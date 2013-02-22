@@ -1,0 +1,151 @@
+## -*- mode: sh-mode; -*-
+
+# Basic commands
+alias zcat='zcat -f'
+# - same as tail but using inotify for better perfomance
+# - linux only
+xalias tail='inotail'
+alias less='less -isRM'
+
+xalias ag='ag --color'
+
+# System tools
+xalias top='htop'
+alias free='free -m'
+alias vuser="fuser -v "
+alias du='du -hc'
+alias df='df -hT'
+xalias df='dfc'
+
+# File management
+alias ls='ls --color=auto -F -h'
+#alias sl=ls
+alias la='ls -lA'
+alias laa='ls -la'
+alias ll='ls -l'
+
+alias rm='rm -rv'
+alias cp='nocorrect cp -rpv'
+alias cpv="rsync -pogr --progress"
+alias ln="nocorrect ln"
+alias mv='nocorrect mv -v'
+alias mkdir='nocorrect mkdir -p'
+xalias locate='locate --existing --follow --basename --ignore-case'
+
+# frontend for generic colouriser grcat(1)
+if [[ -n "${commands[grc]}" ]]; then
+	alias grc='grc --colour=auto'
+	#alias ping='grc ping'
+	alias last='grc last'
+	alias netstat='grc netstat'
+	alias traceroute='grc traceroute'
+	alias diff='grc diff'
+	alias gcc='grc gcc'
+	alias configure='grc configure'
+	alias cvs='grc cvs'
+fi
+
+# Push and pop directories on directory stack
+alias pu='pushd'
+alias po='popd'
+
+# Root
+# fallback if sudo is not yet installed
+alias su='su - '
+alias !=''
+xalias !='sudo'
+alias sync='! sync'
+alias updatedb='! updatedb'
+alias sless='! less'
+alias stail='! tail'
+xalias ctl='! systemctl'
+
+# Editors
+[[ -n ${commands[vi]} ]] && alias vi=vim
+alias svim='! vim'
+alias svimdiff='! vimdiff'
+alias ntree='vim -c NERDTree'
+xalias ee="emacs -nw"
+
+# reboot/halt/suspend
+alias shutdown='! shutdown'
+alias reboot='! reboot'
+xalias shutdown="systemctl poweroff"
+xalias reboot="systemctl reboot"
+xalias suspend="systemctl suspend"
+xalias hibernate="systemctl hibernate"
+xalias sleep="systemctl hybrid-sleep"
+
+# Package management
+if [[ -f /etc/debian_version ]] ; then
+  alias apt-get='! apt-get'
+  alias apt-secure='! apt-secure'
+  alias apt-file='! apt-file'
+  alias aptitude='! aptitude'
+  alias dpkg='! dpkg'
+  alias update='apt-get update && apt-get upgrade'
+  alias dist-upgrade='apt-get dist-upgrade'
+  alias install='apt-get install'
+  alias remove='apt-get remove'
+  alias purge='apt-get purge'
+  alias clean='apt-get clean && apt-get autoclean'
+
+  alias search='apt-cache search'
+  alias show='apt-cache show'
+  alias depends='apt-cache depends'
+
+  alias ifup='! ifup'
+  alias ifdown='! ifdown'
+  alias pon='! pon'
+  alias poff='! poff'
+  alias plog='! plog'
+elif [[ -f /etc/arch-release ]] ; then
+  # if colored version is avaible
+  xalias pacman='pacman-color'
+  xalias y=yaourt
+  xalias c='clyde'
+  # run as root
+  alias pacman='! pacman'
+  alias pacman-optimize='! pacman-optimize'
+  alias abs='! abs'
+  # pacman-contrib stuff
+  xalias pacdiff='! pacdiff -l'
+  xalias pacscripts='! pacscripts'
+  xalias pactree='pactree -c'
+  xhashd yaourtbuild=/var/abs/local/yaourtbuild
+  xhashd clydebuild=/var/abs/local/clydebuild
+elif [[ -f /etc/gentoo-release ]] ; then
+  alias emerge='! emerge'
+  xalias eix-sync='! eix-sync -C --quiet'
+fi
+
+# Set up auto extension stuff
+alias -s exe=wine
+
+# Dir Hashes
+xhashd subtle=$HOME/.config/subtle
+xhashd awesome=$HOME/.config/awesome/
+xhashd vicious=$HOME/.config/awesome/vicious
+xhashd dotfiles=$HOME/git/dotfiles
+xhashd doc=/usr/share/doc
+xhashd abs=/var/abs
+xhashd web=/var/www
+xhashd web=/srv/http
+xhashd log=/var/log
+xhashd zdir=${${${(M)fpath:#*/zsh/${ZSH_VERSION}/*}[1]}%${ZSH_VERSION}*}${ZSH_VERSION}
+
+# Miscellanious
+alias aliases='less ~/.zaliases'
+# a fresh zsh, please.
+alias fzsh='PS1="zsh%# " zsh -f'
+# generic aliases
+xalias rot13='tr A-Za-z N-ZA-Mn-za-m'
+# diff format like git
+xalias diff='diff -Naur --strip-trailing-cr'
+alias gping="ping google.com"
+alias gping6="ping6 google.com"
+alias :q=exit
+
+alias webtunnel='ssh higgs-boson-tunnel cat'
+
+### vim:ft=zsh:foldmethod=marker

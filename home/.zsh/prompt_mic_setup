@@ -1,0 +1,60 @@
+# based on wunjo prompt theme
+autoload -U zgitinit
+
+prompt_mic_help () {
+  print "usage:
+  prompt mic"
+}
+
+
+# Notify, if an command is ready.
+function _mic_notify { 	echo -ne '\a'}
+# Directory in the title bar
+function _mic_display_pwd {
+  [[ -o interactive ]] || return
+  case $TERM in
+    sun-cmd) print -Pn "\e]l%~\e\\"
+      ;;
+    *xterm*|rxvt*|(dt|k|E)term) print -Pn "\e]2;%~\a"
+      ;;
+  esac
+}
+
+autoload -Uz add-zsh-hook
+# Does only make sense in X with URGENT notification
+[[ $TERM != "linux" ]] && add-zsh-hook precmd _mic_notify
+add-zsh-hook chpwd _mic_display_pwd
+
+prompt_mic_setup() {
+    colorize() { echo %{$fg[$2]%}$1%{$reset_color%} }
+    brackets()	{ echo $open_p$1$close_p }
+
+    local open_p=$(colorize "[" blue)
+    local close_p=$(colorize "]" blue)
+
+    local path_p=$(brackets $(colorize %~ yellow))
+
+    local user=$(colorize %n cyan)
+    local host=$(colorize %m yellow)
+    local user_host=$(brackets $user@$host)
+
+    local ret_status=$(brackets %?)
+
+    local hist_no=$(brackets %h)
+
+    local smile=$(colorize ":%)" green)
+    local cry=$(colorize ":(" red )
+    local smiley=$(brackets "%(?,$smile,$cry)")
+
+    PS1="╭─${path_p}─${user_host}─${ret_status}─${hist_no}
+╰─$smiley %# "
+
+    local cur_cmd=$(brackets %_ )
+    PS2="${cur_cmd}> "
+
+    export PS1 PS2
+}
+
+prompt_mic_setup
+
+# vim:set ft=zsh:

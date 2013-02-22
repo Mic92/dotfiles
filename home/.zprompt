@@ -1,0 +1,11 @@
+# very compact theme from Frank Terbeck
+# do some little color modifications
+#autoload prompt_ft_setup && prompt ft
+#zstyle ':vcs_info:*'     enable git hg cvs svn bzr
+
+# extendet git prompt
+#autoload prompt_wunjo_setup && prompt wunjo
+
+# Testing
+autoload prompt_mic_setup && prompt mic
+# vim:ft=zsh:foldmethod=marker
