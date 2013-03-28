@@ -1,12 +1,9 @@
 #!/usr/bin/env zsh
-#shell-script -*-
 
-# {{{ Path + fpath
-# ~/bin for local scripts
+# Customize to your needs...
+export PATH=$PATH
 path=(
     $HOME/bin
-    $HOME/.gems/bin
-    $HOME/.rbenv/bin
     $HOME/.cabal/bin
     /usr/local/{,s}bin
     /opt/local/{,s}bin
@@ -14,7 +11,6 @@ path=(
     /usr/{,s}bin
     $path
 )
-
 fpath=(~/.zsh $fpath)
 # get rid of duplicate
 typeset -U path
@@ -23,7 +19,6 @@ typeset -U fpath
 # remove non-existing entries from path
 path=($^path(N))
 export PATH
-# }}}
 
 # {{{ Prefered programs
 export BROWSER=firefox
@@ -80,10 +75,6 @@ export LESS_TERMCAP_us=$'\E[03;33;146m' # begin underline is now yellow, italic
 #                           |  |----------------- yellow
 #                           |-------------------- italic
 
-# ignore case
-export LESS="-imR"
-# }}}
-
 # Man
 export MANWIDTH=80
 
@@ -95,19 +86,6 @@ export REPORTTIME=4
 export LANG=de_DE.UTF-8
 export LC_ALL=$LANG
 
-# Ruby
-# only if rbenv is avaible and not already loaded
-if [[ -n ${commands[rbenv]} && -n _rbenv ]]; then
-        eval "$(rbenv init -)"
-fi
-export GEM_HOME=~/.gems
-export GEM_PATH=~/.gems:.rbenv/versions/1.9.3-p286-falcon/lib/ruby/gems/1.9.1
-
-# Node
-export NODE_PATH="/usr/lib/node"
-
 # Python
 export PYTHONDOCS=/usr/share/doc/python/html/
 
-
-source /usr/share/zsh/site-functions/_z
