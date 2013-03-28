@@ -1,116 +1,41 @@
-# -*- shell-script -*-
+# Path to your oh-my-zsh configuration.
+ZSH=$HOME/.oh-my-zsh
 
-# early, fast invocation of tmux
-# - only if tmux is installed
-# - not in linux ttys
-# - no nested tmux sessions
-if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
-        tmux attach-session || tmux
-        [[ $? = "0" ]] && exit
-fi
+# Set name of the theme to load.
+# Look in ~/.oh-my-zsh/themes/
+# Optionally, if you set this to "random", it'll load a random theme each
+# time that oh-my-zsh is loaded.
+ZSH_THEME="mic92"
 
-# Keybindings
-bindkey -e
+# Example aliases
+# alias zshconfig="mate ~/.zshrc"
+# alias ohmyzsh="mate ~/.oh-my-zsh"
 
-# Colorful output
-if [[ -n ${commands[dircolors]} ]] then
-  if [[ -r "$HOME/.dircolors.ansi-universal" ]]; then
-    eval $(dircolors "$HOME/.dircolors.ansi-universal")
-  fi
-fi
+# Set to this to use case-sensitive completion
+# CASE_SENSITIVE="true"
 
-# {{{ Helper functions
-# {{{ xalias - only supposed to be used with simple aliases.
-function xalias() {
-	local key val com
-	if (( ${#argv} == 0 )) ; then
-		printf 'xalias(): Missing argument.\n'
-		return 1
-	fi
-	if (( ${#argv} > 1 )) ; then
-		printf 'xalias(): Too many arguments %s\n' "${#argv}"
-		return 1
-	fi
+# Comment this out to disable bi-weekly auto-update checks
+DISABLE_AUTO_UPDATE="true"
 
-	key="${1%%\=*}" ;  val="${1#*\=}"
-	check_com ${val} && alias -- "${key}=${val}"
-	return 0
-}
-# }}}
+# Uncomment to change how many often would you like to wait before auto-updates occur? (in days)
+# export UPDATE_ZSH_DAYS=13
 
-# {{{ xhashd - check for directory, then create hash -d
-function xhashd() {
-    local key val com
-    if (( ${#argv} == 0 )) ; then
-        printf 'xhashd(): Missing argument.\n'
-        return 1
-    fi
-    if (( ${#argv} > 1 )) ; then
-        printf 'xhashd(): Too many arguments %s\n' "${#argv}"
-        return 1
-    fi
+# Uncomment following line if you want to disable colors in ls
+# DISABLE_LS_COLORS="true"
 
-    key="${1%%\=*}" ;  val="${1#*\=}"
-    [[ -d ${val} ]] && hash -d -- "${key}=${val}"
-    return 0
-}
-# }}}
+# Uncomment following line if you want to disable autosetting terminal title.
+# DISABLE_AUTO_TITLE="true"
 
-# check_com - check if a command exists {{{
-# eg: check_com "vim -p"
-function check_com() {
-    #setopt localoptions xtrace
-    local -a words
-    local -i comonly
-    local cmd
+# Uncomment following line if you want red dots to be displayed while waiting for completion
+COMPLETION_WAITING_DOTS="true"
 
-    if [[ ${1} == '-c' ]] ; then
-        (( comonly = 1 ))
-        shift
-    else
-        (( comonly = 0 ))
-    fi
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+plugins=(git zsh-syntax-highlighting)
 
-    if (( ${#argv} != 1 )) ; then
-        printf 'usage: check_com [-c] <command>\n' >&2
-        return 1
-    fi
+source $ZSH/tmux.sh # early launch tmux
+source $ZSH/custom-helpers.sh
+source $ZSH/oh-my-zsh.sh
 
-    words=(${(z)1})
-    cmd=${words[1]}
-
-    if (( comonly > 0 )) ; then
-        [[ -n ${commands[$cmd]}  ]] && return 0
-        return 1
-    fi
-
-    if   [[ -n ${commands[$cmd]}    ]] \
-      || [[ -n ${functions[$cmd]}   ]] \
-      || [[ -n ${aliases[$cmd]}     ]] \
-      || [[ -n ${reswords[(r)$cmd]} ]] ; then
-
-        return 0
-    fi
-
-    return 1
-}
-# }}}
-# }}}
-
-# Additional files - I like splitting things up.
-
-. ~/.zprofile
-. ~/.zmodule
-. ~/.zabbrev
-. ~/.zaliases
-. ~/.zfunctions
-. ~/.zprompt
-. ~/.zcompletion
-. ~/.zoptions
-[[ -r "$HOME/.zshrc.$HOST" ]] && . "$HOME/.zshrc.$HOST"
-
-source ~/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-
-return 0
-
-# vim:ft=zsh:foldmethod=marker
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && . "$HOME/.rvm/scripts/rvm"
