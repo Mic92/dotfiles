@@ -4,6 +4,9 @@
 [submodule "home/.vim/bundle/vundle"]
 	path = home/.vim/bundle/vundle
 	url = https://github.com/gmarik/vundle.git
-[submodule "home/.oh-my-zsh"]
-	path = home/.oh-my-zsh
-	url = https://github.com/Mic92/oh-my-zsh.git
+[submodule "home/.zsh-completion"]
+	path = home/.zsh-completion
+	url = git://github.com/zsh-users/zsh-completions.git
+[submodule "home/.zshuery"]
+	path = home/.zshuery
+	url = git://github.com/Mic92/zshuery.git
