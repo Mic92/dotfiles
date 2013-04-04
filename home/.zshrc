@@ -1,3 +1,12 @@
+# early, fast invocation of tmux
+# - only if tmux is installed
+# - not in linux ttys
+# - no nested tmux sessions
+if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
+  tmux attach-session || tmux
+  [[ $? = "0" ]] && exit
+fi
+
 source $HOME/.zshuery/zshuery.sh
 load_defaults
 load_aliases
