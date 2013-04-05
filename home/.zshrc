@@ -93,3 +93,8 @@ function check_com() {
 # }}}
 
 source $HOME/.zalias
+
+chpwd() {
+    update_terminal_cwd
+    ls
+}
