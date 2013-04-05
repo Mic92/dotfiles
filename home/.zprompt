@@ -1,14 +1,90 @@
 # based on wunjo prompt theme
+# and on Sebastian Celis's git prompt
 autoload -U zgitinit
+autoload -Uz add-zsh-hook
+setopt promptsubst
 
 prompt_mic_help () {
   print "usage:
   prompt mic"
 }
 
+update_current_git_vars() {
+    unset __CURRENT_GIT_BRANCH
+    unset __CURRENT_GIT_BRANCH_STATUS
+    unset __CURRENT_GIT_BRANCH_IS_DIRTY
+
+    local st="$(git status 2>/dev/null)"
+    if [[ -n "$st" ]]; then
+        local -a arr
+        arr=(${(f)st})
+
+        if [[ $arr[1] =~ 'Not currently on any branch.' ]]; then
+            __CURRENT_GIT_BRANCH='no-branch'
+        else
+            __CURRENT_GIT_BRANCH="${arr[1][(w)4]}";
+        fi
+
+        if [[ $arr[2] =~ 'Your branch' ]]; then
+            if [[ $arr[2] =~ 'ahead' ]]; then
+                __CURRENT_GIT_BRANCH_STATUS='ahead'
+            elif [[ $arr[2] =~ 'diverged' ]]; then
+                __CURRENT_GIT_BRANCH_STATUS='diverged'
+            else
+                __CURRENT_GIT_BRANCH_STATUS='behind'
+            fi
+        fi
+
+        if [[ ! $st =~ 'nothing to commit' ]]; then
+            __CURRENT_GIT_BRANCH_IS_DIRTY='1'
+        fi
+    fi
+}
+
+prompt_git_info() {
+    if [ -n "$__CURRENT_GIT_BRANCH" ]; then
+        local s="$__CURRENT_GIT_BRANCH"
+        case "$__CURRENT_GIT_BRANCH_STATUS" in
+            ahead)
+            s+="↑"
+            ;;
+            diverged)
+            s+="↕"
+            ;;
+            behind)
+            s+="↓"
+            ;;
+        esac
+        if [ -n "$__CURRENT_GIT_BRANCH_IS_DIRTY" ]; then
+            s+="%{$fg[red]%}⚡%{$reset_color%}"
+        fi
+
+        local open_p="%{$fg[blue]%}[%{$reset_color%}"
+        local close_p="%{$fg[blue]%}]%{$reset_color%}"
+        echo "─$open_p${s}$close_p"
+    fi
+}
+
+preexec_update_git_vars() {
+  case "$1" in
+    git*)
+      __EXECUTED_GIT_COMMAND=1
+      ;;
+  esac
+}
+
+precmd_update_git_vars() {
+  if [ -n "$__EXECUTED_GIT_COMMAND" ]; then
+    update_current_git_vars
+    unset __EXECUTED_GIT_COMMAND
+  fi
+}
+add-zsh-hook chpwd update_current_git_vars
+add-zsh-hook preexec preexec_update_git_vars
+add-zsh-hook precmd precmd_update_git_vars
 
 # Notify, if an command is ready.
-function _mic_notify { 	echo -ne '\a'}
+function _mic_notify { echo -ne '\a'}
 # Directory in the title bar
 function _mic_display_pwd {
   [[ -o interactive ]] || return
@@ -20,39 +96,38 @@ function _mic_display_pwd {
   esac
 }
 
-autoload -Uz add-zsh-hook
 # Does only make sense in X with URGENT notification
 [[ $TERM != "linux" ]] && add-zsh-hook precmd _mic_notify
 add-zsh-hook chpwd _mic_display_pwd
 
+
 prompt_mic_setup() {
-    colorize() { echo %{$fg[$2]%}$1%{$reset_color%} }
-    brackets()	{ echo $open_p$1$close_p }
+    local open_p="%{$fg[blue]%}[%{$reset_color%}"
+    local close_p="%{$fg[blue]%}]%{$reset_color%}"
 
-    local open_p=$(colorize "[" blue)
-    local close_p=$(colorize "]" blue)
+    local path_p="$open_p%{$fg[yellow]%}%~%{$reset_color%}$close_p"
 
-    local path_p=$(brackets $(colorize %~ yellow))
+    local user="%{$fg[cyan]%}%n%{$reset_color%}"
+    local host="%{$fg[yellow]%}%m%{$reset_color%}"
+    local user_host="${open_p}${user}@${host}${close_p}"
 
-    local user=$(colorize %n cyan)
-    local host=$(colorize %m yellow)
-    local user_host=$(brackets $user@$host)
+    local git_status="${open_p}\$(prompt_git_info)${close_p}"
 
-    local ret_status=$(brackets %?)
+    local ruby="${open_p}\$RUBY_VERSION${close_p}"
 
-    local hist_no=$(brackets %h)
+    local smile="%{$fg[green]%}:%)%{$reset_color%}"
+    local cry="%{$fg[red]%}:(%{$reset_color%}"
+    local smiley="${open_p}%(?,$smile,$cry)${close_p}"
+    local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
 
-    local smile=$(colorize ":%)" green)
-    local cry=$(colorize ":(" red )
-    local smiley=$(brackets "%(?,$smile,$cry)")
-
-    PS1="╭─${path_p}─${user_host}─${ret_status}─${hist_no}
+    PS1="╭─${path_p}─${user_host}\$(prompt_git_info)─${ruby}
 ╰─$smiley %# "
 
-    local cur_cmd=$(brackets %_ )
     PS2="${cur_cmd}> "
+    RPS1="${return_code}"
+    local user_host="${open_p}%_${close_p}> "
 
-    export PS1 PS2
+    export PS1 PS2 RPS1
 }
 
 prompt_mic_setup
