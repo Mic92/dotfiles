@@ -10,3 +10,6 @@
 [submodule "home/.zshuery"]
 	path = home/.zshuery
 	url = git://github.com/Mic92/zshuery.git
+[submodule "home/.z"]
+	path = home/.z
+	url = git://github.com/sjl/z-zsh.git

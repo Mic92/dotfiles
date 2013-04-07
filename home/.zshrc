@@ -15,6 +15,7 @@ load_completion $HOME/.zsh-completion
 
 bindkey -e
 source $HOME/.zprompt
+source $HOME/.z/z.sh
 
 # {{{ Functions
 flash_undelete() {
