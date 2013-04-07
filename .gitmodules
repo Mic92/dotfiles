@@ -13,3 +13,6 @@
 [submodule "home/.z"]
 	path = home/.z
 	url = git://github.com/sjl/z-zsh.git
+[submodule "home/.zsh-syntax-highlighting"]
+	path = home/.zsh-syntax-highlighting
+	url = git://github.com/zsh-users/zsh-syntax-highlighting.git
