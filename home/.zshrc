@@ -40,7 +40,7 @@ pull-dotfiles() {
 
 ff() { /usr/bin/find . -iname "*$@*" }
 
-{emacs,ee}merge() {
+function {emacs,ee}merge() {
   if [ $# -ne 2 ]; then
     echo Usage: $0 local base other
     exit 1
