@@ -67,7 +67,7 @@ prompt_git_info() {
 
 preexec_update_git_vars() {
   case "$1" in
-    git*)
+    git*|tig)
       __EXECUTED_GIT_COMMAND=1
       ;;
   esac
