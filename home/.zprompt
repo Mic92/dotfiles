@@ -61,7 +61,8 @@ prompt_git_info() {
 
         local open_p="%{$fg[blue]%}[%{$reset_color%}"
         local close_p="%{$fg[blue]%}]%{$reset_color%}"
-        echo "─$open_p${s}$close_p"
+        local branch="%{$fg[yellow]%}${s}%{$reset_color%}"
+        echo "─$open_p${branch}$close_p"
     fi
 }
 
@@ -111,9 +112,7 @@ prompt_mic_setup() {
     local host="%{$fg[yellow]%}%m%{$reset_color%}"
     local user_host="${open_p}${user}@${host}${close_p}"
 
-    local git_status="${open_p}\$(prompt_git_info)${close_p}"
-
-    local ruby="${open_p}\$RUBY_VERSION${close_p}"
+    local ruby="${open_p}%{$fg[yellow]%}\$RUBY_VERSION%{$reset_color%}${close_p}"
 
     local smile="%{$fg[green]%}:%)%{$reset_color%}"
     local cry="%{$fg[red]%}:(%{$reset_color%}"
