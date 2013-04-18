@@ -289,6 +289,7 @@ xalias rot13='tr A-Za-z N-ZA-Mn-za-m'
 xalias diff='diff -Naur --strip-trailing-cr'
 alias gping="ping google.com"
 alias gping6="ping6 google.com"
+alias hping="ping higgsboson.tk"
 alias :q=exit
 
 alias webtunnel='ssh higgs-boson-tunnel cat'
