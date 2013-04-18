@@ -63,7 +63,7 @@ browse () {
 
 chpwd() {
   update_terminal_cwd
-  ls
+  ls --color
 }
 # }}}
 
