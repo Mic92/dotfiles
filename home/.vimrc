@@ -45,7 +45,6 @@ Bundle 'The-NERD-tree'
 Bundle 'bronson/vim-trailing-whitespace'
 Bundle 'altercation/vim-colors-solarized'
 Bundle 'alfredodeza/jacinto.vim'
-Bundle 'davidhalter/jedi-vim'
 Bundle 'msanders/snipmate.vim'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'slim-template/vim-slim'
@@ -53,6 +52,7 @@ Bundle 'ap/vim-css-color'
 Bundle 'vim-scripts/ctags.vim'
 Bundle 'scrooloose/syntastic'
 Bundle 'airblade/vim-gitgutter'
+Bundle 'wincent/Command-T'
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
@@ -143,7 +143,7 @@ map <Leader>ct :!ctags -R .<CR>
 nnoremap <leader><leader> <c-^>
 
 " vim-rspec mappings
-nnoremap <Leader>t :call RunCurrentSpecFile()<CR>
+"nnoremap <Leader>t :call RunCurrentSpecFile()<CR>
 nnoremap <Leader>s :call RunNearestSpec()<CR>
 nnoremap <Leader>l :call RunLastSpec()<CR>
 
@@ -155,6 +155,9 @@ au BufRead,BufNewFile *.md set filetype=markdown
 
 " python setup
 au BufEnter *.py set ai sw=4 ts=4 sta et fo=croql
+
+" rust setup
+au BufEnter *.rs set ai sw=4 ts=4 sta et fo=croql
 
 " Copy and paste with fakeclip
 "Command-C and Command-V are also available in MacVim
