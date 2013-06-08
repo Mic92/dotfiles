@@ -319,3 +319,10 @@ alias webtunnel='ssh higgs-boson-tunnel cat'
 alias homesick="$HOME/.homeshick"
 # }}}
 
+if [ -n ${commands[envoy]} ]; then
+  envoy -t ssh-agent
+  envoy -t gpg-agent
+  source <(envoy -p)
+fi
+
+[ -e $HOME/.zshrc.$HOST ] && source $HOME/.zshrc.$HOST
