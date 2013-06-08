@@ -9,6 +9,7 @@ path=(
     /opt/local/{,s}bin
     /usr/lib/perl5/vendor_perl/bin/
     /usr/{,s}bin
+    /sbin
     $path
 )
 fpath=(~/.zsh $fpath)
