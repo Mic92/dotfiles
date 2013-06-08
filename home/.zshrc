@@ -18,6 +18,29 @@ source $HOME/.z/z.sh
 source $HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # {{{ Functions
+shorturl() {
+  if [[ $# -ne 1 && $# -ne 2 ]]; then
+    echo "Usage: $0 URL [TITLE]"
+    return 1
+  fi
+
+  if [ -z $YOURLS_TOKEN ]; then
+    echo "Please set the YOURLS_TOKEN environment variable"
+    return 1
+  fi
+
+  local short_url
+  short_url=$(curl --silent --show-error -X POST \
+    --data-urlencode "signature=$YOURLS_TOKEN" \
+    --data-urlencode "action=shorturl" \
+    --data-urlencode "url=$1" \
+    --data-urlencode "keyword=$2" \
+    --data-urlencode "format=simple" \
+    http://higgs.tk/yourls-api.php)
+  echo $short_url | xclip
+  echo $short_url
+}
+
 flash_undelete() {
   cd /proc/$(ps x | awk '/libflashplayer.so\ /{print $1}')/fd && ls -l | grep deleted
 }
@@ -43,7 +66,7 @@ ff() { /usr/bin/find . -iname "*$@*" }
 function {emacs,ee}merge() {
   if [ $# -ne 2 ]; then
     echo Usage: $0 local base other
-    exit 1
+    return 1
   fi
   local in_shell
   if [[ "$0" == "eemerge" ]]; then
@@ -63,6 +86,7 @@ browse () {
 chpwd() {
   update_terminal_cwd
   ls --color
+  z --add "$(pwd -P)"
 }
 # }}}
 
