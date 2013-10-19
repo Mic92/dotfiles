@@ -7,6 +7,7 @@ set showcmd " display incomplete commands
 set incsearch " do incremental searching
 set laststatus=2 " Always display the status line
 set smartcase
+set ignorecase
 set showmatch     " Show matching bracets when text indicator is over them
 set autowrite     " write a modified buffer on each :next ,  ...
 
@@ -31,14 +32,11 @@ call vundle#rc()
 " Let Vundle manage Vundle
 Bundle 'gmarik/vundle'
 
-Bundle 'thoughtbot/vim-rspec'
-Bundle 'tpope/vim-endwise'
-Bundle 'tpope/vim-markdown'
+Bundle 'bling/vim-airline'
+
 Bundle 'tpope/vim-rails'
 Bundle 'tpope/vim-surround'
-Bundle 'tsaleh/vim-matchit'
 Bundle 'scrooloose/nerdcommenter'
-Bundle 'xenoterracide/html.vim'
 Bundle 'Raimondi/delimitMate'
 Bundle 'fakeclip'
 Bundle 'The-NERD-tree'
@@ -49,10 +47,16 @@ Bundle 'msanders/snipmate.vim'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'slim-template/vim-slim'
 Bundle 'ap/vim-css-color'
-Bundle 'vim-scripts/ctags.vim'
 Bundle 'scrooloose/syntastic'
+Bundle 'Valloric/YouCompleteMe'
 Bundle 'airblade/vim-gitgutter'
-Bundle 'wincent/Command-T'
+Bundle 'SirVer/ultisnips'
+Bundle 'kien/ctrlp.vim'
+Bundle 'majutsushi/tagbar'
+Bundle 'freitass/todo.txt-vim'
+"Bundle 'derekwyatt/vim-scala'
+"Bundle 'wavded/vim-stylus'
+"Bundle 'digitaltoad/vim-jade'
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
@@ -69,6 +73,10 @@ if (&t_Co > 2 || has("gui_running")) && !exists("syntax_on")
 endif
 
 filetype plugin indent on
+
+runtime macros/matchit.vim
+Bundle 'kana/vim-textobj-user'
+Bundle 'nelstrom/vim-textobj-rubyblock'
 
 set textwidth=80
 
@@ -99,9 +107,6 @@ set list listchars=tab:»·,trail:·
 if executable("ag")
   set grepprg=ag\ --nogroup\ --nocolor
 endif
-
-" Snippets are activated by Shift+Tab
-let g:snippetsEmu_key = "<S-Tab>"
 
 " Tab completion
 " will insert tab at beginning of line,
@@ -141,11 +146,6 @@ map <Leader>ct :!ctags -R .<CR>
 
 " Switch between the last two files
 nnoremap <leader><leader> <c-^>
-
-" vim-rspec mappings
-"nnoremap <Leader>t :call RunCurrentSpecFile()<CR>
-nnoremap <Leader>s :call RunNearestSpec()<CR>
-nnoremap <Leader>l :call RunLastSpec()<CR>
 
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
@@ -202,8 +202,9 @@ set fileencodings=ucs-bom,utf-8,latin1
 " If the encoding is none of those three, then the file is interpreted as latin-1.
 set termencoding=utf-8
 
-
-
+let g:UltiSnipsExpandTrigger="<leader><Tab>"
+let g:UltiSnipsJumpForwardTrigger="<leader><Tab>"
+let g:UltiSnipsJumpBackwardTrigger="<leader><s-Tab>"
 
 "open zipped files
 au BufReadCmd *.jar,*.xpi,*.wgt call zip#Browse(expand("<amatch>"))
@@ -224,13 +225,31 @@ inoremap jj <Esc>
 " change in the directory of the current file
 "autocmd BufEnter * :lchdir %:p:h
 
+let g:tagbar_type_ruby = {
+    \ 'kinds' : [
+        \ 'm:modules',
+        \ 'c:classes',
+        \ 'd:describes',
+        \ 'C:contexts',
+        \ 'f:methods',
+        \ 'F:singleton methods'
+    \ ]
+\ }
+
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
-" Remove trailing whitespace on saving
-"autocmd BufWritePre * :%s/\s\+$//e
-" sudo to write
-cmap w!! w !sudo tee % >/dev/null
+" conflict with YouCompleteMe
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+
+command! -bar SudoWrite :
+      \ setlocal nomodified |
+      \ exe (has('gui_running') ? '' : 'silent') 'write !sudo tee % >/dev/null' |
+      \ let &modified = v:shell_error
+
+cmap w!! SudoWrite
 
 set undofile
 set undoreload=10000
