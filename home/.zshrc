@@ -294,6 +294,7 @@ alias -s exe=wine
 xhashd awesome=$HOME/.config/awesome/
 xhashd vicious=$HOME/.config/awesome/vicious
 xhashd dotfiles=$HOME/git/dotfiles
+xhashd git=$HOME/git
 xhashd doc=/usr/share/doc
 xhashd abs=/var/abs
 xhashd web=/var/www
