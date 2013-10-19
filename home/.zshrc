@@ -176,7 +176,8 @@ alias zcat='zcat -f'
 xalias tail='inotail'
 alias less='less -isRM'
 
-xalias ag='ag --color --ignore \*.min.js'
+xalias ag='ag --color'
+xalias rag='ag --color --path-to-agignore ~/.ruby-agignore'
 
 # System tools
 xalias top='htop'
@@ -323,16 +324,66 @@ xalias diff='diff -Naur --strip-trailing-cr'
 alias gping="ping google.com"
 alias gping6="ping6 google.com"
 alias hping="ping higgsboson.tk"
+alias hcurl="curl -v higgsboson.tk/ping.txt"
 alias :q=exit
+alias todotxt="vim ~/Dropbox/todo/todo.txt"
+
+[ -n ${commands[pacman]} ] && function owns() { /usr/bin/pacman -Qo $(which $1)}
+
+
+function retry() {
+  local n=0
+  local trys=${TRYS:-100000}
+  local sleep_time=${SLEEP:-1}
+  until ($1 "${@:2}") ; do
+      n=$(( n + 1 ))
+      [ $n -gt $trys ] && return 1
+      sleep $sleep_time
+  done
+}
+
+function print_result() {
+  subsystem=$1
+  result=$2
+  bold=`tput bold`
+  normal=`tput sgr0`
+  if [[ $result -eq "0" ]]; then
+    echo "$bold$subsystem:$normal \e[0;32m✓\e[0m"
+  else
+    echo "$bold$subsystem:$normal \e[0;31m✗\e[0m"
+  fi
+}
+
+function netcheck() {
+  echo "Test Ping (IPv4)"
+  ping -c 3 8.8.8.8
+  ipv4=$?
+  echo "Test DNS (Google DNS)"
+  host github.com 8.8.8.8
+  dns_google=$?
+  echo "Test DNS (Higgsboson.tk DNS)"
+  host github.com 82.196.5.246
+  dns_higgsboson=$?
+  echo "Test HTTP (IPv4)"
+  curl -v google.com >/dev/null
+  http=$?
+  echo "Test Ping (IPv6)"
+  ping6 -c 3 ipv6.google.com
+  ipv6=$?
+
+  echo ">>>>Result<<<<"
+  print_result "ipv4" $ipv4
+  print_result "ipv6" $ipv6
+  print_result "dns (google)" $dns_google
+  print_result "dns (higgsboson.tk)" $dns_higgsboson
+  print_result "http" $http
+}
 
 alias webtunnel='ssh higgs-boson-tunnel cat'
 alias homesick="$HOME/.homeshick"
 # }}}
 
-if [ -n ${commands[envoy]} ]; then
-  envoy -t ssh-agent
-  envoy -t gpg-agent
-  source <(envoy -p)
-fi
+# zprofile not sourced
+[ -z $EDITOR ] && [ -f $HOME/.zprofile ] && source $HOME/.zprofile
 
 [ -e $HOME/.zshrc.$HOST ] && source $HOME/.zshrc.$HOST
