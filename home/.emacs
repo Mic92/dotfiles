@@ -219,6 +219,9 @@
       TeX-insert-braces nil                    ;; don't add brackets after macro
       LaTeX-math-abbrev-prefix "#"
       LaTeX-math-list (append '((?f "frac" nil) ))
+      TeX-view-program-list '(("Evince" "evince --page-index=%(outpage) %o"))
+      TeX-view-program-selection '((output-pdf "Evince"))
+      TeX-source-correlate-start-server t
       )
 
 ;; make AUCTeX aware of style files and multi-file documents
@@ -519,16 +522,6 @@
 (global-set-key "\C-cr" 'org-remember)
 ;; }}}
 
-;; {{{ Remember mode
-;; - connected with org-mode
-;; Initialization
-(autoload 'remember "remember" nil t)
-;; Connect with org-mode
-(eval-after-load "remember" (org-remember-insinuate))
-;; Notes file
-(setq org-default-notes-file (concat org-directory "notes.org"))
-;; }}}
-
 ;; {{{ Saveplace
 ;; - places cursor in the last place you edited file
 ;; activate it for all buffers
@@ -552,6 +545,7 @@
 (add-hook 'emacs-lisp-mode-hook 'paredit-replace-autopair)
 (add-hook 'lisp-mode-hook 'paredit-replace-autopair)
 (add-hook 'lisp-interaction-mode-hook 'paredit-replace-autopair)
+(add-hook 'scheme-mode-hook  'paredit-replace-autopair)
 ;; }}}
 
 ;; {{{ PKGBUILD
@@ -572,6 +566,11 @@
 ;; Additional extensions we are interested in
 (speedbar-add-supported-extension  '("PKGBUILD" ".txt" ".org" ".xml" ".pdf" ".patch"
 				     ".diff" ".php" ".py"  ".lua" ".sh" ".pl" ".tex" ".el" ".h" ".c" ".cpp" ".java" ))
+
+;; {{{ Scheme
+(setq scheme-program-name "csi")
+;; }}}
+
 ;; Quick access to the speedbar
 (global-set-key "\C-cs" 'speedbar-get-focus)
 ;; }}}
