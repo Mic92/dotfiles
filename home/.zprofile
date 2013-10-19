@@ -5,11 +5,6 @@ export PATH=$PATH
 path=(
     $HOME/bin
     $HOME/.cabal/bin
-    /usr/local/{,s}bin
-    /opt/local/{,s}bin
-    /usr/lib/perl5/vendor_perl/bin/
-    /usr/{,s}bin
-    /sbin
     $path
 )
 fpath=(~/.zsh $fpath)
@@ -59,7 +54,6 @@ export SDL_AUDIODRIVER=pulse
 # fix broken xdg-open
 export GDMSESSION=1 GNOME_DESKTOP_SESSION_ID=1
 
-export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=lcd_hrgb -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
 # make OpenJDK working with awesome wm
 export _JAVA_AWT_WM_NONREPARENTING=1
 export JAVA_FONTS=/usr/share/fonts/TTF
@@ -89,4 +83,3 @@ export LC_ALL=$LANG
 
 # Python
 export PYTHONDOCS=/usr/share/doc/python/html/
-
