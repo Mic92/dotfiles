@@ -234,6 +234,8 @@ alias svimdiff='sudo vimdiff'
 alias ntree='vim -c NERDTree'
 xalias ee="emacs -nw"
 
+xalias mplayer="mpv"
+
 # reboot/halt/suspend
 alias shutdown='! shutdown'
 alias reboot='! reboot'
