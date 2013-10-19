@@ -220,6 +220,13 @@ alias sless='sudo less'
 alias stail='sudo tail'
 xalias ctl='sudo systemctl'
 
+ulimit -S -c 0 # disable core dumps
+stty -ctlecho # turn off control character echoing
+
+if [[ $TERM = linux ]]; then
+  setterm -regtabs 2 # set tab width of 4 (only works on TTY)
+fi
+
 # Editors
 [[ -n ${commands[vi]} ]] && alias vi=vim
 alias svim='sudo vim'
