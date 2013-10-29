@@ -54,6 +54,7 @@ Bundle 'SirVer/ultisnips'
 Bundle 'kien/ctrlp.vim'
 Bundle 'majutsushi/tagbar'
 Bundle 'freitass/todo.txt-vim'
+Bundle 'stefanoverna/vim-i18n'
 "Bundle 'derekwyatt/vim-scala'
 "Bundle 'wavded/vim-stylus'
 "Bundle 'digitaltoad/vim-jade'
@@ -107,21 +108,6 @@ set list listchars=tab:»·,trail:·
 if executable("ag")
   set grepprg=ag\ --nogroup\ --nocolor
 endif
-
-" Tab completion
-" will insert tab at beginning of line,
-" will use completion if not at beginning
-set wildmode=list:longest,list:full
-set complete=.,w,t
-function! InsertTabWrapper()
-    let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k'
-        return "\<tab>"
-    else
-        return "\<c-p>"
-    endif
-endfunction
-inoremap <Tab> <c-r>=InsertTabWrapper()<cr>
 
 " Tab completion
 " will insert tab at beginning of line,
@@ -216,11 +202,11 @@ set spell
 set splitbelow
 set splitright
 
-" comma always followed by a space
-inoremap  ,  ,<Space>
-
 " go in normal mode with jj
 inoremap jj <Esc>
+
+" I18n translations
+vmap <Leader>z :call I18nTranslateString()<CR>
 
 " change in the directory of the current file
 "autocmd BufEnter * :lchdir %:p:h
