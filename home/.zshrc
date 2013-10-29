@@ -176,7 +176,7 @@ alias zcat='zcat -f'
 xalias tail='inotail'
 alias less='less -isRM'
 
-xalias ag='ag --color'
+xalias ag='ag --color --smart-case --literal'
 xalias rag='ag --color --path-to-agignore ~/.ruby-agignore'
 
 # System tools
@@ -220,6 +220,8 @@ alias updatedb='sudo updatedb'
 alias sless='sudo less'
 alias stail='sudo tail'
 xalias ctl='sudo systemctl'
+
+alias json_escape="ruby -e \"require 'json'; puts(File.open(ARGV[0]).read.to_json) if ARGV[0]\""
 
 ulimit -S -c 0 # disable core dumps
 stty -ctlecho # turn off control character echoing
@@ -293,6 +295,7 @@ alias -s exe=wine
 
 # Dir Hashes
 xhashd awesome=$HOME/.config/awesome/
+xhashd xmonad=$HOME/.xmonad
 xhashd vicious=$HOME/.config/awesome/vicious
 xhashd dotfiles=$HOME/git/dotfiles
 xhashd git=$HOME/git
@@ -381,9 +384,13 @@ function netcheck() {
 
 alias webtunnel='ssh higgs-boson-tunnel cat'
 alias homesick="$HOME/.homeshick"
+
+if [[ -n ${commands[envoy]} ]]; then
+  envoy -t ssh-agent
+  source <(envoy -p)
+fi
 # }}}
 
 # zprofile not sourced
 [ -z $EDITOR ] && [ -f $HOME/.zprofile ] && source $HOME/.zprofile
-
 [ -e $HOME/.zshrc.$HOST ] && source $HOME/.zshrc.$HOST
