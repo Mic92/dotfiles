@@ -17,3 +17,7 @@
     $ (cd ~/.homesick/repos/dotfiles && git submodule foreach --recursive "git pull -u origin master")
 
     $ homeshick symlink
+
+    $ curl -L https://get.rvm.io | bash -s stable --ruby
+
+    $ vim +BundleInstall +qall

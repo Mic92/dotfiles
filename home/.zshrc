@@ -61,6 +61,7 @@ pull-dotfiles() {
   popd
 }
 
+
 ff() { /usr/bin/find . -iname "*$@*" }
 
 function {emacs,ee}merge() {
@@ -177,7 +178,7 @@ xalias tail='inotail'
 alias less='less -isRM'
 
 xalias ag='ag --color --smart-case --literal'
-xalias rag='ag --color --path-to-agignore ~/.ruby-agignore'
+xalias rag='ag --color --smart-case --path-to-agignore ~/.ruby-agignore'
 
 # System tools
 xalias top='htop'
@@ -193,6 +194,7 @@ alias ls='ls --color=auto -F -h'
 alias la='ls -lA'
 alias laa='ls -la'
 alias ll='ls -l'
+alias tempdir='cd `mktemp -d`'
 
 alias rm='rm -rv'
 alias cp='nocorrect cp -rpv'
@@ -385,11 +387,10 @@ function netcheck() {
 alias webtunnel='ssh higgs-boson-tunnel cat'
 alias homesick="$HOME/.homeshick"
 
-if [[ -n ${commands[envoy]} ]]; then
-  envoy -t ssh-agent
+if [[ -n ${commands[envoy]} ]] && (( UID != 0)); then
+  envoy
   source <(envoy -p)
 fi
-# }}}
 
 # zprofile not sourced
 [ -z $EDITOR ] && [ -f $HOME/.zprofile ] && source $HOME/.zprofile
