@@ -32,9 +32,7 @@ call vundle#rc()
 
 " Let Vundle manage Vundle
 Bundle 'gmarik/vundle'
-
 Bundle 'bling/vim-airline'
-
 Bundle 'tpope/vim-rails'
 Bundle 'tpope/vim-surround'
 Bundle 'scrooloose/nerdcommenter'
@@ -56,6 +54,8 @@ Bundle 'kien/ctrlp.vim'
 Bundle 'majutsushi/tagbar'
 Bundle 'freitass/todo.txt-vim'
 Bundle 'stefanoverna/vim-i18n'
+Bundle 'dag/vim-fish'
+"Bundle 'dhruvasagar/vim-table-mode'
 "Bundle 'derekwyatt/vim-scala'
 "Bundle 'wavded/vim-stylus'
 "Bundle 'digitaltoad/vim-jade'
