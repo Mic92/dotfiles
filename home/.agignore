@@ -1,0 +1,8 @@
+*.sql
+*.tags*
+*.gemtags*
+*.tmp*
+*.min.js
+*.min.css
+*.plist
+*.pdf
