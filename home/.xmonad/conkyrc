@@ -1,0 +1,22 @@
+# ~/.conkyrc
+# Thayer Williams - http://cinderwick.ca
+# vim:nu:ai:si:et:ts=4:sw=4:ft=conkyrc:
+
+background no
+out_to_x no
+out_to_console yes
+update_interval 3
+total_run_times 0
+use_spacer none
+
+TEXT
+^i(.xmonad/dzen-icons/cpu.xbm) ^ca(1,urxvt -e htop)^fg(\#999999)${cpu cpu1}%/${cpu cpu2}%/${cpu cpu3}%/${cpu cpu4}%^fg()^ca() \
+^i(.xmonad/dzen-icons/temp.xbm) ^fg(\#999999)${hwmon temp 1}°^fg() \
+LOAD: ^fg(\#999999)${loadavg 1}^fg() \
+^i(.xmonad/dzen-icons/mem.xbm) ^fg(\#999999)${mem}/${memmax}^fg() \
+IO: ^fg(\#999999)${diskio_read}/${diskio_write}^fg()\
+^i(.xmonad/dzen-icons/bat_full_01.xbm) ^fg(\#91b8ff)${if_existing /sys/class/power_supply/BAT1/present}${battery_short BAT1} (${battery_time BAT1})${else}AC${endif}^fg() \
+^ca(1,urxvt -e sudo wifi-menu)${if_empty ${exec ifconfig wlan0 | grep 'inet'}}^fg(\#bbbbbb)eth0^fg()  ^fg(\#d94c3d)${upspeed eth0}k^fg()  ^fg(\#a4bc51)${downspeed eth0}k^fg()${else}\
+^i(.xmonad/dzen-icons/wifi_01.xbm) ^fg(\#bbbbbb)${wireless_link_qual_perc wlan0}%  ${wireless_essid wlan0}^fg() \
+^i(.xmonad/dzen-icons/net_up_01.xbm)^fg(\#d94c3d)${upspeed wlan0}^fg()/^fg(\#a4bc51)${downspeed wlan0}^fg()^i(.xmonad/dzen-icons/net_down_01.xbm)${endif}^ca() \
+^i(.xmonad/dzen-icons/phones.xbm) ${if_mpd_playing}^fg(\#999999)${else}^fg(\#505050)${endif} ^ca(1,urxvt -e ncmpcpp) ${mpd_artist} - ${mpd_title 30} ${mpd_elapsed}/${mpd_length}^fg()^ca()

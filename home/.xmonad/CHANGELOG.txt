@@ -1,0 +1,489 @@
+Version 3.5.6 (March 27, 2013)
+- Add <notification-counter-42>.
+- Add <poop*>.
+- Rename <smiley-eek*> to <smiley-shock*>.
+- Add <smiley-curly>, <smiley-eek>, <smiley-glass>,
+  <smiley-grumpy>, <smiley-squint> and <smiley-upset>.
+------------------------------------------------------------
+Version 3.5.5 (March 4, 2013)
+- Add <mail-medium-open>.
+- Add <money-bag*>.
+- Add <surveillance-camera>.
+- Add <weather-snowflake>.
+------------------------------------------------------------
+Version 3.5.4 (February 8, 2013)
+- Add <hand-pinky> and <hand-red-string-of-fate>.
+------------------------------------------------------------
+Version 3.5.3 (February 1, 2013)
+- Add <chocolate-heart*>.
+- Add <cookie-*-sprinkles> and <cookie-heart*>.
+- Add <medal-*-premium>.
+- Add <ui-breadcrumb-bread>.
+- Add <wafer*>.
+------------------------------------------------------------
+Version 3.5.2 (January 1, 2013)
+- Add <blue-folder-network-horizontal*>.
+- Add <folder-network-horizontal*>.
+- Add <image-instagram*>.
+- Add <pill-blue>, <pill-small-blue> and <pills>.
+- Add <poison*>.
+- Add <24/image-instagram*>.
+- Add <32/image-instagram*>.
+- Add <animated/construction>.
+- Add <animated/lock-warning>.
+------------------------------------------------------------
+Version 3.5.1 (November 27, 2012)
+- Add <billboard*>.
+- Add <gingerbread-man*>.
+- Add <holly>.
+- Add <image-map>.
+- Add <mizuhiki-paper-cord*>.
+- Add <processor-*>.
+- Add <spectacle-lorgnette>.
+- Add <ui-check-boxes-list>.
+- Add <ui-radio-buttons-list>.
+- Add <24/image-map>.
+- Add <24/ui-check-boxes-list>.
+- Add <24/ui-radio-buttons-list>.
+- Add <32/image-map>.
+- Add <32/ui-check-boxes-list>.
+- Add <32/ui-radio-buttons-list>.
+------------------------------------------------------------
+Version 3.5 (October 7, 2012)
+- Add <application-cloud>.
+- Add <blue-document-word-tick>.
+- Add <calendar-property>.
+- Add <chart-medium>.
+- Add <clipboard-block>.
+- Add <computer-cloud>.
+- Add <database-cloud> and <database-property>.
+- Add <document-word-tick>.
+- Add <monitor-cloud>.
+- Add <server-cloud>.
+- Add <tree*>.
+- Add <ui-scroll-pane-block>.
+------------------------------------------------------------
+Version 3.4.5 (August 23, 2012)
+- Add <edit-family>.
+- Add <exclamation-circle*>.
+- Add <mushroom>.
+- Add <road>.
+- Add <transmitter>.
+- Add <user-medium-silhouette>.
+- Add <vase*>.
+------------------------------------------------------------
+Version 3.4.4 (June 20, 2012)
+- Add <blue-document-epub*> and <blue-document-mobi*>.
+- Add <cursor-lifebuoy>.
+- Add <document-epub*> and <document-mobi*>.
+- Add <flag-checker>.
+- Add <lifebuoy-medium> and <lifebuoy-small>.
+- Add <pencil-button>.
+- Add <shuriken>.
+- Add <stickman-run*> and <stickman-smiley-*>.
+------------------------------------------------------------
+Version 3.4.3 (June 8, 2012)
+- Add <dress>.
+- Add <edit-lipsum> and <edit-style>.
+- Add <keyboard-small> and <keyboards*>.
+- Add <santa-hat>.
+- Add <smiley-medium>.
+- Add <sushi>.
+- Add <wand-magic>.
+------------------------------------------------------------
+Version 3.4.2 (June 5, 2012)
+- Add <box-resize*> and <box-zipper>.
+- Add <controller-d-pad>.
+- Add <lock-warning>.
+- Add <map-resize*>.
+- Add <selection-resize*>.
+- Add <slide-resize*>.
+- Add <table-resize*> and <table-rotate>.
+- Add <ui-panel-resize*>.
+- Add <zone-resize*>.
+------------------------------------------------------------
+Version 3.4.1 (May 3, 2012)
+- Add <blue-document-number-*>.
+- Add <document-number-*>.
+- Add <footprint*>.
+------------------------------------------------------------
+Version 3.4 (April 28, 2012)
+- Add <balloon-smiley-sad>.
+- Add <blue-document-smiley*>.
+- Add <blue-folder-smiley*> and <blue-folder-tree>.
+- Add <document-smiley*>.
+- Add <folder-smiley*>.
+- Add <geolocation*>.
+- Add <keyboard-smiley>.
+- Add <notification-counter*>.
+- Add <report-share>.
+- Add <script-smiley*>.
+- Add <tag-share>.
+- Add <zone-share>.
+------------------------------------------------------------
+Version 3.3.4 (March 15, 2012)
+- Add <edit-code-division>, <edit-indent-rtl>,
+  <edit-list-order-rtl>, <edit-list-rtl> and
+  <edit-outdent-rtl>.
+- Add <git*>.
+- Add <milk*>.
+- Add <television-medium>.
+- Add <ui-button-image>.
+- Add <ui-text-field-clear*>.
+- Add <weather-*-little>.
+------------------------------------------------------------
+Version 3.3.3 (February 14, 2012)
+- Add <candy-cane>.
+- Add <chalkboard*>.
+- Add <chocolate*>.
+- Add <information-italic>.
+- Add <keyboard-enter>.
+- Add <mail-air>.
+- Add <telephone-handset*>.
+- Add <weather-cloud-small>.
+- Add <wi-fi*>.
+- Add <x-ray>.
+- Add <24/gear>.
+- Add <24/keyboard-enter>.
+- Add <24/prohibition>.
+- Add <32/keyboard-enter>.
+------------------------------------------------------------
+Version 3.3.2 (February 9, 2012)
+- Add <category-group*>, <category-item*> and <categories>.
+- Add <cheese*>.
+- Add <database-sql>.
+- Add <stickman*>.
+------------------------------------------------------------
+Version 3.3.1 (January 16, 2012)
+- Add <balloon-box*>.
+- Add <board-game*>.
+- Add <film-youtube>.
+- Add <lock-ssl>.
+- Add <thumb-small*>.
+- Add <ui-address-bar-lock>.
+- Add <ui-breadcrumb-select*>
+- Add <ui-seek-bar*>.
+- Add <ui-tab-content-vertical>.
+- Add <ui-text-field-medium*> and <ui-text-field-small*>.
+- Add <24/lock-ssl>.
+- Add <32/lock-ssl>.
+------------------------------------------------------------
+Version 3.3 (November 19, 2011)
+- Add <application-icon-large> and <application-plus-red>.
+- Add <fruit-apple-half>.
+- Add <media-player-protector>.
+- Add <mustache>.
+- Add <navigation-*-button-white>.
+- Add <radio*>.
+- Add <resource-monitor-protector>.
+- Add <store-market-stall>.
+- Add <system-monitor-protector>.
+- Add <terminal-protector>.
+- Add <32/tick>.
+------------------------------------------------------------
+Version 3.2.4 (November 7, 2011)
+- Rename <*slash*> to <*prohibition*>.
+- Add <baggage-cart*>.
+- Add <blue-document-tex>.
+- Add <cactus>.
+- Add <caution-board*>.
+- Add <document-tex>.
+- Add <home-for-sale-sign*>.
+- Add <ice-cream-empty>.
+- Add <media-player-phone-protector>.
+- Add <mobile-phone-protector>.
+- Add <monitor-protector>.
+- Add <paper-clip-prohibition>.
+- Add <pda-protector>.
+- Add <popcorn*>.
+- Add <television-protector>.
+------------------------------------------------------------
+Version 3.2.3 (October 29, 2011)
+- Add <application-ab>.
+- Add <balloon-slash>.
+- Add <flower*>.
+- Add <haiku*>.
+- Add <ice-cream*>.
+- Add <locale-alternate>.
+- Add <monitor-blue>.
+- Add <oil-barrel>.
+- Add <paint-brush-slash>.
+- Add <pencil-slash>.
+- Add <quill-slash>.
+- Add <weather-moon-half>.
+- Add <24/lock>.
+- Add <32/lock>.
+------------------------------------------------------------
+Version 3.2.2 (October 21, 2011)
+- Add <cheque*>.
+- Add <fill-medium*>.
+- Add <printer-color> and <printer-monochrome>.
+- Add <sealing-wax>.
+------------------------------------------------------------
+Version 3.2.1 (October 8, 2011)
+- Add <at-sign*>.
+- Add <building-hedge>.
+- Add <envelope-at-sign> and <envelope-string>.
+- Add <headstone*>.
+- Add <mail-at-sign>.
+- Add <milestone-calendar>.
+- Add <postage-stamp-at-sign>.
+- Add <skull*>.
+- Add <spectrum*>.
+- Add <traffic-light-single>.
+- Add <train-metro>.
+- Add <truck-box*>.
+------------------------------------------------------------
+Version 3.2 (October 1, 2011)
+- Add <ear*>.
+- Add <fingerprint-recognition-fail>.
+- Add <hard-hat-military-camouflage>.
+- Add <keyboard-full*>.
+- Add <paper-lantern*>.
+- Add <traffic-light-green>, <traffic-light-red>, and
+  <traffic-light-yellow>.
+------------------------------------------------------------
+Version 3.1.8 (September 20, 2011)
+- Add <edit-heading-*>.
+- Add <regular-expression*>.
+- Add <rosette*>.
+- Add <32/bookmark>.
+- Add <32/card*>.
+- Add <32/disc*>.
+- Add <32/minus-circle>.
+- Add <32/plus-circle>.
+- Add <32/smiley*>.
+- Add <32/sticky-note>.
+- Add <32/tag*>.
+------------------------------------------------------------
+Version 3.1.7 (September 12, 2011)
+- Add <dummy-happy> and <dummy-sad>.
+- Add <e-book-reader-black>.
+- Add <keyboard-command>.
+- Add <weather-wind>.
+- Add <24/eye>.
+- Add <24/keyboard-command>.
+- Add <32/keyboard-command>.
+- Add <32/magnet>.
+- Add <32/zone>.
+------------------------------------------------------------
+Version 3.1.6 (September 2, 2011)
+- Add <download-cloud>.
+- Add <ribbon>.
+- Add <upload-cloud>.
+- Add <24/arrow-circle*>, <24/arrow-curve*>,
+  <24/arrow-join*>, <24/arrow-merge*>, <24/arrow-repeat*>,
+  <24/arrow-retweet>, and <24/arrow-split*>.
+- Add <24/blue-document-text-image>.
+- Add <24/counter>.
+- Add <24/document-text-image>.
+- Add <32/blue-document-text-image>.
+- Add <32/counter>.
+- Add <32/document-text-image>.
+------------------------------------------------------------
+Version 3.1.5 (August 26, 2011)
+- Add <church>.
+- Add <film-timeline>.
+- Add <lighthouse*>.
+- Add <molecule>.
+- Add <rubber-balloon*>.
+- Add <upload*>.
+------------------------------------------------------------
+Version 3.1.4 (August 10, 2011)
+- Add <animal-penguin>.
+- Add <clock-moon-phase>.
+- Add <download*>.
+- Add <mac-os>.
+- Add <power-supply>.
+- Add <table-draw> and <table-heatmap>.
+- Add <windows>.
+------------------------------------------------------------
+Version 3.1.3 (August 5, 2011)
+- Add <application-plus*> and <application-sub>.
+- Add <shoe*>.
+- Add <train*>.
+- Add <web-slice*>.
+------------------------------------------------------------
+Version 3.1.2 (July 27, 2011)
+- Add <box-document>.
+- Add <car-taxi>.
+- Add <graduation-hat>.
+- Add <stairs>.
+- Add <tag-hash>.
+- Add <animated/application-terminal>.
+- Add <animated/counter*>.
+- Add <animated/selection*>.
+- Add <animated/terminal*>.
+- Add <animated/ui-progress-bar-indeterminate>.
+- Add <animated/24/terminal>.
+------------------------------------------------------------
+Version 3.1.1 (June 31, 2011)
+- Add <animal>.
+- Add <bauble>.
+- Add <marker-small>.
+- Rename <monkey*> to <animal-monkey*>.
+- Add <remote-control>.
+- Add <resource-monitor>.
+- Add <road-sign>.
+- Add <sport*>.
+- Add <24/minus-circle>.
+- Add <24/navigation*>.
+- Add <24/plus-circle>.
+------------------------------------------------------------
+Version 3.1 (June 17, 2011)
+- Add <blog-posterous> and <blog-tumblr>.
+- Add <candle*>.
+- Add <futon>.
+- Add <monkey*>.
+- Add <shovel>.
+- Add <tie*>.
+------------------------------------------------------------
+Version 3.0.4 (June 10, 2011)
+- Add <abacus>.
+- Add <bread*>.
+- Add <curtain>.
+- Add <hamburger>.
+- Add <hand-shake>.
+- Add <pearl*>.
+- Add <zodiac*>.
+------------------------------------------------------------
+Version 3.0.3 (May 31, 2011)
+- Add <android>.
+- Add <folding-fan>.
+- Add <hand-finger>, <hand-horns>, and <hand-ily>.
+- Add <lollipop>.
+- Add <paper-bag-recycle>.
+- Add <piggy-bank*>.
+- Add <smiley-angel> and <smiley-nerd>.
+- Add <tag-cloud>.
+- Add <24/e-book-reader>.
+- Add <32/e-book-reader>.
+------------------------------------------------------------
+Version 3.0.2 (May 22, 2011)
+- Add <acorn>.
+- Add <arrow-in-out>.
+- Add <brain*>.
+- Add <certificate>.
+- Add <checkerboard>.
+- Add <co2>.
+- Add <leaf-plant>, <leaf-red>, and <leaf-yellow>.
+- Add <radar>.
+- Add <radioactivity*>.
+- Add <solar-panel>.
+- Add <television-test>.
+- Add <thermometer*>.
+- Add <usb-flash-drive-logo>.
+- Add <weather-tornado>.
+- Add <24/cross-circle>.
+- Add <24/question>.
+- Add <32/cross*>.
+- Add <32/question>.
+------------------------------------------------------------
+Version 3.0.1 (May 13, 2011)
+- Add <clock-network>.
+- Add <disc-rename>.
+- Add <disk-rename>.
+- Add <document-braille>.
+- Add <image-saturation*>.
+- Add <milestone>.
+- Add <network-ip> and <network-ip-local>.
+- Add <occluder>.
+- Add <sort-alphabet-column> and <sort-number-column>.
+- Add <ui-spacer>.
+- Add <weight*>.
+- Add <wrap*>.
+------------------------------------------------------------
+Version 3.0 (July 16, 2010)
+- Add <application-medium>.
+- Add <blog-medium>.
+- Add <blue-document-medium>.
+- Add <blue-folder-medium>.
+- Add <blueprint-medium>.
+- Add <box-medium>.
+- Add <calendar-medium>.
+- Add <card-medium>.
+- Add <cookie-medium>.
+- Add <credit-card-medium>.
+- Add <database-medium>.
+- Add <document-medium>.
+- Add <drive-medium>.
+- Add <film-medium>.
+- Add <folder-medium>.
+- Add <home-medium>.
+- Add <image-medium>.
+- Add <mail-medium>.
+- Add <map-medium>.
+- Add <mobile-phone-medium>.
+- Add <money-medium>.
+- Add <monitor-medium>.
+- Add <notebook-medium>.
+- Add <paint-can-medium>.
+- Add <paint-tube-medium>.
+- Add <palette-medium>.
+- Add <picture-medium>.
+- Add <printer-medium>.
+- Add <receipt-medium>.
+- Add <report-medium>.
+- Add <script-medium>.
+- Add <server-medium>.
+- Add <slide-medium>.
+------------------------------------------------------------
+Version 2.9 (May 20, 2010)
+------------------------------------------------------------
+Version 2.8 (May 8, 2010)
+------------------------------------------------------------
+Version 2.7 (April 25, 2010)
+------------------------------------------------------------
+Version 2.6 (March 1, 2010)
+------------------------------------------------------------
+Version 2.5 (January 3, 2010)
+------------------------------------------------------------
+Version 2.4 (November 6, 2009)
+------------------------------------------------------------
+Version 2.3 (October 16, 2009)
+------------------------------------------------------------
+Version 2.2 (July 3, 2009)
+------------------------------------------------------------
+Version 2.1 (June 13, 2009)
+------------------------------------------------------------
+Version 2.0 (May 13, 2009)
+------------------------------------------------------------
+Version 1.9 (May 4, 2009)
+------------------------------------------------------------
+Version 1.8 (April 29, 2009)
+------------------------------------------------------------
+Version 1.7 (April 15, 2009)
+------------------------------------------------------------
+Version 1.6 (April 6, 2009)
+------------------------------------------------------------
+Version 1.5 (March 17, 2009)
+------------------------------------------------------------
+Version 1.4 (January 28, 2009)
+------------------------------------------------------------
+Version 1.3 (January 22, 2009)
+------------------------------------------------------------
+Version 1.2 (January 11, 2009)
+------------------------------------------------------------
+Version 1.1 (January 2, 2009)
+------------------------------------------------------------
+Version 1.0 (October 12, 2008)
+* Initial non-beta release.
+------------------------------------------------------------
+Version 0.9 (August 4, 2008)
+------------------------------------------------------------
+Version 0.8 (July 28, 2008)
+------------------------------------------------------------
+Version 0.7 (July 22, 2008)
+------------------------------------------------------------
+Version 0.6 (July 14, 2008)
+------------------------------------------------------------
+Version 0.5 (July 13, 2008)
+------------------------------------------------------------
+Version 0.4 (July 9, 2008)
+------------------------------------------------------------
+Version 0.3 (June 29, 2008)
+------------------------------------------------------------
+Version 0.2 (June 27, 2008)
+------------------------------------------------------------
+Version 0.1 (June 17, 2008)
+* Initial beta release.
