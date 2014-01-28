@@ -209,6 +209,7 @@ au BufReadCmd *.jar,*.xpi,*.wgt call zip#Browse(expand("<amatch>"))
 
 " enable spelling
 set spell
+set complete+=kspell
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
