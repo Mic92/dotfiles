@@ -64,6 +64,11 @@ function _print_duration --on-event fish_prompt
   set -l yellow (set_color -o yellow)
   if set -q CMD_DURATION
     echo  \a$yellow\> $CMD_DURATION
+    set -l time_sec (echo $CMD_DURATION | awk 'BEGIN { FS="." } ; { print $1 }')
+
+    if test $time_sec -gt 10
+      notify-send "Shell command is done!" 2>&1 >/dev/null
+    end
   end
 end
 
