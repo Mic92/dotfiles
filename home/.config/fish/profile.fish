@@ -4,13 +4,15 @@ if not set -q _HAS_SOURCED_ENVIRONMENT
 end
 set -x _HAS_SOURCED_ENVIRONMENT 1
 
-set -x PATH ~/bin ~/.cabal/bin /usr/bin/core_perl/ $PATH
+set -x PATH ~/bin ~/.cabal/bin /home/joerg/.npm-packages/bin /usr/bin/core_perl/ /usr/local/bin $PATH
 
 function _clean_up_path
   set -l new_path
   for p in $PATH
-    if not contains $p $new_path; and test -e $p
-      set new_path $new_path $p
+    if not contains $p $new_path;
+      if test -e $p
+        set new_path $new_path $p
+      end
     end
   end
   set -x PATH $new_path
