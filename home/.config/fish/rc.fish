@@ -1,4 +1,4 @@
-set COMMANDS (find $PATH -type f 2>/dev/null | sed 's,.*/,,')
+set COMMANDS (find $PATH -not -type d 2>/dev/null | sed 's,.*/,,')
 
 function is_command
   if test (count $argv) -eq 1;
