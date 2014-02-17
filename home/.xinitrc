@@ -8,10 +8,14 @@ systemctl --user set-environment "DISPLAY=$DISPLAY"
 
 xrdb -merge ~/.Xresources
 xset -b +dpms 0 0 300
-synclient TouchpadOff=1
 setxkbmap -option terminate:ctrl_alt_bksp
+# capslock is escape
+xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
+pulseaudio --start
+netlink-notify &
+evolution &
 
-services=(app@firefox app@thunderbird app@gajim copyq dropbox app@netlink-notify)
+services=(app@firefox app@gajim app@skype copyq dropbox)
 for srv in "${services[@]}"; do
   systemctl --user --no-block start "$srv"
 done
