@@ -99,9 +99,8 @@ if is_command ruby;
   end
 end
 if is_command python;
-  function json_beautify
-    echo $argv | python -mjson.tool
-  end
+  function pretty_json; python -mjson.tool; end
+  function pretty_curl; curl -sS $args | pretty_json; end
 end
 
 # Misc
