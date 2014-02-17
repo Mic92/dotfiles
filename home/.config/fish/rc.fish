@@ -124,6 +124,7 @@ end
 
 function instaweb
   showips
+  echo "http://0.0.0.0:4321"
   python -m http.server 4321; or python -m SimpleHTTPServer 4321
 end
 
@@ -133,13 +134,10 @@ function instasmtp
   python -m smtpd -n -c DebuggingServer localhost:1025
 end
 
-function refresh_wlan
-  sudo fish -c 'rfkill block wlan
-rfkill unblock wlan
-killall dhcpcd
-sleep 1
-dhcpcd wlan0'
-end
+function md5; echo -n $1 | openssl md5 /dev/stdin; end
+function sha1; echo -n $1 | openssl sha1 /dev/stdin; end
+function sha256; echo -n $1 | openssl dgst -sha256 /dev/stdin; end
+function sha512; echo -n $1 | openssl dgst -sha512 /dev/stdin; end
 
 eval (direnv hook fish)
 
