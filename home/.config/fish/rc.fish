@@ -139,7 +139,9 @@ function sha1; echo -n $1 | openssl sha1 /dev/stdin; end
 function sha256; echo -n $1 | openssl dgst -sha256 /dev/stdin; end
 function sha512; echo -n $1 | openssl dgst -sha512 /dev/stdin; end
 
-eval (direnv hook fish)
+if is_command direnv;
+  eval (direnv hook fish)
+end
 
 function flash_undelete
   cd /proc/(ps x | awk '/libflashplayer.so\ /{print $1}')/fd; and ls -l | grep deleted
@@ -150,7 +152,15 @@ function _current_epoch
 end
 
 function pacupgrade
-  yaourt -Syu --aur
+  if is_command snapper
+    sudo true
+    set prenumber (sudo snapper create --type=pre --cleanup-algorithm=number --print-number --description="pacman upgrade")
+    echo Create pre snapshot with number $prenumber before upgrade
+    yaourt -Syu --aur
+    echo Create post snapshot with number (sudo snapper create --type=post --cleanup-algorithm=number --print-number --pre-number="$prenumber")
+  else
+    yaourt -Syu --aur
+  end
   pacman -Qu | sudo tee /var/log/pacman-updates.log >/dev/null
 end
 
