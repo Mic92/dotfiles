@@ -45,17 +45,19 @@ Bundle 'alfredodeza/jacinto.vim'
 Bundle 'msanders/snipmate.vim'
 Bundle 'kchmck/vim-coffee-script'
 Bundle 'slim-template/vim-slim'
-Bundle 'ap/vim-css-color'
+"Bundle 'ap/vim-css-color'
 Bundle 'scrooloose/syntastic'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'SirVer/ultisnips'
+Bundle 'Trevoke/ultisnips-rspec'
 Bundle 'kien/ctrlp.vim'
 Bundle 'majutsushi/tagbar'
 Bundle 'freitass/todo.txt-vim'
 Bundle 'stefanoverna/vim-i18n'
 Bundle 'dag/vim-fish'
-"Bundle 'dhruvasagar/vim-table-mode'
+Bundle 'dhruvasagar/vim-table-mode'
+"Bundle 'rodjek/vim-puppet'
 "Bundle 'derekwyatt/vim-scala'
 "Bundle 'wavded/vim-stylus'
 "Bundle 'digitaltoad/vim-jade'
@@ -170,27 +172,6 @@ if exists('$WINDOW') || exists('$TMUX')
       map <leader>P (fakeclip-screen-p)
 endif
 
-" Treat .tex-file as latex instead of plain-tex
-let g:tex_flavor='latex'
-"
-" Determine the output format.
-let g:Tex_DefaultTargetFormat='pdf'
-"
-" Additionally, if one wants the \lv command calling xdvi with this option, one inserts the following line to the .vimrc file
-let g:Tex_ViewRuleComplete_pdf = 'evince'
-"
-" clean warnings
-let g:Tex_IgnoredWarnings =
-                        \'Underfull'."\n".
-                        \'Overfull'."\n".
-                        \'specifier changed to'."\n".
-                        \'You have requested'."\n".
-                        \'Missing number, treated as zero.'."\n".
-                        \'There were undefined references'."\n".
-                        \'Latex Warning:'."\n".
-                        \'Citation %.%# undefined'
-let g:Tex_IgnoreLevel = 8
-
 " New files are created in utf-8.
 set encoding=utf-8
 "
@@ -238,6 +219,9 @@ let g:tagbar_type_ruby = {
     \ ]
 \ }
 
+" Repeat "." in visual mode
+vnoremap . :norm.<CR>
+
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
@@ -261,6 +245,13 @@ set directory=$HOME/.vim.temp
 
 silent !mkdir -p $HOME/.vim.backup
 silent !mkdir -p $HOME/.vim.temp
+
+if has("python")
+  :command! -nargs=+ Calc :py print <args>
+  :py from math import *
+else
+  command! -nargs=+ Calc :!python -c "from math import *; print <args>"
+end
 
 " Local config
 if filereadable($HOME . "/.vimrc.local")
