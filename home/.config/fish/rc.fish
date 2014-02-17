@@ -34,7 +34,7 @@ if is_command envoy;
 end
 
 # Run in background
-function r; fish -c "$argv 2>&1 >/dev/null"&; end
+function r; eval "$argv &" 2>&1 >/dev/null; end
 
 # Check Internet connection
 alias gping "ping -v 8.8.8.8"
