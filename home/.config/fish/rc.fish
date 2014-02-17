@@ -11,11 +11,16 @@ end
 
 # early, fast invocation of tmux
 # - only if tmux is installed
-# - not in linux ttys
 # - no nested tmux sessions
-if is_command tmux; and test -z "$TMUX"; and test "$TERM" = "linux";
-  if tmux attach-session; or tmux;
-    exec true
+if is_command tmux
+  if test -z "$TMUX"
+    if tmux attach-session
+      exec true
+    else if is_command tmuxinator
+      tmuxinator start default; and exec true
+    else
+      tmux; and exec true
+    end
   end
 end
 
