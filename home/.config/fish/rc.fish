@@ -25,10 +25,11 @@ if is_command tmux
 end
 
 if is_command envoy;
-  envoy
-  eval (envoy --print --fish)
+  eval (env ENVOY_SOCKET="@/vodik/envoy/gpg-agent" envoy --agent=gpg-agent --print --fish)
+  eval (env ENVOY_SOCKET="@/vodik/envoy/ssh-agent" envoy --print --fish)
+
   if is_command systemctl;
-    systemctl --user set-enviroment SSH_AUTH_SOCK=$SSH_AUTH_SOCK SSH_AGENT_PID=$SSH_AGENT_PID
+    systemctl --user set-enviroment SSH_AUTH_SOCK=$SSH_AUTH_SOCK SSH_AGENT_PID=$SSH_AGENT_PID GPG_AGENT_INFO=$GPG_AGENT_INFO
   end
 end
 
