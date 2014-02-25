@@ -37,6 +37,7 @@ set -x MANWIDTH 80
 set -x LANG de_DE.UTF-8
 set -x LC_ALL $LANG
 # less
+set -x LESS "R"
 set -x LESS_TERMCAP_mb \e\[01\;31m      # begin blinking
 set -x LESS_TERMCAP_me \e\[0m           # end mode
 set -x LESS_TERMCAP_se \e\[0m           # end standout-mode
