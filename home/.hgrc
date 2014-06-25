@@ -1,0 +1,19 @@
+[ui]
+username = Jörg Thalheim <joerg@higgsboson.tk>
+editor = vim
+
+[extensions]
+color=
+hgext.convert=
+shelve=
+record=
+mq =
+rebase =
+
+[color]
+status.modified = magenta bold
+status.added = green bold
+status.removed = red bold
+status.deleted = cyan bold
+status.unknown = blue bold
+status.ignored = black bold
