@@ -385,7 +385,10 @@ function netcheck() {
 }
 
 alias webtunnel='ssh higgs-boson-tunnel cat'
-alias homesick="$HOME/.homeshick"
+
+if [ -e $HOME/.homesick/repos/homeshick/homeshick.sh ]; then
+  source $HOME/.homesick/repos/homeshick/homeshick.sh
+fi
 
 if [[ -n ${commands[envoy]} ]] && (( UID != 0)); then
   envoy
