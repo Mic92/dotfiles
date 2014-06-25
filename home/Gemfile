@@ -1,0 +1,7 @@
+source "https://rubygems.org"
+gem "chef"
+gem "pry"
+gem "tmuxinator"
+gem "pessimize"
+gem "librmpd"
+gem "nokogiri"
