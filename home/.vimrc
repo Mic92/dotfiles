@@ -27,40 +27,44 @@ set shell=bash
 
 " Declare bundles are handled via Vundle
 filetype off " required!
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
 
 " Let Vundle manage Vundle
-Bundle 'gmarik/vundle'
-Bundle 'bling/vim-airline'
-Bundle 'tpope/vim-rails'
-Bundle 'tpope/vim-surround'
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'Raimondi/delimitMate'
-Bundle 'fakeclip'
-Bundle 'The-NERD-tree'
-Bundle 'bronson/vim-trailing-whitespace'
-Bundle 'altercation/vim-colors-solarized'
-Bundle 'alfredodeza/jacinto.vim'
-Bundle 'msanders/snipmate.vim'
-Bundle 'kchmck/vim-coffee-script'
-Bundle 'slim-template/vim-slim'
-"Bundle 'ap/vim-css-color'
-Bundle 'scrooloose/syntastic'
-Bundle 'Valloric/YouCompleteMe'
-Bundle 'airblade/vim-gitgutter'
-Bundle 'SirVer/ultisnips'
-Bundle 'Trevoke/ultisnips-rspec'
-Bundle 'kien/ctrlp.vim'
-Bundle 'majutsushi/tagbar'
-Bundle 'freitass/todo.txt-vim'
-Bundle 'stefanoverna/vim-i18n'
-Bundle 'dag/vim-fish'
-Bundle 'dhruvasagar/vim-table-mode'
-"Bundle 'rodjek/vim-puppet'
-"Bundle 'derekwyatt/vim-scala'
-"Bundle 'wavded/vim-stylus'
-"Bundle 'digitaltoad/vim-jade'
+Plugin 'gmarik/Vundle.vim'
+Plugin 'bling/vim-airline'
+Plugin 'tpope/vim-rails'
+Plugin 'tpope/vim-surround'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'Raimondi/delimitMate'
+Plugin 'fakeclip'
+Plugin 'The-NERD-tree'
+Plugin 'bronson/vim-trailing-whitespace'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'alfredodeza/jacinto.vim'
+Plugin 'msanders/snipmate.vim'
+Plugin 'kchmck/vim-coffee-script'
+Plugin 'slim-template/vim-slim'
+"Plugin 'ap/vim-css-color'
+Plugin 'scrooloose/syntastic'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'airblade/vim-gitgutter'
+Plugin 'SirVer/ultisnips'
+Plugin 'Trevoke/ultisnips-rspec'
+Plugin 'kien/ctrlp.vim'
+Plugin 'majutsushi/tagbar'
+Plugin 'freitass/todo.txt-vim'
+Plugin 'stefanoverna/vim-i18n'
+Plugin 'dag/vim-fish'
+Plugin 'dhruvasagar/vim-table-mode'
+Plugin 'elixir-lang/vim-elixir'
+Plugin 'tkztmk/vim-vala'
+"Plugin 'rodjek/vim-puppet'
+"Plugin 'derekwyatt/vim-scala'
+"Plugin 'wavded/vim-stylus'
+"Plugin 'digitaltoad/vim-jade'
+
+call vundle#end()
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
