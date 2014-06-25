@@ -25,12 +25,22 @@ if is_command tmux
 end
 
 if is_command envoy;
-  eval (env ENVOY_SOCKET="@/vodik/envoy/gpg-agent" envoy --agent=gpg-agent --print --fish)
-  eval (env ENVOY_SOCKET="@/vodik/envoy/ssh-agent" envoy --print --fish)
+  eval (envoy --agent=gpg-agent --print --fish)
+  eval (envoy --agent=ssh-agent --print --fish)
 
   if is_command systemctl;
     systemctl --user set-enviroment SSH_AUTH_SOCK=$SSH_AUTH_SOCK SSH_AGENT_PID=$SSH_AGENT_PID GPG_AGENT_INFO=$GPG_AGENT_INFO
   end
+end
+
+function pdfag
+  set f (mktemp)
+  fish -c "
+    pdfgrep --recursive --color always --page-number $argv[1] .
+    echo -n Search finish, Enter a number to open file:
+  " >$f &
+  tail --follow $f
+  rm -rf $f
 end
 
 # Run in background
