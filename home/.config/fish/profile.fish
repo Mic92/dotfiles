@@ -1,9 +1,3 @@
-# source environment from /etc/profile.d/* once by abusing sh
-if not set -q _HAS_SOURCED_ENVIRONMENT
-  eval (sh -c "source /etc/profile; env" | grep -Ev '^(PWD|SHLVL|HOME|_)' |sed 's/^\([^=]\+\)=\(.*\)/set -x \1 \'\2\';/')
-end
-set -x _HAS_SOURCED_ENVIRONMENT 1
-
 set -x PATH ~/bin ~/.cabal/bin /home/joerg/.npm-packages/bin /usr/bin/core_perl/ /usr/local/bin $PATH
 
 function _clean_up_path
