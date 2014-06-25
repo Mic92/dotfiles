@@ -328,8 +328,8 @@ xalias rot13='tr A-Za-z N-ZA-Mn-za-m'
 xalias diff='diff -Naur --strip-trailing-cr'
 alias gping="ping google.com"
 alias gping6="ping6 google.com"
-alias hping="ping higgsboson.tk"
-alias hcurl="curl -v higgsboson.tk/ping.txt"
+alias ghost="host -v google.com 8.8.8.8"
+alias gcurl="curl -v google.com"
 alias :q=exit
 alias todotxt="vim ~/Dropbox/todo/todo.txt"
 
