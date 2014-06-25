@@ -389,9 +389,12 @@ alias homesick="$HOME/.homeshick"
 
 if [[ -n ${commands[envoy]} ]] && (( UID != 0)); then
   envoy
-  source <(envoy -p)
+  source <(envoy --agent=gpg-agent --print)
+  source <(envoy --agent=ssh-agent --print)
 fi
 
 # zprofile not sourced
 [ -z $EDITOR ] && [ -f $HOME/.zprofile ] && source $HOME/.zprofile
 [ -e $HOME/.zshrc.$HOST ] && source $HOME/.zshrc.$HOST
+
+export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
