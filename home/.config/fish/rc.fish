@@ -54,7 +54,13 @@ alias gcurl "curl -v google.com"
 alias eeets1 'env TERM=xterm ssh eeets1'
 alias eeets2 'env TERM=xterm ssh eeets2'
 
-function tmpdir; cd (mktemp -d); end
+function tmpdir;
+  set -l template (shuf -n 1 /usr/share/dict/words 2>/dev/null)
+  or set -l template (shuf -n 1 /usr/share/dict/cracklib-small 2>/dev/null)
+  or set -l template "temp"
+  set -l dir (mktemp -d -t "$template.XXXX")
+  cd $dir
+end
 function ff; /usr/bin/find . -iname "*$argv*"; end
 function browse; $BROWSER file://"`pwd`/$1"; end
 
