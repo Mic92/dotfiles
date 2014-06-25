@@ -13,7 +13,7 @@ function _clean_up_path
 end
 _clean_up_path
 
-set -x CDPATH . ~/git ./.direnv/ruby-2.0.0/gems
+set -x CDPATH . ~/git ./.direnv/ruby-2.1.1/gems
 set -x BUNDLEPATH ~/.bundle
 
 set -x BROWSER firefox
