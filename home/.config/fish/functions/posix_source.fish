@@ -1,6 +1,6 @@
 # Cloned from https://github.com/fish-shell/fish-shell/issues/522
 
-function source_script --description 'Source sh/csh file'
+function posix_source --description 'Source sh/csh file'
   set -l ext
   set -l type
 
@@ -38,23 +38,23 @@ function source_script --description 'Source sh/csh file'
 
   switch "$type"
     case bash
-    set exe /bin/bash
+    set exe bash
     set source .
     case sh
-    set exe /bin/sh
+    set exe sh
     set source .
     case csh
-    set exe /bin/tcsh
+    set exe tcsh
     set source source
     case '*'
     echo Unknown source type for "'$argv'"
   end
 
   if test "$ext"
-    eval "exec $exe -c '$source $argv; exec fish'"
+    eval "exec command $exe -c '$source $argv; exec fish'"
   else
-    set -l f1 (mktemp -t tmp.XXXXXXXXXX)
-    set -l f2 (mktemp -t tmp.XXXXXXXXXX)
+    set -l f1 (command mktemp -t tmp.XXXXXXXXXX)
+    set -l f2 (command mktemp -t tmp.XXXXXXXXXX)
     eval $exe -c "'env | sort > $f1; $source $argv; env | sort > $f2'"
 
     set -l filter "(^[^\+-]|^\+\+\+|^---|^[\+-]_|^[\+-]PIPESTATUS|^[\+-]COLUMNS)"
@@ -62,8 +62,11 @@ function source_script --description 'Source sh/csh file'
 
     set -l IFS '='
     set -l diffopts --old-line-format '-=%L' --new-line-format '+=%L' --unchanged-line-format ''
-    diff $diffopts $f1 $f2 | grep -vE $filter | while read -l state var value
+    command diff $diffopts $f1 $f2 | command grep -vE $filter | while read -l state var value
       switch $state$var
+        case {-,+}_
+        continue
+
         case -PATH
         continue
 
@@ -75,23 +78,20 @@ function source_script --description 'Source sh/csh file'
                 echo "Unable to add '$pt' to \$PATH. Check existance."
                 continue
             end
-            #echo set -gx PATH $PATH $pt
             set -gx PATH $PATH $pt > /dev/null
         end
 
         case '-*'
-        #echo unset $var
         set -e $var
 
         case '+*'
-        eval set -gx $var (echo $value | sed $pattern)
-        #echo Set $var to: (echo $value | sed $pattern)
+        eval set -gx $var (echo $value | command sed $pattern)
 
         case '*'
         echo Source error! Invalid case "'$state$var'"
       end
     end
 
-    rm $f1 $f2 > /dev/null
+    command rm $f1 $f2 > /dev/null
   end
 end
