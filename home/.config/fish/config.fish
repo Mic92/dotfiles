@@ -11,6 +11,7 @@ if test -f "$HOME/.homesick/repos/homeshick/homeshick.fish"
 end
 
 if status --is-login
+  posix_source --sh /etc/profile
   source $FISH_HOME/login.fish
 end
 
