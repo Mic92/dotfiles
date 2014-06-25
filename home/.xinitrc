@@ -15,7 +15,7 @@ pulseaudio --start
 netlink-notify &
 evolution &
 
-services=(app@firefox app@gajim app@skype copyq dropbox)
+services=(app@firefox app@pidgin copyq dropbox)
 for srv in "${services[@]}"; do
   systemctl --user --no-block start "$srv"
 done
