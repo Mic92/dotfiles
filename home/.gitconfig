@@ -1,5 +1,6 @@
 [core]
   editor = vim
+  excludesfile = /home/joerg/.gitignore
 [format]
   pretty = oneline
 [color]
