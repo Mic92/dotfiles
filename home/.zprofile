@@ -76,9 +76,16 @@ export MANWIDTH=80
 # REPORTTIME (in seconds),  time statistics are printed
 export REPORTTIME=4
 
-# locales
+# Enforce correct locales from the beginning:
+# # LC_ALL is unset since it overwrites everything
+# # LANG=de_DE.UTF-8 is used, except for:
+# # LC_MESSAGES=en_DK.UTF-8 never translates program output
+# # LC_TIME=en_DK.UTF-8 leads to yyyy-mm-dd hh:mm date/time output
+#
+unset LC_ALL
 export LANG=de_DE.UTF-8
-export LC_ALL=$LANG
+export LC_MESSAGES=en_DK.UTF-8
+export LC_TIME=en_DK.UTF-8
 
 # Python
 export PYTHONDOCS=/usr/share/doc/python/html/
