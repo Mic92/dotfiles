@@ -20,3 +20,8 @@
   enabled = 1
 [branch]
   autosetuprebase = always
+[pull]
+  rebase = preserve
+  autostash = true
+[rebase]
+  autostash = true
