@@ -166,6 +166,9 @@ au BufEnter *.py set ai sw=4 ts=4 sta et fo=croql
 " rust setup
 au BufEnter *.rs set ai sw=4 ts=4 sta et fo=croql
 
+" go setup
+au BufNewFile,BufRead *.go setlocal noet ts=4 sw=4 sts=4 list!
+
 " Copy and paste with fakeclip
 "Command-C and Command-V are also available in MacVim
 " see :help fakeclip-multibyte-on-mac
