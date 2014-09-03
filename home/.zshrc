@@ -15,6 +15,7 @@ load_completion $HOME/.zsh-completion
 bindkey -e
 source "$HOME/.zprompt"
 source "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+source "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh"
 source "$HOME/.zsh-autosuggestions/autosuggestions.zsh"
 
 # {{{ Functions
@@ -404,9 +405,6 @@ zle-line-init() {
 }
 zle -N zle-line-init
 
-# use ctrl+t to toggle autosuggestions(hopefully this wont be needed as
-# zsh-autosuggestions is designed to be unobtrusive)
-bindkey '^T' autosuggest-toggle
 export AUTOSUGGESTION_HIGHLIGHT_COLOR='fg=10'
 
 # persisting the dirstack
@@ -426,5 +424,9 @@ chpwd() {
   update_terminal_cwd
   ls --color
 }
+
+# bind P and N for EMACS mode
+bindkey -M emacs '^P' history-substring-search-up
+bindkey -M emacs '^N' history-substring-search-down
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
