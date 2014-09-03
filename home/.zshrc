@@ -13,9 +13,9 @@ load_aliases
 load_completion $HOME/.zsh-completion
 
 bindkey -e
-source $HOME/.zprompt
-source $HOME/.z/z.sh
-source $HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source "$HOME/.zprompt"
+source "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+source "$HOME/.zsh-autosuggestions/autosuggestions.zsh"
 
 # {{{ Functions
 shorturl() {
@@ -84,11 +84,6 @@ browse () {
   fi
 }
 
-chpwd() {
-  update_terminal_cwd
-  ls --color
-  z --add "$(pwd -P)"
-}
 # }}}
 
 # {{{ Helpers
@@ -399,5 +394,36 @@ fi
 # zprofile not sourced
 [ -z $EDITOR ] && [ -f $HOME/.zprofile ] && source $HOME/.zprofile
 [ -e $HOME/.zshrc.$HOST ] && source $HOME/.zshrc.$HOST
+
+[ -x /usr/bin/direnv ] && eval "$(direnv hook zsh)"
+
+# Enable autosuggestions automatically
+zle-line-init() {
+  zle autosuggest-start
+}
+zle -N zle-line-init
+
+# use ctrl+t to toggle autosuggestions(hopefully this wont be needed as
+# zsh-autosuggestions is designed to be unobtrusive)
+bindkey '^T' autosuggest-toggle
+export AUTOSUGGESTION_HIGHLIGHT_COLOR='fg=10'
+
+# persisting the dirstack
+DIRSTACKSIZE=${DIRSTACKSIZE:-20}
+dirstack_file=${dirstack_file:-${HOME}/.zdirs}
+if [[ -f ${dirstack_file} ]] && [[ ${#dirstack[*]} -eq 0 ]] ; then
+  dirstack=( ${(f)"$(< $dirstack_file)"} )
+  [[ -d $dirstack[1] ]] && cd $dirstack[1]
+fi
+
+chpwd() {
+  if (( $DIRSTACKSIZE <= 0 )) || [[ -z $dirstack_file ]]; then return; fi
+  local -ax my_stack
+  my_stack=( ${PWD} ${dirstack} )
+  builtin print -l ${(u)my_stack} >! ${dirstack_file}
+
+  update_terminal_cwd
+  ls --color
+}
 
 export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
