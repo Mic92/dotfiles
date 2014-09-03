@@ -328,8 +328,9 @@ alias gcurl="curl -v google.com"
 alias :q=exit
 alias todotxt="vim ~/Dropbox/todo/todo.txt"
 
-[ -n ${commands[pacman]} ] && function owns() { /usr/bin/pacman -Qo $(which $1)}
+alias pacunlock="sudo rm /var/lib/pacman/db.lck"
 
+[ -n ${commands[pacman]} ] && function owns() { /usr/bin/pacman -Qo $(which $1)}
 
 function retry() {
   local n=0
