@@ -55,7 +55,6 @@ export SDL_AUDIODRIVER=pulse
 export GDMSESSION=1 GNOME_DESKTOP_SESSION_ID=1
 
 # make OpenJDK working with awesome wm
-export _JAVA_AWT_WM_NONREPARENTING=1
 export JAVA_FONTS=/usr/share/fonts/TTF
 # }}}
 
