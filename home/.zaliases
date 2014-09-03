@@ -1,0 +1,239 @@
+#!/usr/bin/env zsh
+
+# {{{ Helpers
+# {{{ xalias - only supposed to be used with simple aliases.
+xalias() {
+  local key val com
+  if (( ${#argv} == 0 )) ; then
+    printf 'xalias(): Missing argument.\n'
+    return 1
+  fi
+  if (( ${#argv} > 1 )) ; then
+    printf 'xalias(): Too many arguments %s\n' "${#argv}"
+    return 1
+  fi
+
+  key="${1%%\=*}" ;  val="${1#*\=}"
+  check_com ${val} && alias -- "${key}=${val}"
+  return 0
+}
+# }}}
+
+# {{{ xhashd - check for directory, then create hash -d
+xhashd() {
+  local key val com
+  if (( ${#argv} == 0 )) ; then
+    printf 'xhashd(): Missing argument.\n'
+    return 1
+  fi
+  if (( ${#argv} > 1 )) ; then
+    printf 'xhashd(): Too many arguments %s\n' "${#argv}"
+    return 1
+  fi
+
+  key="${1%%\=*}";  val="${1#*\=}"
+  [[ -d ${val} ]] && hash -d -- "${key}=${val}"
+  return 0
+}
+# }}}
+
+# check_com - check if a command exists {{{
+# eg: check_com "vim -p"
+function check_com() {
+    #setopt localoptions xtrace
+    local -a words
+    local -i comonly
+    local cmd
+
+    if [[ ${1} == '-c' ]] ; then
+        (( comonly = 1 ))
+        shift
+    else
+        (( comonly = 0 ))
+    fi
+
+    if (( ${#argv} != 1 )) ; then
+        printf 'usage: check_com [-c] <command>\n' >&2
+        return 1
+    fi
+
+    words=(${(z)1})
+    cmd=${words[1]}
+
+    if (( comonly > 0 )) ; then
+        [[ -n ${commands[$cmd]}  ]] && return 0
+        return 1
+    fi
+
+    if   [[ -n ${commands[$cmd]}    ]] \
+      || [[ -n ${functions[$cmd]}   ]] \
+      || [[ -n ${aliases[$cmd]}     ]] \
+      || [[ -n ${reswords[(r)$cmd]} ]] ; then
+
+        return 0
+    fi
+
+    return 1
+}
+# }}}
+# }}}
+
+# {{{ Aliase
+# Basic commands
+alias zcat='zcat -f'
+# - same as tail but using inotify for better perfomance
+# - linux only
+xalias tail='inotail'
+alias less='less -isRM'
+
+xalias ag='ag --color --smart-case --literal'
+xalias rag='ag --color --smart-case --path-to-agignore ~/.ruby-agignore'
+
+# System tools
+xalias top='htop'
+alias free='free -m'
+alias vuser="fuser -v "
+alias du='du -hc'
+alias df='df -hT'
+xalias df='dfc'
+
+# File management
+alias ls='ls --color=auto -F -h'
+#alias sl=ls
+alias la='ls -lA'
+alias laa='ls -la'
+alias ll='ls -l'
+alias tempdir='cd `mktemp -d`'
+
+alias rm='rm -rv'
+alias cp='nocorrect cp -rpv'
+alias cpv="rsync -pogr --progress"
+alias ln="nocorrect ln"
+alias mv='nocorrect mv -v'
+alias mkdir='nocorrect mkdir -p'
+xalias locate='locate --existing --follow --basename --ignore-case'
+
+# Push and pop directories on directory stack
+alias pu='pushd'
+alias po='popd'
+
+# noglobs
+alias wget='noglob wget'
+alias curl='noglob curl'
+alias git='noglob git'
+alias rake='noglob rake'
+
+# Root
+# fallback if sudo is not yet installed
+alias su='su - '
+alias sync='sudo sync'
+alias updatedb='sudo updatedb'
+alias sless='sudo less'
+alias stail='sudo tail'
+xalias ctl='sudo systemctl'
+
+alias json_escape="ruby -e \"require 'json'; puts(File.open(ARGV[0]).read.to_json) if ARGV[0]\""
+
+
+# Editors
+[[ -n ${commands[vi]} ]] && alias vi=vim
+alias svim='sudo vim'
+alias svimdiff='sudo vimdiff'
+alias ntree='vim -c NERDTree'
+xalias ee="emacs -nw"
+
+xalias mplayer="mpv"
+
+# reboot/halt/suspend
+alias shutdown='! shutdown'
+alias reboot='! reboot'
+xalias shutdown="systemctl poweroff"
+xalias reboot="systemctl reboot"
+xalias suspend="systemctl suspend"
+xalias hibernate="systemctl hibernate"
+xalias hybrid-sleep="systemctl hybrid-sleep"
+
+# Package management
+if [[ -f /etc/debian_version ]] ; then
+  alias apt-get='sudo apt-get'
+  alias apt-secure='sudo apt-secure'
+  alias apt-file='sudo apt-file'
+  alias aptitude='sudo aptitude'
+  alias dpkg='sudo dpkg'
+  alias update='apt-get update && apt-get upgrade'
+  alias dist-upgrade='apt-get dist-upgrade'
+  alias install='apt-get install'
+  alias remove='apt-get remove'
+  alias purge='apt-get purge'
+  alias clean='apt-get clean && apt-get autoclean'
+
+  alias search='apt-cache search'
+  alias show='apt-cache show'
+  alias depends='apt-cache depends'
+
+  alias ifup='sudo ifup'
+  alias ifdown='sudo ifdown'
+  alias pon='sudo pon'
+  alias poff='sudo poff'
+  alias plog='sudo plog'
+elif [[ -f /etc/arch-release ]] ; then
+  # if colored version is avaible
+  xalias pacman='pacman-color'
+  xalias y=yaourt
+  # run as root
+  alias pacman='sudo pacman'
+  alias pacman-optimize='sudo pacman-optimize'
+  alias abs='sudo abs'
+  # pacman-contrib stuff
+  xalias pacdiff='sudo pacdiff -l'
+  xalias pacscripts='sudo pacscripts'
+  xalias pactree='pactree -c'
+  xhashd yaourtbuild=/var/abs/local/yaourtbuild
+  xhashd clydebuild=/var/abs/local/clydebuild
+elif [[ -f /etc/gentoo-release ]] ; then
+  alias emerge='sudo emerge'
+  xalias eix-sync='sudo eix-sync -C --quiet'
+fi
+
+autoload -U zcalc zsh-mime-setup
+zsh-mime-setup
+
+# Dir Hashes
+xhashd awesome=$HOME/.config/awesome/
+xhashd xmonad=$HOME/.xmonad
+xhashd vicious=$HOME/.config/awesome/vicious
+xhashd dotfiles=$HOME/git/dotfiles
+xhashd git=$HOME/git
+xhashd doc=/usr/share/doc
+xhashd abs=/var/abs
+xhashd web=/var/www
+xhashd web=/srv/http
+xhashd log=/var/log
+xhashd zdir=${${${(M)fpath:#*/zsh/${ZSH_VERSION}/*}[1]}%${ZSH_VERSION}*}${ZSH_VERSION}
+
+alias -g G='| grep -'
+alias -g L='| less'
+alias -g C='| xclip'
+alias -g H='| head'
+alias -g N='&>/dev/null'
+alias -g SL='| sort | less'
+alias -g S='| sort -u'
+alias -g T='| tail'
+alias -g W='| wc -l'
+
+# Miscellanious
+# a fresh zsh, please.
+alias fzsh='PS1="zsh%# " zsh -f'
+# generic aliases
+# diff format like git
+xalias diff='diff -Naur --strip-trailing-cr'
+alias gping="ping google.com"
+alias gping6="ping6 google.com"
+alias ghost="host -v google.com 8.8.8.8"
+alias gcurl="curl -v google.com"
+alias :q=exit
+alias todotxt="vim ~/Dropbox/todo/todo.txt"
+
+alias pacunlock="sudo rm /var/lib/pacman/db.lck"
+
+[ -n ${commands[pacman]} ] && function owns() { /usr/bin/pacman -Qo $(which $1)}
