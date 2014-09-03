@@ -16,3 +16,6 @@
 [submodule "home/.zsh-syntax-highlighting"]
 	path = home/.zsh-syntax-highlighting
 	url = git://github.com/zsh-users/zsh-syntax-highlighting.git
+[submodule "home/.zsh-autosuggestions"]
+	path = home/.zsh-autosuggestions
+	url = git://github.com/tarruda/zsh-autosuggestions
