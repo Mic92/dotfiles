@@ -19,3 +19,6 @@
 [submodule "home/.zsh-autosuggestions"]
 	path = home/.zsh-autosuggestions
 	url = git://github.com/tarruda/zsh-autosuggestions
+[submodule "home/.zsh-history-substring-search"]
+	path = home/.zsh-history-substring-search
+	url = git@github.com:zsh-users/zsh-history-substring-search.git
