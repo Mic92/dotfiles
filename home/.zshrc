@@ -111,12 +111,20 @@ fi
 [ -n "${commands[direnv]}" ] && eval "$(direnv hook zsh)"
 
 # persisting the dirstack
-DIRSTACKSIZE=${DIRSTACKSIZE:-20}
+setopt autopushd
 dirstack_file=${dirstack_file:-${HOME}/.zdirs}
 if [[ -f ${dirstack_file} ]] && [[ ${#dirstack[*]} -eq 0 ]] ; then
   dirstack=( ${(f)"$(< $dirstack_file)"} )
   [[ -d $dirstack[1] ]] && cd $dirstack[1]
 fi
+
+# Cycle directory with Ctrl-Right and Ctrl-Left
+eval "insert-cycledleft () { zle push-line; LBUFFER='pushd -q +1'; zle accept-line }"
+zle -N insert-cycledleft
+bindkey "^[[1;5C" insert-cycledleft
+eval "insert-cycledright () { zle push-line; LBUFFER='pushd -q -0'; zle accept-line }"
+zle -N insert-cycledright
+bindkey "^[[1;5D" insert-cycledright
 
 # Terminal stuff
 ulimit -S -c 0 # disable core dumps
@@ -127,15 +135,14 @@ if [[ $TERM = linux ]]; then
 fi
 
 chpwd() {
-  if (( $DIRSTACKSIZE <= 0 )) || [[ -z $dirstack_file ]]; then return; fi
-  local -ax my_stack
-  my_stack=( ${PWD} ${dirstack} )
-  builtin print -l ${(u)my_stack} >! ${dirstack_file}
-
   update_terminal_cwd
 
   # List directory after changing directory
   ls --color
+
+  local -ax my_stack
+  my_stack=( ${PWD} ${dirstack} )
+  builtin print -l ${(u)my_stack} >>! ${dirstack_file}
 }
 
 # }}}
@@ -143,3 +150,4 @@ chpwd() {
 if [ -d "$HOME/.rvm/bin" ]; then
   export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 fi
+
