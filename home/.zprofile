@@ -17,7 +17,7 @@ path=($^path(N))
 export PATH
 
 # {{{ Prefered programs
-export BROWSER=firefox
+export BROWSER=chromium
 export TERMINAL=urxvt
 export PICTUREVIEW=eog
 export EDITOR=vim
