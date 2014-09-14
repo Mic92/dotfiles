@@ -74,6 +74,14 @@ pull-dotfiles() {
   popd
 }
 
+# Autoinstall Bundle
+bundle() {
+  if [ -z "${commands[bundle]}" ] && [ -n "${commands[gem]}" ]; then
+   gem install --user-install bundler
+  fi
+  command bundle "$@"
+}
+
 ff() { /usr/bin/find . -iname "*$@*" }
 
 function {emacs,ee}merge() {
