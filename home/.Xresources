@@ -24,9 +24,8 @@ URxvt*visualBell:                                 true
 URxvt*scrollBar:                                 false
 URxvt*secondaryScroll:                            true
 URxvt*font:  xft:DejaVu Sans Mono for Powerline:size=10
-URxvt*perl-ext-common:       default,matcher,font-size
+URxvt*perl-ext-common:               default,font-size
 URxvt*iso14755_52:                               false
-URxvt*urlLauncher:                    /usr/bin/firefox
 URxvt*matcher.button:                                1
 URxvt*cursorUnderline:                            true
 URxvt*cursorBlink:                                true
