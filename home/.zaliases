@@ -202,7 +202,7 @@ zsh-mime-setup
 xhashd awesome=$HOME/.config/awesome/
 xhashd xmonad=$HOME/.xmonad
 xhashd vicious=$HOME/.config/awesome/vicious
-xhashd dotfiles=$HOME/git/dotfiles
+xhashd dotfiles=$HOME/.homesick/repos/dotfiles
 xhashd git=$HOME/git
 xhashd doc=/usr/share/doc
 xhashd abs=/var/abs
