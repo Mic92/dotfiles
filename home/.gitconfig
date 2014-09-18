@@ -17,7 +17,6 @@
   comma = commit --amend
   lol = log --graph --decorate --pretty=oneline --abbrev-commit --all --max-count=20
   lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
-  merge-to = "!gitmergeto() { export tmp_branch=`git branch | grep '* ' | tr -d '* '` && git checkout $1 && git merge $tmp_branch && git checkout $tmp_branch; unset tmp_branch; }; gitmergeto"
   s = stash --keep-index
 [push]
   default = simple
