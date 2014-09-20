@@ -232,10 +232,14 @@ vnoremap . :norm.<CR>
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
+set pastetoggle=<F3>
+
 " conflict with YouCompleteMe
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+
+let g:ycm_collect_identifiers_from_tags_files = 1
 
 command! -bar SudoWrite :
       \ setlocal nomodified |
