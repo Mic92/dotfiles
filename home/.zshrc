@@ -10,7 +10,7 @@ fi
 source $HOME/.zshuery/zshuery.sh
 load_defaults
 load_aliases
-load_completion $HOME/.zsh-completion
+load_completion $HOME/.zsh-completion/src
 
 bindkey -e
 source "$HOME/.zprompt"
@@ -34,9 +34,7 @@ fi
 if [ -f "$HOME/.zsh-autosuggestions/autosuggestions.zsh" ]; then
   source "$HOME/.zsh-autosuggestions/autosuggestions.zsh"
   # Enable autosuggestions automatically
-  zle-line-init() {
-    zle autosuggest-start
-  }
+  zle-line-init() { zle autosuggest-start }
   zle -N zle-line-init
 
   export AUTOSUGGESTION_HIGHLIGHT_COLOR='fg=10'
