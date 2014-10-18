@@ -8,9 +8,12 @@
 export TTY=$(tty)
 
 # shell opts: see bash(1)
-shopt -s cdspell dirspell extglob histverify no_empty_cmd_completion checkwinsize
+shopt -s autocd cdspell dirspell extglob no_empty_cmd_completion
+shopt -s checkwinsize checkhash
+shopt -s histverify histappend histreedit cmdhist
 
 set -o notify           # notify of completed background jobs immediately
+set -o noclobber        # don\'t overwrite files by accident
 ulimit -S -c 0          # disable core dumps
 stty -ctlecho           # turn off control character echoing
 
@@ -44,6 +47,8 @@ source_bash_completion() {
     fi
   done
 }
+
+function ff() { find . -type f -iname '*'"$*"'*' -ls ; }
 
 # External config
 if [[ -r ~/.dircolors ]] && type -p dircolors >/dev/null; then
