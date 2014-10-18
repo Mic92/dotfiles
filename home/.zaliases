@@ -144,14 +144,6 @@ xalias ee="emacs -nw"
 
 xalias mplayer="mpv"
 
-# reboot/halt/suspend
-alias shutdown='! shutdown'
-alias reboot='! reboot'
-xalias shutdown="systemctl poweroff"
-xalias reboot="systemctl reboot"
-xalias suspend="systemctl suspend"
-xalias hibernate="systemctl hibernate"
-xalias hybrid-sleep="systemctl hybrid-sleep"
 
 # Package management
 if [[ -f /etc/debian_version ]] ; then
