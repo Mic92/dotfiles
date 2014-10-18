@@ -15,7 +15,7 @@ setxkbmap -option terminate:ctrl_alt_bksp
 xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
 pulseaudio --start
 
-services=(chromium gajim copyq dropbox evolution)
+services=(chromium gajim copyq dropbox claws-mail)
 for srv in "${services[@]}"; do
   systemctl --user start "$srv"
 done
