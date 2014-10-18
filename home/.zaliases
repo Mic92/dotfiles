@@ -182,6 +182,9 @@ elif [[ -f /etc/arch-release ]] ; then
   xalias pactree='pactree -c'
   xhashd yaourtbuild=/var/abs/local/yaourtbuild
   xhashd clydebuild=/var/abs/local/clydebuild
+  alias gensums="[[ -f PKGBUILD ]] && makepkg -g >> PKGBUILD"
+  function owns() { /usr/bin/pacman -Qo $(which $1)}
+  alias pacunlock="sudo rm /var/lib/pacman/db.lck"
 elif [[ -f /etc/gentoo-release ]] ; then
   alias emerge='sudo emerge'
   xalias eix-sync='sudo eix-sync -C --quiet'
@@ -225,7 +228,3 @@ alias ghost="host -v google.com 8.8.8.8"
 alias gcurl="curl -v google.com"
 alias :q=exit
 alias todotxt="vim ~/Dropbox/todo/todo.txt"
-
-alias pacunlock="sudo rm /var/lib/pacman/db.lck"
-
-[ -n ${commands[pacman]} ] && function owns() { /usr/bin/pacman -Qo $(which $1)}
