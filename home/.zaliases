@@ -98,7 +98,7 @@ alias df='df -hT'
 xalias df='dfc'
 
 # File management
-alias ls='ls --color=auto -F -h'
+alias ls='ls --color=auto --classify --human-readable --group-directories-first'
 #alias sl=ls
 alias la='ls -lA'
 alias laa='ls -la'
@@ -112,6 +112,7 @@ alias ln="nocorrect ln"
 alias mv='nocorrect mv -v'
 alias mkdir='nocorrect mkdir -p'
 xalias locate='locate --existing --follow --basename --ignore-case'
+alias j='jobs'
 
 # Push and pop directories on directory stack
 alias pu='pushd'
@@ -131,9 +132,7 @@ alias updatedb='sudo updatedb'
 alias sless='sudo less'
 alias stail='sudo tail'
 xalias ctl='sudo systemctl'
-
 alias json_escape="ruby -e \"require 'json'; puts(File.open(ARGV[0]).read.to_json) if ARGV[0]\""
-
 
 # Editors
 [[ -n ${commands[vi]} ]] && alias vi=vim
