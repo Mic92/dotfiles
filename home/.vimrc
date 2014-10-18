@@ -45,7 +45,6 @@ Plugin 'alfredodeza/jacinto.vim'
 Plugin 'msanders/snipmate.vim'
 Plugin 'kchmck/vim-coffee-script'
 Plugin 'slim-template/vim-slim'
-"Plugin 'ap/vim-css-color'
 Plugin 'scrooloose/syntastic'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'airblade/vim-gitgutter'
@@ -55,10 +54,11 @@ Plugin 'kien/ctrlp.vim'
 Plugin 'majutsushi/tagbar'
 Plugin 'freitass/todo.txt-vim'
 Plugin 'stefanoverna/vim-i18n'
-Plugin 'dag/vim-fish'
 Plugin 'dhruvasagar/vim-table-mode'
-Plugin 'elixir-lang/vim-elixir'
-Plugin 'tkztmk/vim-vala'
+"Plugin 'ap/vim-css-color'
+"Plugin 'dag/vim-fish'
+"Plugin 'elixir-lang/vim-elixir'
+"Plugin 'tkztmk/vim-vala'
 "Plugin 'rodjek/vim-puppet'
 "Plugin 'derekwyatt/vim-scala'
 "Plugin 'wavded/vim-stylus'
@@ -84,7 +84,7 @@ filetype plugin indent on
 
 runtime macros/matchit.vim
 Bundle 'kana/vim-textobj-user'
-Bundle 'nelstrom/vim-textobj-rubyblock'
+"Bundle 'nelstrom/vim-textobj-rubyblock'
 
 set textwidth=80
 
