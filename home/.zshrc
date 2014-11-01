@@ -16,6 +16,10 @@ bindkey -e
 source "$HOME/.zprompt"
 source "$HOME/.zaliases"
 
+# jobs
+setopt long_list_jobs
+zstyle ':completion:*' menu select
+
 # zprofile not sourced
 [ -z $EDITOR ] && [ -f $HOME/.zprofile ] && source $HOME/.zprofile
 [ -f $HOME/.zshrc.$HOST ] && source $HOME/.zshrc.$HOST
