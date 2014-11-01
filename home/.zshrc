@@ -153,7 +153,15 @@ chpwd() {
 
 # }}}
 
+# usage
+# vil file:20 -> opens file on line 20
+vil() {
+  setopt shwordsplit
+  IFS=':' ARGS=($@)
+  unsetopt shwordsplit
+  vim +${ARGS[2]} ${ARGS[1]}
+}
+
 if [ -d "$HOME/.rvm/bin" ]; then
   export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 fi
-
