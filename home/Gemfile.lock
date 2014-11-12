@@ -76,6 +76,9 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
+    pry-doc (0.6.0)
+      pry (~> 0.9)
+      yard (~> 0.8)
     rack (1.5.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
@@ -87,6 +90,7 @@ GEM
       thor (>= 0.18.0)
     trollop (2.0)
     wmi-lite (1.0.0)
+    yard (0.8.7.4)
 
 PLATFORMS
   ruby
@@ -100,4 +104,5 @@ DEPENDENCIES
   nokogiri
   pessimize
   pry
+  pry-doc
   tmuxinator
