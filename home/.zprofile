@@ -31,9 +31,9 @@ export pacman_program=pacman-color
 # }}}
 
 # {{{ History
-HISTFILE=~/.zhistory
-HISTSIZE=9999
-SAVEHIST=6000
+HISTFILE=~/.zsh_history
+HISTSIZE=99999
+SAVEHIST=99999
 DIRSTACKSIZE=30
 # }}}
 
