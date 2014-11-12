@@ -21,7 +21,7 @@ setopt long_list_jobs
 zstyle ':completion:*' menu select
 
 # zprofile not sourced
-[ -z $EDITOR ] && [ -f $HOME/.zprofile ] && source $HOME/.zprofile
+[ -f $HOME/.zprofile ] && source $HOME/.zprofile
 [ -f $HOME/.zshrc.$HOST ] && source $HOME/.zshrc.$HOST
 
 if [ -f "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
