@@ -12,6 +12,10 @@ load_defaults
 load_aliases
 load_completion $HOME/.zsh-completion/src
 
+for file in ~/.zsh/*[^~]; do
+  autoload -U "${file##*/}"
+done
+
 bindkey -e
 source "$HOME/.zprompt"
 source "$HOME/.zaliases"
