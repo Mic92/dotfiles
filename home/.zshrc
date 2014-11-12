@@ -111,11 +111,15 @@ function retry() {
   done
 }
 # }}}
+#
 
-if [[ -n ${commands[envoy]} ]] && (( UID != 0)); then
-  envoy
-  source <(envoy --agent=gpg-agent --print)
-  source <(envoy --agent=ssh-agent --print)
+# starting with gnupg 2.1.0, ssh-agent uses static socket paths, which make
+# invocation much easier
+export GPG_AGENT_INFO=$HOME/.gnupg/S.gpg-agent
+export SSH_AUTH_SOCK=$HOME/.gnupg/S.gpg-agent.ssh
+if [[ -n "${commands[gpg-agent]}" && ! -S "$HOME/.gnupg/S.gpg-agent.ssh" ]]; then
+  eval "$(gpg-agent --enable-ssh-support --daemon)"
+  [ -f ~/.ssh/id_rsa.pub ] || [ -f ~/.ssh/id_ecdsa ] && ssh-add
 fi
 
 [ -n "${commands[direnv]}" ] && eval "$(direnv hook zsh)"
