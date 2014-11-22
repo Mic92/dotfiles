@@ -13,11 +13,13 @@
   tool = vimdiff
 [merge]
   tool = vimdiff
+  conflictstyle = diff3
 [alias]
   comma = commit --amend
   lol = log --graph --decorate --pretty=oneline --abbrev-commit --all --max-count=20
   lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
   s = stash --keep-index
+  uncommit = reset --soft HEAD^
 [push]
   default = simple
 [rerere]
@@ -33,3 +35,10 @@
   insteadOf = higgs:
 [url "git@github.com:Mic92/"]
   insteadOf = gh:
+[hooks]
+  symlinksourcerepo = /home/joerg/git/githooks
+  requirestrictparenspacing = false
+[credential]
+  helper = gnome-keyring
+[mergetool]
+  prompt = false
