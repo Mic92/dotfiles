@@ -103,7 +103,7 @@ alias ls='ls --color=auto --classify --human-readable --group-directories-first'
 alias la='ls -lA'
 alias laa='ls -la'
 alias ll='ls -l'
-alias tempdir='cd `mktemp -d`'
+alias tempdir='cd `mktemp -d`;'
 
 alias rm='rm -rv'
 alias cp='nocorrect cp -rpv'
