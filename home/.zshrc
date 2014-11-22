@@ -114,6 +114,14 @@ function retry() {
       sleep $sleep_time
   done
 }
+
+function own() {
+  if [ -n "${commands[sudo]}" ]; then
+    sudo chown "$USER:$(id -gn)" "$@"
+  else
+    chown "$USER:$(id -gn)" "$@"
+  fi
+}
 # }}}
 #
 
