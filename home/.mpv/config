@@ -1,0 +1,7 @@
+# Write your default config options here!
+af-add = scaletempo
+save-position-on-quit
+keep-open
+hwdec=vaapi
+vo=opengl-hq
+input-unix-socket=/home/joerg/.mpv/socket
