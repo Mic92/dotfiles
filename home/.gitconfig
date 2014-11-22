@@ -4,7 +4,10 @@
 [format]
   pretty = oneline
 [color]
+  branch = true
+  diff = true
   ui = true
+  status = true
 [user]
   name = Jörg Thalheim
   email = joerg@higgsboson.tk
