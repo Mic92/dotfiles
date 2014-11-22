@@ -41,6 +41,8 @@
 [hooks]
   symlinksourcerepo = /home/joerg/git/githooks
   requirestrictparenspacing = false
+[help]
+  autocorrect = 1
 [credential]
   helper = gnome-keyring
 [mergetool]
