@@ -24,6 +24,31 @@ set novisualbell                     " disable beep
 set backspace=indent,eol,start       " backspacing over everything in insert mode
 set browsedir=current                " which directory to use for the file browser
 set shell=bash
+" Softtabs, 2 spaces
+set tabstop=2
+set shiftwidth=2
+set expandtab
+set textwidth=80
+
+set undofile
+set undoreload=10000
+set undodir=$HOME/.vimundo
+set backupdir =$HOME/.vim.backup
+set directory=$HOME/.vim.temp
+silent !mkdir -p $HOME/.vim.backup
+silent !mkdir -p $HOME/.vim.temp
+
+" enable spelling
+set spell
+set complete+=kspell
+
+" Open new split panes to right and bottom, which feels more natural
+set splitbelow
+set splitright
+
+set encoding=utf-8
+set fileencodings=ucs-bom,utf-8,latin1
+set termencoding=utf-8
 
 " Declare bundles are handled via Vundle
 filetype off " required!
@@ -55,6 +80,7 @@ Plugin 'majutsushi/tagbar'
 Plugin 'freitass/todo.txt-vim'
 Plugin 'stefanoverna/vim-i18n'
 Plugin 'dhruvasagar/vim-table-mode'
+"Plugin 'digitaltoad/vim-jade'
 "Plugin 'ap/vim-css-color'
 "Plugin 'dag/vim-fish'
 "Plugin 'elixir-lang/vim-elixir'
@@ -86,7 +112,6 @@ runtime macros/matchit.vim
 Bundle 'kana/vim-textobj-user'
 "Bundle 'nelstrom/vim-textobj-rubyblock'
 
-set textwidth=80
 
 augroup vimrcEx
   au!
@@ -101,11 +126,6 @@ augroup vimrcEx
     \   exe "normal g`\"" |
     \ endif
 augroup END
-
-" Softtabs, 2 spaces
-set tabstop=2
-set shiftwidth=2
-set expandtab
 
 " Display extra whitespace
 set list listchars=tab:»·,trail:·
@@ -179,36 +199,19 @@ au BufNewFile,BufRead *.c setlocal noet ts=4 sw=4 sts=4 list!
 map <leader>y "*y
 map <leader>p "*p
 if exists('$WINDOW') || exists('$TMUX')
-      map <leader>Y (fakeclip-screen-y)
-      map <leader>P (fakeclip-screen-p)
+  map <leader>Y (fakeclip-screen-y)
+  map <leader>P (fakeclip-screen-p)
 endif
-
-" New files are created in utf-8.
-set encoding=utf-8
-"
-" If the encoding of the file cannot be determined uniquely among those three, utf-8 is chosen.
-setglobal fileencoding=utf-8
-"
-" Existing files are treated as utf-8-bom, utf-8 and latin-1.
-set fileencodings=ucs-bom,utf-8,latin1
-"
-" If the encoding is none of those three, then the file is interpreted as latin-1.
-set termencoding=utf-8
 
 let g:UltiSnipsExpandTrigger="<leader><Tab>"
 let g:UltiSnipsJumpForwardTrigger="<leader><Tab>"
 let g:UltiSnipsJumpBackwardTrigger="<leader><s-Tab>"
+let g:UltiSnipsSnippetsDir        = '~/.vim/'
+let g:UltiSnipsSnippetDirectories = ['UltiSnips']
+
 
 "open zipped files
 au BufReadCmd *.jar,*.xpi,*.wgt call zip#Browse(expand("<amatch>"))
-
-" enable spelling
-set spell
-set complete+=kspell
-
-" Open new split panes to right and bottom, which feels more natural
-set splitbelow
-set splitright
 
 " go in normal mode with jj
 inoremap jj <Esc>
@@ -252,14 +255,6 @@ command! -bar SudoWrite :
 
 cmap w!! SudoWrite
 
-set undofile
-set undoreload=10000
-set undodir=$HOME/.vimundo
-set backupdir =$HOME/.vim.backup
-set directory=$HOME/.vim.temp
-
-silent !mkdir -p $HOME/.vim.backup
-silent !mkdir -p $HOME/.vim.temp
 
 if has("python")
   :command! -nargs=+ Calc :py print <args>
