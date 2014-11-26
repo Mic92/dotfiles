@@ -26,7 +26,6 @@ export ALTERNATE_EDITOR=vim
 export PAGER=less
 export ACK_PAGER=$PAGER
 export READNULLCMD=$PAGER
-export GREP_OPTIONS='--binary-files=without-match --directories=skip --color=auto'
 export pacman_program=pacman-color
 # }}}
 

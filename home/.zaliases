@@ -227,3 +227,4 @@ alias ghost="host -v google.com 8.8.8.8"
 alias gcurl="curl -v google.com"
 alias :q=exit
 alias todotxt="vim ~/Dropbox/todo/todo.txt"
+alias grep="grep --binary-files=without-match --directories=skip --color=auto"
