@@ -117,9 +117,9 @@ function retry() {
 
 function own() {
   if [ -n "${commands[sudo]}" ]; then
-    sudo chown "$USER:$(id -gn)" "$@"
+    sudo chown -R "$USER:$(id -gn)" "$@"
   else
-    chown "$USER:$(id -gn)" "$@"
+    chown -R "$USER:$(id -gn)" "$@"
   fi
 }
 # }}}
