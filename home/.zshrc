@@ -130,7 +130,7 @@ function own() {
 export GPG_AGENT_INFO=$HOME/.gnupg/S.gpg-agent
 export SSH_AUTH_SOCK=$HOME/.gnupg/S.gpg-agent.ssh
 if [[ -n "${commands[gpg-agent]}" && ! -S "$HOME/.gnupg/S.gpg-agent.ssh" ]]; then
-  eval "$(gpg-agent --enable-ssh-support --daemon)"
+  eval "$(gpg-agent --daemon)"
   [ -f ~/.ssh/id_rsa.pub ] || [ -f ~/.ssh/id_ecdsa ] && ssh-add
 fi
 
