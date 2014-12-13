@@ -80,6 +80,7 @@ Plugin 'majutsushi/tagbar'
 Plugin 'freitass/todo.txt-vim'
 Plugin 'stefanoverna/vim-i18n'
 Plugin 'dhruvasagar/vim-table-mode'
+Plugin 'fatih/vim-go'
 "Plugin 'digitaltoad/vim-jade'
 "Plugin 'ap/vim-css-color'
 "Plugin 'dag/vim-fish'
@@ -262,6 +263,23 @@ if has("python")
 else
   command! -nargs=+ Calc :!python -c "from math import *; print <args>"
 end
+
+au FileType go nmap <Leader>s <Plug>(go-implements)
+au FileType go nmap <Leader>i <Plug>(go-info)
+au FileType go nmap <Leader>gd <Plug>(go-doc)
+au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
+au FileType go nmap <Leader>gb <Plug>(go-doc-browser)
+
+au FileType go nmap <leader>r <Plug>(go-run)
+au FileType go nmap <leader>b <Plug>(go-build)
+au FileType go nmap <leader>t <Plug>(go-test)
+au FileType go nmap <leader>c <Plug>(go-coverage)
+
+au FileType go nmap <Leader>ds <Plug>(go-def-split)
+au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
+au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+
+au FileType go nmap <Leader>e <Plug>(go-rename)
 
 " Local config
 if filereadable($HOME . "/.vimrc.local")
