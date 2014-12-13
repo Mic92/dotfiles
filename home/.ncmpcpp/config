@@ -348,7 +348,7 @@ playlist_display_mode = "columns"
 #
 #jump_to_now_playing_song_at_start = "yes"
 #
-ask_before_clearing_main_playlist = "yes"
+#ask_before_clearing_main_playlist = "yes"
 #
 #clock_display_seconds = "no"
 #
@@ -405,7 +405,7 @@ display_bitrate = "yes"
 ## ncmpcpp's browser screen.
 ##
 #
-allow_physical_files_deletion = "yes"
+#allow_physical_files_deletion = "yes"
 #
 #allow_physical_directories_deletion = "no"
 #
