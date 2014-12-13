@@ -16,6 +16,8 @@ typeset -U fpath
 path=($^path(N))
 export PATH
 
+cdpath=( ~/git )
+
 # {{{ Prefered programs
 export BROWSER=chromium
 export TERMINAL=urxvt
