@@ -13,7 +13,6 @@ export BROWSER=firefox
 export TERMINAL=urxvt
 export PICTUREVIEW=eog
 export ALTERNATE_EDITOR=emacs
-export GREP_OPTIONS='--binary-files=without-match --directories=skip --color=auto'
 export pacman_program=pacman-color
 
 # {{{ X11, Sound, Graphic

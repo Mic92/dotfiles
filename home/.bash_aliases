@@ -17,3 +17,4 @@ alias sudo='sudo '
 alias udevinfo='udevadm info -q all -n'
 alias webshare='python -m http.server 8080'
 alias wgetxc='wget $(xclip -o)'
+alias grep="grep --binary-files=without-match --directories=skip --color=auto"
