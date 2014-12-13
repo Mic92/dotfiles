@@ -1,0 +1,56 @@
+if [[ $# -ge 1 ]]
+then
+    if [[ $# -gt 1 ]]
+    then
+        print "only one argument allowed" > /dev/fd/2
+        return 23
+    else
+        servername=$(echo ${1} | tr "[:lower:]" "[:upper:]")
+    fi
+else
+    print "please specify a servername" > /dev/fd/2
+    return 13
+fi
+
+_redefines()
+{
+    # force vim to cd with you
+    cd()
+    {
+        builtin cd $*
+        command vim --servername ${VIMLINKED} --remote-send ":cd ${PWD}<CR>"
+    }
+
+    # open files in linked vim
+    vim()
+    {
+        if [[ ${1} =~ "^-.*" ]]
+        then
+            command vim $*
+        else
+            command vim --servername ${VIMLINKED} --remote $*
+        fi
+    }
+}
+
+print "trying to link to ${servername}"
+vim --serverlist | grep ${servername} > /dev/null
+
+if [[ $? -eq 0 ]]
+then
+    if [[ $VIMLINKED != ${servername} ]]
+    then
+        print "now linked to ${servername}"
+        export VIMLINKED=${servername}
+        _redefines
+        cd .
+    else
+        print "this shell is already linked to ${VIMLINKED}"
+    fi
+else
+    print "there is no server ${servername}"
+fi
+
+return 0
+
+# vim: ft=zsh

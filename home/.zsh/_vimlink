@@ -1,0 +1,14 @@
+#compdef vimlink
+
+_vimlink() {
+    local -a vimse
+    vimse=($(command vim --serverlist))
+
+    if (( CURRENT == 2 )); then
+        _arguments '*:vimserver:($vimse)'
+    fi
+
+    return 0
+}
+
+_vimlink
