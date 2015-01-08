@@ -88,5 +88,8 @@ export LANG=de_DE.UTF-8
 export LC_MESSAGES=en_DK.UTF-8
 export LC_TIME=en_DK.UTF-8
 
+export PERL_CPANM_OPT="--local-lib=~/.perl5"
+export PERL5LIB=~/.perl5/lib/perl5
+
 # Python
 export PYTHONDOCS=/usr/share/doc/python/html/
