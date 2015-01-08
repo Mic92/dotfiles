@@ -214,6 +214,7 @@ alias -g SL='| sort | less'
 alias -g S='| sort -u'
 alias -g T='| tail'
 alias -g W='| wc -l'
+alias -g lessf="> /tmp/x & less +F /tmp/x; kill %; rm /tmp/x"
 
 # Miscellanious
 # a fresh zsh, please.
