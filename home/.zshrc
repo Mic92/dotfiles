@@ -7,6 +7,14 @@ if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
   [[ $? = "0" ]] && exit
 fi
 
+# Predictable ssh auth sockets
+SOCK="${HOME}/.ssh/ssh_auth_sock"
+if test $SSH_AUTH_SOCK && [ $SSH_AUTH_SOCK != $SOCK ]
+then
+  ln -sf $SSH_AUTH_SOCK $SOCK
+  export SSH_AUTH_SOCK=$SOCK
+fi
+
 source $HOME/.zshuery/zshuery.sh
 load_defaults
 load_aliases
@@ -24,7 +32,6 @@ source "$HOME/.zaliases"
 setopt long_list_jobs
 zstyle ':completion:*' menu select
 
-# zprofile not sourced
 [ -f $HOME/.zprofile ] && source $HOME/.zprofile
 [ -f $HOME/.zshrc.$HOST ] && source $HOME/.zshrc.$HOST
 
