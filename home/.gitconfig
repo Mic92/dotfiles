@@ -47,3 +47,7 @@
   helper = gnome-keyring
 [mergetool]
   prompt = false
+[imap]
+  folder = "Drafts"
+  host = imap://localhost
+  user = joerg@higgsboson.tk
