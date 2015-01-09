@@ -32,7 +32,6 @@ mpd_music_dir = "~/Musik"
 #
 ## Needed for tag editor and file operations to work.
 ##
-mpd_music_dir = ~/Musik
 #
 #mpd_crossfade_time = 5
 #
