@@ -24,6 +24,8 @@
 Essential packages:
 
     $ pacman -S htop git tig zsh tmux vim ruby strace tcpdump lsof rsync sudo
+    
+    $ pkg install git tmux zsh vim-lite ruby tcpdump lsof rsync sudo
 
 Bootstrap yaourt
 
