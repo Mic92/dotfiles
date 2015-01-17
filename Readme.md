@@ -25,11 +25,11 @@ Essential packages:
 
 arch:
 
-    $ pacman -S htop git tig zsh tmux vim ruby strace tcpdump lsof rsync sudo
+    $ pacman -S the_silver_searcher htop git tig zsh tmux vim ruby strace tcpdump lsof rsync sudo
 
 freebsd:
 
-    $ pkg install git tmux zsh vim-lite ruby tcpdump lsof rsync sudo bash
+    $ pkg install the_silver_searcher git tmux zsh vim-lite ruby tcpdump lsof rsync sudo bash
 
 Bootstrap yaourt
 
