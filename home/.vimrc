@@ -71,10 +71,14 @@ Plugin 'msanders/snipmate.vim'
 Plugin 'kchmck/vim-coffee-script'
 Plugin 'slim-template/vim-slim'
 Plugin 'scrooloose/syntastic'
-Plugin 'Valloric/YouCompleteMe'
+if has("python")
+  Plugin 'Valloric/YouCompleteMe'
+end
 Plugin 'airblade/vim-gitgutter'
-Plugin 'SirVer/ultisnips'
-Plugin 'Trevoke/ultisnips-rspec'
+if has("python")
+  Plugin 'SirVer/ultisnips'
+  Plugin 'Trevoke/ultisnips-rspec'
+end
 Plugin 'kien/ctrlp.vim'
 Plugin 'majutsushi/tagbar'
 Plugin 'freitass/todo.txt-vim'
