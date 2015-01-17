@@ -45,7 +45,7 @@ done
 EOF
 ```
 
-    $ bash aur.sh -si yaourt
+    $ bash aur.sh -si package-query yaourt
 
 Bootstrap user:
 
