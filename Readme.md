@@ -31,6 +31,7 @@ Bootstrap yaourt
 
     $ pacman -S --needed base-devel
 
+```
     $ cat > aur.sh <<'EOF'
 #!/bin/bash
 d=${BUILDDIR:-$PWD}
@@ -42,6 +43,7 @@ cd "$p"
 makepkg ${@##[^\-]*}
 done
 EOF
+```
 
     $ bash aur.sh -si yaourt
 
