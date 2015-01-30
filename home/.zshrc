@@ -143,13 +143,7 @@ fi
 
 [ -n "${commands[direnv]}" ] && eval "$(direnv hook zsh)"
 
-# persisting the dirstack
 setopt autopushd
-dirstack_file=${dirstack_file:-${HOME}/.zdirs}
-if [[ -f ${dirstack_file} ]] && [[ ${#dirstack[*]} -eq 0 ]] ; then
-  dirstack=( ${(f)"$(< $dirstack_file)"} )
-  [[ -d $dirstack[1] ]] && cd $dirstack[1]
-fi
 
 # Cycle directory with Ctrl-Right and Ctrl-Left
 eval "insert-cycledleft () { zle push-line; LBUFFER='pushd -q +1'; zle accept-line }"
@@ -172,10 +166,6 @@ chpwd() {
 
   # List directory after changing directory
   ls --color
-
-  local -ax my_stack
-  my_stack=( ${PWD} ${dirstack} )
-  builtin print -l ${(u)my_stack} >>! ${dirstack_file}
 }
 
 # }}}
