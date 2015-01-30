@@ -189,8 +189,7 @@ elif [[ -f /etc/gentoo-release ]] ; then
   xalias eix-sync='sudo eix-sync -C --quiet'
 fi
 
-autoload -U zcalc zsh-mime-setup
-zsh-mime-setup
+autoload -U zcalc
 
 # Dir Hashes
 xhashd awesome=$HOME/.config/awesome/
