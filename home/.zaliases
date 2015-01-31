@@ -98,8 +98,12 @@ alias df='df -hT'
 xalias df='dfc'
 
 # File management
-alias ls='ls --color=auto --classify --human-readable --group-directories-first'
-#alias sl=ls
+if is_freebsd; then
+  alias ls='ls -G'
+else
+  alias ls='ls --color=auto --classify --human-readable --group-directories-first'
+fi
+alias sl=ls
 alias la='ls -lA'
 alias laa='ls -la'
 alias ll='ls -l'
