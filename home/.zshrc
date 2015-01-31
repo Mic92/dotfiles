@@ -141,7 +141,9 @@ if [[ -z "$SSH_CLIENT"  && -n "${commands[gpg-agent]}" && ! -S "$HOME/.gnupg/S.g
   [ -f ~/.ssh/id_rsa.pub ] || [ -f ~/.ssh/id_ecdsa ] && ssh-add
 fi
 
-[ -n "${commands[direnv]}" ] && eval "$(direnv hook zsh)"
+if [ -n "${commands[direnv]}" ]; then
+  eval "$(direnv hook zsh)"
+fi
 
 setopt autopushd
 
@@ -165,7 +167,7 @@ chpwd() {
   update_terminal_cwd
 
   # List directory after changing directory
-  ls --color
+  ls
 }
 
 # }}}
