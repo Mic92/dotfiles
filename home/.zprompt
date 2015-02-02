@@ -30,6 +30,8 @@ update_current_git_vars() {
                 __CURRENT_GIT_BRANCH_STATUS='ahead'
             elif [[ $arr[2] =~ 'diverged' ]]; then
                 __CURRENT_GIT_BRANCH_STATUS='diverged'
+            elif [[ $arr[2] =~ 'up-to-date' ]]; then
+                __CURRENT_GIT_BRANCH_STATUS='up-to-date'
             else
                 __CURRENT_GIT_BRANCH_STATUS='behind'
             fi
@@ -53,6 +55,8 @@ prompt_git_info() {
             ;;
             behind)
             s+="↓"
+            ;;
+            up-to-date)
             ;;
         esac
         if [ -n "$__CURRENT_GIT_BRANCH_IS_DIRTY" ]; then
