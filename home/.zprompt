@@ -108,12 +108,12 @@ function _mic_notify { echo -ne '\a'}
 #Limited support for Apple Terminal (Terminal can't set window or tab separately)
 function _mic_title {
   if [[ "$DISABLE_AUTO_TITLE" == "true" ]] || [[ "$EMACS" == *term* ]]; then
-return
-fi
-if [[ "$TERM" == screen* ]]; then
-print -Pn "\ek$1:q\e\\" #set screen hardstatus, usually truncated at 20 chars
+   return
+  fi
+  if [[ "$TERM" == screen* ]]; then
+    print -Pn "\ek$1:q\e\\" #set screen hardstatus, usually truncated at 20 chars
   elif [[ "$TERM" == xterm* ]] || [[ $TERM == rxvt* ]] || [[ "$TERM_PROGRAM" == "iTerm.app" ]]; then
-print -Pn "\e]2;$2:q\a" #set window name
+    print -Pn "\e]2;$2:q\a" #set window name
     print -Pn "\e]1;$1:q\a" #set icon (=tab) name (will override window name on broken terminal)
   fi
 }
@@ -141,29 +141,28 @@ add-zsh-hook preexec _mic_termsupport_preexec
 # >>> Snippet end
 
 prompt_mic_setup() {
-    local open_p="%{$fg[blue]%}[%{$reset_color%}"
-    local close_p="%{$fg[blue]%}]%{$reset_color%}"
+  local open_p="%{$fg[blue]%}[%{$reset_color%}"
+  local close_p="%{$fg[blue]%}]%{$reset_color%}"
 
-    local path_p="$open_p%{$fg[yellow]%}%~%{$reset_color%}$close_p"
+  local path_p="$open_p%{$fg[yellow]%}%~%{$reset_color%}$close_p"
 
-    local user="%{$fg[cyan]%}%n%{$reset_color%}"
-    local host="%{$fg[yellow]%}%m%{$reset_color%}"
-    local user_host="${open_p}${user}@${host}${close_p}"
+  local user="%{$fg[cyan]%}%n%{$reset_color%}"
+  local host="%{$fg[yellow]%}%m%{$reset_color%}"
+  local user_host="${open_p}${user}@${host}${close_p}"
 
+  local smile="%{$fg[green]%}:%)%{$reset_color%}"
+  local cry="%{$fg[red]%}:(%{$reset_color%}"
+  local smiley="${open_p}%(?,$smile,$cry)${close_p}"
+  local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
 
-    local smile="%{$fg[green]%}:%)%{$reset_color%}"
-    local cry="%{$fg[red]%}:(%{$reset_color%}"
-    local smiley="${open_p}%(?,$smile,$cry)${close_p}"
-    local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
-
-    PS1="╭─${path_p}─${user_host}\$(prompt_git_info)\$(prompt_ruby_info)
+  PS1="╭─${path_p}─${user_host}\$(prompt_git_info)\$(prompt_ruby_info)
 ╰─$smiley %# "
 
-    PS2="${cur_cmd}> "
-    RPS1="${return_code}"
-    local user_host="${open_p}%_${close_p}> "
+  PS2="${cur_cmd}> "
+  RPS1="${return_code}"
+  local user_host="${open_p}%_${close_p}> "
 
-    export PS1 PS2 RPS1
+  export PS1 PS2 RPS1
 }
 
 prompt_mic_setup
