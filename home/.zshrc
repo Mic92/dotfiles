@@ -181,6 +181,12 @@ vil() {
   vim +${ARGS[2]} ${ARGS[1]}
 }
 
-if [ -d "$HOME/.rvm/bin" ]; then
+# OPAM configuration
+[ -f "$HOME/.opam/opam-init/init.zsh" ] && . "${HOME}/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null
+
+if [ -f /usr/share/chruby/chruby.sh ]; then
+  source /usr/share/chruby/chruby.sh
+  source /usr/share/chruby/auto.sh
+elif [ -d "$HOME/.rvm/bin" ]; then
   export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 fi
