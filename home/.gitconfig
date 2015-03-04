@@ -51,3 +51,10 @@
   folder = "Drafts"
   host = imap://localhost
   user = joerg@higgsboson.tk
+[sendemail]
+  from = joerg@higgsboson.tk <joerg@higgsboson.tk>
+  smtpserver = mail.higgsboson.tk
+  smtpuser = joerg@higgsboson.tk
+  smtpencryption = tls
+  chainreplyto = false
+  smtpserverport = 587
