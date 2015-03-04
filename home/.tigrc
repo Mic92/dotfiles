@@ -1,0 +1,2 @@
+set refresh-mode = auto
+bind generic I @sh -c "git ignore '%(file)'"
