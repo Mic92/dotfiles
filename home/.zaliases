@@ -233,4 +233,3 @@ alias :q=exit
 alias todotxt="vim ~/Dropbox/todo/todo.txt"
 alias grep="grep --binary-files=without-match --directories=skip --color=auto"
 xalias vim="nvim"
-

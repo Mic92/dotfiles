@@ -129,6 +129,10 @@ function own() {
     chown -R "$USER:$(id -gn)" "$@"
   fi
 }
+
+function jtes {
+  curl jtes.halfco.de/sets/1.json | jq "map({id: .id, created_at: .created_at, desc: .summary ,url: .track.permalink_url })" | less
+}
 # }}}
 #
 
