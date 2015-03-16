@@ -15,10 +15,12 @@ setxkbmap -option terminate:ctrl_alt_bksp
 xmodmap -e 'clear Lock' -e 'keycode 0x42 = Escape'
 pulseaudio --start
 
-services=(chromium gajim copyq dropbox claws-mail)
+services=(chromium gajim copyq claws-mail)
 for srv in "${services[@]}"; do
   systemctl --user start "$srv"
 done
+
+seafile-applet &
 
 (
   sleep 4
@@ -29,12 +31,14 @@ done
 # Use XToolkit in java applications
 export AWT_TOOLKIT=XToolkit
 echo "Starting at $(date)"
-exec i3 >> ~/.i3/log
+#exec i3 >> ~/.i3/log
 
 ## awesome
 #if awesome --version; then
-#  export _JAVA_AWT_WM_NONREPARENTING=1
-#  exec awesome 2>&1 >> ~/.config/awesome/log
+  export _JAVA_AWT_WM_NONREPARENTING=1
+  exec awesome 2>&1 >> ~/.config/awesome/log
 #else
 #  echo "Awesome WM is not working. Fix this before continue."
 #fi
+
+#exec qtile
