@@ -49,12 +49,24 @@ done
 EOF
 ```
 
-    $ bash aur.sh -si package-query yaourt
+```
+$ bash aur.sh -si package-query yaourt
+```
 
 Bootstrap user:
 
-    $ useradd -m -s /bin/zsh joerg
+```
+$ useradd -m -s /bin/zsh joerg
 
-    $ gpasswd -a joerg wheel # sudo on debian
+$ gpasswd -a joerg wheel # sudo on debian
 
-    $ passwd joerg
+$ passwd joerg
+
+$ install -d -m 700 -o joerg -g joerg ~joerg/.ssh
+
+$ cat >> /tmp/authorized_keys <<'EOF'
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbBp2dH2X3dcU1zh+xW3ZsdYROKpJd3n13ssOP092qE joerg@turingmachine
+EOF
+
+$ install -m 400 -o joerg -g joerg /tmp/authorized_keys ~joerg/.ssh/authorized_keys && rm /tmp/authorized_keys
+```
