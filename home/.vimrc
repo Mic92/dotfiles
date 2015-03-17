@@ -30,6 +30,10 @@ set shiftwidth=2
 set expandtab
 set textwidth=80
 
+if has("nvim")
+  set clipboard+=unnamedplus
+endif
+
 set undofile
 set undoreload=10000
 set undodir=$HOME/.vimundo
@@ -62,7 +66,6 @@ Plugin 'tpope/vim-rails'
 Plugin 'tpope/vim-surround'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'Raimondi/delimitMate'
-Plugin 'fakeclip'
 Plugin 'The-NERD-tree'
 Plugin 'bronson/vim-trailing-whitespace'
 Plugin 'altercation/vim-colors-solarized'
@@ -198,15 +201,6 @@ au BufNewFile,BufRead *.go setlocal noet ts=4 sw=4 sts=4 list!
 au BufNewFile,BufRead *.h setlocal noet ts=4 sw=4 sts=4 list!
 au BufNewFile,BufRead *.c setlocal noet ts=4 sw=4 sts=4 list!
 
-" Copy and paste with fakeclip
-"Command-C and Command-V are also available in MacVim
-" see :help fakeclip-multibyte-on-mac
-map <leader>y "*y
-map <leader>p "*p
-if exists('$WINDOW') || exists('$TMUX')
-  map <leader>Y (fakeclip-screen-y)
-  map <leader>P (fakeclip-screen-p)
-endif
 
 let g:UltiSnipsExpandTrigger="<leader><Tab>"
 let g:UltiSnipsJumpForwardTrigger="<leader><Tab>"
