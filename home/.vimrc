@@ -30,7 +30,7 @@ set shiftwidth=2
 set expandtab
 set textwidth=80
 
-if has("nvim")
+if ! $SSH_CONNECTION
   set clipboard+=unnamedplus
 endif
 
