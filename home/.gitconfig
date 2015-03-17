@@ -3,6 +3,7 @@
   excludesfile = /home/joerg/.gitignore
 [format]
   pretty = oneline
+  signoff = true
 [color]
   branch = true
   diff = true
