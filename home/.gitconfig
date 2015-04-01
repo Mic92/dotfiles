@@ -33,8 +33,6 @@
 [pull]
   rebase = preserve
   autostash = true
-[rebase]
-  autostash = true
 [url "gitlab@git.higgsboson.tk:Mic92/"]
   insteadOf = higgs:
 [url "git@github.com:Mic92/"]
