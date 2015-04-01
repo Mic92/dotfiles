@@ -5,3 +5,4 @@ keep-open
 hwdec=vaapi
 vo=opengl-hq
 input-unix-socket=/home/joerg/.mpv/socket
+cache-default=81920
