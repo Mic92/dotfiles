@@ -137,15 +137,15 @@ function jtes {
 #
 
 # starting with gnupg 2.1.0, ssh-agent uses static socket paths, which make
-# invocation much easier
-if [[ -z "$SSH_CLIENT" ]]; then
-  export GPG_AGENT_INFO=$HOME/.gnupg/S.gpg-agent
-  export SSH_AUTH_SOCK=$HOME/.gnupg/S.gpg-agent.ssh
-  if [[ -n "${commands[gpg-agent]}" && ! -S "$HOME/.gnupg/S.gpg-agent.ssh" ]]; then
-    eval "$(gpg-agent --daemon)"
-    [ -f ~/.ssh/id_rsa.pub ] || [ -f ~/.ssh/id_ecdsa ] && ssh-add
-  fi
-fi
+# invocation much easier; UPDATE: except it does not work
+#if [[ -z "$SSH_CLIENT" ]]; then
+#  export GPG_AGENT_INFO=$HOME/.gnupg/S.gpg-agent
+#  export SSH_AUTH_SOCK=$HOME/.gnupg/S.gpg-agent.ssh
+#  if [[ -n "${commands[gpg-agent]}" && ! -S "$HOME/.gnupg/S.gpg-agent.ssh" ]]; then
+#    eval "$(gpg-agent --daemon)"
+#    [ -f ~/.ssh/id_rsa.pub ] || [ -f ~/.ssh/id_ecdsa ] && ssh-add
+#  fi
+#fi
 
 if [ -n "${commands[direnv]}" ]; then
   eval "$(direnv hook zsh)"
