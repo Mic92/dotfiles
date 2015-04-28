@@ -187,6 +187,11 @@ vil() {
   vim +${ARGS[2]} ${ARGS[1]}
 }
 
+export GOPATH=$HOME/go
+if [ ! -d $GOPATH ]; then
+  mkdir -p "$GOPATH" 2>/dev/null
+fi
+
 # OPAM configuration
 [ -f "$HOME/.opam/opam-init/init.zsh" ] && . "${HOME}/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null
 
