@@ -196,17 +196,14 @@ fi
 autoload -U zcalc
 
 # Dir Hashes
-xhashd awesome=$HOME/.config/awesome/
-xhashd xmonad=$HOME/.xmonad
-xhashd vicious=$HOME/.config/awesome/vicious
-xhashd dotfiles=$HOME/.homesick/repos/dotfiles
-xhashd git=$HOME/git
+xhashd awesome=~/.config/awesome/
+xhashd xmonad=~/.xmonad
+xhashd vicious=~/.config/awesome/vicious
+xhashd mic92=~/go/src/github.com/Mic92
+xhashd git=~/git
 xhashd doc=/usr/share/doc
-xhashd abs=/var/abs
 xhashd web=/var/www
 xhashd web=/srv/http
-xhashd log=/var/log
-xhashd zdir=${${${(M)fpath:#*/zsh/${ZSH_VERSION}/*}[1]}%${ZSH_VERSION}*}${ZSH_VERSION}
 
 alias -g G='| grep -'
 alias -g L='| less'
