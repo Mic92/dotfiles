@@ -143,7 +143,7 @@ if [[ $+functions[_zsh_highlight] -eq 0 ]]; then
 
     # Override ZLE widgets to make them invoke _zsh_highlight.
     local cur_widget
-    for cur_widget in ${${(f)"$(builtin zle -la)"}:#(.*|_*|orig-*|run-help|which-command|beep)}; do
+    for cur_widget in ${${(f)"$(builtin zle -la)"}:#(.*|_*|orig-*|run-help|which-command|beep|yank*)}; do
       case $widgets[$cur_widget] in
 
         # Already rebound event: do nothing.
@@ -200,12 +200,10 @@ function _history-substring-search-begin() {
     #
     # Find all occurrences of the search query in the history file.
     #
-    # (k) turns it an array of line numbers.
+    # (k) returns the "keys" (history index numbers) instead of the values
+    # (Oa) reverses the order, because (R) returns results reversed.
     #
-    # (on) seems to remove duplicates, which are default
-    #      options. They can be turned off by (ON).
-    #
-    _history_substring_search_matches=(${(kon)history[(R)(#$HISTORY_SUBSTRING_SEARCH_GLOBBING_FLAGS)*${_history_substring_search_query_escaped}*]})
+    _history_substring_search_matches=(${(kOa)history[(R)(#$HISTORY_SUBSTRING_SEARCH_GLOBBING_FLAGS)*${_history_substring_search_query_escaped}*]})
 
     #
     # Define the range of values that $_history_substring_search_match_index
@@ -470,6 +468,19 @@ function _history-substring-search-up-search() {
     # We are at the beginning of history and there are no further matches.
     #
     _history-substring-search-not-found
+    return
+  fi
+
+  #
+  # When HIST_FIND_NO_DUPS is set, meaning that only unique command lines from
+  # history should be matched, make sure the new and old results are different.
+  # But when HIST_IGNORE_ALL_DUPS is set, ZSH already ensures a unique history.
+  #
+  if [[ ! -o HIST_IGNORE_ALL_DUPS && -o HIST_FIND_NO_DUPS && $BUFFER == $_history_substring_search_result ]]; then
+    #
+    # Repeat the current search so that a different (unique) match is found.
+    #
+    _history-substring-search-up-search
   fi
 }
 
@@ -554,6 +565,19 @@ function _history-substring-search-down-search() {
     # We are at the end of history and there are no further matches.
     #
     _history-substring-search-not-found
+    return
+  fi
+
+  #
+  # When HIST_FIND_NO_DUPS is set, meaning that only unique command lines from
+  # history should be matched, make sure the new and old results are different.
+  # But when HIST_IGNORE_ALL_DUPS is set, ZSH already ensures a unique history.
+  #
+  if [[ ! -o HIST_IGNORE_ALL_DUPS && -o HIST_FIND_NO_DUPS && $BUFFER == $_history_substring_search_result ]]; then
+    #
+    # Repeat the current search so that a different (unique) match is found.
+    #
+    _history-substring-search-down-search
   fi
 }
 

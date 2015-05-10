@@ -19,9 +19,9 @@
 [submodule "home/.zsh-autosuggestions"]
 	path = home/.zsh-autosuggestions
 	url = git://github.com/tarruda/zsh-autosuggestions
-[submodule "home/.zsh-history-substring-search"]
-	path = home/.zsh-history-substring-search
-	url = git@github.com:zsh-users/zsh-history-substring-search.git
 [submodule "home/.vim/bundle/Vundle.vim"]
 	path = home/.vim/bundle/Vundle.vim
 	url = https://github.com/gmarik/Vundle.vim.git
+[submodule "home/.zsh-history-substring-search"]
+	path = home/.zsh-history-substring-search
+	url = https://github.com:zsh-users/zsh-history-substring-search.git

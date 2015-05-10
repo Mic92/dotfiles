@@ -40,6 +40,11 @@ Usage
         bindkey "$terminfo[kcuu1]" history-substring-search-up
         bindkey "$terminfo[kcud1]" history-substring-search-down
 
+        # bind UP and DOWN arrow keys (compatibility fallback
+        # for Ubuntu 12.04, Fedora 21, and MacOSX 10.9 users)
+        bindkey '^[[A' history-substring-search-up
+        bindkey '^[[B' history-substring-search-down
+
         # bind P and N for EMACS mode
         bindkey -M emacs '^P' history-substring-search-up
         bindkey -M emacs '^N' history-substring-search-down
@@ -47,12 +52,6 @@ Usage
         # bind k and j for VI mode
         bindkey -M vicmd 'k' history-substring-search-up
         bindkey -M vicmd 'j' history-substring-search-down
-
-    Ubuntu 12.04 and MacOSX 10.9 users might need to use this snippet instead:
-
-        # bind UP and DOWN arrow keys
-        bindkey '^[[A' history-substring-search-up
-        bindkey '^[[B' history-substring-search-down
 
 3.  Type any part of any previous command and then:
 
@@ -102,6 +101,14 @@ default values only after having loaded this script into your ZSH session.
   causes this script to perform a case-insensitive search. See the "Globbing
   Flags" section in the zshexpn(1) man page to learn about the kinds of
   values you may assign to this variable.
+
+To always receive _unique_ search results, use `setopt HIST_IGNORE_ALL_DUPS`.
+Alternatively, use `setopt HIST_FIND_NO_DUPS` which makes this plugin skip
+duplicate _adjacent_ search results as you cycle through them---however, this
+does not guarantee that search results are unique: if your search results were
+"Dog", "Dog", "HotDog", "Dog", then cycling them gives "Dog", "HotDog", "Dog".
+Notice that the "Dog" search result appeared twice as you cycled through them!
+If you wish to avoid this limitation, then use `setopt HIST_IGNORE_ALL_DUPS`.
 
 ------------------------------------------------------------------------------
 History
