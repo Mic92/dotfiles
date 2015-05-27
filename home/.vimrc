@@ -88,6 +88,7 @@ Plugin 'freitass/todo.txt-vim'
 Plugin 'stefanoverna/vim-i18n'
 Plugin 'dhruvasagar/vim-table-mode'
 Plugin 'fatih/vim-go'
+Plugin 'rking/ag.vim'
 "Plugin 'digitaltoad/vim-jade'
 "Plugin 'ap/vim-css-color'
 "Plugin 'dag/vim-fish'
@@ -97,6 +98,7 @@ Plugin 'fatih/vim-go'
 "Plugin 'derekwyatt/vim-scala'
 "Plugin 'wavded/vim-stylus'
 "Plugin 'digitaltoad/vim-jade'
+Plugin 'ompugao/uncrustify-vim'
 
 call vundle#end()
 
