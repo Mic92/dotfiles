@@ -288,3 +288,7 @@ au FileType go nmap <Leader>e <Plug>(go-rename)
 if filereadable($HOME . "/.vimrc.local")
   source ~/.vimrc.local
 endif
+
+if filereadable($LOCAL_VIMRC)
+  source $LOCAL_VIMRC
+endif
