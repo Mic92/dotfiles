@@ -15,7 +15,10 @@ set modeline      " React on modlines in files
 set hlsearch      " highlightthe last used search pattern
 
 set ttyfast          " send more characters to screen for redrawing
-set ttymouse=xterm2
+if has("ttymouse")
+  " was removed in neovim
+  set ttymouse=xterm2
+end
 set wildignore=*.bak,*.o,*.e,*~      " wildmenu: ignore these extensions
 set iskeyword+=_,-  " these characters also belong to a word
 set wrap                             " do wrap lines
