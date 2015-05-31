@@ -7,4 +7,5 @@
 *.plist
 *.pdf
 *.a
+compile_commands.json
 tags
