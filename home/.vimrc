@@ -213,7 +213,6 @@ let g:UltiSnipsJumpBackwardTrigger="<leader><s-Tab>"
 let g:UltiSnipsSnippetsDir        = '~/.vim/'
 let g:UltiSnipsSnippetDirectories = ['UltiSnips']
 
-
 "open zipped files
 au BufReadCmd *.jar,*.xpi,*.wgt call zip#Browse(expand("<amatch>"))
 
@@ -250,7 +249,9 @@ let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
+nnoremap <leader>jd :YcmCompleter GoTo<CR>
 let g:ycm_collect_identifiers_from_tags_files = 1
+let g:ycm_extra_conf_globlist = ['~/git/tthreads/*','!~/*']
 
 command! -bar SudoWrite :
       \ setlocal nomodified |
@@ -258,7 +259,6 @@ command! -bar SudoWrite :
       \ let &modified = v:shell_error
 
 cmap w!! SudoWrite
-
 
 if has("python")
   :command! -nargs=+ Calc :py print <args>
@@ -277,7 +277,6 @@ au FileType go nmap <leader>r <Plug>(go-run)
 au FileType go nmap <leader>b <Plug>(go-build)
 au FileType go nmap <leader>t <Plug>(go-test)
 au FileType go nmap <leader>c <Plug>(go-coverage)
-
 au FileType go nmap <Leader>ds <Plug>(go-def-split)
 au FileType go nmap <Leader>dv <Plug>(go-def-vertical)
 au FileType go nmap <Leader>dt <Plug>(go-def-tab)
