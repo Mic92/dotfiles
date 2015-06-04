@@ -46,8 +46,8 @@ silent !mkdir -p $HOME/.vim.backup
 silent !mkdir -p $HOME/.vim.temp
 
 " enable spelling
-set spell
-set complete+=kspell
+"set spell
+"set complete+=kspell
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
@@ -125,7 +125,6 @@ runtime macros/matchit.vim
 Bundle 'kana/vim-textobj-user'
 "Bundle 'nelstrom/vim-textobj-rubyblock'
 
-
 augroup vimrcEx
   au!
 
@@ -191,7 +190,7 @@ nnoremap <leader><leader> <c-^>
 let g:html_indent_tags = 'li\|p'
 
 " Markdown files end in .md
-au BufRead,BufNewFile *.md set filetype=markdown
+au BufEnter *.md set filetype=markdown
 
 " python setup
 au BufEnter *.py set ai sw=4 ts=4 sta et fo=croql
@@ -200,12 +199,12 @@ au BufEnter *.py set ai sw=4 ts=4 sta et fo=croql
 au BufEnter *.rs set ai sw=4 ts=4 sta et fo=croql
 
 " go setup
-au BufNewFile,BufRead *.go setlocal noet ts=4 sw=4 sts=4 list!
+au BufEnter *.go setlocal noet ts=4 sw=4 sts=4 list!
 
-" tabs for C projects
-au BufNewFile,BufRead *.h setlocal noet ts=4 sw=4 sts=4 list!
-au BufNewFile,BufRead *.c setlocal noet ts=4 sw=4 sts=4 list!
-
+" tabs for C/C++ projects
+au BufEnter *.h setlocal noet ts=4 sw=4 sts=4 list!
+au BufEnter *.c setlocal noet ts=4 sw=4 sts=4 list!
+au BufEnter *.cpp setlocal noet ts=4 sw=4 sts=4 list!
 
 let g:UltiSnipsExpandTrigger="<leader><Tab>"
 let g:UltiSnipsJumpForwardTrigger="<leader><Tab>"
@@ -251,7 +250,7 @@ let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 nnoremap <leader>jd :YcmCompleter GoTo<CR>
 let g:ycm_collect_identifiers_from_tags_files = 1
-let g:ycm_extra_conf_globlist = ['~/git/tthreads/*','!~/*']
+let g:ycm_extra_conf_globlist = ['~/git/tthread/*','!~/*']
 
 command! -bar SudoWrite :
       \ setlocal nomodified |
