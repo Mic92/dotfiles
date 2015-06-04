@@ -7,22 +7,10 @@ if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
   [[ $? = "0" ]] && exit
 fi
 
-# Predictable ssh auth sockets
-SOCK="${HOME}/.ssh/ssh_auth_sock"
-if test $SSH_AUTH_SOCK && [ $SSH_AUTH_SOCK != $SOCK ]
-then
-  ln -sf $SSH_AUTH_SOCK $SOCK
-  export SSH_AUTH_SOCK=$SOCK
-fi
-
 source $HOME/.zshuery/zshuery.sh
 load_defaults
 load_aliases
 load_completion $HOME/.zsh-completion/src
-
-for file in ~/.zsh/*[^~]; do
-  autoload -U "${file##*/}"
-done
 
 bindkey -e
 source "$HOME/.zprompt"
@@ -59,13 +47,6 @@ if [ -f $HOME/.homesick/repos/homeshick/homeshick.sh ]; then
   source $HOME/.homesick/repos/homeshick/homeshick.sh
 fi
 
-fpath=($ZDOTDIR/functions/*(/N) $fpath)
-# autoload all public functions
-for file in $ZDOTDIR/functions/*/*(.N:t); do
-  autoload -U $file
-done
-unset file
-
 # {{{ Functions
 flash_undelete() {
   cd /proc/$(ps x | awk '/libflashplayer.so\ /{print $1}')/fd && ls -l | grep deleted
@@ -97,18 +78,6 @@ bundle() {
 
 ff() { /usr/bin/find . -iname "*$@*" }
 
-function {emacs,ee}merge() {
-  if [ $# -ne 2 ]; then
-    echo Usage: $0 local base other
-    return 1
-  fi
-  local in_shell
-  if [[ "$0" == "eemerge" ]]; then
-    in_shell="-nw"
-  fi
-  emacs $in_shell --eval '(ediff-merge "'$1'" "'$2'")'
-}
-
 browse () { $BROWSER file://"`pwd`/$1" }
 
 function retry() {
@@ -130,23 +99,20 @@ function own() {
   fi
 }
 
+# usage
+# vil file:20 -> opens file on line 20
+vil() {
+  setopt shwordsplit
+  IFS=':' ARGS=($@)
+  unsetopt shwordsplit
+  vim +${ARGS[2]} ${ARGS[1]}
+}
+
 function jtes {
   curl jtes.halfco.de/sets/1.json | jq "map({id: .id, created_at: .created_at, desc: .summary ,url: .track.permalink_url })" | less
 }
 # }}}
 #
-
-# starting with gnupg 2.1.0, ssh-agent uses static socket paths, which make
-# invocation much easier; UPDATE: except it does not work
-#if [[ -z "$SSH_CLIENT" ]]; then
-#  export GPG_AGENT_INFO=$HOME/.gnupg/S.gpg-agent
-#  export SSH_AUTH_SOCK=$HOME/.gnupg/S.gpg-agent.ssh
-#  if [[ -n "${commands[gpg-agent]}" && ! -S "$HOME/.gnupg/S.gpg-agent.ssh" ]]; then
-#    eval "$(gpg-agent --daemon)"
-#    [ -f ~/.ssh/id_rsa.pub ] || [ -f ~/.ssh/id_ecdsa ] && ssh-add
-#  fi
-#fi
-
 if [ -n "${commands[direnv]}" ]; then
   eval "$(direnv hook zsh)"
 fi
@@ -176,24 +142,10 @@ chpwd() {
   ls
 }
 
-# }}}
-
-# usage
-# vil file:20 -> opens file on line 20
-vil() {
-  setopt shwordsplit
-  IFS=':' ARGS=($@)
-  unsetopt shwordsplit
-  vim +${ARGS[2]} ${ARGS[1]}
-}
-
 export GOPATH=$HOME/go
 if [ ! -d $GOPATH ]; then
   mkdir -p "$GOPATH" 2>/dev/null
 fi
-
-# OPAM configuration
-[ -f "$HOME/.opam/opam-init/init.zsh" ] && . "${HOME}/.opam/opam-init/init.zsh" > /dev/null 2> /dev/null
 
 if [ -f /usr/share/chruby/chruby.sh ]; then
   source /usr/share/chruby/chruby.sh
