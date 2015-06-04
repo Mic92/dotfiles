@@ -167,7 +167,7 @@ set history save on
 set listsize 10
 
 add-auto-load-safe-path /usr/lib/go/src/runtime/runtime-gdb.py
-add-auto-load-safe-path /home/joerg/git/tthreads/.gdbinit
+add-auto-load-safe-path /home/joerg/git/tthread/.gdbinit
 
 set output-radix 0x10
 set input-radix 0x10
@@ -179,7 +179,7 @@ set width 0
 # Display instructions in Intel format
 set disassembly-flavor intel
 
-set $SHOW_CONTEXT = 0
+set $SHOW_CONTEXT = 1
 set $SHOW_NEST_INSN = 0
 
 set $CONTEXTSIZE_STACK = 6
