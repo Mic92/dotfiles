@@ -130,7 +130,6 @@ highlights='${PREFIX:+=(#bi)($PREFIX:t)(?)*==31=1;32}':${(s.:.)LS_COLORS}}
 highlights2='=(#bi) #([0-9]#) #([^ ]#) #([^ ]#) ##*($PREFIX)*==1;31=1;35=1;33=1;32=}'
 zstyle -e ':completion:*' list-colors 'if [[ $words[1] != kill && $words[1] != strace ]]; then reply=( "'$highlights'" ); else reply=( "'$highlights2'" ); fi'
 unset highlights
-# zstyle ':completion:*' completer _complete _match _approximate
 zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' expand 'yes'
 zstyle ':completion:*:match:*' original only
@@ -356,6 +355,9 @@ if [ -f /usr/share/chruby/chruby.sh ]; then
   source /usr/share/chruby/auto.sh
 elif [ -d "$HOME/.rvm/bin" ]; then
   export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+fi
+if [ -f /usr/lib/libstderred.so ]; then
+  export LD_PRELOAD="/usr/lib/libstderred.so${LD_PRELOAD:+:$LD_PRELOAD}"
 fi
 
 ## Functions
