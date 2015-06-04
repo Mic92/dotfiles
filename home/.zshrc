@@ -356,9 +356,6 @@ if [ -f /usr/share/chruby/chruby.sh ]; then
 elif [ -d "$HOME/.rvm/bin" ]; then
   export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 fi
-if [ -f /usr/lib/libstderred.so ]; then
-  export LD_PRELOAD="/usr/lib/libstderred.so${LD_PRELOAD:+:$LD_PRELOAD}"
-fi
 
 ## Functions
 flash_undelete() {
@@ -387,7 +384,7 @@ bundle() {
 }
 ff() { /usr/bin/find . -iname "*$@*" }
 browse () { $BROWSER file://"`pwd`/$1" }
-function retry() {
+retry() {
   local n=0
   local trys=${TRYS:-100000}
   local sleep_time=${SLEEP:-1}
@@ -397,7 +394,7 @@ function retry() {
       sleep $sleep_time
   done
 }
-function own() {
+own() {
   if [ -n "${commands[sudo]}" ]; then
     sudo chown -R "$USER:$(id -gn)" "$@"
   else
@@ -412,8 +409,17 @@ vil() {
   unsetopt shwordsplit
   vim +${ARGS[2]} ${ARGS[1]}
 }
-function jtes {
+jtes() {
   curl jtes.halfco.de/sets/1.json | jq "map({id: .id, created_at: .created_at, desc: .summary ,url: .track.permalink_url })" | less
+}
+# force output to be on a single line
+ss() {
+  # -p requires sudo to see all processes
+  if echo "$@" | grep -q "p"; then
+    sudo ss "$@" | tee
+  else
+    command ss "$@" | tee
+  fi
 }
 # List directory after changing directory
 chpwd() { ls }
