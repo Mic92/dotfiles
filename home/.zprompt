@@ -1,6 +1,5 @@
 # based on wunjo prompt theme
 # and on Sebastian Celis's git prompt
-autoload -U zgitinit
 autoload -Uz add-zsh-hook
 setopt promptsubst
 
