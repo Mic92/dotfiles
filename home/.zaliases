@@ -143,10 +143,10 @@ alias json_escape="ruby -e \"require 'json'; puts(File.open(ARGV[0]).read.to_jso
 alias svim='sudo vim'
 alias svimdiff='sudo vimdiff'
 alias ntree='vim -c NERDTree'
+xalias vim="nvim"
 xalias ee="emacs -nw"
 
 xalias mplayer="mpv"
-
 
 # Package management
 if [[ -f /etc/debian_version ]] ; then
@@ -177,15 +177,12 @@ elif [[ -f /etc/arch-release ]] ; then
   xalias y=yaourt
   # run as root
   alias pacman='sudo pacman'
-  alias pacman-optimize='sudo pacman-optimize'
   alias abs='sudo abs'
   # pacman-contrib stuff
   xalias pacdiff='sudo pacdiff -l'
   xalias pacscripts='sudo pacscripts'
   xalias pactree='pactree -c'
   xhashd yaourtbuild=/var/abs/local/yaourtbuild
-  xhashd clydebuild=/var/abs/local/clydebuild
-  alias gensums="[[ -f PKGBUILD ]] && makepkg -g >> PKGBUILD"
   function owns() { /usr/bin/pacman -Qo $(which $1)}
   alias pacunlock="sudo rm /var/lib/pacman/db.lck"
 elif [[ -f /etc/gentoo-release ]] ; then
@@ -214,7 +211,6 @@ alias -g SL='| sort | less'
 alias -g S='| sort -u'
 alias -g T='| tail'
 alias -g W='| wc -l'
-alias -g lessf="> /tmp/x & less +F /tmp/x; kill %; rm /tmp/x"
 
 # Miscellanious
 # a fresh zsh, please.
@@ -229,4 +225,3 @@ alias gcurl="curl -v google.com"
 alias :q=exit
 alias todotxt="vim ~/Dropbox/todo/todo.txt"
 alias grep="grep --binary-files=without-match --directories=skip --color=auto"
-xalias vim="nvim"
