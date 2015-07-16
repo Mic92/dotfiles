@@ -282,6 +282,14 @@ au FileType go nmap <Leader>dt <Plug>(go-def-tab)
 
 au FileType go nmap <Leader>e <Plug>(go-rename)
 
+" copy current filename:line to clipboard,
+" usefull for gdb breakpoints
+function! LineToClipboard()
+  let path = resolve(expand(@%))
+  call system('xclip', (path . ":" . line(".")))
+endfunction
+nmap <leader>l :call LineToClipboard()<CR>
+
 " Local config
 if filereadable($HOME . "/.vimrc.local")
   source ~/.vimrc.local
