@@ -31,6 +31,10 @@ freebsd:
 
     $ pkg install the_silver_searcher git tmux zsh vim-lite ruby tcpdump lsof rsync sudo bash
 
+debian:
+
+    $ apt-get install silversearcher-ag htop git-core tig zsh tmux vim ruby strace tcpdump lsof rsync sudo
+
 Bootstrap yaourt
 
     $ pacman -S --needed base-devel
