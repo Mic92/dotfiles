@@ -6,18 +6,14 @@
 
     $ sudo apt-get install git-core
 
-
-    $ git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
-
-    $ alias homeshick="source $HOME/.homesick/repos/homeshick/bin/homeshick"
-
-    $ homeshick clone git://github.com/Mic92/dotfiles.git
+    $ bash <<EOF
+    git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
+    alias homeshick="source $HOME/.homesick/repos/homeshick/bin/homeshick"
+    homeshick clone git://github.com/Mic92/dotfiles.git
+    ( cd ~/.homesick/repos/dotfiles && git submodule foreach --recursive "git pull -u origin master" )
+    EOF
 
     $ homeshick clone git://github.com/Mic92/scripts.git
-
-    $ (cd ~/.homesick/repos/dotfiles && git submodule foreach --recursive "git pull -u origin master")
-
-    $ homeshick symlink
 
     $ vim +BundleInstall +qall
 
