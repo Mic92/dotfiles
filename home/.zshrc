@@ -453,6 +453,8 @@ ss() {
     command ss "$@" | tee
   fi
 }
+# Autossh - try to connect every 0.5 secs (modulo timeouts)
+sssh(){ while true; do command ssh -q "$@"; [ $? -ne 0 ] && break || sleep 0.5; done }
 # List directory after changing directory
 chpwd() { ls }
 mcd() { mkdir -p "$1" && cd "$1"; }
@@ -463,9 +465,12 @@ sha1() { echo -n $1 | openssl sha1 /dev/stdin }
 sha256() { echo -n $1 | openssl dgst -sha256 /dev/stdin }
 sha512() { echo -n $1 | openssl dgst -sha512 /dev/stdin }
 rot13() { echo $1 | tr "A-Za-z" "N-ZA-Mn-za-m" }
-urlencode() { python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])" $1 }
-urldecode() { python -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])" $1 }
+urlencode() { python2 -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])" $1 }
+urldecode() { python2 -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])" $1 }
 last_modified() { ls -t $* 2> /dev/null | head -n 1 }
+cheat() {
+  command cheat "$@" | less
+}
 ninja(){
   local build_path
   build_path=$(dirname "$(upfind "build.ninja")")
