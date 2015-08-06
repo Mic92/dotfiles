@@ -57,3 +57,6 @@
   smtpencryption = tls
   chainreplyto = false
   smtpserverport = 587
+
+[http "github.com"]
+  SSLCypherList = "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH"

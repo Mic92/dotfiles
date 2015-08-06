@@ -167,7 +167,10 @@ set history save on
 set listsize 10
 
 add-auto-load-safe-path /usr/lib/go/src/runtime/runtime-gdb.py
-add-auto-load-safe-path /home/joerg/git/tthread/.gdbinit
+
+set auto-load safe-path /
+
+source ~/git/peda/peda.py
 
 set output-radix 0x10
 set input-radix 0x10
@@ -1238,150 +1241,6 @@ end
 # _______________process context______________
 # initialize variable
 set $displayobjectivec = 0
-
-define context 
-    echo \033[34m
-    if $SHOWCPUREGISTERS == 1
-	    printf "----------------------------------------"
-	    printf "----------------------------------"
-	    if ($64BITS == 1)
-	     printf "---------------------------------------------"
-	    end
-	    echo \033[34m\033[1m
-	    printf "[regs]\n"
-	    echo \033[0m
-	    reg
-	    echo \033[36m
-    end
-    if $SHOWSTACK == 1
-	echo \033[34m
-		if ($64BITS == 1)
-		 printf "[0x%04X:0x%016lX]", $ss, $rsp
-		else
-    	 printf "[0x%04X:0x%08X]", $ss, $esp
-    	end
-        echo \033[34m
-		printf "-------------------------"
-    	printf "-----------------------------"
-	    if ($64BITS == 1)
-	     printf "-------------------------------------"
-	    end
-	echo \033[34m\033[1m
-	printf "[stack]\n"
-    	echo \033[0m
-    	set $context_i = $CONTEXTSIZE_STACK
-    	while ($context_i > 0)
-       	 set $context_t = $sp + 0x10 * ($context_i - 1)
-       	 hexdump $context_t
-       	 set $context_i--
-    	end
-    end
-# show the objective C message being passed to msgSend
-   if $SHOWOBJECTIVEC == 1
-#FIXME64
-# What a piece of crap that's going on here :)
-# detect if it's the correct opcode we are searching for
-    	set $__byte1 = *(unsigned char *)$pc
-    	set $__byte = *(int *)$pc
-#
-    	if ($__byte == 0x4244489)
-      		set $objectivec = $eax
-      		set $displayobjectivec = 1
-    	end
-#
-    	if ($__byte == 0x4245489)
-     		set $objectivec = $edx
-     		set $displayobjectivec = 1
-    	end
-#
-    	if ($__byte == 0x4244c89)
-     		set $objectivec = $edx
-     		set $displayobjectivec = 1
-    	end
-# and now display it or not (we have no interest in having the info displayed after the call)
-    	if $__byte1 == 0xE8
-     		if $displayobjectivec == 1
-      			echo \033[34m
-      			printf "--------------------------------------------------------------------"
-  			    if ($64BITS == 1)
-			     printf "---------------------------------------------"
-	    		end
-			echo \033[34m\033[1m
-			printf "[ObjectiveC]\n"
-      			echo \033[0m\033[30m
-      			x/s $objectivec
-     		end   
-     		set $displayobjectivec = 0     
-    	end
-    	if $displayobjectivec == 1
-      		echo \033[34m
-      		printf "--------------------------------------------------------------------"
-      		if ($64BITS == 1)
-	     	 printf "---------------------------------------------"
-	    	end
-		echo \033[34m\033[1m
-		printf "[ObjectiveC]\n"
-      		echo \033[0m\033[30m
-      		x/s $objectivec 
-    	end   
-   end
-    echo \033[0m
-# and this is the end of this little crap
-
-    if $SHOWDATAWIN == 1
-	 datawin
-    end
-
-    echo \033[34m
-    printf "--------------------------------------------------------------------------"
-    if ($64BITS == 1)
-	 printf "---------------------------------------------"
-	end
-    echo \033[34m\033[1m
-    printf "[code]\n"
-    echo \033[0m
-    set $context_i = $CONTEXTSIZE_CODE
-    if($context_i > 0)
-        x /i $pc
-        set $context_i--
-    end
-    while ($context_i > 0)
-        x /i
-        set $context_i--
-    end
-    echo \033[34m
-    printf "----------------------------------------"
-    printf "----------------------------------------"
-    if ($64BITS == 1)
-     printf "---------------------------------------------\n"
-	else
-	 printf "\n"
-	end
-
-    echo \033[0m
-end
-document context
-Print context window, i.e. regs, stack, ds:esi and disassemble cs:eip.
-end
-
-
-define context-on
-    set $SHOW_CONTEXT = 1
-    printf "Displaying of context is now ON\n"
-end
-document context-on
-Enable display of context on every program break.
-end
-
-
-define context-off
-    set $SHOW_CONTEXT = 0
-    printf "Displaying of context is now OFF\n"
-end
-document context-off
-Disable display of context on every program break.
-end
-
 
 # _______________process control______________
 define n
