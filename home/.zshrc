@@ -430,6 +430,9 @@ own() {
     chown -R "$USER:$(id -gn)" "$@"
   fi
 }
+cdf(){
+  cd "$(dirname $1)"
+}
 # usage
 # vil file:20 -> opens file on line 20
 vil() {
