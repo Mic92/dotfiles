@@ -19,6 +19,7 @@ if has("ttymouse")
   " was removed in neovim
   set ttymouse=xterm2
 end
+set mouse=i
 set wildignore=*.bak,*.o,*.e,*~      " wildmenu: ignore these extensions
 set iskeyword+=_,-  " these characters also belong to a word
 set wrap                             " do wrap lines
@@ -42,8 +43,7 @@ set undoreload=10000
 set undodir=$HOME/.vimundo
 set backupdir =$HOME/.vim.backup
 set directory=$HOME/.vim.temp
-silent !mkdir -p $HOME/.vim.backup
-silent !mkdir -p $HOME/.vim.temp
+silent !mkdir -p "$HOME/.vim.temp" "$HOME/.vim.backup"
 
 " enable spelling
 "set spell
@@ -88,7 +88,6 @@ end
 Plugin 'kien/ctrlp.vim'
 Plugin 'majutsushi/tagbar'
 Plugin 'freitass/todo.txt-vim'
-Plugin 'stefanoverna/vim-i18n'
 Plugin 'dhruvasagar/vim-table-mode'
 Plugin 'fatih/vim-go'
 Plugin 'rking/ag.vim'
