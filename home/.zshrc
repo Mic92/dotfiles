@@ -358,6 +358,12 @@ if [ -f /usr/share/chruby/chruby.sh ]; then
 elif [ -d "$HOME/.rvm/bin" ]; then
   export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 fi
+if [ -d "$HOME/.deer" ]; then
+  fpath=($HOME/.deer $fpath)
+  autoload -U deer
+  zle -N deer
+  bindkey '\ek' deer
+fi
 
 ## Functions
 flash_undelete() {

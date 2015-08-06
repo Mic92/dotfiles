@@ -25,3 +25,6 @@
 [submodule "home/.zsh-history-substring-search"]
 	path = home/.zsh-history-substring-search
 	url = https://github.com:zsh-users/zsh-history-substring-search.git
+[submodule "home/.deer"]
+	path = home/.deer
+	url = https://github.com/Vifon/deer.git
