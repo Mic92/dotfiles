@@ -257,6 +257,7 @@ xalias mplayer="mpv"
 path=(
     $HOME/bin
     $HOME/.cabal/bin
+    $HOME/go/bin
     $path
 )
 fpath=(~/.zsh $fpath)
@@ -323,8 +324,9 @@ export LC_TIME=en_DK.UTF-8
 export PERL_CPANM_OPT="--local-lib=~/.perl5"
 export PERL5LIB=~/.perl5/lib/perl5
 export PYTHONDOCS=/usr/share/doc/python/html/
-export GOPATH=$HOME/go
-[ ! -d $GOPATH ] && mkdir -p "$GOPATH" 2>/dev/null
+[ -x "$HOME/go/bin/go" ] && export GOROOT="$HOME/go"
+export GOPATH="$HOME/go"
+[ ! -d "$GOPATH" ] && mkdir -p "$GOPATH" 2>/dev/null
 
 ## Plugins
 if [ -f "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
