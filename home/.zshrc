@@ -151,7 +151,6 @@ alias zcat='zcat -f'
 # - same as tail but using inotify for better perfomance
 # - linux only
 xalias tail='inotail'
-alias less='less -isRM'
 xalias ag='ag --color --smart-case --literal'
 xalias rag='ag --color --smart-case --path-to-agignore ~/.ruby-agignore'
 # System tools
@@ -298,6 +297,7 @@ export GDMSESSION=1 GNOME_DESKTOP_SESSION_ID=1
 # make OpenJDK working with awesome wm
 export JAVA_FONTS=/usr/share/fonts/TTF
 # less
+export LESS=-FXisRM
 export LESS_TERMCAP_mb=$'\E[01;31m'     # begin blinking
 export LESS_TERMCAP_me=$'\E[0m'         # end mode
 export LESS_TERMCAP_se=$'\E[0m'         # end standout-mode
