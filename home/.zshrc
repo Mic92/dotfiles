@@ -78,6 +78,27 @@ function check_com() {
 is_mac() { [[ $OSTYPE == darwin* ]] }
 is_freebsd() { [[ $OSTYPE == freebsd* ]] }
 is_linux() { [[ $OSTYPE == linux-gnu ]] }
+upfind() {
+  local previous=
+  local current=$PWD
+
+  if [[ $# -ne 1 ]];then
+    echo "$0 FILE_NAME"
+    return 1
+  fi
+
+  while [[ -d $current && $current != $previous ]]; do
+    local target_path=$current/$1
+    if [[ -f $target_path ]]; then
+      echo $target_path
+      return 0
+    else
+      previous=$current
+      current=$current:h
+    fi
+  done
+  return 1
+}
 
 ## Options
 setopt auto_name_dirs
@@ -442,6 +463,11 @@ rot13() { echo $1 | tr "A-Za-z" "N-ZA-Mn-za-m" }
 urlencode() { python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])" $1 }
 urldecode() { python -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])" $1 }
 last_modified() { ls -t $* 2> /dev/null | head -n 1 }
+ninja(){
+  local build_path
+  build_path=$(dirname "$(upfind "build.ninja")")
+  command ninja -C "${build_path:-.}" "$@"
+}
 
 ## Autocycle
 setopt autopushd
