@@ -10,7 +10,7 @@
     git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
     alias homeshick="source $HOME/.homesick/repos/homeshick/bin/homeshick"
     homeshick clone git://github.com/Mic92/dotfiles.git
-    ( cd ~/.homesick/repos/dotfiles && git submodule foreach --recursive "git pull -u origin master" )
+    ( cd ~/.homesick/repos/dotfiles && git submodule foreach --recursive "git pull origin master" )
     EOF
 
     $ homeshick clone git://github.com/Mic92/scripts.git
@@ -21,7 +21,7 @@ Essential packages:
 
 arch:
 
-    $ pacman -S the_silver_searcher htop git tig zsh tmux vim ruby strace tcpdump lsof rsync sudo
+    $ pacman -S base-devel the_silver_searcher htop git tig zsh tmux vim ruby strace tcpdump lsof rsync sudo
 
 freebsd:
 
@@ -29,11 +29,9 @@ freebsd:
 
 debian:
 
-    $ apt-get install silversearcher-ag htop git-core tig zsh tmux vim ruby strace tcpdump lsof rsync sudo
+    $ apt-get install build-essentials silversearcher-ag htop git-core tig zsh tmux vim-nox ruby strace tcpdump lsof rsync sudo
 
 Bootstrap yaourt
-
-    $ pacman -S --needed base-devel
 
 ```
     $ cat > aur.sh <<'EOF'
@@ -69,4 +67,10 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbBp2dH2X3dcU1zh+xW3ZsdYROKpJd3n13ssOP092qE
 EOF
 
 $ install -m 400 -o joerg -g joerg /tmp/authorized_keys ~joerg/.ssh/authorized_keys && rm /tmp/authorized_keys
+```
+
+Bootstrap system:
+
+```
+sed -i '/^#.*de_DE.UTF-8/s/^#//g;/^#.*en_DK.UTF-8/s/^#//g' /etc/locale.gen && locale-gen
 ```
