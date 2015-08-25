@@ -278,6 +278,7 @@ path=(
     $HOME/bin
     $HOME/.cabal/bin
     $HOME/go/bin
+    $HOME/.go/bin
     $path
 )
 fpath=(~/.zsh $fpath)
@@ -345,9 +346,12 @@ export LC_TIME=en_DK.UTF-8
 export PERL_CPANM_OPT="--local-lib=~/.perl5"
 export PERL5LIB=~/.perl5/lib/perl5
 export PYTHONDOCS=/usr/share/doc/python/html/
-[ -x "$HOME/go/bin/go" ] && export GOROOT="$HOME/go"
+if [ -x "$HOME/.go/bin/go" ]; then
+  export GOROOT="$HOME/.go"
+  export GOROOT_BOOTSTRAP=/usr/lib/go
+fi
 export GOPATH="$HOME/go"
-[ ! -d "$GOPATH" ] && mkdir -p "$GOPATH" 2>/dev/null
+[ ! -d "$GOPATH" ] && mkdir -p "$GOPATH/src" 2>/dev/null
 
 ## Plugins
 if [ -f "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
