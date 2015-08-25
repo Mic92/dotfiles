@@ -64,9 +64,11 @@ fi
 source_bash_completion
 unset -f source_bash_completion
 
-for config in .bash_aliases .bash_functions .bash_prompt .bashrc."$HOSTNAME"; do
+for config in .bash_aliases .bash_functions .bashrc."$HOSTNAME"; do
   [[ -r ~/$config ]] && . ~/"$config"
 done
 unset config
 
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
+
+PS1='\[\033[01;31m\]\u\[\033[01;33m\]@\[\033[01;36m\]\h \[\033[01;33m\]\w \[\033[01;35m\]\$ \[\033[00m\]'
