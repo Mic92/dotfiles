@@ -57,52 +57,91 @@ set encoding=utf-8
 set fileencodings=ucs-bom,utf-8,latin1
 set termencoding=utf-8
 
+call plug#begin('~/.vim/plugged')
+Plug 'bling/vim-airline'
+Plug 'tpope/vim-rails', { 'for': 'ruby' }
+Plug 'tpope/vim-surround'
+Plug 'scrooloose/nerdcommenter'
+Plug 'Raimondi/delimitMate'
+Plug 'The-NERD-tree'
+Plug 'bronson/vim-trailing-whitespace'
+Plug 'altercation/vim-colors-solarized'
+Plug 'alfredodeza/jacinto.vim'
+Plug 'msanders/snipmate.vim'
+Plug 'slim-template/vim-slim'
+Plug 'scrooloose/syntastic'
+Plug 'airblade/vim-gitgutter'
+if has("python")
+  Plug 'Valloric/YouCompleteMe', { 'do': 'python2 ./install.py' }
+  Plug 'SirVer/ultisnips'
+  Plug 'Trevoke/ultisnips-rspec'
+end
+Plug 'kien/ctrlp.vim'
+Plug 'freitass/todo.txt-vim'
+Plug 'dhruvasagar/vim-table-mode'
+Plug 'fatih/vim-go'
+Plug 'rking/ag.vim'
+"Plug 'digitaltoad/vim-jade'
+"Plug 'ap/vim-css-color'
+"Plug 'dag/vim-fish'
+"Plug 'elixir-lang/vim-elixir'
+"Plug 'tkztmk/vim-vala'
+"Plug 'rodjek/vim-puppet'
+"Plug 'derekwyatt/vim-scala'
+"Plug 'wavded/vim-stylus'
+"Plug 'kchmck/vim-coffee-script'
+Plug 'ompugao/uncrustify-vim', { 'for': ['c', 'cpp'] }
+Plug 'rust-lang/rust.vim'
+call plug#end()
+
 " Declare bundles are handled via Vundle
-filetype off " required!
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-
-" Let Vundle manage Vundle
-Plugin 'gmarik/Vundle.vim'
-Plugin 'bling/vim-airline'
-Plugin 'tpope/vim-rails'
-Plugin 'tpope/vim-surround'
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'Raimondi/delimitMate'
-Plugin 'The-NERD-tree'
-Plugin 'bronson/vim-trailing-whitespace'
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'alfredodeza/jacinto.vim'
-Plugin 'msanders/snipmate.vim'
-Plugin 'kchmck/vim-coffee-script'
-Plugin 'slim-template/vim-slim'
-Plugin 'scrooloose/syntastic'
-if has("python")
-  Plugin 'Valloric/YouCompleteMe'
-end
-Plugin 'airblade/vim-gitgutter'
-if has("python")
-  Plugin 'SirVer/ultisnips'
-  Plugin 'Trevoke/ultisnips-rspec'
-end
-Plugin 'kien/ctrlp.vim'
-Plugin 'majutsushi/tagbar'
-Plugin 'freitass/todo.txt-vim'
-Plugin 'dhruvasagar/vim-table-mode'
-Plugin 'fatih/vim-go'
-Plugin 'rking/ag.vim'
-"Plugin 'digitaltoad/vim-jade'
-"Plugin 'ap/vim-css-color'
-"Plugin 'dag/vim-fish'
-"Plugin 'elixir-lang/vim-elixir'
-"Plugin 'tkztmk/vim-vala'
-"Plugin 'rodjek/vim-puppet'
-"Plugin 'derekwyatt/vim-scala'
-"Plugin 'wavded/vim-stylus'
-"Plugin 'digitaltoad/vim-jade'
-Plugin 'ompugao/uncrustify-vim'
-
-call vundle#end()
+"filetype off " required!
+"set rtp+=~/.vim/bundle/Vundle.vim
+"call vundle#begin()
+"
+"" Let Vundle manage Vundle
+"Plugin 'gmarik/Vundle.vim'
+"Plugin 'bling/vim-airline'
+"Plugin 'tpope/vim-rails'
+"Plugin 'tpope/vim-surround'
+"Plugin 'scrooloose/nerdcommenter'
+"Plugin 'Raimondi/delimitMate'
+"Plugin 'The-NERD-tree'
+"Plugin 'bronson/vim-trailing-whitespace'
+"Plugin 'altercation/vim-colors-solarized'
+"Plugin 'alfredodeza/jacinto.vim'
+"Plugin 'msanders/snipmate.vim'
+"Plugin 'kchmck/vim-coffee-script'
+"Plugin 'slim-template/vim-slim'
+"Plugin 'scrooloose/syntastic'
+"if has("python")
+"  Plugin 'Valloric/YouCompleteMe'
+"end
+"Plugin 'airblade/vim-gitgutter'
+"if has("python")
+"  Plugin 'SirVer/ultisnips'
+"  Plugin 'Trevoke/ultisnips-rspec'
+"end
+"Plugin 'kien/ctrlp.vim'
+"Plugin 'majutsushi/tagbar'
+"Plugin 'freitass/todo.txt-vim'
+"Plugin 'dhruvasagar/vim-table-mode'
+"Plugin 'fatih/vim-go'
+"Plugin 'rking/ag.vim'
+""Plugin 'digitaltoad/vim-jade'
+""Plugin 'ap/vim-css-color'
+""Plugin 'dag/vim-fish'
+""Plugin 'elixir-lang/vim-elixir'
+""Plugin 'tkztmk/vim-vala'
+""Plugin 'rodjek/vim-puppet'
+""Plugin 'derekwyatt/vim-scala'
+""Plugin 'wavded/vim-stylus'
+""Plugin 'digitaltoad/vim-jade'
+"Plugin 'ompugao/uncrustify-vim'
+"Plugin 'phildawes/racer'
+"Plugin 'rust-lang/rust.vim'
+"
+"call vundle#end()
 
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
@@ -121,8 +160,6 @@ endif
 filetype plugin indent on
 
 runtime macros/matchit.vim
-Bundle 'kana/vim-textobj-user'
-"Bundle 'nelstrom/vim-textobj-rubyblock'
 
 augroup vimrcEx
   au!
