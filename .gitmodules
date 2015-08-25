@@ -1,15 +1,9 @@
 [submodule "home/.zsh/zsh-syntax-highlighting"]
 	path = home/.zsh/zsh-syntax-highlighting
 	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
-[submodule "home/.vim/bundle/vundle"]
-	path = home/.vim/bundle/vundle
-	url = https://github.com/gmarik/vundle.git
 [submodule "home/.zsh-completion"]
 	path = home/.zsh-completion
 	url = git://github.com/zsh-users/zsh-completions.git
-[submodule "home/.zshuery"]
-	path = home/.zshuery
-	url = git://github.com/Mic92/zshuery.git
 [submodule "home/.z"]
 	path = home/.z
 	url = git://github.com/sjl/z-zsh.git
@@ -19,9 +13,6 @@
 [submodule "home/.zsh-autosuggestions"]
 	path = home/.zsh-autosuggestions
 	url = git://github.com/tarruda/zsh-autosuggestions
-[submodule "home/.vim/bundle/Vundle.vim"]
-	path = home/.vim/bundle/Vundle.vim
-	url = https://github.com/gmarik/Vundle.vim.git
 [submodule "home/.zsh-history-substring-search"]
 	path = home/.zsh-history-substring-search
 	url = https://github.com:zsh-users/zsh-history-substring-search.git
