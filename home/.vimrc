@@ -251,6 +251,9 @@ let g:UltiSnipsSnippetDirectories = ['UltiSnips']
 "open zipped files
 au BufReadCmd *.jar,*.xpi,*.wgt call zip#Browse(expand("<amatch>"))
 
+" geojson
+au BufNewFile,BufRead *.geojson set filetype=json
+
 " go in normal mode with jj
 inoremap jj <Esc>
 
