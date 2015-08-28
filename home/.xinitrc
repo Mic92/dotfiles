@@ -25,13 +25,6 @@ for srv in "${services[@]}"; do
   systemctl --user start "$srv"
 done
 
-seafile-applet &
-
-(
-  sleep 4
-  $HOME/bin/gajim-autojoin-slack.py
-)&
-
 ## i3
 # Use XToolkit in java applications
 export AWT_TOOLKIT=XToolkit
