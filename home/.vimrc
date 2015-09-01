@@ -245,8 +245,8 @@ au BufEnter *.cpp setlocal noet ts=4 sw=4 sts=4 list!
 let g:UltiSnipsExpandTrigger="<leader><Tab>"
 let g:UltiSnipsJumpForwardTrigger="<leader><Tab>"
 let g:UltiSnipsJumpBackwardTrigger="<leader><s-Tab>"
-let g:UltiSnipsSnippetsDir        = '~/.vim/'
-let g:UltiSnipsSnippetDirectories = ['UltiSnips']
+let g:UltiSnipsSnippetsDir        = expand('~/.vim/UltiSnips')
+let g:UltiSnipsSnippetDirectories = [expand('~/.vim/UltiSnips')]
 
 "open zipped files
 au BufReadCmd *.jar,*.xpi,*.wgt call zip#Browse(expand("<amatch>"))
