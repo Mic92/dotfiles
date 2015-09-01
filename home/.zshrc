@@ -279,7 +279,7 @@ path=(
     $HOME/.cabal/bin
     $HOME/go/bin
     $HOME/.go/bin
-    $HOME/.gem/ruby/*.*.*/bin(On[1])
+    $HOME/.gem/ruby/*.*.*/bin(NOn[1])
     $path
 )
 fpath=(~/.zsh $fpath)
