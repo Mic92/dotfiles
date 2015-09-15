@@ -19,3 +19,6 @@
 [submodule "home/.deer"]
 	path = home/.deer
 	url = https://github.com/Vifon/deer.git
+[submodule "home/.zsh-notify"]
+	path = home/.zsh-notify
+	url = https://github.com/marzocchi/zsh-notify.git
