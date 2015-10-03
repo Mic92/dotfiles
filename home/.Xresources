@@ -23,7 +23,7 @@ URxvt*urgentOnBell:                               true
 URxvt*visualBell:                                 true
 URxvt*scrollBar:                                 false
 URxvt*secondaryScroll:                            true
-URxvt*font:  xft:Hack:size=10
+URxvt*font:                           xft:Hack:size=10
 URxvt*perl-ext-common:               default,font-size
 URxvt*iso14755_52:                               false
 URxvt*matcher.button:                                1
