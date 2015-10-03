@@ -6,7 +6,7 @@
 
     $ sudo apt-get install git-core
 
-    $ git clone git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
+    $ git clone --depth=1 git://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
     $ alias homeshick="source $HOME/.homesick/repos/homeshick/bin/homeshick"
     $ homeshick clone git://github.com/Mic92/dotfiles.git
     $ ( cd ~/.homesick/repos/dotfiles && git submodule foreach --recursive "git pull origin master" )
