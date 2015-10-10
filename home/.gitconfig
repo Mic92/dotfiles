@@ -37,6 +37,8 @@
   insteadOf = higgs:
 [url "git@github.com:Mic92/"]
   insteadOf = gh:
+[url "aur@aur4.archlinux.org:"]
+  insteadOf = arch:
 [hooks]
   symlinksourcerepo = /home/joerg/git/githooks
   requirestrictparenspacing = false
