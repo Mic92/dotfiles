@@ -13,12 +13,12 @@
 [submodule "home/.zsh-autosuggestions"]
 	path = home/.zsh-autosuggestions
 	url = git://github.com/tarruda/zsh-autosuggestions
-[submodule "home/.zsh-history-substring-search"]
-	path = home/.zsh-history-substring-search
-	url = https://github.com:zsh-users/zsh-history-substring-search.git
 [submodule "home/.deer"]
 	path = home/.deer
 	url = https://github.com/Vifon/deer.git
 [submodule "home/.zsh-notify"]
 	path = home/.zsh-notify
 	url = https://github.com/marzocchi/zsh-notify.git
+[submodule "home/.zsh-history-substring-search"]
+	path = home/.zsh-history-substring-search
+	url = https://github.com/zsh-users/zsh-history-substring-search.git
