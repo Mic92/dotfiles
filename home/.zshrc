@@ -360,6 +360,22 @@ export GOPATH="$HOME/go"
 flash_undelete() {
   cd /proc/$(ps x | awk '/libflashplayer.so\ /{print $1}')/fd && ls -l | grep deleted
 }
+network() {
+  (
+    echo "$fg_bold[green]# Interfaces$reset_color"
+    ip a s $1 || ip a s | grep "$1"
+    (
+      echo "\n$fg_bold[green]# Routes (v4) $reset_color"
+      ip route;
+      echo "\n$fg_bold[green]# Routes (v6) $reset_color"
+      ip -6 route;
+      echo "\n$fg_bold[green]# Rule $reset_color"
+      ip rule;
+      echo "\n$fg_bold[green]# Neighbor $reset_color"
+      ip neigh
+    ) | grep --color=always "$1"
+  ) | less '+/#'
+}
 webserver() {
   # dirty hack to get the network interfaces
   # and its local ip address
