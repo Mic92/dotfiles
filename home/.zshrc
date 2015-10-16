@@ -199,7 +199,7 @@ alias ln="nocorrect ln"
 alias mv='nocorrect mv -v'
 alias mkdir='nocorrect mkdir -p'
 xalias locate='locate --existing --follow --basename --ignore-case'
-alias j='jobs'
+alias ip='ip -c'
 # noglobs
 alias wget='noglob wget'
 alias curl='noglob curl'
@@ -214,6 +214,7 @@ alias sless='sudo less'
 alias stail='sudo tail'
 xalias ctl='sudo systemctl'
 alias json_escape="ruby -e \"require 'json'; puts(File.open(ARGV[0]).read.to_json) if ARGV[0]\""
+alias gdb='gdb --quiet'
 # Editors
 [[ -n ${commands[vi]} ]] && alias vi=vim
 xalias vim="nvim"
