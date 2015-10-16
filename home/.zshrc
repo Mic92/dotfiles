@@ -355,42 +355,6 @@ fi
 export GOPATH="$HOME/go"
 [ ! -d "$GOPATH" ] && mkdir -p "$GOPATH/src" 2>/dev/null
 
-## Plugins
-if [ -f "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
-  source "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-fi
-if [ -f "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh" ]; then
-  source "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh"
-  # bind P and N for EMACS mode
-  bindkey -M emacs '^P' history-substring-search-up
-  bindkey -M emacs '^N' history-substring-search-down
-fi
-if [ -f "$HOME/.zsh-autosuggestions/autosuggestions.zsh" ]; then
-  source "$HOME/.zsh-autosuggestions/autosuggestions.zsh"
-  # Enable autosuggestions automatically
-  zle-line-init() { zle autosuggest-start }
-  zle -N zle-line-init
-
-  export AUTOSUGGESTION_HIGHLIGHT_COLOR='fg=10'
-fi
-if [ -f $HOME/.homesick/repos/homeshick/homeshick.sh ]; then
-  source $HOME/.homesick/repos/homeshick/homeshick.sh
-fi
-if [ -n "${commands[direnv]}" ]; then
-  eval "$(direnv hook zsh)"
-fi
-if [ -f /usr/share/chruby/chruby.sh ]; then
-  source /usr/share/chruby/chruby.sh
-  source /usr/share/chruby/auto.sh
-elif [ -d "$HOME/.rvm/bin" ]; then
-  export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-fi
-if [ -d "$HOME/.deer" ]; then
-  fpath=($HOME/.deer $fpath)
-  autoload -U deer
-  zle -N deer
-  bindkey '\ek' deer
-fi
 
 ## Functions
 flash_undelete() {
@@ -502,3 +466,49 @@ fi
 
 ## Per machine zshrc
 [ -f $HOME/.zshrc.$HOST ] && source $HOME/.zshrc.$HOST
+
+# added by travis gem
+[ -f /home/joerg/.travis/travis.sh ] && source /home/joerg/.travis/travis.sh
+
+## Plugins
+if [ -f "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh" ]; then
+  source "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh"
+  # bind P and N for EMACS mode
+  bindkey -M emacs '^P' history-substring-search-up
+  bindkey -M emacs '^N' history-substring-search-down
+fi
+if [ -f "$HOME/.zsh-autosuggestions/autosuggestions.zsh" ]; then
+  source "$HOME/.zsh-autosuggestions/autosuggestions.zsh"
+  # Enable autosuggestions automatically
+  zle-line-init() { zle autosuggest-start }
+  zle -N zle-line-init
+
+  export AUTOSUGGESTION_HIGHLIGHT_COLOR='fg=10'
+fi
+#if [[ -f "$HOME/.zsh-notify/notify.plugin.zsh" && -n "${commands[notify-send]}" ]]; then
+#  source "$HOME/.zsh-notify/notify.plugin.zsh"
+#fi
+if [ -f "$HOME/.homesick/repos/homeshick/homeshick.sh" ]; then
+  source "$HOME/.homesick/repos/homeshick/homeshick.sh"
+fi
+if [ -n "${commands[direnv]}" ]; then
+  eval "$(direnv hook zsh)"
+fi
+if [ -n "${commands[envoy]}" ]; then
+  eval "$(envoy -pt ssh-agent)"
+fi
+if [ -f /usr/share/chruby/chruby.sh ]; then
+  source /usr/share/chruby/chruby.sh
+  source /usr/share/chruby/auto.sh
+elif [ -d "$HOME/.rvm/bin" ]; then
+  export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
+fi
+if [ -d "$HOME/.deer" ]; then
+  fpath=($HOME/.deer $fpath)
+  autoload -U deer
+  zle -N deer
+  bindkey '\ek' deer
+fi
+if [ -f "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
+  source "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
