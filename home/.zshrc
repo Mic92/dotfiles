@@ -441,6 +441,7 @@ ss() {
 }
 # Autossh - try to connect every 0.5 secs (modulo timeouts)
 sssh(){ while true; do command ssh -q "$@"; [ $? -ne 0 ] && break || sleep 0.5; done }
+moshlogin(){ ssh login killall mosh-server; mosh -A -p 60011:60011 login }
 # List directory after changing directory
 chpwd() { ls }
 mcd() { mkdir -p "$1" && cd "$1"; }
