@@ -3,6 +3,7 @@ let mapleader = " "
 
 set nocompatible " Use Vim settings, rather then Vi settings
 set ruler " show the cursor position all the time
+set cursorline " highlight current line
 set showcmd " display incomplete commands
 set incsearch " do incremental searching
 set laststatus=2 " Always display the status line
