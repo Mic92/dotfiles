@@ -13,6 +13,7 @@ set autowrite     " write a modified buffer on each :next ,  ...
 
 set modeline      " React on modlines in files
 set hlsearch      " highlightthe last used search pattern
+set nojoinspaces
 
 set ttyfast          " send more characters to screen for redrawing
 if has("ttymouse")
