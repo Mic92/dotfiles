@@ -7,6 +7,19 @@ if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
   [[ $? = "0" ]] && exit
 fi
 
+hash_string256() {
+  local hashval
+  hashval=$(printf "%s" "$1" | md5sum)
+  # upcase & substring
+  hashval="0x${(L)hashval[1,15]}"
+  (( y = (hashval + 127) % 100))
+  printf "%d" $y
+}
+if [[ "$__host__" != "$HOST" ]]; then
+  tmux set -g status-bg colour$(hash_string256 $HOST 127)
+  __host__=$HOST
+fi
+
 ##  Helpers
 # xalias - only supposed to be used with simple aliases.
 xalias() {
