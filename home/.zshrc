@@ -501,6 +501,9 @@ fi
 [ -f /home/joerg/.travis/travis.sh ] && source /home/joerg/.travis/travis.sh
 
 ## Plugins
+if [ -f "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
+  source "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+fi
 if [ -f "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh" ]; then
   source "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh"
   # bind P and N for EMACS mode
@@ -538,7 +541,4 @@ if [ -d "$HOME/.deer" ]; then
   autoload -U deer
   zle -N deer
   bindkey '\ek' deer
-fi
-if [ -f "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
-  source "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
 fi
