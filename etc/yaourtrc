@@ -32,6 +32,7 @@ TMPDIR="/var/lib/yaourtbuild"
 #AURSEARCH=1
 #AURUPGRADE=0
 #AURVOTE=1
+#AURUSEGIT=0
 
 # Build
 #EXPORT=0           # Export to 1: EXPORTDIR or PKGDEST
