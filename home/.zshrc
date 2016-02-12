@@ -370,7 +370,7 @@ if [ -x "$HOME/.go/bin/go" ]; then
 fi
 export GOPATH="$HOME/go"
 [ ! -d "$GOPATH" ] && mkdir -p "$GOPATH/src" 2>/dev/null
-
+export NIX_PATH="$HOME/.nix"
 
 ## Functions
 flash_undelete() {
@@ -413,7 +413,7 @@ bundle() {
   fi
   command bundle "$@"
 }
-ff() { /usr/bin/find . -iname "*$@*" }
+ff() { /usr/bin/find . -iname "*$@*" 2>/dev/null }
 browse () { $BROWSER file://"`pwd`/$1" }
 retry() {
   local n=0
@@ -471,9 +471,7 @@ rot13() { echo $1 | tr "A-Za-z" "N-ZA-Mn-za-m" }
 urlencode() { python2 -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])" $1 }
 urldecode() { python2 -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])" $1 }
 last_modified() { ls -t $* 2> /dev/null | head -n 1 }
-cheat() {
-  command cheat "$@" | less
-}
+cheat() { command cheat "$@" | less }
 ninja(){
   local build_path
   build_path=$(dirname "$(upfind "build.ninja")")
@@ -521,9 +519,6 @@ if [ -f "$HOME/.zsh-autosuggestions/autosuggestions.zsh" ]; then
 
   export AUTOSUGGESTION_HIGHLIGHT_COLOR='fg=10'
 fi
-#if [[ -f "$HOME/.zsh-notify/notify.plugin.zsh" && -n "${commands[notify-send]}" ]]; then
-#  source "$HOME/.zsh-notify/notify.plugin.zsh"
-#fi
 if [ -f "$HOME/.homesick/repos/homeshick/homeshick.sh" ]; then
   source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 fi
