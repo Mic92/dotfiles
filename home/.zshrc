@@ -283,6 +283,8 @@ alias gping="ping google.com"
 alias gping6="ping6 google.com"
 alias ghost="host -v google.com 8.8.8.8"
 alias gcurl="curl -v google.com"
+ping_gw(){ ip route | awk '/default/ {printf "-I %s %s", $5, $3; exit}' | xargs --no-run-if-empty --max-args 3 ping -W2 }
+ping6_gw(){ ip -6 route | awk '/default/ {printf "-I %s %s", $5, $3; exit}' | xargs --no-run-if-empty --max-args 3 ping6 -W2 }
 alias :q=exit
 alias todotxt="vim ~/Dropbox/todo/todo.txt"
 alias grep="grep --binary-files=without-match --directories=skip --color=auto"
