@@ -2,6 +2,7 @@
 # - only if tmux is installed
 # - not in linux ttys
 # - no nested tmux sessions
+
 if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
   tmux attach-session || tmux
   [[ $? = "0" ]] && exit
@@ -16,7 +17,7 @@ hash_string256() {
   printf "%d" $y
 }
 if [[ "$__host__" != "$HOST" ]]; then
-  tmux set -g status-bg colour$(hash_string256 $HOST 127)
+  tmux set -g status-bg colour$(hash_string256 $HOST)
   __host__=$HOST
 fi
 
