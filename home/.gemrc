@@ -1,1 +1,2 @@
 rdoc: --inline-source --line-numbers
+gem: --user-install
