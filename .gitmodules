@@ -3,16 +3,16 @@
 	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
 [submodule "home/.zsh-completion"]
 	path = home/.zsh-completion
-	url = git://github.com/zsh-users/zsh-completions.git
+	url = https://github.com/zsh-users/zsh-completions.git
 [submodule "home/.z"]
 	path = home/.z
-	url = git://github.com/sjl/z-zsh.git
+	url = https://github.com/sjl/z-zsh.git
 [submodule "home/.zsh-syntax-highlighting"]
 	path = home/.zsh-syntax-highlighting
-	url = git://github.com/zsh-users/zsh-syntax-highlighting.git
+	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
 [submodule "home/.zsh-autosuggestions"]
 	path = home/.zsh-autosuggestions
-	url = git://github.com/tarruda/zsh-autosuggestions
+	url = https://github.com/tarruda/zsh-autosuggestions
 [submodule "home/.deer"]
 	path = home/.deer
 	url = https://github.com/Vifon/deer.git
