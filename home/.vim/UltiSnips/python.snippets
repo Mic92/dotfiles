@@ -1,3 +1,15 @@
 snippet ipdb "import ipdb; ipdb.set_trace()"
 import ipdb; ipdb.set_trace()
 endsnippet
+
+snippet pdb "import pdb; pdb.set_trace()"
+import pdb; pdb.set_trace()
+endsnippet
+
+snippet dbg "from loadgenerator.debug import d; d()"
+from loadgenerator.debug import d; d()
+endsnippet
+
+snippet html "preview_html"
+from loadgenerator.debug import preview_html; preview_html($1.content)
+endsnippet
