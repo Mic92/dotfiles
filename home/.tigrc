@@ -1,6 +1,0 @@
-set refresh-mode = auto
-bind generic I @sh -c "git ignore '%(file)'"
-set main-view = \
-    date:short \
-    author:abbreviated \
-    commit-title:graph=yes,refs=yes
