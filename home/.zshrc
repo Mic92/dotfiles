@@ -534,6 +534,10 @@ if [ -f /usr/share/chruby/chruby.sh ]; then
 elif [ -d "$HOME/.rvm/bin" ]; then
   export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 fi
+if [ -d "$HOME/.pyenv" ]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+fi
 if [ -d "$HOME/.deer" ]; then
   fpath=($HOME/.deer $fpath)
   autoload -U deer
