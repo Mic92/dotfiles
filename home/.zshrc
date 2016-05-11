@@ -279,6 +279,7 @@ alias fzsh='PS1="zsh%# " zsh -f'
 # generic aliases
 # diff format like git
 xalias diff='diff -Naur --strip-trailing-cr'
+[ -z "${commands[ping6]}" ] && ping6="ping -6"
 alias gping="ping google.com"
 alias gping6="ping6 google.com"
 alias ghost="host -v google.com 8.8.8.8"
