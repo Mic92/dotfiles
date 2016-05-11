@@ -478,6 +478,11 @@ ninja(){
   build_path=$(dirname "$(upfind "build.ninja")")
   command ninja -C "${build_path:-.}" "$@"
 }
+make(){
+  local build_path
+  build_path=$(dirname "$(upfind "Makefile")")
+  command make -C "${build_path:-.}" "$@"
+}
 
 ## Autocycle
 setopt autopushd
