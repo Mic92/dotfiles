@@ -1,7 +1,11 @@
+let s:python_interpreter = 'python2'
+
 " Leader
 let mapleader = " "
 
-set nocompatible " Use Vim settings, rather then Vi settings
+if has("nocompatible")
+  set nocompatible " Use Vim settings, rather then Vi settings
+end
 set ruler " show the cursor position all the time
 set cursorline " highlight current line
 set showcmd " display incomplete commands
@@ -15,6 +19,7 @@ set autowrite     " write a modified buffer on each :next ,  ...
 set modeline      " React on modlines in files
 set hlsearch      " highlightthe last used search pattern
 set nojoinspaces
+set autoread
 
 set ttyfast          " send more characters to screen for redrawing
 "if has("ttymouse")
@@ -55,43 +60,35 @@ silent !mkdir -p "$HOME/.vim.temp" "$HOME/.vim.backup"
 set splitbelow
 set splitright
 
+if &termencoding == ""
+  let &termencoding = &encoding
+endif
 set encoding=utf-8
-set fileencodings=ucs-bom,utf-8,latin1
-set termencoding=utf-8
+setglobal fileencodings=ucs-bom,utf-8,default,latin1
+
+syntax on
+filetype plugin indent on
+
+runtime macros/matchit.vim
 
 call plug#begin('~/.vim/plugged')
 Plug 'bling/vim-airline'
-Plug 'tpope/vim-rails', { 'for': 'ruby' }
-Plug 'tpope/vim-surround'
-Plug 'scrooloose/nerdcommenter'
 Plug 'Raimondi/delimitMate'
-Plug 'The-NERD-tree'
+Plug 'scrooloose/nerdtree'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'altercation/vim-colors-solarized'
-Plug 'alfredodeza/jacinto.vim'
-Plug 'msanders/snipmate.vim'
-Plug 'slim-template/vim-slim'
-Plug 'scrooloose/syntastic'
+"Plug 'benekastah/neomake'
 Plug 'airblade/vim-gitgutter'
 if has("python")
-  Plug 'Valloric/YouCompleteMe', { 'do': 'python2 ./install.py' }
+  Plug 'Valloric/YouCompleteMe', { 'do': 'python2 ./install.py --gocode-completer --clang-completer --racer-completer --tern-completer' }
   Plug 'SirVer/ultisnips'
   Plug 'Trevoke/ultisnips-rspec'
-end
+endif
 Plug 'kien/ctrlp.vim'
 Plug 'freitass/todo.txt-vim'
 Plug 'dhruvasagar/vim-table-mode'
 Plug 'fatih/vim-go'
 Plug 'rking/ag.vim'
-"Plug 'digitaltoad/vim-jade'
-"Plug 'ap/vim-css-color'
-"Plug 'dag/vim-fish'
-"Plug 'elixir-lang/vim-elixir'
-"Plug 'tkztmk/vim-vala'
-"Plug 'rodjek/vim-puppet'
-"Plug 'derekwyatt/vim-scala'
-"Plug 'wavded/vim-stylus'
-"Plug 'kchmck/vim-coffee-script'
 Plug 'ompugao/uncrustify-vim', { 'for': ['c', 'cpp'] }
 Plug 'rust-lang/rust.vim'
 call plug#end()
@@ -99,8 +96,6 @@ call plug#end()
 " Switch syntax highlighting on, when the terminal has colors
 " Also switch on highlighting the last used search pattern.
 if (&t_Co > 2 || has("gui_running"))
-  syntax on
-
   " Enable 256 colors
   set t_Co=256
   "colorscheme zenburn
@@ -110,9 +105,6 @@ if (&t_Co > 2 || has("gui_running"))
   colorscheme solarized
 endif
 
-filetype plugin indent on
-
-runtime macros/matchit.vim
 
 augroup vimrcEx
   au!
@@ -178,6 +170,9 @@ nnoremap <leader><leader> <c-^>
 " Treat <li> and <p> tags like the block tags they are
 let g:html_indent_tags = 'li\|p'
 
+" check file change every 4 seconds ('CursorHold') and reload the buffer upon detecting change
+au CursorHold * checktime
+
 " Markdown files end in .md
 au BufEnter *.md set filetype=markdown
 
@@ -235,14 +230,17 @@ match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
 set pastetoggle=<F3>
 
+" autocmd! BufWritePost * Neomake
+
 " conflict with YouCompleteMe
 let g:UltiSnipsExpandTrigger="<c-j>"
 let g:UltiSnipsJumpForwardTrigger="<c-j>"
 let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
-nnoremap <leader>jd :YcmCompleter GoTo<CR>
-let g:ycm_collect_identifiers_from_tags_files = 1
-let g:ycm_extra_conf_globlist = ['~/git/tthread/*','!~/*']
+nnoremap <leader>jd :YcmCompleter GoToDeclaration<CR>
+nnoremap <leader>je :YcmCompleter GotoDefinition<CR>
+nnoremap <leader>jf :YcmCompleter FixIt<CR>
+nnoremap <leader>jt :YcmCompleter GetType<CR>
 
 command! -bar SudoWrite :
       \ setlocal nomodified |
@@ -277,10 +275,13 @@ au FileType go nmap <Leader>e <Plug>(go-rename)
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_structs = 1
-let g:go_highlight_interfaces = 1
 let g:go_highlight_operators = 1
 let g:go_highlight_build_constraints = 1
 let g:go_fmt_command = "goimports"
+let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
+let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+
+let g:rustfmt_autosave = 1
 
 " copy current filename:line to clipboard,
 " usefull for gdb breakpoints
