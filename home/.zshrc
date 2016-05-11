@@ -294,6 +294,7 @@ xalias mplayer="mpv"
 path=(
     $HOME/bin
     $HOME/.cabal/bin
+    $HOME/.cargo/bin
     $HOME/go/bin
     $HOME/.go/bin
     $HOME/.gem/ruby/*.*.*/bin(NOn[1])
