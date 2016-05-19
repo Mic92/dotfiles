@@ -77,10 +77,10 @@ Plug 'Raimondi/delimitMate'
 Plug 'scrooloose/nerdtree'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'altercation/vim-colors-solarized'
-"Plug 'benekastah/neomake'
+Plug 'scrooloose/syntastic'
 Plug 'airblade/vim-gitgutter'
 if has("python")
-  Plug 'Valloric/YouCompleteMe', { 'do': 'python2 ./install.py --gocode-completer --clang-completer --racer-completer --tern-completer' }
+  Plug 'Valloric/YouCompleteMe', { 'do': 'python2 ./install.py --clang-completer --gocode-completer --tern-completer --racer-completer' }
   Plug 'SirVer/ultisnips'
   Plug 'Trevoke/ultisnips-rspec'
 endif
