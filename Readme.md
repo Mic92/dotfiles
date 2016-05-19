@@ -26,7 +26,7 @@ freebsd:
 
 debian:
 
-    $ apt-get install build-essentials silversearcher-ag htop git-core tig zsh tmux vim-nox ruby strace tcpdump lsof rsync sudo
+    $ apt-get install build-essential silversearcher-ag htop git-core tig zsh tmux vim-nox ruby strace tcpdump lsof rsync sudo
 
 Bootstrap yaourt
 
