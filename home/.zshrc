@@ -113,6 +113,12 @@ upfind() {
   done
   return 1
 }
+clone(){
+  [ $# -eq 0 ] && echo "clone <GIT_CLONE_URL>" && return 1
+
+  cd `mktemp -d`
+  git clone --depth=1 "$1"
+}
 
 ## Options
 setopt auto_name_dirs
