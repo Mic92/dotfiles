@@ -13,7 +13,7 @@ hash_string256() {
   hashval=$(printf "%s" "$1" | md5sum)
   # upcase & substring
   hashval="0x${(L)hashval[1,15]}"
-  (( y = (hashval + 127) % 100))
+  (( y = (hashval + 110) % 255 ))
   printf "%d" $y
 }
 if [[ "$__host__" != "$HOST" ]]; then
