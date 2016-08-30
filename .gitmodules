@@ -22,3 +22,6 @@
 [submodule "home/.zsh-history-substring-search"]
 	path = home/.zsh-history-substring-search
 	url = https://github.com/zsh-users/zsh-history-substring-search.git
+[submodule "home/.zsh-nativgation-tools"]
+	path = home/.zsh-nativgation-tools
+	url = https://github.com/psprint/zsh-navigation-tools.git
