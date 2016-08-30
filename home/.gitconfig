@@ -1,6 +1,7 @@
 [core]
   editor = vim
   excludesfile = /home/joerg/.gitignore
+  pager = diff-so-fancy | less --tabs=4 -RFX
 [format]
   pretty = oneline
   signoff = true
@@ -26,6 +27,10 @@
   lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
   s = stash --keep-index
   uncommit = reset --soft HEAD^
+  # the acronym stands for "subtree add"
+  sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f"
+  # the acronym stands for "subtree update"
+  sbu = "!f() { git subtree pull --prefix $2 $1 master --squash; }; f"
 [push]
   default = simple
 [rerere]
@@ -46,8 +51,6 @@
   requirestrictparenspacing = false
 [help]
   autocorrect = 1
-[credential]
-  helper = gnome-keyring
 [mergetool]
   prompt = false
 [imap]
