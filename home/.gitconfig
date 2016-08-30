@@ -12,9 +12,11 @@
 [user]
   name = Jörg Thalheim
   email = joerg@higgsboson.tk
-  signingkey = D7CC79FA
+  signingkey = CA4106B8D7CC79FA
 [diff]
   tool = vimdiff
+  compactionHeuristic = true
+  renames = true
 [merge]
   tool = vimdiff
   conflictstyle = diff3
@@ -62,3 +64,9 @@
 
 [http "github.com"]
   SSLCypherList = "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH"
+[commit]
+  gpgsign = true
+[filter "lfs"]
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  required = true
