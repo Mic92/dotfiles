@@ -1,0 +1,3 @@
+bind main Enter !git diff --color %(commit) | diff-so-fancy
+bind main B !git rebase -i %(commit)
+bind generic + !git commit --amend
