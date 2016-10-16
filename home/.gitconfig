@@ -46,9 +46,6 @@
   insteadOf = gh:
 [url "aur@aur4.archlinux.org:"]
   insteadOf = arch:
-[hooks]
-  symlinksourcerepo = /home/joerg/git/githooks
-  requirestrictparenspacing = false
 [help]
   autocorrect = 1
 [mergetool]
@@ -73,3 +70,5 @@
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
   required = true
+[init]
+  templatedir = /home/joerg/git/githooks/githooks_bootstrap
