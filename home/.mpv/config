@@ -4,5 +4,4 @@ save-position-on-quit
 keep-open
 hwdec=vaapi
 vo=opengl-hq
-input-unix-socket=/home/joerg/.mpv/socket
 cache-default=819200
