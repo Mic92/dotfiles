@@ -27,6 +27,7 @@
   lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
   s = stash --keep-index
   uncommit = reset --soft HEAD^
+  pr = !"pr() { git fetch origin pull/$1/head:pr-$1; git checkout pr-$1; }; pr"
   # the acronym stands for "subtree add"
   sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f"
   # the acronym stands for "subtree update"
