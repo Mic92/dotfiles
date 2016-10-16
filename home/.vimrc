@@ -20,13 +20,8 @@ set modeline      " React on modlines in files
 set hlsearch      " highlightthe last used search pattern
 set nojoinspaces
 set autoread
+set mouse =
 
-set ttyfast          " send more characters to screen for redrawing
-"if has("ttymouse")
-"  " was removed in neovim
-"  set ttymouse=xterm2
-"end
-"set mouse=i
 set wildignore=*.bak,*.o,*.e,*~      " wildmenu: ignore these extensions
 set iskeyword+=_,-  " these characters also belong to a word
 set wrap                             " do wrap lines
