@@ -13,7 +13,7 @@ def preview_html(html, host="http://localhost:3000")
   html.gsub!(/\/assets/, host + "/assets")
   file.write(html)
   file.close
-  link = "file://#{file.path}"
+  link = file.path
 
   if RbConfig::CONFIG['host_os'] =~ /mswin|mingw|cygwin/
     system "start #{link}"
