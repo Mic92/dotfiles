@@ -2,9 +2,9 @@
 !
 !    X F T
 
-Xft.autohint:           1
+Xft.autohint:       false
 Xft.lcdfilter: lcddefault
-Xft.hintstyle:   hintfull
+Xft.hintstyle: hintsligth
 Xft.hinting:         true
 Xft.antialias:       true
 Xft.rgba:             rgb
