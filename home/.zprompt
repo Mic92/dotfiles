@@ -96,9 +96,9 @@ add-zsh-hook preexec preexec_update_git_vars
 add-zsh-hook precmd precmd_update_git_vars
 
 # Notify, if an command is ready.
-function _mic_notify { echo -ne '\a'}
+#function _mic_notify { echo -ne '\a'}
 # Does only make sense in X with URGENT notification
-[[ $TERM != "linux" ]] && add-zsh-hook precmd _mic_notify
+#[[ $TERM != "linux" ]] && add-zsh-hook precmd _mic_notify
 
 # <<< Snippet start (stolen from oh-my-zsh)
 #usage: title short_tab_title looooooooooooooooooooooggggggg_windows_title
@@ -115,12 +115,29 @@ function _mic_title {
   # if it is set and empty, leave it as is
   : ${2=$1}
 
-  if [[ "$TERM" == screen* ]]; then
-    print -Pn "\ek$1:q\e\\" #set screen hardstatus, usually truncated at 20 chars
-  elif [[ "$TERM" == xterm* ]] || [[ "$TERM" == rxvt* ]] || [[ "$TERM" == ansi ]] || [[ "$TERM_PROGRAM" == "iTerm.app" ]]; then
-    print -Pn "\e]2;$2:q\a" #set window name
-    print -Pn "\e]1;$1:q\a" #set icon (=tab) name
-  fi
+  case "$TERM" in
+    cygwin|xterm*|putty*|rxvt*|ansi)
+      print -Pn "\e]2;$2:q\a" # set window name
+      print -Pn "\e]1;$1:q\a" # set tab name
+      ;;
+    screen*)
+      print -Pn "\ek$1:q\e\\" # set screen hardstatus
+      ;;
+    *)
+      if [[ "$TERM_PROGRAM" == "iTerm.app" ]]; then
+        print -Pn "\e]2;$2:q\a" # set window name
+        print -Pn "\e]1;$1:q\a" # set tab name
+      else
+        # Try to use terminfo to set the title
+        # If the feature is available set title
+        if [[ -n "$terminfo[fsl]" ]] && [[ -n "$terminfo[tsl]" ]]; then
+          echoti tsl
+          print -Pn "$1"
+          echoti fsl
+        fi
+      fi
+      ;;
+  esac
 }
 
 ZSH_THEME_TERM_TAB_TITLE_IDLE="%15<..<%~%<<" #15 char left truncated PWD
@@ -140,7 +157,7 @@ function _mic_termsupport_preexec {
   local CMD=${1[(wr)^(*=*|sudo|ssh|mosh|rake|-*)]:gs/%/%%}
   local LINE="${2:gs/%/%%}"
 
-  _mic_title '$CMD' '%100>...>$LINE%<<'
+  _mic_title '$CMD[1,24]' '%100>...>$LINE%<<'
 }
 
 autoload -U add-zsh-hook
