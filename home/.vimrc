@@ -6,6 +6,7 @@ let mapleader = " "
 if has("nocompatible")
   set nocompatible " Use Vim settings, rather then Vi settings
 end
+set mouse =
 set ruler " show the cursor position all the time
 set cursorline " highlight current line
 set showcmd " display incomplete commands
@@ -20,7 +21,6 @@ set modeline      " React on modlines in files
 set hlsearch      " highlightthe last used search pattern
 set nojoinspaces
 set autoread
-set mouse =
 
 set wildignore=*.bak,*.o,*.e,*~      " wildmenu: ignore these extensions
 set iskeyword+=_,-  " these characters also belong to a word
