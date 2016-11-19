@@ -53,7 +53,7 @@
   prompt = false
 [imap]
   folder = "Drafts"
-  host = imap://localhost
+  host = imap://imap.higgsboson.tk
   user = joerg@higgsboson.tk
 [sendemail]
   from = joerg@higgsboson.tk <joerg@higgsboson.tk>
