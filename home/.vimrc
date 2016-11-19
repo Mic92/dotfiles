@@ -68,6 +68,7 @@ runtime macros/matchit.vim
 
 call plug#begin('~/.vim/plugged')
 Plug 'bling/vim-airline'
+Plug 'pearofducks/ansible-vim'
 Plug 'Raimondi/delimitMate'
 Plug 'scrooloose/nerdtree'
 Plug 'bronson/vim-trailing-whitespace'
