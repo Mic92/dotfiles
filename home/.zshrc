@@ -18,7 +18,7 @@ hash_string256() {
 }
 if [[ "$__host__" != "$HOST" ]]; then
   tmux set -g status-bg colour$(hash_string256 $HOST)
-  __host__=$HOST
+  export __host__=$HOST
 fi
 
 ##  Helpers
@@ -205,7 +205,7 @@ xalias df='dfc'
 if [[ $OSTYPE == freebsd* ]]; then
   alias ls='ls -G'
 else
-  alias ls='ls --color=auto --classify --human-readable --group-directories-first'
+  alias ls='ls --color=auto --classify --human-readable'
 fi
 alias sl=ls
 alias la='ls -lA'
@@ -295,6 +295,7 @@ ping6_gw(){ ip -6 route | awk '/default/ {printf "-I %s %s", $5, $3; exit}' | xa
 alias :q=exit
 alias todotxt="vim ~/Dropbox/todo/todo.txt"
 alias grep="grep --binary-files=without-match --directories=skip --color=auto"
+alias R="R --quiet"
 
 ## PROFILE
 path=(
@@ -304,6 +305,8 @@ path=(
     $HOME/go/bin
     $HOME/.go/bin
     $HOME/.gem/ruby/*.*.*/bin(NOn[1])
+    # python
+    $HOME/.local/bin/
     $path
 )
 fpath=(~/.zsh $fpath)
@@ -329,11 +332,18 @@ export pacman_program=pacman-color
 export XDG_CACHE_HOME=~/.cache
 export XDG_CONFIG_HOME=~/.config
 export XDG_DATA_HOME=~/.data
+export XDG_DESKTOP_DIR="$HOME/Desktop"
+export XDG_DOCUMENTS_DIR="$HOME/Documents"
+export XDG_DOWNLOAD_DIR="$HOME/Downloads"
+export XDG_MUSIC_DIR="$HOME/Music"
+export XDG_PICTURES_DIR="$HOME/Pictures"
+export XDG_PUBLICSHARE_DIR="$HOME/Public"
+export XDG_TEMPLATES_DIR="$HOME/.Templates"
+export XDG_VIDEOS_DIR="$HOME/Videos"
 export ERRFILE=~/.xsession-errors
 # Antialising
 export QT_XFT=1
 export GDK_USE_XFT=1
-export GTK2_RC_FILES="$HOME/.gtkrc-2.0"
 # To enable Graphic Hardware acceleration
 #export LIBGL_ALWAYS_INDIRECT=1
 export INTEL_BATCH=1
@@ -341,8 +351,6 @@ export INTEL_BATCH=1
 export SDL_AUDIODRIVER=pulse
 # fix broken xdg-open
 export GDMSESSION=1 GNOME_DESKTOP_SESSION_ID=1
-# make OpenJDK working with awesome wm
-export JAVA_FONTS=/usr/share/fonts/TTF
 # less
 export LESS=-FXisRM
 export LESS_TERMCAP_mb=$'\E[01;31m'     # begin blinking
@@ -377,7 +385,7 @@ if [ -x "$HOME/.go/bin/go" ]; then
 fi
 export GOPATH="$HOME/go"
 [ ! -d "$GOPATH" ] && mkdir -p "$GOPATH/src" 2>/dev/null
-export NIX_PATH="$HOME/.nix"
+[ ! -d "/etc/nixos/nixpkgs" ] && export NIX_PATH="$HOME/.nix"
 
 ## Functions
 flash_undelete() {
@@ -420,7 +428,7 @@ bundle() {
   fi
   command bundle "$@"
 }
-ff() { /usr/bin/find . -iname "*$@*" 2>/dev/null }
+ff() { command find . -iname "*$@*" 2>/dev/null }
 browse () { $BROWSER file://"`pwd`/$1" }
 retry() {
   local n=0
@@ -450,9 +458,6 @@ vil() {
   unsetopt shwordsplit
   vim +${ARGS[2]} ${ARGS[1]}
 }
-jtes() {
-  curl jtes.halfco.de/sets/1.json | jq "map({id: .id, created_at: .created_at, desc: .summary ,url: .track.permalink_url })" | less
-}
 # force output to be on a single line
 ss() {
   # -p requires sudo to see all processes
@@ -464,10 +469,23 @@ ss() {
 }
 # Autossh - try to connect every 0.5 secs (modulo timeouts)
 sssh(){ while true; do command ssh -q "$@"; [ $? -ne 0 ] && break || sleep 0.5; done }
-moshlogin(){ ssh login killall mosh-server; mosh -A -p 60011:60011 login }
+moshlogin(){
+  if ssh-add -L | grep -q "no identities"; then
+    ssh-add ~/.ssh/id_{rsa,ecdsa,ed25519}
+  fi
+  ssh login killall mosh-server;
+  mosh -A -p 60011:60011 login
+}
 # List directory after changing directory
 chpwd() { ls }
 mcd() { mkdir -p "$1" && cd "$1"; }
+cd() {
+  local to="${1:-$HOME}"
+  if [ -f "$to" ]; then
+    to="$(dirname $to)"
+  fi
+  builtin cd "$to"
+}
 pj() { python -mjson.tool } # pretty-print JSON
 cj() { curl -sS $@ | pj } # curl JSON
 md5() { echo -n $1 | openssl md5 /dev/stdin }
@@ -480,14 +498,23 @@ urldecode() { python2 -c "import sys, urllib as ul; print ul.unquote_plus(sys.ar
 last_modified() { ls -t $* 2> /dev/null | head -n 1 }
 cheat() { command cheat "$@" | less }
 ninja(){
-  local build_path
-  build_path=$(dirname "$(upfind "build.ninja")")
+  local build_path="$(dirname "$(upfind "build.ninja")")"
   command ninja -C "${build_path:-.}" "$@"
 }
 make(){
-  local build_path
-  build_path=$(dirname "$(upfind "Makefile")")
+  local build_path="$(dirname "$(upfind "Makefile")")"
   command make -C "${build_path:-.}" "$@"
+}
+heroku(){
+  docker run -it --rm -u $(id -u):$(id -g) -w "$HOME" \
+    -v /etc/passwd:/etc/passwd:ro \
+    -v /etc/group:/etc/group:ro \
+    -v /etc/localtime:/etc/localtime:ro \
+    -v /home:/home \
+    -v /tmp:/tmp \
+    -v /run/user/$(id -u):/run/user/$(id -u) \
+    --name heroku \
+    johnnagro/heroku-toolbelt "$@"
 }
 
 ## Autocycle
@@ -534,6 +561,7 @@ fi
 if [ -f "$HOME/.homesick/repos/homeshick/homeshick.sh" ]; then
   source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 fi
+
 if [ -n "${commands[direnv]}" ]; then
   eval "$(direnv hook zsh)"
 fi
@@ -550,9 +578,4 @@ if [ -d "$HOME/.pyenv" ]; then
   export PYENV_ROOT="$HOME/.pyenv"
   export PATH="$PYENV_ROOT/bin:$PATH"
 fi
-if [ -d "$HOME/.deer" ]; then
-  fpath=($HOME/.deer $fpath)
-  autoload -U deer
-  zle -N deer
-  bindkey '\ek' deer
-fi
+source $HOME/.zsh-nativgation-tools/zsh-navigation-tools.plugin.zsh
