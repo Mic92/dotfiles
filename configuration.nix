@@ -145,6 +145,8 @@ in {
   #  };
   #});
 
+  powerManagment.powertop.enable = true;
+
   systemd.services = {
     systemd-networkd-wait-online.enable = false;
     caddy = let
@@ -201,14 +203,6 @@ in {
         Restart   = "on-abort";
         User = "joerg";
         ExecStart = "${pkgs.bittorrentSync20}/bin/btsync --nodaemon --config /home/joerg/.config/btsync/btsync.conf";
-      };
-    };
-    powertop = {
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = "yes";
-        ExecStart = "${pkgs.powertop}/bin/powertop --auto-tune";
       };
     };
     godoc = {
