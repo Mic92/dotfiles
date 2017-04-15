@@ -73,7 +73,6 @@ in {
   '';
 
   services = {
-    nginx.enable = true;
     locate.enable = true;
     dbus.socketActivated = true;
     tor = {
