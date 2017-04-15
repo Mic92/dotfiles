@@ -74,7 +74,6 @@ in {
 
   services = {
     locate.enable = true;
-    dbus.socketActivated = true;
     tor = {
       enable = true;
       extraConfig = ''
