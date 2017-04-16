@@ -3,15 +3,6 @@ with pkgs;
 
 let
   myhunspell = (hunspellWithDicts (with hunspellDicts; [en-us en-gb-ise]));
-  #notcoreutils = coreutils.overrideDerivation (old: {
-  #    doCheck = false;
-  #    patches = [
-  #      (fetchpatch {
-  #        url = "https://gist.githubusercontent.com/blastmaster/60d7819e0d4bf8d1f4925a909902e9cc/raw/b08f92d965db63b35bc231ff5387404be48783e4/diff.patch";
-  #        sha256 = "0n6yx4jqicdmnwxmmn8h02p2d556r9qlqzgb08qwg589c1lpzlh1";                                                                             
-  #      })
-  #    ];
-  #});
 in {
   boot = {
     kernelPackages = linuxPackages_4_10;
@@ -102,6 +93,5 @@ in {
     mtr
     nix-zsh-completions
     ntfs3g
-    #(hiPrio notcoreutils)
   ];
 }
