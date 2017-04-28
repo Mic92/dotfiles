@@ -139,7 +139,7 @@ in {
     hostName = "turingmachine";
     wireless.enable = !internetSharing.hotspot;
     extraHosts = ''
-      #141.76.50.75 sharelatex.local
+      #35.185.98.254 monit.thalheim.io
     '';
     dhcpcd.enable = false;
   };
@@ -169,6 +169,8 @@ in {
     wg-eve6 = wgTemplate 42422 "eve6" "ipv6.dn42.higgsboson.tk:42422" "fxiGmHUK1aMa07cejTP3SHxYivIj3aXZwdvzTEXmYHM=";
     wg-rauter = wgTemplate 42423 "rauter" "ipv4.rauter.thalheim.io:42422" "l6LjG1WuLNkEwd2047mw2GpgPUppM1VwP/LWMaOqJ0E=";
     wg-matchbox = wgTemplate 42424 "matchbox" "ipv4.matchbox.thalheim.io:42432" "6ExGu7MjeHoPbWj8/F3YNcdMHa7e3fXFFPkswAXv4T4=";
+
+    anboxbr0.netdevConfig = { Name = "anboxbr0"; Kind = "bridge"; };
 
     dummy0.netdevConfig = { Name = "dummy0"; Kind = "dummy"; };
     #physical = {
@@ -305,6 +307,19 @@ in {
       UseHostname=false
       UseDNS=false
       RouteMetric=2048
+    '';
+    anboxbr0.extraConfig = ''
+      [Match]
+      Name=anboxbr0
+      
+      [Network]
+      Address=0.0.0.0/24
+      DHCPServer=yes
+      IPMasquerade=yes
+      
+      [DHCPServer]
+      ##Manual provide DNS Server
+      #DNS=8.8.8.8
     '';
   };
 }

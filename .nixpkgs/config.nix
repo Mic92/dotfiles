@@ -6,9 +6,6 @@ let
       # loaded on launch
       start = with vimPlugins; [ 
         youcompleteme
-        #deoplete-nvim
-        #deoplete-jedi
-        #clang_complete
         syntastic
         gitgutter
         airline
@@ -18,14 +15,33 @@ let
         vim-scala
         vim-polyglot
         syntastic
-        # delimitMate
+        nerdcommenter
         editorconfig-vim
+        easymotion
         ctrlp
         rust-vim
-        # vim-trailing-whitespace
+        vim-trailing-whitespace
+        pony-vim-syntax
+        vim-css-color
       ];
     };
   };
+  officeCommand = alias: exe: (stdenv.mkDerivation {
+    buildInputs = [ wrapGAppsHook ];
+    name = alias;
+    src = null;
+    phases = [ "installPhase" "fixupPhase" ];
+    installPhase = ''
+      mkdir -p $out/bin
+      cat > $out/bin/${alias} <<'EOF'
+#! ${pkgs.stdenv.shell} -e
+export WINEPREFIX=~/.wineprefix/office2010
+export PATH=${samba}/bin:$PATH
+exec "${wineUnstable}/bin/wine" "$WINEPREFIX/drive_c/Program Files/Microsoft Office/Office14/${exe}"
+EOF
+      chmod +x $out/bin/${alias}
+    '';
+  });
 
   vim = pkgs.vim_configurable.customize {
     name = "vim";
@@ -60,14 +76,13 @@ let
   };
 
   desktopApps = [
-    cantata
     dropbox
     #android-studio
     gimp
     inkscape
     mpd
     mpv
-    chromium
+    firefox
     thunderbird
     transmission_gtk
     rxvt_unicode-with-plugins
@@ -117,8 +132,7 @@ let
   ];
 
   rust = [
-    rustNightlyBin.rustc
-    rustNightlyBin.cargo
+    rustup
     rustfmt
     rustracer
     (pkgs.writeScriptBin "rust-doc" ''
@@ -139,7 +153,6 @@ let
   ];
 
   nixDev = [
-    nix-prefetch-git
     nix-prefetch-scripts
     pypi2nix
     go2nix
@@ -175,6 +188,7 @@ let
   ];
 in {
   allowUnfree = true;
+  pulseaudio = true;
   chromium = {
     enablePepperFlash = true;
     enablePepperPDF = true;
@@ -214,6 +228,9 @@ in {
           sshuttle
           jq
           libreoffice
+          (officeCommand "word" "WINWORD.EXE")
+          (officeCommand "excel" "EXCEL.EXE")
+          (officeCommand "powerpoint" "POWERPNT.EXE")
           httpie
           cloc
           mosh
@@ -223,6 +240,7 @@ in {
           gnupg1compat
           direnv
           ghostscript
+          anbox
         ] ++ latex;
     };
     staging = buildEnv {

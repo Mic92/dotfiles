@@ -29,7 +29,6 @@ in {
     ./packages.nix
   ];
 
-
   boot = {
     plymouth.enable = true;
     loader = {
@@ -73,6 +72,7 @@ in {
   '';
 
   services = {
+    upower.enable = true;
     locate.enable = true;
     tor = {
       enable = true;
@@ -106,10 +106,6 @@ in {
         default = "awesome";
       };
       videoDrivers = [ "modesetting" ];
-      displayManager.sddm = {
-        enable = true;
-#        defaultUser = "joerg";
-      };
     };
 
     avahi.enable = true;
@@ -152,9 +148,9 @@ in {
     caddy = let
       cfg = pkgs.writeText "Caddyfile" ''
         0.0.0.0 {
-	  timeouts 0
+          timeouts 0
           tls off
-          markdown
+          #markdown
           browse
           root /home/joerg/web
 
@@ -223,6 +219,7 @@ in {
       storageDriver = "zfs";
       extraOptions = "--iptables=false";
     };
+    anbox.enable = true;
   };
 
   #systemd.user.services = (builtins.listToAttrs (map userservice [
@@ -264,12 +261,13 @@ in {
     light.enable = true;
     adb.enable = true;
     zsh = {
+      syntax-highlighting.enable = true;
       enable = true;
-      enableSyntaxHighlighting = true;
       enableAutosuggestions = true;
       enableCompletion = true;
     };
   };
+
   hardware.pulseaudio.enable = true;
 
   users.extraUsers.joerg = {
@@ -287,7 +285,7 @@ in {
     sudo.wheelNeedsPassword = false;
   };
 
-  services.dbus.packages = [ pkgs.gnome3.dconf pkgs.gnome3.gnome_keyring ];
+  services.dbus.packages = with pkgs; [ iwd gnome3.dconf gnome3.gnome_keyring ];
 
   system.stateVersion = "17.03";
 }
