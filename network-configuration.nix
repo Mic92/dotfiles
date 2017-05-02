@@ -37,7 +37,6 @@ in {
 
         address=/blog/127.0.0.1
         address=/blog/::1
-        server=/higgsboson.tk/173.245.59.126
         rebind-domain-ok=/onion/
         server=/.onion/127.0.0.1#9053
         port=53
@@ -207,7 +206,7 @@ in {
     '';
     wlan.extraConfig = ''
       [Match]
-      Name=wlp3s0
+      Name=wl*
 
       [Network]
       DHCP=both
