@@ -12,7 +12,6 @@
     initrd = {
       availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" "i8042" "i915" "snd-bt-sco" ];
       luks.devices = [ { name = "root"; device = "/dev/sda2"; } ];
-      supportedFilesystems = [ "zfs" ];
     };
     kernelModules = [ "kvm-intel" ];
     kernelParams = [ "systemd.legacy_systemd_cgroup_controller=yes" ];
@@ -44,13 +43,6 @@
       MatchDevicePath "/dev/input/event*"
       Driver "libinput"
     EndSection
-    
-    #Section "InputClass"
-    #  Identifier "libinput keyboard catchall"
-    #  MatchIsKeyboard "on"
-    #  MatchDevicePath "/dev/input/event*"
-    #  Driver "libinput"
-    #EndSection
     
     Section "InputClass"
       Identifier "libinput touchpad catchall"
