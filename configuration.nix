@@ -209,6 +209,7 @@ in {
         ExecStart = "/home/joerg/go/bin/godoc -http=:8081";
       };
     };
+    systemd-udev-settle.serviceConfig.ExecStart = "${pkgs.coreutils}/bin/true";
   };
 
   virtualisation = {
