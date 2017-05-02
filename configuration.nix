@@ -27,6 +27,7 @@ in {
     ./network-configuration.nix
     ./bird.nix
     ./packages.nix
+    <nixpkgs/nixos/modules/profiles/hardened.nix>
   ];
 
   boot = {
