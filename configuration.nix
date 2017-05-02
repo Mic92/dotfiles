@@ -66,8 +66,6 @@ in {
   };
   time.timeZone = "Europe/Berlin";
 
-  environment.etc."systemd/sleep.conf".text = pkgs.lib.mkAfter "SuspendState=freeze";
-
   boot.extraModprobeConfig = ''
     options zfs zfs_arc_max=34359738368
   '';
