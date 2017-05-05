@@ -64,7 +64,7 @@ in {
     consoleKeyMap = "de";
     defaultLocale = "en_DK.UTF-8";
   };
-  time.timeZone = "Europe/Berlin";
+  time.timeZone = "Europe/London";
 
   boot.extraModprobeConfig = ''
     options zfs zfs_arc_max=34359738368
