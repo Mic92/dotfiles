@@ -83,6 +83,7 @@ EOF
     mpd
     mpv
     firefox
+    chromium
     thunderbird
     transmission_gtk
     rxvt_unicode-with-plugins
@@ -241,6 +242,7 @@ in {
           direnv
           ghostscript
           anbox
+          skype
         ] ++ latex;
     };
     staging = buildEnv {
