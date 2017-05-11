@@ -5,8 +5,8 @@ let
   myhunspell = (hunspellWithDicts (with hunspellDicts; [en-us en-gb-ise]));
 in {
   boot = {
-    kernelPackages = linuxPackages_4_10;
-    extraModulePackages = with linuxPackages_4_10; [ bcc wireguard sysdig ];
+    kernelPackages = linuxPackages_4_11;
+    extraModulePackages = with linuxPackages_4_11; [ bcc wireguard sysdig ];
     zfs.enableUnstable = true;
   };
   nixpkgs.config = {
