@@ -27,6 +27,7 @@ in {
     ./network-configuration.nix
     ./bird.nix
     ./packages.nix
+    ./nixos-hardware/lenovo/x250.nix
   ];
 
 
@@ -47,7 +48,7 @@ in {
   nix = {
     gc.automatic = true;
     gc.dates = "03:15";
-    nixPath = [ "/etc/nixos" "nixos-config=/etc/nixos/configuration.nix"];
+    nixPath = [ "/etc/nixos" "nixos-config=/etc/nixos/configuration.nix" ];
     package = pkgs.nixUnstable;
     extraOptions = ''
       gc-keep-outputs = true
@@ -70,6 +71,7 @@ in {
     options zfs zfs_arc_max=34359738368
   '';
 
+
   services = {
     upower.enable = true;
     locate.enable = true;
@@ -82,6 +84,7 @@ in {
         EnforceDistinctSubnets 1
         ExitNodes {de}
         NewCircuitPeriod 120
+
       '';
     };
     nscd.enable = true;
@@ -96,7 +99,6 @@ in {
       enable = true;
       layout = "de";
       xkbOptions = "eurosign:e";
-      libinput.enable = true;
       windowManager = {
         awesome = {
           enable = true;
@@ -104,7 +106,6 @@ in {
         };
         default = "awesome";
       };
-      videoDrivers = [ "modesetting" ];
     };
 
     avahi.enable = true;
@@ -123,16 +124,6 @@ in {
     journald.extraConfig = "SystemMaxUse=1G";
   };
 
-  #systemd.timers = {
-  #  "update-wireguard-endpoint" = {
-  #    wantedBy = ["multi-user.target"];
-  #    timerConfig = {
-  #      OnBootSec="1min";
-  #      OnUnitActiveSec="1min";
-  #    };
-  #  };
-  #};
-  
   #systemd.package = pkgs.systemd.overrideDerivation(old: {
   #  src = builtins.fetchgit {
   #    url = /home/joerg/git/systemd;
@@ -219,7 +210,7 @@ in {
       storageDriver = "zfs";
       extraOptions = "--iptables=false";
     };
-    anbox.enable = true;
+    #anbox.enable = true;
   };
 
   #systemd.user.services = (builtins.listToAttrs (map userservice [

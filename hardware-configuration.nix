@@ -14,12 +14,9 @@
       luks.devices = [ { name = "root"; device = "/dev/sda2"; } ];
     };
     kernelModules = [ "kvm-intel" ];
-    kernelParams = [ "systemd.legacy_systemd_cgroup_controller=yes" ];
   };
 
   hardware = {
-    enableAllFirmware = true;
-
     bluetooth.enable = true;
     opengl = {
       enable = true;
@@ -35,39 +32,8 @@
 
   powerManagement.enable = true;
 
-  services.xserver.config = ''
-    # Match on all types of devices but tablet devices and joysticks
-    Section "InputClass"
-      Identifier "libinput pointer catchall"
-      MatchIsPointer "on"
-      MatchDevicePath "/dev/input/event*"
-      Driver "libinput"
-    EndSection
-    
-    Section "InputClass"
-      Identifier "libinput touchpad catchall"
-      MatchIsTouchpad "on"
-      MatchDevicePath "/dev/input/event*"
-      Driver "libinput"
-    EndSection
-    
-    Section "InputClass"
-      Identifier "libinput touchscreen catchall"
-      MatchIsTouchscreen "on"
-      MatchDevicePath "/dev/input/event*"
-      Driver "libinput"
-    EndSection
-    
-    Section "InputClass"
-      Identifier "libinput tablet catchall"
-      MatchIsTablet "on"
-      MatchDevicePath "/dev/input/event*"
-      Driver "libinput"
-    EndSection
-  '';
-
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/8751-58B9";
+    { device = "/dev/sda1";
       fsType = "vfat";
     };
 
