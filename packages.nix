@@ -21,26 +21,36 @@ in {
       #};
       networkd = stdenv.mkDerivation {
         name = "systemd-networkd";
-        buildInputs = [ linuxHeaders pkgconfig intltool gperf libcap kmod xz pam acl
+        buildInputs = [ 
+          linuxHeaders pkgconfig intltool gperf libcap kmod
+          xz pam acl
           libuuid m4 glib libxslt libgcrypt libgpgerror
           libmicrohttpd kexectools libseccomp libffi audit lz4 libapparmor
-          iptables gnu-efi file
-          autoreconfHook gettext docbook_xsl docbook_xml_dtd_42 docbook_xml_dtd_45
-          idutils patchelf
+          iptables gnu-efi
+          gettext docbook_xsl docbook_xml_dtd_42 docbook_xml_dtd_45
+          (python3.withPackages (pythonPackages: with pythonPackages; [ lxml ]))
+          patchelf
         ];
+        nativeBuildInputs = [ meson ninja glibcLocales ];
         src = fetchFromGitHub {
           owner = "Mic92";
           repo = "systemd";
-          rev = "4bad9b7ef9ffa8e98d168119bf87f7bf69286531";
-          sha256 = "17a7b7zmrzkx0yf6c38yq1nkvv88qd8qgihbans5i6cm4ryf27yy";
+          rev = "7ac926b7cf31cc8615078bb796a6724d4581888d";
+          sha256 = "1xa9ls7dphdhfb0fgkd3r4afn4nylmz6mjvhh50rhpdqm0dl7sn8";
         };
-        enableParallelBuilding = true;
-        makeFlags = ["ID" "systemd-networkd"];
-        preConfigure = "./autogen.sh";
+        LC_ALL="en_US.utf8";
+
+        configurePhase = ''
+          patchShebangs .
+          meson -D system-uid-max=499 -D system-gid-max=499 . build
+          cd build
+        '';
+        buildPhase = "ninja systemd-networkd";
         installPhase = ''
-          mkdir -p $out/lib $out/bin
-          cp .libs/*.so $out/lib/
-          cp .libs/systemd-networkd $out/bin/
+          mkdir -p $out/{bin,lib}
+          cp src/shared/libsystemd-shared-*.so $out/lib
+          cp ./systemd-networkd $out/bin
+          patchelf --set-rpath "$out/lib:\$ORIGIN" $out/bin/systemd-networkd
         '';
       };
     };
