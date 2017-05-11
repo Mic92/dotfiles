@@ -9,10 +9,6 @@ let
   network = (import ./network.nix);
 in {
   services = {
-    #ferm = {
-    #  enable = true;
-    #  config = builtins.readFile "/etc/nixos/ferm.conf";
-    #};
     dnscrypt-proxy = {
       enable = true;
       localAddress = "127.1.0.1";
@@ -166,8 +162,8 @@ in {
   in {
     wg-eve = wgTemplate 42421 "eve" "ipv4.dn42.higgsboson.tk:42422" "fxiGmHUK1aMa07cejTP3SHxYivIj3aXZwdvzTEXmYHM=";
     wg-eve6 = wgTemplate 42422 "eve6" "ipv6.dn42.higgsboson.tk:42422" "fxiGmHUK1aMa07cejTP3SHxYivIj3aXZwdvzTEXmYHM=";
-    wg-rauter = wgTemplate 42423 "rauter" "ipv4.rauter.thalheim.io:42422" "l6LjG1WuLNkEwd2047mw2GpgPUppM1VwP/LWMaOqJ0E=";
-    wg-matchbox = wgTemplate 42424 "matchbox" "ipv4.matchbox.thalheim.io:42432" "6ExGu7MjeHoPbWj8/F3YNcdMHa7e3fXFFPkswAXv4T4=";
+    wg-rauter = wgTemplate 42423 "rauter" "rauter.he.thalheim.io:42422" "l6LjG1WuLNkEwd2047mw2GpgPUppM1VwP/LWMaOqJ0E=";
+    wg-matchbox = wgTemplate 42424 "matchbox" "matchbox.he.thalheim.io:42432" "6ExGu7MjeHoPbWj8/F3YNcdMHa7e3fXFFPkswAXv4T4=";
 
     anboxbr0.netdevConfig = { Name = "anboxbr0"; Kind = "bridge"; };
 
