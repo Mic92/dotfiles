@@ -60,10 +60,7 @@ in {
         '' else ""}
       '';
     };
-    resolved = {
-      enable = false;
-      dnssec = "false";
-    };
+    resolved.enable = false;
     hostapd = {
       enable = internetSharing.hotspot;
       ssid = "cipherpunk";
@@ -129,7 +126,6 @@ in {
         }
       '';
     };
-    nameservers = [ "127.0.0.1" ];
     hostId = "8425e349";
     hostName = "turingmachine";
     wireless.enable = !internetSharing.hotspot;
@@ -168,15 +164,6 @@ in {
     anboxbr0.netdevConfig = { Name = "anboxbr0"; Kind = "bridge"; };
 
     dummy0.netdevConfig = { Name = "dummy0"; Kind = "dummy"; };
-    #physical = {
-    #  netdevConfig = { 
-    #    Name = "physical";
-    #    Kind = "vrf";
-    #  };
-    #  extraConfig = ''
-    #    TableId=42
-    #  '';
-    #};
   };
   systemd.network.networks = {
     ethernet.extraConfig = ''
@@ -197,7 +184,6 @@ in {
 
       [DHCP]
       UseHostname=false
-      UseDNS=false
       RouteMetric=512
     '';
     wlan.extraConfig = ''
@@ -219,7 +205,6 @@ in {
 
       [DHCP]
       UseHostname=false
-      UseDNS=false
       RouteMetric=1024
     '';
     dummy.extraConfig = ''
@@ -283,7 +268,6 @@ in {
 
       [DHCP]
       UseHostname=false
-      UseDNS=false
       RouteMetric=2048
     '';
     bluetooth.extraConfig = ''
@@ -300,8 +284,7 @@ in {
 
       [DHCP]
       UseHostname=false
-      UseDNS=false
-      RouteMetric=2048
+      RouteMetric=4096
     '';
     anboxbr0.extraConfig = ''
       [Match]
