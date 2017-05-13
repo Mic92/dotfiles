@@ -241,8 +241,8 @@ in {
           gnupg1compat
           direnv
           ghostscript
-          anbox
           skype
+          nmap
         ] ++ latex;
     };
     staging = buildEnv {
