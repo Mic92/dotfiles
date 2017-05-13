@@ -3,8 +3,8 @@ with lib;
 
 let
   internetSharing = {
-    enable = false;
-    hotspot = false;
+    enable = true;
+    hotspot = true;
   };
   network = (import ./network.nix);
 in {
@@ -17,12 +17,10 @@ in {
     dnsmasq = {
       enable = true;
       extraConfig = ''
-        #server=74.82.42.42
-        #server=2001:470:20::2
         server=127.1.0.1
         server=/dn42/172.23.75.6
 
-        no-resolv
+        #no-resolv
         cache-size=1000
         min-cache-ttl=3600
         bind-dynamic
@@ -37,13 +35,6 @@ in {
         server=/.onion/127.0.0.1#9053
         port=53
         #log-queries
-        # dhcp
-        # HOTSPOT
-        interface=enp0s25
-        dhcp-option=enp0s25,1,255.255.255.0  # subnet
-        dhcp-option=enp0s25,3,192.168.43.254 # router
-        dhcp-option=enp0s25,6,192.168.43.254 # dns
-        dhcp-range=enp0s25,192.168.43.0,192.168.43.253,12h
         ${if internetSharing.hotspot then
         ''
           interface=wlp3s0
@@ -90,6 +81,7 @@ in {
           # Block all incomming connections traffic except SSH and "ping".
           chain input {
             type filter hook input priority 0;
+
         
             ## accept any localhost traffic
             #iifname lo accept
@@ -122,6 +114,19 @@ in {
           chain forward {
             type filter hook forward priority 0;
             accept
+          }
+        }
+        table ip nat {
+          chain prerouting { 
+            type nat hook prerouting priority 0;
+          }
+          chain postrouting { 
+            type nat hook postrouting priority 0;
+            ${ if internetSharing.hotspot then ''
+              oifname "enp0s25" masquerade
+            '' else if internetSharing.enable then ''
+              oifname "wlp3s0" masquerade
+            '' else ""}
           }
         }
       '';
