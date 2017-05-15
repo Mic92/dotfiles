@@ -5,7 +5,7 @@
 
 if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
   tmux attach-session || tmux
-  [[ $? = "0" ]] && exit
+  #[[ $? = "0" ]] && exit
 fi
 
 hash_string256() {
@@ -119,6 +119,9 @@ clone(){
   cd `mktemp -d`
   git clone --depth=1 "$1"
 }
+rust-doc(){
+  xdg-open "$(nix-build '<nixpkgs>' -A rustc.doc --no-out-link)/share/doc/rust/html/index.html"
+}
 
 ## Options
 setopt auto_name_dirs
@@ -189,11 +192,7 @@ source "$HOME/.zprompt"
 ## Aliases
 # Basic commands
 alias zcat='zcat -f'
-# - same as tail but using inotify for better perfomance
-# - linux only
-xalias tail='inotail'
-xalias ag='ag --color --smart-case --literal'
-xalias rag='ag --color --smart-case --path-to-agignore ~/.ruby-agignore'
+xalias ag='ag --color --smart-case --literal --pager=less'
 # System tools
 xalias top='htop'
 alias free='free -m'
@@ -387,6 +386,11 @@ export GOPATH="$HOME/go"
 [ ! -d "$GOPATH" ] && mkdir -p "$GOPATH/src" 2>/dev/null
 [ ! -d "/etc/nixos/nixpkgs" ] && export NIX_PATH="$HOME/.nix"
 
+unlock_root(){
+  echo "cryptsetup luksOpen --tries 99 /dev/sda2 root && killall cryptsetup"
+  cat ~/.secret/cryptsetup-passwd | ssh -tt -v root@eve -p 2222
+}
+
 ## Functions
 flash_undelete() {
   cd /proc/$(ps x | awk '/libflashplayer.so\ /{print $1}')/fd && ls -l | grep deleted
@@ -505,6 +509,13 @@ make(){
   local build_path="$(dirname "$(upfind "Makefile")")"
   command make -C "${build_path:-.}" "$@"
 }
+cargo(){
+  local build_path="$(dirname "$(upfind "Cargo.toml")")"
+  ( 
+    builtin cd "${build_path:-.}" >/dev/null
+    command cargo "$@"
+  )
+}
 heroku(){
   docker run -it --rm -u $(id -u):$(id -g) -w "$HOME" \
     -v /etc/passwd:/etc/passwd:ro \
@@ -515,6 +526,24 @@ heroku(){
     -v /run/user/$(id -u):/run/user/$(id -u) \
     --name heroku \
     johnnagro/heroku-toolbelt "$@"
+}
+nixify() {
+  if [ ! -e ./.envrc ]; then
+    echo "use nix" > .envrc
+    direnv allow
+  fi
+  if [ ! -e default.nix ]; then
+    cat > default.nix <<'EOF'
+with import <nixpkgs> {};
+stdenv.mkDerivation {
+  name = "env";
+  buildInputs = [
+    bashInteractive
+  ];
+}
+EOF
+    ${EDITOR:-vim} default.nix
+  fi
 }
 
 ## Autocycle
@@ -550,13 +579,8 @@ if [ -f "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh" ]
   bindkey -M emacs '^P' history-substring-search-up
   bindkey -M emacs '^N' history-substring-search-down
 fi
-if [ -f "$HOME/.zsh-autosuggestions/autosuggestions.zsh" ]; then
-  source "$HOME/.zsh-autosuggestions/autosuggestions.zsh"
-  # Enable autosuggestions automatically
-  zle-line-init() { zle autosuggest-start }
-  zle -N zle-line-init
-
-  export AUTOSUGGESTION_HIGHLIGHT_COLOR='fg=10'
+if [ -f "$HOME/.zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+  source "$HOME/.zsh-autosuggestions/zsh-autosuggestions.zsh"
 fi
 if [ -f "$HOME/.homesick/repos/homeshick/homeshick.sh" ]; then
   source "$HOME/.homesick/repos/homeshick/homeshick.sh"

@@ -2,6 +2,7 @@
 af-add=scaletempo
 save-position-on-quit
 keep-open
-hwdec=vaapi
-vo=opengl-hq
+#hwdec=vaapi
+profile=opengl-hq
 cache-default=819200
+input-ipc-server=/tmp/mpvsocket

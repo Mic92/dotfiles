@@ -1,6 +1,7 @@
 [core]
   editor = vim
-  excludesfile = /home/joerg/.gitignore
+  excludesfile = ~/.gitignore
+  attributesfile = ~/.gitattributes
   pager = diff-so-fancy | less --tabs=4 -RFX
 [format]
   pretty = oneline
@@ -12,7 +13,7 @@
   status = true
 [user]
   name = Jörg Thalheim
-  email = joerg@higgsboson.tk
+  email = joerg@thalheim.io
   signingkey = CA4106B8D7CC79FA
 [diff]
   tool = vimdiff
@@ -32,14 +33,15 @@
   sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f"
   # the acronym stands for "subtree update"
   sbu = "!f() { git subtree pull --prefix $2 $1 master --squash; }; f"
+  publish = !git pull && git push
 [push]
   default = simple
 [rerere]
-  enabled = 1
+  enabled = true
 [branch]
   autosetuprebase = always
 [pull]
-  rebase = preserve
+	rebase = true
   autostash = true
 [url "gitlab@git.higgsboson.tk:Mic92/"]
   insteadOf = higgs:
@@ -51,6 +53,7 @@
   autocorrect = 1
 [mergetool]
   prompt = false
+  path = nvim
 [imap]
   folder = "Drafts"
   host = imap://imap.higgsboson.tk
@@ -62,7 +65,6 @@
   smtpencryption = tls
   chainreplyto = false
   smtpserverport = 587
-
 [http "github.com"]
   SSLCypherList = "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH"
 [commit]
@@ -71,5 +73,3 @@
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
   required = true
-[init]
-  templatedir = /home/joerg/git/githooks/githooks_bootstrap

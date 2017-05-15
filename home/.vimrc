@@ -6,7 +6,7 @@ let mapleader = " "
 if has("nocompatible")
   set nocompatible " Use Vim settings, rather then Vi settings
 end
-set mouse =
+set mouse=
 set ruler " show the cursor position all the time
 set cursorline " highlight current line
 set showcmd " display incomplete commands
@@ -48,8 +48,8 @@ set directory=$HOME/.vim.temp
 silent !mkdir -p "$HOME/.vim.temp" "$HOME/.vim.backup"
 
 " enable spelling
-"set spell
-"set complete+=kspell
+set spell
+set complete+=kspell
 
 " Open new split panes to right and bottom, which feels more natural
 set splitbelow
@@ -61,46 +61,16 @@ endif
 set encoding=utf-8
 setglobal fileencodings=ucs-bom,utf-8,default,latin1
 
-syntax on
 filetype plugin indent on
+syntax on
 
 runtime macros/matchit.vim
 
-call plug#begin('~/.vim/plugged')
-Plug 'bling/vim-airline'
-Plug 'pearofducks/ansible-vim'
-Plug 'Raimondi/delimitMate'
-Plug 'scrooloose/nerdtree'
-Plug 'bronson/vim-trailing-whitespace'
-Plug 'altercation/vim-colors-solarized'
-Plug 'scrooloose/syntastic'
-Plug 'airblade/vim-gitgutter'
-if has("python")
-  Plug 'Valloric/YouCompleteMe', { 'do': 'python2 ./install.py --clang-completer --gocode-completer --tern-completer --racer-completer' }
-  Plug 'SirVer/ultisnips'
-  Plug 'Trevoke/ultisnips-rspec'
-endif
-Plug 'kien/ctrlp.vim'
-Plug 'freitass/todo.txt-vim'
-Plug 'dhruvasagar/vim-table-mode'
-Plug 'fatih/vim-go'
-Plug 'rking/ag.vim'
-Plug 'ompugao/uncrustify-vim', { 'for': ['c', 'cpp'] }
-Plug 'rust-lang/rust.vim'
-call plug#end()
-
-" Switch syntax highlighting on, when the terminal has colors
-" Also switch on highlighting the last used search pattern.
 if (&t_Co > 2 || has("gui_running"))
-  " Enable 256 colors
-  set t_Co=256
-  "colorscheme zenburn
-  let g:solarized_termcolors=256
   set background=light
-  "set background=dark
+  let g:solarized_termcolors=256
   colorscheme solarized
 endif
-
 
 augroup vimrcEx
   au!
@@ -116,8 +86,6 @@ augroup vimrcEx
     \ endif
 augroup END
 
-" Display extra whitespace
-set list listchars=tab:»·,trail:·
 
 map <C-n> :NERDTreeToggle<CR>
 
@@ -139,33 +107,6 @@ let g:ctrlp_dont_split = 'NERD_tree_2'
 " bind K to grep word under cursor
 nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 
-" Tab completion
-" will insert tab at beginning of line,
-" will use completion if not at beginning
-set wildmode=list:longest,list:full
-set complete=.,w,t
-function! InsertTabWrapper()
-    let col = col('.') - 1
-    if !col || getline('.')[col - 1] !~ '\k'
-        return "\<tab>"
-    else
-        return "\<c-p>"
-    endif
-endfunction
-inoremap <Tab> <c-r>=InsertTabWrapper()<cr>
-
-" Exclude Javascript files in :Rtags via rails.vim due to warnings when parsing
-let g:Tlist_Ctags_Cmd="ctags --exclude='*.js'"
-
-" Index ctags from any project, including those outside Rails
-map <Leader>ct :!ctags -R .<CR>
-
-" Switch between the last two files
-nnoremap <leader><leader> <c-^>
-
-" Treat <li> and <p> tags like the block tags they are
-let g:html_indent_tags = 'li\|p'
-
 " check file change every 4 seconds ('CursorHold') and reload the buffer upon detecting change
 au CursorHold * checktime
 
@@ -181,16 +122,14 @@ au BufEnter *.rs set ai sw=4 ts=4 sta et fo=croql
 " go setup
 au BufEnter *.go setlocal noet ts=4 sw=4 sts=4 list!
 
-" tabs for C/C++ projects
-au BufEnter *.h setlocal noet ts=4 sw=4 sts=4 list!
-au BufEnter *.c setlocal noet ts=4 sw=4 sts=4 list!
-au BufEnter *.cpp setlocal noet ts=4 sw=4 sts=4 list!
 
-let g:UltiSnipsExpandTrigger="<leader><Tab>"
-let g:UltiSnipsJumpForwardTrigger="<leader><Tab>"
-let g:UltiSnipsJumpBackwardTrigger="<leader><s-Tab>"
+" tabs for C/C++ projects
+"au BufEnter *.h setlocal noet ts=4 sw=4 sts=4 list!
+"au BufEnter *.c setlocal noet ts=4 sw=4 sts=4 list!
+"au BufEnter *.cpp setlocal noet ts=4 sw=4 sts=4 list!
+
 let g:UltiSnipsSnippetsDir        = expand('~/.vim/UltiSnips')
-let g:UltiSnipsSnippetDirectories = [expand('~/.vim/UltiSnips')]
+let g:UltiSnipsSnippetDirectories = [expand('~/.vim/UltiSnips'), expand('~/.vim/vim-snippets/UltiSnips')]
 
 "open zipped files
 au BufReadCmd *.jar,*.xpi,*.wgt call zip#Browse(expand("<amatch>"))
@@ -223,20 +162,6 @@ vnoremap . :norm.<CR>
 
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
-
-set pastetoggle=<F3>
-
-" autocmd! BufWritePost * Neomake
-
-" conflict with YouCompleteMe
-let g:UltiSnipsExpandTrigger="<c-j>"
-let g:UltiSnipsJumpForwardTrigger="<c-j>"
-let g:UltiSnipsJumpBackwardTrigger="<c-k>"
-
-nnoremap <leader>jd :YcmCompleter GoToDeclaration<CR>
-nnoremap <leader>je :YcmCompleter GotoDefinition<CR>
-nnoremap <leader>jf :YcmCompleter FixIt<CR>
-nnoremap <leader>jt :YcmCompleter GetType<CR>
 
 command! -bar SudoWrite :
       \ setlocal nomodified |
@@ -276,6 +201,20 @@ let g:go_highlight_build_constraints = 1
 let g:go_fmt_command = "goimports"
 let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
 let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+
+"let g:deoplete#enable_at_startup = 1
+"call deoplete#enable()
+"" deoplete-go settings
+"let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
+"let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
+"let g:deoplete#sources#go#use_cache = 1
+"let g:deoplete#sources = {}
+"let g:deoplete#sources._ = ['buffer', 'file', 'omni', 'ultisnips']
+"let g:deoplete#sources.python = ['jedi']
+"let g:deoplete#sources#python#use_cache = 1
+
+let g:python_host_prog="/run/current-system/sw/bin/nvim-python"
+let g:python3_host_prog="/run/current-system/sw/bin/nvim-python3"
 
 let g:rustfmt_autosave = 1
 

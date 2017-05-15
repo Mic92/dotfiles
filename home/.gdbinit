@@ -170,7 +170,7 @@ add-auto-load-safe-path /usr/lib/go/src/runtime/runtime-gdb.py
 
 set auto-load safe-path /
 
-source ~/git/peda/peda.py
+source ~joerg/git/peda/peda.py
 
 set output-radix 0x10
 set input-radix 0x10

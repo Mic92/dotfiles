@@ -3,7 +3,7 @@
 #
 
 # If not running interactively, don't do anything
-[[ $- != *i* ]] && return
+#[[ $- != *i* ]] && return
 
 export TTY=$(tty)
 
@@ -71,4 +71,5 @@ unset config
 
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 
-PS1='\[\033[01;31m\]\u\[\033[01;33m\]@\[\033[01;36m\]\h \[\033[01;33m\]\w \[\033[01;35m\]\$ \[\033[00m\]'
+#PS1='\[\033[01;31m\]\u\[\033[01;33m\]@\[\033[01;36m\]\h \[\033[01;33m\]\w \[\033[01;35m\]\$ \[\033[00m\]'
+PS1='[\[\033[1;36m\]\u\[\033[0m\]@\h \W]\$ '

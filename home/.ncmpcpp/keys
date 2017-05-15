@@ -80,7 +80,7 @@
 #
 #key_stop = 's'
 #
-#key_pause = 'P'
+key_pause = 'P'
 #
 #key_next = '>'
 #
