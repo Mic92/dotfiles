@@ -607,3 +607,6 @@ if [ -d "$HOME/.pyenv" ]; then
   export PATH="$PYENV_ROOT/bin:$PATH"
 fi
 source $HOME/.zsh-nativgation-tools/zsh-navigation-tools.plugin.zsh
+
+. /home/joerg/.nix-profile/etc/profile.d/nix.sh
+export NIX_PATH=nixpkgs=$HOME/git/nixpkgs:nixos-config=$HOME/git/nixos-configuration/configuration.nix
