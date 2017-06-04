@@ -85,7 +85,6 @@ in {
         ExitNodes {de}
         EntryNodes {de}
         NewCircuitPeriod 120
-
       '';
     };
     nscd.enable = true;
@@ -212,8 +211,9 @@ in {
       storageDriver = "zfs";
       extraOptions = "--iptables=false";
     };
-    #anbox.enable = true;
   };
+
+  systemd.coredump.enable = true;
 
   #systemd.user.services = (builtins.listToAttrs (map userservice [
   #  { name = "chromium"; command = "${pkgs.chromium}/bin/chromium"; }
@@ -254,7 +254,7 @@ in {
     light.enable = true;
     adb.enable = true;
     zsh = {
-      syntax-highlighting.enable = true;
+      syntaxHighlighting.enable = true;
       enable = true;
       enableAutosuggestions = true;
       enableCompletion = true;
