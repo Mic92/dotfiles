@@ -62,7 +62,7 @@ in {
 
   i18n = {
     consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "de";
+    consoleKeyMap = "us";
     defaultLocale = "en_DK.UTF-8";
   };
   time.timeZone = "Europe/London";
