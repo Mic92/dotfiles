@@ -276,7 +276,7 @@ in {
     sudo.wheelNeedsPassword = false;
   };
 
-  services.dbus.packages = with pkgs; [ iwd gnome3.dconf gnome3.gnome_keyring ];
+  services.dbus.packages = with pkgs; [ gnome3.dconf gnome3.gnome_keyring ];
 
   system.stateVersion = "17.03";
 }
