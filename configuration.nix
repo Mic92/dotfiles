@@ -83,6 +83,7 @@ in {
         AutomapHostsSuffixes .exit,.onion
         EnforceDistinctSubnets 1
         ExitNodes {de}
+        EntryNodes {de}
         NewCircuitPeriod 120
 
       '';
