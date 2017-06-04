@@ -45,29 +45,32 @@ EOF
 
   vim = pkgs.vim_configurable.customize {
     name = "vim";
-    vimrcConfig.customRC = "source ~/.vimrc";
-    vimrcConfig.packages.nixbundle = with pkgs.vimPlugins; {
-      # loaded on launch
-      start = [ 
-        youcompleteme
-        #deoplete-nvim
-        #deoplete-jedi
-        #clang_complete
-        syntastic
-        gitgutter
-        airline
-        nerdtree
-        colors-solarized
-        vim-go
-        vim-scala
-        vim-polyglot
-        syntastic
-        # delimitMate
-        editorconfig-vim
-        ctrlp
-        rust-vim
-        # vim-trailing-whitespace
-      ];
+    vimrcConfig = {
+      customRC = ''
+        if filereadable($HOME . "/.vimrc")
+          source ~/.vimrc
+        endif
+      '';
+      packages.nixbundle = with pkgs.vimPlugins; {
+        # loaded on launch
+        start = [ 
+          youcompleteme
+          syntastic
+          gitgutter
+          airline
+          nerdtree
+          colors-solarized
+          vim-go
+          vim-scala
+          vim-polyglot
+          syntastic
+          # delimitMate
+          editorconfig-vim
+          ctrlp
+          rust-vim
+          # vim-trailing-whitespace
+        ];
+      };
     };
   };
 
@@ -76,6 +79,7 @@ EOF
   };
 
   desktopApps = [
+    dino
     dropbox
     #android-studio
     gimp
@@ -133,7 +137,8 @@ EOF
   ];
 
   rust = [
-    rustup
+    rustc
+    cargo
     rustfmt
     rustracer
     (pkgs.writeScriptBin "rust-doc" ''
