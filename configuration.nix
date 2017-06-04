@@ -116,7 +116,7 @@ in {
     printing = {
       enable = true;
       browsing = true;
-      drivers = [ pkgs.gutenprint pkgs.hplip ];
+      drivers = [ pkgs.gutenprint ]; # pkgs.hplip
     };
 
     logind.extraConfig = ''
