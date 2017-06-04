@@ -35,8 +35,8 @@ in {
         src = fetchFromGitHub {
           owner = "Mic92";
           repo = "systemd";
-          rev = "7ac926b7cf31cc8615078bb796a6724d4581888d";
-          sha256 = "1xa9ls7dphdhfb0fgkd3r4afn4nylmz6mjvhh50rhpdqm0dl7sn8";
+          rev = "3e56d2b1b121700a858b2e6980f855999ccba538";
+          sha256 = "0bzgmc8lni72fblx1m9fzp62k580bkbbwdkfsdip1khq50bijxn0";
         };
         LC_ALL="en_US.utf8";
 
