@@ -17,7 +17,12 @@
   };
 
   hardware = {
-    bluetooth.enable = true;
+    bluetooth = {
+      enable = true;
+      extraConfig = ''
+        AutoConnect=true
+      '';
+    };
     opengl = {
       enable = true;
       extraPackages = [ pkgs.vaapiIntel ];
