@@ -98,8 +98,9 @@ in {
 
     xserver = {
       enable = true;
-      layout = "de";
-      xkbOptions = "eurosign:e";
+      layout = "us";
+      xkbVariant = "altgr-intl";
+      xkbOptions = "caps:ctrl_modifier,compose:menu";
       windowManager = {
         awesome = {
           enable = true;
