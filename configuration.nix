@@ -133,7 +133,7 @@ in {
   #  };
   #});
 
-  powerManagment.powertop.enable = true;
+  powerManagement.powertop.enable = true;
 
   systemd.services = {
     systemd-networkd-wait-online.enable = false;
