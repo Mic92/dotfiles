@@ -48,7 +48,11 @@ in {
   nix = {
     gc.automatic = true;
     gc.dates = "03:15";
-    nixPath = [ "/etc/nixos" "nixos-config=/etc/nixos/configuration.nix" ];
+    nixPath = [
+      "/etc/nixos"
+      "nixos-config=/etc/nixos/configuration.nix"
+      "nixpkgs-overlays=/etc/nixos/overlays"
+    ];
     package = pkgs.nixUnstable;
     extraOptions = ''
       gc-keep-outputs = true
@@ -125,12 +129,7 @@ in {
     journald.extraConfig = "SystemMaxUse=1G";
   };
 
-  #systemd.package = pkgs.systemd.overrideDerivation(old: {
-  #  src = builtins.fetchgit {
-  #    url = /home/joerg/git/systemd;
-  #    rev = "c87463cc115b1e4cf9771c0b0b5a9fa8b7ba1d8f";
-  #  };
-  #});
+  systemd.package = pkgs.mysystemd;
 
   powerManagement.powertop.enable = true;
 

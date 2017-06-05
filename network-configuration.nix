@@ -141,10 +141,6 @@ in {
   };
 
   systemd.network.enable = true;
-  systemd.services.systemd-networkd.serviceConfig.ExecStart = [
-    ""
-    "${pkgs.networkd}/bin/systemd-networkd"
-  ];
   systemd.network.netdevs = let
     wgTemplate = lport: name: endpoint: key: {
       netdevConfig = { Name = "wg-${name}"; Kind = "wireguard"; };
