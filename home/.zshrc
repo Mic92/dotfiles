@@ -516,6 +516,10 @@ cargo(){
     command cargo "$@"
   )
 }
+real-which(){
+  realpath "$(command which $@)"
+}
+
 heroku(){
   docker run -it --rm -u $(id -u):$(id -g) -w "$HOME" \
     -v /etc/passwd:/etc/passwd:ro \
