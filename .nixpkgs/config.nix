@@ -136,7 +136,7 @@ EOF
     go2nix
     mercurial # go2nix
     bundix
-    nox
+    #nox
     nix-repl
   ];
 
