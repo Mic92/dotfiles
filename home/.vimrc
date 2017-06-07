@@ -137,12 +137,6 @@ au BufReadCmd *.jar,*.xpi,*.wgt call zip#Browse(expand("<amatch>"))
 " geojson
 au BufNewFile,BufRead *.geojson set filetype=json
 
-" go in normal mode with jj
-inoremap jj <Esc>
-
-" I18n translations
-vmap <Leader>z :call I18nTranslateString()<CR>
-
 " change in the directory of the current file
 "autocmd BufEnter * :lchdir %:p:h
 
