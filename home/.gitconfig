@@ -2,7 +2,6 @@
   editor = vim
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
-  pager = diff-so-fancy | less --tabs=4 -RFX
 [format]
   pretty = oneline
   signoff = true
@@ -29,10 +28,7 @@
   s = stash --keep-index
   uncommit = reset --soft HEAD^
   pr = !"pr() { git fetch origin pull/$1/head:pr-$1; git checkout pr-$1; }; pr"
-  # the acronym stands for "subtree add"
-  sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f"
-  # the acronym stands for "subtree update"
-  sbu = "!f() { git subtree pull --prefix $2 $1 master --squash; }; f"
+  reset-pr = reset --hard FETCH_HEAD
   publish = !git pull && git push
 [push]
   default = simple
@@ -67,9 +63,9 @@
   smtpserverport = 587
 [http "github.com"]
   SSLCypherList = "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH"
-[commit]
-  gpgsign = true
 [filter "lfs"]
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
   required = true
+[include]
+  path = ~/.gitconfig.local
