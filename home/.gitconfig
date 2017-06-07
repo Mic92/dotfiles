@@ -13,7 +13,7 @@
 [user]
   name = Jörg Thalheim
   email = joerg@thalheim.io
-  signingkey = CA4106B8D7CC79FA
+  #signingkey = CA4106B8D7CC79FA
 [diff]
   tool = vimdiff
   compactionHeuristic = true
