@@ -1,31 +1,5 @@
 with import <nixpkgs> {};
 let
-  nvim = pkgs.neovim.override {
-    vimAlias = true;
-    configure.packages.nixbundle = with pkgs.vimPlugins; {
-      # loaded on launch
-      start = with vimPlugins; [ 
-        youcompleteme
-        syntastic
-        gitgutter
-        airline
-        nerdtree
-        colors-solarized
-        vim-go
-        vim-scala
-        vim-polyglot
-        syntastic
-        nerdcommenter
-        editorconfig-vim
-        easymotion
-        ctrlp
-        rust-vim
-        vim-trailing-whitespace
-        pony-vim-syntax
-        vim-css-color
-      ];
-    };
-  };
   officeCommand = alias: exe: (stdenv.mkDerivation {
     buildInputs = [ wrapGAppsHook ];
     name = alias;
