@@ -228,3 +228,15 @@ endif
 if filereadable($LOCAL_VIMRC)
   source $LOCAL_VIMRC
 endif
+
+nnoremap <leader>jd :YcmCompleter GoToDeclaration<CR>
+nnoremap <leader>je :YcmCompleter GoToDefinition<CR>
+nnoremap <leader>jf :YcmCompleter FixIt<CR>
+nnoremap <leader>jt :YcmCompleter GetType<CR>
+
+let g:syntastic_python_flake8_args='--ignore=E501,E265'
+
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
+noremap <Leader>a :Ack <cword><cr>
