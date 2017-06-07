@@ -1,4 +1,4 @@
 home/.vim/bundle
 *.zwc
 home/.emacs.elc
-home/.gitconfig.local
+/home/.gitconfig.local
