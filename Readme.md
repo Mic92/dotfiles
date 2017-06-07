@@ -70,6 +70,14 @@ EOF
 $ install -m 400 -o joerg -g joerg /tmp/authorized_keys ~joerg/.ssh/authorized_keys && rm /tmp/authorized_keys
 ```
 
+Boostrap nix:
+
+```
+$ install -d -m755 -o joerg -g joerg /nix
+$ curl https://nixos.org/nix/install | sh
+```
+
+
 Bootstrap system:
 
 ```
