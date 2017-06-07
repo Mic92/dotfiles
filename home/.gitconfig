@@ -15,11 +15,11 @@
   email = joerg@thalheim.io
   #signingkey = CA4106B8D7CC79FA
 [diff]
-  tool = vimdiff
+  tool = vim -d
   compactionHeuristic = true
   renames = true
 [merge]
-  tool = vimdiff
+  tool = vim -d
   conflictstyle = diff3
 [alias]
   comma = commit --amend
