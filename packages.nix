@@ -1,9 +1,7 @@
 {pkgs, ...}:
 with pkgs;
 
-let
-  myhunspell = (hunspellWithDicts (with hunspellDicts; [en-us en-gb-ise]));
-in {
+{
   boot = {
     kernelPackages = linuxPackages_4_11;
     extraModulePackages = with linuxPackages_4_11; [ bcc wireguard sysdig ];
@@ -11,7 +9,7 @@ in {
   };
 
   nixpkgs.config.allowUnfree = true;
-  nixpkgs.overlays = [ (import <nixpkgs-overlays/mypackages>) ];
+  nixpkgs.overlays = [ (import ./overlays/mypackages) ];
 
   environment.systemPackages = [
     mysystemd
