@@ -50,12 +50,16 @@ EOF
     };
   };
 
-  rubyEnv = pkgs.loadRubyEnv ./.bundix/definition.nix {
+  rubyApps = pkgs.loadRubyEnv ./.bundix/definition.nix {
     paths = with pkgs; [ bundler bundix rubocop ];
   };
 
   desktopApps = [
     dino
+    libreoffice
+    (officeCommand "word" "WINWORD.EXE")
+    (officeCommand "excel" "EXCEL.EXE")
+    (officeCommand "powerpoint" "POWERPNT.EXE")
     dropbox
     #android-studio
     gimp
@@ -103,16 +107,8 @@ EOF
     adwaita-icon-theme
   ]);
 
-  pythonLibs = with pythonPackages; [
-    ipython
-    numpy
-    scipy
-    matplotlib
-    pandas
-    seaborn
-  ];
 
-  rust = [
+  rustApps = [
     rustc
     cargo
     rustfmt
@@ -134,40 +130,26 @@ EOF
     '')
   ];
 
-  nixDev = [
+  nixDevApps = [
     nix-prefetch-scripts
     pypi2nix
     go2nix
+    mercurial # go2nix
     bundix
     nox
     nix-repl
   ];
 
-  latex = [
-    rubber
-    (texlive.combine {
-      inherit (texlive)
-      scheme-basic
-
-      # awesome cv
-      xetex
-      xetex-def
-      unicode-math
-      ucharcat
-      collection-fontsextra
-      fontspec
-
-      collection-binextra
-      collection-fontsrecommended
-      collection-genericrecommended
-      collection-latex
-      collection-latexextra
-      collection-latexrecommended
-      collection-science
-      collection-langgerman
-      IEEEtran;
-    })
+  debuggingBasicsApps = [
+    gdb
+    strace
   ];
+  userPackages = name: paths: buildEnv {
+    inherit ((import <nixpkgs/nixos> {}).config.system.path)
+      pathsToLink ignoreCollisions postBuild;
+    extraOutputsToInstall = [ "man" ];
+    inherit paths name;
+  };
 in {
   allowUnfree = true;
   pulseaudio = true;
@@ -189,46 +171,53 @@ in {
     #      dontStrip = false;
     #    });
     #});
-    all = buildEnv {
-      inherit ((import <nixpkgs/nixos> {}).config.system.path)
-        pathsToLink ignoreCollisions postBuild;
-      extraOutputsToInstall = [ "man" ];
-      name = "all";
-      paths = desktopApps
-        ++ rust
-        ++ pythonLibs
-        ++ nixDev
-        ++ [
-          vim
-          gitAndTools.diff-so-fancy
-          gitAndTools.hub
-          gitAndTools.git-octopus
-          gitAndTools.git-crypt
-          gitFull
-          mercurial
-          sshfsFuse
-          sshuttle
-          jq
-          libreoffice
-          (officeCommand "word" "WINWORD.EXE")
-          (officeCommand "excel" "EXCEL.EXE")
-          (officeCommand "powerpoint" "POWERPNT.EXE")
-          httpie
-          cloc
-          mosh
-          cheat
-          graphicsmagick
-          gdb
-          gnupg1compat
-          direnv
-          ghostscript
-          skype
-          nmap
-        ] ++ latex;
-    };
+    all = userPackages "all" ([]
+      #++ desktopApps
+      #++ latexApps
+      #++ rustApps
+      #++ rubyApps
+      #++ pythonDataLibs
+      ++ nixDevApps
+      ++ debuggingApps
+      ++ [
+        vim
+        gitAndTools.diff-so-fancy
+        gitAndTools.hub
+        gitAndTools.git-octopus
+        gitAndTools.git-crypt
+        gitFull
+        sshfsFuse
+        sshuttle
+        jq
+        httpie
+        cloc
+        mosh
+        cheat
+        graphicsmagick
+        gnupg1compat
+        direnv
+        ghostscript
+        tree
+      ]);
+    
     staging = buildEnv {
       name = "staging";
       paths = [ ];
     };
+
+    debuggingApps = [
+      gperftools
+      valgrind
+      binutils
+    ];
+
+    pythonDataLibs = with python3Packages; [
+      ipython
+      numpy
+      scipy
+      matplotlib
+      pandas
+      seaborn
+    ];
   };
 }
