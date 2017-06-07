@@ -7,6 +7,17 @@ if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
   tmux attach-session || tmux
   #[[ $? = "0" ]] && exit
 fi
+if [ -e /home/joerg/.nix-profile/etc/profile.d/nix.sh ]; then 
+  . /home/joerg/.nix-profile/etc/profile.d/nix.sh;
+fi
+if (( ! ${+NIX_PATH} )); then
+  if [[ -d $HOME/git/nixpkgs ]]; then
+    export NIX_PATH=nixpkgs=$HOME/git/nixpkgs
+  fi
+  if [[ -d $HOME/git/nixos-configuration ]]; then
+    export NIX_PATH=$NIX_PATH:nixos-config=$HOME/git/nixos-configuration/configuration.nix
+  fi
+fi
 
 hash_string256() {
   local hashval
@@ -384,7 +395,6 @@ if [ -x "$HOME/.go/bin/go" ]; then
 fi
 export GOPATH="$HOME/go"
 [ ! -d "$GOPATH" ] && mkdir -p "$GOPATH/src" 2>/dev/null
-[ ! -d "/etc/nixos/nixpkgs" ] && export NIX_PATH="$HOME/.nix"
 
 unlock_root(){
   echo "cryptsetup luksOpen --tries 99 /dev/sda2 root && killall cryptsetup"
@@ -608,5 +618,3 @@ if [ -d "$HOME/.pyenv" ]; then
 fi
 source $HOME/.zsh-nativgation-tools/zsh-navigation-tools.plugin.zsh
 
-. /home/joerg/.nix-profile/etc/profile.d/nix.sh
-export NIX_PATH=nixpkgs=$HOME/git/nixpkgs:nixos-config=$HOME/git/nixos-configuration/configuration.nix

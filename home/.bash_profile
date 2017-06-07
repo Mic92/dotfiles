@@ -50,3 +50,4 @@ export CDPATH=.:/home/git:/var/abs/local/yaourtbuild:/var/log
 [ -n $BASH -a -r ~/.bashrc ] && . ~/.bashrc
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+if [ -e /home/joerg/.nix-profile/etc/profile.d/nix.sh ]; then . /home/joerg/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
