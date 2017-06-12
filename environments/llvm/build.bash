@@ -23,7 +23,7 @@ for v in "${versions[@]}"; do
     ln -sf ../../build-env.nix default.nix
     nix-shell --option build-use-sandbox true --pure \
       --run 'eval $configurePhase && eval $buildPhase' \
-      --arg llvm_version $v | tee /dev/null
+      --arg llvm_version $v
   )
 done
 
