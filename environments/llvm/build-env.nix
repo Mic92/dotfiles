@@ -16,10 +16,11 @@ in (overrideCC stdenv cc).mkDerivation {
     ninja
     ccache
     utillinux # typescript
+    python
   ];
   configurePhase = "cmake -B. -H.. -GNinja -DLLVM_CCACHE_BUILD=ON -DLLVM_TARGETS_TO_BUILD=X86";
   DEBUG_SYMBOLS="1";
   # only build libraries and llvm-config, this save
   # script is needed because ninja tries to reopen a tty, if stdout is not connected to one
-  buildPhase = ''script -c 'ninja -t targets all' | awk -F":" '/\.a|\.so|llvm-config/ {printf "%s ", $1}' | xargs ninja'';
+  buildPhase = ''script -c 'ninja -t targets all' | awk -F":" '/\.a|\.so|bin\/llvm-config/ {printf "%s ", $1}' | xargs echo'';
 }
