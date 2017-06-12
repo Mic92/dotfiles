@@ -3,7 +3,7 @@
 with import <nixpkgs> {};
 
 let
-  cc = if llvm_version == "27" then
+  cc = if llvm_version <= 27 then
          gcc45
        else
          clang_4;
@@ -14,7 +14,12 @@ in (overrideCC stdenv cc).mkDerivation {
     cmake
     bashInteractive
     ninja
+    ccache
+    utillinux # typescript
   ];
-  configureCommand = "cmake -B. -H.. -GNinja";
-  buildCommand = "ninja";
+  configurePhase = "cmake -B. -H.. -GNinja -DLLVM_CCACHE_BUILD=ON -DLLVM_TARGETS_TO_BUILD=X86";
+  DEBUG_SYMBOLS="1";
+  # only build libraries and llvm-config, this save
+  # script is needed because ninja tries to reopen a tty, if stdout is not connected to one
+  buildPhase = ''script -c 'ninja -t targets all' | awk -F":" '/\.a|\.so|llvm-config/ {printf "%s ", $1}' | xargs ninja'';
 }
