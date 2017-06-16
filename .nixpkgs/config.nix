@@ -26,11 +26,13 @@ EOF
     '';
     vimrcConfig.packages.nixbundle = with pkgs.vimPlugins; {
       # loaded on launch
-      start = [ 
+      start = [
         youcompleteme
         #deoplete-nvim
         #deoplete-jedi
         #clang_complete
+        vim-trailing-whitespace
+        nerdtree-git-plugin
         syntastic
         gitgutter
         airline
@@ -147,7 +149,7 @@ EOF
   userPackages = name: paths: buildEnv {
     inherit ((import <nixpkgs/nixos> {}).config.system.path)
       pathsToLink ignoreCollisions postBuild;
-    extraOutputsToInstall = [ "man" ];
+    extraOutputsToInstall = [ "man" "debug" ];
     inherit paths name;
   };
 in {
@@ -179,6 +181,7 @@ in {
       #++ pythonDataLibs
       ++ nixDevApps
       ++ debuggingApps
+      ++ debuggingBasicsApps
       ++ [
         vim
         gitAndTools.diff-so-fancy
@@ -198,8 +201,9 @@ in {
         direnv
         ghostscript
         tree
+        fzf
       ]);
-    
+
     staging = buildEnv {
       name = "staging";
       paths = [ ];
