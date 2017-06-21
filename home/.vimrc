@@ -66,11 +66,7 @@ syntax on
 
 runtime macros/matchit.vim
 
-if (&t_Co > 2 || has("gui_running"))
-  set background=light
-  let g:solarized_termcolors=256
-  colorscheme solarized
-endif
+colorscheme solarized
 
 augroup vimrcEx
   au!
