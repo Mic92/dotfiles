@@ -383,7 +383,7 @@ export REPORTTIME=4
 # LC_MESSAGES=en_DK.UTF-8 never translates program output
 # LC_TIME=en_DK.UTF-8 leads to yyyy-mm-dd hh:mm date/time output
 unset LC_ALL
-export LANG=de_DE.UTF-8
+export LANG=en_US.UTF-8
 export LC_MESSAGES=en_DK.UTF-8
 export LC_TIME=en_DK.UTF-8
 export PERL_CPANM_OPT="--local-lib=~/.perl5"
@@ -492,7 +492,7 @@ moshlogin(){
 }
 # List directory after changing directory
 chpwd() { ls }
-mcd() { mkdir -p "$1" && cd "$1"; }
+mkcd() { mkdir -p "$1" && cd "$1"; }
 cd() {
   local to="${1:-$HOME}"
   if [ -f "$to" ]; then
