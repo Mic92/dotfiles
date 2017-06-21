@@ -69,4 +69,15 @@ self: super:
       patchelf --set-rpath "$out/lib:\$ORIGIN" $out/bin/systemd-networkd
     '';
   };
+
+  ocaml_with_topfind = with self; self.stdenv.mkDerivation rec {
+    name = "ocaml_with_topfind-${version}";
+    version = lib.getVersion ocaml;
+
+    nativeBuildInputs = [ makeWrapper ];
+    buildCommand = ''
+      makeWrapper "${ocaml}/bin/ocaml" "$out/bin/ocaml_topfind" \
+      --add-flags "-I ${ocamlPackages.findlib}/lib/ocaml/${version}/site-lib"
+      '';
+  };
 }
