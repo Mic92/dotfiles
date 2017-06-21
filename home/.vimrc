@@ -236,3 +236,5 @@ if executable('ag')
   let g:ackprg = 'ag --vimgrep'
 endif
 noremap <Leader>a :Ack <cword><cr>
+vnoremap <Leader>a y:Ack <C-r>=fnameescape(@")<CR><CR>
+
