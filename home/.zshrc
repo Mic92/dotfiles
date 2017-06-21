@@ -619,3 +619,6 @@ if [ -d "$HOME/.pyenv" ]; then
 fi
 source $HOME/.zsh-nativgation-tools/zsh-navigation-tools.plugin.zsh
 
+if [[ -n ${commands[thefuck]} ]]; then
+  eval $(thefuck --alias)
+fi
