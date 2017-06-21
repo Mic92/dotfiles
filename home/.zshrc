@@ -230,6 +230,7 @@ alias mv='nocorrect mv -v'
 alias mkdir='nocorrect mkdir -p'
 xalias locate='locate --existing --follow --basename --ignore-case'
 alias ip='ip -c'
+xalias objdump='objdump -M intel'
 # noglobs
 alias wget='noglob wget'
 alias curl='noglob curl'
