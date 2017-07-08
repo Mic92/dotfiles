@@ -8,7 +8,6 @@
 [color]
   branch = true
   diff = true
-  ui = true
   status = true
 [user]
   name = Jörg Thalheim
