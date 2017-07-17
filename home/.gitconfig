@@ -22,11 +22,10 @@
   conflictstyle = diff3
 [alias]
   comma = commit --amend
-  lol = log --graph --decorate --pretty=oneline --abbrev-commit --all --max-count=20
-  lola = log --graph --decorate --pretty=oneline --abbrev-commit --all
   s = stash --keep-index
   uncommit = reset --soft HEAD^
   pr = !"pr() { git fetch origin pull/$1/head:pr-$1; git checkout pr-$1; }; pr"
+  backport = cherry-pick -x
   reset-pr = reset --hard FETCH_HEAD
   publish = !git pull && git push
 [push]
