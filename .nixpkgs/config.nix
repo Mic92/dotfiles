@@ -83,7 +83,11 @@ let
     hunspell
     hunspellDicts.en-gb-ise
     scrot
-    gajim
+    (gajim.overrideDerivation (old: {
+      patches = (old.patches or []) ++ [
+        ./0001-remove-outer-paragraph.patch
+      ];
+    }))
     arandr
     lxappearance
     xorg.xev
