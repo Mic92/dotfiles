@@ -1,22 +1,5 @@
 with import <nixpkgs> {};
 let
-  officeCommand = alias: exe: (stdenv.mkDerivation {
-    buildInputs = [ wrapGAppsHook ];
-    name = alias;
-    src = null;
-    phases = [ "installPhase" "fixupPhase" ];
-    installPhase = ''
-      mkdir -p $out/bin
-      cat > $out/bin/${alias} <<'EOF'
-#! ${pkgs.stdenv.shell} -e
-export WINEPREFIX=~/.wineprefix/office2010
-export PATH=${samba}/bin:$PATH
-exec "${wineUnstable}/bin/wine" "$WINEPREFIX/drive_c/Program Files/Microsoft Office/Office14/${exe}"
-EOF
-      chmod +x $out/bin/${alias}
-    '';
-  });
-
   vim = pkgs.vim_configurable.customize {
     name = "vim";
     vimrcConfig.customRC = ''
@@ -47,7 +30,6 @@ EOF
         editorconfig-vim
         ctrlp
         rust-vim
-        # vim-trailing-whitespace
       ];
     };
   };
@@ -59,9 +41,6 @@ EOF
   desktopApps = [
     dino
     libreoffice
-    (officeCommand "word" "WINWORD.EXE")
-    (officeCommand "excel" "EXCEL.EXE")
-    (officeCommand "powerpoint" "POWERPNT.EXE")
     dropbox
     #android-studio
     gimp
