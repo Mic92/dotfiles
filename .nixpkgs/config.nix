@@ -34,9 +34,33 @@ let
     };
   };
 
-  rubyApps = pkgs.loadRubyEnv ./.bundix/definition.nix {
-    paths = with pkgs; [ bundler bundix rubocop ];
-  };
+  latexApps = [
+    rubber
+    (texlive.combine {
+      inherit (texlive)
+      scheme-basic
+
+      # awesome cv
+      xetex
+      xetex-def
+      unicode-math
+      ucharcat
+      collection-fontsextra
+      fontspec
+
+      collection-binextra
+      collection-fontsrecommended
+      collection-genericrecommended
+      collection-latex
+      collection-latexextra
+      collection-latexrecommended
+      collection-science
+      collection-langgerman
+      IEEEtran;
+    })
+  ];
+
+  rubyApps = [ bundler bundix rubocop ];
 
   desktopApps = [
     dino
@@ -80,6 +104,7 @@ let
     xclip
     screen-message
     scrot
+    alacritty
   ] ++ (with gnome3; [
     gvfs
     eog
@@ -88,36 +113,13 @@ let
     adwaita-icon-theme
   ]);
 
-
-  rustApps = [
-    rustc
-    cargo
-    rustfmt
-    rustracer
-    (pkgs.writeScriptBin "rust-doc" ''
-       #! ${pkgs.stdenv.shell} -e
-       browser="$BROWSER"
-       if [ -z "$browser" ]; then
-         browser="$(type -P xdg-open || true)"
-         if [ -z "$browser" ]; then
-           browser="$(type -P w3m || true)"
-           if [ -z "$browser" ]; then
-             echo "$0: unable to start a web browser; please set \$BROWSER"
-             exit 1
-           fi
-         fi
-       fi
-       exec "$browser" "${rustc.doc}/share/doc/rust/html/index.html"
-    '')
-  ];
-
   nixDevApps = [
     nix-prefetch-scripts
     pypi2nix
     go2nix
     mercurial # go2nix
     bundix
-    #nox
+    nox
     nix-repl
   ];
 
@@ -125,6 +127,8 @@ let
     gdb
     strace
   ];
+  debuggingApps = [ binutils gperftools valgrind ];
+
   userPackages = name: paths: buildEnv {
     inherit ((import <nixpkgs/nixos> {}).config.system.path)
       pathsToLink ignoreCollisions postBuild;
@@ -139,28 +143,15 @@ in {
     enablePepperPDF = true;
   };
   packageOverrides = pkgs: with pkgs; {
-    #pandas = pkgs.python3Packages.pandas.overridePythonPackage(old: rec {
-    #  version = "0.19.1";
-    #  src =  pkgs.python3Packages.fetchPypi {
-    #    pname = "pandas";
-    #    inherit version;
-    #    sha256 = "08blshqj9zj1wyjhhw3kl2vas75vhhicvv72flvf1z3jvapgw295";
-    #  };
-    #});
-    #st = (st.overrideDerivation (old: { dontStrip = true; })).override ({
-    #    libXft = xorg.libXft.overrideDerivation (old: {
-    #      dontStrip = false;
-    #    });
-    #});
     all = userPackages "all" ([]
       #++ desktopApps
       #++ latexApps
-      #++ rustApps
       #++ rubyApps
+      #++ rustApps
       #++ pythonDataLibs
-      ++ nixDevApps
       ++ debuggingApps
       ++ debuggingBasicsApps
+      ++ nixDevApps
       ++ [
         vim
         gitAndTools.diff-so-fancy
@@ -181,17 +172,36 @@ in {
         ghostscript
         tree
         fzf
+        exa
+        bench
       ]);
 
     staging = buildEnv {
       name = "staging";
-      paths = [ ];
+      paths = [
+      ];
     };
 
-    debuggingApps = [
-      gperftools
-      valgrind
-      binutils
+    rustApps = [
+      rustc
+      cargo
+      rustfmt
+      rustracer
+      (pkgs.writeScriptBin "rust-doc" ''
+         #! ${pkgs.stdenv.shell} -e
+         browser="$BROWSER"
+         if [ -z "$browser" ]; then
+           browser="$(type -P xdg-open || true)"
+           if [ -z "$browser" ]; then
+             browser="$(type -P w3m || true)"
+             if [ -z "$browser" ]; then
+               echo "$0: unable to start a web browser; please set \$BROWSER"
+               exit 1
+             fi
+           fi
+         fi
+         exec "$browser" "${rustc.doc}/share/doc/rust/html/index.html"
+      '')
     ];
 
     pythonDataLibs = with python3Packages; [
