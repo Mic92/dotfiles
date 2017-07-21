@@ -125,6 +125,7 @@ let
     bundix
     nox
     nix-repl
+    nix-review
   ];
 
   debuggingBasicsApps = [

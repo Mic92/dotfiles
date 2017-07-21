@@ -1,6 +1,17 @@
 self: super:
 
 {
+  nix-review = self.stdenv.mkDerivation {
+    name = "nix-review";
+    src = ./nix-review;
+    buildInputs = [ self.python3 ];
+    installPhase = ''
+      runHook preInstall
+      install -m755 -D review.py $out/bin/nix-review
+      runHook postInstall
+    '';
+  };
+
   hplip = super.hplip.override { withPlugin = true; };
   #neovim = pkgs.neovim.override {
   #  vimAlias = true;
