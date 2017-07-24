@@ -1,10 +1,10 @@
-{pkgs, ...}:
+{pkgs, config, ...}:
 with pkgs;
 
 {
   boot = {
-    kernelPackages = linuxPackages_4_11;
-    extraModulePackages = with linuxPackages_4_11; [ bcc wireguard sysdig ];
+    kernelPackages = linuxPackages_4_9;
+    extraModulePackages = with linuxPackages_4_9; [ bcc wireguard sysdig ];
     zfs.enableUnstable = true;
   };
 
