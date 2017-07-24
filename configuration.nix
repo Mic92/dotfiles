@@ -191,15 +191,6 @@ in {
         ExecStart = "${pkgs.bittorrentSync20}/bin/btsync --nodaemon --config /home/joerg/.config/btsync/btsync.conf";
       };
     };
-    godoc = {
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Environment = "GOPATH=/home/joerg/go";
-        User = "joerg";
-        RemainAfterExit = "yes";
-        ExecStart = "/home/joerg/go/bin/godoc -http=:8081";
-      };
-    };
     systemd-udev-settle.serviceConfig.ExecStart = "${pkgs.coreutils}/bin/true";
   };
 
