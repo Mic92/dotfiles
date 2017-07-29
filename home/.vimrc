@@ -92,12 +92,11 @@ if executable('ag')
 " Use Ag over Grep
   set grepprg=ag\ --nogroup\ --nocolor
 
-" Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
   let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
 
-" ag is fast enough that CtrlP doesn't need to cache
+  " ag is fast enough that CtrlP doesn't need to cache
   let g:ctrlp_use_caching = 0
-
 endif
 let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_dont_split = 'NERD_tree_2'
@@ -117,7 +116,7 @@ au BufEnter *.py set ai sw=4 ts=4 sta et fo=croql
 au BufEnter *.rs set ai sw=4 ts=4 sta et fo=croql
 
 " go setup
-au BufEnter *.go setlocal noet ts=4 sw=4 sts=4 list!
+au BufEnter *.go setlocal noet ts=4 sw=4 sts=4
 
 
 " tabs for C/C++ projects
