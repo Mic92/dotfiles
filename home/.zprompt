@@ -11,7 +11,6 @@ prompt_mic_help () {
 update_current_git_vars() {
     unset __CURRENT_GIT_BRANCH
     unset __CURRENT_GIT_BRANCH_STATUS
-    unset __CURRENT_GIT_BRANCH_IS_DIRTY
 
     local st="$(LC_ALL=posix git status 2>/dev/null)"
     if [[ -n "$st" ]]; then
@@ -35,10 +34,6 @@ update_current_git_vars() {
                 __CURRENT_GIT_BRANCH_STATUS='behind'
             fi
         fi
-
-        if [[ ! $st =~ 'nothing to commit' ]]; then
-            __CURRENT_GIT_BRANCH_IS_DIRTY='1'
-        fi
     fi
 }
 
@@ -58,9 +53,6 @@ prompt_git_info() {
             up-to-date)
             ;;
         esac
-        if [ -n "$__CURRENT_GIT_BRANCH_IS_DIRTY" ]; then
-            s+="%{$fg[red]%}⚡%{$reset_color%}"
-        fi
 
         local open_p="%{$fg[blue]%}[%{$reset_color%}"
         local close_p="%{$fg[blue]%}]%{$reset_color%}"
