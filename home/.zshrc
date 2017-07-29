@@ -245,7 +245,7 @@ alias sless='sudo less'
 alias stail='sudo tail'
 xalias ctl='sudo systemctl'
 alias json_escape="ruby -e \"require 'json'; puts(File.open(ARGV[0]).read.to_json) if ARGV[0]\""
-alias gdb='gdb --quiet'
+alias gdb='gdb --quiet --args'
 # Editors
 [[ -n ${commands[vi]} ]] && alias vi=vim
 xalias vim="nvim"
