@@ -212,7 +212,7 @@ let g:rustfmt_autosave = 1
 " usefull for gdb breakpoints
 function! LineToClipboard()
   let path = resolve(expand(@%))
-  call system('xclip', (path . ":" . line(".")))
+  call system('tmux load-buffer -', (path . ":" . line(".")))
 endfunction
 nmap <leader>l :call LineToClipboard()<CR>
 
