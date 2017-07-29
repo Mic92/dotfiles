@@ -7,7 +7,7 @@ if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
   tmux attach-session || tmux
   #[[ $? = "0" ]] && exit
 fi
-if [ -e /home/joerg/.nix-profile/etc/profile.d/nix.sh ]; then 
+if [ -e /home/joerg/.nix-profile/etc/profile.d/nix.sh ]; then
   . /home/joerg/.nix-profile/etc/profile.d/nix.sh;
 fi
 if (( ! ${+NIX_PATH} )); then
@@ -221,7 +221,7 @@ alias sl=ls
 alias la='ls -lA'
 alias laa='ls -la'
 alias ll='ls -l'
-alias tempdir='cd `mktemp -d`;'
+alias tempdir='cd `TMPDIR=/tmp mktemp -d`;'
 alias rm='rm -rv'
 alias cp='nocorrect cp -rpv'
 alias cpv="rsync -pogr --progress"
