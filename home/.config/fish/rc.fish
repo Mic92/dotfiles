@@ -92,12 +92,9 @@ alias sync 'sudo sync'
 alias sync 'sudo updatedb'
 alias sless 'sudo less'
 alias stail 'sudo tail'
-if is_command vim;
-  alias svim 'sudo vim'
-  alias svim 'sudo vimdiff'
-else
-  alias vim 'vi'
-end
+alias svim 'sudo vim'
+alias svim 'sudo vimdiff'
+alias vim 'vi'
 # reboot/halt/suspend
 alias shutdown='sudo shutdown'
 alias reboot='sudo reboot'
