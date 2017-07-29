@@ -330,7 +330,7 @@ export PATH
 cdpath=( ~/git )
 # Prefered programs
 export BROWSER=chromium
-export TERMINAL=urxvt
+export TERMINAL=alacritty
 export PICTUREVIEW=eog
 export EDITOR=vim
 export VISUAL=$EDITOR
@@ -489,10 +489,14 @@ moshlogin(){
     ssh-add ~/.ssh/id_{rsa,ecdsa,ed25519}
   fi
   ssh login killall mosh-server;
-  mosh -A -p 60011:60011 login
+  LC_ALL=en_DK.UTF-8 mosh -A -p 60011:60011 login
 }
 # List directory after changing directory
-chpwd() { ls }
+if [ "${commands[exa]}" ]; then
+  chpwd() { exa }
+else
+  chpwd() { ls }
+fi
 mkcd() { mkdir -p "$1" && cd "$1"; }
 cd() {
   local to="${1:-$HOME}"
@@ -522,7 +526,7 @@ make(){
 }
 cargo(){
   local build_path="$(dirname "$(upfind "Cargo.toml")")"
-  ( 
+  (
     builtin cd "${build_path:-.}" >/dev/null
     command cargo "$@"
   )
@@ -604,9 +608,6 @@ fi
 if [ -n "${commands[direnv]}" ]; then
   eval "$(direnv hook zsh)"
 fi
-if [ -n "${commands[envoy]}" ]; then
-  eval "$(envoy -pt ssh-agent)"
-fi
 if [ -f /usr/share/chruby/chruby.sh ]; then
   source /usr/share/chruby/chruby.sh
   source /usr/share/chruby/auto.sh
@@ -617,8 +618,9 @@ if [ -d "$HOME/.pyenv" ]; then
   export PYENV_ROOT="$HOME/.pyenv"
   export PATH="$PYENV_ROOT/bin:$PATH"
 fi
-source $HOME/.zsh-nativgation-tools/zsh-navigation-tools.plugin.zsh
+FZF_CTRL_R_OPTS=--reverse
+#source $HOME/.zsh-nativgation-tools/zsh-navigation-tools.plugin.zsh
 
-if [[ -n ${commands[thefuck]} ]]; then
-  eval $(thefuck --alias)
-fi
+#if [[ -n ${commands[thefuck]} ]]; then
+#  eval $(thefuck --alias)
+#fi
