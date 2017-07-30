@@ -5,6 +5,7 @@ import subprocess
 import os
 import sys
 import shutil
+import xml.etree.ElementTree as ET
 
 
 def sh(command, **kwargs):
@@ -34,10 +35,21 @@ def build_in_path(args, attrs, path):
     except subprocess.CalledProcessError:
         die('The invocation of "{}" failed'.format(' '.join(command)))
 
-def list_packages(path):
-    cmd = ['nix-env', '-f', path, '-qaP', '--out-path', '--show-trace']
-    output = subprocess.check_output(cmd, universal_newlines=True)
-    return set(output.split('\n'))
+def list_packages(path, check_meta=False):
+    cmd = ['nix-env', '-f', path, '-qaP', '--xml', '--out-path', '--show-trace']
+    if check_meta:
+        cmd.append("--meta")
+    process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    context = ET.iterparse(process.stdout, events=("start",))
+    packages = set()
+    for event, elem in context:
+        if elem.tag == "item":
+            attrib = elem.attrib["attrPath"]
+        elif elem.tag == "output":
+            assert attrib is not None
+            path = elem.attrib["path"]
+            packages.add((attrib, path))
+    return packages
 
 def fetch_ref(ref):
     sh(["git", "fetch", "https://github.com/NixOS/nixpkgs", ref])
@@ -46,7 +58,7 @@ def fetch_ref(ref):
 
 def differences(old, new):
     raw = new - old
-    return {l.split()[0] for l in raw}
+    return {l[0] for l in raw}
 
 def review_pr(pr, args, worktree_dir):
     master_rev = fetch_ref("master")
@@ -56,7 +68,7 @@ def review_pr(pr, args, worktree_dir):
     pr_rev = fetch_ref(f"pull/{pr}/head")
     sh(["git", "merge", pr_rev, "-m", "auto merge"], cwd=worktree_dir)
 
-    merged_packages = list_packages(worktree_dir)
+    merged_packages = list_packages(worktree_dir, check_meta=True)
 
     attrs = differences(master_packages, merged_packages)
     build_in_path(args, attrs, worktree_dir)
