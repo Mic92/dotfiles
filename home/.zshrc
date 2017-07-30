@@ -618,7 +618,10 @@ if [ -d "$HOME/.pyenv" ]; then
   export PYENV_ROOT="$HOME/.pyenv"
   export PATH="$PYENV_ROOT/bin:$PATH"
 fi
-FZF_CTRL_R_OPTS=--reverse
+if [ -n "${commands[fzf-share]}" ]; then
+  FZF_CTRL_R_OPTS=--reverse
+  source "$(fzf-share)/key-bindings.zsh"
+fi
 #source $HOME/.zsh-nativgation-tools/zsh-navigation-tools.plugin.zsh
 
 #if [[ -n ${commands[thefuck]} ]]; then
