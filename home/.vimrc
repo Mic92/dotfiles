@@ -66,7 +66,6 @@ syntax on
 
 runtime macros/matchit.vim
 
-set background=dark
 colorscheme solarized
 
 augroup vimrcEx
