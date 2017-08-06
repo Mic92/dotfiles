@@ -397,6 +397,10 @@ fi
 export GOPATH="$HOME/go"
 [ ! -d "$GOPATH" ] && mkdir -p "$GOPATH/src" 2>/dev/null
 
+if [ -S /run/user/1000/ssh-agent ]; then
+  export SSH_AUTH_SOCK=/run/user/1000/ssh-agent
+fi
+
 unlock_root(){
   echo "cryptsetup luksOpen --tries 99 /dev/sda2 root && killall cryptsetup"
   cat ~/.secret/cryptsetup-passwd | ssh -tt -v root@eve -p 2222
@@ -583,10 +587,14 @@ if [[ $TERM = linux ]]; then
 fi
 
 ## Per machine zshrc
-[ -f $HOME/.zshrc.$HOST ] && source $HOME/.zshrc.$HOST
+if [ -f $HOME/.zshrc.$HOST ]; then
+  source $HOME/.zshrc.$HOST
+fi
 
 # added by travis gem
-[ -f /home/joerg/.travis/travis.sh ] && source /home/joerg/.travis/travis.sh
+if [ -f /home/joerg/.travis/travis.sh ]; then
+  source /home/joerg/.travis/travis.sh
+fi
 
 ## Plugins
 if [ -f "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
@@ -622,7 +630,6 @@ if [ -n "${commands[fzf-share]}" ]; then
   FZF_CTRL_R_OPTS=--reverse
   source "$(fzf-share)/key-bindings.zsh"
 fi
-#source $HOME/.zsh-nativgation-tools/zsh-navigation-tools.plugin.zsh
 
 #if [[ -n ${commands[thefuck]} ]]; then
 #  eval $(thefuck --alias)
