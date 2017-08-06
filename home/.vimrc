@@ -1,5 +1,3 @@
-let s:python_interpreter = 'python2'
-
 " Leader
 let mapleader = " "
 
@@ -201,9 +199,6 @@ let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 "let g:deoplete#sources._ = ['buffer', 'file', 'omni', 'ultisnips']
 "let g:deoplete#sources.python = ['jedi']
 "let g:deoplete#sources#python#use_cache = 1
-
-let g:python_host_prog="/run/current-system/sw/bin/nvim-python"
-let g:python3_host_prog="/run/current-system/sw/bin/nvim-python3"
 
 let g:rustfmt_autosave = 1
 
