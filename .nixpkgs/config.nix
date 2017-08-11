@@ -1,36 +1,49 @@
 with import <nixpkgs> {};
 let
-  vim = pkgs.vim_configurable.customize {
-    name = "vim";
-    vimrcConfig.customRC = ''
-      if filereadable($HOME . "/.vimrc")
-        source ~/.vimrc
-      endif
-    '';
-    vimrcConfig.packages.nixbundle = with pkgs.vimPlugins; {
-      # loaded on launch
-      start = [
-        youcompleteme
-        #deoplete-nvim
-        #deoplete-jedi
-        #clang_complete
-        vim-trailing-whitespace
-        nerdtree-git-plugin
-        syntastic
-        gitgutter
-        airline
-        nerdtree
-        colors-solarized
-        ack-vim
-        vim-go
-        vim-scala
-        vim-polyglot
-        syntastic
-        # delimitMate
-        editorconfig-vim
-        ctrlp
-        rust-vim
-      ];
+  vim = pkgs.neovim.override {
+    vimAlias = true;
+    withPython = true;
+    configure = {
+      customRC = ''
+        if filereadable($HOME . "/.vimrc")
+          source ~/.vimrc
+        endif
+        let g:ycm_rust_src_path = '${stdenv.mkDerivation {
+          inherit (rustc) src;
+          inherit (rustc.src) name;
+          phases = ["unpackPhase" "installPhase"];
+          installPhase = ''
+            cp -r src $out
+          '';
+        }}'
+      '';
+      packages.nixbundle = with pkgs.vimPlugins; {
+        # loaded on launch
+        start = [
+          youcompleteme
+          clang_complete
+          pony-vim-syntax
+          #deoplete-nvim
+          #deoplete-jedi
+          vim-trailing-whitespace
+          nerdtree-git-plugin
+          syntastic
+          gitgutter
+          airline
+          nerdtree
+          colors-solarized
+          ack-vim
+          vim-go
+          vim-scala
+          vim-polyglot
+          syntastic
+          # delimitMate
+          editorconfig-vim
+          ctrlp
+          rust-vim
+          vim-yapf
+        ];
+      };
     };
   };
 
