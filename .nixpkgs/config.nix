@@ -77,7 +77,7 @@ let
 
   desktopApps = [
     dino
-    libreoffice
+    libreoffice-fresh
     dropbox
     #android-studio
     gimp
@@ -109,7 +109,6 @@ let
     copyq
     xautolock
     i3lock
-    zeroad
     keepassx-community
     pavucontrol
     evince
@@ -125,9 +124,7 @@ let
   ] ++ (with gnome3; [
     gvfs
     eog
-    gedit
-    gnome_themes_standard
-    adwaita-icon-theme
+    sublime3
   ]);
 
   nixDevApps = [
@@ -135,10 +132,10 @@ let
     pypi2nix
     go2nix
     mercurial # go2nix
-    bundix
     nox
     nix-repl
     nix-review
+    nixUnstable
   ];
 
   debuggingBasicsApps = [
