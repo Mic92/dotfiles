@@ -16,6 +16,9 @@
     kernelModules = [ "kvm-intel" ];
   };
 
+  # for zfs
+  networking.hostId = "8425e349";
+
   hardware = {
     bluetooth = {
       enable = true;
