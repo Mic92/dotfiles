@@ -3,9 +3,8 @@ with pkgs;
 
 {
   boot = {
-    kernelPackages = linuxPackages_4_9;
-    extraModulePackages = with linuxPackages_4_9; [ bcc wireguard sysdig ];
-    zfs.enableUnstable = true;
+    kernelPackages = linuxPackages_4_12;
+    extraModulePackages = with linuxPackages_4_12; [ bcc wireguard sysdig ];
   };
 
   nixpkgs.config.allowUnfree = true;
@@ -26,9 +25,7 @@ with pkgs;
     sipcalc
     iperf
     pkgconfig
-    libxml2
     openssl
-    zlib
     binutils
     file
     wget
@@ -51,7 +48,6 @@ with pkgs;
     nethogs
     iotop
     gnumake
-    cmake
     manpages
     dnsutils
     netcat
