@@ -6,7 +6,7 @@ import os
 import sys
 import shutil
 import xml.etree.ElementTree as ET
-
+import multiprocessing
 
 def sh(command, **kwargs):
     print("$ " + ' '.join(command))
@@ -24,7 +24,12 @@ def build_in_path(args, attrs, path):
     canonical_path = str(os.path.realpath(path))
     result_dir = tempfile.mkdtemp(prefix='nox-review-')
     print('Building in {}: {}'.format(result_dir, ' '.join(attrs)))
-    command = ['nix-shell'] + args
+    command = [
+            'nix-shell',
+            '--keep-going',
+            f"-j{multiprocessing.cpu_count()}",
+            "--option", "build-use-sandbox", "true" # only matters for single-user nix
+            ] + args
     for a in attrs:
         command.append('-p')
         command.append(a)
