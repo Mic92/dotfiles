@@ -31,6 +31,9 @@ def build_in_path(args, attrs, path):
             "--option", "build-use-sandbox", "true" # only matters for single-user nix
             ] + args
     for a in attrs:
+        # add option to opt out builds
+        #if 'libreoffice' in a or 'chromium' in a:
+        #    continue
         command.append('-p')
         command.append(a)
 
