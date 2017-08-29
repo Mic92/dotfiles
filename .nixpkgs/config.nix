@@ -189,6 +189,8 @@ in {
         fzf
         exa
         bench
+        ripgrep
+        ag
       ]);
 
     staging = buildEnv {
