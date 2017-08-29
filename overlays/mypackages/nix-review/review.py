@@ -38,7 +38,6 @@ def build_in_path(args, attrs, path):
         command.append(a)
 
     try:
-        print(" ".join(command))
         sh(command, cwd=result_dir)
     except subprocess.CalledProcessError:
         die('The invocation of "{}" failed'.format(' '.join(command)))
