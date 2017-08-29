@@ -84,7 +84,7 @@ def main():
     worktree_dir = tempfile.mkdtemp(prefix=os.path.join(git_root, f".review/pr-{pr}-"))
     try:
         with tempfile.NamedTemporaryFile() as cfg:
-            cfg.write(b"pkgs: { nixpkgs.config.allowUnfree = true; }")
+            cfg.write(b"pkgs: { allowUnfree = true; }")
             cfg.flush()
             os.environ['NIXPKGS_CONFIG'] = cfg.name
             os.environ['NIX_PATH'] = f"nixpkgs={worktree_dir}"
