@@ -1,15 +1,12 @@
-if (( ! ${+LC_ALL} )); then
-  export LC_ALL=en_DK.UTF-8
-fi
-
 # early, fast invocation of tmux
 # - only if tmux is installed
 # - not in linux ttys
 # - no nested tmux sessions
 if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
-  tmux attach-session || tmux
+  tmux -u attach-session || tmux -u
   #[[ $? = "0" ]] && exit
 fi
+
 if [ -e /home/joerg/.nix-profile/etc/profile.d/nix.sh ]; then
   . /home/joerg/.nix-profile/etc/profile.d/nix.sh;
 fi
