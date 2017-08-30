@@ -25,3 +25,6 @@
 [submodule "home/.zsh-nativgation-tools"]
 	path = home/.zsh-nativgation-tools
 	url = https://github.com/psprint/zsh-navigation-tools.git
+[submodule "home/.zsh-pure"]
+	path = home/.zsh-pure
+	url = https://github.com/sindresorhus/pure.git

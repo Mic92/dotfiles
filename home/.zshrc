@@ -142,14 +142,13 @@ rust-doc(){
 
 ## Options
 setopt auto_name_dirs
+setopt transient_rprompt
 setopt pushd_ignore_dups
-setopt prompt_subst
 setopt no_beep
 setopt auto_cd
 setopt correct
 setopt multios
 setopt cdablevarS
-setopt transient_rprompt
 setopt extended_glob
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
@@ -204,7 +203,10 @@ zstyle ':completion:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w
 [ -d "$HOME/.zsh-completions/src" ] && fpath=($HOME/.zsh-completions $fpath)
 
 ## Prompt
-source "$HOME/.zprompt"
+source $HOME/.zsh-pure/async.zsh
+source $HOME/.zsh-pure/pure.zsh
+# non-zero exit code in right prompt
+RPS1='%(?.%F{magenta}.%F{red}(%?%) %F{magenta})'
 
 ## Aliases
 # Basic commands
@@ -326,10 +328,8 @@ path=(
     $HOME/.local/bin/
     $path
 )
-fpath=(~/.zsh $fpath)
 # get rid of duplicate
 typeset -U path
-typeset -U fpath
 # remove non-existing entries from path
 path=($^path(N))
 export PATH
