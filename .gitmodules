@@ -27,4 +27,4 @@
 	url = https://github.com/psprint/zsh-navigation-tools.git
 [submodule "home/.zsh-pure"]
 	path = home/.zsh-pure
-	url = https://github.com/sindresorhus/pure.git
+	url = https://github.com/Mic92/pure.git
