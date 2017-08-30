@@ -3,64 +3,64 @@ with lib;
 
 let
   internetSharing = {
-    enable = true;
-    hotspot = true;
+    enable = false;
+    hotspot = false;
   };
   network = (import ./network.nix);
 in {
   services = {
     dnscrypt-proxy = {
       enable = true;
-      localAddress = "127.1.0.1";
-      resolverName = "cs-de";
+      #resolverName = "ipredator";
+      localAddress = "0.0.0.0";
     };
-    dnsmasq = {
-      enable = true;
-      extraConfig = ''
-        server=127.1.0.1
-        server=/dn42/172.23.75.6
+    #extraConfig = ''
+    #  #server=127.0.0.1#5353
+    #  #server=/dn42/172.23.75.6
 
-        #no-resolv
-        cache-size=1000
-        min-cache-ttl=3600
-        bind-dynamic
-        all-servers
+    #  no-resolv
+    #  cache-size=1000
+    #  min-cache-ttl=3600
+    #  bind-dynamic
+    #  all-servers
 
-        dnssec
-        trust-anchor=.,19036,8,2,49AAC11D7B6F6446702E54A1607371607A1A41855200FD2CE1CDDE32F24E8FB5
+    #  dnssec
+    #  trust-anchor=.,19036,8,2,49AAC11D7B6F6446702E54A1607371607A1A41855200FD2CE1CDDE32F24E8FB5
 
-        address=/blog/127.0.0.1
-        address=/blog/::1
-        rebind-domain-ok=/onion/
-        server=/.onion/127.0.0.1#9053
-        port=53
-        #log-queries
-        ${if internetSharing.hotspot then
-        ''
-          interface=wlp3s0
-          dhcp-option=wlp3s0,1,255.255.255.0  # subnet
-          dhcp-option=wlp3s0,3,192.168.44.254 # router
-          dhcp-option=wlp3s0,6,192.168.44.254 # dns
-          dhcp-range=wlp3s0,192.168.44.0,192.168.44.253,12h
-        '' else if internetSharing.enable then ''
-          interface=enp0s25
-          dhcp-option=enp0s25,1,255.255.255.0  # subnet
-          dhcp-option=enp0s25,3,192.168.43.254 # router
-          dhcp-option=enp0s25,6,192.168.43.254 # dns
-          dhcp-range=enp0s25,192.168.43.0,192.168.43.253,12h
-        '' else ""}
-      '';
-    };
+    #  address=/blog/127.0.0.1
+    #  address=/blog/::1
+    #  rebind-domain-ok=/onion/
+    #  server=/.onion/127.0.0.1#9053
+    #  port=53
+    #  #log-queries
+    #  ${if internetSharing.hotspot then
+    #  ''
+    #    interface=wlp3s0
+    #    dhcp-option=wlp3s0,1,255.255.255.0  # subnet
+    #    dhcp-option=wlp3s0,3,192.168.44.254 # router
+    #    dhcp-option=wlp3s0,6,192.168.44.254 # dns
+    #    dhcp-range=wlp3s0,192.168.44.0,192.168.44.253,12h
+    #  '' else if internetSharing.enable then ''
+    #    interface=enp0s25
+    #    dhcp-option=enp0s25,1,255.255.255.0  # subnet
+    #    dhcp-option=enp0s25,3,192.168.43.254 # router
+    #    dhcp-option=enp0s25,6,192.168.43.254 # dns
+    #    dhcp-range=enp0s25,192.168.43.0,192.168.43.253,12h
+    #  '' else ""}
+    #'';
     resolved.enable = false;
     hostapd = {
       enable = internetSharing.hotspot;
       ssid = "cipherpunk";
       wpaPassphrase = "cipherpunk";
-      interface = "wlp3s0";
+      interface = network.wlan_interface;
     };
   };
 
   networking = {
+    #interfaces.lo.ip4 = [ { address = "172.23.42.73"; prefixLength = 29; } ];
+    #interfaces.lo.ip6 = [ { address = "fd42:23:42:dd02::1"; prefixLength = 128; } ];
+
     defaultMailServer = {
       directDelivery = true;
       hostName = "mail.thalheim.io:587";
@@ -70,7 +70,8 @@ in {
       domain = "thalheim.io";
       useSTARTTLS = true;
     };
-    
+    nameservers = ["127.0.0.1"];
+
     firewall.enable = false;
     nftables = {
       enable = true;
@@ -81,64 +82,49 @@ in {
           # Block all incomming connections traffic except SSH and "ping".
           chain input {
             type filter hook input priority 0;
+            accept;
 
-        
             ## accept any localhost traffic
-            #iifname lo accept
-        
+            iifname lo accept
+
             ## accept traffic originated from us
-            #ct state {established, related} accept
-       
-            ## ICMP
-            ## routers may also want: mld-listener-query, nd-router-solicit
-            #ip6 nexthdr icmpv6 icmpv6 type { destination-unreachable, packet-too-big, time-exceeded, parameter-problem, nd-router-advert, nd-neighbor-solicit, nd-neighbor-advert } accept
-            #ip protocol icmp icmp type { destination-unreachable, router-advertisement, time-exceeded, parameter-problem } accept
-
-            ## allow "ping"
-            #ip6 nexthdr icmp icmpv6 type echo-request accept
-            #ip protocol icmp icmp type echo-request accept
-
-            ## accept SSH connections (required for a server)
-            #tcp dport 22 accept
-        
-            ## count and drop any other traffic
-            #counter drop
+            ct state {established, related} accept
           }
-        
+
           # Allow all outgoing connections.
           chain output {
             type filter hook output priority 0;
             accept
           }
-        
+
           chain forward {
             type filter hook forward priority 0;
             accept
           }
         }
         table ip nat {
-          chain prerouting { 
+          chain prerouting {
             type nat hook prerouting priority 0;
+            #udp port 53 !iif lo
           }
-          chain postrouting { 
+          chain postrouting {
             type nat hook postrouting priority 0;
             ${ if internetSharing.hotspot then ''
-              oifname "enp0s25" masquerade
+              oifname "${network.lan_interface}" masquerade
             '' else if internetSharing.enable then ''
-              oifname "wlp3s0" masquerade
+              oifname "${network.wlan_interface}" masquerade
             '' else ""}
           }
         }
       '';
     };
-    hostId = "8425e349";
+    #nameservers = [ "127.0.0.1" ];
     hostName = "turingmachine";
     wireless.enable = !internetSharing.hotspot;
-    extraHosts = ''
-      #35.185.98.254 monit.thalheim.io
-    '';
+    #wireless.iwd.enable = true;
     dhcpcd.enable = false;
   };
+
 
   systemd.network.enable = true;
   systemd.network.netdevs = let
@@ -162,14 +148,14 @@ in {
     wg-rauter = wgTemplate 42423 "rauter" "rauter.he.thalheim.io:42422" "l6LjG1WuLNkEwd2047mw2GpgPUppM1VwP/LWMaOqJ0E=";
     wg-matchbox = wgTemplate 42424 "matchbox" "matchbox.he.thalheim.io:42432" "6ExGu7MjeHoPbWj8/F3YNcdMHa7e3fXFFPkswAXv4T4=";
 
-    anboxbr0.netdevConfig = { Name = "anboxbr0"; Kind = "bridge"; };
+    #anboxbr0.netdevConfig = { Name = "anboxbr0"; Kind = "bridge"; };
 
     dummy0.netdevConfig = { Name = "dummy0"; Kind = "dummy"; };
   };
   systemd.network.networks = {
     ethernet.extraConfig = ''
       [Match]
-      Name = enp0s25
+      Name = enp*
 
       [Network]
       DHCP=both
@@ -181,7 +167,7 @@ in {
       ''}
       LLDP=true
       IPv6AcceptRA=true
-      #VRF=physical
+      IPv6Token=::521a:c5ff:fefe:65d8
 
       [DHCP]
       UseHostname=false
@@ -189,7 +175,7 @@ in {
     '';
     wlan.extraConfig = ''
       [Match]
-      Name=wl*
+      Name = wl*
 
       [Network]
       DHCP=both
@@ -228,7 +214,7 @@ in {
       DNS=172.23.75.6
       Domains=~dn42
       DNSSEC=allow-downgrade
-      BindCarrier=enp0s20u*,wlp3s0,enp0s25
+      BindCarrier=enp*,wlp*
       Address=fe80::${network.router_id}/64
 
       [Address]
@@ -247,7 +233,7 @@ in {
       Name=wg-*
 
       [Network]
-      BindCarrier=enp0s20u*,wlp3s0,enp0s25
+      BindCarrier=enp*,wlp*
       Address=fe80::${network.router_id}/64
 
       [Address]
@@ -287,18 +273,18 @@ in {
       UseHostname=false
       RouteMetric=4096
     '';
-    anboxbr0.extraConfig = ''
-      [Match]
-      Name=anboxbr0
-      
-      [Network]
-      Address=0.0.0.0/24
-      DHCPServer=yes
-      IPMasquerade=yes
-      
-      [DHCPServer]
-      ##Manual provide DNS Server
-      #DNS=8.8.8.8
-    '';
+    #anboxbr0.extraConfig = ''
+    #  [Match]
+    #  Name=anboxbr0
+
+    #  [Network]
+    #  Address=0.0.0.0/24
+    #  DHCPServer=yes
+    #  IPMasquerade=yes
+
+    #  [DHCPServer]
+    #  ##Manual provide DNS Server
+    #  #DNS=8.8.8.8
+    #'';
   };
 }

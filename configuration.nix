@@ -28,8 +28,8 @@ in {
     ./bird.nix
     ./packages.nix
     ./nixos-hardware/lenovo/x250.nix
+    #<nspawn-container>
   ];
-
 
   boot = {
     plymouth.enable = true;
@@ -51,16 +51,15 @@ in {
     nixPath = [
       "/etc/nixos"
       "nixos-config=/etc/nixos/configuration.nix"
+      "nspawn-container=/etc/nixos/nspawn-container"
       "nixpkgs-overlays=/etc/nixos/overlays"
     ];
-    package = pkgs.nixUnstable;
+    nrBuildUsers = 30;
+    useSandbox = true;
     extraOptions = ''
       gc-keep-outputs = true
       gc-keep-derivations = true
       build-max-jobs = 10
-      #binary-caches-parallel-connections = 3
-      #connect-timeout = 10
-      build-use-sandbox = true
     '';
   };
 
@@ -75,12 +74,20 @@ in {
     options zfs zfs_arc_max=34359738368
   '';
 
-
   services = {
+    autorandr.enable = true;
+    resilio = {
+      enable = true;
+      enableWebUI = true;
+    };
     upower.enable = true;
     locate.enable = true;
     tor = {
       enable = true;
+      hiddenServices."turingmachine".map = [
+        { port = 22; }
+        { port = 2015; }
+      ];
       extraConfig = ''
         DNSPort 9053
         AutomapHostsOnResolve 1
@@ -91,13 +98,20 @@ in {
         NewCircuitPeriod 120
       '';
     };
+    polipo = {
+      enable = true;
+      socksParentProxy = "localhost:9050";
+    };
     nscd.enable = true;
     zfs = {
       autoSnapshot.enable = true;
       autoScrub.enable = true;
     };
 
-    openssh.enable = true;
+    openssh = {
+      enable = true;
+      forwardX11 = true;
+    };
 
     xserver = {
       enable = true;
@@ -114,7 +128,11 @@ in {
     };
 
     avahi.enable = true;
-    samba.enable = true;
+
+    samba = {
+      enable = true;
+      enableWinbindd = false;
+    };
 
     printing = {
       enable = true;
@@ -129,12 +147,13 @@ in {
     journald.extraConfig = "SystemMaxUse=1G";
   };
 
-  systemd.package = pkgs.mysystemd;
+  #systemd.package = pkgs.mysystemd;
 
   powerManagement.powertop.enable = true;
 
   systemd.services = {
     systemd-networkd-wait-online.enable = false;
+
     caddy = let
       cfg = pkgs.writeText "Caddyfile" ''
         0.0.0.0 {
@@ -195,11 +214,12 @@ in {
   };
 
   virtualisation = {
+    virtualbox.host.enable = true;
     docker = {
-      enable = true;
+      #enable = true;
       enableOnBoot = true;
       storageDriver = "zfs";
-      extraOptions = "--iptables=false";
+      extraOptions = "--iptables=false --storage-opt=zfs.fsname=zroot/docker --userns-remap=docker";
     };
   };
 
@@ -237,6 +257,7 @@ in {
       inconsolata
       ubuntu_font_family
       unifont
+      powerline-fonts
     ];
   };
   programs = {
@@ -253,22 +274,37 @@ in {
 
   hardware.pulseaudio.enable = true;
 
-  users.extraUsers.joerg = {
-    isNormalUser = true;
-    home = "/home/joerg";
-    extraGroups = ["wheel" "docker" "plugdev" "vboxusers" "adbusers" "input"];
-    shell = "/run/current-system/sw/bin/zsh";
-    uid = 1000;
+  users.extraUsers = {
+    joerg = {
+      isNormalUser = true;
+      home = "/home/joerg";
+      extraGroups = ["wheel" "docker" "plugdev" "vboxusers" "adbusers" "input"];
+      shell = "/run/current-system/sw/bin/zsh";
+      uid = 1000;
+    };
+    docker = {
+      subUidRanges = [ { startUid = 100000; count = 65536; } ];
+      subGidRanges = [ { startGid = 100000; count = 65536; } ];
+    };
   };
   users.extraGroups.adbusers = {};
 
   security = {
     audit.enable = false;
-    apparmor.enable = true;
+    #apparmor.enable = true;
     sudo.wheelNeedsPassword = false;
   };
 
   services.dbus.packages = with pkgs; [ gnome3.dconf gnome3.gnome_keyring ];
 
   system.stateVersion = "17.03";
+
+  #containers.database = {
+  #  privateNetwork = true;
+  #  hostAddress = "192.168.100.10";
+  #  localAddress = "192.168.100.11";
+  #  config = { config, pkgs, ... }: {
+  #    services.postgresql.enable = true;
+  #  };
+  #};
 }
