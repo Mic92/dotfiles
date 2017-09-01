@@ -80,9 +80,26 @@ def review_pr(pr, args, worktree_dir):
     attrs = differences(master_packages, merged_packages)
     build_in_path(args, attrs, worktree_dir)
 
+
+def find_nixpkgs_root():
+    prefix = ["."]
+    release_nix = ["nixos", "release.nix"]
+    while True:
+        root_path = os.path.join(*prefix)
+        release_nix_path = os.path.join(root_path, *release_nix)
+        if os.path.exists(release_nix_path):
+            return root_path
+        if os.path.abspath(root_path) == '/':
+            return None
+        prefix.append("..")
+
+
 def main():
-    if not os.path.exists("nixos/release.nix"):
+    root = find_nixpkgs_root()
+    if root is None:
         die("Has to be execute from nixpkgs repository")
+
+    os.chdir(root)
 
     pr = int(sys.argv[1])
 
