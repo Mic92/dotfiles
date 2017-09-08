@@ -200,6 +200,7 @@ zstyle ':completion:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w
 [ -d "$HOME/.zsh-completions/src" ] && fpath=($HOME/.zsh-completions $fpath)
 
 ## Prompt
+export PURE_GIT_UNTRACKED_DIRTY=0
 source $HOME/.zsh-pure/async.zsh
 source $HOME/.zsh-pure/pure.zsh
 # non-zero exit code in right prompt
