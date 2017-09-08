@@ -21,8 +21,10 @@
   tool = vim -d
   conflictstyle = diff3
 [alias]
+  get = clone --recursive
+  blame = -w -M
+  update = !git pull && git submodule update --init --recursive
   comma = commit --amend
-  s = stash --keep-index
   uncommit = reset --soft HEAD^
   pr = !"pr() { git fetch origin pull/$1/head:pr-$1; git checkout pr-$1; }; pr"
   backport = cherry-pick -x
@@ -53,7 +55,7 @@
   host = imap://imap.higgsboson.tk
   user = joerg@higgsboson.tk
 [sendemail]
-  from = joerg@higgsboson.tk <joerg@higgsboson.tk>
+  from = joerg@thalheim.io <joerg@thalheim.io>
   smtpserver = mail.higgsboson.tk
   smtpuser = joerg@higgsboson.tk
   smtpencryption = tls
