@@ -247,3 +247,12 @@ nnoremap <leader>P "+P
 vnoremap <leader>p "+p
 vnoremap <leader>P "+P
 
+autocmd QuickFixCmdPost [^l]* nested cwindow
+autocmd QuickFixCmdPost    l* nested lwindow
+
+autocmd BufEnter * highlight Normal guibg=0
+
+" let g:ycm_filetype_blacklist = { 'cpp': 1 }
+" let g:clang_compilation_database = '/home/joerg/git/klee/build'
+
+let g:airline_powerline_fonts = 1
