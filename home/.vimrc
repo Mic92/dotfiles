@@ -202,6 +202,9 @@ let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 
 let g:rustfmt_autosave = 1
 
+ " ocaml projects lack of software engineering in general
+let g:extra_whitespace_ignored_filetypes = [ 'ocaml', 'patch' ]
+
 " copy current filename:line to clipboard,
 " usefull for gdb breakpoints
 function! LineToClipboard()
