@@ -34,7 +34,7 @@ self: super:
   #  enableParallelBuilding = true;
   #}) // { inherit (super.nixUnstable) perl-bindings; };
 
-  mysystemd = self.callPackage ./systemd.nix {};
+  #mysystemd = self.callPackage ./systemd.nix {};
 
   networkd = super.stdenv.mkDerivation {
     name = "systemd-networkd";
