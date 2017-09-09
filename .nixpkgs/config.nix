@@ -17,10 +17,14 @@ let
           '';
         }}'
       '';
-      packages.nixbundle = with pkgs.vimPlugins; {
+      packages.nixbundle = let
+        plugins = (pkgs.vimPlugins.override (old: { python = python3; }));
+      in with plugins; {
         # loaded on launch
         start = [
-          youcompleteme
+          vim-devicons
+          nvim-completion-manager
+          LanguageClient-neovim
           clang_complete
           pony-vim-syntax
           #deoplete-nvim
@@ -135,7 +139,6 @@ let
     nox
     nix-repl
     nix-review
-    nixUnstable
   ];
 
   debuggingBasicsApps = [
