@@ -26,9 +26,10 @@ in {
     ./hardware-configuration.nix
     ./network-configuration.nix
     ./bird.nix
+    ./tinc.nix
     ./packages.nix
     ./nixos-hardware/lenovo/x250.nix
-    #<nspawn-container>
+    ./nspawn-container
   ];
 
   boot = {
@@ -75,6 +76,7 @@ in {
   '';
 
   services = {
+    gnome3.gnome-keyring.enable = true;
     autorandr.enable = true;
     resilio = {
       enable = true;
@@ -216,7 +218,7 @@ in {
   virtualisation = {
     virtualbox.host.enable = true;
     docker = {
-      #enable = true;
+      enable = true;
       enableOnBoot = true;
       storageDriver = "zfs";
       extraOptions = "--iptables=false --storage-opt=zfs.fsname=zroot/docker --userns-remap=docker";
@@ -251,13 +253,21 @@ in {
     enableGhostscriptFonts = true;
     fonts = with pkgs; [
       league-of-moveable-type
-      hack-font
-      #emojione
+      (stdenv.mkDerivation rec {
+        name = "inconsolata-nerdfont-${version}";
+        version = nerdfonts.version;
+        src = fetchurl {
+          name = "inconsolata.otf";
+          url = "https://github.com/ryanoasis/nerd-fonts/raw/${version}/patched-fonts/Inconsolata/complete/Inconsolata%20Nerd%20Font%20Complete%20Mono.otf";
+          sha256 = "1n6nnrlvzzrdbsksknia374q6ijmh6qqiyq8c2qsg9f896sr8q64";
+        };
+        buildCommand = ''
+          install -D $src "$out/share/fonts/opentype/Inconsolata Nerd Font Complete.otf"
+        '';
+      })
       dejavu_fonts
-      inconsolata
       ubuntu_font_family
       unifont
-      powerline-fonts
     ];
   };
   programs = {
@@ -265,6 +275,7 @@ in {
     light.enable = true;
     adb.enable = true;
     zsh = {
+      promptInit = "";
       syntaxHighlighting.enable = true;
       enable = true;
       enableAutosuggestions = true;
@@ -277,7 +288,6 @@ in {
   users.extraUsers = {
     joerg = {
       isNormalUser = true;
-      home = "/home/joerg";
       extraGroups = ["wheel" "docker" "plugdev" "vboxusers" "adbusers" "input"];
       shell = "/run/current-system/sw/bin/zsh";
       uid = 1000;
@@ -295,7 +305,8 @@ in {
     sudo.wheelNeedsPassword = false;
   };
 
-  services.dbus.packages = with pkgs; [ gnome3.dconf gnome3.gnome_keyring ];
+
+  services.dbus.packages = with pkgs; [ gnome3.dconf ];
 
   system.stateVersion = "17.03";
 

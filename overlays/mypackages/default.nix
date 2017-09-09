@@ -20,28 +20,21 @@ self: super:
   #  extraPython3Packages = with python3Packages; [jedi requests2];
   #};
 
-  mynix = super.nixUnstable.overrideDerivation (old: {
-    src = self.fetchFromGitHub {
-      owner = "NixOS";
-      repo = "nix";
-      rev = "a7e55151a8d45d987ca42ba318c44ed3ccdeecca";
-      sha256 = "0qnnc8wbh55j2mpnywvj22ajcqfcdfismxbgkix45hq4nm5lkb1j";
-    };
-    enableParallelBuilding = true;
-  });
+  #nixUnstable = super.nixUnstable.overrideDerivation (old: {
+  #  src = self.fetchFromGitHub {
+  #    owner = "NixOS";
+  #    repo = "nix";
+  #    rev = "c7654bc491d9ce7c1fbadecd7769418fa79a2060";
+  #    sha256 = "11djnvf2dg5qssix34n5avq1b334lhcbffissxghzfa3kvsm0x9d";
+  #  };
+  #  buildInputs = old.buildInputs ++ [ self.gperftools self.gcc7 self.nlohmann_json ];
+  #  CXXFLAGS = "-flto -march=native -O3";
+  #  CFLAGS = "-flto -march=native -O3";
+  #  NIX_LDFLAGS = "-ltcmalloc";
+  #  enableParallelBuilding = true;
+  #}) // { inherit (super.nixUnstable) perl-bindings; };
 
-  mysystemd = super.systemd.overrideDerivation(old: {
-    src = self.fetchFromGitHub {
-      owner = "Mic92";
-      repo = "systemd";
-      rev = "17b7553d68519399c2fefc8bbed234f86a240992";
-      sha256 = "1gbi9aq1gq3il8256ffa2s4nyp26qzfyzsmvyr0kqfdmxb9pjj39";
-    };
-    preConfigure = old.preConfigure + ''
-      substituteInPlace src/network/networkd-manager.c \
-        --replace /usr/lib/systemd/network $out/lib/systemd/network
-    '';
-  });
+  mysystemd = self.callPackage ./systemd.nix {};
 
   networkd = super.stdenv.mkDerivation {
     name = "systemd-networkd";

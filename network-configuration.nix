@@ -58,8 +58,9 @@ in {
   };
 
   networking = {
-    #interfaces.lo.ip4 = [ { address = "172.23.42.73"; prefixLength = 29; } ];
-    #interfaces.lo.ip6 = [ { address = "fd42:23:42:dd02::1"; prefixLength = 128; } ];
+    extraHosts = ''
+      ${readFile ./retiolum.hosts}
+    '';
 
     defaultMailServer = {
       directDelivery = true;

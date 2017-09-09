@@ -72,11 +72,5 @@
       fsType = "zfs";
     };
 
-  fileSystems."none" =
-    { device = "/dev/zvol/zroot/swap";
-      fsType = "swap";
-      options = ["discard"];
-    };
-
   nix.maxJobs = lib.mkDefault 4;
 }

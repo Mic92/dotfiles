@@ -11,7 +11,7 @@ with pkgs;
   nixpkgs.overlays = [ (import ./overlays/mypackages) ];
 
   environment.systemPackages = [
-    mysystemd
+    config.boot.kernelPackages.perf
     linuxPackages.bcc
     usbutils
     (sysdig.overrideDerivation (old: { dontStrip = true; }))
@@ -54,5 +54,8 @@ with pkgs;
     mtr
     nix-zsh-completions
     ntfs3g
+
+    arc-icon-theme
+    arc-theme
   ];
 }
