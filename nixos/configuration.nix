@@ -50,10 +50,10 @@ in {
     gc.automatic = true;
     gc.dates = "03:15";
     nixPath = [
-      "/etc/nixos"
-      "nixos-config=/etc/nixos/configuration.nix"
-      "nspawn-container=/etc/nixos/nspawn-container"
-      "nixpkgs-overlays=/etc/nixos/overlays"
+      "nixpkgs=/home/joerg/git/nixpkgs"
+      "nixos-config=/home/joerg/git/nixos-configuration/configuration.nix"
+      "nspawn-container=/home/joerg/git/nixos-configuration/nspawn-container"
+      "nixpkgs-overlays=/home/joerg/git/nixos-configuration/overlays"
     ];
     nrBuildUsers = 30;
     useSandbox = true;
