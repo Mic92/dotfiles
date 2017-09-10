@@ -194,6 +194,7 @@ in {
         bench
         ripgrep
         ag
+        fd
       ]);
 
     staging = buildEnv {

@@ -218,15 +218,14 @@ alias du='du -hc'
 alias df='df -hT'
 xalias df='dfc'
 # File management
-if [[ $OSTYPE == freebsd* ]]; then
+if [[ -n ${commands[exa]} ]]; then
+  alias ls='exa'
+elif [[ $OSTYPE == freebsd* ]]; then
   alias ls='ls -G'
 else
   alias ls='ls --color=auto --classify --human-readable'
 fi
 alias sl=ls
-alias la='ls -lA'
-alias laa='ls -la'
-alias ll='ls -l'
 alias tempdir='cd `TMPDIR=/tmp mktemp -d`;'
 alias rm='rm -rv'
 alias cp='nocorrect cp -rpv'
@@ -451,7 +450,13 @@ bundle() {
   fi
   command bundle "$@"
 }
-ff() { command find . -iname "*$@*" 2>/dev/null }
+fd() {
+  if [ "${commands[fd]}" ]; then
+    command fd "$@"
+  else
+    command find . -iname "*$@*" 2>/dev/null
+  fi
+}
 browse () { $BROWSER file://"`pwd`/$1" }
 retry() {
   local n=0
@@ -469,9 +474,6 @@ own() {
   else
     chown -R "$USER:$(id -gn)" "$@"
   fi
-}
-cdf(){
-  cd "$(dirname $1)"
 }
 # usage
 # vil file:20 -> opens file on line 20
