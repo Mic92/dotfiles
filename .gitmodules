@@ -1,30 +1,21 @@
-[submodule "home/.zsh/zsh-syntax-highlighting"]
-	path = home/.zsh/zsh-syntax-highlighting
-	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
 [submodule "home/.zsh-completion"]
 	path = home/.zsh-completion
 	url = https://github.com/zsh-users/zsh-completions.git
-[submodule "home/.z"]
-	path = home/.z
-	url = https://github.com/sjl/z-zsh.git
-[submodule "home/.zsh-syntax-highlighting"]
-	path = home/.zsh-syntax-highlighting
-	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
-[submodule "home/.zsh-autosuggestions"]
-	path = home/.zsh-autosuggestions
-	url = https://github.com/tarruda/zsh-autosuggestions
-[submodule "home/.deer"]
-	path = home/.deer
-	url = https://github.com/Vifon/deer.git
-[submodule "home/.zsh-notify"]
-	path = home/.zsh-notify
-	url = https://github.com/marzocchi/zsh-notify.git
-[submodule "home/.zsh-history-substring-search"]
-	path = home/.zsh-history-substring-search
+[submodule "zsh/zsh-completions"]
+	path = zsh/zsh-completions
+	url = https://github.com/zsh-users/zsh-completions.git
+[submodule "zsh/zsh-autosuggestions"]
+	path = zsh/zsh-autosuggestions
+	url = https://github.com/zsh-users/zsh-autosuggestions.git
+[submodule "zsh/zsh-history-substring-search"]
+	path = zsh/zsh-history-substring-search
 	url = https://github.com/zsh-users/zsh-history-substring-search.git
-[submodule "home/.zsh-nativgation-tools"]
-	path = home/.zsh-nativgation-tools
-	url = https://github.com/psprint/zsh-navigation-tools.git
-[submodule "home/.zsh-pure"]
-	path = home/.zsh-pure
+[submodule "zsh/zsh-syntax-highlighting"]
+	path = zsh/zsh-syntax-highlighting
+	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
+[submodule "zsh/pure"]
+	path = zsh/pure
 	url = https://github.com/Mic92/pure.git
+[submodule "zsh/deer"]
+	path = zsh/deer
+	url = https://github.com/Vifon/deer.git
