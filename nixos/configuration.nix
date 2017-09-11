@@ -28,7 +28,7 @@ in {
     ./bird.nix
     ./tinc.nix
     ./packages.nix
-    ./nixos-hardware/lenovo/x250.nix
+    ./hardware/x250.nix
     ./nspawn-container
   ];
 
