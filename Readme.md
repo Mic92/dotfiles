@@ -7,12 +7,9 @@
     $ sudo apt-get install git-core
 
     $ git clone --depth=1 https://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
-    $ alias homeshick="source $HOME/.homesick/repos/homeshick/bin/homeshick"
+    $ alias homeshick="$HOME/.homesick/repos/homeshick/bin/homeshick"
     $ homeshick clone https://github.com/Mic92/dotfiles.git
     $ ( cd ~/.homesick/repos/dotfiles && git submodule foreach --recursive "git pull origin master" )
-
-    $ homeshick clone https://github.com/Mic92/scripts.git
-    $ vim +PlugInstall +qall
 
 Essential packages:
 
@@ -75,6 +72,14 @@ Boostrap nix:
 ```
 $ install -d -m755 -o joerg -g joerg /nix
 $ curl https://nixos.org/nix/install | sh
+```
+
+Boostrap nixpkgs:
+
+```
+$ git clone https://github.com/Mic92/nixpkgs/ ~/git/nixpkgs
+$ (cd ~/git/nixpkgs && git remote add upstream https://github.com/NixOS/nixpkgs.git)
+$ nix-env -f '<nixpkgs>' -iA all -j10
 ```
 
 
