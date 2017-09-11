@@ -1,6 +1,6 @@
 with import <nixpkgs> {};
 let
-  vim = pkgs.neovim.override {
+  nvim = pkgs.neovim.override {
     vimAlias = true;
     withPython = true;
     configure = {
@@ -80,6 +80,11 @@ let
   rubyApps = [ bundler bundix rubocop ];
 
   desktopApps = [
+    graphicsmagick
+    ghostscript
+    bench
+    sshfsFuse
+    sshuttle
     dino
     libreoffice-fresh
     dropbox
@@ -171,27 +176,24 @@ in {
       ++ debuggingBasicsApps
       ++ nixDevApps
       ++ [
-        vim
+        nvim
+        tmux
+        htop
         gitAndTools.diff-so-fancy
         gitAndTools.hub
-        gitAndTools.git-octopus
         gitAndTools.git-crypt
+        gitAndTools.tig
         gitFull
-        sshfsFuse
-        sshuttle
         jq
         httpie
         cloc
         mosh
         cheat
-        graphicsmagick
         gnupg1compat
         direnv
-        ghostscript
         tree
         fzf
         exa
-        bench
         ripgrep
         ag
         fd
