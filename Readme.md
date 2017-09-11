@@ -79,7 +79,8 @@ Boostrap nixpkgs:
 ```
 $ git clone https://github.com/Mic92/nixpkgs/ ~/git/nixpkgs
 $ (cd ~/git/nixpkgs && git remote add upstream https://github.com/NixOS/nixpkgs.git)
-$ nix-env -f '<nixpkgs>' -iA all -j10
+$ nix-env -f '<nixpkgs>' -iA home-manager
+$ home-manager switch
 ```
 
 
