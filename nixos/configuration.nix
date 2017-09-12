@@ -77,6 +77,7 @@ in {
   '';
 
   services = {
+    physlock.enable = true;
     gnome3.gnome-keyring.enable = true;
     autorandr.enable = true;
     resilio = {
@@ -234,7 +235,6 @@ in {
   #  #{ name = "gajim"; command = "${pkgs.gajim}/bin/gajim"; }
   #  { name = "gpg-agent"; command = "${pkgs.gnupg1compat}/bin/gpg-agent"; }
   #  { name = "copyq"; command = "${pkgs.copyq}/bin/copyq"; }
-  #  { name = "xautolock"; command = "${pkgs.xautolock}/bin/xautolock -time 20 -locker %h/bin/i3lock.sh"; }
   #  { name = "mpd"; command = "${pkgs.mpd}/bin/mpd"; }
   #])) // {
   #  gajim = {
@@ -283,6 +283,7 @@ in {
       enableCompletion = true;
     };
   };
+
 
   hardware.pulseaudio.enable = true;
 
