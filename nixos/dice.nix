@@ -1,7 +1,6 @@
 # NixOS Module for University of Edinburgh (DICE substitution)
 # Support for kerberos, AFS and openvpn and ssh
 { pkgs, ... }:
-
 {
   # AFS filesystem: http://computing.help.inf.ed.ac.uk/informatics-filesystem
   # - also requires kerberos
@@ -69,4 +68,20 @@
         wallet_server = wallet.inf.ed.ac.uk
       }
   '';
+
+  # every researcher also get 500 GB storage
+  fileSystems."/mnt/backup" = let
+    uun = "s1691654"; # EASE ID
+  in {
+      device = "//csce.datastore.ed.ac.uk/csce/inf/users/${uun}";
+      fsType = "cifs";
+      options = let
+        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+        # cat > smb-secrets <<EOF
+        # username=s16916XX
+        # domain=ED
+        # password=<EASE_PASSWORD>
+        # EOF
+      in ["${automount_opts},credentials=/home/joerg/git/nixos-configuration/secrets/smb-secrets"];
+  };
 }
