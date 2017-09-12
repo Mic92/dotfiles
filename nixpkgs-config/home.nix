@@ -86,7 +86,6 @@ let
 
   desktopApps = [
     graphicsmagick
-    ghostscript
     bench
     sshfsFuse
     sshuttle
