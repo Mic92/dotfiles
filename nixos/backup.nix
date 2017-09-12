@@ -10,10 +10,8 @@ in {
   };
   systemd.services.backup = {
     path = with pkgs; [ borgbackup ];
-    # cifs mount from cifs
+    # cifs mount from ./dice.nix
     unitConfig.RequiresMountsFor = backup_path;
-
-    requires = " ";
     script = ''
        export BORG_PASSPHRASE=$(cat /home/joerg/git/nixos-configuration/secrets/borgbackup)
 
