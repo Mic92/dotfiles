@@ -30,6 +30,7 @@ in {
     ./packages.nix
     ./hardware/x250.nix
     ./nspawn-container
+    ./dice.nix
   ];
 
   boot = {
