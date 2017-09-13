@@ -2,21 +2,26 @@
 with builtins;
 
 let
- backup_path = "/mnt/backup/borg";
+  backup_path = "/mnt/backup/borg";
+  borg = pkgs.borgbackup.overrideDerivation (old: rec {
+    version = "1.1.0rc3";
+    src = pkgs.fetchurl {
+      url = "https://github.com/borgbackup/borg/releases/download/${version}/borgbackup-${version}.tar.gz";
+      sha256 = "076v9x3gqgnscfk1zrkp7290liz15jadz8rvcinmk6iknjn7hhjh";
+    };
+    postInstall = ""; # skip doc generation
+  });
 in {
   systemd.timers.backup = {
     wantedBy = ["multi-user.target"];
     timerConfig.OnCalendar = "12:00:00";
   };
   systemd.services.backup = {
-    path = with pkgs; [ borgbackup ];
+    path = with pkgs; [ borg ];
     # cifs mount from ./dice.nix
     unitConfig.RequiresMountsFor = backup_path;
     script = ''
        export BORG_PASSPHRASE=$(cat /home/joerg/git/nixos-configuration/secrets/borgbackup)
-
-       # handle crash (when cifs became unavailable)
-       rm -rf /mnt/backup/borg/lock.exclusive
 
        borg create --stats "${backup_path}::turingmachine-$(date +%Y%m%d)" \
             --compression zlib,9 \
@@ -31,7 +36,5 @@ in {
        cp "$0" "${backup_path}/../backup-script"
     '';
   };
-  environment.systemPackages = with pkgs; [
-    borgbackup
-  ];
+  environment.systemPackages = with pkgs; [ borg ];
 }
