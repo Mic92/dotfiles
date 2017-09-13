@@ -15,6 +15,9 @@ in {
     script = ''
        export BORG_PASSPHRASE=$(cat /home/joerg/git/nixos-configuration/secrets/borgbackup)
 
+       # handle crash (when cifs became unavailable)
+       rm -rf /mnt/backup/borg/lock.exclusive
+
        borg create --stats "${backup_path}::turingmachine-$(date +%Y%m%d)" \
             --compression zlib,9 \
             /home /var /root /etc
