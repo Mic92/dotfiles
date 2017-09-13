@@ -16,4 +16,7 @@
      <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix>
      ./base-config.nix
    ];
+
+  boot.supportedFilesystems = [ "zfs" ];
+  networking.hostId = "ac174b52";
 }

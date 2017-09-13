@@ -3,14 +3,7 @@ let
   irc-announce = pkgs.callPackage ./irc-announce {};
   untilport = pkgs.callPackage ./untilport {};
 in {
-
-  boot.supportedFilesystems = [ "zfs" ];
-  networking = {
-    hostId = "ac174b52";
-    firewall.enable = false;
-  };
-
-  users.users.root.initialPassword = "root";
+  networking.firewall.enable = false;
 
   services.tor = {
     enable = true;
