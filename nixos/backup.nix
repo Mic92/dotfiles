@@ -23,14 +23,15 @@ in {
     script = ''
        export BORG_PASSPHRASE=$(cat /home/joerg/git/nixos-configuration/secrets/borgbackup)
 
-       borg create --stats "${backup_path}::turingmachine-$(date +%Y%m%d)" \
+       borg create --stats \
             --compression zlib,9 \
+            "${backup_path}::turingmachine-$(date +%Y%m%d)" \
             /home /var /root /etc
 
        borg prune -v "${backup_path}" \
          --keep-daily 7 \
          --keep-weekly 4 \
-         --keep-monthly 3 \
+         --keep-monthly 3
 
        # backup itself
        cp "$0" "${backup_path}/../backup-script"
