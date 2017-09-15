@@ -76,7 +76,7 @@
       device = "//csce.datastore.ed.ac.uk/csce/inf/users/${uun}";
       fsType = "cifs";
       options = let
-        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=5s";
+        automount_opts = "x-systemd.automount,noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=5s,x-systemd.mount-timeout=10s";
         # cat > smb-secrets <<EOF
         # username=s16916XX
         # domain=ED
