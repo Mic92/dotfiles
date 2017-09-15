@@ -101,7 +101,6 @@ let
     chromium
     thunderbird
     transmission_gtk
-    rxvt_unicode-with-plugins
     aspell
     aspellDicts.de
     aspellDicts.fr
@@ -109,7 +108,7 @@ let
     hunspell
     hunspellDicts.en-gb-ise
     scrot
-    (gajim.overrideDerivation (old: {
+    (gajim.overrideAttrs (old: {
       patches = (old.patches or []) ++ [
         ./0001-remove-outer-paragraph.patch
       ];
@@ -122,7 +121,16 @@ let
     copyq
     xautolock
     i3lock
-    keepassx-community
+    (keepassx-community.overrideAttrs (old: {
+      src = pkgs.fetchFromGitHub {
+        owner = "varjolintu";
+        repo = "keepassxc";
+        rev = "2.2.0-browser-rc1";
+        sha256 = "0sg0sq32lz6jibd3q6iiwa50rw68bccv22sm2pzx3dpl7972c0b2";
+      };
+      cmakeFlags = old.cmakeFlags ++ [ "-DWITH_XC_BROWSER=ON" ];
+      buildInputs = old.buildInputs ++ [ boost libsodium ];
+    }))
     pavucontrol
     evince
     pcmanfm
