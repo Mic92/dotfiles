@@ -51,6 +51,7 @@ in {
   nix = {
     gc.automatic = true;
     gc.dates = "03:15";
+    binaryCaches = [ https://cache.rrza.de https://cache.nixos.org/ ];
     nixPath = [
       "nixpkgs=/home/joerg/git/nixpkgs"
       "nixos-config=/home/joerg/git/nixos-configuration/configuration.nix"
