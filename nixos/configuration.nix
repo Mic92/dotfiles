@@ -32,6 +32,7 @@ in {
     ./nspawn-container
     ./dice.nix
     ./backup.nix
+    ./nfs.nix
   ];
 
   boot = {
@@ -77,6 +78,7 @@ in {
   boot.extraModprobeConfig = ''
     options zfs zfs_arc_max=34359738368
   '';
+  #boot.zfs.enableUnstable = true;
 
   services = {
     physlock.enable = true;
