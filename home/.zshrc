@@ -7,9 +7,6 @@ if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
   #[[ $? = "0" ]] && exit
 fi
 
-if [ -e /home/joerg/.nix-profile/etc/profile.d/nix.sh ]; then
-  . /home/joerg/.nix-profile/etc/profile.d/nix.sh;
-fi
 if [[ ! -e /etc/nixos/configuration.nix ]]; then
   if [[ -d $HOME/git/nixpkgs ]]; then
     export NIX_PATH=nixpkgs=$HOME/git/nixpkgs
@@ -19,6 +16,9 @@ if [[ ! -e /etc/nixos/configuration.nix ]]; then
   fi
   if [ -e /home/joerg/.nix-profile/etc/profile.d/nix.sh ]; then
     . /home/joerg/.nix-profile/etc/profile.d/nix.sh;
+  fi
+  if [[ -S /nix/var/nix/daemon-socket/socket ]]; then
+    export NIX_REMOTE=daemon
   fi
 fi
 
