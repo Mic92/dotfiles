@@ -211,6 +211,7 @@ in {
         nvim
         tmux
         htop
+        psmisc
         gitAndTools.diff-so-fancy
         gitAndTools.hub
         gitAndTools.git-crypt
