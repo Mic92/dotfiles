@@ -618,6 +618,7 @@ fi
 if [ -f "$HOME/.homesick/repos/homeshick/homeshick.sh" ]; then
   source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 fi
+source ~/.zsh-termsupport
 
 if [ -n "${commands[direnv]}" ]; then
   eval "$(direnv hook zsh)"

@@ -28,6 +28,3 @@
 [submodule "nixpkgs-config/home-manager"]
 	path = nixpkgs-config/home-manager
 	url = https://github.com/rycee/home-manager.git
-[submodule "zsh/zsh-titles"]
-	path = zsh/zsh-titles
-	url = https://github.com/jreese/zsh-titles.git
