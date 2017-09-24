@@ -37,7 +37,7 @@
 [branch]
   autosetuprebase = always
 [pull]
-	rebase = true
+  rebase = true
   autostash = true
 [url "gitlab@git.higgsboson.tk:Mic92/"]
   insteadOf = higgs:
