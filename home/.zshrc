@@ -619,6 +619,13 @@ if [ -f "$HOME/.homesick/repos/homeshick/homeshick.sh" ]; then
   source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 fi
 source ~/.zsh-termsupport
+if [ -f "$HOME/.deer/deer" ]; then
+  fpath=(~/.deer $fpath)
+  autoload deer
+  typeset -Ag DEER_KEYS
+  zle -N deer
+  bindkey '\ek' deer
+fi
 
 if [ -n "${commands[direnv]}" ]; then
   eval "$(direnv hook zsh)"
