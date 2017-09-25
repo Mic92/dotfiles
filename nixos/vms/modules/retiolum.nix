@@ -36,6 +36,7 @@ in {
         ConnectTo = gum
         ConnectTo = ni
         ConnectTo = prism
+        AutoConnect = yes
       '';
     };
 
@@ -56,6 +57,7 @@ in {
       '';
     };
 
+    systemd.network.enable = true;
     systemd.network.networks = {
       "${netname}".extraConfig = ''
         [Match]
