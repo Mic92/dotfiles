@@ -25,6 +25,7 @@ in {
 
        borg create --stats \
             --compression zlib,9 \
+            --verbose \
             "${backup_path}::turingmachine-$(date +%Y%m%d)" \
             /home /var /root /etc
 
