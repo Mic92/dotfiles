@@ -27,9 +27,11 @@ let
       in with plugins; {
         # loaded on launch
         start = [
+          fzfWrapper
           vim-devicons
           nvim-completion-manager
           LanguageClient-neovim
+          nvim-cm-racer
           clang_complete
           pony-vim-syntax
           #deoplete-nvim
