@@ -25,7 +25,7 @@
 # iso> zpool create -f zroot /dev/mapper/root
 
 ## New zroot setup
-# zfs create -o encryption=aes-256-gcm -o keyformat=passphrase -o mountpoint=none zroot/root
+# zfs create -o encryption=aes-256-gcm -o keyformat=passphrase -o compression=lz4 -o mountpoint=none zroot/root
 # zfs create -o mountpoint=legacy -o sync=disabled zroot/root/tmp
 # zfs create -o mountpoint=legacy -o com.sun:auto-snapshot=true zroot/root/home
 # zfs create -o mountpoint=legacy -o com.sun:auto-snapshot=true zroot/root/nixos
