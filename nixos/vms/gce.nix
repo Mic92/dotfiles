@@ -30,6 +30,10 @@ in {
       network = resources.gceNetworks.eva-network;
     };
 
+    imports = [
+      ./modules/users.nix
+    ];
+
     services.caddy = {
       email = "joerg@thalheim.io";
       enable = true;
@@ -42,7 +46,7 @@ in {
       serviceConfig.PermissionsStartOnly = true;
       preStart = ''
         mkdir -p /var/www
-        cat > /var/www/index.html <<EOF 
+        cat > /var/www/index.html <<EOF
         <html>
         <head><title>Hello world!</title></head>
         <body><h1>Hello world!</h1></body>
@@ -51,37 +55,10 @@ in {
       '';
     };
 
-    programs = {
-      zsh = {
-        enable = true;
-        syntax-highlighting.enable = true;
-        enableAutosuggestions = true;
-        enableCompletion = true;
-        oh-my-zsh = {
-          enable = true;
-          theme = "robbyrussell";
-        };
-      };
-    };
-
-    environment.systemPackages = with pkgs; [ 
+    environment.systemPackages = with pkgs; [
       htop
       vim
     ];
-
-    users.extraUsers = let
-      key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbBp2dH2X3dcU1zh+xW3ZsdYROKpJd3n13ssOP092qE joerg@turingmachine";
-    in {
-      joerg = {
-        isNormalUser = true;
-        home = "/home/joerg";
-        extraGroups = [ "wheel" ];
-        shell = "/run/current-system/sw/bin/zsh";
-        uid = 1000;
-        openssh.authorizedKeys.keys = [ key ];
-      };
-      root.openssh.authorizedKeys.keys = [ key ];
-    };
 
     # size
     programs.ssh.setXAuthLocation = false;

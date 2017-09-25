@@ -26,7 +26,6 @@ in {
     ./hardware-configuration.nix
     ./network-configuration.nix
     ./bird.nix
-    ./tinc.nix
     ./packages.nix
     ./hardware/x250.nix
     ./nspawn-container

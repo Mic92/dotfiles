@@ -8,6 +8,12 @@ let
   };
   network = (import ./network.nix);
 in {
+
+  imports = [
+   ./vms/modules/retiolum.nix
+  ];
+
+
   services = {
     dnscrypt-proxy = {
       enable = true;
@@ -58,9 +64,10 @@ in {
   };
 
   networking = {
-    extraHosts = ''
-      ${readFile ./retiolum.hosts}
-    '';
+    retiolum = {
+      ipv4 = "10.243.29.168";
+      ipv6 = "42:4992:6a6d:600::1";
+    };
 
     defaultMailServer = {
       directDelivery = true;

@@ -3,7 +3,13 @@
     { config, pkgs, lib, ... }:
     {
       deployment.targetHost = "172.16.49.86";
-      imports = [ <nixpkgs/nixos/modules/profiles/qemu-guest.nix> ];
+
+      imports = [
+        <nixpkgs/nixos/modules/profiles/qemu-guest.nix>
+        ./modules/users.nix
+        ./modules/retiolum.nix
+      ];
+
       networking.hostName = "borg";
 
       boot.initrd.availableKernelModules = [ "ata_piix" "uhci_hcd" "virtio_pci" "virtio_blk" ];
@@ -12,6 +18,11 @@
       boot.loader.grub.enable = true;
       boot.loader.grub.version = 2;
       boot.loader.grub.device = "/dev/vda";
+
+	    networking.retiolum = {
+	    	ipv4 = "10.243.29.171";
+	    	ipv6 = "42:4992:6a6d:700::2";
+	    };
 
       fileSystems."/" = {
         device = "/dev/vda1";
@@ -33,9 +44,6 @@
       };
 
       services.openssh.enable = true;
-      users.extraUsers.root.openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbBp2dH2X3dcU1zh+xW3ZsdYROKpJd3n13ssOP092qE joerg@turingmachine"
-      ];
 
       nix.maxJobs = lib.mkDefault 1;
 
