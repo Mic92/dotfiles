@@ -52,7 +52,6 @@ with pkgs;
     dnsutils
     netcat
     mtr
-    nix-zsh-completions
     ntfs3g
 
     arc-icon-theme
