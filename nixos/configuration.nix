@@ -41,6 +41,7 @@ in {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
+    blacklistedKernelModules = [ "iptable_nat" "ip_tables" ];
   };
 
   environment.sessionVariables = {
