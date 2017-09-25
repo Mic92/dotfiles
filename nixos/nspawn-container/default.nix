@@ -15,24 +15,8 @@ let
        networking.hostName = mkDefault name;
        networking.useDHCP = false;
        systemd.network.enable = true;
-       #systemd.package = pkgs.mysystemd;
 
-       # TODO: nscd does resolve users at the moment
-       # work around by adding nss modules directly to LD_LIBRARY_PATH
-       services.nscd.enable = false;
-       systemd.globalEnvironment = {
-         LD_LIBRARY_PATH = "${pkgs.systemd.out}/lib";
-         #SYSTEMD_LOG_LEVEL = "debug";
-         #DBUS_SYSTEM_BUS_ADDRESS = "unix:path=/var/run/dbus/system_bus_socket";
-       };
-       environment.sessionVariables = {
-         LD_LIBRARY_PATH = "${pkgs.systemd.out}/lib";
-         #SYSTEMD_LOG_LEVEL = "debug";
-         #DBUS_SYSTEM_BUS_ADDRESS = "unix:path=/var/run/dbus/system_bus_socket";
-       };
-       environment.systemPackages = [pkgs.gdb];
-
-       users.users.root.initialPassword = "root";
+       environment.systemPackages = [ ];
      };
 
      config = (import <nixpkgs/nixos/lib/eval-config.nix> {
@@ -43,12 +27,12 @@ let
      # /etc/.os-release is dummy and will be replaced init stage-2
      # with a symlink to /etc/static/os-release
      containerFiles = pkgs.writeScript "container-files" ''
-       d "${root}" 0700 - - -
+       d "${root}" 0755 - - -
        d "${root}/etc" 0755 - - -
        L+ "${root}/etc/os-release" - - - - /etc/.os-release
        f "${root}/etc/.os-release" - - - -
-       w "${root}/etc/resolv.conf" 0700 - - - nameserver 8.8.8.8
        d "${root}/var/lib/private" 0700 - - - -
+       w "${root}/etc/resolv.conf" 0700 - - - nameserver 8.8.8.8
        d "${root}/nix/var/nix/" 0755 - - -
        d "${root}/root" 0700 - - -
        d "${root}/sbin" 0755 - - -
@@ -59,11 +43,14 @@ let
      '';
   in {
     systemd.nspawn."${name}" = {
+      execConfig = {
+        PrivateUsers=false;
+        #NotifyReady=true;
+      };
       filesConfig = {
         Bind = [
-          #"/nix/var/nix/profiles/per-container/${name}:/nix/var/nix/profiles"
-          #"/nix/var/nix/gcroots/per-container/${name}:/nix/var/nix/gcroots"
-          "/home/joerg/git/systemd"
+          "/nix/var/nix/profiles/per-container/${name}:/nix/var/nix/profiles"
+          "/nix/var/nix/gcroots/per-container/${name}:/nix/var/nix/gcroots"
         ];
         BindReadOnly = [
           "/nix/store"
@@ -73,11 +60,11 @@ let
       };
     };
 
-    # copy systemd-nspawn@ to systemd-nspawn@${name} to allow overrides
+    # copy systemd-nspawn@ to systemd-nspawn-${name} to allow overrides
     systemd.packages = [
       (pkgs.runCommand "systemd-nspawn-${name}" {} ''
         mkdir -p $out/lib/systemd/system/
-        sed -e 's/%i/${name}/g' ${pkgs.systemd}/example/systemd/system/systemd-nspawn@.service \
+        sed -e 's/%i/${name}/g' ${config.systemd.package}/example/systemd/system/systemd-nspawn@.service \
           > $out/lib/systemd/system/systemd-nspawn-${name}.service
       '')
     ];
@@ -85,17 +72,14 @@ let
     systemd.services."systemd-nspawn-${name}".serviceConfig = {
       ExecStartPre = "${config.systemd.package}/bin/systemd-tmpfiles --create ${containerFiles}";
       ExecStart = [""
-      #${pkgs.systemd}/bin/systemd-nspawn \
       ''
-        /home/joerg/git/systemd/systemd-nspawn
-          -U \
-          --boot \
-          --link-journal=try-guest \
+        ${config.systemd.package}/bin/systemd-nspawn \
           --keep-unit \
-          --machine ${name} \
+          --machine=${name} \
+          --directory="${root}" \
           --settings=override \
           --network-veth \
-          ${root}/sbin/init systemd.legacy_systemd_cgroup_controller=1
+          ${config.system.build.toplevel}/init
       ''];
     };
   };
