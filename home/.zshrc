@@ -22,16 +22,27 @@ if [[ ! -e /etc/nixos/configuration.nix ]]; then
   fi
 fi
 
-hash_string256() {
-  local hashval
-  hashval=$(printf "%s" "$1" | md5sum)
-  # upcase & substring
-  hashval="0x${(L)hashval[1,15]}"
-  (( y = (hashval + 110) % 255 ))
-  printf "%d" $y
+function string_hash() {
+  local HASHSTR=$1
+  local HASHSIZE=$2
+
+  HASHVAL=52
+
+  for i in {1..${#HASHSTR}}; do;
+    local THISCHAR=$HASHSTR[$i]
+    HASHVAL=$(( $HASHVAL + $((#THISCHAR)) ))
+  done
+
+  # Avoid 0 as that's black
+  HASHSIZE=$(( $HASHSIZE - 1 ))
+  HASHVAL=$(( $HASHVAL % $HASHSIZE ))
+  HASHVAL=$(( $HASHVAL + 1 ))
+
+  echo $HASHVAL
 }
+
 if [[ "$__host__" != "$HOST" ]]; then
-  tmux set -g status-bg colour$(hash_string256 $HOST)
+  tmux set -g status-bg colour$(string_hash $HOST 255)
   export __host__=$HOST
 fi
 
