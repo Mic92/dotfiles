@@ -7,19 +7,17 @@ if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
   #[[ $? = "0" ]] && exit
 fi
 
-if [[ ! -e /etc/nixos/configuration.nix ]]; then
-  if [[ -d $HOME/git/nixpkgs ]]; then
-    export NIX_PATH=nixpkgs=$HOME/git/nixpkgs
-  fi
-  if [[ -d $HOME/git/nixos-configuration ]]; then
-    export NIX_PATH=$NIX_PATH:nixos-config=$HOME/git/nixos-configuration/configuration.nix:nixpkgs-overlays=$HOME/git/nixos-configuration/overlays
-  fi
-  if [ -e /home/joerg/.nix-profile/etc/profile.d/nix.sh ]; then
-    . /home/joerg/.nix-profile/etc/profile.d/nix.sh;
-  fi
-  if [[ -S /nix/var/nix/daemon-socket/socket ]]; then
-    export NIX_REMOTE=daemon
-  fi
+if [[ -d $HOME/git/nixpkgs ]]; then
+  export NIX_PATH=nixpkgs=$HOME/git/nixpkgs
+fi
+if [[ -d $HOME/git/nixos-configuration ]]; then
+  export NIX_PATH=$NIX_PATH:nixos-config=$HOME/git/nixos-configuration/configuration.nix:nixpkgs-overlays=$HOME/git/nixos-configuration/overlays
+fi
+if [ -e /home/joerg/.nix-profile/etc/profile.d/nix.sh ]; then
+  . /home/joerg/.nix-profile/etc/profile.d/nix.sh;
+fi
+if [[ -S /nix/var/nix/daemon-socket/socket ]]; then
+  export NIX_REMOTE=daemon
 fi
 
 function string_hash() {
