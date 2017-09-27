@@ -68,8 +68,12 @@ def list_packages(path, check_meta=False):
 
 
 def fetch_ref(ref):
-    sh(["git", "fetch", "https://github.com/NixOS/nixpkgs", ref])
-    o = subprocess.check_output(["git", "rev-parse", "--verify", "FETCH_HEAD"])
+    try:
+        sh(["git", "branch", "-D", f"_nix-review_"])
+    except:
+        pass
+    sh(["git", "fetch", "https://github.com/NixOS/nixpkgs", f"{ref}:_nix-review_"])
+    o = subprocess.check_output(["git", "rev-parse", "--verify", "_nix-review_"])
     return o.strip().decode("utf-8")
 
 
