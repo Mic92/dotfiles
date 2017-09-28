@@ -3,8 +3,11 @@
 # - not in linux ttys
 # - no nested tmux sessions
 if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
+  if [[ -n "$SSH_AUTH_SOCK" ]]  then
+    tmux set-environment -g SSH_AUTH_SOCK "$SSH_AUTH_SOCK" 2>/dev/null
+  fi
+
   tmux -u attach-session || tmux -u
-  #[[ $? = "0" ]] && exit
 fi
 
 if [[ -d $HOME/git/nixpkgs ]]; then
