@@ -32,6 +32,7 @@ in {
     ./dice.nix
     ./backup.nix
     ./nfs.nix
+    ./vms/modules/mosh.nix
   ];
 
   boot = {
@@ -280,11 +281,8 @@ in {
     light.enable = true;
     adb.enable = true;
     zsh = {
-      promptInit = "";
-      syntaxHighlighting.enable = true;
       enable = true;
-      enableAutosuggestions = true;
-      enableCompletion = true;
+      promptInit = "";
     };
   };
 
@@ -310,7 +308,6 @@ in {
     #apparmor.enable = true;
     sudo.wheelNeedsPassword = false;
   };
-
 
   services.dbus.packages = with pkgs; [ gnome3.dconf ];
 

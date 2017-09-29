@@ -1,13 +1,16 @@
 {
-  box =
+  borg =
     { config, pkgs, lib, ... }:
     {
-      deployment.targetHost = "172.16.49.86";
+      #deployment.targetHost = "172.16.49.86";
+      deployment.targetHost = "borg.r";
 
       imports = [
         <nixpkgs/nixos/modules/profiles/qemu-guest.nix>
         ./modules/users.nix
         ./modules/retiolum.nix
+        ./modules/mosh.nix
+        ./modules/overlay.nix
       ];
 
       networking.hostName = "borg";
