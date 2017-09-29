@@ -3,8 +3,8 @@ with pkgs;
 
 {
   boot = {
-    kernelPackages = linuxPackages_4_12;
-    extraModulePackages = with linuxPackages_4_12; [ bcc wireguard sysdig ];
+    kernelPackages = linuxPackages_latest;
+    extraModulePackages = with config.boot.kernelPackages; [ bcc wireguard sysdig ];
   };
 
   nixpkgs.config.allowUnfree = true;
