@@ -69,3 +69,5 @@
   required = true
 [include]
   path = ~/.gitconfig.local
+[rebase]
+  autoStash = true
