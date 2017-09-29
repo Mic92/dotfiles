@@ -40,13 +40,11 @@ in {
       '';
     };
 
-    networking.extraHosts = ''
-      ${builtins.readFile (pkgs.fetchurl {
-        url = "https://lassul.us/retiolum.hosts";
-        # FIXME
-				sha256 = "0zfmk4mqq8zgribl6xq7w4xwl4ds0hpib8l4d732ad4y418l4343";
-       })}
-    '';
+    networking.extraHosts = builtins.readFile (pkgs.fetchurl {
+      url = "https://lassul.us/retiolum.hosts";
+      # FIXME
+      sha256 = "1z8hfxxbmss3qayqsxp1s7g6aws5pcrk951byzb93yvmacfhf228";
+    });
 
     environment.systemPackages = [ config.services.tinc.networks.${netname}.package ];
 
