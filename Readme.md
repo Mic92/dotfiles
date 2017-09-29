@@ -9,7 +9,6 @@
     $ git clone --depth=1 https://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
     $ alias homeshick="$HOME/.homesick/repos/homeshick/bin/homeshick"
     $ homeshick clone https://github.com/Mic92/dotfiles.git
-    $ ( cd ~/.homesick/repos/dotfiles && git submodule foreach --recursive "git pull origin master" )
 
 Essential packages:
 
