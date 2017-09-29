@@ -10,18 +10,7 @@ stdenv.mkDerivation {
     fuse
     linuxPackages_4_12.perf
     bc
-    (gdbm.overrideAttrs (old: {
-      postInstall = (old.postInstall or "") + ''
-        # create symlinks for compatibility
-        install -dm755 $out/include/gdbm
-        (
-          cd $out/include/gdbm
-          ln -s ../gdbm.h gdbm.h
-          ln -s ../ndbm.h ndbm.h
-          ln -s ../dbm.h  dbm.h
-        )
-      '';
-    }))
+    gdbm
     xfsprogs
     libtool
     autoreconfHook
