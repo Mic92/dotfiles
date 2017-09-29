@@ -630,6 +630,9 @@ fi
 if [ -f "$HOME/.homesick/repos/homeshick/homeshick.sh" ]; then
   source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 fi
+if [ -f "$HOME/.zsh-autopair/autopair.zsh" ]; then
+  source "$HOME/.zsh-autopair/autopair.zsh"
+fi
 source ~/.zsh-termsupport
 if [ -f "$HOME/.deer/deer" ]; then
   fpath=(~/.deer $fpath)
