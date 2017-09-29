@@ -4,17 +4,14 @@ with pkgs;
 {
   boot = {
     kernelPackages = linuxPackages_latest;
-    extraModulePackages = with config.boot.kernelPackages; [ bcc wireguard sysdig ];
+    extraModulePackages = with config.boot.kernelPackages; [ bcc wireguard ];
   };
 
   nixpkgs.config.allowUnfree = true;
   nixpkgs.overlays = [ (import ./overlays/mypackages) ];
 
   environment.systemPackages = [
-    config.boot.kernelPackages.perf
-    linuxPackages.bcc
     usbutils
-    (sysdig.overrideDerivation (old: { dontStrip = true; }))
     wireguard
     socat
     whois
@@ -43,8 +40,6 @@ with pkgs;
     python3
     go
     gcc
-    strace
-    ltrace
     nethogs
     iotop
     manpages

@@ -21,6 +21,7 @@
         ./modules/retiolum.nix
         ./modules/mosh.nix
         ./modules/overlay.nix
+        ./modules/tracing.nix
       ];
 
       networking.retiolum = {

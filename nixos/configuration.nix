@@ -33,6 +33,7 @@ in {
     ./backup.nix
     ./nfs.nix
     ./vms/modules/mosh.nix
+    ./vms/modules/tracing.nix
   ];
 
   boot = {
