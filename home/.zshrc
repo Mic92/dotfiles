@@ -348,7 +348,7 @@ path=($^path(N))
 export PATH
 cdpath=( ~/git )
 # Prefered programs
-export BROWSER=chromium
+export BROWSER=firefox
 export TERMINAL=alacritty
 export PICTUREVIEW=eog
 export EDITOR=vim
