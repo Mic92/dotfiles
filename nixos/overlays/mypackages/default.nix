@@ -13,6 +13,17 @@ self: super:
   };
 
   hplip = super.hplip.override { withPlugin = true; };
+
+  mosh = super.mosh.overrideDerivation (old: {
+    name = "mosh-ssh-agent";
+    src = self.pkgs.fetchFromGitHub {
+      owner = "mobile-shell";
+      repo = "mosh";
+      rev = "968f3ccba04faf3a5b12d583128ce7450b006742";
+      sha256 = "1dyraknc9wwfb097ixryzjj86d60zz4yi0av0fq07p3bjz8f1sd9";
+    };
+  });
+
   #neovim = pkgs.neovim.override {
   #  vimAlias = true;
   #  extraPythonPackages = with python27Packages; [jedi];
