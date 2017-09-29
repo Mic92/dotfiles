@@ -47,14 +47,10 @@ with pkgs;
     ltrace
     nethogs
     iotop
-    gnumake
     manpages
     dnsutils
     netcat
     mtr
     ntfs3g
-
-    arc-icon-theme
-    arc-theme
   ];
 }
