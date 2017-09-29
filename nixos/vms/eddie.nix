@@ -1,13 +1,26 @@
 {
-  eddi =
+
+  #libvirtExampe = { ... }: {
+  #    deployment.targetEnv = "libvirtd";
+  #    deployment.libvirtd.headless = true;
+  #    users.users.root.initialPassword = "root";
+  #}
+
+  eddie =
     { config, pkgs, lib, ... }:
     {
-      deployment.targetHost = "129.215.90.4";
+      #deployment.targetHost = "129.215.90.4";
+      deployment.targetHost = "eddie.r";
+
+
+      deployment.keys."initrd-ssh-key".keyFile = ../secrets/eddie/initrd-ssh-key;
 
       imports = [
         <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
         ./modules/users.nix
         ./modules/retiolum.nix
+        ./modules/mosh.nix
+        ./modules/overlay.nix
       ];
 
       networking.retiolum = {
@@ -15,13 +28,43 @@
         ipv6 = "42:4992:6a6d:700::1";
       };
 
-      boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" ];
-      boot.kernelModules = [ "kvm-intel" ];
-      boot.extraModulePackages = [ ];
+      boot = {
+        initrd.network = {
+          enable = true;
+          ssh = {
+            enable = true;
+            port = 2222;
+            hostECDSAKey = "/run/keys/initrd-ssh-key";
+          };
+          postCommands = ''
+            echo "zfs load-key -a; killall zfs" >> /root/.profile
+          '';
+        };
+        blacklistedKernelModules = [ "iptable_nat" "ip_tables" ];
+      };
+
+      services = {
+        xserver = {
+          enable = true;
+          desktopManager.xfce.enable = true;
+        };
+        xrdp = {
+          enable = true;
+          defaultWindowManager = "xfce4-session";
+        };
+      };
+
+      networking.firewall.enable = false;
+
+      boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "e1000e" ];
+      boot.kernelModules = [ "kvm-intel" "wireguard" "sysdig" "bcc" ];
+      boot.extraModulePackages = with config.boot.kernelPackages; [ bcc wireguard sysdig ];
 
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
       networking.hostName = "eddie"; # Define your hostname.
+
+      virtualisation.virtualbox.host.enable = true;
 
       # for zfs
       networking.hostId = "81d75a04";
@@ -57,7 +100,7 @@
         config.boot.kernelPackages.perf
         config.boot.kernelPackages.bcc
         usbutils
-        (sysdig.overrideDerivation (old: { dontStrip = true; }))
+        sysdig
         wireguard
         socat
         whois
@@ -95,9 +138,6 @@
         netcat
         mtr
         ntfs3g
-
-        arc-icon-theme
-        arc-theme
       ];
 
       services.tor = {
