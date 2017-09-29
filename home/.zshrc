@@ -251,7 +251,11 @@ xalias objdump='objdump -M intel'
 # noglobs
 alias wget='noglob wget'
 alias curl='noglob curl'
-alias git='noglob git'
+if [[ -n ${commands[hub]} ]]; then
+  alias git='noglob hub'
+else
+  alias git='noglob git'
+fi
 alias rake='noglob rake'
 # Root
 # fallback if sudo is not yet installed
