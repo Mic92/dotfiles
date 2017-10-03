@@ -8,7 +8,7 @@ stdenv.mkDerivation {
     rustfmt
     lldb
     fuse
-    linuxPackages_4_12.perf
+    linuxPackages_latest.bcc
     bc
     gdbm
     xfsprogs
