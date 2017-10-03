@@ -14,7 +14,7 @@ in {
   };
 
   environment.systemPackages = [
-    pkgs.krb5Full # ssh with kerberos authentication
+    # ssh with kerberos authentication
     (pkgs.openssh.override { withKerberos = true; withGssapiPatches = true; })
 
     # http://computing.help.inf.ed.ac.uk/openvpn
@@ -44,40 +44,45 @@ in {
   # /etc/krb5.conf
   # test using kinit and your DICE password
   # $ kinit s16916XX -k
-  environment.etc."krb5.conf".text = ''
-    [libdefaults]
-      ticket_lifetime = 64800
-      dns_lookup_realm = true
-      default_realm = INF.ED.AC.UK
-      forwardable = true
-      dns_lookup_kdc = true
-    [realms]
-      INF.ED.AC.UK = {
-        admin_server = kdc.inf.ed.ac.uk:749
-        default_domain = inf.ed.ac.uk
-      }
-    [domain_realm]
-      inf.ed.ac.uk  =  INF.ED.AC.UK
-      .inf.ed.ac.uk  =  INF.ED.AC.UK
-    [capaths]
-      INF.ED.AC.UK = {
-            ED.AC.UK = EASE.ED.AC.UK
-      }
-      ED.AC.UK = {
-            INF.ED.AC.UK = EASE.ED.AC.UK
-      }
-    [appdefaults]
+  krb5 = {
+    enable = true;
+    kerberos = pkgs.krb5Full;
+    libdefaults = {
+      ticket_lifetime = 64800;
+      dns_lookup_realm = true;
+      default_realm = "INF.ED.AC.UK";
+      forwardable = true;
+      dns_lookup_kdc = true;
+    };
+    realms."INF.ED.AC.UK" = {
+      admin_server = "kdc.inf.ed.ac.uk:749";
+      default_domain = "inf.ed.ac.uk";
+    };
+    domain_realm = {
+      "inf.ed.ac.uk" = "INF.ED.AC.UK";
+      ".inf.ed.ac.uk"= "INF.ED.AC.UK";
+    };
+    capaths = {
+      "INF.ED.AC.UK" = {
+        "ED.AC.UK" = "EASE.ED.AC.UK";
+      };
+      "ED.AC.UK" = {
+        "INF.ED.AC.UK" = "EASE.ED.AC.UK";
+      };
+    };
+    appdefaults = {
       pam = {
-        debug = false
-        ticket_lifetime = 64800
-        renew_lifetime = 64800
-        forwardable = true
-        krb4_convert = false
-      }
+        debug = false;
+        ticket_lifetime = 64800;
+        renew_lifetime = 64800;
+        forwardable = true;
+        krb4_convert = false;
+      };
       wallet = {
-        wallet_server = wallet.inf.ed.ac.uk
-      }
-  '';
+        wallet_server = "wallet.inf.ed.ac.uk";
+      };
+    };
+  };
 
   systemd.timers.kinit = {
     wantedBy = ["multi-user.target"];
