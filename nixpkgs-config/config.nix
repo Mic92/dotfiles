@@ -12,8 +12,7 @@ with import <nixpkgs> {};
 
     staging = buildEnv {
       name = "staging";
-      paths = [
-      ];
+      paths = [ ];
     };
   };
 }

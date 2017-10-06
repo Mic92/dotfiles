@@ -87,6 +87,10 @@ let
   rubyApps = [ bundler bundix rubocop ];
 
   desktopApps = [
+    screen
+    remmina
+    arc-icon-theme
+    arc-theme
     graphicsmagick
     bench
     sshfsFuse
@@ -198,11 +202,47 @@ let
     seaborn
   ];
 
+  dotfilesPath = file: ".homesick/repos/dotfiles/home/${file}";
+
 in {
+  programs.git = {
+    enable = true;
+    userEmail = "joerg@thalheim.io";
+    userName = "Joerg Thalheim";
+    package = gitFull;
+    signing = {
+      #signByDefault = builtins.pathExists ../../.gnupg/S.gpg-agent;
+      key = "CA4106B8D7CC79FA";
+    };
+  };
+  home.file.".gitconfig".target = dotfilesPath ".gitconfig.local";
+
+  fonts.fonts = [
+    (fetchzip {
+       url = "https://github.com/Mic92/awesome-dotfiles/releases/download/download/ConkySymbols.ttf.tar.gz";
+       sha256 = "08xhavw9kgi2jdmpzmxalcpbnzhng1g3z69v9s7yax4gj0jdlss5";
+     })
+     league-of-moveable-type
+     dejavu_fonts
+     ubuntu_font_family
+     unifont
+     (stdenv.mkDerivation rec {
+       name = "inconsolata-nerdfont-${version}";
+       version = nerdfonts.version;
+       src = fetchurl {
+         name = "inconsolata.otf";
+         url = "https://github.com/ryanoasis/nerd-fonts/raw/${version}/patched-fonts/Inconsolata/complete/Inconsolata%20Nerd%20Font%20Complete%20Mono.otf";
+         sha256 = "1n6nnrlvzzrdbsksknia374q6ijmh6qqiyq8c2qsg9f896sr8q64";
+       };
+       buildCommand = ''
+         install -D $src "$out/share/fonts/opentype/Inconsolata Nerd Font Complete.otf"
+       '';
+     })
+  ];
 
   home.packages = ([]
-      #++ desktopApps
-      #++ latexApps
+      ++ desktopApps
+      ++ latexApps
       #++ rubyApps
       #++ rustApps
       #++ pythonDataLibs
@@ -214,11 +254,12 @@ in {
         tmux
         htop
         psmisc
+        lesspipe
+        expect
         gitAndTools.diff-so-fancy
         gitAndTools.hub
         gitAndTools.git-crypt
         gitAndTools.tig
-        gitFull
         jq
         httpie
         cloc
