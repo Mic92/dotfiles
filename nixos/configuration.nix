@@ -33,6 +33,7 @@ in {
     ./backup.nix
     ./nfs.nix
     ./vms/modules/mosh.nix
+    ./vms/modules/overlay.nix
     ./vms/modules/tracing.nix
   ];
 
@@ -54,7 +55,12 @@ in {
   nix = {
     gc.automatic = true;
     gc.dates = "03:15";
-    binaryCaches = [ https://cache.rrza.de https://cache.nixos.org/ ];
+    #binaryCaches = [ https://cache.nixos.community https://cache.nixos.org/ ];
+    distributedBuilds = false;
+    #buildMachines = [
+    #  { hostName = "inspector.r"; sshUser = "nix"; sshKey = "/etc/nixos/secrets/id_buildfarm"; system = "x86_64-linux"; maxJobs = 8; }
+    #];
+    package = pkgs.nixUnstable;
     nixPath = [
       "nixpkgs=/home/joerg/git/nixpkgs"
       "nixos-config=/home/joerg/git/nixos-configuration/configuration.nix"
@@ -233,50 +239,11 @@ in {
     };
   };
 
-  systemd.coredump.enable = true;
-
-  #systemd.user.services = (builtins.listToAttrs (map userservice [
-  #  { name = "chromium"; command = "${pkgs.chromium}/bin/chromium"; }
-  #  { name = "thunderbird"; command = "${pkgs.thunderbird}/bin/thunderbird"; }
-  #  #{ name = "gajim"; command = "${pkgs.gajim}/bin/gajim"; }
-  #  { name = "gpg-agent"; command = "${pkgs.gnupg1compat}/bin/gpg-agent"; }
-  #  { name = "copyq"; command = "${pkgs.copyq}/bin/copyq"; }
-  #  { name = "mpd"; command = "${pkgs.mpd}/bin/mpd"; }
-  #])) // {
-  #  gajim = {
-  #    wantedBy = [ "default.target" ];
-  #    enable = true;
-  #    path = with pkgs; [dnsutils mercurial];
-  #    serviceConfig = {
-  #      RestartSec="500ms";
-  #      Environment="GTK_DATA_PREFIX=/run/current-system/sw";
-  #      ExecStart="${pkgs.gajim}/bin/gajim";
-  #    };
-  #  };
-  #};
-
   fonts = {
     enableFontDir = true;
     enableGhostscriptFonts = true;
-    fonts = with pkgs; [
-      league-of-moveable-type
-      (stdenv.mkDerivation rec {
-        name = "inconsolata-nerdfont-${version}";
-        version = nerdfonts.version;
-        src = fetchurl {
-          name = "inconsolata.otf";
-          url = "https://github.com/ryanoasis/nerd-fonts/raw/${version}/patched-fonts/Inconsolata/complete/Inconsolata%20Nerd%20Font%20Complete%20Mono.otf";
-          sha256 = "1n6nnrlvzzrdbsksknia374q6ijmh6qqiyq8c2qsg9f896sr8q64";
-        };
-        buildCommand = ''
-          install -D $src "$out/share/fonts/opentype/Inconsolata Nerd Font Complete.otf"
-        '';
-      })
-      dejavu_fonts
-      ubuntu_font_family
-      unifont
-    ];
   };
+
   programs = {
     ssh.startAgent = true;
     light.enable = true;
@@ -286,7 +253,6 @@ in {
       promptInit = "";
     };
   };
-
 
   hardware.pulseaudio.enable = true;
 
@@ -315,11 +281,9 @@ in {
   system.stateVersion = "17.03";
 
   #containers.database = {
-  #  privateNetwork = true;
-  #  hostAddress = "192.168.100.10";
-  #  localAddress = "192.168.100.11";
   #  config = { config, pkgs, ... }: {
   #    services.postgresql.enable = true;
+  #    environment.systemPackages = [ pkgs.htop ];
   #  };
   #};
 }

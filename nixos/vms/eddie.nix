@@ -12,7 +12,6 @@
       #deployment.targetHost = "129.215.90.4";
       deployment.targetHost = "eddie.r";
 
-
       deployment.keys."initrd-ssh-key".keyFile = ../secrets/eddie/initrd-ssh-key;
 
       imports = [
@@ -23,6 +22,10 @@
         ./modules/overlay.nix
         ./modules/tracing.nix
       ];
+
+      nix.extraOptions = ''
+        build-max-jobs = 10
+      '';
 
       networking.retiolum = {
         ipv4 = "10.243.29.170";
@@ -48,11 +51,15 @@
         xserver = {
           enable = true;
           desktopManager.xfce.enable = true;
+          layout = "us";
+          xkbVariant = "altgr-intl";
+          xkbOptions = "caps:ctrl_modifier,compose:menu";
         };
         xrdp = {
           enable = true;
           defaultWindowManager = "xfce4-session";
         };
+
       };
 
       networking.firewall.enable = false;
@@ -65,7 +72,15 @@
       boot.loader.efi.canTouchEfiVariables = true;
       networking.hostName = "eddie"; # Define your hostname.
 
-      virtualisation.virtualbox.host.enable = true;
+      virtualisation = {
+        virtualbox.host.enable = true;
+        docker = {
+          enable = true;
+          enableOnBoot = false;
+          storageDriver = "zfs";
+          extraOptions = "--iptables=false --storage-opt=zfs.fsname=zroot/docker";
+        };
+      };
 
       # for zfs
       networking.hostId = "81d75a04";
@@ -161,11 +176,6 @@
       time.timeZone = "Europe/London";
 
       services.openssh.enable = true;
-
-      users.extraUsers.fsgqa = {
-        isNormalUser = true;
-        home = "/home/joerg";
-      };
 
       system.stateVersion = "18.03";
     };
