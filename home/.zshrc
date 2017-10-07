@@ -24,22 +24,21 @@ if [[ -S /nix/var/nix/daemon-socket/socket ]]; then
 fi
 
 function string_hash() {
-  local HASHSTR=$1
-  local HASHSIZE=$2
+  local hashstr=$1
+  local hashsize=$2
+  local hashval=52
 
-  HASHVAL=52
-
-  for i in {1..${#HASHSTR}}; do;
-    local THISCHAR=$HASHSTR[$i]
-    HASHVAL=$(( $HASHVAL + $((#THISCHAR)) ))
+  for i in {1..${#hashstr}}; do;
+    local thischar=$hashstr[$i]
+    hashval=$(( $hashval + $((#thischar)) ))
   done
 
   # Avoid 0 as that's black
-  HASHSIZE=$(( $HASHSIZE - 1 ))
-  HASHVAL=$(( $HASHVAL % $HASHSIZE ))
-  HASHVAL=$(( $HASHVAL + 1 ))
+  hashsize=$(( $hashsize - 1 ))
+  hashval=$(( $hashval % $hashsize ))
+  hashval=$(( $hashval + 1 ))
 
-  echo $HASHVAL
+  echo $hashval
 }
 
 if [[ "$__host__" != "$HOST" ]]; then
