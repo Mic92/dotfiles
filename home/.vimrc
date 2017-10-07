@@ -200,8 +200,6 @@ let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 "let g:deoplete#sources.python = ['jedi']
 "let g:deoplete#sources#python#use_cache = 1
 
-let g:rustfmt_autosave = 1
-
  " ocaml projects lack of software engineering in general
 let g:extra_whitespace_ignored_filetypes = [ 'ocaml', 'patch' ]
 
