@@ -23,6 +23,12 @@ in {
        export PATH=$PATH:${pkgs.iproute}/bin
        exec "${pkgs.openvpn}/bin/openvpn" ${./uni-edinburgh.ovpn}
      '')
+
+    # http://computing.help.inf.ed.ac.uk/openvpn
+    (pkgs.writeScriptBin "openvpn-edinburgh-full" ''
+       export PATH=$PATH:${pkgs.iproute}/bin
+       exec "${pkgs.openvpn}/bin/openvpn" --redirect-gateway def1  ${./uni-edinburgh.ovpn}
+     '')
   ];
 
   programs.ssh.extraConfig = ''
