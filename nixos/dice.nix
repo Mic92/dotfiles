@@ -9,7 +9,7 @@ in {
   # - also requires kerberos
   # - mount with the `aklog -d` command
   services.openafsClient = {
-    enable = true;
+    enable = false;
     cellName = "inf.ed.ac.uk";
     sparse = true;
   };
@@ -108,7 +108,7 @@ in {
       device = "//csce.datastore.ed.ac.uk/csce/inf/users/${uun}";
       fsType = "cifs";
       options = let
-        automount_opts = "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s";
+        automount_opts = "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s,soft";
         # cat > smb-secrets <<EOF
         # username=s16916XX
         # domain=ED
