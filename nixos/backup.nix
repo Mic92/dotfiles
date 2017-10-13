@@ -3,14 +3,6 @@ with builtins;
 
 let
   backup_path = "/mnt/backup/borg";
-  borg = pkgs.borgbackup.overrideDerivation (old: rec {
-    version = "1.1.0rc3";
-    src = pkgs.fetchurl {
-      url = "https://github.com/borgbackup/borg/releases/download/${version}/borgbackup-${version}.tar.gz";
-      sha256 = "076v9x3gqgnscfk1zrkp7290liz15jadz8rvcinmk6iknjn7hhjh";
-    };
-    postInstall = ""; # skip doc generation
-  });
 in {
   systemd.timers.backup = {
     wantedBy = ["multi-user.target"];
@@ -22,6 +14,9 @@ in {
     unitConfig.RequiresMountsFor = backup_path;
     script = ''
        export BORG_PASSPHRASE=$(cat /home/joerg/git/nixos-configuration/secrets/borgbackup)
+
+       # could be dangerous, but works
+       borg break-lock "${backup_path}"
 
        borg create --stats \
             --compression zlib,9 \
