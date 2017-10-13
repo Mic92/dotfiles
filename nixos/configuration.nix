@@ -83,11 +83,6 @@ in {
   };
   time.timeZone = "Europe/London";
 
-  boot.extraModprobeConfig = ''
-    options zfs zfs_arc_max=34359738368
-  '';
-  #boot.zfs.enableUnstable = true;
-
   services = {
     physlock.enable = true;
     gnome3.gnome-keyring.enable = true;
@@ -228,6 +223,7 @@ in {
     };
     systemd-udev-settle.serviceConfig.ExecStart = "${pkgs.coreutils}/bin/true";
   };
+
 
   virtualisation = {
     virtualbox.host.enable = true;
