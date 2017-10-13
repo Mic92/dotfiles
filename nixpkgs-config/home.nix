@@ -265,6 +265,7 @@ in {
         gitAndTools.diff-so-fancy
         gitAndTools.hub
         gitAndTools.git-crypt
+        gitAndTools.git-extras
         gitAndTools.tig
         jq
         httpie
