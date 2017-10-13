@@ -87,6 +87,33 @@ let
   rubyApps = [ bundler bundix rubocop ];
 
   desktopApps = [
+    (stdenv.mkDerivation rec {
+      name = "ConkySymbols";
+      src = fetchzip {
+        url = "https://github.com/Mic92/awesome-dotfiles/releases/download/download/ConkySymbols.ttf.tar.gz";
+        sha256 = "08xhavw9kgi2jdmpzmxalcpbnzhng1g3z69v9s7yax4gj0jdlss5";
+      };
+      buildCommand = ''
+        install -D $src/ConkySymbols.ttf "$out/share/fonts/truetype/ConkySymbols.ttf"
+      '';
+    })
+    league-of-moveable-type
+    dejavu_fonts
+    ubuntu_font_family
+    unifont
+    (stdenv.mkDerivation rec {
+      name = "inconsolata-nerdfont-${version}";
+      version = nerdfonts.version;
+      src = fetchurl {
+        name = "inconsolata.otf";
+        url = "https://github.com/ryanoasis/nerd-fonts/raw/${version}/patched-fonts/Inconsolata/complete/Inconsolata%20Nerd%20Font%20Complete%20Mono.otf";
+        sha256 = "1n6nnrlvzzrdbsksknia374q6ijmh6qqiyq8c2qsg9f896sr8q64";
+      };
+      buildCommand = ''
+        install -D $src "$out/share/fonts/opentype/Inconsolata Nerd Font Complete.otf"
+      '';
+    })
+
     screen
     remmina
     arc-icon-theme
@@ -217,28 +244,7 @@ in {
   };
   home.file.".gitconfig".target = dotfilesPath ".gitconfig.local";
 
-  fonts.fonts = [
-    (fetchzip {
-       url = "https://github.com/Mic92/awesome-dotfiles/releases/download/download/ConkySymbols.ttf.tar.gz";
-       sha256 = "08xhavw9kgi2jdmpzmxalcpbnzhng1g3z69v9s7yax4gj0jdlss5";
-     })
-     league-of-moveable-type
-     dejavu_fonts
-     ubuntu_font_family
-     unifont
-     (stdenv.mkDerivation rec {
-       name = "inconsolata-nerdfont-${version}";
-       version = nerdfonts.version;
-       src = fetchurl {
-         name = "inconsolata.otf";
-         url = "https://github.com/ryanoasis/nerd-fonts/raw/${version}/patched-fonts/Inconsolata/complete/Inconsolata%20Nerd%20Font%20Complete%20Mono.otf";
-         sha256 = "1n6nnrlvzzrdbsksknia374q6ijmh6qqiyq8c2qsg9f896sr8q64";
-       };
-       buildCommand = ''
-         install -D $src "$out/share/fonts/opentype/Inconsolata Nerd Font Complete.otf"
-       '';
-     })
-  ];
+  fonts.enablePackageFonts = true;
 
   home.packages = ([]
       ++ desktopApps
