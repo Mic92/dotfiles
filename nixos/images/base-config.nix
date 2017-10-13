@@ -8,6 +8,13 @@ in {
   services.tor = {
     enable = true;
     hiddenServices."ssh".map = [ { port = 22; } ];
+    extraConfig = ''
+      SocksPort 0
+      HiddenServiceNonAnonymousMode 1
+      HiddenServiceSingleHopMode 1
+      ExitNodes {de}
+      NewCircuitPeriod 120
+    '';
   };
 
   systemd.services.hidden-ssh-announce = {
