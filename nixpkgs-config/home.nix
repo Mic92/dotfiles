@@ -37,7 +37,7 @@ let
           #deoplete-nvim
           #deoplete-jedi
           vim-trailing-whitespace
-          nerdtree-git-plugin
+          #nerdtree-git-plugin
           syntastic
           gitgutter
           airline
