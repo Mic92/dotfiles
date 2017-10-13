@@ -220,6 +220,7 @@ RPS1='%(?.%F{magenta}.%F{red}(%?%) %F{magenta})'
 ## Aliases
 # Basic commands
 alias zcat='zcat -f'
+alias dd='dd status=progress'
 xalias ag='ag --color --smart-case --literal --pager=less'
 # System tools
 xalias top='htop'
