@@ -59,14 +59,13 @@
           enable = true;
           defaultWindowManager = "xfce4-session";
         };
-
       };
 
       networking.firewall.enable = false;
 
       boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "e1000e" ];
-      boot.kernelModules = [ "kvm-intel" "wireguard" "sysdig" "bcc" ];
-      boot.extraModulePackages = with config.boot.kernelPackages; [ bcc wireguard sysdig ];
+      boot.kernelModules = [ "kvm-intel" "wireguard" ];
+      boot.extraModulePackages = with config.boot.kernelPackages; [ wireguard ];
 
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
@@ -113,10 +112,7 @@
       powerManagement.cpuFreqGovernor = "powersave";
 
       environment.systemPackages = with pkgs; [
-        config.boot.kernelPackages.perf
-        config.boot.kernelPackages.bcc
         usbutils
-        sysdig
         wireguard
         socat
         whois
