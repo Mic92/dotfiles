@@ -31,3 +31,6 @@
 [submodule "zsh/zsh-autopair"]
 	path = zsh/zsh-autopair
 	url = https://github.com/hlissner/zsh-autopair.git
+[submodule "nixos/overlays/nixpkgs-mozilla"]
+	path = nixos/overlays/nixpkgs-mozilla
+	url = https://github.com/mozilla/nixpkgs-mozilla.git
