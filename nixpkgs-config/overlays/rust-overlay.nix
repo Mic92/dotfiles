@@ -1,1 +1,1 @@
-/home/joerg/git/nixpkgs-mozilla/rust-overlay.nix
+../../nixos/overlays/nixpkgs-mozilla/rust-overlay.nix
