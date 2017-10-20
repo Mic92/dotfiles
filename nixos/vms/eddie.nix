@@ -21,6 +21,7 @@
         ./modules/mosh.nix
         ./modules/overlay.nix
         ./modules/tracing.nix
+        ./modules/packages.nix
       ];
 
       nix.extraOptions = ''
@@ -44,7 +45,6 @@
             echo "zfs load-key -a; killall zfs" >> /root/.profile
           '';
         };
-        blacklistedKernelModules = [ "iptable_nat" "ip_tables" ];
       };
 
       services = {
@@ -61,10 +61,18 @@
         };
       };
 
-      networking.firewall.enable = false;
+      networking.firewall.enable = true;
+      networking.firewall.allowedTCPPorts = [
+        3389 # xrdp
+        655 # tinc
+      ];
+      networking.firewall.allowedUDPPorts = [ 655 ];
+      # mosh
+      networking.firewall.allowedUDPPortRanges = [ { from = 60000; to = 61000; } ];
 
       boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "e1000e" ];
       boot.kernelModules = [ "kvm-intel" "wireguard" ];
+      boot.kernelPackages = pkgs.linuxPackages_latest;
       boot.extraModulePackages = with config.boot.kernelPackages; [ wireguard ];
 
       boot.loader.systemd-boot.enable = true;
@@ -77,13 +85,18 @@
           enable = true;
           enableOnBoot = false;
           storageDriver = "zfs";
-          extraOptions = "--iptables=false --storage-opt=zfs.fsname=zroot/docker";
+          extraOptions = "--storage-opt=zfs.fsname=zroot/docker";
         };
       };
 
       # for zfs
       networking.hostId = "81d75a04";
       boot.zfs.enableUnstable = true;
+
+      services.zfs = {
+        autoSnapshot.enable = true;
+        autoScrub.enable = true;
+      };
 
       fileSystems."/" = {
         device = "zroot/root/nixos";
@@ -111,45 +124,14 @@
 
       powerManagement.cpuFreqGovernor = "powersave";
 
+      services.avahi = {
+        enable = true;
+        nssmdns = true;
+      };
+
       environment.systemPackages = with pkgs; [
         usbutils
         wireguard
-        socat
-        whois
-
-        # must have
-        psmisc
-        p7zip
-        sipcalc
-        iperf
-        pkgconfig
-        openssl
-        binutils
-        file
-        wget
-        htop
-        ag
-        lsof
-        tcpdump
-        tmux
-        rsync
-        git
-        tig
-        ruby.devEnv
-        python
-        python3
-        go
-        gcc
-        strace
-        ltrace
-        nethogs
-        iotop
-        gnumake
-        manpages
-        dnsutils
-        netcat
-        mtr
-        ntfs3g
       ];
 
       services.tor = {
