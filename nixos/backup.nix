@@ -9,7 +9,7 @@ in {
     timerConfig.OnCalendar = "12:00:00";
   };
   systemd.services.backup = {
-    path = with pkgs; [ borg ];
+    path = with pkgs; [ borgbackup ];
     # cifs mount from ./dice.nix
     unitConfig.RequiresMountsFor = backup_path;
     script = ''
@@ -33,5 +33,5 @@ in {
        cp "$0" "${backup_path}/../backup-script"
     '';
   };
-  environment.systemPackages = with pkgs; [ borg ];
+  environment.systemPackages = with pkgs; [ borgbackup ];
 }
