@@ -244,7 +244,7 @@ in {
   };
   home.file.".gitconfig".target = dotfilesPath ".gitconfig.local";
 
-  fonts.enablePackageFonts = true;
+  fonts.fontconfig.enableProfileFonts = true;
 
   home.packages = ([]
       ++ desktopApps
