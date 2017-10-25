@@ -174,7 +174,7 @@ let
     xclip
     screen-message
     scrot
-    alacritty
+    stable.alacritty
   ] ++ (with gnome3; [
     gvfs
     eog
@@ -274,11 +274,8 @@ in {
         cheat
         gnupg1compat
         direnv
-        tree
         fzf
         exa
-        ripgrep
-        ag
         fd
   ]);
 }

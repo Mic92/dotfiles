@@ -15,8 +15,6 @@ let
        networking.hostName = mkDefault name;
        networking.useDHCP = false;
        systemd.network.enable = true;
-
-       environment.systemPackages = [ ];
      };
 
      config = (import <nixpkgs/nixos/lib/eval-config.nix> {

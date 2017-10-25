@@ -3,14 +3,14 @@ let
   zone = "us-east-1a";
   accessKeyId = "default";
 in {
-  resources.ebsVolumes.cntr-disk = {
-    accessKeyId = accessKeyId;
-    tags.Name = "cntr-disk";
-    inherit region;
-    zone = zone;
-    size = 100;
-    volumeType = "gp2";
-  };
+  #resources.ebsVolumes.cntr-disk = {
+  #  accessKeyId = accessKeyId;
+  #  tags.Name = "cntr-disk";
+  #  inherit region;
+  #  zone = zone;
+  #  size = 100;
+  #  volumeType = "gp2";
+  #};
 
   cntr-machine = { resources, config, lib, pkgs, ... }: {
     deployment.targetEnv = "ec2";
@@ -37,7 +37,7 @@ in {
       autoFormat = true;
       fsType = "ext4";
       device = "/dev/xvdj";
-      ec2.disk = resources.ebsVolumes.cntr-disk;
+      #ec2.disk = resources.ebsVolumes.cntr-disk;
     };
   };
 
@@ -46,7 +46,10 @@ in {
   resources.ec2SecurityGroups.cntr-security-group = { resources, ... }: {
     inherit region accessKeyId;
     vpcId = resources.vpc.cntr-vpc;
-    rules = [{ protocol = "-1"; fromPort = 0; toPort = 65535; sourceIp = "0.0.0.0/0"; }];
+    rules = [
+      { protocol = "-1"; fromPort = 0; toPort = 65535; sourceIp = "0.0.0.0/0"; }
+      #{ protocol = "-1"; fromPort = 0; toPort = 65535; sourceIp = "::/0"; }
+    ];
   };
 
   resources.vpc.cntr-vpc = {
@@ -55,6 +58,7 @@ in {
     enableDnsSupport = true;
     enableDnsHostnames = true;
     cidrBlock = "192.168.56.0/24";
+    amazonProvidedIpv6CidrBlock = true;
   };
 
   resources.vpcSubnets.cntr-subnet = { resources, ... }: {
@@ -90,6 +94,13 @@ in {
     inherit region accessKeyId;
     routeTableId = resources.vpcRouteTables.cntr-route-table;
     destinationCidrBlock = "0.0.0.0/0";
+    gatewayId = resources.vpcInternetGateways.cntr-igw;
+  };
+
+  resources.vpcRoutes.cntr-igw-route6 = { resources, ... }: {
+    inherit region accessKeyId;
+    routeTableId = resources.vpcRouteTables.cntr-route-table;
+    destinationIpv6CidrBlock = "::/0";
     gatewayId = resources.vpcInternetGateways.cntr-igw;
   };
 }

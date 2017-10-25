@@ -11,10 +11,13 @@ if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
 fi
 
 if [[ -d $HOME/git/nixpkgs ]]; then
-  export NIX_PATH=nixpkgs=$HOME/git/nixpkgs
+  export NIX_PATH="nixpkgs=$HOME/git/nixpkgs"
+fi
+if [[ -d $HOME/git/nixpkgs/.stable ]]; then
+  export NIX_PATH="${NIX_PATH}:stable=$HOME/git/nixpkgs/.stable"
 fi
 if [[ -d $HOME/git/nixos-configuration ]]; then
-  export NIX_PATH=$NIX_PATH:nixos-config=$HOME/git/nixos-configuration/configuration.nix:nixpkgs-overlays=$HOME/git/nixos-configuration/overlays
+  export NIX_PATH="$NIX_PATH:nixos-config=$HOME/git/nixos-configuration/configuration.nix:nixpkgs-overlays=$HOME/git/nixos-configuration/overlays"
 fi
 if [ -e /home/joerg/.nix-profile/etc/profile.d/nix.sh ]; then
   . /home/joerg/.nix-profile/etc/profile.d/nix.sh;
@@ -222,6 +225,7 @@ RPS1='%(?.%F{magenta}.%F{red}(%?%) %F{magenta})'
 alias zcat='zcat -f'
 alias dd='dd status=progress'
 xalias ag='ag --color --smart-case --literal --pager=less'
+
 # System tools
 xalias top='htop'
 alias free='free -m'
@@ -232,6 +236,7 @@ xalias df='dfc'
 # File management
 if [[ -n ${commands[exa]} ]]; then
   alias ls='exa'
+  alias tree='exa -T'
 elif [[ $OSTYPE == freebsd* ]]; then
   alias ls='ls -G'
 else
@@ -420,6 +425,10 @@ if [ -S /run/user/1000/ssh-agent ]; then
   export SSH_AUTH_SOCK=/run/user/1000/ssh-agent
 fi
 
+if [[ -n ${commands[lesspipe.sh]} ]]; then
+  export LESSOPEN="| lesspipe.sh %s"
+fi
+
 unlock_root(){
   echo "cryptsetup luksOpen --tries 99 /dev/sda2 root && killall cryptsetup"
   cat ~/.secret/cryptsetup-passwd | ssh -tt -v root@eve -p 2222
@@ -515,7 +524,7 @@ moshlogin(){
     ssh-add ~/.ssh/id_{rsa,ecdsa,ed25519}
   fi
   ssh login killall mosh-server;
-  LC_ALL=en_DK.UTF-8 mosh -A -p 60011:60011 login
+  mosh -A -p 60011:60011 login
 }
 # List directory after changing directory
 if [ "${commands[exa]}" ]; then

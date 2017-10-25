@@ -63,6 +63,7 @@ in {
     package = pkgs.nixUnstable;
     nixPath = [
       "nixpkgs=/home/joerg/git/nixpkgs"
+      "nixpkgs-stable=/home/joerg/git/nixpkgs/.stable"
       "nixos-config=/home/joerg/git/nixos-configuration/configuration.nix"
       "nspawn-container=/home/joerg/git/nixos-configuration/nspawn-container"
       "nixpkgs-overlays=/home/joerg/git/nixos-configuration/overlays"

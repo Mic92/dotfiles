@@ -43,7 +43,7 @@ in {
     networking.extraHosts = builtins.readFile (pkgs.fetchurl {
       url = "https://lassul.us/retiolum.hosts";
       # FIXME
-      sha256 = "0l9ygs0qypf2k80q34ny1biwb45s3vii5g8vx2gir4zylqibkysw";
+      sha256 = "0bdw0f3kgg8vqwdmxan15l6xksd4ypmdc3iwylhq300bjnf4zc4w";
     });
 
     environment.systemPackages = [ config.services.tinc.networks.${netname}.package ];

@@ -27,7 +27,7 @@ in {
     # http://computing.help.inf.ed.ac.uk/openvpn
     (pkgs.writeScriptBin "openvpn-edinburgh-full" ''
        export PATH=$PATH:${pkgs.iproute}/bin
-       exec "${pkgs.openvpn}/bin/openvpn" --redirect-gateway def1  ${./uni-edinburgh.ovpn}
+       exec "${pkgs.openvpn}/bin/openvpn" --redirect-gateway def1 --config ${./uni-edinburgh.ovpn}
      '')
   ];
 

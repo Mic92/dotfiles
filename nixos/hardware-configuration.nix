@@ -16,6 +16,8 @@
     kernelModules = [ "kvm-intel" ];
   };
 
+  services.xserver.videoDrivers = [ "intel" ];
+
   # for zfs
   networking.hostId = "8425e349";
 

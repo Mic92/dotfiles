@@ -4,7 +4,7 @@ with pkgs;
 {
   boot = {
     kernelPackages = linuxPackages_latest;
-    extraModulePackages = with config.boot.kernelPackages; [ bcc wireguard ];
+    extraModulePackages = with config.boot.kernelPackages; [ wireguard ];
   };
 
   nixpkgs.config.allowUnfree = true;
