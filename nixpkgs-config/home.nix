@@ -247,8 +247,8 @@ in {
   fonts.fontconfig.enableProfileFonts = true;
 
   home.packages = ([]
-      ++ desktopApps
-      ++ latexApps
+      #++ desktopApps
+      #++ latexApps
       #++ rubyApps
       #++ rustApps
       #++ pythonDataLibs
