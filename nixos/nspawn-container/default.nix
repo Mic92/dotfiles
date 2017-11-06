@@ -42,7 +42,7 @@ let
   in {
     systemd.nspawn."${name}" = {
       execConfig = {
-        PrivateUsers=false;
+        PrivateUsers=true;
         #NotifyReady=true;
       };
       filesConfig = {
@@ -75,6 +75,7 @@ let
           --keep-unit \
           --machine=${name} \
           --directory="${root}" \
+          --private-users \
           --settings=override \
           --network-veth \
           ${config.system.build.toplevel}/init
