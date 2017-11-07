@@ -6,5 +6,7 @@ stdenv.mkDerivation {
     fuse
     meson
     ninja
+    pkgconfig
+    systemd
   ];
 }
