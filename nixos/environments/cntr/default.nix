@@ -2,8 +2,6 @@ with import <nixpkgs> {};
 stdenv.mkDerivation {
   name = "env";
   buildInputs = [
-    rustc
-    cargo
     rustracer
     rustfmt
     lldb
@@ -19,6 +17,8 @@ stdenv.mkDerivation {
     dbench
     fio
     glibc.debug
+    gperftools
+    # kcachegrind
     latest.rustChannels.nightly.rust
     latest.rustChannels.nightly.cargo
 
