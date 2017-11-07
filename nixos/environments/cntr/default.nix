@@ -19,6 +19,7 @@ stdenv.mkDerivation {
     glibc.debug
     gperftools
     # kcachegrind
+    gnumake
     latest.rustChannels.nightly.rust
     latest.rustChannels.nightly.cargo
 
