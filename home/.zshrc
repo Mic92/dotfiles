@@ -63,7 +63,11 @@ xalias() {
   fi
 
   key="${1%%\=*}" ;  val="${1#*\=}"
-  check_com ${val} && alias -- "${key}=${val}"
+
+  words=(${(z)val})
+  cmd=${words[1]}
+
+  [[ -n ${commands[$cmd]}  ]] && alias -- "${key}=${val}"
   return 0
 }
 # xhashd - check for directory, then create hash -d
@@ -81,41 +85,6 @@ xhashd() {
   key="${1%%\=*}";  val="${1#*\=}"
   [[ -d ${val} ]] && hash -d -- "${key}=${val}"
   return 0
-}
-# check_com - check if a command exists
-# eg: check_com "vim -p"
-function check_com() {
-    local -a words
-    local -i comonly
-    local cmd
-
-    if [[ ${1} == '-c' ]] ; then
-        (( comonly = 1 ))
-        shift
-    else
-        (( comonly = 0 ))
-    fi
-
-    if (( ${#argv} != 1 )) ; then
-        printf 'usage: check_com [-c] <command>\n' >&2
-        return 1
-    fi
-
-    words=(${(z)1})
-    cmd=${words[1]}
-
-    if (( comonly > 0 )) ; then
-        [[ -n ${commands[$cmd]}  ]] && return 0
-        return 1
-    fi
-
-    if   [[ -n ${commands[$cmd]}    ]] \
-      || [[ -n ${functions[$cmd]}   ]] \
-      || [[ -n ${aliases[$cmd]}     ]] \
-      || [[ -n ${reswords[(r)$cmd]} ]] ; then
-        return 0
-    fi
-    return 1
 }
 is_mac() { [[ $OSTYPE == darwin* ]] }
 is_freebsd() { [[ $OSTYPE == freebsd* ]] }
@@ -322,13 +291,13 @@ alias fzsh='PS1="zsh%# " zsh -f'
 # generic aliases
 # diff format like git
 xalias diff='diff -Naur --strip-trailing-cr'
-[ -z "${commands[ping6]}" ] && ping6="ping -6"
+[ -z "${commands[ping6]}" ] && alias ping6="ping -6"
 alias gping="ping google.com"
 alias gping6="ping6 google.com"
 alias ghost="host -v google.com 8.8.8.8"
 alias gcurl="curl -v google.com"
 ping_gw(){ ip route | awk '/default/ {printf "-I %s %s", $5, $3; exit}' | xargs --no-run-if-empty --max-args 3 ping -W2 }
-ping6_gw(){ ip -6 route | awk '/default/ {printf "-I %s %s", $5, $3; exit}' | xargs --no-run-if-empty --max-args 3 ping6 -W2 }
+ping6_gw(){ ip -6 route | awk '/default/ {printf "-I %s %s", $5, $3; exit}' | xargs --no-run-if-empty --max-args 3 ping -6 -W2 }
 alias :q=exit
 alias todotxt="vim ~/Dropbox/todo/todo.txt"
 alias grep="grep --binary-files=without-match --directories=skip --color=auto"
@@ -433,11 +402,6 @@ unlock_root(){
   echo "cryptsetup luksOpen --tries 99 /dev/sda2 root && killall cryptsetup"
   cat ~/.secret/cryptsetup-passwd | ssh -tt -v root@eve -p 2222
 }
-
-## Functions
-flash_undelete() {
-  cd /proc/$(ps x | awk '/libflashplayer.so\ /{print $1}')/fd && ls -l | grep deleted
-}
 network() {
   (
     echo "$fg_bold[green]# Interfaces$reset_color"
@@ -453,20 +417,6 @@ network() {
       ip neigh
     ) | grep --color=always "$1"
   ) | less '+/#'
-}
-webserver() {
-  # dirty hack to get the network interfaces
-  # and its local ip address
-  ip addr show | grep --color=never --perl-regexp '^\d:|inet'
-
-  [[ -n commands[avahi-publish-service] ]] && avahi-publish-service "Joergs Webserver" _http._tcp 8080 &
-  trap "kill $!" SIGINT SIGTERM EXIT
-  python -m http.server 8080
-}
-pull-dotfiles() {
-  pushd ~/.homesick/repos/dotfiles
-  git submodule foreach --recursive "git fetch --all; git reset --hard origin/master"
-  popd
 }
 # Autoinstall Bundle
 bundle() {
@@ -533,6 +483,7 @@ else
   chpwd() { ls }
 fi
 mkcd() { mkdir -p "$1" && cd "$1"; }
+# make cd accept files
 cd() {
   local to="${1:-$HOME}"
   if [ -f "$to" ]; then
@@ -672,7 +623,3 @@ if [ -n "${commands[fzf-share]}" ]; then
   FZF_CTRL_R_OPTS=--reverse
   source "$(fzf-share)/key-bindings.zsh"
 fi
-
-#if [[ -n ${commands[thefuck]} ]]; then
-#  eval $(thefuck --alias)
-#fi
