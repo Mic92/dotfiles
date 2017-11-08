@@ -13,7 +13,7 @@ let
         if filereadable($HOME . "/.vimrc")
           source ~/.vimrc
         endif
-        let g:ycm_rust_src_path = '${stdenv.mkDerivation {
+        let $RUST_SRC_PATH = '${stdenv.mkDerivation {
           inherit (rustc) src;
           inherit (rustc.src) name;
           phases = ["unpackPhase" "installPhase"];
@@ -27,27 +27,25 @@ let
       in with plugins; {
         # loaded on launch
         start = [
+          vim-docbk
+          vim-docbk-snippets
+          UltiSnips
+
           fzfWrapper
           vim-devicons
           nvim-completion-manager
           LanguageClient-neovim
           nvim-cm-racer
-          clang_complete
-          pony-vim-syntax
-          #deoplete-nvim
-          #deoplete-jedi
           vim-trailing-whitespace
           #nerdtree-git-plugin
-          syntastic
           gitgutter
           airline
           nerdtree
           colors-solarized
           ack-vim
           vim-go
-          vim-scala
           vim-polyglot
-          syntastic
+          ale
           # delimitMate
           editorconfig-vim
           ctrlp
@@ -83,6 +81,7 @@ let
       IEEEtran;
     })
   ];
+
 
   rubyApps = [ bundler bundix rubocop ];
 
