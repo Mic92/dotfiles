@@ -157,8 +157,8 @@ let
       src = pkgs.fetchFromGitHub {
         owner = "varjolintu";
         repo = "keepassxc";
-        rev = "2.2.0-browser-rc2";
-        sha256 = "0rlws726z0kbnvsvj6926p0h24x1jfz2c8lb58713xqd5xyg2nwb";
+        rev = "2.2.0-browser-rc5";
+        sha256 = "09s2k0cih4g9hykxai32gjjgs5hczicrfp6psl70s0s2rpmq8c6g";
       };
       cmakeFlags = old.cmakeFlags ++ [ "-DWITH_XC_BROWSER=ON" ];
       buildInputs = old.buildInputs ++ [ boost libsodium ];
