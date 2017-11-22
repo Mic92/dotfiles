@@ -13,20 +13,15 @@ let
         if filereadable($HOME . "/.vimrc")
           source ~/.vimrc
         endif
-        let $RUST_SRC_PATH = '${stdenv.mkDerivation {
-          inherit (rustc) src;
-          inherit (rustc.src) name;
-          phases = ["unpackPhase" "installPhase"];
-          installPhase = ''
-            cp -r src $out
-          '';
-        }}'
+        let $RUST_SRC_PATH = '${rustPlatform.rustcSrc}'
+        let g:grammarous#show_first_error = 1
       '';
       packages.nixbundle = let
         plugins = (vimPlugins.override (old: { python = python3; }));
       in with plugins; {
         # loaded on launch
         start = [
+          vim-grammarous
           vim-docbk
           vim-docbk-snippets
           UltiSnips
@@ -36,9 +31,6 @@ let
           nvim-completion-manager
           LanguageClient-neovim
           nvim-cm-racer
-          vim-trailing-whitespace
-          #nerdtree-git-plugin
-          gitgutter
           airline
           nerdtree
           colors-solarized
@@ -51,6 +43,7 @@ let
           ctrlp
           rust-vim
           vim-yapf
+          vim-signify
         ];
       };
     };
