@@ -41,7 +41,8 @@ in {
     plymouth.enable = true;
     loader = {
       systemd-boot.enable = true;
-      efi.canTouchEfiVariables = true;
+      # when installing toggle this
+      # efi.canTouchEfiVariables = true;
     };
     blacklistedKernelModules = [ "iptable_nat" "ip_tables" ];
   };
