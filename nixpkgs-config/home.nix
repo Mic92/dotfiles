@@ -25,7 +25,8 @@ let
           vim-docbk
           vim-docbk-snippets
           UltiSnips
-
+          vim-maktaba
+          vim-codefmt
           fzfWrapper
           vim-devicons
           nvim-completion-manager
@@ -51,6 +52,8 @@ let
 
   latexApps = [
     rubber
+    (callPackages ./write-good/composition.nix {}).write-good
+
     (texlive.combine {
       inherit (texlive)
       scheme-basic
@@ -93,6 +96,7 @@ let
     dejavu_fonts
     ubuntu_font_family
     unifont
+    emojione
     (stdenv.mkDerivation rec {
       name = "inconsolata-nerdfont-${version}";
       version = nerdfonts.version;
@@ -106,10 +110,11 @@ let
       '';
     })
 
+    gnome3.defaultIconTheme
+    hicolor_icon_theme
+
     screen
     remmina
-    arc-icon-theme
-    arc-theme
     graphicsmagick
     bench
     sshfsFuse
@@ -122,7 +127,7 @@ let
     inkscape
     mpd
     mpv
-    firefox
+    firefox-beta-bin
     chromium
     thunderbird
     transmission_gtk
@@ -133,6 +138,8 @@ let
     hunspell
     hunspellDicts.en-gb-ise
     scrot
+    urlview
+    #gajimUnstable
     (gajim.overrideAttrs (old: {
       patches = (old.patches or []) ++ [
         ./0001-remove-outer-paragraph.patch
@@ -146,16 +153,18 @@ let
     copyq
     xautolock
     i3lock
-    (keepassx-community.overrideAttrs (old: {
-      src = pkgs.fetchFromGitHub {
-        owner = "varjolintu";
-        repo = "keepassxc";
-        rev = "2.2.0-browser-rc5";
-        sha256 = "09s2k0cih4g9hykxai32gjjgs5hczicrfp6psl70s0s2rpmq8c6g";
-      };
-      cmakeFlags = old.cmakeFlags ++ [ "-DWITH_XC_BROWSER=ON" ];
-      buildInputs = old.buildInputs ++ [ boost libsodium ];
-    }))
+    wireshark
+    keepassx-community
+    #(keepassx-community.overrideAttrs (old: {
+    #  src = pkgs.fetchFromGitHub {
+    #    owner = "varjolintu";
+    #    repo = "keepassxc";
+    #    rev = "2.2.0-browser-rc5";
+    #    sha256 = "09s2k0cih4g9hykxai32gjjgs5hczicrfp6psl70s0s2rpmq8c6g";
+    #  };
+    #  cmakeFlags = old.cmakeFlags ++ [ "-DWITH_XC_BROWSER=ON" ];
+    #  buildInputs = old.buildInputs ++ [ boost libsodium ];
+    #}))
     pavucontrol
     evince
     pcmanfm
@@ -166,7 +175,7 @@ let
     xclip
     screen-message
     scrot
-    stable.alacritty
+    alacritty
   ] ++ (with gnome3; [
     gvfs
     eog
@@ -239,8 +248,8 @@ in {
   fonts.fontconfig.enableProfileFonts = true;
 
   home.packages = ([]
-      #++ desktopApps
-      #++ latexApps
+      ++ desktopApps
+      ++ latexApps
       #++ rubyApps
       #++ rustApps
       #++ pythonDataLibs
@@ -249,6 +258,9 @@ in {
       ++ nixDevApps
       ++ [
         nvim
+        python3Packages.flake8
+        nodePackages.jsonlint
+
         tmux
         htop
         psmisc
