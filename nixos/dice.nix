@@ -52,7 +52,7 @@ in {
   # test using kinit and your DICE password
   # $ kinit s16916XX -k
   krb5 = {
-    enable = true;
+    enable = false;
     kerberos = pkgs.krb5Full;
     libdefaults = {
       ticket_lifetime = 64800;
@@ -104,8 +104,9 @@ in {
       ExecStart = with pkgs; [
         "${krb5Full}/bin/kinit ${uun} -k"
         "${utillinux}/bin/runuser -u joerg -- ${krb5Full}/bin/kinit ${uun} -k"
+      ] ++ (lib.optional config.services.openafsClient.enable [
         "${utillinux}/bin/runuser -u joerg -- ${config.boot.kernelPackages.openafsClient}/bin/aklog -d"
-      ];
+      ]);
     };
   };
 
