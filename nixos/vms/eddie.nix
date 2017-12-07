@@ -33,6 +33,45 @@
         ipv6 = "42:4992:6a6d:700::1";
       };
 
+      networking.dhcpcd.enable = false;
+
+      systemd.network.networks = {
+        ethernet.extraConfig = ''
+          [Match]
+          Name=eth0
+
+          [Network]
+          DHCP=both
+          LLMNR=true
+          IPv4LL=true
+          LLDP=true
+          IPv6AcceptRA=true
+          IPv6Token=::521a:c5ff:fefe:65d9
+
+          [DHCP]
+          UseHostname=false
+          RouteMetric=512
+        '';
+        usb.extraConfig = ''
+          [Match]
+          Name=enp0s20f0u9
+
+          [Network]
+          Address=192.168.44.253/24
+          IPMasquerade=true
+          LLMNR=true
+          IPv4LL=true
+          LLDP=true
+          DHCPServer=yes
+
+          [DHCPServer]
+          PoolOffset=100
+          PoolSize=20
+          EmitDNS=yes
+          DNS=8.8.8.8
+        '';
+      };
+
       boot = {
         initrd.network = {
           enable = true;
@@ -42,12 +81,18 @@
             hostECDSAKey = "/run/keys/initrd-ssh-key";
           };
           postCommands = ''
-            echo "zfs load-key -a; killall zfs" >> /root/.profile
+            echo "zfs load-key -a; killall zfs; ip addr flush dev eth0" >> /root/.profile
           '';
         };
       };
 
       services = {
+        unbound = {
+          enable = true;
+          forwardAddresses = ["9.9.9.9"];
+          allowedAccess = ["0.0.0.0/0" "::/0"];
+          interfaces = ["10.243.29.170" "42:4992:6a6d:700::1"];
+        };
         xserver = {
           enable = true;
           desktopManager.xfce.enable = true;
@@ -66,9 +111,16 @@
         3389 # xrdp
         655 # tinc
       ];
-      networking.firewall.allowedUDPPorts = [ 655 ];
-      # mosh
-      networking.firewall.allowedUDPPortRanges = [ { from = 60000; to = 61000; } ];
+      networking.firewall.allowedUDPPorts = [
+        655
+        53
+        # dhcp
+        67 68
+      ];
+      networking.firewall.allowedUDPPortRanges = [ 
+        # mosh
+        { from = 60000; to = 61000; }
+      ];
 
       boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "e1000e" ];
       boot.kernelModules = [ "kvm-intel" "wireguard" ];
