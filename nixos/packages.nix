@@ -5,6 +5,7 @@ with pkgs;
   boot = {
     kernelPackages = linuxPackages_latest;
     extraModulePackages = with config.boot.kernelPackages; [ wireguard ];
+    zfs.enableUnstable = true;
   };
 
   nixpkgs.config.allowUnfree = true;
@@ -14,6 +15,8 @@ with pkgs;
     wireguard
     socat
     whois
+    gnome3.defaultIconTheme
+    hicolor_icon_theme
 
     # must have
     psmisc
