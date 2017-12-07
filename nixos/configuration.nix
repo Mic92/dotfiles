@@ -53,15 +53,16 @@ in {
     LD_LIBRARY_PATH = [ config.system.nssModules.path ];
   };
 
+
   nix = {
     gc.automatic = true;
     gc.dates = "03:15";
     #binaryCaches = [ https://cache.nixos.community https://cache.nixos.org/ ];
     distributedBuilds = false;
+    package = pkgs.nixUnstable;
     #buildMachines = [
     #  { hostName = "inspector.r"; sshUser = "nix"; sshKey = "/etc/nixos/secrets/id_buildfarm"; system = "x86_64-linux"; maxJobs = 8; }
     #];
-    package = pkgs.nixUnstable;
     nixPath = [
       "nixpkgs=/home/joerg/git/nixpkgs"
       "nixpkgs-stable=/home/joerg/git/nixpkgs/.stable"
@@ -86,8 +87,8 @@ in {
   time.timeZone = "Europe/London";
 
   services = {
+    gpm.enable = true;
     physlock.enable = true;
-    gnome3.gnome-keyring.enable = true;
     autorandr.enable = true;
     resilio = {
       enable = true;
@@ -127,6 +128,11 @@ in {
     };
 
     xserver = {
+      displayManager.lightdm = {
+        enable = true;
+        autoLogin.user = "joerg";
+        autoLogin.enable = true;
+      };
       enable = true;
       layout = "us";
       xkbVariant = "altgr-intl";
@@ -134,7 +140,11 @@ in {
       windowManager = {
         awesome = {
           enable = true;
-          luaModules = with pkgs.lua52Packages; [ luasocket ];
+          luaModules = with pkgs.lua52Packages; [ luasocket cjson ];
+        };
+        i3 = {
+          enable = false;
+          extraPackages = with pkgs; [ dmenu i3pystatus i3lock i3status ];
         };
         default = "awesome";
       };
@@ -228,7 +238,7 @@ in {
 
 
   virtualisation = {
-    virtualbox.host.enable = true;
+    virtualbox.host.enable = false;
     docker = {
       enable = true;
       enableOnBoot = true;
@@ -254,10 +264,10 @@ in {
 
   hardware.pulseaudio.enable = true;
 
-  users.extraUsers = {
+  users.users = {
     joerg = {
       isNormalUser = true;
-      extraGroups = ["wheel" "docker" "plugdev" "vboxusers" "adbusers" "input"];
+      extraGroups = ["wheel" "docker" "plugdev" "vboxusers" "adbusers" "input" "sway" "wireshark"];
       shell = "/run/current-system/sw/bin/zsh";
       uid = 1000;
     };
@@ -266,7 +276,7 @@ in {
       subGidRanges = [ { startGid = 100000; count = 65536; } ];
     };
   };
-  users.extraGroups.adbusers = {};
+  users.groups.adbusers = {};
 
   security = {
     audit.enable = false;
