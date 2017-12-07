@@ -151,6 +151,10 @@ setopt hist_ignore_space
 setopt long_list_jobs
 # emacs keys
 bindkey -e
+# open current line in editor
+autoload edit-command-line
+zle -N edit-command-line
+bindkey '^X^e' edit-command-line
 
 ## Completion
 autoload colors; colors;
