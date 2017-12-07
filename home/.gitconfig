@@ -52,11 +52,11 @@
   path = nvim
 [imap]
   folder = "Drafts"
-  host = imap://imap.higgsboson.tk
+  host = imap://imap.thalheim.io
   user = joerg@higgsboson.tk
 [sendemail]
   from = joerg@thalheim.io <joerg@thalheim.io>
-  smtpserver = mail.higgsboson.tk
+  smtpserver = smtp.thalheim.io
   smtpuser = joerg@higgsboson.tk
   smtpencryption = tls
   chainreplyto = false
@@ -67,7 +67,5 @@
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
   required = true
-[include]
-  path = ~/.gitconfig.local
 [rebase]
   autoStash = true
