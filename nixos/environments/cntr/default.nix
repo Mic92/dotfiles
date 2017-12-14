@@ -4,7 +4,7 @@ stdenv.mkDerivation {
   buildInputs = [
     rustracer
     rustfmt
-    lldb
+    gdbgui
     fuse
     bc
     gdbm
@@ -20,12 +20,14 @@ stdenv.mkDerivation {
     gperftools
     # kcachegrind
     gnumake
-    latest.rustChannels.nightly.rust
-    latest.rustChannels.nightly.cargo
+    rustc
+    cargo
+    #latest.rustChannels.nightly.rust
+    #latest.rustChannels.nightly.cargo
 
-    (e2fsprogs.overrideDerivation (old: {
-      patches = [./0001-fix-stackoverflow-in-fgetversion.patch];
-    }))
+    #(e2fsprogs.overrideAttrs (old: {
+    #  patches = [./0001-fix-stackoverflow-in-fgetversion.patch];
+    #}))
   ] ++ xfstests.buildInputs
     ++ xfstests.nativeBuildInputs;
   hardeningDisable = [ "format" ];

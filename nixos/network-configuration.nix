@@ -13,47 +13,53 @@ in {
    ./vms/modules/retiolum.nix
   ];
 
-
   services = {
     dnscrypt-proxy = {
       enable = true;
-      #resolverName = "ipredator";
       localAddress = "0.0.0.0";
+      resolverName = "ipredator";
+      #customResolver = {
+      #  address = "185.194.143.140";
+      #  port = 15251;
+      #  name = "2.dnscrypt-cert.euer.krebsco.de";
+      #  key = "1AFC:E58D:F242:0FBB:9EE9:4E51:47F4:5373:D9AE:C2AB:DD96:8448:333D:5D79:272C:A44C";
+      #};
     };
-    #extraConfig = ''
-    #  #server=127.0.0.1#5353
-    #  #server=/dn42/172.23.75.6
+    dnsmasq.enable = false;
+    dnsmasq.extraConfig = ''
+      #server=127.0.0.1#5353
+      #server=/dn42/172.23.75.6
 
-    #  no-resolv
-    #  cache-size=1000
-    #  min-cache-ttl=3600
-    #  bind-dynamic
-    #  all-servers
+      no-resolv
+      cache-size=1000
+      min-cache-ttl=3600
+      bind-dynamic
+      all-servers
 
-    #  dnssec
-    #  trust-anchor=.,19036,8,2,49AAC11D7B6F6446702E54A1607371607A1A41855200FD2CE1CDDE32F24E8FB5
+      dnssec
+      trust-anchor=.,19036,8,2,49AAC11D7B6F6446702E54A1607371607A1A41855200FD2CE1CDDE32F24E8FB5
 
-    #  address=/blog/127.0.0.1
-    #  address=/blog/::1
-    #  rebind-domain-ok=/onion/
-    #  server=/.onion/127.0.0.1#9053
-    #  port=53
-    #  #log-queries
-    #  ${if internetSharing.hotspot then
-    #  ''
-    #    interface=wlp3s0
-    #    dhcp-option=wlp3s0,1,255.255.255.0  # subnet
-    #    dhcp-option=wlp3s0,3,192.168.44.254 # router
-    #    dhcp-option=wlp3s0,6,192.168.44.254 # dns
-    #    dhcp-range=wlp3s0,192.168.44.0,192.168.44.253,12h
-    #  '' else if internetSharing.enable then ''
-    #    interface=enp0s25
-    #    dhcp-option=enp0s25,1,255.255.255.0  # subnet
-    #    dhcp-option=enp0s25,3,192.168.43.254 # router
-    #    dhcp-option=enp0s25,6,192.168.43.254 # dns
-    #    dhcp-range=enp0s25,192.168.43.0,192.168.43.253,12h
-    #  '' else ""}
-    #'';
+      address=/blog/127.0.0.1
+      address=/blog/::1
+      rebind-domain-ok=/onion/
+      server=/.onion/127.0.0.1#9053
+      port=53
+      #log-queries
+      ${if internetSharing.hotspot then
+      ''
+        interface=wlp3s0
+        dhcp-option=wlp3s0,1,255.255.255.0  # subnet
+        dhcp-option=wlp3s0,3,192.168.44.254 # router
+        dhcp-option=wlp3s0,6,192.168.44.254 # dns
+        dhcp-range=wlp3s0,192.168.44.0,192.168.44.253,12h
+      '' else if internetSharing.enable then ''
+        interface=enp0s25
+        dhcp-option=enp0s25,1,255.255.255.0  # subnet
+        dhcp-option=enp0s25,3,192.168.43.254 # router
+        dhcp-option=enp0s25,6,192.168.43.254 # dns
+        dhcp-range=enp0s25,192.168.43.0,192.168.43.253,12h
+      '' else ""}
+    '';
     resolved.enable = false;
     hostapd = {
       enable = internetSharing.hotspot;
@@ -139,12 +145,13 @@ in {
     wgTemplate = lport: name: endpoint: key: {
       netdevConfig = { Name = "wg-${name}"; Kind = "wireguard"; };
       extraConfig = ''
-       [Wireguard]
+       [WireGuard]
        PrivateKey = ${lib.readFile ./secrets/wireguard-key}
        ListenPort = ${toString lport}
+       FwMark = 42
 
-       [WireguardPeer]
-       AllowedIPs = 0.0.0.0/0
+       [WireGuardPeer]
+       AllowedIPs = 0.0.0.0/1
        AllowedIPs = ::/0
        Endpoint = ${endpoint}
        PublicKey = ${key}
@@ -153,8 +160,8 @@ in {
   in {
     wg-eve = wgTemplate 42421 "eve" "ipv4.dn42.higgsboson.tk:42422" "fxiGmHUK1aMa07cejTP3SHxYivIj3aXZwdvzTEXmYHM=";
     wg-eve6 = wgTemplate 42422 "eve6" "ipv6.dn42.higgsboson.tk:42422" "fxiGmHUK1aMa07cejTP3SHxYivIj3aXZwdvzTEXmYHM=";
-    wg-rauter = wgTemplate 42423 "rauter" "rauter.he.thalheim.io:42422" "l6LjG1WuLNkEwd2047mw2GpgPUppM1VwP/LWMaOqJ0E=";
-    wg-matchbox = wgTemplate 42424 "matchbox" "matchbox.he.thalheim.io:42432" "6ExGu7MjeHoPbWj8/F3YNcdMHa7e3fXFFPkswAXv4T4=";
+    #wg-rauter = wgTemplate 42423 "rauter" "rauter.he.thalheim.io:42422" "l6LjG1WuLNkEwd2047mw2GpgPUppM1VwP/LWMaOqJ0E=";
+    #wg-matchbox = wgTemplate 42424 "matchbox" "matchbox.he.thalheim.io:42432" "6ExGu7MjeHoPbWj8/F3YNcdMHa7e3fXFFPkswAXv4T4=";
 
     #anboxbr0.netdevConfig = { Name = "anboxbr0"; Kind = "bridge"; };
 

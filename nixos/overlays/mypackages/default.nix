@@ -1,7 +1,6 @@
 self: super:
-
 {
-  nix-review = self.stdenv.mkDerivation {
+  nix-review = super.stdenv.mkDerivation {
     name = "nix-review";
     src = ./nix-review;
     buildInputs = [ self.python3 ];
@@ -12,17 +11,17 @@ self: super:
     '';
   };
 
-  hplip = super.hplip.override { withPlugin = true; };
+  #hplip = super.hplip.override { withPlugin = true; };
 
-  mosh = super.mosh.overrideDerivation (old: {
-    name = "mosh-ssh-agent";
-    src = self.pkgs.fetchFromGitHub {
-      owner = "mobile-shell";
-      repo = "mosh";
-      rev = "968f3ccba04faf3a5b12d583128ce7450b006742";
-      sha256 = "1dyraknc9wwfb097ixryzjj86d60zz4yi0av0fq07p3bjz8f1sd9";
-    };
-  });
+  #mosh = super.mosh.overrideDerivation (old: {
+  #  name = "mosh-ssh-agent";
+  #  src = super.fetchFromGitHub {
+  #    owner = "mobile-shell";
+  #    repo = "mosh";
+  #    rev = "968f3ccba04faf3a5b12d583128ce7450b006742";
+  #    sha256 = "1dyraknc9wwfb097ixryzjj86d60zz4yi0av0fq07p3bjz8f1sd9";
+  #  };
+  #});
 
   #neovim = pkgs.neovim.override {
   #  vimAlias = true;
@@ -47,52 +46,52 @@ self: super:
 
   #mysystemd = self.callPackage ./systemd.nix {};
 
-  networkd = super.stdenv.mkDerivation {
-    name = "systemd-networkd";
-    buildInputs = with self; [
-      linuxHeaders pkgconfig intltool gperf libcap kmod
-      xz pam acl
-      libuuid m4 glib libxslt libgcrypt libgpgerror
-      libmicrohttpd kexectools libseccomp libffi audit lz4 libapparmor
-      iptables gnu-efi
-      gettext docbook_xsl docbook_xml_dtd_42 docbook_xml_dtd_45
-      (python3.withPackages (pythonPackages: with pythonPackages; [ lxml ]))
-      patchelf
-    ];
-    nativeBuildInputs = with self; [ meson ninja glibcLocales ];
-    src = self.fetchFromGitHub {
-      owner = "Mic92";
-      repo = "systemd";
-      rev = "9f11187dae637c3184922276dd809a0ebcb9cb69";
-      sha256 = "05nknky9ga2spfmid6gwplinn0iyc7rm63dxj7fmnb8yxdywqq1q";
-    };
-    LC_ALL="en_US.utf8";
+  #networkd = super.stdenv.mkDerivation {
+  #  name = "systemd-networkd";
+  #  buildInputs = with self; [
+  #    linuxHeaders pkgconfig intltool gperf libcap kmod
+  #    xz pam acl
+  #    libuuid m4 glib libxslt libgcrypt libgpgerror
+  #    libmicrohttpd kexectools libseccomp libffi audit lz4 libapparmor
+  #    iptables gnu-efi
+  #    gettext docbook_xsl docbook_xml_dtd_42 docbook_xml_dtd_45
+  #    (python3.withPackages (pythonPackages: with pythonPackages; [ lxml ]))
+  #    patchelf
+  #  ];
+  #  nativeBuildInputs = with self; [ meson ninja glibcLocales ];
+  #  src = super.fetchFromGitHub {
+  #    owner = "Mic92";
+  #    repo = "systemd";
+  #    rev = "9f11187dae637c3184922276dd809a0ebcb9cb69";
+  #    sha256 = "05nknky9ga2spfmid6gwplinn0iyc7rm63dxj7fmnb8yxdywqq1q";
+  #  };
+  #  LC_ALL="en_US.utf8";
 
-    configurePhase = ''
-      patchShebangs .
-      substituteInPlace src/network/networkd-manager.c \
-        --replace /usr/lib/systemd/network $out/lib/systemd/network
-      meson -D system-uid-max=499 -D system-gid-max=499 . build
-      cd build
-      '';
-    buildPhase = "ninja systemd-networkd";
-    installPhase = ''
-      mkdir -p $out/{bin,lib/systemd}
-      cp src/shared/libsystemd-shared-*.so $out/lib
-      cp -r ../network $out/lib/systemd/network
-      cp ./systemd-networkd $out/bin
-      patchelf --set-rpath "$out/lib:\$ORIGIN" $out/bin/systemd-networkd
-    '';
-  };
+  #  configurePhase = ''
+  #    patchShebangs .
+  #    substituteInPlace src/network/networkd-manager.c \
+  #      --replace /usr/lib/systemd/network $out/lib/systemd/network
+  #    meson -D system-uid-max=499 -D system-gid-max=499 . build
+  #    cd build
+  #    '';
+  #  buildPhase = "ninja systemd-networkd";
+  #  installPhase = ''
+  #    mkdir -p $out/{bin,lib/systemd}
+  #    cp src/shared/libsystemd-shared-*.so $out/lib
+  #    cp -r ../network $out/lib/systemd/network
+  #    cp ./systemd-networkd $out/bin
+  #    patchelf --set-rpath "$out/lib:\$ORIGIN" $out/bin/systemd-networkd
+  #  '';
+  #};
 
-  ocaml_with_topfind = with self; self.stdenv.mkDerivation rec {
-    name = "ocaml_with_topfind-${version}";
-    version = lib.getVersion ocaml;
+  #ocaml_with_topfind = super.stdenv.mkDerivation rec {
+  #  name = "ocaml_with_topfind-${version}";
+  #  version = super.lib.getVersion ocaml;
 
-    nativeBuildInputs = [ makeWrapper ];
-    buildCommand = ''
-      makeWrapper "${ocaml}/bin/ocaml" "$out/bin/ocaml_topfind" \
-      --add-flags "-I ${ocamlPackages.findlib}/lib/ocaml/${version}/site-lib"
-      '';
-  };
+  #  nativeBuildInputs = [ makeWrapper ];
+  #  buildCommand = ''
+  #    makeWrapper "${ocaml}/bin/ocaml" "$out/bin/ocaml_topfind" \
+  #    --add-flags "-I ${ocamlPackages.findlib}/lib/ocaml/${version}/site-lib"
+  #    '';
+  #};
 }
