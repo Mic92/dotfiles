@@ -25,8 +25,7 @@ let
           vim-docbk
           vim-docbk-snippets
           UltiSnips
-          vim-maktaba
-          vim-codefmt
+          vim-autoformat
           fzfWrapper
           vim-devicons
           nvim-completion-manager
@@ -60,7 +59,6 @@ let
 
       # awesome cv
       xetex
-      xetex-def
       unicode-math
       ucharcat
       collection-fontsextra
@@ -68,11 +66,9 @@ let
 
       collection-binextra
       collection-fontsrecommended
-      collection-genericrecommended
       collection-latex
       collection-latexextra
       collection-latexrecommended
-      collection-science
       collection-langgerman
       IEEEtran;
     })
@@ -243,8 +239,7 @@ in {
       key = "CA4106B8D7CC79FA";
     };
   };
-  home.file.".gitconfig".target = dotfilesPath ".gitconfig.local";
-
+ 
   fonts.fontconfig.enableProfileFonts = true;
 
   home.packages = ([]
