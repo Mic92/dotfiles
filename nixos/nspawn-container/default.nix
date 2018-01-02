@@ -68,6 +68,7 @@ let
     ];
 
     systemd.services."systemd-nspawn-${name}".serviceConfig = {
+      wantedBy = [ "machines.target" ];
       ExecStartPre = "${config.systemd.package}/bin/systemd-tmpfiles --create ${containerFiles}";
       ExecStart = [""
       ''
