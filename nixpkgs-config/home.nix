@@ -21,6 +21,8 @@ let
       in with plugins; {
         # loaded on launch
         start = [
+          fugitive
+          rhubarb
           vim-grammarous
           vim-docbk
           vim-docbk-snippets
@@ -149,7 +151,6 @@ let
     copyq
     xautolock
     i3lock
-    wireshark
     keepassx-community
     #(keepassx-community.overrideAttrs (old: {
     #  src = pkgs.fetchFromGitHub {
