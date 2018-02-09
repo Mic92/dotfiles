@@ -288,6 +288,14 @@ in {
       UseHostname=false
       RouteMetric=4096
     '';
+    "10usbnetwork".extraConfig = ''
+      [Match]
+      Driver=r8152
+
+      [Network]
+      DHCPServer=yes
+      Address=192.168.41.254/24
+    '';
     #anboxbr0.extraConfig = ''
     #  [Match]
     #  Name=anboxbr0
