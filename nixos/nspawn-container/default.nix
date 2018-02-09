@@ -19,7 +19,7 @@ let
 
      config = (import <nixpkgs/nixos/lib/eval-config.nix> {
        modules = [ defaultConfig ] ++ modules;
-       prefix = [ "containers" name ];
+       prefix = [ "nspawn" name ];
      }).config;
 
      # /etc/.os-release is dummy and will be replaced init stage-2
@@ -42,8 +42,8 @@ let
   in {
     systemd.nspawn."${name}" = {
       execConfig = {
-        PrivateUsers=true;
-        #NotifyReady=true;
+        PrivateUsers="pick";
+        NotifyReady=true;
       };
       filesConfig = {
         Bind = [
@@ -56,6 +56,9 @@ let
           "/nix/var/nix/daemon-socket"
         ];
       };
+      networkConfig = {
+        VirtualEthernet=true;
+      };
     };
 
     # copy systemd-nspawn@ to systemd-nspawn-${name} to allow overrides
@@ -67,20 +70,20 @@ let
       '')
     ];
 
-    systemd.services."systemd-nspawn-${name}".serviceConfig = {
+    systemd.services."systemd-nspawn-${name}" = {
       wantedBy = [ "machines.target" ];
-      ExecStartPre = "${config.systemd.package}/bin/systemd-tmpfiles --create ${containerFiles}";
-      ExecStart = [""
-      ''
-        ${config.systemd.package}/bin/systemd-nspawn \
-          --keep-unit \
-          --machine=${name} \
-          --directory="${root}" \
-          --private-users \
-          --settings=override \
-          --network-veth \
-          ${config.system.build.toplevel}/init
-      ''];
+      serviceConfig = {
+        ExecStartPre = "${config.systemd.package}/bin/systemd-tmpfiles --create ${containerFiles}";
+        ExecStart = [""
+        ''
+          ${config.systemd.package}/bin/systemd-nspawn \
+            --boot \
+            --keep-unit \
+            --machine=${name} \
+            --directory="${root}" \
+            --settings=override
+        ''];
+      };
     };
   };
 in createContainer {
