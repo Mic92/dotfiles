@@ -274,6 +274,13 @@ elif [[ -f /etc/gentoo-release ]] ; then
   alias emerge='sudo emerge'
   xalias eix-sync='sudo eix-sync -C --quiet'
 fi
+
+if [[ -n ${commands[nix]} ]]; then
+  n() {
+    NIX_RUN_ARGS="$@${NIX_RUN_ARGS+ }${NIX_RUN_ARGS}" nix run "$@" -f '<nixpkgs>' -c zsh
+  }
+fi
+
 # Dir Hashes
 xhashd awesome=~/.config/awesome/
 xhashd vicious=~/.config/awesome/vicious
