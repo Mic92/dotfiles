@@ -3,14 +3,14 @@ let
   zone = "us-east-1a";
   accessKeyId = "default";
 in {
-  #resources.ebsVolumes.cntr-disk = {
-  #  accessKeyId = accessKeyId;
-  #  tags.Name = "cntr-disk";
-  #  inherit region;
-  #  zone = zone;
-  #  size = 100;
-  #  volumeType = "gp2";
-  #};
+  resources.ebsVolumes.cntr-disk = {
+    accessKeyId = accessKeyId;
+    tags.Name = "cntr-disk";
+    inherit region;
+    zone = zone;
+    size = 100;
+    volumeType = "gp2";
+  };
 
   cntr-machine = { resources, config, lib, pkgs, ... }: {
     deployment.targetEnv = "ec2";
@@ -20,7 +20,7 @@ in {
     deployment.ec2.instanceType = "m4.xlarge";
     deployment.ec2.associatePublicIpAddress = true;
     deployment.ec2.keyPair = resources.ec2KeyPairs.cntr-key-pair;
-    deployment.ec2.elasticIPv4 = resources.elasticIPs.cntr-ip;
+    deployment.ec2.elasticIPv4 = resources.elasticIPs.cntr-ip6;
     deployment.ec2.ebsInitialRootDiskSize = 30;
     deployment.ec2.subnetId = resources.vpcSubnets.cntr-subnet;
     deployment.ec2.securityGroupIds = [ resources.ec2SecurityGroups.cntr-security-group.name ];
@@ -31,14 +31,38 @@ in {
       ./modules/packages.nix
     ];
 
+    services.nfs.server = {
+      enable = true;
+      exports = "/mnt/original 127.0.0.1(rw,no_root_squash)";
+    };
+
+    #fileSystems."/scratch" = {
+    #  fsType = "nfs";
+    #  device = "127.0.0.1:/mnt/original";
+    #};
+
     boot.kernelPackages = pkgs.linuxPackages_latest;
 
-    fileSystems."/scratch" = {
+    fileSystems."/mnt/original" = {
       autoFormat = true;
       fsType = "ext4";
       device = "/dev/xvdj";
-      #ec2.disk = resources.ebsVolumes.cntr-disk;
+      ec2.disk = resources.ebsVolumes.cntr-disk;
     };
+
+    #fileSystems."/xfstests-scratch" = {
+    #  autoFormat = true;
+    #  fsType = "ext4";
+    #  device = "/dev/xvdk";
+    #  ec2.disk = resources.ebsVolumes.cntr-disk3;
+    #};
+
+    #fileSystems."/xfstests-test" = {
+    #  autoFormat = true;
+    #  fsType = "ext4";
+    #  device = "/dev/xvdl";
+    #  ec2.disk = resources.ebsVolumes.cntr-disk4;
+    #};
   };
 
   resources.ec2KeyPairs.cntr-key-pair = { inherit region accessKeyId; };
@@ -69,7 +93,7 @@ in {
     tags.Source = "NixOps";
   };
 
-  resources.elasticIPs.cntr-ip = {
+  resources.elasticIPs.cntr-ip6 = {
     inherit region accessKeyId;
     vpc = true;
   };
