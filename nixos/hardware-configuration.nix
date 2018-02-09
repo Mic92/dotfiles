@@ -16,8 +16,6 @@
     kernelModules = [ "kvm-intel" ];
   };
 
-  services.xserver.videoDrivers = [ "intel" ];
-
   # for zfs
   networking.hostId = "8425e349";
 
@@ -39,8 +37,6 @@
       package = pkgs.pulseaudioFull;
     };
   };
-
-  powerManagement.enable = true;
 
   fileSystems."/boot" =
     { device = "/dev/sda1";
