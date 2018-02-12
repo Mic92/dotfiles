@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs }:
 {
   deployment.keys."monit-email.cfg".keyFile = ../secrets/monit-email.cfg;
 
@@ -16,12 +16,6 @@
   
       include /var/lib/monit/*.cfg
   
-      set mailserver mail.gmx.net
-        port 587
-        username devkid@gmx.net password XXX
-        using tlsv12
-        with timeout 30 seconds
-      
       check host eve.higgsboson.tk with address "eve.higgsboson.tk"
         if failed 
             ping count 5 size 128 
