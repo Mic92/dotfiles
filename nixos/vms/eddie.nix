@@ -10,7 +10,7 @@
     { config, pkgs, lib, ... }:
     {
       #deployment.targetHost = "129.215.90.4";
-      deployment.targetHost = "eddie.r";
+      deployment.targetHost = lib.mkForce "eddie.r";
 
       deployment.keys."initrd-ssh-key".keyFile = ../secrets/eddie/initrd-ssh-key;
 
@@ -19,6 +19,7 @@
         ./modules/users.nix
         ./modules/retiolum.nix
         ./modules/mosh.nix
+        ./modules/monit.nix
         ./modules/overlay.nix
         ./modules/tracing.nix
         ./modules/packages.nix
@@ -87,6 +88,10 @@
       };
 
       services = {
+        nfs.server = {
+          enable = true;
+          exports = "/mnt/original 127.0.0.1(rw,no_root_squash)";
+        };
         unbound = {
           enable = true;
           forwardAddresses = ["9.9.9.9"];
@@ -103,6 +108,12 @@
         xrdp = {
           enable = true;
           defaultWindowManager = "xfce4-session";
+        };
+
+        printing = {
+          enable = true;
+          browsing = true;
+          drivers = [ pkgs.gutenprint ]; # pkgs.hplip
         };
       };
 
