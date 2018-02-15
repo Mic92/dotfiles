@@ -9,7 +9,9 @@ stdenv.mkDerivation {
     perl
     gcc7
     pcre
+    glibc.out
     glibc.static
+    bc
   ];
   hardeningDisable = [ "all" ];
 }
