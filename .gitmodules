@@ -25,9 +25,6 @@
 [submodule "nix-home-manager"]
 	path = nix-home-manager
 	url = https://github.com/rycee/home-manager.git
-[submodule "nixpkgs-config/home-manager"]
-	path = nixpkgs-config/home-manager
-	url = https://github.com/rycee/home-manager.git
 [submodule "zsh/zsh-autopair"]
 	path = zsh/zsh-autopair
 	url = https://github.com/hlissner/zsh-autopair.git

@@ -7,7 +7,6 @@ with import <nixpkgs> {};
 
   packageOverrides = pkgs: with pkgs; {
     stable = import <stable> {};
-    home-manager = import ./home-manager { inherit pkgs; };
 
     staging = buildEnv {
       name = "staging";
