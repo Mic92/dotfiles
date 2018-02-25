@@ -543,6 +543,18 @@ heroku(){
     --name heroku \
     johnnagro/heroku-toolbelt "$@"
 }
+
+build-cscope-db() {
+    find ${PWD} -type f -name "*.c" \
+        -o -name "*.cc" \
+        -o -name "*.cpp" \
+        -o -name "*.h" \
+        -o -name "*.hpp" \
+        -o -name "*.H" > ${PWD}/cscope.files
+    cscope -R -b
+    export CSCOPE_DB=${PWD}/cscope.out
+}
+
 nixify() {
   if [ ! -e ./.envrc ]; then
     echo "use nix" > .envrc
