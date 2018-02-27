@@ -1,12 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # this script requires at least python 3.6!
+import sys
+if sys.version_info < (3, 6):
+    sys.write("this script requires at least python3.6")
 import tempfile
 import subprocess
 import os
-import sys
 import shutil
 import xml.etree.ElementTree as ET
 import multiprocessing
+import json
+import urllib.request
 
 
 def sh(command, **kwargs):
@@ -72,8 +76,12 @@ def fetch_ref(ref):
         sh(["git", "branch", "-D", f"_nix-review_"])
     except:
         pass
-    sh(["git", "fetch", "https://github.com/NixOS/nixpkgs", f"{ref}:_nix-review_"])
-    o = subprocess.check_output(["git", "rev-parse", "--verify", "_nix-review_"])
+    sh([
+        "git", "fetch", "https://github.com/NixOS/nixpkgs",
+        f"{ref}:_nix-review_"
+    ])
+    o = subprocess.check_output(
+        ["git", "rev-parse", "--verify", "_nix-review_"])
     return o.strip().decode("utf-8")
 
 
@@ -83,11 +91,11 @@ def differences(old, new):
 
 
 def review_pr(pr, args, worktree_dir):
-    master_rev = fetch_ref("master")
+    master_rev = fetch_ref(pr["base"]["ref"])
     sh(["git", "worktree", "add", worktree_dir, master_rev])
     master_packages = list_packages(worktree_dir)
 
-    pr_rev = fetch_ref(f"pull/{pr}/head")
+    pr_rev = fetch_ref(f"pull/{pr['number']}/head")
     sh(["git", "merge", pr_rev, "-m", "auto merge"], cwd=worktree_dir)
 
     merged_packages = list_packages(worktree_dir, check_meta=True)
@@ -116,12 +124,24 @@ def main():
 
     os.chdir(root)
 
-    pr = int(sys.argv[1])
+    if len(sys.argv) < 2:
+        print(
+            f"USAGE: {sys.argv[0]} <pr-number> [NIX-SHELL-OPTIONS...]",
+            file=sys.stderr)
+
+    try:
+        pr_number = int(sys.argv[1])
+    except ValueError:
+        print("first argument must be a positive number", file=sys.stderr)
+        sys.exit(1)
+
+    api_url = f"https://api.github.com/repos/NixOS/nixpkgs/pulls/{pr_number}"
+    pr = json.load(urllib.request.urlopen(api_url))
 
     git_root = os.path.realpath(".")
     os.makedirs(os.path.join(git_root, ".review"), exist_ok=True)
-    worktree_dir = tempfile.mkdtemp(prefix=os.path.join(
-        git_root, f".review/pr-{pr}-"))
+    worktree_dir = tempfile.mkdtemp(
+        prefix=os.path.join(git_root, f".review/pr-{pr['number']}-"))
     try:
         with tempfile.NamedTemporaryFile() as cfg:
             cfg.write(b"pkgs: { allowUnfree = true; }")
