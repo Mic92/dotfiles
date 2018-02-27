@@ -2,7 +2,8 @@
 # this script requires at least python 3.6!
 import sys
 if sys.version_info < (3, 6):
-    sys.write("this script requires at least python3.6")
+    sys.stderr.write("this script requires at least python 3.6")
+    sys.exit(1)
 import tempfile
 import subprocess
 import os
