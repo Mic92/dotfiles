@@ -4,6 +4,7 @@ let mapleader = " "
 if has("nocompatible")
   set nocompatible " Use Vim settings, rather then Vi settings
 end
+set number
 set mouse=
 set ruler " show the cursor position all the time
 set cursorline " highlight current line

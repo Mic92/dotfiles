@@ -1,5 +1,6 @@
 with import <nixpkgs> {};
 stdenv.mkDerivation {
   name = "env";
-  inherit (nixops) buildInputs propagatedBuildInputs;
+  propagatedBuildInputs = [ python2Packages.libvirt ] ++ nixops.propagatedBuildInputs;
+  buildInputs = [ nix ] ++ nixops.buildInputs;
 }

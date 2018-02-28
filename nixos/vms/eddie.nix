@@ -23,8 +23,13 @@
         ./modules/overlay.nix
         ./modules/tracing.nix
         ./modules/packages.nix
+        ./modules/zfs.nix
       ];
 
+      programs.ssh.startAgent = true;
+
+      nix.useSandbox = true;
+      nix.package = pkgs.nixUnstable;
       nix.extraOptions = ''
         build-max-jobs = 10
       '';

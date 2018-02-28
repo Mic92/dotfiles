@@ -1,6 +1,6 @@
-{ pkgs }:
+{ pkgs, ... }:
 {
-  deployment.keys."monit-email.cfg".keyFile = ../secrets/monit-email.cfg;
+  deployment.keys."monit-email.cfg".keyFile = ../../secrets/monit-email.cfg;
 
   systemd.services.nixops-keys.postStart = ''
     ${pkgs.coreutils}/bin/install -m400 -D /run/keys/monit-email.cfg /var/lib/monit/monit-email.cfg

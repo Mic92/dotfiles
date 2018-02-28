@@ -21,6 +21,7 @@ let
       in with plugins; {
         # loaded on launch
         start = [
+          vim-css-color
           fugitive
           rhubarb
           vim-grammarous
@@ -80,6 +81,9 @@ let
   rubyApps = [ bundler bundix rubocop ];
 
   desktopApps = [
+    (gdbgui.overrideAttrs (old: {
+      patches = [ ./gdbgui.patch ];
+    }))
     (stdenv.mkDerivation rec {
       name = "ConkySymbols";
       src = fetchzip {
@@ -112,7 +116,7 @@ let
     hicolor_icon_theme
 
     screen
-    remmina
+    #remmina
     graphicsmagick
     bench
     sshfsFuse
@@ -125,7 +129,7 @@ let
     inkscape
     mpd
     mpv
-    firefox-beta-bin
+    firefox
     chromium
     thunderbird
     transmission_gtk
@@ -194,7 +198,7 @@ let
     strace
   ];
 
-  debuggingApps = [ binutils gperftools valgrind ];
+  debuggingApps = [ binutils gperftools valgrind python2Packages.pwntools ];
 
   rustApps = [
     rustc
@@ -256,6 +260,7 @@ in {
         nvim
         python3Packages.flake8
         nodePackages.jsonlint
+
 
         tmux
         htop

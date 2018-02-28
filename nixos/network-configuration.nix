@@ -14,18 +14,6 @@ in {
   ];
 
   services = {
-    dnscrypt-proxy = {
-      enable = true;
-      localAddress = "0.0.0.0";
-      resolverName = "ipredator";
-      #customResolver = {
-      #  address = "185.194.143.140";
-      #  port = 15251;
-      #  name = "2.dnscrypt-cert.euer.krebsco.de";
-      #  key = "1AFC:E58D:F242:0FBB:9EE9:4E51:47F4:5373:D9AE:C2AB:DD96:8448:333D:5D79:272C:A44C";
-      #};
-    };
-    dnsmasq.enable = false;
     dnsmasq.extraConfig = ''
       #server=127.0.0.1#5353
       #server=/dn42/172.23.75.6
@@ -67,6 +55,31 @@ in {
       wpaPassphrase = "cipherpunk";
       interface = network.wlan_interface;
     };
+  };
+
+  services.kresd = let
+    certificate = pkgs.fetchurl {
+      url = "https://letsencrypt.org/certs/isrgrootx1.pem.txt";
+      sha256 = "0zhd1ps7sz4w1x52xk3v7ng6d0rcyi7y7rcrplwkmilnq5hzjv1y";
+    };
+  in {
+    enable = true;
+    extraConfig = ''
+      modules = {
+        predict = {
+           window = 15, -- 15 minutes sampling window
+           period = 6*(60/15) -- track last 6 hours
+        },
+        -- activate later https://github.com/CZ-NIC/knot-resolver/commit/c766411a8868b57cb8a9f3c1536b32b5204ffcd3#r27794868
+        --'serve_stale < cache',
+      }
+      policy.add(policy.all(policy.TLS_FORWARD({
+        --{ '2620:fe::fe', hostname = 'dns.quad9.net', ca_file = '${certificate}' },
+        --{ '9.9.9.9', hostname = 'dns.quad9.net', ca_file = '${certificate}' },
+        { '9.9.9.9', hostname = 'dns.quad9.net', ca_file = '/etc/ssl/certs/ca-bundle.crt' },
+        { '2620:fe::fe', hostname = 'dns.quad9.net', ca_file = '/etc/ssl/certs/ca-bundle.crt' },
+      })))
+    '';
   };
 
   networking = {
@@ -123,11 +136,12 @@ in {
           }
           chain postrouting {
             type nat hook postrouting priority 0;
-            ${ if internetSharing.hotspot then ''
-              oifname "${network.lan_interface}" masquerade
-            '' else if internetSharing.enable then ''
-              oifname "${network.wlan_interface}" masquerade
-            '' else ""}
+            # container network
+            oifname "${network.lan_interface}" masquerade
+            oifname "${network.wlan_interface}" masquerade
+            #${ if internetSharing.hotspot then ''
+            #'' else if internetSharing.enable then ''
+            #'' else ""}
           }
         }
       '';
@@ -158,8 +172,8 @@ in {
       '';
     };
   in {
-    wg-eve = wgTemplate 42421 "eve" "ipv4.dn42.higgsboson.tk:42422" "fxiGmHUK1aMa07cejTP3SHxYivIj3aXZwdvzTEXmYHM=";
-    wg-eve6 = wgTemplate 42422 "eve6" "ipv6.dn42.higgsboson.tk:42422" "fxiGmHUK1aMa07cejTP3SHxYivIj3aXZwdvzTEXmYHM=";
+    #wg-eve = wgTemplate 42421 "eve" "ipv4.dn42.higgsboson.tk:42422" "fxiGmHUK1aMa07cejTP3SHxYivIj3aXZwdvzTEXmYHM=";
+    #wg-eve6 = wgTemplate 42422 "eve6" "ipv6.dn42.higgsboson.tk:42422" "fxiGmHUK1aMa07cejTP3SHxYivIj3aXZwdvzTEXmYHM=";
     #wg-rauter = wgTemplate 42423 "rauter" "rauter.he.thalheim.io:42422" "l6LjG1WuLNkEwd2047mw2GpgPUppM1VwP/LWMaOqJ0E=";
     #wg-matchbox = wgTemplate 42424 "matchbox" "matchbox.he.thalheim.io:42432" "6ExGu7MjeHoPbWj8/F3YNcdMHa7e3fXFFPkswAXv4T4=";
 

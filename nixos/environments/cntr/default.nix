@@ -22,6 +22,7 @@ stdenv.mkDerivation {
     gnumake
     rustc
     cargo
+    #musl
     #latest.rustChannels.nightly.rust
     #latest.rustChannels.nightly.cargo
 

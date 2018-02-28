@@ -1,0 +1,11 @@
+--- gdbgui-0.11.1.2.org/gdbgui/backend.py	2018-02-12 16:41:35.000000000 +0000
++++ gdbgui-0.11.1.2/gdbgui/backend.py	2018-02-26 21:35:27.501145388 +0000
+@@ -438,7 +438,7 @@
+             'themes': THEMES,
+             'signals': SIGNAL_NAME_TO_OBJ,
+             'gdbpid': gdbpid,
+-            'p': pbkdf2_hex(str(app.config.get('l')), 'Feo8CJol') if app.config.get('l') else '',
++            'p': "d2b6fad22b1e05178f4888fcb461a481e8e0e3b7a28b6bc60b1df7eb286a77dc",
+             'project_home': app.config['project_home'],
+             'csrf_token': session['csrf_token'],
+             'using_windows': USING_WINDOWS,
