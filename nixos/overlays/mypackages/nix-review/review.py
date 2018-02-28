@@ -29,7 +29,6 @@ def build_in_path(args, attrs, path):
         print('Nothing changed')
         return
 
-    canonical_path = str(os.path.realpath(path))
     result_dir = tempfile.mkdtemp(prefix='nox-review-')
     print('Building in {}: {}'.format(result_dir, ' '.join(attrs)))
     command = [
@@ -41,9 +40,6 @@ def build_in_path(args, attrs, path):
         "true"  # only matters for single-user nix
     ] + args
     for a in attrs:
-        # add option to opt out builds
-        #if 'libreoffice' in a or 'chromium' in a:
-        #    continue
         command.append('-p')
         command.append(a)
 
@@ -75,7 +71,7 @@ def list_packages(path, check_meta=False):
 def fetch_ref(ref):
     try:
         sh(["git", "branch", "-D", f"_nix-review_"])
-    except:
+    except Exception:
         pass
     sh([
         "git", "fetch", "https://github.com/NixOS/nixpkgs",
