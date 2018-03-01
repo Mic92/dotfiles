@@ -32,16 +32,15 @@ def build_in_path(args, attrs, path):
     result_dir = tempfile.mkdtemp(prefix='nox-review-')
     print('Building in {}: {}'.format(result_dir, ' '.join(attrs)))
     command = [
-        'nix-shell',
+        'nix',
+        'run',
         '--keep-going',
-        f"-j{multiprocessing.cpu_count()}",
-        "--option",
-        "build-use-sandbox",
+        '--max-jobs', multiprocessing.cpu_count(),
+        "--build-use-sandbox",
         "true"  # only matters for single-user nix
     ] + args
     for a in attrs:
-        command.append('-p')
-        command.append(a)
+        command.append(f"nixpkgs.{a}")
 
     try:
         sh(command, cwd=result_dir)
