@@ -281,6 +281,17 @@ if [[ -n ${commands[nix]} ]]; then
   }
 fi
 
+# fancy file selector for vim
+vimf() {
+  # prefilter non-interactive followed by selection
+  r=$(fzf --multi -f "$@" | fzf --sync)
+  if [ -n "$r" ]; then
+    # put effective command into the history
+    print -s vim "$r"
+    vim "$r"
+  fi
+}
+
 # Dir Hashes
 xhashd awesome=~/.config/awesome/
 xhashd vicious=~/.config/awesome/vicious
