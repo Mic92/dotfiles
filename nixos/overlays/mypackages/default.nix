@@ -11,6 +11,41 @@ self: super:
     '';
   };
 
+  pwndbg = super.stdenv.mkDerivation {
+    name = "pwndbg";
+    src = super.fetchFromGitHub {
+      owner = "pwndbg";
+      repo = "pwndbg";
+      rev = "f595ba3fe6abb9b2c2e57e41f4941ea7f50f955d";
+      sha256 = "1mx30mp4rrzscmjps5l7qfmf4183hk2sa5ig0ga2hh1602bw6q2p";
+    };
+
+    propagatedBuildInputs = with self.pythonPackages; [
+      future
+      isort
+      psutil
+      pycparser
+      pyelftools
+      python-ptrace
+      ROPGadget
+      six
+      unicorn
+      pygments
+      enum34
+    ];
+
+
+    installPhase = ''
+      mkdir -p $out/share/pwndbg
+      cp -r *.py pwndbg $out/share/pwndbg
+    '';
+
+    preFixup = ''
+      sed -i "/import sys/a import sys; sys.path.extend('$PYTHONPATH'.split(':'))" \
+        $out/share/pwndbg/gdbinit.py
+    '';
+  };
+
   #hplip = super.hplip.override { withPlugin = true; };
 
   #mosh = super.mosh.overrideDerivation (old: {
