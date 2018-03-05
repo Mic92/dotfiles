@@ -282,14 +282,24 @@ if [[ -n ${commands[nix]} ]]; then
 fi
 
 # fancy file selector for vim
-vimf() {
+vim-fzf() {
   # prefilter non-interactive followed by selection
-  r=$(fzf --multi -f "$@" | fzf --sync)
-  if [ -n "$r" ]; then
-    # put effective command into the history
-    print -s vim "$r"
-    vim "$r"
-  fi
+  local file=$(fzf --exact --multi -f "$@" | fzf --exact --sync)
+  [ -z "$file" ] && return
+  # put effective command into the history
+  print -s vim "$file"
+  vim "$file"
+}
+
+# fancy file selector for vim + ag
+vim-ag() {
+  local file=$(ag "$@" | fzf --ansi --select-1 --exact)
+  [ -z "$file" ] && return
+  setopt shwordsplit
+  local args
+  IFS=':' args=($file)
+  unsetopt shwordsplit
+  vim +${args[2]} ${args[1]}
 }
 
 # Dir Hashes
@@ -297,6 +307,7 @@ xhashd awesome=~/.config/awesome/
 xhashd vicious=~/.config/awesome/vicious
 xhashd mic92=~/go/src/github.com/Mic92
 xhashd git=~/git
+xhashd hase=~/git/angr/hase
 # Global aliases
 alias -g G='| grep -'
 alias -g L='| less'
