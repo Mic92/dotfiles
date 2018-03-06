@@ -293,12 +293,14 @@ vim-fzf() {
 
 # fancy file selector for vim + ag
 vim-ag() {
-  local file=$(ag "$@" | fzf --ansi --select-1 --exact)
+  local preview=$HOME/.homesick/repos/dotfiles/zsh/vim-ag/preview.sh
+  local file=$( ag "$@" | fzf --ansi --select-1 --exact --preview "$preview '$@' {} " )
   [ -z "$file" ] && return
   setopt shwordsplit
   local args
   IFS=':' args=($file)
   unsetopt shwordsplit
+  print -s vim +${args[2]} ${args[1]}
   vim +${args[2]} ${args[1]}
 }
 
