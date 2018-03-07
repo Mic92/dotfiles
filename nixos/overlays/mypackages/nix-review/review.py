@@ -32,20 +32,25 @@ def build_in_path(args, attrs, path):
     result_dir = tempfile.mkdtemp(prefix='nox-review-')
     print('Building in {}: {}'.format(result_dir, ' '.join(attrs)))
     command = [
-        'nix',
-        'run',
+        'nix-shell',
         '--keep-going',
-        '--max-jobs', multiprocessing.cpu_count(),
-        "--build-use-sandbox",
-        "true"  # only matters for single-user nix
+        '--max-jobs', str(multiprocessing.cpu_count()),
+        # only matters for single-user nix and trusted users
+        "--option", "build-use-sandbox", "true"
     ] + args
     for a in attrs:
-        command.append(f"nixpkgs.{a}")
+        command.append(f"-p")
+        command.append(a)
 
     try:
         sh(command, cwd=result_dir)
     except subprocess.CalledProcessError:
-        die('The invocation of "{}" failed'.format(' '.join(command)))
+        msg = f"The invocation of '{' '.join(command)}' failed\n\n"
+        msg += "Your NIX_PATH still points to the merged pull requests, so you can make attempts to fix it and rerun the command above"
+        print(msg, file=sys.stderr)
+        # XXX personal nit to use bash here,
+        # since my zsh overrides NIX_PATH.
+        sh(["bash"], cwd=result_dir)
 
 
 def list_packages(path, check_meta=False):
