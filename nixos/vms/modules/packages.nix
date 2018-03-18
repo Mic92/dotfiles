@@ -21,7 +21,6 @@
     rsync
     git
     tig
-    ruby.devEnv
     python
     python3
     strace

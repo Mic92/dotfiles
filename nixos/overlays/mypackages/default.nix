@@ -1,13 +1,16 @@
 self: super:
 {
-  nix-review = super.stdenv.mkDerivation {
+  nix-review = super.python3Packages.buildPythonApplication {
     name = "nix-review";
-    src = ./nix-review;
-    buildInputs = [ self.python3 ];
-    installPhase = ''
-      runHook preInstall
-      install -m755 -D review.py $out/bin/nix-review
-      runHook postInstall
+    src = super.fetchFromGitHub {
+      owner = "Mic92";
+      repo = "nix-review";
+      rev = "4a7128914e3714e39b6309fb1438c86a691e634e";
+      sha256 = "0rxck1w240mm57xgfg3qm9rmahnm251v7ss9i8hawzydfv34gf06";
+    };
+    buildInputs = [ self.makeWrapper ];
+    preFixup = ''
+      wrapProgram $out/bin/nix-review --prefix PATH : ${self.nix}/bin
     '';
   };
 

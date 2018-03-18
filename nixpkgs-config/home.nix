@@ -121,7 +121,6 @@ let
     bench
     sshfsFuse
     sshuttle
-    dino
     libreoffice-fresh
     dropbox
     #android-studio
@@ -129,7 +128,7 @@ let
     inkscape
     mpd
     mpv
-    firefox
+    firefox-bin
     chromium
     thunderbird
     transmission_gtk
@@ -152,26 +151,13 @@ let
     xorg.xev
     xorg.xprop
     xclip
-    copyq
     xautolock
-    i3lock
     keepassx-community
-    #(keepassx-community.overrideAttrs (old: {
-    #  src = pkgs.fetchFromGitHub {
-    #    owner = "varjolintu";
-    #    repo = "keepassxc";
-    #    rev = "2.2.0-browser-rc5";
-    #    sha256 = "09s2k0cih4g9hykxai32gjjgs5hczicrfp6psl70s0s2rpmq8c6g";
-    #  };
-    #  cmakeFlags = old.cmakeFlags ++ [ "-DWITH_XC_BROWSER=ON" ];
-    #  buildInputs = old.buildInputs ++ [ boost libsodium ];
-    #}))
     pavucontrol
     evince
     pcmanfm
     gpodder
     valauncher
-    youtube-dl
     ncmpcpp
     xclip
     screen-message
@@ -189,7 +175,6 @@ let
     go2nix
     mercurial # go2nix
     nox
-    nix-repl
     nix-review
   ];
 

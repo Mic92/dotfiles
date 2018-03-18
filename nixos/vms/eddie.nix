@@ -28,11 +28,13 @@
 
       programs.ssh.startAgent = true;
 
-      nix.useSandbox = true;
-      nix.package = pkgs.nixUnstable;
-      nix.extraOptions = ''
-        build-max-jobs = 10
-      '';
+      nix = {
+        trustedUsers = ["joerg"];
+        useSandbox = true;
+        extraOptions = ''
+          build-max-jobs = 10
+        '';
+      };
 
       networking.retiolum = {
         ipv4 = "10.243.29.170";
@@ -81,6 +83,7 @@
       boot = {
         initrd.network = {
           enable = true;
+          udhcpc.extraArgs = ["--background"];
           ssh = {
             enable = true;
             port = 2222;

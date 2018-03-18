@@ -32,6 +32,7 @@ in {
     ./dice.nix
     ./backup.nix
     ./nfs.nix
+    ./vms/modules/zfs.nix
     ./vms/modules/mosh.nix
     ./vms/modules/overlay.nix
     ./vms/modules/tracing.nix
@@ -39,6 +40,8 @@ in {
 
   boot = {
     plymouth.enable = true;
+    #kernelParams = [ "security=selinux" "selinux"];
+    kernelParams = [ "apparmor=1" "security=apparmor" ];
     loader = {
       systemd-boot.enable = true;
       # when installing toggle this
@@ -53,13 +56,13 @@ in {
     LD_LIBRARY_PATH = [ config.system.nssModules.path ];
   };
 
-
   nix = {
+    trustedUsers = ["joerg"];
     gc.automatic = true;
     gc.dates = "03:15";
     #binaryCaches = [ https://cache.nixos.community https://cache.nixos.org/ ];
-    distributedBuilds = false;
-    package = pkgs.nixUnstable;
+    distributedBuilds = true;
+    #package = pkgs.nixUnstable;
     #buildMachines = [
     #  { hostName = "inspector.r"; sshUser = "nix"; sshKey = "/etc/nixos/secrets/id_buildfarm"; system = "x86_64-linux"; maxJobs = 8; }
     #];
@@ -77,6 +80,14 @@ in {
       gc-keep-derivations = true
       build-max-jobs = 10
     '';
+    #buildMachines = [{
+    #  hostName = "aarch64.nixos.community";
+    #  maxJobs = 96;
+    #  sshKey = "/home/joerg/.ssh/id_ecdsa";
+    #  sshUser = "mic92";
+    #  system = "aarch64-linux";
+    #  supportedFeatures = [ "big-parallel" ];
+    #}];
   };
 
   i18n = {
@@ -85,8 +96,10 @@ in {
     defaultLocale = "en_DK.UTF-8";
   };
   time.timeZone = "Europe/London";
+  #time.timeZone = "Europe/Berlin";
 
   services = {
+    #teamviewer.enable = true;
     gpm.enable = true;
     physlock.enable = true;
     autorandr.enable = true;
@@ -112,22 +125,13 @@ in {
         NewCircuitPeriod 120
       '';
     };
-    polipo = {
-      enable = true;
-      socksParentProxy = "localhost:9050";
-    };
-    nscd.enable = true;
-    zfs = {
-      autoSnapshot.enable = true;
-      autoScrub.enable = true;
-    };
-
     openssh = {
       enable = true;
       forwardX11 = true;
     };
 
     xserver = {
+      desktopManager.xterm.enable = false;
       displayManager.lightdm = {
         enable = true;
         autoLogin.user = "joerg";
@@ -136,7 +140,9 @@ in {
       enable = true;
       layout = "us";
       xkbVariant = "altgr-intl";
-      xkbOptions = "caps:ctrl_modifier,compose:menu";
+      xkbOptions = "caps:escape,compose:menu";
+      libinput.enable = true;
+
       windowManager = {
         awesome = {
           enable = true;
@@ -173,6 +179,7 @@ in {
   #systemd.package = pkgs.mysystemd;
 
   powerManagement.powertop.enable = true;
+
 
   systemd.services = {
     systemd-networkd-wait-online.enable = false;
@@ -233,29 +240,38 @@ in {
         ExecStart = "${pkgs.bittorrentSync20}/bin/btsync --nodaemon --config /home/joerg/.config/btsync/btsync.conf";
       };
     };
-    systemd-udev-settle.serviceConfig.ExecStart = "${pkgs.coreutils}/bin/true";
+    systemd-udev-settle.serviceConfig.ExecStart = ["" "${pkgs.coreutils}/bin/true"];
   };
 
 
   virtualisation = {
+    lxc.enable = true;
+    #lxd.enable = true;
+    rkt.enable = true;
     virtualbox.host.enable = false;
     docker = {
       enable = true;
       enableOnBoot = true;
       storageDriver = "zfs";
-      extraOptions = "--iptables=false --storage-opt=zfs.fsname=zroot/docker --userns-remap=docker";
+      #extraOptions = "--iptables=false --storage-opt=zfs.fsname=zroot/docker --userns-remap=docker";
+      extraOptions = "--iptables=false --storage-opt=zfs.fsname=zroot/docker";
     };
   };
 
   fonts = {
     enableFontDir = true;
-    enableGhostscriptFonts = true;
+    #enableGhostscriptFonts = true;
   };
 
   programs = {
     ssh.startAgent = true;
     light.enable = true;
     adb.enable = true;
+    #wireshark = {
+    #  enable = true;
+    #  package = pkgs.wireshark-gtk;
+    #};
+    bash.enableCompletion = true;
     zsh = {
       enable = true;
       promptInit = "";
@@ -271,12 +287,17 @@ in {
       shell = "/run/current-system/sw/bin/zsh";
       uid = 1000;
     };
+    root = {
+      subUidRanges = [ { startUid = 200000; count = 65536; } ];
+      subGidRanges = [ { startGid = 200000; count = 65536; } ];
+    };
     docker = {
       subUidRanges = [ { startUid = 100000; count = 65536; } ];
       subGidRanges = [ { startGid = 100000; count = 65536; } ];
     };
   };
   users.groups.adbusers = {};
+  users.users.unbound = {};
 
   security = {
     audit.enable = false;

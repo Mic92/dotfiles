@@ -26,6 +26,10 @@ if [[ -S /nix/var/nix/daemon-socket/socket ]]; then
   export NIX_REMOTE=daemon
 fi
 
+function faketty {
+  script -qfc "$(printf "%q " "$@")";
+}
+
 function string_hash() {
   local hashstr=$1
   local hashsize=$2
