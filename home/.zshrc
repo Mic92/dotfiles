@@ -387,6 +387,7 @@ export ERRFILE=~/.xsession-errors
 # Antialising
 export QT_XFT=1
 export GDK_USE_XFT=1
+export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=lcd -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
 # To enable Graphic Hardware acceleration
 #export LIBGL_ALWAYS_INDIRECT=1
 export INTEL_BATCH=1
