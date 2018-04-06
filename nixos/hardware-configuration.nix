@@ -11,13 +11,13 @@
   boot = {
     initrd = {
       availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" "i8042" "i915" "snd-bt-sco" ];
-      luks.devices = [ { name = "root"; device = "/dev/sda2"; } ];
     };
     kernelModules = [ "kvm-intel" ];
   };
 
   # for zfs
   networking.hostId = "8425e349";
+  boot.zfs.enableUnstable = true;
 
   hardware = {
     bluetooth = {
@@ -39,8 +39,9 @@
   };
 
   fileSystems."/boot" =
-    { device = "/dev/sda1";
+    { device = "/dev/disk/by-uuid/BB76-AED1";
       fsType = "vfat";
+      options = ["nofail"];
     };
 
   fileSystems."/" =
@@ -49,25 +50,27 @@
     };
 
   fileSystems."/home" =
-    { device = "zroot/home";
+    { device = "zroot/root/home";
       fsType = "zfs";
+      options = ["nofail"];
     };
 
   fileSystems."/home/joerg/Musik/podcasts" =
     { device = "/home/joerg/gPodder/Downloads";
       fsType = "none";
-      options = ["bind"];
+      options = ["bind" "nofail"];
     };
 
   fileSystems."/home/joerg/web/privat" =
     { device = "/home/joerg/web/private";
       fsType = "none";
-      options = ["bind"];
+      options = ["bind" "nofail"];
     };
 
   fileSystems."/tmp" =
-    { device = "zroot/tmp";
+    { device = "zroot/root/tmp";
       fsType = "zfs";
+      options = ["nofail"];
     };
 
   nix.maxJobs = lib.mkDefault 4;

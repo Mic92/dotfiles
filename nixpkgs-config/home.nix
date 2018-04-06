@@ -5,6 +5,7 @@
 with pkgs;
 
 let
+  mybrowser = firefox-bin;
   nvim = neovim.override {
     vimAlias = true;
     withPython = true;
@@ -94,6 +95,7 @@ let
         install -D $src/ConkySymbols.ttf "$out/share/fonts/truetype/ConkySymbols.ttf"
       '';
     })
+    radare2
     league-of-moveable-type
     dejavu_fonts
     ubuntu_font_family
@@ -128,7 +130,8 @@ let
     inkscape
     mpd
     mpv
-    firefox-bin
+    youtube-dl
+    mybrowser
     chromium
     thunderbird
     transmission_gtk
@@ -141,11 +144,12 @@ let
     scrot
     urlview
     #gajimUnstable
-    (gajim.overrideAttrs (old: {
-      patches = (old.patches or []) ++ [
-        ./0001-remove-outer-paragraph.patch
-      ];
-    }))
+    gajim
+    #(gajim.overrideAttrs (old: {
+    #  patches = (old.patches or []) ++ [
+    #    ./0001-remove-outer-paragraph.patch
+    #  ];
+    #}))
     arandr
     lxappearance
     xorg.xev
@@ -192,18 +196,7 @@ let
     rustracer
     (writeScriptBin "rust-doc" ''
        #! ${stdenv.shell} -e
-       browser="$BROWSER"
-       if [ -z "$browser" ]; then
-         browser="$(type -P xdg-open || true)"
-         if [ -z "$browser" ]; then
-           browser="$(type -P w3m || true)"
-           if [ -z "$browser" ]; then
-             echo "$0: unable to start a web browser; please set \$BROWSER"
-             exit 1
-           fi
-         fi
-       fi
-       exec "$browser" "${rustc.doc}/share/doc/rust/html/index.html"
+       exec "${mybrowser}" "${rustc.doc}/share/doc/rust/html/index.html"
     '')
   ];
 
@@ -233,8 +226,8 @@ in {
   fonts.fontconfig.enableProfileFonts = true;
 
   home.packages = ([]
-      #++ desktopApps
-      #++ latexApps
+      ++ desktopApps
+      ++ latexApps
       #++ rubyApps
       #++ rustApps
       #++ pythonDataLibs
@@ -267,5 +260,5 @@ in {
         fzf
         exa
         fd
-  ]);
+      ]);
 }

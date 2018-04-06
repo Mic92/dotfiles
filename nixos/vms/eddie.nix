@@ -24,9 +24,8 @@
         ./modules/tracing.nix
         ./modules/packages.nix
         ./modules/zfs.nix
+        ./modules/libvirt.nix
       ];
-
-      programs.ssh.startAgent = true;
 
       nix = {
         trustedUsers = ["joerg"];
@@ -136,6 +135,9 @@
         # dhcp
         67 68
       ];
+
+      networking.firewall.trustedInterfaces = [ "virbr+" "docker0" ];
+
       networking.firewall.allowedUDPPortRanges = [ 
         # mosh
         { from = 60000; to = 61000; }
@@ -151,7 +153,6 @@
       networking.hostName = "eddie"; # Define your hostname.
 
       virtualisation = {
-        virtualbox.host.enable = true;
         docker = {
           enable = true;
           enableOnBoot = false;

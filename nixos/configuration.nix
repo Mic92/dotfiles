@@ -27,7 +27,11 @@ in {
     ./network-configuration.nix
     ./bird.nix
     ./packages.nix
-    ./hardware/x250.nix
+    #./libvirt.nix
+    (builtins.fetchGit {
+      url = "https://github.com/NixOS/nixos-hardware";
+      rev = "a5fa2cc1ae6a1002962cf71fc23fbd533db412be";
+    } + "/lenovo/thinkpad/x250") 
     ./nspawn-container
     ./dice.nix
     ./backup.nix
@@ -39,9 +43,8 @@ in {
   ];
 
   boot = {
-    plymouth.enable = true;
     #kernelParams = [ "security=selinux" "selinux"];
-    kernelParams = [ "apparmor=1" "security=apparmor" ];
+    #kernelParams = [ "apparmor=1" "security=apparmor" ];
     loader = {
       systemd-boot.enable = true;
       # when installing toggle this
@@ -243,10 +246,9 @@ in {
     systemd-udev-settle.serviceConfig.ExecStart = ["" "${pkgs.coreutils}/bin/true"];
   };
 
-
   virtualisation = {
     lxc.enable = true;
-    #lxd.enable = true;
+    lxd.enable = true;
     rkt.enable = true;
     virtualbox.host.enable = false;
     docker = {
