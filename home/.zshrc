@@ -308,6 +308,10 @@ vim-ag() {
   vim +${args[2]} ${args[1]}
 }
 
+psgrep() {
+  ps aux | grep "$@"
+}
+
 # Dir Hashes
 xhashd awesome=~/.config/awesome/
 xhashd vicious=~/.config/awesome/vicious
@@ -658,6 +662,18 @@ if [ -f "$HOME/.deer/deer" ]; then
   bindkey '\ek' deer
 fi
 
+if [ -d "$HOME/git/x86_64-linux-cheatsheats/pages" ]; then
+  export CHEATPATH="$HOME/git/x86_64-linux-cheatsheats/pages"
+fi
+if [ -n "${commands[r2]}" ]; then
+  r2() {
+    if [[ "$#" -eq 0 ]]; then
+      command r2 -
+    else
+      command r2 "$@"
+    fi
+  }
+fi
 if [ -n "${commands[direnv]}" ]; then
   eval "$(direnv hook zsh)"
 fi
