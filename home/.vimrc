@@ -255,3 +255,10 @@ autocmd BufEnter * highlight Normal guibg=0
 " let g:clang_compilation_database = '/home/joerg/git/klee/build'
 
 let g:airline_powerline_fonts = 1
+
+" let g:LanguageClient_serverCommands = {
+"     \ 'cpp': ['cquery'],
+"     \ 'c': ['cquery'],
+"     \ } 
+" let g:LanguageClient_settingsPath = $HOME . '/.config/nvim/settings.json'
+" let g:LanguageClient_loadSettings = 1
