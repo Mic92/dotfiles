@@ -82,6 +82,7 @@ let
   rubyApps = [ bundler bundix rubocop ];
 
   desktopApps = [
+    qt5.qttools
     (gdbgui.overrideAttrs (old: {
       patches = [ ./gdbgui.patch ];
     }))
@@ -187,7 +188,7 @@ let
     strace
   ];
 
-  debuggingApps = [ binutils gperftools valgrind python2Packages.pwntools ];
+  debuggingApps = [ binutils gperftools valgrind ];
 
   rustApps = [
     rustc
