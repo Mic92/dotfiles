@@ -6,52 +6,6 @@ with pkgs;
 
 let
   mybrowser = firefox-bin;
-  nvim = neovim.override {
-    vimAlias = true;
-    withPython = true;
-    configure = {
-      customRC = ''
-        if filereadable($HOME . "/.vimrc")
-          source ~/.vimrc
-        endif
-        let $RUST_SRC_PATH = '${rustPlatform.rustcSrc}'
-        let g:grammarous#show_first_error = 1
-      '';
-      packages.nixbundle = let
-        plugins = (vimPlugins.override (old: { python = python3; }));
-      in with plugins; {
-        # loaded on launch
-        start = [
-          vim-css-color
-          fugitive
-          rhubarb
-          vim-grammarous
-          vim-docbk
-          vim-docbk-snippets
-          UltiSnips
-          vim-autoformat
-          fzfWrapper
-          vim-devicons
-          nvim-completion-manager
-          LanguageClient-neovim
-          nvim-cm-racer
-          airline
-          nerdtree
-          colors-solarized
-          ack-vim
-          vim-go
-          vim-polyglot
-          ale
-          # delimitMate
-          editorconfig-vim
-          ctrlp
-          rust-vim
-          vim-yapf
-          vim-signify
-        ];
-      };
-    };
-  };
 
   latexApps = [
     rubber
@@ -236,7 +190,7 @@ in {
       ++ debuggingBasicsApps
       ++ nixDevApps
       ++ [
-        nvim
+        myvim
         python3Packages.flake8
         nodePackages.jsonlint
 
