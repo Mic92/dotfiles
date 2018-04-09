@@ -108,7 +108,7 @@ let
       src = fetchurl {
         name = "inconsolata.otf";
         url = "https://github.com/ryanoasis/nerd-fonts/raw/${version}/patched-fonts/Inconsolata/complete/Inconsolata%20Nerd%20Font%20Complete%20Mono.otf";
-        sha256 = "1n6nnrlvzzrdbsksknia374q6ijmh6qqiyq8c2qsg9f896sr8q64";
+        sha256 = "0dpi27lpag46diynw7z0yfcqsp87mf4skzz1pdq18x1wxfc3nymz";
       };
       buildCommand = ''
         install -D $src "$out/share/fonts/opentype/Inconsolata Nerd Font Complete.otf"
