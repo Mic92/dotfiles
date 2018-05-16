@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+source ~/.dbus/session-bus/$(cat /etc/machine-id)-0
+dbus-send --dest=org.awesomewm.awful --type=method_call --print-reply / org.awesomewm.awful.Remote.Eval string:"awesome.restart()"
