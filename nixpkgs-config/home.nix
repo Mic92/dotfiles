@@ -5,11 +5,13 @@
 with pkgs;
 
 let
-  mybrowser = firefox-bin;
+  mybrowser = firefox;
+
+  myNodePackages = (callPackages ./write-good/composition.nix {});
 
   latexApps = [
     rubber
-    (callPackages ./write-good/composition.nix {}).write-good
+    myNodePackages.write-good
 
     (texlive.combine {
       inherit (texlive)
@@ -50,12 +52,13 @@ let
         install -D $src/ConkySymbols.ttf "$out/share/fonts/truetype/ConkySymbols.ttf"
       '';
     })
+    myNodePackages.typescript-language-server
     radare2
     league-of-moveable-type
     dejavu_fonts
     ubuntu_font_family
     unifont
-    emojione
+    #emojione
     (stdenv.mkDerivation rec {
       name = "inconsolata-nerdfont-${version}";
       version = nerdfonts.version;
@@ -82,7 +85,7 @@ let
     dropbox
     #android-studio
     gimp
-    inkscape
+    #inkscape
     mpd
     mpv
     youtube-dl
@@ -98,13 +101,7 @@ let
     hunspellDicts.en-gb-ise
     scrot
     urlview
-    #gajimUnstable
-    gajim
-    #(gajim.overrideAttrs (old: {
-    #  patches = (old.patches or []) ++ [
-    #    ./0001-remove-outer-paragraph.patch
-    #  ];
-    #}))
+    dino
     arandr
     lxappearance
     xorg.xev
@@ -193,7 +190,6 @@ in {
         myvim
         python3Packages.flake8
         nodePackages.jsonlint
-
 
         tmux
         htop

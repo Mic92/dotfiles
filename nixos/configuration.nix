@@ -266,6 +266,9 @@ in {
   };
 
   programs = {
+    ssh.extraConfig = ''
+      SendEnv LANG LC_*
+    '';
     ssh.startAgent = true;
     light.enable = true;
     adb.enable = true;

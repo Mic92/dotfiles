@@ -25,6 +25,7 @@
         ./modules/packages.nix
         ./modules/zfs.nix
         ./modules/libvirt.nix
+        ./modules/intel-graphics.nix
       ];
 
       nix = {
@@ -145,7 +146,7 @@
 
       boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "e1000e" ];
       boot.kernelModules = [ "kvm-intel" "wireguard" ];
-      boot.kernelPackages = pkgs.linuxPackages_latest;
+      boot.kernelPackages = pkgs.linuxPackages;
       boot.extraModulePackages = with config.boot.kernelPackages; [ wireguard ];
 
       boot.loader.systemd-boot.enable = true;

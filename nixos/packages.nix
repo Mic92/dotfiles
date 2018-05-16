@@ -3,7 +3,7 @@ with pkgs;
 
 {
   boot = {
-    kernelPackages = linuxPackages_latest;
+    #kernelPackages = linuxPackages_latest;
     extraModulePackages = with config.boot.kernelPackages; [ wireguard ];
     zfs.enableUnstable = true;
   };
@@ -11,6 +11,7 @@ with pkgs;
   nixpkgs.config.allowUnfree = true;
 
   environment.systemPackages = [
+    qt5.qttools
     usbutils
     wireguard
     socat

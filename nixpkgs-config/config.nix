@@ -27,6 +27,7 @@ with import <nixpkgs> {};
          nvim-cm-racer
          airline
          nerdtree
+         nerdtree-git-plugin
          colors-solarized
          ack-vim
          vim-go
