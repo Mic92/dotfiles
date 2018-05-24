@@ -259,7 +259,8 @@ let g:airline_powerline_fonts = 1
 let g:LanguageClient_serverCommands = {
      \ 'cpp': ['cquery'],
      \ 'c': ['cquery'],
-     \ 'typescript': ['typescript-language-server']
+     \ 'typescript': ['typescript-language-server'],
+     \ 'python': ['pyls']
      \ } 
 let g:LanguageClient_settingsPath = $HOME . '/.config/nvim/settings.json'
 let g:LanguageClient_loadSettings = 1
