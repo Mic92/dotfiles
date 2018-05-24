@@ -188,7 +188,9 @@ in {
       ++ nixDevApps
       ++ [
         myvim
-        python3Packages.flake8
+        python3Packages.python-language-server
+        python3Packages.pyls-mypy
+        python3Packages.pyls-isort
         nodePackages.jsonlint
 
         tmux
