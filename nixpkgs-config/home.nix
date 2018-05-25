@@ -188,9 +188,10 @@ in {
       ++ nixDevApps
       ++ [
         myvim
-        python3Packages.python-language-server
-        python3Packages.pyls-mypy
-        python3Packages.pyls-isort
+
+        # python language server + plugins
+        (python3.withPackages(ps: [ps.pyls-mypy ps.pyls-isort ]))
+
         nodePackages.jsonlint
 
         tmux
