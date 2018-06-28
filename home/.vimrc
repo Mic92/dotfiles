@@ -257,10 +257,17 @@ autocmd BufEnter * highlight Normal guibg=0
 let g:airline_powerline_fonts = 1
 
 let g:LanguageClient_serverCommands = {
-     \ 'cpp': ['cquery'],
-     \ 'c': ['cquery'],
-     \ 'typescript': ['typescript-language-server'],
-     \ 'python': ['pyls']
-     \ } 
+      \ 'cpp': ['cquery'],
+      \ 'c': ['cquery'],
+      \ 'typescript': ['typescript-language-server'],
+      \ 'python': ['pyls'],
+      \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+      \ }
 let g:LanguageClient_settingsPath = $HOME . '/.config/nvim/settings.json'
 let g:LanguageClient_loadSettings = 1
+nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+nnoremap <silent> gh :call LanguageClient_textDocument_hover()<CR>
+nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
+nnoremap <silent> gr :call LanguageClient_textDocument_references()<CR>
+nnoremap <silent> gs :call LanguageClient_textDocument_documentSymbol()<CR>
+nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
