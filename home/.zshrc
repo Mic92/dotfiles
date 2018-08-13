@@ -573,8 +573,10 @@ heroku(){
     -v /home:/home \
     -v /tmp:/tmp \
     -v /run/user/$(id -u):/run/user/$(id -u) \
+    -v $(pwd):/workdir \
+    -w /workdir \
     --name heroku \
-    johnnagro/heroku-toolbelt "$@"
+    wingrunr21/alpine-heroku-cli "$@"
 }
 
 build-cscope-db() {
@@ -604,6 +606,19 @@ stdenv.mkDerivation {
 }
 EOF
     ${EDITOR:-vim} default.nix
+  fi
+}
+
+open() {
+  if [ -n "${commands[xdg-open]}" ]; then
+    xdg-open "$@"
+  elif [ -n "${commands[kde-open5]}" ]; then
+    kde-open5 "$@"
+  elif [ -n "${commands[gnome-open]}" ]; then
+    gnome-open "$@"
+  else
+    echo "no suitable command found" >&2
+    return 1
   fi
 }
 

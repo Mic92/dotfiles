@@ -65,7 +65,7 @@ syntax on
 
 runtime macros/matchit.vim
 
-colorscheme solarized
+" colorscheme solarized
 
 augroup vimrcEx
   au!
@@ -76,9 +76,9 @@ augroup vimrcEx
   " For all text files set 'textwidth' to 78 characters.
   autocmd FileType text setlocal textwidth=78
   autocmd BufReadPost *
-    \ if line("'\"") > 0 && line("'\"") <= line("$") |
-    \   exe "normal g`\"" |
-    \ endif
+        \ if line("'\"") > 0 && line("'\"") <= line("$") |
+        \   exe "normal g`\"" |
+        \ endif
 augroup END
 
 
@@ -87,7 +87,7 @@ map <C-n> :NERDTreeToggle<CR>
 " Use Ag (https://github.com/ggreer/the_silver_searcher) instead of Grep when
 " available
 if executable('ag')
-" Use Ag over Grep
+  " Use Ag over Grep
   set grepprg=ag\ --nogroup\ --nocolor
 
   " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
@@ -116,7 +116,6 @@ au BufEnter *.rs set ai sw=4 ts=4 sta et fo=croql
 " go setup
 au BufEnter *.go setlocal noet ts=4 sw=4 sts=4
 
-
 " tabs for C/C++ projects
 "au BufEnter *.h setlocal noet ts=4 sw=4 sts=4 list!
 "au BufEnter *.c setlocal noet ts=4 sw=4 sts=4 list!
@@ -133,17 +132,6 @@ au BufNewFile,BufRead *.geojson set filetype=json
 
 " change in the directory of the current file
 "autocmd BufEnter * :lchdir %:p:h
-
-let g:tagbar_type_ruby = {
-    \ 'kinds' : [
-        \ 'm:modules',
-        \ 'c:classes',
-        \ 'd:describes',
-        \ 'C:contexts',
-        \ 'f:methods',
-        \ 'F:singleton methods'
-    \ ]
-\ }
 
 " Repeat "." in visual mode
 vnoremap . :norm.<CR>
@@ -201,7 +189,7 @@ let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
 "let g:deoplete#sources.python = ['jedi']
 "let g:deoplete#sources#python#use_cache = 1
 
- " ocaml projects lack of software engineering in general
+" ocaml projects lack of software engineering in general
 let g:extra_whitespace_ignored_filetypes = [ 'ocaml', 'patch' ]
 
 " copy current filename:line to clipboard,
@@ -251,9 +239,6 @@ autocmd QuickFixCmdPost    l* nested lwindow
 
 autocmd BufEnter * highlight Normal guibg=0
 
-" let g:ycm_filetype_blacklist = { 'cpp': 1 }
-" let g:clang_compilation_database = '/home/joerg/git/klee/build'
-
 let g:airline_powerline_fonts = 1
 
 let g:LanguageClient_serverCommands = {
@@ -271,3 +256,4 @@ nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
 nnoremap <silent> gr :call LanguageClient_textDocument_references()<CR>
 nnoremap <silent> gs :call LanguageClient_textDocument_documentSymbol()<CR>
 nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
+nnoremap <silent> gf :call LanguageClient_textDocument_formatting()<CR>

@@ -1,5 +1,4 @@
-{pkgs, config, ...}:
-with pkgs;
+{ pkgs, config, ... }:
 
 {
   boot = {
@@ -8,10 +7,15 @@ with pkgs;
     zfs.enableUnstable = true;
   };
 
-  nixpkgs.config.allowUnfree = true;
-
-  environment.systemPackages = [
+  environment.systemPackages = with pkgs; [
+    vim
+    #cntr
     qt5.qttools
+    kmail
+    kdeApplications.akonadi-mime
+    kdeApplications.korganizer
+
+    cryptsetup
     usbutils
     wireguard
     socat
@@ -24,12 +28,10 @@ with pkgs;
     p7zip
     sipcalc
     iperf
-    pkgconfig
     openssl
     binutils
     file
     wget
-    #neovim
     htop
     ag
     lsof
@@ -41,8 +43,6 @@ with pkgs;
     ruby.devEnv
     python
     python3
-    go
-    gcc
     nethogs
     iotop
     manpages

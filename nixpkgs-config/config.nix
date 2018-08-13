@@ -1,15 +1,12 @@
-with import <nixpkgs> {};
-
 {
   allowUnfree = true;
   pulseaudio = true;
   chromium.enablePepperPDF = true;
 
-  packageOverrides = pkgs: with pkgs; {
-    stable = import <stable> {};
 
-    myVimBundle = { python ? python3 }: let
-      plugins = (vimPlugins.override (old: { inherit python; }));
+  packageOverrides = pkgs: let
+    myVimBundle = let
+      plugins = (pkgs.vimPlugins.override (old: { inherit (pkgs) python3; }));
     in with plugins; {
        # loaded on launch
        start = [
@@ -40,9 +37,22 @@ with import <nixpkgs> {};
          vim-yapf
          vim-signify
        ];
-    };
+     };
+   in {
+    myVimBundle = myVimBundle;
 
-    myvim = neovim.override {
+    stable = import <stable> {};
+
+    nur = pkgs.callPackage (import (builtins.fetchTarball {
+      url = "https://github.com/nix-community/NUR/archive/master.tar.gz";
+    })) {};
+
+    cachix = pkgs.callPackage (import (builtins.fetchGit {
+      url = "https://github.com/cachix/cachix";
+      rev = "0c8366d2a901da28388680e891d4751255e79185";
+    })) {};
+
+    myvim = pkgs.neovim.override {
       vimAlias = true;
       withPython = true;
       configure = {
@@ -50,14 +60,14 @@ with import <nixpkgs> {};
           if filereadable($HOME . "/.vimrc")
             source ~/.vimrc
           endif
-          let $RUST_SRC_PATH = '${rustPlatform.rustcSrc}'
+          let $RUST_SRC_PATH = '${pkgs.rustPlatform.rustcSrc}'
           let g:grammarous#show_first_error = 1
         '';
-        packages.nixbundle = myVimBundle {};
+        packages.nixbundle = myVimBundle;
       };
     };
 
-    staging = buildEnv {
+    staging = pkgs.buildEnv {
       name = "staging";
       paths = [ ];
     };

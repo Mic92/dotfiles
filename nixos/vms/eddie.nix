@@ -90,7 +90,7 @@
             hostECDSAKey = "/run/keys/initrd-ssh-key";
           };
           postCommands = ''
-            echo "zfs load-key -a; killall zfs; ip addr flush dev eth0" >> /root/.profile
+            echo "zfs load-key -a && killall zfs && ip addr flush dev eth0" >> /root/.profile
           '';
         };
       };
@@ -179,16 +179,19 @@
       fileSystems."/boot" = {
         device = "/dev/disk/by-uuid/5C7E-D359";
         fsType = "vfat";
+        options = ["nofail"];
       };
 
       fileSystems."/home" = {
         device = "zroot/root/home";
         fsType = "zfs";
+        options = ["nofail"];
       };
 
       fileSystems."/tmp" = {
         device = "zroot/root/tmp";
         fsType = "zfs";
+        options = ["nofail"];
       };
 
       swapDevices = [ ];

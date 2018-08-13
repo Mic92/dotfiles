@@ -1,3 +1,5 @@
 {
-  nixpkgs.overlays = [ (import ../../overlays/mypackages) ];
+  nixpkgs.overlays = [ 
+    (import ../../overlays/mypackages)
+  ];
 }

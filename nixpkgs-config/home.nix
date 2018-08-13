@@ -7,11 +7,9 @@ with pkgs;
 let
   mybrowser = firefox;
 
-  myNodePackages = (callPackages ./write-good/composition.nix {});
 
   latexApps = [
     rubber
-    myNodePackages.write-good
 
     (texlive.combine {
       inherit (texlive)
@@ -30,7 +28,8 @@ let
       collection-latexextra
       collection-latexrecommended
       collection-langgerman
-      IEEEtran;
+      IEEEtran
+      algorithm2e;
     })
   ];
 
@@ -39,49 +38,23 @@ let
 
   desktopApps = [
     qt5.qttools
-    (gdbgui.overrideAttrs (old: {
-      patches = [ ./gdbgui.patch ];
-    }))
-    (stdenv.mkDerivation rec {
-      name = "ConkySymbols";
-      src = fetchzip {
-        url = "https://github.com/Mic92/awesome-dotfiles/releases/download/download/ConkySymbols.ttf.tar.gz";
-        sha256 = "08xhavw9kgi2jdmpzmxalcpbnzhng1g3z69v9s7yax4gj0jdlss5";
-      };
-      buildCommand = ''
-        install -D $src/ConkySymbols.ttf "$out/share/fonts/truetype/ConkySymbols.ttf"
-      '';
-    })
-    myNodePackages.typescript-language-server
     radare2
     league-of-moveable-type
     dejavu_fonts
     ubuntu_font_family
     unifont
     #emojione
-    (stdenv.mkDerivation rec {
-      name = "inconsolata-nerdfont-${version}";
-      version = nerdfonts.version;
-      src = fetchurl {
-        name = "inconsolata.otf";
-        url = "https://github.com/ryanoasis/nerd-fonts/raw/${version}/patched-fonts/Inconsolata/complete/Inconsolata%20Nerd%20Font%20Complete%20Mono.otf";
-        sha256 = "0dpi27lpag46diynw7z0yfcqsp87mf4skzz1pdq18x1wxfc3nymz";
-      };
-      buildCommand = ''
-        install -D $src "$out/share/fonts/opentype/Inconsolata Nerd Font Complete.otf"
-      '';
-    })
 
     gnome3.defaultIconTheme
     hicolor_icon_theme
+    #kmymoney
 
-    screen
     #remmina
     graphicsmagick
-    bench
+    hyperfine
     sshfsFuse
     sshuttle
-    libreoffice-fresh
+    #libreoffice
     dropbox
     #android-studio
     gimp
@@ -91,38 +64,45 @@ let
     youtube-dl
     mybrowser
     chromium
-    thunderbird
-    transmission_gtk
     aspell
     aspellDicts.de
     aspellDicts.fr
     aspellDicts.en
     hunspell
     hunspellDicts.en-gb-ise
-    scrot
     urlview
     dino
-    arandr
-    lxappearance
     xorg.xev
     xorg.xprop
     xclip
-    xautolock
     keepassx-community
-    pavucontrol
-    evince
-    pcmanfm
+    lxqt.pavucontrol-qt
     gpodder
-    valauncher
     ncmpcpp
     xclip
     screen-message
-    scrot
     alacritty
-  ] ++ (with gnome3; [
-    gvfs
-    eog
     sublime3
+
+    kmail
+    kdeApplications.kontact
+    kdeApplications.kaddressbook
+    kdeApplications.korganizer
+    kdeconnect
+    kdeApplications.spectacle
+    kdeApplications.gwenview
+    kdeApplications.dolphin
+    kdeApplications.okular
+    kdeApplications.akonadi-contacts
+    kdeApplications.akonadi-calendar
+    kdeApplications.akonadi-mime 
+    kdeApplications.akonadi-notes 
+    kdeFrameworks.networkmanager-qt
+  ] ++ (with nur.repos.mic92; [
+    inxi
+    conky-symbols
+    inconsolata-nerdfonts
+    gdbgui
   ]);
 
   nixDevApps = [
@@ -188,11 +168,15 @@ in {
       ++ nixDevApps
       ++ [
         myvim
+        asciinema
+
+        flatpak
 
         # python language server + plugins
-        (python3.withPackages(ps: [ps.pyls-mypy ps.pyls-isort ]))
+        (python36.withPackages(ps: [ ps.pyls-mypy ps.pyls-isort ps.pyls-black ]))
 
         nodePackages.jsonlint
+        rustup
 
         tmux
         htop
@@ -201,8 +185,6 @@ in {
         expect
         gitAndTools.diff-so-fancy
         gitAndTools.hub
-        gitAndTools.git-crypt
-        gitAndTools.git-extras
         gitAndTools.tig
         jq
         httpie
