@@ -111,7 +111,7 @@ let
     go2nix
     mercurial # go2nix
     nox
-    nix-review
+    nur.repos.mic92.nix-review-unstable
   ];
 
   debuggingBasicsApps = [
@@ -176,6 +176,8 @@ in {
         (python36.withPackages(ps: [ ps.pyls-mypy ps.pyls-isort ps.pyls-black ]))
 
         nodePackages.jsonlint
+        nodePackages.ocaml-language-server
+        ocamlPackages_latest.merlin
         rustup
 
         tmux
