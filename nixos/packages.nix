@@ -2,14 +2,20 @@
 
 {
   boot = {
-    #kernelPackages = linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_latest;
     extraModulePackages = with config.boot.kernelPackages; [ wireguard ];
     zfs.enableUnstable = true;
   };
 
+  nixpkgs.config.packageOverrides = pkgs: {
+    nur = import <nur> { inherit pkgs; };
+  };
+  
   environment.systemPackages = with pkgs; [
     vim
-    #cntr
+
+    nur.repos.mic92.cntr
+
     qt5.qttools
     kmail
     kdeApplications.akonadi-mime

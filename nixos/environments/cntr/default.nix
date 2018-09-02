@@ -2,7 +2,6 @@ with import <nixpkgs> {};
 stdenv.mkDerivation {
   name = "env";
   buildInputs = [
-    rustracer
     rustfmt
     gdbgui
     fuse
@@ -22,6 +21,7 @@ stdenv.mkDerivation {
     gnumake
     rustc
     cargo
+    #rustup
     #musl
     #latest.rustChannels.nightly.rust
     #latest.rustChannels.nightly.cargo

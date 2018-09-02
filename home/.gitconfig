@@ -24,7 +24,6 @@
   get = clone --recursive
   blame = -w -M
   update = !git pull && git submodule update --init --recursive
-  commit = -v -c HEAD --reset-author   
   comma = commit --amend
   uncommit = reset --soft HEAD^
   pr = !"pr() { git fetch origin pull/$1/head:pr-$1; git checkout pr-$1; }; pr"

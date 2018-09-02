@@ -10,7 +10,8 @@ let
 in {
 
   imports = [
-   ./vms/modules/retiolum.nix
+    ./vms/modules/retiolum.nix
+    ./vms/modules/networkd.nix
   ];
 
   services = {
@@ -48,7 +49,6 @@ in {
         dhcp-range=enp0s25,192.168.43.0,192.168.43.253,12h
       '' else ""}
     '';
-    resolved.enable = false;
     hostapd = {
       enable = internetSharing.hotspot;
       ssid = "cipherpunk";
@@ -83,6 +83,9 @@ in {
   };
 
   networking = {
+    networkmanager.enable = true;
+    networkmanager.packages = [ pkgs.networkmanager-vpnc ];
+
     retiolum = {
       ipv4 = "10.243.29.168";
       ipv6 = "42:4992:6a6d:600::1";
@@ -97,64 +100,16 @@ in {
       domain = "thalheim.io";
       useSTARTTLS = true;
     };
-    nameservers = ["127.0.0.1"];
+    nameservers = ["9.9.9.9"];
 
-    firewall.enable = false;
-    nftables = {
-      enable = true;
-      ruleset = ''
-        # Check out https://wiki.nftables.org/ for better documentation.
-        # Table for both IPv4 and IPv6.
-        table inet filter {
-          # Block all incomming connections traffic except SSH and "ping".
-          chain input {
-            type filter hook input priority 0;
-            accept;
-
-            ## accept any localhost traffic
-            iifname lo accept
-
-            ## accept traffic originated from us
-            ct state {established, related} accept
-          }
-
-          # Allow all outgoing connections.
-          chain output {
-            type filter hook output priority 0;
-            accept
-          }
-
-          chain forward {
-            type filter hook forward priority 0;
-            accept
-          }
-        }
-        table ip nat {
-          chain prerouting {
-            type nat hook prerouting priority 0;
-            #udp port 53 !iif lo
-          }
-          chain postrouting {
-            type nat hook postrouting priority 0;
-            # container network
-            oifname "${network.lan_interface}" masquerade
-            oifname "${network.wlan_interface}" masquerade
-            #${ if internetSharing.hotspot then ''
-            #'' else if internetSharing.enable then ''
-            #'' else ""}
-          }
-        }
-      '';
-    };
-    #nameservers = [ "127.0.0.1" ];
+    firewall.enable = true;
+    firewall.allowedTCPPorts = [ 3030 ];
     hostName = "turingmachine";
-    wireless.enable = !internetSharing.hotspot;
-    #wireless.iwd.enable = true;
+    #wireless.enable = !internetSharing.hotspot;
+    wireless.iwd.enable = false;
     dhcpcd.enable = false;
   };
 
-
-  systemd.network.enable = true;
   systemd.network.netdevs = let
     wgTemplate = lport: name: endpoint: key: {
       netdevConfig = { Name = "wg-${name}"; Kind = "wireguard"; };
@@ -185,6 +140,26 @@ in {
     ethernet.extraConfig = ''
       [Match]
       Name = enp*
+
+      [Network]
+      DHCP=both
+      LLMNR=true
+      IPv4LL=true
+      ${optionalString internetSharing.enable ''
+        IPForward=yes
+        Address=192.168.43.254/24
+      ''}
+      LLDP=true
+      IPv6AcceptRA=true
+      IPv6Token=::521a:c5ff:fefe:65d8
+
+      [DHCP]
+      UseHostname=false
+      RouteMetric=512
+    '';
+    ethernet2.extraConfig = ''
+      [Match]
+      Name = eth*
 
       [Network]
       DHCP=both

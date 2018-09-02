@@ -26,22 +26,16 @@
         ./modules/zfs.nix
         ./modules/libvirt.nix
         ./modules/intel-graphics.nix
+        ./modules/tor-ssh.nix
+        ./modules/nix-daemon.nix
+        ./modules/networkd.nix
+        ./modules/xfce.nix
       ];
-
-      nix = {
-        trustedUsers = ["joerg"];
-        useSandbox = true;
-        extraOptions = ''
-          build-max-jobs = 10
-        '';
-      };
 
       networking.retiolum = {
         ipv4 = "10.243.29.170";
         ipv6 = "42:4992:6a6d:700::1";
       };
-
-      networking.dhcpcd.enable = false;
 
       systemd.network.networks = {
         ethernet.extraConfig = ''
@@ -62,7 +56,7 @@
         '';
         usb.extraConfig = ''
           [Match]
-          Name=enp0s20f0u9
+          Name=eth1
 
           [Network]
           Address=192.168.44.253/24
@@ -76,6 +70,7 @@
           PoolOffset=100
           PoolSize=20
           EmitDNS=yes
+          EmitRouter=yes
           DNS=8.8.8.8
         '';
       };
@@ -105,13 +100,6 @@
           forwardAddresses = ["9.9.9.9"];
           allowedAccess = ["0.0.0.0/0" "::/0"];
           interfaces = ["10.243.29.170" "42:4992:6a6d:700::1"];
-        };
-        xserver = {
-          enable = true;
-          desktopManager.xfce.enable = true;
-          layout = "us";
-          xkbVariant = "altgr-intl";
-          xkbOptions = "caps:ctrl_modifier,compose:menu";
         };
         xrdp = {
           enable = true;
@@ -196,8 +184,6 @@
 
       swapDevices = [ ];
 
-      nix.maxJobs = lib.mkDefault 4;
-
       powerManagement.cpuFreqGovernor = "powersave";
 
       services.avahi = {
@@ -210,26 +196,7 @@
         wireguard
       ];
 
-      services.tor = {
-        enable = true;
-        hiddenServices."eddie".map = [
-          { port = 22; }
-          { port = 2015; }
-        ];
-        extraConfig = ''
-          DNSPort 9053
-          AutomapHostsOnResolve 1
-          AutomapHostsSuffixes .exit,.onion
-          EnforceDistinctSubnets 1
-          ExitNodes {de}
-          EntryNodes {de}
-          NewCircuitPeriod 120
-        '';
-      };
-
       time.timeZone = "Europe/London";
-
-      services.openssh.enable = true;
 
       system.stateVersion = "18.03";
     };

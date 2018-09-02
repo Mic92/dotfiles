@@ -16,7 +16,7 @@ in {
 
   environment.systemPackages = [
     # ssh with kerberos authentication
-    (pkgs.openssh.override { withKerberos = true; withGssapiPatches = true; })
+    #(pkgs.openssh.override { withKerberos = true; withGssapiPatches = true; })
 
     # http://computing.help.inf.ed.ac.uk/openvpn
     (pkgs.writeScriptBin "openvpn-edinburgh" ''

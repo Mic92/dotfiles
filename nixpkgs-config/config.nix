@@ -3,7 +3,6 @@
   pulseaudio = true;
   chromium.enablePepperPDF = true;
 
-
   packageOverrides = pkgs: let
     myVimBundle = let
       plugins = (pkgs.vimPlugins.override (old: { inherit (pkgs) python3; }));
@@ -36,6 +35,7 @@
          rust-vim
          vim-yapf
          vim-signify
+         vim-nix
        ];
      };
    in {

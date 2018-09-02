@@ -10,14 +10,13 @@ if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
   tmux -u attach-session || tmux -u
 fi
 
-if [[ -d $HOME/git/nixpkgs ]]; then
-  export NIX_PATH="nixpkgs=$HOME/git/nixpkgs"
-fi
-if [[ -d $HOME/git/nixpkgs/.stable ]]; then
-  export NIX_PATH="${NIX_PATH}:stable=$HOME/git/nixpkgs/.stable"
-fi
-if [[ -d $HOME/git/nixos-configuration ]]; then
-  export NIX_PATH="$NIX_PATH:nixos-config=$HOME/git/nixos-configuration/configuration.nix:nixpkgs-overlays=$HOME/git/nixos-configuration/overlays"
+if [[ -z "$NIX_PATH" ]]; then
+  if [[ -d $HOME/git/nixpkgs ]]; then
+    export NIX_PATH="nixpkgs=$HOME/git/nixpkgs"
+  fi
+  if [[ -d $HOME/git/nixos-configuration ]]; then
+    export NIX_PATH="$NIX_PATH:nixos-config=$HOME/git/nixos-configuration/configuration.nix:nixpkgs-overlays=$HOME/git/nixos-configuration/overlays"
+  fi
 fi
 if [ -e /home/joerg/.nix-profile/etc/profile.d/nix.sh ]; then
   . /home/joerg/.nix-profile/etc/profile.d/nix.sh;

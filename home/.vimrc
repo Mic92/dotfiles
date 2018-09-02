@@ -247,6 +247,7 @@ let g:LanguageClient_serverCommands = {
       \ 'typescript': ['typescript-language-server'],
       \ 'python': ['pyls'],
       \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+      \ 'ocaml': ['ocaml-language-server', '--stdio'],
       \ }
 let g:LanguageClient_settingsPath = $HOME . '/.config/nvim/settings.json'
 let g:LanguageClient_loadSettings = 1

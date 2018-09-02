@@ -30,9 +30,8 @@ in {
     #./libvirt.nix
     (builtins.fetchGit {
       url = "https://github.com/NixOS/nixos-hardware";
-      rev = "a5fa2cc1ae6a1002962cf71fc23fbd533db412be";
+      rev = "cfc72f6c9b4348aa9952730c52c44cf8460fbc40";
     } + "/lenovo/thinkpad/x250") 
-    ./nspawn-container
     ./dice.nix
     ./backup.nix
     ./nfs.nix
@@ -40,11 +39,11 @@ in {
     ./vms/modules/mosh.nix
     ./vms/modules/overlay.nix
     ./vms/modules/tracing.nix
+    ./vms/modules/tor-ssh.nix
+    ./vms/modules/nix-daemon.nix
   ];
 
   boot = {
-    #kernelParams = [ "security=selinux" "selinux"];
-    #kernelParams = [ "apparmor=1" "security=apparmor" ];
     loader = {
       systemd-boot.enable = true;
       # when installing toggle this
@@ -60,37 +59,37 @@ in {
   };
 
   nix = {
-    trustedUsers = ["joerg"];
-    gc.automatic = true;
-    gc.dates = "03:15";
-    #binaryCaches = [ https://cache.nixos.community https://cache.nixos.org/ ];
+    binaryCaches = [
+      https://cache.nixos.org/
+      https://r-ryantm.cachix.org
+    ];
+    binaryCachePublicKeys = [
+      "r-ryantm.cachix.org-1:gkUbLkouDAyvBdpBX0JOdIiD2/DP1ldF3Z3Y6Gqcc4c="
+    ];
     distributedBuilds = true;
-    #package = pkgs.nixUnstable;
-    #buildMachines = [
-    #  { hostName = "inspector.r"; sshUser = "nix"; sshKey = "/etc/nixos/secrets/id_buildfarm"; system = "x86_64-linux"; maxJobs = 8; }
-    #];
+    buildMachines = [
+      { 
+        hostName = "inspector.r";
+        sshUser = "nix"; 
+        sshKey = "/etc/nixos/secrets/id_buildfarm"; 
+        system = "x86_64-linux"; 
+        maxJobs = 8;
+      }
+      {
+        hostName = "aarch64.nixos.community";
+        maxJobs = 96;
+        sshKey = "/root/.ssh/id_ed25519";
+        sshUser = "mic92";
+        system = "aarch64-linux";
+        supportedFeatures = [ "big-parallel" ];
+    }];
     nixPath = [
       "nixpkgs=/home/joerg/git/nixpkgs"
-      "nixpkgs-stable=/home/joerg/git/nixpkgs/.stable"
       "nixos-config=/home/joerg/git/nixos-configuration/configuration.nix"
-      "nspawn-container=/home/joerg/git/nixos-configuration/nspawn-container"
       "nixpkgs-overlays=/home/joerg/git/nixos-configuration/overlays"
+      "/nix/var/nix/profiles/per-user/root/channels"
     ];
     nrBuildUsers = 30;
-    useSandbox = true;
-    extraOptions = ''
-      gc-keep-outputs = true
-      gc-keep-derivations = true
-      build-max-jobs = 10
-    '';
-    #buildMachines = [{
-    #  hostName = "aarch64.nixos.community";
-    #  maxJobs = 96;
-    #  sshKey = "/home/joerg/.ssh/id_ecdsa";
-    #  sshUser = "mic92";
-    #  system = "aarch64-linux";
-    #  supportedFeatures = [ "big-parallel" ];
-    #}];
   };
 
   i18n = {
@@ -98,13 +97,13 @@ in {
     consoleKeyMap = "us";
     defaultLocale = "en_DK.UTF-8";
   };
+
   time.timeZone = "Europe/London";
-  #time.timeZone = "Europe/Berlin";
 
   services = {
-    #teamviewer.enable = true;
+    zabbixServer.enable = true;
+    hylafax.enable = true;
     gpm.enable = true;
-    physlock.enable = true;
     autorandr.enable = true;
     resilio = {
       enable = true;
@@ -112,34 +111,16 @@ in {
     };
     upower.enable = true;
     locate.enable = true;
-    tor = {
-      enable = true;
-      hiddenServices."turingmachine".map = [
-        { port = 22; }
-        { port = 2015; }
-      ];
-      extraConfig = ''
-        DNSPort 9053
-        AutomapHostsOnResolve 1
-        AutomapHostsSuffixes .exit,.onion
-        EnforceDistinctSubnets 1
-        ExitNodes {de}
-        EntryNodes {de}
-        NewCircuitPeriod 120
-      '';
-    };
+
     openssh = {
       enable = true;
       forwardX11 = true;
     };
 
     xserver = {
+      desktopManager.plasma5.enable = true;
       desktopManager.xterm.enable = false;
-      displayManager.lightdm = {
-        enable = true;
-        autoLogin.user = "joerg";
-        autoLogin.enable = true;
-      };
+      displayManager.sddm.enable = true;
       enable = true;
       layout = "us";
       xkbVariant = "altgr-intl";
@@ -151,10 +132,6 @@ in {
           enable = true;
           luaModules = with pkgs.lua52Packages; [ luasocket cjson ];
         };
-        i3 = {
-          enable = false;
-          extraPackages = with pkgs; [ dmenu i3pystatus i3lock i3status ];
-        };
         default = "awesome";
       };
     };
@@ -162,7 +139,7 @@ in {
     avahi.enable = true;
 
     samba = {
-      enable = true;
+      enable = false;
       enableWinbindd = false;
     };
 
@@ -179,14 +156,20 @@ in {
     journald.extraConfig = "SystemMaxUse=1G";
   };
 
-  #systemd.package = pkgs.mysystemd;
+  #systemd.package = lib.mkForce (pkgs.systemd.overrideAttrs (old: {
+  #  name = "systemd-239";
+  #  src = pkgs.fetchFromGitHub { 
+  #    owner = "Mic92";
+  #    repo = "systemd";
+  #    rev = "nixos-v239";
+  #    sha256 = "114vq71gcddi4qm2hyrj5jsas9599s0h5mg65jfpvxhfyaw54cpv";
+  #  };
+  #  patches = [];
+  #}));
 
   powerManagement.powertop.enable = true;
 
-
   systemd.services = {
-    systemd-networkd-wait-online.enable = false;
-
     caddy = let
       cfg = pkgs.writeText "Caddyfile" ''
         0.0.0.0 {
@@ -223,26 +206,18 @@ in {
       };
     };
 
-    wifi-scan = {
-      description = "Scan wlan after suspend";
-      wantedBy = [ "sleep.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = "yes";
-        ExecStart = "${pkgs.coreutils}/bin/true";
-        ExecStop = "${pkgs.wpa_supplicant}/bin/wpa_cli scan";
-      };
-    };
     btsync = with pkgs; {
       wantedBy = [ "multi-user.target" ];
       description = "Bittorrent Sync user service";
-      after       = [ "network.target" "local-fs.target" ];
+      after = [ "network.target" "local-fs.target" ];
+      enable = false;
       serviceConfig = {
-        Restart   = "on-abort";
+        Restart = "on-abort";
         User = "joerg";
         ExecStart = "${pkgs.bittorrentSync20}/bin/btsync --nodaemon --config /home/joerg/.config/btsync/btsync.conf";
       };
     };
+
     systemd-udev-settle.serviceConfig.ExecStart = ["" "${pkgs.coreutils}/bin/true"];
   };
 
@@ -255,27 +230,20 @@ in {
       enable = true;
       enableOnBoot = true;
       storageDriver = "zfs";
-      #extraOptions = "--iptables=false --storage-opt=zfs.fsname=zroot/docker --userns-remap=docker";
-      extraOptions = "--iptables=false --storage-opt=zfs.fsname=zroot/docker";
+      extraOptions = "--userland-proxy=false --ip-masq=true --storage-opt=zfs.fsname=zroot/docker";
     };
   };
 
-  fonts = {
-    enableFontDir = true;
-    #enableGhostscriptFonts = true;
-  };
+  fonts.enableFontDir = true;
 
   programs = {
+    singularity.enable = true;
+    sway.enable = true;
     ssh.extraConfig = ''
       SendEnv LANG LC_*
     '';
     ssh.startAgent = true;
-    light.enable = true;
     adb.enable = true;
-    #wireshark = {
-    #  enable = true;
-    #  package = pkgs.wireshark-gtk;
-    #};
     bash.enableCompletion = true;
     zsh = {
       enable = true;
@@ -310,9 +278,12 @@ in {
     sudo.wheelNeedsPassword = false;
   };
 
-  services.dbus.packages = with pkgs; [ gnome3.dconf ];
+  services.dbus.packages = with pkgs; [ gnome3.dconf flatpak ];
+  systemd.packages = with pkgs; [ flatpak ];
 
-  system.stateVersion = "17.03";
+  nixpkgs.config.allowUnfree = true;
+
+  system.stateVersion = "18.03";
 
   #containers.database = {
   #  config = { config, pkgs, ... }: {
