@@ -24,8 +24,6 @@ let
 in {
   imports = [ # Include the results of the hardware scan.or
     ./hardware-configuration.nix
-    ./network-configuration.nix
-    ./bird.nix
     ./packages.nix
     #./libvirt.nix
     (builtins.fetchGit {
@@ -41,6 +39,8 @@ in {
     ./vms/modules/tracing.nix
     ./vms/modules/tor-ssh.nix
     ./vms/modules/nix-daemon.nix
+    ./vms/modules/retiolum.nix
+    ./vms/modules/networkd.nix
   ];
 
   boot = {
@@ -89,7 +89,6 @@ in {
       "nixpkgs-overlays=/home/joerg/git/nixos-configuration/overlays"
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
-    nrBuildUsers = 30;
   };
 
   i18n = {
@@ -282,6 +281,33 @@ in {
   systemd.packages = with pkgs; [ flatpak ];
 
   nixpkgs.config.allowUnfree = true;
+
+  networking = {
+    networkmanager.enable = true;
+    networkmanager.packages = [ pkgs.networkmanager-vpnc ];
+
+    retiolum = {
+      ipv4 = "10.243.29.168";
+      ipv6 = "42:4992:6a6d:600::1";
+    };
+
+    defaultMailServer = {
+      directDelivery = true;
+      hostName = "mail.thalheim.io:587";
+      root = "joerg@thalheim.io";
+      authUser = "joerg@higgsboson.tk";
+      authPassFile = "/etc/nixos/secrets/smtp-authpass";
+      domain = "thalheim.io";
+      useSTARTTLS = true;
+    };
+    nameservers = ["9.9.9.9"];
+
+    firewall.enable = true;
+    firewall.allowedTCPPorts = [ 3030 ];
+    hostName = "turingmachine";
+    wireless.iwd.enable = false;
+    dhcpcd.enable = false;
+  };
 
   system.stateVersion = "18.03";
 

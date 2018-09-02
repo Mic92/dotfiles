@@ -3,6 +3,7 @@
     trustedUsers = ["joerg"];
     useSandbox = true;
     maxJobs = "auto";
+    buildCores = 0;
     gc.automatic = true;
     gc.dates = "03:15";
 

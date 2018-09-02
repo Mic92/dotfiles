@@ -19,6 +19,7 @@
         ./modules/xfce.nix
         ./modules/networkd.nix
         ./modules/nix-daemon.nix
+        ./modules/dashboard.nix
       ];
 
       boot.kernelPackages = pkgs.rock64.linuxPackages_ayufan_4_4;
@@ -59,20 +60,7 @@
         defaultWindowManager = "xfce4-session";
       };
 
-      services.xserver = {
-        displayManager.slim.autoLogin = true;
-        displayManager.slim.defaultUser = "dashboard";
-        videoDrivers = [ "modesetting" ];
-        desktopManager.xfce.extraSessionCommands = ''
-          firefox http://10.243.29.168:3030 &
-          xdotool search --sync --onlyvisible --class "Firefox" windowactivate key F11 &
-        '';
-      };
-
       environment.systemPackages = with pkgs; [
-        firefox
-        xdotool
-
         tmux
         htop
         iotop
