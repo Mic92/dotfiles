@@ -100,9 +100,12 @@ let
     kdeFrameworks.networkmanager-qt
   ] ++ (with nur.repos.mic92; [
     inxi
+    nix-lsp
     conky-symbols
     inconsolata-nerdfonts
     gdbgui
+    gdb-dashboard
+    bat
   ]);
 
   nixDevApps = [
