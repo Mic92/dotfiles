@@ -344,6 +344,15 @@ alias :q=exit
 alias todotxt="vim ~/Dropbox/todo/todo.txt"
 alias grep="grep --binary-files=without-match --directories=skip --color=auto"
 alias R="R --quiet"
+if [ -n "${commands[xclip]}" ]; then
+  # normalize 
+  pbcopy() {
+    tee >(xclip -selection primary) | xclip -selection clipboard
+  }
+  pbpaste() { xclip -o }
+  pbpaste2() { xclip -selection clipboard -o }
+fi
+[ -n "${commands[bat]}" ] && alias cat="bat --style plain,changes,header --theme 'Monokai Extended Light'"
 
 ## PROFILE
 path=(

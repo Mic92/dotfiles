@@ -179,8 +179,11 @@ in {
         (python36.withPackages(ps: [ ps.pyls-mypy ps.pyls-isort ps.pyls-black ]))
 
         nodePackages.jsonlint
-        nodePackages.ocaml-language-server
-        ocamlPackages_latest.merlin
+
+        # not needed
+        #nodePackages.ocaml-language-server
+        #ocamlPackages_latest.merlin
+
         rustup
 
         tmux

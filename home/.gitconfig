@@ -9,6 +9,7 @@
   branch = true
   diff = true
   status = true
+
 [user]
   name = Jörg Thalheim
   email = joerg@thalheim.io
@@ -30,6 +31,7 @@
   backport = cherry-pick -x
   reset-pr = reset --hard FETCH_HEAD
   publish = !git pull && git push
+
 [push]
   default = simple
 [rerere]
@@ -39,6 +41,9 @@
 [pull]
   rebase = true
   autostash = true
+[rebase]
+  autoStash = true
+
 [url "gitlab@git.higgsboson.tk:Mic92/"]
   insteadOf = higgs:
 [url "git@github.com:Mic92/"]
@@ -67,5 +72,3 @@
   clean = git-lfs clean -- %f
   smudge = git-lfs smudge -- %f
   required = true
-[rebase]
-  autoStash = true

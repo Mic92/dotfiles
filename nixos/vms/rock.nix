@@ -2,12 +2,13 @@
   rock =
     { config, pkgs, lib, ... }:
     {
-      deployment.targetHost = "borg.r";
+      deployment.targetHost = "rock.r";
 
       nixpkgs.localSystem.system = "aarch64-linux";
 
       imports = let
-        rock64 = builtins.fetchTarball "https://github.com/thefloweringash/rock64-nix/archive/master.tar.gz";
+        #rock64 = builtins.fetchTarball "https://github.com/thefloweringash/rock64-nix/archive/master.tar.gz";
+        rock64 = ./rock64-nix;
       in [
         (rock64 + "/modules/rock64-configuration.nix")
         (rock64 + "/modules/packages.nix")
@@ -30,6 +31,11 @@
 	    	ipv4 = "10.243.29.171";
 	    	ipv6 = "42:4992:6a6d:700::2";
       };
+
+      networking.firewall.allowedTCPPorts = [
+        3389 # xrdp
+        655 # tinc
+      ];
 
       systemd.network.networks = {
         ethernet.extraConfig = ''
@@ -68,6 +74,8 @@
         strace
         ethtool
       ];
+
+      time.timeZone = "Europe/London";
 
       system.stateVersion = "18.03";
     };
