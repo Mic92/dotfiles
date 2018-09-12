@@ -1,0 +1,4 @@
+#!/bin/sh
+
+pacman -r "$LXC_ROOTFS_PATH" -Syu --noconfirm
+exit $?

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -eu
+
+MACHINE_ID="${LXC_ROOTFS_PATH}/etc/machine-id"
+
+if [ -f "$MACHINE_ID" ]; then
+  rm "$MACHINE_ID"
+fi
+
+systemd-machine-id-setup --root="$LXC_ROOTFS_PATH"

@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+require_relative "lib/lxc"
+
+registry = Lxc::Registry.new
+containers = `lxc-ls -1`.split(/\n/).map(&:strip)
+
+modified = false
+network = registry.data["network"] || {}
+network.each do |host, value|
+  unless containers.include?(host) or value["lxc"] == false
+    network.delete(host)
+    modified = true
+  end
+end
+
+if modified
+  registry.save
+else
+  puts "Unchanged"
+end

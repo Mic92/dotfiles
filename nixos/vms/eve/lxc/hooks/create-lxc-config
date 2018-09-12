@@ -1,0 +1,112 @@
+#!/usr/bin/env ruby
+require "ostruct"
+require "optparse"
+require "json"
+require "netaddr"
+require "pathname"
+require "fileutils"
+
+require_relative "lib/lxc"
+
+def try_env(key)
+  ENV[key] or abort("environment variable '#{key}' not set")
+end
+
+def allocate_container(data, name:, ipv4: nil, ipv6: nil, ula: nil, **options)
+  network = data["network"] || {}
+  zone = data["zone"]
+
+  ipv4_subnet = NetAddr::CIDR.create(zone["ipv4-subnet"] || "192.168.10.0/24")
+  ipv6_subnet = NetAddr::CIDR.create(zone["ipv6-subnet"] || "fd7d:aed0:18aa::/48")
+  ula_subnet  = NetAddr::CIDR.create(zone["ula-subnet"] || "fdc5:bdb8:b81::/48")
+
+  c = {}
+  c["ipv4"] = ipv4 || find_address(ipv4_subnet, collect_subnets(network, "ipv4"))
+  c["ipv6"] = ipv6 || find_address(ipv6_subnet, collect_subnets(network, "ipv6"))
+  c["ula"] = ula  || find_address(ula_subnet,  collect_subnets(network, "ula"))
+  c["group"] = options[:group] if options[:group]
+  c["vars"] = options[:vars] if options[:vars]
+  c
+end
+
+def collect_subnets(network, type)
+  addrs = []
+  network.each do |k,v|
+    if v[type]
+      addrs << NetAddr::CIDR.create(v[type])
+    end
+  end
+  addrs
+end
+
+def find_address(subnet, assigned_subnets)
+  subnet.enumerate(Limit: 1E4, Short: true)[1..1E4].each do |cidr|
+    assigned = assigned_subnets.find { |s| s.contains?(cidr) || s == cidr }
+    return cidr unless assigned
+  end
+end
+
+def parse_opts
+  options = OpenStruct.new
+  options.container_name = try_env("LXC_NAME")
+  options.container_config = try_env("LXC_CONFIG_FILE")
+  options.rootfs = try_env("LXC_ROOTFS_PATH")
+  options.mounts = Hash.new { |hash,key| hash[key] = {} }
+
+  OptionParser.new do |opts|
+    opts.banner = "Usage: create-lxc-config [options]"
+
+    opts.on("-4", "--ipv4", "private Ipv4 subnet") do |v|
+      options.ipv4 = v
+    end
+    opts.on("-6", "--ipv6", "public Ipv6 subnet") do |v|
+      options.ipv6 = v
+    end
+    opts.on("--ula", String, "private unique local ipv6 subnet") do |v|
+      options.ula = v
+    end
+    opts.on("--group GROUP", String, "set ansible group (default NONE)") do |group|
+      options.group = group
+    end
+    opts.on("--mounts other_container,/src/dir,/dest/path", Array, "mount other container path") do |args|
+      if args.size != 3
+        abort "expect 3 arguments for --mounts got: #{args.size}: USAGE: other_container,/src/dir,/dest/path"
+      end
+      options.mounts[args[0]][args[1]] = args[2]
+    end
+    opts.on("--vars FILE", String, "set json file for ansible variables") do |vars|
+      begin
+        options.vars = JSON.load(File.open(vars))
+        unless options.vars.is_a? Hash
+          abort "vars: Should be a json object"
+        end
+      rescue SystemCallError => e
+        abort "Failed to open '#{vars}': #{e.message}"
+      rescue JSON::ParserError => e
+        abort "Failed to parse ansible variables: #{e.message}"
+      end
+    end
+  end.parse!
+
+  options
+end
+
+
+def main
+  options = parse_opts
+  registry = Lxc::Registry.new
+  c = allocate_container(registry.data,
+                         name: options.container_name,
+                         ipv4: options.ipv4,
+                         ipv6: options.ipv6,
+                         rootfs: options.rootfs,
+                         ula: options.ula,
+                         group: options.group,
+                         vars: options.vars,
+                         mounts: options.mounts)
+  registry.data["network"] ||= {}
+  registry.data["network"][options.container_name] = c
+  registry.save
+end
+
+main

@@ -1,0 +1,3 @@
+#!/bin/sh
+ip route add 172.23.0.80/28 via 172.23.75.5 dev eth0
+ip -6 route add fd42:d42:d42:80::1/64 via fd42:4992:6a6d::5 dev eth0

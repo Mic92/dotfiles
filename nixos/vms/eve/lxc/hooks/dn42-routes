@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+set -x
+ip a
+
+ip route add 172.16.0.0/12 via 172.23.75.1
+ip route add 10.0.0.0/8 via 172.23.75.1
+ip -6 route add fc00::/7 via fd42:4992:6a6d::1
+
+sysctl -w net.ipv4.conf.all.forwarding=0
+sysctl -w net.ipv4.ip_forward=0
+sysctl -w net.ipv6.conf.all.forwarding=0
+exit 0

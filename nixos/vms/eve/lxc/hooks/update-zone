@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+require "json"
+require "pathname"
+require_relative "lib/lxc"
+
+DNS_CONTAINER = "dns"
+
+def dns_zone(registry, template, zone_name)
+  root_path = Pathname.new(File.expand_path("../..", __FILE__))
+  zone_template = Lxc::Template.new(root_path.join("hooks/templates/#{template}.erb"))
+  zone = registry.data["zone"] || {}
+  zone_template.write(root_path.join("zones",
+                                     "#{zone_name}.zone"),
+                                     data: registry.data,
+                                     zone: zone)
+end
+
+def main
+  registry = Lxc::Registry.new
+  registry.data["zone"] ||= {}
+  registry.data["zone"]["serial"] += 1
+  registry.save
+
+  root_path = Lxc::CONFIG_ROOT
+
+  if subnet = registry.data["zone"]["ula-subnet"]
+    zone = Lxc::RdnsZone.new(registry.data, "ula", subnet)
+    zone.write_zone_file(root_path)
+  end
+
+  if subnet = registry.data["zone"]["ipv4-subnet"]
+    zone = Lxc::RdnsZone.new(registry.data, "ipv4", subnet)
+    zone.write_zone_file(root_path)
+  end
+
+  if domain = registry.data["zone"]["ipv6-domain"]
+    dns_zone(registry, "ipv6-zone", domain)
+  end
+
+  if domain = registry.data["zone"]["dn42-domain"]
+    dns_zone(registry, "dn42-zone", domain)
+  end
+
+  Lxc::Utils.sh("lxc-attach", "-n", DNS_CONTAINER, "--", "rndc", "reload")
+end
+
+main

@@ -1,0 +1,32 @@
+<% if data["zone"]["ttl"] -%>
+$TTL <%= data["zone"]["ttl"] %>
+<% end -%>
+
+@ IN SOA <%= data["zone"]["soa"] %> <%= data["zone"]["hostmaster"] %> (
+                    <%= data["zone"]["serial"] %> ; serial
+                    <%= data["zone"]["refresh"] %> ; refresh
+                    <%= data["zone"]["retry"] %> ; retry
+                    <%= data["zone"]["expire"] %> ; expire
+                    <%= data["zone"]["minimum"] %>) ; minimum
+<% data["zone"]["ns"].each do |name, value| -%>
+  NS <%= name %>.
+<% end -%>
+
+<% if data["zone"]["a"] -%>
+  A <%= data["zone"]["a"] %>
+<% end -%>
+<% if data["zone"]["aaaa"] -%>
+  AAAA <%= data["zone"]["aaaa"]%>
+<% end -%>
+
+<% data["network"].each do |name, value| %>
+<% if value["cname"] -%>
+<%= fqdn(name) %> CNAME <%= value["cname"] %>
+<% end -%>
+<% if value["srv"] -%>
+<%= fqdn(name) %> SRV <%= value["srv"] %>
+<% end -%>
+<% if value["ipv6"] -%>
+<%= fqdn(name) %> AAAA <%= NetAddr::CIDR.create(value["ipv6"]).ip(Short: true) %>
+<% end -%>
+<% end -%>

@@ -1,0 +1,925 @@
+{
+  "zone": {
+    "soa": "ns1.higgsboson.tk.",
+    "serial": 252,
+    "refresh": "1H",
+    "hostmaster": "hostmaster.higgsboson.tk",
+    "ipv6-domain": "eve.higgsboson.tk",
+    "dn42-domain": "eve.evenet.dn42",
+    "ttl": 300,
+    "a": "188.68.39.17",
+    "aaaa": "2a03:4000:13:31e::1",
+    "dn42-a": "172.23.75.1",
+    "dn42-aaaa": "fd42:4992:6a6d::1",
+    "retry": "4H",
+    "expire": "3W",
+    "minimum": "1D",
+    "ipv4-subnet": "172.23.75.0/26",
+    "ula-subnet": "fd42:4992:6a6d::/80",
+    "ipv6-subnet": "2a03:4000:13:31e:1::/80",
+    "lxc-root": "/lxc",
+    "ns": [
+      "ns1.evenet.dn42",
+      "ns2.evenet.dn42"
+    ]
+  },
+  "subnets": {
+    "ipv4": {
+      "172.23.75.0/26": {
+        "name": "eve.evenet.dn42"
+      },
+      "172.23.75.64/28": {
+        "name": "home.devkid.net"
+      },
+      "172.23.75.80/28": {
+        "name": "vpn.evenet.dn42"
+      },
+      "172.23.75.96/27": {
+        "name": "edingburgh.evenet.dn42"
+      },
+      "172.23.75.128/26": {
+        "name": "unassigned.evenet.dn42"
+      },
+      "172.23.75.192/28": {
+        "name": "inspector.evenet.dn42"
+      },
+      "172.23.75.208/28": {
+        "name": "cac.evenet.dn42"
+      },
+      "172.23.75.224/27": {
+        "name": "ohorn.evenet.dn42"
+      }
+    },
+    "ula": {
+      "fd42:4992:6a6d::1/80": {
+        "name": "eve.evenet.dn42"
+      },
+      "fd42:4992:6a6d:200::/64": {
+        "name": "vpn.evenet.dn42"
+      },
+      "fd42:4992:6a6d:300::/64": {
+        "name": "inspector.evenet.dn42"
+      },
+      "fd42:4992:6a6d:500::/64": {
+        "name": "ohorn.evenet.dn42"
+      },
+      "fd42:4992:6a6d:600::/64": {
+        "name": "turingmachine.evenet.dn42"
+      }
+    },
+    "ipv6": {
+      "2001:470:1f0b:f8d::/64": {
+        "name": "ohorn.thalheim.io"
+      },
+      "2a03:4000:13:31e::1/80": {
+        "name": "eve.thalheim.io"
+      },
+      "2a03:4000:13:31e:100::/120": {
+        "name": "ohorn.thalheim.io"
+      },
+      "2a03:4000:13:31e:200::/120": {
+        "name": "turingmachine.thalheim.io"
+      },
+      "2a03:4000:13:31e:300::/120": {
+        "name": "home.devkid.net"
+      }
+    }
+  },
+  "network": {
+    "eve": {
+      "ipv4": "172.23.75.2",
+      "ipv6": "2a03:4000:13:31e::2",
+      "lxc": false
+    },
+    "alfred-pi": {
+      "ipv4": "172.23.75.65",
+      "lxc": false
+    },
+    "bridge": {
+      "ipv4": "172.23.75.2",
+      "ipv6": "2a03:4000:13:31e:1::2",
+      "ula": "fd42:4992:6a6d::2",
+      "lxc": false
+    },
+    "jabber": {
+      "ipv4": "172.23.75.22",
+      "ipv6": "2a03:4000:13:31e:1::16",
+      "rdns6": "jabber.higgsboson.tk",
+      "lxc": false
+    },
+    "_xmpp-client._tcp": {
+      "srv": "0 5 5222 jabber",
+      "lxc": false
+    },
+    "base": {
+      "ipv4": "172.23.75.62",
+      "ipv6": "2a03:4000:13:31e:1::3e",
+      "ula": "fd42:4992:6a6d::3e"
+    },
+    "ldap": {
+      "ipv4": "172.23.75.3",
+      "ipv6": "2a03:4000:13:31e:1::3",
+      "ula": "fd42:4992:6a6d::3",
+      "services": {
+        "ldap": {
+          "port": 389,
+          "allow": [
+            "login",
+            "owncloud",
+            "mail",
+            "squid",
+            "web",
+            "git",
+            "ldapadmin",
+            "piwik",
+            "prosody",
+            "ttrss",
+            "grafana"
+          ]
+        }
+      }
+    },
+    "wikianycast": {
+      "ipv4": "172.23.0.80",
+      "ula": "fd42:d42:d42:80::1",
+      "ipv6": "fd42:d42:d42:80::2",
+      "lxc": false,
+      "services": {
+        "wikianycast": {
+          "port": "80",
+          "allow": [
+            "all"
+          ]
+        },
+        "wikianycasts": {
+          "port": "443",
+          "allow": [
+            "all"
+          ]
+        }
+      }
+    },
+    "web": {
+      "ipv4": "172.23.75.5",
+      "rdns6": "web.higgsboson.tk",
+      "ipv6": "2a03:4000:13:31e:1::5",
+      "ula": "fd42:4992:6a6d::5",
+      "services": {
+        "web": {
+          "port": 80,
+	  "allow": [
+            "grafana",
+            "istwiki"
+	  ],
+          "forward": true
+        },
+        "webs": {
+          "port": 443,
+	  "allow": [
+            "grafana",
+            "istwiki"
+	  ],
+          "forward": true
+        }
+      },
+      "mounts": {
+        "istwiki": {
+          "srv/http/ist.devkid.net": true
+        },
+        "git": {
+          "usr/share/webapps/gitlab/public": true,
+          "var/lib/gitlab/assets": true,
+          "var/lib/gitlab/uploads": true,
+          "srv/http/higgsboson.tk": true,
+          "srv/http/blog.higgsboson.tk": true
+        },
+        "halfcode": {
+          "srv/http/halfco.de": true
+        },
+        "ldapadmin": {
+          "usr/share/webapps/phpldapadmin": true
+        },
+        "rainloop": {
+          "srv/http/mail.higgsboson.tk": true
+        },
+        "etherpad": {
+          "/usr/share/webapps/etherpad-lite/src/static": "/srv/http/pad.higgsboson.tk/static"
+        },
+        "owncloud": {
+          "usr/share/webapps/owncloud": true,
+          "usr/share/webapps/nextcloud": true
+        },
+        "piwik": {
+          "usr/share/webapps/piwik": true
+        },
+        "pyload": {
+          "var/lib/pyload/Downloads": "mnt/pyload"
+        },
+        "ttrss": {
+          "usr/share/webapps/tt-rss": true,
+          "var/lib/tt-rss/feed-icons": true
+        }
+      }
+    },
+    "dns": {
+      "ipv4": "172.23.75.6",
+      "ipv6": "2a03:4000:13:31e:1::6",
+      "rdns6": "ns1.higgsboson.tk",
+      "ula": "fd42:4992:6a6d::6",
+      "services": {
+        "dns": {
+          "port": 53,
+          "proto": "udp",
+          "forward": true
+        },
+        "dns-tcp": {
+          "port": 5353,
+          "proto": "udp",
+          "forward": true,
+          "allow": [
+            "all"
+          ]
+        },
+        "whois": {
+          "port": 43,
+          "forward": true
+        },
+        "monotone": {
+          "port": 4691,
+          "forward": true
+        }
+      }
+    },
+    "dn42": {
+      "ipv4": "172.23.75.1",
+      "ipv6": "2a03:4000:13:31e:1::1",
+      "ula": "fd42:4992:6a6d::1",
+      "services": {
+        "bird": {
+          "port": 179,
+          "allow": [
+            "exabgp"
+          ]
+        },
+        "openvpn": {
+          "port": "5002-5020",
+          "forward": true,
+          "proto": "udp"
+        },
+        "wireguard": {
+          "port": "42421-42429",
+          "forward": true,
+          "proto": "udp"
+        },
+        "wireguard2": {
+          "port": "4242-4299",
+          "forward": true,
+          "proto": "udp"
+        },
+        "ipsec": {
+          "port": "500",
+          "forward": true,
+          "proto": "udp"
+        },
+        "evenet": {
+          "port": "20",
+          "forward": "{20, 21, 123, openvpn}",
+          "proto": "udp"
+        },
+        "evenet-tcp": {
+          "port": "993",
+          "forward": true
+        },
+        "vtun": {
+          "port": "5000",
+          "forward": true,
+          "proto": "udp"
+        },
+        "vtun2": {
+          "port": "5000",
+          "forward": true
+        },
+        "fastd": {
+          "port": "5001",
+          "forward": true,
+          "proto": "udp"
+        },
+        "dn42ssh": {
+          "port": "22",
+          "forward": "2020"
+        },
+        "tinc": {
+          "port": "655",
+          "forward": true,
+          "proto": "udp"
+        },
+        "tinc-tcp": {
+          "port": "655",
+          "forward": true
+        }
+      },
+      "mounts": {
+        "web": {
+          "srv/http/dl.higgsboson.tk": true
+        },
+        "dns": {
+          "etc/named/net.dn42.registry": "etc/bird/registry"
+        }
+      }
+    },
+    "mysql": {
+      "ipv4": "172.23.75.9",
+      "ipv6": "2a03:4000:13:31e:1::9",
+      "backup-scripts": [
+        {
+          "backupname": "mysqldbs",
+          "command": "/etc/nixos/scripts/backup-mysql"
+        }
+      ],
+      "ula": "fd42:4992:6a6d::9",
+      "services": {
+        "mysql": {
+          "port": 3306,
+          "allow": [
+            "adminer",
+            "istwiki",
+            "piwik"
+          ]
+        }
+      }
+    },
+    "gitweb": {
+      "cname": "web",
+      "lxc": false
+    },
+    "git": {
+      "ipv4": "172.23.75.4",
+      "rdns6": "git.higgsboson.tk",
+      "ipv6": "2a03:4000:13:31e:1::4",
+      "ula": "fd42:4992:6a6d::4",
+      "backup-paths": [
+        "/srv/gogs"
+      ],
+      "services": {
+        "gogs": {
+          "port": 3000,
+          "allow": [
+            "web"
+          ]
+        },
+        "git-ssh": {
+          "port": 22,
+          "forward": true
+        }
+      }
+    },
+    "postgres": {
+      "ipv4": "172.23.75.10",
+      "ipv6": "2a03:4000:13:31e:1::a",
+      "backup-scripts": [
+        {
+          "backupname": "postgresdbs",
+          "command": "/etc/nixos/scripts/backup-postgres"
+        }
+      ],
+      "ula": "fd42:4992:6a6d::a",
+      "services": {
+        "postgres": {
+          "port": 5432,
+          "allow": [
+            "adminer",
+            "etherpad",
+            "ghost",
+            "git",
+            "owncloud",
+            "ldap",
+            "rainloop",
+            "ttrss",
+            "prosody",
+            "grafana"
+          ]
+        }
+      }
+    },
+    "adminer": {
+      "ipv4": "172.23.75.14",
+      "ipv6": "2a03:4000:13:31e:1::e",
+      "group": "php",
+      "ula": "fd42:4992:6a6d::e",
+      "services": {
+        "adminer": {
+          "port": 9000,
+          "allow": [
+            "web"
+          ]
+        }
+      }
+    },
+    "mail": {
+      "ipv4": "172.23.75.16",
+      "ipv6": "2a03:4000:13:31e:1::10",
+      "rdns6": "mail.higgsboson.tk",
+      "mounts": {
+        "web": {
+          "/etc/letsencrypt/live/": true,
+          "/etc/letsencrypt/archive/": true
+        }
+      },
+      "backup-paths": [
+        "var/vmail"
+      ],
+      "ula": "fd42:4992:6a6d::10",
+      "services": {
+        "smtp": {
+          "port": 25,
+          "forward": true
+        },
+        "smtps": {
+          "port": 465,
+          "forward": true
+        },
+        "submission": {
+          "port": 587,
+          "forward": true
+        },
+        "imap": {
+          "port": 143,
+          "forward": true
+        },
+        "imaps": {
+          "port": 993,
+          "forward": true
+        },
+        "imap-stats": {
+          "port": 3000
+        },
+        "sieve": {
+          "port": 4190,
+          "forward": true
+        },
+        "dsync": {
+          "port": 4170,
+          "forward": true
+        }
+      }
+    },
+    "istwiki": {
+      "ipv4": "172.23.75.17",
+      "ipv6": "2a03:4000:13:31e:1::11",
+      "group": "php",
+      "ula": "fd42:4992:6a6d::11",
+      "services": {
+        "istwiki": {
+          "port": 9000,
+          "allow": [
+            "web"
+          ]
+        }
+      }
+    },
+    "ldapadmin": {
+      "ipv4": "172.23.75.12",
+      "ipv6": "2a03:4000:13:31e:1::c",
+      "group": "php",
+      "ula": "fd42:4992:6a6d::c",
+      "services": {
+        "ldapadmin": {
+          "port": 9000,
+          "allow": [
+            "web"
+          ]
+        }
+      }
+    },
+    "rainloop": {
+      "ipv4": "172.23.75.19",
+      "ipv6": "2a03:4000:13:31e:1::13",
+      "ula": "fd42:4992:6a6d::13",
+      "services": {
+        "rainloop": {
+          "port": 9000,
+          "allow": [
+            "web"
+          ]
+        }
+      }
+    },
+    "owncloud": {
+      "ipv4": "172.23.75.15",
+      "ipv6": "2a03:4000:13:31e:1::f",
+      "group": "php",
+      "ula": "fd42:4992:6a6d::f",
+      "services": {
+        "owncloud": {
+          "port": 9000,
+          "allow": [
+            "web"
+          ]
+        }
+      }
+    },
+    "ttrss": {
+      "ipv4": "172.23.75.20",
+      "ipv6": "2a03:4000:13:31e:1::14",
+      "group": "php",
+      "ula": "fd42:4992:6a6d::14",
+      "services": {
+        "ttrss": {
+          "port": 9000,
+          "allow": [
+            "web"
+          ]
+        }
+      }
+    },
+    "teamspeak": {
+      "ipv4": "172.23.75.21",
+      "ipv6": "2a03:4000:13:31e:1::15",
+      "backup-paths": [
+        "var/lib/teamspeak3-server"
+      ],
+      "ula": "fd42:4992:6a6d::15",
+      "services": {
+        "ts3_ft": {
+          "port": 30033,
+          "forward": true
+        },
+        "ts3_sq": {
+          "port": 10011,
+          "forward": true
+        },
+        "ts3_dns": {
+          "port": 41144,
+          "forward": true
+        },
+        "ts3_devkid": {
+          "port": 9987,
+          "forward": true,
+          "proto": "udp"
+        },
+        "ts3_martijn": {
+          "port": 22222,
+          "forward": true,
+          "proto": "udp"
+        },
+        "ts3_martin": {
+          "port": 5037,
+          "forward": true,
+          "proto": "udp"
+        },
+        "ts3_putzy": {
+          "port": 9000,
+          "forward": true,
+          "proto": "udp"
+        }
+      }
+    },
+    "prosody": {
+      "ipv4": "172.23.75.22",
+      "ipv6": "2a03:4000:13:31e:1::16",
+      "rdns6": "jabber.higgsboson.tk",
+      "backup-paths": [
+        "var/lib/prosody"
+      ],
+      "mounts": {
+        "web": {
+          "/etc/letsencrypt/live/": true,
+          "/etc/letsencrypt/archive/": true
+        }
+      },
+      "ula": "fd42:4992:6a6d::16",
+      "services": {
+        "xmpp-client": {
+          "port": 5222,
+          "forward": true
+        },
+        "xmpp-server": {
+          "port": 5269,
+          "forward": true
+        },
+        "xmpp-bosh": {
+          "port": 5280,
+          "forward": true
+        },
+        "bosh-ssl": {
+          "port": 5281,
+          "forward": true
+        },
+        "xmpp-proxy65": {
+          "port": 6555,
+          "forward": true
+        }
+      }
+    },
+    "piwik": {
+      "ipv4": "172.23.75.23",
+      "ipv6": "2a03:4000:13:31e:1::17",
+      "group": "php",
+      "ula": "fd42:4992:6a6d::17",
+      "services": {
+        "piwik": {
+          "port": 9000,
+          "allow": [
+            "web"
+          ]
+        }
+      }
+    },
+    "etherpad": {
+      "ipv4": "172.23.75.25",
+      "ipv6": "2a03:4000:13:31e:1::19",
+      "ula": "fd42:4992:6a6d::19",
+      "services": {
+        "etherpad": {
+          "port": 9000,
+          "allow": [
+            "web"
+          ]
+        }
+      }
+    },
+    "pyload": {
+      "ipv4": "172.23.75.26",
+      "ipv6": "2a03:4000:13:31e:1::1a",
+      "ula": "fd42:4992:6a6d::1a",
+      "services": {
+        "pyload": {
+          "port": 8001,
+          "allow": [
+            "web"
+          ]
+        },
+        "pyloadremote": {
+          "port": 7227,
+          "forward": true
+        }
+      }
+    },
+    "squid": {
+      "ipv4": "172.23.75.27",
+      "ipv6": "2a03:4000:13:31e:1::1b",
+      "ula": "fd42:4992:6a6d::1b",
+      "services": {
+        "squid": {
+          "port": 8888,
+          "forward": true
+        },
+        "ssquid": {
+          "port": 8889,
+          "forward": true
+        }
+      }
+    },
+    "login": {
+      "ipv4": "172.23.75.30",
+      "ipv6": "2a03:4000:13:31e:1::1e",
+      "rdns6": "login.higgsboson.tk",
+      "services": {
+        "login": {
+          "port": 22,
+          "forward": 22722
+        },
+        "mosh_login": {
+          "port": 60011,
+          "proto": "udp",
+          "forward": true
+        },
+        "weechat": {
+          "port": 4242,
+          "forward": true,
+          "allow": [
+            "all"
+          ]
+        },
+        "irc-dcc": {
+          "port": "6760-6769",
+          "forward": true
+        }
+      },
+      "mounts": {
+        "pyload": {
+          "var/lib/pyload/Downloads": "mnt/pyload"
+        },
+        "web": {
+          "/etc/letsencrypt/live/": true,
+          "/etc/letsencrypt/archive/": true
+        }
+      },
+      "vars": {
+        "ssh_ldap": true,
+        "install_dn42_ca": false,
+        "add_repo_in_pacman_conf": false,
+        "additional_admins": [
+          {
+            "dest": "/var/lib/aurrepo/",
+            "owner": "aurrepo",
+            "group": "aurrepo"
+          }
+        ]
+      },
+      "ula": "fd42:4992:6a6d::1e"
+    },
+    "halfcode": {
+      "ipv4": "172.23.75.32",
+      "ipv6": "2a03:4000:13:31e:1::20",
+      "group": "php",
+      "ula": "fd42:4992:6a6d::20",
+      "services": {
+        "halfcode": {
+          "port": 9000,
+          "allow": [
+            "web"
+          ]
+        }
+      }
+    },
+    "ghost": {
+      "ipv4": "172.23.75.35",
+      "ipv6": "2a03:4000:13:31e:1::23",
+      "ula": "fd42:4992:6a6d::23",
+      "services": {
+        "ghost": {
+          "port": 9000,
+          "allow": [
+            "web"
+          ]
+        }
+      }
+    },
+    "bitlbee": {
+      "ipv4": "172.23.75.36",
+      "ipv6": "2a03:4000:13:31e:1::24",
+      "ula": "fd42:4992:6a6d::24",
+      "services": {
+        "bitlbee": {
+          "port": 6667,
+          "allow": [
+            "all"
+          ]
+        }
+      }
+    },
+    "btsync": {
+      "ipv4": "172.23.75.31",
+      "ipv6": "2a03:4000:13:31e:1::1f",
+      "ula": "fd42:4992:6a6d::1f",
+      "services": {
+        "btsync-web": {
+          "port": 8888,
+          "allow": [
+            "web"
+          ]
+        },
+        "btsync-tcp": {
+          "port": 5555,
+          "forward": true,
+          "allow": [
+            "all"
+          ]
+        },
+        "btsync-udp": {
+          "port": 5555,
+          "proto": "udp",
+          "forward": true,
+          "allow": [
+            "all"
+          ]
+        }
+      },
+      "mounts": {
+        "pyload": {
+          "var/lib/pyload/Downloads": "mnt/pyload"
+        },
+        "deluge": {
+          "srv/deluge/Downloads": "mnt/deluge"
+        }
+      }
+    },
+    "dn42wiki": {
+      "ipv4": "172.23.75.13",
+      "ipv6": "2a03:4000:13:31e:1::d",
+      "ula": "fd42:4992:6a6d::d",
+      "services": {
+        "gollum": {
+          "port": 4568,
+          "allow": [
+            "web"
+          ]
+        }
+      }
+    },
+    "exabgp": {
+      "ipv4": "172.23.75.11",
+      "ipv6": "2a03:4000:13:31e:1::b",
+      "ula": "fd42:4992:6a6d::b",
+      "services": {
+        "exabgp": {
+          "port": 179,
+          "allow": [
+            "dn42"
+          ]
+        }
+      }
+    },
+    "deluge": {
+      "ipv4": "172.23.75.28",
+      "ipv6": "2a03:4000:13:31e:1::1c",
+      "ula": "fd42:4992:6a6d::1c",
+      "services": {
+        "bittorrent": {
+          "port": 56883,
+          "proto": "udp",
+          "allow": [
+            "all"
+          ]
+        },
+        "bittorrent2": {
+          "port": 56883,
+          "allow": [
+            "all"
+          ]
+        },
+        "delugeweb": {
+          "port": 8112,
+          "allow": [
+            "web"
+          ]
+        },
+        "delugestream": {
+          "port": 8000,
+          "forward": true
+        }
+      }
+    },
+    "influxdb": {
+      "ipv4": "172.23.75.7",
+      "ipv6": "2a03:4000:13:31e:1::7",
+      "ula": "fd42:4992:6a6d::7",
+      "services": {
+        "influxdbadmin": {
+          "port": 8083,
+          "allow": [
+            "all"
+          ],
+          "forward": true
+        },
+        "influxdb": {
+          "port": 8086,
+          "allow": [
+            "all"
+          ],
+          "forward": true
+        },
+        "collectd": {
+          "proto": "udp",
+          "port": 25826,
+          "forward": true
+        }
+      },
+      "mounts": {
+        "web": {
+          "/etc/letsencrypt/live/": true,
+          "/etc/letsencrypt/archive/": true
+        }
+      }
+    },
+    "grafana": {
+      "ipv4": "172.23.75.8",
+      "ipv6": "2a03:4000:13:31e:1::8",
+      "ula": "fd42:4992:6a6d::8",
+      "services": {
+        "grafana": {
+          "port": 3000,
+          "allow": [
+            "web"
+          ]
+        }
+      }
+    },
+    "rauter": {
+      "ipv4": "172.23.75.225",
+      "ipv6": "fd42:4992:6a6d:500::2",
+      "ula": "fd42:4992:6a6d:500::1",
+      "lxc": false
+    },
+    "matchbox": {
+      "ipv4": "172.23.75.254",
+      "ipv6": "fd42:4992:6a6d:500::2",
+      "ula": "fd42:4992:6a6d:500::2",
+      "lxc": false
+    },
+    "tor": {
+      "ipv4": "172.23.75.18",
+      "ipv6": "2a03:4000:13:31e:1::12",
+      "ula": "fd42:4992:6a6d::12",
+      "services": {
+        "tor": {
+          "port": 9500,
+          "allow": [
+            "all"
+          ]
+        }
+      }
+    }
+  }
+}

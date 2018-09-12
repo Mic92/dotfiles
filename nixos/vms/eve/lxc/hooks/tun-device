@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+set -x
+mkdir ${LXC_ROOTFS_MOUNT}/dev/net/
+mknod ${LXC_ROOTFS_MOUNT}/dev/net/tun -m 0666 c 10 200

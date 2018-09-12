@@ -1,0 +1,13 @@
+@ IN SOA ns1.evenet.dn42. <%= data["zone"]["hostmaster"] %>. (
+                    <%= data["zone"]["serial"] %> ; serial
+                    <%= data["zone"]["refresh"] %> ; refresh
+                    <%= data["zone"]["retry"] %> ; retry
+                    <%= data["zone"]["expire"] %> ; expire
+                    <%= data["zone"]["minimum"] %>) ; minimum
+<% data["zone"]["ns"].each do |name, value| -%>
+  NS <%= name %>.
+<% end -%>
+
+<% zone.pointers do |name, addr| -%>
+<%= addr %> PTR <%= fqdn(name) %>.<%= domain %>.
+<% end -%>
