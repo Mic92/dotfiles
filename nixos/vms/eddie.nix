@@ -30,6 +30,7 @@
         ./modules/nix-daemon.nix
         ./modules/networkd.nix
         ./modules/xfce.nix
+        ./modules/builder.nix
       ];
 
       networking.retiolum = {
