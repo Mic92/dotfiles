@@ -105,7 +105,6 @@ let
     inconsolata-nerdfonts
     gdbgui
     gdb-dashboard
-    bat
   ]);
 
   nixDevApps = [
@@ -204,5 +203,6 @@ in {
         fzf
         exa
         fd
+        bat
       ]);
 }
