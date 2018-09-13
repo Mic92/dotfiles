@@ -89,9 +89,6 @@ xhashd() {
   [[ -d ${val} ]] && hash -d -- "${key}=${val}"
   return 0
 }
-is_mac() { [[ $OSTYPE == darwin* ]] }
-is_freebsd() { [[ $OSTYPE == freebsd* ]] }
-is_linux() { [[ $OSTYPE == linux-gnu ]] }
 upfind() {
   local previous=
   local current=$PWD
@@ -121,6 +118,14 @@ clone(){
 }
 rust-doc(){
   xdg-open "$(nix-build '<nixpkgs>' -A rustc.doc --no-out-link)/share/doc/rust/html/index.html"
+}
+boostrap-home-manager() {
+  if [ ! -d $HOME/git/nixpkgs ]; then
+    git clone https://github.com/Mic92/nixpkgs/ ~/git/nixpkgs
+    (cd ~/git/nixpkgs && git remote add upstream https://github.com/NixOS/nixpkgs.git)
+  fi
+  nix-shell https://github.com/rycee/home-manager/archive/master.tar.gz -A install
+  home-manager switch
 }
 
 ## Options
