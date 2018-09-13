@@ -18,9 +18,14 @@
          vim-autoformat
          fzfWrapper
          vim-devicons
-         nvim-completion-manager
+         ncm2
+         ncm2-bufword
+         ncm2-path
+         ncm2-tmux
+         ncm2-ultisnips
+         vim-snippets
+         nvim-yarp
          LanguageClient-neovim
-         nvim-cm-racer
          airline
          nerdtree
          nerdtree-git-plugin
