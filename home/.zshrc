@@ -357,7 +357,9 @@ if [ -n "${commands[xclip]}" ]; then
   pbpaste() { xclip -o }
   pbpaste2() { xclip -selection clipboard -o }
 fi
-[ -n "${commands[bat]}" ] && alias cat="bat --style plain,changes,header --theme 'Monokai Extended Light'"
+if [ -n "${commands[bat]}" ]; then 
+  alias cat="bat --style plain,changes,header --theme 'Lyte-Solarized-Light'"
+fi
 
 ## PROFILE
 path=(
