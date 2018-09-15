@@ -16,9 +16,6 @@
 [submodule "zsh/pure"]
 	path = zsh/pure
 	url = https://github.com/Mic92/pure.git
-[submodule "zsh/deer"]
-	path = zsh/deer
-	url = https://github.com/Vifon/deer.git
 [submodule "home-manager"]
 	path = home-manager
 	url = https://github.com/rycee/home-manager.git
