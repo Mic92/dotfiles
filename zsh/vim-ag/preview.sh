@@ -11,7 +11,5 @@ context=`expr ${args[2]} - 10`
 if (( $context < 0 )); then
 	context=0
 fi
-syncat -t 'Solarized (light)' "${args[1]}" \
-	| sed 's/253;//g' \
-	| tail -n+$context \
+bat --color=always --theme 'Monokai Extended Light' --line-range $context: "${args[1]}" \
 	| ag --color --passthrough "${keyword}"
