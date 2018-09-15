@@ -682,13 +682,6 @@ if [ -f "$HOME/.zsh-autopair/autopair.zsh" ]; then
   source "$HOME/.zsh-autopair/autopair.zsh"
 fi
 source ~/.zsh-termsupport
-if [ -f "$HOME/.deer/deer" ]; then
-  fpath=(~/.deer $fpath)
-  autoload deer
-  typeset -Ag DEER_KEYS
-  zle -N deer
-  bindkey '\ek' deer
-fi
 
 if [ -d "$HOME/git/x86_64-linux-cheatsheats/pages" ]; then
   export CHEATPATH="$HOME/git/x86_64-linux-cheatsheats/pages"
