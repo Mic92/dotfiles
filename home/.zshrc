@@ -248,8 +248,6 @@ alias rake='noglob rake'
 alias su='su - '
 alias sync='sudo sync'
 alias updatedb='sudo updatedb'
-alias sless='sudo less'
-alias stail='sudo tail'
 xalias ctl='sudo systemctl'
 alias json_escape="ruby -e \"require 'json'; puts(File.open(ARGV[0]).read.to_json) if ARGV[0]\""
 alias gdb='gdb --quiet --args'
@@ -318,7 +316,6 @@ psgrep() {
 
 # Dir Hashes
 xhashd awesome=~/.config/awesome/
-xhashd vicious=~/.config/awesome/vicious
 xhashd mic92=~/go/src/github.com/Mic92
 xhashd git=~/git
 xhashd hase=~/git/angr/hase
@@ -343,8 +340,6 @@ alias gping="ping google.com"
 alias gping6="ping6 google.com"
 alias ghost="host -v google.com 8.8.8.8"
 alias gcurl="curl -v google.com"
-ping_gw(){ ip route | awk '/default/ {printf "-I %s %s", $5, $3; exit}' | xargs --no-run-if-empty --max-args 3 ping -W2 }
-ping6_gw(){ ip -6 route | awk '/default/ {printf "-I %s %s", $5, $3; exit}' | xargs --no-run-if-empty --max-args 3 ping -6 -W2 }
 alias :q=exit
 alias todotxt="vim ~/Dropbox/todo/todo.txt"
 alias grep="grep --binary-files=without-match --directories=skip --color=auto"
