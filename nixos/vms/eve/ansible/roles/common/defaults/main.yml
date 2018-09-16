@@ -1,0 +1,7 @@
+static_files:
+  - { from: locale.conf, to: /etc/locale.conf }
+  - { from: whois.conf, to: /etc/whois.conf }
+  - { from: resolv.conf, to: /etc/resolv.conf }
+  - { from: logind.conf, to: /etc/systemd/system/logind.conf }
+  - { from: locale.gen, to: /etc/locale.gen }
+  - { from: man-db.hook, to: /etc/pacman.d/hooks/man-db.hook }

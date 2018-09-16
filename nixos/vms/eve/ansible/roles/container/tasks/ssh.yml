@@ -1,0 +1,23 @@
+- name: install openssh
+  pacman: name=openssh state=present
+
+- name: Write sshd_config
+  template: src=sshd_config.j2 dest=/etc/ssh/sshd_config mode=0644
+- name: Write ssh_config
+  template: src=ssh_config.j2 dest=/etc/ssh/ssh_config mode=0644
+- name: deploy ssh moduli
+  copy: src=ssh_moduli dest=/etc/ssh/moduli mode=0644
+- name: create link-ptmx.service
+  copy: src=link-ptmx.service dest=/etc/systemd/system/link-ptmx.service mode=0644
+
+- name: enable link-ptmx.service
+  file: src=/etc/systemd/system/link-ptmx.service dest=/etc/systemd/system/multi-user.target.wants/link-ptmx.service state=link
+
+- name: start sshd.socket
+  service: name=sshd.socket state=started enabled=yes
+
+- name: sshd.service.d
+  file: path=/etc/systemd/system/sshd@.service.d/ state=directory
+- name: ssh service KillMode
+  copy: src=sshd-killmode.conf dest=/etc/systemd/system/sshd@.service.d/killmode.conf
+  notify: Reload systemd

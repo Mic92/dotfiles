@@ -4,5 +4,5 @@
 
   networking.dhcpcd.enable = false;
 
-  services.resolved.enable = false;
+  #services.resolved.enable = false;
 }

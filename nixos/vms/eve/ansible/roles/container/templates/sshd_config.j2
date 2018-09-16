@@ -1,0 +1,23 @@
+Port 22
+
+{% if ssh_ldap %}
+AuthorizedKeysCommand /usr/lib/openssh-ldap-helper/openssh-ldap-helper
+AuthorizedKeysCommandUser root
+{% else %}
+AuthorizedKeysFile .ssh/authorized_keys
+{% endif %}
+
+PermitRootLogin no
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+
+UsePAM yes
+
+PrintMotd no
+UsePrivilegeSeparation sandbox
+Subsystem sftp usr/lib/ssh/sftp-server
+
+# started failing, maybe check https://cipherli.st/ later
+#KexAlgorithms curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+#Ciphers chacha20-poly1305@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+#MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-ripemd160-etm@openssh.com,umac-128-etm@openssh.com,hmac-sha2-512,hmac-sha2-256,hmac-ripemd160,umac-128@openssh.com

@@ -1,0 +1,9 @@
+---
+- hosts: container php
+  roles:
+  - aurrepo
+  - common
+  - container
+- hosts: php
+  roles:
+  - php

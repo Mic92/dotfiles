@@ -37,29 +37,19 @@ let
   rubyApps = [ bundler bundix rubocop ];
 
   desktopApps = [
-    qt5.qttools
     radare2
+
     league-of-moveable-type
     dejavu_fonts
     ubuntu_font_family
     unifont
-    #emojione
-
     gnome3.defaultIconTheme
     hicolor_icon_theme
-    #kmymoney
-
-    #remmina
     graphicsmagick
-    hyperfine
     sshfsFuse
     sshuttle
-    #libreoffice
     dropbox
-    #android-studio
     gimp
-    #inkscape
-    mpd
     mpv
     youtube-dl
     mybrowser
@@ -76,28 +66,12 @@ let
     xorg.xprop
     xclip
     keepassx-community
-    lxqt.pavucontrol-qt
     gpodder
     ncmpcpp
     xclip
     screen-message
     alacritty
     sublime3
-
-    kmail
-    kdeApplications.kontact
-    kdeApplications.kaddressbook
-    kdeApplications.korganizer
-    kdeconnect
-    kdeApplications.spectacle
-    kdeApplications.gwenview
-    kdeApplications.dolphin
-    kdeApplications.okular
-    kdeApplications.akonadi-contacts
-    kdeApplications.akonadi-calendar
-    kdeApplications.akonadi-mime 
-    kdeApplications.akonadi-notes 
-    kdeFrameworks.networkmanager-qt
   ] ++ (with nur.repos.mic92; [
     inxi
     nix-lsp
@@ -152,7 +126,7 @@ in {
     userName = "Joerg Thalheim";
     package = gitFull;
     signing = {
-      #signByDefault = builtins.pathExists ../../.gnupg/S.gpg-agent;
+      signByDefault = builtins.pathExists ../../.gnupg/S.gpg-agent;
       key = "CA4106B8D7CC79FA";
     };
   };
@@ -161,7 +135,7 @@ in {
 
   home.packages = ([]
       ++ desktopApps
-      ++ latexApps
+      #++ latexApps
       #++ rubyApps
       #++ rustApps
       #++ pythonDataLibs
@@ -205,4 +179,7 @@ in {
         fd
         bat
       ]);
+
+  programs.home-manager.enable = true;
+  programs.home-manager.path = "https://github.com/rycee/home-manager/archive/master.tar.gz";
 }

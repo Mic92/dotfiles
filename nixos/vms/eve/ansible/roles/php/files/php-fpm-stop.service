@@ -1,0 +1,5 @@
+[Unit]
+Description="Stop php-fpm"
+
+[Service]
+ExecStart=/usr/local/bin/stop-php-fpm

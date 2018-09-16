@@ -333,7 +333,7 @@
       "backup-scripts": [
         {
           "backupname": "mysqldbs",
-          "command": "/etc/nixos/scripts/backup-mysql"
+          "command": "backup-mysql"
         }
       ],
       "ula": "fd42:4992:6a6d::9",
@@ -379,7 +379,7 @@
       "backup-scripts": [
         {
           "backupname": "postgresdbs",
-          "command": "/etc/nixos/scripts/backup-postgres"
+          "command": "backup-postgres"
         }
       ],
       "ula": "fd42:4992:6a6d::a",

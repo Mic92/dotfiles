@@ -2,18 +2,36 @@
 
 with pkgs;
 
-let
-  fuidshift = callPackage (import ./fuidshift.nix) {};
-in {
+{
   boot = {
     kernelPackages = linuxPackages;
     extraModulePackages = with config.boot.kernelPackages; [
       wireguard
     ];
   };
-  environment.systemPackages = [
+  environment.systemPackages = let
+    scripts = stdenv.mkDerivation {
+      name = "eve-scripts";
+      src = ./scripts;
+      buildInputs = [ ruby bash python3 ];
+      nativeBuildInputs = [ makeWrapper ];
+      installPhase = ''
+        mkdir -p $out/bin
+        install -D --target $out/bin *
+
+        substituteInPlace $out/bin/lxc-destroy \
+          --replace '@lxc@' "${lxc}"
+
+        makeWrapper ${pkgs.lxc}/bin/lxc-attach $out/bin/lxc-attach \
+          --run "cd /root" \
+          --set HOME /root \
+          --add-flags "--clear-env --keep-var TERM --keep-var HOME"
+      '';
+    };
+  in [
+    scripts
+
     ruby.devEnv
-    fuidshift
     # must have
     psmisc
     p7zip

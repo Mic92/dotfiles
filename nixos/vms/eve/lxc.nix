@@ -3,17 +3,22 @@
 with builtins;
 let
 
-  nft_rules = pkgs.callPackage (import ./nft.nix) {};
-
   network = (import ./network.nix) {inherit lib;};
-  fuidshift = pkgs.callPackage (import ./fuidshift.nix) {};
+  fuidshift = pkgs.callPackage (import ./pkgs/fuidshift.nix) {};
 
   lxcRuby = (import ./lxc/default.nix);
 
-  rubyScript = script: pkgs.writeScript (baseNameOf (toString script)) ''
-    #!${pkgs.stdenv.shell}
-    ${lxcRuby.wrappedRuby}/bin/ruby ${script}
-  '';
+  lxcHooks = pkgs.stdenv.mkDerivation {
+    name = "lxc-hooks";
+    src = ./lxc/hooks;
+
+    buildInputs = with pkgs; [ lxcRuby bash ];
+
+    installPhase = ''
+      mkdir -p $out/bin
+      cp -r * $out/bin
+    '';
+  };
 
   lxcConfig = container:
     pkgs.writeText "lxc-config" (
@@ -53,7 +58,7 @@ let
 
       # Blacklist some syscalls which are not safe in privileged
       # containers
-      lxc.seccomp.profile = /etc/nixos/lxc/default.seccomp
+      lxc.seccomp.profile = ${./lxc/default.seccomp}
 
       lxc.include = ${pkgs.lxcfs}/share/lxc/config/common.conf.d/00-lxcfs.conf
       lxc.include = ${pkgs.lxc}/share/lxc/config/userns.conf
@@ -67,13 +72,13 @@ let
       lxc.mount.entry = tmpfs dev/shm tmpfs nosuid,nodev,mode=1777,create=dir 0 0
       lxc.mount.entry = tmpfs run tmpfs nosuid,nodev,noexec,mode=0755,size=128m 0 0
 
-      lxc.hook.clone = ${rubyScript "/etc/nixos/lxc/hooks/cleanup-lxc-config"}
-      lxc.hook.clone = ${rubyScript "/etc/nixos/lxc/hooks/create-lxc-config"}
-      lxc.hook.clone = /etc/nixos/lxc/hooks/setup-machine-id
-      lxc.hook.clone = ${rubyScript "/etc/nixos/lxc/hooks/update-zone"}
-      lxc.hook.clone = /etc/nixos/lxc/hooks/create-systemd-service
+      lxc.hook.clone = ${lxcHooks}/bin/cleanup-lxc-config
+      lxc.hook.clone = ${lxcHooks}/bin/create-lxc-config
+      lxc.hook.clone = ${lxcHooks}/bin/setup-machine-id
+      lxc.hook.clone = ${lxcHooks}/bin/update-zone
+      lxc.hook.clone = ${lxcHooks}/bin/create-systemd-service
 
-      lxc.hook.autodev = /etc/nixos/lxc/hooks/dn42-routes
+      lxc.hook.autodev = ${lxcHooks}/bin/dn42-routes
 
       lxc.apparmor.allow_incomplete = 1
       lxc.apparmor.profile = lxc-container-default-with-nesting
@@ -115,6 +120,8 @@ let
   }) network.lxcContainers;
 
 in {
+  environment.systemPackages = [ fuidshift ];
+
   users.extraUsers.root = {
     subUidRanges = [ { startUid = 100000; count = 65536; } ];
     subGidRanges = [ { startGid = 100000; count = 65536; } ];
@@ -130,22 +137,5 @@ in {
     lxcfs.enable = true;
   };
 
-  systemd.services = {
-    nftables = {
-      description="Cgroup management daemon";
-      after = [ "local-fs.target" ];
-      before = [ "network-pre.target" ];
-      wants = [ "network-pre.target" ];
-      wantedBy = [ "multi-user.target" ];
-      reloadIfChanged = true;
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = "${nft_rules}";
-        ExecStop = "${pkgs.nftables}/bin/nft flush ruleset";
-        ExecReload = "${nft_rules}";
-        KillMode = "process";
-        RemainAfterExit = true;
-      };
-    };
-  } // lxcServices;
+  systemd.services = lxcServices;
 }

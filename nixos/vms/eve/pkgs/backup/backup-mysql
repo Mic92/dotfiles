@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# TARGET: Backup-Ziel
+# IGNORE: Liste zu ignorierender Datenbanken (durch | getrennt)
+IGNORE="mysql|information_schema|performance_schema|test"
+PASSWORD="$(cat /run/keys/mysql-password)"
+
+set -eu -o pipefail
+
+export PATH="/usr/bin/:$PATH"
+
+DBS="$(lxc-attach -n mysql -- mysql --host="mysql" --user="root" --password="$PASSWORD" -Bse 'show databases' | grep -Ev $IGNORE)"
+
+rm -f *.sql.bz2
+
+for DB in $DBS; do
+  lxc-attach -n mysql -- mysqldump --host="localhost" --user="root" --password="$PASSWORD" --skip-extended-insert --skip-comments "$DB" | bzip2 -c > "$DB.sql.bz2"
+done
+
+echo "$0 - Backup erfolgreich durchgefuehrt"
+exit 0

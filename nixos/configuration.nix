@@ -41,6 +41,7 @@ in {
     ./vms/modules/nix-daemon.nix
     ./vms/modules/retiolum.nix
     ./vms/modules/networkd.nix
+    ./kde.nix
   ];
 
   boot = {
@@ -73,6 +74,21 @@ in {
         sshUser = "nix"; 
         sshKey = "/etc/nixos/secrets/id_buildfarm"; 
         system = "x86_64-linux"; 
+        maxJobs = 16;
+        supportedFeatures = [ "big-parallel" ];
+      }
+      {
+        hostName = "dpdkm.r";
+        sshKey = "/etc/nixos/secrets/id_buildfarm"; 
+        sshUser = "nix";
+        system = "x86_64-linux"; 
+        maxJobs = 8;
+      }
+      {
+        hostName = "eddie.r";
+        sshKey = "/etc/nixos/secrets/id_buildfarm"; 
+        sshUser = "nix";
+        system = "x86_64-linux"; 
         maxJobs = 8;
       }
       {
@@ -82,13 +98,17 @@ in {
         sshUser = "mic92";
         system = "aarch64-linux";
         supportedFeatures = [ "big-parallel" ];
-    }];
+      }
+    ];
     nixPath = [
       "nixpkgs=/home/joerg/git/nixpkgs"
       "nixos-config=/home/joerg/git/nixos-configuration/configuration.nix"
       "nixpkgs-overlays=/home/joerg/git/nixos-configuration/overlays"
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
+    extraOptions = ''
+      builders-use-substitutes = true
+    '';
   };
 
   i18n = {
@@ -100,8 +120,7 @@ in {
   time.timeZone = "Europe/London";
 
   services = {
-    zabbixServer.enable = true;
-    hylafax.enable = true;
+    exim.enable = true;
     gpm.enable = true;
     autorandr.enable = true;
     resilio = {
@@ -117,22 +136,11 @@ in {
     };
 
     xserver = {
-      desktopManager.plasma5.enable = true;
-      desktopManager.xterm.enable = false;
-      displayManager.sddm.enable = true;
       enable = true;
       layout = "us";
       xkbVariant = "altgr-intl";
       xkbOptions = "caps:escape,compose:menu";
       libinput.enable = true;
-
-      windowManager = {
-        awesome = {
-          enable = true;
-          luaModules = with pkgs.lua52Packages; [ luasocket cjson ];
-        };
-        default = "awesome";
-      };
     };
 
     avahi.enable = true;
@@ -217,6 +225,10 @@ in {
       };
     };
 
+    wpa_supplicant = {
+      serviceConfig.ExecStart = ["" "${pkgs.wpa_supplicant}/bin/wpa_supplicant -iwlan0 -u -c /etc/wpa_supplicant.conf"];
+    };
+
     systemd-udev-settle.serviceConfig.ExecStart = ["" "${pkgs.coreutils}/bin/true"];
   };
 
@@ -236,8 +248,6 @@ in {
   fonts.enableFontDir = true;
 
   programs = {
-    singularity.enable = true;
-    sway.enable = true;
     ssh.extraConfig = ''
       SendEnv LANG LC_*
     '';
@@ -277,14 +287,12 @@ in {
     sudo.wheelNeedsPassword = false;
   };
 
-  services.dbus.packages = with pkgs; [ gnome3.dconf flatpak ];
-  systemd.packages = with pkgs; [ flatpak ];
+  services.dbus.packages = with pkgs; [ gnome3.dconf ];
 
   nixpkgs.config.allowUnfree = true;
 
   networking = {
     networkmanager.enable = true;
-    networkmanager.packages = [ pkgs.networkmanager-vpnc ];
 
     retiolum = {
       ipv4 = "10.243.29.168";
@@ -305,14 +313,16 @@ in {
     firewall.enable = true;
     firewall.allowedTCPPorts = [ 3030 ];
     hostName = "turingmachine";
-    wireless.iwd.enable = false;
-    dhcpcd.enable = false;
   };
 
   system.stateVersion = "18.03";
 
   #containers.database = {
+  #  privateNetwork = true;
+  #  hostAddress = "192.168.100.10";
+  #  localAddress = "192.168.100.11";
   #  config = { config, pkgs, ... }: {
+  #    system.stateVersion = "18.03";
   #    services.postgresql.enable = true;
   #    environment.systemPackages = [ pkgs.htop ];
   #  };

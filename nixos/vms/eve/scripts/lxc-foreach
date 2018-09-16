@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+lxc_root=/lxc/
+for n in `lxc-ls`; do
+  name=n
+  r=$lxc_root/$n/rootfs
+  root=$r
+  c=$lxc_root/$n/config
+  config=$c
+  eval echo "\$ $1" 1>&2
+  eval "$1"
+done

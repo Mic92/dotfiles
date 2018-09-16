@@ -1,0 +1,108 @@
+#
+# .bashrc - interactive shell configuration
+#
+
+# check for interactive
+[[ $- = *i* ]] || return
+
+export TTY=$(tty)
+export GPG_TTY=$TTY
+
+# shell opts: see bash(1)
+shopt -s autocd cdspell dirspell extglob no_empty_cmd_completion
+shopt -s checkwinsize checkhash
+shopt -s histverify histappend histreedit cmdhist
+
+set -o notify           # notify of completed background jobs immediately
+set -o noclobber        # don\'t overwrite files by accident
+ulimit -S -c 0          # disable core dumps
+stty -ctlecho           # turn off control character echoing
+
+if [[ $TERM = linux ]]; then
+  setterm -regtabs 2    # set tab width of 4 (only works on TTY)
+fi
+
+# more for less
+export LESS=-R # use -X to avoid sending terminal initialization
+export LESS_TERMCAP_mb=$'\e[01;31m'
+export LESS_TERMCAP_md=$'\e[01;31m'
+export LESS_TERMCAP_me=$'\e[0m'
+export LESS_TERMCAP_se=$'\e[0m'
+export LESS_TERMCAP_so=$'\e[01;44;33m'
+export LESS_TERMCAP_ue=$'\e[0m'
+export LESS_TERMCAP_us=$'\e[01;32m'
+
+# history
+export HISTIGNORE="&:ls:[bf]g:exit:reset:clear:cd *"
+export HISTCONTROL="ignoreboth:erasedups"
+export HISTSIZE=1000
+export HISTFILESIZE=2000
+
+GIT_EXEC_PATH=/usr/lib/git:/usr/share/git/remote-helpers
+
+source_bash_completion() {
+  local f
+  [[ $BASH_COMPLETION ]] && return 0
+  for f in /{etc,usr/share/bash-completion}/bash_completion; do
+    if [[ -r $f ]]; then
+      . "$f"
+      return 0;
+    fi
+  done
+}
+
+# External config
+if [[ -r ~/.dircolors ]] && type -p dircolors >/dev/null; then
+  eval $(dircolors -b "$HOME/.dircolors")
+fi
+
+PS1='\[\033[01;31m\]\u\[\033[01;33m\]@\[\033[01;36m\]\h \[\033[01;33m\]\w \[\033[01;35m\]\$ \[\033[00m\]'
+
+source_bash_completion
+[[ -r /usr/share/bash-completion/completions/git ]] && . /usr/share/bash-completion/completions/git
+unset -f source_bash_completion
+
+# git prompt
+[[ -f /usr/share/git/git-prompt.sh ]] && . /usr/share/git/git-prompt.sh
+
+urlencode() {
+  local i= char= url=$*
+  declare -i len=${#url}
+
+  for (( i = 0; i < len; i++ )); do
+    char=${url:i:1}
+    case "$char" in
+      [a-zA-Z0-9.~_-]) printf "$char" ;;
+      ' ') printf + ;;
+      *) printf '%%%X' "'$char" ;;
+    esac
+  done
+}
+
+mkcd() {
+  [[ $1 ]] || return 0
+  [[ -d $1 ]] || mkdir -vp "$1"
+  [[ -d $1 ]] && builtin cd "$1"
+}
+
+function ff() { find . -type f -iname '*'"$*"'*' -ls ; }
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias gensums='[[ -f PKGBUILD ]] && makepkg -g >> PKGBUILD'
+alias info='info --vi-keys'
+alias j='jobs'
+alias lla='ls -la'
+alias ls='ls --group-directories-first --color'
+alias md5='md5sum'
+alias sd='systemctl'
+alias ls='ls --color=auto'
+alias grep='grep --color=auto'
+alias fgrep='fgrep --color=auto'
+alias egrep='egrep --color=auto'
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+
+[[ -r "$HOME/.bashrc.local" ]] && . "$HOME/basrc.local"

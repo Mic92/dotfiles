@@ -1,0 +1,8 @@
+[Unit]
+Description=Symlink /dev/ptmx for interactive logins
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/chmod 777 /dev/pts/ptmx
+ExecStart=/usr/bin/ln -s /dev/pts/ptmx /dev/ptmx

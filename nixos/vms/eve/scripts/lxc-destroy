@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+require "optparse"
+
+def sh(*args)
+  puts("$ #{args.join(" ")}")
+  system(*args)
+end
+
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: lxc-destroy [options]"
+  opts.on("-nNAME", "--name=NAME", "container name") do |n|
+    options[:name] = n
+  end
+end.parse!
+
+unless options[:name]
+  $stderr.puts "no option for --name supplied"
+  exit(1)
+end
+
+print "enter the name of the container to delete: "
+unless options[:name] == STDIN.gets.chomp
+  puts "does not match"
+  exit(1)
+end
+
+sh "@lxc@/bin/lxc-destroy", "-n", options[:name]

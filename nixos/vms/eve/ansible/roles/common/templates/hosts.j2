@@ -1,0 +1,10 @@
+# {{ ansible_managed }}
+#
+# /etc/hosts: static lookup table for host names
+#
+
+#<ip-address>   <hostname.domain.org>   <hostname>
+127.0.0.1       {{ inventory_hostname }}.eve.evenet.dn42 {{ inventory_hostname }} localhost
+::1             {{ inventory_hostname }}.eve.evenet.dn42 {{ inventory_hostname }} localhost
+
+# End of file

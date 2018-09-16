@@ -1,0 +1,120 @@
+#!/usr/bin/env ruby
+require "json"
+require "pathname"
+require "fileutils"
+require "open3"
+require 'socket'
+
+LXC_PATH = Pathname.new("/lxc/")
+BACKUP_LOCATIONS = %w{home srv etc usr/local var opt}
+BACKUP_PATH = "eve-backup@backup:backup"
+BORG_PATH = Pathname.new("/data/borg")
+PASSWORD_FILE = BORG_PATH.join("passwordfile").to_s
+KEEP_DAILY = 7
+KEEP_WEEKLY = 4
+KEEP_MONTHLY = 0
+
+def load_config(config_path)
+  return JSON.load(File.open(config_path))
+rescue SystemCallError => e
+  abort "failed to open configuration '#{config_path}', #{e}"
+rescue JSON::ParserError => e
+  abort "failed to parse configuration '#{config_path}', #{e}"
+end
+
+def sh(cmd, env={}, *args)
+  pretty_args = args.map {|arg| "'#{arg}'"}
+  puts ([cmd] + pretty_args).join(" ")
+  system(env, cmd, *args)
+end
+
+class Container
+  def initialize(name, backup_paths, backup_scripts)
+    @name = name
+    @backup_paths = backup_paths
+    @backup_scripts = backup_scripts
+    @path = LXC_PATH.join(name, "rootfs")
+  end
+  def backup_paths
+    paths = BACKUP_LOCATIONS
+    if @backup_paths.is_a?(Array)
+      paths += @backup_paths
+    end
+    paths.map do |relative_path|
+      @path.join(relative_path)
+    end
+  end
+  def run_backup_scripts
+    if @backup_scripts.is_a?(Array)
+      @backup_scripts.map do |script|
+        backup_script(script)
+      end
+    else
+      []
+    end
+  end
+
+  private
+  def backup_script(script)
+    unless script.is_a?(Hash)
+      abort("backup-scripts: Expected an Object, got #{script.class}")
+    end
+    command = script["command"]
+    if command.nil?
+      abort("command not set for backup-scripts for container '#{@name}'")
+    end
+    backupname = script["backupname"]
+    if backupname.nil?
+      abort("backupname not set for backup-scripts for container '#{@name}'")
+    end
+    backupname = BORG_PATH.join(backupname.gsub("/", ""))
+    FileUtils.mkdir_p(backupname)
+    puts "cd #{backupname}"
+    Dir.chdir(backupname) do
+      sh(command)
+    end
+    backupname
+  end
+
+  def empty_directory?(path)
+    return false unless Dir.exists?(path)
+    return Dir.entries(path).size <= 2 # - [".", ".."]
+  end
+end
+
+def main
+  if ARGV.empty?
+    $stderr.puts "USAGE: #{$0} container.json"
+    exit 1
+  end
+  config_path = ARGV[0]
+  config = load_config config_path
+  backup_paths = BACKUP_LOCATIONS.map { |location| "/#{location}" }
+  config["network"].each do |container, data|
+    next if data["lxc"] == false
+    container = Container.new(container, data["backup-paths"], data["backup-scripts"])
+    backup_paths += container.backup_paths
+    backup_paths += container.run_backup_scripts
+  end
+  
+  env = { "BORG_PASSPHRASE" => File.read(PASSWORD_FILE).chomp }
+  now = Time.now.strftime("%Y-%m-%d-%H:%M:%S")
+  paths = backup_paths.map {|path| path.to_s }
+  
+  TCPSocket.open('home.devkid.net', 22198) do |socket|
+    socket.write(File.read("/run/keys/nas-wakeup-password"))
+  end
+  
+  sh("borg", env, "create", "--stats",
+     "--compression", "zlib,9",
+     "--exclude", "*/srv/repo",
+     "--exclude", "*/srv/deluge",
+     "--exclude", "*/var/lib/lxcfs",
+     "--exclude", "*/joerg/git/openwrt",
+     "#{BACKUP_PATH}::eve-#{now}", *paths)
+  sh("borg", env, "prune", "-v",
+     "--keep-daily", KEEP_DAILY.to_s,
+     "--keep-weekly", KEEP_WEEKLY.to_s,
+     "--keep-monthly", KEEP_MONTHLY.to_s,
+     BACKUP_PATH)
+end

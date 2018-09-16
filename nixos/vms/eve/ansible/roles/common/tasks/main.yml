@@ -1,0 +1,36 @@
+- name: update pacman cache
+  pacman: update_cache=yes
+- fetch: src=/etc/hosts dest=/tmp/fetched
+- name: remove silver-searcher-git
+  pacman:
+    name="silver-searcher-git"
+    state=absent
+- name: install essential packages
+  pacman:
+    name="htop,strace,zsh,git,sudo,vim,the_silver_searcher"
+    state=present
+- name: install packages from repo
+  pacman:
+    name="ca-certificates-dn42"
+    state=present
+  # fails on login, because it does not have the repo
+  ignore_errors: yes
+- file: path=/usr/local/bin/vim state=absent
+- locale_gen: name=de_DE.UTF-8 state=present
+- locale_gen: name=en_DK.UTF-8 state=present
+
+- hostname:
+    name="{{ inventory_hostname }}"
+
+- name: common configuration
+  template: src={{ item.from }}.j2 dest={{ item.to }} mode=0644 backup=no
+  with_items:
+    - { from: hosts, to: /etc/hosts }
+
+- name: create directories for files
+  file: path="{{ item.to | dirname }}" recurse=yes state=directory
+  with_items: "{{static_files}}"
+
+- name: common configuration
+  copy: src="{{ item.from }}" dest={{ item.to }}
+  with_items: "{{static_files}}"

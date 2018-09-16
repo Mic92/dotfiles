@@ -1,0 +1,8 @@
+[Socket]
+ListenStream=9000
+
+[Service]
+Restart=on-failure
+
+[Install]
+WantedBy=sockets.target

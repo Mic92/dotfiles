@@ -1,0 +1,38 @@
+" managed by ansible
+set nocompatible   " be iMproved
+filetype off       " required!
+let mapleader=","  " change the leader to be a comma vs slash
+
+call plug#begin('~/.vim/plugged')
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/syntastic'
+Plug 'Valloric/YouCompleteMe'
+Plug 'airblade/vim-gitgutter'
+Plug 'bronson/vim-trailing-whitespace'
+call plug#end()
+
+syntax on
+filetype plugin indent on
+set backupdir=~/.vim.backupdir
+set backup                           " keep a backup file
+set autoindent                       " copy indent from current line
+set undofile                         " persistent undo
+set undoreload=10000
+set undodir=~/.vimundo
+
+" Softtabs, 2 spaces
+set tabstop=2
+set shiftwidth=2
+set expandtab
+
+command! -bar SudoWrite :
+      \ setlocal nomodified |
+      \ exe (has('gui_running') ? '' : 'silent') 'write !sudo tee % >/dev/null' |
+      \ let &modified = v:shell_error
+
+cmap w!! SudoWrite
+
+" Local config
+if filereadable($HOME . "/.vimrc.local")
+  source ~/.vimrc.local
+endif

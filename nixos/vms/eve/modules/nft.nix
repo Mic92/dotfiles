@@ -1,10 +1,10 @@
-{ callPackage, writeTextFile, nftables, lib }:
+{ lib, ... }:
 
 with builtins;
 let
-  network = (import ./network.nix) {inherit lib;};
+  network = (import ../network.nix) {inherit lib;};
 
-  json = (fromJSON (readFile ./lxc/container.json)).network;
+  json = (fromJSON (readFile ../lxc/container.json)).network;
   containers = lib.mapAttrs (name: container:
     container // {
       inherit name;
@@ -54,13 +54,9 @@ let
 
   optionalPort = p: optionalString (p != "") ":${p}";
 
-in with containers; writeTextFile {
-  name = "nftables-rules";
-  executable = true;
-  text = ''
-    #!${nftables}/bin/nft -f
-    flush ruleset
-
+in {
+  networking.nftables.enable = true;
+  networking.nftables.ruleset = with containers; ''
     table inet filter {
       chain input {
         type filter hook input priority 0;

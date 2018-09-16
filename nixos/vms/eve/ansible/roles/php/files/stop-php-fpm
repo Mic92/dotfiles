@@ -1,0 +1,9 @@
+#!/bin/bash
+
+PID=$(cat /run/php-fpm/php-fpm.pid 2>/dev/null)
+[ "$PID" == "" ] && exit 0
+CHILDREN=$(ps -o pid --no-headers --ppid "$PID" | wc -l)
+
+if [ "$CHILDREN" == "0" ]; then
+  kill "$PID"
+fi

@@ -9,25 +9,29 @@ let
   network = (import ./network.nix) {inherit lib;};
 
 in {
+  deployment.targetHost = "eve.higgsboson.tk";
+
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./network-configuration.nix
       ./lxc.nix
-      ./backup.nix
+      ./modules/backup.nix
+      ./modules/resolver.nix
       ./packages.nix
-      #./telegraf.nix
+      #./modules/telegraf.nix
       ./modules/containers.nix
       ./containers.nix
-      ./resolver.nix
+      ./modules/matemat-stats.nix
+      ./modules/nft.nix
     ];
 
   boot = {
     kernel.sysctl = {
-      "fs.inotify.max_queued_events"=1048576;
-      "fs.inotify.max_user_instances"=1048576;
-      "fs.inotify.max_user_watches"=1048576;
-      "net.ipv6.conf.all.forwarding"=1;
+      "fs.inotify.max_queued_events" = 1048576;
+      "fs.inotify.max_user_instances" = 1048576;
+      "fs.inotify.max_user_watches" = 1048576;
+      "net.ipv6.conf.all.forwarding" = 1;
     };
     zfs.enableUnstable = true;
     loader.grub = {
@@ -36,20 +40,6 @@ in {
       device = "/dev/sda";
     };
     kernelModules = ["ip6_gre"];
-    initrd.network = {
-      enable = true;
-      ssh = {
-        enable = true;
-        port = 2222;
-        hostECDSAKey = /etc/nixos/secrets/initrd-ssh-key;
-      };
-      postCommands = ''
-        echo "cryptsetup-askpass" >> /root/.profile
-
-        ip addr add ${network.ipv6} dev eth0
-        ip route add default via fe80::1 dev eth0
-      '';
-    };
 
     blacklistedKernelModules = [ "iptable_nat" "ip_tables" ];
   };
@@ -72,7 +62,6 @@ in {
       automatic = true;
       dates = "03:15";
     };
-    nixPath = [ "/etc/nixos" "nixos-config=/etc/nixos/configuration.nix"];
     binaryCaches = [ https://cache.nixos.org/ ];
     extraOptions = ''
       gc-keep-outputs = true
@@ -84,10 +73,6 @@ in {
   };
 
   nixpkgs.config.allowUnfree = true;
-
-  environment.extraInit = ''
-    export PATH="/etc/nixos/scripts:$PATH"
-  '';
 
   programs = {
     sysdig.enable = true;
@@ -154,27 +139,6 @@ in {
     apparmor.enable = true;
   };
 
-  systemd.timers = {
-    "matemat-stats" = {
-      wantedBy = ["multi-user.target"];
-      timerConfig = {
-        OnBootSec="20min";
-        OnUnitActiveSec="60min";
-      };
-    };
-  };
-
-  systemd.services.matemat-stats = let
-    matematEnv = pkgs.python3.buildEnv.override {
-      extraLibs = with pkgs.python3Packages; [ requests influxdb ];
-    };
-  in {
-    serviceConfig = {
-      User = "nobody";
-      ExecStart = "${matematEnv}/bin/python ${/etc/nixos/scripts/matemat-stats.py}";
-    };
-  };
-
   # The NixOS release to be compatible with for stateful data such as databases.
-  system.nixos.stateVersion = "18.03";
+  system.stateVersion = "18.03";
 }
