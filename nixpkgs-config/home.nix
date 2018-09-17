@@ -130,55 +130,44 @@ in {
       key = "CA4106B8D7CC79FA";
     };
   };
- 
+
   fonts.fontconfig.enableProfileFonts = true;
 
   home.packages = ([]
-      ++ desktopApps
-      #++ latexApps
-      #++ rubyApps
-      #++ rustApps
-      #++ pythonDataLibs
-      ++ debuggingApps
-      ++ debuggingBasicsApps
-      ++ nixDevApps
-      ++ [
-        myvim
-        asciinema
+  ++ desktopApps
+  #++ latexApps
+  #++ rubyApps
+  #++ rustApps
+  #++ pythonDataLibs
+  ++ debuggingApps
+  ++ debuggingBasicsApps
+  ++ nixDevApps
+  ++ [
+    myvim
+    # python language server + plugins
+    (python36.withPackages(ps: [ ps.pyls-mypy ps.pyls-isort ps.pyls-black ]))
 
-        flatpak
+    rustup
 
-        # python language server + plugins
-        (python36.withPackages(ps: [ ps.pyls-mypy ps.pyls-isort ps.pyls-black ]))
-
-        nodePackages.jsonlint
-
-        # not needed
-        #nodePackages.ocaml-language-server
-        #ocamlPackages_latest.merlin
-
-        rustup
-
-        tmux
-        htop
-        psmisc
-        lesspipe
-        expect
-        gitAndTools.diff-so-fancy
-        gitAndTools.hub
-        gitAndTools.tig
-        jq
-        httpie
-        cloc
-        mosh
-        cheat
-        gnupg1compat
-        direnv
-        fzf
-        exa
-        fd
-        bat
-      ]);
+    tmux
+    htop
+    psmisc
+    lesspipe
+    expect
+    gitAndTools.hub
+    gitAndTools.tig
+    jq
+    httpie
+    cloc
+    mosh
+    cheat
+    gnupg1compat
+    direnv
+    fzf
+    exa
+    fd
+    bat
+  ]);
 
   programs.home-manager.enable = true;
   programs.home-manager.path = "https://github.com/rycee/home-manager/archive/master.tar.gz";
