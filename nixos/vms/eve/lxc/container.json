@@ -202,9 +202,6 @@
         "rainloop": {
           "srv/http/mail.higgsboson.tk": true
         },
-        "etherpad": {
-          "/usr/share/webapps/etherpad-lite/src/static": "/srv/http/pad.higgsboson.tk/static"
-        },
         "owncloud": {
           "usr/share/webapps/owncloud": true,
           "usr/share/webapps/nextcloud": true
@@ -239,14 +236,6 @@
           "allow": [
             "all"
           ]
-        },
-        "whois": {
-          "port": 43,
-          "forward": true
-        },
-        "monotone": {
-          "port": 4691,
-          "forward": true
         }
       }
     },
@@ -255,17 +244,6 @@
       "ipv6": "2a03:4000:13:31e:1::1",
       "ula": "fd42:4992:6a6d::1",
       "services": {
-        "bird": {
-          "port": 179,
-          "allow": [
-            "exabgp"
-          ]
-        },
-        "openvpn": {
-          "port": "5002-5020",
-          "forward": true,
-          "proto": "udp"
-        },
         "wireguard": {
           "port": "42421-42429",
           "forward": true,
@@ -275,76 +253,11 @@
           "port": "4242-4299",
           "forward": true,
           "proto": "udp"
-        },
-        "ipsec": {
-          "port": "500",
-          "forward": true,
-          "proto": "udp"
-        },
-        "evenet": {
-          "port": "20",
-          "forward": "{20, 21, 123, openvpn}",
-          "proto": "udp"
-        },
-        "evenet-tcp": {
-          "port": "993",
-          "forward": true
-        },
-        "vtun": {
-          "port": "5000",
-          "forward": true,
-          "proto": "udp"
-        },
-        "vtun2": {
-          "port": "5000",
-          "forward": true
-        },
-        "fastd": {
-          "port": "5001",
-          "forward": true,
-          "proto": "udp"
-        },
-        "dn42ssh": {
-          "port": "22",
-          "forward": "2020"
-        },
-        "tinc": {
-          "port": "655",
-          "forward": true,
-          "proto": "udp"
-        },
-        "tinc-tcp": {
-          "port": "655",
-          "forward": true
         }
       },
       "mounts": {
         "web": {
           "srv/http/dl.higgsboson.tk": true
-        },
-        "dns": {
-          "etc/named/net.dn42.registry": "etc/bird/registry"
-        }
-      }
-    },
-    "mysql": {
-      "ipv4": "172.23.75.9",
-      "ipv6": "2a03:4000:13:31e:1::9",
-      "backup-scripts": [
-        {
-          "backupname": "mysqldbs",
-          "command": "backup-mysql"
-        }
-      ],
-      "ula": "fd42:4992:6a6d::9",
-      "services": {
-        "mysql": {
-          "port": 3306,
-          "allow": [
-            "adminer",
-            "istwiki",
-            "piwik"
-          ]
         }
       }
     },
@@ -388,7 +301,6 @@
           "port": 5432,
           "allow": [
             "adminer",
-            "etherpad",
             "ghost",
             "git",
             "owncloud",
@@ -625,19 +537,6 @@
         }
       }
     },
-    "etherpad": {
-      "ipv4": "172.23.75.25",
-      "ipv6": "2a03:4000:13:31e:1::19",
-      "ula": "fd42:4992:6a6d::19",
-      "services": {
-        "etherpad": {
-          "port": 9000,
-          "allow": [
-            "web"
-          ]
-        }
-      }
-    },
     "pyload": {
       "ipv4": "172.23.75.26",
       "ipv6": "2a03:4000:13:31e:1::1a",
@@ -789,65 +688,6 @@
       "mounts": {
         "pyload": {
           "var/lib/pyload/Downloads": "mnt/pyload"
-        },
-        "deluge": {
-          "srv/deluge/Downloads": "mnt/deluge"
-        }
-      }
-    },
-    "dn42wiki": {
-      "ipv4": "172.23.75.13",
-      "ipv6": "2a03:4000:13:31e:1::d",
-      "ula": "fd42:4992:6a6d::d",
-      "services": {
-        "gollum": {
-          "port": 4568,
-          "allow": [
-            "web"
-          ]
-        }
-      }
-    },
-    "exabgp": {
-      "ipv4": "172.23.75.11",
-      "ipv6": "2a03:4000:13:31e:1::b",
-      "ula": "fd42:4992:6a6d::b",
-      "services": {
-        "exabgp": {
-          "port": 179,
-          "allow": [
-            "dn42"
-          ]
-        }
-      }
-    },
-    "deluge": {
-      "ipv4": "172.23.75.28",
-      "ipv6": "2a03:4000:13:31e:1::1c",
-      "ula": "fd42:4992:6a6d::1c",
-      "services": {
-        "bittorrent": {
-          "port": 56883,
-          "proto": "udp",
-          "allow": [
-            "all"
-          ]
-        },
-        "bittorrent2": {
-          "port": 56883,
-          "allow": [
-            "all"
-          ]
-        },
-        "delugeweb": {
-          "port": 8112,
-          "allow": [
-            "web"
-          ]
-        },
-        "delugestream": {
-          "port": 8000,
-          "forward": true
         }
       }
     },
