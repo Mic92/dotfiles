@@ -92,16 +92,6 @@
       };
 
       services = {
-        nfs.server = {
-          enable = true;
-          exports = "/mnt/original 127.0.0.1(rw,no_root_squash)";
-        };
-        unbound = {
-          enable = true;
-          forwardAddresses = ["9.9.9.9"];
-          allowedAccess = ["0.0.0.0/0" "::/0"];
-          interfaces = ["10.243.29.170" "42:4992:6a6d:700::1"];
-        };
         xrdp = {
           enable = true;
           defaultWindowManager = "xfce4-session";
@@ -134,9 +124,8 @@
       ];
 
       boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "e1000e" ];
-      boot.kernelModules = [ "kvm-intel" "wireguard" ];
+      boot.kernelModules = [ "kvm-intel" ];
       boot.kernelPackages = pkgs.linuxPackages;
-      boot.extraModulePackages = with config.boot.kernelPackages; [ wireguard ];
 
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
@@ -149,6 +138,8 @@
           storageDriver = "zfs";
           extraOptions = "--storage-opt=zfs.fsname=zroot/docker";
         };
+        virtualbox.host.enable = true;
+        virtualbox.host.headless = true;
       };
 
       # for zfs
