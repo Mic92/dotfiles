@@ -24,6 +24,8 @@ in {
       ./containers.nix
       ./modules/matemat-stats.nix
       ./modules/nft.nix
+      ./modules/mysql.nix
+      ./modules/gogs.nix
     ];
 
   boot = {

@@ -75,6 +75,8 @@ in {
         tcp dport 5201 accept
         tcp dport 21 accept
 
+        iifname "${network.bridge}" accept
+
         meta nfproto ipv6 ip6 nexthdr icmpv6 accept
         meta nfproto ipv4 ip protocol icmp accept
 
