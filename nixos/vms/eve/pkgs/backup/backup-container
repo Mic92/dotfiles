@@ -108,7 +108,6 @@ def main
   sh("borg", env, "create", "--stats",
      "--compression", "zlib,9",
      "--exclude", "*/srv/repo",
-     "--exclude", "*/srv/deluge",
      "--exclude", "*/var/lib/lxcfs",
      "--exclude", "*/joerg/git/openwrt",
      "#{BACKUP_PATH}::eve-#{now}", *paths)
@@ -118,3 +117,5 @@ def main
      "--keep-monthly", KEEP_MONTHLY.to_s,
      BACKUP_PATH)
 end
+
+main

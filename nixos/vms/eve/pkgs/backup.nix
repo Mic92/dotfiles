@@ -7,7 +7,6 @@ stdenv.mkDerivation {
   nativeBuildInputs = [ makeWrapper ];
 
   installPhase = ''
-    install -m755 -D backup-mysql $out/bin/backup-mysql
     install -m755 -D backup-postgres $out/bin/backup-postgres
     install -m755 -D backup-container $out/bin/backup-container
 
@@ -20,7 +19,7 @@ stdenv.mkDerivation {
         bzip2
         openssh
         lxc
-      ]}
+      ]}:$out/bin
     done
   '';
 }

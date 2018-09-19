@@ -13,12 +13,9 @@ with builtins;
     "nas-wakeup-password".keyFile = ../secrets/nas-wakeup-password;
   };
 
-  systemd.services.backup = {
-    path = with pkgs; [ bash netcat (pkgs.callPackage ../pkgs/backup.nix {}) ];
-    script = ''
-      set -eu -o pipefail
-      cat /run/keys/nas-wakeup-password | nc -w1 -v 172.23.75.65 22198
-      backup-container ${../lxc/container.json}
-    '';
+  systemd.services.backup = let
+    backup = pkgs.callPackage ../pkgs/backup.nix {};
+  in {
+    serviceConfig.ExecStart = "${backup}/bin/backup-container ${../lxc/container.json}";
   };
 }
