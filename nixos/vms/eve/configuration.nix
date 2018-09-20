@@ -26,6 +26,8 @@ in {
       ./modules/nft.nix
       ./modules/mysql.nix
       ./modules/gogs.nix
+      ./modules/openldap.nix
+      ./modules/grafana.nix
     ];
 
   boot = {

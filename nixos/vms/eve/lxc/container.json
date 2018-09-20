@@ -133,28 +133,7 @@
             "ldapadmin",
             "piwik",
             "prosody",
-            "ttrss",
-            "grafana"
-          ]
-        }
-      }
-    },
-    "wikianycast": {
-      "ipv4": "172.23.0.80",
-      "ula": "fd42:d42:d42:80::1",
-      "ipv6": "fd42:d42:d42:80::2",
-      "lxc": false,
-      "services": {
-        "wikianycast": {
-          "port": "80",
-          "allow": [
-            "all"
-          ]
-        },
-        "wikianycasts": {
-          "port": "443",
-          "allow": [
-            "all"
+            "ttrss"
           ]
         }
       }
@@ -168,7 +147,6 @@
         "web": {
           "port": 80,
 	  "allow": [
-            "grafana",
             "istwiki"
 	  ],
           "forward": true
@@ -176,7 +154,6 @@
         "webs": {
           "port": 443,
 	  "allow": [
-            "grafana",
             "istwiki"
 	  ],
           "forward": true
@@ -307,8 +284,7 @@
             "ldap",
             "rainloop",
             "ttrss",
-            "prosody",
-            "grafana"
+            "prosody"
           ]
         }
       }
@@ -720,19 +696,6 @@
         "web": {
           "/etc/letsencrypt/live/": true,
           "/etc/letsencrypt/archive/": true
-        }
-      }
-    },
-    "grafana": {
-      "ipv4": "172.23.75.8",
-      "ipv6": "2a03:4000:13:31e:1::8",
-      "ula": "fd42:4992:6a6d::8",
-      "services": {
-        "grafana": {
-          "port": 3000,
-          "allow": [
-            "web"
-          ]
         }
       }
     },

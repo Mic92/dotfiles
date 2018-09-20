@@ -14,6 +14,7 @@
       ENABLED = true
       FROM = gogs@higgsboson.tk
       USER = gogs@higgsboson.tk
+      HOST = mail.higgsboson.tk:587
       PASSWD = #dbpass#
 
       [service]
@@ -22,7 +23,6 @@
   };
 
   # for database key
-  users.users.gogs.extraGroups = [ "keys" ];
   systemd.services.gogs.serviceConfig.SupplementaryGroups = [ "keys" ];
 
   deployment.keys."gogs-database" = {

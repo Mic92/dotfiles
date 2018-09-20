@@ -1,0 +1,4 @@
+objectClass ( 1.3.6.1.4.1.16548.1.2.4 NAME 'proxyUser'
+        SUP top AUXILIARY
+        DESC 'Account to allow a user to use the Squid proxy'
+	MUST ( mail $ accountActive $ delete $ userPassword ))
