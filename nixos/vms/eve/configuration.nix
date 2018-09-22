@@ -31,6 +31,7 @@ in {
       ./modules/influxdb.nix
       ./modules/letsencrypt.nix
       ./modules/prosody.nix
+      ./modules/bitlbee.nix
     ];
 
   boot = {
@@ -111,7 +112,6 @@ in {
       ports = [22022];
     };
     timesyncd.enable = true;
-    nscd.enable = false;
     resolved.enable = false;
     vnstat.enable = true;
   };

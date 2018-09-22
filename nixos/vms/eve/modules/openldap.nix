@@ -1,4 +1,16 @@
 { pkgs, ... }: {
+
+  users.ldap = {
+    enable = true;
+    server = "ldap://127.0.0.1/";
+    base = "ou=users,dc=eve";
+    daemon.enable = true;
+    bind = {
+      distinguishedName = "cn=login,ou=system,ou=users,dc=eve";
+      password = "/run/keys/ldap-login";
+    };
+  };
+
   services.openldap = {
     enable = true;
     extraConfig = ''
@@ -54,6 +66,9 @@
     "openldap-rootpw" =  {
       keyFile = ../secrets/openldap-rootpw;
       user = "openldap";
+    };
+    "ldap-login" =  {
+      keyFile = ../secrets/ldap-login;
     };
   };
 
