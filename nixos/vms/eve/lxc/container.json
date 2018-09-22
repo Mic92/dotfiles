@@ -132,7 +132,6 @@
             "git",
             "ldapadmin",
             "piwik",
-            "prosody",
             "ttrss"
           ]
         }
@@ -146,16 +145,16 @@
       "services": {
         "web": {
           "port": 80,
-	  "allow": [
+          "allow": [
             "istwiki"
-	  ],
+          ],
           "forward": true
         },
         "webs": {
           "port": 443,
-	  "allow": [
+          "allow": [
             "istwiki"
-	  ],
+          ],
           "forward": true
         }
       },
@@ -164,9 +163,6 @@
           "srv/http/ist.devkid.net": true
         },
         "git": {
-          "usr/share/webapps/gitlab/public": true,
-          "var/lib/gitlab/assets": true,
-          "var/lib/gitlab/uploads": true,
           "srv/http/higgsboson.tk": true,
           "srv/http/blog.higgsboson.tk": true
         },
@@ -283,8 +279,7 @@
             "owncloud",
             "ldap",
             "rainloop",
-            "ttrss",
-            "prosody"
+            "ttrss"
           ]
         }
       }
@@ -462,43 +457,6 @@
         }
       }
     },
-    "prosody": {
-      "ipv4": "172.23.75.22",
-      "ipv6": "2a03:4000:13:31e:1::16",
-      "rdns6": "jabber.higgsboson.tk",
-      "backup-paths": [
-        "var/lib/prosody"
-      ],
-      "mounts": {
-        "web": {
-          "/etc/letsencrypt/live/": true,
-          "/etc/letsencrypt/archive/": true
-        }
-      },
-      "ula": "fd42:4992:6a6d::16",
-      "services": {
-        "xmpp-client": {
-          "port": 5222,
-          "forward": true
-        },
-        "xmpp-server": {
-          "port": 5269,
-          "forward": true
-        },
-        "xmpp-bosh": {
-          "port": 5280,
-          "forward": true
-        },
-        "bosh-ssl": {
-          "port": 5281,
-          "forward": true
-        },
-        "xmpp-proxy65": {
-          "port": 6555,
-          "forward": true
-        }
-      }
-    },
     "piwik": {
       "ipv4": "172.23.75.23",
       "ipv6": "2a03:4000:13:31e:1::17",
@@ -664,38 +622,6 @@
       "mounts": {
         "pyload": {
           "var/lib/pyload/Downloads": "mnt/pyload"
-        }
-      }
-    },
-    "influxdb": {
-      "ipv4": "172.23.75.7",
-      "ipv6": "2a03:4000:13:31e:1::7",
-      "ula": "fd42:4992:6a6d::7",
-      "services": {
-        "influxdbadmin": {
-          "port": 8083,
-          "allow": [
-            "all"
-          ],
-          "forward": true
-        },
-        "influxdb": {
-          "port": 8086,
-          "allow": [
-            "all"
-          ],
-          "forward": true
-        },
-        "collectd": {
-          "proto": "udp",
-          "port": 25826,
-          "forward": true
-        }
-      },
-      "mounts": {
-        "web": {
-          "/etc/letsencrypt/live/": true,
-          "/etc/letsencrypt/archive/": true
         }
       }
     },

@@ -28,6 +28,9 @@ in {
       ./modules/gogs.nix
       ./modules/openldap.nix
       ./modules/grafana.nix
+      ./modules/influxdb.nix
+      ./modules/letsencrypt.nix
+      ./modules/prosody.nix
     ];
 
   boot = {
