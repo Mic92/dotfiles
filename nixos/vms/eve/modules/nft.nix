@@ -75,6 +75,16 @@ in {
         tcp dport 5201 accept
         tcp dport 21 accept
 
+        # influxdb
+        tcp dport 8086 accept
+
+        # prosody
+        tcp dport 5222 accept # xmpp-client
+        tcp dport 5269 accept # xmpp-server
+        tcp dport 5280 accept # xmpp-bosh
+        tcp dport 5281 accept # bosh-ssl
+        tcp dport 6555 accept # xmpp-proxy65
+
         iifname "${network.bridge}" accept
 
         meta nfproto ipv6 ip6 nexthdr icmpv6 accept

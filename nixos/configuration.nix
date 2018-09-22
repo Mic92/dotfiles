@@ -228,8 +228,6 @@ in {
     wpa_supplicant = {
       serviceConfig.ExecStart = ["" "${pkgs.wpa_supplicant}/bin/wpa_supplicant -iwlan0 -u -c /etc/wpa_supplicant.conf"];
     };
-
-    systemd-udev-settle.serviceConfig.ExecStart = ["" "${pkgs.coreutils}/bin/true"];
   };
 
   virtualisation = {
@@ -308,7 +306,7 @@ in {
       domain = "thalheim.io";
       useSTARTTLS = true;
     };
-    nameservers = ["9.9.9.9"];
+    nameservers = ["1.1.1.1"];
 
     firewall.enable = true;
     firewall.allowedTCPPorts = [ 3030 ];
@@ -316,6 +314,8 @@ in {
   };
 
   system.stateVersion = "18.03";
+
+  services.resolved.enable = false;
 
   #containers.database = {
   #  privateNetwork = true;
