@@ -28,3 +28,9 @@
 [submodule "nixos/overlays/nixpkgs-mozilla"]
 	path = nixos/overlays/nixpkgs-mozilla
 	url = https://github.com/mozilla/nixpkgs-mozilla.git
+[submodule "home/.tmux-copycat"]
+	path = home/.tmux-copycat
+	url = https://github.com/tmux-plugins/tmux-copycat
+[submodule "home/.tmux-yank"]
+	path = home/.tmux-yank
+	url = https://github.com/tmux-plugins/tmux-yank
