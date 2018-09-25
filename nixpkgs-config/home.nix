@@ -161,6 +161,7 @@ in {
     cloc
     mosh
     cheat
+    tldr
     gnupg1compat
     direnv
     fzf

@@ -4,9 +4,7 @@
   chromium.enablePepperPDF = true;
 
   packageOverrides = pkgs: let
-    myVimBundle = let
-      plugins = (pkgs.vimPlugins.override (old: { inherit (pkgs) python3; }));
-    in with plugins; {
+    myVimBundle = with pkgs.vimPlugins; {
        # loaded on launch
        start = [
          fugitive
@@ -14,6 +12,7 @@
          vim-grammarous
          vim-docbk
          vim-docbk-snippets
+         vim-husk
          UltiSnips
          vim-autoformat
          fzfWrapper

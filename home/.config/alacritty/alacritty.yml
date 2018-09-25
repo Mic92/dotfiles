@@ -18,6 +18,7 @@ window:
   dimensions:
     columns: 80
     lines: 24
+  decorations: true
 
 # The FreeType rasterizer needs to know the device DPI for best results
 # (changes require restart)

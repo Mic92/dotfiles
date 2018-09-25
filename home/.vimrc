@@ -1,3 +1,4 @@
+" {{{ General
 " Leader
 let mapleader = " "
 
@@ -63,44 +64,9 @@ setglobal fileencodings=ucs-bom,utf-8,default,latin1
 filetype plugin indent on
 syntax on
 
-runtime macros/matchit.vim
+" }}}
 
-" colorscheme solarized
-
-augroup vimrcEx
-  au!
-
-  " For all text files set 'textwidth' to 78 characters.
-  "   autocmd FileType text setlocal textwidth=78  au!
-  "
-  " For all text files set 'textwidth' to 78 characters.
-  autocmd FileType text setlocal textwidth=78
-  autocmd BufReadPost *
-        \ if line("'\"") > 0 && line("'\"") <= line("$") |
-        \   exe "normal g`\"" |
-        \ endif
-augroup END
-
-
-map <C-n> :NERDTreeToggle<CR>
-
-" Use Ag (https://github.com/ggreer/the_silver_searcher) instead of Grep when
-" available
-if executable('ag')
-  " Use Ag over Grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
-
-  " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
-endif
-let g:ctrlp_working_path_mode = 'ra'
-let g:ctrlp_dont_split = 'NERD_tree_2'
-" bind K to grep word under cursor
-nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
-
+" {{{ File types
 " check file change every 4 seconds ('CursorHold') and reload the buffer upon detecting change
 au CursorHold * checktime
 
@@ -121,38 +87,45 @@ au BufEnter *.go setlocal noet ts=4 sw=4 sts=4
 "au BufEnter *.c setlocal noet ts=4 sw=4 sts=4 list!
 "au BufEnter *.cpp setlocal noet ts=4 sw=4 sts=4 list!
 
-let g:UltiSnipsSnippetsDir        = expand('~/.vim/UltiSnips')
-let g:UltiSnipsSnippetDirectories = [expand('~/.vim/UltiSnips'), expand('~/.vim/vim-snippets/UltiSnips')]
-
 "open zipped files
 au BufReadCmd *.jar,*.xpi,*.wgt call zip#Browse(expand("<amatch>"))
 
 " geojson
 au BufNewFile,BufRead *.geojson set filetype=json
 
-" change in the directory of the current file
-"autocmd BufEnter * :lchdir %:p:h
+autocmd BufEnter * highlight Normal guibg=0
+" }}}
 
-" Repeat "." in visual mode
-vnoremap . :norm.<CR>
+runtime macros/matchit.vim
+
+colorscheme solarized
+
+map <C-n> :NERDTreeToggle<CR>
+
+" Use Ag (https://github.com/ggreer/the_silver_searcher) instead of Grep when
+" available
+if executable('ag')
+  " Use Ag over Grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor --hidden -g ""'
+
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif
+let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_dont_split = 'NERD_tree_2'
+" bind K to grep word under cursor
+nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
+
+let g:UltiSnipsSnippetsDir        = expand('~/.vim/UltiSnips')
+let g:UltiSnipsSnippetDirectories = [expand('~/.vim/UltiSnips'), expand('~/.vim/vim-snippets/UltiSnips')]
 
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
-command! -bar SudoWrite :
-      \ setlocal nomodified |
-      \ exe (has('gui_running') ? '' : 'silent') 'write !sudo tee % >/dev/null' |
-      \ let &modified = v:shell_error
-
-cmap w!! SudoWrite
-
-if has("python")
-  :command! -nargs=+ Calc :py print <args>
-  :py from math import *
-else
-  command! -nargs=+ Calc :!python -c "from math import *; print <args>"
-end
-
+" {{{ Go
 au FileType go nmap <Leader>s <Plug>(go-implements)
 au FileType go nmap <Leader>i <Plug>(go-info)
 au FileType go nmap <Leader>gd <Plug>(go-doc)
@@ -177,21 +150,22 @@ let g:go_highlight_build_constraints = 1
 let g:go_fmt_command = "goimports"
 let g:syntastic_go_checkers = ['golint', 'govet', 'errcheck']
 let g:syntastic_mode_map = { 'mode': 'active', 'passive_filetypes': ['go'] }
+" }}}
 
-"let g:deoplete#enable_at_startup = 1
-"call deoplete#enable()
-"" deoplete-go settings
-"let g:deoplete#sources#go#gocode_binary = $GOPATH.'/bin/gocode'
-"let g:deoplete#sources#go#sort_class = ['package', 'func', 'type', 'var', 'const']
-"let g:deoplete#sources#go#use_cache = 1
-"let g:deoplete#sources = {}
-"let g:deoplete#sources._ = ['buffer', 'file', 'omni', 'ultisnips']
-"let g:deoplete#sources.python = ['jedi']
-"let g:deoplete#sources#python#use_cache = 1
+" {{{ Helper functions
+command! -bar SudoWrite :
+      \ setlocal nomodified |
+      \ exe (has('gui_running') ? '' : 'silent') 'write !sudo tee % >/dev/null' |
+      \ let &modified = v:shell_error
 
-" ocaml projects lack of software engineering in general
-let g:extra_whitespace_ignored_filetypes = [ 'ocaml', 'patch' ]
+cmap w!! SudoWrite
 
+if has("python")
+  :command! -nargs=+ Calc :py print <args>
+  :py from math import *
+else
+  command! -nargs=+ Calc :!python -c "from math import *; print <args>"
+end
 " copy current filename:line to clipboard,
 " usefull for gdb breakpoints
 function! LineToClipboard()
@@ -199,21 +173,8 @@ function! LineToClipboard()
   call system('tmux load-buffer -', (path . ":" . line(".")))
 endfunction
 nmap <leader>l :call LineToClipboard()<CR>
+" }}}
 
-" Local config
-if filereadable($HOME . "/.vimrc.local")
-  source ~/.vimrc.local
-endif
-
-if filereadable($LOCAL_VIMRC)
-  source $LOCAL_VIMRC
-endif
-
-let g:syntastic_python_flake8_args='--ignore=E501,E265'
-
-if executable('ag')
-  let g:ackprg = 'ag --vimgrep'
-endif
 noremap <Leader>a :Ack <cword><cr>
 vnoremap <Leader>a y:Ack <C-r>=fnameescape(@")<CR><CR>
 
@@ -232,10 +193,15 @@ vnoremap <leader>P "+P
 autocmd QuickFixCmdPost [^l]* nested cwindow
 autocmd QuickFixCmdPost    l* nested lwindow
 
-autocmd BufEnter * highlight Normal guibg=0
+let g:syntastic_python_flake8_args='--ignore=E501,E265'
+
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
 
 let g:airline_powerline_fonts = 1
 
+" {{{ LanguageClient
 let g:LanguageClient_serverCommands = {
       \ 'cpp': ['cquery'],
       \ 'c': ['cquery'],
@@ -245,8 +211,11 @@ let g:LanguageClient_serverCommands = {
       \ 'ocaml': ['ocaml-language-server', '--stdio'],
       \ 'nix': ['nix-lsp'],
       \ }
+
 let g:LanguageClient_settingsPath = $HOME . '/.config/nvim/settings.json'
 let g:LanguageClient_loadSettings = 1
+
+set formatexpr=LanguageClient_textDocument_rangeFormatting()
 nnoremap <F5> :call LanguageClient_contextMenu()<CR>
 nnoremap <silent> gh :call LanguageClient_textDocument_hover()<CR>
 nnoremap <silent> gd :call LanguageClient_textDocument_definition()<CR>
@@ -254,6 +223,7 @@ nnoremap <silent> gr :call LanguageClient_textDocument_references()<CR>
 nnoremap <silent> gs :call LanguageClient_textDocument_documentSymbol()<CR>
 nnoremap <silent> <F2> :call LanguageClient_textDocument_rename()<CR>
 nnoremap <silent> gf :call LanguageClient_textDocument_formatting()<CR>
+" }}}
 
 " {{{ NCM2 - settings recommend by the authors
 " enable ncm2 for all buffers
@@ -287,4 +257,14 @@ let g:UltiSnipsJumpForwardTrigger	= "<c-j>"
 let g:UltiSnipsJumpBackwardTrigger	= "<c-k>"
 let g:UltiSnipsRemoveSelectModeMappings = 0
 " }}}
+
+" Local config
+if filereadable($HOME . "/.vimrc.local")
+  source ~/.vimrc.local
+endif
+
+if filereadable($LOCAL_VIMRC)
+  source $LOCAL_VIMRC
+endif
+
 " vim: ft=vim fdm=marker
