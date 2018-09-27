@@ -85,6 +85,16 @@ in {
         tcp dport 5281 accept # bosh-ssl
         tcp dport 6555 accept # xmpp-proxy65
 
+        # postfix
+        tcp dport 25 accept # smtp
+        tcp dport 465 accept # stmps
+        tcp dport 587 accept # submission
+
+        # dovecot
+        tcp dport 143 accept # imap
+        tcp dport 993 accept # imaps
+        tcp dport 4190 accept # sieve
+
         iifname "${network.bridge}" accept
 
         meta nfproto ipv6 ip6 nexthdr icmpv6 accept
@@ -140,8 +150,6 @@ in {
           ip6 daddr {${srv.ip6}, ${srv.ula}} ${srv.proto} dport ${srv.port} accept comment "${srv.name}"
         '') public_services}
 
-        ip saddr ${mail.ip} tcp dport smtp accept
-        ip6 saddr {${mail.ip6}, ${mail.ula}} tcp dport smtp accept
         tcp dport smtp reject with tcp reset
       }
 

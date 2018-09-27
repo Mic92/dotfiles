@@ -38,6 +38,7 @@ in {
           IPv6ProxyNDPAddress = ${container.ipv6}
         '') (attrValues config.eve.containers)}
         Address = ${network.ipv6}/128
+        Address = 2a03:4000:13:31e:1::10/128
         Gateway = fe80::1
         IPv6AcceptRA = no
         IPForward = yes
@@ -54,6 +55,7 @@ in {
         Address = ${containers.bridge.ipv6}/80
         Address = ${containers.bridge.ula}/80
         Address = fe80::1/64
+        Address = 2a03:4000:13:31e:1::10/128
 
         IPForward = yes
         Domains = ${network.zone.dn42-domain} ~dn42

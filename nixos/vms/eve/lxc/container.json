@@ -126,7 +126,6 @@
           "allow": [
             "login",
             "owncloud",
-            "mail",
             "squid",
             "web",
             "git",
@@ -295,54 +294,6 @@
           "allow": [
             "web"
           ]
-        }
-      }
-    },
-    "mail": {
-      "ipv4": "172.23.75.16",
-      "ipv6": "2a03:4000:13:31e:1::10",
-      "rdns6": "mail.higgsboson.tk",
-      "mounts": {
-        "web": {
-          "/etc/letsencrypt/live/": true,
-          "/etc/letsencrypt/archive/": true
-        }
-      },
-      "backup-paths": [
-        "var/vmail"
-      ],
-      "ula": "fd42:4992:6a6d::10",
-      "services": {
-        "smtp": {
-          "port": 25,
-          "forward": true
-        },
-        "smtps": {
-          "port": 465,
-          "forward": true
-        },
-        "submission": {
-          "port": 587,
-          "forward": true
-        },
-        "imap": {
-          "port": 143,
-          "forward": true
-        },
-        "imaps": {
-          "port": 993,
-          "forward": true
-        },
-        "imap-stats": {
-          "port": 3000
-        },
-        "sieve": {
-          "port": 4190,
-          "forward": true
-        },
-        "dsync": {
-          "port": 4170,
-          "forward": true
         }
       }
     },
