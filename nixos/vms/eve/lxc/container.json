@@ -127,65 +127,10 @@
             "login",
             "owncloud",
             "squid",
-            "web",
             "ldapadmin",
             "piwik",
             "ttrss"
           ]
-        }
-      }
-    },
-    "web": {
-      "ipv4": "172.23.75.5",
-      "rdns6": "web.higgsboson.tk",
-      "ipv6": "2a03:4000:13:31e:1::5",
-      "ula": "fd42:4992:6a6d::5",
-      "services": {
-        "web": {
-          "port": 80,
-          "allow": [
-            "istwiki"
-          ],
-          "forward": true
-        },
-        "webs": {
-          "port": 443,
-          "allow": [
-            "istwiki"
-          ],
-          "forward": true
-        }
-      },
-      "mounts": {
-        "istwiki": {
-          "srv/http/ist.devkid.net": true
-        },
-        "git": {
-          "srv/http/higgsboson.tk": true,
-          "srv/http/blog.higgsboson.tk": true
-        },
-        "halfcode": {
-          "srv/http/halfco.de": true
-        },
-        "ldapadmin": {
-          "usr/share/webapps/phpldapadmin": true
-        },
-        "rainloop": {
-          "srv/http/mail.higgsboson.tk": true
-        },
-        "owncloud": {
-          "usr/share/webapps/owncloud": true,
-          "usr/share/webapps/nextcloud": true
-        },
-        "piwik": {
-          "usr/share/webapps/piwik": true
-        },
-        "pyload": {
-          "var/lib/pyload/Downloads": "mnt/pyload"
-        },
-        "ttrss": {
-          "usr/share/webapps/tt-rss": true,
-          "var/lib/tt-rss/feed-icons": true
         }
       }
     },
@@ -227,11 +172,6 @@
         }
       },
       "mounts": {
-        "web": {
-          "srv/http/dl.higgsboson.tk": true
-        }
-      }
-    },
       }
     },
     "postgres": {
@@ -266,9 +206,7 @@
       "services": {
         "adminer": {
           "port": 9000,
-          "allow": [
-            "web"
-          ]
+          "allow": [ ]
         }
       }
     },
@@ -281,7 +219,6 @@
         "istwiki": {
           "port": 9000,
           "allow": [
-            "web"
           ]
         }
       }
@@ -295,7 +232,6 @@
         "ldapadmin": {
           "port": 9000,
           "allow": [
-            "web"
           ]
         }
       }
@@ -308,7 +244,6 @@
         "rainloop": {
           "port": 9000,
           "allow": [
-            "web"
           ]
         }
       }
@@ -322,7 +257,6 @@
         "owncloud": {
           "port": 9000,
           "allow": [
-            "web"
           ]
         }
       }
@@ -336,7 +270,6 @@
         "ttrss": {
           "port": 9000,
           "allow": [
-            "web"
           ]
         }
       }
@@ -392,7 +325,6 @@
         "piwik": {
           "port": 9000,
           "allow": [
-            "web"
           ]
         }
       }
@@ -405,7 +337,6 @@
         "pyload": {
           "port": 8001,
           "allow": [
-            "web"
           ]
         },
         "pyloadremote": {
@@ -458,10 +389,6 @@
       "mounts": {
         "pyload": {
           "var/lib/pyload/Downloads": "mnt/pyload"
-        },
-        "web": {
-          "/etc/letsencrypt/live/": true,
-          "/etc/letsencrypt/archive/": true
         }
       },
       "vars": {
@@ -487,7 +414,6 @@
         "halfcode": {
           "port": 9000,
           "allow": [
-            "web"
           ]
         }
       }
@@ -500,7 +426,6 @@
         "ghost": {
           "port": 9000,
           "allow": [
-            "web"
           ]
         }
       }
@@ -513,7 +438,6 @@
         "btsync-web": {
           "port": 8888,
           "allow": [
-            "web"
           ]
         },
         "btsync-tcp": {
