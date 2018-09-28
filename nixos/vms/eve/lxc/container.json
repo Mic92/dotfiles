@@ -128,7 +128,6 @@
             "owncloud",
             "squid",
             "web",
-            "git",
             "ldapadmin",
             "piwik",
             "ttrss"
@@ -233,29 +232,6 @@
         }
       }
     },
-    "gitweb": {
-      "cname": "web",
-      "lxc": false
-    },
-    "git": {
-      "ipv4": "172.23.75.4",
-      "rdns6": "git.higgsboson.tk",
-      "ipv6": "2a03:4000:13:31e:1::4",
-      "ula": "fd42:4992:6a6d::4",
-      "backup-paths": [
-        "/srv/gogs"
-      ],
-      "services": {
-        "gogs": {
-          "port": 3000,
-          "allow": [
-            "web"
-          ]
-        },
-        "git-ssh": {
-          "port": 22,
-          "forward": true
-        }
       }
     },
     "postgres": {
@@ -274,7 +250,6 @@
           "allow": [
             "adminer",
             "ghost",
-            "git",
             "owncloud",
             "ldap",
             "rainloop",
