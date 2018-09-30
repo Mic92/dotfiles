@@ -62,18 +62,66 @@ in {
   };
 
   fileSystems = [
-    { mountPoint = "/boot";
+    {
+      mountPoint = "/boot";
       device = "/dev/disk/by-uuid/56FC-E60D";
       fsType = "vfat";
       options = ["nofail"];
-      }
-    { mountPoint = "/";
+    }
+    {
+      device = "/lxc/web/rootfs/etc/letsencrypt";
+      mountPoint = "/etc/letsencrypt";
+      fsType = "none";
+      options = ["bind" "nofail"];
+    }
+    {
+      device = "/lxc/rainloop/rootfs/srv/http/mail.higgsboson.tk";
+      mountPoint = "/srv/http/mail.higgsboson.tk";
+      fsType = "none";
+      options = ["bind" "nofail"];
+    }
+    {
+      device = "/lxc/adminer/rootfs/usr/share/webapps/adminer";
+      mountPoint = "/usr/share/webapps/adminer";
+      fsType = "none";
+      options = ["bind" "nofail"];
+    }
+    {
+      device = "/lxc/istwiki/rootfs/srv/http/ist.devkid.net";
+      mountPoint = "/srv/http/ist.devkid.net";
+      fsType = "none";
+      options = ["bind" "nofail"];
+    }
+    {
+      device = "/lxc/ldapadmin/rootfs/usr/share/webapps/phpldapadmin";
+      mountPoint = "/usr/share/webapps/phpldapadmin";
+      fsType = "none";
+      options = ["bind" "nofail"];
+    }
+    {
+      device = "/lxc/owncloud/rootfs/usr/share/webapps/nextcloud";
+      mountPoint = "/usr/share/webapps/nextcloud";
+      fsType = "none";
+      options = ["bind" "nofail"];
+    }
+    {
+      device = "/lxc/piwik/rootfs/usr/share/webapps/piwik";
+      mountPoint = "/usr/share/webapps/piwik";
+      fsType = "none";
+      options = ["bind" "nofail"];
+    }
+    {
+      device = "/lxc/ttrss/rootfs/usr/share/webapps/tt-rss";
+      mountPoint = "/usr/share/webapps/tt-rss";
+      fsType = "none";
+      options = ["bind" "nofail"];
+    }
+    {
+      mountPoint = "/";
       device = "zroot/root";
       fsType = "zfs";
-      }
+    }
   ] ++ zfsMounts ++ bindMounts;
 
   nix.maxJobs = lib.mkDefault 8;
-
-
 }

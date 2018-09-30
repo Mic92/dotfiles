@@ -46,9 +46,7 @@
       }
 
       Component "muc.higgsboson.tk" "muc"
-        modules_enabled = {
-        "mam_muc";
-      }
+        modules_enabled = { "mam_muc"; }
       muc_log_by_default = true;
       muc_log_all_rooms = false;
       max_archive_query_results = 20;

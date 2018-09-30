@@ -69,6 +69,7 @@ in {
   };
   services.postfix.extraConfig = ''
     smtpd_milters = unix:/run/rspamd.sock
+    non_smtpd_milters = $smtpd_milters
     milter_default_action = accept
   '';
 

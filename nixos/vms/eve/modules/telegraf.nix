@@ -93,10 +93,6 @@ in {
           record_type = "PTR";
         }
       ];
-      dovecot = {
-        servers = ["mail:3000"];
-        type = "global";
-      };
       netstat = {};
       net.interfaces = ["eth0" "lxc_dn42"];
       nginx.urls = ["https://higgsboson.tk/_status"];

@@ -39,6 +39,7 @@ in {
         '') (attrValues config.eve.containers)}
         Address = ${network.ipv6}/128
         Address = 2a03:4000:13:31e:1::10/128
+        Address = 2a03:4000:13:31e:1::5/128
         Gateway = fe80::1
         IPv6AcceptRA = no
         IPForward = yes

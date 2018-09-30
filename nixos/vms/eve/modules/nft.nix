@@ -95,6 +95,10 @@ in {
         tcp dport 993 accept # imaps
         tcp dport 4190 accept # sieve
 
+        # nginx
+        tcp dport 80 accept # http
+        tcp dport 443 accept # https
+
         iifname "${network.bridge}" accept
 
         meta nfproto ipv6 ip6 nexthdr icmpv6 accept
@@ -167,10 +171,6 @@ in {
       chain prerouting {
         type nat hook prerouting priority 0;
         ip6 daddr ${network.ipv6} iifname "${network.wan}" jump lxc_chain
-
-        # git.higgsboson.tk points to web
-        # therefore DNAT port ssh back to git
-        ip6 daddr ${web.ip6} tcp dport ssh dnat ${git.ip6} comment "web to git dnat"
       }
       chain lxc_chain {
         ${lib.concatMapStrings (srv: ''
@@ -185,10 +185,6 @@ in {
         iifname "${network.wan}" jump lxc_chain
 
         iifname "${network.bridge}" ip daddr ${network.ipv4} meta mark set 0x42 jump lxc_chain comment "NAT reflection"
-
-        # git.higgsboson.tk points to web
-        # therefore DNAT port ssh back to git
-        ip daddr ${web.ip} tcp dport ssh dnat ${git.ip} comment "web to git dnat"
       }
       chain postrouting {
         type nat hook postrouting priority 0;

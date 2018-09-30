@@ -2,17 +2,19 @@
   services.influxdb = {
     enable = true;
     extraConfig = {
-      admin = {
-        https-enabled = true;
-        https-certificate = "/etc/letsencrypt/live/influxdb.thalheim.io-0001/both.pem";
-      };
-
       http = {
         auth-enabled = true;
         https-enabled = true;
-        https-certificate = "/etc/letsencrypt/live/influxdb.thalheim.io-0001/fullchain.pem";
-        https-private-key = "/etc/letsencrypt/live/influxdb.thalheim.io-0001/privkey.pem";
+        https-certificate = "/var/lib/acme/influxdb.thalheim.io/fullchain.pem";
+        https-private-key = "/var/lib/acme/influxdb.thalheim.io/key.pem";
       };
     };
+  };
+
+  security.acme.certs."influxdb.thalheim.io" = {
+    postRun = "systemctl restart influxdb.service";
+    webroot = "/var/lib/acme/acme-challenge";
+    allowKeysForGroup = true;
+    group = "influxdb";
   };
 }
