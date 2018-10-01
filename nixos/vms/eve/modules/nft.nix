@@ -99,6 +99,11 @@ in {
         tcp dport 80 accept # http
         tcp dport 443 accept # https
 
+        # weechat
+        tcp dport 4242 accept
+        # irc-dcc
+        tcp dport 6760-6769 accept
+
         iifname "${network.bridge}" accept
 
         meta nfproto ipv6 ip6 nexthdr icmpv6 accept
