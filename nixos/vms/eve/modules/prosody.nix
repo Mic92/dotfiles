@@ -121,6 +121,11 @@
   users.users.prosody.extraGroups = [ "keys" ];
   systemd.services.prosody.serviceConfig.SupplementaryGroups = [ "keys" ];
 
+  services.tor.hiddenServices."jabber".map = [
+    { port = "5222"; }
+    { port = "5269"; }
+  ];
+
   deployment.keys = {
     "prosody-ldap-password" = {
       keyFile = ../secrets/prosody-ldap-password;

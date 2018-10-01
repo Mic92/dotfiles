@@ -32,6 +32,7 @@ in {
       ./modules/letsencrypt.nix
       ./modules/prosody.nix
       ./modules/bitlbee.nix
+      ./modules/tor.nix
     ];
 
   boot = {
@@ -109,9 +110,11 @@ in {
     zfs.autoSnapshot.enable = true;
     openssh = {
       enable = true;
-      ports = [22022];
+      ports = [
+        22022 # legacy
+        22
+      ];
     };
-    timesyncd.enable = true;
     resolved.enable = false;
     vnstat.enable = true;
   };
