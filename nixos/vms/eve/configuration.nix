@@ -31,6 +31,10 @@ in {
       ./modules/influxdb.nix
       ./modules/prosody.nix
       ./modules/bitlbee.nix
+      ./modules/postfix.nix
+      ./modules/rspamd.nix
+      ./modules/dovecot.nix
+      ./modules/nginx/default.nix
       ./modules/tor.nix
     ];
 
