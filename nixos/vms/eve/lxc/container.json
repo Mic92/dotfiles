@@ -173,8 +173,7 @@
             "adminer",
             "ghost",
             "owncloud",
-            "rainloop",
-            "ttrss"
+            "rainloop"
           ]
         }
       }
@@ -236,19 +235,6 @@
       "ula": "fd42:4992:6a6d::f",
       "services": {
         "owncloud": {
-          "port": 9000,
-          "allow": [
-          ]
-        }
-      }
-    },
-    "ttrss": {
-      "ipv4": "172.23.75.20",
-      "ipv6": "2a03:4000:13:31e:1::14",
-      "group": "php",
-      "ula": "fd42:4992:6a6d::14",
-      "services": {
-        "ttrss": {
           "port": 9000,
           "allow": [
           ]

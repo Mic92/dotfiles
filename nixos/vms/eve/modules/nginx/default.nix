@@ -28,7 +28,6 @@ in {
     ./pyload.nix
     ./rainloop.nix
     #./threema.nix
-    ./tinytinyrss.nix
   ];
 
   services.nginx = {
