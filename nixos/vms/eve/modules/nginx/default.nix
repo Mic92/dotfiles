@@ -17,7 +17,6 @@ in {
     ./btsync.nix
     ./devkid.net.nix
     ./dl.nix
-    ./grafana.nix
     ./halfco.de.nix
     ./homepage.nix
     ./ip.nix
