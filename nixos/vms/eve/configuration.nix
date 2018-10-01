@@ -29,7 +29,6 @@ in {
       ./modules/openldap.nix
       ./modules/grafana.nix
       ./modules/influxdb.nix
-      ./modules/letsencrypt.nix
       ./modules/prosody.nix
       ./modules/bitlbee.nix
       ./modules/tor.nix
