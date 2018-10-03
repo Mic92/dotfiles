@@ -43,7 +43,7 @@
         name = "ldap.toml";
         text = ''
           [[servers]]
-          host = "172.23.75.3"
+          host = "127.0.0.1"
           port = 389
           bind_dn = "cn=grafana,ou=system,ou=users,dc=eve"
           bind_password = "@bindPassword@"
