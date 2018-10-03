@@ -172,7 +172,6 @@
           "allow": [
             "adminer",
             "ghost",
-            "owncloud",
             "rainloop"
           ]
         }
@@ -222,19 +221,6 @@
       "ula": "fd42:4992:6a6d::13",
       "services": {
         "rainloop": {
-          "port": 9000,
-          "allow": [
-          ]
-        }
-      }
-    },
-    "owncloud": {
-      "ipv4": "172.23.75.15",
-      "ipv6": "2a03:4000:13:31e:1::f",
-      "group": "php",
-      "ula": "fd42:4992:6a6d::f",
-      "services": {
-        "owncloud": {
           "port": 9000,
           "allow": [
           ]

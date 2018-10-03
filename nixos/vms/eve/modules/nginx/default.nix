@@ -23,7 +23,6 @@ in {
     ./ist.devkid.net.nix
     ./ldapadmin.nix
     ./muc.nix
-    ./owncloud.nix
     ./piwik.nix
     ./pyload.nix
     ./rainloop.nix
