@@ -36,6 +36,7 @@ in {
       ./modules/dovecot.nix
       ./modules/nginx/default.nix
       ./modules/tor.nix
+      ./modules/tt-rss.nix
     ];
 
   boot = {
