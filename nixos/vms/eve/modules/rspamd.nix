@@ -34,8 +34,6 @@ let
 in {
   services.rspamd = {
     enable = true;
-    # FIXME: the order of sockets is messed up
-    socketActivation = false;
     extraConfig = ''
       .include(priority=1,duplicate=merge) "${localConfig}"
     '';
