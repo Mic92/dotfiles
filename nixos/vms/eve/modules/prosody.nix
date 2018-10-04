@@ -109,7 +109,9 @@
         "smacks"
         "smacks_offline"
         "csi"
-        "cloud_notify"
+        # crititcal bug -> TODO report upstream
+        # mod_s2s: Traceback[s2s]: ...ib/prosody/modules/mod_cloud_notify/mod_cloud_notify.lua:255:  attempt to perform arithmetic on field 'count' (a nil value)
+        #"cloud_notify"
         "throttle_presence"
         "http_upload"
         "pep_vcard_avatar"
