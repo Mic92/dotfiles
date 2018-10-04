@@ -23,6 +23,14 @@
         ./modules/dashboard.nix
       ];
 
+      users.extraUsers.chris = {
+        isNormalUser = true;
+        extraGroups = [ "wheel" "input" ];
+        openssh.authorizedKeys.keys = [
+          ''ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQC7KdbeVK4cCUIe4dV0SLAddFXGEzHlD/Ct1pFE6r7gXJWWUBWTks7pjfT0R8a5bB6ECrPWE1YlYonOlYGOEUE6GbgVZ+zNwHrmDz/I6P01YfQeJH7dbywVm1Hk70aynnbHhhvXKRySML0DPo7zq/JxV3YRA7TQ1Ywj4ZyUZYwz7i2/PG85llSt8UYNsasSweQJf4Qh/aSsDT6PHI6bpS1vjGERgAl2BarjBfZb3vBKSwgqVNLqnzFE3hHmEn29NJ9K4As6eAxB0PDKhSHV1kLGADPLcEH+F36xBGNta+oVP3SaUkUw8PQBq3h3g1U0hsqL+PELS3RTpWfV+0J57RQxgSH8HNtZqdlQjAuDWKOA4pF5qofN5rAjJ4VC2SmqPe45M/A97PCXb0xo378UnMEPUG4wHvhnU5TgseGN1D6S5wmRAXYUEixJpu6vmRLqPaubxw7PCovKwXdNE+6z5/787hF3ICK/RwK0NJekcmz8S5cRP5WkTgGDmeMLwYDcNqpyo7QdcGVDjoeY0bB9CQ3+cWrN/Vr1UNr68lsQGLdrR9IUmcHQrXiipbzzdfJF34SRuezUc3HOOv5mrSOctvJLsZVWwl4rT39aEmB0+Dq36r5aAKx4zN0uGy4pIS/y7IDe9t6KQoiou7nS10zRAf+vlroBFepkPVJm3fs0oVC6YQ==''
+        ];
+      };
+
       boot.kernelPackages = pkgs.rock64.linuxPackages_ayufan_4_4;
 
       networking.hostName = "rock";
