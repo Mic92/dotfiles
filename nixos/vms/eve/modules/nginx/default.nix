@@ -4,8 +4,11 @@ let
   sanCertificate = domain: let
     wantedVhosts = lib.filterAttrs (_: attrs: (attrs.useACMEHost or null) == domain) 
       config.services.nginx.virtualHosts;
+    serverAliases = lib.flatten (lib.mapAttrsToList (_: vhost: vhost.serverAliases) wantedVhosts);
   in {
-    extraDomains = lib.mapAttrs (name: _: null) wantedVhosts;
+    extraDomains = (
+      lib.mapAttrs (name: _: null) wantedVhosts
+    ) // (lib.foldl (domains: domain: domains // { ${domain} = null; }) {} serverAliases);
     postRun = "systemctl reload nginx.service";
     webroot = "/var/lib/acme/acme-challenge";
   };

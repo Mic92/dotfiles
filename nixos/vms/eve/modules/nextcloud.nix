@@ -45,10 +45,7 @@
     virtualHosts."cloud.thalheim.io" = {
       useACMEHost = "thalheim.io";
       forceSSL = true;
-    };
-    virtualHosts."pim.devkid.net" = {
-      useACMEHost = "devkid.net";
-      forceSSL = true;
+      serverAliases = [ "pim.devkid.net" ];
     };
   };
 }
