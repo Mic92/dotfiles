@@ -14,7 +14,6 @@ let
   };
 in {
   imports = [
-    ./adminer.nix
     ./blog.halfco.de.nix
     ./blog.nix
     ./devkid.net.nix

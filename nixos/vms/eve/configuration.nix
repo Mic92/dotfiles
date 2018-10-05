@@ -15,13 +15,14 @@ in {
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./network-configuration.nix
+    ./containers.nix
     ./lxc.nix
+    ./modules/adminer.nix
     ./modules/backup.nix
     ./modules/resolver.nix
     ./packages.nix
     #./modules/telegraf.nix
     ./modules/containers.nix
-    ./containers.nix
     ./modules/matemat-stats.nix
     ./modules/nft.nix
     ./modules/mysql.nix
