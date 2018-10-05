@@ -120,7 +120,6 @@ in {
   time.timeZone = "Europe/London";
 
   services = {
-    exim.enable = true;
     gpm.enable = true;
     autorandr.enable = true;
     resilio = {
