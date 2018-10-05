@@ -26,9 +26,7 @@ in {
     ./ist.devkid.net.nix
     ./ldapadmin.nix
     ./muc.nix
-    ./piwik.nix
     ./pyload.nix
-    ./rainloop.nix
     #./threema.nix
   ];
 
