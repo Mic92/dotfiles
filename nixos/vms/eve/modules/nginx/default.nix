@@ -17,14 +17,12 @@ in {
     ./adminer.nix
     ./blog.halfco.de.nix
     ./blog.nix
-    ./btsync.nix
     ./devkid.net.nix
     ./dl.nix
     ./halfco.de.nix
     ./homepage.nix
     ./ip.nix
     ./ist.devkid.net.nix
-    ./ldapadmin.nix
     ./muc.nix
     ./pyload.nix
     #./threema.nix

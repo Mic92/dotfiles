@@ -30,7 +30,6 @@ in {
     ./modules/grafana.nix
     ./modules/influxdb.nix
     ./modules/prosody.nix
-    #./modules/bitlbee.nix
     ./modules/postfix.nix
     ./modules/rspamd.nix
     ./modules/dovecot.nix
@@ -40,6 +39,7 @@ in {
     ./modules/nextcloud.nix
     ./modules/rainloop.nix
     ./modules/mastodon-hnbot.nix
+    ./modules/phpldapadmin.nix
   ];
 
   nixpkgs.config.packageOverrides = pkgs: {

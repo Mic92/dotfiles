@@ -182,19 +182,6 @@
         }
       }
     },
-    "ldapadmin": {
-      "ipv4": "172.23.75.12",
-      "ipv6": "2a03:4000:13:31e:1::c",
-      "group": "php",
-      "ula": "fd42:4992:6a6d::c",
-      "services": {
-        "ldapadmin": {
-          "port": 9000,
-          "allow": [
-          ]
-        }
-      }
-    },
     "teamspeak": {
       "ipv4": "172.23.75.21",
       "ipv6": "2a03:4000:13:31e:1::15",
@@ -268,51 +255,6 @@
         }
       }
     },
-    "login": {
-      "ipv4": "172.23.75.30",
-      "ipv6": "2a03:4000:13:31e:1::1e",
-      "rdns6": "login.higgsboson.tk",
-      "services": {
-        "login": {
-          "port": 22,
-          "forward": 22722
-        },
-        "mosh_login": {
-          "port": 60011,
-          "proto": "udp",
-          "forward": true
-        },
-        "weechat": {
-          "port": 4242,
-          "forward": true,
-          "allow": [
-            "all"
-          ]
-        },
-        "irc-dcc": {
-          "port": "6760-6769",
-          "forward": true
-        }
-      },
-      "mounts": {
-        "pyload": {
-          "var/lib/pyload/Downloads": "mnt/pyload"
-        }
-      },
-      "vars": {
-        "ssh_ldap": true,
-        "install_dn42_ca": false,
-        "add_repo_in_pacman_conf": false,
-        "additional_admins": [
-          {
-            "dest": "/var/lib/aurrepo/",
-            "owner": "aurrepo",
-            "group": "aurrepo"
-          }
-        ]
-      },
-      "ula": "fd42:4992:6a6d::1e"
-    },
     "ghost": {
       "ipv4": "172.23.75.35",
       "ipv6": "2a03:4000:13:31e:1::23",
@@ -324,50 +266,6 @@
           ]
         }
       }
-    },
-    "btsync": {
-      "ipv4": "172.23.75.31",
-      "ipv6": "2a03:4000:13:31e:1::1f",
-      "ula": "fd42:4992:6a6d::1f",
-      "services": {
-        "btsync-web": {
-          "port": 8888,
-          "allow": [
-          ]
-        },
-        "btsync-tcp": {
-          "port": 5555,
-          "forward": true,
-          "allow": [
-            "all"
-          ]
-        },
-        "btsync-udp": {
-          "port": 5555,
-          "proto": "udp",
-          "forward": true,
-          "allow": [
-            "all"
-          ]
-        }
-      },
-      "mounts": {
-        "pyload": {
-          "var/lib/pyload/Downloads": "mnt/pyload"
-        }
-      }
-    },
-    "rauter": {
-      "ipv4": "172.23.75.225",
-      "ipv6": "fd42:4992:6a6d:500::2",
-      "ula": "fd42:4992:6a6d:500::1",
-      "lxc": false
-    },
-    "matchbox": {
-      "ipv4": "172.23.75.254",
-      "ipv6": "fd42:4992:6a6d:500::2",
-      "ula": "fd42:4992:6a6d:500::2",
-      "lxc": false
     }
   }
 }
