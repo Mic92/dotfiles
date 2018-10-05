@@ -66,7 +66,8 @@
       };
     '';
     s2sSecureDomains = [
-      "jabber.c3d2.de"
+      # wh00t?
+      #"jabber.c3d2.de"
     ];
     modules = {
       mam = true;
