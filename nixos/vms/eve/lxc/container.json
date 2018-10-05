@@ -91,30 +91,11 @@
       "ipv6": "2a03:4000:13:31e::2",
       "lxc": false
     },
-    "alfred-pi": {
-      "ipv4": "172.23.75.65",
-      "lxc": false
-    },
     "bridge": {
       "ipv4": "172.23.75.2",
       "ipv6": "2a03:4000:13:31e:1::2",
       "ula": "fd42:4992:6a6d::2",
       "lxc": false
-    },
-    "jabber": {
-      "ipv4": "172.23.75.22",
-      "ipv6": "2a03:4000:13:31e:1::16",
-      "rdns6": "jabber.higgsboson.tk",
-      "lxc": false
-    },
-    "_xmpp-client._tcp": {
-      "srv": "0 5 5222 jabber",
-      "lxc": false
-    },
-    "base": {
-      "ipv4": "172.23.75.62",
-      "ipv6": "2a03:4000:13:31e:1::3e",
-      "ula": "fd42:4992:6a6d::3e"
     },
     "dns": {
       "ipv4": "172.23.75.6",
@@ -171,8 +152,7 @@
           "port": 5432,
           "allow": [
             "adminer",
-            "ghost",
-            "rainloop"
+            "ghost"
           ]
         }
       }
@@ -209,18 +189,6 @@
       "ula": "fd42:4992:6a6d::c",
       "services": {
         "ldapadmin": {
-          "port": 9000,
-          "allow": [
-          ]
-        }
-      }
-    },
-    "rainloop": {
-      "ipv4": "172.23.75.19",
-      "ipv6": "2a03:4000:13:31e:1::13",
-      "ula": "fd42:4992:6a6d::13",
-      "services": {
-        "rainloop": {
           "port": 9000,
           "allow": [
           ]
@@ -266,19 +234,6 @@
           "port": 9000,
           "forward": true,
           "proto": "udp"
-        }
-      }
-    },
-    "piwik": {
-      "ipv4": "172.23.75.23",
-      "ipv6": "2a03:4000:13:31e:1::17",
-      "group": "php",
-      "ula": "fd42:4992:6a6d::17",
-      "services": {
-        "piwik": {
-          "port": 9000,
-          "allow": [
-          ]
         }
       }
     },
