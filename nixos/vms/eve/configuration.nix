@@ -30,13 +30,15 @@ in {
       ./modules/grafana.nix
       ./modules/influxdb.nix
       ./modules/prosody.nix
-      ./modules/bitlbee.nix
+      #./modules/bitlbee.nix
       ./modules/postfix.nix
       ./modules/rspamd.nix
       ./modules/dovecot.nix
       ./modules/nginx/default.nix
       ./modules/tor.nix
       ./modules/tt-rss.nix
+      ./modules/nextcloud.nix
+      ./modules/rainloop.nix
     ];
 
   boot = {
