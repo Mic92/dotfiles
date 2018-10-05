@@ -11,35 +11,42 @@ let
 in {
   deployment.targetHost = "eve.higgsboson.tk";
 
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      ./network-configuration.nix
-      ./lxc.nix
-      ./modules/backup.nix
-      ./modules/resolver.nix
-      ./packages.nix
-      #./modules/telegraf.nix
-      ./modules/containers.nix
-      ./containers.nix
-      ./modules/matemat-stats.nix
-      ./modules/nft.nix
-      ./modules/mysql.nix
-      ./modules/gogs.nix
-      ./modules/openldap.nix
-      ./modules/grafana.nix
-      ./modules/influxdb.nix
-      ./modules/prosody.nix
-      #./modules/bitlbee.nix
-      ./modules/postfix.nix
-      ./modules/rspamd.nix
-      ./modules/dovecot.nix
-      ./modules/nginx/default.nix
-      ./modules/tor.nix
-      ./modules/tt-rss.nix
-      ./modules/nextcloud.nix
-      ./modules/rainloop.nix
-    ];
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    ./network-configuration.nix
+    ./lxc.nix
+    ./modules/backup.nix
+    ./modules/resolver.nix
+    ./packages.nix
+    #./modules/telegraf.nix
+    ./modules/containers.nix
+    ./containers.nix
+    ./modules/matemat-stats.nix
+    ./modules/nft.nix
+    ./modules/mysql.nix
+    ./modules/gogs.nix
+    ./modules/openldap.nix
+    ./modules/grafana.nix
+    ./modules/influxdb.nix
+    ./modules/prosody.nix
+    #./modules/bitlbee.nix
+    ./modules/postfix.nix
+    ./modules/rspamd.nix
+    ./modules/dovecot.nix
+    ./modules/nginx/default.nix
+    ./modules/tor.nix
+    ./modules/tt-rss.nix
+    ./modules/nextcloud.nix
+    ./modules/rainloop.nix
+    ./modules/mastodon-hnbot.nix
+  ];
+
+  nixpkgs.config.packageOverrides = pkgs: {
+    nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+      inherit pkgs;
+    };
+  };
 
   boot = {
     kernel.sysctl = {
