@@ -26,7 +26,8 @@ let
     }
     phishing {
       openphish_enabled = true;
-      phishtank_enabled = true;
+      # too much memory
+      #phishtank_enabled = true;
     }
   '';
 
