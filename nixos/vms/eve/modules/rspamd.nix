@@ -105,6 +105,16 @@ in {
     '';
   };
 
+  services.nginx = {
+    virtualHosts."rspamd.thalheim.io" = {
+      useACMEHost = "thalheim.io";
+      forceSSL = true;
+      locations."/".extraConfig = ''
+        proxy_pass http://localhost:11334;
+      '';
+    };
+  };
+
   systemd.services.dovecot2.preStart = ''
     mkdir -p /var/lib/dovecot/sieve/
     for i in ${sieve-spam-filter}/share/sieve-rspamd-filter/*.sieve; do
