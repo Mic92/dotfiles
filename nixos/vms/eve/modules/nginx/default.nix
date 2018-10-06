@@ -21,7 +21,6 @@ in {
     ./halfco.de.nix
     ./homepage.nix
     ./ip.nix
-    ./ist.devkid.net.nix
     ./muc.nix
     ./pyload.nix
     #./threema.nix

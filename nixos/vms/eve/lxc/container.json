@@ -86,30 +86,6 @@
     }
   },
   "network": {
-    "eve": {
-      "ipv4": "172.23.75.2",
-      "ipv6": "2a03:4000:13:31e::2",
-      "lxc": false
-    },
-    "bridge": {
-      "ipv4": "172.23.75.2",
-      "ipv6": "2a03:4000:13:31e:1::2",
-      "ula": "fd42:4992:6a6d::2",
-      "lxc": false
-    },
-    "istwiki": {
-      "ipv4": "172.23.75.17",
-      "ipv6": "2a03:4000:13:31e:1::11",
-      "group": "php",
-      "ula": "fd42:4992:6a6d::11",
-      "services": {
-        "istwiki": {
-          "port": 9000,
-          "allow": [
-          ]
-        }
-      }
-    },
     "teamspeak": {
       "ipv4": "172.23.75.21",
       "ipv6": "2a03:4000:13:31e:1::15",
@@ -149,22 +125,6 @@
           "port": 9000,
           "forward": true,
           "proto": "udp"
-        }
-      }
-    },
-    "pyload": {
-      "ipv4": "172.23.75.26",
-      "ipv6": "2a03:4000:13:31e:1::1a",
-      "ula": "fd42:4992:6a6d::1a",
-      "services": {
-        "pyload": {
-          "port": 8001,
-          "allow": [
-          ]
-        },
-        "pyloadremote": {
-          "port": 7227,
-          "forward": true
         }
       }
     },

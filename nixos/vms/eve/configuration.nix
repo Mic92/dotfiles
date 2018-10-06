@@ -42,6 +42,7 @@ in {
     ./modules/phpldapadmin.nix
     ./modules/named.nix
     ./modules/syncthing.nix
+    ./modules/mediawiki.nix
   ];
 
   nixpkgs.config.packageOverrides = pkgs: {
