@@ -1,51 +1,56 @@
 {
-	services.bind = {
-		enable = true;
-		forwarders = [ "9.9.9.9" ];
-		cacheNetworks = [ "any" ];
-		extraConfig = ''
+  services.bind = {
+    enable = true;
+    forwarders = [ "9.9.9.9" ];
+    cacheNetworks = [ "any" ];
+    extraConfig = ''
       include "/run/keys/chelnok.key";
       server 89.238.64.7 {
-			  transfer-format many-answers;
+        transfer-format many-answers;
         keys { ns.chelnok.de-ns1.higgsboson.tk.;};
       };
       server 2a00:1828:a013:f00::3 {
-			  transfer-format many-answers;
+        transfer-format many-answers;
         keys { ns.chelnok.de-ns1.higgsboson.tk.;};
       };
-		'';
-    extraOptions = ''
-			allow-recursion {
-        localhost;
-			  localnets;
-			  172.23.75/24;
-			  fd42:4992:6a6d::/64;
-				2a03:4000:13:31e::/64;
-				188.68.39.17/32;
-			};
     '';
-		zones = let
+    extraOptions = ''
+      allow-recursion {
+        localhost;
+        localnets;
+        172.23.75/24;
+        fd42:4992:6a6d::/64;
+        2a03:4000:13:31e::/64;
+        188.68.39.17/32;
+      };
+    '';
+    zones = let
       chelnok = [
-       "89.238.64.7"
-       "2a00:1828:2000:289::4"
+        "89.238.64.7"
+        "2a00:1828:a013:f00::3"
       ];
-		in [{
-			name = "chelnok.de.";
-			master = false;
-			file = "chelnok.de.zone";
-			masters = chelnok;
-		} {
-			name = "nek0.eu.";
-			master = false;
-			file = "nek0.eu.zone";
-			masters = chelnok;
-		} {
-			name = "nek0.cat.";
-			master = false;
-			file = "nek0.cat.zone";
-			masters = chelnok;
-		}];
-	};
+    in [{
+      name = "chelnok.de.";
+      master = false;
+      file = "chelnok.de.zone";
+      masters = chelnok;
+    } {
+      name = "nek0.eu.";
+      master = false;
+      file = "nek0.eu.zone";
+      masters = chelnok;
+    } {
+      name = "nek0.cat.";
+      master = false;
+      file = "nek0.cat.zone";
+      masters = chelnok;
+    } {
+      name = "nek0.space.";
+      master = false;
+      file = "nek0.space.zone";
+      masters = chelnok;
+    }];
+  };
 
   users.users.named.extraGroups = [ "keys" ];
   systemd.services.bind.serviceConfig.SupplementaryGroups = [ "keys" ];
