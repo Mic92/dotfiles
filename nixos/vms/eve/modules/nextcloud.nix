@@ -8,11 +8,10 @@
 
     config = {
       dbtype = "pgsql";
-      dbname = "owncloud";
+      dbname = "nextcloud";
       dbtableprefix = "oc_";
-      dbuser = "owncloud";
-      dbhost = "172.23.75.10";
-      dbpassFile = "/run/keys/nextcloud-db-password";
+      dbuser = "nextcloud";
+      dbhost = "/tmp";
       adminuser = "nextcloudadmin";
       adminpassFile = "/run/keys/nextcloud-admin-password";
       extraTrustedDomains = [
@@ -22,15 +21,9 @@
     };
   };
 
-  deployment.keys = {
-    "nextcloud-db-password" = {
-      keyFile = ../secrets/nextcloud-db-password;
-      user = "nextcloud";
-    };
-    "nextcloud-admin-password" = {
-      keyFile = ../secrets/nextcloud-admin-password;
-      user = "nextcloud";
-    };
+  deployment.keys."nextcloud-admin-password" = {
+    keyFile = ../secrets/nextcloud-admin-password;
+    user = "nextcloud";
   };
 
   users.users.nextcloud.extraGroups = [ "keys" ];

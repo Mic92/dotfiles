@@ -4,7 +4,6 @@
     package = pkgs.mariadb;
     ensureDatabases = [
       "istwiki"
-      "matomo"
       "mysqlbackup"
     ];
     ensureUsers = [{
@@ -12,11 +11,6 @@
           "istwiki.*" = "ALL PRIVILEGES";
         };
         name = "istwiki";
-      } {
-        ensurePermissions = { 
-          "matomo.*" = "ALL PRIVILEGES";
-        };
-        name = "matomo";
       }];
     };
 
@@ -35,9 +29,6 @@
       text = ''
         CREATE USER IF NOT EXISTS 'istwiki'@'%';
         GRANT ALL PRIVILEGES ON istwiki.* TO 'istwiki'@'%';
-
-        CREATE USER IF NOT EXISTS 'matomo'@'%';
-        GRANT ALL PRIVILEGES ON matomo.* TO 'matomo'@'%';
       '';
     };
   in ''

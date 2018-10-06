@@ -23,9 +23,8 @@
     database = {
       type = "postgres";
       name = "grafana";
-      host = "172.23.75.10";
+      host = "/tmp";
       user = "grafana";
-      passwordFile = "/run/keys/grafana-db-password";
     };
     security.adminPasswordFile = "/run/keys/grafana-admin-password";
     addr = "0.0.0.0";
@@ -76,10 +75,6 @@
   deployment.keys = {
     "grafana-smtp-password" = {
       keyFile = ../secrets/grafana-smtp-password;
-      user = "grafana";
-    };
-    "grafana-db-password" = {
-      keyFile = ../secrets/grafana-db-password;
       user = "grafana";
     };
     "grafana-admin-password" = {

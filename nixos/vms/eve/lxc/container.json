@@ -97,78 +97,6 @@
       "ula": "fd42:4992:6a6d::2",
       "lxc": false
     },
-    "dns": {
-      "ipv4": "172.23.75.6",
-      "ipv6": "2a03:4000:13:31e:1::6",
-      "rdns6": "ns1.higgsboson.tk",
-      "ula": "fd42:4992:6a6d::6",
-      "services": {
-        "dns": {
-          "port": 53,
-          "proto": "udp",
-          "forward": true
-        },
-        "dns-tcp": {
-          "port": 5353,
-          "proto": "udp",
-          "forward": true,
-          "allow": [
-            "all"
-          ]
-        }
-      }
-    },
-    "dn42": {
-      "ipv4": "172.23.75.1",
-      "ipv6": "2a03:4000:13:31e:1::1",
-      "ula": "fd42:4992:6a6d::1",
-      "services": {
-        "wireguard": {
-          "port": "42421-42429",
-          "forward": true,
-          "proto": "udp"
-        },
-        "wireguard2": {
-          "port": "4242-4299",
-          "forward": true,
-          "proto": "udp"
-        }
-      },
-      "mounts": {
-      }
-    },
-    "postgres": {
-      "ipv4": "172.23.75.10",
-      "ipv6": "2a03:4000:13:31e:1::a",
-      "backup-scripts": [
-        {
-          "backupname": "postgresdbs",
-          "command": "backup-postgres"
-        }
-      ],
-      "ula": "fd42:4992:6a6d::a",
-      "services": {
-        "postgres": {
-          "port": 5432,
-          "allow": [
-            "adminer",
-            "ghost"
-          ]
-        }
-      }
-    },
-    "adminer": {
-      "ipv4": "172.23.75.14",
-      "ipv6": "2a03:4000:13:31e:1::e",
-      "group": "php",
-      "ula": "fd42:4992:6a6d::e",
-      "services": {
-        "adminer": {
-          "port": 9000,
-          "allow": [ ]
-        }
-      }
-    },
     "istwiki": {
       "ipv4": "172.23.75.17",
       "ipv6": "2a03:4000:13:31e:1::11",
@@ -252,18 +180,6 @@
         "ssquid": {
           "port": 8889,
           "forward": true
-        }
-      }
-    },
-    "ghost": {
-      "ipv4": "172.23.75.35",
-      "ipv6": "2a03:4000:13:31e:1::23",
-      "ula": "fd42:4992:6a6d::23",
-      "services": {
-        "ghost": {
-          "port": 9000,
-          "allow": [
-          ]
         }
       }
     }

@@ -36,7 +36,7 @@ let
 
   helo_access = pkgs.writeText "helo_access" ''
     148.251.132.243   REJECT Get lost - you're lying about who you are
-    2a03:4000:13:31e:1::10    REJECT Get lost - you're lying about who you are
+    2a03:4000:13:31e::1    REJECT Get lost - you're lying about who you are
     higgsboson.tk   REJECT Get lost - you're lying about who you are
   '';
 in {

@@ -21,10 +21,8 @@
 
     database = {
       type = "pgsql";
-      name = "ttrss";
-      user = "ttrss";
-      host = "172.23.75.10";
-      passwordFile = "/run/keys/ttrss-db-password";
+      password = "";
+      host = "/tmp";
     };
 
     extraConfig = ''
@@ -64,15 +62,9 @@
     };
   };
 
-  deployment.keys = {
-    "ttrss-db-password" = {
-      keyFile = ../secrets/ttrss-db-password;
-      user = "tt_rss";
-    };
-    "ttrss-ldap-password" = {
-      keyFile = ../secrets/ttrss-ldap-password;
-      user = "tt_rss";
-    };
+  deployment.keys."ttrss-ldap-password" = {
+    keyFile = ../secrets/ttrss-ldap-password;
+    user = "tt_rss";
   };
 
   users.users.tt_rss.extraGroups = [ "keys" ];

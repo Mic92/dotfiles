@@ -78,8 +78,6 @@ let
       lxc.hook.clone = ${lxcHooks}/bin/update-zone
       lxc.hook.clone = ${lxcHooks}/bin/create-systemd-service
 
-      lxc.hook.autodev = ${lxcHooks}/bin/dn42-routes
-
       lxc.apparmor.allow_incomplete = 1
       lxc.apparmor.profile = lxc-container-default-with-nesting
       lxc.cgroup.pattern = ""

@@ -10,9 +10,7 @@ in {
     dhcpcd.enable = false;
     # use nftables instead
     firewall.enable = false;
-    nameservers = with containers.dns; [
-      ipv4 ipv6 ula
-    ];
+    nameservers = [ "127.0.0.1" ];
   };
 
   systemd.network = with network; {
@@ -40,6 +38,7 @@ in {
         Address = ${network.ipv6}/128
         Address = 2a03:4000:13:31e:1::10/128
         Address = 2a03:4000:13:31e:1::5/128
+        Address = 2a03:4000:13:31e:1::6/128
         Gateway = fe80::1
         IPv6AcceptRA = no
         IPForward = yes
@@ -57,25 +56,7 @@ in {
         Address = ${containers.bridge.ula}/80
         Address = fe80::1/64
         Address = 2a03:4000:13:31e:1::10/128
-
         IPForward = yes
-        Domains = ${network.zone.dn42-domain} ~dn42
-
-        [Route]
-        Gateway = ${containers.dn42.ip}
-        Destination = 172.16.0.0/12
-
-        [Route]
-        Gateway = ${containers.dn42.ip}
-        Destination = 10.0.0.0/8
-
-        [Route]
-        Gateway = ${containers.dn42.ula}
-        Destination = fc00::/7
-
-        [Route]
-        Gateway = ${containers.dn42.ip6}
-        Destination = ${network.ipv6}/64
       '';
       lxc.extraConfig = ''
         [Match]

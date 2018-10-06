@@ -41,8 +41,6 @@
         driver = "PostgreSQL", 
         database = "prosody", 
         username = "prosody", 
-        password = io.open("/run/keys/prosody-db-password", "r"):read("*a"),
-        host = "172.23.75.10";
       }
 
       Component "muc.higgsboson.tk" "muc"
@@ -132,10 +130,6 @@
   deployment.keys = {
     "prosody-ldap-password" = {
       keyFile = ../secrets/prosody-ldap-password;
-      user = "prosody";
-    };
-    "prosody-db-password" = {
-      keyFile = ../secrets/prosody-db-password;
       user = "prosody";
     };
   };

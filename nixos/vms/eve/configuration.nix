@@ -19,7 +19,6 @@ in {
     ./lxc.nix
     ./modules/adminer.nix
     ./modules/backup.nix
-    ./modules/resolver.nix
     ./packages.nix
     #./modules/telegraf.nix
     ./modules/containers.nix
@@ -41,6 +40,7 @@ in {
     ./modules/rainloop.nix
     ./modules/mastodon-hnbot.nix
     ./modules/phpldapadmin.nix
+    ./modules/named.nix
   ];
 
   nixpkgs.config.packageOverrides = pkgs: {

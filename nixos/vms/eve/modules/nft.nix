@@ -95,6 +95,10 @@ in {
         tcp dport 993 accept # imaps
         tcp dport 4190 accept # sieve
 
+        # bind
+        tcp dport 53 accept
+        udp dport 53 accept
+
         # nginx
         tcp dport 80 accept # http
         tcp dport 443 accept # https
@@ -141,8 +145,6 @@ in {
           ip6 saddr { ${container.ip6}, ${container.ula} } jump lxc_${container.name}
         '') forward_jumps}
 
-        ip6 daddr ${dn42.ip6} ip6 nexthdr 50 accept comment "ipsec"
-
         counter log group 1 prefix "forward"
         meta nfproto ipv4 reject with tcp reset
         meta nfproto ipv6 reject with tcp reset
@@ -151,7 +153,6 @@ in {
       }
 
       chain lxc_all {
-        oifname "lxc_dn42" accept
         oifname "${network.wan}" accept
 
         ${lib.concatMapStrings (srv: ''
