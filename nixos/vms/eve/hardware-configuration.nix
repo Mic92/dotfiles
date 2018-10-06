@@ -18,7 +18,6 @@ let
     "zroot/data/backup" = "/data/backup";
     "zroot/data/backup/devkid" = "/data/backup/devkid";
     "zroot/data/pacman" = "/data/pacman";
-    "zroot/data/pyload" = "/lxc/pyload/rootfs/var/lib/pyload";
   } // (lib.mapAttrs' (name: _: {
     name = "zroot/lxc/${name}";
     value = "/lxc/${name}/rootfs";
