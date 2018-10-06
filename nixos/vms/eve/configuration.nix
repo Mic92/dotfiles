@@ -41,6 +41,7 @@ in {
     ./modules/mastodon-hnbot.nix
     ./modules/phpldapadmin.nix
     ./modules/named.nix
+    ./modules/syncthing.nix
   ];
 
   nixpkgs.config.packageOverrides = pkgs: {

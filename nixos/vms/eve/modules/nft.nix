@@ -108,6 +108,10 @@ in {
         # irc-dcc
         tcp dport 6760-6769 accept
 
+        # syncthing
+        tcp dport 22000 accept
+        udp dport 21027 accept
+
         iifname "${network.bridge}" accept
 
         meta nfproto ipv6 ip6 nexthdr icmpv6 accept
