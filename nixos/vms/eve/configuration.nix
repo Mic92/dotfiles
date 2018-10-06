@@ -24,7 +24,6 @@ in {
     ./modules/containers.nix
     ./modules/matemat-stats.nix
     ./modules/nft.nix
-    ./modules/mysql.nix
     ./modules/gogs.nix
     ./modules/openldap.nix
     ./modules/grafana.nix
