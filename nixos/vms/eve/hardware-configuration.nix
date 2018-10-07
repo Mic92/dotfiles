@@ -5,10 +5,6 @@
 
 with builtins;
 let
-
-  inherit ((import ./network.nix) {inherit lib;})
-    containers lxcContainers;
-
   zfsMapping = {
     "zroot/home" = "/home";
     "zroot/tmp" = "/tmp";
@@ -18,10 +14,7 @@ let
     "zroot/data/backup" = "/data/backup";
     "zroot/data/backup/devkid" = "/data/backup/devkid";
     "zroot/data/pacman" = "/data/pacman";
-  } // (lib.mapAttrs' (name: _: {
-    name = "zroot/lxc/${name}";
-    value = "/lxc/${name}/rootfs";
-  }) lxcContainers);
+  };
 
   zfsMounts = map (fs: {
     mountPoint = zfsMapping.${fs};
@@ -29,22 +22,6 @@ let
     fsType = "zfs";
     options = ["nofail"];
   }) (attrNames zfsMapping);
-
-  foldAttr = op: nul: attr:
-    foldl' (nul: key: op nul key attr.${key}) nul (attrNames attr);
-
-  bindMounts =
-    foldl' (n: toContainer:
-      foldAttr (n: fromContainer: mountFrom:
-        foldAttr (n: source: dest: [{
-            device = "/lxc/${fromContainer}/rootfs/${source}";
-            mountPoint = "/lxc/${toContainer.name}/rootfs/${if isString dest then dest else source}";
-            fsType = "none";
-            options = ["bind" "nofail"];
-          }] ++ n
-        ) n mountFrom
-      ) n (toContainer.mounts or {})
-    ) [] (attrValues containers);
 
 in {
   imports =
@@ -57,7 +34,6 @@ in {
 	    luks.devices = [ { name = "root"; device = "/dev/sda2"; } ];
 	    supportedFilesystems = [ "zfs" ];
     };
-    kernelParams = [ "systemd.legacy_systemd_cgroup_controller=yes" ];
   };
 
   fileSystems = [
@@ -74,53 +50,11 @@ in {
       options = ["bind" "nofail"];
     }
     {
-      device = "/lxc/rainloop/rootfs/srv/http/mail.higgsboson.tk";
-      mountPoint = "/srv/http/mail.higgsboson.tk";
-      fsType = "none";
-      options = ["bind" "nofail"];
-    }
-    {
-      device = "/lxc/adminer/rootfs/usr/share/webapps/adminer";
-      mountPoint = "/usr/share/webapps/adminer";
-      fsType = "none";
-      options = ["bind" "nofail"];
-    }
-    {
-      device = "/lxc/istwiki/rootfs/srv/http/ist.devkid.net";
-      mountPoint = "/srv/http/ist.devkid.net";
-      fsType = "none";
-      options = ["bind" "nofail"];
-    }
-    {
-      device = "/lxc/ldapadmin/rootfs/usr/share/webapps/phpldapadmin";
-      mountPoint = "/usr/share/webapps/phpldapadmin";
-      fsType = "none";
-      options = ["bind" "nofail"];
-    }
-    {
-      device = "/lxc/owncloud/rootfs/usr/share/webapps/nextcloud";
-      mountPoint = "/usr/share/webapps/nextcloud";
-      fsType = "none";
-      options = ["bind" "nofail"];
-    }
-    {
-      device = "/lxc/piwik/rootfs/usr/share/webapps/piwik";
-      mountPoint = "/usr/share/webapps/piwik";
-      fsType = "none";
-      options = ["bind" "nofail"];
-    }
-    {
-      device = "/lxc/ttrss/rootfs/usr/share/webapps/tt-rss";
-      mountPoint = "/usr/share/webapps/tt-rss";
-      fsType = "none";
-      options = ["bind" "nofail"];
-    }
-    {
       mountPoint = "/";
       device = "zroot/root";
       fsType = "zfs";
     }
-  ] ++ zfsMounts ++ bindMounts;
+  ] ++ zfsMounts;
 
   nix.maxJobs = lib.mkDefault 8;
 }

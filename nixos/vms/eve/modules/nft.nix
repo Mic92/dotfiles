@@ -1,62 +1,8 @@
 { lib, ... }:
 
-with builtins;
-let
-  network = (import ../network.nix) {inherit lib;};
-
-  json = (fromJSON (readFile ../lxc/container.json)).network;
-  containers = lib.mapAttrs (name: container:
-    container // {
-      inherit name;
-      ip = container.ipv4;
-      ip6 = container.ipv6;
-  }) json;
-
-  getServices = container:
-    if container ? "services" then
-      map (name:
-        let
-          service = container.services.${name};
-          allow = service.allow or [];
-        in {
-          inherit name;
-          ip  = lib.removeSuffix "/32" container.ipv4;
-          ip6 = lib.removeSuffix "/128" container.ipv6;
-          ula = lib.removeSuffix "/128" container.ula;
-          port = toString service.port;
-          proto = service.proto or "tcp";
-          forward = service.forward or false;
-          forward_port = if (isBool (service.forward or false)) then
-            toString service.port
-          else
-            toString service.forward;
-          allow = filter (s: s != "all") allow;
-          allow_all = elem "all" allow;
-        }) (attrNames container.services)
-    else
-      [];
-
-  services = foldl' (a: name:
-    (getServices containers.${name}) ++ a
-  ) [] (attrNames containers);
-
-  public_services = filter (s: s.allow_all) services;
-
-  forward_services = filter (s: isInt(s.forward) || isString(s.forward) || s.forward) services;
-
-  forward_jumps = map (name: containers.${name})
-    (lib.unique (lib.flatten (catAttrs "allow" services)));
-
-  forward_chains = map (container: {
-    container_name = container.name;
-    services = filter (srv: elem container.name srv.allow) services;
-  }) forward_jumps;
-
-  optionalPort = p: optionalString (p != "") ":${p}";
-
-in {
+{
   networking.nftables.enable = true;
-  networking.nftables.ruleset = with containers; ''
+  networking.nftables.ruleset = ''
     table inet filter {
       chain input {
         type filter hook input priority 0;
@@ -112,7 +58,18 @@ in {
         tcp dport 22000 accept
         udp dport 21027 accept
 
-        iifname "${network.bridge}" accept
+        # squid
+        tcp dport 8888 accept
+        tcp dport 8889 accept
+
+        # teamspeak
+        tcp dport 30033 accept # ts3_ft
+        tcp dport 10011 accept # ts3_sq
+        tcp dport 41144 accept # ts3_dns
+        udp dport 9987 accept # ts3_devkid
+        udp dport 22222 accept # ts3_martijn
+        udp dport 5037 accept # ts3_martin
+        udp dport 9000 accept # ts3_putzy
 
         meta nfproto ipv6 ip6 nexthdr icmpv6 accept
         meta nfproto ipv4 ip protocol icmp accept
@@ -133,21 +90,7 @@ in {
         meta nfproto ipv6 ip6 nexthdr icmpv6 accept
         meta nfproto ipv4 ip protocol icmp accept
 
-        iifname "${network.bridge}" jump lxc_all
-        iifname "vc-*" oifname "${network.wan}" accept
-        iifname "docker0" oifname "${network.wan}" accept
-
-        ## Allow for all
-        ${lib.concatMapStrings (srv: ''
-          ip daddr ${srv.ip} ${srv.proto} dport ${srv.port} accept comment "${srv.name}"
-          ip6 daddr {${srv.ip6}, ${srv.ula}} ${srv.proto} dport ${srv.port} accept comment "${srv.name}"
-        '') forward_services}
-
-        ## LXC targets
-        ${lib.concatMapStrings (container: ''
-          ip saddr ${container.ip} jump lxc_${container.name}
-          ip6 saddr { ${container.ip6}, ${container.ula} } jump lxc_${container.name}
-        '') forward_jumps}
+        iifname "docker0" oifname "eth0" accept
 
         counter log group 1 prefix "forward"
         meta nfproto ipv4 reject with tcp reset
@@ -155,58 +98,20 @@ in {
         reject with icmp type port-unreachable
         reject with icmpv6 type port-unreachable
       }
-
-      chain lxc_all {
-        oifname "${network.wan}" accept
-
-        ${lib.concatMapStrings (srv: ''
-          ip daddr ${srv.ip} ${srv.proto} dport ${srv.port} accept comment "${srv.name}"
-          ip6 daddr {${srv.ip6}, ${srv.ula}} ${srv.proto} dport ${srv.port} accept comment "${srv.name}"
-        '') public_services}
-
-        tcp dport smtp reject with tcp reset
-      }
-
-      ${lib.concatMapStrings (e: ''
-        chain lxc_${e.container_name} {
-          ${lib.concatMapStrings (srv: ''
-            ip daddr ${srv.ip} ${srv.proto} dport ${srv.port} accept comment "${srv.name}"
-            ip6 daddr {${srv.ip6}, ${srv.ula}} ${srv.proto} dport ${srv.port} accept comment "${srv.name}"
-          '') e.services}
-        }
-      '') forward_chains}
     }
 
     table ip6 nat {
       chain prerouting {
         type nat hook prerouting priority 0;
-        ip6 daddr ${network.ipv6} iifname "${network.wan}" jump lxc_chain
-      }
-      chain lxc_chain {
-        ${lib.concatMapStrings (srv: ''
-          ${srv.proto} dport ${srv.forward_port} dnat ${srv.ip6} :${srv.port} comment "${srv.name}"
-        '') forward_services}
       }
     }
 
     table ip nat {
       chain prerouting {
         type nat hook prerouting priority 0;
-        iifname "${network.wan}" jump lxc_chain
-
-        iifname "${network.bridge}" ip daddr ${network.ipv4} meta mark set 0x42 jump lxc_chain comment "NAT reflection"
       }
       chain postrouting {
         type nat hook postrouting priority 0;
-
-        meta mark 0x42 snat ${network.ipv4} comment "NAT reflection"
-
-        oifname "${network.wan}" masquerade
-      }
-      chain lxc_chain {
-        ${lib.concatMapStrings (srv: ''
-        ${srv.proto} dport ${srv.forward_port} dnat ${srv.ip} :${srv.port} comment "${srv.name}"
-        '') forward_services}
       }
     }
   '';

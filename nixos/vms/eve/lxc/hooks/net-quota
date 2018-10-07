@@ -1,6 +1,0 @@
-#!/bin/sh
-
-tc qdisc add dev "lxc_${LXC_NAME}" root handle 1: cbq avpkt 1000 bandwidth 10000mbit
-tc class replace dev "lxc_${LXC_NAME}" parent 1: classid 1:42 cbq rate 400kbit allot 1500 prio 5 bounded isolated
-tc filter replace dev "lxc_${LXC_NAME}" parent 1:0 prio 1 protocol ip handle 42 fw flowid 1:42
-exit 0

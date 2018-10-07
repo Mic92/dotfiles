@@ -1,8 +1,0 @@
-masked_services:
-    - systemd-logind.service
-    - getty.target
-base_admins:
-    - {dest: "/home/admin", owner: "admin", group: "admin"}
-    - {dest: "/root", owner: "root", group: "root"}
-additional_admins: []
-ssh_ldap: false

@@ -14,14 +14,10 @@ in {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ./network-configuration.nix
-    ./containers.nix
-    ./lxc.nix
     ./modules/adminer.nix
-    ./modules/backup.nix
+    ./modules/borgbackup.nix
     ./packages.nix
     #./modules/telegraf.nix
-    ./modules/containers.nix
     ./modules/matemat-stats.nix
     ./modules/nft.nix
     ./modules/gogs.nix
@@ -41,7 +37,9 @@ in {
     ./modules/phpldapadmin.nix
     ./modules/named.nix
     ./modules/syncthing.nix
+    ./modules/squid.nix
     ./modules/mediawiki.nix
+    ./modules/teamspeak.nix
   ];
 
   nixpkgs.config.packageOverrides = pkgs: {
@@ -68,10 +66,6 @@ in {
     blacklistedKernelModules = [ "iptable_nat" "ip_tables" ];
   };
 
-  networking = {
-    hostName = "eve";
-    hostId = "8425e349";
-  };
 
   i18n = {
     consoleFont = "Lat2-Terminus16";
@@ -162,6 +156,36 @@ in {
     sudo.wheelNeedsPassword = false;
     audit.enable = false;
     apparmor.enable = true;
+  };
+
+  networking = {
+    hostName = "eve";
+    hostId = "8425e349";
+    dhcpcd.enable = false;
+    # use nftables instead
+    firewall.enable = false;
+    nameservers = [ "127.0.0.1" ];
+  };
+
+  systemd.network = with network; {
+    enable = true;
+    networks."eth0".extraConfig = ''
+      [Match]
+      Name = eth0
+
+      [Network]
+      DHCP = ipv4
+      Address = 2a03:4000:13:31e::1/128
+      Address = 2a03:4000:13:31e:1::10/128
+      Address = 2a03:4000:13:31e:1::5/128
+      Address = 2a03:4000:13:31e:1::6/128
+      Gateway = fe80::1
+      IPv6AcceptRA = no
+      IPForward = yes
+
+      [DHCP]
+      UseDNS = no
+    '';
   };
 
   # The NixOS release to be compatible with for stateful data such as databases.

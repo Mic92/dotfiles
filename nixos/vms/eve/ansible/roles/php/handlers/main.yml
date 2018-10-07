@@ -1,4 +1,0 @@
-- name: stop php-fpm
-  service: name=php-fpm state=restarted
-- name: Reload systemd
-  action: command systemctl daemon-reload

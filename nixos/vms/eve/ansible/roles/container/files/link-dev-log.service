@@ -1,7 +1,0 @@
-[Unit]
-Description=Symlink /dev/log to local journald
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=/usr/bin/ln -s /run/systemd/journal/dev-log /dev/log

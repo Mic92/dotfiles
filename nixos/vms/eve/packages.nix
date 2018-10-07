@@ -18,14 +18,6 @@ with pkgs;
       installPhase = ''
         mkdir -p $out/bin
         install -D --target $out/bin *
-
-        substituteInPlace $out/bin/lxc-destroy \
-          --replace '@lxc@' "${lxc}"
-
-        makeWrapper ${pkgs.lxc}/bin/lxc-attach $out/bin/lxc-attach \
-          --run "cd /root" \
-          --set HOME /root \
-          --add-flags "--clear-env --keep-var TERM --keep-var HOME"
       '';
     };
   in [
@@ -72,10 +64,8 @@ with pkgs;
 
     # additional
     mosh
-    wireguard
     gnupg1compat
     socat
     whois
-    ansible2
   ];
 }
