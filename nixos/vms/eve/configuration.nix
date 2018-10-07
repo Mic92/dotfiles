@@ -18,7 +18,6 @@ in {
     ./modules/borgbackup.nix
     ./packages.nix
     #./modules/telegraf.nix
-    ./modules/matemat-stats.nix
     ./modules/nft.nix
     ./modules/gogs.nix
     ./modules/openldap.nix

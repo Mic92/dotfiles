@@ -5,11 +5,7 @@
     paths = [
       "/home"
       "/etc"
-      "/srv"
       "/var"
-      "/usr/local"
-      "/var"
-      "/opt"
     ];
     repo = "eve-backup@backup:backup";
     encryption = {
