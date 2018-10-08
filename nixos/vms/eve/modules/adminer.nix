@@ -1,7 +1,5 @@
 { pkgs, ... }:
-let
-  adminer = pkgs.callPackage ../pkgs/adminer.nix {};
-in {
+{
   services.phpfpm.pools.adminer = {
     listen = "/run/phpfpm-adminer.sock";
     extraConfig = ''
@@ -34,7 +32,7 @@ in {
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
       '';
-      root = "${adminer}/share/adminer";
+      root = "${pkgs.nur.repos.mic92.adminer}/share/adminer";
     };
 
     virtualHosts."adminer.higgsboson.tk" = {

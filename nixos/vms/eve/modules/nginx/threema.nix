@@ -9,7 +9,7 @@
     virtualHosts."threema.thalheim.io" = {
       useACMEHost = "thalheim.io";
       forceSSL = true;
-      root = "${pkgs.callPackage ../../pkgs/threema-web.nix {}}";
+      root = "${pkgs.nur.repos.joerg.threema-web}";
     };
   };
 }

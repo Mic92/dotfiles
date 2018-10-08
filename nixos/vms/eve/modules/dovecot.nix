@@ -46,7 +46,7 @@ in {
       ssl_prefer_server_ciphers = yes
       ssl_dh=<${config.security.dhparams.params.dovecot2.path}
 
-      mail_plugins = virtual
+      mail_plugins = virtual fts fts_lucene
 
       service lmtp {
         user = vmail
@@ -111,13 +111,15 @@ in {
         sieve = /var/vmail/%d/%n/sieve/active-script.sieve
         sieve_extensions = +vacation-seconds
         sieve_vacation_min_period = 1min
+
+        fts = lucene
+        fts_lucene = whitespace_chars=@.
       }
 
       # If you have Dovecot v2.2.8+ you may get a significant performance improvement with fetch-headers:
       imapc_features = $imapc_features fetch-headers
       # Read multiple mails in parallel, improves performance
       mail_prefetch_count = 20
-
     '';
     modules = [
       pkgs.dovecot_pigeonhole

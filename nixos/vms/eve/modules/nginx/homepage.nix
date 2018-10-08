@@ -5,18 +5,6 @@
       useACMEHost = "thalheim.io";
       forceSSL = true;
       root = "/var/www/higgsboson.tk";
-      locations."/irc".extraConfig = ''
-        index index.html;
-        rewrite ^/irc/(.*)$ /$1 break;
-        root ${pkgs.callPackage ../../pkgs/glowing-bear.nix {}};
-      '';
-      locations."/weechat".extraConfig = ''
-        proxy_pass http://localhost:4242;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_read_timeout 3600;
-      '';
       locations."/http-bind".extraConfig = ''
         proxy_pass  http://localhost:5280/http-bind;
         proxy_set_header Host $host;

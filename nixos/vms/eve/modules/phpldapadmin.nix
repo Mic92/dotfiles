@@ -1,8 +1,5 @@
 { pkgs, ... }:
-
-let
-  phpldapadmin = pkgs.callPackage ../pkgs/phpldapadmin.nix {};
-in {
+{
   services.phpfpm.pools.phpldapadmin = {
     listen = "/run/phpfpm-phpldapadmin.sock";
     extraConfig = ''
@@ -35,7 +32,7 @@ in {
         fastcgi_pass unix:/run/phpfpm-phpldapadmin.sock;
         fastcgi_index index.php;
       '';
-      root = "${phpldapadmin}/share/phpldapadmin";
+      root = "${pkgs.nur.repos.mic92.phpldapadmin}/share/phpldapadmin";
     };
     virtualHosts."ldap.higgsboson.tk" = {
       useACMEHost = "higgsboson.tk";

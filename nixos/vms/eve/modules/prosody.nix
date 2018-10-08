@@ -101,9 +101,7 @@
     };
     package = pkgs.prosody.override {
       #withExtraLibs = [ pkgs.luaPackages.lpty ];
-      withExtraLibs = [ 
-        (pkgs.callPackage ../pkgs/lualdap.nix {})
-      ];
+      withExtraLibs = [ pkgs.nur.repos.mic92.lualdap ];
       withCommunityModules = [ 
         "smacks"
         "smacks_offline"

@@ -25,6 +25,7 @@ in {
     ./modules/influxdb.nix
     ./modules/prosody.nix
     ./modules/postfix.nix
+    ./modules/postgresql.nix
     ./modules/rspamd.nix
     ./modules/dovecot.nix
     ./modules/nginx/default.nix

@@ -1,7 +1,4 @@
-{ pkgs, ... }: let
-  rainloop = pkgs.callPackage ../pkgs/rainloop.nix {};
-in {
-
+{ pkgs, ... }: {
   services.phpfpm.pools.rainloop = {
     listen = "/run/phpfpm-rainloop.sock";
     extraConfig = ''
@@ -36,7 +33,7 @@ in {
         fastcgi_param   SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_pass unix:/run/phpfpm-rainloop.sock;
       '';
-      root = rainloop;
+      root = pkgs.nur.repos.mic92.rainloop;
     };
 
     virtualHosts."mail.higgsboson.tk" = {
