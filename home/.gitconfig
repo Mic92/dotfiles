@@ -13,7 +13,11 @@
 [user]
   name = Jörg Thalheim
   email = joerg@thalheim.io
-  #signingkey = CA4106B8D7CC79FA
+  signingkey = CA4106B8D7CC79FA
+[commit]
+  gpgSign = true
+[gpg]
+  program = gpg2
 [diff]
   tool = vim -d
   compactionHeuristic = true
