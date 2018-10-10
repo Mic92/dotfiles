@@ -91,9 +91,11 @@ in {
       smtp_tls_note_starttls_offer = yes
       smtpd_tls_security_level = may
       smtpd_tls_auth_only = yes
-      smtpd_tls_cert_file = /etc/letsencrypt/live/higgsboson.tk-0002/cert.pem
-      smtpd_tls_key_file = /etc/letsencrypt/live/higgsboson.tk-0002/privkey.pem
-      smtpd_tls_CAfile = /etc/letsencrypt/live/higgsboson.tk-0002/fullchain.pem
+
+      smtpd_tls_cert_file = /var/lib/acme/mail.thalheim.io/full.pem
+      smtpd_tls_key_file = /var/lib/acme/mail.thalheim.io/key.pem
+      smtpd_tls_CAfile = /var/lib/acme/mail.thalheim.io/fullchain.pem
+
       smtpd_tls_dh512_param_file = ${config.security.dhparams.params.postfix512.path}
       smtpd_tls_dh1024_param_file = ${config.security.dhparams.params.postfix2048.path}
 
@@ -160,5 +162,12 @@ in {
     enable = true;
     params.postfix512.bits = 512;
     params.postfix2048.bits = 1024;
+  };
+
+  security.acme.certs = {
+    "mail.thalheim.io" = {
+      webroot = "/var/lib/acme/acme-challenge";
+      postRun = "systemctl restart postfix.service";
+    };
   };
 }

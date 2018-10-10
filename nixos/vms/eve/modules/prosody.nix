@@ -78,14 +78,20 @@
       thalheim = {
         domain = "thalheim.io";
         enabled = true;
+        ssl.key  = "/var/lib/acme/prosody-thalheim.io/key.pem";
+        ssl.cert = "/var/lib/acme/prosody-thalheim.io/fullchain.pem";
       };
       higgsboson = {
         domain = "higgsboson.tk";
         enabled = true;
+        ssl.key  = "/var/lib/acme/prosody-higgsboson.tk/key.pem";
+        ssl.cert = "/var/lib/acme/prosody-higgsboson.tk/fullchain.pem";
       };
       devkid = {
         domain = "devkid.net";
         enabled = true;
+        ssl.key  = "/var/lib/acme/prosody-devkid.net/key.pem";
+        ssl.cert = "/var/lib/acme/prosody-devkid.net/fullchain.pem";
       };
       w01f = {
         domain = "w01f.de";
@@ -94,6 +100,8 @@
       anon = {
         enabled = true;
         domain = "anon.higgsboson.tk";
+        ssl.key  = "/var/lib/acme/prosody-anon.higgsboson.tk/key.pem";
+        ssl.cert = "/var/lib/acme/prosody-anon.higgsboson.tk/fullchain.pem";
         extraConfig = ''
           authentication = "anonymous"
         '';
@@ -115,6 +123,21 @@
         "auth_ldap"
       ];
     };
+  };
+
+  security.acme.certs = let
+    cert = domain: {
+      inherit domain;
+      webroot = "/var/lib/acme/acme-challenge";
+      postRun = "systemctl restart prosody.service";
+      allowKeysForGroup = true;
+      group = "prosody";
+    };
+  in {
+    "prosody-anon.higgsboson.tk" = cert "anon.higgsboson.tk";
+    "prosody-devkid.net" = cert "devkid.net";
+    "prosody-thalheim.io" = cert "thalheim.io";
+    "prosody-higgsboson.tk" = cert "higgsboson.tk";
   };
 
   users.users.prosody.extraGroups = [ "keys" ];

@@ -1,6 +1,5 @@
 { pkgs, config, ... }: 
 let
-  #args = /run/keys/dovecot-ldap.conf
   ldapConfig = pkgs.writeText "dovecot-ldap.conf" ''
     hosts = 127.0.0.1
     dn = "cn=dovecot,dc=mail,dc=eve"
@@ -32,15 +31,27 @@ in {
     mailGroup = "vmail";
     extraConfig = ''
       ssl = yes
-      ssl_cert = </etc/letsencrypt/live/higgsboson.tk-0002/fullchain.pem
-      ssl_key = </etc/letsencrypt/live/higgsboson.tk-0002/privkey.pem
+      ssl_cert = </var/lib/acme/imap.thalheim.io/fullchain.pem
+      ssl_key = </var/lib/acme/imap.thalheim.io/key.pem
+      local_name thalheim.io {
+        ssl_cert = </var/lib/acme/thalheim.io/fullchain.pem
+        ssl_key = </var/lib/acme/thalheim.io/key.pem
+      }
+      local_name higgsboson.tk {
+        ssl_cert = </var/lib/acme/higgsboson.tk/fullchain.pem
+        ssl_key = </var/lib/acme/higgsboson.tk/key.pem
+      }
+      local_name imap.higgsboson.tk {
+        ssl_cert = </var/lib/acme/imap.higgsboson.tk/fullchain.pem
+        ssl_key = </var/lib/acme/imap.higgsboson.tk/key.pem
+      }
       local_name devkid.net {
-        ssl_cert = </etc/letsencrypt/live/devkid.net/fullchain.pem
-        ssl_key = </etc/letsencrypt/live/devkid.net/privkey.pem
+        ssl_cert = </var/lib/acme/devkid.net/fullchain.pem
+        ssl_key = </var/lib/acme/devkid.net/key.pem
       }
       local_name imap.devkid.net {
-        ssl_cert = </etc/letsencrypt/live/devkid.net-2/fullchain.pem
-        ssl_key = </etc/letsencrypt/live/devkid.net-2/privkey.pem
+        ssl_cert = </var/lib/acme/imap.devkid.net/fullchain.pem
+        ssl_key = </var/lib/acme/imap.devkid.net/key.pem
       }
       ssl_cipher_list = AES128+EECDH:AES128+EDH
       ssl_prefer_server_ciphers = yes
@@ -149,4 +160,17 @@ in {
   systemd.services.dovecot2.preStart = ''
     sed -e "s!@ldap-password@!$(cat /run/keys/dovecot-ldap-password)!" ${ldapConfig} > /run/dovecot2/ldap.conf
   '';
+
+  security.acme.certs = let
+    cert = {
+      postRun = "systemctl restart dovecot2.service";
+      webroot = "/var/lib/acme/acme-challenge";
+      allowKeysForGroup = true;
+      group = "dovecot2";
+    };
+  in {
+    "imap.higgsboson.tk" = cert;
+    "imap.thalheim.io" = cert;
+    "imap.devkid.net" = cert;
+  };
 }
