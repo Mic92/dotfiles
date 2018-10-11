@@ -40,6 +40,7 @@ in {
     ./modules/squid.nix
     ./modules/mediawiki.nix
     ./modules/teamspeak.nix
+    ./modules/netdata.nix
   ];
 
   nixpkgs.config.packageOverrides = pkgs: {
