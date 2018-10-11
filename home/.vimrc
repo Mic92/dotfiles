@@ -98,6 +98,7 @@ autocmd BufEnter * highlight Normal guibg=0
 
 runtime macros/matchit.vim
 
+set background=dark
 colorscheme solarized
 
 map <C-n> :NERDTreeToggle<CR>

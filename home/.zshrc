@@ -353,7 +353,7 @@ if [ -n "${commands[xclip]}" ]; then
   pbpaste2() { xclip -selection clipboard -o }
 fi
 if [ -n "${commands[bat]}" ]; then 
-  alias cat="bat --style plain,changes,header --theme 'Lyte-Solarized-Light'"
+  alias cat="bat --style plain,changes,header"
 fi
 
 ## PROFILE
@@ -671,6 +671,7 @@ if [ -f "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh" ]
 fi
 if [ -f "$HOME/.zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
   source "$HOME/.zsh-autosuggestions/zsh-autosuggestions.zsh"
+  export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE=fg=60
 fi
 if [ -f "$HOME/.homesick/repos/homeshick/homeshick.sh" ]; then
   source "$HOME/.homesick/repos/homeshick/homeshick.sh"
