@@ -13,6 +13,9 @@
         transfer-format many-answers;
         keys { ns.chelnok.de-ns1.higgsboson.tk.;};
       };
+      statistics-channels { 
+        inet 127.0.0.1 port 8053 allow { 127.0.0.1; }; 
+      };
     '';
     extraOptions = ''
       allow-recursion {
@@ -60,4 +63,5 @@
       user = "named";
     };
   };
+
 }
