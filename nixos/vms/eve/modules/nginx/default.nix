@@ -49,6 +49,15 @@ in {
 
     sslDhparam = config.security.dhparams.params.nginx.path;
 
+    virtualHosts."_" = {
+      locations."/stub_status".extraConfig = ''
+        stub_status;
+        # Security: Only allow access from the IP below.
+        allow 127.0.0.1;
+        # Deny anyone else
+        deny all;
+      '';
+    };
   };
 
   security.dhparams = {
