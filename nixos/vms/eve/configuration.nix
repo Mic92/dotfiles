@@ -16,8 +16,7 @@ in {
     ./hardware-configuration.nix
     ./modules/adminer.nix
     ./modules/borgbackup.nix
-    ./packages.nix
-    #./modules/telegraf.nix
+    ./modules/packages.nix
     ./modules/nft.nix
     ./modules/gogs.nix
     ./modules/openldap.nix
@@ -41,7 +40,13 @@ in {
     ./modules/mediawiki.nix
     ./modules/teamspeak.nix
     ./modules/netdata.nix
+    ./modules/retiolum.nix
+    ./modules/wireguard.nix
+
+    ../modules/tracing.nix
+    ../modules/nix-daemon.nix
   ];
+
 
   nixpkgs.config.packageOverrides = pkgs: {
     nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
@@ -50,19 +55,13 @@ in {
   };
 
   boot = {
-    kernel.sysctl = {
-      "fs.inotify.max_queued_events" = 1048576;
-      "fs.inotify.max_user_instances" = 1048576;
-      "fs.inotify.max_user_watches" = 1048576;
-      "net.ipv6.conf.all.forwarding" = 1;
-    };
     zfs.enableUnstable = true;
+
     loader.grub = {
       enable = true;
       version = 2;
       device = "/dev/sda";
     };
-    kernelModules = ["ip6_gre"];
 
     blacklistedKernelModules = [ "iptable_nat" "ip_tables" ];
   };
@@ -76,26 +75,7 @@ in {
 
   time.timeZone = "UTC";
 
-  nix = {
-    gc = {
-      automatic = true;
-      dates = "03:15";
-    };
-    binaryCaches = [ https://cache.nixos.org/ ];
-    extraOptions = ''
-      gc-keep-outputs = true
-      gc-keep-derivations = true
-      binary-caches-parallel-connections = 3
-      build-max-jobs = 9
-      connect-timeout = 5
-    '';
-  };
-
-  nixpkgs.config.allowUnfree = true;
-
   programs = {
-    sysdig.enable = true;
-    bcc.enable = true;
     zsh = {
       enable = true;
       enableCompletion = true;

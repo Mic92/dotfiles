@@ -36,14 +36,16 @@ in {
         ConnectTo = gum
         ConnectTo = ni
         ConnectTo = prism
+        ConnectTo = eve
         AutoConnect = yes
       '';
     };
 
     networking.extraHosts = builtins.readFile (pkgs.fetchurl {
+      name = "retiolum.hosts";
       url = "https://lassul.us/retiolum.hosts";
       # FIXME
-      sha256 = "1hgc7lhaa1ygi2wk5vpy4871h98l86qncwzlwr3xxjaq6cylm1x0";
+      sha256 = "0qi7bcmkhj2kmb3qrgs3q220q9z298awy91wm9nhk4vbgj7271g0";
     });
 
     environment.systemPackages = [ config.services.tinc.networks.${netname}.package ];

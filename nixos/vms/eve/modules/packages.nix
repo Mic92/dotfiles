@@ -1,28 +1,9 @@
 { pkgs, config, ... }:
 
-with pkgs;
-
 {
-  boot = {
-    kernelPackages = linuxPackages;
-    extraModulePackages = with config.boot.kernelPackages; [
-      wireguard
-    ];
-  };
   environment.systemPackages = let
-    scripts = stdenv.mkDerivation {
-      name = "eve-scripts";
-      src = ./scripts;
-      buildInputs = [ ruby bash python3 ];
-      nativeBuildInputs = [ makeWrapper ];
-      installPhase = ''
-        mkdir -p $out/bin
-        install -D --target $out/bin *
-      '';
-    };
-  in [
-    scripts
-
+    scripts = pkgs.callPackage ./pkgs/scripts {};
+  in with pkgs; [
     ruby.devEnv
     # must have
     psmisc

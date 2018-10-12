@@ -17,4 +17,6 @@
       gc-keep-derivations = true
     '';
   };
+
+  nixpkgs.config.allowUnfree = true;
 }

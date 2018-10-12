@@ -1,7 +1,5 @@
 { pkgs, ... }: {
   systemd.network.enable = true;
-  networking.useNetworkd = true;
-
   # often hangs
   systemd.services.systemd-networkd-wait-online.enable = false;
 
