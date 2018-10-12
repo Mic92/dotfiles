@@ -31,6 +31,7 @@
         ./modules/networkd.nix
         ./modules/xfce.nix
         ./modules/builder.nix
+        ./modules/netdata.nix
       ];
 
       networking.retiolum = {
