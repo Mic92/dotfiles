@@ -71,6 +71,14 @@
         udp dport 5037 accept # ts3_martin
         udp dport 9000 accept # ts3_putzy
 
+        # tinc
+        tcp dport 655 accept
+        udp dport 655 accept
+
+        # netdata
+        ip saddr { 10.243.29.0/12 } tcp dport 19999 accept
+        ip6 saddr { 42:4992:6a6d::/16 } tcp dport 19999 accept
+
         meta nfproto ipv6 ip6 nexthdr icmpv6 accept
         meta nfproto ipv4 ip protocol icmp accept
 
