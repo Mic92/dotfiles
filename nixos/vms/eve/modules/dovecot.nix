@@ -142,12 +142,10 @@ in {
       # netdata
       service old-stats {
         unix_listener stats {
-          user = netdata
-          mode = 0644
+          user = vmail
+          group = vmail
+          mode = 0664
         }
-      }
-      protocol imap {
-        mail_plugins = $mail_plugins old_imap_stats
       }
     '';
     modules = [
@@ -197,4 +195,6 @@ in {
       name : 'local'
       socket : '/run/dovecot2/stats'
   '';
+
+  users.users.netdata.extraGroups = [ "vmail" ];
 }
