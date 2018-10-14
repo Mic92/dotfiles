@@ -14,4 +14,11 @@
       "tt_rss" 
     ];
   };
+
+  environment.etc."netdata/python.d/postgres.conf".text = ''
+    socket:
+      name     : 'local'
+      user     : 'netdata'
+      database : 'postgres'
+  '';
 }
