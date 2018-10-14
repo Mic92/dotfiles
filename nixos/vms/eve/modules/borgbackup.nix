@@ -15,7 +15,7 @@
     compression = "auto,zstd";
     startAt = "daily";
     preHook = ''
-      ${pkgs.netcat}/bin/nc -w3 home.devkid.net 22198 < /run/keys/nas-wakeup-password
+      ${pkgs.netcat}/bin/nc -w20 home.devkid.net 22198 < /run/keys/nas-wakeup-password
     '';
     prune.keep = {
       within = "1d"; # Keep all archives from the last day
