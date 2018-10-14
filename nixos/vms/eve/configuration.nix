@@ -4,11 +4,7 @@
 
 { config, pkgs, lib, ... }:
 
-let
-  sshKeys = (import ./ssh-keys.nix);
-  network = (import ./network.nix) {inherit lib;};
-
-in {
+{
   deployment.targetHost = "eve.higgsboson.tk";
 
   imports = [
@@ -109,7 +105,9 @@ in {
     vnstat.enable = true;
   };
 
-  users.extraUsers = {
+  users.extraUsers = let
+    sshKeys = (import ./ssh-keys.nix);
+  in {
     devkid = {
       isNormalUser = true;
       uid = 2002;
@@ -148,7 +146,7 @@ in {
     nameservers = [ "127.0.0.1" ];
   };
 
-  systemd.network = with network; {
+  systemd.network = {
     enable = true;
     networks."eth0".extraConfig = ''
       [Match]
