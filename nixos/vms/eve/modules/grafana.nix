@@ -59,6 +59,13 @@
     in ''
       umask 077 
       sed -e "s/@bindPassword@/$(cat /run/keys/grafana-ldap-password)/" ${ldap} > /run/grafana/ldap.toml
+
+      for i in `seq 1 10`; do
+        if pg_isready; then
+          break
+        fi
+        sleep 1
+      done
     '';
   };
 
