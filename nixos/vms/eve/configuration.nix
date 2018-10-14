@@ -38,6 +38,7 @@
     ./modules/netdata.nix
     ./modules/retiolum.nix
     ./modules/wireguard.nix
+    ./modules/phpfpm.nix
 
     ../modules/tracing.nix
     ../modules/nix-daemon.nix
