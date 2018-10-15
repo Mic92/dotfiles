@@ -171,24 +171,6 @@ in {
     };
   };
 
-  # FIXME upstream this
-  security.wrappers.postqueue = {
-    program = "postqueue";
-    source = "${pkgs.postfix}/bin/postqueue";
-    group = config.services.postfix.setgidGroup;
-    setuid = false;
-    setgid = true;
-  };
-
-  # FIXME upstream this
-  security.wrappers.postdrop = {
-    program = "postdrop";
-    source = "${pkgs.postfix}/bin/postdrop";
-    group = config.services.postfix.setgidGroup;
-    setuid = false;
-    setgid = true;
-  };
-
   environment.etc."netdata/python.d/postfix.conf".text = ''
     local:
       command: '/run/wrappers/bin/postqueue -p'
