@@ -33,8 +33,7 @@ let
 
   sieve-spam-filter = pkgs.callPackage ../pkgs/sieve-spam-filter {};
 in {
-  services.rspamd = {
-    enable = true;
+  services.rspamd = { enable = true;
     extraConfig = ''
       .include(priority=1,duplicate=merge) "${localConfig}"
     '';
@@ -113,6 +112,11 @@ in {
         proxy_pass http://localhost:11334;
       '';
     };
+  };
+
+  services.netdata.httpcheck.checks.rspamd = {
+    url = "https://rspamd.thalheim.io";
+    regex = "Rspamd";
   };
 
   systemd.services.dovecot2.preStart = ''

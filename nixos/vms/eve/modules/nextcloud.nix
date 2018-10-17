@@ -41,4 +41,9 @@
       serverAliases = [ "pim.devkid.net" ];
     };
   };
+
+  services.netdata.httpcheck.checks.nextcloud = {
+    url = "https://cloud.thalheim.io/login";
+    regex = "Nextcloud";
+  };
 }

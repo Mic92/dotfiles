@@ -22,7 +22,6 @@ in {
     ./homepage.nix
     ./ip.nix
     ./muc.nix
-    ./pyload.nix
     #./threema.nix
   ];
 
@@ -72,4 +71,12 @@ in {
     "halfco.de" = sanCertificate "halfco.de";
     "higgsboson.tk" = sanCertificate "higgsboson.tk";
   };
+
+  environment.etc."netdata/python.d/web_log.conf".text = ''
+    nginx_log3:
+      name: 'nginx'
+      path: '/var/spool/nginx/logs/access.log'
+  '';
+
+  users.users.netdata.extraGroups = [ "nginx" ];
 }

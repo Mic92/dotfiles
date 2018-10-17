@@ -14,6 +14,9 @@
       locations."/_status".extraConfig = ''
         stub_status;
       '';
+      locations."/files".extraConfig = ''
+        autoindex on;
+      '';
       extraConfig = ''
         # TODO
         #location /privat.html {
@@ -22,6 +25,7 @@
         #}
       '';
     };
+
 
     virtualHosts."www.thalheim.io" = {
       useACMEHost = "thalheim.io";
@@ -40,6 +44,10 @@
       forceSSL = true;
       globalRedirect = "thalheim.io";
     };
+  };
 
+  services.netdata.httpcheck.checks.homepage = {
+    url = "https://thalheim.io";
+    regex = "Higgs-Boson";
   };
 }

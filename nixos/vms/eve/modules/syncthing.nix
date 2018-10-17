@@ -6,9 +6,7 @@ in {
   services.syncthing = {
     enable = true;
     group = "users";
-    extraFlags = [ 
-      "-gui-address=0.0.0.0:8384"
-    ];
+    guiAddress = "0.0.0.0:8384";
   };
 
   services.nginx = {
@@ -28,4 +26,10 @@ in {
       '';
     };
   };
+
+  services.netdata.httpcheck.checks.syncthing = {
+    url = "https://syncthing.thalheim.io";
+    statusAccepted = [ 401 ];
+  };
+
 }

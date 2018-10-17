@@ -79,6 +79,11 @@
     };
   };
 
+  services.netdata.httpcheck.checks.grafana = {
+    url = "https://grafana.thalheim.io";
+    regex = "Grafana";
+  };
+
   deployment.keys = {
     "grafana-smtp-password" = {
       keyFile = ../secrets/grafana-smtp-password;

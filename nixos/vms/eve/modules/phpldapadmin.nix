@@ -63,4 +63,9 @@
   };
 
   users.groups.phpldapadmin = {};
+
+  services.netdata.httpcheck.checks.phpldapadmin = {
+    url = "https://ldap.thalheim.io";
+    regex = "phpLDAPadmin";
+  };
 }

@@ -9,6 +9,13 @@
       http_access allow ldapauth
 
       https_port 8889 cert=/var/lib/acme/devkid.net/fullchain.pem key=/var/lib/acme/devkid.net/key.pem
+
+      # for netdata
+      access_log stdio:/var/log/squid/access.log combined
+
+      # for netdata
+      http_access allow localhost manager
+      http_access deny manager
     '';
   };
 
@@ -21,4 +28,20 @@
       user = "squid";
     };
   };
+
+  environment.etc."netdata/python.d/squid.conf".text = ''
+    tcp8888new:
+      name : 'local'
+      host : 'localhost'
+      port : 8888
+      request : '/squid-internal-mgr/counters'
+  '';
+
+  environment.etc."netdata/python.d/web_log.conf".text = ''
+    squid_log3:
+      name: 'squid'
+      path: '/var/log/squid/access.log'
+  '';
+
+  users.users.netdata.extraGroups = [ "squid" ];
 }

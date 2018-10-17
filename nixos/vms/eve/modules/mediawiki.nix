@@ -134,11 +134,15 @@ in {
       '';
       root = "${mediawiki}/share/mediawiki";
     };
-
     virtualHosts."www.ist.devkid.net" = {
       useACMEHost = "devkid.net";
       forceSSL = true;
       globalRedirect = "ist.devkid.net";
     };
+  };
+
+  services.netdata.httpcheck.checks.istwiki = {
+    url = "https://ist.devkid.net";
+    regex = "Informationssystemtechnik";
   };
 }

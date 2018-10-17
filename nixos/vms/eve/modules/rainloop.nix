@@ -45,6 +45,11 @@
     };
   };
 
+  services.netdata.httpcheck.checks.rainloop = {
+    url = "https://mail.thalheim.io";
+    regex = "javascript";
+  };
+
   users.users.rainloop = {
     isSystemUser = true;
     createHome = true;
