@@ -48,6 +48,7 @@ with lib;
     networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 19999 ];
 
     environment.etc."netdata/python.d/httpcheck.conf".text = ''
+    update_every: 30
     ${lib.concatStringsSep "\n" (mapAttrsToList (site: options:
     ''
       ${site}:
