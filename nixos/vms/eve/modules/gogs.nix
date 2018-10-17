@@ -36,6 +36,11 @@
     };
   };
 
+  services.netdata.httpcheck.checks.gogs = {
+    url = "https://git.thalheim.io";
+    regex = "Gogs";
+  };
+ 
   # for database key
   systemd.services.gogs.serviceConfig.SupplementaryGroups = [ "keys" ];
 }

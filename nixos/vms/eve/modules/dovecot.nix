@@ -190,6 +190,12 @@ in {
     "imap.devkid.net" = cert;
   };
 
+  services.netdata.portcheck.checks = {
+    dovecot-imap.port = 143;
+    dovecot-imaps.port = 993;
+    dovecot-sieve.port = 4190;
+  };
+
   environment.etc."netdata/python.d/dovecot.conf".text = ''
     localsocket2:
       name : 'local'

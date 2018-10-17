@@ -29,6 +29,25 @@ with lib;
         httpcheck plugin: https://github.com/netdata/netdata/blob/master/collectors/python.d.plugin/httpcheck/httpcheck.conf
       '';
     };
+
+    services.netdata.portcheck.checks = mkOption {
+      type = types.attrsOf (types.submodule ({
+        options = {
+          host = mkOption {
+            type = types.str;
+            default = "127.0.0.1";
+            description = "Dns name/IP to check";
+          };
+          port = mkOption {
+            type = types.int;
+            description = "Tcp port number";
+          };
+        };
+      }));
+      description = ''
+        portcheck plugin: https://github.com/netdata/netdata/tree/master/collectors/python.d.plugin/portcheck
+      '';
+    };
   };
   config = {
     services.netdata = {
@@ -45,6 +64,9 @@ with lib;
         };
       };
     };
+
+    services.netdata.portcheck.checks.openssh.port = (lib.head config.services.openssh.ports);
+
     networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 19999 ];
 
     environment.etc."netdata/python.d/httpcheck.conf".text = ''
@@ -58,7 +80,20 @@ with lib;
       '') config.services.netdata.httpcheck.checks)
       }
     '';
-    systemd.services.netdata.restartTriggers = [ config.environment.etc."netdata/python.d/httpcheck.conf".source  ];
+
+    environment.etc."netdata/python.d/portcheck.conf".text = ''
+    ${lib.concatStringsSep "\n" (mapAttrsToList (service: options:
+    ''
+      ${service}:
+        host: '${options.host}'
+        port: ${toString options.port}
+      '') config.services.netdata.portcheck.checks)
+      }
+    '';
+    systemd.services.netdata.restartTriggers = [
+      config.environment.etc."netdata/python.d/httpcheck.conf".source 
+      config.environment.etc."netdata/python.d/portcheck.conf".source 
+    ];
 
     # TODO create /etc/netdata
   };

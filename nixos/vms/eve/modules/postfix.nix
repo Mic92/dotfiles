@@ -171,6 +171,12 @@ in {
     };
   };
 
+  services.netdata.portcheck.checks = {
+    postfix-smtp.port = 25;
+    postfix-smtps.port = 465;
+    postfix-submission.port = 587;
+  };
+
   environment.etc."netdata/python.d/postfix.conf".text = ''
     local:
       command: '/run/wrappers/bin/postqueue -p'

@@ -148,6 +148,11 @@
     { port = "5269"; }
   ];
 
+  services.netdata.portcheck.checks = {
+    xmpp-server.port = 5222;
+    xmpp-client.port = 5269;
+  };
+
   deployment.keys = {
     "prosody-ldap-password" = {
       keyFile = ../secrets/prosody-ldap-password;
