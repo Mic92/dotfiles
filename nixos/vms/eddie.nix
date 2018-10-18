@@ -106,7 +106,9 @@
 
       networking.firewall.enable = true;
       networking.firewall.allowedTCPPorts = [
+        22 # ssh
         3389 # xrdp
+        5900 # vnc in vagrant
         655 # tinc
       ];
       networking.firewall.allowedUDPPorts = [
@@ -115,6 +117,8 @@
         # dhcp
         67 68
       ];
+
+      networking.nameservers = [ "1.1.1.1" ];
 
       networking.firewall.trustedInterfaces = [ "virbr+" "docker0" ];
 
@@ -139,7 +143,7 @@
           extraOptions = "--storage-opt=zfs.fsname=zroot/docker";
         };
         virtualbox.host.enable = true;
-        virtualbox.host.headless = true;
+        virtualbox.host.headless = false;
       };
 
       # for zfs
@@ -173,8 +177,6 @@
         fsType = "zfs";
         options = ["nofail"];
       };
-
-      swapDevices = [ ];
 
       powerManagement.cpuFreqGovernor = "powersave";
 
