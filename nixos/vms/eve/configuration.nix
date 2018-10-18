@@ -39,6 +39,9 @@
     ./modules/retiolum.nix
     ./modules/wireguard.nix
     ./modules/phpfpm.nix
+    ./modules/docker.nix
+    ./modules/rsyncd.nix
+    ./modules/icinga-sync.nix
 
     ../modules/tracing.nix
     ../modules/nix-daemon.nix
@@ -77,12 +80,6 @@
       enable = true;
       enableCompletion = true;
     };
-  };
-
-  virtualisation.docker = {
-    enable = true;
-    storageDriver = "zfs";
-    extraOptions = "--iptables=false -D";
   };
 
   services = {
