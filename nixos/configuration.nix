@@ -41,6 +41,7 @@ in {
     ./vms/modules/nix-daemon.nix
     ./vms/modules/retiolum.nix
     ./vms/modules/networkd.nix
+    ./vms/modules/dnscrypt.nix
     ./kde.nix
   ];
 
@@ -209,18 +210,6 @@ in {
         User = "joerg";
         RemainAfterExit = "yes";
         ExecStart = "${pkgs.pamixer}/bin/pamixer --mute";
-      };
-    };
-
-    btsync = with pkgs; {
-      wantedBy = [ "multi-user.target" ];
-      description = "Bittorrent Sync user service";
-      after = [ "network.target" "local-fs.target" ];
-      enable = false;
-      serviceConfig = {
-        Restart = "on-abort";
-        User = "joerg";
-        ExecStart = "${pkgs.bittorrentSync20}/bin/btsync --nodaemon --config /home/joerg/.config/btsync/btsync.conf";
       };
     };
 

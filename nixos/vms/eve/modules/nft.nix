@@ -79,6 +79,9 @@
         ip saddr { 10.243.29.0/12 } tcp dport 19999 accept
         ip6 saddr { 42:4992:6a6d::/16 } tcp dport 19999 accept
 
+        # rsync
+        tcp dport 873 accept
+
         meta nfproto ipv6 ip6 nexthdr icmpv6 accept
         meta nfproto ipv4 ip protocol icmp accept
 

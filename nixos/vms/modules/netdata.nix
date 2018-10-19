@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 
 with lib;
 {
@@ -25,6 +25,7 @@ with lib;
           };
         };
       }));
+      default = {};
       description = ''
         httpcheck plugin: https://github.com/netdata/netdata/blob/master/collectors/python.d.plugin/httpcheck/httpcheck.conf
       '';
@@ -44,21 +45,22 @@ with lib;
           };
         };
       }));
+      default = {};
       description = ''
         portcheck plugin: https://github.com/netdata/netdata/tree/master/collectors/python.d.plugin/portcheck
       '';
     };
   };
   config = {
+    systemd.services.netdata.serviceConfig = {
+      Environment="PYTHONPATH=${pkgs.netdata}/libexec/netdata/python.d/python_modules";
+    };
+
     services.netdata = {
       enable = true;
       config = {
         global = {
-          "bind to" = (lib.concatStringsSep " " [
-            "127.0.0.1:19999"
-            "${config.networking.retiolum.ipv4}:19999"
-            "[${config.networking.retiolum.ipv6}]:19999"
-          ]);
+          "bind to" = "0.0.0.0:19999";
           "error log" = "stderr";
           "update every" = "5";
         };
@@ -67,7 +69,7 @@ with lib;
 
     services.netdata.portcheck.checks.openssh.port = (lib.head config.services.openssh.ports);
 
-    networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 19999 ];
+    networking.firewall.allowedTCPPorts = [ 19999 ];
 
     environment.etc."netdata/python.d/httpcheck.conf".text = ''
     update_every: 30

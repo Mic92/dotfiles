@@ -7,13 +7,14 @@ with pkgs;
 let
   mybrowser = firefox;
 
+  isDesktop = true;
 
   latexApps = [
     rubber
 
     (texlive.combine {
       inherit (texlive)
-      scheme-basic
+      scheme-full
 
       # awesome cv
       xetex
@@ -28,16 +29,17 @@ let
       collection-latexextra
       collection-latexrecommended
       collection-langgerman
+      siunitx
+      bibtex
+      tracklang
       IEEEtran
       algorithm2e;
     })
   ];
 
-
-  rubyApps = [ bundler bundix rubocop ];
-
   desktopApps = [
     radare2
+    rambox
 
     league-of-moveable-type
     dejavu_fonts
@@ -120,24 +122,11 @@ let
   dotfilesPath = file: ".homesick/repos/dotfiles/home/${file}";
 
 in {
-  programs.git = {
-    enable = true;
-    userEmail = "joerg@thalheim.io";
-    userName = "Joerg Thalheim";
-    package = gitFull;
-    signing = {
-      signByDefault = builtins.pathExists ../../.gnupg/S.gpg-agent;
-      key = "CA4106B8D7CC79FA";
-    };
-  };
-
   fonts.fontconfig.enableProfileFonts = true;
 
-  home.packages = ([]
-  ++ desktopApps
-  #++ latexApps
-  #++ rubyApps
-  #++ rustApps
+  home.packages = ((lib.optionals isDesktop desktopApps)
+  #++ (lib.optionals isDesktop rustApps)
+  ++ (lib.optionals isDesktop latexApps)
   #++ pythonDataLibs
   ++ debuggingApps
   ++ debuggingBasicsApps
@@ -169,6 +158,8 @@ in {
     fd
     bat
   ]);
+
+  services.syncthing.enable = isDesktop;
 
   programs.home-manager.enable = true;
   programs.home-manager.path = "https://github.com/rycee/home-manager/archive/master.tar.gz";

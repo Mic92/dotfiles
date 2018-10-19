@@ -14,9 +14,6 @@
       locations."/_status".extraConfig = ''
         stub_status;
       '';
-      locations."/files".extraConfig = ''
-        autoindex on;
-      '';
       extraConfig = ''
         # TODO
         #location /privat.html {

@@ -1,6 +1,7 @@
 { pkgs, ... }: {
 
   services.xserver.desktopManager.plasma5.enable = true;
+  services.xserver.displayManager.sddm.enable = true;
 
   environment.systemPackages = with pkgs; [
     gnome3.defaultIconTheme
@@ -8,6 +9,7 @@
 
     qt5.qttools
     kmail
+    kdeApplications.kleopatra
     kdeApplications.akonadi-mime
     kdeApplications.korganizer
     kdeApplications.kontact

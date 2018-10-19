@@ -33,6 +33,8 @@ in {
     services.tinc.networks.${netname} = {
       name = cfg.nodename;
       extraConfig = ''
+        LocalDiscovery = yes
+
         ConnectTo = gum
         ConnectTo = ni
         ConnectTo = prism

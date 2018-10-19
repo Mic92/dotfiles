@@ -152,12 +152,6 @@ in {
     '';
   };
 
-  nixpkgs.config.packageOverrides = pkgs: {
-    postfix = pkgs.postfix.override {
-      withLDAP = true;
-    };
-  };
-
   security.dhparams = {
     enable = true;
     params.postfix512.bits = 512;

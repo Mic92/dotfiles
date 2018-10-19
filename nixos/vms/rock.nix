@@ -21,6 +21,7 @@
         ./modules/networkd.nix
         ./modules/nix-daemon.nix
         ./modules/dashboard.nix
+        ./modules/netdata.nix
       ];
 
       users.extraUsers.chris = {
@@ -47,6 +48,15 @@
         3389 # xrdp
         655 # tinc
       ];
+
+      systemd.services.netdata = {
+        path = with pkgs; [ python3 ];
+      };
+
+      services.netdata.httpcheck.checks.dashboard = {
+        url = "http://dashboard.thalheim.io:3030";
+        regex = "office-dashboard";
+      };
 
       systemd.network.networks = {
         ethernet.extraConfig = ''
