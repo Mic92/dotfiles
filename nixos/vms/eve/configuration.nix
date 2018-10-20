@@ -10,6 +10,7 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+
     ./modules/adminer.nix
     ./modules/borgbackup.nix
     ./modules/packages.nix
@@ -42,128 +43,25 @@
     ./modules/docker.nix
     ./modules/rsyncd.nix
     ./modules/icinga-sync.nix
+    ./modules/users.nix
+    ./modules/network.nix
+    ./modules/zsh.nix
+    ./modules/openssh.nix
 
     ../modules/tracing.nix
     ../modules/nix-daemon.nix
+    ../modules/zfs.nix
+    ../modules/nur.nix
   ];
 
-
-  nixpkgs.config.packageOverrides = pkgs: {
-    nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
-      inherit pkgs;
-    };
-  };
-
-  boot = {
-    zfs.enableUnstable = true;
-
-    loader.grub = {
-      enable = true;
-      version = 2;
-      device = "/dev/sda";
-    };
-
-    blacklistedKernelModules = [ "iptable_nat" "ip_tables" ];
-  };
-
-
-  i18n = {
-    consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "us";
-    defaultLocale = "en_DK.UTF-8";
-  };
+  i18n.defaultLocale = "en_DK.UTF-8";
 
   time.timeZone = "UTC";
 
-  programs = {
-    zsh = {
-      enable = true;
-      enableCompletion = true;
-    };
-  };
+  security.audit.enable = false;
 
-  services = {
-    xserver = {
-      enable = true;
-      desktopManager.xfce.enable = true;
-    };
-    xrdp = {
-      enable = true;
-      defaultWindowManager = "xfce4-session";
-    };
-    zfs.autoSnapshot.enable = true;
-    openssh = {
-      enable = true;
-      ports = [
-        22022 # legacy
-        22
-      ];
-    };
-    resolved.enable = false;
-    vnstat.enable = true;
-  };
-
-  users.extraUsers = let
-    sshKeys = (import ./ssh-keys.nix);
-  in {
-    devkid = {
-      isNormalUser = true;
-      uid = 2002;
-      extraGroups = ["wheel"];
-      shell = "/run/current-system/sw/bin/zsh";
-      openssh.authorizedKeys.keys = with sshKeys; alfred ++ [''
-          command="${pkgs.borgbackup}/bin/borg serve --restrict-to-path /data/backup/devkid/pi0",no-pty,no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-user-rc ${alfredsPi}
-        ''
-        ''
-          command="${pkgs.borgbackup}/bin/borg serve --restrict-to-path /data/backup/devkid/Dokumente --restrict-to-path /data/backup/devkid/Bilder",no-pty,no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-user-rc ${alfredsNas}
-        ''
-      ];
-    };
-    joerg = {
-      isNormalUser = true;
-      uid = 2003;
-      extraGroups = ["wheel"];
-      shell = "/run/current-system/sw/bin/zsh";
-      openssh.authorizedKeys.keys = sshKeys.joerg;
-    };
-    root.openssh.authorizedKeys.keys = with sshKeys; alfred ++ joerg;
-  };
-
-  security = {
-    sudo.wheelNeedsPassword = false;
-    audit.enable = false;
-    apparmor.enable = true;
-  };
-
-  networking = {
-    hostName = "eve";
-    hostId = "8425e349";
-    dhcpcd.enable = false;
-    # use nftables instead
-    firewall.enable = false;
-    nameservers = [ "127.0.0.1" ];
-  };
-
-  systemd.network = {
-    enable = true;
-    networks."eth0".extraConfig = ''
-      [Match]
-      Name = eth0
-
-      [Network]
-      DHCP = ipv4
-      Address = 2a03:4000:13:31e::1/128
-      Address = 2a03:4000:13:31e:1::10/128
-      Address = 2a03:4000:13:31e:1::5/128
-      Address = 2a03:4000:13:31e:1::6/128
-      Gateway = fe80::1
-      IPv6AcceptRA = no
-      IPForward = yes
-
-      [DHCP]
-      UseDNS = no
-    '';
-  };
+  networking.hostName = "eve";
+  networking.hostId = "8425e349";
 
   # The NixOS release to be compatible with for stateful data such as databases.
   system.stateVersion = "18.03";

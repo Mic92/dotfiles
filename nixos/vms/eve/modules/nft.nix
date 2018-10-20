@@ -1,6 +1,9 @@
 { lib, ... }:
 
 {
+  boot.blacklistedKernelModules = [ "iptable_nat" "ip_tables" ];
+
+  networking.firewall.enable = false;
   networking.nftables.enable = true;
   networking.nftables.ruleset = ''
     table inet filter {

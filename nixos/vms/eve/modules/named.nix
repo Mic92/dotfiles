@@ -1,4 +1,7 @@
 {
+  services.resolved.enable = false;
+  networking.nameservers = [ "127.0.0.1" ];
+
   services.bind = {
     enable = true;
     forwarders = [ "9.9.9.9" ];
