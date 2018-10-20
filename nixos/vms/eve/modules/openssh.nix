@@ -1,7 +1,9 @@
 {
-  openssh.enable = true;
-  openssh.ports = [
-    22022 # legacy
-    22
-  ];
+  services.openssh = {
+    enable = true;
+    ports = [
+      22022 # legacy
+      22
+    ];
+  };
 }

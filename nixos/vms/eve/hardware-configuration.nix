@@ -23,7 +23,7 @@
     device = "/dev/disk/by-uuid/56FC-E60D";
     fsType = "vfat";
     options = ["nofail"];
-  }] ++ (lib.mapAttrs (fs: mountPoint: {
+  }] ++ (lib.mapAttrsToList (fs: mountPoint: {
     device = fs;
     mountPoint = mountPoint;
     fsType = "zfs";
