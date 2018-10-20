@@ -29,7 +29,6 @@
     ./modules/netdata.nix
     ./modules/network.nix
     ./modules/nextcloud.nix
-    ./modules/nft.nix
     ./modules/nginx/default.nix
     ./modules/openldap.nix
     ./modules/openssh.nix

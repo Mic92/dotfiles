@@ -64,6 +64,8 @@ in {
     params.nginx = {};
   };
 
+  networking.firewall.allowedTCPPorts = [ 80 443 ];
+
   #security.acme.production = false;
   security.acme.certs = {
     "thalheim.io" = sanCertificate "thalheim.io";

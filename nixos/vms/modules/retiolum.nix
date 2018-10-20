@@ -59,6 +59,9 @@ in {
       '';
     };
 
+    networking.firewall.allowedTCPPorts = [ 655 ];
+    networking.firewall.allowedUDPPorts = [ 655 ];
+
     systemd.network.enable = true;
     systemd.network.networks = {
       "${netname}".extraConfig = ''

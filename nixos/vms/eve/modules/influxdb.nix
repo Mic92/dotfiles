@@ -11,6 +11,8 @@
     };
   };
 
+  networking.firewall.allowedTCPPorts = [ 8086 ];
+
   security.acme.certs."influxdb.thalheim.io" = {
     postRun = "systemctl restart influxdb.service";
     webroot = "/var/lib/acme/acme-challenge";

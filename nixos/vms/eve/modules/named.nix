@@ -58,6 +58,9 @@
     }];
   };
 
+  networking.firewall.allowedTCPPorts = [ 53 ];
+  networking.firewall.allowedUDPPorts = [ 53 ];
+
   users.users.named.extraGroups = [ "keys" ];
   systemd.services.bind.serviceConfig.SupplementaryGroups = [ "keys" ];
   deployment.keys = {

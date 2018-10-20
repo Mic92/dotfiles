@@ -1,4 +1,4 @@
-{
+{ config, ... }: {
   services.openssh = {
     enable = true;
     ports = [
@@ -6,4 +6,5 @@
       22
     ];
   };
+  networking.firewall.allowedTCPPorts = config.services.openssh.ports;
 }

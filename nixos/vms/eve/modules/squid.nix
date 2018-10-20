@@ -19,6 +19,8 @@
     '';
   };
 
+  networking.firewall.allowedTCPPorts = [ 8888 8889 ];
+
   users.users.squid.extraGroups = [ "keys" ];
   systemd.services.squid.serviceConfig.SupplementaryGroups = [ "keys" ];
 

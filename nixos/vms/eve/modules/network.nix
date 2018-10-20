@@ -21,4 +21,6 @@
       UseDNS = no
     '';
   };
+
+  networking.firewall.enable = true;
 }

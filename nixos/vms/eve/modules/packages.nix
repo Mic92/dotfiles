@@ -41,7 +41,6 @@
     hdparm
     nftables
     dnsutils
-    iperf3
 
     # additional
     mosh

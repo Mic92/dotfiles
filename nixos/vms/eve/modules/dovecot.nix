@@ -196,6 +196,12 @@ in {
     dovecot-sieve.port = 4190;
   };
 
+  networking.firewall.allowedTCPPorts = [
+    143 # imap
+    993 # imaps
+    4190 # sieve
+  ];
+
   environment.etc."netdata/python.d/dovecot.conf".text = ''
     localsocket2:
       name : 'local'

@@ -153,6 +153,14 @@
     xmpp-client.port = 5269;
   };
 
+  networking.firewall.allowedTCPPorts = [
+    5222 # xmpp-client
+    5269 # xmpp-server
+    5280 # xmpp-bosh
+    5281 # bosh-ssl
+    6555 # xmpp-proxy65
+  ];
+
   deployment.keys = {
     "prosody-ldap-password" = {
       keyFile = ../secrets/prosody-ldap-password;
