@@ -49,7 +49,6 @@
     ./modules/tor.nix
     ./modules/tt-rss.nix
     ./modules/users.nix
-    ./modules/wireguard.nix
     ./modules/zsh.nix
     
     ../modules/nix-daemon.nix
