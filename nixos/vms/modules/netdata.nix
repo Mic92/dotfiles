@@ -62,7 +62,7 @@ in
     };
   };
   config = {
-    environment.etc."netdata/stream.conf".source = "/run/keys/stream.conf";
+    environment.etc."netdata/stream.conf".source = "/run/keys/netdata-stream.conf";
 
     deployment.keys."netdata-stream.conf" = {
       keyFile = if cfg.stream.role == "master" then
@@ -72,6 +72,8 @@ in
       user = "netdata";
     };
 
+    users.users.netdata.extraGroups = [ "keys" ];
+
     systemd.services.netdata.serviceConfig = {
       Environment="PYTHONPATH=${pkgs.netdata}/libexec/netdata/python.d/python_modules";
     };
@@ -80,7 +82,7 @@ in
       enable = true;
       config = {
         global = {
-          "bind to" = "0.0.0.0:19999";
+          "bind to" = "0.0.0.0:19999 [::]:19999";
           "error log" = "stderr";
           "update every" = "5";
         };
@@ -116,6 +118,7 @@ in
     systemd.services.netdata.restartTriggers = [
       config.environment.etc."netdata/python.d/httpcheck.conf".source 
       config.environment.etc."netdata/python.d/portcheck.conf".source 
+      config.environment.etc."netdata/stream.conf".source 
     ];
 
     # TODO create /etc/netdata

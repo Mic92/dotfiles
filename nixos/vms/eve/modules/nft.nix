@@ -68,7 +68,6 @@
         # teamspeak
         tcp dport 30033 accept # ts3_ft
         tcp dport 10011 accept # ts3_sq
-        tcp dport 41144 accept # ts3_dns
         udp dport 9987 accept # ts3_devkid
         udp dport 22222 accept # ts3_martijn
         udp dport 5037 accept # ts3_martin
