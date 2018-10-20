@@ -6,62 +6,57 @@
 
 {
   deployment.targetHost = "eve.higgsboson.tk";
+  networking.hostName = "eve";
+  networking.hostId = "8425e349";
+
+  time.timeZone = "UTC";
+  i18n.defaultLocale = "en_DK.UTF-8";
 
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-
     ./modules/adminer.nix
     ./modules/borgbackup.nix
-    ./modules/packages.nix
-    ./modules/nft.nix
+    ./modules/docker.nix
+    ./modules/dovecot.nix
     ./modules/gogs.nix
-    ./modules/openldap.nix
     ./modules/grafana.nix
+    ./modules/icinga-sync.nix
     ./modules/influxdb.nix
-    ./modules/prosody.nix
+    ./modules/mastodon-hnbot.nix
+    ./modules/mediawiki.nix
+    ./modules/named.nix
+    ./modules/netdata.nix
+    ./modules/network.nix
+    ./modules/nextcloud.nix
+    ./modules/nft.nix
+    ./modules/nginx/default.nix
+    ./modules/openldap.nix
+    ./modules/openssh.nix
+    ./modules/packages.nix
+    ./modules/phpfpm.nix
+    ./modules/phpldapadmin.nix
     ./modules/postfix.nix
     ./modules/postgresql.nix
+    ./modules/prosody.nix
+    ./modules/rainloop.nix
+    ./modules/retiolum.nix
     ./modules/rspamd.nix
-    ./modules/dovecot.nix
-    ./modules/nginx/default.nix
+    ./modules/rsyncd.nix
+    ./modules/squid.nix
+    ./modules/syncthing.nix
+    ./modules/teamspeak.nix
     ./modules/tor.nix
     ./modules/tt-rss.nix
-    ./modules/nextcloud.nix
-    ./modules/rainloop.nix
-    ./modules/mastodon-hnbot.nix
-    ./modules/phpldapadmin.nix
-    ./modules/named.nix
-    ./modules/syncthing.nix
-    ./modules/squid.nix
-    ./modules/mediawiki.nix
-    ./modules/teamspeak.nix
-    ./modules/netdata.nix
-    ./modules/retiolum.nix
-    ./modules/wireguard.nix
-    ./modules/phpfpm.nix
-    ./modules/docker.nix
-    ./modules/rsyncd.nix
-    ./modules/icinga-sync.nix
     ./modules/users.nix
-    ./modules/network.nix
+    ./modules/wireguard.nix
     ./modules/zsh.nix
-    ./modules/openssh.nix
-
-    ../modules/tracing.nix
+    
     ../modules/nix-daemon.nix
-    ../modules/zfs.nix
     ../modules/nur.nix
+    ../modules/tracing.nix
+    ../modules/zfs.nix
   ];
-
-  i18n.defaultLocale = "en_DK.UTF-8";
-
-  time.timeZone = "UTC";
-
-  security.audit.enable = false;
-
-  networking.hostName = "eve";
-  networking.hostId = "8425e349";
 
   # The NixOS release to be compatible with for stateful data such as databases.
   system.stateVersion = "18.03";
