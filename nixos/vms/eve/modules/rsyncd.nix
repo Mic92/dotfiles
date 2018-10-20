@@ -10,4 +10,6 @@
     };
   };
   networking.firewall.allowedTCPPorts = [ 873 ];
+
+  services.netdata.portcheck.checks.rsync.port = 873;
 }
