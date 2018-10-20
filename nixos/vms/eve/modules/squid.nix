@@ -45,10 +45,5 @@
       path: '/var/log/squid/access.log'
   '';
 
-  services.netdata.httpcheck.checks.squid = {
-    url = "https://devkid.net:8889";
-    statusAccepted = [ 403 ];
-  };
-
   users.users.netdata.extraGroups = [ "squid" ];
 }
