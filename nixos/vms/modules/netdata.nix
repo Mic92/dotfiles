@@ -1,9 +1,19 @@
 { config, lib, pkgs, ... }:
 
 with lib;
+let
+  cfg = config.services.netdata;
+in
 {
-  options = {
-    services.netdata.httpcheck.checks = mkOption {
+  options.services.netdata = {
+
+    stream.role = mkOption {
+      type = types.enum [ "master" "slave" ];
+      default = "slave";
+      description = "Wether to stream data";
+    };
+
+    httpcheck.checks = mkOption {
       type = types.attrsOf (types.submodule ({
         options = {
           url = mkOption {
@@ -31,7 +41,7 @@ with lib;
       '';
     };
 
-    services.netdata.portcheck.checks = mkOption {
+    portcheck.checks = mkOption {
       type = types.attrsOf (types.submodule ({
         options = {
           host = mkOption {
@@ -52,6 +62,16 @@ with lib;
     };
   };
   config = {
+    environment.etc."netdata/stream.conf".source = "/run/keys/stream.conf";
+
+    deployment.keys."netdata-stream.conf" = {
+      keyFile = if cfg.stream.role == "master" then
+        ../../secrets/netdata-stream-master.conf
+      else
+        ../../secrets/netdata-stream-slave.conf;
+      user = "netdata";
+    };
+
     systemd.services.netdata.serviceConfig = {
       Environment="PYTHONPATH=${pkgs.netdata}/libexec/netdata/python.d/python_modules";
     };
@@ -64,6 +84,7 @@ with lib;
           "error log" = "stderr";
           "update every" = "5";
         };
+        health.enable = if cfg.stream.role == "master" then "yes" else "no";
       };
     };
 
@@ -79,7 +100,7 @@ with lib;
         url: '${options.url}'
         ${optionalString (options.regex != null) "regex: '${options.regex}'"}
         status_accepted: [ ${lib.concatStringsSep " " (map toString options.statusAccepted) } ]
-      '') config.services.netdata.httpcheck.checks)
+      '') cfg.httpcheck.checks)
       }
     '';
 
@@ -89,7 +110,7 @@ with lib;
       ${service}:
         host: '${options.host}'
         port: ${toString options.port}
-      '') config.services.netdata.portcheck.checks)
+      '') cfg.portcheck.checks)
       }
     '';
     systemd.services.netdata.restartTriggers = [
