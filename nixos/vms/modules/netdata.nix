@@ -121,7 +121,23 @@ in
       config.environment.etc."netdata/stream.conf".source 
     ];
 
-    # TODO create /etc/netdata
+    environment.etc."netdata/health.d/httpcheck.conf".text = ''
+      # taken from the original but warn only if a request is at least 300ms slow
+      template: web_service_slow
+      families: *
+      on: httpcheck.responsetime
+      lookup: average -3m unaligned of time
+      units: ms
+      every: 10s
+      warn: ($this > ($1h_web_service_response_time * 4) && $this > 1000)
+      crit: ($this > ($1h_web_service_response_time * 6) && $this > 1000)
+      info: average response time over the last 3 minutes, compared to the average over the last hour
+      delay: down 5m multiplier 1.5 max 1h
+      options: no-clear-notification
+      to: webmaster
+    '';
+
+     # TODO create /etc/netdata
   };
 
 }
