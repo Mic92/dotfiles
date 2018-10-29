@@ -18,6 +18,7 @@ in {
     ./blog.nix
     ./devkid.net.nix
     ./dl.nix
+    ./glowing-bear.nix
     ./halfco.de.nix
     ./homepage.nix
     ./ip.nix
