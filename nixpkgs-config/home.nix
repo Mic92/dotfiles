@@ -76,7 +76,6 @@ let
     sublime3
   ] ++ (with nur.repos.mic92; [
     inxi
-    nix-lsp
     conky-symbols
     inconsolata-nerdfonts
     gdbgui

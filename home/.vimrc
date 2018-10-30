@@ -98,8 +98,10 @@ autocmd BufEnter * highlight Normal guibg=0
 
 runtime macros/matchit.vim
 
+let g:gruvbox_italic=1
 set background=dark
-colorscheme solarized
+set termguicolors
+color gruvbox
 
 map <C-n> :NERDTreeToggle<CR>
 
@@ -122,7 +124,6 @@ nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
 
 let g:UltiSnipsSnippetsDir        = expand('~/.vim/UltiSnips')
 let g:UltiSnipsSnippetDirectories = [expand('~/.vim/UltiSnips'), expand('~/.vim/vim-snippets/UltiSnips')]
-
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
@@ -176,14 +177,14 @@ endfunction
 nmap <leader>l :call LineToClipboard()<CR>
 " }}}
 
-noremap <Leader>a :Ack <cword><cr>
-vnoremap <Leader>a y:Ack <C-r>=fnameescape(@")<CR><CR>
+noremap <leader>a :Ack <cword><cr>
+vnoremap <leader>a y:Ack <C-r>=fnameescape(@")<CR><CR>
 
 " Copy to clipboard
-vnoremap  <leader>y  "+y
-nnoremap  <leader>Y  "+yg_
-nnoremap  <leader>y  "+y
-nnoremap  <leader>yy  "+yy
+vnoremap <leader>y "+y
+nnoremap <leader>Y "+yg_
+nnoremap <leader>y "+y
+nnoremap <leader>yy "+yy
 
 " Paste from clipboard
 nnoremap <leader>p "+p

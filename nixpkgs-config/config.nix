@@ -10,8 +10,6 @@
          fugitive
          rhubarb
          vim-grammarous
-         vim-docbk
-         vim-docbk-snippets
          vim-husk
          UltiSnips
          vim-autoformat
@@ -28,7 +26,7 @@
          airline
          nerdtree
          nerdtree-git-plugin
-         colors-solarized
+         gruvbox
          ack-vim
          vim-go
          vim-polyglot

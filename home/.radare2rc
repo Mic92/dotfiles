@@ -2,16 +2,3 @@ e asm.pseudo = true
 e scr.utf8 = true
 e scr.color = 3
 eco tango
-
-# more readable with solarized
-ec gui.alt_background rgb:de8
-ec help rbg:28d
-ec offset rbg:28d
-ec math rbg:28d
-ec bin rbg:28d
-ec bin rbg:28d
-ec cmp rbg:28d
-ec cmp rbg:28d
-ec mov rbg:28d
-ec mov rbg:28d
-ec graph.trufae rbg:28d

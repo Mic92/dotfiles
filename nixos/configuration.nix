@@ -273,7 +273,7 @@ in {
     sudo.wheelNeedsPassword = false;
   };
 
-  services.dbus.packages = with pkgs; [ gnome3.dconf ];
+  services.dbus.packages = with pkgs; [ gnome3.dconf gnome2.GConf.out ];
 
   nixpkgs.config.allowUnfree = true;
 
