@@ -2,9 +2,10 @@
   imports = [
     ../../modules/netdata.nix
   ];
-  systemd.services.netdata = {
-    path = with pkgs; [
-      (python3.withPackages (ps: [ ps.psycopg2 ps.docker ps.dnspython ]))
+
+  services.netdata.python = {
+    extraPackages = ps: [
+      ps.psycopg2 ps.docker ps.dnspython
     ];
   };
 

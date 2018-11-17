@@ -74,10 +74,6 @@ in
 
     users.users.netdata.extraGroups = [ "keys" ];
 
-    systemd.services.netdata.serviceConfig = {
-      Environment="PYTHONPATH=${pkgs.netdata}/libexec/netdata/python.d/python_modules";
-    };
-
     services.netdata = {
       enable = true;
       config = {
