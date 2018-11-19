@@ -3,7 +3,7 @@
 #
 
 # If not running interactively, don't do anything
-#[[ $- != *i* ]] && return
+[[ $- != *i* ]] && return
 
 export TTY=$(tty)
 
