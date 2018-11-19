@@ -353,7 +353,7 @@ if [ -n "${commands[xclip]}" ]; then
   pbpaste2() { xclip -selection clipboard -o }
 fi
 if [ -n "${commands[bat]}" ]; then 
-  alias cat="bat --style plain,changes,header"
+  alias cat=bat
 fi
 
 ## PROFILE
@@ -381,7 +381,12 @@ export PICTUREVIEW=eog
 export EDITOR=vim
 export VISUAL=$EDITOR
 export ALTERNATE_EDITOR=vim
-export PAGER=less
+if [[ -n ${commands[bat]} ]]; then
+  export PAGER=bat
+  export MANPAGER=less
+else
+  export PAGER=less
+fi
 export ACK_PAGER=$PAGER
 export READNULLCMD=$PAGER
 export pacman_program=pacman-color

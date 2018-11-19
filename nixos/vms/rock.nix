@@ -15,7 +15,6 @@
         ./modules/users.nix
         ./modules/retiolum.nix
         ./modules/mosh.nix
-        ./modules/overlay.nix
         ./modules/tor-ssh.nix
         ./modules/xfce.nix
         ./modules/networkd.nix

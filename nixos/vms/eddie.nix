@@ -74,6 +74,7 @@
           DNS=8.8.8.8
         '';
       };
+      hardware.pulseaudio.enable = true;
 
       boot = {
         initrd.network = {
@@ -141,8 +142,8 @@
           storageDriver = "zfs";
           extraOptions = "--storage-opt=zfs.fsname=zroot/docker";
         };
-        virtualbox.host.enable = true;
-        virtualbox.host.headless = false;
+        #virtualbox.host.enable = true;
+        #virtualbox.host.headless = false;
       };
 
       # for zfs

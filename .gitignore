@@ -3,3 +3,4 @@ home/.vim/bundle
 home/.emacs.elc
 /home/.gitconfig.local
 nixos/secrets
+nixos/vms/eve/secrets
