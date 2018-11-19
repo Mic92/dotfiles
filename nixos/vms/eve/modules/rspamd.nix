@@ -33,11 +33,13 @@ let
 
   sieve-spam-filter = pkgs.callPackage ../pkgs/sieve-spam-filter {};
 in {
-  services.rspamd = { enable = true;
+  services.rspamd = {
+    enable = true;
     extraConfig = ''
       .include(priority=1,duplicate=merge) "${localConfig}"
     '';
 
+    postfix.enable = true;
     workers.controller = {
       extraConfig = ''
         count = 1;
@@ -46,30 +48,7 @@ in {
         enable_password = "$2$cifyu958qabanmtjyofmf5981posxie7$dz3taiiumir9ew5ordg8n1ia3eb73y1t55kzc9qsjdq1n8esmqqb";
       '';
     };
-    workers.rspamd_proxy = {
-      type = "proxy";
-      extraConfig = ''
-        milter = yes; # Enable milter mode
-        timeout = 120s; # Needed for Milter usually
-        upstream "local" {
-          default = yes;
-          self_scan = yes; # Enable self-scan
-        }
-        count = 1; # Do not spawn too many processes of this type
-      '';
-      bindSockets = [{
-        socket = "/run/rspamd.sock";
-        mode = "0666";
-        owner = "rspamd";
-        group = "rspamd";
-      }];
-    };
   };
-  services.postfix.extraConfig = ''
-    smtpd_milters = unix:/run/rspamd.sock
-    non_smtpd_milters = $smtpd_milters
-    milter_default_action = accept
-  '';
 
   services.dovecot2 = {
     mailboxes = [

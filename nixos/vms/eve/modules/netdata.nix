@@ -3,11 +3,9 @@
     ../../modules/netdata.nix
   ];
 
-  services.netdata.python = {
-    extraPackages = ps: [
-      ps.psycopg2 ps.docker ps.dnspython
-    ];
-  };
+  services.netdata.python.extraPackages = ps: [
+    ps.psycopg2 ps.docker ps.dnspython
+  ];
 
   services.netdata.stream.role = "master";
 
