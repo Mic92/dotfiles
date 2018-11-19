@@ -40,6 +40,7 @@ let
   desktopApps = [
     radare2
     rambox
+    albert
 
     league-of-moveable-type
     dejavu_fonts
@@ -50,12 +51,11 @@ let
     graphicsmagick
     sshfsFuse
     sshuttle
-    dropbox
     gimp
     mpv
     youtube-dl
     mybrowser
-    chromium
+    #chromium
     aspell
     aspellDicts.de
     aspellDicts.fr
@@ -73,6 +73,7 @@ let
     xclip
     screen-message
     alacritty
+    kitty
     sublime3
   ] ++ (with nur.repos.mic92; [
     inxi

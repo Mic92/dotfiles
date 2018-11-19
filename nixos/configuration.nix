@@ -35,7 +35,6 @@ in {
     ./nfs.nix
     ./vms/modules/zfs.nix
     ./vms/modules/mosh.nix
-    ./vms/modules/overlay.nix
     ./vms/modules/tracing.nix
     ./vms/modules/tor-ssh.nix
     ./vms/modules/nix-daemon.nix

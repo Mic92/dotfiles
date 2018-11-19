@@ -19,7 +19,6 @@
         ./modules/users.nix
         ./modules/retiolum.nix
         ./modules/mosh.nix
-        ./modules/overlay.nix
         ./modules/tracing.nix
         ./modules/packages.nix
         ./modules/zfs.nix
