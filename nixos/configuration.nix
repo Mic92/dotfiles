@@ -75,22 +75,22 @@ in {
         sshUser = "nix"; 
         sshKey = "/etc/nixos/secrets/id_buildfarm"; 
         system = "x86_64-linux"; 
-        maxJobs = 16;
-        supportedFeatures = [ "big-parallel" ];
-      }
-      {
-        hostName = "dpdkm.r";
-        sshKey = "/etc/nixos/secrets/id_buildfarm"; 
-        sshUser = "nix";
-        system = "x86_64-linux"; 
         maxJobs = 8;
+        supportedFeatures = [ "big-parallel" ];
       }
       {
         hostName = "eddie.r";
         sshKey = "/etc/nixos/secrets/id_buildfarm"; 
         sshUser = "nix";
         system = "x86_64-linux"; 
-        maxJobs = 8;
+        maxJobs = 2;
+      }
+      {
+        hostName = "dpdkm.r";
+        sshKey = "/etc/nixos/secrets/id_buildfarm"; 
+        sshUser = "nix";
+        system = "x86_64-linux"; 
+        maxJobs = 4;
       }
       {
         hostName = "aarch64.nixos.community";
