@@ -180,18 +180,6 @@ nmap <leader>l :call LineToClipboard()<CR>
 noremap <leader>a :Ack <cword><cr>
 vnoremap <leader>a y:Ack <C-r>=fnameescape(@")<CR><CR>
 
-" Copy to clipboard
-vnoremap <leader>y "+y
-nnoremap <leader>Y "+yg_
-nnoremap <leader>y "+y
-nnoremap <leader>yy "+yy
-
-" Paste from clipboard
-nnoremap <leader>p "+p
-nnoremap <leader>P "+P
-vnoremap <leader>p "+p
-vnoremap <leader>P "+P
-
 autocmd QuickFixCmdPost [^l]* nested cwindow
 autocmd QuickFixCmdPost    l* nested lwindow
 
@@ -259,6 +247,30 @@ let g:UltiSnipsJumpForwardTrigger	= "<c-j>"
 let g:UltiSnipsJumpBackwardTrigger	= "<c-k>"
 let g:UltiSnipsRemoveSelectModeMappings = 0
 " }}}
+
+" {{{ Bracket paste (i.e. no more :set paste!)
+let &t_ti .= "\<Esc>[?2004h"
+let &t_te = "\e[?2004l" . &t_te
+
+function! XTermPasteBegin(ret)
+  set pastetoggle=<f29>
+  set paste
+  return a:ret
+endfunction
+
+execute "set <f28>=\<Esc>[200~"
+execute "set <f29>=\<Esc>[201~"
+map <expr> <f28> XTermPasteBegin("i")
+imap <expr> <f28> XTermPasteBegin("")
+vmap <expr> <f28> XTermPasteBegin("c")
+cmap <f28> <nop>
+cmap <f29> <nop>
+" }}}
+
+if filereadable($HOME . "/.config/nvim/osc52.vim")
+  source ~/.config/nvim/osc52.vim
+  vmap <C-c> y:call SendViaOSC52(getreg('"'))<cr>
+endif
 
 " Local config
 if filereadable($HOME . "/.vimrc.local")
