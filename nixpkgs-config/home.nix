@@ -134,7 +134,7 @@ in {
   ++ [
     myvim
     # python language server + plugins
-    (python36.withPackages(ps: [ ps.pyls-mypy ps.pyls-isort ps.pyls-black ]))
+    (python3.withPackages(ps: [ ps.pyls-mypy ps.pyls-isort ps.pyls-black ]))
 
     rustup
 
