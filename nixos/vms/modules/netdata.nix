@@ -66,8 +66,17 @@ in
 
     deployment.keys."netdata-stream.conf" = {
       keyFile = if cfg.stream.role == "master" then
+      # Generate <UUID> with `uuidgen`:
+      # [<UUID>]
+      #     enabled = yes
+      #     health enabled by default = yes
+      #
         ../../secrets/netdata-stream-master.conf
-      else
+        else
+      # [stream]
+      # enabled = yes
+      # destination = [42:4992:6a6d:a00::1]:19999
+      # api key = <UUID>
         ../../secrets/netdata-stream-slave.conf;
       user = "netdata";
     };
