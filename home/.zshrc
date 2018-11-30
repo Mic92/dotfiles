@@ -11,15 +11,19 @@ if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
 fi
 
 if [[ -z "$NIX_PATH" ]]; then
+  if [ -e /opt/nix-multiuser/nix/etc/profile.d/nix.sh ]; then
+    . /opt/nix-multiuser/nix/etc/profile.d/nix.sh
+    export PATH="$PATH:/opt/nix-multiuser/nix/bin"
+  fi
+  if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
+    . $HOME/.nix-profile/etc/profile.d/nix.sh;
+  fi
   if [[ -d $HOME/git/nixpkgs ]]; then
     export NIX_PATH="nixpkgs=$HOME/git/nixpkgs"
   fi
   if [[ -d $HOME/git/nixos-configuration ]]; then
     export NIX_PATH="$NIX_PATH:nixos-config=$HOME/git/nixos-configuration/configuration.nix:nixpkgs-overlays=$HOME/git/nixos-configuration/overlays"
   fi
-fi
-if [ -e /home/joerg/.nix-profile/etc/profile.d/nix.sh ]; then
-  . /home/joerg/.nix-profile/etc/profile.d/nix.sh;
 fi
 if [[ -S /nix/var/nix/daemon-socket/socket ]]; then
   export NIX_REMOTE=daemon
@@ -28,6 +32,9 @@ fi
 function faketty {
   script -qfc "$(printf "%q " "$@")";
 }
+
+export NIX_USER_PROFILE_DIR=${NIX_USER_PROFILE_DIR:-/nix/var/nix/profiles/per-user/${USER}}
+export NIX_PROFILES=${NIX_PROFILES:-$HOME/.nix-profile}
 
 function string_hash() {
   local hashstr=$1
@@ -126,10 +133,11 @@ home-manager() {
   typeset -A profile
   profile[turingmachine]="desktop.nix"
   profile[eddie]="desktop.nix"
-  local file="${HOME}/.config/nixpkgs/${profile[$HOST]:-common.nix}"
+  export HOME_MANAGER_CONFIG="${HOME}/.config/nixpkgs/${profile[$HOST]:-common.nix}"
+  echo "using $HOME_MANAGER_CONFIG"
 
   if [[ -n ${commands[home-manager]} ]]; then
-    command home-manager -f "$file" "$@"
+    command home-manager "$@"
   else
     if [ ! -d "$HOME/git/nixpkgs" ]; then
       git clone https://github.com/Mic92/nixpkgs/ ~/git/nixpkgs
@@ -137,7 +145,7 @@ home-manager() {
     fi
 
     nix-shell https://github.com/rycee/home-manager/archive/master.tar.gz -A install
-    command home-manager -f "$file" "$@"
+    command home-manager "$@"
   fi
 }
 

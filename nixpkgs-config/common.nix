@@ -9,8 +9,8 @@ with pkgs;
     go2nix
     mercurial # go2nix
     nox
-    (pkgs.callPackage /home/joerg/git/nix-review {})
-    #nur.repos.mic92.nix-review-unstable
+    #(pkgs.callPackage /home/joerg/git/nix-review {})
+    nur.repos.mic92.nix-review-unstable
 
     gdb
     strace

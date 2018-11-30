@@ -87,12 +87,9 @@ $ curl https://nixos.org/nix/install -o install
 $ sh ./install --daemon
 ```
 
-Boostrap nixpkgs:
+Boostrap nixpkgs (in zsh):
 
 ```console
-$ git clone https://github.com/Mic92/nixpkgs/ ~/git/nixpkgs
-$ (cd ~/git/nixpkgs && git remote add upstream https://github.com/NixOS/nixpkgs.git)
-$ nix-shell https://github.com/rycee/home-manager/archive/master.tar.gz -A install
 $ home-manager switch
 ```
 
