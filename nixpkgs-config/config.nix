@@ -1,6 +1,7 @@
 {
   allowUnfree = true;
   pulseaudio = true;
+  #allowUnsupportedSystem = true;
   chromium.enablePepperPDF = true;
 
   packageOverrides = pkgs: let
@@ -43,15 +44,8 @@
    in {
     myVimBundle = myVimBundle;
 
-    stable = import <stable> {};
-
     nur = pkgs.callPackage (import (builtins.fetchTarball {
       url = "https://github.com/nix-community/NUR/archive/master.tar.gz";
-    })) {};
-
-    cachix = pkgs.callPackage (import (builtins.fetchGit {
-      url = "https://github.com/cachix/cachix";
-      rev = "0c8366d2a901da28388680e891d4751255e79185";
     })) {};
 
     myvim = pkgs.neovim.override {
@@ -67,11 +61,6 @@
         '';
         packages.nixbundle = myVimBundle;
       };
-    };
-
-    staging = pkgs.buildEnv {
-      name = "staging";
-      paths = [ ];
     };
   };
 }

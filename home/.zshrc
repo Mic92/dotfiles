@@ -116,16 +116,29 @@ clone(){
   cd `mktemp -d`
   git clone --depth=1 "$1"
 }
+
 rust-doc(){
   xdg-open "$(nix-build '<nixpkgs>' -A rustc.doc --no-out-link)/share/doc/rust/html/index.html"
 }
-boostrap-home-manager() {
-  if [ ! -d $HOME/git/nixpkgs ]; then
-    git clone https://github.com/Mic92/nixpkgs/ ~/git/nixpkgs
-    (cd ~/git/nixpkgs && git remote add upstream https://github.com/NixOS/nixpkgs.git)
+
+home-manager() {
+  local profile
+  typeset -A profile
+  profile[turingmachine]="desktop.nix"
+  profile[eddie]="desktop.nix"
+  local file="${HOME}/.config/nixpkgs/${profile[$HOST]:-common.nix}"
+
+  if [[ -n ${commands[home-manager]} ]]; then
+    command home-manager -f "$file" "$@"
+  else
+    if [ ! -d "$HOME/git/nixpkgs" ]; then
+      git clone https://github.com/Mic92/nixpkgs/ ~/git/nixpkgs
+      (cd ~/git/nixpkgs && git remote add upstream https://github.com/NixOS/nixpkgs.git)
+    fi
+
+    nix-shell https://github.com/rycee/home-manager/archive/master.tar.gz -A install
+    command home-manager -f "$file" "$@"
   fi
-  nix-shell https://github.com/rycee/home-manager/archive/master.tar.gz -A install
-  home-manager switch
 }
 
 ## Options

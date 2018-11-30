@@ -41,7 +41,8 @@ in {
     ./vms/modules/retiolum.nix
     ./vms/modules/networkd.nix
     ./vms/modules/dnscrypt.nix
-    ./kde.nix
+    #./kde.nix
+    ./awesome.nix
   ];
 
   boot = {
@@ -51,6 +52,7 @@ in {
       # efi.canTouchEfiVariables = true;
     };
     blacklistedKernelModules = [ "iptable_nat" "ip_tables" ];
+
   };
 
   environment.sessionVariables = {
@@ -103,7 +105,6 @@ in {
     nixPath = [
       "nixpkgs=/home/joerg/git/nixpkgs"
       "nixos-config=/home/joerg/git/nixos-configuration/configuration.nix"
-      "nixpkgs-overlays=/home/joerg/git/nixos-configuration/overlays"
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
     extraOptions = ''
