@@ -255,7 +255,6 @@ alias mkdir='nocorrect mkdir -p'
 xalias locate='locate --existing --follow --basename --ignore-case'
 alias ip='ip -c'
 xalias objdump='objdump -M intel'
-# noglobs
 alias wget='noglob wget'
 alias curl='noglob curl'
 if [[ -n ${commands[hub]} ]]; then
@@ -656,6 +655,14 @@ open() {
     echo "no suitable command found" >&2
     return 1
   fi
+}
+fixssh() {
+  for key in SSH_AUTH_SOCK SSH_CONNECTION SSH_CLIENT; do
+    if (tmux show-environment | grep "^${key}" > /dev/null); then
+      value=`tmux show-environment | grep "^${key}" | sed -e "s/^[A-Z_]*=//"`
+      export ${key}="${value}"
+    fi
+  done
 }
 
 ## Autocycle
