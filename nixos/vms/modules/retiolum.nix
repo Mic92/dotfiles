@@ -47,7 +47,7 @@ in {
       name = "retiolum.hosts";
       url = "https://lassul.us/retiolum.hosts";
       # FIXME
-      sha256 = "1brhldl47mmm78qcckvcx7ynb970vj4qpdgykkb4ysylgzvx4bk7";
+      sha256 = "0gwi39253pwxiay0lqsv59738809nhdich2pp0vxvr87b4wx91vb";
     });
 
     environment.systemPackages = [ config.services.tinc.networks.${netname}.package ];
@@ -61,7 +61,7 @@ in {
 
     networking.firewall.allowedTCPPorts = [ 655 ];
     networking.firewall.allowedUDPPorts = [ 655 ];
-    services.netdata.portcheck.checks.tinc.port = 655;
+    #services.netdata.portcheck.checks.tinc.port = 655;
 
     systemd.network.enable = true;
     systemd.network.networks = {

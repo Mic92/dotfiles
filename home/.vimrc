@@ -197,7 +197,7 @@ let g:LanguageClient_serverCommands = {
       \ 'c': ['cquery'],
       \ 'typescript': ['typescript-language-server'],
       \ 'python': ['pyls'],
-      \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
+      \ 'rust': ['rustup', 'run', 'stable', 'rls'],
       \ 'ocaml': ['ocaml-language-server', '--stdio'],
       \ 'nix': ['nix-lsp'],
       \ }

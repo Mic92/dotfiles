@@ -48,11 +48,12 @@
     ./modules/tor.nix
     ./modules/tt-rss.nix
     ./modules/users.nix
-    ./modules/zsh.nix
     
     ../modules/nix-daemon.nix
     ../modules/nur.nix
     ../modules/tracing.nix
+    ../modules/wireguard.nix
+    ./modules/zsh.nix
     ../modules/zfs.nix
   ];
 

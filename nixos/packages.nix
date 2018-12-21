@@ -37,7 +37,6 @@
     git
     tig
     ruby.devEnv
-    python
     python3
     nethogs
     iotop

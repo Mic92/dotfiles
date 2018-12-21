@@ -12,21 +12,17 @@
 
   services.syncthing.enable = true;
   home.packages = with pkgs; [
-    albert
-    arandr
-
-    rambox
-    albert
-
     league-of-moveable-type
     dejavu_fonts
     ubuntu_font_family
     unifont
+
+    arandr
+    rambox
+    albert
     gnome3.defaultIconTheme
     hicolor_icon_theme
     graphicsmagick
-    sshfsFuse
-    sshuttle
     gimp
     mpv
     youtube-dl
@@ -50,6 +46,17 @@
     screen-message
     alacritty
     sublime3
+
+    sshfsFuse
+    sshuttle
+    jq
+    httpie
+    pypi2nix
+    go2nix
+    mercurial # go2nix
+    gnupg1compat
+    cheat
+    tldr
   ] ++ (with nur.repos.mic92; [
     inxi
     conky-symbols

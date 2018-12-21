@@ -23,4 +23,9 @@
   };
 
   networking.firewall.enable = true;
+  networking.nat = {
+    enable = true;
+    externalInterface = "eth0";
+    internalIPs = [ "192.168.92.0/24" ];
+  };
 }

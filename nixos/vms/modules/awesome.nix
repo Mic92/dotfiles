@@ -1,4 +1,5 @@
 { pkgs, ... }: {
+  imports = [ ./xserver.nix ];
   services.xserver.windowManager = {
     awesome = {
       enable = true;
@@ -14,4 +15,7 @@
     evince
     xautolock
   ];
+
+  services.autorandr.enable = true;
+  programs.nm-applet.enable = true;
 }

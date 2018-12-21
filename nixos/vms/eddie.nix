@@ -27,15 +27,18 @@
         ./modules/tor-ssh.nix
         ./modules/nix-daemon.nix
         ./modules/networkd.nix
-        ./modules/xfce.nix
         ./modules/builder.nix
         ./modules/netdata.nix
+        ./modules/awesome.nix
+        #./modules/xfce.nix
       ];
 
       networking.retiolum = {
         ipv4 = "10.243.29.170";
         ipv6 = "42:4992:6a6d:700::1";
       };
+
+      programs.ssh.startAgent = true;
 
       systemd.network.networks = {
         ethernet.extraConfig = ''
@@ -94,7 +97,7 @@
       services = {
         xrdp = {
           enable = true;
-          defaultWindowManager = "xfce4-session";
+          defaultWindowManager = "awesome";
         };
 
         printing = {

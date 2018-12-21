@@ -28,7 +28,7 @@ in {
     #./libvirt.nix
     (builtins.fetchGit {
       url = "https://github.com/NixOS/nixos-hardware";
-      rev = "cfc72f6c9b4348aa9952730c52c44cf8460fbc40";
+      rev = "1e2c130d38d72860660474c36207b099c519cb6a";
     } + "/lenovo/thinkpad/x250") 
     ./dice.nix
     ./backup.nix
@@ -42,7 +42,7 @@ in {
     ./vms/modules/networkd.nix
     ./vms/modules/dnscrypt.nix
     #./kde.nix
-    ./awesome.nix
+    ./vms/modules/awesome.nix
   ];
 
   boot = {
@@ -122,7 +122,6 @@ in {
 
   services = {
     gpm.enable = true;
-    autorandr.enable = true;
     resilio = {
       enable = true;
       enableWebUI = true;
@@ -133,14 +132,6 @@ in {
     openssh = {
       enable = true;
       forwardX11 = true;
-    };
-
-    xserver = {
-      enable = true;
-      layout = "us";
-      xkbVariant = "altgr-intl";
-      xkbOptions = "caps:escape,compose:menu";
-      libinput.enable = true;
     };
 
     avahi.enable = true;
@@ -273,7 +264,7 @@ in {
     sudo.wheelNeedsPassword = false;
   };
 
-  services.dbus.packages = with pkgs; [ gnome3.dconf gnome2.GConf.out ];
+  services.dbus.packages = with pkgs; [ gnome3.dconf ];
 
   nixpkgs.config.allowUnfree = true;
 
@@ -302,17 +293,5 @@ in {
   };
 
   system.stateVersion = "18.03";
-
   services.resolved.enable = false;
-
-  #containers.database = {
-  #  privateNetwork = true;
-  #  hostAddress = "192.168.100.10";
-  #  localAddress = "192.168.100.11";
-  #  config = { config, pkgs, ... }: {
-  #    system.stateVersion = "18.03";
-  #    services.postgresql.enable = true;
-  #    environment.systemPackages = [ pkgs.htop ];
-  #  };
-  #};
 }
