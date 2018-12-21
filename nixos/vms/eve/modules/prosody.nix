@@ -139,6 +139,7 @@
     "prosody-thalheim.io" = cert "thalheim.io";
     "prosody-higgsboson.tk" = cert "higgsboson.tk";
   };
+  services.nginx.virtualHosts."anon.higgsboson.tk".useACMEHost = "thalheim.io";
 
   users.users.prosody.extraGroups = [ "keys" ];
   systemd.services.prosody.serviceConfig.SupplementaryGroups = [ "keys" ];

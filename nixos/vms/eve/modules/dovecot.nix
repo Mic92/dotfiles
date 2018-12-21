@@ -185,9 +185,13 @@ in {
       group = "dovecot2";
     };
   in {
-    "imap.higgsboson.tk" = cert;
     "imap.thalheim.io" = cert;
-    "imap.devkid.net" = cert;
+  };
+
+  services.nginx = {
+    virtualHosts."imap.higgsboson.tk".useACMEHost = "imap.thalheim.io";
+    virtualHosts."imap.thalheim.io".useACMEHost = "imap.thalheim.io";
+    virtualHosts."imap.devkid.net".useACMEHost = "imap.thalheim.io";
   };
 
   services.netdata.portcheck.checks = {
