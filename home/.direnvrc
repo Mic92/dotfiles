@@ -2,18 +2,18 @@ use_nix() {
   local path="$(nix-instantiate --find-file nixpkgs)"
 
   if [ -f "${path}/.version-suffix" ]; then
-    local version="$(< $path/.version-suffix)"
-  else
-    local version="$(git -C $path rev-parse HEAD)"
+    local version="$(< '$path/.version-suffix')"
+  elif [ -f "${path}/.git" ]; then
+    local version="$(< $(< ${path}/.git/HEAD))"
   fi
 
   local cache=".direnv/cache-${version:-unknown}"
 
   if [[ ! -e "$cache" ]] || \
     [[ "$HOME/.direnvrc" -nt "$cache" ]] || \
-    [[ ".envrc" -nt "$cache" ]] || \
-    [[ "default.nix" -nt "$cache" ]] || \
-    [[ "shell.nix" -nt "$cache" ]];
+    [[ .envrc" -nt "$cache" ]] || \
+    [[ default.nix -nt "$cache" ]] || \
+    [[ shell.nix -nt "$cache" ]];
   then
     [ -d .direnv ] || mkdir .direnv
     local tmp=$(nix-shell --show-trace --pure "$@" \
