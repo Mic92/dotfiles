@@ -1,5 +1,13 @@
 use_nix() {
-  local cache=".direnv.$(nixos-version --hash)"
+  local path="$(nix-instantiate --find-file nixpkgs)"
+
+  if [ -f "${path}/.version-suffix" ]; then
+    local version="$(< '$path/.version-suffix')"
+  else
+    local version="$(git -C $path rev-parse HEAD)"
+  fi
+
+  local cache=".direnv/cache-${version}"
 
   if [[ ! -e "$cache" ]] || \
     [[ "$HOME/.direnvrc" -nt "$cache" ]] || \
@@ -7,17 +15,17 @@ use_nix() {
     [[ "default.nix" -nt "$cache" ]] || \
     [[ "shell.nix" -nt "$cache" ]];
   then
-    local tmp="$(mktemp "${cache}.tmp-XXXXXXXX")"
-    trap "rm -rf '$tmp' >/dev/null" EXIT
-    nix-shell --show-trace "$@" --run 'direnv dump' > "$tmp" && \
-    mv "$tmp" "$cache"
+    [ -d .direnv ] || mkdir .direnv
+    local tmp=$(nix-shell --show-trace --pure "$@" --run "\"$direnv\" dump bash")
+    echo "$tmp" > "$cache"
   fi
 
-  direnv_load cat "$cache"
+  local path_backup=$PATH
+  eval "$(< $cache)"
+  export PATH=$PATH:$path_backup
 
   if [[ $# = 0 ]]; then
     watch_file default.nix
     watch_file shell.nix
-    rm direnv.* 2>/dev/null
   fi
 }
