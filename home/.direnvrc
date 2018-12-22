@@ -7,7 +7,7 @@ use_nix() {
     local version="$(git -C $path rev-parse HEAD)"
   fi
 
-  local cache=".direnv/cache-${version}"
+  local cache=".direnv/cache-${version:-unknown}"
 
   if [[ ! -e "$cache" ]] || \
     [[ "$HOME/.direnvrc" -nt "$cache" ]] || \
