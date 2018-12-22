@@ -2,7 +2,7 @@ use_nix() {
   local path="$(nix-instantiate --find-file nixpkgs)"
 
   if [ -f "${path}/.version-suffix" ]; then
-    local version="$(< '$path/.version-suffix')"
+    local version="$(< $path/.version-suffix)"
   else
     local version="$(git -C $path rev-parse HEAD)"
   fi
@@ -16,7 +16,8 @@ use_nix() {
     [[ "shell.nix" -nt "$cache" ]];
   then
     [ -d .direnv ] || mkdir .direnv
-    local tmp=$(nix-shell --show-trace --pure "$@" --run "\"$direnv\" dump bash")
+    local tmp=$(nix-shell --show-trace --pure "$@" \
+      --run "\"$direnv\" dump bash")
     echo "$tmp" > "$cache"
   fi
 
