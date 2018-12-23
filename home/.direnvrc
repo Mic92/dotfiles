@@ -2,7 +2,7 @@ use_nix() {
   local path="$(nix-instantiate --find-file nixpkgs)"
 
   if [ -f "${path}/.version-suffix" ]; then
-    local version="$(< '$path/.version-suffix')"
+    local version="$(< $path/.version-suffix)"
   elif [ -f "${path}/.git" ]; then
     local version="$(< $(< ${path}/.git/HEAD))"
   fi
@@ -11,7 +11,7 @@ use_nix() {
 
   if [[ ! -e "$cache" ]] || \
     [[ "$HOME/.direnvrc" -nt "$cache" ]] || \
-    [[ .envrc" -nt "$cache" ]] || \
+    [[ .envrc -nt "$cache" ]] || \
     [[ default.nix -nt "$cache" ]] || \
     [[ shell.nix -nt "$cache" ]];
   then
