@@ -14,8 +14,15 @@ with pkgs;
 
     # see config.nix
     myvim
+    emacs
     # python language server + plugins
-    (python3.withPackages(ps: [ ps.pyls-mypy ps.pyls-isort ps.pyls-black ]))
+    (python3.withPackages(ps: [
+      ps.pyls-mypy
+      ps.pyls-isort
+      ps.pyls-black
+      ps.flake8
+      ps.mypy
+    ]))
 
     tmux
     htop
@@ -30,6 +37,7 @@ with pkgs;
     fd
     bat
     vivid
+    silver-searcher
   ];
 
   programs.home-manager.enable = true;

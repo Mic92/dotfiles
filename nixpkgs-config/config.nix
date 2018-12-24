@@ -36,7 +36,6 @@
          editorconfig-vim
          ctrlp
          rust-vim
-         vim-yapf
          vim-signify
          vim-nix
        ];
