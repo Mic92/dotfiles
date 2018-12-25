@@ -33,9 +33,9 @@
   uncommit = reset --soft HEAD^
   pr = !"pr() { git fetch origin pull/$1/head:pr-$1; git checkout pr-$1; }; pr"
   backport = cherry-pick -x
+  cp = cherry-pick
   reset-pr = reset --hard FETCH_HEAD
   publish = !git pull && git push
-
 [push]
   default = simple
 [rerere]
