@@ -128,14 +128,16 @@ rust-doc(){
   xdg-open "$(nix-build '<nixpkgs>' -A rustc.doc --no-out-link)/share/doc/rust/html/index.html"
 }
 
-home-manager() {
+function {
   local profile
   typeset -A profile
   profile[turingmachine]="desktop.nix"
   profile[eddie]="desktop.nix"
   export HOME_MANAGER_CONFIG="${HOME}/.config/nixpkgs/${profile[$HOST]:-common.nix}"
-  echo "using $HOME_MANAGER_CONFIG"
+}
 
+home-manager() {
+  echo "using $HOME_MANAGER_CONFIG"
   if [[ -n ${commands[home-manager]} ]]; then
     command home-manager "$@"
   else
@@ -237,8 +239,15 @@ alias df='df -hT'
 xalias df='dfc'
 # File management
 if [[ -n ${commands[exa]} ]]; then
-  alias ls='exa'
-  alias tree='exa -T'
+  if [ -n "${commands[vivid]}" ]; then 
+    LS_COLORS="$(vivid -m 8-bit generate molokai)"
+  fi
+  function ls() {
+    LS_COLORS=$LS_COLORS exa --classify
+  }
+  function tree() {
+    LS_COLORS=$LS_COLORS exa -T
+  }
 elif [[ $OSTYPE == freebsd* ]]; then
   alias ls='ls -G'
 else
@@ -274,7 +283,11 @@ alias gdb='gdb --quiet --args'
 # Editors
 [[ -n ${commands[vi]} ]] && alias vi=vim
 xalias vim="nvim"
-xalias ee="emacs -nw"
+if [[ -n ${commands[emacs]} ]]; then
+  ee(){
+    emacsclient -c --alternate-editor= -nw "$@" -s ${XDG_RUNTIME_DIR:-~/.emacs.d}/emacs
+  }
+fi
 # Package management
 if [[ -f /etc/debian_version ]] ; then
   alias apt-get='sudo apt-get'
@@ -402,8 +415,8 @@ export EDITOR=vim
 export VISUAL=$EDITOR
 export ALTERNATE_EDITOR=vim
 if [[ -n ${commands[bat]} ]]; then
-  export PAGER=bat
   export MANPAGER=less
+  export PAGER=bat
 else
   export PAGER=less
 fi
@@ -556,11 +569,7 @@ moshlogin(){
   mosh -A -p 60011:60011 login
 }
 # List directory after changing directory
-if [ "${commands[exa]}" ]; then
-  chpwd() { exa }
-else
-  chpwd() { ls }
-fi
+chpwd() { ls }
 mkcd() { mkdir -p "$1" && cd "$1"; }
 # make cd accept files
 cd() {
