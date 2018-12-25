@@ -267,9 +267,12 @@ cmap <f28> <nop>
 cmap <f29> <nop>
 " }}}
 
-if filereadable($HOME . "/.config/nvim/osc52.vim")
-  source ~/.config/nvim/osc52.vim
-  vmap <C-c> y:call SendViaOSC52(getreg('"'))<cr>
+if filereadable($HOME . "/bin/osc52")
+  function SendViaOSC52()
+    " horrible hack but neovim seems to filter osc52 escapes
+    echo system('f=mktemp; echo '.shellescape(getreg('"')).' > $f; tmux splitw -- "~/bin/osc52 < $f"; rm $f')
+  endfunction
+  vmap <C-c> y:call SendViaOSC52()<cr>
 endif
 
 " Local config
