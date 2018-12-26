@@ -240,14 +240,9 @@ xalias df='dfc'
 # File management
 if [[ -n ${commands[exa]} ]]; then
   if [ -n "${commands[vivid]}" ]; then 
-    LS_COLORS="$(vivid -m 8-bit generate molokai)"
+    export LS_COLORS="$(vivid -m 8-bit generate molokai)"
   fi
-  function ls() {
-    LS_COLORS=$LS_COLORS exa --classify
-  }
-  function tree() {
-    LS_COLORS=$LS_COLORS exa -T
-  }
+  alias ls="exa --classify"
 elif [[ $OSTYPE == freebsd* ]]; then
   alias ls='ls -G'
 else
@@ -287,7 +282,7 @@ if [[ -n ${commands[emacs]} ]]; then
   ee(){
     emacsclient \
       --alternate-editor= \
-      -s "${XDG_RUNTIME_DIR:-~/.emacs.d}/emacs" \
+      -s "~/.emacs.d/emacs" \
       "${@:-.}" &
   }
 fi

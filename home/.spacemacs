@@ -322,7 +322,7 @@ you should place your code here."
   ;; should not depend on $TMPDIR
   (setq
    server-name "emacs"
-   server-socket-dir (or (getenv "XDG_RUNTIME_DIR") (expand-file-name "~/.emacs.d")))
+   server-socket-dir (expand-file-name "~/.emacs.d"))
   (server-start)
 
   ;; depending on the language treat _ or - as part of a variable name
