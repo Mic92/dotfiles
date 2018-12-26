@@ -16,6 +16,7 @@
     dejavu_fonts
     ubuntu_font_family
     unifont
+    source-code-pro
 
     arandr
     rambox

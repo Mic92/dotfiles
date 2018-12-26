@@ -1,46 +1,50 @@
-{ pkgs, ... }:
-
-with pkgs;
+{ pkgs, config, lib, ... }:
 
 {
-  home.packages = [
-    nix-prefetch-scripts
-    #(pkgs.callPackage /home/joerg/git/nix-review {})
-    nur.repos.mic92.nix-review-unstable
+  options.python.packages = lib.mkOption {
+    type = lib.types.listOf lib.types.str;
+    default = [];
+    description = ''
+      Names of python packages to install
+    '';
+  };
 
-    gdb
-    strace
-    binutils
-
-    # see config.nix
-    myvim
-    emacs
-    # python language server + plugins
-    (python3.withPackages(ps: [
-      ps.pyls-mypy
-      ps.pyls-isort
-      ps.pyls-black
-      ps.flake8
-      ps.mypy
-    ]))
-
-    tmux
-    htop
-    psmisc
-    gitAndTools.hub
-    gitAndTools.tig
-    cloc
-    mosh
-    direnv
-    fzf
-    exa
-    fd
-    bat
-    vivid
-    silver-searcher
+  imports = [
+    ./vim.nix ./emacs.nix
   ];
 
-  programs.home-manager.enable = true;
-  programs.home-manager.path = "https://github.com/rycee/home-manager/archive/master.tar.gz";
-  home.stateVersion = "18.09";
+  config = {
+    home.packages = with pkgs; [
+      nix-prefetch-scripts
+      #(pkgs.callPackage /home/joerg/git/nix-review {})
+      nur.repos.mic92.nix-review-unstable
+
+      gdb
+      strace
+      binutils
+      ccls
+
+      # python language server + plugins
+      (pkgs.python3.withPackages (ps: lib.attrVals config.python.packages ps))
+
+      tmux
+      htop
+      psmisc
+      gitAndTools.hub
+      gitAndTools.tig
+      cloc
+      mosh
+      direnv
+      fzf
+      exa
+      fd
+      bat
+      vivid
+      silver-searcher
+    ];
+
+    programs.home-manager.enable = true;
+    programs.home-manager.path = "https://github.com/rycee/home-manager/archive/master.tar.gz";
+    home.stateVersion = "18.09";
+  };
 }
