@@ -401,15 +401,10 @@ cdpath=( ~/git )
 export BROWSER=firefox
 export TERMINAL=alacritty
 export PICTUREVIEW=eog
-if [[ -n ${commands[emacs]} ]]; then
-  export EDITOR=emacs
-  ee() {
-    emacsclient \
-      -n \
-      --alternate-editor= \
-      -s ~/.emacs.d/emacs \
-      "${@:-.}"
-  }
+if [[ -n ${commands[emacsclient]} ]]; then
+  export EDITOR="emacsclient -c --alternate-editor= -s $HOME/.emacs.d/emacs"
+  alias ee="$EDITOR -c -n"
+  alias vim=ee
 else
   export EDITOR=vim
 fi
@@ -650,7 +645,7 @@ stdenv.mkDerivation {
   ];
 }
 EOF
-    ${EDITOR:-vim} default.nix
+    ${EDITOR[@]:-vim} default.nix
   fi
 }
 
