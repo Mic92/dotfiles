@@ -122,10 +122,6 @@ in {
 
   services = {
     gpm.enable = true;
-    resilio = {
-      enable = true;
-      enableWebUI = true;
-    };
     upower.enable = true;
     locate.enable = true;
 
