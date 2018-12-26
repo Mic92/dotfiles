@@ -278,15 +278,6 @@ alias gdb='gdb --quiet --args'
 # Editors
 [[ -n ${commands[vi]} ]] && alias vi=vim
 xalias vim="nvim"
-if [[ -n ${commands[emacs]} ]]; then
-  ee(){
-    emacsclient \
-      -n \
-      --alternate-editor= \
-      -s ~/.emacs.d/emacs \
-      "${@:-.}"
-  }
-fi
 # Package management
 if [[ -f /etc/debian_version ]] ; then
   alias apt-get='sudo apt-get'
@@ -410,9 +401,20 @@ cdpath=( ~/git )
 export BROWSER=firefox
 export TERMINAL=alacritty
 export PICTUREVIEW=eog
-export EDITOR=vim
+if [[ -n ${commands[emacs]} ]]; then
+  export EDITOR=emacs
+  ee() {
+    emacsclient \
+      -n \
+      --alternate-editor= \
+      -s ~/.emacs.d/emacs \
+      "${@:-.}"
+  }
+else
+  export EDITOR=vim
+fi
 export VISUAL=$EDITOR
-export ALTERNATE_EDITOR=vim
+export ALTERNATE_EDITOR=$EDITOR
 if [[ -n ${commands[bat]} ]]; then
   export MANPAGER=less
   export PAGER=bat
