@@ -1,5 +1,4 @@
 [core]
-  editor = vim
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
 [format]
