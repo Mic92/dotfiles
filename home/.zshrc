@@ -285,7 +285,10 @@ alias gdb='gdb --quiet --args'
 xalias vim="nvim"
 if [[ -n ${commands[emacs]} ]]; then
   ee(){
-    emacsclient -c --alternate-editor= -nw "$@" -s ${XDG_RUNTIME_DIR:-~/.emacs.d}/emacs
+    emacsclient \
+      --alternate-editor= \
+      -s "${XDG_RUNTIME_DIR:-~/.emacs.d}/emacs" \
+      "${@:-.}" &
   }
 fi
 # Package management
