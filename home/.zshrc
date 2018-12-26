@@ -281,9 +281,10 @@ xalias vim="nvim"
 if [[ -n ${commands[emacs]} ]]; then
   ee(){
     emacsclient \
+      -n \
       --alternate-editor= \
-      -s "~/.emacs.d/emacs" \
-      "${@:-.}" &
+      -s ~/.emacs.d/emacs \
+      "${@:-.}"
   }
 fi
 # Package management
