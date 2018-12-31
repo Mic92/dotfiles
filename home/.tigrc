@@ -2,3 +2,5 @@ bind main Enter !git diff --color %(commit) | diff-so-fancy
 bind main B !git rebase -i %(commit)
 bind generic c !git commit -v
 bind generic + !git commit --amend
+bind generic P !git push
+bind generic p !git pull
