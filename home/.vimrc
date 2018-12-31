@@ -96,6 +96,8 @@ au BufNewFile,BufRead *.geojson set filetype=json
 autocmd BufEnter * highlight Normal guibg=0
 " }}}
 
+autocmd BufNewFile,BufRead *.asd set ft=lisp
+
 runtime macros/matchit.vim
 
 let g:gruvbox_italic=1
