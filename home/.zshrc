@@ -375,8 +375,13 @@ if [ -n "${commands[xclip]}" ]; then
   pbpaste() { xclip -o }
   pbpaste2() { xclip -selection clipboard -o }
 fi
-if [ -n "${commands[bat]}" ]; then 
-  alias cat=bat
+if [ -n "${commands[bat]}" ]; then
+  cat() {
+    if [ -n "$DISPLAY" ]; then
+      xclip -selection clipboard < "$1" &
+    fi
+    bat "$@"
+  }
 fi
 
 ## PROFILE
@@ -645,7 +650,7 @@ stdenv.mkDerivation {
   ];
 }
 EOF
-    ${EDITOR[@]:-vim} default.nix
+    emacsclient -c --alternate-editor= -s $HOME/.emacs.d/emacs default.nix
   fi
 }
 
