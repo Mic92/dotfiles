@@ -68,7 +68,8 @@ in {
     mapFiles."helo_access" = helo_access;
 
     extraConfig = ''
-      smtp_bind_address = 188.68.39.17 2a03:4000:13:31e:1::10
+      smtp_bind_address = 188.68.39.17
+      smtp_bind_address6 = 2a03:4000:13:31e::1
       mailbox_transport = lmtp:unix:private/dovecot-lmtp
       masquerade_domains = ldap:${domains}
       virtual_mailbox_domains = ldap:${domains}
