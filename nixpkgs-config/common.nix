@@ -14,6 +14,12 @@
   ];
 
   config = {
+    python.packages = [
+      "pyls-mypy"
+      "pyls-isort"
+      "pyls-black"
+    ];
+
     home.packages = with pkgs; [
       nix-prefetch-scripts
       #(pkgs.callPackage /home/joerg/git/nix-review {})
