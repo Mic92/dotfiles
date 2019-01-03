@@ -10,5 +10,9 @@
     impl
     gometalinter
   ];
-  python.packages = [ "flake8" "mypy" ];
+  python.packages = [
+    "pyls-mypy"
+    "pyls-isort"
+    "pyls-black"
+  ];
 }

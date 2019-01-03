@@ -378,7 +378,7 @@ fi
 if [ -n "${commands[bat]}" ]; then
   cat() {
     if [ -n "$DISPLAY" ]; then
-      xclip -selection clipboard < "$1" &
+       xclip -selection clipboard < "$1" &
     fi
     bat "$@"
   }
@@ -407,8 +407,8 @@ export BROWSER=firefox
 export TERMINAL=alacritty
 export PICTUREVIEW=eog
 if [[ -n ${commands[emacsclient]} ]]; then
-  export EDITOR="emacsclient -c --alternate-editor= -s $HOME/.emacs.d/emacs"
-  alias ee="$EDITOR -c -n"
+  export EDITOR="emacsclient -nw --alternate-editor= -s $HOME/.emacs.d/emacs"
+  alias ee="$EDITOR"
   alias vim=ee
 else
   export EDITOR=vim
