@@ -49,8 +49,8 @@ values."
             c-c++-backend 'lsp-ccls
             c-c++-lsp-sem-highlight-rainbow t)
      csv
-     erlang
-     elixir
+     ;; erlang
+     ;; elixir
      git
      emacs-lisp
      (go :variables go-use-gometalinter t)
@@ -60,13 +60,13 @@ values."
      java
      javascript
      json
-     julia
+     ;; julia
      lua
      latex
      major-modes
      markdown
-     notmuch
-     ;ocaml
+     ;; notmuch
+     ;; ocaml
      perl5
      nixos
      deft
@@ -74,12 +74,12 @@ values."
      restructuredtext
      ruby
      rust
-     scala
+     ;; scala
      shell-scripts
      (spell-checking :variables enable-flyspell-auto-completion t)
      sql
      syntax-checking
-     typescript
+     ;; typescript
      treemacs
      vimscript
      version-control
