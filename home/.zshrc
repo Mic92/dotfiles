@@ -476,6 +476,14 @@ export LC_TIME=en_DK.UTF-8
 export PERL_CPANM_OPT="--local-lib=~/.perl5"
 export PERL5LIB=~/.perl5/lib/perl5
 export PYTHONDOCS=/usr/share/doc/python/html/
+
+# upgrade terminfo to tmux if we are inside
+if [[ -n TMUX ]] && [[ TERM != tmux-256colors ]] && [[ -n ${commands[tput]} ]]; then
+    if TERM=tmux-256color tput longname >/dev/null 2>&1 ; then
+        export TERM=tmux-256color
+    fi
+fi
+
 if [ -x "$HOME/.go/bin/go" ]; then
   export GOROOT="$HOME/.go"
   export GOROOT_BOOTSTRAP=/usr/lib/go
@@ -494,22 +502,6 @@ fi
 unlock_root(){
   echo "cryptsetup luksOpen --tries 99 /dev/sda2 root && killall cryptsetup"
   cat ~/.secret/cryptsetup-passwd | ssh -tt -v root@eve -p 2222
-}
-network() {
-  (
-    echo "$fg_bold[green]# Interfaces$reset_color"
-    ip a s $1 || ip a s | grep "$1"
-    (
-      echo "\n$fg_bold[green]# Routes (v4) $reset_color"
-      ip route;
-      echo "\n$fg_bold[green]# Routes (v6) $reset_color"
-      ip -6 route;
-      echo "\n$fg_bold[green]# Rule $reset_color"
-      ip rule;
-      echo "\n$fg_bold[green]# Neighbor $reset_color"
-      ip neigh
-    ) | grep --color=always "$1"
-  ) | less '+/#'
 }
 # Autoinstall Bundle
 bundle() {
