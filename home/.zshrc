@@ -6,7 +6,6 @@ if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
   if [[ -n "$SSH_AUTH_SOCK" ]]  then
     tmux set-environment -g SSH_AUTH_SOCK "$SSH_AUTH_SOCK" 2>/dev/null
   fi
-
   tmux -u attach-session || tmux -u
 fi
 
@@ -407,14 +406,20 @@ export BROWSER=firefox
 export TERMINAL=alacritty
 export PICTUREVIEW=eog
 if [[ -n ${commands[emacsclient]} ]]; then
-  export EDITOR="emacsclient -nw --alternate-editor= -s $HOME/.emacs.d/emacs"
+  export EDITOR="emacsclient -f ~/.emacs.d/server/emacs -nw"
   alias ee="$EDITOR"
   alias vim=ee
 else
   export EDITOR=vim
 fi
+
+if [[ -n ${command[nvim]} ]]; then
+    export ALTERNATE_EDITOR=nvim
+elif [[ -n ${command[vim]} ]]; then
+    export ALTERNATE_EDITOR=vim
+fi
+
 export VISUAL=$EDITOR
-export ALTERNATE_EDITOR=$EDITOR
 if [[ -n ${commands[bat]} ]]; then
   export MANPAGER=less
   export PAGER=bat
