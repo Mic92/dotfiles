@@ -1,14 +1,17 @@
 { pkgs, ... }: {
   deployment.targetHost = "172.23.75.254";
 
-  fileSystems."/mnt/hdd" = {
-    device = "UUID=1d377ab7-65ca-492d-9ea4-620034230192";
-    fsType = "ext4";
-    options = [
-      "defaults"
-      "nofail"
-      "x-systemd.device-timeouts=2"
-    ];
+  fileSystems = {
+    "/mnt/hdd" = {
+       device = "UUID=1d377ab7-65ca-492d-9ea4-620034230192";
+       fsType = "ext4";
+       options = [ "defaults" "nofail" "x-systemd.device-timeouts=2" ];
+    };
+    "/mnt/backup" = {
+      device = "UUID=11ac8bec-aef1-45ca-a530-2115d403ce53";
+      fsType = "ext4";
+      options = [ "defaults" "nofail" "x-systemd.device-timeouts=2" ];
+    };
   };
 
   imports = [
@@ -21,10 +24,12 @@
     ../modules/netdata.nix
     ../modules/rpi3.nix
 
+    ./modules/borgbackup.nix
     ./modules/samba.nix
     ./modules/cups.nix
     ./modules/network.nix
     ./modules/cloud-print-connector.nix
+    ./modules/rsyncd.nix
   ];
 
   networking.hostName = "matchbox";

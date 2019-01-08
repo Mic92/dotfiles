@@ -15,6 +15,9 @@
       printing = cups
       printcap name = cups
       security = user
+
+      [global]
+        syslog only = yes
     '';
     shares = {
       printers = {

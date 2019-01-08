@@ -18,5 +18,7 @@
     '';
   };
 
+  imports = [ ./builder.nix ];
+
   nixpkgs.config.allowUnfree = true;
 }

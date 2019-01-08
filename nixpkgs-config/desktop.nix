@@ -28,6 +28,7 @@
     mpv
     youtube-dl
     firefox
+    thunderbird
     chromium
     aspell
     aspellDicts.de
@@ -58,6 +59,7 @@
     gnupg1compat
     cheat
     tldr
+    nixopsUnstable
   ] ++ (with nur.repos.mic92; [
     inxi
     conky-symbols

@@ -1,17 +1,16 @@
 { config, pkgs, ... } : {
   services.tt-rss = {
     enable = true;
-
     virtualHost = "rss.devkid.net";
     selfUrlPath = "https://rss.devkid.net";
 
     pluginPackages = [
-      pkgs.tt-rss-plugin-auth-ldap 
+      pkgs.tt-rss-plugin-auth-ldap
     ];
-    themePackages = [ 
+    themePackages = [
       pkgs.tt-rss-theme-feedly
     ];
-    plugins = [ 
+    plugins = [
       "auth_internal"
       "auth_ldap"
       "note"
