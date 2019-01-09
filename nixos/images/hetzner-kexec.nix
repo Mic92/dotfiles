@@ -10,6 +10,17 @@
 # rescue> tar -C / -xf nixos-system-x86_64-linux.tar.xz
 # rescue> /kexec_nixos
 # $ zpool create -o ashift=12 -o altroot=/mnt -O acltype=posixacl -O xattr=sa -O compression=lz4 zroot /dev/sda3
+# $ zfs create -o encryption=aes-256-gcm -o keyformat=passphrase -o mountpoint=none zroot/root
+
+# $ zfs create -o mountpoint=legacy -o sync=disabled zroot/root/tmp
+# $ zfs create -o mountpoint=legacy -o com.sun:auto-snapshot=true zroot/root/home
+# $ zfs create -o mountpoint=legacy -o com.sun:auto-snapshot=true zroot/root/nixos
+# $ mount -t zfs zroot/root/nixos /mnt
+# $ mkdir /mnt/{home,tmp,boot}
+# $ mount /dev/sda2 /mnt/boot/
+# $ mount -t zfs zroot/root/home /mnt/home/
+# $ mount -t zfs zroot/root/tmp /mnt/tmp/
+# $ 
 
 {...}: {
   networking.dhcpcd.enable = false;
