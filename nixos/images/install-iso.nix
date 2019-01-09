@@ -13,10 +13,8 @@
   imports = [
     <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix>
     ./base-config.nix
+    ./zfs.nix
   ];
-  boot.zfs.enableUnstable = true;
-  boot.supportedFilesystems = [ "zfs" ];
-  networking.hostId = "ac174b52";
   environment.systemPackages = with pkgs; [ diskrsync partclone ntfsprogs ntfs3g ];
 }
 
