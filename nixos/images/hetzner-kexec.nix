@@ -20,8 +20,9 @@
 # $ mount /dev/sda2 /mnt/boot/
 # $ mount -t zfs zroot/root/home /mnt/home/
 # $ mount -t zfs zroot/root/tmp /mnt/tmp/
-# $ 
+# $ nixos-generate-config
 
+# continue with hetzner-bootstrap.nix
 {...}: {
   networking.dhcpcd.enable = false;
 
