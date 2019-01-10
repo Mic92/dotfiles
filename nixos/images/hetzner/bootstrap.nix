@@ -17,8 +17,8 @@
   boot.loader.grub.devices = [ "/dev/sda" "/dev/sdb" ];
 
   # make our configuration locally evaluate
-  fileSystems."/" = {
-    device = "zroot/root/nixos";
-    fsType = "zfs";
-  };
+  #fileSystems."/" = {
+  #  device = "zroot/root/nixos";
+  #  fsType = "zfs";
+  #};
 }
