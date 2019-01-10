@@ -58,6 +58,9 @@ in {
       internalIPs = [ "192.168.92.0/24" ];
     };
 
+    # Hack so that network is considered up by boot.initrd.network and postCommands gets executed.
+    boot.kernelParams = [ "ip=127.0.0.1:::::lo:none" ];
+
     boot.initrd.network = {
       enable = true;
       ssh = {
