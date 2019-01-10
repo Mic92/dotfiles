@@ -1,6 +1,9 @@
 { config, lib, ... }:
 with lib;
-{
+
+let
+  cfg = config.networking.eve;
+in {
   options = {
     networking.eve.ipv4.address = mkOption {
       type = types.str;
@@ -37,10 +40,10 @@ with lib;
         Name = eth0
 
         [Network]
-        Address = ${config.networking.eve.ipv4}/${config.networking.eve.ipv4.subnet}
-        Gateway = ${config.networking.eve.ipv4.gateway}
-        Address = ${config.networking.eve.ipv6}/${config.networking.eve.ipv6.subnet}
-        Gateway = ${config.networking.eve.ipv6.gateway}
+        Address = ${cfg.ipv4.address}/${cfg.ipv4.subnet}
+        Gateway = ${cfg.ipv4.gateway}
+        Address = ${cfg.ipv6.address}/${cfg.ipv6.subnet}
+        Gateway = ${cfg.ipv6.gateway}
         IPv6AcceptRA = no
         IPForward = yes
 
@@ -65,10 +68,10 @@ with lib;
       postCommands = ''
         echo "zfs load-key -a && killall zfs" >> /root/.profile
 
-        ip addr add ${config.networking.eve.ipv4}/${config.networking.eve.ipv4.subnet} dev eth0
-        ip route add default via ${config.networking.eve.ipv4.gateway}
-        ip addr add ${config.networking.eve.ipv6.address}/${config.networking.eve.ipv6.subnet}
-        ip route add default via ${config.networking.eve.ipv6.gateway} dev eth0
+        ip addr add ${cfg.ipv4.address}/${cfg.ipv4.subnet} dev eth0
+        ip route add default via ${cfg.ipv4.gateway}
+        ip addr add ${cfg.ipv6.address}/${cfg.ipv6.subnet}
+        ip route add default via ${cfg.ipv6.gateway} dev eth0
       '';
     };
   };
