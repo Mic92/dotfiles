@@ -38,7 +38,6 @@
 # rescue> mount /dev/sda2 /mnt/
 # rescue> tar -C / -xf /mnt/nixos-system-x86_64-linux.tar.xz
 # rescue> /kexec_nixos
-# kexec> zpool import zroot
-# kexec> zfs load-key -a
+# kexec> zpool import zroot; zfs load-key -a
 # kexec> mount -t zfs zroot/root/nixos /mnt; mount /dev/sda2 /mnt/boot/; mount -t zfs zroot/root/home /mnt/home/; mount -t zfs zroot/root/tmp /mnt/tmp/
 # kexec> nixos-enter # will mount
