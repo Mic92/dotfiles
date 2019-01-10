@@ -27,9 +27,7 @@
 # continue with hetzner-bootstrap.nix
 { lib, ... }: {
 
-  imports = [
-    ./base.nix
-  ];
+  imports = [ ./base.nix ];
 
   boot.initrd.network.enable = lib.mkForce false;
 }
