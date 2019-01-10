@@ -9,9 +9,10 @@
     ./base.nix
   ];
 
-  initrd.network = {
+  boot.initrd.network = {
     port = lib.mkForce 22222;
     hostECDSAKey = lib.mkForce "/boot/initrd-ssh-key";
   };
+
   boot.loader.grub.devices = [ "/dev/sda" "/dev/sdb" ];
 }

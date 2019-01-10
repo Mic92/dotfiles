@@ -56,7 +56,7 @@ with lib;
       internalIPs = [ "192.168.92.0/24" ];
     };
 
-    initrd.network = {
+    boot.initrd.network = {
       enable = true;
       ssh = {
         enable = true;
