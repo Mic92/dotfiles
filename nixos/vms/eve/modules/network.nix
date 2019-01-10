@@ -68,6 +68,7 @@ in {
       postCommands = ''
         echo "zfs load-key -a && killall zfs" >> /root/.profile
 
+        ip link set dev eth0 up
         ip addr add ${cfg.ipv4.address}/${cfg.ipv4.subnet} dev eth0
         ip route add default via ${cfg.ipv4.gateway}
         ip addr add ${cfg.ipv6.address}/${cfg.ipv6.subnet}
