@@ -49,7 +49,6 @@ with lib;
       '';
     };
 
-    networking.firewall.enable = true;
     networking.nat = {
       enable = true;
       externalInterface = "eth0";
