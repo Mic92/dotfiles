@@ -5,6 +5,11 @@ let
 in {
   networking.firewall.enable = false;
 
+  networking.nameservers = [
+    # hurricane electric
+    "74.82.42.42" "2001:470:20::2"
+  ];
+
   services.tor = {
     enable = true;
     hiddenServices."ssh".map = [ { port = 22; } ];
