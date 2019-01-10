@@ -7,5 +7,5 @@
   imports = [
     ./hetzner-base.nix
   ];
-  boot.loader.grub.device = "/dev/sda";
+  boot.loader.grub.devices = ["/dev/sda" "/dev/sdb"];
 }
