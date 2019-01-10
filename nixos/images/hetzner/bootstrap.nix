@@ -9,7 +9,7 @@
     ./base.nix
   ];
 
-  boot.initrd.network = {
+  boot.initrd.network.ssh = {
     port = lib.mkForce 22222;
     hostECDSAKey = lib.mkForce "/boot/initrd-ssh-key";
   };
