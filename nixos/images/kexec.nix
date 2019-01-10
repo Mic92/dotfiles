@@ -1,4 +1,4 @@
-# see hetzner-kexec.nix for example
+# see hetzner/kexec.nix for example
 { lib, ... }: let
   nixos-generators = builtins.fetchGit {
     url = https://github.com/krebs/nixos-generators;

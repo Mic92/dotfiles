@@ -28,7 +28,7 @@
 {...}: {
 
   imports = [
-    ./hetzner-base.nix
+    ./base.nix
   ];
 }
 
