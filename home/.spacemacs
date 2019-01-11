@@ -29,6 +29,7 @@ values."
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
    dotspacemacs-configuration-layer-path '()
+   with-editor-emacsclient-executable "emacsclient"
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
@@ -39,6 +40,7 @@ values."
      ;; ----------------------------------------------------------------
      (auto-completion :variables
                       auto-completion-enable-snippets-in-popup t
+                      auto-completion-enable-sort-by-usage t
                       spacemacs-default-company-backends '(company-dabbrev-code
                                                            company-gtags
                                                            company-etags
@@ -74,7 +76,7 @@ values."
      perl5
      nixos
      deft
-     (python :variables python-backend 'lsp)
+     python
      restructuredtext
      ruby
      rust
@@ -339,7 +341,8 @@ values."
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
    dotspacemacs-whitespace-cleanup nil
-   dotspacemacs-mode-line-theme 'vim-powerline
+   ;;dotspacemacs-mode-line-theme 'vim-powerline
+   dotspacemacs-mode-line-theme 'spacemacs
    ))
 
 (defun dotspacemacs/user-init ()
@@ -362,7 +365,7 @@ you should place your code here."
   ;; should not depend on $TMPDIR
   (setq
    server-name "emacs"
-   server-socket-dir (expand-file-name "~/.emacs.d"))
+   server-use-tcp t)
   (server-start)
 
   (global-company-mode)
@@ -376,13 +379,11 @@ you should place your code here."
   (with-eval-after-load 'evil
     :config (defalias #'forward-evil-word #'forward-evil-symbol))
 
-  (with-eval-after-load 'flycheck
-    (lambda()
-      (global-flycheck-inline-mode)
-      (global-flycheck-mode 1)
-      ;; check both mypy and flake8
-      (setq flycheck-pycheckers-checkers '(flake8 mypy2 mypy3))
-      (add-hook 'flycheck-mode-hook #'flycheck-pycheckers-setup)))
+  (global-flycheck-inline-mode)
+  (global-flycheck-mode 1)
+  ;; check both mypy and flake8
+  (setq flycheck-pycheckers-checkers '(flake8 mypy2 mypy3))
+  (add-hook 'flycheck-mode-hook #'flycheck-pycheckers-setup)
 
   (with-eval-after-load 'yapfify
     (defun yapfify-buffer ()
@@ -391,10 +392,13 @@ you should place your code here."
        (py-isort-buffer)
        (blacken-buffer)))
 
-  (with-eval-after-load 'treemacs
-    (lambda ()
-      (treemacs-git-mode 'deferred)
-      (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?)))
+  (use-package treemacs
+    :config (progn
+              (treemacs-git-mode 'deferred)
+              (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?)))
+
+  (use-package direnv
+    :config (direnv-mode))
 
   (with-eval-after-load 'sh-script
     (lambda ()
@@ -430,7 +434,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (osc52 yapfify unfill smeargle pyvenv pytest pyenv-mode py-isort pip-requirements orgit mwim mmm-mode markdown-toc magit-gitflow live-py-mode hy-mode dash-functional helm-pydoc helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-pycheckers evil-magit magit magit-popup git-commit ghub treepy graphql with-editor cython-mode company-anaconda blacken auto-dictionary anaconda-mode pythonic nix-mode helm-nixos-options helm-company helm-c-yasnippet fuzzy company-statistics company-nixos-options nixos-options company auto-yasnippet yasnippet ac-ispell auto-complete toml-mode racer flycheck-rust cargo markdown-mode rust-mode flycheck-pos-tip pos-tip flycheck ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async))))
+    (less-css-mode yapfify unfill smeargle pyvenv pytest pyenv-mode py-isort pip-requirements orgit mwim mmm-mode markdown-toc magit-gitflow live-py-mode hy-mode dash-functional helm-pydoc helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-pycheckers evil-magit magit magit-popup git-commit ghub treepy graphql with-editor cython-mode company-anaconda blacken auto-dictionary anaconda-mode pythonic nix-mode helm-nixos-options helm-company helm-c-yasnippet fuzzy company-statistics company-nixos-options nixos-options company auto-yasnippet yasnippet ac-ispell auto-complete toml-mode racer flycheck-rust cargo markdown-mode rust-mode flycheck-pos-tip pos-tip flycheck ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
