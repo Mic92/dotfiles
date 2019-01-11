@@ -11,7 +11,7 @@
 
   boot.initrd.network.ssh = {
     port = lib.mkForce 22222;
-    hostECDSAKey = lib.mkForce /mnt/boot/initrd-ssh-key;
+    hostECDSAKey = lib.mkForce null;
   };
 
   boot.loader.grub.devices = [ "/dev/sda" "/dev/sdb" ];
