@@ -74,10 +74,14 @@ in {
         set -x
 
         ip link set dev eth0 up
+
         ip addr add ${cfg.ipv4.address}/${cfg.ipv4.subnet} dev eth0
+        ip route add ${cfg.ipv4.gateway} dev eth0
         ip route add default via ${cfg.ipv4.gateway} dev eth0
-        ip addr add ${cfg.ipv6.address}/${cfg.ipv6.subnet} dev eth0
-        ip route add default via ${cfg.ipv6.gateway} dev eth0
+
+        ip -6 addr add ${cfg.ipv6.address}/${cfg.ipv6.subnet} dev eth0
+        ip -6 route add ${cfg.ipv6.gateway} dev eth0
+        ip -6 route add default via ${cfg.ipv6.gateway} dev eth0
 
         mkdir -p /mnt
         mount /dev/sda2 /mnt
