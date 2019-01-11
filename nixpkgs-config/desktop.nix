@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 
 {
   imports = [
@@ -9,6 +9,7 @@
   ];
 
   fonts.fontconfig.enableProfileFonts = true;
+  programs.emacs.package = lib.mkForce pkgs.emacs;
 
   services.syncthing.enable = true;
   home.packages = with pkgs; [
@@ -16,7 +17,6 @@
     dejavu_fonts
     ubuntu_font_family
     unifont
-    source-code-pro
 
     arandr
     rambox
@@ -64,5 +64,6 @@
     inxi
     conky-symbols
     inconsolata-nerdfonts
+    fira-code-nerdfonts
   ]);
 }

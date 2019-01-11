@@ -1,6 +1,6 @@
 {...}: {
   nix = {
-    trustedUsers = ["joerg"];
+    trustedUsers = ["joerg" "root"];
     useSandbox = true;
     buildCores = 0;
     gc.automatic = true;

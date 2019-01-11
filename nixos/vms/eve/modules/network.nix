@@ -11,7 +11,7 @@ in {
     };
     networking.eve.ipv4.subnet = mkOption {
       type = types.str;
-      default = "/26";
+      default = "26";
     };
     networking.eve.ipv4.gateway = mkOption {
       type = types.str;
@@ -23,7 +23,7 @@ in {
     };
     networking.eve.ipv6.subnet = mkOption {
       type = types.str;
-      default = "/64";
+      default = "64";
     };
     networking.eve.ipv6.gateway = mkOption {
       type = types.str;

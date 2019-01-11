@@ -30,7 +30,7 @@
     };
   in with pkgs; [
     office-dashboard
-    firefox
+    firefox-bin
     xdotool
     unclutter
   ];

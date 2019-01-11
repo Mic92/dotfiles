@@ -29,7 +29,7 @@ in {
     (builtins.fetchGit {
       url = "https://github.com/NixOS/nixos-hardware";
       rev = "1e2c130d38d72860660474c36207b099c519cb6a";
-    } + "/lenovo/thinkpad/x250") 
+    } + "/lenovo/thinkpad/x250")
     ./dice.nix
     ./backup.nix
     ./nfs.nix
@@ -41,6 +41,8 @@ in {
     ./vms/modules/retiolum.nix
     ./vms/modules/networkd.nix
     ./vms/modules/dnscrypt.nix
+    ./vms/modules/wireguard.nix
+    #./vms/modules/secrets.nix
     #./kde.nix
     ./vms/modules/awesome.nix
   ];
@@ -54,6 +56,16 @@ in {
     blacklistedKernelModules = [ "iptable_nat" "ip_tables" ];
 
   };
+
+  # when I need dhcp
+  #systemd.network.networks."eth0".extraConfig = ''
+  #  [Match]
+  #  Name = eth0
+
+  #  [Network]
+  #  Address = 192.168.43.1/24
+  #  DHCPServer = yes
+  #'';
 
   environment.sessionVariables = {
     # so gtk2.0/gtk3.0 themes can be found
@@ -71,27 +83,41 @@ in {
     ];
     distributedBuilds = true;
     buildMachines = [
-      { 
+      {
+        hostName = "prism.r";
+        sshKey = "/root/.ssh/id_ed25519";
+        sshUser = "Mic92";
+        system = "x86_64-linux";
+        maxJobs = 4;
+      }
+      {
         hostName = "inspector.r";
-        sshUser = "nix"; 
-        sshKey = "/etc/nixos/secrets/id_buildfarm"; 
-        system = "x86_64-linux"; 
+        sshUser = "nix";
+        sshKey = "/etc/nixos/secrets/id_buildfarm";
+        system = "x86_64-linux";
         maxJobs = 8;
         supportedFeatures = [ "big-parallel" ];
       }
       {
         hostName = "eddie.r";
-        sshKey = "/etc/nixos/secrets/id_buildfarm"; 
+        sshKey = "/etc/nixos/secrets/id_buildfarm";
         sshUser = "nix";
-        system = "x86_64-linux"; 
+        system = "x86_64-linux";
         maxJobs = 2;
       }
       {
         hostName = "dpdkm.r";
-        sshKey = "/etc/nixos/secrets/id_buildfarm"; 
+        sshKey = "/etc/nixos/secrets/id_buildfarm";
         sshUser = "nix";
-        system = "x86_64-linux"; 
+        system = "x86_64-linux";
         maxJobs = 4;
+      }
+      {
+        hostName = "172.23.75.254";
+        maxJobs = 4;
+        sshKey = "/etc/nixos/secrets/id_buildfarm";
+        sshUser = "nix";
+        system = "aarch64-linux";
       }
       {
         hostName = "aarch64.nixos.community";
@@ -131,6 +157,7 @@ in {
     };
 
     avahi.enable = true;
+    avahi.nssmdns = true;
 
     samba = {
       enable = false;
@@ -152,7 +179,7 @@ in {
 
   #systemd.package = lib.mkForce (pkgs.systemd.overrideAttrs (old: {
   #  name = "systemd-239";
-  #  src = pkgs.fetchFromGitHub { 
+  #  src = pkgs.fetchFromGitHub {
   #    owner = "Mic92";
   #    repo = "systemd";
   #    rev = "nixos-v239";
@@ -262,7 +289,10 @@ in {
 
   services.dbus.packages = with pkgs; [ gnome3.dconf ];
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    android_sdk.accept_license = true;
+  };
 
   networking = {
     networkmanager.enable = true;
@@ -287,6 +317,7 @@ in {
     firewall.allowedTCPPorts = [ 3030 ];
     hostName = "turingmachine";
   };
+
 
   system.stateVersion = "18.03";
   services.resolved.enable = false;

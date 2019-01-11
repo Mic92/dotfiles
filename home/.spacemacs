@@ -1,4 +1,4 @@
-;; -*- mode: emacs-lisp -*-
+;; -*- mode: emacs-lisp lexical-binding: t -*-
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
 
@@ -104,8 +104,7 @@ values."
                                       (company-tmux
                                        :location (recipe :fetcher github :repo "Mic92/company-tmux"))
                                       (osc52
-                                       :location (recipe :fetcher github :repo "Mic92/osc52"))
-                                      weechat)
+                                       :location (recipe :fetcher github :repo "Mic92/osc52")))
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '(agda2-mode)
    ;; A list of packages that will not be installed and loaded.
@@ -182,8 +181,8 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
    ;; quickly tweak the mode-line size to make separators look not too crappy.
-   dotspacemacs-default-font '("Inconsolata Nerd Font Mono"
-                               :size 20
+   dotspacemacs-default-font '("FuraCode Nerd Font"
+                               :size 15
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)

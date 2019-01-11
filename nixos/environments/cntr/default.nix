@@ -5,6 +5,7 @@ stdenv.mkDerivation {
     rustc
     cargo
     rustup
+    hello
   ];
   hardeningDisable = [ "format" ];
   DUMP_OUTPUT="true";
