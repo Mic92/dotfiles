@@ -35,9 +35,10 @@ let
   '';
 
   helo_access = pkgs.writeText "helo_access" ''
-    148.251.132.243   REJECT Get lost - you're lying about who you are
-    2a03:4000:13:31e::1    REJECT Get lost - you're lying about who you are
+    ${config.networking.eve.ipv4.address}   REJECT Get lost - you're lying about who you are
+    ${config.networking.eve.ipv6.address}   REJECT Get lost - you're lying about who you are
     higgsboson.tk   REJECT Get lost - you're lying about who you are
+    thalheim.io   REJECT Get lost - you're lying about who you are
   '';
 in {
 
@@ -47,7 +48,7 @@ in {
     hostname = "mail.thalheim.io";
     domain = "thalheim.io";
 
-    masterConfig."465" = { 
+    masterConfig."465" = {
       type = "inet";
       private = false;
       command = "smtpd";
@@ -68,8 +69,8 @@ in {
     mapFiles."helo_access" = helo_access;
 
     extraConfig = ''
-      smtp_bind_address = 188.68.39.17
-      smtp_bind_address6 = 2a03:4000:13:31e::1
+      smtp_bind_address = ${config.networking.eve.ipv4.address}
+      smtp_bind_address6 = ${config.networking.eve.ipv6.address}
       mailbox_transport = lmtp:unix:private/dovecot-lmtp
       masquerade_domains = ldap:${domains}
       virtual_mailbox_domains = ldap:${domains}

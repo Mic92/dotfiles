@@ -1,4 +1,4 @@
-{
+{ config, ... }: {
   services.resolved.enable = false;
   networking.nameservers = [ "127.0.0.1" ];
 
@@ -26,8 +26,8 @@
         localnets;
         172.23.75/24;
         fd42:4992:6a6d::/64;
-        2a03:4000:13:31e::/64;
-        188.68.39.17/32;
+        ${config.networking.eve.ipv6.subnet};
+        ${config.networking.eve.ipv4.address}/32;
       };
     '';
     zones = let

@@ -11,8 +11,8 @@ let
         access_log off;
         allow 127.0.0.1;
         allow ::1;
-        allow 188.68.39.17;
-        allow 2a03:4000:13:31e::/64;
+        allow ${config.networking.eve.ipv4.address};
+        allow ${config.networking.eve.ipv6.subnet};
         deny all;
         include ${pkgs.nginx}/conf/fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;

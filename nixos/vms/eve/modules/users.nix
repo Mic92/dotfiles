@@ -16,6 +16,10 @@ let
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBG/wZ9KClBhUf3k7wzacLT0uL+SDWM3nPfhVHlm/QZI joerg@eddie"
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGoQXNL3B1+pS4WYfhvn4ULb6oCNovT+dpWist7osToj5UVQ64odlcemnSG07GRcEnwf2zDTYq8eatomGQ94VsnmWuKaYzF8nqNl+qHRM49nS+Myi2ETn0B5fnMSh45lmkjR5rL/tb02EXUVoNf7acE2K3Q8M/tGFEdCdQNuqEgishi5nrs/WvZHn0cxP1anv8WRtm2qlj0jtH1rYmo7n/xsPb15FNBaE92aQXTkGoj6xdQknGWnGjLLm33lGIxRKvHTJ9T2NGte4gTYC/CADPxU2x5nq8zGDTNna/YMUyKmlqgGm+p+sE9dERmxKtquLgyE8mNvjDSMvtnrkMojN5 joerg@turingmachine"
   ];
+
+  vv01f = [
+    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2RPmBzVk0/pMxwuzp6NYI6ZrvDmxF6chJQ4Ky2+gdfYMI3aWqdTFtcmP0wxghChH6WQeEd86uqRD08SwTrR/oFr8uriczYbcyLmDJa2UclMXOHhwoTJP3IgbqPWzFOcBTYwPRQ/h8UA2W80BXPxdqx9oz1tRh26uoa7TCk/tB4nHUpS+hw22Cu2k8QTmVy0XhJquyRb/BKlk2WhiA6VfRzlMWi3b/jjLiOYPCl7LZSoJ7wT22H9M3lq/xV6ym1JaxQ1mLeZzZLeIRsiMrSayiNOvkNdtb2VRIM/St2VgZnIbUnrqlDZqewy1ydbOMnnu3ArAnWkAK5l02NCeFR69n vv01f"
+  ];
 in {
   security.sudo.wheelNeedsPassword = false;
 
@@ -30,6 +34,7 @@ in {
         ''command="${pkgs.borgbackup}/bin/borg serve --restrict-to-path /data/backup/devkid/Dokumente --restrict-to-path /data/backup/devkid/Bilder",no-pty,no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-user-rc ${alfredsNas}''
       ];
     };
+
     joerg = {
       isNormalUser = true;
       uid = 2003;
@@ -38,6 +43,14 @@ in {
       openssh.authorizedKeys.keys = joerg;
     };
 
-    root.openssh.authorizedKeys.keys = alfred ++ joerg;
+    vv01f = {
+      isNormalUser = true;
+      uid = 2004;
+      extraGroups = ["wheel"];
+      shell = "/run/current-system/sw/bin/bash";
+      openssh.authorizedKeys.keys = vv01f;
+    };
+
+    root.openssh.authorizedKeys.keys = alfred ++ joerg ++ vv01f;
   };
 }
