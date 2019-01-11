@@ -76,6 +76,10 @@ in {
         ip route add default via ${cfg.ipv4.gateway} dev eth0
         ip addr add ${cfg.ipv6.address}/${cfg.ipv6.subnet} dev eth0
         ip route add default via ${cfg.ipv6.gateway} dev eth0
+
+        mkdir -p /mnt
+        mount /dev/sda2 /mnt
+        ip addr > /mnt/log
       '';
     };
   };
