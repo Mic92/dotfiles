@@ -50,9 +50,10 @@ in {
         ssl_key = </var/lib/acme/devkid.net/key.pem
       }
       local_name imap.devkid.net {
-        ssl_cert = </var/lib/acme/imap.thalheim.io/fullchain.pem
-        ssl_key = </var/lib/acme/imap.thalheim.io/key.pem
+        ssl_cert = </var/lib/acme/imap.devkid.net/fullchain.pem
+        ssl_key = </var/lib/acme/imap.devkid.net/key.pem
       }
+      ssl_protocols = !SSLv2 !SSLv3 !TLSv1
       ssl_cipher_list = AES128+EECDH:AES128+EDH
       ssl_prefer_server_ciphers = yes
       ssl_dh=<${config.security.dhparams.params.dovecot2.path}
@@ -186,12 +187,14 @@ in {
     };
   in {
     "imap.thalheim.io" = cert;
+    "imap.higgsboson.tk" = cert;
+    "imap.devkid.net" = cert;
   };
 
   services.nginx = {
-    virtualHosts."imap.higgsboson.tk".useACMEHost = "imap.thalheim.io";
+    virtualHosts."imap.higgsboson.tk".useACMEHost = "imap.higgsboson.tk";
     virtualHosts."imap.thalheim.io".useACMEHost = "imap.thalheim.io";
-    virtualHosts."imap.devkid.net".useACMEHost = "imap.thalheim.io";
+    virtualHosts."imap.devkid.net".useACMEHost = "imap.devkid.net";
   };
 
   services.netdata.portcheck.checks = {
