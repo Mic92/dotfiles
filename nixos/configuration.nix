@@ -248,10 +248,15 @@ in {
   fonts.enableFontDir = true;
 
   programs = {
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+      enableExtraSocket = true;
+    };
+
     ssh.extraConfig = ''
       SendEnv LANG LC_*
     '';
-    ssh.startAgent = true;
     adb.enable = true;
     bash.enableCompletion = true;
     zsh = {

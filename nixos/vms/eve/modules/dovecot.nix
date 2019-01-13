@@ -50,8 +50,8 @@ in {
         ssl_key = </var/lib/acme/devkid.net/key.pem
       }
       local_name imap.devkid.net {
-        ssl_cert = </var/lib/acme/imap.devkid.net/fullchain.pem
-        ssl_key = </var/lib/acme/imap.devkid.net/key.pem
+        ssl_cert = </var/lib/acme/imap.thalheim.io/fullchain.pem
+        ssl_key = </var/lib/acme/imap.thalheim.io/key.pem
       }
       ssl_cipher_list = AES128+EECDH:AES128+EDH
       ssl_prefer_server_ciphers = yes
