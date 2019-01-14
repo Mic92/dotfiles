@@ -38,7 +38,7 @@
       psmisc
       gitAndTools.hub
       gitAndTools.tig
-      cloc
+      tokei
       mosh
       direnv
       fzf

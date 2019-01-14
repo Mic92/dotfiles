@@ -199,8 +199,8 @@ let g:airline_powerline_fonts = 1
 
 " {{{ LanguageClient
 let g:LanguageClient_serverCommands = {
-      \ 'cpp': ['cquery'],
-      \ 'c': ['cquery'],
+      \ 'cpp': ['ccls'],
+      \ 'c': ['ccls'],
       \ 'typescript': ['typescript-language-server'],
       \ 'python': ['pyls'],
       \ 'rust': ['rustup', 'run', 'stable', 'rls'],
