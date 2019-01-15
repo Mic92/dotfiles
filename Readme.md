@@ -25,7 +25,7 @@ $ pacman -S base-devel the_silver_searcher htop git tig zsh tmux vim ruby strace
 freebsd:
 
 ```console
-$ pkg install the_silver_searcher git tmux zsh vim-lite ruby tcpdump lsof rsync sudo bash
+$ pkg install the_silver_searcher git tmux zsh vim ruby tcpdump lsof rsync sudo bash
 ```
 
 debian/ubuntu:

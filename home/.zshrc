@@ -302,6 +302,9 @@ elif [[ -f /etc/gentoo-release ]] ; then
   alias emerge='sudo emerge'
   xalias eix-sync='sudo eix-sync -C --quiet'
 fi
+if [[ -n ${commands[tokei]} ]]; then
+  alias cloc=tokei
+fi
 
 if [[ -n ${commands[nix]} ]]; then
   n() {
@@ -406,7 +409,7 @@ export BROWSER=firefox
 export TERMINAL=alacritty
 export PICTUREVIEW=eog
 if [[ -n ${commands[emacsclient]} ]]; then
-  export EDITOR="emacsclient -f ~/.emacs.d/server/emacs -nw"
+  export EDITOR="emacsclient -f $HOME/.emacs.d/server/emacs -nw -a ''"
   alias ee="$EDITOR"
   alias vim=ee
 else
