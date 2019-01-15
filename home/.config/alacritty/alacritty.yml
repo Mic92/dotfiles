@@ -86,23 +86,23 @@ tabspaces: 8
 font:
   # Normal (roman) font face
   normal:
-    family: "Inconsolata Nerd Font Mono"
+    family: "SauceCodePro Nerd Font Mono"
     # The `style` can be specified to pick a specific face.
-    #style: Regular
+    style: Regular
 
   # Bold font face
   bold:
-    family: "Inconsolata Nerd Font Mono"
+    family: "SauceCodePro Nerd Font Mono"
     # The `style` can be specified to pick a specific face.
-    #style: Bold
+    style: Bold
 
   # Italic font face
   italic:
-    family: "Inconsolata Nerd Font Mono"
-    #style: Italic
+    family: "SauceCodePro Nerd Font Mono"
+    style: Italic
 
   # Point size
-  size: 15.0
+  size: 9.0
 
   # Offset is the extra space around each character. `offset.y` can be thought of
   # as modifying the line spacing, and `offset.x` as modifying the letter spacing.

@@ -482,10 +482,12 @@ export PERL_CPANM_OPT="--local-lib=~/.perl5"
 export PERL5LIB=~/.perl5/lib/perl5
 export PYTHONDOCS=/usr/share/doc/python/html/
 
-# upgrade terminfo to tmux if we are inside
-if [[ -n TMUX ]] && [[ TERM != tmux-256colors ]] && [[ -n ${commands[tput]} ]]; then
+# downgrade terminfo to tmux if we are inside
+if [[ -n "$TMUX" ]] && [[ -n "${commands[tput]}" ]]; then
     if TERM=tmux-256color tput longname >/dev/null 2>&1 ; then
         export TERM=tmux-256color
+    else
+        export TERM=screen-256color
     fi
 fi
 
@@ -559,6 +561,7 @@ ss() {
 }
 # Autossh - try to connect every 0.5 secs (modulo timeouts)
 sssh(){ while true; do command ssh -q "$@"; [ $? -ne 0 ] && break || sleep 0.5; done }
+dumbssh(){ TERM=screen-256color ssh "$@" }
 moshlogin(){
   if ssh-add -L | grep -q "no identities"; then
     ssh-add ~/.ssh/id_{rsa,ecdsa,ed25519}
