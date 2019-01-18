@@ -92,6 +92,13 @@ in {
         maxJobs = 4;
       }
       {
+        hostName = "eve.thalheim.io";
+        sshUser = "nix";
+        sshKey = "/etc/nixos/secrets/id_buildfarm";
+        system = "x86_64-linux";
+        maxJobs = 4;
+      }
+      {
         hostName = "inspector.r";
         sshUser = "nix";
         sshKey = "/etc/nixos/secrets/id_buildfarm";
