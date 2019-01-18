@@ -48,7 +48,8 @@
     ./modules/tor.nix
     ./modules/tt-rss.nix
     ./modules/users.nix
-    
+
+    ../modules/builder.nix
     ../modules/nix-daemon.nix
     ../modules/nur.nix
     ../modules/tracing.nix
