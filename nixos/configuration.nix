@@ -331,6 +331,7 @@ in {
     hostName = "turingmachine";
   };
 
+  services.tor.client.enable = true;
 
   system.stateVersion = "18.03";
   services.resolved.enable = false;
