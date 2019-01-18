@@ -653,7 +653,7 @@ stdenv.mkDerivation {
   ];
 }
 EOF
-    emacsclient -c --alternate-editor= -s $HOME/.emacs.d/emacs default.nix
+    emacsclient -f $HOME/.emacs.d/server/emacs -nw -a '' default.nix
   fi
 }
 
