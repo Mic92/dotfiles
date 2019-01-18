@@ -1,5 +1,9 @@
-{ pkgs, ... }: {
-  imports = [ ./xserver.nix ];
+{ pkgs, lib, ... }:
+{
+  imports = [
+    ./xserver.nix
+    ./xss-lock.nix
+  ];
   services.xserver.windowManager = {
     awesome = {
       enable = true;
@@ -13,12 +17,9 @@
     lxappearance
     scrot
     evince
-    xautolock
     rofi
   ];
 
   services.autorandr.enable = true;
-  programs.xss-lock.enable = true;
-  programs.xss-lock.lockerCommand = "${pkgs.i3lock-fancy}/bin/i3lock-fancy";
   programs.nm-applet.enable = true;
 }
