@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, config, ... }:
 
 let
   editorScript = pkgs.writeScriptBin "emacseditor" ''
@@ -11,30 +11,40 @@ let
   '';
 
 in {
-  home.packages = with pkgs; [
-    editorScript
-    gocode
-    godef
-    gocode
-    go-tools
-    gogetdoc
-    impl
-    gometalinter
-  ];
-
-  systemd.user.sockets.emacs-daemon = {
-    Socket.ListenStream = "%t/emacs";
-    Install.WantedBy = [ "sockets.target" ];
-  };
-
-  systemd.user.services.emacs-daemon = {
-    Unit.RefuseManualStart = true;
-    Service = {
-      Type = "forking";
-      ExecStart = "${pkgs.zsh}/bin/zsh -c 'source ~/.zshrc; exec ${pkgs.emacs}/bin/emacs --daemon'";
-      ExecStop = "${pkgs.emacs}/bin/emacsclient --eval (kill-emacs)";
-      Restart = "always";
+  options = {
+    programs.emacs.socket-activation.enable = (lib.mkEnableOption "socket-activation") // {
+      default = true;
     };
-    Install.WantedBy = [ "default.target" ];
   };
+  config = lib.mkMerge [
+    ({
+      home.packages = with pkgs; [
+        editorScript
+        gocode
+        godef
+        gocode
+        go-tools
+        gogetdoc
+        impl
+        gometalinter
+      ];
+    })
+    (lib.mkIf config.programs.emacs.socket-activation.enable {
+      systemd.user.sockets.emacs-daemon = {
+        Socket.ListenStream = "%t/emacs";
+        Install.WantedBy = [ "sockets.target" ];
+      };
+
+      systemd.user.services.emacs-daemon = {
+        Unit.RefuseManualStart = true;
+        Service = {
+          Type = "forking";
+          ExecStart = "${pkgs.zsh}/bin/zsh -c 'source ~/.zshrc; exec ${pkgs.emacs}/bin/emacs --daemon'";
+          ExecStop = "${pkgs.emacs}/bin/emacsclient --eval (kill-emacs)";
+          Restart = "always";
+        };
+        Install.WantedBy = [ "default.target" ];
+      };
+    })
+  ];
 }

@@ -132,6 +132,7 @@ function {
   typeset -A profile
   profile[turingmachine]="desktop.nix"
   profile[eddie]="desktop.nix"
+  profile[brain20]="brain.nix"
   export HOME_MANAGER_CONFIG="${HOME}/.config/nixpkgs/${profile[$HOST]:-common.nix}"
 }
 

@@ -10,7 +10,8 @@
   };
 
   imports = [
-    ./vim.nix ./emacs.nix
+    ./vim.nix
+    ./emacs.nix
   ];
 
   config = {

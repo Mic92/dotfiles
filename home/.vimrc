@@ -253,14 +253,14 @@ function s:enableNcm2()
   " The parameters are the same as `:help feedkeys()`
   inoremap <silent> <expr> <CR> ncm2_ultisnips#expand_or("\<CR>", 'n')
 
+  " c-j c-k for moving in snippet
+  let g:UltiSnipsExpandTrigger		= "<Plug>(ultisnips_expand)"
+  let g:UltiSnipsJumpForwardTrigger	= "<c-j>"
+  let g:UltiSnipsJumpBackwardTrigger	= "<c-k>"
+  let g:UltiSnipsRemoveSelectModeMappings = 0
 endfunction
 autocmd BufEnter * call s:enableNcm2()
 
-" c-j c-k for moving in snippet
-" let g:UltiSnipsExpandTrigger		= "<Plug>(ultisnips_expand)"
-let g:UltiSnipsJumpForwardTrigger	= "<c-j>"
-let g:UltiSnipsJumpBackwardTrigger	= "<c-k>"
-let g:UltiSnipsRemoveSelectModeMappings = 0
 " }}}
 
 " {{{ Bracket paste (i.e. no more :set paste!)
@@ -299,4 +299,4 @@ if filereadable($LOCAL_VIMRC)
   source $LOCAL_VIMRC
 endif
 
-" vim: ft=vim fdm=marker
+"" vim: ft=vim fdm=marker

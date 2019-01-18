@@ -32,7 +32,7 @@ values."
    with-editor-emacsclient-executable "emacsclient"
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
+   '(systemd
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
@@ -64,6 +64,7 @@ values."
      haskell
      helm
      html
+     games
      java
      javascript
      json
@@ -77,6 +78,7 @@ values."
      perl5
      nixos
      deft
+     ;;(python :variables python-backend 'lsp)
      python
      restructuredtext
      ruby
@@ -101,8 +103,8 @@ values."
                                       blacken
                                       direnv
                                       editorconfig
-                                      flycheck-pycheckers
                                       flycheck-inline
+                                      flycheck-pycheckers
                                       meson-mode
                                       (company-tmux
                                        :location (recipe :fetcher github :repo "Mic92/company-tmux"))
