@@ -45,6 +45,7 @@ in {
     #./vms/modules/secrets.nix
     #./kde.nix
     ./vms/modules/awesome.nix
+    ./vms/modules/yubikey.nix
   ];
 
   boot = {
