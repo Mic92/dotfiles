@@ -40,7 +40,7 @@ in {
         Service = {
           Type = "forking";
           ExecStart = "${pkgs.zsh}/bin/zsh -c 'source ~/.zshrc; exec ${pkgs.emacs}/bin/emacs --daemon'";
-          ExecStop = "${pkgs.emacs}/bin/emacsclient --eval (kill-emacs)";
+          ExecStop = "${pkgs.emacs}/bin/emacsclient -s %t/emacs --eval (kill-emacs)";
           Restart = "always";
         };
         Install.WantedBy = [ "default.target" ];
