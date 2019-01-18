@@ -63,6 +63,6 @@
   ] ++ (with nur.repos.mic92; [
     inxi
     conky-symbols
-    source-code-pro-nerdfonts.overrideAttrs
+    source-code-pro-nerdfonts
   ]);
 }
