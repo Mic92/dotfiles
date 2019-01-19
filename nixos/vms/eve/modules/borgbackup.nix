@@ -16,6 +16,7 @@
     startAt = "daily";
     preHook = ''
       ${pkgs.netcat}/bin/nc -w20 home.devkid.net 22198 < /run/keys/nas-wakeup-password
+      ${pkgs.netcat}/bin/nc -z -v -w30 home.devkid.net 22022
     '';
     prune.keep = {
       within = "1d"; # Keep all archives from the last day
