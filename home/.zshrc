@@ -257,7 +257,13 @@ alias ln="nocorrect ln"
 alias mv='nocorrect mv -v'
 alias mkdir='nocorrect mkdir -p'
 xalias locate='locate --existing --follow --basename --ignore-case'
-alias ip='ip -c'
+ip() {
+    if [[ $# -eq 0 ]]; then
+        command ip -c -br a
+    else
+        command ip -c "$@"
+    fi
+}
 xalias objdump='objdump -M intel'
 alias wget='noglob wget'
 alias curl='noglob curl'

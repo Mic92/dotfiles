@@ -35,7 +35,7 @@
          ale
          # delimitMat
          editorconfig-vim
-         ctrlp
+         fzf-vim
          rust-vim
          vim-signify
          vim-nix

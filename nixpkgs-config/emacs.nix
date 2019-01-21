@@ -3,11 +3,12 @@
 let
   editorScript = pkgs.writeScriptBin "emacseditor" ''
     #!${pkgs.runtimeShell}
-    if [ -z "$1" ]; then
-      exec ${pkgs.emacs}/bin/emacsclient -s $XDG_RUNTIME_DIR/emacs --create-frame --alternate-editor ${pkgs.emacs}/bin/emacs
-    else
-      exec ${pkgs.emacs}/bin/emacsclient -s $XDG_RUNTIME_DIR/emacs --alternate-editor ${pkgs.emacs}/bin/emacs "$@"
-    fi
+    export TERM=alacritty
+    exec ${pkgs.emacs}/bin/emacsclient \
+      --socket-name $XDG_RUNTIME_DIR/emacs \
+      --create-frame \
+      --alternate-editor ${pkgs.emacs}/bin/emacs \
+      -nw "$@"
   '';
 
 in {

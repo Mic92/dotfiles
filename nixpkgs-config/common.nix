@@ -22,6 +22,7 @@
     ];
 
     home.packages = with pkgs; [
+      alacritty.terminfo
       nix-prefetch-scripts
       #(pkgs.callPackage /home/joerg/git/nix-review {})
       nur.repos.mic92.nix-review-unstable
