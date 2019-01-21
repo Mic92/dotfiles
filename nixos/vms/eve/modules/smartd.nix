@@ -7,6 +7,5 @@
     ];
     notifications.mail.enable = true;
     notifications.mail.recipient = "joerg@thalheim.io";
-    notifications.test = true;
   };
 }
