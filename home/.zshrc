@@ -713,9 +713,6 @@ if [ -f /home/joerg/.travis/travis.sh ]; then
 fi
 
 ## Plugins
-if [ -f "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]; then
-  source "$HOME/.zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-fi
 if [ -f "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh" ]; then
   source "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh"
   # bind P and N for EMACS mode
@@ -762,4 +759,7 @@ fi
 if [ -n "${commands[fzf-share]}" ]; then
   FZF_CTRL_R_OPTS=--reverse
   source "$(fzf-share)/key-bindings.zsh"
+fi
+if [ -f "$HOME/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]; then
+    source "$HOME/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
 fi

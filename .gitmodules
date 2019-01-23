@@ -10,9 +10,6 @@
 [submodule "zsh/zsh-history-substring-search"]
 	path = zsh/zsh-history-substring-search
 	url = https://github.com/zsh-users/zsh-history-substring-search.git
-[submodule "zsh/zsh-syntax-highlighting"]
-	path = zsh/zsh-syntax-highlighting
-	url = https://github.com/zsh-users/zsh-syntax-highlighting.git
 [submodule "zsh/pure"]
 	path = zsh/pure
 	url = https://github.com/Mic92/pure.git
@@ -34,3 +31,6 @@
 [submodule "home/.tmux-yank"]
 	path = home/.tmux-yank
 	url = https://github.com/tmux-plugins/tmux-yank
+[submodule "zsh/fast-syntax-highlighting"]
+	path = zsh/fast-syntax-highlighting
+	url = https://github.com/zdharma/fast-syntax-highlighting
