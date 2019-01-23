@@ -47,7 +47,7 @@ in {
       name = "retiolum.hosts";
       url = "https://lassul.us/retiolum.hosts";
       # FIXME
-      sha256 = "0q8f5gw12hf9dhwcs4fni8jrvb2a1g6jskz28qcbd10p2xlkja58";
+      sha256 = "0kr68c2j1kdnlg9wk78dq02xzgxqyqzj2hfc42h7v9irrmrhnjka";
     });
 
     environment.systemPackages = [ config.services.tinc.networks.${netname}.package ];

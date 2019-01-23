@@ -1,9 +1,6 @@
 { pkgs, lib, ... }:
 {
-  imports = [
-    ./xserver.nix
-    ./xss-lock.nix
-  ];
+  imports = [ ./xserver.nix ];
   services.xserver.windowManager = {
     awesome = {
       enable = true;
@@ -14,6 +11,7 @@
 
   environment.systemPackages = with pkgs; [
     pavucontrol
+    light-locker
     lxappearance
     scrot
     evince
