@@ -319,29 +319,6 @@ if [[ -n ${commands[nix]} ]]; then
   }
 fi
 
-# fancy file selector for vim
-vim-fzf() {
-  # prefilter non-interactive followed by selection
-  local file=$(fzf --exact --multi -f "$@" | fzf --exact --sync)
-  [ -z "$file" ] && return
-  # put effective command into the history
-  print -s vim "$file"
-  vim "$file"
-}
-
-# fancy file selector for vim + ag
-vim-ag() {
-  local preview=$HOME/.homesick/repos/dotfiles/zsh/vim-ag/preview.sh
-  local file=$( ag "$@" | fzf --ansi --select-1 --exact --preview "$preview '$@' {} " )
-  [ -z "$file" ] && return
-  setopt shwordsplit
-  local args
-  IFS=':' args=($file)
-  unsetopt shwordsplit
-  print -s vim +${args[2]} ${args[1]}
-  vim +${args[2]} ${args[1]}
-}
-
 psgrep() {
   ps aux | grep "$@"
 }
