@@ -384,12 +384,17 @@ if [ -n "${commands[xclip]}" ]; then
   pbpaste() { xclip -o }
   pbpaste2() { xclip -selection clipboard -o }
 fi
+
 if [ -n "${commands[bat]}" ]; then
   cat() {
-    if [ -n "$DISPLAY" ]; then
-       xclip -selection clipboard < "$1" &
+    if [ -t 1 ] && [[ -o interactive ]]; then
+        if [ -n "$DISPLAY" ]; then
+            xclip -selection clipboard < "$1" &
+        fi
+        bat "$@"
+    else
+        command cat "$@"
     fi
-    bat "$@"
   }
 fi
 
