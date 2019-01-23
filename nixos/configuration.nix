@@ -120,13 +120,14 @@ in {
         system = "x86_64-linux";
         maxJobs = 4;
       }
-      {
-        hostName = "172.23.75.254";
-        maxJobs = 4;
-        sshKey = "/etc/nixos/secrets/id_buildfarm";
-        sshUser = "nix";
-        system = "aarch64-linux";
-      }
+      # rpi3
+      #{
+      #  hostName = "172.23.75.254";
+      #  maxJobs = 4;
+      #  sshKey = "/etc/nixos/secrets/id_buildfarm";
+      #  sshUser = "nix";
+      #  system = "aarch64-linux";
+      #}
       {
         hostName = "aarch64.nixos.community";
         maxJobs = 96;
