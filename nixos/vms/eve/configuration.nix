@@ -5,7 +5,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  deployment.targetHost = "eve.higgsboson.tk";
+  deployment.targetHost = "eve.thalheim.io";
   networking.hostName = "eve";
   networking.hostId = "8425e349";
 
@@ -44,6 +44,7 @@
     ./modules/rsyncd.nix
     ./modules/squid.nix
     ./modules/syncthing.nix
+    ./modules/smartd.nix
     ./modules/teamspeak.nix
     ./modules/tor.nix
     ./modules/tt-rss.nix
