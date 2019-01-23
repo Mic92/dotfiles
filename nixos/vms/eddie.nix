@@ -38,8 +38,6 @@
         ipv6 = "42:4992:6a6d:700::1";
       };
 
-      programs.ssh.startAgent = true;
-
       systemd.network.networks = {
         ethernet.extraConfig = ''
           [Match]

@@ -1,19 +1,6 @@
 {
   services.postgresql.enable = true;
-
-  services.postgresqlBackup = {
-    enable = true;
-    databases = [ 
-      "gogs" 
-      "grafana"
-      "mediawiki"
-      "nextcloud" 
-      "postgres"
-      "prosody"
-      "rainloop"
-      "tt_rss" 
-    ];
-  };
+  services.postgresqlBackup.enable = true;
 
   environment.etc."netdata/python.d/postgres.conf".text = ''
     socket:
