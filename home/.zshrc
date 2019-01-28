@@ -510,7 +510,7 @@ bundle() {
   command bundle "$@"
 }
 fd() {
-  if [ "${commands[fd]}" ]; then
+  if [ -n "${commands[fd]}" ]; then
     command fd "$@"
   else
     command find . -iname "*$@*" 2>/dev/null
