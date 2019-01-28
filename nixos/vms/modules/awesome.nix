@@ -11,7 +11,7 @@
 
   environment.systemPackages = with pkgs; [
     pavucontrol
-    light-locker
+    lightlocker
     lxappearance
     scrot
     evince
