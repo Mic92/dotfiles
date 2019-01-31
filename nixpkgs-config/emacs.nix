@@ -3,8 +3,8 @@
 let
   editorScript = pkgs.writeScriptBin "emacseditor" ''
     #!${pkgs.runtimeShell}
-    export TERM=alacritty
-    exec ${pkgs.emacs}/bin/emacsclient \
+    export TERM=xterm-24bit
+    exec -a emacs ${pkgs.emacs}/bin/emacsclient \
       --socket-name $XDG_RUNTIME_DIR/emacs \
       --create-frame \
       --alternate-editor ${pkgs.emacs}/bin/emacs \
@@ -28,6 +28,7 @@ in {
         gogetdoc
         impl
         gometalinter
+        nur.repos.mic92.xterm-24bit-terminfo
       ];
     })
     (lib.mkIf config.programs.emacs.socket-activation.enable {
