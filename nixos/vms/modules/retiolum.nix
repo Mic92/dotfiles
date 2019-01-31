@@ -43,11 +43,9 @@ in {
       '';
     };
 
-    networking.extraHosts = builtins.readFile (pkgs.fetchurl {
+    networking.extraHosts = builtins.readFile (builtins.fetchurl {
       name = "retiolum.hosts";
-      url = "https://lassul.us/retiolum.hosts";
-      # FIXME
-      sha256 = "0kr68c2j1kdnlg9wk78dq02xzgxqyqzj2hfc42h7v9irrmrhnjka";
+      url = "https://ni.krebsco.de/etc/krebs.hosts";
     });
 
     environment.systemPackages = [ config.services.tinc.networks.${netname}.package ];
