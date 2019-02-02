@@ -411,6 +411,9 @@ you should place your code here."
     (lambda ()
       (setq sh-basic-offset 2 sh-indentation 2)))
 
+  (add-to-list 'spacemacs-indent-sensitive-modes 'c-mode)
+  (add-to-list 'spacemacs-indent-sensitive-modes 'c++-mode)
+
   (setq deft-directory "~/Sync/notes")
   (setq org-directory "~/Sync/notes")
 
