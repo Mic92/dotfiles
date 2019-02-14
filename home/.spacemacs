@@ -73,6 +73,7 @@ values."
      latex
      major-modes
      markdown
+     org
      ;; notmuch
      ;; ocaml
      perl5
@@ -387,6 +388,8 @@ you should place your code here."
   (setq flycheck-pycheckers-checkers '(flake8 mypy2 mypy3))
   (add-hook 'flycheck-mode-hook #'flycheck-pycheckers-setup)
 
+  (setq org-latex-prefer-user-labels t)
+
   (with-eval-after-load 'yapfify
     (defun yapfify-buffer ()
        "Format python code with isort and black"
@@ -410,6 +413,8 @@ you should place your code here."
 
   (setq deft-directory "~/Sync/notes")
   (setq org-directory "~/Sync/notes")
+
+  (setq projectile-project-search-path '("~/git"))
 )
 
 

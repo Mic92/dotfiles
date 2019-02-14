@@ -13,7 +13,7 @@
         "${openssh}/bin/scp -o 'ProxyJump mic92@srv04.bsd.services' eve.thalheim.io.conf \\
           mic92@icingamaster:eve.thalheim.io.conf"
         "${openssh}/bin/ssh -J mic92@srv04.bsd.services mic92@icingamaster \\
-          'sudo systemctl reload icinga2 || sudo icinga2 daemon -C'"
+          'sudo service icinga2 reload || sudo icinga2 daemon -C'"
       ];
     };
   };

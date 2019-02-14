@@ -4,13 +4,19 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports =
-    [ <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
-    ];
+  imports = [
+    <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
+    (builtins.fetchGit {
+      url = "https://github.com/NixOS/nixos-hardware";
+      rev = "1e2c130d38d72860660474c36207b099c519cb6a";
+    } + "/lenovo/thinkpad/x250")
+  ];
 
   boot = {
     initrd = {
-      availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" "i8042" "i915" "snd-bt-sco" ];
+      availableKernelModules = [
+        "xhci_pci" "ehci_pci" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" "i8042" "i915" "snd-bt-sco"
+      ];
     };
     kernelModules = [ "kvm-intel" ];
   };
@@ -19,6 +25,9 @@
   networking.hostId = "8425e349";
   boot.zfs.enableUnstable = true;
 
+  nixpkgs.config.packageOverrides = pkgs: {
+    vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+  };
   hardware = {
     bluetooth = {
       enable = true;
@@ -28,7 +37,11 @@
     };
     opengl = {
       enable = true;
-      extraPackages = [ pkgs.vaapiIntel ];
+      extraPackages = with pkgs; [
+        vaapiIntel
+        vaapiVdpau
+        libvdpau-va-gl
+      ];
       driSupport32Bit = true;
     };
     cpu.intel.updateMicrocode = true;

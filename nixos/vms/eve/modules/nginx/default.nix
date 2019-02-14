@@ -38,7 +38,7 @@ in {
       # TODO check later if this is required for ssl_stapling
       #ssl_trusted_certificate ${./isrgrootx1.pem.txt}
       add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
-      add_header X-Frame-Options DENY;
+      add_header X-Frame-Options SAMEORIGIN;
       add_header X-Content-Type-Options nosniff;
     '';
 

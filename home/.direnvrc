@@ -21,9 +21,9 @@ use_nix() {
     echo "$tmp" > "$cache"
   fi
 
-  local term_backup=$TERM path_backup=$PATH
+  local term_backup=$TERM path_backup=$PATH tmp_backup=$TMPDIR
   eval "$(< $cache)"
-  export PATH=$PATH:$path_backup TERM=$term_backup
+  export PATH=$PATH:$path_backup TERM=$term_backup TMPDIR=$tmp_backup
 
   if [[ $# = 0 ]]; then
     watch_file default.nix

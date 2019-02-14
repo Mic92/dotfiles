@@ -1,6 +1,9 @@
 { pkgs, lib, ... }:
 {
-  imports = [ ./xserver.nix ];
+  imports = [
+    ./xserver.nix
+    ./flameshot.nix
+  ];
   services.xserver.windowManager = {
     awesome = {
       enable = true;
@@ -16,6 +19,7 @@
     scrot
     evince
     rofi
+    gnome3.eog
   ];
 
   services.autorandr.enable = true;
