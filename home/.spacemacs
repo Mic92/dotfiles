@@ -414,10 +414,27 @@ you should place your code here."
   (add-to-list 'spacemacs-indent-sensitive-modes 'c-mode)
   (add-to-list 'spacemacs-indent-sensitive-modes 'c++-mode)
 
+  (defun toggle-tabs-spaces ()
+    (interactive)
+    (setq indent-tabs-mode (not indent-tabs-mode)))
+
+  (spacemacs/set-leader-keys "tt" 'toggle-tabs-spaces)
+
   (setq deft-directory "~/Sync/notes")
   (setq org-directory "~/Sync/notes")
 
   (setq projectile-project-search-path '("~/git"))
+
+  (defun copy-current-line-position-to-clipboard ()
+    "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
+    (interactive)
+    (let ((path-with-line-number
+           (concat (buffer-file-name) ":" (number-to-string (line-number-at-pos)))))
+      (kill-new path-with-line-number)
+      (message (concat path-with-line-number " copied to clipboard"))))
+
+  (spacemacs/set-leader-keys "rf" 'copy-current-line-position-to-clipboard)
+
 )
 
 
