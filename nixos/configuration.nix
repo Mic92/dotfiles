@@ -44,7 +44,8 @@ in {
     ./vms/modules/wireguard.nix
     #./vms/modules/secrets.nix
     #./kde.nix
-    ./vms/modules/awesome.nix
+    ./vms/modules/i3.nix
+    #./vms/modules/awesome.nix
     ./vms/modules/yubikey.nix
   ];
 

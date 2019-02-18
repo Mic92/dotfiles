@@ -29,7 +29,8 @@
         ./modules/networkd.nix
         ./modules/builder.nix
         ./modules/netdata.nix
-        ./modules/awesome.nix
+        ./modules/i3.nix
+        #./modules/awesome.nix
         #./modules/xfce.nix
       ];
 

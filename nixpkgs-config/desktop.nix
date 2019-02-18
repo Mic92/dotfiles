@@ -10,6 +10,40 @@
 
   fonts.fontconfig.enableProfileFonts = true;
   programs.emacs.package = lib.mkForce pkgs.emacs;
+  services.dunst = {
+    enable = true;
+    settings = {
+      global = {
+        font = "SauceCodePro Nerd Font Mono 12";
+        alignment = "left";
+        geometry = "0x5-3+29";
+        corner_radius = "2";
+        padding = "8";
+        horizontal_padding = "8";
+        frame_width = "1";
+        frame_color = "#dbdbdb";
+        markup = "full";
+        format = "<b>%s</b>\n%b";
+        transparency = "10";
+      };
+      urgency_low = {
+        background = "#303030";
+        foreground = "#888888";
+        timeout = "10";
+      };
+      urgency_normal = {
+        background = "#303030";
+        foreground = "#c7c7c7";
+        timeout = "10";
+      };
+      urgency_critical = {
+        background = "#900000";
+        foreground = "#ffffff";
+        frame_color = "#ff0000";
+        timeout = "0";
+      };
+    };
+  };
 
   services.syncthing.enable = true;
   home.packages = with pkgs; [

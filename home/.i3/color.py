@@ -19,5 +19,6 @@ text_urgent         = "#ffffff"
 background_urgent   = "#900000"
 border_urgent       = "#2f343a"
 
+text_warn           = "#fabd2f"
 text_up             = "#00cd66"
 text_down           = "#f14634"

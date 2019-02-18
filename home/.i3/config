@@ -43,8 +43,8 @@ bindsym $mod+Shift+q kill
 
 bindsym $mod+Ctrl+l exec ~/bin/i3lock.sh
 
-# start dmenu (a program launcher)
-bindsym $mod+d exec dmenu_run
+# start rofi (a program launcher)
+bindsym  $mod+d exec rofi -theme glue_pro_blue -show combi
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -114,7 +114,6 @@ bindsym $mod+8 workspace 8
 bindsym $mod+9 workspace 9
 bindsym $mod+0 workspace 10
 
-
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace $wsWeb
 bindsym $mod+Shift+2 move container to workspace $wsDev
@@ -126,6 +125,12 @@ bindsym $mod+Shift+7 move container to workspace 7
 bindsym $mod+Shift+8 move container to workspace 8
 bindsym $mod+Shift+9 move container to workspace 9
 bindsym $mod+Shift+0 move container to workspace 10
+
+# move workspace to next screen
+bindsym $mod+x move workspace to output right
+# move focus to next screen
+bindsym $mod+Control+j focus output left
+bindsym $mod+Control+k focus output right
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -169,9 +174,7 @@ bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 1 +5% # increase
 bindsym XF86AudioLowerVolume exec pactl set-sink-volume 1 -- -5% # decrease
 bindsym XF86AudioMute        exec pactl set-sink-mute 1 toggle # mute
 
-bindsym XF86Display          exec autorandr --change
-# Screen brightness controls
-# pacman -S xorg-xbacklight
+bindsym XF86WakeUp          exec autorandr --change
 bindsym XF86MonBrightnessUp exec xbacklight -inc 10
 bindsym XF86MonBrightnessDown exec xbacklight -dec 10
 
@@ -213,8 +216,8 @@ bar {
 bar {
   id 1
   position bottom
+  tray_output none
   separator_symbol " | "
-  #font pango:SauceCodePro Nerd Font Mono 10
   font $font
   status_command i3pystatus-python-interpreter ~/.i3/i3status_bottom.py
   workspace_buttons no
@@ -237,7 +240,6 @@ client.urgent           #2f343a #900000 #ffffff #900000   #900000
 client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
 client.background #ffffff
 
-
 # Rules
 set $webClasses "^(Firefox|Opera|Chromium|Aurora)$"
 for_window [class=$webClasses] move container to workspace $wsWeb
@@ -254,3 +256,12 @@ for_window [class=$docClasses] move container to workspace $wsDoc
 
 # hide titlebar if there is only one window
 for_window [class="^.*"] border pixel 1
+
+exec --no-startup-id rambox
+exec --no-startup-id dino
+exec --no-startup-id thunderbird
+exec --no-startup-id firefox
+exec --no-startup-id light-locker
+exec --no-startup-id compton -b
+exec --no-startup-id nm-applet
+exec --no-startup-id systemctl --user import-environment XDG_SESSION_PATH
