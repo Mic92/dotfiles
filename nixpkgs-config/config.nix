@@ -2,7 +2,6 @@
   allowUnfree = true;
   pulseaudio = true;
   #allowUnsupportedSystem = true;
-  chromium.enablePepperPDF = true;
   oraclejdk.accept_license = true;
 
   packageOverrides = pkgs: let
