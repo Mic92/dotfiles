@@ -11,6 +11,35 @@ from i3pystatus.disk import Disk
 
 status = Status(standalone=True)
 
+status.register(
+    "mpd",
+    format="{title} {status} {album} {song_elapsed}/{song_length}",
+    status={"pause": "", "play": "▶", "stop": "◾"},
+    color=color.text_normal,
+)
+
+status.register(
+    "network",
+    interface="eth1",
+    format_up="{v4cidr} {bytes_sent}/s|{bytes_recv}/s",
+    color_down=color.text_down,
+    color_up=color.text_up,
+    auto_units=True
+)
+icons.conkysymbol(status, "i")
+
+status.register(
+    "disk", path="/", format="{used}/{total}G [{avail}G]", color=color.text_normal
+)
+
+status.register(
+    "mem",
+    format="{used_mem}/{total_mem}MB",
+    color=color.text_normal,
+    warn_color=color.text_warn,
+)
+icons.conkysymbol(status, "J")
+
 status.register("load", format="Load: {avg1} {avg5}", color=color.text_normal)
 
 ## Shows your CPU temperature, if you have a Intel CPU
@@ -21,30 +50,5 @@ count = multiprocessing.cpu_count()
 fmt = ["{usage_cpu%d:02}%%" % cpu for cpu in range(count)]
 status.register("cpu_usage", format="/".join(fmt), color=color.text_normal)
 icons.nerdfont(status, "")
-
-status.register(
-    "mem",
-    format="{used_mem}/{total_mem}MB",
-    color=color.text_normal,
-    warn_color=color.text_warn,
-)
-icons.conkysymbol(status, "J")
-
-status.register(
-    "network", interface="eth0", format_up="{v4cidr}", color_down=color.text_down
-)
-
-icons.conkysymbol(status, "i")
-
-status.register(
-    "disk", path="/", format="{used}/{total}G [{avail}G]", color=color.text_normal
-)
-
-status.register(
-    "mpd",
-    format="{title} {status} {album} {song_elapsed}/{song_length}",
-    status={"pause": "", "play": "▶", "stop": "◾"},
-    color=color.text_normal,
-)
 
 status.run()

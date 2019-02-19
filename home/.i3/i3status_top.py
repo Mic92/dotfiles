@@ -17,9 +17,10 @@ icons.nerdfont(status, "")
 status.register(
     "network",
     interface="wlan0",
-    format_up="{essid} {quality_bar} {v4cidr}",
+    format_up="{essid} {quality_bar} {v4cidr} {bytes_sent}/s|{bytes_recv}/s",
     color_up=color.text_normal,
     color_down=color.text_down,
+    dynamic_color=False
 )
 icons.nerdfont(status, "")
 
