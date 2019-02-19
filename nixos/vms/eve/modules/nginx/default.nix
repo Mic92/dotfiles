@@ -14,16 +14,16 @@ let
   };
 in {
   imports = [
-    ./blog.halfco.de.nix
     ./blog.nix
     ./devkid.net.nix
     ./dl.nix
     ./glowing-bear.nix
-    ./halfco.de.nix
     ./homepage.nix
     ./ip.nix
     ./muc.nix
-    #./threema.nix
+    #./blog.halfco.de.nix
+    #./halfco.de.nix
+    ./threema.nix
   ];
 
   services.nginx = {
@@ -71,7 +71,7 @@ in {
   security.acme.certs = {
     "thalheim.io" = sanCertificate "thalheim.io";
     "devkid.net" = sanCertificate "devkid.net";
-    "halfco.de" = sanCertificate "halfco.de";
+    #"halfco.de" = sanCertificate "halfco.de";
     "higgsboson.tk" = sanCertificate "higgsboson.tk";
   };
 
