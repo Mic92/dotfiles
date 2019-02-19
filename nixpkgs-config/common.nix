@@ -22,7 +22,6 @@
     ];
 
     home.packages = with pkgs; [
-      nix-prefetch-scripts
       #(pkgs.callPackage /home/joerg/git/nix-review {})
       nur.repos.mic92.nix-review-unstable
 
