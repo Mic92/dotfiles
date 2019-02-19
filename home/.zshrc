@@ -558,8 +558,8 @@ moshlogin(){
   if ssh-add -L | grep -q "no identities"; then
     ssh-add ~/.ssh/id_{rsa,ecdsa,ed25519}
   fi
-  ssh login killall mosh-server;
-  mosh -A -p 60011:60011 login
+  ssh -v eve killall mosh-server
+  mosh -A eve
 }
 # List directory after changing directory
 chpwd() { ls }
