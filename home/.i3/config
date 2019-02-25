@@ -184,7 +184,7 @@ bindsym XF86AudioPause exec playerctl pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 
-bindsym Print     exec flameshot gui -p ~/upload
+bindsym $mod+Print exec flameshot gui -p /home/joerg/upload
 
 # gnome-calculator
 bindsym $mod+c exec speedcrunch

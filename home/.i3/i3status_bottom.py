@@ -9,6 +9,8 @@ import icons
 from i3pystatus import Status
 from i3pystatus.disk import Disk
 
+import yubikey
+
 status = Status(standalone=True)
 
 status.register(
@@ -50,5 +52,7 @@ count = multiprocessing.cpu_count()
 fmt = ["{usage_cpu%d:02}%%" % cpu for cpu in range(count)]
 status.register("cpu_usage", format="/".join(fmt), color=color.text_normal)
 icons.nerdfont(status, "")
+
+status.register(yubikey.YubiKeyTouchDetector, hints={"markup": "pango"})
 
 status.run()
