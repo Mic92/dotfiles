@@ -166,13 +166,10 @@ mode "resize" {
 
 bindsym $mod+r mode "resize"
 
-# MPD
-bindsym shift+space exec mpc toggle
-
 # Pulse Audio controls
-bindsym XF86AudioRaiseVolume exec pactl set-sink-volume 1 +5% # increase
-bindsym XF86AudioLowerVolume exec pactl set-sink-volume 1 -- -5% # decrease
-bindsym XF86AudioMute        exec pactl set-sink-mute 1 toggle # mute
+bindsym XF86AudioRaiseVolume exec pamixer --increase 5 # increase
+bindsym XF86AudioLowerVolume exec pamixer --decrease 5 # decrease
+bindsym XF86AudioMute        exec pamixer --toggle-mute # mute
 
 bindsym XF86WakeUp          exec autorandr --change
 bindsym XF86MonBrightnessUp exec xbacklight -inc 10
@@ -183,6 +180,7 @@ bindsym XF86AudioPlay exec playerctl play
 bindsym XF86AudioPause exec playerctl pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
+#bindsym $mod+shift+Space exec mpc toggle
 
 bindsym $mod+Print exec flameshot gui -p /home/joerg/upload
 
