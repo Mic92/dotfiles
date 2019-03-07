@@ -36,7 +36,7 @@
 
       networking.retiolum = {
         ipv4 = "10.243.29.170";
-        ipv6 = "42:4992:6a6d:700::1";
+        ipv6 = "42:0:3c46:126:3b9d:8298:f1b5:86d";
       };
 
       systemd.network.networks = {
