@@ -10,7 +10,6 @@
        start = [
          fugitive
          rhubarb
-         vim-grammarous
          vim-husk
          UltiSnips
          vim-autoformat
