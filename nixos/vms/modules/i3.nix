@@ -20,6 +20,8 @@
     libnotify
     dunst
     compton-git
+    pamixer
+    mpc_cli
     (i3pystatus.override {
       extraLibs = [ python3.pkgs.keyrings-alt ];
     })
