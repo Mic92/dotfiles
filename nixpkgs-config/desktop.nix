@@ -1,10 +1,10 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 
 {
   imports = [
     ./common.nix
     ./rust.nix
-    ./latex.nix
+    #./latex.nix
     ./debugging.nix
   ];
 
@@ -46,6 +46,17 @@
   };
 
   services.syncthing.enable = true;
+
+  services.mpd = {
+    enable = true;
+    musicDirectory = "${config.home.homeDirectory}/Musik";
+    extraConfig = ''
+      audio_output {
+        type "pulse"
+        name "Pulse output"
+      }
+    '';
+  };
   home.packages = with pkgs; [
     league-of-moveable-type
     dejavu_fonts
