@@ -25,9 +25,6 @@
   networking.hostId = "8425e349";
   boot.zfs.enableUnstable = true;
 
-  nixpkgs.config.packageOverrides = pkgs: {
-    vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
-  };
   hardware = {
     bluetooth = {
       enable = true;
