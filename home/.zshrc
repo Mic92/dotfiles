@@ -218,7 +218,7 @@ zstyle ':completion:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w
 [ -d "$HOME/.zsh-completions/src" ] && fpath=($HOME/.zsh-completions $fpath)
 
 ## Prompt
-export PURE_GIT_UNTRACKED_DIRTY=0
+PURE_GIT_UNTRACKED_DIRTY=0 PURE_GIT_PULL=0
 source $HOME/.zsh-pure/async.zsh
 source $HOME/.zsh-pure/pure.zsh
 # non-zero exit code in right prompt
@@ -483,15 +483,11 @@ if [[ -n "$TMUX" ]] && [[ -n "${commands[tput]}" ]]; then
     fi
 fi
 
-if [ -x "$HOME/.go/bin/go" ]; then
-  export GOROOT="$HOME/.go"
-  export GOROOT_BOOTSTRAP=/usr/lib/go
-fi
 export GOPATH="$HOME/go"
-[ ! -d "$GOPATH" ] && mkdir -p "$GOPATH/src" 2>/dev/null
+[[ ! -d "$GOPATH" ]] && mkdir -p "$GOPATH/src" 2>/dev/null
 
-if [ -S /run/user/1000/ssh-agent ]; then
-  export SSH_AUTH_SOCK=/run/user/1000/ssh-agent
+if [[ -S "/run/user/${UID}/ssh-agent" ]]; then
+  export SSH_AUTH_SOCK="/run/user/${UID}/ssh-agent"
 fi
 
 if [[ -n ${commands[lesspipe.sh]} ]]; then
@@ -504,13 +500,13 @@ unlock_root(){
 }
 # Autoinstall Bundle
 bundle() {
-  if [ -z "${commands[bundle]}" ] && [ -n "${commands[gem]}" ]; then
+  if [[ -z "${commands[bundle]}" ]] && [[ -n "${commands[gem]}" ]]; then
    gem install --user-install bundler
   fi
   command bundle "$@"
 }
 fd() {
-  if [ -n "${commands[fd]}" ]; then
+  if [[ -n "${commands[fd]}" ]]; then
     command fd "$@"
   else
     command find . -iname "*$@*" 2>/dev/null
@@ -528,7 +524,7 @@ retry() {
   done
 }
 own() {
-  if [ -n "${commands[sudo]}" ]; then
+  if [[ -n "${commands[sudo]}" ]]; then
     sudo chown -R "$USER:$(id -gn)" "$@"
   else
     chown -R "$USER:$(id -gn)" "$@"
@@ -567,7 +563,7 @@ mkcd() { mkdir -p "$1" && cd "$1"; }
 # make cd accept files
 cd() {
   local to="${1:-$HOME}"
-  if [ -f "$to" ]; then
+  if [[ -f "$to" ]]; then
     to="$(dirname $to)"
   fi
   builtin cd "$to"
@@ -617,22 +613,22 @@ heroku(){
 }
 
 build-cscope-db() {
-    find ${PWD} -type f -name "*.c" \
-        -o -name "*.cc" \
-        -o -name "*.cpp" \
-        -o -name "*.h" \
-        -o -name "*.hpp" \
-        -o -name "*.H" > ${PWD}/cscope.files
-    cscope -R -b
-    export CSCOPE_DB=${PWD}/cscope.out
+  find ${PWD} -type f -name "*.c" \
+    -o -name "*.cc" \
+    -o -name "*.cpp" \
+    -o -name "*.h" \
+    -o -name "*.hpp" \
+    -o -name "*.H" > ${PWD}/cscope.files
+  cscope -R -b
+  export CSCOPE_DB=${PWD}/cscope.out
 }
 
 nixify() {
-  if [ ! -e ./.envrc ]; then
+  if [[ ! -e ./.envrc ]]; then
     echo "use nix" > .envrc
     direnv allow
   fi
-  if [ ! -e default.nix ]; then
+  if [[ ! -e default.nix ]]; then
     cat > default.nix <<'EOF'
 with import <nixpkgs> {};
 stdenv.mkDerivation {
@@ -647,11 +643,11 @@ EOF
 }
 
 open() {
-  if [ -n "${commands[xdg-open]}" ]; then
+  if [[ -n "${commands[xdg-open]}" ]]; then
     xdg-open "$@"
-  elif [ -n "${commands[kde-open5]}" ]; then
+  elif [[ -n "${commands[kde-open5]}" ]]; then
     kde-open5 "$@"
-  elif [ -n "${commands[gnome-open]}" ]; then
+  elif [[ -n "${commands[gnome-open]}" ]]; then
     gnome-open "$@"
   else
     echo "no suitable command found" >&2
@@ -685,36 +681,36 @@ if [[ $TERM = linux ]]; then
 fi
 
 ## Per machine zshrc
-if [ -f $HOME/.zshrc.$HOST ]; then
+if [[ -f $HOME/.zshrc.$HOST ]]; then
   source $HOME/.zshrc.$HOST
 fi
 
 # added by travis gem
-if [ -f /home/joerg/.travis/travis.sh ]; then
+if [[ -f /home/joerg/.travis/travis.sh ]]; then
   source /home/joerg/.travis/travis.sh
 fi
 
 ## Plugins
-if [ -f "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh" ]; then
+if [[ -f "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh" ]]; then
   source "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh"
   # bind P and N for EMACS mode
   bindkey -M emacs '^P' history-substring-search-up
   bindkey -M emacs '^N' history-substring-search-down
 fi
-if [ -f "$HOME/.zsh-autosuggestions/zsh-autosuggestions.zsh" ]; then
+if [[ -f "$HOME/.zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
   source "$HOME/.zsh-autosuggestions/zsh-autosuggestions.zsh"
   export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE=fg=60
 fi
-if [ -f "$HOME/.homesick/repos/homeshick/homeshick.sh" ]; then
+if [[ -f "$HOME/.homesick/repos/homeshick/homeshick.sh" ]]; then
   source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 fi
-if [ -f "$HOME/.zsh-autopair/autopair.zsh" ]; then
+if [[ -f "$HOME/.zsh-autopair/autopair.zsh" ]]; then
   source "$HOME/.zsh-autopair/autopair.zsh"
 fi
 source ~/.zsh-termsupport
 
-if [ -d "$HOME/git/x86_64-linux-cheatsheats/pages" ]; then
-  export CHEAT_PATH="$HOME/git/x86_64-linux-cheatsheats/pages"
+if [[ -d "$HOME/git/x86_64-linux-cheatsheats/pages" ]]; then
+  export CHEAT_PATH="${CHEAT_PATH:+':'}$HOME/git/x86_64-linux-cheatsheats/pages"
 fi
 if [ -n "${commands[r2]}" ]; then
   r2() {
@@ -728,20 +724,14 @@ fi
 if [ -n "${commands[direnv]}" ]; then
   eval "$(direnv hook zsh)"
 fi
-if [ -f /usr/share/chruby/chruby.sh ]; then
-  source /usr/share/chruby/chruby.sh
-  source /usr/share/chruby/auto.sh
-elif [ -d "$HOME/.rvm/bin" ]; then
-  export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-fi
-if [ -d "$HOME/.pyenv" ]; then
-  export PYENV_ROOT="$HOME/.pyenv"
-  export PATH="$PYENV_ROOT/bin:$PATH"
-fi
-if [ -n "${commands[fzf-share]}" ]; then
+if [[ -n "${commands[fzf-share]}" ]]; then
   FZF_CTRL_R_OPTS=--reverse
   source "$(fzf-share)/key-bindings.zsh"
 fi
-if [ -f "$HOME/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]; then
+if [[ -f "$HOME/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]]; then
     source "$HOME/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+fi
+
+if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
+    source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 fi
