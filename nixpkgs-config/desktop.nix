@@ -104,7 +104,7 @@
     gnupg1compat
     cheat
     tldr
-    nixopsUnstable
+    nixops
   ] ++ (with nur.repos.mic92; [
     inxi
     conky-symbols
