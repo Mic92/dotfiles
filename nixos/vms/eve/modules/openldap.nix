@@ -62,15 +62,8 @@
     '';
   };
 
-  deployment.keys = {
-    "openldap-rootpw" =  {
-      keyFile = ../secrets/openldap-rootpw;
-      user = "openldap";
-    };
-    "ldap-login" =  {
-      keyFile = ../secrets/ldap-login;
-    };
-  };
+  krebs.secret.files.openldap-rootpw.owner = "openldap";
+  krebs.secret.files.ldap-login = {};
 
   users.users.openldap.extraGroups = [ "keys" ];
   systemd.services.openldap.serviceConfig.SupplementaryGroups = [ "keys" ];

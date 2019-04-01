@@ -84,18 +84,7 @@
     regex = "Grafana";
   };
 
-  deployment.keys = {
-    "grafana-smtp-password" = {
-      keyFile = ../secrets/grafana-smtp-password;
-      user = "grafana";
-    };
-    "grafana-admin-password" = {
-      keyFile = ../secrets/grafana-admin-password;
-      user = "grafana";
-    };
-    "grafana-ldap-password" = {
-      keyFile = ../secrets/grafana-ldap-password;
-      user = "grafana";
-    };
-  };
+  krebs.secret.files.grafana-smtp-password.owner = "grafana";
+  krebs.secret.files.grafana-admin-password.owner = "grafana";
+  krebs.secret.files.grafana-ldap-password.owner = "grafana";
 }

@@ -61,10 +61,7 @@
     };
   };
 
-  deployment.keys."ttrss-ldap-password" = {
-    keyFile = ../secrets/ttrss-ldap-password;
-    user = "tt_rss";
-  };
+  krebs.secret.files.ttrss-ldap-password.owner = "tt_rss";
 
   users.users.tt_rss.extraGroups = [ "keys" ];
   systemd.services.phpfpm-tt-rss.serviceConfig.SupplementaryGroups = [ "keys" ];

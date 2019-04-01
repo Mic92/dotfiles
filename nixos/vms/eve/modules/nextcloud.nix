@@ -21,10 +21,7 @@
     };
   };
 
-  deployment.keys."nextcloud-admin-password" = {
-    keyFile = ../secrets/nextcloud-admin-password;
-    user = "nextcloud";
-  };
+  krebs.secret.files.nextcloud-admin-password.owner = "nextcloud";
 
   users.users.nextcloud.extraGroups = [ "keys" ];
   systemd.services.nextcloud.serviceConfig.SupplementaryGroups = [ "keys" ];

@@ -31,8 +31,6 @@
     };
   };
 
-  deployment.keys = {
-    "nas-wakeup-password".keyFile = ../secrets/nas-wakeup-password;
-    "borg-passphrase".keyFile = ../secrets/borg-passphrase;
-  };
+  krebs.secret.files.nas-wakeup-password = {};
+  krebs.secret.files.borg-passphrase = {};
 }

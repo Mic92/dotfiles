@@ -63,11 +63,6 @@
 
   users.users.named.extraGroups = [ "keys" ];
   systemd.services.bind.serviceConfig.SupplementaryGroups = [ "keys" ];
-  deployment.keys = {
-    "chelnok.key" = {
-      keyFile = ../secrets/chelnok.key;
-      user = "named";
-    };
-  };
 
+  krebs.secret.files."chelnok.key".owner = "named";
 }

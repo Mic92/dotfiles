@@ -2,5 +2,5 @@ home/.vim/bundle
 *.zwc
 home/.emacs.elc
 /home/.gitconfig.local
-nixos/secrets
+#nixos/secrets
 nixos/vms/eve/secrets

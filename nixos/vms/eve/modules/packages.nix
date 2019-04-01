@@ -1,8 +1,6 @@
 { pkgs, config, ... }:
 
 {
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-
   environment.systemPackages = let
     scripts = pkgs.callPackage ./pkgs/scripts {};
   in with pkgs; [

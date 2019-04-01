@@ -39,10 +39,5 @@
   };
   users.groups.mastodon-hnbot = {};
 
-  deployment.keys = {
-    "hnbot-password" = {
-      keyFile = ../secrets/hnbot-password;
-      user = "mastodon-hnbot";
-    };
-  };
+  krebs.secret.files.hnbot-password.owner = "mastadon-hnbot";
 }

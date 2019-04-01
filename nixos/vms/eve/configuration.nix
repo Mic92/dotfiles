@@ -5,7 +5,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  deployment.targetHost = "eve.thalheim.io";
+  #deployment.targetHost = "eve.thalheim.io";
   networking.hostName = "eve";
   networking.hostId = "8425e349";
 
@@ -49,14 +49,15 @@
     ./modules/tor.nix
     ./modules/tt-rss.nix
     ./modules/users.nix
+    ./modules/zsh.nix
 
     ../modules/builder.nix
     ../modules/nix-daemon.nix
     ../modules/mosh.nix
     ../modules/nur.nix
+    ../modules/secrets.nix
     ../modules/tracing.nix
     ../modules/wireguard.nix
-    ./modules/zsh.nix
     ../modules/zfs.nix
   ];
 

@@ -165,9 +165,7 @@ in {
     shell = "/run/current-system/sw/bin/nologin";
   };
 
-  deployment.keys."dovecot-ldap-password" = {
-    keyFile = ../secrets/dovecot-ldap-password;
-  };
+  krebs.secret.files."dovecot-ldap-password" = {};
 
   security.dhparams = {
     enable = true;

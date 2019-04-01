@@ -162,10 +162,5 @@
     6555 # xmpp-proxy65
   ];
 
-  deployment.keys = {
-    "prosody-ldap-password" = {
-      keyFile = ../secrets/prosody-ldap-password;
-      user = "prosody";
-    };
-  };
+  krebs.secret.files.prosody-ldap-password.owner = "prosody";
 }
