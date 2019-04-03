@@ -12,6 +12,8 @@
   time.timeZone = "UTC";
   i18n.defaultLocale = "en_DK.UTF-8";
 
+  programs.vim.defaultEditor = true;
+
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
