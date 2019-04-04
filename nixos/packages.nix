@@ -2,7 +2,7 @@
 
 {
   boot = {
-    #kernelPackages = pkgs.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_4_14;
     zfs.enableUnstable = true;
   };
 

@@ -93,6 +93,7 @@
     screen-message
     alacritty
     sublime3
+    mumble
 
     sshfsFuse
     sshuttle

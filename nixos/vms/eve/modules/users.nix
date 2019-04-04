@@ -20,6 +20,7 @@ let
   vv01f = [
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2RPmBzVk0/pMxwuzp6NYI6ZrvDmxF6chJQ4Ky2+gdfYMI3aWqdTFtcmP0wxghChH6WQeEd86uqRD08SwTrR/oFr8uriczYbcyLmDJa2UclMXOHhwoTJP3IgbqPWzFOcBTYwPRQ/h8UA2W80BXPxdqx9oz1tRh26uoa7TCk/tB4nHUpS+hw22Cu2k8QTmVy0XhJquyRb/BKlk2WhiA6VfRzlMWi3b/jjLiOYPCl7LZSoJ7wT22H9M3lq/xV6ym1JaxQ1mLeZzZLeIRsiMrSayiNOvkNdtb2VRIM/St2VgZnIbUnrqlDZqewy1ydbOMnnu3ArAnWkAK5l02NCeFR69n vv01f"
   ];
+  
 in {
   security.sudo.wheelNeedsPassword = false;
 
