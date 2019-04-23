@@ -7,18 +7,16 @@
     daemon.enable = true;
     bind = {
       distinguishedName = "cn=login,ou=system,ou=users,dc=eve";
-      password = "/run/keys/ldap-login";
+      passwordFile = "/run/keys/ldap-login";
     };
   };
 
   services.openldap = {
     enable = true;
+    suffix = "dc=eve";
+    rootdn = "cn=admin,dc=eve";
+    rootpwFile = "/run/keys/openldap-rootpw";
     extraConfig = ''
-      include ${pkgs.openldap}/etc/schema/core.schema
-      include ${pkgs.openldap}/etc/schema/cosine.schema
-      include ${pkgs.openldap}/etc/schema/inetorgperson.schema
-      include ${pkgs.openldap}/etc/schema/nis.schema
-
       # Mailserver schema used with postfix
       include ${./openldap}/mailserver.schema
       include ${./openldap}/owncloud.schema
@@ -50,15 +48,6 @@
         by * read
       access to *
         by * read
-
-      database mdb
-      maxsize 1073741824
-      suffix "dc=eve"
-      rootdn "cn=admin,dc=eve"
-      include /run/keys/openldap-rootpw
-
-      directory /var/db/openldap
-      index objectClass eq
     '';
   };
 
