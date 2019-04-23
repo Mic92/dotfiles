@@ -57,7 +57,7 @@ in {
     $wgEmailAuthentication = true;
 
     $wgDBtype = "postgres";
-    $wgDBserver = "/tmp";
+    $wgDBserver = "/run/postgresql";
     $wgDBname = "mediawiki";
     $wgDBuser = "mediawiki";
 

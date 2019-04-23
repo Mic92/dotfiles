@@ -3,7 +3,7 @@
     enable = true;
     database = {
       type = "postgres";
-      host = "/tmp";
+      host = "/run/postgresql";
       port = 5432;
     };
     domain = "git.higgsboson.tk";

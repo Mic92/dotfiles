@@ -23,7 +23,7 @@
     database = {
       type = "postgres";
       name = "grafana";
-      host = "/tmp";
+      host = "/run/postgresql";
       user = "grafana";
     };
     security.adminPasswordFile = "/run/keys/grafana-admin-password";

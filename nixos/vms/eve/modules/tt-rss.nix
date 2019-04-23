@@ -21,7 +21,7 @@
     database = {
       type = "pgsql";
       password = "";
-      host = "/tmp";
+      host = "/run/postgresql";
     };
 
     extraConfig = ''

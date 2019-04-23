@@ -11,7 +11,7 @@
       dbname = "nextcloud";
       dbtableprefix = "oc_";
       dbuser = "nextcloud";
-      dbhost = "/tmp";
+      dbhost = "/run/postgresql";
       adminuser = "nextcloudadmin";
       adminpassFile = "/run/keys/nextcloud-admin-password";
       extraTrustedDomains = [
