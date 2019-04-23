@@ -1,10 +1,10 @@
 { pkgs, ... }: {
   services.nginx = {
-    virtualHosts."www.threema.thalheim.io" = {
-      useACMEHost = "thalheim.io";
-      forceSSL = true;
-      globalRedirect = "threema.thalheim.io";
-    };
+    #virtualHosts."www.threema.thalheim.io" = {
+    #  useACMEHost = "thalheim.io";
+    #  forceSSL = true;
+    #  globalRedirect = "threema.thalheim.io";
+    #};
 
     virtualHosts."threema.thalheim.io" = {
       useACMEHost = "thalheim.io";

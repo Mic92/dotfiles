@@ -10,10 +10,6 @@ let
 
       if ($secure_link = "") { return 403; }
       if ($secure_link = "0") { return 403; }
-
-      add_header Cache-Control 'private, max-age=0, must-revalidate';
-      add_header Strict-Transport-Security "max-age=16070400; includeSubdomains";
-      add_header X-Frame-Options DENY;
     '';
     locations."/".extraConfig = ''
       rewrite /([a-zA-Z0-9_\-]*)/(.*)$ /$2?st=$1;
