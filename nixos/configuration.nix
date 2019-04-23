@@ -25,7 +25,8 @@ in {
   imports = [ # Include the results of the hardware scan.or
     ./hardware-configuration.nix
     ./packages.nix
-    #./libvirt.nix
+
+    ./vms/modules/libvirt.nix
     (builtins.fetchGit {
       url = "https://github.com/NixOS/nixos-hardware";
       rev = "1e2c130d38d72860660474c36207b099c519cb6a";
@@ -60,93 +61,93 @@ in {
   };
 
   # when I need dhcp
-  #systemd.network.networks."eth0".extraConfig = ''
-  #  [Match]
-  #  Name = eth0
+  systemd.network.networks."eth0".extraConfig = ''
+    [Match]
+    Name = eth0
 
-  #  [Network]
-  #  Address = 192.168.43.1/24
-  #  DHCPServer = yes
-  #'';
+    [Network]
+    Address = 192.168.43.1/24
+    DHCPServer = yes
+  '';
 
   environment.sessionVariables = {
-    # so gtk2.0/gtk3.0 themes can be found
-    GTK_DATA_PREFIX = "/run/current-system/sw";
-    LD_LIBRARY_PATH = [ config.system.nssModules.path ];
-  };
+   # so gtk2.0/gtk3.0 themes can be found
+   GTK_DATA_PREFIX = "/run/current-system/sw";
+   LD_LIBRARY_PATH = [ config.system.nssModules.path ];
+ };
 
-  nix = {
-    binaryCaches = [
-      https://cache.nixos.org/
-      https://r-ryantm.cachix.org
-    ];
-    binaryCachePublicKeys = [
-      "r-ryantm.cachix.org-1:gkUbLkouDAyvBdpBX0JOdIiD2/DP1ldF3Z3Y6Gqcc4c="
-    ];
-    distributedBuilds = true;
-    buildMachines = [
-      {
-        hostName = "prism.r";
-        sshKey = "/root/.ssh/id_ed25519";
-        sshUser = "Mic92";
-        system = "x86_64-linux";
-        maxJobs = 4;
-      }
-      {
-        hostName = "eve.thalheim.io";
-        sshUser = "nix";
-        sshKey = "/etc/nixos/secrets/id_buildfarm";
-        system = "x86_64-linux";
-        maxJobs = 4;
-      }
-      {
-        hostName = "inspector.r";
-        sshUser = "nix";
-        sshKey = "/etc/nixos/secrets/id_buildfarm";
-        system = "x86_64-linux";
-        maxJobs = 8;
-        supportedFeatures = [ "big-parallel" ];
-      }
-      {
-        hostName = "eddie.r";
-        sshKey = "/etc/nixos/secrets/id_buildfarm";
-        sshUser = "nix";
-        system = "x86_64-linux";
-        maxJobs = 2;
-      }
-      {
-        hostName = "dpdkm.r";
-        sshKey = "/etc/nixos/secrets/id_buildfarm";
-        sshUser = "nix";
-        system = "x86_64-linux";
-        maxJobs = 4;
-      }
-      # rpi3
-      #{
-      #  hostName = "172.23.75.254";
-      #  maxJobs = 4;
-      #  sshKey = "/etc/nixos/secrets/id_buildfarm";
-      #  sshUser = "nix";
-      #  system = "aarch64-linux";
-      #}
-      {
-        hostName = "aarch64.nixos.community";
-        maxJobs = 96;
-        sshKey = "/root/.ssh/id_ed25519";
-        sshUser = "mic92";
-        system = "aarch64-linux";
-        supportedFeatures = [ "big-parallel" ];
-      }
-    ];
-    nixPath = [
-      "nixpkgs=/home/joerg/git/nixpkgs"
-      "nixos-config=/home/joerg/git/nixos-configuration/configuration.nix"
-      "/nix/var/nix/profiles/per-user/root/channels"
-    ];
-    extraOptions = ''
-      builders-use-substitutes = true
-    '';
-  };
+ nix = {
+   binaryCaches = [
+     https://cache.nixos.org/
+     https://r-ryantm.cachix.org
+   ];
+   binaryCachePublicKeys = [
+     "r-ryantm.cachix.org-1:gkUbLkouDAyvBdpBX0JOdIiD2/DP1ldF3Z3Y6Gqcc4c="
+   ];
+   distributedBuilds = true;
+   buildMachines = [
+     {
+       hostName = "prism.r";
+       sshKey = "/root/.ssh/id_ed25519";
+       sshUser = "Mic92";
+       system = "x86_64-linux";
+       maxJobs = 4;
+     }
+     {
+       hostName = "eve.thalheim.io";
+       sshUser = "nix";
+       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       system = "x86_64-linux";
+       maxJobs = 4;
+     }
+     {
+       hostName = "inspector.r";
+       sshUser = "nix";
+       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       system = "x86_64-linux";
+       maxJobs = 8;
+       supportedFeatures = [ "big-parallel" ];
+     }
+     {
+       hostName = "eddie.r";
+       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       sshUser = "nix";
+       system = "x86_64-linux";
+       maxJobs = 2;
+     }
+     {
+       hostName = "dpdkm.r";
+       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       sshUser = "nix";
+       system = "x86_64-linux";
+       maxJobs = 4;
+     }
+     # rpi3
+     #{
+     #  hostName = "172.23.75.254";
+     #  maxJobs = 4;
+     #  sshKey = "/etc/nixos/secrets/id_buildfarm";
+     #  sshUser = "nix";
+     #  system = "aarch64-linux";
+     #}
+     {
+       hostName = "aarch64.nixos.community";
+       maxJobs = 96;
+       sshKey = "/root/.ssh/id_ed25519";
+       sshUser = "mic92";
+       system = "aarch64-linux";
+       supportedFeatures = [ "big-parallel" ];
+     }
+   ];
+   nixPath = [
+     "nixpkgs=/home/joerg/git/nixpkgs"
+     "nixos-config=/home/joerg/git/nixos-configuration/configuration.nix"
+     "/nix/var/nix/profiles/per-user/root/channels"
+   ];
+   extraOptions = ''
+     builders-use-substitutes = true
+   '';
+ };
 
   i18n = {
     consoleFont = "Lat2-Terminus16";
@@ -350,7 +351,7 @@ in {
   };
 
   services.dbus.packages = with pkgs; [ gnome3.dconf ];
-  #services.teamviewer.enable = true;
+  services.teamviewer.enable = true;
 
   nixpkgs.config = {
     allowUnfree = true;
