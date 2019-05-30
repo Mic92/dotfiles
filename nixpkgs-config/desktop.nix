@@ -8,7 +8,7 @@
     ./debugging.nix
   ];
 
-  fonts.fontconfig.enableProfileFonts = true;
+  fonts.fontconfig.enable = true;
   programs.emacs.package = lib.mkForce pkgs.emacs;
   services.dunst = {
     enable = true;
@@ -93,8 +93,7 @@
     screen-message
     alacritty
     sublime3
-    mumble
-
+    spotify
     sshfsFuse
     sshuttle
     jq
@@ -106,6 +105,31 @@
     cheat
     tldr
     nixops
+
+    rubber
+    (texlive.combine {
+      inherit (texlive)
+      scheme-full
+
+      # awesome cv
+      xetex
+      unicode-math
+      ucharcat
+      collection-fontsextra
+      fontspec
+
+      collection-binextra
+      collection-fontsrecommended
+      collection-latex
+      collection-latexextra
+      collection-latexrecommended
+      collection-langgerman
+      siunitx
+      bibtex
+      tracklang
+      IEEEtran
+      algorithm2e;
+    })
   ] ++ (with nur.repos.mic92; [
     inxi
     conky-symbols
