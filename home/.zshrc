@@ -368,7 +368,7 @@ if [ -n "${commands[bat]}" ]; then
         if [ -n "$DISPLAY" ]; then
             xclip -selection clipboard < "$1" &
         fi
-        bat "$@"
+        bat --theme="Solarized (light)" "$@"
     else
         command cat "$@"
     fi
