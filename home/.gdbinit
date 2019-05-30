@@ -10,3 +10,7 @@ add-auto-load-safe-path /usr/lib/go/src/runtime/runtime-gdb.py
 
 set auto-load safe-path /
 set breakpoint pending on
+define gef
+	source /home/joerg/.gdbinit-gef.py
+end
+
