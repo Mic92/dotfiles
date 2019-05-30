@@ -2,14 +2,14 @@
 
 {
   boot = {
-    kernelPackages = pkgs.linuxPackages_4_14;
+    kernelPackages = pkgs.linuxPackages_latest;
     zfs.enableUnstable = true;
   };
 
   nixpkgs.config.packageOverrides = pkgs: {
     nur = import <nur> { inherit pkgs; };
   };
-  
+
   environment.systemPackages = with pkgs; [
     neovim
     nur.repos.mic92.cntr
