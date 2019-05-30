@@ -78,6 +78,7 @@ values."
      ;; ocaml
      perl5
      nixos
+
      deft
      ;;(python :variables python-backend 'lsp)
      python
@@ -108,7 +109,7 @@ values."
                                       editorconfig
                                       flycheck-inline
                                       flycheck-pycheckers
-                                      gruvbox-theme
+                                      solarized-theme
                                       meson-mode
                                       (company-tmux
                                        :location (recipe :fetcher github :repo "Mic92/company-tmux"))
