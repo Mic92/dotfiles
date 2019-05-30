@@ -1,14 +1,12 @@
-output DP1
+output DP-1
 off
-output DP2
+output HDMI-1
 off
-output HDMI1
+output DP-2
 off
-output HDMI2
+output HDMI-2
 off
-output VIRTUAL1
-off
-output eDP1
+output eDP-1
 mode 1920x1080
 pos 0x0
 primary
