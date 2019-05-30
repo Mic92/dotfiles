@@ -26,6 +26,7 @@
       nur.repos.mic92.nix-review-unstable
 
       gdb
+      hexyl
       strace
       binutils
       ccls
@@ -47,6 +48,11 @@
       bat
       vivid
       silver-searcher
+      zsh
+      glibcLocales
+      less
+      bash
+      gnupg
     ];
 
     home.stateVersion = "18.09";
