@@ -127,6 +127,12 @@ rust-doc(){
   xdg-open "$(nix-build '<nixpkgs>' -A rustc.doc --no-out-link)/share/doc/rust/html/index.html"
 }
 
+wttr() {
+    local request="wttr.in/${1-Edinburgh}"
+    [ "$COLUMNS" -lt 125 ] && request+='?n'
+    curl -H "Accept-Language: ${LANG%_*}" --compressed "$request"
+}
+
 function {
   local profile
   typeset -A profile
