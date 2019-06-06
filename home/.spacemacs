@@ -374,6 +374,8 @@ you should place your code here."
 
   (global-company-mode)
 
+  (load-theme 'solarized-light t)
+
   (use-package osc52
     :config (osc52-set-cut-function))
 
