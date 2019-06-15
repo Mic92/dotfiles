@@ -105,16 +105,16 @@ values."
    dotspacemacs-additional-packages '(coffee-mode
                                       csharp-mode
                                       blacken
-                                      direnv
+                                      ;;direnv 
                                       editorconfig
                                       flycheck-inline
                                       flycheck-pycheckers
-                                      solarized-theme
                                       meson-mode
                                       (company-tmux
                                        :location (recipe :fetcher github :repo "Mic92/company-tmux"))
                                       (osc52
-                                       :location (recipe :fetcher github :repo "Mic92/osc52")))
+                                       :location (recipe :fetcher github :repo "Mic92/osc52"))
+                                      zig-mode)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '(agda2-mode)
    ;; A list of packages that will not be installed and loaded.
@@ -186,7 +186,7 @@ values."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press <SPC> T n to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(gruvbox spacemacs-dark spacemacs-light)
+   dotspacemacs-themes '(solarized-light solarized-dark gruvbox spacemacs-dark spacemacs-light)
    ;; If non nil the cursor color matches the state color in GUI Emacs.
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font, or prioritized list of fonts. `powerline-scale' allows to
@@ -374,8 +374,6 @@ you should place your code here."
 
   (global-company-mode)
 
-  (load-theme 'solarized-light t)
-
   (use-package osc52
     :config (osc52-set-cut-function))
 
@@ -469,7 +467,7 @@ This function is called at the very end of Spacemacs initialization."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (transient yaml-mode x86-lookup web-mode web-beautify vimrc-mode typit mmt tagedit systemd sudoku sql-indent slim-mode scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv ranger rake racket-mode yapfify unfill smeargle pyvenv pytest pyenv-mode py-isort pip-requirements orgit mwim mmm-mode markdown-toc magit-gitflow live-py-mode hy-mode dash-functional helm-pydoc helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-pycheckers evil-magit magit magit-popup git-commit ghub treepy graphql with-editor cython-mode company-anaconda blacken auto-dictionary anaconda-mode pythonic nix-mode helm-nixos-options helm-company helm-c-yasnippet fuzzy company-statistics company-nixos-options nixos-options company auto-yasnippet yasnippet ac-ispell auto-complete toml-mode racer flycheck-rust cargo markdown-mode rust-mode flycheck-pos-tip pos-tip flycheck ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
+    (treemacs symbol-overlay org-brain doom-modeline lsp-mode ivy package-lint biblio-core haskell-mode alert inf-ruby ht yaml-mode x86-lookup web-mode web-beautify vimrc-mode typit mmt tagedit systemd sudoku sql-indent slim-mode scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv ranger rake racket-mode yapfify unfill smeargle pyvenv pytest pyenv-mode py-isort pip-requirements orgit mwim mmm-mode markdown-toc magit-gitflow live-py-mode hy-mode dash-functional helm-pydoc helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-pycheckers evil-magit magit magit-popup git-commit ghub treepy graphql with-editor cython-mode company-anaconda blacken auto-dictionary anaconda-mode pythonic nix-mode helm-nixos-options helm-company helm-c-yasnippet fuzzy company-statistics company-nixos-options nixos-options company auto-yasnippet yasnippet ac-ispell auto-complete toml-mode racer flycheck-rust cargo markdown-mode rust-mode flycheck-pos-tip pos-tip flycheck ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
  '(paradox-github-token t)
  '(safe-local-variable-values
    (quote
