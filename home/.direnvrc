@@ -25,12 +25,29 @@ use_nix() {
   if [ -z ${TMPDIR+x} ]; then
     local tmp_backup=$TMPDIR
   fi
+
+  if [ -z ${SSL_CERT_FILE+x} ]; then
+    local ssl_cert_file_backup=$SSL_CERT_FILE
+  fi
+  if [ -z ${NIX_SSL_CERT_FILE+x} ]; then
+    local nix_ssl_cert_file_backup=$NIX_SSL_CERT_FILE
+  fi
   eval "$(< $cache)"
   export PATH=$PATH:$path_backup TERM=$term_backup TMPDIR=$tmp_backup
   if [ -z ${tmp_backup+x} ]; then
     export TMPDIR=${tmp_backup}
   else
     unset TMPDIR
+  fi
+  if [ -z ${ssl_cert_file_backup+x} ]; then
+    export SSL_CERT_FILE=${ssl_cert_file_backup}
+  else
+    unset SSL_CERT_FILE
+  fi
+  if [ -z ${nix_ssl_cert_file_backup+x} ]; then
+    export NIX_SSL_CERT_FILE=${nix_ssl_cert_file_backup}
+  else
+    unset NIX_SSL_CERT_FILE
   fi
 
   if [[ $# = 0 ]]; then
