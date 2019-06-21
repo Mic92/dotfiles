@@ -58,7 +58,22 @@ in {
     };
     blacklistedKernelModules = [ "iptable_nat" "ip_tables" ];
 
+    # It may leak your data, but look how FAST it is!1!!
+    # https://make-linux-fast-again.com/
+    kernelParams = [
+      "noibrs"
+      "noibpb"
+      "nopti"
+      "nospectre_v2"
+      "nospectre_v1"
+      "l1tf=off"
+      "nospec_store_bypass_disable"
+      "no_stf_barrier"
+      "mds=off"
+      "mitigations=off"
+    ];
   };
+
 
   # when I need dhcp
   systemd.network.networks."eth0".extraConfig = ''
