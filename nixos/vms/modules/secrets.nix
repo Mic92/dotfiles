@@ -45,6 +45,8 @@ in {
       files = unique (map (flip removeAttrs ["_module"])
                           (attrValues cfg.files));
     in {
+      wantedBy = [ "keys.target" ];
+      before = [ "keys.target" ];
       serviceConfig = {
         Type = "oneshot";
         RemainAfterExit = "yes";
