@@ -1,6 +1,8 @@
 [core]
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
+[include]
+  path = ~/.gitconfig.local
 [format]
   pretty = oneline
   signoff = true
@@ -76,3 +78,11 @@
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
+[magithub]
+  online = false
+[magithub "status"]
+  includeStatusHeader = false
+  includePullRequestsSection = false
+  includeIssuesSection = false
+[github]
+  user = Mic92
