@@ -8,14 +8,17 @@
     <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
     (builtins.fetchGit {
       url = "https://github.com/NixOS/nixos-hardware";
-      rev = "1e2c130d38d72860660474c36207b099c519cb6a";
-    } + "/lenovo/thinkpad/x250")
+      rev = "54268d11ae4e7a35e6085c5561a8d585379e5c73";
+    } + "/dell/xps/13-9380")
   ];
+
+  # on demand
+  #services.fwupd.enable = true;
 
   boot = {
     initrd = {
       availableKernelModules = [
-        "xhci_pci" "ehci_pci" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" "i8042" "i915" "snd-bt-sco"
+        "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" "i915"
       ];
     };
     kernelModules = [ "kvm-intel" ];
@@ -34,14 +37,8 @@
     };
     opengl = {
       enable = true;
-      extraPackages = with pkgs; [
-        vaapiIntel
-        vaapiVdpau
-        libvdpau-va-gl
-      ];
       driSupport32Bit = true;
     };
-    cpu.intel.updateMicrocode = true;
     pulseaudio = {
       enable = true;
       package = pkgs.pulseaudioFull;
@@ -49,7 +46,7 @@
   };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/BB76-AED1";
+    { device = "/dev/disk/by-uuid/66F2-49C6";
       fsType = "vfat";
       options = ["nofail"];
     };
@@ -83,5 +80,10 @@
       options = ["nofail"];
     };
 
-  nix.maxJobs = lib.mkDefault 4;
+  nix.maxJobs = lib.mkDefault 8;
+
+  # High-DPI console
+  i18n.consoleFont = lib.mkDefault "${pkgs.terminus_font}/share/consolefonts/ter-u28n.psf.gz";
+
+  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 }
