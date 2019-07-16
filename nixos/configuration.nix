@@ -102,9 +102,30 @@ in {
    distributedBuilds = true;
    buildMachines = [
      {
+       hostName = "rose.r";
+       sshUser = "nix";
+       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       system = "x86_64-linux";
+       maxJobs = 8;
+     }
+     {
+       hostName = "martha.r";
+       sshUser = "nix";
+       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       system = "x86_64-linux";
+       maxJobs = 8;
+     }
+     {
+       hostName = "donna.r";
+       sshUser = "nix";
+       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       system = "x86_64-linux";
+       maxJobs = 8;
+     }
+     {
        hostName = "prism.r";
+       sshUser = "nix";
        sshKey = "/root/.ssh/id_ed25519";
-       sshUser = "Mic92";
        system = "x86_64-linux";
        maxJobs = 4;
      }
@@ -165,7 +186,6 @@ in {
  };
 
   i18n = {
-    consoleFont = "Lat2-Terminus16";
     consoleKeyMap = "us";
     defaultLocale = "en_DK.UTF-8";
   };
@@ -176,7 +196,6 @@ in {
     gpm.enable = true;
     upower.enable = true;
     locate.enable = true;
-
     openssh = {
       enable = true;
       forwardX11 = true;
@@ -203,63 +222,6 @@ in {
     journald.extraConfig = "SystemMaxUse=1G";
   };
 
-  systemd.package = lib.mkForce (pkgs.systemd.overrideAttrs (old: with pkgs; {
-    name = "systemd-241";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "Mic92";
-      repo = "systemd";
-      rev = "9e238521511993f5f766310e8d00894b2fe08ce0";
-      sha256 = "0grcf0x793k1jx4bx7p63h3f3cd8w262824mzf8iwdsy6y9wzylr";
-    };
-
-    preConfigure =  ''
-      mesonFlagsArray+=(-Dntp-servers="0.nixos.pool.ntp.org 1.nixos.pool.ntp.org 2.nixos.pool.ntp.org 3.nixos.pool.ntp.org")
-      mesonFlagsArray+=(-Ddbuspolicydir=$out/etc/dbus-1/system.d)
-      mesonFlagsArray+=(-Ddbussessionservicedir=$out/share/dbus-1/services)
-      mesonFlagsArray+=(-Ddbussystemservicedir=$out/share/dbus-1/system-services)
-      mesonFlagsArray+=(-Dpamconfdir=$out/etc/pam.d)
-      mesonFlagsArray+=(-Drootprefix=$out)
-      mesonFlagsArray+=(-Drootlibdir=$lib/lib)
-      mesonFlagsArray+=(-Dpkgconfiglibdir=$dev/lib/pkgconfig)
-      mesonFlagsArray+=(-Dpkgconfigdatadir=$dev/share/pkgconfig)
-
-      export LC_ALL="en_US.UTF-8";
-      # FIXME: patch this in systemd properly (and send upstream).
-      # already fixed in f00929ad622c978f8ad83590a15a765b4beecac9: (u)mount
-      for i in src/remount-fs/remount-fs.c \
-              src/core/mount.c \
-              src/core/swap.c \
-              src/fsck/fsck.c \
-              units/emergency.service.in \
-              units/rescue.service.in \
-              src/journal/cat.c \
-              src/core/shutdown.c \
-              src/nspawn/nspawn.c \
-              src/shared/generator.c; do
-        test -e $i
-        substituteInPlace $i \
-          --replace /usr/bin/getent ${getent}/bin/getent \
-          --replace /sbin/swapon ${utillinux.bin}/sbin/swapon \
-          --replace /sbin/swapoff ${utillinux.bin}/sbin/swapoff \
-          --replace /sbin/fsck ${utillinux.bin}/sbin/fsck \
-          --replace /bin/echo ${coreutils}/bin/echo \
-          --replace /bin/cat ${coreutils}/bin/cat \
-          --replace /sbin/sulogin ${utillinux.bin}/sbin/sulogin \
-          --replace /usr/lib/systemd/systemd-fsck $out/lib/systemd/systemd-fsck \
-          --replace /bin/plymouth /run/current-system/sw/bin/plymouth # To avoid dependency
-      done
-
-      for dir in tools src/resolve test src/test; do
-        patchShebangs $dir
-      done
-
-      substituteInPlace src/journal/catalog.c \
-        --replace /usr/lib/systemd/catalog/ $out/lib/systemd/catalog/
-    '';
-    prePatch = "";
-  }));
-
   powerManagement.powertop.enable = true;
 
   systemd.services = {
@@ -281,7 +243,7 @@ in {
       after = [ "network.target" ];
       wantedBy = [ "multi-user.target" ];
       serviceConfig = {
-        ExecStart = ''${pkgs.caddy.bin}/bin/caddy -conf=${cfg} -agree'';
+        ExecStart = ''${pkgs.caddy}/bin/caddy -conf=${cfg} -agree'';
         User = "joerg";
         AmbientCapabilities = "cap_net_bind_service";
       };
@@ -401,4 +363,8 @@ in {
 
   system.stateVersion = "18.03";
   services.resolved.enable = false;
+
+  services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''
+    xft-dpi = 180
+  '';
 }
