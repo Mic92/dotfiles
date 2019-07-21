@@ -44,6 +44,7 @@
     ./modules/retiolum.nix
     ./modules/rspamd.nix
     ./modules/rsyncd.nix
+    ./modules/sslh.nix
     ./modules/squid.nix
     ./modules/syncthing.nix
     ./modules/smartd.nix
