@@ -28,7 +28,7 @@ clean_on_exit = False
 autosave_breakpoints_file = 
 debug = False
 disable_color = False
-extra_plugins_dir = ~/.gef-extras/scripts
+extra_plugins_dir = ~/.gef-extras/scripts;~/.gef-mic92/scripts
 follow_child = True
 readline_compat = False
 
