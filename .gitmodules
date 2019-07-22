@@ -34,3 +34,9 @@
 [submodule "zsh/fast-syntax-highlighting"]
 	path = zsh/fast-syntax-highlighting
 	url = https://github.com/zdharma/fast-syntax-highlighting
+[submodule "gdb/gef-extras"]
+	path = gdb/gef-extras
+	url = https://github.com/hugsy/gef-extras
+[submodule "gdb/gef"]
+	path = gdb/gef
+	url = https://github.com/hugsy/gef
