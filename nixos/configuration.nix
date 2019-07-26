@@ -124,7 +124,7 @@ in {
      }
      {
        hostName = "prism.r";
-       sshUser = "nix";
+       sshUser = "Mic92";
        sshKey = "/root/.ssh/id_ed25519";
        system = "x86_64-linux";
        maxJobs = 4;

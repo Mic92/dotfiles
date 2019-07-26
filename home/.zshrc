@@ -248,6 +248,7 @@ if [[ -n ${commands[exa]} ]]; then
   if [ -n "${commands[vivid]}" ]; then 
     export LS_COLORS="$(vivid -m 8-bit generate molokai)"
   fi
+  #alias ls="exa --classify --icons"
   alias ls="exa --classify"
 elif [[ $OSTYPE == freebsd* ]]; then
   alias ls='ls -G'
@@ -325,8 +326,12 @@ if [[ -n ${commands[nix]} ]]; then
   }
 fi
 
-psgrep() {
-  ps aux | grep "$@"
+killp() {
+  local pid=$(ps -ef | sed 1d | eval "fzf ${FZF_DEFAULT_OPTS} -m --header='[kill:process]'" | awk '{print $2}')
+  if [[ "$pid" != "" ]]; then
+    echo $pid | xargs sudo kill -${1:-9}
+    kp
+  fi
 }
 
 # Dir Hashes
@@ -442,8 +447,6 @@ export XDG_TEMPLATES_DIR="$HOME/.Templates"
 export XDG_VIDEOS_DIR="$HOME/Videos"
 export ERRFILE=~/.xsession-errors
 # Antialising
-export QT_XFT=1
-export GDK_USE_XFT=1
 export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=lcd -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
 # To enable Graphic Hardware acceleration
 #export LIBGL_ALWAYS_INDIRECT=1
@@ -452,6 +455,7 @@ export INTEL_BATCH=1
 export SDL_AUDIODRIVER=pulse
 # fix broken xdg-open
 export GDMSESSION=1 GNOME_DESKTOP_SESSION_ID=1
+export GDK_SCALE=2 GDK_DPI_SCALE=0.5
 # less
 export LESS=-FXisRM
 export LESS_TERMCAP_mb=$'\E[01;31m'     # begin blinking

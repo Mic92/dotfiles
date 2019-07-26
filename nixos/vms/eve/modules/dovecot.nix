@@ -21,7 +21,6 @@ let
     default_pass_scheme = SSHA
   '';
 in {
-
   services.dovecot2 = {
     enable = true;
     enableImap = true;
@@ -53,7 +52,7 @@ in {
         ssl_cert = </var/lib/acme/imap.devkid.net/fullchain.pem
         ssl_key = </var/lib/acme/imap.devkid.net/key.pem
       }
-      ssl_protocols = !SSLv2 !SSLv3 !TLSv1
+      ssl_protocols = !SSLv3 !TLSv1
       ssl_cipher_list = AES128+EECDH:AES128+EDH
       ssl_prefer_server_ciphers = yes
       ssl_dh=<${config.security.dhparams.params.dovecot2.path}

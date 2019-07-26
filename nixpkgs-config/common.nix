@@ -24,6 +24,7 @@
     home.packages = with pkgs; [
       #(pkgs.callPackage /home/joerg/git/nix-review {})
       nur.repos.mic92.nix-review-unstable
+      nix-prefetch
 
       gdb
       hexyl

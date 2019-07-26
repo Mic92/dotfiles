@@ -5,6 +5,9 @@
       22
       22022 # legacy
     ];
+    extraConfig = ''
+      StreamLocalBindUnlink yes
+    '';
   };
   networking.firewall.allowedTCPPorts = config.services.openssh.ports;
 

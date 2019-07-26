@@ -108,8 +108,10 @@
       };
     };
     package = pkgs.prosody.override {
-      #withExtraLibs = [ pkgs.luaPackages.lpty ];
-      withExtraLibs = [ pkgs.nur.repos.mic92.lualdap ];
+      withExtraLibs = [
+        pkgs.nur.repos.mic92.lualdap
+        pkgs.luaPackages.luadbi-postgresql
+      ];
       withCommunityModules = [ 
         "smacks"
         "smacks_offline"

@@ -28,7 +28,7 @@
 # zfs create -o mountpoint=legacy -o setuid=off -o devices=off -o sync=disabled zroot/root/tmp
 # zfs create -o mountpoint=legacy -o com.sun:auto-snapshot=true zroot/root/home
 # zfs create -o mountpoint=legacy -o com.sun:auto-snapshot=true zroot/root/nixos
-# zfs create -o mountpoint=none compression=lz4 zroot/docker
+# zfs create -o mountpoint=none -o compression=lz4 zroot/docker
 # mount -t zfs zroot/root/nixos /mnt
 # mkdir /mnt/{home,tmp,boot}
 # mount /dev/sda1 /mnt/boot/
