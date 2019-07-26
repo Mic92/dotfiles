@@ -1,3 +1,6 @@
-.ccls-cache
-.mypy_cache
-.direnv/
+*.swp
+/.direnv.*
+/.direnv
+/.envrc
+tags
+/.mypy_cache
