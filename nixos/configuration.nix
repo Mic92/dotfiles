@@ -260,10 +260,6 @@ in {
         ExecStart = "${pkgs.pamixer}/bin/pamixer --mute";
       };
     };
-
-    wpa_supplicant = {
-      serviceConfig.ExecStart = ["" "${pkgs.wpa_supplicant}/bin/wpa_supplicant -iwlan0 -u -c /etc/wpa_supplicant.conf"];
-    };
   };
 
   virtualisation = {
