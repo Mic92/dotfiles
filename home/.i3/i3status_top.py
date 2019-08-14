@@ -25,7 +25,7 @@ status.register(
 icons.nerdfont(status, "")
 
 bat_status = {"DIS": "-", "CHR": "+", "FULL": "↯"}
-for bat in ["BAT0", "BAT1"]:
+for bat in ["BAT0"]:
     status.register(
         "battery",
         format='{status}{percentage:.2f}% [{glyph}] {remaining:%E%hh:%Mm}',
