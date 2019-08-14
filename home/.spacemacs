@@ -97,7 +97,8 @@ values."
      treemacs
      vimscript
      version-control
-     yaml)
+     yaml
+     zig)
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
@@ -105,7 +106,7 @@ values."
    dotspacemacs-additional-packages '(coffee-mode
                                       csharp-mode
                                       blacken
-                                      ;;direnv 
+                                      direnv 
                                       editorconfig
                                       flycheck-inline
                                       flycheck-pycheckers
@@ -113,8 +114,7 @@ values."
                                       (company-tmux
                                        :location (recipe :fetcher github :repo "Mic92/company-tmux"))
                                       (osc52
-                                       :location (recipe :fetcher github :repo "Mic92/osc52"))
-                                      zig-mode)
+                                       :location (recipe :fetcher github :repo "Mic92/osc52")))
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '(agda2-mode)
    ;; A list of packages that will not be installed and loaded.
