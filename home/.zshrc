@@ -566,7 +566,7 @@ moshlogin(){
     ssh-add ~/.ssh/id_{rsa,ecdsa,ed25519}
   fi
   ssh -v eve killall mosh-server
-  mosh -A eve
+  mosh -A eve.mosh
 }
 # List directory after changing directory
 chpwd() { ls }
