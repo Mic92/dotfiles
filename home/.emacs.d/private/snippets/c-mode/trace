@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: trace function
+# key: trace
+# --
+#include <linux/rdtsc.h>
+TRACE_START(trace1);
+TRACE_STOP(trace1, 1000);

@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: debug fprintf
+# name: fprintf debugging snippet
 # key: dbg
 # --
 fprintf(stderr, "%s() at %s:%d\n", __func__, __FILE__, __LINE__);
