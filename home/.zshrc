@@ -330,7 +330,7 @@ killp() {
   local pid=$(ps -ef | sed 1d | eval "fzf ${FZF_DEFAULT_OPTS} -m --header='[kill:process]'" | awk '{print $2}')
   if [[ "$pid" != "" ]]; then
     echo $pid | xargs sudo kill -${1:-9}
-    kp
+    killp
   fi
 }
 
