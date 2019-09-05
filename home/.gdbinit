@@ -7,9 +7,6 @@ set history save on
 #set detach-on-fork off
 set listsize 10
 
-set output-radix 0x10
-set input-radix 0x10
-
 set disassembly-flavor intel
 
 # These make gdb never pause in its output
