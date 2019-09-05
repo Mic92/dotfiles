@@ -383,6 +383,12 @@ you should place your code here."
   (with-eval-after-load 'evil
     :config (defalias #'forward-evil-word #'forward-evil-symbol))
 
+  (setq undo-tree-auto-save-history t
+        undo-tree-history-directory-alist
+        `(("." . ,(concat spacemacs-cache-directory "undo"))))
+  (unless (file-exists-p (concat spacemacs-cache-directory "undo"))
+    (make-directory (concat spacemacs-cache-directory "undo")))
+
   (global-flycheck-inline-mode)
   (global-flycheck-mode 1)
   ;; check both mypy and flake8
