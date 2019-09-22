@@ -2,11 +2,11 @@
 {
   services.phpfpm.pools.adminer = {
     listen = "/run/phpfpm-adminer.sock";
+    user = "adminer";
+    group = "adminer";
     extraConfig = ''
       listen.owner = nginx
       listen.group = nginx
-      user = adminer
-      group = adminer
       pm = dynamic
       pm.max_children = 32
       pm.start_servers = 1

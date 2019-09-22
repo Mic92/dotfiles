@@ -2,11 +2,11 @@
 {
   services.phpfpm.pools.phpldapadmin = {
     listen = "/run/phpfpm-phpldapadmin.sock";
+    user = "phpldapadmin";
+    group = "phpldapadmin";
     extraConfig = ''
       listen.owner = nginx
       listen.group = nginx
-      user = phpldapadmin
-      group = phpldapadmin
       pm = dynamic
       pm.max_children = 32
       pm.start_servers = 1

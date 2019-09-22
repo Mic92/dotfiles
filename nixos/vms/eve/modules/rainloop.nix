@@ -1,11 +1,11 @@
 { pkgs, ... }: {
   services.phpfpm.pools.rainloop = {
     listen = "/run/phpfpm-rainloop.sock";
+    user = "rainloop";
+    group = "rainloop";
     extraConfig = ''
       listen.owner = nginx
       listen.group = nginx
-      user = rainloop
-      group = rainloop
       pm = dynamic
       pm.max_children = 32
       pm.start_servers = 2

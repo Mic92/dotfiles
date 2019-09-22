@@ -4,11 +4,11 @@ let
 in {
   services.phpfpm.pools.mediawiki = {
     listen = "/run/phpfpm/mediawiki.sock";
+    user = "mediawiki";
+    group = "mediawiki";
     extraConfig = ''
       listen.owner = nginx
       listen.group = nginx
-      user = mediawiki
-      group = mediawiki
       pm = dynamic
       pm.max_children = 32
       pm.start_servers = 1
