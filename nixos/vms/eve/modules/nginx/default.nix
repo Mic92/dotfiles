@@ -31,7 +31,6 @@ in {
     type = lib.types.attrsOf (lib.types.submodule {
       config.listen = lib.mkDefault [
         { addr = "127.0.0.1"; port = 4443; ssl = true;}
-        { addr = "127.0.0.1"; port = 80; }
       ];
     });
   };
