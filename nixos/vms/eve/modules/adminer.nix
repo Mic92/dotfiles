@@ -4,16 +4,16 @@
     listen = "/run/phpfpm-adminer.sock";
     user = "adminer";
     group = "adminer";
-    extraConfig = ''
-      listen.owner = nginx
-      listen.group = nginx
-      pm = dynamic
-      pm.max_children = 32
-      pm.start_servers = 1
-      pm.min_spare_servers = 1
-      pm.max_spare_servers = 1
-      pm.max_requests = 500
-    '';
+    settings = {
+      "listen.owner" = "nginx";
+      "listen.group" = "nginx";
+      "pm" = "dynamic";
+      "pm.max_children" = 32;
+      "pm.start_servers" = 1;
+      "pm.min_spare_servers" = 1;
+      "pm.max_spare_servers" = 1;
+      "pm.max_requests" = 500;
+    };
   };
 
   services.nginx = {

@@ -6,16 +6,16 @@ in {
     listen = "/run/phpfpm/mediawiki.sock";
     user = "mediawiki";
     group = "mediawiki";
-    extraConfig = ''
-      listen.owner = nginx
-      listen.group = nginx
-      pm = dynamic
-      pm.max_children = 32
-      pm.start_servers = 1
-      pm.min_spare_servers = 1
-      pm.max_spare_servers = 1
-      pm.max_requests = 500
-    '';
+    settings = {
+      "listen.owner" = "nginx";
+      "listen.group" = "nginx";
+      "pm" = "dynamic";
+      "pm.max_children" = 32;
+      "pm.start_servers" = 1;
+      "pm.min_spare_servers" = 1;
+      "pm.max_spare_servers" = 1;
+      "pm.max_requests" = 500;
+    };
   };
 
 	environment.etc."mediawiki/LocalSettings.php".text = ''
