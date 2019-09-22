@@ -17,7 +17,7 @@ let
         include ${pkgs.nginx}/conf/fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_index index.php;
-        fastcgi_pass unix:${config.services.phpfpm.pools.${poolName}.listen};
+        fastcgi_pass unix:${config.services.phpfpm.pools.${poolName}.socket};
       '';
     };
 
