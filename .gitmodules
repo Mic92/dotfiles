@@ -40,3 +40,6 @@
 [submodule "gdb/gef"]
 	path = gdb/gef
 	url = https://github.com/hugsy/gef
+[submodule "home/.nix-direnv"]
+	path = home/.nix-direnv
+	url = https://github.com/nix-community/nix-direnv
