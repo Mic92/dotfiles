@@ -225,6 +225,9 @@ zstyle ':completion:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w
 
 ## Prompt
 PURE_GIT_UNTRACKED_DIRTY=0 PURE_GIT_PULL=0
+zstyle :prompt:pure:git:branch blue
+zstyle :prompt:pure:git:branch:cached red
+PURE_PROMPT_SYMBOL=%%
 source $HOME/.zsh-pure/async.zsh
 source $HOME/.zsh-pure/pure.zsh
 # non-zero exit code in right prompt
