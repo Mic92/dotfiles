@@ -1,3 +1,4 @@
+
 { pkgs, lib, config, ... }:
 
 let
@@ -38,13 +39,15 @@ in {
       };
 
       systemd.user.services.emacs-daemon = {
-        Unit.RefuseManualStart = true;
+        Unit = {
+          Requires = [ "emacs-daemon.socket" ];
+          RefuseManualStart = true;
+        };
         Service = {
           Type = "forking";
-          ExecStart = "${pkgs.zsh}/bin/zsh -c 'source ~/.zshrc; exec ${pkgs.emacs}/bin/emacs --daemon'";
+          ExecStart = "${pkgs.zsh}/bin/zsh -c 'source ~/.zshrc; export PATH=$PATH:${pkgs.sqlite}/bin; exec ${pkgs.emacs}/bin/emacs --daemon'";
           Restart = "always";
         };
-        Install.WantedBy = [ "default.target" ];
       };
     })
   ];
