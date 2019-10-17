@@ -442,6 +442,8 @@ you should place your code here."
 
   (spacemacs/set-leader-keys "rf" 'copy-current-line-position-to-clipboard)
 
+  ; make recentf unique per host in case .emacs.d is stored in a NFS share to avoid lock contention
+  (setq recentf-save-file (expand-file-name (concat "recentf-" system-name) "/home/joerg/.emacs.d/.cache/"))
 )
 
 
