@@ -24,6 +24,7 @@
     home.packages = with pkgs; [
       #(pkgs.callPackage /home/joerg/git/nix-review {})
       nur.repos.mic92.nix-review-unstable
+      nur.repos.mic92.mosh-truecolor
       nix-prefetch
 
       gdb
@@ -41,7 +42,6 @@
       gitAndTools.hub
       gitAndTools.tig
       tokei
-      mosh
       direnv
       fzf
       exa
