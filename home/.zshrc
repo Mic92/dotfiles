@@ -251,8 +251,7 @@ if [[ -n ${commands[exa]} ]]; then
   if [ -n "${commands[vivid]}" ]; then 
     export LS_COLORS="$(vivid -m 8-bit generate molokai)"
   fi
-  #alias ls="exa --classify --icons"
-  alias ls="exa --classify"
+  alias ls="exa --classify --icons"
 elif [[ $OSTYPE == freebsd* ]]; then
   alias ls='ls -G'
 else
