@@ -359,8 +359,4 @@ in {
 
   system.stateVersion = "18.03";
   services.resolved.enable = false;
-
-  services.xserver.displayManager.lightdm.greeters.gtk.extraConfig = ''
-    xft-dpi = 180
-  '';
 }

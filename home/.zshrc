@@ -458,7 +458,6 @@ export INTEL_BATCH=1
 export SDL_AUDIODRIVER=pulse
 # fix broken xdg-open
 export GDMSESSION=1 GNOME_DESKTOP_SESSION_ID=1
-export GDK_SCALE=2 GDK_DPI_SCALE=0.5
 # less
 export LESS=-FXisRM
 export LESS_TERMCAP_mb=$'\E[01;31m'     # begin blinking

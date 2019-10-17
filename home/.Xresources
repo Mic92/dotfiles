@@ -8,7 +8,6 @@ Xft.hintstyle: hintsfull
 Xft.hinting:         true
 Xft.antialias:       true
 Xft.rgba:             rgb
-Xft.dpi:              192
 
 Xcursor.theme:    Neutral
 
