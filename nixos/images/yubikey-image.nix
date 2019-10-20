@@ -21,6 +21,7 @@
     midori
     paperkey
     gnupg
+    ctmg
   ];
 
   services.udev.packages = with pkgs; [ yubikey-personalization ];
