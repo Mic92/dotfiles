@@ -20,6 +20,7 @@
     pwgen
     midori
     paperkey
+    gnupg
   ];
 
   services.udev.packages = with pkgs; [ yubikey-personalization ];
