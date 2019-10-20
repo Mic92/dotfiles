@@ -19,6 +19,7 @@
     cryptsetup
     pwgen
     midori
+    paperkey
   ];
 
   services.udev.packages = with pkgs; [ yubikey-personalization ];
