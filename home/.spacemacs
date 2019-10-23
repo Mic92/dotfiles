@@ -446,6 +446,23 @@ you should place your code here."
 
   ; make recentf unique per host in case .emacs.d is stored in a NFS share to avoid lock contention
   (setq recentf-save-file (expand-file-name (concat "recentf-" system-name) "/home/joerg/.emacs.d/.cache/"))
+
+  (defun shell-stdout-to-string (command)
+    (with-output-to-string
+      (with-current-buffer
+          standard-output
+        (process-file shell-file-name nil '(t nil)  nil shell-command-switch command))))
+
+  (defun insert-nix-hash (attribute)
+    (interactive "sNix attribute to fetch")
+    (let ((hash (shell-stdout-to-string (concat "nix-prefetch " attribute))))
+      ;; replace current selection → can detect the hash under the cursor as well?
+      (if (use-region-p)
+          (kill-region (region-beginning)
+                       (region-end)))
+      (insert (string-trim-right hash))))
+
+  (spacemacs/set-leader-keys "xn" 'insert-nix-hash)
 )
 
 
