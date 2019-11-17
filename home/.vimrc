@@ -199,8 +199,8 @@ let g:airline_powerline_fonts = 1
 
 " {{{ LanguageClient
 let g:LanguageClient_serverCommands = {
-      \ 'cpp': ['ccls'],
-      \ 'c': ['ccls'],
+      \ 'cpp': ['clangd', '-background-index'],
+      \ 'c': ['clangd', '-background-index'],
       \ 'typescript': ['typescript-language-server'],
       \ 'python': ['pyls'],
       \ 'rust': ['rustup', 'run', 'stable', 'rls'],
@@ -210,6 +210,7 @@ let g:LanguageClient_serverCommands = {
 
 let g:LanguageClient_settingsPath = $HOME . '/.config/nvim/settings.json'
 let g:LanguageClient_loadSettings = 1
+"let g:LanguageClient_serverStderr = expand('~/.vim/LanguageClient.log')
 
 set formatexpr=LanguageClient_textDocument_rangeFormatting()
 nnoremap <F5> :call LanguageClient_contextMenu()<CR>
