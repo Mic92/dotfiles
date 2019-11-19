@@ -4,7 +4,7 @@
     virtualHosts."glowing-bear.thalheim.io" = {
       useACMEHost = "thalheim.io";
       forceSSL = true;
-      root = pkgs.nur.repos.mic92.glowing-bear;
+      root = pkgs.glowing-bear;
       locations."/weechat".extraConfig = ''
         proxy_pass  http://localhost:4242/weechat;
         proxy_http_version 1.1;
