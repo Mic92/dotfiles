@@ -1,7 +1,6 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   services.phpfpm.pools.phpldapadmin = {
-    listen = "/run/phpfpm-phpldapadmin.sock";
     user = "phpldapadmin";
     group = "phpldapadmin";
     settings = {
@@ -29,7 +28,7 @@
       locations."~* ^.+\.php$".extraConfig = ''
         include ${pkgs.nginx}/conf/fastcgi_params;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_pass unix:/run/phpfpm-phpldapadmin.sock;
+        fastcgi_pass unix:${config.services.phpfpm.pools.phpldapadmin.socket};
         fastcgi_index index.php;
       '';
       root = "${pkgs.nur.repos.mic92.phpldapadmin}/share/phpldapadmin";

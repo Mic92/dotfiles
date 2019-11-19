@@ -1,6 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, config, ... }: {
   services.phpfpm.pools.rainloop = {
-    listen = "/run/phpfpm-rainloop.sock";
     user = "rainloop";
     group = "rainloop";
     settings = {
@@ -31,7 +30,7 @@
       locations."~ \.php$".extraConfig = ''
         include ${pkgs.nginx}/conf/fastcgi_params;
         fastcgi_param   SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_pass unix:/run/phpfpm-rainloop.sock;
+        fastcgi_pass unix:${config.services.phpfpm.pools.rainloop.socket};
       '';
       root = (pkgs.rainloop-community.override {
         dataPath = "/var/lib/rainloop";

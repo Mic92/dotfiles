@@ -2,9 +2,7 @@
 let
   monitorPool = poolName: virtualHost: {...}: {
     services.phpfpm.pools.${poolName} = {
-      extraConfig = ''
-        pm.status_path = /_status
-      '';
+      settings."pm.status_path" = "/_status";
     };
     services.nginx.virtualHosts.${virtualHost} = {
       locations."~ ^/_status$".extraConfig = ''

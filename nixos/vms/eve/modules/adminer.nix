@@ -1,7 +1,6 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   services.phpfpm.pools.adminer = {
-    listen = "/run/phpfpm-adminer.sock";
     user = "adminer";
     group = "adminer";
     settings = {
@@ -28,7 +27,7 @@
       '';
       locations."~* ^.+\.php$".extraConfig = ''
         include ${pkgs.nginx}/conf/fastcgi_params;
-        fastcgi_pass unix:/run/phpfpm-adminer.sock;
+        fastcgi_pass unix:${config.services.phpfpm.pools.adminer.socket};
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
       '';

@@ -1,9 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 let
   mediawiki = pkgs.callPackage ../pkgs/mediawiki.nix {};
 in {
   services.phpfpm.pools.mediawiki = {
-    listen = "/run/phpfpm/mediawiki.sock";
     user = "mediawiki";
     group = "mediawiki";
     settings = {
@@ -117,7 +116,7 @@ in {
         include ${pkgs.nginx}/conf/fastcgi_params;
         fastcgi_param   SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_index   index.php;
-        fastcgi_pass    unix:/run/phpfpm/mediawiki.sock;
+        fastcgi_pass    unix:${config.services.phpfpm.pools.mediawiki.socket};
       '';
       extraConfig = ''
         add_header X-Frame-Options DENY;
