@@ -17,6 +17,10 @@ let
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDGoQXNL3B1+pS4WYfhvn4ULb6oCNovT+dpWist7osToj5UVQ64odlcemnSG07GRcEnwf2zDTYq8eatomGQ94VsnmWuKaYzF8nqNl+qHRM49nS+Myi2ETn0B5fnMSh45lmkjR5rL/tb02EXUVoNf7acE2K3Q8M/tGFEdCdQNuqEgishi5nrs/WvZHn0cxP1anv8WRtm2qlj0jtH1rYmo7n/xsPb15FNBaE92aQXTkGoj6xdQknGWnGjLLm33lGIxRKvHTJ9T2NGte4gTYC/CADPxU2x5nq8zGDTNna/YMUyKmlqgGm+p+sE9dERmxKtquLgyE8mNvjDSMvtnrkMojN5 joerg@turingmachine"
   ];
 
+  joergPasswordstore = [
+    ''no-port-forwarding,no-agent-forwarding,command="${pkgs.git}/bin/git-shell -c \"$SSH_ORIGINAL_COMMAND\"" ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDkwsgmk4jOOD5ZAfzOle9oyt72BRLkIyjErU3xqAyLfVrVUbUx7ERSJbPf0MxpqZBycDrC7b2mjVHynzMjnBvN5gWu5KGEJGEWIRnXTe99haUBX0LJbVgl+QFAZTr/vfaoxzEN69jxm5c/4TrYddZVP9TCeNKyde8YAsEtUjwGCqXl6g2vCZRR6PAy0CJOhIB4+rI0vsrFYS51QJJxuMQcKln5uEIzoZ1E4wAXMoU6Nj1xjNHc1oagJcYg/F+lix2OkCFfo89UHTyaRBXJn+yZ9tSvaDpBQ8G+4+6A67FZoXda5HorQjqEFhrLvU2xJ+np1htGgqGln2Bbfb13Mpi8ubaQXmqIGTGTCptBlVucu+QRrQ8athL+IdPKjxU2oYSjlkTpx7QvRjVJjR1yOYVgKVE0GuGu+2yhF5mjpzpRpoZvYjVLQVEzOaJ6tIIeNr0Po6R6CDwBK0dVbntSvCa4NY/8eWsFrg1k4wBQNkevDSYcHDXJ2tVAoc47Fifzrejl4wJOhFJDplsu6vpr/vzmE0rrga3qU6hxqomzvvR/Sljfxu13cSMUz124wxYbWir9ZkctoWoKp2jaM9AeZF/0Qz4nDWt4KwwhaYPUQlJ+JsgMClNLivjfJ/NCZekVWwS0MLzlLSwZhD46ewhXfVEh43jwVqw4X1YNyggKgO4bVw== passwordstore''
+  ];
+
   vv01f = [
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2RPmBzVk0/pMxwuzp6NYI6ZrvDmxF6chJQ4Ky2+gdfYMI3aWqdTFtcmP0wxghChH6WQeEd86uqRD08SwTrR/oFr8uriczYbcyLmDJa2UclMXOHhwoTJP3IgbqPWzFOcBTYwPRQ/h8UA2W80BXPxdqx9oz1tRh26uoa7TCk/tB4nHUpS+hw22Cu2k8QTmVy0XhJquyRb/BKlk2WhiA6VfRzlMWi3b/jjLiOYPCl7LZSoJ7wT22H9M3lq/xV6ym1JaxQ1mLeZzZLeIRsiMrSayiNOvkNdtb2VRIM/St2VgZnIbUnrqlDZqewy1ydbOMnnu3ArAnWkAK5l02NCeFR69n vv01f"
   ];
@@ -41,7 +45,7 @@ in {
       uid = 2003;
       extraGroups = ["wheel"];
       shell = "/run/current-system/sw/bin/zsh";
-      openssh.authorizedKeys.keys = joerg;
+      openssh.authorizedKeys.keys = joerg ++ joergPasswordstore;
     };
 
     vv01f = {
