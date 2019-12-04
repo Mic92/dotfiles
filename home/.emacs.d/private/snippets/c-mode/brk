@@ -2,4 +2,4 @@
 # name: breakpoint
 # key: brk
 # --
-int printf(const char* f,...); printf("%s() at %s:%d\n", __func__, __FILE__, __LINE__); __asm__("int3");
+int printf(const char* f,...); printf("%s() at %s:%d\n", __func__, __FILE__, __LINE__); __asm__("int3" ::: "memory"); printf("continue\n");
