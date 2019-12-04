@@ -2,7 +2,7 @@
 af-add=scaletempo
 save-position-on-quit
 keep-open
-hwdec=vaapi
+hwdec=yes
 vo=gpu
 hwdec-codecs=all
-cache-default=819200
+#cache-default=819200
