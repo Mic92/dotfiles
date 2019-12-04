@@ -1,5 +1,10 @@
 with import <nixpkgs> {};
 stdenv.mkDerivation {
   name = "env";
-  buildInputs = [ python3 ];
+  buildInputs = with rustPackages; [
+    python3
+    clippy
+    rustc
+    rls
+  ];
 }
