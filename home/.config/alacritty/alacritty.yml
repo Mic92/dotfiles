@@ -52,7 +52,7 @@ scrolling:
   # to allow mouse scrolling for applications like `man`.
   #
   # Specifying `0` will disable faux scrolling.
-  faux_multiplier: 3
+  multiplier: 3
 
   # Scroll to the bottom when new text is written to the terminal.
   auto_scroll: false
