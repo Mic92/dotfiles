@@ -290,6 +290,16 @@ alias updatedb='sudo updatedb'
 xalias ctl='sudo systemctl'
 alias json_escape="ruby -e \"require 'json'; puts(File.open(ARGV[0]).read.to_json) if ARGV[0]\""
 alias gdb='gdb --quiet --args'
+compile_command() {
+  if [[ $# -lt 1 ]]; then
+      echo "USAGE: $0 file_path [compile_commands.json]"
+      return 1
+  fi
+  nix run nixpkgs.jq -c \
+    jq -r --arg filename "$1" \
+    'first(.[] | select( .file | contains($filename))) | @sh "cd \(.directory) && \(.arguments)"' \
+    < "${2:-compile_commands.json}"
+}
 # Editors
 [[ -n ${commands[vi]} ]] && alias vi=vim
 xalias vim="nvim"
