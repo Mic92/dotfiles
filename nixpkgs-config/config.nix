@@ -48,7 +48,7 @@
 
     myvim = pkgs.neovim.override {
       vimAlias = true;
-      withPython = true;
+      withPython = false;
       configure = {
         customRC = ''
           if filereadable($HOME . "/.vimrc")
