@@ -19,6 +19,10 @@ define gef
 	source /home/joerg/.gdbinit-gef.py
 end
 
+define src
+  layout src
+end
+
 define segfaultaddr
   p $_siginfo._sifields._sigfault.si_addr
 end
