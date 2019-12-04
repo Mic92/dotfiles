@@ -45,6 +45,7 @@ bindsym $mod+Ctrl+l exec ~/bin/i3lock.sh
 
 # start rofi (a program launcher)
 bindsym  $mod+d exec rofi -theme glue_pro_blue -show run
+bindsym  $mod+p exec rofi-pass
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -264,3 +265,4 @@ exec --no-startup-id light-locker
 exec --no-startup-id compton -b
 exec --no-startup-id nm-applet
 exec --no-startup-id systemctl --user import-environment XDG_SESSION_PATH
+exec --no-startup-id copyq
