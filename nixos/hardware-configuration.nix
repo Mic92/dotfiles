@@ -12,11 +12,9 @@
   #services.fwupd.enable = true;
 
   boot = {
-    initrd = {
-      availableKernelModules = [
-        "xhci_pci" "nvme" "usb_storage" "sd_mod" "rtsx_pci_sdmmc" "i915"
-      ];
-    };
+    initrd.availableKernelModules = [
+      "xhci_pci" "ehci_pci" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc"
+    ];
     kernelModules = [ "kvm-intel" ];
   };
 
@@ -25,12 +23,7 @@
   boot.zfs.enableUnstable = true;
 
   hardware = {
-    bluetooth = {
-      enable = true;
-      extraConfig = ''
-        AutoConnect=true
-      '';
-    };
+    bluetooth.enable = true;
     opengl = {
       enable = true;
       driSupport32Bit = true;
@@ -41,40 +34,40 @@
     };
   };
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/66F2-49C6";
-      fsType = "vfat";
-      options = ["nofail"];
-    };
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/BB76-AED1";
+    fsType = "vfat";
+    options = ["nofail"];
+  };
 
-  fileSystems."/" =
-    { device = "zroot/root/nixos";
-      fsType = "zfs";
-    };
+  fileSystems."/" = {
+    device = "zroot/root/nixos";
+    fsType = "zfs";
+  };
 
-  fileSystems."/home" =
-    { device = "zroot/root/home";
-      fsType = "zfs";
-      options = ["nofail"];
-    };
+  fileSystems."/home" = {
+    device = "zroot/root/home";
+    fsType = "zfs";
+    options = ["nofail"];
+  };
 
-  fileSystems."/home/joerg/Musik/podcasts" =
-    { device = "/home/joerg/gPodder/Downloads";
-      fsType = "none";
-      options = ["bind" "nofail"];
-    };
+  fileSystems."/home/joerg/Musik/podcasts" = {
+    device = "/home/joerg/gPodder/Downloads";
+    fsType = "none";
+    options = ["bind" "nofail"];
+  };
 
-  fileSystems."/home/joerg/web/privat" =
-    { device = "/home/joerg/web/private";
-      fsType = "none";
-      options = ["bind" "nofail"];
-    };
+  fileSystems."/home/joerg/web/privat" = {
+    device = "/home/joerg/web/private";
+    fsType = "none";
+    options = ["bind" "nofail"];
+  };
 
-  fileSystems."/tmp" =
-    { device = "zroot/root/tmp";
-      fsType = "zfs";
-      options = ["nofail"];
-    };
+  fileSystems."/tmp" = {
+    device = "zroot/root/tmp";
+    fsType = "zfs";
+    options = ["nofail"];
+  };
 
   nix.maxJobs = lib.mkDefault 8;
 
