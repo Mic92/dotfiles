@@ -26,7 +26,7 @@ in {
     ./hardware-configuration.nix
     ./packages.nix
 
-    ./vms/modules/libvirt.nix
+    #./vms/modules/libvirt.nix
     (builtins.fetchGit {
       url = "https://github.com/NixOS/nixos-hardware";
       rev = "1e2c130d38d72860660474c36207b099c519cb6a";
@@ -35,6 +35,7 @@ in {
     ./backup.nix
     ./nfs.nix
     ./vms/modules/zfs.nix
+    #./vms/modules/sway.nix
     ./vms/modules/mosh.nix
     ./vms/modules/tracing.nix
     ./vms/modules/tor-ssh.nix
@@ -86,14 +87,11 @@ in {
   '';
 
   environment.sessionVariables = {
-   # so gtk2.0/gtk3.0 themes can be found
-   GTK_DATA_PREFIX = "/run/current-system/sw";
-   LD_LIBRARY_PATH = [ config.system.nssModules.path ];
- };
+    LD_LIBRARY_PATH = [ config.system.nssModules.path ];
+  };
 
  nix = {
    binaryCaches = [
-     https://cache.nixos.org/
      https://r-ryantm.cachix.org
    ];
    binaryCachePublicKeys = [
@@ -101,13 +99,6 @@ in {
    ];
    distributedBuilds = true;
    buildMachines = [
-     {
-       hostName = "rose.r";
-       sshUser = "nix";
-       sshKey = "/etc/nixos/secrets/id_buildfarm";
-       system = "x86_64-linux";
-       maxJobs = 8;
-     }
      {
        hostName = "martha.r";
        sshUser = "nix";
@@ -117,6 +108,27 @@ in {
      }
      {
        hostName = "donna.r";
+       sshUser = "nix";
+       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       system = "x86_64-linux";
+       maxJobs = 8;
+     }
+     {
+       hostName = "amy.r";
+       sshUser = "nix";
+       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       system = "x86_64-linux";
+       maxJobs = 8;
+     }
+     {
+       hostName = "clara.r";
+       sshUser = "nix";
+       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       system = "x86_64-linux";
+       maxJobs = 8;
+     }
+     {
+       hostName = "rose.r";
        sshUser = "nix";
        sshKey = "/etc/nixos/secrets/id_buildfarm";
        system = "x86_64-linux";
@@ -141,15 +153,7 @@ in {
        sshUser = "nix";
        sshKey = "/etc/nixos/secrets/id_buildfarm";
        system = "x86_64-linux";
-       maxJobs = 8;
-       supportedFeatures = [ "big-parallel" ];
-     }
-     {
-       hostName = "eddie.r";
-       sshKey = "/etc/nixos/secrets/id_buildfarm";
-       sshUser = "nix";
-       system = "x86_64-linux";
-       maxJobs = 2;
+       maxJobs = 4;
      }
      {
        hostName = "dpdkm.r";
@@ -158,6 +162,13 @@ in {
        system = "x86_64-linux";
        maxJobs = 4;
      }
+     #{
+     #  hostName = "eddie.r";
+     #  sshKey = "/etc/nixos/secrets/id_buildfarm";
+     #  sshUser = "nix";
+     #  system = "x86_64-linux";
+     #  maxJobs = 2;
+     #}
      # rpi3
      #{
      #  hostName = "172.23.75.254";
@@ -193,6 +204,7 @@ in {
   time.timeZone = "Europe/London";
 
   services = {
+    fwupd.enable = true;
     gpm.enable = true;
     upower.enable = true;
     locate.enable = true;
@@ -324,7 +336,7 @@ in {
   };
 
   services.dbus.packages = with pkgs; [ gnome3.dconf ];
-  services.teamviewer.enable = true;
+  #services.teamviewer.enable = true;
 
   nixpkgs.config = {
     allowUnfree = true;
