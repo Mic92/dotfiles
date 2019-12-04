@@ -11,7 +11,10 @@
   };
 
   environment.systemPackages = with pkgs; [
-    neovim
+    (neovim.override {
+      # no python2
+      withPython = false;
+    })
     nur.repos.mic92.cntr
 
     cryptsetup
