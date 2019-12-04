@@ -6,10 +6,6 @@
 {
   imports = [
     <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
-    (builtins.fetchGit {
-      url = "https://github.com/NixOS/nixos-hardware";
-      rev = "54268d11ae4e7a35e6085c5561a8d585379e5c73";
-    } + "/dell/xps/13-9380")
   ];
 
   # on demand
