@@ -4,7 +4,7 @@
   imports = [
     ./common.nix
     ./rust.nix
-    #./latex.nix
+    ./latex.nix
     ./debugging.nix
   ];
 
@@ -62,10 +62,13 @@
     dejavu_fonts
     ubuntu_font_family
     unifont
+    twitter-color-emoji
 
     arandr
-    rambox
-    albert
+    ferdi
+    signal-desktop
+    copyq
+    nur.repos.mic92.pandoc-bin
     gnome3.defaultIconTheme
     hicolor_icon_theme
     graphicsmagick
@@ -87,13 +90,15 @@
     xorg.xprop
     xclip
     keepassx-community
+    (pass.withExtensions (e: [ e.pass-import ]))
+    rofi-pass
+    browserpass
+    qtpass
     gpodder
     ncmpcpp
     xclip
     screen-message
     alacritty
-    sublime3
-    spotify
     sshfsFuse
     sshuttle
     jq
@@ -105,6 +110,9 @@
     cheat
     tldr
     nixops
+
+    isync
+    mu
 
     rubber
     (texlive.combine {
