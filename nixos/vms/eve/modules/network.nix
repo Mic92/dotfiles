@@ -9,17 +9,28 @@ in {
       type = types.str;
       default = "95.216.112.61";
     };
+
     networking.eve.ipv4.cidr = mkOption {
       type = types.str;
       default = "26";
     };
+
     networking.eve.ipv4.gateway = mkOption {
       type = types.str;
       default = "95.216.112.1";
     };
-    networking.eve.ipv6.address = mkOption {
-      type = types.str;
-      default = "2a01:4f9:2b:1605::1";
+
+    networking.eve.ipv6.addresses = mkOption {
+      type = types.listOf types.str;
+      default = [
+        "2a01:4f9:2b:1605::1"
+        # ssh on port 443
+        "2a01:4f9:2b:1605::2"
+        # xmpp on port 443
+        "2a01:4f9:2b:1605::3"
+        # tinc on port 443
+        "2a01:4f9:2b:1605::4"
+       ];
     };
 
     networking.eve.ipv6.subnet = mkOption {
@@ -48,7 +59,10 @@ in {
         [Network]
         Address = ${cfg.ipv4.address}/${cfg.ipv4.cidr}
         Gateway = ${cfg.ipv4.gateway}
-        Address = ${cfg.ipv6.address}/${cfg.ipv6.cidr}
+
+        ${concatMapStringsSep "\n" (address: ''
+        Address = ${address}/${cfg.ipv6.cidr}
+        '') cfg.ipv6.addresses}
         Gateway = ${cfg.ipv6.gateway}
         IPv6AcceptRA = no
         IPForward = yes
@@ -83,7 +97,9 @@ in {
         ip route add ${cfg.ipv4.gateway} dev eth0
         ip route add default via ${cfg.ipv4.gateway} dev eth0
 
-        ip -6 addr add ${cfg.ipv6.address}/${cfg.ipv6.cidr} dev eth0
+        ${concatMapStringsSep "\n" (address: ''
+        ip -6 addr add ${address}/${cfg.ipv6.cidr} dev eth0
+        '') cfg.ipv6.addresses}
         ip -6 route add ${cfg.ipv6.gateway} dev eth0
         ip -6 route add default via ${cfg.ipv6.gateway} dev eth0
       '';

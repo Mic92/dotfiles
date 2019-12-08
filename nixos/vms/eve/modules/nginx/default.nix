@@ -31,6 +31,7 @@ in {
     type = lib.types.attrsOf (lib.types.submodule {
       config.listen = lib.mkDefault [
         { addr = "127.0.0.1"; port = 4443; ssl = true;}
+        { addr = "[2a01:4f9:2b:1605::1]"; port = 443; ssl = true;}
       ];
     });
   };
@@ -47,16 +48,20 @@ in {
       # owncloud etc
       clientMaxBodySize = "4G";
 
-      resolver.addresses = ["172.23.75.6"];
+      resolver.addresses = ["127.0.0.1"];
 
       sslDhparam = config.security.dhparams.params.nginx.path;
 
       virtualHosts."_" = {
-        listen = [{ addr = "127.0.0.1"; port = 80; }];
+        listen = [
+          { addr = "127.0.0.1"; port = 80; }
+          { addr = "[2a01:4f9:2b:1605::1]"; port = 80; }
+        ];
         locations."/stub_status".extraConfig = ''
           stub_status;
           # Security: Only allow access from the IP below.
           allow 127.0.0.1;
+          allow ::1;
           # Deny anyone else
           deny all;
         '';

@@ -36,7 +36,9 @@ let
 
   helo_access = pkgs.writeText "helo_access" ''
     ${config.networking.eve.ipv4.address}   REJECT Get lost - you're lying about who you are
-    ${config.networking.eve.ipv6.address}   REJECT Get lost - you're lying about who you are
+    ${lib.concatMapStringsSep "\n" (address: ''
+    ${address}   REJECT Get lost - you're lying about who you are
+    '') config.networking.eve.ipv6.addresses}
     higgsboson.tk   REJECT Get lost - you're lying about who you are
     thalheim.io   REJECT Get lost - you're lying about who you are
   '';
@@ -70,7 +72,7 @@ in {
 
     extraConfig = ''
       smtp_bind_address = ${config.networking.eve.ipv4.address}
-      smtp_bind_address6 = ${config.networking.eve.ipv6.address}
+      smtp_bind_address6 = 2a01:4f9:2b:1605::1
       mailbox_transport = lmtp:unix:private/dovecot-lmtp
       masquerade_domains = ldap:${domains}
       virtual_mailbox_domains = ldap:${domains}
