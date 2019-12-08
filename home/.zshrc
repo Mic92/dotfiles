@@ -570,7 +570,7 @@ ss() {
   fi
 }
 sieve-edit() {
-    nix run nixpkgs.sieve-connect -c sieve-connect -s imap.thalheim.io -u joerg@higgsboson.tk --remotesieve Filter --edit
+    pass eve-login | nix run nixpkgs.sieve-connect -c sieve-connect --passwordfd 0 -s imap.thalheim.io -u joerg@higgsboson.tk --remotesieve Filter --edit
 }
 # Autossh - try to connect every 0.5 secs (modulo timeouts)
 sssh(){ while true; do command ssh -q "$@"; [ $? -ne 0 ] && break || sleep 0.5; done }
