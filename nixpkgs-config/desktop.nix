@@ -113,6 +113,8 @@
 
     isync
     mu
+    # to fix xdg-open
+    glib
 
     rubber
     (texlive.combine {
