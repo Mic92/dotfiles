@@ -73,6 +73,34 @@ values."
      lsp
      major-modes
      markdown
+     (mu4e :variables
+           mu4e-enable-mode-line t
+           mu4e-enable-notifications t
+           mu4e-get-mail-command "mbsync -Va"
+           mu4e-change-filenames-when-moving t
+           mu4e-maildir (expand-file-name "~/mail")
+           mu4e-sent-folder   "/thalheim.io/Sent"
+           mu4e-drafts-folder "/thalheim.io/Drafts"
+           mu4e-trash-folder  "/thalheim.io/Trash"
+           mu4e-enable-async-operations t
+           mu4e-use-maildirs-extension t
+           mu4e-view-show-addresses 't
+           mu4e-maildirs-extension-hide-empty-maildirs t
+           mu4e-update-interval 300
+           mu4e-alert-interesting-mail-query (concat
+                                              "flag:unread"
+                                              " AND NOT flag:trashed"
+                                              " AND NOT maildir:/thalheim.io/Spam"
+                                              " AND NOT maildir:/thalheim.io/Trash"
+                                              " AND NOT maildir:/thalheim.io/Entwickler"
+                                              " AND NOT maildir:/thalheim.io/Netzwerke"
+                                              " AND NOT maildir:/thalheim.io/zlist/*")
+           mu4e-user-mail-address-list '("joerg@thalheim.io" "joerg@higgsboson.tk" "s1691654@sms.ed.ac.uk")
+           message-send-mail-function 'smtpmail-send-it
+           smtpmail-smtp-server "mail.thalheim.io"
+           smtpmail-smtp-user "joerg@higgsboson.tk"
+           user-mail-address "joerg@thalheim.io"
+           user-full-name  "Jörg Thalheim")
      org
      ;; notmuch
      ;; ocaml
@@ -110,7 +138,9 @@ values."
                                       editorconfig
                                       flycheck-inline
                                       flycheck-pycheckers
+                                      sieve
                                       meson-mode
+                                      ;org-caldav
                                       (company-tmux
                                        :location (recipe :fetcher github :repo "Mic92/company-tmux"))
                                       (osc52
@@ -379,6 +409,16 @@ you should place your code here."
 
   (setq vc-follow-symlinks t)
 
+  ;(setq org-caldav-url "https://cloud.thalheim.io/remote.php/dav/calendars/joerg@higgsboson.tk"
+  ;      org-caldav-calendar-id "personal"
+  ;      org-caldav-inbox "~/.org/calendar.org"
+  ;      org-caldav-files '("~/.org/calendar.org")
+  ;      org-icalendar-timezone "Europe/London"
+  ;      org-agenda-files (list "~/.org/calendar.org"))
+
+  (require 'auth-source-pass)
+  (auth-source-pass-enable)
+
   ;; depending on the language treat _ or - as part of a variable name
   (with-eval-after-load 'evil
     :config (defalias #'forward-evil-word #'forward-evil-symbol))
@@ -413,6 +453,33 @@ you should place your code here."
   (setenv "NIX_REMOTE_SYSTEMS" "")
   (use-package direnv
     :config (direnv-mode))
+
+
+  (with-eval-after-load 'mu4e-alert
+    ;; Enable Desktop notifications
+    (mu4e-alert-set-default-style 'notifications))
+
+  (add-to-list 'mu4e-header-info-custom
+               '(:folder . (:name "Folder"  ;; long name, as seen in the message-view
+                            :shortname "Folder"           ;; short name, as seen in the headers view
+                            :help "Mailbox folder of the message" ;; tooltip
+                            :function (lambda (msg) (replace-regexp-in-string "/thalheim.io/?\\(zlist/\\)?" "" (mu4e-message-field msg :maildir))))))
+  (setq mu4e-headers-fields '((:human-date . 12) (:flags . 6) (:folder . 20) (:from . 22) (:subject)))
+
+  (defun derfian/mu4e-headers-learn-spam ()
+    (interactive)
+    (mu4e-mark-set 'move "/thalheim.io/Spam")
+    (mu4e-headers-next))
+
+  (defun derfian/mu4e-view-learn-spam ()
+    (interactive)
+    (mu4e~view-in-headers-context
+     (derfian/mu4e-headers-learn-spam)))
+
+  (define-key 'mu4e-headers-mode-map (kbd "L")
+    #'derfian/mu4e-headers-learn-spam)
+  (define-key 'mu4e-view-mode-map (kbd "L")
+    #'derfian/mu4e-view-learn-spam)
 
   (with-eval-after-load 'sh-script
     (lambda ()
@@ -492,9 +559,10 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (dap-mode bui tree-mode zig-mode yaml-mode x86-lookup web-mode web-beautify vimrc-mode typit mmt tagedit systemd sudoku sql-indent slim-mode scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv ranger rake racket-mode yapfify unfill smeargle pyvenv pytest pyenv-mode py-isort pip-requirements orgit mwim mmm-mode markdown-toc magit-gitflow live-py-mode hy-mode dash-functional helm-pydoc helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-pycheckers evil-magit magit magit-popup git-commit ghub treepy graphql with-editor cython-mode company-anaconda blacken auto-dictionary anaconda-mode pythonic nix-mode helm-nixos-options helm-company helm-c-yasnippet fuzzy company-statistics company-nixos-options nixos-options company auto-yasnippet yasnippet ac-ispell auto-complete toml-mode racer flycheck-rust cargo markdown-mode rust-mode flycheck-pos-tip pos-tip flycheck ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
+    (dap-mode bui tree-mode flymake zig-mode yaml-mode x86-lookup web-mode web-beautify vimrc-mode typit mmt tagedit systemd sudoku sql-indent slim-mode scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv ranger rake racket-mode yapfify unfill smeargle pyvenv pytest pyenv-mode py-isort pip-requirements orgit mwim mmm-mode markdown-toc magit-gitflow live-py-mode hy-mode dash-functional helm-pydoc helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-pycheckers evil-magit magit magit-popup git-commit ghub treepy graphql with-editor cython-mode company-anaconda blacken auto-dictionary anaconda-mode pythonic nix-mode helm-nixos-options helm-company helm-c-yasnippet fuzzy company-statistics company-nixos-options nixos-options company auto-yasnippet yasnippet ac-ispell auto-complete toml-mode racer flycheck-rust cargo markdown-mode rust-mode flycheck-pos-tip pos-tip flycheck ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
  '(paradox-github-token t)
  '(safe-local-variable-values
    (quote

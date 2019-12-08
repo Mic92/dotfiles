@@ -248,7 +248,7 @@ set $devClasses "^(xterm|urxvt|aterm|URxvt|XTerm|alacritty|emacs)$"
 for_window [class=$devClasses] move to workspace $wsDev
 
 # Daily == thunderbird
-set $imClasses "^(Kopete|Pidgin|gajim|rambox|Dino|.gam-wrapped|Daily|birdie|evolution)$"
+set $imClasses "^(Kopete|Pidgin|gajim|rambox|Dino|.gam-wrapped|Daily|birdie|evolution|Ferdi|signal|Emacs)$"
 for_window [class=$imClasses] move to workspace $wsIm
 
 set $docClasses "^(Evince|GVim|keepassx|libreoffice)$"
@@ -257,9 +257,10 @@ for_window [class=$docClasses] move to workspace $wsDoc
 # hide titlebar if there is only one window
 for_window [class="^.*"] border pixel 1
 
-exec --no-startup-id rambox
+exec --no-startup-id ferdi
+exec --no-startup-id emacs -e '(mu4e)' -T 'mu4e'
+exec --no-startup-id signal-desktop
 exec --no-startup-id dino
-exec --no-startup-id thunderbird
 exec --no-startup-id firefox
 exec --no-startup-id light-locker
 exec --no-startup-id compton -b
