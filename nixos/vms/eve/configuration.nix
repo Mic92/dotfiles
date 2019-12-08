@@ -14,6 +14,8 @@
 
   programs.vim.defaultEditor = true;
 
+  nixpkgs.config.php.mhash = true;
+
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
