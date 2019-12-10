@@ -2,5 +2,7 @@
 /.direnv.*
 /.direnv
 /.envrc
+/.clangd/
+/.ccls-cache/
 tags
-/.mypy_cache
+/.mypy_cache/
