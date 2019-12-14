@@ -40,35 +40,26 @@ in {
     };
   };
   config = lib.mkIf (cfg.files != {}) {
-    systemd.services.secret = let
-      # TODO fail if two files have the same path but differ otherwise
+    system.activationScripts.nixops-keys = let
       files = unique (map (flip removeAttrs ["_module"])
                           (attrValues cfg.files));
-    in {
-      wantedBy = [ "keys.target" ];
-      before = [ "keys.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        RemainAfterExit = "yes";
-        SyslogIdentifier = "secret";
-        ExecStart = pkgs.writeScript "install-secret-files" ''
-          #!${pkgs.runtimeShell}
-          exit_code=0
-          ${concatMapStringsSep "\n" (file: ''
-            ${pkgs.coreutils}/bin/install \
-              -D \
-              --compare \
-              --verbose \
-              --mode=${lib.escapeShellArg file.mode} \
-              --owner=${lib.escapeShellArg file.owner} \
-              --group=${lib.escapeShellArg file.group-name} \
-              ${lib.escapeShellArg file.source-path} \
-              ${lib.escapeShellArg file.path} \
-            || exit_code=1
-          '') files}
-          exit $exit_code
-        '';
-      };
-    };
+      script = ''
+        echo setting up secrets...
+        mkdir -p /run/keys -m 0750
+        chown root:keys /run/keys
+        ${concatMapStringsSep "\n" (file: ''
+          ${pkgs.coreutils}/bin/install \
+            -D \
+            --compare \
+            --verbose \
+            --mode=${lib.escapeShellArg file.mode} \
+            --owner=${lib.escapeShellArg file.owner} \
+            --group=${lib.escapeShellArg file.group-name} \
+            ${lib.escapeShellArg file.source-path} \
+            ${lib.escapeShellArg file.path} \
+          || echo "failed to copy ${file.source-path} to ${file.path}"
+        '') files}
+      '';
+    in stringAfter [ "users" "groups" ] "source ${pkgs.writeText "setup-keys.sh" script}";
   };
 }
