@@ -40,7 +40,7 @@ in {
     };
   };
   config = lib.mkIf (cfg.files != {}) {
-    system.activationScripts.nixops-keys = let
+    system.activationScripts.setup-keys = let
       files = unique (map (flip removeAttrs ["_module"])
                           (attrValues cfg.files));
       script = ''
