@@ -84,7 +84,7 @@
     regex = "Grafana";
   };
 
-  krebs.secret.files.grafana-smtp-password.owner = "grafana";
-  krebs.secret.files.grafana-admin-password.owner = "grafana";
-  krebs.secret.files.grafana-ldap-password.owner = "grafana";
+  krops.secrets.files.grafana-smtp-password.owner = "grafana";
+  krops.secrets.files.grafana-admin-password.owner = "grafana";
+  krops.secrets.files.grafana-ldap-password.owner = "grafana";
 }

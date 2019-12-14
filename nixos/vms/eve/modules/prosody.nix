@@ -164,5 +164,5 @@
     6555 # xmpp-proxy65
   ];
 
-  krebs.secret.files.prosody-ldap-password.owner = "prosody";
+  krops.secrets.files.prosody-ldap-password.owner = "prosody";
 }

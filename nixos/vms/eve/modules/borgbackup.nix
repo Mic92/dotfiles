@@ -31,6 +31,6 @@
     };
   };
 
-  krebs.secret.files.nas-wakeup-password = {};
-  krebs.secret.files.borg-passphrase = {};
+  krops.secrets.files.nas-wakeup-password = {};
+  krops.secrets.files.borg-passphrase = {};
 }

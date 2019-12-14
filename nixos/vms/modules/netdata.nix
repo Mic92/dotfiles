@@ -62,7 +62,7 @@ in
     };
   };
   config = {
-    krebs.secret.files = (if cfg.stream.role == "master" then {
+    krops.secrets.files = (if cfg.stream.role == "master" then {
         # Generate <UUID> with `uuidgen`:
         # [<UUID>]
         #     enabled = yes

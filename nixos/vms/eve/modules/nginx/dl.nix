@@ -22,7 +22,7 @@ in {
     virtualHosts."dl.higgsboson.tk" = site "higgsboson.tk" "dl.higgsboson.tk";
   };
 
-  krebs.secret.files.nginx-secure-link.owner = "nginx";
+  krops.secrets.files.nginx-secure-link.owner = "nginx";
 
   services.netdata.httpcheck.checks."dl.thalheim.io" = {
     url = "https://dl.thalheim.io/OtNjoZOUnEn3H6LJZ1qcIw/test";

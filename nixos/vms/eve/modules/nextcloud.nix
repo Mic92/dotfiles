@@ -21,7 +21,7 @@
     };
   };
 
-  krebs.secret.files.nextcloud-admin-password.owner = "nextcloud";
+  krops.secrets.files.nextcloud-admin-password.owner = "nextcloud";
 
   users.users.nextcloud.extraGroups = [ "keys" ];
   systemd.services.nextcloud.serviceConfig.SupplementaryGroups = [ "keys" ];

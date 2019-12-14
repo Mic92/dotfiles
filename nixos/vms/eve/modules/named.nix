@@ -64,5 +64,5 @@
   users.users.named.extraGroups = [ "keys" ];
   systemd.services.bind.serviceConfig.SupplementaryGroups = [ "keys" ];
 
-  krebs.secret.files."chelnok.key".owner = "named";
+  krops.secrets.files."chelnok.key".owner = "named";
 }

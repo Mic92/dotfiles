@@ -51,8 +51,8 @@
     '';
   };
 
-  krebs.secret.files.openldap-rootpw.owner = "openldap";
-  krebs.secret.files.ldap-login = {};
+  krops.secrets.files.openldap-rootpw.owner = "openldap";
+  krops.secrets.files.ldap-login = {};
 
   users.users.openldap.extraGroups = [ "keys" ];
   systemd.services.openldap.serviceConfig.SupplementaryGroups = [ "keys" ];

@@ -9,7 +9,7 @@
 
   services.netdata.stream.role = "master";
 
-  krebs.secret.files.netdata-pushover = {
+  krops.secrets.files.netdata-pushover = {
     path = "/etc/netdata/health_alarm_notify.conf";
     owner = "netdata";
   };

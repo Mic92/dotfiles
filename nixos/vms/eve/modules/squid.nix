@@ -24,7 +24,7 @@
   users.users.squid.extraGroups = [ "keys" ];
   systemd.services.squid.serviceConfig.SupplementaryGroups = [ "keys" ];
 
-  krebs.secret.files.squid-ldap.owner = "squid";
+  krops.secrets.files.squid-ldap.owner = "squid";
 
   environment.etc."netdata/python.d/squid.conf".text = ''
     tcp8888new:

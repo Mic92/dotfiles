@@ -164,7 +164,7 @@ in {
     shell = "/run/current-system/sw/bin/nologin";
   };
 
-  krebs.secret.files."dovecot-ldap-password" = {};
+  krops.secrets.files."dovecot-ldap-password" = {};
 
   security.dhparams = {
     enable = true;

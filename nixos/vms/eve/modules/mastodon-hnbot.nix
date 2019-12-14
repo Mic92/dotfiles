@@ -39,5 +39,5 @@
   };
   users.groups.mastodon-hnbot = {};
 
-  krebs.secret.files.hnbot-password.owner = "mastodon-hnbot";
+  krops.secrets.files.hnbot-password.owner = "mastodon-hnbot";
 }

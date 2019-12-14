@@ -3,7 +3,7 @@
 with lib;
 
 let
-  cfg = config.krebs.secret;
+  cfg = config.krops.secrets;
   secret-file = types.submodule ({ config, ... }: {
     options = {
       name = mkOption {
@@ -33,14 +33,14 @@ let
     };
   });
 in {
-  options.krebs.secret = {
+  options.krops.secrets = {
     files = mkOption {
       type = with types; attrsOf secret-file;
       default = {};
     };
   };
   config = lib.mkIf (cfg.files != {}) {
-    system.activationScripts.setup-keys = let
+    system.activationScripts.setup-secrets = let
       files = unique (map (flip removeAttrs ["_module"])
                           (attrValues cfg.files));
       script = ''
@@ -60,6 +60,6 @@ in {
           || echo "failed to copy ${file.source-path} to ${file.path}"
         '') files}
       '';
-    in stringAfter [ "users" "groups" ] "source ${pkgs.writeText "setup-keys.sh" script}";
+    in stringAfter [ "users" "groups" ] "source ${pkgs.writeText "setup-secrets.sh" script}";
   };
 }
