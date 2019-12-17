@@ -343,6 +343,16 @@ in {
     android_sdk.accept_license = true;
   };
 
+  services.ssmtp = {
+    enable = true;
+    authPassFile = "/etc/nixos/secrets/smtp-authpass";
+    authUser = "joerg@higgsboson.tk";
+    hostName = "mail.thalheim.io:587";
+    domain = "thalheim.io";
+    root = "joerg@thalheim.io";
+    useSTARTTLS = true;
+  };
+
   networking = {
     networkmanager.enable = true;
 
@@ -351,15 +361,6 @@ in {
       ipv6 = "42:0:3c46:47e8:f610:15d1:27a3:674b";
     };
 
-    defaultMailServer = {
-      directDelivery = true;
-      hostName = "mail.thalheim.io:587";
-      root = "joerg@thalheim.io";
-      authUser = "joerg@higgsboson.tk";
-      authPassFile = "/etc/nixos/secrets/smtp-authpass";
-      domain = "thalheim.io";
-      useSTARTTLS = true;
-    };
     nameservers = ["1.1.1.1"];
 
     firewall.enable = true;
