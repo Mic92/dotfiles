@@ -258,7 +258,7 @@ for_window [class=$docClasses] move to workspace $wsDoc
 for_window [class="^.*"] border pixel 1
 
 exec --no-startup-id ferdi
-exec --no-startup-id emacs -e '(mu4e)' -T 'mu4e'
+exec --no-startup-id mu4e
 exec --no-startup-id signal-desktop
 exec --no-startup-id dino
 exec --no-startup-id firefox

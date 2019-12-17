@@ -3,16 +3,18 @@
 
 let
   myEmacs = ((pkgs.emacsPackagesNgGen pkgs.emacs).emacsWithPackages (epkgs: [ pkgs.mu ]));
-  editorScript = { x11 ? false } : pkgs.writeScriptBin "emacseditor" ''
+  editorScript = { name ? "emacseditor", x11 ? false, mu4e ? false } : pkgs.writeScriptBin name ''
     #!${pkgs.runtimeShell}
     export TERM=xterm-24bit
     exec -a emacs ${myEmacs}/bin/emacsclient \
       --socket-name $XDG_RUNTIME_DIR/emacs \
       --create-frame \
       --alternate-editor ${myEmacs}/bin/emacs \
-      ${lib.optionalString x11 "-nw"} "$@"
+      ${lib.optionalString (!x11) "-nw"} \
+      ${lib.optionalString (mu4e) "-e '(mu4e)'"} \
+      "$@"
   '';
-  editorScriptX11 = editorScript { x11 = true; };
+  editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
 
 in {
   options = {
@@ -36,6 +38,7 @@ in {
           mimeType = "text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++";
         })
 
+        (editorScript { name = "mu4e"; mu4e = true; x11 = true; })
         (editorScript {})
         gocode
         godef
