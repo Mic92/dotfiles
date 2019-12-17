@@ -99,8 +99,10 @@ values."
            message-send-mail-function 'smtpmail-send-it
            smtpmail-smtp-server "mail.thalheim.io"
            smtpmail-smtp-user "joerg@higgsboson.tk"
-           user-mail-address "joerg@thalheim.io"
-           user-full-name  "Jörg Thalheim")
+           smtpmail-smtp-service 587
+           smtpmail-stream-type 'starttls
+           smtpmail-cred-passwd
+           mml-secure-openpgp-encrypt-to-self t)
      org
      ;; notmuch
      ;; ocaml
@@ -144,7 +146,9 @@ values."
                                       (company-tmux
                                        :location (recipe :fetcher github :repo "Mic92/company-tmux"))
                                       (osc52
-                                       :location (recipe :fetcher github :repo "Mic92/osc52")))
+                                       :location (recipe :fetcher github :repo "Mic92/osc52"))
+                                      (defaultencrypt
+                                        :location (recipe :fetcher gitlab :repo "lechten/defaultencrypt")))
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '(agda2-mode)
    ;; A list of packages that will not be installed and loaded.
@@ -407,6 +411,11 @@ you should place your code here."
   (use-package osc52
     :config (osc52-set-cut-function))
 
+  (use-package jl-encrypt
+    :config (progn
+              (add-hook 'message-send-hook 'mml-secure-encrypt-if-possible)
+              (add-hook 'message-send-hook 'mml-secure-check-encryption-p)))
+
   (setq vc-follow-symlinks t)
 
   ;(setq org-caldav-url "https://cloud.thalheim.io/remote.php/dav/calendars/joerg@higgsboson.tk"
@@ -481,6 +490,8 @@ you should place your code here."
   (define-key 'mu4e-view-mode-map (kbd "L")
     #'derfian/mu4e-view-learn-spam)
 
+  (setq user-full-name  "Jörg Thalheim" user-mail-address "joerg@thalheim.io")
+
   (with-eval-after-load 'sh-script
     (lambda ()
       (setq sh-basic-offset 2 sh-indentation 2)))
@@ -530,6 +541,14 @@ you should place your code here."
       (insert (string-trim-right hash))))
 
   (spacemacs/set-leader-keys "xn" 'insert-nix-hash)
+
+  ;; speeds-up tmux/screen:
+  ;; https://github.com/syl20bnr/spacemacs/issues/6181#issuecomment-264549368
+  (eval-after-load "xterm" ;; term/xterm.el does not provide 'xterm
+    '(defadvice xterm--query (around tweak-for-gnu-screen (query handlers) activate)
+     ;; GNU screen does not support this sequence
+       (unless (string= query "\e]11;?\e\\")
+         ad-do-it)))
 )
 
 
@@ -562,7 +581,7 @@ This function is called at the very end of Spacemacs initialization."
  '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (dap-mode bui tree-mode flymake zig-mode yaml-mode x86-lookup web-mode web-beautify vimrc-mode typit mmt tagedit systemd sudoku sql-indent slim-mode scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv ranger rake racket-mode yapfify unfill smeargle pyvenv pytest pyenv-mode py-isort pip-requirements orgit mwim mmm-mode markdown-toc magit-gitflow live-py-mode hy-mode dash-functional helm-pydoc helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-pycheckers evil-magit magit magit-popup git-commit ghub treepy graphql with-editor cython-mode company-anaconda blacken auto-dictionary anaconda-mode pythonic nix-mode helm-nixos-options helm-company helm-c-yasnippet fuzzy company-statistics company-nixos-options nixos-options company auto-yasnippet yasnippet ac-ispell auto-complete toml-mode racer flycheck-rust cargo markdown-mode rust-mode flycheck-pos-tip pos-tip flycheck ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
+    (dap-mode bui tree-mode zig-mode yaml-mode x86-lookup web-mode web-beautify vimrc-mode typit mmt tagedit systemd sudoku sql-indent slim-mode scss-mode sass-mode rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv ranger rake racket-mode yapfify unfill smeargle pyvenv pytest pyenv-mode py-isort pip-requirements orgit mwim mmm-mode markdown-toc magit-gitflow live-py-mode hy-mode dash-functional helm-pydoc helm-gitignore gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link gh-md flyspell-correct-helm flyspell-correct flycheck-pycheckers evil-magit magit magit-popup git-commit ghub treepy graphql with-editor cython-mode company-anaconda blacken auto-dictionary anaconda-mode pythonic nix-mode helm-nixos-options helm-company helm-c-yasnippet fuzzy company-statistics company-nixos-options nixos-options company auto-yasnippet yasnippet ac-ispell auto-complete toml-mode racer flycheck-rust cargo markdown-mode rust-mode flycheck-pos-tip pos-tip flycheck ws-butler winum which-key volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation helm-themes helm-swoop helm-projectile helm-mode-manager helm-make projectile pkg-info epl helm-flx helm-descbinds helm-ag google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump f dash s diminish define-word column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line helm avy helm-core popup async)))
  '(paradox-github-token t)
  '(safe-local-variable-values
    (quote
