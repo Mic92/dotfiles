@@ -29,6 +29,7 @@
       include ${./openldap}/seafile.schema
       include ${./openldap}/openssh-lpk-openldap.schema
       include ${./openldap}/grafana.schema
+      include ${./openldap}/home-assistant.schema
 
       access to attrs=userPassword
         by self         write

@@ -11,7 +11,7 @@ let
   source = lib.evalSource [{
     nixpkgs.git = {
       clean.exclude = ["/.version-suffix"];
-      ref = "14110e71b0d4842ae4de44331c12e2e57dc6e44b";
+      ref = "182290f591bb69a9b0ef22e80ff1b5c7f4b77580";
       url = https://github.com/Mic92/nixpkgs;
     };
     dotfiles.file.path = toString ./../..;
