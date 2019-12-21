@@ -490,7 +490,13 @@ you should place your code here."
   (define-key 'mu4e-view-mode-map (kbd "L")
     #'derfian/mu4e-view-learn-spam)
 
-  (setq user-full-name  "Jörg Thalheim" user-mail-address "joerg@thalheim.io")
+  (setq user-full-name  "Jörg Thalheim"
+        user-mail-address "joerg@thalheim.io")
+  (add-to-list 'mu4e-bookmarks
+               (make-mu4e-bookmark
+                :name  "Big messages"
+                :query "size:2M..500M"
+                :key ?b))
 
   (with-eval-after-load 'sh-script
     (lambda ()
