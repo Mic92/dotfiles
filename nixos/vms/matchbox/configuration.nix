@@ -1,5 +1,4 @@
 { pkgs, ... }: {
-  deployment.targetHost = "172.23.75.254";
 
   fileSystems = {
     "/mnt/hdd" = {
@@ -23,6 +22,7 @@
     ../modules/nix-daemon.nix
     ../modules/netdata.nix
     ../modules/rpi3.nix
+    ../modules/secrets.nix
 
     ./modules/borgbackup.nix
     ./modules/samba.nix

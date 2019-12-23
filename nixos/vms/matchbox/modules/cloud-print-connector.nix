@@ -20,9 +20,8 @@
 
   # generated with:
   # $ gcp-connector-util init
-  deployment.keys."gcp-cups-connector.config.json" = {
-    keyFile = ../secrets/gcp-cups-connector.config.json;
-    user = "cloud-print-connector";
+  krops.secrets.files."gcp-cups-connector.config.json" = {
+    owner = "cloud-print-connector";
   };
 
   users.users.cloud-print-connector = {

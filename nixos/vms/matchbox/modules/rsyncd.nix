@@ -25,9 +25,8 @@
     extraGroups = [ "keys" ];
   };
 
-  deployment.keys."rsyncd.secrets" = {
-    keyFile = ../secrets/rsyncd.secrets;
-    user = "rsyncd";
+  krops.secrets.files."rsyncd.secrets" = {
+    owner = "rsyncd";
   };
 
   users.groups.rsyncd = {};
