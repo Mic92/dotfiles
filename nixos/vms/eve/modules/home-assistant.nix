@@ -115,6 +115,7 @@ in {
       recorder.db_url = "postgresql://@/hass";
       config = {};
       mobile_app = {};
+      system_health = {};
     };
   };
 
