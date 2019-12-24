@@ -22,6 +22,8 @@ in {
     virtualHosts."dl.higgsboson.tk" = site "higgsboson.tk" "dl.higgsboson.tk";
   };
 
+  systemd.services.nginx.serviceConfig.SupplementaryGroups = [ "keys" ];
+
   krops.secrets.files.nginx-secure-link.owner = "nginx";
 
   services.netdata.httpcheck.checks."dl.thalheim.io" = {

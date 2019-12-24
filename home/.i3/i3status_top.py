@@ -16,7 +16,7 @@ icons.nerdfont(status, "")
 
 status.register(
     "network",
-    interface="wlp2s0",
+    interface="wlp3s0",
     format_up="{essid} {quality_bar} {v4cidr} {bytes_sent}/s|{bytes_recv}/s",
     color_up=color.text_normal,
     color_down=color.text_down,

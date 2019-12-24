@@ -7,13 +7,7 @@
       "127.0.0.1:631"
     ];
     defaultShared = true;
-    drivers = [ pkgs.hplip ];
-  };
-
-  nixpkgs.config.packageOverrides = pkgs: {
-    hplip = pkgs.hplip.override {
-      withQt5 = false;
-    };
+    drivers = [ pkgs.gutenprint ];
   };
 
   fonts.enableGhostscriptFonts = true;

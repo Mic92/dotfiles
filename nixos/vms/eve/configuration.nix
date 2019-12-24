@@ -20,6 +20,7 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./modules/adminer.nix
+    ./modules/bitwarden.nix
     ./modules/borgbackup.nix
     ./modules/docker.nix
     ./modules/dovecot.nix

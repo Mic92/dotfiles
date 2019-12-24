@@ -26,7 +26,9 @@ let
       name = "shared";
     };
   }];
-in pkgs.krops.writeDeploy' "deploy" {
+in pkgs.krops.writeDeploy "deploy" {
   source = source;
+  buildHost = "joerg@localhost";
+  crossDeploy = true;
   target = "root@matchbox.r";
 }

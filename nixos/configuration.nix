@@ -55,7 +55,7 @@ in {
     loader = {
       systemd-boot.enable = true;
       # when installing toggle this
-      # efi.canTouchEfiVariables = true;
+      efi.canTouchEfiVariables = false;
     };
     blacklistedKernelModules = [ "iptable_nat" "ip_tables" ];
 

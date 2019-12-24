@@ -1,4 +1,4 @@
-{
+{ pkgs, ... }: {
   environment.systemPackages = [ pkgs.iperf3 ];
 
   networking.firewall.allowedTCPPorts = [

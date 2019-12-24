@@ -498,6 +498,9 @@ you should place your code here."
                 :query "size:2M..500M"
                 :key ?b))
 
+  (when (fboundp 'imagemagick-register-types)
+    (imagemagick-register-types))
+
   (with-eval-after-load 'sh-script
     (lambda ()
       (setq sh-basic-offset 2 sh-indentation 2)))

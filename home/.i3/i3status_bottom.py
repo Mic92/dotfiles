@@ -22,7 +22,7 @@ status.register(
 
 status.register(
     "network",
-    interface="eth1",
+    interface="enp0s25",
     format_up="{v4cidr} {bytes_sent}/s|{bytes_recv}/s",
     color_down=color.text_down,
     color_up=color.text_up,

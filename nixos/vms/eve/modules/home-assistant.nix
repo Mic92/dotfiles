@@ -68,6 +68,13 @@ in {
       }];
       automation = [{
         alias = "Redmi battery warnings";
+        influxdb = {
+          username = "homeassistant";
+          password = "!secret influxdb";
+          database = "homeassistant";
+          ssl = true;
+        };
+
         trigger = {
           platform = "numeric_state";
           entity_id  = "device_tracker.redmi_note_5";

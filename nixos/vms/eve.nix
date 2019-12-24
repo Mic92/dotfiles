@@ -1,5 +1,5 @@
 let
-  krops = import ./krops.nix;
+  krops = (import <nixpkgs> {}).callPackage ./krops.nix {};
   lib = import "${krops}/lib";
   pkgs = import "${krops}/pkgs" {};
 

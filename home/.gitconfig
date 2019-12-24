@@ -86,3 +86,5 @@
   includeIssuesSection = false
 [github]
   user = Mic92
+[advice]
+  detachedHead = false

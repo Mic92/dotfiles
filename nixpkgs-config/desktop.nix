@@ -9,7 +9,11 @@
   ];
 
   fonts.fontconfig.enable = true;
-  programs.emacs.package = lib.mkForce pkgs.emacs;
+  programs.emacs.package = (pkgs.emacsPackagesNgGen
+    (pkgs.emacs.override {
+      inherit (pkgs) imagemagick;
+    })).emacsWithPackages (ps: [ pkgs.mu ]);
+
   services.dunst = {
     enable = true;
     settings = {
@@ -105,11 +109,9 @@
     httpie
     pypi2nix
     go2nix
-    mercurial # go2nix
     gnupg1compat
     cheat
     tldr
-    nixops
 
     isync
     mu

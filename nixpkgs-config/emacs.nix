@@ -1,29 +1,36 @@
 
 { pkgs, lib, config, ... }:
 
+with lib;
+
 let
-  myEmacs = ((pkgs.emacsPackagesNgGen pkgs.emacs).emacsWithPackages (epkgs: [ pkgs.mu ]));
+  cfg = config.programs.emacs;
   editorScript = { name ? "emacseditor", x11 ? false, mu4e ? false } : pkgs.writeScriptBin name ''
     #!${pkgs.runtimeShell}
     export TERM=xterm-24bit
-    exec -a emacs ${myEmacs}/bin/emacsclient \
+    exec -a emacs ${cfg.package}/bin/emacsclient \
       --socket-name $XDG_RUNTIME_DIR/emacs \
       --create-frame \
-      --alternate-editor ${myEmacs}/bin/emacs \
-      ${lib.optionalString (!x11) "-nw"} \
-      ${lib.optionalString (mu4e) "-e '(mu4e)'"} \
+      --alternate-editor ${cfg.package}/bin/emacs \
+      ${optionalString (!x11) "-nw"} \
+      ${optionalString (mu4e) "-e '(mu4e)'"} \
       "$@"
   '';
   editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
 
 in {
-  options = {
-    programs.emacs.socket-activation.enable = (lib.mkEnableOption "socket-activation") // {
-      default = true;
+  options.programs.emacs = {
+    socket-activation.enable =
+      (mkEnableOption "socket-activation") // { default = true; };
+
+    extraPackages = mkOption {
+      default = ps: [];
+      defaultText = "ps: []";
+      type = types.listOf types.package;
+      example = "(ps: [ pkgs.mu ])";
     };
   };
-  config = lib.mkMerge [
-
+  config = mkMerge [
     ({
       home.packages = with pkgs; [
         editorScriptX11
@@ -50,7 +57,7 @@ in {
         nur.repos.mic92.xterm-24bit-terminfo
       ];
     })
-    (lib.mkIf config.programs.emacs.socket-activation.enable {
+    (mkIf config.programs.emacs.socket-activation.enable {
       systemd.user.sockets.emacs-daemon = {
         Socket.ListenStream = "%t/emacs";
         Install.WantedBy = [ "sockets.target" ];
@@ -63,7 +70,7 @@ in {
         };
         Service = {
           Type = "forking";
-          ExecStart = "${pkgs.zsh}/bin/zsh -c 'source ~/.zshrc; export PATH=$PATH:${pkgs.sqlite}/bin; exec ${myEmacs}/bin/emacs --daemon'";
+          ExecStart = "${pkgs.zsh}/bin/zsh -c 'source ~/.zshrc; export PATH=$PATH:${pkgs.sqlite}/bin; exec ${cfg.package}/bin/emacs --daemon'";
           Restart = "always";
         };
       };
