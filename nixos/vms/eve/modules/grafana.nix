@@ -84,7 +84,16 @@
     regex = "Grafana";
   };
 
-  krops.secrets.files.grafana-smtp-password.owner = "grafana";
-  krops.secrets.files.grafana-admin-password.owner = "grafana";
-  krops.secrets.files.grafana-ldap-password.owner = "grafana";
+  krops.secrets.files = {
+    grafana-smtp-password.owner = "grafana";
+    grafana-admin-password.owner = "grafana";
+    grafana-ldap-password.owner = "grafana";
+  };
+
+  services.openldap.extraConfig = ''
+    objectClass ( 1.3.6.1.4.1.28293.1.2.5 NAME 'grafana'
+            SUP uidObject AUXILIARY
+            DESC 'Added to an account to allow grafana access'
+            MUST (mail) )
+  '';
 }

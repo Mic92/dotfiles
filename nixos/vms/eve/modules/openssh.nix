@@ -19,4 +19,16 @@
     ssh.port = 22;
     ssh-legacy.port = 22022;
   };
+
+  services.openldap.extraConfig = ''
+    attributetype ( 1.3.6.1.4.1.24552.500.1.1.1.13 NAME 'sshPublicKey'
+       DESC 'MANDATORY: OpenSSH Public key'
+       EQUALITY octetStringMatch
+       SYNTAX 1.3.6.1.4.1.1466.115.121.1.40 )
+    # printableString SYNTAX yes|no
+    objectclass ( 1.3.6.1.4.1.24552.500.1.1.2.0 NAME 'ldapPublicKey' SUP top AUXILIARY
+       DESC 'MANDATORY: OpenSSH LPK objectclass'
+       MUST ( sshPublicKey $ uid )
+       )
+  '';
 }

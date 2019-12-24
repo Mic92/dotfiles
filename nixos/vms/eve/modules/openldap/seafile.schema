@@ -1,4 +1,0 @@
-objectClass ( 1.3.6.1.4.1.28295.1.2.5 NAME 'seafile'
-        SUP top AUXILIARY
-        DESC 'Added to an account to allow seafile access'
-	MUST ( mail $ accountActive $ delete $ userPassword ))

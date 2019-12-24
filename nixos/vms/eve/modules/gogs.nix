@@ -40,7 +40,14 @@
     url = "https://git.thalheim.io";
     regex = "Gogs";
   };
- 
+
+  services.openldap.extraConfig = ''
+    objectClass ( 1.3.6.1.4.1.28293.1.2.4 NAME 'gitlab'
+            SUP uidObject AUXILIARY
+            DESC 'Added to an account to allow gitlab access'
+            MUST (mail) )
+  '';
+
   # for database key
   systemd.services.gogs.serviceConfig.SupplementaryGroups = [ "keys" ];
 }

@@ -43,4 +43,19 @@
     url = "https://cloud.thalheim.io/login";
     regex = "Nextcloud";
   };
+
+  services.openldap.extraConfig = ''
+    attributetype ( 1.3.6.1.4.1.39430.1.1.1
+        NAME 'ownCloudQuota'
+        DESC 'User Quota (e.g. 15 GB)'
+        SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )
+
+    objectclass ( 1.3.6.1.4.1.39430.1.2.1
+        NAME 'ownCloud'
+        DESC 'ownCloud LDAP Schema'
+        AUXILIARY
+        MUST ( mail $ userPassword )
+        MAY ( ownCloudQuota ) )
+
+  '';
 }

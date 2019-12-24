@@ -11,6 +11,8 @@ let
     ) // (lib.foldl (domains: domain: domains // { ${domain} = null; }) {} serverAliases);
     postRun = "systemctl reload nginx.service";
     webroot = "/var/lib/acme/acme-challenge";
+    allowKeysForGroup = true;
+    group = "nginx";
   };
 in {
   imports = [
@@ -92,5 +94,11 @@ in {
     '';
 
     users.users.netdata.extraGroups = [ "nginx" ];
+    services.openldap.extraConfig = ''
+      objectClass ( 1.3.6.1.4.1.28295.1.2.4 NAME 'nginx'
+              SUP top AUXILIARY
+              DESC 'Added to an account to allow nginx access'
+      	MUST ( mail $ userPassword ))
+    '';
   };
 }

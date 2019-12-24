@@ -12,7 +12,7 @@ let
   domains = pkgs.writeText "domains.cf" ''
     server_host = ldap://127.0.0.1
     search_base = dc=domains,dc=mail,dc=eve
-    query_filter = (&(dc=%s)(objectClass=mailDomain)(accountActive=TRUE)(delete=FALSE))
+    query_filter = (&(dc=%s)(objectClass=mailDomain))
     result_attribute = postfixTransport
     bind = no
     scope = one
@@ -21,7 +21,7 @@ let
   accountsmap = pkgs.writeText "accountsmap.cf" ''
     server_host = ldap://127.0.0.1
     search_base = ou=users,dc=eve
-    query_filter = (&(objectClass=mailAccount)(mail=%s)(accountActive=TRUE)(delete=FALSE))
+    query_filter = (&(objectClass=mailAccount)(mail=%s))
     result_attribute = mail
     bind = no
   '';
@@ -29,7 +29,7 @@ let
   aliases = pkgs.writeText "aliases.cf" ''
     server_host = ldap://127.0.0.1
     search_base = dc=aliases,dc=mail,dc=eve
-    query_filter = (&(objectClass=mailAlias)(mail=%s)(accountActive=TRUE))
+    query_filter = (&(objectClass=mailAlias)(mail=%s))
     result_attribute = maildrop
     bind = no
   '';

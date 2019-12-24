@@ -8,15 +8,15 @@ let
     auth_bind = no
     ldap_version = 3
     base = ou=users,dc=eve
-    user_filter = (&(objectClass=MailAccount)(mail=%u)(accountActive=TRUE)(delete=FALSE))
+    user_filter = (&(objectClass=mailAccount)(mail=%u))
     user_attrs = \
       quota=quota_rule=*:bytes=%$, \
       =home=/var/vmail/%d/%n/, \
       =mail=maildir:/var/vmail/%d/%n/Maildir
     pass_attrs = mail=user,userPassword=password
-    pass_filter = (&(objectClass=MailAccount)(mail=%u))
+    pass_filter = (&(objectClass=mailAccount)(mail=%u))
     iterate_attrs = =user=%{ldap:mail}
-    iterate_filter = (objectClass=MailAccount)
+    iterate_filter = (objectClass=mailAccount)
     scope = subtree
     default_pass_scheme = SSHA
   '';
@@ -213,4 +213,50 @@ in {
   '';
 
   users.users.netdata.extraGroups = [ "vmail" ];
+
+  services.openldap.extraConfig = ''
+    attributetype ( 1.3.6.1.4.1.12461.1.1.1 NAME 'postfixTransport'
+            DESC 'A string directing postfix which transport to use'
+            EQUALITY caseExactIA5Match
+            SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{20} SINGLE-VALUE )
+
+    attributetype ( 1.3.6.1.4.1.12461.1.1.5 NAME 'mailbox'
+            DESC 'The absolute path to the mailbox for a mail account in a non-default location'
+            EQUALITY caseExactIA5Match
+            SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 SINGLE-VALUE )
+
+    attributetype ( 1.3.6.1.4.1.12461.1.1.6 NAME 'quota'
+            DESC 'A string that represents the quota on a mailbox'
+            EQUALITY caseExactIA5Match
+            SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 SINGLE-VALUE )
+
+    attributetype ( 1.3.6.1.4.1.12461.1.1.8 NAME 'maildrop'
+            DESC 'RFC822 Mailbox - mail alias'
+            EQUALITY caseIgnoreIA5Match
+            SUBSTR caseIgnoreIA5SubstringsMatch
+            SYNTAX 1.3.6.1.4.1.1466.115.121.1.26{256} )
+
+    objectclass ( 1.3.6.1.4.1.12461.1.2.1 NAME 'mailAccount'
+            SUP top AUXILIARY
+            DESC 'Mail account objects'
+            MUST ( mail $ userPassword )
+            MAY (  cn $ description $ quota) )
+
+    objectclass ( 1.3.6.1.4.1.12461.1.2.2 NAME 'mailAlias'
+            SUP top STRUCTURAL
+            DESC 'Mail aliasing/forwarding entry'
+            MUST ( mail $ maildrop )
+            MAY ( cn $ description ) )
+
+    objectclass ( 1.3.6.1.4.1.12461.1.2.3 NAME 'mailDomain'
+            SUP domain STRUCTURAL
+            DESC 'Virtual Domain entry to be used with postfix transport maps'
+            MUST ( dc )
+            MAY ( postfixTransport $ description  ) )
+
+    objectClass ( 1.3.6.1.4.1.12461.1.2.4 NAME 'mailPostmaster'
+            SUP top AUXILIARY
+            DESC 'Added to a mailAlias to create a postmaster entry'
+            MUST roleOccupant )
+  '';
 }

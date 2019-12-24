@@ -1,9 +1,0 @@
-#
-# OID prefix: 1.3.6.1.4.1.28293
-#
-# 28293
-
-objectClass ( 1.3.6.1.4.1.28293.1.2.5 NAME 'grafana'
-        SUP uidObject AUXILIARY
-        DESC 'Added to an account to allow grafana access'
-        MUST (mail $ userPassword $ accountActive $ delete) )

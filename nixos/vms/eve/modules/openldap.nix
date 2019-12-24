@@ -1,5 +1,6 @@
-{ pkgs, ... }: {
-
+{ pkgs, lib, ... }:
+with lib;
+{
   users.ldap = {
     enable = true;
     server = "ldap://127.0.0.1/";
@@ -17,20 +18,6 @@
     rootdn = "cn=admin,dc=eve";
     rootpwFile = "/run/keys/openldap-rootpw";
     extraConfig = ''
-      # Mailserver schema used with postfix
-      include ${./openldap}/mailserver.schema
-      include ${./openldap}/owncloud.schema
-      include ${./openldap}/ttrss.schema
-      include ${./openldap}/gitlab.schema
-      include ${./openldap}/pyload.schema
-      include ${./openldap}/nginx.schema
-      include ${./openldap}/jabber.schema
-      include ${./openldap}/proxy.schema
-      include ${./openldap}/seafile.schema
-      include ${./openldap}/openssh-lpk-openldap.schema
-      include ${./openldap}/grafana.schema
-      include ${./openldap}/home-assistant.schema
-
       access to attrs=userPassword
         by self         write
         by anonymous    auth
@@ -51,7 +38,6 @@
         by * read
     '';
   };
-
   krops.secrets.files.openldap-rootpw.owner = "openldap";
   krops.secrets.files.ldap-login = {};
 

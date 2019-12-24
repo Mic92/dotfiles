@@ -165,4 +165,18 @@
   ];
 
   krops.secrets.files.prosody-ldap-password.owner = "prosody";
+
+  services.openldap.extraConfig = ''
+    attributeType ( 1.2.752.43.9.1.1
+        NAME 'jabberID'
+        DESC 'The Jabber ID(s) associated with this object. Used to map a JID to an LDAP account.'
+        EQUALITY caseIgnoreMatch
+        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+    objectClass ( 1.2.752.43.9.2.1
+        NAME 'jabberUser'
+        DESC 'A jabber user'
+        AUXILIARY
+        MUST ( jabberID ) )
+  '';
 }

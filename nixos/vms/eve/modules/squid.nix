@@ -4,7 +4,7 @@
     enable = true;
     proxyPort = 8888;
     extraConfig = ''
-      auth_param basic program ${pkgs.squid}/libexec/basic_ldap_auth -b "ou=users,dc=eve" -f "(&(objectClass=proxyUser)(mail=%s)(accountActive=TRUE)(delete=FALSE))" -D cn=squid,ou=system,ou=users,dc=eve -W /run/keys/squid-ldap -h 127.0.0.1
+      auth_param basic program ${pkgs.squid}/libexec/basic_ldap_auth -b "ou=users,dc=eve" -f "(&(objectClass=proxyUser)(mail=%s))" -D cn=squid,ou=system,ou=users,dc=eve -W /run/keys/squid-ldap -h 127.0.0.1
       acl ldapauth proxy_auth REQUIRED
       http_access allow ldapauth
 
@@ -41,4 +41,11 @@
   '';
 
   users.users.netdata.extraGroups = [ "squid" ];
+
+  services.openldap.extraConfig = ''
+    objectClass ( 1.3.6.1.4.1.16548.1.2.4 NAME 'proxyUser'
+        SUP top AUXILIARY
+        DESC 'Account to allow a user to use the Squid proxy'
+	  MUST ( mail $ userPassword ))
+  '';
 }
