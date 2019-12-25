@@ -53,6 +53,6 @@ fmt = ["{usage_cpu%d:02}%%" % cpu for cpu in range(count)]
 status.register("cpu_usage", format="/".join(fmt), color=color.text_normal)
 icons.nerdfont(status, "")
 
-status.register(yubikey.YubiKeyTouchDetector, hints={"markup": "pango"})
+#status.register(yubikey.YubiKeyTouchDetector, hints={"markup": "pango"})
 
 status.run()

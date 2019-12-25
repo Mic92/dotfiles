@@ -5,6 +5,7 @@ import subprocess
 import color
 import icons
 from i3pystatus import Status
+from phone_battery import PhoneBattery
 
 status = Status(standalone=True)
 
@@ -39,6 +40,10 @@ for bat in ["BAT0"]:
         critical_color=color.text_down,
         hints={ "separator": False, "separator_block_width": 5 } if bat == "BAT1" else {},
     )
+
 icons.nerdfont(status, "")
+
+status.register(PhoneBattery)
+icons.nerdfont(status, "", size="medium")
 
 status.run()
