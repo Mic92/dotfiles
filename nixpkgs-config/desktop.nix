@@ -6,6 +6,7 @@
     ./rust.nix
     ./latex.nix
     ./debugging.nix
+    ./bitwarden.nix
   ];
 
   fonts.fontconfig.enable = true;
@@ -94,10 +95,10 @@
     xorg.xprop
     xclip
     keepassx-community
-    (pass.withExtensions (e: [ e.pass-import ]))
-    rofi-pass
-    browserpass
-    qtpass
+    #(pass.withExtensions (e: [ e.pass-import ]))
+    #rofi-pass
+    #browserpass
+    #qtpass
     gpodder
     ncmpcpp
     xclip
