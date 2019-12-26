@@ -10,7 +10,7 @@
   };
 
   imports = [
-    ./vim.nix
+    #./vim.nix
     ./emacs.nix
   ];
 
