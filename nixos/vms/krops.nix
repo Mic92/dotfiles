@@ -1,6 +1,7 @@
 { fetchgit }:
 fetchgit {
   url = https://github.com/Mic92/krops;
-  rev = "1730a7f1c2503a9fef302405e91d06472779c03e";
-  sha256 = "0sirnr376nf0h4xflksn06sq9bl7x37smfbs14wx1vwfj5nlanmb";
+  rev = "52d8830276390f281025aad6536f7729c1128051";
+  sha256 = "0sm9g0vd3ysw4v0970aldl6g90qzi6r4108ivzrrcdvbqyj3wvjv";
 }
+#/home/joerg/git/krops
