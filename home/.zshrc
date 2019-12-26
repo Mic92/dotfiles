@@ -754,9 +754,9 @@ if [[ -n "${commands[fzf-share]}" ]]; then
   source "$(fzf-share)/key-bindings.zsh"
 fi
 if [[ -f "$HOME/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]]; then
-    source "$HOME/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+  source "$HOME/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
 fi
 
 if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
-    source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+  source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 fi

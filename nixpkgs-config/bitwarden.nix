@@ -17,9 +17,14 @@ let
     if [[ -e "$token_file" ]]; then
       export BW_SESSION=$(<"$token_file")
     else
-      password=$(${askpass} "bitwarden")
-      export BW_SESSION=$(bw unlock --raw "$password")
-      echo "$BW_SESSION" > "$token_file"
+      for i in $(seq 1 4); do
+        password=$(${askpass} "bitwarden")
+        export BW_SESSION=$(bw unlock --raw "$password")
+        if [[ "$BW_SESSION" != "" ]]; then
+          echo "$BW_SESSION" > "$token_file"
+          break
+        fi
+      done
     fi
 
     exec bw "$@"
