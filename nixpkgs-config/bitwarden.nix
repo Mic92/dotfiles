@@ -14,14 +14,12 @@ let
 
     export DISPLAY="$(systemctl --user show-environment | sed 's/^DISPLAY=\(.*\)/\1/; t; d')"
 
-    if [[ ! "$1" =~ "login|logout|lock|unlock" ]]; then
-      if [[ ! -e "$token_file" ]]; then
-        password=$(${askpass} "bitwarden")
-        export BW_SESSION=$(bw unlock --raw "$password")
-        echo "$BW_SESSION" > "$token_file"
-      else
-        export BW_SESSION=$(<"$token_file")
-      fi
+    if [[ -e "$token_file" ]]; then
+      export BW_SESSION=$(<"$token_file")
+    else
+      password=$(${askpass} "bitwarden")
+      export BW_SESSION=$(bw unlock --raw "$password")
+      echo "$BW_SESSION" > "$token_file"
     fi
 
     exec bw "$@"

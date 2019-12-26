@@ -143,6 +143,8 @@ values."
                                       sieve
                                       meson-mode
                                       ;org-caldav
+                                      (bitwarden
+                                       :location (recipe :fetcher github :repo "seanfarley/emacs-bitwarden"))
                                       (company-tmux
                                        :location (recipe :fetcher github :repo "Mic92/company-tmux"))
                                       (osc52
@@ -416,6 +418,12 @@ you should place your code here."
               (add-hook 'message-send-hook 'mml-secure-encrypt-if-possible)
               (add-hook 'message-send-hook 'mml-secure-check-encryption-p)))
 
+  (use-package bitwarden
+    :config (progn
+              (bitwarden-auth-source-enable)
+              (setq bitwarden-automatic-unlock "")
+             ))
+
   (setq vc-follow-symlinks t)
 
   ;(setq org-caldav-url "https://cloud.thalheim.io/remote.php/dav/calendars/joerg@higgsboson.tk"
@@ -424,9 +432,6 @@ you should place your code here."
   ;      org-caldav-files '("~/.org/calendar.org")
   ;      org-icalendar-timezone "Europe/London"
   ;      org-agenda-files (list "~/.org/calendar.org"))
-
-  (require 'auth-source-pass)
-  (auth-source-pass-enable)
 
   ;; depending on the language treat _ or - as part of a variable name
   (with-eval-after-load 'evil

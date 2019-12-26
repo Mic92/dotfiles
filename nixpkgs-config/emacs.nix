@@ -70,7 +70,9 @@ in {
         };
         Service = {
           Type = "forking";
-          ExecStart = "${pkgs.zsh}/bin/zsh -c 'source ~/.zshrc; export PATH=$PATH:${pkgs.sqlite}/bin; exec ${cfg.package}/bin/emacs --daemon'";
+          # bitwarden.el checks if that value is set,
+          # we set it in our own bw wrapper internally
+          ExecStart = "${pkgs.zsh}/bin/zsh -c 'source ~/.zshrc; export BW_SESSION=1 PATH=$PATH:${pkgs.sqlite}/bin; exec ${cfg.package}/bin/emacs --daemon'";
           Restart = "always";
         };
       };
