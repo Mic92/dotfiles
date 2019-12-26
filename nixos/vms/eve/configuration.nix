@@ -26,7 +26,7 @@
     ./modules/dovecot.nix
     ./modules/gogs.nix
     ./modules/grafana.nix
-    ./modules/home-assistant.nix
+    ./modules/home-assistant
     ./modules/icinga-sync.nix
     ./modules/influxdb.nix
     ./modules/mastodon-hnbot.nix
