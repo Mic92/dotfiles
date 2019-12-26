@@ -5,10 +5,6 @@
     domain = "grafana.thalheim.io";
     rootUrl = "https://grafana.thalheim.io";
     analytics.reporting.enable = false;
-    auth.anonymous = {
-      enable = true;
-      org_name = "c3d2";
-    };
     extraOptions = {
       SERVER_ENFORCE_DOMAIN = "true";
       AUTH_LDAP_ENABLED = "true";
