@@ -4,10 +4,8 @@
     ./xserver.nix
     ./flameshot.nix
   ];
-  services.xserver.windowManager = {
-    i3.enable = true;
-    default = "i3";
-  };
+  services.xserver.windowManager.i3.enable = true;
+  services.xserver.displayManager.defaultSession = "none+i3";
 
   environment.systemPackages = with pkgs; [
     pavucontrol

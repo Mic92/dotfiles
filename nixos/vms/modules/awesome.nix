@@ -5,12 +5,12 @@
     ./flameshot.nix
   ];
   services.xserver.windowManager = {
-    awesome = {
-      enable = true;
-      luaModules = with pkgs.lua52Packages; [ luasocket cjson ];
-    };
-    default = "awesome";
+    awesome.enable = true;
+    awesome.luaModules = with pkgs.lua52Packages; [
+      luasocket cjson
+    ];
   };
+  services.xserver.displayManager.defaultSession = "none+awesome";
 
   environment.systemPackages = with pkgs; [
     pavucontrol
