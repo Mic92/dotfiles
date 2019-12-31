@@ -21,7 +21,7 @@ status.register(
     format_up="{essid} {quality_bar} {v4cidr} {bytes_sent}/s|{bytes_recv}/s",
     color_up=color.text_normal,
     color_down=color.text_down,
-    dynamic_color=False
+    dynamic_color=False,
 )
 icons.nerdfont(status, "")
 
@@ -29,7 +29,7 @@ bat_status = {"DIS": "-", "CHR": "+", "FULL": "↯"}
 for bat in ["BAT0"]:
     status.register(
         "battery",
-        format='{status}{percentage:.2f}% [{glyph}] {remaining:%E%hh:%Mm}',
+        format="{status}{percentage:.2f}% [{glyph}] {remaining:%E%hh:%Mm}",
         alert=True,
         alert_percentage=5,
         battery_ident=bat,
@@ -38,12 +38,12 @@ for bat in ["BAT0"]:
         charging_color=color.text_normal,
         full_color=color.text_normal,
         critical_color=color.text_down,
-        hints={ "separator": False, "separator_block_width": 5 } if bat == "BAT1" else {},
+        hints={"separator": False, "separator_block_width": 5} if bat == "BAT1" else {},
     )
 
 icons.nerdfont(status, "")
 
-status.register(PhoneBattery)
+status.register(PhoneBattery, interval=60)
 icons.nerdfont(status, "", size="medium")
 
 status.run()
