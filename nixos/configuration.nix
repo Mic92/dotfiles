@@ -196,10 +196,8 @@ in {
    '';
  };
 
-  i18n = {
-    consoleKeyMap = "us";
-    defaultLocale = "en_DK.UTF-8";
-  };
+  console.keyMap = "us";
+  i18n.defaultLocale = "en_DK.UTF-8";
 
   time.timeZone = "Europe/London";
 
