@@ -26,6 +26,7 @@ in {
     #./blog.halfco.de.nix
     #./halfco.de.nix
     ./threema.nix
+    ./retiolum.nix
   ];
 
   # avoid conflict with sslh by binding to port 4443
