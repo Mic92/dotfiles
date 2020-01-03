@@ -4,7 +4,6 @@
 [include]
   path = ~/.gitconfig.local
 [format]
-  pretty = oneline
   signoff = true
 [color]
   branch = true
