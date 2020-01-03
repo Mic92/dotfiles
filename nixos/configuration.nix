@@ -48,6 +48,7 @@ in {
     #./kde.nix
     ./vms/modules/i3.nix
     #./vms/modules/awesome.nix
+    ./vms/modules/pki
     ./vms/modules/yubikey.nix
   ];
 
