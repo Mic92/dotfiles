@@ -53,7 +53,7 @@ in {
     systemd.services."tinc.${netname}" = {
       path = with pkgs; [ curl gnutar bzip2 ];
       preStart = ''
-        curl https://lassul.us/retiolum-hosts.tar.bz2 | tar -xjvf - -C /etc/tinc/${netname}/ || true
+        curl https://retiolum.thalheim.io/tinc-hosts.tar.bz2 | tar -xjvf - -C /etc/tinc/${netname}/ || true
       '';
     };
 
