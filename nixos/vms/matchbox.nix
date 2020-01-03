@@ -28,7 +28,7 @@ let
   }];
 in pkgs.krops.writeDeploy "deploy" {
   source = source;
-  buildHost = "joerg@localhost";
+  buildTarget = "joerg@localhost";
   crossDeploy = true;
   target = "root@matchbox.r";
 }
