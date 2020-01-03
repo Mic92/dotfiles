@@ -6,14 +6,14 @@
       host = "/run/postgresql";
       port = 5432;
     };
-    domain = "git.higgsboson.tk";
-    rootUrl = "https://git.higgsboson.tk";
+    domain = "git.thalheim.io";
+    rootUrl = "https://git.thalheim.io";
     extraConfig = ''
       [mailer]
       ENABLED = true
-      FROM = gogs@higgsboson.tk
-      USER = gogs@higgsboson.tk
-      HOST = mail.higgsboson.tk:587
+      FROM = gogs@thalheim.io
+      USER = gogs@thalheim.io
+      HOST = mail.thalheim.io:587
       PASSWD = #dbpass#
 
       [service]
