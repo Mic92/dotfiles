@@ -100,6 +100,17 @@ in {
       recorder.db_url = "postgresql://@/hass";
       config = {};
       mobile_app = {};
+      device_tracker = [{
+        platform = "fritz";
+        host = "fritzbox.ohorn.thalheim.io";
+        username = "home-assistant";
+        password = "!secret fritzbox_password";
+      } {
+        platform = "fritz2";
+        host = "fritzbox.ohorn.thalheim.io";
+        username = "home-assistant";
+        password = "!secret fritzbox_password";
+      }];
       cloud = {};
       system_health = {};
       binary_sensor = [{
