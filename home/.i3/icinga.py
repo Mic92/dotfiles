@@ -22,11 +22,13 @@ class PasswordCmd:
 
 class Icinga(IntervalModule):
     hints = dict(markup=True)
-    username = ""
-    base_url = ""
     ca_file = ""
-    password: Union[str, PasswordCmd] = ""
+    password: Union[str, PasswordCmd]
     service_filter = ""
+    color = "#FFFFFF"
+    warning_color = "#FFFF00"
+    critical_color = "#FF0000"
+
     format = "OK: {ok}/WARN: {failed}/CRIT: {critical}"
 
     required = ("base_url", "username", "password")
@@ -36,6 +38,9 @@ class Icinga(IntervalModule):
         "password",
         "service_filter",
         "ca_file",
+        "color",
+        "warning_color",
+        "critical_color",
         "format",
     )
 
@@ -84,4 +89,10 @@ class Icinga(IntervalModule):
         text = self.format.format(
             ok=ok, warning=warning, critical=critical, not_ok=not_ok
         )
-        self.output = dict(full_text=text)
+        if critical > 0:
+            color = self.critical_color
+        elif warning > 0:
+            color = self.warning_color
+        else:
+            color = self.color
+        self.output = dict(full_text=text, color=color)
