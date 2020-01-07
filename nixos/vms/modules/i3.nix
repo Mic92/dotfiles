@@ -7,6 +7,7 @@
   services.xserver.windowManager.i3.enable = true;
   services.xserver.displayManager.defaultSession = "none+i3";
 
+  programs.light.enable = true;
   environment.systemPackages = with pkgs; [
     pavucontrol
     lightlocker
@@ -23,7 +24,6 @@
     (i3pystatus.override {
       extraLibs = [ python3.pkgs.keyrings-alt ];
     })
-    xlibs.xbacklight
     gnome3.networkmanagerapplet
   ];
 
