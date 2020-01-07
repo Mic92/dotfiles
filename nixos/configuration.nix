@@ -380,4 +380,6 @@ in {
 
   system.stateVersion = "18.03";
   services.resolved.enable = false;
+
+  networking.networkmanager.wifi.backend = "iwd";
 }
