@@ -17,7 +17,7 @@ let
     nixos-config.symlink = "dotfiles/nixos/vms/matchbox/configuration.nix";
 
     secrets.pass = {
-      dir  = toString ../secrets/shared;
+      dir  = toString ../secrets/joerg;
       name = "matchbox";
     };
 
