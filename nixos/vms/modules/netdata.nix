@@ -103,47 +103,60 @@ in
 
       networking.firewall.allowedTCPPorts = [ 19999 ];
 
-      environment.etc."netdata/python.d/httpcheck.conf".text = ''
-      update_every: 30
-      ${lib.concatStringsSep "\n" (mapAttrsToList (site: options:
-      ''
-        ${site}:
-          url: '${options.url}'
-          ${optionalString (options.regex != null) "regex: '${options.regex}'"}
-          status_accepted: [ ${lib.concatStringsSep " " (map toString options.statusAccepted) } ]
-        '') cfg.httpcheck.checks)
-        }
-      '';
+      environment.etc = let
+        silenceAlerts = filename: alerts: {
+          "netdata/health.d/${filename}.conf".source = pkgs.runCommand "${filename}.conf" {} ''
+            sed > $out ${pkgs.netdata}/lib/netdata/conf.d/health.d/${filename}.conf \
+              ${concatMapStringsSep " " (alert: "-e '/template: ${alert}/a to: silent' ") alerts}
+          '';
+        };
+      in {
+        "netdata/health.d/httpcheck.conf".text = ''
+          # taken from the original but warn only if a request is at least 300ms slow
+          template: web_service_slow
+          families: *
+          on: httpcheck.responsetime
+          lookup: average -3m unaligned of time
+          units: ms
+          every: 10s
+          warn: ($this > ($1h_web_service_response_time * 4) && $this > 1000)
+          crit: ($this > ($1h_web_service_response_time * 6) && $this > 1000)
+          info: average response time over the last 3 minutes, compared to the average over the last hour
+          delay: down 5m multiplier 1.5 max 1h
+          options: no-clear-notification
+          to: webmaster
+        '';
+        "netdata/python.d/httpcheck.conf".text = ''
+          update_every: 30
+          ${lib.concatStringsSep "\n" (mapAttrsToList (site: options:
+          ''
+            ${site}:
+              url: '${options.url}'
+              ${optionalString (options.regex != null) "regex: '${options.regex}'"}
+              status_accepted: [ ${lib.concatStringsSep " " (map toString options.statusAccepted) } ]
+            '') cfg.httpcheck.checks)
+            }
+          '';
+        "netdata/python.d/portcheck.conf".text = ''
+          ${lib.concatStringsSep "\n" (mapAttrsToList (service: options:
+          ''
+            ${service}:
+              host: '${options.host}'
+              port: ${toString options.port}
+            '') cfg.portcheck.checks)
+            }
+          '';
+      } // (silenceAlerts "disks" [ "10min_disk_backlog" "10min_disk_utilization" ])
+        // (silenceAlerts "tcp_listen" [ "1m_tcp_syn_queue_cookies" ])
+        // (silenceAlerts "net" [ "inbound_packets_dropped" "inbound_packets_dropped_ratio" ])
+        // (silenceAlerts "netfilter" [ "netfilter_last_collected_secs" ])
+        // (silenceAlerts "udp_errors" [ "ipv4_udperrors_last_collected_secs" ])
+        // (silenceAlerts "tcp_resets" [ "ipv4_tcphandshake_last_collected_secs" ]);
 
-      environment.etc."netdata/python.d/portcheck.conf".text = ''
-      ${lib.concatStringsSep "\n" (mapAttrsToList (service: options:
-      ''
-        ${service}:
-          host: '${options.host}'
-          port: ${toString options.port}
-        '') cfg.portcheck.checks)
-        }
-      '';
       systemd.services.netdata.restartTriggers = [
         config.environment.etc."netdata/python.d/httpcheck.conf".source
         config.environment.etc."netdata/python.d/portcheck.conf".source
       ];
-
-      environment.etc."netdata/health.d/httpcheck.conf".text = ''
-        # taken from the original but warn only if a request is at least 300ms slow
-        template: web_service_slow
-        families: *
-        on: httpcheck.responsetime
-        lookup: average -3m unaligned of time
-        units: ms
-        every: 10s
-        warn: ($this > ($1h_web_service_response_time * 4) && $this > 1000)
-        crit: ($this > ($1h_web_service_response_time * 6) && $this > 1000)
-        info: average response time over the last 3 minutes, compared to the average over the last hour
-        delay: down 5m multiplier 1.5 max 1h
-        options: no-clear-notification
-        to: webmaster
-      '';
 
        # TODO create /etc/netdata
    };
