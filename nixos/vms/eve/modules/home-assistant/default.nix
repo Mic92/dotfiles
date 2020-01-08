@@ -58,29 +58,29 @@ in {
       };
       homeassistant = {
         name = "Home";
-        latitude = "!secret latitude";
-        longitude = "!secret longitude";
-        elevation = "!secret elevation";
+        latitude = "!secret home_latitude";
+        longitude = "!secret home_longitude";
+        elevation = "!secret home_elevation";
         unit_system = "metric";
         time_zone = "Europe/London";
       };
       zone = [{
         name = "Elternhaus";
         icon = "mdi:home";
-        latitude = "51.173370";
-        longitude = "14.032305";
+        latitude = "!secret elternhaus_latitude";
+        longitude = "!secret elternhaus_longitude";
         radius = "100";
       } {
         name = "Shannan";
         icon = "mdi:human-female-girl";
-        latitude = "55.9673361";
-        longitude = "-3.1458731";
+        latitude = "!secret shannan_latitude";
+        longitude = "!secret shannan_longitude";
         radius = "100";
       } {
         name = "University";
         icon = "mdi:school";
-        latitude = "55.9447576";
-        longitude = "-3.1896472";
+        latitude = "!secret uni_latitude";
+        longitude = "!secret uni_longitude";
         radius = "200";
       }];
       influxdb = {
