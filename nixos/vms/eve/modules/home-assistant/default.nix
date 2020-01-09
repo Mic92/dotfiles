@@ -78,11 +78,23 @@ in {
         longitude = "!secret shannan_longitude";
         radius = "100";
       } {
+        name = "Shannan's Work";
+        icon = "mdi:office-building";
+        latitude = "!secret shannan_work_latitude";
+        longitude = "!secret shannan_work_longitude";
+        radius = "100";
+      } {
         name = "University";
         icon = "mdi:school";
         latitude = "!secret uni_latitude";
         longitude = "!secret uni_longitude";
         radius = "200";
+      } {
+        name = "Gym";
+        icon = "mdi:weight-lifter";
+        latitude = "!secret gym_latitude";
+        longitude = "!secret gym_longitude";
+        radius = "100";
       }];
       influxdb = {
         username = "homeassistant";
@@ -115,6 +127,10 @@ in {
       cloud = {};
       system_health = {};
       sensor = [{
+        platform = "darksky";
+        api_key = "!secret darksky_api_key";
+        monitored_conditions = [ "summary" "icon" "temperature" "precip_type" ];
+      } {
         name = "choose_place";
         platform = "rest";
         json_attributes = "places";
@@ -141,6 +157,36 @@ in {
         };
       }];
       automation = [{
+        alias = "Rainy day notification (joerg)";
+        trigger = {
+          platform = "state";
+          entity_id = "sensor.dark_sky_precip";
+          to = "rain";
+        };
+        action = {
+          service = "notify.pushover";
+          data_template = {
+            title = "Weather";
+            message = ''{{ states("sensor.dark_sky_summary") }}'';
+            data.attachment = ''https://hass.thalheim.io{{ state_attr("sensor.dark_sky_summary", "entity_picture")}}'';
+          };
+        };
+      } {
+        alias = "Rainy day notification (shannan)";
+        trigger = {
+          platform = "state";
+          entity_id = "sensor.dark_sky_precip";
+          to = "rain";
+        };
+        action = {
+          service = "notify.mobile_app_beatrice";
+          data_template = {
+            title = "Weather";
+            message = ''{{ states("sensor.dark_sky_summary") }}'';
+            data.photo.url = ''https://hass.thalheim.io{{ state_attr("sensor.dark_sky_summary", "entity_picture")}}'';
+          };
+        };
+      } {
         alias = "Lunch place options";
         trigger = {
           platform = "time";
