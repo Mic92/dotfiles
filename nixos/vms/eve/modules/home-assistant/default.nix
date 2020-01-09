@@ -64,6 +64,7 @@ in {
         unit_system = "metric";
         time_zone = "Europe/London";
       };
+      shopping_list = {};
       zone = [{
         name = "Elternhaus";
         icon = "mdi:home";
