@@ -106,8 +106,10 @@ in
       environment.etc = let
         silenceAlerts = filename: alerts: {
           "netdata/health.d/${filename}.conf".source = pkgs.runCommand "${filename}.conf" {} ''
-            sed > $out ${pkgs.netdata}/lib/netdata/conf.d/health.d/${filename}.conf \
-              ${concatMapStringsSep " " (alert: "-e '/template: ${alert}/a to: silent' ") alerts}
+            cp ${pkgs.netdata}/lib/netdata/conf.d/health.d/${filename}.conf $out
+            ${concatMapStringsSep "\n" (alert: ''
+              sed -i -e '/template: ${alert}$/a to: silent' $out
+            '') alerts}
           '';
         };
       in {
@@ -148,7 +150,10 @@ in
           '';
       } // (silenceAlerts "disks" [ "10min_disk_backlog" "10min_disk_utilization" ])
         // (silenceAlerts "tcp_listen" [ "1m_tcp_syn_queue_cookies" ])
-        // (silenceAlerts "net" [ "inbound_packets_dropped" "inbound_packets_dropped_ratio" ])
+        // (silenceAlerts "net" [
+          "inbound_packets_dropped"
+          "inbound_packets_dropped_ratio"
+        ])
         // (silenceAlerts "netfilter" [ "netfilter_last_collected_secs" ])
         // (silenceAlerts "udp_errors" [ "ipv4_udperrors_last_collected_secs" ])
         // (silenceAlerts "tcp_resets" [ "ipv4_tcphandshake_last_collected_secs" ]);
