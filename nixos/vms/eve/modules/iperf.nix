@@ -1,10 +1,8 @@
 { pkgs, ... }: {
   environment.systemPackages = [ pkgs.iperf3 ];
 
-  networking.firewall.allowedTCPPorts = [
-    # iperf2
-    5201
-    # abuse ftp port
-    21
-  ];
+  # iperf2
+  networking.firewall.allowedTCPPorts = [ 5201 ];
+  # iperf2
+  networking.firewall.allowedUDPorts = [ 5201 ];
 }
