@@ -42,8 +42,12 @@ let
     higgsboson.tk   REJECT Get lost - you're lying about who you are
     thalheim.io   REJECT Get lost - you're lying about who you are
   '';
+  enableRblOverride = false;
+  rbl_override = pkgs.writeText "rbl_override" ''
+    # pfpleisure.org
+    95.141.161.114 OK
+  '';
 in {
-
   services.postfix = {
     enable = true;
     enableSubmission = true;
@@ -69,6 +73,7 @@ in {
 
     mapFiles."virtual-regex" = virtualRegex;
     mapFiles."helo_access" = helo_access;
+    mapFiles."rbl_override" = rbl_override;
 
     extraConfig = ''
       smtp_bind_address = ${config.networking.eve.ipv4.address}
@@ -118,21 +123,24 @@ in {
       smtpd_sasl_path = /var/lib/postfix/queue/private/auth
       smtpd_relay_restrictions = permit_mynetworks,
                                  permit_sasl_authenticated,
+                                 ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
                                  defer_unauth_destination
       smtpd_client_restrictions = permit_mynetworks,
                                 permit_sasl_authenticated,
+                                 ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
                                 reject_invalid_hostname,
                                 reject_unknown_client,
                                 permit
       smtpd_helo_restrictions = permit_mynetworks,
                               permit_sasl_authenticated,
-                              check_helo_access hash:/var/lib/postfix/conf/helo_access,
+                              ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
                               reject_unauth_pipelining,
                               reject_non_fqdn_hostname,
                               reject_invalid_hostname,
                               warn_if_reject reject_unknown_hostname,
                               permit
       smtpd_recipient_restrictions = permit_mynetworks,
+                               ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
                                permit_sasl_authenticated,
                                reject_non_fqdn_sender,
                                reject_non_fqdn_recipient,
@@ -146,6 +154,7 @@ in {
                                permit
       smtpd_sender_restrictions = permit_mynetworks,
                           permit_sasl_authenticated,
+                          ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
                           reject_non_fqdn_sender,
                           reject_unknown_sender_domain,
                           reject_unknown_client_hostname,
