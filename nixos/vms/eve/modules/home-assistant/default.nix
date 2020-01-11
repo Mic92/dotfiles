@@ -78,7 +78,7 @@ in {
         longitude = "!secret shannan_longitude";
         radius = "100";
       } {
-        name = "Shannan's Work";
+        name = "Work of Shannan";
         icon = "mdi:office-building";
         latitude = "!secret shannan_work_latitude";
         longitude = "!secret shannan_work_longitude";
@@ -102,7 +102,12 @@ in {
         password = "!secret influxdb";
         database = "homeassistant";
         ssl = true;
-        include.entities = [ "device_tracker.redmi_note_5" ];
+        include.entities = [
+          "person.jorg_thalheim"
+          "person.dorit_thalheim"
+          "person.falk_thalheim"
+          "person.shannan_lekwati"
+        ];
       };
       notify = [{
         name = "Pushover";
@@ -114,6 +119,11 @@ in {
       config = {};
       mobile_app = {};
       device_tracker = [{
+        platform = "icloud";
+        username = "slekwati@outlook.com";
+        password = "!secret icloud_password";
+        account_name = "Shannan's icloud";
+      } {
         platform = "fritz";
         host = "fritzbox.ohorn.thalheim.io";
         username = "home-assistant";
