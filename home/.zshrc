@@ -600,9 +600,8 @@ sha1() { echo -n $1 | openssl sha1 /dev/stdin }
 sha256() { echo -n $1 | openssl dgst -sha256 /dev/stdin }
 sha512() { echo -n $1 | openssl dgst -sha512 /dev/stdin }
 rot13() { echo $1 | tr "A-Za-z" "N-ZA-Mn-za-m" }
-urlencode() { python2 -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1])" $1 }
-urldecode() { python2 -c "import sys, urllib as ul; print ul.unquote_plus(sys.argv[1])" $1 }
-last_modified() { ls -t $* 2> /dev/null | head -n 1 }
+urlencode() { python3 -c "import sys, urllib.parse as parse; print(parse.quote(sys.argv[1]))" $1 }
+urldecode() { python3 -c "import sys, urllib.parse as parse; print(parse.unquote(sys.argv[1]))" $1 }
 cheat() { command cheat "$@" | less }
 ninja(){
   local build_path="$(dirname "$(upfind "build.ninja")")"
