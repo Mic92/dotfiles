@@ -1,7 +1,5 @@
 { pkgs, ... }:
 let
-  bitwarden_ldap = pkgs.callPackage ../pkgs/bitwarden_rs_ldap {};
-
   ldapConfig = {
     bitwarden_url = "https://bitwarden.thalheim.io";
     bitwarden_admin_token = "@ADMIN_TOKEN@";
@@ -54,7 +52,7 @@ in {
     '';
 
     serviceConfig = {
-      ExecStart = "${bitwarden_ldap}/bin/bitwarden_rs_ldap";
+      ExecStart = "${pkgs.nur.repos.mic92.bitwarden_rs_ldap}/bin/bitwarden_rs_ldap";
       Environment = "CONFIG_PATH=/run/bitwarden_ldap/config.toml";
 
       SupplementaryGroups = [ "keys" ];
