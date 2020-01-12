@@ -25,6 +25,7 @@ in {
     enable = true;
     enableImap = true;
     enableLmtp = true;
+    enablePAM = false;
     mailLocation = "maildir:/var/vmail/%d/%n/Maildir";
     mailUser = "vmail";
     mailGroup = "vmail";
