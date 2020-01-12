@@ -140,6 +140,7 @@ in {
         platform = "darksky";
         api_key = "!secret darksky_api_key";
         monitored_conditions = [ "summary" "icon" "temperature" "precip_type" ];
+        forecast = [ 0 ];
       } {
         name = "choose_place";
         platform = "rest";
@@ -166,36 +167,31 @@ in {
           attribute = "battery_level";
         };
       }];
-      automation = [{
-        alias = "Rainy day notification (joerg)";
-        trigger = {
-          platform = "state";
-          entity_id = "sensor.dark_sky_precip";
-          to = "rain";
-        };
-        action = {
+      script = {
+        notify_weather.sequence = [{
           service = "notify.pushover";
           data_template = {
             title = "Weather";
-            message = ''{{ states("sensor.dark_sky_summary") }}'';
-            data.attachment = ''https://hass.thalheim.io{{ state_attr("sensor.dark_sky_summary", "entity_picture")}}'';
+            message = ''{{ states("sensor.dark_sky_summary_0d") }}'';
+            data.attachment = ''https://hass.thalheim.io{{ state_attr("sensor.dark_sky_summary_0d", "entity_picture")}}'';
           };
-        };
-      } {
-        alias = "Rainy day notification (shannan)";
-        trigger = {
-          platform = "state";
-          entity_id = "sensor.dark_sky_precip";
-          to = "rain";
-        };
-        action = {
-          service = "notify.mobile_app_beatrice";
+        } {
+          service = "notify.mobile_app_beatrice_2";
           data_template = {
             title = "Weather";
-            message = ''{{ states("sensor.dark_sky_summary") }}'';
-            data.photo.url = ''https://hass.thalheim.io{{ state_attr("sensor.dark_sky_summary", "entity_picture")}}'';
+            message = ''{{ states("sensor.dark_sky_summary_0d") }}'';
+            data.photo.url = ''https://hass.thalheim.io{{ state_attr("sensor.dark_sky_summary_0d", "entity_picture")}}'';
           };
+        }];
+      };
+      automation = [{
+        alias = "Rainy day notification";
+        trigger = {
+          platform = "state";
+          entity_id = "sensor.dark_sky_precip_0d";
+          to = "rain";
         };
+        action.service = "script.notify_weather";
       } {
         alias = "Lunch place options";
         trigger = {
