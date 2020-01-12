@@ -26,4 +26,21 @@
     url = "https://influxdb.thalheim.io:8086/ping";
     statusAccepted = [ 204 ];
   };
+  services.icinga2.extraConfig = ''
+    apply Service "INFLUXDB HTTP v4 (eve)" {
+      import "eve-http4-service"
+      vars.http_port = 8086
+      vars.http_vhost = "influxdb.thalheim.io"
+      vars.http_uri = "/ping"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "INFLUXDB HTTP v6 (eve)" {
+      import "eve-http6-service"
+      vars.http_port = 8086
+      vars.http_vhost = "influxdb.thalheim.io"
+      vars.http_uri = "/ping"
+      assign where host.name == "eve.thalheim.io"
+    }
+  '';
 }

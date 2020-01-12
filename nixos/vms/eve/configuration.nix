@@ -27,7 +27,7 @@
     ./modules/gogs.nix
     ./modules/grafana.nix
     ./modules/home-assistant
-    ./modules/icinga-sync.nix
+    ./modules/icinga2.nix
     ./modules/influxdb.nix
     ./modules/mastodon-hnbot.nix
     ./modules/mediawiki.nix

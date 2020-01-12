@@ -77,4 +77,20 @@
             DESC 'Added to an account to allow tinytinyrss access'
     	MUST ( mail $ userPassword ))
   '';
+
+  services.icinga2.extraConfig = ''
+    apply Service "TT-RSS v4 (eve)" {
+      import "eve-http4-service"
+      vars.http_vhost = "rss.devkid.net"
+      vars.http_uri = "/"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "TT-RSS v6 (eve)" {
+      import "eve-http6-service"
+      vars.http_vhost = "rss.devkid.net"
+      vars.http_uri = "/"
+      assign where host.name == "eve.thalheim.io"
+    }
+  '';
 }

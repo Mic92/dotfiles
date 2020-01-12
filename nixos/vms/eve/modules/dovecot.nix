@@ -1,4 +1,4 @@
-{ pkgs, config, ... }: 
+{ pkgs, config, ... }:
 let
   ldapConfig = pkgs.writeText "dovecot-ldap.conf" ''
     hosts = 127.0.0.1
@@ -258,5 +258,51 @@ in {
             SUP top AUXILIARY
             DESC 'Added to a mailAlias to create a postmaster entry'
             MUST roleOccupant )
+  '';
+
+  services.icinga2.extraConfig = ''
+    apply Service "IMAP v4 (eve)" {
+      import "eve-service"
+      check_command = "imap"
+      vars.imap_ipv4 = true
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "IMAP v6 (eve)" {
+      import "eve-service"
+      check_command = "imap"
+      vars.imap_ipv6 = true
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "IMAPS v4 (eve)" {
+      import "eve-service"
+      check_command = "imap"
+      vars.imap_ipv4 = true
+      vars.imap_ssl = true
+      vars.imap_port = 993
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "IMAPS v6 (eve)" {
+      import "eve-service"
+      check_command = "imap"
+      vars.imap_ipv6 = true
+      vars.imap_ssl = true
+      vars.imap_port = 993
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "SIEVE v4 (eve)" {
+      import "eve-tcp4-service"
+      vars.tcp_port = 4190
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "SIEVE v6 (eve)" {
+      import "eve-tcp6-service"
+      vars.tcp_port = 4190
+      assign where host.name == "eve.thalheim.io"
+    }
   '';
 }

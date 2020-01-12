@@ -58,4 +58,19 @@
         MAY ( ownCloudQuota ) )
 
   '';
+  services.icinga2.extraConfig = ''
+    apply Service "Nextcloud v4 (eve)" {
+      import "eve-http4-service"
+      vars.http_vhost = "cloud.thalheim.io"
+      vars.http_uri = "/login"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "Nextcloud v6 (eve)" {
+      import "eve-http6-service"
+      vars.http_vhost = "cloud.thalheim.io"
+      vars.http_uri = "/login"
+      assign where host.name == "eve.thalheim.io"
+    }
+  '';
 }

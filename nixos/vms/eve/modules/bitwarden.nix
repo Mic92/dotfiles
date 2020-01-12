@@ -109,4 +109,20 @@ in {
             DESC 'Added to an account to allow bitwarden access'
             MUST (mail $ userPassword) )
   '';
+
+  services.icinga2.extraConfig = ''
+    apply Service "Bitwarden v6 (eve)" {
+      import "eve-http4-service"
+      vars.http_vhost = "bitwarden.thalheim.io"
+      vars.http_uri = "/"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "Bitwarden v4 (eve)" {
+      import "eve-http6-service"
+      vars.http_vhost = "bitwarden.thalheim.io"
+      vars.http_uri = "/"
+      assign where host.name == "eve.thalheim.io"
+    }
+  '';
 }

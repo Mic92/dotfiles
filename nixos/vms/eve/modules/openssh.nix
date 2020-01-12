@@ -31,4 +31,20 @@
        MUST ( sshPublicKey $ uid )
        )
   '';
+
+  services.icinga2.extraConfig = ''
+    apply Service "SSH v4 (eve)" {
+      import "eve-service"
+      check_command = "ssh"
+      vars.ssh_ipv4 = true
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "SSH v6 (eve)" {
+      import "eve-service"
+      check_command = "ssh"
+      vars.ssh_ipv6 = true
+      assign where host.name == "eve.thalheim.io"
+    }
+  '';
 }

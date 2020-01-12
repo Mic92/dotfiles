@@ -48,4 +48,39 @@
         DESC 'Account to allow a user to use the Squid proxy'
 	  MUST ( mail $ userPassword ))
   '';
+
+  services.icinga2.extraConfig = ''
+    apply Service "SQUID HTTP v4 (eve)" {
+      import "eve-http4-service"
+      vars.http_port = 8888
+      vars.http_expect = "HTTP/1.1"
+      vars.http_sni = false
+      vars.http_ssl_force_tlsv1_2 = false
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "SQUID HTTP v6 (eve)" {
+      import "eve-http6-service"
+      vars.http_port = 8888
+      vars.http_expect = "HTTP/1.1"
+      vars.http_sni = false
+      vars.http_ssl_force_tlsv1_2 = false
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "SQUID HTTPS v4 (eve)" {
+      import "eve-http4-service"
+      vars.http_port = 8889
+      vars.http_expect = "HTTP/1.1"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "SQUID HTTPS v6 (eve)" {
+      import "eve-http6-service"
+      vars.http_port = 8889
+      vars.http_expect = "HTTP/1.1"
+      assign where host.name == "eve.thalheim.io"
+    }
+  '';
+
 }

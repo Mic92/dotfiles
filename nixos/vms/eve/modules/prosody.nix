@@ -1,15 +1,15 @@
 { pkgs, ... }: {
   services.prosody = {
     enable = true;
-    admins = [ 
+    admins = [
       "joerg@thalheim.io"
       "devkid@devkid.net"
     ];
     extraConfig = ''
       consider_bosh_secure = true
       cross_domain_bosh = {
-        "thalheim.io", 
-        "devkid.net", 
+        "thalheim.io",
+        "devkid.net",
         "higgsboson.tk",
         "muc.higgsboson.tk",
         "anon.higgsboson.tk"
@@ -37,10 +37,10 @@
       }
       http_upload_file_size_limit = 20 * 1024 * 1024
 
-      sql = { 
-        driver = "PostgreSQL", 
-        database = "prosody", 
-        username = "prosody", 
+      sql = {
+        driver = "PostgreSQL",
+        database = "prosody",
+        username = "prosody",
       }
 
       Component "muc.higgsboson.tk" "muc"
@@ -112,7 +112,7 @@
         pkgs.nur.repos.mic92.lualdap
         pkgs.luaPackages.luadbi-postgresql
       ];
-      withCommunityModules = [ 
+      withCommunityModules = [
         "smacks"
         "smacks_offline"
         "csi"
@@ -178,5 +178,39 @@
         DESC 'A jabber user'
         AUXILIARY
         MUST ( jabberID ) )
+  '';
+
+  services.icinga2.extraConfig = ''
+    apply Service "JABBER C2S (eve)" {
+      import "eve-service"
+      check_command = "xmpp_cert6"
+      vars.ssl_cert_port = "5222"
+      vars.ssl_cert_xmpphost = "thalheim.io";
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "JABBER S2S (eve)" {
+      import "eve-service"
+      check_command = "xmpp_cert4"
+      vars.ssl_cert_port = "5269"
+      vars.ssl_cert_xmpphost = "thalheim.io";
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "JABBER C2S v6 (eve)" {
+      import "eve-service"
+      check_command = "xmpp_cert6"
+      vars.ssl_cert_port = "5222"
+      vars.ssl_cert_xmpphost = "thalheim.io";
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "JABBER S2S v6 (eve)" {
+      import "eve-service"
+      check_command = "xmpp_cert6"
+      vars.ssl_cert_port = "5269"
+      vars.ssl_cert_xmpphost = "thalheim.io";
+      assign where host.name == "eve.thalheim.io"
+    }
   '';
 }

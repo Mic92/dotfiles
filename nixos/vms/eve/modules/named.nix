@@ -65,4 +65,24 @@
   systemd.services.bind.serviceConfig.SupplementaryGroups = [ "keys" ];
 
   krops.secrets.files."chelnok.key".owner = "named";
+
+  services.icinga2.extraConfig = ''
+    apply Service "DNS v4 (eve)" {
+      import "eve-service"
+      check_command = "dig"
+      vars.dig_lookup = "chelnok.de"
+      vars.dig_server = host.address
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "DNS v6 (eve)" {
+      import "eve-service"
+      check_command = "dig"
+      vars.dig_lookup = "chelnok.de"
+      vars.dig_server = host.address6
+      vars.dig_ipv6 = true
+      vars.dig_record_type = "AAAA"
+      assign where host.name == "eve.thalheim.io"
+    }
+  '';
 }
