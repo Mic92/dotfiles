@@ -312,7 +312,9 @@ in {
   users.users = {
     joerg = {
       isNormalUser = true;
-      extraGroups = ["wheel" "docker" "plugdev" "vboxusers" "adbusers" "input" "sway" "wireshark"];
+      extraGroups = [
+        "wheel" "docker" "plugdev" "vboxusers" "adbusers" "input" "sway" "wireshark" "networkmanager"
+      ];
       shell = "/run/current-system/sw/bin/zsh";
       uid = 1000;
     };
