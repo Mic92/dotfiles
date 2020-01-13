@@ -57,7 +57,7 @@ in {
         }];
       };
       homeassistant = {
-        name = "Home";
+        name = "Joerg's Home";
         latitude = "!secret home_latitude";
         longitude = "!secret home_longitude";
         elevation = "!secret home_elevation";
@@ -66,13 +66,13 @@ in {
       };
       shopping_list = {};
       zone = [{
-        name = "Elternhaus";
+        name = "Thalheim's Home";
         icon = "mdi:home";
         latitude = "!secret elternhaus_latitude";
         longitude = "!secret elternhaus_longitude";
         radius = "100";
       } {
-        name = "Shannan";
+        name = "Shannan's Home";
         icon = "mdi:human-female-girl";
         latitude = "!secret shannan_latitude";
         longitude = "!secret shannan_longitude";
@@ -139,7 +139,17 @@ in {
       sensor = [{
         platform = "darksky";
         api_key = "!secret darksky_api_key";
-        monitored_conditions = [ "summary" "icon" "temperature" "precip_type" ];
+        monitored_conditions = [
+          "summary"
+          "icon"
+          "temperature"
+          "temperature_high"
+          "temperature_low"
+          "sunrise_time"
+          "sunset_time"
+          "alerts"
+          "precip_type"
+        ];
         forecast = [ 0 ];
       } {
         name = "choose_place";
@@ -185,6 +195,72 @@ in {
         }];
       };
       automation = [{
+        alias = "Joerg at Shannan's notification";
+        trigger = {
+          platform = "state";
+          entity_id  = "person.jorg_thalheim";
+          to = "Shannan's Home";
+        };
+        action = [{
+          service = "notify.mobile_app_beatrice_2";
+          data_template.message = "Jörg arrived";
+        }];
+      } {
+        alias = "Shannan at Joerg's place notification";
+        trigger = {
+          platform = "state";
+          entity_id  = "person.shannan_lekwati";
+          to = "home";
+        };
+        action = [{
+          service = "notify.pushover";
+          data_template.message = "Shannan arrived";
+        }];
+      } {
+        alias = "Shannan arrived home";
+        trigger = {
+          platform = "state";
+          entity_id  = "person.shannan_lekwati";
+          to = "Shannan's Home";
+        };
+        action = [{
+          service = "notify.pushover";
+          data_template.message = "Shannan is home";
+        }];
+      } {
+        alias = "Joerg arrived home";
+        trigger = {
+          platform = "state";
+          entity_id  = "person.jorg_thalheim";
+          to = "home";
+        };
+        action = [{
+          service = "notify.mobile_app_beatrice_2";
+          data_template.message = "Jörg is home";
+        }];
+      } {
+        alias = "Joerg left Uni notification";
+        trigger = {
+          platform = "state";
+          entity_id  = "person.jorg_thalheim";
+          from = "University";
+        };
+        action = [{
+          service = "notify.mobile_app_beatrice_2";
+          data_template.message = "Jörg left Uni";
+        }];
+      } {
+        alias = "Shannan left work notification";
+        trigger = {
+          platform = "state";
+          entity_id  = "person.shannan_lekwati";
+          from = "Work of Shannan";
+        };
+        action = [{
+          service = "notify.mobile_app_beatrice_2";
+          data_template.message = "Shanna left work";
+        }];
+      } {
         alias = "Rainy day notification";
         trigger = {
           platform = "state";
