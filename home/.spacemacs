@@ -101,7 +101,6 @@ values."
            smtpmail-smtp-user "joerg@higgsboson.tk"
            smtpmail-smtp-service 587
            smtpmail-stream-type 'starttls
-           smtpmail-cred-passwd
            mml-secure-openpgp-encrypt-to-self t)
      org
      ;; notmuch
