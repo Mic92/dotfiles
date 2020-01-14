@@ -24,7 +24,7 @@ let
 in {
   imports = [ # Include the results of the hardware scan.or
     ./hardware-configuration.nix
-    ./packages.nix
+    ./modules/packages.nix
 
     #./vms/modules/libvirt.nix
     (builtins.fetchGit {
@@ -34,15 +34,19 @@ in {
     ./dice.nix
     ./backup.nix
     ./nfs.nix
+    ./modules/dice.nix
+    ./modules/backup.nix
+    ./modules/nfs.nix
+    ./modules/retiolum.nix
     ./vms/modules/zfs.nix
     #./vms/modules/sway.nix
     ./vms/modules/mosh.nix
     ./vms/modules/tracing.nix
     ./vms/modules/tor-ssh.nix
     ./vms/modules/nix-daemon.nix
-    ./vms/modules/retiolum.nix
     ./vms/modules/networkd.nix
     ./vms/modules/dnscrypt.nix
+    #./vm/modules/dnsmasq.nix
     ./vms/modules/wireguard.nix
     #./vms/modules/secrets.nix
     #./kde.nix
@@ -354,24 +358,9 @@ in {
     useSTARTTLS = true;
   };
 
-  systemd.network.networks."retiolum".extraConfig = ''
-    [Network]
-    Address=fd42:4492:6a6d:500:f610:15d1:27a3:674b/128
-
-    [Route]
-    Destination=fd42:4492:6a6d:500::/64
-    Metric=1200
-  '';
 
   networking = {
-    networkmanager.enable = true;
-
-    retiolum = {
-      ipv4 = "10.243.29.168";
-      ipv6 = "42:0:3c46:47e8:f610:15d1:27a3:674b";
-    };
-
-    nameservers = ["1.1.1.1"];
+    nameservers = [ "1.1.1.1" ];
 
     firewall.enable = true;
     firewall.allowedTCPPorts = [ 3030 ];
