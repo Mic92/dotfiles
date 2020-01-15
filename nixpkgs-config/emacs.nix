@@ -22,16 +22,14 @@ in {
   options.programs.emacs = {
     socket-activation.enable =
       (mkEnableOption "socket-activation") // { default = true; };
-
-    extraPackages = mkOption {
-      default = ps: [];
-      defaultText = "ps: []";
-      type = types.listOf types.package;
-      example = "(ps: [ pkgs.mu ])";
-    };
+    imagemagick.enable = mkEnableOption "imagemagick";
   };
   config = mkMerge [
     ({
+      programs.emacs.package = (pkgs.emacsPackagesNgGen
+        (pkgs.emacs.override {
+          imagemagick = if cfg.imagemagick.enable then pkgs.imagemagick else null;
+        })).emacsWithPackages (ps: [ pkgs.mu ]);
       home.packages = with pkgs; [
         editorScriptX11
         (makeDesktopItem {

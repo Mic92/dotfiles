@@ -10,10 +10,8 @@
   ];
 
   fonts.fontconfig.enable = true;
-  programs.emacs.package = (pkgs.emacsPackagesNgGen
-    (pkgs.emacs.override {
-      inherit (pkgs) imagemagick;
-    })).emacsWithPackages (ps: [ pkgs.mu ]);
+
+  programs.emacs.imagemagick.enable = true;
 
   services.dunst = {
     enable = true;
