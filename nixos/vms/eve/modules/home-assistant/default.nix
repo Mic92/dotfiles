@@ -203,7 +203,7 @@ in {
         };
         action = [{
           service = "notify.mobile_app_beatrice_2";
-          data_template.message = "Jörg arrived";
+          data_template.message = "Jörg arrived at your place";
         }];
       } {
         alias = "Shannan at Joerg's place notification";
@@ -214,7 +214,7 @@ in {
         };
         action = [{
           service = "notify.pushover";
-          data_template.message = "Shannan arrived";
+          data_template.message = "Shannan arrived at your place";
         }];
       } {
         alias = "Shannan arrived home";
@@ -257,8 +257,8 @@ in {
           from = "Work of Shannan";
         };
         action = [{
-          service = "notify.mobile_app_beatrice_2";
-          data_template.message = "Shanna left work";
+          service = "notify.pushover";
+          data_template.message = "Shannan is home";
         }];
       } {
         alias = "Rainy day notification";
