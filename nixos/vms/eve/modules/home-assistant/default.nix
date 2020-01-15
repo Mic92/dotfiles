@@ -255,10 +255,11 @@ in {
           platform = "state";
           entity_id  = "person.shannan_lekwati";
           from = "Work of Shannan";
+          to = "Away";
         };
         action = [{
           service = "notify.pushover";
-          data_template.message = "Shannan is at work";
+          data_template.message = "Shannan left work";
         }];
       } {
         alias = "Rainy day notification";
