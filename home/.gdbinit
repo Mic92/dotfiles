@@ -26,3 +26,5 @@ end
 define segfaultaddr
   p $_siginfo._sifields._sigfault.si_addr
 end
+
+macro define offsetof(t, f) &((t *) 0)->f
