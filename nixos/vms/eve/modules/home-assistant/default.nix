@@ -258,7 +258,7 @@ in {
         };
         action = [{
           service = "notify.pushover";
-          data_template.message = "Shannan is home";
+          data_template.message = "Shannan is at work";
         }];
       } {
         alias = "Rainy day notification";
