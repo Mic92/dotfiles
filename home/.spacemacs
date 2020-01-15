@@ -84,7 +84,7 @@ values."
            mu4e-trash-folder  "/thalheim.io/Trash"
            mu4e-enable-async-operations t
            mu4e-use-maildirs-extension t
-           mu4e-view-show-addresses 't
+           mu4e-view-show-addresses t
            mu4e-maildirs-extension-hide-empty-maildirs t
            mu4e-update-interval 300
            mu4e-alert-interesting-mail-query (concat
@@ -106,7 +106,7 @@ values."
      ;; notmuch
      ;; ocaml
      perl5
-     nixos
+     (nixos :variables nixos-enable-company nil)
 
      deft
      ;;(python :variables python-backend 'lsp)
