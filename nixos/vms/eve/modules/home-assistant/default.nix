@@ -255,7 +255,7 @@ in {
           platform = "state";
           entity_id  = "person.shannan_lekwati";
           from = "Work of Shannan";
-          to = "Away";
+          to = "not_home";
         };
         action = [{
           service = "notify.pushover";
