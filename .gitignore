@@ -4,3 +4,5 @@ home/.emacs.elc
 /home/.gitconfig.local
 #nixos/secrets
 nixos/vms/eve/secrets
+.direnv
+.mypy_cache/
