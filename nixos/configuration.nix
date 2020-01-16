@@ -25,6 +25,7 @@ in {
   imports = [ # Include the results of the hardware scan.or
     ./hardware-configuration.nix
     ./modules/packages.nix
+    ./modules/networkmanager.nix
 
     #./vms/modules/libvirt.nix
     (builtins.fetchGit {
