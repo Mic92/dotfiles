@@ -17,6 +17,7 @@
     ../modules/builder.nix
     ../modules/netdata.nix
     ../modules/i3.nix
+    ./modules/ping-tracker
     #./modules/awesome.nix
     #./modules/xfce.nix
   ];
