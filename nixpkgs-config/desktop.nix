@@ -68,7 +68,6 @@
     twitter-color-emoji
 
     arandr
-    ferdi
     signal-desktop
     copyq
     nur.repos.mic92.pandoc-bin
@@ -145,5 +144,6 @@
     inxi
     conky-symbols
     source-code-pro-nerdfonts
+    ferdi
   ]);
 }
