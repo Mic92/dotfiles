@@ -149,6 +149,7 @@ in {
           "sunset_time"
           "alerts"
           "precip_type"
+          "precip_probability"
         ];
         forecast = [ 0 ];
       } {
@@ -179,11 +180,11 @@ in {
       }];
       script = {
         notify_weather.sequence = [{
-          service = "notify.pushover";
+          service = "notify.mobile_app_jorg_s_xiaomi";
           data_template = {
             title = "Weather";
-            message = ''{{ states("sensor.dark_sky_summary_0d") }}'';
-            data.attachment = ''https://hass.thalheim.io{{ state_attr("sensor.dark_sky_summary_0d", "entity_picture")}}'';
+            message = ''{{ states("sensor.dark_sky_summary_0d") }} (rain propability {{ states("sensor.dark_sky_precip_probability_0d") }}%)'';
+            data.photo.url = ''https://hass.thalheim.io{{ state_attr("sensor.dark_sky_summary_0d", "entity_picture")}}'';
           };
         } {
           service = "notify.mobile_app_beatrice";
