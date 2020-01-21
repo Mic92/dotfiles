@@ -5,7 +5,6 @@ let
   pkgs = import "${krops}/pkgs" {};
 
   source = lib.evalSource [{
-    #nixpkgs.git = import ./nixpkgs.nix;
     nixpkgs.file = {
       path = toString <nixpkgs>;
       exclude = [ ".git" ];

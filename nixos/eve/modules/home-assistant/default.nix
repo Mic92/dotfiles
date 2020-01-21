@@ -250,6 +250,28 @@ in {
           data_template.message = "Jörg left Uni";
         }];
       } {
+        alias = "Maurice left Uni notification";
+        trigger = {
+          platform = "state";
+          entity_id  = "person.maurice_baillieu";
+          from = "University";
+        };
+        action = [{
+          service = "notify.pushover";
+          data_template.message = "Maurice left Uni";
+        }];
+      } {
+        alias = "Maurice arrived at Uni notification";
+        trigger = {
+          platform = "state";
+          entity_id  = "person.maurice_baillieu";
+          to = "University";
+        };
+        action = [{
+          service = "notify.pushover";
+          data_template.message = "Maurice arrived at Uni";
+        }];
+      } {
         alias = "Shannan left work notification";
         trigger = {
           platform = "state";
