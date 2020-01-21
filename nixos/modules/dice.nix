@@ -111,16 +111,16 @@ in {
   };
 
   # every researcher also get 500 GB storage
-  #fileSystems."/mnt/backup" = {
-  #    device = "//csce.datastore.ed.ac.uk/csce/inf/users/${uun}";
-  #    fsType = "cifs";
-  #    options = let
-  #      automount_opts = "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s,soft";
-  #      # cat > smb-secrets <<EOF
-  #      # username=s16916XX
-  #      # domain=ED
-  #      # password=<EASE_PASSWORD>
-  #      # EOF
-  #    in ["${automount_opts},credentials=/var/src/secrets/smb-secrets"];
-  #};
+  fileSystems."/mnt/backup" = {
+    device = "//csce.datastore.ed.ac.uk/csce/inf/users/${uun}";
+    fsType = "cifs";
+    options = let
+      automount_opts = "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s,soft";
+      # cat > smb-secrets <<EOF
+      # username=s16916XX
+      # domain=ED
+      # password=<EASE_PASSWORD>
+      # EOF
+    in ["${automount_opts},credentials=/var/src/secrets/smb-secrets"];
+  };
 }

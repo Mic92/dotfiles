@@ -4,10 +4,10 @@ with builtins;
 let
   backup_path = "/mnt/backup/borg";
 in {
-  #systemd.timers.backup = {
-  #  wantedBy = ["multi-user.target"];
-  #  timerConfig.OnCalendar = "12:00:00";
-  #};
+  systemd.timers.backup = {
+    wantedBy = ["multi-user.target"];
+    timerConfig.OnCalendar = "12:00:00";
+  };
   systemd.services.backup = {
     path = with pkgs; [ borgbackup ];
     # cifs mount from ./dice.nix
