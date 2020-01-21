@@ -20,5 +20,5 @@ let
   }];
 in pkgs.krops.writeDeploy "deploy" {
   source = source;
-  target = "root@eve.r";
+  target = "root@eve.thalheim.io";
 }

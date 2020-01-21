@@ -5,7 +5,6 @@
 { config, pkgs, lib, ... }:
 
 let
-
   userservice = args: {
     name = args.name;
     value = {
@@ -27,34 +26,28 @@ in {
     ./modules/packages.nix
     ./modules/networkmanager.nix
 
-    #./vms/modules/libvirt.nix
-    (builtins.fetchGit {
-      url = "https://github.com/NixOS/nixos-hardware";
-      rev = "1e2c130d38d72860660474c36207b099c519cb6a";
-    } + "/lenovo/thinkpad/x250")
-    ./dice.nix
-    ./backup.nix
-    ./nfs.nix
+    #../modules/libvirt.nix
+    ((toString <nixos-hardware>) + "/lenovo/thinkpad/x250")
     ./modules/dice.nix
     ./modules/backup.nix
     ./modules/nfs.nix
     ./modules/retiolum.nix
-    ./vms/modules/zfs.nix
-    #./vms/modules/sway.nix
-    ./vms/modules/mosh.nix
-    ./vms/modules/tracing.nix
-    ./vms/modules/tor-ssh.nix
-    ./vms/modules/nix-daemon.nix
-    ./vms/modules/networkd.nix
-    ./vms/modules/dnscrypt.nix
+    ../modules/zfs.nix
+    #../modules/sway.nix
+    ../modules/mosh.nix
+    ../modules/tracing.nix
+    ../modules/tor-ssh.nix
+    ../modules/nix-daemon.nix
+    ../modules/networkd.nix
+    ../modules/dnscrypt.nix
     #./vm/modules/dnsmasq.nix
-    ./vms/modules/wireguard.nix
-    #./vms/modules/secrets.nix
+    ../modules/wireguard.nix
+    ../modules/secrets.nix
     #./kde.nix
-    ./vms/modules/i3.nix
-    #./vms/modules/awesome.nix
-    ./vms/modules/pki
-    ./vms/modules/yubikey.nix
+    ../modules/i3.nix
+    #../modules/awesome.nix
+    ../modules/pki
+    ../modules/yubikey.nix
   ];
 
   boot = {
@@ -63,7 +56,6 @@ in {
       # when installing toggle this
       efi.canTouchEfiVariables = false;
     };
-    blacklistedKernelModules = [ "iptable_nat" "ip_tables" ];
 
     # It may leak your data, but look how FAST it is!1!!
     # https://make-linux-fast-again.com/
@@ -80,7 +72,6 @@ in {
       "mitigations=off"
     ];
   };
-
 
   # when I need dhcp
   systemd.network.networks."eth0".extraConfig = ''

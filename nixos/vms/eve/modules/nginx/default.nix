@@ -1,4 +1,4 @@
-{ config, lib, ... }: 
+{ config, lib, pkgs, ... }: 
 
 let
   sanCertificate = domain: let
@@ -43,6 +43,9 @@ in {
 
   config = {
     services.nginx = {
+      package = pkgs.nginx.override {
+        modules = with pkgs.nginxModules; [ ldap-auth ];
+      };
       enable = true;
 
       recommendedGzipSettings = true;

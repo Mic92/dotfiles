@@ -1,6 +1,6 @@
 { ... }: {
   imports = [
-    ../vms/modules/retiolum.nix
+    ../../modules/retiolum.nix
   ];
 
   systemd.network.networks."retiolum".extraConfig = ''

@@ -3,6 +3,7 @@
 
   boot.loader.grub.enable = false;
   boot.loader.generic-extlinux-compatible.enable = true;
+  boot.loader.generic-extlinux-compatible.configurationLimit = 1;
   boot.kernelPackages = pkgs.linuxPackages_latest;
   documentation.enable = false;
 
