@@ -108,35 +108,35 @@ in {
      {
        hostName = "martha.r";
        sshUser = "nix";
-       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       sshKey = "/var/src/secrets/id_buildfarm";
        system = "x86_64-linux";
        maxJobs = 8;
      }
      {
        hostName = "donna.r";
        sshUser = "nix";
-       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       sshKey = "/var/src/secrets/id_buildfarm";
        system = "x86_64-linux";
        maxJobs = 8;
      }
      {
        hostName = "amy.r";
        sshUser = "nix";
-       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       sshKey = "/var/src/secrets/id_buildfarm";
        system = "x86_64-linux";
        maxJobs = 8;
      }
      {
        hostName = "clara.r";
        sshUser = "nix";
-       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       sshKey = "/var/src/secrets/id_buildfarm";
        system = "x86_64-linux";
        maxJobs = 8;
      }
      {
        hostName = "rose.r";
        sshUser = "nix";
-       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       sshKey = "/var/src/secrets/id_buildfarm";
        system = "x86_64-linux";
        maxJobs = 8;
      }
@@ -150,27 +150,27 @@ in {
      {
        hostName = "eve.thalheim.io";
        sshUser = "nix";
-       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       sshKey = "/var/src/secrets/id_buildfarm";
        system = "x86_64-linux";
        maxJobs = 4;
      }
      {
        hostName = "inspector.r";
        sshUser = "nix";
-       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       sshKey = "/var/src/secrets/id_buildfarm";
        system = "x86_64-linux";
        maxJobs = 4;
      }
      {
        hostName = "dpdkm.r";
-       sshKey = "/etc/nixos/secrets/id_buildfarm";
+       sshKey = "/var/src/secrets/id_buildfarm";
        sshUser = "nix";
        system = "x86_64-linux";
        maxJobs = 4;
      }
      #{
      #  hostName = "eddie.r";
-     #  sshKey = "/etc/nixos/secrets/id_buildfarm";
+     #  sshKey = "/var/src/secrets/id_buildfarm";
      #  sshUser = "nix";
      #  system = "x86_64-linux";
      #  maxJobs = 2;
@@ -179,7 +179,7 @@ in {
      #{
      #  hostName = "172.23.75.254";
      #  maxJobs = 4;
-     #  sshKey = "/etc/nixos/secrets/id_buildfarm";
+     #  sshKey = "/var/src/secrets/id_buildfarm";
      #  sshUser = "nix";
      #  system = "aarch64-linux";
      #}
@@ -205,7 +205,8 @@ in {
   console.keyMap = "us";
   i18n.defaultLocale = "en_DK.UTF-8";
 
-  time.timeZone = "Europe/London";
+  # Manual
+  time.timeZone = null;
 
   services = {
     fwupd.enable = true;
@@ -351,7 +352,7 @@ in {
 
   services.ssmtp = {
     enable = true;
-    authPassFile = "/etc/nixos/secrets/smtp-authpass";
+    authPassFile = "/var/src/secrets/smtp-authpass";
     authUser = "joerg@higgsboson.tk";
     hostName = "mail.thalheim.io:587";
     domain = "thalheim.io";

@@ -13,7 +13,7 @@ in {
     # cifs mount from ./dice.nix
     unitConfig.RequiresMountsFor = backup_path;
     script = ''
-      export BORG_PASSPHRASE=$(cat /home/joerg/git/nixos-configuration/secrets/borgbackup)
+      export BORG_PASSPHRASE=$(cat /var/src/secrets/borgbackup)
 
       # could be dangerous, but works
       borg break-lock "${backup_path}"

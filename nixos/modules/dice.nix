@@ -44,7 +44,7 @@ in {
   #ktutil:  addent -password -p s16916XX -k 1 -e aes256-cts
   #ktutil:  wkt /etc/nixos/secrets/krb5.keytab
   #ktutil:  quit
-  environment.etc."krb5.keytab".source = "/etc/nixos/secrets/krb5.keytab";
+  environment.etc."krb5.keytab".source = "/var/src/secrets/krb5.keytab";
 
   # http://computing.help.inf.ed.ac.uk/TAGS/kerberos
   # copied from login server: bruegel.inf.ed.ac.uk
@@ -121,6 +121,6 @@ in {
   #      # domain=ED
   #      # password=<EASE_PASSWORD>
   #      # EOF
-  #    in ["${automount_opts},credentials=/home/joerg/git/nixos-configuration/secrets/smb-secrets"];
+  #    in ["${automount_opts},credentials=/var/src/secrets/smb-secrets"];
   #};
 }
