@@ -1,12 +1,12 @@
 let
-  krops = (import <nixpkgs> {}).callPackage ./krops.nix {};
+  krops = (import <nixpkgs> {}).callPackage ../krops.nix {};
   lib = import "${krops}/lib";
   pkgs = import "${krops}/pkgs" {};
 
   source = lib.evalSource [{
     nixpkgs.git = import ./nixpkgs.nix;
     dotfiles.file.path = toString ./../..;
-    nixos-config.symlink = "dotfiles/nixos/vms/eve/configuration.nix";
+    nixos-config.symlink = "dotfiles/nixos/eve/configuration.nix";
 
     secrets.pass = {
       dir  = toString ../secrets/shared;

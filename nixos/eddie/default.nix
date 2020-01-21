@@ -1,6 +1,5 @@
-
 let
-  krops = (import <nixpkgs> {}).callPackage ./krops.nix {};
+  krops = (import <nixpkgs> {}).callPackage ../krops.nix {};
   lib = import "${krops}/lib";
   pkgs = import "${krops}/pkgs" {};
 
@@ -10,15 +9,12 @@ let
       path = toString <nixpkgs>;
       exclude = [ ".git" ];
     };
-    dotfiles.file = {
-      path = toString ./../..;
-      exclude = [ ".git" ];
-    };
-    nixos-config.symlink = "dotfiles/nixos/vms/matchbox/configuration.nix";
+    dotfiles.file.path = toString ./../..;
+    nixos-config.symlink = "dotfiles/nixos/eddie/configuration.nix";
 
     secrets.pass = {
       dir  = toString ../secrets/joerg;
-      name = "matchbox";
+      name = "eddie";
     };
 
     shared-secrets.pass = {
@@ -28,7 +24,6 @@ let
   }];
 in pkgs.krops.writeDeploy "deploy" {
   source = source;
-  buildTarget = "joerg@localhost";
-  crossDeploy = true;
-  target = "root@matchbox.r";
+  target = "root@eddie.r";
+  #target = "root@129.215.90.4";
 }

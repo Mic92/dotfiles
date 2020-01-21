@@ -43,7 +43,7 @@
     myVimBundle = myVimBundle;
 
     nur = pkgs.callPackage (import (builtins.fetchTarball {
-      url = "https://github.com/nix-community/NUR/archive/master.tar.gz";
+      url = "https://github.com/nix-community/NUR/archive/master.tar.gz?1";
     })) {};
 
     myvim = pkgs.neovim.override {

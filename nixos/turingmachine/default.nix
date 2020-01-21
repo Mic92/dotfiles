@@ -1,5 +1,5 @@
 let
-  krops = (import <nixpkgs> {}).callPackage ./krops.nix {};
+  krops = (import <nixpkgs> {}).callPackage ../krops.nix {};
   lib = import "${krops}/lib";
   pkgs = import "${krops}/pkgs" {};
 
@@ -17,7 +17,7 @@ let
       path = toString ./../..;
       exclude = [ ".git" ];
     };
-    nixos-config.symlink = "dotfiles/nixos/vms/turingmachine/configuration.nix";
+    nixos-config.symlink = "dotfiles/nixos/turingmachine/configuration.nix";
     secrets.pass = {
       dir  = toString ../secrets/joerg;
       name = "turingmachine";
