@@ -80,6 +80,22 @@
     regex = "Grafana";
   };
 
+  services.icinga2.extraConfig = ''
+    apply Service "Grafana v4 (eve)" {
+      import "eve-http4-service"
+      vars.http_vhost = "grafana.thalheim.io"
+      vars.http_uri = "/"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "Grafana v6 (eve)" {
+      import "eve-http6-service"
+      vars.http_vhost = "grafana.thalheim.io"
+      vars.http_uri = "/"
+      assign where host.name == "eve.thalheim.io"
+    }
+  '';
+
   krops.secrets.files = {
     grafana-smtp-password.owner = "grafana";
     grafana-admin-password.owner = "grafana";

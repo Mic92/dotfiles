@@ -67,4 +67,20 @@
     url = "https://ldap.thalheim.io";
     regex = "phpLDAPadmin";
   };
+
+  services.icinga2.extraConfig = ''
+    apply Service "phpLDAPadmin v4 (eve)" {
+      import "eve-http4-service"
+      vars.http_vhost = "ldap.thalheim.io"
+      vars.http_uri = "/"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "phpLDAPadmin v6 (eve)" {
+      import "eve-http6-service"
+      vars.http_vhost = "ldap.thalheim.io"
+      vars.http_uri = "/"
+      assign where host.name == "eve.thalheim.io"
+    }
+  '';
 }

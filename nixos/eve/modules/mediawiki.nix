@@ -144,4 +144,20 @@ in {
     url = "https://ist.devkid.net";
     regex = "Informationssystemtechnik";
   };
+
+  services.icinga2.extraConfig = ''
+    apply Service "IST wiki v4 (eve)" {
+      import "eve-http4-service"
+      vars.http_vhost = "ist.devkid.net"
+      vars.http_uri = "/"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "IST wiki v6 (eve)" {
+      import "eve-http6-service"
+      vars.http_vhost = "ist.devkid.net"
+      vars.http_uri = "/"
+      assign where host.name == "eve.thalheim.io"
+    }
+  '';
 }

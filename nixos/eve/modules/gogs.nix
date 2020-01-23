@@ -41,6 +41,22 @@
     regex = "Gogs";
   };
 
+  services.icinga2.extraConfig = ''
+    apply Service "Gogs v4 (eve)" {
+      import "eve-http4-service"
+      vars.http_vhost = "git.thalheim.io"
+      vars.http_uri = "/"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "Gogs v6 (eve)" {
+      import "eve-http6-service"
+      vars.http_vhost = "git.thalheim.io"
+      vars.http_uri = "/"
+      assign where host.name == "eve.thalheim.io"
+    }
+  '';
+
   services.openldap.extraConfig = ''
     objectClass ( 1.3.6.1.4.1.28293.1.2.4 NAME 'gitlab'
             SUP uidObject AUXILIARY

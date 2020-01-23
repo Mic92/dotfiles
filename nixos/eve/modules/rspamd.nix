@@ -107,4 +107,20 @@ in {
     done
     chown -R "${config.services.dovecot2.mailUser}:${config.services.dovecot2.mailGroup}" /var/lib/dovecot/sieve
   '';
+
+  services.icinga2.extraConfig = ''
+    apply Service "Rspamd v4 (eve)" {
+      import "eve-http4-service"
+      vars.http_vhost = "rspamd.thalheim.io"
+      vars.http_uri = "/"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "Rspamd v6 (eve)" {
+      import "eve-http6-service"
+      vars.http_vhost = "rspamd.thalheim.io"
+      vars.http_uri = "/"
+      assign where host.name == "eve.thalheim.io"
+    }
+  '';
 }
