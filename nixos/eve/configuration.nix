@@ -29,9 +29,10 @@
     ./modules/home-assistant
     ./modules/icinga2.nix
     ./modules/influxdb.nix
+    ./modules/kresd.nix
     ./modules/mastodon-hnbot.nix
     ./modules/mediawiki.nix
-    ./modules/named.nix
+    #./modules/named.nix
     ./modules/netdata.nix
     ./modules/network.nix
     ./modules/nextcloud.nix
