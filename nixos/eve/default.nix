@@ -4,6 +4,10 @@ let
   pkgs = import "${krops}/pkgs" {};
 
   source = lib.evalSource [{
+    #nixpkgs.file = {
+    #  path = toString <nixpkgs>;
+    #  exclude = [".git"];
+    #};
     nixpkgs.git = import ../nixpkgs.nix;
     dotfiles.file.path = toString ./../..;
     nixos-config.symlink = "dotfiles/nixos/eve/configuration.nix";

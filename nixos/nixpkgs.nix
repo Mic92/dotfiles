@@ -1,5 +1,5 @@
 {
   clean.exclude = ["/.version-suffix"];
-  ref = "ee5a6f94b1385fc1d39d8166baa26131b3f59c80";
+  ref = "34a39207175e81564b85cc65c2ecaed1fd6f8c66";
   url = https://github.com/Mic92/nixpkgs;
 }
