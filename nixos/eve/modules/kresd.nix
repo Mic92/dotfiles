@@ -44,6 +44,11 @@
     };
   };
 
+  services.netdata.httpcheck.checks.nextcloud = {
+    url = "https://dns.thalheim.io/dns-query?dns=q80BAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
+    regex = "example";
+  };
+
   services.icinga2.extraConfig = ''
     apply Service "Kresd v4 (eve)" {
       import "eve-http4-service"
@@ -52,6 +57,7 @@
       vars.http_expect_body_regex = "example"
       assign where host.name == "eve.thalheim.io"
     }
+
     apply Service "Kresd v6 (eve)" {
       import "eve-http6-service"
       vars.http_vhost = "dns.thalheim.io"
