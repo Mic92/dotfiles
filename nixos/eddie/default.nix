@@ -1,28 +1,13 @@
-let
-  krops = (import <nixpkgs> {}).callPackage ../krops.nix {};
-  lib = import "${krops}/lib";
-  pkgs = import "${krops}/pkgs" {};
+with (import <nixpkgs> {}).callPackage ../krops.nix {
+  name = "eddie";
+  secretSource = "joerg";
+};
 
+pkgs.krops.writeDeploy "deploy" {
   source = lib.evalSource [{
-    nixpkgs.file = {
-      path = toString <nixpkgs>;
-      exclude = [ ".git" ];
-    };
-    dotfiles.file.path = toString ./../..;
-    nixos-config.symlink = "dotfiles/nixos/eddie/configuration.nix";
-
-    secrets.pass = {
-      dir  = toString ../secrets/joerg;
-      name = "eddie";
-    };
-
-    shared-secrets.pass = {
-      dir  = toString ../secrets/shared;
-      name = "shared";
-    };
+    nixpkgs.file = nixpkgs.file;
+    inherit dotfiles nixos-config secrets shared-secrets;
   }];
-in pkgs.krops.writeDeploy "deploy" {
-  source = source;
   target = "root@eddie.r";
   #target = "root@129.215.90.4";
 }

@@ -1,28 +1,12 @@
-let
-  krops = (import <nixpkgs> {}).callPackage ../krops.nix {};
-  lib = import "${krops}/lib";
-  pkgs = import "${krops}/pkgs" {};
+with (import <nixpkgs> {}).callPackage ../krops.nix {
+  name = "eve";
+};
 
+pkgs.krops.writeDeploy "deploy" {
   source = lib.evalSource [{
-    #nixpkgs.file = {
-    #  path = toString <nixpkgs>;
-    #  exclude = [".git"];
-    #};
-    nixpkgs.git = import ../nixpkgs.nix;
-    dotfiles.file.path = toString ./../..;
-    nixos-config.symlink = "dotfiles/nixos/eve/configuration.nix";
-
-    secrets.pass = {
-      dir  = toString ../secrets/shared;
-      name = "eve";
-    };
-
-    shared-secrets.pass = {
-      dir  = toString ../secrets/shared;
-      name = "shared";
-    };
+    nixpkgs.file = nixpkgs.file;
+    inherit dotfiles nixos-config secrets shared-secrets;
   }];
-in pkgs.krops.writeDeploy "deploy" {
-  source = source;
   target = "root@eve.thalheim.io";
+  #target = "root@129.215.90.4";
 }
