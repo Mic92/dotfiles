@@ -152,6 +152,11 @@ home-manager() {
       (cd ~/git/nixpkgs && git remote add upstream https://github.com/NixOS/nixpkgs.git)
     fi
 
+    if ! nix-channel --list | grep -q home-manager; then
+      nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
+    fi
+    nix-channel --update
+
     nix-shell https://github.com/rycee/home-manager/archive/master.tar.gz -A install
     command home-manager "$@"
   fi
