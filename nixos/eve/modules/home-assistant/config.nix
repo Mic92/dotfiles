@@ -114,8 +114,13 @@ in {
     system_health = {};
     sensor = [{
       platform = "template";
-      sensors.shannan_joerg_distance.value_template =
-        ''{{ distance('person.jorg_thalheim', 'person.shannan_lekwati') | round(2) }}'';
+      sensors.shannan_joerg_distance = {
+        value_template = ''{{ distance('person.jorg_thalheim', 'person.shannan_lekwati') | round(2) }}'';
+        entity_id = [
+          "person.jorg_thalheim"
+          "person.shannan_lekwati"
+        ];
+      };
     } {
       platform = "darksky";
       api_key = "!secret darksky_api_key";
