@@ -5,9 +5,8 @@ with (import <nixpkgs> {}).callPackage ../krops.nix {
 
 pkgs.krops.writeDeploy "deploy" {
   source = lib.evalSource [{
-    nixpkgs.file = krops.nixpkgs.file;
-    inherit (krops)
-      dotfiles nixos-config secrets shared-secrets nixos-hardware;
+    nixpkgs.file = nixpkgs.file;
+    inherit dotfiles nixos-config secrets shared-secrets nixos-hardware;
   }];
   target = lib.mkTarget "joerg@localhost" // {
     sudo = true;
