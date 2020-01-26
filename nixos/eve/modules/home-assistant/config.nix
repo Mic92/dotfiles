@@ -216,7 +216,7 @@ in {
         data_template.message = "Shannan arrived at your place";
       }];
     } {
-      alias = "Shannan arrived home";
+      alias = "Shannan arrived home notification";
       trigger = {
         platform = "state";
         entity_id  = "person.shannan_lekwati";
@@ -227,7 +227,40 @@ in {
         data_template.message = "Shannan is home";
       }];
     } {
-      alias = "Joerg arrived home";
+      alias = "Joerg arrived home notification";
+      trigger = {
+        platform = "state";
+        entity_id  = "person.jorg_thalheim";
+        to = "home";
+      };
+      action = [{
+        service = "notify.mobile_app_beatrice";
+        data_template.message = "Jörg is home";
+      }];
+    } {
+      alias = "Shannan left home notification";
+      trigger = {
+        platform = "state";
+        entity_id  = "person.shannan_lekwati";
+        from = "home";
+      };
+      action = [{
+        service = "notify.pushover";
+        data_template.message = "Shannan left home";
+      }];
+    } {
+      alias = "Joerg left home notification";
+      trigger = {
+        platform = "state";
+        entity_id  = "person.jorg_thalheim";
+        from = "home";
+      };
+      action = [{
+        service = "notify.mobile_app_beatrice";
+        data_template.message = "Jörg left home";
+      }];
+    } {
+      alias = "Joerg arrived home notification";
       trigger = {
         platform = "state";
         entity_id  = "person.jorg_thalheim";
@@ -247,6 +280,18 @@ in {
       action = [{
         service = "notify.mobile_app_beatrice";
         data_template.message = "Jörg left Uni";
+      }];
+    } {
+      alias = "Shannan left work notification";
+      trigger = {
+        platform = "state";
+        entity_id  = "person.shannan_lekwati";
+        from = "Work of Shannan";
+        to = "not_home";
+      };
+      action = [{
+        service = "notify.pushover";
+        data_template.message = "Shannan left work";
       }];
     } {
       alias = "Maurice left Uni notification";
@@ -269,18 +314,6 @@ in {
       action = [{
         service = "notify.pushover";
         data_template.message = "Maurice arrived at Uni";
-      }];
-    } {
-      alias = "Shannan left work notification";
-      trigger = {
-        platform = "state";
-        entity_id  = "person.shannan_lekwati";
-        from = "Work of Shannan";
-        to = "not_home";
-      };
-      action = [{
-        service = "notify.pushover";
-        data_template.message = "Shannan left work";
       }];
     } {
       alias = "IPhone battery warning";
@@ -424,6 +457,7 @@ in {
     }
     (chargeNotification "University")
     (chargeNotification "home")
+    (chargeNotification "Shannan's Home")
     {
       alias = "Increment discharged counter";
       trigger = {
