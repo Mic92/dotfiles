@@ -4,7 +4,7 @@ with (import <nixpkgs> {}).callPackage ../krops.nix {
 
 pkgs.krops.writeDeploy "deploy" {
   source = lib.evalSource [{
-    nixpkgs.file = nixpkgs.file;
+    nixpkgs.git = nixpkgs.git;
     inherit dotfiles nixos-config secrets shared-secrets;
   }];
   target = "root@eve.thalheim.io";
