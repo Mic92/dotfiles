@@ -87,7 +87,14 @@ class Shannan(IntervalModule):
     def run(self) -> None:
         global state
         shannan = state.get("person.shannan_lekwati")
-        self.output = dict(full_text=f"{shannan['state']}")
+        distance = state.get("sensor.shannan_joerg_distance")
+        locations = {
+            "not_home": "Away",
+            "Work of Shannan": "Work",
+            "Shannan's Home": "Home",
+        }
+        location = locations.get(shannan['state'], shannan['state'])
+        self.output = dict(full_text=f"{location} ({distance['state']}km)")
 
 
 class BikeBattery(IntervalModule):
