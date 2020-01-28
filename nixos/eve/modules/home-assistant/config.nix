@@ -94,12 +94,12 @@ in {
     recorder.db_url = "postgresql://@/hass";
     config = {};
     mobile_app = {};
-    device_tracker = [{
-      platform = "icloud";
+    icloud = {
       username = "slekwati@outlook.com";
       password = "!secret icloud_password";
       account_name = "Shannan's icloud";
-    } {
+    };
+    device_tracker = [{
       platform = "fritz";
       host = "fritzbox.ohorn.thalheim.io";
       username = "home-assistant";
@@ -341,18 +341,18 @@ in {
       alias = "Apple watch battery warning";
       trigger = {
         platform = "numeric_state";
-        entity_id  = "device_tracker.shannansapple_watch";
+        entity_id  = "device_tracker.shannans_apple_watch";
         value_template = "{{ state.attributes.battery }}";
         below = 30;
         for = "00:10:00";
       };
       condition = {
         condition = "template";
-        value_template = ''{{ state_attr("device_tracker.shannansapple_watch", "battery_status") == "NotCharging" }}'';
+        value_template = ''{{ state_attr("device_tracker.shannans_apple_watch", "battery_status") == "NotCharging" }}'';
       };
       action = [{
         service = "notify.mobile_app_beatrice";
-        data_template.message = ''Apple watch only got {{ state_attr("device_tracker.shannansapple_watch", "battery") | round(1) }}% battery left'';
+        data_template.message = ''Apple watch only got {{ state_attr("device_tracker.shannans_apple_watch", "battery") | round(1) }}% battery left'';
       }];
     } {
       alias = "Apple watch wearing reminder notification";
@@ -367,29 +367,29 @@ in {
           weekday = [ "mon" "tue" "wed" "thu" "fri"];
         } {
           condition = "template";
-          value_template = ''{{ state_attr("device_tracker.shannansapple_watch", "battery_status") != "NotCharging" }}'';
+          value_template = ''{{ state_attr("device_tracker.shannans_apple_watch", "battery_status") != "NotCharging" }}'';
         }];
       };
       action = [{
         service = "notify.mobile_app_beatrice";
-        data_template.message = ''Apple watch is still on charge ({{ state_attr("device_tracker.shannansapple_watch", "battery") | round(1) }}%)'';
+        data_template.message = ''Apple watch is still on charge ({{ state_attr("device_tracker.shannans_apple_watch", "battery") | round(1) }}%)'';
       }];
     } {
       alias = "Apple watch charged notification";
       trigger = {
         platform = "numeric_state";
-        entity_id  = "device_tracker.shannansapple_watch";
+        entity_id  = "device_tracker.shannans_apple_watch";
         value_template = "{{ state.attributes.battery }}";
         above = 95;
         for = "00:10:00";
       };
       condition = {
         condition = "template";
-        value_template = ''{{ state_attr("device_tracker.shannansapple_watch", "battery_status") != "NotCharging" }}'';
+        value_template = ''{{ state_attr("device_tracker.shannans_apple_watch", "battery_status") != "NotCharging" }}'';
       };
       action = [{
         service = "notify.mobile_app_beatrice";
-        data_template.message = ''Apple watch was charged up to {{ state_attr("device_tracker.shannansapple_watch", "battery") | round(1) }}%'';
+        data_template.message = ''Apple watch was charged up to {{ state_attr("device_tracker.shannans_apple_watch", "battery") | round(1) }}%'';
       }];
     } {
       alias = "Rainy day notification";
