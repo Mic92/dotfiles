@@ -9,7 +9,7 @@ in {
     timerConfig.OnCalendar = "12:00:00";
   };
   systemd.services.backup = {
-    path = with pkgs; [ borgbackup ];
+    path = with pkgs; [ borgbackup utillinux ];
     # cifs mount from ./dice.nix
     unitConfig.RequiresMountsFor = backup_path;
     script = ''
