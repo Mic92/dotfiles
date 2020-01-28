@@ -1,6 +1,15 @@
 { pkgs, lib, ... }: let
 in {
-  imports = [ ./config.nix ];
+  imports = [
+    ./bike-light.nix
+    ./charge-notifications.nix
+    ./ldap.nix
+    ./location-notifications.nix
+    ./lunch-place.nix
+    ./postgres.nix
+    ./weather.nix
+    ./zones.nix
+  ];
 
   services.home-assistant = {
     enable = true;
@@ -9,12 +18,61 @@ in {
     };
   };
 
-  services.postgresql = {
-    ensureDatabases = ["hass"];
-    ensureUsers = [{
-      name = "hass";
-      ensurePermissions = {
-        "DATABASE hass" = "ALL PRIVILEGES";
+  services.home-assistant.config = {
+    frontend = {};
+    http = {};
+    "map" = {};
+    shopping_list = {};
+    sun = {};
+    influxdb = {
+      username = "homeassistant";
+      host = "influxdb.thalheim.io";
+      password = "!secret influxdb";
+      database = "homeassistant";
+      ssl = true;
+      include.entities = [
+        "person.jorg_thalheim"
+        "person.dorit_thalheim"
+        "person.falk_thalheim"
+        "person.shannan_lekwati"
+        "device_tracker.beatrice"
+        "device_tracker.redmi_note_5"
+      ];
+    };
+    notify = [{
+      name = "Pushover";
+      platform = "pushover";
+      api_key = "!secret pushover_api_key";
+      user_key = "!secret pushover_user_key";
+    }];
+    config = {};
+    mobile_app = {};
+    icloud = {
+      username = "slekwati@outlook.com";
+      password = "!secret icloud_password";
+      account_name = "Shannan's icloud";
+    };
+    device_tracker = [{
+      platform = "fritz";
+      host = "fritzbox.ohorn.thalheim.io";
+      username = "home-assistant";
+      password = "!secret fritzbox_password";
+    } {
+      platform = "fritz2";
+      host = "fritzbox.ohorn.thalheim.io";
+      username = "home-assistant";
+      password = "!secret fritzbox_password";
+    }];
+    cloud = {};
+    system_health = {};
+    sensor = [{
+      platform = "template";
+      sensors.shannan_joerg_distance = {
+        value_template = ''{{ distance('person.jorg_thalheim', 'person.shannan_lekwati') | round(2) }}'';
+        entity_id = [
+          "person.jorg_thalheim"
+          "person.shannan_lekwati"
+        ];
       };
     }];
   };
@@ -42,13 +100,6 @@ in {
     owner = "hass";
     path = "/var/lib/hass/secrets.yaml";
   };
-  users.users.hass.extraGroups = [ "keys" ];
 
-  krops.secrets.files.home-assistant-ldap.owner = "hass";
-  services.openldap.extraConfig = ''
-    objectClass ( 1.3.6.1.4.1.28297.1.2.4 NAME 'homeAssistant'
-            SUP uidObject AUXILIARY
-            DESC 'Added to an account to allow home-assistant access'
-            MUST (mail) )
-  '';
+  users.users.hass.extraGroups = [ "keys" ];
 }
