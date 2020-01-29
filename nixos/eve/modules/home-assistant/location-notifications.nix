@@ -14,7 +14,8 @@
     // lib.optionalAttrs (from != null) { inherit from; };
 
   joerg = person "person.jorg_thalheim";
-  shannan = person "person.shannan_lekwati";
+  # only track one device to avoid duplicate notifications
+  shannan = person "device_tracker.beatrice";
   maurice = person "person.maurice_baillieu";
   gymTime = {
     condition = "template";
