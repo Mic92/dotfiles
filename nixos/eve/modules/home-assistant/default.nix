@@ -80,6 +80,18 @@ in {
           "person.shannan_lekwati"
         ];
       };
+      sensors.joerg_last_updated = {
+        friendly_name = "Jörg's last location update";
+        value_template = ''{{ states.person.jorg_thalheim.last_updated.strftime('%Y-%m-%dT%H:%M:%S') }}Z'';
+        entity_id = "person.jorg_thalheim";
+        device_class = "timestamp";
+      };
+      sensors.shannan_last_updated = {
+        friendly_name = "Shannan's last location update";
+        value_template = ''{{ states.person.shannan_lekwati.last_updated.strftime('%Y-%m-%dT%H:%M:%S') }}Z'';
+        entity_id = "person.shannan_lekwati";
+        device_class = "timestamp";
+      };
     }];
   };
 
