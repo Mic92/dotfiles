@@ -23,16 +23,13 @@ in {
     http = {};
     "map" = {};
     shopping_list = {};
+    sun = {};
     calendar = {
       platform = "caldav";
       url = "https://cloud.thalheim.io/remote.php/dav";
       username = "hass@thalheim.io";
       password = "!secret ldap_password";
-      calendars = [
-        "joergshannan_shared_by_joerg@higgsboson.tk"
-      ];
     };
-    sun = {};
     influxdb = {
       username = "homeassistant";
       host = "influxdb.thalheim.io";
