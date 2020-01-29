@@ -44,7 +44,7 @@
        alias = "Rainy/Snowy day notification";
        trigger = {
          platform = "state";
-         entity_id = "states.sensor.dark_sky_icon";
+         entity_id = "sensor.dark_sky_icon";
        };
        action.service = "script.notify_weather";
        condition = {
