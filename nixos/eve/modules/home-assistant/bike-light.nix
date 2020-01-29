@@ -38,7 +38,7 @@ in {
         entity_id = "input_boolean.bike_light_used_today";
       }];
     };
-    automations = [
+    automation = [
       (chargeNotification "University")
       (chargeNotification "home")
       (chargeNotification "Shannan's Home")

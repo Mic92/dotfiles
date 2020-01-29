@@ -37,26 +37,30 @@
          "precip_type"
          "precip_probability"
        ];
+       forecast = [ 0 ];
        hourly_forecast = [ 0 ];
      }];
      automation = [{
-       alias = "Rainy day notification";
+       alias = "Rainy/Snowy day notification";
        trigger = {
          platform = "state";
-         entity_id = "sensor.dark_sky_precip_0h";
-         to = "rain";
+         entity_id = "states.sensor.dark_sky_icon";
        };
        action.service = "script.notify_weather";
-    } {
-      alias = "Reset rain notified today";
-      trigger = {
-        platform = "time";
-        at = "00:00:01";
-      };
-      action = [{
-        service = "input_boolean.turn_off";
-        entity_id = "input_boolean.rain_notified_today";
-      }];
-    }];
+       condition = {
+         condition = "template";
+         value_template = ''{{ "rain" in states.sensor.dark_sky_icon.state or "snow" in states.sensor.dark_sky_icon.state }}'';
+       };
+     } {
+       alias = "Reset rain notified today";
+       trigger = {
+         platform = "time";
+         at = "00:00:01";
+       };
+       action = [{
+         service = "input_boolean.turn_off";
+         entity_id = "input_boolean.rain_notified_today";
+       }];
+     }];
    };
  }
