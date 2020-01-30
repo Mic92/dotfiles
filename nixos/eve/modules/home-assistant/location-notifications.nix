@@ -4,7 +4,7 @@
     data_template.message = msg;
   }];
   notifyShannan = msg: [{
-    service = "notify.pushover";
+    service = "notify.mobile_app_beatrice";
     data_template.message = msg;
   }];
 
