@@ -29,6 +29,7 @@
     ./modules/home-assistant
     ./modules/icinga2.nix
     ./modules/influxdb.nix
+    ./modules/knot.nix
     ./modules/kresd.nix
     ./modules/mastodon-hnbot.nix
     ./modules/mediawiki.nix
