@@ -7,6 +7,8 @@ WEATHER_ICONS = {
     "mdi:weather-lightning": "朗",
     "mdi:weather-lightning-rainy": "ﭼ",
     "mdi:weather-night": "望",
+    # FIXME: does not exists in nerdfonts yet, fallback to partly-cloudy
+    "mdi:weather-night-partly-cloudy": "",
     "mdi:weather-partly-cloudy": "杖",
     "mdi:weather-pouring": "歹",
     "mdi:weather-rainy": "殺",

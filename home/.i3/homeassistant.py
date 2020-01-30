@@ -63,8 +63,11 @@ class WeatherIcon(IntervalModule):
         global state
         weather = state.get("sensor.dark_sky_summary")
         icon_name = weather['attributes']['icon']
-        icon = WEATHER_ICONS.get(icon_name, icon_name)
-        text = f'<span font_size="xx-large" color="white">{icon}</span>'
+        icon = WEATHER_ICONS.get(icon_name, None)
+        if icon is None:
+            text = f'<span color="white">{icon_name}</span>'
+        else:
+            text = f'<span font_size="xx-large" color="white">{icon}</span>'
         self.output = dict(full_text=text,
                            markup="pango",
                            separator=False,
