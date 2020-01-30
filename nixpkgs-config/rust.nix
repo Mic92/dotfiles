@@ -1,8 +1,6 @@
 { pkgs, ... }:
 {
   home.packages = with pkgs; [
-    rustc
-    cargo
     rustfmt
     rustracer
     (writeScriptBin "rust-doc" ''
