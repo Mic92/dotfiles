@@ -1,37 +1,18 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, lib, ... }:
-
-let
-  userservice = args: {
-    name = args.name;
-    value = {
-      wantedBy = [ "default.target" ];
-      enable = true;
-      serviceConfig = {
-        RestartSec="500ms";
-        ExecStart="/run/current-system/sw/bin/sh -c '" +
-          "export GTK_DATA_PREFIX=/run/current-system/sw;" +
-          "export PATH=$PATH:/var/setuid-wrappers:%h/.nix-profile/bin:/nix/var/nix/profiles/default/bin:/run/current-system/sw/bin:/run/current-system/sw/sbin;" +
-          "exec ${args.command}'";
-      };
-    };
-  };
-
-in {
-  imports = [ # Include the results of the hardware scan.or
+{
+  imports = [
     ./hardware-configuration.nix
     ./modules/packages.nix
     ./modules/networkmanager.nix
 
     #../modules/libvirt.nix
     ((toString <nixos-hardware>) + "/lenovo/thinkpad/x250")
+    ./modules/caddy.nix
     ./modules/dice.nix
     ./modules/backup.nix
     ./modules/nfs.nix
     ./modules/retiolum.nix
+    ./modules/remote-builder.nix
     ../modules/zfs.nix
     #../modules/sway.nix
     ../modules/mosh.nix
@@ -51,11 +32,9 @@ in {
   ];
 
   boot = {
-    loader = {
-      systemd-boot.enable = true;
-      # when installing toggle this
-      efi.canTouchEfiVariables = false;
-    };
+    loader.systemd-boot.enable = true;
+    # when installing toggle this
+    loader.efi.canTouchEfiVariables = false;
 
     # It may leak your data, but look how FAST it is!1!!
     # https://make-linux-fast-again.com/
@@ -73,6 +52,8 @@ in {
     ];
   };
 
+  networking.hostName = "turingmachine";
+
   # when I need dhcp
   systemd.network.networks."eth0".extraConfig = ''
     [Match]
@@ -83,120 +64,23 @@ in {
     DHCPServer = yes
   '';
 
-  environment.sessionVariables = {
-    LD_LIBRARY_PATH = [ config.system.nssModules.path ];
-  };
-
- nix = {
-   binaryCaches = [
-     https://r-ryantm.cachix.org
-   ];
-   binaryCachePublicKeys = [
-     "r-ryantm.cachix.org-1:gkUbLkouDAyvBdpBX0JOdIiD2/DP1ldF3Z3Y6Gqcc4c="
-   ];
-   distributedBuilds = true;
-   buildMachines = [
-     {
-       hostName = "martha.r";
-       sshUser = "nix";
-       sshKey = "/var/src/secrets/id_buildfarm";
-       system = "x86_64-linux";
-       maxJobs = 8;
-     }
-     {
-       hostName = "donna.r";
-       sshUser = "nix";
-       sshKey = "/var/src/secrets/id_buildfarm";
-       system = "x86_64-linux";
-       maxJobs = 8;
-     }
-     {
-       hostName = "amy.r";
-       sshUser = "nix";
-       sshKey = "/var/src/secrets/id_buildfarm";
-       system = "x86_64-linux";
-       maxJobs = 8;
-     }
-     {
-       hostName = "clara.r";
-       sshUser = "nix";
-       sshKey = "/var/src/secrets/id_buildfarm";
-       system = "x86_64-linux";
-       maxJobs = 8;
-     }
-     {
-       hostName = "rose.r";
-       sshUser = "nix";
-       sshKey = "/var/src/secrets/id_buildfarm";
-       system = "x86_64-linux";
-       maxJobs = 8;
-     }
-     {
-       hostName = "prism.r";
-       sshUser = "Mic92";
-       sshKey = "/root/.ssh/id_ed25519";
-       system = "x86_64-linux";
-       maxJobs = 4;
-     }
-     {
-       hostName = "eve.thalheim.io";
-       sshUser = "nix";
-       sshKey = "/var/src/secrets/id_buildfarm";
-       system = "x86_64-linux";
-       maxJobs = 4;
-     }
-     {
-       hostName = "inspector.r";
-       sshUser = "nix";
-       sshKey = "/var/src/secrets/id_buildfarm";
-       system = "x86_64-linux";
-       maxJobs = 4;
-     }
-     {
-       hostName = "dpdkm.r";
-       sshKey = "/var/src/secrets/id_buildfarm";
-       sshUser = "nix";
-       system = "x86_64-linux";
-       maxJobs = 4;
-     }
-     #{
-     #  hostName = "eddie.r";
-     #  sshKey = "/var/src/secrets/id_buildfarm";
-     #  sshUser = "nix";
-     #  system = "x86_64-linux";
-     #  maxJobs = 2;
-     #}
-     # rpi3
-     #{
-     #  hostName = "172.23.75.254";
-     #  maxJobs = 4;
-     #  sshKey = "/var/src/secrets/id_buildfarm";
-     #  sshUser = "nix";
-     #  system = "aarch64-linux";
-     #}
-     {
-       hostName = "aarch64.nixos.community";
-       maxJobs = 96;
-       sshKey = "/root/.ssh/id_ed25519";
-       sshUser = "mic92";
-       system = "aarch64-linux";
-       supportedFeatures = [ "big-parallel" ];
-     }
-   ];
-   nixPath = [
-     "nixpkgs=/home/joerg/git/nixpkgs"
-     "nixos-config=/home/joerg/git/nixos-configuration/configuration.nix"
-     "/nix/var/nix/profiles/per-user/root/channels"
-   ];
-   extraOptions = ''
+  nix = {
+    binaryCaches = [ https://r-ryantm.cachix.org ];
+    binaryCachePublicKeys = [ "r-ryantm.cachix.org-1:gkUbLkouDAyvBdpBX0JOdIiD2/DP1ldF3Z3Y6Gqcc4c=" ];
+    nixPath = [
+      "nixpkgs=/home/joerg/git/nixpkgs"
+      "nixos-config=/home/joerg/git/nixos-configuration/configuration.nix"
+      "/nix/var/nix/profiles/per-user/root/channels"
+    ];
+    extraOptions = ''
      builders-use-substitutes = true
    '';
- };
+  };
 
   console.keyMap = "us";
   i18n.defaultLocale = "en_DK.UTF-8";
 
-  # Manual
+  # Manual timezones, also see modules/networkmanager.py
   time.timeZone = null;
 
   services = {
@@ -232,41 +116,15 @@ in {
 
   powerManagement.powertop.enable = true;
 
-  systemd.services = {
-    caddy = let
-      cfg = pkgs.writeText "Caddyfile" ''
-        0.0.0.0 {
-          timeouts 0
-          tls off
-          #markdown
-          browse
-          root /home/joerg/web
-
-          basicauth /privat root cakeistasty
-          basicauth /private root kuchenistlecker
-        }
-      '';
-    in {
-      description = "Caddy web server";
-      after = [ "network.target" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        ExecStart = ''${pkgs.caddy}/bin/caddy -conf=${cfg} -agree'';
-        User = "joerg";
-        AmbientCapabilities = "cap_net_bind_service";
-      };
-    };
-
-    audio-off = {
-      description = "Mute audio before suspend";
-      wantedBy = [ "sleep.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        Environment = "XDG_RUNTIME_DIR=/run/user/1000";
-        User = "joerg";
-        RemainAfterExit = "yes";
-        ExecStart = "${pkgs.pamixer}/bin/pamixer --mute";
-      };
+  systemd.services.audio-off = {
+    description = "Mute audio before suspend";
+    wantedBy = [ "sleep.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      Environment = "XDG_RUNTIME_DIR=/run/user/1000";
+      User = "joerg";
+      RemainAfterExit = "yes";
+      ExecStart = "${pkgs.pamixer}/bin/pamixer --mute";
     };
   };
 
@@ -306,32 +164,18 @@ in {
 
   hardware.pulseaudio.enable = true;
 
-  users.users = {
-    joerg = {
-      isNormalUser = true;
-      extraGroups = [
-        "wheel" "docker" "plugdev" "vboxusers" "adbusers" "input" "sway" "wireshark" "networkmanager"
-      ];
-      shell = "/run/current-system/sw/bin/zsh";
-      uid = 1000;
-    };
-    root = {
-      subUidRanges = [ { startUid = 200000; count = 65536; } ];
-      subGidRanges = [ { startGid = 200000; count = 65536; } ];
-    };
-    docker = {
-      subUidRanges = [ { startUid = 100000; count = 65536; } ];
-      subGidRanges = [ { startGid = 100000; count = 65536; } ];
-    };
+  users.users.joerg = {
+    isNormalUser = true;
+    extraGroups = [
+      "wheel" "docker" "plugdev" "vboxusers" "adbusers" "input" "wireshark"
+    ];
+    shell = "/run/current-system/sw/bin/zsh";
+    uid = 1000;
   };
   users.groups.adbusers = {};
-  users.users.unbound = {};
+  security.sudo.wheelNeedsPassword = false;
 
-  security = {
-    audit.enable = false;
-    #apparmor.enable = true;
-    sudo.wheelNeedsPassword = false;
-  };
+  security.audit.enable = false;
 
   services.dbus.packages = with pkgs; [ gnome3.dconf ];
   #services.teamviewer.enable = true;
@@ -351,19 +195,10 @@ in {
     useSTARTTLS = true;
   };
 
-
-  networking = {
-    nameservers = [ "1.1.1.1" ];
-
-    firewall.enable = true;
-    firewall.allowedTCPPorts = [ 3030 ];
-    hostName = "turingmachine";
-  };
+  networking.nameservers = [ "1.1.1.1" ];
+  services.resolved.enable = false;
 
   services.tor.client.enable = true;
 
   system.stateVersion = "18.03";
-  services.resolved.enable = false;
-
-  networking.networkmanager.wifi.backend = "iwd";
 }

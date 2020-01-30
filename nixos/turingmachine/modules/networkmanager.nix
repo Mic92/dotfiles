@@ -15,8 +15,11 @@ let
     '';
   };
 in {
+  users.users.joerg.extraGroups = [ "networkmanager" ];
+
   networking.networkmanager = {
     enable = true;
+    wifi.backend = "iwd";
     dispatcherScripts = [{
       source = "${networkmanager-hook}/bin/dispatcher";
     }];
