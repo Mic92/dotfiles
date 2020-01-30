@@ -9,7 +9,8 @@
   branch = true
   diff = true
   status = true
-
+[am]
+  threeWay = true
 [user]
   name = Jörg Thalheim
   email = joerg@thalheim.io
