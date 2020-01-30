@@ -22,6 +22,7 @@ let
 in {
   services.bitwarden_rs = {
     enable = true;
+    dbBackend = "postgresql";
     config = {
       domain = "https://bitwarden.thalheim.io";
       signupsAllowed = false;

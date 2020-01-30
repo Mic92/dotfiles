@@ -8,7 +8,6 @@ in rec {
   lib = import "${krops}/lib";
   pkgs = import "${krops}/pkgs" {};
 
-
   krops-local = /home/joerg/git/krops;
 
   nixpkgs.git = {
