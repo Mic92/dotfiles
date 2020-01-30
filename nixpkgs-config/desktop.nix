@@ -48,6 +48,13 @@
     };
   };
 
+  systemd.user.services.mpris-proxy = {
+    Unit.Description = "Mpris proxy";
+    Unit.After = [ "network.target" "sound.target" ];
+    Install.WantedBy = [ "default.target" ];
+    Service.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
+  };
+
   services.syncthing.enable = true;
 
   services.mpd = {
@@ -75,7 +82,8 @@
     hicolor_icon_theme
     graphicsmagick
     gimp
-    mpv
+    (mpv-with-scripts.override { scripts = [ mpvScripts.mpris ];})
+    wmc-mpris
     youtube-dl
     firefox
     thunderbird
