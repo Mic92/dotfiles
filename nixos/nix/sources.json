@@ -1,0 +1,45 @@
+{
+    "krops": {
+        "sha256": "0fcybc92nslwvzw7vz5b5qwpxbjppz4kckbvbrxrr536kd5ynwzw",
+        "type": "tarball",
+        "url": "https://github.com/krebs/krops/archive/v1.19.0.tar.gz",
+        "url_template": "https://github.com/krebs/krops/archive/v<version>.tar.gz",
+        "version": "1.19.0"
+    },
+    "niv": {
+        "branch": "master",
+        "description": "Easy dependency management for Nix projects",
+        "homepage": "https://github.com/nmattia/niv",
+        "owner": "nmattia",
+        "repo": "niv",
+        "rev": "49157afd2298749b8a5062fd21079542a6b2de35",
+        "sha256": "0q7ymfrcgagcsw6kr93kprag7k358qj8znyzyri53ci1mrsak5y1",
+        "type": "tarball",
+        "url": "https://github.com/nmattia/niv/archive/49157afd2298749b8a5062fd21079542a6b2de35.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixos-hardware": {
+        "branch": "master",
+        "description": "A collection of NixOS modules covering hardware quirks.",
+        "homepage": "",
+        "owner": "NixOS",
+        "repo": "nixos-hardware",
+        "rev": "89c4ddb0e60e5a643ab15f68b2f4ded43134f492",
+        "sha256": "1a0mplnj0zx33f4lm7kwg6z6iwgdkg2pxy58plkj6w59ibfl2l27",
+        "type": "tarball",
+        "url": "https://github.com/NixOS/nixos-hardware/archive/89c4ddb0e60e5a643ab15f68b2f4ded43134f492.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nixpkgs": {
+        "branch": "master",
+        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
+        "homepage": "https://github.com/NixOS/nixpkgs",
+        "owner": "Mic92",
+        "repo": "nixpkgs",
+        "rev": "6f34bdd3c1a396d57a854cc87f3075195392f665",
+        "sha256": "018sm65ds89i3izpxn5x60g13864hm1s85bf1b6251c9dlbkdsc3",
+        "type": "tarball",
+        "url": "https://github.com/Mic92/nixpkgs/archive/6f34bdd3c1a396d57a854cc87f3075195392f665.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    }
+}

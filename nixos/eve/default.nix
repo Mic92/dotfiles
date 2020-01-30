@@ -1,4 +1,4 @@
-with (import <nixpkgs> {}).callPackage ../krops.nix {
+with import ../krops.nix {
   name = "eve";
 };
 
