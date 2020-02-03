@@ -2,35 +2,38 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ./modules/packages.nix
-    ./modules/networkmanager.nix
 
     #../modules/libvirt.nix
     #((toString <nixos-hardware>) + "/lenovo/thinkpad/x250")
     ((toString <nixos-hardware>) + "/dell/xps/13-9380")
-    ./modules/high-dpi.nix
     ./modules/caddy.nix
     ./modules/dice.nix
     ./modules/backup.nix
+    ./modules/high-dpi.nix
     ./modules/nfs.nix
-    ./modules/retiolum.nix
     ./modules/remote-builder.nix
-    ../modules/zfs.nix
+    ./modules/retiolum.nix
+    ./modules/ssmtp.nix
     #../modules/sway.nix
+    ./modules/minidlna.nix
+    ./modules/networkmanager.nix
+    ./modules/packages.nix
+
+    ../modules/dnscrypt.nix
     ../modules/mosh.nix
-    ../modules/tracing.nix
-    ../modules/tor-ssh.nix
     ../modules/nix-daemon.nix
     ../modules/networkd.nix
-    ../modules/dnscrypt.nix
     #./vm/modules/dnsmasq.nix
     ../modules/wireguard.nix
     ../modules/secrets.nix
+    ../modules/tracing.nix
+    ../modules/tor-ssh.nix
     #./kde.nix
     ../modules/i3.nix
     #../modules/awesome.nix
     ../modules/pki
     ../modules/yubikey.nix
+    ../modules/zfs.nix
   ];
 
   boot = {
@@ -55,16 +58,6 @@
   };
 
   networking.hostName = "turingmachine";
-
-  # when I need dhcp
-  systemd.network.networks."eth0".extraConfig = ''
-    [Match]
-    Name = eth0
-
-    [Network]
-    Address = 192.168.43.1/24
-    DHCPServer = yes
-  '';
 
   nix = {
     binaryCaches = [ https://r-ryantm.cachix.org ];
@@ -185,16 +178,6 @@
   nixpkgs.config = {
     allowUnfree = true;
     android_sdk.accept_license = true;
-  };
-
-  services.ssmtp = {
-    enable = true;
-    authPassFile = "/var/src/secrets/smtp-authpass";
-    authUser = "joerg@higgsboson.tk";
-    hostName = "mail.thalheim.io:587";
-    domain = "thalheim.io";
-    root = "joerg@thalheim.io";
-    useSTARTTLS = true;
   };
 
   networking.nameservers = [ "1.1.1.1" ];
