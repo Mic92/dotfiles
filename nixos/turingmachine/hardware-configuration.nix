@@ -13,7 +13,14 @@
 
   boot = {
     initrd.availableKernelModules = [
-      "xhci_pci" "ehci_pci" "ahci" "usb_storage" "sd_mod" "rtsx_pci_sdmmc"
+      "xhci_pci"
+      "ehci_pci"
+      # required on thinkpad
+      #"ahci"
+      "usb_storage"
+      "sd_mod"
+      "rtsx_pci_sdmmc"
+      "nvme"
     ];
     kernelModules = [ "kvm-intel" ];
   };
@@ -35,7 +42,7 @@
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/BB76-AED1";
+    device = "/dev/disk/by-uuid/66F2-49C6";
     fsType = "vfat";
     options = ["nofail"];
   };
