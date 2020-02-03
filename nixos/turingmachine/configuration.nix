@@ -7,6 +7,7 @@
 
     #../modules/libvirt.nix
     ((toString <nixos-hardware>) + "/lenovo/thinkpad/x250")
+    ./modules/high-dpi.nix
     ./modules/caddy.nix
     ./modules/dice.nix
     ./modules/backup.nix
