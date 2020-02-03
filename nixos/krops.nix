@@ -29,6 +29,11 @@ in rec {
 
   nixos-config.symlink = "dotfiles/nixos/${name}/configuration.nix";
 
+  nur.git = {
+    url = https://github.com/nix-community/nur;
+    ref = sourcesJson.nur.rev;
+  };
+
   secrets.pass = {
     dir  = toString ./. + "/secrets/${secretSource}";
     name = name;
