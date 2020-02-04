@@ -39,6 +39,11 @@ in rec {
     ref = sourcesJson.nur.rev;
   };
 
+  home-manager.git = {
+    url = https://github.com/rycee/home-manager;
+    ref = sourcesJson.home-manager.rev;
+  };
+
   secrets.pass = {
     dir  = toString ./. + "/secrets/${secretSource}";
     name = name;
