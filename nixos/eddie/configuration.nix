@@ -2,6 +2,7 @@
 {
   imports = [
     <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
+    ./modules/borg
     ../modules/secrets.nix
     ../modules/users.nix
     ../modules/retiolum.nix
