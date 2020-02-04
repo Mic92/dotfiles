@@ -9,20 +9,18 @@ if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" ]]; then
   tmux new-session -s "${TTY:t}" -t main || tmux attach-session -t "${TTY:t}"
 fi
 
-if [[ -z "$NIX_PATH" ]]; then
-  if [ -e /opt/nix-multiuser/nix/etc/profile.d/nix.sh ]; then
-    . /opt/nix-multiuser/nix/etc/profile.d/nix.sh
-    export PATH="$PATH:/opt/nix-multiuser/nix/bin"
-  fi
-  if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
-    . $HOME/.nix-profile/etc/profile.d/nix.sh;
-  fi
-  if [[ -d $HOME/git/nixpkgs ]]; then
-    export NIX_PATH="nixpkgs=$HOME/git/nixpkgs"
-  fi
-  if [[ -d $HOME/git/nixos-configuration ]]; then
-    export NIX_PATH="$NIX_PATH:nixos-config=$HOME/git/nixos-configuration/configuration.nix:nixpkgs-overlays=$HOME/git/nixos-configuration/overlays"
-  fi
+if [ -e /opt/nix-multiuser/nix/etc/profile.d/nix.sh ]; then
+  . /opt/nix-multiuser/nix/etc/profile.d/nix.sh
+  export PATH="$PATH:/opt/nix-multiuser/nix/bin"
+fi
+if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
+  . $HOME/.nix-profile/etc/profile.d/nix.sh;
+fi
+if [[ -d $HOME/git/nixpkgs ]]; then
+  export NIX_PATH="nixpkgs=$HOME/git/nixpkgs:$NIX_PATH"
+fi
+if [[ -d $HOME/.nix-defexpr/channels ]]; then
+    export NIX_PATH="$NIX_PATH:$HOME/.nix-defexpr/channels"
 fi
 if [[ -S /nix/var/nix/daemon-socket/socket ]]; then
   export NIX_REMOTE=daemon
