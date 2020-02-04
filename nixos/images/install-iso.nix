@@ -5,9 +5,9 @@
 # iso> sgdisk -n 1:0:+500M -N 2 -t 1:ef00 -t 2:8304 /dev/sda
 # iso> mkfs.vfat -b32 /dev/sda1
 # iso> zpool create -f zroot /dev/disk/by-partuuid/046fdb0b-114f-4435-9d8c-957ac73b5cd2
-# iso> nc -6 -w 120 -l -p 8023 | zfs receive -F zroot
+# iso> nc -6 -w 120 -l 8023 | zfs receive -F zroot
 # host> sudo zfs snapshot -r zroot@zfs-send
-# host> sudo zfs send -R zroot@zfs-send | nc -w 20 fe80::6af7:28ff:feb2:8706%enp0s25 8023
+# host> sudo zfs send --raw -R zroot@zfs-send | nc -w 20 fd42:4492:6a6d:43:1::0 8023
 { config, lib, pkgs, modulesPath, ... }:
 {
   imports = [

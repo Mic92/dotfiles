@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import hashlib
 import os
 import subprocess
 import urllib.request
@@ -30,9 +31,26 @@ def set_geo_ip(action: str) -> None:
         subprocess.run(["timedatectl", "set-timezone", timezone])
 
 
+def assign_ula_ip(action: str) -> None:
+    # DEVICE_IFACE
+    iface = os.environ.get("DEVICE_IFACE", None)
+    if iface is None:
+        raise Exception("No DEVICE_IFACE set")
+    hashsum = hashlib.sha256()
+    hashsum.update(iface.encode("utf-8"))
+    digest = hashsum.hexdigest()
+    address = f"fd42:4492:6a6d:43:2:{digest[0:4]}:{digest[4:8]}:{digest[8:12]}/64"
+    if action in ["down", "pre-down"]:
+        action = "del"
+    else:
+        action = "add"
+    cmd = ["ip", "addr", action, address, "dev", iface]
+    subprocess.run(cmd, check=True)
+
+
 def main() -> None:
     action = os.environ.get("NM_DISPATCHER_ACTION", "unknown")
-    hooks = [disable_sound, set_geo_ip]
+    hooks = [assign_ula_ip, disable_sound, set_geo_ip]
     for hook in hooks:
         try:
             print(f"run hook {hook.__name__}")
