@@ -139,6 +139,7 @@ function {
   profile[turingmachine]="desktop.nix"
   profile[eddie]="desktop.nix"
   profile[brain20]="brain.nix"
+  profile[eve]="eve.nix"
   export HOME_MANAGER_CONFIG="${HOME}/.config/nixpkgs/${profile[$HOST]:-common.nix}"
 }
 
