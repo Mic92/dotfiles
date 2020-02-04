@@ -3,10 +3,7 @@ with import ../krops.nix {
 };
 
 pkgs.krops.writeDeploy "deploy" {
-  source = lib.evalSource [{
-    nixpkgs.git = nixpkgs.git;
-    inherit dotfiles nixos-config secrets shared-secrets;
-  }];
+  source = lib.evalSource [defaultSources];
   target = "root@eve.thalheim.io";
   #target = "root@129.215.90.4";
 }

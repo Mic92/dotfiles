@@ -4,10 +4,9 @@ with import ../krops.nix {
 };
 
 pkgs.krops.writeDeploy "deploy" {
-  source = lib.evalSource [{
-    nixpkgs.file = nixpkgs.file;
-    inherit dotfiles nixos-config secrets shared-secrets;
-  }];
+  source = lib.evalSource [
+    (defaultSources // { nixpkgs.file = nixpkgs.file;})
+  ];
   buildTarget = "joerg@localhost";
   crossDeploy = true;
   target = "root@matchbox.r";

@@ -8,6 +8,11 @@ in rec {
   lib = import "${krops}/lib";
   pkgs = import "${krops}/pkgs" {};
 
+  defaultSources = {
+    nixpkgs.git = nixpkgs.git;
+    inherit dotfiles nixos-config secrets shared-secrets nixos-hardware nur home-manager;
+  };
+
   krops-local = /home/joerg/git/krops;
 
   nixpkgs.git = {
