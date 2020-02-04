@@ -99,11 +99,6 @@
     xorg.xev
     xorg.xprop
     xclip
-    keepassx-community
-    #(pass.withExtensions (e: [ e.pass-import ]))
-    #rofi-pass
-    #browserpass
-    #qtpass
     gpodder
     ncmpcpp
     xclip
