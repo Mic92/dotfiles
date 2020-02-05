@@ -1,0 +1,72 @@
+higgsboson.tk.	3600	IN	SOA	higgsboson.tk. root.higgsboson.tk. 2020020504 7200 3600 86400 3600
+
+;; NS Record
+@ 3600 IN NS ns1
+@ 3600 IN NS josh.ns.cloudflare.com.
+@ 3600 IN NS kate.ns.cloudflare.com.
+@ 3600 IN NS slave.dns.he.net.
+ns1 1 IN A 95.216.112.61
+ns1 1 IN AAAA 2a01:4f9:2b:1605::1
+
+;; A Records
+eve.higgsboson.tk.	1	IN	A	95.216.112.61
+higgsboson.tk.	1	IN	A	95.216.112.61
+iodine.higgsboson.tk.	1	IN	A	95.216.112.61
+jabber.higgsboson.tk.	1	IN	A	95.216.112.61
+login.higgsboson.tk.	1	IN	A	95.216.112.61
+mail.higgsboson.tk.	1	IN	A	95.216.112.61
+speedtest.higgsboson.tk.	1	IN	A	95.216.112.61
+web.higgsboson.tk.	1	IN	A	95.216.112.61
+
+;; AAAA Records
+eve.higgsboson.tk.	1	IN	AAAA	2a01:4f9:2b:1605::2
+higgsboson.tk.	1	IN	AAAA	2a01:4f9:2b:1605::1
+jabber.higgsboson.tk.	1	IN	AAAA	2a01:4f9:2b:1605::1
+mail.higgsboson.tk.	1	IN	AAAA	2a01:4f9:2b:1605::1
+matchbox.higgsboson.tk.	1	IN	AAAA	2001:470:6f:84e::3
+web.higgsboson.tk.	1	IN	AAAA	2a01:4f9:2b:1605::1
+
+;; CNAME Records
+adminer.higgsboson.tk.	1	IN	CNAME	new.devkid.net.
+anon.higgsboson.tk.	1	IN	CNAME	jabber.higgsboson.tk.
+archfeed.higgsboson.tk.	1	IN	CNAME	arch-pkg-feed.herokuapp.com.
+blog.higgsboson.tk.	1	IN	CNAME	web.higgsboson.tk.
+cdn.jabber.higgsboson.tk.	1	IN	CNAME	web.higgsboson.tk.
+cloud.higgsboson.tk.	1	IN	CNAME	web.higgsboson.tk.
+dl.higgsboson.tk.	1	IN	CNAME	web.higgsboson.tk.
+git.higgsboson.tk.	1	IN	CNAME	web.higgsboson.tk.
+githubtags.higgsboson.tk.	1	IN	CNAME	github-tags-feed.herokuapp.com.
+*.higgsboson.tk.	1	IN	CNAME	web.higgsboson.tk.
+imap.higgsboson.tk.	1	IN	CNAME	mail.higgsboson.tk.
+*.jabber.higgsboson.tk.	1	IN	CNAME	jabber.higgsboson.tk.
+ldap.higgsboson.tk.	1	IN	CNAME	web.higgsboson.tk.
+muc.higgsboson.tk.	1	IN	CNAME	jabber.higgsboson.tk.
+nixboot.higgsboson.tk.	1	IN	CNAME	web.higgsboson.tk.
+pad.higgsboson.tk.	1	IN	CNAME	web.higgsboson.tk.
+piwik.higgsboson.tk.	1	IN	CNAME	web.higgsboson.tk.
+pkg.higgsboson.tk.	1	IN	CNAME	web.higgsboson.tk.
+proxy.higgsboson.tk.	1	IN	CNAME	jabber.higgsboson.tk.
+pubsub.higgsboson.tk.	1	IN	CNAME	jabber.higgsboson.tk.
+reisekosten.higgsboson.tk.	1	IN	CNAME	reisekosten.herokuapp.com.
+rss.higgsboson.tk.	1	IN	CNAME	web.higgsboson.tk.
+smtp.higgsboson.tk.	1	IN	CNAME	mail.higgsboson.tk.
+tweets.higgsboson.tk.	1	IN	CNAME	web.higgsboson.tk.
+www.higgsboson.tk.	1	IN	CNAME	web.higgsboson.tk.
+
+;; MX Records
+higgsboson.tk.	1	IN	MX	10 mail.thalheim.io.
+
+;; SRV Records
+_xmpp-client._tcp.higgsboson.tk.	1	IN	SRV	0 5 5222 jabber.higgsboson.tk.
+_xmpp-client._tcp.test.higgsboson.tk.	1	IN	SRV	0 5 5333 test.higgsboson.tk.
+_xmpp-server._tcp.higgsboson.tk.	1	IN	SRV	0 5 5269 jabber.higgsboson.tk.
+_xmpp-server._tcp.muc.higgsboson.tk.	1	IN	SRV	0 5 5269 jabber.higgsboson.tk.
+_xmpp-server._tcp.test.higgsboson.tk.	1	IN	SRV	0 5 5369 test.higgsboson.tk.
+
+;; TXT Records
+_adsp._domainkey.higgsboson.tk.	1	IN	TXT	"dkim=all;"
+default._domainkey.higgsboson.tk.	1	IN	TXT	"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDhqBgbSEMgdWYmBSBsNbI2opjEZSFuZiqnAzv2yxLYyXB0l1uL4tw9npNkC4w5cNehc87qhuuzADsSOJoFUQ+H3oWOnENcGKatQqRKzLxKLBWwUf+TnC21AKGHXD4eABZk3ahfYnlR7li3Wh/JSMsAxWmaikLj3uLHd/WN9eH4rwIDAQAB"
+_dmarc.higgsboson.tk.	1	IN	TXT	"\"v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:admin@higgsboson.tk; ruf=mailto:admin@higgsboson.tk; pct=100\""
+higgsboson.tk.	1	IN	TXT	"v=spf1 mx a:mail.thalheim.io ip6:2a01:4f9:2b:1605::1 -all"
+joerg._pka.higgsboson.tk.	1	IN	TXT	"v=pka1;fpr=4ABA07382AD57E6B9AA4E88DCA4106B8D7CC79FA;uri=https://higgsboson.tk/joerg/joerg.asc"
+_keybase.higgsboson.tk.	1	IN	TXT	"keybase-site-verification=LtNOXZbyWD0wPWIUMzZBZcTQErv2Uq-ySvG_UN4kGUY"
