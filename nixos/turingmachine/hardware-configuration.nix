@@ -9,21 +9,19 @@
   ];
 
   # on demand
-  #services.fwupd.enable = true;
+  services.fwupd.enable = false;
 
-  boot = {
-    initrd.availableKernelModules = [
-      "xhci_pci"
-      "ehci_pci"
-      # required on thinkpad
-      #"ahci"
-      "usb_storage"
-      "sd_mod"
-      "rtsx_pci_sdmmc"
-      "nvme"
-    ];
-    kernelModules = [ "kvm-intel" ];
-  };
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "ehci_pci"
+    # required on thinkpad
+    #"ahci"
+    "usb_storage"
+    "sd_mod"
+    "rtsx_pci_sdmmc"
+    "nvme"
+  ];
+  boot.kernelModules = [ "kvm-intel" ];
 
   # for zfs
   networking.hostId = "8425e349";

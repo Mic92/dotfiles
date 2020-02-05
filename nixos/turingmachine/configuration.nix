@@ -63,8 +63,7 @@
     binaryCaches = [ https://r-ryantm.cachix.org ];
     binaryCachePublicKeys = [ "r-ryantm.cachix.org-1:gkUbLkouDAyvBdpBX0JOdIiD2/DP1ldF3Z3Y6Gqcc4c=" ];
     nixPath = [
-      "nixpkgs=/home/joerg/git/nixpkgs"
-      "nixos-config=/home/joerg/git/nixos-configuration/configuration.nix"
+      "/var/src"
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
     extraOptions = ''
@@ -79,7 +78,6 @@
   time.timeZone = null;
 
   services = {
-    fwupd.enable = true;
     gpm.enable = true;
     upower.enable = true;
     locate.enable = true;
