@@ -3,6 +3,7 @@ in {
   imports = [
     ./bike-light.nix
     ./charge-notifications.nix
+    #./parents.nix
     ./ldap.nix
     ./location-notifications.nix
     ./lunch-place.nix
@@ -38,8 +39,6 @@ in {
       ssl = true;
       include.entities = [
         "person.jorg_thalheim"
-        "person.dorit_thalheim"
-        "person.falk_thalheim"
         "person.shannan_lekwati"
         "device_tracker.beatrice"
         "device_tracker.redmi_note_5"
@@ -58,17 +57,6 @@ in {
       password = "!secret icloud_password";
       account_name = "Shannan's icloud";
     };
-    device_tracker = [{
-      platform = "fritz";
-      host = "fritzbox.ohorn.thalheim.io";
-      username = "home-assistant";
-      password = "!secret fritzbox_password";
-    } {
-      platform = "fritz2";
-      host = "fritzbox.ohorn.thalheim.io";
-      username = "home-assistant";
-      password = "!secret fritzbox_password";
-    }];
     cloud = {};
     system_health = {};
     sensor = [{
