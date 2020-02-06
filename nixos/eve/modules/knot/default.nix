@@ -43,7 +43,7 @@ in {
 
       acl:
         - id: he_acl
-          key: he_key
+          key: he1
           action: transfer
 
       zone:
@@ -72,4 +72,7 @@ in {
       install -m700 --owner $USER /var/src/secrets/knot-he-key.conf /var/lib/knot/knot-he-key.conf
     '';
   };
+
+  networking.firewall.allowedTCPPorts = [ 53 ];
+  networking.firewall.allowedUDPPorts = [ 53 ];
 }
