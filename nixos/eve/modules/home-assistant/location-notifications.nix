@@ -17,12 +17,42 @@
   # only track one device to avoid duplicate notifications
   shannan = person "device_tracker.beatrice";
   maurice = person "person.maurice_baillieu";
+  dimitra = person "person.dimitra";
+  sasha = person "person.aleksandr_maramzin";
   gymTime = {
     condition = "template";
     value_template = ''{{ state_attr("calendar.joerg_shannan_jorg_thalheim", "message") == "Gym" }}'';
   };
 in {
    services.home-assistant.config.automation = [{
+     alias = "Reset ping-tracker desktop";
+     trigger = {
+       platform = "homeassistant";
+       event = "start";
+     };
+     action = [{
+       service = "device_tracker.see";
+       data = {
+         host_name = "sascha_desktop";
+         mac = "a0:8c:fd:f1:86:af";
+         location_name = "Unknown";
+       };
+     } {
+       service = "device_tracker.see";
+       data = {
+         host_name = "dimitra-desktop";
+         mac = "6c:2b:59:8a:d3:3a";
+         location_name = "Unknown";
+       };
+     } {
+       service = "device_tracker.see";
+       data = {
+         host_name = "idontcare";
+         mac = "00:0e:c6:e2:11:fa";
+         location_name = "Unknown";
+       };
+     }];
+   } {
      alias = "Joerg at Shannan's notification";
      trigger = joerg { to = "Shannan's Home"; };
      action = notifyShannan "Jörg arrived at your place";
@@ -70,11 +100,27 @@ in {
      action = notifyShannan "Shannan arrived at the Gym";
    } {
      alias = "Maurice left Uni notification";
-     trigger = maurice { from = "University"; };
+     trigger = maurice { to = "not_home"; from = "University"; };
      action = notifyJoerg "Maurice left Uni";
    } {
      alias = "Maurice arrived at Uni notification";
-     trigger = maurice { to = "University"; };
+     trigger = maurice { from = "not_home"; to = "University"; };
      action = notifyJoerg "Maurice arrived at Uni";
+   } {
+     alias = "Dimitra left Uni notification";
+     trigger = dimitra { to = "not_home"; from = "University"; };
+     action = notifyJoerg "Dimitra left Uni";
+   } {
+     alias = "Dimitra arrived at Uni notification";
+     trigger = dimitra { from = "not_home"; to = "University"; };
+     action = notifyJoerg "Dimitra attrived at Uni";
+   } {
+     alias = "Sasha left Uni notification";
+     trigger = sasha { to = "not_home"; from = "University"; };
+     action = notifyJoerg "Sasha left Uni";
+  } {
+     alias = "Sasha arrived at Uni notification";
+     trigger = sasha { from = "not_home"; to = "University"; };
+     action = notifyJoerg "Sasha arrived at Uni";
    }];
 }
