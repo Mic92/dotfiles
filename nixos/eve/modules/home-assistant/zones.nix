@@ -8,12 +8,6 @@
     time_zone = "Europe/London";
   };
   services.home-assistant.config.zone = [{
-    name = "Thalheim's Home";
-    icon = "mdi:home";
-    latitude = "!secret elternhaus_latitude";
-    longitude = "!secret elternhaus_longitude";
-    radius = "100";
-  } {
     name = "Shannan's Home";
     icon = "mdi:human-female-girl";
     latitude = "!secret shannan_latitude";

@@ -1,23 +1,5 @@
  { ... }: {
    services.home-assistant.config = {
-     script = {
-       notify_weather.sequence = let
-         data_template = {
-           title = "Weather";
-           message = ''{{ states("sensor.dark_sky_summary_0h") }} (rain propability {{ states("sensor.dark_sky_precip_probability_0h") }}%)'';
-           data.photo.url = ''https://hass.thalheim.io{{ state_attr("sensor.dark_sky_summary_0h", "entity_picture")}}'';
-         };
-       in [{
-         service = "notify.mobile_app_jorg_s_xiaomi";
-         inherit data_template;
-       } {
-         service = "notify.mobile_app_beatrice";
-         inherit data_template;
-       } {
-         service = "input_boolean.turn_on";
-         entity_id = "input_boolean.rain_notified_today";
-       }];
-     };
      input_boolean.rain_notified_today = {
        name = "Rain notified today";
        icon = "mdi:weather-cloudy";
@@ -46,7 +28,22 @@
          platform = "state";
          entity_id = "sensor.dark_sky_icon";
        };
-       action.service = "script.notify_weather";
+       action.service = let
+         data_template = {
+           title = "Weather";
+           message = ''{{ states("sensor.dark_sky_summary_0h") }} (rain propability {{ states("sensor.dark_sky_precip_probability_0h") }}%)'';
+           data.photo.url = ''https://hass.thalheim.io{{ state_attr("sensor.dark_sky_summary_0h", "entity_picture")}}'';
+         };
+       in [{
+         service = "notify.mobile_app_jorg_s_xiaomi";
+         inherit data_template;
+       } {
+         service = "notify.mobile_app_beatrice";
+         inherit data_template;
+       } {
+         service = "input_boolean.turn_on";
+         entity_id = "input_boolean.rain_notified_today";
+       }];
        condition = {
          condition = "template";
          value_template = ''{{ "rain" in states.sensor.dark_sky_icon.state or "snow" in states.sensor.dark_sky_icon.state }}'';
