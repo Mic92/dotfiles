@@ -37,9 +37,9 @@ in {
 
       remote:
         - id: he_ip4
-          address: 216.218.133.2
+          address: 216.218.130.2
         - id: he_ip6
-          address: 2001:470:600::2
+          address: 2001:470:100::2
 
       acl:
         - id: he_acl
