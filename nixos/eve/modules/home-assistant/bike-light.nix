@@ -9,7 +9,7 @@
      };
      condition = {
        condition = "template";
-       value_template = ''{{ states("input_number.days_bike_light_uncharged") >= 3 }}'';
+       value_template = ''{{ states("input_number.days_bike_light_uncharged") | int >= 3 }}'';
      };
      action = [{
        service = "notify.pushover";
@@ -29,15 +29,6 @@ in {
       name = "Bike light used today";
       icon = "mdi:lightbulb";
     };
-    script = {
-      decrement_discharge_counter.sequence = [{
-        service = "input_number.increment";
-        entity_id = "input_number.days_bike_light_uncharged";
-      } {
-        service = "input_boolean.turn_on";
-        entity_id = "input_boolean.bike_light_used_today";
-      }];
-    };
     automation = [
       (chargeNotification "University")
       (chargeNotification "home")
@@ -53,7 +44,13 @@ in {
           condition = "template";
           value_template = ''{{ states("sun.sun") == "below_horizon" and states("input_boolean.bike_light_used_today") == "off" }}'';
         };
-        action.service = "script.decrement_discharge_counter";
+        action.service = [{
+          service = "input_number.increment";
+          entity_id = "input_number.days_bike_light_uncharged";
+        } {
+          service = "input_boolean.turn_on";
+          entity_id = "input_boolean.bike_light_used_today";
+        }];
       } {
         alias = "Reset bike light used today bool";
         trigger = {
