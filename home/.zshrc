@@ -146,15 +146,10 @@ home-manager() {
   if [[ -n ${commands[home-manager]} ]]; then
     command home-manager "$@"
   else
-    if [ ! -d "$HOME/git/nixpkgs" ]; then
-      git clone https://github.com/Mic92/nixpkgs/ ~/git/nixpkgs
-      (cd ~/git/nixpkgs && git remote add upstream https://github.com/NixOS/nixpkgs.git)
+    if ! nix-instantiate --find-file home-manager; then
+        nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
+        nix-channel --update
     fi
-
-    if ! nix-channel --list | grep -q home-manager; then
-      nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
-    fi
-    nix-channel --update
 
     nix-shell https://github.com/rycee/home-manager/archive/master.tar.gz -A install
     command home-manager "$@"
