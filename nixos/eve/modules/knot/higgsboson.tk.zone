@@ -1,4 +1,4 @@
-higgsboson.tk. 3600 IN SOA higgsboson.tk. root.higgsboson.tk. 2020020622 7200 3600 86400 3600
+higgsboson.tk. 3600 IN SOA higgsboson.tk. root.higgsboson.tk. 2020020707 7200 3600 86400 3600
 
 ;; NS Record
 @ 3600 IN NS ns1.thalheim.io.
@@ -9,27 +9,27 @@ higgsboson.tk. 3600 IN SOA higgsboson.tk. root.higgsboson.tk. 2020020622 7200 36
 
 $TTL 600
 
-eve.higgsboson.tk. IN A 95.216.112.61
-eve.higgsboson.tk. IN AAAA 2a01:4f9:2b:1605::2
-higgsboson.tk. IN A 95.216.112.61
-higgsboson.tk. IN AAAA 2a01:4f9:2b:1605::1
-higgsboson.tk. IN MX 10 mail.thalheim.io.
-www.higgsboson.tk. IN A 95.216.112.61
-www.higgsboson.tk. IN AAAA 2a01:4f9:2b:1605::1
-*.higgsboson.tk IN CNAME www.higgsboson.tk
+eve IN A 95.216.112.61
+eve IN AAAA 2a01:4f9:2b:1605::2
+@ IN A 95.216.112.61
+@ IN AAAA 2a01:4f9:2b:1605::1
+@ IN MX 10 mail.thalheim.io.
+www IN A 95.216.112.61
+www IN AAAA 2a01:4f9:2b:1605::1
+* IN CNAME www
 
-archfeed.higgsboson.tk. IN CNAME arch-pkg-feed.herokuapp.com.
-githubtags.higgsboson.tk. IN CNAME github-tags-feed.herokuapp.com.
-reisekosten.higgsboson.tk. IN CNAME reisekosten.herokuapp.com.
+archfeed IN CNAME arch-pkg-feed.herokuapp.com.
+githubtags IN CNAME github-tags-feed.herokuapp.com.
+reisekosten IN CNAME reisekosten.herokuapp.com.
 
-*.jabber.higgsboson.tk. IN CNAME jabber.higgsboson.tk.
-_xmpp-client._tcp.higgsboson.tk. IN SRV 0 5 5222 jabber.higgsboson.tk.
-_xmpp-server._tcp.higgsboson.tk. IN SRV 0 5 5269 jabber.higgsboson.tk.
-_xmpp-server._tcp.muc.higgsboson.tk. IN SRV 0 5 5269 jabber.higgsboson.tk.
+*.jabber IN CNAME jabber
+_xmpp-client._tcp IN SRV 0 5 5222 jabber
+_xmpp-server._tcp IN SRV 0 5 5269 jabber
+_xmpp-server._tcp.muc IN SRV 0 5 5269 jabber
 
-_adsp._domainkey.higgsboson.tk. IN TXT "dkim=all;"
-default._domainkey.higgsboson.tk. IN TXT "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDhqBgbSEMgdWYmBSBsNbI2opjEZSFuZiqnAzv2yxLYyXB0l1uL4tw9npNkC4w5cNehc87qhuuzADsSOJoFUQ+H3oWOnENcGKatQqRKzLxKLBWwUf+TnC21AKGHXD4eABZk3ahfYnlR7li3Wh/JSMsAxWmaikLj3uLHd/WN9eH4rwIDAQAB"
-_dmarc.higgsboson.tk. IN TXT "\"v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:admin@higgsboson.tk; ruf=mailto:admin@higgsboson.tk; pct=100\""
-higgsboson.tk. IN TXT "v=spf1 mx a:mail.thalheim.io ip6:2a01:4f9:2b:1605::1 -all"
-joerg._pka.higgsboson.tk. IN TXT "v=pka1;fpr=4ABA07382AD57E6B9AA4E88DCA4106B8D7CC79FA;uri=https://higgsboson.tk/joerg/joerg.asc"
-_keybase.higgsboson.tk. IN TXT "keybase-site-verification=LtNOXZbyWD0wPWIUMzZBZcTQErv2Uq-ySvG_UN4kGUY"
+_adsp._domainkey IN TXT "dkim=all;"
+default._domainkey IN TXT "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDhqBgbSEMgdWYmBSBsNbI2opjEZSFuZiqnAzv2yxLYyXB0l1uL4tw9npNkC4w5cNehc87qhuuzADsSOJoFUQ+H3oWOnENcGKatQqRKzLxKLBWwUf+TnC21AKGHXD4eABZk3ahfYnlR7li3Wh/JSMsAxWmaikLj3uLHd/WN9eH4rwIDAQAB"
+_dmarc IN TXT "\"v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:admin@higgsboson.tk; ruf=mailto:admin@higgsboson.tk; pct=100\""
+@ IN TXT "v=spf1 mx a:mail.thalheim.io ip6:2a01:4f9:2b:1605::1 -all"
+joerg._pka IN TXT "v=pka1;fpr=4ABA07382AD57E6B9AA4E88DCA4106B8D7CC79FA;uri=https://higgsboson.tk/joerg/joerg.asc"
+_keybase IN TXT "keybase-site-verification=LtNOXZbyWD0wPWIUMzZBZcTQErv2Uq-ySvG_UN4kGUY"
