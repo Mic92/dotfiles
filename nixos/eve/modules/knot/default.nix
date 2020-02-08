@@ -7,13 +7,13 @@ in {
   ];
   services.knot = {
     enable = true;
-    checkConfig = false;
+    keyFiles = [
+      "/var/src/secrets/knot-he-key.conf"
+    ];
     extraConfig = ''
       server:
         listen: ${ip4}@53
         listen: ${ip6}@53
-
-      include: /var/lib/knot/knot-he-key.conf
 
       remote:
         - id: he_ip4
@@ -44,30 +44,48 @@ in {
           global-module: mod-rrl/default
 
         - id: master
-          storage: /var/lib/knot/signed
           semantic-checks: on
           dnssec-signing: on
           dnssec-policy: rsa2k
-          notify: [ he_ip4, he_ip6 ]
+          notify: [ he_ip4 ]
           acl: [ he_acl ]
+          zonefile-sync: -1
           zonefile-load: difference
+          journal-content: changes
 
       zone:
-        #- domain: thalheim.io
-        #  file: "${./thalheim.io.zone}"
-        #  template: master
+        - domain: thalheim.io
+          file: "${./thalheim.io.zone}"
+          template: master
         - domain: higgsboson.tk
           file: "${./higgsboson.tk.zone}"
           template: master
-    '';
-  };
-  systemd.services.knot = {
-    serviceConfig.PermissionsStartOnly = true;
-    preStart = ''
-      install -m700 --owner $USER /var/src/secrets/knot-he-key.conf /var/lib/knot/knot-he-key.conf
+        - domain: lekwati.com
+          file: "${./lekwati.com.zone}"
+          template: master
     '';
   };
 
   networking.firewall.allowedTCPPorts = [ 53 ];
   networking.firewall.allowedUDPPorts = [ 53 ];
+
+  services.icinga2.extraConfig = ''
+    apply Service "DNS v4 (eve)" {
+      import "eve-service"
+      check_command = "dig"
+      vars.dig_lookup = "thalheim.io"
+      vars.dig_server = host.address
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "DNS v6 (eve)" {
+      import "eve-service"
+      check_command = "dig"
+      vars.dig_lookup = "thalheim.io"
+      vars.dig_server = host.address6
+      vars.dig_ipv6 = true
+      vars.dig_record_type = "AAAA"
+      assign where host.name == "eve.thalheim.io"
+    }
+  '';
 }

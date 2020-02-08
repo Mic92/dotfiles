@@ -1,98 +1,86 @@
-thalheim.io.	3600	IN	SOA	thalheim.io. root.thalheim.io. 2020020500 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020020809 7200 3600 86400 3600
 
-;; NS Record
 @ 3600 IN NS ns1
-ns1 1 IN A 95.216.112.61
-ns1 1 IN AAAA 2a01:4f9:2b:1605::1
+@ 3600 IN NS ns2.he.net.
+@ 3600 IN NS ns3.he.net.
+@ 3600 IN NS ns4.he.net.
+@ 3600 IN NS ns5.he.net.
 
-;; A Records
-amy.thalheim.io.	1	IN	A	129.215.165.57
-clara.thalheim.io.	1	IN	A	129.215.165.58
-dashboard.thalheim.io.	300	IN	A	129.215.91.109
-dimitra.thalheim.io.	1	IN	A	129.215.90.138
-donna.thalheim.io.	1	IN	A	129.215.165.54
-eddie.thalheim.io.	1	IN	A	129.215.197.11
-eve.thalheim.io.	1	IN	A	95.216.112.61
-idontcare.thalheim.io.	1	IN	A	129.215.91.216
-influxdb.thalheim.io.	1	IN	A	95.216.112.61
-jabber.thalheim.io.	1	IN	A	95.216.112.61
-login.thalheim.io.	1	IN	A	95.216.112.61
-mail.thalheim.io.	1	IN	A	95.216.112.61
-martha.thalheim.io.	1	IN	A	129.215.165.53
-matchbox.thalheim.io.	1	IN	A	172.23.75.254
-pramod.thalheim.io.	1	IN	A	129.215.91.229
-rauter.thalheim.io.	120	IN	A	172.23.75.225
-rose.thalheim.io.	1	IN	A	129.215.165.52
-sascha.thalheim.io.	1	IN	A	129.215.91.153
-thalheim.io.	1	IN	A	95.216.112.61
-web.thalheim.io.	1	IN	A	95.216.112.61
+$TTL 600
 
-;; AAAA Records
-eve.ohorn.thalheim.io.	1	IN	AAAA	fd42:4492:6a6d:500:8526:2adf:7451:8bbb
-eve.thalheim.io.	1	IN	AAAA	2a01:4f9:2b:1605::2
-fritzbox.ohorn.thalheim.io.	1	IN	AAAA	fd42:4492:6a6d:500:2665:11ff:fe80:52a3
-influxdb.thalheim.io.	1	IN	AAAA	2a01:4f9:2b:1605::1
-ipv6.thalheim.io.	1	IN	AAAA	2a01:4f9:2b:1605::1
-jabber.thalheim.io.	1	IN	AAAA	2a01:4f9:2b:1605::1
-mail.thalheim.io.	1	IN	AAAA	2a01:4f9:2b:1605::1
-matchbox.ohorn.thalheim.io.	1	IN	AAAA	fd42:4492:6a6d:500:ba27:ebff:feff:3dc5
-rauter.thalheim.io.	1	IN	AAAA	2001:470:1f0a:f8e::1
-thalheim.io.	1	IN	AAAA	2a01:4f9:2b:1605::1
-turingmachine.ohorn.thalheim.io.	1	IN	AAAA	fd42:4492:6a6d:500:f610:15d1:27a3:674b
-web.thalheim.io.	1	IN	AAAA	2a01:4f9:2b:1605::1
+ns1 IN A 95.216.112.61
+ns1 IN AAAA 2a01:4f9:2b:1605::1
 
-;; CNAME Records
-adminer.thalheim.io.	1	IN	CNAME	web.higgsboson.tk.
-anon.thalheim.io.	1	IN	CNAME	jabber.thalheim.io.
-archfeed.thalheim.io.	1	IN	CNAME	arch-pkg-feed.herokuapp.com.
-blog.thalheim.io.	1	IN	CNAME	web.thalheim.io.
-cdn.jabber.thalheim.io.	1	IN	CNAME	web.thalheim.io.
-cloud.thalheim.io.	1	IN	CNAME	web.thalheim.io.
-dl.thalheim.io.	1	IN	CNAME	thalheim.io.
-dns.thalheim.io.	1	IN	CNAME	web.thalheim.io.
-githubtags.thalheim.io.	1	IN	CNAME	github-tags-feed.herokuapp.com.
-git.thalheim.io.	1	IN	CNAME	web.thalheim.io.
-imap.thalheim.io.	1	IN	CNAME	mail.thalheim.io.
-ldap.thalheim.io.	1	IN	CNAME	web.thalheim.io.
-nixboot.thalheim.io.	1	IN	CNAME	web.thalheim.io.
-pad.thalheim.io.	1	IN	CNAME	web.thalheim.io.
-pkg.thalheim.io.	1	IN	CNAME	web.thalheim.io.
-proxy.thalheim.io.	1	IN	CNAME	jabber.higgsboson.tk.
-pubsub.thalheim.io.	1	IN	CNAME	jabber.thalheim.io.
-reisekosten.thalheim.io.	1	IN	CNAME	reisekosten.herokuapp.com.
-rss.thalheim.io.	1	IN	CNAME	web.higgsboson.tk.
-smtp.thalheim.io.	1	IN	CNAME	mail.thalheim.io.
-syncthing.thalheim.io.	1	IN	CNAME	thalheim.io.
-*.thalheim.io.	1	IN	CNAME	web.thalheim.io.
-tweets.thalheim.io.	1	IN	CNAME	thalheim.io.
-www.thalheim.io.	1	IN	CNAME	thalheim.io.
+amy IN A 129.215.165.57
+clara IN A 129.215.165.58
+dashboard IN A 129.215.91.109
+donna IN A 129.215.165.54
+eddie IN A 129.215.197.11
+martha IN A 129.215.165.53
+rose IN A 129.215.165.52
 
-;; MX Records
-thalheim.io.	1	IN	MX	3 mail.thalheim.io.
+@ IN A 95.216.112.61
+@ IN AAAA 2a01:4f9:2b:1605::1
+eve IN A 95.216.112.61
+eve IN AAAA 2a01:4f9:2b:1605::2
+www IN A 95.216.112.61
+www IN AAAA 2a01:4f9:2b:1605::1
+
+dimitra IN A 129.215.90.138
+dimitra IN TXT "c8:d9:d2:32:3b:28"
+idontcare IN A 129.215.91.216
+idontcare IN TXT "00:0e:c6:e2:11:fa"
+sascha IN A 129.215.91.153
+sascha IN TXT "a0:8c:fd:f1:44:23"
+pramod IN A 129.215.91.229
+
+matchbox IN A 172.23.75.254
+rauter IN A 172.23.75.225
+fritzbox IN AAAA fd42:4492:6a6d:500:2665:11ff:fe80:52a3
+matchbox.ohorn IN AAAA fd42:4492:6a6d:500:ba27:ebff:feff:3dc5
+rauter IN AAAA 2001:470:1f0a:f8e::1
+eve.ohorn IN AAAA fd42:4492:6a6d:500:8526:2adf:7451:8bbb
+turingmachine.ohorn IN AAAA fd42:4492:6a6d:500:f610:15d1:27a3:674b
+
+archfeed IN CNAME arch-pkg-feed.herokuapp.com.
+githubtags IN CNAME github-tags-feed.herokuapp.com.
+reisekosten IN CNAME reisekosten.herokuapp.com.
+* IN CNAME www
+*.jabber IN CNAME www
+
+@ IN MX 3 mail
 
 ;; NS Records
-dyn123.thalheim.io.	1	IN	NS	google.com.
-he.thalheim.io.	1	IN	NS	ns1.he.net.
-he.thalheim.io.	1	IN	NS	ns2.he.net.
-he.thalheim.io.	1	IN	NS	ns3.he.net.
-he.thalheim.io.	1	IN	NS	ns4.he.net.
-he.thalheim.io.	1	IN	NS	ns5.he.net.
+he IN NS ns2.he.net.
+he IN NS ns3.he.net.
+he IN NS ns4.he.net.
+he IN NS ns5.he.net.
+whoami4 IN NS ns1
+whoami6 IN NS ns1
 
 ;; SRV Records
-_xmpp-client._tcp.thalheim.io.	1	IN	SRV	1 5 5222 jabber.thalheim.io.
-_xmpp-server._tcp.muc.thalheim.io.	1	IN	SRV	1 5 5269 jabber.thalheim.io.
-_xmpp-server._tcp.thalheim.io.	1	IN	SRV	0 5 5269 jabber.thalheim.io.
+_xmpp-client._tcp IN SRV 1 5 5222 jabber
+_xmpp-server._tcp IN SRV 1 5 5269 jabber
+_xmpp-server._tcp IN SRV 0 5 5269 jabber
 
 ;; SSHFP Records
-;;thalheim.io.	1	IN	SSHFP	4 2 G0IURX3+XADBAPLPMNPXFTLKKNVMQDHUVYKJH7XUXEI
+thalheim.io IN SSHFP 1 1 183d8a19ce46d00f2a2bc8795088deb5d1154c46
+thalheim.io IN SSHFP 1 2 2bb2e95b3392f0b0f44d0a60e4cb1f21a1fbd06b01eb117d34c6610b869ba6a9
+thalheim.io IN SSHFP 4 1 96750ca52c9f8daf87e4357bab14c029db1d5da1
+thalheim.io IN SSHFP 4 2 a9f03d1083f98cf257561ee97ea2086e2d308c5ece581e42bd35f6c2ed114ac4
+eve IN SSHFP 1 1 183d8a19ce46d00f2a2bc8795088deb5d1154c46
+eve IN SSHFP 1 2 2bb2e95b3392f0b0f44d0a60e4cb1f21a1fbd06b01eb117d34c6610b869ba6a9
+eve IN SSHFP 4 1 96750ca52c9f8daf87e4357bab14c029db1d5da1
+eve IN SSHFP 4 2 a9f03d1083f98cf257561ee97ea2086e2d308c5ece581e42bd35f6c2ed114ac4
+git.thalheim.io IN SSHFP 1 1 183d8a19ce46d00f2a2bc8795088deb5d1154c46
+git.thalheim.io IN SSHFP 1 2 2bb2e95b3392f0b0f44d0a60e4cb1f21a1fbd06b01eb117d34c6610b869ba6a9
+git.thalheim.io IN SSHFP 4 1 96750ca52c9f8daf87e4357bab14c029db1d5da1
+git.thalheim.io IN SSHFP 4 2 a9f03d1083f98cf257561ee97ea2086e2d308c5ece581e42bd35f6c2ed114ac4
 
 ;; TXT Records
-_adsp._domainkey.thalheim.io.	1	IN	TXT	"dkim=all;"
-default._domainkey.thalheim.io.	1	IN	TXT	"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgVpKyJL+JXhYefL05+wal58+PK1s5y1nf1uI7aguTbQFaM3wo3cs/7CaxBK1a+JNCd7f1sgmbdR17CzsiUUQO5GLsyl6bS4VGZv1XMMSuTdCpOT08iY0s9JikME6kPg9rxbo35ET9DtDDEqmgwbUcIfl/eD8G4jwTvyPYJPfFKQIDAQAB"
-dimitra.thalheim.io.	1	IN	TXT	"c8:d9:d2:32:3b:28"
-_dmarc.thalheim.io.	1	IN	TXT	"v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:admin@higgsboson.tk; ruf=mailto:admin@higgsboson.tk; pct=100"
-idontcare.thalheim.io.	1	IN	TXT	"00:0e:c6:e2:11:fa"
-joerg._pka.thalheim.io.	1	IN	TXT	"v=pka1;fpr=4ABA07382AD57E6B9AA4E88DCA4106B8D7CC79FA;uri=https://thalheim.io/joerg/joerg.asc"
-_keybase.thalheim.io.	1	IN	TXT	"keybase-site-verification=woupLHxi4iAKOAHIOaKDPJwR3GiAzVagmTp68g0b2uM"
-sascha.thalheim.io.	1	IN	TXT	"a0:8c:fd:f1:44:23"
-thalheim.io.	1	IN	TXT	"v=spf1 mx a:mail.thalheim.io ip6:2a01:4f9:2b:1605::1 -all"
+_adsp._domainkey IN TXT "dkim=all;"
+default._domainkey IN TXT "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgVpKyJL+JXhYefL05+wal58+PK1s5y1nf1uI7aguTbQFaM3wo3cs/7CaxBK1a+JNCd7f1sgmbdR17CzsiUUQO5GLsyl6bS4VGZv1XMMSuTdCpOT08iY0s9JikME6kPg9rxbo35ET9DtDDEqmgwbUcIfl/eD8G4jwTvyPYJPfFKQIDAQAB"
+_dmarc IN TXT "v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:admin@higgsboson.tk; ruf=mailto:admin@higgsboson.tk; pct=100"
+joerg._pka IN TXT "v=pka1;fpr=4ABA07382AD57E6B9AA4E88DCA4106B8D7CC79FA;uri=https://thalheim.io/joerg/joerg.asc"
+_keybase IN TXT "keybase-site-verification=woupLHxi4iAKOAHIOaKDPJwR3GiAzVagmTp68g0b2uM"
+@ IN TXT "v=spf1 mx a:mail.thalheim.io ip6:2a01:4f9:2b:1605::1 -all"

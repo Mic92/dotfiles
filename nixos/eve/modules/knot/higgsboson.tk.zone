@@ -1,4 +1,4 @@
-higgsboson.tk. 3600 IN SOA higgsboson.tk. root.higgsboson.tk. 2020020707 7200 3600 86400 3600
+@ 3600 IN SOA higgsboson.tk. root.higgsboson.tk. 2020020800 7200 3600 86400 3600
 
 ;; NS Record
 @ 3600 IN NS ns1.thalheim.io.
