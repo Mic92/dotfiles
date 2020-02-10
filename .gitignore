@@ -1,5 +1,6 @@
 home/.vim/bundle
 *.zwc
+*.pyc
 home/.emacs.elc
 /home/.gitconfig.local
 #nixos/secrets
