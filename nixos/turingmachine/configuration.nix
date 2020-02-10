@@ -14,12 +14,12 @@
     ./modules/remote-builder.nix
     ./modules/retiolum.nix
     ./modules/ssmtp.nix
+    ./modules/stubby.nix
     #../modules/sway.nix
     ./modules/minidlna.nix
     ./modules/networkmanager.nix
     ./modules/packages.nix
 
-    ../modules/dnscrypt.nix
     ../modules/mosh.nix
     ../modules/nix-daemon.nix
     ../modules/networkd.nix
