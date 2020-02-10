@@ -3,6 +3,7 @@
   pulseaudio = true;
   #allowUnsupportedSystem = true;
   oraclejdk.accept_license = true;
+  android_sdk.accept_license = true;
 
   packageOverrides = pkgs: let
     myVimBundle = with pkgs.vimPlugins; {
