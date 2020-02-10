@@ -42,25 +42,25 @@
     sshKey = "/var/src/secrets/id_buildfarm";
     system = "x86_64-linux";
     maxJobs = 4;
+  #} {
+  #  hostName = "inspector.r";
+  #  sshUser = "nix";
+  #  sshKey = "/var/src/secrets/id_buildfarm";
+  #  system = "x86_64-linux";
+  #  maxJobs = 4;
+  #} {
+  #  hostName = "dpdkm.r";
+  #  sshKey = "/var/src/secrets/id_buildfarm";
+  #  sshUser = "nix";
+  #  system = "x86_64-linux";
+  #  maxJobs = 4;
   } {
-    hostName = "inspector.r";
-    sshUser = "nix";
+    hostName = "eddie.r";
     sshKey = "/var/src/secrets/id_buildfarm";
-    system = "x86_64-linux";
-    maxJobs = 4;
-  } {
-    hostName = "dpdkm.r";
-    sshKey = "/var/src/secrets/id_buildfarm";
     sshUser = "nix";
     system = "x86_64-linux";
-    maxJobs = 4;
+    maxJobs = 2;
   } {
-    #  hostName = "eddie.r";
-    #  sshKey = "/var/src/secrets/id_buildfarm";
-    #  sshUser = "nix";
-    #  system = "x86_64-linux";
-    #  maxJobs = 2;
-    #} {
     # rpi3
     #  hostName = "172.23.75.254";
     #  maxJobs = 4;
