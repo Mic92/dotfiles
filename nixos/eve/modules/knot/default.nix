@@ -70,21 +70,52 @@ in {
   networking.firewall.allowedUDPPorts = [ 53 ];
 
   services.icinga2.extraConfig = ''
-    apply Service "DNS v4 (eve)" {
+    template Service "eve-dns4-service" {
       import "eve-service"
       check_command = "dig"
-      vars.dig_lookup = "thalheim.io"
       vars.dig_server = host.address
-      assign where host.name == "eve.thalheim.io"
     }
-
-    apply Service "DNS v6 (eve)" {
+    template Service "eve-dns6-service" {
       import "eve-service"
       check_command = "dig"
-      vars.dig_lookup = "thalheim.io"
       vars.dig_server = host.address6
       vars.dig_ipv6 = true
       vars.dig_record_type = "AAAA"
+    }
+
+    apply Service "DNS thalheim.io v4 (eve)" {
+      import "eve-dns4-service"
+      vars.dig_lookup = "thalheim.io"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "DNS thalheim.io v6 (eve)" {
+      import "eve-dns6-service"
+      vars.dig_lookup = "thalheim.io"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "DNS higgsboson.tk v4 (eve)" {
+      import "eve-dns4-service"
+      vars.dig_lookup = "higgsboson.tk"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "DNS higgsboson.tk v6 (eve)" {
+      import "eve-dns6-service"
+      vars.dig_lookup = "higgsboson.tk"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "DNS lekwati.com v4 (eve)" {
+      import "eve-dns4-service"
+      vars.dig_lookup = "lekwati.com"
+      assign where host.name == "eve.thalheim.io"
+    }
+
+    apply Service "DNS lekwati.com v6 (eve)" {
+      import "eve-dns6-service"
+      vars.dig_lookup = "lekwati.com"
       assign where host.name == "eve.thalheim.io"
     }
   '';
