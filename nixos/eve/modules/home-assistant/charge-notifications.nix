@@ -54,7 +54,7 @@
           weekday = [ "mon" "tue" "wed" "thu" "fri"];
         } {
           condition = "template";
-          value_template = ''{{ state_attr("device_tracker.shannans_apple_watch", "battery_status") != "NotCharging" }}'';
+          value_template = ''{{ state_attr("device_tracker.shannans_apple_watch", "battery_status") == "Charging" }}'';
         }];
       };
       action = [{
