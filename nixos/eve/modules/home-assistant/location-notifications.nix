@@ -97,7 +97,7 @@ in {
      alias = "Shannan arrived at the Gym notification";
      trigger = shannan { to = "Gym"; };
      condition = gymTime;
-     action = notifyShannan "Shannan arrived at the Gym";
+     action = notifyJoerg "Shannan arrived at the Gym";
    } {
      alias = "Maurice left Uni notification";
      trigger = maurice { to = "not_home"; from = "University"; };
