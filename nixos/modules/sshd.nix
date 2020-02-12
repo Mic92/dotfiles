@@ -3,7 +3,6 @@
 
   services.openssh = {
     enable = true;
-    startWhenNeeded = true;
     passwordAuthentication = false;
     useDns = false;
     # unbind gnupg sockets if they exists
