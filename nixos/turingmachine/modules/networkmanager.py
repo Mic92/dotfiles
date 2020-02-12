@@ -35,16 +35,15 @@ def assign_ula_ip(action: str) -> None:
     # DEVICE_IFACE
     iface = os.environ.get("DEVICE_IFACE", None)
     if iface is None:
-        raise Exception("No DEVICE_IFACE set")
+        raise OSError(f"No DEVICE_IFACE set for {action}")
+    if action in ["down", "pre-down"]:
+        return
+
     hashsum = hashlib.sha256()
     hashsum.update(iface.encode("utf-8"))
     digest = hashsum.hexdigest()
     address = f"fd42:4492:6a6d:43:2:{digest[0:4]}:{digest[4:8]}:{digest[8:12]}/64"
-    if action in ["down", "pre-down"]:
-        action = "del"
-    else:
-        action = "add"
-    cmd = ["ip", "addr", action, address, "dev", iface]
+    cmd = ["ip", "addr", "add", address, "dev", iface]
     subprocess.run(cmd, check=True)
 
 
