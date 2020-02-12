@@ -72,7 +72,7 @@ let
       check_command = "http"
       vars.http_sni = true
       vars.http_onredirect = "follow"
-      vars.http_ssl_force_tlsv1_2 = true
+      vars.http_ssl_force_tlsv1_2_or_higher = true
     }
 
     template Service "eve-http4-service" {

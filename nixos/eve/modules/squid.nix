@@ -55,7 +55,7 @@
       vars.http_port = 8888
       vars.http_expect = "HTTP/1.1"
       vars.http_sni = false
-      vars.http_ssl_force_tlsv1_2 = false
+      vars.http_ssl_force_tlsv1_2_or_higher = false
       assign where host.name == "eve.thalheim.io"
     }
 
@@ -64,7 +64,7 @@
       vars.http_port = 8888
       vars.http_expect = "HTTP/1.1"
       vars.http_sni = false
-      vars.http_ssl_force_tlsv1_2 = false
+      vars.http_ssl_force_tlsv1_2_or_higher = false
       assign where host.name == "eve.thalheim.io"
     }
 
