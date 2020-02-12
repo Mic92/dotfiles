@@ -28,7 +28,7 @@
          platform = "state";
          entity_id = "sensor.dark_sky_icon";
        };
-       action.service = let
+       action = let
          data_template = {
            title = "Weather";
            message = ''{{ states("sensor.dark_sky_summary_0h") }} (rain propability {{ states("sensor.dark_sky_precip_probability_0h") }}%)'';

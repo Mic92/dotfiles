@@ -44,7 +44,7 @@ in {
           condition = "template";
           value_template = ''{{ states("sun.sun") == "below_horizon" and states("input_boolean.bike_light_used_today") == "off" }}'';
         };
-        action.service = [{
+        action = [{
           service = "input_number.increment";
           entity_id = "input_number.days_bike_light_uncharged";
         } {
