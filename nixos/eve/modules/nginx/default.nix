@@ -84,6 +84,8 @@ in {
     networking.firewall.allowedTCPPorts = [ 80 443 ];
 
     #security.acme.production = false;
+    security.acme.email = "joerg.letsencrypt@thalheim.io";
+    security.acme.acceptTerms = true;
     security.acme.certs = {
       "thalheim.io" = sanCertificate "thalheim.io";
       "devkid.net" = sanCertificate "devkid.net";
