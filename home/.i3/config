@@ -45,7 +45,6 @@ bindsym $mod+Ctrl+l exec ~/bin/i3lock.sh
 
 # start rofi (a program launcher)
 bindsym  $mod+d exec rofi -font "SauceCodePro Nerd Font Mono 24" -theme glue_pro_blue -show run
-bindsym  $mod+p exec rofi-pass
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -181,7 +180,7 @@ bindsym XF86AudioPlay exec playerctl play
 bindsym XF86AudioPause exec playerctl pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
-#bindsym $mod+shift+Space exec mpc toggle
+bindsym $mod+p exec playerctl play-pause
 
 bindsym $mod+Print exec flameshot gui -p /home/joerg/upload
 

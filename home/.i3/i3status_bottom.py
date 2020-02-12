@@ -18,13 +18,6 @@ status = Status(standalone=True)
 ROOT = os.path.dirname(os.path.realpath(__file__))
 
 status.register(
-    "mpd",
-    format="{title} {status} {album} {song_elapsed}/{song_length}",
-    status={"pause": "", "play": "▶", "stop": "◾"},
-    color=color.text_normal,
-)
-
-status.register(
     "network",
     interface="enp0s20f0u1u4",
     format_up="{v4cidr} {bytes_sent}/s|{bytes_recv}/s",
