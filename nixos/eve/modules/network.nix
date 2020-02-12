@@ -86,7 +86,7 @@ in {
       ssh = {
         enable = true;
         port = 2222;
-        hostECDSAKey = /var/src/secrets/initrd-ssh-key;
+        hostECDSAKey = toString <secrets/initrd-ssh-key>;
       };
       postCommands = ''
         echo "zfs load-key -a && killall zfs" >> /root/.profile

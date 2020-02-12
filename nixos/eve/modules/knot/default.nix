@@ -8,7 +8,7 @@ in {
   services.knot = {
     enable = true;
     keyFiles = [
-      "/var/src/secrets/knot-he-key.conf"
+      (toString <secrets/knot-he-key.conf>)
     ];
     extraConfig = ''
       server:
