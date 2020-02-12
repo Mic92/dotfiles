@@ -16,7 +16,7 @@
   joerg = person "person.jorg_thalheim";
   # only track one device to avoid duplicate notifications
   shannan = person "device_tracker.beatrice";
-  maurice = person "person.maurice_baillieu";
+  maurice = person "person.maurice_bailleu";
   dimitra = person "person.dimitra";
   sasha = person "person.aleksandr_maramzin";
   gymTime = {
