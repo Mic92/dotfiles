@@ -39,7 +39,6 @@
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
     ./modules/openldap.nix
-    ./modules/openssh.nix
     ./modules/packages.nix
     ./modules/phpfpm.nix
     ./modules/phpldapadmin.nix
@@ -50,6 +49,7 @@
     ./modules/retiolum.nix
     ./modules/rspamd.nix
     ./modules/rsyncd.nix
+    ./modules/sshd.nix
     ./modules/sslh.nix
     ./modules/squid.nix
     ./modules/syncthing.nix
