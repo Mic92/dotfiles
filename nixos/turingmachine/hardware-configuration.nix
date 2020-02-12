@@ -6,6 +6,8 @@
 {
   imports = [
     <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
+    #((toString <nixos-hardware>) + "/lenovo/thinkpad/x250")
+    ((toString <nixos-hardware>) + "/dell/xps/13-9380")
   ];
 
   # on demand

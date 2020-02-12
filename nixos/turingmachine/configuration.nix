@@ -4,8 +4,6 @@
     ./hardware-configuration.nix
 
     #../modules/libvirt.nix
-    #((toString <nixos-hardware>) + "/lenovo/thinkpad/x250")
-    ((toString <nixos-hardware>) + "/dell/xps/13-9380")
     ./modules/caddy.nix
     ./modules/dice.nix
     ./modules/backup.nix
