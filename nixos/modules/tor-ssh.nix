@@ -1,9 +1,9 @@
 { ... }: {
   services.tor = {
     enable = true;
-    hiddenServices."ssh".map = [
-      { port = 22; }
-    ];
+    hiddenServices."ssh".map = [{
+      port = 22;
+    }];
     extraConfig = ''
       DNSPort 9053
       AutomapHostsOnResolve 1
@@ -14,5 +14,6 @@
       NewCircuitPeriod 120
     '';
   };
-  services.openssh.enable = true;
+
+  imports = [ ./sshd.nix ];
 }
