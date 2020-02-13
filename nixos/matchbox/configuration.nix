@@ -20,7 +20,7 @@
     ../modules/tor-ssh.nix
     ../modules/networkd.nix
     ../modules/nix-daemon.nix
-    ../modules/netdata.nix
+    ../modules/netdata
     ../modules/rpi3.nix
     ../modules/secrets.nix
 

@@ -1,6 +1,6 @@
 { pkgs, ... }: {
   imports = [
-    ../../modules/netdata.nix
+    ../../modules/netdata
   ];
 
   services.netdata.python.extraPackages = ps: [

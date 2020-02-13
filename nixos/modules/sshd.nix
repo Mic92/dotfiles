@@ -1,5 +1,5 @@
 {
-  imports = [ ./netdata.nix ];
+  imports = [ ./netdata/options.nix ];
 
   services.openssh = {
     enable = true;

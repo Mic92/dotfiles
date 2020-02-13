@@ -20,7 +20,7 @@
         ./modules/networkd.nix
         ./modules/nix-daemon.nix
         ./modules/dashboard.nix
-        ./modules/netdata.nix
+        ./modules/netdata
       ];
 
       users.extraUsers.chris = {
