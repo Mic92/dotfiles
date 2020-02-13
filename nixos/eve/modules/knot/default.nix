@@ -5,11 +5,13 @@ in {
   imports = [
     ./whoami.nix
   ];
+
+  krops.secrets.files."knot-he-key.conf".owner = "knot";
+  users.users.knot.extraGroups = [ "keys" ];
+
   services.knot = {
     enable = true;
-    keyFiles = [
-      (toString <secrets/knot-he-key.conf>)
-    ];
+    keyFiles = [ "/run/keys/knot-he-key.conf" ];
     extraConfig = ''
       server:
         listen: ${ip4}@53
