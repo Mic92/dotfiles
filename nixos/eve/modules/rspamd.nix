@@ -4,6 +4,9 @@ let
     classifier "bayes" {
       autolearn = true;
     }
+    redis {
+      servers = "127.0.0.1";
+    }
     dkim_signing {
       path = "/var/lib/rspamd/dkim/$domain.$selector.key";
       selector = "default";
@@ -29,6 +32,21 @@ let
       # too much memory
       #phishtank_enabled = true;
     }
+    neural {
+      enabled = true;
+    }
+    neural_group {
+      symbols = {
+        "NEURAL_SPAM" {
+          weight = 3.0; # sample weight
+          description = "Neural network spam";
+        }
+        "NEURAL_HAM" {
+          weight = -3.0; # sample weight
+          description = "Neural network ham";
+        }
+      }
+    }
   '';
 
   sieve-spam-filter = pkgs.callPackage ../pkgs/sieve-spam-filter {};
@@ -37,6 +55,7 @@ in {
     enable = true;
     extraConfig = ''
       .include(priority=1,duplicate=merge) "${localConfig}"
+      .include(priority=2,duplicate=merge) "/run/keys/rspamd-redis-password"
     '';
 
     postfix.enable = true;
@@ -97,6 +116,18 @@ in {
     url = "https://rspamd.thalheim.io";
     regex = "Rspamd";
   };
+
+  services.redis = {
+    enable = true;
+    requirePassFile = "/run/keys/redis-password";
+  };
+  krops.secrets.files.redis-password.owner = "redis";
+  users.users.redis.extraGroups = [ "keys" ];
+  systemd.services.redis.serviceConfig.SupplementaryGroups =  [ "keys" ];
+
+  krops.secrets.files.rspamd-redis-password.owner = "rspamd";
+  users.users.rspamd.extraGroups = [ "keys" ];
+  systemd.services.rspamd.serviceConfig.SupplementaryGroups =  [ "keys" ];
 
   systemd.services.dovecot2.preStart = ''
     mkdir -p /var/lib/dovecot/sieve/
