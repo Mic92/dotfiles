@@ -509,6 +509,11 @@ you should place your code here."
                 :name  "Big messages"
                 :query "size:2M..500M"
                 :key ?b))
+  (add-to-list 'mu4e-bookmarks
+               (make-mu4e-bookmark
+                :name "Unread messages without spam"
+                :query "flag:unread AND NOT flag:trashed AND NOT maildir:/thalheim.io/Spam"
+                :key ?u))
 
   (when (fboundp 'imagemagick-register-types)
     (imagemagick-register-types))
