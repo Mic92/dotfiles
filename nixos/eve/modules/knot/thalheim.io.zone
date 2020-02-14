@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020020809 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020021408 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -46,7 +46,7 @@ archfeed IN CNAME arch-pkg-feed.herokuapp.com.
 githubtags IN CNAME github-tags-feed.herokuapp.com.
 reisekosten IN CNAME reisekosten.herokuapp.com.
 * IN CNAME www
-*.jabber IN CNAME www
+
 
 @ IN MX 3 mail
 
@@ -59,9 +59,12 @@ whoami4 IN NS ns1
 whoami6 IN NS ns1
 
 ;; SRV Records
-_xmpp-client._tcp IN SRV 1 5 5222 jabber
-_xmpp-server._tcp IN SRV 1 5 5269 jabber
+jabber IN A 95.216.112.61
+jabber IN AAAA 2a01:4f9:2b:1605::1
+*.jabber IN CNAME www
+_xmpp-client._tcp IN SRV 0 5 5222 jabber
 _xmpp-server._tcp IN SRV 0 5 5269 jabber
+_xmpp-server._tcp.muc IN SRV 0 5 5269 jabber
 
 ;; SSHFP Records
 thalheim.io IN SSHFP 1 1 183d8a19ce46d00f2a2bc8795088deb5d1154c46

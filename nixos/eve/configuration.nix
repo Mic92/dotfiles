@@ -24,6 +24,7 @@
     ./modules/borgbackup.nix
     ./modules/docker.nix
     ./modules/dovecot.nix
+    ./modules/ejabberd.nix
     ./modules/gogs.nix
     ./modules/grafana.nix
     ./modules/home-assistant
@@ -44,7 +45,6 @@
     ./modules/phpldapadmin.nix
     ./modules/postfix.nix
     ./modules/postgresql.nix
-    ./modules/prosody.nix
     ./modules/rainloop.nix
     ./modules/retiolum.nix
     ./modules/rspamd.nix
@@ -58,6 +58,7 @@
     ./modules/tor.nix
     ./modules/tt-rss.nix
     ./modules/users.nix
+    #./modules/wiregrill
     ./modules/zsh.nix
 
     ../modules/builder.nix
