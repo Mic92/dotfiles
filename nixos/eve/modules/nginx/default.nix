@@ -53,6 +53,10 @@ in {
       recommendedProxySettings = true;
       recommendedTlsSettings = true;
 
+      commonHttpConfig = ''
+        access_log syslog:server=unix:/dev/log combined;
+      '';
+
       # owncloud etc
       clientMaxBodySize = "4G";
 
