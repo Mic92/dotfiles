@@ -35,7 +35,7 @@
            data.photo.url = ''https://hass.thalheim.io{{ state_attr("sensor.dark_sky_summary_0h", "entity_picture")}}'';
          };
        in [{
-         service = "notify.mobile_app_jorg_s_xiaomi";
+         service = "notify.mobile_app_redmi_note_5";
          inherit data_template;
        } {
          service = "notify.mobile_app_beatrice";
@@ -46,7 +46,7 @@
        }];
        condition = {
          condition = "template";
-         value_template = ''{{ "rain" in states.sensor.dark_sky_icon.state or "snow" in states.sensor.dark_sky_icon.state }}'';
+         value_template = ''{{ "rain" in states.sensor.dark_sky_icon.state or "snow" in states.sensor.dark_sky_icon.state and not states.input_boolean.rain_notified_today == "on" }}'';
        };
      } {
        alias = "Reset rain notified today";
