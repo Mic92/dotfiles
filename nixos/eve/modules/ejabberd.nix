@@ -11,9 +11,7 @@
   services.postgresql.ensureDatabases = [ "ejabberd" ];
   services.postgresql.ensureUsers = [{
     name = "ejabberd";
-    ensurePermissions = {
-      "DATABASE prosody" = "ALL PRIVILEGES";
-    };
+    ensurePermissions."DATABASE prosody" = "ALL PRIVILEGES";
   }];
 
   security.dhparams = {

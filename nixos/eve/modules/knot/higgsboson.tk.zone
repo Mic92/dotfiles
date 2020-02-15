@@ -1,4 +1,4 @@
-@ 3600 IN SOA higgsboson.tk. root.higgsboson.tk. 2020021407 7200 3600 86400 3600
+@ 3600 IN SOA higgsboson.tk. root.higgsboson.tk. 2020021501 7200 3600 86400 3600
 
 ;; NS Record
 @ 3600 IN NS ns1.thalheim.io.
@@ -14,6 +14,8 @@ eve IN AAAA 2a01:4f9:2b:1605::2
 @ IN A 95.216.112.61
 @ IN AAAA 2a01:4f9:2b:1605::1
 @ IN MX 10 mail.thalheim.io.
+@ IN CAA 0 issue "letsencrypt.org"
+@ IN CAA 0 iodef "mailto:joerg.caa@thalheim.io"
 www IN A 95.216.112.61
 www IN AAAA 2a01:4f9:2b:1605::1
 * IN CNAME www
