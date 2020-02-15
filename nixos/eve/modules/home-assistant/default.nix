@@ -88,6 +88,10 @@ in {
       useACMEHost = "thalheim.io";
       forceSSL = true;
       extraConfig = ''
+        # rsa4096 certificate for android
+        ssl_certificate /var/lib/acme/hass.thalheim.io/fullchain.pem;
+        ssl_certificate_key /var/lib/acme/hass.thalheim.io/key.pem;
+
         proxy_buffering off;
       '';
       locations."/".extraConfig = ''
@@ -100,6 +104,14 @@ in {
         proxy_set_header Connection $connection_upgrade;
       '';
     };
+  };
+
+  security.acme.certs."hass.thalheim.io" = {
+    webroot = "/var/lib/acme/acme-challenge";
+    postRun = "systemctl reload nginx.service";
+    allowKeysForGroup = true;
+    group = "nginx";
+    keyType = "rsa4096";
   };
 
   krops.secrets.files."home-assistant-secrets.yaml" = {
