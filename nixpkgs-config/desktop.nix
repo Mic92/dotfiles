@@ -57,16 +57,6 @@
 
   services.syncthing.enable = true;
 
-  services.mpd = {
-    enable = true;
-    musicDirectory = "${config.home.homeDirectory}/Musik";
-    extraConfig = ''
-      audio_output {
-        type "pulse"
-        name "Pulse output"
-      }
-    '';
-  };
   home.packages = with pkgs; [
     league-of-moveable-type
     dejavu_fonts
@@ -75,6 +65,7 @@
     twitter-color-emoji
 
     arandr
+    xlibs.xkill
     signal-desktop
     copyq
     nur.repos.mic92.pandoc-bin
@@ -82,9 +73,6 @@
     hicolor_icon_theme
     graphicsmagick
     gimp
-    (mpv-with-scripts.override { scripts = [ mpvScripts.mpris ];})
-    wmc-mpris
-    youtube-dl
     firefox
     thunderbird
     chromium
@@ -113,6 +101,11 @@
     gnupg1compat
     cheat
     tldr
+
+    (mpv-with-scripts.override { scripts = [ mpvScripts.mpris ];})
+    wmc-mpris
+    playerctl
+    youtube-dl
 
     isync
     mu
