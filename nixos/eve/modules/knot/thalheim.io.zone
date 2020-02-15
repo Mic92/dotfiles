@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020021408 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020021500 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -61,7 +61,6 @@ whoami6 IN NS ns1
 ;; SRV Records
 jabber IN A 95.216.112.61
 jabber IN AAAA 2a01:4f9:2b:1605::1
-*.jabber IN CNAME www
 _xmpp-client._tcp IN SRV 0 5 5222 jabber
 _xmpp-server._tcp IN SRV 0 5 5269 jabber
 _xmpp-server._tcp.muc IN SRV 0 5 5269 jabber

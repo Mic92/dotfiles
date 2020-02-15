@@ -52,7 +52,6 @@
 
       hosts:
       - thalheim.io
-      - jabber.thalheim.io
       - anon.thalheim.io
       - higgsboson.tk
       - devkid.net
@@ -62,7 +61,6 @@
 
       certfiles:
       - /var/lib/acme/ejabberd-anon.thalheim.io/full.pem
-      - /var/lib/acme/ejabberd-jabber.thalheim.io/full.pem
       - /var/lib/acme/ejabberd-thalheim.io/full.pem
       - /var/lib/acme/ejabberd-devkid.net/full.pem
       - /var/lib/acme/ejabberd-higgsboson.tk/full.pem
@@ -340,7 +338,6 @@
     };
   in {
     "ejabberd-anon.thalheim.io" = cert "anon.thalheim.io";
-    "ejabberd-jabber.thalheim.io" = cert "jabber.thalheim.io";
     "ejabberd-devkid.net" = cert "devkid.net";
     "ejabberd-thalheim.io" = cert "thalheim.io";
     "ejabberd-higgsboson.tk" = cert "higgsboson.tk";
