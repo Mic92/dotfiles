@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020021502 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020021700 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -25,6 +25,7 @@ eve IN A 95.216.112.61
 eve IN AAAA 2a01:4f9:2b:1605::2
 www IN A 95.216.112.61
 www IN AAAA 2a01:4f9:2b:1605::1
+muc IN CNAME www
 
 @ IN CAA 0 issue "letsencrypt.org"
 @ IN CAA 0 iodef "mailto:joerg.caa@thalheim.io"
