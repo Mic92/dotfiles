@@ -58,6 +58,7 @@ in {
 
       commonHttpConfig = ''
         access_log syslog:server=unix:/dev/log combined;
+        add_header Strict-Transport-Security 'max-age=31536000; includeSubDomains; preload' always;
       '';
 
       resolver.addresses = ["127.0.0.1"];
