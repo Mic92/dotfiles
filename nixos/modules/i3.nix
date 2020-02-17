@@ -7,8 +7,8 @@
   services.xserver.windowManager.i3.enable = true;
   services.xserver.displayManager.defaultSession = "none+i3";
 
-  programs.light.enable = true;
   environment.systemPackages = with pkgs; [
+    brightnessctl
     pavucontrol
     lightlocker
     lxappearance
