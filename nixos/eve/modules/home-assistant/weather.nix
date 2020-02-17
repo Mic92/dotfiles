@@ -46,7 +46,7 @@
        }];
        condition = {
          condition = "template";
-         value_template = ''{{ "rain" in states.sensor.dark_sky_icon.state or "snow" in states.sensor.dark_sky_icon.state and states.input_boolean.rain_notified_today.state != "on" }}'';
+         value_template = ''{{ ("rain" in states.sensor.dark_sky_icon.state or "snow" in states.sensor.dark_sky_icon.state) and states.input_boolean.rain_notified_today.state != "on" }}'';
        };
      } {
        alias = "Reset rain notified today";
