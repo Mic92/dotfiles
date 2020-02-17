@@ -147,8 +147,8 @@ home-manager() {
     command home-manager "$@"
   else
     if ! nix-instantiate --find-file home-manager; then
-        nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
-        nix-channel --update
+      nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
+      nix-channel --update
     fi
 
     nix-shell https://github.com/rycee/home-manager/archive/master.tar.gz -A install
@@ -195,8 +195,9 @@ bindkey '^X^e' edit-command-line
 ## Completion
 autoload colors; colors;
 autoload -U compinit
-fpath=($* "/usr/local/share/zsh/site-functions" $fpath)
 fignore=(.DS_Store $fignore)
+[ -d "$HOME/.zsh-completions/src" ] && fpath+=($HOME/.zsh-completions)
+[ -d "$HOME/.nix-profile/share/zsh/site-functions" ] && fpath+=(~/.nix-profile/share/zsh/site-functions)
 compinit -i
 compdef mcd=cd
 zmodload -i zsh/complist
@@ -220,7 +221,6 @@ zstyle ':completion::complete:*' cache-path ./cache/
 zstyle ':completion:*:cd:*' ignore-parents parent pwd
 zstyle ':completion:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
 zstyle ':completion:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w -w"
-[ -d "$HOME/.zsh-completions/src" ] && fpath=($HOME/.zsh-completions $fpath)
 
 ## Prompt
 PURE_GIT_UNTRACKED_DIRTY=0 PURE_GIT_PULL=0
