@@ -1,11 +1,12 @@
 { config, lib, pkgs, ... }: 
 
 let
-  sanCertificate = domain: let
-    wantedVhosts = lib.filterAttrs (_: attrs: (attrs.useACMEHost or null) == domain) 
+  sanCertificate = { domain, rsa ? false }: let
+    wantedVhosts = lib.filterAttrs (_: attrs: (attrs.useACMEHost or null) == domain)
       config.services.nginx.virtualHosts;
     serverAliases = lib.flatten (lib.mapAttrsToList (_: vhost: vhost.serverAliases) wantedVhosts);
   in {
+    domain = domain;
     extraDomains = (
       lib.mapAttrs (name: _: null) wantedVhosts
     ) // (lib.foldl (domains: domain: domains // { ${domain} = null; }) {} serverAliases);
@@ -13,6 +14,7 @@ let
     webroot = "/var/lib/acme/acme-challenge";
     allowKeysForGroup = true;
     group = "nginx";
+    keyType = if rsa then "rsa2048" else "ec384";
   };
 in {
   imports = [
@@ -58,27 +60,9 @@ in {
         access_log syslog:server=unix:/dev/log combined;
       '';
 
-      # owncloud etc
-      clientMaxBodySize = "4G";
-
       resolver.addresses = ["127.0.0.1"];
 
       sslDhparam = config.security.dhparams.params.nginx.path;
-
-      virtualHosts."_" = {
-        listen = [
-          { addr = "127.0.0.1"; port = 80; }
-          { addr = "[2a01:4f9:2b:1605::1]"; port = 80; }
-        ];
-        locations."/stub_status".extraConfig = ''
-          stub_status;
-          # Security: Only allow access from the IP below.
-          allow 127.0.0.1;
-          allow ::1;
-          # Deny anyone else
-          deny all;
-        '';
-      };
     };
 
     security.dhparams = {
@@ -92,10 +76,12 @@ in {
     security.acme.email = "joerg.letsencrypt@thalheim.io";
     security.acme.acceptTerms = true;
     security.acme.certs = {
-      "thalheim.io" = sanCertificate "thalheim.io";
-      "devkid.net" = sanCertificate "devkid.net";
-      #"halfco.de" = sanCertificate "halfco.de";
-      "higgsboson.tk" = sanCertificate "higgsboson.tk";
+      "thalheim.io" = sanCertificate  { domain = "thalheim.io"; };
+      "legacy-thalheim.io" = sanCertificate { domain = "thalheim.io"; rsa = true; };
+      "devkid.net" = sanCertificate { domain = "devkid.net"; };
+      "legacy-devkid.net" = sanCertificate { domain = "devkid.net"; rsa = true; };
+      "higgsboson.tk" = sanCertificate { domain = "higgsboson.tk"; };
+      "legacy-higgsboson.tk" = sanCertificate { domain = "higgsboson.tk"; rsa = true; };
     };
 
     environment.etc."netdata/python.d/web_log.conf".text = ''
