@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020021801 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020021818 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -8,9 +8,29 @@
 
 $TTL 600
 
+;; NS Records
+he IN NS ns2.he.net.
+he IN NS ns3.he.net.
+he IN NS ns4.he.net.
+he IN NS ns5.he.net.
+whoami4 IN NS ns1
+whoami6 IN NS ns1
+
+@ IN A 95.216.112.61
+@ IN AAAA 2a01:4f9:2b:1605::1
+eve IN A 95.216.112.61
+eve IN AAAA 2a01:4f9:2b:1605::2
 ns1 IN A 95.216.112.61
 ns1 IN AAAA 2a01:4f9:2b:1605::1
 
+www IN A 95.216.112.61
+www IN AAAA 2a01:4f9:2b:1605::1
+* IN CNAME www
+
+@ IN CAA 0 issue "letsencrypt.org"
+@ IN CAA 0 iodef "mailto:joerg.caa@thalheim.io"
+
+;; University
 amy IN A 129.215.165.57
 clara IN A 129.215.165.58
 dashboard IN A 129.215.91.109
@@ -18,20 +38,6 @@ donna IN A 129.215.165.54
 eddie IN A 129.215.197.11
 martha IN A 129.215.165.53
 rose IN A 129.215.165.52
-
-@ IN A 95.216.112.61
-@ IN AAAA 2a01:4f9:2b:1605::1
-eve IN A 95.216.112.61
-eve IN AAAA 2a01:4f9:2b:1605::2
-www IN A 95.216.112.61
-www IN AAAA 2a01:4f9:2b:1605::1
-mail IN A 95.216.112.61
-mail IN AAAA 2a01:4f9:2b:1605::1
-muc IN CNAME www
-
-@ IN CAA 0 issue "letsencrypt.org"
-@ IN CAA 0 iodef "mailto:joerg.caa@thalheim.io"
-
 dimitra IN A 129.215.90.138
 dimitra IN TXT "c8:d9:d2:32:3b:28"
 idontcare IN A 129.215.91.216
@@ -40,6 +46,7 @@ sascha IN A 129.215.91.153
 sascha IN TXT "a0:8c:fd:f1:44:23"
 pramod IN A 129.215.91.229
 
+;; VPN
 matchbox IN A 172.23.75.254
 rauter IN A 172.23.75.225
 fritzbox IN AAAA fd42:4492:6a6d:500:2665:11ff:fe80:52a3
@@ -51,22 +58,20 @@ turingmachine.ohorn IN AAAA fd42:4492:6a6d:500:f610:15d1:27a3:674b
 archfeed IN CNAME arch-pkg-feed.herokuapp.com.
 githubtags IN CNAME github-tags-feed.herokuapp.com.
 reisekosten IN CNAME reisekosten.herokuapp.com.
-* IN CNAME www
 
-
+;; Mail
 @ IN MX 3 mail
+mail IN A 95.216.112.61
+mail IN AAAA 2a01:4f9:2b:1605::1
+_adsp._domainkey IN TXT "dkim=all;"
+default._domainkey IN TXT "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgVpKyJL+JXhYefL05+wal58+PK1s5y1nf1uI7aguTbQFaM3wo3cs/7CaxBK1a+JNCd7f1sgmbdR17CzsiUUQO5GLsyl6bS4VGZv1XMMSuTdCpOT08iY0s9JikME6kPg9rxbo35ET9DtDDEqmgwbUcIfl/eD8G4jwTvyPYJPfFKQIDAQAB"
+_dmarc IN TXT "v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:admin@higgsboson.tk; ruf=mailto:admin@higgsboson.tk; pct=100"
+@ IN TXT "v=spf1 mx a:mail.thalheim.io ip6:2a01:4f9:2b:1605::1 -all"
 
-;; NS Records
-he IN NS ns2.he.net.
-he IN NS ns3.he.net.
-he IN NS ns4.he.net.
-he IN NS ns5.he.net.
-whoami4 IN NS ns1
-whoami6 IN NS ns1
-
-;; SRV Records
+;; XMPP
 jabber IN A 95.216.112.61
 jabber IN AAAA 2a01:4f9:2b:1605::1
+muc IN CNAME www
 _xmpp-client._tcp IN SRV 0 5 5222 jabber
 _xmpp-server._tcp IN SRV 0 5 5269 jabber
 _xmpp-server._tcp.muc IN SRV 0 5 5269 jabber
@@ -85,10 +90,6 @@ git IN SSHFP 1 2 2bb2e95b3392f0b0f44d0a60e4cb1f21a1fbd06b01eb117d34c6610b869ba6a
 git IN SSHFP 4 1 96750ca52c9f8daf87e4357bab14c029db1d5da1
 git IN SSHFP 4 2 a9f03d1083f98cf257561ee97ea2086e2d308c5ece581e42bd35f6c2ed114ac4
 
-;; TXT Records
-_adsp._domainkey IN TXT "dkim=all;"
-default._domainkey IN TXT "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgVpKyJL+JXhYefL05+wal58+PK1s5y1nf1uI7aguTbQFaM3wo3cs/7CaxBK1a+JNCd7f1sgmbdR17CzsiUUQO5GLsyl6bS4VGZv1XMMSuTdCpOT08iY0s9JikME6kPg9rxbo35ET9DtDDEqmgwbUcIfl/eD8G4jwTvyPYJPfFKQIDAQAB"
-_dmarc IN TXT "v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:admin@higgsboson.tk; ruf=mailto:admin@higgsboson.tk; pct=100"
+;; Keybase & GPG
 joerg._pka IN TXT "v=pka1;fpr=4ABA07382AD57E6B9AA4E88DCA4106B8D7CC79FA;uri=https://thalheim.io/joerg/joerg.asc"
 _keybase IN TXT "keybase-site-verification=woupLHxi4iAKOAHIOaKDPJwR3GiAzVagmTp68g0b2uM"
-@ IN TXT "v=spf1 mx a:mail.thalheim.io ip6:2a01:4f9:2b:1605::1 -all"
