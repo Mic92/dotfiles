@@ -6,11 +6,9 @@
     settings = {
       "listen.owner" = "nginx";
       "listen.group" = "nginx";
-      "pm" = "dynamic";
+      "pm" = "ondemand";
       "pm.max_children" = 32;
-      "pm.start_servers" = 1;
-      "pm.min_spare_servers" = 1;
-      "pm.max_spare_servers" = 1;
+      "pm.process_idle_timeout" = "10s";
       "pm.max_requests" = 500;
     };
   };

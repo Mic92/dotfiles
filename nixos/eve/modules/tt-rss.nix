@@ -1,4 +1,12 @@
 { config, pkgs, ... } : {
+
+  services.phpfpm.pools.tt-rss = {
+    "pm" = "ondemand";
+    "pm.max_children" = 32;
+    "pm.process_idle_timeout" = "10s";
+    "pm.max_requests" = 500;
+  };
+
   services.tt-rss = {
     enable = true;
     virtualHost = "rss.devkid.net";
