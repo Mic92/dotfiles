@@ -9,7 +9,7 @@
      };
      condition = {
        condition = "template";
-       value_template = ''{{ states("input_number.days_bike_light_uncharged") | int >= 3 }}'';
+       value_template = ''{{ states("input_number.days_bike_light_uncharged") | int >= 2 }}'';
      };
      action = [{
        service = "notify.pushover";
