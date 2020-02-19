@@ -23,6 +23,17 @@
         sleep 1
       done
     '';
+
+    postHook = ''
+      url="https://hc-ping.com/$(cat ${toString <secrets/borgbackup-healthcheck-uuid>})"
+
+      if [[ "$exitStatus" == "0" ]]; then
+        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 "$url"
+      else
+        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 "$url"/fail
+      fi
+    '';
+
     prune.keep = {
       within = "1d"; # Keep all archives from the last day
       daily = 7;
