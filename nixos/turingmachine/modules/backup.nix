@@ -9,7 +9,7 @@ in {
     timerConfig.OnCalendar = "12:00:00";
   };
   systemd.services.backup = {
-    path = with pkgs; [ borgbackup utillinux ];
+    path = with pkgs; [ borgbackup utillinux curl ];
     # cifs mount from ./dice.nix
     unitConfig.RequiresMountsFor = backup_path;
     script = ''
@@ -33,6 +33,8 @@ in {
       cp "$0" "${backup_path}/../backup-script"
 
       umount -l /mnt/backup
+
+      curl -v "https://hc-ping.com/$(cat ${toString <secrets/borgbackup-healthcheck-uuid>})"
     '';
   };
   environment.systemPackages = with pkgs; [ borgbackup ];
