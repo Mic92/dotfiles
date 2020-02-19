@@ -15,6 +15,7 @@
     compression = "auto,zstd";
     startAt = "daily";
     preHook = ''
+      set -x
       ${pkgs.netcat}/bin/nc -w20 home.devkid.net 22198 < /run/keys/nas-wakeup-password
       for i in $(seq 1 20); do
         if ${pkgs.netcat}/bin/nc -z -v -w1 home.devkid.net 22022; then
