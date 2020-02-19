@@ -15,7 +15,7 @@
       # no python2
       withPython = false;
     })
-    nur.repos.mic92.cntr
+    cntr
 
     cryptsetup
     usbutils
