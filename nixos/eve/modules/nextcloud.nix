@@ -19,13 +19,13 @@
         "pim.devkid.net"
       ];
     };
-  };
 
-  services.phpfpm.pools.nextcloud = {
-    "pm" = "ondemand";
-    "pm.max_children" = 32;
-    "pm.process_idle_timeout" = "10s";
-    "pm.max_requests" = 500;
+    poolSettings = {
+      "pm" = "ondemand";
+      "pm.max_children" = 32;
+      "pm.process_idle_timeout" = "10s";
+      "pm.max_requests" = 500;
+    };
   };
 
   krops.secrets.files.nextcloud-admin-password.owner = "nextcloud";

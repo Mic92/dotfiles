@@ -1,6 +1,6 @@
 { config, pkgs, ... } : {
 
-  services.phpfpm.pools.tt-rss = {
+  services.phpfpm.pools.tt-rss.settings = {
     "pm" = "ondemand";
     "pm.max_children" = 32;
     "pm.process_idle_timeout" = "10s";
