@@ -28,7 +28,7 @@
     ./modules/gogs.nix
     ./modules/grafana.nix
     ./modules/home-assistant
-    ./modules/icinga2.nix
+    ./modules/icinga2
     ./modules/influxdb.nix
     ./modules/knot
     ./modules/kresd.nix

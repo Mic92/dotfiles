@@ -1,5 +1,4 @@
 { pkgs, ... }:
-
 {
   services.borgbackup.jobs.eve = {
     paths = [
@@ -26,13 +25,9 @@
     '';
 
     postHook = ''
-      url="https://hc-ping.com/$(cat ${toString <secrets/borgbackup-healthcheck-uuid>})"
-
-      if [[ "$exitStatus" == "0" ]]; then
-        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 "$url"
-      else
-        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 "$url"/fail
-      fi
+      ${pkgs.nur.repos.mic92.healthcheck}/bin/healthcheck \
+        --service borgbackup --failed $exitStatus \
+        --password-file ${toString <secrets/healthcheck-borgbackup>}
     '';
 
     prune.keep = {
@@ -42,6 +37,8 @@
       monthly = 0;
     };
   };
+
+  services.icinga2.healthchecks.borgbackup = {};
 
   krops.secrets.files.nas-wakeup-password = {};
   krops.secrets.files.borg-passphrase = {};

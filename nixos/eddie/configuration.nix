@@ -15,6 +15,7 @@
     ../modules/tor-ssh.nix
     ../modules/nix-daemon.nix
     ../modules/networkd.nix
+    ../modules/nur.nix
     ../modules/builder.nix
     ../modules/i3.nix
     ./modules/ping-tracker

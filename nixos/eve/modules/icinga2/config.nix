@@ -1,4 +1,6 @@
-{ config, pkgs, lib, ... }:
+{ pkgs, config, lib, ... }:
+
+with lib;
 let
   icingaConf = pkgs.writeText "eve.thalheim.io.conf" ''
     # TODO: https://www.jens.bruntt.dk/icinga2-sending-pushover-alerts-revisited/
@@ -52,6 +54,21 @@ let
       check_interval = 1m
       retry_interval = 30s
       command_endpoint = "icingamaster.bsd.services"
+    }
+
+    template Service "eve-healthcheck" {
+      import "eve-service"
+      check_interval = 2d
+      max_check_attempts = 1
+
+      check_command = "dummy"
+      vars.dummy_text = {{
+        var service = get_service(macro("$host.name$"), macro("$service.name$"))
+        var lastCheck = DateTime(service.last_check).to_string()
+
+        return "No check results received. Last result time: " + lastCheck
+      }}
+      vars.dummy_state = "3"
     }
 
     ## prosody
@@ -112,40 +129,47 @@ let
     # {{{ Services
     ${config.services.icinga2.extraConfig}
     # }}}
+
+    # {{{ Healthchecks
+    ${concatMapStringsSep "\n" (check: ''
+      apply Service "Healthcheck ${check.name} (eve)" {
+        import "eve-healthcheck"
+        assign where host.name == "eve.thalheim.io"
+      }
+
+      object ApiUser "mic92-healthcheck-${check.name}" {
+        password = "@healthcheck_${check.name}@"
+        permissions = [{
+          permission = "actions/process-check-result"
+          filter = {{ match("Healthcheck ${check.name} (eve)", service.display_name) }}
+        }]
+      }
+    '') (attrValues config.services.icinga2.healthchecks)}
+    # }}}
   '';
 in {
-  options.services.icinga2.extraConfig = lib.mkOption {
-    type = lib.types.lines;
-    default = "";
-    description = "Icinga configuration file";
-  };
-
-  config = {
-    services.icinga2.extraConfig = ''
+  systemd.services.icinga-sync = {
+    wantedBy = [ "multi-user.target" ];
+    path = with pkgs; [ openssh gnused ];
+    script = ''
+      sed \
+        -e "s!@API_PASSWORD@!$(<${toString <secrets/icinga-api-password>})!" \
+        -e "s!@PUSHOVER_EMAIL@!$(<${toString <secrets/icinga-pushover-email>})!" \
+        ${concatMapStringsSep "" (check: ''
+          -e "s!@healthcheck_${check.name}@!$(< ${toString <secrets>}/healthcheck-${check.name})!" \
+        '') (attrValues config.services.icinga2.healthchecks)} \
+        ${icingaConf} \
+        > eve.thalheim.io.conf
+      scp -o 'ProxyJump mic92@fw02.bsd.services' eve.thalheim.io.conf \
+        mic92@icingamaster:eve.thalheim.io.conf
+      ssh -J mic92@fw02.bsd.services mic92@icingamaster \
+        'sudo service icinga2 reload || sudo icinga2 daemon -C'
     '';
-    systemd.services.icinga-sync = {
-      wantedBy = [ "multi-user.target" ];
-      path = with pkgs; [ openssh gnused ];
-      script = ''
-        sed \
-          -e "s!@API_PASSWORD@!$(</run/keys/icinga-api-password)!" \
-          -e "s!@PUSHOVER_EMAIL@!$(</run/keys/icinga-pushover-email)!" \
-          ${icingaConf} \
-          > eve.thalheim.io.conf
-        scp -o 'ProxyJump mic92@fw02.bsd.services' eve.thalheim.io.conf \
-          mic92@icingamaster:eve.thalheim.io.conf
-        ssh -J mic92@fw02.bsd.services mic92@icingamaster \
-          'sudo service icinga2 reload || sudo icinga2 daemon -C'
-      '';
-      serviceConfig = {
-        RuntimeDirectory = "icinga-sync";
-        WorkingDirectory = "/run/icinga-sync/";
-        Type = "oneshot";
-        RemainAfterExit = true;
-      };
+    serviceConfig = {
+      RuntimeDirectory = "icinga-sync";
+      WorkingDirectory = "/run/icinga-sync/";
+      Type = "oneshot";
+      RemainAfterExit = true;
     };
-
-    krops.secrets.files.icinga-api-password = {};
-    krops.secrets.files.icinga-pushover-email = {};
   };
 }

@@ -6,10 +6,6 @@
     zfs.enableUnstable = true;
   };
 
-  nixpkgs.config.packageOverrides = pkgs: {
-    nur = import <nur> { inherit pkgs; };
-  };
-
   environment.systemPackages = with pkgs; [
     (neovim.override {
       # no python2
