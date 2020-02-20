@@ -20,6 +20,7 @@
 
     ../modules/mosh.nix
     ../modules/nix-daemon.nix
+    ../modules/nur.nix
     ../modules/networkd.nix
     #./vm/modules/dnsmasq.nix
     ../modules/wireguard.nix

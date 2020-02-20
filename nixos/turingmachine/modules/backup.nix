@@ -2,40 +2,49 @@
 with builtins;
 
 let
-  backup_path = "/mnt/backup/borg";
+  backupPath = "/mnt/backup/borg";
 in {
   systemd.timers.backup = {
     wantedBy = ["multi-user.target"];
     timerConfig.OnCalendar = "12:00:00";
   };
-  systemd.services.backup = {
-    path = with pkgs; [ borgbackup utillinux curl ];
-    # cifs mount from ./dice.nix
-    unitConfig.RequiresMountsFor = backup_path;
-    script = ''
-      export BORG_PASSPHRASE=$(cat ${toString <secrets/borgbackup>})
 
-      # could be dangerous, but works
-      borg break-lock "${backup_path}"
+  systemd.services.borgbackup-job-turingmachine.unitConfig.RequiresMountsFor = backupPath;
 
-      borg create --stats \
-           --compression zlib,9 \
-           --verbose \
-           "${backup_path}::turingmachine-$(date +%Y%m%d)" \
-           /home /var /root /etc
-
-      borg prune -v "${backup_path}" \
-        --keep-daily 7 \
-        --keep-weekly 4 \
-        --keep-monthly 3
-
-      # backup itself
-      cp "$0" "${backup_path}/../backup-script"
-
-      umount -l /mnt/backup
-
-      curl -v "https://hc-ping.com/$(cat ${toString <secrets/borgbackup-healthcheck-uuid>})"
+  services.borgbackup.jobs.turingmachine = {
+    removableDevice = true;
+    paths = [
+      "/home"
+      "/etc"
+      "/var"
+      "/root"
+    ];
+    repo = backupPath;
+    encryption = {
+      mode = "repokey";
+      passCommand = "cat ${toString <secrets/borgbackup>}";
+    };
+    preHook = ''
+      # Could be dangerous, but works.
+      # In case an backup was aborted....
+      borg break-lock "${backupPath}"
     '';
+    postHook = ''
+      ${pkgs.nur.repos.mic92.healthcheck}/bin/healthcheck \
+        --service borgbackup-turingmachine --failed $exitStatus \
+        --password-file ${toString <secrets/healthcheck-borgbackup-turingmachine>}
+    '';
+
+    postCreate = ''
+      umount -l /mnt/backup
+    '';
+
+    prune.keep = {
+      within = "1d"; # Keep all archives from the last day
+      daily = 7;
+      weekly = 4;
+      monthly = 3;
+    };
   };
   environment.systemPackages = with pkgs; [ borgbackup ];
 }
