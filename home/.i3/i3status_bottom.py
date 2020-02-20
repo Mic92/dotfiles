@@ -25,7 +25,7 @@ status.register(
     color_up=color.text_up,
     auto_units=True
 )
-icons.conkysymbol(status, "i")
+icons.nerdfont(status, "ﯴ")
 
 status.register(
     "disk", path="/", format="{used}/{total}G [{avail}G]", color=color.text_normal
@@ -37,7 +37,7 @@ status.register(
     color=color.text_normal,
     warn_color=color.text_warn,
 )
-icons.conkysymbol(status, "J")
+icons.nerdfont(status, "")
 
 status.register("load", format="Load: {avg1} {avg5}", color=color.text_normal)
 
