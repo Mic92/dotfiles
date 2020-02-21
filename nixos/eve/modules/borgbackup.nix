@@ -5,17 +5,18 @@
       "/home"
       "/etc"
       "/var"
+      "/root"
     ];
     repo = "eve-backup@backup:backup";
     encryption = {
       mode = "repokey";
-      passCommand = "cat /run/keys/borg-passphrase";
+      passCommand = "cat ${toString <secrets/borg-passphrase>}";
     };
     compression = "auto,zstd";
     startAt = "daily";
     preHook = ''
       set -x
-      ${pkgs.netcat}/bin/nc -w20 home.devkid.net 22198 < /run/keys/nas-wakeup-password
+      ${pkgs.netcat}/bin/nc -w20 home.devkid.net 22198 < ${toString <secrets/nas-wakeup-password>}
       for i in $(seq 1 20); do
         if ${pkgs.netcat}/bin/nc -z -v -w1 home.devkid.net 22022; then
           break
@@ -39,7 +40,4 @@
   };
 
   services.icinga2.healthchecks.borgbackup = {};
-
-  krops.secrets.files.nas-wakeup-password = {};
-  krops.secrets.files.borg-passphrase = {};
 }
