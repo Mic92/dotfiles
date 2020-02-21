@@ -2,7 +2,7 @@
 
   services.squid = {
     enable = true;
-    # We cannot disable the port atm, but the firewall blocks it
+    # We cannot disable the plain text port atm, but the firewall blocks it
     proxyPort = 8888;
     extraConfig = ''
       auth_param basic program ${pkgs.squid}/libexec/basic_ldap_auth -b "ou=users,dc=eve" -f "(&(objectClass=proxyUser)(mail=%s))" -D cn=squid,ou=system,ou=users,dc=eve -W /run/keys/squid-ldap -h 127.0.0.1
