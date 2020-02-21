@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020021820 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020022105 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -31,13 +31,19 @@ www IN AAAA 2a01:4f9:2b:1605::1
 @ IN CAA 0 iodef "mailto:joerg.caa@thalheim.io"
 
 ;; University
-amy IN A 129.215.165.57
-clara IN A 129.215.165.58
+amy       IN A 129.215.165.57
+amy       IN AAAA 2001:630:3c1:164:b62e:99ff:fe3e:d369
+clara     IN A 129.215.165.58
+clara     IN AAAA 2001:630:3c1:164:b62e:99ff:fe3d:70f2
 dashboard IN A 129.215.91.109
-donna IN A 129.215.165.54
-eddie IN A 129.215.197.11
-martha IN A 129.215.165.53
-rose IN A 129.215.165.52
+donna     IN A 129.215.165.54
+donna     IN AAAA 2001:630:3c1:164:30a2:6e7b:c58b:cafd
+eddie     IN A 129.215.197.11
+martha    IN A 129.215.165.53
+martha    IN AAAA 2001:630:3c1:164:6d4:c4ff:fe04:4aba
+rose      IN A 129.215.165.52
+rose      IN AAAA 2001:630:3c1:164:6d4:c4ff:fe04:4e4b
+
 dimitra IN A 129.215.90.138
 dimitra IN TXT "c8:d9:d2:32:3b:28"
 idontcare IN A 129.215.91.216
