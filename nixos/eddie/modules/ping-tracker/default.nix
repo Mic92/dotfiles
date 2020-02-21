@@ -6,7 +6,7 @@
         "${pkgs.python3.interpreter} ${./ping_tracker.py} /run/keys/ping-tracker.json"
         ''
           ${pkgs.nur.repos.mic92.healthcheck}/bin/healthcheck \
-            --service ping-tracker --password-file ${toString <secrets/healthcheck-ping-tracker>}
+            --service ping-tracker --password-file /run/keys/healthcheck-ping-tracker
         ''
       ];
       Type = "oneshot";
