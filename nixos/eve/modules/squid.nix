@@ -2,6 +2,7 @@
 
   services.squid = {
     enable = true;
+    # We cannot disable the port atm, but the firewall blocks it
     proxyPort = 8888;
     extraConfig = ''
       auth_param basic program ${pkgs.squid}/libexec/basic_ldap_auth -b "ou=users,dc=eve" -f "(&(objectClass=proxyUser)(mail=%s))" -D cn=squid,ou=system,ou=users,dc=eve -W /run/keys/squid-ldap -h 127.0.0.1
@@ -19,7 +20,7 @@
     '';
   };
 
-  networking.firewall.allowedTCPPorts = [ 8888 8889 ];
+  networking.firewall.allowedTCPPorts = [ 8889 ];
 
   users.users.squid.extraGroups = [ "keys" ];
   systemd.services.squid.serviceConfig.SupplementaryGroups = [ "keys" ];
@@ -50,24 +51,6 @@
   '';
 
   services.icinga2.extraConfig = ''
-    apply Service "SQUID HTTP v4 (eve)" {
-      import "eve-http4-service"
-      vars.http_port = 8888
-      vars.http_expect = "HTTP/1.1"
-      vars.http_sni = false
-      vars.http_ssl_force_tlsv1_2_or_higher = false
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "SQUID HTTP v6 (eve)" {
-      import "eve-http6-service"
-      vars.http_port = 8888
-      vars.http_expect = "HTTP/1.1"
-      vars.http_sni = false
-      vars.http_ssl_force_tlsv1_2_or_higher = false
-      assign where host.name == "eve.thalheim.io"
-    }
-
     apply Service "SQUID HTTPS v4 (eve)" {
       import "eve-http4-service"
       vars.http_port = 8889
