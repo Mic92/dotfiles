@@ -194,11 +194,17 @@ bindkey '^X^e' edit-command-line
 
 ## Completion
 autoload colors; colors;
-autoload -U compinit
+autoload -zU compinit
 fignore=(.DS_Store $fignore)
 [ -d "$HOME/.zsh-completions/src" ] && fpath+=($HOME/.zsh-completions)
 [ -d "$HOME/.nix-profile/share/zsh/site-functions" ] && fpath+=(~/.nix-profile/share/zsh/site-functions)
-compinit -i
+
+# only update zsh completion once a day
+if [[ -n ${ZDOTDIR:-${HOME}}/$ZSH_COMPDUMP(#qN.mh+24) ]]; then
+  compinit -d $ZSH_COMPDUMP
+else
+  compinit -C
+fi
 compdef mcd=cd
 zmodload -i zsh/complist
 setopt complete_in_word
