@@ -20,6 +20,7 @@ in {
       "/root"
     ];
     repo = backupPath;
+    exclude = [ "/home/*/.cache" ];
     encryption = {
       mode = "repokey";
       passCommand = "cat ${toString <secrets/borgbackup>}";
