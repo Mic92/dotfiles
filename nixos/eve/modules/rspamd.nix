@@ -5,7 +5,7 @@ let
       autolearn = true;
     }
     redis {
-      servers = "127.0.0.1";
+      servers = "/run/redis/redis.socket";
     }
     dkim_signing {
       path = "/var/lib/rspamd/dkim/$domain.$selector.key";
@@ -55,7 +55,6 @@ in {
     enable = true;
     extraConfig = ''
       .include(priority=1,duplicate=merge) "${localConfig}"
-      .include(priority=2,duplicate=merge) "/run/keys/rspamd-redis-password"
     '';
 
     postfix.enable = true;
@@ -70,10 +69,7 @@ in {
   };
 
   services.dovecot2 = {
-    mailboxes = [
-      { auto = "subscribe"; name = "Spam"; specialUse = "Junk"; }
-    ];
-
+    mailboxes = [{ auto = "subscribe"; name = "Spam"; specialUse = "Junk"; }];
     extraConfig = ''
       protocol imap {
         mail_plugins = $mail_plugins imap_sieve
@@ -117,17 +113,7 @@ in {
     regex = "Rspamd";
   };
 
-  services.redis = {
-    enable = true;
-    requirePassFile = "/run/keys/redis-password";
-  };
-  krops.secrets.files.redis-password.owner = "redis";
-  users.users.redis.extraGroups = [ "keys" ];
-  systemd.services.redis.serviceConfig.SupplementaryGroups =  [ "keys" ];
-
-  krops.secrets.files.rspamd-redis-password.owner = "rspamd";
-  users.users.rspamd.extraGroups = [ "keys" ];
-  systemd.services.rspamd.serviceConfig.SupplementaryGroups =  [ "keys" ];
+  users.users.rspamd.extraGroups = [ "redis" ];
 
   systemd.services.dovecot2.preStart = ''
     mkdir -p /var/lib/dovecot/sieve/

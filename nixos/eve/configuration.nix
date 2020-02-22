@@ -47,6 +47,7 @@
     ./modules/postgresql.nix
     ./modules/rainloop.nix
     ./modules/retiolum.nix
+    ./modules/redis.nix
     ./modules/rspamd.nix
     ./modules/rsyncd.nix
     ./modules/sshd.nix
