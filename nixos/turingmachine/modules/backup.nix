@@ -37,7 +37,7 @@ in {
     '';
 
     postCreate = ''
-      ${pkgs.utillinux}/bin/umount -l /mnt/backup
+      ${pkgs.utillinux}/bin/umount -l /mnt/backup || true
     '';
 
     prune.keep = {
