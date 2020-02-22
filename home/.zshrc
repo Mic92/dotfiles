@@ -280,7 +280,7 @@ ip() {
 }
 xalias objdump='objdump -M intel'
 alias wget='noglob wget'
-alias curl='noglob curl'
+alias curl='noglob curl --proto-default https'
 if [[ -n ${commands[hub]} ]]; then
   alias git='noglob hub'
 else
@@ -342,6 +342,9 @@ if [[ -n ${commands[nix]} ]]; then
     NIX_RUN_ARGS="$@${NIX_RUN_ARGS+ }${NIX_RUN_ARGS}" nix run "$@" -f '<nixpkgs>' -c zsh
   }
 fi
+callPackage() {
+    nix-build -E "with import <nixpkgs> {}; pkgs.callPackage $(realpath $1) {}"
+}
 
 killp() {
   local pid=$(ps -ef | sed 1d | eval "fzf ${FZF_DEFAULT_OPTS} -m --header='[kill:process]'" | awk '{print $2}')
