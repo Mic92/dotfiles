@@ -36,8 +36,20 @@ with lib;
         by * read
       access to *
         by * read
-    '';
+
+      database monitor
+      access to *
+        by dn.exact="cn=netdata,ou=system,ou=users,dc=eve" read
+        by * none
+   '';
   };
+
+  environment.etc."netdata/python.d/openldap.conf" = {
+    source = "/run/keys/netdata-openldap-password";
+    user = "netdata";
+  };
+  krops.secrets.files.netdata-openldap-password.owner = "netdata";
+
   krops.secrets.files.openldap-rootpw.owner = "openldap";
   krops.secrets.files.ldap-login = {};
 

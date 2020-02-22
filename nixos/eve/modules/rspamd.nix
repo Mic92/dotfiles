@@ -5,7 +5,7 @@ let
       autolearn = true;
     }
     redis {
-      servers = "/run/redis/redis.socket";
+      servers = "/run/redis/redis.sock";
     }
     dkim_signing {
       path = "/var/lib/rspamd/dkim/$domain.$selector.key";

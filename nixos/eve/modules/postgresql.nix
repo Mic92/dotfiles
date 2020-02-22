@@ -8,4 +8,9 @@
       user     : 'netdata'
       database : 'postgres'
   '';
+
+  services.postgresql.ensureUsers = [{
+    name = "netdata";
+    ensurePermissions."ALL TABLES IN SCHEMA public" = "SELECT";
+  }];
 }

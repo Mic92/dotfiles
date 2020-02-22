@@ -4,7 +4,13 @@
   ];
 
   services.netdata.python.extraPackages = ps: [
-    ps.psycopg2 ps.docker ps.dnspython
+    # postgresql
+    ps.psycopg2
+    ps.docker
+    ps.dnspython
+    # tor
+    ps.stem
+    ps.ldap
   ];
 
   services.netdata.stream.role = "master";
