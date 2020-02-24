@@ -54,6 +54,7 @@ in {
       path = with pkgs; [ curl gnutar bzip2 ];
       preStart = ''
         (
+          set -e
           curl -sL https://retiolum.thalheim.io/tinc-hosts.tar.bz2 -o /run/tinc-hosts.tar.bz2
           rm -rf /etc/tinc/${netname}/hosts.tmp
           mkdir /etc/tinc/${netname}/hosts.tmp
