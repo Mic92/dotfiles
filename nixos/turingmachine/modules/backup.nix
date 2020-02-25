@@ -26,6 +26,7 @@ in {
       passCommand = "cat ${toString <secrets/borgbackup>}";
     };
     preHook = ''
+      set -x
       # Could be dangerous, but works.
       # In case an backup was aborted....
       borg break-lock "${backupPath}"
@@ -36,7 +37,7 @@ in {
         --password-file ${toString <secrets/healthcheck-borgbackup-turingmachine>}
     '';
 
-    postCreate = ''
+    postPrune = ''
       ${pkgs.utillinux}/bin/umount -l /mnt/backup || true
     '';
 
