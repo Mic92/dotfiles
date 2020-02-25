@@ -16,6 +16,12 @@
       gc-keep-outputs = true
       gc-keep-derivations = true
     '';
+
+    nixPath = [
+      # provided by krops
+      "/var/src"
+      "/nix/var/nix/profiles/per-user/root/channels"
+    ];
   };
 
   imports = [ ./builder.nix ];

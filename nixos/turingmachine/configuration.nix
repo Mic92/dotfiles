@@ -58,17 +58,8 @@
 
   networking.hostName = "turingmachine";
 
-  nix = {
-    binaryCaches = [ https://r-ryantm.cachix.org ];
-    binaryCachePublicKeys = [ "r-ryantm.cachix.org-1:gkUbLkouDAyvBdpBX0JOdIiD2/DP1ldF3Z3Y6Gqcc4c=" ];
-    nixPath = [
-      "/var/src"
-      "/nix/var/nix/profiles/per-user/root/channels"
-    ];
-    extraOptions = ''
-     builders-use-substitutes = true
-   '';
-  };
+  nix.binaryCaches = [ https://r-ryantm.cachix.org ];
+  nix.binaryCachePublicKeys = [ "r-ryantm.cachix.org-1:gkUbLkouDAyvBdpBX0JOdIiD2/DP1ldF3Z3Y6Gqcc4c=" ];
 
   console.keyMap = "us";
   i18n.defaultLocale = "en_DK.UTF-8";
