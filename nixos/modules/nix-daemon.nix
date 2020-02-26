@@ -19,7 +19,14 @@
 
     nixPath = [
       # provided by krops
-      "/var/src"
+      "nixpkgs=/var/src/nixpkgs"
+      "home-manager=/var/src/home-manager"
+      "secrets=/var/src/secrets"
+      "nur=/var/src/nur"
+      "shared-secrets=/var/src/shared-secrets"
+      "nixos-config=/var/src/nixos-config"
+      "nixos-hardware=/var/src/nixos-hardware"
+
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
   };
