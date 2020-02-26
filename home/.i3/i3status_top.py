@@ -34,7 +34,7 @@ for bat_path in glob.glob("/sys/class/power_supply/BAT*"):
         "battery",
         format="{status}{percentage:.2f}% [{glyph}] {remaining:%E%hh:%Mm}",
         alert=True,
-        alert_percentage=10,
+        alert_percentage=30,
         battery_ident=bat,
         status=bat_status,
         color=color.text_normal,
