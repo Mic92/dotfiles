@@ -342,8 +342,17 @@ if [[ -n ${commands[nix]} ]]; then
     NIX_RUN_ARGS="$@${NIX_RUN_ARGS+ }${NIX_RUN_ARGS}" nix run "$@" -f '<nixpkgs>' -c zsh
   }
 fi
+
 callPackage() {
     nix-build -E "with import <nixpkgs> {}; pkgs.callPackage $(realpath $1) {}"
+}
+
+nix-pkg-path() {
+    if [ $# != 1 ]; then
+        echo "USAGE: $0" >&2
+        return 1
+    fi
+    nix-shell -p "$1" --run 'echo $buildInputs'
 }
 
 killp() {
