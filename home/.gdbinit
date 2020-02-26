@@ -23,6 +23,18 @@ define src
   layout src
 end
 
+define btc
+  bt
+  continue
+end
+
+define continous-bt
+  while (1)
+    bt
+    continue
+  end
+end
+
 define segfaultaddr
   p $_siginfo._sifields._sigfault.si_addr
 end
