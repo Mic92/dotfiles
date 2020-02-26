@@ -1,8 +1,32 @@
 #!/usr/bin/env python3
 import hashlib
+import logging
+import logging.handlers
 import os
+import random
+import socket
+import string
 import subprocess
 import urllib.request
+
+logger = logging.getLogger(__name__)
+logger.addHandler(logging.handlers.SysLogHandler(address="/dev/log"))
+
+
+# sometimes stubby hangs after network disconnect
+def restart_stubby(action: str) -> None:
+    if action in ["down", "pre-down"]:
+        return
+
+    charset = string.ascii_lowercase + string.digits
+    subdomain = "".join(random.choices(charset, k=5))
+    try:
+        # Random subdomain to bypass cache.
+        # Works because we have a wildcard on thalheim.io.
+        socket.gethostbyname(f"{subdomain}.thalheim.io")
+    except OSError:
+        logger.info("Restart stubby")
+        subprocess.run(["systemctl", "restart", "stubby"], check=True)
 
 
 def disable_sound(action: str) -> None:
@@ -15,8 +39,16 @@ def disable_sound(action: str) -> None:
             if val.startswith("2001:630:3c1:90"):
                 found = True
                 break
-            cmd = ["machinectl", "shell", "--uid=1000",
-                   ".host", "amixer", "set", "Master", "mute"]
+            cmd = [
+                "machinectl",
+                "shell",
+                "--uid=1000",
+                ".host",
+                "amixer",
+                "set",
+                "Master",
+                "mute",
+            ]
             if found:
                 subprocess.run(cmd)
 
@@ -27,7 +59,7 @@ def set_geo_ip(action: str) -> None:
 
     with urllib.request.urlopen("https://ipapi.co/timezone") as response:
         timezone = response.read().decode("utf-8")
-        print(f"Set timezone {timezone}")
+        logger.info(f"Set timezone {timezone}")
         subprocess.run(["timedatectl", "set-timezone", timezone])
 
 
@@ -49,14 +81,14 @@ def assign_ula_ip(action: str) -> None:
 
 def main() -> None:
     action = os.environ.get("NM_DISPATCHER_ACTION", "unknown")
-    hooks = [assign_ula_ip, disable_sound, set_geo_ip]
+    hooks = [restart_stubby, assign_ula_ip, disable_sound, set_geo_ip]
     for hook in hooks:
         try:
-            print(f"run hook {hook.__name__}")
+            logger.info(f"run hook {hook.__name__}")
             hook(action)
         except OSError as e:
-            print(f"hook {hook.__name__} failed with {e}")
+            logger.warning(f"hook {hook.__name__} failed with {e}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
