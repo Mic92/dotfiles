@@ -87,8 +87,8 @@ in {
         proxy_pass http://localhost:3011;
       '';
     };
-
   };
+
   krops.secrets.files = {
     bitwarden-ldap-password.owner = "bitwarden_ldap";
     bitwarden-admin-token.owner = "bitwarden_ldap";

@@ -55,7 +55,6 @@ in {
     icloud = {
       username = "!secret icloud_email";
       password = "!secret icloud_password";
-      account_name = "Shannan's icloud";
     };
     cloud = {};
     system_health = {};
