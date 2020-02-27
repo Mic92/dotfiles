@@ -1,4 +1,4 @@
-{...}: {
+{ lib, ... }: with lib; {
   nix = {
     trustedUsers = ["joerg" "root"];
     useSandbox = true;
@@ -17,16 +17,10 @@
       gc-keep-derivations = true
     '';
 
-    nixPath = [
-      # provided by krops
-      "nixpkgs=/var/src/nixpkgs"
-      "home-manager=/var/src/home-manager"
-      "secrets=/var/src/secrets"
-      "nur=/var/src/nur"
-      "shared-secrets=/var/src/shared-secrets"
-      "nixos-config=/var/src/nixos-config"
-      "nixos-hardware=/var/src/nixos-hardware"
-
+    nixPath = let
+      kropsSources = filter (src: src != ".populate")
+        (attrNames (builtins.readDir "/var/src"));
+    in (map (entry: "${entry}=/var/src/${entry}") kropsSources) ++ [
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
   };
