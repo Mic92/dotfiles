@@ -9,19 +9,19 @@
         tls_pubkey_pinset:
           # rsa
           - digest: "sha256"
-            value: 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
+            value: zIwUHqvwcf3K3ego52BJtkityUsxbYHqvpLX6Tryo+w=
           # ec384
           - digest: "sha256"
-            value: /tYNz0qFGTguihrWOjVfTdhzz4hPW6FaUTjJWdyDBV0=
+            value: gN2FtyubY3GCUQSiboHFGgy6qTraG61T019sXi9QDLA=
       - address_data: 2a01:4f9:2b:1605::1
         tls_auth_name: "dns.thalheim.io"
         tls_pubkey_pinset:
           # rsa
           - digest: "sha256"
-            value: 47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=
+            value: zIwUHqvwcf3K3ego52BJtkityUsxbYHqvpLX6Tryo+w=
           # ec384
           - digest: "sha256"
-            value: /tYNz0qFGTguihrWOjVfTdhzz4hPW6FaUTjJWdyDBV0=
+            value: gN2FtyubY3GCUQSiboHFGgy6qTraG61T019sXi9QDLA=
     '';
   };
 
