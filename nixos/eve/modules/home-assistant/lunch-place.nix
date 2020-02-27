@@ -4,7 +4,7 @@
       name = "choose_place";
       platform = "rest";
       json_attributes = "places";
-      resource = "https://choose-place.herokuapp.com/api/occasion/lunch";
+      resource = "https://choose-place.thalheim.io/api/occasion/lunch";
     } {
       platform = "template";
       sensors = let
