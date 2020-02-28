@@ -1,5 +1,7 @@
-{ pkgs, ... }: let
-  ldap-auth-sh = pkgs.callPackage ./ldap-auth-sh.nix {};
+{ pkgs, config, ... }: let
+  ldap-auth-sh = pkgs.callPackage ./ldap-auth-sh.nix {
+    ldapPasswordFile = config.krops.secrets."home-assistant-ldap".path;
+  };
 in {
   services.home-assistant.config.homeassistant.auth_providers = [{
     type = "command_line";
@@ -14,5 +16,5 @@ in {
             MUST (mail) )
   '';
 
-  krops.secrets.files.home-assistant-ldap.owner = "hass";
+  krops.secrets.home-assistant-ldap.owner = "hass";
 }

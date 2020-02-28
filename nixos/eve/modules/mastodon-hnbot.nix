@@ -1,4 +1,4 @@
-{ pkgs, ... }: { 
+{ pkgs, config, ... }: { 
 
   systemd.services.mastodon-hnbot = {
     path = [
@@ -9,7 +9,7 @@
         --points 50 \
         https://toot.matereal.eu \
         joerg.hackernews50@thalheim.io \
-        "$(cat /run/keys/hnbot-password)"
+        "$(cat ${config.krops.secrets.hnbot-password.path})"
     '';
     serviceConfig = {
       Type = "oneshot";
@@ -39,5 +39,5 @@
   };
   users.groups.mastodon-hnbot = {};
 
-  krops.secrets.files.hnbot-password.owner = "mastodon-hnbot";
+  krops.secrets.hnbot-password.owner = "mastodon-hnbot";
 }

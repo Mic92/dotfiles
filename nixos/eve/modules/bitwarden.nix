@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 let
   ldapConfig = {
     bitwarden_url = "https://bitwarden.thalheim.io";
@@ -37,7 +37,7 @@ in {
   };
 
   systemd.services.bitwarden_rs.serviceConfig = {
-    EnvironmentFile = ["/run/keys/bitwarden-smtp-password"];
+    EnvironmentFile = [ config.krops.secrets."bitwarden-smtp-password".path ];
     SupplementaryGroups = [ "keys" ];
   };
 
@@ -46,8 +46,8 @@ in {
 
     preStart = ''
       sed \
-        -e "s=@LDAP_PASSWORD@=$(</run/keys/bitwarden-ldap-password)=" \
-        -e "s=@ADMIN_TOKEN@=$(</run/keys/bitwarden-admin-token)=" \
+        -e "s=@LDAP_PASSWORD@=$(<${config.krops.secrets."bitwarden-ldap-password".path})=" \
+        -e "s=@ADMIN_TOKEN@=$(<${config.krops.secrets."bitwarden-admin-token".path})=" \
         ${ldapConfigFile} \
         > /run/bitwarden_ldap/config.toml
     '';
@@ -89,7 +89,7 @@ in {
     };
   };
 
-  krops.secrets.files = {
+  krops.secrets = {
     bitwarden-ldap-password.owner = "bitwarden_ldap";
     bitwarden-admin-token.owner = "bitwarden_ldap";
     bitwarden-smtp-password.owner = "bitwarden_rs";

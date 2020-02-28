@@ -1,12 +1,12 @@
-{ pkgs, ... }: {
+{ pkgs, config, ... }: {
   systemd.services.ping-tracker = {
     serviceConfig = {
       Environment = "PATH=/run/wrappers/bin";
       ExecStart = [
-        "${pkgs.python3.interpreter} ${./ping_tracker.py} /run/keys/ping-tracker.json"
+        "${pkgs.python3.interpreter} ${./ping_tracker.py} ${config.krops.secrets."ping-tracker.json".path}"
         ''
           ${pkgs.nur.repos.mic92.healthcheck}/bin/healthcheck \
-            --service ping-tracker --password-file /run/keys/healthcheck-ping-tracker
+            --service ping-tracker --password-file ${config.krops.secrets."healthcheck-ping-tracker".path}
         ''
       ];
       Type = "oneshot";
@@ -27,8 +27,8 @@
   users.users.ping-tracker.group = "ping-tracker";
   users.groups.ping-tracker = {};
 
-  krops.secrets.files."ping-tracker.json".owner = "ping-tracker";
-  krops.secrets.files."healthcheck-ping-tracker".owner = "ping-tracker";
+  krops.secrets."ping-tracker.json".owner = "ping-tracker";
+  krops.secrets."healthcheck-ping-tracker".owner = "ping-tracker";
 
   security.wrappers.fping.source = "${pkgs.fping}/bin/fping";
 }

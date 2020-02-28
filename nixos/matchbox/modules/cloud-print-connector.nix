@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ pkgs, config, ... }: {
 
   environment.systemPackages = with pkgs; [
     # for first time setup with gcp-connector-util
@@ -11,7 +11,7 @@
     wantedBy = [ "multi-user.target" ];
     after = [ "cups.service" "avahi.service" "network.target" ];
     serviceConfig = {
-      ExecStart = "${pkgs.cloud-print-connector}/bin/gcp-cups-connector -config-filename /run/keys/gcp-cups-connector.config.json";
+      ExecStart = "${pkgs.cloud-print-connector}/bin/gcp-cups-connector -config-filename ${config.krops.secrets."gcp-cups-connector.config.json".path}";
       Restart = "on-failure";
       User = "cloud-print-connector";
       SupplementaryGroups = [ "keys" ];
@@ -20,7 +20,7 @@
 
   # generated with:
   # $ gcp-connector-util init
-  krops.secrets.files."gcp-cups-connector.config.json" = {
+  krops.secrets."gcp-cups-connector.config.json" = {
     owner = "cloud-print-connector";
   };
 

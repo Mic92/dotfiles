@@ -6,12 +6,12 @@ in {
     ./whoami.nix
   ];
 
-  krops.secrets.files."knot-he-key.conf".owner = "knot";
+  krops.secrets."knot-he-key.conf".owner = "knot";
   users.users.knot.extraGroups = [ "keys" ];
 
   services.knot = {
     enable = true;
-    keyFiles = [ "/run/keys/knot-he-key.conf" ];
+    keyFiles = [ config.krops.secrets."knot-he-key.conf".path ];
     extraConfig = ''
       server:
         listen: ${ip4}@53

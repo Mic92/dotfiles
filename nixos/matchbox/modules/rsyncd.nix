@@ -1,4 +1,4 @@
-{
+{ config, ... }: {
   services.rsyncd ={
     enable = true;
     user = "rsyncd";
@@ -11,7 +11,7 @@
         comment = "Public rsync share.";
         path = "/mnt/hdd/public";
         "auth users" = "backup";
-        "secrets file" = "/run/keys/rsyncd.secrets";
+        "secrets file" = config.krops.secrets."rsyncd.secrets".path;
       };
     };
   };
@@ -25,9 +25,7 @@
     extraGroups = [ "keys" ];
   };
 
-  krops.secrets.files."rsyncd.secrets" = {
-    owner = "rsyncd";
-  };
+  krops.secrets."rsyncd.secrets".owner = "rsyncd";
 
   users.groups.rsyncd = {};
 

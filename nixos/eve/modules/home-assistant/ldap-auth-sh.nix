@@ -1,5 +1,7 @@
 { stdenv, fetchFromGitHub, makeWrapper
-, openldap, coreutils, gnused, gnugrep }:
+, openldap, coreutils, gnused, gnugrep
+, ldapPasswordFile
+}:
 
 stdenv.mkDerivation {
   name = "ldap-auth-sh";
@@ -18,7 +20,7 @@ stdenv.mkDerivation {
     CLIENT="ldapsearch"
     SERVER="ldap://localhost:389"
     USERDN="cn=home-assistant,ou=system,ou=users,dc=eve"
-    PW="$(cat /run/keys/home-assistant-ldap)"
+    PW="${ldapPasswordFile}"
 
     BASEDN="ou=users,dc=eve"
     SCOPE="subtree"

@@ -1,4 +1,5 @@
-let 
+{ config, ...}:
+let
   site = acmeHost: root: {
     useACMEHost = acmeHost;
     forceSSL = true;
@@ -6,7 +7,7 @@ let
     locations."/files/".extraConfig = ''
       internal;
       secure_link $arg_st;
-      include /run/keys/nginx-secure-link;
+      include ${config.krops.secrets."nginx-secure-link".path};
 
       if ($secure_link = "") { return 403; }
       if ($secure_link = "0") { return 403; }
@@ -24,7 +25,7 @@ in {
 
   systemd.services.nginx.serviceConfig.SupplementaryGroups = [ "keys" ];
 
-  krops.secrets.files.nginx-secure-link.owner = "nginx";
+  krops.secrets.nginx-secure-link.owner = "nginx";
 
   services.netdata.httpcheck.checks."dl.thalheim.io" = {
     url = "https://dl.thalheim.io/OtNjoZOUnEn3H6LJZ1qcIw/test";

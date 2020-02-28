@@ -33,16 +33,14 @@ let
     };
   });
 in {
-  options.krops.secrets = {
-    files = mkOption {
-      type = with types; attrsOf secret-file;
-      default = {};
-    };
+  options.krops.secrets = mkOption {
+    type = with types; attrsOf secret-file;
+    default = {};
   };
-  config = lib.mkIf (cfg.files != {}) {
+  config = lib.mkIf (cfg != {}) {
     system.activationScripts.setup-secrets = let
       files = unique (map (flip removeAttrs ["_module"])
-                          (attrValues cfg.files));
+                          (attrValues cfg));
       script = ''
         echo setting up secrets...
         mkdir -p /run/keys -m 0750

@@ -7,7 +7,7 @@
     forwarders = [ "9.9.9.9" ];
     cacheNetworks = [ "any" ];
     extraConfig = ''
-      include "/run/keys/chelnok.key";
+      include "${config.krops.secrets."chelnok.key".path}";
       server 89.238.64.7 {
         transfer-format many-answers;
         keys { ns.chelnok.de-ns1.higgsboson.tk.;};
@@ -64,7 +64,7 @@
   users.users.named.extraGroups = [ "keys" ];
   systemd.services.bind.serviceConfig.SupplementaryGroups = [ "keys" ];
 
-  krops.secrets.files."chelnok.key".owner = "named";
+  krops.secrets."chelnok.key".owner = "named";
 
   services.icinga2.extraConfig = ''
     apply Service "DNS v4 (eve)" {

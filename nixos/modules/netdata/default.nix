@@ -6,7 +6,7 @@ let
 in {
   imports = [ ./options.nix ];
 
-  krops.secrets.files = (if cfg.stream.role == "master" then {
+  krops.secrets = (if cfg.stream.role == "master" then {
     # Generate <UUID> with `uuidgen`:
     # [<UUID>]
     #     enabled = yes

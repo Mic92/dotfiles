@@ -165,7 +165,7 @@ in {
     shell = "/run/current-system/sw/bin/nologin";
   };
 
-  krops.secrets.files."dovecot-ldap-password" = {};
+  krops.secrets."dovecot-ldap-password" = {};
 
   security.dhparams = {
     enable = true;
@@ -173,7 +173,7 @@ in {
   };
 
   systemd.services.dovecot2.preStart = ''
-    sed -e "s!@ldap-password@!$(cat /run/keys/dovecot-ldap-password)!" ${ldapConfig} > /run/dovecot2/ldap.conf
+    sed -e "s!@ldap-password@!$(<${config.krops.secrets."dovecot-ldap-password".path})!" ${ldapConfig} > /run/dovecot2/ldap.conf
   '';
 
   security.acme.certs = let

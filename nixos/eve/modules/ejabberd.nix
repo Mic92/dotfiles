@@ -35,7 +35,7 @@
       ldap_filter: "(objectClass=jabberUser)"
       # ldap_password: ""
       include_config_file:
-        - /run/keys/ejabber-ldap-password.yml
+        - ${config.krops.secrets."ejabber-ldap-password.yml".path}
 
       default_db: sql
       new_sql_schema: true
@@ -46,7 +46,7 @@
       sql_database: ejabberd
       # sql_password: ejabberd
       include_config_file:
-        - /run/keys/ejabber-postgres-password.yml
+        - ${config.krops.secrets."ejabber-postgres-password.yml".path}
 
       hosts:
       - thalheim.io
@@ -250,8 +250,8 @@
     '';
   };
 
-  krops.secrets.files."ejabber-ldap-password.yml".owner = "ejabberd";
-  krops.secrets.files."ejabber-postgres-password.yml".owner = "ejabberd";
+  krops.secrets."ejabber-ldap-password.yml".owner = "ejabberd";
+  krops.secrets."ejabber-postgres-password.yml".owner = "ejabberd";
 
   services.openldap.extraConfig = ''
     attributeType ( 1.2.752.43.9.1.1

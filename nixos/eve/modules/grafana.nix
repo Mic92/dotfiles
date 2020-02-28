@@ -13,7 +13,7 @@
     smtp = {
       host = "mail.higgsboson.tk:587";
       user = "grafana@thalheim.io";
-      passwordFile = "/run/keys/grafana-smtp-password";
+      passwordFile = config.krops.secrets."grafana-smtp-password".path;
       fromAddress = "grafana@thalheim.io";
     };
     database = {
@@ -22,7 +22,7 @@
       host = "/run/postgresql";
       user = "grafana";
     };
-    security.adminPasswordFile = "/run/keys/grafana-admin-password";
+    security.adminPasswordFile = config.krops.secrets."grafana-admin-password".path;
     addr = "0.0.0.0";
     port = 3001;
   };
@@ -53,8 +53,8 @@
         '';
       };
     in ''
-      umask 077 
-      sed -e "s/@bindPassword@/$(cat /run/keys/grafana-ldap-password)/" ${ldap} > /run/grafana/ldap.toml
+      umask 077
+      sed -e "s/@bindPassword@/$(cat ${config.krops.secrets."grafana-ldap-password".path})/" ${ldap} > /run/grafana/ldap.toml
 
       for i in `seq 1 10`; do
         if pg_isready; then
@@ -96,7 +96,7 @@
     }
   '';
 
-  krops.secrets.files = {
+  krops.secrets = {
     grafana-smtp-password.owner = "grafana";
     grafana-admin-password.owner = "grafana";
     grafana-ldap-password.owner = "grafana";

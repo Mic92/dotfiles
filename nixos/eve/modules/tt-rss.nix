@@ -37,7 +37,7 @@
       define('LDAP_AUTH_USETLS', FALSE); // Enable TLS Support for ldaps://
       define('LDAP_AUTH_ALLOW_UNTRUSTED_CERT', TRUE); // Allows untrusted certificate
       define('LDAP_AUTH_BINDDN', 'cn=ttrss,ou=system,ou=users,dc=eve');
-      define('LDAP_AUTH_BINDPW', file_get_contents('/run/keys/ttrss-ldap-password'));
+      define('LDAP_AUTH_BINDPW', file_get_contents('${config.krops.secrets."ttrss-ldap-password".path}'));
       define('LDAP_AUTH_BASEDN', 'dc=eve');
       define('LDAP_AUTH_LOGIN_ATTRIB', 'mail');
       define('LDAP_AUTH_ANONYMOUSBEFOREBIND', FALSE);
@@ -69,7 +69,7 @@
     };
   };
 
-  krops.secrets.files.ttrss-ldap-password.owner = "tt_rss";
+  krops.secrets.ttrss-ldap-password.owner = "tt_rss";
 
   users.users.tt_rss.extraGroups = [ "keys" ];
   systemd.services.phpfpm-tt-rss.serviceConfig.SupplementaryGroups = [ "keys" ];

@@ -1,4 +1,4 @@
-{
+{ config, ... }: {
   services.nextcloud = {
     enable = true;
     hostName = "cloud.thalheim.io";
@@ -13,7 +13,7 @@
       dbuser = "nextcloud";
       dbhost = "/run/postgresql";
       adminuser = "nextcloudadmin";
-      adminpassFile = "/run/keys/nextcloud-admin-password";
+      adminpassFile = config.krops.secrets.nextcloud-admin-password.path;
       extraTrustedDomains = [
         "cloud.higgsboson.tk"
         "pim.devkid.net"
@@ -28,7 +28,7 @@
     };
   };
 
-  krops.secrets.files.nextcloud-admin-password.owner = "nextcloud";
+  krops.secrets.nextcloud-admin-password.owner = "nextcloud";
 
   users.users.nextcloud.extraGroups = [ "keys" ];
   systemd.services.nextcloud.serviceConfig.SupplementaryGroups = [ "keys" ];

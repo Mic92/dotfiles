@@ -101,7 +101,7 @@ in {
     };
   };
 
-  krops.secrets.files."home-assistant-secrets.yaml" = {
+  krops.secrets."home-assistant-secrets.yaml" = {
     owner = "hass";
     path = "/var/lib/hass/secrets.yaml";
   };
