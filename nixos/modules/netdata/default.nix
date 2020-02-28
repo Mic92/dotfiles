@@ -14,7 +14,7 @@ in {
     netdata-stream-master = {
       path = "/etc/netdata/stream.conf";
       owner = "netdata";
-      source-path = toString <shared-secrets> + "/netdata-stream-master";
+      sourcePath = toString <shared-secrets> + "/netdata-stream-master";
     };
   } else {
     # Generate <UUID> with `uuidgen`:
@@ -25,7 +25,7 @@ in {
     netdata-stream-slave = {
       path = "/etc/netdata/stream.conf";
       owner = "netdata";
-      source-path = toString <shared-secrets> + "/netdata-stream-slave";
+      sourcePath = toString <shared-secrets> + "/netdata-stream-slave";
     };
   });
 

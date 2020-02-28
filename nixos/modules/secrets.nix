@@ -4,16 +4,20 @@ with lib;
 
 let
   cfg = config.krops.secrets;
+  users = config.users.users;
   secret-file = types.submodule ({ config, ... }: {
     options = {
       name = mkOption {
         type = types.str;
         default = config._module.args.name;
       };
-      path = mkOption {
-        type = types.str;
-        default = "/run/keys/${config.name}";
-      };
+      path = assert lib.assertMsg (builtins.pathExists config.sourcePath) ''
+          Cannot find path '${config.sourcePath}' set in 'krops.secrets."${config._module.args.name}".sourcePath'
+        '';
+        mkOption {
+          type = types.str;
+          default = "/run/keys/${config.name}";
+        };
       mode = mkOption {
         type = types.str;
         default = "0400";
@@ -22,13 +26,13 @@ let
         type = types.str;
         default = "root";
       };
-      group-name = mkOption {
+      group = mkOption {
         type = types.str;
-        default = "root";
+        default = users.${config.owner}.group;
       };
-      source-path = mkOption {
+      sourcePath = mkOption {
         type = types.str;
-        default = toString <secrets> + "/${config.name}";
+        default = (toString <secrets> + "/${config.name}");
       };
     };
   });
@@ -52,10 +56,10 @@ in {
             --verbose \
             --mode=${lib.escapeShellArg file.mode} \
             --owner=${lib.escapeShellArg file.owner} \
-            --group=${lib.escapeShellArg file.group-name} \
-            ${lib.escapeShellArg file.source-path} \
+            --group=${lib.escapeShellArg file.group} \
+            ${lib.escapeShellArg file.sourcePath} \
             ${lib.escapeShellArg file.path} \
-          || echo "failed to copy ${file.source-path} to ${file.path}"
+          || echo "failed to copy ${file.sourcePath} to ${file.path}"
         '') files}
       '';
     in stringAfter [ "users" "groups" ] "source ${pkgs.writeText "setup-secrets.sh" script}";
