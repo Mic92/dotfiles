@@ -9,7 +9,7 @@
         tls_pubkey_pinset:
           # rsa
           - digest: "sha256"
-            value: zIwUHqvwcf3K3ego52BJtkityUsxbYHqvpLX6Tryo+w=
+            value: /zJHMpHhhKuL9bjIbVG1SMsRXmqv0MKh4W+3Sej4J/8=
           # ec384
           - digest: "sha256"
             value: gN2FtyubY3GCUQSiboHFGgy6qTraG61T019sXi9QDLA=
@@ -18,7 +18,7 @@
         tls_pubkey_pinset:
           # rsa
           - digest: "sha256"
-            value: zIwUHqvwcf3K3ego52BJtkityUsxbYHqvpLX6Tryo+w=
+            value: /zJHMpHhhKuL9bjIbVG1SMsRXmqv0MKh4W+3Sej4J/8=
           # ec384
           - digest: "sha256"
             value: gN2FtyubY3GCUQSiboHFGgy6qTraG61T019sXi9QDLA=
@@ -26,4 +26,7 @@
   };
 
   networking.nameservers = [ "127.0.0.1" ];
+
+  programs.captive-browser.enable = true;
+  programs.captive-browser.interface = "wlan0";
 }
