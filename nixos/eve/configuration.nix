@@ -22,6 +22,7 @@
     ./modules/adminer.nix
     ./modules/bitwarden.nix
     ./modules/borgbackup.nix
+    ./modules/buildkite.nix
     ./modules/choose-place
     ./modules/docker.nix
     ./modules/dovecot.nix
