@@ -20,7 +20,7 @@ stdenv.mkDerivation {
     CLIENT="ldapsearch"
     SERVER="ldap://localhost:389"
     USERDN="cn=home-assistant,ou=system,ou=users,dc=eve"
-    PW="${ldapPasswordFile}"
+    PW="$(<${ldapPasswordFile})"
 
     BASEDN="ou=users,dc=eve"
     SCOPE="subtree"
