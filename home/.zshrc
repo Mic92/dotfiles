@@ -679,7 +679,7 @@ nixify() {
     echo "use nix" > .envrc
     direnv allow
   fi
-  if [[ ! -e default.nix ]]; then
+  if [[ ! -e shell.nix ]] && [[ ! -e default.nix ]]; then
     cat > default.nix <<'EOF'
 with import <nixpkgs> {};
 stdenv.mkDerivation {
