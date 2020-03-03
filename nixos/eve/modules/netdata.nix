@@ -8,8 +8,8 @@
     netdata = pkgs.netdata.overrideAttrs (old: {
       patches = (old.patches or []) ++ [
         (pkgs.fetchpatch {
-          url = "https://github.com/Mic92/netdata/commit/a73ac203506a9cc623fb5ba3d7fc4b886609d638.patch";
-          sha256 = "00a13mhwfwr4ia4fgq7zwpiadpzrvv7mrdfa8h6zgij4x02z8xi9";
+          url = "https://github.com/Mic92/netdata/commit/47ddf40f7e6cd32af6da11ad7dbc77433ddf08b8.patch";
+          sha256 = "0qc9r3sxyhb2hbi5s98d5c77br6hsic2gm010ra80d2d6lyjvfaw";
         })
       ];
     });
