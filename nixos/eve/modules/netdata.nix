@@ -1,7 +1,19 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   imports = [
     ../../modules/netdata
   ];
+
+  nixpkgs.config.packageOverrides = pkgs: {
+    netdata = pkgs.netdata.overrideAttrs (old: {
+      patches = (old.patches or []) ++ [
+        (pkgs.fetchpatch {
+          url = "https://github.com/Mic92/netdata/commit/a73ac203506a9cc623fb5ba3d7fc4b886609d638.patch";
+          sha256 = "00a13mhwfwr4ia4fgq7zwpiadpzrvv7mrdfa8h6zgij4x02z8xi9";
+        })
+      ];
+    });
+  };
 
   services.netdata.python.extraPackages = ps: [
     # postgresql
