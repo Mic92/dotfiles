@@ -12,13 +12,13 @@
     icon = "mdi:human-female-girl";
     latitude = "!secret shannan_latitude";
     longitude = "!secret shannan_longitude";
-    radius = "100";
+    radius = "50";
   } {
     name = "Work of Shannan";
     icon = "mdi:office-building";
     latitude = "!secret shannan_work_latitude";
     longitude = "!secret shannan_work_longitude";
-    radius = "100";
+    radius = "50";
   } {
     name = "University";
     icon = "mdi:school";
@@ -30,6 +30,6 @@
     icon = "mdi:weight-lifter";
     latitude = "!secret gym_latitude";
     longitude = "!secret gym_longitude";
-    radius = "100";
+    radius = "50";
   }];
 }
