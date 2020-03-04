@@ -53,6 +53,7 @@ in {
     '';
 
     serviceConfig = {
+      Restart = "on-failure";
       ExecStart = "${pkgs.nur.repos.mic92.bitwarden_rs_ldap}/bin/bitwarden_rs_ldap";
       Environment = "CONFIG_PATH=/run/bitwarden_ldap/config.toml";
 
