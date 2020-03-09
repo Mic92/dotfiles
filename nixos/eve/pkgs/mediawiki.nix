@@ -1,12 +1,12 @@
-{ stdenv, fetchurl }: 
+{ stdenv, fetchurl }:
 stdenv.mkDerivation rec {
-  name = "mediawiki-${version}";
-  majorVersion = "1.31";
-  version = "${majorVersion}.1";
+  pname = "mediawiki";
+  majorVersion = "1.34";
+  version = "${majorVersion}.0";
 
   src = fetchurl {
     url = "https://releases.wikimedia.org/mediawiki/${majorVersion}/mediawiki-${version}.tar.gz";
-    sha256 = "13x48clij21cmysjkpnx68vggchrdasqp7b290j87xlfgjhdhnnf";
+    sha256 = "1lckjnharwxh9xb7gxdxrkb0r3xgd0dh4019cnbixn5mmzgc696y";
   };
 
   installPhase = ''
@@ -14,7 +14,8 @@ stdenv.mkDerivation rec {
     cp -ra * $out/share/mediawiki
     cp ${./logo.png} $out/share/mediawiki/logo.png
     ln -s /etc/mediawiki/LocalSettings.php $out/share/mediawiki
-    ln -s /var/lib/mediawiki/ $out/share/mediawiki/images
+    rm -rf $out/share/mediawiki/images
+    ln -s /var/lib/mediawiki/uploads $out/share/mediawiki/images
   '';
 
   meta = with stdenv.lib; {
