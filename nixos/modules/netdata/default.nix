@@ -57,21 +57,6 @@ in {
       '';
     };
   in {
-    "netdata/health.d/httpcheck.conf".text = ''
-      # taken from the original but warn only if a request is at least 300ms slow
-      template: web_service_slow
-      families: *
-      on: httpcheck.responsetime
-      lookup: average -3m unaligned of time
-      units: ms
-      every: 10s
-      warn: ($this > ($1h_web_service_response_time * 4) && $this > 1000)
-      crit: ($this > ($1h_web_service_response_time * 6) && $this > 1000)
-      info: average response time over the last 3 minutes, compared to the average over the last hour
-      delay: down 5m multiplier 1.5 max 1h
-      options: no-clear-notification
-      to: webmaster
-    '';
     "netdata/python.d/httpcheck.conf".text = ''
       update_every: 30
       ${lib.concatStringsSep "\n" (mapAttrsToList (site: options:
@@ -92,7 +77,8 @@ in {
         '') cfg.portcheck.checks)
         }
       '';
-  } // (silenceAlerts "disks" [ "10min_disk_backlog" "10min_disk_utilization" ])
+  } // (silenceAlerts "httpcheck" [ "web_service_slow" ])
+    // (silenceAlerts "disks" [ "10min_disk_backlog" "10min_disk_utilization" ])
     // (silenceAlerts "tcp_listen" [ "1m_tcp_syn_queue_cookies" ])
     // (silenceAlerts "net" [
       "inbound_packets_dropped"
