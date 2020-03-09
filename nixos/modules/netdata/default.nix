@@ -48,12 +48,27 @@ in {
   networking.firewall.allowedTCPPorts = [ 19999 ];
 
   environment.etc = let
+    silenceAlertScript = pkgs.writers.writePython3 "silence-alerts" {} ''
+      import sys
+      import re
+
+      alerts = set(sys.argv[3:])
+      disable_alert = False
+      with open(sys.argv[1]) as src, open(sys.argv[2], "w") as dst:
+          for line in src:
+              match = re.match(r".*template: (\S+).*", line)
+              if match:
+                  disable_alert = match.group(1) in alerts
+              if disable_alert and re.match(r".*to: .*", line):
+                  dst.write("to: silent\n")
+              else:
+                  dst.write(line)
+    '';
+
     silenceAlerts = filename: alerts: {
       "netdata/health.d/${filename}.conf".source = pkgs.runCommand "${filename}.conf" {} ''
-        cp ${pkgs.netdata}/lib/netdata/conf.d/health.d/${filename}.conf $out
-        ${concatMapStringsSep "\n" (alert: ''
-          sed -i -e '/template: ${alert}$/a to: silent' $out
-        '') alerts}
+        exec ${silenceAlertScript} ${pkgs.netdata}/lib/netdata/conf.d/health.d/${filename}.conf $out \
+          ${concatStringsSep " " alerts}
       '';
     };
   in {
