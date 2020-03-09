@@ -33,6 +33,7 @@
     ../modules/pki
     ../modules/yubikey.nix
     ../modules/zfs.nix
+    ../modules/users.nix
   ];
 
   boot = {
@@ -146,17 +147,6 @@
   };
 
   hardware.pulseaudio.enable = true;
-
-  users.users.joerg = {
-    isNormalUser = true;
-    extraGroups = [
-      "wheel" "docker" "plugdev" "vboxusers" "adbusers" "input" "wireshark"
-    ];
-    shell = "/run/current-system/sw/bin/zsh";
-    uid = 1000;
-  };
-  users.groups.adbusers = {};
-  security.sudo.wheelNeedsPassword = false;
 
   security.audit.enable = false;
 
