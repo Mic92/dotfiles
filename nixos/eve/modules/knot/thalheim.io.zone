@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020030200 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020030900 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -21,7 +21,7 @@ whoami6 IN NS ns1
 eve IN A 95.216.112.61
 eve IN AAAA 2a01:4f9:2b:1605::2
 git IN A 95.216.112.61
-git IN AAAA 2a01:4f9:2b:1605::2
+git IN AAAA 2a01:4f9:2b:1605::1
 ns1 IN A 95.216.112.61
 ns1 IN AAAA 2a01:4f9:2b:1605::1
 
