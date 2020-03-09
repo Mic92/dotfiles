@@ -20,7 +20,10 @@ in {
       "/root"
     ];
     repo = backupPath;
-    exclude = [ "/home/*/.cache" ];
+    exclude = [
+      "/home/*/.cache"
+      "/home/*/.config/Ferdi/Partitions"
+    ];
     encryption = {
       mode = "repokey";
       passCommand = "cat ${toString <secrets/borgbackup>}";
