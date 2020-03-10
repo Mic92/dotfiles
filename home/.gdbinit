@@ -23,6 +23,14 @@ define src
   layout src
 end
 
+define asm
+  layout asm
+end
+
+define regs
+  layout regs
+end
+
 define btc
   bt
   continue
