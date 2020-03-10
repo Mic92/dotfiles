@@ -39,4 +39,18 @@ define segfaultaddr
   p $_siginfo._sifields._sigfault.si_addr
 end
 
+define lines
+  if $argc < 0
+    print "USAGE: lines ADDR1 [ADDR2...]"
+    return
+  end
+  set $i = 0
+  set $sum = 0
+  while $i < $argc
+    eval "info line *$arg%d", $i
+    set $i = $i + 1
+  end
+  print $sum
+end
+
 macro define offsetof(t, f) &((t *) 0)->f
