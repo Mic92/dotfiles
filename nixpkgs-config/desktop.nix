@@ -53,6 +53,7 @@
     Unit.After = [ "network.target" "sound.target" ];
     Install.WantedBy = [ "default.target" ];
     Service.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
+    Service.Restart = "always";
   };
 
   services.syncthing.enable = true;
