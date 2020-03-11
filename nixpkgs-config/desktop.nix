@@ -98,6 +98,7 @@
     httpie
     pypi2nix
     go2nix
+    nix-index
     gnupg1compat
     cheat
     tldr
