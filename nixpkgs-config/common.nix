@@ -53,7 +53,7 @@
       zsh
       glibcLocales
       less
-      bash
+      bashInteractive
       gnupg
     ];
 
