@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: vanity checksum
+# key: modSha256
+# --
+modSha256 = "0000000000000000000000000000000000000000000000000000";
