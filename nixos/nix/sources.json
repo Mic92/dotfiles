@@ -77,5 +77,17 @@
         "type": "tarball",
         "url": "https://github.com/nix-community/nur/archive/196454a89f03e2ab8f9a60a8a2600f253cdb4435.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "spacemacs": {
+        "branch": "develop",
+        "description": "A community-driven Emacs distribution - The best editor is neither Emacs nor Vim,  it's Emacs *and* Vim!",
+        "homepage": "http://spacemacs.org",
+        "owner": "syl20bnr",
+        "repo": "spacemacs",
+        "rev": "2049817b1281dbda1286771a99498aa6ea4696bc",
+        "sha256": "1ggg53fvkwxszjvgmhjqwxjw84957syqnf02gsn2y9fzzbadx6i3",
+        "type": "tarball",
+        "url": "https://github.com/syl20bnr/spacemacs/archive/2049817b1281dbda1286771a99498aa6ea4696bc.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }

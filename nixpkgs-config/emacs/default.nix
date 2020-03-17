@@ -5,6 +5,8 @@ with lib;
 
 let
   cfg = config.programs.emacs;
+
+  sourcesJson = builtins.fromJSON (builtins.readFile ../../nixos/nix/sources.json);
   editorScript = { name ? "emacseditor", x11 ? false, mu4e ? false } : pkgs.writeScriptBin name ''
     #!${pkgs.runtimeShell}
     export TERM=xterm-24bit
@@ -16,8 +18,38 @@ let
       ${optionalString (mu4e) "-e '(mu4e)'"} \
       "$@"
   '';
-  editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
+  daemonScript = pkgs.writeScript "emacs-daemon" ''
+    #!${pkgs.zsh}/bin/zsh
+    source ~/.zshrc
+    export BW_SESSION=1 PATH=$PATH:${pkgs.sqlite}/bin:${pkgs.git}/bin
 
+    cd $HOME/.emacs.d/
+    if [ ! -d $HOME/.emacs.d/.git ]; then
+      git init
+      git remote add https://github.com/syl20bnr/spacemacs
+      git pull origin develop
+    fi
+    hash=${sourcesJson.spacemacs.rev}
+    if [[ ! "$(git log --format=%H -1)" = "$hash" ]]; then
+      git fetch origin
+      git reset --hard "$hash" >&2
+    fi
+    pushd
+    exec ${cfg.package}/bin/emacs --daemon
+  '';
+  editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
+  core = pkgs.emacsPackagesNgGen (pkgs.emacs.override {
+    imagemagick = if cfg.imagemagick.enable then pkgs.imagemagick else null;
+  });
+  #spacemacs = pkgs.callPackage ./spacemacs-with-packages.nix {
+  #  emacsWithPackages = core.emacsWithPackages;
+  #} {
+  #  layers = import ./spacemacs-layers.nix;
+  #  themes = ps: [ ps.solarized-theme pkgs.mu core.emacs ];
+  #};
+  myemacs = (pkgs.emacsPackagesNgGen (pkgs.emacs.override {
+        imagemagick = if cfg.imagemagick.enable then pkgs.imagemagick else null;
+  })).emacsWithPackages (ps: [pkgs.mu]);
 in {
   options.programs.emacs = {
     socket-activation.enable =
@@ -26,10 +58,8 @@ in {
   };
   config = mkMerge [
     ({
-      programs.emacs.package = (pkgs.emacsPackagesNgGen
-        (pkgs.emacs.override {
-          imagemagick = if cfg.imagemagick.enable then pkgs.imagemagick else null;
-        })).emacsWithPackages (ps: [ pkgs.mu ]);
+      programs.emacs.package = myemacs;
+      #programs.emacs.package = spacemacs;
       home.packages = with pkgs; [
         editorScriptX11
         (makeDesktopItem {
@@ -71,8 +101,8 @@ in {
           TimeoutStartSec = "10min";
           # bitwarden.el checks if that value is set,
           # we set it in our own bw wrapper internally
-          ExecStart = "${pkgs.zsh}/bin/zsh -c 'source ~/.zshrc; export BW_SESSION=1 PATH=$PATH:${pkgs.sqlite}/bin; exec ${cfg.package}/bin/emacs --daemon'";
           Restart = "always";
+          ExecStart = toString daemonScript;
         };
       };
     })

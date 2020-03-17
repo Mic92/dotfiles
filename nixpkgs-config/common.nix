@@ -11,7 +11,7 @@
 
   imports = [
     #./vim.nix
-    ./emacs.nix
+    ./emacs
   ];
 
   config = {
