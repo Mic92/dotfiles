@@ -1,5 +1,5 @@
 # -*- mode: snippet -*-
-# name: vanity checksum
+# name: vanity checksum for go packages
 # key: modSha256
 # --
 modSha256 = "0000000000000000000000000000000000000000000000000000";
