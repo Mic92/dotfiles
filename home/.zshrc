@@ -483,7 +483,7 @@ export XDG_TEMPLATES_DIR="$HOME/.Templates"
 export XDG_VIDEOS_DIR="$HOME/Videos"
 export ERRFILE=~/.xsession-errors
 # Antialising
-export _JAVA_OPTIONS='-Dawt.useSystemAAFontSettings=lcd -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel'
+export _JAVA_OPTIONS="$_JAVA_OPTIONS -Dawt.useSystemAAFontSettings=lcd -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
 # To enable Graphic Hardware acceleration
 #export LIBGL_ALWAYS_INDIRECT=1
 export INTEL_BATCH=1
