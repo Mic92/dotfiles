@@ -105,9 +105,14 @@ if exists('+termguicolors')
   let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   set termguicolors
 endif
-let g:gruvbox_italic=1
+
 set background=dark
-color gruvbox
+try
+   let g:gruvbox_italic=1
+   colorscheme gruvbox
+catch /^Vim\%((\a\+)\)\=:E185/
+   colorscheme zellner
+endtry
 
 map <C-n> :NERDTreeToggle<CR>
 
