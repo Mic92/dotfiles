@@ -26,7 +26,7 @@ let
     cd $HOME/.emacs.d/
     if [ ! -d $HOME/.emacs.d/.git ]; then
       git init
-      git remote add https://github.com/syl20bnr/spacemacs
+      git remote add origin https://github.com/syl20bnr/spacemacs
       git pull origin develop
     fi
     hash=${sourcesJson.spacemacs.rev}
