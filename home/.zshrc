@@ -33,6 +33,10 @@ function faketty {
 export NIX_USER_PROFILE_DIR=${NIX_USER_PROFILE_DIR:-/nix/var/nix/profiles/per-user/${USER}}
 export NIX_PROFILES=${NIX_PROFILES:-$HOME/.nix-profile}
 
+if [[ -z "$TERMINFO_DIRS" ]] || [[ -d $HOME/.nix-profile/share/terminfo ]]; then
+  export TERMINFO_DIRS=$HOME/.nix-profile/share/terminfo
+fi
+
 function string_hash() {
   local hashstr=$1
   local hashsize=$2
@@ -518,7 +522,6 @@ export LC_MESSAGES=en_DK.UTF-8
 export LC_TIME=en_DK.UTF-8
 export PERL_CPANM_OPT="--local-lib=~/.perl5"
 export PERL5LIB=~/.perl5/lib/perl5
-export PYTHONDOCS=/usr/share/doc/python/html/
 
 # downgrade terminfo to tmux if we are inside
 if [[ -n "$TMUX" ]] && [[ -n "${commands[tput]}" ]]; then
