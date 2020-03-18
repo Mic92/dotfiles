@@ -55,6 +55,7 @@ in {
     icloud = {
       username = "!secret icloud_email";
       password = "!secret icloud_password";
+      with_family = true;
     };
     cloud = {};
     system_health = {};
