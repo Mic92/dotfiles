@@ -32,6 +32,7 @@
       strace
       binutils
       clang-tools
+      grc
 
       # python language server + plugins
       (pkgs.python3.withPackages (ps: lib.attrVals config.python.packages ps))
