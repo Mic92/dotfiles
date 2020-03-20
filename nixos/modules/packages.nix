@@ -1,10 +1,10 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
-    socat
-    whois
-
-    # must have
+    (neovim.override {
+      # no python2
+      withPython = false;
+    })
     psmisc
     p7zip
     sipcalc
@@ -21,14 +21,14 @@
     rsync
     git
     tig
-    python
     python3
     strace
-    nethogs
+    bandwhich
     iotop
     manpages
     dnsutils
     netcat
     mtr
+    whois
  ];
 }

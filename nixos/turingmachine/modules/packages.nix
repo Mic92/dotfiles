@@ -6,43 +6,7 @@
     zfs.enableUnstable = true;
   };
 
-  environment.systemPackages = with pkgs; [
-    (neovim.override {
-      # no python2
-      withPython = false;
-    })
-    cntr
+  imports = [ ../../modules/packages.nix ];
 
-    cryptsetup
-    usbutils
-    socat
-    whois
-
-    # must have
-    psmisc
-    p7zip
-    sipcalc
-    iperf
-    openssl
-    binutils
-    file
-    wget
-    htop
-    ag
-    lsof
-    tcpdump
-    tmux
-    rsync
-    git
-    tig
-    ruby.devEnv
-    python3
-    nethogs
-    iotop
-    manpages
-    dnsutils
-    netcat
-    mtr
-    ntfs3g
-  ];
+  environment.systemPackages = with pkgs; [ cntr ntfs3g ];
 }
