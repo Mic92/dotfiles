@@ -15,31 +15,33 @@
     });
   };
 
-  services.netdata.python.extraPackages = ps: [
-    # postgresql
-    ps.psycopg2
-    ps.docker
-    ps.dnspython
-    # tor
-    ps.stem
-    ps.ldap
-  ];
+  services.netdata = {
+    config.global."memory mode" = "save";
 
-  services.netdata.stream.role = "master";
+    python.extraPackages = ps: [
+      # postgresql
+      ps.psycopg2
+      ps.docker
+      ps.dnspython
+      # tor
+      ps.stem
+      ps.ldap
+    ];
+
+    stream.role = "master";
+  };
 
   krops.secrets.netdata-pushover = {
     path = "/etc/netdata/health_alarm_notify.conf";
     owner = "netdata";
   };
 
-  services.nginx = {
-    virtualHosts."netdata.thalheim.io" = {
-      useACMEHost = "thalheim.io";
-      forceSSL = true;
-      locations."/".extraConfig = ''
-        proxy_pass http://localhost:19999;
-      '';
-    };
+  services.nginx.virtualHosts."netdata.thalheim.io" = {
+    useACMEHost = "thalheim.io";
+    forceSSL = true;
+    locations."/".extraConfig = ''
+      proxy_pass http://localhost:19999;
+    '';
   };
 
   services.icinga2.extraConfig = ''
