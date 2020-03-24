@@ -18,11 +18,16 @@
       };
       condition = {
         condition = "template";
-        value_template = ''{{ state_attr("device_tracker.beatrice", "battery") == "NotCharging" }}'';
+        value_template = ''{{ state_attr("device_tracker.beatrice_icloud", "battery_status") == "NotCharging" }}'';
       };
-      action = [{
+      action = let
+        msg = ''Iphone only got {{ state_attr("device_tracker.beatrice_icloud", "battery") | round(1) }}% battery left'';
+      in [{
         service = "notify.mobile_app_beatrice";
-        data_template.message = ''Iphone only got {{ state_attr("device_tracker.beatrice", "battery") | round(1) }}% battery left'';
+        data_template.message = msg;
+      } {
+        service = "notify.pushover";
+        data_template.message = msg;
       }];
     } {
       alias = "Apple watch battery warning";
@@ -37,9 +42,14 @@
         condition = "template";
         value_template = ''{{ state_attr("device_tracker.shannans_apple_watch", "battery_status") == "NotCharging" }}'';
       };
-      action = [{
+      action = let
+        msg = ''Apple watch only got {{ state_attr("device_tracker.shannans_apple_watch", "battery") | round(1) }}% battery left'';
+      in [{
         service = "notify.mobile_app_beatrice";
-        data_template.message = ''Apple watch only got {{ state_attr("device_tracker.shannans_apple_watch", "battery") | round(1) }}% battery left'';
+        data_template.message = msg;
+      } {
+        service = "notify.pushover";
+        data_template.message = msg;
       }];
     } {
       alias = "Apple watch wearing reminder notification";
@@ -94,9 +104,7 @@
       };
       action = [{
         service = "notify.pushover";
-        data_template = {
-          message = ''Redmi only has {{ state_attr("device_tracker.redmi_note_5", "battery_level") }}% battery left'';
-        };
+        data_template.message = ''Redmi only has {{ state_attr("device_tracker.redmi_note_5", "battery_level") }}% battery left'';
       }];
     } {
       alias = "Redmi charged notification";
