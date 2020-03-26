@@ -9,7 +9,7 @@ let
   sourcesJson = builtins.fromJSON (builtins.readFile ../../nixos/nix/sources.json);
   editorScript = { name ? "emacseditor", x11 ? false, mu4e ? false } : pkgs.writeScriptBin name ''
     #!${pkgs.runtimeShell}
-    export TERM=xterm-24bit
+    export TERM=xterm-direct
     exec -a emacs ${cfg.package}/bin/emacsclient \
       --socket-name $XDG_RUNTIME_DIR/emacs \
       --create-frame \
