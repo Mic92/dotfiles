@@ -82,7 +82,6 @@ in {
         gogetdoc
         impl
         gometalinter
-        nur.repos.mic92.xterm-24bit-terminfo
       ];
     })
     (mkIf config.programs.emacs.socket-activation.enable {
