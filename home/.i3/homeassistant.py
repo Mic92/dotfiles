@@ -120,7 +120,6 @@ class BikeBattery(IntervalModule):
 
 
 class PhoneBattery(IntervalModule):
-    url = "https://hass.thalheim.io"
     hints = dict(markup=True)
 
     @require(internet)
@@ -128,10 +127,29 @@ class PhoneBattery(IntervalModule):
         state.update()
         phone_state = state.get("device_tracker.redmi_note_5")
         charge_state = state.get("binary_sensor.redmi_charging")
+        iphone_state = state.get("sensor.beatrice_battery_state")
+        watch_state = state.get("device_tracker.shannans_apple_watch")
 
         level = phone_state["attributes"]["battery_level"]
         if level == 100:
             status = bat_status["FULL"]
         else:
             status = bat_status[charge_state["state"]]
-        self.output = dict(full_text=f"{status}{level}%")
+
+        iphone_level = iphone_state["attributes"]["battery"]
+        if level == 100:
+            iphone_status = bat_status["FULL"]
+        elif iphone_state["attributes"]["battery_status"] == "NotCharging":
+            iphone_status = bat_status["off"]
+        else:
+            iphone_status = bat_status["on"]
+
+        watch_level = watch_state["attributes"]["battery"]
+        if level == 100:
+            watch_status = bat_status["FULL"]
+        elif watch_state["attributes"]["battery_status"] == "NotCharging":
+            watch_status = bat_status["off"]
+        else:
+            watch_status = bat_status["on"]
+
+        self.output = dict(full_text=f"{status}{level}% {iphone_status}{iphone_level}% {watch_status}{watch_level}%")
