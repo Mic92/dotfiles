@@ -56,6 +56,7 @@
       less
       bashInteractive
       gnupg
+      ncurses
     ];
 
     home.stateVersion = "18.09";
