@@ -1,7 +1,6 @@
 #
 # ~/.bashrc
 #
-
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
@@ -55,21 +54,27 @@ if [[ -r ~/.dircolors ]] && type -p dircolors >/dev/null; then
   eval $(dircolors -b "$HOME/.dircolors")
 fi
 
-# ssh agent
-if type -p envoy >/dev/null && (( UID != 0)); then
-  envoy
-  source <(envoy -p)
-fi
-
 source_bash_completion
 unset -f source_bash_completion
 
-for config in .bash_aliases .bash_functions .bashrc."$HOSTNAME"; do
-  [[ -r ~/$config ]] && . ~/"$config"
-done
-unset config
-
 source "$HOME/.homesick/repos/homeshick/homeshick.sh"
 
-#PS1='\[\033[01;31m\]\u\[\033[01;33m\]@\[\033[01;36m\]\h \[\033[01;33m\]\w \[\033[01;35m\]\$ \[\033[00m\]'
 PS1='[\[\033[1;36m\]\u\[\033[0m\]@\h \W]\$ '
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias grep='grep --color'
+alias info='info --vi-keys'
+alias j='jobs'
+alias ll='ls -l --color'
+alias lla='ls -la --color'
+alias ls='ls --group-directories-first --color'
+alias sudo='sudo '
+alias webshare='python -m http.server 8080'
+alias wgetxc='wget $(xclip -o)'
+alias grep="grep --binary-files=without-match --directories=skip --color=auto"
+
+if [[ -r ~/.bashrc."$HOSTNAME" ]]; then
+  . ~/.bashrc."$HOSTNAME"
+fi
