@@ -18,11 +18,12 @@
     ./modules/networkmanager.nix
     ./modules/packages.nix
 
+    ../modules/macos-kvm.nix
     ../modules/mosh.nix
     ../modules/nix-daemon.nix
     ../modules/nur.nix
     ../modules/networkd.nix
-    #./vm/modules/dnsmasq.nix
+    ../modules/dnsmasq.nix
     ../modules/wireguard.nix
     ../modules/secrets.nix
     ../modules/tracing.nix

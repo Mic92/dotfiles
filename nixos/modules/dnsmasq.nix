@@ -1,9 +1,12 @@
-{ ... }: {
-  services.dnsmasq.enable = true;
+{ config, ... }: {
+  services.dnsmasq.enable = !config.virtualisation.libvirtd.enable;
   services.dnsmasq.extraConfig = ''
-    interface=enp0s25
+    #interface=enp0s25
+    #interface=virttap
     listen-address=127.0.0.1
     dhcp-range=192.168.32.50,192.168.32.100,12h
+    # disable dns
+    port=0
     ## no gateway
     #dhcp-option=3
     ## no dns
