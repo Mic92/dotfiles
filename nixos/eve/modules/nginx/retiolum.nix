@@ -31,7 +31,6 @@
     path = [ pkgs.git ];
     serviceConfig = {
       Type = "oneshot";
-      RemainAfterExit = true;
       User = "gogs";
     };
   };
