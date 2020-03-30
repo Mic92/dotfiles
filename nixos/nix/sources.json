@@ -24,11 +24,11 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "krops": {
-        "sha256": "0fcybc92nslwvzw7vz5b5qwpxbjppz4kckbvbrxrr536kd5ynwzw",
+        "sha256": "18fsxk7a2bp7bgslpd66g0n86h719allrp6gi0fjjk9ydp3q30dn",
         "type": "tarball",
-        "url": "https://github.com/krebs/krops/archive/v1.19.0.tar.gz",
+        "url": "https://github.com/krebs/krops/archive/v1.20.0.tar.gz",
         "url_template": "https://github.com/krebs/krops/archive/v<version>.tar.gz",
-        "version": "1.19.0"
+        "version": "1.20.0"
     },
     "niv": {
         "branch": "master",
@@ -36,10 +36,10 @@
         "homepage": "https://github.com/nmattia/niv",
         "owner": "nmattia",
         "repo": "niv",
-        "rev": "98c74a80934123cb4c3bf3314567f67311eb711a",
-        "sha256": "1w8n54hapd4x9f1am33icvngkqns7m3hl9yair38yqq08ffwg0kn",
+        "rev": "372f96bff217a7a019de27667d04118cffa9841b",
+        "sha256": "1l0z6162zw60pdcdj03aq64qgf1vyzmf24i9pxca64i4sprl1b7p",
         "type": "tarball",
-        "url": "https://github.com/nmattia/niv/archive/98c74a80934123cb4c3bf3314567f67311eb711a.tar.gz",
+        "url": "https://github.com/nmattia/niv/archive/372f96bff217a7a019de27667d04118cffa9841b.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixos-hardware": {
@@ -48,10 +48,10 @@
         "homepage": "",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "f4364f2457051b407899f7fc3bced4ac952644ff",
-        "sha256": "0f9mywyybrbmdbkhaalgryissi6bj1a5i72lmp47rvrgs0ssgcgg",
+        "rev": "edb7199b5c4f1db34a7253d4cabf6cf690521a92",
+        "sha256": "00r28jglx47wd2gd1bcs8m44z7a6hs5d8j48f0xjvc6s512359bm",
         "type": "tarball",
-        "url": "https://github.com/NixOS/nixos-hardware/archive/f4364f2457051b407899f7fc3bced4ac952644ff.tar.gz",
+        "url": "https://github.com/NixOS/nixos-hardware/archive/edb7199b5c4f1db34a7253d4cabf6cf690521a92.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs": {
@@ -60,10 +60,10 @@
         "homepage": "https://github.com/NixOS/nixpkgs",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "ffcc7ce3b998598f6b61479289f483524945ce12",
-        "sha256": "0hcjgnlcl370sfz6c70h6havmq52p8ykdsdb5fdxkdywk7x6803c",
+        "rev": "0278c2bf81a62b9359fe35bf1e59f2b1aa07798a",
+        "sha256": "1ay2827xy353abb4qzkgbchngzvqcaa1y6nqx2pjxvgkyf423lpm",
         "type": "tarball",
-        "url": "https://github.com/Mic92/nixpkgs/archive/ffcc7ce3b998598f6b61479289f483524945ce12.tar.gz",
+        "url": "https://github.com/Mic92/nixpkgs/archive/0278c2bf81a62b9359fe35bf1e59f2b1aa07798a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nur": {
@@ -72,10 +72,10 @@
         "homepage": "",
         "owner": "nix-community",
         "repo": "nur",
-        "rev": "f298327718c733fe217d87d8ccf05f28906501dd",
-        "sha256": "1ksgppb2py6d1b3klxdvxkah572xyaq1wxfmfacrplg4xrk3p7fc",
+        "rev": "1d0e4b2a245e02d2b76b1b5d2732ee4b8c1f501b",
+        "sha256": "1470pgvdf41853dkfx1rrnzpwqrh86m9pjlj2wy15yccr65aqkx2",
         "type": "tarball",
-        "url": "https://github.com/nix-community/nur/archive/f298327718c733fe217d87d8ccf05f28906501dd.tar.gz",
+        "url": "https://github.com/nix-community/nur/archive/1d0e4b2a245e02d2b76b1b5d2732ee4b8c1f501b.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "spacemacs": {
@@ -84,10 +84,10 @@
         "homepage": "http://spacemacs.org",
         "owner": "syl20bnr",
         "repo": "spacemacs",
-        "rev": "b5f0eb5f764672744bb9134d3db8d3186bb013c0",
-        "sha256": "09jd33653wns3g2f99sryja210i1v4v1f5sa15nr270n7gjyyg3c",
+        "rev": "2d7480f6770d4f393d375ac6ef34cd643bfb3971",
+        "sha256": "1cdv5hl7cr4z6xw6hy681p9nvy85cd8mpw3rpq6hrca6ad48y21z",
         "type": "tarball",
-        "url": "https://github.com/syl20bnr/spacemacs/archive/b5f0eb5f764672744bb9134d3db8d3186bb013c0.tar.gz",
+        "url": "https://github.com/syl20bnr/spacemacs/archive/2d7480f6770d4f393d375ac6ef34cd643bfb3971.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
