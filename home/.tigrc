@@ -5,3 +5,4 @@ bind generic c !git commit -v
 bind generic + !git commit --amend
 bind generic P !git push
 bind generic p !git pull
+set diff-highlight = true
