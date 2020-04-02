@@ -68,7 +68,7 @@
     arandr
     xlibs.xkill
     signal-desktop
-    copyq
+    parcellite
     nur.repos.mic92.pandoc-bin
     gnome3.defaultIconTheme
     hicolor_icon_theme
@@ -139,6 +139,7 @@
       algorithm2e;
     })
   ] ++ (with nur.repos.mic92; [
+    speedscope
     inxi
     source-code-pro-nerdfonts
     ferdi
