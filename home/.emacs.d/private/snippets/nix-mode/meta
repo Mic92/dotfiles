@@ -1,0 +1,12 @@
+# -*- mode: snippet -*-
+# name: meta attribute
+# key: meta
+# --
+
+meta = with stdenv.lib; {
+  description = "$1";
+  homepage    = "$2";
+  license     = licenses.mit;
+  maintainers = with maintainers; [ mic92 ];
+  platforms   = platforms.unix;
+};
