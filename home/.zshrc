@@ -247,6 +247,7 @@ RPS1='%(?.%F{magenta}.%F{red}(%?%) %F{magenta})'
 alias zcat='zcat -f'
 alias dd='dd status=progress'
 xalias ag='ag --color --smart-case --literal --pager=less'
+alias pgrep='pgrep -a'
 
 # System tools
 xalias top='htop'
@@ -257,7 +258,7 @@ alias df='df -hT'
 xalias df='dfc'
 # File management
 if [[ -n ${commands[exa]} ]]; then
-  if [ -n "${commands[vivid]}" ]; then 
+  if [ -n "${commands[vivid]}" ]; then
     export LS_COLORS="$(vivid -m 8-bit generate molokai)"
   fi
   alias ls="exa --classify --icons"
