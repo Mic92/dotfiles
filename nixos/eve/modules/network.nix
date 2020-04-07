@@ -89,7 +89,7 @@ in {
         enable = true;
         port = 2222;
         # FIXME: is in the nix store
-        hostECDSAKey = <secrets/initrd-ssh-key>;
+        hostKeys = [ <secrets/initrd-ssh-key> ];
       };
       postCommands = ''
         echo "zfs load-key -a && killall zfs" >> /root/.profile
