@@ -42,6 +42,7 @@
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
     ./modules/openldap.nix
+    ./modules/openttd
     ./modules/packages.nix
     ./modules/phpfpm.nix
     ./modules/phpldapadmin.nix
