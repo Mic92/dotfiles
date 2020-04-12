@@ -136,20 +136,26 @@ class PhoneBattery(IntervalModule):
         else:
             status = bat_status[charge_state["state"]]
 
-        iphone_level = iphone_state["attributes"]["battery"]
-        if level == 100:
-            iphone_status = bat_status["FULL"]
-        elif iphone_state["attributes"]["battery_status"] == "NotCharging":
-            iphone_status = bat_status["off"]
-        else:
-            iphone_status = bat_status["on"]
+        full_text = f"{status}{level}%"
 
-        watch_level = watch_state["attributes"]["battery"]
-        if level == 100:
-            watch_status = bat_status["FULL"]
-        elif watch_state["attributes"]["battery_status"] == "NotCharging":
-            watch_status = bat_status["off"]
-        else:
-            watch_status = bat_status["on"]
+        iphone_level = iphone_state["attributes"].get("battery", None)
+        if iphone_level:
+            if level == 100:
+                iphone_status = bat_status["FULL"]
+            elif iphone_state["attributes"]["battery_status"] == "NotCharging":
+                iphone_status = bat_status["off"]
+            else:
+                iphone_status = bat_status["on"]
+            full_text += f" I:{iphone_status}{iphone_level}%"
 
-        self.output = dict(full_text=f"{status}{level}% {iphone_status}{iphone_level}% {watch_status}{watch_level}%")
+        watch_level = watch_state["attributes"].get("battery", None)
+        if watch_level:
+            if level == 100:
+                watch_status = bat_status["FULL"]
+            elif watch_state["attributes"]["battery_status"] == "NotCharging":
+                watch_status = bat_status["off"]
+            else:
+                watch_status = bat_status["on"]
+            full_text += f" W:{watch_status}{watch_level}%"
+
+        self.output = dict(full_text=full_text)
