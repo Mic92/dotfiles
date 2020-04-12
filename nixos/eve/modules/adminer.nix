@@ -18,7 +18,7 @@
       useACMEHost = "thalheim.io";
       forceSSL = true;
       extraConfig = ''
-        index index.php;
+        index adminer.php;
       '';
       locations."/".extraConfig = ''
         try_files $uri $uri/ /index.php?$args;
@@ -26,10 +26,10 @@
       locations."~* ^.+\.php$".extraConfig = ''
         include ${pkgs.nginx}/conf/fastcgi_params;
         fastcgi_pass unix:${config.services.phpfpm.pools.adminer.socket};
-        fastcgi_index index.php;
+        fastcgi_index adminer.php;
         fastcgi_param SCRIPT_FILENAME $document_root/$fastcgi_script_name;
       '';
-      root = "${pkgs.nur.repos.mic92.adminer}/share/adminer";
+      root = "${pkgs.adminer}";
     };
 
     virtualHosts."adminer.higgsboson.tk" = {
