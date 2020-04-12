@@ -1,10 +1,12 @@
-{ config, ... }: {
+{ config, pkgs, ... }: {
   services.nextcloud = {
     enable = true;
     hostName = "cloud.thalheim.io";
 
     nginx.enable = true;
     caching.apcu = true;
+
+    package = pkgs.nextcloud18;
 
     config = {
       dbtype = "pgsql";
