@@ -5,8 +5,8 @@
 
 meta = with stdenv.lib; {
   description = "$1";
-  homepage    = "$2";
-  license     = licenses.mit;
+  homepage = "$2";
+  license = licenses.mit;
   maintainers = with maintainers; [ mic92 ];
-  platforms   = platforms.unix;
+  platforms = platforms.unix;
 };
