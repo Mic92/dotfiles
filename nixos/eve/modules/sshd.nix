@@ -1,6 +1,18 @@
 { config, ... }: {
   imports = [ ../../modules/sshd.nix ];
 
+  programs.ssh.knownHosts.eve = {
+    hostNames = [
+      "eve"
+      "eve.thalheim.io"
+      "eve.r"
+      config.networking.eve.ipv4.address
+    ] ++ config.networking.eve.ipv6.addresses;
+    publicKey = ''
+      ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF/KPU3Z5LSjbBI6hrq25wCcseq2UpqSzUFZRr+ux6LM
+    '';
+  };
+
   services.openssh.listenAddresses = [
     { addr = "0.0.0.0"; port = 22; }
     { addr = "0.0.0.0"; port = 22022; } # legacy

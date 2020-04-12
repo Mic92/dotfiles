@@ -24,6 +24,7 @@
     ./modules/borgbackup.nix
     ./modules/buildkite.nix
     ./modules/choose-place
+    ./modules/krops-deploy
     ./modules/docker.nix
     ./modules/dovecot.nix
     ./modules/ejabberd.nix
