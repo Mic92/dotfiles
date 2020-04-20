@@ -445,9 +445,9 @@ export TERMINAL=alacritty
 export PICTUREVIEW=eog
 if [[ -f ~/.emacs.d/spacemacs.mk ]] && [[ -n ${commands[emacseditor]} ]] && [[ -n $XDG_RUNTIME_DIR ]]; then
   export EDITOR=emacseditor
-  emacs-ag() {
+  ee-ag() {
       if [[ "$#" == 0 ]]; then
-          echo "USAGE: emacs-ag query" >&2
+          echo "USAGE: ee-ag query" >&2
           return 1
       fi
       emacseditor -e "(helm-ag \"${2:-$(realpath .)}\" \"${1}\")"
