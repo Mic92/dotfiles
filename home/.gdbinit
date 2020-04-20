@@ -36,7 +36,13 @@ define btc
   continue
 end
 
-define continous-bt
+define loop-stepi
+  while (1)
+    stepi
+  end
+end
+
+define loop-bt
   while (1)
     bt
     continue
