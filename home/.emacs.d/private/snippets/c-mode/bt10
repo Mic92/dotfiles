@@ -1,6 +1,6 @@
 
 # -*- mode: snippet -*-
-# name: poormans backtrace
+# name: poormans backtrace (depth: 10)
 # key: bt10
 # --
 

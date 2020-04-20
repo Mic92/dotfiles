@@ -10,7 +10,7 @@ def bt(depth):
         return_addrs.append(f"r({i})")
     return f"""
 # -*- mode: snippet -*-
-# name: poormans backtrace
+# name: poormans backtrace (depth: {depth})
 # key: bt{depth}
 # --
 
