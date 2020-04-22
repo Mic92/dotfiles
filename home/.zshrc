@@ -348,8 +348,12 @@ if [[ -n ${commands[nix]} ]]; then
   }
 fi
 
-callPackage() {
-    nix-build -E "with import <nixpkgs> {}; pkgs.callPackage $(realpath $1) {}"
+nix-call-package() {
+    if [ $# != 1 ]; then
+        echo "USAGE: $0" >&2
+        return 1
+    fi
+    nix-build -E "with import <nixpkgs> {}; pkgs.callPackage $1 {}"
 }
 
 nix-pkg-path() {
@@ -358,6 +362,17 @@ nix-pkg-path() {
         return 1
     fi
     nix-shell -p "$1" --run 'echo $buildInputs'
+}
+
+nix-unpack() {
+    if [ $# != 1 ]; then
+        echo "USAGE: $0" >&2
+        return 1
+    fi
+    pkg=$1
+    nix-shell \
+      -E "with import <nixpkgs> {}; mkShell { buildInputs = [ (srcOnly pkgs.\"$pkg\") ]; }" \
+      --run "cp -r \$buildInputs $pkg; chmod -R +w $pkg"
 }
 
 killp() {
