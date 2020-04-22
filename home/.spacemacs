@@ -32,7 +32,8 @@ values."
    with-editor-emacsclient-executable "emacsclient"
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(php
+   '(typescript
+     php
      nginx
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
