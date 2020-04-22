@@ -8,9 +8,6 @@
     # should be enough?
     nrBuildUsers = 32;
 
-    # https://github.com/NixOS/nixpkgs/pull/84570
-    maxJobs = "auto";
-
     # https://github.com/NixOS/nix/issues/719
     extraOptions = ''
       builders-use-substitutes = true
