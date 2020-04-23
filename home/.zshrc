@@ -423,11 +423,10 @@ if [ -n "${commands[xclip]}" ]; then
 fi
 
 if [ -n "${commands[bat]}" ]; then
-  export BAT_THEME="Solarized (light)"
   cat() {
-    if [ -t 1 ] && [[ -o interactive ]]; then
-        if [ -n "$DISPLAY" ]; then
-            xclip -selection clipboard < "$1" &
+    if [[ -t 1 ]] && [[ -o interactive ]]; then
+        if [[ -n "$DISPLAY" ]]; then
+            xclip -selection clipboard < "$1" 2>/dev/null &
         fi
         bat "$@"
     else
