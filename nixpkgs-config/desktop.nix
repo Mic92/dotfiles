@@ -103,6 +103,7 @@
     gnupg1compat
     cheat
     tldr
+    nixpkgs-pytools
 
     (mpv-with-scripts.override { scripts = [ mpvScripts.mpris ];})
     wmc-mpris
