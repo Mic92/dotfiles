@@ -75,13 +75,16 @@ in {
 
         (editorScript { name = "mu4e"; mu4e = true; x11 = true; })
         (editorScript {})
-        gocode
-        godef
-        gocode
-        go-tools
-        gogetdoc
+        gopls
+        golangci-lint
+        gotools
+        gotests
+        reftools
+        gomodifytags
+        gopkgs
         impl
-        gometalinter
+        godef
+        gogetdoc
       ];
     })
     (mkIf config.programs.emacs.socket-activation.enable {
