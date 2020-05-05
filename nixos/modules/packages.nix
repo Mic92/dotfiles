@@ -6,7 +6,6 @@
       withPython = false;
     })
     psmisc
-    p7zip
     sipcalc
     iperf
     openssl
