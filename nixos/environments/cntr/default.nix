@@ -5,6 +5,7 @@ stdenv.mkDerivation {
     python3
     clippy
     rustc
+    cargo
     rls
   ];
 }
