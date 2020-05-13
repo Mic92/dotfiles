@@ -23,7 +23,7 @@
 
     home.packages = with pkgs; [
       #(pkgs.callPackage /home/joerg/git/nix-review {})
-      nur.repos.mic92.nix-review-unstable
+      nur.repos.mic92.nixpkgs-review-unstable
       nur.repos.mic92.mosh-ssh-agent
       nix-prefetch
 
