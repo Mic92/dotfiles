@@ -45,6 +45,7 @@
       gitAndTools.tig
       tokei
       direnv
+      nix-direnv
       fzf
       exa
       fd

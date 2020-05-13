@@ -1,5 +1,8 @@
 # see https://github.com/nix-community/nix-direnv
-source $HOME/.nix-direnv/direnvrc
+
+if [ -f ~/.nix-profile/share/nix-direnv/direnvrc ]; then
+  source ~/.nix-profile/share/nix-direnv/direnvrc
+fi
 
 _realpath() {
     [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
