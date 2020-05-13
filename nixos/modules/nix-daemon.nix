@@ -21,6 +21,14 @@
     in (map (entry: "${entry}=/var/src/${entry}") kropsSources) ++ [
       "/nix/var/nix/profiles/per-user/root/channels"
     ];
+    binaryCaches = [
+      "https://r-ryantm.cachix.org"
+      "https://mic92.cachix.org"
+    ];
+    binaryCachePublicKeys = [
+      "r-ryantm.cachix.org-1:gkUbLkouDAyvBdpBX0JOdIiD2/DP1ldF3Z3Y6Gqcc4c="
+      "mic92.cachix.org-1:gi8IhgiT3CYZnJsaW7fxznzTkMUOn1RY4GmXdT/nXYQ="
+    ];
   };
 
   imports = [ ./builder.nix ];
