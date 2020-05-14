@@ -6,13 +6,13 @@ import threading
 import time
 from os.path import expanduser, expandvars
 from threading import Thread
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 
 from bitwarden import BitwardenPassword
 from i3pystatus import IntervalModule
 from i3pystatus.core.util import internet, require
 from icons import WEATHER_ICONS
-
+import color
 
 
 def request(path: str,
@@ -129,32 +129,32 @@ class BikeBattery(IntervalModule):
 status_symbols = {"off": "-", "on": "+", "FULL": "↯"}
 
 
-def format_charge_state(level: int, state: str):
+def charge_state(level: int, state: str) -> Tuple[str, bool]:
     if level == 100:
         status = status_symbols["FULL"]
     elif state in ["discharging", "NotCharging"]:
         status = status_symbols["off"]
     else:
         status = status_symbols["on"]
-    return f"{status}{level}%"
+    return f"{status}{level}%", level < 40
 
 
-def charge_state_android(state: State, device: str) -> str:
+def charge_state_android(state: State, device: str) -> Tuple[str, bool]:
     battery_level = state.get(f"sensor.{device}_battery_level")
     battery_state = state.get(f"sensor.{device}_battery_state")
 
     if battery_level is None or battery_state is None:
-        return "N/A"
-    return format_charge_state(battery_level["state"], battery_state["state"])
+        return "N/A", False
+    return charge_state(int(battery_level["state"]), battery_state["state"])
 
 
-def charge_state_ios(state: State, device: str) -> str:
+def charge_state_ios(state: State, device: str) -> Tuple[str, bool]:
     battery = state.get(f"sensor.{device}_battery_state")
 
     if battery is None:
-        return "N/A"
-    return format_charge_state(battery["attributes"]["battery"],
-                               battery["attributes"]["battery_status"])
+        return "N/A", False
+    return charge_state(battery["attributes"]["battery"],
+                        battery["attributes"]["battery_status"])
 
 
 class PhoneBattery(IntervalModule):
@@ -166,7 +166,8 @@ class PhoneBattery(IntervalModule):
         redmi = charge_state_android(state, "redmi_note_5")
         iphone = charge_state_ios(state, "beatrice")
         watch = charge_state_ios(state, "shannans_apple_watch")
+        full_text = f"{redmi[0]} I:{iphone[0]} W:{watch[0]}"
+        critical = redmi[1] or iphone[1] or watch[1]
+        text_color = color.text_down if critical else None
 
-        full_text = f"{redmi} I:{iphone} W:{watch}"
-
-        self.output = dict(full_text=full_text)
+        self.output = dict(full_text=full_text, color=text_color)
