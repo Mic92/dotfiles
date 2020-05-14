@@ -13,7 +13,6 @@ from i3pystatus import IntervalModule
 from i3pystatus.core.util import internet, require
 from icons import WEATHER_ICONS
 
-bat_status = {"off": "-", "on": "+", "FULL": "↯"}
 
 
 def request(path: str,
@@ -47,11 +46,11 @@ class State:
             entities[entity["entity_id"]] = entity
         self.entities = entities
 
-    def get(self, entity_id: str) -> Dict[str, Any]:
+    def get(self, entity_id: str) -> Optional[Dict[str, Any]]:
         if self.entities is None:
             self.update()
         assert self.entities is not None
-        return self.entities[entity_id]
+        return self.entities.get(entity_id)
 
 
 state = State(BitwardenPassword("home-assistant-token"))
@@ -62,6 +61,8 @@ class WeatherIcon(IntervalModule):
     def run(self) -> None:
         global state
         weather = state.get("sensor.dark_sky_summary")
+        if weather is None:
+            return
         icon_name = weather['attributes']['icon']
         icon = WEATHER_ICONS.get(icon_name, None)
         if icon is None:
@@ -79,6 +80,8 @@ class WeatherText(IntervalModule):
     def run(self) -> None:
         global state
         temperature = state.get("sensor.dark_sky_temperature")
+        if temperature is None:
+            return
         unit = temperature["attributes"]["unit_of_measurement"]
         text = f'{temperature["state"]}{unit}'
 
@@ -96,6 +99,8 @@ class Shannan(IntervalModule):
             "Work of Shannan": "Work",
             "Shannan's Home": "Home",
         }
+        if shannan is None or distance is None:
+            return
         location = locations.get(shannan['state'], shannan['state'])
         self.output = dict(full_text=f"{location} ({distance['state']}km)")
 
@@ -115,8 +120,41 @@ class BikeBattery(IntervalModule):
     def run(self) -> None:
         global state
         days_uncharged = state.get(self.entity_id)
+        if days_uncharged is None:
+            return
         days = int(float(days_uncharged["state"]))
         self.output = dict(full_text=f"{days}d")
+
+
+status_symbols = {"off": "-", "on": "+", "FULL": "↯"}
+
+
+def format_charge_state(level: int, state: str):
+    if level == 100:
+        status = status_symbols["FULL"]
+    elif state in ["discharging", "NotCharging"]:
+        status = status_symbols["off"]
+    else:
+        status = status_symbols["on"]
+    return f"{status}{level}%"
+
+
+def charge_state_android(state: State, device: str) -> str:
+    battery_level = state.get(f"sensor.{device}_battery_level")
+    battery_state = state.get(f"sensor.{device}_battery_state")
+
+    if battery_level is None or battery_state is None:
+        return "N/A"
+    return format_charge_state(battery_level["state"], battery_state["state"])
+
+
+def charge_state_ios(state: State, device: str) -> str:
+    battery = state.get(f"sensor.{device}_battery_state")
+
+    if battery is None:
+        return "N/A"
+    return format_charge_state(battery["attributes"]["battery"],
+                               battery["attributes"]["battery_status"])
 
 
 class PhoneBattery(IntervalModule):
@@ -125,37 +163,10 @@ class PhoneBattery(IntervalModule):
     @require(internet)
     def run(self) -> None:
         state.update()
-        phone_state = state.get("device_tracker.redmi_note_5")
-        charge_state = state.get("binary_sensor.redmi_charging")
-        iphone_state = state.get("sensor.beatrice_battery_state")
-        watch_state = state.get("device_tracker.shannans_apple_watch")
+        redmi = charge_state_android(state, "redmi_note_5")
+        iphone = charge_state_ios(state, "beatrice")
+        watch = charge_state_ios(state, "shannans_apple_watch")
 
-        level = phone_state["attributes"]["battery_level"]
-        if level == 100:
-            status = bat_status["FULL"]
-        else:
-            status = bat_status[charge_state["state"]]
-
-        full_text = f"{status}{level}%"
-
-        iphone_level = iphone_state["attributes"].get("battery", None)
-        if iphone_level:
-            if level == 100:
-                iphone_status = bat_status["FULL"]
-            elif iphone_state["attributes"]["battery_status"] == "NotCharging":
-                iphone_status = bat_status["off"]
-            else:
-                iphone_status = bat_status["on"]
-            full_text += f" I:{iphone_status}{iphone_level}%"
-
-        watch_level = watch_state["attributes"].get("battery", None)
-        if watch_level:
-            if level == 100:
-                watch_status = bat_status["FULL"]
-            elif watch_state["attributes"]["battery_status"] == "NotCharging":
-                watch_status = bat_status["off"]
-            else:
-                watch_status = bat_status["on"]
-            full_text += f" W:{watch_status}{watch_level}%"
+        full_text = f"{redmi} I:{iphone} W:{watch}"
 
         self.output = dict(full_text=full_text)
