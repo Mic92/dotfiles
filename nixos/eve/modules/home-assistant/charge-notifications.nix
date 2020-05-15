@@ -1,12 +1,5 @@
 { ... }: {
   services.home-assistant.config = {
-    binary_sensor = [{
-      platform = "trend";
-      sensors.redmi_charging = {
-        entity_id = "device_tracker.redmi_note_5";
-        attribute = "battery_level";
-      };
-    }];
     automation = [{
       alias = "IPhone battery warning";
       trigger = {
@@ -93,35 +86,34 @@
 
       trigger = {
         platform = "numeric_state";
-        entity_id  = "device_tracker.redmi_note_5";
-        value_template = "{{ state.attributes.battery_level }}";
+        entity_id  = "sensor.redmi_note_5_battery_level";
+        #value_template = "{{ state }}";
         below = 30;
         for = "00:10:00";
       };
       condition = {
         condition = "template";
-        value_template = ''{{ states("binary_sensor.redmi_charging") != "on"  }}'';
+        value_template = ''{{ states("sensor.redmi_note_5_battery_state") == "discharging"  }}'';
       };
       action = [{
         service = "notify.pushover";
-        data_template.message = ''Redmi only has {{ state_attr("device_tracker.redmi_note_5", "battery_level") }}% battery left'';
+        data_template.message = ''Redmi only has {{ states("sensor.redmi_note_5_battery_level")  }}% battery left'';
       }];
     } {
       alias = "Redmi charged notification";
       trigger = {
         platform = "numeric_state";
-        entity_id  = "device_tracker.redmi_note_5";
-        value_template = "{{ state.attributes.battery_level }}";
+        entity_id  = "sensor.redmi_note_5_battery_level";
         above = 95;
         for = "00:10:00";
       };
       condition = {
         condition = "template";
-        value_template = ''{{ states("binary_sensor.redmi_charging") == "on"  }}'';
+        value_template = ''{{ states("sensor.redmi_note_5_battery_state") != "discharging" }}'';
       };
       action = [{
         service = "notify.pushover";
-        data_template.message = ''Redmi was charged up {{ state_attr("device_tracker.redmi_note_5", "battery_level") }}%'';
+        data_template.message = ''Redmi was charged up {{ states("sensor.redmi_note_5_battery_level") }}%'';
       }];
     }];
   };
