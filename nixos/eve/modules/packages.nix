@@ -7,7 +7,6 @@
     ruby.devEnv
     # must have
     psmisc
-    p7zip
     openssl
     binutils
     file
