@@ -478,14 +478,6 @@ you should place your code here."
               (treemacs-git-mode 'deferred)
               (add-to-list 'treemacs-pre-file-insert-predicates #'treemacs-is-file-git-ignored?)))
 
-  (use-package lsp-mode
-    :config
-    (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
-    (lsp-register-client
-     (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
-                      :major-modes '(nix-mode)
-                      :server-id 'nix))
-
   ;; otherwise nix-mode will block on instantiating stuff
   (setenv "NIX_REMOTE_SYSTEMS" "")
   (use-package direnv
