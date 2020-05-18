@@ -1,16 +1,13 @@
 !--------------------------------------------------------------------------------
 !
 !    X F T
+Xft.autohint:        false
+Xft.hintstyle:  hintslight
+Xft.hinting:          true
+Xft.antialias:        true
+Xft.rgba:              rgb
 
-Xft.dpi:              192
-Xft.autohint:       false
-Xft.lcdfilter: lcddefault
-Xft.hintstyle: hintsfull
-Xft.hinting:         true
-Xft.antialias:       true
-Xft.rgba:             rgb
-
-Xcursor.theme:    Neutral
+Xcursor.theme:     Neutral
 
 !-------------------------------------------------------------------------------
 !!
