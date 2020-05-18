@@ -1,4 +1,5 @@
 e asm.pseudo = true
 e scr.utf8 = true
 e scr.color = 3
+e io.cache=true
 eco tango
