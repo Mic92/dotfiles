@@ -17,6 +17,7 @@
     ./modules/minidlna.nix
     ./modules/networkmanager.nix
     ./modules/packages.nix
+    ./modules/gnome-pim.nix
 
     ../modules/macos-kvm.nix
     ../modules/mosh.nix
