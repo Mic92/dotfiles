@@ -77,10 +77,6 @@ in {
      trigger = joerg { from = "home"; };
      action = notifyShannan "Jörg left home";
    } {
-     alias = "Joerg arrived home notification";
-     trigger = joerg { to = "home"; };
-     action = notifyShannan "Jörg is home";
-   } {
      alias = "Joerg left Uni notification";
      trigger = joerg { from = "University"; };
      action = notifyShannan "Jörg left Uni";
