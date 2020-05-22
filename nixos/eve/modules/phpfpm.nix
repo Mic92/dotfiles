@@ -30,7 +30,6 @@ in {
     (monitorPool "mediawiki" "ist.devkid.net")
     (monitorPool "rainloop" "mail.thalheim.io")
     (monitorPool "adminer" "adminer.thalheim.io")
-    (monitorPool "phpldapadmin" "ldap.thalheim.io")
     (monitorPool "nextcloud" "cloud.thalheim.io")
     (monitorPool "tt-rss" "rss.devkid.net")
   ];
