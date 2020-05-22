@@ -57,7 +57,6 @@ in {
       recommendedTlsSettings = true;
 
       commonHttpConfig = ''
-        access_log syslog:server=unix:/dev/log combined;
         add_header Strict-Transport-Security 'max-age=31536000; includeSubDomains; preload' always;
       '';
 
@@ -88,7 +87,7 @@ in {
     environment.etc."netdata/python.d/web_log.conf".text = ''
       nginx_log3:
         name: 'nginx'
-        path: '/var/spool/nginx/logs/access.log'
+        path: '/var/log/nginx/access.log'
     '';
 
     users.users.netdata.extraGroups = [ "nginx" ];
