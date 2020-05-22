@@ -11,6 +11,7 @@
     };
   };
 
+
   services.openldap = {
     enable = true;
     suffix = "dc=eve";
@@ -55,4 +56,5 @@
   users.users.openldap.extraGroups = [ "keys" ];
   systemd.services.openldap.serviceConfig.SupplementaryGroups = [ "keys" ];
   services.netdata.portcheck.checks.openldap.port = 389;
+  networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 389 ];
 }
