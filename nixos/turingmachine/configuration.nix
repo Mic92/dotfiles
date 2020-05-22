@@ -12,7 +12,6 @@
     ./modules/remote-builder.nix
     ./modules/retiolum.nix
     ./modules/ssmtp.nix
-    ./modules/stubby.nix
     #../modules/sway.nix
     ./modules/minidlna.nix
     ./modules/networkmanager.nix
@@ -38,6 +37,8 @@
     ../modules/users.nix
   ];
 
+  programs.captive-browser.enable = true;
+  programs.captive-browser.interface = "wlan0";
   boot = {
     loader.systemd-boot.enable = true;
     # when installing toggle this
@@ -163,9 +164,6 @@
     allowUnfree = true;
     android_sdk.accept_license = true;
   };
-
-  networking.nameservers = [ "1.1.1.1" ];
-  services.resolved.enable = false;
 
   services.tor.client.enable = true;
 

@@ -13,22 +13,6 @@ logger = logging.getLogger(__name__)
 logger.addHandler(logging.handlers.SysLogHandler(address="/dev/log"))
 
 
-# sometimes stubby hangs after network disconnect
-def restart_stubby(action: str) -> None:
-    if action in ["down", "pre-down"]:
-        return
-
-    charset = string.ascii_lowercase + string.digits
-    subdomain = "".join(random.choices(charset, k=5))
-    try:
-        # Random subdomain to bypass cache.
-        # Works because we have a wildcard on thalheim.io.
-        socket.gethostbyname(f"{subdomain}.thalheim.io")
-    except OSError:
-        logger.info("Restart stubby")
-        subprocess.run(["systemctl", "restart", "stubby"], check=True)
-
-
 def disable_sound(action: str) -> None:
     if action in ["down", "pre-down"]:
         return
@@ -81,7 +65,7 @@ def assign_ula_ip(action: str) -> None:
 
 def main() -> None:
     action = os.environ.get("NM_DISPATCHER_ACTION", "unknown")
-    hooks = [restart_stubby, assign_ula_ip, disable_sound, set_geo_ip]
+    hooks = [assign_ula_ip, disable_sound, set_geo_ip]
     for hook in hooks:
         try:
             logger.info(f"run hook {hook.__name__}")
