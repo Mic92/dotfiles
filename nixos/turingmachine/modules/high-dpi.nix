@@ -1,13 +1,13 @@
-{ pkgs, ... }: {
-  console.font =
-    "${pkgs.terminus_font}/share/consolefonts/ter-u28n.psf.gz";
-  console.earlySetup = true;
-  boot.loader.systemd-boot.consoleMode = "max";
+{ config, lib, pkgs, ... }:
+{
+  hardware.video.high-dpi.enable = true;
+  services.xserver.displayManager.setupCommands = ''
+    ${pkgs.xlibs.xrandr}/bin/xrandr --dpi eDP-1
+  '';
 
-  services.xserver.dpi = 180;
   environment.variables = {
-    GDK_SCALE = "2";
-    GDK_DPI_SCALE = "0.5";
-    _JAVA_OPTIONS = "-Dsun.java2d.uiScale=2";
+    _JAVA_OPTIONS = lib.mkDefault "-Dsun.java2d.uiScale=2";
+    GDK_SCALE = lib.mkDefault "2";
+    GDK_DPI_SCALE = lib.mkDefault "0.5";
   };
 }
