@@ -6,5 +6,6 @@
   environment.systemPackages = [
     pkgs.gnome3.gnome-calendar
     pkgs.gnome3.gnome-todo
+    pkgs.gnome3.evolution
   ];
 }
