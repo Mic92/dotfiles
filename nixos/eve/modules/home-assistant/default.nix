@@ -40,7 +40,7 @@ in {
     };
     "map" = {};
     shopping_list = {};
-    logbook.entities = hiddenEntities;
+    logbook.exclude.entities = hiddenEntities;
     sun = {};
     calendar = {
       platform = "caldav";

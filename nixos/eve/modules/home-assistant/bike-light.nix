@@ -1,4 +1,4 @@
-{ ... }: let
+let
   chargeNotification = place: {
      alias = "Charge bike light at ${place} notification";
      trigger = {
