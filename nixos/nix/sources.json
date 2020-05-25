@@ -17,10 +17,10 @@
         "homepage": "",
         "owner": "rycee",
         "repo": "home-manager",
-        "rev": "cc48e15f28bea29c47e1e1b573bb36baa159c324",
-        "sha256": "04njsk751qfhmq44a987p3p8rqpq96ycqf0n8wiis0riz9mq57kr",
+        "rev": "f90b86b5771df940f063988b08211f9c7a895551",
+        "sha256": "0v4k5vx99wxdbp4y7n4x3d647zipgns372mvw9whzai0ysrwqhq6",
         "type": "tarball",
-        "url": "https://github.com/rycee/home-manager/archive/cc48e15f28bea29c47e1e1b573bb36baa159c324.tar.gz",
+        "url": "https://github.com/rycee/home-manager/archive/f90b86b5771df940f063988b08211f9c7a895551.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "krops": {
@@ -60,10 +60,10 @@
         "homepage": "https://github.com/NixOS/nixpkgs",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "076d96d846b2f82951153d2b5676bb374ebefbd0",
-        "sha256": "1r0rijcfi5ywmfg904wxbf7rbz1y5qa3rcsbnn8zl89xg99ax1n8",
+        "rev": "e271fc3212f45bb0d99d54bb0b8ee08685f6e1a4",
+        "sha256": "130smizj7lirrzfh49ql4nspjlbmm2p5nnbvl8li0pbg2dsb451h",
         "type": "tarball",
-        "url": "https://github.com/Mic92/nixpkgs/archive/076d96d846b2f82951153d2b5676bb374ebefbd0.tar.gz",
+        "url": "https://github.com/Mic92/nixpkgs/archive/e271fc3212f45bb0d99d54bb0b8ee08685f6e1a4.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nur": {
@@ -72,10 +72,10 @@
         "homepage": "",
         "owner": "nix-community",
         "repo": "nur",
-        "rev": "04b00af96977134d80ba3124236dc3f9bfb02776",
-        "sha256": "18xi0vc3hdcly5g9rgv4l1rqd2nh1xmf0nvwknxn2i33zl3c67hd",
+        "rev": "2cb9d46ec9eb7fa8366bb1521132e7b941461bcc",
+        "sha256": "0mw82cvl49d6qh3izmjhvm7q3z89i09c2ff17mnx2y8lhkw81pzn",
         "type": "tarball",
-        "url": "https://github.com/nix-community/nur/archive/04b00af96977134d80ba3124236dc3f9bfb02776.tar.gz",
+        "url": "https://github.com/nix-community/nur/archive/2cb9d46ec9eb7fa8366bb1521132e7b941461bcc.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "spacemacs": {
@@ -84,10 +84,10 @@
         "homepage": "http://spacemacs.org",
         "owner": "syl20bnr",
         "repo": "spacemacs",
-        "rev": "015303a7014be847e0f3339b76d632b8c2a84b78",
-        "sha256": "1dsahv838z06v9285s3yfxl6fzlc4wi5f37px81j88w2fds7zy6r",
+        "rev": "0d9cea8e2fcd900ac7501667142ec3a0fc653b6f",
+        "sha256": "1b0rpsqykip397f2gk121d7brmx7w309lggnsdp13ka4ml09j2ci",
         "type": "tarball",
-        "url": "https://github.com/syl20bnr/spacemacs/archive/015303a7014be847e0f3339b76d632b8c2a84b78.tar.gz",
+        "url": "https://github.com/syl20bnr/spacemacs/archive/0d9cea8e2fcd900ac7501667142ec3a0fc653b6f.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
