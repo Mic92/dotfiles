@@ -497,6 +497,9 @@ you should place your code here."
 
   (setq mu4e-spam-folder "/thalheim.io/Spam")
 
+  (add-to-list 'mu4e-headers-actions
+               '("Apply patch" . mu4e-action-git-apply-mbox) t)
+
   ;; Mark as read and move to spam
   (add-to-list 'mu4e-marks
                '(spam
