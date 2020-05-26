@@ -17,10 +17,10 @@
         "homepage": "",
         "owner": "rycee",
         "repo": "home-manager",
-        "rev": "f90b86b5771df940f063988b08211f9c7a895551",
-        "sha256": "0v4k5vx99wxdbp4y7n4x3d647zipgns372mvw9whzai0ysrwqhq6",
+        "rev": "b95ad632010bf1d135f7585c590f51f6c3dc2896",
+        "sha256": "1ir8wnigswkk7fbjy1jhz13wr7ynvxpmwv9q2k4pgzn6b38ylns1",
         "type": "tarball",
-        "url": "https://github.com/rycee/home-manager/archive/f90b86b5771df940f063988b08211f9c7a895551.tar.gz",
+        "url": "https://github.com/rycee/home-manager/archive/b95ad632010bf1d135f7585c590f51f6c3dc2896.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "krops": {
@@ -72,10 +72,10 @@
         "homepage": "",
         "owner": "nix-community",
         "repo": "nur",
-        "rev": "2cb9d46ec9eb7fa8366bb1521132e7b941461bcc",
-        "sha256": "0mw82cvl49d6qh3izmjhvm7q3z89i09c2ff17mnx2y8lhkw81pzn",
+        "rev": "f00421b6ff823b5a8424cbdc4fea0a3e047fd2cf",
+        "sha256": "003h16fbn7a51qriz66ff6yq980isw320z5k5mg48gmbjcyv00ij",
         "type": "tarball",
-        "url": "https://github.com/nix-community/nur/archive/2cb9d46ec9eb7fa8366bb1521132e7b941461bcc.tar.gz",
+        "url": "https://github.com/nix-community/nur/archive/f00421b6ff823b5a8424cbdc4fea0a3e047fd2cf.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "spacemacs": {
@@ -84,10 +84,10 @@
         "homepage": "http://spacemacs.org",
         "owner": "syl20bnr",
         "repo": "spacemacs",
-        "rev": "0d9cea8e2fcd900ac7501667142ec3a0fc653b6f",
-        "sha256": "1b0rpsqykip397f2gk121d7brmx7w309lggnsdp13ka4ml09j2ci",
+        "rev": "1ec43e7262238c66258cacc2f68e5b706c9248d7",
+        "sha256": "1l0g5m4nd817agl02w03i0p92dnqsszyrm4fkyrf0cwrnf6l3r6f",
         "type": "tarball",
-        "url": "https://github.com/syl20bnr/spacemacs/archive/0d9cea8e2fcd900ac7501667142ec3a0fc653b6f.tar.gz",
+        "url": "https://github.com/syl20bnr/spacemacs/archive/1ec43e7262238c66258cacc2f68e5b706c9248d7.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }
