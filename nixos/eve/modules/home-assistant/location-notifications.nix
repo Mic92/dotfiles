@@ -29,7 +29,7 @@ let
   };
   notTogether = {
     condition = "template";
-    value_template = ''{{ states("binary_sensor.shannan_jorg_not_together") }}'';
+    value_template = ''{{ states("binary_sensor.shannan_jorg_not_together") == "on" }}'';
   };
 in
 {
