@@ -8,6 +8,8 @@
   services.xserver.displayManager.defaultSession = "none+i3";
 
   environment.systemPackages = with pkgs; [
+    # autostart stuff
+    dex
     brightnessctl
     pavucontrol
     lightlocker
@@ -21,6 +23,7 @@
     compton-git
     pamixer
     mpc_cli
+    clipit
     (i3pystatus.override {
       extraLibs = [ python3.pkgs.keyrings-alt ];
     })
