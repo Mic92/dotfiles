@@ -1,6 +1,6 @@
 { config, lib, pkgs, ... }:
 {
-  hardware.video.high-dpi.enable = true;
+  hardware.video.hidpi.enable = true;
   services.xserver.displayManager.setupCommands = ''
     ${pkgs.xlibs.xrandr}/bin/xrandr --dpi eDP-1
   '';
