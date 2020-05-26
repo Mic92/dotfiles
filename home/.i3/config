@@ -265,4 +265,15 @@ exec --no-startup-id light-locker
 exec --no-startup-id compton -b
 exec --no-startup-id nm-applet
 exec --no-startup-id systemctl --user import-environment XDG_SESSION_PATH
-exec --no-startup-id clipit
+exec --no-startup-id dex --autostart
+
+
+
+
+
+
+
+
+
+
+
