@@ -313,6 +313,7 @@ compile_command() {
 # Editors
 [[ -n ${commands[vi]} ]] && alias vi=vim
 xalias vim="nvim"
+xalias xclip="xclip -selection clipboard"
 # Package management
 if [[ -f /etc/debian_version ]] ; then
   alias apt-get='sudo apt-get'
