@@ -61,6 +61,32 @@ in
       window_size = "00:35";
       precision = "2";
     }];
+  } {
+    platform = "filter";
+    name = "average distance 2 Jörg - Shannan";
+    entity_id = "sensor.distance_joerg_shannan";
+    filters = [{
+      filter = "time_simple_moving_average";
+      window_size = "00:10";
+      precision = "2";
+    }];
+  } {
+    platform = "filter";
+    name = "low-pass distance Jörg - Shannan";
+    entity_id = "sensor.distance_joerg_shannan";
+    filters = [{
+      filter = "lowpass";
+      time_constant = 2;
+    }];
+  } {
+    platform = "filter";
+    name = "outlier-filter distance Jörg - Shannan";
+    entity_id = "sensor.distance_joerg_shannan";
+    filters = [{
+      filter = "outlier";
+      window_size = 4;
+      radius = 2.0;
+    }];
   }];
   services.home-assistant.config.automation = [{
     alias = "Reset ping-tracker desktop";
