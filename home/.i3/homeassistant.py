@@ -151,7 +151,7 @@ def charge_state_android(state: State, device: str) -> Tuple[str, bool]:
 def charge_state_ios(state: State, device: str) -> Tuple[str, bool]:
     battery = state.get(f"sensor.{device}_battery_state")
 
-    if battery is None:
+    if battery is None or "battery" not in battery["attributes"]:
         return "N/A", False
     return charge_state(battery["attributes"]["battery"],
                         battery["attributes"]["battery_status"])
