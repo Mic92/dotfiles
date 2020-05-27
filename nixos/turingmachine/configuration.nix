@@ -7,7 +7,7 @@
     ./modules/caddy.nix
     ./modules/dice.nix
     ./modules/backup.nix
-    ./modules/high-dpi.nix
+    #./modules/high-dpi.nix
     ./modules/nfs.nix
     ./modules/remote-builder.nix
     ./modules/retiolum.nix
@@ -15,8 +15,11 @@
     #../modules/sway.nix
     ./modules/minidlna.nix
     ./modules/networkmanager.nix
+    ./modules/nfs-dl.nix
     ./modules/packages.nix
+    ./modules/high-dpi.nix
     ./modules/gnome-pim.nix
+    ./modules/rhasspy.nix
 
     ../modules/macos-kvm.nix
     ../modules/mosh.nix
@@ -30,7 +33,9 @@
     ../modules/tor-ssh.nix
     #./kde.nix
     ../modules/i3.nix
+    #../modules/sway.nix
     #../modules/awesome.nix
+    #../modules/gnome.nix
     ../modules/pki
     ../modules/yubikey.nix
     ../modules/zfs.nix
@@ -39,6 +44,7 @@
 
   programs.captive-browser.enable = true;
   programs.captive-browser.interface = "wlan0";
+
   boot = {
     loader.systemd-boot.enable = true;
     # when installing toggle this
@@ -157,7 +163,6 @@
 
   security.audit.enable = false;
 
-  services.dbus.packages = with pkgs; [ gnome3.dconf ];
   #services.teamviewer.enable = true;
 
   nixpkgs.config = {
@@ -166,6 +171,32 @@
   };
 
   services.tor.client.enable = true;
+
+  #services.pixiecore = let
+  #  nixos = import <nixpkgs/nixos> {
+  #    configuration = { config, pkgs, lib, ... }: with lib; {
+  #      imports = [
+  #        <nixpkgs/nixos/modules/installer/netboot/netboot-minimal.nix>
+  #      ];
+  #      # Some useful options for setting up a new system
+  #      services.mingetty.autologinUser = mkForce "root";
+  #      # Enable sshd which gets disabled by netboot-minimal.nix
+  #      systemd.services.sshd.wantedBy = mkOverride 0 [ "multi-user.target" ];
+  #      # users.users.root.openssh.authorizedKeys.keys = [ ... ];
+  #      # i18n.consoleKeyMap = "de";
+  #    };
+  #  };
+  #  build = nixos.config.system.build;
+  #in {
+  #  enable = true;
+  #  openFirewall = true;
+  #  mode = "boot";
+  #  kernel = "${build.kernel}/bzImage";
+  #  initrd = "${toString build.netbootRamdisk}/initrd";
+  #  cmdLine = "init=${build.netbootIpxeScript} ${lib.concatStringsSep " " nixos.config.boot.kernelParams} debug";
+  #  dhcpNoBind = true;
+  #};
+
 
   system.stateVersion = "18.03";
 }

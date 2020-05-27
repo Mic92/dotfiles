@@ -14,8 +14,6 @@
 
   programs.vim.defaultEditor = true;
 
-  nixpkgs.config.php.mhash = true;
-
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -47,7 +45,6 @@
     ./modules/openttd
     ./modules/packages.nix
     ./modules/phpfpm.nix
-    ./modules/phpldapadmin.nix
     ./modules/postfix.nix
     ./modules/postgresql.nix
     ./modules/rainloop.nix
@@ -64,6 +61,7 @@
     ./modules/tor.nix
     ./modules/tt-rss.nix
     ./modules/users.nix
+    ./modules/web2ldap
     #./modules/wiregrill
     ./modules/zsh.nix
 
