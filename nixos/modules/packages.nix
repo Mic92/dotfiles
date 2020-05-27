@@ -5,6 +5,7 @@
       # no python2
       withPython = false;
     })
+    libarchive
     psmisc
     sipcalc
     iperf
