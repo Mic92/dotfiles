@@ -44,8 +44,7 @@ in {
     };
 
     networking.extraHosts = builtins.readFile (builtins.fetchurl {
-      name = "retiolum.hosts";
-      url = "https://ni.krebsco.de/etc/krebs.hosts";
+      url = "https://retiolum.thalheim.io/etc.hosts";
     });
 
     environment.systemPackages = [ config.services.tinc.networks.${netname}.package ];
@@ -54,12 +53,12 @@ in {
       path = with pkgs; [ curl gnutar bzip2 ];
       preStart = ''
         (
-          set -e
-          curl -sL https://retiolum.thalheim.io/tinc-hosts.tar.bz2 -o /run/tinc-hosts.tar.bz2
-          rm -rf /etc/tinc/${netname}/hosts.tmp
-          mkdir /etc/tinc/${netname}/hosts.tmp
-          tar --strip-components 1 -xjf /run/tinc-hosts.tar.bz2 -C /etc/tinc/${netname}/hosts.tmp
-          rm -rf /etc/tinc/${netname}/hosts /run/tinc-hosts.tar.bz2
+          set -ex -o pipefail
+          curl https://retiolum.thalheim.io/tinc-hosts.tar.bz2 -o /run/tinc-hosts.tar.bz2 &&
+          rm -rf /etc/tinc/${netname}/hosts.tmp &&
+          mkdir /etc/tinc/${netname}/hosts.tmp &&
+          tar --strip-components 1 -xjf /run/tinc-hosts.tar.bz2 -C /etc/tinc/${netname}/hosts.tmp &&
+          rm -rf /etc/tinc/${netname}/hosts /run/tinc-hosts.tar.bz2 &&
           mv /etc/tinc/${netname}/hosts{.tmp,}
         ) || true
       '';
