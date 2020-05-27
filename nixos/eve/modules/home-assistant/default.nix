@@ -8,15 +8,24 @@ in {
     ./location-notifications.nix
     ./lunch-place.nix
     ./postgres.nix
+    ./timer.nix
     ./weather.nix
     ./zones.nix
   ];
 
   services.home-assistant = {
     enable = true;
-    package = pkgs.home-assistant.override {
+    package = (pkgs.home-assistant.override {
       extraPackages = ps: with ps; [ psycopg2 ];
-    };
+    }).overrideAttrs (old: {
+      patches = old.patches ++ [
+        # https://github.com/NixOS/nixpkgs/pull/87750
+        ./0001-Fix-intent-component-initialisation.patch
+      ];
+      # nobody got time for that!
+      doCheck = false;
+      doInstallCheck = false;
+    });
   };
 
   services.home-assistant.config = let
