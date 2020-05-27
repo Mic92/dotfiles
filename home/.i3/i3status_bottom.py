@@ -10,6 +10,7 @@ from i3pystatus import Status
 from i3pystatus.disk import Disk
 from bitwarden import BitwardenPassword
 from icinga import Icinga
+from netdata import Netdata
 
 import yubikey
 
@@ -50,17 +51,23 @@ fmt = ["{usage_cpu%d:02}%%" % cpu for cpu in range(count)]
 status.register("cpu_usage", format="/".join(fmt), color=color.text_normal)
 icons.nerdfont(status, "")
 
-status.register(Icinga,
-                base_url="https://icingamaster.bsd.services:5665",
-                username="mic92-api",
-                password=BitwardenPassword("d1677bc8-1d2d-47c8-86ed-52132498e9c1"),
-                service_filter='match("eve.thalheim.io", host.name)',
-                ca_file=os.path.join(ROOT, "icingamaster-bsd-services-chain.pem"),
-                format="UP/DOWN: {ok}/{not_ok}",
-                interval=60,
-                color=color.text_normal,
-                warning_color=color.text_warn,
-                critical_color=color.text_down)
+#status.register(Icinga,
+#                base_url="https://icingamaster.bsd.services:5665",
+#                username="mic92-api",
+#                password=BitwardenPassword("d1677bc8-1d2d-47c8-86ed-52132498e9c1"),
+#                service_filter='match("eve.thalheim.io", host.name)',
+#                ca_file=os.path.join(ROOT, "icingamaster-bsd-services-chain.pem"),
+#                format="UP/DOWN: {ok}/{not_ok}",
+#                interval=60,
+#                color=color.text_normal,
+#                warning_color=color.text_warn,
+#                critical_color=color.text_down)
+
+#status.register(Netdata,
+#                base_url="https://netdata.thalheim.io",
+#                color=color.text_normal,
+#                warning_color=color.text_warn,
+#                critical_color=color.text_down)
 
 #status.register(yubikey.YubiKeyTouchDetector, hints={"markup": "pango"})
 
