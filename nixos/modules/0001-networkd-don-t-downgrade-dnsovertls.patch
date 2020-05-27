@@ -1,0 +1,30 @@
+From 0a9b7485a71ec590c3682bc195e3f1ca0b4a5d17 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Sun, 24 May 2020 09:30:21 +0100
+Subject: [PATCH] networkd: don't downgrade dnsovertls
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ src/resolve/resolved-dns-server.c | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/src/resolve/resolved-dns-server.c b/src/resolve/resolved-dns-server.c
+index 4b0599ab9c..31895b4ac8 100644
+--- a/src/resolve/resolved-dns-server.c
++++ b/src/resolve/resolved-dns-server.c
+@@ -397,6 +397,9 @@ DnsServerFeatureLevel dns_server_possible_feature_level(DnsServer *s) {
+                         DNS_SERVER_FEATURE_LEVEL_EDNS0 :
+                         DNS_SERVER_FEATURE_LEVEL_TLS_PLAIN;
+ 
++        s->possible_feature_level = best;
++        return s->possible_feature_level;
++
+         /* Clamp the feature level the highest level we care about. The DNSSEC mode might have changed since the last
+          * time, hence let's downgrade if we are still at a higher level. */
+         if (s->possible_feature_level > best)
+-- 
+2.26.2
+

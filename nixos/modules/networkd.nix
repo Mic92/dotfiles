@@ -10,11 +10,12 @@
     buildPhase = ''
       ninja systemd-resolved
     '';
-    patches = [];
+    patches = [
+      ./0001-networkd-don-t-downgrade-dnsovertls.patch
+    ];
     installPhase = ''
       install -D systemd-resolved $out/bin/systemd-resolved
       install -D src/shared/libsystemd-shared-245.so $out/lib/libsystemd-shared-245.so
-      set -x
     '';
     postFixup = "";
     outputs = [ "out" ];
