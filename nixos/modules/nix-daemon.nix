@@ -1,4 +1,4 @@
-{ lib, ... }: with lib; {
+{ lib, config, ... }: with lib; {
   nix = {
     trustedUsers = ["joerg" "root"];
     useSandbox = true;
@@ -13,6 +13,8 @@
       builders-use-substitutes = true
       keep-outputs = true
       keep-derivations = true
+      # in zfs we trust
+      fsync-metadata = ${lib.boolToString (config.fileSystems."/".fsType != "zfs")}
     '';
 
     nixPath = let
