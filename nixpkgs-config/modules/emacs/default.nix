@@ -6,7 +6,7 @@ with lib;
 let
   cfg = config.programs.emacs;
 
-  sourcesJson = builtins.fromJSON (builtins.readFile ../../nixos/nix/sources.json);
+  sourcesJson = builtins.fromJSON (builtins.readFile ../../../nixos/nix/sources.json);
   editorScript = { name ? "emacseditor", x11 ? false, mu4e ? false } : pkgs.writeScriptBin name ''
     #!${pkgs.runtimeShell}
     export TERM=xterm-direct
