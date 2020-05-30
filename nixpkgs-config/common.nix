@@ -56,6 +56,7 @@
       gnupg
       ncurses
       coreutils
+      git
     ] ++ (lib.optionals pkgs.stdenv.isLinux [
       strace
       psmisc 
