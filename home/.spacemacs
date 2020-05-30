@@ -84,13 +84,14 @@ values."
      markdown
      (mu4e :variables
            mu4e-enable-mode-line t
+           mu4e-maildirs-extension-fake-maildir-separator "\\."
            mu4e-enable-notifications t
            mu4e-get-mail-command "mbsync -Va"
            mu4e-change-filenames-when-moving t
            mu4e-maildir (expand-file-name "~/mail")
-           mu4e-sent-folder   "/thalheim.io/Sent"
-           mu4e-drafts-folder "/thalheim.io/Drafts"
-           mu4e-trash-folder  "/thalheim.io/Trash"
+           mu4e-sent-folder   "/thalheim.io/.Sent"
+           mu4e-drafts-folder "/thalheim.io/.Drafts"
+           mu4e-trash-folder  "/thalheim.io/.Trash"
            mu4e-enable-async-operations t
            mu4e-use-maildirs-extension t
            mu4e-view-show-addresses t
@@ -99,11 +100,11 @@ values."
            mu4e-alert-interesting-mail-query (concat
                                               "flag:unread"
                                               " AND NOT flag:trashed"
-                                              " AND NOT maildir:/thalheim.io/Spam"
-                                              " AND NOT maildir:/thalheim.io/Trash"
-                                              " AND NOT maildir:/thalheim.io/Entwickler"
-                                              " AND NOT maildir:/thalheim.io/Netzwerke"
-                                              " AND NOT maildir:/thalheim.io/zlist/*")
+                                              " AND NOT maildir:/thalheim.io/.Spam"
+                                              " AND NOT maildir:/thalheim.io/.Trash"
+                                              " AND NOT maildir:/thalheim.io/.Entwickler"
+                                              " AND NOT maildir:/thalheim.io/.Netzwerke"
+                                              " AND NOT maildir:/thalheim.io/.zlist.*")
            mu4e-user-mail-address-list '("joerg@thalheim.io" "joerg@higgsboson.tk" "s1691654@sms.ed.ac.uk")
            message-send-mail-function 'smtpmail-send-it
            smtpmail-smtp-server "mail.thalheim.io"
@@ -492,10 +493,10 @@ you should place your code here."
                '(:folder . (:name "Folder"  ;; long name, as seen in the message-view
                             :shortname "Folder"           ;; short name, as seen in the headers view
                             :help "Mailbox folder of the message" ;; tooltip
-                            :function (lambda (msg) (replace-regexp-in-string "/thalheim.io/?\\(zlist/\\)?" "" (mu4e-message-field msg :maildir))))))
+                            :function (lambda (msg) (replace-regexp-in-string "/thalheim.io/?\\(.zlist\\)?" "" (mu4e-message-field msg :maildir))))))
   (setq mu4e-headers-fields '((:human-date . 12) (:flags . 6) (:folder . 20) (:from . 22) (:subject)))
 
-  (setq mu4e-spam-folder "/thalheim.io/Spam")
+  (setq mu4e-spam-folder "/thalheim.io/.Spam")
 
   (add-to-list 'mu4e-headers-actions
                '("Apply patch" . mu4e-action-git-apply-mbox) t)
@@ -522,7 +523,7 @@ you should place your code here."
   (add-to-list 'mu4e-bookmarks
                (make-mu4e-bookmark
                 :name "Unread messages without spam"
-                :query "flag:unread AND NOT flag:trashed AND NOT maildir:/thalheim.io/Spam"
+                :query "flag:unread AND NOT flag:trashed AND NOT maildir:/thalheim.io/.Spam"
                 :key ?u))
 
   (when (fboundp 'imagemagick-register-types)
