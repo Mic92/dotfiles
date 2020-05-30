@@ -93,11 +93,6 @@
     avahi.enable = true;
     avahi.nssmdns = true;
 
-    samba = {
-      enable = false;
-      enableWinbindd = false;
-    };
-
     printing = {
       enable = true;
       browsing = true;
@@ -196,6 +191,38 @@
   #  cmdLine = "init=${build.netbootIpxeScript} ${lib.concatStringsSep " " nixos.config.boot.kernelParams} debug";
   #  dhcpNoBind = true;
   #};
+
+  services.samba = {
+    enable = true;
+    securityType = "user";
+    extraConfig = ''
+      workgroup = WORKGROUP
+      server string = smbnix
+      netbios name = smbnix
+      security = user
+      hosts allow = 0.0.0.0/0
+      guest account = nobody
+      map to guest = bad user
+    '';
+    shares = {
+      public = {
+        path = "/home/joerg/web/upload";
+        browseable = "yes";
+        "read only" = "no";
+        "guest ok" = "yes";
+        "create mask" = "0644";
+        "directory mask" = "0755";
+        "force user" = "joerg";
+        "force group" = "users";
+      };
+    };
+  };
+  networking.firewall.interfaces."virbr1".allowedTCPPorts = [
+    445 139
+  ];
+  networking.firewall.interfaces."virbr1".allowedUDPPorts = [
+    445 139
+  ];
 
 
   system.stateVersion = "18.03";
