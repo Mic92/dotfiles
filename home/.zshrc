@@ -665,7 +665,7 @@ cargo(){
   )
 }
 real-which(){
-  realpath "$(command which $@)"
+  readlink -f "$(command which $@)"
 }
 
 heroku(){
