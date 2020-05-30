@@ -29,7 +29,6 @@
 
       gdb
       hexyl
-      strace
       binutils
       clang-tools
       grc
@@ -40,7 +39,6 @@
 
       tmux
       htop
-      psmisc
       gitAndTools.hub
       gitAndTools.tig
       tokei
@@ -53,12 +51,16 @@
       vivid
       silver-searcher
       zsh
-      glibcLocales
       less
       bashInteractive
       gnupg
       ncurses
-    ];
+      coreutils
+    ] ++ (lib.optionals pkgs.stdenv.isLinux [
+      strace
+      psmisc 
+      glibcLocales
+    ]);
 
     home.stateVersion = "18.09";
     programs.home-manager.enable = true;

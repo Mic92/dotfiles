@@ -20,8 +20,12 @@ if [[ -d $HOME/git/nixpkgs ]]; then
   export NIX_PATH="nixpkgs=$HOME/git/nixpkgs:$NIX_PATH"
 fi
 if [[ -d $HOME/.nix-defexpr/channels ]]; then
-    export NIX_PATH="$NIX_PATH:$HOME/.nix-defexpr/channels"
+  export NIX_PATH="$NIX_PATH:$HOME/.nix-defexpr/channels"
 fi
+if [[ $OSTYPE == darwin* ]]; then
+  export NIX_PATH="$NIX_PATH:darwin-config=$HOME/.config/nixpkgs/darwin-configuration.nix"
+fi
+
 if [[ -S /nix/var/nix/daemon-socket/socket ]]; then
   export NIX_REMOTE=daemon
 fi
@@ -262,7 +266,7 @@ if [[ -n ${commands[exa]} ]]; then
     export LS_COLORS="$(vivid -m 8-bit generate molokai)"
   fi
   alias ls="exa --classify --icons"
-elif [[ $OSTYPE == freebsd* ]]; then
+elif [[ $OSTYPE == freebsd* ]] ||  [[ $OSTYPE == darwin* ]]; then
   alias ls='ls -G'
 else
   alias ls='ls --color=auto --classify --human-readable'
@@ -527,15 +531,11 @@ export MANWIDTH=80
 # If the execution of a command takes longer than
 # REPORTTIME (in seconds),  time statistics are printed
 export REPORTTIME=4
-# Enforce correct locales from the beginning:
-# LC_ALL is unset since it overwrites everything
-# LANG=de_DE.UTF-8 is used, except for:
-# LC_MESSAGES=en_DK.UTF-8 never translates program output
-# LC_TIME=en_DK.UTF-8 leads to yyyy-mm-dd hh:mm date/time output
-unset LC_ALL
-export LANG=en_US.UTF-8
-export LC_MESSAGES=en_DK.UTF-8
-export LC_TIME=en_DK.UTF-8
+if [[ $OSTYPE == darwin* ]] || [[ $OSTYPE == freebsd* ]]; then
+  export LC_ALL=en_US.UTF-8
+else
+  export LC_ALL=en_DK.UTF-8
+fi
 export PERL_CPANM_OPT="--local-lib=~/.perl5"
 export PERL5LIB=~/.perl5/lib/perl5
 

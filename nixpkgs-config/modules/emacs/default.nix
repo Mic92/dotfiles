@@ -53,7 +53,7 @@ let
 in {
   options.programs.emacs = {
     socket-activation.enable =
-      (mkEnableOption "socket-activation") // { default = true; };
+      (mkEnableOption "socket-activation") // { default = pkgs.stdenv.isLinux; };
     imagemagick.enable = mkEnableOption "imagemagick";
   };
   config = mkMerge [
