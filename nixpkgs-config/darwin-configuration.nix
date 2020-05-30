@@ -14,6 +14,8 @@
   # Auto upgrade nix package and the daemon service.
   services.nix-daemon.enable = true;
   nix.package = pkgs.nix;
+  environment.shells = [ pkgs.zsh ];
+  environment.darwinConfig = "/Users/joerg/.config/nixpkgs/darwin-configuration.nix";
 
   # Create /etc/bashrc that loads the nix-darwin environment.
   programs.bash.enable = true;
