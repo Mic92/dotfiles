@@ -40,7 +40,10 @@ class State:
         self.password = password
 
     def update(self):
-        resp = request("/api/states", self.password.get())
+        try:
+            resp = request("/api/states", self.password.get())
+        except OSError:
+            return
         entities = {}
         for entity in resp:
             entities[entity["entity_id"]] = entity
