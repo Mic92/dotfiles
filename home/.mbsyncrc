@@ -15,8 +15,7 @@ Account thalheim
 MaildirStore thalheim-local
 # The trailing "/" is important
 Inbox ~/mail/thalheim.io/
-Path ~/mail/thalheim.io/
-SubFolders Verbatim
+SubFolders Maildir++
 
 Channel thalheim
 Master :thalheim-remote:
