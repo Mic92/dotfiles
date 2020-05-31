@@ -5,8 +5,8 @@ in {
     ./charge-notifications.nix
     #./parents.nix
     ./ldap.nix
-    ./location-notifications.nix
     ./lunch-place.nix
+    ./presence.nix
     ./postgres.nix
     ./timer.nix
     ./weather.nix
@@ -16,7 +16,10 @@ in {
   services.home-assistant = {
     enable = true;
     package = (pkgs.home-assistant.override {
-      extraPackages = ps: with ps; [ psycopg2 ];
+      extraPackages = ps: with ps; [
+        psycopg2
+        (pkgs.python3.pkgs.callPackage ./coronavirus.nix {})
+      ];
     }).overrideAttrs (old: {
       patches = old.patches ++ [
         # https://github.com/NixOS/nixpkgs/pull/87750
@@ -38,6 +41,7 @@ in {
       "sensor.date"
     ];
   in {
+    coronavirus = {};
     frontend = {};
     http = {};
     history.exclude = {

@@ -24,11 +24,16 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "krops": {
-        "sha256": "18fsxk7a2bp7bgslpd66g0n86h719allrp6gi0fjjk9ydp3q30dn",
+        "branch": "master",
+        "description": "Mirror of https://cgit.krebsco.de/krops/about/ (PRs / issues accepted, as can be seen by not having them disabled)",
+        "homepage": "",
+        "owner": "krebs",
+        "repo": "krops",
+        "rev": "be3fa4608b23b1e24f838903d6f7be932b299776",
+        "sha256": "0rilii6qa0bhr124ivm16jjdailwyz7s5dxwzds7siry4yq40kym",
         "type": "tarball",
-        "url": "https://github.com/krebs/krops/archive/v1.20.0.tar.gz",
-        "url_template": "https://github.com/krebs/krops/archive/v<version>.tar.gz",
-        "version": "1.20.0"
+        "url": "https://github.com/krebs/krops/archive/be3fa4608b23b1e24f838903d6f7be932b299776.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "niv": {
         "branch": "master",
@@ -60,10 +65,10 @@
         "homepage": "https://github.com/NixOS/nixpkgs",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "d45f613b485c718cbdacbf2a468a35b5e366595e",
-        "sha256": "1qnnnlv9va8lcl826lw4sdj7jj74ic3kd0prnqxkgv0r8f0dgm46",
+        "rev": "f2d6917cb30bd69a3ed3390f93665ea5d5b42ab8",
+        "sha256": "1grxa303g7z9rnjcrvdz7d430s0k12pb12sckm9axsk01rsnyydh",
         "type": "tarball",
-        "url": "https://github.com/Mic92/nixpkgs/archive/d45f613b485c718cbdacbf2a468a35b5e366595e.tar.gz",
+        "url": "https://github.com/Mic92/nixpkgs/archive/f2d6917cb30bd69a3ed3390f93665ea5d5b42ab8.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nur": {
@@ -72,10 +77,10 @@
         "homepage": "",
         "owner": "nix-community",
         "repo": "nur",
-        "rev": "557a5cb4892c541a556f73350a2824ba2efa5136",
-        "sha256": "06c0ad6i4pcn4apcharwymqx378rs3xjw8jnspa5lpcw6n4klla7",
+        "rev": "525a60f8dbbec5b5e2178fb9bcbffe9d41da4eae",
+        "sha256": "0dpcjqh4z300svn2j7qlx5nsixdx6xpgnpx052rm0iy0k9hj3k0s",
         "type": "tarball",
-        "url": "https://github.com/nix-community/nur/archive/557a5cb4892c541a556f73350a2824ba2efa5136.tar.gz",
+        "url": "https://github.com/nix-community/nur/archive/525a60f8dbbec5b5e2178fb9bcbffe9d41da4eae.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "spacemacs": {
