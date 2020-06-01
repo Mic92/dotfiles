@@ -42,7 +42,7 @@ class State:
     def update(self):
         try:
             resp = request("/api/states", self.password.get())
-        except OSError:
+        except (OSError, json.JSONDecodeError):
             return
         entities = {}
         for entity in resp:
