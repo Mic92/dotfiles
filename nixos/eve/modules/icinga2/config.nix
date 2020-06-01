@@ -151,6 +151,8 @@ in {
   systemd.services.icinga-sync = {
     wantedBy = [ "multi-user.target" ];
     path = with pkgs; [ openssh gnused ];
+    # server was disabled
+    enable = false;
     script = ''
       sed \
         -e "s!@API_PASSWORD@!$(<${toString <secrets/icinga-api-password>})!" \
