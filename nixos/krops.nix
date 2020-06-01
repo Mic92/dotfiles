@@ -28,7 +28,10 @@ in rec {
   };
 
   nixpkgs.file = {
-    exclude = [".git"];
+    filters = [{
+      type = "exclude";
+      pattern = ".git";
+    }];
     path = toString <nixpkgs>;
   };
 
@@ -56,6 +59,9 @@ in rec {
 
   dotfiles.file = {
     path = toString ./..;
-    exclude = [ ".git" ];
+    filters = [{
+      type = "exclude";
+      pattern = ".git";
+    }];
   };
 }
