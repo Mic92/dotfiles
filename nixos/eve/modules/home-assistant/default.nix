@@ -6,6 +6,7 @@ in {
     #./parents.nix
     ./ldap.nix
     ./lunch-place.nix
+    ./find-phone.nix
     ./presence.nix
     ./postgres.nix
     ./timer.nix
