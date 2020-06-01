@@ -63,6 +63,10 @@ in {
         entity_id = "person.jorg_thalheim";
       };
       action = presenceScript;
+      condition = {
+        condition = "template";
+        value_template = ''{{ trigger.from_state.state != trigger.to_state.state }}'';
+      };
     } {
       alias = "Location notifications to Jörg";
       trigger = {
@@ -70,6 +74,10 @@ in {
         entity_id = "device_tracker.beatrice";
       };
       action = presenceScript;
+      condition = {
+        condition = "template";
+        value_template = ''{{ trigger.from_state.state != trigger.to_state.state }}'';
+      };
     } {
       alias = "Shannan and Jörg are together";
       trigger = {
