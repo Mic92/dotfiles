@@ -10,7 +10,7 @@ shannans_home = "Shannan's Home"
 joergs_home = "home"
 shannans_work = "Work of Shannan"
 university = "University"
-gym = "University"
+gym = "Gym"
 
 
 def get_message():
@@ -66,6 +66,7 @@ def main():
     hass.services.call("notify", notify_service, {"message": message}, blocking=False)
 
     if joerg.state == shannan.state:
+        logger.info(f"shannan and joerg are together now")
         hass.services.call(
             "input_boolean",
             "turn_off",
