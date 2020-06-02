@@ -42,8 +42,8 @@
     ../modules/users.nix
   ];
 
-  programs.captive-browser.enable = true;
-  programs.captive-browser.interface = "wlan0";
+  #programs.captive-browser.enable = true;
+  #programs.captive-browser.interface = "wlan0";
 
   boot = {
     loader.systemd-boot.enable = true;

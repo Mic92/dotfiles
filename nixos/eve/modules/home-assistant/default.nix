@@ -4,6 +4,7 @@ in {
     ./bike-light.nix
     ./charge-notifications.nix
     #./parents.nix
+    ./light.nix
     ./ldap.nix
     ./lunch-place.nix
     ./find-phone.nix

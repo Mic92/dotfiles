@@ -10,9 +10,9 @@
     timer.rhasspy = {};
     intent = {};
     intent_script = {
-      GetTime.speech.text = "It is {{ now().hour }}:{{ now().minute }}";
+      GetTime.speech.text = "It is {{ now().hour }}:{{ now().minute }}.";
       SetTimer = {
-        speech.text = "Set a timer for {{ duration }} {{ unit }}";
+        speech.text = "Set a timer for {{ duration }} {{ unit }}.";
         action = [{
           service = "timer.start";
           entity_id = "timer.rhasspy";
@@ -27,7 +27,7 @@
         }];
       };
       CancelTimer = {
-        speech.text = ''Timer for {{ state_attr("timer.rhasspy", "duration") }} canceled'';
+        speech.text = ''Timer for {{ state_attr("timer.rhasspy", "duration") }} canceled.'';
         action = {
           service = "timer.cancel";
           entity_id = "timer.rhasspy";
