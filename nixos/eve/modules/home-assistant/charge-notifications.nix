@@ -23,6 +23,28 @@
         data_template.message = msg;
       }];
     } {
+      alias = "Herbert battery warning";
+      trigger = {
+        platform = "numeric_state";
+        entity_id  = "device_tracker.herbert";
+        value_template = "{{ state.attributes.herbert }}";
+        below = 30;
+        for = "00:10:00";
+      };
+      condition = {
+        condition = "template";
+        value_template = ''{{ state_attr("device_tracker.herbert", "battery_status") == "NotCharging" }}'';
+      };
+      action = let
+        msg = ''Herbert only got {{ state_attr("device_tracker.herbert", "battery") | round(1) }}% battery left'';
+      in [{
+        service = "notify.mobile_app_beatrice";
+        data_template.message = msg;
+      } {
+        service = "notify.pushover";
+        data_template.message = msg;
+      }];
+    } {
       alias = "Apple watch battery warning";
       trigger = {
         platform = "numeric_state";
@@ -54,7 +76,7 @@
         condition = "and";
         conditions = [{
           condition = "time";
-          weekday = [ "mon" "tue" "wed" "thu" "fri"];
+          weekday = [ "mon" "tue" "wed" "thu" "fri" ];
         } {
           condition = "template";
           value_template = ''{{ state_attr("device_tracker.shannans_apple_watch", "battery_status") == "Charging" }}'';
