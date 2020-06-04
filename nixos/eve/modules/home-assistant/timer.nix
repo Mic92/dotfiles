@@ -1,12 +1,5 @@
 {
   services.home-assistant.config = {
-    rest_command = {
-      tts = {
-        url = "http://turingmachine.r:12101/api/text-to-speech";
-        method = "POST";
-        payload = "{{message}}";
-      };
-    };
     timer.rhasspy = {};
     intent = {};
     intent_script = {
@@ -32,6 +25,13 @@
           service = "timer.cancel";
           entity_id = "timer.rhasspy";
         };
+      };
+    };
+    rest_command = {
+      tts = {
+        url = "http://turingmachine.r:12101/api/text-to-speech";
+        method = "POST";
+        payload = "{{message}}";
       };
     };
     automation = [{

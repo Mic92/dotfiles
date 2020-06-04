@@ -50,7 +50,7 @@
     ./modules/rainloop.nix
     ./modules/retiolum.nix
     ./modules/redis.nix
-    ./modules/rspamd.nix
+    ./modules/rspamd/rspamd.nix
     ./modules/rsyncd.nix
     ./modules/sshd.nix
     ./modules/sslh.nix
