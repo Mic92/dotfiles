@@ -169,8 +169,9 @@ class PhoneBattery(IntervalModule):
         redmi = charge_state_android(state, "redmi_note_5")
         iphone = charge_state_ios(state, "beatrice")
         watch = charge_state_ios(state, "shannans_apple_watch")
-        full_text = f"{redmi[0]} I:{iphone[0]} W:{watch[0]}"
-        critical = redmi[1] or iphone[1] or watch[1]
+        herbert = charge_state_ios(state, "herbert")
+        full_text = f"{redmi[0]} I:{iphone[0]} W:{watch[0]} H:{herbert[0]}"
+        critical = redmi[1] or iphone[1] or watch[1] or herbert[1]
         text_color = color.text_down if critical else None
 
         self.output = dict(full_text=full_text, color=text_color)
