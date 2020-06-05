@@ -5,6 +5,7 @@
       platform = "rest";
       json_attributes = "places";
       resource = "https://choose-place.thalheim.io/api/occasion/lunch";
+      scan_interval = "3600";
     } {
       platform = "template";
       sensors = let
