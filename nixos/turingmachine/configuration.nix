@@ -7,6 +7,7 @@
     ./modules/caddy.nix
     ./modules/dice.nix
     ./modules/backup.nix
+    ./modules/light
     #./modules/high-dpi.nix
     ./modules/nfs.nix
     ./modules/remote-builder.nix
@@ -224,6 +225,7 @@
     445 139
   ];
 
+  documentation.doc.enable = false;
 
   system.stateVersion = "18.03";
 }
