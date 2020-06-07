@@ -1,67 +1,18 @@
 { pkgs, ...}: {
-  services.home-assistant.config = let
-    lightCmd = address: ''
-      ${pkgs.openssh}/bin/ssh -o "StrictHostKeyChecking no" light@turingmachine.r "hue-ble-ctl toggle ${address}"
+  services.home-assistant.config = {
+    shell_command.toggle_light = ''
+      ${pkgs.openssh}/bin/ssh -o "StrictHostKeyChecking no" light@turingmachine.r '
+        hue-ble-ctl toggle D4:BB:D8:6C:07:86 &
+        pid=$!
+        hue-ble-ctl toggle E2:71:8C:F7:4F:13 &
+        pid2=$!
+        # only one light will succeed, kill the other
+        wait -n
+        kill $pid $pid2'
     '';
-
-    ps4Cmd = command: ''
-      ${pkgs.openssh}/bin/ssh -o "StrictHostKeyChecking no" light@turingmachine.r "pyps4-2ndscreen ${command}"
-    '';
-  in {
-    shell_command.toggle_light_joerg = lightCmd "D4:BB:D8:6C:07:86";
-    intent_script = {
-      ToggleJoergsLight = {
-        speech.text = "Toggled Yörgs light.";
-        action.service = "shell_command.toggle_light_joerg";
-      };
-    };
-
-    shell_command.toggle_light_shannan = lightCmd "E2:71:8C:F7:4F:13";
-    intent_script = {
-      ToggleShannansLight = {
-        speech.text = "Toggled Shannans light.";
-        action.service = "shell_command.toggle_light_shannan";
-      };
-    };
-
-    shell_command.ps4_start_netflix = ps4Cmd "start CUSA00127";
-    intent_script = {
-      StartNetflix = {
-        speech.text = "Started Netflix.";
-        action.service = "shell_command.ps4_start_netflix";
-      };
-    };
-
-    shell_command.ps4_start_nowtv = ps4Cmd "start CUSA00117";
-    intent_script = {
-      StartNowTV = {
-        speech.text = "Started NowTV.";
-        action.service = "shell_command.ps4_start_nowtv";
-      };
-    };
-
-    shell_command.ps4_start_all4 = ps4Cmd "start CUSA00072";
-    intent_script = {
-      StartAll4 = {
-        speech.text = "Started All4.";
-        action.service = "shell_command.ps4_start_all4";
-      };
-    };
-
-    shell_command.ps4_start_youtube = ps4Cmd "start CUSA01116";
-    intent_script = {
-      StartYoutube = {
-        speech.text = "Started Youtube.";
-        action.service = "shell_command.ps4_start_youtube";
-      };
-    };
-
-    shell_command.ps4_standby = ps4Cmd "standby";
-    intent_script = {
-      StandbyPS4 = {
-        speech.text = "Put PS4 to sleep.";
-        action.service = "shell_command.ps4_standby";
-      };
+    intent_script.ToggleLight = {
+      speech.text = "Toggled light.";
+      action.service = "shell_command.toggle_light";
     };
   };
 }

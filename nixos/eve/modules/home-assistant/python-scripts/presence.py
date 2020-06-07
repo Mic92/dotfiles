@@ -74,7 +74,7 @@ def main():
         hass.services.call(
             "input_boolean",
             "turn_off",
-            {"entity_id": "shannan_joerg_not_together"},
+            {"entity_id": "input_boolean.shannan_joerg_not_together"},
             blocking=False,
         )
 
