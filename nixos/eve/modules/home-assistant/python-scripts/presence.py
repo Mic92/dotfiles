@@ -5,6 +5,7 @@ entity_id = data.get("entity_id")
 shannan = hass.states.get("device_tracker.beatrice")
 joerg = hass.states.get("person.jorg_thalheim")
 calendar = hass.states.get("calendar.joerg_shannan_jorg_thalheim")
+not_together = hass.states.get("input_boolean.shannan_joerg_not_together")
 
 shannans_home = "Shannan's Home"
 joergs_home = "home"
@@ -56,6 +57,9 @@ def main():
     message = get_message()
     logger.info(f"message {message}")
     if message is None:
+        return
+    if not_together == "off":
+        logger.info("skip notification, shannan and joerg are together")
         return
     if entity_id == joerg.entity_id:
         notify_service = "mobile_app_beatrice"

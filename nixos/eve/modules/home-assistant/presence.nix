@@ -8,7 +8,6 @@ let
     service = "notify.mobile_app_beatrice";
     data_template.message = msg;
   };
-
   person = entity_id: { to ? null, from ? null }: {
     platform = "state"; inherit entity_id;
   } // lib.optionalAttrs (to != null) { inherit to; }
@@ -49,7 +48,7 @@ in {
       alias = "Set Shannan and Jörg are not together";
       trigger = {
         platform = "numeric_state";
-        entity_id = "sensors.distance_joerg_shannan";
+        entity_id = "sensor.distance_joerg_shannan";
         above = 1;
       };
       action = {
