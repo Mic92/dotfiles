@@ -24,6 +24,9 @@ if [[ -d $HOME/.nix-defexpr/channels ]]; then
 fi
 if [[ $OSTYPE == darwin* ]]; then
   export NIX_PATH="$NIX_PATH:darwin-config=$HOME/.config/nixpkgs/darwin-configuration.nix"
+  if [[ -d $HOME/git/nix-darwin ]]; then
+    export NIX_PATH="$NIX_PATH:darwin=$HOME/git/nix-darwin"
+  fi
 fi
 
 if [[ -S /nix/var/nix/daemon-socket/socket ]]; then
