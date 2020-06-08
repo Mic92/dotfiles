@@ -122,6 +122,7 @@ in {
     cheat
     tldr
     nixpkgs-pytools
+    hydra-check
 
     (mpv.override {
       scripts = [ mpvScripts.mpris ];

@@ -34,7 +34,6 @@
     ./modules/knot
     ./modules/kresd.nix
     ./modules/mastodon-hnbot.nix
-    ./modules/matterbridge.nix
     ./modules/mediawiki.nix
     #./modules/named.nix
     ./modules/netdata.nix

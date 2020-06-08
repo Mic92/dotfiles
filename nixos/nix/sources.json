@@ -1,6 +1,7 @@
 {
     "choose-place": {
         "branch": "master",
+        "builtin": false,
         "description": "Reduces discussion time to which place to go for a specific occasion, by restricting the options to three.",
         "homepage": "https://choose-place.herokuapp.com/",
         "owner": "mbailleu",
@@ -65,10 +66,10 @@
         "homepage": "https://github.com/NixOS/nixpkgs",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "35456ec9146011bbb15735046ec70d410f357220",
-        "sha256": "0c857mq7y0zz6fpjsqlnn2iii3bww6jm1a51jg4j5hljh2mn49gr",
+        "rev": "11a89f95f064795145393017ef42561c76cb07be",
+        "sha256": "0l0fdr2zws6s4f83rixz09vzrcvn7l7lsm0m1c5d9bllzmq6cgrm",
         "type": "tarball",
-        "url": "https://github.com/Mic92/nixpkgs/archive/35456ec9146011bbb15735046ec70d410f357220.tar.gz",
+        "url": "https://github.com/Mic92/nixpkgs/archive/11a89f95f064795145393017ef42561c76cb07be.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nur": {
@@ -77,10 +78,10 @@
         "homepage": "",
         "owner": "nix-community",
         "repo": "nur",
-        "rev": "66799255f502e50abaa277447ef868635a42bbb4",
-        "sha256": "0lmrh0a1dngirv75lx12clddam7sga21zl8zgildjmh6mjwnc5rl",
+        "rev": "597f78e4acb3bfe8215fd55e97e8d5d1ca8b1565",
+        "sha256": "1npim78p8hg59bci4vl1zg4h7pdxga6l91mr5syp2b1r3k62abyp",
         "type": "tarball",
-        "url": "https://github.com/nix-community/nur/archive/66799255f502e50abaa277447ef868635a42bbb4.tar.gz",
+        "url": "https://github.com/nix-community/nur/archive/597f78e4acb3bfe8215fd55e97e8d5d1ca8b1565.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "spacemacs": {

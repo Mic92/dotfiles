@@ -52,11 +52,13 @@ in {
     services.resolved.enable = false;
     networking.nameservers = [ "127.0.0.1" ];
 
+    networking.usePredictableInterfaceNames = false;
+
     systemd.network = {
       enable = true;
       networks."eth0".extraConfig = ''
         [Match]
-        Name = eth0
+        Name = e*
 
         [Network]
         Address = ${cfg.ipv4.address}/${cfg.ipv4.cidr}
@@ -88,8 +90,9 @@ in {
       ssh = {
         enable = true;
         port = 2222;
-        # FIXME: is in the nix store
-        hostKeys = [ <secrets/initrd-ssh-key> ];
+        hostKeys = [
+          (toString <secrets/initrd-ssh-key>)
+        ];
       };
       postCommands = ''
         echo "zfs load-key -a && killall zfs" >> /root/.profile

@@ -15,7 +15,7 @@ with lib;
           { name: "ssl"; host: "localhost"; port: "4443"; probe: "builtin"; },
           { name: "tinc"; host: "localhost"; port: "655"; probe: "builtin"; }
         );
-    '';
+      '';
     };
   };
 }

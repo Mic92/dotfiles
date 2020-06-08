@@ -20,14 +20,16 @@
     gnome3.eog
     libnotify
     dunst
-    compton-git
     pamixer
     mpc_cli
     clipit
+    picom
     (i3pystatus.override {
       extraLibs = [ python3.pkgs.keyrings-alt ];
     })
     gnome3.networkmanagerapplet
+    gnome3.file-roller
+    gnome3.nautilus
   ];
 
   services.autorandr.enable = true;
