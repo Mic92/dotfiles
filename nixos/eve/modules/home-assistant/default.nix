@@ -4,12 +4,13 @@ in {
     ./bike-light.nix
     ./charge-notifications.nix
     #./parents.nix
+    ./find-phone.nix
     ./jokes.nix
     ./light.nix
     ./ldap.nix
     ./ps4.nix
     ./lunch-place.nix
-    ./find-phone.nix
+    ./noops.nix
     ./presence.nix
     ./postgres.nix
     ./timer.nix
