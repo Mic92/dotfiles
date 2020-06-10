@@ -4,8 +4,7 @@
       alias = "IPhone battery warning";
       trigger = {
         platform = "numeric_state";
-        entity_id  = "device_tracker.beatrice";
-        value_template = "{{ state.attributes.battery }}";
+        entity_id  = "sensor.beatrice_battery_state";
         below = 30;
         for = "00:10:00";
       };
@@ -26,8 +25,7 @@
       alias = "Herbert battery warning";
       trigger = {
         platform = "numeric_state";
-        entity_id  = "device_tracker.herbert";
-        value_template = "{{ state.attributes.herbert }}";
+        entity_id  = "sensor.herbert_battery_state";
         below = 30;
         for = "00:10:00";
       };
@@ -48,8 +46,7 @@
       alias = "Apple watch battery warning";
       trigger = {
         platform = "numeric_state";
-        entity_id  = "device_tracker.shannans_apple_watch";
-        value_template = "{{ state.attributes.battery }}";
+        entity_id  = "sensor.shannans_apple_watch_battery_state";
         below = 30;
         for = "00:10:00";
       };
@@ -90,8 +87,7 @@
       alias = "Apple watch charged notification";
       trigger = {
         platform = "numeric_state";
-        entity_id  = "device_tracker.shannans_apple_watch";
-        value_template = "{{ state.attributes.battery }}";
+        entity_id  = "sensor.shannans_apple_watch_battery_state";
         above = 95;
         for = "00:10:00";
       };
@@ -109,7 +105,6 @@
       trigger = {
         platform = "numeric_state";
         entity_id  = "sensor.redmi_note_5_battery_level";
-        #value_template = "{{ state }}";
         below = 30;
         for = "00:10:00";
       };
