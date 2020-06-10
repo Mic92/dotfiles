@@ -8,6 +8,7 @@ import color
 import icons
 from i3pystatus import Status
 from i3pystatus.disk import Disk
+from i3pystatus.now_playing import NowPlaying
 from bitwarden import BitwardenPassword
 from icinga import Icinga
 from netdata import Netdata
@@ -27,6 +28,8 @@ status.register(
     auto_units=True
 )
 icons.nerdfont(status, "ﯴ")
+
+status.register("now_playing", format="{title} {song_elapsed}/{song_length} {status}")
 
 status.register(
     "disk", path="/", format="{used}/{total}G [{avail}G]", color=color.text_normal
