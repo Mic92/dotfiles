@@ -17,9 +17,12 @@ in {
       speech.text = "Send notification";
       action = {
         service = "notify.pushover";
-        target = "gt-i9195";
-        data.sound = "echo";
-        data.priority = 1;
+        data = {
+          message = "Phonefinderalert";
+          target = "gt-i9195";
+          data.sound = "echo";
+          data.priority = 1;
+        };
       };
     };
   };
