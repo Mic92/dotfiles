@@ -2,9 +2,9 @@ from i3pystatus import Module
 
 import time
 import socket
-import threading
 from os.path import expanduser, expandvars
 from threading import Thread
+
 
 class YubiKeyTouchDetector(Module):
     socket_path = "$XDG_RUNTIME_DIR/yubikey-touch-detector.socket"
@@ -26,7 +26,7 @@ class YubiKeyTouchDetector(Module):
         try:
             self.socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             self.socket.connect(self._socket_path)
-        except Exception as e:
+        except Exception:
             self.socket = None
             self.output = {
                 "full_text": f"Cannot connect to yubikey-touch-detector"
@@ -34,9 +34,9 @@ class YubiKeyTouchDetector(Module):
 
     def update_status(self):
         if len(self.requests) > 0:
-            full_text='<span font_size="xx-large"></span>'
+            full_text = '<span font_size="xx-large"></span>'
         else:
-            full_text=""
+            full_text = ""
 
         self.output = dict(
             full_text=full_text,
