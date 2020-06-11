@@ -26,10 +26,6 @@ in {
         (pkgs.python3.pkgs.callPackage ./coronavirus.nix {})
       ];
     }).overrideAttrs (old: {
-      patches = old.patches ++ [
-        # https://github.com/NixOS/nixpkgs/pull/87750
-        ./0001-Fix-intent-component-initialisation.patch
-      ];
       # nobody got time for that!
       doCheck = false;
       doInstallCheck = false;

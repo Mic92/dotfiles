@@ -25,7 +25,7 @@
        alias = "Reset rain notified today";
        trigger = {
          platform = "time";
-         at = "00:00:01";
+         at = "00:07:00";
        };
        action = [{
          service = "input_boolean.turn_off";

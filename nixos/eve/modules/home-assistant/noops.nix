@@ -1,6 +1,6 @@
 {
   services.home-assistant.config.intent_script = {
-    Noop.speech.text = "Ok";
+    Noop.speech.text = "Fine, whatever...";
     FuckOff.speech.text = "Fuck yourself.";
   };
 }

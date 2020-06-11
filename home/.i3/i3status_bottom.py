@@ -12,6 +12,7 @@ from i3pystatus.now_playing import NowPlaying
 from bitwarden import BitwardenPassword
 from icinga import Icinga
 from netdata import Netdata
+from rhasspy import Rhasspy
 
 import yubikey
 
@@ -73,5 +74,7 @@ icons.nerdfont(status, "")
 #                critical_color=color.text_down)
 
 #status.register(yubikey.YubiKeyTouchDetector, hints={"markup": "pango"})
+
+status.register(Rhasspy)
 
 status.run()
