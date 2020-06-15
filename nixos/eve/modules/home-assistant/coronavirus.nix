@@ -6,11 +6,11 @@
 
 buildPythonPackage rec {
   pname = "coronavirus";
-  version = "1.1.0";
+  version = "1.1.1";
 
   src = fetchPypi {
     inherit pname version;
-    sha256 = "38f47bed399967329d06a784081b427e94a5055ad7487875fb8af8b58d4db611";
+    sha256 = "1xpckp5zyspbgia2lkk9f9fxkkr9lam9wl3lx9fwffiid7lgkbgw";
   };
 
   propagatedBuildInputs = [
