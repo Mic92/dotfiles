@@ -15,6 +15,7 @@ gym = "Gym"
 
 
 def get_message():
+    logger.info(f"not_together: {not_together}")
     logger.info(f"to_state: {to_state}")
     logger.info(f"from_state: {from_state}")
     logger.info(f"entity_id: {entity_id}")
