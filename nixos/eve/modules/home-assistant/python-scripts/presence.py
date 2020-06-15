@@ -15,7 +15,7 @@ gym = "Gym"
 
 
 def get_message():
-    logger.info(f"not_together: {not_together}")
+    logger.info(f"not_together: {not_together.state}")
     logger.info(f"to_state: {to_state}")
     logger.info(f"from_state: {from_state}")
     logger.info(f"entity_id: {entity_id}")
@@ -59,7 +59,7 @@ def main():
     logger.info(f"message {message}")
     if message is None:
         return
-    if not_together == "off":
+    if not_together.state == "off":
         logger.info("skip notification, shannan and joerg are together")
         return
     if entity_id == joerg.entity_id:
