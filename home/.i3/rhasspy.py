@@ -2,6 +2,7 @@ from threading import Thread
 from typing import Any
 from enum import Enum
 import json
+import time
 
 from i3pystatus import Module
 import paho.mqtt.client as mqtt
@@ -11,7 +12,7 @@ from i3pystatus.core.desktop import DesktopNotification
 class RhasspyState(Enum):
     disconnected = 0
     connected = 1
-    in_session = 2
+    listening = 2
 
 
 class Topic:
@@ -33,15 +34,29 @@ class Rhasspy(Module):
     host = "localhost"
     port = 12183
     password = None
-    color = "#FFFFFF"
+    color_connected = "#FFFFFF"
+    color_disconnected = "#FF0000"
+    color_listening = "#00FF00"
+    format_connected = "◉"
+    format_listening = "◉"
+    format_disconnected = "N/A"
     settings = (
-        "host",
-        "port",
-        "password",
-        "color"
+        ("host", "Hostname/ip address of the MQTT broker connect to it."),
+        ("port", "Port number of the MQTT broker connect"),
+        ("password", "Password of the mqtt broker"),
+        ("color_connected", "Text color"),
+        ("format_connected", "Text color"),
+        ("color_disconnected", "Text color"),
+        ("format_disconnected", "Text color"),
+        ("color_listening", "Text color"),
+        ("format_listening", "Text color"),
     )
 
-    def on_connect(self, client: mqtt.Client, userdata: Any, flags: int, rc: int) -> None:
+    def on_connect(self,
+                   client: mqtt.Client,
+                   userdata: Any,
+                   flags: int,
+                   rc: int) -> None:
         client.subscribe(Topic.SESSION_STARTED)
         client.subscribe(Topic.TEXT_CAPTURED)
         client.subscribe(Topic.INTENT_PARSED)
@@ -52,18 +67,18 @@ class Rhasspy(Module):
         self.state = RhasspyState.connected
 
     @property
-    def state(self):
+    def state(self) -> RhasspyState:
         return self._state
 
     @state.setter
-    def state(self, value):
+    def state(self, value: RhasspyState) -> None:
         self._state = value
         self.update_status()
 
     def on_disconnect(self, client: mqtt.Client, userdata: Any, rc: int) -> None:
         self.state = RhasspyState.disconnected
 
-    def notify(self, text, title="Rhasspy:"):
+    def notify(self, text: str, title: str="Rhasspy:") -> None:
         DesktopNotification(title=title, body=text).display()
 
     def on_message(self, client: mqtt.Client, userdata: Any, msg: mqtt.MQTTMessage) -> None:
@@ -85,31 +100,40 @@ class Rhasspy(Module):
     def init(self) -> None:
         self.output = dict(
             full_text="disconnected",
-            color=self.color,
+            color=self.color_disconnected,
         )
-        self.client = mqtt.Client(self.host, self.port)
-        self.client.connect(self.host, self.port, 60)
-        self.client.on_connect = self.on_connect
-        self.client.on_disconnect = self.on_disconnect
-        self.client.on_message = self.on_message
         t = Thread(target=self._run)
         t.daemon = True
         t.start()
         self.state = RhasspyState.disconnected
 
     def update_status(self) -> None:
-        if self.state == RhasspyState.in_session:
-            full_text = "in session"
+        if self.state == RhasspyState.listening:
+            full_text = self.format_listening
+            color = self.color_listening
         elif self.state == RhasspyState.connected:
-            full_text = "connected"
+            full_text = self.format_connected
+            color = self.color_connected
         elif self.state == RhasspyState.disconnected:
-            full_text = "disconnected"
+            full_text = self.format_disconnected
+            color = self.color_disconnected
         else:
-            full_text = "invalid state"
+            raise RuntimeError("invalid state: {self.state}")
         self.output = dict(
             full_text=full_text,
-            color=self.color
+            color=color
         )
 
     def _run(self):
+        while True:
+            try:
+                self.client = mqtt.Client(self.host, self.port)
+                break
+            except Exception:
+                time.sleep(3)
+
+        self.client.connect(self.host, self.port, 60)
+        self.client.on_connect = self.on_connect
+        self.client.on_disconnect = self.on_disconnect
+        self.client.on_message = self.on_message
         self.client.loop_forever()
