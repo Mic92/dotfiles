@@ -55,6 +55,7 @@ in {
     "map" = {};
     shopping_list = {};
     logbook.exclude.entities = hiddenEntities;
+    logger.default = "info";
     sun = {};
     calendar = {
       platform = "caldav";
