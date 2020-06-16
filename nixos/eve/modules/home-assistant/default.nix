@@ -5,6 +5,7 @@ in {
     ./charge-notifications.nix
     #./parents.nix
     ./find-phone.nix
+    ./german.nix
     ./jokes.nix
     ./light.nix
     ./ldap.nix
