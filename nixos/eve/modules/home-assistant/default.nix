@@ -12,6 +12,7 @@ in {
     ./ps4.nix
     ./lunch-place.nix
     ./noops.nix
+    ./nixoswiki.nix
     ./presence.nix
     ./postgres.nix
     ./timer.nix
