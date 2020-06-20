@@ -39,6 +39,8 @@ in {
   systemd.services.bitwarden_rs.serviceConfig = {
     EnvironmentFile = [ config.krops.secrets."bitwarden-smtp-password".path ];
     SupplementaryGroups = [ "keys" ];
+    Restart = "on-failure";
+    RestartSec = "2s";
   };
 
   systemd.services.bitwarden_ldap = {
@@ -54,6 +56,7 @@ in {
 
     serviceConfig = {
       Restart = "on-failure";
+      RestartSec = "2s";
       ExecStart = "${pkgs.nur.repos.mic92.bitwarden_rs_ldap}/bin/bitwarden_rs_ldap";
       Environment = "CONFIG_PATH=/run/bitwarden_ldap/config.toml";
 
