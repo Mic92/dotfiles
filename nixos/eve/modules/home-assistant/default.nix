@@ -23,14 +23,10 @@ in {
   services.home-assistant = {
     enable = true;
     package = (pkgs.home-assistant.override {
-      extraPackages = ps: with ps; [
-        psycopg2
-        (pkgs.python3.pkgs.callPackage ./coronavirus.nix {})
+      extraPackages = ps: [
+        ps.psycopg2
+        (ps.callPackage ./coronavirus.nix {})
       ];
-    }).overrideAttrs (old: {
-      # nobody got time for that!
-      doCheck = false;
-      doInstallCheck = false;
     });
   };
 
