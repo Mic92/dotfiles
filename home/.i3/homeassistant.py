@@ -59,34 +59,34 @@ class State:
 state = State(BitwardenPassword("home-assistant-token"))
 
 
-class WeatherIcon(IntervalModule):
-    @require(internet)
-    def run(self) -> None:
-        global state
-        weather = state.get("sensor.dark_sky_summary")
-        if weather is None:
-            return
-        icon_name = weather['attributes']['icon']
-        icon = WEATHER_ICONS.get(icon_name, None)
-        if icon is None:
-            text = f'<span color="white">{icon_name}</span>'
-        else:
-            text = f'<span font_size="xx-large" color="white">{icon}</span>'
-        self.output = dict(full_text=text,
-                           markup="pango",
-                           separator=False,
-                           separator_block_width=5)
+#class WeatherIcon(IntervalModule):
+#    @require(internet)
+#    def run(self) -> None:
+#        global state
+#        weather = state.get("weather.openweathermap")
+#        if weather is None:
+#            return
+#        text = f"{weather['attributes']['temperature']}°C"
+#        #icon_name = weather['attributes']['icon']
+#        #icon = WEATHER_ICONS.get(icon_name, None)
+#        #if icon is None:
+#        #    text = f'<span color="white">{icon_name}</span>'
+#        #else:
+#        #    text = f'<span font_size="xx-large" color="white">{icon}</span>'
+#        self.output = dict(full_text=text,
+#                           markup="pango"
+#                           separator=False,
+#                           separator_block_width=5)
 
 
 class WeatherText(IntervalModule):
     @require(internet)
     def run(self) -> None:
         global state
-        temperature = state.get("sensor.dark_sky_temperature")
-        if temperature is None:
+        weather = state.get("weather.openweathermap")
+        if weather is None:
             return
-        unit = temperature["attributes"]["unit_of_measurement"]
-        text = f'{temperature["state"]}{unit}'
+        text = f"{weather['attributes']['temperature']}°C"
 
         self.output = dict(full_text=text)
 

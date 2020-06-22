@@ -7,7 +7,8 @@ import subprocess
 import color
 import icons
 from i3pystatus import Status
-from homeassistant import PhoneBattery, BikeBattery, Shannan, WeatherIcon, WeatherText
+#from homeassistant import PhoneBattery, BikeBattery, Shannan, WeatherIcon, WeatherText
+from homeassistant import PhoneBattery, BikeBattery, Shannan, WeatherText
 
 status = Status(standalone=True)
 
@@ -54,6 +55,6 @@ icons.nerdfont(status, "", size="x-large")
 status.register(Shannan, interval=60)
 icons.nerdfont(status, "", size="x-large")
 status.register(WeatherText, interval=60)
-status.register(WeatherIcon, interval=60)
+#status.register(WeatherIcon, interval=60)
 
 status.run()
