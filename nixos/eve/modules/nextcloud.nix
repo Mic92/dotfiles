@@ -6,7 +6,7 @@
     nginx.enable = true;
     caching.apcu = true;
 
-    package = pkgs.nextcloud18;
+    package = pkgs.nextcloud19;
 
     config = {
       dbtype = "pgsql";
