@@ -55,6 +55,8 @@ fmt = ["{usage_cpu%d:02}%%" % cpu for cpu in range(count)]
 status.register("cpu_usage", format="/".join(fmt), color=color.text_normal)
 icons.nerdfont(status, "")
 
+status.register("ping", host="1.1.1.1", color=color.text_normal)
+
 #status.register(Icinga,
 #                base_url="https://icingamaster.bsd.services:5665",
 #                username="mic92-api",
