@@ -64,16 +64,7 @@ class Rhasspy(Module):
         client.subscribe(Topic.TTS_SAY)
         client.subscribe(Topic.SESSION_ENDED)
 
-        self.state = RhasspyState.connected
-
-    @property
-    def state(self) -> RhasspyState:
-        return self._state
-
-    @state.setter
-    def state(self, value: RhasspyState) -> None:
-        self._state = value
-        self.update_status()
+        self.update_state(RhasspyState.connected)
 
     def on_disconnect(self, client: mqtt.Client, userdata: Any, rc: int) -> None:
         self.state = RhasspyState.disconnected
@@ -85,10 +76,12 @@ class Rhasspy(Module):
         payload = json.loads(msg.payload)
 
         if msg.topic == Topic.SESSION_STARTED:
-            self.state = RhasspyState.in_session
+            self.notify(f"Listening.")
+            self.update_state(RhasspyState.listening)
         elif msg.topic == Topic.SESSION_ENDED:
-            self.state = RhasspyState.connected
+            self.update_state(RhasspyState.connected)
         elif msg.topic == Topic.TEXT_CAPTURED:
+            self.update_state(RhasspyState.connected)
             self.notify(payload["text"], title="You:")
         elif msg.topic == Topic.INTENT_PARSED:
             self.notify(f"Intent {payload['intentName']} detected.")
@@ -105,16 +98,16 @@ class Rhasspy(Module):
         t = Thread(target=self._run)
         t.daemon = True
         t.start()
-        self.state = RhasspyState.disconnected
+        self.update_state(RhasspyState.disconnected)
 
-    def update_status(self) -> None:
-        if self.state == RhasspyState.listening:
+    def update_state(self, state: RhasspyState) -> None:
+        if state == RhasspyState.listening:
             full_text = self.format_listening
             color = self.color_listening
-        elif self.state == RhasspyState.connected:
+        elif state == RhasspyState.connected:
             full_text = self.format_connected
             color = self.color_connected
-        elif self.state == RhasspyState.disconnected:
+        elif state == RhasspyState.disconnected:
             full_text = self.format_disconnected
             color = self.color_disconnected
         else:
