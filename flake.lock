@@ -1,0 +1,29 @@
+{
+  "nodes": {
+    "nixpkgs": {
+      "info": {
+        "lastModified": 1592823104,
+        "narHash": "sha256-/Jh2vGCQXtaOMMw1pij5Sq202UJ8dd7HalKKnuiugAs="
+      },
+      "locked": {
+        "owner": "Mic92",
+        "repo": "nixpkgs",
+        "rev": "a776760e38fc641b5bc97c0eb236726375a1c375",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "ref": "master",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 5
+}
