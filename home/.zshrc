@@ -352,7 +352,7 @@ fi
 
 if [[ -n ${commands[nix]} ]]; then
   n() {
-    NIX_RUN_ARGS="$@${NIX_RUN_ARGS+ }${NIX_RUN_ARGS}" nix run "$@" -f '<nixpkgs>' -c zsh
+    NIX_RUN_ARGS="$@${NIX_RUN_ARGS+ }${NIX_RUN_ARGS}" nix shell "$@" -f '<nixpkgs>' -c zsh
   }
 fi
 
@@ -618,7 +618,7 @@ ss() {
 sieve-edit() {
     local passwordfd
     exec {passwordfd} < <(bw get password 0b03e201-0c7c-4692-b34e-7594f4bbef8d)
-    nix run nixpkgs.sieve-connect -c sieve-connect --passwordfd $passwordfd -s imap.thalheim.io -u joerg@higgsboson.tk --remotesieve Filter --edit
+    nix shell -f '<nixpkgs>' sieve-connect -c sieve-connect --passwordfd $passwordfd -s imap.thalheim.io -u joerg@higgsboson.tk --remotesieve Filter --edit
     exec {passwordfd}>&-
 }
 # Autossh - try to connect every 0.5 secs (modulo timeouts)
