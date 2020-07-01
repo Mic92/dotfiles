@@ -36,6 +36,7 @@
       (pkgs.python3.withPackages (ps: lib.attrVals config.python.packages ps))
       #rls
 
+      nixFlakes
       tmux
       htop
       gitAndTools.hub
@@ -58,7 +59,7 @@
       git
     ] ++ (lib.optionals pkgs.stdenv.isLinux [
       strace
-      psmisc 
+      psmisc
       glibcLocales
     ]);
 

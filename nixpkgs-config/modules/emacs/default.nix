@@ -7,7 +7,7 @@ let
   cfg = config.programs.emacs;
 
   sourcesJson = builtins.fromJSON (builtins.readFile ../../../nixos/nix/sources.json);
-  editorScript = { name ? "emacseditor", x11 ? false, mu4e ? false } : pkgs.writeScriptBin name ''
+  editorScript = { name ? "emacseditor", x11 ? false } : pkgs.writeScriptBin name ''
     #!${pkgs.runtimeShell}
     export TERM=xterm-direct
     exec -a emacs ${cfg.package}/bin/emacsclient \
@@ -15,7 +15,6 @@ let
       --create-frame \
       --alternate-editor ${cfg.package}/bin/emacs \
       ${optionalString (!x11) "-nw"} \
-      ${optionalString (mu4e) "-e '(mu4e)'"} \
       "$@"
   '';
   daemonScript = pkgs.writeScript "emacs-daemon" ''
@@ -73,7 +72,11 @@ in {
           mimeType = "text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++";
         })
 
-        (editorScript { name = "mu4e"; mu4e = true; x11 = true; })
+        (pkgs.writeScriptBin "mu4e" ''
+          #!${pkgs.runtimeShell}
+          export BW_SESSION=1
+          exec -a emacs ${cfg.package}/bin/emacs -e '(mu4e)'
+        '')
         (editorScript {})
         gopls
         golangci-lint
