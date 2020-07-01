@@ -18,7 +18,6 @@
     python.packages = [
       "pyls-mypy"
       "pyls-isort"
-      "pyls-black"
     ];
 
     home.packages = with pkgs; [
