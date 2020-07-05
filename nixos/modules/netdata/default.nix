@@ -100,7 +100,7 @@ in {
       "inbound_packets_dropped_ratio"
     ])
     // (silenceAlerts "netfilter" [ "netfilter_last_collected_secs" ])
-    // (silenceAlerts "udp_errors" [ "ipv4_udperrors_last_collected_secs" ])
+    // (silenceAlerts "udp_errors" [ "ipv4_udperrors_last_collected_secs" "1m_ipv4_udp_receive_buffer_errors" ])
     // (silenceAlerts "tcp_resets" [ "ipv4_tcphandshake_last_collected_secs" ]);
 
   systemd.services.netdata.restartTriggers = [

@@ -13,7 +13,8 @@ in rec {
     inherit dotfiles nixos-config secrets shared-secrets nixos-hardware nur home-manager;
   };
 
-  krops-local = /home/joerg/git/krops;
+  # for testing
+  #krops = /home/joerg/git/krops;
 
   nixpkgs.git = {
     clean.exclude = ["/.version-suffix"];

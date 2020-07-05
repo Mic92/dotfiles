@@ -46,6 +46,7 @@
       nix-direnv
       fzf
       exa
+      pinentry
       fd
       bat
       vivid

@@ -15,6 +15,7 @@
       keep-derivations = true
       # in zfs we trust
       fsync-metadata = ${lib.boolToString (config.fileSystems."/".fsType != "zfs")}
+      experimental-features = nix-command flakes
     '';
 
     nixPath = let

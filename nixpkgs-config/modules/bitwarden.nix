@@ -3,7 +3,7 @@ let
   path = lib.makeBinPath ([
     pkgs.coreutils
     pkgs.utillinux
-    pkgs.bitwarden-cli
+    pkgs.nodePackages_latest.bitwarden-cli
     pkgs.systemd
     pkgs.gnused
   ]);

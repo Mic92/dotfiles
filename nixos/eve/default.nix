@@ -6,4 +6,5 @@ pkgs.krops.writeDeploy "deploy" {
   source = lib.evalSource defaultSources;
   target = "root@eve.thalheim.io";
   #target = "root@129.215.90.4";
+  #target = "root@eve.i";
 }
