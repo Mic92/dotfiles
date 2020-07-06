@@ -2,11 +2,11 @@
   "nodes": {
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1592984699,
-        "narHash": "sha256-bBIrPMjtVbmgJYk46fD8QVWnQD2wL9WeaAHWxHaSZeY=",
+        "lastModified": 1594039920,
+        "narHash": "sha256-M6SFOwjjpnb9jrdqc5ogytP1SkS6avgdvX67zP+s+ks=",
         "owner": "Mic92",
         "repo": "nixos-hardware",
-        "rev": "372387f3f11d55788a425b96f27c396d6e05088a",
+        "rev": "2db3e65956c6733a92870586c6f7d5df9f79f99e",
         "type": "github"
       },
       "original": {
@@ -64,15 +64,15 @@
       "locked": {
         "lastModified": 1594024616,
         "narHash": "sha256-5ZV93RNtGji70SiPhY/Mf9b0BbNPrKTefSK+cLdw14E=",
-        "ref": "master",
+        "owner": "Mic92",
+        "repo": "sops-nix",
         "rev": "bb21643ce1ebe91e756cf8232ac131aa303ad4ac",
-        "revCount": 3,
-        "type": "git",
-        "url": "file:///home/joerg/git/sops-nix"
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/joerg/git/sops-nix"
+        "owner": "Mic92",
+        "repo": "sops-nix",
+        "type": "github"
       }
     }
   },

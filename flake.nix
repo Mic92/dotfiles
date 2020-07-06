@@ -15,7 +15,7 @@
       system = "x86_64-linux";
       modules = [
         { nixpkgs.overlays = [ nur.overlay ]; }
-        nixos-hardware.nixosModules.dell.xps-13-9380
+        nixos-hardware.nixosModules.dell-xps-13-9380
         sops-nix.nixosModules.sops
         ./nixos/turingmachine/configuration.nix
       ];
