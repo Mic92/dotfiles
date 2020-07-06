@@ -11,6 +11,8 @@ in {
 
   systemd.services.borgbackup-job-turingmachine.unitConfig.RequiresMountsFor = backupPath;
 
+  sops.secrets.borgbackup = {};
+
   services.borgbackup.jobs.turingmachine = {
     removableDevice = true;
     paths = [
@@ -26,7 +28,7 @@ in {
     ];
     encryption = {
       mode = "repokey";
-      passCommand = "cat ${toString <secrets/borgbackup>}";
+      passCommand = "cat ${config.sops.secrets.borgbackup.path}";
     };
     preHook = ''
       set -x
@@ -37,7 +39,7 @@ in {
     postHook = ''
       ${pkgs.nur.repos.mic92.healthcheck}/bin/healthcheck \
         --service borgbackup-turingmachine --failed $exitStatus \
-        --password-file ${toString <secrets/healthcheck-borgbackup-turingmachine>}
+        --password-file ${config.sops.secrets.healthcheck-borgbackup-turingmachine.path}
     '';
 
     postPrune = ''
@@ -52,4 +54,5 @@ in {
     };
   };
   environment.systemPackages = with pkgs; [ borgbackup ];
+  sops.secrets.healthcheck-borgbackup-turingmachine = {};
 }

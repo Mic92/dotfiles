@@ -21,6 +21,7 @@
     ./modules/high-dpi.nix
     ./modules/gnome-pim.nix
     ./modules/rhasspy.nix
+    ./modules/sops.nix
 
     ../modules/macos-kvm.nix
     ../modules/mosh.nix
@@ -29,7 +30,6 @@
     ../modules/networkd.nix
     ../modules/dnsmasq.nix
     ../modules/wireguard.nix
-    ../modules/secrets.nix
     ../modules/tracing.nix
     ../modules/tor-ssh.nix
     #./kde.nix
