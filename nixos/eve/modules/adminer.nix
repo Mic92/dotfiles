@@ -31,12 +31,6 @@
       '';
       root = "${pkgs.adminer}";
     };
-
-    virtualHosts."adminer.higgsboson.tk" = {
-      useACMEHost = "higgsboson.tk";
-      forceSSL = true;
-      globalRedirect = "adminer.thalheim.io";
-    };
   };
 
   users.users.adminer = {

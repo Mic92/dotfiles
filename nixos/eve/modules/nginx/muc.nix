@@ -14,11 +14,5 @@
 
       root = "/var/www/muc.thalheim.io";
     };
-
-    virtualHosts."muc.higgsboson.tk" = {
-      useACMEHost = "higgsboson.tk";
-      forceSSL = true;
-      globalRedirect = "muc.thalheim.io";
-    };
   };
 }

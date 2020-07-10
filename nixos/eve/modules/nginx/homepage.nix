@@ -29,18 +29,6 @@
       forceSSL = true;
       globalRedirect = "thalheim.io";
     };
-
-    virtualHosts."www.higgsboson.tk" = {
-      useACMEHost = "higgsboson.tk";
-      forceSSL = true;
-      globalRedirect = "thalheim.io";
-    };
-
-    virtualHosts."higgsboson.tk" = {
-      useACMEHost = "higgsboson.tk";
-      forceSSL = true;
-      globalRedirect = "thalheim.io";
-    };
   };
 
   services.netdata.httpcheck.checks.homepage = {

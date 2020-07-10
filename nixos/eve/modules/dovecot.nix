@@ -37,14 +37,6 @@ in {
         ssl_cert = </var/lib/acme/thalheim.io/fullchain.pem
         ssl_key = </var/lib/acme/thalheim.io/key.pem
       }
-      local_name higgsboson.tk {
-        ssl_cert = </var/lib/acme/higgsboson.tk/fullchain.pem
-        ssl_key = </var/lib/acme/higgsboson.tk/key.pem
-      }
-      local_name imap.higgsboson.tk {
-        ssl_cert = </var/lib/acme/imap.higgsboson.tk/fullchain.pem
-        ssl_key = </var/lib/acme/imap.higgsboson.tk/key.pem
-      }
       local_name devkid.net {
         ssl_cert = </var/lib/acme/devkid.net/fullchain.pem
         ssl_key = </var/lib/acme/devkid.net/key.pem
@@ -76,8 +68,8 @@ in {
         }
       }
       protocol lmtp {
-        postmaster_address=postmaster@higgsboson.tk
-        hostname=mail.higgsboson.tk
+        postmaster_address=postmaster@thalheim.io
+        hostname=mail.thalheim.io
         mail_plugins = $mail_plugins sieve
       }
       service auth {
@@ -185,12 +177,10 @@ in {
     };
   in {
     "imap.thalheim.io" = cert;
-    "imap.higgsboson.tk" = cert;
     "imap.devkid.net" = cert;
   };
 
   services.nginx = {
-    virtualHosts."imap.higgsboson.tk".useACMEHost = "imap.higgsboson.tk";
     virtualHosts."imap.thalheim.io".useACMEHost = "imap.thalheim.io";
     virtualHosts."imap.devkid.net".useACMEHost = "imap.devkid.net";
   };

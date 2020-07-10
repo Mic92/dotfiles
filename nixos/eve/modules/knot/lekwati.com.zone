@@ -1,4 +1,4 @@
-@ 3600 IN SOA lekwati.com. root.lekwati.com. 2020021501 7200 3600 86400 3600
+@ 3600 IN SOA lekwati.com. root.lekwati.com. 2020071000 7200 3600 86400 3600
 
 $TTL 600
 
@@ -12,5 +12,5 @@ www IN CNAME www.thalheim.io
 ;; TXT Records
 _adsp._domainkey 1 IN TXT "dkim=all;"
 default._domainkey 1 IN TXT "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDF+v8DL7amTnEsriUt3c1f7C6n99FPTxsnAnUr0HoiMxGdkcy7sIofxtPSxhQE4+jqFFPptxJ9gCQlkmh2w0vw+B9aulVpC8bltjt0Jn/o+AYy6Z/R12C3EaYGWyJbKTu1qTl3DwHKZS8ehJ2Jqkr2Ri+nWM0TQm7PjAHjboi8ywIDAQAB"
-_dmarc 1 IN TXT "\"v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:admin@higgsboson.tk; ruf=mailto:admin@higgsboson.tk; pct=100\""
+_dmarc 1 IN TXT "\"v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:admin@thalheim.io; ruf=mailto:admin@thalheim.io; pct=100\""
 @ IN TXT "v=spf1 mx a:mail.thalheim.io ip6:2a01:4f9:2b:1605::1 -all"

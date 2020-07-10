@@ -3,7 +3,6 @@
 let
 
   virtualRegex = pkgs.writeText "virtual-regex" ''
-    /^joerg\.[^@.]+@higgsboson\.tk$/ joerg@thalheim.io
     /^joerg\.[^@.]+@thalheim\.io$/ joerg@thalheim.io
     /^albert-[^@.]+@halfco\.de$/ albert@halfco.de
     /^devkid-[^@.]+@devkid\.net$/ devkid@devkid.net
@@ -39,8 +38,8 @@ let
     ${lib.concatMapStringsSep "\n" (address: ''
     ${address}   REJECT Get lost - you're lying about who you are
     '') config.networking.eve.ipv6.addresses}
-    higgsboson.tk   REJECT Get lost - you're lying about who you are
     thalheim.io   REJECT Get lost - you're lying about who you are
+    lekwati.com   REJECT Get lost - you're lying about who you are
   '';
   enableRblOverride = false;
   rbl_override = pkgs.writeText "rbl_override" ''

@@ -17,7 +17,6 @@
       adminuser = "nextcloudadmin";
       adminpassFile = config.krops.secrets.nextcloud-admin-password.path;
       extraTrustedDomains = [
-        "cloud.higgsboson.tk"
         "pim.devkid.net"
       ];
     };
@@ -36,11 +35,6 @@
   systemd.services.nextcloud.serviceConfig.SupplementaryGroups = [ "keys" ];
 
   services.nginx = {
-    virtualHosts."cloud.higgsboson.tk" = {
-      useACMEHost = "higgsboson.tk";
-      forceSSL = true;
-      globalRedirect = "cloud.thalheim.io";
-    };
     virtualHosts."cloud.thalheim.io" = {
       useACMEHost = "thalheim.io";
       forceSSL = true;

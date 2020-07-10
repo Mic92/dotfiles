@@ -11,7 +11,7 @@
       AUTH_LDAP_CONFIG_FILE = "/run/grafana/ldap.toml";
     };
     smtp = {
-      host = "mail.higgsboson.tk:587";
+      host = "mail.thalheim.io:587";
       user = "grafana@thalheim.io";
       passwordFile = config.krops.secrets."grafana-smtp-password".path;
       fromAddress = "grafana@thalheim.io";

@@ -20,7 +20,6 @@ in {
   services.nginx = {
     virtualHosts."dl.devkid.net" = site "devkid.net" "dl.devkid.net";
     virtualHosts."dl.thalheim.io" = site "thalheim.io" "dl.thalheim.io";
-    virtualHosts."dl.higgsboson.tk" = site "higgsboson.tk" "dl.higgsboson.tk";
   };
 
   systemd.services.nginx.serviceConfig.SupplementaryGroups = [ "keys" ];

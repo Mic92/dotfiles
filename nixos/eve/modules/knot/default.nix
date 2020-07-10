@@ -59,9 +59,6 @@ in {
         - domain: thalheim.io
           file: "${./thalheim.io.zone}"
           template: master
-        - domain: higgsboson.tk
-          file: "${./higgsboson.tk.zone}"
-          template: master
         - domain: lekwati.com
           file: "${./lekwati.com.zone}"
           template: master
@@ -94,18 +91,6 @@ in {
     apply Service "DNS thalheim.io v6 (eve)" {
       import "eve-dns6-service"
       vars.dig_lookup = "thalheim.io"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "DNS higgsboson.tk v4 (eve)" {
-      import "eve-dns4-service"
-      vars.dig_lookup = "higgsboson.tk"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "DNS higgsboson.tk v6 (eve)" {
-      import "eve-dns6-service"
-      vars.dig_lookup = "higgsboson.tk"
       assign where host.name == "eve.thalheim.io"
     }
 

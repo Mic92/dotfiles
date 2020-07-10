@@ -80,8 +80,6 @@ in {
       "legacy-thalheim.io" = sanCertificate { domain = "thalheim.io"; rsa = true; };
       "devkid.net" = sanCertificate { domain = "devkid.net"; };
       "legacy-devkid.net" = sanCertificate { domain = "devkid.net"; rsa = true; };
-      "higgsboson.tk" = sanCertificate { domain = "higgsboson.tk"; };
-      "legacy-higgsboson.tk" = sanCertificate { domain = "higgsboson.tk"; rsa = true; };
     };
 
     environment.etc."netdata/python.d/web_log.conf".text = ''

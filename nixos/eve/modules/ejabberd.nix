@@ -51,7 +51,6 @@
       hosts:
       - thalheim.io
       - anon.thalheim.io
-      - higgsboson.tk
       - devkid.net
       - w01f.de
 
@@ -61,7 +60,6 @@
       - /var/lib/acme/ejabberd-anon.thalheim.io/full.pem
       - /var/lib/acme/ejabberd-thalheim.io/full.pem
       - /var/lib/acme/ejabberd-devkid.net/full.pem
-      - /var/lib/acme/ejabberd-higgsboson.tk/full.pem
       listen:
       -
         port: 5222
@@ -338,7 +336,6 @@
     "ejabberd-anon.thalheim.io" = cert "anon.thalheim.io";
     "ejabberd-devkid.net" = cert "devkid.net";
     "ejabberd-thalheim.io" = cert "thalheim.io";
-    "ejabberd-higgsboson.tk" = cert "higgsboson.tk";
   };
   services.nginx.virtualHosts."anon.thalheim.io".useACMEHost = "thalheim.io";
 

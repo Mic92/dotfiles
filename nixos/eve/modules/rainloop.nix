@@ -34,12 +34,6 @@
         dataPath = "/var/lib/rainloop";
       });
     };
-
-    virtualHosts."mail.higgsboson.tk" = {
-      useACMEHost = "higgsboson.tk";
-      forceSSL = true;
-      globalRedirect = "mail.thalheim.io";
-    };
   };
 
   services.netdata.httpcheck.checks.rainloop = {

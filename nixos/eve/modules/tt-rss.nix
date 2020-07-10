@@ -51,12 +51,6 @@
   };
 
   services.nginx = {
-    virtualHosts."rss.higgsboson.tk" = {
-      useACMEHost = "higgsboson.tk";
-      forceSSL = true;
-      globalRedirect = "rss.devkid.net";
-    };
-
     virtualHosts."rss.thalheim.io" = {
       useACMEHost = "thalheim.io";
       forceSSL = true;

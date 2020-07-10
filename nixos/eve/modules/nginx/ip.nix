@@ -8,10 +8,5 @@
         return 200 "$remote_addr\n";
       '';
     };
-    virtualHosts."ip.higgsboson.tk" = {
-      useACMEHost = "higgsboson.tk";
-      forceSSL = true;
-      globalRedirect = "ip.thalheim.io";
-    };
   };
 }

@@ -29,11 +29,6 @@
         proxy_pass http://localhost:3000;
       '';
     };
-    virtualHosts."git.higgsboson.tk" = {
-      useACMEHost = "higgsboson.tk";
-      forceSSL = true;
-      globalRedirect = "git.thalheim.io";
-    };
   };
 
   services.netdata.httpcheck.checks.gogs = {
