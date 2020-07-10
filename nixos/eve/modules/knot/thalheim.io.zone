@@ -1,4 +1,6 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020071000 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020071002 7200 3600 86400 3600
+;; dnswl.org needs this
+mail 3600 IN SOA thalheim.io. root.thalheim.io. 2020071000 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
