@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020071006 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020071008 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -69,8 +69,14 @@ reisekosten IN CNAME reisekosten.herokuapp.com.
 
 ;; Mail
 @ IN MX 3 mail
-;; dnswl.org needs this
+;; dnswl.org needs this >>
 mail 3600 IN SOA thalheim.io. root.thalheim.io. 2020071004 7200 3600 86400 3600
+mail 3600 IN NS ns1
+mail 3600 IN NS ns2.he.net.
+mail 3600 IN NS ns3.he.net.
+mail 3600 IN NS ns4.he.net.
+mail 3600 IN NS ns5.he.net.
+;; << dnswl.org
 mail IN A 95.216.112.61
 mail IN AAAA 2a01:4f9:2b:1605::1
 _adsp._domainkey IN TXT "dkim=all;"
