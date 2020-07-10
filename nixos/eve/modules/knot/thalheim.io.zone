@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020071009 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020071010 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -74,7 +74,7 @@ mail IN AAAA 2a01:4f9:2b:1605::1
 _adsp._domainkey IN TXT "dkim=all;"
 default._domainkey IN TXT "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgVpKyJL+JXhYefL05+wal58+PK1s5y1nf1uI7aguTbQFaM3wo3cs/7CaxBK1a+JNCd7f1sgmbdR17CzsiUUQO5GLsyl6bS4VGZv1XMMSuTdCpOT08iY0s9JikME6kPg9rxbo35ET9DtDDEqmgwbUcIfl/eD8G4jwTvyPYJPfFKQIDAQAB"
 _dmarc IN TXT "v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:admin@thalheim.io; ruf=mailto:admin@thalheim.io; pct=100"
-@ IN TXT "v=spf1 mx a:mail.thalheim.io ip6:2a01:4f9:2b:1605::1 -all"
+@ IN TXT "v=spf1 ip4:95.216.112.61 ip6:2a01:4f9:2b:1605::1 -all"
 _token._dnswl IN TXT "v6e9a15zje7o03w1oos9ashj258elvdh"
 
 ;; XMPP
