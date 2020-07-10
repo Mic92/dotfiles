@@ -159,8 +159,7 @@ values."
                                        :location (recipe :fetcher github :repo "Mic92/company-tmux"))
                                       (osc52
                                        :location (recipe :fetcher github :repo "Mic92/osc52"))
-                                      (defaultencrypt
-                                        :location (recipe :fetcher gitlab :repo "lechten/defaultencrypt")))
+                                      )
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '(agda2-mode)
    ;; A list of packages that will not be installed and loaded.
@@ -425,15 +424,10 @@ you should place your code here."
   (use-package osc52
     :config (osc52-set-cut-function))
 
-  (use-package jl-encrypt
-    :config (progn
-              (add-hook 'message-send-hook 'mml-secure-encrypt-if-possible)
-              (add-hook 'message-send-hook 'mml-secure-check-encryption-p)))
-
   (use-package bitwarden
     :config (progn
               (bitwarden-auth-source-enable)
-              (setq bitwarden-automatic-unlock "")
+              (setq bitwarden-automatic-unlock (lambda() ""))
              ))
 
   (use-package persistent-scratch
@@ -441,6 +435,11 @@ you should place your code here."
     (persistent-scratch-setup-default))
 
   (setq vc-follow-symlinks t)
+
+  ;; make git-commit faster
+  (remove-hook 'server-switch-hook 'magit-commit-diff)
+  ;; https://magit.vc/manual/magit/Performance.html
+  (setq magit-refresh-status-buffer nil)
 
   ;(setq org-caldav-url "https://cloud.thalheim.io/remote.php/dav/calendars/joerg@higgsboson.tk"
   ;      org-caldav-calendar-id "personal"
