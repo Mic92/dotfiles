@@ -4,10 +4,10 @@
   imports = [
     ./common.nix
   ];
-  home.packages = with pkgs; [
-    (weechat.override {
+  home.packages = [
+    (pkgs.weechat.override {
       configure = { availablePlugins, ... }: {
-        scripts = with weechatScripts; [ weechat-otr wee-slack ];
+        scripts = with pkgs.weechatScripts; [ weechat-otr wee-slack ];
         plugins = [
           availablePlugins.python
           availablePlugins.perl

@@ -2,7 +2,13 @@
 
 {
   options.python.packages = lib.mkOption {
-    type = lib.types.listOf lib.types.str;
+    type = lib.mkOptionType {
+      name = "function";
+      check = x: lib.isFunction x;
+      merge = loc: functions: packageset:
+        lib.foldl (list: function: list ++ (function packageset)) []
+          (lib.getValues functions);
+    };
     default = [];
     description = ''
       Names of python packages to install
@@ -15,9 +21,9 @@
   ];
 
   config = {
-    python.packages = [
-      "pyls-mypy"
-      "pyls-isort"
+    python.packages = ps: [
+      ps.pyls-mypy
+      ps.pyls-isort
     ];
 
     home.packages = with pkgs; [
@@ -33,7 +39,7 @@
       grc
 
       # python language server + plugins
-      (pkgs.python3.withPackages (ps: lib.attrVals config.python.packages ps))
+      (pkgs.python3.withPackages (ps: config.python.packages ps))
       #rls
 
       nixFlakes
