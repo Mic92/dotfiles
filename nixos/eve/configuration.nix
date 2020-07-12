@@ -22,7 +22,6 @@
     ./modules/borgbackup.nix
     ./modules/buildkite.nix
     ./modules/choose-place
-    ./modules/krops-deploy
     ./modules/docker.nix
     ./modules/dovecot.nix
     ./modules/ejabberd.nix
@@ -33,6 +32,7 @@
     ./modules/influxdb.nix
     ./modules/knot
     ./modules/kresd.nix
+    ./modules/krops-deploy
     ./modules/mastodon-hnbot.nix
     ./modules/mediawiki.nix
     #./modules/named.nix

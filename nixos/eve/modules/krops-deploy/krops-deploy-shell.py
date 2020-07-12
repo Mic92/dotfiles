@@ -70,6 +70,7 @@ def main() -> None:
         die(f"{host_path} does not exists")
     sh(["nix-build", "--", str(host_path)])
     # TODO sandbox this
+    sys.stderr.flush()
     sh(["./result"])
 
 

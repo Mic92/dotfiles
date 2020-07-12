@@ -2,7 +2,7 @@
 let
   secrets = config.krops.secrets;
 in {
-  services.buildkite-agents.choose-place = {
+  services.buildkite-agents.builder = {
     enable = true;
     tokenPath = secrets.buildkite-token.path;
     privateSshKeyPath =  secrets.buildkite-ssh-key.path;
@@ -17,10 +17,10 @@ in {
 
   };
 
-  systemd.services."buildkite-agent-choose-place" = {
+  systemd.services."buildkite-agent-builder" = {
     serviceConfig.SupplementaryGroups = [ "keys" ];
   };
 
-  krops.secrets.buildkite-token.owner = "buildkite-agent-choose-place";
-  krops.secrets.buildkite-ssh-key.owner = "buildkite-agent-choose-place";
+  krops.secrets.buildkite-token.owner = "buildkite-agent-builder";
+  krops.secrets.buildkite-ssh-key.owner = "buildkite-agent-builder";
 }
