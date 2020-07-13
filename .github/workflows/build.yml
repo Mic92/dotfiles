@@ -1,0 +1,37 @@
+name: "Build and populate cache"
+on:
+  pull_request:
+  push:
+  schedule:
+    # everyday at 2:51
+    - cron:  '51 2 * * *'
+jobs:
+  tests:
+    strategy:
+      matrix:
+        nurRepo:
+          - mic92
+        cachixName:
+          - mic92
+        nixPath:
+          - nixpkgs=channel:nixos-unstable-small
+          - nixpkgs=https://github.com/Mic92/nixpkgs/archive/master.tar.gz
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+    - name: Install nix
+      uses: cachix/install-nix-action@v10
+      with:
+        nix_path: "${{ matrix.nixPath }}"
+    - name: Show nixpkgs version
+      run: nix-instantiate --eval -E '(import <nixpkgs> {}).lib.version'
+    - name: Setup cachix
+      uses: cachix/cachix-action@v6
+      with:
+        name: ${{ matrix.cachixName }}
+        signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
+    - name: Build nix packages
+      run: nix run '(with import <nixpkgs> {}; nix-build-uncached.override {nix = nixFlakes;})' -c nix-build-uncached nixos/ci.nix
+    - name: Trigger NUR update
+      run: curl -XPOST "https://nur-update.herokuapp.com/update?repo=${{ matrix.nurRepo }}"
