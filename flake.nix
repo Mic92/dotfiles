@@ -3,7 +3,7 @@
   description = "NixOS configuration with flakes";
 
   # To update all inputs:
-  # nix flake list-inputs --json | jq -r '.nodes | keys | .[]' | xargs -n1 nix flake update --update-input
+  # $ nix flake update --recreate-lock-file
   inputs.nixpkgs.url = github:Mic92/nixpkgs/master;
   inputs.nur.url = github:nix-community/NUR;
   inputs.sops-nix.url = github:Mic92/sops-nix;
@@ -48,5 +48,10 @@
       common = buildHomeManager "${self}/nixpkgs-config/common.nix";
       desktop = buildHomeManager "${self}/nixpkgs-config/desktop.nix";
     };
+  };
+  hydraJobs = {
+    configurations = let lib = nixpkgs.lib; in lib.mapAttrs' (name: config:
+      lib.nameValuePair name config.config.system.build.toplevel)
+      self.nixosConfigurations;
   };
 }
