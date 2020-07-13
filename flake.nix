@@ -48,10 +48,11 @@
       common = buildHomeManager "${self}/nixpkgs-config/common.nix";
       desktop = buildHomeManager "${self}/nixpkgs-config/desktop.nix";
     };
-  };
-  hydraJobs = {
-    configurations = let lib = nixpkgs.lib; in lib.mapAttrs' (name: config:
-      lib.nameValuePair name config.config.system.build.toplevel)
-      self.nixosConfigurations;
+
+    hydraJobs = {
+      configurations = let lib = nixpkgs.lib; in lib.mapAttrs' (name: config:
+        lib.nameValuePair name config.config.system.build.toplevel)
+        self.nixosConfigurations;
+    };
   };
 }
