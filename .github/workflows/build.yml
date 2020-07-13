@@ -14,7 +14,6 @@ jobs:
         cachixName:
           - mic92
         nixPath:
-          - nixpkgs=channel:nixos-unstable-small
           - nixpkgs=https://github.com/Mic92/nixpkgs/archive/master.tar.gz
     runs-on: ubuntu-latest
     steps:
@@ -33,5 +32,3 @@ jobs:
         signingKey: '${{ secrets.CACHIX_SIGNING_KEY }}'
     - name: Build nix packages
       run: nix run '(with import <nixpkgs> {}; nix-build-uncached.override {nix = nixFlakes;})' -c nix-build-uncached nixos/ci.nix
-    - name: Trigger NUR update
-      run: curl -XPOST "https://nur-update.herokuapp.com/update?repo=${{ matrix.nurRepo }}"
