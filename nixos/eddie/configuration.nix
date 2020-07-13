@@ -1,7 +1,7 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, modulesPath, ... }:
 {
   imports = [
-    <nixpkgs/nixos/modules/installer/scan/not-detected.nix>
+    "${modulesPath}/installer/scan/not-detected.nix"
     ./modules/borg
     ../modules/secrets.nix
     ../modules/users.nix
@@ -22,6 +22,8 @@
     #./modules/awesome.nix
     #./modules/xfce.nix
   ];
+
+  nix.package = pkgs.nixFlakes;
 
   networking.retiolum = {
     ipv4 = "10.243.29.170";
@@ -75,11 +77,12 @@
       ssh = {
         enable = true;
         port = 2222;
-        hostECDSAKey = toString <secrets/initrd-ssh-key>;
+        hostKeys = [
+          (toString <secrets/initrd-ssh-key>)
+        ];
       };
       postCommands = ''
         echo "zfs load-key -a && killall zfs && ip addr flush dev eth0" >> /root/.profile
-
       '';
     };
   };
