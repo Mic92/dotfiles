@@ -36,7 +36,7 @@
     hmConfigurations = let
       pkgs = nixpkgs.legacyPackages."x86_64-linux";
       buildHomeManager = confPath: rec {
-        generation = import "${home-manager.outPath}/home-manager/home-manager.nix" {
+        generation = import "${home-manager}/home-manager/home-manager.nix" {
           inherit pkgs confPath;
         };
         activate = pkgs.writeShellScript "home-manager-activate" ''
