@@ -33,17 +33,20 @@
       ];
     };
 
-    hmConfigurations.joerg = let
+    hmConfigurations = let
       pkgs = nixpkgs.legacyPackages."x86_64-linux";
-    in rec {
-      generation = import "${home-manager.outPath}/home-manager/home-manager.nix" {
-        confPath = "${self}/nixpkgs-config/common.nix";
-        inherit pkgs;
+      buildHomeManager = confPath: rec {
+        generation = import "${home-manager.outPath}/home-manager/home-manager.nix" {
+          inherit pkgs confPath;
+        };
+        activate = pkgs.writeShellScript "home-manager-activate" ''
+          #!${pkgs.runtimeShell}
+          exec ${generation.activationPackage}/activate
+        '';
       };
-      activate = pkgs.writeShellScript "home-manager-activate" ''
-        #!${pkgs.runtimeShell}
-        exec ${generation.activationPackage}/activate
-      '';
+    in rec {
+      common = buildHomeManager "${self}/nixpkgs-config/common.nix";
+      desktop = buildHomeManager "${self}/nixpkgs-config/desktop.nix";
     };
   };
 }

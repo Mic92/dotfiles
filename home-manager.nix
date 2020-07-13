@@ -1,1 +1,1 @@
-(builtins.getFlake (toString ./.)).outputs.hmConfigurations.joerg.activate
+(builtins.getFlake (toString ./.)).outputs.hmConfigurations.desktop.activate
