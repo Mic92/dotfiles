@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "home-manager": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1593858062,
+        "narHash": "sha256-hvennrm0RslFCPQ+5GNA7+1sD4FUDksR/D7VNMfbdUU=",
+        "owner": "rycee",
+        "repo": "home-manager",
+        "rev": "5f189acce44dc39ea4055bfd8064adaf90d7fb5a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rycee",
+        "repo": "home-manager",
+        "type": "github"
+      }
+    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1594041983,
@@ -49,6 +65,7 @@
     },
     "root": {
       "inputs": {
+        "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
