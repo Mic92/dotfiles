@@ -23,11 +23,13 @@ let
     exec ${cfg.package}/bin/emacs --daemon
   '';
   editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
-  core = pkgs.emacsPackagesNgGen (pkgs.emacs.override {
+
+  emacsOverlay = import (builtins.fetchTarball {
+    url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
+  }) pkgs pkgs;
+
+  myemacs = (pkgs.emacsPackagesNgGen (emacsOverlay.emacsGit.override {
     imagemagick = if cfg.imagemagick.enable then pkgs.imagemagick else null;
-  });
-  myemacs = (pkgs.emacsPackagesNgGen (pkgs.emacs.override {
-        imagemagick = if cfg.imagemagick.enable then pkgs.imagemagick else null;
   })).emacsWithPackages (ps: [pkgs.mu]);
 in {
   options.programs.emacs = {

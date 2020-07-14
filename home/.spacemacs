@@ -1,7 +1,6 @@
 ;; -*- mode: emacs-lisp -*-
 ;; This file is loaded by Spacemacs at startup.
 ;; It must be stored in your home directory.
-
 (defun dotspacemacs/layers ()
   "Configuration Layers declaration.
 You should not put any user code in this function besides modifying the variable
@@ -56,8 +55,7 @@ values."
      bibtex
      (c-c++ :variables
             c-c++-backend 'lsp-clangd
-            c-c++-adopt-subprojects t
-            c-c++-lsp-enable-semantic-highlight t)
+            c-c++-adopt-subprojects t)
      csv
      ;; erlang
      ;; elixir
@@ -79,7 +77,8 @@ values."
      ;; julia
      lua
      latex
-     lsp
+     (lsp :variables
+          lsp-enable-semantic-highlighting t)
      major-modes
      markdown
      (mu4e :variables
@@ -577,6 +576,8 @@ you should place your code here."
       (insert (string-trim-right hash))))
 
   (spacemacs/set-leader-keys "xn" 'insert-nix-hash)
+
+  (setq package-quickstart t)
 
   ;; speeds-up tmux/screen:
   ;; https://github.com/syl20bnr/spacemacs/issues/6181#issuecomment-264549368
