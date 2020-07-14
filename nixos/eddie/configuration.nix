@@ -3,7 +3,6 @@
   imports = [
     "${modulesPath}/installer/scan/not-detected.nix"
     ./modules/borg
-    ../modules/secrets.nix
     ../modules/users.nix
     ../modules/retiolum.nix
     ../modules/mosh.nix
@@ -19,6 +18,7 @@
     ../modules/builder.nix
     ../modules/i3.nix
     ./modules/ping-tracker
+    ./modules/sops.nix
     #./modules/awesome.nix
     #./modules/xfce.nix
   ];
@@ -70,6 +70,7 @@
   };
   hardware.pulseaudio.enable = true;
 
+  sops.secrets.initrd-ssh-key = {};
   boot = {
     initrd.network = {
       enable = true;
@@ -78,7 +79,7 @@
         enable = true;
         port = 2222;
         hostKeys = [
-          (toString <secrets/initrd-ssh-key>)
+          config.sops.secrets.initrd-ssh-key.path
         ];
       };
       postCommands = ''
