@@ -24,15 +24,14 @@
         ./nixos/turingmachine/configuration.nix
       ];
     };
-    # wip
-    #nixosConfigurations.eddie = nixpkgs.lib.nixosSystem {
-    #  system = "x86_64-linux";
-    #  modules = [
-    #    { nixpkgs.overlays = [ nur.overlay ]; }
-    #    sops-nix.nixosModules.sops
-    #    ./nixos/eddie/configuration.nix
-    #  ];
-    #};
+    nixosConfigurations.eddie = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      modules = [
+        { nixpkgs.overlays = [ nur.overlay ]; }
+        sops-nix.nixosModules.sops
+        ./nixos/eddie/configuration.nix
+      ];
+    };
 
     hmConfigurations = let
       pkgs = nixpkgs.legacyPackages."x86_64-linux";
