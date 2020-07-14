@@ -1,4 +1,3 @@
-
 {
   description = "NixOS configuration with flakes";
 
@@ -14,45 +13,59 @@
   inputs.home-manager.url = github:rycee/home-manager;
   inputs.home-manager.flake = false;
 
-  outputs = { self, nixpkgs, nixos-hardware, sops-nix, nur, home-manager }: {
-    nixosConfigurations.turingmachine = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        { nixpkgs.overlays = [ nur.overlay ]; }
-        nixos-hardware.nixosModules.dell-xps-13-9380
-        sops-nix.nixosModules.sops
-        ./nixos/turingmachine/configuration.nix
-      ];
-    };
-    nixosConfigurations.eddie = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      modules = [
-        { nixpkgs.overlays = [ nur.overlay ]; }
-        sops-nix.nixosModules.sops
-        ./nixos/eddie/configuration.nix
-      ];
-    };
-
-    hmConfigurations = let
-      pkgs = nixpkgs.legacyPackages."x86_64-linux";
-      buildHomeManager = confPath: rec {
-        generation = import "${home-manager}/home-manager/home-manager.nix" {
-          inherit pkgs confPath;
-        };
-        activate = pkgs.writeShellScript "home-manager-activate" ''
-          #!${pkgs.runtimeShell}
-          exec ${generation.activationPackage}/activate
-        '';
+  outputs = { self, nixpkgs, nixos-hardware, sops-nix, nur, home-manager }:
+    let
+      legacyNixPath = {
+        nix.nixPath = [
+          "home-manager=${home-manager}"
+          "nixpkgs=${nixpkgs}"
+          "nur=${nur}"
+        ];
       };
-    in rec {
-      common = buildHomeManager "${self}/nixpkgs-config/common.nix";
-      desktop = buildHomeManager "${self}/nixpkgs-config/desktop.nix";
-    };
+    in {
+      nixosConfigurations.turingmachine = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          { nixpkgs.overlays = [ nur.overlay ]; }
+          nixos-hardware.nixosModules.dell-xps-13-9380
+          sops-nix.nixosModules.sops
+          ./nixos/turingmachine/configuration.nix
+          legacyNixPath
+        ];
+      };
+      nixosConfigurations.eddie = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          { nixpkgs.overlays = [ nur.overlay ]; }
+          sops-nix.nixosModules.sops
+          ./nixos/eddie/configuration.nix
+          legacyNixPath
+        ];
+      };
 
-    hydraJobs = {
-      configurations = let lib = nixpkgs.lib; in lib.mapAttrs' (name: config:
-        lib.nameValuePair name config.config.system.build.toplevel)
-        self.nixosConfigurations;
+      hmConfigurations = let
+        pkgs = nixpkgs.legacyPackages."x86_64-linux";
+        buildHomeManager = confPath: rec {
+          generation = import "${home-manager}/home-manager/home-manager.nix" {
+            inherit pkgs confPath;
+          };
+          activate = pkgs.writeShellScript "home-manager-activate" ''
+              #!${pkgs.runtimeShell}
+              exec ${generation.activationPackage}/activate
+            '';
+        };
+      in rec {
+        common = buildHomeManager "${self}/nixpkgs-config/common.nix";
+        desktop = buildHomeManager "${self}/nixpkgs-config/desktop.nix";
+      };
+
+      hydraJobs = {
+        configurations = nixpkgs.lib.mapAttrs' (name: config:
+          nixpkgs.lib.nameValuePair name config.config.system.build.toplevel)
+          self.nixosConfigurations;
+        hmConfigurations = nixpkgs.lib.mapAttrs' (name: config:
+          nixpkgs.lib.nameValuePair name config.generation)
+          self.hmConfigurations;
+      };
     };
-  };
 }

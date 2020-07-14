@@ -1,7 +1,7 @@
+with import <nixpkgs> {};
+
 let
-  outputs = builtins.getFlake (../.);
-in {
-  turingmachine = outputs.nixosConfigurations.turingmachine.config.system.build.toplevel;
-  home-manager-desktop = outputs.hmConfigurations.desktop.activate;
-  home-manager-common = outputs.hmConfigurations.common.activate;
-}
+  outputs = builtins.getFlake (toString ../.);
+  drvs = lib.collect lib.isDerivation outputs.hydraJobs;
+in drvs
+
