@@ -19,6 +19,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+    - name: Make more space
+      run: sudo rm -rf /opt /usr/local || true &
     - name: Install nix
       run: |
         # Allow binary caches for runner user
