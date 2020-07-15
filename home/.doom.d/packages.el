@@ -5,6 +5,20 @@
 ;; on the command line, then restart Emacs for the changes to take effect -- or
 ;; use 'M-x doom/reload'.
 
+(package! mu4e-alert)
+(package! csharp-mode)
+(package! editorconfig)
+(package! vimrc-mode)
+(package! coffee-mode)
+(package! sieve)
+(package! meson-mode)
+(package! persistent-scratch)
+(package! bitwarden
+  :recipe (:host github :repo "seanfarley/emacs-bitwarden"))
+(package! company-tmux
+  :recipe (:host github :repo "Mic92/company-tmux"))
+(package! osc52
+  :recipe (:host github :repo "Mic92/osc52"))
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
