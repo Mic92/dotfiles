@@ -170,9 +170,31 @@
                                            " AND NOT maildir:/thalheim.io/.Netzwerke"
                                            " AND NOT maildir:/thalheim.io/.zlist.*")))
 
-(map! :after treemacs
-      :leader
-      :n "-" #'treemacs-project-toggle)
+;; FIXME not loaded as a proper package yet
+;(use-package! osc52
+;  :config (osc52-set-cut-function))
+(osc52-set-cut-function)
+
+;; FIXME not loaded as a proper package yet
+;(use-package! bitwarden
+;  :config
+;  (bitwarden-auth-source-enable)
+;  (setq bitwarden-automatic-unlock (lambda() "")))
+(bitwarden-auth-source-enable)
+(setq bitwarden-automatic-unlock (lambda() ""))
+
+(defun treemacs-back-and-forth ()
+  (interactive)
+  (if (treemacs-is-treemacs-window-selected?)
+      (other-window 1)
+    (treemacs-select-window)))
+
+(use-package! treemacs-evil
+  :config
+  (define-key! evil-treemacs-state-map
+    "-" #'treemacs-back-and-forth))
+
+(map! :leader :n "-" #'treemacs-back-and-forth)
 
 (defun treemacs-project-toggle ()
   "Toggle and add the current project to treemacs if not already added."
@@ -186,34 +208,4 @@
       (treemacs-do-add-project-to-workspace path name)
       (treemacs-select-window))))
 
-(map! :after treemacs
-      :leader
-      :n "+" #'treemacs-project-toggle)
-
-(setq initial-buffer-choice (lambda () (get-buffer "*scratch*")))
-
-(use-package! osc52
-  :config (osc52-set-cut-function))
-
-(use-package! bitwarden
-  :config (progn
-            (bitwarden-auth-source-enable)
-            (setq bitwarden-automatic-unlock (lambda() ""))))
-
-(use-package! persistent-scratch
-  :config (persistent-scratch-setup-default))
-
-(defun treemacs-back-and-forth ()
-  (interactive)
-  (if (treemacs-is-treemacs-window-selected?)
-      (other-window 1)
-    (treemacs-select-window)))
-
-(package! treemacs-evil
-  :config
-  (define-key! evil-treemacs-state-map
-    "-" #'treemacs-back-and-forth))
-
-(map! :after treemacs
-      :leader
-      :n "-" #'treemacs-back-and-forth)
+(map! :leader :n "+" #'treemacs-project-toggle)
