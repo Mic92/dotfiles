@@ -30,7 +30,7 @@ jobs:
         curl ${{matrix.nixTarball }} -o nix.tar.xz
         mkdir -p /tmp/nix/
         tar -xJf nix.tar.xz -C /tmp/nix
-        /tmp/nix/*/install --daemon --daemon-user-count 4 --nix-extra-conf-file /tmp/nix.conf --no-channel-add
+        /tmp/nix/*/install --daemon --daemon-user-count $(nproc) --nix-extra-conf-file /tmp/nix.conf --no-channel-add
         echo "::add-path::/nix/var/nix/profiles/per-user/runner/profile/bin"
         echo "::add-path::/nix/var/nix/profiles/default/bin"
     - name: Setup cachix
