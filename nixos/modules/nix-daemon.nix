@@ -18,12 +18,6 @@
       experimental-features = nix-command flakes
     '';
 
-    nixPath = let
-      kropsSources = filter (src: src != ".populate")
-        (attrNames (builtins.readDir "/var/src"));
-    in (map (entry: "${entry}=/var/src/${entry}") kropsSources) ++ [
-      "/nix/var/nix/profiles/per-user/root/channels"
-    ];
     binaryCaches = [
       "https://r-ryantm.cachix.org"
       "https://mic92.cachix.org"
