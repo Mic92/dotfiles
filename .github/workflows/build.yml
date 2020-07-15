@@ -48,5 +48,5 @@ jobs:
         fi
         nix path-info --all --json -r > packages.json
         nix shell 'github:Mic92/nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < packages.json > build-packages
-        nix shell 'github:Mic92/nixpkgs#cachix' -c cachix push < build-packages
+        nix shell 'github:Mic92/nixpkgs#cachix' -c cachix push ${{matrix.cachixName} < build-packages
         exit $exitcode
