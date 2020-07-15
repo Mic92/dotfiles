@@ -38,18 +38,17 @@ jobs:
         echo "::add-path::/nix/var/nix/profiles/default/bin"
     - name: Setup cachix
       run: |
-        nix shell 'github:Mic92/nixpkgs#cachix' -c cachix use "${{ matrix.cachixName }}"
+        nix shell '.#cachix' -c cachix use "${{ matrix.cachixName }}"
         echo "::set-env name=CACHIX_SIGNING_KEY::${{ secrets.CACHIX_SIGNING_KEY }}"
     - name: Build nix packages
       run: |
         # TODO fix this NIX_PATH impurities in homemanager
-        rm -rf .git
         export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
         exitcode=0
         if ! nix-build nixos/ci.nix --show-trace; then
            exitcode=1
         fi
-        nix path-info --all --json -r > packages.json
-        nix shell 'github:Mic92/nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < packages.json > build-packages
-        nix shell 'github:Mic92/nixpkgs#cachix' -c cachix push ${{matrix.cachixName}} < build-packages
+        nix path-info --all --json -r |
+          nix shell '.#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]'
+          nix shell '.#cachix' -c cachix push ${{matrix.cachixName}}
         exit $exitcode
