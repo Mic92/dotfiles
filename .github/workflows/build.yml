@@ -46,7 +46,7 @@ jobs:
         if ! nix-build nixos/ci.nix --show-trace; then
            exitcode=1
         fi
-        nix path-info --all --json -r | \
-          nix shell 'github:Mic92/nixpkgs#jq' -c jq 'map(select(.ca == null and .signatures == null))' | \
-          nix shell 'github:Mic92/nixpkgs#cachix' -c cachix push
+        nix path-info --all --json -r > packages.json
+        nix shell 'github:Mic92/nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < packages.json > build-packages
+        nix shell 'github:Mic92/nixpkgs#cachix' -c cachix push < build-packages
         exit $exitcode
