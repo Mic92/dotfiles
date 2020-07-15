@@ -64,7 +64,7 @@ in {
           exec -a emacs ${cfg.package}/bin/emacs -e '(mu4e)'
         '')
         (editorScript {})
-        myemacs
+        (pkgs.lowPrio myemacs)
         gopls
         golangci-lint
         gotools
