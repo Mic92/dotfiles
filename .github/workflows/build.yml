@@ -35,7 +35,7 @@ jobs:
         echo "::add-path::/nix/var/nix/profiles/default/bin"
     - name: Setup cachix
       run: |
-        nix shell 'github:Mic92/nixpkgs#cachix' -c "cachix use ${{ matrix.cachixName }}"
+        nix shell 'github:Mic92/nixpkgs#cachix' -c cachix use "${{ matrix.cachixName }}"
         echo "::set-env name=CACHIX_SIGNING_KEY::${{ secrets.CACHIX_SIGNING_KEY }}"
     - name: Build nix packages
       run: |
