@@ -22,13 +22,9 @@ let
     export BW_SESSION=1 PATH=$PATH:${lib.makeBinPath [ pkgs.git pkgs.sqlite pkgs.unzip ]}
     exec ${cfg.package}/bin/emacs --daemon
   '';
-  editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
+  editorScriptX11 = editorScript { name = "emacs-x11"; x11 = true; };
 
-  emacsOverlay = import (builtins.fetchTarball {
-    url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
-  }) pkgs pkgs;
-
-  myemacs = (pkgs.emacsPackagesNgGen (emacsOverlay.emacsGit.override {
+  myemacs = (pkgs.emacsPackagesNgGen (pkgs.emacs.override {
     imagemagick = if cfg.imagemagick.enable then pkgs.imagemagick else null;
   })).emacsWithPackages (ps: [pkgs.mu]);
 in {
@@ -39,14 +35,14 @@ in {
   };
   config = mkMerge [
     ({
-      home.file = let
-        spacemacs = (import ../../../nixos/nix/sources.nix).spacemacs;
-        spacemacsDirs = builtins.readDir spacemacs;
-        mapDir = name: _: nameValuePair ".emacs.d/${name}" {
-          recursive = name == "private";
-          source = "${spacemacs}/${name}";
-        };
-      in mapAttrs' mapDir spacemacsDirs;
+      #home.file = let
+      #  spacemacs = (import ../../../nixos/nix/sources.nix).spacemacs;
+      #  spacemacsDirs = builtins.readDir spacemacs;
+      #  mapDir = name: _: nameValuePair ".emacs.d/${name}" {
+      #    recursive = name == "private";
+      #    source = "${spacemacs}/${name}";
+      #  };
+      #in mapAttrs' mapDir spacemacsDirs;
 
       programs.emacs.package = myemacs;
       home.packages = with pkgs; [
@@ -68,6 +64,7 @@ in {
           exec -a emacs ${cfg.package}/bin/emacs -e '(mu4e)'
         '')
         (editorScript {})
+        myemacs
         gopls
         golangci-lint
         gotools
