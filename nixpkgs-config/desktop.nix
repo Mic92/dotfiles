@@ -18,7 +18,7 @@ in {
   imports = [
     ./common.nix
     ./modules/rust.nix
-    ./modules/latex.nix
+    #./modules/latex.nix
     ./modules/debugging.nix
     ./modules/default-apps.nix
     ./modules/bitwarden.nix
@@ -136,30 +136,6 @@ in {
     # to fix xdg-open
     glib
 
-    rubber
-    (texlive.combine {
-      inherit (texlive)
-      scheme-full
-
-      # awesome cv
-      xetex
-      unicode-math
-      ucharcat
-      collection-fontsextra
-      fontspec
-
-      collection-binextra
-      collection-fontsrecommended
-      collection-latex
-      collection-latexextra
-      collection-latexrecommended
-      collection-langgerman
-      siunitx
-      bibtex
-      tracklang
-      IEEEtran
-      algorithm2e;
-    })
   ] ++ (with nur.repos.mic92; [
     speedscope
     inxi
