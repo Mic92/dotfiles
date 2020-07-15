@@ -19,6 +19,9 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        # Nix Flakes doesn't work on shallow clones
+        fetch-depth: 0
     - name: Make more space
       run: sudo rm -rf /opt /usr/local || true &
     - name: Install nix
@@ -48,5 +51,5 @@ jobs:
         fi
         nix path-info --all --json -r > packages.json
         nix shell 'github:Mic92/nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < packages.json > build-packages
-        nix shell 'github:Mic92/nixpkgs#cachix' -c cachix push ${{matrix.cachixName} < build-packages
+        nix shell 'github:Mic92/nixpkgs#cachix' -c cachix push ${{matrix.cachixName}} < build-packages
         exit $exitcode
