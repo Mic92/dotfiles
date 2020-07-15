@@ -45,14 +45,29 @@
 
       hmConfigurations = let
         pkgs = nixpkgs.legacyPackages."x86_64-linux";
-        buildHomeManager = confPath: rec {
-          generation = import "${home-manager}/home-manager/home-manager.nix" {
-            inherit pkgs confPath;
+        extendedLib = import "${home-manager}/modules/lib/stdlib-extended.nix" pkgs.lib;
+        buildHomeManager = configuration: rec {
+          hmModules = import "${home-manager}/modules/modules.nix" {
+            inherit pkgs;
+            lib = extendedLib;
+            useNixpkgsModule = true;
+          };
+          module = extendedLib.evalModules {
+            modules = [
+              {
+                nixpkgs.config.packageOverrides = pkgs: {
+                  nur = import "${nur}" {
+                    inherit pkgs;
+                  };
+                };
+              }
+              configuration
+            ] ++ hmModules;
           };
           activate = pkgs.writeShellScript "home-manager-activate" ''
-              #!${pkgs.runtimeShell}
-              exec ${generation.activationPackage}/activate
-            '';
+            #!${pkgs.runtimeShell}
+            exec ${module.config.home.activationPackage}/activate
+          '';
         };
       in rec {
         common = buildHomeManager "${self}/nixpkgs-config/common.nix";
@@ -64,7 +79,7 @@
           nixpkgs.lib.nameValuePair name config.config.system.build.toplevel)
           self.nixosConfigurations;
         hmConfigurations = nixpkgs.lib.mapAttrs' (name: config:
-          nixpkgs.lib.nameValuePair name config.generation)
+          nixpkgs.lib.nameValuePair name config.activate)
           self.hmConfigurations;
       };
     };

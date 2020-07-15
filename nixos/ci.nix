@@ -1,7 +1,6 @@
-with import <nixpkgs> {};
-
 let
   outputs = builtins.getFlake (toString ../.);
-  drvs = lib.collect lib.isDerivation outputs.hydraJobs;
+  pkgs = outputs.inputs.nixpkgs;
+  drvs = pkgs.lib.collect pkgs.lib.isDerivation outputs.hydraJobs;
 in drvs
 
