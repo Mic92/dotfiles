@@ -24,6 +24,7 @@
     python.packages = ps: [
       ps.pyls-mypy
       ps.pyls-isort
+      ps.pyls-black
     ];
 
     home.packages = with pkgs; [
