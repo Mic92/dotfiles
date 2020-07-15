@@ -24,9 +24,12 @@ let
   '';
   editorScriptX11 = editorScript { name = "emacs-x11"; x11 = true; };
 
-  myemacs = (pkgs.emacsPackagesNgGen (pkgs.emacs.override {
-    imagemagick = if cfg.imagemagick.enable then pkgs.imagemagick else null;
-  })).emacsWithPackages (ps: [pkgs.mu]);
+  myemacs = pkgs.callPackage (builtins.fetchTarball {
+    url = "https://github.com/vlaci/nix-doom-emacs/archive/develop.tar.gz";
+  }) {
+    doomPrivateDir = ../../../home/.doom.d;
+    extraPackages = [ pkgs.mu ];
+  };
 in {
   options.programs.emacs = {
     socket-activation.enable =
@@ -35,14 +38,7 @@ in {
   };
   config = mkMerge [
     ({
-      #home.file = let
-      #  spacemacs = (import ../../../nixos/nix/sources.nix).spacemacs;
-      #  spacemacsDirs = builtins.readDir spacemacs;
-      #  mapDir = name: _: nameValuePair ".emacs.d/${name}" {
-      #    recursive = name == "private";
-      #    source = "${spacemacs}/${name}";
-      #  };
-      #in mapAttrs' mapDir spacemacsDirs;
+      home.file.".emacs.d/init.el".text = ''(load "default.el")'';
 
       programs.emacs.package = myemacs;
       home.packages = with pkgs; [

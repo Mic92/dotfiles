@@ -465,7 +465,7 @@ cdpath=( ~/git )
 export BROWSER=firefox
 export TERMINAL=alacritty
 export PICTUREVIEW=eog
-if [[ -f ~/.emacs.d/bin/doom ]] && [[ -n ${commands[emacseditor]} ]] && [[ -n $XDG_RUNTIME_DIR ]]; then
+if [[ -n ${commands[emacseditor]} ]] && [[ -n $XDG_RUNTIME_DIR ]]; then
   export EDITOR=emacseditor
   ee-ag() {
       if [[ "$#" == 0 ]]; then
