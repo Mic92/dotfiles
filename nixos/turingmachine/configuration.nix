@@ -26,7 +26,6 @@
     ../modules/macos-kvm.nix
     ../modules/mosh.nix
     ../modules/nix-daemon.nix
-    ../modules/nur.nix
     ../modules/networkd.nix
     ../modules/dnsmasq.nix
     ../modules/wireguard.nix
@@ -239,6 +238,7 @@
     # supervisord tries to open /dev/stdout and fails with the default systemd device
     # it works for pipes so...
     script = ''
+
       ${pkgs.nur.repos.mic92.rhasspy}/bin/rhasspy --profile en | ${pkgs.utillinux}/bin/logger
     '';
     serviceConfig = {
