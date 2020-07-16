@@ -24,9 +24,14 @@ let
   '';
   editorScriptX11 = editorScript { name = "emacs-x11"; x11 = true; };
 
-  myemacs = pkgs.callPackage (builtins.fetchTarball {
-    url = "https://github.com/vlaci/nix-doom-emacs/archive/develop.tar.gz";
-  }) {
+  #emacsOverlay = (import (builtins.fetchTarball {
+  #  url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
+  #})) pkgs pkgs;
+  #
+
+  myemacs = pkgs.callPackage ((import ../../../nixos/nix/sources.nix).nix-doom-emacs) {
+    # maybe some day, when it stops segfaulting
+    #emacsPackages = emacsOverlay.emacsPackagesFor emacsOverlay.emacsGcc;
     doomPrivateDir = builtins.path {
       name = "doom.d";
       path = ../../../home/.doom.d;
@@ -59,6 +64,7 @@ in {
 
       programs.emacs.package = myemacs;
       home.packages = with pkgs; [
+        emacs-all-the-icons-fonts
         editorScriptX11
         (makeDesktopItem {
           name = "emacs";
