@@ -27,7 +27,10 @@ let
   myemacs = pkgs.callPackage (builtins.fetchTarball {
     url = "https://github.com/vlaci/nix-doom-emacs/archive/develop.tar.gz";
   }) {
-    doomPrivateDir = ../../../home/.doom.d;
+    doomPrivateDir = builtins.path {
+      name = "doom.d";
+      path = ../../../home/.doom.d;
+    };
     extraPackages = [ pkgs.mu ];
   };
 in {
