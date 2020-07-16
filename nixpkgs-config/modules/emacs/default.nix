@@ -48,12 +48,6 @@ in {
     ({
       home.file.".emacs.d/init.el".text = ''
         (load "${pkgs.fetchFromGitHub {
-          owner = "Mic92";
-          repo = "osc52";
-          rev = "89f1bafd096efca45c8e02dfc4e4fbd76afb1c98";
-          sha256 = "sha256-qThYQKi2xHDvhB4a6lGMz4VYXEc3gr+PAHqzD+wRPoc=";
-        }}/osc52.el")
-        (load "${pkgs.fetchFromGitHub {
           owner = "seanfarley";
           repo = "emacs-bitwarden";
           rev = "e03919ca68c32a8053ddea2ed05ecc5e454d8a43";

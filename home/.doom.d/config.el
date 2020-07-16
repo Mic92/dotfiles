@@ -155,11 +155,6 @@
 (setenv "NIX_REMOTE_SYSTEMS" "")
 
 ;; FIXME not loaded as a proper package yet
-;(use-package! osc52
-;  :config (osc52-set-cut-function))
-(osc52-set-cut-function)
-
-;; FIXME not loaded as a proper package yet
 ;(use-package! bitwarden
 ;  :config
 ;  (bitwarden-auth-source-enable)
