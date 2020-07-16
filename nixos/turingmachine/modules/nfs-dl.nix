@@ -13,7 +13,7 @@
       "x-systemd.automount"
       "x-systemd.device-timeout=1"
       "x-systemd.idle-timeout=1min"
-      "x-systemd.requires=retiolum.service"
+      "x-systemd.requires=tinc.retiolum.service"
     ];
   };
 }
