@@ -43,7 +43,9 @@
    in {
     myVimBundle = myVimBundle;
 
-    nur = import <nur> { inherit pkgs; };
+    nur = import (import "${builtins.getEnv "HOME"}/.homesick/repos/dotfiles/nixos/nix/sources.nix").nur {
+      inherit pkgs;
+    };
 
     myvim = pkgs.neovim.override {
       vimAlias = true;
