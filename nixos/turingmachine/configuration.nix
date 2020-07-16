@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, modulesPath, ... }:
 {
   imports = [
     ./hardware-configuration.nix
@@ -169,11 +169,10 @@
   services.tor.client.enable = true;
 
   #services.pixiecore = let
-  #  nixos = import <nixpkgs/nixos> {
+  #  nixos = import "${modulesPath}/.." {
+  #    inherit (pkgs) system;
   #    configuration = { config, pkgs, lib, ... }: with lib; {
-  #      imports = [
-  #        <nixpkgs/nixos/modules/installer/netboot/netboot-minimal.nix>
-  #      ];
+  #      imports = [ "${modulesPath}/installer/netboot/netboot-minimal.nix" ];
   #      # Some useful options for setting up a new system
   #      services.mingetty.autologinUser = mkForce "root";
   #      # Enable sshd which gets disabled by netboot-minimal.nix
@@ -238,7 +237,6 @@
     # supervisord tries to open /dev/stdout and fails with the default systemd device
     # it works for pipes so...
     script = ''
-
       ${pkgs.nur.repos.mic92.rhasspy}/bin/rhasspy --profile en | ${pkgs.utillinux}/bin/logger
     '';
     serviceConfig = {
