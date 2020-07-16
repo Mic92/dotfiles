@@ -25,7 +25,7 @@
 ;; There are two ways to load a theme. Both assume the theme is installed and
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
-(setq doom-theme 'doom-one)
+(setq doom-theme 'doom-solarized-light)
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -35,7 +35,6 @@
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
-
 
 ;; Here are some additional functions/macros that could help you configure Doom:
 ;;
@@ -85,7 +84,6 @@
                             :shortname "Folder"           ;; short name, as seen in the headers view
                             :help "Mailbox folder of the message" ;; tooltip
                             :function (lambda (msg) (replace-regexp-in-string "/thalheim.io/?\\(.zlist\\)?" "" (mu4e-message-field msg :maildir))))))
-
   (add-to-list 'mu4e-headers-actions
                '("Apply patch" . mu4e-action-git-apply-mbox) t)
 
@@ -98,53 +96,8 @@
                  :action      (lambda (docid msg target)
                                 (mu4e~proc-move docid mu4e-spam-folder "+S-u-N"))))
 
-  (with-eval-after-load 'sh-script
-    (lambda ()
-      (setq sh-basic-offset 2 sh-indentation 2)))
-
   (mu4e~headers-defun-mark-for spam)
   (define-key mu4e-headers-mode-map (kbd "S") 'mu4e-headers-mark-for-spam)
-
-  (use-package! lsp
-      :config
-      (setq lsp-clients-clangd-args '("-background-index")))
-
-  (setq projectile-project-search-path '("~/git"))
-
-
-  ; make recentf unique per host in case .emacs.d is stored in a NFS share to avoid lock contention
-  (setq recentf-save-file (expand-file-name (concat "recentf-" system-name) "/home/joerg/.emacs.d/.local/.cache/"))
-
-  (defun shell-stdout-to-string (command)
-    (with-output-to-string
-      (with-current-buffer
-          standard-output
-        (process-file shell-file-name nil '(t nil)  nil shell-command-switch command))))
-
-  (defun insert-nix-hash (attribute)
-    (interactive "sNix attribute to fetch")
-    (let ((hash (shell-stdout-to-string (concat "nix-prefetch " attribute))))
-      ;; replace current selection → can detect the hash under the cursor as well?
-      (if (use-region-p)
-          (kill-region (region-beginning)
-                       (region-end)))
-      (insert (string-trim-right hash))))
-
-  (defun copy-current-line-position-to-clipboard ()
-    "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
-    (interactive)
-    (let ((path-with-line-number
-           (concat (buffer-file-name) ":" (number-to-string (line-number-at-pos)))))
-      (kill-new path-with-line-number)
-      (message (concat path-with-line-number " copied to clipboard"))))
-
-  (map! (:leader
-         (:desc "search" :prefix "r"
-          :desc "Nix hash" :nv "n" #'insert-nix-hash
-          :desc "Line" :n "l" #'copy-current-line-position-to-clipboard)))
-
-  ;; otherwise nix-mode will block on instantiating stuff
-  (setenv "NIX_REMOTE_SYSTEMS" "")
 
   (add-to-list 'mu4e-bookmarks
                (make-mu4e-bookmark
@@ -157,18 +110,49 @@
                 :query "flag:unread AND NOT flag:trashed AND NOT maildir:/thalheim.io/.Spam"
                 :key ?u)))
 
-;; Enable Desktop notifications
-(use-package! mu4e-alert
+(after! 'sh-script
+  (lambda ()
+    (setq sh-basic-offset 2 sh-indentation 2)))
+
+(use-package! lsp
   :config
-  (mu4e-alert-set-default-style 'notifications)
-  (setq mu4e-alert-interesting-mail-query (concat
-                                           "flag:unread"
-                                           " AND NOT flag:trashed"
-                                           " AND NOT maildir:/thalheim.io/.Spam"
-                                           " AND NOT maildir:/thalheim.io/.Trash"
-                                           " AND NOT maildir:/thalheim.io/.Entwickler"
-                                           " AND NOT maildir:/thalheim.io/.Netzwerke"
-                                           " AND NOT maildir:/thalheim.io/.zlist.*")))
+  (setq lsp-clients-clangd-args '("-background-index")))
+
+(setq projectile-project-search-path '("~/git"))
+
+; make recentf unique per host in case .emacs.d is stored in a NFS share to avoid lock contention
+(setq recentf-save-file (expand-file-name (concat "recentf-" system-name) "/home/joerg/.emacs.d/.local/.cache/"))
+
+(defun shell-stdout-to-string (command)
+  (with-output-to-string
+    (with-current-buffer
+        standard-output
+      (process-file shell-file-name nil '(t nil)  nil shell-command-switch command))))
+
+(defun insert-nix-hash (attribute)
+  (interactive "sNix attribute to fetch")
+  (let ((hash (shell-stdout-to-string (concat "nix-prefetch " attribute))))
+    ;; replace current selection → can detect the hash under the cursor as well?
+    (if (use-region-p)
+        (kill-region (region-beginning)
+                     (region-end)))
+    (insert (string-trim-right hash))))
+
+(defun copy-current-line-position-to-clipboard ()
+  "Copy current line in file to clipboard as '</path/to/file>:<line-number>'."
+  (interactive)
+  (let ((path-with-line-number
+         (concat (buffer-file-name) ":" (number-to-string (line-number-at-pos)))))
+    (kill-new path-with-line-number)
+    (message (concat path-with-line-number " copied to clipboard"))))
+
+(map! (:leader
+       (:desc "search" :prefix "r"
+        :desc "Nix hash" :nv "n" #'insert-nix-hash
+        :desc "Line" :n "l" #'copy-current-line-position-to-clipboard)))
+
+;; otherwise nix-mode will block on instantiating stuff
+(setenv "NIX_REMOTE_SYSTEMS" "")
 
 ;; FIXME not loaded as a proper package yet
 ;(use-package! osc52
@@ -195,6 +179,8 @@
     "-" #'treemacs-back-and-forth))
 
 (map! :leader :n "-" #'treemacs-back-and-forth)
+
+(setq persistent-scratch-save-file (expand-file-name "~/.emacs.d/.persistant-scratch"))
 
 (defun treemacs-project-toggle ()
   "Toggle and add the current project to treemacs if not already added."

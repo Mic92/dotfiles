@@ -10,7 +10,6 @@
 (package! editorconfig)
 (package! vimrc-mode)
 (package! coffee-mode)
-;(package! sieve)
 (package! meson-mode)
 ;(package! bitwarden
 ;  :recipe (:host github :repo "seanfarley/emacs-bitwarden"))
