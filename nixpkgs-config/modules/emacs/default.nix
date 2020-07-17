@@ -6,16 +6,20 @@ with lib;
 let
   cfg = config.programs.emacs;
 
-  editorScript = { name ? "emacseditor", x11 ? false } : pkgs.writeScriptBin name ''
-    #!${pkgs.runtimeShell}
-    export TERM=xterm-direct
-    exec -a emacs ${cfg.package}/bin/emacsclient \
-      --socket-name $XDG_RUNTIME_DIR/emacs \
-      --create-frame \
-      --alternate-editor ${cfg.package}/bin/emacs \
-      ${optionalString (!x11) "-nw"} \
-      "$@"
-  '';
+  editorScript = {
+    name ? "emacseditor",
+    x11 ? false,
+    extraArgs ? []
+  }: pkgs.writeScriptBin name ''
+      #!${pkgs.runtimeShell}
+      export TERM=xterm-direct
+      exec -a emacs ${cfg.package}/bin/emacsclient \
+        --socket-name $XDG_RUNTIME_DIR/emacs \
+        --create-frame \
+        --alternate-editor ${cfg.package}/bin/emacs \
+        ${optionalString (!x11) "-nw"} \
+        ${toString extraArgs} "$@"
+    '';
   daemonScript = pkgs.writeScript "emacs-daemon" ''
     #!${pkgs.zsh}/bin/zsh
     source ~/.zshrc
@@ -78,11 +82,11 @@ in {
           mimeType = "text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++";
         })
 
-        (pkgs.writeScriptBin "mu4e" ''
-          #!${pkgs.runtimeShell}
-          export BW_SESSION=1
-          exec -a emacs ${cfg.package}/bin/emacs -e '(mu4e)'
-        '')
+        (editorScript {
+          name = "mu4e";
+          x11 = true;
+          extraArgs = [ "--eval" "'(mu4e)'" ];
+        })
         (editorScript {})
         (pkgs.lowPrio myemacs)
         gopls

@@ -62,9 +62,9 @@
         mu4e-get-mail-command "mbsync -Va"
         mu4e-change-filenames-when-moving t
         mu4e-maildir (expand-file-name "~/mail")
-        mu4e-sent-folder   "/thalheim.io/.Sent"
+        mu4e-sent-folder "/thalheim.io/.Sent"
         mu4e-drafts-folder "/thalheim.io/.Drafts"
-        mu4e-trash-folder  "/thalheim.io/.Trash"
+        mu4e-trash-folder "/thalheim.io/.Trash"
         mu4e-spam-folder "/thalheim.io/.Spam"
         mu4e-enable-async-operations t
         mu4e-use-maildirs-extension t
@@ -124,7 +124,7 @@
 
 (setq projectile-project-search-path '("~/git"))
 
-; make recentf unique per host in case .emacs.d is stored in a NFS share to avoid lock contention
+;; make recentf unique per host in case .emacs.d is stored in a NFS share to avoid lock contention
 (setq recentf-save-file (expand-file-name (concat "recentf-" system-name) "/home/joerg/.emacs.d/.local/.cache/"))
 
 (defun shell-stdout-to-string (command)
@@ -159,10 +159,10 @@
 (setenv "NIX_REMOTE_SYSTEMS" "")
 
 ;; FIXME not loaded as a proper package yet
-;(use-package! bitwarden
-;  :config
-;  (bitwarden-auth-source-enable)
-;  (setq bitwarden-automatic-unlock (lambda() "")))
+;;(use-package! bitwarden
+;;  :config
+;;  (bitwarden-auth-source-enable)
+;;  (setq bitwarden-automatic-unlock (lambda() "")))
 (bitwarden-auth-source-enable)
 (setq bitwarden-automatic-unlock (lambda() ""))
 
