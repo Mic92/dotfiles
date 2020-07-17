@@ -15,31 +15,29 @@
 
   outputs = { self, nixpkgs, nixos-hardware, sops-nix, nur, home-manager }:
     let
-      legacyNixPath = {
-        nix.nixPath = [
-          "home-manager=${home-manager}"
-          "nixpkgs=${nixpkgs}"
-          "nur=${nur}"
-        ];
-      };
+      defaultModules = [
+        {
+          nix.nixPath = [
+            "home-manager=${home-manager}"
+            "nixpkgs=${nixpkgs}"
+            "nur=${nur}"
+          ];
+          nixpkgs.overlays = [ nur.overlay ];
+        }
+        sops-nix.nixosModules.sops
+      ];
     in {
       nixosConfigurations.turingmachine = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = [
-          { nixpkgs.overlays = [ nur.overlay ]; }
+        modules = defaultModules ++ [
           nixos-hardware.nixosModules.dell-xps-13-9380
-          sops-nix.nixosModules.sops
           ./nixos/turingmachine/configuration.nix
-          legacyNixPath
         ];
       };
       nixosConfigurations.eddie = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = [
-          { nixpkgs.overlays = [ nur.overlay ]; }
-          sops-nix.nixosModules.sops
+        modules = defaultModules ++ [
           ./nixos/eddie/configuration.nix
-          legacyNixPath
         ];
       };
 
