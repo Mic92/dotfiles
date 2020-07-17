@@ -261,9 +261,27 @@
       directory = [
         "inode/directory"
       ];
+      code = [
+        "text/english"
+        "text/plain"
+        "text/x-makefile"
+        "text/x-c++hdr"
+        "text/x-c++src"
+        "text/x-chdr"
+        "text/x-csrc"
+        "text/x-java"
+        "text/x-moc"
+        "text/x-pascal"
+        "text/x-tcl"
+        "text/x-tex"
+        "application/x-shellscript"
+        "text/x-c"
+        "text/x-c++"
+      ];
     in {
-      "x-scheme-handler/mailto" = [ "org.gnome.Evolution.desktop" ];
-    } // (lib.genAttrs images (_: [ "org.gnome.eog.desktop" ]))
+      "x-scheme-handler/mailto" = [ "emacs-mailto.desktop" ];
+    } // (lib.genAttrs code (_: [ "emacs.desktop" ]))
+      // (lib.genAttrs images (_: [ "org.gnome.eog.desktop" ]))
       // (lib.genAttrs urls (_: [ "firefox.desktop" ]))
       // (lib.genAttrs documents (_: [ "org.gnome.Evince.desktop" ]))
       // (lib.genAttrs audioVideo (_: [ "mpv.desktop" ]))

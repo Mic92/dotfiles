@@ -26,7 +26,7 @@ let
     export BW_SESSION=1 PATH=$PATH:${lib.makeBinPath [ pkgs.git pkgs.sqlite pkgs.unzip ]}
     exec ${cfg.package}/bin/emacs --daemon
   '';
-  editorScriptX11 = editorScript { name = "emacs-x11"; x11 = true; };
+  editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
 
   #emacsOverlay = (import (builtins.fetchTarball {
   #  url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
@@ -82,13 +82,24 @@ in {
           mimeType = "text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++";
         })
 
+        (makeDesktopItem {
+          name = "emacs-mailto";
+          desktopName = "Emacs (MailTo)";
+          # %u contains single quotes
+          exec = ''${editorScriptX11}/bin/emacs --eval "(browse-url (replace-regexp-in-string \"'\" \"\" \"%u\"))"'';
+          icon = "emacs";
+          genericName = "Text Editor";
+          comment = "Send email with Emacs";
+          categories = "Utility";
+          mimeType = "x-scheme-handler/mailto";
+        })
+
         (editorScript {
           name = "mu4e";
           x11 = true;
           extraArgs = [ "--eval" "'(mu4e)'" ];
         })
         (editorScript {})
-        (pkgs.lowPrio myemacs)
         gopls
         golangci-lint
         gotools
