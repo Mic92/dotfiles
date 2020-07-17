@@ -123,6 +123,7 @@
   (setq lsp-clients-clangd-args '("-background-index")))
 
 (setq projectile-project-search-path '("~/git"))
+(setq yas-snippet-dirs (append yas-snippet-dirs '("~/.emacs.d/snippets")))
 
 ;; make recentf unique per host in case .emacs.d is stored in a NFS share to avoid lock contention
 (setq recentf-save-file (expand-file-name (concat "recentf-" system-name) "/home/joerg/.emacs.d/.local/.cache/"))
