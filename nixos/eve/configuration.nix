@@ -30,6 +30,7 @@
     ./modules/home-assistant
     ./modules/icinga2
     ./modules/influxdb.nix
+    ./modules/ipfs.nix
     ./modules/knot
     ./modules/kresd.nix
     ./modules/krops-deploy
