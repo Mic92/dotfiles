@@ -53,6 +53,7 @@
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
 
+
 (use-package! mu4e
   :config
   (setq mu4e-enable-mode-line t
@@ -79,6 +80,9 @@
         mu4e-headers-fields '((:human-date . 12) (:flags . 6) (:folder . 20) (:from . 22) (:subject))
         mml-secure-openpgp-encrypt-to-self t
         )
+
+  (setq nsm-settings-file (expand-file-name "~/.emacs.d/network-security.data"))
+
   (add-to-list 'mu4e-header-info-custom
                '(:folder . (:name "Folder"  ;; long name, as seen in the message-view
                             :shortname "Folder"           ;; short name, as seen in the headers view

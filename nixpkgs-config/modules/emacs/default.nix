@@ -36,6 +36,12 @@ let
       name = "doom.d";
       path = ../../../home/.doom.d;
     };
+    dependencyOverrides.doom-emacs = pkgs.fetchFromGitHub {
+      owner = "hlissner";
+      repo = "doom-emacs";
+      rev = "576eb40b501213b4707b542b6ab5d13c1538414f";
+      sha256 = "sha256-5GwpkxYDwP40RNTZdQz6QOmUt0wwr0slHjW2l6DqQPw=";
+    };
     extraPackages = [ pkgs.mu ];
   };
 in {
@@ -60,6 +66,7 @@ in {
       home.packages = with pkgs; [
         emacs-all-the-icons-fonts
         editorScriptX11
+        ripgrep
         (makeDesktopItem {
           name = "emacs";
           desktopName = "Emacs (Client)";
