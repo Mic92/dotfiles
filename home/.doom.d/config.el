@@ -125,7 +125,7 @@
   (setq lsp-clients-clangd-args '("-background-index")))
 
 (setq projectile-project-search-path '("~/git"))
-(setq yas-snippet-dirs (append yas-snippet-dirs '("~/.emacs.d/snippets")))
+(yas/load-directory "~/.homesick/repos/dotfiles/home/.emacs.d/snippets")
 
 (add-to-list '+format-on-save-enabled-modes 'go-mode t)
 (add-hook! 'go-mode-hook
@@ -133,7 +133,8 @@
   (add-hook 'before-save-hook #'lsp-organize-imports nil 'local))
 
 ;; make recentf unique per host in case .emacs.d is stored in a NFS share to avoid lock contention
-(setq recentf-save-file (expand-file-name (concat "recentf-" system-name) "/home/joerg/.emacs.d/.local/.cache/"))
+(setq recentf-save-file
+      (expand-file-name (concat "recentf-" system-name) "/home/joerg/.emacs.d/.local/.cache/"))
 
 (defun shell-stdout-to-string (command)
   (with-output-to-string
@@ -188,3 +189,12 @@
 (map! :leader :n "-" #'treemacs-back-and-forth)
 
 (setq persistent-scratch-save-file (expand-file-name "~/.emacs.d/.persistant-scratch"))
+
+;; Is there an easier way?
+(defun disable-python-pylint()
+  (flycheck-disable-checker 'python-pylint))
+
+(use-package! flycheck
+  :config
+  (add-hook 'flycheck-before-syntax-check-hook
+            #'disable-python-pylint 'local))
