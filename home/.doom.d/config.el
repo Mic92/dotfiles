@@ -180,17 +180,3 @@
 (map! :leader :n "-" #'treemacs-back-and-forth)
 
 (setq persistent-scratch-save-file (expand-file-name "~/.emacs.d/.persistant-scratch"))
-
-(defun treemacs-project-toggle ()
-  "Toggle and add the current project to treemacs if not already added."
-  (interactive)
-  (if (eq (treemacs-current-visibility) 'visible)
-      (delete-window (treemacs-get-local-window))
-    (let ((path (projectile-ensure-project (projectile-project-root)))
-          (name (projectile-project-name)))
-      (unless (treemacs-current-workspace)
-        (treemacs--find-workspace))
-      (treemacs-do-add-project-to-workspace path name)
-      (treemacs-select-window))))
-
-(map! :leader :n "+" #'treemacs-project-toggle)
