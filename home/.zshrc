@@ -253,7 +253,18 @@ RPS1='%(?.%F{magenta}.%F{red}(%?%) %F{magenta})'
 # Basic commands
 alias zcat='zcat -f'
 alias dd='dd status=progress'
-xalias ag='ag --color --smart-case --literal --pager=less'
+if [[ -n ${commands[rg]} ]]; then
+  rg() {
+    command rg --sort path --pretty --smart-case --fixed-strings "$@" | less -R
+  }
+  ag() {
+    echo "use rg instead"
+    sleep 1
+    rg "$@"
+  }
+elif [[ -n ${commands[ag]} ]]; then
+  alias ag='ag --color --smart-case --literal --pager=less'
+fi
 alias pgrep='pgrep -a'
 
 # System tools

@@ -37,7 +37,6 @@
       hexyl
       binutils
       clang-tools
-      grc
 
       # python language server + plugins
       (pkgs.python3.withPackages (ps: config.python.packages ps))
@@ -57,7 +56,7 @@
       fd
       bat
       vivid
-      silver-searcher
+      ripgrep
       zsh
       less
       bashInteractive

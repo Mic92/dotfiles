@@ -19,19 +19,19 @@ Essential packages:
 arch:
 
 ```console
-$ pacman -S base-devel the_silver_searcher htop git tig zsh tmux vim ruby strace tcpdump lsof rsync sudo
+$ pacman -S base-devel ripgrep htop git tig zsh tmux vim ruby strace tcpdump lsof rsync sudo
 ```
 
 freebsd:
 
 ```console
-$ pkg install the_silver_searcher git tmux zsh vim ruby tcpdump lsof rsync sudo bash
+$ pkg install ripgrep git tmux zsh vim ruby tcpdump lsof rsync sudo bash
 ```
 
 debian/ubuntu:
 
 ```console
-$ apt-get install build-essential silversearcher-ag htop git-core tig zsh tmux vim-nox ruby strace tcpdump lsof rsync sudo
+$ apt-get install build-essential ripgrep htop git-core tig zsh tmux vim-nox ruby strace tcpdump lsof rsync sudo
 ```
 
 or minimal:
