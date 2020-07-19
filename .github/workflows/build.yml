@@ -42,6 +42,7 @@ jobs:
         echo "::set-env name=CACHIX_SIGNING_KEY::${{ secrets.CACHIX_SIGNING_KEY }}"
     - name: Build nix packages
       run: |
+        set -x
         # TODO fix this NIX_PATH impurities in homemanager
         export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
         # TODO switch back to nixpkg's nix-build-uncached eventually
