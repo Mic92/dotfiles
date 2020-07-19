@@ -53,12 +53,12 @@ in rec {
   };
 
   secrets.pass = {
-    dir  = toString ./. + "/secrets/${secretSource}";
+    dir  = toString ./. + "/secrets-legacy/${secretSource}";
     name = name;
   };
 
   shared-secrets.pass = {
-    dir  = toString ./secrets/shared;
+    dir  = toString ./secrets-legacy/shared;
     name = "shared";
   };
 
