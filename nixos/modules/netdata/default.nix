@@ -14,7 +14,7 @@ in {
     netdata-stream-master = {
       path = "/etc/netdata/stream.conf";
       owner = "netdata";
-      sopsFile = ../../secrets-sops/secrets.yaml;
+      sopsFile = ../../secrets/secrets.yaml;
     };
   } else {
     # Generate <UUID> with `uuidgen`:
@@ -25,7 +25,7 @@ in {
     netdata-stream-slave = {
       path = "/etc/netdata/stream.conf";
       owner = "netdata";
-      sopsFile = ../../secrets-sops/secrets.yaml;
+      sopsFile = ../../secrets/secrets.yaml;
     };
   });
 
