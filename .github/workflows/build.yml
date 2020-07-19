@@ -44,8 +44,11 @@ jobs:
       run: |
         # TODO fix this NIX_PATH impurities in homemanager
         export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
+        # TODO switch back to nixpkg's nix-build-uncached eventually
+        result=$(nix-build --no-out-link \
+          -E '(import (builtins.getFlake (toString ./.)).inputs.nur { pkgs = import <nixpkgs> {}; }).repos.mic92.nix-build-uncached')
         exitcode=0
-        if ! nix-build nixos/ci.nix --show-trace; then
+        if ! $result/bin/nix-build-uncached nixos/ci.nix --show-trace; then
            exitcode=1
         fi
         nix path-info --all --json -r |
