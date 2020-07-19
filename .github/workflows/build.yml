@@ -47,7 +47,7 @@ jobs:
         export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
         # TODO switch back to nixpkg's nix-build-uncached eventually
         result=$(nix-build --no-out-link \
-          -E '(import (builtins.getFlake (toString ./.)).inputs.nur { pkgs = import <nixpkgs> {}; }).repos.mic92.nix-build-uncached')
+          -E '(import (builtins.getFlake (toString ./.)).inputs.nur { pkgs = import <nixpkgs> {}; }).repos.mic92.nix-build-uncached-flakes')
         exitcode=0
         if ! $result/bin/nix-build-uncached nixos/ci.nix --show-trace; then
            exitcode=1
