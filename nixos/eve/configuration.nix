@@ -28,7 +28,6 @@
     ./modules/gogs.nix
     ./modules/grafana.nix
     ./modules/home-assistant
-    ./modules/icinga2
     ./modules/influxdb.nix
     ./modules/ipfs.nix
     ./modules/knot
@@ -57,6 +56,7 @@
     ./modules/squid.nix
     ./modules/syncthing.nix
     ./modules/smartd.nix
+    ./modules/sops.nix
     ./modules/teamspeak.nix
     ./modules/tor.nix
     ./modules/tt-rss.nix
@@ -69,7 +69,6 @@
     ../modules/nix-daemon.nix
     ../modules/mosh.nix
     ../modules/nur.nix
-    ../modules/secrets.nix
     ../modules/tracing.nix
     ../modules/wireguard.nix
     ../modules/zfs.nix

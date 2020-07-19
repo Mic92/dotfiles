@@ -15,7 +15,7 @@
       dbuser = "nextcloud";
       dbhost = "/run/postgresql";
       adminuser = "nextcloudadmin";
-      adminpassFile = config.krops.secrets.nextcloud-admin-password.path;
+      adminpassFile = config.sops.secrets.nextcloud-admin-password.path;
       extraTrustedDomains = [
         "pim.devkid.net"
       ];
@@ -29,7 +29,7 @@
     };
   };
 
-  krops.secrets.nextcloud-admin-password.owner = "nextcloud";
+  sops.secrets.nextcloud-admin-password.owner = "nextcloud";
 
   users.users.nextcloud.extraGroups = [ "keys" ];
   systemd.services.nextcloud.serviceConfig.SupplementaryGroups = [ "keys" ];
@@ -60,20 +60,5 @@
         MUST ( mail $ userPassword )
         MAY ( ownCloudQuota ) )
 
-  '';
-  services.icinga2.extraConfig = ''
-    apply Service "Nextcloud v4 (eve)" {
-      import "eve-http4-service"
-      vars.http_vhost = "cloud.thalheim.io"
-      vars.http_uri = "/login"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "Nextcloud v6 (eve)" {
-      import "eve-http6-service"
-      vars.http_vhost = "cloud.thalheim.io"
-      vars.http_uri = "/login"
-      assign where host.name == "eve.thalheim.io"
-    }
   '';
 }

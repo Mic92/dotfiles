@@ -1,5 +1,9 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
+  sops.secrets.borg-passphrase = {};
+  sops.secrets.nas-wakeup-password = {};
+  sops.secrets.healthcheck-borgbackup = {};
+
   services.borgbackup.jobs.eve = {
     paths = [
       "/home"
@@ -10,13 +14,13 @@
     repo = "eve-backup@backup:backup";
     encryption = {
       mode = "repokey";
-      passCommand = "cat ${toString <secrets/borg-passphrase>}";
+      passCommand = "cat ${config.sops.secrets.borg-passphrase.path}";
     };
     compression = "auto,zstd";
     startAt = "daily";
     preHook = ''
       set -x
-      ${pkgs.netcat}/bin/nc -w20 home.devkid.net 22198 < ${toString <secrets/nas-wakeup-password>}
+      ${pkgs.netcat}/bin/nc -w20 home.devkid.net 22198 < ${config.sops.secrets.nas-wakeup-password.path}
       for i in $(seq 1 20); do
         if ${pkgs.netcat}/bin/nc -z -v -w1 home.devkid.net 22022; then
           break
@@ -28,7 +32,7 @@
     postHook = ''
       ${pkgs.nur.repos.mic92.healthcheck}/bin/healthcheck \
         --service borgbackup --failed $exitStatus \
-        --password-file ${toString <secrets/healthcheck-borgbackup>}
+        --password-file ${config.sops.secrets.healthcheck-borgbackup.path}
     '';
 
     prune.keep = {
@@ -38,6 +42,4 @@
       monthly = 0;
     };
   };
-
-  services.icinga2.healthchecks.borgbackup = {};
 }

@@ -10,7 +10,7 @@ in rec {
 
   defaultSources = {
     nixpkgs.git = nixpkgs.git;
-    inherit dotfiles nixos-config secrets shared-secrets nixos-hardware nur home-manager;
+    inherit dotfiles nixos-config secrets shared-secrets nixos-hardware nur home-manager sops-nix;
   };
 
   # for testing
@@ -23,9 +23,13 @@ in rec {
   };
 
   nixos-hardware.git = {
-    clean.exclude = ["/.version-suffix"];
     url = https://github.com/NixOS/nixos-hardware;
     ref = sourcesJson.nixos-hardware.rev;
+  };
+
+  sops-nix.git = {
+    url = "https://github.com/Mic92/sops-nix";
+    ref = sourcesJson.sops-nix.rev;
   };
 
   nixpkgs.file = {

@@ -23,28 +23,8 @@ in {
     root.openssh.authorizedKeys.keys = [ krops-deploy-key ];
   };
 
-  systemd.services.krops-gpg-key-import = {
-    description = "Import krops deploy gpg key";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" ];
-    path = [ pkgs.gnupg ];
-
-    unitConfig.ConditionPathExists = "!/var/lib/deploy/.krops-key-imported";
-
-    script = ''
-      gpg2 --allow-secret-key-import --import ${config.krops.secrets."krops-deploy-gpg".path}
-      touch /var/lib/deploy/.krops-key-imported
-    '';
-
-    serviceConfig = {
-      User = "krops-deploy";
-      SupplementaryGroups = [ "keys" ];
-    };
-  };
-
   users.users.krops-deploy.extraGroups = [ "keys" ];
-  krops.secrets.krops-deploy-gpg.owner = "krops-deploy";
-  krops.secrets.krops-deploy-ssh = {
+  sops.secrets.krops-deploy-ssh = {
     path = "${config.users.extraUsers.krops-deploy.home}/.ssh/id_ed25519";
     owner = "krops-deploy";
   };

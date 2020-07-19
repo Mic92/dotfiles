@@ -193,43 +193,4 @@ in {
     local:
       command: '/run/wrappers/bin/postqueue -p'
   '';
-  services.icinga2.extraConfig = ''
-    apply Service "SMTP v4 (eve)" {
-      import "eve-smtp4-service"
-      vars.smtp_port = "25"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "SMTP v6 (eve)" {
-      import "eve-smtp6-service"
-      vars.smtp_port = "25"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "SMTPS v4 (eve)" {
-      import "eve-tcp4-service"
-      vars.tcp_port = "465"
-      vars.tcp_ssl = true
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "SMTPS v6 (eve)" {
-      import "eve-tcp6-service"
-      vars.tcp_port = "465"
-      vars.tcp_ssl = true
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "SMTP Submission v4 (eve)" {
-      import "eve-smtp4-service"
-      vars.smtp_port = "587"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "SMTP Submission v6 (eve)" {
-      import "eve-smtp6-service"
-      vars.smtp_port = "587"
-      assign where host.name == "eve.thalheim.io"
-    }
-  '';
 }

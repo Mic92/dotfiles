@@ -96,6 +96,18 @@
         "url": "https://github.com/nix-community/nur/archive/4bd81468c6203e19c71576f89a9b356ac79646c4.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "sops-nix": {
+        "branch": "master",
+        "description": "Atomic secret provisioning for NixOS based on sops",
+        "homepage": "",
+        "owner": "Mic92",
+        "repo": "sops-nix",
+        "rev": "f0b40035602e516f981f94da463ec627793f1f83",
+        "sha256": "16ygf8rs8d7c47hi6cdiln8bcrc0y5wzy3rymqp1c11hjiximshm",
+        "type": "tarball",
+        "url": "https://github.com/Mic92/sops-nix/archive/f0b40035602e516f981f94da463ec627793f1f83.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "spacemacs": {
         "branch": "develop",
         "description": "A community-driven Emacs distribution - The best editor is neither Emacs nor Vim,  it's Emacs *and* Vim!",

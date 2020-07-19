@@ -44,20 +44,4 @@
     url = "https://adminer.thalheim.io";
     regex = "Login";
   };
-
-  services.icinga2.extraConfig = ''
-    apply Service "Adminer v4 (eve)" {
-      import "eve-http4-service"
-      vars.http_vhost = "adminer.thalheim.io"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "Adminer v6 (eve)" {
-      import "eve-http6-service"
-      vars.http_vhost = "adminer.thalheim.io"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
-  '';
 }

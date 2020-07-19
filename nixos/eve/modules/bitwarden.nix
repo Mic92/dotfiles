@@ -37,7 +37,7 @@ in {
   };
 
   systemd.services.bitwarden_rs.serviceConfig = {
-    EnvironmentFile = [ config.krops.secrets."bitwarden-smtp-password".path ];
+    EnvironmentFile = [ config.sops.secrets.bitwarden-smtp-password.path ];
     SupplementaryGroups = [ "keys" ];
     Restart = "on-failure";
     RestartSec = "2s";
@@ -48,8 +48,8 @@ in {
 
     preStart = ''
       sed \
-        -e "s=@LDAP_PASSWORD@=$(<${config.krops.secrets."bitwarden-ldap-password".path})=" \
-        -e "s=@ADMIN_TOKEN@=$(<${config.krops.secrets."bitwarden-admin-token".path})=" \
+        -e "s=@LDAP_PASSWORD@=$(<${config.sops.secrets.bitwarden-ldap-password.path})=" \
+        -e "s=@ADMIN_TOKEN@=$(<${config.sops.secrets.bitwarden-admin-token.path})=" \
         ${ldapConfigFile} \
         > /run/bitwarden_ldap/config.toml
     '';
@@ -91,7 +91,7 @@ in {
     };
   };
 
-  krops.secrets = {
+  sops.secrets = {
     bitwarden-ldap-password.owner = "bitwarden_ldap";
     bitwarden-admin-token.owner = "bitwarden_ldap";
     bitwarden-smtp-password.owner = "bitwarden_rs";
@@ -109,21 +109,5 @@ in {
             SUP uidObject AUXILIARY
             DESC 'Added to an account to allow bitwarden access'
             MUST (mail $ userPassword) )
-  '';
-
-  services.icinga2.extraConfig = ''
-    apply Service "Bitwarden v6 (eve)" {
-      import "eve-http4-service"
-      vars.http_vhost = "bitwarden.thalheim.io"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "Bitwarden v4 (eve)" {
-      import "eve-http6-service"
-      vars.http_vhost = "bitwarden.thalheim.io"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
   '';
 }

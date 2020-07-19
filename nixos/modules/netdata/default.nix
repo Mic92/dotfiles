@@ -6,7 +6,7 @@ let
 in {
   imports = [ ./options.nix ];
 
-  krops.secrets = (if cfg.stream.role == "master" then {
+  sops.secrets = (if cfg.stream.role == "master" then {
     # Generate <UUID> with `uuidgen`:
     # [<UUID>]
     #     enabled = yes
@@ -14,7 +14,7 @@ in {
     netdata-stream-master = {
       path = "/etc/netdata/stream.conf";
       owner = "netdata";
-      sourcePath = toString <shared-secrets> + "/netdata-stream-master";
+      sopsFile = ../../secrets-sops/secrets.yaml;
     };
   } else {
     # Generate <UUID> with `uuidgen`:
@@ -25,7 +25,7 @@ in {
     netdata-stream-slave = {
       path = "/etc/netdata/stream.conf";
       owner = "netdata";
-      sourcePath = toString <shared-secrets> + "/netdata-stream-slave";
+      sopsFile = ../../secrets-sops/secrets.yaml;
     };
   });
 

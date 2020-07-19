@@ -41,22 +41,6 @@
     regex = "javascript";
   };
 
-  services.icinga2.extraConfig = ''
-    apply Service "Rainloop v4 (eve)" {
-      import "eve-http4-service"
-      vars.http_vhost = "mail.thalheim.io"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "Rainloop v6 (eve)" {
-      import "eve-http6-service"
-      vars.http_vhost = "mail.thalheim.io"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
-  '';
-
   users.users.rainloop = {
     isSystemUser = true;
     createHome = true;

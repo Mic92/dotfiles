@@ -1,10 +1,10 @@
 with import <nixpkgs> {};
 mkShell {
-  sopsGPGKeyDirs = [
+  sopsPGPKeyDirs = [
     "./keys/hosts"
     "./keys/users"
   ];
   nativeBuildInputs = [
-    (pkgs.callPackage /home/joerg/git/sops-nix {}).sops-shell-hook
+    (pkgs.callPackage /home/joerg/git/sops-nix {}).sops-pgp-hook
   ];
 }

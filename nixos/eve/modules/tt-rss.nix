@@ -37,7 +37,7 @@
       define('LDAP_AUTH_USETLS', FALSE); // Enable TLS Support for ldaps://
       define('LDAP_AUTH_ALLOW_UNTRUSTED_CERT', TRUE); // Allows untrusted certificate
       define('LDAP_AUTH_BINDDN', 'cn=ttrss,ou=system,ou=users,dc=eve');
-      define('LDAP_AUTH_BINDPW', file_get_contents('${config.krops.secrets."ttrss-ldap-password".path}'));
+      define('LDAP_AUTH_BINDPW', file_get_contents('${config.sops.secrets.ttrss-ldap-password.path}'));
       define('LDAP_AUTH_BASEDN', 'dc=eve');
       define('LDAP_AUTH_LOGIN_ATTRIB', 'mail');
       define('LDAP_AUTH_ANONYMOUSBEFOREBIND', FALSE);
@@ -63,7 +63,7 @@
     };
   };
 
-  krops.secrets.ttrss-ldap-password.owner = "tt_rss";
+  sops.secrets.ttrss-ldap-password.owner = "tt_rss";
 
   users.users.tt_rss.extraGroups = [ "keys" ];
   systemd.services.phpfpm-tt-rss.serviceConfig.SupplementaryGroups = [ "keys" ];
@@ -78,21 +78,5 @@
             SUP top AUXILIARY
             DESC 'Added to an account to allow tinytinyrss access'
     	MUST ( mail $ userPassword ))
-  '';
-
-  services.icinga2.extraConfig = ''
-    apply Service "TT-RSS v4 (eve)" {
-      import "eve-http4-service"
-      vars.http_vhost = "rss.devkid.net"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "TT-RSS v6 (eve)" {
-      import "eve-http6-service"
-      vars.http_vhost = "rss.devkid.net"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
   '';
 }

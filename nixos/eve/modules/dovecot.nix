@@ -157,15 +157,14 @@ in {
     shell = "/run/current-system/sw/bin/nologin";
   };
 
-  krops.secrets."dovecot-ldap-password" = {};
-
   security.dhparams = {
     enable = true;
     params.dovecot2 = {};
   };
 
+  sops.secrets.dovecot-ldap-password = {};
   systemd.services.dovecot2.preStart = ''
-    sed -e "s!@ldap-password@!$(<${config.krops.secrets."dovecot-ldap-password".path})!" ${ldapConfig} > /run/dovecot2/ldap.conf
+    sed -e "s!@ldap-password@!$(<${config.sops.secrets.dovecot-ldap-password.path})!" ${ldapConfig} > /run/dovecot2/ldap.conf
   '';
 
   security.acme.certs = let
@@ -249,51 +248,5 @@ in {
             SUP top AUXILIARY
             DESC 'Added to a mailAlias to create a postmaster entry'
             MUST roleOccupant )
-  '';
-
-  services.icinga2.extraConfig = ''
-    apply Service "IMAP v4 (eve)" {
-      import "eve-service"
-      check_command = "imap"
-      vars.imap_ipv4 = true
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "IMAP v6 (eve)" {
-      import "eve-service"
-      check_command = "imap"
-      vars.imap_ipv6 = true
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "IMAPS v4 (eve)" {
-      import "eve-service"
-      check_command = "imap"
-      vars.imap_ipv4 = true
-      vars.imap_ssl = true
-      vars.imap_port = 993
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "IMAPS v6 (eve)" {
-      import "eve-service"
-      check_command = "imap"
-      vars.imap_ipv6 = true
-      vars.imap_ssl = true
-      vars.imap_port = 993
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "SIEVE v4 (eve)" {
-      import "eve-tcp4-service"
-      vars.tcp_port = 4190
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "SIEVE v6 (eve)" {
-      import "eve-tcp6-service"
-      vars.tcp_port = 4190
-      assign where host.name == "eve.thalheim.io"
-    }
   '';
 }

@@ -1,11 +1,9 @@
 { pkgs, config, ... }:
-let
-  secrets = config.krops.secrets;
-in {
+{
   services.buildkite-agents.builder = {
     enable = true;
-    tokenPath = secrets.buildkite-token.path;
-    privateSshKeyPath =  secrets.buildkite-ssh-key.path;
+    tokenPath = config.sops.secrets.buildkite-token.path;
+    privateSshKeyPath = config.sops.secrets.buildkite-ssh-key.path;
 
     runtimePackages = [
       pkgs.gnutar
@@ -21,6 +19,6 @@ in {
     serviceConfig.SupplementaryGroups = [ "keys" ];
   };
 
-  krops.secrets.buildkite-token.owner = "buildkite-agent-builder";
-  krops.secrets.buildkite-ssh-key.owner = "buildkite-agent-builder";
+  sops.secrets.buildkite-token.owner = "buildkite-agent-builder";
+  sops.secrets.buildkite-ssh-key.owner = "buildkite-agent-builder";
 }

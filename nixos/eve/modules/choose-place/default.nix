@@ -42,20 +42,4 @@
     url = "https://choose-place.thalheim.io";
     regex = "Choose Place";
   };
-
-  services.icinga2.extraConfig = ''
-    apply Service "Chooseplace v4 (eve)" {
-      import "eve-http4-service"
-      vars.http_vhost = "hass.thalheim.io"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "Chooseplace v6 (eve)" {
-      import "eve-http6-service"
-      vars.http_vhost = "hass.thalheim.io"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
-  '';
 }

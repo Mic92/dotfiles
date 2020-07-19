@@ -9,7 +9,7 @@
         --points 50 \
         https://toot.matereal.eu \
         joerg.hackernews50@thalheim.io \
-        "$(cat ${config.krops.secrets.hnbot-password.path})"
+        "$(cat ${config.sops.secrets.hnbot-password.path})"
     '';
     serviceConfig = {
       Type = "oneshot";
@@ -39,5 +39,5 @@
   };
   users.groups.mastodon-hnbot = {};
 
-  krops.secrets.hnbot-password.owner = "mastodon-hnbot";
+  sops.secrets.hnbot-password.owner = "mastodon-hnbot";
 }

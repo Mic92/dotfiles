@@ -4,7 +4,7 @@
     # We cannot disable the plain text port atm, but the firewall blocks it
     proxyPort = 8888;
     extraConfig = ''
-      auth_param basic program ${pkgs.squid}/libexec/basic_ldap_auth -b "ou=users,dc=eve" -f "(&(objectClass=proxyUser)(mail=%s))" -D cn=squid,ou=system,ou=users,dc=eve -W ${config.krops.secrets."squid-ldap".path} -h 127.0.0.1
+      auth_param basic program ${pkgs.squid}/libexec/basic_ldap_auth -b "ou=users,dc=eve" -f "(&(objectClass=proxyUser)(mail=%s))" -D cn=squid,ou=system,ou=users,dc=eve -W ${config.sops.secrets.squid-ldap.path} -h 127.0.0.1
       acl ldapauth proxy_auth REQUIRED
       http_access allow ldapauth
 
@@ -25,7 +25,7 @@
   users.users.squid.extraGroups = [ "keys" ];
   systemd.services.squid.serviceConfig.SupplementaryGroups = [ "keys" ];
 
-  krops.secrets.squid-ldap.owner = "squid";
+  sops.secrets.squid-ldap.owner = "squid";
 
   environment.etc."netdata/python.d/squid.conf".text = ''
     tcp8888new:
@@ -49,21 +49,4 @@
         DESC 'Account to allow a user to use the Squid proxy'
 	  MUST ( mail $ userPassword ))
   '';
-
-  services.icinga2.extraConfig = ''
-    apply Service "SQUID HTTPS v4 (eve)" {
-      import "eve-http4-service"
-      vars.http_port = 8889
-      vars.http_expect = "HTTP/1.1"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "SQUID HTTPS v6 (eve)" {
-      import "eve-http6-service"
-      vars.http_port = 8889
-      vars.http_expect = "HTTP/1.1"
-      assign where host.name == "eve.thalheim.io"
-    }
-  '';
-
 }

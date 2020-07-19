@@ -35,7 +35,7 @@
       ldap_filter: "(objectClass=jabberUser)"
       # ldap_password: ""
       include_config_file:
-        - ${config.krops.secrets."ejabber-ldap-password.yml".path}
+        - ${config.sops.secrets."ejabber-ldap-password.yml".path}
 
       default_db: sql
       new_sql_schema: true
@@ -46,7 +46,7 @@
       sql_database: ejabberd
       # sql_password: ejabberd
       include_config_file:
-        - ${config.krops.secrets."ejabber-postgres-password.yml".path}
+        - ${config.sops.secrets."ejabber-postgres-password.yml".path}
 
       hosts:
       - thalheim.io
@@ -248,8 +248,8 @@
     '';
   };
 
-  krops.secrets."ejabber-ldap-password.yml".owner = "ejabberd";
-  krops.secrets."ejabber-postgres-password.yml".owner = "ejabberd";
+  sops.secrets."ejabber-ldap-password.yml".owner = "ejabberd";
+  sops.secrets."ejabber-postgres-password.yml".owner = "ejabberd";
 
   services.openldap.extraConfig = ''
     attributeType ( 1.2.752.43.9.1.1
@@ -263,59 +263,6 @@
         DESC 'A jabber user'
         AUXILIARY
         MUST ( jabberID ) )
-  '';
-
-  services.icinga2.extraConfig = ''
-    object CheckCommand "eve-xmpp_cert" {
-      import "ssl_cert"
-      arguments += {
-        "--xmpphost" = "$ssl_cert_xmpphost$"
-      }
-      vars.ssl_cert_port = "5222"
-      vars.ssl_cert_protocol = "xmpp"
-    }
-
-    object CheckCommand "eve-xmpp_cert4" {
-      import "eve-xmpp_cert"
-      vars.ssl_cert_address = "$address$"
-    }
-
-    object CheckCommand "eve-xmpp_cert6" {
-      import "eve-xmpp_cert"
-      vars.ssl_cert_address = "$address6$"
-    }
-
-    apply Service "JABBER C2S (eve)" {
-      import "eve-service"
-      check_command = "eve-xmpp_cert4"
-      vars.ssl_cert_xmpphost = "thalheim.io"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "JABBER S2S (eve)" {
-      import "eve-service"
-      check_command = "eve-xmpp_cert4"
-      vars.ssl_cert_port = "5269"
-      vars.ssl_cert_protocol = "xmpp-server"
-      vars.ssl_cert_xmpphost = "thalheim.io"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "JABBER C2S v6 (eve)" {
-      import "eve-service"
-      check_command = "eve-xmpp_cert6"
-      vars.ssl_cert_xmpphost = "thalheim.io"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "JABBER S2S v6 (eve)" {
-      import "eve-service"
-      check_command = "eve-xmpp_cert6"
-      vars.ssl_cert_port = "5269"
-      vars.ssl_cert_protocol = "xmpp-server"
-      vars.ssl_cert_xmpphost = "thalheim.io"
-      assign where host.name == "eve.thalheim.io"
-    }
   '';
 
   security.acme.certs = let

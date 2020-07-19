@@ -16,30 +16,4 @@
     5037  # ts3_martin
     9000  # ts3_putzy
   ];
-  services.icinga2.extraConfig = ''
-    apply Service "Teamspeak FT v4 (eve)" {
-      import "eve-tcp4-service"
-      vars.tcp_port = 30033
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "Teamspeak FT v6 (eve)" {
-      import "eve-tcp6-service"
-      vars.tcp_port = 30033
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "Teamspeak SQ v4 (eve)" {
-      import "eve-tcp4-service"
-      vars.tcp_port = 10011
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "Teamspeak SQ v6 (eve)" {
-      import "eve-tcp6-service"
-      vars.tcp_port = 10011
-      assign where host.name == "eve.thalheim.io"
-    }
-  '';
-
 }

@@ -6,12 +6,12 @@ in {
     ./whoami.nix
   ];
 
-  krops.secrets."knot-he-key.conf".owner = "knot";
+  sops.secrets."knot-he-key.conf".owner = "knot";
   users.users.knot.extraGroups = [ "keys" ];
 
   services.knot = {
     enable = true;
-    keyFiles = [ config.krops.secrets."knot-he-key.conf".path ];
+    keyFiles = [ config.sops.secrets."knot-he-key.conf".path ];
     extraConfig = ''
       server:
         listen: ${ip4}@53
@@ -67,43 +67,4 @@ in {
 
   networking.firewall.allowedTCPPorts = [ 53 ];
   networking.firewall.allowedUDPPorts = [ 53 ];
-
-  services.icinga2.extraConfig = ''
-    template Service "eve-dns4-service" {
-      import "eve-service"
-      check_command = "dig"
-      vars.dig_server = host.address
-    }
-    template Service "eve-dns6-service" {
-      import "eve-service"
-      check_command = "dig"
-      vars.dig_server = host.address6
-      vars.dig_ipv6 = true
-      vars.dig_record_type = "AAAA"
-    }
-
-    apply Service "DNS thalheim.io v4 (eve)" {
-      import "eve-dns4-service"
-      vars.dig_lookup = "thalheim.io"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "DNS thalheim.io v6 (eve)" {
-      import "eve-dns6-service"
-      vars.dig_lookup = "thalheim.io"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "DNS lekwati.com v4 (eve)" {
-      import "eve-dns4-service"
-      vars.dig_lookup = "lekwati.com"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "DNS lekwati.com v6 (eve)" {
-      import "eve-dns6-service"
-      vars.dig_lookup = "lekwati.com"
-      assign where host.name == "eve.thalheim.io"
-    }
-  '';
 }

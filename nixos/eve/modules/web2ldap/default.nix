@@ -66,20 +66,4 @@
     url = "https://ldap.thalheim.io";
     regex = "web2ldap";
   };
-
-  services.icinga2.extraConfig = ''
-    apply Service "Web2ldap v4 (eve)" {
-      import "eve-http4-service"
-      vars.http_vhost = "ldap.thalheim.io"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "Web2ldap v6 (eve)" {
-      import "eve-http6-service"
-      vars.http_vhost = "ldap.thalheim.io"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
-  '';
 }

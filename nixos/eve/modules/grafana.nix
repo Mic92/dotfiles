@@ -13,7 +13,7 @@
     smtp = {
       host = "mail.thalheim.io:587";
       user = "grafana@thalheim.io";
-      passwordFile = config.krops.secrets."grafana-smtp-password".path;
+      passwordFile = config.sops.secrets.grafana-smtp-password.path;
       fromAddress = "grafana@thalheim.io";
     };
     database = {
@@ -22,7 +22,7 @@
       host = "/run/postgresql";
       user = "grafana";
     };
-    security.adminPasswordFile = config.krops.secrets."grafana-admin-password".path;
+    security.adminPasswordFile = config.sops.secrets.grafana-admin-password.path;
     addr = "0.0.0.0";
     port = 3001;
   };
@@ -54,7 +54,7 @@
       };
     in ''
       umask 077
-      sed -e "s/@bindPassword@/$(cat ${config.krops.secrets."grafana-ldap-password".path})/" ${ldap} > /run/grafana/ldap.toml
+      sed -e "s/@bindPassword@/$(cat ${config.sops.secrets.grafana-ldap-password.path})/" ${ldap} > /run/grafana/ldap.toml
 
       for i in `seq 1 10`; do
         if pg_isready; then
@@ -80,23 +80,7 @@
     regex = "Grafana";
   };
 
-  services.icinga2.extraConfig = ''
-    apply Service "Grafana v4 (eve)" {
-      import "eve-http4-service"
-      vars.http_vhost = "grafana.thalheim.io"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "Grafana v6 (eve)" {
-      import "eve-http6-service"
-      vars.http_vhost = "grafana.thalheim.io"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
-  '';
-
-  krops.secrets = {
+  sops.secrets = {
     grafana-smtp-password.owner = "grafana";
     grafana-admin-password.owner = "grafana";
     grafana-ldap-password.owner = "grafana";

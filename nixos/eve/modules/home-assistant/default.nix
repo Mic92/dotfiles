@@ -132,7 +132,7 @@ in {
     };
   };
 
-  krops.secrets."home-assistant-secrets.yaml" = {
+  sops.secrets."home-assistant-secrets.yaml" = {
     owner = "hass";
     path = "/var/lib/hass/secrets.yaml";
   };
@@ -143,20 +143,4 @@ in {
     url = "https://hass.thalheim.io";
     regex = "Home Assistant";
   };
-
-  services.icinga2.extraConfig = ''
-    apply Service "Homeassistant v4 (eve)" {
-      import "eve-http4-service"
-      vars.http_vhost = "hass.thalheim.io"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
-
-    apply Service "Homeassistant v6 (eve)" {
-      import "eve-http6-service"
-      vars.http_vhost = "hass.thalheim.io"
-      vars.http_uri = "/"
-      assign where host.name == "eve.thalheim.io"
-    }
-  '';
 }

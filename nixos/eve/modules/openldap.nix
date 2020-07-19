@@ -7,7 +7,7 @@
     daemon.enable = true;
     bind = {
       distinguishedName = "cn=login,ou=system,ou=users,dc=eve";
-      passwordFile = config.krops.secrets."ldap-login".path;
+      passwordFile = config.sops.secrets.ldap-login.path;
     };
   };
 
@@ -16,7 +16,7 @@
     enable = true;
     suffix = "dc=eve";
     rootdn = "cn=admin,dc=eve";
-    rootpwFile = config.krops.secrets."openldap-rootpw".path;
+    rootpwFile = config.sops.secrets.openldap-rootpw.path;
     extraConfig = ''
       access to attrs=userPassword
         by self         write
@@ -45,13 +45,13 @@
   };
 
   environment.etc."netdata/python.d/openldap.conf" = {
-    source = config.krops.secrets."netdata-openldap-password".path;
+    source = config.sops.secrets.netdata-openldap-password.path;
     user = "netdata";
   };
-  krops.secrets.netdata-openldap-password.owner = "netdata";
+  sops.secrets.netdata-openldap-password.owner = "netdata";
 
-  krops.secrets.openldap-rootpw.owner = "openldap";
-  krops.secrets.ldap-login = {};
+  sops.secrets.openldap-rootpw.owner = "openldap";
+  sops.secrets.ldap-login = {};
 
   users.users.openldap.extraGroups = [ "keys" ];
   systemd.services.openldap.serviceConfig.SupplementaryGroups = [ "keys" ];
