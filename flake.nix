@@ -13,7 +13,10 @@
   inputs.home-manager.url = github:rycee/home-manager;
   inputs.home-manager.flake = false;
 
-  outputs = { self, nixpkgs, nixos-hardware, sops-nix, nur, home-manager }:
+  inputs.choose-place.url = github:mbailleu/choose-place;
+  inputs.choose-place.flake = false;
+
+  outputs = { self, nixpkgs, nixos-hardware, sops-nix, nur, home-manager, choose-place }:
     let
       defaultModules = [
         {
@@ -40,7 +43,14 @@
       };
       nixosConfigurations.eve = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = defaultModules ++ [ ./nixos/eve/configuration.nix ];
+        modules = defaultModules ++ [
+          ./nixos/eve/configuration.nix
+          {
+            nixpkgs.overlays = [(self: super: {
+              choose-place = super.callPackage "${choose-place}" {};
+            })];
+          }
+        ];
       };
 
       hmConfigurations = let

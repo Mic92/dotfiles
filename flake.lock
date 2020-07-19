@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "choose-place": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1595201175,
+        "narHash": "sha256-eKmBDOt+MFJunr/XiU3Osq8kNcgIlr3CxQPsU+oXP48=",
+        "owner": "mbailleu",
+        "repo": "choose-place",
+        "rev": "6ea0c711c44ee6097e9d6ddd8e16163e1b0a61fd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mbailleu",
+        "repo": "choose-place",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "flake": false,
       "locked": {
@@ -65,6 +81,7 @@
     },
     "root": {
       "inputs": {
+        "choose-place": "choose-place",
         "home-manager": "home-manager",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
@@ -79,11 +96,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1595197860,
-        "narHash": "sha256-Feoae5QwBBYurj4P/3nxgGW2kKWxMRPhIew0pDNyz5s=",
+        "lastModified": 1595200591,
+        "narHash": "sha256-uhYDVn3FoBmeCqIJwIsRO+L6aljENjpgVlFFy0yuLGY=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "f0b40035602e516f981f94da463ec627793f1f83",
+        "rev": "2fb90c84a67ba60bfbd56e780917839009c55481",
         "type": "github"
       },
       "original": {

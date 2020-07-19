@@ -85,13 +85,14 @@ in {
     # Hack so that network is considered up by boot.initrd.network and postCommands gets executed.
     boot.kernelParams = [ "ip=127.0.0.1:::::lo:none" ];
 
+    sops.secrets.initrd-ssh-key = {};
     boot.initrd.network = {
       enable = true;
       ssh = {
         enable = true;
         port = 2222;
         hostKeys = [
-          (toString <secrets/initrd-ssh-key>)
+          config.sops.secrets.initrd-ssh-key.path
         ];
       };
       postCommands = ''

@@ -1,4 +1,4 @@
-{
+{ pkgs, ... }: {
   services.uwsgi = {
     enable = true;
     plugins = [ "python3" ];
@@ -14,7 +14,7 @@
         socket = "/run/uwsgi/choose-place.sock";
         chmod-socket = 664;
         pythonPackages = self: [
-          (self.callPackage ./package.nix {})
+          (self.toPythonModule pkgs.choose-place)
         ];
       };
     };
