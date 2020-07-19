@@ -6,10 +6,10 @@
         "homepage": "https://choose-place.herokuapp.com/",
         "owner": "mbailleu",
         "repo": "choose-place",
-        "rev": "69173fb3f836310ef3d8f5af5597c5fb6e94e12c",
-        "sha256": "0iq238rl0hfc169i6a1gqc8wwcaiyr4vqzlmqs8k71aqgb61nya0",
+        "rev": "6ea0c711c44ee6097e9d6ddd8e16163e1b0a61fd",
+        "sha256": "13rz2zm57v03qp1bv5h8r0sj9bxjrr6qkmxzkrp54c3yxc683abq",
         "type": "tarball",
-        "url": "https://github.com/mbailleu/choose-place/archive/69173fb3f836310ef3d8f5af5597c5fb6e94e12c.tar.gz",
+        "url": "https://github.com/mbailleu/choose-place/archive/6ea0c711c44ee6097e9d6ddd8e16163e1b0a61fd.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "home-manager": {
