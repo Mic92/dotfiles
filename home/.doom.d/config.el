@@ -125,6 +125,11 @@
 (setq projectile-project-search-path '("~/git"))
 (setq yas-snippet-dirs (append yas-snippet-dirs '("~/.emacs.d/snippets")))
 
+(add-to-list '+format-on-save-enabled-modes 'go-mode t)
+(add-hook! 'go-mode-hook
+  (add-hook 'before-save-hook #'lsp-format-buffer nil 'local)
+  (add-hook 'before-save-hook #'lsp-organize-imports nil 'local))
+
 ;; make recentf unique per host in case .emacs.d is stored in a NFS share to avoid lock contention
 (setq recentf-save-file (expand-file-name (concat "recentf-" system-name) "/home/joerg/.emacs.d/.local/.cache/"))
 
