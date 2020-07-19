@@ -36,9 +36,11 @@
       };
       nixosConfigurations.eddie = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        modules = defaultModules ++ [
-          ./nixos/eddie/configuration.nix
-        ];
+        modules = defaultModules ++ [ ./nixos/eddie/configuration.nix ];
+      };
+      nixosConfigurations.eve = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = defaultModules ++ [ ./nixos/eve/configuration.nix ];
       };
 
       hmConfigurations = let

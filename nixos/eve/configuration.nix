@@ -14,6 +14,8 @@
 
   programs.vim.defaultEditor = true;
 
+  nix.package = pkgs.nixFlakes;
+
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
