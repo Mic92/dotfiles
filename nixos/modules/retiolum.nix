@@ -45,7 +45,7 @@ in {
 
     networking.extraHosts = builtins.readFile (builtins.fetchurl {
       url = "https://retiolum.thalheim.io/etc.hosts";
-      sha256 = "0p684a9zpwlcxsgcxhr12gmxmvcrj9fdy0caciwz55dgczkv474p";
+      sha256 = "03r2cs7a7a9cbshz05hddk7bl64yxgdhjjm722p81qvvg201bywk";
     });
 
     environment.systemPackages = [ config.services.tinc.networks.${netname}.package ];
