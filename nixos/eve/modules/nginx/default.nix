@@ -46,9 +46,10 @@ in {
 
   config = {
     services.nginx = {
-      package = pkgs.nginx.override {
-        modules = with pkgs.nginxModules; [ ldap-auth ];
-      };
+      #package = with pkgs; nginxStable.override {
+      #  perl = null;
+      #  modules = [ nginxModules.auth-ldap ];
+      #};
       enable = true;
 
       recommendedGzipSettings = true;
