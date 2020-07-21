@@ -56,7 +56,8 @@ status.register("cpu_usage", format="/".join(fmt), color=color.text_normal)
 icons.nerdfont(status, "")
 
 status.register("ping", host="1.1.1.1", color=color.text_normal)
-status.register("ping", format="GW: {ping}ms", host="_gateway", color=color.text_normal)
+status.register("ping", format="GW: {ping}ms", format_down="GW: N/A", host="_gateway", color=color.text_normal)
+status.register("ping", format="IP6: {ping}ms", format_down="IP6: N/A", host="2606:4700:4700::1111", color=color.text_normal)
 
 #status.register(Icinga,
 #                base_url="https://icingamaster.bsd.services:5665",
