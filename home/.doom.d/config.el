@@ -101,7 +101,9 @@
                                 (mu4e~proc-move docid mu4e-spam-folder "+S-u-N"))))
 
   (mu4e~headers-defun-mark-for spam)
-  (define-key mu4e-headers-mode-map (kbd "S") 'mu4e-headers-mark-for-spam)
+  (map! :localleader
+        :map mu4e-headers-mode-map
+        :desc "Move to spam" "s" #'mu4e-headers-mark-for-spam)
 
   (add-to-list 'mu4e-bookmarks
                (make-mu4e-bookmark
