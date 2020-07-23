@@ -12,6 +12,18 @@
         "url": "https://github.com/mbailleu/choose-place/archive/6ea0c711c44ee6097e9d6ddd8e16163e1b0a61fd.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "doom-emacs": {
+        "branch": "develop",
+        "description": "An Emacs framework for the stubborn martian hacker",
+        "homepage": "",
+        "owner": "hlissner",
+        "repo": "doom-emacs",
+        "rev": "15f0bccde57538812e64f1c12771bc454aa254c6",
+        "sha256": "1ydif4qwq0l6rv1h5418vl8igbk4qclzwg9ck3b7jzpbv27rmf1z",
+        "type": "tarball",
+        "url": "https://github.com/hlissner/doom-emacs/archive/15f0bccde57538812e64f1c12771bc454aa254c6.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "home-manager": {
         "branch": "master",
         "description": "Manage a user environment using Nix",
@@ -49,15 +61,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nix-doom-emacs": {
-        "branch": "develop",
+        "branch": "doom-snippets",
         "description": "doom-emacs packaged for Nix",
         "homepage": "",
-        "owner": "vlaci",
+        "owner": "Mic92",
         "repo": "nix-doom-emacs",
-        "rev": "a4d50421009ab1b310d8fc8054a6e7a184b69738",
-        "sha256": "19cphzd2d6c8320f1i0c5w0575069rn9acmqqg58rbz5vsqkkgyw",
+        "rev": "bc7a962ade3d5e0e78618d9bbbf0e43dfe1c68c2",
+        "sha256": "0lzcz5qwg96s6qd9dzs4iv19lddz0hsr84p6cgdh22rwjvs9b91f",
         "type": "tarball",
-        "url": "https://github.com/vlaci/nix-doom-emacs/archive/a4d50421009ab1b310d8fc8054a6e7a184b69738.tar.gz",
+        "url": "https://github.com/Mic92/nix-doom-emacs/archive/bc7a962ade3d5e0e78618d9bbbf0e43dfe1c68c2.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixos-hardware": {
@@ -94,30 +106,6 @@
         "sha256": "04nwssxiiagkzz2gqm75wlk8qm3y2ra4fl9lczgbzkz7k8ih6d8v",
         "type": "tarball",
         "url": "https://github.com/nix-community/nur/archive/4bd81468c6203e19c71576f89a9b356ac79646c4.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "sops-nix": {
-        "branch": "master",
-        "description": "Atomic secret provisioning for NixOS based on sops",
-        "homepage": "",
-        "owner": "Mic92",
-        "repo": "sops-nix",
-        "rev": "f0b40035602e516f981f94da463ec627793f1f83",
-        "sha256": "16ygf8rs8d7c47hi6cdiln8bcrc0y5wzy3rymqp1c11hjiximshm",
-        "type": "tarball",
-        "url": "https://github.com/Mic92/sops-nix/archive/f0b40035602e516f981f94da463ec627793f1f83.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "spacemacs": {
-        "branch": "develop",
-        "description": "A community-driven Emacs distribution - The best editor is neither Emacs nor Vim,  it's Emacs *and* Vim!",
-        "homepage": "http://spacemacs.org",
-        "owner": "syl20bnr",
-        "repo": "spacemacs",
-        "rev": "1e677bb532e171d5e353bd3200549da8ccad5817",
-        "sha256": "05iipshn8k79a6xjp67va6dfrfbpcmdqq41kvps23lvdj8r74q3l",
-        "type": "tarball",
-        "url": "https://github.com/syl20bnr/spacemacs/archive/1e677bb532e171d5e353bd3200549da8ccad5817.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     }
 }

@@ -31,22 +31,20 @@ let
   #emacsOverlay = (import (builtins.fetchTarball {
   #  url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
   #})) pkgs pkgs;
-  #
 
-  myemacs = pkgs.callPackage ((import ../../../nixos/nix/sources.nix).nix-doom-emacs) {
-    # maybe some day, when it stops segfaulting
-    #emacsPackages = emacsOverlay.emacsPackagesFor emacsOverlay.emacsGcc;
+  sources = import ../../../nixos/nix/sources.nix;
+
+  myemacs = pkgs.callPackage sources.nix-doom-emacs {
+  # For testing
+  #myemacs = pkgs.callPackage /home/joerg/git/nix-doom-emacs {
     doomPrivateDir = builtins.path {
       name = "doom.d";
       path = ../../../home/.doom.d;
     };
-    dependencyOverrides.doom-emacs = pkgs.fetchFromGitHub {
-      owner = "hlissner";
-      repo = "doom-emacs";
-      rev = "576eb40b501213b4707b542b6ab5d13c1538414f";
-      sha256 = "sha256-5GwpkxYDwP40RNTZdQz6QOmUt0wwr0slHjW2l6DqQPw=";
-    };
+    dependencyOverrides.doom-emacs = sources.doom-emacs;
     extraPackages = [ pkgs.mu ];
+    # maybe some day, when it stops segfaulting
+    #emacsPackages = emacsOverlay.emacsPackagesFor emacsOverlay.emacsGcc;
   };
 in {
   options.programs.emacs = {
