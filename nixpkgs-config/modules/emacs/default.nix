@@ -28,11 +28,9 @@ let
   '';
   editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
 
-  #emacsOverlay = (import (builtins.fetchTarball {
-  #  url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
-  #})) pkgs pkgs;
-
   sources = import ../../../nixos/nix/sources.nix;
+
+  #emacsOverlay = (import sources.emacs-overlay) pkgs pkgs;
 
   myemacs = pkgs.callPackage sources.nix-doom-emacs {
   # For testing
