@@ -32,6 +32,22 @@
         "type": "github"
       }
     },
+    "krops": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1593711896,
+        "narHash": "sha256-PrQCjH3caV8Tmv23+na+SDPx2uFfPmJY/a7tnUP1yPo=",
+        "owner": "krebs",
+        "repo": "krops",
+        "rev": "5ea125514e48c630120fbb6a44e9ae0c7932a123",
+        "type": "github"
+      },
+      "original": {
+        "owner": "krebs",
+        "repo": "krops",
+        "type": "github"
+      }
+    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1594041983,
@@ -66,11 +82,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1595650389,
-        "narHash": "sha256-lAasQUuYxlE35+/WpBZu8mzDfeV/6K1MfK/oE300M50=",
+        "lastModified": 1595680516,
+        "narHash": "sha256-doUFCh9KvGKmu4wi5tmIUVbsCF0BBJ74WQG5dafmP8o=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "7c1287626c26c5e8d7c4414b47feafba7417f1d7",
+        "rev": "8d0682bac014f5c0ee717e9dade62c3fe40b6dab",
         "type": "github"
       },
       "original": {
@@ -83,6 +99,7 @@
       "inputs": {
         "choose-place": "choose-place",
         "home-manager": "home-manager",
+        "krops": "krops",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nur": "nur",

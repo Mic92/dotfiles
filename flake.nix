@@ -6,6 +6,8 @@
   inputs.nixpkgs.url = github:Mic92/nixpkgs/master;
   inputs.nur.url = github:nix-community/NUR;
   inputs.sops-nix.url = github:Mic92/sops-nix;
+  inputs.krops.url = github:krebs/krops;
+  inputs.krops.flake = false;
   # for development
   #inputs.sops-nix.url = "/home/joerg/git/sops-nix";
   inputs.sops-nix.inputs.nixpkgs.follows = "nixpkgs";
@@ -16,7 +18,7 @@
   inputs.choose-place.url = github:mbailleu/choose-place;
   inputs.choose-place.flake = false;
 
-  outputs = { self, nixpkgs, nixos-hardware, sops-nix, nur, home-manager, choose-place }:
+  outputs = { self, nixpkgs, nixos-hardware, sops-nix, nur, home-manager, choose-place, ... }:
     let
       defaultModules = [
         {

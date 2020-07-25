@@ -1,8 +1,6 @@
-with import ../krops.nix {
-  name = "eve";
-};
+with import ../krops.nix;
 
-pkgs.krops.writeCommand "deploy" {
+krops.writeCommand "deploy" {
   source = lib.evalSource [{
     inherit dotfiles;
   }];

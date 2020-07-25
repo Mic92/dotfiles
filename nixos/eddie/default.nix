@@ -1,9 +1,6 @@
-with import ../krops.nix {
-  name = "eddie";
-  secretSource = "joerg";
-};
+with import ../krops.nix;
 
-pkgs.krops.writeCommand "deploy" {
+krops.writeCommand "deploy" {
   source = lib.evalSource [{
     inherit dotfiles;
   }];
