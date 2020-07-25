@@ -12,13 +12,24 @@
       pkgs.gzip
       pkgs.git
     ];
-
   };
 
-  systemd.services."buildkite-agent-builder" = {
-    serviceConfig.SupplementaryGroups = [ "keys" ];
+  systemd.services.buildkite-agent-builder = {
+    confinement.enable = true;
+    serviceConfig = {
+      SupplementaryGroups = [ "keys" ];
+      BindReadOnlyPaths = [
+        config.services.buildkite-agents.builder.tokenPath
+        config.services.buildkite-agents.builder.privateSshKeyPath
+        "${config.environment.etc."ssl/certs/ca-certificates.crt".source}:/etc/ssl/certs/ca-certificates.crt"
+        "/etc/machine-id"
+      ];
+      BindPaths = [
+        config.services.buildkite-agents.builder.dataDir
+      ];
+    };
   };
 
-  sops.secrets.buildkite-token.owner = "buildkite-agent-builder";
-  sops.secrets.buildkite-ssh-key.owner = "buildkite-agent-builder";
+  sops.secrets.buildkite-token.owner = config.systemd.services.buildkite-agent-builder.serviceConfig.User;
+  sops.secrets.buildkite-ssh-key.owner = config.systemd.services.buildkite-agent-builder.serviceConfig.User;
 }
