@@ -92,3 +92,5 @@
   user = Mic92
 [advice]
   detachedHead = false
+[init]
+  defaultBranch = main
