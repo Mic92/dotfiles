@@ -63,7 +63,7 @@
         } {
           service = "notify.pushover";
           data_template.message = ''
-            Shannan ${name} today.
+            Shannan ${name} today. Call her a good girl.
           '';
         } {
           service = "notify.mobile_app_beatrice";
