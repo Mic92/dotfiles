@@ -14,14 +14,15 @@
     },
     "doom-emacs": {
         "branch": "develop",
+        "builtin": true,
         "description": "An Emacs framework for the stubborn martian hacker",
         "homepage": "",
         "owner": "hlissner",
         "repo": "doom-emacs",
-        "rev": "15f0bccde57538812e64f1c12771bc454aa254c6",
-        "sha256": "1ydif4qwq0l6rv1h5418vl8igbk4qclzwg9ck3b7jzpbv27rmf1z",
+        "rev": "9c96feba56ff687f2c8376bfe76363a53bf601ec",
+        "sha256": "0459yy3ki27l6ir2g015x1rcafrkqjyni3hk90va0fhahjzpg154",
         "type": "tarball",
-        "url": "https://github.com/hlissner/doom-emacs/archive/15f0bccde57538812e64f1c12771bc454aa254c6.tar.gz",
+        "url": "https://github.com/hlissner/doom-emacs/archive/9c96feba56ff687f2c8376bfe76363a53bf601ec.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "home-manager": {
