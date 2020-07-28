@@ -4,6 +4,8 @@
   # To update all inputs:
   # $ nix flake update --recreate-lock-file
   inputs.nixpkgs.url = github:Mic92/nixpkgs/master;
+  # for development
+  #inputs.nixpkgs.url = "/home/joerg/git/nixpkgs";
   inputs.nur.url = github:nix-community/NUR;
   inputs.sops-nix.url = github:Mic92/sops-nix;
   inputs.krops.url = github:krebs/krops;
@@ -28,6 +30,7 @@
             "nur=${nur}"
           ];
           nixpkgs.overlays = [ nur.overlay ];
+          #system.nixos.versionSuffix = "";
         }
         sops-nix.nixosModules.sops
       ];
