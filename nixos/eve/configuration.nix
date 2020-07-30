@@ -22,10 +22,10 @@
     ./modules/adminer.nix
     ./modules/bitwarden.nix
     ./modules/borgbackup.nix
-    ./modules/buildkite.nix
     ./modules/choose-place
     ./modules/docker.nix
     ./modules/dovecot.nix
+    ./modules/drone.nix
     ./modules/ejabberd.nix
     ./modules/gogs.nix
     ./modules/grafana.nix
