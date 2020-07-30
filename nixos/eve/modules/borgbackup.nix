@@ -30,9 +30,12 @@
     '';
 
     postHook = ''
-      ${pkgs.nur.repos.mic92.healthcheck}/bin/healthcheck \
-        --service borgbackup --failed $exitStatus \
-        --password-file ${config.sops.secrets.healthcheck-borgbackup.path}
+      token=$(cat ${config.sops.secrets.healthcheck-borgbackup.path})
+      if [[ "$exitStatus" == "0" ]]; then
+        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$token
+      else
+        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$token/fail
+      fi
     '';
 
     prune.keep = {
