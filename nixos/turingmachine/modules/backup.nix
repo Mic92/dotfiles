@@ -12,6 +12,7 @@ in {
   systemd.services.borgbackup-job-turingmachine.unitConfig.RequiresMountsFor = backupPath;
 
   sops.secrets.borgbackup = {};
+  sops.secrets.healthcheck-borgbackup = {};
 
   services.borgbackup.jobs.turingmachine = {
     removableDevice = true;
@@ -39,9 +40,9 @@ in {
     postHook = ''
       token=$(cat ${config.sops.secrets.healthcheck-borgbackup.path})
       if [[ "$exitStatus" == "0" ]]; then
-        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/${token}
+        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$token
       else
-        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/${token}/fail
+        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$token/fail
       fi
     '';
 
