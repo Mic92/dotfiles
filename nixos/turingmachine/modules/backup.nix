@@ -58,5 +58,5 @@ in {
     };
   };
   environment.systemPackages = with pkgs; [ borgbackup ];
-  sops.secrets.healthcheck-borgbackup-turingmachine = {};
+  sops.secrets.healthcheck-borgbackup = {};
 }
