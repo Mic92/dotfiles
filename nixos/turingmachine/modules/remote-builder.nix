@@ -1,39 +1,37 @@
 { config, ... }: {
   nix.distributedBuilds = true;
   nix.buildMachines = [
-  # b0rked
-  #{
-  #  hostName = "martha.r";
-  #  sshUser = "nix";
-  #  sshKey = config.sops.secrets.id_buildfarm.path;
-  #  system = "x86_64-linux";
-  #  maxJobs = 8;
-  #} {
-  #  hostName = "donna.r";
-  #  sshUser = "nix";
-  #  sshKey = config.sops.secrets.id_buildfarm.path;
-  #  system = "x86_64-linux";
-  #  maxJobs = 8;
-  #} {
-  #  hostName = "amy.r";
-  #  sshUser = "nix";
-  #  sshKey = config.sops.secrets.id_buildfarm.path;
-  #  system = "x86_64-linux";
-  #  maxJobs = 8;
-  #} {
-  #  hostName = "clara.r";
-  #  sshUser = "nix";
-  #  sshKey = config.sops.secrets.id_buildfarm.path;
-  #  system = "x86_64-linux";
-  #  maxJobs = 8;
-  #} {
-  #  hostName = "rose.r";
-  #  sshUser = "nix";
-  #  sshKey = config.sops.secrets.id_buildfarm.path;
-  #  system = "x86_64-linux";
-  #  maxJobs = 8;
-  #}
   {
+    hostName = "martha.r";
+    sshUser = "nix";
+    sshKey = config.sops.secrets.id_buildfarm.path;
+    system = "x86_64-linux";
+    maxJobs = 8;
+  } {
+    hostName = "donna.r";
+    sshUser = "nix";
+    sshKey = config.sops.secrets.id_buildfarm.path;
+    system = "x86_64-linux";
+    maxJobs = 8;
+  } {
+    hostName = "amy.r";
+    sshUser = "nix";
+    sshKey = config.sops.secrets.id_buildfarm.path;
+    system = "x86_64-linux";
+    maxJobs = 8;
+  } {
+    hostName = "clara.r";
+    sshUser = "nix";
+    sshKey = config.sops.secrets.id_buildfarm.path;
+    system = "x86_64-linux";
+    maxJobs = 8;
+  } {
+    hostName = "rose.r";
+    sshUser = "nix";
+    sshKey = config.sops.secrets.id_buildfarm.path;
+    system = "x86_64-linux";
+    maxJobs = 8;
+  } {
     hostName = "prism.r";
     sshUser = "Mic92";
     sshKey = "/root/.ssh/id_ed25519";
