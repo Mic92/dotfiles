@@ -38,7 +38,6 @@
     nix-zsh-completions
     vim
     hdparm
-    nftables
     dnsutils
 
     # additional
