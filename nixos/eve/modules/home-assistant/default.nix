@@ -9,7 +9,6 @@ in {
     ./jokes.nix
     ./light.nix
     ./ldap.nix
-    ./ps4.nix
     ./lunch-place.nix
     ./noops.nix
     ./nixoswiki.nix

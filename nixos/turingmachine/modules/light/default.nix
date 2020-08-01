@@ -12,6 +12,5 @@
 
   environment.systemPackages = [
     (pkgs.callPackage ./hue-bt-ctl.nix {})
-    pkgs.nur.repos.mic92.pyps4-2ndscreen
   ];
 }
