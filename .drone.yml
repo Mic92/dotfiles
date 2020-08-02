@@ -32,7 +32,6 @@ steps:
     if [[ -n "$CACHIX_SIGNING_KEY" ]]; then
       nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
       nix shell '.#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
-      cat paths
       nix shell '.#cachix' -c cachix push mic92 < paths
     fi
 volumes:
