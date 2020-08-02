@@ -27,7 +27,8 @@
     ./modules/dovecot.nix
     ./modules/drone.nix
     ./modules/ejabberd.nix
-    ./modules/gogs.nix
+    ./modules/gitea.nix
+    #./modules/gogs.nix
     ./modules/grafana.nix
     ./modules/home-assistant
     ./modules/influxdb.nix
