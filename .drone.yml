@@ -1,0 +1,33 @@
+---
+kind: pipeline
+name: Build NixOS & home-manager
+
+steps:
+- name: test
+  image: scratch
+  pull: never
+  environment:
+    NIX_REMOTE: daemon
+    PATH: /nix/var/nix/profiles/system/sw/bin/
+    SSL_CERT_FILE: /nix/var/nix/profiles/system/etc/ssl/certs/ca-bundle.crt
+    PAGER: cat
+    USER: root
+  volumes:
+    - name: nixstore
+      path: /nix
+  volumes:
+    - name: gcroots
+      path: /var/lib/drone/gcroots
+  commands:
+  # TODO fix this NIX_PATH impurities in homemanager
+  - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
+  - rm -rf /var/lib/drone/gcroots.tmp && mkdir -p /var/lib/drone/gcroots.tmp
+  - nix build --out-link /var/lib/drone/gcroots{.tmp,} -f ./nixos/ci.nix
+  - rm -rf /var/lib/drone/gcroots && mv /var/lib/drone/gcroots{.tmp,}
+volumes:
+- name: nixstore
+  host:
+    path: /nix
+- name: gcroots
+  host:
+    path: /var/lib/drone/gcroots
