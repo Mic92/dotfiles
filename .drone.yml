@@ -46,6 +46,6 @@ volumes:
     path: /nix/var/nix/profiles/system/etc/ssl
 ---
 kind: signature
-hmac: c635a7c58bf73876436014a03c2e8793c983cfbcf3a6a46f0b4816955dae6956
+hmac: 42c6da64ba008c611518ba38b63e1f2754cdcb67917978edacd924c0f51812bd
 
 ...
