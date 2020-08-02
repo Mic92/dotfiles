@@ -44,6 +44,6 @@ volumes:
     path: /var/lib/drone/nix-build
 ---
 kind: signature
-hmac: e6020fdb5db095c4ffab506ad2fe2bbcd713800d6f18e8847c8a9ba4747eda17
+hmac: 6c66b99a9de43bb5c4c1049120ffddad811237b9b42c8d6479147d1202b1243a
 
 ...
