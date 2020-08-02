@@ -28,7 +28,6 @@
     ./modules/drone.nix
     ./modules/ejabberd.nix
     ./modules/gitea.nix
-    #./modules/gogs.nix
     ./modules/grafana.nix
     ./modules/home-assistant
     ./modules/influxdb.nix
