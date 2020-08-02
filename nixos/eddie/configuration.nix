@@ -4,7 +4,6 @@
     "${modulesPath}/installer/scan/not-detected.nix"
     ./modules/borg
     ../modules/users.nix
-    ../modules/retiolum.nix
     ../modules/mosh.nix
     ../modules/tracing.nix
     ../modules/packages.nix

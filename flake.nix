@@ -10,6 +10,7 @@
   inputs.sops-nix.url = github:Mic92/sops-nix;
   inputs.krops.url = github:krebs/krops;
   inputs.krops.flake = false;
+  inputs.retiolum.url = git+https://git.thalheim.io/Mic92/retiolum;
   # for development
   #inputs.sops-nix.url = "/home/joerg/git/sops-nix";
   inputs.sops-nix.inputs.nixpkgs.follows = "nixpkgs";
@@ -20,7 +21,15 @@
   inputs.choose-place.url = github:mbailleu/choose-place;
   inputs.choose-place.flake = false;
 
-  outputs = { self, nixpkgs, nixos-hardware, sops-nix, nur, home-manager, choose-place, ... }:
+  outputs = { self
+            , nixpkgs
+            , nixos-hardware
+            , sops-nix
+            , nur
+            , home-manager
+            , choose-place
+            , retiolum
+            , ... }:
     let
       defaultModules = [
         {
@@ -32,6 +41,7 @@
           nixpkgs.overlays = [ nur.overlay ];
           #system.nixos.versionSuffix = "";
         }
+        retiolum.nixosModules.retiolum
         sops-nix.nixosModules.sops
       ];
     in {
