@@ -1,3 +1,4 @@
+---
 kind: pipeline
 name: Build NixOS & home-manager
 
@@ -43,6 +44,6 @@ volumes:
     path: /var/lib/drone/nix-build
 ---
 kind: signature
-hmac: 994ab60a71d16e82c5517943962adc7ae4298e6196967a67b827367217ae2243
+hmac: e6020fdb5db095c4ffab506ad2fe2bbcd713800d6f18e8847c8a9ba4747eda17
 
 ...
