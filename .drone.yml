@@ -14,6 +14,8 @@ steps:
     PAGER: cat
     USER: root
     BUILDDIR: /var/lib/drone/nix-build
+    CACHIX_SIGNING_KEY:
+      from_secret: CACHIX_SIGNING_KEY
   volumes:
     - name: nixstore
       path: /nix
@@ -25,8 +27,14 @@ steps:
   # TODO fix this NIX_PATH impurities in homemanager
   - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=$${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
-  - nix build -L --out-link $BUILDDIR/result -f ./nixos/ci.nix
-  - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots{.tmp,}
+  - nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
+  - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
+  - |
+    if [[ -n "$CACHIX_SIGNING_KEY" ]]; then
+      nix path-info --json -r $BUILDDIR/gcroots.tmp/result* | \
+      nix shell '.#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' | \
+      nix shell '.#cachix' -c cachix push mic92
+    fi
 volumes:
 - name: nixstore
   host:
@@ -36,6 +44,6 @@ volumes:
     path: /var/lib/drone/nix-build
 ---
 kind: signature
-hmac: a2ea2543b18c4ac92330585f3c39bb19a92c2f4234cd83c509a0b29fd166d624
+hmac: 994ab60a71d16e82c5517943962adc7ae4298e6196967a67b827367217ae2243
 
 ...
