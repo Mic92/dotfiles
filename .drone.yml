@@ -8,9 +8,6 @@ steps:
   environment:
     NIX_REMOTE: daemon
     PATH: /nix/var/nix/profiles/system/sw/bin/
-    SSL_CERT_FILE: /nix/var/nix/profiles/system/etc/ssl/certs/ca-certificates.crt
-    GIT_SSL_CAINFO: /nix/var/nix/profiles/system/etc/ssl/certs/ca-certificates.crt
-    CURL_CA_BUNDLE: /nix/var/nix/profiles/system/etc/ssl/certs/ca-certificates.crt
     PAGER: cat
     USER: root
     BUILDDIR: /var/lib/drone/nix-build
@@ -19,6 +16,8 @@ steps:
   volumes:
     - name: nixstore
       path: /nix
+    - name: sslcerts
+      path: /etc/ssl
     - name: gcroots
       path: /var/lib/drone/nix-build
   commands:
@@ -43,8 +42,11 @@ volumes:
 - name: gcroots
   host:
     path: /var/lib/drone/nix-build
+- name: sslcerts
+  host:
+    path: /nix/var/nix/profiles/system/etc/ssl
 ---
 kind: signature
-hmac: 499d509c5c5f551c64d03ba1119baee94bd8c5a3aa1a6f46dfe31463f80b90b5
+hmac: c635a7c58bf73876436014a03c2e8793c983cfbcf3a6a46f0b4816955dae6956
 
 ...
