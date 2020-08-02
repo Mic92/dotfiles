@@ -31,7 +31,7 @@ steps:
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
   - |
     if [[ -n "$CACHIX_SIGNING_KEY" ]]; then
-      nix path-info --json -r $BUILDDIR/gcroots.tmp/result* | \
+      nix path-info --json -r $BUILDDIR/gcroots/result* | \
       nix shell '.#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' | \
       nix shell '.#cachix' -c cachix push mic92
     fi
