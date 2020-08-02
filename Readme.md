@@ -1,5 +1,8 @@
 # My personal bootstrap process
 
+[![Build Status](https://drone.thalheim.io/api/badges/Mic92/dotfiles/status.svg)](https://drone.thalheim.io/Mic92/dotfiles)
+
+
 ```console
 $ sudo pacman -S git
 ```
