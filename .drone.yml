@@ -31,9 +31,10 @@ steps:
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
   - |
     if [[ -n "$CACHIX_SIGNING_KEY" ]]; then
-      nix path-info --json -r $BUILDDIR/gcroots/result* | \
-      nix shell '.#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' | \
-      nix shell '.#cachix' -c cachix push mic92
+      nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
+      nix shell '.#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
+      cat paths
+      nix shell '.#cachix' -c cachix push mic92 < paths
     fi
 volumes:
 - name: nixstore
@@ -44,6 +45,6 @@ volumes:
     path: /var/lib/drone/nix-build
 ---
 kind: signature
-hmac: 6c66b99a9de43bb5c4c1049120ffddad811237b9b42c8d6479147d1202b1243a
+hmac: 499d509c5c5f551c64d03ba1119baee94bd8c5a3aa1a6f46dfe31463f80b90b5
 
 ...
