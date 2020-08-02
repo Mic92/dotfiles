@@ -69,7 +69,10 @@ in {
   };
 
   services.dovecot2 = {
-    mailboxes = [{ auto = "subscribe"; name = "Spam"; specialUse = "Junk"; }];
+    mailboxes.Spam = {
+      auto = "subscribe";
+      specialUse = "Junk";
+    };
     extraConfig = ''
       protocol imap {
         mail_plugins = $mail_plugins imap_sieve
