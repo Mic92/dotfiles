@@ -4,7 +4,7 @@
   services.nginx.virtualHosts."retiolum.thalheim.io" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
-    root = "/var/lib/gogs/builds/retiolum.thalheim.io";
+    root = "/var/lib/gitea/builds/retiolum.thalheim.io";
   };
 
   systemd.timers.stockholm-autosync = {
@@ -16,8 +16,8 @@
   systemd.services.stockholm-autosync = {
     script = ''
       set -eux -o pipefail
-      readonly workdir=/var/lib/gogs/builds/stockholm-auto-update
-      readonly downstream=gogs@git.thalheim.io:Mic92/stockholm
+      readonly workdir=/var/lib/gitea/builds/stockholm-auto-update
+      readonly downstream=gitea@git.thalheim.io:Mic92/stockholm
       readonly upstream=https://cgit.krebsco.de/stockholm 
       if [[ ! -d "$workdir" ]]; then
         git clone "$downstream" "$workdir"
@@ -31,7 +31,7 @@
     path = [ pkgs.git ];
     serviceConfig = {
       Type = "oneshot";
-      User = "gogs";
+      User = "gitea";
     };
   };
 }

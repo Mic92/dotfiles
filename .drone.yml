@@ -3,30 +3,46 @@ name: Build NixOS & home-manager
 
 steps:
 - name: test
-  image: scratch
-  pull: never
+  image: busybox
   environment:
     NIX_REMOTE: daemon
     PATH: /nix/var/nix/profiles/system/sw/bin/
-    SSL_CERT_FILE: /nix/var/nix/profiles/system/etc/ssl/certs/ca-bundle.crt
+    SSL_CERT_FILE: /nix/var/nix/profiles/system/etc/ssl/certs/ca-certificates.crt
+    GIT_SSL_CAINFO: /nix/var/nix/profiles/system/etc/ssl/certs/ca-certificates.crt
+    CURL_CA_BUNDLE: /nix/var/nix/profiles/system/etc/ssl/certs/ca-certificates.crt
     PAGER: cat
     USER: root
+    BUILDDIR: /var/lib/drone/nix-build
+    CACHIX_SIGNING_KEY:
+      from_secret: CACHIX_SIGNING_KEY
   volumes:
     - name: nixstore
       path: /nix
-  volumes:
     - name: gcroots
-      path: /var/lib/drone/gcroots
+      path: /var/lib/drone/nix-build
   commands:
+  - mkdir /etc/nix
+  - echo "experimental-features = nix-command flakes" >> /etc/nix/nix.conf
   # TODO fix this NIX_PATH impurities in homemanager
-  - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
-  - rm -rf /var/lib/drone/gcroots.tmp && mkdir -p /var/lib/drone/gcroots.tmp
-  - nix build --out-link /var/lib/drone/gcroots{.tmp,} -f ./nixos/ci.nix
-  - rm -rf /var/lib/drone/gcroots && mv /var/lib/drone/gcroots{.tmp,}
+  - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=$${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
+  - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
+  - nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
+  - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
+  - |
+    if [[ -n "$CACHIX_SIGNING_KEY" ]]; then
+      nix path-info --json -r $BUILDDIR/gcroots.tmp/result* | \
+      nix shell '.#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' | \
+      nix shell '.#cachix' -c cachix push mic92
+    fi
 volumes:
 - name: nixstore
   host:
     path: /nix
 - name: gcroots
   host:
-    path: /var/lib/drone/gcroots
+    path: /var/lib/drone/nix-build
+---
+kind: signature
+hmac: 994ab60a71d16e82c5517943962adc7ae4298e6196967a67b827367217ae2243
+
+...

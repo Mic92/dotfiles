@@ -19,11 +19,11 @@
     "home-manager": {
       "flake": false,
       "locked": {
-        "lastModified": 1596209457,
-        "narHash": "sha256-E0oOfGzbBIkFnDt/sOfKusoOUsqmLiEbL0htGVZljR4=",
+        "lastModified": 1596369918,
+        "narHash": "sha256-7JZkUHx68mrG9YhWxlFKAtfwq00QQP1lzIY4Xa/mW4M=",
         "owner": "rycee",
         "repo": "home-manager",
-        "rev": "f119d4d1423cec5cee7a7b75e51d329fe2b28325",
+        "rev": "152769aed96d4d6f005ab40daf03ec4f5102c763",
         "type": "github"
       },
       "original": {
@@ -82,17 +82,32 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1596298354,
-        "narHash": "sha256-88dduOuSHMB4DQzuUhB3Owrj1kiYv2HujJ8ns0QyTSw=",
+        "lastModified": 1596400160,
+        "narHash": "sha256-UIn9nMXXyyGFiqwV9/itOk92HLZOPPXgf0hf9AK4yes=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "0b3327968107987efcdc261b60575936b7d39c55",
+        "rev": "173fd2bb35af351b4f70b3c4d4db42e25a52f47f",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "repo": "NUR",
         "type": "github"
+      }
+    },
+    "retiolum": {
+      "locked": {
+        "lastModified": 1596402401,
+        "narHash": "sha256-sxDldyyjmmUSEvF4phj8IG5UZV/cEH+maEsqw3jZ6TY=",
+        "ref": "master",
+        "rev": "f88ee824910c4eac78d4208dac3f82fba5995e52",
+        "revCount": 4,
+        "type": "git",
+        "url": "https://git.thalheim.io/Mic92/retiolum"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://git.thalheim.io/Mic92/retiolum"
       }
     },
     "root": {
@@ -103,6 +118,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
+        "retiolum": "retiolum",
         "sops-nix": "sops-nix"
       }
     },
@@ -113,11 +129,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1596006704,
-        "narHash": "sha256-xdqsXgmC+1d3PFQL96qhreaAR54sBqewVUVDjsMD0e4=",
+        "lastModified": 1596323363,
+        "narHash": "sha256-rr+B51kZO8ZlQEiCj/gCsBwQbEGwr2ph5IpFxq/1VFY=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "bef5a493529c12f224dd2ef3ba01aec0c470f290",
+        "rev": "9cbdd539702265ad0f1d80d5124fcab3fe969f00",
         "type": "github"
       },
       "original": {
