@@ -1,4 +1,3 @@
----
 kind: pipeline
 name: Build NixOS & home-manager
 
