@@ -76,6 +76,7 @@ steps:
   image: busybox
   commands:
     - mkdir -m700 -p $HOME/.ssh && echo "$DEPLOY_SSH_KEY" > $HOME/.ssh/id_ed25519 && chmod 400 $HOME/.ssh/id_ed25519
+    - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts .ssh/known_hosts
     # TODO: get rid of NIX_PATH here
     - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=$${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
     - $(nix-build ./nixos/eve)
@@ -100,6 +101,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: f55d6ef23aa3dcc198091f249cb65923ab811794ae3951117b204e26a87d34b1
+hmac: faf6ef4742688abcc0b50a93b062353c4c47d3d2cb79dbdb8eb1a6f617af06d4
 
 ...
