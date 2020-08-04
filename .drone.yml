@@ -75,7 +75,9 @@ steps:
 - name: deploy
   image: busybox
   commands:
-    - mkdir -m700 -p $HOME/.ssh && echo "$DEPLOY_SSH_KEY" > .ssh/id_ed25519 && chmod 400 .ssh/id_ed25519
+    - mkdir -m700 -p $HOME/.ssh && echo "$DEPLOY_SSH_KEY" > $HOME/.ssh/id_ed25519 && chmod 400 $HOME/.ssh/id_ed25519
+    # TODO: get rid of NIX_PATH here
+    - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=$${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
     - $(nix-build ./nixos/eve)
   volumes:
     - name: nixstore
@@ -98,6 +100,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: c1733c320cb1fb79f8d249248cedbf4f63d99180553d1e8be4c6fb657a968186
+hmac: f55d6ef23aa3dcc198091f249cb65923ab811794ae3951117b204e26a87d34b1
 
 ...
