@@ -26,6 +26,8 @@ steps:
   - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=$${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
   - nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
+  # WIP debugging
+  - sleep 99999
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
   volumes:
     - name: nixstore
@@ -98,6 +100,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: c1733c320cb1fb79f8d249248cedbf4f63d99180553d1e8be4c6fb657a968186
+hmac: 3a6c16fafc935df9340839c024399e4779da51eb1b9d61ff3e21c834696846e1
 
 ...
