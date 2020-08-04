@@ -14,6 +14,7 @@ in {
         "DRONE_DATABASE_DRIVER=postgres"
         "DRONE_SERVER_PORT=:3030"
         "DRONE_USER_CREATE=username:Mic92,admin:true"
+        "DRONE_RUNNER_NETWORKS=host"
       ];
       ExecStart = "${pkgs.drone}/bin/drone-server";
       User = droneserver;
