@@ -101,6 +101,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: faf6ef4742688abcc0b50a93b062353c4c47d3d2cb79dbdb8eb1a6f617af06d4
+hmac: 7ec242a97657928b0f5a75d58b9fc78b634fa1ade42226719b5c1c09b51e25bf
 
 ...
