@@ -75,7 +75,7 @@ steps:
 - name: deploy
   image: busybox
   commands:
-    - mkdir -m700 -p $HOME/.ssh && echo "${DEPLOY_SSH_KEY}" > $HOME/.ssh/id_ed25519 && chmod 400 $HOME/.ssh/id_ed25519
+    - mkdir -m700 -p $HOME/.ssh && echo "$DEPLOY_SSH_KEY" > $HOME/.ssh/id_ed25519 && chmod 400 $HOME/.ssh/id_ed25519
     - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
     # TODO: get rid of NIX_PATH here
     - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=$${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
@@ -103,6 +103,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: cb05f8cc3aaef6b0f74b968010f276903762315040a465f3113c5946d9f54a26
+hmac: 0fad9014adde2b61fc088fc0d20c7c2475def41fcf8e1c400f137b820e7cd858
 
 ...
