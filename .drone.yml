@@ -41,6 +41,10 @@ steps:
     PAGER: cat
     USER: root
     BUILDDIR: /var/lib/drone/nix-build
+  when:
+    event:
+      exclude:
+        - promote
 
 
 - name: upload
@@ -70,6 +74,7 @@ steps:
     event:
       exclude:
         - pull_request
+        - promote
 
 - name: deploy
   image: busybox
@@ -102,6 +107,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: a430081ef5394203dc9a81681c60982f0fe8c259960e24f1c4fb3fe709c44912
+hmac: eb3fb392b0782dbc0deb657087d5f8748252f9ef740b1f078c9d2a3da8b40b69
 
 ...
