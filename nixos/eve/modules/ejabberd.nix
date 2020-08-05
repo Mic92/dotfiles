@@ -284,7 +284,20 @@
     "ejabberd-devkid.net" = cert "devkid.net";
     "ejabberd-thalheim.io" = cert "thalheim.io";
   };
-  services.nginx.virtualHosts."anon.thalheim.io".useACMEHost = "thalheim.io";
+
+  services.nginx.virtualHosts = let
+    vhosts = domain: {
+      "upload.${domain}".useACMEHost = "ejabberd-${domain}";
+      "muc.${domain}".useACMEHost = "ejabberd-${domain}";
+      "pubsub.${domain}".useACMEHost = "ejabberd-${domain}";
+      "proxy.${domain}".useACMEHost = "ejabberd-${domain}";
+    };
+  in (vhosts "anon.thalheim.io")
+     // (vhosts "devkid.net")
+     // (vhosts "thalheim.io")
+     // {
+       "anon.thalheim.io".useACMEHost = "ejabberd-anon.thalheim.io";
+     };
 
   users.users.ejabberd.extraGroups = [ "keys" ];
   systemd.services.ejabberd.serviceConfig.SupplementaryGroups = [ "keys" ];
