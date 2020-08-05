@@ -22,7 +22,6 @@ steps:
   image: busybox
   commands:
   # TODO fix this NIX_PATH impurities in homemanager
-  - ls -la /etc/nix
   - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=$${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
   - nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
@@ -103,6 +102,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: 0fad9014adde2b61fc088fc0d20c7c2475def41fcf8e1c400f137b820e7cd858
+hmac: a430081ef5394203dc9a81681c60982f0fe8c259960e24f1c4fb3fe709c44912
 
 ...
