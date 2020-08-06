@@ -28,18 +28,21 @@ let
   '';
   editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
 
-  sources = import ../../../nixos/nix/sources.nix;
+  flake = (builtins.fromJSON (builtins.readFile ../../../flake.lock)).nodes;
+  tarballUrl = info: "https://api.github.com/repos/${info.owner}/${info.repo}/tarball/${info.rev}";
+  nix-doom-emacs = builtins.fetchTarball (tarballUrl flake.nix-doom-emacs.locked);
+  doom-emacs = builtins.fetchTarball (tarballUrl flake.doom-emacs.locked);
 
   #emacsOverlay = (import sources.emacs-overlay) pkgs pkgs;
 
-  myemacs = pkgs.callPackage sources.nix-doom-emacs {
+  myemacs = pkgs.callPackage nix-doom-emacs {
   # For testing
   #myemacs = pkgs.callPackage /home/joerg/git/nix-doom-emacs {
     doomPrivateDir = builtins.path {
       name = "doom.d";
       path = ../../../home/.doom.d;
     };
-    dependencyOverrides.doom-emacs = sources.doom-emacs;
+    dependencyOverrides.doom-emacs = doom-emacs;
     extraPackages = [ pkgs.mu ];
     # maybe some day, when it stops segfaulting
     #emacsPackages = emacsOverlay.emacsPackagesFor emacsOverlay.emacsGcc;

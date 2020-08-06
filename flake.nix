@@ -3,23 +3,31 @@
 
   # To update all inputs:
   # $ nix flake update --recreate-lock-file
-  inputs.nixpkgs.url = github:Mic92/nixpkgs/master;
-  # for development
-  #inputs.nixpkgs.url = "/home/joerg/git/nixpkgs";
-  inputs.nur.url = github:nix-community/NUR;
-  inputs.sops-nix.url = github:Mic92/sops-nix;
-  inputs.krops.url = github:krebs/krops;
-  inputs.krops.flake = false;
-  inputs.retiolum.url = git+https://git.thalheim.io/Mic92/retiolum;
-  # for development
-  #inputs.sops-nix.url = "/home/joerg/git/sops-nix";
-  inputs.sops-nix.inputs.nixpkgs.follows = "nixpkgs";
-  inputs.nixos-hardware.url = github:Mic92/nixos-hardware/master;
-  inputs.home-manager.url = github:rycee/home-manager;
-  inputs.home-manager.flake = false;
+  inputs = {
+    nixpkgs.url = github:Mic92/nixpkgs/master;
+    # for development
+    #nixpkgs.url = "/home/joerg/git/nixpkgs";
+    nur.url = github:nix-community/NUR;
+    sops-nix.url = github:Mic92/sops-nix;
+    krops.url = github:krebs/krops;
+    krops.flake = false;
+    retiolum.url = git+https://git.thalheim.io/Mic92/retiolum;
+    # for development
+    #sops-nix.url = "/home/joerg/git/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-hardware.url = github:Mic92/nixos-hardware/master;
+    home-manager.url = github:rycee/home-manager;
+    home-manager.flake = false;
 
-  inputs.choose-place.url = github:mbailleu/choose-place;
-  inputs.choose-place.flake = false;
+    choose-place.url = github:mbailleu/choose-place;
+    choose-place.flake = false;
+
+    doom-emacs.url = github:hlissner/doom-emacs;
+    doom-emacs.flake = false;
+
+    nix-doom-emacs.url = github:vlaci/nix-doom-emacs;
+    nix-doom-emacs.flake = false;
+  };
 
   outputs = { self
             , nixpkgs

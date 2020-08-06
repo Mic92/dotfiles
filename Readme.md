@@ -33,4 +33,3 @@ $ sh ./install --daemon
 ```console
 $ home-manager switch
 ```
-

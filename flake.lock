@@ -16,6 +16,22 @@
         "type": "github"
       }
     },
+    "doom-emacs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1596688356,
+        "narHash": "sha256-FzTbUSxbC368l+ztIiX03/616F5deZhl9rNnipm+QyE=",
+        "owner": "hlissner",
+        "repo": "doom-emacs",
+        "rev": "bf9042327c576a96751da78d335f18ced21e111e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hlissner",
+        "repo": "doom-emacs",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "flake": false,
       "locked": {
@@ -45,6 +61,22 @@
       "original": {
         "owner": "krebs",
         "repo": "krops",
+        "type": "github"
+      }
+    },
+    "nix-doom-emacs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1595709059,
+        "narHash": "sha256-io9HmkkT8RtKbx37r/B5WgXYbm4q9MFLcMbIR9790sE=",
+        "owner": "vlaci",
+        "repo": "nix-doom-emacs",
+        "rev": "c440f4afe4ff2d38d2beb40d7e4bcfa2496f60c2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "vlaci",
+        "repo": "nix-doom-emacs",
         "type": "github"
       }
     },
@@ -82,11 +114,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1596579551,
-        "narHash": "sha256-Hi5Lk/+u19IKE96OjxMZHftXo9U20LInOFW66ZjSocE=",
+        "lastModified": 1596694299,
+        "narHash": "sha256-Zu2xq5H5vh5cfeBJ8pR9DwadiMr07Uwf1fbVecJjAaM=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "59e46926778e56d274385cf6961f0b5e27fae91d",
+        "rev": "a807a38bfcba39c4677e7720b1d04c01bb3f5594",
         "type": "github"
       },
       "original": {
@@ -113,8 +145,10 @@
     "root": {
       "inputs": {
         "choose-place": "choose-place",
+        "doom-emacs": "doom-emacs",
         "home-manager": "home-manager",
         "krops": "krops",
+        "nix-doom-emacs": "nix-doom-emacs",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nur": "nur",

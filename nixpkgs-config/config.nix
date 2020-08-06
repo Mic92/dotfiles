@@ -43,7 +43,11 @@
    in {
     myVimBundle = myVimBundle;
 
-    nur = import (import "${builtins.getEnv "HOME"}/.homesick/repos/dotfiles/nixos/nix/sources.nix").nur {
+    nur = let
+      flake = "${builtins.getEnv "HOME"}/.homesick/repos/dotfiles/flake.lock";
+      info = (builtins.fromJSON (builtins.readFile flake)).nodes.nur.locked;
+      url = "https://api.github.com/repos/${info.owner}/${info.repo}/tarball/${info.rev}";
+    in import (builtins.fetchTarball url) {
       inherit pkgs;
     };
 
