@@ -46,8 +46,12 @@
       pkgs = nixpkgs.legacyPackages.${system};
      in {
        devShell = pkgs.mkShell {
-         # is this a good idea?
-         #nativeBuildInputs = [ pkgs.ansible ];
+         nativeBuildInputs = [
+           pkgs.drone-cli
+           # is this a good idea?
+           #pkgs.ansible
+           pkgs.pre-commit
+         ];
        };
      })) // {
      nixosConfigurations = import ./nixos/configurations.nix {
