@@ -14,7 +14,6 @@ in {
         "DRONE_DATABASE_DRIVER=postgres"
         "DRONE_SERVER_PORT=:3030"
         "DRONE_USER_CREATE=username:Mic92,admin:true"
-        "DRONE_RUNNER_NETWORKS=host"
       ];
       ExecStart = "${pkgs.drone}/bin/drone-server";
       User = droneserver;
@@ -45,7 +44,7 @@ in {
     serviceConfig = {
       Environment = [
         "DRONE_SERVER_PORT=:3030"
-        "DRONE_RUNNER_NETWORKS=host"
+        "DRONE_RUNNER_NETWORKS=bridge"
       ];
       EnvironmentFile = [ config.sops.secrets.drone.path ];
       ExecStart = "${pkgs.drone}/bin/drone-agent";
