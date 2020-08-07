@@ -25,19 +25,19 @@ in {
     system = "x86_64-linux";
     modules = defaultModules ++ [
       nixos-hardware.nixosModules.dell-xps-13-9380
-      ./nixos/turingmachine/configuration.nix
+      ./turingmachine/configuration.nix
     ];
   };
 
   eddie = nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
-    modules = defaultModules ++ [ ./nixos/eddie/configuration.nix ];
+    modules = defaultModules ++ [ ./eddie/configuration.nix ];
   };
 
   eve = nixpkgs.lib.nixosSystem {
     system = "x86_64-linux";
     modules = defaultModules ++ [
-      ./nixos/eve/configuration.nix
+      ./eve/configuration.nix
       {
         nixpkgs.overlays = [(self: super: {
           choose-place = super.callPackage "${choose-place}" {};
