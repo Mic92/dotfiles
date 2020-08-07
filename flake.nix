@@ -55,7 +55,7 @@
      };
 
      hmConfigurations = import ./nixpkgs-config/homes.nix {
-       inherit self nixpkgs home-manager;
+       inherit self nixpkgs home-manager nur;
      };
 
      inherit (nixpkgs) legacyPackages;
