@@ -1,9 +1,10 @@
-{ lib, config, ... }: with lib; {
+{ lib, config, pkgs, ... }: with lib; {
   nix = {
     trustedUsers = ["joerg" "root"];
     useSandbox = true;
     gc.automatic = true;
     gc.dates = "03:15";
+    package = pkgs.nixFlakes;
 
     # should be enough?
     nrBuildUsers = 32;

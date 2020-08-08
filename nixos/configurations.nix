@@ -45,4 +45,9 @@ in {
       }
     ];
   };
+
+  eva = nixpkgs.lib.nixosSystem {
+    system = "x86_64-linux";
+    modules = defaultModules ++ [ ./eva/configuration.nix ];
+  };
 }

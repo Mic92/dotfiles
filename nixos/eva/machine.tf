@@ -81,6 +81,10 @@ resource "aws_security_group" "eva" {
   }
 }
 
+output "eva-id" {
+  value = aws_instance.eva.id
+}
+
 output "eva-ipv4" {
   value = aws_instance.eva.public_ip
 }

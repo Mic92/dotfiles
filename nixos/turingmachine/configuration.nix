@@ -192,8 +192,6 @@
   #  dhcpNoBind = true;
   #};
 
-  nix.package = pkgs.nixFlakes;
-
   services.samba = {
     enable = true;
     securityType = "user";

@@ -3,7 +3,6 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, lib, ... }:
-
 {
   #deployment.targetHost = "eve.thalheim.io";
   networking.hostName = "eve";
@@ -13,8 +12,6 @@
   i18n.defaultLocale = "en_DK.UTF-8";
 
   programs.vim.defaultEditor = true;
-
-  nix.package = pkgs.nixFlakes;
 
   imports = [
     # Include the results of the hardware scan.
