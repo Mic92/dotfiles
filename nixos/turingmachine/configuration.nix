@@ -25,7 +25,6 @@
 
     ../modules/macos-kvm.nix
     ../modules/mosh.nix
-    ../modules/nix-daemon.nix
     ../modules/networkd.nix
     ../modules/dnsmasq.nix
     ../modules/wireguard.nix

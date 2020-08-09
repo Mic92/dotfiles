@@ -7,7 +7,6 @@
   programs.vim.defaultEditor = true;
 
   imports = [
-    ../modules/nix-daemon.nix
     ../modules/mosh.nix
     ../modules/nur.nix
     ../modules/tracing.nix

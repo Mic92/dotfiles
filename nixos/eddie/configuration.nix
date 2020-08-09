@@ -11,7 +11,6 @@
     ../modules/libvirt.nix
     ../modules/intel-graphics.nix
     ../modules/tor-ssh.nix
-    ../modules/nix-daemon.nix
     ../modules/networkd.nix
     ../modules/builder.nix
     ../modules/i3.nix

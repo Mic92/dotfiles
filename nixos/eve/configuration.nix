@@ -65,7 +65,6 @@
     ./modules/zsh.nix
 
     ../modules/builder.nix
-    ../modules/nix-daemon.nix
     ../modules/mosh.nix
     ../modules/nur.nix
     ../modules/tracing.nix

@@ -15,6 +15,9 @@ let
         "nur=${nur}"
       ];
       nixpkgs.overlays = [ nur.overlay ];
+      imports = [
+        ./modules/nix-daemon.nix
+      ];
       #system.nixos.versionSuffix = "";
     }
     retiolum.nixosModules.retiolum
