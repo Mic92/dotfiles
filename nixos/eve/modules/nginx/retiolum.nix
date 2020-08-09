@@ -18,7 +18,7 @@
       set -eux -o pipefail
       readonly workdir=/var/lib/gitea/builds/stockholm-auto-update
       readonly downstream=gitea@git.thalheim.io:Mic92/stockholm
-      readonly upstream=https://cgit.krebsco.de/stockholm 
+      readonly upstream=https://cgit.lassul.us/stockholm
       if [[ ! -d "$workdir" ]]; then
         git clone "$downstream" "$workdir"
       fi
