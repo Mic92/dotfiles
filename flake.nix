@@ -45,14 +45,7 @@
     (flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
      in {
-       devShell = pkgs.mkShell {
-         nativeBuildInputs = [
-           pkgs.drone-cli
-           # is this a good idea?
-           #pkgs.ansible
-           pkgs.pre-commit
-         ];
-       };
+       devShell = import ./shell.nix { inherit pkgs; };
      })) // {
      nixosConfigurations = import ./nixos/configurations.nix {
        inherit nixpkgs nur home-manager sops-nix retiolum nixos-hardware choose-place;
