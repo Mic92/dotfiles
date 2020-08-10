@@ -1,10 +1,13 @@
 with import <nixpkgs> {};
+let
+  flake = builtins.getFlake (toString ./../..);
+in
 mkShell {
   sopsPGPKeyDirs = [
     "./keys/hosts"
     "./keys/users"
   ];
   nativeBuildInputs = [
-    (pkgs.callPackage /home/joerg/git/sops-nix {}).sops-pgp-hook
+    (pkgs.callPackage flake.inputs.sops-nix {}).sops-pgp-hook
   ];
 }
