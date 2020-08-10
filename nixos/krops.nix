@@ -10,9 +10,5 @@ in {
 
   dotfiles.file = {
     path = toString ./..;
-    filters = [{
-      type = "exclude";
-      pattern = ".git";
-    }];
   };
 }
