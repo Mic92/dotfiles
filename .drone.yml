@@ -75,6 +75,9 @@ steps:
       exclude:
         - pull_request
         - promote
+    status:
+      - failure
+      - success
 
 - name: deploy
   image: busybox
@@ -108,6 +111,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: 3cef5953277a9161d21a568db63e56059f946b74f66a84c00fd5642455c60def
+hmac: 0ae90c4663f7eaaec1fe6735fddfdf17d18fc2fffc4ffef8f0f5dcc5a1c34ce9
 
 ...
