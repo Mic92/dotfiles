@@ -1,8 +1,9 @@
-{
+{ pkgs, ... }: {
   virtualisation.docker = {
     enable = true;
     storageDriver = "zfs";
     extraOptions = "--dns 8.8.8.8";
+    autoPrune.enable = true;
   };
 
   users.users.netdata.extraGroups = [ "docker" ];
