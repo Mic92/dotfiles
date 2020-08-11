@@ -24,7 +24,16 @@ steps:
   # TODO fix this NIX_PATH impurities in home-manager
   - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=$${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
-  - nix shell 'nixpkgs#git' -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
+  - |
+    if ! nix shell 'nixpkgs#git' -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix; then
+      ci_fail=1
+    fi
+    if [[ -n "$CACHIX_SIGNING_KEY" ]]; then
+      nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
+      nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
+      nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths
+    fi
+    exit ${ci_fail:-0}
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
   volumes:
     - name: nixstore
@@ -41,39 +50,11 @@ steps:
     PAGER: cat
     USER: root
     BUILDDIR: /var/lib/drone/nix-build
-  when:
-    event:
-      exclude:
-        - promote
-
-
-- name: upload
-  image: busybox
-  commands:
-  - nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
-  - nix shell '.#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
-  - nix shell '.#cachix' -c cachix push --jobs 32 mic92 < paths
-  environment:
-    NIX_REMOTE: daemon
-    PATH: /nix/var/nix/profiles/system/sw/bin/
-    PAGER: cat
-    USER: root
-    BUILDDIR: /var/lib/drone/nix-build
     CACHIX_SIGNING_KEY:
       from_secret: CACHIX_SIGNING_KEY
-  volumes:
-    - name: nixstore
-      path: /nix
-    - name: gcroots
-      path: /var/lib/drone/nix-build
-    - name: nixconf
-      path: /etc/nix
-    - name: sslcerts
-      path: /etc/ssl
   when:
     event:
       exclude:
-        - pull_request
         - promote
 
 - name: deploy
@@ -108,6 +89,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: 3cef5953277a9161d21a568db63e56059f946b74f66a84c00fd5642455c60def
+hmac: 6648c2bd81e7c0bb758a43bdc3d9b0b490de6b714016822b5517a1f360b1a0fd
 
 ...
