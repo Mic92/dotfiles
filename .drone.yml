@@ -21,6 +21,7 @@ steps:
 - name: build
   image: busybox
   commands:
+  - git submodule update --recursive --remote
   # TODO fix this NIX_PATH impurities in home-manager
   - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=$${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
@@ -107,6 +108,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: e6d532dd0463cd5efd8795fd8bf3fff726a9682d8596ebc5d1bdf23e27a7120e
+hmac: 9206adf3ac9087f39141e06623ec053565a7cbf7e5e794c9e1a3076c5bc592a0
 
 ...
