@@ -16,19 +16,11 @@ set width 0
 set auto-load safe-path /
 set breakpoint pending on
 define gef
-	source /home/joerg/.gdbinit-gef.py
+  source /home/joerg/.gdbinit-gef.py
 end
 
 define src
   layout src
-end
-
-define asm
-  layout asm
-end
-
-define regs
-  layout regs
 end
 
 define btc
