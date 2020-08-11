@@ -24,6 +24,7 @@ steps:
   # TODO fix this NIX_PATH impurities in home-manager
   - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=$${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
+  - sleep 9999
   - nix shell 'nixpkgs#git' -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
   volumes:
@@ -107,6 +108,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: e6d532dd0463cd5efd8795fd8bf3fff726a9682d8596ebc5d1bdf23e27a7120e
+hmac: 6f43da7931c51e79ab37f74d906be72ffd70881e0dee0e43c838eaa6110eda5d
 
 ...
