@@ -79,6 +79,7 @@ steps:
 - name: deploy
   image: busybox
   commands:
+    - git submodule update --recursive --remote
     - mkdir -m700 -p $HOME/.ssh && echo "$DEPLOY_SSH_KEY" > $HOME/.ssh/id_ed25519 && chmod 400 $HOME/.ssh/id_ed25519
     - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
     # TODO: get rid of NIX_PATH here
@@ -107,6 +108,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: e6d532dd0463cd5efd8795fd8bf3fff726a9682d8596ebc5d1bdf23e27a7120e
+hmac: 3cef5953277a9161d21a568db63e56059f946b74f66a84c00fd5642455c60def
 
 ...
