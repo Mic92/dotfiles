@@ -23,6 +23,7 @@ in {
   };
 
   systemd.services.nginx.serviceConfig.SupplementaryGroups = [ "keys" ];
+  systemd.services.nginx-config-reload.serviceConfig.SupplementaryGroups = [ "keys" ];
 
   sops.secrets.nginx-secure-link.owner = "nginx";
 
