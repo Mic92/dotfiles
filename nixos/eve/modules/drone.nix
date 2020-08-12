@@ -41,16 +41,29 @@ in {
 
   systemd.services.drone-agent = {
     wantedBy = [ "multi-user.target" ];
+    preStart = ''
+        export PATH=${pkgs.docker}/bin:$PATH
+        docker network rm drone || true
+        docker network rm drone-retiolum || true
+        while ! docker network ls | grep -q drone; do
+          docker network create \
+            --driver=bridge \
+            --subnet=172.28.0.0/16 \
+            --gateway=172.28.0.1 \
+            --subnet 2a01:4f9:2b:1605:3::1/80
+            --ipv6 drone
+          docker network create \
+            --driver=bridge \
+            --subnet 42:0000:3c46:70c7::/80 \
+            --ipv6 drone-retiolum
+        done
+    '';
     serviceConfig = {
       Environment = [
         "DRONE_SERVER_PORT=:3030"
-        "DRONE_RUNNER_NETWORKS=drone"
+        "DRONE_RUNNER_NETWORKS=drone,drone-retiolum"
       ];
       EnvironmentFile = [ config.sops.secrets.drone.path ];
-      ExecStartPre = [
-        "-${pkgs.docker}/bin/docker network rm drone"
-        "${pkgs.docker}/bin/docker network create --driver=bridge --subnet=172.28.0.0/16 --gateway=172.28.0.1 --subnet 2a01:4f9:2b:1605:3::1/80 --subnet 42:0000:3c46:70c7::/80 --ipv6 drone"
-      ];
       ExecStart = "${pkgs.drone}/bin/drone-agent";
       User = "drone-agent";
       Group = "drone-agent";
