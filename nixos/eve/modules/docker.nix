@@ -2,9 +2,12 @@
   virtualisation.docker = {
     enable = true;
     storageDriver = "zfs";
-    extraOptions = "--dns 8.8.8.8";
+    extraOptions = "--dns 172.28.0.1";
     autoPrune.enable = true;
   };
+
+  # see ./drone.nix
+  services.kresd.listenPlain = [ "172.28.0.1:53" ];
 
   users.users.netdata.extraGroups = [ "docker" ];
 

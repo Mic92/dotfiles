@@ -2,6 +2,10 @@
   services.kresd = {
     enable = true;
     listenDoH = [ "[::1]:8053" ];
+    listenPlain = [
+      "[::1]:53"
+      "127.0.0.1:53"
+    ];
     extraConfig = ''
       modules = { 'hints > iterate' }
       hints.add_hosts('${pkgs.retiolum}/etc.hosts')
