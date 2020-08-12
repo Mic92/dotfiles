@@ -92,7 +92,7 @@ in {
     gnome3.defaultIconTheme
     hicolor_icon_theme
     graphicsmagick
-    gimp
+    #gimp
     firefox
     #chromium
     aspell
