@@ -33,7 +33,9 @@ let
   nix-doom-emacs = builtins.fetchTarball (tarballUrl flake.nix-doom-emacs.locked);
   doom-emacs = builtins.fetchTarball (tarballUrl flake.doom-emacs.locked);
 
-  #emacsOverlay = (import sources.emacs-overlay) pkgs pkgs;
+  #emacsOverlay = (import (builtins.fetchTarball {
+  #    url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
+  #  })) pkgs pkgs;
 
   myemacs = pkgs.callPackage nix-doom-emacs {
   # For testing
