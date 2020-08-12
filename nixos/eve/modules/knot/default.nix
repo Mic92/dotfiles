@@ -45,6 +45,14 @@ in {
           semantic-checks: on
           global-module: mod-rrl/default
 
+        - id: retiolum
+          semantic-checks: on
+          dnssec-signing: on
+          dnssec-policy: rsa2k
+          zonefile-sync: -1
+          zonefile-load: difference
+          journal-content: changes
+
         - id: master
           semantic-checks: on
           dnssec-signing: on
@@ -62,6 +70,11 @@ in {
         - domain: lekwati.com
           file: "${./lekwati.com.zone}"
           template: master
+        ${lib.concatMapStringsSep "\n" (domain: ''
+        - domain: ${domain}
+          file: "${pkgs.retiolum}/zones/${domain}.zone"
+          template: retiolum
+        '') [ "w" "r" "i" "lan" "shack" "gg23" ]}
     '';
   };
 

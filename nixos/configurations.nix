@@ -29,6 +29,7 @@ let
     {
       nixpkgs.overlays = [(self: super: {
         choose-place = super.callPackage "${choose-place}" {};
+        inherit retiolum;
       })];
     }
   ];
@@ -51,12 +52,12 @@ in {
     modules = eveModules;
   };
 
-  eve-vm = nixosSystem {
-    system = "x86_64-linux";
-    modules = eveModules ++ [
-      "${nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
-    ];
-  };
+  #eve-vm = nixosSystem {
+  #  system = "x86_64-linux";
+  #  modules = eveModules ++ [
+  #    "${nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
+  #  ];
+  #};
 
   eva = nixosSystem {
     system = "x86_64-linux";
