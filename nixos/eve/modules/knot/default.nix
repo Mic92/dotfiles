@@ -70,11 +70,24 @@ in {
         - domain: lekwati.com
           file: "${./lekwati.com.zone}"
           template: master
-        ${lib.concatMapStringsSep "\n" (domain: ''
-#- domain: ${domain}
-#  file: "${pkgs.retiolum}/zones/${domain}.zone"
-#  template: retiolum
-        '') [ "w" "r" "i" "lan" "shack" "gg23" ]}
+        - domain: r
+          file: "${pkgs.retiolum}/zones/r.zone"
+          template: retiolum
+        - domain: w
+          file: "${pkgs.retiolum}/zones/w.zone"
+          template: retiolum
+        - domain: i
+          file: "${pkgs.retiolum}/zones/i.zone"
+          template: retiolum
+        - domain: lan
+          file: "${pkgs.retiolum}/zones/lan.zone"
+          template: retiolum
+        - domain: shack
+          file: "${pkgs.retiolum}/zones/shack.zone"
+          template: retiolum
+        - domain: gg23
+          file: "${pkgs.retiolum}/zones/gg23.zone"
+          template: retiolum
     '';
   };
 
