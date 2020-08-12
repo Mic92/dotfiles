@@ -4,7 +4,7 @@ krops.writeCommand "deploy" {
   source = lib.evalSource [{
     inherit dotfiles;
   }];
-  target = lib.mkTarget "joerg@turinmachine.r" // {
+  target = lib.mkTarget "joerg@turingmachine.r" // {
     sudo = true;
   };
   command = targetPath: ''
