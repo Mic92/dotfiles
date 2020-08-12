@@ -2,6 +2,10 @@
   services.kresd = {
     enable = true;
     listenDoH = [ "[::1]:8053" ];
+    extraConfig = ''
+      modules = { 'hints > iterate' }
+      hints.add_hosts('${pkgs.retiolum}/etc.hosts')
+    '';
   };
 
   networking.firewall.allowedTCPPorts = [ 853 ];
