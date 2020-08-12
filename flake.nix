@@ -45,7 +45,9 @@
     (flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
      in {
-       devShell = import ./shell.nix { inherit pkgs; };
+       devShell = pkgs.callPackage ./shell.nix {
+         inherit (sops-nix.packages.${system}) sops-pgp-hook;
+       };
      })) // {
      nixosConfigurations = import ./nixos/configurations.nix {
        #nixpkgs = toString <nixpkgs>;
