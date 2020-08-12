@@ -7,3 +7,6 @@ home/.emacs.elc
 nixos/vms/eve/secrets
 .direnv
 .mypy_cache/
+
+.terraform
+*.tfstate.backup
