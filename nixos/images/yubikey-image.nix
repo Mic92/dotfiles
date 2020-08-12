@@ -1,6 +1,10 @@
 # NixOS livesystem to generate yubikeys in an air-gapped manner
-# screenshot: https://dl.thalheim.io/wmxIqucOEo2xuLk0Ut45fQ/yubikey-live-system.png
+# screenshot: https://dl.thalheim.io/ZF5Y0yyVRZ_2MWqX2J42Gg/2020-08-12_16-00.png
 # $ nixos-generate -f iso -c yubikey-image.nix
+#
+# to test it in a vm:
+#
+# $ nixos-generate --run -f vm -c yubikey-image.nix
 { pkgs, ... }:
 
 let
@@ -22,8 +26,8 @@ in {
       mkdir $GNUPGHOME
     fi
     cp ${pkgs.fetchurl {
-      url = "https://raw.githubusercontent.com/drduh/config/662c16404eef04f506a6a208f1253fee2f4895d9/gpg.conf";
-      sha256 = "118fmrsn28fz629y7wwwcx7r1wfn59h3mqz1snyhf8b5yh0sb8la";
+      url = "https://raw.githubusercontent.com/drduh/config/75ec3f35c6977722d4dba17732d526f704f256ff/gpg.conf";
+      sha256 = "sha256-LK29P4+ZAvy9ObNGDNBGP/8+MIUY3/Uo4eJtXhwMoE0=";
     }} "$GNUPGHOME/gpg.conf"
     echo "\$GNUPGHOME has been set up for you. Generated keys will be in $GNUPGHOME."
   '';
