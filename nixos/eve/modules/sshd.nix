@@ -1,35 +1,18 @@
 { config, ... }: {
   imports = [ ../../modules/sshd.nix ];
 
-  programs.ssh.knownHosts = {
-    eve = {
-      hostNames = [
-        "eve"
-        "eve.thalheim.io"
-        "eve.r"
-        config.networking.eve.ipv4.address
-      ] ++ config.networking.eve.ipv6.addresses;
-      publicKey = ''
-        ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF/KPU3Z5LSjbBI6hrq25wCcseq2UpqSzUFZRr+ux6LM
-      '';
-    };
-    turingmachine = {
-      hostNames = [
-        "turingmachine.r"
-      ];
-      publicKey = ''
-        ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIM0sA09EdzAF25+oVGyMamLmsXrl4oIx6/endHqZ9lBa root@turingmachine
-      '';
-    };
+  services.openssh = {
+    extraConfig = ''
+      HostCertificate ${./eve-cert.pub}
+    '';
+    listenAddresses = [
+      { addr = "0.0.0.0"; port = 22; }
+      { addr = "0.0.0.0"; port = 22022; } # legacy
+      { addr = "[::]"; port = 22; }
+      { addr = "[::]"; port = 22022; } # legacy
+      { addr = "[2a01:4f9:2b:1605::2]"; port = 443; }
+    ];
   };
-
-  services.openssh.listenAddresses = [
-    { addr = "0.0.0.0"; port = 22; }
-    { addr = "0.0.0.0"; port = 22022; } # legacy
-    { addr = "[::]"; port = 22; }
-    { addr = "[::]"; port = 22022; } # legacy
-    { addr = "[2a01:4f9:2b:1605::2]"; port = 443; }
-  ];
 
   networking.firewall.allowedTCPPorts = [ 22 22022 443 ];
 

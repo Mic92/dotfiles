@@ -1,12 +1,17 @@
 {
-  imports = [ ./netdata/options.nix ];
+  imports = [
+    ./ssh.nix
+    ./netdata/options.nix
+  ];
 
   services.openssh = {
     enable = true;
     passwordAuthentication = false;
     useDns = false;
     # unbind gnupg sockets if they exists
-    extraConfig = "StreamLocalBindUnlink yes";
+    extraConfig = ''
+      StreamLocalBindUnlink yes
+    '';
   };
 
   services.netdata.portcheck.checks = {
