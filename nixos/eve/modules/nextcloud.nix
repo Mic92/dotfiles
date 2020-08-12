@@ -33,12 +33,10 @@
   users.users.nextcloud.extraGroups = [ "keys" ];
   systemd.services.nextcloud.serviceConfig.SupplementaryGroups = [ "keys" ];
 
-  services.nginx = {
-    virtualHosts."cloud.thalheim.io" = {
-      useACMEHost = "thalheim.io";
-      forceSSL = true;
-      serverAliases = [ "pim.devkid.net" ];
-    };
+  services.nginx.virtualHosts."cloud.thalheim.io" = {
+    useACMEHost = "thalheim.io";
+    forceSSL = true;
+    serverAliases = [ "pim.devkid.net" ];
   };
 
   services.netdata.httpcheck.checks.nextcloud = {
