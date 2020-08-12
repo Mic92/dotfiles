@@ -1,9 +1,10 @@
 { lib, pkgs, ... }:
 let
-  irc-announce = pkgs.callPackage ./irc-announce {};
-  untilport = pkgs.callPackage ./untilport {};
+  nur = (builtins.getFlake (toString ../..)).inputs.nur;
 in {
   networking.firewall.enable = false;
+
+  nixpkgs.overlays = [ nur.overlay ];
 
   services.resolved.enable = false;
   networking.nameservers = [
@@ -58,8 +59,8 @@ in {
       echo "still waiting for /var/lib/tor/onion/ssh/hostname"
       sleep 1
       done
-      ${untilport}/bin/untilport irc.freenode.org 6667 && \
-      ${irc-announce}/bin/irc-announce \
+      ${pkgs.nur.repos.mic92.untilport}/bin/untilport irc.freenode.org 6667 && \
+      ${pkgs.nur.repos.mic92.irc-announce}/bin/irc-announce \
         irc.freenode.org 6667 install-image "#krebs-announce" \
         "SSH Hidden Service at $(cat /var/lib/tor/onion/ssh/hostname)"
     '';
