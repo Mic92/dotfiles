@@ -49,7 +49,7 @@ in {
       EnvironmentFile = [ config.sops.secrets.drone.path ];
       ExecStartPre = [
         "-${pkgs.docker}/bin/docker network rm drone"
-        "${pkgs.docker}/bin/docker network create --driver=bridge --subnet=172.28.0.0/16 --gateway=172.28.0.1 --subnet 2a01:4f9:2b:1605:3::1/80 --ipv6 drone"
+        "${pkgs.docker}/bin/docker network create --driver=bridge --subnet=172.28.0.0/16 --gateway=172.28.0.1 --subnet 2a01:4f9:2b:1605:3::1/80 --subnet 42:0000:3c46:70c7::/80 --ipv6 drone"
       ];
       ExecStart = "${pkgs.drone}/bin/drone-agent";
       User = "drone-agent";
