@@ -19,11 +19,11 @@
     "doom-emacs": {
       "flake": false,
       "locked": {
-        "lastModified": 1597115241,
-        "narHash": "sha256-mGB7Hg1eBfeHf0yyIzrLsyxzgxDtIZCExBK7iEW+jOk=",
+        "lastModified": 1597188152,
+        "narHash": "sha256-gyh7S3RRy8YghE67xh+TszqKn4qkdr+scpz7wNpBMA8=",
         "owner": "hlissner",
         "repo": "doom-emacs",
-        "rev": "050ac737895110f581a19bd6c63b8bc80598da18",
+        "rev": "03162466c65b1f53274d97fde4dc016b77020b53",
         "type": "github"
       },
       "original": {
@@ -113,11 +113,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1597140598,
-        "narHash": "sha256-U8aGPnMCeTYZfvgH93rjGvc36Q8UuSsF74pOou5LqcM=",
+        "lastModified": 1597215356,
+        "narHash": "sha256-kxvpCNWwyzbsGAJsMeGod8HZb9A3SMO1qHjYIg2hR2c=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "0efc3d761e00585e4259ec6d3d27578baeb82675",
+        "rev": "9d724fdc6a9870ed0d174aa0e3ed6435e5bb6ae4",
         "type": "github"
       },
       "original": {
@@ -129,11 +129,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1597140520,
-        "narHash": "sha256-GTjMVdW4tPhCCdbREJ09/SDq2qfPaa5oAc1WGVDwBps=",
+        "lastModified": 1597190999,
+        "narHash": "sha256-0PGB4L9p07zQcG8kqL+WKnKvUnmFcZcC8O7Ifcy75S8=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "8e35fc1464154489482922b084b31f1a90f87b50",
+        "rev": "bdade0fccdb7937936417875b5f1aee248a785d0",
         "type": "github"
       },
       "original": {
