@@ -71,10 +71,9 @@ in {
           file: "${./lekwati.com.zone}"
           template: master
         ${lib.concatMapStringsSep "\n" (domain: ''
-#
-        - domain: ${domain}
-          file: "${pkgs.retiolum}/zones/${domain}.zone"
-          template: retiolum
+#- domain: ${domain}
+#  file: "${pkgs.retiolum}/zones/${domain}.zone"
+#  template: retiolum
         '') [ "w" "r" "i" "lan" "shack" "gg23" ]}
     '';
   };
