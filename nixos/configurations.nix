@@ -53,7 +53,7 @@ in {
 
   eve-vm = nixosSystem {
     system = "x86_64-linux";
-    imports = eveModules ++ [
+    modules = eveModules ++ [
       "${nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
     ];
   };
