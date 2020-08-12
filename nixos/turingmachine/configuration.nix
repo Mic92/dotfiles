@@ -22,6 +22,7 @@
     ./modules/gnome-pim.nix
     ./modules/rhasspy.nix
     ./modules/sops.nix
+    ./modules/sshd.nix
 
     ../modules/macos-kvm.nix
     ../modules/mosh.nix
@@ -29,7 +30,6 @@
     ../modules/dnsmasq.nix
     ../modules/wireguard.nix
     ../modules/tracing.nix
-    ../modules/tor-ssh.nix
     #./kde.nix
     ../modules/i3.nix
     #../modules/sway.nix
