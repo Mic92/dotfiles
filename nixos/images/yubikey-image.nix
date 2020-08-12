@@ -1,7 +1,21 @@
 # NixOS livesystem to generate yubikeys in an air-gapped manner
 # screenshot: https://dl.thalheim.io/wmxIqucOEo2xuLk0Ut45fQ/yubikey-live-system.png
-# $ nixos-generator -f iso -c yubikey-image.nix
-{ pkgs, ... }: {
+# $ nixos-generate -f iso -c yubikey-image.nix
+{ pkgs, ... }:
+
+let
+  guide = pkgs.stdenv.mkDerivation {
+    name = "yubikey-guide-2020-08-12.html";
+    src = pkgs.fetchFromGitHub {
+      owner = "drduh";
+      repo = "YubiKey-Guide";
+      rev = "f7561616a541182554c2e16ec7c05ac1565a61d7";
+      sha256 = "sha256-3CUqLde0NxFEQpYIbL0n7oueF7vEQRuz6tYerqPOL7k=";
+    };
+    buildInputs = [ pkgs.pandoc ];
+    installPhase = "pandoc --highlight-style pygments -s --toc README.md -o $out";
+  };
+in {
   environment.interactiveShellInit = ''
     export GNUPGHOME=/run/user/$(id -u)/gnupghome
     if [ ! -d $GNUPGHOME ]; then
@@ -26,7 +40,6 @@
 
   services.udev.packages = with pkgs; [ yubikey-personalization ];
   services.pcscd.enable = true;
-  users.extraUsers.root.initialHashedPassword = "";
 
   # make sure we are air-gapped
   networking.wireless.enable = false;
@@ -34,30 +47,26 @@
 
   services.mingetty.helpLine = "The 'root' account has an empty password.";
 
+  security.sudo.wheelNeedsPassword = false;
+  users.users.yubikey = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ];
+    shell = "/run/current-system/sw/bin/bash";
+  };
+
   services.xserver = {
     enable = true;
-    displayManager.auto.enable = true;
+    displayManager.autoLogin.enable = true;
+    displayManager.autoLogin.user = "yubikey";
+    displayManager.defaultSession = "xfce";
+    displayManager.sessionCommands = ''
+      ${pkgs.midori}/bin/midori ${guide} &
+      ${pkgs.xfce.terminal}/bin/xfce4-terminal &
+    '';
 
-    desktopManager = let
-      guide = pkgs.stdenv.mkDerivation {
-        name = "yubikey-guide-2019-01-21.html";
-        src = pkgs.fetchFromGitHub {
-          owner = "drduh";
-          repo = "YubiKey-Guide";
-          rev = "035d98ebbed54a0218ccbf23905054d32f97508e";
-          sha256 = "0rzy06a5xgfjpaklxdgrxml24d0vhk78lb577l3z4x7a2p32dbyq";
-        };
-        buildInputs = [ pkgs.pandoc ];
-        installPhase = "pandoc --highlight-style pygments -s --toc README.md -o $out";
-      };
-    in {
-      default = "xfce";
+    desktopManager = {
       xterm.enable = false;
       xfce.enable = true;
-      xfce.extraSessionCommands = ''
-        ${pkgs.midori}/bin/midori ${guide} &
-        ${pkgs.xfce.terminal}/bin/xfce4-terminal &
-      '';
     };
   };
 }
