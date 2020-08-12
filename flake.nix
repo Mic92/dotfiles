@@ -48,7 +48,12 @@
        devShell = import ./shell.nix { inherit pkgs; };
      })) // {
      nixosConfigurations = import ./nixos/configurations.nix {
-       inherit nixpkgs nur home-manager sops-nix retiolum nixos-hardware choose-place;
+       #nixpkgs = toString <nixpkgs>;
+       # for testing
+       #nixosSystem = import <nixpkgs/nixos/lib/eval-config.nix>;
+       inherit nixpkgs;
+       nixosSystem = nixpkgs.lib.nixosSystem;
+       inherit nur home-manager sops-nix retiolum nixos-hardware choose-place;
      };
 
      hmConfigurations = import ./nixpkgs-config/homes.nix {

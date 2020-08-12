@@ -1,4 +1,5 @@
 { nixpkgs
+, nixosSystem
 , nur
 , home-manager
 , sops-nix
@@ -23,8 +24,16 @@ let
     retiolum.nixosModules.retiolum
     sops-nix.nixosModules.sops
   ];
+  eveModules = defaultModules ++ [
+    ./eve/configuration.nix
+    {
+      nixpkgs.overlays = [(self: super: {
+        choose-place = super.callPackage "${choose-place}" {};
+      })];
+    }
+  ];
 in {
-  turingmachine = nixpkgs.lib.nixosSystem {
+  turingmachine = nixosSystem {
     system = "x86_64-linux";
     modules = defaultModules ++ [
       nixos-hardware.nixosModules.dell-xps-13-9380
@@ -32,24 +41,24 @@ in {
     ];
   };
 
-  eddie = nixpkgs.lib.nixosSystem {
+  eddie = nixosSystem {
     system = "x86_64-linux";
     modules = defaultModules ++ [ ./eddie/configuration.nix ];
   };
 
-  eve = nixpkgs.lib.nixosSystem {
+  eve = nixosSystem {
     system = "x86_64-linux";
-    modules = defaultModules ++ [
-      ./eve/configuration.nix
-      {
-        nixpkgs.overlays = [(self: super: {
-          choose-place = super.callPackage "${choose-place}" {};
-        })];
-      }
+    modules = eveModules;
+  };
+
+  eve-vm = nixosSystem {
+    system = "x86_64-linux";
+    imports = eveModules ++ [
+      "${nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
     ];
   };
 
-  eva = nixpkgs.lib.nixosSystem {
+  eva = nixosSystem {
     system = "x86_64-linux";
     modules = defaultModules ++ [ ./eva/configuration.nix ];
   };
