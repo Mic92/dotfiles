@@ -88,6 +88,7 @@ steps:
     # TODO: get rid of NIX_PATH here
     - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=$${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
     - $(nix-build ./nixos/eve)
+    - $(nix-build ./nixos/turingmachine)
   volumes:
     - name: nixstore
       path: /nix
@@ -111,6 +112,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: 0ae90c4663f7eaaec1fe6735fddfdf17d18fc2fffc4ffef8f0f5dcc5a1c34ce9
+hmac: 1d16cc9b934c373bccfb84ac9680a4807a2d9b26ba6d6406d1e1f730b7174e7c
 
 ...
