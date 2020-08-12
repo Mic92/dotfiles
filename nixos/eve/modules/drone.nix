@@ -50,7 +50,7 @@ in {
             --driver=bridge \
             --subnet=172.28.0.0/16 \
             --gateway=172.28.0.1 \
-            --subnet 2a01:4f9:2b:1605:3::1/80
+            --subnet 2a01:4f9:2b:1605:3::1/80 \
             --ipv6 drone
           docker network create \
             --driver=bridge \
