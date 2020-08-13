@@ -14,8 +14,5 @@
     '';
   };
 
-  services.netdata.portcheck.checks = {
-    ssh.port = 22;
-    ssh-legacy.port = 22022;
-  };
+  services.netdata.portcheck.checks.ssh.port = 22;
 }
