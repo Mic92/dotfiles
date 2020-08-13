@@ -31,7 +31,6 @@
     ./modules/ipfs.nix
     ./modules/knot
     ./modules/kresd.nix
-    ./modules/krops-deploy
     ./modules/mastodon-hnbot.nix
     ./modules/mediawiki.nix
     #./modules/named.nix
@@ -65,6 +64,7 @@
     ./modules/zsh.nix
 
     ../modules/builder.nix
+    ../modules/drone-deploy.nix
     ../modules/mosh.nix
     ../modules/nur.nix
     ../modules/tracing.nix
