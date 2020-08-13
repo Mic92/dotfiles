@@ -7,6 +7,7 @@
   programs.vim.defaultEditor = true;
 
   imports = [
+    ./modules/blackbox-exporter.nix
     ../modules/mosh.nix
     ../modules/nur.nix
     ../modules/tracing.nix
