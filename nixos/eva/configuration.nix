@@ -8,6 +8,7 @@
 
   imports = [
     ./modules/blackbox-exporter.nix
+    ./modules/sshd.nix
     ../modules/mosh.nix
     ../modules/nur.nix
     ../modules/tracing.nix
