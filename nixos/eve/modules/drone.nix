@@ -2,6 +2,8 @@
 
 let
   droneserver = config.users.users.droneserver.name;
+  droneNet = "2a01:4f9:2b:1605:3::1/80";
+  droneRetiolumNet = "42:0000:002b:1605:3::/80";
 in {
   systemd.services.drone-server = {
     wantedBy = [ "multi-user.target" ];
@@ -39,6 +41,26 @@ in {
     '';
   };
 
+  systemd.services.netmap-docker-retiolum = {
+    wantedBy = [ "multi-user.target" ];
+    requires = [ "sys-devices-virtual-net-tinc.retiolum.device" ];
+    after = [ "network.target" "sys-devices-virtual-net-tinc.retiolum.device" ];
+    serviceConfig = let
+      removeCommands = [
+        "-${pkgs.iptables}/bin/ip6tables -t nat -D PREROUTING -i tinc.retiolum -d ${droneRetiolumNet} -j NETMAP --to ${droneNet}"
+        "-${pkgs.iptables}/bin/ip6tables -t nat -D POSTROUTING -o tinc.retiolum -s ${droneNet} -j NETMAP --to ${droneRetiolumNet}"
+      ];
+    in {
+      Type = "oneshot";
+      RemainAfterExit  = true;
+      ExecStart = removeCommands ++ [
+        "${pkgs.iptables}/bin/ip6tables -t nat -A PREROUTING -i tinc.retiolum -d ${droneRetiolumNet} -j NETMAP --to ${droneNet}"
+        "${pkgs.iptables}/bin/ip6tables -t nat -A POSTROUTING -o tinc.retiolum -s ${droneNet} -j NETMAP --to ${droneRetiolumNet}"
+      ];
+      ExecStop = removeCommands;
+    };
+  };
+
   systemd.services.drone-agent = {
     wantedBy = [ "multi-user.target" ];
     preStart = ''
@@ -49,7 +71,7 @@ in {
             --driver=bridge \
             --subnet=172.28.0.0/16 \
             --gateway=172.28.0.1 \
-            --subnet 2a01:4f9:2b:1605:3::1/80 \
+            --subnet ${droneNet} \
             --ipv6 drone
         done
     '';
