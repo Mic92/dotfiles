@@ -63,6 +63,8 @@ in {
 
   systemd.services.drone-agent = {
     wantedBy = [ "multi-user.target" ];
+    # might break deployment
+    restartIfChanged = false;
     preStart = ''
         export PATH=${pkgs.docker}/bin:$PATH
         docker network rm drone || true
