@@ -38,7 +38,7 @@ in {
   systemd.services.prometheus-blackbox-exporter.serviceConfig.LimitNOFILE = 1024000;
   services.prometheus.exporters.blackbox = {
     enable = true;
-    listenAddress = "::1";
+    listenAddress = "[::1]";
     configFile = pkgs.writeText "blackbox-exporter.yaml" (builtins.toJSON { inherit modules; });
   };
 }

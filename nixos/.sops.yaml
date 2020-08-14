@@ -4,21 +4,17 @@ creation_rules:
     pgp: >-
       F095F28F7B1BA4DD0D93554EE179454B201E23CA
   # joerg
-  # eddie
-  # eve
-  # turingmachine
-  - path_regex: secrets/[^/]+\.yaml$
-    pgp: >-
-      F095F28F7B1BA4DD0D93554EE179454B201E23CA,
-      CC48DB9AC67E71DA343B47D594933BDDF739BEB3,
-      C5A6167F97F68FD053571E8B04188BA1509DCDC5,
-      50612B0983F7FA2F1985DA0F30371B437689ACFD
-  # joerg
   # eve
   - path_regex: eve/secrets/[^/]+\.yaml$
     pgp: >-
       F095F28F7B1BA4DD0D93554EE179454B201E23CA,
       C5A6167F97F68FD053571E8B04188BA1509DCDC5
+  # joerg
+  # eva
+  - path_regex: eva/secrets/[^/]+\.yaml$
+    pgp: >-
+      F095F28F7B1BA4DD0D93554EE179454B201E23CA,
+      464E02307E15D115D8D666ADE0BD184A633C5C72
   # joerg
   # turingmachine
   - path_regex: turingmachine/secrets/[^/]+\.yaml$
@@ -31,3 +27,15 @@ creation_rules:
     pgp: >-
       F095F28F7B1BA4DD0D93554EE179454B201E23CA,
       CC48DB9AC67E71DA343B47D594933BDDF739BEB3
+  # joerg
+  # eddie
+  # eve
+  # turingmachine
+  # eva
+  - path_regex: ./secrets/[^/]+\.yaml$
+    pgp: >-
+      F095F28F7B1BA4DD0D93554EE179454B201E23CA,
+      CC48DB9AC67E71DA343B47D594933BDDF739BEB3,
+      C5A6167F97F68FD053571E8B04188BA1509DCDC5,
+      50612B0983F7FA2F1985DA0F30371B437689ACFD,
+      464E02307E15D115D8D666ADE0BD184A633C5C72

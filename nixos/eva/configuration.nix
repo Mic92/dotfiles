@@ -7,8 +7,10 @@
   programs.vim.defaultEditor = true;
 
   imports = [
+    ./modules/prometheus.nix
     ./modules/blackbox-exporter.nix
     ./modules/sshd.nix
+    ./modules/sops.nix
     ../modules/mosh.nix
     ../modules/nur.nix
     ../modules/tracing.nix
