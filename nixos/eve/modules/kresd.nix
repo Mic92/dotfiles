@@ -12,6 +12,9 @@
     '';
   };
 
+  # This causes services to fail on upgrade
+  systemd.services."kresd@".restartIfChanged = false;
+
   networking.firewall.allowedTCPPorts = [ 853 ];
 
   services.nginx = {
