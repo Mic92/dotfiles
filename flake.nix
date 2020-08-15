@@ -12,8 +12,10 @@
     nur.url = "github:nix-community/NUR";
     sops-nix.url = "github:Mic92/sops-nix";
 
-    krops.url = "github:krebs/krops";
-    krops.flake = false;
+    #krops.url = "github:krebs/krops";
+    #krops.flake = false;
+    krops.url = "github:Mic92/krops";
+    krops.inputs.flake-utils.follows = "flake-utils";
     retiolum.url = "git+https://git.thalheim.io/Mic92/retiolum";
     # for development
     #sops-nix.url = "/home/joerg/git/sops-nix";
@@ -41,12 +43,20 @@
             , choose-place
             , retiolum
             , flake-utils
+            , krops
             , ... }:
     (flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
      in {
        devShell = pkgs.callPackage ./shell.nix {
          inherit (sops-nix.packages.${system}) sops-pgp-hook;
+       };
+       # deploy like this:
+       #  nix run ".#deploy.turingmachine"
+       #  nix run ".#deploy.eve"
+       apps.deploy = pkgs.callPackage ./nixos/krops.nix {
+         inherit (krops.packages.${system}) writeCommand;
+         lib = krops.lib;
        };
      })) // {
      nixosConfigurations = import ./nixos/configurations.nix {
@@ -57,6 +67,7 @@
        nixosSystem = nixpkgs.lib.nixosSystem;
        inherit nur home-manager sops-nix retiolum nixos-hardware choose-place;
      };
+
 
      hmConfigurations = import ./nixpkgs-config/homes.nix {
        inherit self nixpkgs home-manager nur;

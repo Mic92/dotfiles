@@ -87,8 +87,8 @@ steps:
     - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
     # TODO: get rid of NIX_PATH here
     - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=$${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
-    - $(nix-build ./nixos/eve)
-    - $(nix-build ./nixos/turingmachine)
+    - nix run ".#deploy.turingmachine"
+    - nix run ".#deploy.eve"
   volumes:
     - name: nixstore
       path: /nix
@@ -112,6 +112,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: 1d16cc9b934c373bccfb84ac9680a4807a2d9b26ba6d6406d1e1f730b7174e7c
+hmac: 2c02a7b4f89467673ddc1db438c9e4110fcbc1e5cdb7c8508e80fba5d1b71c55
 
 ...
