@@ -7,7 +7,9 @@ let
     };
   }];
   command = targetPath: ''
-    nixos-rebuild switch --flake ${targetPath}/dotfiles
+    # sometimes services fail to switch on the first run, but are fine on the second
+    nixos-rebuild switch --flake ${targetPath}/dotfiles || \
+      nixos-rebuild switch --flake ${targetPath}/dotfiles
   '';
 in
 {
