@@ -22,6 +22,7 @@
         by anonymous    auth
         by dn="cn=dovecot,dc=mail,dc=eve" read
         by dn="cn=gitlab,ou=system,ou=users,dc=eve" read
+        by dn="cn=ldapsync,ou=system,ou=users,dc=eve" read
         by *            none
       access to attrs=loginShell
         by self write
@@ -33,8 +34,6 @@
       access to dn.subtree="ou=jabber,ou=users,dc=eve"
         by dn="cn=prosody,ou=system,ou=users,dc=eve" write
         by * read
-      access to dn.subtree="dc=eve"
-        by dn="cn=ldapsync,ou=system,ou=users,dc=eve" read
       access to *
         by * read
 
