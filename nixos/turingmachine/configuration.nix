@@ -68,13 +68,6 @@
 
   networking.hostName = "turingmachine";
 
-  nix.binaryCaches = [
-    "https://r-ryantm.cachix.org"
-  ];
-  nix.binaryCachePublicKeys = [
-    "r-ryantm.cachix.org-1:gkUbLkouDAyvBdpBX0JOdIiD2/DP1ldF3Z3Y6Gqcc4c="
-  ];
-
   console.keyMap = "us";
   i18n.defaultLocale = "en_DK.UTF-8";
 
