@@ -82,9 +82,10 @@ steps:
 - name: deploy
   image: busybox
   commands:
-    - git submodule update --recursive --remote
     - mkdir -m700 -p $HOME/.ssh && echo "$DEPLOY_SSH_KEY" > $HOME/.ssh/id_ed25519 && chmod 400 $HOME/.ssh/id_ed25519
     - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+    - |
+      sleep 99999
     - |
       nix shell '.#parallel' -c parallel --line-buffer --tagstring '{}' -q nix run '.#deploy.{1}' ::: eve turingmachine
   volumes:
@@ -110,6 +111,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: 87f9cb469b5cd8aec3dcd437ff5078cc87d0589a41652a936c7b85f778e83b9a
+hmac: aca3ec4415ca6dc259590322aa0a7dd28f02f8e942151b1d6e33aa7573c872ea
 
 ...
