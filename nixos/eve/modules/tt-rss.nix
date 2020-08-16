@@ -73,10 +73,12 @@
     regex = "Tiny Tiny RSS";
   };
 
-  services.openldap.extraConfig = ''
-    objectClass ( 1.3.6.1.4.1.28294.1.2.4 NAME 'ttrss'
-            SUP top AUXILIARY
-            DESC 'Added to an account to allow tinytinyrss access'
-    	MUST ( mail $ userPassword ))
-  '';
+  services.openldap.settings.children."cn={1}ttrss,cn=schema".attrs =  {
+    cn = "{1}ttrss";
+    objectClass = "olcSchemaConfig";
+    olcObjectClasses = ''( 1.3.6.1.4.1.28294.1.2.4 NAME 'ttrss'
+      SUP top AUXILIARY
+      DESC 'Added to an account to allow tinytinyrss access'
+      MUST ( mail $ userPassword ))'';
+  };
 }
