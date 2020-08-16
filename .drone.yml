@@ -85,10 +85,7 @@ steps:
     - git submodule update --recursive --remote
     - mkdir -m700 -p $HOME/.ssh && echo "$DEPLOY_SSH_KEY" > $HOME/.ssh/id_ed25519 && chmod 400 $HOME/.ssh/id_ed25519
     - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
-    # TODO: get rid of NIX_PATH here
-    - export NIX_PATH=$(nix eval --raw --impure --expr '"nixpkgs=$${(builtins.getFlake (toString ./.)).inputs.nixpkgs}"')
-    - nix run ".#deploy.turingmachine"
-    - nix run ".#deploy.eve"
+    - nix shell '.#parallel' -c parallel --line-buffer --tagstring '{}' -q nix run '.#deploy.{1}' ::: eve turingmachine
   volumes:
     - name: nixstore
       path: /nix
@@ -112,6 +109,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: 2c02a7b4f89467673ddc1db438c9e4110fcbc1e5cdb7c8508e80fba5d1b71c55
+hmac: 0364cd8ba0600a8e4455b3f2dbdbbe9ccbf4a89e25897df30de8dc9df19af74d
 
 ...
