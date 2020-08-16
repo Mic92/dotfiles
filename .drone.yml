@@ -85,8 +85,6 @@ steps:
     - mkdir -m700 -p $HOME/.ssh && echo "$DEPLOY_SSH_KEY" > $HOME/.ssh/id_ed25519 && chmod 400 $HOME/.ssh/id_ed25519
     - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
     - |
-      sleep 99999
-    - |
       nix shell '.#parallel' -c parallel --line-buffer --tagstring '{}' -q nix run '.#deploy.{1}' ::: eve turingmachine
   volumes:
     - name: nixstore
@@ -111,6 +109,6 @@ steps:
       - production
 ---
 kind: signature
-hmac: aca3ec4415ca6dc259590322aa0a7dd28f02f8e942151b1d6e33aa7573c872ea
+hmac: 66cd03526cb8cdfaa3507b1bf58529c008e753ece0bd91176b59d4f5d52b5aff
 
 ...
