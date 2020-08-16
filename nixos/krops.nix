@@ -3,6 +3,7 @@ let
   source = lib.evalSource [{
     dotfiles.file = {
       path = toString ./..;
+      useChecksum = true;
     };
   }];
   command = targetPath: ''
