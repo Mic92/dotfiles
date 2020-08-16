@@ -198,3 +198,7 @@
   :config
   (add-hook 'flycheck-before-syntax-check-hook
             #'disable-python-pylint 'local))
+
+(use-package! direnv
+  :config
+  (setq direnv--executable "emacs-direnv"))

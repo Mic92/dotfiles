@@ -28,6 +28,17 @@ let
   '';
   editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
 
+  emacs-direnv = pkgs.writeScriptBin "emacs-direnv" ''
+    #!${pkgs.runtimeShell}
+    timeout 1 ${pkgs.direnv}/bin/direnv "$@"
+    res=$!
+    if [[ "$res" == 124 ]]; then
+      echo "{}" >&2
+      exit 0
+    fi
+    exit $res
+  '';
+
   flake = (builtins.fromJSON (builtins.readFile ../../../flake.lock)).nodes;
   tarballUrl = info: "https://api.github.com/repos/${info.owner}/${info.repo}/tarball/${info.rev}";
   nix-doom-emacs = builtins.fetchTarball (tarballUrl flake.nix-doom-emacs.locked);
@@ -70,6 +81,7 @@ in {
       programs.emacs.package = myemacs;
       home.packages = with pkgs; [
         emacs-all-the-icons-fonts
+        emacs-direnv
         editorScriptX11
         ripgrep
         (makeDesktopItem {
