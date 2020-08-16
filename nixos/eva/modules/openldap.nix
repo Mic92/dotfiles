@@ -20,6 +20,6 @@
     '';
   };
 
-  config.sops.secrets.ldapsync-password.owner = "openldap";
+  sops.secrets.ldapsync-password.owner = "openldap";
   systemd.services.openldap.serviceConfig.SupplementaryGroups = [ "keys" ];
 }
