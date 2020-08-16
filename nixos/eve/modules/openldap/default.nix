@@ -47,7 +47,7 @@
 
   sops.secrets.openldap-rootpw = {
     owner = "openldap";
-    sopsFile = ../../secrets/ldap.yaml;
+    sopsFile = ../../../secrets/ldap.yaml;
   };
 
   environment.etc."netdata/python.d/openldap.conf" = {
