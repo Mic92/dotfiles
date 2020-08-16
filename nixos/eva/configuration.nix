@@ -8,6 +8,8 @@
 
   imports = [
     ./modules/prometheus.nix
+    ./modules/nginx.nix
+    ./modules/openldap.nix
     ./modules/blackbox-exporter.nix
     ./modules/sshd.nix
     ./modules/sops.nix

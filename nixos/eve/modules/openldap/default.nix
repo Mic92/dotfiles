@@ -11,7 +11,6 @@
     };
   };
 
-
   services.openldap = {
     enable = true;
     suffix = "dc=eve";
@@ -34,6 +33,8 @@
       access to dn.subtree="ou=jabber,ou=users,dc=eve"
         by dn="cn=prosody,ou=system,ou=users,dc=eve" write
         by * read
+      access to dn.subtree="dc=eve"
+        by dn="cn=ldapsync,ou=system,ou=users,dc=eve" read
       access to *
         by * read
 
