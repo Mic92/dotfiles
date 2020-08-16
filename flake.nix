@@ -16,6 +16,7 @@
     #krops.flake = false;
     krops.url = "github:Mic92/krops";
     krops.inputs.flake-utils.follows = "flake-utils";
+    krops.inputs.nixpkgs.follows = "nixpkgs";
     retiolum.url = "git+https://git.thalheim.io/Mic92/retiolum";
     # for development
     #sops-nix.url = "/home/joerg/git/sops-nix";
