@@ -7,6 +7,16 @@
     rootdn = "cn=admin,dc=eve";
     rootpwFile = config.sops.secrets.openldap-rootpw.path;
     extraConfig = ''
+      access to attrs=userPassword
+        by self         write
+        by anonymous    auth
+        by *            none
+      access to attrs=loginShell
+        by self write
+        by * read
+      access to *
+        by * read
+
       syncrepl rid=123
         provider=ldap://eve.r:389
         type=refreshOnly
@@ -20,6 +30,12 @@
     '';
   };
 
-  sops.secrets.ldapsync-password.owner = "openldap";
+  sops.secrets.openldap-rootpw = {
+    owner = "openldap";
+    sopsFile = ../../secrets/ldap.yaml;
+  };
+  sops.secrets.ldapsync-password = {
+    owner = "openldap";
+  };
   systemd.services.openldap.serviceConfig.SupplementaryGroups = [ "keys" ];
 }

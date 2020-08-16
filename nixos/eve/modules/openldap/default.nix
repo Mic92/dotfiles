@@ -45,13 +45,17 @@
    '';
   };
 
+  sops.secrets.openldap-rootpw = {
+    owner = "openldap";
+    sopsFile = ../../secrets/ldap.yaml;
+  };
+
   environment.etc."netdata/python.d/openldap.conf" = {
     source = config.sops.secrets.netdata-openldap-password.path;
     user = "netdata";
   };
   sops.secrets.netdata-openldap-password.owner = "netdata";
 
-  sops.secrets.openldap-rootpw.owner = "openldap";
   sops.secrets.ldap-login = {};
 
   users.users.openldap.extraGroups = [ "keys" ];
