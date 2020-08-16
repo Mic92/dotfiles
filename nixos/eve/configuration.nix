@@ -59,7 +59,6 @@
     ./modules/tor.nix
     ./modules/tt-rss.nix
     ./modules/users.nix
-    ./modules/web2ldap
     #./modules/wiregrill
     ./modules/zsh.nix
 
