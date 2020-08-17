@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020081500 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020081700 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -79,6 +79,7 @@ default._domainkey IN TXT "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQK
 _dmarc IN TXT "v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:admin@thalheim.io; ruf=mailto:admin@thalheim.io; pct=100"
 @ IN TXT "v=spf1 ip4:95.216.112.61 ip6:2a01:4f9:2b:1605::1 -all"
 _token._dnswl IN TXT "v6e9a15zje7o03w1oos9ashj258elvdh"
+@ IN TXT "google-site-verification=TGvlDYzS1IB0wcHO32Bnzfb5IVFbYm6Roeg27TU6XjY"
 
 ;; XMPP
 jabber IN A 95.216.112.61
