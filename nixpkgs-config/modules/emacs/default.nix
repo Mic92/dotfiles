@@ -23,7 +23,7 @@ let
   daemonScript = pkgs.writeScript "emacs-daemon" ''
     #!${pkgs.zsh}/bin/zsh
     source ~/.zshrc
-    export BW_SESSION=1 PATH=$PATH:${lib.makeBinPath [ pkgs.git pkgs.sqlite pkgs.unzip ]}
+    export BW_SESSION=1 PATH=$PATH:${lib.makeBinPath [ pkgs.git pkgs.sqlite pkgs.unzip pkgs.xclip ]}
     exec ${cfg.package}/bin/emacs --daemon
   '';
   editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
