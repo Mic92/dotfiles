@@ -103,15 +103,4 @@ in {
   };
 
   users.groups.bitwarden_ldap = {};
-
-  services.openldap.settings.children."cn={1}bitwarden,cn=schema" = {
-    attrs = {
-      cn = "{1}bitwarden";
-      objectClass = "olcSchemaConfig";
-      olcObjectClasses = "(1.3.6.1.4.1.28298.1.2.4 NAME 'bitwarden'
-        SUP uidObject AUXILIARY
-        DESC 'Added to an account to allow bitwarden access'
-        MUST (mail $ userPassword))";
-    };
-  };
 }

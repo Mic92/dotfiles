@@ -251,28 +251,6 @@
   sops.secrets."ejabber-ldap-password.yml".owner = "ejabberd";
   sops.secrets."ejabber-postgres-password.yml".owner = "ejabberd";
 
-  services.openldap.settings.children."cn={1}ejabberd,cn=schema".attrs =  {
-    cn = "{1}ejabberd";
-    objectClass = "olcSchemaConfig";
-    olcAttributeTypes = [''(1.2.752.43.9.1.1
-        NAME 'jabberID'
-        DESC 'The Jabber ID(s) associated with this object. Used to map a JID to an LDAP account.'
-        EQUALITY caseIgnoreMatch
-        SYNTAX 1.3.6.1.4.1.1466.115.121.1.15)
-    ''];
-  };
-
-  services.openldap.settings.children."cn={2}ejabberd,cn=schema".attrs =  {
-    cn = "{2}ejabberd";
-    objectClass = "olcSchemaConfig";
-    olcObjectClasses = [''(1.2.752.43.9.2.1
-       NAME 'jabberUser'
-       DESC 'A jabber user'
-       AUXILIARY
-       MUST ( jabberID ))
-    ''];
-  };
-
   security.acme.certs = let
     cert = domain: {
       inherit domain;

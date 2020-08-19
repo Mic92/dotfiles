@@ -35,14 +35,4 @@
 
   # for database key
   systemd.services.gitea.serviceConfig.SupplementaryGroups = [ "keys" ];
-
-  services.openldap.settings.children."cn={1}gitlab,cn=schema".attrs =  {
-    cn = "{1}gitlab";
-    objectClass = "olcSchemaConfig";
-    olcObjectClasses = [''( 1.3.6.1.4.1.28293.1.2.4 NAME 'gitlab'
-      SUP uidObject AUXILIARY
-      DESC 'Added to an account to allow gitlab access'
-      MUST (mail))
-    ''];
-  };
 }

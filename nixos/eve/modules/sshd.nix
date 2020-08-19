@@ -13,20 +13,4 @@
   };
 
   networking.firewall.allowedTCPPorts = [ 22 443 ];
-
-  services.openldap.settings.children."cn={1}openssh,cn=schema".attrs =  {
-    cn = "{1}openssh";
-    objectClass = "olcSchemaConfig";
-    olcAttributeTypes = [''(1.3.6.1.4.1.24552.500.1.1.1.13
-       NAME 'sshPublicKey'
-       DESC 'MANDATORY: OpenSSH Public key'
-       EQUALITY octetStringMatch
-       SYNTAX 1.3.6.1.4.1.1466.115.121.1.40 )''];
-    olcObjectClasses = [''(1.3.6.1.4.1.24552.500.1.1.2.0
-       NAME 'ldapPublicKey'
-       SUP top AUXILIARY
-       DESC 'MANDATORY: OpenSSH LPK objectclass'
-       MUST ( sshPublicKey $ uid ))
-    ''];
-  };
 }

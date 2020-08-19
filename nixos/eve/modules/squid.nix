@@ -42,15 +42,4 @@
   '';
 
   users.users.netdata.extraGroups = [ "squid" ];
-
-  services.openldap.settings.children."cn={1}squid,cn=schema".attrs =  {
-    cn = "{1}squid";
-    objectClass = "olcSchemaConfig";
-    olcObjectClasses = [
-    ''(1.3.6.1.4.1.16548.1.2.4 NAME 'proxyUser'
-        SUP top AUXILIARY
-        DESC 'Account to allow a user to use the Squid proxy'
-        MUST ( mail $ userPassword ))
-    ''];
-  };
 }
