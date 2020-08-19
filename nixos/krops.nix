@@ -34,7 +34,7 @@ in
   eva = writeCommand "/bin/eva" {
     inherit source;
     # 1GB goes OOM while deploying
-    target = "root@eve";
+    target = "root@eve.thalheim.io";
     command = targetPath: ''
       nix shell 'nixpkgs#git' -c \
          nixos-rebuild switch --flake ${targetPath}/dotfiles#eva \
