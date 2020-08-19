@@ -28,8 +28,6 @@ in {
 
   fonts.fontconfig.enable = true;
 
-  programs.emacs.imagemagick.enable = true;
-
   services.dunst = {
     enable = true;
     settings = {
