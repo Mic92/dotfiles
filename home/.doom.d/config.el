@@ -186,6 +186,10 @@
   (define-key! evil-treemacs-state-map
     "-" #'treemacs-back-and-forth))
 
+(use-package! treemacs
+  :config
+  (treemacs-follow-mode t))
+
 (map! :leader :n "-" #'treemacs-back-and-forth)
 
 (setq persistent-scratch-save-file (expand-file-name "~/.emacs.d/.persistant-scratch"))
