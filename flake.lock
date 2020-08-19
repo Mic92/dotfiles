@@ -19,11 +19,11 @@
     "doom-emacs": {
       "flake": false,
       "locked": {
-        "lastModified": 1597859844,
-        "narHash": "sha256-CRVXLvdGtDWS8XYWJlqvC5bYJdsERWEWs/T7k8nZcSk=",
+        "lastModified": 1597863625,
+        "narHash": "sha256-H93NOcVaGcr6YzbnvIIHzjxQELoKG/egIUVePlIITGQ=",
         "owner": "hlissner",
         "repo": "doom-emacs",
-        "rev": "8402f8aecc322df7bf084334c122d0b15f2df948",
+        "rev": "b4431dcd49ecf74de23463dfa15952462320dd45",
         "type": "github"
       },
       "original": {
@@ -151,11 +151,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1597862794,
-        "narHash": "sha256-MuAWptmy2KrO2S1TIYJyPLUgha3HcRsd2Zxutr5MMOY=",
+        "lastModified": 1597864352,
+        "narHash": "sha256-5rG11oOCiGPMtsPLiccAp9e/SqJqgUMy5APuIBfdtig=",
         "ref": "master",
-        "rev": "c72f78b542314c74550dfa6a38a0d234b2010435",
-        "revCount": 20,
+        "rev": "9aa7a4a2d8bc7f02f87cb822bba74a2776a4012c",
+        "revCount": 21,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },

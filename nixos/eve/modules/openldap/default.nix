@@ -50,6 +50,11 @@
         ];
       };
     };
+    settings.children."olcOverlay=syncprov,olcDatabase={1}mdb".attrs = {
+      objectClass = [ "olcOverlayConfig" "olcSyncProvConfig" ];
+      olcOverlay = "syncprov";
+      olcSpSessionLog = "100";
+    };
     settings.children."olcDatabase={2}monitor".attrs = {
       olcDatabase = "{2}monitor";
       objectClass = [ "olcDatabaseConfig" "olcMonitorConfig" ];
