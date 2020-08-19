@@ -11,12 +11,14 @@
 (package! vimrc-mode)
 (package! coffee-mode)
 (package! meson-mode)
+
+;; cannot be found on melpa
+(disable-packages! nose)
+
 ;(package! bitwarden
 ;  :recipe (:host github :repo "seanfarley/emacs-bitwarden"))
 ;(package! company-tmux
 ;  :recipe (:host github :repo "Mic92/company-tmux"))
-;(package! osc52
-;  :recipe (:host github :repo "Mic92/osc52"))
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
