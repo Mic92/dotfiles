@@ -653,8 +653,6 @@ cd() {
   fi
   builtin cd "$to"
 }
-pj() { python -mjson.tool } # pretty-print JSON
-cj() { curl -sS $@ | pj } # curl JSON
 md5() { echo -n $1 | openssl md5 /dev/stdin }
 sha1() { echo -n $1 | openssl sha1 /dev/stdin }
 sha256() { echo -n $1 | openssl dgst -sha256 /dev/stdin }
@@ -696,33 +694,29 @@ heroku(){
     wingrunr21/alpine-heroku-cli "$@"
 }
 
-build-cscope-db() {
-  find ${PWD} -type f -name "*.c" \
-    -o -name "*.cc" \
-    -o -name "*.cpp" \
-    -o -name "*.h" \
-    -o -name "*.hpp" \
-    -o -name "*.H" > ${PWD}/cscope.files
-  cscope -R -b
-  export CSCOPE_DB=${PWD}/cscope.out
+untilport(){
+  if [[ $# -lt 2 ]]; then
+    echo "$0: host port"
+    return 1
+  fi
+  until nc -z "$@"; do sleep 1; done
 }
 
 nixify() {
-  if [[ ! -e ./.envrc ]]; then
+  if [ ! -e ./.envrc ]; then
     echo "use nix" > .envrc
     direnv allow
   fi
   if [[ ! -e shell.nix ]] && [[ ! -e default.nix ]]; then
     cat > default.nix <<'EOF'
 with import <nixpkgs> {};
-stdenv.mkDerivation {
-  name = "env";
-  buildInputs = [
+mkShell {
+  nativeBuildInputs = [
     bashInteractive
   ];
 }
 EOF
-    $EDITOR default.nix
+    ${EDITOR:-vim} default.nix
   fi
 }
 
