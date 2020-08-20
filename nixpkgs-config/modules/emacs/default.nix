@@ -117,4 +117,16 @@ in {
     godef
     gogetdoc
   ];
+
+  systemd.user.services.emacs-daemon = {
+    Install.WantedBy = [ "default.target" ];
+    Service = {
+      Type = "forking";
+      TimeoutStartSec = "10min";
+      # bitwarden.el checks if that value is set,
+      # we set it in our own bw wrapper internally
+      Restart = "always";
+      ExecStart = toString daemonScript;
+    };
+  };
 }
