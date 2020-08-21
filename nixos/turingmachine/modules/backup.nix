@@ -9,9 +9,8 @@ in {
     timerConfig.OnCalendar = "12:00:00";
   };
 
-  systemd.services.borgbackup-job-turingmachine.unitConfig.RequiresMountsFor = backupPath;
-
   sops.secrets.borgbackup = {};
+  sops.secrets.ssh-borgbackup = {};
   sops.secrets.healthcheck-borgbackup = {};
 
   services.borgbackup.jobs.turingmachine = {
@@ -33,6 +32,15 @@ in {
     };
     preHook = ''
       set -x
+      mkdir -p /mnt/backup
+      eval $(ssh-agent)
+      ssh-add ${config.sops.secrets.ssh-borgbackup.path}
+      ${pkgs.sshfs}/bin/sshfs \
+        -oIdentityFile=${config.sops.secrets.ssh-borgbackup.path} \
+        -oProxyJump=sshjump@eddie.r \
+        -oPort=22222 \
+        s1691654@csce.datastore.ed.ac.uk:/csce/datastore/inf/users/s1691654 \
+        /mnt/backup \
       # Could be dangerous, but works.
       # In case an backup was aborted....
       borg break-lock "${backupPath}"
@@ -46,10 +54,6 @@ in {
       fi
     '';
 
-    postPrune = ''
-      ${pkgs.utillinux}/bin/umount -l /mnt/backup || true
-    '';
-
     prune.keep = {
       within = "1d"; # Keep all archives from the last day
       daily = 7;
@@ -57,6 +61,9 @@ in {
       monthly = 3;
     };
   };
+
+  systemd.services.borgbackup-job-turingmachine.serviceConfig.PrivateMounts = true;
+
   environment.systemPackages = with pkgs; [ borgbackup ];
   sops.secrets.healthcheck-borgbackup = {};
 }

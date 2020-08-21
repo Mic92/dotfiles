@@ -4,8 +4,7 @@
 , home-manager
 , sops-nix
 , retiolum
-, nixos-hardware
-, choose-place
+, nixos-hardware , choose-place
 }:
 let
   defaultModules = [
