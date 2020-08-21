@@ -13,6 +13,8 @@
     ./modules/blackbox-exporter.nix
     ./modules/sshd.nix
     ./modules/sops.nix
+
+    ../modules/drone-deploy.nix
     ../modules/mosh.nix
     ../modules/nur.nix
     ../modules/tracing.nix
