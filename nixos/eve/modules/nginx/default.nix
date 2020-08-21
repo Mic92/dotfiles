@@ -30,6 +30,8 @@ in {
     ./stub-status.nix
     ./threema.nix
     ./retiolum.nix
+
+    ../../../modules/acme.nix
   ];
 
   # avoid conflict with sslh by binding to port 4443
@@ -73,9 +75,6 @@ in {
 
     networking.firewall.allowedTCPPorts = [ 80 443 ];
 
-    #security.acme.production = false;
-    security.acme.email = "joerg.letsencrypt@thalheim.io";
-    security.acme.acceptTerms = true;
     security.acme.certs = {
       "thalheim.io" = sanCertificate  { domain = "thalheim.io"; };
       "legacy-thalheim.io" = sanCertificate { domain = "thalheim.io"; rsa = true; };
