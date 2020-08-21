@@ -89,16 +89,17 @@
     "nix-doom-emacs": {
       "flake": false,
       "locked": {
-        "lastModified": 1597510486,
-        "narHash": "sha256-sszIFwSLtdVhXKbxg5bIXBt8Rm4gkYJYZQjDoyCyBZs=",
+        "lastModified": 1598013798,
+        "narHash": "sha256-i8Cug00eDBloJxqt8t1VQNlat+YhUcj/LJinOysV4bI=",
         "owner": "vlaci",
         "repo": "nix-doom-emacs",
-        "rev": "edea767bd1a5cf2bbf00760f6070ecf1c2490ebc",
+        "rev": "238b18d7b2c8239f676358634bfb32693d3706f3",
         "type": "github"
       },
       "original": {
         "owner": "vlaci",
         "repo": "nix-doom-emacs",
+        "rev": "238b18d7b2c8239f676358634bfb32693d3706f3",
         "type": "github"
       }
     },

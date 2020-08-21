@@ -11,10 +11,7 @@
 (package! vimrc-mode)
 (package! coffee-mode)
 (package! meson-mode)
-
-;; cannot be found on melpa
-(disable-packages! nose)
-(disable-packages! explain-pause-mode)
+(package! jsonnet-mode)
 
 ;(package! bitwarden
 ;  :recipe (:host github :repo "seanfarley/emacs-bitwarden"))

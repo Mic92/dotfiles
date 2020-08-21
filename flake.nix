@@ -31,7 +31,7 @@
     doom-emacs.url = "github:hlissner/doom-emacs";
     doom-emacs.flake = false;
 
-    nix-doom-emacs.url = "github:vlaci/nix-doom-emacs";
+    nix-doom-emacs.url = "github:vlaci/nix-doom-emacs?rev=238b18d7b2c8239f676358634bfb32693d3706f3";
     nix-doom-emacs.flake = false;
   };
 
