@@ -214,6 +214,16 @@
           DESC 'Added to an account to allow tinytinyrss access'
           MUST ( mail $ userPassword ))'';
       };
+      "cn={1}prometheus,cn=schema".attrs =  {
+        cn = "{1}gitlab";
+        objectClass = "olcSchemaConfig";
+        olcObjectClasses = [''( 1.3.6.1.4.1.28296.1.2.4
+          NAME 'prometheus'
+          SUP uidObject AUXILIARY
+          DESC 'Added to an account to allow prometheus access'
+          MUST (mail))
+        ''];
+      };
     };
   };
 
