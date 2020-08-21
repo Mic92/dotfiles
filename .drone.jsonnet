@@ -71,8 +71,8 @@ local build = {
   },
 };
 
-local deploy = {
-  name: 'Deploy NixOS',
+local deploy(target) = {
+  name: 'Deploy NixOS to ' + target,
   kind: 'pipeline',
   type: 'docker',
   volumes: dockerVolumes,
@@ -84,9 +84,7 @@ local deploy = {
         mkdir -m700 -p $HOME/.ssh && echo "$DEPLOY_SSH_KEY" > $HOME/.ssh/id_ed25519 && chmod 400 $HOME/.ssh/id_ed25519
       |||,
       'cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts',
-      |||
-        nix shell '.#parallel' -c parallel --line-buffer --tagstring '{}' -q nix run '.#deploy.{1}' ::: eve turingmachine eva
-      |||,
+      "nix run .#deploy.%s" % target,
     ],
     volumes: stepVolumes,
     environment: environment + {
@@ -98,5 +96,7 @@ local deploy = {
 
 [
   build,
-  deploy
+  deploy("eve"),
+  deploy("turingmachine"),
+  deploy("eva")
 ]

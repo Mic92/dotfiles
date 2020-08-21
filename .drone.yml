@@ -82,7 +82,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: Deploy NixOS
+name: Deploy NixOS to eve
 
 platform:
   os: linux
@@ -94,7 +94,113 @@ steps:
   commands:
   - "mkdir -m700 -p $HOME/.ssh && echo \"$DEPLOY_SSH_KEY\" > $HOME/.ssh/id_ed25519 && chmod 400 $HOME/.ssh/id_ed25519\n"
   - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
-  - "nix shell '.#parallel' -c parallel --line-buffer --tagstring '{}' -q nix run '.#deploy.{1}' ::: eve turingmachine eva\n"
+  - nix run .#deploy.eve
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+    DEPLOY_SSH_KEY:
+      from_secret: DEPLOY_SSH_KEY
+    NIX_REMOTE: daemon
+    PAGER: cat
+    PATH: /nix/var/nix/profiles/system/sw/bin/
+    USER: root
+  volumes:
+  - name: nixstore
+    path: /nix
+  - name: gcroots
+    path: /var/lib/drone/nix-build
+  - name: nixconf
+    path: /etc/nix
+  - name: sslcerts
+    path: /etc/ssl
+
+volumes:
+- name: nixstore
+  host:
+    path: /nix
+- name: gcroots
+  host:
+    path: /var/lib/drone/nix-build
+- name: nixconf
+  host:
+    path: /nix/var/nix/profiles/system/etc/nix
+- name: sslcerts
+  host:
+    path: /nix/var/nix/profiles/system/etc/ssl
+
+trigger:
+  event:
+  - promote
+  - rollback
+
+---
+kind: pipeline
+type: docker
+name: Deploy NixOS to turingmachine
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: deploy
+  image: busybox
+  commands:
+  - "mkdir -m700 -p $HOME/.ssh && echo \"$DEPLOY_SSH_KEY\" > $HOME/.ssh/id_ed25519 && chmod 400 $HOME/.ssh/id_ed25519\n"
+  - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+  - nix run .#deploy.turingmachine
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+    DEPLOY_SSH_KEY:
+      from_secret: DEPLOY_SSH_KEY
+    NIX_REMOTE: daemon
+    PAGER: cat
+    PATH: /nix/var/nix/profiles/system/sw/bin/
+    USER: root
+  volumes:
+  - name: nixstore
+    path: /nix
+  - name: gcroots
+    path: /var/lib/drone/nix-build
+  - name: nixconf
+    path: /etc/nix
+  - name: sslcerts
+    path: /etc/ssl
+
+volumes:
+- name: nixstore
+  host:
+    path: /nix
+- name: gcroots
+  host:
+    path: /var/lib/drone/nix-build
+- name: nixconf
+  host:
+    path: /nix/var/nix/profiles/system/etc/nix
+- name: sslcerts
+  host:
+    path: /nix/var/nix/profiles/system/etc/ssl
+
+trigger:
+  event:
+  - promote
+  - rollback
+
+---
+kind: pipeline
+type: docker
+name: Deploy NixOS to eva
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: deploy
+  image: busybox
+  commands:
+  - "mkdir -m700 -p $HOME/.ssh && echo \"$DEPLOY_SSH_KEY\" > $HOME/.ssh/id_ed25519 && chmod 400 $HOME/.ssh/id_ed25519\n"
+  - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+  - nix run .#deploy.eva
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
@@ -134,6 +240,6 @@ trigger:
 
 ---
 kind: signature
-hmac: a7c413ec10a2f0942ecaa35e4c7d88510f0b7b3d31251ccdddd0224137f1ce7a
+hmac: 2a8ea762c806353a0b694aaa1f33a729551d64d3390d5e6d49839c7ad34f7d0b
 
 ...
