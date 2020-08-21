@@ -14,6 +14,7 @@
 
 ;; cannot be found on melpa
 (disable-packages! nose)
+(disable-packages! explain-pause-mode)
 
 ;(package! bitwarden
 ;  :recipe (:host github :repo "seanfarley/emacs-bitwarden"))
