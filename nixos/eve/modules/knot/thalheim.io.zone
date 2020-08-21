@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020081702 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2020082200 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -30,6 +30,7 @@ ns1 IN AAAA 2a01:4f9:2b:1605::1
 www IN A 95.216.112.61
 www IN AAAA 2a01:4f9:2b:1605::1
 prometheus IN CNAME eva
+alertmanager IN CNAME eva
 * IN CNAME www
 
 @ IN CAA 0 issue "letsencrypt.org"
