@@ -33,7 +33,7 @@
     maxJobs = 8;
   } {
     hostName = "prism.r";
-    sshUser = "Mic92";
+    sshUser = "mic92";
     sshKey = "/root/.ssh/id_ed25519";
     system = "x86_64-linux";
     maxJobs = 4;
