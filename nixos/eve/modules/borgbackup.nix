@@ -1,6 +1,7 @@
 { pkgs, config, ... }:
 {
   sops.secrets.borg-passphrase = {};
+  sops.secrets.borg-ssh = {};
   sops.secrets.nas-wakeup-password = {};
   sops.secrets.healthcheck-borgbackup = {};
 
@@ -11,15 +12,18 @@
       "/var"
       "/root"
     ];
-    repo = "eve-backup@backup:backup";
+    repo = "eve-backup@home.devkid.net:backup";
     encryption = {
       mode = "repokey";
       passCommand = "cat ${config.sops.secrets.borg-passphrase.path}";
     };
     compression = "auto,zstd";
     startAt = "daily";
+    environment.BORG_RSH = "ssh -oPort=22022";
     preHook = ''
       set -x
+      eval $(ssh-agent)
+      ssh-add ${config.sops.secrets.borg-ssh.path}
       ${pkgs.netcat}/bin/nc -w20 home.devkid.net 22198 < ${config.sops.secrets.nas-wakeup-password.path}
       for i in $(seq 1 20); do
         if ${pkgs.netcat}/bin/nc -z -v -w1 home.devkid.net 22022; then
