@@ -120,7 +120,7 @@ in {
     device = "//csce.datastore.ed.ac.uk/csce/inf/users/${uun}";
     fsType = "cifs";
     options = let
-      automount_opts = "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s,soft";
+      automount_opts = "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s,soft,vers=2.0";
       # cat > smb-secrets <<EOF
       # username=s16916XX
       # domain=ED
@@ -130,4 +130,5 @@ in {
   };
 
   sops.secrets.smb-secrets = {};
+  sops.secrets.uni-vpn-auth = {};
 }
