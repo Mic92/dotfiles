@@ -10,9 +10,9 @@
     ./modules/prometheus.nix
     ./modules/nginx.nix
     ./modules/openldap.nix
-    ./modules/blackbox-exporter.nix
     ./modules/sshd.nix
     ./modules/sops.nix
+    ./modules/telegraf.nix
 
     ../modules/drone-deploy.nix
     ../modules/mosh.nix

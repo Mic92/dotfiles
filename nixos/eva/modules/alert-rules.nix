@@ -125,11 +125,11 @@ in lib.mapAttrsToList (name: opts: {
     summary = "{{$labels.alias}}: Uptime monster";
     description = "{{$labels.alias}} has been up for more than 30 days.";
   };
-  blackbox_down = {
-    condition = ''min(up{job=~"blackbox"}) by (source, job, instance) == 0'';
+  telegraf_down = {
+    condition = ''min(up{job=~"telegraf"}) by (source, job, instance) == 0'';
     time = "3m";
-    summary = "{{$labels.instance}}: {{$labels.job}} blackbox exporter from {{$labels.source}} is down.";
-    description = "{{$labels.instance}}: {{$labels.job}} blackbox exporter from {{$labels.source}} is down.";
+    summary = "{{$labels.instance}}: {{$labels.job}} telegraf exporter from {{$labels.source}} is down.";
+    description = "{{$labels.instance}}: {{$labels.job}} telegraf exporter from {{$labels.source}} is down.";
   };
   blackbox_probe = {
     condition = "probe_success == 0";

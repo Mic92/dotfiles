@@ -10,29 +10,11 @@
       }];
     }))];
     scrapeConfigs = [{
-      job_name = "blackbox";
+      job_name = "telegraf";
       scrape_interval = "60s";
-      metrics_path = "/probe";
-      params.module = [ "icmp_v4" ];
+      metrics_path = "/metrics";
       static_configs = [{
-        targets = [ "eve.thalheim.io" ];
-        labels.source = "localhost";
-      }];
-      relabel_configs = [{
-        source_labels = [ "__address__" ];
-        regex = "(.*)(:80)?";
-        target_label = "__param_target";
-        replacement = ''''${1}'';
-      } {
-        source_labels = [ "__param_target" ];
-        regex = "(.*)";
-        target_label = "instance";
-        replacement = ''''${1}'';
-      } {
-        source_labels = [];
-        regex = ".*";
-        target_label = "__address__";
-        replacement = "localhost:9115";
+        targets = [ "eva.thalheim.io:9273" ];
       }];
     }];
     alertmanagers = [{
