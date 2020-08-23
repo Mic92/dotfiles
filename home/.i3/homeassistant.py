@@ -1,17 +1,11 @@
 import http.client
 import json
-import socket
-import subprocess
-import threading
 import time
-from os.path import expanduser, expandvars
-from threading import Thread
 from typing import Any, Dict, Optional, Tuple
 
 from bitwarden import BitwardenPassword
 from i3pystatus import IntervalModule
 from i3pystatus.core.util import internet, require
-from icons import WEATHER_ICONS
 import color
 
 
@@ -50,16 +44,17 @@ class State:
         self.entities = entities
 
     def get(self, entity_id: str) -> Optional[Dict[str, Any]]:
-        if self.entities is None:
+        while self.entities is None:
             self.update()
-        assert self.entities is not None
+            if self.entities is None:
+                time.sleep(5)
         return self.entities.get(entity_id)
 
 
 state = State(BitwardenPassword("home-assistant-token"))
 
 
-#class WeatherIcon(IntervalModule):
+# class WeatherIcon(IntervalModule):
 #    @require(internet)
 #    def run(self) -> None:
 #        global state
