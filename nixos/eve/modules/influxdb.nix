@@ -21,9 +21,4 @@
   };
 
   services.nginx.virtualHosts."influxdb.thalheim.io".useACMEHost = "influxdb.thalheim.io";
-
-  services.netdata.httpcheck.checks.influxdb = {
-    url = "https://influxdb.thalheim.io:8086/ping";
-    statusAccepted = [ 204 ];
-  };
 }

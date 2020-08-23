@@ -19,7 +19,6 @@
     ../modules/mosh.nix
     ../modules/tor-ssh.nix
     ../modules/networkd.nix
-    ../modules/netdata
     ../modules/rpi3.nix
     ../modules/secrets.nix
 
@@ -32,10 +31,6 @@
   ];
 
   networking.hostName = "matchbox";
-
-  systemd.services.netdata.path = with pkgs; [
-    python3
-  ];
 
   environment.systemPackages = with pkgs; [
     tmux

@@ -177,12 +177,6 @@ in {
     };
   };
 
-  services.netdata.portcheck.checks = {
-    postfix-smtp.port = 25;
-    postfix-smtps.port = 465;
-    postfix-submission.port = 587;
-  };
-
   networking.firewall.allowedTCPPorts = [
     25 # smtp
     465 # stmps

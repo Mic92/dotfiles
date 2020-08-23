@@ -137,9 +137,4 @@ in {
       globalRedirect = "ist.devkid.net";
     };
   };
-
-  services.netdata.httpcheck.checks.istwiki = {
-    url = "https://ist.devkid.net";
-    regex = "Informationssystemtechnik";
-  };
 }

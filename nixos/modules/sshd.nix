@@ -1,7 +1,6 @@
 {
   imports = [
     ./ssh.nix
-    ./netdata/options.nix
   ];
 
   services.openssh = {
@@ -13,6 +12,4 @@
       StreamLocalBindUnlink yes
     '';
   };
-
-  services.netdata.portcheck.checks.ssh.port = 22;
 }

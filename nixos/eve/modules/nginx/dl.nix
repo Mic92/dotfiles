@@ -26,8 +26,4 @@ in {
   systemd.services.nginx-config-reload.serviceConfig.SupplementaryGroups = [ "keys" ];
 
   sops.secrets.nginx-secure-link.owner = "nginx";
-
-  services.netdata.httpcheck.checks."dl.thalheim.io" = {
-    url = "https://dl.thalheim.io/OtNjoZOUnEn3H6LJZ1qcIw/test";
-  };
 }

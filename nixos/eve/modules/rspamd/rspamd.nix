@@ -111,11 +111,6 @@ in {
     };
   };
 
-  services.netdata.httpcheck.checks.rspamd = {
-    url = "https://rspamd.thalheim.io";
-    regex = "Rspamd";
-  };
-
   users.users.rspamd.extraGroups = [ "redis" ];
 
   systemd.services.dovecot2.preStart = ''

@@ -34,7 +34,6 @@
     ./modules/mastodon-hnbot.nix
     ./modules/mediawiki.nix
     #./modules/named.nix
-    ./modules/netdata.nix
     ./modules/network.nix
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
@@ -56,6 +55,7 @@
     ./modules/smartd.nix
     ./modules/sops.nix
     ./modules/teamspeak.nix
+    ./modules/telegraf.nix
     ./modules/tor.nix
     ./modules/tt-rss.nix
     ./modules/users.nix

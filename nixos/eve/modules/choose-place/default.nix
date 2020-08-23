@@ -37,9 +37,4 @@
       '';
     };
   };
-
-  services.netdata.httpcheck.checks.choose-place = {
-    url = "https://choose-place.thalheim.io";
-    regex = "Choose Place";
-  };
 }

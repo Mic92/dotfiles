@@ -15,11 +15,6 @@
       '';
     };
   };
-
-  services.netdata.httpcheck.checks.glowing-bear = {
-    url = "https://glowing-bear.thalheim.io";
-    regex = "Glowing";
-  };
 }
 
 # Custom css

@@ -22,5 +22,4 @@
   };
   sops.secrets.netdata-openldap-password.owner = "netdata";
   sops.secrets.ldap-login = {};
-  services.netdata.portcheck.checks.openldap.port = 389;
 }

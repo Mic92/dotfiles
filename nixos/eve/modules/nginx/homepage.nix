@@ -30,9 +30,4 @@
       globalRedirect = "thalheim.io";
     };
   };
-
-  services.netdata.httpcheck.checks.homepage = {
-    url = "https://thalheim.io";
-    regex = "Higgs-Boson";
-  };
 }

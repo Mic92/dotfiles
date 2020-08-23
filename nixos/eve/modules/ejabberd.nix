@@ -293,11 +293,6 @@
     { port = "5269"; }
   ];
 
-  services.netdata.portcheck.checks = {
-    xmpp-server.port = 5222;
-    xmpp-client.port = 5269;
-  };
-
   networking.firewall.allowedTCPPorts = [
     5222 # xmpp-client
     5269 # xmpp-server

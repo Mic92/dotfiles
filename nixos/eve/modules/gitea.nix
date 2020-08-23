@@ -28,11 +28,6 @@
     '';
   };
 
-  services.netdata.httpcheck.checks.gitea = {
-    url = "https://git.thalheim.io";
-    regex = "Gitea";
-  };
-
   # for database key
   systemd.services.gitea.serviceConfig.SupplementaryGroups = [ "keys" ];
 }

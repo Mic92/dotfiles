@@ -137,9 +137,4 @@ in {
   };
 
   users.users.hass.extraGroups = [ "keys" ];
-
-  services.netdata.httpcheck.checks.home-assistant = {
-    url = "https://hass.thalheim.io";
-    regex = "Home Assistant";
-  };
 }

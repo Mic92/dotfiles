@@ -75,11 +75,6 @@
     };
   };
 
-  services.netdata.httpcheck.checks.grafana = {
-    url = "https://grafana.thalheim.io";
-    regex = "Grafana";
-  };
-
   sops.secrets = {
     grafana-smtp-password.owner = "grafana";
     grafana-admin-password.owner = "grafana";

@@ -28,9 +28,4 @@ in {
   };
   networking.firewall.allowedTCPPorts = [ 22000 ];
   networking.firewall.allowedUDPPorts = [ 21027 ];
-
-  services.netdata.httpcheck.checks.syncthing = {
-    url = "https://syncthing.thalheim.io";
-    statusAccepted = [ 401 ];
-  };
 }

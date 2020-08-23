@@ -67,9 +67,4 @@
 
   users.users.tt_rss.extraGroups = [ "keys" ];
   systemd.services.phpfpm-tt-rss.serviceConfig.SupplementaryGroups = [ "keys" ];
-
-  services.netdata.httpcheck.checks.ttrss = {
-    url = "https://rss.devkid.net";
-    regex = "Tiny Tiny RSS";
-  };
 }

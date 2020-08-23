@@ -54,9 +54,4 @@
       '';
     };
   };
-
-  services.netdata.httpcheck.checks.kresd = {
-    url = "https://dns.thalheim.io/dns-query?dns=q80BAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB";
-    regex = "example";
-  };
 }

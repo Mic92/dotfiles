@@ -50,7 +50,7 @@ in {
       ssl_prefer_server_ciphers = yes
       ssl_dh=<${config.security.dhparams.params.dovecot2.path}
 
-      mail_plugins = virtual fts fts_lucene old_stats
+      mail_plugins = virtual fts fts_lucene
 
       service lmtp {
         user = vmail
@@ -124,22 +124,6 @@ in {
       imapc_features = $imapc_features fetch-headers
       # Read multiple mails in parallel, improves performance
       mail_prefetch_count = 20
-
-      plugin {
-        # how often to session statistics (must be set)
-        old_stats_refresh = 30 secs
-        # track per-IMAP command statistics (optional)
-        old_stats_track_cmds = yes
-      }
-
-      # netdata
-      service old-stats {
-        unix_listener stats {
-          user = vmail
-          group = vmail
-          mode = 0664
-        }
-      }
     '';
     modules = [
       pkgs.dovecot_pigeonhole
@@ -184,23 +168,9 @@ in {
     virtualHosts."imap.devkid.net".useACMEHost = "imap.devkid.net";
   };
 
-  services.netdata.portcheck.checks = {
-    dovecot-imap.port = 143;
-    dovecot-imaps.port = 993;
-    dovecot-sieve.port = 4190;
-  };
-
   networking.firewall.allowedTCPPorts = [
     143 # imap
     993 # imaps
     4190 # sieve
   ];
-
-  environment.etc."netdata/python.d/dovecot.conf".text = ''
-    localsocket2:
-      name : 'local'
-      socket : '/run/dovecot2/stats'
-  '';
-
-  users.users.netdata.extraGroups = [ "vmail" ];
 }

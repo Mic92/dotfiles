@@ -40,8 +40,4 @@
   };
 
   users.groups.adminer = {};
-  services.netdata.httpcheck.checks.adminer = {
-    url = "https://adminer.thalheim.io";
-    regex = "Login";
-  };
 }
