@@ -34,6 +34,7 @@ steps:
 - name: upload
   image: busybox
   commands:
+  - sleep 99999
   - nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
   - nix shell '.#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
   - nix shell '.#cachix' -c cachix push --jobs 32 mic92 < paths
@@ -240,6 +241,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 2a8ea762c806353a0b694aaa1f33a729551d64d3390d5e6d49839c7ad34f7d0b
+hmac: 3ae6fc7e068ab4a80c198e501a4bfe3a07ba957610a8285f669063a3ed7e18ed
 
 ...

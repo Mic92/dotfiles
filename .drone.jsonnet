@@ -50,6 +50,7 @@ local build = {
     name: 'upload',
     image: 'busybox',
     commands: [
+      'sleep 99999',
       'nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json',
       "nix shell '.#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths",
       "nix shell '.#cachix' -c cachix push --jobs 32 mic92 < paths",
