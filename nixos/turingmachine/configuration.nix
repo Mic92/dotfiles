@@ -42,6 +42,9 @@
     ../modules/users.nix
   ];
 
+  # required for gpg-agent?
+  services.dbus.packages = [ pkgs.gcr ];
+
   #programs.captive-browser.enable = true;
   #programs.captive-browser.interface = "wlan0";
 
