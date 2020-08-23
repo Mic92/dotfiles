@@ -182,9 +182,4 @@ in {
     465 # stmps
     587 # submission
   ];
-
-  environment.etc."netdata/python.d/postfix.conf".text = ''
-    local:
-      command: '/run/wrappers/bin/postqueue -p'
-  '';
 }

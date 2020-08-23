@@ -59,13 +59,5 @@ in {
       "devkid.net" = sanCertificate { domain = "devkid.net"; };
       "legacy-devkid.net" = sanCertificate { domain = "devkid.net"; rsa = true; };
     };
-
-    environment.etc."netdata/python.d/web_log.conf".text = ''
-      nginx_log3:
-        name: 'nginx'
-        path: '/var/log/nginx/access.log'
-    '';
-
-    users.users.netdata.extraGroups = [ "nginx" ];
   };
 }

@@ -40,7 +40,6 @@
     ./modules/openldap.nix
     ./modules/openttd
     ./modules/packages.nix
-    ./modules/phpfpm.nix
     ./modules/postfix.nix
     ./modules/postgresql.nix
     ./modules/rainloop.nix
@@ -56,7 +55,6 @@
     ./modules/sops.nix
     ./modules/teamspeak.nix
     ./modules/telegraf.nix
-    ./modules/tor.nix
     ./modules/tt-rss.nix
     ./modules/users.nix
     #./modules/wiregrill
@@ -66,6 +64,7 @@
     ../modules/drone-deploy.nix
     ../modules/mosh.nix
     ../modules/nur.nix
+    ../modules/tor-ssh.nix
     ../modules/tracing.nix
     ../modules/wireguard.nix
     ../modules/zfs.nix

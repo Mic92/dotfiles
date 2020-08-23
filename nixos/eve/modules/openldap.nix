@@ -16,10 +16,5 @@
     ../../modules/openldap
   ];
 
-  environment.etc."netdata/python.d/openldap.conf" = {
-    source = config.sops.secrets.netdata-openldap-password.path;
-    user = "netdata";
-  };
-  sops.secrets.netdata-openldap-password.owner = "netdata";
   sops.secrets.ldap-login = {};
 }

@@ -7,12 +7,4 @@
       unixsocketperm 660
     '';
   };
-
-  environment.etc."netdata/python.d/redis.conf".text = ''
-    socket:
-      name: 'local'
-      socket: '/run/redis/redis.sock'
-  '';
-
-  users.users.netdata.extraGroups = [ "redis" ];
 }
