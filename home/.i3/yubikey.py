@@ -29,7 +29,7 @@ class YubiKeyTouchDetector(Module):
         except Exception:
             self.socket = None
             self.output = {
-                "full_text": f"Cannot connect to yubikey-touch-detector"
+                "full_text": "Cannot connect to yubikey-touch-detector"
             }
 
     def update_status(self):

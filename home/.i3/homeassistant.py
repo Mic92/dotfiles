@@ -2,10 +2,10 @@ import http.client
 import json
 import time
 from typing import Any, Dict, Optional, Tuple
+from threading import Thread
 
 from bitwarden import BitwardenPassword
 from i3pystatus import IntervalModule
-from i3pystatus.core.util import internet, require
 import color
 
 
@@ -32,12 +32,20 @@ class State:
     def __init__(self, password: BitwardenPassword):
         self.entities: Optional[Dict[str, Any]] = None
         self.password = password
+        thread = Thread(target=self.update_state)
+        thread.daemon = True
+        thread.start()
+
+    def update_state(self):
+        while True:
+            try:
+                self.update()
+            except Exception:
+                pass
+            time.sleep(30)
 
     def update(self):
-        try:
-            resp = request("/api/states", self.password.get())
-        except (OSError, json.JSONDecodeError):
-            return
+        resp = request("/api/states", self.password.get())
         entities = {}
         for entity in resp:
             entities[entity["entity_id"]] = entity
@@ -45,9 +53,7 @@ class State:
 
     def get(self, entity_id: str) -> Optional[Dict[str, Any]]:
         while self.entities is None:
-            self.update()
-            if self.entities is None:
-                time.sleep(5)
+            time.sleep(1)
         return self.entities.get(entity_id)
 
 
@@ -75,9 +81,7 @@ state = State(BitwardenPassword("home-assistant-token"))
 
 
 class WeatherText(IntervalModule):
-    @require(internet)
     def run(self) -> None:
-        global state
         weather = state.get("weather.openweathermap")
         if weather is None:
             return
@@ -87,9 +91,7 @@ class WeatherText(IntervalModule):
 
 
 class Shannan(IntervalModule):
-    @require(internet)
     def run(self) -> None:
-        global state
         shannan = state.get("person.shannan_lekwati")
         distance = state.get("sensor.shannan_joerg_distance")
         locations = {
@@ -114,9 +116,7 @@ class BikeBattery(IntervalModule):
         state.update()
         self.run()
 
-    @require(internet)
     def run(self) -> None:
-        global state
         days_uncharged = state.get(self.entity_id)
         if days_uncharged is None:
             return
@@ -158,9 +158,7 @@ def charge_state_ios(state: State, device: str) -> Tuple[str, bool]:
 class PhoneBattery(IntervalModule):
     hints = dict(markup=True)
 
-    @require(internet)
     def run(self) -> None:
-        state.update()
         redmi = charge_state_android(state, "redmi_note_5")
         iphone = charge_state_ios(state, "beatrice")
         watch = charge_state_ios(state, "shannans_apple_watch")

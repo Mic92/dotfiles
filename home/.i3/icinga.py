@@ -1,13 +1,7 @@
 import http.client
 import json
-import socket
 import ssl
-import subprocess
-import threading
-import time
 from base64 import b64encode
-from os.path import expanduser, expandvars
-from threading import Thread
 from typing import Any, Dict, Optional, Union
 from urllib.parse import urlparse
 
