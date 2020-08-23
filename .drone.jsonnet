@@ -54,13 +54,14 @@ local build = {
       "nix shell '.#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths",
       "nix shell '.#cachix' -c cachix push --jobs 32 mic92 < paths",
     ],
-    environment: environment + {
+    environment: environment {
       CACHIX_SIGNING_KEY: {
         from_secret: 'CACHIX_SIGNING_KEY',
       },
     },
     volumes: stepVolumes,
     when: {
+      event: { exclude: ['pull_request'] },
       status: ['failure', 'success'],
     },
   }],
@@ -84,10 +85,10 @@ local deploy(target) = {
         mkdir -m700 -p $HOME/.ssh && echo "$DEPLOY_SSH_KEY" > $HOME/.ssh/id_ed25519 && chmod 400 $HOME/.ssh/id_ed25519
       |||,
       'cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts',
-      "nix run .#deploy.%s" % target,
+      'nix run .#deploy.%s' % target,
     ],
     volumes: stepVolumes,
-    environment: environment + {
+    environment: environment {
       DEPLOY_SSH_KEY: { from_secret: 'DEPLOY_SSH_KEY' },
     },
   }],
@@ -96,7 +97,7 @@ local deploy(target) = {
 
 [
   build,
-  deploy("eve"),
-  deploy("turingmachine"),
-  deploy("eva")
+  deploy('eve'),
+  deploy('turingmachine'),
+  deploy('eva'),
 ]

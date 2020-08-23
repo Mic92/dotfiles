@@ -55,6 +55,9 @@ steps:
   - name: sslcerts
     path: /etc/ssl
   when:
+    event:
+      exclude:
+      - pull_request
     status:
     - failure
     - success
@@ -240,6 +243,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 2a8ea762c806353a0b694aaa1f33a729551d64d3390d5e6d49839c7ad34f7d0b
+hmac: e486001d15c15625faa790005cca13634d70b6bcefacb887010b6681858d2a0b
 
 ...
