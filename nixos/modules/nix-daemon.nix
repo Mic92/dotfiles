@@ -20,11 +20,11 @@
     '';
 
     binaryCaches = [
-      "https://r-ryantm.cachix.org"
+      "https://nix-community.cachix.org"
       "https://mic92.cachix.org"
     ];
     binaryCachePublicKeys = [
-      "r-ryantm.cachix.org-1:gkUbLkouDAyvBdpBX0JOdIiD2/DP1ldF3Z3Y6Gqcc4c="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
       "mic92.cachix.org-1:gi8IhgiT3CYZnJsaW7fxznzTkMUOn1RY4GmXdT/nXYQ="
     ];
   };
