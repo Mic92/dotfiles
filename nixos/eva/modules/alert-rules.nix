@@ -158,8 +158,8 @@ in lib.mapAttrsToList (name: opts: {
 
   postfix_queue_length = {
     condition = "avg_over_time(postfix_queue_length[1h]) > 10";
-    summary = "{{$lables.instance}}: mail queue is filling up: {{$value}}";
-    description = "{{$lables.instance}}: postfix mail queue has undelivered {{$value}} items";
+    summary = "{{$labels.instance}}: mail queue is filling up: {{$value}}";
+    description = "{{$labels.instance}}: postfix mail queue has undelivered {{$value}} items";
   };
 
   zfs_errors = {
