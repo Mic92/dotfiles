@@ -155,11 +155,18 @@ in lib.mapAttrsToList (name: opts: {
   #  summary = "{{$labels.alias}}: Mail send failed";
   #  description = "{{$labels.alias}}: Mail send failed";
   #};
-  #node_zfs_errors = {
-  #  condition = "node_zfs_arc_l2_writes_error + node_zfs_arc_l2_io_error + node_zfs_arc_l2_writes_error > 0";
-  #  summary = "{{$labels.alias}}: ZFS IO errors: {{$value}}";
-  #  description = "{{$labels.alias}} reports: {{$value}} ZFS IO errors. Drive(s) are failing.";
-  #};
+
+  postfix_queue_length = {
+    condition = "avg_over_time(postfix_queue_length[1h]) > 10";
+    summary = "{{$lables.instance}}: mail queue is filling up: {{$value}}";
+    description = "{{$lables.instance}}: postfix mail queue has undelivered {{$value}} items";
+  };
+
+  zfs_errors = {
+    condition = "zfs_arcstats_l2_io_error + zfs_dmu_tx_error + zfs_arcstats_l2_writes_error > 0";
+    summary = "{{$labels.instance}}: ZFS IO errors: {{$value}}";
+    description = "{{$labels.instance}} reports: {{$value}} ZFS IO errors. Drive(s) are failing.";
+  };
 
   alerts_silences_changed = {
     condition = ''abs(delta(alertmanager_silences{state="active"}[1h])) >= 1'';

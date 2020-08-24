@@ -1,3 +1,7 @@
 {
-  imports = [ ../../modules/telegraf.nix ];
+  imports = [
+    ../../modules/telegraf.nix
+  ];
+
+  services.telegraf.extraConfig.inputs.postfix = {};
 }
