@@ -134,6 +134,7 @@ in {
     # to fix xdg-open
     glib
 
+    jmtpfs # needed for charging? WTF
   ] ++ (with nur.repos.mic92; [
     speedscope
     inxi
