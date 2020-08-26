@@ -21,6 +21,8 @@ in {
       "/var"
       "/root"
     ];
+    # runs borg list, which is really slow over sshfs
+    doInit = false;
     repo = backupPath;
     exclude = [
       "/home/*/.cache"
