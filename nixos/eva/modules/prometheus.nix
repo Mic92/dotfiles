@@ -9,6 +9,7 @@
         rules = import ./alert-rules.nix { inherit lib; };
       }];
     }))];
+    webExternalUrl = "https://prometheus.thalheim.io";
     scrapeConfigs = [{
       job_name = "telegraf";
       scrape_interval = "60s";
@@ -41,6 +42,7 @@
   services.prometheus.alertmanager = {
     enable = true;
     environmentFile = config.sops.secrets.alertmanager.path;
+    webExternalUrl = "https://alertmanager.thalheim.io";
     configuration = {
       global = {
         # The smarthost and SMTP sender used for mail notifications.

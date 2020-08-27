@@ -42,6 +42,9 @@ in {
       enableACME = true;
       locations."/".extraConfig = proxy "prometheus";
     };
+    virtualHosts."prometheus.r" = {
+      locations."/".extraConfig = proxy "prometheus";
+    };
     virtualHosts."alertmanager.thalheim.io" = {
       forceSSL = true;
       enableACME = true;
