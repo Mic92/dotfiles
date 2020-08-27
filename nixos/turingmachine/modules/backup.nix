@@ -2,7 +2,7 @@
 with builtins;
 
 let
-  backupPath = "/mnt/backup/borg";
+  backupPath = "borgbackup@eddie.r:turingmachine/borg";
 in {
   systemd.timers.backup = {
     wantedBy = ["multi-user.target"];
@@ -14,7 +14,6 @@ in {
   sops.secrets.healthcheck-borgbackup = {};
 
   services.borgbackup.jobs.turingmachine = {
-    removableDevice = true;
     paths = [
       "/home"
       "/etc"
@@ -25,24 +24,42 @@ in {
     doInit = false;
     repo = backupPath;
     exclude = [
+      "*.pyc"
+      "/home/*/.direnv"
       "/home/*/.cache"
+      "/home/*/.cargo"
+      "/home/*/.npm"
+      "/home/*/.m2"
+      "/home/*/.gradle"
+      "/home/*/.opam"
+      "/home/*/.clangd"
+      "/home/*/Android"
       "/home/*/.config/Ferdi/Partitions"
+      "/home/joerg/Musik/podcasts"
+      "/home/joerg/gPodder/Downloads"
+      "/home/joerg/sync"
+      "/home/joerg/git/OSX-KVM/mac_hdd_ng.img"
+      "/var/lib/docker"
+      "/var/log/journal"
+      "/var/cache"
+      "/var/tmp"
     ];
     encryption = {
       mode = "repokey";
       passCommand = "cat ${config.sops.secrets.borgbackup.path}";
     };
+    #${pkgs.sshfs}/bin/sshfs \
+    #  -oworkaround=rename \
+    #  -oIdentityFile=${config.sops.secrets.ssh-borgbackup.path} \
+    #  -oProxyJump=sshjump@eddie.r \
+    #  -oPort=22222 \
+    #  s1691654@csce.datastore.ed.ac.uk:/csce/datastore/inf/users/s1691654 \
+    #  /mnt/backup
     preHook = ''
       set -x
       mkdir -p /mnt/backup
       eval $(ssh-agent)
       ssh-add ${config.sops.secrets.ssh-borgbackup.path}
-      ${pkgs.sshfs}/bin/sshfs \
-        -oIdentityFile=${config.sops.secrets.ssh-borgbackup.path} \
-        -oProxyJump=sshjump@eddie.r \
-        -oPort=22222 \
-        s1691654@csce.datastore.ed.ac.uk:/csce/datastore/inf/users/s1691654 \
-        /mnt/backup \
       # Could be dangerous, but works.
       # In case an backup was aborted....
       borg break-lock "${backupPath}"
