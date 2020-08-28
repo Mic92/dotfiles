@@ -55,13 +55,23 @@
         receiver = "default";
         routes = [{
           group_by = [ "instance" ];
+          match_re.org = "krebs";
+          receiver = "krebs";
+        } {
+          group_by = [ "instance" ];
           group_wait = "30s";
           group_interval = "2m";
           repeat_interval = "2h";
           receiver = "all";
         }];
       };
-      receivers = [{
+      receivers = [ {
+        name = "krebs";
+        webhook_configs = [{
+          url = "http://127.0.0.1:9223/";
+          max_alerts = 5;
+        }];
+      } {
         name = "all";
         email_configs = [{
           to = "joerg@thalheim.io";
@@ -76,4 +86,27 @@
       }];
     };
   };
+
+  systemd.sockets.irc-alerts = {
+    description = "Receive http hook and send irc message";
+    wantedBy = [ "sockets.target" ];
+    listenStreams = [ "[::]:9223" ];
+  };
+
+  systemd.services.irc-alerts = let
+    irc-alerts = pkgs.stdenv.mkDerivation {
+      name = "irc-alerts";
+      src = ./irc-alerts.py;
+      dontUnpack = true;
+      buildInputs = [ pkgs.python3 ];
+      installPhase = ''
+        install -D -m755 $src $out/bin/irc-alerts
+      '';
+    }; in {
+      requires = [ "irc-alerts.socket" ];
+      serviceConfig = {
+        Environment = "IRC_URL=irc://prometheus@irc.r:6667/#xxx";
+        ExecStart = "${irc-alerts}/bin/irc-alerts";
+      };
+    };
 }

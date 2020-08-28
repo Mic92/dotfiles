@@ -43,7 +43,16 @@ in {
       locations."/".extraConfig = proxy "prometheus";
     };
     virtualHosts."prometheus.r" = {
-      locations."/".extraConfig = proxy "prometheus";
+      locations."/".extraConfig = ''
+        proxy_pass       http://@prometheus/;
+        proxy_set_header Host              $host;
+        proxy_set_header X-Real-IP         $remote_addr;
+        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host   $host:443;
+        proxy_set_header X-Forwarded-Server $host;
+        proxy_set_header X-Forwarded-Port 443;
+        proxy_set_header X-Forwarded-Proto $scheme;
+      '';
     };
     virtualHosts."alertmanager.thalheim.io" = {
       forceSSL = true;

@@ -7,7 +7,7 @@
   programs.vim.defaultEditor = true;
 
   imports = [
-    ./modules/prometheus.nix
+    ./modules/prometheus
     ./modules/nginx.nix
     ./modules/openldap.nix
     ./modules/sshd.nix

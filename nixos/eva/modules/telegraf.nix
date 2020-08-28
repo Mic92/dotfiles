@@ -86,6 +86,17 @@
         }];
 
         http_response = [{
+          urls = [ "http://yellow.r:9091/transmission/web/" ];
+          response_string_match = "Transmission Web";
+          tags.org = "krebs";
+        } {
+          urls = [
+            "http://helsinki.r"
+            "http://yellow.r"
+          ];
+          tags.org = "krebs";
+          response_string_match = "Index of /";
+        } {
           urls = [ "https://www.wikipedia.org/" ];
           http_proxy = ''https://telegraf%40thalheim.io:''${LDAP_PASSWORD}@devkid.net:8889'';
           response_string_match = "wikipedia.org";
