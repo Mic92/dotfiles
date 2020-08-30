@@ -17,8 +17,15 @@ let
 in {
   users.users.joerg.extraGroups = [ "networkmanager" ];
 
+
   networking.networkmanager = {
     enable = true;
+    extraConfig = ''
+      # using seems to make resolved ignoring all dhcp dns server
+      # and therefore use out dns-over-tls resolver.
+      [global-dns-domain-*]
+      servers=127.0.0.53
+    '';
     wifi.backend = "iwd";
     dispatcherScripts = [{
       source = "${networkmanager-hook}/bin/dispatcher";
