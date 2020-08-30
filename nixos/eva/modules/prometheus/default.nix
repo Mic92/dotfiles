@@ -79,7 +79,7 @@
         pushover_configs = [{
           user_key = "$PUSHOVER_USER_KEY";
           token = "$PUSHOVER_TOKEN";
-          priority = ''{{ if eq .Status "firing" }}1{{ else }}0{{ end }}'';
+          priority = "0";
         }];
       } {
         name = "default";
