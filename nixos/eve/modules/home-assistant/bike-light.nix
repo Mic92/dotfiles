@@ -32,7 +32,6 @@ in {
     automation = [
       (chargeNotification "University")
       (chargeNotification "home")
-      (chargeNotification "Shannan's Home")
       {
         alias = "Increment discharged counter";
         trigger = {
