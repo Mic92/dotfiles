@@ -60,9 +60,6 @@ in {
       mkdir -p /mnt/backup
       eval $(ssh-agent)
       ssh-add ${config.sops.secrets.ssh-borgbackup.path}
-      # Could be dangerous, but works.
-      # In case an backup was aborted....
-      borg break-lock "${backupPath}"
     '';
     postHook = ''
       token=$(cat ${config.sops.secrets.healthcheck-borgbackup.path})
