@@ -29,6 +29,7 @@
     ./modules/home-assistant
     ./modules/influxdb.nix
     ./modules/ipfs.nix
+    ./modules/iperf.nix
     ./modules/knot
     ./modules/kresd.nix
     ./modules/mastodon-hnbot.nix
