@@ -39,6 +39,7 @@ in {
       "/home/joerg/gPodder/Downloads"
       "/home/joerg/sync"
       "/home/joerg/git/OSX-KVM/mac_hdd_ng.img"
+      "/home/joerg/mnt"
       "/var/lib/docker"
       "/var/log/journal"
       "/var/cache"
