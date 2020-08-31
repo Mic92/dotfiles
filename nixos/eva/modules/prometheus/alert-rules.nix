@@ -100,12 +100,12 @@ in lib.mapAttrsToList (name: opts: {
     description = "{{$labels.instance}}: {{$labels.job}} telegraf exporter from {{$labels.source}} is down.";
   };
   ping = {
-    condition = "ping_result_code == 1";
+    condition = "ping_result_code{type!='mobile'} == 1";
     summary = "{{$labels.url}}: ping from {{$labels.instance}} has failed!";
     description = "{{$labels.url}}: ping from {{$labels.instance}} has failed!";
   };
   ping_high_latency = {
-    condition = "ping_average_response_ms > 5000";
+    condition = "ping_average_response_ms{type!='mobile'} > 5000";
     summary = "{{$labels.instance}}: ping probe from {{$labels.source}} takes too long!";
     description = "{{$labels.instance}}: ping probe from {{$labels.source}} is encountering high latency!";
   };
