@@ -4,10 +4,6 @@ with builtins;
 let
   backupPath = "borgbackup@eddie.r:turingmachine/borg";
 in {
-  systemd.timers.backup = {
-    wantedBy = ["multi-user.target"];
-    timerConfig.OnCalendar = "12:00:00";
-  };
 
   sops.secrets.borgbackup = {};
   sops.secrets.ssh-borgbackup = {};
@@ -69,6 +65,10 @@ in {
       else
         ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$token/fail
       fi
+
+      if grep -q closed /proc/acpi/button/lid/LID0/state; then
+        ${pkgs.systemd}/bin/systemctl suspend
+      fi
     '';
 
     prune.keep = {
@@ -76,6 +76,13 @@ in {
       daily = 7;
       weekly = 4;
       monthly = 3;
+    };
+  };
+
+  systemd.timers.borgbackup-job-turingmachine = {
+    timerConfig = {
+      OnCalendar = lib.mkForce "03:00:00";
+      WakeSystem = true;
     };
   };
 
