@@ -103,6 +103,39 @@
           response_string_match = "gollum";
           tags.org = "krebs";
         } {
+          urls = [
+            "http://graph.r"
+          ];
+          response_string_match = "Retiolum";
+          tags.org = "krebs";
+        } {
+          urls = [
+            "http://cgit.ni.r"
+            "http://cgit.enklave.r"
+            "http://cgit.gum.r"
+            "http://cgit.prism.r"
+          ];
+          response_string_match = "cgit";
+          tags.org = "krebs";
+        } {
+          urls = [
+            "http://build.hotdog.r"
+          ];
+          response_string_match = "BuildBot";
+          tags.org = "krebs";
+        } {
+          urls = [
+            "http://paste.r/"
+          ];
+          response_string_match = "Bepasty";
+          tags.org = "krebs";
+        } {
+          urls = [
+            "http://p.r/1pziljc"
+          ];
+          response_string_match = "ok";
+          tags.org = "krebs";
+        } {
           urls = [ "https://www.wikipedia.org/" ];
           http_proxy = ''https://telegraf%40thalheim.io:''${LDAP_PASSWORD}@devkid.net:8889'';
           response_string_match = "wikipedia.org";
