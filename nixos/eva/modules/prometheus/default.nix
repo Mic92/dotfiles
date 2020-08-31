@@ -56,6 +56,9 @@
         routes = [{
           group_by = [ "instance" ];
           match_re.org = "krebs";
+          group_wait = "5m";
+          group_interval = "5m";
+          repeat_interval = "4h";
           receiver = "krebs";
         } {
           group_by = [ "instance" ];

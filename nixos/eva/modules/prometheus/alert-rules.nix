@@ -111,13 +111,13 @@ in lib.mapAttrsToList (name: opts: {
   };
   http =  {
     condition = "http_response_result_code != 0";
-    summary = "{{$labels.server}}: http request failed: {{$labels.result}}";
-    description = "{{$labels.server}}: http request failed from {{$labels.instance}}: {{$labels.result}}!";
+    summary = "{{$labels.server}} : http request failed: {{$labels.result}}";
+    description = "{{$labels.server}} : http request failed from {{$labels.instance}}: {{$labels.result}}!";
   };
   http_match_failed = {
     condition = "http_response_response_string_match == 0";
-    summary = "{{$labels.server}}: http body not as expected";
-    description = "{{$labels.server}}: http body not as expected; status code: {{$labels.status_code}}!";
+    summary = "{{$labels.server}} : http body not as expected";
+    description = "{{$labels.server}} : http body not as expected; status code: {{$labels.status_code}}!";
   };
   connection_failed = {
     condition = "net_response_result_code != 0";

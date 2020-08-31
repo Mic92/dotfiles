@@ -94,8 +94,14 @@
             "http://helsinki.r"
             "http://yellow.r"
           ];
-          tags.org = "krebs";
           response_string_match = "Index of /";
+          tags.org = "krebs";
+        } {
+          urls = [
+            "http://wiki.r/Home"
+          ];
+          response_string_match = "gollum";
+          tags.org = "krebs";
         } {
           urls = [ "https://www.wikipedia.org/" ];
           http_proxy = ''https://telegraf%40thalheim.io:''${LDAP_PASSWORD}@devkid.net:8889'';
