@@ -7,12 +7,8 @@ import subprocess
 import color
 import icons
 from i3pystatus import Status
-from i3pystatus.disk import Disk
-from i3pystatus.now_playing import NowPlaying
-from bitwarden import BitwardenPassword
-from icinga import Icinga
-from netdata import Netdata
 from rhasspy import Rhasspy
+from prometheus import Prometheus
 
 import yubikey
 
@@ -57,19 +53,13 @@ icons.nerdfont(status, "")
 
 status.register("ping", host="1.1.1.1", color=color.text_normal)
 status.register("ping", format="GW: {ping}ms", format_down="GW: N/A", host="_gateway", color=color.text_normal)
-status.register("ping", format="IP6: {ping}ms", format_down="IP6: N/A", host="2606:4700:4700::1111", color=color.text_normal)
+status.register("ping", format="V6: {ping}ms", format_down="V6: N/A", host="2606:4700:4700::1111", color=color.text_normal)
 
-#status.register(Icinga,
-#                base_url="https://icingamaster.bsd.services:5665",
-#                username="mic92-api",
-#                password=BitwardenPassword("d1677bc8-1d2d-47c8-86ed-52132498e9c1"),
-#                service_filter='match("eve.thalheim.io", host.name)',
-#                ca_file=os.path.join(ROOT, "icingamaster-bsd-services-chain.pem"),
-#                format="UP/DOWN: {ok}/{not_ok}",
-#                interval=60,
-#                color=color.text_normal,
-#                warning_color=color.text_warn,
-#                critical_color=color.text_down)
+status.register(Prometheus,
+                base_url="http://prometheus.r",
+                color=color.text_normal,
+                warning_color=color.text_warn,
+                critical_color=color.text_down)
 
 #status.register(Netdata,
 #                base_url="https://netdata.thalheim.io",
