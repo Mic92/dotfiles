@@ -78,11 +78,10 @@ local deploy(target) = {
     name: 'deploy',
     image: 'busybox',
     commands: [
-      |||
-        mkdir -m700 -p $HOME/.ssh && echo "$DEPLOY_SSH_KEY" > $HOME/.ssh/id_ed25519 && chmod 400 $HOME/.ssh/id_ed25519
-      |||,
+      'ssh-agent > .ssh-agent-env',
+      '. .ssh-agent-env && ssh-add - <<< "$DEPLOY_SSH_KEY"',
       'cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts',
-      'nix run .#deploy.%s' % target,
+      '. .ssh-agent-env && nix run .#deploy.%s' % target,
     ],
     volumes: stepVolumes,
     environment: environment {
