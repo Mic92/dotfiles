@@ -95,7 +95,7 @@ steps:
   image: busybox
   commands:
   - ssh-agent > .ssh-agent-env
-  - . .ssh-agent-env && ssh-add - <<< "$DEPLOY_SSH_KEY"
+  - . .ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
   - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - . .ssh-agent-env && nix run .#deploy.eve
   environment:
@@ -149,7 +149,7 @@ steps:
   image: busybox
   commands:
   - ssh-agent > .ssh-agent-env
-  - . .ssh-agent-env && ssh-add - <<< "$DEPLOY_SSH_KEY"
+  - . .ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
   - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - . .ssh-agent-env && nix run .#deploy.turingmachine
   environment:
@@ -203,7 +203,7 @@ steps:
   image: busybox
   commands:
   - ssh-agent > .ssh-agent-env
-  - . .ssh-agent-env && ssh-add - <<< "$DEPLOY_SSH_KEY"
+  - . .ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
   - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - . .ssh-agent-env && nix run .#deploy.eva
   environment:
@@ -245,6 +245,6 @@ trigger:
 
 ---
 kind: signature
-hmac: a7ec42e967e1344f6419d8e1f1cf2f1aee9a22623cb983cc5117dd17fc0303e0
+hmac: dbd787cede8ee4a4e5b012894b2e0241645d9254ad299f9304813574e28a04a0
 
 ...
