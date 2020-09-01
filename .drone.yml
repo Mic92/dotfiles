@@ -11,7 +11,6 @@ steps:
 - name: build
   image: busybox
   commands:
-  - "export NIX_PATH=$(nix eval --raw --impure --expr '\"nixpkgs=$${(builtins.getFlake (toString ./.)).inputs.nixpkgs}\"')\n"
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
   - nix shell 'nixpkgs#git' -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
@@ -243,6 +242,6 @@ trigger:
 
 ---
 kind: signature
-hmac: e486001d15c15625faa790005cca13634d70b6bcefacb887010b6681858d2a0b
+hmac: d7c964935440abeafa6d0a625928543dceeb51be26ca0259f2aa6adde9732c15
 
 ...
