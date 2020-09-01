@@ -81,6 +81,7 @@ in {
       Environment = [
         "DRONE_SERVER_PORT=:3030"
         "DRONE_RUNNER_NETWORKS=drone"
+        "DRONE_RUNNER_CAPACITY=10"
       ];
       EnvironmentFile = [ config.sops.secrets.drone.path ];
       ExecStart = "${pkgs.drone}/bin/drone-agent";
