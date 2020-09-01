@@ -17,7 +17,7 @@ let
       system = "x86_64-linux";
       homeDirectory = "/home/joerg";
       username = "joerg";
-    }).activation-script;
+    });
 in {
   common = hmConfiguration {};
   desktop = hmConfiguration {
