@@ -34,8 +34,8 @@ steps:
   image: busybox
   commands:
   - nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
-  - nix shell '.#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
-  - nix shell '.#cachix' -c cachix push --jobs 32 mic92 < paths
+  - nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
+  - nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     CACHIX_SIGNING_KEY:
@@ -242,6 +242,6 @@ trigger:
 
 ---
 kind: signature
-hmac: d7c964935440abeafa6d0a625928543dceeb51be26ca0259f2aa6adde9732c15
+hmac: 5cd2d7c2a2f8460010750d145cdaf90d6317fda6f9e1abf995e7d9e9e923f3e1
 
 ...
