@@ -32,6 +32,22 @@
         "type": "github"
       }
     },
+    "flake-registry": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1597733674,
+        "narHash": "sha256-cC5FZBeKwA0H5uGqYI6BrNrdkBICg9FzPpK9WQSdQkQ=",
+        "owner": "NixOS",
+        "repo": "flake-registry",
+        "rev": "090d2e959af4b35d35d7b0717c5669e77ba9678b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "repo": "flake-registry",
+        "type": "github"
+      }
+    },
     "flake-utils": {
       "locked": {
         "lastModified": 1598466101,
@@ -172,6 +188,7 @@
       "inputs": {
         "choose-place": "choose-place",
         "doom-emacs": "doom-emacs",
+        "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
         "krops": "krops",

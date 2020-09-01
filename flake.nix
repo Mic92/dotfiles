@@ -33,6 +33,9 @@
 
     nix-doom-emacs.url = "github:vlaci/nix-doom-emacs";
     nix-doom-emacs.flake = false;
+
+    flake-registry.url = "github:NixOS/flake-registry";
+    flake-registry.flake = false;
   };
 
   outputs = { self
@@ -45,6 +48,7 @@
             , retiolum
             , flake-utils
             , krops
+            , flake-registry
             , ... }:
     (flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
@@ -66,7 +70,7 @@
        #nixosSystem = import <nixpkgs/nixos/lib/eval-config.nix>;
        inherit nixpkgs;
        nixosSystem = nixpkgs.lib.nixosSystem;
-       inherit nur home-manager sops-nix retiolum nixos-hardware choose-place;
+       inherit nur home-manager sops-nix retiolum nixos-hardware choose-place flake-registry;
      };
 
 

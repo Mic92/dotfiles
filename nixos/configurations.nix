@@ -4,7 +4,9 @@
 , home-manager
 , sops-nix
 , retiolum
-, nixos-hardware , choose-place
+, nixos-hardware
+, choose-place
+, flake-registry
 }:
 let
   defaultModules = [
@@ -14,6 +16,15 @@ let
         "nixpkgs=${nixpkgs}"
         "nur=${nur}"
       ];
+      nix.extraOptions = ''
+        flake-registry = ${flake-registry}/flake-registry.json
+      '';
+      nix.registry = {
+        home-manager.flake = home-manager;
+        nixpkgs.flake = nixpkgs;
+        nur.flake = nur;
+        sops-nix.flake = sops-nix;
+      };
       nixpkgs.overlays = [ nur.overlay ];
       imports = [
         ./modules/nix-daemon.nix
