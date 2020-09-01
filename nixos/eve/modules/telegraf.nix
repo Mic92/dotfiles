@@ -16,13 +16,9 @@
       ];
     in [{
       method = "native";
-      urls = map (url: "4.${url}") mobileUrls;
+      urls = map (url: "${url}") mobileUrls;
       tags.type = "mobile";
-    } {
-      method = "native";
-      urls = map (url: "6.${url}") mobileUrls;
-      tags.type = "mobile";
-      ipv6 = true;
+      count = 5;
     } {
       method = "native";
       urls = map (url: "4.${url}") urls;
