@@ -97,7 +97,7 @@ steps:
   - ssh-agent > $HOME/.ssh-agent-env
   - . $HOME/.ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
-  - . $HOME/.ssh-agent-env && nix run .#deploy.eve
+  - . $HOME/.ssh-agent-env && nix run .#deploy.eve || sleep 99999
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
@@ -151,7 +151,7 @@ steps:
   - ssh-agent > $HOME/.ssh-agent-env
   - . $HOME/.ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
-  - . $HOME/.ssh-agent-env && nix run .#deploy.turingmachine
+  - . $HOME/.ssh-agent-env && nix run .#deploy.turingmachine || sleep 99999
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
@@ -205,7 +205,7 @@ steps:
   - ssh-agent > $HOME/.ssh-agent-env
   - . $HOME/.ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
-  - . $HOME/.ssh-agent-env && nix run .#deploy.eva
+  - . $HOME/.ssh-agent-env && nix run .#deploy.eva || sleep 99999
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
@@ -245,6 +245,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 44c10ccbce23bec369b33b015616aa7bf6bc0c8f183439d7a70fbac45ba2ae96
+hmac: 3e8077eed29edc7a5bdb705ea89e339cd6de31270d59a789e6ab30bc97fc655e
 
 ...

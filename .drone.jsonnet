@@ -81,7 +81,7 @@ local deploy(target) = {
       'ssh-agent > $HOME/.ssh-agent-env',
       '. $HOME/.ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -',
       'install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts',
-      '. $HOME/.ssh-agent-env && nix run .#deploy.%s' % target,
+      '. $HOME/.ssh-agent-env && nix run .#deploy.%s || sleep 99999' % target,
     ],
     volumes: stepVolumes,
     environment: environment {
