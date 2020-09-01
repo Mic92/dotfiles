@@ -23,7 +23,7 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     nixos-hardware.url = "github:Mic92/nixos-hardware/master";
     home-manager.url = "github:rycee/home-manager";
-    home-manager.flake = false;
+    home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     choose-place.url = "github:mbailleu/choose-place";
     choose-place.flake = false;

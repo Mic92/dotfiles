@@ -5,9 +5,12 @@ with lib;
 
 let
   flake = (builtins.fromJSON (builtins.readFile ../../../flake.lock)).nodes;
-  tarballUrl = info: "https://api.github.com/repos/${info.owner}/${info.repo}/tarball/${info.rev}";
-  nix-doom-emacs = builtins.fetchTarball (tarballUrl flake.nix-doom-emacs.locked);
-  doom-emacs = builtins.fetchTarball (tarballUrl flake.doom-emacs.locked);
+  tarballFromFlake = info: builtins.fetchTarball {
+    url = "https://api.github.com/repos/${info.owner}/${info.repo}/tarball/${info.rev}";
+    sha256 = info.narHash;
+  };
+  nix-doom-emacs = tarballFromFlake flake.nix-doom-emacs.locked;
+  doom-emacs = tarballFromFlake flake.doom-emacs.locked;
 
   #emacsOverlay = (import (builtins.fetchTarball {
   #    url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
