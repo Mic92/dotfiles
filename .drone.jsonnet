@@ -70,7 +70,7 @@ local build = {
 };
 
 local deploy(target) = {
-  name: 'Deploy NixOS to ' + target,
+  name: 'Deploy to ' + target,
   kind: 'pipeline',
   type: 'docker',
   volumes: dockerVolumes,
@@ -98,4 +98,7 @@ local deploy(target) = {
   deploy('turingmachine'),
   deploy('eva'),
   deploy('eddie'),
+  deploy('joerg@turingmachine'),
+  deploy('joerg@eddie'),
+  deploy('joerg@eve'),
 ]

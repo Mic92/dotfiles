@@ -84,7 +84,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: Deploy NixOS to eve
+name: Deploy to eve
 
 platform:
   os: linux
@@ -137,7 +137,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: Deploy NixOS to turingmachine
+name: Deploy to turingmachine
 
 platform:
   os: linux
@@ -190,7 +190,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: Deploy NixOS to eva
+name: Deploy to eva
 
 platform:
   os: linux
@@ -243,7 +243,7 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: Deploy NixOS to eddie
+name: Deploy to eddie
 
 platform:
   os: linux
@@ -294,7 +294,166 @@ trigger:
   - rollback
 
 ---
+kind: pipeline
+type: docker
+name: Deploy to joerg@turingmachine
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: deploy
+  image: busybox
+  commands:
+  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - eval $(ssh-agent) && echo "$DEPLOY_SSH_KEY" | ssh-add - && nix run .#deploy.joerg@turingmachine
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+    DEPLOY_SSH_KEY:
+      from_secret: DEPLOY_SSH_KEY
+    NIX_REMOTE: daemon
+    PAGER: cat
+    PATH: /nix/var/nix/profiles/system/sw/bin/
+    USER: root
+  volumes:
+  - name: nixstore
+    path: /nix
+  - name: gcroots
+    path: /var/lib/drone/nix-build
+  - name: nixconf
+    path: /etc/nix
+  - name: sslcerts
+    path: /etc/ssl
+
+volumes:
+- name: nixstore
+  host:
+    path: /nix
+- name: gcroots
+  host:
+    path: /var/lib/drone/nix-build
+- name: nixconf
+  host:
+    path: /nix/var/nix/profiles/system/etc/nix
+- name: sslcerts
+  host:
+    path: /nix/var/nix/profiles/system/etc/ssl
+
+trigger:
+  event:
+  - promote
+  - rollback
+
+---
+kind: pipeline
+type: docker
+name: Deploy to joerg@eddie
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: deploy
+  image: busybox
+  commands:
+  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - eval $(ssh-agent) && echo "$DEPLOY_SSH_KEY" | ssh-add - && nix run .#deploy.joerg@eddie
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+    DEPLOY_SSH_KEY:
+      from_secret: DEPLOY_SSH_KEY
+    NIX_REMOTE: daemon
+    PAGER: cat
+    PATH: /nix/var/nix/profiles/system/sw/bin/
+    USER: root
+  volumes:
+  - name: nixstore
+    path: /nix
+  - name: gcroots
+    path: /var/lib/drone/nix-build
+  - name: nixconf
+    path: /etc/nix
+  - name: sslcerts
+    path: /etc/ssl
+
+volumes:
+- name: nixstore
+  host:
+    path: /nix
+- name: gcroots
+  host:
+    path: /var/lib/drone/nix-build
+- name: nixconf
+  host:
+    path: /nix/var/nix/profiles/system/etc/nix
+- name: sslcerts
+  host:
+    path: /nix/var/nix/profiles/system/etc/ssl
+
+trigger:
+  event:
+  - promote
+  - rollback
+
+---
+kind: pipeline
+type: docker
+name: Deploy to joerg@eve
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: deploy
+  image: busybox
+  commands:
+  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - eval $(ssh-agent) && echo "$DEPLOY_SSH_KEY" | ssh-add - && nix run .#deploy.joerg@eve
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+    DEPLOY_SSH_KEY:
+      from_secret: DEPLOY_SSH_KEY
+    NIX_REMOTE: daemon
+    PAGER: cat
+    PATH: /nix/var/nix/profiles/system/sw/bin/
+    USER: root
+  volumes:
+  - name: nixstore
+    path: /nix
+  - name: gcroots
+    path: /var/lib/drone/nix-build
+  - name: nixconf
+    path: /etc/nix
+  - name: sslcerts
+    path: /etc/ssl
+
+volumes:
+- name: nixstore
+  host:
+    path: /nix
+- name: gcroots
+  host:
+    path: /var/lib/drone/nix-build
+- name: nixconf
+  host:
+    path: /nix/var/nix/profiles/system/etc/nix
+- name: sslcerts
+  host:
+    path: /nix/var/nix/profiles/system/etc/ssl
+
+trigger:
+  event:
+  - promote
+  - rollback
+
+---
 kind: signature
-hmac: a0b7132d7c21db50af43a56a5c3c48aa425850d1ba01de95784cdc299ad20154
+hmac: f75c781db9949886f8b4c22fff75ec07f895a6d7249d471458a524e40382f46d
 
 ...
