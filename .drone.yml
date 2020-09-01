@@ -94,10 +94,10 @@ steps:
 - name: deploy
   image: busybox
   commands:
-  - ssh-agent > .ssh-agent-env
-  - . ./.ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
-  - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
-  - . ./.ssh-agent-env && nix run .#deploy.eve
+  - ssh-agent > $HOME/.ssh-agent-env
+  - . $HOME/.ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
+  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+  - . $HOME/.ssh-agent-env && nix run .#deploy.eve
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
@@ -148,10 +148,10 @@ steps:
 - name: deploy
   image: busybox
   commands:
-  - ssh-agent > .ssh-agent-env
-  - . ./.ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
-  - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
-  - . ./.ssh-agent-env && nix run .#deploy.turingmachine
+  - ssh-agent > $HOME/.ssh-agent-env
+  - . $HOME/.ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
+  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+  - . $HOME/.ssh-agent-env && nix run .#deploy.turingmachine
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
@@ -202,10 +202,10 @@ steps:
 - name: deploy
   image: busybox
   commands:
-  - ssh-agent > .ssh-agent-env
-  - . ./.ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
-  - cp /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
-  - . ./.ssh-agent-env && nix run .#deploy.eva
+  - ssh-agent > $HOME/.ssh-agent-env
+  - . $HOME/.ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
+  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+  - . $HOME/.ssh-agent-env && nix run .#deploy.eva
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
@@ -245,6 +245,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 7a20e66e0a699f1c23d48fea9bc73f56e792ed5294b8a80163d3ae7ee90c16c1
+hmac: 44c10ccbce23bec369b33b015616aa7bf6bc0c8f183439d7a70fbac45ba2ae96
 
 ...
