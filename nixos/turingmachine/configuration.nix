@@ -24,7 +24,6 @@
     ./modules/sops.nix
     ./modules/sshd.nix
 
-    ../modules/drone-deploy.nix
     ../modules/macos-kvm.nix
     ../modules/mosh.nix
     ../modules/networkd.nix

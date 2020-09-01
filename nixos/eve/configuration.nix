@@ -62,7 +62,6 @@
     ./modules/zsh.nix
 
     ../modules/builder.nix
-    ../modules/drone-deploy.nix
     ../modules/mosh.nix
     ../modules/nur.nix
     ../modules/tor-ssh.nix

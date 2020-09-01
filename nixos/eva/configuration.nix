@@ -14,7 +14,6 @@
     ./modules/sops.nix
     ./modules/telegraf.nix
 
-    ../modules/drone-deploy.nix
     ../modules/mosh.nix
     ../modules/nur.nix
     ../modules/tracing.nix

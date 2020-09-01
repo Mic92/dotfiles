@@ -28,6 +28,7 @@ let
       nixpkgs.overlays = [ nur.overlay ];
       imports = [
         ./modules/nix-daemon.nix
+        ./modules/drone-deploy.nix
       ];
       #system.nixos.versionSuffix = "";
     }
