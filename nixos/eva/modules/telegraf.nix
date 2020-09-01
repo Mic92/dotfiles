@@ -196,6 +196,21 @@
           urls = ["https://influxdb.thalheim.io:8086/ping"];
         }];
 
+        dns_query = {
+          servers = [
+            "ns1.thalheim.io"
+            "ns2.he.net"
+            "ns3.he.net"
+            "ns4.he.net"
+            "ns5.he.net"
+          ];
+          domains = [
+            "lekwati.com"
+            "thalheim.io"
+          ];
+          record_type = "A";
+        };
+
         x509_cert = {
           sources = [
             # nginx

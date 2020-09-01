@@ -119,6 +119,11 @@ in lib.mapAttrsToList (name: opts: {
     summary = "{{$labels.server}} : http body not as expected";
     description = "{{$labels.server}} : http body not as expected; status code: {{$labels.status_code}}!";
   };
+  dns_query = {
+    condition = "dns_query_result_code != 0";
+    summary = "{{$labels.domain}} : dns query failed: {{$labels.result}}";
+    description = "{{$labels.domain}} : could retrieve A record {{$labels.instance}} from server {{$labels.server}}: {{$labels.result}}!";
+  };
   connection_failed = {
     condition = "net_response_result_code != 0";
     summary = "{{$labels.server}}: connection to {{$labels.port}}({{$labels.protocol}}) failed";
