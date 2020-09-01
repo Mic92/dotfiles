@@ -13,7 +13,15 @@ let
   '';
 
   deployDotfiles = user: targetPath: ''
-    sudo -u ${user} zsh -c 'cd $HOME && source $HOME/.zshrc && homeshick pull && homeshick symlink && home-manager switch'
+    sudo -u ${user} zsh <<'EOF'
+    cd $HOME
+    source $HOME/.zshrc
+    homeshick pull
+    homeshick symlink
+    homeshick cd dotfiles
+    nix build --out-link $HOME/.hm-activate ".#hmConfigurations.desktop.activation-script"
+    $HOME/.hm-activate/activate
+    EOF
   '';
   turingmachine = lib.mkTarget "root@turingmachine.r";
   eve = lib.mkTarget "root@eve.thalheim.io";
