@@ -36,7 +36,6 @@ in
     # 1GB goes OOM while deploying
     target = "root@eve.thalheim.io";
     command = targetPath: ''
-      export NIX_SSHOPTS="-o ForwardAgent=yes"
       nix shell 'nixpkgs#git' -c \
          nixos-rebuild switch --flake ${targetPath}/dotfiles#eva \
          --build-host localhost \
