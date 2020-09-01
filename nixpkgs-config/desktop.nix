@@ -140,4 +140,22 @@ in {
     inxi
     source-code-pro-nerdfonts
   ]);
+
+  systemd.user.timers.mbsync = {
+    Unit.Description = "mbsync";
+    Timer.OnBootSec = "10m";
+    Timer.OnUnitInactiveSec = "10m";
+    Timer.Unit = "mbsync.service";
+    Install.WantedBy = [ "timers.target" ];
+  };
+
+  systemd.user.services.mbsync = {
+    Service.Type = "oneshot";
+    Service.Environment = "PATH=${pkgs.bitwarden-wrapper}/bin";
+    # TODO: Fix ini generator in home-manager
+    Service.ExecStart = ''
+      -${pkgs.isync}/bin/mbsync -Va
+      ExecStart=${pkgs.emacs}/bin/emacsclient -e (mu4e-update-index)
+    '';
+  };
 }

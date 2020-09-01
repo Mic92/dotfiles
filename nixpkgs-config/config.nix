@@ -51,6 +51,8 @@
       inherit pkgs;
     };
 
+    bitwarden-wrapper = pkgs.callPackage ./bitwarden.nix {};
+
     myvim = pkgs.neovim.override {
       vimAlias = true;
       withPython = false;
