@@ -12,14 +12,14 @@ let
       nixos-rebuild switch --flake ${targetPath}/dotfiles
   '';
 
-  deployDotfiles = user: targetPath: ''
+  deployDotfiles = { user ? "joerg", configuration ? "common" }: targetPath: ''
     sudo -u ${user} zsh <<'EOF'
     cd $HOME
     source $HOME/.zshrc
     homeshick pull
     homeshick symlink
     homeshick cd dotfiles
-    nix build --out-link $HOME/.hm-activate ".#hmConfigurations.desktop.activation-script"
+    nix build --out-link $HOME/.hm-activate ".#hmConfigurations.${configuration}.activation-script"
     $HOME/.hm-activate/activate
     EOF
   '';
@@ -38,7 +38,7 @@ in
 
   "joerg@turingmachine" = writeCommand "/bin/joerg-turingmachine" {
     inherit source;
-    command = deployDotfiles "joerg";
+    command = deployDotfiles { configuration = "desktop"; };
     target = turingmachine;
   };
 
@@ -49,7 +49,7 @@ in
 
   "joerg@eve" = writeCommand "/bin/joerg-eve" {
     inherit source;
-    command = deployDotfiles "joerg";
+    command = deployDotfiles { configuration = "eve"; };
     target = eve;
   };
 
@@ -60,7 +60,7 @@ in
 
   "joerg@eddie" = writeCommand "/bin/joerg-eddie" {
     inherit source;
-    command = deployDotfiles "joerg";
+    command = deployDotfiles { configuration = "desktop"; };
     target = eddie;
   };
 

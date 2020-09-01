@@ -23,4 +23,7 @@ in {
   desktop = hmConfiguration {
     extraModules = [ ./desktop.nix ];
   };
+  eve = hmConfiguration {
+    extraModules = [ ./eve.nix ];
+  };
 }
