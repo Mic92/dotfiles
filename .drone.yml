@@ -94,10 +94,9 @@ steps:
 - name: deploy
   image: busybox
   commands:
-  - ssh-agent > $HOME/.ssh-agent-env
-  - . $HOME/.ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
-  - . $HOME/.ssh-agent-env && nix run .#deploy.eve || sleep 99999
+  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - eval $(ssh-agent) && echo "$DEPLOY_SSH_KEY" | ssh-add - && nix run .#deploy.eve
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
@@ -148,10 +147,9 @@ steps:
 - name: deploy
   image: busybox
   commands:
-  - ssh-agent > $HOME/.ssh-agent-env
-  - . $HOME/.ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
-  - . $HOME/.ssh-agent-env && nix run .#deploy.turingmachine || sleep 99999
+  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - eval $(ssh-agent) && echo "$DEPLOY_SSH_KEY" | ssh-add - && nix run .#deploy.turingmachine
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
@@ -202,10 +200,9 @@ steps:
 - name: deploy
   image: busybox
   commands:
-  - ssh-agent > $HOME/.ssh-agent-env
-  - . $HOME/.ssh-agent-env && echo "$DEPLOY_SSH_KEY" | ssh-add -
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
-  - . $HOME/.ssh-agent-env && nix run .#deploy.eva || sleep 99999
+  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - eval $(ssh-agent) && echo "$DEPLOY_SSH_KEY" | ssh-add - && nix run .#deploy.eva
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
@@ -245,6 +242,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 3e8077eed29edc7a5bdb705ea89e339cd6de31270d59a789e6ab30bc97fc655e
+hmac: 9269b7318eb89f0933953ae0ac7c6e5be98b5ce5a057721804b34554fafa8c6d
 
 ...
