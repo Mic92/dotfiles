@@ -59,7 +59,6 @@
   (setq mu4e-enable-mode-line t
         mu4e-maildirs-extension-fake-maildir-separator "\\."
         mu4e-enable-notifications t
-        mu4e-get-mail-command "mbsync -Va"
         mu4e-change-filenames-when-moving t
         mu4e-maildir (expand-file-name "~/mail")
         mu4e-sent-folder "/thalheim.io/.Sent"
