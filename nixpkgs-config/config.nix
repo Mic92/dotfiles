@@ -1,4 +1,4 @@
-{
+{ pkgs, nur ? null }: {
   allowUnfree = true;
   pulseaudio = true;
   #allowUnsupportedSystem = true;
@@ -47,7 +47,9 @@
       flake = "${builtins.getEnv "HOME"}/.homesick/repos/dotfiles/flake.lock";
       info = (builtins.fromJSON (builtins.readFile flake)).nodes.nur.locked;
       url = "https://api.github.com/repos/${info.owner}/${info.repo}/tarball/${info.rev}";
-    in import (builtins.fetchTarball url) {
+      nur' = if nur != null then nur else import (builtins.fetchTarball url);
+    in nur' {
+      nurpkgs = pkgs;
       inherit pkgs;
     };
 

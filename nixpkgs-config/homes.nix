@@ -7,12 +7,9 @@ let
         imports = extraModules ++ [
           ./common.nix
         ];
-        nixpkgs.config.packageOverrides = pkgs: {
-          nur = import "${nur}" {
-            inherit pkgs;
-            nurpkgs = pkgs;
-          };
-          bitwarden-wrapper = pkgs.callPackage ./bitwarden.nix {};
+        nixpkgs.config = import ./config.nix {
+          pkgs = nixpkgs;
+          nur = import nur;
         };
       };
       system = "x86_64-linux";
