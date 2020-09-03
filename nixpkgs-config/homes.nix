@@ -12,7 +12,7 @@ let
             inherit pkgs;
             nurpkgs = pkgs;
           };
-          bitwarden-wrapper = import ./bitwarden.nix {};
+          bitwarden-wrapper = pkgs.callPackage ./bitwarden.nix {};
         };
       };
       system = "x86_64-linux";
