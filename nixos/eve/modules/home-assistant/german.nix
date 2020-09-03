@@ -1,3 +1,4 @@
+{ lib, ...}:
 {
   services.home-assistant.config = let
     counter = name: {
@@ -43,15 +44,10 @@
       name = "Learned German today";
       icon = "mdi:book";
     };
-    automation = let
-      doneAutomation = name: id: {
+    script = let
+      doneScript = name: id: {
         alias = name;
-        trigger = {
-          platform = "event";
-          event_type = "ios.notification_action_fired";
-          event_data.actionName = id;
-        };
-        action = [{
+        sequence = [{
           service = "input_number.increment";
           entity_id = "input_number.german_streak_days";
         } {
@@ -67,8 +63,25 @@
           '';
         } {
           service = "notify.mobile_app_beatrice";
-          data_template.message = "Great your German streak is at {{input_number.german_streak_days}} days!";
+          data_template.message = "Great your German streak is at {{ states.input_number.german_streak_days.state }} days!";
         }];
+      };
+    in {
+      done_duolingo = (doneScript "done Duolingo" "DONE_DUOLINGO");
+      done_grammar  = (doneScript "done grammar" "DONE_GRAMMAR");
+      done_speaking = (doneScript "done speaking" "DONE_SPEAKING");
+      done_book     = (doneScript "read a book" "DONE_BOOK");
+      done_podcast  = (doneScript "listened podcast" "DONE_PODCAST");
+    };
+    automation = let
+      doneAutomation = name: id: {
+        alias = name;
+        trigger = {
+          platform = "event";
+          event_type = "ios.notification_action_fired";
+          event_data.actionName = id;
+        };
+        action.service = "script.${lib.toLower id}";
       };
       reminder = time: {
         alias = "German reminder at ${time}";
