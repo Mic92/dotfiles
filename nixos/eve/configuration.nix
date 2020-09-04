@@ -63,6 +63,7 @@
 
     ../modules/builder.nix
     ../modules/mosh.nix
+    ../modules/nfs-dl.nix
     ../modules/nur.nix
     ../modules/tor-ssh.nix
     ../modules/tracing.nix

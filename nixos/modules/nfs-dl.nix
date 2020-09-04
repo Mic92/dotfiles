@@ -1,5 +1,5 @@
 {
-  fileSystems."/var/lib/minidlna/nfs" = {
+  fileSystems."/mnt/prism" = {
     device = "prism.r:/export/download";
     fsType = "nfs";
     options = [
