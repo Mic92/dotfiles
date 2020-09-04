@@ -54,7 +54,6 @@ in {
     #  /mnt/backup
     preHook = ''
       set -x
-      mkdir -p /mnt/backup
       eval $(ssh-agent)
       ssh-add ${config.sops.secrets.ssh-borgbackup.path}
     '';
