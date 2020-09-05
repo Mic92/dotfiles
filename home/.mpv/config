@@ -2,7 +2,6 @@
 af-add=scaletempo
 save-position-on-quit
 keep-open
-hwdec=yes
+hwdec=auto-safe
 vo=gpu
-hwdec-codecs=all
-#cache-default=819200
+profile=gpu-hq
