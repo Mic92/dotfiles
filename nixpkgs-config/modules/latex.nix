@@ -11,19 +11,19 @@
       unicode-math
       ucharcat
       collection-fontsextra
-      fontspec
+      fontspec;
 
-      collection-binextra
-      collection-fontsrecommended
-      collection-latex
-      collection-latexextra
-      collection-latexrecommended
-      collection-langgerman
-      siunitx
-      bibtex
-      tracklang
-      IEEEtran
-      algorithm2e;
+      #collection-binextra
+      #collection-fontsrecommended
+      #collection-latex
+      #collection-latexextra
+      #collection-latexrecommended
+      #collection-langgerman
+      #siunitx
+      #bibtex
+      #tracklang
+      #IEEEtran
+      #algorithm2e;
     })
   ];
 }
