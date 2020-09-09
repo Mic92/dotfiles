@@ -13,7 +13,7 @@ steps:
   commands:
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
   - ulimit -n
-  - ulimit -n 4096
+  - ulimit -n 40096
   - nix shell 'nixpkgs#git' -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
   environment:
@@ -457,6 +457,6 @@ trigger:
 
 ---
 kind: signature
-hmac: feef6e2a0ae7bd2fbd253b65d2b3053b6684c9ebb46638550e1d19c5d6f2e1cf
+hmac: 0d8f34fcc46c68eb3bbe8b68246d45b3655c9cd816ce3ae6f4988c7ee3d7f871
 
 ...

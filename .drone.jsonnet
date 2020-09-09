@@ -39,7 +39,7 @@ local build = {
     commands: [
       'rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp',
       'ulimit -n',
-      'ulimit -n 4096',
+      'ulimit -n 40096',
       "nix shell 'nixpkgs#git' -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix",
       'rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots',
     ],
