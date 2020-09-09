@@ -12,6 +12,8 @@ steps:
   image: busybox
   commands:
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
+  - ulimit -n
+  - ulimit -n 4096
   - nix shell 'nixpkgs#git' -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
   environment:
@@ -20,6 +22,7 @@ steps:
     PAGER: cat
     PATH: /nix/var/nix/profiles/system/sw/bin/
     USER: root
+  privileged: true
   volumes:
   - name: nixstore
     path: /nix
@@ -454,6 +457,6 @@ trigger:
 
 ---
 kind: signature
-hmac: f75c781db9949886f8b4c22fff75ec07f895a6d7249d471458a524e40382f46d
+hmac: feef6e2a0ae7bd2fbd253b65d2b3053b6684c9ebb46638550e1d19c5d6f2e1cf
 
 ...

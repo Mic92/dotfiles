@@ -35,8 +35,11 @@ local build = {
   steps: [{
     name: 'build',
     image: 'busybox',
+    privileged: true,
     commands: [
       'rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp',
+      'ulimit -n',
+      'ulimit -n 4096',
       "nix shell 'nixpkgs#git' -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix",
       'rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots',
     ],
