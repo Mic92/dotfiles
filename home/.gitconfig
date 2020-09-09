@@ -94,3 +94,5 @@
   detachedHead = false
 [init]
   defaultBranch = main
+[credential]
+  helper = store
