@@ -58,6 +58,16 @@ in
     target = "root@eddie.r";
   };
 
+  rock = writeCommand "/bin/rock" {
+    inherit source;
+    target = "root@localhost";
+    command = targetPath: ''
+      nixos-rebuild switch --flake ${targetPath}/dotfiles#rock \
+        --build-host localhost \
+        --target-host root@eva.thalheim.io
+    '';
+  };
+
   "joerg@eddie" = writeCommand "/bin/joerg-eddie" {
     inherit source;
     command = deployDotfiles { configuration = "desktop"; };
@@ -75,4 +85,13 @@ in
          --target-host root@eva.thalheim.io
     '';
   };
+
+  #pkgs.krops.writeDeploy "deploy" {
+  #  source = lib.evalSource [
+  #    (defaultSources // { nixpkgs.file = nixpkgs.file;})
+  #  ];
+  #  buildTarget = "joerg@localhost";
+  #  crossDeploy = true;
+  #  target = "root@matchbox.r";
+  #}
 }
