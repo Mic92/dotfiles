@@ -12,9 +12,7 @@ steps:
   image: busybox
   commands:
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
-  - ulimit -n
-  - ulimit -n 40096
-  - nix shell 'nixpkgs#git' -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
+  - nix shell 'nixpkgs#git' 'nixpkgs#nix-build-uncached' -c nix-build-uncached -build-flags '--out-link $BUILDDIR/gcroots.tmp/result' ./nixos/ci.nix
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -22,7 +20,6 @@ steps:
     PAGER: cat
     PATH: /nix/var/nix/profiles/system/sw/bin/
     USER: root
-  privileged: true
   volumes:
   - name: nixstore
     path: /nix
@@ -457,6 +454,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 0d8f34fcc46c68eb3bbe8b68246d45b3655c9cd816ce3ae6f4988c7ee3d7f871
+hmac: 12fe0700de4feb84330e594e4f1985b27364db0f1fcf6b0c411eb6045d322939
 
 ...
