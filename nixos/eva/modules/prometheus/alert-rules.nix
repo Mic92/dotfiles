@@ -31,32 +31,18 @@ in lib.mapAttrsToList (name: opts: {
     description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} got less than 20% space left on its filesystem.";
   };
 
-  filesystem_full_in_7d = {
-    condition = "predict_linear(disk_free[2d], 7*24*3600) <= 0";
+  filesystem_full_in_1d = {
+    condition = "predict_linear(disk_free[1d], 24*3600) <= 0";
     time = "1h";
-    summary = "{{$labels.instance}}: Filesystem is running out of space in 7 days.";
-    description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} is running out of space in approx. 7 days";
+    summary = "{{$labels.instance}}: Filesystem is running out of space in one day.";
+    description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} is running out of space in approx. 1 day";
   };
 
-  filesystem_full_in_30d = {
-    condition = "predict_linear(disk_free[30d], 30*24*3600) <= 0";
+  inodes_full_in_1d = {
+    condition = "predict_linear(disk_inodes_free[1d], 24*3600) < 0";
     time = "1h";
-    summary = "{{$labels.instance}}: Filesystem is running out of space in 30 days.";
-    description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} is running out of space in approx. 30 days";
-  };
-
-  inodes_full_in_7d = {
-    condition = "predict_linear(disk_inodes_free[2d], 7*24*3600) < 0";
-    time = "1h";
-    summary = "{{$labels.instance}}: Filesystem is running out of inodes in 7 days.";
-    description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} is running out of inodes in approx. 7 days";
-  };
-
-  inodes_full_in_30d = {
-    condition = ''predict_linear(disk_indoes_free[30d], 30*24*3600) < 0'';
-    time = "1h";
-    summary = "{{$labels.instance}}: Filesystem is running out of inodes in 30 days.";
-    description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} is running out of inodes in approx. 30 days";
+    summary = "{{$labels.instance}}: Filesystem is running out of inodes in one day.";
+    description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} is running out of inodes in approx. 1 day";
   };
 
   swap_using_30percent = {
