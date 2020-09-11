@@ -28,7 +28,8 @@
     choose-place.url = "github:mbailleu/choose-place";
     choose-place.flake = false;
 
-    doom-emacs.url = "github:hlissner/doom-emacs";
+    #doom-emacs.url = "github:hlissner/doom-emacs";
+    doom-emacs.url = "github:Mic92/doom-emacs/nix";
     doom-emacs.flake = false;
 
     nix-doom-emacs.url = "github:vlaci/nix-doom-emacs";
