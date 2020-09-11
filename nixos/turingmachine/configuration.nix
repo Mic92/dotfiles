@@ -43,6 +43,7 @@
 
   # required for gpg-agent?
   services.dbus.packages = [ pkgs.gcr ];
+  services.udev.packages = [ pkgs.platformio ];
 
   #programs.captive-browser.enable = true;
   #programs.captive-browser.interface = "wlan0";
