@@ -4,6 +4,7 @@
   imports = [
     ./modules/kodi.nix
     ../modules/users.nix
+    ../modules/nfs-dl.nix
     ../modules/mosh.nix
     ../modules/tor-ssh.nix
     ../modules/networkd.nix
