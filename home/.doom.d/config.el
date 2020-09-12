@@ -205,8 +205,3 @@
 (use-package! direnv
   :config
   (setq direnv--executable "emacs-direnv"))
-
-(use-package! nix-mode
-  :config
-  ;; company-nixos-options blocks emacs!
-  (set-company-backend! 'nix-mode nil))
