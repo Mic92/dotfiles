@@ -12,7 +12,7 @@ steps:
   image: busybox
   commands:
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
-  - nix shell "nixpkgs#git" "nixpkgs#nix-build-uncached" -c nix-build-uncached -build-flags "--out-link $BUILDDIR/gcroots.tmp/result" ./nixos/ci.nix
+  - nix shell nixpkgs#git -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -454,6 +454,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 080d45ae6f5fefee458f948abc28e03ec9da0943ce8e0ba2ee002b5732281130
+hmac: a3f8d93350e9110b732cb5f68eeed271f4b18ded78df011208634776cdf7ec3e
 
 ...
