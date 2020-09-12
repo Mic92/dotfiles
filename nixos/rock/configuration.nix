@@ -2,8 +2,8 @@
   nixpkgs.localSystem.system = "aarch64-linux";
 
   imports = [
+    ./modules/kodi.nix
     ../modules/users.nix
-    ../modules/retiolum.nix
     ../modules/mosh.nix
     ../modules/tor-ssh.nix
     ../modules/networkd.nix

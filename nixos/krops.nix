@@ -64,7 +64,7 @@ in
     command = targetPath: ''
       nixos-rebuild switch --flake ${targetPath}/dotfiles#rock \
         --build-host localhost \
-        --target-host root@eva.thalheim.io
+        --target-host root@192.168.1.10
     '';
   };
 
