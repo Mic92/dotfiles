@@ -5,6 +5,16 @@
   sops.secrets.nas-wakeup-password = {};
   sops.secrets.healthcheck-borgbackup = {};
 
+  services.borgbackup.repos.uni = {
+    path = "/data/backup/uni";
+    authorizedKeys = builtins.readFile ./uni-borgbackup.pub;
+  };
+
+  services.borgbackup.repos.turingmachine = {
+    path = "/data/backup/turingmachine";
+    authorizedKeys = builtins.readFile ./turingmachine-borgbackup.pub;
+  };
+
   services.borgbackup.jobs.eve = {
     paths = [
       "/home"
