@@ -3,6 +3,7 @@
 
   imports = [
     ./modules/kodi.nix
+    ./hardware-configuration.nix
     ../modules/users.nix
     ../modules/nfs-dl.nix
     ../modules/mosh.nix
@@ -44,11 +45,6 @@
       UseHostname=false
       RouteMetric=512
     '';
-  };
-
-  fileSystems."/" = {
-    device = "/dev/mmcblk1p2";
-    fsType = "ext4";
   };
 
   environment.systemPackages = with pkgs; [
