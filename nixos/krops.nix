@@ -53,19 +53,19 @@ in
     target = eve;
   };
 
-  eddie = writeCommand "/bin/eddie" {
-    inherit source command;
-    target = "root@eddie.r";
-  };
-
   rock = writeCommand "/bin/rock" {
     inherit source;
     target = "root@localhost";
     command = targetPath: ''
       nixos-rebuild switch --flake ${targetPath}/dotfiles#rock \
         --build-host localhost \
-        --target-host root@192.168.1.10
+        --target-host root@192.168.1.7
     '';
+  };
+
+  eddie = writeCommand "/bin/eddie" {
+    inherit source command;
+    target = "root@eddie.r";
   };
 
   "joerg@eddie" = writeCommand "/bin/joerg-eddie" {
