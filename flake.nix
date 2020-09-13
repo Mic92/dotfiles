@@ -65,6 +65,8 @@
          lib = krops.lib;
        };
      })) // {
+
+
      nixosConfigurations = import ./nixos/configurations.nix {
        #nixpkgs = toString <nixpkgs>;
        # for testing
@@ -80,9 +82,10 @@
      };
 
      hydraJobs = {
-       configurations = nixpkgs.lib.mapAttrs' (name: config:
-         nixpkgs.lib.nameValuePair name config.config.system.build.toplevel)
-         self.nixosConfigurations;
+       configurations =
+         nixpkgs.lib.filterAttrs (n: v: n != "rock") (nixpkgs.lib.mapAttrs' (name: config:
+           nixpkgs.lib.nameValuePair name config.config.system.build.toplevel)
+           self.nixosConfigurations);
        hmConfigurations = nixpkgs.lib.mapAttrs' (name: config:
          nixpkgs.lib.nameValuePair name config.activation-script)
          self.hmConfigurations;
