@@ -18,7 +18,7 @@
     ./hardware-configuration.nix
     ./modules/adminer.nix
     ./modules/bitwarden.nix
-    ./modules/borgbackup.nix
+    ./modules/borgbackup
     ./modules/choose-place
     ./modules/docker.nix
     ./modules/dovecot.nix
