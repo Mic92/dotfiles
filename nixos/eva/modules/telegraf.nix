@@ -21,7 +21,6 @@
             "donna.r"
             "amy.r"
             "clara.r"
-            "eddie.r"
           ];
           mobileUrls = [
             "turingmachine.r"

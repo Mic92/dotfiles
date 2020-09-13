@@ -55,12 +55,12 @@
   #  sshUser = "nix";
   #  system = "x86_64-linux";
   #  maxJobs = 4;
-  } {
-    hostName = "eddie.r";
-    sshKey = config.sops.secrets.id_buildfarm.path;
-    sshUser = "nix";
-    system = "x86_64-linux";
-    maxJobs = 2;
+  #} {
+  #  hostName = "eddie.r";
+  #  sshKey = config.sops.secrets.id_buildfarm.path;
+  #  sshUser = "nix";
+  #  system = "x86_64-linux";
+  #  maxJobs = 2;
   } {
     # rpi3
     #  hostName = "172.23.75.254";

@@ -349,59 +349,6 @@ trigger:
 ---
 kind: pipeline
 type: docker
-name: Deploy to joerg@eddie
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: deploy
-  image: busybox
-  commands:
-  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
-  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
-  - eval $(ssh-agent) && echo "$DEPLOY_SSH_KEY" | ssh-add - && nix run .#deploy.joerg@eddie
-  environment:
-    BUILDDIR: /var/lib/drone/nix-build
-    DEPLOY_SSH_KEY:
-      from_secret: DEPLOY_SSH_KEY
-    NIX_REMOTE: daemon
-    PAGER: cat
-    PATH: /nix/var/nix/profiles/system/sw/bin/
-    USER: root
-  volumes:
-  - name: nixstore
-    path: /nix
-  - name: gcroots
-    path: /var/lib/drone/nix-build
-  - name: nixconf
-    path: /etc/nix
-  - name: sslcerts
-    path: /etc/ssl
-
-volumes:
-- name: nixstore
-  host:
-    path: /nix
-- name: gcroots
-  host:
-    path: /var/lib/drone/nix-build
-- name: nixconf
-  host:
-    path: /nix/var/nix/profiles/system/etc/nix
-- name: sslcerts
-  host:
-    path: /nix/var/nix/profiles/system/etc/ssl
-
-trigger:
-  event:
-  - promote
-  - rollback
-
----
-kind: pipeline
-type: docker
 name: Deploy to joerg@eve
 
 platform:
@@ -454,6 +401,6 @@ trigger:
 
 ---
 kind: signature
-hmac: a3f8d93350e9110b732cb5f68eeed271f4b18ded78df011208634776cdf7ec3e
+hmac: 62577884013b629e33824919b63aa24d14a86885126ce9f3061b95894fc34dc0
 
 ...
