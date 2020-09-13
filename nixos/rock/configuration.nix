@@ -12,6 +12,8 @@
     ../modules/nix-daemon.nix
   ];
 
+  boot.kernelPackages = pkgs.nur.repos.mic92.linuxPackages_ayufan_5_6;
+
   # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
   boot.loader.grub.enable = false;
   # Enables the generation of /boot/extlinux/extlinux.conf

@@ -1,13 +1,4 @@
-{
-  # Enable X11 windowing system
-  services.xserver.enable = true;
-  services.xserver.videoDrivers = [ "modesetting" ];
-
-  # Enable Kodi
-  services.xserver.desktopManager.kodi.enable = true;
-  services.xserver.displayManager.autoLogin.enable = true;
-  services.xserver.displayManager.autoLogin.user = "kodi";
-
+{ pkgs, ... }: {
   # Define a user account
   users.extraUsers.kodi.isNormalUser = true;
 
@@ -16,4 +7,19 @@
     allowedTCPPorts = [ 8080 ];
     allowedUDPPorts = [ 8080 ];
   };
+
+  environment.systemPackages = [
+    pkgs.mpv
+  ];
+
+  hardware.pulseaudio.enable = true;
+  services.avahi = {
+    enable = true;
+    publish.enable = true;
+    publish.userServices = true;
+  };
+
+  services.cage.program = "${pkgs.kodi-wayland}/bin/kodi-standalone";
+  services.cage.user = "kodi";
+  services.cage.enable = true;
 }
