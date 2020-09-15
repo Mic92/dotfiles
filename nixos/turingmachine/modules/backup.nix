@@ -2,7 +2,7 @@
 with builtins;
 
 let
-  backupPath = "borgbackup@eddie.r:turingmachine/borg";
+  backupPath = "borg@eve.thalheim.io:./.";
 in {
 
   sops.secrets.borgbackup = {};
