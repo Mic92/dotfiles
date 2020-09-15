@@ -90,8 +90,6 @@
           # openssh
           protocol = "tcp";
           address = "eve.thalheim.io:22";
-          send = "ssh";
-          expect = "ssh";
         }];
 
         http_response = [{
