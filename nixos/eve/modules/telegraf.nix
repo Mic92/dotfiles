@@ -43,9 +43,7 @@
     smart.use_sudo = true;
   };
   security.sudo.extraRules = [{
-    users = "telegraf";
-    commands = [
-      "${pkgs.smartmontools}/bin/smartctl"
-    ];
+    users = [ "telegraf" ];
+    commands = [ "${pkgs.smartmontools}/bin/smartctl" ];
   }];
 }
