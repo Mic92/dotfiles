@@ -39,5 +39,13 @@
       urls = map (url: "6.${url}") urls;
       ipv6 = true;
     }];
+    smart.path = "${pkgs.smartmontools}/bin/smartctl";
+    smart.use_sudo = true;
   };
+  security.sudo.extraRules = [{
+    users = "telegraf";
+    commands = [
+      "${pkgs.smartmontools}/bin/smartctl"
+    ];
+  }];
 }
