@@ -42,8 +42,14 @@
     smart.path = "${pkgs.smartmontools}/bin/smartctl";
     smart.use_sudo = true;
   };
+
+  systemd.services.telegraf.path = [ "/run/wrappers" ];
+
   security.sudo.extraRules = [{
     users = [ "telegraf" ];
-    commands = [ "${pkgs.smartmontools}/bin/smartctl" ];
+    commands = [ {
+      command = "${pkgs.smartmontools}/bin/smartctl";
+      options = [ "NOPASSWD" ];
+    }];
   }];
 }

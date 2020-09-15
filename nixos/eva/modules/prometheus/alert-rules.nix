@@ -159,6 +159,12 @@ in lib.mapAttrsToList (name: opts: {
     description = "{{$labels.instance}} reports: {{$value}} ZFS IO errors. Drive(s) are failing.";
   };
 
+  smart_errors = {
+    condition = "smart_device_health_ok != 1";
+    summary = "{{$labels.instance}}: S.M.A.R.T health not ok";
+    description = "{{$labels.instance}}: S.M.A.R.T reports: {{$labels.device}} ({{$lables.model}}) has errors.";
+  };
+
   alerts_silences_changed = {
     condition = ''abs(delta(alertmanager_silences{state="active"}[1h])) >= 1'';
     summary = "alertmanager: number of active silences has changed: {{$value}}";
