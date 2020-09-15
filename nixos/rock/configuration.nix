@@ -7,6 +7,7 @@
     ../modules/users.nix
     ../modules/nfs-dl.nix
     ../modules/mosh.nix
+    ../modules/telegraf.nix
     ../modules/tor-ssh.nix
     ../modules/networkd.nix
     ../modules/nix-daemon.nix
