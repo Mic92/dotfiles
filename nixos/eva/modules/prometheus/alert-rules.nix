@@ -162,7 +162,13 @@ in lib.mapAttrsToList (name: opts: {
   smart_errors = {
     condition = "smart_device_health_ok != 1";
     summary = "{{$labels.instance}}: S.M.A.R.T health not ok";
-    description = "{{$labels.instance}}: S.M.A.R.T reports: {{$labels.device}} ({{$lables.model}}) has errors.";
+    description = "{{$labels.instance}}: S.M.A.R.T reports: {{$labels.device}} ({{$labels.model}}) has errors.";
+  };
+
+  ext4_errors = {
+    condition = "ext4_errors_value > 0";
+    summary = "{{$labels.instance}}: ext4 reports errors";
+    description = "{{$labels.instance}}: ext4 has reported {{$value}} I/O errors: check /sys/fs/ext4/*/errors_count";
   };
 
   alerts_silences_changed = {

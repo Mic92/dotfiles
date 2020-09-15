@@ -6,6 +6,11 @@
       inputs = {
         system = {};
         mem = {};
+        file = {
+          name_override = "ext4_errors";
+          files = [ "/sys/fs/ext4/*/errors_count" ];
+          data_format = "value";
+        };
         zfs = lib.optionalAttrs (lib.any (fs: fs == "zfs") config.boot.supportedFilesystems) {};
         systemd_units = {};
         swap = {};
