@@ -2,7 +2,7 @@
   nixpkgs.localSystem.system = "aarch64-linux";
 
   imports = [
-    ./modules/kodi.nix
+    ./modules/jellyfin.nix
     ./hardware-configuration.nix
     ../modules/users.nix
     ../modules/nfs-dl.nix
