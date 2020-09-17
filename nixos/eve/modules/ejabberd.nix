@@ -256,7 +256,6 @@
       inherit domain;
       webroot = "/var/lib/acme/acme-challenge";
       postRun = "systemctl restart ejabberd.service";
-      allowKeysForGroup = true;
       group = "ejabberd";
       extraDomains = {
         "upload.${domain}" = null;

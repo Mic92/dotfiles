@@ -12,7 +12,6 @@ let
                    // (lib.foldl (domains: domain: domains // { ${domain} = null; }) {} serverAliases);
     postRun = "systemctl reload nginx.service";
     webroot = "/var/lib/acme/acme-challenge";
-    allowKeysForGroup = true;
     group = "nginx";
     keyType = if rsa then "rsa2048" else "ec384";
   };

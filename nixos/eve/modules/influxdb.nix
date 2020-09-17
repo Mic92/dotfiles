@@ -16,7 +16,6 @@
   security.acme.certs."influxdb.thalheim.io" = {
     postRun = "systemctl restart influxdb.service";
     webroot = "/var/lib/acme/acme-challenge";
-    allowKeysForGroup = true;
     group = "influxdb";
   };
 

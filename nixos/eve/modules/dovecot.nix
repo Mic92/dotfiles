@@ -155,7 +155,6 @@ in {
     cert = {
       postRun = "systemctl restart dovecot2.service";
       webroot = "/var/lib/acme/acme-challenge";
-      allowKeysForGroup = true;
       group = "dovecot2";
     };
   in {
