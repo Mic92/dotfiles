@@ -97,7 +97,7 @@ local deploy(target) = {
   deploy('eve'),
   deploy('turingmachine'),
   deploy('eva'),
-  deploy('eddie'),
+  #deploy('eddie'),
   deploy('joerg@turingmachine'),
   #deploy('joerg@eddie'),
   deploy('joerg@eve'),
