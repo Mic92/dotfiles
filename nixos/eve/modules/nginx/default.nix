@@ -8,8 +8,7 @@ let
     serverAliases = lib.flatten (lib.mapAttrsToList (_: vhost: vhost.serverAliases) wantedVhosts);
   in {
     domain = domain;
-    extraDomains = (lib.mapAttrs (name: _: null) extraVhosts)
-                   // (lib.foldl (domains: domain: domains // { ${domain} = null; }) {} serverAliases);
+    extraDomainNames = (builtins.attrNames extraVhosts) ++ serverAliases;
     postRun = "systemctl reload nginx.service";
     webroot = "/var/lib/acme/acme-challenge";
     group = "nginx";

@@ -257,12 +257,12 @@
       webroot = "/var/lib/acme/acme-challenge";
       postRun = "systemctl restart ejabberd.service";
       group = "ejabberd";
-      extraDomains = {
-        "upload.${domain}" = null;
-        "muc.${domain}" = null;
-        "pubsub.${domain}" = null;
-        "proxy.${domain}" = null;
-      };
+      extraDomainNames = [
+        "upload.${domain}"
+        "muc.${domain}"
+        "pubsub.${domain}"
+        "proxy.${domain}"
+      ];
     };
   in {
     "ejabberd-anon.thalheim.io" = cert "anon.thalheim.io";
