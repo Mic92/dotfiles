@@ -13,12 +13,12 @@
     sshKey = config.sops.secrets.id_buildfarm.path;
     system = "x86_64-linux";
     maxJobs = 8;
-  } {
-    hostName = "amy.r";
-    sshUser = "nix";
-    sshKey = config.sops.secrets.id_buildfarm.path;
-    system = "x86_64-linux";
-    maxJobs = 8;
+  #} {
+  #  hostName = "amy.r";
+  #  sshUser = "nix";
+  #  sshKey = config.sops.secrets.id_buildfarm.path;
+  #  system = "x86_64-linux";
+  #  maxJobs = 8;
   } {
     hostName = "clara.r";
     sshUser = "nix";
