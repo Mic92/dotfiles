@@ -90,6 +90,20 @@
           # openssh
           protocol = "tcp";
           address = "eve.thalheim.io:22";
+        } {
+          protocol = "tcp"; address = "rock.r:22";
+        } {
+          protocol = "tcp"; address = "eve.r:22";
+        } {
+          protocol = "tcp"; address = "amy.r:22";
+        } {
+          protocol = "tcp"; address = "donna.r:22";
+        } {
+          protocol = "tcp"; address = "clara.r:22";
+        } {
+          protocol = "tcp"; address = "martha.r:22";
+        } {
+          protocol = "tcp"; address = "rose.r:22";
         }];
 
         http_response = [{
