@@ -64,7 +64,7 @@ in lib.mapAttrsToList (name: opts: {
     description = "{{$labels.instance}} is using at least 90% of its RAM for at least 1 hour.";
   };
   load15 = {
-    condition = ''system_load15 / on(instance) count(system_n_cpus) by (instance) >= 1.0'';
+    condition = ''system_load15 / on(instance) count(system_n_cpus) by (instance) >= 2.0'';
     time = "10m";
     summary = "{{$labels.instance}}: Running on high load: {{$value}}";
     description = "{{$labels.instance}} is running with load15 > 1 for at least 5 minutes: {{$value}}";
