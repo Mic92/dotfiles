@@ -9,6 +9,10 @@
       SERVER_ENFORCE_DOMAIN = "true";
       AUTH_LDAP_ENABLED = "true";
       AUTH_LDAP_CONFIG_FILE = "/run/grafana/ldap.toml";
+
+      AUTH_ANONYMOUS_ENABLED = "true";
+      AUTH_ANONYMOUS_ORG_NAME = "Main Org.";
+      AUTH_ANONYMOUS_ORG_ROLE = "Viewer";
     };
     smtp = {
       host = "mail.thalheim.io:587";
