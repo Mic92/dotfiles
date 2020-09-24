@@ -39,17 +39,7 @@
       urls = map (url: "6.${url}") urls;
       ipv6 = true;
     }];
-    smart.path = "${pkgs.smartmontools}/bin/smartctl";
-    smart.use_sudo = true;
   };
 
   systemd.services.telegraf.path = [ "/run/wrappers" ];
-
-  security.sudo.extraRules = [{
-    users = [ "telegraf" ];
-    commands = [ {
-      command = "${pkgs.smartmontools}/bin/smartctl";
-      options = [ "NOPASSWD" ];
-    }];
-  }];
 }
