@@ -58,13 +58,15 @@ in {
       set -x
       eval $(ssh-agent)
       ssh-add ${config.sops.secrets.ssh-borgbackup.path}
+
+      hc_token=$(cat ${config.sops.secrets.healthcheck-borgbackup.path})
+      ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$hc_token/start
     '';
     postHook = ''
-      token=$(cat ${config.sops.secrets.healthcheck-borgbackup.path})
       if [[ "$exitStatus" == "0" ]]; then
-        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$token
+        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$hc_token
       else
-        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$token/fail
+        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$hc_token/fail
       fi
 
       if grep -q closed /proc/acpi/button/lid/LID0/state; then
