@@ -83,10 +83,7 @@ in {
   };
 
   systemd.timers.borgbackup-job-turingmachine = {
-    timerConfig = {
-      OnCalendar = lib.mkForce "03:00:00";
-      WakeSystem = true;
-    };
+    timerConfig.OnCalendar = lib.mkForce "13:00:00";
   };
 
   systemd.services.borgbackup-job-turingmachine.serviceConfig.PrivateMounts = true;
