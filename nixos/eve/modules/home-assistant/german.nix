@@ -139,7 +139,7 @@
           at = "00:00:01";
         };
         action = let
-          msg = "German learning streak broke after {{input_number.german_streak_days}} days :(";
+          msg = "German learning streak broke after {{states.input_number.german_streak_days.state}} days :(";
         in [{
           service = "notify.mobile_app_beatrice";
           data_template.message = msg;
