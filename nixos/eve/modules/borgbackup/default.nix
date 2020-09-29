@@ -71,13 +71,6 @@
       set -x
       eval $(ssh-agent)
       ssh-add ${config.sops.secrets.borg-nas-ssh.path}
-      ${pkgs.netcat}/bin/nc -w20 home.devkid.net 22198 < ${config.sops.secrets.nas-wakeup-password.path}
-      for i in $(seq 1 20); do
-        if ${pkgs.netcat}/bin/nc -z -v -w1 home.devkid.net 22022; then
-          break
-        fi
-        sleep 1
-      done
       hc_token=$(cat ${config.sops.secrets.healthcheck-borgbackup.path})
       ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$hc_token/start
     '';
