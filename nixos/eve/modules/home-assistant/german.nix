@@ -77,7 +77,7 @@
       done_speaking = (doneScript "done speaking" "DONE_SPEAKING");
       done_book     = (doneScript "read a book" "DONE_BOOK");
       done_podcast  = (doneScript "listened podcast" "DONE_PODCAST");
-      done_media  = (doneScript "listened/watched media" "DONE_MEDIA");
+      done_media   = (doneScript "listened/watched media" "DONE_MEDIA");
     };
     automation = let
       doneAutomation = name: id: {
