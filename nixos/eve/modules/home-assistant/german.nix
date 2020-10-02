@@ -43,7 +43,7 @@
     input_number.done_grammar = counter "Days grammar";
     input_number.done_book = counter "Days book";
     input_number.done_podcast = counter  "Days podcast";
-    input_number.done_media = counter "Days Media";
+    input_number.done_media = counter "Days media";
     input_number.done_speaking = counter "Days speaking";
     input_boolean.learned_german_today = {
       name = "Learned German today";
