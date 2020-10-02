@@ -29,6 +29,10 @@
         title = "Podcast :)";
         activationMode = "background";
       } {
+        identifier = "DONE_MEDIA";
+        title = "Media :)";
+        activationMode = "background";
+      } {
         identifier = "DONE_SPEAKING";
         title = "Speaking :)";
         activationMode = "background";
@@ -39,6 +43,7 @@
     input_number.done_grammar = counter "Days grammar";
     input_number.done_book = counter "Days book";
     input_number.done_podcast = counter  "Days podcast";
+    input_number.done_media = counter "Days Media";
     input_number.done_speaking = counter "Days speaking";
     input_boolean.learned_german_today = {
       name = "Learned German today";
@@ -72,6 +77,7 @@
       done_speaking = (doneScript "done speaking" "DONE_SPEAKING");
       done_book     = (doneScript "read a book" "DONE_BOOK");
       done_podcast  = (doneScript "listened podcast" "DONE_PODCAST");
+      done_media  = (doneScript "listened/watched media" "DONE_MEDIA");
     };
     automation = let
       doneAutomation = name: id: {
@@ -117,6 +123,7 @@
       (doneAutomation "done speaking" "DONE_SPEAKING")
       (doneAutomation "read a book" "DONE_BOOK")
       (doneAutomation "listened podcast" "DONE_PODCAST")
+      (doneAutomation "listened/watched media" "DONE_MEDIA")
       {
         alias = "Reset learned German today";
         trigger = {
