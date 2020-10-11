@@ -8,6 +8,7 @@
   services.xserver.displayManager.defaultSession = "none+i3";
 
   environment.systemPackages = with pkgs; [
+    xorg.xmodmap
     # autostart stuff
     dex
     brightnessctl

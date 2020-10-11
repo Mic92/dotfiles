@@ -260,8 +260,8 @@ exec --no-startup-id mu4e
 exec --no-startup-id signal-desktop
 exec --no-startup-id dino
 exec --no-startup-id firefox
-exec --no-startup-id light-locker
 exec --no-startup-id picom -b
 exec --no-startup-id nm-applet
 exec --no-startup-id systemctl --user import-environment XDG_SESSION_PATH
 exec --no-startup-id dex --autostart
+exec --no-startup-id xmodmap -e "keycode 66 = KP_Enter"
