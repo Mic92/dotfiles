@@ -205,3 +205,5 @@
 (use-package! direnv
   :config
   (setq direnv--executable "emacs-direnv"))
+
+(setq-hook! 'nix-mode-hook company-idle-delay nil)
