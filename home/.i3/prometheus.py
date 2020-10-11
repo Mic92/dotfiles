@@ -36,7 +36,12 @@ class Prometheus(IntervalModule):
 
     @require(internet)
     def run(self) -> None:
-        resp = self.request("/api/v1/alerts")
+        try:
+            resp = self.request("/api/v1/alerts")
+        except Exception:
+            self.output = dict(full_text="N/A", color=self.critical_color)
+            return
+
         pending = 0
         firing = 0
         for alert in resp["data"]["alerts"]:
