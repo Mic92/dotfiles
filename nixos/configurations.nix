@@ -70,6 +70,13 @@ in {
     ];
   };
 
+  matchbox = nixosSystem {
+    system = "aarch64-linux";
+    modules = defaultModules ++ [
+      ./matchbox/configuration.nix
+    ];
+  };
+
   #eve-vm = nixosSystem {
   #  system = "x86_64-linux";
   #  modules = eveModules ++ [

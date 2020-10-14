@@ -11,7 +11,7 @@
         comment = "Public rsync share.";
         path = "/mnt/hdd/public";
         "auth users" = "backup";
-        "secrets file" = config.krops.secrets."rsyncd.secrets".path;
+        "secrets file" = config.sops.secrets.rsyncd-secrets.path;
       };
     };
   };
@@ -23,7 +23,7 @@
     extraGroups = [ "keys" ];
   };
 
-  krops.secrets."rsyncd.secrets".owner = "rsyncd";
+  sops.secrets.rsyncd-secrets.owner = "rsyncd";
 
   users.groups.rsyncd = {};
 

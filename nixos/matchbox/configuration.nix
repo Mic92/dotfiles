@@ -15,20 +15,19 @@
 
   imports = [
     ../modules/users.nix
-    ../modules/retiolum.nix
     ../modules/mosh.nix
     ../modules/tor-ssh.nix
-    ../modules/networkd.nix
     ../modules/rpi3.nix
-    ../modules/secrets.nix
 
     ./modules/borgbackup.nix
     ./modules/samba.nix
-    ./modules/cups.nix
-    ./modules/network.nix
-    ./modules/cloud-print-connector.nix
     ./modules/rsyncd.nix
   ];
+
+  networking.retiolum = {
+    ipv4 = "10.243.29.176";
+    ipv6 = "42:0:3c46:6745:adf4:a844:26c4:bf91";
+  };
 
   networking.hostName = "matchbox";
 
@@ -44,4 +43,5 @@
   ];
 
   system.stateVersion = "18.09";
+  networking.dhcpcd.enable = true;
 }
