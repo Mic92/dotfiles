@@ -9,6 +9,8 @@
     system = "aarch64-linux";
     supportedFeatures = [
       "big-parallel"
+      "kvm"
+      "nixos-tests"
     ];
   }];
 
