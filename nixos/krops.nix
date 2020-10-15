@@ -8,8 +8,10 @@ let
   }];
   # sometimes services fail to switch on the first run, but are fine on the second
   command = targetPath: ''
-    nixos-rebuild switch --flake ${targetPath}/dotfiles || \
-      nixos-rebuild switch --flake ${targetPath}/dotfiles
+    nix-shell -p git --run '
+      nixos-rebuild switch --flake ${targetPath}/dotfiles || \
+        nixos-rebuild switch --flake ${targetPath}/dotfiles
+    '
   '';
 
   deployDotfiles = { user ? "joerg", configuration ? "common" }: targetPath: ''
@@ -61,6 +63,20 @@ in
         --build-host localhost \
         --target-host root@192.168.1.7
     '';
+  };
+
+  #matchbox = writeCommand "/bin/matchbox" {
+  #  inherit source;
+  #  target = "root@localhost";
+  #  command = targetPath: ''
+  #    nixos-rebuild switch --flake ${targetPath}/dotfiles#matchbox \
+  #      --build-host localhost \
+  #      --target-host root@192.168.178.2
+  #  '';
+  #};
+  matchbox = writeCommand "/bin/matchbox" {
+    inherit source command;
+    target = "root@192.168.178.2";
   };
 
   eddie = writeCommand "/bin/eddie" {
