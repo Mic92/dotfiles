@@ -34,10 +34,11 @@
       set -x
       eval $(ssh-agent)
       ssh-add ${config.sops.secrets.borg-nas-ssh.path}
+      hc_token=$(cat ${config.sops.secrets.healthcheck-borgbackup.path})
+      ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$hc_token/start
     '';
 
     postHook = ''
-      token=$(cat ${config.sops.secrets.healthcheck-borgbackup.path})
       if [[ "$exitStatus" == "0" ]]; then
         ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$token
       else
