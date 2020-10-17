@@ -40,9 +40,9 @@
 
     postHook = ''
       if [[ "$exitStatus" == "0" ]]; then
-        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$token
+        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$hc_token
       else
-        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$token/fail
+        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$hc_token/fail
       fi
     '';
 
