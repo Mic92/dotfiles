@@ -8,10 +8,10 @@ in {
 
   boot.loader.grub.enable = false;
   boot.loader.generic-extlinux-compatible.enable = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages; 
   documentation.enable = false;
 
-  boot.kernelParams = ["cma=32M"];
+  boot.kernelParams = [ "cma=32M" ];
 
   services.journald.extraConfig = ''
     Storage = volatile
