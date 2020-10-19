@@ -65,19 +65,19 @@ in
     '';
   };
 
-  #matchbox = writeCommand "/bin/matchbox" {
-  #  inherit source;
-  #  target = "root@localhost";
-  #  command = targetPath: ''
-  #    nixos-rebuild switch --flake ${targetPath}/dotfiles#matchbox \
-  #      --build-host localhost \
-  #      --target-host root@192.168.178.2
-  #  '';
-  #};
   matchbox = writeCommand "/bin/matchbox" {
-    inherit source command;
-    target = "root@192.168.178.2";
+    inherit source;
+    target = "root@localhost";
+    command = targetPath: ''
+      nixos-rebuild switch --flake ${targetPath}/dotfiles#matchbox \
+        --build-host localhost \
+        --target-host root@192.168.178.2
+    '';
   };
+  #matchbox = writeCommand "/bin/matchbox" {
+  #  inherit source command;
+  #  target = "root@192.168.178.2";
+  #};
 
   eddie = writeCommand "/bin/eddie" {
     inherit source command;

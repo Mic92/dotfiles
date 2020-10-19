@@ -47,13 +47,6 @@ in {
       mode = "repokey";
       passCommand = "cat ${config.sops.secrets.borgbackup.path}";
     };
-    #${pkgs.sshfs}/bin/sshfs \
-    #  -oworkaround=rename \
-    #  -oIdentityFile=${config.sops.secrets.ssh-borgbackup.path} \
-    #  -oProxyJump=sshjump@eddie.r \
-    #  -oPort=22222 \
-    #  s1691654@csce.datastore.ed.ac.uk:/csce/datastore/inf/users/s1691654 \
-    #  /mnt/backup
     preHook = ''
       set -x
       eval $(ssh-agent)
