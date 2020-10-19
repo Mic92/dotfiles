@@ -23,7 +23,6 @@ let
       name = "doom.d";
       path = ../../../home/.doom.d;
     };
-    dependencyOverrides.doom-emacs = doom-emacs;
     extraPackages = [ pkgs.mu ];
     # maybe some day, when it stops segfaulting
     #emacsPackages = emacsOverlay.emacsPackagesFor emacsOverlay.emacsGcc;

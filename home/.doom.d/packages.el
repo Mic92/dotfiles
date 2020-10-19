@@ -12,6 +12,7 @@
 (package! coffee-mode)
 (package! meson-mode)
 (package! jsonnet-mode)
+(package! direnv)
 
 ;(package! bitwarden
 ;  :recipe (:host github :repo "seanfarley/emacs-bitwarden"))
