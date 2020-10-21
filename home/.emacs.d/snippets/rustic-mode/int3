@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: runtime breakpoint()
+# key: int3
+# --
+unsafe { asm!("int3") };
