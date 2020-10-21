@@ -1,12 +1,12 @@
 { config, ... }: {
   services.rsyncd ={
     enable = true;
-    user = "rsyncd";
-    group = "rsyncd";
-    extraConfig = ''
-      use chroot = false
-    '';
-    modules =  {
+    settings =  {
+      global = {
+        user = "rsyncd";
+        group = "rsyncd";
+        "use chroot" = false;
+      };
       public = {
         comment = "Public rsync share.";
         path = "/mnt/hdd/public";
