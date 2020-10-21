@@ -48,7 +48,6 @@
     ./modules/remote-builder.nix
     ./modules/redis.nix
     ./modules/rspamd/rspamd.nix
-    ./modules/rsyncd.nix
     ./modules/sshd.nix
     ./modules/sslh.nix
     ./modules/squid.nix

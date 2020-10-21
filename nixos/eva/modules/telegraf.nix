@@ -70,10 +70,6 @@
           protocol = "tcp";
           address = "eva.r:389";
         } {
-          # rsync
-          protocol = "tcp";
-          address = "eve.thalheim.io:873";
-        } {
           # postfix: smtp
           protocol = "tcp";
           # amazon does block port 25
