@@ -92,7 +92,8 @@ in {
         enable = true;
         port = 2222;
         hostKeys = [
-          config.sops.secrets.initrd-ssh-key.path
+          #config.sops.secrets.initrd-ssh-key.path
+          "/var/lib/initrd-ssh-key"
         ];
       };
       postCommands = ''
