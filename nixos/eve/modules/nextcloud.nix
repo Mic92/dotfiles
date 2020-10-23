@@ -5,7 +5,7 @@
 
     caching.apcu = true;
 
-    package = pkgs.nextcloud19;
+    package = pkgs.nextcloud20;
 
     config = {
       dbtype = "pgsql";
