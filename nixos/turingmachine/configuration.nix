@@ -130,7 +130,7 @@
     };
   };
 
-  fonts.enableFontDir = true;
+  fonts.fontDir.enable = true;
 
   programs = {
     gnupg.agent = {
