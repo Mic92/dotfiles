@@ -2,6 +2,7 @@
   services.nextcloud = {
     enable = true;
     hostName = "cloud.thalheim.io";
+    https = true;
 
     caching.apcu = true;
 
