@@ -1,7 +1,8 @@
 { lib }:
 
 let
-  deviceFilter = ''fstype!="ramfs",device!="rpc_pipefs",device!="lxcfs",device!="nsfs",device!="borgfs"'';
+  # docker's filesystems disappear quickly, leading to false positives
+  deviceFilter = ''path!~"^/var/lib/docker.*"'';
 in lib.mapAttrsToList (name: opts: {
   alert = name;
   expr = opts.condition;
@@ -12,18 +13,6 @@ in lib.mapAttrsToList (name: opts: {
     description = opts.description;
   };
 }) {
-  #node_hwmon_temp = {
-  #  condition = "node_hwmon_temp_celsius > node_hwmon_temp_crit_celsius*0.9 OR node_hwmon_temp_celsius > node_hwmon_temp_max_celsius*0.95";
-  #  time = "5m";
-  #  summary = "{{$labels.alias}}: Sensor {{$labels.sensor}}/{{$labels.chip}} temp is high: {{$value}} ";
-  #  description = "{{$labels.alias}} reports hwmon sensor {{$labels.sensor}}/{{$labels.chip}} temperature value is nearly critical: {{$value}}";
-  #};
-  #node_conntrack_limit = {
-  #  condition  = "node_nf_conntrack_entries_limit - node_nf_conntrack_entries < 1000";
-  #  time = "5m";
-  #  summary = "{{$labels.alias}}: Number of tracked connections high";
-  #  description = "{{$labels.alias}} has only {{$value}} free slots for connection tracking available.";
-  #};
   filesystem_full_80percent = {
     condition = "disk_used_percent >= 80";
     time = "10m";
@@ -32,14 +21,14 @@ in lib.mapAttrsToList (name: opts: {
   };
 
   filesystem_full_in_1d = {
-    condition = "predict_linear(disk_free[1d], 24*3600) <= 0";
+    condition = "predict_linear(disk_free{${deviceFilter}}[1d], 24*3600) <= 0";
     time = "1h";
     summary = "{{$labels.instance}}: Filesystem is running out of space in one day.";
     description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} is running out of space in approx. 1 day";
   };
 
   inodes_full_in_1d = {
-    condition = "predict_linear(disk_inodes_free[1d], 24*3600) < 0";
+    condition = "predict_linear(disk_inodes_free{${deviceFilter}}[1d], 24*3600) < 0";
     time = "1h";
     summary = "{{$labels.instance}}: Filesystem is running out of inodes in one day.";
     description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} is running out of inodes in approx. 1 day";
