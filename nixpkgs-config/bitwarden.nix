@@ -1,12 +1,17 @@
 { lib, coreutils, utillinux, nodePackages_latest
 , systemd, gnused, gnome3, runtimeShell, writeScriptBin
+, callPackage, pkgs, nodejs-14_x
 }:
 
 let
+  inherit (callPackage (pkgs.path + "/pkgs/development/node-packages/default.nix") {
+    nodejs = nodejs-14_x;
+  }) bitwarden-cli;
+
   path = lib.makeBinPath ([
     coreutils
     utillinux
-    nodePackages_latest.bitwarden-cli
+    bitwarden-cli
     systemd
     gnused
   ]);
