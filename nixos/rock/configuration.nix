@@ -13,6 +13,10 @@
     ../modules/nix-daemon.nix
   ];
 
+  services.openssh.extraConfig = ''
+    HostCertificate ${./rock-cert.pub}
+  '';
+
   programs.bcc.enable = true;
 
   boot.kernelPackages = pkgs.nur.repos.mic92.linuxPackages_ayufan_5_6;
