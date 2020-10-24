@@ -82,18 +82,11 @@ in {
     config = {};
     mobile_app = {};
 
-    device_tracker = [{
-      platform = "icloud3";
+    icloud = {
       username = "!secret icloud_email";
       password = "!secret icloud_password";
-      tracking_method = "famshr";
-      track_devices = [
-        "beatrice > gary.png"
-        "herbert > gary.png"
-        "shannans_applewatch > gary.png"
-      ];
-    }];
-
+      with_family = true;
+    };
     cloud = {};
     system_health = {};
     sensor = [{
