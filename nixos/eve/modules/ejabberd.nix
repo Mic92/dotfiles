@@ -96,11 +96,6 @@
         request_handlers:
           /admin: ejabberd_web_admin
           /.well-known/acme-challenge: ejabberd_acme
-      -
-        port: 1883
-        ip: "::"
-        module: mod_mqtt
-        backlog: 1000
 
       s2s_use_starttls: required
 
