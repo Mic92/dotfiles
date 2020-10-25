@@ -111,6 +111,12 @@
           ip:
             - 127.0.0.0/8
             - ::1/128
+        hass_publisher:
+          user:
+            "rock" : "thalheim.io"
+        hass_subscriber:
+          user:
+            "hass" : "thalheim.io"
       access_rules:
         local:
           allow: local
@@ -195,7 +201,19 @@
           ## db_type: sql
           assume_mam_usage: true
           default: always
-        mod_mqtt: {}
+        mod_mqtt:
+          access_publish:
+            "/homeassistant/#":
+              - allow: hass_publisher
+              - deny
+            "#":
+              - deny
+          access_subscribe:
+            "/homeassistant/#":
+              - allow: hass_subscriber
+              - deny
+            "#":
+              - deny
         mod_muc:
           host: "muc.@HOST@"
           access:
