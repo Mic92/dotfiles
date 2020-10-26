@@ -113,7 +113,7 @@
             - ::1/128
         hass_publisher:
           user:
-            "rock" : "thalheim.io"
+            "bme680" : "thalheim.io"
         hass_subscriber:
           user:
             "hass" : "thalheim.io"
