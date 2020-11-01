@@ -19,6 +19,13 @@
           "eva.r:9273"
           "eve.r:9273"
           "rock.r:9273"
+
+          # university
+          "rose.r:9273"
+          "martha.r:9273"
+          "donna.r:9273"
+          "amy.r:9273"
+          "clara.r:9273"
         ];
       }];
     } {

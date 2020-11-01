@@ -9,6 +9,7 @@
   services.telegraf = {
     environmentFile = config.sops.secrets.telegraf.path;
     extraConfig = {
+      agent.interval = "120s";
       inputs = {
         ping = let
           urls = [
@@ -21,6 +22,7 @@
             "donna.r"
             "amy.r"
             "clara.r"
+            #"doctor.r"
           ];
           mobileUrls = [
             "turingmachine.r"
