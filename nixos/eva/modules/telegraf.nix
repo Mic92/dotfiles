@@ -22,7 +22,7 @@
             "donna.r"
             "amy.r"
             "clara.r"
-            #"doctor.r"
+            "doctor.r"
           ];
           mobileUrls = [
             "turingmachine.r"
@@ -102,6 +102,17 @@
           protocol = "tcp"; address = "martha.r:22";
         } {
           protocol = "tcp"; address = "rose.r:22";
+        } {
+          protocol = "tcp"; address = "doctor.r:22";
+        }];
+
+        http = [{
+          urls = [
+            "https://api.github.com/repos/Mic92/nur-packages/commits/master/check-suites"
+            "https://api.github.com/repos/Mic92/sops-nix/commits/master/check-suites"
+          ];
+          data_format = "json";
+          json_query = "check_suites.#(app.id == 15368)";
         }];
 
         http_response = [{
