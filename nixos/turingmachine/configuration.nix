@@ -132,6 +132,8 @@
 
   fonts.fontDir.enable = true;
 
+  systemd.package = pkgs.systemd-247;
+
   programs = {
     gnupg.agent = {
       enable = true;

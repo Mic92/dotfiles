@@ -7,6 +7,7 @@
     flake-utils.url = "github:numtide/flake-utils";
 
     nixpkgs.url = "github:Mic92/nixpkgs/master";
+    nixpkgs-systemd.url = "github:Mic92/nixpkgs/systemd";
     # for development
     #nixpkgs.url = "/home/joerg/git/nixpkgs";
     nur.url = "github:nix-community/NUR";
@@ -41,6 +42,7 @@
 
   outputs = { self
             , nixpkgs
+            , nixpkgs-systemd
             , nixos-hardware
             , sops-nix
             , nur
@@ -71,7 +73,7 @@
        #nixpkgs = toString <nixpkgs>;
        # for testing
        #nixosSystem = import <nixpkgs/nixos/lib/eval-config.nix>;
-       inherit nixpkgs;
+       inherit nixpkgs nixpkgs-systemd;
        nixosSystem = nixpkgs.lib.nixosSystem;
        inherit nur home-manager sops-nix retiolum nixos-hardware choose-place flake-registry;
      };
