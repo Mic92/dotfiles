@@ -23,6 +23,7 @@
     ./modules/rhasspy.nix
     ./modules/sops.nix
     ./modules/sshd.nix
+    ./modules/cntr.nix
 
     ../modules/macos-kvm.nix
     ../modules/mosh.nix
