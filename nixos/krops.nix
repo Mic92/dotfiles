@@ -57,11 +57,11 @@ in
 
   rock = writeCommand "/bin/rock" {
     inherit source;
-    target = "root@localhost";
+    target = "root@eve.thalheim.io";
     command = targetPath: ''
       nixos-rebuild switch --flake ${targetPath}/dotfiles#rock \
         --build-host localhost \
-        --target-host root@192.168.1.7
+        --target-host root@rock.r
     '';
   };
 
