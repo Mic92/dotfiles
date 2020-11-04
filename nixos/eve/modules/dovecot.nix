@@ -162,6 +162,8 @@ in {
     "imap.devkid.net" = cert;
   };
 
+  systemd.services.nginx.serviceConfig.SupplementaryGroups = [ "dovecot2" ];
+
   services.nginx = {
     virtualHosts."imap.thalheim.io".useACMEHost = "imap.thalheim.io";
     virtualHosts."imap.devkid.net".useACMEHost = "imap.devkid.net";

@@ -288,6 +288,8 @@
     "ejabberd-thalheim.io" = cert "thalheim.io";
   };
 
+  systemd.services.nginx.serviceConfig.SupplementaryGroups = [ "ejabberd" ];
+
   services.nginx.virtualHosts = let
     vhosts = domain: {
       "upload.${domain}".useACMEHost = "ejabberd-${domain}";

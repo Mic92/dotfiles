@@ -18,6 +18,7 @@
     webroot = "/var/lib/acme/acme-challenge";
     group = "influxdb";
   };
+  systemd.services.nginx.serviceConfig.SupplementaryGroups = [ "influxdb" ];
 
   services.nginx.virtualHosts."influxdb.thalheim.io".useACMEHost = "influxdb.thalheim.io";
 }
