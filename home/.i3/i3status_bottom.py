@@ -59,7 +59,8 @@ status.register(Prometheus,
                 base_url="http://prometheus.r",
                 color=color.text_normal,
                 warning_color=color.text_warn,
-                critical_color=color.text_down)
+                critical_color=color.text_down,
+                interval=30)
 
 #status.register(Netdata,
 #                base_url="https://netdata.thalheim.io",
