@@ -8,7 +8,6 @@ in {
     ./jokes.nix
     ./light.nix
     ./ldap.nix
-    ./lunch-place.nix
     ./noops.nix
     ./nixoswiki.nix
     ./mqtt.nix
