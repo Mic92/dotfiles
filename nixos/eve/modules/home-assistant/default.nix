@@ -24,7 +24,6 @@ in {
     package = (pkgs.home-assistant.override {
       extraPackages = ps: [
         ps.psycopg2
-        (ps.callPackage ./coronavirus.nix {})
       ];
     });
   };
@@ -39,7 +38,6 @@ in {
       "sensor.date"
     ];
   in {
-    coronavirus = {};
     frontend = {};
     http = {};
     history.exclude = {
