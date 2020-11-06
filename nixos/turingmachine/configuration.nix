@@ -31,6 +31,7 @@
     ../modules/dnsmasq.nix
     ../modules/wireguard.nix
     ../modules/tracing.nix
+    ../modules/telegraf.nix
     #./kde.nix
     ../modules/i3.nix
     #../modules/sway.nix
