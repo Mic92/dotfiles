@@ -26,9 +26,6 @@
     home-manager.url = "github:rycee/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    choose-place.url = "github:mbailleu/choose-place";
-    choose-place.flake = false;
-
     doom-emacs.url = "github:hlissner/doom-emacs";
     #doom-emacs.url = "github:Mic92/doom-emacs/nix";
     doom-emacs.flake = false;
@@ -47,7 +44,6 @@
             , sops-nix
             , nur
             , home-manager
-            , choose-place
             , retiolum
             , flake-utils
             , krops
@@ -75,7 +71,7 @@
        #nixosSystem = import <nixpkgs/nixos/lib/eval-config.nix>;
        inherit nixpkgs nixpkgs-systemd;
        nixosSystem = nixpkgs.lib.nixosSystem;
-       inherit nur home-manager sops-nix retiolum nixos-hardware choose-place flake-registry;
+       inherit nur home-manager sops-nix retiolum nixos-hardware flake-registry;
      };
 
 

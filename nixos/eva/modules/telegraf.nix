@@ -200,9 +200,6 @@
           password = "$SYNCTHING_PASSWORD";
           response_string_match = "Syncthing";
         } {
-          urls = [ "https://choose-place.thalheim.io" ];
-          response_string_match = "Choose Place";
-        } {
           urls = [ "https://git.thalheim.io" ];
           response_string_match = "Gitea";
         } {

@@ -19,7 +19,6 @@
     ./modules/adminer.nix
     ./modules/bitwarden.nix
     ./modules/borgbackup
-    ./modules/choose-place
     ./modules/docker.nix
     ./modules/dovecot.nix
     ./modules/drone.nix

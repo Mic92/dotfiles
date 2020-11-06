@@ -6,7 +6,6 @@
 , sops-nix
 , retiolum
 , nixos-hardware
-, choose-place
 , flake-registry
 }:
 let
@@ -40,7 +39,6 @@ let
     ./eve/configuration.nix
     {
       nixpkgs.overlays = [(self: super: {
-        choose-place = super.callPackage "${choose-place}" {};
         inherit retiolum;
       })];
     }

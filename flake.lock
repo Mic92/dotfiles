@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "choose-place": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1595201175,
-        "narHash": "sha256-eKmBDOt+MFJunr/XiU3Osq8kNcgIlr3CxQPsU+oXP48=",
-        "owner": "mbailleu",
-        "repo": "choose-place",
-        "rev": "6ea0c711c44ee6097e9d6ddd8e16163e1b0a61fd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mbailleu",
-        "repo": "choose-place",
-        "type": "github"
-      }
-    },
     "doom-emacs": {
       "flake": false,
       "locked": {
@@ -202,7 +186,6 @@
     },
     "root": {
       "inputs": {
-        "choose-place": "choose-place",
         "doom-emacs": "doom-emacs",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
