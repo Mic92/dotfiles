@@ -1,7 +1,6 @@
 { pkgs, lib, ... }: let
 in {
   imports = [
-    ./bike-light.nix
     ./charge-notifications.nix
     #./parents.nix
     ./find-phone.nix
