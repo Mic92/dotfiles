@@ -9,12 +9,16 @@
         platform = "event";
         event_type = "transmission_downloaded_torrent";
       };
-      action = {
+      action = [{
         service = "notify.irc_flix";
-        data = {
-          message = "torrent completed: {{trigger.event.data.name}}";
+        data_template.message = "torrent completed: {{trigger.event.data.name}}";
+      } {
+        service = "notify.mobile_app_beatrice";
+        data_template = {
+          title = "Torrent completed!";
+          message = ": {{trigger.event.data.name}}";
         };
-      };
+      }];
     }];
     notify = [{
       name = "irc_flix";
@@ -22,6 +26,6 @@
       command = ''
         ${pkgs.nur.repos.mic92.irc-announce}/bin/irc-announce irc.r 6667 transmission '#flix' "$(cat)"
       '';
-    }];
+    } ];
   };
 }
