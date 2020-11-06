@@ -105,25 +105,6 @@ class Shannan(IntervalModule):
         self.output = dict(full_text=f"{location} ({distance['state']}km)")
 
 
-class BikeBattery(IntervalModule):
-    entity_id = "input_number.days_bike_light_uncharged"
-    on_rightclick = "reset_counter"
-
-    def reset_counter(self) -> None:
-        request(f"/api/states/{self.entity_id}",
-                state.password.get(),
-                data=dict(state=0))
-        state.update()
-        self.run()
-
-    def run(self) -> None:
-        days_uncharged = state.get(self.entity_id)
-        if days_uncharged is None:
-            return
-        days = int(float(days_uncharged["state"]))
-        self.output = dict(full_text=f"{days}d")
-
-
 status_symbols = {"off": "-", "on": "+", "FULL": "↯"}
 
 
