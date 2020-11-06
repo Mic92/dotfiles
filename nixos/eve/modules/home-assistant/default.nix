@@ -14,6 +14,7 @@ in {
     ./presence.nix
     ./postgres.nix
     ./timer.nix
+    ./transmission.nix
     ./weather.nix
     ./zones.nix
   ];

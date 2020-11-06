@@ -4,10 +4,8 @@
        name = "Rain notified today";
        icon = "mdi:weather-cloudy";
      };
-     weather = {
-       platform = "openweathermap";
-       api_key = "!secret openweathermap_api_key";
-     };
+     openweathermap = {};
+     weather = {};
      automation = [{
        alias = "rainy/snowy day notification";
        trigger = {
