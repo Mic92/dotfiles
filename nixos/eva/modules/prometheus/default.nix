@@ -12,7 +12,7 @@
     webExternalUrl = "https://prometheus.thalheim.io";
     scrapeConfigs = [{
       job_name = "telegraf";
-      scrape_interval = "60s";
+      scrape_interval = "120s";
       metrics_path = "/metrics";
       static_configs = [{
         targets = [
@@ -31,7 +31,7 @@
       }];
     } {
       job_name = "healtchecks";
-      scrape_interval = "60s";
+      scrape_interval = "120s";
       scheme = "https";
 
       metrics_path = "/projects/19949858-209b-4d47-99f3-ca27e9b0dd96/metrics/-YJxfazBu__IIQmIyze5_SHKTxtJg0PR";
