@@ -117,7 +117,7 @@
     }; in {
       requires = [ "irc-alerts.socket" ];
       serviceConfig = {
-        Environment = "IRC_URL=irc://prometheus@irc.r:6667/#xxx";
+        Environment = "IRC_URL=irc://prometheus@irc.r:6667/#flix";
         ExecStart = "${irc-alerts}/bin/irc-alerts";
       };
     };
