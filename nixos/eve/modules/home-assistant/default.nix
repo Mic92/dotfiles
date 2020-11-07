@@ -30,10 +30,6 @@ in {
 
   services.home-assistant.config = let
     hiddenEntities = [
-      "sensor.first_lunch_choice"
-      "sensor.second_lunch_choice"
-      "sensor.third_lunch_choice"
-      "sensor.choose_place"
       "sensor.last_boot"
       "sensor.date"
     ];
