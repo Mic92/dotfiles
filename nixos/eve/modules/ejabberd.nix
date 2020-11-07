@@ -114,6 +114,7 @@
         hass_publisher:
           user:
             "bme680" : "thalheim.io"
+            "hass" : "thalheim.io"
         hass_subscriber:
           user:
             "hass" : "thalheim.io"

@@ -2,6 +2,10 @@
 
 {
   services.home-assistant.config.mqtt = {
+    broker = "mqtt.thalheim.io";
+    client_id = "hass";
+    certificate = "auto";
+    port = "8883";
     username = "hass@thalheim.io";
     password = "!secret ldap_password";
   };
