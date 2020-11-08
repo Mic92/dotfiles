@@ -13,6 +13,10 @@
     nur.url = "github:nix-community/NUR";
     sops-nix.url = "github:Mic92/sops-nix";
 
+    bme680-mqtt.url = "github:Mic92/bme680-mqtt/nixos-module";
+    bme680-mqtt.inputs.utils.follows = "flake-utils";
+    bme680-mqtt.inputs.nixpkgs.follows = "nixpkgs";
+
     #krops.url = "github:krebs/krops";
     #krops.flake = false;
     krops.url = "github:Mic92/krops";
@@ -48,6 +52,7 @@
             , flake-utils
             , krops
             , flake-registry
+            , bme680-mqtt
             , ... }:
     (flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
@@ -71,7 +76,7 @@
        #nixosSystem = import <nixpkgs/nixos/lib/eval-config.nix>;
        inherit nixpkgs nixpkgs-systemd;
        nixosSystem = nixpkgs.lib.nixosSystem;
-       inherit nur home-manager sops-nix retiolum nixos-hardware flake-registry;
+       inherit nur home-manager sops-nix retiolum nixos-hardware flake-registry bme680-mqtt;
      };
 
 

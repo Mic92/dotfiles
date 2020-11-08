@@ -42,11 +42,18 @@ creation_rules:
       C5A6167F97F68FD053571E8B04188BA1509DCDC5,
       464E02307E15D115D8D666ADE0BD184A633C5C72
   # joerg
+  # rock
+  - path_regex: rock/secrets/[^/]+\.yaml$
+    pgp: >-
+      F095F28F7B1BA4DD0D93554EE179454B201E23CA
+      F139840C191C75322AC3D4516BE2046130150E21
+  # joerg
   # eddie
   # eve
   # turingmachine
   # eva
   # matchbox
+  # rock
   - path_regex: ./secrets/[^/]+\.yaml$
     pgp: >-
       F095F28F7B1BA4DD0D93554EE179454B201E23CA,
@@ -55,3 +62,4 @@ creation_rules:
       50612B0983F7FA2F1985DA0F30371B437689ACFD,
       464E02307E15D115D8D666ADE0BD184A633C5C72
       13d0b443fe935edf44f9b472d8abdace2bcf8e4b
+      F139840C191C75322AC3D4516BE2046130150E21

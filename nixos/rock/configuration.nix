@@ -3,6 +3,8 @@
 
   imports = [
     ./modules/jellyfin.nix
+    ./modules/sops.nix
+    ./modules/bme680-mqtt.nix
     ./hardware-configuration.nix
     ../modules/users.nix
     ../modules/nfs-dl.nix
@@ -10,6 +12,7 @@
     ../modules/telegraf.nix
     ../modules/tor-ssh.nix
     ../modules/networkd.nix
+
     ../modules/nix-daemon.nix
   ];
 

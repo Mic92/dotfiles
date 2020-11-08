@@ -7,6 +7,7 @@
 , retiolum
 , nixos-hardware
 , flake-registry
+, bme680-mqtt
 }:
 let
   defaultModules = [
@@ -70,6 +71,7 @@ in {
   rock = nixosSystem {
     system = "aarch64-linux";
     modules = defaultModules ++ [
+      bme680-mqtt.nixosModules.bme680-mqtt
       ./rock/configuration.nix
     ];
   };

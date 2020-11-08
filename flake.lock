@@ -1,5 +1,29 @@
 {
   "nodes": {
+    "bme680-mqtt": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "utils": [
+          "flake-utils"
+        ]
+      },
+      "locked": {
+        "lastModified": 1604851812,
+        "narHash": "sha256-x83RSLhu/CAuf+Hq4ppc2sDGl2OHvc2RhZVpRrCo2iw=",
+        "owner": "Mic92",
+        "repo": "bme680-mqtt",
+        "rev": "c09d08f47c6b0e6fc6193287eb2148b08cde87fc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "ref": "nixos-module",
+        "repo": "bme680-mqtt",
+        "type": "github"
+      }
+    },
     "doom-emacs": {
       "flake": false,
       "locked": {
@@ -93,11 +117,11 @@
     "nix-doom-emacs": {
       "flake": false,
       "locked": {
-        "lastModified": 1604761591,
-        "narHash": "sha256-f/mn1NC1fwD6oGnj5Mf+l2tLu0t56Mf14x8ReFwCIR4=",
+        "lastModified": 1604842236,
+        "narHash": "sha256-qeEnS7LP+cgmB3TOgzHeDxO4dSTtza1ciJP5YbXFRiw=",
         "owner": "vlaci",
         "repo": "nix-doom-emacs",
-        "rev": "8c1376ad15214b42af350469f5a6106bdc212ab3",
+        "rev": "fcc395f3db3adb36d1055cea4da2f8c8e368e56e",
         "type": "github"
       },
       "original": {
@@ -156,11 +180,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1604766602,
-        "narHash": "sha256-xbTmwtGcJKhIn8AZjlg5XTeETGRYV6ibh21n9//0kdc=",
+        "lastModified": 1604833178,
+        "narHash": "sha256-gB5ux0gVkDw5ZR66tMpVCOAl3A/0Jhh1/MSzeY3TGdA=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "f21a9be15a6d9ee3433a801a113dbb611a6b227a",
+        "rev": "6cbd445555c1e308539be37474bed2b77c57411e",
         "type": "github"
       },
       "original": {
@@ -186,6 +210,7 @@
     },
     "root": {
       "inputs": {
+        "bme680-mqtt": "bme680-mqtt",
         "doom-emacs": "doom-emacs",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
@@ -207,11 +232,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1598620579,
-        "narHash": "sha256-t4ImALU9Kx2Ayzgcq/AmoYJ0NcRCH0YaCKsHFC88BvY=",
+        "lastModified": 1604843906,
+        "narHash": "sha256-/ykyaRIAbKsceJhB52GQ2huogqYaY2Q4bL+ApEEqwQs=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "412ba17f0d21043fa30fc2d9db4cd9bd5e1da440",
+        "rev": "b67ae45dc7459e10f390b2c5d24822599b564974",
         "type": "github"
       },
       "original": {
