@@ -204,13 +204,13 @@
           default: always
         mod_mqtt:
           access_publish:
-            "/homeassistant/#":
+            "homeassistant/#":
               - allow: hass_publisher
               - deny
             "#":
               - deny
           access_subscribe:
-            "/homeassistant/#":
+            "homeassistant/#":
               - allow: hass_subscriber
               - deny
             "#":
