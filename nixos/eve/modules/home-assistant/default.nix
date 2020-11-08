@@ -9,7 +9,6 @@ in {
     ./light.nix
     ./ldap.nix
     ./noops.nix
-    ./nixoswiki.nix
     ./mqtt.nix
     ./presence.nix
     ./postgres.nix
