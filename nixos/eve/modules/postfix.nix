@@ -174,6 +174,7 @@ in {
     "mail.thalheim.io" = {
       webroot = "/var/lib/acme/acme-challenge";
       postRun = "systemctl restart postfix.service";
+      group = "nginx";
     };
   };
 
