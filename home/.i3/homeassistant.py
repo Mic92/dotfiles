@@ -85,7 +85,11 @@ class WeatherText(IntervalModule):
         weather = state.get("weather.openweathermap")
         if weather is None:
             return
-        text = f"{weather['attributes']['temperature']}°C"
+
+        air_quality = state.get("sensor.bme680_air_quality")
+        temperature = state.get("sensor.bme680_temperature")
+
+        text = f"{weather['attributes']['temperature']}°C (inside: {temperature['state']}°C/air: {air_quality['state']}%)"
 
         self.output = dict(full_text=text)
 
