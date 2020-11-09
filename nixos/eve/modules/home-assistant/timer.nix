@@ -4,6 +4,7 @@
     intent = {};
     intent_script = {
       GetTime.speech.text = "It is {{ now().hour }}:{{ now().minute }}.";
+      GetTimer.speech.text = ''{{ state_attr("timer.rhasspy", "duration") }} is left.'';
       SetTimer = {
         speech.text = "Set a timer for {{ duration }} {{ unit }}.";
         action = [{
