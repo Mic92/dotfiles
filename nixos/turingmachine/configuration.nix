@@ -227,20 +227,4 @@
   documentation.doc.enable = false;
 
   system.stateVersion = "18.03";
-
-  systemd.services.rhasspy = {
-    after = [ "network.target" ];
-    wantedBy = [ "multi-user.target" ];
-    # rhasspy sets `/dev/stdout` as log file for supervisord
-    # supervisord tries to open /dev/stdout and fails with the default systemd device
-    # it works for pipes so...
-    script = ''
-      ${pkgs.nur.repos.mic92.rhasspy}/bin/rhasspy --profile en | ${pkgs.utillinux}/bin/logger
-    '';
-    serviceConfig = {
-      User = "joerg";
-      # needed for pulseaudio
-      Environment = "XDG_RUNTIME_DIR=/run/user/1000";
-    };
-  };
 }
