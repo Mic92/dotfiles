@@ -13,7 +13,7 @@
     nur.url = "github:nix-community/NUR";
     sops-nix.url = "github:Mic92/sops-nix";
 
-    bme680-mqtt.url = "github:Mic92/bme680-mqtt/nixos-module";
+    bme680-mqtt.url = "github:Mic92/bme680-mqtt";
     bme680-mqtt.inputs.utils.follows = "flake-utils";
     bme680-mqtt.inputs.nixpkgs.follows = "nixpkgs";
 

@@ -10,16 +10,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1604854389,
-        "narHash": "sha256-cNbiyCYd4GN1HTz5XdVH/oG0ltm3ii4SEUdXoh84Lro=",
+        "lastModified": 1604859111,
+        "narHash": "sha256-DDcahUQ5IbZx3aI/U21V4YhcuTpfWrnkEr1i2C0KPoc=",
         "owner": "Mic92",
         "repo": "bme680-mqtt",
-        "rev": "2d909e5bf57d50f4c17d7546d17f4920ea7ac892",
+        "rev": "41f5ee4ae1fb21a396678410508157d77503e856",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
-        "ref": "nixos-module",
         "repo": "bme680-mqtt",
         "type": "github"
       }
