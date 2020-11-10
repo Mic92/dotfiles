@@ -1,14 +1,9 @@
 { pkgs, ... }: let
   conf = pkgs.writeText "Caddyfile" ''
-    0.0.0.0 {
-      timeouts 0
-      tls off
-      #markdown
-      browse
-      root /home/joerg/web
-
-      basicauth /privat root cakeistasty
-      basicauth /private root kuchenistlecker
+    http://0.0.0.0:80 {
+      file_server /* browse {
+        root /home/joerg/web
+      }
     }
   '';
 in {
@@ -17,7 +12,7 @@ in {
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
-      ExecStart = ''${pkgs.caddy}/bin/caddy -conf=${conf} -agree'';
+      ExecStart = "${pkgs.caddy}/bin/caddy run -config=./Caddyfile";
       User = "joerg";
       AmbientCapabilities = "cap_net_bind_service";
     };

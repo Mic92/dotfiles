@@ -62,12 +62,6 @@
     options = ["bind" "nofail"];
   };
 
-  fileSystems."/home/joerg/web/privat" = {
-    device = "/home/joerg/web/private";
-    fsType = "none";
-    options = ["bind" "nofail"];
-  };
-
   fileSystems."/tmp" = {
     device = "zroot/root/tmp";
     fsType = "zfs";
