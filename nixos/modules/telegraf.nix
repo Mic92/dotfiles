@@ -2,6 +2,9 @@
   isVM = lib.any (mod: mod == "xen-blkfront" || mod == "virtio_console") config.boot.initrd.kernelModules;
 in {
   networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 9273 ];
+
+  systemd.services.telegraf.path = [ pkgs.nvme-cli ];
+
   services.telegraf = {
     enable = true;
     extraConfig = {
@@ -13,7 +16,7 @@ in {
         };
         system = {};
         mem = {};
-        file = {
+        file = lib.optionalAttrs (lib.any (fs: fs == "ext4") config.boot.supportedFilesystems) {
           name_override = "ext4_errors";
           files = [ "/sys/fs/ext4/*/errors_count" ];
           data_format = "value";
