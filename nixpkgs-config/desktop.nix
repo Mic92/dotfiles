@@ -154,7 +154,7 @@ in {
     Service.Environment = "PATH=${pkgs.bitwarden-wrapper}/bin";
     # TODO: Fix ini generator in home-manager
     Service.ExecStart = ''
-      -${pkgs.isync}/bin/mbsync -Va
+      -${pkgs.isync}/bin/mbsync -a --quiet
       ExecStart=${pkgs.emacs}/bin/emacsclient -e (mu4e-update-index)
     '';
   };
