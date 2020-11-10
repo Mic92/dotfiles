@@ -8,14 +8,15 @@
     ./modules/loki.nix
     ./modules/promtail.nix
     ./hardware-configuration.nix
+
     ../modules/users.nix
     ../modules/nfs-dl.nix
     ../modules/mosh.nix
     ../modules/telegraf.nix
     ../modules/tor-ssh.nix
     ../modules/networkd.nix
-
     ../modules/nix-daemon.nix
+    ../modules/openldap/replica.nix
   ];
 
   services.openssh.extraConfig = ''

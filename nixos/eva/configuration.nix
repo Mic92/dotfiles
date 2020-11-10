@@ -9,13 +9,13 @@
   imports = [
     ./modules/prometheus
     ./modules/nginx.nix
-    ./modules/openldap.nix
     ./modules/sshd.nix
     ./modules/sops.nix
     ./modules/telegraf.nix
 
     ../modules/mosh.nix
     ../modules/nur.nix
+    ../modules/openldap/replica.nix
     ../modules/tracing.nix
     ../modules/ec2.nix
   ];
