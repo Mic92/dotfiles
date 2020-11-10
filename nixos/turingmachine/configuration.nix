@@ -14,7 +14,7 @@
     ./modules/retiolum.nix
     ./modules/ssmtp.nix
     #../modules/sway.nix
-    ./modules/minidlna.nix
+    #./modules/minidlna.nix
     ./modules/networkmanager.nix
     #./modules/nfs-dl.nix
     ./modules/packages.nix

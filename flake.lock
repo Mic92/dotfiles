@@ -10,11 +10,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1604859111,
-        "narHash": "sha256-DDcahUQ5IbZx3aI/U21V4YhcuTpfWrnkEr1i2C0KPoc=",
+        "lastModified": 1605003813,
+        "narHash": "sha256-ySTstlDMAA79tPw5eX/ctj65+IsPIBBWmqEhncvQa6Y=",
         "owner": "Mic92",
         "repo": "bme680-mqtt",
-        "rev": "41f5ee4ae1fb21a396678410508157d77503e856",
+        "rev": "baf8d726ce57767a0bfb1111bbcd21caf6643d67",
         "type": "github"
       },
       "original": {
@@ -147,11 +147,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1605001013,
-        "narHash": "sha256-wlGUp2L1y7hmdLDzzio0CJpvZhSgJ4V71PgHNNl16Tg=",
+        "lastModified": 1605001178,
+        "narHash": "sha256-bJuecE2ce7SZbigOV6VDOuy53lnNsUuG7a2TYJLDDqs=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "c0ab87db055ecdb87349ec3c96faf70a70ecb732",
+        "rev": "5e0a8f94d3b519c5d4572788a6c196d4fc08384f",
         "type": "github"
       },
       "original": {
