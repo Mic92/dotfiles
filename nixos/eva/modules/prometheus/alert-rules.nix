@@ -42,7 +42,7 @@ in lib.mapAttrsToList (name: opts: {
   };
 
   systemd_service_failed = {
-    condition = ''systemd_units_active_code == 3'';
+    condition = ''systemd_units_load_code == 3 or systemd_units_load_code == 4'';
     summary = "{{$labels.instance}}: Service {{$labels.name}} failed to start.";
     description = "{{$labels.instance}} failed to (re)start service {{$labels.name}}.";
   };
