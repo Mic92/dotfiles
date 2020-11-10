@@ -94,7 +94,7 @@
           "rock.r:22"
           "eve.r:22"
           "amy.r:22"
-          "donnar.r:22"
+          "donna.r:22"
           "clara.r:22"
           "martha.r:22"
           "rose.r:22"

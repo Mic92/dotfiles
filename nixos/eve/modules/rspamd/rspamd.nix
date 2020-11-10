@@ -1,6 +1,9 @@
 { pkgs, config, ... }:
 let
   localConfig = pkgs.writeText "local.conf" ''
+    logging {
+      level = "notice";
+    }
     classifier "bayes" {
       autolearn = true;
     }

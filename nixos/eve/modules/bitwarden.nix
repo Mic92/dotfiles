@@ -8,7 +8,7 @@ let
     ldap_bind_password = "@LDAP_PASSWORD@";
     ldap_search_base_dn = "ou=users,dc=eve";
     ldap_search_filter = "(&(objectClass=bitwarden))";
-    ldap_sync_interval_seconds = 360;
+    ldap_sync_interval_seconds = 3600;
   };
 
   ldapConfigFile = pkgs.runCommand "config.toml" {

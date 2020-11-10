@@ -4,6 +4,7 @@
     extraConfig = {
       http = {
         auth-enabled = true;
+        log-enabled = false;
         https-enabled = true;
         https-certificate = "/var/lib/acme/influxdb.thalheim.io/fullchain.pem";
         https-private-key = "/var/lib/acme/influxdb.thalheim.io/key.pem";
