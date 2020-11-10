@@ -17,8 +17,7 @@
       ];
 
       "olcDatabase={1}mdb" = {
-        attrs = {
-          objectClass = [ "olcDatabaseConfig" "olcMdbConfig" ];
+        attrs = {objectClass = [ "olcDatabaseConfig" "olcMdbConfig" ];
           olcDatabase = "{1}mdb";
           olcDbDirectory = "/var/db/openldap";
           olcRootPW.path = config.sops.secrets.openldap-rootpw.path;
@@ -216,12 +215,22 @@
           MUST ( mail $ userPassword ))'';
       };
       "cn={1}prometheus,cn=schema".attrs =  {
-        cn = "{1}gitlab";
+        cn = "{1}prometheus";
         objectClass = "olcSchemaConfig";
         olcObjectClasses = [''( 1.3.6.1.4.1.28296.1.2.4
           NAME 'prometheus'
           SUP uidObject AUXILIARY
           DESC 'Added to an account to allow prometheus access'
+          MUST (mail))
+        ''];
+      };
+      "cn={1}loki,cn=schema".attrs =  {
+        cn = "{1}loki";
+        objectClass = "olcSchemaConfig";
+        olcObjectClasses = [''( 1.3.6.1.4.1.28299.1.2.4
+          NAME 'loki'
+          SUP uidObject AUXILIARY
+          DESC 'Added to an account to allow loki access'
           MUST (mail))
         ''];
       };
