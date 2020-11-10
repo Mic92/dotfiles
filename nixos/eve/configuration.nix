@@ -61,7 +61,7 @@
 
     ../modules/builder.nix
     ../modules/mosh.nix
-    ../modules/openldap.nix
+    ../modules/openldap
     ../modules/nfs-dl.nix
     ../modules/nur.nix
     ../modules/tor-ssh.nix
