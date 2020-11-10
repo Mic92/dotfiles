@@ -7,8 +7,9 @@ in {
     extraConfig = {
       inputs = {
         smart = lib.mkIf (!isVM) {
-          path = "${pkgs.smartmontools}/bin/smartctl";
-          use_sudo = true;
+          path = pkgs.writeShellScript "smartctl" ''
+            exec /run/wrappers/bin/sudo ${pkgs.smartmontools}/bin/smartctl "$@"
+          '';
         };
         system = {};
         mem = {};
@@ -50,7 +51,6 @@ in {
       };
     };
   };
-
   security.sudo.extraRules = lib.mkIf (!isVM) [{
     users = [ "telegraf" ];
     commands = [ {
@@ -58,4 +58,8 @@ in {
       options = [ "NOPASSWD" ];
     }];
   }];
+  # avoid logging sudo use
+  security.sudo.configFile = ''
+    Defaults:telegraf !syslog,!pam_session
+  '';
 }

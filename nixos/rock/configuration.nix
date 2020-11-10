@@ -2,11 +2,11 @@
   nixpkgs.localSystem.system = "aarch64-linux";
 
   imports = [
+    ./modules/bme680-mqtt.nix
     ./modules/jellyfin.nix
     ./modules/sops.nix
     ./modules/loki.nix
     ./modules/promtail.nix
-    ./modules/bme680-mqtt.nix
     ./hardware-configuration.nix
     ../modules/users.nix
     ../modules/nfs-dl.nix
