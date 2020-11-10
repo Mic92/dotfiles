@@ -4,6 +4,8 @@
   imports = [
     ./modules/jellyfin.nix
     ./modules/sops.nix
+    ./modules/loki.nix
+    ./modules/promtail.nix
     ./modules/bme680-mqtt.nix
     ./hardware-configuration.nix
     ../modules/users.nix
