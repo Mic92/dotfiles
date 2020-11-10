@@ -57,9 +57,7 @@
     (flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
      in {
-       devShell = pkgs.callPackage ./shell.nix {
-         inherit (sops-nix.packages.${system}) sops-pgp-hook;
-       };
+       devShell = pkgs.callPackage ./shell.nix {};
        # deploy like this:
        #  nix run ".#deploy.turingmachine"
        #  nix run ".#deploy.eve"
