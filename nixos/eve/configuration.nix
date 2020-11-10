@@ -37,7 +37,6 @@
     ./modules/network.nix
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
-    ./modules/openldap.nix
     ./modules/openttd
     ./modules/packages.nix
     ./modules/postfix.nix
@@ -62,6 +61,7 @@
 
     ../modules/builder.nix
     ../modules/mosh.nix
+    ../modules/openldap.nix
     ../modules/nfs-dl.nix
     ../modules/nur.nix
     ../modules/tor-ssh.nix
