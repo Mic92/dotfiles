@@ -1,7 +1,6 @@
 { sops
 , drone-cli
 , mkShell
-, sops-pgp-hook
 }:
 
 mkShell {
@@ -9,10 +8,5 @@ mkShell {
   nativeBuildInputs = [
     sops
     drone-cli
-    sops-pgp-hook
-  ];
-  sopsPGPKeyDirs = [
-    "./nixos/secrets/keys/hosts"
-    "./nixos/secrets/keys/users"
   ];
 }
