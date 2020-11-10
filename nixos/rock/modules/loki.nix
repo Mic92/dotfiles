@@ -2,6 +2,13 @@
   rulerConfig = {};
 
   rulerDir = pkgs.writeText "ruler.yml" (builtins.toJSON rulerConfig);
+
+  ldapConf = pkgs.writeText "ldap.conf" ''
+    base dc=eve
+    host localhost:389
+    pam_login_attribute mail
+    pam_filter objectClass=prometheus
+  '';
 in {
   services.loki = {
     enable = true;
@@ -67,15 +74,24 @@ in {
     };
   };
 
+  security.pam.services.loki.text = ''
+    auth required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${ldapConf}
+    account required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${ldapConf}
+  '';
+
   services.nginx = {
     enable = true;
+    package = pkgs.nginxStable.override {
+      perl = null;
+      modules = [ pkgs.nginxModules.pam ];
+    };
     virtualHosts.loki = {
       serverName = "loki.r";
       locations."/" = {
         proxyWebsockets = true;
         extraConfig = ''
           auth_basic loki;
-          auth_basic_user_file ${config.sops.secrets.loki.path};
+          auth_basic_user_file "loki";
 
           proxy_read_timeout 1800s;
           proxy_redirect off;
@@ -95,9 +111,6 @@ in {
       };
     };
   };
-
-  sops.secrets.loki.owner = "nginx";
-  systemd.services.nginx.serviceConfig.SupplementaryGroups = [ "keys" ];
 
   networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 80 ];
 }
