@@ -10,10 +10,10 @@ with lib;
     appendConfig = ''
       protocols:
       (
-        { name: "ssh"; service: "ssh"; host: "localhost"; port: "22"; probe: "builtin"; },
-        { name: "xmpp"; host: "localhost"; port: "5222"; probe: "builtin"; },
-        { name: "tls"; host: "localhost"; port: "4443"; probe: "builtin"; },
-        { name: "tinc"; host: "localhost"; port: "655"; probe: "builtin"; }
+        { name: "ssh"; service: "ssh"; host: "localhost"; port: "22"; probe: "builtin"; log_level: 0; },
+        { name: "xmpp"; host: "localhost"; port: "5222"; probe: "builtin"; log_level: 0; },
+        { name: "tls"; host: "localhost"; port: "4443"; probe: "builtin"; log_level: 0; },
+        { name: "tinc"; host: "localhost"; port: "655"; probe: "builtin"; log_level: 0; }
       );
     '';
   };

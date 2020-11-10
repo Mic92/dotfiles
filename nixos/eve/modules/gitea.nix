@@ -6,6 +6,7 @@
       host = "/run/postgresql";
       port = 5432;
     };
+    log.level = "Error";
     domain = "git.thalheim.io";
     rootUrl = "https://git.thalheim.io";
     mailerPasswordFile = config.sops.secrets.gitea-mail.path;
@@ -16,6 +17,7 @@
       USER = "gitea@thalheim.io";
       HOST = "mail.thalheim.io:587";
     };
+    settings.server.DISABLE_ROUTER_LOG = true;
   };
 
   sops.secrets.gitea-mail.owner = config.systemd.services.gitea.serviceConfig.User;

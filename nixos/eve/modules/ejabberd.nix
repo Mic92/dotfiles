@@ -23,7 +23,7 @@
     user = "ejabberd";
     mode = "0600";
     text = ''
-      loglevel: 5
+      loglevel: 4
 
       auth_method: ldap
       ldap_servers:

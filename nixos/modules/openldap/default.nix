@@ -6,6 +6,7 @@
     defaultSchemas = null;
     dataDir = null;
     database = null;
+    settings.attrs.olcLogLevel = "0";
 
     settings.children = {
       "cn=schema".includes = [
