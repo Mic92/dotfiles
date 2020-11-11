@@ -1,6 +1,9 @@
 { config, ... }:
 {
-  sops.secrets.promtail-password.owner = "promtail";
+  sops.secrets.promtail-password = {
+    owner = "promtail";
+    sopsFile = ../secrets/secrets.yaml;
+  };
   systemd.services.promtail.serviceConfig.SupplementaryGroups = [ "keys" ];
 
   services.promtail = {

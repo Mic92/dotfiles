@@ -6,7 +6,6 @@
     ./modules/jellyfin.nix
     ./modules/sops.nix
     ./modules/loki.nix
-    ./modules/promtail.nix
     ./hardware-configuration.nix
 
     ../modules/users.nix
@@ -17,6 +16,7 @@
     ../modules/networkd.nix
     ../modules/nix-daemon.nix
     ../modules/openldap/replica.nix
+    ../modules/promtail.nix
   ];
 
   services.openssh.extraConfig = ''
