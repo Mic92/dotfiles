@@ -25,6 +25,7 @@
     ./modules/sshd.nix
     ./modules/cntr.nix
 
+    ../modules/promtail.nix
     ../modules/macos-kvm.nix
     ../modules/mosh.nix
     ../modules/networkd.nix

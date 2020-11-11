@@ -66,6 +66,7 @@
     ../modules/nur.nix
     ../modules/tor-ssh.nix
     ../modules/tracing.nix
+    ../modules/promtail.nix
     ../modules/wireguard.nix
     ../modules/zfs.nix
   ];
