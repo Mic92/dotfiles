@@ -2,7 +2,6 @@
 in {
   imports = [
     ./charge-notifications.nix
-    #./parents.nix
     ./find-phone.nix
     ./german.nix
     ./jokes.nix
