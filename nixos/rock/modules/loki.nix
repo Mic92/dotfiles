@@ -7,7 +7,8 @@
     base dc=eve
     host localhost:389
     pam_login_attribute mail
-    pam_filter objectClass=prometheus
+    pam_filter objectClass=loki
+    binddn cn=nginx,ou=system,ou=users,dc=eve
   '';
 in {
   services.loki = {
@@ -30,7 +31,8 @@ in {
           replication_factor = 1;
         };
         chunk_encoding = "snappy";
-        max_transfer_retries = 0; # Disable block transfers on shtudown
+        # Disable block transfers on shutdown
+        max_transfer_retries = 0;
       };
 
       # Storage
@@ -74,24 +76,39 @@ in {
     };
   };
 
+  systemd.services.ldap-nginx-config = {
+    wantedBy = [ "multi-user.target" ];
+    script = ''
+      umask 0077
+      printf 'bindpw %s\n' \
+        "$(cat ${config.sops.secrets.ldap-nginx-password.path})" | \
+      cat "${ldapConf}" - > /run/ldap-nginx.conf
+      chown nginx /run/ldap-nginx.conf
+    '';
+    serviceConfig.Type = "oneshot";
+  };
+  sops.secrets.ldap-nginx-password = {};
+
   security.pam.services.loki.text = ''
-    auth required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${ldapConf}
-    account required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${ldapConf}
+    auth required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=/run/ldap-nginx.conf
+    account required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=/run/ldap-nginx.conf
   '';
 
   services.nginx = {
     enable = true;
     package = pkgs.nginxStable.override {
       perl = null;
-      modules = [ pkgs.nginxModules.pam ];
+      modules = [
+        pkgs.nginxModules.pam
+      ];
     };
     virtualHosts.loki = {
       serverName = "loki.r";
       locations."/" = {
         proxyWebsockets = true;
         extraConfig = ''
-          auth_basic loki;
-          auth_basic_user_file "loki";
+          auth_pam "Ldap password";
+          auth_pam_service_name "loki";
 
           proxy_read_timeout 1800s;
           proxy_redirect off;
