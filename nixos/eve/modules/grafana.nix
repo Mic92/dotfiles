@@ -15,9 +15,10 @@
       AUTH_ANONYMOUS_ORG_ROLE = "Viewer";
     };
     smtp = {
+      enable = true;
       host = "mail.thalheim.io:587";
       user = "grafana@thalheim.io";
-      passwordFile = config.sops.secrets.grafana-smtp-password.path;
+      passwordFile = config.sops.secrets.grafana-ldap-password.path;
       fromAddress = "grafana@thalheim.io";
     };
     database = {
@@ -80,7 +81,6 @@
   };
 
   sops.secrets = {
-    grafana-smtp-password.owner = "grafana";
     grafana-admin-password.owner = "grafana";
     grafana-ldap-password.owner = "grafana";
   };
