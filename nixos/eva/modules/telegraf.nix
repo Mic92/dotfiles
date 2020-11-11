@@ -201,6 +201,9 @@
           urls = [ "https://thalheim.io" ];
           response_string_match = "Higgs-Boson";
         } {
+          urls = [ "https://loki.r/ready" ];
+          response_string_match = "ready";
+        } {
           urls = [
             "https://cloud.thalheim.io/login"
             "https://pim.devkid.net/login"
