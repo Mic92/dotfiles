@@ -61,6 +61,13 @@ steps:
     - failure
     - success
 
+- name: send irc notification
+  image: plugins/drone-irc
+  settings:
+    channel: "#xxx"
+    host: irc.r
+    nick: drone
+
 volumes:
 - name: nixstore
   host:
@@ -401,6 +408,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 3b1af704d12689db09e0869f3825cb96093470c4fba2bd68c6f87f849bce7def
+hmac: a3c19c645d1b08883843372fcea572869f97e9c6ac21a0de25ca4eee1323a1c6
 
 ...

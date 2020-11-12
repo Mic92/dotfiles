@@ -61,6 +61,14 @@ local build = {
       event: { exclude: ['pull_request'] },
       status: ['failure', 'success'],
     },
+  }, {
+    name: 'send irc notification',
+    image: 'plugins/drone-irc',
+    settings: {
+      host: 'irc.r',
+      nick: 'drone',
+      channel: '#xxx',
+    },
   }],
   trigger: {
     event: {
