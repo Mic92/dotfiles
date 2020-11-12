@@ -62,11 +62,31 @@ steps:
     - success
 
 - name: send irc notification
-  image: plugins/drone-irc
-  settings:
-    channel: "#xxx"
-    host: irc.r
-    nick: drone
+  image: busybox
+  commands:
+  - nix run .#irc-announce -- irc.r 6667 drone "#xxx" "{{#success build.status}}build {{build.number}} succeeded.{{else}}build {{build.number}} failed.{{/success}}"
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+    NIX_REMOTE: daemon
+    PAGER: cat
+    PATH: /nix/var/nix/profiles/system/sw/bin/
+    USER: root
+  volumes:
+  - name: nixstore
+    path: /nix
+  - name: gcroots
+    path: /var/lib/drone/nix-build
+  - name: nixconf
+    path: /etc/nix
+  - name: sslcerts
+    path: /etc/ssl
+  when:
+    event:
+      exclude:
+      - pull_request
+    status:
+    - failure
+    - success
 
 volumes:
 - name: nixstore
@@ -408,6 +428,6 @@ trigger:
 
 ---
 kind: signature
-hmac: a3c19c645d1b08883843372fcea572869f97e9c6ac21a0de25ca4eee1323a1c6
+hmac: cdf057e92ece6dae6c3c6985e683d6adf41d8e1c79da45a3e5558848a975e903
 
 ...

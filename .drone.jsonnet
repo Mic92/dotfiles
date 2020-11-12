@@ -63,11 +63,15 @@ local build = {
     },
   }, {
     name: 'send irc notification',
-    image: 'plugins/drone-irc',
-    settings: {
-      host: 'irc.r',
-      nick: 'drone',
-      channel: '#xxx',
+    image: 'busybox',
+    volumes: stepVolumes,
+    environment: environment,
+    commands: [
+      'nix run .#irc-announce -- irc.r 6667 drone "#xxx" "{{#success build.status}}build {{build.number}} succeeded.{{else}}build {{build.number}} failed.{{/success}}"'
+    ],
+    when: {
+      event: { exclude: ['pull_request'] },
+      status: ['failure', 'success'],
     },
   }],
   trigger: {

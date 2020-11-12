@@ -56,6 +56,10 @@
             , ... }:
     (flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
+      nurPkgs = import nur {
+        inherit pkgs;
+        nurpkgs = pkgs;
+      };
      in {
        devShell = pkgs.callPackage ./shell.nix {};
        # deploy like this:
@@ -65,6 +69,7 @@
          inherit (krops.packages.${system}) writeCommand;
          lib = krops.lib;
        };
+       apps.irc-announce = nurPkgs.repos.mic92.irc-announce;
      })) // {
 
 
