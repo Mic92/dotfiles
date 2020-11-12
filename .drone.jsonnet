@@ -67,7 +67,9 @@ local build = {
     volumes: stepVolumes,
     environment: environment,
     commands: [
-      'LOGNAME=drone nix run .#irc-announce -- irc.r 6667 drone "#xxx" "build ${DRONE_BUILD_NUMBER}: $DRONE_BUILD_STATUS"'
+      # TODO: fix retiolum ipv6
+      #'LOGNAME=drone nix run .#irc-announce -- irc.r 6667 drone "#xxx" "build ${DRONE_BUILD_NUMBER}: $DRONE_BUILD_STATUS"'
+      'LOGNAME=drone nix run .#irc-announce -- 10.243.77.3 6667 drone "#xxx" "build ${DRONE_BUILD_NUMBER}: $DRONE_BUILD_STATUS"'
     ],
     when: {
       event: { exclude: ['pull_request'] },
