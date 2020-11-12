@@ -1,6 +1,7 @@
 { pkgs, lib, ... }: let
 in {
   imports = [
+    ./bme680.nix
     ./charge-notifications.nix
     ./find-phone.nix
     ./german.nix
