@@ -69,7 +69,7 @@ local build = {
     commands: [
       # TODO: fix retiolum ipv6
       #'LOGNAME=drone nix run .#irc-announce -- irc.r 6667 drone "#xxx" "build ${DRONE_BUILD_NUMBER}: $DRONE_BUILD_STATUS" || true'
-      'BUILD="$DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER" LOGNAME=drone nix run .#irc-announce -- 10.243.77.3 6667 drone "#xxx" "build $BUILD: $DRONE_BUILD_STATUS" || true'
+      'BUILD="$DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER"; LOGNAME=drone nix run .#irc-announce -- 10.243.77.3 6667 drone "#xxx" "build $BUILD: $DRONE_BUILD_STATUS" || true'
     ],
     when: {
       event: { exclude: ['pull_request'] },
