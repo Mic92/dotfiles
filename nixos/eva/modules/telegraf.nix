@@ -222,7 +222,7 @@
           urls = [ "https://thalheim.io" ];
           response_string_match = "Higgs-Boson";
         } {
-          urls = [ "https://loki.r/ready" ];
+          urls = [ "http://loki.r/ready" ];
           response_string_match = "ready";
         } {
           urls = [
