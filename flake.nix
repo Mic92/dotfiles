@@ -30,8 +30,8 @@
     home-manager.url = "github:rycee/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    doom-emacs.url = "github:hlissner/doom-emacs";
-    #doom-emacs.url = "github:Mic92/doom-emacs/nix";
+    #doom-emacs.url = "github:hlissner/doom-emacs";
+    doom-emacs.url = "github:Mic92/doom-emacs/develop";
     doom-emacs.flake = false;
 
     nix-doom-emacs.url = "github:vlaci/nix-doom-emacs";
