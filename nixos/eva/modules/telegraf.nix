@@ -21,17 +21,16 @@
   };
 
   services.telegraf = {
-    environmentFile = [
+    environmentFiles = [
       config.sops.secrets.telegraf.path
       config.sops.secrets.telegraf-shared.path
     ];
     extraConfig = {
       agent.interval = "120s";
       inputs = {
-        influxdb_listener = [{
+        influxdb_v2_listener = [{
           service_address = ":8186";
-          basic_username = "telegraf";
-          basic_password = "$INFLUXDB_PASSWORD";
+          token = ''''${INFLUXDB_PASSWORD}'';
         }];
         ping = let
           urls = [

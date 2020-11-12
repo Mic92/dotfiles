@@ -24,6 +24,7 @@
     ./modules/sops.nix
     ./modules/sshd.nix
     ./modules/cntr.nix
+    ./modules/telegraf.nix
 
     ../modules/promtail.nix
     ../modules/macos-kvm.nix
