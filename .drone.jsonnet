@@ -67,11 +67,8 @@ local build = {
     volumes: stepVolumes,
     environment: environment,
     commands: [
-      'LOGNAME=drone nix run .#irc-announce -- irc.r 6667 drone "#xxx" "$PLUGIN_MESSAGE"'
+      'LOGNAME=drone nix run .#irc-announce -- irc.r 6667 drone "#xxx" "build ${DRONE_BUILD_NUMBER}: ${DRONE_BUILD_STATUS}"'
     ],
-    settings: {
-      message: "{{#success build.status}}build {{build.number}} succeeded.{{else}}build {{build.number}} failed.{{/success}}",
-    },
     when: {
       event: { exclude: ['pull_request'] },
       status: ['failure', 'success'],

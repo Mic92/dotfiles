@@ -64,9 +64,7 @@ steps:
 - name: send irc notification
   image: busybox
   commands:
-  - LOGNAME=drone nix run .#irc-announce -- irc.r 6667 drone "#xxx" "$PLUGIN_MESSAGE"
-  settings:
-    message: "{{#success build.status}}build {{build.number}} succeeded.{{else}}build {{build.number}} failed.{{/success}}"
+  - "LOGNAME=drone nix run .#irc-announce -- irc.r 6667 drone \"#xxx\" \"build ${DRONE_BUILD_NUMBER}: ${DRONE_BUILD_STATUS}\""
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     NIX_REMOTE: daemon
@@ -430,6 +428,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 1ada40c5cb7a355f558de9f69492c7c1d663ff59ff03b2cb711cdec09420e4ef
+hmac: da836a61b7e379271e8ed52e737107733f2cd17dbe36eefb4e5a8870ecb55df0
 
 ...
