@@ -6,7 +6,7 @@
       GetTime.speech.text = "It is {{ now().hour }}:{{ now().minute }}.";
       GetTimer.speech.text = ''{{ state_attr("timer.rhasspy", "duration") }} is left.'';
       SetTimer = {
-        speech.text = "Set a timer for {{ duration }} {{ unit }}.";
+        speech.text = "Timer for {{ duration }} {{ unit }} set!";
         action = [{
           service = "timer.start";
           entity_id = "timer.rhasspy";
