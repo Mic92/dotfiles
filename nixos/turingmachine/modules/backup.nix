@@ -4,10 +4,8 @@ with builtins;
 let
   backupPath = "borg@eve.thalheim.io:./.";
 in {
-
   sops.secrets.borgbackup = {};
   sops.secrets.ssh-borgbackup = {};
-  sops.secrets.healthcheck-borgbackup = {};
 
   services.borgbackup.jobs.turingmachine = {
     paths = [
@@ -51,20 +49,11 @@ in {
       set -x
       eval $(ssh-agent)
       ssh-add ${config.sops.secrets.ssh-borgbackup.path}
-
-      hc_token=$(cat ${config.sops.secrets.healthcheck-borgbackup.path})
-      ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$hc_token/start
     '';
     postHook = ''
-      if [[ "$exitStatus" == "0" ]]; then
-        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$hc_token
-      else
-        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$hc_token/fail
-      fi
-
-      if grep -q closed /proc/acpi/button/lid/LID0/state; then
-        ${pkgs.systemd}/bin/systemctl suspend
-      fi
+      cat > /var/log/telegraf/borgbackup-turingmachine <<EOF
+      task,frequency=daily last_run=$(date +%s)i,state="$([[ $exitStatus == 0 ]] && echo ok || echo fail)"
+      EOF
     '';
 
     prune.keep = {
@@ -79,7 +68,9 @@ in {
     timerConfig.OnCalendar = lib.mkForce "13:00:00";
   };
 
-  systemd.services.borgbackup-job-turingmachine.serviceConfig.PrivateMounts = true;
+  systemd.services.borgbackup-job-turingmachine.serviceConfig.ReadWritePaths = [
+    "/var/log/telegraf"
+  ];
 
   environment.systemPackages = with pkgs; [ borgbackup ];
   sops.secrets.healthcheck-borgbackup = {};

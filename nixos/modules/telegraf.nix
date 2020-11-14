@@ -28,7 +28,11 @@ in {
           };
           system = {};
           mem = {};
-          file = lib.optionalAttrs (lib.any (fs: fs == "ext4") config.boot.supportedFilesystems) {
+          file = [{
+            data_format = "influx";
+            file_tag = "name";
+            files = [ "/var/log/telegraf/*" ];
+          }] ++ lib.optional (lib.any (fs: fs == "ext4") config.boot.supportedFilesystems) {
             name_override = "ext4_errors";
             files = [ "/sys/fs/ext4/*/errors_count" ];
             data_format = "value";
@@ -82,6 +86,10 @@ in {
     security.sudo.configFile = ''
       Defaults:telegraf !syslog,!pam_session
     '';
+    # create dummy file to avoid telegraf errors
+    systemd.tmpfiles.rules = [
+      "f /var/log/telegraf/dummy 0444 root root - -"
+    ];
     sops.secrets = lib.mkIf (config.mic92.telegraf.mode == "push") {
       telegraf-shared = {
         owner = config.systemd.services.telegraf.serviceConfig.User;
