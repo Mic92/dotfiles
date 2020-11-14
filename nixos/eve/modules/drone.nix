@@ -41,25 +41,11 @@ in {
     '';
   };
 
-  systemd.services.netmap-docker-retiolum = {
-    wantedBy = [ "multi-user.target" ];
-    requires = [ "sys-devices-virtual-net-tinc.retiolum.device" ];
-    after = [ "network.target" "sys-devices-virtual-net-tinc.retiolum.device" ];
-    serviceConfig = let
-      removeCommands = [
-        "-${pkgs.iptables}/bin/ip6tables -t nat -D PREROUTING -i tinc.retiolum -d ${droneRetiolumNet} -j NETMAP --to ${droneNet}"
-        "-${pkgs.iptables}/bin/ip6tables -t nat -D POSTROUTING -o tinc.retiolum -s ${droneNet} -j NETMAP --to ${droneRetiolumNet}"
-      ];
-    in {
-      Type = "oneshot";
-      RemainAfterExit  = true;
-      ExecStart = removeCommands ++ [
-        "${pkgs.iptables}/bin/ip6tables -t nat -A PREROUTING -i tinc.retiolum -d ${droneRetiolumNet} -j NETMAP --to ${droneNet}"
-        "${pkgs.iptables}/bin/ip6tables -t nat -A POSTROUTING -o tinc.retiolum -s ${droneNet} -j NETMAP --to ${droneRetiolumNet}"
-      ];
-      ExecStop = removeCommands;
-    };
-  };
+  networking.nat.enable = true;
+  networking.nat.extraCommands = ''
+    ip6tables -t nat -A nixos-nat-pre -i tinc.retiolum -d ${droneRetiolumNet} -j NETMAP --to ${droneNet}
+    ip6tables -t nat -A nixos-nat-post -o tinc.retiolum -s ${droneNet} -j NETMAP --to ${droneRetiolumNet}
+  '';
 
   systemd.services.drone-agent = {
     wantedBy = [ "multi-user.target" ];
