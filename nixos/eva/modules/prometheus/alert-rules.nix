@@ -12,7 +12,7 @@ in lib.mapAttrsToList (name: opts: {
     summary = opts.summary;
     description = opts.description;
   };
-}) {
+}) ({
   filesystem_full_80percent = {
     condition = "disk_used_percent >= 80";
     time = "10m";
@@ -20,6 +20,25 @@ in lib.mapAttrsToList (name: opts: {
     description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} got less than 20% space left on its filesystem.";
   };
 
+  daily_task_not_run = {
+    condition = ''time() - task_last_run{state="ok",frequency="daily"} > 24 * 60 * 60'';
+    summary = "{{$labels.host}}: {{$labels.name}} was not run in the last 24h";
+    description = "{{$labels.host}}: {{$labels.name}} was not run in the last 24h ()";
+  };
+
+  daily_task_failed = {
+    condition = ''task_last_run{state="fail"}'';
+    summary = "{{$labels.host}}: {{$labels.name}} failed to run";
+    description = "{{$labels.host}}: {{$labels.name}} failed to run";
+  };
+} // (lib.genAttrs [
+      "borgbackup-turingmachine"
+    ] (name: {
+      condition = ''absent_over_time(task_last_run{name="${name}"}[1d])'';
+      summary = "status of ${name} is unknown";
+      description = "status of ${name} is unknown: no data for a day";
+    }))
+// {
   filesystem_full_in_1d = {
     condition = "predict_linear(disk_free{${deviceFilter}}[1d], 24*3600) <= 0";
     time = "1h";
@@ -165,4 +184,4 @@ in lib.mapAttrsToList (name: opts: {
     summary = "alertmanager: number of active silences has changed: {{$value}}";
     description = "alertmanager: number of active silences has changed: {{$value}}";
   };
-}
+})
