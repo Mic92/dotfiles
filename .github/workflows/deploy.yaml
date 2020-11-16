@@ -13,3 +13,4 @@ jobs:
         with:
           token: "${{ github.token }}"
           environment: production
+          ref: master
