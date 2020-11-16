@@ -4,7 +4,7 @@
     storageDriver = "zfs";
     extraOptions = "--dns 172.28.0.1";
     autoPrune.enable = true;
-    autoPrune.flags = ["--filter=usage!=drone"];
+    autoPrune.flags = [ "--filter=label!=drone" ];
   };
 
   # see ./drone.nix

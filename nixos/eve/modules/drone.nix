@@ -59,7 +59,7 @@ in {
             --driver=bridge \
             --subnet=172.28.0.0/16 \
             --gateway=172.28.0.1 \
-            --label=usage=drone \
+            --label=drone \
             --subnet ${droneNet} \
             --ipv6 drone
         done
