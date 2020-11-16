@@ -14,6 +14,10 @@
     authorizedKeys = [ (builtins.readFile ./turingmachine-borgbackup.pub) ];
   };
 
+  systemd.services.borgbackup-job-hetzner.serviceConfig.ReadWritePaths = [
+    "/var/log/telegraf"
+  ];
+
   services.borgbackup.jobs.hetzner = {
     paths = [
       "/home"
