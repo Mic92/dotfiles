@@ -3,7 +3,6 @@
   sops.secrets.borg-passphrase = {};
   sops.secrets.borg-nas-ssh = {};
   sops.secrets.nas-wakeup-password = {};
-  sops.secrets.healthcheck-borgbackup = {};
 
   services.borgbackup.repos.uni = {
     path = "/data/backup/uni";
