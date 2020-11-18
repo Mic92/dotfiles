@@ -26,8 +26,6 @@ status.register(
 )
 icons.nerdfont(status, "ﯴ")
 
-status.register("now_playing", format="{title} {song_elapsed}/{song_length} {status}")
-
 status.register(
     "disk", path="/", format="{used}/{total}G [{avail}G]", color=color.text_normal
 )
