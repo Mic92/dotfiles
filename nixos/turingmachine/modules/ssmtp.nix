@@ -7,6 +7,7 @@
     domain = "thalheim.io";
     root = "joerg@thalheim.io";
     useSTARTTLS = true;
+    useTLS = true;
   };
   sops.secrets.smtp-authpass = {};
 }
