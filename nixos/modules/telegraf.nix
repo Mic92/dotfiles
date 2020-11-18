@@ -20,6 +20,7 @@ in {
       environmentFiles = lib.optional (config.mic92.telegraf.mode == "push")
         config.sops.secrets.telegraf-shared.path;
       extraConfig = {
+        agent.interval = "60s";
         inputs = {
           smart = lib.mkIf (!isVM) {
             path = pkgs.writeShellScript "smartctl" ''
