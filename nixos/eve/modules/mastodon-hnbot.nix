@@ -5,7 +5,7 @@
       pkgs.nur.repos.mic92.mastodon-hnbot
     ];
     script = ''
-      hnbot \
+      exec hnbot \
         --points 50 \
         https://toot.matereal.eu \
         joerg.hackernews50@thalheim.io \
@@ -16,8 +16,14 @@
       WorkingDirectory = [
         "/var/lib/mastodon-hnbot"
       ];
+      PermissionsStartOnly = true;
+      ExecStopPost = pkgs.writeShellScript "update-health" ''
+        cat > /var/log/telegraf/mastadon-hnbot <<EOF
+        task,frequency=daily last_run=$(date +%s)i,state="$([[ $EXIT_CODE == exited ]] && echo ok || echo fail)"
+        EOF
+      '';
       SupplementaryGroups = [ "keys" ];
-      StateDirectory = ["mastodon-hnbot"];
+      StateDirectory = [ "mastodon-hnbot" ];
       User = "mastodon-hnbot";
     };
   };
