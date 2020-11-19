@@ -46,6 +46,13 @@ let
     }
   ];
 in {
+  bernie = nixosSystem {
+    modules = defaultModules ++ [
+      nixos-hardware.nixosModules.dell-xps-13-9380
+      ./bernie/configuration.nix
+    ];
+  };
+
   turingmachine = nixosSystem {
     system = "x86_64-linux";
     modules = defaultModules ++ [
