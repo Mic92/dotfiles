@@ -48,6 +48,7 @@
     pkgs.celluloid
     pkgs.calibre
     pkgs.wpsoffice
+    pkgs.gnome3.evolution
   ];
 
   documentation.doc.enable = false;
