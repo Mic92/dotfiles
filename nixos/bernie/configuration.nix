@@ -45,7 +45,9 @@
 
   environment.systemPackages = with pkgs; [
     pkgs.firefox
-    pkgs.chromium
+    pkgs.celluloid
+    pkgs.calibre
+    pkgs.wpsoffice
   ];
 
   documentation.doc.enable = false;
