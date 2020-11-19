@@ -37,7 +37,7 @@ local build = {
     image: 'busybox',
     commands: [
       'rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp',
-      'nix shell nixpkgs#git -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix',
+      'nix shell nixpkgs#git nixpkgs#nix-build-uncached -c nix-build-uncached -build-flags "--out-link $BUILDDIR/gcroots.tmp/result" ./nixos/ci.nix',
       'rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots',
     ],
     volumes: stepVolumes,
