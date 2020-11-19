@@ -8,8 +8,14 @@
     ../modules/packages.nix
     ../modules/users.nix
     ../modules/zfs.nix
-    ./modules/networkmanager.nix
+    ./hardware-configuration.nix
   ];
+  networking.retiolum = {
+    ipv4 = "10.243.29.169";
+    ipv6 = "42:0:3c46:47e8:f610:15d1:27a3:674b";
+  };
+
+  boot.loader.systemd-boot.enable = true;
 
   users.extraUsers.shannan = {
     isNormalUser = true;
