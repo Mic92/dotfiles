@@ -32,6 +32,7 @@ let
         ./modules/drone-deploy.nix
       ];
       #system.nixos.versionSuffix = "";
+      documentation.info.enable = false;
     }
     retiolum.nixosModules.retiolum
     sops-nix.nixosModules.sops
