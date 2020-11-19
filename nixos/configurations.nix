@@ -47,8 +47,9 @@ let
   ];
 in {
   bernie = nixosSystem {
+    system = "x86_64-linux";
     modules = defaultModules ++ [
-      nixos-hardware.nixosModules.dell-xps-13-9380
+      nixos-hardware.nixosModules.lenovo-thinkpad-x250
       ./bernie/configuration.nix
     ];
   };

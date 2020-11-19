@@ -55,6 +55,11 @@ in
     target = eve;
   };
 
+  bernie = writeCommand "/bin/bernie" {
+    inherit source command;
+    target = "root@192.168.1.15";
+  };
+
   rock = writeCommand "/bin/rock" {
     inherit source;
     target = "root@eve.thalheim.io";

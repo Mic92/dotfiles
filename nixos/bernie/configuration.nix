@@ -36,7 +36,18 @@
   powerManagement.powertop.enable = true;
   programs.vim.defaultEditor = true;
 
-  services.xserver.desktopManager.gnome3.enable = true;
+  services.xserver = {
+    enable = true;
+    libinput.enable = true;
+    displayManager.gdm.enable = true;
+    desktopManager.gnome3.enable = true;
+  };
+
+  environment.systemPackages = with pkgs; [
+    pkgs.firefox
+    pkgs.chromium
+  ];
+
   documentation.doc.enable = false;
 
   services.openssh.enable = true;
