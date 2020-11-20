@@ -45,6 +45,7 @@
 
   environment.systemPackages = with pkgs; [
     pkgs.firefox
+    pkgs.chromium
     pkgs.celluloid
     pkgs.mpv
     pkgs.youtube-dl
