@@ -19,7 +19,7 @@
 
   users.extraUsers.shannan = {
     isNormalUser = true;
-    home = "/home/joerg";
+    home = "/home/shannan";
     extraGroups = [ "wheel" "plugdev" "adbusers" "input" "kvm" ];
     shell = "/run/current-system/sw/bin/zsh";
     uid = 1001;
@@ -46,8 +46,10 @@
   environment.systemPackages = with pkgs; [
     pkgs.firefox
     pkgs.celluloid
+    pkgs.mpv
+    pkgs.youtube-dl
     pkgs.calibre
-    pkgs.wpsoffice
+    pkgs.libreoffice
     pkgs.gnome3.evolution
   ];
 
