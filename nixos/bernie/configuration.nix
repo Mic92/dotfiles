@@ -11,8 +11,8 @@
     ./hardware-configuration.nix
   ];
   networking.retiolum = {
-    ipv4 = "10.243.29.169";
-    ipv6 = "42:0:3c46:96e2:72f4:be89:d6eb:ab14";
+    ipv4 = "10.243.29.186";
+    ipv6 = "42:0:3c46:1452:ca55:fdaf:b12b:3027";
   };
 
   boot.loader.systemd-boot.enable = true;
