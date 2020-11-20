@@ -33,7 +33,7 @@ steps:
 - name: upload
   image: busybox
   commands:
-  - "if [[ -d $BUILDDIR/gcroots ]]; then\n        nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json\n        # only local built derivations\n        nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths\n        nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths\n      fi"
+  - "if stat -t $BUILDDIR/gcroots/results/* >/dev/null 2>&1; then\n        nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json\n        # only local built derivations\n        nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths\n        nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths\n      fi"
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     CACHIX_SIGNING_KEY:
@@ -426,6 +426,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 19b66f2db35eb7f3fb3fae11088313ee931b7e7afe340cec087ee98750be49fc
+hmac: 340f11480678a36f46a5a1c3887e22168a84f56294655506d86be0a1e25424b1
 
 ...
