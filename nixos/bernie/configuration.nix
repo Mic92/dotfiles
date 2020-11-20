@@ -12,7 +12,7 @@
   ];
   networking.retiolum = {
     ipv4 = "10.243.29.169";
-    ipv6 = "42:0:3c46:47e8:f610:15d1:27a3:674b";
+    ipv6 = "42:0:3c46:96e2:72f4:be89:d6eb:ab14";
   };
 
   boot.loader.systemd-boot.enable = true;
