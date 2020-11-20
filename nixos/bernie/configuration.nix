@@ -11,7 +11,7 @@
     ./hardware-configuration.nix
   ];
   networking.retiolum = {
-    ipv4 = "10.243.29.186";
+    ipv4 = "10.243.29.169";
     ipv6 = "42:0:3c46:1452:ca55:fdaf:b12b:3027";
   };
 
@@ -51,6 +51,7 @@
     pkgs.youtube-dl
     pkgs.calibre
     pkgs.libreoffice
+    pkgs.nur.repos.mic92.ferdi
     pkgs.gnome3.evolution
   ];
 

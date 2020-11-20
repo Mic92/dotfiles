@@ -57,7 +57,7 @@ in
 
   bernie = writeCommand "/bin/bernie" {
     inherit source command;
-    target = "root@192.168.1.15";
+    target = "root@bernie.r";
   };
 
   rock = writeCommand "/bin/rock" {
