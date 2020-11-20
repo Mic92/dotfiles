@@ -2,13 +2,13 @@ output DP-1
 off
 output DP-2
 off
-output DP-1-1
+output DP-1-2
 off
 output DP-1-3
 off
 output eDP-1
 off
-output DP-1-2
+output DP-1-1
 crtc 0
 mode 3840x2160
 pos 0x0
