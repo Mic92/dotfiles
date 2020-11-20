@@ -32,8 +32,11 @@ in lib.mapAttrsToList (name: opts: {
     description = "{{$labels.host}}: {{$labels.name}} failed to run";
   };
 } // (lib.genAttrs [
+      "borgbackup-amy"
       "borgbackup-turingmachine"
       "borgbackup-eve"
+      "borgbackup-datastore"
+      "borgbackup-martha"
     ] (name: {
       condition = ''absent_over_time(task_last_run{name="${name}"}[1d])'';
       summary = "status of ${name} is unknown";
