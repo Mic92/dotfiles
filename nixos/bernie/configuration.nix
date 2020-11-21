@@ -53,6 +53,7 @@
     pkgs.calibre
     pkgs.libreoffice
     pkgs.nur.repos.mic92.ferdi
+    pkgs.xournalpp
   ];
 
   documentation.doc.enable = false;
