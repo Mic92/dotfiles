@@ -31,6 +31,7 @@
   networking.networkmanager.wifi.backend = "iwd";
 
   time.timeZone = null;
+  services.geoclue2.enable = true;
   i18n.defaultLocale = "en_DK.UTF-8";
 
   powerManagement.powertop.enable = true;
@@ -52,7 +53,6 @@
     pkgs.calibre
     pkgs.libreoffice
     pkgs.nur.repos.mic92.ferdi
-    pkgs.gnome3.evolution
   ];
 
   documentation.doc.enable = false;
