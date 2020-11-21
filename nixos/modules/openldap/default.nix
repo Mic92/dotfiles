@@ -3,9 +3,6 @@
   services.openldap = {
     enable = true;
 
-    defaultSchemas = null;
-    dataDir = null;
-    database = null;
     settings.attrs.olcLogLevel = "0";
 
     settings.children = {
@@ -16,29 +13,28 @@
         "${pkgs.openldap}/etc/schema/nis.ldif"
       ];
 
-      "olcDatabase={1}mdb" = {
-        attrs = {objectClass = [ "olcDatabaseConfig" "olcMdbConfig" ];
-          olcDatabase = "{1}mdb";
-          olcDbDirectory = "/var/db/openldap";
-          olcRootPW.path = config.sops.secrets.openldap-rootpw.path;
-          olcRootDN = "cn=admin,dc=eve";
-          olcSuffix = "dc=eve";
-          olcAccess = [
-            ''{0}to attrs=userPassword
-                 by self write  by anonymous auth
-                 by dn.base="cn=dovecot,dc=mail,dc=eve" read
-                 by dn.base="cn=gitlab,ou=system,ou=users,dc=eve" read
-                 by dn.base="cn=ldapsync,ou=system,ou=users,dc=eve"
-                 read by * none''
-            ''{1}to attrs=loginShell  by self write  by * read''
-            ''{2}to dn.subtree="ou=system,ou=users,dc=eve"
-                 by dn.base="cn=dovecot,dc=mail,dc=eve" read
-                 by dn.subtree="ou=system,ou=users,dc=eve" read
-                 by * none''
-            ''{3}to dn.subtree="ou=jabber,ou=users,dc=eve"  by dn.base="cn=prosody,ou=system,ou=users,dc=eve" write  by * read''
-            ''{4}to * by * read''
-          ];
-        };
+      "olcDatabase={1}mdb".attrs = {
+        objectClass = [ "olcDatabaseConfig" "olcMdbConfig" ];
+        olcDatabase = "{1}mdb";
+        olcDbDirectory = "/var/db/openldap";
+        olcRootPW.path = config.sops.secrets.openldap-rootpw.path;
+        olcRootDN = "cn=admin,dc=eve";
+        olcSuffix = "dc=eve";
+        olcAccess = [
+          ''{0}to attrs=userPassword
+               by self write  by anonymous auth
+               by dn.base="cn=dovecot,dc=mail,dc=eve" read
+               by dn.base="cn=gitlab,ou=system,ou=users,dc=eve" read
+               by dn.base="cn=ldapsync,ou=system,ou=users,dc=eve"
+               read by * none''
+          ''{1}to attrs=loginShell  by self write  by * read''
+          ''{2}to dn.subtree="ou=system,ou=users,dc=eve"
+               by dn.base="cn=dovecot,dc=mail,dc=eve" read
+               by dn.subtree="ou=system,ou=users,dc=eve" read
+               by * none''
+          ''{3}to dn.subtree="ou=jabber,ou=users,dc=eve"  by dn.base="cn=prosody,ou=system,ou=users,dc=eve" write  by * read''
+          ''{4}to * by * read''
+        ];
       };
       "olcOverlay=syncprov,olcDatabase={1}mdb".attrs = {
         objectClass = [ "olcOverlayConfig" "olcSyncProvConfig" ];
