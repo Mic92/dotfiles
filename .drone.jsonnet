@@ -46,7 +46,7 @@ local build = {
     name: 'upload',
     image: 'busybox',
     commands: [
-      "if stat -t $BUILDDIR/gcroots/results/* >/dev/null 2>&1; then
+      "if stat -t $BUILDDIR/gcroots/result* >/dev/null 2>&1; then
         nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
         # only local built derivations
         nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
