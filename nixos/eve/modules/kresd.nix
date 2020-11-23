@@ -1,16 +1,21 @@
 { pkgs, ... }: {
   services.kresd = {
     enable = true;
-    #listenDoH = [ "[::1]:8053" ];
     listenPlain = [
       "[::1]:53"
       "127.0.0.1:53"
     ];
     extraConfig = ''
-      net.listen('::1', 8053, { kind = 'doh', freebind = true })
+      modules.load('http')
+      http.config({})
+      net.listen('::1', 8453, { kind = 'webmgmt', freebind = true })
       modules = { 'hints > iterate' }
       hints.add_hosts('${pkgs.retiolum}/etc.hosts')
     '';
+  };
+
+  nixpkgs.config.packageOverrides = pkgs: {
+    knot-resolver = pkgs.knot-resolver.override { extraFeatures = true; };
   };
 
   # This causes services to fail on upgrade
@@ -37,7 +42,7 @@
       extraConfig = ''
         zone doh 64k;
       '';
-      servers."[::1]:8053" = {};
+      servers."[::1]:8453" = {};
     };
     virtualHosts."dns.thalheim.io" = {
       useACMEHost = "thalheim.io";
