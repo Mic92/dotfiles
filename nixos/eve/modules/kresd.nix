@@ -48,7 +48,8 @@
       locations."/dns-query".extraConfig = ''
         proxy_http_version 1.1;
         proxy_set_header Connection "";
-        proxy_pass http://doh/doh;
+        proxy_pass https://doh/doh;
+        proxy_ssl_verify off;
       '';
     };
   };
