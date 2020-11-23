@@ -1,9 +1,9 @@
 {
   services.teamspeak3.enable = true;
-  #services.netdata.portcheck.checks = {
-  #  teamspeak-ft.port = 30033;
-  #  teamspeak-sq.port = 10011;
-  #};
+
+  systemd.services.teamspeak3-server.serviceConfig = {
+    Restart = "always";
+  };
 
   networking.firewall.allowedTCPPorts = [
     30033 # ts3_ft

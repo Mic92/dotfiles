@@ -62,9 +62,33 @@
           urls = map (url: "6.${url}") urls;
           ipv6 = true;
         }];
-
-        # dovecot
-        net_response = [{
+        net_response = map (port: {
+          protocol = "tcp";
+          address = "devkid.net:${toString port}";
+        }) [
+          30033 # ts3_ft
+          10011 # ts3_sq
+        ] ++ map (port: {
+          protocol = "udp";
+          address = "devkid.net:${toString port}";
+        }) [
+          9987  # ts3_devkid
+          22222 # ts3_martijn
+          5037  # ts3_martin
+          9000  # ts3_putzy
+        ] ++ [{
+          # teamspeak
+          protocol = "tcp";
+          address = "devkid.net:10022";
+        } {
+          # teamspeak
+          protocol = "tcp";
+          address = "devkid.net:10011";
+        } {
+          # teamspeak
+          protocol = "tcp";
+          address = "devkid.net:30033";
+        } {
           # imap
           protocol = "tcp";
           address = "imap.thalheim.io:143";
