@@ -16,8 +16,6 @@ let
   };
 in {
   users.users.joerg.extraGroups = [ "networkmanager" ];
-
-
   networking.networkmanager = {
     enable = true;
     extraConfig = ''

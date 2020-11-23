@@ -45,12 +45,12 @@ in {
     virtualHosts."prometheus.r" = {
       locations."/".extraConfig = ''
         proxy_pass       http://@prometheus/;
-        proxy_set_header Host              $host;
-        proxy_set_header X-Real-IP         $remote_addr;
-        proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Host   $host:443;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host:80;
         proxy_set_header X-Forwarded-Server $host;
-        proxy_set_header X-Forwarded-Port 443;
+        proxy_set_header X-Forwarded-Port 80;
         proxy_set_header X-Forwarded-Proto $scheme;
       '';
     };
@@ -58,6 +58,20 @@ in {
       forceSSL = true;
       enableACME = true;
       locations."/".extraConfig = proxy "alertmanager";
+    };
+    virtualHosts."alertmanager.r" = {
+      forceSSL = true;
+      enableACME = true;
+      locations."/".extraConfig = ''
+        proxy_pass       http://@alertmanager/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Host $host:80;
+        proxy_set_header X-Forwarded-Server $host;
+        proxy_set_header X-Forwarded-Port 80;
+        proxy_set_header X-Forwarded-Proto $scheme;
+      '';
     };
   };
 }
