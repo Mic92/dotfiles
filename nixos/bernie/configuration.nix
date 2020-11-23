@@ -54,6 +54,7 @@
     pkgs.libreoffice
     pkgs.nur.repos.mic92.ferdi
     pkgs.xournalpp
+    pkgs.zoom-us
   ];
 
   documentation.doc.enable = false;
