@@ -60,8 +60,6 @@ in {
       locations."/".extraConfig = proxy "alertmanager";
     };
     virtualHosts."alertmanager.r" = {
-      forceSSL = true;
-      enableACME = true;
       locations."/".extraConfig = ''
         proxy_pass       http://@alertmanager/;
         proxy_set_header Host $host;
