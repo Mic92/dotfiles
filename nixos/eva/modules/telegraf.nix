@@ -120,6 +120,15 @@
           "martha.r:22"
           "rose.r:22"
           "doctor.r:22"
+        ] ++ map (address: {
+          protocol = "tcp";
+          inherit address;
+          send = "SSH-2.0-Telegraf";
+          expect = "SSH-2.0";
+          tags.org = "krebs";
+        }) [
+          "puyak.r:22"
+          "yellow.r:22"
         ];
 
         http = [{
@@ -132,6 +141,11 @@
         }];
 
         http_response = [{
+          urls = [ "http://puyak.r" ];
+          headers.Host = "light.shack";
+          response_string_match = "shackspace";
+          tags.org = "krebs";
+        } {
           urls = [ "http://yellow.r:9091/transmission/web/" ];
           response_string_match = "Transmission Web";
           tags.org = "krebs";
