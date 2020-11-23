@@ -177,6 +177,12 @@ in lib.mapAttrsToList (name: opts: {
     description = "{{$labels.instance}}: S.M.A.R.T reports: {{$labels.device}} ({{$labels.model}}) has errors.";
   };
 
+  oom_kills = {
+    condition = "increase(kernel_vmstat_oom_kill[5m]) > 0";
+    summary = "{{$labels.instance}}: OOM kill detected";
+    description = "{{$labels.instance}}: OOM kill detected";
+  };
+
   ext4_errors = {
     condition = "ext4_errors_value > 0";
     summary = "{{$labels.instance}}: ext4 reports errors";
