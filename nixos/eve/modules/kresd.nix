@@ -1,12 +1,13 @@
 { pkgs, ... }: {
   services.kresd = {
     enable = true;
-    listenDoH = [ "[::1]:8053" ];
+    #listenDoH = [ "[::1]:8053" ];
     listenPlain = [
       "[::1]:53"
       "127.0.0.1:53"
     ];
     extraConfig = ''
+      net.listen('::1', 8053, { kind = 'doh', freebind = true })
       modules = { 'hints > iterate' }
       hints.add_hosts('${pkgs.retiolum}/etc.hosts')
     '';
@@ -48,8 +49,7 @@
       locations."/dns-query".extraConfig = ''
         proxy_http_version 1.1;
         proxy_set_header Connection "";
-        proxy_pass https://doh/doh;
-        proxy_ssl_verify off;
+        proxy_pass http://doh/doh;
       '';
     };
   };
