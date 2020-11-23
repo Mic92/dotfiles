@@ -22,6 +22,7 @@ in {
       extraConfig = {
         agent.interval = "60s";
         inputs = {
+          kernel_vmstat = {};
           smart = lib.mkIf (!isVM) {
             path = pkgs.writeShellScript "smartctl" ''
               exec /run/wrappers/bin/sudo ${pkgs.smartmontools}/bin/smartctl "$@"
