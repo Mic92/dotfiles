@@ -574,8 +574,7 @@ if [[ -n ${commands[lesspipe.sh]} ]]; then
 fi
 
 unlock_root(){
-  echo "cryptsetup luksOpen --tries 99 /dev/sda2 root && killall cryptsetup"
-  cat ~/.secret/cryptsetup-passwd | ssh -tt -v root@eve -p 2222
+  bw get password aceb6d01-5bb5-4ff9-b40d-2cd8bee51417 | ssh -tt -v root@eve.i -p 2222
 }
 # Autoinstall Bundle
 bundle() {
