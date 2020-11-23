@@ -52,7 +52,7 @@
     pkgs.youtube-dl
     pkgs.calibre
     pkgs.libreoffice
-    pkgs.nur.repos.mic92.ferdi
+    pkgs.ferdi
     pkgs.xournalpp
     pkgs.zoom-us
   ];
