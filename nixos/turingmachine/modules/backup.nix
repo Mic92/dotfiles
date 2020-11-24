@@ -31,6 +31,7 @@ in {
       "/home/*/.clangd"
       "/home/*/Android"
       "/home/*/.config/Ferdi/Partitions"
+      "/home/*/.mozilla/firefox/*/storage"
       "/home/joerg/Musik/podcasts"
       "/home/joerg/gPodder/Downloads"
       "/home/joerg/sync"
