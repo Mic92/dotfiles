@@ -2,7 +2,7 @@
 
 let
   # docker's filesystems disappear quickly, leading to false positives
-  deviceFilter = ''path!~"^/var/lib/docker.*"'';
+  deviceFilter = ''path!~"^(/var/lib/docker|/nix/store).*"'';
 in lib.mapAttrsToList (name: opts: {
   alert = name;
   expr = opts.condition;
