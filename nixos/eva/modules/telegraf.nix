@@ -77,18 +77,6 @@
           5037  # ts3_martin
           9000  # ts3_putzy
         ] ++ [{
-          # teamspeak
-          protocol = "tcp";
-          address = "devkid.net:10022";
-        } {
-          # teamspeak
-          protocol = "tcp";
-          address = "devkid.net:10011";
-        } {
-          # teamspeak
-          protocol = "tcp";
-          address = "devkid.net:30033";
-        } {
           # imap
           protocol = "tcp";
           address = "imap.thalheim.io:143";
