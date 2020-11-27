@@ -49,98 +49,124 @@
             "turingmachine.r"
             "herbert.r"
           ];
-        in [{
-          method = "native";
-          urls = map (url: "${url}") mobileUrls;
-          tags.type = "mobile";
-          count = 5;
-        } {
-          method = "native";
-          urls = map (url: "4.${url}") urls;
-        } {
-          method = "native";
-          urls = map (url: "6.${url}") urls;
-          ipv6 = true;
-        }];
+        in
+          (map (url: {
+            method = "native";
+            urls = [ url ];
+            tags.type = "mobile";
+            tags.host = lib.removeSuffix ".r" url;
+            count = 5;
+          }) mobileUrls) ++
+          (map (url: {
+            method = "native";
+            urls = [ "4.${url}" ];
+            tags.host = lib.removeSuffix ".r" url;
+          }) urls) ++
+          (map (url: {
+            method = "native";
+            urls = [ "6.${url}" ];
+            ipv6 = true;
+            tags.host = lib.removeSuffix ".r" url;
+          }) urls);
         net_response = map (port: {
           protocol = "tcp";
+          tags.host = "eve";
           address = "devkid.net:${toString port}";
         }) [
           30033 # ts3_ft
           10011 # ts3_sq
         ] ++ map (port: {
           protocol = "udp";
+          tags.host = "eve";
           address = "devkid.net:${toString port}";
         }) [
-          9987  # ts3_devkid
-          22222 # ts3_martijn
-          5037  # ts3_martin
-          9000  # ts3_putzy
+        # telegraf also wants payload for udp...
+        #  9987  # ts3_devkid
+        #  22222 # ts3_martijn
+        #  5037  # ts3_martin
+        #  9000  # ts3_putzy
         ] ++ [{
           # imap
           protocol = "tcp";
+          tags.host = "eve";
           address = "imap.thalheim.io:143";
         } {
           # imaps
           protocol = "tcp";
+          tags.host = "eve";
           address = "imap.thalheim.io:993";
         } {
           # sieve
           protocol = "tcp";
+          tags.host = "eve";
           address = "imap.thalheim.io:4190";
         } {
           # xmpp-client
           protocol = "tcp";
+          tags.host = "eve";
           address = "jabber.thalheim.io:5222";
         } {
           # xmpp-server
           protocol = "tcp";
+          tags.host = "eve";
           address = "jabber.thalheim.io:5269";
         } {
           # openldap
           protocol = "tcp";
+          tags.host = "eve";
           address = "eve.r:389";
         } {
           # openldap
           protocol = "tcp";
+          tags.host = "eva";
           address = "eva.r:389";
         } {
           # postfix: smtp
           protocol = "tcp";
           # amazon does block port 25
+          tags.host = "eve";
           address = "eve.r:25";
         } {
           # postfix: submission
           protocol = "tcp";
+          tags.host = "eve";
           address = "mail.thalheim.io:587";
         } {
           # postfix: smtps
           protocol = "tcp";
+          tags.host = "eve";
           address = "mail.thalheim.io:465";
-        }] ++ map (address: {
+        } {
           protocol = "tcp";
-          inherit address;
+          address = "eve.thalheim.io:22";
+          tags.host = "eve";
+          send = "SSH-2.0-Telegraf";
+          expect = "SSH-2.0";
+        }] ++ map (host: {
+          protocol = "tcp";
+          address = "${host}.r:22";
+          tags.host = host;
           send = "SSH-2.0-Telegraf";
           expect = "SSH-2.0";
         }) [
-          "eve.thalheim.io:22"
-          "rock.r:22"
-          "eve.r:22"
-          "amy.r:22"
-          "donna.r:22"
-          "clara.r:22"
-          "martha.r:22"
-          "rose.r:22"
-          "doctor.r:22"
-        ] ++ map (address: {
+          "rock"
+          "eve"
+          "amy"
+          "donna"
+          "clara"
+          "martha"
+          "rose"
+          "doctor"
+        ] ++ map (host: {
           protocol = "tcp";
-          inherit address;
+          address = "${host}.r:22";
           send = "SSH-2.0-Telegraf";
           expect = "SSH-2.0";
+          tags.host = host;
           tags.org = "krebs";
         }) [
-          "puyak.r:22"
-          "yellow.r:22"
+          "puyak"
+          "yellow"
         ];
 
         http = [{
@@ -156,10 +182,12 @@
           urls = [ "http://puyak.r" ];
           headers.Host = "light.shack";
           response_string_match = "shackspace";
+          tags.host = "puyak";
           tags.org = "krebs";
         } {
           urls = [ "http://yellow.r:9091/transmission/web/" ];
           response_string_match = "Transmission Web";
+          tags.host = "yellow";
           tags.org = "krebs";
         } {
           urls = [
@@ -172,12 +200,14 @@
           urls = [
             "http://wiki.r/Home"
           ];
+          tags.host = "hotdog";
           response_string_match = "gollum";
           tags.org = "krebs";
         } {
           urls = [
             "http://graph.r"
           ];
+          tags.host = "gum";
           response_string_match = "Retiolum";
           tags.org = "krebs";
         } {
@@ -194,12 +224,14 @@
             "http://build.hotdog.r"
           ];
           response_string_match = "BuildBot";
+          tags.host = "hotdog";
           tags.org = "krebs";
         } {
           urls = [
             "http://paste.r/"
           ];
           response_string_match = "Bepasty";
+          tags.host = "prism";
           tags.org = "krebs";
         } {
           urls = [
@@ -210,54 +242,70 @@
         } {
           urls = [ "https://www.wikipedia.org/" ];
           http_proxy = ''https://telegraf%40thalheim.io:''${LDAP_PASSWORD}@devkid.net:8889'';
+          tags.host = "eve";
           response_string_match = "wikipedia.org";
         } {
           urls = [ "https://adminer.thalheim.io/" ];
+          tags.host = "eve";
           response_string_match = "Login";
         } {
           urls = [ "https://mail.thalheim.io" ];
+          tags.host = "eve";
           response_string_match = "javascript";
         } {
           urls = [ "https://ist.devkid.net/wiki/Hauptseite" ];
+          tags.host = "eve";
           response_string_match = "Informationssystemtechnik";
         } {
           urls = [ "https://rss.devkid.net" ];
+          tags.host = "eve";
         } {
           urls = [ "https://rspamd.thalheim.io" ];
+          tags.host = "eve";
           response_string_match = "Rspamd";
         } {
           urls = [ "https://glowing-bear.thalheim.io" ];
+          tags.host = "eve";
           response_string_match = "Glowing";
         } {
           urls = [ "https://grafana.thalheim.io/login" ];
+          tags.host = "eve";
           response_string_match = "Grafana";
         } {
+          tags.host = "eve";
           urls = [ "https://dl.thalheim.io/OtNjoZOUnEn3H6LJZ1qcIw/test" ];
         } {
           urls = [ "https://dns.thalheim.io/dns-query?dns=q80BAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB" ];
+          tags.host = "eve";
           response_string_match = "example";
         } {
           urls = [ "https://syncthing.thalheim.io" ];
           username = "syncthing";
           password = "$SYNCTHING_PASSWORD";
+          tags.host = "eve";
           response_string_match = "Syncthing";
         } {
           urls = [ "https://git.thalheim.io" ];
+          tags.host = "eve";
           response_string_match = "Gitea";
         } {
           urls = [ "https://thalheim.io" ];
+          tags.host = "eve";
           response_string_match = "Higgs-Boson";
         } {
           urls = [ "http://loki.r/ready" ];
+          tags.host = "rock";
           response_string_match = "ready";
         } {
           urls = [
             "https://cloud.thalheim.io/login"
             "https://pim.devkid.net/login"
           ];
+          tags.host = "eve";
           response_string_match = "Nextcloud";
         } {
           urls = ["https://influxdb.thalheim.io:8086/ping"];
+          tags.host = "eve";
         }];
 
         dns_query = {
@@ -272,14 +320,13 @@
             "lekwati.com"
             "thalheim.io"
           ];
+          tags.host = "eve";
           record_type = "A";
         };
 
-        x509_cert = {
+        x509_cert = [{
           sources = [
             # nginx
-            "https://prometheus.thalheim.io:443"
-            "https://alertmanager.thalheim.io:443"
             "https://devkid.net:443"
             "https://thalheim.io:443"
             # squid
@@ -290,7 +337,15 @@
             #  postfix
             "tcp://mail.thalheim.io:465"
           ];
-        };
+          tags.host = "eve";
+        } {
+          sources = [
+            # nginx
+            "https://prometheus.thalheim.io:443"
+            "https://alertmanager.thalheim.io:443"
+          ];
+          tags.host = "eva";
+        }];
       };
     };
   };

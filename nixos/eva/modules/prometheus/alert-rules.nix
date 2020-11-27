@@ -72,14 +72,14 @@ in lib.mapAttrsToList (name: opts: {
   ram_using_90percent = {
     condition =  "mem_buffered + mem_free + mem_cached < mem_total * 0.1";
     time = "1h";
-    summary = "{{$labels.instance}}: Using lots of RAM.";
-    description = "{{$labels.instance}} is using at least 90% of its RAM for at least 1 hour.";
+    summary = "{{$labels.host}}: Using lots of RAM.";
+    description = "{{$labels.host}} is using at least 90% of its RAM for at least 1 hour.";
   };
   load15 = {
-    condition = ''system_load15 / on(instance) count(system_n_cpus) by (instance) >= 2.0'';
+    condition = ''system_load15 / on(host) count(system_n_cpus) by (host) >= 2.0'';
     time = "10m";
-    summary = "{{$labels.instance}}: Running on high load: {{$value}}";
-    description = "{{$labels.instance}} is running with load15 > 1 for at least 5 minutes: {{$value}}";
+    summary = "{{$labels.host}}: Running on high load: {{$value}}";
+    description = "{{$labels.host}} is running with load15 > 1 for at least 5 minutes: {{$value}}";
   };
   reboot = {
     condition = "system_uptime < 300";

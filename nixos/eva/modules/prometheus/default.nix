@@ -63,14 +63,14 @@
       route = {
         receiver = "default";
         routes = [{
-          group_by = [ "instance" ];
+          group_by = [ "host" ];
           match_re.org = "krebs";
           group_wait = "5m";
           group_interval = "5m";
           repeat_interval = "4h";
           receiver = "krebs";
         } {
-          group_by = [ "instance" ];
+          group_by = [ "host" ];
           group_wait = "30s";
           group_interval = "2m";
           repeat_interval = "2h";
