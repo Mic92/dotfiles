@@ -8,6 +8,7 @@
 , nixos-hardware
 , flake-registry
 , bme680-mqtt
+, nix-ld
 }:
 let
   defaultModules = [
@@ -58,6 +59,7 @@ in {
     system = "x86_64-linux";
     modules = defaultModules ++ [
       nixos-hardware.nixosModules.dell-xps-13-9380
+      nix-ld.nixosModules.nix-ld
       ./turingmachine/configuration.nix
       {
         nixpkgs.overlays = [(self: super: {

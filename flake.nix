@@ -39,6 +39,11 @@
 
     flake-registry.url = "github:NixOS/flake-registry";
     flake-registry.flake = false;
+
+    nix-ld.url = "github:Mic92/nix-ld";
+    nix-ld.inputs.nixpkgs.follows = "nixpkgs";
+    nix-ld.inputs.utils.follows = "flake-utils";
+    nix-ld.flake = true;
   };
 
   outputs = { self
@@ -53,6 +58,7 @@
             , krops
             , flake-registry
             , bme680-mqtt
+            , nix-ld
             , ... }:
     (flake-utils.lib.eachDefaultSystem (system: let
       pkgs = nixpkgs.legacyPackages.${system};
@@ -79,9 +85,15 @@
        #nixosSystem = import <nixpkgs/nixos/lib/eval-config.nix>;
        inherit nixpkgs nixpkgs-systemd;
        nixosSystem = nixpkgs.lib.nixosSystem;
-       inherit nur home-manager sops-nix retiolum nixos-hardware flake-registry bme680-mqtt;
+       inherit nur
+         home-manager
+         sops-nix
+         retiolum
+         nixos-hardware
+         flake-registry
+         bme680-mqtt
+         nix-ld;
      };
-
 
      hmConfigurations = import ./nixpkgs-config/homes.nix {
        inherit self nixpkgs home-manager nur;
