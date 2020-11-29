@@ -21,7 +21,8 @@ in lib.mapAttrsToList (name: opts: {
   };
 
   daily_task_not_run = {
-    condition = ''time() - task_last_run{state="ok",frequency="daily"} > 24 * 60 * 60'';
+    # give 6 hours grace period
+    condition = ''time() - task_last_run{state="ok",frequency="daily"} > (24 + 6) * 60 * 60'';
     summary = "{{$labels.host}}: {{$labels.name}} was not run in the last 24h";
     description = "{{$labels.host}}: {{$labels.name}} was not run in the last 24h ()";
   };
@@ -46,28 +47,28 @@ in lib.mapAttrsToList (name: opts: {
   filesystem_full_in_1d = {
     condition = "predict_linear(disk_free{${deviceFilter}}[1d], 24*3600) <= 0";
     time = "1h";
-    summary = "{{$labels.instance}}: Filesystem is running out of space in one day.";
-    description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} is running out of space in approx. 1 day";
+    summary = "{{$labels.host}}: Filesystem is running out of space in one day.";
+    description = "{{$labels.host}} device {{$labels.device}} on {{$labels.path}} is running out of space in approx. 1 day";
   };
 
   inodes_full_in_1d = {
     condition = "predict_linear(disk_inodes_free{${deviceFilter}}[1d], 24*3600) < 0";
     time = "1h";
-    summary = "{{$labels.instance}}: Filesystem is running out of inodes in one day.";
-    description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} is running out of inodes in approx. 1 day";
+    summary = "{{$labels.host}}: Filesystem is running out of inodes in one day.";
+    description = "{{$labels.host}} device {{$labels.device}} on {{$labels.path}} is running out of inodes in approx. 1 day";
   };
 
   swap_using_30percent = {
     condition = "mem_swap_total - (mem_swap_cached + mem_swap_free) > mem_swap_total * 0.3";
     time = "30m";
-    summary = "{{$labels.instance}}: Using more than 30% of its swap.";
-    description = "{{$labels.instance}} is using 30% of its swap space for at least 30 minutes.";
+    summary = "{{$labels.host}}: Using more than 30% of its swap.";
+    description = "{{$labels.host}} is using 30% of its swap space for at least 30 minutes.";
   };
 
   systemd_service_failed = {
     condition = ''systemd_units_active_code == 3'';
-    summary = "{{$labels.instance}}: Service {{$labels.name}} failed to start.";
-    description = "{{$labels.instance}} failed to (re)start service {{$labels.name}}.";
+    summary = "{{$labels.host}}: Service {{$labels.name}} failed to start.";
+    description = "{{$labels.host}} failed to (re)start service {{$labels.name}}.";
   };
   ram_using_90percent = {
     condition =  "mem_buffered + mem_free + mem_cached < mem_total * 0.1";
