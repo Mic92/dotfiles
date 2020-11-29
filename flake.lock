@@ -10,11 +10,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1606143011,
-        "narHash": "sha256-y/vzOgDCQlUZWmo1d+DETm+WRew41b8ms8UMyWHKgeI=",
+        "lastModified": 1606201959,
+        "narHash": "sha256-7+4fb1S9486fz2NZOjzCPexDvIIOZQ5l8XqP9t57/jI=",
         "owner": "Mic92",
         "repo": "bme680-mqtt",
-        "rev": "0e851da9b78c67c837efb847f428bf399760c5b1",
+        "rev": "b237c0066691f0ff1f795747a361aad7f6c28af7",
         "type": "github"
       },
       "original": {
@@ -43,11 +43,11 @@
     "flake-registry": {
       "flake": false,
       "locked": {
-        "lastModified": 1597733674,
-        "narHash": "sha256-cC5FZBeKwA0H5uGqYI6BrNrdkBICg9FzPpK9WQSdQkQ=",
+        "lastModified": 1606311492,
+        "narHash": "sha256-LzPViua8CDT+Sg3saSnk74gdej2HhzdSmhRcjE3WMdw=",
         "owner": "NixOS",
         "repo": "flake-registry",
-        "rev": "090d2e959af4b35d35d7b0717c5669e77ba9678b",
+        "rev": "6a2f0df7428d48b352416ce5025847e99cb3f78e",
         "type": "github"
       },
       "original": {
@@ -130,6 +130,29 @@
         "type": "github"
       }
     },
+    "nix-ld": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "utils": [
+          "flake-utils"
+        ]
+      },
+      "locked": {
+        "lastModified": 1606489372,
+        "narHash": "sha256-tWh/u5JyxDTExLdlsnCPWXzgbVL8W4kfn9kzWGvR1CA=",
+        "owner": "Mic92",
+        "repo": "nix-ld",
+        "rev": "60158bbc2afcbb0ece3183c5e01872d04773b9d0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "nix-ld",
+        "type": "github"
+      }
+    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1594041983,
@@ -164,11 +187,11 @@
     },
     "nixpkgs-systemd": {
       "locked": {
-        "lastModified": 1605904217,
-        "narHash": "sha256-jm7xV49mj71kT9/ov/ePGgaJpHyts4r7vMZi/AORuwE=",
+        "lastModified": 1606425491,
+        "narHash": "sha256-W2PICWG34Q3s1k9YgJPRR82dKDFi5aI3hbrZFlp84oc=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "0ef8d3c8efee0578d2db1f9f1e4cbc8897f67452",
+        "rev": "c77b3924039bad0a280a135075dffc5faf35c63a",
         "type": "github"
       },
       "original": {
@@ -180,11 +203,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1606119624,
-        "narHash": "sha256-jHaXooChvmQwnCmCD7SO2x6eqIHbRktvdUqiHEgmfzk=",
+        "lastModified": 1606400179,
+        "narHash": "sha256-7lfCHdo4LMrKkubIsto/o+5eJID/B8exbmhfWyT1lTM=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "a7b6ee5497f74a901dc6980b2e3e57b2d27cca32",
+        "rev": "8dd5adadb3f1ffedeb2f7828921bd01bf55a981a",
         "type": "github"
       },
       "original": {
@@ -195,11 +218,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1606146957,
-        "narHash": "sha256-eHU9Fd5kqBhapce26dZD9I113ZOd82isGYCLToljlgs=",
+        "lastModified": 1606481138,
+        "narHash": "sha256-sd6FLk3NoFUS4YXg625CufwY59R18/l5o3fO/+yoT6Y=",
         "ref": "master",
-        "rev": "7399a85050233ff005f625962bb936da3968f01f",
-        "revCount": 49,
+        "rev": "6ee216dfb5f0c9d167087ad6c60bf14914bad882",
+        "revCount": 50,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },
@@ -217,6 +240,7 @@
         "home-manager": "home-manager",
         "krops": "krops",
         "nix-doom-emacs": "nix-doom-emacs",
+        "nix-ld": "nix-ld",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nixpkgs-systemd": "nixpkgs-systemd",
