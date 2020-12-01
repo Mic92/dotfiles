@@ -1,11 +1,11 @@
 { pkgs, ... }:
 {
-  virtualisation.oci-containers = {
-    containers.nginx = {
-      image = "nginx-container";
-      imageFile = pkgs.dockerTools.examples.nginx;
-    };
-  };
+  #virtualisation.oci-containers = {
+  #  containers.nginx = {
+  #    image = "nginx-container";
+  #    imageFile = pkgs.dockerTools.examples.nginx;
+  #  };
+  #};
 
   # fstest
   users.users = {
