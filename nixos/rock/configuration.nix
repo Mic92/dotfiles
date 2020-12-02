@@ -24,7 +24,7 @@
 
   programs.bcc.enable = true;
 
-  boot.kernelPackages = pkgs.nur.repos.mic92.linuxPackages_ayufan_5_6;
+  boot.kernelPackages = pkgs.nur.repos.mic92.linuxPackages_ayufan;
 
   # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
   boot.loader.grub.enable = false;
