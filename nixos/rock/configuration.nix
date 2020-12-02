@@ -3,7 +3,6 @@
 
   imports = [
     ./modules/bme680-mqtt.nix
-    ./modules/jellyfin.nix
     ./modules/sops.nix
     ./modules/loki.nix
     ./hardware-configuration.nix
