@@ -30,5 +30,7 @@
     netcat
     mtr
     whois
+    usbutils
+    pciutils
  ];
 }
