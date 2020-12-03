@@ -11,7 +11,9 @@
 , flake-registry
 , bme680-mqtt
 , nix-ld
-, ... }:
+, doom-emacs
+, nix-doom-emacs
+}:
 (flake-utils.lib.eachDefaultSystem (system: let
   pkgs = nixpkgs.legacyPackages.${system};
   nurPkgs = import nur {
