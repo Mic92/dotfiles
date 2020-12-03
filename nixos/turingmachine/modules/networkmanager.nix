@@ -16,6 +16,8 @@ let
   };
 in {
   users.users.joerg.extraGroups = [ "networkmanager" ];
+  # breaks nixos-rebuild over network
+  systemd.services.NetworkManager.restartIfChanged = false;
   networking.networkmanager = {
     enable = true;
     extraConfig = ''
