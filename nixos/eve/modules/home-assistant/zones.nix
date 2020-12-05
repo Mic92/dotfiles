@@ -5,7 +5,7 @@
     longitude = "!secret home_longitude";
     elevation = "!secret home_elevation";
     unit_system = "metric";
-    time_zone = "Europe/London";
+    time_zone = "Europe/Berlin";
   };
   services.home-assistant.config.zone = [{
     name = "Lidle";
