@@ -2,13 +2,10 @@
   services.home-assistant.config = {
     intent_script = {
       WeatherToday.speech.text = ''
-        The weather is currently {{ states('sensor.openweathermap_temperature') | round(0) }}
-        degrees outside and {{ states('sensor.openweathermap_condition') }}.
+        The weather is currently {{ states('sensor.openweathermap_temperature') | round(0) }} degrees outside and {{ states('sensor.openweathermap_condition') }}.
       '';
       WeatherTomorrow.speech.text = ''
-        Tomorrow will be {{ state_attr('weather.openweathermap', 'forecast')[1]["tempature"] | round(0) }} degrees
-        and {{ state_attr('weather.openweathermap', 'forecast')[1]["condition"] }}
-        with a low of {{ state_attr('weather.openweathermap', 'forecast')[1]["templow"] | round(0) }} degrees.
+        Tomorrow will be {{ state_attr('weather.openweathermap', 'forecast')[1]["temperature"] | round(0) }} degrees and {{ state_attr('weather.openweathermap', 'forecast')[1]["condition"] }} with a low of {{ state_attr('weather.openweathermap', 'forecast')[1]["templow"] | round(0) }} degrees.
       '';
     };
     input_boolean.rain_notified_today = {
