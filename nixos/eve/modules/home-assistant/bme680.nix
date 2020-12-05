@@ -1,7 +1,7 @@
 {
   services.home-assistant.config = {
     intent_script.RoomTemperature.speech.text = ''
-      It is {{ states('sensor.bme680_temperature') }} degrees inside. The air quality is {{ states('sensor.bme680_air_quality') }} percent.
+      It is {{ states('sensor.bme680_temperature') | round(0) }} degrees inside. The air quality is {{ states('sensor.bme680_air_quality') | round(0) }} percent.
     '';
      automation = [{
        alias = "open a window notification";
