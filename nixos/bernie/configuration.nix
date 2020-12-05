@@ -55,6 +55,7 @@
     pkgs.ferdi
     pkgs.xournalpp
     pkgs.zoom-us
+    pkgs.calibre
   ];
 
   documentation.doc.enable = false;
