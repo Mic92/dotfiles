@@ -499,12 +499,7 @@ elif [[ -n ${command[vim]} ]]; then
 fi
 
 export VISUAL=$EDITOR
-if [[ -n ${commands[bat]} ]]; then
-  export MANPAGER=less
-  export PAGER=bat
-else
-  export PAGER=less
-fi
+export PAGER=less
 export ACK_PAGER=$PAGER
 export READNULLCMD=$PAGER
 export pacman_program=pacman-color
