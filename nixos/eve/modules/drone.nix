@@ -43,18 +43,41 @@ in {
     wantedBy = [ "multi-user.target" ];
     # might break deployment
     restartIfChanged = false;
+    confinement.enable = true;
+    confinement.packages = [
+      pkgs.git
+      pkgs.gnutar
+      pkgs.bash
+      pkgs.nix
+      pkgs.gzip
+    ];
     serviceConfig = {
       Environment = [
         "DRONE_RUNNER_CAPACITY=10"
         "CLIENT_DRONE_RPC_HOST=127.0.0.1:3030"
       ];
+      BindPaths = [
+        "/nix/var/nix/daemon-socket/socket"
+      ];
+      BindReadOnlyPaths = [
+        "/nix/var/nix/profiles/system/etc/nix:/etc/nix"
+        "/var/lib/drone/nix-build"
+        "${config.environment.etc."ssl/certs/ca-certificates.crt".source}:/etc/ssl/certs/ca-certificates.crt"
+        "/etc/machine-id"
+        # channels are dynamic paths in the nix store, therefore we need to bind mount the whole thing
+        "/nix/store"
+      ];
       EnvironmentFile = [ config.sops.secrets.drone.path ];
       ExecStart = "${pkgs.nur.repos.mic92.drone-runner-exec}/bin/drone-runner-exec";
       User = "drone-runner-exec";
       Group = "drone-runner-exec";
-      DynamicUser = true;
     };
   };
+  users.users.drone-runner-exec = {
+    isSystemUser = true;
+    group = "drone-runner-exec";
+  };
+  users.groups.drone-runner-exec = {};
 
   users.users.droneserver = {
     isSystemUser = true;
