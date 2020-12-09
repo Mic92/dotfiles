@@ -78,11 +78,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1607156297,
-        "narHash": "sha256-rRu3Nq3oRAaDDgJuNQhH7wD+rQfYoviNhrpqXyOlJjI=",
+        "lastModified": 1607502120,
+        "narHash": "sha256-P07YXzjsGiJrMKp7W9Huo55O5I9pMhYatnKmvliZUDI=",
         "owner": "rycee",
         "repo": "home-manager",
-        "rev": "275d1b52126674764f0f3d15c73c2add511bd310",
+        "rev": "e3828769e877b1869129a3816515a8c0ea454977",
         "type": "github"
       },
       "original": {
@@ -171,11 +171,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1607416763,
-        "narHash": "sha256-H7t5MGEVeX2b9HsC1mMOL1Uotl5wnDpVa0PCEwQFTg4=",
+        "lastModified": 1607540715,
+        "narHash": "sha256-7CDSyLpg9zw+5ggadS1ZE/Gtam429MSagrd+obymxW0=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "21e9b256c18914ae64ed8c22220302363dc9faeb",
+        "rev": "69d0de9ffddd6904e697007e4d48ab6ee0da459f",
         "type": "github"
       },
       "original": {
@@ -185,29 +185,13 @@
         "type": "github"
       }
     },
-    "nixpkgs-systemd": {
-      "locked": {
-        "lastModified": 1607243464,
-        "narHash": "sha256-9CUewCzQWhZz8U2qaW+xMTiIo9xRrQ5Sf2e5ghS9jvM=",
-        "owner": "Mic92",
-        "repo": "nixpkgs",
-        "rev": "74f96a5eb37426276e9772d42b305a571fb4b850",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "ref": "systemd",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nur": {
       "locked": {
-        "lastModified": 1607400947,
-        "narHash": "sha256-LZXT2YaZ3vXx/4YF2Y0kum6gLm750V7CMU9s/47NoiQ=",
+        "lastModified": 1607541335,
+        "narHash": "sha256-XLqVFZ08JpHprpV5DMuc+s8M5IpTgjE7W/rO1HJRJRc=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "4b682c9b667bd544cf48804064bb6b1d202bcc81",
+        "rev": "e4dca476b29fe4aa0669a5cb3124c2de9736b94d",
         "type": "github"
       },
       "original": {
@@ -243,7 +227,6 @@
         "nix-ld": "nix-ld",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-systemd": "nixpkgs-systemd",
         "nur": "nur",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix"
