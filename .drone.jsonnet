@@ -20,8 +20,6 @@ local dockerVolumes = [{
 }];
 
 local environment = {
-  NIX_REMOTE: 'daemon',
-  PAGER: 'cat',
   BUILDDIR: '/var/lib/drone/nix-build',
 };
 

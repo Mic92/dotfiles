@@ -48,14 +48,14 @@ in {
       pkgs.git
       pkgs.gnutar
       pkgs.bash
-      pkgs.nix
+      pkgs.nixUnstable
       pkgs.gzip
     ];
     path = [
       pkgs.git
       pkgs.gnutar
       pkgs.bash
-      pkgs.nix
+      pkgs.nixUnstable
       pkgs.gzip
     ];
     serviceConfig = {
@@ -67,10 +67,10 @@ in {
       ];
       BindPaths = [
         "/nix/var/nix/daemon-socket/socket"
+        "/var/lib/drone/nix-build"
       ];
       BindReadOnlyPaths = [
         "/nix/var/nix/profiles/system/etc/nix:/etc/nix"
-        "/var/lib/drone/nix-build"
         "${config.environment.etc."ssl/certs/ca-certificates.crt".source}:/etc/ssl/certs/ca-certificates.crt"
         "/etc/machine-id"
         # channels are dynamic paths in the nix store, therefore we need to bind mount the whole thing
