@@ -3,6 +3,8 @@ from typing import Any
 from enum import Enum
 import json
 import time
+import os
+import subprocess
 
 from i3pystatus import Module
 import paho.mqtt.client as mqtt
@@ -28,6 +30,8 @@ class Topic:
     TTS_SAY = "hermes/tts/say"
     # 5. After intent is handled
     SESSION_ENDED = "hermes/dialogueManager/sessionEnded"
+    # 6. After tts ended
+    TTS_ENDED = "hermes/tts/sayFinished"
 
 
 class Rhasspy(Module):
@@ -63,6 +67,7 @@ class Rhasspy(Module):
         client.subscribe(Topic.INTENT_NOT_RECOGNIZED)
         client.subscribe(Topic.TTS_SAY)
         client.subscribe(Topic.SESSION_ENDED)
+        client.subscribe(Topic.TTS_ENDED)
 
         self.update_state(RhasspyState.connected)
 
@@ -76,7 +81,7 @@ class Rhasspy(Module):
         payload = json.loads(msg.payload)
 
         if msg.topic == Topic.SESSION_STARTED:
-            self.notify(f"Listening.")
+            self.notify("Listening.")
             self.update_state(RhasspyState.listening)
         elif msg.topic == Topic.SESSION_ENDED:
             self.update_state(RhasspyState.connected)
@@ -86,9 +91,12 @@ class Rhasspy(Module):
         elif msg.topic == Topic.INTENT_PARSED:
             self.notify(f"Intent {payload['intentName']} detected.")
         elif msg.topic == Topic.INTENT_NOT_RECOGNIZED:
-            self.notify(f"Intent not recognized.")
+            self.notify("Intent not recognized.")
         elif msg.topic == Topic.TTS_SAY:
             self.notify(payload["text"])
+        elif msg.topic == Topic.TTS_ENDED:
+            if "neutral-janet" in payload["sessionId"]:
+                subprocess.Popen(["paplay", os.path.expanduser("~/.config/rhasspy/profiles/en/end-of-conversation.wav")])
 
     def init(self) -> None:
         self.output = dict(
