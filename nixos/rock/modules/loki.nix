@@ -1,5 +1,15 @@
 { config, pkgs, lib, ... }: let
-  rulerConfig = {};
+  rulerConfig = {
+    groups = [{
+      name = "general";
+      rules = [{
+        alert = "Coredumps";
+        expr = ''sum by (nodename) (count_over_time({unit=~"systemd-coredump.*"}[10m])) > 1'';
+        for = "20s";
+        annotations.description = ''{{ $labels.instance }} {{ $labels.value }} coredumps in last 10min.'';
+      }];
+    }];
+  };
 
   rulerDir = pkgs.writeText "ruler.yml" (builtins.toJSON rulerConfig);
 
@@ -20,6 +30,17 @@ in {
         http_listen_port = 3100;
         log_level = "warn";
       };
+      alertmanager_url = "http://alertmanager.r";
+
+      groups = [{
+        name = "general";
+        rules = [{
+          alert = "Coredumps";
+          expr = ''sum by (nodename) (count_over_time({unit=~"systemd-coredump.*"}[10m])) > 1'';
+          for = "20s";
+          annotations.description = ''{{ $labels.instance }} {{ $labels.value }} coredumps in last 10min.'';
+        }];
+      }];
 
       # Distributor
       distributor.ring.kvstore.store = "inmemory";
@@ -58,15 +79,15 @@ in {
 
       limits_config.ingestion_burst_size_mb = 16;
 
-      #ruler = {
-      #  storage = {
-      #    type = "local";
-      #    directory = rulerDir;
-      #  };
-      #  rule_path = "/var/lib/loki/ruler";
-      #  alertmanager_url = "https://alerts.helsinki.tools";
-      #  ring.kvstore = "inmemory";
-      #};
+      ruler = {
+        storage = {
+          type = "local";
+          directory = rulerDir;
+        };
+        rule_path = "/var/lib/loki/ruler";
+        alertmanager_url = "https://alertmanager.r";
+        ring.kvstore = "inmemory";
+      };
 
       # Query splitting and caching
       query_range = {

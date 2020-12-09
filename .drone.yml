@@ -1,6 +1,6 @@
 ---
 kind: pipeline
-type: docker
+type: exec
 name: Build NixOS and home-manager
 
 platform:
@@ -9,7 +9,6 @@ platform:
 
 steps:
 - name: build
-  image: busybox
   commands:
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
   - nix shell nixpkgs#git nixpkgs#nix-build-uncached -c nix-build-uncached -build-flags "--out-link $BUILDDIR/gcroots.tmp/result" ./nixos/ci.nix
@@ -20,18 +19,8 @@ steps:
     PAGER: cat
     PATH: /nix/var/nix/profiles/system/sw/bin/
     USER: root
-  volumes:
-  - name: nixstore
-    path: /nix
-  - name: gcroots
-    path: /var/lib/drone/nix-build
-  - name: nixconf
-    path: /etc/nix
-  - name: sslcerts
-    path: /etc/ssl
 
 - name: upload
-  image: busybox
   commands:
   - "if stat -t $BUILDDIR/gcroots/result* >/dev/null 2>&1; then\n        nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json\n        # only local built derivations\n        nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths\n        nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths\n      fi"
   environment:
@@ -42,15 +31,6 @@ steps:
     PAGER: cat
     PATH: /nix/var/nix/profiles/system/sw/bin/
     USER: root
-  volumes:
-  - name: nixstore
-    path: /nix
-  - name: gcroots
-    path: /var/lib/drone/nix-build
-  - name: nixconf
-    path: /etc/nix
-  - name: sslcerts
-    path: /etc/ssl
   when:
     event:
       exclude:
@@ -60,7 +40,6 @@ steps:
     - success
 
 - name: send irc notification
-  image: busybox
   commands:
   - "LOGNAME=drone nix run .#irc-announce -- irc.r 6667 drone \"#xxx\" \"build $DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER : $DRONE_BUILD_STATUS\" || true"
   environment:
@@ -86,20 +65,6 @@ steps:
     - failure
     - success
 
-volumes:
-- name: nixstore
-  host:
-    path: /nix
-- name: gcroots
-  host:
-    path: /var/lib/drone/nix-build
-- name: nixconf
-  host:
-    path: /nix/var/nix/profiles/system/etc/nix
-- name: sslcerts
-  host:
-    path: /nix/var/nix/profiles/system/etc/ssl
-
 trigger:
   event:
     exclude:
@@ -108,7 +73,6 @@ trigger:
 
 ---
 kind: pipeline
-type: docker
 name: Deploy to eve
 
 platform:
@@ -117,7 +81,6 @@ platform:
 
 steps:
 - name: deploy
-  image: busybox
   commands:
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
@@ -130,29 +93,6 @@ steps:
     PAGER: cat
     PATH: /nix/var/nix/profiles/system/sw/bin/
     USER: root
-  volumes:
-  - name: nixstore
-    path: /nix
-  - name: gcroots
-    path: /var/lib/drone/nix-build
-  - name: nixconf
-    path: /etc/nix
-  - name: sslcerts
-    path: /etc/ssl
-
-volumes:
-- name: nixstore
-  host:
-    path: /nix
-- name: gcroots
-  host:
-    path: /var/lib/drone/nix-build
-- name: nixconf
-  host:
-    path: /nix/var/nix/profiles/system/etc/nix
-- name: sslcerts
-  host:
-    path: /nix/var/nix/profiles/system/etc/ssl
 
 trigger:
   event:
@@ -161,7 +101,6 @@ trigger:
 
 ---
 kind: pipeline
-type: docker
 name: Deploy to turingmachine
 
 platform:
@@ -170,7 +109,6 @@ platform:
 
 steps:
 - name: deploy
-  image: busybox
   commands:
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
@@ -183,29 +121,6 @@ steps:
     PAGER: cat
     PATH: /nix/var/nix/profiles/system/sw/bin/
     USER: root
-  volumes:
-  - name: nixstore
-    path: /nix
-  - name: gcroots
-    path: /var/lib/drone/nix-build
-  - name: nixconf
-    path: /etc/nix
-  - name: sslcerts
-    path: /etc/ssl
-
-volumes:
-- name: nixstore
-  host:
-    path: /nix
-- name: gcroots
-  host:
-    path: /var/lib/drone/nix-build
-- name: nixconf
-  host:
-    path: /nix/var/nix/profiles/system/etc/nix
-- name: sslcerts
-  host:
-    path: /nix/var/nix/profiles/system/etc/ssl
 
 trigger:
   event:
@@ -214,7 +129,6 @@ trigger:
 
 ---
 kind: pipeline
-type: docker
 name: Deploy to eva
 
 platform:
@@ -223,7 +137,6 @@ platform:
 
 steps:
 - name: deploy
-  image: busybox
   commands:
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
@@ -236,29 +149,6 @@ steps:
     PAGER: cat
     PATH: /nix/var/nix/profiles/system/sw/bin/
     USER: root
-  volumes:
-  - name: nixstore
-    path: /nix
-  - name: gcroots
-    path: /var/lib/drone/nix-build
-  - name: nixconf
-    path: /etc/nix
-  - name: sslcerts
-    path: /etc/ssl
-
-volumes:
-- name: nixstore
-  host:
-    path: /nix
-- name: gcroots
-  host:
-    path: /var/lib/drone/nix-build
-- name: nixconf
-  host:
-    path: /nix/var/nix/profiles/system/etc/nix
-- name: sslcerts
-  host:
-    path: /nix/var/nix/profiles/system/etc/ssl
 
 trigger:
   event:
@@ -267,7 +157,6 @@ trigger:
 
 ---
 kind: pipeline
-type: docker
 name: Deploy to rock
 
 platform:
@@ -276,7 +165,6 @@ platform:
 
 steps:
 - name: deploy
-  image: busybox
   commands:
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
@@ -289,29 +177,6 @@ steps:
     PAGER: cat
     PATH: /nix/var/nix/profiles/system/sw/bin/
     USER: root
-  volumes:
-  - name: nixstore
-    path: /nix
-  - name: gcroots
-    path: /var/lib/drone/nix-build
-  - name: nixconf
-    path: /etc/nix
-  - name: sslcerts
-    path: /etc/ssl
-
-volumes:
-- name: nixstore
-  host:
-    path: /nix
-- name: gcroots
-  host:
-    path: /var/lib/drone/nix-build
-- name: nixconf
-  host:
-    path: /nix/var/nix/profiles/system/etc/nix
-- name: sslcerts
-  host:
-    path: /nix/var/nix/profiles/system/etc/ssl
 
 trigger:
   event:
@@ -320,7 +185,6 @@ trigger:
 
 ---
 kind: pipeline
-type: docker
 name: Deploy to joerg@turingmachine
 
 platform:
@@ -329,7 +193,6 @@ platform:
 
 steps:
 - name: deploy
-  image: busybox
   commands:
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
@@ -342,29 +205,6 @@ steps:
     PAGER: cat
     PATH: /nix/var/nix/profiles/system/sw/bin/
     USER: root
-  volumes:
-  - name: nixstore
-    path: /nix
-  - name: gcroots
-    path: /var/lib/drone/nix-build
-  - name: nixconf
-    path: /etc/nix
-  - name: sslcerts
-    path: /etc/ssl
-
-volumes:
-- name: nixstore
-  host:
-    path: /nix
-- name: gcroots
-  host:
-    path: /var/lib/drone/nix-build
-- name: nixconf
-  host:
-    path: /nix/var/nix/profiles/system/etc/nix
-- name: sslcerts
-  host:
-    path: /nix/var/nix/profiles/system/etc/ssl
 
 trigger:
   event:
@@ -373,7 +213,6 @@ trigger:
 
 ---
 kind: pipeline
-type: docker
 name: Deploy to joerg@eve
 
 platform:
@@ -382,7 +221,6 @@ platform:
 
 steps:
 - name: deploy
-  image: busybox
   commands:
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
@@ -395,29 +233,6 @@ steps:
     PAGER: cat
     PATH: /nix/var/nix/profiles/system/sw/bin/
     USER: root
-  volumes:
-  - name: nixstore
-    path: /nix
-  - name: gcroots
-    path: /var/lib/drone/nix-build
-  - name: nixconf
-    path: /etc/nix
-  - name: sslcerts
-    path: /etc/ssl
-
-volumes:
-- name: nixstore
-  host:
-    path: /nix
-- name: gcroots
-  host:
-    path: /var/lib/drone/nix-build
-- name: nixconf
-  host:
-    path: /nix/var/nix/profiles/system/etc/nix
-- name: sslcerts
-  host:
-    path: /nix/var/nix/profiles/system/etc/ssl
 
 trigger:
   event:
@@ -426,6 +241,6 @@ trigger:
 
 ---
 kind: signature
-hmac: cc8acf033218c93be4fde0f0dc39d29d47e54e045bb0082b0809e4ee95d14a2e
+hmac: 47cb973e99955d1a621b9a2725d35dfb25ecf385c2ef348a74f1915293d6092b
 
 ...

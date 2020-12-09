@@ -1,5 +1,4 @@
 { nixpkgs
-, nixpkgs-systemd
 , nixosSystem
 , nur
 , home-manager
@@ -61,11 +60,6 @@ in {
       nixos-hardware.nixosModules.dell-xps-13-9380
       nix-ld.nixosModules.nix-ld
       ./turingmachine/configuration.nix
-      {
-        nixpkgs.overlays = [(self: super: {
-          systemd-247 = (import nixpkgs-systemd { inherit (super) system; }).systemd;
-        })];
-      }
     ];
   };
 

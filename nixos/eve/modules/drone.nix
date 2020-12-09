@@ -2,8 +2,6 @@
 
 let
   droneserver = config.users.users.droneserver.name;
-  droneNet = "2a01:4f9:2b:1605:3::1/80";
-  droneRetiolumNet = "42:0000:002b:1605:3::/80";
 in {
   systemd.services.drone-server = {
     wantedBy = [ "multi-user.target" ];
@@ -41,40 +39,19 @@ in {
     '';
   };
 
-  networking.nat.enable = true;
-  networking.nat.extraCommands = ''
-    ip6tables -t nat -A nixos-nat-pre -i tinc.retiolum -d ${droneRetiolumNet} -j NETMAP --to ${droneNet}
-    ip6tables -t nat -A nixos-nat-post -o tinc.retiolum -s ${droneNet} -j NETMAP --to ${droneRetiolumNet}
-  '';
-
-  systemd.services.drone-agent = {
+  systemd.services.drone-runner-exec = {
     wantedBy = [ "multi-user.target" ];
     # might break deployment
     restartIfChanged = false;
-    preStart = ''
-        export PATH=${pkgs.docker}/bin:$PATH
-        docker network rm drone || true
-        while ! docker network ls | grep -q drone; do
-          docker network create \
-            --driver=bridge \
-            --subnet=172.28.0.0/16 \
-            --gateway=172.28.0.1 \
-            --label=drone \
-            --subnet ${droneNet} \
-            --ipv6 drone
-        done
-    '';
     serviceConfig = {
       Environment = [
-        "DRONE_SERVER_PORT=:3030"
-        "DRONE_RUNNER_NETWORKS=drone"
         "DRONE_RUNNER_CAPACITY=10"
+        "CLIENT_DRONE_RPC_HOST=127.0.0.1:3030"
       ];
       EnvironmentFile = [ config.sops.secrets.drone.path ];
-      ExecStart = "${pkgs.drone}/bin/drone-agent";
-      User = "drone-agent";
-      Group = "drone-agent";
-      SupplementaryGroups = [ "docker" ];
+      ExecStart = "${pkgs.nur.repos.mic92.drone-runner-exec}/bin/drone-runner-exec";
+      User = "drone-runner-exec";
+      Group = "drone-runner-exec";
       DynamicUser = true;
     };
   };

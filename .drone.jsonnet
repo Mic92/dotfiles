@@ -30,21 +30,21 @@ local environment = {
 local build = {
   name: 'Build NixOS and home-manager',
   kind: 'pipeline',
-  type: 'docker',
-  volumes: dockerVolumes,
+  type: 'exec',
+  #volumes: dockerVolumes,
   steps: [{
     name: 'build',
-    image: 'busybox',
+    #image: 'busybox',
     commands: [
       'rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp',
       'nix shell nixpkgs#git nixpkgs#nix-build-uncached -c nix-build-uncached -build-flags "--out-link $BUILDDIR/gcroots.tmp/result" ./nixos/ci.nix',
       'rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots',
     ],
-    volumes: stepVolumes,
+    #volumes: stepVolumes,
     environment: environment,
   }, {
     name: 'upload',
-    image: 'busybox',
+    #image: 'busybox',
     commands: [
       "if stat -t $BUILDDIR/gcroots/result* >/dev/null 2>&1; then
         nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
@@ -58,14 +58,14 @@ local build = {
         from_secret: 'CACHIX_SIGNING_KEY',
       },
     },
-    volumes: stepVolumes,
+    #volumes: stepVolumes,
     when: {
       event: { exclude: ['pull_request'] },
       status: ['failure', 'success'],
     },
   }, {
     name: 'send irc notification',
-    image: 'busybox',
+    #image: 'busybox',
     volumes: stepVolumes,
     environment: environment,
     commands: [
@@ -86,11 +86,11 @@ local build = {
 local deploy(target) = {
   name: 'Deploy to ' + target,
   kind: 'pipeline',
-  type: 'docker',
-  volumes: dockerVolumes,
+  #type: 'docker',
+  #volumes: dockerVolumes,
   steps: [{
     name: 'deploy',
-    image: 'busybox',
+    #image: 'busybox',
     commands: [
       'install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts',
       'echo "Host eve.thalheim.io\nForwardAgent yes" > $HOME/.ssh/config',
@@ -98,7 +98,7 @@ local deploy(target) = {
       'echo "$DEPLOY_SSH_KEY" | ssh-add - && ' +
       'nix run .#deploy.%s' % target,
     ],
-    volumes: stepVolumes,
+    #volumes: stepVolumes,
     environment: environment {
       DEPLOY_SSH_KEY: { from_secret: 'DEPLOY_SSH_KEY' },
     },

@@ -1,6 +1,5 @@
 { self
 , nixpkgs
-, nixpkgs-systemd
 , nixos-hardware
 , sops-nix
 , nur
@@ -35,7 +34,7 @@ in {
     #nixpkgs = toString <nixpkgs>;
     # for testing
     #nixosSystem = import <nixpkgs/nixos/lib/eval-config.nix>;
-    inherit nixpkgs nixpkgs-systemd;
+    inherit nixpkgs;
     nixosSystem = nixpkgs.lib.nixosSystem;
     inherit
       nur
