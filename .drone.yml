@@ -1,0 +1,173 @@
+---
+kind: pipeline
+type: exec
+name: Build NixOS and home-manager
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: build
+  commands:
+  - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
+  - nix shell nixpkgs#git nixpkgs#nix-build-uncached -c nix-build-uncached -build-flags "--out-link $BUILDDIR/gcroots.tmp/result" ./nixos/ci.nix
+  - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+
+- name: upload
+  commands:
+  - "\n      if stat -t $BUILDDIR/gcroots/result* >/dev/null 2>&1; then\n        nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json\n        # only local built derivations\n        nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths\n        nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths\n      fi\n      "
+  when:
+    event:
+      exclude:
+      - pull_request
+    status:
+    - failure
+    - success
+
+- name: send irc notification
+  commands:
+  - "LOGNAME=drone nix run .#irc-announce -- irc.r 6667 drone \"#xxx\" \"build $DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER : $DRONE_BUILD_STATUS\" || true"
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+  when:
+    event:
+      exclude:
+      - pull_request
+    status:
+    - failure
+    - success
+
+trigger:
+  event:
+    exclude:
+    - promote
+    - rollback
+
+---
+kind: pipeline
+name: Deploy to eve
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: deploy
+  commands:
+  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - eval $(ssh-agent) && echo "$DEPLOY_SSH_KEY" | ssh-add - && nix run .#deploy.eve
+
+trigger:
+  event:
+  - promote
+  - rollback
+
+---
+kind: pipeline
+name: Deploy to turingmachine
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: deploy
+  commands:
+  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - eval $(ssh-agent) && echo "$DEPLOY_SSH_KEY" | ssh-add - && nix run .#deploy.turingmachine
+
+trigger:
+  event:
+  - promote
+  - rollback
+
+---
+kind: pipeline
+name: Deploy to eva
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: deploy
+  commands:
+  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - eval $(ssh-agent) && echo "$DEPLOY_SSH_KEY" | ssh-add - && nix run .#deploy.eva
+
+trigger:
+  event:
+  - promote
+  - rollback
+
+---
+kind: pipeline
+name: Deploy to rock
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: deploy
+  commands:
+  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - eval $(ssh-agent) && echo "$DEPLOY_SSH_KEY" | ssh-add - && nix run .#deploy.rock
+
+trigger:
+  event:
+  - promote
+  - rollback
+
+---
+kind: pipeline
+name: Deploy to joerg@turingmachine
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: deploy
+  commands:
+  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - eval $(ssh-agent) && echo "$DEPLOY_SSH_KEY" | ssh-add - && nix run .#deploy.joerg@turingmachine
+
+trigger:
+  event:
+  - promote
+  - rollback
+
+---
+kind: pipeline
+name: Deploy to joerg@eve
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: deploy
+  commands:
+  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
+  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - eval $(ssh-agent) && echo "$DEPLOY_SSH_KEY" | ssh-add - && nix run .#deploy.joerg@eve
+
+trigger:
+  event:
+  - promote
+  - rollback
+
+---
+kind: signature
+hmac: a8cc5dfed9a8236dd5d93e86b20054660919c71871aeb050645cd2ed63e3faaf
+
+...

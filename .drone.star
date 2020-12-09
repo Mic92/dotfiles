@@ -1,7 +1,5 @@
 def environment():
-  return {
-    "BUILDDIR": '/var/lib/drone/nix-build',
-  }
+  return { "BUILDDIR": '/var/lib/drone/nix-build' }
 
 build = {
   "name": 'Build NixOS and home-manager',
