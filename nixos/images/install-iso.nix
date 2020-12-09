@@ -15,6 +15,7 @@
     ./base-config.nix
     ./zfs.nix
   ];
+  documentation.info.enable = false;
   environment.systemPackages = with pkgs; [ diskrsync partclone ntfsprogs ntfs3g ];
 }
 
