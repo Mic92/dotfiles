@@ -12,6 +12,17 @@
       "kvm"
       "nixos-tests"
     ];
+  } {
+    hostName = "localhost";
+    maxJobs = 8;
+    sshKey = config.sops.secrets.ssh-aarch64-builder.path;
+    sshUser = "root";
+    system = "x86_64-linux";
+    supportedFeatures = [
+      "big-parallel"
+      "kvm"
+      "nixos-tests"
+    ];
   }];
 
   sops.secrets.ssh-aarch64-builder = {};
