@@ -51,10 +51,19 @@ in {
       pkgs.nix
       pkgs.gzip
     ];
+    path = [
+      pkgs.git
+      pkgs.gnutar
+      pkgs.bash
+      pkgs.nix
+      pkgs.gzip
+    ];
     serviceConfig = {
       Environment = [
         "DRONE_RUNNER_CAPACITY=10"
         "CLIENT_DRONE_RPC_HOST=127.0.0.1:3030"
+        "NIX_REMOTE=daemon"
+        "PAGER=cat"
       ];
       BindPaths = [
         "/nix/var/nix/daemon-socket/socket"

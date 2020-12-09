@@ -15,10 +15,6 @@ steps:
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
   environment:
     BUILDDIR: /var/lib/drone/nix-build
-    NIX_REMOTE: daemon
-    PAGER: cat
-    PATH: /nix/var/nix/profiles/system/sw/bin/
-    USER: root
 
 - name: upload
   commands:
@@ -27,10 +23,6 @@ steps:
     BUILDDIR: /var/lib/drone/nix-build
     CACHIX_SIGNING_KEY:
       from_secret: CACHIX_SIGNING_KEY
-    NIX_REMOTE: daemon
-    PAGER: cat
-    PATH: /nix/var/nix/profiles/system/sw/bin/
-    USER: root
   when:
     event:
       exclude:
@@ -44,10 +36,6 @@ steps:
   - "LOGNAME=drone nix run .#irc-announce -- irc.r 6667 drone \"#xxx\" \"build $DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER : $DRONE_BUILD_STATUS\" || true"
   environment:
     BUILDDIR: /var/lib/drone/nix-build
-    NIX_REMOTE: daemon
-    PAGER: cat
-    PATH: /nix/var/nix/profiles/system/sw/bin/
-    USER: root
   volumes:
   - name: nixstore
     path: /nix
@@ -89,10 +77,6 @@ steps:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
       from_secret: DEPLOY_SSH_KEY
-    NIX_REMOTE: daemon
-    PAGER: cat
-    PATH: /nix/var/nix/profiles/system/sw/bin/
-    USER: root
 
 trigger:
   event:
@@ -117,10 +101,6 @@ steps:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
       from_secret: DEPLOY_SSH_KEY
-    NIX_REMOTE: daemon
-    PAGER: cat
-    PATH: /nix/var/nix/profiles/system/sw/bin/
-    USER: root
 
 trigger:
   event:
@@ -145,10 +125,6 @@ steps:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
       from_secret: DEPLOY_SSH_KEY
-    NIX_REMOTE: daemon
-    PAGER: cat
-    PATH: /nix/var/nix/profiles/system/sw/bin/
-    USER: root
 
 trigger:
   event:
@@ -173,10 +149,6 @@ steps:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
       from_secret: DEPLOY_SSH_KEY
-    NIX_REMOTE: daemon
-    PAGER: cat
-    PATH: /nix/var/nix/profiles/system/sw/bin/
-    USER: root
 
 trigger:
   event:
@@ -201,10 +173,6 @@ steps:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
       from_secret: DEPLOY_SSH_KEY
-    NIX_REMOTE: daemon
-    PAGER: cat
-    PATH: /nix/var/nix/profiles/system/sw/bin/
-    USER: root
 
 trigger:
   event:
@@ -229,10 +197,6 @@ steps:
     BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
       from_secret: DEPLOY_SSH_KEY
-    NIX_REMOTE: daemon
-    PAGER: cat
-    PATH: /nix/var/nix/profiles/system/sw/bin/
-    USER: root
 
 trigger:
   event:
@@ -241,6 +205,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 47cb973e99955d1a621b9a2725d35dfb25ecf385c2ef348a74f1915293d6092b
+hmac: c23d3ae5e8d387748e1d97cb583bd6641f23551dea787ea522e1af4da7960464
 
 ...
