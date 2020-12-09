@@ -1,24 +1,3 @@
-local stepVolumes = [
-  { name: 'nixstore', path: '/nix' },
-  { name: 'gcroots', path: '/var/lib/drone/nix-build' },
-  { name: 'nixconf', path: '/etc/nix' },
-  { name: 'sslcerts', path: '/etc/ssl' },
-];
-
-local dockerVolumes = [{
-  name: 'nixstore',
-  host: { path: '/nix' },
-}, {
-  name: 'gcroots',
-  host: { path: '/var/lib/drone/nix-build' },
-}, {
-  name: 'nixconf',
-  host: { path: '/nix/var/nix/profiles/system/etc/nix' },
-}, {
-  name: 'sslcerts',
-  host: { path: '/nix/var/nix/profiles/system/etc/ssl' },
-}];
-
 local environment = {
   BUILDDIR: '/var/lib/drone/nix-build',
 };
@@ -27,20 +6,16 @@ local build = {
   name: 'Build NixOS and home-manager',
   kind: 'pipeline',
   type: 'exec',
-  #volumes: dockerVolumes,
   steps: [{
     name: 'build',
-    #image: 'busybox',
     commands: [
       'rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp',
       'nix shell nixpkgs#git nixpkgs#nix-build-uncached -c nix-build-uncached -build-flags "--out-link $BUILDDIR/gcroots.tmp/result" ./nixos/ci.nix',
       'rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots',
     ],
-    #volumes: stepVolumes,
     environment: environment,
   }, {
     name: 'upload',
-    #image: 'busybox',
     commands: [
       "if stat -t $BUILDDIR/gcroots/result* >/dev/null 2>&1; then
         nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
@@ -54,15 +29,12 @@ local build = {
         from_secret: 'CACHIX_SIGNING_KEY',
       },
     },
-    #volumes: stepVolumes,
     when: {
       event: { exclude: ['pull_request'] },
       status: ['failure', 'success'],
     },
   }, {
     name: 'send irc notification',
-    #image: 'busybox',
-    volumes: stepVolumes,
     environment: environment,
     commands: [
       'LOGNAME=drone nix run .#irc-announce -- irc.r 6667 drone "#xxx" "build $DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER : $DRONE_BUILD_STATUS" || true'
@@ -82,11 +54,8 @@ local build = {
 local deploy(target) = {
   name: 'Deploy to ' + target,
   kind: 'pipeline',
-  #type: 'docker',
-  #volumes: dockerVolumes,
   steps: [{
     name: 'deploy',
-    #image: 'busybox',
     commands: [
       'install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts',
       'echo "Host eve.thalheim.io\nForwardAgent yes" > $HOME/.ssh/config',
@@ -94,7 +63,6 @@ local deploy(target) = {
       'echo "$DEPLOY_SSH_KEY" | ssh-add - && ' +
       'nix run .#deploy.%s' % target,
     ],
-    #volumes: stepVolumes,
     environment: environment {
       DEPLOY_SSH_KEY: { from_secret: 'DEPLOY_SSH_KEY' },
     },
