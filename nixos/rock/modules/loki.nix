@@ -4,14 +4,14 @@
       name = "general";
       rules = [{
         alert = "Coredumps";
-        expr = ''sum by (nodename) (count_over_time({unit=~"systemd-coredump.*"}[10m])) > 1'';
-        for = "20s";
+        expr = ''sum by (nodename) (count_over_time({unit=~"systemd-coredump.*"}|~ "dumped core" [10m])) > 1'';
+        for = "10s";
         annotations.description = ''{{ $labels.instance }} {{ $labels.value }} coredumps in last 10min.'';
       }];
     }];
   };
 
-  rulerDir = pkgs.writeText "ruler.yml" (builtins.toJSON rulerConfig);
+  rulerDir = pkgs.writeTextDir "ruler/ruler.yml" (builtins.toJSON rulerConfig);
 
   ldapConf = pkgs.writeText "ldap.conf" ''
     base dc=eve
@@ -21,6 +21,9 @@
     binddn cn=nginx,ou=system,ou=users,dc=eve
   '';
 in {
+  systemd.tmpfiles.rules = [
+    "d /var/lib/loki/ruler 0700 loki loki - -"
+  ];
   services.loki = {
     enable = true;
     configuration = {
@@ -30,17 +33,6 @@ in {
         http_listen_port = 3100;
         log_level = "warn";
       };
-      alertmanager_url = "http://alertmanager.r";
-
-      groups = [{
-        name = "general";
-        rules = [{
-          alert = "Coredumps";
-          expr = ''sum by (nodename) (count_over_time({unit=~"systemd-coredump.*"}[10m])) > 1'';
-          for = "20s";
-          annotations.description = ''{{ $labels.instance }} {{ $labels.value }} coredumps in last 10min.'';
-        }];
-      }];
 
       # Distributor
       distributor.ring.kvstore.store = "inmemory";
@@ -82,11 +74,11 @@ in {
       ruler = {
         storage = {
           type = "local";
-          directory = rulerDir;
+          local.directory = rulerDir;
         };
         rule_path = "/var/lib/loki/ruler";
-        alertmanager_url = "https://alertmanager.r";
-        ring.kvstore = "inmemory";
+        alertmanager_url = "http://alertmanager.r";
+        ring.kvstore.store = "inmemory";
       };
 
       # Query splitting and caching
