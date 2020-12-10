@@ -62,7 +62,7 @@ platform:
 steps:
 - name: deploy
   commands:
-  - "mkdir $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - "install -m700 -d $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config && chmod 600 $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.eve
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -86,7 +86,7 @@ platform:
 steps:
 - name: deploy
   commands:
-  - "mkdir $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - "install -m700 -d $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config && chmod 600 $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.turingmachine
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -110,7 +110,7 @@ platform:
 steps:
 - name: deploy
   commands:
-  - "mkdir $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - "install -m700 -d $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config && chmod 600 $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.eva
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -134,7 +134,7 @@ platform:
 steps:
 - name: deploy
   commands:
-  - "mkdir $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - "install -m700 -d $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config && chmod 600 $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.rock
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -158,7 +158,7 @@ platform:
 steps:
 - name: deploy
   commands:
-  - "mkdir $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - "install -m700 -d $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config && chmod 600 $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.joerg@turingmachine
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -182,7 +182,7 @@ platform:
 steps:
 - name: deploy
   commands:
-  - "mkdir $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - "install -m700 -d $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config && chmod 600 $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.joerg@eve
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -196,6 +196,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 53764087e1cddffb461bd48dd70065febdedf03a6fbec615e7817f6d5455dd3f
+hmac: aa93e4fc3a0c973411a84ce37828aa13d7ba19dcd65fa85e6339d9bd48746d40
 
 ...
