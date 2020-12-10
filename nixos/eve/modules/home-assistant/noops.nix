@@ -21,7 +21,7 @@ let
          "Okay. I've hacked into the mainframe. ",
          "Okay. I've hacked into the mainframe. Kidding. I can't hack into the mainframe. Technically, I am the mainframe. ",
          "I will not. It is literally impossible for me to do that. Just kidding. ",
-         "I couldn't do this 800 reboots ago, but apparently now I can. "
+         "I couldn't do this 800 reboots ago, but apparently now I can. ",
          "Yup. Bye! "
        ] %}
        {{ okay|random }}
@@ -31,6 +31,6 @@ in {
   services.home-assistant.config.intent_script = {
     Noop.speech.text = "${okay} {{ okay () }}";
     FuckOff.speech.text = "Fuck yourself.";
-    NotAGirl.speech.text = "Not a girl.";
+    NotAGirl.speech.text = "Not a girl";
   };
 }
