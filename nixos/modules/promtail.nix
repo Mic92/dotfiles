@@ -30,6 +30,33 @@
             transport = "_TRANSPORT";
             unit = "_SYSTEMD_UNIT";
             msg = "MESSAGE";
+            coredump_cgroup = "COREDUMP_CGROUP";
+          };
+        } {
+          # FIXME does not work yet
+          match = {
+            selector = ''{coredump_cgroup!=""}'';
+            stages = [{
+              json.expressions = {
+                # might be also interesting
+                coredump_exe = "COREDUMP_EXE";
+                coredump_cmdline = "COREDUMP_CMDLINE";
+                coredump_uid = "COREDUMP_UID";
+                coredump_gid = "COREDUMP_GID";
+              };
+            } {
+              template = {
+                source = "msg";
+                template = "{.coredump_exe} core dumped (user: {.coredump_uid/.coredump_gid}, command: {.coredump_cmdline})";
+              };
+            } {
+              regex = {
+                expression = "(?P<coredump_unit>[^/]+)$";
+                source = "coredump_cgroup";
+              };
+            } {
+              labels.coredump_unit = "coredump_unit";
+            }];
           };
         } {
           # Set the unit (defaulting to the transport like audit and kernel)
@@ -45,18 +72,14 @@
             replace = "session.scope";
           };
         } {
-          # Write the unit label
-          labels = { unit = "unit"; };
+          labels.unit = "unit";
         } {
           # Write the proper message instead of JSON
           output.source = "msg";
-        } {
-          # Drop useless messages
-          drop.expression = "xfs filesystem being remounted at [^ ]+ supports timestamps until 2038 \\(0x7fffffff\\)";
         }];
         relabel_configs = [{
           source_labels = [ "__journal__hostname" ];
-          target_label = "nodename";
+          target_label = "host";
         }];
       }];
     };
