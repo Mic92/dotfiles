@@ -62,7 +62,7 @@ platform:
 steps:
 - name: deploy
   commands:
-  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - "mkdir $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.eve
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -86,7 +86,7 @@ platform:
 steps:
 - name: deploy
   commands:
-  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - "mkdir $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.turingmachine
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -110,7 +110,7 @@ platform:
 steps:
 - name: deploy
   commands:
-  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - "mkdir $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.eva
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -134,7 +134,7 @@ platform:
 steps:
 - name: deploy
   commands:
-  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - "mkdir $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.rock
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -158,7 +158,7 @@ platform:
 steps:
 - name: deploy
   commands:
-  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - "mkdir $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.joerg@turingmachine
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -182,7 +182,7 @@ platform:
 steps:
 - name: deploy
   commands:
-  - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
+  - "mkdir $HOME/.ssh && echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.joerg@eve
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -196,6 +196,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 9da3fdac2fd7d04b0c2c18379cb50e031f91367b251107a24ed44c746b9c270a
+hmac: 53764087e1cddffb461bd48dd70065febdedf03a6fbec615e7817f6d5455dd3f
 
 ...
