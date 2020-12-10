@@ -19,6 +19,10 @@ steps:
 - name: upload
   commands:
   - "\n      if stat -t $BUILDDIR/gcroots/result* >/dev/null 2>&1; then\n        nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json\n        # only local built derivations\n        nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths\n        nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths\n      fi\n      "
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+    CACHIX_SIGNING_KEY:
+      from_secret: CACHIX_SIGNING_KEY
   when:
     event:
       exclude:
@@ -61,6 +65,10 @@ steps:
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.eve
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+    DEPLOY_SSH_KEY:
+      from_secret: DEPLOY_SSH_KEY
 
 trigger:
   event:
@@ -82,6 +90,10 @@ steps:
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.turingmachine
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+    DEPLOY_SSH_KEY:
+      from_secret: DEPLOY_SSH_KEY
 
 trigger:
   event:
@@ -103,6 +115,10 @@ steps:
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.eva
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+    DEPLOY_SSH_KEY:
+      from_secret: DEPLOY_SSH_KEY
 
 trigger:
   event:
@@ -124,6 +140,10 @@ steps:
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.rock
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+    DEPLOY_SSH_KEY:
+      from_secret: DEPLOY_SSH_KEY
 
 trigger:
   event:
@@ -145,6 +165,10 @@ steps:
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.joerg@turingmachine
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+    DEPLOY_SSH_KEY:
+      from_secret: DEPLOY_SSH_KEY
 
 trigger:
   event:
@@ -166,6 +190,10 @@ steps:
   - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.joerg@eve
+  environment:
+    BUILDDIR: /var/lib/drone/nix-build
+    DEPLOY_SSH_KEY:
+      from_secret: DEPLOY_SSH_KEY
 
 trigger:
   event:
@@ -174,6 +202,6 @@ trigger:
 
 ---
 kind: signature
-hmac: eb01a8d6e3da9cf06760a4ba8fe8914fa82df1992fe26deab0b4f4ddaf212d88
+hmac: 21c3d5973751a8f00d34e8d42c24933e8a2e8facbe49a75fca92374cfd2dcc5d
 
 ...

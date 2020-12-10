@@ -1,5 +1,7 @@
-def environment():
-  return { "BUILDDIR": '/var/lib/drone/nix-build' }
+def environment(extra={}):
+  e = { "BUILDDIR": '/var/lib/drone/nix-build' }
+  e.update(extra)
+  return e
 
 build = {
   "name": 'Build NixOS and home-manager',
@@ -25,10 +27,9 @@ build = {
       fi
       """,
     ],
-    "environment": environment().update({
-      "CACHIX_SIGNING_KEY": {
-        "from_secret": 'CACHIX_SIGNING_KEY',
-    }}),
+    "environment": environment({
+      "CACHIX_SIGNING_KEY": { "from_secret": 'CACHIX_SIGNING_KEY', }
+    }),
     "when": {
       "event": { "exclude": ['pull_request'] },
       "status": ['failure', 'success'],
@@ -65,7 +66,7 @@ def deploy(target):
         'echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && ' +
         'nix run .#deploy.%s' % target,
        ],
-       "environment": environment().update({
+       "environment": environment({
          "DEPLOY_SSH_KEY": { "from_secret": 'DEPLOY_SSH_KEY' },
        }),
       }],
