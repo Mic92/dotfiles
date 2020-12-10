@@ -4,7 +4,7 @@
       name = "general";
       rules = [{
         alert = "Coredumps";
-        expr = ''sum by (nodename) (count_over_time({unit=~"systemd-coredump.*"}|~ "dumped core" [10m])) > 1'';
+        expr = ''sum by (host) (count_over_time({unit=~"systemd-coredump.*"}|~ "dumped core" [10m])) > 1'';
         for = "10s";
         annotations.description = ''{{ $labels.instance }} {{ $labels.value }} coredumps in last 10min.'';
       }];
@@ -22,6 +22,7 @@
   '';
 in {
   systemd.tmpfiles.rules = [
+    "d /var/lib/loki 0700 loki loki - -"
     "d /var/lib/loki/ruler 0700 loki loki - -"
   ];
   services.loki = {
