@@ -74,7 +74,7 @@ in {
         "${config.environment.etc."ssl/certs/ca-certificates.crt".source}:/etc/ssl/certs/ca-certificates.crt"
         "/etc/machine-id"
         # channels are dynamic paths in the nix store, therefore we need to bind mount the whole thing
-        "/nix/store"
+        "/nix/"
       ];
       EnvironmentFile = [ config.sops.secrets.drone.path ];
       ExecStart = "${pkgs.nur.repos.mic92.drone-runner-exec}/bin/drone-runner-exec";
