@@ -62,8 +62,6 @@ platform:
 steps:
 - name: deploy
   commands:
-  - env
-  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.eve
   environment:
@@ -88,8 +86,6 @@ platform:
 steps:
 - name: deploy
   commands:
-  - env
-  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.turingmachine
   environment:
@@ -114,8 +110,6 @@ platform:
 steps:
 - name: deploy
   commands:
-  - env
-  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.eva
   environment:
@@ -140,8 +134,6 @@ platform:
 steps:
 - name: deploy
   commands:
-  - env
-  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.rock
   environment:
@@ -166,8 +158,6 @@ platform:
 steps:
 - name: deploy
   commands:
-  - env
-  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.joerg@turingmachine
   environment:
@@ -192,8 +182,6 @@ platform:
 steps:
 - name: deploy
   commands:
-  - env
-  - install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts
   - "echo \"Host eve.thalheim.io\nForwardAgent yes\" > $HOME/.ssh/config"
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.joerg@eve
   environment:
@@ -208,6 +196,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 4a2866d159b8cdef81ade6aa342f65a39b5e5c59aeaee260bb5d25a36b591760
+hmac: 9da3fdac2fd7d04b0c2c18379cb50e031f91367b251107a24ed44c746b9c270a
 
 ...

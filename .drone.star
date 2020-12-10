@@ -60,8 +60,6 @@ def deploy(target):
     "steps": [{
       "name": 'deploy',
       "commands": [
-        'env',
-        'install -D /nix/var/nix/profiles/system/etc/ssh/ssh_known_hosts $HOME/.ssh/known_hosts',
         'echo "Host eve.thalheim.io\nForwardAgent yes" > $HOME/.ssh/config',
         'eval $(nix shell nixpkgs#openssh -c ssh-agent) && ' +
         'echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && ' +
