@@ -48,6 +48,7 @@ trigger:
 
 ---
 kind: pipeline
+type: exec
 name: Deploy to eve
 
 platform:
@@ -68,6 +69,7 @@ trigger:
 
 ---
 kind: pipeline
+type: exec
 name: Deploy to turingmachine
 
 platform:
@@ -88,6 +90,7 @@ trigger:
 
 ---
 kind: pipeline
+type: exec
 name: Deploy to eva
 
 platform:
@@ -108,6 +111,7 @@ trigger:
 
 ---
 kind: pipeline
+type: exec
 name: Deploy to rock
 
 platform:
@@ -128,6 +132,7 @@ trigger:
 
 ---
 kind: pipeline
+type: exec
 name: Deploy to joerg@turingmachine
 
 platform:
@@ -148,6 +153,7 @@ trigger:
 
 ---
 kind: pipeline
+type: exec
 name: Deploy to joerg@eve
 
 platform:
@@ -168,6 +174,6 @@ trigger:
 
 ---
 kind: signature
-hmac: a8cc5dfed9a8236dd5d93e86b20054660919c71871aeb050645cd2ed63e3faaf
+hmac: ae182f0de135ceab2e6ae1c9359cffdcd84987959b3a0cbfc25880fe89ca748a
 
 ...

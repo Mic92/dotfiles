@@ -55,6 +55,7 @@ def deploy(target):
   return {
     "name": 'Deploy to ' + target,
     "kind": 'pipeline',
+    "type": 'exec',
     "steps": [{
       "name": 'deploy',
       "commands": [
