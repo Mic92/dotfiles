@@ -6,7 +6,6 @@ jobs:
     name: Deploy configuration
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2.3.4
       - uses: chrnorm/deployment-action@releases/v1
         name: Create GitHub deployment
         id: deployment
