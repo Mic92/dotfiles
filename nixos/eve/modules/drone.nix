@@ -71,13 +71,22 @@ in {
         "/var/lib/drone/nix-build"
       ];
       BindReadOnlyPaths = [
+        "/etc/passwd:/etc/passwd"
+        "/etc/group:/etc/group"
         "/nix/var/nix/profiles/system/etc/nix:/etc/nix"
         "${config.environment.etc."ssl/certs/ca-certificates.crt".source}:/etc/ssl/certs/ca-certificates.crt"
+        "${config.environment.etc."ssh/ssh_known_hosts".source}:/etc/ssh/ssh_known_hosts"
+        "${builtins.toFile "ssh_config" ''
+          Host eve.thalheim.io
+            ForwardAgent yes
+        ''}:/etc/ssh/ssh_config"
         "/etc/machine-id"
         # channels are dynamic paths in the nix store, therefore we need to bind mount the whole thing
         "/nix/"
       ];
-      EnvironmentFile = [ config.sops.secrets.drone.path ];
+      EnvironmentFile = [
+        config.sops.secrets.drone.path
+      ];
       ExecStart = "${pkgs.nur.repos.mic92.drone-runner-exec}/bin/drone-runner-exec";
       User = "drone-runner-exec";
       Group = "drone-runner-exec";
