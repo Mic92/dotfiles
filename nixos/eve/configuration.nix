@@ -63,7 +63,6 @@
     ../modules/mosh.nix
     ../modules/openldap
     ../modules/nfs-dl.nix
-    ../modules/nur.nix
     ../modules/tor-ssh.nix
     ../modules/tracing.nix
     ../modules/promtail.nix

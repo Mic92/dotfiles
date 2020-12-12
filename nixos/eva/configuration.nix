@@ -15,7 +15,6 @@
 
     ../modules/ec2.nix
     ../modules/mosh.nix
-    ../modules/nur.nix
     ../modules/openldap/replica.nix
     ../modules/promtail.nix
     ../modules/tracing.nix
