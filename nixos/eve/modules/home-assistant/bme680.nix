@@ -1,8 +1,7 @@
 {
   services.home-assistant.config = {
-    intent_script.RoomTemperature.speech.text = ''
-      It is {{ states('sensor.bme680_temperature') | round(0) }} degrees inside. The air quality is {{ states('sensor.bme680_air_quality') | round(0) }} percent.
-    '';
+    intent_script.RoomTemperature.speech.text = "It is {{ states('sensor.bme680_temperature') | round(0) }} degrees inside. " +
+      "The air quality is {{ states('sensor.bme680_air_quality') | round(0) }} percent and the humidity is {{ states('sensor.bme680_humidity') | round(0) }}.";
      automation = [{
        alias = "open a window notification";
        trigger = {
@@ -14,6 +13,9 @@
        action = [{
          service = "notify.pushover";
          data_template.message = "Open a window!";
+       } {
+         service = "rest_command.tts";
+         data_template.message = ''Open a window, please.'';
        }];
      }];
   };
