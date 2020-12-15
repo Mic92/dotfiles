@@ -18,7 +18,7 @@ steps:
 
 - name: upload
   commands:
-  - "\n      if stat -t $BUILDDIR/gcroots/result* >/dev/null 2>&1; then\n        nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json\n        # only local built derivations\n        nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths\n        nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths\n      fi\n      "
+  - "\n      nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json\n      # only local built derivations\n      nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths\n      nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths\n      "
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     CACHIX_SIGNING_KEY:
@@ -190,6 +190,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 9ea2bfdd64c51f0b1f6bd0dff73143e1fc95f00c9e460171637ecf3c10ed3a16
+hmac: 8921d6c715f19fc20d362147bd9f83f35962865a4e878614d31c2a6f05e7d4b4
 
 ...

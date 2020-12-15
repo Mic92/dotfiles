@@ -19,12 +19,10 @@ build = {
     "name": 'upload',
     "commands": [
       """
-      if stat -t $BUILDDIR/gcroots/result* >/dev/null 2>&1; then
-        nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
-        # only local built derivations
-        nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
-        nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths
-      fi
+      nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
+      # only local built derivations
+      nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
+      nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths
       """,
     ],
     "environment": environment({
