@@ -6,7 +6,7 @@
         alert = "Coredumps";
         expr = ''sum by (host) (count_over_time({unit=~"systemd-coredump.*"}|~ "dumped core" [10m])) > 1'';
         for = "10s";
-        annotations.description = ''{{ $labels.instance }} {{ $labels.value }} coredumps in last 10min.'';
+        annotations.description = ''{{ $labels.instance }} {{ $labels.coredump_unit }} core dumped in last 10min.'';
       }];
     }];
   };
