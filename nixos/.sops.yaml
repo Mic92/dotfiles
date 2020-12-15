@@ -1,75 +1,66 @@
+keys:
+  - &joerg F095F28F7B1BA4DD0D93554EE179454B201E23CA
+  - &eve C5A6167F97F68FD053571E8B04188BA1509DCDC5
+  - &eva 464E02307E15D115D8D666ADE0BD184A633C5C72
+  - &turingmachine 50612B0983F7FA2F1985DA0F30371B437689ACFD
+  - &matchbox 13d0b443fe935edf44f9b472d8abdace2bcf8e4b
+  - &eddie CC48DB9AC67E71DA343B47D594933BDDF739BEB3
+  - &rock F139840C191C75322AC3D4516BE2046130150E21
 creation_rules:
-  # joerg
   - path_regex: secrets/admins/[^/]+\.yaml$
-    pgp: >-
-      F095F28F7B1BA4DD0D93554EE179454B201E23CA
-  # joerg
-  # eve
+    key_groups:
+    - pgp:
+      - *joerg
   - path_regex: eve/secrets/[^/]+\.yaml$
-    pgp: >-
-      F095F28F7B1BA4DD0D93554EE179454B201E23CA,
-      C5A6167F97F68FD053571E8B04188BA1509DCDC5
-  # joerg
-  # eva
+    key_groups:
+    - pgp:
+      - *joerg
+      - *eve
   - path_regex: eva/secrets/[^/]+\.yaml$
-    pgp: >-
-      F095F28F7B1BA4DD0D93554EE179454B201E23CA,
-      464E02307E15D115D8D666ADE0BD184A633C5C72
-  # joerg
-  # turingmachine
+    key_groups:
+    - pgp:
+      - *joerg
+      - *eva
   - path_regex: turingmachine/secrets/[^/]+\.yaml$
-    pgp: >-
-      F095F28F7B1BA4DD0D93554EE179454B201E23CA,
-      50612B0983F7FA2F1985DA0F30371B437689ACFD
-  # joerg
-  # matchbox
+    key_groups:
+    - pgp:
+      - *joerg
+      - *turingmachine
   - path_regex: matchbox/secrets/[^/]+\.yaml$
-    pgp: >-
-      F095F28F7B1BA4DD0D93554EE179454B201E23CA,
-      13d0b443fe935edf44f9b472d8abdace2bcf8e4b
-  # joerg
-  # eddie
+    key_groups:
+    - pgp:
+      - *joerg
+      - *matchbox
   - path_regex: eddie/secrets/[^/]+\.yaml$
-    pgp: >-
-      F095F28F7B1BA4DD0D93554EE179454B201E23CA,
-      CC48DB9AC67E71DA343B47D594933BDDF739BEB3
-  # joerg
-  # eve
-  # eva
-  # rock
+    key_groups:
+    - pgp:
+      - *joerg
+      - *eddie
   - path_regex: secrets/ldap\.yaml$
-    pgp: >-
-      F095F28F7B1BA4DD0D93554EE179454B201E23CA,
-      C5A6167F97F68FD053571E8B04188BA1509DCDC5,
-      464E02307E15D115D8D666ADE0BD184A633C5C72,
-      F139840C191C75322AC3D4516BE2046130150E21
-  # joerg
-  # eva
-  # turingmachine
+    key_groups:
+    - pgp:
+      - *joerg
+      - *eve
+      - *eva
+      - *rock
   - path_regex: secrets/telegraf\.yaml$
-    pgp: >-
-      F095F28F7B1BA4DD0D93554EE179454B201E23CA,
-      464E02307E15D115D8D666ADE0BD184A633C5C72,
-      50612B0983F7FA2F1985DA0F30371B437689ACFD
-  # joerg
-  # rock
+    key_groups:
+    - pgp:
+      - *joerg
+      - *eva
+      - *turingmachine
   - path_regex: rock/secrets/[^/]+\.yaml$
-    pgp: >-
-      F095F28F7B1BA4DD0D93554EE179454B201E23CA,
-      F139840C191C75322AC3D4516BE2046130150E21
-  # joerg
-  # eddie
-  # eve
-  # turingmachine
-  # eva
-  # matchbox
-  # rock
+    key_groups:
+    - pgp:
+      - *joerg
+      - *rock
   - path_regex: secrets/[^/]+\.yaml$
-    pgp: >-
-      F095F28F7B1BA4DD0D93554EE179454B201E23CA,
-      CC48DB9AC67E71DA343B47D594933BDDF739BEB3,
-      C5A6167F97F68FD053571E8B04188BA1509DCDC5,
-      50612B0983F7FA2F1985DA0F30371B437689ACFD,
-      464E02307E15D115D8D666ADE0BD184A633C5C72,
-      13d0b443fe935edf44f9b472d8abdace2bcf8e4b,
-      F139840C191C75322AC3D4516BE2046130150E21
+    key_groups:
+    - pgp:
+      - *joerg
+      - *eddie
+      - *eve
+      - *turingmachine
+      - *eva
+      - *matchbox
+      - *rock
