@@ -11,7 +11,7 @@ steps:
 - name: build
   commands:
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
-  - nix shell nixpkgs#git nixpkgs#nix-build-uncached -c nix-build-uncached -build-flags "--out-link $BUILDDIR/gcroots.tmp/result" ./nixos/ci.nix
+  - nix shell nixpkgs#git -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -190,6 +190,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 9119ae479eecdbf1f1d1052ca53bda1568b8f44ec863c7429d543d154a725633
+hmac: 9ea2bfdd64c51f0b1f6bd0dff73143e1fc95f00c9e460171637ecf3c10ed3a16
 
 ...
