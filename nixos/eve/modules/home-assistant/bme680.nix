@@ -11,11 +11,20 @@
          for = "00:10:00";
        };
        action = [{
-         service = "notify.pushover";
-         data_template.message = "Open a window!";
-       } {
          service = "rest_command.tts";
          data_template.message = ''Open a window, please.'';
+       }];
+     } {
+       alias = "close the window notification";
+       trigger = {
+         platform = "numeric_state";
+         entity_id  = "sensor.bme680_temperature";
+         below = 19;
+         for = "00:10:00";
+       };
+       action = [{
+         service = "rest_command.tts";
+         data_template.message = ''Close the window, please.'';
        }];
      }];
   };
