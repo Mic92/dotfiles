@@ -52,6 +52,8 @@ in {
     #};
 
     security.acme.certs = {
+      "lekwati.com" = sanCertificate  { domain = "lekwati.com"; };
+      "legacy-lekwati.com" = sanCertificate  { domain = "lekwati.com"; rsa = true; };
       "thalheim.io" = sanCertificate  { domain = "thalheim.io"; };
       "legacy-thalheim.io" = sanCertificate { domain = "thalheim.io"; rsa = true; };
       "devkid.net" = sanCertificate { domain = "devkid.net"; };
