@@ -14,6 +14,25 @@
         proxy_send_timeout 12h;
       '';
     };
+
+    services.weechat.enable = true;
+    virtualHosts."lekwati.com" = {
+      useACMEHost = "lekwati.com";
+      forceSSL = true;
+    };
+    virtualHosts."glowing-bear.lekwati.com" = {
+      useACMEHost = "lekwati.com";
+      forceSSL = true;
+      root = pkgs.glowing-bear;
+      locations."/weechat".extraConfig = ''
+        proxy_pass  http://localhost:4243/weechat;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_read_timeout 12h;
+        proxy_send_timeout 12h;
+      '';
+    };
   };
 }
 
