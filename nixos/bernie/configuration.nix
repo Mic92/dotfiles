@@ -5,6 +5,7 @@
 { config, pkgs, lib, ... }:
 {
   imports = [
+    #./modules/telegraf.nix
     ../modules/packages.nix
     ../modules/users.nix
     ../modules/zfs.nix
@@ -64,5 +65,6 @@
   services.printing = {
     enable = true;
     browsing = true;
+    drivers = [ pkgs.gutenprint ];
   };
 }
