@@ -1,5 +1,6 @@
 { pkgs, ...}: 
 {
+  services.weechat.enable = true;
   services.nginx = {
     virtualHosts."glowing-bear.thalheim.io" = {
       useACMEHost = "thalheim.io";
@@ -15,7 +16,6 @@
       '';
     };
 
-    services.weechat.enable = true;
     virtualHosts."lekwati.com" = {
       useACMEHost = "lekwati.com";
       forceSSL = true;
