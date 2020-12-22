@@ -149,7 +149,7 @@
           send = "SSH-2.0-Telegraf";
           expect = "SSH-2.0";
         }) [
-          "rock"
+          #"rock"
           "eve"
           "amy"
           "donna"
@@ -292,10 +292,10 @@
           urls = [ "https://thalheim.io" ];
           tags.host = "eve";
           response_string_match = "Higgs-Boson";
-        } {
-          urls = [ "http://loki.r/ready" ];
-          tags.host = "rock";
-          response_string_match = "ready";
+        #} {
+        #  urls = [ "http://loki.r/ready" ];
+        #  tags.host = "rock";
+        #  response_string_match = "ready";
         } {
           urls = [
             "https://cloud.thalheim.io/login"

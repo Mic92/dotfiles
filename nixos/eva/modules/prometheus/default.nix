@@ -18,7 +18,7 @@
         targets = [
           "eva.r:9273"
           "eve.r:9273"
-          "rock.r:9273"
+          #"rock.r:9273"
 
           # university
           "rose.r:9273"
