@@ -12,7 +12,7 @@
       ExitNodes = "{de}";
       EntryNodes = "{de}";
       NewCircuitPeriod = 120;
-      DNSPort = 9053:
+      DNSPort = 9053;
     };
   };
 
