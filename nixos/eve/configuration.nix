@@ -19,7 +19,6 @@
     ./modules/adminer.nix
     ./modules/bitwarden.nix
     ./modules/borgbackup
-    ./modules/docker.nix
     ./modules/dovecot.nix
     ./modules/drone.nix
     ./modules/ejabberd.nix
@@ -29,6 +28,7 @@
     ./modules/influxdb.nix
     ./modules/ipfs.nix
     ./modules/iperf.nix
+    ./modules/k8s.nix
     ./modules/knot
     ./modules/kresd.nix
     ./modules/mastodon-hnbot.nix
