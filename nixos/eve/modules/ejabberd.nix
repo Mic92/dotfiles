@@ -308,9 +308,9 @@
   users.users.ejabberd.extraGroups = [ "keys" ];
   systemd.services.ejabberd.serviceConfig.SupplementaryGroups = [ "keys" ];
 
-  services.tor.hiddenServices."jabber".map = [
-    { port = "5222"; }
-    { port = "5269"; }
+  services.tor.relay.onionServices."jabber".map = [
+    { port = 5222; }
+    { port = 5269; }
   ];
 
   networking.firewall.allowedTCPPorts = [
