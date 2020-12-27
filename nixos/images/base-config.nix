@@ -36,17 +36,9 @@ in {
       '';
     }) { "0" = {}; "1" = {}; "2" = {}; "3" = {}; };
 
-  services.tor = {
-    enable = true;
-    hiddenServices."ssh".map = [ { port = 22; } ];
-    extraConfig = ''
-      SocksPort 0
-      HiddenServiceNonAnonymousMode 1
-      HiddenServiceSingleHopMode 1
-      ExitNodes {de}
-      NewCircuitPeriod 120
-    '';
-  };
+  imports = [
+    ../modules/tor-ssh.nix
+  ];
 
   systemd.services.hidden-ssh-announce = {
     description = "irc announce hidden ssh";
@@ -71,8 +63,6 @@ in {
     };
   };
 
-  services.openssh.enable = true;
-  boot.zfs.enableUnstable = true;
   systemd.services.sshd.wantedBy = lib.mkForce [ "multi-user.target" ];
 
   users.extraUsers.root.openssh.authorizedKeys.keys = [
