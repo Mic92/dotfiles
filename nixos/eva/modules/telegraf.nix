@@ -314,6 +314,7 @@
             host = "mashinenraum";
             org = "krebs";
           };
+          response_string_match = "backoffice";
         }];
 
         dns_query = {
