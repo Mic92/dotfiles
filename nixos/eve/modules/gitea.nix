@@ -18,6 +18,7 @@
       HOST = "mail.thalheim.io:587";
     };
     settings.server.DISABLE_ROUTER_LOG = true;
+    httpPort = 3002;
   };
 
   sops.secrets.gitea-mail.owner = config.systemd.services.gitea.serviceConfig.User;
@@ -26,7 +27,7 @@
     useACMEHost = "thalheim.io";
     forceSSL = true;
     locations."/".extraConfig = ''
-      proxy_pass http://localhost:3000;
+      proxy_pass http://localhost:3002;
     '';
   };
 
