@@ -1,14 +1,22 @@
 { config, pkgs, ... }: {
   virtualisation.docker.storageDriver = "zfs";
 
-  #services.kubernetes = {
-  #  addons.dashboard.enable = true;
-  #  proxy.hostname = "eve.thalheim.io";
+  services.kubernetes = {
+    addons.dashboard.enable = true;
+    masterAddress = "eve.r";
+    proxy.hostname = "eve.thalheim.io";
 
-  #  easyCerts = true;
-  #  roles = [ "master" "node" ];
-  #  masterAddress = "eve.r";
-  #};
+    apiserver = {
+      securePort = 8443;
+      advertiseAddress = "eve.r";
+    };
+
+    addons.dns.enable = true;
+
+    easyCerts = true;
+    roles = [ "master" "node" ];
+  };
+
   environment.systemPackages = [
     (pkgs.runCommand "wrap-kubectl" {
       nativeBuildInputs = [ pkgs.makeWrapper ];
