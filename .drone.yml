@@ -18,7 +18,7 @@ steps:
 
 - name: upload
   commands:
-  - "\n      nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json\n      # only local built derivations\n      # drone-runner-exec-chroot contains character device files\n      nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null and (.path | contains(\"drone-runner-exec-chroot\") | not))) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths\n      nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths\n      "
+  - "\n      nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json\n      # only local built derivations\n      # drone-runner-exec-chroot contains character device files\n      nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null and (.path | contains(\"drone-runner-exec-chroot\") | not))) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths\n      grep drone-runner-exec paths\n      nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths\n      "
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     CACHIX_SIGNING_KEY:
@@ -190,6 +190,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 85bbe791158283c4aa1c59af40d6bd9953efd2eb9949d01f42e66f030b77e311
+hmac: ba0c2d481e369e3c4104498d216d62d22ffef44a4635fdc891ee30c3da52cf6b
 
 ...
