@@ -29,6 +29,19 @@ in {
     lib = krops.lib;
   };
   apps.irc-announce = nurPkgs.repos.mic92.irc-announce;
+
+  apps.hm-switch = pkgs.writeScriptBin "hm-flake-switch" ''
+    #!${pkgs.runtimeShell}
+    tmpdir=$(mktemp -d)
+    trap "rm -rf $tmpdir" EXIT
+    declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve")
+    profile=''${profiles[$HOSTNAME]}
+
+    flake=$(nix flake info --json ${./.} | ${pkgs.jq}/bin/jq -r .url)
+    nix build --out-link "$tmpdir/result" "$flake#hmConfigurations.''${profile:-common}.activationPackage"
+    link=$(realpath $tmpdir/result)
+    $link/activate
+  '';
 })) // {
   nixosConfigurations = import ./nixos/configurations.nix {
     #nixpkgs = toString <nixpkgs>;
