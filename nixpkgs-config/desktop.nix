@@ -128,6 +128,7 @@ in {
     wmc-mpris
     playerctl
     youtube-dl
+    mumble
 
     isync
     mu
