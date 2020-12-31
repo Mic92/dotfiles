@@ -11,9 +11,6 @@
       map to guest = Bad User
       max log size = 50
       dns proxy = no
-      load printers = yes
-      printing = cups
-      printcap name = cups
       security = user
 
       [global]

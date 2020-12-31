@@ -26,6 +26,8 @@
 
   networking.hostName = "matchbox";
 
+  time.timeZone = "UTC";
+
   environment.systemPackages = with pkgs; [
     tmux
     htop
