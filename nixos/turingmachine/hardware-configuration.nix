@@ -8,6 +8,8 @@
     "${modulesPath}/installer/scan/not-detected.nix"
   ];
 
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+
   # on demand
   services.fwupd.enable = false;
 
@@ -35,6 +37,7 @@
     };
     pulseaudio = {
       enable = true;
+      extraModules = [ pkgs.pulseaudio-modules-bt ];
       package = pkgs.pulseaudioFull;
     };
   };
