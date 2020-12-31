@@ -310,15 +310,6 @@
         } {
           urls = ["https://influxdb.thalheim.io:8086/ping"];
           tags.host = "eve";
-        } {
-          urls = [
-            "https://maschinenraum.rc3.world/backoffice/"
-          ];
-          tags = {
-            host = "mashinenraum";
-            org = "krebs";
-          };
-          response_string_match = "backoffice";
         }];
 
         dns_query = {
