@@ -22,8 +22,9 @@ build = {
       nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
       # only local built derivations
       # drone-runner-exec-chroot contains character device files
-      nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null and (.path | contains("drone-runner-exec-chroot") | not))) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
-      grep drone-runner-exec paths
+      nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
+      echo sleep for an hour
+      sleep 3600
       nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths
       """,
     ],
