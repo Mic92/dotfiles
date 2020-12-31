@@ -6,6 +6,7 @@
     ../modules/tor-ssh.nix
     ../modules/telegraf.nix
     ../modules/rpi3.nix
+    ../modules/promtail.nix
 
     ./modules/borgbackup.nix
     ./modules/samba.nix
