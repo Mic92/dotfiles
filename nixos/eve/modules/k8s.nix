@@ -1,33 +1,36 @@
 { config, pkgs, ... }: {
   virtualisation.docker.storageDriver = "zfs";
 
-  services.kubernetes = {
-    addons.dashboard.enable = true;
-    masterAddress = "eve.r";
-    proxy.hostname = "eve.thalheim.io";
+  #services.kubernetes = {
+  #  #addons.dns.enable = true;
+  #  #addons.dashboard.enable = true;
+  #  masterAddress = "eve.r";
+  #  kubeconfig.server = "https://10.243.29.174:8443";
+  #  proxy.hostname = "eve.r";
+  #  kubelet.nodeIp = "10.243.29.174";
 
-    apiserver = {
-      securePort = 8443;
-      advertiseAddress = "eve.r";
-    };
+  #  apiserverAddress = "https://10.243.29.174:8443";
+  #  apiserver.advertiseAddress = "10.243.29.174";
 
-    addons.dns.enable = true;
+  #  apiserver.securePort = 8443;
 
-    easyCerts = true;
-    roles = [ "master" "node" ];
-  };
+  #  easyCerts = true;
+  #  roles = [ "master" "node" ];
+  #};
 
-  environment.systemPackages = [
-    (pkgs.runCommand "wrap-kubectl" {
-      nativeBuildInputs = [ pkgs.makeWrapper ];
-    } ''
-      mkdir -p $out/bin
-      makeWrapper ${pkgs.kubernetes}/bin/kubectl $out/bin/kubectl \
-        --set KUBECONFIG "/etc/kubernetes/cluster-admin.kubeconfig"
-    '')
-  ];
+  #environment.systemPackages = [
+  #  (pkgs.runCommand "wrap-kubectl" {
+  #    nativeBuildInputs = [ pkgs.makeWrapper ];
+  #  } ''
+  #    mkdir -p $out/bin
+  #    makeWrapper ${pkgs.kubernetes}/bin/kubectl $out/bin/kubectl \
+  #      --set KUBECONFIG "/etc/kubernetes/cluster-admin.kubeconfig"
+  #  '')
+  #];
 
-  networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [
-    6443
-  ];
+  #networking.firewall.allowedTCPPorts = [
+  #  8443
+  #];
+  #networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [
+  #];
 }
