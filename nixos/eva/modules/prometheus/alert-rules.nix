@@ -38,6 +38,7 @@ in lib.mapAttrsToList (name: opts: {
       "borgbackup-eve"
       "borgbackup-datastore"
       "borgbackup-martha"
+      "borgbackup-matchbox"
     ] (name: {
       condition = ''absent_over_time(task_last_run{name="${name}"}[1d])'';
       summary = "status of ${name} is unknown";
