@@ -30,17 +30,10 @@
     encryption.mode = "none";
     startAt = "Mon,Fri *-*-* 00:00:00";
     removableDevice = true;
-    preHook = ''
-      set -x
-      hc_token=$(cat ${config.sops.secrets.healthcheck-borgbackup.path})
-      ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$hc_token/start
-    '';
     postHook = ''
-      if [[ "$exitStatus" == "0" ]]; then
-        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$hc_token
-      else
-        ${pkgs.curl}/bin/curl -XPOST -fsS --retry 3 https://hc-ping.com/$hc_token/fail
-      fi
+      cat > /var/log/telegraf/borgbackup-matchbox <<EOF
+      task,frequency=daily last_run=$(date +%s)i,state="$([[ $exitStatus == 0 ]] && echo ok || echo fail)"
+      EOF
     '';
     prune.keep = {
       within = "1d"; # Keep all archives from the last day
@@ -50,6 +43,9 @@
     };
   };
 
+  systemd.services.borgbackup-job-turingmachine.serviceConfig.ReadWritePaths = [
+    "/var/log/telegraf"
+  ];
+
   sops.secrets.smb-secrets = {};
-  sops.secrets.healthcheck-borgbackup = {};
 }
