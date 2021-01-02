@@ -43,7 +43,7 @@
     };
   };
 
-  systemd.services.borgbackup-job-turingmachine.serviceConfig.ReadWritePaths = [
+  systemd.services.borgbackup-job-matchbox.serviceConfig.ReadWritePaths = [
     "/var/log/telegraf"
   ];
 
