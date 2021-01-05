@@ -45,10 +45,11 @@ steps:
     - success
 
 trigger:
+  branch:
+  - master
   event:
-    exclude:
-    - promote
-    - rollback
+  - push
+  - pull_request
 
 ---
 kind: pipeline
@@ -190,6 +191,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 48e97f3bd12ee40958c261e2b2ca70181a20fdc3c9d99209b4b836f8ca757b12
+hmac: 4e2a410e1a09b48e07cdae9c863cf496f260ea2da0a41e3b2b383beef3b41360
 
 ...

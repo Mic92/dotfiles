@@ -45,10 +45,8 @@ build = {
     },
   }],
   "trigger": {
-    "event": {
-      "branch": 'master',
-      "exclude": ['promote', 'rollback'],
-    },
+    "branch": 'master',
+    "event": [ "push", "pull_request"],
   },
 };
 
