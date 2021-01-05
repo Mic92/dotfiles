@@ -78,11 +78,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1609573857,
-        "narHash": "sha256-AlCR2ffY5ZOwwazzhM3BuQ5Z82JiNV4mur6p7RMoR6g=",
+        "lastModified": 1609665715,
+        "narHash": "sha256-O5Cy3BgKBoZFM2ZdjndYeQNxESI2ZcMdke60wZ6uPgk=",
         "owner": "rycee",
         "repo": "home-manager",
-        "rev": "73506f947c3a2f63306233358231b069865d1d56",
+        "rev": "b9597e57747f227317affdfa2f97fee8e167c33f",
         "type": "github"
       },
       "original": {
@@ -171,11 +171,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1609494683,
-        "narHash": "sha256-U3nfwAFQegar1Y2JkfEumYE8N3Oqcb0m7bm58TVmvIE=",
+        "lastModified": 1609860595,
+        "narHash": "sha256-tCI2VEPBicKp7fP079RrvqAcgQkiMq6u/pOkwG8Wrmo=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "27927cfff834c94aa50a057b2df7d1061d444cff",
+        "rev": "13c4c4662d26ee536d588aec79935c4d525d1e06",
         "type": "github"
       },
       "original": {
@@ -187,11 +187,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1609643133,
-        "narHash": "sha256-MeCqEu8+MDRI0URwFkR0EGXR/6EkOCagR6BOaHZRroA=",
+        "lastModified": 1609820015,
+        "narHash": "sha256-iM7ZKftQmiCv+3zKsPrlOaoiebg+xUjJ5QWbXYPRky4=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "8939b6d4b78f6796467e692ca1e96ae9d2770564",
+        "rev": "cd4f1244f3c65671ddaca5e66495b2fb7aea73dd",
         "type": "github"
       },
       "original": {
@@ -202,11 +202,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1609455256,
-        "narHash": "sha256-q9yfxRB8dq6cV+zfvKzw5MzWU1umyDOvYVi6iosCoPk=",
+        "lastModified": 1609851286,
+        "narHash": "sha256-foUVOb6Lf6u71Bkpdf02Iwv+dYVDfhWctNWrZ8etYrI=",
         "ref": "master",
-        "rev": "dfaced4d1dd175c2f77c810656421df85f5d9e38",
-        "revCount": 53,
+        "rev": "bacb66ea745ba3712f60c9685b5bb3b7c88612a6",
+        "revCount": 54,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },
