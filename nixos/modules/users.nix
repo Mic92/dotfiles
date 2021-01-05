@@ -8,7 +8,7 @@ in {
     joerg = {
       isNormalUser = true;
       home = "/home/joerg";
-      extraGroups = [ "wheel" "docker" "plugdev" "vboxusers" "adbusers" "input" "kvm" "wireshark" ];
+      extraGroups = [ "audio" "wheel" "docker" "plugdev" "vboxusers" "adbusers" "input" "kvm" "wireshark" ];
       shell = "/run/current-system/sw/bin/zsh";
       uid = 1000;
       openssh.authorizedKeys.keys = [ key ];
