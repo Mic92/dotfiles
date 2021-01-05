@@ -155,8 +155,6 @@
     };
   };
 
-  hardware.pulseaudio.enable = true;
-
   security.audit.enable = false;
 
   #services.teamviewer.enable = true;
