@@ -17,7 +17,10 @@ let
       sha256 = "sha256-3CUqLde0NxFEQpYIbL0n7oueF7vEQRuz6tYerqPOL7k=";
     };
     buildInputs = [ pkgs.pandoc ];
-    installPhase = "pandoc --highlight-style pygments -s --toc README.md -o $out";
+    installPhase = ''
+      pandoc --highlight-style pygments -s --toc README.md | \
+        sed -e 's/<keyid>/\&lt;keyid\&gt;/g' > $out
+    '';
   };
 in {
   environment.interactiveShellInit = ''
