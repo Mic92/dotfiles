@@ -18,7 +18,7 @@
     "console=tty1"
   ];
 
-  services.mingetty.serialSpeed = [ 1500000 115200 ];
+  services.getty.serialSpeed = [ 1500000 115200 ];
 
   services.udev.extraRules = ''
     KERNEL=="mali", MODE="0660", GROUP="video"
