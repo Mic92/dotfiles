@@ -79,7 +79,9 @@
 
   console.keyMap = "us";
   # Capslock -> Enter
-  console.keyMapOverrides = "keycode 58 = Return";
+  console.keyMapOverrides = ''
+    keycode 58 = Return
+  '';
 
   i18n.defaultLocale = "en_DK.UTF-8";
 
