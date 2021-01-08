@@ -51,8 +51,10 @@
 
   #programs.captive-browser.enable = true;
   #programs.captive-browser.interface = "wlan0";
-
+  #
   boot = {
+    zfs.requestEncryptionCredentials = [ "zroot/root" ];
+
     loader.systemd-boot.enable = true;
     # when installing toggle this
     loader.efi.canTouchEfiVariables = false;
@@ -76,6 +78,9 @@
   networking.hostName = "turingmachine";
 
   console.keyMap = "us";
+  # Capslock -> Enter
+  console.keyMapOverrides = "keycode 58 = Return";
+
   i18n.defaultLocale = "en_DK.UTF-8";
 
   # Manual timezones, also see modules/networkmanager.py
