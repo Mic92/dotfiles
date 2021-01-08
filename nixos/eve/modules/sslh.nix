@@ -4,7 +4,6 @@ with lib;
 {
   services.sslh = {
     enable = true;
-    transparent = true;
     port = 443;
     listenAddresses = [ "0.0.0.0" ];
     appendConfig = ''
