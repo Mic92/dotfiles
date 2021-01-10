@@ -1,7 +1,19 @@
-{ pkgs, config, ... }: {
+{ pkgs, config, lib, ... }: let
+
+  maxUploadSize = "256M";
+  toKeyValue = lib.generators.toKeyValue {
+    mkKeyValue = lib.generators.mkKeyValueDefault {} " = ";
+  };
+in {
   services.phpfpm.pools.rainloop = {
     user = "rainloop";
     group = "rainloop";
+    phpOptions = toKeyValue {
+      upload_max_filesize = maxUploadSize;
+      post_max_size = maxUploadSize;
+      memory_limit = maxUploadSize;
+    };
+
     settings = {
       "listen.owner" = "nginx";
       "listen.group" = "nginx";
@@ -29,6 +41,9 @@
         include ${pkgs.nginx}/conf/fastcgi_params;
         fastcgi_param   SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_pass unix:${config.services.phpfpm.pools.rainloop.socket};
+      '';
+      extraConfig = ''
+        client_max_body_size ${maxUploadSize};
       '';
       root = (pkgs.rainloop-community.override {
         dataPath = "/var/lib/rainloop";
