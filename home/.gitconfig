@@ -29,6 +29,7 @@
   tool = vim -d
   conflictstyle = diff3
 [alias]
+  rb = "rebase origin/HEAD"
   get = clone --recursive
   blame = -w -M
   update = !git pull && git submodule update --init --recursive
