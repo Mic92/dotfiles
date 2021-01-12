@@ -28,7 +28,6 @@
       "/mnt/hdd/public/Joerg"
     ];
     encryption.mode = "none";
-    startAt = "Mon,Fri *-*-* 00:00:00";
     removableDevice = true;
     postHook = ''
       cat > /var/log/telegraf/borgbackup-matchbox <<EOF
