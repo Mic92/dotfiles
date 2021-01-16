@@ -7,6 +7,7 @@ build = {
   "name": 'Build NixOS and home-manager',
   "kind": 'pipeline',
   "type": 'exec',
+  "clone": {  "depth": 1 },
   "steps": [{
     "name": 'build',
     "commands": [

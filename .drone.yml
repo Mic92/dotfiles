@@ -7,6 +7,9 @@ platform:
   os: linux
   arch: amd64
 
+clone:
+  depth: 1
+
 steps:
 - name: build
   commands:
@@ -191,6 +194,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 4e2a410e1a09b48e07cdae9c863cf496f260ea2da0a41e3b2b383beef3b41360
+hmac: 9fb7ac620a7efd72f1c5461023c863fefbeb5b1832d75e52c0d4eaae2777e031
 
 ...
