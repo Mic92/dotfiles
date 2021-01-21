@@ -378,6 +378,10 @@ if [[ -n ${commands[nix]} ]]; then
   n() {
     NIX_RUN_ARGS="$@${NIX_RUN_ARGS+ }${NIX_RUN_ARGS}" nix shell "$@" -f '<nixpkgs>' -c zsh
   }
+  nbuild() {
+    nix build --no-link "$@"
+    nix path-info "$@"
+  }
 fi
 
 nix-call-package() {
