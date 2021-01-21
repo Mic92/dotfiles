@@ -29,7 +29,8 @@ let
   '';
 in {
   services.home-assistant.config.intent_script = {
-    Noop.speech.text = "${okay} {{ okay () }}";
+    #Noop.speech.text = "${okay} {{ okay () }}";
+    Noop.speech.text = "";
     FuckOff.speech.text = "Fuck yourself.";
     NotAGirl.speech.text = "Not a girl";
     Siri.speech.text = "Siri is a cunt";
