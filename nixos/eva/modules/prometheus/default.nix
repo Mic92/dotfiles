@@ -1,6 +1,16 @@
 { config, lib, pkgs, ... }:
 
-{
+let
+  irc-alerts = pkgs.stdenv.mkDerivation {
+    name = "irc-alerts";
+    src = ./irc-alerts.py;
+    dontUnpack = true;
+    buildInputs = [ pkgs.python3 ];
+    installPhase = ''
+      install -D -m755 $src $out/bin/irc-alerts
+    '';
+  };
+in {
   services.prometheus = {
     enable = true;
     ruleFiles = [(pkgs.writeText "prometheus-rules.yml" (builtins.toJSON {
@@ -29,15 +39,9 @@
           "clara.r:9273"
           "doctor.r:9273"
         ];
-      }];
-    } {
-      job_name = "healtchecks";
-      scrape_interval = "120s";
-      scheme = "https";
-
-      metrics_path = "/projects/19949858-209b-4d47-99f3-ca27e9b0dd96/metrics/-YJxfazBu__IIQmIyze5_SHKTxtJg0PR";
-      static_configs = [{
-        targets = [ "healthchecks.io" ];
+      } {
+        targets = [ "build01.nix-community.org:9273" ];
+        labels.org = "nix-community";
       }];
     }];
     alertmanagers = [{
@@ -72,6 +76,13 @@
           receiver = "krebs";
         } {
           group_by = [ "host" ];
+          match_re.org = "nix-community";
+          group_wait = "5m";
+          group_interval = "5m";
+          repeat_interval = "4h";
+          receiver = "nix-community";
+        } {
+          group_by = [ "host" ];
           group_wait = "30s";
           group_interval = "2m";
           repeat_interval = "2h";
@@ -82,6 +93,12 @@
         name = "krebs";
         webhook_configs = [{
           url = "http://127.0.0.1:9223/";
+          max_alerts = 5;
+        }];
+      } {
+        name = "nix-community";
+        webhook_configs = [{
+          url = "http://127.0.0.1:9224/";
           max_alerts = 5;
         }];
       } {
@@ -100,26 +117,48 @@
     };
   };
 
-  systemd.sockets.irc-alerts = {
-    description = "Receive http hook and send irc message";
-    wantedBy = [ "sockets.target" ];
-    listenStreams = [ "[::]:9223" ];
-  };
+  systemd.sockets = lib.mapAttrs' (name: opts:
+    lib.nameValuePair "irc-alerts-${name}" {
+      description = "Receive http hook and send irc message for ${name}";
+      wantedBy = [ "sockets.target" ];
+      listenStreams = [ "[::]:${builtins.toString opts.port}" ];
+    }) {
+      krebs.port = 9223;
+      nix-community.port = 9224;
+    };
 
-  systemd.services.irc-alerts = let
-    irc-alerts = pkgs.stdenv.mkDerivation {
-      name = "irc-alerts";
-      src = ./irc-alerts.py;
-      dontUnpack = true;
-      buildInputs = [ pkgs.python3 ];
-      installPhase = ''
-        install -D -m755 $src $out/bin/irc-alerts
-      '';
-    }; in {
-      requires = [ "irc-alerts.socket" ];
+  sops.secrets.prometheus-irc-password = {};
+
+  systemd.services = lib.mapAttrs' (name: opts:
+    let
+      serviceName = "irc-alerts-${name}";
+      hasPassword = opts.passwordFile or null != null;
+    in
+    lib.nameValuePair serviceName {
+      description = "Receive http hook and send irc message for ${name}";
+      requires = [ "irc-alerts-${name}.socket" ];
       serviceConfig = {
-        Environment = "IRC_URL=irc://prometheus@irc.r:6667/#xxx";
+        Environment = [
+          "IRC_URL=${opts.url}"
+        ] ++ lib.optional hasPassword "IRC_PASSWORD_FILE=/run/${serviceName}/password";
+        DynamicUser = true;
+        User = serviceName;
         ExecStart = "${irc-alerts}/bin/irc-alerts";
+      } // lib.optionalAttrs hasPassword {
+        PermissionsStartOnly = true;
+        ExecStartPre = "${pkgs.coreutils}/bin/install -m400 " +
+                       "-o ${serviceName} -g ${serviceName} " +
+                       "${config.sops.secrets.prometheus-irc-password.path} " +
+                       "/run/${serviceName}/password";
+        RuntimeDirectory = serviceName;
+      };
+    }) {
+      krebs = {
+        url = "irc://prometheus@irc.r:6667/#xxx";
+      };
+      nix-community = {
+        url = "irc+tls://nix-prometheus@chat.freenode.net/#nix-community";
+        passwordFile = config.sops.secrets.prometheus-irc-password.path;
       };
     };
 }

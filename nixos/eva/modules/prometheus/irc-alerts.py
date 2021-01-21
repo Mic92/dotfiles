@@ -6,16 +6,20 @@ import sys
 import cgi
 import json
 import ssl
+import base64
 from http.server import BaseHTTPRequestHandler
 from typing import Tuple, Optional, List
 from urllib.parse import urlparse
+
+DEBUG = False
 
 
 def _irc_send(
     server: str,
     nick: str,
-    password: Optional[str],
     channel: str,
+    sasl_password: Optional[str] = None,
+    server_password: Optional[str] = None,
     tls: bool = True,
     port: int = 6697,
     messages: List[str] = [],
@@ -30,14 +34,22 @@ def _irc_send(
         )
 
     def _send(command: str) -> int:
+        if DEBUG:
+            print(command)
         return sock.send((f"{command}\r\n").encode())
 
     print(f"connect {server}:{port}")
     sock.connect((server, port))
-    if password:
-        _send(f"PASS {password}")
-    _send(f"USER {nick} {server} bla :{nick}")
+    if server_password:
+        _send(f"PASS {server_password}")
+    _send("CAP REQ :sasl")
     _send(f"NICK {nick}")
+    _send(f"USER {nick} {server} bla :{nick}")
+    if sasl_password:
+        _send("AUTHENTICATE PLAIN")
+        auth = base64.encodebytes(f"{nick}\0{nick}\0{sasl_password}".encode("utf8"))
+        _send(f"AUTHENTICATE {auth.decode('ascii')}")
+        _send("CAP END")
     _send(f"JOIN :{channel}")
 
     for m in messages:
@@ -45,12 +57,13 @@ def _irc_send(
 
     _send("INFO")
 
-
     while True:
         data = sock.recv(4096)
         if not data:
             raise RuntimeError("Received empty data")
 
+        if DEBUG:
+            print(data.decode("utf8"))
         # Assume INFO reply means we are done
         if b"End of /INFO list" in data:
             break
@@ -63,60 +76,70 @@ def _irc_send(
     sock.close()
 
 
-def irc_send(url: str, notifications: List[str]) -> None:
+def irc_send(
+    url: str, notifications: List[str], password: Optional[str] = None
+) -> None:
     parsed = urlparse(f"{url}")
     username = parsed.username or "prometheus"
-    server = parsed.hostname or "chat.freenode.de"
+    server = parsed.hostname or "chat.freenode.net"
     if parsed.fragment != "":
         channel = f"#{parsed.fragment}"
     else:
         channel = "#krebs-announce"
     port = parsed.port or 6697
-    password = parsed.password
+    if not password:
+        password = parsed.password
     if len(notifications) == 0:
         return
     _irc_send(
         server=server,
         nick=username,
-        password=password,
+        sasl_password=password,
         channel=channel,
         port=port,
         messages=notifications,
-        tls=parsed.scheme == "irc+tls"
+        tls=parsed.scheme == "irc+tls",
     )
 
 
 class PrometheusWebHook(BaseHTTPRequestHandler):
-    def __init__(self, irc_url: str, conn: socket.socket, addr: Tuple[str, int]) -> None:
+    def __init__(
+        self,
+        irc_url: str,
+        conn: socket.socket,
+        addr: Tuple[str, int],
+        password: Optional[str] = None,
+    ) -> None:
         self.irc_url = irc_url
+        self.password = password
         self.rfile = conn.makefile("rb")
         self.wfile = conn.makefile("wb")
         self.client_address = addr
         self.handle()
 
     # for testing
-    def do_GET(self):
+    def do_GET(self) -> None:
         self.send_response(200)
-        self.send_header(b"Content-type", "text/plain")
+        self.send_header("Content-type", "text/plain")
         self.end_headers()
         self.wfile.write(b"ok")
 
-    def do_POST(self):
-        content_type, _ = cgi.parse_header(self.headers.get('content-type'))
+    def do_POST(self) -> None:
+        content_type, _ = cgi.parse_header(self.headers.get("content-type"))
 
         # refuse to receive non-json content
-        if content_type != 'application/json':
+        if content_type != "application/json":
             self.send_response(400)
             self.end_headers()
             return
 
-        length = int(self.headers.get('content-length'))
+        length = int(self.headers.get("content-length"))
         payload = json.loads(self.rfile.read(length))
         messages = []
         for alert in payload["alerts"]:
-            summary = alert['annotations']['summary']
+            summary = alert["annotations"]["summary"]
             messages.append(f"{alert['status']}: {summary}")
-        irc_send(self.irc_url, messages)
+        irc_send(self.irc_url, messages, password=self.password)
 
         self.do_GET()
 
@@ -124,13 +147,30 @@ class PrometheusWebHook(BaseHTTPRequestHandler):
 def systemd_socket_response() -> None:
     irc_url = os.environ.get("IRC_URL", None)
     if irc_url is None:
-        print("IRC_URL environment variable not set: i.e. IRC_URL=irc+tls://mic92-prometheus@chat.freenode.de#krebs-announce", file=sys.stderr)
+        print(
+            "IRC_URL environment variable not set: i.e. IRC_URL=irc+tls://mic92-prometheus@chat.freenode.net/#krebs-announce",
+            file=sys.stderr,
+        )
         sys.exit(1)
+
+    password = None
+    irc_password_file = os.environ.get("IRC_PASSWORD_FILE", None)
+    if irc_password_file:
+        with open(irc_password_file) as f:
+            password = f.read()
+
+    msgs = sys.argv[1:]
+
+    if msgs != []:
+        irc_send(irc_url, msgs, password=password)
+        return
 
     nfds = os.environ.get("LISTEN_FDS", None)
     if nfds is None:
-        print("LISTEN_FDS not set. Run me with systemd(TM) socket activation?",
-              file=sys.stderr)
+        print(
+            "LISTEN_FDS not set. Run me with systemd(TM) socket activation?",
+            file=sys.stderr,
+        )
         sys.exit(1)
     fds = range(3, 3 + int(nfds))
 
@@ -140,7 +180,7 @@ def systemd_socket_response() -> None:
 
         try:
             while True:
-                PrometheusWebHook(irc_url, *sock.accept())
+                PrometheusWebHook(irc_url, *sock.accept(), password=password)
         except BlockingIOError:
             # no more connections
             pass

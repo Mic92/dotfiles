@@ -89,13 +89,13 @@ in lib.mapAttrsToList (name: opts: {
   };
   reboot = {
     condition = "system_uptime < 300";
-    summary = "{{$labels.alias}}: Reboot";
-    description = "{{$labels.alias}} just rebooted.";
+    summary = "{{$labels.host}}: Reboot";
+    description = "{{$labels.host}} just rebooted.";
   };
   uptime = {
     condition = "system_uptime > 2592000";
-    summary = "{{$labels.alias}}: Uptime monster";
-    description = "{{$labels.alias}} has been up for more than 30 days.";
+    summary = "{{$labels.host}}: Uptime monster";
+    description = "{{$labels.host}} has been up for more than 30 days.";
   };
   telegraf_down = {
     condition = ''min(up{job=~"telegraf"}) by (source, job, instance) == 0'';
@@ -146,23 +146,23 @@ in lib.mapAttrsToList (name: opts: {
   # TODO
   #mail_down = {
   #  condition = ''up{job="mail"} == 0'';
-  #  summary = "{{$labels.alias}}: Mail exporter is down.";
-  #  description = "Mail exporter on {{$labels.alias}} hasn't been responding more than 2 minutes.";
+  #  summary = "{{$labels.host}}: Mail exporter is down.";
+  #  description = "Mail exporter on {{$labels.host}} hasn't been responding more than 2 minutes.";
   #};
   #mail_delivery_unsuccessful = {
   #  condition = "mail_deliver_success == 0";
-  #  summary = "{{$labels.alias}}: Mail delivery unsuccessful";
-  #  description = "{{$labels.alias}}: Mail delivery unsuccessful";
+  #  summary = "{{$labels.host}}: Mail delivery unsuccessful";
+  #  description = "{{$labels.host}}: Mail delivery unsuccessful";
   #};
   #mail_delivery_late = {
   #  condition = "increase(mail_late_mails_total[1h]) >= 1";
-  #  summary = "{{$labels.alias}}: Mail delivery late";
-  #  description = "{{$labels.alias}}: Mail delivery late";
+  #  summary = "{{$labels.host}}: Mail delivery late";
+  #  description = "{{$labels.host}}: Mail delivery late";
   #};
   #mail_send_fails = {
   #  condition = "increase(mail_send_fails_total[1h]) >= 1";
-  #  summary = "{{$labels.alias}}: Mail send failed";
-  #  description = "{{$labels.alias}}: Mail send failed";
+  #  summary = "{{$labels.host}}: Mail send failed";
+  #  description = "{{$labels.host}}: Mail send failed";
   #};
 
   postfix_queue_length = {
