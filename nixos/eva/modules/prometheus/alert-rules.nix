@@ -38,13 +38,17 @@ in lib.mapAttrsToList (name: opts: {
       "borgbackup-eve"
       "borgbackup-datastore"
       "borgbackup-martha"
-      "borgbackup-matchbox"
     ] (name: {
       condition = ''absent_over_time(task_last_run{name="${name}"}[1d])'';
       summary = "status of ${name} is unknown";
       description = "status of ${name} is unknown: no data for a day";
     }))
 // {
+  borgbackup-matchbox = {
+    condition = ''absent_over_time(task_last_run{name="borgbackup-matchbox"}[7d])'';
+    summary = "status of borgbackup-matchbox is unknown";
+    description = "status of borgbackup-matchbox is unknown: no data for a week";
+  };
   filesystem_full_in_1d = {
     condition = "predict_linear(disk_free{${deviceFilter}}[1d], 24*3600) <= 0";
     time = "1h";
