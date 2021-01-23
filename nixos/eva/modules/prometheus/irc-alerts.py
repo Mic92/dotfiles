@@ -42,7 +42,8 @@ def _irc_send(
     sock.connect((server, port))
     if server_password:
         _send(f"PASS {server_password}")
-    _send("CAP REQ :sasl")
+    if sasl_password:
+        _send("CAP REQ :sasl")
     _send(f"NICK {nick}")
     _send(f"USER {nick} {server} bla :{nick}")
     if sasl_password:
