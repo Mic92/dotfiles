@@ -9,6 +9,7 @@
     ../modules/packages.nix
     ../modules/users.nix
     ../modules/zfs.nix
+    ../modules/tracing.nix
     ./hardware-configuration.nix
   ];
   networking.retiolum = {
@@ -16,6 +17,7 @@
     ipv6 = "42:0:3c46:1452:ca55:fdaf:b12b:3027";
   };
 
+  boot.zfs.requestEncryptionCredentials = [ "zroot/root" ];
   boot.loader.systemd-boot.enable = true;
 
   users.extraUsers.shannan = {
@@ -46,17 +48,19 @@
   };
 
   environment.systemPackages = with pkgs; [
-    pkgs.firefox
-    pkgs.chromium
-    pkgs.celluloid
-    pkgs.mpv
-    pkgs.youtube-dl
-    pkgs.calibre
-    pkgs.libreoffice
-    pkgs.ferdi
-    pkgs.xournalpp
-    pkgs.zoom-us
-    pkgs.calibre
+    firefox
+    chromium
+    celluloid
+    mpv
+    youtube-dl
+    calibre
+    libreoffice
+    ferdi
+    xournalpp
+    zoom-us
+    calibre
+    evolution
+    signal-desktop
   ];
 
   documentation.doc.enable = false;

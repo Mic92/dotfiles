@@ -134,6 +134,7 @@ in {
     mu
     # to fix xdg-open
     glib
+    zoom-us
 
     jmtpfs # needed for charging? WTF
   ] ++ (with nur.repos.mic92; [
