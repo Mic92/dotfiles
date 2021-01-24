@@ -37,7 +37,7 @@ in {
       "/home/joerg/sync"
       "/home/joerg/git/OSX-KVM/mac_hdd_ng.img"
       "/home/joerg/mnt"
-      "/var/lib/docker"
+      "/var/lib/containerd"
       "/var/log/journal"
       "/var/cache"
       "/var/tmp"

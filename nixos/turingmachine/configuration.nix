@@ -132,13 +132,9 @@
     #lxc.enable = true;
     #lxd.enable = true;
     #rkt.enable = true;
+    #rkt.enable = true;
     virtualbox.host.enable = false;
-    docker = {
-      enable = true;
-      enableOnBoot = true;
-      storageDriver = "zfs";
-      extraOptions = "--userland-proxy=false --ip-masq=true --storage-opt=zfs.fsname=zroot/docker --dns=8.8.8.8";
-    };
+    podman.enable = true;
   };
 
   fonts.fontDir.enable = true;
