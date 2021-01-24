@@ -61,6 +61,7 @@
     calibre
     evolution
     signal-desktop
+    gimp
   ];
 
   documentation.doc.enable = false;
