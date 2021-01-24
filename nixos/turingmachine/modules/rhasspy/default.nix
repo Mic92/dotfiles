@@ -19,16 +19,30 @@
     };
   };
 
-  systemd.services.tts = {
+  systemd.services.tts = let
+    server = pkgs.stdenv.mkDerivation {
+      name = "tts-server";
+      dontUnpack = true;
+      nativeBuildInputs = [
+        pkgs.python3.pkgs.wrapPython
+      ];
+      propagatedBuildInputs = [ pkgs.tts pkgs.python3.pkgs.flask ];
+
+      installPhase = ''
+        install -D -m755 ${./server.py} $out/bin/tts-server
+      '';
+      postFixup = "wrapPythonPrograms";
+    };
+  in {
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       ExecStart = ''
-        ${pkgs.tts}/bin/tts-server \
-          --vocoder_config ./vocoder/config.json \
-          --vocoder_checkpoint ./vocoder/checkpoint_1450000.pth.tar \
-          --tts_config ./tts/config.json \
-          --tts_checkpoint ./tts/checkpoint_130000.pth.tar
+        ${server}/bin/tts-server \
+          --tts-config ./config.json \
+          --tts-checkpoint ./tts_model.pth.tar \
+          --vocoder-config ./config_vocoder.json \
+          --vocoder-checkpoint ./vocoder_model.pth.tar
       '';
       User = "joerg";
       WorkingDirectory = "/home/joerg/.config/rhasspy/profiles/en/tts";
