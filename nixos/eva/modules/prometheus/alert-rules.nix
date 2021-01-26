@@ -71,7 +71,7 @@ in lib.mapAttrsToList (name: opts: {
   };
 
   systemd_service_failed = {
-    condition = ''systemd_units_active_code == 3'';
+    condition = ''systemd_units_active_code{name!="nixpkgs-update.service"} == 3'';
     summary = "{{$labels.host}}: Service {{$labels.name}} failed to start.";
     description = "{{$labels.host}} failed to (re)start service {{$labels.name}}.";
   };
