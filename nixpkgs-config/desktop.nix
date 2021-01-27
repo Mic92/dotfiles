@@ -108,7 +108,7 @@ in {
     ncmpcpp
     xclip
     screen-message
-    alacritty
+    nur.repos.xeals.alacritty-ligatures
     sshfsFuse
     sshuttle
     jq
@@ -141,6 +141,9 @@ in {
     speedscope
     inxi
     source-code-pro-nerdfonts
+    (pkgs.nerdfonts.override {
+      fonts = [ "FiraCode" ];
+    })
   ]);
 
   systemd.user.timers.mbsync = {

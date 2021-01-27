@@ -3,13 +3,13 @@ scrolling:
 
 font:
   normal:
-    family: "SauceCodePro Nerd Font Mono"
+    family: "FiraCode Nerd Font Mono"
     style: Regular
   bold:
-    family: "SauceCodePro Nerd Font Mono"
+    family: "FiraCode Nerd Font Mono"
     style: Bold
   italic:
-    family: "SauceCodePro Nerd Font Mono"
+    family: "FiraCode Nerd Font Mono"
     style: Italic
   size: 10.0
 
