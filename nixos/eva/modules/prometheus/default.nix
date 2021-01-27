@@ -106,9 +106,6 @@ in {
         }];
       } {
         name = "all";
-        email_configs = [{
-          to = "joerg@thalheim.io";
-        }];
         pushover_configs = [{
           user_key = "$PUSHOVER_USER_KEY";
           token = "$PUSHOVER_TOKEN";
