@@ -10,6 +10,7 @@
 , flake-registry
 , bme680-mqtt
 , nix-ld
+, envfs
 , doom-emacs
 , nix-doom-emacs
 }:
@@ -56,6 +57,7 @@ in {
       retiolum
       nixos-hardware
       flake-registry bme680-mqtt
+      envfs
       nix-ld;
   };
 
