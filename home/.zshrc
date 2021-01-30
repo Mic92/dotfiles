@@ -253,11 +253,15 @@ zstyle ':completion:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w
 
 ## Prompt
 PURE_GIT_UNTRACKED_DIRTY=0 PURE_GIT_PULL=0
-zstyle :prompt:pure:git:branch blue
-zstyle :prompt:pure:git:branch:cached red
-PURE_PROMPT_SYMBOL=%%
+
+PURE_PROMPT_SYMBOL="%F{blue}╰─ %(?.%F{green}.%F{red})%%%f"
 source $HOME/.zsh-pure/async.zsh
 source $HOME/.zsh-pure/pure.zsh
+zstyle :prompt:pure:path color yellow
+zstyle :prompt:pure:git:branch color yellow
+zstyle :prompt:pure:user color cyan
+zstyle :prompt:pure:host color yellow
+zstyle :prompt:pure:git:branch:cached color red
 # non-zero exit code in right prompt
 RPS1='%(?.%F{magenta}.%F{red}(%?%) %F{magenta})'
 
@@ -689,20 +693,6 @@ cargo(){
 }
 real-which(){
   readlink -f "$(command which $@)"
-}
-
-heroku(){
-  docker run -it --rm -u $(id -u):$(id -g) -w "$HOME" \
-    -v /etc/passwd:/etc/passwd:ro \
-    -v /etc/group:/etc/group:ro \
-    -v /etc/localtime:/etc/localtime:ro \
-    -v /home:/home \
-    -v /tmp:/tmp \
-    -v /run/user/$(id -u):/run/user/$(id -u) \
-    -v $(pwd):/workdir \
-    -w /workdir \
-    --name heroku \
-    wingrunr21/alpine-heroku-cli "$@"
 }
 
 untilport(){
