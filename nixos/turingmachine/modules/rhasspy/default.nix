@@ -19,33 +19,14 @@
     };
   };
 
-  systemd.services.tts = let
-    server = pkgs.stdenv.mkDerivation {
-      name = "tts-server";
-      dontUnpack = true;
-      nativeBuildInputs = [
-        pkgs.python3.pkgs.wrapPython
-      ];
-      propagatedBuildInputs = [ pkgs.tts pkgs.python3.pkgs.flask ];
-
-      installPhase = ''
-        install -D -m755 ${./server.py} $out/bin/tts-server
-      '';
-      postFixup = "wrapPythonPrograms";
-    };
-  in {
+  systemd.services.tts = {
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       ExecStart = ''
-        ${server}/bin/tts-server \
-          --tts-config ./config.json \
-          --tts-checkpoint ./tts_model.pth.tar \
-          --vocoder-config ./config_vocoder.json \
-          --vocoder-checkpoint ./vocoder_model.pth.tar
+        ${pkgs.tts}/bin/tts-server --model_name tts_models/en/ljspeech/glow-tts --vocoder_name vocoder_models/universal/libri-tts/fullband-melgan
       '';
       User = "joerg";
-      WorkingDirectory = "/home/joerg/.config/rhasspy/profiles/en/tts";
     };
   };
 }
