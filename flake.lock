@@ -40,6 +40,29 @@
         "type": "github"
       }
     },
+    "envfs": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "utils": [
+          "flake-utils"
+        ]
+      },
+      "locked": {
+        "lastModified": 1611782218,
+        "narHash": "sha256-PKh2gI/kqqWa9g1PbceHZpF10XzV1VKnrk0q/GFjNUA=",
+        "owner": "Mic92",
+        "repo": "envfs",
+        "rev": "4515e7610cbea99826c72dfe3bf6f6a2805d6a98",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "envfs",
+        "type": "github"
+      }
+    },
     "flake-registry": {
       "flake": false,
       "locked": {
@@ -78,11 +101,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1611422785,
-        "narHash": "sha256-6XylW5uQ/Hr2BkmOFzLdBxE8qSQNtoWL60LcpCl3Qcw=",
+        "lastModified": 1611994408,
+        "narHash": "sha256-9lF/96lCtwJXE9r9r3gVbFX4tVa85nyG93oRfweDkEo=",
         "owner": "rycee",
         "repo": "home-manager",
-        "rev": "c137866bd7d2a9c2010b618252694f395453cf59",
+        "rev": "98d030f723e0a4a446e56b276573efb8bef422f5",
         "type": "github"
       },
       "original": {
@@ -171,11 +194,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1611681185,
-        "narHash": "sha256-YUD9OVid8sNZVbNs/Wt1DCRO2eRsbXgGTF9uG/7T9yo=",
+        "lastModified": 1611996773,
+        "narHash": "sha256-jRcIK2WgvglZHVkBQNx0fsDNW8SuFI6RUla1ZobJE+g=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "2b96aa7852d0eeaf0d838dffa1c0db7e6954ab1e",
+        "rev": "ff36f56453c58edf72cb1c3881203e7ba26a68a8",
         "type": "github"
       },
       "original": {
@@ -187,11 +210,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1611739031,
-        "narHash": "sha256-jd9rLfuavZuT2v1WH153A0KbY23tOEpnAhyznjf6qLE=",
+        "lastModified": 1612005144,
+        "narHash": "sha256-IY9f+6Mo+x+6+X4i0VvW9U3P2TM4aYEOBNCwHCYxnKQ=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "139a716d2461dba820cc65f99e2ec821d1cea3b4",
+        "rev": "c6f2507d77fee9edced3df7d46f03532c58247c9",
         "type": "github"
       },
       "original": {
@@ -219,6 +242,7 @@
       "inputs": {
         "bme680-mqtt": "bme680-mqtt",
         "doom-emacs": "doom-emacs",
+        "envfs": "envfs",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
@@ -239,11 +263,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1611729666,
-        "narHash": "sha256-UcJhAp2T0mzsysT/ig5rZAEEDB2nVJEAFOfbhzRR7kQ=",
+        "lastModified": 1611870440,
+        "narHash": "sha256-5o4mRkBMR5QIMj/DpAujubnRMT4hOxtQLeMxKl+3GPQ=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "3735915c486c3df669879071ceaa9b65079faf49",
+        "rev": "ab321bf72a33adce3bfe20b648c6c0df15ce7426",
         "type": "github"
       },
       "original": {

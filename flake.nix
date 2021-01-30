@@ -42,6 +42,10 @@
     nix-ld.url = "github:Mic92/nix-ld";
     nix-ld.inputs.nixpkgs.follows = "nixpkgs";
     nix-ld.inputs.utils.follows = "flake-utils";
+
+    envfs.url = "github:Mic92/envfs";
+    envfs.inputs.nixpkgs.follows = "nixpkgs";
+    envfs.inputs.utils.follows = "flake-utils";
   };
 
   outputs = { ... } @ args: import ./outputs.nix args;

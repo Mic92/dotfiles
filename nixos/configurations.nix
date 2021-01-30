@@ -8,6 +8,7 @@
 , flake-registry
 , bme680-mqtt
 , nix-ld
+, envfs
 }:
 let
   defaultModules = [
@@ -59,6 +60,7 @@ in {
     modules = defaultModules ++ [
       nixos-hardware.nixosModules.dell-xps-13-9380
       nix-ld.nixosModules.nix-ld
+      envfs.nixosModules.envfs
       ./turingmachine/configuration.nix
     ];
   };
