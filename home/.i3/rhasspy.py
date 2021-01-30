@@ -38,6 +38,7 @@ class Rhasspy(Module):
     host = "localhost"
     port = 12183
     password = None
+    was_muted : bool = False
     color_connected = "#FFFFFF"
     color_disconnected = "#FF0000"
     color_listening = "#00FF00"
@@ -81,6 +82,14 @@ class Rhasspy(Module):
         payload = json.loads(msg.payload)
 
         if msg.topic == Topic.SESSION_STARTED:
+            proc = subprocess.run(["pamixer", "--get-mute"], stdout=subprocess.PIPE, text=True)
+            out = proc.stdout.strip()
+            if out == "true":
+                subprocess.run(["pamixer", "--unmute"])
+                subprocess.run(["pamixer", "--source", "1", "--mute"])
+                subprocess.run(["paplay", os.path.expanduser("~/.config/rhasspy/profiles/en/sounds/start_of_input.wav")])
+                subprocess.run(["pamixer", "--source", "1", "--unmute"])
+                self.was_muted = True
             self.notify("Listening.")
             self.update_state(RhasspyState.listening)
         elif msg.topic == Topic.SESSION_ENDED:
@@ -95,6 +104,9 @@ class Rhasspy(Module):
         elif msg.topic == Topic.TTS_SAY:
             self.notify(payload["text"])
         elif msg.topic == Topic.TTS_ENDED:
+            if self.was_muted:
+                subprocess.run(["pamixer", "--mute"])
+                self.was_muted = False
             if "neutral-janet" in payload["sessionId"]:
                 subprocess.Popen(["paplay", os.path.expanduser("~/.config/rhasspy/profiles/en/end-of-conversation.wav")])
 
