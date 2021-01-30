@@ -209,6 +209,15 @@
           tags.org = "krebs";
         } {
           urls = [
+            "http://news.r/"
+            "http://brockman.r/"
+            "http://rss.r/"
+          ];
+          tags.host = "news";
+          response_string_match = "rss";
+          tags.org = "krebs";
+        } {
+          urls = [
             "http://graph.r"
           ];
           tags.host = "gum";
