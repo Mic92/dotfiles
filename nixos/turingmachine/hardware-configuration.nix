@@ -37,12 +37,9 @@
     };
     pulseaudio = {
       enable = true;
-      extraModules = [ pkgs.pulseaudio-modules-bt ];
       package = pkgs.pulseaudioFull;
     };
   };
-
-  services.ofono.enable = true;
 
   #services.pipewire = {
   #  enable = true;
@@ -50,9 +47,6 @@
   #  alsa.support32Bit = true;
   #  pulse.enable = true;
   #};
-
-  #hardware.bluetooth.hsphfpd.enable = true;
-  #security.rtkit.enable = true;
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/66F2-49C6";
