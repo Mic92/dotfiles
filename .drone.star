@@ -3,6 +3,8 @@ def environment(extra={}):
   e.update(extra)
   return e
 
+buildCi = 'nix shell nixpkgs#git -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix'
+
 build = {
   "name": 'Build NixOS and home-manager',
   "kind": 'pipeline',
@@ -12,7 +14,8 @@ build = {
     "name": 'build',
     "commands": [
       'rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp',
-      'nix shell nixpkgs#git -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix',
+      # retry flaky builds
+      buildCi + ' || ' + buildCi,
       'rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots',
     ],
     "environment": environment(),
