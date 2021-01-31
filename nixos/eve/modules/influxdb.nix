@@ -1,4 +1,4 @@
-{ ... }: {
+{ config, ... }: {
   services.influxdb = {
     enable = true;
     extraConfig = {
@@ -16,10 +16,8 @@
 
   security.acme.certs."influxdb.thalheim.io" = {
     postRun = "systemctl restart influxdb.service";
-    webroot = "/var/lib/acme/acme-challenge";
     group = "influxdb";
+    dnsProvider = "rfc2136";
+    credentialsFile = config.sops.secrets.lego-knot-credentials.path;
   };
-  systemd.services.nginx.serviceConfig.SupplementaryGroups = [ "influxdb" ];
-
-  services.nginx.virtualHosts."influxdb.thalheim.io".useACMEHost = "influxdb.thalheim.io";
 }

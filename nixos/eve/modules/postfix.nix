@@ -170,12 +170,11 @@ in {
     params.postfix2048.bits = 1024;
   };
 
-  security.acme.certs = {
-    "mail.thalheim.io" = {
-      webroot = "/var/lib/acme/acme-challenge";
-      postRun = "systemctl restart postfix.service";
-      group = "nginx";
-    };
+  security.acme.certs."mail.thalheim.io" = {
+    postRun = "systemctl restart postfix.service";
+    group = "postfix";
+    dnsProvider = "rfc2136";
+    credentialsFile = config.sops.secrets.lego-knot-credentials.path;
   };
 
   networking.firewall.allowedTCPPorts = [

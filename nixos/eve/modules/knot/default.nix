@@ -1,6 +1,13 @@
 { pkgs, config, lib, ... }: let
   ip4 = config.networking.eve.ipv4.address;
   ip6 = lib.head config.networking.eve.ipv6.addresses;
+  acmeChallenge = domain: pkgs.writeText "_acme-challenge.${domain}.zone" ''
+    @ 3600 IN SOA _acme-challenge.${domain}. root.thalheim.io. 2021013110 7200 3600 86400 3600
+
+    $TTL 600
+
+    @ IN NS ns1.thalheim.io.
+  '';
 in {
   imports = [
     ./whoami.nix
@@ -97,13 +104,28 @@ in {
           file: "${pkgs.retiolum}/zones/i.zone"
           template: retiolum
         - domain: _acme-challenge.thalheim.io
-          file: "${./_acme-challenge.thalheim.io.zone}"
+          file: "${acmeChallenge "thalheim.io"}"
+          template: acme
+        - domain: _acme-challenge.anon.thalheim.io
+          file: "${acmeChallenge "anon.thalheim.io"}"
+          template: acme
+        - domain: _acme-challenge.imap.thalheim.io
+          file: "${acmeChallenge "imap.thalheim.io"}"
+          template: acme
+        - domain: _acme-challenge.mail.thalheim.io
+          file: "${acmeChallenge "mail.thalheim.io"}"
+          template: acme
+        - domain: _acme-challenge.influxdb.thalheim.io
+          file: "${acmeChallenge "influxdb.thalheim.io"}"
           template: acme
         - domain: _acme-challenge.lekwati.com
-          file: "${./_acme-challenge.lekwati.com.zone}"
+          file: "${acmeChallenge "lekwati.com"}"
           template: acme
         - domain: _acme-challenge.devkid.net
-          file: "${./_acme-challenge.devkid.net.zone}"
+          file: "${acmeChallenge "devkid.net"}"
+          template: acme
+        - domain: _acme-challenge.imap.devkid.net
+          file: "${acmeChallenge "imap.devkid.net"}"
           template: acme
     '';
   };

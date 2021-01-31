@@ -154,19 +154,13 @@ in {
   security.acme.certs = let
     cert = {
       postRun = "systemctl restart dovecot2.service";
-      webroot = "/var/lib/acme/acme-challenge";
       group = "dovecot2";
+      dnsProvider = "rfc2136";
+      credentialsFile = config.sops.secrets.lego-knot-credentials.path;
     };
   in {
     "imap.thalheim.io" = cert;
     "imap.devkid.net" = cert;
-  };
-
-  systemd.services.nginx.serviceConfig.SupplementaryGroups = [ "dovecot2" ];
-
-  services.nginx = {
-    virtualHosts."imap.thalheim.io".useACMEHost = "imap.thalheim.io";
-    virtualHosts."imap.devkid.net".useACMEHost = "imap.devkid.net";
   };
 
   networking.firewall.allowedTCPPorts = [
