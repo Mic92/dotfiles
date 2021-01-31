@@ -96,7 +96,7 @@ in {
 
   services.nginx = {
     virtualHosts."ist.devkid.net" = {
-      useACMEHost = "devkid.net";
+      useACMEHost = "thalheim.io";
       forceSSL = true;
       locations."= /robots.txt".extraConfig = ''
         access_log off; log_not_found off;
@@ -130,11 +130,6 @@ in {
         if ($rewritecond = 1234) { rewrite ^ /anmeldung.php last; }
       '';
       root = "${mediawiki}/share/mediawiki";
-    };
-    virtualHosts."www.ist.devkid.net" = {
-      useACMEHost = "devkid.net";
-      forceSSL = true;
-      globalRedirect = "ist.devkid.net";
     };
   };
 }

@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2021013105 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2021013110 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -33,10 +33,16 @@ ns1 IN AAAA 2a01:4f9:2b:1605::1
 
 www IN A 95.216.112.61
 www IN AAAA 2a01:4f9:2b:1605::1
+* IN CNAME www
+
 prometheus IN CNAME eva
 alertmanager IN CNAME eva
 telegraf IN CNAME eva
-* IN CNAME www
+;; needed because of acme challenge
+influxdb IN CNAME www
+imap IN CNAME www
+anon IN CNAME www
+
 
 _acme-challenge IN NS ns1.thalheim.io.
 _acme-challenge.imap IN NS ns1.thalheim.io.

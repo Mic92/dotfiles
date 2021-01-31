@@ -1,16 +1,6 @@
 { config, lib, pkgs, ... }: 
 
-let
-  sanCertificate = { domain, rsa ? false }: {
-    domain = domain;
-    postRun = "systemctl reload nginx.service";
-    group = "nginx";
-    keyType = if rsa then "rsa2048" else "ec384";
-    dnsProvider = "rfc2136";
-    extraDomainNames = [ "*.${domain}" ];
-    credentialsFile = config.sops.secrets.lego-knot-credentials.path;
-  };
-in {
+{
   imports = [
     ./blog.nix
     ./devkid.net.nix
@@ -48,13 +38,25 @@ in {
     #};
     sops.secrets.lego-knot-credentials.owner = "acme";
 
-    security.acme.certs = {
-      "lekwati.com" = sanCertificate  { domain = "lekwati.com"; };
-      "legacy-lekwati.com" = sanCertificate  { domain = "lekwati.com"; rsa = true; };
-      "thalheim.io" = sanCertificate  { domain = "thalheim.io"; };
-      "legacy-thalheim.io" = sanCertificate { domain = "thalheim.io"; rsa = true; };
-      "devkid.net" = sanCertificate { domain = "devkid.net"; };
-      "legacy-devkid.net" = sanCertificate { domain = "devkid.net"; rsa = true; };
+    security.acme.certs = let
+      sanCertificate = { rsa ? false }: {
+        domain = "thalheim.io";
+        postRun = "systemctl reload nginx.service";
+        group = "nginx";
+        keyType = if rsa then "rsa2048" else "ec384";
+        dnsProvider = "rfc2136";
+        extraDomainNames = [
+          "*.thalheim.io"
+          "devkid.net"
+          "*.devkid.net"
+          "lekwati.com"
+          "*.lekwati.com"
+        ];
+        credentialsFile = config.sops.secrets.lego-knot-credentials.path;
+      };
+    in {
+      "thalheim.io" = sanCertificate  {};
+      "legacy-thalheim.io" = sanCertificate  { rsa = true; };
     };
   };
 }

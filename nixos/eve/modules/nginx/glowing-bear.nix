@@ -17,17 +17,17 @@
     };
 
     virtualHosts."lekwati.com" = {
-      useACMEHost = "lekwati.com";
+      useACMEHost = "thalheim.io";
       forceSSL = true;
     };
 
     virtualHosts."blog.lekwati.com" = {
-      useACMEHost = "lekwati.com";
+      useACMEHost = "thalheim.io";
       forceSSL = true;
     };
 
     virtualHosts."glowing-bear.lekwati.com" = {
-      useACMEHost = "lekwati.com";
+      useACMEHost = "thalheim.io";
       forceSSL = true;
       root = pkgs.glowing-bear;
       locations."/weechat".extraConfig = ''

@@ -58,7 +58,7 @@
     };
 
     virtualHosts."rss.devkid.net" = {
-      useACMEHost = "devkid.net";
+      useACMEHost = "thalheim.io";
       forceSSL = true;
     };
   };

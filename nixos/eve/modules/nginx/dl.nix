@@ -1,7 +1,7 @@
 { config, ...}:
 let
-  site = acmeHost: root: {
-    useACMEHost = acmeHost;
+  site =  root: {
+    useACMEHost = "thalheim.io";
     forceSSL = true;
     root = "/var/www/${root}";
     locations."/files/".extraConfig = ''
@@ -18,8 +18,8 @@ let
   };
 in {
   services.nginx = {
-    virtualHosts."dl.devkid.net" = site "devkid.net" "dl.devkid.net";
-    virtualHosts."dl.thalheim.io" = site "thalheim.io" "dl.thalheim.io";
+    virtualHosts."dl.devkid.net" = site "dl.devkid.net";
+    virtualHosts."dl.thalheim.io" = site "dl.thalheim.io";
   };
 
   systemd.services.nginx.serviceConfig.SupplementaryGroups = [ "keys" ];
