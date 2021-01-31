@@ -98,11 +98,9 @@ in {
           template: retiolum
         - domain: _acme-challenge.thalheim.io
           file: "${./_acme-challenge.thalheim.io.zone}"
-          file: _acme-challenge.thalheim.io.zone
           template: acme
         - domain: _acme-challenge.lekwati.com
           file: "${./_acme-challenge.lekwati.com.zone}"
-          file: _acme-challenge.lekwati.com.zone
           template: acme
         - domain: _acme-challenge.devkid.net
           file: "${./_acme-challenge.devkid.net.zone}"

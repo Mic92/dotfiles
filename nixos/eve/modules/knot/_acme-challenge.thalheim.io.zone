@@ -1,4 +1,4 @@
-@ 3600 IN SOA _acme-challenge.thalheim.io. root.thalheim.io. 2021013104 7200 3600 86400 3600
+@ 3600 IN SOA _acme-challenge.thalheim.io. root.thalheim.io. 2021013108 7200 3600 86400 3600
 
 $TTL 600
 

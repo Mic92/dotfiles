@@ -20,6 +20,12 @@
       useACMEHost = "lekwati.com";
       forceSSL = true;
     };
+
+    virtualHosts."blog.lekwati.com" = {
+      useACMEHost = "lekwati.com";
+      forceSSL = true;
+    };
+
     virtualHosts."glowing-bear.lekwati.com" = {
       useACMEHost = "lekwati.com";
       forceSSL = true;

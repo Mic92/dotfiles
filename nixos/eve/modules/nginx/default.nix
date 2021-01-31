@@ -1,23 +1,14 @@
 { config, lib, pkgs, ... }: 
 
 let
-  sanCertificate = { domain, rsa ? false, dns01 ? false }: let
-    wantedVhosts = lib.filterAttrs (_: attrs: (attrs.useACMEHost or null) == domain)
-      config.services.nginx.virtualHosts;
-    extraVhosts = lib.filterAttrs (host: _: host != domain) wantedVhosts;
-    serverAliases = lib.flatten (lib.mapAttrsToList (_: vhost: vhost.serverAliases) wantedVhosts);
-  in {
+  sanCertificate = { domain, rsa ? false }: {
     domain = domain;
-    extraDomainNames = (builtins.attrNames extraVhosts) ++ serverAliases;
     postRun = "systemctl reload nginx.service";
     group = "nginx";
     keyType = if rsa then "rsa2048" else "ec384";
-  } // (if dns01 then {
     dnsProvider = "rfc2136";
+    extraDomainNames = [ "*.${domain}" ];
     credentialsFile = config.sops.secrets.lego-knot-credentials.path;
-    extraDomainNames = ["*.${domain}"];
-  } else {
-    webroot = "/var/lib/acme/acme-challenge";
   });
 in {
   imports = [
@@ -58,7 +49,7 @@ in {
     sops.secrets.lego-knot-credentials.owner = "acme";
 
     security.acme.certs = {
-      "lekwati.com" = sanCertificate  { domain = "lekwati.com"; dns01 = true; };
+      "lekwati.com" = sanCertificate  { domain = "lekwati.com"; };
       "legacy-lekwati.com" = sanCertificate  { domain = "lekwati.com"; rsa = true; };
       "thalheim.io" = sanCertificate  { domain = "thalheim.io"; };
       "legacy-thalheim.io" = sanCertificate { domain = "thalheim.io"; rsa = true; };
