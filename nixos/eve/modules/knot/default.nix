@@ -7,11 +7,15 @@ in {
   ];
 
   sops.secrets."knot-he-key.conf".owner = "knot";
+  sops.secrets."knot-acme-key.conf".owner = "knot";
   users.users.knot.extraGroups = [ "keys" ];
 
   services.knot = {
     enable = true;
-    keyFiles = [ config.sops.secrets."knot-he-key.conf".path ];
+    keyFiles = [
+      config.sops.secrets."knot-he-key.conf".path
+      config.sops.secrets."knot-acme-key.conf".path
+    ];
     extraConfig = ''
       server:
         listen: ${ip4}@53
@@ -28,6 +32,10 @@ in {
         - id: he_acl
           key: he1
           action: transfer
+
+        - id: acme_acl
+          key: acme
+          action: update
 
       mod-rrl:
         - id: default
@@ -63,6 +71,15 @@ in {
           zonefile-load: difference
           journal-content: changes
 
+        - id: acme
+          semantic-checks: on
+          dnssec-signing: on
+          dnssec-policy: rsa2k
+          acl: [ acme_acl ]
+          zonefile-sync: -1
+          zonefile-load: difference
+          journal-content: changes
+
       zone:
         - domain: thalheim.io
           file: "${./thalheim.io.zone}"
@@ -79,15 +96,17 @@ in {
         - domain: i
           file: "${pkgs.retiolum}/zones/i.zone"
           template: retiolum
-        - domain: lan
-          file: "${pkgs.retiolum}/zones/lan.zone"
-          template: retiolum
-        - domain: shack
-          file: "${pkgs.retiolum}/zones/shack.zone"
-          template: retiolum
-        - domain: gg23
-          file: "${pkgs.retiolum}/zones/gg23.zone"
-          template: retiolum
+        - domain: _acme-challenge.thalheim.io
+          file: "${./_acme-challenge.thalheim.io.zone}"
+          file: _acme-challenge.thalheim.io.zone
+          template: acme
+        - domain: _acme-challenge.lekwati.com
+          file: "${./_acme-challenge.lekwati.com.zone}"
+          file: _acme-challenge.lekwati.com.zone
+          template: acme
+        - domain: _acme-challenge.devkid.net
+          file: "${./_acme-challenge.devkid.net.zone}"
+          template: acme
     '';
   };
 
