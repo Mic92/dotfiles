@@ -6,6 +6,7 @@
   systemd.services.rhasspy = {
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.pamixer pkgs.pulseaudioFull ];
     # rhasspy sets `/dev/stdout` as log file for supervisord
     # supervisord tries to open /dev/stdout and fails with the default systemd device
     # it works for pipes so...
