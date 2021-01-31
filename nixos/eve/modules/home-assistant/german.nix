@@ -95,6 +95,10 @@
           platform = "time";
           at = time;
         };
+        condition = {
+          condition = "time";
+          weekday = [ "mon" "wed" "fri"];
+        };
         action = [{
           service = "notify.mobile_app_beatrice";
           data_template = {
@@ -116,8 +120,7 @@
           state = "off";
         };
     }; in [
-      (reminder "13:35:00")
-      (reminder "18:05:00")
+      (reminder "19:05:00")
       (doneAutomation "done Duolingo" "DONE_DUOLINGO")
       (doneAutomation "done grammar" "DONE_GRAMMAR")
       (doneAutomation "done speaking" "DONE_SPEAKING")
@@ -129,6 +132,10 @@
         trigger = {
           platform = "time";
           at = "00:00:01";
+        };
+        condition = {
+          condition = "time";
+          weekday = [ "tue" "thu" "sat"];
         };
         action = [{
           service = "input_boolean.turn_off";
@@ -144,6 +151,10 @@
         trigger = {
           platform = "time";
           at = "00:00:01";
+        };
+        condition = {
+          condition = "time";
+          weekday = [ "tue" "thu" "sat"];
         };
         action = let
           msg = "German learning streak broke after {{states.input_number.german_streak_days.state}} days :(";
