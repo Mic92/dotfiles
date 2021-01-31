@@ -35,13 +35,31 @@ in {
         value_template = "{{ distance('person.jorg_thalheim', 'device_tracker.beatrice') }}";
       };
     }];
+
+    binary_sensor = [{
+      platform = "template";
+      sensors.different_locations_joerg_shannan = {
+        entity_id = [
+          "person.jorg_thalheim"
+          "device_tracker.beatrice"
+        ];
+        friendly_name = "Jörg and Shannan are in different locations";
+        value_template = "{{ states.person.jorg_thalheim.state !=  states.device_tracker.beatrice.state }}";
+      };
+    }];
+
     automation = [{
       alias = "Set Shannan and Jörg are not together";
-      trigger = {
+      trigger = [{
         platform = "numeric_state";
         entity_id = "sensor.distance_joerg_shannan";
         above = 1;
-      };
+      } {
+        platform = "state";
+        entity_id = "binary_sensor.different_locations_joerg_shannan";
+        to = "on";
+        for = "00:00:25";
+      }];
       action = {
         service = "input_boolean.turn_on";
         entity_id = "input_boolean.shannan_joerg_not_together";
