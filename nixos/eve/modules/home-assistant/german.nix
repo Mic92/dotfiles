@@ -95,10 +95,6 @@
           platform = "time";
           at = time;
         };
-        condition = {
-          condition = "time";
-          weekday = [ "mon" "wed" "fri"];
-        };
         action = [{
           service = "notify.mobile_app_beatrice";
           data_template = {
@@ -114,11 +110,14 @@
             Remind Shannan to do German (current streak: {{states("input_number.german_streak_days")}} days)
           '';
         }];
-        condition = {
+        condition = [{
           condition = "state";
           entity_id = "input_boolean.learned_german_today";
           state = "off";
-        };
+        } {
+          condition = "time";
+          weekday = [ "mon" "wed" "fri"];
+        }];
     }; in [
       (reminder "19:05:00")
       (doneAutomation "done Duolingo" "DONE_DUOLINGO")
@@ -133,28 +132,23 @@
           platform = "time";
           at = "00:00:01";
         };
-        condition = {
-          condition = "time";
-          weekday = [ "tue" "thu" "sat"];
-        };
         action = [{
           service = "input_boolean.turn_off";
           entity_id = "input_boolean.learned_german_today";
         }];
-        condition = {
+        condition = [{
+          condition = "time";
+          weekday = [ "tue" "thu" "sat"];
+        } {
           condition = "state";
           entity_id = "input_boolean.learned_german_today";
           state = "on";
-        };
+        }];
       } {
         alias = "Break German learning streak";
         trigger = {
           platform = "time";
           at = "00:00:01";
-        };
-        condition = {
-          condition = "time";
-          weekday = [ "tue" "thu" "sat"];
         };
         action = let
           msg = "German learning streak broke after {{states.input_number.german_streak_days.state}} days :(";
@@ -169,11 +163,14 @@
           entity_id = "input_number.german_streak_days";
           data.value = 0;
         }];
-        condition = {
+        condition = [{
           condition = "state";
           entity_id = "input_boolean.learned_german_today";
           state = "off";
-        };
+        } {
+          condition = "time";
+          weekday = [ "tue" "thu" "sat"];
+        }];
     }];
   };
 }
