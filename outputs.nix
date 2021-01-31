@@ -39,7 +39,7 @@ in {
     profile=''${profiles[$HOSTNAME]}
 
     flake=$(nix flake info --json ${./.} | ${pkgs.jq}/bin/jq -r .url)
-    nix build --out-link "$tmpdir/result" "$flake#hmConfigurations.''${profile:-common}.activationPackage"
+    nix build --impure --out-link "$tmpdir/result" "$flake#hmConfigurations.''${profile:-common}.activationPackage"
     link=$(realpath $tmpdir/result)
     $link/activate
   '';
