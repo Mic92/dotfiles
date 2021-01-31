@@ -9,7 +9,7 @@ let
     dnsProvider = "rfc2136";
     extraDomainNames = [ "*.${domain}" ];
     credentialsFile = config.sops.secrets.lego-knot-credentials.path;
-  });
+  };
 in {
   imports = [
     ./blog.nix
