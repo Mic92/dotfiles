@@ -11,11 +11,11 @@ def main():
     if notified_today.state == "on":
         return
 
-    now = datetime.datetime.now()
+    now = datetime.datetime.utcnow()
     rain_start = None
     rain_times = []
     for entry in forecast:
-        time = datetime.datetime.fromtimestamp(entry["datetime"] / 1000)
+        time = entry["datetime"]
         # in the past
         if time < now:
             continue
