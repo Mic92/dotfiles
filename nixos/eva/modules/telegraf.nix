@@ -165,7 +165,7 @@
           tags.host = host;
           tags.org = "krebs";
         }) [
-          "puyak"
+          #"puyak"
           "yellow"
         ] ++ [{
           protocol = "tcp";
@@ -182,13 +182,15 @@
           json_query = "check_suites.#(app.id == 15368)";
         }];
 
-        http_response = [{
-          urls = [ "http://puyak.r" ];
-          headers.Host = "light.shack";
-          response_string_match = "shackspace";
-          tags.host = "puyak";
-          tags.org = "krebs";
-        } {
+        http_response = [
+          #{
+          #  urls = [ "http://puyak.r" ];
+          #  headers.Host = "light.shack";
+          #  response_string_match = "shackspace";
+          #  tags.host = "puyak";
+          #  tags.org = "krebs";
+          #}
+        {
           urls = [ "http://yellow.r:9091/transmission/web/" ];
           response_string_match = "Transmission Web";
           tags.host = "yellow";
