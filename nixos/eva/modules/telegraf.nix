@@ -164,6 +164,7 @@
           expect = "SSH-2.0";
           tags.host = host;
           tags.org = "krebs";
+          timeout = "10s";
         }) [
           #"puyak"
           "yellow"
