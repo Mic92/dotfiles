@@ -148,6 +148,7 @@
           tags.host = host;
           send = "SSH-2.0-Telegraf";
           expect = "SSH-2.0";
+          timeout = "10s";
         }) [
           "rock"
           "eve"
