@@ -82,7 +82,7 @@ in lib.mapAttrsToList (name: opts: {
     description = "{{$labels.host}} is using at least 90% of its RAM for at least 1 hour.";
   };
   load15 = {
-    condition = ''system_load15 / on(host) count(system_n_cpus{org!="nix-community"}) by (host) >= 2.0'';
+    condition = ''system_load15 / system_n_cpus >= 2.0'';
     time = "10m";
     summary = "{{$labels.host}}: Running on high load: {{$value}}";
     description = "{{$labels.host}} is running with load15 > 1 for at least 5 minutes: {{$value}}";
