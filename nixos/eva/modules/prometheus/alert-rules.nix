@@ -93,7 +93,8 @@ in lib.mapAttrsToList (name: opts: {
     description = "{{$labels.host}} just rebooted.";
   };
   uptime = {
-    condition = "system_uptime > 2592000";
+    # too scared to upgrade matchbox
+    condition = ''system_uptime {host!="matchbox"} > 2592000'';
     summary = "{{$labels.host}}: Uptime monster";
     description = "{{$labels.host}} has been up for more than 30 days.";
   };
