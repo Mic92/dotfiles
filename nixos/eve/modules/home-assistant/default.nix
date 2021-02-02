@@ -1,6 +1,7 @@
 { pkgs, lib, ... }: let
 in {
   imports = [
+    ./bluetooth.nix
     ./bme680.nix
     ./charge-notifications.nix
     ./find-phone.nix
@@ -84,23 +85,15 @@ in {
     system_health = {};
     sensor = [{
       platform = "template";
-      sensors.shannan_joerg_distance = {
-        value_template = ''{{ distance('person.jorg_thalheim', 'person.shannan_lekwati') | round(2) }}'';
-        entity_id = [
-          "person.jorg_thalheim"
-          "person.shannan_lekwati"
-        ];
-      };
+      sensors.shannan_joerg_distance.value_template = ''{{ distance('person.jorg_thalheim', 'person.shannan_lekwati') | round(2) }}'';
       sensors.joerg_last_updated = {
         friendly_name = "Jörg's last location update";
         value_template = ''{{ states.person.jorg_thalheim.last_updated.strftime('%Y-%m-%dT%H:%M:%S') }}Z'';
-        entity_id = "person.jorg_thalheim";
         device_class = "timestamp";
       };
       sensors.shannan_last_updated = {
         friendly_name = "Shannan's last location update";
         value_template = ''{{ states.person.shannan_lekwati.last_updated.strftime('%Y-%m-%dT%H:%M:%S') }}Z'';
-        entity_id = "person.shannan_lekwati";
         device_class = "timestamp";
       };
     }];

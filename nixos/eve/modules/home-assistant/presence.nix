@@ -26,10 +26,6 @@ in {
     sensor = [{
       platform = "template";
       sensors.distance_joerg_shannan = {
-        entity_id = [
-          "person.jorg_thalheim"
-          "device_tracker.beatrice"
-        ];
         friendly_name = "Distance between Jörg and Shannan";
         unit_of_measurement = "km";
         value_template = "{{ distance('person.jorg_thalheim', 'device_tracker.beatrice') }}";
@@ -39,10 +35,6 @@ in {
     binary_sensor = [{
       platform = "template";
       sensors.different_locations_joerg_shannan = {
-        entity_id = [
-          "person.jorg_thalheim"
-          "device_tracker.beatrice"
-        ];
         friendly_name = "Jörg and Shannan are in different locations";
         value_template = "{{ states.person.jorg_thalheim.state !=  states.device_tracker.beatrice.state }}";
       };
