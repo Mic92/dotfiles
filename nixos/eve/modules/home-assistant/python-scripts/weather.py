@@ -11,13 +11,12 @@ def main():
     if notified_today.state == "on":
         return
 
-    now = datetime.datetime.now()
+    now = datetime.datetime.utcnow().replace(tzinfo=None)
     rain_start = None
     rain_times = []
     for entry in forecast:
-        time = entry["datetime"]
+        time = entry["datetime"].replace(tzinfo=None)
         # in the past
-        logger.info(f"rain_time: {now} -> {time}")
         if time < now:
             continue
         # limit to the same day
