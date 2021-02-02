@@ -16,6 +16,6 @@
       };
     };
 
-    shell_command.ssh_bluetooth = ''${pkgs.openssh}/bin/ssh -i ${config.sops.secrets.ssh-homeassistant.path} bluetooth@{{ host }} "bluetoothctl {{ action }} {{ mac }}"'';
+    shell_command.ssh_bluetooth = ''${pkgs.openssh}/bin/ssh -i ${config.sops.secrets.ssh-homeassistant.path} hass-agent@{{ host }} "bluetoothctl {{ action }} {{ mac }}"'';
   };
 }

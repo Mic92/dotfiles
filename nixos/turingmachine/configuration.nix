@@ -26,6 +26,7 @@
     ./modules/cntr.nix
     ./modules/telegraf.nix
 
+    ../modules/hass-agent.nix
     ../modules/promtail.nix
     ../modules/macos-kvm.nix
     ../modules/mosh.nix
@@ -48,15 +49,6 @@
   # required for gpg-agent?
   services.dbus.packages = [ pkgs.gcr ];
   services.udev.packages = [ pkgs.platformio ];
-
-  users.extraUsers.bluetooth = {
-    isSystemUser = true;
-    extraGroups = [ "keys" ];
-    shell = "/run/current-system/sw/bin/bash";
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA6vG7qFCKcdlB+0PdLc2IY7dBmD26NcSEUVwaoqLFNB"
-    ];
-  };
 
   boot = {
     zfs.requestEncryptionCredentials = [ "zroot/root" ];

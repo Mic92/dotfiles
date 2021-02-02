@@ -1,8 +1,26 @@
-{
+let
+  convertDuration = ''
+    {% if unit == "seconds" %}
+      {{ duration }}
+    {% elif unit == "minutes" %}
+      {{ duration * 60 }}
+    {% elif unit == "hours" %}
+      {{ duration * 60 * 60 }}
+    {% endif %}
+  '';
+in {
   services.home-assistant.config = {
     timer.rhasspy = {};
     intent = {};
     intent_script = {
+      Pause = {
+        speech.text = "Suspend Jarvis for {{ duration }} {{ unit }}.";
+        action = [{
+          service = "timer.start";
+          entity_id = "timer.pause-rhasspy";
+          data_template.duration = convertDuration;
+        }]
+      };
       GetTime.speech.text = "It is {{ now().hour }}:{{ now().minute }}.";
       GetTimer.speech.text = ''{{ state_attr("timer.rhasspy", "duration") }} is left.'';
       SetTimer = {
@@ -10,14 +28,7 @@
         action = [{
           service = "timer.start";
           entity_id = "timer.rhasspy";
-          data_template.duration = ''{% if unit == "seconds" %}
-              {{ duration }}
-            {% elif unit == "minutes" %}
-              {{ duration * 60 }}
-            {% elif unit == "hours" %}
-              {{ duration * 60 * 60 }}
-            {% endif %}
-          '';
+          data_template.duration = convertDuration;
         }];
       };
       CancelTimer = {

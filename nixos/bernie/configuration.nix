@@ -6,6 +6,7 @@
 {
   imports = [
     #./modules/telegraf.nix
+    ../modules/hass-agent.nix
     ../modules/packages.nix
     ../modules/users.nix
     ../modules/zfs.nix
