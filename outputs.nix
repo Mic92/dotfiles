@@ -33,13 +33,14 @@ in {
 
   apps.hm-switch = pkgs.writeScriptBin "hm-flake-switch" ''
     #!${pkgs.runtimeShell}
+    set -eu -o pipefail -x
     tmpdir=$(mktemp -d)
     trap "rm -rf $tmpdir" EXIT
     declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve")
     profile=''${profiles[$HOSTNAME]}
 
     flake=$(nix flake info --json ${./.} | ${pkgs.jq}/bin/jq -r .url)
-    nix build --impure --out-link "$tmpdir/result" "$flake#hmConfigurations.''${profile:-common}.activationPackage"
+    nix build --show-trace --out-link "$tmpdir/result" "$flake#hmConfigurations.''${profile:-common}.activationPackage" "$@"
     link=$(realpath $tmpdir/result)
     $link/activate
   '';
@@ -62,7 +63,7 @@ in {
   };
 
   hmConfigurations = import ./nixpkgs-config/homes.nix {
-    inherit self nixpkgs home-manager nur;
+    inherit self nixpkgs home-manager nur nix-doom-emacs;
   };
 
   hydraJobs = {

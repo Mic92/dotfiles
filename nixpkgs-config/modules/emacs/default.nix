@@ -1,47 +1,9 @@
-
 { pkgs, lib, config, ... }:
 
 with lib;
 
 let
-  flake = (builtins.fromJSON (builtins.readFile ../../../flake.lock)).nodes;
-  tarballFromFlake = info: builtins.fetchTarball {
-    url = "https://api.github.com/repos/${info.owner}/${info.repo}/tarball/${info.rev}";
-    sha256 = info.narHash;
-  };
-  nix-doom-emacs = tarballFromFlake flake.nix-doom-emacs.locked;
-  doom-emacs = tarballFromFlake flake.doom-emacs.locked;
-
-  #emacsOverlay = (import (builtins.fetchTarball {
-  #    url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
-  #  })) pkgs pkgs;
-
-  myemacs = pkgs.callPackage nix-doom-emacs {
-  # For testing
-  #myemacs = pkgs.callPackage /home/joerg/git/nix-doom-emacs {
-    doomPrivateDir = builtins.path {
-      name = "doom.d";
-      path = ../../../home/.doom.d;
-    };
-    extraPackages = [ pkgs.mu ];
-    dependencyOverrides = {
-      inherit doom-emacs;
-    };
-    # maybe some day, when it stops segfaulting
-    #emacsPackages = emacsOverlay.emacsPackagesFor emacsOverlay.emacsGcc;
-  };
-
-  emacs-direnv = pkgs.writeScriptBin "emacs-direnv" ''
-    #!${pkgs.runtimeShell}
-    timeout 1 ${pkgs.direnv}/bin/direnv "$@"
-    res=$!
-    if [[ "$res" == 124 ]]; then
-      echo "{}" >&2
-      exit 0
-    fi
-    exit $res
-  '';
-
+  myemacs = config.programs.emacs.package;
   editorScript = {
     name ? "emacseditor",
     x11 ? false,
@@ -67,22 +29,25 @@ let
 
   editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
 in {
-  home.file.".emacs.d/init.el".text = ''
+  home.file.".emacs.d/init.el".text = lib.mkBefore ''
     (load "${pkgs.fetchFromGitHub {
       owner = "seanfarley";
       repo = "emacs-bitwarden";
       rev = "e03919ca68c32a8053ddea2ed05ecc5e454d8a43";
       sha256 = "sha256-ooLgOwpJX9dgkWEev9xmPyDVPRx4ycyZQm+bggKAfa0=";
     }}/bitwarden.el")
-    (load "default.el")
   '';
 
+  programs.doom-emacs = {
+    enable = true;
+    doomPrivateDir = ../../../home/.doom.d;
+    extraPackages = [ pkgs.mu ];
+  };
+
   home.packages = with pkgs; [
-    emacs-all-the-icons-fonts
-    editorScriptX11
+    (lib.hiPrio editorScriptX11)
     ripgrep
-    emacs-direnv
-    (makeDesktopItem {
+    (lib.hiPrio (makeDesktopItem {
       name = "emacs";
       desktopName = "Emacs (Client)";
       exec = "${editorScriptX11}/bin/emacs %F";
@@ -91,9 +56,9 @@ in {
       comment = "Edit text";
       categories = "Development;TextEditor;Utility";
       mimeType = "text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++";
-    })
+    }))
 
-    (makeDesktopItem {
+    (lib.hiPrio (makeDesktopItem {
       name = "emacs-mailto";
       desktopName = "Emacs (MailTo)";
       # %u contains single quotes
@@ -103,7 +68,7 @@ in {
       comment = "Send email with Emacs";
       categories = "Utility";
       mimeType = "x-scheme-handler/mailto";
-    })
+    }))
 
     (editorScript {
       name = "mu4e";
@@ -113,7 +78,17 @@ in {
     (editorScript {})
     gopls
     golangci-lint
-    gotools
+    (pkgs.runCommand "gotools-${gotools.version}" {} ''
+      mkdir -p $out/bin
+      # skip tools colliding with binutils
+      for p in ${gotools}/bin/*; do
+        name=$(basename $p)
+        if [[ -x "${binutils-unwrapped}/bin/$name" ]]; then
+          continue
+        fi
+        ln -s $p $out/bin/
+      done
+    '')
     gotests
     reftools
     gomodifytags

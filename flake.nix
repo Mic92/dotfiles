@@ -34,7 +34,8 @@
     doom-emacs.flake = false;
 
     nix-doom-emacs.url = "github:vlaci/nix-doom-emacs";
-    nix-doom-emacs.flake = false;
+    nix-doom-emacs.inputs.doom-emacs.follows = "doom-emacs";
+    nix-doom-emacs.inputs.flake-utils.follows = "flake-utils";
 
     flake-registry.url = "github:NixOS/flake-registry";
     flake-registry.flake = false;

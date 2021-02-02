@@ -1,4 +1,4 @@
-{ pkgs, nur ? null }: {
+{ pkgs, nurFun ? null }: {
   allowUnfree = true;
   pulseaudio = true;
   #allowUnsupportedSystem = true;
@@ -43,12 +43,7 @@
    in {
     myVimBundle = myVimBundle;
 
-    nur = let
-      flake = "${builtins.getEnv "HOME"}/.homesick/repos/dotfiles/flake.lock";
-      info = (builtins.fromJSON (builtins.readFile flake)).nodes.nur.locked;
-      url = "https://api.github.com/repos/${info.owner}/${info.repo}/tarball/${info.rev}";
-      nur' = if nur != null then nur else import (builtins.fetchTarball url);
-    in nur' {
+    nur = nurFun {
       nurpkgs = pkgs;
       inherit pkgs;
     };
