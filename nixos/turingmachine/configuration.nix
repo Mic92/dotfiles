@@ -7,6 +7,7 @@
     ./modules/caddy.nix
     ./modules/dice.nix
     ./modules/backup.nix
+    ./modules/hass-agent.nix
     ./modules/light
     #./modules/high-dpi.nix
     ./modules/nfs.nix
@@ -26,7 +27,6 @@
     ./modules/cntr.nix
     ./modules/telegraf.nix
 
-    ../modules/hass-agent.nix
     ../modules/promtail.nix
     ../modules/macos-kvm.nix
     ../modules/mosh.nix
