@@ -136,6 +136,11 @@ in lib.mapAttrsToList (name: opts: {
     summary = "{{$labels.domain}} : dns query failed: {{$labels.result}}";
     description = "{{$labels.domain}} : could retrieve A record {{$labels.instance}} from server {{$labels.server}}: {{$labels.result}}!";
   };
+  secure_dns_query = {
+    condition = "secure_dns_state != 0";
+    summary = "{{$labels.domain}} : dns query failed: {{$labels.result}}";
+    description = "{{$labels.domain}} : could retrieve A record {{$labels.instance}} from server {{$labels.server}}: {{$labels.result}} for protocol {{$labels.protocol}}!";
+  };
   connection_failed = {
     condition = "net_response_result_code != 0";
     summary = "{{$labels.server}}: connection to {{$labels.port}}({{$labels.protocol}}) failed";

@@ -292,10 +292,6 @@
           tags.host = "eve";
           urls = [ "https://dl.thalheim.io/OtNjoZOUnEn3H6LJZ1qcIw/test" ];
         } {
-          urls = [ "https://dns.thalheim.io/dns-query?dns=q80BAAABAAAAAAAAA3d3dwdleGFtcGxlA2NvbQAAAQAB" ];
-          tags.host = "eve";
-          response_string_match = "example";
-        } {
           urls = [ "https://syncthing.thalheim.io" ];
           username = "syncthing";
           password = "$SYNCTHING_PASSWORD";
@@ -339,6 +335,26 @@
           ];
           tags.host = "eve";
           record_type = "A";
+        };
+
+        exec = {
+          ## Commands array
+          commands = let
+            kdigHealth = pkgs.writeScript "kdig-health" ''
+              #!${pkgs.runtimeShell}
+              proto=$1
+              if ${pkgs.knot-dns}/bin/kdig +short "+$proto" example.com A @dns.thalheim.io >/dev/null; then
+                result=0
+              else
+                result=1
+              fi
+              echo secure_dns,protocol=$proto state=$result
+            '';
+          in [
+            "${kdigHealth} https"
+            "${kdigHealth} tls"
+          ];
+          data_format = "influx";
         };
 
         x509_cert = [{
