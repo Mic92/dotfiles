@@ -1,4 +1,4 @@
-let
+{ config, pkgs, ... }: let
   convertDuration = ''
     {% if unit == "seconds" %}
       {{ duration }}
