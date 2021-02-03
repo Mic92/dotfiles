@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2021020303 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2021020304 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -30,6 +30,7 @@ git IN A 95.216.112.61
 git IN AAAA 2a01:4f9:2b:1605::1
 ns1 IN A 95.216.112.61
 ns1 IN AAAA 2a01:4f9:2b:1605::1
+dns IN A 95.216.112.61
 dns IN AAAA 2a01:4f9:2b:1605::5
 
 www IN A 95.216.112.61
@@ -43,7 +44,6 @@ telegraf IN CNAME eva
 influxdb IN CNAME www
 imap IN CNAME www
 anon IN CNAME www
-dns IN CNAME www
 
 _acme-challenge IN NS ns1.thalheim.io.
 _acme-challenge.imap IN NS ns1.thalheim.io.
