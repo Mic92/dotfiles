@@ -9,10 +9,11 @@ with lib;
     appendConfig = ''
       protocols:
       (
-        { name: "ssh"; service: "ssh"; host: "localhost"; port: "22"; probe: "builtin"; log_level: 0; },
-        { name: "xmpp"; host: "localhost"; port: "5222"; probe: "builtin"; log_level: 0; },
-        { name: "tls"; host: "localhost"; port: "4443"; probe: "builtin"; log_level: 0; },
-        { name: "tinc"; host: "localhost"; port: "655"; probe: "builtin"; log_level: 0; }
+        { name: "ssh"; service: "ssh"; host: "localhost"; port: "22"; probe: "builtin"; log_level: 0; tfo_ok: true; keepalive: true; fork; true; },
+        { name: "xmpp"; host: "localhost"; port: "5222"; probe: "builtin"; log_level: 0; tfo_ok: true },
+        { name: "tls"; host: "localhost"; port: "5343"; sni_hostnames: [ "dns.thalheim.io" ], log_level: 0; tfo_ok: true; },
+        { name: "tls"; host: "localhost"; port: "4443"; probe: "builtin"; log_level: 0; tfo_ok: true; },
+        { name: "tinc"; host: "localhost"; port: "655"; probe: "builtin"; log_level: 0; tfo_ok: true; }
       );
     '';
   };

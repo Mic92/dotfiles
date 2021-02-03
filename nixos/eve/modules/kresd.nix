@@ -1,14 +1,18 @@
 { pkgs, ... }: {
   services.kresd = {
     enable = true;
+    # proxied with nixos/eve/modules/sslh.nix
+    listenDoh = [
+      "[::1]:5343"
+      "127.0.0.1:5343"
+    ];
+    listenTLS = [ "853" ];
     listenPlain = [
       "[::1]:53"
       "127.0.0.1:53"
     ];
     extraConfig = ''
-      modules.load('http')
-      http.config({})
-      net.listen('::1', 8453, { kind = 'webmgmt', freebind = true })
+      net.tls("/var/lib/acme/dns.thalheim.io/fullchain.pem", "/var/lib/acme/dns.thalheim.io/key.pem")
       modules = { 'hints > iterate' }
       hints.add_hosts('${pkgs.retiolum}/etc.hosts')
     '';
@@ -21,41 +25,13 @@
   # This causes services to fail on upgrade
   systemd.services."kresd@".restartIfChanged = false;
 
+  # dns.thalheim.io
   networking.firewall.allowedTCPPorts = [ 853 ];
 
-  services.nginx = {
-    enableReload = true;
-    streamConfig = ''
-      upstream dns {
-        zone dns 64k;
-        server [::1]:53;
-      }
-      server {
-        listen 853 ssl;
-        ssl_certificate /var/lib/acme/thalheim.io/fullchain.pem;
-        ssl_certificate_key /var/lib/acme/thalheim.io/key.pem;
-        ssl_trusted_certificate /var/lib/acme/thalheim.io/fullchain.pem;
-        proxy_pass dns;
-      }
-    '';
-    upstreams."doh" = {
-      extraConfig = ''
-        zone doh 64k;
-      '';
-      servers."[::1]:8453" = {};
-    };
-    virtualHosts."dns.thalheim.io" = {
-      useACMEHost = "thalheim.io";
-      forceSSL = true;
-      http2 = true;
-      locations."/".extraConfig = ''
-        return 404 "404 Not Found\n";
-      '';
-      locations."/dns-query".extraConfig = ''
-        proxy_http_version 1.1;
-        proxy_set_header Connection "";
-        proxy_pass http://doh/doh;
-      '';
-    };
+  security.acme.certs."dns.thalheim.io" = {
+    postRun = "systemctl restart kresd@1.service";
+    group = "knot-resolver";
+    dnsProvider = "rfc2136";
+    credentialsFile = config.sops.secrets.lego-knot-credentials.path;
   };
 }
