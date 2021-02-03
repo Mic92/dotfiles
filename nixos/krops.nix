@@ -46,7 +46,7 @@ in
 
   eve = writeCommand "/bin/eve" {
     inherit source command;
-    target = "root@eve.thalheim.io";
+    target = eve;
   };
 
   "joerg@eve" = writeCommand "/bin/joerg-eve" {
