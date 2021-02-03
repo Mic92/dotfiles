@@ -22,9 +22,10 @@ in lib.mapAttrsToList (name: opts: {
 
   daily_task_not_run = {
     # give 6 hours grace period
-    condition = ''time() - task_last_run{state="ok",frequency="daily"} > (24 + 6) * 60 * 60'';
+    # FIXME: convert borgbackup-matchbox to weekly task
+    condition = ''time() - task_last_run{state="ok",frequency="daily",name!="borgbackup-matchbox"} > (24 + 6) * 60 * 60'';
     summary = "{{$labels.host}}: {{$labels.name}} was not run in the last 24h";
-    description = "{{$labels.host}}: {{$labels.name}} was not run in the last 24h ()";
+    description = "{{$labels.host}}: {{$labels.name}} was not run in the last 24h";
   };
 
   daily_task_failed = {
@@ -44,7 +45,13 @@ in lib.mapAttrsToList (name: opts: {
       description = "status of ${name} is unknown: no data for a day";
     }))
 // {
-  borgbackup-matchbox = {
+  borgbackup_matchbox_not_run = {
+    # give 6 hours grace period
+    condition = ''time() - task_last_run{state="ok",frequency="daily",name="borgbackup-matchbox"} > 7 * 24 * 60 * 60'';
+    summary = "{{$labels.host}}: {{$labels.name}} was not run in the last week";
+    description = "{{$labels.host}}: {{$labels.name}} was not run in the last week";
+  };
+  borgbackup_matchbox = {
     condition = ''absent_over_time(task_last_run{name="borgbackup-matchbox"}[7d])'';
     summary = "status of borgbackup-matchbox is unknown";
     description = "status of borgbackup-matchbox is unknown: no data for a week";
