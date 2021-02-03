@@ -7,10 +7,6 @@
       Environment = "PATH=/run/wrappers/bin";
       ExecStart = [
         "${pkgs.python3.interpreter} ${./ping_tracker.py} ${config.sops.secrets.ping-tracker-json.path}"
-        ''
-          ${pkgs.nur.repos.mic92.healthcheck}/bin/healthcheck \
-            --service ping-tracker --password-file ${config.sops.secrets.healthcheck-ping-tracker.path}
-        ''
       ];
       Type = "oneshot";
       SupplementaryGroups = [ "keys" ];
