@@ -1,12 +1,15 @@
-{ pkgs, ... }: {
+{ pkgs, config, ... }: {
   services.kresd = {
     enable = true;
     # proxied with nixos/eve/modules/sslh.nix
-    listenDoh = [
+    listenDoH = [
       "[::1]:5343"
       "127.0.0.1:5343"
     ];
-    listenTLS = [ "853" ];
+    listenTLS = [
+      "0.0.0.0:853"
+      "[::]:853"
+    ];
     listenPlain = [
       "[::1]:53"
       "127.0.0.1:53"

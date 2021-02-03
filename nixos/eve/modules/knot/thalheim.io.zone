@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2021013110 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2021020302 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -42,13 +42,14 @@ telegraf IN CNAME eva
 influxdb IN CNAME www
 imap IN CNAME www
 anon IN CNAME www
-
+dns IN CNAME www
 
 _acme-challenge IN NS ns1.thalheim.io.
 _acme-challenge.imap IN NS ns1.thalheim.io.
 _acme-challenge.mail IN NS ns1.thalheim.io.
 _acme-challenge.influxdb IN NS ns1.thalheim.io.
 _acme-challenge.anon IN NS ns1.thalheim.io.
+_acme-challenge.dns IN NS ns1.thalheim.io.
 
 @ IN CAA 0 issue "letsencrypt.org"
 @ IN CAA 0 iodef "mailto:joerg.caa@thalheim.io"

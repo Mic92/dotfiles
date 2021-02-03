@@ -10,7 +10,10 @@
     # for development
     #nixpkgs.url = "/home/joerg/git/nixpkgs";
     nur.url = "github:nix-community/NUR";
+    # for development
+    #sops-nix.url = "/home/joerg/git/sops-nix";
     sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     bme680-mqtt.url = "github:Mic92/bme680-mqtt";
     bme680-mqtt.inputs.utils.follows = "flake-utils";
@@ -21,11 +24,11 @@
     krops.url = "github:Mic92/krops";
     krops.inputs.flake-utils.follows = "flake-utils";
     krops.inputs.nixpkgs.follows = "nixpkgs";
+
     retiolum.url = "git+https://git.thalheim.io/Mic92/retiolum";
-    # for development
-    #sops-nix.url = "/home/joerg/git/sops-nix";
-    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+
     nixos-hardware.url = "github:Mic92/nixos-hardware/master";
+
     home-manager.url = "github:rycee/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -36,6 +39,7 @@
     nix-doom-emacs.url = "github:vlaci/nix-doom-emacs";
     nix-doom-emacs.inputs.doom-emacs.follows = "doom-emacs";
     nix-doom-emacs.inputs.flake-utils.follows = "flake-utils";
+    nix-doom-emacs.inputs.nixpkgs.follows = "nixpkgs";
 
     flake-registry.url = "github:NixOS/flake-registry";
     flake-registry.flake = false;
