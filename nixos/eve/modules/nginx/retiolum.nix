@@ -4,7 +4,7 @@
   services.nginx.virtualHosts."retiolum.thalheim.io" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
-    root = "/var/lib/gitea/builds/retiolum.thalheim.io";
+    root = "/var/www/retiolum.thalheim.io";
   };
 
   systemd.timers.stockholm-autosync = {
