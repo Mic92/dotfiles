@@ -37,7 +37,6 @@ class Topic:
 class Rhasspy(Module):
     host = "localhost"
     port = 12183
-    password = None
     color_connected = "#FFFFFF"
     color_disconnected = "#FF0000"
     color_listening = "#00FF00"
@@ -47,7 +46,6 @@ class Rhasspy(Module):
     settings = (
         ("host", "Hostname/ip address of the MQTT broker connect to it."),
         ("port", "Port number of the MQTT broker connect"),
-        ("password", "Password of the mqtt broker"),
         ("color_connected", "Text color"),
         ("format_connected", "Text color"),
         ("color_disconnected", "Text color"),
