@@ -193,14 +193,9 @@
 
 (setq persistent-scratch-save-file (expand-file-name "~/.emacs.d/.persistant-scratch"))
 
-;; Is there an easier way?
-(defun disable-python-pylint()
-  (flycheck-disable-checker 'python-pylint))
-
-(use-package! flycheck
+(use-package flycheck
   :config
-  (add-hook 'flycheck-before-syntax-check-hook
-            #'disable-python-pylint 'local))
+  (setq-default flycheck-disabled-checkers '(python-pylint)))
 
 (use-package! direnv
   :config
