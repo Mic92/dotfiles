@@ -60,12 +60,6 @@ status.register(Prometheus,
                 critical_color=color.text_down,
                 interval=30)
 
-#status.register(Netdata,
-#                base_url="https://netdata.thalheim.io",
-#                color=color.text_normal,
-#                warning_color=color.text_warn,
-#                critical_color=color.text_down)
-
 #status.register(yubikey.YubiKeyTouchDetector, hints={"markup": "pango"})
 
 status.register(Rhasspy)
