@@ -110,5 +110,8 @@ mouse:
 selection:
   semantic_escape_chars: ",│`|:\"' ()[]{}<>"
 
+key_bindings:
+  - { key: NumpadEnter, chars: "\x0d" }
+
 cursor:
   style: Block

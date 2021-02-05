@@ -48,6 +48,16 @@
   #  pulse.enable = true;
   #};
 
+  #environment.variables.GTK_USE_PORTAL = "1";
+  #xdg.portal = {
+  #  enable = true;
+  #  extraPortals = with pkgs; [
+  #    xdg-desktop-portal-wlr
+  #    xdg-desktop-portal-gtk
+  #  ];
+  #  gtkUsePortal = true;
+  #};
+
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/66F2-49C6";
     fsType = "vfat";

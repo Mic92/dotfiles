@@ -92,6 +92,7 @@ in {
     graphicsmagick
     #gimp
     firefox
+    #firefox-wayland
     #chromium
     aspell
     aspellDicts.de
@@ -106,7 +107,6 @@ in {
     xclip
     gpodder
     ncmpcpp
-    xclip
     screen-message
     nur.repos.xeals.alacritty-ligatures
     sshfsFuse
@@ -121,6 +121,7 @@ in {
     tldr
     nixpkgs-pytools
     hydra-check
+    xdg_utils
 
     (mpv.override {
       scripts = [ mpvScripts.mpris ];
@@ -135,7 +136,6 @@ in {
     # to fix xdg-open
     glib
     zoom-us
-
     jmtpfs # needed for charging? WTF
   ] ++ (with nur.repos.mic92; [
     speedscope
