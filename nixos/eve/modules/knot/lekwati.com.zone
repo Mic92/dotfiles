@@ -1,4 +1,4 @@
-@ 3600 IN SOA lekwati.com. root.lekwati.com. 2021013106 7200 3600 86400 3600
+@ 3600 IN SOA lekwati.com. root.lekwati.com. 2021020500 7200 3600 86400 3600
 
 $TTL 600
 
@@ -15,6 +15,8 @@ $TTL 600
 @ IN CAA 0 iodef "mailto:joerg.caa@thalheim.io"
 
 * IN CNAME www.thalheim.io.
+
+blog IN CNAME slekwati.github.io.
 _acme-challenge IN NS ns1.thalheim.io.
 
 ;; TXT Records
