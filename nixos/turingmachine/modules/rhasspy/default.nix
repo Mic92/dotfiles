@@ -25,7 +25,7 @@
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       ExecStart = ''
-        ${pkgs.tts}/bin/tts-server --model_name tts_models/en/ljspeech/glow-tts --vocoder_name vocoder_models/universal/libri-tts/fullband-melgan
+        ${pkgs.tts}/bin/tts-server --model_name tts_models/en/ljspeech/glow-tts --vocoder_name vocoder_models/en/ljspeech/mulitband-melgan
       '';
       User = "joerg";
     };
