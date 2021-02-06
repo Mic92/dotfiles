@@ -9,7 +9,6 @@
     ./homepage.nix
     ./ip.nix
     ./muc.nix
-    #./blog.halfco.de.nix
     #./halfco.de.nix
     ./stub-status.nix
     ./threema.nix
