@@ -304,7 +304,7 @@
         } {
           urls = [ "https://thalheim.io" ];
           tags.host = "eve";
-          response_string_match = "Higgs-Boson";
+          response_string_match = "Jörg Thalheim";
         } {
           urls = [ "http://loki.r/ready" ];
           tags.host = "rock";
