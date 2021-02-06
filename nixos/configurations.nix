@@ -51,6 +51,7 @@ in {
     system = "x86_64-linux";
     modules = defaultModules ++ [
       nixos-hardware.nixosModules.lenovo-thinkpad-x250
+      home-manager.nixosModules.home-manager
       ./bernie/configuration.nix
     ];
   };
