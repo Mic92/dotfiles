@@ -21,11 +21,6 @@
       forceSSL = true;
     };
 
-    virtualHosts."blog.lekwati.com" = {
-      useACMEHost = "thalheim.io";
-      forceSSL = true;
-    };
-
     virtualHosts."glowing-bear.lekwati.com" = {
       useACMEHost = "thalheim.io";
       forceSSL = true;

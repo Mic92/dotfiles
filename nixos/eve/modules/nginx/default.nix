@@ -2,7 +2,6 @@
 
 {
   imports = [
-    ./blog.nix
     ./devkid.net.nix
     ./dl.nix
     ./glowing-bear.nix
