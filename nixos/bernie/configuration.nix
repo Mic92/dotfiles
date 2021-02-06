@@ -32,7 +32,6 @@
   networking.hostId = "ac174b52";
 
   networking.networkmanager.enable = true;
-  networking.networkmanager.wifi.backend = "iwd";
 
   time.timeZone = null;
   services.geoclue2.enable = true;
