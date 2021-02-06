@@ -6,6 +6,7 @@ keys:
   - &matchbox 13d0b443fe935edf44f9b472d8abdace2bcf8e4b
   - &eddie CC48DB9AC67E71DA343B47D594933BDDF739BEB3
   - &rock F139840C191C75322AC3D4516BE2046130150E21
+  - &bernie 6be0cdb876ff7fcb2e0721bcd05c8bd9edd15816
 creation_rules:
   - path_regex: secrets/admins/[^/]+\.yaml$
     key_groups:
@@ -48,6 +49,7 @@ creation_rules:
     - pgp:
       - *joerg
       - *eva
+      - *bernie
       - *turingmachine
   - path_regex: rock/secrets/[^/]+\.yaml$
     key_groups:

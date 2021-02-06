@@ -5,7 +5,8 @@
 { config, pkgs, lib, ... }:
 {
   imports = [
-    #./modules/telegraf.nix
+    ./modules/telegraf.nix
+    ./modules/home-manager
     ../modules/hass-agent.nix
     ../modules/packages.nix
     ../modules/users.nix
