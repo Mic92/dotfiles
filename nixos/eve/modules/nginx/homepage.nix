@@ -11,9 +11,6 @@
         proxy_buffering off;
         tcp_nodelay on;
       '';
-      locations."/_status".extraConfig = ''
-        stub_status;
-      '';
       extraConfig = ''
         # TODO
         #location /privat.html {

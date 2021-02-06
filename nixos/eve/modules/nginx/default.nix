@@ -8,8 +8,6 @@
     ./homepage.nix
     ./ip.nix
     ./muc.nix
-    #./halfco.de.nix
-    ./stub-status.nix
     ./threema.nix
     ./retiolum.nix
 
