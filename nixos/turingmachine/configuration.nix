@@ -142,7 +142,7 @@
       enable = true;
       enableSSHSupport = true;
       enableExtraSocket = true;
-      pinentryFlavor = "gnome3";
+      pinentryFlavor = "qt";
     };
 
     ssh.extraConfig = ''
