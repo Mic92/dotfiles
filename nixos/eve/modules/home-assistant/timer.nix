@@ -10,19 +10,25 @@
   '';
 in {
   services.home-assistant.config = {
-    timer.rhasspy = {};
-    timer.pause-rhasspy = {};
+    timer = {
+      rhasspy = {};
+      pause_rhasspy = {};
+    };
     intent = {};
     intent_script = {
       Pause = {
         speech.text = "Suspend Jarvis for {{ duration }} {{ unit }}.";
+        async_action = true;
         action = [{
           service = "timer.start";
-          entity_id = "timer.pause-rhasspy";
+          entity_id = "timer.pause_rhasspy";
           data_template.duration = convertDuration;
         } {
           service = "shell_command.ssh_rhasspy_mqtt";
-          data_template.state = "Off";
+          data_template = {
+            state = "Off";
+            host = "turingmachine.r";
+          };
         }];
       };
       GetTime.speech.text = "It is {{ now().hour }}:{{ now().minute }}.";
@@ -52,7 +58,7 @@ in {
     };
 
     shell_command.ssh_rhasspy_mqtt = let
-      cmd = ''mosquitto_pub -L mqtt://localhost:12183/hermes/hotword/toggle{{ state }} -m '{\"siteId\": \"default\", \"reason\": \"\"}'';
+      cmd = ''mosquitto_pub -L mqtt://localhost:12183/hermes/hotword/toggle{{ state }} -m '{\"siteId\": \"default\", \"reason\": \"\"}' '';
     in ''${pkgs.openssh}/bin/ssh -i ${config.sops.secrets.ssh-homeassistant.path} hass-agent@{{ host }} "${cmd}"'';
 
     automation = [{
@@ -74,14 +80,17 @@ in {
       trigger = {
         platform = "event";
         event_type = "timer.finished";
-        event_data.entity_id = "timer.pause-rhasspy";
+        event_data.entity_id = "timer.pause_rhasspy";
       };
       action = [{
         service = "shell_command.ssh_rhasspy_mqtt";
-        data_template.state = "On";
+        data_template = {
+          state = "On";
+          host = "turingmachine.r";
+        };
       } {
         service = "rest_command.tts";
-        data_template.message = ''Re-armed jarvis'';
+        data_template.message = ''Listening again'';
       }];
     }];
   };
