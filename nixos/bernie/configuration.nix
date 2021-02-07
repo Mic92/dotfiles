@@ -5,14 +5,16 @@
 { config, pkgs, lib, ... }:
 {
   imports = [
-    ./modules/telegraf.nix
+    ./hardware-configuration.nix
     ./modules/home-manager
+    ./modules/sshd.nix
+    ./modules/telegraf.nix
+
     ../modules/hass-agent.nix
     ../modules/packages.nix
     ../modules/users.nix
     ../modules/zfs.nix
     ../modules/tracing.nix
-    ./hardware-configuration.nix
   ];
   networking.retiolum = {
     ipv4 = "10.243.29.169";
