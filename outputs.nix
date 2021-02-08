@@ -37,10 +37,10 @@ in {
     tmpdir=$(mktemp -d)
     trap "rm -rf $tmpdir" EXIT
     declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve")
-    profile=''${profiles[$HOSTNAME]}
+    profile=''${profiles[$HOSTNAME]:-common}
 
     flake=$(nix flake info --json ${./.} | ${pkgs.jq}/bin/jq -r .url)
-    nix build --show-trace --out-link "$tmpdir/result" "$flake#hmConfigurations.''${profile:-common}.activationPackage" "$@"
+    nix build --show-trace --out-link "$tmpdir/result" "$flake#hmConfigurations.''${profile}.activationPackage" "$@"
     link=$(realpath $tmpdir/result)
     $link/activate
   '';
