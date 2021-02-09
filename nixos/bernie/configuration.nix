@@ -71,6 +71,7 @@
     evolution
     signal-desktop
     gimp
+    wl-clipboard
   ];
 
   documentation.doc.enable = false;
