@@ -39,6 +39,7 @@
 
             # university
             "rose.r"
+            "grandalf.r"
             "martha.r"
             "donna.r"
             "amy.r"
@@ -151,6 +152,7 @@
           timeout = "10s";
         }) [
           "rock"
+          "grandalf"
           "eve"
           "amy"
           "donna"
