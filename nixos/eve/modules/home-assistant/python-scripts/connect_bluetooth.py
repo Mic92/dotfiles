@@ -1,11 +1,11 @@
 devices = [
-    "laptop",
+    "turingmachine",
     "bernie",
     "phone",
 ]
 
 hosts = {
-    "laptop": "turingmachine.r",
+    "turingmachine": "turingmachine.r",
     "bernie": "bernie.r"
 }
 
