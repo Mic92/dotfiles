@@ -348,11 +348,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1612964511,
-        "narHash": "sha256-wcwO5/a+W+3WLuK3fCcvIB9/e9R1w7mikOeuuzT1DJo=",
+        "lastModified": 1613049780,
+        "narHash": "sha256-wUTeSph/+gek4+P4yG7FPuBRFkXh+fF0xmygRKaABEw=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "260ce91b8c2ed888f816ad46e1aa6e4f7ad7f735",
+        "rev": "bdbcaac5571c535b33ef95a2102f58fd85349f6f",
         "type": "github"
       },
       "original": {
@@ -459,11 +459,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1612783377,
-        "narHash": "sha256-eDVx/+hPoaPq73xUIMBfE1iw3Q10GK/EIWMJoTWqYIg=",
+        "lastModified": 1613039905,
+        "narHash": "sha256-8orFOcR6HrLP6JL8UpQx6kN8O/YV0GTIMG56kufn5/A=",
         "ref": "master",
-        "rev": "d05e290d127e45839a6446831331587f9964e6f4",
-        "revCount": 64,
+        "rev": "9aa8db25a31608ef8328acda41a5f55dc346fce6",
+        "revCount": 65,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },
