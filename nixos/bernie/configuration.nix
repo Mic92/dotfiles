@@ -72,6 +72,7 @@
     signal-desktop
     gimp
     wl-clipboard
+    poppler_utils
   ];
 
   documentation.doc.enable = false;
