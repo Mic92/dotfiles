@@ -194,6 +194,7 @@
   services.samba = {
     enable = true;
     securityType = "user";
+    enableWinbindd = false;
     extraConfig = ''
       workgroup = WORKGROUP
       server string = smbnix
