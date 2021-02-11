@@ -145,7 +145,7 @@ class PhoneBattery(IntervalModule):
 
     def run(self) -> None:
         redmi = charge_state_android(state, "redmi_note_5")
-        iphone = charge_state_ios(state, "beatrice")
+        iphone = charge_state_ios(state, "beatrice_icloud")
         watch = charge_state_ios(state, "shannans_apple_watch")
         herbert = charge_state_ios(state, "herbert")
         full_text = f"{redmi[0]} I:{iphone[0]} W:{watch[0]} H:{herbert[0]}"
