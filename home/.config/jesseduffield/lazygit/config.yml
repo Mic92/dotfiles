@@ -1,0 +1,5 @@
+reporting: "off"
+git:
+  paging:
+    colorArg: always
+    pager: delta --syntax-theme "Solarized (light)" --paging=never --24-bit-color=never
