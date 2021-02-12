@@ -45,8 +45,10 @@
       nixFlakes
       tmux
       htop
-      gitAndTools.hub
-      gitAndTools.tig
+      hub
+      tig
+      lazygit
+      delta
       tokei
       direnv
       nix-direnv
