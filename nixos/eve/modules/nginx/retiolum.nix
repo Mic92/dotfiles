@@ -15,7 +15,7 @@
 
   systemd.services.stockholm-autosync = {
     script = ''
-      set -eux -o pipefail
+      set -eu -o pipefail
       readonly workdir=/var/lib/gitea/builds/stockholm-auto-update
       readonly downstream=gitea@git.thalheim.io:Mic92/stockholm
       readonly upstream=https://cgit.lassul.us/stockholm
