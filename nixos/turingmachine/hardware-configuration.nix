@@ -8,7 +8,7 @@
     "${modulesPath}/installer/scan/not-detected.nix"
   ];
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages;
 
   # on demand
   services.fwupd.enable = false;
@@ -35,20 +35,20 @@
       enable = true;
       driSupport32Bit = true;
     };
-    pulseaudio = {
-      enable = true;
-      package = pkgs.pulseaudioFull;
-    };
+    #pulseaudio = {
+    #  enable = true;
+    #  package = pkgs.pulseaudioFull;
+    #};
   };
 
-  #services.pipewire = {
-  #  enable = true;
-  #  alsa.enable = true;
-  #  alsa.support32Bit = true;
-  #  pulse.enable = true;
-  #  # use the example session manager
-  #  pwms.enable = true;
-  #};
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # use the example session manager
+    pwms.enable = true;
+  };
 
   #environment.variables.GTK_USE_PORTAL = "1";
   #xdg.portal = {
