@@ -31,6 +31,21 @@ in {
           };
         }];
       };
+      Nap = {
+        speech.text = "No, I need one.";
+        async_action = true;
+        action = [{
+          service = "timer.start";
+          entity_id = "timer.pause_rhasspy";
+          data_template.duration = "{{ 60 * 20 }}";
+        } {
+          service = "shell_command.ssh_rhasspy_mqtt";
+          data_template = {
+            state = "Off";
+            host = "turingmachine.r";
+          };
+        }];
+      };
       GetTime.speech.text = "It is {{ now().hour }}:{{ now().minute }}.";
       GetTimer.speech.text = ''{{ state_attr("timer.rhasspy", "duration") }} is left.'';
       SetTimer = {
