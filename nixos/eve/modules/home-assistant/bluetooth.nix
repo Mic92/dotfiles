@@ -10,8 +10,19 @@
       action = {
         service = "python_script.connect_bluetooth";
         data_template = {
+          action = "connect";
           bluetooth_device = "{{ bluetooth_device }}";
           device = "{{ device }}";
+        };
+      };
+    };
+    intent_script.DisconnectBluetooth = {
+      speech.text = "Disconnect {{ bluetooth_device }}.";
+      action = {
+        service = "python_script.connect_bluetooth";
+        data_template = {
+          action = "disconnect";
+          bluetooth_device = "{{ bluetooth_device }}";
         };
       };
     };

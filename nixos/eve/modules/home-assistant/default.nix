@@ -13,6 +13,7 @@ in {
     ./mqtt.nix
     ./presence.nix
     ./postgres.nix
+    ./redmi.nix
     ./timer.nix
     ./transmission.nix
     ./weather.nix

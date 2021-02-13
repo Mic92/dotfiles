@@ -12,18 +12,5 @@ in {
     FindIphone = notifyDevice "beatrice" "Shannan's phone";
     FindWatch = notifyDevice "shannansapple_watch" "Shannan's watch";
     FindMacbook = notifyDevice "herbert" "Shannan's laptop";
-
-    FindRedmi = {
-      speech.text = "Send notification";
-      action = {
-        service = "notify.pushover";
-        data = {
-          message = "Phonefinderalert";
-          target = "gt-i9195";
-          data.sound = "echo";
-          data.priority = 1;
-        };
-      };
-    };
   };
 }

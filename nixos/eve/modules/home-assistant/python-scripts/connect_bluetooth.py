@@ -49,10 +49,14 @@ def disconnect(device: str, mac: str) -> None:
 
 
 def main() -> None:
-    device = data.get("device", None)
-    if not device:
-        logger.warning("Called without 'device' parameter")
-        return
+    action = data.get("action", None)
+
+    device = ""
+    if action == "connect":
+        device = data.get("device", None)
+        if not device:
+            logger.warning("Called without 'device' parameter")
+            return
 
     bluetooth_device = data.get("bluetooth_device", None)
     if not bluetooth_device:
