@@ -1,6 +1,7 @@
 *~
 *.swp
 *.swo
+.gdb_history
 /.direnv.*
 /.direnv
 /.envrc
