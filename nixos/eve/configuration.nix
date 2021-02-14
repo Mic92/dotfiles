@@ -24,6 +24,7 @@
     ./modules/ejabberd.nix
     ./modules/gitea.nix
     ./modules/grafana.nix
+    ./modules/goatcounter.nix
     ./modules/home-assistant
     ./modules/influxdb.nix
     ./modules/ipfs.nix
