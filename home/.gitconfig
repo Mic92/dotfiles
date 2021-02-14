@@ -11,6 +11,9 @@
   status = true
 [am]
   threeWay = true
+[delta]
+  plus-color = "#012800"
+  minus-color = "#340001"
 [user]
   name = Jörg Thalheim
   email = joerg@thalheim.io
@@ -25,6 +28,7 @@
   tool = vim -d
   compactionHeuristic = true
   renames = true
+  colorMoved = default
 [merge]
   tool = vim -d
   conflictstyle = diff3
