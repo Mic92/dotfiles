@@ -25,4 +25,7 @@ in {
   eve = hmConfiguration {
     extraModules = [ ./eve.nix ];
   };
+  bernie = hmConfiguration {
+    extraModules = [ ./bernie.nix ];
+  };
 }
