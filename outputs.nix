@@ -36,7 +36,7 @@ in {
     set -eu -o pipefail -x
     tmpdir=$(mktemp -d)
     trap "rm -rf $tmpdir" EXIT
-    declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve")
+    declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie")
     profile=''${profiles[$HOSTNAME]:-common}
 
     flake=$(nix flake info --json ${./.} | ${pkgs.jq}/bin/jq -r .url)

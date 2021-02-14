@@ -6,7 +6,6 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ./modules/home-manager
     ./modules/sshd.nix
     ./modules/telegraf.nix
 
