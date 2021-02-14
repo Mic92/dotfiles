@@ -49,6 +49,7 @@
     # use the example session manager
     media-session.enable = true;
   };
+  security.rtkit.enable = true;
 
   #environment.variables.GTK_USE_PORTAL = "1";
   #xdg.portal = {
