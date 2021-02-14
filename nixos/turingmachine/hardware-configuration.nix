@@ -47,7 +47,7 @@
     alsa.support32Bit = true;
     pulse.enable = true;
     # use the example session manager
-    pwms.enable = true;
+    media-session.enable = true;
   };
 
   #environment.variables.GTK_USE_PORTAL = "1";
