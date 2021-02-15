@@ -45,17 +45,20 @@ in lib.mapAttrsToList (name: opts: {
       description = "status of ${name} is unknown: no data for a day";
     }))
 // {
+
   borgbackup_matchbox_not_run = {
     # give 6 hours grace period
     condition = ''time() - task_last_run{state="ok",frequency="daily",name="borgbackup-matchbox"} > 7 * 24 * 60 * 60'';
     summary = "{{$labels.host}}: {{$labels.name}} was not run in the last week";
     description = "{{$labels.host}}: {{$labels.name}} was not run in the last week";
   };
+
   borgbackup_matchbox = {
     condition = ''absent_over_time(task_last_run{name="borgbackup-matchbox"}[7d])'';
     summary = "status of borgbackup-matchbox is unknown";
     description = "status of borgbackup-matchbox is unknown: no data for a week";
   };
+
   filesystem_full_in_1d = {
     condition = "predict_linear(disk_free{${deviceFilter}}[1d], 24*3600) <= 0";
     time = "1h";
@@ -82,6 +85,13 @@ in lib.mapAttrsToList (name: opts: {
     summary = "{{$labels.host}}: Service {{$labels.name}} failed to start.";
     description = "{{$labels.host}} failed to (re)start service {{$labels.name}}.";
   };
+
+  service_not_running = {
+    condition = ''systemd_units_active_code{name=~"teamspeak3-server.service|tt-rss.service", sub!="running"}'';
+    summary = "{{$labels.host}}: Service {{$labels.name}} not running.";
+    description = "{{$labels.host}} should have a running {{$labels.name}}.";
+  };
+
   ram_using_90percent = {
     condition =  "mem_buffered + mem_free + mem_cached < mem_total * 0.1";
     time = "1h";
