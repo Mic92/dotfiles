@@ -137,6 +137,22 @@ in {
     glib
     zoom-us
     jmtpfs # needed for charging? WTF
+
+    (pkgs.writeScriptBin "rhasspy-play" ''
+      #!${pkgs.runtimeShell}
+      set -eux -o pipefail
+      export PATH=${pkgs.pulseaudioFull}/bin:$PATH
+
+      sink=42
+
+      if pamixer --get-mute --sink="$sink"; then
+        pamixer --sink=$sink --unmute
+        paplay --device=$sink
+        pamixer --sink=$sink --mute
+      else
+        paplay --device=$sink
+      fi
+    '')
   ] ++ (with nur.repos.mic92; [
     speedscope
     inxi

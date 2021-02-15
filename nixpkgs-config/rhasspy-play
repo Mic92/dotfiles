@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+set -eux -o pipefail
+
+#sink=alsa_output.pci-0000:00:1f.3.analog-stereo
+sink=42
+
+if pamixer --get-mute --sink="$sink"; then
+    pamixer --sink=$sink --unmute
+    paplay --device=$sink
+    pamixer --sink=$sink --mute
+else
+    paplay --device=$sink
+fi
