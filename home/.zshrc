@@ -285,6 +285,7 @@ alias pgrep='pgrep -a'
 
 # System tools
 xalias top='htop'
+xalias tig='lazygit'
 alias free='free -m'
 alias vuser="fuser -v "
 alias du='du -hc'
