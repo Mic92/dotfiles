@@ -49,7 +49,7 @@
   # https://github.com/systemd/systemd/issues/17866
   systemd.services.borgbackup-job-matchbox.serviceConfig = {
     ProtectSystem = lib.mkForce false;
-    serviceConfig.ReadWritePaths = lib.mkForce (lib.mkAfter "");
+    ReadWritePaths = lib.mkForce (lib.mkAfter "");
   };
 
   sops.secrets.smb-secrets = {};
