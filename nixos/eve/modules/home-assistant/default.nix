@@ -7,6 +7,7 @@ in {
     ./find-phone.nix
     ./german.nix
     ./jokes.nix
+    ./laptops.nix
     ./light.nix
     ./ldap.nix
     ./noops.nix

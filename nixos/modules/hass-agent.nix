@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 {
   users.extraUsers.hass-agent = {
     isSystemUser = true;
@@ -8,4 +8,11 @@
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA6vG7qFCKcdlB+0PdLc2IY7dBmD26NcSEUVwaoqLFNB"
     ];
   };
+  security.sudo.extraRules = [{
+    users = [ "hass-agent" ];
+    commands = [{
+      command = "/run/current-system/sw/bin/systemctl suspend";
+      options = [ "NOPASSWD" ];
+    }];
+  }];
 }
