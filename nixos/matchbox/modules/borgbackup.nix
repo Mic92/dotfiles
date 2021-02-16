@@ -1,4 +1,4 @@
-{ pkgs, config, ... }: {
+{ pkgs, lib, config, ... }: {
   fileSystems."/mnt/backup" = {
     device = "//192.168.178.1/FRITZ.NAS/TOSHIBA-ExternalUSB3-0-02";
     fsType = "cifs";
@@ -42,9 +42,15 @@
     };
   };
 
-  systemd.services.borgbackup-job-matchbox.serviceConfig.ReadWritePaths = [
-    "/var/log/telegraf"
-  ];
+  #systemd.services.borgbackup-job-matchbox.serviceConfig.ReadWritePaths = [
+  #  "/var/log/telegraf"
+  #];
+
+  # https://github.com/systemd/systemd/issues/17866
+  systemd.services.borgbackup-job-matchbox.serviceConfig = {
+    ProtectSystem = lib.mkForce false;
+    serviceConfig.ReadWritePaths = lib.mkForce (lib.mkAfter "");
+  };
 
   sops.secrets.smb-secrets = {};
 }
