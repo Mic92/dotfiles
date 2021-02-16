@@ -1,4 +1,7 @@
 reporting: "off"
+confirmOnQuit: true
+update:
+    method: never
 git:
   paging:
     colorArg: always
