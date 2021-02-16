@@ -215,7 +215,7 @@
           urls = [
             "http://news.r/"
             "http://brockman.r/"
-            "http://rss.r/"
+            "http://rss.r/?action=display&bridge=Heise&category=https%3A%2F%2Fwww.heise.de%2Fnewsticker%2Fheise-atom.xml&limit=5&format=Plaintext"
           ];
           tags.host = "news";
           response_string_match = "rss";
