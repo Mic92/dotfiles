@@ -4,7 +4,7 @@
       alias = "IPhone battery warning";
       trigger = {
         platform = "numeric_state";
-        entity_id  = "sensor.beatrice_battery_state";
+        entity_id  = "sensor.beatrice_battery_level";
         below = 30;
         for = "00:10:00";
       };
