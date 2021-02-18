@@ -76,7 +76,7 @@ in
     command = targetPath: ''
       nixos-rebuild switch --flake ${targetPath}/dotfiles#matchbox \
         --build-host localhost \
-        --target-host root@192.168.178.2
+        --target-host root@matchbox.r
     '';
   };
   #matchbox = writeCommand "/bin/matchbox" {
