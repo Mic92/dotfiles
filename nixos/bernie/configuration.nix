@@ -72,6 +72,7 @@
     gimp
     wl-clipboard
     poppler_utils
+    focuswriter
   ];
 
   documentation.doc.enable = false;
