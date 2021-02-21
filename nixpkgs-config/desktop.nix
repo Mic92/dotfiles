@@ -108,7 +108,19 @@ in {
     gpodder
     ncmpcpp
     screen-message
-    nur.repos.xeals.alacritty-ligatures
+    (nur.repos.xeals.alacritty-ligatures.overrideAttrs (old: rec {
+      src = fetchFromGitHub {
+        owner = "Mic92";
+        repo = "alacritty";
+        rev = "ligatures-2021-01-21";
+        sha256 = "sha256-1dGk4ORzMSUQhuKSt5Yo7rOJCJ5/folwPX2tLiu0suA=";
+      };
+      cargoDeps = old.cargoDeps.overrideAttrs (pkgs.lib.const {
+        name = "alacritty-vendor.tar.gz";
+        inherit src;
+        outputHash = "sha256-FC3+9wjk/Samq2T/I/DXzGdV9/8puGI0OlJhG6o3rcg=";
+      });
+    }))
     sshfsFuse
     sshuttle
     jq
