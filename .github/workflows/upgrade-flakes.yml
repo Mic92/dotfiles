@@ -1,5 +1,6 @@
 name: "Update flakes"
 on:
+  repository_dispatch:
   workflow_dispatch:
   schedule:
     - cron:  '51 2 * * 0'
