@@ -142,29 +142,11 @@ wttr() {
     curl -H "Accept-Language: ${LANG%_*}" --compressed "$request"
 }
 
-function {
-  local profile
-  typeset -A profile
-  profile[turingmachine]="desktop.nix"
-  profile[eddie]="desktop.nix"
-  profile[brain20]="brain.nix"
-  profile[eve]="eve.nix"
-  export HOME_MANAGER_CONFIG="${HOME}/.config/nixpkgs/${profile[$HOST]:-common.nix}"
-}
-
-home-manager() {
-  echo "using $HOME_MANAGER_CONFIG"
-  if [[ -n ${commands[home-manager]} ]]; then
-    command home-manager "$@"
-  else
-    if ! nix-instantiate --find-file home-manager; then
-      nix-channel --add https://github.com/rycee/home-manager/archive/master.tar.gz home-manager
-      nix-channel --update
-    fi
-
-    nix-shell https://github.com/rycee/home-manager/archive/master.tar.gz -A install
-    command home-manager "$@"
-  fi
+hm-switch() {
+  (
+    cd ~/.homesick/repos/dotfiles
+    nix run '.#hm-switch' -- "$@"
+  )
 }
 nix-index-update() {
   tag=$(git -c 'versionsort.suffix=-' \
