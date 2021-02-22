@@ -169,15 +169,6 @@
           tags.org = "krebs";
         }];
 
-        http = [{
-          urls = [
-            "https://api.github.com/repos/Mic92/nur-packages/commits/master/check-suites"
-            "https://api.github.com/repos/Mic92/sops-nix/commits/master/check-suites"
-          ];
-          data_format = "json";
-          json_query = "check_suites.#(app.id == 15368)";
-        }];
-
         http_response = [{
           urls = [ "http://puyak.r" ];
           headers.Host = "light.shack";
@@ -205,12 +196,18 @@
           tags.org = "krebs";
         } {
           urls = [
-            "http://news.r/"
-            "http://brockman.r/"
             "http://rss.r/?action=display&bridge=Heise&category=https%3A%2F%2Fwww.heise.de%2Fnewsticker%2Fheise-atom.xml&limit=5&format=Plaintext"
           ];
           tags.host = "news";
           response_string_match = "rss";
+          tags.org = "krebs";
+        } {
+          urls = [
+            "http://news.r/"
+            "http://brockman.r/"
+          ];
+          tags.host = "news";
+          method = "HEAD";
           tags.org = "krebs";
         } {
           urls = [
