@@ -12,6 +12,14 @@
     ../../modules/telegraf.nix
   ];
 
+  services.nginx.virtualHosts."telegraf.thalheim.io" = {
+    forceSSL = true;
+    enableACME = true;
+    locations."/".extraConfig =  ''
+      proxy_pass http://localhost:8186/;
+    '';
+  };
+
   services.telegraf = {
     environmentFiles = [
       config.sops.secrets.telegraf.path
