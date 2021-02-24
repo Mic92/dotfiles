@@ -37,6 +37,7 @@
       hexyl
       binutils
       clang-tools
+      nixpkgs-fmt
 
       # python language server + plugins
       (pkgs.python3.withPackages (ps: config.python.packages ps))
