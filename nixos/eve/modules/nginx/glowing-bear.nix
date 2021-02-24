@@ -5,15 +5,11 @@
     virtualHosts."glowing-bear.thalheim.io" = {
       useACMEHost = "thalheim.io";
       forceSSL = true;
-      root = pkgs.glowing-bear;
-      locations."/weechat".extraConfig = ''
-        proxy_pass  http://localhost:4242/weechat;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_read_timeout 12h;
-        proxy_send_timeout 12h;
-      '';
+      locations."^~ /weechat" = {
+        proxyPass = "http://127.0.0.1:4242";
+        proxyWebsockets = true;
+      };
+      locations."/".root = pkgs.glowing-bear;
     };
 
     virtualHosts."lekwati.com" = {
@@ -24,15 +20,11 @@
     virtualHosts."glowing-bear.lekwati.com" = {
       useACMEHost = "thalheim.io";
       forceSSL = true;
-      root = pkgs.glowing-bear;
-      locations."/weechat".extraConfig = ''
-        proxy_pass  http://localhost:4243/weechat;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
-        proxy_read_timeout 12h;
-        proxy_send_timeout 12h;
-      '';
+      locations."^~ /weechat" = {
+        proxyPass = "http://127.0.0.1:4243";
+        proxyWebsockets = true;
+      };
+      locations."/".root = pkgs.glowing-bear;
     };
   };
 }
