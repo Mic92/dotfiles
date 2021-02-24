@@ -19,6 +19,7 @@ in {
     ./transmission.nix
     ./weather.nix
     ./zones.nix
+    ./news.nix
   ];
 
   services.home-assistant = {
