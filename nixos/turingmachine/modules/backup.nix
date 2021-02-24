@@ -66,13 +66,16 @@ in {
     };
   };
 
-  systemd.services.break-borgbackup-lock.script = ''
-     eval $(ssh-agent)
-     ssh-add ${config.sops.secrets.ssh-borgbackup.path}
-     export BORG_PASSCOMMAND='cat /run/secrets/borgbackup'
-     export BORG_REPO='borg@eve.thalheim.io:./.'
-     ${pkgs.borgbackup}/bin/borg break-lock
-  '';
+  systemd.services.break-borgbackup-lock = {
+    path = [ pkgs.borgbackup pkgs.openssh ];
+    script = ''
+      eval $(ssh-agent)
+      ssh-add ${config.sops.secrets.ssh-borgbackup.path}
+      export BORG_PASSCOMMAND='cat /run/secrets/borgbackup'
+      export BORG_REPO='borg@eve.thalheim.io:./.'
+      borg break-lock
+    '';
+  };
 
   systemd.timers.borgbackup-job-turingmachine = {
     timerConfig.OnCalendar = lib.mkForce "13:00:00";
