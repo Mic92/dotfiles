@@ -57,6 +57,9 @@ in {
       username = "hass@thalheim.io";
       password = "!secret ldap_password";
     };
+    prometheus.filter.include_domains = [
+      "persistent_notification"
+    ];
     influxdb = {
       username = "homeassistant";
       host = "influxdb.thalheim.io";

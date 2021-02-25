@@ -59,6 +59,12 @@ in lib.mapAttrsToList (name: opts: {
     description = "status of borgbackup-matchbox is unknown: no data for a week";
   };
 
+  homeassistant = {
+    condition = ''entity_available{domain="persistent_notification"} >= 0'';
+    summary = "homeassistant notifications available";
+    description = "homeassistant notification {{$labels.entity}} ({{$labels.friendly_name}}): {{$value}}";
+  };
+
   filesystem_full_in_1d = {
     condition = "predict_linear(disk_free{${deviceFilter}}[1d], 24*3600) <= 0";
     time = "1h";
