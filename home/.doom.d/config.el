@@ -78,7 +78,7 @@
         smtpmail-stream-type 'starttls
         mu4e-headers-fields '((:human-date . 12) (:flags . 6) (:folder . 20) (:from . 22) (:subject))
         mml-secure-openpgp-encrypt-to-self t
-        )
+        mm-sign-option 'guided)
 
   (setq nsm-settings-file (expand-file-name "~/.emacs.d/network-security.data"))
 
