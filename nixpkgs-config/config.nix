@@ -26,11 +26,9 @@
          LanguageClient-neovim
          airline
          nerdtree
-         nerdtree-git-plugin
          gruvbox
          ack-vim
          vim-go
-         vim-polyglot
          ale
          # delimitMat
          editorconfig-vim
