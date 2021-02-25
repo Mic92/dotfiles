@@ -73,6 +73,7 @@ in {
           influxdb_v2 = {
             urls = [ "https://telegraf.thalheim.io" ];
             token = ''''${INFLUXDB_PASSWORD}'';
+            insecure_skip_verify = false;
           };
         };
       };
