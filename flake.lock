@@ -98,11 +98,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1614012490,
-        "narHash": "sha256-1R37JnAlO5qeQ2jUrBxi/LFhxTO8fRby//wj0w1wq/U=",
+        "lastModified": 1614473849,
+        "narHash": "sha256-pRKaW5WTnsd0GABvv9v3e7s1ZqVemGH83RtKXdKWvZI=",
         "owner": "Mic92",
         "repo": "envfs",
-        "rev": "c63766f894b15ed0c79801577cea7e9120985cc0",
+        "rev": "2c50beb490e50ae99f0779229c708d414313913a",
         "type": "github"
       },
       "original": {
