@@ -3,9 +3,8 @@
     12101
   ];
 
-  systemd.services.rhasspy = {
-    after = [ "network.target" ];
-    wantedBy = [ "multi-user.target" ];
+  systemd.user.services.rhasspy = {
+    wantedBy = [ "default.target" ];
     path = [ pkgs.pamixer pkgs.pulseaudioFull ];
     # rhasspy sets `/dev/stdout` as log file for supervisord
     # supervisord tries to open /dev/stdout and fails with the default systemd device
@@ -13,11 +12,6 @@
     script = ''
       ${pkgs.nur.repos.mic92.rhasspy}/bin/rhasspy --profile en | ${pkgs.utillinux}/bin/logger
     '';
-    serviceConfig = {
-      User = "joerg";
-      # needed for pulseaudio
-      Environment = "XDG_RUNTIME_DIR=/run/user/1000";
-    };
   };
 
   systemd.services.tts = {
