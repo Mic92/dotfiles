@@ -3,7 +3,8 @@ with lib;
 
 let
   cfg = config.networking.eve;
-in {
+in
+{
   options = {
     networking.eve.ipv4.address = mkOption {
       type = types.str;
@@ -32,7 +33,7 @@ in {
         "2a01:4f9:2b:1605::4"
         # kresd on port 443
         "2a01:4f9:2b:1605::5"
-       ];
+      ];
     };
 
     networking.eve.ipv6.subnet = mkOption {
@@ -59,22 +60,24 @@ in {
     systemd.network = {
       enable = true;
       networks."eth0".extraConfig = ''
-        [Match]
-        Name = e*
+                [Match]
+                Name = e*
 
-        [Network]
-        Address = ${cfg.ipv4.address}/${cfg.ipv4.cidr}
-        Gateway = ${cfg.ipv4.gateway}
+                [Network]
+                Address = ${cfg.ipv4.address}/${cfg.ipv4.cidr}
+                Gateway = ${cfg.ipv4.gateway}
 
-        ${concatMapStringsSep "\n" (address: ''
-        Address = ${address}/${cfg.ipv6.cidr}
-        '') cfg.ipv6.addresses}
-        Gateway = ${cfg.ipv6.gateway}
-        IPv6AcceptRA = no
-        IPForward = yes
+                ${concatMapStringsSep "\n"
+        (address: ''
+                Address = ${address}/${cfg.ipv6.cidr}
+                '')
+        cfg.ipv6.addresses}
+                Gateway = ${cfg.ipv6.gateway}
+                IPv6AcceptRA = no
+                IPForward = yes
 
-        [DHCP]
-        UseDNS = no
+                [DHCP]
+                UseDNS = no
       '';
     };
 
@@ -92,18 +95,19 @@ in {
         sourcePort = 2201;
         loopbackIPs = [ "10.243.29.174" ];
         destination = "10.243.29.179:22";
-      } {
-        # rose
-        sourcePort = 2202;
-        loopbackIPs = [ "10.243.29.174" ];
-        destination = "10.243.29.178:22";
-      }];
+      }
+        {
+          # rose
+          sourcePort = 2202;
+          loopbackIPs = [ "10.243.29.174" ];
+          destination = "10.243.29.178:22";
+        }];
     };
 
     # Hack so that network is considered up by boot.initrd.network and postCommands gets executed.
     boot.kernelParams = [ "ip=127.0.0.1:::::lo:none" ];
 
-    sops.secrets.initrd-ssh-key = {};
+    sops.secrets.initrd-ssh-key = { };
     boot.initrd.network = {
       enable = true;
       ssh = {
@@ -115,19 +119,21 @@ in {
         ];
       };
       postCommands = ''
-        echo "zpool import data && zfs load-key -a && killall zfs" >> /root/.profile
+                echo "zpool import data && zfs load-key -a && killall zfs" >> /root/.profile
 
-        ip link set dev eth0 up
+                ip link set dev eth0 up
 
-        ip addr add ${cfg.ipv4.address}/${cfg.ipv4.cidr} dev eth0
-        ip route add ${cfg.ipv4.gateway} dev eth0
-        ip route add default via ${cfg.ipv4.gateway} dev eth0
+                ip addr add ${cfg.ipv4.address}/${cfg.ipv4.cidr} dev eth0
+                ip route add ${cfg.ipv4.gateway} dev eth0
+                ip route add default via ${cfg.ipv4.gateway} dev eth0
 
-        ${concatMapStringsSep "\n" (address: ''
-        ip -6 addr add ${address}/${cfg.ipv6.cidr} dev eth0
-        '') cfg.ipv6.addresses}
-        ip -6 route add ${cfg.ipv6.gateway} dev eth0
-        ip -6 route add default via ${cfg.ipv6.gateway} dev eth0
+                ${concatMapStringsSep "\n"
+        (address: ''
+                ip -6 addr add ${address}/${cfg.ipv6.cidr} dev eth0
+                '')
+        cfg.ipv6.addresses}
+                ip -6 route add ${cfg.ipv6.gateway} dev eth0
+                ip -6 route add default via ${cfg.ipv6.gateway} dev eth0
       '';
     };
     boot.initrd.kernelModules = [ "e1000e" ];

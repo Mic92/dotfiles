@@ -52,8 +52,9 @@ let
     }
   '';
 
-  sieve-spam-filter = pkgs.callPackage ../../pkgs/sieve-spam-filter {};
-in {
+  sieve-spam-filter = pkgs.callPackage ../../pkgs/sieve-spam-filter { };
+in
+{
   services.rspamd = {
     enable = true;
     extraConfig = ''

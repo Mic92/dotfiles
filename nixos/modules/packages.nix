@@ -32,5 +32,5 @@
     whois
     usbutils
     pciutils
- ];
+  ];
 }

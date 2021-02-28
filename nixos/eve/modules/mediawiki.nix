@@ -1,7 +1,8 @@
 { pkgs, config, ... }:
 let
-  mediawiki = pkgs.callPackage ../pkgs/mediawiki.nix {};
-in {
+  mediawiki = pkgs.callPackage ../pkgs/mediawiki.nix { };
+in
+{
   services.phpfpm.pools.mediawiki = {
     user = "mediawiki";
     group = "mediawiki";
@@ -15,7 +16,7 @@ in {
     };
   };
 
-	environment.etc."mediawiki/LocalSettings.php".text = ''
+  environment.etc."mediawiki/LocalSettings.php".text = ''
     <?php
     error_reporting( E_ALL );
     ini_set( 'display_errors', 1 );
@@ -92,7 +93,7 @@ in {
     home = "/var/lib/mediawiki";
   };
 
-  users.groups.mediawiki = {};
+  users.groups.mediawiki = { };
 
   services.nginx = {
     virtualHosts."ist.devkid.net" = {
@@ -117,17 +118,17 @@ in {
         fastcgi_pass    unix:${config.services.phpfpm.pools.mediawiki.socket};
       '';
       extraConfig = ''
-        add_header X-Frame-Options DENY;
+          add_header X-Frame-Options DENY;
 
-        index index.php index.html index.htm;
+          index index.php index.html index.htm;
 
-      # anti spam
-        rewrite ^/richtige-anmeldung.php$ /index.php?title=Spezial:Anmelden&type=signup&spam=nospam;
-        if ($arg_title = Spezial:Anmelden) { set $rewritecond "1"; }
-        if ($arg_type = signup) { set $rewritecond "''${rewritecond}2"; }
-        if ($arg_spam != nospam) { set $rewritecond "''${rewritecond}3"; }
-        if ($arg_action != submitlogin) { set $rewritecond "''${rewritecond}4"; }
-        if ($rewritecond = 1234) { rewrite ^ /anmeldung.php last; }
+        # anti spam
+          rewrite ^/richtige-anmeldung.php$ /index.php?title=Spezial:Anmelden&type=signup&spam=nospam;
+          if ($arg_title = Spezial:Anmelden) { set $rewritecond "1"; }
+          if ($arg_type = signup) { set $rewritecond "''${rewritecond}2"; }
+          if ($arg_spam != nospam) { set $rewritecond "''${rewritecond}3"; }
+          if ($arg_action != submitlogin) { set $rewritecond "''${rewritecond}4"; }
+          if ($rewritecond = 1234) { rewrite ^ /anmeldung.php last; }
       '';
       root = "${mediawiki}/share/mediawiki";
     };

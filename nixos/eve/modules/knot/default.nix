@@ -1,4 +1,5 @@
-{ pkgs, config, lib, ... }: let
+{ pkgs, config, lib, ... }:
+let
   ip4 = config.networking.eve.ipv4.address;
   ip6 = lib.head config.networking.eve.ipv6.addresses;
   acmeChallenge = domain: pkgs.writeText "_acme-challenge.${domain}.zone" ''
@@ -8,7 +9,8 @@
 
     @ IN NS ns1.thalheim.io.
   '';
-in {
+in
+{
   imports = [
     ./whoami.nix
   ];

@@ -11,9 +11,9 @@
   ];
 
   networking.firewall.allowedUDPPorts = [
-    9987  # ts3_devkid
+    9987 # ts3_devkid
     22222 # ts3_martijn
-    5037  # ts3_martin
-    9000  # ts3_putzy
+    5037 # ts3_martin
+    9000 # ts3_putzy
   ];
 }

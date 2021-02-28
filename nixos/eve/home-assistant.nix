@@ -1,4 +1,5 @@
-with import ../krops.nix {
+with import ../krops.nix
+{
   name = "eve";
 };
 

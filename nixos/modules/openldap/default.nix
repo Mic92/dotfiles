@@ -44,9 +44,11 @@
       "olcDatabase={2}monitor".attrs = {
         olcDatabase = "{2}monitor";
         objectClass = [ "olcDatabaseConfig" "olcMonitorConfig" ];
-        olcAccess = [''{0}to *
+        olcAccess = [
+          ''{0}to *
              by dn.exact="cn=netdata,ou=system,ou=users,dc=eve" read
-             by * none''];
+             by * none''
+        ];
       };
 
       "cn={1}bitwarden,cn=schema" = {
@@ -59,7 +61,7 @@
             MUST (mail $ userPassword))";
         };
       };
-      "cn={1}squid,cn=schema".attrs =  {
+      "cn={1}squid,cn=schema".attrs = {
         cn = "{1}squid";
         objectClass = "olcSchemaConfig";
         olcObjectClasses = [
@@ -70,7 +72,7 @@
           ''
         ];
       };
-      "cn={1}grafana,cn=schema".attrs =  {
+      "cn={1}grafana,cn=schema".attrs = {
         cn = "{1}grafana";
         objectClass = "olcSchemaConfig";
         olcObjectClasses = [
@@ -78,7 +80,8 @@
              SUP uidObject AUXILIARY
              DESC 'Added to an account to allow grafana access'
              MUST (mail))
-          ''];
+          ''
+        ];
       };
       "cn={2}postfix,cn=schema".attrs = {
         cn = "{2}postfix";
@@ -124,85 +127,102 @@
              MUST roleOccupant)''
         ];
       };
-      "cn={1}openssh,cn=schema".attrs =  {
+      "cn={1}openssh,cn=schema".attrs = {
         cn = "{1}openssh";
         objectClass = "olcSchemaConfig";
-        olcAttributeTypes = [''(1.3.6.1.4.1.24552.500.1.1.1.13
+        olcAttributeTypes = [
+          ''(1.3.6.1.4.1.24552.500.1.1.1.13
           NAME 'sshPublicKey'
           DESC 'MANDATORY: OpenSSH Public key'
           EQUALITY octetStringMatch
-          SYNTAX 1.3.6.1.4.1.1466.115.121.1.40 )''];
-        olcObjectClasses = [''(1.3.6.1.4.1.24552.500.1.1.2.0
+          SYNTAX 1.3.6.1.4.1.1466.115.121.1.40 )''
+        ];
+        olcObjectClasses = [
+          ''(1.3.6.1.4.1.24552.500.1.1.2.0
           NAME 'ldapPublicKey'
           SUP top AUXILIARY
           DESC 'MANDATORY: OpenSSH LPK objectclass'
           MUST ( sshPublicKey $ uid ))
-        ''];
+        ''
+        ];
       };
-      "cn={1}nginx,cn=schema".attrs =  {
+      "cn={1}nginx,cn=schema".attrs = {
         cn = "{1}nginx";
         objectClass = "olcSchemaConfig";
-        olcObjectClasses = [''(1.3.6.1.4.1.28295.1.2.4 NAME 'nginx'
+        olcObjectClasses = [
+          ''(1.3.6.1.4.1.28295.1.2.4 NAME 'nginx'
              SUP top AUXILIARY
              DESC 'Added to an account to allow nginx access'
              MUST ( mail $ userPassword ))
-          ''];
+          ''
+        ];
       };
 
-      "cn={1}nextcloud,cn=schema".attrs =  {
+      "cn={1}nextcloud,cn=schema".attrs = {
         cn = "{1}nextcloud";
         objectClass = "olcSchemaConfig";
-        olcAttributeTypes = [''(1.3.6.1.4.1.39430.1.1.1
+        olcAttributeTypes = [
+          ''(1.3.6.1.4.1.39430.1.1.1
            NAME 'ownCloudQuota'
            DESC 'User Quota (e.g. 15 GB)'
-           SYNTAX '1.3.6.1.4.1.1466.115.121.1.15')''];
-        olcObjectClasses = [''(1.3.6.1.4.1.39430.1.2.1
+           SYNTAX '1.3.6.1.4.1.1466.115.121.1.15')''
+        ];
+        olcObjectClasses = [
+          ''(1.3.6.1.4.1.39430.1.2.1
            NAME 'ownCloud'
            DESC 'ownCloud LDAP Schema'
            AUXILIARY
            MUST ( mail $ userPassword )
-           MAY ( ownCloudQuota ))''];
+           MAY ( ownCloudQuota ))''
+        ];
       };
-      "cn={1}gitlab,cn=schema".attrs =  {
+      "cn={1}gitlab,cn=schema".attrs = {
         cn = "{1}gitlab";
         objectClass = "olcSchemaConfig";
-        olcObjectClasses = [''( 1.3.6.1.4.1.28293.1.2.4 NAME 'gitlab'
+        olcObjectClasses = [
+          ''( 1.3.6.1.4.1.28293.1.2.4 NAME 'gitlab'
           SUP uidObject AUXILIARY
           DESC 'Added to an account to allow gitlab access'
           MUST (mail))
-        ''];
+        ''
+        ];
       };
-      "cn={1}ejabberd,cn=schema".attrs =  {
+      "cn={1}ejabberd,cn=schema".attrs = {
         cn = "{1}ejabberd";
         objectClass = "olcSchemaConfig";
-        olcAttributeTypes = [''(1.2.752.43.9.1.1
+        olcAttributeTypes = [
+          ''(1.2.752.43.9.1.1
           NAME 'jabberID'
           DESC 'The Jabber ID(s) associated with this object. Used to map a JID to an LDAP account.'
           EQUALITY caseIgnoreMatch
           SYNTAX 1.3.6.1.4.1.1466.115.121.1.15)
-        ''];
+        ''
+        ];
       };
-      "cn={2}ejabberd,cn=schema".attrs =  {
+      "cn={2}ejabberd,cn=schema".attrs = {
         cn = "{2}ejabberd";
         objectClass = "olcSchemaConfig";
-        olcObjectClasses = [''(1.2.752.43.9.2.1
+        olcObjectClasses = [
+          ''(1.2.752.43.9.2.1
           NAME 'jabberUser'
           DESC 'A jabber user'
           AUXILIARY
           MUST ( jabberID ))
-        ''];
+        ''
+        ];
       };
-      "cn={1}homeAssistant,cn=schema".attrs =  {
+      "cn={1}homeAssistant,cn=schema".attrs = {
         cn = "{1}homeAssistant";
         objectClass = "olcSchemaConfig";
         olcObjectClasses = [
-        ''(1.3.6.1.4.1.28297.1.2.4 NAME 'homeAssistant'
+          ''(1.3.6.1.4.1.28297.1.2.4 NAME 'homeAssistant'
            SUP uidObject AUXILIARY
            DESC 'Added to an account to allow home-assistant access'
            MUST (mail) )
-        ''];
+        ''
+        ];
       };
-      "cn={1}ttrss,cn=schema".attrs =  {
+      "cn={1}ttrss,cn=schema".attrs = {
         cn = "{1}ttrss";
         objectClass = "olcSchemaConfig";
         olcObjectClasses = ''( 1.3.6.1.4.1.28294.1.2.4 NAME 'ttrss'
@@ -210,25 +230,29 @@
           DESC 'Added to an account to allow tinytinyrss access'
           MUST ( mail $ userPassword ))'';
       };
-      "cn={1}prometheus,cn=schema".attrs =  {
+      "cn={1}prometheus,cn=schema".attrs = {
         cn = "{1}prometheus";
         objectClass = "olcSchemaConfig";
-        olcObjectClasses = [''( 1.3.6.1.4.1.28296.1.2.4
+        olcObjectClasses = [
+          ''( 1.3.6.1.4.1.28296.1.2.4
           NAME 'prometheus'
           SUP uidObject AUXILIARY
           DESC 'Added to an account to allow prometheus access'
           MUST (mail))
-        ''];
+        ''
+        ];
       };
-      "cn={1}loki,cn=schema".attrs =  {
+      "cn={1}loki,cn=schema".attrs = {
         cn = "{1}loki";
         objectClass = "olcSchemaConfig";
-        olcObjectClasses = [''( 1.3.6.1.4.1.28299.1.2.4
+        olcObjectClasses = [
+          ''( 1.3.6.1.4.1.28299.1.2.4
           NAME 'loki'
           SUP uidObject AUXILIARY
           DESC 'Added to an account to allow loki access'
           MUST (mail))
-        ''];
+        ''
+        ];
       };
     };
   };

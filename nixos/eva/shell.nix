@@ -1,7 +1,7 @@
 let
   flake = builtins.getFlake (toString ./../..);
 in
-with import flake.inputs.nixpkgs {};
+with import flake.inputs.nixpkgs { };
 mkShell {
   nativeBuildInputs = [
     bashInteractive

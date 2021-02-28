@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   services.zfs = {
     autoSnapshot.enable = true;
     autoSnapshot.monthly = 2;

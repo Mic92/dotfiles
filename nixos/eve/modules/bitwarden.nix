@@ -11,15 +11,17 @@ let
     ldap_sync_interval_seconds = 3600;
   };
 
-  ldapConfigFile = pkgs.runCommand "config.toml" {
-    buildInputs = [ pkgs.remarshal ];
-    preferLocalBuild = true;
-  } ''
+  ldapConfigFile = pkgs.runCommand "config.toml"
+    {
+      buildInputs = [ pkgs.remarshal ];
+      preferLocalBuild = true;
+    } ''
     remarshal -if json -of toml \
     < ${pkgs.writeText "config.json" (builtins.toJSON ldapConfig)} \
     > $out
   '';
-in {
+in
+{
   services.bitwarden_rs = {
     enable = true;
     dbBackend = "postgresql";
@@ -102,5 +104,5 @@ in {
     group = "bitwarden_ldap";
   };
 
-  users.groups.bitwarden_ldap = {};
+  users.groups.bitwarden_ldap = { };
 }

@@ -1,4 +1,4 @@
-with import <nixpkgs> {};
+with import <nixpkgs> { };
 let
   myLlvmPackages = llvmPackages_4;
 in
@@ -24,5 +24,5 @@ stdenv.mkDerivation {
     clang
     llvm
   ]);
-  hardeningDisable = ["all"];
+  hardeningDisable = [ "all" ];
 }

@@ -1,4 +1,4 @@
-with import <nixpkgs> {};
+with import <nixpkgs> { };
 
 let
   aprSrc = fetchzip {
@@ -10,7 +10,8 @@ let
     sha256 = "06cavh899a4gkmqigv14hi9xinc0j5ix32kp0lgqfbnrd4rpscs6";
   };
 
-in stdenv.mkDerivation {
+in
+stdenv.mkDerivation {
   name = "env";
   buildInputs = [
     # test dependencies

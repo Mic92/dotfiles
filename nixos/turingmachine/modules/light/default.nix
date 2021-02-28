@@ -11,6 +11,6 @@
   };
 
   environment.systemPackages = [
-    (pkgs.callPackage ./hue-bt-ctl.nix {})
+    (pkgs.callPackage ./hue-bt-ctl.nix { })
   ];
 }

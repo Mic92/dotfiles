@@ -4,7 +4,8 @@ let
     eva = "openldap-syncpw-rid1";
     rock = "openldap-syncpw-rid2";
   }.${config.networking.hostName};
-in {
+in
+{
   imports = [
     ./.
   ];

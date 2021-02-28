@@ -12,7 +12,8 @@ let
 
     propagatedBuildInputs = [ dbus-python pygobject3 ];
   };
-in stdenv.mkDerivation {
+in
+stdenv.mkDerivation {
   name = "hue-ble-ctl";
   src = fetchFromGitHub {
     owner = "Mic92";

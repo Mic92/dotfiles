@@ -4,14 +4,14 @@
     rubber
     (texlive.combine {
       inherit (texlive)
-      scheme-full
+        scheme-full
 
-      # awesome cv
-      xetex
-      unicode-math
-      ucharcat
-      collection-fontsextra
-      fontspec;
+        # awesome cv
+        xetex
+        unicode-math
+        ucharcat
+        collection-fontsextra
+        fontspec;
 
       #collection-binextra
       #collection-fontsrecommended

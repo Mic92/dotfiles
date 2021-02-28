@@ -24,14 +24,16 @@
     '';
   };
 
-  environment.systemPackages = let
-    office-dashboard = import (builtins.fetchTarball "https://github.com/Mic92/office-dashboard/archive/master.tar.gz#2") {
-      inherit pkgs;
-    };
-  in with pkgs; [
-    office-dashboard
-    firefox-bin
-    xdotool
-    unclutter
-  ];
+  environment.systemPackages =
+    let
+      office-dashboard = import (builtins.fetchTarball "https://github.com/Mic92/office-dashboard/archive/master.tar.gz#2") {
+        inherit pkgs;
+      };
+    in
+    with pkgs; [
+      office-dashboard
+      firefox-bin
+      xdotool
+      unclutter
+    ];
 }

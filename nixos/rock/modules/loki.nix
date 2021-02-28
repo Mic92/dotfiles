@@ -1,4 +1,5 @@
-{ config, pkgs, lib, ... }: let
+{ config, pkgs, lib, ... }:
+let
   rulerConfig = {
     groups = [{
       name = "general";
@@ -20,7 +21,8 @@
     pam_filter objectClass=loki
     binddn cn=nginx,ou=system,ou=users,dc=eve
   '';
-in {
+in
+{
   systemd.tmpfiles.rules = [
     "d /var/lib/loki 0700 loki loki - -"
     "d /var/lib/loki/ruler 0700 loki loki - -"
@@ -101,7 +103,7 @@ in {
     '';
     serviceConfig.Type = "oneshot";
   };
-  sops.secrets.ldap-nginx-password = {};
+  sops.secrets.ldap-nginx-password = { };
 
   security.pam.services.loki.text = ''
     auth required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=/run/ldap-nginx.conf

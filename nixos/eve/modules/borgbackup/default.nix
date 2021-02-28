@@ -1,8 +1,8 @@
 { pkgs, config, ... }:
 {
-  sops.secrets.borg-passphrase = {};
-  sops.secrets.borg-nas-ssh = {};
-  sops.secrets.nas-wakeup-password = {};
+  sops.secrets.borg-passphrase = { };
+  sops.secrets.borg-nas-ssh = { };
+  sops.secrets.nas-wakeup-password = { };
 
   services.borgbackup.repos.uni = {
     path = "/data/backup/uni";

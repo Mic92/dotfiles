@@ -1,5 +1,10 @@
-{ stdenv, fetchFromGitHub, makeWrapper
-, openldap, coreutils, gnused, gnugrep
+{ stdenv
+, fetchFromGitHub
+, makeWrapper
+, openldap
+, coreutils
+, gnused
+, gnugrep
 , ldapPasswordFile
 }:
 

@@ -1,6 +1,15 @@
-{ lib, coreutils, utillinux, nodePackages_latest
-, systemd, gnused, gnome3, runtimeShell, writeScriptBin
-, callPackage, pkgs, nodejs-14_x
+{ lib
+, coreutils
+, utillinux
+, nodePackages_latest
+, systemd
+, gnused
+, gnome3
+, runtimeShell
+, writeScriptBin
+, callPackage
+, pkgs
+, nodejs-14_x
 }:
 
 let
@@ -16,7 +25,8 @@ let
     gnused
   ]);
   askpass = "${gnome3.seahorse}/libexec/seahorse/ssh-askpass";
-in writeScriptBin "bw" ''
+in
+writeScriptBin "bw" ''
   #!${runtimeShell}
   export PATH=${path};
   token_file=/run/user/$(id -u)/bw-token

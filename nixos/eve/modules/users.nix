@@ -1,10 +1,10 @@
-{ pkgs, ... }: 
+{ pkgs, ... }:
 
 let
   alfred = [
-     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCzdS6xog803ySrz1+hTUYlL89Wbb5p+7hd1WvDXHP4ERICuouVYO/F54saCokpcZBSyMtBC11+Yvk5J+L6pNuDJki04y4fr0HMmIVc5khuvNAiiH/8IFZk9v8uf7dyHVJyKIB+4LFMXuFB5i9gtoTM8WpIu8lYzIK6BEG1xhnfmPrLTWOw4w1Ty3iE93VPt3qRYxsB6Dx4f2n3S0piLQ+sX/aHiDO+MNdZTKJMdzPkqp89b8kF6vRyAp8WuiQDJkZJK+QKG+dvMKAofv7G97eO01TKNLPLqtswDGCnkXjkBrQ2tY7Nq5fannLGKBl+qOu3SRq8FRBaiPDa7uzCV3Vr devkid@desktop"
-     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1BA5FRaZOidnPBcW6Ip+4OmZbSbDJkGSMELS3JAI2oOMcZEwlhp0V/hDoBIw2czaMM8oZLBttd+eMgSum/4Dq+TJ/I0wyrY5W3Vni5iO3m3uSdQEWisgsye8D2GziIXN4nE61IcWBjLeVX7eE9FpHu95eWzl/NolSisCqUhqu4TmmGOO7QYKMififJTRh9HL7YBMMylw4aib8MvN6MWdVMHXrzRv+sNE70SHvK2Ioaz1Jxbue2dyvd/Z3xaNox+IWzWZ8mwyvb3E1xNKlZULz3TeBQ+zRne1R3x0NLl+NzIt9hHvfzID79HtTOGdavIav9fBGJEXdv0xHOXXxBG3H devkid@tpinabox"
-     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDfp9es60l+4L2yJ4O9LS3R2L4EcSdrqGeZBaTCzhgpEw+ptUzlQsmqUMSC+FtfXRE7jhMsD2ayNfSgVLGVy0Kd91T3fYPeOC4ibrYEbfnJGnnretHe2CdPESN6nyNzI2lg4WVZbuuZh+nV96839ORqVcEESDtq7Le1G9cFwP0w6hBnzNukiWv+bwvZYu1eUDevgnnW6bcwNbr+S4NF9Ddji17ZYhld5l0y0vrgZzYmeOLE7bjL3iwLp3/SzHd+K5+xOMLIfrUIRyJs39aCuesAUXaht9I91UBU5ML77NfpF5L4VIn3613VYfJV6kV17uHU0Rvgh5q6YK1fpq1+M7m7 alfred@alfred-HP-Compaq-Elite-8300-MT"
+    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCzdS6xog803ySrz1+hTUYlL89Wbb5p+7hd1WvDXHP4ERICuouVYO/F54saCokpcZBSyMtBC11+Yvk5J+L6pNuDJki04y4fr0HMmIVc5khuvNAiiH/8IFZk9v8uf7dyHVJyKIB+4LFMXuFB5i9gtoTM8WpIu8lYzIK6BEG1xhnfmPrLTWOw4w1Ty3iE93VPt3qRYxsB6Dx4f2n3S0piLQ+sX/aHiDO+MNdZTKJMdzPkqp89b8kF6vRyAp8WuiQDJkZJK+QKG+dvMKAofv7G97eO01TKNLPLqtswDGCnkXjkBrQ2tY7Nq5fannLGKBl+qOu3SRq8FRBaiPDa7uzCV3Vr devkid@desktop"
+    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC1BA5FRaZOidnPBcW6Ip+4OmZbSbDJkGSMELS3JAI2oOMcZEwlhp0V/hDoBIw2czaMM8oZLBttd+eMgSum/4Dq+TJ/I0wyrY5W3Vni5iO3m3uSdQEWisgsye8D2GziIXN4nE61IcWBjLeVX7eE9FpHu95eWzl/NolSisCqUhqu4TmmGOO7QYKMififJTRh9HL7YBMMylw4aib8MvN6MWdVMHXrzRv+sNE70SHvK2Ioaz1Jxbue2dyvd/Z3xaNox+IWzWZ8mwyvb3E1xNKlZULz3TeBQ+zRne1R3x0NLl+NzIt9hHvfzID79HtTOGdavIav9fBGJEXdv0xHOXXxBG3H devkid@tpinabox"
+    "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDfp9es60l+4L2yJ4O9LS3R2L4EcSdrqGeZBaTCzhgpEw+ptUzlQsmqUMSC+FtfXRE7jhMsD2ayNfSgVLGVy0Kd91T3fYPeOC4ibrYEbfnJGnnretHe2CdPESN6nyNzI2lg4WVZbuuZh+nV96839ORqVcEESDtq7Le1G9cFwP0w6hBnzNukiWv+bwvZYu1eUDevgnnW6bcwNbr+S4NF9Ddji17ZYhld5l0y0vrgZzYmeOLE7bjL3iwLp3/SzHd+K5+xOMLIfrUIRyJs39aCuesAUXaht9I91UBU5ML77NfpF5L4VIn3613VYfJV6kV17uHU0Rvgh5q6YK1fpq1+M7m7 alfred@alfred-HP-Compaq-Elite-8300-MT"
   ];
 
   alfredsPi = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC/V+n/T0T9UIpkTXqQIcl3Lb4dMUAtu4IIeUxv7rfF9yWHj5VrfEWf3DYDR8xD/OFRmrk3Ab0qu+COEGsc49ejHARKK+ZEL0f4oyh63H41cALwCbz3gjsTPWHAgrdsj27y9vPARC3BLHNwLCZmeuVQOJiXyEHbvt3anf1+XHqPO/KtvohXzKY1dWn4z/AsDWnsht+7wxsRTpYn6tAtcb7asFn/TgD83Vvo2wV0gQVHjsAOu1L6OsE6v1krt308sWuafgAfFyy0bCmiliDszDDyEAcWlPVL7Vxy8JFleerzqHxeCGXRk5Pn1IlzOeGeViFmewbjaiprf3E/FU2yoT5x root@alarmpi";
@@ -24,15 +24,16 @@ let
   vv01f = [
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2RPmBzVk0/pMxwuzp6NYI6ZrvDmxF6chJQ4Ky2+gdfYMI3aWqdTFtcmP0wxghChH6WQeEd86uqRD08SwTrR/oFr8uriczYbcyLmDJa2UclMXOHhwoTJP3IgbqPWzFOcBTYwPRQ/h8UA2W80BXPxdqx9oz1tRh26uoa7TCk/tB4nHUpS+hw22Cu2k8QTmVy0XhJquyRb/BKlk2WhiA6VfRzlMWi3b/jjLiOYPCl7LZSoJ7wT22H9M3lq/xV6ym1JaxQ1mLeZzZLeIRsiMrSayiNOvkNdtb2VRIM/St2VgZnIbUnrqlDZqewy1ydbOMnnu3ArAnWkAK5l02NCeFR69n vv01f"
   ];
-  
-in {
+
+in
+{
   security.sudo.wheelNeedsPassword = false;
 
   users.extraUsers = {
     devkid = {
       isNormalUser = true;
       uid = 2002;
-      extraGroups = ["wheel"];
+      extraGroups = [ "wheel" ];
       shell = "/run/current-system/sw/bin/zsh";
       openssh.authorizedKeys.keys = alfred ++ [
         ''command="${pkgs.borgbackup}/bin/borg serve --restrict-to-path /data/backup/devkid/pi0",no-pty,no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-user-rc ${alfredsPi}''
@@ -43,7 +44,7 @@ in {
     joerg = {
       isNormalUser = true;
       uid = 2003;
-      extraGroups = ["wheel"];
+      extraGroups = [ "wheel" ];
       shell = "/run/current-system/sw/bin/zsh";
       openssh.authorizedKeys.keys = joerg ++ joergPasswordstore;
     };
@@ -51,7 +52,7 @@ in {
     vv01f = {
       isNormalUser = true;
       uid = 2004;
-      extraGroups = ["wheel"];
+      extraGroups = [ "wheel" ];
       shell = "/run/current-system/sw/bin/bash";
       openssh.authorizedKeys.keys = vv01f;
     };

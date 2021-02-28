@@ -6,10 +6,10 @@
       name = "function";
       check = x: lib.isFunction x;
       merge = loc: functions: packageset:
-        lib.foldl (list: function: list ++ (function packageset)) []
+        lib.foldl (list: function: list ++ (function packageset)) [ ]
           (lib.getValues functions);
     };
-    default = [];
+    default = [ ];
     description = ''
       Names of python packages to install
     '';

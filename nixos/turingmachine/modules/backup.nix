@@ -3,9 +3,10 @@ with builtins;
 
 let
   backupPath = "borg@eve.thalheim.io:./.";
-in {
-  sops.secrets.borgbackup = {};
-  sops.secrets.ssh-borgbackup = {};
+in
+{
+  sops.secrets.borgbackup = { };
+  sops.secrets.ssh-borgbackup = { };
 
   services.borgbackup.jobs.turingmachine = {
     paths = [
@@ -86,5 +87,5 @@ in {
   ];
 
   environment.systemPackages = with pkgs; [ borgbackup ];
-  sops.secrets.healthcheck-borgbackup = {};
+  sops.secrets.healthcheck-borgbackup = { };
 }

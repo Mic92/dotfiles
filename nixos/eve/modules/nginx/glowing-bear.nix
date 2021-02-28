@@ -1,4 +1,4 @@
-{ pkgs, ...}: 
+{ pkgs, ... }:
 {
   services.weechat.enable = true;
   services.nginx = {

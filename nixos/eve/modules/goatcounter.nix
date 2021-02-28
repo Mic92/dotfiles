@@ -19,7 +19,7 @@
       User = "goatcounter";
     };
   };
-          #-db postgresql://?host=/run/postgresql&dbname=goatcounter&sslmode=disable \
+  #-db postgresql://?host=/run/postgresql&dbname=goatcounter&sslmode=disable \
 
   services.nginx.virtualHosts."goatcounter.thalheim.io" = {
     useACMEHost = "thalheim.io";
@@ -39,12 +39,12 @@
     ensurePermissions."DATABASE goatcounter" = "ALL PRIVILEGES";
   }];
 
-  sops.secrets.goatcounter-smtp-password = {};
+  sops.secrets.goatcounter-smtp-password = { };
 
   users.users.goatcounter = {
     isSystemUser = true;
     group = "goatcounter";
   };
 
-  users.groups.goatcounter = {};
+  users.groups.goatcounter = { };
 }

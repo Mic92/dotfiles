@@ -17,7 +17,7 @@
       isNormalUser = false;
       group = "fsgqa";
     };
-    "123456-fsgqa" = {};
+    "123456-fsgqa" = { };
   };
-  users.groups.fsgqa = {};
+  users.groups.fsgqa = { };
 }

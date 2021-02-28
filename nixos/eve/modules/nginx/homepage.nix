@@ -1,4 +1,4 @@
-{ pkgs, ...}: 
+{ pkgs, ... }:
 {
   services.nginx = {
     virtualHosts."thalheim.io" = {

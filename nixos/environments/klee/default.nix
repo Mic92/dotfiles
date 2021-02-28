@@ -1,4 +1,4 @@
-with import <nixpkgs> {};
+with import <nixpkgs> { };
 
 let
   # cc wrapper leaks unwrapped clang-3.4 into environment
@@ -10,21 +10,30 @@ let
     '';
   });
   gefDependencies = pkgs: with pkgs; [ capstone ropper ];
-in (overrideCC stdenv myclang).mkDerivation rec {
+in
+(overrideCC stdenv myclang).mkDerivation rec {
   name = "klee-unstable-2017-03-01";
 
   buildInputs = debuggingApps ++ [
-                  jetbrains.clion
-                  clang-tools
-                  llvm_4
-                  lldb_4
-                  parallel
-                  (python3.withPackages (packages:
-                    with packages;
-                    [ tabulate ] ++ (gefDependencies packages)
-                  ))
-                  perl ncurses zlib stp lit gtest
-                  cryptominisat z3 ninja ];
+    jetbrains.clion
+    clang-tools
+    llvm_4
+    lldb_4
+    parallel
+    (python3.withPackages (packages:
+      with packages;
+      [ tabulate ] ++ (gefDependencies packages)
+    ))
+    perl
+    ncurses
+    zlib
+    stp
+    lit
+    gtest
+    cryptominisat
+    z3
+    ninja
+  ];
   nativeBuildInputs = [ cmake flex bison ];
   cmakeFlags = [
     "-DENABLE_SOLVER_STP=ON"

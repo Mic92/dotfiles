@@ -22,7 +22,8 @@ let
         sed -e 's/<keyid>/\&lt;keyid\&gt;/g' > $out
     '';
   };
-in {
+in
+{
   environment.interactiveShellInit = ''
     export GNUPGHOME=/run/user/$(id -u)/gnupghome
     if [ ! -d $GNUPGHOME ]; then

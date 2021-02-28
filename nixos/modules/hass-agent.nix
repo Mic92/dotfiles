@@ -20,12 +20,13 @@
       command = "/run/current-system/sw/bin/systemctl suspend";
       options = [ "NOPASSWD" ];
     }];
-  } {
-    users = [ "hass-agent" ];
-    runAs = "joerg";
-    commands = [{
-      command = "/etc/profiles/per-user/hass-agent/bin/mpv-play";
-      options = [ "NOPASSWD" ];
+  }
+    {
+      users = [ "hass-agent" ];
+      runAs = "joerg";
+      commands = [{
+        command = "/etc/profiles/per-user/hass-agent/bin/mpv-play";
+        options = [ "NOPASSWD" ];
+      }];
     }];
-  }];
 }

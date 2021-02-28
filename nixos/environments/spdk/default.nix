@@ -1,4 +1,4 @@
-with import <nixpkgs> {};
+with import <nixpkgs> { };
 stdenv.mkDerivation {
   name = "env";
   buildInputs = [
@@ -11,6 +11,6 @@ stdenv.mkDerivation {
     cunit
   ] ++ rocksdb.buildInputs;
 
-  NIX_CFLAGS_COMPILE = ["-msse4.1"];
+  NIX_CFLAGS_COMPILE = [ "-msse4.1" ];
   nativeBuildInputs = rocksdb.nativeBuildInputs;
 }

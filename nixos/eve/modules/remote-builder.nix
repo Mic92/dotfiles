@@ -14,5 +14,5 @@
     ];
   }];
 
-  sops.secrets.ssh-aarch64-builder = {};
+  sops.secrets.ssh-aarch64-builder = { };
 }

@@ -1,4 +1,4 @@
-{ pkgs, config, ...}:
+{ pkgs, config, ... }:
 {
   sops.secrets.ssh-homeassistant.owner = "hass";
   users.users.hass.extraGroups = [ "keys" ];

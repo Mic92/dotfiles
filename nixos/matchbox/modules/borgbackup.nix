@@ -2,16 +2,18 @@
   fileSystems."/mnt/backup" = {
     device = "//192.168.178.1/FRITZ.NAS/TOSHIBA-ExternalUSB3-0-02";
     fsType = "cifs";
-    options = let
-      automount_opts = "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s,soft,vers=1.0";
-      # cat > smb-secrets <<EOF
-      # username=s16916XX
-      # domain=ED
-      # password=<EASE_PASSWORD>
-      # EOF
-    in [
-      "${automount_opts},credentials=${config.sops.secrets.smb-secrets.path}"
-    ];
+    options =
+      let
+        automount_opts = "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s,soft,vers=1.0";
+        # cat > smb-secrets <<EOF
+        # username=s16916XX
+        # domain=ED
+        # password=<EASE_PASSWORD>
+        # EOF
+      in
+      [
+        "${automount_opts},credentials=${config.sops.secrets.smb-secrets.path}"
+      ];
   };
 
   services.borgbackup.jobs.matchbox = {
@@ -52,5 +54,5 @@
     ReadWritePaths = lib.mkForce (lib.mkAfter "");
   };
 
-  sops.secrets.smb-secrets = {};
+  sops.secrets.smb-secrets = { };
 }

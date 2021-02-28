@@ -1,4 +1,4 @@
-{ pkgs, config, ... }: { 
+{ pkgs, config, ... }: {
 
   systemd.services.mastodon-hnbot = {
     path = [
@@ -43,7 +43,7 @@
     home = "/var/lib/mastodon-hnbot";
     group = "mastodon-hnbot";
   };
-  users.groups.mastodon-hnbot = {};
+  users.groups.mastodon-hnbot = { };
 
   sops.secrets.hnbot-password.owner = "mastodon-hnbot";
 }

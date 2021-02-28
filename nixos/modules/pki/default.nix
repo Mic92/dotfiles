@@ -3,39 +3,41 @@ with lib;
 
 let
   certFile = config.environment.etc."ssl/certs/ca-certificates.crt".source;
-in {
+in
+{
   environment.etc."pki/nssdb".source =
-    pkgs.runCommand "system-wide-nssdb" {
-      inherit certFile;
-      buildInputs = [
-        pkgs.jq
-        pkgs.nssTools
-      ];
-      parseInfoScript = /* jq */ ''
-        ${builtins.toJSON certFile} as $certFile |
+    pkgs.runCommand "system-wide-nssdb"
+      {
+        inherit certFile;
+        buildInputs = [
+          pkgs.jq
+          pkgs.nssTools
+        ];
+        parseInfoScript = /* jq */ ''
+          ${builtins.toJSON certFile} as $certFile |
 
-        split("\t-----END CERTIFICATE-----\n")[] |
-        select(test("\t-----BEGIN CERTIFICATE-----\n")) |
-        . + "\t-----END CERTIFICATE-----\n" |
+          split("\t-----END CERTIFICATE-----\n")[] |
+          select(test("\t-----BEGIN CERTIFICATE-----\n")) |
+          . + "\t-----END CERTIFICATE-----\n" |
 
-        sub("^([0-9]+\t\n)*";"") |
+          sub("^([0-9]+\t\n)*";"") |
 
-        (match("^([0-9]+)\t").captures[0].string | tonumber) as $lineNumber |
+          (match("^([0-9]+)\t").captures[0].string | tonumber) as $lineNumber |
 
-        gsub("(?m)^[0-9]+\t";"") |
+          gsub("(?m)^[0-9]+\t";"") |
 
-        match("^([^\n]+)\n(.*)";"m").captures | map(.string) |
+          match("^([^\n]+)\n(.*)";"m").captures | map(.string) |
 
-        # Line numbers are added to the names to ensure uniqueness.
-        "\(.[0]) (\($certFile):\($lineNumber))" as $name |
-        .[1] as $cert |
+          # Line numbers are added to the names to ensure uniqueness.
+          "\(.[0]) (\($certFile):\($lineNumber))" as $name |
+          .[1] as $cert |
 
-        { $name, $cert }
-      '';
-      passAsFile = [
-        "parseInfoScript"
-      ];
-    } /* sh */ ''
+          { $name, $cert }
+        '';
+        passAsFile = [
+          "parseInfoScript"
+        ];
+      } /* sh */ ''
       mkdir nssdb
 
       nl -ba -w1 "$certFile" |
@@ -62,6 +64,6 @@ in {
     mapAttrsToList
       (name: const (./certs + "/${name}"))
       (filterAttrs (const ((dir: "regular" == dir)))
-                   (builtins.readDir ./certs));
+        (builtins.readDir ./certs));
 
 }

@@ -36,38 +36,40 @@
   systemd.services.grafana = {
     serviceConfig = {
       SupplementaryGroups = [ "keys" ];
-      RuntimeDirectory = ["grafana"];
+      RuntimeDirectory = [ "grafana" ];
     };
-    preStart = let
-      ldap = pkgs.writeTextFile {
-        name = "ldap.toml";
-        text = ''
-          [[servers]]
-          host = "127.0.0.1"
-          port = 389
-          bind_dn = "cn=grafana,ou=system,ou=users,dc=eve"
-          bind_password = "@bindPassword@"
-          search_filter = "(&(objectClass=grafana)(|(mail=%s)(uid=%s)))"
-          search_base_dns = ["ou=users,dc=eve"]
+    preStart =
+      let
+        ldap = pkgs.writeTextFile {
+          name = "ldap.toml";
+          text = ''
+            [[servers]]
+            host = "127.0.0.1"
+            port = 389
+            bind_dn = "cn=grafana,ou=system,ou=users,dc=eve"
+            bind_password = "@bindPassword@"
+            search_filter = "(&(objectClass=grafana)(|(mail=%s)(uid=%s)))"
+            search_base_dns = ["ou=users,dc=eve"]
 
-          [servers.attributes]
-          name = "givenName"
-          surname = "sn"
-          username = "uid"
-          email =  "mail"
-        '';
-      };
-    in ''
-      umask 077
-      sed -e "s/@bindPassword@/$(cat ${config.sops.secrets.grafana-ldap-password.path})/" ${ldap} > /run/grafana/ldap.toml
+            [servers.attributes]
+            name = "givenName"
+            surname = "sn"
+            username = "uid"
+            email =  "mail"
+          '';
+        };
+      in
+      ''
+        umask 077
+        sed -e "s/@bindPassword@/$(cat ${config.sops.secrets.grafana-ldap-password.path})/" ${ldap} > /run/grafana/ldap.toml
 
-      for i in `seq 1 10`; do
-        if pg_isready; then
-          break
-        fi
-        sleep 1
-      done
-    '';
+        for i in `seq 1 10`; do
+          if pg_isready; then
+            break
+          fi
+          sleep 1
+        done
+      '';
   };
 
   services.nginx = {

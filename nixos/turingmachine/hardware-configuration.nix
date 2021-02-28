@@ -64,7 +64,7 @@
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/66F2-49C6";
     fsType = "vfat";
-    options = ["nofail"];
+    options = [ "nofail" ];
   };
 
   fileSystems."/" = {
@@ -75,19 +75,19 @@
   fileSystems."/home" = {
     device = "zroot/root/home";
     fsType = "zfs";
-    options = ["nofail"];
+    options = [ "nofail" ];
   };
 
   fileSystems."/home/joerg/Musik/podcasts" = {
     device = "/home/joerg/gPodder/Downloads";
     fsType = "none";
-    options = ["bind" "nofail"];
+    options = [ "bind" "nofail" ];
   };
 
   fileSystems."/tmp" = {
     device = "zroot/root/tmp";
     fsType = "zfs";
-    options = ["nofail"];
+    options = [ "nofail" ];
   };
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";

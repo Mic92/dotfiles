@@ -1,4 +1,5 @@
-{ pkgs, lib, ... }: let
+{ pkgs, lib, ... }:
+let
   conf = pkgs.writeText "ldap.conf" ''
     base dc=eve
     host localhost:389
@@ -18,7 +19,8 @@
     proxy_set_header X-Forwarded-Port 443;
     proxy_set_header X-Forwarded-Proto $scheme;
   '';
-in {
+in
+{
   imports = [
     ../../modules/nginx.nix
   ];

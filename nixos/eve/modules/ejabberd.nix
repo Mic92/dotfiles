@@ -16,7 +16,7 @@
 
   security.dhparams = {
     enable = true;
-    params.nginx = {};
+    params.nginx = { };
   };
 
   environment.etc."ejabberd.yml" = {
@@ -270,20 +270,22 @@
   sops.secrets."ejabber-ldap-password.yml".owner = "ejabberd";
   sops.secrets."ejabber-postgres-password.yml".owner = "ejabberd";
 
-  security.acme.certs = let
-    cert = domain: {
-      inherit domain;
-      postRun = "systemctl restart ejabberd.service";
-      group = "ejabberd";
-      dnsProvider = "rfc2136";
-      credentialsFile = config.sops.secrets.lego-knot-credentials.path;
-      extraDomainNames = [ "*.${domain}" ];
+  security.acme.certs =
+    let
+      cert = domain: {
+        inherit domain;
+        postRun = "systemctl restart ejabberd.service";
+        group = "ejabberd";
+        dnsProvider = "rfc2136";
+        credentialsFile = config.sops.secrets.lego-knot-credentials.path;
+        extraDomainNames = [ "*.${domain}" ];
+      };
+    in
+    {
+      "ejabberd-anon.thalheim.io" = cert "anon.thalheim.io";
+      "ejabberd-devkid.net" = cert "devkid.net";
+      "ejabberd-thalheim.io" = cert "thalheim.io";
     };
-  in {
-    "ejabberd-anon.thalheim.io" = cert "anon.thalheim.io";
-    "ejabberd-devkid.net" = cert "devkid.net";
-    "ejabberd-thalheim.io" = cert "thalheim.io";
-  };
 
   users.users.ejabberd.extraGroups = [ "keys" ];
   systemd.services.ejabberd.serviceConfig.SupplementaryGroups = [ "keys" ];

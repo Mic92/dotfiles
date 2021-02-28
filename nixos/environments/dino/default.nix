@@ -1,4 +1,4 @@
-with import <nixpkgs> {};
+with import <nixpkgs> { };
 stdenv.mkDerivation {
   name = "env";
   buildInputs = [

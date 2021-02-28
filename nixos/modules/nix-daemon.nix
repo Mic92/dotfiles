@@ -1,6 +1,6 @@
 { lib, config, pkgs, ... }: with lib; {
   nix = {
-    trustedUsers = ["joerg" "root"];
+    trustedUsers = [ "joerg" "root" ];
     gc.automatic = true;
     gc.dates = "03:15";
     package = pkgs.nixFlakes;

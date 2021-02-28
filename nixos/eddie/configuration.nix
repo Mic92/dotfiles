@@ -66,11 +66,11 @@
   };
   hardware.pulseaudio.enable = true;
 
-  sops.secrets.initrd-ssh-key = {};
+  sops.secrets.initrd-ssh-key = { };
   boot = {
     initrd.network = {
       enable = true;
-      udhcpc.extraArgs = ["--background"];
+      udhcpc.extraArgs = [ "--background" ];
       ssh = {
         enable = true;
         port = 2222;
@@ -108,7 +108,8 @@
     655
     53
     # dhcp
-    67 68
+    67
+    68
   ];
 
   networking.nameservers = [ "1.1.1.1" ];
@@ -156,19 +157,19 @@
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/5C7E-D359";
     fsType = "vfat";
-    options = ["nofail"];
+    options = [ "nofail" ];
   };
 
   fileSystems."/home" = {
     device = "zroot/root/home";
     fsType = "zfs";
-    options = ["nofail"];
+    options = [ "nofail" ];
   };
 
   fileSystems."/tmp" = {
     device = "zroot/root/tmp";
     fsType = "zfs";
-    options = ["nofail"];
+    options = [ "nofail" ];
   };
 
   powerManagement.cpuFreqGovernor = "powersave";

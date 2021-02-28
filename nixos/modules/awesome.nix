@@ -7,7 +7,8 @@
   services.xserver.windowManager = {
     awesome.enable = true;
     awesome.luaModules = with pkgs.lua52Packages; [
-      luasocket cjson
+      luasocket
+      cjson
     ];
   };
   services.xserver.displayManager.defaultSession = "none+awesome";

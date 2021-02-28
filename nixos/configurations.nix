@@ -41,12 +41,15 @@ let
   eveModules = defaultModules ++ [
     ./eve/configuration.nix
     {
-      nixpkgs.overlays = [(self: super: {
-        inherit retiolum;
-      })];
+      nixpkgs.overlays = [
+        (self: super: {
+          inherit retiolum;
+        })
+      ];
     }
   ];
-in {
+in
+{
   bernie = nixosSystem {
     system = "x86_64-linux";
     modules = defaultModules ++ [

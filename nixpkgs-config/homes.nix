@@ -1,7 +1,7 @@
 { self, nixpkgs, home-manager, nur, nix-doom-emacs }:
 
 let
-  hmConfiguration = { extraModules ? [] }:
+  hmConfiguration = { extraModules ? [ ] }:
     (home-manager.lib.homeManagerConfiguration {
       configuration = { ... }: {
         imports = extraModules ++ [
@@ -17,8 +17,9 @@ let
       homeDirectory = "/home/joerg";
       username = "joerg";
     });
-in {
-  common = hmConfiguration {};
+in
+{
+  common = hmConfiguration { };
   desktop = hmConfiguration {
     extraModules = [ ./desktop.nix ];
   };

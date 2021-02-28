@@ -1,4 +1,5 @@
-{ pkgs, ... }: let
+{ pkgs, ... }:
+let
   # resolved with support TLS over DNS server with hostname-based certificates
   resolved = pkgs.systemd.overrideAttrs (old: {
     src = pkgs.fetchFromGitHub {
@@ -20,7 +21,8 @@
     postFixup = "";
     outputs = [ "out" ];
   });
-in {
+in
+{
   systemd.network.enable = true;
   systemd.services.systemd-resolved.serviceConfig = {
     ExecStart = [ "" "!!${resolved}/bin/systemd-resolved" ];

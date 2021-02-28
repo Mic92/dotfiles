@@ -1,18 +1,18 @@
 { config, lib, pkgs, ... }:
 {
   services.home-assistant.config = {
-    intent_script.SuspendLaptop =  {
+    intent_script.SuspendLaptop = {
       speech.text = "Suspend laptop";
       action.service = "shell_command.suspend_laptop";
       action.data_template.host = "turingmachine.r";
     };
-    intent_script.PlayMinimix =  {
+    intent_script.PlayMinimix = {
       speech.text = "Play minimix";
       action.service = "shell_command.play_file";
       action.data_template.host = "turingmachine.r";
       action.data_template.url = "{{ states.sensor.random_minimix.state }}";
     };
-    intent_script.PlayBBC =  {
+    intent_script.PlayBBC = {
       speech.text = "Play BBC World News";
       action.service = "shell_command.play_file";
       action.data_template.host = "turingmachine.r";

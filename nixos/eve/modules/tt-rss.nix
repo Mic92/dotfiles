@@ -1,4 +1,4 @@
-{ config, pkgs, ... } : {
+{ config, pkgs, ... }: {
 
   services.phpfpm.pools.tt-rss.settings = {
     "pm" = "ondemand";

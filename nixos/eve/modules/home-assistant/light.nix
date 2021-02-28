@@ -1,4 +1,4 @@
-{ pkgs, ...}: {
+{ pkgs, ... }: {
   services.home-assistant.config = {
     shell_command.toggle_light = ''
       ${pkgs.openssh}/bin/ssh -o "StrictHostKeyChecking no" light@turingmachine.r '

@@ -1,9 +1,11 @@
-{ pkgs, lib, config, ... }: let
+{ pkgs, lib, config, ... }:
+let
   isVM = lib.any (mod: mod == "xen-blkfront" || mod == "virtio_console") config.boot.initrd.kernelModules;
-in {
+in
+{
   options = {
     mic92.telegraf.mode = lib.mkOption {
-      type = lib.types.enum [ "push" "pull"];
+      type = lib.types.enum [ "push" "pull" ];
       default = "pull";
       description = ''
         Wether to pull/push metrics to prometheus
@@ -22,14 +24,14 @@ in {
       extraConfig = {
         agent.interval = "60s";
         inputs = {
-          kernel_vmstat = {};
+          kernel_vmstat = { };
           smart = lib.mkIf (!isVM) {
             path = pkgs.writeShellScript "smartctl" ''
               exec /run/wrappers/bin/sudo ${pkgs.smartmontools}/bin/smartctl "$@"
             '';
           };
-          system = {};
-          mem = {};
+          system = { };
+          mem = { };
           file = [{
             data_format = "influx";
             file_tag = "name";
@@ -57,30 +59,31 @@ in {
             ];
             data_format = "influx";
           };
-          systemd_units = {};
-          swap = {};
+          systemd_units = { };
+          swap = { };
           disk.tagdrop = {
             fstype = [ "tmpfs" "ramfs" "devtmpfs" "devfs" "iso9660" "overlay" "aufs" "squashfs" ];
             device = [ "rpc_pipefs" "lxcfs" "nsfs" "borgfs" ];
           };
         };
-        outputs = if config.mic92.telegraf.mode == "pull" then {
-          prometheus_client = {
-            listen = ":9273";
-            metric_version = 2;
+        outputs =
+          if config.mic92.telegraf.mode == "pull" then {
+            prometheus_client = {
+              listen = ":9273";
+              metric_version = 2;
+            };
+          } else {
+            influxdb_v2 = {
+              urls = [ "https://telegraf.thalheim.io" ];
+              token = ''''${INFLUXDB_PASSWORD}'';
+              insecure_skip_verify = false;
+            };
           };
-        } else {
-          influxdb_v2 = {
-            urls = [ "https://telegraf.thalheim.io" ];
-            token = ''''${INFLUXDB_PASSWORD}'';
-            insecure_skip_verify = false;
-          };
-        };
       };
     };
     security.sudo.extraRules = lib.mkIf (!isVM) [{
       users = [ "telegraf" ];
-      commands = [ {
+      commands = [{
         command = "${pkgs.smartmontools}/bin/smartctl";
         options = [ "NOPASSWD" ];
       }];

@@ -1,5 +1,7 @@
-{ pkgs, lib, ... }: let
-in {
+{ pkgs, lib, ... }:
+let
+in
+{
   imports = [
     ./bluetooth.nix
     ./bme680.nix
@@ -31,79 +33,81 @@ in {
     });
   };
 
-  services.home-assistant.config = let
-    hiddenEntities = [
-      "sensor.last_boot"
-      "sensor.date"
-    ];
-  in {
-    frontend = {};
-    http = {};
-    history.exclude = {
-      entities = hiddenEntities;
-      domains = [
-        "automation"
-        "updater"
+  services.home-assistant.config =
+    let
+      hiddenEntities = [
+        "sensor.last_boot"
+        "sensor.date"
       ];
-    };
-    "map" = {};
-    shopping_list = {};
-    logbook.exclude.entities = hiddenEntities;
-    logger.default = "info";
-    sun = {};
-    calendar = {
-      platform = "caldav";
-      url = "https://cloud.thalheim.io/remote.php/dav";
-      username = "hass@thalheim.io";
-      password = "!secret ldap_password";
-    };
-    prometheus.filter.include_domains = [
-      "persistent_notification"
-    ];
-    influxdb = {
-      username = "homeassistant";
-      host = "influxdb.thalheim.io";
-      password = "!secret influxdb";
-      database = "homeassistant";
-      ssl = true;
-      include.entities = [
-        "person.jorg_thalheim"
-        "person.shannan_lekwati"
-        "device_tracker.beatrice"
-        "device_tracker.redmi_note_5"
+    in
+    {
+      frontend = { };
+      http = { };
+      history.exclude = {
+        entities = hiddenEntities;
+        domains = [
+          "automation"
+          "updater"
+        ];
+      };
+      "map" = { };
+      shopping_list = { };
+      logbook.exclude.entities = hiddenEntities;
+      logger.default = "info";
+      sun = { };
+      calendar = {
+        platform = "caldav";
+        url = "https://cloud.thalheim.io/remote.php/dav";
+        username = "hass@thalheim.io";
+        password = "!secret ldap_password";
+      };
+      prometheus.filter.include_domains = [
+        "persistent_notification"
       ];
-    };
-    notify = [{
-      name = "Pushover";
-      platform = "pushover";
-      api_key = "!secret pushover_api_key";
-      user_key = "!secret pushover_user_key";
-    }];
-    config = {};
-    mobile_app = {};
+      influxdb = {
+        username = "homeassistant";
+        host = "influxdb.thalheim.io";
+        password = "!secret influxdb";
+        database = "homeassistant";
+        ssl = true;
+        include.entities = [
+          "person.jorg_thalheim"
+          "person.shannan_lekwati"
+          "device_tracker.beatrice"
+          "device_tracker.redmi_note_5"
+        ];
+      };
+      notify = [{
+        name = "Pushover";
+        platform = "pushover";
+        api_key = "!secret pushover_api_key";
+        user_key = "!secret pushover_user_key";
+      }];
+      config = { };
+      mobile_app = { };
 
-    icloud = {
-      username = "!secret icloud_email";
-      password = "!secret icloud_password";
-      with_family = true;
+      icloud = {
+        username = "!secret icloud_email";
+        password = "!secret icloud_password";
+        with_family = true;
+      };
+      cloud = { };
+      system_health = { };
+      sensor = [{
+        platform = "template";
+        sensors.shannan_joerg_distance.value_template = ''{{ distance('person.jorg_thalheim', 'person.shannan_lekwati') | round(2) }}'';
+        sensors.joerg_last_updated = {
+          friendly_name = "Jörg's last location update";
+          value_template = ''{{ states.person.jorg_thalheim.last_updated.strftime('%Y-%m-%dT%H:%M:%S') }}Z'';
+          device_class = "timestamp";
+        };
+        sensors.shannan_last_updated = {
+          friendly_name = "Shannan's last location update";
+          value_template = ''{{ states.person.shannan_lekwati.last_updated.strftime('%Y-%m-%dT%H:%M:%S') }}Z'';
+          device_class = "timestamp";
+        };
+      }];
     };
-    cloud = {};
-    system_health = {};
-    sensor = [{
-      platform = "template";
-      sensors.shannan_joerg_distance.value_template = ''{{ distance('person.jorg_thalheim', 'person.shannan_lekwati') | round(2) }}'';
-      sensors.joerg_last_updated = {
-        friendly_name = "Jörg's last location update";
-        value_template = ''{{ states.person.jorg_thalheim.last_updated.strftime('%Y-%m-%dT%H:%M:%S') }}Z'';
-        device_class = "timestamp";
-      };
-      sensors.shannan_last_updated = {
-        friendly_name = "Shannan's last location update";
-        value_template = ''{{ states.person.shannan_lekwati.last_updated.strftime('%Y-%m-%dT%H:%M:%S') }}Z'';
-        device_class = "timestamp";
-      };
-    }];
-  };
 
   services.nginx = {
     virtualHosts."hass.thalheim.io" = {

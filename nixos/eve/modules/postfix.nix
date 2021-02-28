@@ -34,19 +34,22 @@ let
   '';
 
   helo_access = pkgs.writeText "helo_access" ''
-    ${config.networking.eve.ipv4.address}   REJECT Get lost - you're lying about who you are
-    ${lib.concatMapStringsSep "\n" (address: ''
-    ${address}   REJECT Get lost - you're lying about who you are
-    '') config.networking.eve.ipv6.addresses}
-    thalheim.io   REJECT Get lost - you're lying about who you are
-    lekwati.com   REJECT Get lost - you're lying about who you are
+        ${config.networking.eve.ipv4.address}   REJECT Get lost - you're lying about who you are
+        ${lib.concatMapStringsSep "\n"
+    (address: ''
+        ${address}   REJECT Get lost - you're lying about who you are
+        '')
+    config.networking.eve.ipv6.addresses}
+        thalheim.io   REJECT Get lost - you're lying about who you are
+        lekwati.com   REJECT Get lost - you're lying about who you are
   '';
   enableRblOverride = false;
   rbl_override = pkgs.writeText "rbl_override" ''
     # pfpleisure.org
     95.141.161.114 OK
   '';
-in {
+in
+{
   services.postfix = {
     enable = true;
     enableSubmission = true;

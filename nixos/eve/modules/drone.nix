@@ -2,7 +2,8 @@
 
 let
   droneserver = config.users.users.droneserver.name;
-in {
+in
+{
   systemd.services.drone-server = {
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
@@ -96,14 +97,14 @@ in {
     isSystemUser = true;
     group = "drone-runner-exec";
   };
-  users.groups.drone-runner-exec = {};
+  users.groups.drone-runner-exec = { };
 
   users.users.droneserver = {
     isSystemUser = true;
     createHome = true;
     group = droneserver;
   };
-  users.groups.droneserver = {};
+  users.groups.droneserver = { };
 
   sops.secrets.drone = { };
 }

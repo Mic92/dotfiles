@@ -2,7 +2,8 @@
 
 let
   cfg = config.services.syncthing;
-in {
+in
+{
   services.syncthing = {
     enable = true;
     group = "users";

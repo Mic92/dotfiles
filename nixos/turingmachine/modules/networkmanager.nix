@@ -14,7 +14,8 @@ let
       wrapProgram $out/bin/dispatcher --prefix PATH : ${lib.makeBinPath [ systemd alsaUtils ]}
     '';
   };
-in {
+in
+{
   users.users.joerg.extraGroups = [ "networkmanager" ];
   # breaks nixos-rebuild over network
   systemd.services.NetworkManager.restartIfChanged = false;

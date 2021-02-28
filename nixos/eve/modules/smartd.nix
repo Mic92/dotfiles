@@ -1,4 +1,4 @@
-{...}: {
+{ ... }: {
   services.smartd = {
     enable = true;
     devices = [

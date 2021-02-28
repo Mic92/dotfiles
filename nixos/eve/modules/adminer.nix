@@ -39,5 +39,5 @@
     group = "adminer";
   };
 
-  users.groups.adminer = {};
+  users.groups.adminer = { };
 }

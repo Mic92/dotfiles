@@ -14,7 +14,8 @@ let
     version = "0.50.0";
     sha256 = "1b2lqd89vnynbzd3rss1jahc1zxs769s921rclgy1v7z1sd1kqxy";
   }];
-in {
+in
+{
   imports = [
     ./common.nix
     ./modules/rust.nix

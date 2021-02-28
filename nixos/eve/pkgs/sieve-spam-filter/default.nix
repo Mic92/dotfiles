@@ -1,4 +1,4 @@
-{ stdenv, makeWrapper, rspamd }: 
+{ stdenv, makeWrapper, rspamd }:
 
 stdenv.mkDerivation {
   name = "sieve-rspamd-filter";

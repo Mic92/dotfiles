@@ -1,7 +1,7 @@
 { config, ... }: {
-  services.rsyncd ={
+  services.rsyncd = {
     enable = true;
-    settings =  {
+    settings = {
       global = {
         user = "rsyncd";
         group = "rsyncd";
@@ -25,7 +25,7 @@
 
   sops.secrets.rsyncd-secrets.owner = "rsyncd";
 
-  users.groups.rsyncd = {};
+  users.groups.rsyncd = { };
 
   systemd.services.rsyncd.serviceConfig = {
     AmbientCapabilities = "cap_net_bind_service";

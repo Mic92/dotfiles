@@ -1,4 +1,5 @@
-{ pkgs, config, lib, ... }: let
+{ pkgs, config, lib, ... }:
+let
   serial = "2020012901";
   whoamiZone = { domain, ipv4 ? false, ipv6 ? false }:
     pkgs.writeText "${domain}.zone" ''
@@ -21,7 +22,8 @@
         ns1 AAAA ${lib.head config.networking.eve.ipv6.addresses}
       ''}
     '';
-in {
+in
+{
   services.knot = {
     extraConfig = ''
       zone:

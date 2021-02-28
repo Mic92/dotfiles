@@ -20,7 +20,8 @@ let
     scope = subtree
     default_pass_scheme = SSHA
   '';
-in {
+in
+{
   services.dovecot2 = {
     enable = true;
     enableImap = true;
@@ -143,25 +144,27 @@ in {
 
   security.dhparams = {
     enable = true;
-    params.dovecot2 = {};
+    params.dovecot2 = { };
   };
 
-  sops.secrets.dovecot-ldap-password = {};
+  sops.secrets.dovecot-ldap-password = { };
   systemd.services.dovecot2.preStart = ''
     sed -e "s!@ldap-password@!$(<${config.sops.secrets.dovecot-ldap-password.path})!" ${ldapConfig} > /run/dovecot2/ldap.conf
   '';
 
-  security.acme.certs = let
-    cert = {
-      postRun = "systemctl restart dovecot2.service";
-      group = "dovecot2";
-      dnsProvider = "rfc2136";
-      credentialsFile = config.sops.secrets.lego-knot-credentials.path;
+  security.acme.certs =
+    let
+      cert = {
+        postRun = "systemctl restart dovecot2.service";
+        group = "dovecot2";
+        dnsProvider = "rfc2136";
+        credentialsFile = config.sops.secrets.lego-knot-credentials.path;
+      };
+    in
+    {
+      "imap.thalheim.io" = cert;
+      "imap.devkid.net" = cert;
     };
-  in {
-    "imap.thalheim.io" = cert;
-    "imap.devkid.net" = cert;
-  };
 
   networking.firewall.allowedTCPPorts = [
     143 # imap

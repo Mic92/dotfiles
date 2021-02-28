@@ -9,5 +9,5 @@
     useSTARTTLS = true;
     useTLS = true;
   };
-  sops.secrets.smtp-authpass = {};
+  sops.secrets.smtp-authpass = { };
 }

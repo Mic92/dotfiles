@@ -1,10 +1,12 @@
-{ pkgs, config, lib, ... }: let
+{ pkgs, config, lib, ... }:
+let
 
   maxUploadSize = "256M";
   toKeyValue = lib.generators.toKeyValue {
-    mkKeyValue = lib.generators.mkKeyValueDefault {} " = ";
+    mkKeyValue = lib.generators.mkKeyValueDefault { } " = ";
   };
-in {
+in
+{
   services.phpfpm.pools.rainloop = {
     user = "rainloop";
     group = "rainloop";
@@ -58,5 +60,5 @@ in {
     group = "rainloop";
   };
 
-  users.groups.rainloop = {};
+  users.groups.rainloop = { };
 }
