@@ -156,7 +156,7 @@ in
       set -eux -o pipefail
       export PATH=${pkgs.pulseaudioFull}/bin:$PATH
 
-      sink=alsa_output.pci-0000:00:1f.3.analog-stereo
+      sink=alsa_output.pci-0000_00_1f.3.analog-stereo
 
       if pamixer --get-mute --sink="$sink"; then
           pamixer --sink=$sink --unmute
@@ -165,7 +165,6 @@ in
       else
           paplay --device=$sink
       fi
-
     '')
   ] ++ (with nur.repos.mic92; [
     speedscope
