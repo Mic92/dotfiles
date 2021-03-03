@@ -29,12 +29,11 @@
     ./modules/influxdb.nix
     ./modules/ipfs.nix
     ./modules/iperf.nix
-    ./modules/k8s.nix
+    #./modules/k8s.nix
     ./modules/knot
     ./modules/kresd.nix
     ./modules/mastodon-hnbot.nix
     ./modules/mediawiki.nix
-    #./modules/named.nix
     ./modules/network.nix
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
