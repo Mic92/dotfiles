@@ -20,7 +20,7 @@
     ./modules/bitwarden.nix
     ./modules/borgbackup
     ./modules/dovecot.nix
-    ./modules/drone.nix
+    ./modules/drone
     ./modules/ejabberd.nix
     ./modules/gitea.nix
     ./modules/grafana.nix
