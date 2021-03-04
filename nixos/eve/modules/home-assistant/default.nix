@@ -30,6 +30,8 @@ in
       extraPackages = ps: [
         ps.psycopg2
       ];
+    }).overridePythonAttrs (oldAttrs: {
+      doCheck = false;
     });
   };
 
