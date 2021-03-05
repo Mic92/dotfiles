@@ -141,6 +141,10 @@ wttr() {
     [ "$COLUMNS" -lt 125 ] && request+='?n'
     curl -H "Accept-Language: ${LANG%_*}" --compressed "$request"
 }
+kpaste() {
+  curl -sS http://p.r --data-binary @"${1:--}" | \
+    sed '$ {p;s|http://p.r|https://p.krebsco.de|}'
+}
 
 hm-switch() {
   (
