@@ -216,7 +216,6 @@
           }
           {
             urls = [
-              "http://helsinki.r"
               "http://yellow.r"
             ];
             response_string_match = "Index of /";
