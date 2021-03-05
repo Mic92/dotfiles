@@ -26,13 +26,11 @@ in
 
   services.home-assistant = {
     enable = true;
-    package = (pkgs.home-assistant.override {
+    package = pkgs.home-assistant.override {
       extraPackages = ps: [
         ps.psycopg2
       ];
-    }).overridePythonAttrs (oldAttrs: {
-      doCheck = false;
-    });
+    };
   };
 
   services.home-assistant.config =
