@@ -65,6 +65,6 @@ in
       openssh.authorizedKeys.keys = shannan;
     };
 
-    root.openssh.authorizedKeys.keys = alfred ++ joerg ++ vv01f;
+    root.openssh.authorizedKeys.keys = alfred ++ joerg ++ vv01f ++ shannan;
   };
 }
