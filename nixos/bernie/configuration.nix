@@ -50,7 +50,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    firefox
+    firefox-wayland
     chromium
     celluloid
     mpv
