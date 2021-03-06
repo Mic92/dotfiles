@@ -22,6 +22,7 @@ in
     ./weather.nix
     ./zones.nix
     ./news.nix
+    ./coding.nix
   ];
 
   services.home-assistant = {
