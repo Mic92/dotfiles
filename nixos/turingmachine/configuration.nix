@@ -28,6 +28,7 @@
     ./modules/telegraf.nix
 
     ../modules/promtail.nix
+    ../modules/powertop.nix
     ../modules/macos-kvm.nix
     ../modules/mosh.nix
     ../modules/networkd.nix
@@ -110,8 +111,6 @@
     '';
     journald.extraConfig = "SystemMaxUse=1G";
   };
-
-  powerManagement.powertop.enable = true;
 
   systemd.services.audio-off = {
     description = "Mute audio before suspend";

@@ -11,6 +11,7 @@
 
     ../modules/hass-agent.nix
     ../modules/packages.nix
+    ../modules/powertop.nix
     ../modules/users.nix
     ../modules/zfs.nix
     ../modules/tracing.nix
@@ -39,7 +40,6 @@
   services.geoclue2.enable = true;
   i18n.defaultLocale = "en_DK.UTF-8";
 
-  powerManagement.powertop.enable = true;
   programs.vim.defaultEditor = true;
 
   services.xserver = {
