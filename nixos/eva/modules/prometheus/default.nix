@@ -54,6 +54,7 @@ in
             targets = [
               "build01.nix-community.org:9273"
               "build02.nix-community.org:9273"
+              "build03.nix-community.org:9273"
             ];
             labels.org = "nix-community";
           }
