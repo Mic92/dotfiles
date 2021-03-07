@@ -34,6 +34,9 @@
 , OpenGL ? null
 }:
 let
+  ligatureInputs = [
+    stdenv.cc.cc.lib
+  ];
   rpathLibs = [
     expat
     fontconfig
@@ -48,7 +51,7 @@ let
   ] ++ lib.optionals stdenv.isLinux [
     libxkbcommon
     wayland
-  ];
+  ] ++ ligatureInputs;
 in
 rustPlatform.buildRustPackage rec {
   pname = "alacritty";
