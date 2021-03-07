@@ -53,6 +53,7 @@
     firefox-wayland
     chromium
     celluloid
+    vscode
     mpv
     youtube-dl
     calibre
