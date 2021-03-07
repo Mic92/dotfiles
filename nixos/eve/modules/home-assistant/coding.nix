@@ -72,12 +72,12 @@
         }];
       };
     in {
-      DONE_PYTHON_ON_MIMO = (doneScript "done MIMO" "DONE_PYTHON_ON_MIMO");
-      listened_to_joerg  = (doneScript "Listened to Jörg" LISTENED_TO_JOERG");
-      read_something_online = (doneScript "Read something online" READ_SOMETHING_ONLINE");
-      WATCHED_A_YOUTUBE_TUTORIAL    = (doneScript "Watched a youtube tutorial" "WATCHED_A_YOUTUBE_TUTORIAL");
-      ONLINE_WALKTHROUGH  = (doneScript "Completed an online walkthrough" "ONLINE_WALKTHROUGH");
-      UPLOADED_BLOG   = (doneScript "Uploaded a blog/messed around on github" "UPLOADED_BLOG");
+      done_python_on_mimo = (doneScript "done MIMO" "DONE_PYTHON_ON_MIMO");
+      listened_to_joerg = (doneScript "Listened to Jörg" "LISTENED_TO_JOERG");
+      read_something_online = (doneScript "Read something online" "READ_SOMETHING_ONLINE");
+      watched_a_youtube_tutorial = (doneScript "Watched a youtube tutorial" "WATCHED_A_YOUTUBE_TUTORIAL");
+      online_walkthrough  = (doneScript "Completed an online walkthrough" "ONLINE_WALKTHROUGH");
+      uploaded_blog = (doneScript "Uploaded a blog/messed around on github" "UPLOADED_BLOG");
     };
     automation = let
       doneAutomation = name: id: {
@@ -121,8 +121,8 @@
     }; in [
       (reminder "12:00:00")
       (doneAutomation "done MIMO" "DONE_PYTHON_ON_MIMO")
-      (doneAutomation "Listened to Joerg" LISTENED_TO_JOERG")
-      (doneAutomation "Read something online" READ_SOMETHING_ONLINE")
+      (doneAutomation "Listened to Joerg" "LISTENED_TO_JOERG")
+      (doneAutomation "Read something online" "READ_SOMETHING_ONLINE")
       (doneAutomation "Watched a youtube tutorial" "WATCHED_A_YOUTUBE_TUTORIAL")
       (doneAutomation "listened podcast" "DONE_PODCAST")
       (doneAutomation "Uploaded a blog/messed around on github" "UPLOADED_BLOG")
