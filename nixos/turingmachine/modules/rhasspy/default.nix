@@ -12,7 +12,10 @@
     script = ''
       ${pkgs.nur.repos.mic92.rhasspy}/bin/rhasspy --profile en | ${pkgs.utillinux}/bin/logger
     '';
-    serviceConfig.Environment = [ "ALSA_PLUGIN_DIRS=${pkgs.alsaPlugins}/lib/alsa-lib" ];
+    serviceConfig.Environment = [
+      "ALSA_PLUGIN_DIRS=${pkgs.alsaPlugins}/lib/alsa-lib"
+      "XDG_RUNTIME_DIR=/run/user/1000"
+    ];
   };
 
   systemd.services.tts = {
