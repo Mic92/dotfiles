@@ -74,6 +74,8 @@
     wl-clipboard
     poppler_utils
     focuswriter
+    jetbrains.idea-community
+    jdk15_headless
   ];
 
   documentation.doc.enable = false;
