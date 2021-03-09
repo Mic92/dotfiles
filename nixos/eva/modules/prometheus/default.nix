@@ -39,7 +39,10 @@ in
               "eve.r:9273"
               "matchbox.r:9273"
               "rock.r:9273"
-
+            ];
+          }
+          {
+            targets = [
               # university
               "rose.r:9273"
               "martha.r:9273"
@@ -49,6 +52,8 @@ in
               "doctor.r:9273"
               "grandalf.r:9273"
             ];
+
+            labels.org = "uni";
           }
           {
             targets = [
