@@ -11,7 +11,7 @@
   in {
     ios.push.categories = [{
       name = "Learn how to code";
-      identifier = "learn_to code";
+      identifier = "learn_to_code";
       actions = [{
         identifier = "DONE_PYTHON_ON_MIMO";
         title = "Python on Mimo ";
