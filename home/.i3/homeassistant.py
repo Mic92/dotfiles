@@ -126,7 +126,7 @@ def charge_state_android(state: State, device: str) -> Tuple[str, bool]:
     battery_level = state.get(f"sensor.{device}_battery_level")
     battery_state = state.get(f"sensor.{device}_battery_state")
 
-    if battery_level is None or battery_state is None:
+    if battery_level == "unknown" or battery_level is None or battery_state is None:
         return "N/A", False
     return charge_state(int(battery_level["state"]), battery_state["state"])
 
