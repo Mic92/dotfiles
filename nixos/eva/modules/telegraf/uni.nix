@@ -13,39 +13,35 @@ let
   ];
 in
 {
-  services.telegraf = {
-    extraConfig = {
-      inputs = {
-        ping =
-          (map
-            (url: {
-              method = "native";
-              urls = [ "4.${url}" ];
-              tags.org = "uni";
-              tags.host = lib.removeSuffix ".r" url;
-            })
-            urls) ++
-          (map
-            (url: {
-              method = "native";
-              urls = [ "6.${url}" ];
-              ipv6 = true;
-              tags.org = "uni";
-              tags.host = lib.removeSuffix ".r" url;
-            })
-            urls);
-        net_response = map
-          (host: {
-            protocol = "tcp";
-            address = "${host}:22";
-            tags.host = host;
-            tags.org = "uni";
-            send = "SSH-2.0-Telegraf";
-            expect = "SSH-2.0";
-            timeout = "10s";
-          })
-          urls;
-      };
-    };
+  services.telegraf.extraConfig.inputs = {
+    ping =
+      (map
+        (url: {
+          method = "native";
+          urls = [ "4.${url}" ];
+          tags.org = "uni";
+          tags.host = lib.removeSuffix ".r" url;
+        })
+        urls) ++
+      (map
+        (url: {
+          method = "native";
+          urls = [ "6.${url}" ];
+          ipv6 = true;
+          tags.org = "uni";
+          tags.host = lib.removeSuffix ".r" url;
+        })
+        urls);
+    net_response = map
+      (host: {
+        protocol = "tcp";
+        address = "${host}:22";
+        tags.host = host;
+        tags.org = "uni";
+        send = "SSH-2.0-Telegraf";
+        expect = "SSH-2.0";
+        timeout = "10s";
+      })
+      urls;
   };
 }
