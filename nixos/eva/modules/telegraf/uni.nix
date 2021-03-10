@@ -37,7 +37,7 @@ in
         net_response = map
           (host: {
             protocol = "tcp";
-            address = "${host}.r:22";
+            address = "${host}:22";
             tags.host = host;
             tags.org = "uni";
             send = "SSH-2.0-Telegraf";
