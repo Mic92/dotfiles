@@ -11,7 +11,7 @@
     ./modules/nginx.nix
     ./modules/sshd.nix
     ./modules/sops.nix
-    ./modules/telegraf.nix
+    ./modules/telegraf
 
     ../modules/ec2.nix
     ../modules/mosh.nix
