@@ -2,7 +2,7 @@ pull_request_rules:
   - name: automatic merge on CI success
     conditions:
       - check-success=continuous-integration/drone/pr
-      - author=github-actions
+      - author=github-actions[bot]
     actions:
       merge:
         method: merge
