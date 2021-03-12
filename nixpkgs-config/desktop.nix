@@ -108,7 +108,7 @@ in
     xclip
     gpodder
     ncmpcpp
-    (pkgs.callPackage ./pkgs/alacritty.nix {})
+    (pkgs.callPackage ./pkgs/alacritty.nix { })
     screen-message
     sshfsFuse
     sshuttle
