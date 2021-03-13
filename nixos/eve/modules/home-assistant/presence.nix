@@ -87,7 +87,7 @@ in
         alias = "Shannan and Jörg are together";
         trigger = {
           platform = "numeric_state";
-          entity_id = "sensors.distance_joerg_shannan";
+          entity_id = "sensor.distance_joerg_shannan";
           below = 0.2;
         };
         condition = {
@@ -101,10 +101,10 @@ in
           entity_id = "input_boolean.shannan_joerg_not_together";
         }
           (
-            notifyJoerg "Shannan is close to you {{ sensors.distance_joerg_shannan | round(2)}}km"
+            notifyJoerg "Shannan is close to you {{ sensor.distance_joerg_shannan | round(2)}}km"
           )
           (
-            notifyShannan "Jörg is close to you {{ sensors.distance_joerg_shannan | round(2)}}km"
+            notifyShannan "Jörg is close to you {{ sensor.distance_joerg_shannan | round(2)}}km"
           )];
       }];
   };
