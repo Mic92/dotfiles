@@ -15,7 +15,15 @@ def main():
     rain_start = None
     rain_times = []
     for entry in forecast:
-        time = entry["datetime"].replace(tzinfo=None)
+        d = entry["datetime"]
+        time = datetime.datetime(
+            year=int(d[0:4]),
+            month=int(d[5:7]),
+            day=int(d[8:10]),
+            hour=int(d[11:13]),
+            minute=int(d[14:16]),
+            second=int(d[17:19]),
+        )
         # in the past
         if time < now:
             continue
@@ -45,10 +53,16 @@ def main():
     message = f"There is rain predicted today: {', '.join(ranges)}"
 
     hass.services.call("notify", "pushover", {"message": message}, blocking=False)
-    hass.services.call("notify", "mobile_app_beatrice", {"message": message}, blocking=False)
+    hass.services.call(
+        "notify", "mobile_app_beatrice", {"message": message}, blocking=False
+    )
 
-    hass.services.call("input_boolean", "turn_on",
-            {"entity_id": "input_boolean.rain_notified_today"},
-            blocking=False)
+    hass.services.call(
+        "input_boolean",
+        "turn_on",
+        {"entity_id": "input_boolean.rain_notified_today"},
+        blocking=False,
+    )
+
 
 main()
