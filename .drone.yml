@@ -54,6 +54,24 @@ trigger:
 ---
 kind: pipeline
 type: exec
+name: Build nix expression
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: deploy
+  commands:
+  - echo "$what"
+
+trigger:
+  event:
+  - custom
+
+---
+kind: pipeline
+type: exec
 name: Deploy to eve
 
 platform:
@@ -191,6 +209,6 @@ trigger:
 
 ---
 kind: signature
-hmac: defdb5ae2bf5b006248163ba4b25838f4476cbd244650f1bfce46049014ff895
+hmac: 0a0ec336972afa0842f60d0ab4830a802d1dd7406b01c6da8e23b2b2ae6f9382
 
 ...
