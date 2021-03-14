@@ -20,6 +20,8 @@
     ../modules/tracing.nix
   ];
 
+  documentation.enable = false;
+
   networking.retiolum = {
     ipv4 = "10.243.29.185";
     ipv6 = "42:0:3c46:8a42:2b1:5ef8:7562:676a";
