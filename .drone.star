@@ -53,6 +53,17 @@ build = {
   },
 };
 
+buildExpression = {
+  "name": 'Build nix expression',
+  "kind": 'pipeline',
+  "type": 'exec',
+  "steps": [{
+    "name": 'deploy',
+    "commands": [ 'echo "$what"'],
+  }],
+  "trigger": { "event": ['custom'] },
+};
+
 def deploy(target):
   return {
     "name": 'Deploy to ' + target,
