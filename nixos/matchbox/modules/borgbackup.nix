@@ -4,7 +4,7 @@
     fsType = "cifs";
     options =
       let
-        automount_opts = "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s,soft,vers=1.0";
+        automount_opts = "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s,soft,noserverino";
         # cat > smb-secrets <<EOF
         # username=s16916XX
         # domain=ED
