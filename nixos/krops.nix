@@ -72,7 +72,7 @@ in
 
   matchbox = writeCommand "/bin/matchbox" {
     inherit source;
-    target = "root@turingmachine";
+    target = "root@eve.thalheim.io";
     command = targetPath: ''
       nixos-rebuild switch --flake ${targetPath}/dotfiles#matchbox \
         --build-host localhost \
