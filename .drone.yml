@@ -63,7 +63,7 @@ platform:
 steps:
 - name: deploy
   commands:
-  - echo "$what"
+  - echo "$derivation"
 
 trigger:
   event:
@@ -209,6 +209,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 0a0ec336972afa0842f60d0ab4830a802d1dd7406b01c6da8e23b2b2ae6f9382
+hmac: 10746eead13fc51fe69090c14b10f0b36d8a0a0613c2b4543707ba00125aa7b4
 
 ...

@@ -59,7 +59,7 @@ buildExpression = {
   "type": 'exec',
   "steps": [{
     "name": 'deploy',
-    "commands": [ 'echo "$what"'],
+    "commands": [ 'echo "$derivation"'],
   }],
   "trigger": { "event": ['custom'] },
 };
