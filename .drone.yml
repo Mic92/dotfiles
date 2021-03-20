@@ -54,14 +54,14 @@ trigger:
 ---
 kind: pipeline
 type: exec
-name: Build nix expression
+name: Build nix derivation
 
 platform:
   os: linux
   arch: amd64
 
 steps:
-- name: deploy
+- name: build
   commands:
   - nix build -L $derivation
 
@@ -209,6 +209,6 @@ trigger:
 
 ---
 kind: signature
-hmac: b078d363e17b626acf8edc81403a1145605137606998d42b02a1f18b6b714f0e
+hmac: 60dd7b756f5b2a594bc94ea25ba0908249cfedd142d69f23dcde8d159839a037
 
 ...

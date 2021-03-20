@@ -54,11 +54,11 @@ build = {
 };
 
 buildExpression = {
-  "name": 'Build nix expression',
+  "name": 'Build nix derivation',
   "kind": 'pipeline',
   "type": 'exec',
   "steps": [{
-    "name": 'deploy',
+    "name": 'build',
     "commands": [ 'nix build -L $derivation'],
   }],
   "trigger": { "event": ['custom'] },
