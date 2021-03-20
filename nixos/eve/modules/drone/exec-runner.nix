@@ -52,7 +52,7 @@ in
       EnvironmentFile = [
         config.sops.secrets.drone.path
       ];
-      ExecStart = "${pkgs.nur.repos.mic92.drone-runner-exec}/bin/drone-runner-exec";
+      ExecStart = "${pkgs.drone-runner-exec}/bin/drone-runner-exec";
       User = "drone-runner-exec";
       Group = "drone-runner-exec";
     };
