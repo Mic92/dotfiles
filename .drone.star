@@ -59,7 +59,7 @@ buildExpression = {
   "type": 'exec',
   "steps": [{
     "name": 'deploy',
-    "commands": [ 'echo "$derivation"'],
+    "commands": [ 'nix build -L $derivation'],
   }],
   "trigger": { "event": ['custom'] },
 };

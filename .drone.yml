@@ -63,7 +63,7 @@ platform:
 steps:
 - name: deploy
   commands:
-  - echo "$derivation"
+  - nix build -L $derivation
 
 trigger:
   event:
@@ -209,6 +209,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 10746eead13fc51fe69090c14b10f0b36d8a0a0613c2b4543707ba00125aa7b4
+hmac: b078d363e17b626acf8edc81403a1145605137606998d42b02a1f18b6b714f0e
 
 ...
