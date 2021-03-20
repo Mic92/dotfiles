@@ -2,7 +2,7 @@
   description = "NixOS configuration with flakes";
 
   # To update all inputs:
-  # $ nix flake update --recreate-lock-file
+  # $ nix flake update
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
 
