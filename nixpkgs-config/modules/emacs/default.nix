@@ -20,12 +20,19 @@ let
         ${toString extraArgs} "$@"
     '';
 
+  treeSitterGrammars = pkgs.runCommandLocal "grammars" {} ''
+    mkdir -p $out/bin
+    ${lib.concatStringsSep "\n"
+      (lib.mapAttrsToList (name: src: "ln -s ${src}/parser $out/bin/${name}.so") pkgs.tree-sitter.builtGrammars)};
+  '';
+
   daemonScript = pkgs.writeScript "emacs-daemon" ''
     #!${pkgs.zsh}/bin/zsh
     source ~/.zshrc
     export BW_SESSION=1 PATH=$PATH:${lib.makeBinPath [ pkgs.git pkgs.sqlite pkgs.unzip ]}
     exec ${myemacs}/bin/emacs --daemon
   '';
+  #export TREE_SITTER_GRAMMAR_DIR=${treeSitterGrammars}
 
   editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
 in
@@ -83,51 +90,6 @@ in
 
     extraPackages = [
       pkgs.mu
-      # we cannot override the straight.el-build here because it will discard our grammars from $out/bin/*.so
-      #(with pkgs; stdenv.mkDerivation rec {
-      #  pname = "tree-sitter-langs";
-      #  version = "0.9.2";
-      #  src = fetchFromGitHub {
-      #    owner = "ubolonton";
-      #    repo = "tree-sitter-langs";
-      #    rev = "fcd267f5d141b0de47f0da16306991ece93100a1";
-      #    sha256 = "sha256-WwAy986QQ4zqbdWdMfm7QooGkLVa0uPFtAZm7RxFLUw=";
-      #    fetchSubmodules = true;
-      #  };
-      #  nativeBuildInputs = [ tree-sitter nodejs emacs ];
-
-      #  # mock git executable
-      #  postPatch = ''
-      #    cat > git <<'EOF'
-      #    #!${runtimeShell}
-      #    if [[ "$1" == submodule && "$2" == status ]]; then
-      #      # simulate synchronized submodule
-      #      echo " "
-      #      exit 0
-      #    fi
-      #    ${git}/bin/git "$@"
-      #    exit 0
-      #    EOF
-      #    export PATH=$(pwd):$PATH
-      #    chmod +x git
-
-      #    git init .
-      #  '';
-
-      #  buildPhase = ''
-      #    runHook preBuild
-      #    HOME=$TMPDIR emacs -L . --batch --eval "(progn (require 'tree-sitter-langs-build) (tree-sitter-langs-create-bundle))"
-      #    runHook postBuild
-      #  '';
-      #  installPhase = ''
-      #    runHook preInstall
-      #    dest=$out/share/emacs/site-lisp/elpa/tree-sitters-langs
-      #    install -D --target $dest *.el
-      #    mkdir -p $dest/bin
-      #    tar -C $dest/bin -xf tree-sitter-grammars-linux-${version}.tar.gz
-      #    runHook postInstall
-      #  '';
-      #})
     ];
   };
 
