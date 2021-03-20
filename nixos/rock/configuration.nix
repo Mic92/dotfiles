@@ -13,7 +13,6 @@
     ../modules/telegraf.nix
     ../modules/tor-ssh.nix
     ../modules/networkd.nix
-    ../modules/nix-daemon.nix
     ../modules/openldap/replica.nix
     ../modules/promtail.nix
   ];
