@@ -13,36 +13,13 @@ clone:
 steps:
 - name: build
   commands:
-  - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
-  - nix shell nixpkgs#git -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix || nix shell nixpkgs#git -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
-  - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
+  - nix run github:Mic92/drone-nix-scheduler#hydra-eval-jobs --gc-roots-dir $BUILDDIR/gcroots --flake .# > eval.json
+  - nix run github:Mic92/drone-nix-scheduler eval.json
   environment:
     BUILDDIR: /var/lib/drone/nix-build
-
-- name: upload
-  commands:
-  - "\n      nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json\n      # only local built derivations\n      # drone-runner-exec-chroot contains character device files\n      nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths\n      nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths\n      "
-  environment:
-    BUILDDIR: /var/lib/drone/nix-build
-    CACHIX_SIGNING_KEY:
-      from_secret: CACHIX_SIGNING_KEY
-  when:
-    event:
-      exclude:
-      - pull_request
-    status:
-    - failure
-    - success
-
-- name: send irc notification
-  commands:
-  - "LOGNAME=drone nix run github:Mic92/nur-packages#irc-announce -- irc.r 6667 drone \"#xxx\" \"build $DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER : $DRONE_BUILD_STATUS\" || true"
-  environment:
-    BUILDDIR: /var/lib/drone/nix-build
-  when:
-    status:
-    - failure
-    - success
+    DRONE_SERVER: https://drone.thalheim.io
+    DRONE_TOKEN:
+      from_secret: DRONE_TOKEN
 
 trigger:
   branch:
@@ -209,6 +186,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 60dd7b756f5b2a594bc94ea25ba0908249cfedd142d69f23dcde8d159839a037
+hmac: 09038c08f1c8f53bb7b0830e8dcd90badab8e15a6262693df762af9645d2de78
 
 ...

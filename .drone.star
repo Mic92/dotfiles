@@ -10,43 +10,58 @@ build = {
   "kind": 'pipeline',
   "type": 'exec',
   "clone": {  "depth": 1 },
-  "steps": [{
+  "steps": [
+  {
     "name": 'build',
     "commands": [
-      'rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp',
-      # retry flaky builds
-      buildCi + ' || ' + buildCi,
-      'rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots',
-    ],
-    "environment": environment(),
-  }, {
-    "name": 'upload',
-    "commands": [
-      """
-      nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
-      # only local built derivations
-      # drone-runner-exec-chroot contains character device files
-      nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
-      nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths
-      """,
+      "nix run github:Mic92/drone-nix-scheduler#hydra-eval-jobs --gc-roots-dir $BUILDDIR/gcroots --flake .# > eval.json",
+      "nix run github:Mic92/drone-nix-scheduler eval.json"
     ],
     "environment": environment({
-      "CACHIX_SIGNING_KEY": { "from_secret": 'CACHIX_SIGNING_KEY', }
+      "DRONE_SERVER": "https://drone.thalheim.io",
+      "DRONE_TOKEN": {"from_secret": 'DRONE_TOKEN'},
     }),
-    "when": {
-      "event": { "exclude": ['pull_request'] },
-      "status": ['failure', 'success'],
-    },
-  }, {
-    "name": 'send irc notification',
-    "environment": environment(),
-    "commands": [
-      'LOGNAME=drone nix run github:Mic92/nur-packages#irc-announce -- irc.r 6667 drone "#xxx" "build $DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER : $DRONE_BUILD_STATUS" || true'
-    ],
-    "when": {
-      "status": ['failure', 'success'],
-    },
-  }],
+  }
+  #{
+  #  "name": 'build',
+  #  "commands": [
+  #    'rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp',
+  #    # retry flaky builds
+  #    buildCi + ' || ' + buildCi,
+  #    'rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots',
+  #  ],
+  #  "environment": environment(),
+  #},
+  #{
+  #  "name": 'upload',
+  #  "commands": [
+  #    """
+  #    nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
+  #    # only local built derivations
+  #    # drone-runner-exec-chroot contains character device files
+  #    nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
+  #    nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths
+  #    """,
+  #  ],
+  #  "environment": environment({
+  #    "CACHIX_SIGNING_KEY": { "from_secret": 'CACHIX_SIGNING_KEY', }
+  #  }),
+  #  "when": {
+  #    "event": { "exclude": ['pull_request'] },
+  #    "status": ['failure', 'success'],
+  #  },
+  #},
+  #{
+  #  "name": 'send irc notification',
+  #  "environment": environment(),
+  #  "commands": [
+  #    'LOGNAME=drone nix run github:Mic92/nur-packages#irc-announce -- irc.r 6667 drone "#xxx" "build $DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER : $DRONE_BUILD_STATUS" || true'
+  #  ],
+  #  "when": {
+  #    "status": ['failure', 'success'],
+  #  },
+  #}
+  ],
   "trigger": {
     "branch": 'master',
     "event": [ "push", "pull_request"],
