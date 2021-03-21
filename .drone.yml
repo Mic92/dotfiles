@@ -13,8 +13,8 @@ clone:
 steps:
 - name: build
   commands:
-  - nix run github:Mic92/drone-nix-scheduler#hydra-eval-jobs --gc-roots-dir $BUILDDIR/gcroots --flake .# > eval.json
-  - nix run github:Mic92/drone-nix-scheduler eval.json
+  - nix run github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --gc-roots-dir $BUILDDIR/gcroots --flake .# > eval.json
+  - nix run github:Mic92/drone-nix-scheduler -- eval.json
   environment:
     BUILDDIR: /var/lib/drone/nix-build
     DRONE_SERVER: https://drone.thalheim.io
@@ -186,6 +186,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 09038c08f1c8f53bb7b0830e8dcd90badab8e15a6262693df762af9645d2de78
+hmac: 90aea1759749022b1253f4517cc91c4c2636adf42c81a34444a9e88951e918e5
 
 ...

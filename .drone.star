@@ -14,8 +14,8 @@ build = {
   {
     "name": 'build',
     "commands": [
-      "nix run github:Mic92/drone-nix-scheduler#hydra-eval-jobs --gc-roots-dir $BUILDDIR/gcroots --flake .# > eval.json",
-      "nix run github:Mic92/drone-nix-scheduler eval.json"
+      "nix run github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --gc-roots-dir $BUILDDIR/gcroots --flake .# > eval.json",
+      "nix run github:Mic92/drone-nix-scheduler -- eval.json"
     ],
     "environment": environment({
       "DRONE_SERVER": "https://drone.thalheim.io",
