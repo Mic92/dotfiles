@@ -18,7 +18,7 @@ build = {
   }, {
     "name": 'upload',
     "commands": [
-      "nix path-info --json -r gcroots/*.drv > path-info.json",
+      "nix path-info --json -r $PWD/gcroots/*.drv > path-info.json",
       # only local built derivations
       "nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < path-info.json > paths",
       "nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths",
