@@ -38,7 +38,6 @@
     ./modules/network.nix
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
-    ./modules/nix.nix
     ./modules/openttd
     ./modules/packages.nix
     ./modules/postfix.nix
