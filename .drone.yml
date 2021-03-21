@@ -13,13 +13,37 @@ clone:
 steps:
 - name: build
   commands:
-  - nix run github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --workers 4 --gc-roots-dir $BUILDDIR/gcroots --flake .# > eval.json
+  - mkdir gcroots
+  - nix run github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --workers 4 --gc-roots-dir gcroots --flake .# > eval.json
   - nix run github:Mic92/drone-nix-scheduler -- eval.json
   environment:
-    BUILDDIR: /var/lib/drone/nix-build
     DRONE_SERVER: https://drone.thalheim.io
     DRONE_TOKEN:
       from_secret: DRONE_TOKEN
+
+- name: upload
+  commands:
+  - nix path-info --json -r gcroots/*.drv > path-info.json
+  - nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < path-info.json > paths
+  - nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths
+  environment:
+    CACHIX_SIGNING_KEY:
+      from_secret: CACHIX_SIGNING_KEY
+  when:
+    event:
+      exclude:
+      - pull_request
+    status:
+    - failure
+    - success
+
+- name: send irc notification
+  commands:
+  - "LOGNAME=drone nix run github:Mic92/nur-packages#irc-announce -- irc.r 6667 drone \"#xxx\" \"build $DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER : $DRONE_BUILD_STATUS\" || true"
+  when:
+    status:
+    - failure
+    - success
 
 trigger:
   branch:
@@ -40,6 +64,7 @@ platform:
 steps:
 - name: build
   commands:
+  - echo $derivation
   - nix build -L $derivation
 
 trigger:
@@ -60,7 +85,6 @@ steps:
   commands:
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.eve
   environment:
-    BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
       from_secret: DEPLOY_SSH_KEY
 
@@ -83,7 +107,6 @@ steps:
   commands:
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.turingmachine
   environment:
-    BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
       from_secret: DEPLOY_SSH_KEY
 
@@ -106,7 +129,6 @@ steps:
   commands:
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.eva
   environment:
-    BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
       from_secret: DEPLOY_SSH_KEY
 
@@ -129,7 +151,6 @@ steps:
   commands:
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.rock
   environment:
-    BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
       from_secret: DEPLOY_SSH_KEY
 
@@ -152,7 +173,6 @@ steps:
   commands:
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.joerg@turingmachine
   environment:
-    BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
       from_secret: DEPLOY_SSH_KEY
 
@@ -175,7 +195,6 @@ steps:
   commands:
   - eval $(nix shell nixpkgs#openssh -c ssh-agent) && echo "$DEPLOY_SSH_KEY" | nix shell nixpkgs#openssh -c ssh-add - && nix run .#deploy.joerg@eve
   environment:
-    BUILDDIR: /var/lib/drone/nix-build
     DEPLOY_SSH_KEY:
       from_secret: DEPLOY_SSH_KEY
 
@@ -186,6 +205,6 @@ trigger:
 
 ---
 kind: signature
-hmac: a2c3a449a4a38fbedd8611d7a4a124e58b681caa2ad942da18033991b3fc684f
+hmac: 9aa1fb543ff3b6be39e49b2a515927a36728e2f5a7dccade264ef38fefdc7942
 
 ...
