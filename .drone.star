@@ -8,7 +8,7 @@ build = {
     "name": 'build',
     "commands": [
       "mkdir gcroots",
-      "nix run github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --workers 4 --gc-roots-dir gcroots --flake .# > eval.json",
+      "nix run github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --workers 4 --gc-roots-dir $PWD/gcroots --flake .# > eval.json",
       "nix run github:Mic92/drone-nix-scheduler -- eval.json"
     ],
     "environment": {
