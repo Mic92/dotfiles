@@ -13,7 +13,7 @@ clone:
 steps:
 - name: build
   commands:
-  - nix run github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --gc-roots-dir $BUILDDIR/gcroots --flake .# > eval.json
+  - nix run github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --workers 4 --gc-roots-dir $BUILDDIR/gcroots --flake .# > eval.json
   - nix run github:Mic92/drone-nix-scheduler -- eval.json
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -186,6 +186,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 90aea1759749022b1253f4517cc91c4c2636adf42c81a34444a9e88951e918e5
+hmac: a2c3a449a4a38fbedd8611d7a4a124e58b681caa2ad942da18033991b3fc684f
 
 ...
