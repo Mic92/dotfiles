@@ -14,8 +14,8 @@ steps:
 - name: build
   commands:
   - mkdir gcroots
-  - nix run --override-input nixpkgs github:Mic92/nixpkgs github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --workers 4 --gc-roots-dir $PWD/gcroots --flake .# > eval.json
-  - nix run --override-input nixpkgs github:Mic92/nixpkgs github:Mic92/drone-nix-scheduler -- eval.json
+  - nix run --no-write-lock-file --override-input nixpkgs github:Mic92/nixpkgs github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --workers 4 --gc-roots-dir $PWD/gcroots --flake .# > eval.json
+  - nix run --no-write-lock-file --override-input nixpkgs github:Mic92/nixpkgs github:Mic92/drone-nix-scheduler -- eval.json
   environment:
     DRONE_SERVER: https://drone.thalheim.io
     DRONE_TOKEN:
@@ -205,6 +205,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 823dbeb9baa7c98c2289a26aeaaacb9f333705066b682783a7a7dfccb8f57b9b
+hmac: eb671acc55b52ea235d6d4227c7131ff8b42e5b6533548af07e90055acba7439
 
 ...

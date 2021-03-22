@@ -8,8 +8,8 @@ build = {
     "name": 'build',
     "commands": [
       "mkdir gcroots",
-      "nix run --override-input nixpkgs github:Mic92/nixpkgs github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --workers 4 --gc-roots-dir $PWD/gcroots --flake .# > eval.json",
-      "nix run --override-input nixpkgs github:Mic92/nixpkgs github:Mic92/drone-nix-scheduler -- eval.json"
+      "nix run --no-write-lock-file --override-input nixpkgs github:Mic92/nixpkgs github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --workers 4 --gc-roots-dir $PWD/gcroots --flake .# > eval.json",
+      "nix run --no-write-lock-file --override-input nixpkgs github:Mic92/nixpkgs github:Mic92/drone-nix-scheduler -- eval.json"
     ],
     "environment": {
       "DRONE_SERVER": "https://drone.thalheim.io",
