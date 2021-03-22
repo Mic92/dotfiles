@@ -6,10 +6,6 @@ let
     "rock"
     "matchbox"
   ];
-  mobileUrls = [
-    "turingmachine.r"
-    "herbert.r"
-  ];
 in
 {
   services.telegraf.extraConfig.inputs = {
@@ -19,25 +15,25 @@ in
           method = "native";
           urls = [ url ];
           tags.type = "mobile";
-          tags.host = lib.removeSuffix ".r" url;
+          tags.host = url;
           tags.org = "private";
           count = 5;
         })
-        mobileUrls) ++
+        [ "turingmachine" "herbert" ]) ++
       (map
         (url: {
           method = "native";
           urls = [ "4.${url}" ];
-          tags.host = lib.removeSuffix ".r" url;
+          tags.host = url;
           tags.org = "private";
         })
         urls) ++
       (map
         (url: {
           method = "native";
-          urls = [ "6.${url}" ];
+          urls = [ "6.${url}.r" ];
           ipv6 = true;
-          tags.host = lib.removeSuffix ".r" url;
+          tags.host = url;
           tags.org = "private";
         })
         urls);

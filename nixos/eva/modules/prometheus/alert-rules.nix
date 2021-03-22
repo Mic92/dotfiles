@@ -132,7 +132,7 @@ lib.mapAttrsToList
       description = "{{$labels.instance}}: {{$labels.job}} telegraf exporter from {{$labels.source}} is down.";
     };
     ping = {
-      condition = "ping_result_code{type!='mobile'} == 1";
+      condition = "ping_result_code{type!='mobile'} != 0";
       summary = "{{$labels.url}}: ping from {{$labels.instance}} has failed!";
       description = "{{$labels.url}}: ping from {{$labels.instance}} has failed!";
     };
