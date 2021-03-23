@@ -19,11 +19,11 @@ in
           tags.org = "private";
           count = 5;
         })
-        [ "turingmachine" "herbert" ]) ++
+        [ "turingmachine.r" "herbert.r" ]) ++
       (map
         (url: {
           method = "native";
-          urls = [ "4.${url}" ];
+          urls = [ "4.${url}.r" ];
           tags.host = url;
           tags.org = "private";
         })
