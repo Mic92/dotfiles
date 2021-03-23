@@ -13,6 +13,7 @@
     ./private.nix
     ./uni.nix
     ./krebs.nix
+    ./nix-community.nix
   ];
 
   services.nginx.virtualHosts."telegraf.thalheim.io" = {
