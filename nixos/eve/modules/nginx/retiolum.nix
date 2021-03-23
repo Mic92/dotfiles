@@ -7,13 +7,8 @@
     root = "/var/www/retiolum.thalheim.io";
   };
 
-  systemd.timers.stockholm-autosync = {
-    wantedBy = [ "multi-user.target" ];
-    timerConfig.OnBootSec = "60min";
-    timerConfig.OnUnitActiveSec = "60min";
-  };
-
   systemd.services.stockholm-autosync = {
+    startAt = "hourly";
     script = ''
       set -eu -o pipefail
       readonly workdir=/var/lib/gitea/builds/stockholm-auto-update
