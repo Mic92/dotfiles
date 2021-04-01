@@ -38,10 +38,11 @@
       #!${pkgs.runtimeShell}
       set -eu -o pipefail -x
       tmpdir=$(mktemp -d)
+      export PATH=${pkgs.lib.makeBinPath [ pkgs.coreutils pkgs.nixFlakes pkgs.jq ]}
       trap "rm -rf $tmpdir" EXIT
       declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie")
       profile=''${profiles[$HOSTNAME]:-common}
-      flake=$(nix flake metadata --json ${./.} | ${pkgs.jq}/bin/jq -r .url)
+      flake=$(nix flake metadata --json ${./.} | jq -r .url)
       nix build --show-trace --out-link "$tmpdir/result" "$flake#hmConfigurations.''${profile}.activationPackage" "$@"
       link=$(realpath $tmpdir/result)
       $link/activate
