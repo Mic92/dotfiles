@@ -362,6 +362,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-systemd": {
+      "locked": {
+        "lastModified": 1617207963,
+        "narHash": "sha256-tfkwhfqNtA6X8onMqhFDYRAYH4W+9XkBBwIgzKR01Rs=",
+        "owner": "Mic92",
+        "repo": "nixpkgs",
+        "rev": "165aa424cfa1f2cccd45d7fc5f9bb5628bd32670",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "ref": "systemd-stable-update",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nose": {
       "flake": false,
       "locked": {
@@ -501,6 +517,7 @@
         "nix-ld": "nix-ld",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-systemd": "nixpkgs-systemd",
         "nur": "nur",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix"

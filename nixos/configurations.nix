@@ -9,6 +9,7 @@
 , bme680-mqtt
 , nix-ld
 , envfs
+, nixpkgs-systemd
 }:
 let
   defaultModules = [
@@ -66,6 +67,11 @@ in
       nix-ld.nixosModules.nix-ld
       envfs.nixosModules.envfs
       ./turingmachine/configuration.nix
+      ({...}: {
+        systemd.package = (import nixpkgs-systemd {
+          system = "x86_64-linux";
+        }).systemd;
+      })
     ];
   };
 
