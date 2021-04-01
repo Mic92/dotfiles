@@ -204,4 +204,4 @@
 (setq-hook! 'nix-mode-hook company-idle-delay nil)
 
 (after! rustic
-  (setq rustic-lsp-server 'rust-analyzer))
+  (setq rustic-lsp-server 'rls))
