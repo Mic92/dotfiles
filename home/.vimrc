@@ -208,7 +208,7 @@ let g:LanguageClient_serverCommands = {
       \ 'c': ['clangd', '-background-index'],
       \ 'typescript': ['typescript-language-server'],
       \ 'python': ['pyls'],
-      \ 'rust': ['rustup', 'run', 'stable', 'rls'],
+      \ 'rust': ['rls'],
       \ 'ocaml': ['ocaml-language-server', '--stdio'],
       \ 'nix': ['nix-lsp'],
       \ }
