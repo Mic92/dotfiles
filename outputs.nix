@@ -1,5 +1,6 @@
 { self
 , nixpkgs
+, nixpkgs-systemd
 , nixos-hardware
 , sops-nix
 , nur
@@ -40,8 +41,7 @@
       trap "rm -rf $tmpdir" EXIT
       declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie")
       profile=''${profiles[$HOSTNAME]:-common}
-
-      flake=$(nix flake info --json ${./.} | ${pkgs.jq}/bin/jq -r .url)
+      flake=$(nix flake metadata --json ${./.} | ${pkgs.jq}/bin/jq -r .url)
       nix build --show-trace --out-link "$tmpdir/result" "$flake#hmConfigurations.''${profile}.activationPackage" "$@"
       link=$(realpath $tmpdir/result)
       $link/activate
@@ -61,7 +61,8 @@
       nixos-hardware
       flake-registry bme680-mqtt
       envfs
-      nix-ld;
+      nix-ld
+      nixpkgs-systemd;
   };
 
   hmConfigurations = import ./nixpkgs-config/homes.nix {
