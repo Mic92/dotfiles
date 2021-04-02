@@ -3,7 +3,7 @@
 let
   urls = [
     "eve"
-    "rock"
+    #"rock"
     "matchbox"
   ];
 in
@@ -213,12 +213,12 @@ in
         tags.org = "private";
         response_string_match = "Jörg Thalheim";
       }
-      {
-        urls = [ "http://loki.r/ready" ];
-        tags.host = "rock";
-        tags.org = "private";
-        response_string_match = "ready";
-      }
+      #{
+      #  urls = [ "http://loki.r/ready" ];
+      #  tags.host = "rock";
+      #  tags.org = "private";
+      #  response_string_match = "ready";
+      #}
       {
         urls = [
           "https://cloud.thalheim.io/login"
