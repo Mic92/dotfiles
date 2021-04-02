@@ -18,8 +18,6 @@ in
     # runs borg list, which is really slow over sshfs
     doInit = false;
     repo = backupPath;
-    # to not slow down my DSL
-    extraArgs = "--remote-ratelimit 150";
     exclude = [
       "*.pyc"
       "/home/*/.direnv"
