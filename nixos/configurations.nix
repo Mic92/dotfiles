@@ -67,11 +67,11 @@ in
       nix-ld.nixosModules.nix-ld
       envfs.nixosModules.envfs
       ./turingmachine/configuration.nix
-      ({...}: {
-        systemd.package = (import nixpkgs-systemd {
-          system = "x86_64-linux";
-        }).systemd;
-      })
+      #({...}: {
+      #  systemd.package = (import nixpkgs-systemd {
+      #    system = "x86_64-linux";
+      #  }).systemd;
+      #})
     ];
   };
 
