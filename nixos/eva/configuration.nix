@@ -19,6 +19,9 @@
     ../modules/promtail.nix
     ../modules/tracing.nix
   ];
+  services.tinc.networks.retiolum.extraConfig = ''
+    Weight = 1000
+  '';
 
   documentation.enable = false;
 
