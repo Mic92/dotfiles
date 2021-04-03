@@ -30,7 +30,7 @@
       config.sops.secrets.telegraf-shared.path
     ];
     extraConfig = {
-      agent.interval = lib.mkForce "120s";
+      agent.interval = lib.mkForce "280s";
       inputs = {
         influxdb_v2_listener = [{
           service_address = ":8186";
