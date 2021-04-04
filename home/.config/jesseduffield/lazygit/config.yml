@@ -6,3 +6,8 @@ git:
   paging:
     colorArg: always
     pager: delta --syntax-theme "Solarized (light)" --paging=never --24-bit-color=never
+customCommands:
+  - key: '<c-r>'
+    command: 'git rebase --interactive "{{.SelectedLocalCommit.Sha}}"'
+    context: 'commits'
+    subprocess: true
