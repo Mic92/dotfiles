@@ -41,6 +41,9 @@ steps:
   commands:
   - "LOGNAME=drone nix run github:Mic92/nur-packages#irc-announce -- irc.r 6667 drone \"#xxx\" \"build $DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER : $DRONE_BUILD_STATUS\" || true"
   when:
+    event:
+      exclude:
+      - pull_request
     status:
     - failure
     - success
@@ -205,6 +208,6 @@ trigger:
 
 ---
 kind: signature
-hmac: eb671acc55b52ea235d6d4227c7131ff8b42e5b6533548af07e90055acba7439
+hmac: 21bd708d139fc8946ed5500bfa264c298a0ae957003e03988a537adb3f472b22
 
 ...

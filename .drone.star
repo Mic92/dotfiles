@@ -37,6 +37,7 @@ build = {
     ],
     "when": {
       "status": ['failure', 'success'],
+      "event": { "exclude": ['pull_request'] },
     },
   }],
   "trigger": {
