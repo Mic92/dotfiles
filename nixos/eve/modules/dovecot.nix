@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, config, lib, ... }:
 let
   ldapConfig = pkgs.writeText "dovecot-ldap.conf" ''
     hosts = 127.0.0.1
@@ -154,16 +154,25 @@ in
 
   security.acme.certs =
     let
-      cert = {
+      cert = { domain, extraDomainNames ? [] }: {
         postRun = "systemctl restart dovecot2.service";
         group = "dovecot2";
         dnsProvider = "rfc2136";
         credentialsFile = config.sops.secrets.lego-knot-credentials.path;
+        inherit domain extraDomainNames;
       };
     in
     {
-      "imap.thalheim.io" = cert;
-      "imap.devkid.net" = cert;
+      "imap.thalheim.io" = cert {
+        domain = "imap.thalheim.io";
+      };
+      # validation for subdomain does not work, might need _acme-challenge.imap.devkid.net
+      "imap.devkid.net" = cert {
+        domain = "devkid.net";
+        extraDomainNames = [
+          "*.devkid.net"
+        ];
+      };
     };
 
   networking.firewall.allowedTCPPorts = [
