@@ -1,15 +1,34 @@
+def environment(extra={}):
+  e = { "BUILDDIR": '/var/lib/drone/nix-build' }
+  e.update(extra)
+  return e
+
+buildCi = 'nix shell nixpkgs#git -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix'
+
 build = {
   "name": 'Build NixOS and home-manager',
   "kind": 'pipeline',
   "type": 'exec',
   "clone": {  "depth": 1 },
-  "steps": [
-  {
+  "steps": [{
     "name": 'build',
     "commands": [
-      "mkdir gcroots",
-      "nix run --no-write-lock-file --override-input nixpkgs github:Mic92/nixpkgs github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --workers 4 --gc-roots-dir $PWD/gcroots --flake .# > eval.json",
-      "nix run --no-write-lock-file --override-input nixpkgs github:Mic92/nixpkgs github:Mic92/drone-nix-scheduler -- eval.json"
+      'rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp',
+      # retry flaky builds
+      buildCi + ' || ' + buildCi,
+      'rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots',
+    ],
+    "environment": environment(),
+  }, {
+    "name": 'upload',
+    "commands": [
+      """
+      nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
+      # only local built derivations
+      # drone-runner-exec-chroot contains character device files
+      nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
+      nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths
+      """,
     ],
     "environment": {
       "DRONE_SERVER": "https://drone.thalheim.io",
