@@ -21,14 +21,6 @@ steps:
 
 - name: upload
   commands:
-  - "\n      nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json\n      # only local built derivations\n      # drone-runner-exec-chroot contains character device files\n      nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths\n      nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths\n      "
-  environment:
-    DRONE_SERVER: https://drone.thalheim.io
-    DRONE_TOKEN:
-      from_secret: DRONE_TOKEN
-
-- name: upload
-  commands:
   - nix path-info --json -r $PWD/gcroots/*.drv > path-info.json
   - nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < path-info.json > paths
   - nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths
@@ -60,25 +52,6 @@ trigger:
   event:
   - push
   - pull_request
-
----
-kind: pipeline
-type: exec
-name: Build nix derivation
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: build
-  commands:
-  - echo $derivation
-  - nix build -L $derivation
-
-trigger:
-  event:
-  - custom
 
 ---
 kind: pipeline
@@ -214,6 +187,6 @@ trigger:
 
 ---
 kind: signature
-hmac: a45364c6baabcbd9f401faa1597968db1a7fb8ba6fc31ec5aede3149c9dac10d
+hmac: 9da29cd24afb5ba03d5e4e89c795171ab2df152b1a0d644e2f689ab1f23802cf
 
 ...

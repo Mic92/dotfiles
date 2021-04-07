@@ -22,21 +22,6 @@ build = {
   }, {
     "name": 'upload',
     "commands": [
-      """
-      nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
-      # only local built derivations
-      # drone-runner-exec-chroot contains character device files
-      nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > paths
-      nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths
-      """,
-    ],
-    "environment": {
-      "DRONE_SERVER": "https://drone.thalheim.io",
-      "DRONE_TOKEN": {"from_secret": 'DRONE_TOKEN'},
-    },
-  }, {
-    "name": 'upload',
-    "commands": [
       "nix path-info --json -r $PWD/gcroots/*.drv > path-info.json",
       # only local built derivations
       "nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < path-info.json > paths",
@@ -101,7 +86,7 @@ def deploy(target):
 def main(ctx):
   return [
     build,
-    buildExpression,
+    #buildExpression,
     deploy('eve'),
     deploy('turingmachine'),
     deploy('eva'),
