@@ -21,7 +21,7 @@ steps:
 
 - name: upload
   commands:
-  - nix path-info --json -r $PWD/gcroots/*.drv > path-info.json
+  - nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
   - nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < path-info.json > paths
   - nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths
   environment:
@@ -187,6 +187,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 9da29cd24afb5ba03d5e4e89c795171ab2df152b1a0d644e2f689ab1f23802cf
+hmac: 52d68b3266cfe44fefc5cb66420ac2cd8b5cd49815d5f52cd956454d78d936c2
 
 ...
