@@ -22,13 +22,14 @@ build = {
   }, {
     "name": 'upload',
     "commands": [
-      "nix path-info --json -r $PWD/gcroots/*.drv > path-info.json",
+      "nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json",
       # only local built derivations
-      "nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < path-info.json > paths",
-      "nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths",
+      "nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > $BUILDDIR/paths",
+      "nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < $BUILDDIR/paths",
     ],
     "environment": {
-      "CACHIX_SIGNING_KEY": { "from_secret": 'CACHIX_SIGNING_KEY', }
+      "CACHIX_SIGNING_KEY": { "from_secret": 'CACHIX_SIGNING_KEY', },
+      "BUILDDIR": "/var/lib/drone/nix-build",
     },
     "when": {
       "event": { "exclude": ['pull_request'] },

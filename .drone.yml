@@ -22,9 +22,10 @@ steps:
 - name: upload
   commands:
   - nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
-  - nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < path-info.json > paths
-  - nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < paths
+  - nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > $BUILDDIR/paths
+  - nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < $BUILDDIR/paths
   environment:
+    BUILDDIR: /var/lib/drone/nix-build
     CACHIX_SIGNING_KEY:
       from_secret: CACHIX_SIGNING_KEY
   when:
@@ -187,6 +188,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 52d68b3266cfe44fefc5cb66420ac2cd8b5cd49815d5f52cd956454d78d936c2
+hmac: b379d1f4c8e5d4d67ac61c91476e5492d4177a017e464a25a6ec8818c131f737
 
 ...
