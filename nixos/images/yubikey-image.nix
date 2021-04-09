@@ -53,7 +53,7 @@ in
   networking.wireless.enable = false;
   networking.dhcpcd.enable = false;
 
-  services.mingetty.helpLine = "The 'root' account has an empty password.";
+  services.getty.helpLine = "The 'root' account has an empty password.";
 
   security.sudo.wheelNeedsPassword = false;
   users.users.yubikey = {
