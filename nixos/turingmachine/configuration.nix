@@ -168,30 +168,6 @@
 
   services.tor.client.enable = true;
 
-  #services.pixiecore = let
-  #  nixos = import "${modulesPath}/.." {
-  #    inherit (pkgs) system;
-  #    configuration = { config, pkgs, lib, ... }: with lib; {
-  #      imports = [ "${modulesPath}/installer/netboot/netboot-minimal.nix" ];
-  #      # Some useful options for setting up a new system
-  #      services.mingetty.autologinUser = mkForce "root";
-  #      # Enable sshd which gets disabled by netboot-minimal.nix
-  #      systemd.services.sshd.wantedBy = mkOverride 0 [ "multi-user.target" ];
-  #      # users.users.root.openssh.authorizedKeys.keys = [ ... ];
-  #      # i18n.consoleKeyMap = "de";
-  #    };
-  #  };
-  #  build = nixos.config.system.build;
-  #in {
-  #  enable = true;
-  #  openFirewall = true;
-  #  mode = "boot";
-  #  kernel = "${build.kernel}/bzImage";
-  #  initrd = "${toString build.netbootRamdisk}/initrd";
-  #  cmdLine = "init=${build.netbootIpxeScript} ${lib.concatStringsSep " " nixos.config.boot.kernelParams} debug";
-  #  dhcpNoBind = true;
-  #};
-
   services.samba = {
     enable = true;
     securityType = "user";
