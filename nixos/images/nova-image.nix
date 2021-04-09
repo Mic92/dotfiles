@@ -8,9 +8,9 @@
   ];
 
   # Automatically log in at the virtual consoles.
-  services.mingetty.autologinUser = "root";
+  services.getty.autologinUser = "root";
   # Some more help text.
-  services.mingetty.helpLine = ''
+  services.getty.helpLine = ''
     The "root" account has an empty password.
   '';
   # Allow the user to log in as root without a password.
