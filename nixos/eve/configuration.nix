@@ -21,6 +21,7 @@
     ./modules/borgbackup
     ./modules/dovecot.nix
     ./modules/drone
+    ./modules/docker.nix
     ./modules/ejabberd.nix
     ./modules/gitea.nix
     ./modules/grafana.nix
