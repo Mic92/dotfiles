@@ -6,7 +6,7 @@
       host = "127.0.0.1"
       port = 389
       bind_dn = "cn=grafana,ou=system,ou=users,dc=eve"
-      bind_password = "''${LDAP_ADMIN_PASSWORD}"
+      bind_password = "$__file{/run/secrets/grafana-ldap-password}"
       search_filter = "(&(objectClass=grafana)(|(mail=%s)(uid=%s)))"
       search_base_dns = ["ou=users,dc=eve"]
 
