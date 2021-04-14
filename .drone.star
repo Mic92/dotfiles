@@ -3,7 +3,7 @@ def environment(extra={}):
   e.update(extra)
   return e
 
-buildCi = 'nix shell nixpkgs#git -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix'
+buildCi = 'nix shell nixpkgs#git -c nix build -L --option keep-going true --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix'
 
 build = {
   "name": 'Build NixOS and home-manager',
@@ -19,22 +19,6 @@ build = {
       'rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots',
     ],
     "environment": environment(),
-  }, {
-    "name": 'upload',
-    "commands": [
-      "nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json",
-      # only local built derivations
-      "nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > $BUILDDIR/paths",
-      "nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < $BUILDDIR/paths",
-    ],
-    "environment": {
-      "CACHIX_SIGNING_KEY": { "from_secret": 'CACHIX_SIGNING_KEY', },
-      "BUILDDIR": "/var/lib/drone/nix-build",
-    },
-    "when": {
-      "event": { "exclude": ['pull_request'] },
-      "status": ['failure', 'success'],
-    },
   }, {
     "name": 'send irc notification',
     "commands": [

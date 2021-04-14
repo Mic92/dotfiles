@@ -14,27 +14,10 @@ steps:
 - name: build
   commands:
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
-  - nix shell nixpkgs#git -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix || nix shell nixpkgs#git -c nix build -L --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
+  - nix shell nixpkgs#git -c nix build -L --option keep-going true --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix || nix shell nixpkgs#git -c nix build -L --option keep-going true --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
   environment:
     BUILDDIR: /var/lib/drone/nix-build
-
-- name: upload
-  commands:
-  - nix path-info --json -r $BUILDDIR/gcroots/result* > $BUILDDIR/path-info.json
-  - nix shell 'nixpkgs#jq' -c jq -r 'map(select(.ca == null and .signatures == null)) | map(.path) | .[]' < $BUILDDIR/path-info.json > $BUILDDIR/paths
-  - nix shell 'nixpkgs#cachix' -c cachix push --jobs 32 mic92 < $BUILDDIR/paths
-  environment:
-    BUILDDIR: /var/lib/drone/nix-build
-    CACHIX_SIGNING_KEY:
-      from_secret: CACHIX_SIGNING_KEY
-  when:
-    event:
-      exclude:
-      - pull_request
-    status:
-    - failure
-    - success
 
 - name: send irc notification
   commands:
@@ -188,6 +171,6 @@ trigger:
 
 ---
 kind: signature
-hmac: b379d1f4c8e5d4d67ac61c91476e5492d4177a017e464a25a6ec8818c131f737
+hmac: 1813377f9d5cf0d96fb82d93b820ea495f7a65623e70235d98b6e68076057229
 
 ...
