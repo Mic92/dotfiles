@@ -22,6 +22,7 @@
     ./modules/dovecot.nix
     ./modules/drone
     ./modules/docker.nix
+    ./modules/cachix.nix
     ./modules/ejabberd.nix
     ./modules/gitea.nix
     ./modules/grafana.nix
