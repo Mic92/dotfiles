@@ -32,7 +32,6 @@ in {
       AUTH_ANONYMOUS_ORG_NAME = "Main Org.";
       AUTH_ANONYMOUS_ORG_ROLE = "Viewer";
     };
-    ldap.bindPasswordFile = config.sops.secrets.grafana-ldap-password.path;
     smtp = {
       enable = true;
       host = "mail.thalheim.io:587";
