@@ -23,7 +23,10 @@
     };
   };
 
-  users.users.ping-tracker.group = "ping-tracker";
+  users.users.ping-tracker = {
+    isSystemUser = true;
+    group = "ping-tracker";
+  };
   users.groups.ping-tracker = { };
 
   security.wrappers.fping.source = "${pkgs.fping}/bin/fping";
