@@ -10,14 +10,14 @@
   # fstest
   users.users = {
     fsgqa = {
-      isNormalUser = false;
+      isSystemUser = true;
       group = "fsgqa";
     };
     fsgqa2 = {
-      isNormalUser = false;
+      isSystemUser = true;
       group = "fsgqa";
     };
-    "123456-fsgqa" = { };
+    "123456-fsgqa".isSystemUser = true;
   };
   users.groups.fsgqa = { };
 }
