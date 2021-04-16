@@ -198,6 +198,19 @@ lib.mapAttrsToList
     #  description = "{{$labels.host}}: Mail send failed";
     #};
 
+
+    public_github_action_runner = {
+      condition = ''count(kubernetes_pod_container_state_code{pod_name=~"runner-deployment.*", state="running",container_name="runner"}) > 0'';
+      summary = "{{$labels.instance}}: has no public github action runner: {{$value}}";
+      description = "{{$labels.instance}}: There are no github action runner {{$value}} for (https://github.com/organizations/ls1-sys-prog-course/settings/actions)";
+    };
+
+    internal_github_action_runner = {
+      condition = ''count(kubernetes_pod_container_state_code{pod_name=~"runner-deployment.*", state="running",container_name="runner"}) > 0'';
+      summary = "{{$labels.instance}}: has no internal github action runner: {{$value}}";
+      description = "{{$labels.instance}}: There are no github action runner {{$value}} for (https://github.com/organizations/ls1-sys-prog-course-internal/settings/actions)";
+    };
+
     postfix_queue_length = {
       condition = "avg_over_time(postfix_queue_length[1h]) > 10";
       summary = "{{$labels.instance}}: mail queue is filling up: {{$value}}";
