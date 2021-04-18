@@ -15,9 +15,9 @@ eval = {
     "name": 'build',
     "commands": [
       'rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp',
-      'echo <hydra-eval-jobs>',
+      'echo "<hydra-eval-jobs>"',
       'nix run --no-write-lock-file --override-input nixpkgs github:Mic92/nixpkgs https://github.com/Mic92/hydra-eval-jobs github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --workers 4 --gc-roots-dir $PWD/gcroots --flake .#',
-      'echo </hydra-eval-jobs>',
+      'echo "</hydra-eval-jobs>"',
       'rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots',
     ],
     "environment": environment(),

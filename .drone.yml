@@ -14,9 +14,9 @@ steps:
 - name: build
   commands:
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
-  - echo <hydra-eval-jobs>
+  - echo "<hydra-eval-jobs>"
   - nix run --no-write-lock-file --override-input nixpkgs github:Mic92/nixpkgs https://github.com/Mic92/hydra-eval-jobs github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --workers 4 --gc-roots-dir $PWD/gcroots --flake .#
-  - echo </hydra-eval-jobs>
+  - echo "</hydra-eval-jobs>"
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
   environment:
     BUILDDIR: /var/lib/drone/nix-build
@@ -188,6 +188,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 7d6741f876c1ceddf317dce62db2ed8e8037e29144cc96eef833e21246ffa85f
+hmac: e7d7898b959dc35fdeb67b92dddf15ca2b40ab14a01166ff96bb7fddcac3e595
 
 ...
