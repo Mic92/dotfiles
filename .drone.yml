@@ -2,6 +2,7 @@
 kind: pipeline
 type: exec
 name: Eval jobsets
+nix-jobset: true
 
 platform:
   os: linux
@@ -32,6 +33,7 @@ trigger:
 kind: pipeline
 type: exec
 name: Build nix derivation
+nix-build: true
 
 platform:
   os: linux
@@ -56,7 +58,8 @@ trigger:
 
 ---
 kind: pipeline
-name: Build nix derivation
+name: Send irc notifications
+nix-post-build: true
 
 platform:
   os: linux
@@ -215,6 +218,6 @@ trigger:
 
 ---
 kind: signature
-hmac: f25e7ac02c7652283e2fd1dd0aba15baa40857a2fed0e03a445f8ab31d79f855
+hmac: 0444e4076a7a5326c53d005e2fb5d721252842d7772b12d50a51b8b5c205b6d8
 
 ...
