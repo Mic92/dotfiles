@@ -48,6 +48,8 @@ build = {
 };
 
 notify = {
+  "name": 'Build nix derivation',
+  "kind": 'pipeline',
   "steps": [{
     "name": 'send irc notification',
     "commands": [
@@ -102,6 +104,7 @@ def main(ctx):
   return [
     eval,
     build,
+    notify,
     #buildExpression,
     deploy('eve'),
     deploy('turingmachine'),

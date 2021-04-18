@@ -56,6 +56,33 @@ trigger:
 
 ---
 kind: pipeline
+name: Build nix derivation
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: send irc notification
+  commands:
+  - "LOGNAME=drone nix run github:Mic92/nur-packages#irc-announce -- irc.r 6667 drone \"#xxx\" \"build $DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER : $DRONE_BUILD_STATUS\" || true"
+  when:
+    event:
+      exclude:
+      - pull_request
+    status:
+    - failure
+    - success
+
+trigger:
+  branch:
+  - master
+  event:
+  - push
+  - pull_request
+
+---
+kind: pipeline
 type: exec
 name: Deploy to eve
 
@@ -188,6 +215,6 @@ trigger:
 
 ---
 kind: signature
-hmac: e7d7898b959dc35fdeb67b92dddf15ca2b40ab14a01166ff96bb7fddcac3e595
+hmac: f25e7ac02c7652283e2fd1dd0aba15baa40857a2fed0e03a445f8ab31d79f855
 
 ...
