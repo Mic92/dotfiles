@@ -61,6 +61,7 @@
     youtube-dl
     calibre
     libreoffice
+    ubuntu_font_family
     aspell
     aspellDicts.de
     aspellDicts.fr
