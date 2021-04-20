@@ -5,52 +5,21 @@ def environment(extra={}):
 
 buildCi = 'nix shell nixpkgs#git -c nix build -L --option keep-going true --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix'
 
-eval = {
-  "name": 'Eval jobsets',
+build = {
+  "name": 'Build NixOS and home-manager',
   "kind": 'pipeline',
   "type": 'exec',
-  "nix-jobset": True,
   "clone": {  "depth": 1 },
   "steps": [{
     "name": 'build',
     "commands": [
       'rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp',
-      'echo "<hydra-eval-jobs>"',
-      'nix run --no-write-lock-file --override-input nixpkgs github:Mic92/nixpkgs https://github.com/Mic92/hydra-eval-jobs github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --workers 4 --gc-roots-dir $PWD/gcroots --flake .#',
-      'echo "</hydra-eval-jobs>"',
+      # retry flaky builds
+      buildCi + ' || ' + buildCi,
       'rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots',
     ],
     "environment": environment(),
-  }],
-  "trigger": {
-    "branch": 'master',
-    "event": [ "push", "pull_request"],
-  },
-}
-
-build = {
-  "kind": 'pipeline',
-  "name": 'Build nix derivation',
-  "type": 'exec',
-  "nix-build": True,
-  "clone": {  "depth": 1 },
-  "steps": [{
-    "name": 'build',
-    "commands": [
-      'nix build -L $derivation'
-    ],
-    "environment": environment(),
-  }],
-  "trigger": {
-    "branch": 'master',
-    "event": [ "push", "pull_request"],
-  },
-};
-
-notify = {
-  "name": 'Build nix derivation',
-  "kind": 'pipeline',
-  "steps": [{
+  }, {
     "name": 'send irc notification',
     "commands": [
       'LOGNAME=drone nix run github:Mic92/nur-packages#irc-announce -- irc.r 6667 drone "#xxx" "build $DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER : $DRONE_BUILD_STATUS" || true'
@@ -60,12 +29,11 @@ notify = {
       "event": { "exclude": ['pull_request'] },
     },
   }],
-  "nix-post-build": True,
   "trigger": {
     "branch": 'master',
     "event": [ "push", "pull_request"],
   },
-}
+};
 
 buildExpression = {
   "name": 'Build nix derivation',
@@ -102,9 +70,7 @@ def deploy(target):
 
 def main(ctx):
   return [
-    eval,
     build,
-    notify,
     #buildExpression,
     deploy('eve'),
     deploy('turingmachine'),

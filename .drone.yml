@@ -1,7 +1,7 @@
 ---
 kind: pipeline
 type: exec
-name: Eval jobsets
+name: Build NixOS and home-manager
 
 platform:
   os: linux
@@ -14,55 +14,11 @@ steps:
 - name: build
   commands:
   - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
-  - echo "<hydra-eval-jobs>"
-  - nix run --no-write-lock-file --override-input nixpkgs github:Mic92/nixpkgs https://github.com/Mic92/hydra-eval-jobs github:Mic92/drone-nix-scheduler#hydra-eval-jobs -- --workers 4 --gc-roots-dir $PWD/gcroots --flake .#
-  - echo "</hydra-eval-jobs>"
+  - nix shell nixpkgs#git -c nix build -L --option keep-going true --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix || nix shell nixpkgs#git -c nix build -L --option keep-going true --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix
   - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
   environment:
     BUILDDIR: /var/lib/drone/nix-build
 
-trigger:
-  branch:
-  - master
-  event:
-  - push
-  - pull_request
-
----
-kind: pipeline
-type: exec
-name: Build nix derivation
-
-platform:
-  os: linux
-  arch: amd64
-
-clone:
-  depth: 1
-
-steps:
-- name: build
-  commands:
-  - nix build -L $derivation
-  environment:
-    BUILDDIR: /var/lib/drone/nix-build
-
-trigger:
-  branch:
-  - master
-  event:
-  - push
-  - pull_request
-
----
-kind: pipeline
-name: Build nix derivation
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
 - name: send irc notification
   commands:
   - "LOGNAME=drone nix run github:Mic92/nur-packages#irc-announce -- irc.r 6667 drone \"#xxx\" \"build $DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER : $DRONE_BUILD_STATUS\" || true"
@@ -215,6 +171,6 @@ trigger:
 
 ---
 kind: signature
-hmac: f25e7ac02c7652283e2fd1dd0aba15baa40857a2fed0e03a445f8ab31d79f855
+hmac: 1813377f9d5cf0d96fb82d93b820ea495f7a65623e70235d98b6e68076057229
 
 ...
