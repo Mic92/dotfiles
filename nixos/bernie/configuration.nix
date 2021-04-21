@@ -49,9 +49,6 @@
     desktopManager.gnome3.enable = true;
   };
 
-  programs.java.enable = true;
-  programs.java.package = pkgs.jdk15_headless;
-
   environment.systemPackages = with pkgs; [
     firefox-wayland
     chromium
@@ -78,7 +75,6 @@
     wl-clipboard
     poppler_utils
     focuswriter
-    jetbrains.idea-community
   ];
 
   documentation.doc.enable = false;
