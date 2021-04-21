@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2021020602 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2021042100 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -72,6 +72,7 @@ rose      IN A 129.215.165.52
 rose      IN AAAA 2001:630:3c1:164:6d4:c4ff:fe04:4e4b
 doctor    IN A 129.215.165.108
 doctor    IN AAAA 2001:630:3c1:164:dea6:32ff:fe42:4f99
+sauron    IN A 129.215.165.75
 
 dimitra IN A 129.215.90.138
 dimitra IN TXT "c8:d9:d2:32:3b:28"
