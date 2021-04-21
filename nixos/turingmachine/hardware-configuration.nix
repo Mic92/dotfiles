@@ -8,7 +8,7 @@
     "${modulesPath}/installer/scan/not-detected.nix"
   ];
 
-  boot.kernelPackages = pkgs.linuxPackages;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   # on demand
   services.fwupd.enable = false;
