@@ -69,18 +69,18 @@ lib.mapAttrsToList
       description = "homeassistant notification {{$labels.entity}} ({{$labels.friendly_name}}): {{$value}}";
     };
 
-    filesystem_full_in_1d = {
-      condition = "predict_linear(disk_free{${deviceFilter}}[1d], 24*3600) <= 0";
+    filesystem_full_in_12h = {
+      condition = "predict_linear(disk_free{${deviceFilter}}[3h], 12 * 3600) < 0";
       time = "1h";
-      summary = "{{$labels.host}}: Filesystem is running out of space in one day.";
-      description = "{{$labels.host}} device {{$labels.device}} on {{$labels.path}} is running out of space in approx. 1 day";
+      summary = "{{$labels.host}}: Filesystem is running out of space in 12h.";
+      description = "{{$labels.host}} device {{$labels.device}} on {{$labels.path}} is running out of space in approx. 12 hours";
     };
 
-    inodes_full_in_1d = {
-      condition = "predict_linear(disk_inodes_free{${deviceFilter}}[1d], 24*3600) < 0";
+    inodes_full_in_12h = {
+      condition = "predict_linear(disk_inodes_free{${deviceFilter}}[3h], 12 * 3600) < 0";
       time = "1h";
-      summary = "{{$labels.host}}: Filesystem is running out of inodes in one day.";
-      description = "{{$labels.host}} device {{$labels.device}} on {{$labels.path}} is running out of inodes in approx. 1 day";
+      summary = "{{$labels.host}}: Filesystem is running out of inodes in 12h.";
+      description = "{{$labels.host}} device {{$labels.device}} on {{$labels.path}} is running out of inodes in approx. 12 hours";
     };
 
     swap_using_30percent = {
