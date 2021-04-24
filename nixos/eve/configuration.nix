@@ -29,8 +29,6 @@
     ./modules/goatcounter.nix
     ./modules/home-assistant
     ./modules/influxdb.nix
-    # disable ipfs for now
-    #./modules/ipfs.nix
     ./modules/iperf.nix
     #./modules/k8s.nix
     ./modules/knot
