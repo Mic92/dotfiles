@@ -154,6 +154,8 @@ in
           paplay --device=$sink
       fi
     '')
+
+    nixos-shell
   ] ++ (with nur.repos.mic92; [
     speedscope
     inxi
