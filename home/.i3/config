@@ -12,10 +12,10 @@
 set $mod Mod4
 
 # Workspaces
-set $wsWeb web
-set $wsDev dev
-set $wsIm im
-set $wsDoc doc
+set $wsWeb "1:web"
+set $wsDev "2:dev"
+set $wsIm "3:im"
+set $wsDoc "4:doc"
 
 set $font pango:SauceCodePro Nerd Font Mono 5
 
