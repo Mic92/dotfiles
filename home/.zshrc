@@ -273,10 +273,9 @@ alias pgrep='pgrep -a'
 xalias top='htop'
 xalias tig='lazygit'
 alias free='free -m'
-alias vuser="fuser -v "
+alias fuser="fuser -v"
 alias du='du -hc'
 alias df='df -hT'
-xalias df='dfc'
 # File management
 if [[ -n ${commands[exa]} ]]; then
   if [ -n "${commands[vivid]}" ]; then
@@ -296,7 +295,6 @@ alias cpv="rsync -pogr --progress"
 alias ln="nocorrect ln"
 alias mv='nocorrect mv -v'
 alias mkdir='nocorrect mkdir -p'
-xalias locate='locate --existing --follow --basename --ignore-case'
 ip() {
     if [[ $# -eq 0 ]]; then
         command ip -c -br a
@@ -317,11 +315,9 @@ alias rake='noglob rake'
 # Root
 # fallback if sudo is not yet installed
 alias su='su - '
-alias sync='sudo sync'
-alias updatedb='sudo updatedb'
 xalias ctl='sudo systemctl'
-alias json_escape="ruby -e \"require 'json'; puts(File.open(ARGV[0]).read.to_json) if ARGV[0]\""
 alias gdb='gdb --quiet --args'
+alias readelf='readelf -W'
 compile_command() {
   if [[ $# -lt 1 ]]; then
       echo "USAGE: $0 file_path [compile_commands.json]"
@@ -336,31 +332,6 @@ compile_command() {
 [[ -n ${commands[vi]} ]] && alias vi=vim
 xalias vim="nvim"
 xalias xclip="xclip -selection clipboard"
-# Package management
-if [[ -f /etc/debian_version ]] ; then
-  alias apt-get='sudo apt-get'
-  alias apt-secure='sudo apt-secure'
-  alias apt-file='sudo apt-file'
-  alias aptitude='sudo aptitude'
-  alias dpkg='sudo dpkg'
-elif [[ -f /etc/arch-release ]] ; then
-  # if colored version is avaible
-  xalias pacman='pacman-color'
-  xalias y=yaourt
-  # run as root
-  alias pacman='sudo pacman'
-  alias abs='sudo abs'
-  # pacman-contrib stuff
-  xalias pacdiff='sudo pacdiff -l'
-  xalias pacscripts='sudo pacscripts'
-  xalias pactree='pactree -c'
-  xhashd yaourtbuild=/var/abs/local/yaourtbuild
-  function owns() { /usr/bin/pacman -Qo $(which $1)}
-  alias pacunlock="sudo rm /var/lib/pacman/db.lck"
-elif [[ -f /etc/gentoo-release ]] ; then
-  alias emerge='sudo emerge'
-  xalias eix-sync='sudo eix-sync -C --quiet'
-fi
 if [[ -n ${commands[tokei]} ]]; then
   alias cloc=tokei
 fi
@@ -411,10 +382,8 @@ killp() {
 }
 
 # Dir Hashes
-xhashd awesome=~/.config/awesome/
 xhashd mic92=~/go/src/github.com/Mic92
 xhashd git=~/git
-xhashd hase=~/git/angr/hase
 # Global aliases
 alias -g G='| grep -'
 alias -g L='| less'
@@ -426,16 +395,10 @@ alias -g S='| sort -u'
 alias -g T='| tail'
 alias -g W='| wc -l'
 # Miscellanious
-# a fresh zsh, please.
-alias fzsh='PS1="zsh%# " zsh -f'
 # generic aliases
 # diff format like git
 xalias diff='diff -Naur --strip-trailing-cr'
 [ -z "${commands[ping6]}" ] && alias ping6="ping -6"
-alias gping="ping google.com"
-alias gping6="ping6 google.com"
-alias ghost="host -v google.com 8.8.8.8"
-alias gcurl="curl -v google.com"
 alias :q=exit
 alias todotxt="vim ~/Dropbox/todo/todo.txt"
 alias grep="grep --binary-files=without-match --directories=skip --color=auto"
