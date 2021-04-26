@@ -1,11 +1,12 @@
 reporting: "off"
-confirmOnQuit: true
 update:
     method: never
+gui:
+  showFileTree: true
 git:
   paging:
     colorArg: always
-    pager: delta --syntax-theme "Solarized (light)" --paging=never --24-bit-color=never
+    pager: delta --syntax-theme "Solarized (light)" --paging=never
 customCommands:
   - key: '<c-r>'
     command: 'git rebase --interactive "{{.SelectedLocalCommit.Sha}}"'
