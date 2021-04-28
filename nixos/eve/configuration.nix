@@ -33,6 +33,7 @@
     #./modules/k8s.nix
     ./modules/knot
     ./modules/kresd.nix
+    ./modules/lambda-shaas.nix
     ./modules/mastodon-hnbot.nix
     ./modules/mediawiki.nix
     ./modules/network.nix
