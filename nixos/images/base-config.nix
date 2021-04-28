@@ -44,6 +44,9 @@ in
     ../modules/tor-ssh.nix
   ];
 
+  documentation.info.enable = false;
+  environment.systemPackages = with pkgs; [ diskrsync partclone ntfsprogs ntfs3g ];
+
   systemd.services.hidden-ssh-announce = {
     description = "irc announce hidden ssh";
     after = [ "tor.service" "network-online.target" ];
