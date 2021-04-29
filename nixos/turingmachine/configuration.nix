@@ -27,12 +27,12 @@
     ./modules/cntr.nix
     ./modules/telegraf.nix
 
+    ../modules/dnsmasq.nix
     ../modules/promtail.nix
     ../modules/powertop.nix
-    ../modules/macos-kvm.nix
+    #../modules/macos-kvm.nix
     ../modules/mosh.nix
     ../modules/networkd.nix
-    ../modules/dnsmasq.nix
     ../modules/wireguard.nix
     ../modules/tracing.nix
     ../modules/telegraf.nix

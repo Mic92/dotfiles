@@ -13,16 +13,18 @@
   # on demand
   services.fwupd.enable = false;
 
-  boot.initrd.availableKernelModules = [
-    "xhci_pci"
-    "ehci_pci"
-    # required on thinkpad
-    #"ahci"
-    "usb_storage"
-    "sd_mod"
-    "rtsx_pci_sdmmc"
-    "nvme"
-  ];
+  # xps
+  #boot.initrd.availableKernelModules = [
+  #  "xhci_pci"
+  #  "ehci_pci"
+  #  # required on thinkpad
+  #  #"ahci"
+  #  "usb_storage"
+  #  "sd_mod"
+  #  "rtsx_pci_sdmmc"
+  #  "nvme"
+  #];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "sdhci_pci" ];
   boot.kernelModules = [ "kvm-intel" ];
 
   # for zfs
@@ -63,7 +65,7 @@
   #};
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/66F2-49C6";
+    device = "/dev/disk/by-uuid/1638-625C";
     fsType = "vfat";
     options = [ "nofail" ];
   };
