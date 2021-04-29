@@ -2,12 +2,18 @@
 # $ nix-build '<nixpkgs/nixos>' -A config.system.build.isoImage -I nixos-config=./install-iso.nix
 # $ dd if=result/iso/nixos-*.iso of=/dev/sdb
 # iso>
-# iso> sgdisk -n 1:0:+500M -N 2 -t 1:ef00 -t 2:8304 /dev/sda
-# iso> mkfs.vfat -b32 /dev/sda1
+# iso> sgdisk -n 1:0:+500M -N 2 -t 1:ef00 -t 2:8304 /dev/nvme0n1
+# iso> mkfs.vfat -b32 /dev/nvme0n1p1
+# iso> ls -la /dev/disk/by-partuuid/
 # iso> zpool create -f zroot /dev/disk/by-partuuid/046fdb0b-114f-4435-9d8c-957ac73b5cd2
 # iso> nc -6 -w 120 -l 8023 | zfs receive -F zroot
 # host> sudo zfs snapshot -r zroot@zfs-send
 # host> sudo zfs send --raw -R zroot@zfs-send | nc -w 20 fd42:4492:6a6d:43:1::0 8023
+# iso> zfs load-key -a
+# iso> mount -t zfs nixos/root/nixos /mnt
+# iso> mount -t zfs nixos/root/home /mnt
+# iso> mount /dev/nvme0n1p1 /mnt/boot
+# iso> nix-shell -p git -p nixFlakes --run 'nixos-install --impure --flake /mnt/home/joerg/.homesick/repos/dotfiles#turingmachine'
 { config, lib, pkgs, modulesPath, ... }:
 {
   imports = [
