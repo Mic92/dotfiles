@@ -1,12 +1,29 @@
 { config, ... }:
 let
-  internal = "enp57s0u1";
-  external = "wlan0";
+  external = "dock0";
 in {
-  #services.dnsmasq.enable = !config.virtualisation.libvirtd.enable;
-  services.dnsmasq.enable = true;
+  systemd.network.netdevs.internal.netdevConfig = {
+    Name = "internal";
+    Kind = "bridge";
+  };
+  systemd.network.networks = {
+    internal.extraConfig = ''
+      [Match]
+      Name=internal
+
+      [Network]
+      Address=192.168.32.50/24
+      LLMNR=true
+      LLDP=true
+    '';
+  };
+
+  # Add any internal interface with the following command:
+  # $ nmcli dev disconnect eth0
+  # $ ip link set eth0 master internal
+  services.dnsmasq.enable = !config.virtualisation.libvirtd.enable;
   services.dnsmasq.extraConfig = ''
-    interface=${internal}
+    interface=internal
     #interface=virttap
     listen-address=127.0.0.1
     dhcp-range=192.168.32.50,192.168.32.100,12h
@@ -24,7 +41,7 @@ in {
   networking.nat = {
     enable = true;
     externalInterface = external;
-    internalInterfaces = [ internal ];
+    internalInterfaces = [ "internal" ];
   };
 
   networking.firewall.allowedTCPPorts = [
@@ -35,6 +52,6 @@ in {
     # pixiecore
     69 4011
     # dnsmasq
-    53 64
+    53 67
   ];
 }
