@@ -1,14 +1,18 @@
 output DP-1
 off
+output HDMI-1
+off
 output DP-2
 off
-output DP-1-2
+output HDMI-2
 off
-output DP-1-3
+output DP-2-1
+off
+output DP-2-2
 off
 output eDP-1
 off
-output DP-1-1
+output DP-2-3
 crtc 0
 mode 3840x2160
 pos 0x0
