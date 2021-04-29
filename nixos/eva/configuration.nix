@@ -18,6 +18,7 @@
     ../modules/openldap/replica.nix
     ../modules/promtail.nix
     ../modules/tracing.nix
+    ../modules/users.nix
   ];
   services.tinc.networks.retiolum.extraConfig = ''
     Weight = 1000
