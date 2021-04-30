@@ -27,7 +27,7 @@
     ./modules/cntr.nix
     ./modules/telegraf.nix
 
-    ../modules/dnsmasq.nix
+    #../modules/dnsmasq.nix
     ../modules/promtail.nix
     ../modules/powertop.nix
     #../modules/macos-kvm.nix
