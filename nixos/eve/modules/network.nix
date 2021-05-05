@@ -60,24 +60,22 @@ in
     systemd.network = {
       enable = true;
       networks."eth0".extraConfig = ''
-                [Match]
-                Name = e*
+        [Match]
+        Name = e*
 
-                [Network]
-                Address = ${cfg.ipv4.address}/${cfg.ipv4.cidr}
-                Gateway = ${cfg.ipv4.gateway}
+        [Network]
+        Address = ${cfg.ipv4.address}/${cfg.ipv4.cidr}
+        Gateway = ${cfg.ipv4.gateway}
 
-                ${concatMapStringsSep "\n"
-        (address: ''
-                Address = ${address}/${cfg.ipv6.cidr}
-                '')
-        cfg.ipv6.addresses}
-                Gateway = ${cfg.ipv6.gateway}
-                IPv6AcceptRA = no
-                IPForward = yes
+        ${concatMapStringsSep "\n" (address: ''
+          Address = ${address}/${cfg.ipv6.cidr}
+        '') cfg.ipv6.addresses}
+        Gateway = ${cfg.ipv6.gateway}
+        IPv6AcceptRA = no
+        IPForward = yes
 
-                [DHCP]
-                UseDNS = no
+        [DHCP]
+        UseDNS = no
       '';
     };
 
