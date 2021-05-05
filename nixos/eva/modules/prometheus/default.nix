@@ -30,7 +30,7 @@ in
     scrapeConfigs = [
       {
         job_name = "telegraf";
-        scrape_interval = "280s";
+        scrape_interval = "60s";
         metrics_path = "/metrics";
         static_configs = [
           {
@@ -67,7 +67,7 @@ in
       }
       {
         job_name = "homeassistant";
-        scrape_interval = "280s";
+        scrape_interval = "60s";
         metrics_path = "/api/prometheus";
 
         # Legacy api password
