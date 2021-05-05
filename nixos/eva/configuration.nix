@@ -9,6 +9,7 @@
   imports = [
     ./modules/hardware-configuration.nix
     ./modules/prometheus
+    ./modules/loki.nix
     ./modules/nginx.nix
     ./modules/sshd.nix
     ./modules/sops.nix

@@ -92,32 +92,13 @@ in
     };
   };
 
-  systemd.services.ldap-nginx-config = {
-    wantedBy = [ "multi-user.target" ];
-    script = ''
-      umask 0077
-      printf 'bindpw %s\n' \
-        "$(cat ${config.sops.secrets.ldap-nginx-password.path})" | \
-      cat "${ldapConf}" - > /run/ldap-nginx.conf
-      chown nginx /run/ldap-nginx.conf
-    '';
-    serviceConfig.Type = "oneshot";
-  };
-  sops.secrets.ldap-nginx-password = { };
-
   security.pam.services.loki.text = ''
-    auth required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=/run/ldap-nginx.conf
-    account required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=/run/ldap-nginx.conf
+    auth required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${ldapConf}
+    account required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${ldapConf}
   '';
 
   services.nginx = {
     enable = true;
-    package = pkgs.nginxStable.override {
-      perl = null;
-      modules = [
-        pkgs.nginxModules.pam
-      ];
-    };
     virtualHosts.loki = {
       serverName = "loki.r";
       locations."/" = {
