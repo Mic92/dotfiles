@@ -31,7 +31,7 @@
 
     nixos-hardware.url = "github:Mic92/nixos-hardware/master";
 
-    home-manager.url = "github:rycee/home-manager";
+    home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
     #doom-emacs.url = "github:hlissner/doom-emacs";
