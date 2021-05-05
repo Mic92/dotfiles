@@ -10,6 +10,11 @@ in
     # ssh with kerberos authentication
     #(pkgs.openssh.override { withKerberos = true; withGssapiPatches = true; })
 
+    (pkgs.writeScriptBin "openvpn-tum" ''
+      export PATH=$PATH:${pkgs.iproute}/bin
+      exec "${pkgs.openvpn}/bin/openvpn" ${./vpn-il1-standard.ovpn}
+    '')
+
     # http://computing.help.inf.ed.ac.uk/openvpn
     (pkgs.writeScriptBin "openvpn-edinburgh" ''
       export PATH=$PATH:${pkgs.iproute}/bin
@@ -39,5 +44,5 @@ in
   };
 
   sops.secrets.smb-secrets = { };
-  sops.secrets.uni-vpn-auth = { };
+  sops.secrets.edinburgh-vpn-auth = { };
 }
