@@ -7,13 +7,13 @@
   programs.vim.defaultEditor = true;
 
   imports = [
+    ./modules/hardware-configuration.nix
     ./modules/prometheus
     ./modules/nginx.nix
     ./modules/sshd.nix
     ./modules/sops.nix
     ./modules/telegraf
 
-    ../modules/ec2.nix
     ../modules/mosh.nix
     ../modules/openldap/replica.nix
     ../modules/promtail.nix
