@@ -45,4 +45,5 @@ in
 
   sops.secrets.smb-secrets = { };
   sops.secrets.edinburgh-vpn-auth = { };
+  sops.secrets.tum-vpn-auth = { };
 }
