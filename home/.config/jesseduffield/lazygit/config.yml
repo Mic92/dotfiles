@@ -6,7 +6,7 @@ gui:
 git:
   paging:
     colorArg: always
-    pager: delta --syntax-theme "Solarized (light)" --paging=never
+    pager: delta --syntax-theme "Dracula" --paging=never
 customCommands:
   - key: '<c-r>'
     command: 'git rebase --interactive "{{.SelectedLocalCommit.Sha}}"'
