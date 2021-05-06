@@ -2,11 +2,13 @@
 # - only if tmux is installed
 # - not in linux ttys
 # - no nested tmux sessions
-if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" && "$INSIDE_EMACS" != "vterm" ]]; then
-  if [[ -n "$SSH_AUTH_SOCK" ]]  then
-    tmux set-environment -g SSH_AUTH_SOCK "$SSH_AUTH_SOCK" 2>/dev/null
+if [[ -z ${commands[wezterm]} ]]; then
+  if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" && "$INSIDE_EMACS" != "vterm" ]]; then
+    if [[ -n "$SSH_AUTH_SOCK" ]]  then
+      tmux set-environment -g SSH_AUTH_SOCK "$SSH_AUTH_SOCK" 2>/dev/null
+    fi
+    tmux new-session -s "${TTY:t}" -t main || tmux attach-session -t "${TTY:t}"
   fi
-  tmux new-session -s "${TTY:t}" -t main || tmux attach-session -t "${TTY:t}"
 fi
 
 if [ -e /opt/nix-multiuser/nix/etc/profile.d/nix.sh ]; then
@@ -445,7 +447,7 @@ export PATH
 cdpath=( ~/git )
 # Prefered programs
 export BROWSER=firefox
-export TERMINAL=alacritty
+export TERMINAL=wezterm
 export PICTUREVIEW=eog
 if [[ -n ${commands[emacseditor]} ]] && [[ -n $XDG_RUNTIME_DIR ]]; then
   export EDITOR=emacseditor
