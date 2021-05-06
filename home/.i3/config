@@ -35,7 +35,8 @@ font $font
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec alacritty
+bindsym $mod+Return exec wezterm
+#bindsym $mod+Return exec alacritty
 #bindsym $mod+Return exec termite
 
 # kill focused window
@@ -79,7 +80,6 @@ bindsym $mod+Shift+Right move right
 # split in horizontal orientation
 bindsym $mod+h split h
 
-# split in vertical orientation
 bindsym $mod+v split v
 
 # enter fullscreen mode for the focused container
@@ -202,13 +202,24 @@ bar {
   separator_symbol " | "
   tray_padding 0
 
+  #colors {
+  #  background #303030
+  #  statusline #ababab
+  #  focused_workspace  #797979 #212121 #DBDBDB
+  #  active_workspace   #c7c7c7 #303030
+  #  inactive_workspace #888888 #303030
+  #  urgent_workspace #ffffff #900000
+  #}
   colors {
-    background #303030
-    statusline #ababab
-    focused_workspace  #797979 #212121 #DBDBDB
-    active_workspace   #c7c7c7 #303030
-    inactive_workspace #888888 #303030
-    urgent_workspace #ffffff #900000
+    background #282A36
+    statusline #F8F8F2
+    separator  #44475A
+
+    focused_workspace  #44475A #44475A #F8F8F2
+    active_workspace   #282A36 #44475A #F8F8F2
+    inactive_workspace #282A36 #282A36 #BFBFBF
+    urgent_workspace   #FF5555 #FF5555 #F8F8F2
+    binding_mode       #FF5555 #FF5555 #F8F8F2
   }
 }
 
@@ -223,22 +234,43 @@ bar {
   workspace_buttons no
 
   colors {
-    background #303030
-    statusline #ababab
-    focused_workspace  #797979 #212121 #DBDBDB
-    active_workspace   #c7c7c7 #303030
-    inactive_workspace #888888 #303030
-    urgent_workspace   #ffffff #900000
+    background #282A36
+    statusline #F8F8F2
+    separator  #44475A
+
+    focused_workspace  #44475A #44475A #F8F8F2
+    active_workspace   #282A36 #44475A #F8F8F2
+    inactive_workspace #282A36 #282A36 #BFBFBF
+    urgent_workspace   #FF5555 #FF5555 #F8F8F2
+    binding_mode       #FF5555 #FF5555 #F8F8F2
   }
+
+  #colors {
+  #  background #303030
+  #  statusline #ababab
+  #  focused_workspace  #797979 #212121 #DBDBDB
+  #  active_workspace   #c7c7c7 #303030
+  #  inactive_workspace #888888 #303030
+  #  urgent_workspace   #ffffff #900000
+  #}
 }
 
+# class                 border  bground text    indicator child_border
+client.focused          #6272A4 #6272A4 #F8F8F2 #6272A4   #6272A4
+client.focused_inactive #44475A #44475A #F8F8F2 #44475A   #44475A
+client.unfocused        #282A36 #282A36 #BFBFBF #282A36   #282A36
+client.urgent           #44475A #FF5555 #F8F8F2 #FF5555   #FF5555
+client.placeholder      #282A36 #282A36 #F8F8F2 #282A36   #282A36
+
+client.background       #F8F8F2
+
 #colors:                border  backgr. text    indicator
-client.focused          #787878 #787878 #ffffff #787878    #787878
-client.focused_inactive #303030 #303030 #ffffff #303030   #303030
-client.unfocused        #303030 #222222 #888888 #292d2e   #222222
-client.urgent           #2f343a #900000 #ffffff #900000   #900000
-client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
-client.background #ffffff
+#client.focused          #787878 #787878 #ffffff #787878    #787878
+#client.focused_inactive #303030 #303030 #ffffff #303030   #303030
+#client.unfocused        #303030 #222222 #888888 #292d2e   #222222
+#client.urgent           #2f343a #900000 #ffffff #900000   #900000
+#client.placeholder      #000000 #0c0c0c #ffffff #000000   #0c0c0c
+#client.background #ffffff
 
 # Rules
 set $webClasses "^(Firefox|Opera|Chromium|Aurora)$"
