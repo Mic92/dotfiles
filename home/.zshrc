@@ -179,7 +179,6 @@ setopt cdablevarS
 setopt extended_glob
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
-autoload -U zmv
 bindkey "^[m" copy-prev-shell-word
 HISTFILE=$HOME/.zsh_history
 HISTSIZE=10000
@@ -295,7 +294,17 @@ alias rm='rm -rv'
 alias cp='nocorrect cp -rpv'
 alias cpv="rsync -pogr --progress"
 alias ln="nocorrect ln"
-alias mv='nocorrect mv -v'
+function mv() {
+  if [ "$#" -ne 1 ] || [ ! -f "$1" ]; then
+    command mv -v "$@"
+    return
+  fi
+
+  newfilename="$1"
+  vared newfilename
+  command mv -v -- "$1" "$newfilename"
+}
+
 alias mkdir='nocorrect mkdir -p'
 ip() {
     if [[ $# -eq 0 ]]; then
