@@ -45,10 +45,6 @@
   # breaks loki
   networking.usePredictableInterfaceNames = false;
 
-  services.tinc.networks.retiolum.extraConfig = ''
-    Weight = 1000
-  '';
-
   documentation.enable = false;
 
   networking.retiolum = {
