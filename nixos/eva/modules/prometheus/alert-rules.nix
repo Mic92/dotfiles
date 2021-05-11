@@ -176,28 +176,6 @@ lib.mapAttrsToList
       summary = "{{$labels.instance}}: TLS certificate from {{$labels.source}} is about to expire.";
       description = "{{$labels.instance}}: The TLS certificate from {{$labels.source}} will expire in less than 7 days: {{$value}}s";
     };
-    # TODO
-    #mail_down = {
-    #  condition = ''up{job="mail"} == 0'';
-    #  summary = "{{$labels.host}}: Mail exporter is down.";
-    #  description = "Mail exporter on {{$labels.host}} hasn't been responding more than 2 minutes.";
-    #};
-    #mail_delivery_unsuccessful = {
-    #  condition = "mail_deliver_success == 0";
-    #  summary = "{{$labels.host}}: Mail delivery unsuccessful";
-    #  description = "{{$labels.host}}: Mail delivery unsuccessful";
-    #};
-    #mail_delivery_late = {
-    #  condition = "increase(mail_late_mails_total[1h]) >= 1";
-    #  summary = "{{$labels.host}}: Mail delivery late";
-    #  description = "{{$labels.host}}: Mail delivery late";
-    #};
-    #mail_send_fails = {
-    #  condition = "increase(mail_send_fails_total[1h]) >= 1";
-    #  summary = "{{$labels.host}}: Mail send failed";
-    #  description = "{{$labels.host}}: Mail send failed";
-    #};
-
 
     public_github_action_runner = {
       condition = ''count(kubernetes_pod_container_state_code{pod_name=~"runner-deployment.*", state="running",container_name="runner"}) < 2'';
@@ -205,10 +183,22 @@ lib.mapAttrsToList
       description = "{{$labels.instance}}: There are no github action runner {{$value}} for (https://github.com/organizations/ls1-sys-prog-course/settings/actions)";
     };
 
+    public_github_action_runner_present = {
+      condition = ''absent_over_time(kubernetes_pod_container_state_code{pod_name=~"runner-deployment.*", state="running",container_name="runner"}[10m])'';
+      summary = "status of public github action runner is unknown";
+      description = "status of public github action runner is unknown: no data for 10 minutes";
+    };
+
     internal_github_action_runner = {
       condition = ''count(kubernetes_pod_container_state_code{pod_name=~"internal-runner-deployment.*", state="running",container_name="runner"}) == 0'';
       summary = "{{$labels.instance}}: has no internal github action runner: {{$value}}";
       description = "{{$labels.instance}}: There are no github action runner {{$value}} for (https://github.com/organizations/ls1-sys-prog-course-internal/settings/actions)";
+    };
+
+    internal_github_action_runner_present = {
+      condition = ''absent_over_time(kubernetes_pod_container_state_code{pod_name=~"internal-runner-deployment.*", state="running",container_name="runner"}[10m])'';
+      summary = "status of internal github action runner is unknown";
+      description = "status of internal github action runner is unknown: no data for 10 minutes";
     };
 
     postfix_queue_length = {
