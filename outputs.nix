@@ -28,25 +28,34 @@
     # deploy like this:
     #  nix run ".#deploy.turingmachine"
     #  nix run ".#deploy.eve"
-    apps.deploy = pkgs.callPackage ./nixos/krops.nix {
-      inherit (krops.packages.${system}) writeCommand;
-      lib = krops.lib;
+    apps.deploy = {
+      type = "app";
+      path = pkgs.callPackage ./nixos/krops.nix {
+        inherit (krops.packages.${system}) writeCommand;
+        lib = krops.lib;
+      };
     };
-    apps.irc-announce = nurPkgs.repos.mic92.irc-announce;
+    apps.irc-announce = {
+      type = "app";
+      path = nurPkgs.repos.mic92.irc-announce;
+    };
 
-    apps.hm-switch = pkgs.writeScriptBin "hm-flake-switch" ''
-      #!${pkgs.runtimeShell}
-      set -eu -o pipefail -x
-      tmpdir=$(mktemp -d)
-      export PATH=${pkgs.lib.makeBinPath [ pkgs.coreutils pkgs.nixFlakes pkgs.jq ]}
-      trap "rm -rf $tmpdir" EXIT
-      declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie")
-      profile=''${profiles[$HOSTNAME]:-common}
-      flake=$(nix flake metadata --json ${./.} | jq -r .url)
-      nix build --show-trace --out-link "$tmpdir/result" "$flake#hmConfigurations.''${profile}.activationPackage" "$@"
-      link=$(realpath $tmpdir/result)
-      $link/activate
-    '';
+    apps.hm-switch = {
+      type = "app";
+      path = pkgs.writeScriptBin "hm-flake-switch" ''
+        #!${pkgs.runtimeShell}
+        set -eu -o pipefail -x
+        tmpdir=$(mktemp -d)
+        export PATH=${pkgs.lib.makeBinPath [ pkgs.coreutils pkgs.nixFlakes pkgs.jq ]}
+        trap "rm -rf $tmpdir" EXIT
+        declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie")
+        profile=''${profiles[$HOSTNAME]:-common}
+        flake=$(nix flake metadata --json ${./.} | jq -r .url)
+        nix build --show-trace --out-link "$tmpdir/result" "$flake#hmConfigurations.''${profile}.activationPackage" "$@"
+        link=$(realpath $tmpdir/result)
+        $link/activate
+      '';
+    };
   })) // {
   nixosConfigurations = import ./nixos/configurations.nix {
     #nixpkgs = toString <nixpkgs>;
