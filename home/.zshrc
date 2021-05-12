@@ -10,10 +10,11 @@ if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" && "$INSIDE_EMACS
   tmux new-session -s "${TTY:t}" -t main || tmux attach-session -t "${TTY:t}"
 fi
 #fi
-
-if [ -e /opt/nix-multiuser/nix/etc/profile.d/nix.sh ]; then
-  . /opt/nix-multiuser/nix/etc/profile.d/nix.sh
-  export PATH="$PATH:/opt/nix-multiuser/nix/bin"
+if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
+  source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+fi
+if [[ -e /etc/profile.d/nix.sh ]]; then
+  . /etc/profile.d/nix.sh
 fi
 if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
   . $HOME/.nix-profile/etc/profile.d/nix.sh;
@@ -770,10 +771,6 @@ if [[ -n "${commands[fzf-share]}" ]]; then
 fi
 if [[ -f "$HOME/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]]; then
   source "$HOME/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
-fi
-
-if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
-  source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 fi
 
 # prevent broken terminals
