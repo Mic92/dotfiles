@@ -48,45 +48,48 @@ in
 
   programs.doom-emacs = {
     enable = true;
-    doomPrivateDir = ../../../home/.doom.d;
-    emacsPackagesOverlay = self: super: with pkgs; {
-      tsc = super.tsc.overrideAttrs (old:
-        let
-          libtsc_dyn = rustPlatform.buildRustPackage rec {
-            pname = "emacs-tree-sitter";
-            version = "0.13.1";
-            src = fetchFromGitHub {
-              owner = "ubolonton";
-              repo = "emacs-tree-sitter";
-              rev = version;
-              sha256 = "sha256-m6hL7HK0fVAcaYaqS/fLaGH686e1jTjos51UdJgNguc=";
-            };
-            preBuild = ''
-              export BINDGEN_EXTRA_CLANG_ARGS="$(< ${stdenv.cc}/nix-support/libc-crt1-cflags) \
-                $(< ${stdenv.cc}/nix-support/libc-cflags) \
-                $(< ${stdenv.cc}/nix-support/cc-cflags) \
-                $(< ${stdenv.cc}/nix-support/libcxx-cxxflags) \
-                ${lib.optionalString stdenv.cc.isClang "-idirafter ${stdenv.cc.cc}/lib/clang/${lib.getVersion stdenv.cc.cc}/include"} \
-                ${lib.optionalString stdenv.cc.isGNU
-                  "-isystem ${stdenv.cc.cc}/lib/gcc/${stdenv.hostPlatform.config}/${lib.getVersion stdenv.cc.cc}/include/"} \
-                ${lib.optionalString stdenv.cc.isGNU
-                  "-isystem ${stdenv.cc.cc}/include/c++/${lib.getVersion stdenv.cc.cc} -isystem ${stdenv.cc.cc}/include/c++/${lib.getVersion stdenv.cc.cc}/${stdenv.hostPlatform.config}"} \
-                $NIX_CFLAGS_COMPILE"
-            '';
-            LIBCLANG_PATH = "${llvmPackages.libclang}/lib";
-            cargoHash = "sha256-UHuosX4MnZMvgRzr6Hc4RNafP0UCYknTxjPIJvYnXkU=";
-          };
-        in
-        {
-          inherit (libtsc_dyn) src;
-          preBuild = ''
-            ext=${stdenv.hostPlatform.extensions.sharedLibrary}
-            dest=$out/share/emacs/site-lisp/elpa/tsc-${old.version}
-            install -D ${libtsc_dyn}/lib/libtsc_dyn$ext $dest/tsc-dyn$ext
-            echo -n "0.13.1" > $dest/DYN-VERSION
-          '';
-        });
+    doomPrivateDir =  builtins.path {
+      name =  "doom";
+      path = ../../../home/.doom.d;
     };
+    #emacsPackagesOverlay = self: super: with pkgs; {
+    #  tsc = super.tsc.overrideAttrs (old:
+    #    let
+    #      libtsc_dyn = rustPlatform.buildRustPackage rec {
+    #        pname = "emacs-tree-sitter";
+    #        version = "0.13.1";
+    #        src = fetchFromGitHub {
+    #          owner = "ubolonton";
+    #          repo = "emacs-tree-sitter";
+    #          rev = version;
+    #          sha256 = "sha256-m6hL7HK0fVAcaYaqS/fLaGH686e1jTjos51UdJgNguc=";
+    #        };
+    #        preBuild = ''
+    #          export BINDGEN_EXTRA_CLANG_ARGS="$(< ${stdenv.cc}/nix-support/libc-crt1-cflags) \
+    #            $(< ${stdenv.cc}/nix-support/libc-cflags) \
+    #            $(< ${stdenv.cc}/nix-support/cc-cflags) \
+    #            $(< ${stdenv.cc}/nix-support/libcxx-cxxflags) \
+    #            ${lib.optionalString stdenv.cc.isClang "-idirafter ${stdenv.cc.cc}/lib/clang/${lib.getVersion stdenv.cc.cc}/include"} \
+    #            ${lib.optionalString stdenv.cc.isGNU
+    #              "-isystem ${stdenv.cc.cc}/lib/gcc/${stdenv.hostPlatform.config}/${lib.getVersion stdenv.cc.cc}/include/"} \
+    #            ${lib.optionalString stdenv.cc.isGNU
+    #              "-isystem ${stdenv.cc.cc}/include/c++/${lib.getVersion stdenv.cc.cc} -isystem ${stdenv.cc.cc}/include/c++/${lib.getVersion stdenv.cc.cc}/${stdenv.hostPlatform.config}"} \
+    #            $NIX_CFLAGS_COMPILE"
+    #        '';
+    #        LIBCLANG_PATH = "${llvmPackages.libclang}/lib";
+    #        cargoHash = "sha256-UHuosX4MnZMvgRzr6Hc4RNafP0UCYknTxjPIJvYnXkU=";
+    #      };
+    #    in
+    #    {
+    #      inherit (libtsc_dyn) src;
+    #      preBuild = ''
+    #        ext=${stdenv.hostPlatform.extensions.sharedLibrary}
+    #        dest=$out/share/emacs/site-lisp/elpa/tsc-${old.version}
+    #        install -D ${libtsc_dyn}/lib/libtsc_dyn$ext $dest/tsc-dyn$ext
+    #        echo -n "0.13.1" > $dest/DYN-VERSION
+    #      '';
+    #    });
+    #};
 
     extraPackages = [
       pkgs.mu

@@ -28,33 +28,30 @@
     # deploy like this:
     #  nix run ".#deploy.turingmachine"
     #  nix run ".#deploy.eve"
-    apps.deploy = {
-      type = "app";
-      path = pkgs.callPackage ./nixos/krops.nix {
-        inherit (krops.packages.${system}) writeCommand;
-        lib = krops.lib;
-      };
+    apps.deploy = pkgs.callPackage ./nixos/krops.nix {
+      inherit (krops.packages.${system}) writeCommand;
+      lib = krops.lib;
     };
     apps.irc-announce = {
       type = "app";
-      path = nurPkgs.repos.mic92.irc-announce;
+      path = "${nurPkgs.repos.mic92.irc-announce}/bin/irc-announce";
     };
 
     apps.hm-switch = {
       type = "app";
-      path = pkgs.writeScriptBin "hm-flake-switch" ''
+      program = toString (pkgs.writeScript "hm-switch" ''
         #!${pkgs.runtimeShell}
         set -eu -o pipefail -x
         tmpdir=$(mktemp -d)
         export PATH=${pkgs.lib.makeBinPath [ pkgs.coreutils pkgs.nixFlakes pkgs.jq ]}
         trap "rm -rf $tmpdir" EXIT
-        declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie")
+        declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie", ["grandalf"]="common-aarch64")
         profile=''${profiles[$HOSTNAME]:-common}
         flake=$(nix flake metadata --json ${./.} | jq -r .url)
         nix build --show-trace --out-link "$tmpdir/result" "$flake#hmConfigurations.''${profile}.activationPackage" "$@"
         link=$(realpath $tmpdir/result)
         $link/activate
-      '';
+      '');
     };
   })) // {
   nixosConfigurations = import ./nixos/configurations.nix {

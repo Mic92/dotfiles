@@ -1,7 +1,7 @@
 { self, nixpkgs, home-manager, nur, nix-doom-emacs }:
 
 let
-  hmConfiguration = { extraModules ? [ ] }:
+  hmConfiguration = { extraModules ? [ ], system ? "x86_64-linux" }:
     (home-manager.lib.homeManagerConfiguration {
       configuration = { ... }: {
         imports = extraModules ++ [
@@ -13,13 +13,17 @@ let
           nurFun = import nur;
         };
       };
-      system = "x86_64-linux";
+      inherit system;
       homeDirectory = "/home/joerg";
       username = "joerg";
     });
 in
 {
   common = hmConfiguration { };
+  common-aarch64 = hmConfiguration {
+    system = "aarch64-linux";
+  };
+
   desktop = hmConfiguration {
     extraModules = [ ./desktop.nix ];
   };
