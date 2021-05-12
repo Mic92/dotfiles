@@ -1,6 +1,39 @@
 { config, ... }: {
   nix.distributedBuilds = true;
-  nix.buildMachines = [{
+  nix.buildMachines = [ {
+    hostName = "nardole.r";
+    sshUser = "nix";
+    sshKey = config.sops.secrets.id_buildfarm.path;
+    system = "x86_64-linux";
+    maxJobs = 10;
+    supportedFeatures = [
+      "big-parallel"
+      "kvm"
+      "nixos-test"
+    ];
+  } {
+    hostName = "bill.r";
+    sshUser = "nix";
+    sshKey = config.sops.secrets.id_buildfarm.path;
+    system = "x86_64-linux";
+    maxJobs = 10;
+    supportedFeatures = [
+      "big-parallel"
+      "kvm"
+      "nixos-test"
+    ];
+  } {
+    hostName = "sauron.r";
+    sshUser = "nix";
+    sshKey = config.sops.secrets.id_buildfarm.path;
+    system = "x86_64-linux";
+    maxJobs = 10;
+    supportedFeatures = [
+      "big-parallel"
+      "kvm"
+      "nixos-test"
+    ];
+  } {
     hostName = "martha.r";
     sshUser = "nix";
     sshKey = config.sops.secrets.id_buildfarm.path;
@@ -11,8 +44,7 @@
       "kvm"
       "nixos-test"
     ];
-  }
-    {
+  } {
       hostName = "donna.r";
       sshUser = "nix";
       sshKey = config.sops.secrets.id_buildfarm.path;
