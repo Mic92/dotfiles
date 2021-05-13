@@ -106,14 +106,11 @@ in
     xorg.xev
     xorg.xprop
     xclip
-    gpodder
-    ncmpcpp
     (pkgs.callPackage ./pkgs/alacritty.nix { })
     screen-message
     sshfsFuse
     sshuttle
     jq
-    httpie
     pypi2nix
     go2nix
     nix-index
