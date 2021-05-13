@@ -5,18 +5,27 @@ return {
   --freetype_load_target = "Light",
   --freetype_render_target = "HorizontalLcd",
   color_scheme = "Dracula",
-  ssh_domains = {
+  tls_clients = {
     {
       -- This name identifies the domain
       name = "eve",
       -- The address to connect to
-      remote_address = "eve.thalheim.io",
+      remote_address = "eve.thalheim.io:60000",
+      bootstrap_via_ssh = "eve.r",
     },
     {
       -- This name identifies the domain
       name = "bill",
       -- The address to connect to
-      remote_address = "bill.r",
+      remote_address = "bill.r:60000",
+      bootstrap_via_ssh = "bill.r",
+    }
+  },
+  tls_server = {
+    {
+      -- The host:port combination on which the server will listen
+      -- for connections
+      bind_address = "[::]:60000"
     }
   },
   leader = { key="b", mods="CTRL", timeout_milliseconds=1000 },
