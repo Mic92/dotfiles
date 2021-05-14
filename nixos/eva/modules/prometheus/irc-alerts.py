@@ -138,8 +138,8 @@ class PrometheusWebHook(BaseHTTPRequestHandler):
         payload = json.loads(self.rfile.read(length))
         messages = []
         for alert in payload["alerts"]:
-            summary = alert["annotations"]["summary"]
-            messages.append(f"{alert['status']}: {summary}")
+            description = alert["annotations"]["description"]
+            messages.append(f"{alert['status']}: {description}")
         irc_send(self.irc_url, messages, password=self.password)
 
         self.do_GET()
