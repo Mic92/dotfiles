@@ -204,4 +204,5 @@
 (setq-hook! 'nix-mode-hook company-idle-delay nil)
 
 (after! rustic
-  (setq rustic-lsp-server 'rls))
+  (setq rustic-lsp-server 'rust-analyzer)
+  (setq lsp-rust-analyzer-cargo-watch-command 'clippy))
