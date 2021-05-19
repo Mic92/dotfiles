@@ -1,4 +1,4 @@
-@ 3600 IN SOA lekwati.com. root.lekwati.com. 2021020500 7200 3600 86400 3600
+@ 3600 IN SOA lekwati.com. root.lekwati.com. 2021051900 7200 3600 86400 3600
 
 $TTL 600
 
@@ -17,6 +17,7 @@ $TTL 600
 * IN CNAME www.thalheim.io.
 
 blog IN CNAME slekwati.github.io.
+writey-things IN CNAME slekwati.github.io.
 _acme-challenge IN NS ns1.thalheim.io.
 
 ;; TXT Records
