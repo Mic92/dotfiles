@@ -231,7 +231,7 @@ lib.mapAttrsToList
 
     host_memory_under_memory_pressure = {
       condition = "rate(node_vmstat_pgmajfault[1m]) > 1000";
-      description = "{{$lables.instance}}: The node is under heavy memory pressure. High rate of major page faults: {{$value}}";
+      description = "{{$labels.instance}}: The node is under heavy memory pressure. High rate of major page faults: {{$value}}";
     };
 
     ext4_errors = {
