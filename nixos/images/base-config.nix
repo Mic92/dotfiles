@@ -58,9 +58,9 @@ in
       echo "still waiting for /var/lib/tor/onion/ssh/hostname"
       sleep 1
       done
-      ${pkgs.nur.repos.mic92.untilport}/bin/untilport irc.freenode.org 6667 && \
+      ${pkgs.nur.repos.mic92.untilport}/bin/untilport irc.hackint.org 6697 && \
       ${pkgs.nur.repos.mic92.irc-announce}/bin/irc-announce \
-        irc.hackint.org 6667 install-image "#krebs-announce" \
+        irc.hackint.org 6697 install-image "#krebs-announce" 1 \
         "SSH Hidden Service at $(cat /var/lib/tor/onion/ssh/hostname)"
     '';
     serviceConfig = {
