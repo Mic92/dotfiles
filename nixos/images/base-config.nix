@@ -60,7 +60,7 @@ in
       done
       ${pkgs.nur.repos.mic92.untilport}/bin/untilport irc.freenode.org 6667 && \
       ${pkgs.nur.repos.mic92.irc-announce}/bin/irc-announce \
-        irc.freenode.org 6667 install-image "#krebs-announce" \
+        irc.hackint.org 6667 install-image "#krebs-announce" \
         "SSH Hidden Service at $(cat /var/lib/tor/onion/ssh/hostname)"
     '';
     serviceConfig = {
