@@ -43,6 +43,8 @@
     #};
   };
 
+  # for pactl
+  environment.systemPackages = with pkgs; [ pulseaudio ];
   services.pipewire = {
     enable = true;
     alsa.enable = true;
