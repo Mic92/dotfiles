@@ -197,12 +197,7 @@
   :config
   (setq-default flycheck-disabled-checkers '(python-pylint)))
 
-(use-package! direnv
-  :config
-  (setq direnv--executable "emacs-direnv"))
-
 (setq-hook! 'nix-mode-hook company-idle-delay nil)
 
 (after! rustic
-  (setq rustic-lsp-server 'rust-analyzer)
-  (setq lsp-rust-analyzer-cargo-watch-command 'clippy))
+  (setq rustic-lsp-server 'rust-analyzer))
