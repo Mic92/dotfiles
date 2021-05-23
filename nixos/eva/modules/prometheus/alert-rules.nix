@@ -180,7 +180,7 @@ lib.mapAttrsToList
     };
 
     public_github_action_runner = {
-      condition = ''count(kubernetes_pod_container_state_code{pod_name=~"runner-deployment.*", state="running",container_name="runner"}) < 2'';
+      condition = ''count(kubernetes_pod_container_state_code{pod_name=~"runner-deployment.*", state="running",container_name="runner"}) == 0'';
       description = "{{$labels.instance}}: There are no github action runner {{$value}} for (https://github.com/organizations/ls1-sys-prog-course/settings/actions)";
     };
 
