@@ -26,10 +26,9 @@
           ncm2-ultisnips
           vim-snippets
           nvim-yarp
-          LanguageClient-neovim
           airline
           nerdtree
-          gruvbox
+          dracula-vim
           ack-vim
           vim-go
           ale
@@ -39,6 +38,9 @@
           rust-vim
           vim-signify
           vim-nix
+        ];
+        opt = [
+          dracula-vim
         ];
       };
     in
