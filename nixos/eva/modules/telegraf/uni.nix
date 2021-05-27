@@ -10,6 +10,8 @@ let
     "amy.r"
     "clara.r"
     "doctor.r"
+    "nardole.r"
+    "bill.r"
   ];
 in
 {
