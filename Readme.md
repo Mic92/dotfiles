@@ -28,8 +28,8 @@ $ curl https://nixos.org/nix/install -o install
 $ sh ./install --daemon
 ```
 
-# Boostrap home-manager:
+# Boostrap home-manager
 
 ```console
-$ home-manager switch
+$ hm-switch
 ```
