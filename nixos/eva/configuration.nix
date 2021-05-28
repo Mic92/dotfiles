@@ -16,6 +16,7 @@
     ./modules/telegraf
 
     ../modules/mosh.nix
+    ../modules/iperf.nix
     ../modules/openldap/replica.nix
     ../modules/promtail.nix
     ../modules/tracing.nix

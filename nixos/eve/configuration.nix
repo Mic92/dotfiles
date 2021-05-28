@@ -29,7 +29,6 @@
     ./modules/goatcounter.nix
     ./modules/home-assistant
     ./modules/influxdb.nix
-    ./modules/iperf.nix
     #./modules/k8s.nix
     ./modules/knot
     ./modules/kresd.nix
@@ -62,6 +61,7 @@
     ./modules/zsh.nix
 
     ../modules/builder.nix
+    /./modules/iperf.nix
     ../modules/mosh.nix
     ../modules/openldap
     ../modules/nfs-dl.nix
