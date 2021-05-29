@@ -61,7 +61,7 @@
     ./modules/zsh.nix
 
     ../modules/builder.nix
-    /./modules/iperf.nix
+    ../modules/iperf.nix
     ../modules/mosh.nix
     ../modules/openldap
     ../modules/nfs-dl.nix
