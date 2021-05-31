@@ -111,7 +111,6 @@ in
     sshfsFuse
     sshuttle
     jq
-    pypi2nix
     go2nix
     nix-index
     gnupg1compat
