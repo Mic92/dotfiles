@@ -29,7 +29,7 @@
 
     retiolum.url = "git+https://git.thalheim.io/Mic92/retiolum";
 
-    nixos-hardware.url = "github:Mic92/nixos-hardware/master";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
