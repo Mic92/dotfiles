@@ -2,8 +2,7 @@
 # - only if tmux is installed
 # - not in linux ttys
 # - no nested tmux sessions
-#if [[ -z ${commands[wezterm]} ]]; then
-if [[ -n ${commands[tmux]} && "$TERM" != "linux" && -z "$TMUX" && "$INSIDE_EMACS" != "vterm" ]]; then
+if [[ -n ${commands[tmux]} ]] && [[ ! "$TERM" =~ "linux|wezterm" ]] && [[ -z "$TMUX" ]] && [[ "$INSIDE_EMACS" != "vterm" ]]; then
   if [[ -n "$SSH_AUTH_SOCK" ]]  then
     tmux set-environment -g SSH_AUTH_SOCK "$SSH_AUTH_SOCK" 2>/dev/null
   fi
@@ -681,6 +680,16 @@ mkShell {
 EOF
     ${EDITOR:-vim} default.nix
   fi
+}
+
+flakify() {
+  if [ ! -e flake.nix ]; then
+    nix flake new -t github:nix-community/nix-direnv .
+  elif [ ! -e .envrc ]; then
+    echo "use flake" > .envrc
+    direnv allow
+  fi
+  ${EDITOR:-vim} flake.nix
 }
 
 open() {
