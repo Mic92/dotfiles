@@ -16,18 +16,20 @@ return {
     {
       -- This name identifies the domain
       name = "bill",
+
       -- The address to connect to
       remote_address = "bill.r:60000",
       bootstrap_via_ssh = "bill.r",
     }
   },
-  tls_server = {
+  tls_servers = {
     {
       -- The host:port combination on which the server will listen
       -- for connections
       bind_address = "[::]:60000"
     }
   },
+  exit_behavior = "Close",
   leader = { key="b", mods="CTRL", timeout_milliseconds=1000 },
   mouse_bindings = {
     {
@@ -54,6 +56,12 @@ return {
     {key="j", mods="LEADER", action=wezterm.action{ActivatePaneDirection="Down"}},
     {key="k", mods="LEADER", action=wezterm.action{ActivatePaneDirection="Up"}},
     {key=";", mods="LEADER", action=wezterm.action{SplitHorizontal={domain="CurrentPaneDomain"}}},
+
+    -- vim compat
+    {key="v", mods="LEADER", action=wezterm.action{SplitHorizontal={domain="CurrentPaneDomain"}}},
+
+    -- screen/tmux compat
+    {key="c", mods="LEADER", action=wezterm.action{SpawnTab="CurrentPaneDomain"}},
 
     {key="1", mods="LEADER", action=wezterm.action{ActivateTab=0}},
     {key="2", mods="LEADER", action=wezterm.action{ActivateTab=1}},
