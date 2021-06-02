@@ -6,6 +6,10 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
 
+    lambda-pirate.url = "github:pogobanane/lambda-pirate/knative";
+    lambda-pirate.inputs.nixpkgs.follows = "nixpkgs";
+    lambda-pirate.inputs.flake-utils.follows = "flake-utils";
+
     nixpkgs.url = "github:Mic92/nixpkgs/master";
     #nixpkgs-systemd.url = "github:Mic92/nixpkgs/systemd-stable-update";
     nixpkgs-systemd.url = "github:Mic92/nixpkgs/systemd";

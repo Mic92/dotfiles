@@ -14,6 +14,7 @@
 , envfs
 , doom-emacs
 , nix-doom-emacs
+, lambda-pirate
 }:
 (flake-utils.lib.eachDefaultSystem (system:
   let
@@ -29,7 +30,7 @@
     #  nix run ".#deploy.turingmachine"
     #  nix run ".#deploy.eve"
     apps.deploy = pkgs.callPackage ./nixos/krops.nix {
-      inherit (krops.packages.${system}) writeCommand;
+      inherit (krops.packages.${pkgs.system}) writeCommand;
       lib = krops.lib;
     };
     apps.irc-announce = {
@@ -55,13 +56,10 @@
     };
   })) // {
   nixosConfigurations = import ./nixos/configurations.nix {
-    #nixpkgs = toString <nixpkgs>;
-    # for testing
-    #nixosSystem = import <nixpkgs/nixos/lib/eval-config.nix>;
-    inherit nixpkgs;
     nixosSystem = nixpkgs.lib.nixosSystem;
     inherit
       nur
+      nixpkgs
       home-manager
       sops-nix
       retiolum
@@ -69,7 +67,8 @@
       flake-registry bme680-mqtt
       envfs
       nix-ld
-      nixpkgs-systemd;
+      nixpkgs-systemd
+      lambda-pirate;
   };
 
   hmConfigurations = import ./nixpkgs-config/homes.nix {
