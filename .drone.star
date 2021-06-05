@@ -3,7 +3,7 @@ def environment(extra={}):
   e.update(extra)
   return e
 
-buildCi = 'nix shell nixpkgs#git -c nix build -L --option keep-going true --out-link $BUILDDIR/gcroots.tmp/result -f ./nixos/ci.nix'
+buildCi = 'nix shell nixpkgs#git -c nix build -L --option keep-going true --out-link $BUILDDIR/gcroots.tmp/result -f ./ci.nix'
 
 build = {
   "name": 'Build NixOS and home-manager',
