@@ -59,6 +59,7 @@
     ./modules/users.nix
     #./modules/wiregrill
     ./modules/zsh.nix
+    ./modules/hercules-ci.nix
 
     ../modules/builder.nix
     ../modules/iperf.nix
