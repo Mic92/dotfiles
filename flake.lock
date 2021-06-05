@@ -282,16 +282,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1622817131,
-        "narHash": "sha256-ksivjeU9PUEcvk0CsYqULRWHVU5aSH/7CdLm03INvsY=",
+        "lastModified": 1622817953,
+        "narHash": "sha256-JkGy9myvyywdJInG4z3UalNR/9BOOtAS0IiQkoF9+e4=",
         "owner": "pogobanane",
         "repo": "lambda-pirate",
-        "rev": "a0c57a293eea56ad8b7ca74ccd06068da79733ef",
+        "rev": "142435d7cb1616df6b7883f59c4aca068562c9e9",
         "type": "github"
       },
       "original": {
         "owner": "pogobanane",
-        "ref": "knative",
         "repo": "lambda-pirate",
         "type": "github"
       }
