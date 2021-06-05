@@ -6,6 +6,7 @@
 , gnused
 , gnugrep
 , ldapPasswordFile
+, lib
 }:
 
 stdenv.mkDerivation {
@@ -46,7 +47,7 @@ stdenv.mkDerivation {
     EOF
     install -D -m755 ldap-auth.sh $out/bin/ldap-auth.sh
     wrapProgram $out/bin/ldap-auth.sh \
-      --prefix PATH : ${stdenv.lib.makeBinPath [ openldap coreutils gnused gnugrep ]} \
+      --prefix PATH : ${lib.makeBinPath [ openldap coreutils gnused gnugrep ]} \
       --add-flags "$out/etc/home-assistant.cfg"
   '';
 }

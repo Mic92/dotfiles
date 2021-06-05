@@ -1,4 +1,4 @@
-{ stdenv, fetchurl }:
+{ stdenv, fetchurl, lib }:
 stdenv.mkDerivation rec {
   pname = "mediawiki";
   majorVersion = "1.34";
@@ -18,7 +18,7 @@ stdenv.mkDerivation rec {
     ln -s /var/lib/mediawiki/uploads $out/share/mediawiki/images
   '';
 
-  meta = with stdenv.lib; {
+  meta = with lib; {
     description = "Free and open source software wiki package written in PHP";
     homepage = https://www.mediawiki.org/wiki/MediaWiki;
     license = licenses.gpl2;
