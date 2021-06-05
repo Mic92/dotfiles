@@ -45,7 +45,6 @@
       #rls
 
       nixFlakes
-      #wezterm
       tmux
       htop
       hub

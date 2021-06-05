@@ -128,6 +128,7 @@ in
     youtube-dl
     mumble
 
+    wezterm
     isync
     mu
     # to fix xdg-open
