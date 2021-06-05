@@ -46,7 +46,7 @@ buildExpression = {
       'nix build -L $derivation'
     ],
   }],
-  "trigger": { "event": ['custom'] },
+  "trigger": { "event": ['nix-build'] },
 };
 
 def deploy(target):
@@ -71,7 +71,7 @@ def deploy(target):
 def main(ctx):
   return [
     build,
-    #buildExpression,
+    buildExpression,
     deploy('eve'),
     deploy('turingmachine'),
     deploy('eva'),

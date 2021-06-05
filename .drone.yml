@@ -40,6 +40,25 @@ trigger:
 ---
 kind: pipeline
 type: exec
+name: Build nix derivation
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: build
+  commands:
+  - echo $derivation
+  - nix build -L $derivation
+
+trigger:
+  event:
+  - nix-build
+
+---
+kind: pipeline
+type: exec
 name: Deploy to eve
 
 platform:
@@ -171,6 +190,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 58ba3a5fe6d0fe6e9b8c3ecf7ad8b220998b2599bff1ef0b98f4f436714e9cee
+hmac: 28679c1c7fe36233f49e6702b25b67c1c8fecf9d8b34d2159ccbaf9e5822d41d
 
 ...
