@@ -66,7 +66,6 @@
     hunspell
     hunspellDicts.en-gb-ise
     ferdi
-    xournalpp
     zoom-us
     calibre
     evolution
