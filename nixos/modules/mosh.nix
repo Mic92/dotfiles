@@ -5,4 +5,8 @@
     # Mosh
     { from = 60000; to = 60010; }
   ];
+  networking.firewall.allowedTCPPortRanges = lib.optionals (config.services.openssh.enable) [
+    # wezterm
+    { from = 60000; to = 60010; }
+  ];
 }
