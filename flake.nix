@@ -6,7 +6,7 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
 
-    lambda-pirate.url = "github:pogobanane/lambda-pirate";
+    lambda-pirate.url = "github:pogobanane/lambda-pirate/fix-eval";
     lambda-pirate.inputs.nixpkgs.follows = "nixpkgs";
     lambda-pirate.inputs.flake-utils.follows = "flake-utils";
 
