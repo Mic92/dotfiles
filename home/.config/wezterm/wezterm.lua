@@ -10,8 +10,9 @@ return {
       -- This name identifies the domain
       name = "eve",
       -- The address to connect to
-      remote_address = "eve.thalheim.io:60000",
+      remote_address = "eve.r:60000",
       bootstrap_via_ssh = "eve.r",
+      expected_cn = "eve"
     },
     {
       -- This name identifies the domain
