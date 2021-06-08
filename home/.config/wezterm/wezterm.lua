@@ -22,11 +22,17 @@ return {
       bootstrap_via_ssh = "bill.r",
     }
   },
+  unix_domains = {
+    {
+      name = "unix",
+      connect_automatically = true,
+    }
+  },
   tls_servers = {
     {
       -- The host:port combination on which the server will listen
       -- for connections
-      bind_address = "[::]:60000"
+      bind_address = "eve.thalheim.io:60000"
     }
   },
   exit_behavior = "Close",
