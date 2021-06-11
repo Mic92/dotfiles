@@ -64,8 +64,8 @@ in
   turingmachine = nixosSystem {
     system = "x86_64-linux";
     modules = defaultModules ++ [
-      lambda-pirate.nixosModules.knative
-      lambda-pirate.nixosModules.vhive
+      #lambda-pirate.nixosModules.knative
+      #lambda-pirate.nixosModules.vhive
       #nixos-hardware.nixosModules.dell-xps-13-9380
       nixos-hardware.nixosModules.lenovo-thinkpad-x13
       nix-ld.nixosModules.nix-ld
