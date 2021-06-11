@@ -152,6 +152,15 @@ in
       fi
     '')
 
+    (pkgs.writeScriptBin "wez" ''
+      #!${pkgs.runtimeShell}
+      set -eux -o pipefail
+      if [[ $(wezterm cli list | wc -l) == 1 ]]; then
+        killall wezterm-mux-server
+      fi
+      exec "${pkgs.wezterm}/bin/wezterm" "$@"
+    '')
+
     nixos-shell
   ] ++ (with nur.repos.mic92; [
     speedscope
