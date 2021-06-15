@@ -31,6 +31,7 @@ in {
       AUTH_ANONYMOUS_ENABLED = "true";
       AUTH_ANONYMOUS_ORG_NAME = "Main Org.";
       AUTH_ANONYMOUS_ORG_ROLE = "Viewer";
+      SERVER_ENABLE_GZIP = "true";
     };
     smtp = {
       enable = true;
