@@ -10,25 +10,20 @@
 , nix-ld
 , envfs
 , nixpkgs-systemd
+, nixpkgs-stable
 , lambda-pirate
 }:
 let
   defaultModules = [
-    {
+    ({ pkgs, ... }: {
       nix.nixPath = [
+        "nixpkgs=${pkgs.path}"
         "home-manager=${home-manager}"
-        "nixpkgs=${nixpkgs}"
         "nur=${nur}"
       ];
       nix.extraOptions = ''
         flake-registry = ${flake-registry}/flake-registry.json
       '';
-      nix.registry = {
-        home-manager.flake = home-manager;
-        nixpkgs.flake = nixpkgs;
-        nur.flake = nur;
-        sops-nix.flake = sops-nix;
-      };
       nixpkgs.overlays = [ nur.overlay ];
       imports = [
         ./modules/nix-daemon.nix
@@ -36,7 +31,7 @@ let
       ];
       #system.nixos.versionSuffix = "";
       documentation.info.enable = false;
-    }
+    })
     retiolum.nixosModules.retiolum
     sops-nix.nixosModules.sops
   ];
@@ -97,12 +92,12 @@ in
   #  ];
   #};
 
-  #matchbox = nixosSystem {
-  #  system = "aarch64-linux";
-  #  modules = defaultModules ++ [
-  #    ./matchbox/configuration.nix
-  #  ];
-  #};
+  matchbox = nixpkgs-stable.lib.nixosSystem {
+    system = "aarch64-linux";
+    modules = defaultModules ++ [
+      ./matchbox/configuration.nix
+    ];
+  };
 
   #eve-vm = nixosSystem {
   #  system = "x86_64-linux";
