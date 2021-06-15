@@ -11,6 +11,8 @@
     lambda-pirate.inputs.flake-utils.follows = "flake-utils";
 
     nixpkgs.url = "github:Mic92/nixpkgs/master";
+    nixpkgs-stable.url = "github:Mic92/nixpkgs/release-21.05-backports";
+
     #nixpkgs-systemd.url = "github:Mic92/nixpkgs/systemd-stable-update";
     nixpkgs-systemd.url = "github:Mic92/nixpkgs/systemd";
     # for development

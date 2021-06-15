@@ -15,6 +15,7 @@
 , doom-emacs
 , nix-doom-emacs
 , lambda-pirate
+, nixpkgs-stable
 }:
 (flake-utils.lib.eachDefaultSystem (system:
   let
@@ -23,6 +24,7 @@
       inherit pkgs;
       nurpkgs = pkgs;
     };
+    pkgsStable = nixpkgs-stable.legacyPackages.${system};
   in
   {
     devShell = pkgs.callPackage ./shell.nix { };
@@ -64,10 +66,12 @@
       sops-nix
       retiolum
       nixos-hardware
-      flake-registry bme680-mqtt
+      flake-registry
+      bme680-mqtt
       envfs
       nix-ld
       nixpkgs-systemd
+      nixpkgs-stable
       lambda-pirate;
   };
 
