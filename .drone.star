@@ -70,8 +70,8 @@ def deploy(target):
 
 def main(ctx):
   return [
-    build,
-    buildExpression,
+    #build,
+    #buildExpression,
     deploy('eve'),
     deploy('turingmachine'),
     deploy('eva'),

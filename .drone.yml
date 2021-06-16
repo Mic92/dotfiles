@@ -1,64 +1,6 @@
 ---
 kind: pipeline
 type: exec
-name: Build NixOS and home-manager
-
-platform:
-  os: linux
-  arch: amd64
-
-clone:
-  depth: 1
-
-steps:
-- name: build
-  commands:
-  - rm -rf $BUILDDIR/gcroots.tmp && mkdir -p $BUILDDIR/gcroots.tmp
-  - nix shell nixpkgs#git -c nix build -L --option keep-going true --out-link $BUILDDIR/gcroots.tmp/result -f ./ci.nix || nix shell nixpkgs#git -c nix build -L --option keep-going true --out-link $BUILDDIR/gcroots.tmp/result -f ./ci.nix
-  - rm -rf $BUILDDIR/gcroots && mv $BUILDDIR/gcroots.tmp $BUILDDIR/gcroots
-  environment:
-    BUILDDIR: /var/lib/drone/nix-build
-
-- name: send irc notification
-  commands:
-  - "LOGNAME=drone nix run github:Mic92/nur-packages#irc-announce -- irc.r 6667 drone \"#xxx\" 0 \"build $DRONE_SYSTEM_PROTO://$DRONE_SYSTEM_HOST/$DRONE_REPO/$DRONE_BUILD_NUMBER : $DRONE_BUILD_STATUS\" || true"
-  when:
-    event:
-      exclude:
-      - pull_request
-    status:
-    - failure
-    - success
-
-trigger:
-  branch:
-  - master
-  event:
-  - push
-  - pull_request
-
----
-kind: pipeline
-type: exec
-name: Build nix derivation
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: build
-  commands:
-  - echo $derivation
-  - nix build -L $derivation
-
-trigger:
-  event:
-  - nix-build
-
----
-kind: pipeline
-type: exec
 name: Deploy to eve
 
 platform:
@@ -190,6 +132,6 @@ trigger:
 
 ---
 kind: signature
-hmac: 28679c1c7fe36233f49e6702b25b67c1c8fecf9d8b34d2159ccbaf9e5822d41d
+hmac: aeac671aae7c8d94b169f4423373de0f495c4d800ef78a94b84ff1cc4f7c7b09
 
 ...
