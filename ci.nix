@@ -1,1 +1,1 @@
-(builtins.getFlake (toString ./.)).hydraJobs
+(builtins.getFlake (toString ./.)).hydraJobs.configurations
