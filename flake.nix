@@ -60,6 +60,9 @@
     envfs.url = "github:Mic92/envfs";
     envfs.inputs.nixpkgs.follows = "nixpkgs";
     envfs.inputs.utils.follows = "flake-utils";
+
+    hercules-ci.url = "github:hercules-ci/hercules-ci-agent/nixUnstable-compatibility";
+    hercules-ci.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { ... } @ args: import ./outputs.nix args;

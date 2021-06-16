@@ -16,6 +16,7 @@
 , nix-doom-emacs
 , lambda-pirate
 , nixpkgs-stable
+, hercules-ci
 }:
 (flake-utils.lib.eachDefaultSystem (system:
   let
@@ -72,7 +73,8 @@
       nix-ld
       nixpkgs-systemd
       nixpkgs-stable
-      lambda-pirate;
+      lambda-pirate
+      hercules-ci;
   };
 
   hmConfigurations = import ./nixpkgs-config/homes.nix {
