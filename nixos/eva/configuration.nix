@@ -7,6 +7,7 @@
   programs.vim.defaultEditor = true;
 
   imports = [
+    ./modules/go-neb.nix
     ./modules/hardware-configuration.nix
     ./modules/prometheus
     ./modules/loki.nix

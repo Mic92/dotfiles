@@ -143,7 +143,7 @@ in
         {
           name = "nix-community";
           webhook_configs = [{
-            url = "http://127.0.0.1:9224/";
+            url = "http://localhost:4050/services/hooks/YWxlcnRtYW5hZ2VyX3NlcnZpY2U";
             max_alerts = 5;
           }];
         }
@@ -171,7 +171,6 @@ in
       })
     {
       krebs.port = 9223;
-      nix-community.port = 9224;
     };
 
   sops.secrets.prometheus-irc-password = { };
@@ -202,12 +201,6 @@ in
         };
       })
     {
-      krebs = {
-        url = "irc://prometheus@irc.r:6667/#xxx";
-      };
-      nix-community = {
-        url = "irc+tls://nix-prometheus@chat.freenode.net/#nix-community";
-        passwordFile = config.sops.secrets.prometheus-irc-password.path;
-      };
+      krebs.url = "irc://prometheus@irc.r:6667/#xxx";
     };
 }
