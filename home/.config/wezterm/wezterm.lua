@@ -1,17 +1,14 @@
 local wezterm = require 'wezterm';
 
 return {
-  --color_scheme = "Builtin Solarized Light",
-  --freetype_load_target = "Light",
-  --freetype_render_target = "HorizontalLcd",
   color_scheme = "Dracula",
   tls_clients = {
     {
       -- This name identifies the domain
       name = "eve",
       -- The address to connect to
-      remote_address = "eve.r:60000",
-      bootstrap_via_ssh = "eve.r",
+      remote_address = "eve.thalheim.io:60000",
+      bootstrap_via_ssh = "eve.thalheim.io",
       expected_cn = "eve"
     },
     {
@@ -21,21 +18,30 @@ return {
       -- The address to connect to
       remote_address = "bill.r:60000",
       bootstrap_via_ssh = "bill.r",
-    }
-  },
-  unix_domains = {
+    },
     {
-      name = "unix",
-      connect_automatically = true,
+      -- This name identifies the domain
+      name = "rose",
+
+      -- The address to connect to
+      remote_address = "rose.r:60000",
+      bootstrap_via_ssh = "rose.r",
+      expected_cn = "rose"
     }
   },
-  tls_servers = {
-    {
-      -- The host:port combination on which the server will listen
-      -- for connections
-      bind_address = "eve.thalheim.io:60000"
-    }
-  },
+  --unix_domains = {
+  --  {
+  --    name = "unix",
+  --    connect_automatically = true,
+  --  }
+  --},
+  --tls_servers = {
+  --  {
+  --    -- The host:port combination on which the server will listen
+  --    -- for connections
+  --    bind_address = "eve.thalheim.io:60000"
+  --  }
+  --},
   exit_behavior = "Close",
   leader = { key="b", mods="CTRL", timeout_milliseconds=1000 },
   mouse_bindings = {
