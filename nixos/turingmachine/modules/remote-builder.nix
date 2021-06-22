@@ -127,14 +127,15 @@
       #  system = "x86_64-linux";
       #  maxJobs = 2;
     }
+    #{
+    #    # rpi3
+    #    hostName = "matchbox.r";
+    #    maxJobs = 4;
+    #    sshKey = config.sops.secrets.id_buildfarm.path;
+    #    sshUser = "nix";
+    #    system = "aarch64-linux";
+    #}
     {
-      # rpi3
-      #  hostName = "172.23.75.254";
-      #  maxJobs = 4;
-      #  sshKey = config.sops.secrets.id_buildfarm.path;
-      #  sshUser = "nix";
-      #  system = "aarch64-linux";
-      #} {
       hostName = "aarch64.nixos.community";
       maxJobs = 96;
       sshKey = "/root/.ssh/id_ed25519";
