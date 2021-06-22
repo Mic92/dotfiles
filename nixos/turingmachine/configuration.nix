@@ -134,6 +134,7 @@
     #rkt.enable = true;
     virtualbox.host.enable = false;
     podman.enable = true;
+    podman.extraPackages = [ pkgs.zfs ];
   };
 
   fonts.fontDir.enable = true;
