@@ -15,6 +15,7 @@
   ];
 
   documentation.enable = false;
+  boot.initrd.includeDefaultModules = false;
 
   fileSystems."/mnt/hdd" = {
     device = "UUID=1d377ab7-65ca-492d-9ea4-620034230192";
