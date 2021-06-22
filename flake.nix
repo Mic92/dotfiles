@@ -61,7 +61,7 @@
     envfs.inputs.nixpkgs.follows = "nixpkgs";
     envfs.inputs.utils.follows = "flake-utils";
 
-    hercules-ci.url = "github:hercules-ci/hercules-ci-agent/nixUnstable-compatibility";
+    hercules-ci.url = "github:hercules-ci/hercules-ci-agent";
     hercules-ci.inputs.nixpkgs.follows = "nixpkgs";
   };
 
