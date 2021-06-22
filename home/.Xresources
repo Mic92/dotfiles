@@ -27,5 +27,5 @@ xterm.utf8:               2
 xterm.bellIsUrgent:    true
 xterm.metaSendsEscape: true
 xterm.eightBitInput:   true
-xterm.faceName: xft:SauceCodePro Nerd Font Mono:size=30
+xterm.faceName: xft:SauceCodePro Nerd Font Mono:size=35
 xterm.cursorColor:  #FFFFFF
