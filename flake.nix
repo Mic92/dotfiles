@@ -44,8 +44,7 @@
     doom-emacs.url = "github:Mic92/doom-emacs/org-msg";
     doom-emacs.flake = false;
 
-    #nix-doom-emacs.url = "github:vlaci/nix-doom-emacs";
-    nix-doom-emacs.url = "github:Mic92/nix-doom-emacs";
+    nix-doom-emacs.url = "github:vlaci/nix-doom-emacs";
     nix-doom-emacs.inputs.doom-emacs.follows = "doom-emacs";
     nix-doom-emacs.inputs.flake-utils.follows = "flake-utils";
     nix-doom-emacs.inputs.nixpkgs.follows = "nixpkgs";
