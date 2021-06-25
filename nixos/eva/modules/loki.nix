@@ -13,14 +13,6 @@ let
   };
 
   rulerDir = pkgs.writeTextDir "ruler/ruler.yml" (builtins.toJSON rulerConfig);
-
-  ldapConf = pkgs.writeText "ldap.conf" ''
-    base dc=eve
-    host localhost:389
-    pam_login_attribute mail
-    pam_filter objectClass=loki
-    binddn cn=nginx,ou=system,ou=users,dc=eve
-  '';
 in
 {
   systemd.tmpfiles.rules = [
@@ -92,10 +84,7 @@ in
     };
   };
 
-  security.pam.services.loki.text = ''
-    auth required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${ldapConf}
-    account required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${ldapConf}
-  '';
+  sops.secrets.promtail-nginx-password.owner = "nginx";
 
   services.nginx = {
     enable = true;
@@ -104,8 +93,8 @@ in
       locations."/" = {
         proxyWebsockets = true;
         extraConfig = ''
-          auth_pam "Ldap password";
-          auth_pam_service_name "loki";
+          auth_basic "Loki password";
+          auth_basic_user_file ${config.sops.secrets.promtail-nginx-password.path};
 
           proxy_read_timeout 1800s;
           proxy_redirect off;
