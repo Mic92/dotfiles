@@ -1,19 +1,8 @@
 { pkgs, lib, config, ... }: {
   fileSystems."/mnt/backup" = {
-    device = "//192.168.178.1/FRITZ.NAS/TOSHIBA-ExternalUSB3-0-02";
-    fsType = "cifs";
-    options =
-      let
-        automount_opts = "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s,soft,noserverino";
-        # cat > smb-secrets <<EOF
-        # username=s16916XX
-        # domain=ED
-        # password=<EASE_PASSWORD>
-        # EOF
-      in
-      [
-        "${automount_opts},credentials=${config.sops.secrets.smb-secrets.path}"
-      ];
+    device = "UUID=11ac8bec-aef1-45ca-a530-2115d403ce53";
+    fsType = "ext4";
+    options = [ "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s" ];
   };
 
   services.borgbackup.jobs.matchbox = {
@@ -31,10 +20,12 @@
     ];
     encryption.mode = "none";
     removableDevice = true;
+    preHook = "${pkgs.util-linux}/bin/mountpoint -q /mnt/backup || ${pkgs.util-linux}/bin/mount /mnt/backup";
     postHook = ''
       cat > /var/log/telegraf/borgbackup-matchbox <<EOF
       task,frequency=weekly last_run=$(date +%s)i,state="$([[ $exitStatus == 0 ]] && echo ok || echo fail)"
       EOF
+      ${pkgs.util-linux}/bin/umount /mnt/backup
     '';
     prune.keep = {
       within = "1d"; # Keep all archives from the last day
