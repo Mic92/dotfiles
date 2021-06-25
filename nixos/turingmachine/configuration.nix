@@ -49,7 +49,7 @@
 
   # required for gpg-agent?
   services.dbus.packages = [ pkgs.gcr ];
-  services.udev.packages = [ pkgs.platformio ];
+  #services.udev.packages = [ pkgs.platformio ];
 
   boot = {
     zfs.requestEncryptionCredentials = [ "zroot/root" ];
