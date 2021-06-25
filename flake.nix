@@ -61,8 +61,12 @@
     envfs.inputs.nixpkgs.follows = "nixpkgs";
     envfs.inputs.utils.follows = "flake-utils";
 
+    nix-darwin.url = "github:LnL7/nix-darwin";
+    nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+
     hercules-ci.url = "github:hercules-ci/hercules-ci-agent";
     hercules-ci.inputs.nixpkgs.follows = "nixpkgs";
+    hercules-ci.inputs.nix-darwin.follows = "nix-darwin";
   };
 
   outputs = { ... } @ args: import ./outputs.nix args;

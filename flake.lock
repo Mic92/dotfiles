@@ -247,7 +247,9 @@
     "hercules-ci": {
       "inputs": {
         "flake-compat": "flake-compat",
-        "nix-darwin": "nix-darwin",
+        "nix-darwin": [
+          "nix-darwin"
+        ],
         "nixos-20_09": "nixos-20_09",
         "nixos-unstable": "nixos-unstable",
         "pre-commit-hooks-nix": "pre-commit-hooks-nix"
@@ -356,7 +358,9 @@
     },
     "nix-darwin": {
       "inputs": {
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": [
+          "nixpkgs"
+        ]
       },
       "locked": {
         "lastModified": 1622060422,
@@ -503,16 +507,18 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1602411953,
-        "narHash": "sha256-gbupmxRpoQZqL5NBQCJN2GI5G7XDEHHHYKhVwEj5+Ps=",
-        "owner": "LnL7",
+        "lastModified": 1624607756,
+        "narHash": "sha256-gmzrtEmmE+L5jGkqOTf1hKB136+n2mHfDf+l6ygOD/0=",
+        "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "f780534ea2d0c12e62607ff254b6b45f46653f7a",
+        "rev": "018e8b559f1234cb03e1a7b0417da5f0bec27704",
         "type": "github"
       },
       "original": {
-        "id": "nixpkgs",
-        "type": "indirect"
+        "owner": "Mic92",
+        "ref": "master",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "nixpkgs-stable": {
@@ -543,22 +549,6 @@
       "original": {
         "owner": "Mic92",
         "ref": "systemd",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1624393917,
-        "narHash": "sha256-dWQ4dQDTj1wq+7nvLtphYrNr+YuuvhpecrL6GDpjvqo=",
-        "owner": "Mic92",
-        "repo": "nixpkgs",
-        "rev": "720000df6cbd28a8e874d4864e9eabc433938569",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "ref": "master",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -676,11 +666,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1623848409,
-        "narHash": "sha256-5HqKYCXxoyPecN8SMKbWu8/I8CWIdFTEq/P1P1JrY8E=",
+        "lastModified": 1624606671,
+        "narHash": "sha256-QT8/wd1hCK6G65kEv+1qFtZ436WAvz2jEGvRUt2EtEc=",
         "ref": "master",
-        "rev": "b827733d67db4b46921090a12f6b38a53bcb0c5e",
-        "revCount": 99,
+        "rev": "089ba92c9a0d6455403d5b5e2f8aa6683f90a5d1",
+        "revCount": 100,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },
@@ -716,10 +706,11 @@
         "home-manager": "home-manager",
         "krops": "krops",
         "lambda-pirate": "lambda-pirate",
+        "nix-darwin": "nix-darwin",
         "nix-doom-emacs": "nix-doom-emacs",
         "nix-ld": "nix-ld",
         "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-systemd": "nixpkgs-systemd",
         "nur": "nur",
