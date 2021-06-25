@@ -221,8 +221,9 @@ lib.mapAttrsToList
       description = "{{$labels.instance}} reports: {{$value}} ZFS IO errors.";
     };
 
+    # ignore devices that disabled S.M.A.R.T (example if attached via USB)
     smart_errors = {
-      condition = "smart_device_health_ok != 1";
+      condition = ''smart_device_health_ok{enabled!="Disabled"} != 1'';
       description = "{{$labels.instance}}: S.M.A.R.T reports: {{$labels.device}} ({{$labels.model}}) has errors.";
     };
 
