@@ -44,6 +44,18 @@ lib.mapAttrsToList
       description = "Prometheus encountered {{ $value }} template text expansion failures\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}";
     };
 
+    promtail_request_errors = {
+      condition = ''100 * sum(rate(promtail_request_duration_seconds_count{status_code=~"5..|failed"}[1m])) by (namespace, job, route, instance) / sum(rate(promtail_request_duration_seconds_count[1m])) by (namespace, job, route, instance) > 10'';
+      time = "15m";
+      description = ''{{ $labels.job }} {{ $labels.route }} is experiencing {{ printf "%.2f" $value }}% errors.'';
+    };
+
+    promtail_file_lagging = {
+      condition = ''abs(promtail_file_bytes_total - promtail_read_bytes_total) > 1e6'';
+      time = "15m";
+      description = ''{{ $labels.instance }} {{ $labels.job }} {{ $labels.path }} has been lagging by more than 1MB for more than 15m.'';
+    };
+
     filesystem_full_80percent = {
       condition = ''disk_used_percent{mode!="ro"} >= 80'';
       time = "10m";
