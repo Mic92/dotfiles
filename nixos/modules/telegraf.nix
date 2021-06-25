@@ -24,6 +24,11 @@ in
       extraConfig = {
         agent.interval = "60s";
         inputs = {
+          prometheus.urls = lib.mkIf (config.services.promtail.enable) [
+            # default promtail port
+            "http://localhost:9080/metrics"
+          ];
+          prometheus.metric_version = 2;
           kernel_vmstat = { };
           smart = lib.mkIf (!isVM) {
             path = pkgs.writeShellScript "smartctl" ''
