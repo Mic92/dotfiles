@@ -42,7 +42,6 @@
 
       # python language server + plugins
       (pkgs.python3.withPackages (ps: config.python.packages ps))
-      #rls
 
       nixFlakes
       tmux
