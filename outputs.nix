@@ -17,6 +17,7 @@
 , lambda-pirate
 , nixpkgs-stable
 , hercules-ci
+, nix-darwin
 }:
 (flake-utils.lib.eachDefaultSystem (system:
   let
