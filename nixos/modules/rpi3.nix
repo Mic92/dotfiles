@@ -8,10 +8,15 @@ in
 {
   nixpkgs.localSystem.system = "aarch64-linux";
 
-  boot.loader.grub.enable = false;
-  boot.loader.generic-extlinux-compatible.enable = true;
-  boot.kernelPackages = pkgs.linuxPackages_rpi3;
   documentation.enable = false;
+
+  boot.loader.grub.enable = false;
+  boot.loader.raspberryPi.enable = true;
+  boot.loader.raspberryPi.version = 3;
+  boot.loader.raspberryPi.uboot.enable = true;
+
+  # Kernel configuration
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   boot.kernelParams = [ "cma=32M" ];
 
@@ -24,12 +29,14 @@ in
     { device = "/swapfile"; size = 1024; }
   ];
 
+  hardware.enableRedistributableFirmware = true;
 
   fileSystems = {
-    "/boot/firmware" = {
-      device = "/dev/disk/by-label/FIRMWARE";
-      fsType = "vfat";
-    };
+    # not needed with uboot
+    #"/boot/firmware" = {
+    #  device = "/dev/disk/by-label/FIRMWARE";
+    #  fsType = "vfat";
+    #};
     "/" = {
       device = "/dev/disk/by-label/NIXOS_SD";
       fsType = "ext4";
