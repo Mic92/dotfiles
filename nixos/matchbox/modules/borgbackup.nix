@@ -9,9 +9,20 @@
     enable = true;
     enableManualRsnapshot = true;
     extraConfig = ''
-      # test
-      no_create_root	1
       snapshot_root	/mnt/backup/rsnapshot
+      cmd_preexec	${pkgs.writeShellScript "mount" ''
+        set -eux -o pipefail
+        if ! ${pkgs.util-linux}/bin/mountpoint -q /mnt/backup; then
+          ${pkgs.util-linux}/bin/mount /mnt/backup
+        fi
+      ''}
+      cmd_postexec	${pkgs.writeShellScript "umount" ''
+        set -eux -o pipefail
+        cat > /var/log/telegraf/borgbackup-matchbox <<EOF
+        task,frequency=weekly last_run=$(date +%s)i,state="ok"
+        EOF
+        ${pkgs.util-linux}/bin/umount /mnt/backup
+      ''}
       retain	daily	30
       retain	monthly	3
       backup	/home	matchbox/
@@ -28,43 +39,6 @@
       monthly = "0 2 1 * *";
       daily = "0 5 * * *";
     };
-  };
-  #services.borgbackup.jobs.matchbox = {
-  #  repo = "/mnt/backup/borg";
-  #  paths = [
-  #    "/home"
-  #    "/etc"
-  #    "/var"
-  #    "/root"
-  #    "/mnt/hdd/public/Dorit"
-  #    "/mnt/hdd/public/falk"
-  #    "/mnt/hdd/public/Daniela"
-  #    "/mnt/hdd/public/Bilder"
-  #    "/mnt/hdd/public/Joerg"
-  #  ];
-  #  encryption.mode = "none";
-  #  removableDevice = true;
-  #  postHook = ''
-  #    cat > /var/log/telegraf/borgbackup-matchbox <<EOF
-  #    task,frequency=weekly last_run=$(date +%s)i,state="$([[ $exitStatus == 0 ]] && echo ok || echo fail)"
-  #    EOF
-  #  '';
-  #  prune.keep = {
-  #    within = "1d"; # Keep all archives from the last day
-  #    daily = 7;
-  #    weekly = 4;
-  #    monthly = 3;
-  #  };
-  #};
-
-  #systemd.services.borgbackup-job-matchbox.serviceConfig.ReadWritePaths = [
-  #  "/var/log/telegraf"
-  #];
-
-  # https://github.com/systemd/systemd/issues/17866
-  systemd.services.borgbackup-job-matchbox.serviceConfig = {
-    ProtectSystem = lib.mkForce false;
-    ReadWritePaths = lib.mkForce (lib.mkAfter "");
   };
 
   sops.secrets.smb-secrets = { };
