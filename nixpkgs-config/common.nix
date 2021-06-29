@@ -52,7 +52,7 @@
       delta
       tokei
       direnv
-      nix-direnv
+      (nix-direnv.override { enableFlakes = true; })
       fzf
       exa
       pinentry
