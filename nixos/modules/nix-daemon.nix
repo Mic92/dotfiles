@@ -18,8 +18,6 @@
       experimental-features = nix-command flakes
     '';
 
-    autoOptimiseStore = true;
-
     binaryCaches = [
       "https://nix-community.cachix.org"
       "https://mic92.cachix.org"
