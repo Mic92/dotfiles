@@ -191,6 +191,16 @@ lib.mapAttrsToList
       description = "{{$labels.instance}}: The TLS certificate from {{$labels.source}} will expire in less than 7 days: {{$value}}s";
     };
 
+    public_runner_action_online = {
+      condition = ''count(http_busy{name=~"runner.*", status="online"}) < 2'';
+      description = "{{$labels.instance}}: There are no public github action runner registerd with github (see https://github.com/organizations/ls1-sys-prog-course/settings/actions)";
+    };
+
+    internal_runner_action_online = {
+      condition = ''count(http_busy{name=~"internal-runner.*", status="online"}) < 1'';
+      description = "{{$labels.instance}}: There are no interal github action runner registerd with github (see https://github.com/organizations/ls1-sys-prog-course-internal/settings/actions)";
+    };
+
     public_github_action_runner = {
       condition = ''count(kubernetes_pod_container_state_code{pod_name=~"runner-deployment.*", state="running",container_name="runner"}) == 0'';
       description = "{{$labels.instance}}: There are no github action runner {{$value}} for (https://github.com/organizations/ls1-sys-prog-course/settings/actions)";
