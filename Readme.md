@@ -1,8 +1,5 @@
 # My personal bootstrap process
 
-[![Build Status](https://drone.thalheim.io/api/badges/Mic92/dotfiles/status.svg)](https://drone.thalheim.io/Mic92/dotfiles)
-
-
 For bootstraping on [legacy operating systems](https://github.com/Mic92/dotfiles/wiki#bootstrap-for-legacy-operating-systems)
 
 # Boostrap homeshick
