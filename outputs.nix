@@ -84,6 +84,6 @@
     inherit self nixpkgs home-manager nur nix-doom-emacs;
   };
 
-  hydraJobs = (nixpkgs.lib.mapAttrs' (name: config: nixpkgs.lib.nameValuePair name config.config.system.build.toplevel) self.nixosConfigurations)
-  // (nixpkgs.lib.mapAttrs' (name: config: nixpkgs.lib.nameValuePair name config.activation-script) self.hmConfigurations);
+  hydraJobs = (nixpkgs.lib.mapAttrs' (name: config: nixpkgs.lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel) self.nixosConfigurations)
+              // (nixpkgs.lib.mapAttrs' (name: config: nixpkgs.lib.nameValuePair "home-manager-${name}" config.activation-script) self.hmConfigurations);
 }
