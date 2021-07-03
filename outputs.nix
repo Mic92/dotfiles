@@ -29,7 +29,9 @@
     pkgsStable = nixpkgs-stable.legacyPackages.${system};
   in
   {
-    devShell = pkgs.callPackage ./shell.nix { };
+    devShell = pkgs.callPackage ./shell.nix {
+      inherit (sops-nix.packages.${pkgs.system}) sops-import-keys-hook;
+    };
     # deploy like this:
     #  nix run ".#deploy.turingmachine"
     #  nix run ".#deploy.eve"
