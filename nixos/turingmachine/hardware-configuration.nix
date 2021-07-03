@@ -37,24 +37,24 @@
       enable = true;
       driSupport32Bit = true;
     };
-    #pulseaudio = {
-    #  enable = true;
-    #  package = pkgs.pulseaudioFull;
-    #};
+    pulseaudio = {
+      enable = true;
+      package = pkgs.pulseaudioFull;
+    };
   };
 
   # for pactl
-  environment.systemPackages = with pkgs; [ pulseaudio ];
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    #jack.enable = true;
-    # use the example session manager
-    media-session.enable = true;
-  };
-  security.rtkit.enable = true;
+  #environment.systemPackages = with pkgs; [ pulseaudio ];
+  #services.pipewire = {
+  #  enable = true;
+  #  alsa.enable = true;
+  #  alsa.support32Bit = true;
+  #  pulse.enable = true;
+  #  #jack.enable = true;
+  #  # use the example session manager
+  #  media-session.enable = true;
+  #};
+  #security.rtkit.enable = true;
 
   #environment.variables.GTK_USE_PORTAL = "1";
   #xdg.portal = {
