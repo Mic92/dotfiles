@@ -51,9 +51,6 @@ in {
     port = 3001;
   };
 
-  users.users.grafana.extraGroups = [ "keys" ];
-  systemd.services.grafana.serviceConfig.SupplementaryGroups = [ "keys" ];
-
   services.nginx = {
     virtualHosts."grafana.thalheim.io" = {
       useACMEHost = "thalheim.io";

@@ -1,8 +1,6 @@
 { pkgs, config, ... }:
 {
   sops.secrets.ssh-homeassistant.owner = "hass";
-  users.users.hass.extraGroups = [ "keys" ];
-  systemd.services.home-assistant.serviceConfig.SupplementaryGroups = [ "keys" ];
 
   services.home-assistant.config = {
     intent_script.ConnectBluetooth = {

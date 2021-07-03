@@ -17,7 +17,6 @@ in
 
   sops.secrets."knot-he-key.conf".owner = "knot";
   sops.secrets."knot-acme-key.conf".owner = "knot";
-  users.users.knot.extraGroups = [ "keys" ];
 
   services.knot = {
     enable = true;

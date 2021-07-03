@@ -31,9 +31,6 @@
 
   sops.secrets.nextcloud-admin-password.owner = "nextcloud";
 
-  users.users.nextcloud.extraGroups = [ "keys" ];
-  systemd.services.nextcloud.serviceConfig.SupplementaryGroups = [ "keys" ];
-
   services.nginx.virtualHosts."cloud.thalheim.io" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;

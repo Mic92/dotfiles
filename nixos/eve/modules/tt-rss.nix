@@ -64,7 +64,4 @@
   };
 
   sops.secrets.ttrss-ldap-password.owner = "tt_rss";
-
-  users.users.tt_rss.extraGroups = [ "keys" ];
-  systemd.services.phpfpm-tt-rss.serviceConfig.SupplementaryGroups = [ "keys" ];
 }

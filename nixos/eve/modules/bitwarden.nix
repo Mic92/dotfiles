@@ -22,7 +22,7 @@ let
   '';
 in
 {
-  services.bitwarden_rs = {
+  services.vaultwarden = {
     enable = true;
     dbBackend = "postgresql";
     config = {
@@ -38,14 +38,13 @@ in
     };
   };
 
-  systemd.services.bitwarden_rs.serviceConfig = {
+  systemd.services.vaultwarden.serviceConfig = {
     EnvironmentFile = [ config.sops.secrets.bitwarden-smtp-password.path ];
-    SupplementaryGroups = [ "keys" ];
     Restart = "on-failure";
     RestartSec = "2s";
   };
 
-  systemd.services.bitwarden_ldap = {
+  systemd.services.vaultwarden_ldap = {
     wantedBy = [ "multi-user.target" ];
 
     preStart = ''
@@ -59,12 +58,11 @@ in
     serviceConfig = {
       Restart = "on-failure";
       RestartSec = "2s";
-      ExecStart = "${pkgs.nur.repos.mic92.bitwarden_rs_ldap}/bin/bitwarden_rs_ldap";
+      ExecStart = "${pkgs.nur.repos.mic92.vaultwarden_ldap}/bin/vaultwarden_ldap";
       Environment = "CONFIG_PATH=/run/bitwarden_ldap/config.toml";
 
-      SupplementaryGroups = [ "keys" ];
-      RuntimeDirectory = [ "bitwarden_ldap" ];
-      User = "bitwarden_ldap";
+      RuntimeDirectory = [ "vaultwarden_ldap" ];
+      User = "vaultwarden_ldap";
     };
   };
 
@@ -94,15 +92,15 @@ in
   };
 
   sops.secrets = {
-    bitwarden-ldap-password.owner = "bitwarden_ldap";
-    bitwarden-admin-token.owner = "bitwarden_ldap";
-    bitwarden-smtp-password.owner = "bitwarden_rs";
+    bitwarden-ldap-password.owner = "vaultwarden_ldap";
+    bitwarden-admin-token.owner = "vaultwarden_ldap";
+    bitwarden-smtp-password.owner = "vaultwarden";
   };
 
-  users.users.bitwarden_ldap = {
+  users.users.vaultwarden_ldap = {
     isSystemUser = true;
     group = "bitwarden_ldap";
   };
 
-  users.groups.bitwarden_ldap = { };
+  users.groups.vaultwarden_ldap = { };
 }

@@ -4,8 +4,6 @@
     owner = "promtail";
     sopsFile = ../secrets/secrets.yaml;
   };
-  systemd.services.promtail.serviceConfig.SupplementaryGroups = [ "keys" ];
-
   services.promtail = {
     enable = true;
     configuration = {

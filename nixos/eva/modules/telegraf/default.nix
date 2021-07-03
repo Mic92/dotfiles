@@ -6,7 +6,6 @@
     owner = config.systemd.services.telegraf.serviceConfig.User;
     sopsFile = ../../../secrets/telegraf.yaml;
   };
-  systemd.services.telegraf.serviceConfig.SupplementaryGroups = [ "keys" ];
 
   imports = [
     ../../../modules/telegraf.nix

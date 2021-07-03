@@ -15,8 +15,5 @@
 
   networking.firewall.allowedTCPPorts = [ 8889 ];
 
-  users.users.squid.extraGroups = [ "keys" ];
-  systemd.services.squid.serviceConfig.SupplementaryGroups = [ "keys" ];
-
   sops.secrets.squid-ldap.owner = "squid";
 }

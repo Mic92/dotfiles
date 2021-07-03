@@ -22,7 +22,6 @@
         task,frequency=daily last_run=$(date +%s)i,state="$([[ $EXIT_CODE == exited ]] && echo ok || echo fail)"
         EOF
       '';
-      SupplementaryGroups = [ "keys" ];
       StateDirectory = [ "mastodon-hnbot" ];
       User = "mastodon-hnbot";
     };

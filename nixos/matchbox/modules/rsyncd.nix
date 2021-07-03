@@ -20,7 +20,6 @@
   users.users.rsyncd = {
     isSystemUser = true;
     group = "rsyncd";
-    extraGroups = [ "keys" ];
   };
 
   sops.secrets.rsyncd-secrets.owner = "rsyncd";

@@ -9,7 +9,6 @@
         "${pkgs.python3.interpreter} ${./ping_tracker.py} ${config.sops.secrets.ping-tracker-json.path}"
       ];
       Type = "oneshot";
-      SupplementaryGroups = [ "keys" ];
       User = "ping-tracker";
     };
   };

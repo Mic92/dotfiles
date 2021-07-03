@@ -262,7 +262,5 @@
     sopsFile = ../../secrets/ldap.yaml;
   };
 
-  users.users.openldap.extraGroups = [ "keys" ];
-  systemd.services.openldap.serviceConfig.SupplementaryGroups = [ "keys" ];
   networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 389 ];
 }

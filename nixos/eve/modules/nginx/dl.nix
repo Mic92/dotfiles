@@ -24,8 +24,5 @@ in
     virtualHosts."dl.lekwati.com" = site "dl.lekwati.com";
   };
 
-  systemd.services.nginx.serviceConfig.SupplementaryGroups = [ "keys" ];
-  systemd.services.nginx-config-reload.serviceConfig.SupplementaryGroups = [ "keys" ];
-
   sops.secrets.nginx-secure-link.owner = "nginx";
 }

@@ -30,7 +30,4 @@
       proxy_pass http://localhost:3002;
     '';
   };
-
-  # for database key
-  systemd.services.gitea.serviceConfig.SupplementaryGroups = [ "keys" ];
 }

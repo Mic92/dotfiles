@@ -133,6 +133,4 @@ in
     owner = "hass";
     path = "/var/lib/hass/secrets.yaml";
   };
-
-  users.users.hass.extraGroups = [ "keys" ];
 }
