@@ -67,7 +67,7 @@ in
       #nixos-hardware.nixosModules.dell-xps-13-9380
       nixos-hardware.nixosModules.lenovo-thinkpad-x13
       nix-ld.nixosModules.nix-ld
-      vmsh.nixosModules.ioregionfd-kernel
+      vmsh.nixosModules.linux-ioregionfd
       #envfs.nixosModules.envfs
       ./turingmachine/configuration.nix
       #({...}: {

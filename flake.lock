@@ -805,11 +805,11 @@
         "not-os": "not-os"
       },
       "locked": {
-        "lastModified": 1625552764,
-        "narHash": "sha256-1ytIs2Bcp8xilOUoT1u2FzQIAfOT/QFcwA2jk1KAdEY=",
+        "lastModified": 1625560396,
+        "narHash": "sha256-bCQW3JUw6CmIxln8I7WDETC8DTNoh8Kl6dvIySxoIfQ=",
         "owner": "Mic92",
         "repo": "vmsh",
-        "rev": "fadf828917baa94717dbe9debe0893ad84076396",
+        "rev": "c64400b47bb859804daa873427eb38885fdeae72",
         "type": "github"
       },
       "original": {
