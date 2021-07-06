@@ -6,9 +6,16 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
 
+    fenix.url = "github:nix-community/fenix";
     lambda-pirate.url = "github:pogobanane/lambda-pirate/fix-eval";
     lambda-pirate.inputs.nixpkgs.follows = "nixpkgs";
     lambda-pirate.inputs.flake-utils.follows = "flake-utils";
+    lambda-pirate.inputs.fenix.follows = "fenix";
+
+    vmsh.url = "git+file:///home/joerg/git/vmsh";
+    vmsh.inputs.flake-utils.follows = "flake-utils";
+    vmsh.inputs.nixpkgs.follows = "nixpkgs";
+    vmsh.inputs.fenix.follows = "fenix";
 
     nixpkgs.url = "github:Mic92/nixpkgs/master";
     nixpkgs-stable.url = "github:Mic92/nixpkgs/release-21.05-backports";

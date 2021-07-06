@@ -178,17 +178,15 @@
     "fenix": {
       "inputs": {
         "naersk": "naersk",
-        "nixpkgs": [
-          "nixpkgs"
-        ],
+        "nixpkgs": "nixpkgs",
         "rust-analyzer-src": "rust-analyzer-src"
       },
       "locked": {
-        "lastModified": 1621999541,
-        "narHash": "sha256-XLRDcZ+NdxDQ+JHHoZC6wTuGmTMaS+rcum76SPXM6JU=",
+        "lastModified": 1625451845,
+        "narHash": "sha256-csx8P8gdnKGm7fv0rChcIVSXi+m9b8ZKBRvaEzHu9IQ=",
         "owner": "nix-community",
         "repo": "fenix",
-        "rev": "8a432c159b7f5e14972fa75fcaf631b78290241c",
+        "rev": "be1856adefd65247c72d4b761d584145ee3cc660",
         "type": "github"
       },
       "original": {
@@ -275,11 +273,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1625162737,
-        "narHash": "sha256-IzKTw2u/EKVr6TCQYylSAcOnrVRpir3wG3MUHj2LsTc=",
+        "lastModified": 1625384440,
+        "narHash": "sha256-WnDK+LZioER6eeC8Sm7GPvbiS6XPyUqn+qtc2lvjLHo=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "7df6656b113ce0d39c8b7d30915cafe046e1d64e",
+        "rev": "ac319fd3149b23a3ad8ee24cb2def6e67acf194c",
         "type": "github"
       },
       "original": {
@@ -313,7 +311,9 @@
     },
     "lambda-pirate": {
       "inputs": {
-        "fenix": "fenix",
+        "fenix": [
+          "fenix"
+        ],
         "flake-utils": [
           "flake-utils"
         ],
@@ -343,11 +343,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1620316130,
-        "narHash": "sha256-sU0VS5oJS1FsHsZsLELAXc7G2eIelVuucRw+q5B1x9k=",
+        "lastModified": 1623927034,
+        "narHash": "sha256-sGxlmfp5eXL5sAMNqHSb04Zq6gPl+JeltIZ226OYN0w=",
         "owner": "nmattia",
         "repo": "naersk",
-        "rev": "a3f40fe42cc6d267ff7518fa3199e99ff1444ac4",
+        "rev": "e09c320446c5c2516d430803f7b19f5833781337",
         "type": "github"
       },
       "original": {
@@ -507,16 +507,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1625341574,
-        "narHash": "sha256-DqrwsWx4uCUC7Y+rY5BqlM3F0l4GuSYVhJqW7YGayMY=",
-        "owner": "Mic92",
+        "lastModified": 1625281901,
+        "narHash": "sha256-DkZDtTIPzhXATqIps2ifNFpnI+PTcfMYdcrx/oFm00Q=",
+        "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "b1796cfc0ad2ea1f757422f168aa9d7a4e066c6c",
+        "rev": "09c38c29f2c719cd76ca17a596c2fdac9e186ceb",
         "type": "github"
       },
       "original": {
-        "owner": "Mic92",
-        "ref": "master",
+        "owner": "nixos",
+        "ref": "nixos-unstable",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -553,6 +553,22 @@
         "type": "github"
       }
     },
+    "nixpkgs_2": {
+      "locked": {
+        "lastModified": 1625501765,
+        "narHash": "sha256-CmWui9F+IllukVEdWT161XP8n4k2LB+Gr5/q+kuJpXQ=",
+        "owner": "Mic92",
+        "repo": "nixpkgs",
+        "rev": "5c9a899a4d279b6e03177184d02dd9c06ba18bd1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "ref": "master",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nose": {
       "flake": false,
       "locked": {
@@ -569,13 +585,29 @@
         "type": "github"
       }
     },
+    "not-os": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1615586706,
+        "narHash": "sha256-Qe0hbUL2sByHGN0uP+nFzAi8gVsk8lZXSgzuZ0pj3Mc=",
+        "owner": "cleverca22",
+        "repo": "not-os",
+        "rev": "97186fc3ca8bfed153920353d4e54b46c145dd07",
+        "type": "github"
+      },
+      "original": {
+        "owner": "cleverca22",
+        "repo": "not-os",
+        "type": "github"
+      }
+    },
     "nur": {
       "locked": {
-        "lastModified": 1625364323,
-        "narHash": "sha256-jn2gDHcW+QTJFcJ9OuaKQPI1yM0d29qCs4lR8LtqB5k=",
+        "lastModified": 1625496932,
+        "narHash": "sha256-aQGdYiqLOojrO6ryr9hRKmxVc6TpzNtRgP2FfCHPl4c=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "0789783134ea6a6e62f3900580b27dbb7f1b576c",
+        "rev": "ebe578ea4155582fd101f251a816bc6a28b302e0",
         "type": "github"
       },
       "original": {
@@ -700,6 +732,7 @@
         "bme680-mqtt": "bme680-mqtt",
         "doom-emacs": "doom-emacs",
         "envfs": "envfs",
+        "fenix": "fenix",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
         "hercules-ci": "hercules-ci",
@@ -710,12 +743,13 @@
         "nix-doom-emacs": "nix-doom-emacs",
         "nix-ld": "nix-ld",
         "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": "nixpkgs_2",
         "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-systemd": "nixpkgs-systemd",
         "nur": "nur",
         "retiolum": "retiolum",
-        "sops-nix": "sops-nix"
+        "sops-nix": "sops-nix",
+        "vmsh": "vmsh"
       }
     },
     "rotate-text": {
@@ -737,11 +771,11 @@
     "rust-analyzer-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1621985282,
-        "narHash": "sha256-pqjglAnn0wwCZR4cfPbSXu71tSEEYJgV8V3A9Kp5zXg=",
+        "lastModified": 1625409300,
+        "narHash": "sha256-7pH38U+HMNPuO1BFP5kPTJoxGWTewRUoLrc9NXDdK2M=",
         "owner": "rust-analyzer",
         "repo": "rust-analyzer",
-        "rev": "8483fb0f269c819cf0970c25cf81660622f1d763",
+        "rev": "e5c1c8cf2fcfae3e15c8bcf5256e84cad3bd3436",
         "type": "github"
       },
       "original": {
@@ -769,6 +803,30 @@
         "owner": "Mic92",
         "repo": "sops-nix",
         "type": "github"
+      }
+    },
+    "vmsh": {
+      "inputs": {
+        "fenix": [
+          "fenix"
+        ],
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "not-os": "not-os"
+      },
+      "locked": {
+        "lastModified": 1625494218,
+        "narHash": "sha256-0rcB3kfQnAMDlgtGEg/kLeadU1Fm/qC67hie0jRZ+Hk=",
+        "type": "git",
+        "url": "file:///home/joerg/git/vmsh"
+      },
+      "original": {
+        "type": "git",
+        "url": "file:///home/joerg/git/vmsh"
       }
     }
   },

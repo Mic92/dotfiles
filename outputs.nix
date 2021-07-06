@@ -18,6 +18,8 @@
 , nixpkgs-stable
 , hercules-ci
 , nix-darwin
+, vmsh
+, fenix
 }:
 (flake-utils.lib.eachDefaultSystem (system:
   let
@@ -77,6 +79,7 @@
       nixpkgs-systemd
       nixpkgs-stable
       lambda-pirate
+      vmsh
       hercules-ci;
   };
 

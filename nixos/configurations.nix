@@ -13,6 +13,7 @@
 , nixpkgs-stable
 , lambda-pirate
 , hercules-ci
+, vmsh
 }:
 let
   defaultModules = [
@@ -66,6 +67,7 @@ in
       #nixos-hardware.nixosModules.dell-xps-13-9380
       nixos-hardware.nixosModules.lenovo-thinkpad-x13
       nix-ld.nixosModules.nix-ld
+      vmsh.nixosModules.ioregionfd-kernel
       #envfs.nixosModules.envfs
       ./turingmachine/configuration.nix
       #({...}: {
