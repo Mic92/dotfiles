@@ -181,7 +181,7 @@ in
 
   systemd.user.services.mbsync = {
     Service.Type = "oneshot";
-    Service.Environment = "PATH=${pkgs.bitwarden-wrapper}/bin";
+    Service.Environment = "PATH=${pkgs.rbw}/bin";
     # TODO: Fix ini generator in home-manager
     Service.ExecStart = ''
       -${pkgs.isync}/bin/mbsync -a --quiet
