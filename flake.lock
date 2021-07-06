@@ -805,14 +805,17 @@
         "not-os": "not-os"
       },
       "locked": {
-        "lastModified": 1625494218,
-        "narHash": "sha256-0rcB3kfQnAMDlgtGEg/kLeadU1Fm/qC67hie0jRZ+Hk=",
-        "type": "git",
-        "url": "file:///home/joerg/git/vmsh"
+        "lastModified": 1625552764,
+        "narHash": "sha256-1ytIs2Bcp8xilOUoT1u2FzQIAfOT/QFcwA2jk1KAdEY=",
+        "owner": "Mic92",
+        "repo": "vmsh",
+        "rev": "fadf828917baa94717dbe9debe0893ad84076396",
+        "type": "github"
       },
       "original": {
-        "type": "git",
-        "url": "file:///home/joerg/git/vmsh"
+        "owner": "Mic92",
+        "repo": "vmsh",
+        "type": "github"
       }
     }
   },

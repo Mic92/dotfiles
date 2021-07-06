@@ -13,7 +13,7 @@
     lambda-pirate.inputs.flake-utils.follows = "flake-utils";
     lambda-pirate.inputs.fenix.follows = "fenix";
 
-    vmsh.url = "git+file:///home/joerg/git/vmsh";
+    vmsh.url = "github:Mic92/vmsh";
     vmsh.inputs.flake-utils.follows = "flake-utils";
     vmsh.inputs.nixpkgs.follows = "nixpkgs";
     vmsh.inputs.fenix.follows = "fenix";
