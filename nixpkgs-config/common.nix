@@ -1,32 +1,12 @@
 { pkgs, config, lib, ... }:
 
 {
-  options.python.packages = lib.mkOption {
-    type = lib.mkOptionType {
-      name = "function";
-      check = x: lib.isFunction x;
-      merge = loc: functions: packageset:
-        lib.foldl (list: function: list ++ (function packageset)) [ ]
-          (lib.getValues functions);
-    };
-    default = [ ];
-    description = ''
-      Names of python packages to install
-    '';
-  };
-
   imports = [
     #./modules/vim.nix
     ./modules/emacs
   ];
 
   config = {
-    python.packages = ps: [
-      ps.pyls-mypy
-      ps.pyls-isort
-      ps.pyls-black
-    ];
-
     home.packages = with pkgs; [
       #(pkgs.callPackage /home/joerg/git/nix-review {})
       nur.repos.mic92.nixpkgs-review-unstable
@@ -41,7 +21,7 @@
       shfmt
 
       # python language server + plugins
-      (pkgs.python3.withPackages (ps: config.python.packages ps))
+      pyright
 
       nixFlakes
       tmux
