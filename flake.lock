@@ -178,7 +178,9 @@
     "fenix": {
       "inputs": {
         "naersk": "naersk",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "rust-analyzer-src": "rust-analyzer-src"
       },
       "locked": {
@@ -507,16 +509,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1625281901,
-        "narHash": "sha256-DkZDtTIPzhXATqIps2ifNFpnI+PTcfMYdcrx/oFm00Q=",
-        "owner": "nixos",
+        "lastModified": 1625501765,
+        "narHash": "sha256-CmWui9F+IllukVEdWT161XP8n4k2LB+Gr5/q+kuJpXQ=",
+        "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "09c38c29f2c719cd76ca17a596c2fdac9e186ceb",
+        "rev": "5c9a899a4d279b6e03177184d02dd9c06ba18bd1",
         "type": "github"
       },
       "original": {
-        "owner": "nixos",
-        "ref": "nixos-unstable",
+        "owner": "Mic92",
+        "ref": "master",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -549,22 +551,6 @@
       "original": {
         "owner": "Mic92",
         "ref": "systemd",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1625501765,
-        "narHash": "sha256-CmWui9F+IllukVEdWT161XP8n4k2LB+Gr5/q+kuJpXQ=",
-        "owner": "Mic92",
-        "repo": "nixpkgs",
-        "rev": "5c9a899a4d279b6e03177184d02dd9c06ba18bd1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "ref": "master",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -743,7 +729,7 @@
         "nix-doom-emacs": "nix-doom-emacs",
         "nix-ld": "nix-ld",
         "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-systemd": "nixpkgs-systemd",
         "nur": "nur",
