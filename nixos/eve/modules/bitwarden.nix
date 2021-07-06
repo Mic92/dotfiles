@@ -29,7 +29,7 @@ in
       domain = "https://bitwarden.thalheim.io";
       signupsAllowed = false;
       rocketPort = 3011;
-      databaseUrl = "postgresql://bitwarden_rs@%2Frun%2Fpostgresql/bitwarden_rs";
+      databaseUrl = "postgresql://vaultwarden@%2Frun%2Fpostgresql/bitwarden_rs";
       enableDbWal = "false";
       websocketEnabled = true;
       smtpHost = "mail.thalheim.io";
@@ -99,7 +99,7 @@ in
 
   users.users.vaultwarden_ldap = {
     isSystemUser = true;
-    group = "bitwarden_ldap";
+    group = "vaultwarden_ldap";
   };
 
   users.groups.vaultwarden_ldap = { };
