@@ -29,7 +29,7 @@ let
   daemonScript = pkgs.writeScript "emacs-daemon" ''
     #!${pkgs.zsh}/bin/zsh
     source ~/.zshrc
-    export BW_SESSION=1 PATH=$PATH:${lib.makeBinPath [ pkgs.git pkgs.sqlite pkgs.unzip ]}
+    export PATH=$PATH:${lib.makeBinPath [ pkgs.git pkgs.sqlite pkgs.unzip ]}
     exec ${myemacs}/bin/emacs --daemon
   '';
   #export TREE_SITTER_GRAMMAR_DIR=${treeSitterGrammars}
@@ -155,8 +155,6 @@ in
     Service = {
       Type = "forking";
       TimeoutStartSec = "10min";
-      # bitwarden.el checks if that value is set,
-      # we set it in our own bw wrapper internally
       Restart = "always";
       ExecStart = toString daemonScript;
     };
