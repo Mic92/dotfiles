@@ -20,8 +20,7 @@
       nixpkgs-fmt
       shfmt
 
-      # python language server + plugins
-      pyright
+      python-language-server
 
       nixFlakes
       tmux
