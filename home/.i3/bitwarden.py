@@ -9,7 +9,7 @@ class BitwardenPassword:
 
     def get(self) -> str:
         if not self.password:
-            cmd = ["bw", "get", "password", self.name]
+            cmd = ["rbw", "get", self.name]
             res = subprocess.run(cmd, check=True, capture_output=True)
-            self.password = res.stdout.decode("utf-8")
+            self.password = res.stdout.decode("utf-8").strip()
         return self.password
