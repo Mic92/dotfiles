@@ -135,6 +135,8 @@ in
     glib
     zoom-us
     jmtpfs # needed for charging? WTF
+    #
+    (pkgs.callPackage ./pkgs/mpv-tv.nix {})
 
     (pkgs.writeScriptBin "rhasspy-play" ''
       #!${pkgs.runtimeShell}
