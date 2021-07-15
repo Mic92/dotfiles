@@ -8,7 +8,7 @@
       acl ldapauth proxy_auth REQUIRED
       http_access allow ldapauth
 
-      https_port 8889 cert=/var/lib/acme/devkid.net/fullchain.pem key=/var/lib/acme/devkid.net/key.pem
+      https_port 8889 cert=/var/lib/acme/thalheim.io/fullchain.pem key=/var/lib/acme/thalheim.io/key.pem
     '';
   };
 
