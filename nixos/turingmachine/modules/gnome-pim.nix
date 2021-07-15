@@ -5,7 +5,8 @@
   services.gnome.gnome-keyring.enable = true;
   environment.systemPackages = [
     pkgs.gnome3.gnome-calendar
-    pkgs.gnome3.gnome-todo
+    # broken
+    #pkgs.gnome3.gnome-todo
     pkgs.evolution
   ];
 }
