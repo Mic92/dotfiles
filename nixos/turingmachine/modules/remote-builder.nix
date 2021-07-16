@@ -3,7 +3,7 @@
   nix.buildMachines = [
     {
       hostName = "nardole.r";
-      sshUser = "nix";
+      sshUser = "ssh-ng://nix";
       sshKey = config.sops.secrets.id_buildfarm.path;
       system = "x86_64-linux";
       maxJobs = 10;
@@ -15,7 +15,7 @@
     }
     {
       hostName = "bill.r";
-      sshUser = "nix";
+      sshUser = "ssh-ng://nix";
       sshKey = config.sops.secrets.id_buildfarm.path;
       system = "x86_64-linux";
       maxJobs = 10;
@@ -27,7 +27,7 @@
     }
     {
       hostName = "sauron.r";
-      sshUser = "nix";
+      sshUser = "ssh-ng://nix";
       sshKey = config.sops.secrets.id_buildfarm.path;
       system = "x86_64-linux";
       maxJobs = 10;
@@ -39,7 +39,7 @@
     }
     {
       hostName = "martha.r";
-      sshUser = "nix";
+      sshUser = "ssh-ng://nix";
       sshKey = config.sops.secrets.id_buildfarm.path;
       system = "x86_64-linux";
       maxJobs = 8;
@@ -51,7 +51,7 @@
     }
     {
       hostName = "donna.r";
-      sshUser = "nix";
+      sshUser = "ssh-ng://nix";
       sshKey = config.sops.secrets.id_buildfarm.path;
       system = "x86_64-linux";
       maxJobs = 8;
@@ -63,7 +63,7 @@
     }
     {
       hostName = "amy.r";
-      sshUser = "nix";
+      sshUser = "ssh-ng://nix";
       sshKey = config.sops.secrets.id_buildfarm.path;
       system = "x86_64-linux";
       maxJobs = 8;
@@ -75,7 +75,7 @@
     }
     {
       hostName = "clara.r";
-      sshUser = "nix";
+      sshUser = "ssh-ng://nix";
       sshKey = config.sops.secrets.id_buildfarm.path;
       system = "x86_64-linux";
       maxJobs = 8;
@@ -87,7 +87,7 @@
     }
     {
       hostName = "rose.r";
-      sshUser = "nix";
+      sshUser = "ssh-ng://nix";
       sshKey = config.sops.secrets.id_buildfarm.path;
       system = "x86_64-linux";
       maxJobs = 8;
@@ -99,7 +99,7 @@
     }
     {
       hostName = "prism.r";
-      sshUser = "mic92";
+      sshUser = "ssh-ng://mic92";
       sshKey = "/root/.ssh/id_ed25519";
       system = "x86_64-linux";
       maxJobs = 4;
@@ -111,7 +111,7 @@
     }
     {
       hostName = "eve.thalheim.io";
-      sshUser = "nix";
+      sshUser = "ssh-ng://nix";
       sshKey = config.sops.secrets.id_buildfarm.path;
       system = "x86_64-linux";
       maxJobs = 4;
@@ -139,7 +139,7 @@
       hostName = "aarch64.nixos.community";
       maxJobs = 96;
       sshKey = "/root/.ssh/id_ed25519";
-      sshUser = "mic92";
+      sshUser = "ssh-ng://mic92";
       system = "aarch64-linux";
       supportedFeatures = [
         "big-parallel"
