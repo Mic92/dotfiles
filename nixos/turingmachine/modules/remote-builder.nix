@@ -97,18 +97,19 @@
         "nixos-test"
       ];
     }
-    {
-      hostName = "prism.r";
-      sshUser = "ssh-ng://mic92";
-      sshKey = "/root/.ssh/id_ed25519";
-      system = "x86_64-linux";
-      maxJobs = 4;
-      supportedFeatures = [
-        "big-parallel"
-        "kvm"
-        "nixos-test"
-      ];
-    }
+    # slow...
+    #{
+    #  hostName = "prism.r";
+    #  sshUser = "ssh-ng://mic92";
+    #  sshKey = "/root/.ssh/id_ed25519";
+    #  system = "x86_64-linux";
+    #  maxJobs = 4;
+    #  supportedFeatures = [
+    #    "big-parallel"
+    #    "kvm"
+    #    "nixos-test"
+    #  ];
+    #}
     {
       hostName = "eve.thalheim.io";
       sshUser = "ssh-ng://nix";
