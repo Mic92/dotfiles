@@ -18,8 +18,6 @@
   name = Jörg Thalheim
   email = joerg@thalheim.io
   signingkey = 0xB3F5D81B0C6967C4
-[commit]
-  gpgSign = true
 [tag]
   gpgSign = true
 [gpg]
