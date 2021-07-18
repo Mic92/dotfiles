@@ -34,7 +34,7 @@
       realms = [{
         ID = "github_realm";
         Type = "github";
-        Config = {};
+        Config = { };
       }];
       sessions = [{
         SessionID = "your_github_session";
@@ -47,18 +47,18 @@
         };
       }];
       services = [
-        #{
-        #  ID = "github_webhook_service";
-        #  Type = "github-webhook";
-        #  UserID = "@nix-community-bot:nixos.dev";
-        #  Config = {
-        #    RealmID = "github_realm";
-        #    ClientUserID = "@mic92:nixos.dev";
-        #    Rooms."!PbtOpdWBSRFbEZRLIf:numtide.com".Repos = {
-        #      "nix-community/infra".Events = [ "push" "issues" "pull_request" ];
-        #    };
-        #  };
-        #}
+        {
+          ID = "github_webhook_service";
+          Type = "github-webhook";
+          UserID = "@nix-community-bot:nixos.dev";
+          Config = {
+            RealmID = "github_realm";
+            ClientUserID = "@mic92:nixos.dev";
+            Rooms."!PbtOpdWBSRFbEZRLIf:numtide.com".Repos = {
+              "nix-community/infra".Events = [ "push" "issues" "pull_request" ];
+            };
+          };
+        }
         {
           ID = "alertmanager_service";
           Type = "alertmanager";
@@ -83,5 +83,5 @@
     secretFile = config.sops.secrets.go-neb-secrets.path;
   };
 
-  sops.secrets.go-neb-secrets = {};
+  sops.secrets.go-neb-secrets = { };
 }
