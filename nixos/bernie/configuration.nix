@@ -49,6 +49,11 @@
     desktopManager.gnome.enable = true;
   };
 
+  hardware.opengl = {
+    driSupport = true;
+    driSupport32Bit = true;
+  };
+
   environment.systemPackages = with pkgs; [
     firefox-wayland
     chromium
