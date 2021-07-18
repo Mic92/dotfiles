@@ -1,6 +1,8 @@
 # see https://github.com/nix-community/nix-direnv
 
-if [ -f ~/.nix-profile/share/nix-direnv/direnvrc ]; then
+if [ -f ~/git/nix-direnv/direnvrc ]; then
+  source ~/git/nix-direnv/direnvrc
+elfif [ -f ~/.nix-profile/share/nix-direnv/direnvrc ]; then
   source ~/.nix-profile/share/nix-direnv/direnvrc
 fi
 
