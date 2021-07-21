@@ -34,6 +34,7 @@
       (nix-direnv.override { enableFlakes = true; })
       fzf
       exa
+      zoxide
       pinentry
       fd
       bat
