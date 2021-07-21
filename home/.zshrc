@@ -146,13 +146,8 @@ kpaste() {
   curl -sS http://p.r --data-binary @"${1:--}" | \
     sed '$ {p;s|http://p.r|https://p.krebsco.de|}'
 }
-
-hm-switch() {
-  (
-    cd ~/.homesick/repos/dotfiles
-    nix run '.#hm-switch' -- "$@"
-  )
-}
+xalias hm-switch="nix run $HOME/.homesick/repos/dotfiles#hm-switch --"
+xalias hm-build="nix run $HOME/.homesick/repos/dotfiles#hm-build --"
 nix-index-update() {
   tag=$(git -c 'versionsort.suffix=-' \
     ls-remote \
@@ -266,6 +261,11 @@ if [[ -n ${commands[rg]} ]]; then
   }
 elif [[ -n ${commands[ag]} ]]; then
   alias ag='ag --color --smart-case --literal --pager=less'
+fi
+if [[ -n ${commands[zoxide]} ]]; then
+  eval "$(zoxide init zsh)"
+else
+  alias z=cd
 fi
 alias pgrep='pgrep -a'
 
