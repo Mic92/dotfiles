@@ -46,20 +46,25 @@
       path = "${nurPkgs.repos.mic92.irc-announce}/bin/irc-announce";
     };
 
+    apps.hm-build = {
+      type = "app";
+      program = toString (pkgs.writeScript "hm-build" ''
+        #!${pkgs.runtimeShell}
+        set -eu -o pipefail -x
+        export PATH=${pkgs.lib.makeBinPath [ pkgs.git pkgs.coreutils pkgs.nixFlakes pkgs.jq ]}
+        declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie", ["grandalf"]="common-aarch64")
+        profile=''${profiles[$HOSTNAME]:-common}
+        flake=$(nix flake metadata --json ${./.} | jq -r .url)
+        nix build --show-trace --json ".#hmConfigurations.desktop.activationPackage" "$@" | jq -r '.[] | .outputs | .out'
+      '');
+    };
     apps.hm-switch = {
       type = "app";
       program = toString (pkgs.writeScript "hm-switch" ''
         #!${pkgs.runtimeShell}
         set -eu -o pipefail -x
-        tmpdir=$(mktemp -d)
-        export PATH=${pkgs.lib.makeBinPath [ pkgs.coreutils pkgs.nixFlakes pkgs.jq ]}
-        trap "rm -rf $tmpdir" EXIT
-        declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie", ["grandalf"]="common-aarch64")
-        profile=''${profiles[$HOSTNAME]:-common}
-        flake=$(nix flake metadata --json ${./.} | jq -r .url)
-        nix build --show-trace --out-link "$tmpdir/result" "$flake#hmConfigurations.''${profile}.activationPackage" "$@"
-        link=$(realpath $tmpdir/result)
-        $link/activate
+        cd ${./.}
+        $(nix run .#hm-build -- "$@")/activate
       '');
     };
   })) // {
