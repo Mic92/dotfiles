@@ -30,6 +30,7 @@
       lazygit
       delta
       scc
+      xcp
       direnv
       (nix-direnv.override { enableFlakes = true; })
       fzf

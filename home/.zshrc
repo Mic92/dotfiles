@@ -290,8 +290,11 @@ fi
 alias sl=ls
 alias tempdir='cd `TMPDIR=/tmp mktemp -d`;'
 alias rm='rm -rv'
-alias cp='nocorrect cp -rpv'
-alias cpv="rsync -pogr --progress"
+if [[ -n ${commands[xcp]} ]]; then
+  alias cp="nocorrect xcp -r"
+else
+  alias cp='nocorrect cp -rpv'
+fi
 alias ln="nocorrect ln"
 function mv() {
   if [ "$#" -ne 1 ] || [ ! -f "$1" ]; then
@@ -342,9 +345,7 @@ compile_command() {
 [[ -n ${commands[vi]} ]] && alias vi=vim
 xalias vim="nvim"
 xalias xclip="xclip -selection clipboard"
-if [[ -n ${commands[scc]} ]]; then
-  alias cloc=scc
-fi
+xalias cloc=scc
 
 if [[ -n ${commands[nix]} ]]; then
   n() {
