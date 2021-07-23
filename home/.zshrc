@@ -274,7 +274,11 @@ xalias top='htop'
 xalias tig='lazygit'
 alias free='free -m'
 alias fuser="fuser -v"
-alias du='du -hc'
+if [[ -n ${commands[dua]} ]]; then
+  alias du='dua'
+else
+  alias du='du -hc'
+fi
 alias df='df -hT'
 # File management
 if [[ -n ${commands[exa]} ]]; then

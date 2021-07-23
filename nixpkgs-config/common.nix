@@ -22,6 +22,7 @@
 
       python-language-server
 
+      dua
       nixFlakes
       tmux
       htop
