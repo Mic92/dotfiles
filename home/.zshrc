@@ -342,8 +342,8 @@ compile_command() {
 [[ -n ${commands[vi]} ]] && alias vi=vim
 xalias vim="nvim"
 xalias xclip="xclip -selection clipboard"
-if [[ -n ${commands[tokei]} ]]; then
-  alias cloc=tokei
+if [[ -n ${commands[scc]} ]]; then
+  alias cloc=scc
 fi
 
 if [[ -n ${commands[nix]} ]]; then

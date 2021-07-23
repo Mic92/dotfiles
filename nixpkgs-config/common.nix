@@ -29,7 +29,7 @@
       tig
       lazygit
       delta
-      tokei
+      scc
       direnv
       (nix-direnv.override { enableFlakes = true; })
       fzf
