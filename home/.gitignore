@@ -9,3 +9,4 @@
 /.ccls-cache/
 tags
 .mypy_cache/
+.cache/clangd
