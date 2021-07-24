@@ -126,6 +126,7 @@
 (setq projectile-project-search-path '("~/git"))
 (yas/load-directory "~/.homesick/repos/dotfiles/home/.emacs.d/snippets")
 
+(add-hook 'prog-mode-hook 'format-all-ensure-formatter)
 (add-to-list '+format-on-save-enabled-modes 'go-mode t)
 (add-hook! 'go-mode-hook
   (add-hook 'before-save-hook #'lsp-format-buffer nil 'local)
