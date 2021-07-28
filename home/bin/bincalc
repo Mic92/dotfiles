@@ -9,7 +9,7 @@ def format_unit(size):
     # 2**10 = 1024
     power = 2 ** 10
     n = 0
-    unit = {0: "", 1: "KB", 2: "MB", 3: "GB", 4: "TB", 5: "PT"}
+    unit = {0: "", 1: "KB", 2: "MB", 3: "GB", 4: "TB", 5: "PB", 6: "EB"}
     while size > power:
         size /= power
         n += 1
