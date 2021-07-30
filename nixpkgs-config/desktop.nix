@@ -128,7 +128,6 @@ in
     youtube-dl
     mumble
 
-    wezterm
     isync
     mu
     # to fix xdg-open
@@ -154,6 +153,7 @@ in
       fi
     '')
 
+    #wezterm
     #(pkgs.writeScriptBin "wez" ''
     #  #!${pkgs.runtimeShell}
     #  set -eux -o pipefail
