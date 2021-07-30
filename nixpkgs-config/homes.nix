@@ -20,9 +20,9 @@ let
 in
 {
   common = hmConfiguration { };
-  #common-aarch64 = hmConfiguration {
-  #  system = "aarch64-linux";
-  #};
+  common-aarch64 = hmConfiguration {
+    system = "aarch64-linux";
+  };
 
   desktop = hmConfiguration {
     extraModules = [ ./desktop.nix ];
