@@ -782,6 +782,9 @@ if [[ -n "${commands[fzf-share]}" ]]; then
   FZF_CTRL_R_OPTS=--reverse
   source "$(fzf-share)/key-bindings.zsh"
 fi
+if [[ -n "${commands[mcfly]}" ]]; then
+  eval "$(mcfly init zsh)"
+fi
 if [[ -f "$HOME/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]]; then
   source "$HOME/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
 fi
