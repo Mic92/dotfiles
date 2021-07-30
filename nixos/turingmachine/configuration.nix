@@ -52,6 +52,7 @@
   #services.udev.packages = [ pkgs.platformio ];
 
   boot = {
+    kernelPackages = pkgs.linuxPackages_zen;
     zfs.requestEncryptionCredentials = [ "zroot/root" ];
 
     loader.systemd-boot.enable = true;
