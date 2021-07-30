@@ -21,7 +21,7 @@
       shfmt
 
       python3.pkgs.black
-      python-language-server
+      pyright
 
       dua
       nixFlakes
