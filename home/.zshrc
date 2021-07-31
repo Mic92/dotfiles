@@ -775,6 +775,10 @@ if [ -n "${commands[r2]}" ]; then
     fi
   }
 fi
+
+if [ -n "$WAYLAND_DISPLAY" ]; then
+  alias chromium="chromium --enable-features=UseOzonePlatform --ozone-platform=wayland"
+fi
 if [ -n "${commands[direnv]}" ]; then
   eval "$(direnv hook zsh)"
 fi
