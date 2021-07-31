@@ -11,7 +11,7 @@ font:
   italic:
     family: "FiraCode Nerd Font Mono"
     style: Italic
-  size: 6.0
+  size: 15.0
 
 draw_bold_text_with_bright_colors: true
 
@@ -69,9 +69,6 @@ colors:
     cyan:    '0x59dffc'
     white:   '0xe6e6d1'
 
-mouse:
-  url:
-    launcher: xdg-open
 selection:
   semantic_escape_chars: ",│`|:\"' ()[]{}<>"
 
