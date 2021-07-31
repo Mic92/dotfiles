@@ -49,8 +49,7 @@
     home-manager.url = "github:Mic92/home-manager/nixos-option-test";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    #doom-emacs.url = "github:hlissner/doom-emacs";
-    doom-emacs.url = "github:Mic92/doom-emacs/org-msg";
+    doom-emacs.url = "github:hlissner/doom-emacs";
     doom-emacs.flake = false;
 
     nix-doom-emacs.url = "github:vlaci/nix-doom-emacs/develop";
