@@ -92,8 +92,8 @@ in
     hicolor_icon_theme
     graphicsmagick
     #gimp
-    firefox
-    #firefox-wayland
+    #firefox
+    firefox-wayland
     #chromium
     aspell
     aspellDicts.de
@@ -106,7 +106,8 @@ in
     xorg.xev
     xorg.xprop
     xclip
-    (pkgs.callPackage ./pkgs/alacritty.nix { })
+    alacritty
+    #(pkgs.callPackage ./pkgs/alacritty.nix { })
     screen-message
     sshfsFuse
     sshuttle

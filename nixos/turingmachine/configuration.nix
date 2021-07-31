@@ -37,8 +37,8 @@
     ../modules/tracing.nix
     ../modules/telegraf.nix
     #./kde.nix
-    ../modules/i3.nix
-    #../modules/sway.nix
+    #../modules/i3.nix
+    ../modules/sway.nix
     #../modules/awesome.nix
     #../modules/gnome.nix
     ../modules/pki
