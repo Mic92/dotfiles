@@ -37,7 +37,6 @@
       manpages
       netcat
       mtr
-      nix-zsh-completions
       vim
       hdparm
       dnsutils
