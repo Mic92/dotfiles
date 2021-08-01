@@ -31,5 +31,7 @@
 
   imports = [ ./builder.nix ];
 
+  programs.command-not-found.enable = false;
+
   nixpkgs.config.allowUnfree = true;
 }
