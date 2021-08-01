@@ -22,9 +22,6 @@
       wl-clipboard
       clipman
 
-      # autostart stuff
-      dex
-
       pavucontrol
       lightlocker
       evince
@@ -36,12 +33,15 @@
       gnome3.nautilus
       firefox-wayland
     ];
-    extraSessionCommands = ''
-      export SDL_VIDEODRIVER=wayland
-      export QT_QPA_PLATFORM=wayland
-      export QT_WAYLAND_DISABLE_WINDOWDECORATION="1"
-      export _JAVA_AWT_WM_NONREPARENTING=1
-    '';
+  };
+
+  environment.sessionVariables = {
+    MOZ_ENABLE_WAYLAND = "1";
+    XDG_CURRENT_DESKTOP = "sway";
+    SDL_VIDEODRIVER = "wayland";
+    QT_QPA_PLATFORM = "wayland";
+    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+    _JAVA_AWT_WM_NONREPARENTING = "1";
   };
 
   environment.systemPackages = with pkgs; [
