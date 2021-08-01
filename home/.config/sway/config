@@ -17,7 +17,7 @@ set $wsDev 2:dev
 set $wsIm 3:im
 set $wsDoc 4:doc
 #
-set $font pango:SauceCodePro Nerd Font Mono 11
+set $font pango:SauceCodePro Nerd Font Mono 10
 #
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -279,5 +279,6 @@ exec --no-startup-id wl-paste -t text --watch clipman store
 exec --no-startup-id firefox
 exec --no-startup-id nm-applet --indicator
 exec --no-startup-id kanshi
+exec --no-startup-id mako
 exec --no-startup-id signal-desktop --enable-features=UseOzonePlatform --ozone-platform=wayland
 exec --no-startup-id systemctl --user import-environment XDG_SESSION_PATH
