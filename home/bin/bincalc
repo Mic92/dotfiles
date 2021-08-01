@@ -4,6 +4,11 @@ import pdb
 import os
 from tempfile import TemporaryDirectory
 
+try:
+    import IPython
+    os.environ["PYTHONBREAKPOINT"] = "IPython.core.debugger.set_trace"
+except ImportError:
+    pass
 
 def format_unit(size):
     # 2**10 = 1024
