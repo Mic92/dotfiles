@@ -23,6 +23,7 @@
 
   boot.zfs.requestEncryptionCredentials = [ "zroot/root" ];
   boot.loader.systemd-boot.enable = true;
+  boot.kernelPackages = pkgs.linuxPackages_zen;
 
   users.extraUsers.shannan = {
     isNormalUser = true;
