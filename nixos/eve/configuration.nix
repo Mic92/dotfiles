@@ -48,7 +48,6 @@
     ./modules/redis.nix
     ./modules/rspamd/rspamd.nix
     ./modules/sshd.nix
-    ./modules/sslh.nix
     ./modules/squid.nix
     ./modules/syncthing.nix
     ./modules/smartd.nix
