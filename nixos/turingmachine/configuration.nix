@@ -49,6 +49,7 @@
 
   # required for gpg-agent?
   services.dbus.packages = [ pkgs.gcr ];
+  services.gnome.gnome-keyring.enable = true;
   #services.udev.packages = [ pkgs.platformio ];
 
   boot = {
@@ -204,6 +205,14 @@
     445
     139
   ];
+
+  systemd.services.prefetch-update = {
+    script = ''
+      nixos-rebuild build --flake github:Mic92/dotfiles
+      nix run github:Mic92/dotfiles#hm-build
+    '';
+    startAt = "";
+  };
 
   documentation.doc.enable = false;
 
