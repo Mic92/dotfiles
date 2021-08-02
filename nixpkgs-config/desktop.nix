@@ -106,8 +106,9 @@ in
     xorg.xev
     xorg.xprop
     xclip
-    alacritty
-    wezterm
+    #alacritty
+    foot
+    #wezterm
     #(pkgs.callPackage ./pkgs/alacritty.nix { })
     screen-message
     sshfsFuse

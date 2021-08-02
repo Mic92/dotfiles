@@ -35,7 +35,14 @@
     ];
   };
 
+  xdg.portal = {
+    #enable = true;
+    #gtkUsePortal = true;
+    #wlr.enable = true;
+  };
+
   environment.sessionVariables = {
+    #GTK_USE_PORTAL = "1";
     MOZ_ENABLE_WAYLAND = "1";
     XDG_CURRENT_DESKTOP = "sway";
     SDL_VIDEODRIVER = "wayland";
@@ -98,6 +105,7 @@
     # We explicitly unset PATH here, as we want it to be set by
     # systemctl --user import-environment in startsway
     environment.PATH = lib.mkForce null;
+    environment.XDG_CURRENT_DESKTOP = "sway:GNOME";
     serviceConfig = {
       Type = "simple";
       ExecStart = ''

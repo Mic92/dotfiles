@@ -35,7 +35,7 @@ font $font
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec alacritty
+bindsym $mod+Return exec foot
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -43,7 +43,7 @@ bindsym $mod+Shift+q kill
 bindsym $mod+Ctrl+l exec swaylock
 
 # start rofi (a program launcher)
-bindsym  $mod+d exec wofi --show run
+bindsym  $mod+d exec wofi --show run --gtk-dark
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
@@ -255,6 +255,7 @@ exec_always {
   gsettings set $gnome-schema icon-theme 'Adwaita'
   gsettings set $gnome-schema cursor-theme 'Adwaita'
   gsettings set $gnome-schema font-name "Ubuntu 18"
+  kanshictl reload
 }
 
 #
@@ -272,8 +273,12 @@ assign [class=$imClasses] $wsIm
 set $docClasses "^(Evince|GVim|keepassx|libreoffice)$"
 assign [class=$docClasses] $wsDoc
 #
-# hide titlebar if there is only one window
-for_window [class="^.*"] border pixel 1
+
+titlebar_border_thickness 2
+titlebar_padding 2
+
+hide_edge_borders both
+default_border normal 1
 
 exec --no-startup-id wl-paste -t text --watch clipman store
 exec --no-startup-id firefox

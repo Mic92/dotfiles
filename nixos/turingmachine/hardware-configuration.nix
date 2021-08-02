@@ -35,34 +35,24 @@
       enable = true;
       driSupport32Bit = true;
     };
-    pulseaudio = {
-      enable = true;
-      package = pkgs.pulseaudioFull;
-    };
+    #pulseaudio = {
+    #  enable = true;
+    #  package = pkgs.pulseaudioFull;
+    #};
   };
 
   # for pactl
-  #environment.systemPackages = with pkgs; [ pulseaudio ];
-  #services.pipewire = {
-  #  enable = true;
-  #  alsa.enable = true;
-  #  alsa.support32Bit = true;
-  #  pulse.enable = true;
-  #  #jack.enable = true;
-  #  # use the example session manager
-  #  media-session.enable = true;
-  #};
-  #security.rtkit.enable = true;
-
-  #environment.variables.GTK_USE_PORTAL = "1";
-  #xdg.portal = {
-  #  enable = true;
-  #  extraPortals = with pkgs; [
-  #    xdg-desktop-portal-wlr
-  #    xdg-desktop-portal-gtk
-  #  ];
-  #  gtkUsePortal = true;
-  #};
+  environment.systemPackages = with pkgs; [ pulseaudio ];
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    #jack.enable = true;
+    # use the example session manager
+    media-session.enable = true;
+  };
+  security.rtkit.enable = true;
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/1638-625C";
