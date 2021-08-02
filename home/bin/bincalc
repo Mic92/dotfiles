@@ -6,11 +6,13 @@ from tempfile import TemporaryDirectory
 
 try:
     import IPython
+
     os.environ["PYTHONBREAKPOINT"] = "IPython.core.debugger.set_trace"
 except ImportError:
     pass
 
-def format_unit(size):
+
+def format_unit(size) -> str:
     # 2**10 = 1024
     power = 2 ** 10
     n = 0
@@ -21,7 +23,16 @@ def format_unit(size):
     return f"{size:0.1f} {unit[n]}"
 
 
-def inspect_num(n: int):
+def contains(lower: int, upper: int, num: int) -> None:
+    if lower > num:
+        print(f"0x{lower - num:x} smaller than range")
+    elif upper < num:
+        print(f"0x{num - upper:x} above range")
+    else:
+        print("yes")
+
+
+def inspect_num(n: int) -> None:
     print(f"hex  {hex(n)}")
     print(f"bin  {bin(n)}")
     print(f"dec  {n}")
@@ -29,7 +40,7 @@ def inspect_num(n: int):
     print(f"unit {format_unit(n)}")
 
 
-def i(n: int):
+def i(n: int) -> None:
     return inspect_num(n)
 
 
