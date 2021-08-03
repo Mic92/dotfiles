@@ -52,8 +52,11 @@
     doom-emacs.url = "github:hlissner/doom-emacs";
     doom-emacs.flake = false;
 
+    emacs-overlay.url = "github:nix-community/emacs-overlay";
+
     nix-doom-emacs.url = "github:vlaci/nix-doom-emacs/develop";
     nix-doom-emacs.inputs.doom-emacs.follows = "doom-emacs";
+    nix-doom-emacs.inputs.emacs-overlay.follows = "emacs-overlay";
     nix-doom-emacs.inputs.flake-utils.follows = "flake-utils";
     nix-doom-emacs.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -70,6 +73,7 @@
 
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+
 
     hercules-ci.url = "github:hercules-ci/hercules-ci-agent";
     hercules-ci.inputs.nixpkgs.follows = "nixpkgs";

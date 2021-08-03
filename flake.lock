@@ -56,13 +56,12 @@
       }
     },
     "emacs-overlay": {
-      "flake": false,
       "locked": {
-        "lastModified": 1626972035,
-        "narHash": "sha256-YhBtnKmLDYiEzP5ZEMEQMg6oMP5EV+ToCkku7ZYfL+A=",
+        "lastModified": 1628387328,
+        "narHash": "sha256-DuiRL4AHfozVM8SqHDUhcRhn661e0TkuU2bOYNMfmxE=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "be04b45efb35db58e6ac6aa86b84f850c85b5dfe",
+        "rev": "db776f230c016deeadebbce42c885c976502ccac",
         "type": "github"
       },
       "original": {
@@ -363,7 +362,9 @@
           "doom-emacs"
         ],
         "doom-snippets": "doom-snippets",
-        "emacs-overlay": "emacs-overlay",
+        "emacs-overlay": [
+          "emacs-overlay"
+        ],
         "emacs-so-long": "emacs-so-long",
         "evil-markdown": "evil-markdown",
         "evil-org-mode": "evil-org-mode",
@@ -713,6 +714,7 @@
       "inputs": {
         "bme680-mqtt": "bme680-mqtt",
         "doom-emacs": "doom-emacs",
+        "emacs-overlay": "emacs-overlay",
         "envfs": "envfs",
         "fenix": "fenix",
         "flake-registry": "flake-registry",

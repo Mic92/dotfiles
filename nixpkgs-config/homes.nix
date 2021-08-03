@@ -1,4 +1,4 @@
-{ self, nixpkgs, home-manager, nur, nix-doom-emacs }:
+{ self, nixpkgs, home-manager, nur, nix-doom-emacs, emacs-overlay }:
 
 let
   hmConfiguration = { extraModules ? [ ], system ? "x86_64-linux" }:
@@ -12,6 +12,9 @@ let
           pkgs = nixpkgs;
           nurFun = import nur;
         };
+        nixpkgs.overlays = [
+          emacs-overlay.overlay
+        ];
       };
       inherit system;
       homeDirectory = "/home/joerg";
