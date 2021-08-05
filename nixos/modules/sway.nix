@@ -35,15 +35,11 @@
     ];
   };
 
-  xdg.portal = {
-    #enable = true;
-    #gtkUsePortal = true;
-    #wlr.enable = true;
-  };
+  xdg.portal.enable = true;
 
   environment.sessionVariables = {
-    #GTK_USE_PORTAL = "1";
     MOZ_ENABLE_WAYLAND = "1";
+    XDG_SESSION_TYPE = "wayland";
     XDG_CURRENT_DESKTOP = "sway";
     SDL_VIDEODRIVER = "wayland";
     QT_QPA_PLATFORM = "wayland";
@@ -52,6 +48,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    xdg_utils
     # polkit agent
     polkit_gnome
 
@@ -69,9 +66,13 @@
       name = "startsway";
       destination = "/bin/startsway";
       executable = true;
-      text = ''
+      text = let
+        schema = pkgs.gsettings-desktop-schemas;
+        datadir = "${schema}/share/gsettings-schemas/${schema.name}";
+      in ''
         #! ${pkgs.bash}/bin/bash
 
+        export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
         # first import environment variables from the login manager
         systemctl --user import-environment
         # then start the service
@@ -105,7 +106,6 @@
     # We explicitly unset PATH here, as we want it to be set by
     # systemctl --user import-environment in startsway
     environment.PATH = lib.mkForce null;
-    environment.XDG_CURRENT_DESKTOP = "sway:GNOME";
     serviceConfig = {
       Type = "simple";
       ExecStart = ''

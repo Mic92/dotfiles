@@ -2,7 +2,7 @@
 
 {
   imports = [
-    #./modules/vim.nix
+    #./modules/neovim.nix
     ./modules/emacs
   ];
 
