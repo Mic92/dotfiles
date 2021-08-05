@@ -199,5 +199,7 @@
 
 (setq-hook! 'nix-mode-hook company-idle-delay nil)
 
+(setq sentence-end-double-space nil) ;period single space ends sentence
+
 (after! rustic
   (setq rustic-lsp-server 'rust-analyzer))
