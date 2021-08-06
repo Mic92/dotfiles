@@ -193,7 +193,14 @@
 
 (setq persistent-scratch-save-file (expand-file-name "~/.emacs.d/.persistant-scratch"))
 
-(use-package flycheck
+(use-package! tree-sitter
+  :config
+  (cl-pushnew (expand-file-name "~/.tree-sitter") tree-sitter-load-path)
+  (require 'tree-sitter-langs)
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
+(use-package! flycheck
   :config
   (setq-default flycheck-disabled-checkers '(python-pylint)))
 

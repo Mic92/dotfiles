@@ -13,6 +13,8 @@
 (package! meson-mode)
 (package! jsonnet-mode)
 (package! direnv)
+(package! tree-sitter)
+(package! tree-sitter-langs)
 
 ;(package! bitwarden
 ;  :recipe (:host github :repo "seanfarley/emacs-bitwarden"))
