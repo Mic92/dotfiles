@@ -21,5 +21,6 @@ in
   boot.initrd.network.ssh.authorizedKeys = [ key ];
 
   security.sudo.wheelNeedsPassword = false;
-  programs.zsh.enable = true;
+
+  imports = [ ./zsh.nix ];
 }
