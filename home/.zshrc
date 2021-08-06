@@ -202,6 +202,7 @@ autoload -zU compinit
 fignore=(.DS_Store $fignore)
 [ -d "$HOME/.zsh-completions/src" ] && fpath+=($HOME/.zsh-completions/src)
 [ -d "$HOME/.nix-profile/share/zsh/site-functions" ] && fpath+=(~/.nix-profile/share/zsh/site-functions)
+[ -d /run/current-system/sw/share/zsh/site-functions/ ] && fpath+=(/run/current-system/sw/share/zsh/site-functions/)
 
 # only update zsh completion once a day
 if [[ -n ${ZDOTDIR:-${HOME}}/$ZSH_COMPDUMP(#qN.mh+24) ]]; then
