@@ -49,7 +49,7 @@
     home-manager.url = "github:Mic92/home-manager/nixos-option-test";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    doom-emacs.url = "github:hlissner/doom-emacs";
+    doom-emacs.url = "github:hlissner/doom-emacs/develop";
     doom-emacs.flake = false;
 
     emacs-overlay.url = "github:nix-community/emacs-overlay";
