@@ -36,6 +36,7 @@
   };
 
   xdg.portal.enable = true;
+  xdg.portal.wlr.enable = true;
 
   environment.sessionVariables = {
     MOZ_ENABLE_WAYLAND = "1";
