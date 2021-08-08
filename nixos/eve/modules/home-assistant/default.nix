@@ -43,7 +43,13 @@ in
     in
     {
       frontend = { };
-      http = { };
+      http = {
+        use_x_forwarded_for = true;
+        trusted_proxies = [
+          "127.0.0.1"
+          "::1"
+        ];
+      };
       history.exclude = {
         entities = hiddenEntities;
         domains = [
