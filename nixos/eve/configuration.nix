@@ -57,7 +57,6 @@
     ./modules/tt-rss.nix
     ./modules/users.nix
     #./modules/wiregrill
-    ./modules/zsh.nix
     ./modules/hercules-ci.nix
 
     ../modules/builder.nix
@@ -71,6 +70,7 @@
     #../modules/wezterm.nix
     ../modules/wireguard.nix
     ../modules/zfs.nix
+    ../modules/zsh.nix
   ];
 
   # The NixOS release to be compatible with for stateful data such as databases.
