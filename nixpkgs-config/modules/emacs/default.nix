@@ -38,7 +38,7 @@ let
       git -C $HOME/.emacs.d fetch https://github.com/hlissner/doom-emacs.git || true
       git -C $HOME/.emacs.d checkout ${pkgs.doomEmacsRevision} || true
       $HOME/.emacs.d/bin/doom sync || true
-      yes 4 | $HOME/.emacs.d/bin/doom sync -u &
+      YES=1 FORCE=1 $HOME/.emacs.d/bin/doom sync -u &
     fi
     exec ${myemacs}/bin/emacs --daemon
   '';
