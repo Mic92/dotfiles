@@ -32,6 +32,11 @@
       gnome3.file-roller
       gnome3.nautilus
       firefox-wayland
+
+      # Somehow xdg.portal services do not really work for me.
+      # Instead I re-start xdg-desktop-portal and xdg-desktop-portal wlr from sway itself
+      xdg-desktop-portal
+      xdg-desktop-portal-wlr
     ];
   };
 
