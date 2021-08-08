@@ -52,7 +52,8 @@
     doom-emacs.url = "github:hlissner/doom-emacs/develop";
     doom-emacs.flake = false;
 
-    emacs-overlay.url = "github:nix-community/emacs-overlay";
+    # recent regression in emacsGcc: https://mail.gnu.org/archive/html/bug-gnu-emacs/2021-08/msg00294.html
+    emacs-overlay.url = "github:nix-community/emacs-overlay/8996dc361d85da1a8707cbc1a686b6c897055027";
 
     flake-registry.url = "github:NixOS/flake-registry";
     flake-registry.flake = false;

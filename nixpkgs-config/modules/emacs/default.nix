@@ -3,7 +3,7 @@
 with lib;
 
 let
-  myemacs = config.programs.emacs.package;
+  myemacs = pkgs.emacsGcc;
   editorScript =
     { name ? "emacseditor"
     , x11 ? false
@@ -37,7 +37,7 @@ let
     fi
     git -C $HOME/.emacs.d fetch origin || true
     git -C $HOME/.emacs.d checkout ${pkgs.doomEmacsRevision} || true
-    $HOME/.emacs.d/bin/doom sync
+    $HOME/.emacs.d/bin/doom sync || true
     exec ${myemacs}/bin/emacs --daemon
   '';
 
@@ -51,7 +51,7 @@ in
   '');
 
   home.packages = with pkgs; [
-    pkgs.emacsGcc
+    myemacs
     ripgrep
     mu
     (lib.hiPrio (makeDesktopItem {
