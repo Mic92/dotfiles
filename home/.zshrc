@@ -3,7 +3,7 @@
 # - not in linux ttys
 # - no nested tmux sessions
 if [[ -n ${commands[tmux]} ]] && [[ "$TERM" != "linux" ]] && [[ "$TERM_PROGRAM" != WezTerm ]] && [[ -z "$TMUX" ]] && [[ "$INSIDE_EMACS" != "vterm" ]]; then
-  if [[ -n "$SSH_AUTH_SOCK" ]]  then
+  if [[ -n "$SSH_AUTH_SOCK" ]]; then
     tmux set-environment -g SSH_AUTH_SOCK "$SSH_AUTH_SOCK" 2>/dev/null
   fi
   tmux new-session -s "${TTY:t}" -t main || tmux attach-session -t "${TTY:t}"
