@@ -26,11 +26,11 @@
     "doom-emacs": {
       "flake": false,
       "locked": {
-        "lastModified": 1628182477,
-        "narHash": "sha256-iEzCBSA59I6Ds2P8fnAFWjW6pWT/PSvBSKundxv/UxM=",
+        "lastModified": 1628236233,
+        "narHash": "sha256-J7qiVmS/4mnIeTyFPg4SwByWuEXmEkB2Xa/jomB0lqY=",
         "owner": "hlissner",
         "repo": "doom-emacs",
-        "rev": "a2a128d3a56a96610fce261f4df256d289135c74",
+        "rev": "6678f3833b5c237b8bf4a0a65449244bec5554e5",
         "type": "github"
       },
       "original": {
@@ -182,11 +182,11 @@
         "rust-analyzer-src": "rust-analyzer-src"
       },
       "locked": {
-        "lastModified": 1628218774,
-        "narHash": "sha256-afNH17Z3m8+qOGI190cZq7zvvtuv1Y+blOJNphN7EM8=",
+        "lastModified": 1628389537,
+        "narHash": "sha256-CMB0HMEP1PtjlL0fFN6rKJ6w/HmyH81Ww6Fnk53L34A=",
         "owner": "nix-community",
         "repo": "fenix",
-        "rev": "b7c5c67a2fdb5998179b8743c88c685c84ff5b9a",
+        "rev": "cecc41f604596a2ed317b49851194d23452481e7",
         "type": "github"
       },
       "original": {
@@ -383,14 +383,15 @@
         "org-yt": "org-yt",
         "php-extras": "php-extras",
         "revealjs": "revealjs",
-        "rotate-text": "rotate-text"
+        "rotate-text": "rotate-text",
+        "straight": "straight"
       },
       "locked": {
-        "lastModified": 1627398156,
-        "narHash": "sha256-Ru1aV3NuIFXAsvUE3de8KR7xDZOo1GCBJdsWKJn+Ebw=",
+        "lastModified": 1628328518,
+        "narHash": "sha256-U56ydG0+GQvXc9ivjPwJzIE4U4ovXDOzTLdHqJx6oxo=",
         "owner": "vlaci",
         "repo": "nix-doom-emacs",
-        "rev": "fee14d217b7a911aad507679dafbeaa8c1ebf5ff",
+        "rev": "656a3aea172d6fb99a1d6e5c45667121855e5996",
         "type": "github"
       },
       "original": {
@@ -426,16 +427,15 @@
     "nix-straight": {
       "flake": false,
       "locked": {
-        "lastModified": 1621543597,
-        "narHash": "sha256-E/m2Hrw2og//CfOCOWe2yapYC01Tqhozn4YMPYJsC3o=",
+        "lastModified": 1628328207,
+        "narHash": "sha256-ZWdev0HyxmKIdzLetPKiNK7Hh5gBuCnGwqgq95aNf5k=",
         "owner": "vlaci",
         "repo": "nix-straight.el",
-        "rev": "8e84d04f10b2298de856b2b8b9a0d13abc91b5ca",
+        "rev": "4bb7a6267d0bbb76d7bf4168ada1fb4eec1b735f",
         "type": "github"
       },
       "original": {
         "owner": "vlaci",
-        "ref": "v2.2.0",
         "repo": "nix-straight.el",
         "type": "github"
       }
@@ -569,11 +569,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1628210011,
-        "narHash": "sha256-g3gDZvBjxkl5cWsyH6huWLOcP5pPGtPX69O9VLbYuOA=",
+        "lastModified": 1628387774,
+        "narHash": "sha256-zFoSC4J2L8znwNcM5tvs8vfU3tVJElVtm4s8Y3cTNZc=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "9d315a97dc1470c90a256b187a92eba6c4af0dbf",
+        "rev": "157140d46c0fd5296f2e966375109fe661bad404",
         "type": "github"
       },
       "original": {
@@ -753,11 +753,11 @@
     "rust-analyzer-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1628196349,
-        "narHash": "sha256-s0geMLo0UvSSGpEfxyw7hoDlk36d+XyPFtOOdWBhihI=",
+        "lastModified": 1628367418,
+        "narHash": "sha256-/TW7wwMKQQDShvV+/Ar2ty0YyYZFQBKZrhydJco4ww4=",
         "owner": "rust-analyzer",
         "repo": "rust-analyzer",
-        "rev": "85d80df889bc17b736f283b73eca098b40f9c6cd",
+        "rev": "6ea07fc26f2f92959b792b903a3719425a4d1a19",
         "type": "github"
       },
       "original": {
@@ -784,6 +784,22 @@
       "original": {
         "owner": "Mic92",
         "repo": "sops-nix",
+        "type": "github"
+      }
+    },
+    "straight": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1623633709,
+        "narHash": "sha256-taLIYnjs9sD8N8PuGO2F7l+O69u0dNPunwzFVTlXjUM=",
+        "owner": "raxod502",
+        "repo": "straight.el",
+        "rev": "1e27b0590df77a5d478970ca58fd6606971692f5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "raxod502",
+        "repo": "straight.el",
         "type": "github"
       }
     },
