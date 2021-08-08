@@ -132,7 +132,6 @@ in
     mumble
 
     isync
-    mu
     # to fix xdg-open
     glib
     zoom-us

@@ -166,14 +166,6 @@
 ;; otherwise nix-mode will block on instantiating stuff
 (setenv "NIX_REMOTE_SYSTEMS" "")
 
-;; FIXME not loaded as a proper package yet
-;;(use-package! bitwarden
-;;  :config
-;;  (bitwarden-auth-source-enable)
-;;  (setq bitwarden-automatic-unlock (lambda() "")))
-(bitwarden-auth-source-enable)
-(setq bitwarden-automatic-unlock (lambda() ""))
-
 (defun treemacs-back-and-forth ()
   (interactive)
   (if (treemacs-is-treemacs-window-selected?)

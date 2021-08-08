@@ -1,11 +1,10 @@
-{ self, nixpkgs, home-manager, nur, nix-doom-emacs, emacs-overlay }:
+{ self, nixpkgs, home-manager, nur, doom-emacs, emacs-overlay }:
 
 let
   hmConfiguration = { extraModules ? [ ], system ? "x86_64-linux" }:
     (home-manager.lib.homeManagerConfiguration {
       configuration = { ... }: {
         imports = extraModules ++ [
-          nix-doom-emacs.hmModule
           ./common.nix
         ];
         nixpkgs.config = import ./config.nix {
@@ -14,6 +13,9 @@ let
         };
         nixpkgs.overlays = [
           emacs-overlay.overlay
+          (self: super: {
+            doomEmacsRevision = doom-emacs.rev;
+          })
         ];
       };
       inherit system;

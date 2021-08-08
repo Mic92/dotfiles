@@ -25,7 +25,6 @@
       clang-tools
       nixpkgs-fmt
       shfmt
-      emacsGcc
 
       python3.pkgs.black
       pyright

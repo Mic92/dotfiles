@@ -30,75 +30,30 @@ let
     #!${pkgs.zsh}/bin/zsh
     source ~/.zshrc
     export PATH=$PATH:${lib.makeBinPath [ pkgs.git pkgs.sqlite pkgs.unzip ]}
+    if [ ! -d $HOME/.emacs ]; then
+      git clone git@github.com:hlissner/doom-emacs.git $HOME/.emacs
+    fi
+    git -C $HOME/.emacs pull || true
+    git -C $HOME/.emacs checkout ${pkgs.doomEmacsRevision} || true
+    $HOME/.emacs/bin/doom sync
     exec ${myemacs}/bin/emacs --daemon
   '';
-  #export TREE_SITTER_GRAMMAR_DIR=${treeSitterGrammars}
 
   editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
 in
 {
-  home.file.".emacs.d/init.el".text = lib.mkBefore ''
-    (load "${pkgs.fetchFromGitHub {
-      owner = "seanfarley";
-      repo = "emacs-bitwarden";
-      rev = "e03919ca68c32a8053ddea2ed05ecc5e454d8a43";
-      sha256 = "sha256-ooLgOwpJX9dgkWEev9xmPyDVPRx4ycyZQm+bggKAfa0=";
-    }}/bitwarden.el")
-  '';
+  programs.emacs.package = pkgs.emacsGcc;
 
-  programs.doom-emacs = {
-    enable = true;
-    doomPrivateDir =  builtins.path {
-      name =  "doom";
-      path = ../../../home/.doom.d;
-    };
-    #emacsPackagesOverlay = self: super: with pkgs; {
-    #  tsc = super.tsc.overrideAttrs (old:
-    #    let
-    #      libtsc_dyn = rustPlatform.buildRustPackage rec {
-    #        pname = "emacs-tree-sitter";
-    #        version = "0.13.1";
-    #        src = fetchFromGitHub {
-    #          owner = "ubolonton";
-    #          repo = "emacs-tree-sitter";
-    #          rev = version;
-    #          sha256 = "sha256-m6hL7HK0fVAcaYaqS/fLaGH686e1jTjos51UdJgNguc=";
-    #        };
-    #        preBuild = ''
-    #          export BINDGEN_EXTRA_CLANG_ARGS="$(< ${stdenv.cc}/nix-support/libc-crt1-cflags) \
-    #            $(< ${stdenv.cc}/nix-support/libc-cflags) \
-    #            $(< ${stdenv.cc}/nix-support/cc-cflags) \
-    #            $(< ${stdenv.cc}/nix-support/libcxx-cxxflags) \
-    #            ${lib.optionalString stdenv.cc.isClang "-idirafter ${stdenv.cc.cc}/lib/clang/${lib.getVersion stdenv.cc.cc}/include"} \
-    #            ${lib.optionalString stdenv.cc.isGNU
-    #              "-isystem ${stdenv.cc.cc}/lib/gcc/${stdenv.hostPlatform.config}/${lib.getVersion stdenv.cc.cc}/include/"} \
-    #            ${lib.optionalString stdenv.cc.isGNU
-    #              "-isystem ${stdenv.cc.cc}/include/c++/${lib.getVersion stdenv.cc.cc} -isystem ${stdenv.cc.cc}/include/c++/${lib.getVersion stdenv.cc.cc}/${stdenv.hostPlatform.config}"} \
-    #            $NIX_CFLAGS_COMPILE"
-    #        '';
-    #        LIBCLANG_PATH = "${llvmPackages.libclang}/lib";
-    #        cargoHash = "sha256-UHuosX4MnZMvgRzr6Hc4RNafP0UCYknTxjPIJvYnXkU=";
-    #      };
-    #    in
-    #    {
-    #      inherit (libtsc_dyn) src;
-    #      preBuild = ''
-    #        ext=${stdenv.hostPlatform.extensions.sharedLibrary}
-    #        dest=$out/share/emacs/site-lisp/elpa/tsc-${old.version}
-    #        install -D ${libtsc_dyn}/lib/libtsc_dyn$ext $dest/tsc-dyn$ext
-    #        echo -n "0.13.1" > $dest/DYN-VERSION
-    #      '';
-    #    });
-    #};
-
-    extraPackages = [
-      pkgs.mu
-    ];
-  };
+  home.file.".tree-sitter".source = (pkgs.runCommand "grammars" {} ''
+    mkdir -p $out/bin
+    ${lib.concatStringsSep "\n"
+      (lib.mapAttrsToList (name: src: "name=${name}; ln -s ${src}/parser $out/bin/\${name#tree-sitter-}.so") pkgs.tree-sitter.builtGrammars)};
+  '');
 
   home.packages = with pkgs; [
     (lib.hiPrio editorScriptX11)
     ripgrep
+    mu
     (lib.hiPrio (makeDesktopItem {
       name = "emacs";
       desktopName = "Emacs (Client)";

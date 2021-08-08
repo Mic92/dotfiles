@@ -13,14 +13,13 @@
 , nix-ld
 , envfs
 , doom-emacs
-, nix-doom-emacs
+, emacs-overlay
 , lambda-pirate
 , nixpkgs-stable
 , hercules-ci
 , nix-darwin
 , vmsh
 , fenix
-, emacs-overlay
 }:
 (flake-utils.lib.eachDefaultSystem (system:
   let
@@ -90,7 +89,7 @@
   };
 
   hmConfigurations = import ./nixpkgs-config/homes.nix {
-    inherit self nixpkgs home-manager nur nix-doom-emacs emacs-overlay;
+    inherit self nixpkgs home-manager nur doom-emacs emacs-overlay;
   };
 
   hydraJobs = (nixpkgs.lib.mapAttrs' (name: config: nixpkgs.lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel) self.nixosConfigurations)
