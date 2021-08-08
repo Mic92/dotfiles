@@ -30,20 +30,20 @@ let
     #!${pkgs.zsh}/bin/zsh
     source ~/.zshrc
     export PATH=$PATH:${lib.makeBinPath [ pkgs.git pkgs.sqlite pkgs.unzip ]}
-    if [ ! -d $HOME/.emacs ]; then
-      git clone git@github.com:hlissner/doom-emacs.git $HOME/.emacs
+    if [ ! -d $HOME/.emacs.d/.git ]; then
+      mkdir -p $HOME/.emacs.d
+      git -C $HOME/.emacs.d init
+      git -C $HOME/.emacs.d remote add origin git@github.com:hlissner/doom-emacs.git
     fi
-    git -C $HOME/.emacs pull || true
-    git -C $HOME/.emacs checkout ${pkgs.doomEmacsRevision} || true
-    $HOME/.emacs/bin/doom sync
+    git -C $HOME/.emacs.d fetch origin || true
+    git -C $HOME/.emacs.d checkout ${pkgs.doomEmacsRevision} || true
+    $HOME/.emacs.d/bin/doom sync
     exec ${myemacs}/bin/emacs --daemon
   '';
 
   editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
 in
 {
-  programs.emacs.package = pkgs.emacsGcc;
-
   home.file.".tree-sitter".source = (pkgs.runCommand "grammars" {} ''
     mkdir -p $out/bin
     ${lib.concatStringsSep "\n"
@@ -51,20 +51,9 @@ in
   '');
 
   home.packages = with pkgs; [
-    (lib.hiPrio editorScriptX11)
+    pkgs.emacsGcc
     ripgrep
     mu
-    (lib.hiPrio (makeDesktopItem {
-      name = "emacs";
-      desktopName = "Emacs (Client)";
-      exec = "${editorScriptX11}/bin/emacs %F";
-      icon = "emacs";
-      genericName = "Text Editor";
-      comment = "Edit text";
-      categories = "Development;TextEditor;Utility";
-      mimeType = "text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++";
-    }))
-
     (lib.hiPrio (makeDesktopItem {
       name = "emacs-mailto";
       desktopName = "Emacs (MailTo)";
