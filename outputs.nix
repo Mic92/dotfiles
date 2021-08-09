@@ -50,11 +50,12 @@
       type = "app";
       program = toString (pkgs.writeScript "hm-build" ''
         #!${pkgs.runtimeShell}
-        set -eu -o pipefail -x
+        set -eu -o pipefail
         export PATH=${pkgs.lib.makeBinPath [ pkgs.git pkgs.coreutils pkgs.nixFlakes pkgs.jq ]}
         declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie", ["grandalf"]="common-aarch64", ["yasmin"]="common-aarch64")
         profile=''${profiles[$HOSTNAME]:-common}
         flake=$(nix flake metadata --json ${./.} | jq -r .url)
+        set -x
         nix build --no-link --show-trace --json ".#hmConfigurations.''${profile}.activationPackage" "$@" | jq -r '.[] | .outputs | .out'
       '');
     };
