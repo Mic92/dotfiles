@@ -101,7 +101,6 @@ in
     aspellDicts.en
     hunspell
     hunspellDicts.en-gb-ise
-    urlview
     dino
     xorg.xev
     xorg.xprop
