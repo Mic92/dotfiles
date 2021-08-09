@@ -267,7 +267,7 @@ fi
 if [[ -n ${commands[zoxide]} ]]; then
   eval "$(zoxide init zsh)"
 else
-  alias z=cd
+  alias z="builtin cd"
 fi
 alias pgrep='pgrep -a'
 
@@ -633,7 +633,9 @@ cd() {
   if [[ -f "$to" ]]; then
     to="$(dirname $to)"
   fi
-  builtin cd "$to"
+
+  # zoxide or builtin cd
+  z "$to"
 }
 md5() { echo -n $1 | openssl md5 /dev/stdin }
 sha1() { echo -n $1 | openssl sha1 /dev/stdin }
