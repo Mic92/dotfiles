@@ -432,7 +432,9 @@ fi
 if [ -n "${commands[bat]}" ]; then
   cat() {
     if [[ -t 1 ]] && [[ -o interactive ]]; then
-        if [[ -n "$DISPLAY" ]]; then
+        if [[ -n "$WAYLAND_DISPLAY" ]]; then
+            wl-copy < "$1" 2>/dev/null &
+        elif [[ -n "$DISPLAY" ]]; then
             xclip -selection clipboard < "$1" 2>/dev/null &
         fi
         bat "$@"
