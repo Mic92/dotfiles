@@ -25,6 +25,7 @@
     mpc_cli
     clipit
     picom
+    xclip
     (i3pystatus.override {
       extraLibs = with python3.pkgs; [ keyrings-alt paho-mqtt ];
     })

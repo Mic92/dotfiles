@@ -104,7 +104,6 @@ in
     dino
     xorg.xev
     xorg.xprop
-    xclip
     #alacritty
     foot
     #wezterm
