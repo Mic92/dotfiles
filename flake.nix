@@ -4,7 +4,8 @@
   # To update all inputs:
   # $ nix flake update
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
+    #flake-utils.url = "github:numtide/flake-utils";
+    flake-utils.url = "github:mic92/flake-utils/aarch64-darwin";
 
     fenix.url = "github:nix-community/fenix";
     fenix.inputs.nixpkgs.follows = "nixpkgs";
