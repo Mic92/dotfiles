@@ -91,10 +91,6 @@ in
     gnome3.defaultIconTheme
     hicolor_icon_theme
     graphicsmagick
-    #gimp
-    #firefox
-    firefox-wayland
-    #chromium
     aspell
     aspellDicts.de
     aspellDicts.fr
@@ -102,11 +98,8 @@ in
     hunspell
     hunspellDicts.en-gb-ise
     dino
-    xorg.xev
-    xorg.xprop
     #alacritty
     foot
-    #wezterm
     #(pkgs.callPackage ./pkgs/alacritty.nix { })
     screen-message
     sshfsFuse
@@ -153,7 +146,7 @@ in
       fi
     '')
 
-    #wezterm
+    wezterm
     #(pkgs.writeScriptBin "wez" ''
     #  #!${pkgs.runtimeShell}
     #  set -eux -o pipefail

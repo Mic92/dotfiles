@@ -26,6 +26,8 @@
     clipit
     picom
     xclip
+    xorg.xev
+    xorg.xprop
     (i3pystatus.override {
       extraLibs = with python3.pkgs; [ keyrings-alt paho-mqtt ];
     })
