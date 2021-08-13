@@ -3,7 +3,6 @@
 {
   imports = [
     #./modules/neovim.nix
-  ] ++ lib.optional (pkgs.stdenv.hostPlatform.system != "aarch64-darwin") [
     ./modules/emacs
   ];
 
