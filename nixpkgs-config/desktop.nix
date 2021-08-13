@@ -146,7 +146,7 @@ in
       fi
     '')
 
-    wezterm
+    #wezterm
     #(pkgs.writeScriptBin "wez" ''
     #  #!${pkgs.runtimeShell}
     #  set -eux -o pipefail
