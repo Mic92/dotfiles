@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: breakpoint
+# key: brk
+# --
+breakpoint(); pass
