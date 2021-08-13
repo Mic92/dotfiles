@@ -199,27 +199,3 @@
 
 (after! rustic
   (setq rustic-lsp-server 'rust-analyzer))
-
-(setq prettify-symbols-alist '(("lambda" . ?λ)
-                                 ("->" . ?→)
-                                 ("->>" . ?↠)
-                                 ("=>" . ?⇒)
-                                 ("map" . ?↦)
-                                 ("/=" . ?≠)
-                                 ("!=" . ?≠)
-                                 ("==" . ?≡)
-                                 ("<=" . ?≤)
-                                 (">=" . ?≥)
-                                 ("=<<" . ?=≪)
-                                 (">>=" . ?≫=)
-                                 ("<=<" . ?↢)
-                                 (">=>" . ?↣)
-                                 ("&&" . ?∧)
-                                 ("||" . ?∨)
-                                 ("not" . ?¬)))
-;; Alternatively, rendering begin/end src as icons can be improved:
-;; https://pank.eu/blog/pretty-babel-src-blocks.html#coderef-symbol
-
-(add-hook 'text-mode-hook 'add-pretty-lambda)
-(add-hook 'prog-mode-hook 'add-pretty-lambda)
-(add-hook 'org-mode-hook 'add-pretty-lambda)
