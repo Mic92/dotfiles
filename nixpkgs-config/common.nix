@@ -57,7 +57,6 @@
       ncurses
       coreutils
       git
-      mcfly
     ] ++ (lib.optionals pkgs.stdenv.isLinux [
       strace
       psmisc
