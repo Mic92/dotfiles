@@ -38,17 +38,29 @@
       ];
     }
     {
-      hostName = "martha.r";
+      hostName = "yasmin.r";
       sshUser = "ssh-ng://nix";
       sshKey = config.sops.secrets.id_buildfarm.path;
-      system = "x86_64-linux";
-      maxJobs = 8;
+      system = "aarch64-linux";
+      maxJobs = 224;
       supportedFeatures = [
         "big-parallel"
         "kvm"
         "nixos-test"
       ];
     }
+    #{
+    #  hostName = "martha.r";
+    #  sshUser = "ssh-ng://nix";
+    #  sshKey = config.sops.secrets.id_buildfarm.path;
+    #  system = "x86_64-linux";
+    #  maxJobs = 8;
+    #  supportedFeatures = [
+    #    "big-parallel"
+    #    "kvm"
+    #    "nixos-test"
+    #  ];
+    #}
     {
       hostName = "donna.r";
       sshUser = "ssh-ng://nix";
