@@ -636,14 +636,11 @@ cd() {
     to="$(dirname $to)"
   fi
 
-  # zoxide or builtin cd
-  z "$to"
+  # fallback to zoxide if builtin cd fails
+  if ! builtin cd "$to" && [[ -n ${commands[zoxide]} ]]; then
+    __zoxide_z "$to"
+  fi
 }
-md5() { echo -n $1 | openssl md5 /dev/stdin }
-sha1() { echo -n $1 | openssl sha1 /dev/stdin }
-sha256() { echo -n $1 | openssl dgst -sha256 /dev/stdin }
-sha512() { echo -n $1 | openssl dgst -sha512 /dev/stdin }
-rot13() { echo $1 | tr "A-Za-z" "N-ZA-Mn-za-m" }
 urlencode() { python3 -c "import sys, urllib.parse as parse; print(parse.quote(sys.argv[1]))" $1 }
 urldecode() { python3 -c "import sys, urllib.parse as parse; print(parse.unquote(sys.argv[1]))" $1 }
 cheat() { command cheat "$@" | less }
