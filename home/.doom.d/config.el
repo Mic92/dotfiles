@@ -199,3 +199,7 @@
 
 (after! rustic
   (setq rustic-lsp-server 'rust-analyzer))
+
+(use-package envrc
+    :config
+    (envrc-global-mode))
