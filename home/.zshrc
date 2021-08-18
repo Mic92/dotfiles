@@ -643,7 +643,7 @@ cd() {
 }
 urlencode() { python3 -c "import sys, urllib.parse as parse; print(parse.quote(sys.argv[1]))" $1 }
 urldecode() { python3 -c "import sys, urllib.parse as parse; print(parse.unquote(sys.argv[1]))" $1 }
-cheat() { command cheat "$@" | less }
+cheat() { command cheat -c "$@" | less }
 ninja(){
   local build_path="$(dirname "$(upfind "build.ninja")")"
   command ninja -C "${build_path:-.}" "$@"
@@ -766,9 +766,6 @@ if [[ -f "$HOME/.zsh-autopair/autopair.zsh" ]]; then
 fi
 source ~/.zsh-termsupport
 
-if [[ -d "$HOME/git/x86_64-linux-cheatsheats/pages" ]]; then
-  export CHEAT_PATH="${CHEAT_PATH:+':'}$HOME/git/x86_64-linux-cheatsheats/pages"
-fi
 if [ -n "${commands[r2]}" ]; then
   r2() {
     if [[ "$#" -eq 0 ]]; then
