@@ -287,7 +287,6 @@ titlebar_padding 2
 hide_edge_borders both
 default_border normal 1
 
-exec --no-startup-id wl-paste -t text --watch clipman store
 exec --no-startup-id firefox
 exec --no-startup-id nm-applet --indicator
 exec --no-startup-id kanshi

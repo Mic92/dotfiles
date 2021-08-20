@@ -20,7 +20,6 @@
       swappy
       wdisplays
       wl-clipboard
-      clipman
 
       pavucontrol
       lightlocker
