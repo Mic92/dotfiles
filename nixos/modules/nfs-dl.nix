@@ -15,4 +15,15 @@
       "x-systemd.idle-timeout=1min"
     ];
   };
+
+  #fileSystems."/mnt/prism2" = {
+  #  device = "//42:0:ce16::1/export";
+  #  fsType = "cifs";
+  #  options = [
+  #    "guest"
+  #    "nofail"
+  #    "noauto"
+  #    "ro"
+  #  ];
+  #};
 }
