@@ -102,16 +102,16 @@ lib.mapAttrsToList
       description = "homeassistant notification {{$labels.entity}} ({{$labels.friendly_name}}): {{$value}}";
     };
 
-    filesystem_full_in_12h = {
-      condition = "predict_linear(disk_free{${deviceFilter}}[3h], 12 * 3600) < 0";
+    filesystem_full_in_24h = {
+      condition = "predict_linear(disk_free{${deviceFilter}}[6h], 24 * 60 * 60) < 0";
       time = "1h";
-      description = "{{$labels.host}} device {{$labels.device}} on {{$labels.path}} is running out of space in approx. 12 hours";
+      description = "{{$labels.host}} device {{$labels.device}} on {{$labels.path}} is running out of space in approx. 24 hours";
     };
 
-    inodes_full_in_12h = {
-      condition = "predict_linear(disk_inodes_free{${deviceFilter}}[3h], 12 * 3600) < 0";
+    inodes_full_in_4h = {
+      condition = "predict_linear(disk_inodes_free{${deviceFilter}}[6h], 4 * 60 * 60) < 0";
       time = "1h";
-      description = "{{$labels.host}} device {{$labels.device}} on {{$labels.path}} is running out of inodes in approx. 12 hours";
+      description = "{{$labels.host}} device {{$labels.device}} on {{$labels.path}} is running out of inodes in approx. 4 hours";
     };
 
     swap_using_30percent = {
