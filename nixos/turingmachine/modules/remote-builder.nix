@@ -148,18 +148,18 @@
     #    sshUser = "nix";
     #    system = "aarch64-linux";
     #}
-    {
-      hostName = "aarch64.nixos.community";
-      maxJobs = 96;
-      sshKey = "/root/.ssh/id_ed25519";
-      sshUser = "ssh-ng://mic92";
-      system = "aarch64-linux";
-      supportedFeatures = [
-        "big-parallel"
-        "kvm"
-        "nixos-test"
-      ];
-    }
+    #{
+    #  hostName = "aarch64.nixos.community";
+    #  maxJobs = 96;
+    #  sshKey = "/root/.ssh/id_ed25519";
+    #  sshUser = "ssh-ng://mic92";
+    #  system = "aarch64-linux";
+    #  supportedFeatures = [
+    #    "big-parallel"
+    #    "kvm"
+    #    "nixos-test"
+    #  ];
+    #}
   ];
   sops.secrets.id_buildfarm = { };
 }
