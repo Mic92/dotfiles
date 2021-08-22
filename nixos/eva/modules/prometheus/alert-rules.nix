@@ -62,6 +62,12 @@ lib.mapAttrsToList
       description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} got less than 20% space left on its filesystem.";
     };
 
+    filesystem_inodes_full = {
+      condition = ''disk_inodes_free / disk_inodes_total < 0.10'';
+      time = "10m";
+      description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} got less than 10% inodes left on its filesystem.";
+    };
+
     daily_task_not_run = {
       # give 6 hours grace period
       # FIXME: convert borgbackup-matchbox to weekly task
