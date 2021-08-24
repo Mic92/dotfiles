@@ -66,7 +66,6 @@
     aspellDicts.en
     hunspell
     hunspellDicts.en-gb-ise
-    ferdi
     zoom-us
     calibre
     evolution
