@@ -7,12 +7,6 @@
   ];
 
   config = {
-    home.file.".tree-sitter".source = (pkgs.runCommand "grammars" {} ''
-      mkdir -p $out/bin
-      ${lib.concatStringsSep "\n"
-        (lib.mapAttrsToList (name: src: "name=${name}; ln -s ${src}/parser $out/bin/\${name#tree-sitter-}.so") pkgs.tree-sitter.builtGrammars)};
-    '');
-
     home.packages = with pkgs; [
       #(pkgs.callPackage /home/joerg/git/nix-review {})
       nur.repos.mic92.nixpkgs-review-unstable

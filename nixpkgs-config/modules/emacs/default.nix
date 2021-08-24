@@ -44,12 +44,42 @@ let
   '';
 
   editorScriptX11 = editorScript { name = "emacs"; x11 = true; };
+  # list taken from here: https://github.com/emacs-tree-sitter/tree-sitter-langs/tree/e7b8db7c4006c04a4bc1fc6865ec31f223843192/repos
+  # commented out are not yet packaged in nix
+  langs = [
+    "agda" 
+    "bash" 
+    "c" 
+    "c-sharp" 
+    "cpp" 
+    "css" 
+    /*"elm" */
+    "fluent"
+    "go" 
+    /*"hcl"*/ 
+    "html" 
+    /*"janet-simple"*/
+    "java"
+    "javascript" 
+    "jsdoc" 
+    "json" 
+    "ocaml" 
+    "python" 
+    "php" 
+    /*"pgn"*/ 
+    "ruby" 
+    "rust"
+    "scala"
+    "swift"
+    "typescript" 
+  ];
+  grammars = lib.getAttrs (map (lang: "tree-sitter-${lang}") langs) pkgs.tree-sitter.builtGrammars;
 in
 {
   home.file.".tree-sitter".source = (pkgs.runCommand "grammars" {} ''
     mkdir -p $out/bin
     ${lib.concatStringsSep "\n"
-      (lib.mapAttrsToList (name: src: "name=${name}; ln -s ${src}/parser $out/bin/\${name#tree-sitter-}.so") pkgs.tree-sitter.builtGrammars)};
+      (lib.mapAttrsToList (name: src: "name=${name}; ln -s ${src}/parser $out/bin/\${name#tree-sitter-}.so") grammars)};
   '');
 
   home.packages = with pkgs; [
