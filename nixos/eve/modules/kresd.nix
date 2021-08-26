@@ -19,7 +19,8 @@
       net.tls("/var/lib/acme/dns.thalheim.io/fullchain.pem", "/var/lib/acme/dns.thalheim.io/key.pem")
       modules = { 'hints > iterate' }
       hints.add_hosts('${pkgs.retiolum}/etc.hosts')
-      # use ns.spaceboys.net as one dns resolver is borked
+
+      -- use ns.spaceboys.net as one dns resolver is borked
       policy.add(policy.suffix(policy.STUB('95.217.229.209'), {todname('c3d2.de')}))
     '';
   };
