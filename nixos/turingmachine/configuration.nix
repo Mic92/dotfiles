@@ -17,7 +17,6 @@
     #../modules/sway.nix
     #./modules/minidlna.nix
     ./modules/networkmanager.nix
-    #./modules/nfs-dl.nix
     ./modules/packages.nix
     ./modules/high-dpi.nix
     ./modules/gnome-pim.nix
@@ -38,6 +37,7 @@
     ../modules/telegraf.nix
     #./kde.nix
     #../modules/i3.nix
+    ../modules/samba-dl.nix
     ../modules/sway.nix
     #../modules/awesome.nix
     #../modules/gnome.nix

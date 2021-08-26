@@ -8,7 +8,7 @@
     ./hardware-configuration.nix
 
     ../modules/users.nix
-    ../modules/nfs-dl.nix
+    ../modules/samba-dl.nix
     ../modules/mosh.nix
     ../modules/telegraf.nix
     ../modules/tor-ssh.nix
