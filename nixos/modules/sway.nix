@@ -20,6 +20,7 @@
       swappy
       wdisplays
       wl-clipboard
+      nur.repos.mic92.grimshot
 
       pavucontrol
       lightlocker
