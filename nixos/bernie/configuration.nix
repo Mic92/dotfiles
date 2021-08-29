@@ -56,6 +56,7 @@
     celluloid
     vscode
     mpv
+    inkscape
     youtube-dl
     calibre
     libreoffice
