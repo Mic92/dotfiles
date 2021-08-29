@@ -11,7 +11,6 @@
 (package! coffee-mode)
 (package! meson-mode)
 (package! jsonnet-mode)
-(package! envrc)
 (package! tree-sitter)
 (package! tree-sitter-langs)
 
