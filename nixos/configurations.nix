@@ -29,7 +29,7 @@ let
       nixpkgs.overlays = [ nur.overlay ];
       documentation.info.enable = false;
     })
-    ./modules/upgrade-stats.nix
+    ./modules/upgrade-diff.nix
     ./modules/nix-daemon.nix
     retiolum.nixosModules.retiolum
     sops-nix.nixosModules.sops
