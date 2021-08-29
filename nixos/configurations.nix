@@ -27,13 +27,10 @@ let
         flake-registry = ${flake-registry}/flake-registry.json
       '';
       nixpkgs.overlays = [ nur.overlay ];
-      imports = [
-        ./modules/nix-daemon.nix
-        ./modules/drone-deploy.nix
-      ];
-      #system.nixos.versionSuffix = "";
       documentation.info.enable = false;
     })
+    ./modules/upgrade-stats.nix
+    ./modules/nix-daemon.nix
     retiolum.nixosModules.retiolum
     sops-nix.nixosModules.sops
   ];
