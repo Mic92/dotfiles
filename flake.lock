@@ -42,11 +42,11 @@
     },
     "emacs-overlay": {
       "locked": {
-        "lastModified": 1630201267,
-        "narHash": "sha256-OjmnIo9r2ny6eyShhwvzMmPAxjPe1ffiNKftlnfzaqg=",
+        "lastModified": 1630401524,
+        "narHash": "sha256-/dTeXrzYlHSHemYaRXULhivux7j/bzz8X9qPSRV0u54=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "c0a70fda34214ed0e64cce9c2ce5b5069075935a",
+        "rev": "359e3d4e9f0a2e773430925b1c390f7c272466c1",
         "type": "github"
       },
       "original": {
@@ -86,11 +86,11 @@
         "rust-analyzer-src": "rust-analyzer-src"
       },
       "locked": {
-        "lastModified": 1630203910,
-        "narHash": "sha256-pxmCR2rYxcVXll0WA/nURyQ4zLlIWEVm530Rh7RnDgE=",
+        "lastModified": 1630418796,
+        "narHash": "sha256-fPW/ngAWjNkkDXWKTUSonk79tRklv9szI7DcLzpceXQ=",
         "owner": "nix-community",
         "repo": "fenix",
-        "rev": "a487339fe891f9e3c9182ee4b1f03aa71f8075e0",
+        "rev": "66c986aba3696040c68011fc90a177ee892886c4",
         "type": "github"
       },
       "original": {
@@ -333,11 +333,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1630084010,
-        "narHash": "sha256-a0hGNTLrPW1uNtCkqjmCetAHpB/oRF2SouunH8sOQR8=",
+        "lastModified": 1630427098,
+        "narHash": "sha256-hYnsc+3AZLF0CmxalyIFILXFFnnolmtjZUc/pXCg3rU=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "6dd1b618da21e870e2f14b0f35d4e83404d6739a",
+        "rev": "dafbeda985c5e5187b89aa1189c2115c9b91c0be",
         "type": "github"
       },
       "original": {
@@ -382,26 +382,27 @@
     "not-os": {
       "flake": false,
       "locked": {
-        "lastModified": 1615586706,
-        "narHash": "sha256-Qe0hbUL2sByHGN0uP+nFzAi8gVsk8lZXSgzuZ0pj3Mc=",
-        "owner": "cleverca22",
+        "lastModified": 1630336741,
+        "narHash": "sha256-s5l9Zj175Vayp8ubUqjJB9UXiSVrx9odA5ebs7qjdSA=",
+        "owner": "Mic92",
         "repo": "not-os",
-        "rev": "97186fc3ca8bfed153920353d4e54b46c145dd07",
+        "rev": "645c55834cced8ba414a88d3ce71b913a35b6e00",
         "type": "github"
       },
       "original": {
-        "owner": "cleverca22",
+        "owner": "Mic92",
+        "ref": "bug-fix",
         "repo": "not-os",
         "type": "github"
       }
     },
     "nur": {
       "locked": {
-        "lastModified": 1630200612,
-        "narHash": "sha256-fCAYs7U3jhayTGUws4tsVoNtK6qDsBw8hF7kgbnpkVo=",
+        "lastModified": 1630426790,
+        "narHash": "sha256-YWo7w68+T20iNrMlaEHhb7aj5/0hxOOs0h/aOmNrLbQ=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "396e7101e0eca9310eafac05812e424c0773aaae",
+        "rev": "c02f4ea653ead9a953ce2119b4886a0999670f24",
         "type": "github"
       },
       "original": {
@@ -469,11 +470,11 @@
     "rust-analyzer-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1630193914,
-        "narHash": "sha256-/HyJIq2NIEc/t2W1Vx6WfaTRlMwSFSLBoKN2pUj61SU=",
+        "lastModified": 1630352100,
+        "narHash": "sha256-hFrB3fqfGIgqsBWldESLtrU2muJBmPFFPxS+WK7vYuM=",
         "owner": "rust-analyzer",
         "repo": "rust-analyzer",
-        "rev": "7c7a41c5e9f1aae8a59994c22b366686e34486e5",
+        "rev": "20f3792d10bd92605b7e9c2677c87868eb8089d9",
         "type": "github"
       },
       "original": {
@@ -490,11 +491,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1630145543,
-        "narHash": "sha256-cTNnlHjdsSWyaQbsyiFYpwyOezA7WBfYRQQEJP2VJhE=",
+        "lastModified": 1630255023,
+        "narHash": "sha256-uCnRUM2qhlEXSbJsY4PkES49WFTWdFhcNc1vwbec/1Y=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "024c079aa1fb582068b79138597ac41f4f3ce799",
+        "rev": "3e4ebc851c91d1ce5c65da23436726c555a0d7e8",
         "type": "github"
       },
       "original": {
@@ -517,11 +518,11 @@
         "not-os": "not-os"
       },
       "locked": {
-        "lastModified": 1630052824,
-        "narHash": "sha256-f6Qb5VXeh6W4+bZL7dWPcl6lNWpLEdgvFygMn96l9HQ=",
+        "lastModified": 1630412971,
+        "narHash": "sha256-C+HrvjbW5rbJCk3mzjFygQOy+NpzmJlKjd+dk5CtamU=",
         "owner": "Mic92",
         "repo": "vmsh",
-        "rev": "f6b9bc3dfd97e1e216fc1b8bd7e73299c69b8ed9",
+        "rev": "53dba908c4ae2165a19e0bae8a1aad3247e30971",
         "type": "github"
       },
       "original": {
