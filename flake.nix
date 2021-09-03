@@ -68,7 +68,7 @@
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    hercules-ci.url = "github:hercules-ci/hercules-ci-agent";
+    hercules-ci.url = "github:hercules-ci/hercules-ci-agent/hercules-ci-agent-0.8.2";
     hercules-ci.inputs.nixpkgs.follows = "nixpkgs";
     hercules-ci.inputs.nix-darwin.follows = "nix-darwin";
   };
