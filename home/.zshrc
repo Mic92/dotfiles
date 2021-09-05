@@ -8,25 +8,27 @@ if [[ -n ${commands[tmux]} ]] && [[ "$TERM" != "linux" ]] && [[ "$TERM_PROGRAM" 
   fi
   tmux new-session -s "${TTY:t}" -t main || tmux attach-session -t "${TTY:t}"
 fi
-if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
-  source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+if [[ -f ~/.nix-profile/etc/profile.d/hm-session-vars.sh ]]; then
+  source ~/.nix-profile/etc/profile.d/hm-session-vars.sh
 fi
 
 if [[ -e /etc/profile.d/nix.sh ]]; then
+  # shellcheck disable=SC1091
   . /etc/profile.d/nix.sh
 fi
-if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then
-  . $HOME/.nix-profile/etc/profile.d/nix.sh;
+if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then
+  # shellcheck disable=SC1091
+  . ~/.nix-profile/etc/profile.d/nix.sh
 fi
-if [[ -d $HOME/git/nixpkgs ]]; then
+if [[ -d ~/git/nixpkgs ]]; then
   export NIX_PATH="nixpkgs=$HOME/git/nixpkgs:$NIX_PATH"
 fi
-if [[ -d $HOME/.nix-defexpr/channels ]]; then
+if [[ -d ~/.nix-defexpr/channels ]]; then
   export NIX_PATH="$NIX_PATH:$HOME/.nix-defexpr/channels"
 fi
 if [[ $OSTYPE == darwin* ]]; then
   export NIX_PATH="$NIX_PATH:darwin-config=$HOME/.config/nixpkgs/darwin-configuration.nix"
-  if [[ -d $HOME/git/nix-darwin ]]; then
+  if [[ -d ~/git/nix-darwin ]]; then
     export NIX_PATH="$NIX_PATH:darwin=$HOME/git/nix-darwin"
   fi
 fi
@@ -64,8 +66,8 @@ function string_hash() {
   echo $hashval
 }
 
-if [[ ! -z $HOST && "$__host__" != "$HOST" ]]; then
-  tmux set -g status-bg colour$(string_hash $HOST 255)
+if [[ -n $HOST && "$__host__" != "$HOST" ]]; then
+  tmux set -g status-bg "colour$(string_hash "$HOST" 255)"
   export __host__=$HOST
 fi
 
@@ -115,10 +117,10 @@ upfind() {
     return 1
   fi
 
-  while [[ -d $current && $current != $previous ]]; do
+  while [[ -d "$current" && "$current" != "$previous" ]]; do
     local target_path=$current/$1
-    if [[ -f $target_path ]]; then
-      echo $target_path
+    if [[ -f "$target_path" ]]; then
+      echo "$target_path"
       return 0
     else
       previous=$current
@@ -128,9 +130,9 @@ upfind() {
   return 1
 }
 clone(){
-  [ $# -eq 0 ] && echo "clone <GIT_CLONE_URL>" && return 1
+  [[ $# -eq 0 ]] && echo "clone <GIT_CLONE_URL>" && return 1
 
-  cd `mktemp -d`
+  cd "$(mktemp -d)" || return 1
   git clone --depth=1 "$1"
 }
 
@@ -158,8 +160,8 @@ nix-index-update() {
     --sort='v:refname' \
     https://github.com/Mic92/nix-index-database \
     | awk 'END {match($2, /([^/]+)$/, m); print m[0]}')
-  curl -L "https://github.com/Mic92/nix-index-database/releases/download/$tag/files" -o $XDG_RUNTIME_DIR/files-$tag
-  mv $XDG_RUNTIME_DIR/files-$tag $HOME/.cache/nix-index/files
+  curl -L "https://github.com/Mic92/nix-index-database/releases/download/$tag/files" -o "$XDG_RUNTIME_DIR/files-$tag"
+  mv "$XDG_RUNTIME_DIR/files-$tag" "$HOME/.cache/nix-index/files"
 }
 
 ## Options
@@ -201,9 +203,9 @@ bindkey '^X^e' edit-command-line
 autoload colors; colors;
 autoload -zU compinit
 fignore=(.DS_Store $fignore)
-[ -d "$HOME/.zsh-completions/src" ] && fpath+=($HOME/.zsh-completions/src)
-[ -d "$HOME/.nix-profile/share/zsh/site-functions" ] && fpath+=(~/.nix-profile/share/zsh/site-functions)
-[ -d /run/current-system/sw/share/zsh/site-functions/ ] && fpath+=(/run/current-system/sw/share/zsh/site-functions/)
+[[ -d ~/.zsh-completions/src ]] && fpath+=(~/.zsh-completions/src)
+[[ -d ~/.nix-profile/share/zsh/site-functions ]] && fpath+=(~/.nix-profile/share/zsh/site-functions)
+[[ -d /run/current-system/sw/share/zsh/site-functions/ ]] && fpath+=(/run/current-system/sw/share/zsh/site-functions/)
 
 # only update zsh completion once a day
 if [[ -n ${ZDOTDIR:-${HOME}}/$ZSH_COMPDUMP(#qN.mh+24) ]]; then
@@ -211,12 +213,9 @@ if [[ -n ${ZDOTDIR:-${HOME}}/$ZSH_COMPDUMP(#qN.mh+24) ]]; then
 else
   compinit -C
 fi
-compdef mcd=cd
 zmodload -i zsh/complist
 setopt complete_in_word
 unsetopt always_to_end
-[[ -f ~/.ssh/known_hosts ]] && hosts=(`awk '{print $1}' ~/.ssh/known_hosts | tr ',' '\n' `)
-[[ -f ~/.ssh/config ]] && hosts=($hosts `grep '^Host' ~/.ssh/config | sed s/Host\ // | egrep -v '^\*$'`)
 zstyle ':completion:*' insert-tab pending
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
 highlights='${PREFIX:+=(#bi)($PREFIX:t)(?)*==31=1;32}':${(s.:.)LS_COLORS}}
@@ -227,12 +226,11 @@ zstyle ':completion:*' squeeze-slashes true
 zstyle ':completion:*' expand 'yes'
 zstyle ':completion:*:match:*' original only
 zstyle ':completion:*:approximate:*' max-errors 1 numeric
-zstyle ':completion:*:hosts' hosts $hosts
 zstyle ':completion::complete:*' use-cache 1
-zstyle ':completion::complete:*' cache-path ./cache/
+zstyle ':completion::complete:*' cache-path ~/.zsh/cache/
 zstyle ':completion:*:cd:*' ignore-parents parent pwd
 zstyle ':completion:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
-zstyle ':completion:*:*:*:processes' command "ps -u `whoami` -o pid,user,comm -w -w"
+zstyle ':completion:*:*:*:processes' command "ps -u $(whoami) -o pid,user,comm -w -w"
 
 ## Prompt
 PURE_GIT_UNTRACKED_DIRTY=0 PURE_GIT_PULL=0
@@ -285,7 +283,7 @@ alias df='df -hT'
 # File management
 if [[ -n ${commands[exa]} ]]; then
   if [ -n "${commands[vivid]}" ]; then
-    export LS_COLORS="$(vivid -m 8-bit generate molokai)"
+    export LS_COLORS="$(vivid generate molokai)"
   fi
   alias ls="exa --classify --icons"
 elif [[ $OSTYPE == freebsd* ]] ||  [[ $OSTYPE == darwin* ]]; then
@@ -294,7 +292,7 @@ else
   alias ls='ls --color=auto --classify --human-readable'
 fi
 alias sl=ls
-alias tempdir='cd `TMPDIR=/tmp mktemp -d`;'
+alias tempdir='cd $(TMPDIR=/tmp mktemp -d);'
 alias rm='rm -rv'
 if [[ -n ${commands[xcp]} ]]; then
   alias cp="nocorrect xcp -r"
@@ -303,7 +301,7 @@ else
 fi
 alias ln="nocorrect ln"
 function mv() {
-  if [ "$#" -ne 1 ] || [ ! -f "$1" ]; then
+  if [[ "$#" -ne 1 ]] || [[ ! -f "$1" ]]; then
     command mv -v "$@"
     return
   fi
@@ -337,16 +335,6 @@ alias su='su - '
 xalias ctl='sudo systemctl'
 alias gdb='gdb --quiet --args'
 alias readelf='readelf -W'
-compile_command() {
-  if [[ $# -lt 1 ]]; then
-      echo "USAGE: $0 file_path [compile_commands.json]"
-      return 1
-  fi
-  nix run nixpkgs.jq -c \
-    jq -r --arg filename "$1" \
-    'first(.[] | select( .file | contains($filename))) | @sh "cd \(.directory) && \(.arguments)"' \
-    < "${2:-compile_commands.json}"
-}
 # Editors
 [[ -n ${commands[vi]} ]] && alias vi=vim
 xalias vim="nvim"
@@ -399,7 +387,6 @@ killp() {
 }
 
 # Dir Hashes
-xhashd mic92=~/go/src/github.com/Mic92
 xhashd git=~/git
 # Global aliases
 alias -g G='| grep -'
@@ -420,14 +407,6 @@ alias :q=exit
 alias todotxt="vim ~/Dropbox/todo/todo.txt"
 alias grep="grep --binary-files=without-match --directories=skip --color=auto"
 alias R="R --quiet"
-if [ -n "${commands[xclip]}" ]; then
-  # normalize 
-  pbcopy() {
-    tee >(xclip -selection primary) | xclip -selection clipboard
-  }
-  pbpaste() { xclip -o }
-  pbpaste2() { xclip -selection clipboard -o }
-fi
 
 if [ -n "${commands[bat]}" ]; then
   cat() {
@@ -468,14 +447,6 @@ export TERMINAL=wezterm
 export PICTUREVIEW=eog
 if [[ -n ${commands[emacseditor]} ]] && [[ -n $XDG_RUNTIME_DIR ]]; then
   export EDITOR=emacseditor
-  ee-ag() {
-      if [[ "$#" == 0 ]]; then
-          echo "USAGE: ee-ag query" >&2
-          return 1
-      fi
-      emacseditor -e "(helm-ag \"${2:-$(realpath .)}\" \"${1}\")"
-  }
-  alias ee=emacseditor
   alias vim=emacseditor
 else
   export EDITOR=vim
@@ -572,10 +543,9 @@ fd() {
   if [[ -n "${commands[fd]}" ]]; then
     command fd "$@"
   else
-    command find . -iname "*$@*" 2>/dev/null
+    command find . -iname "*${*}*" 2>/dev/null
   fi
 }
-browse () { $BROWSER file://"`pwd`/$1" }
 retry() {
   local n=0
   local trys=${TRYS:-100000}
@@ -617,8 +587,8 @@ sieve-edit() {
     exec {passwordfd}>&-
 }
 # Autossh - try to connect every 0.5 secs (modulo timeouts)
-sssh(){ while true; do command ssh -q "$@"; [ $? -ne 0 ] && break || sleep 0.5; done }
-dumbssh(){ TERM=screen-256color ssh "$@" }
+sssh(){ while true; do command ssh -q "$@"; [ $? -ne 0 ] && break || sleep 0.5; done; }
+dumbssh(){ TERM=screen-256color ssh "$@"; }
 moshlogin(){
   if ssh-add -L | grep -q "no identities"; then
     ssh-add ~/.ssh/id_{rsa,ecdsa,ed25519}
@@ -627,7 +597,7 @@ moshlogin(){
   mosh -A eve.mosh
 }
 # List directory after changing directory
-chpwd() { ls }
+chpwd() { ls; }
 mkcd() { mkdir -p "$1" && cd "$1"; }
 # make cd accept files
 cd() {
@@ -641,9 +611,9 @@ cd() {
     __zoxide_z "$to"
   fi
 }
-urlencode() { python3 -c "import sys, urllib.parse as parse; print(parse.quote(sys.argv[1]))" $1 }
-urldecode() { python3 -c "import sys, urllib.parse as parse; print(parse.unquote(sys.argv[1]))" $1 }
-cheat() { command cheat -c "$@" | less }
+urlencode() { python3 -c "import sys, urllib.parse as parse; print(parse.quote(sys.argv[1]))" $1; }
+urldecode() { python3 -c "import sys, urllib.parse as parse; print(parse.unquote(sys.argv[1]))" $1; }
+cheat() { command cheat -c "$@" | less; }
 ninja(){
   local build_path="$(dirname "$(upfind "build.ninja")")"
   command ninja -C "${build_path:-.}" "$@"
@@ -655,12 +625,12 @@ make(){
 cargo(){
   local build_path="$(dirname "$(upfind "Cargo.toml")")"
   (
-    builtin cd "${build_path:-.}" >/dev/null
+    builtin cd "${build_path:-.}" >/dev/null || true
     command cargo "$@"
   )
 }
 real-which(){
-  readlink -f "$(command which $@)"
+  readlink -f "$(command which "$@")"
 }
 
 untilport(){
@@ -714,7 +684,7 @@ open() {
 fixssh() {
   for key in SSH_AUTH_SOCK SSH_CONNECTION SSH_CLIENT; do
     if (tmux show-environment | grep "^${key}" > /dev/null); then
-      value=`tmux show-environment | grep "^${key}" | sed -e "s/^[A-Z_]*=//"`
+      value=$(tmux show-environment | grep "^${key}" | sed -e "s/^[A-Z_]*=//")
       export ${key}="${value}"
     fi
   done
@@ -738,31 +708,26 @@ if [[ $TERM = linux ]]; then
 fi
 
 ## Per machine zshrc
-if [[ -f $HOME/.zshrc.$HOST ]]; then
-  source $HOME/.zshrc.$HOST
-fi
-
-# added by travis gem
-if [[ -f /home/joerg/.travis/travis.sh ]]; then
-  source /home/joerg/.travis/travis.sh
+if [[ -f "$HOME/.zshrc.$HOST" ]]; then
+  source "$HOME/.zshrc.$HOST"
 fi
 
 ## Plugins
-if [[ -f "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh" ]]; then
-  source "$HOME/.zsh-history-substring-search/zsh-history-substring-search.zsh"
+if [[ -f ~/.zsh-history-substring-search/zsh-history-substring-search.zsh ]]; then
+  source ~/.zsh-history-substring-search/zsh-history-substring-search.zsh
   # bind P and N for EMACS mode
   bindkey -M emacs '^P' history-substring-search-up
   bindkey -M emacs '^N' history-substring-search-down
 fi
-if [[ -f "$HOME/.zsh-autosuggestions/zsh-autosuggestions.zsh" ]]; then
-  source "$HOME/.zsh-autosuggestions/zsh-autosuggestions.zsh"
+if [[ -f ~/.zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
+  source ~/.zsh-autosuggestions/zsh-autosuggestions.zsh
   export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE=fg=60
 fi
-if [[ -f "$HOME/.homesick/repos/homeshick/homeshick.sh" ]]; then
-  source "$HOME/.homesick/repos/homeshick/homeshick.sh"
+if [[ -f ~/.homesick/repos/homeshick/homeshick.sh ]]; then
+  source ~/.homesick/repos/homeshick/homeshick.sh
 fi
-if [[ -f "$HOME/.zsh-autopair/autopair.zsh" ]]; then
-  source "$HOME/.zsh-autopair/autopair.zsh"
+if [[ -f ~/.zsh-autopair/autopair.zsh ]]; then
+  source ~/.zsh-autopair/autopair.zsh
 fi
 source ~/.zsh-termsupport
 
@@ -786,8 +751,8 @@ if [[ -n "${commands[fzf-share]}" ]]; then
   FZF_CTRL_R_OPTS=--reverse
   source "$(fzf-share)/key-bindings.zsh"
 fi
-if [[ -f "$HOME/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh" ]]; then
-  source "$HOME/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
+if [[ -f ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]]; then
+  source ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 fi
 
 # prevent broken terminals
