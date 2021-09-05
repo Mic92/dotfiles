@@ -45,6 +45,14 @@ in
           }
           {
             targets = [
+              "prism.r:9273"
+              "gum.r:9273"
+            ];
+
+            labels.org = "krebs";
+          }
+          {
+            targets = [
               # university
               "rose.r:9273"
               "martha.r:9273"
