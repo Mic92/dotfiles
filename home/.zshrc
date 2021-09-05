@@ -51,7 +51,7 @@ function string_hash() {
   local hashsize=$2
   local hashval=52
 
-  for i in {1..${#hashstr}}; do;
+  for i in {1..${#hashstr}}; do
     local thischar=$hashstr[$i]
     hashval=$(( $hashval + $((#thischar)) ))
   done
@@ -64,7 +64,7 @@ function string_hash() {
   echo $hashval
 }
 
-if [[ "$__host__" != "$HOST" ]]; then
+if [[ ! -z $HOST && "$__host__" != "$HOST" ]]; then
   tmux set -g status-bg colour$(string_hash $HOST 255)
   export __host__=$HOST
 fi
