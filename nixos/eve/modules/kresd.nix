@@ -16,6 +16,8 @@
       "127.0.0.1:53"
     ];
     extraConfig = ''
+      modules.load('predict')
+
       net.tls("/var/lib/acme/dns.thalheim.io/fullchain.pem", "/var/lib/acme/dns.thalheim.io/key.pem")
       modules = { 'hints > iterate' }
       hints.add_hosts('${pkgs.retiolum}/etc.hosts')
