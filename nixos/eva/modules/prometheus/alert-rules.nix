@@ -57,9 +57,15 @@ lib.mapAttrsToList
     };
 
     filesystem_full_80percent = {
-      condition = ''disk_used_percent{mode!="ro"} >= 80'';
+      condition = ''disk_used_percent{mode!="ro", host!="prism"} >= 80'';
       time = "10m";
       description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} got less than 20% space left on its filesystem.";
+    };
+
+    filesystem_full_prism = {
+      condition = ''disk_used_percent{mode!="ro", host="prism"} >= 95'';
+      time = "10m";
+      description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} got less than 5% space left on its filesystem.";
     };
 
     filesystem_inodes_full = {
