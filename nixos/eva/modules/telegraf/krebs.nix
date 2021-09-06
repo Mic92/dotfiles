@@ -61,6 +61,7 @@
         urls = [
           "http://news.r/"
           "http://brockman.r/"
+          "http://go.r/"
         ];
         tags.host = "news";
         method = "HEAD";
