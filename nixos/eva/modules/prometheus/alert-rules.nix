@@ -147,7 +147,7 @@ lib.mapAttrsToList
     uptime = {
       # too scared to upgrade matchbox
       condition = ''system_uptime {host!~"^(matchbox|grandalf)$"} > 2592000'';
-      description = "{{$labels.host}} has been up for more than 30 days.";
+      description = "Uptime monster: {{$labels.host}} has been up for more than 30 days.";
     };
     telegraf_down = {
       condition = ''min(up{job=~"telegraf"}) by (source, job, instance, org) == 0'';
