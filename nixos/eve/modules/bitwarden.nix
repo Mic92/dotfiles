@@ -52,14 +52,14 @@ in
         -e "s=@LDAP_PASSWORD@=$(<${config.sops.secrets.bitwarden-ldap-password.path})=" \
         -e "s=@ADMIN_TOKEN@=$(<${config.sops.secrets.bitwarden-admin-token.path})=" \
         ${ldapConfigFile} \
-        > /run/bitwarden_ldap/config.toml
+        > /run/vaultwarden_ldap/config.toml
     '';
 
     serviceConfig = {
       Restart = "on-failure";
       RestartSec = "2s";
       ExecStart = "${pkgs.nur.repos.mic92.vaultwarden_ldap}/bin/vaultwarden_ldap";
-      Environment = "CONFIG_PATH=/run/bitwarden_ldap/config.toml";
+      Environment = "CONFIG_PATH=/run/vaultwarden_ldap/config.toml";
 
       RuntimeDirectory = [ "vaultwarden_ldap" ];
       User = "vaultwarden_ldap";
