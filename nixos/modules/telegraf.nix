@@ -17,6 +17,8 @@ in
 
     systemd.services.telegraf.path = [ pkgs.nvme-cli ];
 
+    #services.journald.forwardToSyslog = true;
+
     services.telegraf = {
       enable = true;
       environmentFiles = lib.optional (config.mic92.telegraf.mode == "push")
@@ -24,6 +26,9 @@ in
       extraConfig = {
         agent.interval = "60s";
         inputs = {
+          #syslog.server = "unixgram:///run/systemd/journal/syslog";
+          #syslog.best_effort = true;
+          #syslog.syslog_standard = "RFC3164";
           prometheus.urls = lib.mkIf (config.services.promtail.enable) [
             # default promtail port
             "http://localhost:9080/metrics"
