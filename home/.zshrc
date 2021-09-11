@@ -152,8 +152,8 @@ kpaste() {
 xalias hm-switch="nix run $HOME/.homesick/repos/dotfiles#hm-switch --"
 xalias hm-build="nix run $HOME/.homesick/repos/dotfiles#hm-build --"
 nix-index-update() {
-  wget -O "$HOME/.cache/nix-index/files-tmp" https://github.com/Mic92/nix-index-database/releases/latest/download/files
-  mv ~/.cache/nix-index/files{-tmp,}
+  cd ~/.cache/nix-index/
+  wget -N https://github.com/Mic92/nix-index-database/releases/latest/download/files
 }
 
 ## Options
