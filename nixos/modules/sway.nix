@@ -15,6 +15,7 @@
       wofi
       gnome3.eog
       libnotify
+      autotiling # https://github.com/nwg-piotr/autotiling
       mako # notification daemon
       kanshi # autorandr
       swappy
