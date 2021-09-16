@@ -109,7 +109,6 @@ in
     nix-index
     gnupg1compat
     cheat
-    tldr
     nixpkgs-pytools
     hydra-check
     xdg_utils
