@@ -2,6 +2,7 @@
   users.extraUsers.borgbackup = {
     isSystemUser = true;
     createHome = true;
+    group = "borgbackup";
     uid = 999;
     shell = "/run/current-system/sw/bin/bash";
     home = "/var/lib/borgbackup";
@@ -15,6 +16,7 @@
         (borgCmd "turingmachine/borg" (builtins.readFile ./turingmachine-borgbackup.pub))
       ];
   };
+  users.groups.borgbackup = "borgbackup";
 
   fileSystems."/var/lib/borgbackup/turingmachine" = {
     device = "//csce.datastore.ed.ac.uk/csce/inf/users/s1691654";
