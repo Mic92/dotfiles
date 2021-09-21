@@ -53,6 +53,9 @@
   #services.udev.packages = [ pkgs.platformio ];
 
   boot = {
+    initrd.lvm.enable = false;
+    initrd.mdadm.enable = false;
+
     kernelPackages = pkgs.linuxPackages_zen;
     zfs.requestEncryptionCredentials = [ "zroot/root" ];
 
@@ -162,7 +165,7 @@
 
   security.audit.enable = false;
 
-  #services.teamviewer.enable = true;
+  services.teamviewer.enable = true;
 
   nixpkgs.config = {
     allowUnfree = true;
