@@ -211,6 +211,17 @@
         ''
         ];
       };
+      "cn={1}hydra,cn=schema".attrs = {
+        cn = "{1}hydra";
+        objectClass = "olcSchemaConfig";
+        olcObjectClasses = [
+          ''(1.3.6.1.4.1.28300.1.2.4
+          NAME 'hydra'
+          SUP uidObject AUXILIARY
+          DESC 'Added to an account to allow hydra access'
+          MUST (mail))
+        ''];
+      };
       "cn={1}homeAssistant,cn=schema".attrs = {
         cn = "{1}homeAssistant";
         objectClass = "olcSchemaConfig";

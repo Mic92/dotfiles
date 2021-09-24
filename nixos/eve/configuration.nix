@@ -30,6 +30,7 @@
     ./modules/influxdb.nix
     #./modules/k8s.nix
     ./modules/knot
+    ./modules/hydra.nix
     ./modules/kresd.nix
     ./modules/mastodon-hnbot.nix
     ./modules/mediawiki.nix
