@@ -4,4 +4,4 @@ save-position-on-quit
 keep-open
 hwdec=auto-safe
 vo=gpu
-profile=gpu-hq
+gpu-context=wayland
