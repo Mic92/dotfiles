@@ -291,11 +291,15 @@ fi
 alias sl=ls
 alias tempdir='cd $(TMPDIR=/tmp mktemp -d);'
 alias rm='rm -rv'
-if [[ -n ${commands[xcp]} ]]; then
-  alias cp="nocorrect xcp -r"
-else
-  alias cp='nocorrect cp -rpv'
-fi
+function cp() {
+  if [[ "$#" -ne 1 ]] || [[ ! -f "$1" ]]; then
+    command cp --reflink=auto -arv "$@"
+    return
+  fi
+  newfilename="$1"
+  vared newfilename
+  command cp --reflink=auto -arv -- "$1" "$newfilename"
+}
 alias ln="nocorrect ln"
 function mv() {
   if [[ "$#" -ne 1 ]] || [[ ! -f "$1" ]]; then
