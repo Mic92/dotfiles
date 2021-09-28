@@ -14,7 +14,7 @@
     ];
   } {
     hostName = "nardole.r";
-    maxJobs = 96;
+    maxJobs = 20;
     sshKey = config.sops.secrets.tum-builder.path;
     sshUser = "nix";
     system = "x86_64-linux";
