@@ -1,7 +1,7 @@
 keys:
   - &joerg F095F28F7B1BA4DD0D93554EE179454B201E23CA
   - &eve C5A6167F97F68FD053571E8B04188BA1509DCDC5
-  - &eva 464E02307E15D115D8D666ADE0BD184A633C5C72
+  - &eva age1v8zjc47jmlqwefyu66s0d4ke98qr4vnuj3cpvs4z9npfdw833dxqwjrhzv
   - &turingmachine 50612B0983F7FA2F1985DA0F30371B437689ACFD
   - &matchbox 13d0b443fe935edf44f9b472d8abdace2bcf8e4b
   - &eddie CC48DB9AC67E71DA343B47D594933BDDF739BEB3
@@ -20,8 +20,9 @@ creation_rules:
   - path_regex: eva/secrets/[^/]+\.yaml$
     key_groups:
     - pgp:
-      - *joerg
-      - *eva
+        - *joerg
+      age:
+        - *eva
   - path_regex: turingmachine/secrets/[^/]+\.yaml$
     key_groups:
     - pgp:
@@ -40,17 +41,19 @@ creation_rules:
   - path_regex: secrets/ldap\.yaml$
     key_groups:
     - pgp:
-      - *joerg
-      - *eve
-      - *eva
-      - *rock
+        - *joerg
+        - *eve
+        - *rock
+      age:
+        - *eva
   - path_regex: secrets/telegraf\.yaml$
     key_groups:
     - pgp:
-      - *joerg
-      - *eva
-      - *bernie
-      - *turingmachine
+        - *joerg
+        - *bernie
+        - *turingmachine
+      age:
+        - *eva
   - path_regex: rock/secrets/[^/]+\.yaml$
     key_groups:
     - pgp:
@@ -59,10 +62,11 @@ creation_rules:
   - path_regex: secrets/[^/]+\.yaml$
     key_groups:
     - pgp:
-      - *joerg
-      - *eddie
-      - *eve
-      - *turingmachine
-      - *eva
-      - *matchbox
-      - *rock
+        - *joerg
+        - *eddie
+        - *eve
+        - *turingmachine
+        - *matchbox
+        - *rock
+      age:
+        - *eva
