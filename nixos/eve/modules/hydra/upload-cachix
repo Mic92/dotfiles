@@ -3,13 +3,24 @@
 import json
 import shutil
 import os
+import syslog
+from subprocess import Popen, PIPE
 
+
+def upload_cachix(hydra_json: str) -> None:
+    with open(hydra_json) as f:
+        data = json.load(f)
+        with Popen(["cachix", "push"], stdin=PIPE, text=True) as proc:
+            assert proc.stdin
+            for output in data["outputs"]:
+                proc.stdin.write(output["path"])
 
 def main() -> None:
-    print('hello world')
-    shutil.copyfile(os.environ["HYDRA_JSON"], "/tmp/hydra.json")
-    with open(os.environ["HYDRA_JSON"]) as f:
-        data = json.load(f)
+    try:
+        upload_cachix(os.environ["HYDRA_JSON"])
+    except Exception as e:
+        syslog.syslog(f"uploading to cachix failed: {e}")
+
 
 
 if __name__ == "__main__":
