@@ -302,7 +302,7 @@ function cp() {
 }
 alias ln="nocorrect ln"
 function mv() {
-  if [[ "$#" -ne 1 ]] || [[ ! -f "$1" ]]; then
+  if [[ "$#" -ne 1 ]] || [[ ! -e "$1" ]]; then
     command mv -v "$@"
     return
   fi
