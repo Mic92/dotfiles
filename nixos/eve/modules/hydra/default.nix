@@ -1,6 +1,11 @@
 { config, lib, pkgs, ... }:
 
-{
+let
+  upload-cachix = pkgs.writeScript "upload-cachix" ''
+    #!${pkgs.python3.interpreter}
+    ${builtins.readFile ./upload-cachix}
+  '';
+in {
   nix.allowedUsers = [ "hydra" "hydra-queue-runner" "hydra-www" ];
 
   systemd.tmpfiles.rules = [
@@ -34,6 +39,9 @@
       evaluator_initial_heap_size = ${toString (4 * 1024 * 1024 * 1024)}
       max_concurrent_evals = 1
       evaluator_workers = 4
+      <runcommand>
+      command = ${upload-cachix} "$HYDRA_JSON"
+      </runcommand>
     '';
 
     notificationSender = "dontspamme@example.com";

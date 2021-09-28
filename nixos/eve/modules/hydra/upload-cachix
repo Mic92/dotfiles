@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+
+import json
+import shutil
+
+
+def main() -> None:
+    shutil.copyfile(sys.environ["HYDRA_JSON"], "/tmp/hydra.json")
+    with open(sys.environ["HYDRA_JSON"]) as f:
+        data = json.load(f)
+
+
+if __name__ == "__main__":
+    main()
