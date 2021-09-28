@@ -26,11 +26,9 @@ let
     EOF
   '';
   turingmachine = lib.mkTarget "root@turingmachine.r";
-  eve = lib.mkTarget "root@eve.thalheim.io";
+  #eve = lib.mkTarget "root@eve.thalheim.io";
   #eve = lib.mkTarget "root@129.215.90.4";
-  #eve = lib.mkTarget "root@eve.i";
-  eddie = lib.mkTarget "root@eddie.r";
-  # eddie = "root@129.215.90.4";
+  eve = lib.mkTarget "root@eve.i";
 in
 {
   turingmachine = writeCommand "/bin/turingmachine" {
@@ -83,17 +81,6 @@ in
   #  inherit source command;
   #  target = "root@192.168.178.2";
   #};
-
-  eddie = writeCommand "/bin/eddie" {
-    inherit source command;
-    target = "root@eddie.r";
-  };
-
-  "joerg@eddie" = writeCommand "/bin/joerg-eddie" {
-    inherit source;
-    command = deployDotfiles { configuration = "desktop"; };
-    target = eddie;
-  };
 
   eva = writeCommand "/bin/eva" {
     inherit source;

@@ -133,12 +133,6 @@
         "kvm"
         "nixos-test"
       ];
-      #} {
-      #  hostName = "eddie.r";
-      #  sshKey = config.sops.secrets.id_buildfarm.path;
-      #  sshUser = "nix";
-      #  system = "x86_64-linux";
-      #  maxJobs = 2;
     }
     #{
     #    # rpi3

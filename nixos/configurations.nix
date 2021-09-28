@@ -74,11 +74,6 @@ in
     ];
   };
 
-  eddie = nixosSystem {
-    system = "x86_64-linux";
-    modules = defaultModules ++ [ ./eddie/configuration.nix ];
-  };
-
   eve = nixosSystem {
     system = "x86_64-linux";
     modules = eveModules;
