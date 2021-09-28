@@ -16,10 +16,11 @@
     '';
   };
 
-  systemd.services.hydra-server = {
-    environment.HYDRA_LDAP_CONFIG = config.sops.secrets.hydra-ldap-config.path;
-  };
-  sops.secrets.hydra-ldap-config.owner = "hydra-www";
+  imports = [
+    ./declarative-admin-user.nix
+  ];
+
+  sops.secrets.hydra-admin-password.owner = "hydra-www";
 
   services.hydra = {
     enable = true;
@@ -27,6 +28,7 @@
     useSubstitutes = true;
     minimumDiskFree = 100;
     minimumDiskFreeEvaluator = 1;
+    admin.passwordFile = config.sops.secrets.hydra-admin-password.path;
     extraConfig = ''
       evaluator_max_memory_size = 4096
       evaluator_initial_heap_size = ${toString (4 * 1024 * 1024 * 1024)}
@@ -62,7 +64,6 @@
            }) prPatches;
         buildInputs = old.buildInputs ++ (with perlPackages; [
           LinuxInotify2
-          CatalystAuthenticationStoreLDAP
           CatalystPluginPrometheusTiny
         ]);
 
