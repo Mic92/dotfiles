@@ -334,11 +334,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1632595367,
-        "narHash": "sha256-gJK0RnJwbvj865rNHHf17JHXJ7SDm7mttTXC2l53Fiw=",
+        "lastModified": 1632834400,
+        "narHash": "sha256-vIMCdnQRUEv8dxeVpPnVW0Kq+VchHs7Z5FaE1q4PX5Y=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "6c2c1a5d951110fa4f4e6e85608fefb1373446da",
+        "rev": "ccc3064b7d6aab7d45fc0f361d1152eda0b89b24",
         "type": "github"
       },
       "original": {
@@ -350,11 +350,11 @@
     },
     "nixpkgs-stable": {
       "locked": {
-        "lastModified": 1631603448,
-        "narHash": "sha256-9/yxXbySCgpazdklfyb+y9l1aCHkn99ctqMdIwPWdwQ=",
+        "lastModified": 1632818950,
+        "narHash": "sha256-oiBDAzy0Czl36yqBfzdmJo1WIr6v0Yg0ETGtG0ypMlY=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "55fc4b43598ae0ee9907be3f9fbc7cea8303de1c",
+        "rev": "43c8341376dbc14c9ebd898cd164c815a4d5171e",
         "type": "github"
       },
       "original": {
@@ -398,11 +398,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1632801861,
-        "narHash": "sha256-YLIv9m8On1Qm0XU1Vpu4zFnQyrN6ZcfGgKj888Y1XDs=",
+        "lastModified": 1632839052,
+        "narHash": "sha256-zqjNYjJf5nTzDt3fVsWKkC1K7hq0K7DDubOJkNp/z8Y=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "9a3ad83a572d9fe26daaf2e4c5387b45b3553014",
+        "rev": "850265575b515d0a5245da8821594e88c93d7c9f",
         "type": "github"
       },
       "original": {
@@ -491,15 +491,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1632602278,
-        "narHash": "sha256-BJNUsxR+YwqCXMojsCK1gOnoxkLdJx5zqSYL1VMxws8=",
+        "lastModified": 1632841152,
+        "narHash": "sha256-3tUyZ+jDli763gubyc50tn3Xmb8mTx8bQP+5zRDH994=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "38e9270b774e50263ae1771922d7e4ff7d543aed",
+        "rev": "eb3a03261ad5a72d600d6833abd95f5ec030db8e",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
+        "ref": "age",
         "repo": "sops-nix",
         "type": "github"
       }
