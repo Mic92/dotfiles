@@ -39,8 +39,9 @@ in {
       evaluator_initial_heap_size = ${toString (4 * 1024 * 1024 * 1024)}
       max_concurrent_evals = 1
       evaluator_workers = 4
+
       <runcommand>
-      command = ${upload-cachix} "$HYDRA_JSON"
+      command = ${upload-cachix}
       </runcommand>
     '';
 
