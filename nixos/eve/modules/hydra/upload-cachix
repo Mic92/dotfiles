@@ -2,13 +2,13 @@
 
 import json
 import shutil
-import sys
+import os
 
 
 def main() -> None:
     print('hello world')
-    shutil.copyfile(sys.environ["HYDRA_JSON"], "/tmp/hydra.json")
-    with open(sys.environ["HYDRA_JSON"]) as f:
+    shutil.copyfile(os.environ["HYDRA_JSON"], "/tmp/hydra.json")
+    with open(os.environ["HYDRA_JSON"]) as f:
         data = json.load(f)
 
 
