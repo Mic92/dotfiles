@@ -1,5 +1,5 @@
 {
   sops.defaultSopsFile = ../secrets/secrets.yaml;
-  sops.gnupgHome = "/var/src/.sops-secret";
-  sops.sshKeyPaths = [ ];
+  sops.gnupg.home = "/var/src/.sops-secret";
+  sops.gnupg.sshKeyPaths = [ ];
 }
