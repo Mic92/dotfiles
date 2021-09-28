@@ -1,22 +1,17 @@
 { pkgs, ... }:
 let
-  # resolved with support TLS over DNS server with hostname-based certificates
   resolved = pkgs.systemd.overrideAttrs (old: {
-    src = pkgs.fetchFromGitHub {
-      owner = "systemd";
-      repo = "systemd";
-      rev = "fbc6d1716fc74d5475146cb6a98a849ade1e5ade";
-      sha256 = "0r76djh4y0v4lb0djlvi5imm9a835b3prh8m7jfp6ckkcw2c4kab";
-    };
     buildPhase = ''
       ninja systemd-resolved
     '';
+    # resolved downgrade to udp/53 which is a problem in flacky networks with servers that don't do udp/53
     patches = [
       ./0001-networkd-don-t-downgrade-dnsovertls.patch
     ];
     installPhase = ''
       install -D systemd-resolved $out/bin/systemd-resolved
-      install -D src/shared/libsystemd-shared-245.so $out/lib/libsystemd-shared-245.so
+      shared=$(echo src/shared/libsystemd-shared-*.so)
+      install -D $shared $out/lib/$(basename $shared)
     '';
     postFixup = "";
     outputs = [ "out" ];
