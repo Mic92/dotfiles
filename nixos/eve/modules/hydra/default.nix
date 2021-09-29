@@ -40,17 +40,14 @@ in {
     minimumDiskFree = 100;
     minimumDiskFreeEvaluator = 1;
     admin.passwordFile = config.sops.secrets.hydra-admin-password.path;
-    extraConfig = let
-      path = lib.makeBinPath [ pkgs.cachix config.nix.package ];
-      #command = PATH=${path} CACHIX_NAME=mic92 CACHIX_CONFIG=${config.sops.secrets.cachix-config.path} ${upload-cachix}/bin/upload-cachix
-    in ''
+    extraConfig = ''
       evaluator_max_memory_size = 4096
       evaluator_initial_heap_size = ${toString (4 * 1024 * 1024 * 1024)}
       max_concurrent_evals = 1
       evaluator_workers = 4
 
       <runcommand>
-      command = PATH=${path} cachix -c ${config.sops.secrets.cachix-config.path} push mic92 < $HYDRA_CONFIG
+      command = ${pkgs.jq}/bin/jq -r '.outputs | .[] | .path' $HYDRA_CONFIG | PATH=${config.nix.package}/bin ${pkgs.cachix}/bin/cachix -c ${config.sops.secrets.cachix-config.path} push mic92
       </runcommand>
     '';
 
