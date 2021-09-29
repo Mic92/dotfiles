@@ -1,10 +1,15 @@
 { config, lib, pkgs, ... }:
 
 let
-  upload-cachix = pkgs.writeScript "upload-cachix" ''
-    #!${pkgs.python3.interpreter}
-    ${builtins.readFile ./upload-cachix}
-  '';
+  upload-cachix = pkgs.stdenv.mkDerivation {
+    name = "upload-cachix";
+    buildInputs = [ pkgs.python3 pkgs.mypy ];
+    dontUnpack = true;
+    installPhase = ''
+      install -m 755 ${./upload-cachix} $out
+      mypy $out
+    '';
+  };
 in {
   nix.allowedUsers = [ "hydra" "hydra-queue-runner" "hydra-www" ];
 
@@ -26,6 +31,7 @@ in {
   ];
 
   sops.secrets.hydra-admin-password.owner = "hydra-www";
+  sops.secrets.cachix-config.owner = "hydra-queue-runner";
 
   services.hydra = {
     enable = true;
@@ -41,7 +47,7 @@ in {
       evaluator_workers = 4
 
       <runcommand>
-      command = ${upload-cachix}
+      command = CACHIX_CONFIG=${config.sops.secrets.cachix-config.path} ${upload-cachix}
       </runcommand>
     '';
 

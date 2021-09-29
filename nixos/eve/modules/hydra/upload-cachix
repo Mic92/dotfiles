@@ -4,23 +4,38 @@ import json
 import shutil
 import os
 import syslog
+import sys
 from subprocess import Popen, PIPE
 
 
-def upload_cachix(hydra_json: str) -> None:
+def upload_cachix(cachix_config: str, hydra_json: str) -> None:
     with open(hydra_json) as f:
         data = json.load(f)
-        with Popen(["cachix", "push"], stdin=PIPE, text=True) as proc:
-            assert proc.stdin
-            for output in data["outputs"]:
-                proc.stdin.write(output["path"])
+    with Popen(
+        ["cachix", "-c", cachix_config, "push"], stdin=PIPE, text=True
+    ) as proc:
+        assert proc.stdin
+        for output in data["outputs"]:
+            proc.stdin.write(output["path"])
+
 
 def main() -> None:
+    syslog.syslog(f"upload to cachix finished")
+    hydra_json = os.environ.get("HYDRA_JSON")
+    if hydra_json is None:
+        syslog.syslog(f"HYDRA_JSON environment variable is not set")
+        sys.exit(1)
+    cachix_config = os.environ.get("CACHIX_CONFIG")
+    if cachix_config is None:
+        syslog.syslog(f"CACHIX_CONFIG environment variable is not set")
+        sys.exit(1)
+    syslog.syslog(f"upload to cachix started")
     try:
-        upload_cachix(os.environ["HYDRA_JSON"])
+        upload_cachix(cachix_config, hydra_json)
     except Exception as e:
         syslog.syslog(f"uploading to cachix failed: {e}")
-
+        sys.exit(1)
+    syslog.syslog(f"upload to cachix finished")
 
 
 if __name__ == "__main__":
