@@ -8,27 +8,28 @@ import sys
 from subprocess import Popen, PIPE
 
 
-def upload_cachix(cachix_config: str, hydra_json: str) -> None:
+def upload_cachix(cachix_name: str, cachix_config: str, hydra_json: str) -> None:
     with open(hydra_json) as f:
         data = json.load(f)
     with Popen(
-        ["cachix", "-c", cachix_config, "push"], stdin=PIPE, text=True
+        ["cachix", "-c", cachix_config, "push", cachix_name], stdin=PIPE, text=True
     ) as proc:
         assert proc.stdin
         for output in data["outputs"]:
             proc.stdin.write(output["path"])
 
+def require_env(name: str) -> str:
+    val = os.environ.get(name)
+    if val is None:
+        syslog.syslog(f"{val} environment variable is not set")
+        sys.exit(1)
 
 def main() -> None:
     syslog.syslog(f"upload to cachix finished")
-    hydra_json = os.environ.get("HYDRA_JSON")
-    if hydra_json is None:
-        syslog.syslog(f"HYDRA_JSON environment variable is not set")
-        sys.exit(1)
-    cachix_config = os.environ.get("CACHIX_CONFIG")
-    if cachix_config is None:
-        syslog.syslog(f"CACHIX_CONFIG environment variable is not set")
-        sys.exit(1)
+    hydra_json = require_env("HYDRA_JSON")
+    cachix_config = require_env("CACHIX_CONFIG")
+    cachix_name = require_env("CACHIX_NAME")
+
     syslog.syslog(f"upload to cachix started")
     try:
         upload_cachix(cachix_config, hydra_json)

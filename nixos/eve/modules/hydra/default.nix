@@ -6,7 +6,7 @@ let
     buildInputs = [ pkgs.python3 pkgs.mypy ];
     dontUnpack = true;
     installPhase = ''
-      install -m 755 ${./upload-cachix} $out
+      install -m 755 ${./upload-cachix} $out/bin/upload-cachix
       mypy $out
     '';
   };
@@ -47,7 +47,7 @@ in {
       evaluator_workers = 4
 
       <runcommand>
-      command = PATH=${pkgs.cachix}/bin CACHIX_CONFIG=${config.sops.secrets.cachix-config.path} ${upload-cachix}
+      command = PATH=${pkgs.cachix}/bin CACHIX_NAME=mic92 CACHIX_CONFIG=${config.sops.secrets.cachix-config.path} ${upload-cachix}/bin/upload-cachix
       </runcommand>
     '';
 
