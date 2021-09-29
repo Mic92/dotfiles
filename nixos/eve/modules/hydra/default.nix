@@ -6,8 +6,8 @@ let
     buildInputs = [ pkgs.python3 pkgs.mypy ];
     dontUnpack = true;
     installPhase = ''
-      install -m 755 ${./upload-cachix} $out/bin/upload-cachix
-      mypy $out
+      install -D -m 755 ${./upload-cachix} $out/bin/upload-cachix
+      mypy $out/bin/upload-cachix
     '';
   };
 in {

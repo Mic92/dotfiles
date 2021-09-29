@@ -23,6 +23,7 @@ def require_env(name: str) -> str:
     if val is None:
         syslog.syslog(f"{val} environment variable is not set")
         sys.exit(1)
+    return val
 
 def main() -> None:
     syslog.syslog(f"upload to cachix finished")
@@ -32,7 +33,7 @@ def main() -> None:
 
     syslog.syslog(f"upload to cachix started")
     try:
-        upload_cachix(cachix_config, hydra_json)
+        upload_cachix(cachix_name, cachix_config, hydra_json)
     except Exception as e:
         syslog.syslog(f"uploading to cachix failed: {e}")
         sys.exit(1)
