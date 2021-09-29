@@ -2,6 +2,8 @@
 {
   systemd.services.goatcounter = {
     wantedBy = [ "multi-user.target" ];
+    # broken
+    enable = false;
 
     serviceConfig = {
       Restart = "on-failure";
