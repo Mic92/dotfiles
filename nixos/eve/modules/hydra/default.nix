@@ -50,7 +50,7 @@ in {
       evaluator_workers = 4
 
       <runcommand>
-      command = PATH=${path} cachix -c ${config.sops.secrets.cachix-config.path} mic92 CACHIX_CONFIG= < $HYDRA_CONFIG
+      command = PATH=${path} cachix -c ${config.sops.secrets.cachix-config.path} push mic92 < $HYDRA_CONFIG
       </runcommand>
     '';
 
