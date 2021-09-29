@@ -47,7 +47,7 @@ in {
       evaluator_workers = 4
 
       <runcommand>
-      command = CACHIX_CONFIG=${config.sops.secrets.cachix-config.path} ${upload-cachix}
+      command = PATH=${pkgs.cachix}/bin CACHIX_CONFIG=${config.sops.secrets.cachix-config.path} ${upload-cachix}
       </runcommand>
     '';
 
