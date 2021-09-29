@@ -49,7 +49,7 @@ in {
       <runcommand>
       command = ${pkgs.writeShellScript "cachix-upload" ''
         export PATH=${config.nix.package}/bin
-        ${pkgs.jq}/bin/jq -r '.outputs | .[] | .path' < $HYDRA_CONFIG | \
+        ${pkgs.jq}/bin/jq -r '.outputs | .[] | .path' < $HYDRA_JSON | \
           ${pkgs.cachix}/bin/cachix -c ${config.sops.secrets.cachix-config.path} push mic92
       ''}
       </runcommand>
