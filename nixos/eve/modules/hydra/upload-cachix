@@ -18,12 +18,14 @@ def upload_cachix(cachix_name: str, cachix_config: str, hydra_json: str) -> None
         for output in data["outputs"]:
             proc.stdin.write(output["path"])
 
+
 def require_env(name: str) -> str:
     val = os.environ.get(name)
     if val is None:
         syslog.syslog(f"{val} environment variable is not set")
         sys.exit(1)
     return val
+
 
 def main() -> None:
     syslog.syslog(f"upload to cachix finished")
