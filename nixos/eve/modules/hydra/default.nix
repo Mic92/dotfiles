@@ -45,9 +45,12 @@ in {
       evaluator_initial_heap_size = ${toString (4 * 1024 * 1024 * 1024)}
       max_concurrent_evals = 1
       evaluator_workers = 4
-
       <runcommand>
-      command = ${pkgs.jq}/bin/jq -r '.outputs | .[] | .path' $HYDRA_CONFIG | PATH=${config.nix.package}/bin ${pkgs.cachix}/bin/cachix -c ${config.sops.secrets.cachix-config.path} push mic92
+      command = ${pkgs.writeShellScript "cachix-upload" ''
+        export PATH=${config.nix.package}/bin
+        ${pkgs.jq}/bin/jq -r '.outputs | .[] | .path' "$HYDRA_CONFIG" | \
+          ${pkgs.cachix}/bin/cachix -c ${config.sops.secrets.cachix-config.path} push mic92
+      ''}
       </runcommand>
     '';
 
