@@ -1,8 +1,8 @@
 { pkgs, config, ... }:
 let
   ldapConfig = {
-    bitwarden_url = "https://bitwarden.thalheim.io";
-    bitwarden_admin_token = "@ADMIN_TOKEN@";
+    vaultwarden_url = "https://bitwarden.thalheim.io";
+    vaultwarden_admin_token = "@ADMIN_TOKEN@";
     ldap_host = "localhost";
     ldap_bind_dn = "cn=bitwarden,ou=system,ou=users,dc=eve";
     ldap_bind_password = "@LDAP_PASSWORD@";
