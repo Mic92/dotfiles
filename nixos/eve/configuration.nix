@@ -56,7 +56,6 @@
     ./modules/tt-rss.nix
     ./modules/users.nix
     #./modules/wiregrill
-    ./modules/hercules-ci.nix
 
     ../modules/builder.nix
     ../modules/iperf.nix
