@@ -12,7 +12,6 @@
 , nixpkgs-systemd
 , nixpkgs-stable
 , lambda-pirate
-, hercules-ci
 , vmsh
 }:
 let
@@ -34,17 +33,7 @@ let
     retiolum.nixosModules.retiolum
     sops-nix.nixosModules.sops
   ];
-  eveModules = defaultModules ++ [
-    ./eve/configuration.nix
-    ({ pkgs, ... }: {
-      services.hercules-ci-agent.package = hercules-ci.packages.${pkgs.system}.hercules-ci-agent-nixUnstable;
-      nixpkgs.overlays = [
-        (self: super: {
-          inherit retiolum;
-        })
-      ];
-    })
-  ];
+  eveModules = defaultModules ++ [ ./eve/configuration.nix ];
 in
 {
   bernie = nixosSystem {

@@ -16,7 +16,6 @@
 , emacs-overlay
 , lambda-pirate
 , nixpkgs-stable
-, hercules-ci
 , nix-darwin
 , vmsh
 , fenix
@@ -85,8 +84,7 @@
       nixpkgs-systemd
       nixpkgs-stable
       lambda-pirate
-      vmsh
-      hercules-ci;
+      vmsh;
   };
 
   hmConfigurations = import ./nixpkgs-config/homes.nix {
