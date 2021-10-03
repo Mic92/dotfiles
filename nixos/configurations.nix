@@ -27,6 +27,9 @@ let
       '';
       nixpkgs.overlays = [ nur.overlay ];
       documentation.info.enable = false;
+      nixpkgs.config.packageOverrides = pkgs: {
+        inherit retiolum;
+      };
     })
     ./modules/upgrade-diff.nix
     ./modules/nix-daemon.nix
