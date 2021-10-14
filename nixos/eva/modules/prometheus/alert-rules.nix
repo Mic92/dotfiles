@@ -86,7 +86,6 @@ lib.mapAttrsToList
       description = "{{$labels.host}}: {{$labels.name}} failed to run";
     };
   } // (lib.genAttrs [
-    "borgbackup-amy"
     "borgbackup-turingmachine"
     "borgbackup-eve"
     "borgbackup-datastore"
