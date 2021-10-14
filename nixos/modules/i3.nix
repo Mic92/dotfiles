@@ -9,6 +9,8 @@
 
   environment.systemPackages = with pkgs; [
     xorg.xmodmap
+    firefox
+    chromium
     # autostart stuff
     dex
     brightnessctl
@@ -28,6 +30,7 @@
     xclip
     xorg.xev
     xorg.xprop
+    alacritty
     (i3pystatus.override {
       extraLibs = with python3.pkgs; [ keyrings-alt paho-mqtt ];
     })
