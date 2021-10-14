@@ -29,6 +29,10 @@
 # iso> zpool create -f zroot /dev/mapper/root
 
 ## New zroot setup
+# iso> sgdisk -n 1:0:+500M -N 2 -t 1:ef00 -t 2:8304 /dev/nvme0n1
+# iso> mkfs.vfat -b32 /dev/nvme0n1p1
+# iso> ls -la /dev/disk/by-partuuid/
+# iso> zpool create -f zroot /dev/disk/by-partuuid/046fdb0b-114f-4435-9d8c-957ac73b5cd2
 # zfs create -o acltype=posixacl -o xattr=sa -o encryption=aes-256-gcm -o keyformat=passphrase -o compression=lz4 -o mountpoint=none zroot/root
 # zfs create -o mountpoint=legacy -o setuid=off -o devices=off -o sync=disabled zroot/root/tmp
 # zfs create -o mountpoint=legacy -o com.sun:auto-snapshot=true zroot/root/home
@@ -37,7 +41,7 @@
 # zfs create -o mountpoint=none -o compression=lz4 zroot/docker
 # mount -t zfs zroot/root/nixos /mnt
 # mkdir /mnt/{home,tmp,boot}
-# mount /dev/sda1 /mnt/boot/
+# mount /dev/nvme0n1p1 /mnt/boot/
 # mount -t zfs zroot/root/home /mnt/home/
 # mount -t zfs zroot/root/tmp /mnt/tmp/
 # chmod 777 /mnt/tmp
