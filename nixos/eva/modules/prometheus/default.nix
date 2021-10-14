@@ -65,6 +65,8 @@ in
               "bill.r:9273"
               "nardole.r:9273"
               "yasmin.r:9273"
+              "ryan.r:9273"
+              "graham.r:9273"
             ];
 
             labels.org = "uni";
