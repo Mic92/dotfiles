@@ -25,9 +25,7 @@
       pyright
 
       dua
-      (pkgs.nixFlakes.override {
-        patches = [ ../nixos/modules/unset-is-macho.patch ];
-      })
+      pkgs.nixFlakes
 
       tmux
       htop
