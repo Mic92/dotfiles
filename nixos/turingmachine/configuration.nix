@@ -53,9 +53,6 @@
   #services.udev.packages = [ pkgs.platformio ];
 
   boot = {
-    initrd.lvm.enable = false;
-    initrd.mdadm.enable = false;
-
     kernelPackages = pkgs.linuxPackages_zen;
     zfs.requestEncryptionCredentials = [ "zroot/root" ];
 
