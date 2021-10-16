@@ -23,24 +23,21 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
         "nixos-rebuild switch --build-host localhost --target-host $TARGET_HOST --flake /etc/nixos#$a"
     )
 
-def _deploy_dotfiles(hosts: List[DeployHost]) -> None:
-    """
-    deploy to all hosts in parallel
-    """
 
 @task
 def deploy(c):
     """
     Deploy to eve, eva and localhost
     """
-    deploy_nixos([
-        DeployHost("eve.r"),
-        DeployHost("localhost"),
-        DeployHost("eve.r",
-                   target_host="eva.r",
-                   flake_attr="eva",
-                   forward_agent=True)
-    ])
+    deploy_nixos(
+        [
+            DeployHost("eve.r"),
+            DeployHost("localhost"),
+            DeployHost(
+                "eve.r", target_host="eva.r", flake_attr="eva", forward_agent=True
+            ),
+        ]
+    )
 
 
 @task
@@ -56,7 +53,10 @@ def deploy_matchbox(c):
     """
     Deploy to matchbox
     """
-    deploy_nixos([DeployHost("localhost", target_host="matchbox.r", flake_attr="matchbox")])
+    deploy_nixos(
+        [DeployHost("localhost", target_host="matchbox.r", flake_attr="matchbox")]
+    )
+
 
 @task
 def deploy_rock(c):
@@ -64,6 +64,7 @@ def deploy_rock(c):
     Deploy to matchbox
     """
     deploy_nixos([DeployHost("localhost", target_host="rock.r", flake_attr="rock")])
+
 
 @task
 def deploy_dotfiles(c):
@@ -73,10 +74,11 @@ def deploy_dotfiles(c):
 
     hosts = [
         DeployHost("localhost", flake_attr="desktop"),
-        DeployHost("eve.r", flake_attr="eve")
+        DeployHost("eve.r", flake_attr="eve"),
     ]
     g = DeployGroup(hosts)
-    g.run("""sudo -u joerg zsh <<'EOF'
+    g.run(
+        """sudo -u joerg zsh <<'EOF'
 cd $HOME
 source $HOME/.zshrc
 homeshick pull
@@ -84,7 +86,8 @@ homeshick symlink
 homeshick cd dotfiles
 nix build --out-link $HOME/.hm-activate ".#hmConfigurations.$FLAKE_ATTR.activation-script"
 $HOME/.hm-activate/activate
-EOF""")
+EOF"""
+    )
 
 
 def wait_for_port(host: str, port: int, shutdown: bool = False) -> None:
@@ -107,8 +110,9 @@ def wait_for_port(host: str, port: int, shutdown: bool = False) -> None:
                 sys.stdout.write(".")
                 sys.stdout.flush()
 
+
 @task
-def reboot(c, hosts = ""):
+def reboot(c, hosts=""):
     """
     Reboot hosts. example usage: fab --hosts clara.r,donna.r reboot
     """
@@ -129,7 +133,7 @@ def reboot(c, hosts = ""):
 
 
 @task
-def cleanup_gcroots(c, hosts = ""):
+def cleanup_gcroots(c, hosts=""):
     deploy_hosts = [DeployHost(h) for h in hosts.split(",")]
     for h in deploy_hosts:
         g = DeployGroup([h])
