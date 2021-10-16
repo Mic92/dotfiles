@@ -7,7 +7,6 @@
 , home-manager
 , retiolum
 , flake-utils
-, krops
 , flake-registry
 , bme680-mqtt
 , nix-ld
@@ -32,13 +31,6 @@
   {
     devShell = pkgs.callPackage ./shell.nix {
       inherit (sops-nix.packages.${pkgs.system}) sops-import-keys-hook;
-    };
-    # deploy like this:
-    #  nix run ".#deploy.turingmachine"
-    #  nix run ".#deploy.eve"
-    apps.deploy = pkgs.callPackage ./nixos/krops.nix {
-      inherit (krops.packages.${pkgs.system}) writeCommand;
-      lib = krops.lib;
     };
     apps.irc-announce = {
       type = "app";
