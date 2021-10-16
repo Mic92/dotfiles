@@ -14,14 +14,11 @@
       readonly workdir=/var/lib/gitea/builds/stockholm-auto-update
       readonly downstream=gitea@git.thalheim.io:Mic92/stockholm
       readonly upstream=https://cgit.lassul.us/stockholm
-      if [[ ! -d "$workdir" ]]; then
-        git clone "$downstream" "$workdir"
-      fi
+      rm -rf "$workdir"
+      git clone "$downstream" "$workdir"
       cd "$workdir"
-      git fetch origin master
-      git reset --hard origin/master
       git pull --rebase "$upstream" master
-      git push origin +master
+      git push origin master
     '';
     path = [ pkgs.git ];
     serviceConfig = {
