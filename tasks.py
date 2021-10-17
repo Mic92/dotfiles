@@ -12,6 +12,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
     Deploy to all hosts in parallel
     """
     g = DeployGroup(hosts)
+
     def deploy(h: DeployHost) -> None:
         h.run_local(
             f"rsync --exclude='.git/' -vaF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
@@ -22,7 +23,10 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
         if flake_attr:
             flake_path += "#" + flake_attr
         target_host = h.meta.get("target_host", "localhost")
-        h.run(f"nixos-rebuild switch --build-host localhost --target-host {target_host} --flake {flake_path}")
+        h.run(
+            f"nixos-rebuild switch --build-host localhost --target-host {target_host} --flake {flake_path}"
+        )
+
     g.run_function(deploy)
 
 
@@ -38,7 +42,8 @@ def deploy(c):
             DeployHost(
                 "eve.r",
                 forward_agent=True,
-                meta=dict(target_host="eva.r", flake_attr="eva")
+                command_prefix="eva.r",
+                meta=dict(target_host="eva.r", flake_attr="eva"),
             ),
         ]
     )
@@ -58,7 +63,13 @@ def deploy_matchbox(c):
     Deploy to matchbox
     """
     deploy_nixos(
-        [DeployHost("localhost", meta=dict(target_host="matchbox.r", flake_attr="matchbox"))]
+        [
+            DeployHost(
+                "localhost",
+                command_prefix="eva.r",
+                meta=dict(target_host="matchbox.r", flake_attr="matchbox"),
+            )
+        ]
     )
 
 
@@ -67,7 +78,9 @@ def deploy_rock(c):
     """
     Deploy to matchbox
     """
-    deploy_nixos([DeployHost("localhost", meta=dict(target_host="rock.r", flake_attr="rock"))])
+    deploy_nixos(
+        [DeployHost("localhost", meta=dict(target_host="rock.r", flake_attr="rock"))]
+    )
 
 
 @task
@@ -83,7 +96,8 @@ def deploy_dotfiles(c):
     g = DeployGroup(hosts)
 
     def deploy_homemanager(host: DeployHost) -> None:
-        host.run(f"""sudo -u joerg zsh <<'EOF'
+        host.run(
+            f"""sudo -u joerg zsh <<'EOF'
 cd $HOME
 source $HOME/.zshrc
 homeshick pull
@@ -91,7 +105,9 @@ homeshick symlink
 homeshick cd dotfiles
 nix build --out-link $HOME/.hm-activate ".#hmConfigurations.{host.meta["flake_attr"]}.activation-script"
 $HOME/.hm-activate/activate
-EOF""")
+EOF"""
+        )
+
     g.run_function(deploy_homemanager)
 
 

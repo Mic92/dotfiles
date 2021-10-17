@@ -4,7 +4,6 @@ import os
 from contextlib import contextmanager
 from typing import List, Dict, Tuple, IO, Iterator, Optional, Callable, Any
 from threading import Thread
-from queue import Queue
 import subprocess
 
 
@@ -70,47 +69,42 @@ class DeployHost:
                 self._prefix_output(read_fd)
                 return p.wait()
 
+DeployResults = List[Tuple[DeployHost, int]]
 
 class DeployGroup:
     def __init__(self, hosts: List[DeployHost]) -> None:
         self.hosts = hosts
 
-    def _run_local(self, cmd: str, host: DeployHost, queue: Queue) -> None:
-        queue.put((host, host.run_local(cmd)))
+    def _run_local(self, cmd: str, host: DeployHost, results: DeployResults) -> None:
+        results.append((host, host.run_local(cmd)))
 
-    def _run_remote(self, cmd: str, host: DeployHost, queue: Queue) -> None:
-        queue.put((host, host.run(cmd)))
+    def _run_remote(self, cmd: str, host: DeployHost, results: DeployResults) -> None:
+        results.append((host, host.run(cmd)))
 
     def _run(
         self, cmd: str, local: bool = False
-    ) -> Dict[DeployHost, int]:
-        queue: Queue[Tuple[DeployHost, int]] = Queue()
+    ) -> DeployResults:
+        results: DeployResults = []
         threads = []
         for host in self.hosts:
             fn = self._run_local if local else self._run_remote
             thread = Thread(
                 target=fn,
-                kwargs=dict(queue=queue, cmd=cmd, host=host),
+                kwargs=dict(results=results, cmd=cmd, host=host),
             )
-            threads.append(thread)
-
-        for thread in threads:
             thread.start()
+            threads.append(thread)
 
         for thread in threads:
             thread.join()
 
-        results = {}
-        while not queue.empty():
-            host, result = queue.get(block=False)
-            results[host] = result
         return results
 
-    def run(self, cmd: str) -> None:
-        self._run(cmd)
+    def run(self, cmd: str) -> DeployResults:
+        return self._run(cmd)
 
-    def run_local(self, cmd: str) -> None:
-        self._run(cmd, local=True)
+    def run_local(self, cmd: str) -> DeployResults:
+        return self._run(cmd, local=True)
 
     def run_function(self, func: Callable) -> None:
         threads = []
