@@ -3,25 +3,27 @@
 from invoke import task
 
 import sys
-from typing import List, Dict, Tuple, IO, Iterator, Optional
-from contextlib import contextmanager
+from typing import List
 from deploy_nixos import DeployHost, DeployGroup
 
 
 def deploy_nixos(hosts: List[DeployHost]) -> None:
     """
-    deploy to all hosts in parallel
+    Deploy to all hosts in parallel
     """
     g = DeployGroup(hosts)
-    g.run_local(
-        "rsync --exclude='.git/' -vaF --delete -e ssh . $SSH_USER@$SSH_HOST:/etc/nixos",
-    )
+    def deploy(h: DeployHost) -> None:
+        h.run_local(
+            f"rsync --exclude='.git/' -vaF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
+        )
 
-    g.run(
-        "a=$FLAKE_ATTR;"
-        "a=${a:-$(< /proc/sys/kernel/hostname)}; "
-        "nixos-rebuild switch --build-host localhost --target-host $TARGET_HOST --flake /etc/nixos#$a"
-    )
+        flake_path = "/etc/nixos"
+        flake_attr = h.meta.get("flake_attr")
+        if flake_attr:
+            flake_path += "#" + flake_attr
+        target_host = h.meta.get("target_host", "localhost")
+        h.run(f"nixos-rebuild switch --build-host localhost --target-host {target_host} --flake {flake_path}")
+    g.run_function(deploy)
 
 
 @task
@@ -34,7 +36,9 @@ def deploy(c):
             DeployHost("eve.r"),
             DeployHost("localhost"),
             DeployHost(
-                "eve.r", target_host="eva.r", flake_attr="eva", forward_agent=True
+                "eve.r",
+                forward_agent=True,
+                meta=dict(target_host="eva.r", flake_attr="eva")
             ),
         ]
     )
@@ -54,7 +58,7 @@ def deploy_matchbox(c):
     Deploy to matchbox
     """
     deploy_nixos(
-        [DeployHost("localhost", target_host="matchbox.r", flake_attr="matchbox")]
+        [DeployHost("localhost", meta=dict(target_host="matchbox.r", flake_attr="matchbox"))]
     )
 
 
@@ -63,7 +67,7 @@ def deploy_rock(c):
     """
     Deploy to matchbox
     """
-    deploy_nixos([DeployHost("localhost", target_host="rock.r", flake_attr="rock")])
+    deploy_nixos([DeployHost("localhost", meta=dict(target_host="rock.r", flake_attr="rock"))])
 
 
 @task
@@ -73,21 +77,22 @@ def deploy_dotfiles(c):
     """
 
     hosts = [
-        DeployHost("localhost", flake_attr="desktop"),
-        DeployHost("eve.r", flake_attr="eve"),
+        DeployHost("localhost", meta=dict(flake_attr="desktop")),
+        DeployHost("eve.r", meta=dict(flake_attr="eve")),
     ]
     g = DeployGroup(hosts)
-    g.run(
-        """sudo -u joerg zsh <<'EOF'
+
+    def deploy_homemanager(host: DeployHost) -> None:
+        host.run(f"""sudo -u joerg zsh <<'EOF'
 cd $HOME
 source $HOME/.zshrc
 homeshick pull
 homeshick symlink
 homeshick cd dotfiles
-nix build --out-link $HOME/.hm-activate ".#hmConfigurations.$FLAKE_ATTR.activation-script"
+nix build --out-link $HOME/.hm-activate ".#hmConfigurations.{host.meta["flake_attr"]}.activation-script"
 $HOME/.hm-activate/activate
-EOF"""
-    )
+EOF""")
+    g.run_function(deploy_homemanager)
 
 
 def wait_for_port(host: str, port: int, shutdown: bool = False) -> None:
