@@ -117,7 +117,7 @@ class DeployGroup:
         for host in self.hosts:
             thread = Thread(
                 target=func,
-                kwargs=dict(host=host),
+                args=(host,),
             )
             threads.append(thread)
 
