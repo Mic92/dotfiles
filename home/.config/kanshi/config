@@ -3,6 +3,11 @@ profile docked {
   output 'Acer Technologies Acer B277K 0x0000CB51' enable scale 1
 }
 
+profile docked2 {
+  output eDP-1 disable
+  output 'Goldstar Company Ltd LG HDR 4K 0x0000DF7B' enable scale 1
+}
+
 profile mobile {
   output eDP-1 enable scale 1
 }
