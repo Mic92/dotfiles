@@ -2,6 +2,30 @@
   nix.distributedBuilds = true;
   nix.buildMachines = [
     {
+      hostName = "graham.r";
+      sshUser = "ssh-ng://nix";
+      sshKey = config.sops.secrets.id_buildfarm.path;
+      system = "x86_64-linux";
+      maxJobs = 64;
+      supportedFeatures = [
+        "big-parallel"
+        "kvm"
+        "nixos-test"
+      ];
+    }
+    {
+      hostName = "ryan.r";
+      sshUser = "ssh-ng://nix";
+      sshKey = config.sops.secrets.id_buildfarm.path;
+      system = "x86_64-linux";
+      maxJobs = 64;
+      supportedFeatures = [
+        "big-parallel"
+        "kvm"
+        "nixos-test"
+      ];
+    }
+    {
       hostName = "nardole.r";
       sshUser = "ssh-ng://nix";
       sshKey = config.sops.secrets.id_buildfarm.path;
