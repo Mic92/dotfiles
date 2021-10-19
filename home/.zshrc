@@ -612,6 +612,16 @@ cd() {
     __zoxide_z "$to"
   fi
 }
+pwd() {
+    if [[ -t 1 ]] && [[ -o interactive ]]; then
+        if [[ -n "$WAYLAND_DISPLAY" ]]; then
+            echo $PWD | wl-copy
+        elif [[ -n "$DISPLAY" ]]; then
+            echo $PWD | xclip -selection clipboard
+        fi
+    fi
+    builtin pwd
+}
 urlencode() { python3 -c "import sys, urllib.parse as parse; print(parse.quote(sys.argv[1]))" $1; }
 urldecode() { python3 -c "import sys, urllib.parse as parse; print(parse.unquote(sys.argv[1]))" $1; }
 cheat() { command cheat -c "$@" | less; }
