@@ -12,6 +12,7 @@
     ../modules/hass-agent.nix
     ../modules/packages.nix
     ../modules/powertop.nix
+    ../modules/promtail.nix
     ../modules/users.nix
     ../modules/zfs.nix
     ../modules/tracing.nix
