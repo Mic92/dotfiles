@@ -117,7 +117,7 @@
     serviceConfig = {
       Type = "simple";
       ExecStart = ''
-        ${pkgs.dbus}/bin/dbus-run-session ${pkgs.sway}/bin/sway --debug
+        ${pkgs.dbus}/bin/dbus-run-session ${pkgs.sway}/bin/sway
       '';
       Restart = "on-failure";
       RestartSec = 1;
