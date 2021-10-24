@@ -74,6 +74,11 @@
             # Write the proper message instead of JSON
             output.source = "msg";
           }
+          # silence nscd:
+          # Oct 24 18:20:19 nardole nscd[1812]: 1812 ignored inotify event for `/etc/netgroup` (file exists)
+          {
+            drop.expression = "ignored inotify event for";
+          }
         ];
         relabel_configs = [{
           source_labels = [ "__journal__hostname" ];
