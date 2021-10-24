@@ -68,5 +68,6 @@ creation_rules:
         - *turingmachine
         - *matchbox
         - *rock
+        - *bernie
       age:
         - *eva
