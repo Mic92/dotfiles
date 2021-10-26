@@ -13,6 +13,7 @@
 (package! jsonnet-mode)
 (package! tree-sitter)
 (package! tree-sitter-langs)
+(package! mu4e-alert :disable t)
 
 ;(package! bitwarden
 ;  :recipe (:host github :repo "seanfarley/emacs-bitwarden"))

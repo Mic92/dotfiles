@@ -163,23 +163,6 @@
 ;; otherwise nix-mode will block on instantiating stuff
 (setenv "NIX_REMOTE_SYSTEMS" "")
 
-(defun treemacs-back-and-forth ()
-  (interactive)
-  (if (treemacs-is-treemacs-window-selected?)
-      (other-window 1)
-    (treemacs-select-window)))
-
-(use-package! treemacs-evil
-  :config
-  (define-key! evil-treemacs-state-map
-    "-" #'treemacs-back-and-forth))
-
-(use-package! treemacs
-  :config
-  (treemacs-follow-mode t))
-
-(map! :leader :n "-" #'treemacs-back-and-forth)
-
 (setq persistent-scratch-save-file (expand-file-name "~/.emacs.d/.persistant-scratch"))
 
 (use-package! tree-sitter
