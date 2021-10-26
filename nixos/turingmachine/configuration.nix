@@ -42,14 +42,11 @@
     #../modules/awesome.nix
     #../modules/gnome.nix
     ../modules/pki
-    ../modules/yubikey.nix
+    #../modules/yubikey.nix
     ../modules/zfs.nix
     ../modules/users.nix
   ];
 
-  # required for gpg-agent?
-  services.dbus.packages = [ pkgs.gcr ];
-  services.gnome.gnome-keyring.enable = true;
   #services.udev.packages = [ pkgs.platformio ];
 
   boot = {
@@ -141,17 +138,15 @@
 
   fonts.fontDir.enable = true;
 
+  environment.variables.SSH_ASKPASS = lib.mkForce "${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
   programs = {
-    gnupg.agent = {
-      enable = true;
-      enableSSHSupport = true;
-      enableExtraSocket = true;
-      pinentryFlavor = "qt";
+    ssh = {
+      startAgent = true;
+      askPassword = "${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
+      extraConfig = ''
+        SendEnv LANG LC_*
+      '';
     };
-
-    ssh.extraConfig = ''
-      SendEnv LANG LC_*
-    '';
     adb.enable = true;
     bash.enableCompletion = true;
     zsh = {

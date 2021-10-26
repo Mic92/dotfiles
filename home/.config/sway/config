@@ -281,6 +281,8 @@ set $docClasses "^(Evince|GVim|keepassx|libreoffice)$"
 assign [class=$docClasses] $wsDoc
 #
 
+for_window [title="OpenSSH Authentication Passphrase request"] floating enable
+
 titlebar_border_thickness 2
 titlebar_padding 2
 

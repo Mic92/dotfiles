@@ -107,7 +107,6 @@ in
     jq
     go2nix
     nix-index
-    gnupg1compat
     cheat
     hydra-check
     xdg_utils

@@ -47,7 +47,6 @@
       zsh
       less
       bashInteractive
-      gnupg
       ncurses
       coreutils
       git

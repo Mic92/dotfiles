@@ -17,9 +17,6 @@
 [user]
   name = Jörg Thalheim
   email = joerg@thalheim.io
-  signingkey = 0xB3F5D81B0C6967C4
-[tag]
-  gpgSign = true
 [gpg]
   program = gpg2
 [diff]
