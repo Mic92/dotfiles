@@ -1,12 +1,6 @@
 { config, lib, pkgs, ... }:
 
 {
-  sops.secrets.telegraf.owner = config.systemd.services.telegraf.serviceConfig.User;
-  sops.secrets.telegraf-shared = {
-    owner = config.systemd.services.telegraf.serviceConfig.User;
-    sopsFile = ../../../secrets/telegraf.yaml;
-  };
-
   imports = [
     ../../../modules/telegraf.nix
     ./private.nix
