@@ -31,6 +31,7 @@ in {
   ];
 
   sops.secrets.hydra-admin-password.owner = "hydra-www";
+  sops.secrets.hydra-github-token.owner = "hydra-www";
   sops.secrets.cachix-config.owner = "hydra-queue-runner";
 
   services.hydra = {
@@ -41,6 +42,14 @@ in {
     minimumDiskFreeEvaluator = 1;
     admin.passwordFile = config.sops.secrets.hydra-admin-password.path;
     extraConfig = ''
+      Include ${config.sops.secrets.hydra-github-token.path}
+      <githubstatus>
+      </githubstatus>
+      <githubpulls>
+      </githubpulls>
+      <github_refs>
+      </github_refs>
+
       evaluator_max_memory_size = 4096
       evaluator_initial_heap_size = ${toString (4 * 1024 * 1024 * 1024)}
       max_concurrent_evals = 1
