@@ -7,7 +7,6 @@
   imports = [
     ./hardware-configuration.nix
     ./modules/sshd.nix
-    ./modules/telegraf.nix
 
     ../modules/hass-agent.nix
     ../modules/packages.nix
@@ -16,6 +15,7 @@
     ../modules/users.nix
     ../modules/zfs.nix
     ../modules/tracing.nix
+    ../modules/telegraf.nix
   ];
   networking.retiolum = {
     ipv4 = "10.243.29.169";

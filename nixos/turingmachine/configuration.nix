@@ -24,7 +24,6 @@
     ./modules/sops.nix
     ./modules/sshd.nix
     ./modules/cntr.nix
-    ./modules/telegraf.nix
 
     #../modules/dnsmasq.nix
     ../modules/promtail.nix

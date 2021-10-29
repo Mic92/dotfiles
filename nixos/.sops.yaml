@@ -46,14 +46,6 @@ creation_rules:
         - *rock
       age:
         - *eva
-  - path_regex: secrets/telegraf\.yaml$
-    key_groups:
-    - pgp:
-        - *joerg
-        - *bernie
-        - *turingmachine
-      age:
-        - *eva
   - path_regex: rock/secrets/[^/]+\.yaml$
     key_groups:
     - pgp:

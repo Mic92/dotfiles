@@ -28,14 +28,6 @@
       config.sops.secrets.telegraf.path
       config.sops.secrets.telegraf-shared.path
     ];
-    extraConfig = {
-      agent.interval = lib.mkForce "200s";
-      inputs = {
-        influxdb_v2_listener = [{
-          service_address = ":8186";
-          token = ''''${INFLUXDB_PASSWORD}'';
-        }];
-      };
-    };
+    extraConfig.agent.interval = lib.mkForce "200s";
   };
 }
