@@ -31,7 +31,9 @@ in {
   ];
 
   sops.secrets.hydra-admin-password.owner = "hydra-www";
-  sops.secrets.hydra-github-token.owner = "hydra-www";
+  sops.secrets.hydra-github-token.owner = "hydra";
+  sops.secrets.hydra-github-token.group = "hydra";
+  sops.secrets.hydra-github-token.mode = "0440";
   sops.secrets.cachix-config.owner = "hydra-queue-runner";
 
   services.hydra = {
