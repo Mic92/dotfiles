@@ -51,6 +51,14 @@
       }
       {
         urls = [
+          "http://search.r/"
+        ];
+        tags.host = "prism";
+        response_string_match = "searx";
+        tags.org = "krebs";
+      }
+      {
+        urls = [
           "http://rss.r/?action=display&bridge=Heise&category=https%3A%2F%2Fwww.heise.de%2Fnewsticker%2Fheise-atom.xml&limit=5&format=Plaintext"
         ];
         tags.host = "news";
