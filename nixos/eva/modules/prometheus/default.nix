@@ -35,6 +35,14 @@ in
         static_configs = [
           {
             targets = [
+              "turingmachine.r:9273"
+              "bernie.r:9273"
+              #"rock.r:9273"
+            ];
+            labels.type = "mobile";
+          }
+          {
+            targets = [
               "eva.r:9273"
               "eve.r:9273"
               "matchbox.r:9273"

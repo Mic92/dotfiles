@@ -17,10 +17,10 @@
     '';
   };
 
+  sops.secrets.telegraf.owner = config.systemd.services.telegraf.serviceConfig.User;
   services.telegraf = {
     environmentFiles = [
       config.sops.secrets.telegraf.path
-      config.sops.secrets.telegraf-shared.path
     ];
     extraConfig.agent.interval = lib.mkForce "200s";
   };

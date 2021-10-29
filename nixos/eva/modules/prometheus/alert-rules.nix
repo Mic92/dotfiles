@@ -148,7 +148,7 @@ lib.mapAttrsToList
       description = "Uptime monster: {{$labels.host}} has been up for more than 30 days.";
     };
     telegraf_down = {
-      condition = ''min(up{job=~"telegraf"}) by (source, job, instance, org) == 0'';
+      condition = ''min(up{job=~"telegraf",type!='mobile'}) by (source, job, instance, org) == 0'';
       time = "3m";
       description = "{{$labels.instance}}: {{$labels.job}} telegraf exporter from {{$labels.source}} is down.";
     };
