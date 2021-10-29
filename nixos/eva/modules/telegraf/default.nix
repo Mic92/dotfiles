@@ -18,10 +18,7 @@
   };
 
   sops.secrets.telegraf.owner = config.systemd.services.telegraf.serviceConfig.User;
-  services.telegraf = {
-    environmentFiles = [
-      config.sops.secrets.telegraf.path
-    ];
-    extraConfig.agent.interval = lib.mkForce "200s";
-  };
+  services.telegraf.environmentFiles = [
+    config.sops.secrets.telegraf.path
+  ];
 }
