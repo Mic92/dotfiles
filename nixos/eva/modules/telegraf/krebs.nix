@@ -78,7 +78,6 @@
       {
         urls = [
           "http://cgit.ni.r"
-          "http://cgit.enklave.r"
           "http://cgit.gum.r"
           "http://cgit.prism.r"
         ];
