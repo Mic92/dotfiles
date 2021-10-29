@@ -6,14 +6,14 @@
   ];
   home.packages = let
     # FIXME: upgrade to python310 when possible
-    python3Packages = pkgs.python3Packages;
-    unwrapped-weechat = pkgs.weechat-unwrapped.override {
+    python3Packages = pkgs.python38Packages;
+    weechat-unwrapped = pkgs.weechat-unwrapped.override {
       inherit python3Packages;
     };
     weechatScripts = pkgs.weechatScripts.override {
       inherit python3Packages;
     };
-    weechat = pkgs.wrapWeechat unwrapped-weechat {};
+    weechat = pkgs.wrapWeechat weechat-unwrapped {};
   in [
     pkgs.profanity
     (weechat.override {
