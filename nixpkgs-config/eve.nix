@@ -4,11 +4,21 @@
   imports = [
     ./common.nix
   ];
-  home.packages = [
+  home.packages = let
+    # FIXME: upgrade to python310 when possible
+    python3Packages = pkgs.python3Packages;
+    unwrapped-weechat = pkgs.weechat-unwrapped.override {
+      inherit python3Packages;
+    };
+    weechatScripts = pkgs.weechatScripts.override {
+      inherit python3Packages;
+    };
+    weechat = pkgs.wrapWeechat unwrapped-weechat {};
+  in [
     pkgs.profanity
-    (pkgs.weechat.override {
+    (weechat.override {
       configure = { availablePlugins, ... }: {
-        scripts = with pkgs.weechatScripts; [
+        scripts = with weechatScripts; [
           weechat-otr
           wee-slack
           multiline
