@@ -95,14 +95,6 @@
       }
       {
         urls = [
-          "http://paste.r/"
-        ];
-        response_string_match = "Bepasty";
-        tags.host = "prism";
-        tags.org = "krebs";
-      }
-      {
-        urls = [
           "http://p.r/1pziljc"
         ];
         response_string_match = "ok";
