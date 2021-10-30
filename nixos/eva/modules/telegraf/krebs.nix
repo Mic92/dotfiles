@@ -37,6 +37,7 @@
       {
         urls = [
           "http://yellow.r"
+          "http://catalonia.r/"
         ];
         response_string_match = "Index of /";
         tags.org = "krebs";
