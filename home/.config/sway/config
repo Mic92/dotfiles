@@ -295,6 +295,7 @@ exec --no-startup-id kanshi
 exec --no-startup-id mako
 exec --no-startup-id foot --server
 exec --no-startup-id autotiling
+exec --no-startup-id ferdi
 exec --no-startup-id signal-desktop --enable-features=UseOzonePlatform --ozone-platform=wayland
 exec --no-startup-id systemctl --user import-environment XDG_SESSION_PATH WAYLAND_DISPLAY
 exec --no-startup-id /run/current-system/sw/libexec/xdg-desktop-portal -r

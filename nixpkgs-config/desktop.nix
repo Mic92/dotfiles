@@ -118,6 +118,7 @@ in
     playerctl
     youtube-dl
     mumble
+    ferdi
 
     isync
     # to fix xdg-open
