@@ -35,7 +35,6 @@
     ../modules/tracing.nix
     ../modules/telegraf.nix
     #./kde.nix
-    #../modules/i3.nix
     ../modules/samba-dl.nix
     ../modules/sway.nix
     #../modules/awesome.nix
@@ -45,6 +44,13 @@
     ../modules/zfs.nix
     ../modules/users.nix
   ];
+
+  specialisation.i3.configuration = {
+    imports = [
+      ../modules/i3.nix
+    ];
+    services.teamviewer.enable = true;
+  };
 
   #services.udev.packages = [ pkgs.platformio ];
 
@@ -155,9 +161,6 @@
   };
 
   security.audit.enable = false;
-
-  services.teamviewer.enable = true;
-
   nixpkgs.config = {
     allowUnfree = true;
     android_sdk.accept_license = true;
