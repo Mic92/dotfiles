@@ -98,9 +98,7 @@ in
     hunspell
     hunspellDicts.en-gb-ise
     dino
-    #alacritty
     foot
-    #(pkgs.callPackage ./pkgs/alacritty.nix { })
     screen-message
     sshfsFuse
     sshuttle
