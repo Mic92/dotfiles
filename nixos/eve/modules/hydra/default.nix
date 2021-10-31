@@ -1,16 +1,6 @@
 { config, lib, pkgs, ... }:
 
-let
-  upload-cachix = pkgs.stdenv.mkDerivation {
-    name = "upload-cachix";
-    buildInputs = [ pkgs.python3 pkgs.mypy ];
-    dontUnpack = true;
-    installPhase = ''
-      install -D -m 755 ${./upload-cachix} $out/bin/upload-cachix
-      mypy $out/bin/upload-cachix
-    '';
-  };
-in {
+{
   nix.allowedUsers = [ "hydra" "hydra-queue-runner" "hydra-www" ];
 
   systemd.tmpfiles.rules = [
