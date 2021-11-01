@@ -2,21 +2,8 @@
   imports = [
     ../../modules/telegraf.nix
   ];
-  systemd.services.fix-telegraf-postfix-access = {
-    wantedBy = [ "multi-user.target" ];
-    requiredBy = [ "telegraf.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = "yes";
-      ExecStart = [
-        "${pkgs.acl}/bin/setfacl -Rm u:telegraf:rX /var/lib/postfix/"
-        "${pkgs.acl}/bin/setfacl -dm u:telegraf:rX /var/lib/postfix/"
-      ];
-    };
-  };
 
   services.telegraf.extraConfig.inputs = {
-    postfix.queue_directory = "/var/lib/postfix/queue";
     ping =
       let
         urls = [
