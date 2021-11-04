@@ -30,7 +30,7 @@
 	url = https://github.com/tmux-plugins/tmux-copycat
 [submodule "zsh/fast-syntax-highlighting"]
 	path = zsh/fast-syntax-highlighting
-	url = https://github.com/zdharma/fast-syntax-highlighting
+	url = https://github.com/zdharma-continuum/fast-syntax-highlighting
 [submodule "gdb/gef-extras"]
 	path = gdb/gef-extras
 	url = https://github.com/hugsy/gef-extras
