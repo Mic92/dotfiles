@@ -43,10 +43,10 @@
         useShortContext = 1
       </githubstatus>
 
-      #<githubpulls>
-      #</githubpulls>
-      #<github_refs>
-      #</github_refs>
+      <githubpulls>
+      </githubpulls>
+      <github_refs>
+      </github_refs>
 
       evaluator_max_memory_size = 4096
       evaluator_initial_heap_size = ${toString (4 * 1024 * 1024 * 1024)}
