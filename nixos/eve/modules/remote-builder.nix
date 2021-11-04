@@ -10,7 +10,7 @@
     supportedFeatures = [
       "big-parallel"
       "kvm"
-      "nixos-tests"
+      "nixos-test"
     ];
   } {
     hostName = "graham.r";
@@ -21,7 +21,7 @@
     supportedFeatures = [
       "big-parallel"
       "kvm"
-      "nixos-tests"
+      "nixos-test"
     ];
   }];
 
