@@ -37,8 +37,10 @@
     admin.passwordFile = config.sops.secrets.hydra-admin-password.path;
     extraConfig = ''
       Include ${config.sops.secrets.hydra-github-token.path}
+
       <githubstatus>
         jobs = .*
+        inputs = src
         excludeBuildFromContext = 1
         useShortContext = 1
       </githubstatus>

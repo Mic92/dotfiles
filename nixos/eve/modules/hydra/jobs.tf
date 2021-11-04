@@ -123,14 +123,14 @@ resource "hydra_jobset" "sops-nix-master" {
   email_notifications = true
 
   nix_expression {
-    file  = "release.nix"
-    input = "sops-nix"
+    file  = "default.nix"
+    input = "src"
   }
 
   input {
-    name = "sops-nix"
+    name = "src"
     type = "git"
-    value = "https://github.com/Mic92/sops-nix.git"
+    value = "https://github.com/Mic92/sops-nix"
     notify_committers = false
   }
 
