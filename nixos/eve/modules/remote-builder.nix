@@ -13,8 +13,8 @@
       "nixos-tests"
     ];
   } {
-    hostName = "nardole.r";
-    maxJobs = 20;
+    hostName = "graham.r";
+    maxJobs = 128;
     sshKey = config.sops.secrets.tum-builder.path;
     sshUser = "nix";
     system = "x86_64-linux";
