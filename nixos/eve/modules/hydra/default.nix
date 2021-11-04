@@ -26,6 +26,8 @@
   sops.secrets.hydra-github-token.mode = "0440";
   sops.secrets.cachix-config.owner = "hydra-queue-runner";
 
+  services.postgresql.settings.max_connections = 256;
+
   services.hydra = {
     enable = true;
     hydraURL = "https://hydra.thalheim.io";
