@@ -6,6 +6,7 @@ mkShell {
   nativeBuildInputs = [
     bashInteractive
     sops
+    gnupg
     (terraform.withPlugins (p: [ p.hydra ]))
   ];
 }

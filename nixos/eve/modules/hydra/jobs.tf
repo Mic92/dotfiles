@@ -38,6 +38,40 @@ resource "hydra_jobset" "dotfiles-master" {
   email_notifications = true
 }
 
+resource "hydra_jobset" "dotfiles-prs" {
+  project     = hydra_project.dotfiles.name
+  state       = "enabled"
+  visible     = true
+  name        = "prs"
+  type        = "legacy"
+  description = "pull requests for dotfiles"
+
+  check_interval    = 60
+  scheduling_shares = 3000
+  keep_evaluations  = 3
+
+  email_notifications = true
+
+  nix_expression {
+    file  = "ci.nix"
+    input = "dotfiles"
+  }
+
+  input {
+    name = "dotfiles"
+    type = "git"
+    value = "https://github.com/Mic92/dotfiles.git"
+    notify_committers = false
+  }
+
+  input {
+    name = "pr"
+    value = "Mic92 dotfiles"
+    type = "githubpulls"
+    notify_committers = false
+  }
+}
+
 resource "hydra_project" "doctor-cluster-config" {
   name         = "doctor-cluster-config"
   display_name = "Doctor-cluster"
