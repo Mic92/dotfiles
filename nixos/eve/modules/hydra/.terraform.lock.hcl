@@ -5,6 +5,6 @@ provider "registry.terraform.io/determinatesystems/hydra" {
   version     = "0.1.2"
   constraints = "~> 0.1"
   hashes = [
-    "h1:i3Qzc5jrb/QwWhXSVGQ46myzCwD4RTe30+vDPu9ljFc=",
+    "h1:eoWSm8A90mcT8putcWUErTKyPLT6a+A0z1ABabDTHtQ=",
   ]
 }
