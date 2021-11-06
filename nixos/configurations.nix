@@ -79,12 +79,12 @@ in
   #  ];
   #};
 
-  #matchbox = nixpkgs-stable.lib.nixosSystem {
-  #  system = "aarch64-linux";
-  #  modules = defaultModules ++ [
-  #    ./matchbox/configuration.nix
-  #  ];
-  #};
+  matchbox = nixpkgs-stable.lib.nixosSystem {
+    system = "aarch64-linux";
+    modules = defaultModules ++ [
+      ./matchbox/configuration.nix
+    ];
+  };
 
   #eve-vm = nixosSystem {
   #  system = "x86_64-linux";
@@ -93,8 +93,8 @@ in
   #  ];
   #};
 
-  eva = nixosSystem {
+  eva = nixpkgs.lib.makeOverridable (nixosSystem {
     system = "x86_64-linux";
     modules = defaultModules ++ [ ./eva/configuration.nix ];
-  };
+  });
 }
