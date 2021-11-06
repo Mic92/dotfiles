@@ -93,8 +93,8 @@ in
   #  ];
   #};
 
-  eva = nixpkgs.lib.makeOverridable (nixosSystem {
+  eva = nixpkgs.lib.makeOverridable nixosSystem {
     system = "x86_64-linux";
     modules = defaultModules ++ [ ./eva/configuration.nix ];
-  });
+  };
 }
