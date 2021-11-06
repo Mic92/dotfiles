@@ -1,3 +1,11 @@
+# To deploy as a systemd-nspawn container on a new host:
+# $ nix run github:nix-community/nixos-generators -- --format lxc --flake '.#eva'
+# $ mkdir -p /var/lib/machines/eva
+# $ tar -C /var/lib/machines/eva -xf nixos-system-x86_64-linux.tar
+# # provision /etc/os-release, the command will fail but systemd-nspawn will be
+# # able to boot our directory afterwards
+# $ unshare --mount -- chroot /var/lib/machines/eva /sbin/init
+# $ systemd-nspawn --capability=CAP_NET_ADMIN -D /var/lib/machines/eva -b
 {
   networking.hostName = "eva";
 
@@ -24,25 +32,16 @@
     ../modules/users.nix
   ];
 
+  # let the host manage these
   systemd.network.networks."ethernet".extraConfig = ''
     [Match]
     Type = ether
 
     [Network]
-    DHCP = yes
-    LLMNR = true
-    LinkLocalAddressing = yes
-    LLDP = true
-    IPv6AcceptRA = true
-    IPForward = yes
-
-    Address = 2a01:4f8:1c1c:9a9::1/128
-    Gateway = fe80::1
-    IPv6AcceptRA = no
-    IPForward = yes
+    Unmanaged = yes
   '';
 
-  systemd.network.enable = true;
+  services.resolved.enable = false;
 
   # breaks loki
   networking.usePredictableInterfaceNames = false;
