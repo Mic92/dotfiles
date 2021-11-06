@@ -272,7 +272,12 @@ xalias tig='lazygit'
 alias free='free -m'
 alias fuser="fuser -v"
 if [[ -n ${commands[dua]} ]]; then
-  alias du='dua'
+  du() {
+    args=$@
+    args=(${args#-s})
+    args=(${args#-h})
+    command dua "$args[@]"
+  }
 else
   alias du='du -hc'
 fi
