@@ -16,7 +16,7 @@
       keep-outputs = true
       keep-derivations = true
       # in zfs we trust
-      fsync-metadata = ${lib.boolToString (config.fileSystems."/".fsType != "zfs")}
+      fsync-metadata = ${lib.boolToString (!config.boot.isContainer or config.fileSystems."/".fsType != "zfs")}
       experimental-features = nix-command flakes
     '';
 
