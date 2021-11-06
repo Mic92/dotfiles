@@ -137,16 +137,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1625909767,
-        "narHash": "sha256-ZP3RCGYwPDu4I5rwLYER2/d4aHFxiMTQ5Ioc89WRTow=",
-        "owner": "Mic92",
+        "lastModified": 1636044164,
+        "narHash": "sha256-RI9QjS8NBrfVTp6dzmcEVKNNjxYGBf26+/7ihDA/USc=",
+        "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "4426880786b623618778d892701f9e0d6452fe4f",
+        "rev": "70c5b268e10025c70823767f4fb49e240b40151d",
         "type": "github"
       },
       "original": {
-        "owner": "Mic92",
-        "ref": "nixos-option-test",
+        "owner": "nix-community",
         "repo": "home-manager",
         "type": "github"
       }
