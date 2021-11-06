@@ -1,6 +1,3 @@
-[submodule "home/.zsh-completion"]
-	path = home/.zsh-completion
-	url = https://github.com/zsh-users/zsh-completions.git
 [submodule "zsh/zsh-completions"]
 	path = zsh/zsh-completions
 	url = https://github.com/zsh-users/zsh-completions.git
@@ -13,21 +10,9 @@
 [submodule "zsh/pure"]
 	path = zsh/pure
 	url = https://github.com/Mic92/pure.git
-[submodule "home-manager"]
-	path = home-manager
-	url = https://github.com/rycee/home-manager.git
-[submodule "nix-home-manager"]
-	path = nix-home-manager
-	url = https://github.com/rycee/home-manager.git
 [submodule "zsh/zsh-autopair"]
 	path = zsh/zsh-autopair
 	url = https://github.com/hlissner/zsh-autopair.git
-[submodule "nixos/overlays/nixpkgs-mozilla"]
-	path = nixos/overlays/nixpkgs-mozilla
-	url = https://github.com/mozilla/nixpkgs-mozilla.git
-[submodule "home/.tmux-copycat"]
-	path = home/.tmux-copycat
-	url = https://github.com/tmux-plugins/tmux-copycat
 [submodule "zsh/fast-syntax-highlighting"]
 	path = zsh/fast-syntax-highlighting
 	url = https://github.com/zdharma-continuum/fast-syntax-highlighting
@@ -37,6 +22,3 @@
 [submodule "gdb/gef"]
 	path = gdb/gef
 	url = https://github.com/hugsy/gef
-[submodule "home/.nix-direnv"]
-	path = home/.nix-direnv
-	url = https://github.com/nix-community/nix-direnv
