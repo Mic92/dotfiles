@@ -37,7 +37,7 @@
     [Match]
     Type = ether
 
-    [Network]
+    [Link]
     Unmanaged = yes
   '';
 
