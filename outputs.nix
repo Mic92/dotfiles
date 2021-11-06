@@ -13,7 +13,6 @@
 , envfs
 , doom-emacs
 , emacs-overlay
-, lambda-pirate
 , nixpkgs-stable
 , nix-darwin
 , vmsh
@@ -75,7 +74,6 @@
       nix-ld
       nixpkgs-systemd
       nixpkgs-stable
-      lambda-pirate
       vmsh;
   };
 

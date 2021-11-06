@@ -150,33 +150,6 @@
         "type": "github"
       }
     },
-    "lambda-pirate": {
-      "inputs": {
-        "fenix": [
-          "fenix"
-        ],
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1623132300,
-        "narHash": "sha256-TwksE+Fb/MtLHfI2CfJJs/vKMFP3RflvA4SIXClhVLI=",
-        "owner": "pogobanane",
-        "repo": "lambda-pirate",
-        "rev": "364441543bd56f9c6152c83a41f8515720560d73",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pogobanane",
-        "ref": "fix-eval",
-        "repo": "lambda-pirate",
-        "type": "github"
-      }
-    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -339,7 +312,6 @@
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
-        "lambda-pirate": "lambda-pirate",
         "nix-darwin": "nix-darwin",
         "nix-ld": "nix-ld",
         "nixos-hardware": "nixos-hardware",
