@@ -4,5 +4,5 @@ let
 in {
   # Pointless in vms or containers and better managed by the host.
   # Also don't enable on laptop's as it might increase energy consumption.
-  services.irqbalance.enable = !(config.boot.isContainer || isVM || config.systemd.services.tlp.enable);
+  services.irqbalance.enable = !(config.boot.isContainer || isVM || config.services.tlp.enable);
 }
