@@ -80,6 +80,8 @@
           # messages from rpi3
           { drop.expression = "hwmon hwmon1: Undervoltage detected!"; }
           { drop.expression = "hwmon hwmon1: Voltage normalised"; }
+          # ignore random portscans on the internet
+          { drop.expression = "refused connection: IN="; }
         ];
         relabel_configs = [{
           source_labels = [ "__journal__hostname" ];
