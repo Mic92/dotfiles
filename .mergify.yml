@@ -1,7 +1,13 @@
 pull_request_rules:
   - name: automatic merge on CI success
     conditions:
-      - check-success=ci/hercules/derivations
+      - check-success=ci/hydra:dotfiles:flake-updates:nixos-eve
+      - check-success=ci/hydra:dotfiles:flake-updates:nixos-eva
+      - check-success=ci/hydra:dotfiles:flake-updates:nixos-matchbox
+      - check-success=ci/hydra:dotfiles:flake-updates:nixos-turingmachine
+      - check-success=ci/hydra:dotfiles:flake-updates:nixos-bernie
+      - check-success=ci/hydra:dotfiles:flake-updates:home-manager-common
+      - check-success=ci/hydra:dotfiles:flake-updates:home-manager-desktop
       - author=github-actions[bot]
     actions:
       merge:
