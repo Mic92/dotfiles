@@ -38,7 +38,7 @@ in
           kvstore.store = "inmemory";
           replication_factor = 1;
         };
-        interface_names = [ "eth0" "en0" "ens192" ];
+        lifecycler.interface_names = [ "eth0" "en0" "ens192" ];
         chunk_encoding = "snappy";
         # Disable block transfers on shutdown
         max_transfer_retries = 0;
