@@ -69,8 +69,6 @@
       bme680-mqtt
       envfs
       nix-ld
-      nixpkgs-systemd
-      nixpkgs-stable
       vmsh;
   };
 
