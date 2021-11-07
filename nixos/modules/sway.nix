@@ -4,7 +4,7 @@
     wrapperFeatures.gtk = true; # so that gtk works properly
     extraPackages = with pkgs; [
       dex
-      swaylock # lockscreen
+      swaylock-effects # lockscreen
       pavucontrol
       swayidle
       xwayland
@@ -16,12 +16,12 @@
       gnome3.eog
       libnotify
       autotiling # https://github.com/nwg-piotr/autotiling
-      mako # notification daemon
+      dunst # notification daemon
       kanshi # autorandr
       swappy
       wdisplays
       wl-clipboard
-      nur.repos.mic92.grimshot
+      flameshot
 
       pavucontrol
       lightlocker

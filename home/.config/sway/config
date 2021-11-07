@@ -179,7 +179,7 @@ bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 bindsym $mod+p exec playerctl play-pause
 #
-#bindsym $mod+Print exec flameshot gui -p /home/joerg/upload
+bindsym $mod+Print exec flameshot
 
 #
 # Start i3bar to display a workspace bar (plus the system information i3status
@@ -292,7 +292,7 @@ default_border normal 1
 exec --no-startup-id firefox
 exec --no-startup-id nm-applet --indicator
 exec --no-startup-id kanshi
-exec --no-startup-id mako
+exec --no-startup-id dunst
 exec --no-startup-id foot --server
 exec --no-startup-id autotiling
 exec --no-startup-id ferdi
@@ -300,3 +300,24 @@ exec --no-startup-id signal-desktop --enable-features=UseOzonePlatform --ozone-p
 exec --no-startup-id systemctl --user import-environment XDG_SESSION_PATH WAYLAND_DISPLAY
 exec --no-startup-id /run/current-system/sw/libexec/xdg-desktop-portal -r
 exec --no-startup-id /run/current-system/sw/libexec/xdg-desktop-portal-wlr -r
+
+set $swaylock swaylock \
+  --screenshots \
+  --clock \
+  --indicator \
+  --indicator-radius 100 \
+  --indicator-thickness 7 \
+  --effect-blur 7x5 \
+  --effect-vignette 0.5:0.5 \
+  --ring-color bb00cc \
+  --key-hl-color 880033 \
+  --line-color 00000000 \
+  --inside-color 00000088 \
+  --separator-color 00000000 \
+  --grace 2 \
+  --fade-in 0.2
+exec --no-startup-id swayidle -w \
+     timeout 300 "$swaylock" \
+     timeout 600 'swaymsg "output * dpms off"' \
+          resume 'swaymsg "output * dpms on"' \
+     before-sleep "$swaylock"
