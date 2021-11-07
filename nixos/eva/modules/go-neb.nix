@@ -79,7 +79,6 @@
           Config = {
             RealmID = "github_realm_davhau";
             ClientUserID = "@mic92:nixos.dev";
-            # (no access yet)
             Rooms."!PrIEtcffTLLzUWvJOS:matrix.org".Repos = {
               "DavHau/dream2nix".Events = [ "pull_request" ];
               "DavHau/dreampkgs".Events = [ "pull_request" ];
