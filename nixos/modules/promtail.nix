@@ -76,9 +76,10 @@
           }
           # silence nscd:
           # Oct 24 18:20:19 nardole nscd[1812]: 1812 ignored inotify event for `/etc/netgroup` (file exists)
-          {
-            drop.expression = "ignored inotify event for";
-          }
+          { drop.expression = "ignored inotify event for"; }
+          # messages from rpi3
+          { drop.expression = "hwmon hwmon1: Undervoltage detected!"; }
+          { drop.expression = "hwmon hwmon1: Voltage normalised"; }
         ];
         relabel_configs = [{
           source_labels = [ "__journal__hostname" ];
