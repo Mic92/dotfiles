@@ -35,6 +35,10 @@
         ID = "github_realm";
         Type = "github";
         Config = { };
+      } {
+        ID = "github_realm_davhau";
+        Type = "github";
+        Config = { };
       }];
       sessions = [{
         SessionID = "your_github_session";
@@ -44,6 +48,15 @@
           # Populate these fields by generating a "Personal Access Token" on github.com
           AccessToken = "$GITHUB_TOKEN";
           Scopes = "admin:org_hook,admin:repo_hook,repo,user";
+        };
+      } {
+        SessionID = "davhau";
+        RealmID = "github_realm_davhau";
+        UserID = "@mic92:nixos.dev";
+        Config = {
+          # Populate these fields by generating a "Personal Access Token" on github.com
+          AccessToken = "$GITHUB_TOKEN_DAVHAU";
+          Scopes = "admin:repo_hook,repo,user";
         };
       }];
       services = [
@@ -57,8 +70,19 @@
             Rooms."!PbtOpdWBSRFbEZRLIf:numtide.com".Repos = {
               "nix-community/infra".Events = [ "push" "issues" "pull_request" ];
             };
+          };
+        }
+        {
+          ID = "github_webhook_service2";
+          Type = "github-webhook";
+          UserID = "@nix-community-bot:nixos.dev";
+          Config = {
+            RealmID = "github_realm_davhau";
+            ClientUserID = "@mic92:nixos.dev";
+            # (no access yet)
             Rooms."!PrIEtcffTLLzUWvJOS:matrix.org".Repos = {
               "DavHau/dream2nix".Events = [ "pull_request" ];
+              "DavHau/dreampkgs".Events = [ "pull_request" ];
             };
           };
         }
