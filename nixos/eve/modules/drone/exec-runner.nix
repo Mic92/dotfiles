@@ -1,9 +1,10 @@
-{ pkgs, config, ... }:
+{ pkgs, config, lib, ... }:
 
 let
   droneserver = config.users.users.droneserver.name;
 in
 {
+  nix.allowedUsers = [ "drone-runner-exec" ];
   systemd.services.drone-runner-exec = {
     wantedBy = [ "multi-user.target" ];
     # might break deployment
@@ -24,6 +25,8 @@ in
       pkgs.gzip
     ];
     serviceConfig = {
+      RootDirectory = lib.mkForce "/run/drone-exec-runner";
+      RuntimeDirectory = [ "drone-exec-runner" ];
       Environment = [
         "DRONE_RUNNER_CAPACITY=10"
         "CLIENT_DRONE_RPC_HOST=127.0.0.1:3030"
