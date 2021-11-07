@@ -38,6 +38,22 @@ resource "hydra_jobset" "dotfiles-master" {
   email_notifications = true
 }
 
+resource "hydra_jobset" "dotfiles-updates" {
+  project     = hydra_project.dotfiles.name
+  state       = "enabled"
+  visible     = true
+  name        = "flake-updates"
+  type        = "flake"
+  description = "master branch"
+  flake_uri   = "github:Mic92/dotfiles/update_flake_lock_action"
+
+  check_interval    = 60
+  scheduling_shares = 3000
+  keep_evaluations  = 3
+
+  email_notifications = true
+}
+
 resource "hydra_project" "doctor-cluster-config" {
   name         = "doctor-cluster-config"
   display_name = "Doctor-cluster"
