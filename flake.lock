@@ -224,38 +224,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-stable": {
-      "locked": {
-        "lastModified": 1635881826,
-        "narHash": "sha256-k5aPPLDpeDdvBF95Y+f0dGbFheS3OUt/4mkvKRZ6bHw=",
-        "owner": "Mic92",
-        "repo": "nixpkgs",
-        "rev": "b32cb5a26ef4c7ba78550ea04a3c04c18887792a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "ref": "release-21.05-backports",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-systemd": {
-      "locked": {
-        "lastModified": 1621285292,
-        "narHash": "sha256-1ZdCKUxLi7Ec/syJUjkDZXYtclOKHrap1ftsyusEPe0=",
-        "owner": "Mic92",
-        "repo": "nixpkgs",
-        "rev": "cd3fc12adc7581aac07af86dbb682fac4b750c94",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "ref": "systemd",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "not-os": {
       "flake": false,
       "locked": {
@@ -316,8 +284,6 @@
         "nix-ld": "nix-ld",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-stable": "nixpkgs-stable",
-        "nixpkgs-systemd": "nixpkgs-systemd",
         "nur": "nur",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",

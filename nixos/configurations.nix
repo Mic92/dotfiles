@@ -9,8 +9,6 @@
 , bme680-mqtt
 , nix-ld
 , envfs
-, nixpkgs-systemd
-, nixpkgs-stable
 , vmsh
 }:
 let
@@ -56,11 +54,6 @@ in
       nix-ld.nixosModules.nix-ld
       #envfs.nixosModules.envfs
       ./turingmachine/configuration.nix
-      #({...}: {
-      #  systemd.package = (import nixpkgs-systemd {
-      #    system = "x86_64-linux";
-      #  }).systemd;
-      #})
     ];
   };
 
@@ -77,7 +70,7 @@ in
   #  ];
   #};
 
-  matchbox = nixpkgs-stable.lib.nixosSystem {
+  matchbox = nixosSystem {
     system = "aarch64-linux";
     modules = defaultModules ++ [
       ./matchbox/configuration.nix

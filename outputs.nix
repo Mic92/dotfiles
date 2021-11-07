@@ -1,6 +1,5 @@
 { self
 , nixpkgs
-, nixpkgs-systemd
 , nixos-hardware
 , sops-nix
 , nur
@@ -13,7 +12,6 @@
 , envfs
 , doom-emacs
 , emacs-overlay
-, nixpkgs-stable
 , nix-darwin
 , vmsh
 , fenix
@@ -25,7 +23,6 @@
       inherit pkgs;
       nurpkgs = pkgs;
     };
-    pkgsStable = nixpkgs-stable.legacyPackages.${system};
   in
   {
     devShell = pkgs.callPackage ./shell.nix {

@@ -15,10 +15,6 @@
     vmsh.inputs.fenix.follows = "fenix";
 
     nixpkgs.url = "github:Mic92/nixpkgs/main";
-    nixpkgs-stable.url = "github:Mic92/nixpkgs/release-21.05-backports";
-
-    #nixpkgs-systemd.url = "github:Mic92/nixpkgs/systemd-stable-update";
-    nixpkgs-systemd.url = "github:Mic92/nixpkgs/systemd";
     # for development
     #nixpkgs.url = "/home/joerg/git/nixpkgs";
     nur.url = "github:nix-community/NUR";
