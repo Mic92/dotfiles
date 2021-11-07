@@ -30,7 +30,6 @@ let
     })
     ./modules/upgrade-diff.nix
     ./modules/nix-daemon.nix
-    ./modules/irqbalance.nix
     retiolum.nixosModules.retiolum
     sops-nix.nixosModules.sops
   ];
