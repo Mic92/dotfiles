@@ -41,6 +41,8 @@
     ../modules/users.nix
   ];
 
+  networking.firewall.enable = false;
+
   # let the host manage these
   systemd.network.networks."ethernet".extraConfig = ''
     [Match]
@@ -49,6 +51,24 @@
     [Link]
     Unmanaged = yes
   '';
+
+  #systemd.network.networks."ethernet".extraConfig = ''
+  #  [Match]
+  #  Type = ether
+
+  #  [Network]
+  #  DHCP = yes
+  #  LLMNR = true
+  #  LinkLocalAddressing = yes
+  #  LLDP = true
+  #  IPv6AcceptRA = true
+  #  IPForward = yes
+
+  #  Address = 2a01:4f8:1c1c:9a9::1/128
+  #  Gateway = fe80::1
+  #  IPv6AcceptRA = no
+  #  IPForward = yes
+  #'';
 
   services.resolved.enable = false;
 
