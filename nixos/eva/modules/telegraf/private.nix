@@ -249,6 +249,7 @@ in
       ];
       tags.host = "eve";
       tags.org = "private";
+      network = "tcp";
       record_type = "A";
     };
 
