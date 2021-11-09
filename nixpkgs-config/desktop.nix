@@ -22,7 +22,6 @@ in
     #./modules/latex.nix
     ./modules/debugging.nix
     ./modules/default-apps.nix
-    ./modules/bitwarden.nix
   ];
 
   manual.json.enable = true;
@@ -84,6 +83,7 @@ in
     mumble
     ferdi
 
+    rbw
     isync
     # to fix xdg-open
     glib
