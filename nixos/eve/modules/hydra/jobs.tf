@@ -84,9 +84,9 @@ resource "hydra_jobset" "doctor-cluster-config-flake" {
   project     = hydra_project.doctor-cluster-config.name
   state       = "enabled"
   visible     = true
-  name        = "update_flake_lock_action"
+  name        = "flake-update"
   type        = "flake"
-  description = "update_flake_lock_action branch"
+  description = "flake-update branch"
   flake_uri   = "github:Mic92/doctor-cluster-config/update_flake_lock_action"
 
   check_interval    = 60
