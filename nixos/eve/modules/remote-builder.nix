@@ -17,7 +17,7 @@
     maxJobs = 128;
     sshKey = config.sops.secrets.tum-builder.path;
     sshUser = "nix";
-    system = "x86_64-linux";
+    systems = [ "x86_64-linux" "i686-linux" ];
     supportedFeatures = [
       "big-parallel"
       "kvm"
