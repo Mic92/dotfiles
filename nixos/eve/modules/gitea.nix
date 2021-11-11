@@ -10,7 +10,7 @@
     domain = "git.thalheim.io";
     rootUrl = "https://git.thalheim.io";
     mailerPasswordFile = config.sops.secrets.gitea-mail.path;
-    disableRegistration = false;
+    disableRegistration = true;
     settings.mailer = {
       ENABLED = true;
       FROM = "gitea@thalheim.io";
