@@ -12,12 +12,12 @@ let
   };
 in
 {
-  sops.secrets.prometheus = { };
   sops.secrets.alertmanager = { };
+  sops.secrets.prometheus-irc-password = { };
+  sops.secrets.hass-token.owner = "prometheus";
 
   services.prometheus = {
     enable = true;
-    environmentFile = config.sops.secrets.prometheus.path;
     ruleFiles = [
       (pkgs.writeText "prometheus-rules.yml" (builtins.toJSON {
         groups = [{
@@ -94,11 +94,8 @@ in
         scrape_interval = "60s";
         metrics_path = "/api/prometheus";
 
-        # Legacy api password
-        params.api_password = [ "PASSWORD" ];
+        authorization.credentials_file = config.sops.secrets.hass-token.path;
 
-        # Long-Lived Access Token
-        bearer_token = "$HASS_TOKEN";
         scheme = "https";
         static_configs = [{
           targets = [ "hass.thalheim.io:443" ];
@@ -191,8 +188,6 @@ in
     {
       krebs.port = 9223;
     };
-
-  sops.secrets.prometheus-irc-password = { };
 
   systemd.services = lib.mapAttrs'
     (name: opts:
