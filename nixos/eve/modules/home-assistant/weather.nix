@@ -14,20 +14,21 @@
     };
     openweathermap = { };
     weather = { };
-    automation = [{
-      alias = "rainy/snowy day notification";
-      trigger = {
-        platform = "state";
-        entity_id = "weather.openweathermap";
-      };
-      condition = {
-        condition = "template";
-        value_template = ''{{ states.input_boolean.rain_notified_today.state == "off" }}'';
-      };
-      action = [{
-        service = "python_script.weather";
-      }];
-    }
+    automation = [
+      {
+        alias = "rainy/snowy day notification";
+        trigger = {
+          platform = "state";
+          entity_id = "weather.openweathermap";
+        };
+        condition = {
+          condition = "template";
+          value_template = ''{{ states.input_boolean.rain_notified_today.state == "off" }}'';
+        };
+        action = [{
+          service = "python_script.weather";
+        }];
+      }
       {
         alias = "Reset rain notified today";
         trigger = {
@@ -38,6 +39,7 @@
           service = "input_boolean.turn_off";
           entity_id = "input_boolean.rain_notified_today";
         }];
-      }];
+      }
+    ];
   };
 }
