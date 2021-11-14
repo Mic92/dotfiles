@@ -1,7 +1,7 @@
 {
   services.home-assistant.config.intent_script = {
     Noop.speech.text = "";
-    Psst.speech.text = "Wot";
+    Psst.speech.text = "Wot.";
     FuckOff.speech.text = "Fuck yourself.";
     NotAGirl.speech.text = "Not a girl";
     Siri.speech.text = "Siri is a cunt";
