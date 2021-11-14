@@ -108,7 +108,7 @@ lib.mapAttrsToList
     };
 
     homeassistant = {
-      condition = ''entity_available{domain="persistent_notification", entity!="persistent_notification.http_login"} >= 0'';
+      condition = ''homeassistant_entity_available{domain="persistent_notification", entity!="persistent_notification.http_login"} >= 0'';
       description = "homeassistant notification {{$labels.entity}} ({{$labels.friendly_name}}): {{$value}}";
     };
 
