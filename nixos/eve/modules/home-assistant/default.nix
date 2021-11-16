@@ -7,7 +7,7 @@ in
     ./bme680.nix
     ./charge-notifications.nix
     ./find-phone.nix
-    ./german.nix
+    #./german.nix
     ./jokes.nix
     ./laptops.nix
     ./light.nix
@@ -22,7 +22,7 @@ in
     ./weather.nix
     ./zones.nix
     ./news.nix
-    ./coding.nix
+    #./coding.nix
   ];
 
   services.home-assistant = {
