@@ -16,6 +16,7 @@
       gnutar
       gzip
       rsync
+      nix-eval-jobs
       config.nix.package
     ];
   };
