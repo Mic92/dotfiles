@@ -24,7 +24,7 @@ resource "hydra_project" "dotfiles" {
 
 resource "hydra_jobset" "dotfiles-master" {
   project     = hydra_project.dotfiles.name
-  state       = "enabled"
+  state       = "disabled"
   visible     = true
   name        = "master"
   type        = "flake"
@@ -40,7 +40,7 @@ resource "hydra_jobset" "dotfiles-master" {
 
 resource "hydra_jobset" "dotfiles-updates" {
   project     = hydra_project.dotfiles.name
-  state       = "enabled"
+  state       = "disabled"
   visible     = true
   name        = "flake-updates"
   type        = "flake"
