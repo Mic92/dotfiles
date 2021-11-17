@@ -20,6 +20,8 @@
     ./declarative-admin-user.nix
   ];
 
+  nix.nrBuildUsers = 128;
+
   sops.secrets.hydra-admin-password.owner = "hydra-www";
   sops.secrets.hydra-github-token.owner = "hydra";
   sops.secrets.hydra-github-token.group = "hydra";
