@@ -99,6 +99,8 @@ in
         with_family = true;
       };
       cloud = { };
+      network = { };
+      zeroconf = { };
       system_health = { };
       sensor = [{
         platform = "template";
