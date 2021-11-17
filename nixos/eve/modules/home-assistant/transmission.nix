@@ -2,7 +2,7 @@
 
 {
   services.home-assistant.config = {
-    transmission.host = "yellow.r";
+    transmission = [{ host = "yellow.r"; }];
     automation = [{
       alias = "Completed Torrent";
       trigger = {
@@ -12,14 +12,13 @@
       action = [{
         service = "notify.irc_flix";
         data_template.message = "torrent completed: {{trigger.event.data.name}}";
-      }
-        {
-          service = "notify.mobile_app_beatrice";
-          data_template = {
-            title = "Torrent completed!";
-            message = ": {{trigger.event.data.name}}";
-          };
-        }];
+      } {
+        service = "notify.mobile_app_beatrice";
+        data_template = {
+          title = "Torrent completed!";
+          message = ": {{trigger.event.data.name}}";
+        };
+      }];
     }];
     notify = [{
       name = "irc_flix";
