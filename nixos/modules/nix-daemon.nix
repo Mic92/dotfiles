@@ -8,7 +8,7 @@
     };
 
     # should be enough?
-    nrBuildUsers = 32;
+    nrBuildUsers = lib.mkDefault 32;
 
     # https://github.com/NixOS/nix/issues/719
     extraOptions = ''
