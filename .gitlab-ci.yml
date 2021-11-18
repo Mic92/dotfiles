@@ -4,6 +4,5 @@ stages:
 build-job:
   stage: build
   script:
-    - echo $PATH
-    - nix-eval-jobs --workers 4 --gc-roots-dir $(pwd)/gcroot --flake '.#hydraJobs' > jobs
+    - nix run nixpkgs/nixpkgs-unstable#nix-eval-jobs --workers 4 --gc-roots-dir $(pwd)/gcroot --flake '.#hydraJobs' > jobs
     - jq -r '.drvPath' < jobs | xargs nix-build
