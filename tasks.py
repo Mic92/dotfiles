@@ -155,6 +155,12 @@ def reboot(c, hosts=""):
 
 
 @task
+def reload_tinc(c):
+    g = DeployGroup(DeployHost(h) for h in ["eva.r", "eve.r", "localhost"])
+    g.run("systemctl restart tinc.retiolum-host-keys.service && systemctl reload tinc.retiolum")
+
+    
+@task
 def cleanup_gcroots(c, hosts=""):
     deploy_hosts = [DeployHost(h) for h in hosts.split(",")]
     for h in deploy_hosts:
