@@ -183,8 +183,6 @@
 (after! rustic
   (setq rustic-lsp-server 'rust-analyzer))
 
-(load! "~/.emacs.d/.local/straight/repos/evil/evil-vars.el")
-
 (use-package envrc
     :config
     (envrc-global-mode))
