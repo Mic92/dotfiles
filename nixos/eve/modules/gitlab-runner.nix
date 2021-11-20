@@ -35,13 +35,15 @@
       BindPaths = [
         "/nix/var/nix/daemon-socket/socket"
         "/run/nscd/socket"
-        "/var/lib/drone"
+        "/var/lib/gitlab-runner"
       ];
       BindReadOnlyPaths = [
         "/etc/passwd:/etc/passwd"
         "/etc/group:/etc/group"
         "/nix/var/nix/profiles/system/etc/nix:/etc/nix"
+        config.sops.secrets.gitlab-runner-registration.path
         "${config.environment.etc."ssl/certs/ca-certificates.crt".source}:/etc/ssl/certs/ca-certificates.crt"
+        "${config.environment.etc."ssl/certs/ca-bundle.crt".source}:/etc/ssl/certs/ca-bundle.crt"
         "${config.environment.etc."ssh/ssh_known_hosts".source}:/etc/ssh/ssh_known_hosts"
         "${builtins.toFile "ssh_config" ''
           Host eve.thalheim.io
