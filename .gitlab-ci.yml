@@ -7,7 +7,7 @@ build-job:
     - nix run nixpkgs/nixpkgs-unstable#nix-eval-jobs -- --workers 4 --gc-roots-dir $(pwd)/gcroot --flake '.#hydraJobs' > jobs
     - nix run nixpkgs/nixpkgs-unstable#jq -- -r '.drvPath' < jobs | xargs nix build -L
     - >
-      set -x
+      set -x;
       if [[ -n "$CACHIX_SIGNING_KEY" ]]; then
         echo result* | nix run nixpkgs/nixpkgs-unstable#cachix -- push mic92
       fi
