@@ -14,14 +14,14 @@ in
       pkgs.git
       pkgs.gnutar
       pkgs.bash
-      pkgs.nixUnstable
+      pkgs.nix
       pkgs.gzip
     ];
     path = [
       pkgs.git
       pkgs.gnutar
       pkgs.bash
-      pkgs.nixUnstable
+      pkgs.nix
       pkgs.gzip
     ];
     serviceConfig = {
