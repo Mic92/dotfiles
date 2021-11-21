@@ -65,5 +65,5 @@
     options = [ "nofail" ];
   };
 
-  powerManagement.cpuFreqGovernor = lib.mkDefault "performance";
+  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 }
