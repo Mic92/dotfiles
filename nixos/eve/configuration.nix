@@ -24,7 +24,7 @@
     ./modules/docker.nix
     ./modules/ejabberd.nix
     ./modules/gitea.nix
-    ./modules/gitlab-runner.nix
+    ./modules/gitlab/runner.nix
     ./modules/grafana.nix
     ./modules/goatcounter.nix
     ./modules/home-assistant

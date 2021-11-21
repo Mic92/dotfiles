@@ -1,5 +1,10 @@
 { pkgs, config, lib, ... }: {
-  sops.secrets.gitlab-runner-registration.owner = "gitlab-runner";
+  sops.secrets.gitlab-runner-registration = {
+    owner = "gitlab-runner";
+    restartUnits = [
+      "gitlab-runner"
+    ];
+  };
 
   services.gitlab-runner = {
     enable = true;

@@ -9,6 +9,7 @@ nixos/vms/eve/secrets
 .mypy_cache/
 
 .terraform
+.terraform.lock.hcl
 *.tfstate.backup
 
 nixos/eve/modules/hydra/.terraform.lock.hcl

@@ -1,4 +1,5 @@
 keys:
+  - &joergold F095F28F7B1BA4DD0D93554EE179454B201E23CA
   - &joerg age17n64ahe3wesh8l8lj0zylf4nljdmqn28hvqns2g7hgm9mdkhlsvsjuvkxz
   - &eve C5A6167F97F68FD053571E8B04188BA1509DCDC5
   - &eva age1v8zjc47jmlqwefyu66s0d4ke98qr4vnuj3cpvs4z9npfdw833dxqwjrhzv
@@ -12,9 +13,12 @@ creation_rules:
     key_groups:
     - age:
       - *joerg
-  - path_regex: nixos/eve/modules/gitlab/[^/]+\.enc.json$
+  # https://github.com/carlpett/terraform-provider-sops does not support age keys yet
+  - path_regex: eve/modules/gitlab/[^/]+\.enc.json$
     key_groups:
-    - age:
+    - pgp:
+      - *joergold
+      age:
       - *joerg
   - path_regex: eve/secrets/[^/]+\.yaml$
     key_groups:
