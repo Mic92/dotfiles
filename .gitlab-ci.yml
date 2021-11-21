@@ -6,4 +6,9 @@ build-job:
   script:
     - nix run nixpkgs/nixpkgs-unstable#nix-eval-jobs -- --workers 4 --gc-roots-dir $(pwd)/gcroot --flake '.#hydraJobs' > jobs
     - nix run nixpkgs/nixpkgs-unstable#jq -- -r '.drvPath' < jobs | xargs nix build -L
-    - if [[ -n "$CACHIX_SIGNING_KEY" ]]; then echo result* | nix run nixpkgs/nixpkgs-unstable#cachix -- push mic92; fi
+    - >
+      if [[ -n "$CACHIX_SIGNING_KEY" ]]; then
+        echo result* | nix run nixpkgs/nixpkgs-unstable#cachix -- push mic92
+      fi
+  after_script:
+    - LOGNAME=drone nix run github:Mic92/nur-packages#irc-announce -- irc.r 6667 drone "#xxx" 0 "build ${CI_JOB_URL}: $CI_JOB_STATUS"
