@@ -50,9 +50,13 @@
       type = "app";
       program = toString (pkgs.writeScript "hm-switch" ''
         #!${pkgs.runtimeShell}
+        export PATH=${pkgs.lib.makeBinPath [ pkgs.nix pkgs.coreutils ]}
         set -eu -o pipefail -x
         cd ${./.}
-        $(nix run .#hm-build -- "$@")/activate
+        oldpath=$(realpath /nix/var/nix/profiles/per-user/$USER/home-manager)
+        path=$(nix run .#hm-build -- "$@")
+        nix store diff-closures "$oldpath" "$path"
+        $path/activate
       '');
     };
   })) // {

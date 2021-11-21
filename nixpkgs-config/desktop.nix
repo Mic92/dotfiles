@@ -96,7 +96,6 @@ in
       #!${pkgs.runtimeShell}
       set -eux -o pipefail
       export PATH=${pkgs.pulseaudioFull}/bin:$PATH
-
       sink=alsa_output.pci-0000_00_1f.3-platform-skl_hda_dsp_generic.HiFi__hw_sofhdadsp__sink
 
       if pamixer --get-mute --sink="$sink"; then
