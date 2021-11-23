@@ -648,6 +648,15 @@ cargo(){
 real-which(){
   readlink -f "$(command which "$@")"
 }
+copypath() {
+  p=$(realpath "${1:-.}")
+  if [[ -n "$WAYLAND_DISPLAY" ]]; then
+    echo "$p" | wl-copy 2>/dev/null
+  elif [[ -n "$DISPLAY" ]]; then
+    echo "$p" | xclip -selection clipboard 2>/dev/null
+  fi
+  echo "$p"
+}
 
 untilport(){
   if [[ $# -lt 2 ]]; then
