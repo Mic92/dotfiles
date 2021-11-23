@@ -9,6 +9,7 @@ mkShell {
         p.gitlab
         p.github
         p.sops
+        p.null
       ]
     ))
   ];

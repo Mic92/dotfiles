@@ -96,16 +96,13 @@ resource "github_repository_webhook" "gitlab" {
   events = ["push", "pull_request"]
 }
 
-#output "gitlab-runner-token" {
-#  value =
-#  sensitive = true
-#}
-#
-#resource "null_resource" "example1" {
-#  provisioner "local-exec" {
-#    command = <<EOT
-#sops --set '["app2"]["key"] ${gitlab_project.repos["Mic92/dotfiles"].runners_token}
-#EOT
-#    interpreter = ["perl", "-e"]
-#  }
-#}
+resource "null_resource" "update-runner-token" {
+  provisioner "local-exec" {
+    command = <<EOT
+    val="CI_SERVER_URL=https://gitlab.com\nREGISTRATION_TOKEN=${gitlab_project.repos["Mic92/dotfiles"].runners_token}"
+sops \
+   --set "[\"gitlab-runner-registration\"] \"$val\"" \
+  ../../secrets/secrets.yaml
+EOT
+  }
+}
