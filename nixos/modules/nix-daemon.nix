@@ -3,12 +3,11 @@
     trustedUsers = [ "joerg" "root" ];
     gc.automatic = true;
     gc.dates = "03:15";
-    package = pkgs.nixFlakes.override {
-      patches = [ ./unset-is-macho.patch ];
-    };
-
     # should be enough?
     nrBuildUsers = lib.mkDefault 32;
+
+    daemonIOSchedClass = "idle";
+    daemonCPUSchedPolicy = "idle";
 
     # https://github.com/NixOS/nix/issues/719
     extraOptions = ''
@@ -34,6 +33,17 @@
   imports = [ ./builder.nix ];
 
   programs.command-not-found.enable = false;
+
+  systemd.services.update-prefetch = {
+    wantedBy = [ "multi-user.target" ];
+    path = [ config.nix.package pkgs.nettools ];
+    script = ''
+      nix build \
+       --out-link /run/next-system \
+       github:Mic92/dotfiles/last-build#nixosConfigurations.$(hostname).config.system.build.toplevel
+    '';
+    startAt = "daily";
+  };
 
   nixpkgs.config.allowUnfree = true;
 }
