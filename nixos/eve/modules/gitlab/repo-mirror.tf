@@ -46,7 +46,7 @@ resource "gitlab_project" "repos" {
   ci_config_path = lookup({
     }, each.key,
     # sane default
-    ".gitlab-ci.yml:Mic92/dotfiles")
+    ".gitlab-ci.yml@Mic92/dotfiles")
   visibility_level = "public"
 }
 
