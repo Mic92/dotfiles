@@ -6,12 +6,17 @@ build-job:
   script:
     - nix run nixpkgs/nixpkgs-unstable#nix-eval-jobs -- --workers 4 --gc-roots-dir $(pwd)/gcroot --flake '.#hydraJobs' > jobs
     - nix run nixpkgs/nixpkgs-unstable#jq -- -r '.drvPath' < jobs | xargs nix build -L
-    - >
-      set -x;
+    - |
       if [[ -n "$CACHIX_SIGNING_KEY" ]]; then
-        echo result* | nix run nixpkgs/nixpkgs-unstable#cachix -- push mic92
+        echo result* | nix run nixpkgs/nixpkgs-unstable#cachix -- push ${CACHIX_NAME:-mic92}
+      fi
+    - |
+      if [[ -n "$GITHUB_TOKEN" ]]; then
+        git remote set-url origin https://Mic92:@github.com/Mic92/${CI_PROJECT_NAME}.git
+        git tag -fa "last-build"
+        git push --tags
       fi
   after_script:
-    - >
+    - |
        echo "build ${CI_JOB_URL}: $CI_JOB_STATUS" | \
          LOGNAME=gitlab nix run github:Mic92/nur-packages#ircsink -- --nick=gitlab --server=irc.r --target="#xxx"
