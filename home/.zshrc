@@ -141,12 +141,18 @@ rust-doc(){
 }
 
 wttr() {
-    local request="wttr.in/${1-muc}"
-    [ "$COLUMNS" -lt 125 ] && request+='?n'
-    curl -H "Accept-Language: ${LANG%_*}" --compressed "$request"
+  local request="wttr.in/${1-muc}"
+  [ "$COLUMNS" -lt 125 ] && request+='?n'
+  curl -H "Accept-Language: ${LANG%_*}" --compressed "$request"
 }
 kpaste() {
-  curl -sS http://p.r --data-binary @"${1:--}" | \
+  arg=cat
+  if [[ $# -ne 0 ]]; then
+    arg+=("${@}")
+  elif [[ -t 0 ]] && [[ -o interactive ]]; then
+    arg=(wl-paste)
+  fi
+  "${arg[@]}" | curl -sS http://p.r --data-binary @- | \
     sed '$ {p;s|http://p.r|https://p.krebsco.de|}'
 }
 xalias hm-switch="nix run $HOME/.homesick/repos/dotfiles#hm-switch --"
