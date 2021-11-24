@@ -186,3 +186,5 @@
 (use-package envrc
     :config
     (envrc-global-mode))
+
+(setq languagetool-language-tool-jar "~/.language-tool/LanguageTool-5.5/languagetool-commandline.jar")

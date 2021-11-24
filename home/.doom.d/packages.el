@@ -9,10 +9,12 @@
 (package! editorconfig)
 (package! vimrc-mode)
 (package! coffee-mode)
+(package! languagetool)
 (package! meson-mode)
 (package! jsonnet-mode)
 (package! tree-sitter)
 (package! tree-sitter-langs)
+
 (package! mu4e-alert :disable t)
 
 ;(package! bitwarden
