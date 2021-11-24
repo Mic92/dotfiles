@@ -13,7 +13,7 @@ build-job:
     - |
       if [[ -n "$GITHUB_TOKEN" ]]; then
         git remote set-url origin https://Mic92:@github.com/Mic92/${CI_PROJECT_NAME}.git
-        git tag -fa "last-build"
+        git -c "user.name=GitLab CI" -c "user.email=git@gitlab.com" tag -fa "last-build"
         git push --tags
       fi
   after_script:
