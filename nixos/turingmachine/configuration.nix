@@ -45,12 +45,12 @@
     ../modules/users.nix
   ];
 
-  specialisation.i3.configuration = {
-    imports = [
-      ../modules/i3.nix
-    ];
-    services.teamviewer.enable = true;
-  };
+  #specialisation.i3.configuration = {
+  #  imports = [
+  #    ../modules/i3.nix
+  #  ];
+  #  services.teamviewer.enable = true;
+  #};
 
   #services.udev.packages = [ pkgs.platformio ];
 
