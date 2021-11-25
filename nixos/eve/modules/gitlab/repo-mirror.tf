@@ -41,6 +41,7 @@ resource "gitlab_project" "repos" {
   import_url             = "https://github.com/${each.key}"
   mirror                 = true
   mirror_trigger_builds  = true
+  mirror_overwrites_diverged_branches  = true
   shared_runners_enabled = false
   ci_config_path = lookup({
     }, each.key,
