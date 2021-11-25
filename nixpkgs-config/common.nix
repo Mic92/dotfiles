@@ -56,6 +56,8 @@
       glibcLocales
     ]);
 
+    home.enableNixpkgsReleaseCheck = false;
+
     home.stateVersion = "20.09";
     home.username = "joerg";
     home.homeDirectory = "/home/joerg";
