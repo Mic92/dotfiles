@@ -15,6 +15,8 @@ build-job:
         git -c "user.name=GitLab CI" -c "user.email=git@gitlab.com" tag -f "last-build"
         git push --force "https://Mic92:${GITHUB_TOKEN}@github.com/Mic92/${CI_PROJECT_NAME}.git" last-build
       fi
+  rules:
+    - if: '$CI_COMMIT_REF_NAME != last-build'
   after_script:
     - |
        echo "build ${CI_JOB_URL}: $CI_JOB_STATUS" | \
