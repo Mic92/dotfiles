@@ -23,7 +23,8 @@ in
       (map
         (url: {
           method = "native";
-          urls = [ "${url}.r" ];
+          urls = [ "6.${url}.r" ];
+          ipv6 = true;
           tags.host = url;
           tags.org = "private";
         })

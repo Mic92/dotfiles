@@ -19,12 +19,12 @@
       } {
         method = "native";
         urls = [
-          "eva.r"
           "4.eva.thalheim.io"
         ];
       } {
         method = "native";
         urls = [
+          "6.eva.r"
           "6.eva.thalheim.io"
         ];
         ipv6 = true;

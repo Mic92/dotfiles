@@ -27,7 +27,8 @@ def _irc_send(
     if not messages:
         return
 
-    sock = socket.socket()
+    # don't give a shit about legacy ip
+    sock = socket.socket(family=socket.AF_INET6)
     if tls:
         sock = ssl.wrap_socket(
             sock, cert_reqs=ssl.CERT_NONE, ssl_version=ssl.PROTOCOL_TLSv1_2
