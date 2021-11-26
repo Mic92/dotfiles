@@ -52,24 +52,6 @@
     Unmanaged = yes
   '';
 
-  #systemd.network.networks."ethernet".extraConfig = ''
-  #  [Match]
-  #  Type = ether
-
-  #  [Network]
-  #  DHCP = yes
-  #  LLMNR = true
-  #  LinkLocalAddressing = yes
-  #  LLDP = true
-  #  IPv6AcceptRA = true
-  #  IPForward = yes
-
-  #  Address = 2a01:4f8:1c1c:9a9::1/128
-  #  Gateway = fe80::1
-  #  IPv6AcceptRA = no
-  #  IPForward = yes
-  #'';
-
   services.resolved.enable = false;
 
   # breaks loki
@@ -78,7 +60,7 @@
   documentation.enable = false;
 
   networking.retiolum = {
-    ipv4 = "10.243.29.185";
+    #ipv4 = "10.243.29.185";
     ipv6 = "42:0:3c46:8a42:2b1:5ef8:7562:676a";
   };
 

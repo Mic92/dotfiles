@@ -20,15 +20,7 @@ in
       (map
         (url: {
           method = "native";
-          urls = [ "4.${url}" ];
-          tags.org = "uni";
-          tags.host = lib.removeSuffix ".r" url;
-        })
-        urls) ++
-      (map
-        (url: {
-          method = "native";
-          urls = [ "6.${url}" ];
+          urls = [ url ];
           ipv6 = true;
           tags.org = "uni";
           tags.host = lib.removeSuffix ".r" url;

@@ -6,10 +6,6 @@
   services.telegraf.extraConfig.inputs = {
     ping =
       let
-        urls = [
-          "eva.r"
-          "eva.thalheim.io"
-        ];
         mobileUrls = [
           "turingmachine.r"
           "herbert.r"
@@ -20,16 +16,19 @@
         urls = map (url: "${url}") mobileUrls;
         tags.type = "mobile";
         count = 5;
-      }
-        {
-          method = "native";
-          urls = map (url: "4.${url}") urls;
-        }
-        {
-          method = "native";
-          urls = map (url: "6.${url}") urls;
-          ipv6 = true;
-        }];
+      } {
+        method = "native";
+        urls = [
+          "eva.r"
+          "4.eva.thalheim.io"
+        ];
+      } {
+        method = "native";
+        urls = [
+          "6.eva.thalheim.io"
+        ];
+        ipv6 = true;
+      }];
   };
 
   systemd.services.telegraf.path = [ "/run/wrappers" ];
