@@ -45,5 +45,11 @@ in
         timeout = "10s";
       })
       urls;
+
+    x509_cert = [{
+      sources = [ "https://web.dse.in.tum.de:443" ];
+      tags.host = "vmbhatotia19";
+      tags.org = "uni";
+    }];
   };
 }
