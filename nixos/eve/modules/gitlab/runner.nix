@@ -26,6 +26,9 @@
     ];
   };
 
+  # does this improve performance?
+  nix.trustedUsers = [ "gitlab-runner" ];
+
   systemd.services.gitlab-runner = {
     confinement.enable = true;
     confinement.packages = config.services.gitlab-runner.extraPackages;
@@ -43,8 +46,12 @@
         "/var/lib/gitlab-runner"
       ];
       BindReadOnlyPaths = [
-        "/etc/passwd:/etc/passwd"
-        "/etc/group:/etc/group"
+        # not sure if those are necessary
+        "/etc/resolv.conf"
+        "/etc/nsswitch.conf"
+
+        "/etc/passwd"
+        "/etc/group"
         "/nix/var/nix/profiles/system/etc/nix:/etc/nix"
         config.sops.secrets.gitlab-runner-registration.path
         "${config.environment.etc."ssl/certs/ca-certificates.crt".source}:/etc/ssl/certs/ca-certificates.crt"
