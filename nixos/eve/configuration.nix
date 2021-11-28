@@ -58,6 +58,7 @@
     #./modules/wiregrill
 
     ../modules/builder.nix
+    ../modules/fast-network.nix
     ../modules/iperf.nix
     ../modules/mosh.nix
     ../modules/openldap

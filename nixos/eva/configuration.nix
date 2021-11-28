@@ -33,6 +33,7 @@
     ./modules/sops.nix
     ./modules/telegraf
 
+    ../modules/fast-network.nix
     ../modules/mosh.nix
     ../modules/iperf.nix
     ../modules/openldap/replica.nix
