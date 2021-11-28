@@ -39,9 +39,9 @@ in
           files = [ "/sys/fs/ext4/*/errors_count" ];
           data_format = "value";
         };
-        exec = lib.optionalAttrs (lib.any (fs: fs == "zfs") config.boot.supportedFilesystems) {
+        exec =  {
           ## Commands array
-          commands = [
+          commands = (lib.optional (lib.any (fs: fs == "zfs") config.boot.supportedFilesystems)
             (pkgs.writeScript "zpool-health" ''
               #!${pkgs.gawk}/bin/awk -f
               BEGIN {
@@ -49,12 +49,46 @@ in
                   if ($1 ~ /pool:/) { printf "zpool_status,name=%s ", $2 }
                   if ($1 ~ /state:/) { printf " state=\"%s\",", $2 }
                   if ($1 ~ /errors:/) {
-                    if (index($2, "No")) printf "errors=0i\n"; else printf "errors=%di\n", $2
+                      if (index($2, "No")) printf "errors=0i\n"; else printf "errors=%di\n", $2
                   }
                 }
               }
             '')
-          ];
+            ) ++ (let
+              collectHosts = shares: fs:
+                if builtins.elem fs.fsType ["nfs" "nfs3" "nfs4"] then
+                  shares // (let
+                    # also match ipv6 addresses
+                    group = builtins.match "\\[?([^\]]+)]?:([^:]+)$" fs.device;
+                    host = builtins.head group;
+                    path = builtins.elemAt group 1;
+                  in {
+                    ${host} = (shares.${host} or []) ++ [ path ];
+                  })
+                else
+                  shares;
+              nfsHosts = lib.foldl collectHosts {} (builtins.attrValues config.fileSystems);
+            in lib.mapAttrsToList (host: args:
+              (pkgs.writeScript "zpool-health" ''
+                #!${pkgs.gawk}/bin/awk -f
+                BEGIN {
+                  for (i = 2; i < ARGC; i++) {
+                      mounts[ARGV[i]] = 1
+                  }
+                  while ("${pkgs.nfs-utils}/bin/showmount -e " ARGV[1] | getline) {
+                    if (NR == 1) { continue }
+                    if (mounts[$1] == 1) {
+                        printf "nfs_export,name=%s present=1\n", $1
+                    }
+                    delete mounts[$1]
+                  }
+                  for (mount in mounts) {
+                      printf "nfs_export,name=%s present=0\n", mount
+                  }
+                }
+               '') + " ${host} ${builtins.concatStringsSep " " args}"
+            ) nfsHosts
+          );
           data_format = "influx";
         };
         systemd_units = { };
