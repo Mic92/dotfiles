@@ -5,7 +5,7 @@
     hostName = "aarch64.nixos.community";
     maxJobs = 96;
     sshKey = config.sops.secrets.ssh-aarch64-builder.path;
-    sshUser = "mic92";
+    sshUser = "ssh-ng://mic92";
     system = "aarch64-linux";
     supportedFeatures = [
       "big-parallel"
@@ -16,7 +16,7 @@
     hostName = "graham.r";
     maxJobs = 128;
     sshKey = config.sops.secrets.tum-builder.path;
-    sshUser = "nix";
+    sshUser = "ssh-ng://nix";
     systems = [ "x86_64-linux" "i686-linux" ];
     supportedFeatures = [
       "big-parallel"
