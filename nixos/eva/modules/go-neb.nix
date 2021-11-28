@@ -57,10 +57,6 @@
             Rooms."!PbtOpdWBSRFbEZRLIf:numtide.com".Repos = {
               "nix-community/infra".Events = [ "push" "issues" "pull_request" ];
             };
-            Rooms."!PrIEtcffTLLzUWvJOS:matrix.org".Repos = {
-              "nix-community/dream2nix".Events = [ "pull_request" ];
-              "nix-community/dreampkgs".Events = [ "pull_request" ];
-            };
           };
         }
         {
