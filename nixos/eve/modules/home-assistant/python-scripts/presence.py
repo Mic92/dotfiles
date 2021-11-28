@@ -9,7 +9,7 @@ not_together = hass.states.get("input_boolean.shannan_joerg_not_together")
 
 home = "home"
 university = "University"
-lidle = "Lidle"
+grunecker = "grunecker"
 
 
 def get_message():
@@ -21,7 +21,6 @@ def get_message():
     logger.info(f"shannan.entity_id: {shannan.entity_id}")
     logger.info(f"home: {home}")
     logger.info(f"uni: {university}")
-    logger.info(f"lidle: {lidle}")
     logger.info(f"entity_id == joerg: {joerg.entity_id == entity_id}")
     logger.info(f"entity_id == shannan: {shannan.entity_id == entity_id}")
 
@@ -29,10 +28,10 @@ def get_message():
 
     if to_state == home:
         return f"{name} is home"
-    elif from_state == lidle:
-        return f"{name} left Lidle"
-    elif to_state == lidle:
-        return f"{name} is in Lidle"
+    elif from_state == grunecker or from_state == "Grunecker":
+        return f"{name} left Grunecker"
+    elif to_state == grunecker or to_state == "Grunecker":
+        return f"{name} is in Grunecker"
     elif from_state == university:
         return f"{name} left uni"
     return None

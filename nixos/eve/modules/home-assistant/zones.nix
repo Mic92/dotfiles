@@ -13,5 +13,11 @@
     latitude = "!secret uni_latitude";
     longitude = "!secret uni_longitude";
     radius = "300";
+  } {
+    name = "Grunecker";
+    icon = "mdi:briefcase";
+    latitude = "!secret work_latitude";
+    longitude = "!secret work_longitude";
+    radius = "300";
   }];
 }
