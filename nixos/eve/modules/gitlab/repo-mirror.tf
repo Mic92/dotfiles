@@ -44,6 +44,7 @@ resource "gitlab_project" "repos" {
   mirror_overwrites_diverged_branches = true
   shared_runners_enabled              = false
   ci_config_path = lookup({
+    "Mic92/sops-nix" : ".gitlab-ci.yml@Mic92/sops-nix",
     }, each.key,
     # sane default
   ".gitlab-ci.yml@Mic92/dotfiles")
