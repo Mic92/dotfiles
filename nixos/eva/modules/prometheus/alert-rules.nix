@@ -128,6 +128,12 @@ lib.mapAttrsToList
       description = "{{$labels.host}} should have a running {{$labels.name}}.";
     };
 
+    nfs_export_not_present = {
+      condition = "nfs_export_present == 0";
+      time = "1h";
+      description = "{{$labels.host}} cannot reach nfs export [{{$labels.server}}]:{{$labels.path}}";
+    };
+
     ram_using_90percent = {
       condition = "mem_buffered + mem_free + mem_cached < mem_total * 0.1";
       time = "1h";
