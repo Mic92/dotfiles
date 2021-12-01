@@ -36,7 +36,7 @@
 
   systemd.services.update-prefetch = {
     startAt = "daily";
-    path = [ config.nix.package pkgs.nettools ];
+    path = [ config.nix.package pkgs.nettools pkgs.git ];
     script = ''
       nix build \
        --out-link /run/next-system \
