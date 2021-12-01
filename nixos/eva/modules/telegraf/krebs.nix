@@ -81,7 +81,7 @@
           "http://graph.r"
         ];
         tags.host = "gum";
-        response_string_match = "Retiolum";
+        response_string_match = "tinc network map";
         tags.org = "krebs";
       }
       {
