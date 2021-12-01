@@ -37,7 +37,7 @@
     doom-emacs.url = "github:hlissner/doom-emacs/develop";
     doom-emacs.flake = false;
 
-    emacs-overlay.url = "github:nix-community/emacs-overlay/23c8464f4527a2b19f6b4776378dd03b8289aa85";
+    emacs-overlay.url = "github:nix-community/emacs-overlay";
 
     flake-registry.url = "github:NixOS/flake-registry";
     flake-registry.flake = false;
