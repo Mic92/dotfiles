@@ -315,15 +315,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1638188662,
-        "narHash": "sha256-heLEbhH3W3GrtYDwacghCiO3g94QkJLW0LhErMWbT2g=",
+        "lastModified": 1638398014,
+        "narHash": "sha256-+0uVFLpbXIvA8CsNIKlU4kVpv0OodNCctB0uMk9zRh4=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "0e0dcc74bae23c7ef7fb6251c43c277b827e8c34",
+        "rev": "0fa0857c41fc0826672c970220e61c6d1359f284",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
+        "ref": "feat/mount-secrets-readonly2",
         "repo": "sops-nix",
         "type": "github"
       }
