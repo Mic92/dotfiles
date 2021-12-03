@@ -81,6 +81,7 @@
         #! ${pkgs.bash}/bin/bash
 
         ${pkgs.rbw}/bin/rbw unlock
+        ${pkgs.openssh}/bin/ssh-add
         export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
         # first import environment variables from the login manager
         systemctl --user import-environment
