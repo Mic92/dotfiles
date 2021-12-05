@@ -200,6 +200,12 @@ in
         response_string_match = "Gitea";
       }
       {
+        url = [ "https://bitwarden.thalheim.io/alive" ];
+        tags.host = "eve";
+        tags.org = "private";
+        response_string_match = ''"20'';
+      }
+      {
         urls = [ "https://thalheim.io" ];
         tags.host = "eve";
         tags.org = "private";
