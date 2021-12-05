@@ -35,7 +35,7 @@ in
           }];
       };
       Nap = {
-        speech.text = "No, I need one.";
+        speech.text = "No! I need one.";
         async_action = true;
         action = [{
           service = "timer.start";
