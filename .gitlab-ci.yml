@@ -4,11 +4,11 @@ stages:
 build-job:
   stage: build
   script:
-    - nix --extra-experimental-features "nix-command flakes" run nixpkgs/nixpkgs-unstable#nix-eval-jobs -- --workers 4 --gc-roots-dir $(pwd)/gcroot --flake '.#hydraJobs' > jobs
-    - nix --extra-experimental-features "nix-command flakes" run nixpkgs/nixpkgs-unstable#jq -- -r '.drvPath' < jobs | xargs -n1 -P$(nproc) nix build -L
+    - nix run nixpkgs/nixpkgs-unstable#nix-eval-jobs -- --workers 4 --gc-roots-dir $(pwd)/gcroot --flake '.#hydraJobs' > jobs
+    - nix run nixpkgs/nixpkgs-unstable#jq -- -r '.drvPath' < jobs | xargs -n1 -P$(nproc) nix build -L
     - |
       if [[ -n "$CACHIX_SIGNING_KEY" ]]; then
-        echo result* | nix --extra-experimental-features "nix-command flakes" run nixpkgs/nixpkgs-unstable#cachix -- push ${CACHIX_NAME:-mic92}
+        echo result* | nix run nixpkgs/nixpkgs-unstable#cachix -- push ${CACHIX_NAME:-mic92}
       fi
     - |
       if [[ -n "$GITHUB_TOKEN" ]]; then
