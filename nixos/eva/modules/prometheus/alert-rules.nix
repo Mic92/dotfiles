@@ -235,6 +235,11 @@ lib.mapAttrsToList
       description = "{{$labels.instance}} reports: {{$value}} ZFS IO errors.";
     };
 
+    zpool_status = {
+      condition = "zpool_status_errors > 0";
+      description = "{{$labels.instance}} reports: zpool {{$labels.name}} has {{$value}} errors.";
+    };
+
     # ignore devices that disabled S.M.A.R.T (example if attached via USB)
     smart_errors = {
       condition = ''smart_device_health_ok{enabled!="Disabled"} != 1'';
