@@ -15,6 +15,7 @@
 , nix-darwin
 , vmsh
 , fenix
+, nixos-generators
 }:
 (flake-utils.lib.eachDefaultSystem (system:
   let
@@ -74,6 +75,13 @@
       envfs
       nix-ld
       vmsh;
+  };
+
+  # nix build '.#kexec'
+  packages.x86_64-linux.kexec = nixos-generators.nixosGenerate {
+    pkgs = nixpkgs.legacyPackages.x86_64-linux;
+    modules = [ ./nixos/images/kexec.nix ];
+    format = "kexec";
   };
 
   hmConfigurations = import ./nixpkgs-config/homes.nix {

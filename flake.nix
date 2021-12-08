@@ -9,6 +9,11 @@
     fenix.url = "github:nix-community/fenix";
     fenix.inputs.nixpkgs.follows = "nixpkgs";
 
+    nixos-generators = {
+      url = "github:nix-community/nixos-generators";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     vmsh.url = "github:Mic92/vmsh";
     vmsh.inputs.flake-utils.follows = "flake-utils";
     vmsh.inputs.nixpkgs.follows = "nixpkgs";
