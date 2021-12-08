@@ -97,7 +97,7 @@
         urls = [
           "http://build.hotdog.r"
         ];
-        response_string_match = "BuildBot";
+        response_string_match = "Buildbot";
         tags.host = "hotdog";
         tags.org = "krebs";
       }
