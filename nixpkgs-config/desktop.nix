@@ -87,7 +87,7 @@ in
     isync
     # to fix xdg-open
     glib
-    #zoom-us
+    zoom-us
     jmtpfs # needed for charging? WTF
     #
     (pkgs.callPackage ./pkgs/mpv-tv.nix {})
