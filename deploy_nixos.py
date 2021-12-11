@@ -53,10 +53,14 @@ class DeployHost:
                 self._prefix_output(read_fd)
                 return p.wait()
 
-    def run(self, cmd: str) -> int:
+    def run(self, cmd: str, become_root: bool = False) -> int:
+        if become_root and self.user != "root":
+            # XXX this only works for single commands
+            cmd = f"sudo {cmd}"
         print(f"[{self.command_prefix}] {cmd}")
         with pipe() as (read_fd, write_fd):
             ssh_opts = ["-A"] if self.forward_agent else []
+
             with subprocess.Popen(
                 ["ssh", f"{self.user}@{self.host}", "-p", str(self.port)]
                 + ssh_opts
