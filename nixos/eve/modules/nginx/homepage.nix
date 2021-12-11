@@ -1,6 +1,12 @@
 { pkgs, ... }:
 {
   services.nginx = {
+    virtualHosts."boot.thalheim.io" = {
+      useACMEHost = "thalheim.io";
+      forceSSL = true;
+      root = "/var/lib/www/boot.thalheim.io";
+    };
+
     virtualHosts."thalheim.io" = {
       useACMEHost = "thalheim.io";
       forceSSL = true;
