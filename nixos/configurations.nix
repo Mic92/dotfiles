@@ -36,7 +36,7 @@ let
   eveModules = defaultModules ++ [ ./eve/configuration.nix ];
 in
 {
-  bernie = nixosSystem {
+  bernie = nixpkgs.lib.makeOverridable nixosSystem {
     system = "x86_64-linux";
     modules = defaultModules ++ [
       nixos-hardware.nixosModules.lenovo-thinkpad-x250
@@ -45,7 +45,7 @@ in
     ];
   };
 
-  turingmachine = nixosSystem {
+  turingmachine = nixpkgs.lib.makeOverridable nixosSystem {
     system = "x86_64-linux";
     modules = defaultModules ++ [
       #nixos-hardware.nixosModules.dell-xps-13-9380
