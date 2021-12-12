@@ -23,8 +23,8 @@
       hints.add_hosts('${pkgs.retiolum}/etc.hosts')
 
       -- use ns.spaceboys.net as one dns resolver is borked
-      policy.add(policy.suffix(policy.STUB('95.217.229.209'), {todname('c3d2.de')}))
-      policy.add(policy.suffix(policy.STUB('95.217.229.209'), {todname('spaceboyz.net')}))
+      policy.add(policy.suffix(policy.STUB('8.8.8.8'), {todname('c3d2.de')}))
+      policy.add(policy.suffix(policy.STUB('8.8.8.8'), {todname('spaceboyz.net')}))
     '';
   };
 
