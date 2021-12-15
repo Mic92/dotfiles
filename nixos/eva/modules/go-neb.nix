@@ -70,7 +70,7 @@
             # Make sure your BASE_URL can be accessed by the Alertmanager instance!
             webhook_url = "https://go-neb.thalheim.io/services/hooks/YWxlcnRtYW5hZ2VyX3NlcnZpY2U";
             # Each room will get the notification with the alert rendered with the given template
-            Rooms."!cBybDCkeRlSWfuaFvn:numtide.com".Repos = {
+            Rooms."!cBybDCkeRlSWfuaFvn:numtide.com" = {
               text_template = "{{range .Alerts -}}
  [{{ .Status }}] {{index .Labels \"alertname\" }}: {{index .Annotations \"description\"}}
  {{ end   -}}";
