@@ -54,7 +54,7 @@
           Config = {
             RealmID = "github_realm";
             ClientUserID = "@mic92:nixos.dev";
-            Rooms."!PbtOpdWBSRFbEZRLIf:numtide.com".Repos = {
+            Rooms."!cBybDCkeRlSWfuaFvn:numtide.com".Repos = {
               "nix-community/infra".Events = [ "push" "issues" "pull_request" ];
             };
           };
@@ -70,7 +70,7 @@
             # Make sure your BASE_URL can be accessed by the Alertmanager instance!
             webhook_url = "https://go-neb.thalheim.io/services/hooks/YWxlcnRtYW5hZ2VyX3NlcnZpY2U";
             # Each room will get the notification with the alert rendered with the given template
-            rooms."!PbtOpdWBSRFbEZRLIf:numtide.com" = {
+            Rooms."!cBybDCkeRlSWfuaFvn:numtide.com".Repos = {
               text_template = "{{range .Alerts -}}
  [{{ .Status }}] {{index .Labels \"alertname\" }}: {{index .Annotations \"description\"}}
  {{ end   -}}";
