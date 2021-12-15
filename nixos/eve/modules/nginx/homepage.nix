@@ -4,7 +4,7 @@
     virtualHosts."boot.thalheim.io" = {
       useACMEHost = "thalheim.io";
       forceSSL = true;
-      root = "/var/lib/www/boot.thalheim.io";
+      root = "/var/www/boot.thalheim.io";
     };
 
     virtualHosts."thalheim.io" = {
