@@ -219,14 +219,6 @@
     139
   ];
 
-  systemd.services.prefetch-update = {
-    script = ''
-      nixos-rebuild build --flake github:Mic92/dotfiles
-      nix run github:Mic92/dotfiles#hm-build
-    '';
-    startAt = "";
-  };
-
   documentation.doc.enable = false;
 
   system.stateVersion = "18.03";
