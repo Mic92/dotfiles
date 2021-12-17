@@ -15,7 +15,6 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
 
     def deploy(h: DeployHost) -> None:
         h.run_local(
-            #f"rsync --exclude=`git ls-files --exclude-standard -oi --directory` --exclude='.git/' -vaF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
             f"rsync --exclude='.git/' -vaF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
         )
 
@@ -133,6 +132,72 @@ def wait_for_port(host: str, port: int, shutdown: bool = False) -> None:
                 sys.stdout.flush()
 
 
+def wait_for_reboot(h: DeployHost):
+    print(f"Wait for {h.host} to shutdown", end="")
+    sys.stdout.flush()
+    wait_for_port(h.host, h.port, shutdown=True)
+    print("")
+
+    print(f"Wait for {h.host} to start", end="")
+    sys.stdout.flush()
+    wait_for_port(h.host, h.port)
+    print("")
+
+
+def parse_hosts(hosts: str) -> DeployGroup:
+    deploy_hosts = []
+    for h in hosts.split(","):
+        parts = h.split("@")
+        if len(parts) > 1:
+            user = parts[0]
+            hostname = parts[1]
+        else:
+            user = "root"
+            hostname = parts[0]
+        deploy_hosts.append(DeployHost(hostname, user=user))
+    return DeployGroup(deploy_hosts)
+
+
+@task
+def kexec_nixos(c, hosts=""):
+    """
+    Boot into nixos via kexec: inv kexec-nixos --hosts
+    """
+
+    def kexec(h: DeployHost) -> None:
+        # in case the machine is still booting
+        print(f"Wait for {h.host} to start", end="")
+        sys.stdout.flush()
+        wait_for_port(h.host, h.port)
+
+        url = "https://boot.thalheim.io/kexec-image-$(uname -m).tar.xz"
+        h.run(
+            f"if command -v sudo; then maybesudo=sudo; fi; (wget {url} -qO- || curl {url}) | $maybesudo tar -C / -xJf -"
+        )
+        h.run(f"nohup /kexec_nixos & exit", become_root=True)
+
+        print(f"Wait for {h.host} to start", end="")
+        sys.stdout.flush()
+        wait_for_port(h.host, h.port)
+        print("")
+
+    g = parse_hosts(hosts)
+    g.run_function(kexec)
+
+
+# still WIP!
+@task
+def nixos_install(c, disk="/dev/nvme0n1", hosts=""):
+    def install(h: DeployHost) -> None:
+        h.run_local(
+            f"rsync --exclude='.git/' -vaF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
+        )
+        h.run(f"/etc/nixos/nixos/images/install.sh {disk}")
+        h.run('nix shell "nixpkgs#git" -- nixos-install --no-root-passwd --flake /etc/nixos')
+    g = parse_hosts(hosts)
+    g.run_function(install)
+
+
 @task
 def reboot(c, hosts=""):
     """
@@ -143,15 +208,7 @@ def reboot(c, hosts=""):
         g = DeployGroup([h])
         g.run("reboot &")
 
-        print(f"Wait for {h.host} to shutdown", end="")
-        sys.stdout.flush()
-        wait_for_port(h.host, h.port, shutdown=True)
-        print("")
-
-        print(f"Wait for {h.host} to start", end="")
-        sys.stdout.flush()
-        wait_for_port(h.host, h.port)
-        print("")
+        wait_for_reboot(h)
 
 
 @task
