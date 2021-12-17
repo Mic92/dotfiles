@@ -42,9 +42,9 @@
         export PATH=${pkgs.lib.makeBinPath [ pkgs.git pkgs.coreutils pkgs.nixFlakes pkgs.jq ]}
         declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie", ["grandalf"]="common-aarch64", ["yasmin"]="common-aarch64")
         profile=''${profiles[$HOSTNAME]:-common}
-        flake=$(nix flake metadata --json ${./.} | jq -r .url)
+        flake=$(nix flake metadata --json ${self} | jq -r .url)
         set -x
-        nix build --no-link --show-trace --json ".#hmConfigurations.''${profile}.activationPackage" "$@" | jq -r '.[] | .outputs | .out'
+        nix build "$@" --no-link --show-trace --json "${self}#hmConfigurations.''${profile}.activationPackage" "$@" | jq -r '.[] | .outputs | .out'
       '');
     };
     apps.hm-switch = {
