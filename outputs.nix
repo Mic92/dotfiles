@@ -44,7 +44,7 @@
         profile=''${profiles[$HOSTNAME]:-common}
         flake=$(nix flake metadata --json ${self} | jq -r .url)
         set -x
-        nix build "$@" --no-link --show-trace --json "${self}#hmConfigurations.''${profile}.activationPackage" "$@" | jq -r '.[] | .outputs | .out'
+        nix build --no-link --show-trace --json "${self}#hmConfigurations.''${profile}.activationPackage" "$@" | jq -r '.[] | .outputs | .out'
       '');
     };
     apps.hm-switch = {
