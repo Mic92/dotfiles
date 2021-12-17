@@ -10,7 +10,7 @@
     # supervisord tries to open /dev/stdout and fails with the default systemd device
     # it works for pipes so...
     script = ''
-      ${pkgs.nur.repos.mic92.rhasspy}/bin/rhasspy --profile en | ${pkgs.utillinux}/bin/logger
+      ${pkgs.nur.repos.mic92.rhasspy}/bin/rhasspy --http-host '[::]' --profile en | ${pkgs.utillinux}/bin/logger
     '';
     serviceConfig.Environment = [
       "ALSA_PLUGIN_DIRS=${pkgs.alsaPlugins}/lib/alsa-lib"
