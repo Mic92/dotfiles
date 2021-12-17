@@ -35,12 +35,16 @@
   programs.command-not-found.enable = false;
 
   systemd.services.update-prefetch = {
-    startAt = "daily";
+    startAt = "hourly";
     path = [ config.nix.package pkgs.nettools pkgs.git ];
     script = ''
       nix build \
        --out-link /run/next-system \
        github:Mic92/dotfiles/last-build#nixosConfigurations.$(hostname).config.system.build.toplevel
+
+      if [[ -x /home/joerg/.nix-profile/bin/home-manager ]]; then
+        nix run github:Mic92/dotfiles/last-build#hm-build --  --out-link /run/next-home
+      fi
     '';
   };
 
