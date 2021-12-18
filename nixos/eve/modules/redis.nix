@@ -1,8 +1,8 @@
 {
-  services.redis = {
+  services.redis.servers.rspamd = {
     enable = true;
     port = 0;
-    unixSocket = "/run/redis/redis.sock";
+    unixSocket = "/run/redis-rspamd/redis.sock";
     unixSocketPerm = 660;
   };
 }
