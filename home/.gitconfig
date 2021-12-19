@@ -92,6 +92,7 @@
   user = Mic92
 [advice]
   detachedHead = false
+  skippedCherryPicks = false
 [init]
   defaultBranch = main
 [credential]
