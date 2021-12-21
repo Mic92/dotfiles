@@ -13,6 +13,13 @@ creation_rules:
     key_groups:
     - age:
       - *joerg
+  - path_regex: modules/etcd-admin.yaml$
+    key_groups:
+    - age:
+      - *joerg
+      - *eva
+      pgp:
+      - *eve
   # https://github.com/carlpett/terraform-provider-sops does not support age keys yet
   - path_regex: eve/modules/gitlab/[^/]+\.enc.json$
     key_groups:

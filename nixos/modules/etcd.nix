@@ -1,10 +1,10 @@
-{ config, ... }: {
+{ config, pkgs, lib, ... }: {
   services.etcd = {
     enable = true;
     clientCertAuth = true;
     certFile = config.sops.secrets.etcd-cert.path;
     keyFile = config.sops.secrets.etcd-key.path;
-    peerKeyFile = config.sops.secrets.etcd-peer-cert.path;
+    peerKeyFile = config.sops.secrets.etcd-peer-key.path;
     peerCertFile = config.sops.secrets.etcd-peer-cert.path;
     peerTrustedCaFile = builtins.toFile "etc-ca.pem" ''
       -----BEGIN CERTIFICATE-----
@@ -24,16 +24,40 @@
       -----END CERTIFICATE-----
     '';
     trustedCaFile = config.services.etcd.peerTrustedCaFile;
-    initialAdvertisePeerUrls = [
-      "http://${config.networking.hostName}.etcd.thalheim.io:2379"
+    listenClientUrls = [
+      "https://[::]:2379"
     ];
+    listenPeerUrls = [
+      "https://[::]:2380"
+    ];
+    name = "${config.networking.hostName}.etcd.thalheim.io";
+    initialCluster = [];
     advertiseClientUrls = [
-      "http://${config.networking.hostName}.etcd.thalheim.io:2379"
+      "https://${config.networking.hostName}.etcd.thalheim.io:2379"
     ];
-    extraConf.ETCD_DISCOVERY_SRV = "thalheim.io";
+    #initialAdvertisePeerUrls = [
+    #  "https://${config.networking.hostName}.etcd.thalheim.io:2380"
+    #];
+    initialClusterState = lib.mkDefault "existing";
+    extraConf.DISCOVERY_SRV = "thalheim.io";
   };
-  sops.secrets.etcd-key = { };
-  sops.secrets.etcd-cert = { };
-  sops.secrets.etcd-peer-cert = { };
-  sops.secrets.etcd-peer-key = { };
+  networking.firewall.interfaces."retiolum".allowedTCPPorts = [
+    2379 2380
+  ];
+  environment.systemPackages = [
+    (pkgs.writeShellScriptBin "etcdctl" ''
+      exec ${pkgs.etcd}/bin/etcdctl \
+        --endpoint https://${config.networking.hostName}.etcd.thalheim.io:2379 \
+        --ca-file=${config.services.etcd.peerTrustedCaFile} \
+        --cert-file=${config.sops.secrets.etcd-admin-cert.path} \
+        --key-file=${config.sops.secrets.etcd-admin-key.path} \
+        "$@"
+    '')
+  ];
+  sops.secrets.etcd-key.owner = "etcd";
+  sops.secrets.etcd-cert.owner = "etcd";
+  sops.secrets.etcd-peer-cert.owner = "etcd";
+  sops.secrets.etcd-peer-key.owner = "etcd";
+  sops.secrets.etcd-admin-cert.sopsFile = ./etcd-admin.yaml;
+  sops.secrets.etcd-admin-key.sopsFile = ./etcd-admin.yaml;
 }
