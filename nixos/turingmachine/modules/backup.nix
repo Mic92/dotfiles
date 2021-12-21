@@ -34,6 +34,7 @@ in
       "/home/joerg/Musik/podcasts"
       "/home/joerg/gPodder/Downloads"
       "/home/joerg/sync"
+      "/home/joerg/Videos"
       "/home/joerg/git/linux/*.qcow2"
       "/home/joerg/git/OSX-KVM/mac_hdd_ng.img"
       "/home/joerg/mnt"
