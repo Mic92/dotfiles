@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2021121809 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2021121812 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -54,17 +54,17 @@ anon IN CNAME www
 
 blog IN CNAME mic92.github.io.
 
-eve.etcd.thalheim.io IN AAAA 42:0:3c46:70c7:8526:2adf:7451:8bbb
-eva.etcd.thalheim.io IN AAAA 42:0:3c46:8a42:2b1:5ef8:7562:676a
-rose.etcd.thalheim.io IN AAAA 42:0:3c46:a5a1:618d:663a:f0f1:ec88
+eve.etcd IN AAAA 42:0:3c46:70c7:8526:2adf:7451:8bbb
+eva.etcd IN AAAA 42:0:3c46:8a42:2b1:5ef8:7562:676a
+rose.etcd IN AAAA 42:0:3c46:a5a1:618d:663a:f0f1:ec88
 
-_etcd-server-ssl._tcp.thalheim.io IN SRV 0 0 2380 eve.etcd.thalheim.io
-_etcd-server-ssl._tcp.thalheim.io IN SRV 0 0 2380 eva.etcd.thalheim.io
-_etcd-server-ssl._tcp.thalheim.io IN SRV 0 0 2380 rose.etcd.thalheim.io
+_etcd-server-ssl._tcp IN SRV 0 0 2380 eve.etcd
+_etcd-server-ssl._tcp IN SRV 0 0 2380 eva.etcd
+_etcd-server-ssl._tcp IN SRV 0 0 2380 rose.etcd
 
-_etcd-client-ssl._tcp.thalheim.io IN SRV 0 0 2380 eve.etcd.thalheim.io
-_etcd-client-ssl._tcp.thalheim.io IN SRV 0 0 2380 eva.etcd.thalheim.io
-_etcd-client-ssl._tcp.thalheim.io IN SRV 0 0 2380 rose.etcd.thalheim.io
+_etcd-client-ssl._tcp IN SRV 0 0 2380 eve.etcd
+_etcd-client-ssl._tcp IN SRV 0 0 2380 eva.etcd
+_etcd-client-ssl._tcp IN SRV 0 0 2380 rose.etcd
 
 _acme-challenge IN NS ns1.thalheim.io.
 _acme-challenge.imap IN NS ns1.thalheim.io.
