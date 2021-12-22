@@ -18,7 +18,9 @@
       ];
     };
 
-    initrd.availableKernelModules = [ "xhci_pci" "ahci" "sd_mod" ];
+    initrd.availableKernelModules = [
+      "xhci_pci" "ahci" "sd_mod" "nvme"
+    ];
   };
 
   fileSystems."/" = {
