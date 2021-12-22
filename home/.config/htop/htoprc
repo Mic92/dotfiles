@@ -1,9 +1,9 @@
 # Beware! This file is rewritten by htop when settings are changed in the interface.
 # The parser is also very primitive, and not human-friendly.
-htop_version=3.1.1
+htop_version=3.1.2
 config_reader_min_version=2
 fields=0 48 17 109 110 18 38 39 40 2 46 47 49 1
-sort_key=109
+sort_key=46
 sort_direction=-1
 tree_sort_key=0
 tree_sort_direction=1
