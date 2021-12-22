@@ -14,7 +14,7 @@
       version = 2;
       devices = [
         "/dev/nvme0n1"
-        "/dev/nvme1n1"
+        #"/dev/nvme1n1"
       ];
     };
 
