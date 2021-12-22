@@ -24,6 +24,7 @@
       "create mask" = "0644";
       "directory mask" = "2777";
       writable = "yes";
+      browseable = "yes";
       printable = "no";
     };
   };
