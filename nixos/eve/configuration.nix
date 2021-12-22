@@ -23,6 +23,7 @@
     ./modules/drone
     ./modules/docker.nix
     ./modules/ejabberd.nix
+    ./modules/etcd.nix
     ./modules/gitea.nix
     ./modules/gitlab/runner.nix
     ./modules/grafana.nix
@@ -58,7 +59,6 @@
     #./modules/wiregrill
 
     ../modules/builder.nix
-    ../modules/etcd.nix
     ../modules/fast-network.nix
     ../modules/iperf.nix
     ../modules/mosh.nix
