@@ -43,6 +43,8 @@
 
   # for pactl
   environment.systemPackages = with pkgs; [ pulseaudio ];
+
+  hardware.pulseaudio.enable = false;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
