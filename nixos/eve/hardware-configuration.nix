@@ -12,7 +12,10 @@
     loader.grub = {
       enable = true;
       version = 2;
-      devices = [ "/dev/sda" "/dev/sdb" ];
+      devices = [
+        "/dev/nvme0n1"
+        "/dev/nvme1n1"
+      ];
     };
 
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "sd_mod" ];
@@ -36,7 +39,7 @@
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/18630124-7e4f-406b-ae58-05c6dd73ada2";
+    device = "/dev/disk/by-label/NIXOS_BOOT";
     fsType = "ext4";
     options = [ "nofail" ];
   };
