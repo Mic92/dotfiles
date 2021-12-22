@@ -8,7 +8,7 @@ in
   options = {
     networking.eve.ipv4.address = mkOption {
       type = types.str;
-      default = "95.216.112.61";
+      default = "88.99.244.96";
     };
 
     networking.eve.ipv4.cidr = mkOption {
@@ -18,21 +18,21 @@ in
 
     networking.eve.ipv4.gateway = mkOption {
       type = types.str;
-      default = "95.216.112.1";
+      default = "88.99.244.65";
     };
 
     networking.eve.ipv6.addresses = mkOption {
       type = types.listOf types.str;
       default = [
-        "2a01:4f9:2b:1605::1"
+        "2a01:4f8:10b:49f::1"
         # ssh on port 443
-        "2a01:4f9:2b:1605::2"
+        "2a01:4f8:10b:49f::2"
         # xmpp on port 443
-        "2a01:4f9:2b:1605::3"
+        "2a01:4f8:10b:49f::3"
         # tinc on port 443
-        "2a01:4f9:2b:1605::4"
+        "2a01:4f8:10b:49f::4"
         # kresd on port 443
-        "2a01:4f9:2b:1605::5"
+        "2a01:4f8:10b:49f::5"
       ];
     };
 
