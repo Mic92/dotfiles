@@ -7,7 +7,7 @@ let
 
     $TTL 600
 
-    @ IN NS ns1.thalheim.io.
+    @ IN NS ns2.thalheim.io.
   '';
 in
 {

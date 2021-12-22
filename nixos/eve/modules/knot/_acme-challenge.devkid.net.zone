@@ -1,5 +1,5 @@
-@ 3600 IN SOA _acme-challenge.devkid.net. root.thalheim.io. 2021013105 7200 3600 86400 3600
+@ 3600 IN SOA _acme-challenge.devkid.net. root.thalheim.io. 2021122300 7200 3600 86400 3600
 
 $TTL 600
 
-@ IN NS ns1.thalheim.io.
+@ IN NS ns2.thalheim.io.

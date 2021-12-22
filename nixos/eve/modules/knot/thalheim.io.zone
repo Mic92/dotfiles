@@ -1,6 +1,7 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2021122204 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2021122303 7200 3600 86400 3600
 
-@ 3600 IN NS ns1
+;;@ 3600 IN NS ns1
+@ 3600 IN NS ns2
 @ 3600 IN NS ns2.he.net.
 @ 3600 IN NS ns3.he.net.
 @ 3600 IN NS ns4.he.net.
@@ -13,8 +14,8 @@ he IN NS ns2.he.net.
 he IN NS ns3.he.net.
 he IN NS ns4.he.net.
 he IN NS ns5.he.net.
-whoami4 IN NS ns1
-whoami6 IN NS ns1
+whoami4 IN NS ns2
+whoami6 IN NS ns2
 
 @ IN A 88.99.244.96
 @ IN AAAA 2a01:4f8:10b:49f::1
@@ -32,6 +33,8 @@ git IN A 88.99.244.96
 git IN AAAA 2a01:4f8:10b:49f::1
 ns1 IN A 88.99.244.96
 ns1 IN AAAA 2a01:4f8:10b:49f::1
+ns2 IN A 88.99.244.96
+ns2 IN AAAA 2a01:4f8:10b:49f::1
 dns IN A 88.99.244.96
 dns IN AAAA 2a01:4f8:10b:49f::1
 
@@ -61,12 +64,12 @@ _etcd-client-ssl._tcp IN SRV 0 0 2380 eve.etcd
 _etcd-client-ssl._tcp IN SRV 0 0 2380 eva.etcd
 _etcd-client-ssl._tcp IN SRV 0 0 2380 rose.etcd
 
-_acme-challenge IN NS ns1.thalheim.io.
-_acme-challenge.imap IN NS ns1.thalheim.io.
-_acme-challenge.mail IN NS ns1.thalheim.io.
-_acme-challenge.influxdb IN NS ns1.thalheim.io.
-_acme-challenge.anon IN NS ns1.thalheim.io.
-_acme-challenge.dns IN NS ns1.thalheim.io.
+_acme-challenge IN NS ns2.thalheim.io.
+_acme-challenge.imap IN NS ns2.thalheim.io.
+_acme-challenge.mail IN NS ns2.thalheim.io.
+_acme-challenge.influxdb IN NS ns2.thalheim.io.
+_acme-challenge.anon IN NS ns2.thalheim.io.
+_acme-challenge.dns IN NS ns2.thalheim.io.
 
 @ IN CAA 0 issue "letsencrypt.org"
 @ IN CAA 0 iodef "mailto:joerg.caa@thalheim.io"

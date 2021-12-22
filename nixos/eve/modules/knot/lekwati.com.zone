@@ -1,8 +1,8 @@
-@ 3600 IN SOA lekwati.com. root.lekwati.com. 2021082300 7200 3600 86400 3600
+@ 3600 IN SOA lekwati.com. root.lekwati.com. 2021122300 7200 3600 86400 3600
 
 $TTL 600
 
-@ 3600 IN NS ns1.thalheim.io.
+@ 3600 IN NS ns2.thalheim.io.
 @ 3600 IN NS ns2.he.net.
 @ 3600 IN NS ns3.he.net.
 @ 3600 IN NS ns4.he.net.
@@ -20,7 +20,7 @@ blog IN CNAME slekwati.github.io.
 writey-things IN CNAME slekwati.github.io.
 desperate-chef IN CNAME slekwati.github.io.
 for-marks IN CNAME slekwati.github.io.
-_acme-challenge IN NS ns1.thalheim.io.
+_acme-challenge IN NS ns2.thalheim.io.
 
 ;; TXT Records
 _adsp._domainkey 1 IN TXT "dkim=all;"
