@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2021121812 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2021122204 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -16,32 +16,27 @@ he IN NS ns5.he.net.
 whoami4 IN NS ns1
 whoami6 IN NS ns1
 
-@ IN A 95.216.112.61
-@ IN AAAA 2a01:4f9:2b:1605::1
-eve IN A 95.216.112.61
-4.eve IN A 95.216.112.61
-eve IN AAAA 2a01:4f9:2b:1605::2
-6.eve IN AAAA 2a01:4f9:2b:1605::2
-
-eva-old IN A 157.90.232.92
-4.eva-old IN A 157.90.232.92
-eva-old IN AAAA 2a01:4f8:1c1c:9a9::1
-6.eva-old IN AAAA 2a01:4f8:1c1c:9a9::1
+@ IN A 88.99.244.96
+@ IN AAAA 2a01:4f8:10b:49f::1
+eve IN A 88.99.244.96
+4.eve IN A 88.99.244.96
+eve IN AAAA 2a01:4f8:10b:49f::2
+6.eve IN AAAA 2a01:4f8:10b:49f::2
 
 eva IN A 131.159.102.4
 4.eva IN A 131.159.102.4
 eva IN AAAA 2a09:80c0:102::4
 6.eva IN AAAA 2a09:80c0:102::4
 
-git IN A 95.216.112.61
-git IN AAAA 2a01:4f9:2b:1605::1
-ns1 IN A 95.216.112.61
-ns1 IN AAAA 2a01:4f9:2b:1605::1
-dns IN A 95.216.112.61
-dns IN AAAA 2a01:4f9:2b:1605::5
+git IN A 88.99.244.96
+git IN AAAA 2a01:4f8:10b:49f::1
+ns1 IN A 88.99.244.96
+ns1 IN AAAA 2a01:4f8:10b:49f::1
+dns IN A 88.99.244.96
+dns IN AAAA 2a01:4f8:10b:49f::1
 
-www IN A 95.216.112.61
-www IN AAAA 2a01:4f9:2b:1605::1
+www IN A 88.99.244.96
+www IN AAAA 2a01:4f8:10b:49f::1
 * IN CNAME www
 
 prometheus IN CNAME eva
@@ -120,21 +115,22 @@ reisekosten IN CNAME reisekosten.herokuapp.com.
 
 ;; Mail
 @ IN MX 3 mail
-mail IN A 95.216.112.61
-mail IN AAAA 2a01:4f9:2b:1605::1
-imap IN A 95.216.112.61
-imap IN AAAA 2a01:4f9:2b:1605::1
+mail IN A 88.99.244.96
+mail IN AAAA 2a01:4f8:10b:49f::1
+imap IN A 88.99.244.96
+imap IN AAAA 2a01:4f8:10b:49f::1
 _adsp._domainkey IN TXT "dkim=all;"
 default._domainkey IN TXT "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgVpKyJL+JXhYefL05+wal58+PK1s5y1nf1uI7aguTbQFaM3wo3cs/7CaxBK1a+JNCd7f1sgmbdR17CzsiUUQO5GLsyl6bS4VGZv1XMMSuTdCpOT08iY0s9JikME6kPg9rxbo35ET9DtDDEqmgwbUcIfl/eD8G4jwTvyPYJPfFKQIDAQAB"
 _dmarc IN TXT "v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:joerc.dmarc@thalheim.io; ruf=mailto:joerg.dmarc@thalheim.io; pct=100"
-@ IN TXT "v=spf1 ip4:95.216.112.61 ip6:2a01:4f9:2b:1605::1 -all"
+@ IN TXT "v=spf1 ip4:88.99.244.96 ip6:2a01:4f8:10b:49f::1 -all"
+
 _token._dnswl IN TXT "v6e9a15zje7o03w1oos9ashj258elvdh"
 @ IN TXT "google-site-verification=TGvlDYzS1IB0wcHO32Bnzfb5IVFbYm6Roeg27TU6XjY"
 _smtp._tls IN TXT "v=TLSRPTv1;rua=mailto:joerg.smtp-tls@thalheim.io"
 
 ;; XMPP
-jabber IN A 95.216.112.61
-jabber IN AAAA 2a01:4f9:2b:1605::1
+jabber IN A 88.99.244.96
+jabber IN AAAA 2a01:4f8:10b:49f::1
 muc IN CNAME www
 _xmpp-client._tcp IN SRV 0 5 5222 jabber
 _xmpp-server._tcp IN SRV 0 5 5269 jabber
