@@ -78,71 +78,71 @@ in
     mapFiles."helo_access" = helo_access;
     mapFiles."rbl_override" = rbl_override;
 
-    extraConfig = ''
-      smtp_bind_address = ${config.networking.eve.ipv4.address}
-      smtp_bind_address6 = 2a01:4f9:2b:1605::1
-      mailbox_transport = lmtp:unix:private/dovecot-lmtp
-      masquerade_domains = ldap:${domains}
-      virtual_mailbox_domains = ldap:${domains}
-      virtual_alias_maps = ldap:${accountsmap},ldap:${aliases},regexp:/var/lib/postfix/conf/virtual-regex
-      virtual_transport = lmtp:unix:private/dovecot-lmtp
+    config = {
+      smtp_bind_address = config.networking.eve.ipv4.address;
+      smtp_bind_address6 = "2a01:4f9:2b:1605::1";
+      mailbox_transport = "lmtp:unix:private/dovecot-lmtp";
+      masquerade_domains = "ldap:${domains}";
+      virtual_mailbox_domains = "ldap:${domains}";
+      virtual_alias_maps = "ldap:${accountsmap},ldap:${aliases},regexp:/var/lib/postfix/conf/virtual-regex";
+      virtual_transport = "lmtp:unix:private/dovecot-lmtp";
 
       # bigger attachement size
-      mailbox_size_limit = 202400000
-      message_size_limit = 51200000
-      smtpd_helo_required = yes
-      smtpd_delay_reject = yes
-      strict_rfc821_envelopes = yes
+      mailbox_size_limit = "202400000";
+      message_size_limit = "51200000";
+      smtpd_helo_required = "yes";
+      smtpd_delay_reject = "yes";
+      strict_rfc821_envelopes = "yes";
 
       # send Limit
-      smtpd_error_sleep_time = 1s
-      smtpd_soft_error_limit = 10
-      smtpd_hard_error_limit = 20
+      smtpd_error_sleep_time = "1s";
+      smtpd_soft_error_limit = "10";
+      smtpd_hard_error_limit = "20";
 
-      smtpd_use_tls = yes
-      smtp_tls_note_starttls_offer = yes
-      smtpd_tls_security_level = may
-      smtpd_tls_auth_only = yes
+      smtpd_use_tls = "yes";
+      smtp_tls_note_starttls_offer = "yes";
+      smtpd_tls_security_level = "may";
+      smtpd_tls_auth_only = "yes";
 
-      smtpd_tls_cert_file = /var/lib/acme/mail.thalheim.io/full.pem
-      smtpd_tls_key_file = /var/lib/acme/mail.thalheim.io/key.pem
-      smtpd_tls_CAfile = /var/lib/acme/mail.thalheim.io/fullchain.pem
+      smtpd_tls_cert_file = "/var/lib/acme/mail.thalheim.io/full.pem";
+      smtpd_tls_key_file = "/var/lib/acme/mail.thalheim.io/key.pem";
+      smtpd_tls_CAfile = "/var/lib/acme/mail.thalheim.io/fullchain.pem";
 
-      smtpd_tls_dh512_param_file = ${config.security.dhparams.params.postfix512.path}
-      smtpd_tls_dh1024_param_file = ${config.security.dhparams.params.postfix2048.path}
+      smtpd_tls_dh512_param_file = config.security.dhparams.params.postfix512.path;
+      smtpd_tls_dh1024_param_file = config.security.dhparams.params.postfix2048.path;
 
-      smtpd_tls_session_cache_database = btree:''${data_directory}/smtpd_scache
-      smtpd_tls_mandatory_protocols = !SSLv2,!SSLv3,!TLSv1,!TLSv1.1
-      smtpd_tls_protocols = !SSLv2,!SSLv3,!TLSv1,!TLSv1.1
-      smtpd_tls_mandatory_ciphers = medium
-      tls_medium_cipherlist = AES128+EECDH:AES128+EDH
+      smtpd_tls_session_cache_database = ''btree:''${data_directory}/smtpd_scache'';
+      smtpd_tls_mandatory_protocols = "!SSLv2,!SSLv3,!TLSv1,!TLSv1.1";
+      smtpd_tls_protocols = "!SSLv2,!SSLv3,!TLSv1,!TLSv1.1";
+      smtpd_tls_mandatory_ciphers = "medium";
+      tls_medium_cipherlist = "AES128+EECDH:AES128+EDH";
 
       # authentication
-      smtpd_sasl_auth_enable = yes
-      smtpd_sasl_local_domain = $mydomain
-      smtpd_sasl_security_options = noanonymous
-      smtpd_sasl_tls_security_options = $smtpd_sasl_security_options
-      smtpd_sasl_type = dovecot
-      smtpd_sasl_path = /var/lib/postfix/queue/private/auth
-      smtpd_relay_restrictions = permit_mynetworks,
+      smtpd_sasl_auth_enable = "yes";
+      smtpd_sasl_local_domain = "$mydomain";
+      smtpd_sasl_security_options = "noanonymous";
+      smtpd_sasl_tls_security_options = "$smtpd_sasl_security_options";
+      smtpd_sasl_type = "dovecot";
+      smtpd_sasl_path = "/var/lib/postfix/queue/private/auth";
+      smtpd_relay_restrictions = "permit_mynetworks,
                                  permit_sasl_authenticated,
                                  ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
-                                 defer_unauth_destination
-      smtpd_client_restrictions = permit_mynetworks,
+                                 defer_unauth_destination";
+      smtpd_client_restrictions = "permit_mynetworks,
                                 permit_sasl_authenticated,
                                  ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
                                 reject_invalid_hostname,
                                 reject_unknown_client,
-                                permit
-      smtpd_helo_restrictions = permit_mynetworks,
+                                permit";
+      smtpd_helo_restrictions = "permit_mynetworks,
                               permit_sasl_authenticated,
                               ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
                               reject_unauth_pipelining,
                               reject_non_fqdn_hostname,
                               reject_invalid_hostname,
                               warn_if_reject reject_unknown_hostname,
-                              permit
-      smtpd_recipient_restrictions = permit_mynetworks,
+                              permit";
+      smtpd_recipient_restrictions = "permit_mynetworks,
                                ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
                                permit_sasl_authenticated,
                                reject_non_fqdn_sender,
@@ -154,18 +154,18 @@ in
                                reject_unknown_client_hostname,
                                reject_unauth_pipelining,
                                reject_unknown_client,
-                               permit
-      smtpd_sender_restrictions = permit_mynetworks,
+                               permit";
+      smtpd_sender_restrictions = "permit_mynetworks,
                           permit_sasl_authenticated,
                           ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
                           reject_non_fqdn_sender,
                           reject_unknown_sender_domain,
                           reject_unknown_client_hostname,
-                          reject_unknown_address
+                          reject_unknown_address";
 
-      smtpd_etrn_restrictions = permit_mynetworks, reject
-      smtpd_data_restrictions = reject_unauth_pipelining, reject_multi_recipient_bounce, permit
-    '';
+      smtpd_etrn_restrictions = "permit_mynetworks, reject";
+      smtpd_data_restrictions = "reject_unauth_pipelining, reject_multi_recipient_bounce, permit";
+    };
   };
 
   security.dhparams = {
