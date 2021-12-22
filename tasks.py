@@ -66,7 +66,7 @@ def deploy_matchbox(c):
         [
             DeployHost(
                 "localhost",
-                command_prefix="eva.r",
+                command_prefix="matchbox.r",
                 meta=dict(target_host="matchbox.r", flake_attr="matchbox"),
             )
         ]
