@@ -64,8 +64,9 @@ in
         Name = e*
 
         [Network]
-        Address = ${cfg.ipv4.address}/${cfg.ipv4.cidr}
-        Gateway = ${cfg.ipv4.gateway}
+        DHCP = ipv4
+        #Address = ${cfg.ipv4.address}/${cfg.ipv4.cidr}
+        #Gateway = ${cfg.ipv4.gateway}
 
         ${concatMapStringsSep "\n" (address: ''
           Address = ${address}/${cfg.ipv6.cidr}
