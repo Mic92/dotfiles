@@ -49,6 +49,7 @@
     enable = true;
     libinput.enable = true;
     displayManager.gdm.enable = true;
+    displayManager.defaultSession = "gnome";
     desktopManager.gnome.enable = true;
   };
 
