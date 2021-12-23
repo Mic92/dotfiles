@@ -235,7 +235,7 @@ in
 
     dns_query = {
       servers = [
-        "ns1.thalheim.io"
+        "ns2.thalheim.io"
         "ns2.he.net"
         "ns3.he.net"
         "ns4.he.net"
