@@ -32,13 +32,18 @@
     ];
     name = "${config.networking.hostName}.etcd.thalheim.io";
     initialCluster = [];
+    initialAdvertisePeerUrls = [
+      "https://eva.etcd.thalheim.io:2380"
+      "https://eve.etcd.thalheim.io:2380"
+      #"https://rose.etcd.thalheim.io:2380"
+    ];
     advertiseClientUrls = [
       "https://${config.networking.hostName}.etcd.thalheim.io:2379"
     ];
     #initialAdvertisePeerUrls = [
     #  "https://${config.networking.hostName}.etcd.thalheim.io:2380"
     #];
-    initialClusterState = lib.mkDefault "existing";
+    initialClusterState = lib.mkDefault "new";
     extraConf.DISCOVERY_SRV = "thalheim.io";
   };
   networking.firewall.interfaces."retiolum".allowedTCPPorts = [

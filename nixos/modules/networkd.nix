@@ -25,8 +25,8 @@ in
 
   services.resolved.enable = true;
   networking.nameservers = [
-    "95.216.112.61#dns.thalheim.io"
-    "2a01:4f9:2b:1605::1#dns.thalheim.io"
+    "88.99.244.96#dns.thalheim.io"
+    "2a01:4f8:10b:49f::1#dns.thalheim.io"
   ];
   services.resolved.extraConfig = ''
     DNSOverTLS=yes
