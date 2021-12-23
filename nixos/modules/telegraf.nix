@@ -39,7 +39,7 @@ in
           files = [ "/sys/fs/ext4/*/errors_count" ];
           data_format = "value";
         };
-        exec =  {
+        exec =  [{
           ## Commands array
           commands = (lib.optional (lib.any (fs: fs == "zfs") config.boot.supportedFilesystems)
             (pkgs.writeScript "zpool-health" ''
@@ -90,7 +90,7 @@ in
             ) nfsHosts
           );
           data_format = "influx";
-        };
+        }];
         systemd_units = { };
         swap = { };
         disk.tagdrop = {

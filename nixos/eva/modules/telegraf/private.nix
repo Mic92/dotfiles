@@ -251,7 +251,7 @@ in
       record_type = "A";
     };
 
-    exec = {
+    exec = [{
       ## Commands array
       commands =
         let
@@ -273,7 +273,7 @@ in
       data_format = "influx";
       tags.host = "eve";
       tags.org = "private";
-    };
+    }];
 
     x509_cert = [
       {
