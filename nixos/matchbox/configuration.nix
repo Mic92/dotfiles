@@ -23,10 +23,7 @@
     options = [ "defaults" "nofail" "x-systemd.device-timeouts=2" ];
   };
 
-  networking.retiolum = {
-    ipv4 = "10.243.29.176";
-    ipv6 = "42:0:3c46:6745:adf4:a844:26c4:bf91";
-  };
+  networking.retiolum.ipv6 = "42:0:3c46:6745:adf4:a844:26c4:bf91";
 
   networking.hostName = "matchbox";
 

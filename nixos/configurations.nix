@@ -31,6 +31,7 @@ let
     ./modules/upgrade-diff.nix
     ./modules/nix-daemon.nix
     retiolum.nixosModules.retiolum
+    retiolum.nixosModules.ca
     sops-nix.nixosModules.sops
   ];
   eveModules = defaultModules ++ [ ./eve/configuration.nix ];

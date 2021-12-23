@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, config, lib, ... }:
 let
   conf = pkgs.writeText "ldap.conf" ''
     base dc=eve
@@ -30,6 +30,9 @@ in
     account required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${conf}
   '';
 
+  security.acme.certs."prometheus.r".server = config.retiolum.ca.acmeURL;
+  security.acme.certs."alertmanager.r".server = config.retiolum.ca.acmeURL;
+
   services.nginx = {
     package = pkgs.nginxStable.override {
       perl = null;
@@ -45,6 +48,8 @@ in
       locations."/".extraConfig = proxy "prometheus";
     };
     virtualHosts."prometheus.r" = {
+      enableACME = true;
+      addSSL = true;
       locations."/".extraConfig = ''
         proxy_pass       http://@prometheus/;
         proxy_set_header Host $host;
@@ -62,6 +67,8 @@ in
       locations."/".extraConfig = proxy "alertmanager";
     };
     virtualHosts."alertmanager.r" = {
+      enableACME = true;
+      addSSL = true;
       locations."/".extraConfig = ''
         proxy_pass       http://@alertmanager/;
         proxy_set_header Host $host;
