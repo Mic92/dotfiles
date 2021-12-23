@@ -50,7 +50,6 @@
     ./modules/sshd.nix
     ./modules/squid.nix
     ./modules/syncthing.nix
-    ./modules/smartd.nix
     ./modules/sops.nix
     ./modules/teamspeak.nix
     ./modules/telegraf.nix
