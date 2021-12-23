@@ -22,6 +22,7 @@
       wdisplays
       wl-clipboard
       flameshot
+      blueberry
 
       pavucontrol
       lightlocker
