@@ -37,10 +37,10 @@ def deploy(c):
     """
     deploy_nixos(
         [
-            DeployHost("eve.r"),
+            DeployHost("eve.i"),
             DeployHost("localhost"),
             DeployHost(
-                "eve.r",
+                "eve.i",
                 forward_agent=True,
                 command_prefix="eva.r",
                 meta=dict(target_host="eva.r", flake_attr="eva"),
