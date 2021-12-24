@@ -42,7 +42,11 @@ in
 
   imports = [
     ../modules/tor-ssh.nix
+    ../modules/nix-daemon.nix
   ];
+
+  # no auto-updates
+  systemd.services.update-prefetch.enable = false;
 
   documentation.info.enable = false;
   environment.systemPackages = with pkgs; [ diskrsync partclone ntfsprogs ntfs3g ];
