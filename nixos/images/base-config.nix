@@ -1,11 +1,6 @@
 { lib, pkgs, ... }:
-let
-  nur = (builtins.getFlake (toString ../..)).inputs.nur;
-in
 {
   networking.firewall.enable = false;
-
-  nixpkgs.overlays = [ nur.overlay ];
 
   services.resolved.enable = false;
   networking.nameservers = [

@@ -80,12 +80,18 @@
   # nix build '.#kexec' --impure
   packages.x86_64-linux.kexec = nixos-generators.nixosGenerate {
     pkgs = nixpkgs.legacyPackages.x86_64-linux;
-    modules = [ ./nixos/images/kexec.nix ];
+    modules = [
+      ./nixos/images/kexec.nix
+      { nixpkgs.overlays = [ nur.overlay ]; }
+    ];
     format = "kexec";
   };
   packages.x86_64-linux.kexec-aarch64 = nixos-generators.nixosGenerate {
     pkgs = nixpkgs.legacyPackages.aarch64-linux;
-    modules = [ ./nixos/images/kexec.nix ];
+    modules = [
+      ./nixos/images/kexec.nix
+      { nixpkgs.overlays = [ nur.overlay ]; }
+    ];
     format = "kexec";
   };
 
