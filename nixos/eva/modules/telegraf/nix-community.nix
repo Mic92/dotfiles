@@ -5,6 +5,7 @@ let
     "build01.nix-community.org"
     "build02.nix-community.org"
     "build03.nix-community.org"
+    "build04.nix-community.org"
   ];
 in
 {
