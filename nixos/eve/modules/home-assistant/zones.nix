@@ -19,5 +19,11 @@
     latitude = "!secret work_latitude";
     longitude = "!secret work_longitude";
     radius = "300";
+  } {
+    name = "Parents";
+    icon = "mdi:human-male-female-child";
+    latitude = "!secret parents_latitude";
+    longitude = "!secret parents_longitude";
+    radius = "200";
   }];
 }
