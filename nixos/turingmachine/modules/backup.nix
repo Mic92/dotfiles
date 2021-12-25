@@ -2,7 +2,7 @@
 with builtins;
 
 let
-  backupPath = "borg@eve.thalheim.io:./.";
+  backupPath = "il1dsenixosbk@eva.r:/mnt/backup/turingmachine";
 in
 {
   sops.secrets.borgbackup = { };
@@ -72,7 +72,7 @@ in
       eval $(ssh-agent)
       ssh-add ${config.sops.secrets.ssh-borgbackup.path}
       export BORG_PASSCOMMAND='cat /run/secrets/borgbackup'
-      export BORG_REPO='borg@eve.thalheim.io:./.'
+      export BORG_REPO='il1dsenixosbk@eva.r:/mnt/backup/turingmachine'
       borg break-lock
     '';
   };
@@ -84,7 +84,4 @@ in
   systemd.services.borgbackup-job-turingmachine.serviceConfig.ReadWritePaths = [
     "/var/log/telegraf"
   ];
-
-  environment.systemPackages = with pkgs; [ borgbackup ];
-  sops.secrets.healthcheck-borgbackup = { };
 }

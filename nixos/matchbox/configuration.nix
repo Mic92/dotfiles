@@ -37,8 +37,11 @@
     strace
     ethtool
     usbutils
+    bandwhich
     vim
   ];
+
+  systemd.services.update-prefetch.enable = false;
 
   system.stateVersion = "18.09";
   networking.dhcpcd.enable = true;

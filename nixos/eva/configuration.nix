@@ -24,7 +24,7 @@
   programs.vim.defaultEditor = true;
 
   imports = [
-    ./modules/backup-nfs.nix
+    ./modules/borgbackup-repos
     ./modules/go-neb.nix
     ./modules/hardware-configuration.nix
     ./modules/prometheus

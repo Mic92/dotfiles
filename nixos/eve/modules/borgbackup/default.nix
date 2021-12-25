@@ -2,36 +2,44 @@
 {
   sops.secrets.borg-passphrase = { };
   sops.secrets.borg-nas-ssh = { };
+  sops.secrets.ssh-borgbackup = { };
   sops.secrets.nas-wakeup-password = { };
 
-  services.borgbackup.repos.turingmachine = {
-    path = "/data/backup/turingmachine";
-    authorizedKeys = [ (builtins.readFile ./turingmachine-borgbackup.pub) ];
-  };
-
-  systemd.services.borgbackup-job-hetzner.serviceConfig.ReadWritePaths = [
+  systemd.services.borgbackup-job-eva.serviceConfig.ReadWritePaths = [
     "/var/log/telegraf"
   ];
 
-  services.borgbackup.jobs.hetzner = {
+  fileSystems."/mnt/matchbox" = {
+    device = "//matchbox.r/public";
+    fsType = "cifs";
+    options = [
+      "guest"
+      "nofail"
+      "ro"
+    ];
+  };
+
+  services.borgbackup.jobs.eva = {
+    # TODO remove this limit when matchbox is backuped
+    extraArgs = "--remote-ratelimit 250";
     paths = [
       "/home"
       "/etc"
       "/var"
       "/root"
+      "/mnt/matchbox"
     ];
-    repo = "u242570@u242570.your-storagebox.de:/./borg";
+    repo = "il1dsenixosbk@eva.r:/mnt/backup/eve";
     encryption = {
       mode = "repokey";
       passCommand = "cat ${config.sops.secrets.borg-passphrase.path}";
     };
     compression = "auto,zstd";
     startAt = "daily";
-    environment.BORG_RSH = "ssh -oPort=23";
     preHook = ''
       set -x
       eval $(ssh-agent)
-      ssh-add ${config.sops.secrets.borg-nas-ssh.path}
+      ssh-add ${config.sops.secrets.ssh-borgbackup.path}
     '';
 
     postHook = ''

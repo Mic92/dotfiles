@@ -24,6 +24,7 @@
     ./modules/sops.nix
     ./modules/sshd.nix
     ./modules/cntr.nix
+    #./modules/minidlna.nix
 
     #../modules/dnsmasq.nix
     ../modules/promtail.nix
