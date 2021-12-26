@@ -193,7 +193,7 @@ def nixos_install(c, disk="/dev/nvme0n1", hosts=""):
             f"rsync --exclude='.git/' -vaF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
         )
         h.run(f"/etc/nixos/nixos/images/install.sh {disk}")
-        h.run('nix shell "nixpkgs#git" -- nixos-install --no-root-passwd --flake /etc/nixos')
+        h.run('nix shell "nixpkgs#git" -c nixos-install --no-root-passwd --flake /etc/nixos')
     g = parse_hosts(hosts)
     g.run_function(install)
 
