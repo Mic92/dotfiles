@@ -37,7 +37,7 @@ mkfs.ext4 "$rootDevice${x}2" -L NIXOS_ROOT
 
 echo "wait for disk to appear"
 while [[ ! -e /dev/disk/by-label/NIXOS_BOOT ]] || [[ ! -e /dev/disk/by-label/NIXOS_ROOT ]]; do
-  sleep 0.1
+  sleep 1
 done
 
 mkdir -p /mnt
