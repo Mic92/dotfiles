@@ -1,5 +1,4 @@
-# inputs == flake inputs in configurations.nix
-{ pkgs, lib, config, inputs ? null, ... }:
+{ pkgs, lib, config, ... } @ args:
 let
   isVM = lib.any (mod: mod == "xen-blkfront" || mod == "virtio_console") config.boot.initrd.kernelModules;
 in
@@ -8,13 +7,14 @@ in
 
   systemd.services.telegraf.path = [ pkgs.nvme-cli ];
 
+  # inputs == flake inputs in configurations.nix
   environment.etc = let
-    inputsWithDate = lib.filterAttrs (_: input: input ? lastModified) inputs;
+    inputsWithDate = lib.filterAttrs (_: input: input ? lastModified) args.inputs;
     flakeAttrs = input: (lib.mapAttrsToList (n: v: ''${n}="${v}"'')
       (lib.filterAttrs (n: v: (builtins.typeOf v) == "string") input));
     lastModified = name: input: ''
       flake_input_last_modified{input="${name}",${lib.concatStringsSep "," (flakeAttrs input)}} ${toString input.lastModified}'';
-  in lib.optionalAttrs (inputs != null) {
+  in lib.optionalAttrs (args ? inputs) {
     "flake-inputs.prom" = {
       mode = "0555";
       text = ''
@@ -44,16 +44,18 @@ in
             exec /run/wrappers/bin/sudo ${pkgs.smartmontools}/bin/smartctl "$@"
           '';
         };
+        mdstat = {};
         system = { };
         mem = { };
-        file = [ {
-          data_format = "prometheus";
-          files = [ "/etc/flake-inputs.prom" ];
-        } {
+        file = [{
           data_format = "influx";
           file_tag = "name";
           files = [ "/var/log/telegraf/*" ];
-        }] ++ lib.optional (lib.any (fs: fs == "ext4") config.boot.supportedFilesystems) {
+        }]
+        ++ lib.optional (args ? inputs) {
+          data_format = "prometheus";
+          files = [ "/etc/flake-inputs.prom" ];
+        } ++ lib.optional (lib.any (fs: fs == "ext4") config.boot.supportedFilesystems) {
           name_override = "ext4_errors";
           files = [ "/sys/fs/ext4/*/errors_count" ];
           data_format = "value";
