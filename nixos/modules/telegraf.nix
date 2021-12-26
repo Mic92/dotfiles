@@ -8,21 +8,28 @@ in
 
   systemd.services.telegraf.path = [ pkgs.nvme-cli ];
 
-  environment.etc = lib.optionalAttrs (inputs != null) {
+  environment.etc = let
+    inputsWithDate = lib.filterAttrs (_: input: input ? lastModified) inputs;
+    flakeAttrs = input: (lib.mapAttrsToList (n: v: ''${n}="${v}"'')
+      (lib.filterAttrs (n: v: (builtins.typeOf v) == "string") input));
+    lastModified = name: input: ''
+      flake_input_last_modified{input="${name}",${lib.concatStringsSep "," (flakeAttrs input)}} ${toString input.lastModified}'';
+  in lib.optionalAttrs (inputs != null) {
     "flake-inputs.prom" = {
       mode = "0555";
       text = ''
         # HELP flake_registry_last_modified Last modification date of flake input in unixtime
         # TYPE flake_input_last_modified gauge
-        ${lib.concatStringsSep "\n" (map (i: ''
-          flake_input_last_modified{input="${i}",${
-            lib.concatStringsSep "," (lib.mapAttrsToList (n: v: ''${n}="${v}"'')
-              (lib.filterAttrs (n: v: (builtins.typeOf v) == "string")
-                inputs."${i}"))
-          }} ${toString inputs."${i}".lastModified}'') (lib.attrNames inputs))}
+        ${lib.concatStringsSep "\n" (lib.mapAttrsToList lastModified inputsWithDate)}
       '';
     };
   };
+
+#          ${lib.concatMapStringsSep "\n"
+#    (address: ''
+#        ${address}   REJECT Get lost - you're lying about who you are
+#        '')
+
 
   services.telegraf = {
     enable = true;
