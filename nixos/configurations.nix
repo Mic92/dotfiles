@@ -9,6 +9,7 @@
 , bme680-mqtt
 , inputs
 , nixos-hardware
+, miniond
 , ...
 }:
 let
@@ -95,6 +96,14 @@ in
     system = "x86_64-linux";
     modules = defaultModules ++ [
       ./eva/configuration.nix
+    ];
+  };
+
+  cloudlab-node = nixosSystem {
+    system = "x86_64-linux";
+    modules = defaultModules ++ [
+      miniond.nixosModule
+      { hardware.emulab.enable = true; }
     ];
   };
 }

@@ -10,9 +10,22 @@
     fenix.inputs.nixpkgs.follows = "nixpkgs";
 
     nixos-generators = {
-      url = "github:nix-community/nixos-generators";
+      #url = "github:nix-community/nixos-generators";
+      url = "github:Mic92/nixos-generators/fedf7136f27490402fe8ab93e67fafae80513e9b";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    rust-overlay.url = "github:oxalica/rust-overlay";
+    rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
+    rust-overlay.inputs.flake-utils.follows = "flake-utils";
+
+    mars-std.url = "github:mars-research/mars-std";
+    mars-std.inputs.nixpkgs.follows = "nixpkgs";
+    mars-std.inputs.rust-overlay.follows = "rust-overlay";
+    mars-std.inputs.flake-utils.follows = "flake-utils";
+
+    miniond.url = "github:mars-research/miniond";
+    miniond.inputs.mars-std.follows = "mars-std";
 
     vmsh.url = "github:Mic92/vmsh";
     vmsh.inputs.flake-utils.follows = "flake-utils";

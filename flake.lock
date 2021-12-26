@@ -99,6 +99,22 @@
         "type": "github"
       }
     },
+    "flake-compat": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1627913399,
+        "narHash": "sha256-hY8g6H2KFL8ownSiFeMOjwPC8P0ueXpCVEbxgda3pko=",
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "rev": "12c64ca55c1014cdc1b16ed5a804aa8576601ff2",
+        "type": "github"
+      },
+      "original": {
+        "owner": "edolstra",
+        "repo": "flake-compat",
+        "type": "github"
+      }
+    },
     "flake-registry": {
       "flake": false,
       "locked": {
@@ -147,6 +163,53 @@
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "mars-std": {
+      "inputs": {
+        "flake-compat": "flake-compat",
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "rust-overlay": [
+          "rust-overlay"
+        ]
+      },
+      "locked": {
+        "lastModified": 1637795985,
+        "narHash": "sha256-/PacCUXpblC8rBClDowmZ6dWVftIYj8k8KmYstNV7Qo=",
+        "owner": "mars-research",
+        "repo": "mars-std",
+        "rev": "5ef35434698313161cebd8879536e28180080875",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mars-research",
+        "repo": "mars-std",
+        "type": "github"
+      }
+    },
+    "miniond": {
+      "inputs": {
+        "mars-std": [
+          "mars-std"
+        ]
+      },
+      "locked": {
+        "lastModified": 1634406356,
+        "narHash": "sha256-c7NR6mcl7gANOS74WBoUMT0SVqjRTXY5zt39BeLHKeg=",
+        "owner": "mars-research",
+        "repo": "miniond",
+        "rev": "7247731062255b4750bae560b8e9b6d1cb855a9f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mars-research",
+        "repo": "miniond",
         "type": "github"
       }
     },
@@ -216,16 +279,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1637655461,
-        "narHash": "sha256-kXZPbclN3gKwjhp2/RYFDFpAsSBwzX1iLF4EcnHZsPQ=",
-        "owner": "nix-community",
+        "lastModified": 1640550527,
+        "narHash": "sha256-zFjpc0/lUWDzM2G+raq/CLoEyJd3iJIuir/ryhKnIm0=",
+        "owner": "Mic92",
         "repo": "nixos-generators",
-        "rev": "05a3eb158a9c7746a5d463726d7f7cccf07500e4",
+        "rev": "fedf7136f27490402fe8ab93e67fafae80513e9b",
         "type": "github"
       },
       "original": {
-        "owner": "nix-community",
+        "owner": "Mic92",
         "repo": "nixos-generators",
+        "rev": "fedf7136f27490402fe8ab93e67fafae80513e9b",
         "type": "github"
       }
     },
@@ -332,6 +396,8 @@
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
+        "mars-std": "mars-std",
+        "miniond": "miniond",
         "nix-darwin": "nix-darwin",
         "nix-ld": "nix-ld",
         "nixos-generators": "nixos-generators",
@@ -340,6 +406,7 @@
         "nixpkgs-systemd": "nixpkgs-systemd",
         "nur": "nur",
         "retiolum": "retiolum",
+        "rust-overlay": "rust-overlay",
         "sops-nix": "sops-nix",
         "vmsh": "vmsh"
       }
@@ -358,6 +425,29 @@
         "owner": "rust-analyzer",
         "ref": "nightly",
         "repo": "rust-analyzer",
+        "type": "github"
+      }
+    },
+    "rust-overlay": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1640486501,
+        "narHash": "sha256-uiHqhCg+cfPVZF7tmxpxsqT3U89E2PwXG2YdQV9sB6Q=",
+        "owner": "oxalica",
+        "repo": "rust-overlay",
+        "rev": "4c46b12384e3df91fea892cc877d088c7257a22c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "oxalica",
+        "repo": "rust-overlay",
         "type": "github"
       }
     },
