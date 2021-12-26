@@ -76,8 +76,7 @@ lib.mapAttrsToList
 
     daily_task_not_run = {
       # give 6 hours grace period
-      # FIXME: convert borgbackup-matchbox to weekly task
-      condition = ''time() - task_last_run{state="ok",frequency="daily",name!="borgbackup-matchbox"} > (24 + 6) * 60 * 60'';
+      condition = ''time() - task_last_run{state="ok",frequency="daily"} > (24 + 6) * 60 * 60'';
       description = "{{$labels.host}}: {{$labels.name}} was not run in the last 24h";
     };
 
@@ -95,6 +94,10 @@ lib.mapAttrsToList
       description = "status of ${name} is unknown: no data for a day";
     }))
   // {
+    nixpkgs_out_of_date = {
+      condition = ''(time() - flake_input_last_modified{input="nixpkgs"}) / (60*60*24) > 7'';
+      description = "{{$labels.host}}: nixpkgs flake is older than a week";
+    };
 
     borgbackup_matchbox_not_run = {
       # give 6 hours grace period

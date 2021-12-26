@@ -1,43 +1,49 @@
-{ nixpkgs
-, nixosSystem
+{ self
+, nixpkgs
 , nur
 , home-manager
 , sops-nix
 , retiolum
-, nixos-hardware
 , flake-registry
 , bme680-mqtt
-, nix-ld
-, envfs
-, vmsh
+, inputs
+, nixos-hardware
+, ...
 }:
 let
+  nixosSystem = nixpkgs.lib.makeOverridable nixpkgs.lib.nixosSystem;
+
   defaultModules = [
-    ({ pkgs, ... }: {
-      nix.nixPath = [
-        "nixpkgs=${pkgs.path}"
-        "home-manager=${home-manager}"
-        "nur=${nur}"
+    # make flake inputs accessiable in NixOS
+    { _module.args.inputs = inputs; }
+    {
+      imports = [
+        ({ pkgs, ... }: {
+          nix.nixPath = [
+            "nixpkgs=${pkgs.path}"
+            "home-manager=${home-manager}"
+            "nur=${nur}"
+          ];
+          nix.extraOptions = ''
+            flake-registry = ${flake-registry}/flake-registry.json
+          '';
+          nixpkgs.overlays = [ nur.overlay ];
+          documentation.info.enable = false;
+          nixpkgs.config.packageOverrides = pkgs: {
+            inherit retiolum;
+          };
+        })
+        ./modules/upgrade-diff.nix
+        ./modules/nix-daemon.nix
+        retiolum.nixosModules.retiolum
+        retiolum.nixosModules.ca
+        sops-nix.nixosModules.sops
       ];
-      nix.extraOptions = ''
-        flake-registry = ${flake-registry}/flake-registry.json
-      '';
-      nixpkgs.overlays = [ nur.overlay ];
-      documentation.info.enable = false;
-      nixpkgs.config.packageOverrides = pkgs: {
-        inherit retiolum;
-      };
-    })
-    ./modules/upgrade-diff.nix
-    ./modules/nix-daemon.nix
-    retiolum.nixosModules.retiolum
-    retiolum.nixosModules.ca
-    sops-nix.nixosModules.sops
+    }
   ];
-  eveModules = defaultModules ++ [ ./eve/configuration.nix ];
 in
 {
-  bernie = nixpkgs.lib.makeOverridable nixosSystem {
+  bernie = nixosSystem {
     system = "x86_64-linux";
     modules = defaultModules ++ [
       nixos-hardware.nixosModules.lenovo-thinkpad-x250
@@ -46,20 +52,22 @@ in
     ];
   };
 
-  turingmachine = nixpkgs.lib.makeOverridable nixosSystem {
+  turingmachine = nixosSystem {
     system = "x86_64-linux";
     modules = defaultModules ++ [
-      #nixos-hardware.nixosModules.dell-xps-13-9380
-      nixos-hardware.nixosModules.lenovo-thinkpad-x13
-      nix-ld.nixosModules.nix-ld
-      #envfs.nixosModules.envfs
       ./turingmachine/configuration.nix
+      nixos-hardware.nixosModules.lenovo-thinkpad-x13
+      nixos-hardware.nixosModules.dell-xps-13-9380
+      inputs.nix-ld.nixosModules.nix-ld
+      #inputs.envfs.nixosModules.envfs
     ];
   };
 
   eve = nixosSystem {
     system = "x86_64-linux";
-    modules = eveModules;
+    modules = defaultModules ++ [
+      ./eve/configuration.nix
+    ];
   };
 
   #rock = nixosSystem {
@@ -77,15 +85,10 @@ in
     ];
   };
 
-  #eve-vm = nixosSystem {
-  #  system = "x86_64-linux";
-  #  modules = eveModules ++ [
-  #    "${nixpkgs}/nixos/modules/virtualisation/qemu-vm.nix"
-  #  ];
-  #};
-
-  eva = nixpkgs.lib.makeOverridable nixosSystem {
+  eva = nixosSystem {
     system = "x86_64-linux";
-    modules = defaultModules ++ [ ./eva/configuration.nix ];
+    modules = defaultModules ++ [
+      ./eva/configuration.nix
+    ];
   };
 }

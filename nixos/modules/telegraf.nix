@@ -1,4 +1,5 @@
-{ pkgs, lib, config, ... }:
+# inputs == flake inputs in configurations.nix
+{ pkgs, lib, config, inputs ? null, ... }:
 let
   isVM = lib.any (mod: mod == "xen-blkfront" || mod == "virtio_console") config.boot.initrd.kernelModules;
 in
@@ -7,7 +8,21 @@ in
 
   systemd.services.telegraf.path = [ pkgs.nvme-cli ];
 
-  #services.journald.forwardToSyslog = true;
+  environment.etc = lib.optionalAttrs (inputs != null) {
+    "flake-inputs.prom" = {
+      mode = "0555";
+      text = ''
+        # HELP flake_registry_last_modified Last modification date of flake input in unixtime
+        # TYPE flake_input_last_modified gauge
+        ${lib.concatStringsSep "\n" (map (i: ''
+          flake_input_last_modified{input="${i}",${
+            lib.concatStringsSep "," (lib.mapAttrsToList (n: v: ''${n}="${v}"'')
+              (lib.filterAttrs (n: v: (builtins.typeOf v) == "string")
+                inputs."${i}"))
+          }} ${toString inputs."${i}".lastModified}'') (lib.attrNames inputs))}
+      '';
+    };
+  };
 
   services.telegraf = {
     enable = true;
@@ -30,7 +45,10 @@ in
         };
         system = { };
         mem = { };
-        file = [{
+        file = [ {
+          data_format = "prometheus";
+          files = [ "/etc/flake-inputs.prom" ];
+        } {
           data_format = "influx";
           file_tag = "name";
           files = [ "/var/log/telegraf/*" ];

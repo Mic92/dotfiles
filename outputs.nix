@@ -1,22 +1,10 @@
 { self
-, nixpkgs
-, nixos-hardware
-, sops-nix
-, nur
-, home-manager
-, retiolum
 , flake-utils
-, flake-registry
-, bme680-mqtt
-, nix-ld
-, envfs
-, doom-emacs
-, emacs-overlay
-, nix-darwin
-, vmsh
-, fenix
+, nixpkgs
+, nur
+, sops-nix
 , nixos-generators
-}:
+, ... } @ inputs:
 (flake-utils.lib.eachDefaultSystem (system:
   let
     pkgs = nixpkgs.legacyPackages.${system};
@@ -61,44 +49,30 @@
       '');
     };
   })) // {
-  nixosConfigurations = import ./nixos/configurations.nix {
-    nixosSystem = nixpkgs.lib.nixosSystem;
-    inherit
-      nur
-      nixpkgs
-      home-manager
-      sops-nix
-      retiolum
-      nixos-hardware
-      flake-registry
-      bme680-mqtt
-      envfs
-      nix-ld
-      vmsh;
-  };
+    nixosConfigurations = import ./nixos/configurations.nix (inputs // {
+      inherit inputs;
+    });
 
-  # nix build '.#kexec' --impure
-  packages.x86_64-linux.kexec = nixos-generators.nixosGenerate {
-    pkgs = nixpkgs.legacyPackages.x86_64-linux;
-    modules = [
-      ./nixos/images/kexec.nix
-      { nixpkgs.overlays = [ nur.overlay ]; }
-    ];
-    format = "kexec";
-  };
-  packages.x86_64-linux.kexec-aarch64 = nixos-generators.nixosGenerate {
-    pkgs = nixpkgs.legacyPackages.aarch64-linux;
-    modules = [
-      ./nixos/images/kexec.nix
-      { nixpkgs.overlays = [ nur.overlay ]; }
-    ];
-    format = "kexec";
-  };
+    # nix build '.#kexec' --impure
+    packages.x86_64-linux.kexec = nixos-generators.nixosGenerate {
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      modules = [
+        ./nixos/images/kexec.nix
+        { nixpkgs.overlays = [ nur.overlay ]; }
+      ];
+      format = "kexec";
+    };
+    packages.x86_64-linux.kexec-aarch64 = nixos-generators.nixosGenerate {
+      pkgs = nixpkgs.legacyPackages.aarch64-linux;
+      modules = [
+        ./nixos/images/kexec.nix
+        { nixpkgs.overlays = [ nur.overlay ]; }
+      ];
+      format = "kexec";
+    };
 
-  hmConfigurations = import ./nixpkgs-config/homes.nix {
-    inherit self nixpkgs home-manager nur doom-emacs emacs-overlay;
-  };
+    hmConfigurations = import ./nixpkgs-config/homes.nix inputs;
 
-  hydraJobs = (nixpkgs.lib.mapAttrs' (name: config: nixpkgs.lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel) self.nixosConfigurations)
-              // (nixpkgs.lib.mapAttrs' (name: config: nixpkgs.lib.nameValuePair "home-manager-${name}" config.activation-script) self.hmConfigurations);
+    hydraJobs = (nixpkgs.lib.mapAttrs' (name: config: nixpkgs.lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel) self.nixosConfigurations)
+                // (nixpkgs.lib.mapAttrs' (name: config: nixpkgs.lib.nameValuePair "home-manager-${name}" config.activation-script) self.hmConfigurations);
 }

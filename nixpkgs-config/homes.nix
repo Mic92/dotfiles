@@ -1,7 +1,16 @@
-{ self, nixpkgs, home-manager, nur, doom-emacs, emacs-overlay }:
+{ self
+, nixpkgs
+, home-manager
+, nur
+, doom-emacs
+, emacs-overlay
+, ...
+}:
 
 let
-  hmConfiguration = { extraModules ? [ ], system ? "x86_64-linux" }:
+  hmConfiguration = { extraModules ? [ ]
+                    , system ? "x86_64-linux"
+                    }:
     (home-manager.lib.homeManagerConfiguration {
       configuration = { ... }: {
         imports = extraModules ++ [
