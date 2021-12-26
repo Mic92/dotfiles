@@ -260,6 +260,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-systemd": {
+      "locked": {
+        "lastModified": 1640434753,
+        "narHash": "sha256-wOQSl09Pej8WD6CBqourmsKqHS3K40S9X1hP36FpXD0=",
+        "owner": "andir",
+        "repo": "nixpkgs",
+        "rev": "948d6206decf2a816ba054e93fb58fecdafc8a78",
+        "type": "github"
+      },
+      "original": {
+        "owner": "andir",
+        "ref": "systemd-250",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "not-os": {
       "flake": false,
       "locked": {
@@ -321,6 +337,7 @@
         "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-systemd": "nixpkgs-systemd",
         "nur": "nur",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",

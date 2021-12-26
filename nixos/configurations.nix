@@ -1,5 +1,6 @@
 { self
 , nixpkgs
+, nixpkgs-systemd
 , nur
 , home-manager
 , sops-nix
@@ -56,6 +57,11 @@ in
     system = "x86_64-linux";
     modules = defaultModules ++ [
       ./turingmachine/configuration.nix
+      ({ pkgs, ... }: {
+        systemd.package = (import nixpkgs-systemd {
+          inherit (pkgs) system;
+        }).systemd;
+      })
       nixos-hardware.nixosModules.lenovo-thinkpad-x13
       nixos-hardware.nixosModules.dell-xps-13-9380
       inputs.nix-ld.nixosModules.nix-ld
