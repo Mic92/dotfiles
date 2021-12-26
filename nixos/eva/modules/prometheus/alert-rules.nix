@@ -243,6 +243,11 @@ lib.mapAttrsToList
       description = "{{$labels.instance}} reports: zpool {{$labels.name}} has {{$value}} errors.";
     };
 
+    mdraid_degraded_disks = {
+      condition = "mdstat_degraded_disks > 0";
+      description = "{{$labels.instance}}: raid {{$labels.dev}} has failed disks.";
+    };
+
     # ignore devices that disabled S.M.A.R.T (example if attached via USB)
     smart_errors = {
       condition = ''smart_device_health_ok{enabled!="Disabled"} != 1'';
