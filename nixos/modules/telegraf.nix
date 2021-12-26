@@ -25,12 +25,6 @@ in
     };
   };
 
-#          ${lib.concatMapStringsSep "\n"
-#    (address: ''
-#        ${address}   REJECT Get lost - you're lying about who you are
-#        '')
-
-
   services.telegraf = {
     enable = true;
     extraConfig = {
