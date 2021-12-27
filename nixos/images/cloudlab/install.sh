@@ -41,8 +41,6 @@ done
 mkdir -p /mnt
 mount /dev/disk/by-label/NIXOS_ROOT /mnt
 
-install -m700 -D /etc/ssh/ssh_host_ed25519_key /mnt/etc/ssh/ssh_host_ed25519_key
-install -m700 -D /etc/ssh/ssh_host_rsa_key /mnt/etc/ssh/ssh_host_rsa_key
 nix shell "nixpkgs#git" -c nixos-install --no-root-passwd --flake "$flake"
 nixos-enter -c 'p=$(readlink -f /nix/var/nix/profiles/system); kexec --load $p/kernel --initrd $p/initrd --append="$(cat $p/kernel-params) init=$p/init)'
 kexec -e

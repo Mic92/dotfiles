@@ -50,6 +50,29 @@ def deploy(c):
 
 
 @task
+def deploy_k3s(c):
+    """
+    Deploy k3s cluster to cloudlab
+    """
+    deploy_nixos(
+        [
+            DeployHost(
+                "node0.NixOS-cluster2.Serverless-tum.emulab.net",
+                meta=dict(flake_attr="cloudlab-k3s-server"),
+            ),
+            DeployHost(
+                "node1.NixOS-cluster2.Serverless-tum.emulab.net",
+                meta=dict(flake_attr="cloudlab-k3s-agent"),
+            ),
+            DeployHost(
+                "node2.NixOS-cluster2.Serverless-tum.emulab.net",
+                meta=dict(flake_attr="cloudlab-k3s-agent"),
+            ),
+        ]
+    )
+
+
+@task
 def deploy_bernie(c):
     """
     Deploy to bernie
@@ -157,10 +180,7 @@ def kexec_nixos(c, hosts=""):
         wait_for_port(h.host, h.port)
 
         url = "https://boot.thalheim.io/kexec-image-$(uname -m).tar.xz"
-        h.run(
-            f"(wget {url} -qO- || curl {url}) | tar -C / -xJf -",
-            become_root=True
-        )
+        h.run(f"(wget {url} -qO- || curl {url}) | tar -C / -xJf -", become_root=True)
         h.run(f"/kexec_nixos", become_root=True)
 
         print(f"Wait for {h.host} to start", end="")
@@ -180,7 +200,8 @@ def cloudlab_install(c, disk="/dev/sda", hosts=""):
             f"rsync --exclude='.git/' -aF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
         )
         h.run(f"/etc/nixos/nixos/images/cloudlab/install.sh /etc/nixos#cloudlab-node")
-    g = parse_hosts(hosts, host_key_check=HostKeyCheck.TOFU)
+
+    g = parse_hosts(hosts, host_key_check=HostKeyCheck.NONE)
     g.run_function(install)
 
 

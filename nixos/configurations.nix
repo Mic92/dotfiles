@@ -98,12 +98,28 @@ in
       ./eva/configuration.nix
     ];
   };
-
+} // (let
+  cloudlabModules = [
+    miniond.nixosModule
+    ./cloudlab/node.nix
+  ];
+in {
   cloudlab-node = nixosSystem {
     system = "x86_64-linux";
-    modules = [
-      miniond.nixosModule
-      ./cloudlab-node.nix
+    modules = cloudlabModules;
+  };
+
+  cloudlab-k3s-server = nixosSystem {
+    system = "x86_64-linux";
+    modules = cloudlabModules ++ [
+      ./modules/k3s/server.nix
     ];
   };
-}
+
+  cloudlab-k3s-agent = nixosSystem {
+    system = "x86_64-linux";
+    modules = cloudlabModules ++ [
+      ./modules/k3s/agent.nix
+    ];
+  };
+})
