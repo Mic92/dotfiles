@@ -2,6 +2,9 @@
   hardware.emulab.enable = true;
   documentation.enable = false;
 
+  systemd.services.miniond.serviceConfig.Restart = "on-failure";
+  systemd.services.miniond.serviceConfig.RestartSec = 2;
+
   imports = [
     ./sshd.nix
   ];

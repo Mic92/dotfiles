@@ -179,10 +179,7 @@ def cloudlab_install(c, disk="/dev/sda", hosts=""):
         h.run_local(
             f"rsync --exclude='.git/' -aF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
         )
-        h.run("install -m700 -D /etc/ssh/ssh_host_ed25519_key /mnt/etc/ssh/ssh_host_ed25519_key")
-        h.run("install -m700 -D /etc/ssh/ssh_host_rsa_key /mnt/etc/ssh/ssh_host_rsa_key")
-        h.run(f"/etc/nixos/nixos/images/cloudlab/install.sh {disk}")
-        h.run('nix shell "nixpkgs#git" -c nixos-install --no-root-passwd --flake /etc/nixos#cloudlab-node && reboot')
+        h.run(f"/etc/nixos/nixos/images/cloudlab/install.sh /etc/nixos#cloudlab-node")
     g = parse_hosts(hosts, host_key_check=HostKeyCheck.TOFU)
     g.run_function(install)
 

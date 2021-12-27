@@ -1,8 +1,21 @@
-#!/usr/bin/env bash
+#!/usr/bin/env nix-shell
+#!nix-shell -p e2fsprogs -p bash -p jq -p util-linux -p coreutils -i bash
 
 set -eux -o pipefail
 
-rootDevice=$1
+flake=$1
+
+rootDevice=
+for dev in /dev/sd* /dev/nvme*; do
+  if [[ $(sfdisk --dump --json $dev | jq '.partitiontable.partitions[0].bootable') == true ]]; then
+    rootDevice=$dev
+    break
+  fi
+done
+
+if [[ -z $rootDevice ]]; then
+  echo "no bootable partition found"
+fi
 
 sfdisk "$rootDevice" <<EOF
 label: mbr
@@ -30,4 +43,6 @@ mount /dev/disk/by-label/NIXOS_ROOT /mnt
 
 install -m700 -D /etc/ssh/ssh_host_ed25519_key /mnt/etc/ssh/ssh_host_ed25519_key
 install -m700 -D /etc/ssh/ssh_host_rsa_key /mnt/etc/ssh/ssh_host_rsa_key
-nix shell "nixpkgs#git" -c nixos-install --no-root-passwd --flake '/etc/nixos#cloudlab-node'
+nix shell "nixpkgs#git" -c nixos-install --no-root-passwd --flake "$flake"
+nixos-enter -c 'p=$(readlink -f /nix/var/nix/profiles/system); kexec --load $p/kernel --initrd $p/initrd --append="$(cat $p/kernel-params) init=$p/init)'
+kexec -e
