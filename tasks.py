@@ -4,7 +4,7 @@ from invoke import task
 
 import sys
 from typing import List
-from deploy_nixos import DeployHost, DeployGroup
+from deploy_nixos import DeployHost, DeployGroup, parse_hosts, HostKeyCheck
 
 
 def deploy_nixos(hosts: List[DeployHost]) -> None:
@@ -144,20 +144,6 @@ def wait_for_reboot(h: DeployHost):
     print("")
 
 
-def parse_hosts(hosts: str) -> DeployGroup:
-    deploy_hosts = []
-    for h in hosts.split(","):
-        parts = h.split("@")
-        if len(parts) > 1:
-            user = parts[0]
-            hostname = parts[1]
-        else:
-            user = "root"
-            hostname = parts[0]
-        deploy_hosts.append(DeployHost(hostname, user=user))
-    return DeployGroup(deploy_hosts)
-
-
 @task
 def kexec_nixos(c, hosts=""):
     """
@@ -172,29 +158,32 @@ def kexec_nixos(c, hosts=""):
 
         url = "https://boot.thalheim.io/kexec-image-$(uname -m).tar.xz"
         h.run(
-            f"if command -v sudo; then maybesudo=sudo; fi; (wget {url} -qO- || curl {url}) | $maybesudo tar -C / -xJf -"
+            f"(wget {url} -qO- || curl {url}) | tar -C / -xJf -",
+            become_root=True
         )
-        h.run(f"nohup /kexec_nixos & exit", become_root=True)
+        h.run(f"/kexec_nixos", become_root=True)
 
         print(f"Wait for {h.host} to start", end="")
         sys.stdout.flush()
         wait_for_port(h.host, h.port)
         print("")
 
-    g = parse_hosts(hosts)
+    # avoid importing temporary ssh keys
+    g = parse_hosts(hosts, host_key_check=HostKeyCheck.NONE)
     g.run_function(kexec)
 
 
-# still WIP!
 @task
-def nixos_install(c, disk="/dev/nvme0n1", hosts=""):
+def cloudlab_install(c, disk="/dev/sda", hosts=""):
     def install(h: DeployHost) -> None:
         h.run_local(
-            f"rsync --exclude='.git/' -vaF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
+            f"rsync --exclude='.git/' -aF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
         )
-        h.run(f"/etc/nixos/nixos/images/install.sh {disk}")
-        h.run('nix shell "nixpkgs#git" -c nixos-install --no-root-passwd --flake /etc/nixos')
-    g = parse_hosts(hosts)
+        h.run("install -m700 -D /etc/ssh/ssh_host_ed25519_key /mnt/etc/ssh/ssh_host_ed25519_key")
+        h.run("install -m700 -D /etc/ssh/ssh_host_rsa_key /mnt/etc/ssh/ssh_host_rsa_key")
+        h.run(f"/etc/nixos/nixos/images/cloudlab/install.sh {disk}")
+        h.run('nix shell "nixpkgs#git" -c nixos-install --no-root-passwd --flake /etc/nixos#cloudlab-node && reboot')
+    g = parse_hosts(hosts, host_key_check=HostKeyCheck.TOFU)
     g.run_function(install)
 
 
