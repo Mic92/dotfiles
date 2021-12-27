@@ -122,7 +122,7 @@ lib.mapAttrsToList
     };
 
     systemd_service_failed = {
-      condition = ''systemd_units_active_code{name!~"nixpkgs-update-.*.service"} == 3'';
+      condition = ''systemd_units_active_code == 3'';
       description = "{{$labels.host}} failed to (re)start service {{$labels.name}}.";
     };
 
