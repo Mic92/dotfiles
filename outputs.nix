@@ -17,10 +17,6 @@
     devShell = pkgs.callPackage ./shell.nix {
       inherit (sops-nix.packages.${pkgs.system}) sops-import-keys-hook;
     };
-    apps.irc-announce = {
-      type = "app";
-      path = "${nurPkgs.repos.mic92.irc-announce}/bin/irc-announce";
-    };
 
     apps.hm-build = {
       type = "app";

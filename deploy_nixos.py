@@ -2,6 +2,7 @@
 
 import os
 from contextlib import contextmanager
+from shlex import quote
 from typing import List, Dict, Tuple, IO, Iterator, Optional, Callable, Any, Union, Text
 from threading import Thread
 import subprocess
@@ -141,8 +142,11 @@ class DeployHost:
         return self._run([cmd], shell=True, stdout=stdout, stderr=stderr)
 
     def run(
-        self, cmd: str, stdout: FILE = None, stderr: FILE = None
+            self, cmd: str, stdout: FILE = None, stderr: FILE = None, become_root: bool = False
     ) -> subprocess.CompletedProcess:
+        sudo = ""
+        if become_root and self.user != "root":
+            sudo = "sudo"
         print(f"[{self.command_prefix}] {cmd}")
         ssh_opts = ["-A"] if self.forward_agent else []
 
@@ -154,7 +158,7 @@ class DeployHost:
         ssh_cmd = (
             ["ssh", f"{self.user}@{self.host}", "-p", str(self.port)]
             + ssh_opts
-            + ["--", cmd]
+            + ["--", f"{sudo} bash -c {quote(cmd)}"]
         )
         return self._run(ssh_cmd, shell=False, stdout=stdout, stderr=stderr)
 

@@ -23,9 +23,7 @@
     notify = [{
       name = "irc_flix";
       platform = "command_line";
-      command = ''
-        ${pkgs.nur.repos.mic92.irc-announce}/bin/irc-announce irc.r 6667 transmission '#flix' 0 "$(cat)"
-      '';
+      command = ''${pkgs.nur.repos.mic92.ircsink}/bin/ircsink --server=irc.r --nick=transmission --target="#flix"'';
     }];
   };
 }
