@@ -4,6 +4,7 @@ from invoke import task
 
 import sys
 from typing import List
+import subprocess
 from deploy_nixos import DeployHost, DeployGroup, parse_hosts, HostKeyCheck
 
 
@@ -57,17 +58,21 @@ def deploy_k3s(c):
     deploy_nixos(
         [
             DeployHost(
-                "node0.NixOS-cluster2.Serverless-tum.emulab.net",
+                "node0.NixOS.Serverless-tum.emulab.net",
                 meta=dict(flake_attr="cloudlab-k3s-server"),
             ),
-            DeployHost(
-                "node1.NixOS-cluster2.Serverless-tum.emulab.net",
-                meta=dict(flake_attr="cloudlab-k3s-agent"),
-            ),
-            DeployHost(
-                "node2.NixOS-cluster2.Serverless-tum.emulab.net",
-                meta=dict(flake_attr="cloudlab-k3s-agent"),
-            ),
+            #DeployHost(
+            #    "node0.NixOS-cluster2.Serverless-tum.emulab.net",
+            #    meta=dict(flake_attr="cloudlab-k3s-server"),
+            #),
+            #DeployHost(
+            #    "node1.NixOS-cluster2.Serverless-tum.emulab.net",
+            #    meta=dict(flake_attr="cloudlab-k3s-agent"),
+            #),
+            #DeployHost(
+            #    "node2.NixOS-cluster2.Serverless-tum.emulab.net",
+            #    meta=dict(flake_attr="cloudlab-k3s-agent"),
+            #),
         ]
     )
 
@@ -199,6 +204,10 @@ def cloudlab_install(c, disk="/dev/sda", hosts=""):
         h.run_local(
             f"rsync --exclude='.git/' -aF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
         )
+        out = h.run_local("""
+        sops -d --extract '["cloudlab-age"]' ./nixos/secrets/admins/sops-keys.yaml
+        """, stdout=subprocess.PIPE)
+        h.run(f"mkdir -p /mnt/var/lib/sops-nix/ && echo '{out.stdout}' > /mnt/var/lib/sops-nix/key.txt")
         h.run(f"/etc/nixos/nixos/images/cloudlab/install.sh /etc/nixos#cloudlab-node")
 
     g = parse_hosts(hosts, host_key_check=HostKeyCheck.NONE)

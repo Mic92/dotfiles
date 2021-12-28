@@ -17,30 +17,34 @@ if [[ -z $rootDevice ]]; then
   echo "no bootable partition found"
 fi
 
-sfdisk "$rootDevice" <<EOF
-label: mbr
-device: $rootDevice
-unit: sectors
-1 : start=2048, type=L, bootable
+if [[ ! -e /dev/disk/by-label/NIXOS_ROOT ]]; then
+  sfdisk "$rootDevice" <<EOF
+  label: mbr
+  device: $rootDevice
+  unit: sectors
+  1 : start=2048, type=L, bootable
 EOF
 
-if [[ "$rootDevice" == /dev/nvme* ]]; then
-  x=p
-else
-  x=
+  if [[ "$rootDevice" == /dev/nvme* ]]; then
+    x=p
+  else
+    x=
+  fi
+
+  fdisk -l
+  mkfs.ext4 "$rootDevice${x}1" -L NIXOS_ROOT
+
+  echo "wait for disk to appear"
+  while [[ ! -e /dev/disk/by-label/NIXOS_ROOT ]]; do
+    sleep 1
+  done
 fi
 
-fdisk -l
-mkfs.ext4 "$rootDevice${x}1" -L NIXOS_ROOT
-
-echo "wait for disk to appear"
-while [[ ! -e /dev/disk/by-label/NIXOS_ROOT ]]; do
-  sleep 1
-done
-
 mkdir -p /mnt
-mount /dev/disk/by-label/NIXOS_ROOT /mnt
-
+if ! mountpoint /mnt; then
+  mount /dev/disk/by-label/NIXOS_ROOT /mnt
+fi
+set -x
 nix shell "nixpkgs#git" -c nixos-install --no-root-passwd --flake "$flake"
-nixos-enter -c 'p=$(readlink -f /nix/var/nix/profiles/system); kexec --load $p/kernel --initrd $p/initrd --append="$(cat $p/kernel-params) init=$p/init)'
-kexec -e
+#nixos-enter -c 'p=$(readlink -f /nix/var/nix/profiles/system); kexec --load $p/kernel --initrd $p/initrd --append="$(cat $p/kernel-params) init=$p/init)"'
+#kexec -e

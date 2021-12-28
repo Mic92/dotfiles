@@ -102,6 +102,7 @@ in
   cloudlabModules = [
     miniond.nixosModule
     ./cloudlab/node.nix
+    sops-nix.nixosModules.sops
   ];
 in {
   cloudlab-node = nixosSystem {
