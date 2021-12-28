@@ -8,6 +8,7 @@ keys:
   - &eddie CC48DB9AC67E71DA343B47D594933BDDF739BEB3
   - &rock F139840C191C75322AC3D4516BE2046130150E21
   - &bernie 6be0cdb876ff7fcb2e0721bcd05c8bd9edd15816
+  - &cloudlab-age age1frtpu0fyht97cl4xv6rz2ga6euxz9xez8suggxlffxl3cre8rcfsnv8cqk
 creation_rules:
   - path_regex: secrets/admins/[^/]+\.yaml$
     key_groups:
@@ -20,6 +21,11 @@ creation_rules:
       - *eva
       pgp:
       - *eve
+  - path_regex: cloudlab/secrets/[^/]+\.yaml$
+    key_groups:
+    - age:
+      - *joerg
+      - *cloudlab-age
   # https://github.com/carlpett/terraform-provider-sops does not support age keys yet
   - path_regex: eve/modules/gitlab/[^/]+\.enc.json$
     key_groups:
