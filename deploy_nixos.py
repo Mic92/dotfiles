@@ -146,6 +146,7 @@ def parse_hosts(
     hosts: str,
     host_key_check: HostKeyCheck = HostKeyCheck.STRICT,
     forward_agent: bool = False,
+    domain_suffix: str = "",
 ) -> DeployGroup:
     deploy_hosts = []
     for h in hosts.split(","):
@@ -158,7 +159,7 @@ def parse_hosts(
             hostname = parts[0]
         deploy_hosts.append(
             DeployHost(
-                hostname, user=user, host_key_check=host_key_check, forward_agent=False
+                hostname + domain_suffix, user=user, host_key_check=host_key_check, forward_agent=False
             )
         )
     return DeployGroup(deploy_hosts)
