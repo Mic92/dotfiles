@@ -46,5 +46,6 @@ if ! mountpoint /mnt; then
 fi
 set -x
 nix shell "nixpkgs#git" -c nixos-install --no-root-passwd --flake "$flake"
+reboot
 #nixos-enter -c 'p=$(readlink -f /nix/var/nix/profiles/system); kexec --load $p/kernel --initrd $p/initrd --append="$(cat $p/kernel-params) init=$p/init)"'
 #kexec -e
