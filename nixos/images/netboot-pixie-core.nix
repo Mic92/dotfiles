@@ -4,7 +4,7 @@
 
 # 1. Enable nixos/modules/dnsmasq.nix
 # $ iptables -F
-# $ sudo $(nix-build ./netboot-pixie-core.nix)
+#   $ sudo $(nix-build ./netboot-pixie-core.nix)
 # TODO: enable getty@ttyS0 for ipmi
 pkgs.writeShellScript "netboot-pixie-core" ''
   set -euo pipefail

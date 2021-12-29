@@ -3,8 +3,6 @@
 
 set -eux -o pipefail
 
-flake=$1
-
 rootDevice=
 for dev in /dev/sd* /dev/nvme*; do
   if [[ $(sfdisk --dump --json $dev | jq '.partitiontable.partitions[0].bootable') == true ]]; then
@@ -44,8 +42,3 @@ mkdir -p /mnt
 if ! mountpoint /mnt; then
   mount /dev/disk/by-label/NIXOS_ROOT /mnt
 fi
-set -x
-nix shell "nixpkgs#git" -c nixos-install --no-root-passwd --flake "$flake"
-reboot
-#nixos-enter -c 'p=$(readlink -f /nix/var/nix/profiles/system); kexec --load $p/kernel --initrd $p/initrd --append="$(cat $p/kernel-params) init=$p/init)"'
-#kexec -e

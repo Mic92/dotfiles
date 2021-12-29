@@ -65,12 +65,24 @@ def deploy_k3s(c):
                 "node1.nixos-cluster.Serverless-tum.emulab.net",
                 meta=dict(flake_attr="cloudlab-k3s-agent"),
             ),
-            DeployHost(
-                "node2.nixos-cluster.Serverless-tum.emulab.net",
-                meta=dict(flake_attr="cloudlab-k3s-agent"),
-            ),
+            # DeployHost(
+            #    "node2.nixos-cluster.Serverless-tum.emulab.net",
+            #    meta=dict(flake_attr="cloudlab-k3s-agent"),
+            # ),
         ]
     )
+
+
+@task
+def deploy_rc3(c):
+    """
+    Deploy k3s cluster to cloudlab
+    """
+    h = DeployHost("node0.nixos-1.Serverless-tum.emulab.net")
+    h.run_local(
+        f"rsync --exclude='.git/' -vaF --delete -e ssh ./nixos/rc3/ {h.user}@{h.host}:/etc/nixos",
+    )
+    h.run(f"nixos-rebuild switch --flake /etc/nixos#nixos")
 
 
 @task
@@ -195,16 +207,67 @@ def kexec_nixos(c, hosts=""):
 
 
 @task
+def rc3_install(c, hosts=""):
+    def install(h: DeployHost) -> None:
+        ssh_cmd = "ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null"
+        h.run_local(
+            f"rsync --exclude='.git/' --exclude='.mypy_cache' -aF --delete -e '{ssh_cmd}' nixos/rc3/ {h.user}@{h.host}:/etc/nixos",
+        )
+        h.run(f"/etc/nixos/partition.sh")
+        h.run(f"mkdir -p /mnt/etc && cp -r /etc/nixos /mnt/etc/")
+
+        h.run(
+            f"""
+        nixos-install --no-root-passwd --flake "/mnt/etc/nixos#nixos" && reboot
+        """
+        )
+        wait_for_reboot(h)
+
+    g = parse_hosts(hosts, host_key_check=HostKeyCheck.NONE)
+    g.run_function(install)
+
+
+@task
+def add_github_user(c, hosts="", github_user="Mic92"):
+    def add_user(h: DeployHost) -> None:
+        h.run(f"mkdir -m700 /root/.ssh")
+        out = h.run_local(
+            f"curl https://github.com/{github_user}.keys", stdout=subprocess.PIPE
+        )
+        h.run(f"echo '{out.stdout}' >> /root/.ssh/authorized_keys && chmod 700 /root/.ssh/authorized_keys")
+
+    g = parse_hosts(hosts, host_key_check=HostKeyCheck.NONE)
+    g.run_function(add_user)
+
+
+@task
 def cloudlab_install(c, disk="/dev/sda", hosts=""):
     def install(h: DeployHost) -> None:
+        ssh_cmd = "ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null"
         h.run_local(
-            f"rsync --exclude='.git/' -aF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
+            f"rsync --exclude='.git/' --exclude='.mypy_cache' -aF --delete -e '{ssh_cmd}' . {h.user}@{h.host}:/etc/nixos",
         )
-        out = h.run_local("""
+        out = h.run_local(
+            """
         sops -d --extract '["cloudlab-age"]' ./nixos/secrets/admins/sops-keys.yaml
-        """, stdout=subprocess.PIPE)
-        h.run(f"mkdir -p /mnt/var/lib/sops-nix/ && echo '{out.stdout}' > /mnt/var/lib/sops-nix/key.txt")
-        h.run(f"/etc/nixos/nixos/images/cloudlab/install.sh /etc/nixos#cloudlab-node")
+        """,
+            stdout=subprocess.PIPE,
+        )
+        h.run(f"/etc/nixos/nixos/images/cloudlab/partition.sh")
+
+        h.run(f"mkdir -p /mnt/var/lib/sops-nix")
+        h.run(f"echo '{out.stdout}' > /mnt/var/lib/sops-nix/key.txt")
+        h.run(f"chmod 400 /mnt/var/lib/sops-nix/key.txt")
+
+        h.run(f"mkdir -p /mnt/etc && cp -r /etc/nixos /mnt/etc/")
+
+        h.run(
+            f"""
+        nix shell "nixpkgs#git" -c nixos-install --no-root-passwd --flake "/mnt/etc/nixos#cloudlab-node" && reboot
+        """
+        )
+
+        wait_for_reboot(h)
 
     g = parse_hosts(hosts, host_key_check=HostKeyCheck.NONE)
     g.run_function(install)
