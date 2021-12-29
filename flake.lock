@@ -458,16 +458,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1638786948,
-        "narHash": "sha256-BywPstHKdyEVnkn9caO55D1UdxXEvo/5IEWa8TcGp/Y=",
+        "lastModified": 1638821683,
+        "narHash": "sha256-oyqALhGijy2ZQxFSACrcC+Z8MzYLiomKCr9FQXVZ47U=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "ed13a34e0688bf0d6e0c63dbaee84cde65882511",
+        "rev": "afe00100b16648c1d79e62926caacac561df93a5",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
-        "ref": "feat/mount-secrets-readonly2",
+        "ref": "improve-default-ssh",
         "repo": "sops-nix",
         "type": "github"
       }
