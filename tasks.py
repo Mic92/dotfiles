@@ -74,18 +74,6 @@ def deploy_k3s(c):
 
 
 @task
-def deploy_rc3(c):
-    """
-    Deploy k3s cluster to cloudlab
-    """
-    h = DeployHost("node0.nixos-1.Serverless-tum.emulab.net")
-    h.run_local(
-        f"rsync --exclude='.git/' -vaF --delete -e ssh ./nixos/rc3/ {h.user}@{h.host}:/etc/nixos",
-    )
-    h.run(f"nixos-rebuild switch --flake /etc/nixos#nixos")
-
-
-@task
 def deploy_bernie(c):
     """
     Deploy to bernie
@@ -204,27 +192,6 @@ def kexec_nixos(c, hosts=""):
     # avoid importing temporary ssh keys
     g = parse_hosts(hosts, host_key_check=HostKeyCheck.NONE)
     g.run_function(kexec)
-
-
-@task
-def rc3_install(c, hosts=""):
-    def install(h: DeployHost) -> None:
-        ssh_cmd = "ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null"
-        h.run_local(
-            f"rsync --exclude='.git/' --exclude='.mypy_cache' -aF --delete -e '{ssh_cmd}' nixos/rc3/ {h.user}@{h.host}:/etc/nixos",
-        )
-        h.run(f"/etc/nixos/partition.sh")
-        h.run(f"mkdir -p /mnt/etc && cp -r /etc/nixos /mnt/etc/")
-
-        h.run(
-            f"""
-        nixos-install --no-root-passwd --flake "/mnt/etc/nixos#nixos" && reboot
-        """
-        )
-        wait_for_reboot(h)
-
-    g = parse_hosts(hosts, host_key_check=HostKeyCheck.NONE)
-    g.run_function(install)
 
 
 @task
