@@ -613,6 +613,9 @@ chpwd() { ls; }
 mkcd() { mkdir -p "$1" && cd "$1"; }
 # make cd accept files
 cd() {
+  if [[ "$1" == "--" ]]; then
+    shift
+  fi
   local to="${1:-$HOME}"
   if [[ -f "$to" ]]; then
     to="$(dirname $to)"
