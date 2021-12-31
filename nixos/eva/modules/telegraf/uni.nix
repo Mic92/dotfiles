@@ -4,7 +4,7 @@ let
   urls = [
     # university
     "rose.r"
-    "grandalf.r"
+    #"grandalf.r"
     "martha.r"
     "donna.r"
     "amy.r"

@@ -68,7 +68,7 @@ in
               "amy.r:9273"
               "clara.r:9273"
               #"doctor.r:9273"
-              "grandalf.r:9273"
+              #"grandalf.r:9273"
               "sauron.r:9273"
               "bill.r:9273"
               "nardole.r:9273"
