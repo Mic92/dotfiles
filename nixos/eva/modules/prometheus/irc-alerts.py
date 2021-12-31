@@ -2,6 +2,7 @@
 
 import socket
 import os
+import re
 import sys
 import cgi
 import json
@@ -11,7 +12,7 @@ from http.server import BaseHTTPRequestHandler
 from typing import Tuple, Optional, List
 from urllib.parse import urlparse
 
-DEBUG = False
+DEBUG = os.environ.get("DEBUG") is not None
 
 
 def _irc_send(
@@ -39,15 +40,26 @@ def _irc_send(
             print(command)
         return sock.send((f"{command}\r\n").encode())
 
+    def _pong(ping: str):
+        if ping.startswith("PING"):
+            sock.send(ping.replace("PONG"))
+
+    recv_file = sock.makefile(mode="r")
+
     print(f"connect {server}:{port}")
     sock.connect((server, port))
     if server_password:
         _send(f"PASS {server_password}")
+    _send(f"USER {nick} 0 * :{nick}")
+    _send(f"NICK {nick}")
+    for line in recv_file.readline():
+        if re.match(r"^:[^ ]* (MODE|221|376|422) ", line):
+            break
+        else:
+            _pong(line)
+
     if sasl_password:
         _send("CAP REQ :sasl")
-    _send(f"NICK {nick}")
-    _send(f"USER {nick} {server} bla :{nick}")
-    if sasl_password:
         _send("AUTHENTICATE PLAIN")
         auth = base64.encodebytes(f"{nick}\0{nick}\0{sasl_password}".encode("utf8"))
         _send(f"AUTHENTICATE {auth.decode('ascii')}")
@@ -58,20 +70,14 @@ def _irc_send(
         _send(f"PRIVMSG {channel} :{m}")
 
     _send("INFO")
-
-    while True:
-        data = sock.recv(4096)
-        if not data:
-            raise RuntimeError("Received empty data")
-
+    for line in recv_file:
         if DEBUG:
-            print(data.decode("utf8"))
+            print(line, end="")
         # Assume INFO reply means we are done
-        if b"End of /INFO list" in data:
+        if "End of /INFO" in line:
             break
-
-        if data.startswith(b"PING"):
-            sock.send(data.replace(b"PING", b"PONG"))
+        else:
+            _pong(line)
 
     sock.send(b"QUIT")
     print("disconnect")
@@ -189,4 +195,8 @@ def systemd_socket_response() -> None:
 
 
 if __name__ == "__main__":
-    systemd_socket_response()
+    if len(sys.argv) == 3:
+        print(f"{sys.argv[1]} {sys.argv[2]}")
+        irc_send(sys.argv[1], [sys.argv[2]])
+    else:
+        systemd_socket_response()
