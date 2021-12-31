@@ -39,7 +39,7 @@
     nur.url = "github:nix-community/NUR";
     # for development
     #sops-nix.url = "/home/joerg/git/sops-nix";
-    sops-nix.url = "github:Mic92/sops-nix/improve-default-ssh";
+    sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     bme680-mqtt.url = "github:Mic92/bme680-mqtt";
