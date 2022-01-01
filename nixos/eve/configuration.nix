@@ -54,6 +54,7 @@
     ./modules/teamspeak.nix
     ./modules/telegraf.nix
     ./modules/tt-rss.nix
+    ./modules/tts.nix
     ./modules/users.nix
     #./modules/wiregrill
 

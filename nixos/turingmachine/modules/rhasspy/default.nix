@@ -17,15 +17,4 @@
       "XDG_RUNTIME_DIR=/run/user/1000"
     ];
   };
-
-  systemd.services.tts = {
-    after = [ "network.target" ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      ExecStart = ''
-        ${pkgs.tts}/bin/tts-server --model_name tts_models/en/ljspeech/tacotron2-DDC --vocoder_name vocoder_models/en/ljspeech/hifigan_v2
-      '';
-      User = "joerg";
-    };
-  };
 }

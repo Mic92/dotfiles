@@ -19,6 +19,8 @@
       config.listen = lib.mkDefault [
         { addr = "0.0.0.0"; port = 443; ssl = true; }
         { addr = "[::1]"; port = 443; ssl = true; }
+        { addr = "[42:0:3c46:70c7:8526:2adf:7451:8bbb]"; port = 80; }
+        { addr = "[42:0:3c46:70c7:8526:2adf:7451:8bbb]"; port = 443; ssl = true; }
         { addr = "[2a01:4f8:10b:49f::1]"; port = 443; ssl = true; }
         { addr = "0.0.0.0"; port = 80; ssl = false; }
         { addr = "[2a01:4f8:10b:49f::1]"; port = 80; ssl = false; }
