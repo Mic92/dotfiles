@@ -212,6 +212,12 @@ in
         response_string_match = "Jörg Thalheim";
       }
       {
+        urls = [ "http://tts.r" ];
+        tags.host = "eve";
+        tags.org = "private";
+        response_string_match = "TTS";
+      }
+      {
         urls = [ "http://loki.r/ready" ];
         tags.host = "rock";
         tags.org = "private";
