@@ -11,7 +11,7 @@
   };
 
   # TODO
-  #security.acme.certs."tts.r".server = config.retiolum.ca.acmeURL;
+  security.acme.certs."tts.r".server = config.retiolum.ca.acmeURL;
 
   services.nginx = {
     upstreams = {
@@ -19,8 +19,8 @@
     };
     virtualHosts."tts.r" = {
       # TODO
-      #enableACME = true;
-      #addSSL = true;
+      enableACME = true;
+      addSSL = true;
       locations."/".extraConfig = ''
         proxy_pass       http://@tts/;
         proxy_set_header Host $host;
