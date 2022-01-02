@@ -335,6 +335,7 @@ xalias objdump='objdump -M intel'
 alias wget='noglob wget'
 alias curl='noglob curl --proto-default https'
 alias nix='noglob nix'
+alias nixos-rebuild='noglob nixos-rebuild'
 if [[ -n ${commands[hub]} ]]; then
   alias git='noglob hub'
 else

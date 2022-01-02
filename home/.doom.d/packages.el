@@ -8,6 +8,7 @@
 (package! csharp-mode)
 (package! editorconfig)
 (package! vimrc-mode)
+(package! vala-mode)
 (package! coffee-mode)
 (package! languagetool)
 (package! meson-mode)

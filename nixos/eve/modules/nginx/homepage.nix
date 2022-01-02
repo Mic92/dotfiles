@@ -18,6 +18,8 @@
         tcp_nodelay on;
       '';
       extraConfig = ''
+        charset utf-8;
+        source_charset utf-8;
         # TODO
         #location /privat.html {
         #  auth_ldap "Forbidden";
