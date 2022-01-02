@@ -12,9 +12,12 @@ build-job:
       fi
     - |
       if [[ -n "$GITHUB_TOKEN" ]]; then
+        set -x
         meta=$(jq -cs '. | map({(.attr) : . })| add' < jobs)
         git -c "user.name=GitLab CI" -c "user.email=git@gitlab.com" tag -f "last-build" -m "last-build\n\n$meta"
         git push --force "https://Mic92:${GITHUB_TOKEN}@github.com/Mic92/${CI_PROJECT_NAME}.git" last-build
+      else
+        echo "no github token set"
       fi
   rules:
     - if: '$CI_COMMIT_REF_NAME != "last-build"'
