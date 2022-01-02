@@ -36,14 +36,15 @@
 
   systemd.services.update-prefetch = {
     startAt = "hourly";
-    path = [ config.nix.package pkgs.nettools pkgs.git ];
     script = ''
+      export PATH=${lib.makeBinPath (with pkgs; [ config.nix.package pkgs.nettools pkgs.git pkgs.jq pkgs.curl ])}
+      last_build=$(curl https://api.github.com/repos/Mic92/dotfiles/git/ref/tags/last-build | jq -r .object.sha)
       nix build \
        --out-link /run/next-system \
-       github:Mic92/dotfiles/last-build#nixosConfigurations.$(hostname).config.system.build.toplevel
+       github:Mic92/dotfiles/$last_build#nixosConfigurations.$(hostname).config.system.build.toplevel
 
       if [[ -x /home/joerg/.nix-profile/bin/home-manager ]]; then
-        nix run github:Mic92/dotfiles/last-build#hm-build --  --out-link /run/next-home
+        nix run github:Mic92/dotfiles/$last_build#hm-build --  --out-link /run/next-home
       fi
     '';
   };
