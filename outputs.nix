@@ -25,7 +25,10 @@
         set -eu -o pipefail
         export PATH=${pkgs.lib.makeBinPath [ pkgs.git pkgs.coreutils pkgs.nixFlakes pkgs.jq ]}
         declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie", ["grandalf"]="common-aarch64", ["yasmin"]="common-aarch64")
-        profile=''${profiles[$HOSTNAME]:-common}
+        profile=common
+        if [[ ''${profiles[$HOSTNAME]+x} != x ]]; then
+            profile=''${profiles[$HOSTNAME]}
+        fi
         flake=$(nix flake metadata --json ${self} | jq -r .url)
         set -x
         nix build --no-link --show-trace --json "${self}#hmConfigurations.''${profile}.activationPackage" "$@" | jq -r '.[] | .outputs | .out'
