@@ -568,6 +568,14 @@ retry() {
       sleep $sleep_time
   done
 }
+say() {
+  _say() { curl -sSG http://tts.r/api/tts --data-urlencode text@- | mpv --no-resume-playback -; }
+  if [[ "$#" -eq 0 ]]; then
+    _say
+  else
+    echo "$@" | _say
+  fi
+}
 own() {
   if [[ -n "${commands[sudo]}" ]]; then
     sudo chown -R "$USER:$(id -gn)" "$@"
