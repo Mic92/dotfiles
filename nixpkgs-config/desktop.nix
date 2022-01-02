@@ -82,6 +82,7 @@ in
     youtube-dl
     mumble
     ferdi
+    msmtp
 
     rbw
     isync
