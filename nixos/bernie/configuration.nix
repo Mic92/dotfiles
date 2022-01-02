@@ -54,6 +54,15 @@
   };
 
   environment.systemPackages = with pkgs; [
+    (pkgs.callPackage (pkgs.fetchFromGitHub {
+      owner = "Mic92";
+      repo = "tts-app";
+      rev = "0.0.1";
+      sha256 = "sha256-J65Eoa6ua7jdmC8/veVfL5oP1IX5lC94EDxP9L59ufQ=";
+    }) {
+      defaultHost = "tts.r";
+      defaultPort = "80";
+    })
     firefox-wayland
     chromium
     celluloid
