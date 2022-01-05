@@ -18,7 +18,7 @@
       protocol = "tcp";
       address = "lassul.us:1935"; # rtmp
       tags.org = "krebs";
-    }];
+    } ];
 
     http_response = [
       {
