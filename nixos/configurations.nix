@@ -92,6 +92,19 @@ in
     ];
   };
 
+  test = nixosSystem {
+    system = "aarch64-linux";
+    modules = [
+      {
+        boot.loader.grub.enable = false;
+        boot.initrd.enable = false;
+        boot.isContainer = true;
+        boot.loader.initScript.enable = true;
+      }
+      sops-nix.nixosModules.sops
+    ];
+  };
+
   eva = nixosSystem {
     system = "x86_64-linux";
     modules = defaultModules ++ [

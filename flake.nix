@@ -39,7 +39,8 @@
     nur.url = "github:nix-community/NUR";
     # for development
     #sops-nix.url = "/home/joerg/git/sops-nix";
-    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.url = "github:Mic92/sops-nix/ea297c304ddaf810c2f3a235f01c19976986df2b";
+
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     bme680-mqtt.url = "github:Mic92/bme680-mqtt";

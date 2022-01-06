@@ -50,7 +50,7 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    #jack.enable = true;
+    jack.enable = true;
     # use the example session manager
     media-session.enable = true;
   };

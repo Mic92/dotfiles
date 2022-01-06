@@ -13,7 +13,6 @@
     ./modules/nfs.nix
     ./modules/remote-builder.nix
     ./modules/retiolum.nix
-    ./modules/ssmtp.nix
     #../modules/sway.nix
     #./modules/minidlna.nix
     ./modules/networkmanager.nix
@@ -221,6 +220,8 @@
   ];
 
   documentation.doc.enable = false;
+
+  virtualisation.waydroid.enable = true;
 
   system.stateVersion = "18.03";
 }
