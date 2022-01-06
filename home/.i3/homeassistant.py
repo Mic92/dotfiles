@@ -144,7 +144,7 @@ class PhoneBattery(IntervalModule):
     hints = dict(markup=True)
 
     def run(self) -> None:
-        redmi = charge_state_android(state, "redmi_note_5")
+        redmi = charge_state_android(state, "android")
         iphone = charge_state_ios(state, "beatrice_icloud")
         watch = charge_state_ios(state, "shannans_apple_watch")
         full_text = f"{redmi[0]} I:{iphone[0]} W:{watch[0]}"
