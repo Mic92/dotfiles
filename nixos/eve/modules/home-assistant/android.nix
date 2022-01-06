@@ -9,18 +9,18 @@
         data = {
           title = "Tasker";
           message = "Play podcast";
-          target = "gt-i9195";
+          target = "android";
         };
       };
     };
 
-    FindRedmi = {
+    FindAndroid = {
       speech.text = "Send notification";
       action = {
         service = "notify.pushover";
         data = {
           message = "Phonefinderalert";
-          target = "gt-i9195";
+          target = "android";
           data.sound = "echo";
           data.priority = 1;
         };

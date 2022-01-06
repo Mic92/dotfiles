@@ -16,7 +16,7 @@ in
     ./mqtt.nix
     ./presence.nix
     ./postgres.nix
-    ./redmi.nix
+    ./android.nix
     ./timer.nix
     ./transmission.nix
     ./weather.nix
@@ -81,7 +81,7 @@ in
           "person.jorg_thalheim"
           "person.shannan_lekwati"
           "device_tracker.beatrice"
-          "device_tracker.redmi_note_5"
+          "device_tracker.android"
         ];
       };
       notify = [{

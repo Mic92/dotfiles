@@ -115,38 +115,38 @@
         }];
       }
       {
-        alias = "Redmi battery warnings";
+        alias = "Android battery warnings";
 
         trigger = {
           platform = "numeric_state";
-          entity_id = "sensor.redmi_note_5_battery_level";
+          entity_id = "sensor.android_battery_level";
           below = 30;
           for = "00:10:00";
         };
         condition = {
           condition = "template";
-          value_template = ''{{ states("sensor.redmi_note_5_battery_state") == "discharging"  }}'';
+          value_template = ''{{ states("sensor.android_battery_state") == "discharging"  }}'';
         };
         action = [{
           service = "notify.pushover";
-          data_template.message = ''Redmi only has {{ states("sensor.redmi_note_5_battery_level")  }}% battery left'';
+          data_template.message = ''Android only has {{ states("sensor.android_battery_level")  }}% battery left'';
         }];
       }
       {
-        alias = "Redmi charged notification";
+        alias = "Android charged notification";
         trigger = {
           platform = "numeric_state";
-          entity_id = "sensor.redmi_note_5_battery_level";
+          entity_id = "sensor.android_battery_level";
           above = 95;
           for = "00:10:00";
         };
         condition = {
           condition = "template";
-          value_template = ''{{ states("sensor.redmi_note_5_battery_state") != "discharging" }}'';
+          value_template = ''{{ states("sensor.android_battery_state") != "discharging" }}'';
         };
         action = [{
           service = "notify.pushover";
-          data_template.message = ''Redmi was charged up {{ states("sensor.redmi_note_5_battery_level") }}%'';
+          data_template.message = ''Android was charged up {{ states("sensor.android_battery_level") }}%'';
         }];
       }];
   };
