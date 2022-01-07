@@ -29,6 +29,13 @@
   };
 
   config = {
+    services.logrotate.enable = true;
+    services.logrotate.paths.nginx = {
+      path = "/var/log/nginx/*.log";
+      user = config.services.nginx.user;
+      group = config.services.nginx.group;
+      keep = 24;
+    };
     #services.nginx.package = with pkgs; nginxStable.override {
     #    perl = null;
     #    modules = [ nginxModules.auth-ldap ];
