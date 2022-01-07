@@ -17,6 +17,7 @@
       USER = "gitea@thalheim.io";
       HOST = "mail.thalheim.io:587";
     };
+    settings.metrics.ENABLED = true;
     settings.server.DISABLE_ROUTER_LOG = true;
     httpPort = 3002;
   };

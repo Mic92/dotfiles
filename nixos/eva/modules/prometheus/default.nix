@@ -98,7 +98,21 @@ in
 
         scheme = "https";
         static_configs = [{
-          targets = [ "hass.thalheim.io:443" ];
+          targets = [
+            "hass.thalheim.io:443"
+          ];
+        }];
+      }
+      {
+        job_name = "gitea";
+        scrape_interval = "60s";
+        metrics_path = "/metrics";
+
+        scheme = "https";
+        static_configs = [{
+          targets = [
+            "git.thalheim.io:443"
+          ];
         }];
       }
     ];

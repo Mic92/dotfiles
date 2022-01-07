@@ -115,6 +115,11 @@ lib.mapAttrsToList
       description = "homeassistant notification {{$labels.entity}} ({{$labels.friendly_name}}): {{$value}}";
     };
 
+    gitea = {
+      condition = ''rate(promhttp_metric_handler_requests_total{job="gitea", code="500"}[5m]) > 3'';
+      description = "{{$labels.instance}}: gitea instances error rate went up: {{$value}} errors in 5 minutes";
+    };
+
     swap_using_30percent = {
       condition = ''mem_swap_total{host!="eva"} - (mem_swap_cached + mem_swap_free) > mem_swap_total * 0.3'';
       time = "30m";
