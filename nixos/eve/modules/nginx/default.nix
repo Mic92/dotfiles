@@ -35,6 +35,10 @@
       user = config.services.nginx.user;
       group = config.services.nginx.group;
       keep = 24;
+      extraConfig = ''
+        postrotate
+          systemctl reload nginx
+      '';
     };
     #services.nginx.package = with pkgs; nginxStable.override {
     #    perl = null;
