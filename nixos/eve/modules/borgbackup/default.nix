@@ -21,7 +21,7 @@
 
   services.borgbackup.jobs.eva = {
     # TODO remove this limit when matchbox is backuped
-    extraArgs = "--remote-ratelimit 250";
+    extraArgs = "--remote-ratelimit 512";
     paths = [
       "/home"
       "/etc"
