@@ -23,6 +23,7 @@
 
   systemd.services.gitea = {
     path = [ pkgs.bash ];
+    serviceConfig.LimitNOFILE = 65536;
   };
 
   systemd.tmpfiles.rules = let
