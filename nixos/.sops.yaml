@@ -8,6 +8,7 @@ keys:
   - &eddie CC48DB9AC67E71DA343B47D594933BDDF739BEB3
   - &rock F139840C191C75322AC3D4516BE2046130150E21
   - &bernie 6be0cdb876ff7fcb2e0721bcd05c8bd9edd15816
+  - &jarvis age1e44vwuuguzn43yhcu9wfulrmpuxjvy50c8hlyqyaudkez7aty59q48qa3s
   - &cloudlab-age age1frtpu0fyht97cl4xv6rz2ga6euxz9xez8suggxlffxl3cre8rcfsnv8cqk
 creation_rules:
   - path_regex: secrets/admins/[^/]+\.yaml$
@@ -88,3 +89,4 @@ creation_rules:
       age:
         - *eva
         - *joerg
+        - *jarvis
