@@ -71,13 +71,12 @@
         mu4e-maildirs-extension-hide-empty-maildirs t
         mu4e-update-interval 300
         mu4e-user-mail-address-list '("joerg@thalheim.io" "joerg@higgsboson.tk" "s1691654@sms.ed.ac.uk")
-        message-send-mail-function 'smtpmail-send-it
-        smtpmail-smtp-server "mail.thalheim.io"
-        smtpmail-smtp-user "joerg@higgsboson.tk"
-        smtpmail-smtp-service 587
-        smtpmail-stream-type 'starttls
+        sendmail-program (executable-find "msmtp")
+        send-mail-function #'smtpmail-send-it
+        message-sendmail-f-is-evil t
+        message-sendmail-extra-arguments '("--read-envelope-from")
+        message-send-mail-function #'message-send-mail-with-sendmail
         mu4e-headers-fields '((:human-date . 12) (:flags . 6) (:folder . 20) (:from . 22) (:subject))
-        mml-secure-openpgp-encrypt-to-self t
         mm-sign-option 'guided)
 
   (setq nsm-settings-file (expand-file-name "~/.emacs.d/network-security.data"))
