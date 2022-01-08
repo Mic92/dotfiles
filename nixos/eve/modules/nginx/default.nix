@@ -38,6 +38,7 @@
       extraConfig = ''
         postrotate
           systemctl reload nginx
+        endscript
       '';
     };
     #services.nginx.package = with pkgs; nginxStable.override {

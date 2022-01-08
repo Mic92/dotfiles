@@ -6,4 +6,7 @@
       General.AddressRandomizationRange = "full";
     };
   };
+
+  # if network manager is used
+  networking.networkmanager.wifi.backend = "iwd";
 }

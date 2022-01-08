@@ -46,9 +46,7 @@
     upower.enable = true;
     locate.enable = true;
 
-    logind.extraConfig = ''
-      HandleLidSwitch = ignore
-    '';
+    logind.lidSwitch = "ignore";
     journald.extraConfig = "SystemMaxUse=1G";
   };
 

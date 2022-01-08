@@ -9,6 +9,7 @@
     ./modules/sshd.nix
 
     ../modules/hass-agent.nix
+    ../modules/iwd.nix
     ../modules/packages.nix
     ../modules/powertop.nix
     ../modules/promtail.nix
@@ -16,6 +17,7 @@
     ../modules/zfs.nix
     ../modules/tracing.nix
     ../modules/telegraf.nix
+    ../modules/pipewire.nix
   ];
   networking.retiolum.ipv6 = "42:0:3c46:1452:ca55:fdaf:b12b:3027";
 
@@ -35,6 +37,7 @@
   networking.hostId = "ac174b52";
 
   networking.networkmanager.enable = true;
+  users.users.shannan.extraGroups = [ "networkmanager" ];
 
   time.timeZone = null;
   services.geoclue2.enable = true;

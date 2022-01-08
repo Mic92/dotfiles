@@ -27,7 +27,6 @@ in
       [global-dns-domain-*]
       servers=127.0.0.53
     '';
-    wifi.backend = "iwd";
     dispatcherScripts = [{
       source = "${networkmanager-hook}/bin/dispatcher";
     }];
