@@ -19,7 +19,6 @@
     ./modules/packages.nix
     ./modules/high-dpi.nix
     ./modules/gnome-pim.nix
-    ./modules/rhasspy
     ./modules/sops.nix
     ./modules/sshd.nix
     ./modules/cntr.nix
