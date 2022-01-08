@@ -340,22 +340,6 @@
         "type": "github"
       }
     },
-    "not-os": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1630679604,
-        "narHash": "sha256-LuBfCWZpHR4EI5cS9/xo9mRNl4RR4qPGTbTDeRjovTE=",
-        "owner": "cleverca22",
-        "repo": "not-os",
-        "rev": "1b1feb12a44daf57885d3167acd647dea7a1b29f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "cleverca22",
-        "repo": "not-os",
-        "type": "github"
-      }
-    },
     "nur": {
       "locked": {
         "lastModified": 1641595892,
@@ -407,8 +391,7 @@
         "nur": "nur",
         "retiolum": "retiolum",
         "rust-overlay": "rust-overlay",
-        "sops-nix": "sops-nix",
-        "vmsh": "vmsh"
+        "sops-nix": "sops-nix"
       }
     },
     "rust-analyzer-src": {
@@ -469,33 +452,6 @@
         "owner": "Mic92",
         "repo": "sops-nix",
         "rev": "ea297c304ddaf810c2f3a235f01c19976986df2b",
-        "type": "github"
-      }
-    },
-    "vmsh": {
-      "inputs": {
-        "fenix": [
-          "fenix"
-        ],
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "not-os": "not-os"
-      },
-      "locked": {
-        "lastModified": 1636962376,
-        "narHash": "sha256-p7Rp7XNUUxvAEYe7sLKTU9evzoV/pDRFiOsdWsp3mag=",
-        "owner": "Mic92",
-        "repo": "vmsh",
-        "rev": "296a09102abece5df0135afb9678261d5a7b6c20",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "vmsh",
         "type": "github"
       }
     }

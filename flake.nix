@@ -27,11 +27,6 @@
     miniond.url = "github:mars-research/miniond";
     miniond.inputs.mars-std.follows = "mars-std";
 
-    vmsh.url = "github:Mic92/vmsh";
-    vmsh.inputs.flake-utils.follows = "flake-utils";
-    vmsh.inputs.nixpkgs.follows = "nixpkgs";
-    vmsh.inputs.fenix.follows = "fenix";
-
     nixpkgs.url = "github:Mic92/nixpkgs/main";
     nixpkgs-systemd.url = "github:andir/nixpkgs/systemd-250";
     # for development
