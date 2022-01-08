@@ -32,10 +32,6 @@ in
       source = "${networkmanager-hook}/bin/dispatcher";
     }];
   };
-  networking.wireless.iwd.settings = {
-    General.AddressRandomization = "once";
-    General.AddressRandomizationRange = "full";
-  };
 
   # Use mac address from thinkpad network dongle also for docking station,
   # since we will not need more than two 1 Gigabyte uplinks

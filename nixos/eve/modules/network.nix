@@ -10,8 +10,7 @@ in
       type = types.str;
       default = "88.99.244.96";
     };
-
-    networking.eve.ipv4.cidr = mkOption {
+networking.eve.ipv4.cidr = mkOption {
       type = types.str;
       default = "26";
     };
@@ -65,8 +64,6 @@ in
 
         [Network]
         DHCP = ipv4
-        #Address = ${cfg.ipv4.address}/${cfg.ipv4.cidr}
-        #Gateway = ${cfg.ipv4.gateway}
 
         ${concatMapStringsSep "\n" (address: ''
           Address = ${address}/${cfg.ipv6.cidr}

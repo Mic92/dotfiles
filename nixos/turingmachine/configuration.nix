@@ -25,6 +25,7 @@
     ./modules/cntr.nix
     #./modules/minidlna.nix
 
+    ../modules/iwd.nix
     #../modules/dnsmasq.nix
     ../modules/promtail.nix
     ../modules/powertop.nix
