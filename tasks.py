@@ -82,6 +82,14 @@ def deploy_bernie(c):
 
 
 @task
+def deploy_jarvis(c):
+    """
+    Deploy to jarvis
+    """
+    deploy_nixos([DeployHost("jarvis.r")])
+
+
+@task
 def deploy_matchbox(c):
     """
     Deploy to matchbox
@@ -201,7 +209,9 @@ def add_github_user(c, hosts="", github_user="Mic92"):
         out = h.run_local(
             f"curl https://github.com/{github_user}.keys", stdout=subprocess.PIPE
         )
-        h.run(f"echo '{out.stdout}' >> /root/.ssh/authorized_keys && chmod 700 /root/.ssh/authorized_keys")
+        h.run(
+            f"echo '{out.stdout}' >> /root/.ssh/authorized_keys && chmod 700 /root/.ssh/authorized_keys"
+        )
 
     g = parse_hosts(hosts, host_key_check=HostKeyCheck.NONE)
     g.run_function(add_user)
