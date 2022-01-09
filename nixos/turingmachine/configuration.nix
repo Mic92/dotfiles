@@ -24,6 +24,7 @@
     ./modules/cntr.nix
     #./modules/minidlna.nix
 
+    ../modules/ip-update.nix
     ../modules/iwd.nix
     #../modules/dnsmasq.nix
     ../modules/promtail.nix
@@ -220,6 +221,7 @@
   ];
 
   documentation.doc.enable = false;
+  documentation.enable = false;
 
   virtualisation.waydroid.enable = true;
 

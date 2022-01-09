@@ -7,6 +7,7 @@
     ./modules/sshd.nix
     ./modules/network.nix
 
+    ../modules/ip-update.nix
     ../modules/make-linux-fast.nix
     ../modules/promtail.nix
     ../modules/powertop.nix

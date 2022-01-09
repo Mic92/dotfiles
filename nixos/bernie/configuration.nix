@@ -9,6 +9,7 @@
     ./modules/sshd.nix
 
     ../modules/hass-agent.nix
+    ../modules/ip-update.nix
     ../modules/iwd.nix
     ../modules/packages.nix
     ../modules/powertop.nix
@@ -97,4 +98,5 @@
     browsing = true;
     drivers = [ pkgs.gutenprint ];
   };
+  sops.defaultSopsFile = ./secrets/secrets.yaml;
 }

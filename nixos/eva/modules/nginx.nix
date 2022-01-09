@@ -80,5 +80,14 @@ in
         proxy_set_header X-Forwarded-Proto $scheme;
       '';
     };
+
+    virtualHosts."ip2.thalheim.io" = {
+      enableACME = true;
+      addSSL = true;
+      locations."/".extraConfig = ''
+        default_type text/plain;
+        return 200 "$remote_addr\n";
+      '';
+    };
   };
 }

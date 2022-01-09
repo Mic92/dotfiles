@@ -13,6 +13,8 @@
 
   programs.vim.defaultEditor = true;
 
+  documentation.enable = false;
+
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix

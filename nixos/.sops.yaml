@@ -62,6 +62,12 @@ creation_rules:
       - *matchbox
       age:
       - *joerg
+  - path_regex: bernie/secrets/[^/]+\.yaml$
+    key_groups:
+    - pgp:
+      - *bernie
+      age:
+      - *joerg
   - path_regex: eddie/secrets/[^/]+\.yaml$
     key_groups:
     - pgp:

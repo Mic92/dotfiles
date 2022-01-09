@@ -9,6 +9,13 @@ let
 
     @ IN NS ns2.thalheim.io.
   '';
+  dyndns = domain: pkgs.writeText "${domain}.zone" ''
+    @ 3600 IN SOA ${domain}. root.thalheim.io. 2021013110 7200 3600 86400 3600
+
+    $TTL 300
+
+    @ IN NS ns2.thalheim.io.
+  '';
 in
 {
   imports = [
@@ -104,11 +111,10 @@ in
           zonefile-load: difference
           journal-content: changes
 
-        - id: turingmachine
+        - id: dyndns
           semantic-checks: on
           dnssec-signing: on
           dnssec-policy: rsa2k
-          acl: [ turingmachine_acl ]
           zonefile-sync: -1
           zonefile-load: difference
           journal-content: changes
@@ -156,6 +162,22 @@ in
         - domain: i
           file: "${pkgs.retiolum}/zones/i.zone"
           template: retiolum
+        - domain: jarvis.thalheim.io
+          file: "${dyndns "jarvis.thalheim.io"}"
+          template: dyndns
+          acl: [ jarvis_acl ]
+        - domain: matchbox.thalheim.io
+          file: "${dyndns "matchbox.thalheim.io"}"
+          template: dyndns
+          acl: [ matchbox_acl ]
+        - domain: bernie.thalheim.io
+          file: "${dyndns "bernie.thalheim.io"}"
+          template: dyndns
+          acl: [ bernie_acl ]
+        - domain: turingmachine.thalheim.io
+          file: "${dyndns "turingmachine.thalheim.io"}"
+          template: dyndns
+          acl: [ turingmachine_acl ]
         - domain: _acme-challenge.thalheim.io
           file: "${acmeChallenge "thalheim.io"}"
           template: acme

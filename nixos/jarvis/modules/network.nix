@@ -1,4 +1,4 @@
-{ config, ... }: {
+{ config, pkgs, ... }: {
   imports = [
     ../../modules/iwd.nix
     ../../modules/networkd.nix
@@ -22,16 +22,5 @@
     '';
   };
 
-  sops.secrets.ddclient-key = {};
-  services.ddclient = {
-    protocol = "nsupdate";
-    zone = "jarvis.thalheim.io";
-    passwordFile = config.sops.secrets.ddclient-key.path;
-  };
-
   networking.retiolum.ipv6 = "42:0:3c46:7338:dda8:2015:8d14:2a0b";
-  services.tinc.networks.retiolum.extraConfig = ''
-    AddressFamily = ipv6
-    ConnectTo = turingmachine
-  '';
 }

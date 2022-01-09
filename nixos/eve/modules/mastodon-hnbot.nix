@@ -16,12 +16,11 @@
       WorkingDirectory = [
         "/var/lib/mastodon-hnbot"
       ];
-      PermissionsStartOnly = true;
-      ExecStopPost = pkgs.writeShellScript "update-health" ''
+      ExecStopPost = "+${pkgs.writeShellScript "update-health" ''
         cat > /var/log/telegraf/mastadon-hnbot <<EOF
         task,frequency=daily last_run=$(date +%s)i,state="$([[ $EXIT_CODE == exited ]] && echo ok || echo fail)"
         EOF
-      '';
+      ''}";
       StateDirectory = [ "mastodon-hnbot" ];
       User = "mastodon-hnbot";
     };
