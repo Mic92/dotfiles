@@ -220,10 +220,5 @@
     139
   ];
 
-  documentation.doc.enable = false;
-  documentation.enable = false;
-
-  virtualisation.waydroid.enable = true;
-
   system.stateVersion = "18.03";
 }

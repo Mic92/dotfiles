@@ -37,6 +37,7 @@ let
         })
         ./modules/upgrade-diff.nix
         ./modules/nix-daemon.nix
+        ./modules/minimal-docs.nix
         retiolum.nixosModules.retiolum
         retiolum.nixosModules.ca
         sops-nix.nixosModules.sops

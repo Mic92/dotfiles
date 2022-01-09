@@ -91,6 +91,7 @@
   ];
 
   documentation.doc.enable = false;
+  documentation.man.enable = false;
 
   services.openssh.enable = true;
   services.printing = {
