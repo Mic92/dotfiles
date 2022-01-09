@@ -61,6 +61,7 @@ in {
 
   environment.systemPackages = [
     rhasspy-play
+    pkgs.pavucontrol
   ];
 
   services.getty.autologinUser = "joerg";

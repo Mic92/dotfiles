@@ -70,7 +70,7 @@ in
     };
     rest_command = {
       tts = {
-        url = "http://turingmachine.r:12101/api/text-to-speech";
+        url = "http://jarvis.r:12101/api/text-to-speech";
         method = "POST";
         payload = "{{message}}";
       };

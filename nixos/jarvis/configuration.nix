@@ -16,6 +16,7 @@
     ../modules/tracing.nix
     ../modules/telegraf.nix
     ../modules/pki
+    ../modules/xrdp.nix
     #../modules/xrdp.nix
     ../modules/zfs.nix
     ../modules/users.nix
@@ -57,4 +58,7 @@
   documentation.enable = false;
 
   system.stateVersion = "18.03";
+
+  sops.secrets.xrdp-password.neededForUsers = true;
+  users.users.joerg.passwordFile = config.sops.secrets.xrdp-password.path;
 }
