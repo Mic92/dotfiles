@@ -9,6 +9,7 @@
       ];
     };
   };
+  hardware.bluetooth.enable = true;
 
   environment.systemPackages = [
     (pkgs.callPackage ./hue-bt-ctl.nix { })

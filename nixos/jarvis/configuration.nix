@@ -5,6 +5,7 @@
 
     ./modules/rhasspy
     ./modules/sshd.nix
+    ./modules/light
     ./modules/network.nix
 
     ../modules/ip-update.nix

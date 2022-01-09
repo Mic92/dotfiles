@@ -8,7 +8,6 @@
     ./modules/dice.nix
     ./modules/backup.nix
     ./modules/hass-agent.nix
-    ./modules/light
     #./modules/high-dpi.nix
     ./modules/nfs.nix
     ./modules/remote-builder.nix
