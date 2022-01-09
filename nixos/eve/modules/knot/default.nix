@@ -104,15 +104,6 @@ in
           zonefile-load: difference
           journal-content: changes
 
-        - id: jarvis
-          semantic-checks: on
-          dnssec-signing: on
-          dnssec-policy: rsa2k
-          acl: [ jarvis_acl ]
-          zonefile-sync: -1
-          zonefile-load: difference
-          journal-content: changes
-
         - id: turingmachine
           semantic-checks: on
           dnssec-signing: on

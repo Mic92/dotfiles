@@ -15,6 +15,7 @@
     ../modules/tracing.nix
     ../modules/telegraf.nix
     ../modules/pki
+    #../modules/xrdp.nix
     ../modules/zfs.nix
     ../modules/users.nix
   ];
@@ -30,6 +31,8 @@
   };
 
   networking.hostName = "jarvis";
+
+  sops.defaultSopsFile = ./secrets/secrets.yaml;
 
   console.keyMap = "us";
   # Capslock -> Enter

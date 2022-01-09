@@ -45,6 +45,11 @@ creation_rules:
     - age:
         - *joerg
         - *eva
+  - path_regex: jarvis/secrets/[^/]+\.yaml$
+    key_groups:
+    - age:
+        - *joerg
+        - *jarvis
   - path_regex: turingmachine/secrets/[^/]+\.yaml$
     key_groups:
     - pgp:

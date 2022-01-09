@@ -1,6 +1,9 @@
 { pkgs, ... }: {
   # for pactl
-  environment.systemPackages = with pkgs; [ pulseaudio ];
+  environment.systemPackages = with pkgs; [
+    pulseaudio
+    pamixer
+  ];
 
   hardware.pulseaudio.enable = false;
   services.pipewire = {
