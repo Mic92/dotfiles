@@ -15,14 +15,12 @@ in
     ./whoami.nix
   ];
 
-  sops.secrets."knot-he-key.conf".owner = "knot";
-  sops.secrets."knot-acme-key.conf".owner = "knot";
+  sops.secrets."knot-keys.conf".owner = "knot";
 
   services.knot = {
     enable = true;
     keyFiles = [
-      config.sops.secrets."knot-he-key.conf".path
-      config.sops.secrets."knot-acme-key.conf".path
+      config.sops.secrets."knot-keys.conf".path
     ];
     extraConfig = ''
       server:
@@ -36,6 +34,8 @@ in
         #- id: he_ip6
         #  address: 2001:470:100::2
 
+      # to generate TSIG key
+      # for i in host; do keymgr -t $i; done
       acl:
         - id: he_acl
           key: he1
@@ -43,6 +43,22 @@ in
 
         - id: acme_acl
           key: acme
+          action: update
+
+        - id: matchbox_acl
+          key: matchbox
+          action: update
+
+        - id: turingmachine_acl
+          key: turingmachine
+          action: update
+
+        - id: bernie_acl
+          key: bernie
+          action: update
+
+        - id: jarvis_acl
+          key: jarvis
           action: update
 
       mod-rrl:
@@ -84,6 +100,51 @@ in
           dnssec-signing: on
           dnssec-policy: rsa2k
           acl: [ acme_acl ]
+          zonefile-sync: -1
+          zonefile-load: difference
+          journal-content: changes
+
+        - id: jarvis
+          semantic-checks: on
+          dnssec-signing: on
+          dnssec-policy: rsa2k
+          acl: [ jarvis_acl ]
+          zonefile-sync: -1
+          zonefile-load: difference
+          journal-content: changes
+
+        - id: turingmachine
+          semantic-checks: on
+          dnssec-signing: on
+          dnssec-policy: rsa2k
+          acl: [ turingmachine_acl ]
+          zonefile-sync: -1
+          zonefile-load: difference
+          journal-content: changes
+
+        - id: bernie
+          semantic-checks: on
+          dnssec-signing: on
+          dnssec-policy: rsa2k
+          acl: [ bernie_acl ]
+          zonefile-sync: -1
+          zonefile-load: difference
+          journal-content: changes
+
+        - id: matchbox
+          semantic-checks: on
+          dnssec-signing: on
+          dnssec-policy: rsa2k
+          acl: [ matchbox_acl ]
+          zonefile-sync: -1
+          zonefile-load: difference
+          journal-content: changes
+
+        - id: jarvis
+          semantic-checks: on
+          dnssec-signing: on
+          dnssec-policy: rsa2k
+          acl: [ jarvis_acl ]
           zonefile-sync: -1
           zonefile-load: difference
           journal-content: changes
