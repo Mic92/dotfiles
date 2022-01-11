@@ -13,8 +13,7 @@
     };
     intent_script.UpdateLocation = {
       speech.text = "Updated Shannan's location";
-      action.service = "notify.mobile_app_beatrice";
-      action.data_template.message = "request_location_update";
+      action.service = "icloud.update";
     };
     intent_script.PlayMinimix = {
       speech.text = "Play minimix";
