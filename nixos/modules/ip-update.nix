@@ -11,13 +11,13 @@
   systemd.services.ip-update = {
     path = [ pkgs.bind.dnsutils pkgs.curl ];
     script = ''
+      set -x
       ip=$(curl -4 https://ip.thalheim.io)
       ip6=$(curl -6 https://ip.thalheim.io)
       if [[ -z "$ip" && -z "$ip6" ]]; then
         exit 0
       fi
       (
-        set -x
         echo "server ns2.thalheim.io"
         echo "zone ${config.networking.hostName}.thalheim.io."
         echo "update delete ${config.networking.hostName}.thalheim.io. A"

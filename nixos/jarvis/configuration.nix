@@ -8,6 +8,7 @@
     ./modules/light
     ./modules/network.nix
 
+    ../modules/hass-agent.nix
     ../modules/ip-update.nix
     ../modules/make-linux-fast.nix
     ../modules/promtail.nix
@@ -38,10 +39,6 @@
   sops.defaultSopsFile = ./secrets/secrets.yaml;
 
   console.keyMap = "us";
-  # Capslock -> Enter
-  console.keyMapOverrides = ''
-    keycode 58 = Return
-  '';
 
   i18n.defaultLocale = "en_DK.UTF-8";
 

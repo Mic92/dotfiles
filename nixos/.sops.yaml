@@ -82,6 +82,13 @@ creation_rules:
       age:
         - *joerg
         - *eva
+  - path_regex: secrets/desktop\.yaml$
+    key_groups:
+    - pgp:
+        - *bernie
+        - *turingmachine
+      age:
+        - *joerg
   - path_regex: rock/secrets/[^/]+\.yaml$
     key_groups:
     - pgp:

@@ -26,31 +26,6 @@
           }];
     }
       {
-        alias = "Herbert battery warning";
-        trigger = {
-          platform = "numeric_state";
-          entity_id = "sensor.herbert_battery_state";
-          below = 30;
-          for = "00:10:00";
-        };
-        condition = {
-          condition = "template";
-          value_template = ''{{ state_attr("device_tracker.herbert", "battery_status") == "NotCharging" }}'';
-        };
-        action =
-          let
-            msg = ''Herbert only got {{ state_attr("device_tracker.herbert", "battery") | round(1) }}% battery left'';
-          in
-          [{
-            service = "notify.mobile_app_beatrice";
-            data_template.message = msg;
-          }
-            {
-              service = "notify.pushover";
-              data_template.message = msg;
-            }];
-      }
-      {
         alias = "Apple watch battery warning";
         trigger = {
           platform = "numeric_state";

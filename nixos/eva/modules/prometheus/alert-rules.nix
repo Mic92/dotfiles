@@ -79,6 +79,11 @@ lib.mapAttrsToList
       condition = ''time() - task_last_run{state="ok",frequency="daily"} > (24 + 6) * 60 * 60'';
       description = "{{$labels.host}}: {{$labels.name}} was not run in the last 24h";
     };
+    tenminutes_task_not_run = {
+      # give 6 hours grace period
+      condition = ''time() - task_last_run{state="ok",frequency=""} > (24 + 6) * 60 * 60'';
+      description = "{{$labels.host}}: {{$labels.name}} was not run in the last 24h";
+    };
 
     daily_task_failed = {
       condition = ''task_last_run{state="fail"}'';
@@ -93,7 +98,13 @@ lib.mapAttrsToList
       condition = ''absent_over_time(task_last_run{name="${name}"}[1d])'';
       description = "status of ${name} is unknown: no data for a day";
     }))
-  // {
+  // (lib.genAttrs [
+    "znapzend-home"
+    "znapzend-share"
+  ] (name: {
+    condition = ''absent_over_time(task_last_run{name="${name}"}[10m])'';
+    description = "status of ${name} is unknown: no data for 10 minutes";
+  })) // {
     nixpkgs_out_of_date = {
       condition = ''(time() - flake_input_last_modified{input="nixpkgs",instance!="matchbox"}) / (60*60*24) > 7'';
       description = "{{$labels.host}}: nixpkgs flake is older than a week";

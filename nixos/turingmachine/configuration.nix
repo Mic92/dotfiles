@@ -83,10 +83,6 @@
   networking.hostName = "turingmachine";
 
   console.keyMap = "us";
-  # Capslock -> Enter
-  console.keyMapOverrides = ''
-    keycode 58 = Return
-  '';
 
   i18n.defaultLocale = "en_DK.UTF-8";
 
@@ -217,6 +213,13 @@
   networking.firewall.interfaces."virbr1".allowedUDPPorts = [
     445
     139
+  ];
+
+  services.aesmd.enable = true;
+
+  systemd.tmpfiles.rules = [
+    "L /dev/sgx/enclave - - - - /dev/sgx_enclave"
+    "L /dev/sgx/provision - - - - /dev/sgx_provision"
   ];
 
   system.stateVersion = "18.03";
