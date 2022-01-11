@@ -32,5 +32,6 @@
       ) | nsupdate -k ${config.sops.secrets."ip-update-key".path} -v
     '';
     serviceConfig.Type = "oneshot";
+    serviceConfig.Restart = "on-failure";
   };
 }
