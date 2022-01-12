@@ -1,10 +1,6 @@
 { config, lib, pkgs, ... }:
 {
   imports = [ ./. ];
-  # k3s api server
-  networking.firewall.allowedTCPPorts = [
-    6443
-  ];
 
   #sops.secrets.k3s-server-token = {};
   #systemd.tmpfiles.rules = [
