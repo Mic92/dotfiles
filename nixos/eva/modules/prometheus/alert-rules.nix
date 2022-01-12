@@ -285,6 +285,11 @@ lib.mapAttrsToList
       description = "{{$labels.instance}}: Disk latency is growing (write operations > 100ms)\n";
     };
 
+    ipv6_dad_check = {
+      condition = "ipv6_dad_failures_count > 0";
+      description = "{{$labels.host}}: {{$value}} assigned ipv6 addresses have failed duplicate address check\n";
+    };
+
     host_memory_under_memory_pressure = {
       condition = "rate(node_vmstat_pgmajfault[1m]) > 1000";
       description = "{{$labels.instance}}: The node is under heavy memory pressure. High rate of major page faults: {{$value}}";
