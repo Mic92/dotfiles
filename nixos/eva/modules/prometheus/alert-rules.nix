@@ -106,7 +106,7 @@ lib.mapAttrsToList
     description = "status of ${name} is unknown: no data for 10 minutes";
   })) // {
     nixpkgs_out_of_date = {
-      condition = ''(time() - flake_input_last_modified{input="nixpkgs",instance!="matchbox"}) / (60*60*24) > 7'';
+      condition = ''(time() - flake_input_last_modified{input="nixpkgs",host!="matchbox"}) / (60*60*24) > 7'';
       description = "{{$labels.host}}: nixpkgs flake is older than a week";
     };
 
