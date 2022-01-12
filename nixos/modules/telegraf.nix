@@ -40,7 +40,12 @@ in
         };
         exec =  [{
           ## Commands array
-          commands = (lib.optional (lib.any (fs: fs == "zfs") config.boot.supportedFilesystems)
+          commands = [
+            (pkgs.writeShellScript "ipv6-dad-check" ''
+              ${pkgs.iproute2}/bin/ip --json addr | \
+                ${pkgs.jq}/bin/jq -r 'map(.addr_info) | flatten(1) | map(select(.dadfailed == true)) | map(.local) | @text "ipv6_dad_failures count=\(length)i"'
+            '')
+            ] ++ (lib.optional (lib.any (fs: fs == "zfs") config.boot.supportedFilesystems)
             (pkgs.writeScript "zpool-health" ''
               #!${pkgs.gawk}/bin/awk -f
               BEGIN {
