@@ -84,6 +84,7 @@ in
     ferdi
     msmtp
     kubectl
+    terraform-ls
 
     rbw
     isync
