@@ -790,6 +790,10 @@ fi
 if [ -n "${commands[direnv]}" ]; then
   eval "$(direnv hook zsh)"
 fi
+if [[ $commands[kubectl] ]]; then
+   alias k=kubectl
+   source <(kubectl completion zsh)
+fi
 if [[ -n "${commands[fzf-share]}" ]]; then
   FZF_CTRL_R_OPTS=--reverse
   source "$(fzf-share)/key-bindings.zsh"
