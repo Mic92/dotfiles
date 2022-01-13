@@ -133,8 +133,9 @@
     #rkt.enable = true;
     #rkt.enable = true;
     virtualbox.host.enable = false;
-    podman.enable = true;
-    podman.extraPackages = [ pkgs.zfs ];
+    docker.enable = true;
+    #podman.enable = true;
+    #podman.extraPackages = [ pkgs.zfs ];
   };
 
   fonts.fontDir.enable = true;
@@ -216,11 +217,8 @@
   ];
 
   services.aesmd.enable = true;
-
-  systemd.tmpfiles.rules = [
-    "L /dev/sgx/enclave - - - - /dev/sgx_enclave"
-    "L /dev/sgx/provision - - - - /dev/sgx_provision"
-  ];
+  hardware.cpu.intel.sgx.enableDcapCompat = true;
+  hardware.cpu.intel.sgx.provision.enable = true;
 
   system.stateVersion = "18.03";
 }
