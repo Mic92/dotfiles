@@ -83,6 +83,7 @@ in
     mumble
     ferdi
     msmtp
+    kubectl
 
     rbw
     isync
