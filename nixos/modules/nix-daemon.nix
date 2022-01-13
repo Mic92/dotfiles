@@ -37,7 +37,11 @@
   systemd.services.update-prefetch = {
     startAt = "hourly";
     script = ''
-      export PATH=${lib.makeBinPath (with pkgs; [ config.nix.package pkgs.nettools pkgs.git pkgs.jq pkgs.curl ])}
+      export PATH=${lib.makeBinPath (with pkgs; [ config.nix.package pkgs.nettools pkgs.git pkgs.jq pkgs.curl pkgs.iproute2 ])}
+      # skip service if do not have a default route
+      if ! ip r g 8.8.8.8; then
+        exit
+      fi
       last_build=$(curl https://api.github.com/repos/Mic92/dotfiles/git/ref/tags/last-build | jq -r .object.sha)
       nix build \
        --out-link /run/next-system \
