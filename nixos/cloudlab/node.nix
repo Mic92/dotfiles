@@ -2,6 +2,7 @@
   imports = [
     ../modules/users.nix
     ../modules/cloudlab.nix
+    ../modules/packages.nix
   ];
   sops.defaultSopsFile = ./secrets/secrets.yaml;
   services.openssh.hostKeys = [
