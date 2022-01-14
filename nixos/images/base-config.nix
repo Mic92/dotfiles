@@ -38,6 +38,8 @@
   imports = [
     ../modules/tor-ssh.nix
     ../modules/nix-daemon.nix
+    ../modules/nur.nix
+    ../modules/minimal-docs.nix
   ];
 
   # no auto-updates

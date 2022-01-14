@@ -1,13 +1,26 @@
-{ pkgs ? import <nixpkgs> {} }:
+{ pkgs
+, nixosSystem
+, extraModules ? []
+}:
 let
-  bootSystem = import <nixpkgs/nixos> {
-    configuration = { ... }: {
-      imports = [
-        <nixpkgs/nixos/modules/installer/netboot/netboot-minimal.nix>
-        ./base-config.nix
-        ./zfs.nix
-      ];
-    };
+  bootSystem = nixosSystem {
+    system = pkgs.system;
+    modules = [
+      ./base-config.nix
+      ./zfs.nix
+      ({ modulesPath, ... }: {
+        imports = [
+          (modulesPath + "/installer/netboot/netboot-minimal.nix")
+        ] ++ extraModules;
+
+        # IPMI SOL console redirection stuff
+        boot.kernelParams = [
+          "console=ttyS0,115200n8"
+          "console=ttyAMA0,115200n8"
+          "console=tty0"
+        ];
+      })
+    ];
   };
 in pkgs.symlinkJoin {
   name = "netboot";
@@ -19,6 +32,6 @@ in pkgs.symlinkJoin {
   preferLocalBuild = true;
 }
 
+# nix build -o /tmp/pixiecore '.#netboot'
 # n=$(realpath /tmp/netboot)
 # init=$(grep -ohP 'init=\S+' $n/netboot.ipxe)
-# nix build -o /tmp/pixiecore nixpkgs.pixiecore

@@ -29,7 +29,6 @@ let
           nix.extraOptions = ''
             flake-registry = ${flake-registry}/flake-registry.json
           '';
-          nixpkgs.overlays = [ nur.overlay ];
           documentation.info.enable = false;
           nixpkgs.config.packageOverrides = pkgs: {
             inherit retiolum;
@@ -38,6 +37,7 @@ let
         ./modules/upgrade-diff.nix
         ./modules/nix-daemon.nix
         ./modules/minimal-docs.nix
+        ./modules/nur.nix
         retiolum.nixosModules.retiolum
         retiolum.nixosModules.ca
         sops-nix.nixosModules.sops

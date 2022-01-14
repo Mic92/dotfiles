@@ -52,21 +52,38 @@
     });
 
     # nix build '.#kexec' --impure
-    packages.x86_64-linux.kexec = nixos-generators.nixosGenerate {
+    packages.x86_64-linux = let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      modules = [
-        ./nixos/images/kexec.nix
-        { nixpkgs.overlays = [ nur.overlay ]; }
-      ];
-      format = "kexec";
-    };
-    packages.x86_64-linux.kexec-aarch64 = nixos-generators.nixosGenerate {
-      pkgs = nixpkgs.legacyPackages.aarch64-linux;
-      modules = [
-        ./nixos/images/kexec.nix
-        { nixpkgs.overlays = [ nur.overlay ]; }
-      ];
-      format = "kexec";
+    in {
+      kexec = nixos-generators.nixosGenerate {
+        inherit pkgs;
+        modules = [
+          ./nixos/images/kexec.nix
+          { nixpkgs.overlays = [ nur.overlay ]; }
+        ];
+        format = "kexec";
+      };
+
+      kexec-aarch64 = nixos-generators.nixosGenerate {
+        pkgs = nixpkgs.legacyPackages.aarch64-linux;
+        modules = [
+          ./nixos/images/kexec.nix
+          { nixpkgs.overlays = [ nur.overlay ]; }
+        ];
+        format = "kexec";
+      };
+
+      netboot = pkgs.callPackage ./nixos/images/netboot.nix {
+        inherit pkgs;
+        inherit (nixpkgs.lib) nixosSystem;
+        extraModules = [
+          { _module.args.inputs = inputs; }
+        ];
+      };
+
+      netboot-pixie-core = pkgs.callPackage ./nixos/images/netboot-pixie-core.nix {
+        inherit (self.outputs.packages.x86_64-linux) netboot;
+      };
     };
 
     hmConfigurations = import ./nixpkgs-config/homes.nix inputs;
