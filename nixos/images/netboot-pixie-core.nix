@@ -4,8 +4,10 @@
 }:
 
 # 1. Enable nixos/modules/dnsmasq.nix
+# $ sudo ip l set $if master internal
 # $ sudo iptables -F
-# $ sudo nix run .#netboot-pixie-core
+# $ sudo iptables -t nat -A POSTROUTING -o wlan0 -j MASQUERADE
+# $ sudo nix run '.#netboot-pixie-core'
 pkgs.writeShellScriptBin "netboot-pixie-core" ''
   set -euo pipefail
   init=$(${pkgs.gnugrep}/bin/grep -ohP 'init=\S+' ${netboot}/netboot.ipxe)
