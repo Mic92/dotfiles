@@ -48,7 +48,7 @@
        github:Mic92/dotfiles/$last_build#nixosConfigurations.$(hostname).config.system.build.toplevel
 
       if [[ -x /home/joerg/.nix-profile/bin/home-manager ]]; then
-        nix run github:Mic92/dotfiles/$last_build#hm-build --  --out-link /run/next-home
+        nix run "github:Mic92/dotfiles/$last_build#hm-build" --  --out-link /run/next-home
       fi
     '';
   };
