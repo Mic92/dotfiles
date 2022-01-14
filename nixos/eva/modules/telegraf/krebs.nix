@@ -20,6 +20,20 @@
       tags.org = "krebs";
     } ];
 
+    ping = map (url: {
+      method = "native";
+      urls = [ "${url}.r" ];
+      ipv6 = true;
+      tags.host = url;
+      tags.org = "krebs";
+    }) [
+      "hotdog"
+      "yellow"
+      "prism"
+      "catalonia"
+      "puyak"
+      "ni"
+    ];
     http_response = [
       {
         urls = [ "http://puyak.r" ];
