@@ -10,7 +10,6 @@
 
     ../modules/hass-agent.nix
     ../modules/ip-update.nix
-    ../modules/iwd.nix
     ../modules/packages.nix
     ../modules/powertop.nix
     ../modules/promtail.nix
