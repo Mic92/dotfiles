@@ -8,7 +8,7 @@ build-job:
     - nix run nixpkgs/nixpkgs-unstable#jq -- -r '.drvPath' < jobs | xargs -n1 -P$(nproc) nix build -L
     - |
       if [[ -n "$CACHIX_SIGNING_KEY" ]]; then
-        echo result* | nix run nixpkgs/nixpkgs-unstable#cachix -- push ${CACHIX_NAME:-mic92}
+        realpath result* | nix run nixpkgs/nixpkgs-unstable#cachix -- push ${CACHIX_NAME:-mic92}
       fi
     - |
       if [[ -n "$GITHUB_TOKEN" ]]; then
