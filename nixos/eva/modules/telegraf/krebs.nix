@@ -12,28 +12,16 @@
         tags.org = "krebs";
         timeout = "10s";
       }) [
-      "puyak"
+      "hotdog"
       "yellow"
+      "prism"
+      "puyak"
+      "ni"
     ] ++ [{
       protocol = "tcp";
       address = "lassul.us:1935"; # rtmp
       tags.org = "krebs";
     }];
-
-    #ping = map (url: {
-    #  method = "native";
-    #  urls = [ "${url}.r" ];
-    #  #ipv6 = true;
-    #  tags.host = url;
-    #  tags.org = "krebs";
-    #}) [
-    #  "hotdog"
-    #  "yellow"
-    #  "prism"
-    #  "catalonia"
-    #  "puyak"
-    #  "ni"
-    #];
 
     http_response = [
       {
