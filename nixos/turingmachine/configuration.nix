@@ -23,6 +23,7 @@
     ./modules/cntr.nix
     #./modules/minidlna.nix
 
+    ../modules/jarvis-rdp.nix
     ../modules/ip-update.nix
     ../modules/iwd.nix
     #../modules/dnsmasq.nix

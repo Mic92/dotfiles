@@ -7,9 +7,9 @@
 
   systemd.network = {
     enable = true;
-    networks."wlan0".extraConfig = ''
+    networks."wlp2s0".extraConfig = ''
       [Match]
-      Name = wlan0
+      Name = wlp2s0
 
       [Network]
       DHCP = true

@@ -3,7 +3,7 @@
     #!${pkgs.runtimeShell}
     set -eux -o pipefail
     export PATH=${pkgs.pipewire}/bin:${pkgs.pamixer}/bin
-    sink=alsa_output.usb-ZhuHai_JieLi_Technology_JieLi_BR21_20180105-01.analog-stereo
+    sink=alsa_output.usb-SEEED_ReSpeaker_4_Mic_Array__UAC1.0_-00.analog-stereo
 
     pamixer --set-volume 34 --sink "$sink"
     if pamixer --get-mute --sink="$sink"; then
