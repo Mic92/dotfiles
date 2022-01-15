@@ -18,22 +18,23 @@
       protocol = "tcp";
       address = "lassul.us:1935"; # rtmp
       tags.org = "krebs";
-    } ];
+    }];
 
-    ping = map (url: {
-      method = "native";
-      urls = [ "${url}.r" ];
-      ipv6 = true;
-      tags.host = url;
-      tags.org = "krebs";
-    }) [
-      "hotdog"
-      "yellow"
-      "prism"
-      "catalonia"
-      "puyak"
-      "ni"
-    ];
+    #ping = map (url: {
+    #  method = "native";
+    #  urls = [ "${url}.r" ];
+    #  #ipv6 = true;
+    #  tags.host = url;
+    #  tags.org = "krebs";
+    #}) [
+    #  "hotdog"
+    #  "yellow"
+    #  "prism"
+    #  "catalonia"
+    #  "puyak"
+    #  "ni"
+    #];
+
     http_response = [
       {
         urls = [ "http://puyak.r" ];
@@ -61,6 +62,7 @@
           "http://wiki.r/Home"
         ];
         tags.host = "hotdog";
+        response_timeout = "10s";
         response_string_match = "gollum";
         tags.org = "krebs";
       }
@@ -111,6 +113,7 @@
         urls = [
           "http://build.hotdog.r"
         ];
+        response_timeout = "10s";
         response_string_match = "Buildbot";
         tags.host = "hotdog";
         tags.org = "krebs";
