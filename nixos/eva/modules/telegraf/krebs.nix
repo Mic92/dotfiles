@@ -42,12 +42,14 @@
         response_string_match = "shackspace";
         tags.host = "puyak";
         tags.org = "krebs";
+        interface = "tinc.retiolum";
       }
       {
         urls = [ "http://yellow.r:9091/transmission/web/" ];
         response_string_match = "Transmission Web";
         tags.host = "yellow";
         tags.org = "krebs";
+        interface = "tinc.retiolum";
       }
       {
         urls = [
@@ -56,15 +58,16 @@
         ];
         response_string_match = "Index of /";
         tags.org = "krebs";
+        interface = "tinc.retiolum";
       }
       {
         urls = [
           "http://wiki.r/Home"
         ];
         tags.host = "hotdog";
-        response_timeout = "10s";
         response_string_match = "gollum";
         tags.org = "krebs";
+        interface = "tinc.retiolum";
       }
       {
         urls = [
@@ -73,6 +76,7 @@
         tags.host = "prism";
         response_string_match = "searx";
         tags.org = "krebs";
+        interface = "tinc.retiolum";
       }
       {
         urls = [
@@ -81,6 +85,7 @@
         tags.host = "news";
         response_string_match = "rss";
         tags.org = "krebs";
+        interface = "tinc.retiolum";
       }
       {
         urls = [
@@ -91,6 +96,7 @@
         tags.host = "news";
         method = "HEAD";
         tags.org = "krebs";
+        interface = "tinc.retiolum";
       }
       {
         urls = [
@@ -99,6 +105,7 @@
         tags.host = "gum";
         response_string_match = "tinc network map";
         tags.org = "krebs";
+        interface = "tinc.retiolum";
       }
       {
         urls = [
@@ -108,15 +115,16 @@
         ];
         response_string_match = "cgit";
         tags.org = "krebs";
+        interface = "tinc.retiolum";
       }
       {
         urls = [
           "http://build.hotdog.r"
         ];
-        response_timeout = "10s";
         response_string_match = "Buildbot";
         tags.host = "hotdog";
         tags.org = "krebs";
+        interface = "tinc.retiolum";
       }
       {
         urls = [
@@ -124,6 +132,7 @@
         ];
         response_string_match = "ok";
         tags.org = "krebs";
+        interface = "tinc.retiolum";
       }
     ];
   };
