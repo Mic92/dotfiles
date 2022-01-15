@@ -8,6 +8,7 @@
     ./hardware-configuration.nix
     ./modules/sshd.nix
 
+    ../modules/jarvis-rdp.nix
     ../modules/hass-agent.nix
     ../modules/ip-update.nix
     ../modules/packages.nix
