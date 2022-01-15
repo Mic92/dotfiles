@@ -1,8 +1,9 @@
 { config, pkgs, ... }: {
   imports = [
-    ../../modules/iwd.nix
     ../../modules/networkd.nix
   ];
+
+  networking.wireless.enable = true;
 
   systemd.network = {
     enable = true;
