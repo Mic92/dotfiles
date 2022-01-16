@@ -11,9 +11,6 @@
   status = true
 [am]
   threeWay = true
-[delta]
-  plus-color = "#012800"
-  minus-color = "#340001"
 [user]
   name = Jörg Thalheim
   email = joerg@thalheim.io
