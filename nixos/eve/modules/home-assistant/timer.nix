@@ -51,7 +51,7 @@ in
           }];
       };
 
-      GetTime.speech.text = ''It is {{ now().strftime("%A, %H %M") }}.'';
+      GetTime.speech.text = ''It is {{ now().strftime("%H %M, %A, the %dth of %B") }}.'';
       GetTimer.speech.text = ''{{ state_attr("timer.rhasspy", "duration") }} is left.'';
       SetTimer = {
         speech.text = "Timer for {{ duration }} {{ unit }} set!";

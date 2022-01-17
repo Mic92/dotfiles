@@ -2,8 +2,10 @@
   services.home-assistant.config.intent_script = {
     Noop.speech.text = "";
     Psst.speech.text = "Wot.";
+    ThankYou.speech.text = "You are welcome.";
     FuckOff.speech.text = "Fuck yourself.";
     NotAGirl.speech.text = "Not a girl!";
+    Drunk.speech.text = "tv";
     Siri.speech.text = "Siri is a cunt";
     PersonLocation.speech.text = '' {% if person == "Jork" %}
       Joerg is {{ states.person.jorg_thalheim.state }} and {{ states.sensor.shannan_joerg_distance.state }} kilometer away from you.
