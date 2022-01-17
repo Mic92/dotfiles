@@ -20,12 +20,21 @@
       ];
     };
 
-    nfs = {
+    nfs-home = {
       user = "il1dsenixosbk";
       group = "il1dsenixosbk";
-      path = "/mnt/backup/nfs";
+      path = "/mnt/backup/nfs-home";
       authorizedKeys = [
-        (builtins.readFile ./nfs-borgbackup.pub)
+        (builtins.readFile ./nfs-home-borgbackup.pub)
+      ];
+    };
+
+    nfs-share = {
+      user = "il1dsenixosbk";
+      group = "il1dsenixosbk";
+      path = "/mnt/backup/nfs-share";
+      authorizedKeys = [
+        (builtins.readFile ./nfs-share-borgbackup.pub)
       ];
     };
 
