@@ -794,6 +794,7 @@ if [[ $commands[kubectl] ]]; then
    alias k=kubectl
    source <(kubectl completion zsh)
 fi
+alias tf=terraform
 if [[ -n "${commands[fzf-share]}" ]]; then
   FZF_CTRL_R_OPTS=--reverse
   source "$(fzf-share)/key-bindings.zsh"
