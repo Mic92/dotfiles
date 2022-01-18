@@ -59,6 +59,7 @@ in
     system = "x86_64-linux";
     modules = defaultModules ++ [
       ./turingmachine/configuration.nix
+      ./modules/k3s/server.nix
       #({ pkgs, ... }: {
       #  systemd.package = (import nixpkgs-systemd {
       #    inherit (pkgs) system;

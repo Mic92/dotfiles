@@ -45,4 +45,15 @@ in
       ''}";
     };
   };
+
+  systemd.services.containerd.serviceConfig = lib.mkIf config.boot.zfs.enabled {
+    ExecStartPre = [
+      "-${pkgs.zfs}/bin/zfs create -o mountpoint=/var/lib/containerd/io.containerd.snapshotter.v1.zfs zroot/containerd"
+      "-${pkgs.zfs}/bin/zfs mount zroot/containerd"
+    ];
+  };
+  systemd.services.k3s = {
+    wants = [ "containerd.service" ];
+    after = [ "containerd.service" ];
+  };
 }
