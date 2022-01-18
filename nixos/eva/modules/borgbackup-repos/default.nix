@@ -10,6 +10,9 @@
     ];
   };
 
+  systemd.services.borgbackup-repo-nfs-share.enable = false;
+  systemd.services.borgbackup-repo-nfs-home.enable = false;
+
   services.borgbackup.repos = {
     eve = {
       user = "il1dsenixosbk";
