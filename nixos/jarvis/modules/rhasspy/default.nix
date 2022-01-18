@@ -55,8 +55,6 @@ in {
   networking.firewall.extraCommands = ''
     ip6tables -I nixos-fw -p tcp -s 42:0:3c46:70c7:8526:2adf:7451:8bbb --dport 12101 -j nixos-fw-accept
     ip6tables -I nixos-fw -p tcp -s 42:0:3c46:47e8:f610:15d1:27a3:674b --dport 12101 -j nixos-fw-accept
-    # TODO
-    # ip6tables -I nixos-fw -p tcp -s 42:0:3c46:47e8:f610:15d1:27a3:674b --dport 4713 -j nixos-fw-accept
   '';
 
   environment.systemPackages = [

@@ -104,6 +104,7 @@ in
       system_health = { };
       default_config = { };
       system_log = { };
+      vlc_telnet = { };
       sensor = [{
         platform = "template";
         sensors.shannan_joerg_distance.value_template = ''{{ distance('person.jorg_thalheim', 'person.shannan_lekwati') | round(2) }}'';

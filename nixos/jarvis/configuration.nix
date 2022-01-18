@@ -7,6 +7,7 @@
     ./modules/sshd.nix
     ./modules/light
     ./modules/network.nix
+    ./modules/vlc-telnet.nix
 
     ../modules/hass-agent.nix
     ../modules/ip-update.nix

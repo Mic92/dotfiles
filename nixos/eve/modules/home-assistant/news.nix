@@ -7,7 +7,7 @@
         platform = "command_line";
         scan_interval = 60 * 60 * 24;
         command =
-          ''${pkgs.curl}/bin/curl -sL https://podcasts.files.bbci.co.uk/p02nrtyg.rss | grep -m1 -oPm1 '(?<=url=")https://[^"]+.mp3' | shuf -n1 '';
+          ''${pkgs.curl}/bin/curl -sL https://podcasts.files.bbci.co.uk/p02nrtyg.rss | grep -m1 -oPm1 '(?<=enclosure url=")http://[^"]+.mp3' | shuf -n1 '';
       }
       {
         name = "BBC World News";
