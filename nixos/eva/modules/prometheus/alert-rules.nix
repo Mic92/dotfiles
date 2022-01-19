@@ -155,10 +155,10 @@ lib.mapAttrsToList
       description = "{{$labels.host}} cannot reach nfs export [{{$labels.server}}]:{{$labels.path}}";
     };
 
-    ram_using_90percent = {
-      condition = "mem_buffered + mem_free + mem_cached < mem_total * 0.1";
+    ram_using_95percent = {
+      condition = "mem_buffered + mem_free + mem_cached < mem_total * 0.05";
       time = "1h";
-      description = "{{$labels.host}} is using at least 90% of its RAM for at least 1 hour.";
+      description = "{{$labels.host}} is using at least 95% of its RAM for at least 1 hour.";
     };
     load15 = {
       condition = ''system_load15 / system_n_cpus{org!="nix-community"} >= 2.0'';
