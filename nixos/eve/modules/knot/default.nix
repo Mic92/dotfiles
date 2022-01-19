@@ -22,6 +22,11 @@ in
     ./whoami.nix
   ];
 
+  #content of the secret
+  #key:
+  #- id: acme
+  #  algorithm: hmac-sha256
+  #  secret: 00000000000000000000000000000000000000000000
   sops.secrets."knot-keys.conf".owner = "knot";
 
   services.knot = {

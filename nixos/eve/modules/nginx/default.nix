@@ -41,11 +41,11 @@
         endscript
       '';
     };
-    #services.nginx.package = with pkgs; nginxStable.override {
-    #    perl = null;
-    #    modules = [ nginxModules.auth-ldap ];
-    #  };
-    #};
+    # format:
+    # RFC2136_NAMESERVER=ns1.thalheim.io
+    # RFC2136_TSIG_ALGORITHM=hmac-sha256.
+    # RFC2136_TSIG_KEY=acme
+    # RFC2136_TSIG_SECRET="00000000000000000000000000000000000000000000"
     sops.secrets.lego-knot-credentials.owner = "acme";
 
     security.acme.certs =
