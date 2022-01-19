@@ -48,7 +48,6 @@
   services = {
     gpm.enable = true;
     upower.enable = true;
-    locate.enable = true;
 
     logind.lidSwitch = "ignore";
     journald.extraConfig = "SystemMaxUse=1G";

@@ -94,7 +94,6 @@
   services = {
     gpm.enable = true;
     upower.enable = true;
-    locate.enable = true;
     openssh = {
       enable = true;
       forwardX11 = true;
