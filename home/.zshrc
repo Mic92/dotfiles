@@ -417,9 +417,9 @@ alias -g W='| wc -l'
 xalias diff='diff -Naur --strip-trailing-cr'
 [ -z "${commands[ping6]}" ] && alias ping6="ping -6"
 alias :q=exit
-alias todotxt="vim ~/Dropbox/todo/todo.txt"
 alias grep="grep --binary-files=without-match --directories=skip --color=auto"
 alias R="R --quiet"
+alias strace="strace -yy"
 
 if [ -n "${commands[bat]}" ]; then
   cat() {
