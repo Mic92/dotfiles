@@ -15,20 +15,6 @@
       speech.text = "Updated Shannan's location";
       action.service = "icloud.update";
     };
-    intent_script.PlayMinimix = {
-      speech.text = "Play minimix";
-      action.service = "media_player.play_media";
-      action.entity_id = "media_player.vlc_telnet";
-      action.data_template.media_content_type = "music";
-      action.data_template.media_content_id = "{{ states.sensor.random_minimix.state }}";
-    };
-    intent_script.PlayBBC = {
-      speech.text = "Play BBC World News";
-      action.service = "media_player.play_media";
-      action.entity_id = "media_player.vlc_telnet";
-      action.data_template.media_content_type = "music";
-      action.data_template.media_content_id = "{{ states.sensor.bbc_world_news.state }}";
-    };
     shell_command = {
       suspend_laptop =
         ''${pkgs.openssh}/bin/ssh -i ${config.sops.secrets.ssh-homeassistant.path} hass-agent@{{ host }} "sudo /run/current-system/sw/bin/systemctl suspend"'';

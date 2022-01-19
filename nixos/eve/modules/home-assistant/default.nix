@@ -19,9 +19,9 @@ in
     ./android.nix
     ./timer.nix
     ./transmission.nix
+    ./vlc.nix
     ./weather.nix
     ./zones.nix
-    ./news.nix
     #./coding.nix
   ];
 
