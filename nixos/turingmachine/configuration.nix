@@ -11,7 +11,6 @@
     #./modules/high-dpi.nix
     ./modules/nfs.nix
     ./modules/remote-builder.nix
-    ./modules/retiolum.nix
     #../modules/sway.nix
     #./modules/minidlna.nix
     ./modules/networkmanager.nix
@@ -44,7 +43,7 @@
     #../modules/yubikey.nix
     ../modules/zfs.nix
     ../modules/users.nix
-    ../modules/k3s/server.nix
+    #../modules/k3s/server.nix
   ];
 
   #specialisation.i3.configuration = {

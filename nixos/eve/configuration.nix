@@ -43,7 +43,6 @@
     ./modules/postfix.nix
     ./modules/postgresql.nix
     ./modules/rainloop.nix
-    ./modules/retiolum.nix
     ./modules/remote-builder.nix
     ./modules/redis.nix
     ./modules/rspamd/rspamd.nix

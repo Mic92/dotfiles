@@ -42,11 +42,11 @@
     },
     "emacs-overlay": {
       "locked": {
-        "lastModified": 1642531343,
-        "narHash": "sha256-8i1fPpjbwFQoVwJ3hPXKAolMJgdv2UrA/kLpY5V93TQ=",
+        "lastModified": 1642617831,
+        "narHash": "sha256-0BsR0GzwsB+fBGjHmceJBcBiU8mGTuJnPAdRLnDLinc=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "bce6deb97784a09d6ca5aa0680d5d32eaf3d5586",
+        "rev": "27e68119c7fd1979c532972d08ed6c3129f0f6da",
         "type": "github"
       },
       "original": {
@@ -86,11 +86,11 @@
         "rust-analyzer-src": "rust-analyzer-src"
       },
       "locked": {
-        "lastModified": 1642486955,
-        "narHash": "sha256-PiPn+ClAr/294i3hGHRygGCPtDrDnqbyl7JRcYRLmZc=",
+        "lastModified": 1642573411,
+        "narHash": "sha256-yJi/UrB0BCJcZ7cex2vWfrNYrMdyV+FFYrh+TYgjEzE=",
         "owner": "nix-community",
         "repo": "fenix",
-        "rev": "a69f7ac3008066e991a83367bbe89c11ccf239ab",
+        "rev": "ed344a29b15438c587c0945fec9271bd8a85e721",
         "type": "github"
       },
       "original": {
@@ -342,11 +342,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1642569544,
-        "narHash": "sha256-laY/7defEelduT3Uz0y4YEOLRMPMcA3oxXKDDVxLx0Y=",
+        "lastModified": 1642617407,
+        "narHash": "sha256-Bt660p/Sbn1w9lumD0AZhq8rz+9y/lB4I0r9Agh0YdM=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "e5ebdc2c3e8b30d9bc4f23ebfa599a282b488fb7",
+        "rev": "d8905f5d3a1ef6e1d63d3e938fe9846f780a72cf",
         "type": "github"
       },
       "original": {
@@ -357,15 +357,16 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1642543210,
-        "narHash": "sha256-TVLlEZACuwart4z/AdA87BuEam5fC+d6xwxv8nbCjwo=",
-        "ref": "master",
-        "rev": "277af5c2f9445ce604b495e6a851d06beade41f4",
-        "revCount": 178,
+        "lastModified": 1642624985,
+        "narHash": "sha256-Byg8YGI9DNaM7gxRcYJXb5lKDaeuiIFnfHHRxw58dXA=",
+        "ref": "genipv6",
+        "rev": "ed4e37960ab21ad33894b690da5cd4294494c936",
+        "revCount": 179,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },
       "original": {
+        "ref": "genipv6",
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       }
@@ -397,11 +398,11 @@
     "rust-analyzer-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1642463850,
-        "narHash": "sha256-kY5+G0F353wG4ob5cZLPAa+lnSmbC2Z7q9HcVqe8buk=",
+        "lastModified": 1642492556,
+        "narHash": "sha256-271PDe0z1cqpuMpnYASNT/hOdHx1O8BGXsdhvi7G5J4=",
         "owner": "rust-analyzer",
         "repo": "rust-analyzer",
-        "rev": "477b654f4f4896dab766a398cf1f2955146088d5",
+        "rev": "ac8806df0846ccc62ee396f38de41310ed1d9934",
         "type": "github"
       },
       "original": {
