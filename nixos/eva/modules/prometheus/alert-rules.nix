@@ -93,6 +93,8 @@ lib.mapAttrsToList
     "borgbackup-turingmachine"
     "borgbackup-eve"
     "borgbackup-datastore"
+    "borgbackup-nfs-home"
+    "borgbackup-nfs-share"
   ]
     (name: {
       condition = ''absent_over_time(task_last_run{name="${name}"}[1d])'';
