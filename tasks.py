@@ -16,7 +16,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
 
     def deploy(h: DeployHost) -> None:
         h.run_local(
-            f"rsync --exclude=gdb --exclude=zsh --exclude=.mypy-cache --exclude='.git/' -vaF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
+            f"rsync --exclude=gdb --exclude=zsh --exclude=.direnv --exclude=.mypy-cache --exclude='.git/' -vaF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
         )
 
         flake_path = "/etc/nixos"
