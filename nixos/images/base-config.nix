@@ -39,8 +39,9 @@
     ../modules/tor-ssh.nix
     ../modules/nix-daemon.nix
     ../modules/nur.nix
-    ../modules/minimal-docs.nix
   ];
+
+  documentation.enable = false;
 
   # no auto-updates
   systemd.services.update-prefetch.enable = false;
@@ -61,7 +62,7 @@
       done
       echo "SSH Hidden Service at $(cat /var/lib/tor/onion/ssh/hostname)" | \
         ${pkgs.nur.repos.mic92.ircsink}/bin/ircsink \
-        --port=6697 --secure --server=irc.hackint.org --nick=transmission --target="#krebs-announce"
+        --port=6697 --secure --server=irc.hackint.org --nick=nixos-installer --target="#krebs-announce"
 
     '';
     serviceConfig = {
