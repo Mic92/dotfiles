@@ -24,8 +24,8 @@
 
     ../modules/jarvis-rdp.nix
     ../modules/ip-update.nix
-    ../modules/iwd.nix
-    #../modules/dnsmasq.nix
+    #../modules/iwd.nix
+    ../modules/dnsmasq.nix
     ../modules/promtail.nix
     ../modules/powertop.nix
     #../modules/macos-kvm.nix
@@ -35,7 +35,7 @@
     ../modules/tracing.nix
     ../modules/telegraf.nix
     #./kde.nix
-    ../modules/samba-dl.nix
+    #../modules/samba-dl.nix
     ../modules/sway.nix
     #../modules/awesome.nix
     #../modules/gnome.nix
@@ -166,48 +166,48 @@
 
   services.tor.client.enable = true;
 
-  services.samba = {
-    enable = true;
-    securityType = "user";
-    enableWinbindd = false;
-    extraConfig = ''
-      workgroup = WORKGROUP
-      server string = smbnix
-      netbios name = smbnix
-      security = user
-      hosts allow = 0.0.0.0/0
-      guest account = nobody
-      map to guest = bad user
-      # Use sendfile() for performance gain
-      use sendfile = true
+  #services.samba = {
+  #  enable = true;
+  #  securityType = "user";
+  #  enableWinbindd = false;
+  #  extraConfig = ''
+  #    workgroup = WORKGROUP
+  #    server string = smbnix
+  #    netbios name = smbnix
+  #    security = user
+  #    hosts allow = 0.0.0.0/0
+  #    guest account = nobody
+  #    map to guest = bad user
+  #    # Use sendfile() for performance gain
+  #    use sendfile = true
 
-      # No NetBIOS is needed
-      disable netbios = true
+  #    # No NetBIOS is needed
+  #    disable netbios = true
 
-      # Only mangle non-valid NTFS names, don't care about DOS support
-      mangled names = illegal
+  #    # Only mangle non-valid NTFS names, don't care about DOS support
+  #    mangled names = illegal
 
-      # Performance optimizations
-      socket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536
+  #    # Performance optimizations
+  #    socket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536
 
-      # Disable all printing
-      load printers = false
-      disable spoolss = true
-      printcap name = /dev/null
-    '';
-    shares = {
-      public = {
-        path = "/home/joerg/web/upload";
-        browseable = "yes";
-        "read only" = "no";
-        "guest ok" = "yes";
-        "create mask" = "0644";
-        "directory mask" = "0755";
-        "force user" = "joerg";
-        "force group" = "users";
-      };
-    };
-  };
+  #    # Disable all printing
+  #    load printers = false
+  #    disable spoolss = true
+  #    printcap name = /dev/null
+  #  '';
+  #  shares = {
+  #    public = {
+  #      path = "/home/joerg/web/upload";
+  #      browseable = "yes";
+  #      "read only" = "no";
+  #      "guest ok" = "yes";
+  #      "create mask" = "0644";
+  #      "directory mask" = "0755";
+  #      "force user" = "joerg";
+  #      "force group" = "users";
+  #    };
+  #  };
+  #};
   networking.firewall.interfaces."virbr1".allowedTCPPorts = [
     445
     139
