@@ -139,8 +139,9 @@ lib.mapAttrsToList
       description = "{{$labels.host}} is using 30% of its swap space for at least 30 minutes.";
     };
 
+    # user@1000.service and similar sometimes fail, we don't care about this service.
     systemd_service_failed = {
-      condition = ''systemd_units_active_code == 3'';
+      condition = ''systemd_units_active_code{name!~user@\d+.service} == 3'';
       description = "{{$labels.host}} failed to (re)start service {{$labels.name}}.";
     };
 
