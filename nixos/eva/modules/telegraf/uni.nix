@@ -16,6 +16,7 @@ let
     "yasmin.r"
     "graham.r"
     "ryan.r"
+    "sauron.r"
   ];
 in
 {
