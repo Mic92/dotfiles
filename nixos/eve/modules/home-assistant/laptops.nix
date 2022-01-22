@@ -11,9 +11,14 @@
       action.service = "shell_command.suspend_laptop";
       action.data_template.host = "bernie.r";
     };
-    intent_script.UpdateLocation = {
+    intent_script.UpdateShannansLocation = {
       speech.text = "Updated Shannan's location";
       action.service = "icloud.update";
+    };
+    intent_script.UpdateJoergsLocation = {
+      speech.text = "Updated Yorks's location";
+      action.service = "notify.mobile_app_android";
+      action.data.message = "request_location_update";
     };
     shell_command = {
       suspend_laptop =
