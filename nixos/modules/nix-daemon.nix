@@ -51,6 +51,10 @@
         nix run "github:Mic92/dotfiles/$last_build#hm-build" --  --out-link /run/next-home
       fi
     '';
+    serviceConfig = {
+      CPUSchedulingPolicy = "idle";
+      IOSchedulingClass = "idle";
+    };
   };
 
   # inputs == flake inputs in configurations.nix
