@@ -30,7 +30,7 @@
       libnotify
       pamixer
       mpc_cli
-      gnome3.networkmanagerapplet
+      networkmanagerapplet
       gnome3.file-roller
       gnome3.nautilus
       firefox-wayland
