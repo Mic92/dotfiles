@@ -4,7 +4,7 @@
     libinput.enable = true;
     displayManager.gdm.enable = true;
     displayManager.defaultSession = "gnome";
-    desktopManager.gnome3.enable = true;
+    desktopManager.gnome.enable = true;
   };
   environment.systemPackages = [
     pkgs.gnome3.gnome-tweaks
