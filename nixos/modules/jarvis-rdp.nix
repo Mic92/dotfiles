@@ -10,7 +10,7 @@
 
       cat > $out/bin/jarvis <<EOF
       #!${pkgs.runtimeShell} -e
-      exec ${pkgs.freerdp}/bin/wlfreerdp /ipv6 /v:jarvis.r:3389 /u:joerg /p:$(<${config.sops.secrets.jarvis-rdp-password.path}) /cert:tofu "$@"
+      exec ${pkgs.freerdp}/bin/wlfreerdp /ipv6 /v:jarvis.r:3389 /u:joerg /p:\$(<${config.sops.secrets.jarvis-rdp-password.path}) /cert:tofu "\$@"
       EOF
       chmod +x $out/bin/jarvis
 
