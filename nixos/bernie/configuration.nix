@@ -8,6 +8,7 @@
     ./hardware-configuration.nix
     ./modules/sshd.nix
 
+    ../modules/gnome.nix
     ../modules/jarvis-rdp.nix
     ../modules/hass-agent.nix
     ../modules/ip-update.nix
@@ -45,14 +46,6 @@
   i18n.defaultLocale = "en_DK.UTF-8";
 
   programs.vim.defaultEditor = true;
-
-  services.xserver = {
-    enable = true;
-    libinput.enable = true;
-    displayManager.gdm.enable = true;
-    displayManager.defaultSession = "gnome";
-    desktopManager.gnome.enable = true;
-  };
 
   environment.systemPackages = with pkgs; [
     (pkgs.callPackage (pkgs.fetchFromGitHub {

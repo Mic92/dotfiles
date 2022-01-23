@@ -8,14 +8,11 @@
     ./modules/dice.nix
     ./modules/backup.nix
     ./modules/hass-agent.nix
-    #./modules/high-dpi.nix
     ./modules/nfs.nix
     ./modules/remote-builder.nix
-    #../modules/sway.nix
     #./modules/minidlna.nix
     ./modules/networkmanager.nix
     ./modules/packages.nix
-    ./modules/high-dpi.nix
     ./modules/gnome-pim.nix
     ./modules/sops.nix
     ./modules/sshd.nix
@@ -46,14 +43,9 @@
     #../modules/k3s/server.nix
   ];
 
-  #specialisation.i3.configuration = {
-  #  imports = [
-  #    ../modules/i3.nix
-  #  ];
-  #  services.teamviewer.enable = true;
-  #};
-
   #services.udev.packages = [ pkgs.platformio ];
+
+  hardware.video.hidpi.enable = true;
 
   boot = {
     kernelPackages = pkgs.linuxPackages_zen;
@@ -216,10 +208,6 @@
     445
     139
   ];
-
-  services.aesmd.enable = true;
-  hardware.cpu.intel.sgx.enableDcapCompat = true;
-  hardware.cpu.intel.sgx.provision.enable = true;
 
   system.stateVersion = "18.03";
 }
