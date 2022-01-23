@@ -261,7 +261,7 @@ exec_always {
   gsettings set $gnome-schema gtk-theme 'Adwaita'
   gsettings set $gnome-schema icon-theme 'Adwaita'
   gsettings set $gnome-schema cursor-theme 'Adwaita'
-  gsettings set $gnome-schema font-name "Ubuntu 18"
+  gsettings set $gnome-schema font-name "Ubuntu 12"
   kanshictl reload
 }
 

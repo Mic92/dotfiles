@@ -4,7 +4,7 @@
   services.xserver.displayManager.sddm.enable = true;
 
   environment.systemPackages = with pkgs; [
-    gnome3.defaultIconTheme
+    gnome.adwaita-icon-theme
     hicolor_icon_theme
 
     qt5.qttools

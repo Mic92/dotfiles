@@ -2,7 +2,7 @@
 {
   programs.ssh.knownHosts.ssh-ca = {
     certAuthority = true;
-    hostNames = [
+    extraHostNames = [
       "*.r"
       "*.i"
       "*.thalheim.io"

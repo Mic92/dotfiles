@@ -35,7 +35,7 @@
     (i3pystatus.override {
       extraLibs = with python3.pkgs; [ keyrings-alt paho-mqtt ];
     })
-    gnome3.networkmanagerapplet
+    networkmanagerapplet
     gnome3.file-roller
     gnome3.nautilus
   ];
