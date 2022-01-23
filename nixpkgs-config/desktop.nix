@@ -53,7 +53,7 @@ in
     xlibs.xkill
     signal-desktop
     nur.repos.mic92.pandoc-bin
-    gnome3.defaultIconTheme
+    gnome.adwaita-icon-theme
     hicolor_icon_theme
     graphicsmagick
     aspell
