@@ -28,7 +28,7 @@
     miniond.inputs.mars-std.follows = "mars-std";
 
     nixpkgs.url = "github:Mic92/nixpkgs/main";
-    nixpkgs-systemd.url = "github:andir/nixpkgs/systemd-250";
+    nixpkgs-systemd.url = "github:jonringer/nixpkgs/systemd-250";
     # for development
     #nixpkgs.url = "/home/joerg/git/nixpkgs";
     nur.url = "github:nix-community/NUR";
