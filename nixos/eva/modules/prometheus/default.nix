@@ -63,12 +63,15 @@ in
           {
             targets = [
               # university
+              "astrid.r:9273"
+              "dan.r:9273"
+              "mickey.r:9273"
               "rose.r:9273"
               "martha.r:9273"
               "donna.r:9273"
               "amy.r:9273"
               "clara.r:9273"
-              #"doctor.r:9273"
+              "doctor.r:9273"
               #"grandalf.r:9273"
               "sauron.r:9273"
               "bill.r:9273"
