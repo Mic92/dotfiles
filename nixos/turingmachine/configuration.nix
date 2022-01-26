@@ -19,6 +19,7 @@
     ./modules/cntr.nix
     #./modules/minidlna.nix
 
+    ../modules/podman.nix
     ../modules/jarvis-rdp.nix
     ../modules/ip-update.nix
     #../modules/iwd.nix
@@ -126,9 +127,6 @@
     #rkt.enable = true;
     virtualbox.host.enable = false;
     #docker.enable = true;
-    podman.enable = true;
-    podman.extraPackages = [ pkgs.zfs ];
-    podman.dockerCompat = true;
   };
 
   fonts.fontDir.enable = true;
