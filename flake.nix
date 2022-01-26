@@ -67,6 +67,10 @@
 
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
+
+    nix2container.url = "github:Mic92/nix2container/speedup";
+    nix2container.inputs.nixpkgs.follows = "nixpkgs";
+    nix2container.inputs.flake-utils.follows = "flake-utils";
   };
 
   outputs = { ... } @ args: import ./outputs.nix args;
