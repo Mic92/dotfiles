@@ -4,6 +4,7 @@
 , nur
 , sops-nix
 , nixos-generators
+, nix2container
 , ... } @ inputs:
 (flake-utils.lib.eachDefaultSystem (system:
   let
@@ -54,6 +55,13 @@
     # nix build '.#kexec' --impure
     packages.x86_64-linux = let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      containerPkgs = nix2container.packages.x86_64-linux;
+      selfPkgs = self.packages.x86_64-linux;
+
+      copyToPodman = image: pkgs.writeShellScriptBin "copy-to-podman" ''
+        ${containerPkgs.skopeo-nix2container}/bin/skopeo --insecure-policy copy nix:${image} containers-storage:${image.name}:${image.tag}
+        echo Docker image ${image.name}:${image.tag} have been loaded
+      '';
     in {
       kexec = nixos-generators.nixosGenerate {
         inherit pkgs;
@@ -81,8 +89,16 @@
         ];
       };
 
+      kresd-image = (pkgs.callPackage ./nixos/images/kresd.nix {
+        inherit (containerPkgs) nix2container;
+      });
+
+      kresd-podman = copyToPodman selfPkgs.kresd-image;
+
+      kresd-registry = selfPkgs.kresd-image.copyToRegistry;
+
       netboot-pixie-core = pkgs.callPackage ./nixos/images/netboot-pixie-core.nix {
-        inherit (self.outputs.packages.x86_64-linux) netboot;
+        inherit (selfPkgs) netboot;
       };
     };
 
