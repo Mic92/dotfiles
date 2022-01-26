@@ -795,6 +795,9 @@ if [[ $commands[kubectl] ]]; then
    source <(kubectl completion zsh)
 fi
 alias tf=terraform
+alias manifold-slack="chromium --app=https://manifoldfinance.slack.com/"
+alias numtide-slack="chromium --app=https://numtide.slack.com/"
+alias numtide-labs-slack="chromium --app=https://numtide-labs.slack.com/"
 if [[ -n "${commands[fzf-share]}" ]]; then
   FZF_CTRL_R_OPTS=--reverse
   source "$(fzf-share)/key-bindings.zsh"
@@ -802,6 +805,7 @@ fi
 if [[ -f ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]]; then
   source ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 fi
+
 
 # prevent broken terminals
 ttyctl -f
