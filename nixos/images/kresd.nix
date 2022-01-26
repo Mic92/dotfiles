@@ -19,7 +19,7 @@ let
     rawset(cache, 'current_storage', 'lmdb:///var/cache/knot-resolver')
   '';
 in nix2container.buildImage {
-  name = "ghcr.io/mic92/kresd";
+  name = "mic92/kresd";
   config = {
     Entrypoint = [ "${kresd}/bin/kresd" "--noninteractive" "-c" configFile ];
     Volumes = {
