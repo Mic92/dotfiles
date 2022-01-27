@@ -1,13 +1,27 @@
 app = "kresd"
 
 [[services]]
-  internal_port = "53"
+  internal_port = "4443"
   protocol = "tcp"
 
   [[services.ports]]
-    handlers = ["tls"]
+    port = "443"
+
+  [[services.tcp_checks]]
+    interval = 10000
+    timeout = 2000
+
+[[services]]
+  internal_port = "8853"
+  protocol = "tcp"
+
+  [[services.ports]]
     port = "853"
 
   [[services.tcp_checks]]
     interval = 10000
     timeout = 2000
+
+[mounts]
+  source="kresdcache"
+  destination="/var/cache/knot-resolver"
