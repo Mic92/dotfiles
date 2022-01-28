@@ -33,11 +33,6 @@
 
   networking.hostName = "rock";
 
-  networking.retiolum = {
-    ipv4 = "10.243.29.171";
-    ipv6 = "42:0:3c46:e1a5:350a:770c:ec9:f353";
-  };
-
   systemd.services.netdata = {
     path = with pkgs; [ python3 ];
   };

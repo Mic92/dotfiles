@@ -22,6 +22,4 @@
       UseDNS = no
     '';
   };
-
-  networking.retiolum.ipv6 = "42:0:3c46:7338:dda8:2015:8d14:2a0b";
 }
