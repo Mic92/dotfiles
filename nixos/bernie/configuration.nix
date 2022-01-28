@@ -21,7 +21,8 @@
     ../modules/telegraf.nix
     ../modules/pipewire.nix
   ];
-  networking.retiolum.ipv6 = "42:0:3c46:1452:ca55:fdaf:b12b:3027";
+
+  systemd.services.update-prefetch.enable = false;
 
   boot.zfs.requestEncryptionCredentials = [ "zroot/root" ];
   boot.zfs.enableUnstable = true;
