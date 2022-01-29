@@ -18,7 +18,7 @@
       git clone "$downstream" "$workdir"
       cd "$workdir"
       git pull --rebase "$upstream" master
-      git push origin master
+      git push --force origin master
     '';
     path = [ pkgs.git ];
     serviceConfig = {
