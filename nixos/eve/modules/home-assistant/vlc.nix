@@ -34,7 +34,7 @@
       action.data_template.media_content_id = "{{ states.sensor.random_minimix.state }}";
     };
     intent_script.PlayBBC = {
-      speech.text = "Play BBC World News";
+      speech.text = "Play B B Ce World News";
       action.service = "media_player.play_media";
       action.entity_id = "media_player.vlc_telnet";
       action.data_template.media_content_type = "music";
