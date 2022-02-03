@@ -1,6 +1,5 @@
 { lib, config, pkgs, inputs, ... }: with lib; {
   nix = {
-    settings.trusted-users = [ "joerg" "root" ];
     gc.automatic = true;
     gc.dates = "03:15";
     # should be enough?
@@ -9,25 +8,24 @@
     daemonIOSchedClass = "idle";
     daemonCPUSchedPolicy = "idle";
 
-    # https://github.com/NixOS/nix/issues/719
-    extraOptions = ''
-      builders-use-substitutes = true
-      keep-outputs = true
-      keep-derivations = true
+    settings = {
+      # https://github.com/NixOS/nix/issues/719
+      builders-use-substitutes = true;
+      keep-outputs = true;
+      keep-derivations = true;
       # in zfs we trust
-      fsync-metadata = ${lib.boolToString (!config.boot.isContainer or config.fileSystems."/".fsType != "zfs")}
-      experimental-features = nix-command flakes
-    '';
-
-    binaryCaches = [
-      "https://nix-community.cachix.org"
-      "https://mic92.cachix.org"
-    ];
-
-    binaryCachePublicKeys = [
-      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "mic92.cachix.org-1:gi8IhgiT3CYZnJsaW7fxznzTkMUOn1RY4GmXdT/nXYQ="
-    ];
+      fsync-metadata = lib.boolToString (!config.boot.isContainer or config.fileSystems."/".fsType != "zfs");
+      experimental-features = "nix-command flakes";
+      substituters = [
+        "https://nix-community.cachix.org"
+        "https://mic92.cachix.org"
+      ];
+      trusted-public-keys = [
+        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+        "mic92.cachix.org-1:gi8IhgiT3CYZnJsaW7fxznzTkMUOn1RY4GmXdT/nXYQ="
+      ];
+      trusted-users = [ "joerg" "root" ];
+    };
   };
 
   imports = [ ./builder.nix ];
