@@ -36,7 +36,7 @@ in
       shell = "/run/current-system/sw/bin/zsh";
       openssh.authorizedKeys.keys = alfred ++ [
         ''command="${pkgs.borgbackup}/bin/borg serve --restrict-to-path /data/backup/devkid/pi0",no-pty,no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-user-rc ${alfredsPi}''
-        ''command="${pkgs.borgbackup}/bin/borg serve --restrict-to-path /data/backup/devkid/Dokumente --restrict-to-path /data/backup/devkid/Bilder",no-pty,no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-user-rc ${alfredsNas}''
+        ''command="${pkgs.borgbackup}/bin/borg serve --restrict-to-path /data/backup/devkid/nas",no-pty,no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-user-rc ${alfredsNas}''
       ];
     };
 
