@@ -79,7 +79,7 @@ in
     })
     wmc-mpris
     playerctl
-    youtube-dl
+    yt-dlp
     mumble
     ferdi
     msmtp

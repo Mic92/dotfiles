@@ -1,6 +1,6 @@
 { lib, config, pkgs, inputs, ... }: with lib; {
   nix = {
-    trustedUsers = [ "joerg" "root" ];
+    settings.trusted-users = [ "joerg" "root" ];
     gc.automatic = true;
     gc.dates = "03:15";
     # should be enough?

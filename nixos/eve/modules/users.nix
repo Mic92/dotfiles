@@ -66,4 +66,6 @@ in
 
     root.openssh.authorizedKeys.keys = alfred ++ joerg ++ vv01f ++ shannan;
   };
+
+  nix.settings.allowed-users = [ "devkid" "vv01f" "shannan" ];
 }
