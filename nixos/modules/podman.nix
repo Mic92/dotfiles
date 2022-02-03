@@ -6,6 +6,12 @@
     podman.dockerCompat = true;
   };
 
+  virtualisation.containers.containersConf.settings = {
+    dns_servers = [
+      "8.8.8.8"
+      "8.8.4.4"
+    ];
+  };
   virtualisation.containers.storage.settings = {
     storage.driver = "zfs";
     storage.graphroot = "/var/lib/containers/storage";
