@@ -57,7 +57,7 @@
 
   sops.secrets.gitea-mail.owner = config.systemd.services.gitea.serviceConfig.User;
 
-  nix.allowedUsers = [ "gitea" ];
+  nix.settings.allowed-users = [ "gitea" ];
 
   services.nginx.virtualHosts."git.thalheim.io" = {
     useACMEHost = "thalheim.io";

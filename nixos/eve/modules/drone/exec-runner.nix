@@ -4,7 +4,7 @@ let
   droneserver = config.users.users.droneserver.name;
 in
 {
-  nix.allowedUsers = [ "drone-runner-exec" ];
+  nix.settings.allowed-users = [ "drone-runner-exec" ];
   systemd.services.drone-runner-exec = {
     wantedBy = [ "multi-user.target" ];
     # might break deployment

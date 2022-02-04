@@ -76,5 +76,5 @@
 
   users.groups.gitlab-runner = {};
 
-  nix.allowedUsers = [ "gitlab-runner" ];
+  nix.settings.allowed-users = [ "gitlab-runner" ];
 }
