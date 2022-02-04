@@ -799,6 +799,7 @@ alias slack-manifold="chromium --app=https://manifoldfinance.slack.com/"
 alias slack-numtide="chromium --app=https://numtide.slack.com/"
 alias slack-numtide-labs="chromium --app=https://numtide-labs.slack.com/"
 alias slack-tum="chromium --app=https://ls1-tum.slack.com/"
+alias slack-tum-courses="chromium --app=https://ls1-tum-course.slack.com/"
 
 if [[ -n "${commands[fzf-share]}" ]]; then
   FZF_CTRL_R_OPTS=--reverse
