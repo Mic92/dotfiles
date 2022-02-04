@@ -49,7 +49,6 @@
   hardware.video.hidpi.enable = true;
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_zen;
     zfs.requestEncryptionCredentials = [ "zroot/root" ];
 
     loader.systemd-boot.enable = true;
