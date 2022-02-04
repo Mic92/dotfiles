@@ -14,8 +14,10 @@
 [user]
   name = Jörg Thalheim
   email = joerg@thalheim.io
+  signingKey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbBp2dH2X3dcU1zh+xW3ZsdYROKpJd3n13ssOP092qE joerg@turingmachine
 [gpg]
   program = gpg2
+  format = ssh
 [diff]
   tool = vim -d
   compactionHeuristic = true
@@ -94,3 +96,5 @@
   defaultBranch = main
 [credential]
   helper = store
+[commit]
+	gpgsign = true
