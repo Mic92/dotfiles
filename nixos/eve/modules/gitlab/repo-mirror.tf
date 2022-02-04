@@ -17,7 +17,6 @@ resource "gitlab_project" "repos" {
   ci_config_path = lookup({
     "Mic92/sops-nix" : ".gitlab-ci.yml@Mic92/sops-nix",
     "Mic92/dotfiles" : ".gitlab-ci.yml@Mic92/dotfiles",
-    "Mic92/doctor-cluster-config" : ".gitlab-ci.yml@Mic92/dotfiles",
     }, each.key,
     # sane default
   "")
@@ -27,7 +26,6 @@ resource "gitlab_project" "repos" {
 resource "gitlab_project_variable" "cachix-key" {
   for_each = toset([
     gitlab_project.repos["Mic92/dotfiles"].id,
-    gitlab_project.repos["Mic92/doctor-cluster-config"].id
   ])
   project   = each.key
   key       = "CACHIX_SIGNING_KEY"
@@ -39,7 +37,6 @@ resource "gitlab_project_variable" "cachix-key" {
 resource "gitlab_project_variable" "github-token" {
   for_each = toset([
     gitlab_project.repos["Mic92/dotfiles"].id,
-    gitlab_project.repos["Mic92/doctor-cluster-config"].id
   ])
   project   = each.key
   key       = "GITHUB_TOKEN"
