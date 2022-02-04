@@ -8,6 +8,9 @@ import subprocess
 from deploy_nixos import DeployHost, DeployGroup, parse_hosts, HostKeyCheck
 
 
+RSYNC_EXCLUDES = ["gdb", "zsh", ".terraform", ".direnv", ".mypy-cache", ".git"]
+
+
 def deploy_nixos(hosts: List[DeployHost]) -> None:
     """
     Deploy to all hosts in parallel
@@ -16,7 +19,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
 
     def deploy(h: DeployHost) -> None:
         h.run_local(
-            f"rsync --exclude=gdb --exclude=zsh --exclude=.direnv --exclude=.mypy-cache --exclude='.git/' -vaF --delete -e ssh . {h.user}@{h.host}:/etc/nixos",
+            f"rsync {' --exclude '.join([''] + RSYNC_EXCLUDES)} -vaF --delete -e ssh . {h.user}@{h.host}:/etc/nixos"
         )
 
         flake_path = "/etc/nixos"
@@ -65,10 +68,10 @@ def deploy_k3s(c):
                 "node1.nixos.Serverless-tum.emulab.net",
                 meta=dict(flake_attr="cloudlab-k3s-agent"),
             ),
-             DeployHost(
+            DeployHost(
                 "node2.nixos.Serverless-tum.emulab.net",
                 meta=dict(flake_attr="cloudlab-k3s-agent"),
-             ),
+            ),
         ]
     )
 
