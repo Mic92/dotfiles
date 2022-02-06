@@ -62,6 +62,7 @@
     ../modules/iperf.nix
     ../modules/mosh.nix
     ../modules/openldap
+    ../modules/rtorrent.nix
     ../modules/samba-dl.nix
     ../modules/tor-ssh.nix
     ../modules/tracing.nix
