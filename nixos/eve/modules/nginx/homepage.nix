@@ -34,7 +34,7 @@
       useACMEHost = "thalheim.io";
       forceSSL = true;
       extraConfig = ''
-        return 302 https//github.com/Mic92/vmsh;
+        return 302 https://github.com/Mic92/vmsh;
       '';
     };
 
@@ -42,7 +42,7 @@
       useACMEHost = "thalheim.io";
       forceSSL = true;
       extraConfig = ''
-        return 302 https//github.com/Mic92/vmsh;
+        return 302 https://github.com/Mic92/vmsh;
       '';
     };
   };
