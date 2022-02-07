@@ -23,6 +23,17 @@
       tags.org = "krebs";
     }];
 
+
+    x509_cert = [
+      {
+        sources = [
+          "https://catalonia.r/"
+        ];
+        tags.host = "catalonia";
+        tags.org = "krebs";
+      }
+    ];
+
     http_response = [
       #{
       #  urls = [ "http://puyak.r" ];
@@ -43,6 +54,7 @@
         urls = [
           "http://yellow.r"
           "http://catalonia.r/"
+          "https://catalonia.r/"
         ];
         response_string_match = "Index of /";
         tags.org = "krebs";
