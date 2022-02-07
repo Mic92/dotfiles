@@ -18,6 +18,7 @@ in {
   imports = [
     ../../../modules/pipewire.nix
   ];
+  #hardware.pulseaudio.enable = true;
   #systemd.user.sockets.pipewire-pulse = {
   #  socketConfig.ListenStream = "4713";
   #};

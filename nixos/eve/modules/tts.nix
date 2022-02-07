@@ -4,7 +4,7 @@
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       ExecStart = ''
-        ${pkgs.tts}/bin/tts-server --model_name tts_models/en/ljspeech/tacotron2-DDC --vocoder_name vocoder_models/en/ljspeech/hifigan_v2
+        ${pkgs.tts}/bin/tts-server --model_name tts_models/en/ljspeech/tacotron2-DCA
       '';
       User = "joerg";
     };
