@@ -42,11 +42,11 @@
     },
     "emacs-overlay": {
       "locked": {
-        "lastModified": 1644116615,
-        "narHash": "sha256-OY6WM1yCgGOKVlQTpCPw2Y9+ugr9aIMvnt6zluedans=",
+        "lastModified": 1644230579,
+        "narHash": "sha256-/3v0jBKY1QJPK6cdO0fZl+xK5E+GZhHcbgWb7RoFEN4=",
         "owner": "nix-community",
         "repo": "emacs-overlay",
-        "rev": "01f7d6402d84ef73b083319f662dc0858aafda5f",
+        "rev": "02d47fdf48e54598f9838f01a9d172bfa206b63e",
         "type": "github"
       },
       "original": {
@@ -133,11 +133,11 @@
     },
     "flake-utils": {
       "locked": {
-        "lastModified": 1642700792,
-        "narHash": "sha256-XqHrk7hFb+zBvRg6Ghl+AZDq03ov6OshJLiSWOoX5es=",
+        "lastModified": 1644229661,
+        "narHash": "sha256-1YdnJAsNy69bpcjuoKdOYQX0YxZBiCYZo4Twxerqv7k=",
         "owner": "numtide",
         "repo": "flake-utils",
-        "rev": "846b2ae0fc4cc943637d3d1def4454213e203cba",
+        "rev": "3cecb5b042f7f209c56ffd8371b2711a290ec797",
         "type": "github"
       },
       "original": {
@@ -180,11 +180,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1643938766,
-        "narHash": "sha256-ogn1AtalQssSdrkGCPqZLTdxnz22kaDEV8hKg0wWcNc=",
+        "lastModified": 1644149190,
+        "narHash": "sha256-Ntmh/QZZep5+zMu+8O+nFwQz1tptGOoy+jj1KK/xm20=",
         "owner": "mars-research",
         "repo": "mars-std",
-        "rev": "3f9358a767132a7e9de1429cb07eed17f0e18e6b",
+        "rev": "2477abccd203e461eaf475cfd2b444baa8108640",
         "type": "github"
       },
       "original": {
@@ -349,11 +349,11 @@
     },
     "nixpkgs-systemd": {
       "locked": {
-        "lastModified": 1643027938,
-        "narHash": "sha256-H/cmwBQyDUm6+/kMuCUZA62jFwNsPGj1ycWtC+qgMgA=",
+        "lastModified": 1644184258,
+        "narHash": "sha256-EFGEbKh91YQxd/xT6TkGbMz9WWCPXl/DTaRG91y/o3w=",
         "owner": "jonringer",
         "repo": "nixpkgs",
-        "rev": "957e22cc61da7145efc1805642942bf61c50eab3",
+        "rev": "9ca3e28b3d7bad85c91d1b08523bd102518ba6da",
         "type": "github"
       },
       "original": {
@@ -365,11 +365,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1644106607,
-        "narHash": "sha256-FbSqrGWufYEyipvTheEvNeAnfx97Jpm2rtfLqXTMJ+k=",
+        "lastModified": 1644200006,
+        "narHash": "sha256-TCOuqFePZrcRAezpOUtObpXtKgMZS+nd/qREW4PQG3Y=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "4d39fd74fbb3d455bdc7342eb886e409848e0296",
+        "rev": "7429ba7df4ddde4a0d9ec388a22e9db81add54e4",
         "type": "github"
       },
       "original": {
@@ -380,11 +380,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1644143266,
-        "narHash": "sha256-mUUUXmR0Ys97BKD9Z981whrbmSadgEqw66MJd8CP3So=",
+        "lastModified": 1644242475,
+        "narHash": "sha256-RKn6+FqkhgNI4s1KDBXf48xuy9LAcwgwcEmqk5q4YYU=",
         "ref": "master",
-        "rev": "622aea3adb9cd48d6db310c4ad502c3d3ef26928",
-        "revCount": 188,
+        "rev": "9c1d5027140cc48fc9db332fdc6240efdf22d940",
+        "revCount": 189,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },
@@ -445,11 +445,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1644115219,
-        "narHash": "sha256-XQpVfuqVbU6RKULeSw+EAiizvenA0NqDEtma2BTtlOw=",
+        "lastModified": 1644201179,
+        "narHash": "sha256-l3fVP+B+OWf6fa75lq9VYck3Arr+QqrXZJTDuWQfalo=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "6970a38429dc822dd5b687a939faafeb3766efe1",
+        "rev": "f70af71ef32b14e33cf9ffa6c28b5fef01d67348",
         "type": "github"
       },
       "original": {
