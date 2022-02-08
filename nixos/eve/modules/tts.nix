@@ -4,7 +4,7 @@
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
       ExecStart = ''
-        ${pkgs.tts}/bin/tts-server --model_name tts_models/en/ljspeech/tacotron2-DCA
+        ${pkgs.tts}/bin/tts-server --model_name tts_models/en/ljspeech/tacotron2-DCA --port 5004
       '';
       User = "joerg";
     };
@@ -15,7 +15,7 @@
 
   services.nginx = {
     upstreams = {
-      "@tts".extraConfig = "server localhost:5002;";
+      "@tts".extraConfig = "server localhost:5004;";
     };
     virtualHosts."tts.r" = {
       # TODO
