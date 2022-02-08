@@ -19,7 +19,7 @@
     ./modules/cntr.nix
     #./modules/minidlna.nix
 
-    ../modules/podman.nix
+    #../modules/podman.nix
     ../modules/jarvis-rdp.nix
     ../modules/ip-update.nix
     #../modules/iwd.nix
@@ -125,7 +125,9 @@
     #rkt.enable = true;
     #rkt.enable = true;
     virtualbox.host.enable = false;
-    #docker.enable = true;
+    docker.enable = true;
+    docker.storageDriver = "zfs";
+    docker.extraOptions = "--storage-opt=zfs.fsname=zroot/docker";
   };
 
   fonts.fontDir.enable = true;
