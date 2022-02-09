@@ -61,15 +61,15 @@ def deploy_k3s(c):
     deploy_nixos(
         [
             DeployHost(
-                "node0.nixos.Serverless-tum.emulab.net",
+                "node0.nixos-k3s.Serverless-tum.emulab.net",
                 meta=dict(flake_attr="cloudlab-k3s-server"),
             ),
             DeployHost(
-                "node1.nixos.Serverless-tum.emulab.net",
+                "node1.nixos-k3s.Serverless-tum.emulab.net",
                 meta=dict(flake_attr="cloudlab-k3s-agent"),
             ),
             DeployHost(
-                "node2.nixos.Serverless-tum.emulab.net",
+                "node2.nixos-k3s.Serverless-tum.emulab.net",
                 meta=dict(flake_attr="cloudlab-k3s-agent"),
             ),
         ]
