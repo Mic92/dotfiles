@@ -33,7 +33,7 @@
     ./modules/jetbrains-remote.nix
     #./modules/k8s.nix
     ./modules/knot
-    ./modules/kresd.nix
+    ./modules/unbound.nix
     ./modules/mastodon-hnbot.nix
     ./modules/mediawiki.nix
     ./modules/network.nix
