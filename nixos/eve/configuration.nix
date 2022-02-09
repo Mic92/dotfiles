@@ -69,6 +69,7 @@
     ../modules/promtail.nix
     #../modules/wezterm.nix
     ../modules/wireguard.nix
+    ../modules/xrdp.nix
     ../modules/zfs.nix
     ../modules/zsh.nix
   ];
