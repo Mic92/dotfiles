@@ -1,4 +1,5 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }: let
+in {
   sops.secrets.jarvis-rdp-password = {
     sopsFile = ../secrets/desktop.yaml;
     group = "users";

@@ -30,6 +30,7 @@
     ./modules/goatcounter.nix
     ./modules/home-assistant
     ./modules/influxdb.nix
+    ./modules/jetbrains-remote.nix
     #./modules/k8s.nix
     ./modules/knot
     ./modules/kresd.nix
@@ -69,7 +70,6 @@
     ../modules/promtail.nix
     #../modules/wezterm.nix
     ../modules/wireguard.nix
-    ../modules/xrdp.nix
     ../modules/zfs.nix
     ../modules/zsh.nix
   ];

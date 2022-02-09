@@ -6,6 +6,7 @@
     #../modules/libvirt.nix
     ./modules/caddy.nix
     ./modules/dice.nix
+    ./modules/eve-rdp.nix
     ./modules/backup.nix
     ./modules/hass-agent.nix
     ./modules/nfs.nix
@@ -128,6 +129,14 @@
     docker.enable = true;
     docker.storageDriver = "zfs";
     docker.extraOptions = "--storage-opt=zfs.fsname=zroot/docker";
+  };
+
+  networking.firewall.extraCommands = ''
+    iptables -t nat -A PREROUTING -p tcp -d 88.99.244.96 --dport 53 -j DNAT --to-destination 172.17.0.1
+  '';
+
+  environment.etc."docker/daemon.json".text = builtins.toJSON {
+    dns = [ "8.8.8.8" "8.8.4.4" ];
   };
 
   fonts.fontDir.enable = true;
