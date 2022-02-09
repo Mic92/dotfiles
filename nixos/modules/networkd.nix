@@ -30,6 +30,8 @@ in
   ];
   services.resolved.extraConfig = ''
     DNSOverTLS=yes
+    # docker
+    DNSStubListenerExtra=172.17.0.1
   '';
   # dns.thalheim.io performs dnssec already
   services.resolved.dnssec = "false";
