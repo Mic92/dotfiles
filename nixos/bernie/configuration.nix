@@ -27,7 +27,6 @@
   boot.zfs.requestEncryptionCredentials = [ "zroot/root" ];
   boot.zfs.enableUnstable = true;
   boot.loader.systemd-boot.enable = true;
-  boot.kernelPackages = pkgs.linuxPackages_zen;
 
   users.extraUsers.shannan = {
     isNormalUser = true;
