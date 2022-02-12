@@ -33,6 +33,7 @@
     ./modules/jetbrains-remote.nix
     #./modules/k8s.nix
     ./modules/knot
+    ./modules/navidrome.nix
     ./modules/unbound.nix
     ./modules/mastodon-hnbot.nix
     ./modules/mediawiki.nix
