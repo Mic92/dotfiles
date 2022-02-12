@@ -27,6 +27,23 @@
       "/root"
       "/mnt/matchbox"
     ];
+    exclude = [
+      "*.pyc"
+      "/home/*/.direnv"
+      "/home/*/.cache"
+      "/home/*/.cargo"
+      "/home/*/.npm"
+      "/home/*/.m2"
+      "/home/*/.gradle"
+      "/home/*/.opam"
+      "/home/*/.clangd"
+      "/home/*/.config/Ferdi/Partitions"
+      "/home/*/.mozilla/firefox/*/storage"
+      "/var/lib/containerd"
+      "/var/log/journal"
+      "/var/cache"
+      "/var/tmp"
+    ];
     repo = "il1dsenixosbk@eva.r:/mnt/backup/eve";
     encryption = {
       mode = "repokey";
