@@ -21,6 +21,7 @@ in
     exclude = [
       "*.pyc"
       "/home/*/.direnv"
+      "/home/*/.emacs.d"
       "/home/*/.cache"
       "/home/*/.cargo"
       "/home/*/.npm"
