@@ -23,6 +23,7 @@
     ./modules/drone
     ./modules/docker.nix
     ./modules/ejabberd.nix
+    ./modules/eurosys-forward.nix
     ./modules/etcd.nix
     ./modules/gitea
     ./modules/gitlab/runner.nix
