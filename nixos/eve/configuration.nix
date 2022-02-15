@@ -58,6 +58,7 @@
     ./modules/tt-rss.nix
     ./modules/tts.nix
     ./modules/users.nix
+    ./modules/wiki-backup.nix
     #./modules/wiregrill
 
     ../modules/builder.nix
