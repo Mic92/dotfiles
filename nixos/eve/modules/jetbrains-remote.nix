@@ -3,7 +3,8 @@
     ../../modules/xrdp.nix
   ];
   environment.systemPackages = [
-    pkgs.jetbrains.idea-community
+    pkgs.jetbrains.idea-ultimate
+    pkgs.firefox
   ];
 
   sops.secrets.xrdp-password.neededForUsers = true;
