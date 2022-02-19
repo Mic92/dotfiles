@@ -18,8 +18,8 @@ stdenv.mkDerivation {
   src = fetchFromGitHub {
     owner = "Mic92";
     repo = "hue-ble-ctl";
-    rev = "335fe388566baef2daceed11e455a7b46aaf6c2a";
-    sha256 = "0rnky829k4d08h61gfkzn83sm226qcmank5x9lyadfd8ypxqgyb5";
+    rev = "d7750a78c38d529eaf34b5ad300e929e8fbec2c2";
+    sha256 = "sha256-GE+E1q8aYYVQfPXZx981dzOTzn/gmryRIIlpIxdEycI=";
   };
   pythonPath = [ gatt ];
   nativeBuildInputs = [
