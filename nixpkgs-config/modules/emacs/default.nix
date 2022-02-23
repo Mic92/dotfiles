@@ -83,7 +83,6 @@ in
   home.packages = with pkgs; [
     myemacs
     ripgrep
-    kotlin-language-server
     mu
     (lib.hiPrio (makeDesktopItem {
       name = "emacs-mailto";
