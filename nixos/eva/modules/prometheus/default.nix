@@ -56,6 +56,7 @@ in
             targets = [
               "prism.r:9273"
               "gum.r:9273"
+              "latte.r:9273"
             ];
 
             labels.org = "krebs";
@@ -107,6 +108,10 @@ in
           ];
         }];
       }
+      #{
+      #  metrics_path = "/prometheus";
+      #  # https://api.fly.io/prometheus/
+      #}
       {
         job_name = "gitea";
         scrape_interval = "60s";
