@@ -15,12 +15,12 @@ lib.mapAttrsToList
   ({
     prometheus_too_many_restarts = {
       condition = ''changes(process_start_time_seconds{job=~"prometheus|pushgateway|alertmanager|telegraf"}[15m]) > 2'';
-      description = "Prometheus has restarted more than twice in the last 15 minutes. It might be crashlooping.";
+      description = "Prometheus has restarted more than twice in the last 15 minutes. It might be crashlooping";
     };
 
     alert_manager_config_not_synced = {
       condition = ''count(count_values("config_hash", alertmanager_config_hash)) > 1'';
-      description = "Configurations of AlertManager cluster instances are out of sync.";
+      description = "Configurations of AlertManager cluster instances are out of sync";
     };
 
     #alert_manager_e2e_dead_man_switch = {
@@ -47,31 +47,31 @@ lib.mapAttrsToList
     promtail_request_errors = {
       condition = ''100 * sum(rate(promtail_request_duration_seconds_count{status_code=~"5..|failed"}[1m])) by (namespace, job, route, instance) / sum(rate(promtail_request_duration_seconds_count[1m])) by (namespace, job, route, instance) > 10'';
       time = "15m";
-      description = ''{{ $labels.job }} {{ $labels.route }} is experiencing {{ printf "%.2f" $value }}% errors.'';
+      description = ''{{ $labels.job }} {{ $labels.route }} is experiencing {{ printf "%.2f" $value }}% errors'';
     };
 
     promtail_file_lagging = {
       condition = ''abs(promtail_file_bytes_total - promtail_read_bytes_total) > 1e6'';
       time = "15m";
-      description = ''{{ $labels.instance }} {{ $labels.job }} {{ $labels.path }} has been lagging by more than 1MB for more than 15m.'';
+      description = ''{{ $labels.instance }} {{ $labels.job }} {{ $labels.path }} has been lagging by more than 1MB for more than 15m'';
     };
 
     filesystem_full_80percent = {
       condition = ''disk_used_percent{mode!="ro", org!="krebs"} >= 80'';
       time = "10m";
-      description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} got less than 20% space left on its filesystem.";
+      description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} got less than 20% space left on its filesystem";
     };
 
     filesystem_full_krebs = {
       condition = ''disk_used_percent{mode!="ro", org="krebs"} >= 95'';
       time = "10m";
-      description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} got less than 5% space left on its filesystem.";
+      description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} got less than 5% space left on its filesystem";
     };
 
     filesystem_inodes_full = {
       condition = ''disk_inodes_free / disk_inodes_total < 0.10'';
       time = "10m";
-      description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} got less than 10% inodes left on its filesystem.";
+      description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} got less than 10% inodes left on its filesystem";
     };
 
     daily_task_not_run = {
@@ -136,18 +136,18 @@ lib.mapAttrsToList
     swap_using_30percent = {
       condition = ''mem_swap_total{host!="eva"} - (mem_swap_cached + mem_swap_free) > mem_swap_total * 0.3'';
       time = "30m";
-      description = "{{$labels.host}} is using 30% of its swap space for at least 30 minutes.";
+      description = "{{$labels.host}} is using 30% of its swap space for at least 30 minutes";
     };
 
     # user@$uid.service and similar sometimes fail, we don't care about those services.
     systemd_service_failed = {
       condition = ''systemd_units_active_code{name!~"user@\\d+.service"} == 3'';
-      description = "{{$labels.host}} failed to (re)start service {{$labels.name}}.";
+      description = "{{$labels.host}} failed to (re)start service {{$labels.name}}";
     };
 
     service_not_running = {
       condition = ''systemd_units_active_code{name=~"teamspeak3-server.service|tt-rss.service", sub!="running"}'';
-      description = "{{$labels.host}} should have a running {{$labels.name}}.";
+      description = "{{$labels.host}} should have a running {{$labels.name}}";
     };
 
     nfs_export_not_present = {
@@ -159,7 +159,7 @@ lib.mapAttrsToList
     ram_using_95percent = {
       condition = "mem_buffered + mem_free + mem_cached < mem_total * 0.05";
       time = "1h";
-      description = "{{$labels.host}} is using at least 95% of its RAM for at least 1 hour.";
+      description = "{{$labels.host}} is using at least 95% of its RAM for at least 1 hour";
     };
     load15 = {
       condition = ''system_load15 / system_n_cpus{org!="nix-community"} >= 2.0'';
@@ -168,41 +168,41 @@ lib.mapAttrsToList
     };
     reboot = {
       condition = "system_uptime < 300";
-      description = "{{$labels.host}} just rebooted.";
+      description = "{{$labels.host}} just rebooted";
     };
     uptime = {
       # too scared to upgrade matchbox
       condition = ''system_uptime {host!~"^(matchbox|grandalf)$"} > 2592000'';
-      description = "Uptime monster: {{$labels.host}} has been up for more than 30 days.";
+      description = "Uptime monster: {{$labels.host}} has been up for more than 30 days";
     };
     telegraf_down = {
       condition = ''min(up{job=~"telegraf",type!='mobile'}) by (source, job, instance, org) == 0'';
       time = "3m";
-      description = "{{$labels.instance}}: {{$labels.job}} telegraf exporter from {{$labels.source}} is down.";
+      description = "{{$labels.instance}}: {{$labels.job}} telegraf exporter from {{$labels.source}} is down";
     };
     ping = {
       condition = "ping_result_code{type!='mobile'} != 0";
-      description = "{{$labels.url}}: ping from {{$labels.instance}} has failed!";
+      description = "{{$labels.url}}: ping from {{$labels.instance}} has failed";
     };
     ping_high_latency = {
       condition = "ping_average_response_ms{type!='mobile'} > 5000";
-      description = "{{$labels.instance}}: ping probe from {{$labels.source}} is encountering high latency!";
+      description = "{{$labels.instance}}: ping probe from {{$labels.source}} is encountering high latency";
     };
     http = {
       condition = "http_response_result_code != 0";
-      description = "{{$labels.server}} : http request failed from {{$labels.instance}}: {{$labels.result}}!";
+      description = "{{$labels.server}} : http request failed from {{$labels.instance}}: {{$labels.result}}";
     };
     http_match_failed = {
       condition = "http_response_response_string_match == 0";
-      description = "{{$labels.server}} : http body not as expected; status code: {{$labels.status_code}}!";
+      description = "{{$labels.server}} : http body not as expected; status code: {{$labels.status_code}}";
     };
     dns_query = {
       condition = "dns_query_result_code != 0";
-      description = "{{$labels.domain}} : could retrieve A record {{$labels.instance}} from server {{$labels.server}}: {{$labels.result}}!";
+      description = "{{$labels.domain}} : could retrieve A record {{$labels.instance}} from server {{$labels.server}}: {{$labels.result}}";
     };
     secure_dns_query = {
       condition = "secure_dns_state != 0";
-      description = "{{$labels.domain}} : could retrieve A record {{$labels.instance}} from server {{$labels.server}}: {{$labels.result}} for protocol {{$labels.protocol}}!";
+      description = "{{$labels.domain}} : could retrieve A record {{$labels.instance}} from server {{$labels.server}}: {{$labels.result}} for protocol {{$labels.protocol}}";
     };
     connection_failed = {
       condition = "net_response_result_code != 0";
@@ -210,7 +210,7 @@ lib.mapAttrsToList
     };
     healthchecks = {
       condition = "hc_check_up == 0";
-      description = "{{$labels.instance}}: healtcheck {{$labels.job}} fails!";
+      description = "{{$labels.instance}}: healtcheck {{$labels.job}} fails";
     };
     cert_expiry = {
       condition = "x509_cert_expiry < 7*24*3600";
@@ -254,24 +254,24 @@ lib.mapAttrsToList
 
     zfs_errors = {
       condition = "zfs_arcstats_l2_io_error + zfs_dmu_tx_error + zfs_arcstats_l2_writes_error > 0";
-      description = "{{$labels.instance}} reports: {{$value}} ZFS IO errors.";
+      description = "{{$labels.instance}} reports: {{$value}} ZFS IO errors";
     };
 
     zpool_status = {
       condition = "zpool_status_errors > 0";
-      description = "{{$labels.instance}} reports: zpool {{$labels.name}} has {{$value}} errors.";
+      description = "{{$labels.instance}} reports: zpool {{$labels.name}} has {{$value}} errors";
     };
 
     mdraid_degraded_disks = {
       condition = "mdstat_degraded_disks > 0";
-      description = "{{$labels.instance}}: raid {{$labels.dev}} has failed disks.";
+      description = "{{$labels.instance}}: raid {{$labels.dev}} has failed disks";
     };
 
     # ignore devices that disabled S.M.A.R.T (example if attached via USB)
     # Also ignore nix-community server ci server until nvme actually fails
     smart_errors = {
       condition = ''smart_device_health_ok{enabled!="Disabled", instance!="build03.nix-community.org:9273"} != 1'';
-      description = "{{$labels.instance}}: S.M.A.R.T reports: {{$labels.device}} ({{$labels.model}}) has errors.";
+      description = "{{$labels.instance}}: S.M.A.R.T reports: {{$labels.device}} ({{$labels.model}}) has errors";
     };
 
     oom_kills = {
@@ -281,17 +281,17 @@ lib.mapAttrsToList
 
     unusual_disk_read_latency = {
       condition = "rate(diskio_read_time[1m]) / rate(diskio_reads[1m]) > 0.1 and rate(diskio_reads[1m]) > 0";
-      description = "{{$labels.instance}}: Disk latency is growing (read operations > 100ms)\n";
+      description = "{{$labels.instance}}: Disk latency is growing (read operations > 100ms)";
     };
 
     unusual_disk_write_latency = {
       condition = "rate(diskio_write_time[1m]) / rate(diskio_write[1m]) > 0.1 and rate(diskio_write[1m]) > 0";
-      description = "{{$labels.instance}}: Disk latency is growing (write operations > 100ms)\n";
+      description = "{{$labels.instance}}: Disk latency is growing (write operations > 100ms)";
     };
 
     ipv6_dad_check = {
       condition = "ipv6_dad_failures_count > 0";
-      description = "{{$labels.host}}: {{$value}} assigned ipv6 addresses have failed duplicate address check\n";
+      description = "{{$labels.host}}: {{$value}} assigned ipv6 addresses have failed duplicate address check";
     };
 
     host_memory_under_memory_pressure = {
