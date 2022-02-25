@@ -2,6 +2,7 @@
   services.navidrome.enable = true;
   services.navidrome.settings.MusicFolder = "/data/torrent/download";
   services.navidrome.settings.ReverseProxyWhitelist = "127.0.0.1/32";
+  services.navidrome.settings.ScanSchedule = "@every 1h";
 
   security.acme.certs."navidrome.r".server = config.retiolum.ca.acmeURL;
 
