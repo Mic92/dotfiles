@@ -73,6 +73,7 @@ in
     cheat
     hydra-check
     xdg_utils
+    patool
 
     (mpv.override {
       scripts = [ mpvScripts.mpris ];
