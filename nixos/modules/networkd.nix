@@ -19,17 +19,17 @@ let
 in
 {
   systemd.network.enable = true;
-  systemd.services.systemd-resolved.serviceConfig = {
-    ExecStart = [ "" "!!${resolved}/bin/systemd-resolved" ];
-  };
+  #systemd.services.systemd-resolved.serviceConfig = {
+  #  ExecStart = [ "" "!!${resolved}/bin/systemd-resolved" ];
+  #};
 
-  services.resolved.enable = true;
-  networking.nameservers = [
-    "88.99.244.96#dns.thalheim.io"
-    "2a01:4f8:10b:49f::1#dns.thalheim.io"
-  ];
+  #services.resolved.enable = true;
+  #networking.nameservers = [
+  #  "88.99.244.96#dns.thalheim.io"
+  #  "2a01:4f8:10b:49f::1#dns.thalheim.io"
+  #];
   services.resolved.extraConfig = ''
-    DNSOverTLS=yes
+    #DNSOverTLS=yes
     # docker
     DNSStubListenerExtra=172.17.0.1
   '';
