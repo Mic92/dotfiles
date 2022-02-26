@@ -19,7 +19,7 @@ build-job:
       else
         echo "no github token set"
       fi
-  retry: 3
+  retry: 2
   rules:
     - if: '$CI_COMMIT_REF_NAME != "last-build"'
   after_script:
