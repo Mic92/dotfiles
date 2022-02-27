@@ -13,7 +13,7 @@
       "nixos-test"
     ];
   } {
-    hostName = "graham.r";
+    hostName = "ryan.r";
     maxJobs = 128;
     sshKey = config.sops.secrets.tum-builder.path;
     sshUser = "ssh-ng://nix";
