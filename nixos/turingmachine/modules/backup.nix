@@ -43,6 +43,7 @@ in
       "/var/log/journal"
       "/var/cache"
       "/var/tmp"
+      "/var/log"
     ];
     encryption = {
       mode = "repokey";
