@@ -1,5 +1,9 @@
-{ pkgs, config, lib, ... }:
-let
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: let
   conf = pkgs.writeText "ldap.conf" ''
     base dc=eve
     host localhost:389
@@ -19,8 +23,7 @@ let
     proxy_set_header X-Forwarded-Port 443;
     proxy_set_header X-Forwarded-Proto $scheme;
   '';
-in
-{
+in {
   imports = [
     ../../modules/nginx.nix
   ];
@@ -36,7 +39,7 @@ in
   services.nginx = {
     package = pkgs.nginxStable.override {
       perl = null;
-      modules = [ pkgs.nginxModules.pam ];
+      modules = [pkgs.nginxModules.pam];
     };
     upstreams = {
       "@prometheus".extraConfig = "server localhost:9090;";

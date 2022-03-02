@@ -1,4 +1,9 @@
-{ pkgs, config, lib, ... }: {
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: {
   sops.secrets.gitlab-runner-registration = {
     owner = "gitlab-runner";
     restartUnits = [
@@ -27,7 +32,7 @@
   };
 
   # does this improve performance?
-  nix.settings.trusted-users = [ "gitlab-runner" ];
+  nix.settings.trusted-users = ["gitlab-runner"];
 
   systemd.services.gitlab-runner = {
     confinement.enable = true;
@@ -57,10 +62,12 @@
         "${config.environment.etc."ssl/certs/ca-certificates.crt".source}:/etc/ssl/certs/ca-certificates.crt"
         "${config.environment.etc."ssl/certs/ca-bundle.crt".source}:/etc/ssl/certs/ca-bundle.crt"
         "${config.environment.etc."ssh/ssh_known_hosts".source}:/etc/ssh/ssh_known_hosts"
-        "${builtins.toFile "ssh_config" ''
-          Host eve.thalheim.io
-            ForwardAgent yes
-        ''}:/etc/ssh/ssh_config"
+        "${
+          builtins.toFile "ssh_config" ''
+            Host eve.thalheim.io
+              ForwardAgent yes
+          ''
+        }:/etc/ssh/ssh_config"
         "/etc/machine-id"
         # channels are dynamic paths in the nix store, therefore we need to bind mount the whole thing
         "/nix/"
@@ -76,5 +83,5 @@
 
   users.groups.gitlab-runner = {};
 
-  nix.settings.allowed-users = [ "gitlab-runner" ];
+  nix.settings.allowed-users = ["gitlab-runner"];
 }

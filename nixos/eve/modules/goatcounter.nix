@@ -1,14 +1,17 @@
-{ pkgs, config, ... }:
 {
+  pkgs,
+  config,
+  ...
+}: {
   systemd.services.goatcounter = {
-    wantedBy = [ "multi-user.target" ];
+    wantedBy = ["multi-user.target"];
     # broken
     enable = false;
 
     serviceConfig = {
       Restart = "on-failure";
       RestartSec = "2s";
-      EnvironmentFile = [ config.sops.secrets.goatcounter-smtp-password.path ];
+      EnvironmentFile = [config.sops.secrets.goatcounter-smtp-password.path];
       ExecStart = ''
         ${pkgs.nur.repos.mic92.goatcounter}/bin/goatcounter \
           serve \
@@ -35,18 +38,20 @@
     '';
   };
 
-  services.postgresql.ensureDatabases = [ "goatcounter" ];
-  services.postgresql.ensureUsers = [{
-    name = "goatcounter";
-    ensurePermissions."DATABASE goatcounter" = "ALL PRIVILEGES";
-  }];
+  services.postgresql.ensureDatabases = ["goatcounter"];
+  services.postgresql.ensureUsers = [
+    {
+      name = "goatcounter";
+      ensurePermissions."DATABASE goatcounter" = "ALL PRIVILEGES";
+    }
+  ];
 
-  sops.secrets.goatcounter-smtp-password = { };
+  sops.secrets.goatcounter-smtp-password = {};
 
   users.users.goatcounter = {
     isSystemUser = true;
     group = "goatcounter";
   };
 
-  users.groups.goatcounter = { };
+  users.groups.goatcounter = {};
 }

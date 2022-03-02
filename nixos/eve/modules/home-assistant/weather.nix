@@ -12,8 +12,8 @@
       name = "Rain notified today";
       icon = "mdi:weather-cloudy";
     };
-    openweathermap = { };
-    weather = { };
+    openweathermap = {};
+    weather = {};
     automation = [
       {
         alias = "rainy/snowy day notification";
@@ -25,9 +25,11 @@
           condition = "template";
           value_template = ''{{ states.input_boolean.rain_notified_today.state == "off" }}'';
         };
-        action = [{
-          service = "python_script.weather";
-        }];
+        action = [
+          {
+            service = "python_script.weather";
+          }
+        ];
       }
       {
         alias = "Reset rain notified today";
@@ -35,10 +37,12 @@
           platform = "time";
           at = "00:07:00";
         };
-        action = [{
-          service = "input_boolean.turn_off";
-          entity_id = "input_boolean.rain_notified_today";
-        }];
+        action = [
+          {
+            service = "input_boolean.turn_off";
+            entity_id = "input_boolean.rain_notified_today";
+          }
+        ];
       }
     ];
   };

@@ -1,8 +1,13 @@
-{ pkgs, lib, config, ... }: {
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: {
   fileSystems."/mnt/backup" = {
     device = "UUID=11ac8bec-aef1-45ca-a530-2115d403ce53";
     fsType = "ext4";
-    options = [ "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s" ];
+    options = ["noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s"];
   };
 
   services.rsnapshot = {
@@ -10,19 +15,23 @@
     enableManualRsnapshot = true;
     extraConfig = ''
       snapshot_root	/mnt/backup/rsnapshot
-      cmd_preexec	${pkgs.writeShellScript "mount" ''
-        set -eux -o pipefail
-        if ! ${pkgs.util-linux}/bin/mountpoint -q /mnt/backup; then
-          ${pkgs.util-linux}/bin/mount /mnt/backup
-        fi
-      ''}
-      cmd_postexec	${pkgs.writeShellScript "umount" ''
-        set -eux -o pipefail
-        cat > /var/log/telegraf/borgbackup-matchbox <<EOF
-        task,frequency=weekly last_run=$(date +%s)i,state="ok"
-        EOF
-        ${pkgs.util-linux}/bin/umount /mnt/backup
-      ''}
+      cmd_preexec	${
+        pkgs.writeShellScript "mount" ''
+          set -eux -o pipefail
+          if ! ${pkgs.util-linux}/bin/mountpoint -q /mnt/backup; then
+            ${pkgs.util-linux}/bin/mount /mnt/backup
+          fi
+        ''
+      }
+      cmd_postexec	${
+        pkgs.writeShellScript "umount" ''
+          set -eux -o pipefail
+          cat > /var/log/telegraf/borgbackup-matchbox <<EOF
+          task,frequency=weekly last_run=$(date +%s)i,state="ok"
+          EOF
+          ${pkgs.util-linux}/bin/umount /mnt/backup
+        ''
+      }
       retain	daily	30
       retain	monthly	3
       backup	/home	matchbox/
@@ -41,5 +50,5 @@
     };
   };
 
-  sops.secrets.smb-secrets = { };
+  sops.secrets.smb-secrets = {};
 }

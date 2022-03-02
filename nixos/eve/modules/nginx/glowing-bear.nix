@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   services.weechat.enable = true;
   services.nginx = {
     virtualHosts."glowing-bear.thalheim.io" = {
@@ -28,7 +27,6 @@
     };
   };
 }
-
 # Custom css
 #
 #@import url('https://fonts.googleapis.com/css?family=Lato');
@@ -61,3 +59,4 @@
 #    position: initial;
 #    left: initial;
 #}
+

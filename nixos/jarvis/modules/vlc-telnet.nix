@@ -1,7 +1,11 @@
-{ pkgs, config, ... }: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   sops.secrets.vlc-password.owner = "joerg";
   systemd.user.services.vlc = {
-    wantedBy = [ "default.target" ];
+    wantedBy = ["default.target"];
     script = ''
       exec ${pkgs.vlc}/bin/vlc -I telnet --telnet-password $(cat ${config.sops.secrets.vlc-password.path})
     '';

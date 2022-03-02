@@ -1,8 +1,11 @@
-{ lib, pkgs, ... }:
 {
+  lib,
+  pkgs,
+  ...
+}: {
   virtualisation = {
     podman.enable = true;
-    podman.extraPackages = [ pkgs.zfs ];
+    podman.extraPackages = [pkgs.zfs];
     podman.dockerCompat = true;
   };
 
@@ -33,19 +36,23 @@
         ipam = {
           type = "host-local";
           routes = [
-            { dst = "0.0.0.0/0"; }
-            { dst = "::/0"; }
+            {dst = "0.0.0.0/0";}
+            {dst = "::/0";}
           ];
           ranges = [
-            [{
-              subnet = "10.88.0.0/16";
-              gateway = "10.88.0.1";
-            }]
-            [{
-              subnet = "fd42:4492:6a6d:0041::/64";
-              rangeStart = "fd42:4492:6a6d:0041::0";
-              rangeEnd = "fd42:4492:6a6d:0041::ffff";
-            }]
+            [
+              {
+                subnet = "10.88.0.0/16";
+                gateway = "10.88.0.1";
+              }
+            ]
+            [
+              {
+                subnet = "fd42:4492:6a6d:0041::/64";
+                rangeStart = "fd42:4492:6a6d:0041::0";
+                rangeEnd = "fd42:4492:6a6d:0041::ffff";
+              }
+            ]
           ];
         };
       }

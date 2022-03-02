@@ -1,4 +1,8 @@
-{ pkgs, config, ... }: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   services.squid = {
     enable = true;
     # We cannot disable the plain text port atm, but the firewall blocks it
@@ -12,8 +16,7 @@
     '';
   };
 
-
-  networking.firewall.allowedTCPPorts = [ 8889 ];
+  networking.firewall.allowedTCPPorts = [8889];
 
   sops.secrets.squid-ldap.owner = "squid";
 }

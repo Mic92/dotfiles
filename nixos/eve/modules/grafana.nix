@@ -1,4 +1,8 @@
-{ pkgs, config, ... }: let
+{
+  pkgs,
+  config,
+  ...
+}: let
   ldap = pkgs.writeTextFile {
     name = "ldap.toml";
     text = ''

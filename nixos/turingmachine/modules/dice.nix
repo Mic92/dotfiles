@@ -1,11 +1,12 @@
 # NixOS Module for University of Edinburgh (DICE substitution)
 # Support for kerberos, AFS and openvpn and ssh
-{ pkgs, config, ... }:
-
-let
-  uun = "s1691654"; # EASE ID
-in
 {
+  pkgs,
+  config,
+  ...
+}: let
+  uun = "s1691654"; # EASE ID
+in {
   environment.systemPackages = [
     # ssh with kerberos authentication
     #(pkgs.openssh.override { withKerberos = true; withGssapiPatches = true; })
@@ -31,19 +32,17 @@ in
   fileSystems."/mnt/backup" = {
     device = "//csce.datastore.ed.ac.uk/csce/inf/users/${uun}";
     fsType = "cifs";
-    options =
-      let
-        automount_opts = "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s,soft,vers=2.0";
-        # cat > smb-secrets <<EOF
-        # username=s16916XX
-        # domain=ED
-        # password=<EASE_PASSWORD>
-        # EOF
-      in
-      [ "${automount_opts},credentials=${config.sops.secrets.smb-secrets.path}" ];
+    options = let
+      automount_opts = "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s,soft,vers=2.0";
+      # cat > smb-secrets <<EOF
+      # username=s16916XX
+      # domain=ED
+      # password=<EASE_PASSWORD>
+      # EOF
+    in ["${automount_opts},credentials=${config.sops.secrets.smb-secrets.path}"];
   };
 
-  sops.secrets.smb-secrets = { };
-  sops.secrets.edinburgh-vpn-auth = { };
-  sops.secrets.tum-vpn-auth = { };
+  sops.secrets.smb-secrets = {};
+  sops.secrets.edinburgh-vpn-auth = {};
+  sops.secrets.tum-vpn-auth = {};
 }

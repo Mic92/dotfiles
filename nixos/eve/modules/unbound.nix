@@ -1,4 +1,9 @@
-{ pkgs, lib, config, ... }: {
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: {
   services.unbound = {
     enable = true;
     package = pkgs.unbound.override {
@@ -26,7 +31,7 @@
   };
 
   # dns.thalheim.io
-  networking.firewall.allowedTCPPorts = [ 853 ];
+  networking.firewall.allowedTCPPorts = [853];
 
   security.acme.certs."dns.thalheim.io" = {
     postRun = "systemctl restart unbound.service";

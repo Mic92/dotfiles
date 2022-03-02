@@ -1,17 +1,19 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   home.packages = with pkgs; [
     # latex
     rubber
     (texlive.combine {
-      inherit (texlive)
+      inherit
+        (texlive)
         scheme-full
-
         # awesome cv
+        
         xetex
         unicode-math
         ucharcat
         collection-fontsextra
-        fontspec;
+        fontspec
+        ;
 
       #collection-binextra
       #collection-fontsrecommended

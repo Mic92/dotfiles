@@ -1,5 +1,8 @@
-{ config, pkgs, ... }:
-let
+{
+  config,
+  pkgs,
+  ...
+}: let
   convertDuration = ''
     {% if unit == "seconds" %}
       {{ duration }}
@@ -9,57 +12,62 @@ let
       {{ duration * 60 * 60 }}
     {% endif %}
   '';
-in
-{
+in {
   services.home-assistant.config = {
     timer = {
-      rhasspy = { };
-      pause_rhasspy = { };
+      rhasspy = {};
+      pause_rhasspy = {};
     };
-    intent = { };
+    intent = {};
     intent_script = {
       Pause = {
         speech.text = "Suspend Jarvis for {{ duration }} {{ unit }}.";
         async_action = true;
-        action = [{
-          service = "timer.start";
-          entity_id = "timer.pause_rhasspy";
-          data_template.duration = convertDuration;
-        }
+        action = [
+          {
+            service = "timer.start";
+            entity_id = "timer.pause_rhasspy";
+            data_template.duration = convertDuration;
+          }
           {
             service = "shell_command.ssh_rhasspy_mqtt";
             data_template = {
               state = "Off";
               host = "turingmachine.r";
             };
-          }];
+          }
+        ];
       };
       Nap = {
         speech.text = "No! I need one.";
         async_action = true;
-        action = [{
-          service = "timer.start";
-          entity_id = "timer.pause_rhasspy";
-          data_template.duration = "{{ 60 * 20 }}";
-        }
+        action = [
+          {
+            service = "timer.start";
+            entity_id = "timer.pause_rhasspy";
+            data_template.duration = "{{ 60 * 20 }}";
+          }
           {
             service = "shell_command.ssh_rhasspy_mqtt";
             data_template = {
               state = "Off";
               host = "turingmachine.r";
             };
-          }];
+          }
+        ];
       };
 
       GetTime.speech.text = ''It is {{ now().strftime("%H %M, %A, the %dth of %B") }}.'';
       GetTimer.speech.text = ''{{ state_attr("timer.rhasspy", "duration") }} is left.'';
       SetTimer = {
         speech.text = "Timer for {{ duration }} {{ unit }} set!";
-        action = [{
-          service = "timer.start";
-          entity_id = "timer.rhasspy";
-          data_template.duration = convertDuration;
-        }];
+        action = [
+          {
+            service = "timer.start";
+            entity_id = "timer.rhasspy";
+            data_template.duration = convertDuration;
+          }
+        ];
       };
       CancelTimer = {
         speech.text = ''Timer for {{ state_attr("timer.rhasspy", "duration") }} canceled.'';
@@ -77,28 +85,29 @@ in
       };
     };
 
-    shell_command.ssh_rhasspy_mqtt =
-      let
-        cmd = ''mosquitto_pub -L mqtt://localhost:12183/hermes/hotword/toggle{{ state }} -m '{\"siteId\": \"default\", \"reason\": \"\"}' '';
-      in
-      ''${pkgs.openssh}/bin/ssh -i ${config.sops.secrets.ssh-homeassistant.path} hass-agent@{{ host }} "${cmd}"'';
+    shell_command.ssh_rhasspy_mqtt = let
+      cmd = ''mosquitto_pub -L mqtt://localhost:12183/hermes/hotword/toggle{{ state }} -m '{\"siteId\": \"default\", \"reason\": \"\"}' '';
+    in ''${pkgs.openssh}/bin/ssh -i ${config.sops.secrets.ssh-homeassistant.path} hass-agent@{{ host }} "${cmd}"'';
 
-    automation = [{
-      alias = "Timer is up notification";
-      trigger = {
-        platform = "event";
-        event_type = "timer.finished";
-        event_data.entity_id = "timer.rhasspy";
-      };
-      action = [{
-        service = "notify.pushover";
-        data_template.message = ''timer for {{ state_attr("timer.rhasspy", "duration") }} is up!'';
+    automation = [
+      {
+        alias = "Timer is up notification";
+        trigger = {
+          platform = "event";
+          event_type = "timer.finished";
+          event_data.entity_id = "timer.rhasspy";
+        };
+        action = [
+          {
+            service = "notify.pushover";
+            data_template.message = ''timer for {{ state_attr("timer.rhasspy", "duration") }} is up!'';
+          }
+          {
+            service = "rest_command.tts";
+            data_template.message = ''Timer for {{ state_attr("timer.rhasspy", "duration") }} is up!'';
+          }
+        ];
       }
-        {
-          service = "rest_command.tts";
-          data_template.message = ''Timer for {{ state_attr("timer.rhasspy", "duration") }} is up!'';
-        }];
-    }
       {
         alias = "Timer is up notification";
         trigger = {
@@ -106,17 +115,20 @@ in
           event_type = "timer.finished";
           event_data.entity_id = "timer.pause_rhasspy";
         };
-        action = [{
-          service = "shell_command.ssh_rhasspy_mqtt";
-          data_template = {
-            state = "On";
-            host = "turingmachine.r";
-          };
-        }
+        action = [
+          {
+            service = "shell_command.ssh_rhasspy_mqtt";
+            data_template = {
+              state = "On";
+              host = "turingmachine.r";
+            };
+          }
           {
             service = "rest_command.tts";
             data_template.message = ''Listening again'';
-          }];
-      }];
+          }
+        ];
+      }
+    ];
   };
 }

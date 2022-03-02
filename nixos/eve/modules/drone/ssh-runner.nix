@@ -1,7 +1,10 @@
-{ pkgs, config, ... }:
 {
+  pkgs,
+  config,
+  ...
+}: {
   systemd.services.drone-runner-ssh = {
-    wantedBy = [ "multi-user.target" ];
+    wantedBy = ["multi-user.target"];
     serviceConfig = {
       EnvironmentFile = [
         config.sops.secrets.drone.path
@@ -21,7 +24,7 @@
     group = "drone-runner-ssh";
   };
 
-  users.groups.drone-runner-ssh = { };
+  users.groups.drone-runner-ssh = {};
 
-  sops.secrets.drone = { };
+  sops.secrets.drone = {};
 }

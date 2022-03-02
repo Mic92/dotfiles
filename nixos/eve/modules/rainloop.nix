@@ -1,12 +1,14 @@
-{ pkgs, config, lib, ... }:
-let
-
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: let
   maxUploadSize = "256M";
   toKeyValue = lib.generators.toKeyValue {
-    mkKeyValue = lib.generators.mkKeyValueDefault { } " = ";
+    mkKeyValue = lib.generators.mkKeyValueDefault {} " = ";
   };
-in
-{
+in {
   services.phpfpm.pools.rainloop = {
     user = "rainloop";
     group = "rainloop";
@@ -47,9 +49,9 @@ in
       extraConfig = ''
         client_max_body_size ${maxUploadSize};
       '';
-      root = (pkgs.rainloop-community.override {
+      root = pkgs.rainloop-community.override {
         dataPath = "/var/lib/rainloop";
-      });
+      };
     };
   };
 
@@ -60,5 +62,5 @@ in
     group = "rainloop";
   };
 
-  users.groups.rainloop = { };
+  users.groups.rainloop = {};
 }

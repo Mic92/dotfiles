@@ -1,5 +1,9 @@
-{ pkgs, config, lib, ... }:
-let
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}: let
   ldapConfig = pkgs.writeText "dovecot-ldap.conf" ''
     hosts = 127.0.0.1
     dn = "cn=dovecot,dc=mail,dc=eve"
@@ -20,8 +24,7 @@ let
     scope = subtree
     default_pass_scheme = SSHA
   '';
-in
-{
+in {
   services.dovecot2 = {
     enable = true;
     enableImap = true;
@@ -144,36 +147,37 @@ in
 
   security.dhparams = {
     enable = true;
-    params.dovecot2 = { };
+    params.dovecot2 = {};
   };
 
-  sops.secrets.dovecot-ldap-password = { };
+  sops.secrets.dovecot-ldap-password = {};
   systemd.services.dovecot2.preStart = ''
     sed -e "s!@ldap-password@!$(<${config.sops.secrets.dovecot-ldap-password.path})!" ${ldapConfig} > /run/dovecot2/ldap.conf
   '';
 
-  security.acme.certs =
-    let
-      cert = { domain, extraDomainNames ? [] }: {
-        postRun = "systemctl restart dovecot2.service";
-        group = "dovecot2";
-        dnsProvider = "rfc2136";
-        credentialsFile = config.sops.secrets.lego-knot-credentials.path;
-        inherit domain extraDomainNames;
-      };
-    in
-    {
-      "imap.thalheim.io" = cert {
-        domain = "imap.thalheim.io";
-      };
-      # validation for subdomain does not work, might need _acme-challenge.imap.devkid.net
-      "imap.devkid.net" = cert {
-        domain = "devkid.net";
-        extraDomainNames = [
-          "*.devkid.net"
-        ];
-      };
+  security.acme.certs = let
+    cert = {
+      domain,
+      extraDomainNames ? [],
+    }: {
+      postRun = "systemctl restart dovecot2.service";
+      group = "dovecot2";
+      dnsProvider = "rfc2136";
+      credentialsFile = config.sops.secrets.lego-knot-credentials.path;
+      inherit domain extraDomainNames;
     };
+  in {
+    "imap.thalheim.io" = cert {
+      domain = "imap.thalheim.io";
+    };
+    # validation for subdomain does not work, might need _acme-challenge.imap.devkid.net
+    "imap.devkid.net" = cert {
+      domain = "devkid.net";
+      extraDomainNames = [
+        "*.devkid.net"
+      ];
+    };
+  };
 
   networking.firewall.allowedTCPPorts = [
     143 # imap

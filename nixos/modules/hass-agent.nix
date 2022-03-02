@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   users.extraUsers.hass-agent = {
     isSystemUser = true;
     group = "hass-agent";
@@ -11,11 +10,15 @@
 
   users.groups.hass-agent = {};
 
-  security.sudo.extraRules = [{
-    users = [ "hass-agent" ];
-    commands = [{
-      command = "/run/current-system/sw/bin/systemctl suspend";
-      options = [ "NOPASSWD" ];
-    }];
-  }];
+  security.sudo.extraRules = [
+    {
+      users = ["hass-agent"];
+      commands = [
+        {
+          command = "/run/current-system/sw/bin/systemctl suspend";
+          options = ["NOPASSWD"];
+        }
+      ];
+    }
+  ];
 }

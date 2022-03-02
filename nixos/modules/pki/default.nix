@@ -1,19 +1,25 @@
-{ config, pkgs, lib, ... }:
-with lib;
-
-let
-  certFile = config.environment.etc."ssl/certs/ca-certificates.crt".source;
-in
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+with lib; let
+  certFile = config.environment.etc."ssl/certs/ca-certificates.crt".source;
+in {
   environment.etc."pki/nssdb".source =
     pkgs.runCommand "system-wide-nssdb"
-      {
-        inherit certFile;
-        buildInputs = [
-          pkgs.jq
-          pkgs.nssTools
-        ];
-        parseInfoScript = /* jq */ ''
+    {
+      inherit certFile;
+      buildInputs = [
+        pkgs.jq
+        pkgs.nssTools
+      ];
+      parseInfoScript =
+        /*
+         jq
+         */
+        ''
           ${builtins.toJSON certFile} as $certFile |
 
           split("\t-----END CERTIFICATE-----\n")[] |
@@ -34,10 +40,14 @@ in
 
           { $name, $cert }
         '';
-        passAsFile = [
-          "parseInfoScript"
-        ];
-      } /* sh */ ''
+      passAsFile = [
+        "parseInfoScript"
+      ];
+    }
+    /*
+     sh
+     */
+    ''
       mkdir nssdb
 
       nl -ba -w1 "$certFile" |
@@ -62,8 +72,7 @@ in
 
   security.pki.certificateFiles =
     mapAttrsToList
-      (name: const (./certs + "/${name}"))
-      (filterAttrs (const ((dir: "regular" == dir)))
-        (builtins.readDir ./certs));
-
+    (name: const (./certs + "/${name}"))
+    (filterAttrs (const (dir: "regular" == dir))
+    (builtins.readDir ./certs));
 }

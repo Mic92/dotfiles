@@ -34,7 +34,6 @@
     ./modules/sops.nix
     ./modules/telegraf
 
-    ../modules/etcd.nix
     ../modules/fast-network.nix
     ../modules/mosh.nix
     ../modules/iperf.nix

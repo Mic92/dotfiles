@@ -1,4 +1,4 @@
-{ pkgs, ... }: let
+{pkgs, ...}: let
   rhasspy-play = pkgs.writeScriptBin "rhasspy-play" ''
     #!${pkgs.runtimeShell}
     set -eux -o pipefail
@@ -66,8 +66,8 @@ in {
   services.getty.autologinUser = "joerg";
 
   systemd.user.services.rhasspy = {
-    wantedBy = [ "default.target" ];
-    path = [ pkgs.pamixer pkgs.pulseaudioFull rhasspy-play ];
+    wantedBy = ["default.target"];
+    path = [pkgs.pamixer pkgs.pulseaudioFull rhasspy-play];
     # rhasspy sets `/dev/stdout` as log file for supervisord
     # supervisord tries to open /dev/stdout and fails with the default systemd device
     # it works for pipes so...

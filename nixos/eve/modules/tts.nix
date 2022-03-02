@@ -1,7 +1,11 @@
-{ pkgs, config, ... }: {
+{
+  pkgs,
+  config,
+  ...
+}: {
   systemd.services.tts = {
-    after = [ "network.target" ];
-    wantedBy = [ "multi-user.target" ];
+    after = ["network.target"];
+    wantedBy = ["multi-user.target"];
     serviceConfig = {
       ExecStart = ''
         ${pkgs.tts}/bin/tts-server --model_name tts_models/en/ljspeech/tacotron2-DCA --port 5004

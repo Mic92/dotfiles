@@ -1,15 +1,13 @@
-{ lib }:
-
-let
+{lib}: let
   # docker's filesystems disappear quickly, leading to false positives
   deviceFilter = ''path!~"^(/var/lib/docker|/nix/store).*"'';
 in
-lib.mapAttrsToList
+  lib.mapAttrsToList
   (name: opts: {
     alert = name;
     expr = opts.condition;
     for = opts.time or "2m";
-    labels = { };
+    labels = {};
     annotations.description = opts.description;
   })
   ({
@@ -89,24 +87,26 @@ lib.mapAttrsToList
       condition = ''task_last_run{state="fail"}'';
       description = "{{$labels.host}}: {{$labels.name}} failed to run";
     };
-  } // (lib.genAttrs [
+  }
+  // (lib.genAttrs [
     "borgbackup-turingmachine"
     "borgbackup-eve"
     "borgbackup-datastore"
     "borgbackup-nfs-home"
     "borgbackup-nfs-share"
   ]
-    (name: {
-      condition = ''absent_over_time(task_last_run{name="${name}"}[1d])'';
-      description = "status of ${name} is unknown: no data for a day";
-    }))
+  (name: {
+    condition = ''absent_over_time(task_last_run{name="${name}"}[1d])'';
+    description = "status of ${name} is unknown: no data for a day";
+  }))
   // (lib.genAttrs [
     "znapzend-home"
     "znapzend-share"
   ] (name: {
     condition = ''absent_over_time(task_last_run{name="${name}"}[10m])'';
     description = "status of ${name} is unknown: no data for 10 minutes";
-  })) // {
+  }))
+  // {
     nixpkgs_out_of_date = {
       condition = ''(time() - flake_input_last_modified{input="nixpkgs",host!="matchbox"}) / (60*60*24) > 7'';
       description = "{{$labels.host}}: nixpkgs flake is older than a week";

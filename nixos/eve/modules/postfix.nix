@@ -1,7 +1,9 @@
-{ pkgs, lib, config, ... }:
-
-let
-
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: let
   virtualRegex = pkgs.writeText "virtual-regex" ''
     /^joerg\.[^@.]+@thalheim\.io$/ joerg@thalheim.io
     /^shannan.[^@.]+@lekwati\.com/ shannan@lekwati.com
@@ -35,22 +37,23 @@ let
   '';
 
   helo_access = pkgs.writeText "helo_access" ''
-        ${config.networking.eve.ipv4.address}   REJECT Get lost - you're lying about who you are
-        ${lib.concatMapStringsSep "\n"
-    (address: ''
+    ${config.networking.eve.ipv4.address}   REJECT Get lost - you're lying about who you are
+    ${
+      lib.concatMapStringsSep "\n"
+      (address: ''
         ${address}   REJECT Get lost - you're lying about who you are
-        '')
-    config.networking.eve.ipv6.addresses}
-        thalheim.io   REJECT Get lost - you're lying about who you are
-        lekwati.com   REJECT Get lost - you're lying about who you are
+      '')
+      config.networking.eve.ipv6.addresses
+    }
+    thalheim.io   REJECT Get lost - you're lying about who you are
+    lekwati.com   REJECT Get lost - you're lying about who you are
   '';
   enableRblOverride = false;
   rbl_override = pkgs.writeText "rbl_override" ''
     # pfpleisure.org
     95.141.161.114 OK
   '';
-in
-{
+in {
   services.postfix = {
     enable = true;
     enableSubmission = true;
@@ -126,24 +129,24 @@ in
       smtpd_sasl_path = "/var/lib/postfix/queue/private/auth";
       smtpd_relay_restrictions = "permit_mynetworks,
                                  permit_sasl_authenticated,
-                                 ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
+                                 ${lib.optionalString enableRblOverride "check_client_access hash:/etc/postfix/rbl_override,"}
                                  defer_unauth_destination";
       smtpd_client_restrictions = "permit_mynetworks,
                                 permit_sasl_authenticated,
-                                 ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
+                                 ${lib.optionalString enableRblOverride "check_client_access hash:/etc/postfix/rbl_override,"}
                                 reject_invalid_hostname,
                                 reject_unknown_client,
                                 permit";
       smtpd_helo_restrictions = "permit_mynetworks,
                               permit_sasl_authenticated,
-                              ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
+                              ${lib.optionalString enableRblOverride "check_client_access hash:/etc/postfix/rbl_override,"}
                               reject_unauth_pipelining,
                               reject_non_fqdn_hostname,
                               reject_invalid_hostname,
                               warn_if_reject reject_unknown_hostname,
                               permit";
       smtpd_recipient_restrictions = "permit_mynetworks,
-                               ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
+                               ${lib.optionalString enableRblOverride "check_client_access hash:/etc/postfix/rbl_override,"}
                                permit_sasl_authenticated,
                                reject_non_fqdn_sender,
                                reject_non_fqdn_recipient,
@@ -157,7 +160,7 @@ in
                                permit";
       smtpd_sender_restrictions = "permit_mynetworks,
                           permit_sasl_authenticated,
-                          ${lib.optionalString (enableRblOverride) "check_client_access hash:/etc/postfix/rbl_override,"}
+                          ${lib.optionalString enableRblOverride "check_client_access hash:/etc/postfix/rbl_override,"}
                           reject_non_fqdn_sender,
                           reject_unknown_sender_domain,
                           reject_unknown_client_hostname,

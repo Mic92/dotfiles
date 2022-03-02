@@ -1,6 +1,9 @@
-{ pkgs, lib, config, ... }:
-
 {
+  pkgs,
+  lib,
+  config,
+  ...
+}: {
   imports = [
     ./common.nix
   ];
@@ -17,7 +20,7 @@
   in [
     pkgs.profanity
     (weechat.override {
-      configure = { availablePlugins, ... }: {
+      configure = {availablePlugins, ...}: {
         scripts = with weechatScripts; [
           weechat-otr
           wee-slack

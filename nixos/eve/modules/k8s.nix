@@ -1,4 +1,8 @@
-{ config, pkgs, ... }: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   virtualisation.docker.storageDriver = "zfs";
 
   services.kubernetes = {
@@ -13,14 +17,14 @@
     apiserver.securePort = 8443;
 
     easyCerts = true;
-    roles = [ "master" "node" ];
+    roles = ["master" "node"];
   };
 
   environment.systemPackages = [
     (pkgs.runCommand "wrap-kubectl"
-      {
-        nativeBuildInputs = [ pkgs.makeWrapper ];
-      } ''
+    {
+      nativeBuildInputs = [pkgs.makeWrapper];
+    } ''
       mkdir -p $out/bin
       makeWrapper ${pkgs.kubernetes}/bin/kubectl $out/bin/kubectl \
         --set KUBECONFIG "/etc/kubernetes/cluster-admin.kubeconfig"

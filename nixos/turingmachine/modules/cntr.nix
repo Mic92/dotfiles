@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   #virtualisation.oci-containers = {
   #  containers.nginx = {
   #    image = "nginx-container";
@@ -20,6 +19,6 @@
     "123456-fsgqa".isSystemUser = true;
     "123456-fsgqa".group = "123456-fsgqa";
   };
-  users.groups.fsgqa = { };
-  users.groups."123456-fsgqa" = { };
+  users.groups.fsgqa = {};
+  users.groups."123456-fsgqa" = {};
 }

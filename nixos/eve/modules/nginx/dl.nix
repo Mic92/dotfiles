@@ -1,5 +1,4 @@
-{ config, ... }:
-let
+{config, ...}: let
   site = root: {
     useACMEHost = "thalheim.io";
     forceSSL = true;
@@ -16,8 +15,7 @@ let
       rewrite /([a-zA-Z0-9_\-]*)/(.*)$ /$2?st=$1;
     '';
   };
-in
-{
+in {
   services.nginx = {
     virtualHosts."dl.devkid.net" = site "dl.devkid.net";
     virtualHosts."dl.thalheim.io" = site "dl.thalheim.io";

@@ -1,16 +1,17 @@
-{ config, lib, ... }:
-with lib;
-
-let
-  cfg = config.networking.eve;
-in
 {
+  config,
+  lib,
+  ...
+}:
+with lib; let
+  cfg = config.networking.eve;
+in {
   options = {
     networking.eve.ipv4.address = mkOption {
       type = types.str;
       default = "88.99.244.96";
     };
-networking.eve.ipv4.cidr = mkOption {
+    networking.eve.ipv4.cidr = mkOption {
       type = types.str;
       default = "26";
     };
@@ -52,7 +53,7 @@ networking.eve.ipv4.cidr = mkOption {
   config = {
     networking.dhcpcd.enable = false;
     services.resolved.enable = false;
-    networking.nameservers = [ "127.0.0.1" ];
+    networking.nameservers = ["127.0.0.1"];
 
     networking.usePredictableInterfaceNames = false;
 
@@ -65,9 +66,12 @@ networking.eve.ipv4.cidr = mkOption {
         [Network]
         DHCP = ipv4
 
-        ${concatMapStringsSep "\n" (address: ''
-          Address = ${address}/${cfg.ipv6.cidr}
-        '') cfg.ipv6.addresses}
+        ${
+          concatMapStringsSep "\n" (address: ''
+            Address = ${address}/${cfg.ipv6.cidr}
+          '')
+          cfg.ipv6.addresses
+        }
         Gateway = ${cfg.ipv6.gateway}
         IPv6AcceptRA = no
         IPForward = yes
@@ -86,24 +90,26 @@ networking.eve.ipv4.cidr = mkOption {
       internalInterfaces = [
         "tinc.retiolum"
       ];
-      forwardPorts = [{
-        # martha
-        sourcePort = 2201;
-        loopbackIPs = [ "10.243.29.174" ];
-        destination = "10.243.29.179:22";
-      }
+      forwardPorts = [
+        {
+          # martha
+          sourcePort = 2201;
+          loopbackIPs = ["10.243.29.174"];
+          destination = "10.243.29.179:22";
+        }
         {
           # rose
           sourcePort = 2202;
-          loopbackIPs = [ "10.243.29.174" ];
+          loopbackIPs = ["10.243.29.174"];
           destination = "10.243.29.178:22";
-        }];
+        }
+      ];
     };
 
     # Hack so that network is considered up by boot.initrd.network and postCommands gets executed.
-    boot.kernelParams = [ "ip=127.0.0.1:::::lo:none" ];
+    boot.kernelParams = ["ip=127.0.0.1:::::lo:none"];
 
-    sops.secrets.initrd-ssh-key = { };
+    sops.secrets.initrd-ssh-key = {};
     boot.initrd.network = {
       enable = true;
       ssh = {
@@ -115,23 +121,25 @@ networking.eve.ipv4.cidr = mkOption {
         ];
       };
       postCommands = ''
-                echo "zpool import data && zfs load-key -a && killall zfs" >> /root/.profile
+        echo "zpool import data && zfs load-key -a && killall zfs" >> /root/.profile
 
-                ip link set dev eth0 up
+        ip link set dev eth0 up
 
-                ip addr add ${cfg.ipv4.address}/${cfg.ipv4.cidr} dev eth0
-                ip route add ${cfg.ipv4.gateway} dev eth0
-                ip route add default via ${cfg.ipv4.gateway} dev eth0
+        ip addr add ${cfg.ipv4.address}/${cfg.ipv4.cidr} dev eth0
+        ip route add ${cfg.ipv4.gateway} dev eth0
+        ip route add default via ${cfg.ipv4.gateway} dev eth0
 
-                ${concatMapStringsSep "\n"
-        (address: ''
-                ip -6 addr add ${address}/${cfg.ipv6.cidr} dev eth0
-                '')
-        cfg.ipv6.addresses}
-                ip -6 route add ${cfg.ipv6.gateway} dev eth0
-                ip -6 route add default via ${cfg.ipv6.gateway} dev eth0
+        ${
+          concatMapStringsSep "\n"
+          (address: ''
+            ip -6 addr add ${address}/${cfg.ipv6.cidr} dev eth0
+          '')
+          cfg.ipv6.addresses
+        }
+        ip -6 route add ${cfg.ipv6.gateway} dev eth0
+        ip -6 route add default via ${cfg.ipv6.gateway} dev eth0
       '';
     };
-    boot.initrd.kernelModules = [ "e1000e" ];
+    boot.initrd.kernelModules = ["e1000e"];
   };
 }

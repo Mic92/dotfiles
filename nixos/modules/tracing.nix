@@ -1,5 +1,9 @@
-{ pkgs, config, lib, ... }:
 {
+  pkgs,
+  config,
+  lib,
+  ...
+}: {
   programs.bcc.enable = true;
   programs.sysdig.enable = true;
 

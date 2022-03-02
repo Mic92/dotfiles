@@ -1,4 +1,11 @@
-{ lib, config, pkgs, inputs, ... }: with lib; {
+{
+  lib,
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
+with lib; {
   nix = {
     gc.automatic = true;
     gc.dates = "03:15";
@@ -24,18 +31,18 @@
         "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
         "mic92.cachix.org-1:gi8IhgiT3CYZnJsaW7fxznzTkMUOn1RY4GmXdT/nXYQ="
       ];
-      trusted-users = [ "joerg" "root" ];
+      trusted-users = ["joerg" "root"];
     };
   };
 
-  imports = [ ./builder.nix ];
+  imports = [./builder.nix];
 
   programs.command-not-found.enable = false;
 
   systemd.services.update-prefetch = {
     startAt = "hourly";
     script = ''
-      export PATH=${lib.makeBinPath (with pkgs; [ config.nix.package pkgs.nettools pkgs.git pkgs.jq pkgs.curl pkgs.iproute2 ])}
+      export PATH=${lib.makeBinPath (with pkgs; [config.nix.package pkgs.nettools pkgs.git pkgs.jq pkgs.curl pkgs.iproute2])}
       # skip service if do not have a default route
       if ! ip r g 8.8.8.8; then
         exit
@@ -59,7 +66,7 @@
   environment.etc = let
     inputsWithDate = lib.filterAttrs (_: input: input ? lastModified) inputs;
     flakeAttrs = input: (lib.mapAttrsToList (n: v: ''${n}="${v}"'')
-      (lib.filterAttrs (n: v: (builtins.typeOf v) == "string") input));
+    (lib.filterAttrs (n: v: (builtins.typeOf v) == "string") input));
     lastModified = name: input: ''
       flake_input_last_modified{input="${name}",${lib.concatStringsSep "," (flakeAttrs input)}} ${toString input.lastModified}'';
   in {
@@ -73,10 +80,12 @@
     };
   };
 
-  services.telegraf.extraConfig.inputs.file = [{
-    data_format = "prometheus";
-    files = [ "/etc/flake-inputs.prom" ];
-  }];
+  services.telegraf.extraConfig.inputs.file = [
+    {
+      data_format = "prometheus";
+      files = ["/etc/flake-inputs.prom"];
+    }
+  ];
 
   nixpkgs.config.allowUnfree = true;
 }

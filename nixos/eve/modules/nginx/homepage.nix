@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   services.nginx = {
     virtualHosts."boot.thalheim.io" = {
       useACMEHost = "thalheim.io";
@@ -22,7 +21,6 @@
         source_charset utf-8;
       '';
     };
-
 
     virtualHosts."www.thalheim.io" = {
       useACMEHost = "thalheim.io";

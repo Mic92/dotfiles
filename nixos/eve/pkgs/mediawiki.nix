@@ -1,4 +1,8 @@
-{ stdenv, fetchurl, lib }:
+{
+  stdenv,
+  fetchurl,
+  lib,
+}:
 stdenv.mkDerivation rec {
   pname = "mediawiki";
   majorVersion = "1.34";

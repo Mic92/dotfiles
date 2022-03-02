@@ -1,11 +1,12 @@
-{ pkgs, config, ... }:
-
-let
-  droneserver = config.users.users.droneserver.name;
-in
 {
+  pkgs,
+  config,
+  ...
+}: let
+  droneserver = config.users.users.droneserver.name;
+in {
   systemd.services.drone-server = {
-    wantedBy = [ "multi-user.target" ];
+    wantedBy = ["multi-user.target"];
     serviceConfig = {
       EnvironmentFile = [
         config.sops.secrets.drone.path
@@ -24,13 +25,15 @@ in
   };
 
   services.postgresql = {
-    ensureDatabases = [ droneserver ];
-    ensureUsers = [{
-      name = droneserver;
-      ensurePermissions = {
-        "DATABASE ${droneserver}" = "ALL PRIVILEGES";
-      };
-    }];
+    ensureDatabases = [droneserver];
+    ensureUsers = [
+      {
+        name = droneserver;
+        ensurePermissions = {
+          "DATABASE ${droneserver}" = "ALL PRIVILEGES";
+        };
+      }
+    ];
   };
 
   services.nginx.virtualHosts."drone.thalheim.io" = {
@@ -46,5 +49,5 @@ in
     createHome = true;
     group = droneserver;
   };
-  users.groups.droneserver = { };
+  users.groups.droneserver = {};
 }

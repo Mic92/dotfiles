@@ -1,5 +1,8 @@
-{ config, pkgs, ... }: {
-
+{
+  config,
+  pkgs,
+  ...
+}: {
   services.phpfpm.pools.tt-rss.settings = {
     "pm" = "ondemand";
     "pm.max_children" = 32;

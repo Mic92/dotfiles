@@ -1,21 +1,28 @@
-{ config, pkgs, lib, ... }:
-let
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: let
   rulerConfig = {
-    groups = [{
-      name = "general";
-      rules = [{
-        alert = "Coredumps";
-        # filter out failed build gitlab CI runner, users or nix build sandboxes
-        expr = ''sum by (host) (count_over_time({unit=~"systemd-coredump.*"} !~ "(/runner/_work|/home|/build|/scratch)" |~ "core dumped"[10m])) > 0'';
-        for = "10s";
-        annotations.description = ''{{ $labels.instance }} {{ $labels.coredump_unit }} core dumped in last 10min.'';
-      }];
-    }];
+    groups = [
+      {
+        name = "general";
+        rules = [
+          {
+            alert = "Coredumps";
+            # filter out failed build gitlab CI runner, users or nix build sandboxes
+            expr = ''sum by (host) (count_over_time({unit=~"systemd-coredump.*"} !~ "(/runner/_work|/home|/build|/scratch)" |~ "core dumped"[10m])) > 0'';
+            for = "10s";
+            annotations.description = ''{{ $labels.instance }} {{ $labels.coredump_unit }} core dumped in last 10min.'';
+          }
+        ];
+      }
+    ];
   };
 
   rulerDir = pkgs.writeTextDir "ruler/ruler.yml" (builtins.toJSON rulerConfig);
-in
-{
+in {
   systemd.tmpfiles.rules = [
     "d /var/lib/loki 0700 loki loki - -"
     "d /var/lib/loki/ruler 0700 loki loki - -"
@@ -39,7 +46,7 @@ in
           kvstore.store = "inmemory";
           replication_factor = 1;
         };
-        lifecycler.interface_names = [ "eth0" "en0" "ens192" ];
+        lifecycler.interface_names = ["eth0" "en0" "ens192"];
         chunk_encoding = "snappy";
         # Disable block transfers on shutdown
         max_transfer_retries = 0;
@@ -58,13 +65,15 @@ in
       };
 
       # Schema
-      schema_config.configs = [{
-        from = "2020-11-08";
-        store = "boltdb";
-        object_store = "filesystem";
-        schema = "v11";
-        index.prefix = "index_";
-      }];
+      schema_config.configs = [
+        {
+          from = "2020-11-08";
+          store = "boltdb";
+          object_store = "filesystem";
+          schema = "v11";
+          index.prefix = "index_";
+        }
+      ];
 
       limits_config.ingestion_burst_size_mb = 16;
 
@@ -120,5 +129,5 @@ in
     };
   };
 
-  networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 80 ];
+  networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [80];
 }

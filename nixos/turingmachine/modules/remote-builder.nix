@@ -1,4 +1,4 @@
-{ config, ... }: {
+{config, ...}: {
   nix.distributedBuilds = true;
   nix.buildMachines = [
     {
@@ -179,5 +179,5 @@
       ];
     }
   ];
-  sops.secrets.id_buildfarm = { };
+  sops.secrets.id_buildfarm = {};
 }

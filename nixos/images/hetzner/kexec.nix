@@ -11,7 +11,6 @@
 ## Start nixos installer via kexec
 # $ rsync -e ssh -a result root@95.216.112.61:/mnt
 # rescue> /mnt/result
-
 ## Create encrypted zfs
 # kexec> zpool create -o ashift=12 -o altroot=/mnt -O acltype=posixacl -O xattr=sa -O compression=lz4 zroot /dev/sda3
 # kexec> zfs create -o encryption=aes-256-gcm -o keyformat=passphrase -o mountpoint=none zroot/root
@@ -24,16 +23,19 @@
 # kexec> mount -t zfs zroot/root/home /mnt/home/
 # kexec> mount -t zfs zroot/root/tmp /mnt/tmp/
 # continue with hetzner-bootstrap.nix
-{ lib, pkgs, ... }: {
-
-  imports = [ ./base.nix ];
+{
+  lib,
+  pkgs,
+  ...
+}: {
+  imports = [./base.nix];
 
   nix.package = pkgs.nixFlakes;
 
   boot.initrd.network.enable = lib.mkForce false;
 }
-
 ## booting nixos from the rescue system
 # rescue> mount /dev/sda2 /mnt; tar -C / -xf /mnt/nixos-system-x86_64-linux.tar.xz; /kexec_nixos
 # kexec> zpool import zroot; zfs load-key -a; mount -t zfs zroot/root/nixos /mnt; mount /dev/sda2 /mnt/boot/; mount -t zfs zroot/root/home /mnt/home/; mount -t zfs zroot/root/tmp /mnt/tmp/
 # kexec> nixos-enter # will mount
+

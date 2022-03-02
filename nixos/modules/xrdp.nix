@@ -1,5 +1,9 @@
-{ config, pkgs, ... }: {
-  networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 3389 ];
+{
+  config,
+  pkgs,
+  ...
+}: {
+  networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [3389];
   services.xrdp.enable = true;
   services.xrdp.defaultWindowManager = "xfce4-session";
   services.xserver = {

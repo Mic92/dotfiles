@@ -1,10 +1,11 @@
-{ pkgs, config, ... }:
-
 {
-  environment.systemPackages =
-    let
-      scripts = pkgs.callPackage ./pkgs/scripts { };
-    in
+  pkgs,
+  config,
+  ...
+}: {
+  environment.systemPackages = let
+    scripts = pkgs.callPackage ./pkgs/scripts {};
+  in
     with pkgs; [
       ruby.devEnv
       # must have

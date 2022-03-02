@@ -1,5 +1,9 @@
-{ lib, config, pkgs, ... }:
 {
+  lib,
+  config,
+  pkgs,
+  ...
+}: {
   services.k3s.enable = true;
   services.k3s.docker = lib.mkForce false;
 
@@ -16,10 +20,12 @@
     plugins."io.containerd.grpc.v1.cri" = {
       cni.conf_dir = "/var/lib/rancher/k3s/agent/etc/cni/net.d/";
       # FIXME: upstream
-      cni.bin_dir = "${pkgs.runCommand "cni-bin-dir" {} ''
-        mkdir -p $out
-        ln -sf ${pkgs.cni-plugins}/bin/* ${pkgs.cni-plugin-flannel}/bin/* $out
-      ''}";
+      cni.bin_dir = "${
+        pkgs.runCommand "cni-bin-dir" {} ''
+          mkdir -p $out
+          ln -sf ${pkgs.cni-plugins}/bin/* ${pkgs.cni-plugin-flannel}/bin/* $out
+        ''
+      }";
     };
   };
 
@@ -30,7 +36,7 @@
     ];
   };
   systemd.services.k3s = {
-    wants = [ "containerd.service" ];
-    after = [ "containerd.service" ];
+    wants = ["containerd.service"];
+    after = ["containerd.service"];
   };
 }

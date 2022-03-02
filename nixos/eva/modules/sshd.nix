@@ -1,5 +1,5 @@
 {
-  imports = [ ../../modules/sshd.nix ];
+  imports = [../../modules/sshd.nix];
   services.openssh.extraConfig = ''
     HostCertificate ${./eva-cert.pub}
     ListenAddress 10.243.29.185

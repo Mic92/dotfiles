@@ -14,20 +14,23 @@
 # iso> mount -t zfs nixos/root/home /mnt
 # iso> mount /dev/nvme0n1p1 /mnt/boot
 # iso> nix-shell -p git -p nixFlakes --run 'nixos-install --impure --flake /mnt/home/joerg/.homesick/repos/dotfiles#turingmachine'
-{ config, lib, pkgs, modulesPath, ... }:
 {
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  ...
+}: {
   imports = [
     <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix>
     ./base-config.nix
     ./zfs.nix
   ];
 }
-
 # legay cryptsetup:
 # iso> cryptsetup luksFormat /dev/sda2
 # iso> cryptsetup luksOpen /dev/sda2 root
 # iso> zpool create -f zroot /dev/mapper/root
-
 ## New zroot setup
 # iso> sgdisk -n 1:0:+500M -N 2 -t 1:ef00 -t 2:8304 /dev/nvme0n1
 # iso> mkfs.vfat -b32 /dev/nvme0n1p1
@@ -47,3 +50,4 @@
 # chmod 777 /mnt/tmp
 # nixos-generate-config  --root /mnt
 # nixos-install
+

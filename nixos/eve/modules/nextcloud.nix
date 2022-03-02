@@ -1,4 +1,8 @@
-{ config, pkgs, ... }: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   services.nextcloud = {
     enable = true;
     hostName = "cloud.thalheim.io";
@@ -34,6 +38,6 @@
   services.nginx.virtualHosts."cloud.thalheim.io" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
-    serverAliases = [ "pim.devkid.net" ];
+    serverAliases = ["pim.devkid.net"];
   };
 }

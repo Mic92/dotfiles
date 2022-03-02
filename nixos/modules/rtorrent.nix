@@ -1,6 +1,9 @@
-{ config, lib, pkgs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   conf = pkgs.writeText "ldap.conf" ''
     base dc=eve
     host localhost:389
@@ -24,9 +27,9 @@ in {
   '';
 
   systemd.services.flood = {
-    wantedBy = [ "multi-user.target" ];
-    wants = [ "rtorrent.service" ];
-    after = [ "rtorrent.service" ];
+    wantedBy = ["multi-user.target"];
+    wants = ["rtorrent.service"];
+    after = ["rtorrent.service"];
     serviceConfig = {
       User = "joerg";
       ExecStart = "${pkgs.nodePackages.flood}/bin/flood --auth none --port 3003 --rtsocket /run/rtorrent/rpc.sock";
@@ -38,7 +41,7 @@ in {
   services.nginx = {
     package = pkgs.nginxStable.override {
       perl = null;
-      modules = [ pkgs.nginxModules.pam ];
+      modules = [pkgs.nginxModules.pam];
     };
     virtualHosts."flood.r" = {
       # TODO

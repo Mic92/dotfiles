@@ -1,4 +1,9 @@
-{ config, pkgs, lib, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   nixpkgs.localSystem.system = "aarch64-linux";
 
   imports = [
@@ -34,7 +39,7 @@
   networking.hostName = "rock";
 
   systemd.services.netdata = {
-    path = with pkgs; [ python3 ];
+    path = with pkgs; [python3];
   };
 
   systemd.network.networks = {

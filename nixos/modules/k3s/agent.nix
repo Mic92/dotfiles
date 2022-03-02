@@ -1,6 +1,10 @@
-{ config, lib, pkgs, ... }:
 {
-  imports = [ ./. ];
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
+  imports = [./.];
 
   services.k3s.role = "agent";
   services.k3s.serverAddr = "https://node0.nixos-k3s.Serverless-tum.emulab.net:6443";

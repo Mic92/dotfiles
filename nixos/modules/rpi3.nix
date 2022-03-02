@@ -1,5 +1,4 @@
-{ pkgs, ... }:
-{
+{pkgs, ...}: {
   nixpkgs.localSystem.system = "aarch64-linux";
 
   documentation.enable = false;
@@ -12,7 +11,7 @@
   # Kernel configuration
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  boot.kernelParams = [ "cma=32M" ];
+  boot.kernelParams = ["cma=32M"];
 
   services.journald.extraConfig = ''
     Storage = volatile
@@ -20,7 +19,10 @@
   '';
 
   swapDevices = [
-    { device = "/swapfile"; size = 1024; }
+    {
+      device = "/swapfile";
+      size = 1024;
+    }
   ];
 
   hardware.enableRedistributableFirmware = true;

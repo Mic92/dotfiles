@@ -1,9 +1,6 @@
-{ config, ... }:
-
-let
+{config, ...}: let
   cfg = config.services.syncthing;
-in
-{
+in {
   services.syncthing = {
     enable = true;
     group = "users";
@@ -30,9 +27,9 @@ in
 
   fileSystems."/var/lib/syncthing/Sync/public" = {
     device = "/var/www/dl.lekwati.com";
-    options = [ "bind" "nofail" ];
+    options = ["bind" "nofail"];
   };
 
-  networking.firewall.allowedTCPPorts = [ 22000 ];
-  networking.firewall.allowedUDPPorts = [ 21027 ];
+  networking.firewall.allowedTCPPorts = [22000];
+  networking.firewall.allowedUDPPorts = [21027];
 }

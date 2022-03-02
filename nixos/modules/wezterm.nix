@@ -1,8 +1,10 @@
-{ pkgs, ... }:
-{
-  environment.systemPackages = [ pkgs.wezterm ];
+{pkgs, ...}: {
+  environment.systemPackages = [pkgs.wezterm];
   networking.firewall.allowedTCPPortRanges = [
     # wezterm tls server
-    { from = 60000; to = 60010; }
+    {
+      from = 60000;
+      to = 60010;
+    }
   ];
 }

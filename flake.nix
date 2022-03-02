@@ -73,5 +73,5 @@
     nix2container.inputs.flake-utils.follows = "flake-utils";
   };
 
-  outputs = { ... } @ args: import ./outputs.nix args;
+  outputs = {...} @ args: import ./outputs.nix args;
 }

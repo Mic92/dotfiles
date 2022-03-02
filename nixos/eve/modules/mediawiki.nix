@@ -1,8 +1,10 @@
-{ pkgs, config, ... }:
-let
-  mediawiki = pkgs.callPackage ../pkgs/mediawiki.nix { };
-in
 {
+  pkgs,
+  config,
+  ...
+}: let
+  mediawiki = pkgs.callPackage ../pkgs/mediawiki.nix {};
+in {
   services.phpfpm.pools.mediawiki = {
     user = "mediawiki";
     group = "mediawiki";
@@ -93,7 +95,7 @@ in
     home = "/var/lib/mediawiki";
   };
 
-  users.groups.mediawiki = { };
+  users.groups.mediawiki = {};
 
   services.nginx = {
     virtualHosts."ist.devkid.net" = {

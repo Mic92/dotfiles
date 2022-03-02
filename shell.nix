@@ -1,7 +1,10 @@
-{ mkShell, sops-import-keys-hook, python3 }:
-
+{
+  mkShell,
+  sops-import-keys-hook,
+  python3,
+}:
 mkShell {
-  sopsPGPKeyDirs = [ "./nixos/secrets/keys" ];
+  sopsPGPKeyDirs = ["./nixos/secrets/keys"];
   sopsCreateGPGHome = true;
   nativeBuildInputs = [
     sops-import-keys-hook

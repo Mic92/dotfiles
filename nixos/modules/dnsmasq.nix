@@ -1,5 +1,4 @@
-{ config, ... }:
-let
+{config, ...}: let
   external = "dock0";
 in {
   systemd.network.netdevs.internal.netdevConfig = {
@@ -41,7 +40,7 @@ in {
   networking.nat = {
     enable = true;
     externalInterface = external;
-    internalInterfaces = [ "internal" ];
+    internalInterfaces = ["internal"];
   };
 
   networking.firewall.allowedTCPPorts = [
@@ -50,8 +49,10 @@ in {
   ];
   networking.firewall.allowedUDPPorts = [
     # pixiecore
-    69 4011
+    69
+    4011
     # dnsmasq
-    53 67
+    53
+    67
   ];
 }

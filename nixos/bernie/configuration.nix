@@ -1,9 +1,12 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ config, pkgs, lib, ... }:
 {
+  config,
+  pkgs,
+  lib,
+  ...
+}: {
   imports = [
     ./hardware-configuration.nix
     ./modules/sshd.nix
@@ -24,14 +27,14 @@
 
   systemd.services.update-prefetch.enable = false;
 
-  boot.zfs.requestEncryptionCredentials = [ "zroot/root" ];
+  boot.zfs.requestEncryptionCredentials = ["zroot/root"];
   boot.zfs.enableUnstable = true;
   boot.loader.systemd-boot.enable = true;
 
   users.extraUsers.shannan = {
     isNormalUser = true;
     home = "/home/shannan";
-    extraGroups = [ "wheel" "plugdev" "adbusers" "input" "kvm" ];
+    extraGroups = ["wheel" "plugdev" "adbusers" "input" "kvm"];
     shell = "/run/current-system/sw/bin/zsh";
     uid = 1001;
   };
@@ -39,7 +42,7 @@
   networking.hostId = "ac174b52";
 
   networking.networkmanager.enable = true;
-  users.users.shannan.extraGroups = [ "networkmanager" ];
+  users.users.shannan.extraGroups = ["networkmanager"];
 
   time.timeZone = null;
   services.geoclue2.enable = true;
@@ -90,7 +93,7 @@
   services.printing = {
     enable = true;
     browsing = true;
-    drivers = [ pkgs.gutenprint ];
+    drivers = [pkgs.gutenprint];
   };
   sops.defaultSopsFile = ./secrets/secrets.yaml;
 }

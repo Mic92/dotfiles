@@ -1,22 +1,23 @@
-{ pkgs, lib, ... }:
-
-with pkgs;
-let
+{
+  pkgs,
+  lib,
+  ...
+}:
+with pkgs; let
   networkmanager-hook = stdenv.mkDerivation {
     name = "networkmanager-hook";
     src = ./networkmanager.py;
-    buildInputs = [ python3 ];
-    nativeBuildInputs = [ makeWrapper python3.pkgs.mypy ];
+    buildInputs = [python3];
+    nativeBuildInputs = [makeWrapper python3.pkgs.mypy];
     dontUnpack = true;
     installPhase = ''
       install -D -m755 $src $out/bin/dispatcher
       mypy $src
-      wrapProgram $out/bin/dispatcher --prefix PATH : ${lib.makeBinPath [ systemd alsaUtils ]}
+      wrapProgram $out/bin/dispatcher --prefix PATH : ${lib.makeBinPath [systemd alsaUtils]}
     '';
   };
-in
-{
-  users.users.joerg.extraGroups = [ "networkmanager" ];
+in {
+  users.users.joerg.extraGroups = ["networkmanager"];
   # breaks nixos-rebuild over network
   systemd.services.NetworkManager.restartIfChanged = false;
   networking.networkmanager = {
@@ -27,9 +28,11 @@ in
     #  [global-dns-domain-*]
     #  servers=127.0.0.53
     #'';
-    dispatcherScripts = [{
-      source = "${networkmanager-hook}/bin/dispatcher";
-    }];
+    dispatcherScripts = [
+      {
+        source = "${networkmanager-hook}/bin/dispatcher";
+      }
+    ];
   };
 
   # Use mac address from thinkpad network dongle also for docking station,

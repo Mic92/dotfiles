@@ -1,6 +1,9 @@
-{ config, lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   services.nginx.virtualHosts."go-neb.thalheim.io" = {
     forceSSL = true;
     enableACME = true;
@@ -21,31 +24,37 @@
     #baseUrl = "https://localhost";
     # ACCESS_TOKEN=<SECRET>
     config = {
-      clients = [{
-        UserID = "@nix-community-bot:nixos.dev";
-        AccessToken = "$ACCESS_TOKEN";
-        DeviceID = "eva";
-        HomeserverURL = "https://matrix.nixos.dev";
-        Sync = true;
-        AutoJoinRooms = true;
-        DisplayName = "Alertmanager";
-        AcceptVerificationFromUsers = [ ":localhost:8008" ];
-      }];
-      realms = [{
-        ID = "github_realm";
-        Type = "github";
-        Config = { };
-      }];
-      sessions = [{
-        SessionID = "your_github_session";
-        RealmID = "github_realm";
-        UserID = "@mic92:nixos.dev";
-        Config = {
-          # Populate these fields by generating a "Personal Access Token" on github.com
-          AccessToken = "$GITHUB_TOKEN";
-          Scopes = "admin:org_hook,admin:repo_hook,repo,user";
-        };
-      }];
+      clients = [
+        {
+          UserID = "@nix-community-bot:nixos.dev";
+          AccessToken = "$ACCESS_TOKEN";
+          DeviceID = "eva";
+          HomeserverURL = "https://matrix.nixos.dev";
+          Sync = true;
+          AutoJoinRooms = true;
+          DisplayName = "Alertmanager";
+          AcceptVerificationFromUsers = [":localhost:8008"];
+        }
+      ];
+      realms = [
+        {
+          ID = "github_realm";
+          Type = "github";
+          Config = {};
+        }
+      ];
+      sessions = [
+        {
+          SessionID = "your_github_session";
+          RealmID = "github_realm";
+          UserID = "@mic92:nixos.dev";
+          Config = {
+            # Populate these fields by generating a "Personal Access Token" on github.com
+            AccessToken = "$GITHUB_TOKEN";
+            Scopes = "admin:org_hook,admin:repo_hook,repo,user";
+          };
+        }
+      ];
       services = [
         {
           ID = "github_webhook_service";
@@ -55,7 +64,7 @@
             RealmID = "github_realm";
             ClientUserID = "@mic92:nixos.dev";
             Rooms."!cBybDCkeRlSWfuaFvn:numtide.com".Repos = {
-              "nix-community/infra".Events = [ "push" "issues" "pull_request" ];
+              "nix-community/infra".Events = ["push" "issues" "pull_request"];
             };
           };
         }
@@ -83,5 +92,5 @@
     secretFile = config.sops.secrets.go-neb-secrets.path;
   };
 
-  sops.secrets.go-neb-secrets = { };
+  sops.secrets.go-neb-secrets = {};
 }

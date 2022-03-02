@@ -1,6 +1,9 @@
-{ config, lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   services.home-assistant.config.mqtt = {
     broker = "mqtt.thalheim.io";
     certificate = "auto";
@@ -8,7 +11,7 @@
     username = "hass@thalheim.io";
     password = "!secret ldap_password";
   };
-  networking.firewall.allowedTCPPorts = [ 8883 ];
+  networking.firewall.allowedTCPPorts = [8883];
 
   services.nginx = {
     streamConfig = ''

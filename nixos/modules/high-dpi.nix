@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   hardware.video.hidpi.enable = true;
   services.xserver.displayManager.setupCommands = ''
     ${pkgs.xlibs.xrandr}/bin/xrandr --dpi eDP-1

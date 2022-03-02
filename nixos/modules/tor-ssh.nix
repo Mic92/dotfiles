@@ -1,13 +1,15 @@
-{ ... }: {
+{...}: {
   services.tor = {
     enable = true;
-    relay.onionServices."ssh".map = [{
-      port = 22;
-    }];
+    relay.onionServices."ssh".map = [
+      {
+        port = 22;
+      }
+    ];
     settings = {
       DnsPort = 9053;
       AutomapHostsOnResolve = true;
-      AutomapHostsSuffixes = [ ".exit" ".onion" ];
+      AutomapHostsSuffixes = [".exit" ".onion"];
       EnforceDistinctSubnets = true;
       ExitNodes = "{de}";
       EntryNodes = "{de}";
@@ -16,5 +18,5 @@
     };
   };
 
-  imports = [ ./sshd.nix ];
+  imports = [./sshd.nix];
 }

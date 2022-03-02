@@ -1,8 +1,12 @@
-{ config, lib, pkgs, ... }:
-
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   services.telegraf.extraConfig.inputs = {
-    net_response = map
+    net_response =
+      map
       (host: {
         protocol = "tcp";
         address = "6.${host}.r:22";
@@ -12,17 +16,19 @@
         tags.org = "krebs";
         timeout = "10s";
       }) [
-      "hotdog"
-      "yellow"
-      "prism"
-      #"puyak"
-      "ni"
-    ] ++ [{
-      protocol = "tcp";
-      address = "lassul.us:1935"; # rtmp
-      tags.org = "krebs";
-    }];
-
+        "hotdog"
+        "yellow"
+        "prism"
+        #"puyak"
+        "ni"
+      ]
+      ++ [
+        {
+          protocol = "tcp";
+          address = "lassul.us:1935"; # rtmp
+          tags.org = "krebs";
+        }
+      ];
 
     x509_cert = [
       {
@@ -44,7 +50,7 @@
       #  interface = "tinc.retiolum";
       #}
       {
-        urls = [ "http://yellow.r:9091/transmission/web/" ];
+        urls = ["http://yellow.r:9091/transmission/web/"];
         response_string_match = "Transmission Web";
         tags.host = "yellow";
         tags.org = "krebs";

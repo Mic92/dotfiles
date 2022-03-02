@@ -1,8 +1,8 @@
 with import <nixpkgs> {};
-mkShell {
-  nativeBuildInputs = [
-    bashInteractive
-    flyctl
-    skopeo
-  ];
-}
+  mkShell {
+    nativeBuildInputs = [
+      bashInteractive
+      flyctl
+      skopeo
+    ];
+  }

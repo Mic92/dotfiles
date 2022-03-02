@@ -1,19 +1,17 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   services.home-assistant.config = {
     sensor = [
       {
         name = "Random minimix";
         platform = "command_line";
         scan_interval = 60 * 60 * 24;
-        command =
-          ''${pkgs.curl}/bin/curl -sL https://podcasts.files.bbci.co.uk/p02nrtyg.rss | grep -m1 -oPm1 '(?<=enclosure url=")http://[^"]+.mp3' | shuf -n1 '';
+        command = ''${pkgs.curl}/bin/curl -sL https://podcasts.files.bbci.co.uk/p02nrtyg.rss | grep -m1 -oPm1 '(?<=enclosure url=")http://[^"]+.mp3' | shuf -n1 '';
       }
       {
         name = "BBC World News";
         platform = "command_line";
         scan_interval = 60 * 60;
-        command =
-          ''${pkgs.curl}/bin/curl -sL https://podcasts.files.bbci.co.uk/p02nq0gn.rss | grep -m1 -oPm1 '(?<=enclosure url=")http://[^"]+.mp3' | head -n1 '';
+        command = ''${pkgs.curl}/bin/curl -sL https://podcasts.files.bbci.co.uk/p02nq0gn.rss | grep -m1 -oPm1 '(?<=enclosure url=")http://[^"]+.mp3' | head -n1 '';
       }
     ];
     intent_script.PlayerStart = {
@@ -40,6 +38,6 @@
       action.data_template.media_content_type = "music";
       action.data_template.media_content_id = "{{ states.sensor.bbc_world_news.state }}";
     };
-    vlc_telnet = { };
+    vlc_telnet = {};
   };
 }

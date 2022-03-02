@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   services.nginx.virtualHosts."retiolum.thalheim.io" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
@@ -20,7 +18,7 @@
       git pull --rebase "$upstream" master
       git push --force origin master
     '';
-    path = [ pkgs.git ];
+    path = [pkgs.git];
     serviceConfig = {
       Type = "oneshot";
       User = "gitea";

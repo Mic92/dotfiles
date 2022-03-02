@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   services.home-assistant.config = {
     intent_script.SuspendLaptop = {
       speech.text = "Suspend laptop";
@@ -21,8 +25,7 @@
       action.data.message = "request_location_update";
     };
     shell_command = {
-      suspend_laptop =
-        ''${pkgs.openssh}/bin/ssh -i ${config.sops.secrets.ssh-homeassistant.path} hass-agent@{{ host }} "sudo /run/current-system/sw/bin/systemctl suspend"'';
+      suspend_laptop = ''${pkgs.openssh}/bin/ssh -i ${config.sops.secrets.ssh-homeassistant.path} hass-agent@{{ host }} "sudo /run/current-system/sw/bin/systemctl suspend"'';
     };
   };
 }

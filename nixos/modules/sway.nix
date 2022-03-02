@@ -1,4 +1,8 @@
-{ pkgs, lib, ... }: {
+{
+  pkgs,
+  lib,
+  ...
+}: {
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true; # so that gtk works properly
@@ -10,7 +14,7 @@
       xwayland
       waybar # status bar
       (i3pystatus.override {
-        extraLibs = [ python3.pkgs.keyrings-alt python3.pkgs.paho-mqtt ];
+        extraLibs = [python3.pkgs.keyrings-alt python3.pkgs.paho-mqtt];
       })
       wofi
       gnome3.eog
@@ -93,27 +97,27 @@
   ];
 
   # for polkit
-  environment.pathsToLink = [ "/libexec" ];
+  environment.pathsToLink = ["/libexec"];
 
   programs.qt5ct.enable = true;
 
   # brightnessctl
-  users.users.joerg.extraGroups = [ "video" ];
+  users.users.joerg.extraGroups = ["video"];
 
   systemd.user.targets.sway-session = {
     description = "Sway compositor session";
-    documentation = [ "man:systemd.special(7)" ];
-    bindsTo = [ "graphical-session.target" ];
-    wants = [ "graphical-session-pre.target" ];
-    after = [ "graphical-session-pre.target" ];
+    documentation = ["man:systemd.special(7)"];
+    bindsTo = ["graphical-session.target"];
+    wants = ["graphical-session-pre.target"];
+    after = ["graphical-session-pre.target"];
   };
 
   systemd.user.services.sway = {
     description = "Sway - Wayland window manager";
-    documentation = [ "man:sway(5)" ];
-    bindsTo = [ "graphical-session.target" ];
-    wants = [ "graphical-session-pre.target" ];
-    after = [ "graphical-session-pre.target" ];
+    documentation = ["man:sway(5)"];
+    bindsTo = ["graphical-session.target"];
+    wants = ["graphical-session-pre.target"];
+    after = ["graphical-session-pre.target"];
     # We explicitly unset PATH here, as we want it to be set by
     # systemctl --user import-environment in startsway
     environment.PATH = lib.mkForce null;
