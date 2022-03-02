@@ -45,6 +45,7 @@
       "/var/log/journal"
       "/var/cache"
       "/var/tmp"
+      "/var/log"
     ];
     repo = "il1dsenixosbk@eva.r:/mnt/backup/eve";
     encryption = {
