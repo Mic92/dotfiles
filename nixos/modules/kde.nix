@@ -4,7 +4,7 @@
 
   environment.systemPackages = with pkgs; [
     gnome.adwaita-icon-theme
-    hicolor_icon_theme
+    hicolor-icon-theme
 
     qt5.qttools
     kmail

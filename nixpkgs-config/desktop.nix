@@ -60,7 +60,7 @@ in {
       signal-desktop
       nur.repos.mic92.pandoc-bin
       gnome.adwaita-icon-theme
-      hicolor_icon_theme
+      hicolor-icon-theme
       graphicsmagick
       aspell
       aspellDicts.de
