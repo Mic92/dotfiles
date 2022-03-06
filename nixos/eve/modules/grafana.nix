@@ -55,14 +55,10 @@ in {
     port = 3001;
   };
 
-  services.nginx = {
-    virtualHosts."grafana.thalheim.io" = {
-      useACMEHost = "thalheim.io";
-      forceSSL = true;
-      locations."/".extraConfig = ''
-        proxy_pass http://localhost:3001;
-      '';
-    };
+  services.nginx.virtualHosts."grafana.thalheim.io" = {
+    useACMEHost = "thalheim.io";
+    forceSSL = true;
+    locations."/".extraConfig = "proxy_pass http://localhost:3001;";
   };
 
   sops.secrets = {
