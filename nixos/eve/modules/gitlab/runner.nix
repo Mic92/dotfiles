@@ -57,12 +57,12 @@
 
         "/etc/passwd"
         "/etc/group"
-        "/etc/hosts"
         "/nix/var/nix/profiles/system/etc/nix:/etc/nix"
         config.sops.secrets.gitlab-runner-registration.path
         "${config.environment.etc."ssl/certs/ca-certificates.crt".source}:/etc/ssl/certs/ca-certificates.crt"
         "${config.environment.etc."ssl/certs/ca-bundle.crt".source}:/etc/ssl/certs/ca-bundle.crt"
         "${config.environment.etc."ssh/ssh_known_hosts".source}:/etc/ssh/ssh_known_hosts"
+        "${config.environment.etc."hosts".source}:/etc/hosts"
         "${
           builtins.toFile "ssh_config" ''
             Host eve.thalheim.io
