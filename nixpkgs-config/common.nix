@@ -42,6 +42,7 @@
         hub
         tig
         lazygit
+        git-absorb
         delta
         scc
         direnv
