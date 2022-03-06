@@ -109,7 +109,7 @@ in {
       icon = "emacs";
       genericName = "Text Editor";
       comment = "Send email with Emacs";
-      categories = "Utility";
+      categories = ["Utility"];
       mimeTypes = ["x-scheme-handler/mailto"];
     }))
 
