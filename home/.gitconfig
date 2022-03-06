@@ -51,6 +51,7 @@
   autostash = true
 [rebase]
   autoStash = true
+  autoSquash = true
 
 [url "gitlab@git.higgsboson.tk:Mic92/"]
   insteadOf = higgs:
