@@ -57,6 +57,7 @@
 
         "/etc/passwd"
         "/etc/group"
+        "/etc/hosts"
         "/nix/var/nix/profiles/system/etc/nix:/etc/nix"
         config.sops.secrets.gitlab-runner-registration.path
         "${config.environment.etc."ssl/certs/ca-certificates.crt".source}:/etc/ssl/certs/ca-certificates.crt"
