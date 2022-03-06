@@ -24,7 +24,7 @@
     strace
     bandwhich
     iotop
-    manpages
+    man-pages
     dnsutils
     netcat
     mtr

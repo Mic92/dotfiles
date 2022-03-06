@@ -16,7 +16,7 @@
       wget
       direnv
       htop
-      ag
+      silver-searcher
       lsof
       tcpdump
       tmux
@@ -35,7 +35,7 @@
       gnumake
       pkgconfig
       cmake
-      manpages
+      man-pages
       netcat
       mtr
       vim
