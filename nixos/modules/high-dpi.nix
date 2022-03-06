@@ -6,7 +6,7 @@
 }: {
   hardware.video.hidpi.enable = true;
   services.xserver.displayManager.setupCommands = ''
-    ${pkgs.xlibs.xrandr}/bin/xrandr --dpi eDP-1
+    ${pkgs.xorg.xrandr}/bin/xrandr --dpi eDP-1
   '';
 
   environment.variables = {
