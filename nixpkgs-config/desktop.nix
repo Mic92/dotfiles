@@ -71,7 +71,7 @@ in {
       dino
       foot
       screen-message
-      sshfsFuse
+      sshfs-fuse
       sshuttle
       jq
       go2nix
