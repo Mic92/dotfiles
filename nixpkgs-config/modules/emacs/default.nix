@@ -110,7 +110,7 @@ in {
       genericName = "Text Editor";
       comment = "Send email with Emacs";
       categories = "Utility";
-      mimeType = "x-scheme-handler/mailto";
+      mimeTypes = ["x-scheme-handler/mailto"];
     }))
 
     (editorScript {
