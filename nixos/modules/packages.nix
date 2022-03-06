@@ -13,7 +13,7 @@
     file
     wget
     htop
-    ag
+    silver-searcher
     lsof
     tcpdump
     tmux
