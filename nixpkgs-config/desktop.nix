@@ -101,6 +101,21 @@ in {
       jmtpfs # needed for charging? WTF
       #
       (pkgs.callPackage ./pkgs/mpv-tv.nix {})
+      (pkgs.runCommand "slack-aliases" {} ''
+        mkdir -p $out/bin
+        declare -A rooms=([manifold]=manifoldfinance \
+               [numtide]=numtide \
+               ["numtide-labs"]="numtide-labs" \
+               ["tum"]="ls1-tum" \
+               ["tum-courses"]="ls1-tum-course")
+        for name in "''${!rooms[@]}"; do
+          cat > "$out/bin/slack-''${name}" <<EOF
+        #!${runtimeShell}
+        exec chromium --app="https://''${rooms[$name]}.slack.com" "$@"
+        EOF
+        done
+        chmod +x $out/bin/slack-*
+      '')
 
       (pkgs.writeScriptBin "rhasspy-play" ''
         #!${pkgs.runtimeShell}
