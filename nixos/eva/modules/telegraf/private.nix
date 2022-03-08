@@ -319,6 +319,13 @@ in {
           #  postfix
           "tcp://mail.thalheim.io:465"
 
+          "https://tts.r:443"
+          "https://navidrome.r:443"
+          "https://prometheus.r:443"
+          "https://alertmanager.r:443"
+          "https://loki.r:443"
+          "https://flood.r:443"
+
           # notify https://twitter.com/SexWithChris
           "https://sexwithstrangersshow.com:443"
         ];
