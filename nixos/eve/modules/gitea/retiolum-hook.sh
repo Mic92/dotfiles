@@ -57,8 +57,8 @@ nix build \
   -I stockholm=./. \
   -f '<nixpkgs/nixos>' \
   config.krebs.tinc.retiolum.hostsArchive pkgs.krebs-hosts
-install -D -m444 result $WEBROOT/tinc-hosts.tar.bz2
-install -D -m444 result-1 $WEBROOT/etc.hosts
+install -D -m644 result $WEBROOT/tinc-hosts.tar.bz2
+install -D -m644 result-1 $WEBROOT/etc.hosts
 grep -E '^42:' result-1 > $WEBROOT/etc.hosts-v6only
 
 nix-build ./wiregrill.nix \
@@ -83,7 +83,7 @@ fi
 
 rm -rf hosts
 tar -xf $WEBROOT/tinc-hosts.tar.bz2
-cp $WEBROOT/{etc.hosts,etc.hosts-v6only,wiregrill.json} .
+cp -f $WEBROOT/{etc.hosts,etc.hosts-v6only,wiregrill.json} .
 
 git add .
 if [[ -z "$(git diff --staged --exit-code)" ]]; then
