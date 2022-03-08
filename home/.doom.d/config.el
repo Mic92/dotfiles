@@ -185,3 +185,5 @@
 (use-package envrc
     :config
     (envrc-global-mode))
+
+(set-formatter! 'alejandra  "alejandra" :modes '(nix-mode))

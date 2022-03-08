@@ -28,7 +28,7 @@
         hexyl
         binutils
         clang-tools
-        nixpkgs-fmt
+        alejandra
         shfmt
 
         python3.pkgs.black
