@@ -33,7 +33,7 @@
     x509_cert = [
       {
         sources = [
-          "https://catalonia.r/"
+          "https://catalonia.r:443"
         ];
         tags.host = "catalonia";
         tags.org = "krebs";
