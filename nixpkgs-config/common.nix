@@ -41,7 +41,7 @@
         python3.pkgs.black
         pyright
 
-        dua
+        du-dust
         pkgs.nixFlakes
 
         tmux
