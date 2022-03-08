@@ -59,7 +59,7 @@ nix build \
   config.krebs.tinc.retiolum.hostsArchive pkgs.krebs-hosts
 install -D -m644 result $WEBROOT/tinc-hosts.tar.bz2
 install -D -m644 result-1 $WEBROOT/etc.hosts
-grep -E '^42:' result-1 > $WEBROOT/etc.hosts-v6only
+grep -E '^42:|.i |.i$' result-1 > $WEBROOT/etc.hosts-v6only
 
 nix-build ./wiregrill.nix \
   -I secrets=./krebs/0tests/data/secrets \
