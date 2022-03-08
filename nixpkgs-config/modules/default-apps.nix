@@ -279,10 +279,7 @@
         "text/x-c++"
       ];
     in
-      {
-        "x-scheme-handler/mailto" = ["emacs-mailto.desktop"];
-      }
-      // (lib.genAttrs code (_: ["emacs.desktop"]))
+      (lib.genAttrs code (_: ["emacs.desktop"]))
       // (lib.genAttrs images (_: ["org.gnome.eog.desktop"]))
       // (lib.genAttrs urls (_: ["firefox.desktop"]))
       // (lib.genAttrs documents (_: ["org.gnome.Evince.desktop"]))

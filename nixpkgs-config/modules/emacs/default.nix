@@ -101,17 +101,6 @@ in {
     myemacs
     ripgrep
     mu
-    (lib.hiPrio (makeDesktopItem {
-      name = "emacs-mailto";
-      desktopName = "Emacs (MailTo)";
-      # %u contains single quotes
-      exec = ''${editorScriptX11}/bin/emacs --eval "(browse-url (replace-regexp-in-string \"'\" \"\" \"%u\"))"'';
-      icon = "emacs";
-      genericName = "Text Editor";
-      comment = "Send email with Emacs";
-      categories = ["Utility"];
-      mimeTypes = ["x-scheme-handler/mailto"];
-    }))
 
     (editorScript {
       name = "mu4e";
