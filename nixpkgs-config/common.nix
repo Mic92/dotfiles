@@ -28,7 +28,14 @@
         hexyl
         binutils
         clang-tools
-        alejandra
+        (alejandra.overrideAttrs (old: {
+          patches = [
+            (fetchpatch {
+              url = "https://github.com/Mic92/alejandra/commit/379984ba8fa8e83723e252a7752b4b68af9c783a.patch";
+              sha256 = "sha256-A/fZNUEHNxq0O/nPTFHTo1cRNhaugclk+XQijj7AIC8=";
+            })
+          ];
+        }))
         shfmt
 
         python3.pkgs.black
