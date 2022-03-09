@@ -50,9 +50,9 @@ in {
 }))
 // {
   nixosConfigurations = import ./nixos/configurations.nix (inputs
-  // {
-    inherit inputs;
-  });
+    // {
+      inherit inputs;
+    });
 
   # nix build '.#kexec' --impure
   packages.x86_64-linux = let

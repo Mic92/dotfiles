@@ -186,4 +186,4 @@
     :config
     (envrc-global-mode))
 
-(set-formatter! 'alejandra  "alejandra" :modes '(nix-mode))
+(set-formatter! 'alejandra  "alejandra --quiet" :modes '(nix-mode))

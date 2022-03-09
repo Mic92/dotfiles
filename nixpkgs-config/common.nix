@@ -29,12 +29,12 @@
         binutils
         clang-tools
         (alejandra.overrideAttrs (old: {
-          patches = [
-            (fetchpatch {
-              url = "https://github.com/Mic92/alejandra/commit/379984ba8fa8e83723e252a7752b4b68af9c783a.patch";
-              sha256 = "sha256-A/fZNUEHNxq0O/nPTFHTo1cRNhaugclk+XQijj7AIC8=";
-            })
-          ];
+          src = fetchFromGitHub {
+            owner = "kamadorueda";
+            repo = "alejandra";
+            rev = "cc92e945d27c8b3a40060efd19839051e680033a";
+            sha256 = "sha256-M35g176uRVBrIUHjztUZDn6c7MIhRObV1B/JgtK4cX8=";
+          };
         }))
         shfmt
 
