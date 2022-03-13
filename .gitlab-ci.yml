@@ -4,7 +4,7 @@ stages:
 build-job:
   stage: build
   script:
-    - nix run nixpkgs/nixpkgs-unstable#nix-eval-jobs -- --workers 8 --gc-roots-dir $(pwd)/gcroot --flake '.#hydraJobs' > jobs
+    - nix run github:nix-community/nix-eval-jobs -- --workers 8 --gc-roots-dir $(pwd)/gcroot --flake '.#hydraJobs' > jobs
     - nix run nixpkgs/nixpkgs-unstable#jq -- -r '.drvPath' < jobs | xargs -n1 -P$(nproc) nix build -L
     - |
       if [[ -n "$CACHIX_SIGNING_KEY" ]]; then
