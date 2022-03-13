@@ -26,7 +26,6 @@
     ./modules/drone
     ./modules/docker.nix
     ./modules/ejabberd.nix
-    ./modules/eurosys-forward.nix
     ./modules/gitea
     ./modules/gitlab/runner.nix
     ./modules/grafana.nix
