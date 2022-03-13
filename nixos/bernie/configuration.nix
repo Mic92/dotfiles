@@ -43,7 +43,6 @@
 
   networking.networkmanager.enable = true;
   users.users.shannan.extraGroups = ["networkmanager"];
-
   time.timeZone = null;
   services.geoclue2.enable = true;
   i18n.defaultLocale = "en_DK.UTF-8";
@@ -54,8 +53,8 @@
     (pkgs.callPackage (pkgs.fetchFromGitHub {
       owner = "Mic92";
       repo = "tts-app";
-      rev = "0.0.1";
-      sha256 = "sha256-J65Eoa6ua7jdmC8/veVfL5oP1IX5lC94EDxP9L59ufQ=";
+      rev = "0.0.2";
+      sha256 = "sha256-QnGYwN3+Qul2jItK7NvKMc6rbtT+f1qXJF542s3EvTQ=";
     }) {
       defaultHost = "tts.r";
       defaultPort = "80";
