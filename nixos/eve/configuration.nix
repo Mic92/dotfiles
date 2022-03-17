@@ -33,7 +33,6 @@
     ./modules/home-assistant
     ./modules/influxdb.nix
     ./modules/jetbrains-remote.nix
-    ./modules/joes-servers.nix
     #./modules/k8s.nix
     ./modules/knot
     ./modules/navidrome.nix
@@ -77,6 +76,7 @@
     ../modules/wireguard.nix
     ../modules/zfs.nix
     ../modules/zsh.nix
+    ../modules/it4r-containers
   ];
 
   # The NixOS release to be compatible with for stateful data such as databases.
