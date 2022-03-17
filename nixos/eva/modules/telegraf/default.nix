@@ -9,6 +9,7 @@
     ./private.nix
     ./uni.nix
     ./krebs.nix
+    ./it4r.nix
     ./nix-community.nix
   ];
 
