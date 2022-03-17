@@ -8,11 +8,10 @@ in {
   services.telegraf.extraConfig.inputs = {
     x509_cert = [{
       sources = [
-        "search.warhelp.broenradio.org"
-        "backend.warhelp.broenradio.org"
-        # TODO
-        "search.warhelp.eu"
-        "backend.search.warhelp.eu"
+        "https://search.warhelp.broenradio.org:443"
+        "https://backend.warhelp.broenradio.org:443"
+        "https://search.warhelp.eu:443"
+        "https://backend.search.warhelp.eu:443"
       ];
       tags.host = "eve";
       tags.org = "it4r";
@@ -27,13 +26,13 @@ in {
       tags.org = "it4r";
       timeout = "10s";
     }) [
-      "2a01:4f8:10b:49f:1::1"
+      "[2a01:4f8:10b:49f:1::1]"
     ];
     http_response = [
       {
         urls = [
-          "search.warhelp.broenradio.org"
-          "search.warhelp.eu"
+          "https://search.warhelp.broenradio.org"
+          "https://search.warhelp.eu"
         ];
         response_string_match = "Beherbergung";
         tags.host = "eve";
@@ -41,8 +40,8 @@ in {
       }
       {
         urls = [
-          "backend.warhelp.broenradio.org"
-          "backend.search.warhelp.eu"
+          "https://backend.warhelp.broenradio.org"
+          "https://backend.search.warhelp.eu"
         ];
         response_string_match = "Graphql";
         tags.host = "eve";
