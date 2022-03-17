@@ -347,22 +347,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-systemd": {
-      "locked": {
-        "lastModified": 1646512088,
-        "narHash": "sha256-D3aBXHXLUamEEbFY4rm1PVQGXmFMr9J5LTizsw+ljDA=",
-        "owner": "jonringer",
-        "repo": "nixpkgs",
-        "rev": "f5c243d6c291671d256ec12a4c6805e9cb049565",
-        "type": "github"
-      },
-      "original": {
-        "owner": "jonringer",
-        "ref": "systemd-250",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nur": {
       "locked": {
         "lastModified": 1646914831,
@@ -411,7 +395,6 @@
         "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-systemd": "nixpkgs-systemd",
         "nur": "nur",
         "retiolum": "retiolum",
         "rust-overlay": "rust-overlay",
