@@ -38,6 +38,22 @@
     DNS = 192.168.53.53
   '';
 
+  services.nginx.virtualHosts."search.warhelp.eu" = {
+    enableACME = true;
+    forceSSL = true;
+    locations."/".extraConfig = ''
+      proxy_pass http://[2a01:4f8:10b:49f:1::1]:3000;
+    '';
+  };
+
+  services.nginx.virtualHosts."backend.search.warhelp.eu" = {
+    enableACME = true;
+    forceSSL = true;
+    locations."/".extraConfig = ''
+      proxy_pass http://[2a01:4f8:10b:49f:1::1]:4000;
+    '';
+  };
+
   networking.nat = {
     enable = true;
     enableIPv6 = true;
