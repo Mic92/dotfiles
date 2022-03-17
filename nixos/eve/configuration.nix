@@ -33,6 +33,7 @@
     ./modules/home-assistant
     ./modules/influxdb.nix
     ./modules/jetbrains-remote.nix
+    ./modules/joes-servers.nix
     #./modules/k8s.nix
     ./modules/knot
     ./modules/navidrome.nix

@@ -13,6 +13,7 @@
       server = {
         access-control = [
           "::/0 allow"
+          "0.0.0.0/0 allow"
         ];
         prefetch = "yes";
         tls-service-key = "/var/lib/acme/dns.thalheim.io/key.pem";
@@ -22,6 +23,7 @@
         tls-port = 853;
         interface = [
           "127.0.0.1@53"
+          "192.168.53.53@53"
           "127.0.0.1@8053"
           "::@853"
           "0.0.0.0@853"

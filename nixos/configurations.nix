@@ -17,7 +17,7 @@
 
   defaultModules = [
     # make flake inputs accessiable in NixOS
-    {_module.args.inputs = inputs;}
+    {_module.args.inputs = inputs; }
     {
       imports = [
         ({pkgs, ...}: {

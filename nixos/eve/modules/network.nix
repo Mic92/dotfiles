@@ -81,31 +81,6 @@ in {
       '';
     };
 
-    networking.nat = {
-      enable = true;
-      externalInterface = "eth0";
-      #internalIPs = [
-      #  "192.168.92.0/24"
-      #];
-      internalInterfaces = [
-        "tinc.retiolum"
-      ];
-      forwardPorts = [
-        {
-          # martha
-          sourcePort = 2201;
-          loopbackIPs = ["10.243.29.174"];
-          destination = "10.243.29.179:22";
-        }
-        {
-          # rose
-          sourcePort = 2202;
-          loopbackIPs = ["10.243.29.174"];
-          destination = "10.243.29.178:22";
-        }
-      ];
-    };
-
     # Hack so that network is considered up by boot.initrd.network and postCommands gets executed.
     boot.kernelParams = ["ip=127.0.0.1:::::lo:none"];
 
