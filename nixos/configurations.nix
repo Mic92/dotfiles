@@ -1,7 +1,6 @@
 {
   self,
   nixpkgs,
-  nixpkgs-systemd,
   nur,
   home-manager,
   sops-nix,
