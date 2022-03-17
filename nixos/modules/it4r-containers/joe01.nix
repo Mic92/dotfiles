@@ -10,6 +10,14 @@ in {
     '';
   };
 
+  services.nginx.virtualHosts."search.warhelp.broenradio.org" = {
+    enableACME = true;
+    forceSSL = true;
+    locations."/".extraConfig = ''
+      proxy_pass http://[${ip6}]:3000;
+    '';
+  };
+
   services.nginx.virtualHosts."backend.search.warhelp.eu" = {
     enableACME = true;
     forceSSL = true;
@@ -17,6 +25,15 @@ in {
       proxy_pass http://[${ip6}]:3000;
     '';
   };
+
+  services.nginx.virtualHosts."backend.warhelp.broenradio.org" = {
+    enableACME = true;
+    forceSSL = true;
+    locations."/".extraConfig = ''
+      proxy_pass http://[${ip6}]:3000;
+    '';
+  };
+
   systemd.nspawn.joe01 = {
     enable = true;
     execConfig = {
