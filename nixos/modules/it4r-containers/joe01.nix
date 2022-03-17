@@ -22,7 +22,7 @@ in {
     enableACME = true;
     forceSSL = true;
     locations."/".extraConfig = ''
-      proxy_pass http://[${ip6}]:3000;
+      proxy_pass http://[${ip6}]:4000;
     '';
   };
 
@@ -30,7 +30,7 @@ in {
     enableACME = true;
     forceSSL = true;
     locations."/".extraConfig = ''
-      proxy_pass http://[${ip6}]:3000;
+      proxy_pass http://[${ip6}]:4000;
     '';
   };
 
