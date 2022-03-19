@@ -28,14 +28,7 @@
         hexyl
         binutils
         clang-tools
-        (alejandra.overrideAttrs (old: {
-          src = fetchFromGitHub {
-            owner = "kamadorueda";
-            repo = "alejandra";
-            rev = "cc92e945d27c8b3a40060efd19839051e680033a";
-            sha256 = "sha256-M35g176uRVBrIUHjztUZDn6c7MIhRObV1B/JgtK4cX8=";
-          };
-        }))
+        alejandra
         shfmt
 
         python3.pkgs.black
