@@ -12,6 +12,9 @@ in {
         "https://backend.warhelp.broenradio.org:443"
         "https://search.warhelp.eu:443"
         "https://backend.search.warhelp.eu:443"
+        # mission lifeline
+        "https://search.beherbergung.broenradio.org:443"
+        "https://backend.beherbergung.broenradio.org:443"
       ];
       tags.host = "eve";
       tags.org = "it4r";
