@@ -47,6 +47,17 @@ in {
         tags.host = "eve";
         tags.org = "it4r";
       }
+      {
+        urls = [
+          "https://backend.warhelp.broenradio.org/health"
+          "https://backend.search.warhelp.eu/health"
+          "https://search.warhelp.broenradio.org/health"
+          "https://search.warhelp.eu/health"
+        ];
+        response_string_match = "ok";
+        tags.host = "eve";
+        tags.org = "it4r";
+      }
     ];
   };
 }
