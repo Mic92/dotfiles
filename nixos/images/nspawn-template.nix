@@ -26,9 +26,9 @@ nixos-generators.nixosGenerate {
 
       [Network]
       # increment this for new servers...
-      Address = 2a01:4f8:10b:49f:1::1/80
+      Address = 2a01:4f8:10b:49f:1::3/80
       # ... and this
-      Address = 192.168.21.1/24
+      Address = 192.168.21.3/24
       Gateway = 192.168.21.254
       LinkLocalAddressing = yes
       LLDP = yes
