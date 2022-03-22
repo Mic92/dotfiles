@@ -40,6 +40,7 @@ in {
       Capability = "all";
       PrivateUsers = "no";
     };
+    networkConfig.Bridge = "br-joe";
   };
   networking.nat = {
     forwardPorts = [
