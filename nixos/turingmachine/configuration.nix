@@ -224,4 +224,9 @@
   ];
 
   system.stateVersion = "18.03";
+  networking.extraHosts = ''
+    127.0.0.1 app.stagsecurities.com
+    127.0.0.1 staging.stagsecurities.com
+    2600:1f16:d7a:b302:845b:4213:4451:345b dev01
+  '';
 }
