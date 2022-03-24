@@ -1,4 +1,4 @@
-{config, ...}: let
+{config, lib, ...}: let
   external = "dock0";
 in {
   systemd.network.netdevs.internal.netdevConfig = {
@@ -21,6 +21,7 @@ in {
   # $ nmcli dev disconnect eth0
   # $ ip link set eth0 master internal
   services.dnsmasq.enable = !config.virtualisation.libvirtd.enable;
+  services.dnsmasq.resolveLocalQueries = lib.mkDefault false; # don't use it locally for dns
   services.dnsmasq.extraConfig = ''
     interface=internal
     #interface=virttap
