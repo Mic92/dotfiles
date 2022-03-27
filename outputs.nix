@@ -89,13 +89,6 @@ in {
       format = "kexec";
     };
 
-    netboot = pkgs.callPackage ./nixos/images/netboot.nix {
-      inherit pkgs;
-      inherit (nixpkgs.lib) nixosSystem;
-      extraModules = [
-        {_module.args.inputs = inputs;}
-      ];
-    };
 
     kresd-image = pkgs.callPackage ./nixos/images/kresd.nix {
       inherit (containerPkgs) nix2container;
@@ -110,6 +103,14 @@ in {
     #headscale-podman = copyToPodman selfPkgs.headscale-image;
 
     kresd-registry = selfPkgs.kresd-image.copyToRegistry;
+
+    netboot = pkgs.callPackage ./nixos/images/netboot.nix {
+      inherit pkgs;
+      inherit (nixpkgs.lib) nixosSystem;
+      extraModules = [
+        {_module.args.inputs = inputs;}
+      ];
+    };
 
     netboot-pixie-core = pkgs.callPackage ./nixos/images/netboot-pixie-core.nix {
       inherit (selfPkgs) netboot;
