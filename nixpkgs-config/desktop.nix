@@ -25,7 +25,6 @@ in {
   imports = [
     ./common.nix
     ./modules/rust.nix
-    #./modules/latex.nix
     ./modules/debugging.nix
     ./modules/default-apps.nix
   ];
