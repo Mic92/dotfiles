@@ -53,12 +53,6 @@
   autoStash = true
   autoSquash = true
 
-[url "gitlab@git.higgsboson.tk:Mic92/"]
-  insteadOf = higgs:
-[url "git@github.com:Mic92/"]
-  insteadOf = gh:
-[url "aur@aur4.archlinux.org:"]
-  insteadOf = arch:
 [help]
   autocorrect = 1
 [mergetool]
@@ -98,4 +92,4 @@
 [credential]
   helper = store
 [commit]
-	gpgsign = true
+  gpgsign = true
