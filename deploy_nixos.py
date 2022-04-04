@@ -81,7 +81,7 @@ class DeployHost:
                 read = os.read(print_fd.fileno(), 4096)
                 if len(read) == 0:
                     rlist.remove(print_fd)
-                print_buf += read.decode("utf-8")
+                print_buf += read.decode("utf-8", errors="ignore")
                 if read == "" or "\n" in print_buf:
                     lines = print_buf.rstrip("\n").split("\n")
                     for line in lines:
@@ -94,7 +94,7 @@ class DeployHost:
                     if len(read) == 0:
                         rlist.remove(fd)
                     else:
-                        return read.decode("utf-8")
+                        return read.decode("utf-8", errors="ignore")
                 return ""
 
             stdout_buf += handle_fd(stdout)
