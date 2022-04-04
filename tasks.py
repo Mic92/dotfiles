@@ -28,7 +28,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
             flake_path += "#" + flake_attr
         target_host = h.meta.get("target_host", "localhost")
         h.run(
-            f"nixos-rebuild switch --build-host localhost --target-host {target_host} --flake {flake_path}"
+            f"nixos-rebuild switch --build-host localhost --target-host {target_host} --flake $(realpath {flake_path})"
         )
 
     g.run_function(deploy)
