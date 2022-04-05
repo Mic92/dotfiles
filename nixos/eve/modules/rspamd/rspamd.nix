@@ -117,7 +117,7 @@ in {
     };
   };
 
-  users.users.rspamd.extraGroups = ["redis"];
+  systemd.services.rspamd.serviceConfig.SupplementaryGroups = [ "rspamd-redis" ];
 
   systemd.services.dovecot2.preStart = ''
     mkdir -p /var/lib/dovecot/sieve/
