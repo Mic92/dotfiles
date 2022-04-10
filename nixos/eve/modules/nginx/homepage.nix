@@ -27,21 +27,5 @@
       forceSSL = true;
       globalRedirect = "thalheim.io";
     };
-
-    virtualHosts."www.vmsh.org" = {
-      useACMEHost = "thalheim.io";
-      forceSSL = true;
-      extraConfig = ''
-        return 302 https://github.com/Mic92/vmsh;
-      '';
-    };
-
-    virtualHosts."vmsh.org" = {
-      useACMEHost = "thalheim.io";
-      forceSSL = true;
-      extraConfig = ''
-        return 302 https://github.com/Mic92/vmsh;
-      '';
-    };
   };
 }

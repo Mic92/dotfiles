@@ -94,8 +94,6 @@
           "*.devkid.net"
           "lekwati.com"
           "*.lekwati.com"
-          "vmsh.org"
-          "*.vmsh.org"
         ];
         credentialsFile = config.sops.secrets.lego-knot-credentials.path;
       };
