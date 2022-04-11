@@ -6,9 +6,9 @@
 # iso> mkfs.vfat -b32 /dev/nvme0n1p1
 # iso> ls -la /dev/disk/by-partuuid/
 # iso> zpool create -f zroot /dev/disk/by-partuuid/046fdb0b-114f-4435-9d8c-957ac73b5cd2
-# iso> nc -6 -w 120 -l 8023 | zfs receive -F zroot
+# iso> mbuffer -6 -I 8023 | zfs receive -F zroot
 # host> sudo zfs snapshot -r zroot@zfs-send
-# host> sudo zfs send --raw -R zroot@zfs-send | nc -w 20 fd42:4492:6a6d:43:1::0 8023
+# host> sudo zfs send --raw -R zroot@zfs-send | mbuffer -6 -O [fd42:4492:6a6d:43:1::0]:8023
 # iso> zfs load-key -a
 # iso> mount -t zfs nixos/root/nixos /mnt
 # iso> mount -t zfs nixos/root/home /mnt
