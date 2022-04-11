@@ -60,17 +60,6 @@
 
   config = {
     services.logrotate.enable = true;
-    services.logrotate.paths.nginx = {
-      path = "/var/log/nginx/*.log";
-      user = config.services.nginx.user;
-      group = config.services.nginx.group;
-      keep = 24;
-      extraConfig = ''
-        postrotate
-          systemctl reload nginx
-        endscript
-      '';
-    };
     # format:
     # RFC2136_NAMESERVER=ns1.thalheim.io
     # RFC2136_TSIG_ALGORITHM=hmac-sha256.
