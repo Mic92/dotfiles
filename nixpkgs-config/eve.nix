@@ -22,7 +22,6 @@
     (weechat.override {
       configure = {availablePlugins, ...}: {
         scripts = with weechatScripts; [
-          weechat-otr
           wee-slack
           multiline
           weechat-matrix
