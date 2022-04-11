@@ -8,7 +8,7 @@
   imports = [
     ./hardware-configuration.nix
 
-    ./modules/rhasspy
+    #./modules/rhasspy
     ./modules/sshd.nix
     ./modules/light
     ./modules/network.nix
