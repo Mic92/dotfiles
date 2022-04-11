@@ -50,6 +50,7 @@
   ];
 
   documentation.enable = false;
+  documentation.nixos.options.warningsAreErrors = false;
 
   # no auto-updates
   systemd.services.update-prefetch.enable = false;
