@@ -27,7 +27,6 @@
     Address = 2a01:4f8:10b:49f:1::/80
     LinkLocalAddressing = yes
     DHCPServer = yes
-    IPMasquerade = yes
     LLDP = yes
     EmitLLDP = customer-bridge
     IPv6SendRA = yes
