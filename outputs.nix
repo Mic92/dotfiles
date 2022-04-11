@@ -70,9 +70,28 @@ in {
       inherit pkgs;
       modules = [
         ./nixos/images/kexec.nix
-        {nixpkgs.overlays = [nur.overlay];}
+        {
+          nixpkgs.overlays = [nur.overlay];
+        }
+        {
+          _module.args.inputs = inputs;
+        }
       ];
       format = "kexec";
+    };
+
+    sd-image = nixos-generators.nixosGenerate {
+      inherit pkgs;
+      modules = [
+        ./nixos/images/base-config.nix
+        {
+          nixpkgs.overlays = [nur.overlay];
+        }
+        {
+          _module.args.inputs = inputs;
+        }
+      ];
+      format = "install-iso";
     };
 
     nspawn-template = import ./nixos/images/nspawn-template.nix {
