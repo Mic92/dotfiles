@@ -10,8 +10,8 @@ in {
       sources = [
         "https://search.warhelp.broenradio.org:443"
         "https://backend.warhelp.broenradio.org:443"
-        "https://search.warhelp.eu:443"
-        "https://backend.search.warhelp.eu:443"
+        #"https://search.warhelp.eu:443"
+        #"https://backend.search.warhelp.eu:443"
         # mission lifeline
         "https://search.beherbergung.broenradio.org:443"
         "https://backend.beherbergung.broenradio.org:443"
@@ -44,7 +44,7 @@ in {
       {
         urls = [
           "https://backend.warhelp.broenradio.org"
-          "https://backend.search.warhelp.eu"
+          #"https://backend.search.warhelp.eu"
         ];
         response_string_match = "Graphql";
         tags.host = "eve";
@@ -53,9 +53,9 @@ in {
       {
         urls = [
           "https://backend.warhelp.broenradio.org/health"
-          "https://backend.search.warhelp.eu/health"
+          #"https://backend.search.warhelp.eu/health"
           "https://search.warhelp.broenradio.org/health"
-          "https://search.warhelp.eu/health"
+          #"https://search.warhelp.eu/health"
         ];
         response_string_match = "ok";
         tags.host = "eve";
