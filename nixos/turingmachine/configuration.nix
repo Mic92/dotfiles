@@ -60,7 +60,7 @@
 
     loader.systemd-boot.enable = true;
     # when installing toggle this
-    loader.efi.canTouchEfiVariables = false;
+    loader.efi.canTouchEfiVariables = true;
 
     # It may leak your data, but look how FAST it is!1!!
     # https://make-linux-fast-again.com/
