@@ -26,12 +26,14 @@
   #  "rtsx_pci_sdmmc"
   #  "nvme"
   #];
-  boot.initrd.availableKernelModules = ["xhci_pci" "nvme" "sdhci_pci"];
+  # x13
+  #boot.initrd.availableKernelModules = ["xhci_pci" "nvme" "sdhci_pci"];
+  # framework
+  boot.initrd.availableKernelModules = ["xhci_pci" "nvme" "thunderbolt"];
   boot.kernelModules = ["kvm-intel"];
 
   # for zfs
   networking.hostId = "8425e349";
-  boot.zfs.enableUnstable = true;
 
   hardware = {
     bluetooth.enable = true;
@@ -49,7 +51,7 @@
   environment.systemPackages = with pkgs; [pulseaudio];
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/1638-625C";
+    device = "/dev/disk/by-uuid/SYSTEM";
     fsType = "vfat";
     options = ["nofail"];
   };
@@ -57,12 +59,13 @@
   fileSystems."/" = {
     device = "zroot/root/nixos";
     fsType = "zfs";
+    options = [ "zfsutil" ];
   };
 
   fileSystems."/home" = {
     device = "zroot/root/home";
     fsType = "zfs";
-    options = ["nofail"];
+    options = ["nofail" "zfsutil"];
   };
 
   fileSystems."/home/joerg/Musik/podcasts" = {
@@ -74,8 +77,11 @@
   fileSystems."/tmp" = {
     device = "zroot/root/tmp";
     fsType = "zfs";
-    options = ["nofail"];
+    options = ["nofail" "zfsutil"];
   };
 
+  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
+  hardware.video.hidpi.enable = lib.mkDefault true;
 }
