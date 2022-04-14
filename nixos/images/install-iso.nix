@@ -10,8 +10,8 @@
 # host> sudo zfs snapshot -r zroot@zfs-send
 # host> sudo zfs send --raw -R zroot@zfs-send | mbuffer -6 -O [fd42:4492:6a6d:43:1::0]:8023
 # iso> zfs load-key -a
-# iso> mount -t zfs nixos/root/nixos /mnt
-# iso> mount -t zfs nixos/root/home /mnt
+# iso> mount -t zfs zroot/root/nixos /mnt
+# iso> mount -t zfs zroot/root/home /mnt
 # iso> mount /dev/nvme0n1p1 /mnt/boot
 # iso> nix-shell -p git -p nixFlakes --run 'nixos-install --impure --flake /mnt/home/joerg/.homesick/repos/dotfiles#turingmachine'
 {
@@ -35,7 +35,7 @@
 # iso> sgdisk -n 1:0:+500M -N 2 -t 1:ef00 -t 2:8304 /dev/nvme0n1
 # iso> mkfs.vfat -b32 /dev/nvme0n1p1
 # iso> ls -la /dev/disk/by-partuuid/
-# iso> zpool create -O compression=lz4 -O dnodesize=auto -O normalization=formD -O atime=off -O xattr=sa -O relatime=on -O mountpoint=none / \
+# iso> zpool create -O compression=lz4 -O dnodesize=auto -O normalization=formD -O atime=off -O xattr=sa -O relatime=on -O mountpoint=none -O acltype=posixacl / \
 #   -f zroot /dev/disk/by-partuuid/046fdb0b-114f-4435-9d8c-957ac73b5cd2
 # zfs create -o encryption=aes-256-gcm -o keyformat=passphrase -o mountpoint=none zroot/root
 # zfs create -o mountpoint=/tmp -o setuid=off -o devices=off -o sync=disabled zroot/root/tmp
