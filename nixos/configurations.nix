@@ -50,7 +50,7 @@ in
       modules =
         defaultModules
         ++ [
-          nixos-hardware.nixosModules.lenovo-thinkpad-x250
+          nixos-hardware.nixosModules.lenovo-thinkpad-x13
           home-manager.nixosModules.home-manager
           ./bernie/configuration.nix
         ];
@@ -62,9 +62,7 @@ in
         defaultModules
         ++ [
           ./turingmachine/configuration.nix
-          #nixos-hardware.nixosModules.lenovo-thinkpad-x13
           nixos-hardware.nixosModules.framework
-          #nixos-hardware.nixosModules.dell-xps-13-9380
           inputs.nix-ld.nixosModules.nix-ld
           #inputs.envfs.nixosModules.envfs
         ];

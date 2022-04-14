@@ -2,8 +2,8 @@
 # $ nix-build '<nixpkgs/nixos>' -A config.system.build.isoImage -I nixos-config=./install-iso.nix
 # $ dd if=result/iso/nixos-*.iso of=/dev/sdb
 # iso>
-# iso> sgdisk -n 1:0:+500M -N 2 -t 1:ef00 -t 2:8304 /dev/nvme0n1
-# iso> mkfs.vfat -b32 /dev/nvme0n1p1
+# iso> sgdisk -n 1:0:+1000M -N 2 -t 1:ef00 -t 2:8304 /dev/nvme0n1
+# iso> mkfs.vfat -b32 /dev/nvme0n1p1 -N NIXOS_BOOT
 # iso> ls -la /dev/disk/by-partuuid/
 # iso> zpool create -f zroot /dev/disk/by-partuuid/046fdb0b-114f-4435-9d8c-957ac73b5cd2
 # iso> mbuffer -6 -I 8023 | zfs receive -F zroot
@@ -32,8 +32,8 @@
 # iso> cryptsetup luksOpen /dev/sda2 root
 # iso> zpool create -f zroot /dev/mapper/root
 ## New zroot setup
-# iso> sgdisk -n 1:0:+500M -N 2 -t 1:ef00 -t 2:8304 /dev/nvme0n1
-# iso> mkfs.vfat -b32 /dev/nvme0n1p1
+# iso> sgdisk -n 1:0:+1000M -N 2 -t 1:ef00 -t 2:8304 /dev/nvme0n1
+# iso> mkfs.vfat -b32 /dev/nvme0n1p1 -N NIXOS_BOOT
 # iso> ls -la /dev/disk/by-partuuid/
 # iso> zpool create -O compression=lz4 -O dnodesize=auto -O normalization=formD -O atime=off -O xattr=sa -O relatime=on -O mountpoint=none -O acltype=posixacl / \
 #   -f zroot /dev/disk/by-partuuid/046fdb0b-114f-4435-9d8c-957ac73b5cd2

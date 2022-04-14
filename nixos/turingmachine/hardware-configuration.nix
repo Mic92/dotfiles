@@ -51,7 +51,7 @@
   environment.systemPackages = with pkgs; [pulseaudio];
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/SYSTEM";
+    device = "/dev/disk/by-label/SYSTEM";
     fsType = "vfat";
     options = ["nofail"];
   };
