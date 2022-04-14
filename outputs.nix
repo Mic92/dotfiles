@@ -43,7 +43,9 @@ in {
       cd ${./.}
       oldpath=$(realpath /nix/var/nix/profiles/per-user/$USER/home-manager)
       path=$(nix run .#hm-build -- "$@")
-      nix store diff-closures "$oldpath" "$path"
+      if [[ -e $oldpath ]]; then
+        nix store diff-closures "$oldpath" "$path"
+      fi
       $path/activate
     '');
   };
