@@ -191,9 +191,6 @@ in {
         - domain: _acme-challenge.thalheim.io
           file: "${acmeChallenge "thalheim.io"}"
           template: acme
-        - domain: _acme-challenge.vmsh.org
-          file: "${acmeChallenge "vmsh.org"}"
-          template: acme
         - domain: _acme-challenge.anon.thalheim.io
           file: "${acmeChallenge "anon.thalheim.io"}"
           template: acme
