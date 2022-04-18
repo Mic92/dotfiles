@@ -134,6 +134,7 @@ in {
       nixos-shell
     ]
     ++ (with nur.repos.mic92; [
+      q
       speedscope
       inxi
       source-code-pro-nerdfonts
