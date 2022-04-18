@@ -48,6 +48,7 @@
 [pull]
   rebase = true
   autostash = true
+  twohead = ort
 [rebase]
   autoStash = true
   autoSquash = true
