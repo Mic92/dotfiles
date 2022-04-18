@@ -5,7 +5,7 @@
   ...
 }:
 with lib; let
-  myemacs = pkgs.emacsGcc;
+  myemacs = pkgs.emacsNativeComp;
   editorScript = {
     name ? "emacseditor",
     x11 ? false,
