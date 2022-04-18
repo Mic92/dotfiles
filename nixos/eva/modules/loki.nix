@@ -87,11 +87,8 @@ in {
         ring.kvstore.store = "inmemory";
       };
 
-      # Query splitting and caching
-      query_range = {
-        split_queries_by_interval = "24h";
-        cache_results = true;
-      };
+      query_range.cache_results = true;
+      limits_config.split_queries_by_interval = "24h";
     };
   };
 
