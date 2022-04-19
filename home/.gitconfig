@@ -24,7 +24,7 @@
   colorMoved = default
 [merge]
   tool = vim -d
-  conflictstyle = diff3
+  conflictstyle = zdiff3
 [alias]
   rb = "rebase origin/HEAD"
   get = clone --recursive
