@@ -29,11 +29,13 @@ in {
 
   services.home-assistant = {
     enable = true;
-    package = pkgs.home-assistant.override {
+    package = (pkgs.home-assistant.override {
       extraPackages = ps: [
         ps.psycopg2
       ];
-    };
+    }).overrideAttrs (old: {
+      patches = [ ./mqtt-5.patch ];
+    });
   };
 
   services.home-assistant.config = let

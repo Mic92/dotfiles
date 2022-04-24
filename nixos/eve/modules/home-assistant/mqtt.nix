@@ -4,13 +4,7 @@
   pkgs,
   ...
 }: {
-  services.home-assistant.config.mqtt = {
-    broker = "mqtt.thalheim.io";
-    certificate = "auto";
-    port = "8883";
-    username = "hass@thalheim.io";
-    password = "!secret ldap_password";
-  };
+  services.home-assistant.config.mqtt = {};
   networking.firewall.allowedTCPPorts = [8883];
 
   services.nginx = {
