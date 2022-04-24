@@ -59,6 +59,7 @@ in {
     };
     "map" = {};
     shopping_list = {};
+    backup = {};
     logbook.exclude.entities = hiddenEntities;
     logger.default = "info";
     sun = {};
