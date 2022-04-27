@@ -42,6 +42,7 @@
       "/home/*/.clangd"
       "/home/*/.config/Ferdi/Partitions"
       "/home/*/.mozilla/firefox/*/storage"
+      "/home/joerg/work/kuutamo/core/src/kuutamod/.data"
       "/mnt/matchbox/ebooks"
       "/var/lib/containerd"
       "/var/lib/docker/"
