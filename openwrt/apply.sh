@@ -2,8 +2,11 @@
 
 set -eux -o pipefail
 
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
+HOST="192.168.1.1"
+
 run() {
-    ssh "root@192.168.1.1" "$@"
+    ssh "root@$HOST" "$@"
 }
 
 # Set unix root password
@@ -16,7 +19,7 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbBp2dH2X3dcU1zh+xW3ZsdYROKpJd3n13ssOP092qE
 EOF
 
 # Apply uci configuration
-nix run .#example | run 'uci batch; uci commit'
+nix run "$SCRIPT_DIR#example" | run 'uci batch; uci commit'
 
 # Set up internet after a firmware reset
 if ! run "ip link | grep -q pppoe-wan"; then
@@ -26,4 +29,7 @@ if ! run "ip link | grep -q pppoe-wan"; then
 fi
 
 # Install web interface and other packages
-run "opkg update && opkg install luci tcpdump"
+run "opkg update && opkg install luci tcpdump tinc rsync"
+
+run "if [ ! -f /etc/tinc/retiolum/rsa_key.priv ]; then mkdir -p /etc/tinc/retiolum; tinc -n retiolum generate-keys; /etc/init.d/tinc start; fi"
+rsync -e ssh -ac /etc/tinc/retiolum/hosts "root@$HOST:/etc/tinc/retiolum"
