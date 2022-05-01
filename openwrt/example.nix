@@ -21,6 +21,11 @@
     # Note that once you define a section i.e. network.wan, than all existing
     # values of this section are unset before applying the new values
 
+    system.system = [{
+      _type = "system";
+      hostname = "rauter";
+    }];
+
     network = {
       wan = {
         _type = "interface";
