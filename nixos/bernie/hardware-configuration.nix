@@ -12,7 +12,7 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.initrd.availableKernelModules = ["xhci_pci" "ehci_pci" "ahci" "sd_mod" "rtsx_pci_sdmmc"];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "sdhci_pci" ];
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-intel"];
   boot.extraModulePackages = [];
@@ -23,18 +23,21 @@
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/BB76-AED1";
+    device = "/dev/disk/by-label/NIXOS_BOOT";
     fsType = "vfat";
+    options = ["nofail"];
   };
 
   fileSystems."/home" = {
     device = "zroot/root/home";
     fsType = "zfs";
+    options = ["nofail"];
   };
 
   fileSystems."/tmp" = {
     device = "zroot/root/tmp";
     fsType = "zfs";
+    options = ["nofail"];
   };
 
   swapDevices = [];

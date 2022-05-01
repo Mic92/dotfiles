@@ -30,6 +30,8 @@
   boot.zfs.requestEncryptionCredentials = ["zroot/root"];
   boot.zfs.enableUnstable = true;
   boot.loader.systemd-boot.enable = true;
+  # when installing toggle this
+  boot.loader.efi.canTouchEfiVariables = false;
 
   users.extraUsers.shannan = {
     isNormalUser = true;
