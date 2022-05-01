@@ -65,7 +65,7 @@ nix build \
   -f '<nixpkgs/nixos>' \
   pkgs.krebs-hosts
 install -D -m644 result $WEBROOT/etc.hosts
-grep -E '^42:|.i |.i$' result-1 > $WEBROOT/etc.hosts-v6only
+grep -E '^42:|.i |.i$' result > $WEBROOT/etc.hosts-v6only
 
 nix-build ./wiregrill.nix \
   -I secrets=./krebs/0tests/data/secrets \
