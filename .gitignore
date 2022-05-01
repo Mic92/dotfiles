@@ -13,3 +13,4 @@ nixos/vms/eve/secrets
 *.tfstate.backup
 
 nixos/eve/modules/hydra/.terraform.lock.hcl
+/openwrt/openwrt.sysupgrade.itb

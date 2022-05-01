@@ -2,7 +2,7 @@
 
 import subprocess
 import sys
-from typing import Any, Dict, List, Type
+from typing import Any, Dict, List, Type, Union
 from pathlib import Path
 import json
 import re
@@ -27,6 +27,17 @@ def interpolate_secrets(option_val: str, secrets: Dict[str, str]) -> str:
     return re.sub("@(.+)@", substitute_secrets, option_val)
 
 
+def serialize_option_val(val: Union[List, str], secrets: Dict[str, str]) -> str:
+    if isinstance(val, str):
+        val = interpolate_secrets(val, secrets)
+        return val
+    elif isinstance(val, list):
+        values = map(lambda v: interpolate_secrets(v, secrets), val)
+        return ' '.join(values)
+    else:
+        raise ConfigError(f"{config_name}.{section_name}.{option_name} is not a string")
+
+
 def serialize_list_section(
     config_name: str,
     section_name: str,
@@ -41,19 +52,12 @@ def serialize_list_section(
     # truncate list so we can start from fresh
 
     for option_name, option in list_obj.items():
-        if not isinstance(option, str):
-            raise ConfigError(
-                f"{config_name}.{section_name}.{option_name} is not a string"
-            )
-
         if option_name == "_type":
             _type = option
             lines.append(f"set {config_name}.@{section_name}[{idx}]={option}")
         else:
-            interpolated = interpolate_secrets(option, secrets)
-            # FIXME: how does escaping work?
             lines.append(
-                f"set {config_name}.@{section_name}[{idx}].{option_name}='{interpolated}'"
+                f"set {config_name}.@{section_name}[{idx}].{option_name}='{serialize_option_val(option, secrets)}'"
             )
     if _type is None:
         raise ConfigError(f"{config_name}.{section_name} has no type")
@@ -72,18 +76,15 @@ def serialize_named_section(
     lines.append(f"delete {config_name}.{section_name}")
 
     for option_name, option in section.items():
-        if not isinstance(option, str):
-            raise ConfigError(
-                f"{config_name}.{section_name}.{option_name} is not a string"
-            )
         if option_name == "_type":
             _type = option
-            lines.append(f"set {config_name}.{section_name}={option}")
+            lines.append(
+                f"set {config_name}.{section_name}={option}"
+            )
         else:
-            interpolated = interpolate_secrets(option, secrets)
             # FIXME: how does escaping work?
             lines.append(
-                f"set {config_name}.{section_name}.{option_name}='{interpolated}'"
+                f"set {config_name}.{section_name}.{option_name}='{serialize_option_val(option, secrets)}'"
             )
     if _type is None:
         raise ConfigError(f"{config_name}.{section_name} has no type")
@@ -126,11 +127,13 @@ def serialize_uci(configs: Dict[str, Any], secrets: Dict[str, str]) -> str:
 
     return "\n".join(lines)
 
+
 def ensure_type(parent: Dict[str, Any], key: str, t: Type) -> Dict:
     val = parent.get(key, {})
     if not isinstance(val, t):
         raise ConfigError(f"{key} is not of type: {t}")
     return val
+
 
 def ensure_dict(parent: Dict[str, Any], key: str) -> Dict:
     return ensure_type(parent, key, dict)
