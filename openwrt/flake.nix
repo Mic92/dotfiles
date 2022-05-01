@@ -15,6 +15,7 @@
       packages = {
         inherit (uci) nix-uci writeUci;
       };
+      # `nix run .#example` will output uci configuration
       apps.example = {
         type = "app";
         program = toString (self.packages.${system}.writeUci ./example.nix).command;

@@ -1,19 +1,43 @@
 {
   uci.settings = {
+    # The block below will translate to the following uci settings:
+    # root@OpenWrt:~# uci show dropbear
+    #dropbear.@dropbear[0]=dropbear
+    #dropbear.@dropbear[0].Interface='lan'
+    #dropbear.@dropbear[0].PasswordAuth='off'
+    #dropbear.@dropbear[0].Port='22'
+    dropbear.dropbear = [
+      {
+        # each section needs a type, denoted by `_type`
+        _type = "dropbear";
+        # those are normal config options
+        PasswordAuth = "off";
+        Port = "22";
+        Interface = "lan";
+      }
+    ];
+
+    # Use `uci show <config>` to translate your existing configuration to the uci equivalent.
+    # Note that once you define a section i.e. network.wan, than all existing
+    # values of this section are unset before applying the new values
+
     network = {
       wan = {
         _type = "interface";
         proto = "pppoe";
+        # values with @key@ are replaced by secrets loaded via the sops files at the end of this module
         username = "@pppoe_username@";
         password = "@pppoe_password@";
         ipv6 = "auto";
         device = "wan.7";
       };
+      # When overriding `network.device`, don't forget to re-add `br-lan`, or you will log yourself out!
       device = [
         {
           _type = "device";
           name = "br-lan";
           type = "bridge";
+          # list options are also supported
           ports = ["lan1" "lan2" "lan3" "lan4"];
         }
         {
@@ -65,17 +89,11 @@
         key = "@wifi_password@";
       };
     };
-    dropbear.dropbear = [
-      {
-        _type = "dropbear";
-        PasswordAuth = "off";
-        Port = "22";
-        Interface = "lan";
-      }
-    ];
   };
   uci.secrets = {
     sops.files = [
+      # Checkout https://github.com/mozilla/sops#encrypting-using-age
+      # to learn how to create encrypted sops files.
       ./secrets.yml
     ];
   };
