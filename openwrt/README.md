@@ -24,3 +24,7 @@ See [example.nix](example.nix), [flake.nix](flake.nix) and [apply.sh](apply.sh) 
   batch command. Currently, the code attempts to delete up to 10 list sections
   and then create a new list:
   https://github.com/Mic92/dotfiles/blob/00e178a0953461f676ecc9c0ab5b36a0742e12bd/openwrt/nix_uci/__init__.py#L108
+
+
+## Related work
+- https://gitea.c3d2.de/zentralwerk/network/src/branch/master/nix/pkgs/ap.nix#L142
