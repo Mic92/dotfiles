@@ -8,7 +8,7 @@ following syntax `@secret_key_from_sops@`
 
 # Example:
 
-See `example.nix`, `flake.nix` and `apply.sh` on how to use this project.
+See [example.nix](example.nix), [flake.nix](flake.nix) and [apply.sh](apply.sh) on how to use this project.
 
 ## State of this project
 - Works for me (TM)
