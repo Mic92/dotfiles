@@ -27,15 +27,16 @@ def interpolate_secrets(option_val: str, secrets: Dict[str, str]) -> str:
     return re.sub("@(.+)@", substitute_secrets, option_val)
 
 
-def serialize_option_val(val: Union[List, str], secrets: Dict[str, str]) -> str:
-    if isinstance(val, str):
-        val = interpolate_secrets(val, secrets)
-        return val
+def serialize_option_val(
+    key: str, val: Union[List, str], secrets: Dict[str, str]
+) -> List[str]:
+    if isinstance(val, str) or isinstance(val, float) or isinstance(val, int):
+        val = interpolate_secrets(str(val), secrets)
+        return [f"set {key}='{val}'"]
     elif isinstance(val, list):
-        values = map(lambda v: interpolate_secrets(v, secrets), val)
-        return ' '.join(values)
+        return [f"add_list {key}='{interpolate_secrets(v, secrets)}'" for v in val]
     else:
-        raise ConfigError(f"{config_name}.{section_name}.{option_name} is not a string")
+        raise ConfigError(f"{context} is not a string")
 
 
 def serialize_list_section(
@@ -51,16 +52,18 @@ def serialize_list_section(
     # FIXME, how to delete all list sections?
     # truncate list so we can start from fresh
 
-    for option_name, option in list_obj.items():
-        if option_name == "_type":
-            _type = option
-            lines.append(f"set {config_name}.@{section_name}[{idx}]={option}")
-        else:
-            lines.append(
-                f"set {config_name}.@{section_name}[{idx}].{option_name}='{serialize_option_val(option, secrets)}'"
-            )
+    _type = list_obj.get("_type")
     if _type is None:
-        raise ConfigError(f"{config_name}.{section_name} has no type")
+        raise ConfigError(f"{config_name}.@{section_name}[{idx}] has no type!")
+    del list_obj["_type"]
+    lines.append(f"set {config_name}.@{section_name}[{idx}]={_type}")
+
+    for option_name, option in list_obj.items():
+        lines.extend(
+            serialize_option_val(
+                f"{config_name}.@{section_name}[{idx}].{option_name}", option, secrets
+            )
+        )
     return lines
 
 
@@ -75,19 +78,19 @@ def serialize_named_section(
     # truncate section so we can start from fresh
     lines.append(f"delete {config_name}.{section_name}")
 
-    for option_name, option in section.items():
-        if option_name == "_type":
-            _type = option
-            lines.append(
-                f"set {config_name}.{section_name}={option}"
-            )
-        else:
-            # FIXME: how does escaping work?
-            lines.append(
-                f"set {config_name}.{section_name}.{option_name}='{serialize_option_val(option, secrets)}'"
-            )
+    _type = section.get("_type")
     if _type is None:
         raise ConfigError(f"{config_name}.{section_name} has no type")
+    del section["_type"]
+    lines.append(f"set {config_name}.{section_name}={_type}")
+
+    for option_name, option in section.items():
+        # FIXME: how does escaping work?
+        lines.extend(
+            serialize_option_val(
+                f"{config_name}.{section_name}.{option_name}", option, secrets
+            )
+        )
     return lines
 
 
