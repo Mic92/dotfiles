@@ -13,7 +13,7 @@ See [example.nix](example.nix), [flake.nix](flake.nix) and [apply.sh](apply.sh) 
 
 ## State of this project
 
-- Works for me (TM)
+- Works for me™
 - I use this code for my own router. I do not intend to support features that go
   beyond what I personally need. If you take up the idea and create a real
   project, let me know and I might switch to your project and contribute to your
