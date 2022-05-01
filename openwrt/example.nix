@@ -89,6 +89,17 @@
         key = "@wifi_password@";
       };
     };
+    tinc.retiolum = {
+      _type = "tinc-net";
+      enabled = 1;
+      Name = "rauter";
+      ConnectTo = [
+        "eva"
+        "eve"
+        "ni"
+        "prism"
+      ];
+    };
   };
   uci.secrets = {
     sops.files = [
