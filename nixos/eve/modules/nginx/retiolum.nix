@@ -18,7 +18,10 @@
       git pull --rebase "$upstream" master
       git push --force origin master
     '';
-    path = [pkgs.git];
+    path = [
+      pkgs.git
+      pkgs.openssh
+    ];
     serviceConfig = {
       Type = "oneshot";
       User = "gitea";
