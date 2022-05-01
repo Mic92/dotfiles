@@ -22,5 +22,5 @@ See [example.nix](example.nix), [flake.nix](flake.nix) and [apply.sh](apply.sh) 
 ## Known bugs
 - It is not possible to reliably delete all elements of a list section with uci
   batch command. Currently, the code attempts to delete up to 10 list sections
-  and then create a new list
-  (https://github.com/Mic92/dotfiles/blob/00e178a0953461f676ecc9c0ab5b36a0742e12bd/openwrt/nix_uci/__init__.py#L108.).
+  and then create a new list:
+  https://github.com/Mic92/dotfiles/blob/00e178a0953461f676ecc9c0ab5b36a0742e12bd/openwrt/nix_uci/__init__.py#L108
