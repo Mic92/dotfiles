@@ -20,6 +20,8 @@ in {
 
   services.prometheus = {
     enable = true;
+    # checks fail because of missing secrets in the sandbox
+    checkConfig = false;
     ruleFiles = [
       (pkgs.writeText "prometheus-rules.yml" (builtins.toJSON {
         groups = [
