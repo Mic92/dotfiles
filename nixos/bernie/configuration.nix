@@ -33,18 +33,18 @@
   # when installing toggle this
   boot.loader.efi.canTouchEfiVariables = false;
 
-  users.extraUsers.shannan = {
+  users.users.shannan = {
     isNormalUser = true;
     home = "/home/shannan";
-    extraGroups = ["wheel" "plugdev" "adbusers" "input" "kvm"];
+    extraGroups = ["wheel" "plugdev" "adbusers" "input" "kvm" "networkmanager"];
     shell = "/run/current-system/sw/bin/zsh";
     uid = 1001;
+    inherit (config.users.users.joerg) openssh;
   };
   networking.hostName = "bernie";
   networking.hostId = "ac174b52";
 
   networking.networkmanager.enable = true;
-  users.users.shannan.extraGroups = ["networkmanager"];
   time.timeZone = null;
   services.geoclue2.enable = true;
   i18n.defaultLocale = "en_DK.UTF-8";
