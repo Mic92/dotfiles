@@ -40,9 +40,9 @@
       install -D -m755 ${./retiolum-hook.sh} $out/bin/retiolum
       install -D -m755 ${./irc-hook.sh} $out/bin/irc-notify
       wrapProgram $out/bin/retiolum \
-        --set PATH ${lib.makeBinPath (with pkgs; [git gnutar gnugrep coreutils nix coreutils bzip2 jq bash])}
+        --set PATH ${lib.makeBinPath (with pkgs; [git openssh gnutar gnugrep coreutils nix coreutils bzip2 jq bash])}
       wrapProgram $out/bin/irc-notify \
-        --set PATH ${lib.makeBinPath (with pkgs; [git coreutils gnugrep gnused nur.repos.mic92.ircsink bash])}
+        --set PATH ${lib.makeBinPath (with pkgs; [git openssh coreutils gnugrep gnused nur.repos.mic92.ircsink bash])}
       cat > $out/bin/irc-stockholm <<EOF
       #!/usr/bin/env bash
       export GIT_URL=https://git.thalheim.io/Mic92/stockholm
