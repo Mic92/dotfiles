@@ -27,8 +27,9 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
         if flake_attr:
             flake_path += "#" + flake_attr
         target_host = h.meta.get("target_host", "localhost")
+        extra_args = h.meta.get("extra_args", "")
         h.run(
-            f"nixos-rebuild switch --build-host localhost --target-host {target_host} --flake $(realpath {flake_path})"
+            f"nixos-rebuild switch {extra_args} --build-host localhost --target-host {target_host} --flake $(realpath {flake_path})"
         )
 
     g.run_function(deploy)
@@ -42,7 +43,7 @@ def deploy(c):
     deploy_nixos(
         [
             DeployHost("eve.i"),
-            DeployHost("localhost"),
+            DeployHost("localhost", user="joerg", meta=dict(extra_args="--use-remote-sudo")),
             DeployHost(
                 "eve.i",
                 forward_agent=True,
