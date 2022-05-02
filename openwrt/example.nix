@@ -13,7 +13,17 @@
         # those are normal config options
         PasswordAuth = "off";
         Port = "22";
+        GatewayPorts = "1";
         Interface = "lan";
+      }
+      {
+        # each section needs a type, denoted by `_type`
+        _type = "dropbear";
+        # those are normal config options
+        PasswordAuth = "off";
+        Port = "22";
+        GatewayPorts = "1";
+        Interface = "vpn";
       }
     ];
 
@@ -35,6 +45,12 @@
         password = "@pppoe_password@";
         ipv6 = "auto";
         device = "wan.7";
+      };
+      vpn = {
+        _type = "interface";
+        ifname = "tun0";
+        proto = "static";
+        ip6addr = "42:0:3c46:3f4b:cbe8:e276:a769:2a99/12";
       };
       # When overriding `network.device`, don't forget to re-add `br-lan`, or you will log yourself out!
       device = [
@@ -98,6 +114,7 @@
       _type = "tinc-net";
       enabled = 1;
       Name = "rauter";
+      Interface = "tun0";
       ConnectTo = [
         "eva"
         "eve"
