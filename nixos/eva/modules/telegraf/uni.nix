@@ -20,6 +20,10 @@
     "graham.r"
     "ryan.r"
     "sauron.r"
+
+    "astrid.r"
+    "dan.r"
+    "mickey.r"
   ];
 in {
   services.telegraf.extraConfig.inputs = {
