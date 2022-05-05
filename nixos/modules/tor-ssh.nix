@@ -1,20 +1,21 @@
-{...}: {
+{config, lib, ...}: {
   services.tor = {
     enable = true;
+    client.enable = lib.mkDefault false;
     relay.onionServices."ssh".map = [
       {
         port = 22;
       }
     ];
     settings = {
-      DnsPort = 9053;
       AutomapHostsOnResolve = true;
       AutomapHostsSuffixes = [".exit" ".onion"];
       EnforceDistinctSubnets = true;
+      UseEntryGuards = true;
       ExitNodes = "{de}";
-      EntryNodes = "{de}";
       NewCircuitPeriod = 120;
-      DNSPort = 9053;
+      HiddenServiceNonAnonymousMode = !config.services.tor.client.enable;
+      HiddenServiceSingleHopMode = !config.services.tor.client.enable;
     };
   };
 
