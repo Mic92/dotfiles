@@ -19,7 +19,7 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbBp2dH2X3dcU1zh+xW3ZsdYROKpJd3n13ssOP092qE
 EOF
 
 # Apply uci configuration
-nix run "$SCRIPT_DIR#example" | run 'uci batch; uci commit'
+nix run "./#example" | run 'uci batch; uci commit'
 
 # Set up internet after a firmware reset
 if ! run "ip link | grep -q pppoe-wan"; then
@@ -29,7 +29,7 @@ if ! run "ip link | grep -q pppoe-wan"; then
 fi
 
 # Install web interface and other packages
-run "opkg update && opkg install luci tcpdump tinc rsync"
+run "opkg update && opkg install luci tcpdump tinc rsync ddns-scripts-nsupdate iperf3"
 
 run "if [ ! -f /etc/tinc/retiolum/rsa_key.priv ]; then mkdir -p /etc/tinc/retiolum; tinc -n retiolum generate-keys; /etc/init.d/tinc start; fi"
 rsync -e ssh -ac /etc/tinc/retiolum/hosts "root@$HOST:/etc/tinc/retiolum"
