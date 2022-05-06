@@ -108,7 +108,7 @@ def serialize_uci(configs: Dict[str, Any], secrets: Dict[str, str]) -> str:
             if isinstance(section, List):
                 # HACK: there seem no better way to clear out a list
                 for i in range(10):
-                    lines.append(f"delete {config_name}.@{section_name}[{i}]")
+                    lines.append(f"delete {config_name}.@{section_name}[0]")
                 for i in range(len(section)):
                     lines.append(f"add {config_name} {section_name}")
 
