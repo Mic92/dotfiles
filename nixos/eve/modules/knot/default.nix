@@ -32,6 +32,7 @@ in {
   #- id: acme
   #  algorithm: hmac-sha256
   #  secret: 00000000000000000000000000000000000000000000
+  #nix-shell -p knot-dns --run 'keymgr -t my_name hmac-sha256'
   sops.secrets."knot-keys.conf".owner = "knot";
 
   services.knot = {
@@ -68,6 +69,10 @@ in {
 
         - id: turingmachine_acl
           key: turingmachine
+          action: update
+
+        - id: rauter_acl
+          key: rauter
           action: update
 
         - id: bernie_acl
@@ -188,6 +193,10 @@ in {
           file: "${dyndns "turingmachine.thalheim.io"}"
           template: dyndns
           acl: [ turingmachine_acl ]
+        - domain: rauter.thalheim.io
+          file: "${dyndns "rauter.thalheim.io"}"
+          template: dyndns
+          acl: [ rauter_acl ]
         - domain: _acme-challenge.thalheim.io
           file: "${acmeChallenge "thalheim.io"}"
           template: acme

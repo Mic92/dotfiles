@@ -1,3 +1,4 @@
+{ config, ... }:
 {
   uci.settings = {
     # The block below will translate to the following uci settings:
@@ -121,6 +122,45 @@
         "ni"
         "prism"
       ];
+    };
+
+    ddns = let
+      common = {
+        _type = "service";
+        enabled = "1";
+        service_name = "bind-nsupdate";
+        lookup_host = "rauter.thalheim.io";
+        domain = "rauter.thalheim.io.";
+        ip_source  = "network";
+        dns_server = "ns2.thalheim.io";
+        use_syslog  = "2";
+        username  = "hmac-sha256:rauter";
+        password  = "@tsig_key@";
+        check_unit = "minutes";
+        force_unit = "minutes";
+        retry_unit = "seconds";
+      };
+    in {
+      global = {
+        _type = "ddns";
+        ddns_dateformat = "%F %R";
+        ddns_loglines = "250";
+        ddns_rundir = "/var/run/ddns";
+        ddns_logdir = "/var/log/ddns";
+        upd_privateip = "0";
+      };
+
+      myddns_ipv4 = common // {
+        use_ipv6 = "0";
+        ip_network  = "wan";
+        interface  = "wan";
+      };
+
+      myddns_ipv6 = common // {
+        use_ipv6 = "1";
+        ip_network  = "wan_6";
+        interface  = "wan_6";
+      };
     };
   };
   uci.secrets = {
