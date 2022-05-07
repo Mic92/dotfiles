@@ -27,10 +27,6 @@
     ../modules/promtail.nix
   ];
 
-  services.openssh.extraConfig = ''
-    HostCertificate ${./rock-cert.pub}
-  '';
-
   programs.bcc.enable = true;
 
   documentation.enable = false;
