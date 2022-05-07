@@ -5,6 +5,7 @@ from invoke import task
 import sys
 from typing import List
 import subprocess
+import socket
 from deploy_nixos import DeployHost, DeployGroup, parse_hosts, HostKeyCheck
 
 
@@ -25,11 +26,12 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
         flake_path = "/etc/nixos"
         flake_attr = h.meta.get("flake_attr")
         if flake_attr:
-            flake_path += "#" + flake_attr
+            flake_attr = "#" + flake_attr
         target_host = h.meta.get("target_host", "localhost")
+        target_user = h.meta.get("user", "root")
         extra_args = h.meta.get("extra_args", "")
         h.run(
-            f"nixos-rebuild switch {extra_args} --build-host localhost --target-host {target_host} --flake $(realpath {flake_path})"
+            f"nixos-rebuild switch {extra_args} --fast --build-host localhost --target-host {target_user}@{target_host} --flake $(realpath {flake_path}){flake_attr}"
         )
 
     g.run_function(deploy)
@@ -43,7 +45,9 @@ def deploy(c):
     deploy_nixos(
         [
             DeployHost("eve.i"),
-            DeployHost("localhost", user="joerg", meta=dict(extra_args="--use-remote-sudo")),
+            DeployHost(
+                "localhost", user="joerg", meta=dict(extra_args="--use-remote-sudo")
+            ),
             DeployHost(
                 "eve.i",
                 forward_agent=True,
@@ -77,12 +81,20 @@ def deploy_k3s(c):
     )
 
 
+def try_local(host: str) -> str:
+    try:
+        socket.gethostbyname(f"{host}.lan")
+        return f"{host}.lan"
+    except socket.error:
+        return f"{host}.r"
+
+
 @task
 def deploy_bernie(c):
     """
     Deploy to bernie
     """
-    deploy_nixos([DeployHost("bernie.r")])
+    deploy_nixos([DeployHost(try_local("bernie"))])
 
 
 @task
@@ -90,7 +102,7 @@ def deploy_jarvis(c):
     """
     Deploy to jarvis
     """
-    deploy_nixos([DeployHost("jarvis.r")])
+    deploy_nixos([DeployHost(try_local("jarvis"))])
 
 
 @task
@@ -112,10 +124,18 @@ def deploy_matchbox(c):
 @task
 def deploy_rock(c):
     """
-    Deploy to matchbox
+    Deploy to rock
     """
     deploy_nixos(
-        [DeployHost("localhost", meta=dict(target_host="rock.r", flake_attr="rock"))]
+        [
+            DeployHost(
+                "localhost",
+                meta=dict(
+                    target_user="root", target_host=try_local("rock"), flake_attr="rock"
+                ),
+                user="joerg"
+            )
+        ]
     )
 
 
