@@ -9,7 +9,6 @@
   imports = [
     ./modules/bme680-mqtt.nix
     ./modules/sops.nix
-    ./modules/loki.nix
     ./hardware-configuration.nix
 
     ../modules/users.nix
@@ -29,7 +28,7 @@
   programs.bcc.enable = true;
 
   documentation.enable = false;
-  boot.kernelPackages = pkgs.nur.repos.mic92.linuxPackages_ayufan;
+  #boot.kernelPackages = pkgs.nur.repos.mic92.linuxPackages_ayufan;
 
   # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
   boot.loader.grub.enable = false;

@@ -77,13 +77,13 @@ in
         ];
     };
 
-    #rock = nixosSystem {
-    #  system = "aarch64-linux";
-    #  modules = defaultModules ++ [
-    #    bme680-mqtt.nixosModules.bme680-mqtt
-    #    ./rock/configuration.nix
-    #  ];
-    #};
+    rock = nixosSystem {
+      system = "aarch64-linux";
+      modules = defaultModules ++ [
+        bme680-mqtt.nixosModules.bme680-mqtt
+        ./rock/configuration.nix
+      ];
+    };
 
     matchbox = nixosSystem {
       system = "aarch64-linux";
