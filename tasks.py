@@ -28,10 +28,12 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
         if flake_attr:
             flake_attr = "#" + flake_attr
         target_host = h.meta.get("target_host", "localhost")
-        target_user = h.meta.get("user", "root")
+        target_user = h.meta.get("user")
+        if target_user:
+            target_host = f"{target_user}@{target_host}"
         extra_args = h.meta.get("extra_args", "")
         h.run(
-            f"nixos-rebuild switch {extra_args} --fast --build-host localhost --target-host {target_user}@{target_host} --flake $(realpath {flake_path}){flake_attr}"
+            f"nixos-rebuild switch {extra_args} --fast --build-host localhost --target-host {target_host} --flake $(realpath {flake_path}){flake_attr}"
         )
 
     g.run_function(deploy)
