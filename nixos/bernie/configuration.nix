@@ -67,7 +67,7 @@
     vscode
     mpv
     inkscape
-    youtube-dl
+    yt-dlp
     calibre
     libreoffice
     ubuntu_font_family
