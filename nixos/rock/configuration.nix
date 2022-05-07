@@ -7,17 +7,23 @@
   nixpkgs.localSystem.system = "aarch64-linux";
 
   imports = [
-    ./modules/bme680-mqtt.nix
-    ./modules/sops.nix
     ./hardware-configuration.nix
 
+    ./modules/bme680-mqtt.nix
+    ./modules/sops.nix
+    ./modules/vlc-telnet.nix
+    ./modules/sshd.nix
+
+    ../modules/hass-agent.nix
     ../modules/users.nix
+    ../modules/ip-update.nix
     ../modules/samba-dl.nix
     ../modules/mosh.nix
     ../modules/telegraf.nix
-    ../modules/tor-ssh.nix
+    ../modules/pki
+    ../modules/xrdp.nix
     ../modules/networkd.nix
-    ../modules/openldap/replica.nix
+    ../modules/mosh.nix
     ../modules/promtail.nix
   ];
 

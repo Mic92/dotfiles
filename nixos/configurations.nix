@@ -94,15 +94,6 @@ in
         ];
     };
 
-    jarvis = nixosSystem {
-      system = "x86_64-linux";
-      modules =
-        defaultModules
-        ++ [
-          ./jarvis/configuration.nix
-        ];
-    };
-
     eva = nixosSystem {
       system = "x86_64-linux";
       modules =

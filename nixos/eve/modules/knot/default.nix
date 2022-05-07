@@ -79,8 +79,8 @@ in {
           key: bernie
           action: update
 
-        - id: jarvis_acl
-          key: jarvis
+        - id: rock_acl
+          key: rock
           action: update
 
       mod-rrl:
@@ -152,11 +152,11 @@ in {
           zonefile-load: difference
           journal-content: changes
 
-        - id: jarvis
+        - id: rock
           semantic-checks: on
           dnssec-signing: on
           dnssec-policy: rsa2k
-          acl: [ jarvis_acl ]
+          acl: [ rock_acl ]
           zonefile-sync: -1
           zonefile-load: difference
           journal-content: changes
@@ -177,10 +177,10 @@ in {
         - domain: i
           file: "${pkgs.retiolum}/zones/i.zone"
           template: retiolum
-        - domain: jarvis.thalheim.io
-          file: "${dyndns "jarvis.thalheim.io"}"
+        - domain: rock.thalheim.io
+          file: "${dyndns "rock.thalheim.io"}"
           template: dyndns
-          acl: [ jarvis_acl ]
+          acl: [ rock_acl ]
         - domain: matchbox.thalheim.io
           file: "${dyndns "matchbox.thalheim.io"}"
           template: dyndns

@@ -24,7 +24,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
         )
 
         flake_path = "/etc/nixos"
-        flake_attr = h.meta.get("flake_attr")
+        flake_attr = h.meta.get("flake_attr", "")
         if flake_attr:
             flake_attr = "#" + flake_attr
         target_host = h.meta.get("target_host", "localhost")
@@ -98,14 +98,6 @@ def deploy_bernie(c):
 
 
 @task
-def deploy_jarvis(c):
-    """
-    Deploy to jarvis
-    """
-    deploy_nixos([DeployHost(try_local("jarvis"))])
-
-
-@task
 def deploy_matchbox(c):
     """
     Deploy to matchbox
@@ -133,7 +125,7 @@ def deploy_rock(c):
                 meta=dict(
                     target_user="root", target_host=try_local("rock"), flake_attr="rock"
                 ),
-                user="joerg"
+                user="joerg",
             )
         ]
     )
