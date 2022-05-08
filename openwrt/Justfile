@@ -31,7 +31,7 @@ apply:
   fi
 
   # Install web interface and other packages
-  just ssh "opkg update && opkg install luci tcpdump tinc rsync ddns-scripts-nsupdate iperf3"
+  just ssh "opkg update && opkg install luci tcpdump tinc rsync ddns-scripts-nsupdate iperf3 luci-mod-rpc"
 
   just ssh "if [ ! -f /etc/tinc/retiolum/rsa_key.priv ]; then mkdir -p /etc/tinc/retiolum; tinc -n retiolum generate-keys; /etc/init.d/tinc start; fi"
   rsync -e ssh -ac /etc/tinc/retiolum/hosts "root@{{host}}:/etc/tinc/retiolum"
