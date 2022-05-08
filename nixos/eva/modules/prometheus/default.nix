@@ -55,6 +55,7 @@ in {
               "alertmanager.r:80"
               "prometheus.r:80"
               "rock.r:9273"
+              "rauter.r:9273"
             ];
           }
           {
