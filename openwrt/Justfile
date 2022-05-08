@@ -1,0 +1,46 @@
+host := "192.168.1.1"
+sysupgrade_url := "https://downloads.openwrt.org/snapshots/targets/mediatek/mt7622/openwrt-mediatek-mt7622-linksys_e8450-ubi-squashfs-sysupgrade.itb"
+
+ssh +command:
+  ssh "root@{{host}}" "{{command}}"
+
+eval-config:
+  nix run "./#example"
+
+# apply configuration to router
+apply:
+  #!/usr/bin/env bash
+  set -eux -o pipefail
+  # Set unix root password
+  password=$(sops -d --extract '["root_password"]' secrets.yml)
+  echo -e "$password\n$password" | just ssh "passwd root"
+
+  # Set root ssh keys
+  just ssh "mkdir -p /etc/dropbear/ && umask 177 && cat > /etc/dropbear/authorized_keys" <<EOF
+  ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbBp2dH2X3dcU1zh+xW3ZsdYROKpJd3n13ssOP092qE joerg@turingmachine
+  EOF
+
+  # Apply uci configuration
+  just eval-config | just ssh 'uci batch; uci commit'
+
+  # Set up internet after a firmware reset
+  if ! just ssh "ip link | grep -q pppoe-wan"; then
+      just ssh "/etc/init.d/network restart"
+      # wait for pppoe to recover
+      while ! ping -c1 -W 1 8.8.8.8; do :; done
+  fi
+
+  # Install web interface and other packages
+  just ssh "opkg update && opkg install luci tcpdump tinc rsync ddns-scripts-nsupdate iperf3"
+
+  just ssh "if [ ! -f /etc/tinc/retiolum/rsa_key.priv ]; then mkdir -p /etc/tinc/retiolum; tinc -n retiolum generate-keys; /etc/init.d/tinc start; fi"
+  rsync -e ssh -ac /etc/tinc/retiolum/hosts "root@{{host}}:/etc/tinc/retiolum"
+
+# perform router upgrade
+upgrade:
+  wget "$URL" -O openwrt.sysupgrade.itb
+  scp openwrt.sysupgrade.itb "root@{{host}}:/tmp/openwrt.sysupgrade.itb"
+  just ssh "sysupgrade -v /tmp/openwrt.sysupgrade.itb"
+  # wait for router to come back
+  while ! nc -zv "{{host}}" 22; do sleep 2; done
+  just apply

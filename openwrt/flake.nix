@@ -21,5 +21,11 @@
         program = toString (self.packages.${system}.writeUci ./example.nix).command;
       };
       defaultPackage = self.packages.${system}.nix-uci;
+      devShell = pkgs.mkShell {
+        buildInputs = [
+          pkgs.just
+          pkgs.sops
+        ];
+      };
     });
 }
