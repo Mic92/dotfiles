@@ -95,6 +95,12 @@ in {
         user_key = "!secret pushover_user_key";
       }
     ];
+    device_tracker = [{
+      platform = "luci";
+      host = "rauter.r";
+      username = "!secret openwrt_user";
+      password = "!secret openwrt_password";
+    }];
     config = {};
     mobile_app = {};
 
