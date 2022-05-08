@@ -185,6 +185,7 @@
     prometheus-node-exporter-lua.main = {
       _type = "prometheus-node-exporter-lua";
       listen_interface = "vpn";
+      listen_port = "9273";
     };
   };
   uci.secrets = {
