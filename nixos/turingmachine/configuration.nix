@@ -28,7 +28,7 @@
     #../modules/podman.nix
     ../modules/tpm2.nix
     ../modules/pipewire.nix
-    ../modules/jarvis-rdp.nix
+    ../modules/rock-rdp.nix
     ../modules/ip-update.nix
     #../modules/iwd.nix
     ../modules/dnsmasq.nix

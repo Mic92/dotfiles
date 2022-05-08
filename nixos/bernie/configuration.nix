@@ -12,7 +12,7 @@
     ./modules/sshd.nix
 
     ../modules/gnome.nix
-    ../modules/jarvis-rdp.nix
+    ../modules/rock-rdp.nix
     ../modules/hass-agent.nix
     ../modules/ip-update.nix
     ../modules/packages.nix

@@ -74,4 +74,7 @@
   time.timeZone = "Europe/Berlin";
 
   system.stateVersion = "18.03";
+
+  sops.secrets.xrdp-password-hash.neededForUsers = true;
+  users.users.joerg.passwordFile = config.sops.secrets.xrdp-password-hash.path;
 }
