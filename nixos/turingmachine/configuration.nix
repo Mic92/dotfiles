@@ -26,6 +26,7 @@
     #./modules/minidlna.nix
 
     #../modules/podman.nix
+    ../modules/tpm2.nix
     ../modules/pipewire.nix
     ../modules/jarvis-rdp.nix
     ../modules/ip-update.nix
