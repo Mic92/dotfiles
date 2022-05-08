@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, lib, ... }:
 {
   uci.settings = {
     # The block below will translate to the following uci settings:
@@ -123,6 +123,22 @@
         "prism"
       ];
     };
+
+    dhcp.host = lib.imap0 (id: host: rec {
+      _type = "host";
+      dns = "1";
+      ip = "192.168.1.${hostid}";
+      hostid = toString (id + 2);
+    } // host) [{
+      name = "rock";
+      mac = "4a:4e:25:af:9e:0f";
+    } {
+      name = "turingmachine";
+      mac = "c4:03:a8:86:a2:95";
+    } {
+      name = "bernie";
+      mac = "14:18:C3:BB:6F:07";
+    }];
 
     ddns = let
       common = {
