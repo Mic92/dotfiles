@@ -55,8 +55,14 @@ in {
               "alertmanager.r:80"
               "prometheus.r:80"
               "rock.r:9273"
+            ];
+          }
+          {
+            targets = [
               "rauter.r:9273"
             ];
+            # to make it compatible with the node-exporter dashboard
+            labels.host = "rauter.r:9273";
           }
           {
             targets = [
