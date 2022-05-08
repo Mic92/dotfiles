@@ -28,7 +28,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
         if flake_attr:
             flake_attr = "#" + flake_attr
         target_host = h.meta.get("target_host", "localhost")
-        target_user = h.meta.get("user")
+        target_user = h.meta.get("target_user")
         if target_user:
             target_host = f"{target_user}@{target_host}"
         extra_args = h.meta.get("extra_args", "")
