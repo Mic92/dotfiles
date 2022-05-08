@@ -52,10 +52,9 @@ in {
               "eva.r:9273"
               "eve.r:9273"
               "matchbox.r:9273"
-              #"jarvis.r:9273"
               "alertmanager.r:80"
               "prometheus.r:80"
-              #"rock.r:9273"
+              "rock.r:9273"
             ];
           }
           {
@@ -86,6 +85,10 @@ in {
               "yasmin.r:9273"
               "ryan.r:9273"
               "graham.r:9273"
+
+              "astrid.r:9273"
+              "dan.r:9273"
+              "mickey.r:9273"
             ];
 
             labels.org = "uni";
