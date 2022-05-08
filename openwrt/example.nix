@@ -138,6 +138,9 @@
     } {
       name = "bernie";
       mac = "14:18:C3:BB:6F:07";
+    } {
+      name = "oneplus-nord";
+      mac = "D0:49:7C:36:5B:80";
     }];
 
     ddns = let
