@@ -69,7 +69,6 @@
     inkscape
     yt-dlp
     calibre
-    libreoffice
     ubuntu_font_family
     aspell
     aspellDicts.de
