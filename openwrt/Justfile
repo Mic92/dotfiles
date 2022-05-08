@@ -31,16 +31,16 @@ apply:
   fi
 
   # Install web interface and other packages
-  just ssh "opkg update && opkg install luci tcpdump tinc rsync ddns-scripts-nsupdate iperf3 luci-mod-rpc"
+  just ssh "opkg update && opkg install luci tcpdump tinc rsync ddns-scripts-nsupdate iperf3 luci-mod-rpc prometheus-node-exporter-lua"
 
   just ssh "if [ ! -f /etc/tinc/retiolum/rsa_key.priv ]; then mkdir -p /etc/tinc/retiolum; tinc -n retiolum generate-keys; /etc/init.d/tinc start; fi"
   rsync -e ssh -ac /etc/tinc/retiolum/hosts "root@{{host}}:/etc/tinc/retiolum"
 
 # perform router upgrade
 upgrade:
-  wget "$URL" -O openwrt.sysupgrade.itb
-  scp openwrt.sysupgrade.itb "root@{{host}}:/tmp/openwrt.sysupgrade.itb"
-  just ssh "sysupgrade -v /tmp/openwrt.sysupgrade.itb"
+  wget "{{sysupgrade_url}}" -O openwrt.sysupgrade.itb
+  rsync -e ssh -ac openwrt.sysupgrade.itb "root@{{host}}:/tmp/openwrt.sysupgrade.itb"
+  just ssh "sysupgrade -v /tmp/openwrt.sysupgrade.itb" || true
   # wait for router to come back
   while ! nc -zv "{{host}}" 22; do sleep 2; done
   just apply

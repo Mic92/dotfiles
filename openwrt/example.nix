@@ -181,6 +181,11 @@
         interface  = "wan_6";
       };
     };
+
+    prometheus-node-exporter-lua.main = {
+      _type = "prometheus-node-exporter-lua";
+      listen_interface = "vpn";
+    };
   };
   uci.secrets = {
     sops.files = [
