@@ -53,6 +53,8 @@
     [Link]
     Unmanaged = yes
   '';
+  # often hangs
+  systemd.services.systemd-networkd-wait-online.enable = false;
 
   services.resolved.enable = false;
 
