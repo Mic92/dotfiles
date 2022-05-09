@@ -21,16 +21,15 @@
     ../modules/mosh.nix
     ../modules/telegraf.nix
     ../modules/pki
-    ../modules/xrdp.nix
     ../modules/networkd.nix
     ../modules/mosh.nix
     ../modules/promtail.nix
+    ./modules/mycroft.nix
   ];
 
   programs.bcc.enable = true;
 
   documentation.enable = false;
-  #boot.kernelPackages = pkgs.nur.repos.mic92.linuxPackages_ayufan;
 
   # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
   boot.loader.grub.enable = false;
@@ -38,10 +37,6 @@
   boot.loader.generic-extlinux-compatible.enable = true;
 
   networking.hostName = "rock";
-
-  systemd.services.netdata = {
-    path = with pkgs; [python3];
-  };
 
   systemd.network.networks = {
     ethernet.extraConfig = ''
@@ -74,7 +69,4 @@
   time.timeZone = "Europe/Berlin";
 
   system.stateVersion = "18.03";
-
-  sops.secrets.xrdp-password-hash.neededForUsers = true;
-  users.users.joerg.passwordFile = config.sops.secrets.xrdp-password-hash.path;
 }
