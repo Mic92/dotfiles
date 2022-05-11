@@ -60,7 +60,6 @@
     ./modules/tts.nix
     ./modules/users.nix
     ./modules/wiki-backup.nix
-    #./modules/uptermd.nix
     #./modules/wiregrill
 
     ../modules/builder.nix
@@ -78,6 +77,7 @@
     ../modules/zfs.nix
     ../modules/zsh.nix
     ../modules/it4r-containers
+    ../modules/uptermd.nix
   ];
 
   # The NixOS release to be compatible with for stateful data such as databases.
