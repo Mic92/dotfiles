@@ -55,6 +55,7 @@ in {
       ubuntu_font_family
       unifont
       twitter-color-emoji
+      upterm
 
       arandr
       signal-desktop
