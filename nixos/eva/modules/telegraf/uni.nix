@@ -24,6 +24,13 @@
     "astrid.r"
     "dan.r"
     "mickey.r"
+
+    "jackson.r"
+    "christina.r"
+    "adelaide.r"
+    "wilfred.r"
+    "river.r"
+    "jack.r"
   ];
 in {
   services.telegraf.extraConfig.inputs = {
