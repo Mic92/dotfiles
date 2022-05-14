@@ -96,6 +96,13 @@ in {
               "astrid.r:9273"
               "dan.r:9273"
               "mickey.r:9273"
+
+              "jackson.r"
+              "christina.r"
+              "adelaide.r"
+              "wilfred.r"
+              "river.r"
+              "jack.r"
             ];
 
             labels.org = "uni";
