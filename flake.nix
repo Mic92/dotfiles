@@ -52,6 +52,8 @@
     doom-emacs.flake = false;
 
     emacs-overlay.url = "github:nix-community/emacs-overlay";
+    emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
+    emacs-overlay.inputs.flake-utils.follows = "flake-utils";
 
     flake-registry.url = "github:NixOS/flake-registry";
     flake-registry.flake = false;
