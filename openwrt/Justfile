@@ -5,7 +5,7 @@ ssh +command:
   ssh "root@{{host}}" "{{command}}"
 
 eval-config:
-  nix run "./#example"
+  nix run --builders '' "./#example"
 
 # apply configuration to router
 apply:
@@ -41,6 +41,6 @@ upgrade:
   wget "{{sysupgrade_url}}" -O openwrt.sysupgrade.itb
   rsync -e ssh -ac openwrt.sysupgrade.itb "root@{{host}}:/tmp/openwrt.sysupgrade.itb"
   just ssh "sysupgrade -v /tmp/openwrt.sysupgrade.itb" || true
-  # wait for router to come back
-  while ! nc -zv "{{host}}" 22; do sleep 2; done
+  # wait for internet to come back
+  while ! ping -c1 -W1 8.8.8.8; do sleep 2; done
   just apply
