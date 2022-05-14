@@ -43,6 +43,7 @@ with lib; let
       git -C $HOME/.emacs.d checkout ${pkgs.doomEmacsRevision} || true
       nice -n19 YES=1 FORCE=1 $HOME/.emacs.d/bin/doom sync -u || true
     fi
+    nice -n19 $HOME/.emacs.d/bin/doom build || true
     exec ${myemacs}/bin/emacs --daemon
   '';
 
