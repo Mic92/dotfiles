@@ -74,35 +74,35 @@ in {
             labels.org = "krebs";
           }
           {
-            targets = [
+            targets = map (host: "${host}.r:9273") [
               # university
-              "astrid.r:9273"
-              "dan.r:9273"
-              "mickey.r:9273"
-              "rose.r:9273"
-              "martha.r:9273"
-              "donna.r:9273"
-              "amy.r:9273"
-              "clara.r:9273"
-              "doctor.r:9273"
-              #"grandalf.r:9273"
-              "sauron.r:9273"
-              "bill.r:9273"
-              "nardole.r:9273"
-              "yasmin.r:9273"
-              "ryan.r:9273"
-              "graham.r:9273"
+              "astrid"
+              "dan"
+              "mickey"
+              "rose"
+              "martha"
+              "donna"
+              "amy"
+              "clara"
+              "doctor"
+              #"grandalf"
+              "sauron"
+              "bill"
+              "nardole"
+              "yasmin"
+              "ryan"
+              "graham"
 
-              "astrid.r:9273"
-              "dan.r:9273"
-              "mickey.r:9273"
+              "astrid"
+              "dan"
+              "mickey"
 
-              "jackson.r"
-              "christina.r"
-              "adelaide.r"
-              "wilfred.r"
-              "river.r"
-              "jack.r"
+              "jackson"
+              "christina"
+              "adelaide"
+              "wilfred"
+              "river"
+              "jack"
             ];
 
             labels.org = "uni";
