@@ -96,4 +96,5 @@
     drivers = [pkgs.gutenprint];
   };
   sops.defaultSopsFile = ./secrets/secrets.yaml;
+  system.stateVersion = "21.11";
 }
