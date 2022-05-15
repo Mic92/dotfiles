@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. root.thalheim.io. 2022050701 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. root.thalheim.io. 2022051504 7200 3600 86400 3600
 
 ;;@ 3600 IN NS ns1
 @ 3600 IN NS ns2
@@ -133,6 +133,10 @@ muc IN CNAME www
 _xmpp-client._tcp IN SRV 0 5 5222 jabber
 _xmpp-server._tcp IN SRV 0 5 5269 jabber
 _xmpp-server._tcp.muc IN SRV 0 5 5269 jabber
+;; Matrix
+matrix IN A 88.99.244.96
+matrix IN AAAA 2a01:4f8:10b:49f::1
+_matrix._tcp IN SRV 0 5 443 matrix
 
 ;; SSHFP Records
 @ IN SSHFP 1 1 307bf9d2a0066efcb78b7b243da920dc36d03060
