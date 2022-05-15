@@ -11,8 +11,10 @@
     "martha.r"
     "donna.r"
     "amy.r"
-    "clara.r"
-    "doctor.r"
+    # currently down
+    #"clara.r"
+    # currently disconnected
+    #"doctor.r"
     "nardole.r"
     "bill.r"
     "nardole.r"
