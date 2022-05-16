@@ -738,6 +738,12 @@ fixssh() {
   done
 }
 
+tmux-upterm() {
+  upterm host --server ssh://upterm.thalheim.io:2323 \
+    --force-command 'tmux attach -t pair-programming' \
+    -- bash -c "read -p 'Press enter to continue ' && tmux new -t pair-programming"
+}
+
 ## Autocycle
 setopt autopushd
 # Cycle directory with Ctrl-Right and Ctrl-Left

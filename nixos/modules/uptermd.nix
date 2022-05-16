@@ -37,6 +37,18 @@
         ```
 
         Copy the SSH Session url and press enter before sharing the url with your peer.
+
+        You can also put the following snippet in your ~/.bashrc or ~/.zshrc:
+
+        ```
+        tmux-upterm() {
+          upterm host --server ssh://upterm.thalheim.io:2323 \
+            --force-command 'tmux attach -t pair-programming' \
+            -- bash -c "read -p 'Press enter to continue ' && tmux new -t pair-programming"
+        }
+        ```
+
+        Source code of this service is [here](https://github.com/Mic92/dotfiles/blob/master/nixos/modules/uptermd.nix)
         EOF
         mkdir $out
         cp ${css} $out/pandoc.css
