@@ -19,16 +19,10 @@
       root = pkgs.runCommand "webroot" { nativeBuildInputs = [ pkgs.pandoc ]; } ''
         cat > index.md <<'EOF'
         # Usage
-        On the machine where you want to share a tmux session first run:
+        On the machine where you want to share a tmux session with [upterm](https://github.com/owenthereal/upterm) first run:
 
         ```
-        upterm host --server ssh://upterm.thalheim.io:2323 --force-command 'tmux attach -t pair-programming' -- tmux new -t pair-programming
-        ```
-
-        Then in the tmux session run to get sharing command to send to your peer:
-
-        ```
-        upterm session info $(upterm session list | grep -o -E '| [a-z0-9A-z]{20} |')
+        upterm host --server ssh://upterm.thalheim.io:2323 --force-command 'tmux attach -t pair-programming' -- bash -c "read -p 'Press enter to continue ' && tmux new -t pair-programming"
         ```
 
         This will output something like:
@@ -39,8 +33,10 @@
         Force Command:          tmux attach -t pair-programming
         Host:                   ssh://upterm.thalheim.io:2323
         SSH Session:            ssh yXbrhy1bXaRIwTsgxJ8l:Wzo6XToyMjIy@upterm.thalheim.io -p 2323
+        Press enter to continue
         ```
 
+        Copy the SSH Session url and press enter before sharing the url with your peer.
         EOF
         mkdir $out
         cp ${css} $out/pandoc.css
