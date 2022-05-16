@@ -35,6 +35,7 @@ in
           "matrix.org"
           "vector.im"
         ];
+        metrics.enabled = true;
       };
       logging = [{
         type = "std";
@@ -50,7 +51,6 @@ in
       };
       media_api = {
         inherit database;
-        max_file_size_bytes = 100 * 1024 * 1024;
         dynamic_thumbnails = true;
       };
       room_server = {
