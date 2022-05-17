@@ -1,22 +1,11 @@
-{
-  self,
-  nixpkgs,
-  nur,
-  home-manager,
-  sops-nix,
-  retiolum,
-  flake-registry,
-  bme680-mqtt,
-  inputs,
-  nixos-hardware,
-  miniond,
-  ...
-}: let
+{self, ...}: let
+  inherit (self.inputs)
+    nixpkgs retiolum sops-nix home-manager nur flake-registry nixos-hardware nix-ld bme680-mqtt;
   nixosSystem = nixpkgs.lib.makeOverridable nixpkgs.lib.nixosSystem;
 
   defaultModules = [
     # make flake inputs accessiable in NixOS
-    {_module.args.inputs = inputs; }
+    {_module.args.inputs = self.inputs;}
     {
       imports = [
         ({pkgs, ...}: {
@@ -43,8 +32,11 @@
       ];
     }
   ];
-in
-  {
+in {
+  imports = [
+    #./cloudlab.nix
+  ];
+  flake.nixosConfigurations = {
     bernie = nixosSystem {
       system = "x86_64-linux";
       modules =
@@ -63,7 +55,7 @@ in
         ++ [
           ./turingmachine/configuration.nix
           nixos-hardware.nixosModules.framework
-          inputs.nix-ld.nixosModules.nix-ld
+          nix-ld.nixosModules.nix-ld
           #inputs.envfs.nixosModules.envfs
         ];
     };
@@ -79,10 +71,12 @@ in
 
     rock = nixosSystem {
       system = "aarch64-linux";
-      modules = defaultModules ++ [
-        bme680-mqtt.nixosModules.bme680-mqtt
-        ./rock/configuration.nix
-      ];
+      modules =
+        defaultModules
+        ++ [
+          bme680-mqtt.nixosModules.bme680-mqtt
+          ./rock/configuration.nix
+        ];
     };
 
     matchbox = nixosSystem {
@@ -102,34 +96,5 @@ in
           ./eva/configuration.nix
         ];
     };
-  }
-  // (let
-    cloudlabModules = [
-      miniond.nixosModule
-      ./cloudlab/node.nix
-      sops-nix.nixosModules.sops
-    ];
-  in {
-    cloudlab-node = nixosSystem {
-      system = "x86_64-linux";
-      modules = cloudlabModules;
-    };
-
-    cloudlab-k3s-server = nixosSystem {
-      system = "x86_64-linux";
-      modules =
-        cloudlabModules
-        ++ [
-          ./modules/k3s/server.nix
-        ];
-    };
-
-    cloudlab-k3s-agent = nixosSystem {
-      system = "x86_64-linux";
-      modules =
-        cloudlabModules
-        ++ [
-          ./modules/k3s/agent.nix
-        ];
-    };
-  })
+  };
+}

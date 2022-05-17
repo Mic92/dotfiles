@@ -5,6 +5,8 @@
   # $ nix flake update
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
+    flake-modules-core.url = "github:hercules-ci/flake-modules-core";
+    flake-modules-core.inputs.nixpkgs.follows = "nixpkgs";
 
     fenix.url = "github:nix-community/fenix";
     fenix.inputs.nixpkgs.follows = "nixpkgs";
@@ -74,5 +76,21 @@
     nix2container.inputs.flake-utils.follows = "flake-utils";
   };
 
-  outputs = {...} @ args: import ./outputs.nix args;
+  #outputs = {...} @ args: import ./outputs.nix args;
+  outputs = {
+    self,
+    flake-modules-core,
+    ...
+  }: (flake-modules-core.lib.evalFlakeModule
+    {inherit self;}
+    {
+      imports = [
+        ./nixos/configurations.nix
+        ./nixos/images/default.nix
+        ./nixpkgs-config/homes.nix
+        ./shell.nix
+        ./ci.nix
+      ];
+      systems = [ "x86_64-linux" "aarch64-darwin" ];
+    }).config.flake;
 }

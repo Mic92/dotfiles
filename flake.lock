@@ -123,6 +123,26 @@
         "type": "github"
       }
     },
+    "flake-modules-core": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1652771592,
+        "narHash": "sha256-7zWWdtD+d4VXU07FA3+hkwzsCPK4ILBEGCBUlaFA/iQ=",
+        "owner": "hercules-ci",
+        "repo": "flake-modules-core",
+        "rev": "1fb0d37021a27834dccc26569e3346d7ef5714c9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-modules-core",
+        "type": "github"
+      }
+    },
     "flake-registry": {
       "flake": false,
       "locked": {
@@ -392,6 +412,7 @@
         "emacs-overlay": "emacs-overlay",
         "envfs": "envfs",
         "fenix": "fenix",
+        "flake-modules-core": "flake-modules-core",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
