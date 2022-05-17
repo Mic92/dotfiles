@@ -2,8 +2,9 @@ pull_request_rules:
   - name: automatic merge on CI success
     conditions:
       - check-success=ci/gitlab/gitlab.com
-      - author=github-actions[bot]
-      - author=Mic92
+      - or:
+        - author=github-actions[bot]
+        - author=Mic92
     actions:
       merge:
         method: merge
