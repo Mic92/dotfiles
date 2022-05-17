@@ -1,8 +1,5 @@
 {
   self,
-  nixos-generators,
-  nur,
-  nixpkgs,
   ...
 }: {
   perSystem = system: {
@@ -11,6 +8,8 @@
     inputs',
     ...
   }: let
+    inherit (self.inputs) nixos-generators nur nixpkgs;
+
     pkgs = inputs'.nixpkgs.legacyPackages;
     containerPkgs = inputs'.nix2container.packages;
     selfPkgs = self.packages.${system};
@@ -27,24 +26,24 @@
   in {
     packages = {
       # nix build '.#kexec' --impure
-      kexec = nixos-generators.nixosGenerate {
-        inherit pkgs;
-        modules = [
-          ./kexec.nix
-          nur-overlay
-          inputs-module
-        ];
-        format = "kexec";
-      };
+      #kexec = nixos-generators.nixosGenerate {
+      #  inherit pkgs;
+      #  modules = [
+      #    ./kexec.nix
+      #    nur-overlay
+      #    inputs-module
+      #  ];
+      #  format = "kexec";
+      #};
 
-      kexec-aarch64 = nixos-generators.nixosGenerate {
-        pkgs = nixpkgs.legacyPackages.aarch64-linux;
-        modules = [
-          ./kexec.nix
-          inputs-module
-        ];
-        format = "kexec";
-      };
+      #kexec-aarch64 = nixos-generators.nixosGenerate {
+      #  pkgs = nixpkgs.legacyPackages.aarch64-linux;
+      #  modules = [
+      #    ./kexec.nix
+      #    inputs-module
+      #  ];
+      #  format = "kexec";
+      #};
 
       sd-image = nixos-generators.nixosGenerate {
         inherit pkgs;
@@ -52,6 +51,7 @@
           ./base-config.nix
           nur-overlay
           inputs-module
+          ({config, ...}: { system.stateVersion = config.system.nixos.version; })
         ];
         format = "install-iso";
       };
@@ -61,6 +61,7 @@
         inherit (nixpkgs.lib) nixosSystem;
         extraModules = [
           inputs-module
+          ({config, ...}: { system.stateVersion = config.system.nixos.version; })
         ];
       };
 
@@ -73,11 +74,11 @@
         inherit pkgs;
       };
 
-      kresd-image = pkgs.callPackage ./kresd.nix {
-        inherit (containerPkgs) nix2container;
-      };
-      kresd-podman = copyToPodman selfPkgs.kresd-image;
-      kresd-registry = selfPkgs.kresd-image.copyToRegistry;
+      #kresd-image = pkgs.callPackage ./kresd.nix {
+      #  inherit (containerPkgs) nix2container;
+      #};
+      #kresd-podman = copyToPodman selfPkgs.kresd-image;
+      #kresd-registry = selfPkgs.kresd-image.copyToRegistry;
 
       #headscale-podman = copyToPodman selfPkgs.headscale-image;
       #headscale-image = pkgs.callPackage ./nixos/images/headscale.nix {

@@ -5,7 +5,9 @@
 # $ sudo unshare --uts --mount -- chroot /var/lib/machines/joe02 /sbin/init
 nixos-generators.nixosGenerate {
   inherit pkgs;
-  modules = [({ modulesPath, ... }: {
+  modules = [({ config, modulesPath, ... }: {
+    system.stateVersion = config.system.nixos.version;
+
     # include this in a normal profile
     #imports = [
     #  "${toString modulesPath}/virtualisation/lxc-container.nix"
