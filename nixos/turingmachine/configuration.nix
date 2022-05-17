@@ -52,6 +52,8 @@
     #../modules/k3s/server.nix
   ];
 
+  services.telegraf.extraConfig.inputs.internet_speed.interval = 1800;
+
   #services.udev.packages = [ pkgs.platformio ];
 
   hardware.video.hidpi.enable = true;
