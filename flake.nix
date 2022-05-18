@@ -92,7 +92,7 @@
           ./shell.nix
           ./ci.nix
         ];
-        systems = ["x86_64-linux" "aarch64-darwin"];
+        systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
         perSystem = system: {inputs', ...}: {
           # make pkgs available to all `perSystem` functions
           _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
