@@ -12,8 +12,8 @@ stages:
 eval:
  stage: eval
  script:
-   - nix run github:nix-community/nix-eval-jobs -- --workers 8 --gc-roots-dir $(pwd)/gcroot --flake '.#hydraJobs' > jobs
-   - nix run nixpkgs/nixpkgs-unstable#jq -- -r '.attr + " " + .drvPath' < jobs > jobs-parsed
+   - nix run github:nix-community/nix-eval-jobs -- --workers 8 --gc-roots-dir $(pwd)/gcroot --flake '.#hydraJobs' > jobs.json
+   - nix run nixpkgs/nixpkgs-unstable#jq -- -r '.attr + " " + .drvPath' < jobs.json > jobs
    - |
      echo > generated-config.yml
      while read -r line; do
@@ -29,10 +29,11 @@ eval:
                nix run nixpkgs/nixpkgs-unstable#cachix -- push ${CACHIX_NAME:-mic92} "result-$attr"
              fi
      EOF
-     done < jobs-parsed
+     done < jobs
  artifacts:
    paths:
      - generated-config.yml
+     - jobs.json
 
 build:
  stage: build
@@ -71,11 +72,14 @@ notify-success:
 
 update-tag:
   stage: update-tag
+  dependencies:
+    - eval
+    - build
   script:
     - |
       if [[ -n "$GITHUB_TOKEN" ]]; then
         set -x
-        meta=$(jq -cs '. | map({(.attr) : . })| add' < jobs)
+        meta=$(jq -cs '. | map({(.attr) : . })| add' < jobs.json)
         git -c "user.name=GitLab CI" -c "user.email=git@gitlab.com" tag -f "last-build" -m "last-build\n\n$meta"
         git push --force "https://Mic92:${GITHUB_TOKEN}@github.com/Mic92/${CI_PROJECT_NAME}.git" last-build
       else
