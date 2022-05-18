@@ -1,6 +1,7 @@
 stages:
  - eval
  - build
+ - notify
 
 eval:
  stage: eval
@@ -15,7 +16,11 @@ eval:
        build-$attr:
          stage: build
          script:
-           - nix build -L "$drvPath"
+           - nix build --out-link "result-$attr" -L "$drvPath"
+           - |
+             if [[ -n "$CACHIX_SIGNING_KEY" ]]; then
+               nix run nixpkgs/nixpkgs-unstable#cachix -- push ${CACHIX_NAME:-mic92} "result-$attr"
+             fi
      EOF
      done < jobs-parsed
  artifacts:
@@ -30,16 +35,30 @@ build:
         job: eval
     strategy: depend
 
+notify-failure:
+  needs: ["build"]
+  stage: notify
+  when: on_failure
+  script:
+    - |
+        echo "build failed ${CI_JOB_URL}" | \
+          LOGNAME=gitlab nix run github:Mic92/nur-packages#ircsink -- --nick=gitlab --server=irc.r --target="#xxx"
+
+notify-success:
+  needs: ["build"]
+  stage: notify
+  when: on_success
+  script:
+    - |
+        echo "build succeed ${CI_JOB_URL}" | \
+          LOGNAME=gitlab nix run github:Mic92/nur-packages#ircsink -- --nick=gitlab --server=irc.r --target="#xxx"
+
 
 
 #build-job:
 #  stage: build
 #  script:
 #    - nix run nixpkgs/nixpkgs-unstable#jq -- -r '.drvPath' < jobs | xargs -n1 -P$(nproc) nix build -L
-#    - |
-#      if [[ -n "$CACHIX_SIGNING_KEY" ]]; then
-#        realpath result* | nix run nixpkgs/nixpkgs-unstable#cachix -- push ${CACHIX_NAME:-mic92}
-#      fi
 #    - |
 #      if [[ -n "$GITHUB_TOKEN" ]]; then
 #        set -x
