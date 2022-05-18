@@ -1,7 +1,8 @@
 stages:
  - eval
+ - notify-eval-error
  - build
- - notify
+ - notify-build
 
 eval:
  stage: eval
@@ -35,25 +36,32 @@ build:
         job: eval
     strategy: depend
 
+notify-eval-error:
+  needs: ["eval"]
+  stage: notify-eval-error
+  when: on_failure
+  script:
+    - |
+        echo "eval failed ${CI_JOB_URL}" | \
+          LOGNAME=gitlab nix run github:Mic92/nur-packages#ircsink -- --nick=gitlab --server=irc.r --target="#xxx" || true
+
 notify-failure:
   needs: ["build"]
-  stage: notify
+  stage: notify-build
   when: on_failure
   script:
     - |
         echo "build failed ${CI_JOB_URL}" | \
-          LOGNAME=gitlab nix run github:Mic92/nur-packages#ircsink -- --nick=gitlab --server=irc.r --target="#xxx"
+          LOGNAME=gitlab nix run github:Mic92/nur-packages#ircsink -- --nick=gitlab --server=irc.r --target="#xxx" || true
 
 notify-success:
   needs: ["build"]
-  stage: notify
+  stage: notify-build
   when: on_success
   script:
     - |
         echo "build succeed ${CI_JOB_URL}" | \
-          LOGNAME=gitlab nix run github:Mic92/nur-packages#ircsink -- --nick=gitlab --server=irc.r --target="#xxx"
-
-
+          LOGNAME=gitlab nix run github:Mic92/nur-packages#ircsink -- --nick=gitlab --server=irc.r --target="#xxx" || true
 
 #build-job:
 #  stage: build
