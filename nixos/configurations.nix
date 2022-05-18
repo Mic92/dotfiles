@@ -34,7 +34,7 @@
   ];
 in {
   imports = [
-    #./cloudlab.nix
+    ./cloudlab.nix
   ];
   flake.nixosConfigurations = {
     bernie = nixosSystem {
