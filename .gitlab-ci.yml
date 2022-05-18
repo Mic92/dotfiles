@@ -27,7 +27,7 @@ build:
  trigger:
     include:
       - artifact: generated-config.yml
-        job: generate-config
+        job: eval
     strategy: depend
 
 
