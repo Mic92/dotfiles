@@ -15,7 +15,7 @@ eval:
        build-$attr:
          stage: build
          script:
-           - nix build -L "$drvpath"
+           - nix build -L "$drvPath"
      EOF
      done < jobs-parsed
  artifacts:
