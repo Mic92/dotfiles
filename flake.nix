@@ -5,8 +5,7 @@
   # $ nix flake update
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
-    # main is broken atm: https://github.com/hercules-ci/flake-modules-core/pull/9#issuecomment-1129257544
-    flake-modules-core.url = "github:hercules-ci/flake-modules-core/783e29f7dd860f0097ef37876cd874c891c84d1e";
+    flake-modules-core.url = "github:hercules-ci/flake-modules-core";
     flake-modules-core.inputs.nixpkgs.follows = "nixpkgs";
 
     fenix.url = "github:nix-community/fenix";
