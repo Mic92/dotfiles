@@ -3,10 +3,9 @@
     config,
     self',
     inputs',
+    pkgs,
     ...
-  }: let
-    pkgs = inputs'.nixpkgs.legacyPackages;
-  in {
+  }: {
     apps.hm-build = {
       type = "app";
       program = toString (pkgs.writeScript "hm-build" ''

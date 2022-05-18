@@ -6,11 +6,11 @@
     config,
     self',
     inputs',
+    pkgs,
     ...
   }: let
     inherit (self.inputs) nixos-generators nur nixpkgs;
 
-    pkgs = inputs'.nixpkgs.legacyPackages;
     containerPkgs = inputs'.nix2container.packages;
     selfPkgs = self.packages.${system};
 

@@ -81,16 +81,23 @@
     self,
     flake-modules-core,
     ...
-  }: (flake-modules-core.lib.evalFlakeModule
-    {inherit self;}
-    {
-      imports = [
-        ./nixos/configurations.nix
-        ./nixos/images/default.nix
-        ./nixpkgs-config/homes.nix
-        ./shell.nix
-        ./ci.nix
-      ];
-      systems = [ "x86_64-linux" "aarch64-darwin" ];
-    }).config.flake;
+  }:
+    (flake-modules-core.lib.evalFlakeModule
+      {inherit self;}
+      {
+        imports = [
+          ./nixos/configurations.nix
+          ./nixos/images/default.nix
+          ./nixpkgs-config/homes.nix
+          ./shell.nix
+          ./ci.nix
+        ];
+        systems = ["x86_64-linux" "aarch64-darwin"];
+        perSystem = system: {inputs', ...}: {
+          # make pkgs available to all `perSystem` functions
+          _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
+        };
+      })
+    .config
+    .flake;
 }
