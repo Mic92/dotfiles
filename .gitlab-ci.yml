@@ -42,7 +42,7 @@ notify-eval-error:
   when: on_failure
   script:
     - |
-        echo "eval failed ${CI_JOB_URL}" | \
+        echo "eval failed ${CI_PIPELINE_URL}" | \
           LOGNAME=gitlab nix run github:Mic92/nur-packages#ircsink -- --nick=gitlab --server=irc.r --target="#xxx" || true
 
 notify-failure:
@@ -51,7 +51,7 @@ notify-failure:
   when: on_failure
   script:
     - |
-        echo "build failed ${CI_JOB_URL}" | \
+        echo "build failed ${CI_PIPELINE_URL}" | \
           LOGNAME=gitlab nix run github:Mic92/nur-packages#ircsink -- --nick=gitlab --server=irc.r --target="#xxx" || true
 
 notify-success:
@@ -60,7 +60,7 @@ notify-success:
   when: on_success
   script:
     - |
-        echo "build succeed ${CI_JOB_URL}" | \
+        echo "build succeeded ${CI_PIPELINE_URL}" | \
           LOGNAME=gitlab nix run github:Mic92/nur-packages#ircsink -- --nick=gitlab --server=irc.r --target="#xxx" || true
 
 #build-job:
