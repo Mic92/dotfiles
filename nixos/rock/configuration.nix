@@ -27,7 +27,7 @@
     ./modules/mycroft.nix
   ];
 
-  services.telegraf.extraConfig.inputs.internet_speed.interval = 1800;
+  #services.telegraf.extraConfig.inputs.internet_speed.interval = 1800;
 
   programs.bcc.enable = true;
 
