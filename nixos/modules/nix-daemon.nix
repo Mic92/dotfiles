@@ -42,20 +42,18 @@ with lib; {
   systemd.services.update-prefetch = {
     startAt = "hourly";
     script = ''
-      export PATH=${lib.makeBinPath (with pkgs; [config.nix.package pkgs.nettools pkgs.git pkgs.jq pkgs.curl pkgs.iproute2])}
+      export PATH=${lib.makeBinPath (with pkgs; [config.nix.package pkgs.jq pkgs.curl pkgs.iproute2])}
       # skip service if do not have a default route
       if ! ip r g 8.8.8.8; then
         exit
       fi
-      last_build=$(curl https://api.github.com/repos/Mic92/dotfiles/git/ref/tags/last-build | jq -r .object.sha)
-      nix build \
-       --out-link /run/next-system \
-       github:Mic92/dotfiles/$last_build#nixosConfigurations.$(hostname).config.system.build.toplevel
-
-      if [[ -x /home/joerg/.nix-profile/bin/home-manager ]]; then
-        nix run "github:Mic92/dotfiles/$last_build#hm-build" --  --out-link /run/next-home
-      fi
+      drvpath=$(curl -L 'https://gitlab.com/Mic92/dotfiles/-/jobs/artifacts/master/raw/jobs.json?job=eval' | jq -r "select(.attr | contains(\"nixos-$(hostname)\")) | .drvPath")
+      nix-store --add-root /run/next-system -r "$drvpath"
     '';
+      # FIXME home-manager
+      #if [[ -x /home/joerg/.nix-profile/bin/home-manager ]]; then
+      #  nix run "github:Mic92/dotfiles/$last_build#hm-build" --  --out-link /run/next-home
+      #fi
     serviceConfig = {
       CPUSchedulingPolicy = "idle";
       IOSchedulingClass = "idle";
