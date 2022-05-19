@@ -8,7 +8,7 @@
   }: {
     apps.hm-build = {
       type = "app";
-      program = toString (pkgs.writeScript "hm-build" ''
+      program = "${pkgs.writeScriptBin "hm-build" ''
         #!${pkgs.runtimeShell}
         set -eu -o pipefail
         export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.nixFlakes pkgs.jq]}
@@ -17,24 +17,23 @@
         if [[ -n ''${profiles[$HOSTNAME]:-} ]]; then
           profile=''${profiles[$HOSTNAME]}
         fi
-        flake=$(nix flake metadata --json ${self} | jq -r .url)
-        nix build --no-link --show-trace --json "${self}#hmConfigurations.''${profile}.activationPackage" "$@" | jq -r '.[] | .outputs | .out'
-      '');
+        nix build --no-link --show-trace --json "${toString ./..}#hmConfigurations.''${profile}.activationPackage" "$@" | jq -r '.[] | .outputs | .out'
+      ''}/bin/hm-build";
     };
     apps.hm-switch = {
       type = "app";
-      program = toString (pkgs.writeScript "hm-switch" ''
+      program = "${pkgs.writeScriptBin "hm-switch" ''
         #!${pkgs.runtimeShell}
         export PATH=${pkgs.lib.makeBinPath [pkgs.nix pkgs.coreutils]}
         set -eu -o pipefail -x
-        cd ${./.}
+        cd ${./..}
         oldpath=$(realpath /nix/var/nix/profiles/per-user/$USER/home-manager)
         path=$(nix run .#hm-build -- "$@")
         if [[ -e $oldpath ]]; then
           nix store diff-closures "$oldpath" "$path"
         fi
         $path/activate
-      '');
+      ''}/bin/hm-switch";
     };
   };
 
