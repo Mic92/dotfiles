@@ -30,6 +30,7 @@
         clang-tools
         alejandra
         shfmt
+        terraform-ls
 
         python3.pkgs.black
         pyright
