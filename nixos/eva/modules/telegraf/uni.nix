@@ -13,6 +13,7 @@
     "amy.r"
     # currently down
     #"clara.r"
+    #"sauron.r"
     # currently disconnected
     #"doctor.r"
     "nardole.r"
@@ -21,7 +22,6 @@
     "yasmin.r"
     "graham.r"
     "ryan.r"
-    "sauron.r"
 
     "astrid.r"
     "dan.r"

@@ -83,10 +83,11 @@ in {
               "martha"
               "donna"
               "amy"
+              # we are loosing more and more Edinburgh machines
               #"clara"
               #"doctor"
               #"grandalf"
-              "sauron"
+              #"sauron"
               "bill"
               "nardole"
               "yasmin"
