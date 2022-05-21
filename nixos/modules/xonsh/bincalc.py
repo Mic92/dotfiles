@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from xonsh.built_ins import XSH
+from typing import List
 
 def format_unit(size) -> str:
     # 2**10 = 1024
@@ -27,7 +28,19 @@ def inspect_num(n: int) -> None:
     print(f"bin  {bin(n)}")
     print(f"dec  {n}")
     print(f"oct  {oct(n)}")
+    try:
+        print(f"chr  {repr(chr(n))}")
+    except ValueError:
+        pass
     print(f"unit {format_unit(n)}")
 
 
-XSH.aliases["?"] = lambda args: inspect_num(int(args[0]))
+def convert_num(args: List[str]) -> None:
+    for a in args:
+        try:
+            inspect_num(int(a))
+        except ValueError:
+            print(f"{a} is not an integer")
+
+
+XSH.aliases["?"] = convert_num
