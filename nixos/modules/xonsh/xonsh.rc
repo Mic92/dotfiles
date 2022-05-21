@@ -10,6 +10,7 @@ $fzf_find_command = "fd"
 $fzf_find_dirs_command = "fd -t d"
 
 import xonsh_extensions
+import bincalc
 
 _xontribs = [
    "direnv",
