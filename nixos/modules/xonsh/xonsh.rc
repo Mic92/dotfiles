@@ -34,7 +34,7 @@ aliases['....'] = 'cd ../..'
 aliases["k"] = "kubectl"
 aliases["tf"] = "terraform"
 aliases["vim"] = "emacseditor"
-aliases["tig"] = "lazygit"
+aliases["lg"] = "lazygit"
 aliases["cheat"] = lambda args: $[cheat -c @(args) | less]
 def moshlogin():
    if "no identifies" in $(ssh-add -L):
@@ -46,7 +46,7 @@ aliases["moshlogin"] = moshlogin
 $XONSH_AUTOPAIR = True
 
 $XONSH_HISTORY_BACKEND = "sqlite"
-$HISTCONTROL = "ignoredups,ignoreerr"
+$HISTCONTROL = "ignoredups"
 
 $XONSH_COLOR_STYLE = "dracula"
 

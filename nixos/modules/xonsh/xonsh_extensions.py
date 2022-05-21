@@ -76,3 +76,17 @@ XSH.aliases["flakify"] = flakify
 
 if XSH.env.get("WAYLAND_DISPLAY"):
     XSH.aliases["nixify"] = "chromium --enable-features=UseOzonePlatform --ozone-platform=wayland"
+
+
+
+def load_package(args) -> None:
+    import json
+    if len(args) == 0:
+        return
+    out = r(["nix", "build", "--json", "-f", "<nixpkgs>"] + args, stdout=subprocess.PIPE)
+    outputs = json.loads(out.stdout)
+    for out in outputs:
+        bin = out["outputs"].get("bin", out["outputs"].get("out"))
+        if bin is not None:
+            XSH.env["PATH"].add(f"{bin}/bin")
+XSH.aliases["n"] = load_package

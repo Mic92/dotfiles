@@ -27,6 +27,7 @@
     packages.xonsh = pkgs.runCommand "xonsh" {nativeBuildInputs = [pkgs.buildPackages.makeWrapper];} ''
       makeWrapper ${pkgs.xonsh}/bin/xonsh $out/bin/xonsh \
         --prefix PATH : "${pkgs.lib.makeBinPath [pkgs.starship pkgs.fzf pkgs.zoxide pkgs.vivid]}" \
+        --suffix PATH : "$out/bin" \
         --prefix PYTHONPATH : "${pythonPath}" \
         --add-flags "--rc ${./.}/xonsh.rc"
     '';
