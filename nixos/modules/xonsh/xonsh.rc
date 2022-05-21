@@ -8,6 +8,7 @@ $fzf_history_binding = "c-r"     # Ctrl+R
 $fzf_file_binding = "c-t"        # Ctrl+T
 $fzf_find_command = "fd"
 $fzf_find_dirs_command = "fd -t d"
+$XONTRIB_OUTPUT_SEARCH_KEY_BINDING='c-g'
 
 import xonsh_extensions
 import bincalc
@@ -18,9 +19,12 @@ _xontribs = [
    "dracula",
    "fzf_widgets",
    "sh",
-   "back2dir"
+   "back2dir",
+   "bashisms",
+   "output_search"
 ]
 xontrib load @(_xontribs)
+
 
 # cd-ing shortcuts.
 aliases['-'] = 'cd -'
@@ -46,6 +50,7 @@ $HISTCONTROL = "ignoredups,ignoreerr"
 
 $XONSH_COLOR_STYLE = "dracula"
 
+$LS_COLORS=$(vivid generate dracula)
 $LESS = "-FXisRM"
 $LESS_TERMCAP_mb = '\033[01;31m'     # begin blinking
 $LESS_TERMCAP_me = '\033[0m'         # end mode
