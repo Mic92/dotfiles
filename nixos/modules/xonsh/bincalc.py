@@ -36,11 +36,10 @@ def inspect_num(n: int) -> None:
 
 
 def convert_num(args: List[str]) -> None:
-    for a in args:
-        try:
-            inspect_num(int(a))
-        except ValueError:
-            print(f"{a} is not an integer")
+    try:
+        inspect_num(int(eval(" ".join(args))))
+    except ValueError:
+        print(f"pass an expression that can be converted to an integer")
 
 
 XSH.aliases["?"] = convert_num
