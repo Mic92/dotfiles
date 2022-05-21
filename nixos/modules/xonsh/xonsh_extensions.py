@@ -5,6 +5,7 @@ from xonsh.built_ins import XSH
 from xontrib.fzf_widgets import get_fzf_binary_path
 
 import subprocess
+import tempfile
 from subprocess import run as r
 
 
@@ -25,7 +26,9 @@ def custom_keybindings(bindings, **kw):
             XSH.aliases["cd"]([choice])
 
 
-out = r(["zoxide", "init", "xonsh"], stdout=subprocess.PIPE, universal_newlines=True).stdout.strip()
+out = r(
+    ["zoxide", "init", "xonsh"], stdout=subprocess.PIPE, universal_newlines=True
+).stdout.strip()
 XSH.builtins.execx(out, "exec", __xonsh__.ctx, filename="zoxide")
 
 
@@ -40,6 +43,7 @@ def mycd(args: List[str]) -> None:
 
 XSH.aliases["cd"] = mycd
 
+
 def nixify(args: List[str]) -> None:
     envrc = Path("./.envrc")
     if not envrc.exists():
@@ -48,16 +52,19 @@ def nixify(args: List[str]) -> None:
     shell_nix = Path("shell.nix")
     default_nix = Path("default.nix")
     if not shell_nix.exists() or default_nix.exist():
-        default_nix.write_text("""
+        default_nix.write_text(
+            """
 with import <nixpkgs> {};
 mkShell {
   nativeBuildInputs = [
     bashInteractive
   ];
 }
-        """)
+        """
+        )
         editor = os.environ.get("EDITOR", "vim")
         r([editor, default_nix])
+
 
 def flakify(args: List[str]) -> None:
     envrc = Path("./.envrc")
@@ -71,28 +78,35 @@ def flakify(args: List[str]) -> None:
     editor = os.environ.get("EDITOR", "vim")
     r([editor, flake_nix])
 
+
 XSH.aliases["nixify"] = nixify
 XSH.aliases["flakify"] = flakify
 
 if XSH.env.get("WAYLAND_DISPLAY"):
-    XSH.aliases["nixify"] = "chromium --enable-features=UseOzonePlatform --ozone-platform=wayland"
-
+    XSH.aliases[
+        "nixify"
+    ] = "chromium --enable-features=UseOzonePlatform --ozone-platform=wayland"
 
 
 def load_package(args: List[str]) -> None:
     import json
+
     if len(args) == 0:
         return
-    out = r(["nix", "build", "--json", "-f", "<nixpkgs>"] + args, stdout=subprocess.PIPE)
+    out = r(
+        ["nix", "build", "--json", "-f", "<nixpkgs>"] + args, stdout=subprocess.PIPE
+    )
     outputs = json.loads(out.stdout)
     for out in outputs:
         bin = out["outputs"].get("bin", out["outputs"].get("out"))
         if bin is not None:
             XSH.env["PATH"].add(f"{bin}/bin")
+
+
 XSH.aliases["n"] = load_package
 
 
-def kpaste(args: List[str], stdin: Optional[IO]=None) -> None:
+def kpaste(args: List[str], stdin: Optional[IO] = None) -> None:
     input = None
     if stdin:
         stdin = stdin
@@ -100,7 +114,25 @@ def kpaste(args: List[str], stdin: Optional[IO]=None) -> None:
         input = r(["wl-paste"], stdout=subprocess.PIPE, text=True).stdout
     else:
         stdin = open(args[0])
-    res = r(["curl", "-sS", "http://p.r", "--data-binary", "@-"], stdin=stdin, input=input, stdout=subprocess.PIPE, text=True).stdout.strip()
+    res = r(
+        ["curl", "-sS", "http://p.r", "--data-binary", "@-"],
+        stdin=stdin,
+        input=input,
+        stdout=subprocess.PIPE,
+        text=True,
+    ).stdout.strip()
     print(res)
     print(res.replace("http://p.r", "https://p.krebsco.de"))
+
+
 XSH.aliases["kpaste"] = kpaste
+
+
+def tempdir(args: List[str]) -> None:
+    prefix = "xonsh"
+    if len(args) > 0:
+        prefix = args[0]
+    XSH.aliases["cd"]([tempfile.mkdtemp(prefix=f"{prefix}-", dir="/tmp")])
+
+
+XSH.aliases["tempdir"] = tempdir
