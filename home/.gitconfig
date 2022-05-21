@@ -1,6 +1,7 @@
 [core]
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
+  pager = delta
 [include]
   path = ~/.gitconfig.local
 [format]
@@ -9,6 +10,8 @@
   branch = true
   diff = true
   status = true
+[interactive]
+  diffFilter = delta --color-only
 [am]
   threeWay = true
 [user]
