@@ -74,6 +74,10 @@
     nix2container.url = "github:nlewo/nix2container";
     nix2container.inputs.nixpkgs.follows = "nixpkgs";
     nix2container.inputs.flake-utils.follows = "flake-utils";
+
+    poetry2nix.url = "github:nix-community/poetry2nix";
+    poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
+    poetry2nix.inputs.flake-utils.follows = "flake-utils";
   };
 
   #outputs = {...} @ args: import ./outputs.nix args;
@@ -89,6 +93,7 @@
           ./nixos/configurations.nix
           ./nixos/images/default.nix
           ./nixpkgs-config/homes.nix
+          ./nixos/modules/xonsh/flake-module.nix
           ./shell.nix
           ./ci.nix
         ];

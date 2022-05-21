@@ -1,4 +1,5 @@
 {
+  self,
   config,
   pkgs,
   lib,
@@ -30,6 +31,7 @@
     ../modules/pipewire.nix
     ../modules/rock-rdp.nix
     ../modules/ip-update.nix
+    ../modules/xonsh
     #../modules/iwd.nix
     ../modules/dnsmasq.nix
     ../modules/promtail.nix

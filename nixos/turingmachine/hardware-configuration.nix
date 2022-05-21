@@ -59,7 +59,7 @@
   fileSystems."/" = {
     device = "zroot/root/nixos";
     fsType = "zfs";
-    options = [ "zfsutil" ];
+    options = ["zfsutil"];
   };
 
   fileSystems."/home" = {
