@@ -36,7 +36,6 @@
     DNS = 192.168.53.53
   '';
 
-
   networking.nat = {
     enable = true;
     enableIPv6 = true;

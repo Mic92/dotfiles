@@ -51,3 +51,4 @@
 # chmod 777 /mnt/tmp
 # nixos-generate-config  --root /mnt
 # nixos-install
+

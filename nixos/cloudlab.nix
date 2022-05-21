@@ -1,5 +1,4 @@
-{ self, ... }:
-let
+{self, ...}: let
   inherit (self.inputs) miniond sops-nix nixpkgs;
   defaultModules = [
     miniond.nixosModule
@@ -7,8 +6,7 @@ let
     sops-nix.nixosModules.sops
   ];
   nixosSystem = nixpkgs.lib.makeOverridable nixpkgs.lib.nixosSystem;
-in
-{
+in {
   flake.nixosConfigurations = {
     cloudlab-node = nixosSystem {
       system = "x86_64-linux";

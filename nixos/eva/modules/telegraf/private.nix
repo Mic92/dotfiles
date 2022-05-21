@@ -14,46 +14,46 @@ in {
   services.telegraf.extraConfig.inputs = {
     ping =
       (map
-      (url: {
-        method = "native";
-        urls = [url];
-        tags.type = "mobile";
-        tags.host = url;
-        tags.org = "private";
-        count = 5;
-      })
-      ["turingmachine.r" "herbert.r"])
+        (url: {
+          method = "native";
+          urls = [url];
+          tags.type = "mobile";
+          tags.host = url;
+          tags.org = "private";
+          count = 5;
+        })
+        ["turingmachine.r" "herbert.r"])
       ++ (map
-      (url: {
-        method = "native";
-        urls = ["6.${url}.r"];
-        ipv6 = true;
-        tags.host = url;
-        tags.org = "private";
-      })
-      urls);
+        (url: {
+          method = "native";
+          urls = ["6.${url}.r"];
+          ipv6 = true;
+          tags.host = url;
+          tags.org = "private";
+        })
+        urls);
     net_response =
       (map
-      (host: {
-        protocol = "tcp";
-        address = "${host}.r:22";
-        tags.host = host;
-        tags.org = "private";
-        send = "SSH-2.0-Telegraf";
-        expect = "SSH-2.0";
-        timeout = "10s";
-      })
-      urls)
+        (host: {
+          protocol = "tcp";
+          address = "${host}.r:22";
+          tags.host = host;
+          tags.org = "private";
+          send = "SSH-2.0-Telegraf";
+          expect = "SSH-2.0";
+          timeout = "10s";
+        })
+        urls)
       ++ (map
-      (port: {
-        protocol = "tcp";
-        tags.host = "eve";
-        tags.org = "private";
-        address = "devkid.net:${toString port}";
-      }) [
-        30033 # ts3_ft
-        10011 # ts3_sq
-      ])
+        (port: {
+          protocol = "tcp";
+          tags.host = "eve";
+          tags.org = "private";
+          address = "devkid.net:${toString port}";
+        }) [
+          30033 # ts3_ft
+          10011 # ts3_sq
+        ])
       ++ [
         {
           # imap

@@ -1,6 +1,4 @@
-with import <nixpkgs> { };
-
-let
+with import <nixpkgs> {}; let
   vexRev = 3206;
   vex = stdenv.mkDerivation {
     name = "build-vex";
@@ -15,8 +13,8 @@ let
         sha256 = "093v2hvwsnw1ww7h558ciy16v0n5kh1142c6y08gam2p8l9z2mkf";
       })
     ];
-    patchFlags = [ "-p0" ];
-    makeFlags = [ "-f" "Makefile-gcc" ];
+    patchFlags = ["-p0"];
+    makeFlags = ["-f" "Makefile-gcc"];
     installPhase = ''
       runHook preInstall
       mkdir $out
@@ -31,28 +29,28 @@ let
         sha256 = "11vz0j10jrkvvlx0arb5xxlhay1sp51hnp0gjxmjxif0psv3dysa";
       })
     ];
-    patchFlags = [ "-p0" ];
+    patchFlags = ["-p0"];
   });
 in
-stdenv.mkDerivation {
-  name = "env";
-  buildInputs = with ocamlPackages; [
-    bashInteractive
-    autoreconfHook
-    ocaml
-    findlib
-    camlidl
-    ocaml_extlib
-    valgrind
-    myStp
-    subversion
-    vex
-    binutils
-    zlib
-    libiberty
-  ];
+  stdenv.mkDerivation {
+    name = "env";
+    buildInputs = with ocamlPackages; [
+      bashInteractive
+      autoreconfHook
+      ocaml
+      findlib
+      camlidl
+      ocaml_extlib
+      valgrind
+      myStp
+      subversion
+      vex
+      binutils
+      zlib
+      libiberty
+    ];
 
-  #NIX_CFLAGS_COMPILE = [ "-I${camlidl}/" ];
+    #NIX_CFLAGS_COMPILE = [ "-I${camlidl}/" ];
 
-  configureFlags = [ "--with-vex=${vex}" "--with-vex-revision=${toString vexRev}" ];
-}
+    configureFlags = ["--with-vex=${vex}" "--with-vex-revision=${toString vexRev}"];
+  }

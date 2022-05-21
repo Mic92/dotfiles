@@ -29,13 +29,15 @@ in {
 
   services.home-assistant = {
     enable = true;
-    package = (pkgs.home-assistant.override {
-      extraPackages = ps: [
-        ps.psycopg2
-      ];
-    }).overrideAttrs (old: {
-      patches = [ ./mqtt-5.patch ];
-    });
+    package =
+      (pkgs.home-assistant.override {
+        extraPackages = ps: [
+          ps.psycopg2
+        ];
+      })
+      .overrideAttrs (old: {
+        patches = [./mqtt-5.patch];
+      });
   };
 
   services.home-assistant.config = let
@@ -95,12 +97,14 @@ in {
         user_key = "!secret pushover_user_key";
       }
     ];
-    device_tracker = [{
-      platform = "luci";
-      host = "rauter.r";
-      username = "!secret openwrt_user";
-      password = "!secret openwrt_password";
-    }];
+    device_tracker = [
+      {
+        platform = "luci";
+        host = "rauter.r";
+        username = "!secret openwrt_user";
+        password = "!secret openwrt_password";
+      }
+    ];
     config = {};
     mobile_app = {};
 

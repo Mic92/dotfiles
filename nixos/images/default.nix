@@ -1,7 +1,4 @@
-{
-  self,
-  ...
-}: {
+{self, ...}: {
   perSystem = system: {
     config,
     self',
@@ -51,7 +48,7 @@
           ./base-config.nix
           nur-overlay
           inputs-module
-          ({config, ...}: { system.stateVersion = config.system.nixos.version; })
+          ({config, ...}: {system.stateVersion = config.system.nixos.version;})
         ];
         format = "install-iso";
       };
@@ -61,7 +58,7 @@
         inherit (nixpkgs.lib) nixosSystem;
         extraModules = [
           inputs-module
-          ({config, ...}: { system.stateVersion = config.system.nixos.version; })
+          ({config, ...}: {system.stateVersion = config.system.nixos.version;})
         ];
       };
 

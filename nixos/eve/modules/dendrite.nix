@@ -1,24 +1,25 @@
-{ config, pkgs, ... }:
-
-let
+{
+  config,
+  pkgs,
+  ...
+}: let
   database = {
     connection_string = "postgres:///dendrite?host=/run/postgresql";
     max_open_conns = 20;
   };
   inherit (config.services.dendrite.settings.global) server_name;
   nginx-vhost = "matrix.thalheim.io";
-  element-web-thalheim.io = pkgs.runCommandNoCC "element-web-with-config" {
-    nativeBuildInputs = [ pkgs.buildPackages.jq ];
-  } ''
-    cp -r ${pkgs.element-web} $out
-    chmod -R u+w $out
-    jq '."default_server_config"."m.homeserver" = { "base_url": "https://${nginx-vhost}:443", "server_name": "${server_name}" }' \
-      > $out/config.json < ${pkgs.element-web}/config.json
-    ln -s $out/config.json $out/config.${nginx-vhost}.json
-  '';
-
-in
-{
+  element-web-thalheim.io =
+    pkgs.runCommandNoCC "element-web-with-config" {
+      nativeBuildInputs = [pkgs.buildPackages.jq];
+    } ''
+      cp -r ${pkgs.element-web} $out
+      chmod -R u+w $out
+      jq '."default_server_config"."m.homeserver" = { "base_url": "https://${nginx-vhost}:443", "server_name": "${server_name}" }' \
+        > $out/config.json < ${pkgs.element-web}/config.json
+      ln -s $out/config.json $out/config.${nginx-vhost}.json
+    '';
+in {
   # $ nix-shell -p dendrite --run 'generate-keys --private-key /tmp/key'
   sops.secrets.matrix-server-key = {};
 
@@ -37,13 +38,15 @@ in
         ];
         metrics.enabled = true;
       };
-      logging = [{
-        type = "std";
-        level = "warn";
-      }];
+      logging = [
+        {
+          type = "std";
+          level = "warn";
+        }
+      ];
       app_service_api = {
         inherit database;
-        config_files = [ ];
+        config_files = [];
       };
       client_api = {
         registration_disabled = true;
@@ -61,7 +64,7 @@ in
       };
       mscs = {
         inherit database;
-        mscs = [ "msc2836" "msc2946" ];
+        mscs = ["msc2836" "msc2946"];
       };
       sync_api = {
         inherit database;
@@ -100,9 +103,9 @@ in
     "matrix-server-key:${config.sops.secrets.matrix-server-key.path}"
   ];
 
-  systemd.services.dendrite.after = [ "postgresql.service" ];
+  systemd.services.dendrite.after = ["postgresql.service"];
   services.postgresql = {
-    ensureDatabases = [ "dendrite" ];
+    ensureDatabases = ["dendrite"];
     ensureUsers = [
       {
         name = "dendrite";

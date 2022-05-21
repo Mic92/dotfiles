@@ -22,13 +22,13 @@
 
   environment.systemPackages = [
     (pkgs.runCommand "wrap-kubectl"
-    {
-      nativeBuildInputs = [pkgs.makeWrapper];
-    } ''
-      mkdir -p $out/bin
-      makeWrapper ${pkgs.kubernetes}/bin/kubectl $out/bin/kubectl \
-        --set KUBECONFIG "/etc/kubernetes/cluster-admin.kubeconfig"
-    '')
+      {
+        nativeBuildInputs = [pkgs.makeWrapper];
+      } ''
+        mkdir -p $out/bin
+        makeWrapper ${pkgs.kubernetes}/bin/kubectl $out/bin/kubectl \
+          --set KUBECONFIG "/etc/kubernetes/cluster-admin.kubeconfig"
+      '')
   ];
 
   networking.firewall.allowedTCPPorts = [

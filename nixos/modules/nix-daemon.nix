@@ -50,10 +50,10 @@ with lib; {
       drvpath=$(curl -L 'https://gitlab.com/Mic92/dotfiles/-/jobs/artifacts/master/raw/jobs.json?job=eval' | jq -r "select(.attr | contains(\"nixos-$(hostname)\")) | .drvPath")
       nix-store --add-root /run/next-system -r "$drvpath"
     '';
-      # FIXME home-manager
-      #if [[ -x /home/joerg/.nix-profile/bin/home-manager ]]; then
-      #  nix run "github:Mic92/dotfiles/$last_build#hm-build" --  --out-link /run/next-home
-      #fi
+    # FIXME home-manager
+    #if [[ -x /home/joerg/.nix-profile/bin/home-manager ]]; then
+    #  nix run "github:Mic92/dotfiles/$last_build#hm-build" --  --out-link /run/next-home
+    #fi
     serviceConfig = {
       CPUSchedulingPolicy = "idle";
       IOSchedulingClass = "idle";
@@ -64,7 +64,7 @@ with lib; {
   environment.etc = let
     inputsWithDate = lib.filterAttrs (_: input: input ? lastModified) inputs;
     flakeAttrs = input: (lib.mapAttrsToList (n: v: ''${n}="${v}"'')
-    (lib.filterAttrs (n: v: (builtins.typeOf v) == "string") input));
+      (lib.filterAttrs (n: v: (builtins.typeOf v) == "string") input));
     lastModified = name: input: ''
       flake_input_last_modified{input="${name}",${lib.concatStringsSep "," (flakeAttrs input)}} ${toString input.lastModified}'';
   in {

@@ -74,5 +74,5 @@ in {
     mapAttrsToList
     (name: const (./certs + "/${name}"))
     (filterAttrs (const (dir: "regular" == dir))
-    (builtins.readDir ./certs));
+      (builtins.readDir ./certs));
 }

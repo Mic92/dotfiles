@@ -46,17 +46,18 @@ in {
         tags.host = lib.removeSuffix ".r" url;
       })
       urls;
-    net_response = map
-    (host: {
-      protocol = "tcp";
-      address = "${host}:22";
-      tags.host = host;
-      tags.org = "uni";
-      send = "SSH-2.0-Telegraf";
-      expect = "SSH-2.0";
-      timeout = "10s";
-    })
-    urls;
+    net_response =
+      map
+      (host: {
+        protocol = "tcp";
+        address = "${host}:22";
+        tags.host = host;
+        tags.org = "uni";
+        send = "SSH-2.0-Telegraf";
+        expect = "SSH-2.0";
+        timeout = "10s";
+      })
+      urls;
 
     x509_cert = [
       {

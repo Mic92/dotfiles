@@ -1,6 +1,5 @@
-{ pkgs, ... }:
-{
-   services.uptermd = {
+{pkgs, ...}: {
+  services.uptermd = {
     enable = true;
     openFirewall = true;
     port = 2323;
@@ -16,7 +15,7 @@
     useACMEHost = "thalheim.io";
     forceSSL = true;
     locations."/" = {
-      root = pkgs.runCommand "webroot" { nativeBuildInputs = [ pkgs.pandoc ]; } ''
+      root = pkgs.runCommand "webroot" {nativeBuildInputs = [pkgs.pandoc];} ''
         cat > index.md <<'EOF'
         # Usage
         On the machine where you want to share a tmux session with [upterm](https://github.com/owenthereal/upterm) first run:

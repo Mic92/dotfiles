@@ -1,4 +1,8 @@
-{config, lib, ...}: {
+{
+  config,
+  lib,
+  ...
+}: {
   services.tor = {
     enable = true;
     client.enable = lib.mkDefault false;

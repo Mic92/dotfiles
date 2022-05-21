@@ -1,6 +1,16 @@
 {self, ...}: let
-  inherit (self.inputs)
-    nixpkgs retiolum sops-nix home-manager nur flake-registry nixos-hardware nix-ld bme680-mqtt;
+  inherit
+    (self.inputs)
+    nixpkgs
+    retiolum
+    sops-nix
+    home-manager
+    nur
+    flake-registry
+    nixos-hardware
+    nix-ld
+    bme680-mqtt
+    ;
   nixosSystem = nixpkgs.lib.makeOverridable nixpkgs.lib.nixosSystem;
 
   defaultModules = [

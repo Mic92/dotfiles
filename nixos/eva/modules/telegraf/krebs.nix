@@ -42,7 +42,7 @@
 
     http_response = [
       {
-        urls = [ "http://puyak.r" ];
+        urls = ["http://puyak.r"];
         headers.Host = "light.shack";
         response_string_match = "shackspace";
         tags.host = "puyak";

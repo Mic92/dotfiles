@@ -1,4 +1,8 @@
-{config, lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   external = "dock0";
 in {
   systemd.network.netdevs.internal.netdevConfig = {
