@@ -47,8 +47,8 @@ with lib; {
       if ! ip r g 8.8.8.8; then
         exit
       fi
-      drvpath=$(curl -L 'https://gitlab.com/Mic92/dotfiles/-/jobs/artifacts/master/raw/jobs.json?job=eval' | jq -r "select(.attr | contains(\"nixos-$(hostname)\")) | .drvPath")
-      nix-store --add-root /run/next-system -r "$drvpath"
+      out=$(curl -L 'https://gitlab.com/Mic92/dotfiles/-/jobs/artifacts/master/raw/jobs.json?job=eval' | jq -r "select(.attr | contains(\"nixos-$(hostname)\")) | .outputs.out")
+      nix-store --add-root /run/next-system -r "$out"
     '';
     # FIXME home-manager
     #if [[ -x /home/joerg/.nix-profile/bin/home-manager ]]; then
