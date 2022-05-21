@@ -136,3 +136,22 @@ def tempdir(args: List[str]) -> None:
 
 
 XSH.aliases["tempdir"] = tempdir
+
+
+def tmux_upterm(args: List[str]) -> None:
+    r(
+        [
+            "upterm",
+            "host",
+            "--server",
+            "ssh://upterm.thalheim.io:2323",
+            "--force-command",
+            "tmux attach -t pair-programming",
+            "--",
+            "bash",
+            "-c",
+            "read -p 'Press enter to continue ' && tmux new -t pair-programming",
+        ]
+    )
+
+XSH.aliases["tmux-upterm"] = tmux_upterm
