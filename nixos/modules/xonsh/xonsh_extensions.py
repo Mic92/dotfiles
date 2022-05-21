@@ -1,5 +1,5 @@
 import os
-import typing
+from typing import List, IO, Optional
 
 from xonsh.built_ins import XSH
 from xontrib.fzf_widgets import get_fzf_binary_path
@@ -29,7 +29,7 @@ out = r(["zoxide", "init", "xonsh"], stdout=subprocess.PIPE, universal_newlines=
 XSH.builtins.execx(out, "exec", __xonsh__.ctx, filename="zoxide")
 
 
-def mycd(args: typing.List[str]) -> None:
+def mycd(args: List[str]) -> None:
     if len(args) == 1 and os.path.isfile(args[0]):
         args[0] = os.path.dirname(args[0])
         if args[0] == "":
@@ -40,7 +40,7 @@ def mycd(args: typing.List[str]) -> None:
 
 XSH.aliases["cd"] = mycd
 
-def nixify(args: typing.List[str]) -> None:
+def nixify(args: List[str]) -> None:
     envrc = Path("./.envrc")
     if not envrc.exists():
         envrc.write_text("use nix\n")
@@ -59,7 +59,7 @@ mkShell {
         editor = os.environ.get("EDITOR", "vim")
         r([editor, default_nix])
 
-def flakify(args: typing.List[str]) -> None:
+def flakify(args: List[str]) -> None:
     envrc = Path("./.envrc")
     if not envrc.exists():
         envrc.write_text("use flake\n")
@@ -79,7 +79,7 @@ if XSH.env.get("WAYLAND_DISPLAY"):
 
 
 
-def load_package(args) -> None:
+def load_package(args: List[str]) -> None:
     import json
     if len(args) == 0:
         return
@@ -90,3 +90,17 @@ def load_package(args) -> None:
         if bin is not None:
             XSH.env["PATH"].add(f"{bin}/bin")
 XSH.aliases["n"] = load_package
+
+
+def kpaste(args: List[str], stdin: Optional[IO]=None) -> None:
+    input = None
+    if stdin:
+        stdin = stdin
+    elif len(args) == 0:
+        input = r(["wl-paste"], stdout=subprocess.PIPE, text=True).stdout
+    else:
+        stdin = open(args[0])
+    res = r(["curl", "-sS", "http://p.r", "--data-binary", "@-"], stdin=stdin, input=input, stdout=subprocess.PIPE, text=True).stdout.strip()
+    print(res)
+    print(res.replace("http://p.r", "https://p.krebsco.de"))
+XSH.aliases["kpaste"] = kpaste
