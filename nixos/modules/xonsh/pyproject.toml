@@ -10,6 +10,9 @@ xontrib-prompt-starship = { git = "https://github.com/anki-code/xontrib-prompt-s
 xontrib-fzf-widgets = { git = "https://github.com/Mic92/xontrib-fzf-widgets", branch = "patch-1" }
 xonsh-direnv = { git = "https://github.com/74th/xonsh-direnv" }
 xontrib-dracula = { git = "https://github.com/agoose77/xontrib-dracula", branch = "main" }
+xontrib-sh = { git = "https://github.com/anki-code/xontrib-sh", branch = "main" }
+xontrib-back2dir = { git = "https://github.com/anki-code/xontrib-back2dir" }
+xontrib-output-search = { git = "https://github.com/tokenizer/xontrib-output-search" }
 
 [tool.poetry.dev-dependencies]
 
