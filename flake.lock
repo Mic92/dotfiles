@@ -28,15 +28,15 @@
       "locked": {
         "lastModified": 1652103812,
         "narHash": "sha256-UKvsThMMycCBrnpDTCKOJd+Nc+by/u6Carl/MOEuQN8=",
-        "owner": "hlissner",
-        "repo": "doom-emacs",
+        "owner": "doomemacs",
+        "repo": "doomemacs",
         "rev": "8a27eb99bec5a955833b6d23f431c5cc39e91f7f",
         "type": "github"
       },
       "original": {
-        "owner": "hlissner",
+        "owner": "doomemacs",
         "ref": "master",
-        "repo": "doom-emacs",
+        "repo": "doomemacs",
         "type": "github"
       }
     },

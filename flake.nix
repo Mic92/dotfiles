@@ -50,7 +50,7 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    doom-emacs.url = "github:hlissner/doom-emacs/master";
+    doom-emacs.url = "github:doomemacs/doomemacs/master";
     doom-emacs.flake = false;
 
     emacs-overlay.url = "github:nix-community/emacs-overlay";
