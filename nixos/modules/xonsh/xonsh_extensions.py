@@ -6,6 +6,7 @@ from xontrib.fzf_widgets import get_fzf_binary_path
 
 import subprocess
 import tempfile
+from pathlib import Path
 from subprocess import run as r
 
 
@@ -154,4 +155,12 @@ def tmux_upterm(args: List[str]) -> None:
         ]
     )
 
+
 XSH.aliases["tmux-upterm"] = tmux_upterm
+
+
+def real_which(args: List[str]) -> None:
+    out = r(["which", args[0]], stdout=subprocess.PIPE, text=True).stdout.strip()
+    print(Path(out).resolve())
+
+XSH.aliases["real-which"] = real_which
