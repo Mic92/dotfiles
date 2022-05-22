@@ -38,6 +38,8 @@ with lib; let
       mkdir -p $HOME/.emacs.d
       git -C $HOME/.emacs.d init
     fi
+    git -C $HOME/.emacs.d remote add origin https://github.com/doomemacs/doomemacs.git || \
+      git -C $HOME/.emacs.d remote set-url origin https://github.com/doomemacs/doomemacs.git
     if [ $(git -C $HOME/.emacs.d rev-parse HEAD) != ${pkgs.doomEmacsRevision} ]; then
       git -C $HOME/.emacs.d fetch https://github.com/doomemacs/doomemacs.git || true
       git -C $HOME/.emacs.d checkout ${pkgs.doomEmacsRevision} || true
