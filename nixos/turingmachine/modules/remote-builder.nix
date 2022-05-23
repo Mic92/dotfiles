@@ -1,8 +1,9 @@
 {config, ...}: {
   nix.distributedBuilds = true;
+
   nix.buildMachines = [
     {
-      hostName = "ryan.r";
+      hostName = "ryan.dse.in.tum.de";
       sshUser = "ssh-ng://nix";
       sshKey = config.sops.secrets.id_buildfarm.path;
       system = "x86_64-linux";
