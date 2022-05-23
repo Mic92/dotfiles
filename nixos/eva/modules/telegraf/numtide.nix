@@ -9,6 +9,7 @@ in {
     x509_cert = [
       {
         sources = [
+          "https://numtide.com:443"
           "https://matrix.numtide.com:443"
           "https://upterm.numtide.com:443"
           "https://mumble.numtide.com:443"
@@ -32,6 +33,14 @@ in {
         "matrix1"
       ];
     http_response = [
+      {
+        urls = [
+          "https://numtide.com/"
+        ];
+        response_string_match = "Numtide";
+        tags.host = "super.so";
+        tags.org = "numtide";
+      }
       {
         urls = [
           "https://upterm.numtide.com/"
