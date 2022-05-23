@@ -42,6 +42,7 @@ def moshlogin():
    ssh -v eve killall mosh-server
    mosh -A eve.mosh
 aliases["moshlogin"] = moshlogin
+del moshlogin
 
 $XONSH_AUTOPAIR = True
 

@@ -10,6 +10,7 @@ from pathlib import Path
 from subprocess import run as r
 
 
+
 @XSH.builtins.events.on_ptk_create
 def custom_keybindings(bindings, **kw):
     @bindings.add("escape", "c")
@@ -85,7 +86,7 @@ XSH.aliases["flakify"] = flakify
 
 if XSH.env.get("WAYLAND_DISPLAY"):
     XSH.aliases[
-        "nixify"
+        "chromium"
     ] = "chromium --enable-features=UseOzonePlatform --ozone-platform=wayland"
 
 
