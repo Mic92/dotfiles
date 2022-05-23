@@ -19,7 +19,7 @@
       ];
     }
     {
-      hostName = "ryan.r";
+      hostName = "ryan.dse.in.tum.de";
       maxJobs = 128;
       sshKey = config.sops.secrets.tum-builder.path;
       sshUser = "ssh-ng://nix";
