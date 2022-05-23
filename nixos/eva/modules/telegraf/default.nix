@@ -11,6 +11,7 @@
     ./krebs.nix
     ./it4r.nix
     ./nix-community.nix
+    ./numtide.nix
   ];
 
   sops.secrets.telegraf.owner = config.systemd.services.telegraf.serviceConfig.User;
