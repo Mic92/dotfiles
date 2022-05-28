@@ -165,3 +165,9 @@ def real_which(args: List[str]) -> None:
     print(Path(out).resolve())
 
 XSH.aliases["real-which"] = real_which
+
+def nix_call_package(args: List[str]) -> None:
+    if len(args) < 1:
+        args = ["./."]
+    r(["nix-build", "-E", "with import <nixpkgs> {}; pkgs.callPackage " + args[0] + "{}"])
+XSH.aliases["nix-call-package"] = nix_call_package
