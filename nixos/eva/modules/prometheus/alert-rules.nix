@@ -140,8 +140,9 @@ in
       };
 
       # user@$uid.service and similar sometimes fail, we don't care about those services.
+      # nixpkgs-update also constantly fails and ryan does not fix it.
       systemd_service_failed = {
-        condition = ''systemd_units_active_code{name!~"user@\\d+.service"} == 3'';
+        condition = ''systemd_units_active_code{name!~"user@\\d+.service|nixpkgs-update.*"} == 3'';
         description = "{{$labels.host}} failed to (re)start service {{$labels.name}}";
       };
 
