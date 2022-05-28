@@ -1,8 +1,5 @@
 {self, ...}: {
-  perSystem = system: {
-    config,
-    self',
-    inputs',
+  perSystem = {
     pkgs,
     ...
   }: {

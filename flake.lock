@@ -123,23 +123,23 @@
         "type": "github"
       }
     },
-    "flake-modules-core": {
+    "flake-parts": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1652946772,
-        "narHash": "sha256-ANAf2XHxiZhQx8lY+pYcEF74Jnf5ua2dhl+nGVHuX3Q=",
+        "lastModified": 1653510071,
+        "narHash": "sha256-KoBs0USqNunyxaBOYx/trSREMf8f3fA+msDfADiMI5o=",
         "owner": "hercules-ci",
-        "repo": "flake-modules-core",
-        "rev": "0263a393a2c259ca80df20174a9f49ec3343fe4e",
+        "repo": "flake-parts",
+        "rev": "c7d1a3d10117247892df7db45cef562bf62789d5",
         "type": "github"
       },
       "original": {
         "owner": "hercules-ci",
-        "repo": "flake-modules-core",
+        "repo": "flake-parts",
         "type": "github"
       }
     },
@@ -435,7 +435,7 @@
         "emacs-overlay": "emacs-overlay",
         "envfs": "envfs",
         "fenix": "fenix",
-        "flake-modules-core": "flake-modules-core",
+        "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",

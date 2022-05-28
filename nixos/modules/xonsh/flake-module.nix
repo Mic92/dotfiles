@@ -1,8 +1,6 @@
 {self, ...}: {
-  perSystem = system: {
-    config,
+  perSystem = {
     self',
-    inputs',
     pkgs,
     ...
   }: let

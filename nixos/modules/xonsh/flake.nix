@@ -3,23 +3,20 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    flake-modules-core.url = "github:hercules-ci/flake-modules-core";
-    flake-modules-core.inputs.nixpkgs.follows = "nixpkgs";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-parts.inputs.nixpkgs.follows = "nixpkgs";
     poetry2nix.url = "github:nix-community/poetry2nix";
     poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = {
     self,
-    flake-modules-core,
+    flake-parts,
     ...
   }:
-    flake-modules-core.lib.mkFlake {inherit self;} {
+    flake-parts.lib.mkFlake {inherit self;} {
       systems = ["x86_64-linux"];
-      perSystem = system: {
-        config,
-        self',
-        inputs',
+      perSystem = {
         pkgs,
         ...
       }: let

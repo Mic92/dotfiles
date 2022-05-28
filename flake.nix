@@ -5,8 +5,8 @@
   # $ nix flake update
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
-    flake-modules-core.url = "github:hercules-ci/flake-modules-core";
-    flake-modules-core.inputs.nixpkgs.follows = "nixpkgs";
+    flake-parts.url = "github:hercules-ci/flake-parts";
+    flake-parts.inputs.nixpkgs.follows = "nixpkgs";
 
     fenix.url = "github:nix-community/fenix";
     fenix.inputs.nixpkgs.follows = "nixpkgs";
@@ -83,10 +83,10 @@
   #outputs = {...} @ args: import ./outputs.nix args;
   outputs = {
     self,
-    flake-modules-core,
+    flake-parts,
     ...
   }:
-    (flake-modules-core.lib.evalFlakeModule
+    (flake-parts.lib.evalFlakeModule
       {inherit self;}
       {
         imports = [
@@ -98,7 +98,7 @@
           ./ci.nix
         ];
         systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
-        perSystem = system: {inputs', ...}: {
+        perSystem = {inputs', ...}: {
           # make pkgs available to all `perSystem` functions
           _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
         };

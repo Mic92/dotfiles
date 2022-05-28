@@ -1,15 +1,13 @@
 {self, ...}: {
-  perSystem = system: {
-    config,
-    self',
+  perSystem = {
     inputs',
     pkgs,
+    self',
     ...
   }: let
     inherit (self.inputs) nixos-generators nur nixpkgs;
 
     containerPkgs = inputs'.nix2container.packages;
-    selfPkgs = self.packages.${system};
 
     copyToPodman = image:
       pkgs.writeShellScriptBin "copy-to-podman" ''
@@ -63,7 +61,7 @@
       };
 
       netboot-pixie-core = pkgs.callPackage ./netboot-pixie-core.nix {
-        inherit (selfPkgs) netboot;
+        inherit (self'.packages) netboot;
       };
 
       nspawn-template = import ./nspawn-template.nix {
