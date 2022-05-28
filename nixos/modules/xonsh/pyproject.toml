@@ -8,7 +8,7 @@ authors = ["Jörg Thalheim <joerg@thalheim.io>"]
 python = "^3.9"
 xontrib-prompt-starship = { git = "https://github.com/anki-code/xontrib-prompt-starship" }
 xontrib-fzf-widgets = { git = "https://github.com/Mic92/xontrib-fzf-widgets", branch = "patch-1" }
-xonsh-direnv = { git = "https://github.com/74th/xonsh-direnv" }
+xonsh-direnv = { git = "https://github.com/gforsyth/xonsh-direnv" }
 xontrib-dracula = { git = "https://github.com/agoose77/xontrib-dracula", branch = "main" }
 xontrib-sh = { git = "https://github.com/anki-code/xontrib-sh", branch = "main" }
 xontrib-back2dir = { git = "https://github.com/anki-code/xontrib-back2dir" }

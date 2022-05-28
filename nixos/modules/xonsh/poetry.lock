@@ -45,9 +45,9 @@ develop = false
 
 [package.source]
 type = "git"
-url = "https://github.com/74th/xonsh-direnv"
+url = "https://github.com/gforsyth/xonsh-direnv"
 reference = "master"
-resolved_reference = "85c9a378599ab560cf2d41b8a5c1f15a233aa228"
+resolved_reference = "2586383a2168e059a93c8218f30e65d9e49cf43e"
 
 [[package]]
 name = "xontrib-back2dir"
@@ -154,7 +154,7 @@ resolved_reference = "789efc4c21b632fcdf8067bd452497523228aae2"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9"
-content-hash = "904a0da1821f24149ca857da55c06df3fe58b2d62b1bdc35be6120e333e02015"
+content-hash = "a6d81babec4d834f09595fbafc514fda9a49ec1dd319dacc037ed61b84855903"
 
 [metadata.files]
 demjson3 = [
