@@ -1,5 +1,6 @@
 import sys
 import os
+import xonsh.environ as xenv
 # add current directory to import path
 sys.path.insert(0, os.path.join(
     os.path.dirname(os.path.dirname(os.path.realpath(__file__)))))
@@ -25,6 +26,11 @@ _xontribs = [
 ]
 xontrib load @(_xontribs)
 
+# xon settings
+$XONSH_AUTOPAIR = True
+$XONSH_HISTORY_BACKEND = "sqlite"
+$HISTCONTROL = "ignoredups"
+$XONSH_COLOR_STYLE = "dracula"
 
 # cd-ing shortcuts.
 aliases['-'] = 'cd -'
@@ -35,21 +41,28 @@ aliases["k"] = "kubectl"
 aliases["tf"] = "terraform"
 aliases["vim"] = "emacseditor"
 aliases["lg"] = "lazygit"
-aliases["cheat"] = lambda args: $[cheat -c @(args) | less]
-def moshlogin():
+
+def command(args) -> None:
+    if len(args) == 0:
+      return
+    bin = args[0]
+    args.pop()
+    $(which -s @(bin)) @(args)
+
+aliases["command"] = command
+del command
+
+aliases["cheat"] = lambda args: $[command cheat -c @(args) | less]
+def moshlogin() -> None:
    if "no identifies" in $(ssh-add -L):
        ssh-add
    ssh -v eve killall mosh-server
    mosh -A eve.mosh
 aliases["moshlogin"] = moshlogin
 del moshlogin
-
-$XONSH_AUTOPAIR = True
-
-$XONSH_HISTORY_BACKEND = "sqlite"
-$HISTCONTROL = "ignoredups"
-
-$XONSH_COLOR_STYLE = "dracula"
+aliases["zcat"] = "zcat -f"
+aliases["dd"] = "dd status=progress"
+aliases["rg"] = lambda args: $[command rg --sort path --pretty --smart-case --fixed-strings @(args) | less]
 
 $LS_COLORS=$(vivid generate dracula)
 $LESS = "-FXisRM"
