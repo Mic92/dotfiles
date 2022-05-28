@@ -72,6 +72,52 @@ def _on_startup():
     aliases["zcat"] = "zcat -f"
     aliases["dd"] = "dd status=progress"
     aliases["rg"] = lambda args: $[command rg --sort path --pretty --smart-case --fixed-strings @(args) | less]
+    aliases["hm-switch"] = "nix run $HOME/.homesick/repos/dotfiles#hm-switch --"
+    aliases["hm-build"] = "nix run $HOME/.homesick/repos/dotfiles#hm-build --"
+    aliases["pgrep"] = "pgrep -a"
+    aliases["top"] = "htop"
+    aliases["dig"] = "q"
+    aliases["free"] = "free -m"
+    aliases["fuser"] = "fuser -v"
+
+    def dust(args) -> None:
+        args.remove("-h")
+        args.remove("-s")
+        args.remove("-sh")
+        $[dust @(args)]
+
+    aliases["du"] = dust
+    aliases["df"] = "df -hT"
+    aliases["ls"] = "exa --classify --icons"
+    aliases["sl"] = "ls"
+    aliases["rm"] = "rm -rv"
+    aliases["mkdir"] = "mkdir -p"
+
+    def ip(args) -> None:
+        if len(args) == 0:
+            $[command ip -c -br a]
+        else:
+            $[command ip -c @(args)]
+    aliases["ip"] = ip
+    aliases["objdump"] = "objdump -M intel"
+    aliases["git"] = "hub"
+    aliases["su"] = "su -"
+    aliases["gdb"] = "gdb --quiet --args"
+    aliases["readelf"] = "readelf -W"
+    aliases["vi"] = "vim"
+    aliases["xclip"] = "command xclip -selection clipboard"
+    aliases["cloc"] = "scc"
+    aliases["strace"] = "command strace -yy"
+    aliases["R"] = "command R --quiet"
+    aliases["diff"] = "-Naur --strip-trailing-cr"
+    aliases["grep"] = "grep --binary-files=without-match --directories=skip --color=auto"
+    def killp(args) -> None:
+        pid_str=$(ps -ef | sed 1d | fzf -m --header='[kill:process]' | awk '{print $2}')
+        pids = [s.strip() for s in pid_str.split("\n")]
+        if pids[0] == "":
+          $[sudo kill -9 @(pids)]
+          killp(args)
+    aliases["killp"] = killp
     $LS_COLORS=$(vivid generate dracula)
     $LESS = "-FXisRM"
     $LESS_TERMCAP_mb = '\033[01;31m'     # begin blinking
