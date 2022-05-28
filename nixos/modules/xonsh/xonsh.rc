@@ -46,9 +46,19 @@ def _on_startup():
     def command(args) -> None:
         if len(args) == 0:
           return
+        only_print = False
+        if args[0] == "-v":
+            only_print = True
+            args.pop()
+            if len(args) == 0:
+               return 1
+
         bin = args[0]
         args.pop()
-        $(which -s @(bin)) @(args)
+        if only_print:
+            which bin
+        else:
+            $(which -s @(bin)) @(args)
 
     aliases["command"] = command
 
