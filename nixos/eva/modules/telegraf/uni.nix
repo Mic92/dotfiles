@@ -6,16 +6,15 @@
 }: let
   urls = [
     # university
-    "rose.r"
+    #"rose.r"
     #"grandalf.r"
-    "martha.r"
-    "donna.r"
-    "amy.r"
-    # currently down
+    #"martha.r"
+    #"donna.r"
+    #"amy.r"
     #"clara.r"
     #"sauron.r"
-    # currently disconnected
     #"doctor.r"
+
     "nardole.r"
     "bill.r"
     "nardole.r"
