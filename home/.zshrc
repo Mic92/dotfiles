@@ -496,11 +496,9 @@ export XDG_VIDEOS_DIR="$HOME/Videos"
 export ERRFILE=~/.xsession-errors
 # Antialising
 export _JAVA_OPTIONS="$_JAVA_OPTIONS -Dawt.useSystemAAFontSettings=lcd -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
-# To enable Graphic Hardware acceleration
-#export LIBGL_ALWAYS_INDIRECT=1
-export INTEL_BATCH=1
-# Enable Pulse for SDL
-export SDL_AUDIODRIVER=pulse
+# Enable Pipewire for SDL
+export SDL_AUDIODRIVER=pipewire
+export ALSOFT_DRIVERS=pipewire
 # fix broken xdg-open
 export GDMSESSION=1 GNOME_DESKTOP_SESSION_ID=1
 # less
