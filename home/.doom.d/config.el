@@ -120,7 +120,8 @@
 
 (use-package! lsp
   :config
-  (setq lsp-clients-clangd-args '("-background-index")))
+  (setq lsp-clients-clangd-args '("-background-index"))
+  (setq lsp-enable-suggest-server-download nil))
 
 (setq projectile-project-search-path '("~/git"))
 (yas/load-directory "~/.homesick/repos/dotfiles/home/.emacs.d/snippets")
