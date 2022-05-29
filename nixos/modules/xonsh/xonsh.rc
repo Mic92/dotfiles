@@ -43,26 +43,8 @@ def _on_startup():
     aliases["tf"] = "terraform"
     aliases["vim"] = "emacseditor"
     aliases["lg"] = "lazygit"
-    def command(args) -> None:
-        if len(args) == 0:
-          return
-        only_print = False
-        if args[0] == "-v":
-            only_print = True
-            args.pop()
-            if len(args) == 0:
-               return 1
 
-        bin = args[0]
-        args.pop()
-        if only_print:
-            which bin
-        else:
-            $(which -s @(bin)) @(args)
-
-    aliases["command"] = command
-
-    aliases["cheat"] = lambda args: $[command cheat -c @(args) | less]
+    aliases["cheat"] = lambda args: $[$(which -s cheat) -c @(args) | less]
     def moshlogin() -> None:
        if "no identifies" in $(ssh-add -L):
            ssh-add
@@ -71,7 +53,7 @@ def _on_startup():
     aliases["moshlogin"] = moshlogin
     aliases["zcat"] = "zcat -f"
     aliases["dd"] = "dd status=progress"
-    aliases["rg"] = lambda args: $[command rg --sort path --pretty --smart-case --fixed-strings @(args) | less]
+    aliases["rg"] = lambda args: $[$(which -s rg) --sort path --pretty --smart-case --fixed-strings @(args) | less]
     aliases["hm-switch"] = "nix run $HOME/.homesick/repos/dotfiles#hm-switch --"
     aliases["hm-build"] = "nix run $HOME/.homesick/repos/dotfiles#hm-build --"
     aliases["pgrep"] = "pgrep -a"
@@ -95,9 +77,8 @@ def _on_startup():
 
     def ip(args) -> None:
         if len(args) == 0:
-            $[command ip -c -br a]
-        else:
-            $[command ip -c @(args)]
+          args=["-br", "a"]
+        $[$(which -s ip) -c @(args)]
     aliases["ip"] = ip
     aliases["objdump"] = "objdump -M intel"
     aliases["git"] = "hub"
@@ -105,10 +86,10 @@ def _on_startup():
     aliases["gdb"] = "gdb --quiet --args"
     aliases["readelf"] = "readelf -W"
     aliases["vi"] = "vim"
-    aliases["xclip"] = "command xclip -selection clipboard"
+    aliases["xclip"] = "xclip -selection clipboard"
     aliases["cloc"] = "scc"
-    aliases["strace"] = "command strace -yy"
-    aliases["R"] = "command R --quiet"
+    aliases["strace"] = "strace -yy"
+    aliases["R"] = "R --quiet"
     aliases["diff"] = "-Naur --strip-trailing-cr"
     aliases["grep"] = "grep --binary-files=without-match --directories=skip --color=auto"
     def killp(args) -> None:
@@ -131,6 +112,7 @@ def _on_startup():
 
     # we don't want to polute the PYTHONPATH with xonsh
     del $PYTHONPATH
+
 
 _on_startup()
 del _on_startup

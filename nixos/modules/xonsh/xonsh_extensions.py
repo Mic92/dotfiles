@@ -10,7 +10,6 @@ from pathlib import Path
 from subprocess import run as r
 
 
-
 @XSH.builtins.events.on_ptk_create
 def custom_keybindings(bindings, **kw):
     @bindings.add("escape", "c")
@@ -164,10 +163,37 @@ def real_which(args: List[str]) -> None:
     out = r(["which", args[0]], stdout=subprocess.PIPE, text=True).stdout.strip()
     print(Path(out).resolve())
 
+
 XSH.aliases["real-which"] = real_which
+
 
 def nix_call_package(args: List[str]) -> None:
     if len(args) < 1:
         args = ["./."]
-    r(["nix-build", "-E", "with import <nixpkgs> {}; pkgs.callPackage " + args[0] + "{}"])
+    r(
+        [
+            "nix-build",
+            "-E",
+            "with import <nixpkgs> {}; pkgs.callPackage " + args[0] + "{}",
+        ]
+    )
+
+
 XSH.aliases["nix-call-package"] = nix_call_package
+
+
+def command(args: List[str], stdin: subprocess.Popen, stdout: subprocess.Popen) -> None:
+    if len(args) == 0:
+        return
+    only_print = False
+    if args[0] == "-v":
+        only_print = True
+        args.pop(0)
+        if len(args) == 0:
+            return 1
+
+    if only_print:
+        return aliases["which"]([args[0]], stdin=stdin, stdout=stdout)
+    else:
+        r(args, stdin=stdin, stdout=stdout)
+aliases["command"] = command
