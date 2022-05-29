@@ -1,3 +1,3 @@
 data "sops_file" "secrets" {
-  source_file = "${module.path}/../secrets.enc.json"
+  source_file = "${path.module}/../secrets.enc.json"
 }
