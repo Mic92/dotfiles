@@ -72,7 +72,7 @@ resource "null_resource" "update-runner-token" {
     val="CI_SERVER_URL=https://gitlab.com\nREGISTRATION_TOKEN=${gitlab_project.repos["Mic92/dotfiles"].runners_token}"
 sops \
    --set "[\"gitlab-runner-registration\"] \"$val\"" \
-  ../../secrets/secrets.yaml
+   ../nixos/eve/secrets/secrets.yaml
 EOT
   }
 }
