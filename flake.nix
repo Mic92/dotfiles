@@ -93,6 +93,7 @@
           ./nixos/configurations.nix
           ./nixos/images/default.nix
           ./nixpkgs-config/homes.nix
+          ./terraform/flake-module.nix
           ./nixos/modules/xonsh/flake-module.nix
           ./shell.nix
           ./ci.nix
