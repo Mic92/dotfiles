@@ -91,7 +91,8 @@ in
     // (lib.genAttrs [
         "borgbackup-turingmachine"
         "borgbackup-eve"
-        "borgbackup-datastore"
+        # currently unavailable (Edinburgh)
+        #"borgbackup-datastore"
         "borgbackup-nfs-home"
         "borgbackup-nfs-share"
       ]
