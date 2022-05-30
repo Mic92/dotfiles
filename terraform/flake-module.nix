@@ -1,6 +1,6 @@
 {
   perSystem = { inputs', pkgs, ... }: {
-    devShells.terranix = pkgs.mkShell {
+    devShells.terraform = pkgs.mkShell {
       buildInputs = [
         (pkgs.terraform.withPlugins (
           p: [
