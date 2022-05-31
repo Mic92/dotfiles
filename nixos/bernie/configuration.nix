@@ -74,7 +74,6 @@
     aspellDicts.en
     hunspell
     hunspellDicts.en-gb-ise
-    zoom-us
     calibre
     evolution
     signal-desktop
