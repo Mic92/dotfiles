@@ -13,7 +13,7 @@
         "DRONE_RUNNER_CAPACITY=10"
         "CLIENT_DRONE_RPC_HOST=127.0.0.1:3030"
       ];
-      ExecStart = "${pkgs.nur.repos.mic92.drone-runner-ssh}/bin/drone-runner-ssh";
+      ExecStart = "${config.nur.repos.mic92.drone-runner-ssh}/bin/drone-runner-ssh";
       User = "drone-runner-ssh";
       Group = "drone-runner-ssh";
     };

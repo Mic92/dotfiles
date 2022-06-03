@@ -14,39 +14,48 @@
         ${containerPkgs.skopeo-nix2container}/bin/skopeo --insecure-policy copy nix:${image} containers-storage:${image.name}:${image.tag}
         echo Docker image ${image.name}:${image.tag} have been loaded
       '';
-    nur-overlay = {nixpkgs.overlays = [nur.overlay];};
-    inputs-module = {
+
+    defaultModule = { config, ... }: {
+      imports = [
+        ./base-config.nix
+        self.inputs.nur.nixosModules.nur
+      ];
       _module.args.inputs = self.inputs;
+      system.stateVersion = config.system.nixos.version;
     };
   in {
     packages = {
-      # nix build '.#kexec' --impure
-      #kexec = nixos-generators.nixosGenerate {
-      #  inherit pkgs;
-      #  modules = [
-      #    ./kexec.nix
-      #    nur-overlay
-      #    inputs-module
-      #  ];
-      #  format = "kexec";
-      #};
+      # nix build '.#kexec'
+      kexec = nixos-generators.nixosGenerate {
+        inherit pkgs;
+        modules = [
+          defaultModule
+          ./kexec.nix
+        ];
+        format = "kexec";
+      };
 
-      #kexec-aarch64 = nixos-generators.nixosGenerate {
-      #  pkgs = nixpkgs.legacyPackages.aarch64-linux;
-      #  modules = [
-      #    ./kexec.nix
-      #    inputs-module
-      #  ];
-      #  format = "kexec";
-      #};
+      kexec-aarch64 = nixos-generators.nixosGenerate {
+        pkgs = nixpkgs.legacyPackages.aarch64-linux;
+        modules = [
+          defaultModule
+          ./kexec.nix
+        ];
+        format = "kexec";
+      };
+
+      sd-image-aarch64 = nixos-generators.nixosGenerate {
+        pkgs = nixpkgs.legacyPackages.aarch64-linux;
+        modules = [
+          defaultModule
+        ];
+        format = "install-iso";
+      };
 
       sd-image = nixos-generators.nixosGenerate {
         inherit pkgs;
         modules = [
-          ./base-config.nix
-          nur-overlay
-          inputs-module
-          ({config, ...}: {system.stateVersion = config.system.nixos.version;})
+          defaultModule
         ];
         format = "install-iso";
       };
@@ -55,8 +64,7 @@
         inherit pkgs;
         inherit (nixpkgs.lib) nixosSystem;
         extraModules = [
-          inputs-module
-          ({config, ...}: {system.stateVersion = config.system.nixos.version;})
+          defaultModule
         ];
       };
 

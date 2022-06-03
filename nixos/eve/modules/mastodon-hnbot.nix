@@ -5,7 +5,7 @@
 }: {
   systemd.services.mastodon-hnbot = {
     path = [
-      pkgs.nur.repos.mic92.mastodon-hnbot
+      config.nur.repos.mic92.mastodon-hnbot
     ];
     script = ''
       exec hnbot \

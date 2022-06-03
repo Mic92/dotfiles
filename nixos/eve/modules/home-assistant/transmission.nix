@@ -32,7 +32,7 @@
       {
         name = "irc_flix";
         platform = "command_line";
-        command = ''${pkgs.nur.repos.mic92.ircsink}/bin/ircsink --server=irc.r --nick=transmission --target="#flix"'';
+        command = ''${config.nur.repos.mic92.ircsink}/bin/ircsink --server=irc.r --nick=transmission --target="#flix"'';
       }
     ];
   };

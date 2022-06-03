@@ -13,7 +13,7 @@
       RestartSec = "2s";
       EnvironmentFile = [config.sops.secrets.goatcounter-smtp-password.path];
       ExecStart = ''
-        ${pkgs.nur.repos.mic92.goatcounter}/bin/goatcounter \
+        ${config.nur.repos.mic92.goatcounter}/bin/goatcounter \
           serve \
           -automigrate \
           -listen localhost:3003 \
