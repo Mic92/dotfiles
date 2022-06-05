@@ -62,18 +62,12 @@ with lib; let
     "c-sharp"
     "cpp"
     "css"
-    /*
-     "elm"
-     */
+    "elm"
     "fluent"
     "go"
-    /*
-     "hcl"
-     */
+    "hcl"
     "html"
-    /*
-     "janet-simple"
-     */
+    "janet-simple"
     "java"
     "javascript"
     "jsdoc"
@@ -81,13 +75,11 @@ with lib; let
     "ocaml"
     "python"
     "php"
-    /*
-     "pgn"
-     */
+    "pgn"
     "ruby"
     "rust"
     "scala"
-    "swift"
+    # "swift"
     "typescript"
   ];
   grammars = lib.getAttrs (map (lang: "tree-sitter-${lang}") langs) pkgs.tree-sitter.builtGrammars;
