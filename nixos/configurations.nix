@@ -39,8 +39,11 @@
         ./modules/nix-daemon.nix
         ./modules/minimal-docs.nix
         nur.nixosModules.nur
+
+        ./modules/retiolum.nix
         retiolum.nixosModules.retiolum
         retiolum.nixosModules.ca
+
         sops-nix.nixosModules.sops
       ];
     }
