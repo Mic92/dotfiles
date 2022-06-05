@@ -1,4 +1,4 @@
-{pkgs, modulesPath, ...}: {
+{pkgs, modulesPath, lib, ...}: {
   nixpkgs.localSystem.system = "aarch64-linux";
 
   documentation.enable = false;
@@ -8,6 +8,8 @@
   ];
 
   boot.kernelParams = ["cma=32M"];
+
+  boot.kernelPackages = lib.mkForce pkgs.linuxPackages;
 
   services.journald.extraConfig = ''
     Storage = volatile
