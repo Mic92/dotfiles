@@ -54,6 +54,8 @@
     #../modules/k3s/server.nix
   ];
 
+  boot.kernelPackages = pkgs.linuxPackages_5_17;
+
   #services.telegraf.extraConfig.inputs.internet_speed.interval = 1800;
 
   #services.udev.packages = [ pkgs.platformio ];
@@ -230,4 +232,5 @@
 
   system.stateVersion = "18.03";
   boot.initrd.systemd.enable = true;
+
 }
