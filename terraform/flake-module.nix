@@ -2,6 +2,7 @@
   perSystem = { inputs', pkgs, ... }: {
     devShells.terraform = pkgs.mkShell {
       buildInputs = [
+        pkgs.sops
         (pkgs.terraform.withPlugins (
           p: [
             p.gitlab

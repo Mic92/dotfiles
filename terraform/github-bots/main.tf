@@ -28,3 +28,9 @@ module "home-manager" {
   github_token = data.sops_file.secrets.data["GITHUB_TOKEN"]
   bot_github_token = data.sops_file.secrets.data["home-manager-bot-token"]
 }
+module "blended" {
+  source = "../modules/github-push-bot"
+  repo_name = "numtide/blended"
+  github_token = data.sops_file.secrets.data["GITHUB_TOKEN"]
+  bot_github_token = data.sops_file.secrets.data["blended-bot-token"]
+}
