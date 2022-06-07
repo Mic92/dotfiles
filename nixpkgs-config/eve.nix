@@ -37,5 +37,6 @@
     # for development
     pkgs.kubectl
     pkgs.kotlin-language-server
+    pkgs.yq-go
   ];
 }
