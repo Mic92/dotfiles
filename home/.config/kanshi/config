@@ -8,6 +8,11 @@ profile docked2 {
   output 'Goldstar Company Ltd LG HDR 4K 0x0000DF7B' enable scale 1
 }
 
+profile docked3 {
+  output eDP-1 disable
+  output 'Lenovo Group Limited P27u-20 V909K2ME' enable scale 1
+}
+
 profile mobile {
   output eDP-1 enable scale 1
 }
