@@ -12,23 +12,5 @@ in {
       system = "x86_64-linux";
       modules = defaultModules;
     };
-
-    cloudlab-k3s-server = nixosSystem {
-      system = "x86_64-linux";
-      modules =
-        defaultModules
-        ++ [
-          ./modules/k3s/server.nix
-        ];
-    };
-
-    cloudlab-k3s-agent = nixosSystem {
-      system = "x86_64-linux";
-      modules =
-        defaultModules
-        ++ [
-          ./modules/k3s/agent.nix
-        ];
-    };
   };
 }
