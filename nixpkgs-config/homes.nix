@@ -58,6 +58,7 @@
         ];
       };
       inherit system;
+      pkgs = nixpkgs.legacyPackages.${system};
       homeDirectory = "/home/joerg";
       username = "joerg";
     });
