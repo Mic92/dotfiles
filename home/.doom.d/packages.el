@@ -13,8 +13,6 @@
 (package! languagetool)
 (package! meson-mode)
 (package! jsonnet-mode)
-(package! tree-sitter)
-(package! tree-sitter-langs)
 (package! just-mode)
 
 (package! mu4e-alert :disable t)
