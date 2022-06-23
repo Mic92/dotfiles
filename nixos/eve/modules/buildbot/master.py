@@ -55,7 +55,7 @@ def build_config() -> dict[str, Any]:
         )
     )
 
-    #factory.addStep(steps.ShellCommand(command=["/buildbot/test.py"]))
+    factory.addStep(steps.ShellCommand(command=["false"]))
 
     workernames = [item["name"] for item in worker_config]
 

@@ -7,6 +7,17 @@
     dbUrl = "postgresql://@/buildbot";
     pythonPackages = ps: [ ps.requests ps.treq ps.psycopg2 ];
   };
+  services.buildbot-worker = {
+    enable = true;
+    workerUser = "eve";
+    adminMessage = "Mic92";
+    home = "/var/lib/buildbot-worker";
+    hostMessage = "A mighty Hetzner server";
+    user = "buildbot-worker";
+    group = "buildbot-worker";
+    packages = [ pkgs.git pkgs.nix ];
+    workerPassFile = config.sops.secrets.buildbot-nix-worker-password.path;
+  };
   systemd.services.buildbot-master = {
     environment = {
       PORT   = "1810";
@@ -23,12 +34,22 @@
       ];
     };
   };
+  users.users.buildbot-worker = {
+    description = "Buildbot Worker User.";
+    isSystemUser = true;
+    createHome = true;
+    home = "/var/lib/buildbot-worker";
+    group = "buildbot-worker";
+    useDefaultShell = true;
+  };
+  users.groups.buildbot-worker = {};
 
   sops.secrets = {
     github-token = {};
     github-webhook-secret = {};
     github-oauth-secret = {};
     github-workers = {};
+    buildbot-nix-worker-password.owner = "buildbot-worker";
   };
   services.postgresql = {
     ensureDatabases = ["buildbot"];
