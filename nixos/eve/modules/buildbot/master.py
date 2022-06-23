@@ -55,7 +55,7 @@ def build_config() -> dict[str, Any]:
         )
     )
 
-    factory.addStep(steps.ShellCommand(command=["nix", "flake", "check"]))
+    factory.addStep(steps.ShellCommand(command=["nix", "flake", "check", "--option", "allow-import-from-derivation", "true"]))
 
     workernames = [item["name"] for item in worker_config]
 
