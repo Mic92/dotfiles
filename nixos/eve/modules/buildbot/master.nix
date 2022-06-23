@@ -23,7 +23,7 @@
       PORT   = "1810";
       DB_URL = config.services.buildbot-master.dbUrl;
       GITHUB_OAUTH_ID = "d1b24258af1abc157934";
-      GITHUB_ADMINS = "Mic92";
+      GITHUB_ADMINS = "Mic92,mic92,Jörg Thalheim <joerg@thalheim.io>";
     };
     serviceConfig = {
       LoadCredential = [
@@ -66,8 +66,17 @@
   services.nginx.virtualHosts."buildbot.thalheim.io" = {
     forceSSL = true;
     useACMEHost = "thalheim.io";
-    locations."/".proxyPass = ''
-      http://127.0.0.1:1810
-    '';
+    locations."/".proxyPass = "http://127.0.0.1:1810/";
+    locations."/sse" = {
+      proxyPass = "http://127.0.0.1:1810/sse/";
+      # proxy buffering will prevent sse to work
+      extraConfig = "proxy_buffering off;";
+    };
+    locations."/ws" = {
+      proxyPass = "http://127.0.0.1:1810/ws";
+      proxyWebsockets = true;
+      # raise the proxy timeout for the websocket
+      extraConfig = "proxy_read_timeout 6000s;";
+    };
   };
 }

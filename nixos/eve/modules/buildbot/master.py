@@ -55,7 +55,7 @@ def build_config() -> dict[str, Any]:
         )
     )
 
-    factory.addStep(steps.ShellCommand(command=["false"]))
+    factory.addStep(steps.ShellCommand(command=["nix", "flake", "check"]))
 
     workernames = [item["name"] for item in worker_config]
 
@@ -68,7 +68,7 @@ def build_config() -> dict[str, Any]:
     github_admins = os.environ.get("GITHUB_ADMINS", "").split(",")
     authz_config = util.Authz(
         roleMatchers=[util.RolesFromUsername(roles=["admin"], usernames=github_admins)],
-        allowRules=[util.AnyEndpointMatcher(role="admin", defaultDeny=True)],
+        allowRules=[util.AnyEndpointMatcher(role="admin", defaultDeny=False)],
     )
     change_hook_dialects = {}
     change_hook_dialects["github"] = {
