@@ -23,7 +23,7 @@
       PORT   = "1810";
       DB_URL = config.services.buildbot-master.dbUrl;
       GITHUB_OAUTH_ID = "d1b24258af1abc157934";
-      GITHUB_ADMINS = "Mic92,mic92,Jörg Thalheim <joerg@thalheim.io>";
+      GITHUB_ADMINS = "Mic92";
     };
     serviceConfig = {
       LoadCredential = [
@@ -34,6 +34,7 @@
       ];
     };
   };
+  nix.settings.allowed-users = ["buildbot-worker"];
   users.users.buildbot-worker = {
     description = "Buildbot Worker User.";
     isSystemUser = true;
