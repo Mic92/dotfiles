@@ -26,23 +26,23 @@
   in {
     packages = {
       # nix build '.#kexec'
-      kexec = nixos-generators.nixosGenerate {
-        inherit pkgs;
-        modules = [
-          defaultModule
-          ./kexec.nix
-        ];
-        format = "kexec";
-      };
+      #kexec = nixos-generators.nixosGenerate {
+      #  inherit pkgs;
+      #  modules = [
+      #    defaultModule
+      #    ./kexec.nix
+      #  ];
+      #  format = "kexec";
+      #};
 
-      kexec-aarch64 = nixos-generators.nixosGenerate {
-        pkgs = nixpkgs.legacyPackages.aarch64-linux;
-        modules = [
-          defaultModule
-          ./kexec.nix
-        ];
-        format = "kexec";
-      };
+      #kexec-aarch64 = nixos-generators.nixosGenerate {
+      #  pkgs = nixpkgs.legacyPackages.aarch64-linux;
+      #  modules = [
+      #    defaultModule
+      #    ./kexec.nix
+      #  ];
+      #  format = "kexec";
+      #};
 
       sd-image-aarch64 = nixos-generators.nixosGenerate {
         pkgs = nixpkgs.legacyPackages.aarch64-linux;
@@ -94,10 +94,11 @@
       #kresd-podman = copyToPodman selfPkgs.kresd-image;
       #kresd-registry = selfPkgs.kresd-image.copyToRegistry;
 
-      #headscale-podman = copyToPodman selfPkgs.headscale-image;
-      #headscale-image = pkgs.callPackage ./nixos/images/headscale.nix {
-      #  inherit (containerPkgs) nix2container;
-      #};
+      headscale-registry = self'.packages.headscale-image.copyToRegistry;
+      headscale-podman = self'.packages.headscale-image.copyToPodman;
+      headscale-image = pkgs.callPackage ./headscale.nix {
+        inherit (containerPkgs) nix2container;
+      };
     };
   };
 }
