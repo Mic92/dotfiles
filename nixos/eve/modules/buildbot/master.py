@@ -28,7 +28,7 @@ class BuildTrigger(Trigger):
             kwargs["name"] = "trigger"
         self.jobs = jobs
         self.config = None
-        steps.trigger.Trigger.__init__(
+        Trigger.__init__(
             self,
             waitForFinish=True,
             schedulerNames=[scheduler],
