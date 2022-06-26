@@ -117,7 +117,7 @@ def nix_eval_config(worker_names: List[str]) -> util.BuilderConfig:
     )
 
     return util.BuilderConfig(
-        name="nix_eval", workernames=worker_names, factory=factory
+        name="nix-eval", workernames=worker_names, factory=factory
     )
 
 
@@ -138,7 +138,7 @@ def nix_build_config(worker_names: List[str]) -> util.BuilderConfig:
         )
     )
     return util.BuilderConfig(
-        name="nix_build",
+        name="nix-build",
         workernames=worker_names,
         properties=[],
         collapseRequests=False,
@@ -154,13 +154,13 @@ def build_config() -> dict[str, Any]:
     c["schedulers"] = [
         schedulers.AnyBranchScheduler(
             name="all",
-            builderNames=["nix_eval"],
+            builderNames=["nix-eval"],
         ),
         schedulers.Triggerable(
             name="nix-build",
             builderNames=["nix-build"],
         ),
-        schedulers.ForceScheduler(name="force", builderNames=["nix_eval"]),
+        schedulers.ForceScheduler(name="force", builderNames=["nix-eval"]),
     ]
 
     github_api_token = read_secret_file("github-token")
