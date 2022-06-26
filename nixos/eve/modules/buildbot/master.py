@@ -56,41 +56,6 @@ class BuildTrigger(Trigger):
             props.setProperty("drv_path", drv_path, "spawner")
             triggered_schedulers.append((sch, props))
         return triggered_schedulers
-        # for
-        # sch = self.schedulerNames[0]
-        # reason_excluded_env = self.config.global_env.keys()
-
-        # triggered_schedulers = []
-        # for env in self.config.matrix:
-        #    props_to_set = Properties()
-        #    props_to_set.setProperty("TRAVIS_PULL_REQUEST",
-        #                             self.getProperty("TRAVIS_PULL_REQUEST"),
-        #                             "inherit")
-        #    flat_env = {}
-        #    for k, v in env.items():
-        #        if k == "env":
-        #            props_to_set.update(v, ".travis.yml")
-        #            flat_env.update(v)
-        #        else:
-        #            props_to_set.setProperty(k, v, ".travis.yml")
-        #            flat_env[k] = v
-        #    tags = self.build.builder.config.tags
-        #    for tag in ["trunk", "try"]:
-        #        if tag in tags:
-        #            tags.remove(tag)
-        #    label_tags = sorted(
-        #        str(self.config.label_mapping.get(k, k)) + ':' +
-        #        str(self.config.label_mapping.get(v, v))
-        #        for k, v in flat_env.items() if k not in reason_excluded_env)
-        #    props_to_set.setProperty("virtual_builder_name", u" ".join(tags + label_tags),
-        #                             "spawner")
-        #    props_to_set.setProperty("virtual_builder_tags", tags + label_tags,
-        #                             "spawner")
-        #    props_to_set.setProperty("matrix_label", u"/".join(label_tags),
-        #                             "spawner")
-
-        #    triggered_schedulers.append((sch, props_to_set))
-        # return triggered_schedulers
 
 
 class GenerateStagesCommand(buildstep.ShellMixin, steps.BuildStep):
@@ -115,17 +80,9 @@ class GenerateStagesCommand(buildstep.ShellMixin, steps.BuildStep):
             for line in self.observer.getStdout().split("\n"):
                 if line != "":
                     jobs.append(json.loads(line))
-            # build_steps = []
-            # for job in jobs:
-            #    build_steps.append(
-            #        BuildTrigger(
-            #            name=job["attr"],
-            #            command=f"nix build --out-link 'result-{job['attr']}' -L '{job['drvPath']}'",
-            #        )
-            #    )
-            #self.build.addStepsAfterCurrentStep(
-            #    [BuildTrigger(scheduler="nix-build", name="nix-build", jobs=jobs)]
-            #)
+            self.build.addStepsAfterCurrentStep(
+                [BuildTrigger(scheduler="nix-build", name="nix-build", jobs=jobs)]
+            )
 
         return result
 
@@ -199,10 +156,10 @@ def build_config() -> dict[str, Any]:
             name="all",
             builderNames=["nix_eval"],
         ),
-        #schedulers.Triggerable(
-        #    name="nix-build",
-        #    builderNames=["nix-build"],
-        #),
+        schedulers.Triggerable(
+            name="nix-build",
+            builderNames=["nix-build"],
+        ),
         schedulers.ForceScheduler(name="force", builderNames=["nix_eval"]),
     ]
 
@@ -219,8 +176,7 @@ def build_config() -> dict[str, Any]:
 
     c["workers"] = [worker.Worker(item["name"], item["pass"]) for item in worker_config]
     worker_names = [item["name"] for item in worker_config]
-    #c["builders"] = [nix_eval_config(worker_names), nix_build_config(worker_names)]
-    c["builders"] = [nix_eval_config(worker_names)]
+    c["builders"] = [nix_eval_config(worker_names), nix_build_config(worker_names)]
 
     github_admins = os.environ.get("GITHUB_ADMINS", "").split(",")
 
