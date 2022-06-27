@@ -40,27 +40,28 @@
       extraModules ? [],
       system ? "x86_64-linux",
     }: (home-manager.lib.homeManagerConfiguration {
-      configuration = {...}: {
-        imports =
-          extraModules
-          ++ [
-            ./common.nix
+      modules = [
+        {
+          imports =
+            extraModules
+            ++ [
+              ./common.nix
+            ];
+          nixpkgs.config = import ./config.nix {
+            pkgs = nixpkgs;
+            nurFun = import nur;
+          };
+          nixpkgs.overlays = [
+            emacs-overlay.overlay
+            (self: super: {
+              doomEmacsRevision = doom-emacs.rev;
+            })
           ];
-        nixpkgs.config = import ./config.nix {
-          pkgs = nixpkgs;
-          nurFun = import nur;
-        };
-        nixpkgs.overlays = [
-          emacs-overlay.overlay
-          (self: super: {
-            doomEmacsRevision = doom-emacs.rev;
-          })
-        ];
-      };
-      inherit system;
+          home.username = "joerg";
+          home.homeDirectory = "/home/joerg";
+        }
+      ];
       pkgs = nixpkgs.legacyPackages.${system};
-      homeDirectory = "/home/joerg";
-      username = "joerg";
     });
   in {
     hmConfigurations = {
