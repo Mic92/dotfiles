@@ -169,6 +169,14 @@ def build_config() -> dict[str, Any]:
         reporters.GitHubStatusPush(
             token=github_api_token,
             context=Interpolate("buildbot/%(prop:buildername)s"),
+        ),
+        reporters.IRC(
+          host = "irc.r",
+          nick = "buildbot",
+          notify_events = [ 'finished', 'failure', 'success', 'exception', 'problem' ],
+          channels = [{"channel": "#xxx"}],
+          showBlameList = True,
+          authz={'force': True},
         )
     )
 
