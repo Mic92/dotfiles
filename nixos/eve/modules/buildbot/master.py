@@ -171,7 +171,7 @@ def build_config() -> dict[str, Any]:
         ),
         reporters.IRC(
           host = "irc.r",
-          nick = "buildbot",
+          nick = "buildbot|mic92",
           notify_events = [ 'finished', 'failure', 'success', 'exception', 'problem' ],
           channels = [{"channel": "#xxx"}],
           #showBlameList = True,
