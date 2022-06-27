@@ -165,10 +165,10 @@ def build_config() -> dict[str, Any]:
 
     github_api_token = read_secret_file("github-token")
     c["services"] = [
-        #reporters.GitHubStatusPush(
-        #    token=github_api_token,
-        #    context=Interpolate("buildbot/%(prop:buildername)s"),
-        #),
+        reporters.GitHubStatusPush(
+            token=github_api_token,
+            context=Interpolate("buildbot/%(prop:buildername)s"),
+        ),
         reporters.IRC(
           host = "irc.r",
           nick = "buildbot|mic92",
