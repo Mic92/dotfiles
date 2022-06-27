@@ -164,8 +164,7 @@ def build_config() -> dict[str, Any]:
     ]
 
     github_api_token = read_secret_file("github-token")
-    c["services"] = []
-    c["services"].append(
+    c["services"] = [
         reporters.GitHubStatusPush(
             token=github_api_token,
             context=Interpolate("buildbot/%(prop:buildername)s"),
@@ -175,10 +174,10 @@ def build_config() -> dict[str, Any]:
           nick = "buildbot",
           notify_events = [ 'finished', 'failure', 'success', 'exception', 'problem' ],
           channels = [{"channel": "#xxx"}],
-          showBlameList = True,
+          #showBlameList = True,
           authz={'force': True},
         )
-    )
+    ]
 
     worker_config = json.loads(read_secret_file("github-workers"))
 
