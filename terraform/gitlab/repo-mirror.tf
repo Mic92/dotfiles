@@ -14,11 +14,6 @@ resource "gitlab_project" "repos" {
   mirror_trigger_builds               = true
   mirror_overwrites_diverged_branches = true
   shared_runners_enabled              = false
-  ci_config_path = lookup({
-    "Mic92/dotfiles" : ".gitlab-ci.yml@Mic92/dotfiles",
-    }, each.key,
-    # sane default
-  "")
   visibility_level = "public"
 }
 
