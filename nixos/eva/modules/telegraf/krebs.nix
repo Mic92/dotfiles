@@ -134,7 +134,7 @@
       }
       {
         urls = [
-          "http://p.r/1pziljc"
+          "http://c.r/ok"
         ];
         response_string_match = "ok";
         tags.org = "krebs";
