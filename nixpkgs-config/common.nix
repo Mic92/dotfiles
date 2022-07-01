@@ -49,7 +49,7 @@
         direnv
         (nix-direnv.override {enableFlakes = true;})
         fzf
-        exa
+        lsd
         zoxide
         pinentry
         fd
