@@ -42,4 +42,5 @@
 
   system.stateVersion = "18.09";
   networking.dhcpcd.enable = true;
+  services.resolved.enable = false;
 }
