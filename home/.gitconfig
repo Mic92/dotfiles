@@ -4,14 +4,18 @@
   pager = delta
 [include]
   path = ~/.gitconfig.local
+[interactive]
+  singlekey = true
 [format]
   signoff = true
 [color]
   branch = true
   diff = true
   status = true
-[interactive]
-  diffFilter = delta --color-only
+[core]
+  pager = delta --color-only
+[push]
+  recurseSubmodules = on-demand
 [am]
   threeWay = true
 [user]
@@ -45,6 +49,7 @@
 [push]
   default = simple
 [rerere]
+  autoUpdate = true
   enabled = true
 [branch]
   autosetuprebase = always
@@ -53,6 +58,7 @@
   autostash = true
   twohead = ort
 [rebase]
+  stat = true
   autoStash = true
   autoSquash = true
 
@@ -94,5 +100,6 @@
   defaultBranch = main
 [credential]
   helper = store
-[commit]
-  gpgsign = true
+# sucks with lazygit
+#[commit]
+#  gpgsign = true
