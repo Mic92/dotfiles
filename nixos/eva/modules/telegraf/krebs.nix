@@ -19,7 +19,7 @@
         "hotdog"
         "yellow"
         "prism"
-        "puyak"
+        #"puyak"
         "ni"
       ]
       ++ [
@@ -41,14 +41,14 @@
     ];
 
     http_response = [
-      {
-        urls = ["http://puyak.r"];
-        headers.Host = "light.shack";
-        response_string_match = "shackspace";
-        tags.host = "puyak";
-        tags.org = "krebs";
-        interface = "tinc.retiolum";
-      }
+      #{
+      #  urls = ["http://puyak.r"];
+      #  headers.Host = "light.shack";
+      #  response_string_match = "shackspace";
+      #  tags.host = "puyak";
+      #  tags.org = "krebs";
+      #  interface = "tinc.retiolum";
+      #}
       {
         urls = ["http://yellow.r:9091/transmission/web/"];
         response_string_match = "Transmission Web";
