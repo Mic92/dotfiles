@@ -294,11 +294,11 @@ else
 fi
 alias df='df -hT'
 # File management
-if [[ -n ${commands[exa]} ]]; then
+if [[ -n ${commands[lsd]} ]]; then
   if [ -n "${commands[vivid]}" ]; then
-    export LS_COLORS="$(vivid generate molokai)"
+    export LS_COLORS="$(vivid generate dracula)"
   fi
-  alias ls="exa --classify --icons"
+  alias ls="lsd --classify --date=relative"
 elif [[ $OSTYPE == freebsd* ]] ||  [[ $OSTYPE == darwin* ]]; then
   alias ls='ls -G'
 else
@@ -338,7 +338,7 @@ ip() {
 }
 xalias objdump='objdump -M intel'
 alias wget='noglob wget'
-alias curl='noglob curl --proto-default https'
+alias curl='noglob curl --compressed --proto-default https'
 alias nix='noglob nix'
 alias nixos-rebuild='noglob nixos-rebuild'
 if [[ -n ${commands[hub]} ]]; then
