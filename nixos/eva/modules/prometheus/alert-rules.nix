@@ -101,8 +101,8 @@ in
         description = "status of ${name} is unknown: no data for a day";
       }))
     // (lib.genAttrs [
-        "znapzend-home"
-        "znapzend-share"
+        "syncoid-home"
+        "syncoid-share"
       ] (name: {
         condition = ''absent_over_time(task_last_run{name="${name}"}[10m])'';
         description = "status of ${name} is unknown: no data for 10 minutes";
