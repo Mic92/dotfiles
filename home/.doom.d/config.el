@@ -102,17 +102,10 @@
   (map! :localleader
         :map mu4e-headers-mode-map
         :desc "Move to spam" "s" #'mu4e-headers-mark-for-spam)
-
-  (add-to-list 'mu4e-bookmarks
-               (make-mu4e-bookmark
-                :name  "Big messages"
-                :query "size:2M..500M"
-                :key ?b))
-  (add-to-list 'mu4e-bookmarks
-               (make-mu4e-bookmark
-                :name "Unread messages without spam"
-                :query "flag:unread AND NOT flag:trashed AND NOT maildir:/thalheim.io/.Spam"
-                :key ?u)))
+  (add-to-list 'mu4e-bookmarks '(:name "Big messages" :query "size:2M..500M" :key ?b))
+  (add-to-list 'mu4e-bookmarks '(:name "Unread messages without spam"
+                                 :query "flag:unread AND NOT flag:trashed AND NOT maildir:/thalheim.io/.Spam"
+                                 :key ?u)))
 
 (after! 'sh-script
   (lambda ()
