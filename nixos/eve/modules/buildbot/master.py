@@ -173,7 +173,9 @@ def nix_eval_config(worker_names: List[str]) -> util.BuilderConfig:
     )
 
 
-def nix_build_config(worker_names: List[str], cachix_token: Optional[str] = None) -> util.BuilderConfig:
+def nix_build_config(
+    worker_names: List[str], enable_cachix: bool
+) -> util.BuilderConfig:
     factory = util.BuildFactory()
     factory.addStep(
         NixBuildCommand(
@@ -189,16 +191,17 @@ def nix_build_config(worker_names: List[str], cachix_token: Optional[str] = None
             ],
         )
     )
-    if cachix_token is not None:
+    if enable_cachix:
         factory.addStep(
-            command=[
-                "sh",
-                "-c",
-                "CACHIX_TOKEN=$1 cachix upload $2",
-                util.Interpolate("%(secret:CACHIX_TOKEN)"),
-                util.Property("drv_path"),
-            ],
-            doStepIf=Interpolate("%(secret:CACHIX_TOKEN)") != ''
+            steps.ShellCommand(
+                env = dict(CACHIX_SIGNING_KEY=util.Secret("cachix-token")),
+                command=[
+                    "cachix",
+                    "push",
+                    util.Secret("cachix-name"),
+                    util.Interpolate("result-%(prop:attr)s"),
+                ]
+            )
         )
     return util.BuilderConfig(
         name="nix-build",
@@ -371,13 +374,14 @@ def build_config() -> dict[str, Any]:
 
     worker_config = json.loads(read_secret_file("github-workers"))
 
-    # credentials = os.environ.get("CREDENTIALS_DIRECTORY")
-    # assert not credentials, "No CREDENTIALS_DIRECTORY has been provided"
+    credentials = os.environ.get("CREDENTIALS_DIRECTORY", ".")
+    enable_cachix = os.path.isfile(os.path.join(credentials, "cachix-token"))
 
-    # c['secretsProviders'] = [secrets.SecretInAFile(dirname=credentials)]
+    systemd_secrets = secrets.SecretInAFile(dirname=credentials)
+    c["secretsProviders"] = [systemd_secrets]
     c["workers"] = [worker.Worker(item["name"], item["pass"]) for item in worker_config]
     worker_names = [item["name"] for item in worker_config]
-    c["builders"] = [nix_eval_config(worker_names), nix_build_config(worker_names)]
+    c["builders"] = [nix_eval_config(worker_names), nix_build_config(worker_names, enable_cachix)]
 
     github_admins = os.environ.get("GITHUB_ADMINS", "").split(",")
 
