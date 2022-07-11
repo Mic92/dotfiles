@@ -54,7 +54,6 @@ in {
     networking.dhcpcd.enable = false;
     services.resolved.enable = false;
     networking.nameservers = ["127.0.0.1"];
-
     networking.usePredictableInterfaceNames = false;
 
     systemd.network = {
@@ -116,5 +115,8 @@ in {
       '';
     };
     boot.initrd.kernelModules = ["e1000e"];
+
+    # often hangs
+    systemd.services.systemd-networkd-wait-online.enable = false;
   };
 }
