@@ -11,17 +11,7 @@
   imports = [
     ./worker.nix
   ];
-  #services.buildbot-worker = {
-  #  enable = true;
-  #  workerUser = "eve";
-  #  adminMessage = "Mic92";
-  #  home = "/var/lib/buildbot-worker";
-  #  hostMessage = "A mighty Hetzner server";
-  #  user = "buildbot-worker";
-  #  group = "buildbot-worker";
-  #  packages = [ pkgs.git pkgs.nix ];
-  #  workerPassFile = config.sops.secrets.buildbot-nix-worker-password.path;
-  #};
+
   systemd.services.buildbot-master = {
     environment = {
       PORT   = "1810";
