@@ -4,7 +4,7 @@ import os
 import sys
 import json
 
-from buildbot.plugins import worker, util, steps, schedulers, reporters
+from buildbot.plugins import worker, util, steps, schedulers, reporters, secrets
 from buildbot.steps.trigger import Trigger
 from buildbot.process import buildstep, logobserver
 from buildbot.process.properties import Properties, Interpolate
@@ -47,18 +47,20 @@ class BuildTrigger(Trigger):
         sch = self.schedulerNames[0]
         triggered_schedulers = []
         for job in self.jobs:
-            attr = job["attr"]
-            drv_path = job["drvPath"]
+            attr = job.get("attr")
+            drv_path = job.get("drvPath")
+            error = job.get("error")
             props = Properties()
             props.setProperty("virtual_builder_name", attr, "spawner")
             props.setProperty("virtual_builder_tags", "", "spawner")
             props.setProperty("attr", attr, "spawner")
             props.setProperty("drv_path", drv_path, "spawner")
+            props.setProperty("error", error, "spawner")
             triggered_schedulers.append((sch, props))
         return triggered_schedulers
 
 
-class GenerateStagesCommand(buildstep.ShellMixin, steps.BuildStep):
+class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
     def __init__(self, **kwargs):
         kwargs = self.setupShellMixin(kwargs)
         super().__init__(**kwargs)
@@ -68,6 +70,43 @@ class GenerateStagesCommand(buildstep.ShellMixin, steps.BuildStep):
     @defer.inlineCallbacks
     def run(self) -> Generator[Any, object, Any]:
         # run nix-instanstiate to generate the dict of stages
+        cmd = yield self.makeRemoteShellCommand()
+        yield self.runCommand(cmd)
+
+        # if the command passes extract the list of stages
+        result = cmd.results()
+        if result == util.SUCCESS:
+            # create a ShellCommand for each stage and add them to the build
+            jobs = []
+
+            for line in self.observer.getStdout().split("\n"):
+                if line != "":
+                    jobs.append(json.loads(line))
+            self.build.addStepsAfterCurrentStep(
+                [BuildTrigger(scheduler="nix-build", name="nix-build", jobs=jobs)]
+            )
+
+        return result
+
+class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
+    def __init__(self, **kwargs):
+        kwargs = self.setupShellMixin(kwargs)
+        super().__init__(**kwargs)
+        self.observer = logobserver.BufferLogObserver()
+        self.addLogObserver("stdio", self.observer)
+
+    @defer.inlineCallbacks
+    def run(self) -> Generator[Any, object, Any]:
+        error = self.getProperty("error")
+        if error is not None:
+            attr = self.getProperty("attr")
+            # show eval error
+            self.build.results = util.FAILURE
+            log = yield self.addLog('nix-error')
+            log.addStderr(f"{attr} failed to evaluate:\n{error}")
+            return util.FAILURE
+
+        # run `nix build`
         cmd = yield self.makeRemoteShellCommand()
         yield self.runCommand(cmd)
 
@@ -97,7 +136,7 @@ def nix_eval_config(worker_names: List[str]) -> util.BuilderConfig:
     )
 
     factory.addStep(
-        GenerateStagesCommand(
+       NixEvalCommand(
             env={},
             name="Eval flake",
             command=[
@@ -124,7 +163,7 @@ def nix_eval_config(worker_names: List[str]) -> util.BuilderConfig:
 def nix_build_config(worker_names: List[str]) -> util.BuilderConfig:
     factory = util.BuildFactory()
     factory.addStep(
-        steps.ShellCommand(
+        NixBuildCommand(
             env={},
             name="Build flake attr",
             command=[
@@ -181,6 +220,10 @@ def build_config() -> dict[str, Any]:
 
     worker_config = json.loads(read_secret_file("github-workers"))
 
+    #credentials = os.environ.get("CREDENTIALS_DIRECTORY")
+    #assert not credentials, "No CREDENTIALS_DIRECTORY has been provided"
+
+    #c['secretsProviders'] = [secrets.SecretInAFile(dirname=credentials)]
     c["workers"] = [worker.Worker(item["name"], item["pass"]) for item in worker_config]
     worker_names = [item["name"] for item in worker_config]
     c["builders"] = [nix_eval_config(worker_names), nix_build_config(worker_names)]
