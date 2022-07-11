@@ -300,6 +300,7 @@ DEFAULT_MSG_TEMPLATE = """
 {{status_detected}} on builder {{ buildername }} ({{ build_url }})
 """
 
+
 class IrcNotifier(ReporterBase):
     def _generators(self) -> List[BuildStatusGenerator]:
         formatter = MessageFormatter(
@@ -320,78 +321,8 @@ class IrcNotifier(ReporterBase):
         for r in reports:
             subject = r["subject"]
             body = r["body"]
-            msgs.append(f"{subject} {body}")
+            msgs.append(f"s: {subject} b: {body}")
         irc_send(self.url, notifications=msgs)
-
-    # @defer.inlineCallbacks
-    # def sendMessage(self, reports):
-    #    # Only use OAuth if basic auth has not been specified
-    #    if not self.auth:
-    #        request = yield self.oauthhttp.post("", data=_GET_TOKEN_DATA)
-    #        if request.code != 200:
-    #            content = yield request.content()
-    #            log.msg(f"{request.code}: unable to authenticate to Bitbucket {content}")
-    #            return
-    #        token = (yield request.json())['access_token']
-    #        self._http.updateHeaders({'Authorization': f'Bearer {token}'})
-
-    #    build = reports[0]['builds'][0]
-    #    if build['complete']:
-    #        status = BITBUCKET_SUCCESSFUL if build['results'] == SUCCESS else BITBUCKET_FAILED
-    #    else:
-    #        status = BITBUCKET_INPROGRESS
-
-    #    props = Properties.fromDict(build['properties'])
-    #    props.master = self.master
-
-    #    body = {
-    #        'state': status,
-    #        'key': (yield props.render(self.status_key)),
-    #        'name': (yield props.render(self.status_name)),
-    #        'description': reports[0]['subject'],
-    #        'url': build['url']
-    #    }
-
-    #    for sourcestamp in build['buildset']['sourcestamps']:
-    #        if not sourcestamp['repository']:
-    #            log.msg(f"Empty repository URL for Bitbucket status {body}")
-    #            continue
-    #        owner, repo = self.get_owner_and_repo(sourcestamp['repository'])
-
-    #        endpoint = (owner, repo, 'commit', sourcestamp['revision'], 'statuses', 'build')
-    #        bitbucket_uri = f"/{'/'.join(endpoint)}"
-
-    #        if self.debug:
-    #            log.msg(f"Bitbucket status {bitbucket_uri} {body}")
-
-    #        response = yield self._http.post(bitbucket_uri, json=body)
-    #        if response.code not in (200, 201):
-    #            content = yield response.content()
-    #            log.msg(f"{response.code}: unable to upload Bitbucket status {content}")
-
-    # def setServiceParent(self, parent) -> None:
-    #    StatusReceiverMultiService.setServiceParent(self, parent)
-    #    self.master_status = self.parent
-    #    self.master_status.subscribe(self)
-    #    self.master = self.master_status.master
-
-    # def disownServiceParent(self) -> None:
-    #    self.master_status.unsubscribe(self)
-    #    self.master_status = None
-    #    for w in self.watched:
-    #        w.unsubscribe(self)
-    #    return StatusReceiverMultiService.disownServiceParent(self)
-
-    # def builderAdded(self, name, builder) -> "IrcPush":
-    #    return self  # subscribe to this builder
-
-    # def buildFinished(self, builderName: str, build, result) -> None:
-    #    assert self.master_status is not None
-    #    url = self.master_status.getURLForThing(build)
-
-    #    message = "%s - %s - <%s>" % \
-    #        (builderName, Results[result].upper(), url)
-    #    irc_send(self.url,  notifications=[message])
 
 
 def build_config() -> dict[str, Any]:
@@ -416,16 +347,7 @@ def build_config() -> dict[str, Any]:
             token=github_api_token,
             context=Interpolate("buildbot/%(prop:virtual_builder_name)s"),
         ),
-        IrcNotifier("irc://buildbot@irc.r:6667/#xxx")
-        #reporters.IRC(
-        #    host="irc.r",
-        #    nick="buildbot|mic92",
-        #    notify_events=["finished", "failure", "success", "exception", "problem"],
-        #    noticeOnChannel=True,
-        #    channels=[{"channel": "#xxx"}],
-        #    # showBlameList = True,
-        #    authz={"force": True},
-        #),
+        IrcNotifier("irc://buildbot@irc.r:6667/#spam"),
     ]
 
     worker_config = json.loads(read_secret_file("github-workers"))
