@@ -156,7 +156,10 @@ def nix_eval_config(worker_names: List[str]) -> util.BuilderConfig:
     )
 
     return util.BuilderConfig(
-        name="nix-eval", workernames=worker_names, factory=factory
+        name="nix-eval",
+        workernames=worker_names,
+        factory=factory,
+        properties=dict(virtual_builder_name="nix-eval"),
     )
 
 
@@ -206,7 +209,7 @@ def build_config() -> dict[str, Any]:
     c["services"] = [
         reporters.GitHubStatusPush(
             token=github_api_token,
-            context=Interpolate("buildbot/%(prop:buildername)s"),
+            context=Interpolate("buildbot/%(prop:virtual_builder_name)s"),
         ),
         reporters.IRC(
           host = "irc.r",
