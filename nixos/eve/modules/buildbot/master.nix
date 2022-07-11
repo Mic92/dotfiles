@@ -8,10 +8,6 @@
     pythonPackages = ps: [ ps.requests ps.treq ps.psycopg2 ];
   };
 
-  imports = [
-    ./worker.nix
-  ];
-
   systemd.services.buildbot-master = {
     environment = {
       PORT   = "1810";

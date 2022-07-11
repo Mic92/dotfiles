@@ -22,6 +22,7 @@
     ./modules/adminer.nix
     ./modules/bitwarden.nix
     ./modules/buildbot/master.nix
+    ./modules/buildbot/worker.nix
     ./modules/borgbackup
     ./modules/dendrite.nix
     ./modules/dovecot.nix
