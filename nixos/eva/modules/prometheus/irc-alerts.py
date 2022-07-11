@@ -42,7 +42,7 @@ def _irc_send(
 
     def _pong(ping: str):
         if ping.startswith("PING"):
-            sock.send(ping.replace("PONG"))
+            sock.send(ping.replace("PING", "PONG").encode("ascii"))
 
     recv_file = sock.makefile(mode="r")
 
@@ -61,7 +61,7 @@ def _irc_send(
     if sasl_password:
         _send("CAP REQ :sasl")
         _send("AUTHENTICATE PLAIN")
-        auth = base64.encodebytes(f"{nick}\0{nick}\0{sasl_password}".encode("utf8"))
+        auth = base64.encodebytes(f"{nick}\0{nick}\0{sasl_password}".encode("utf-8"))
         _send(f"AUTHENTICATE {auth.decode('ascii')}")
         _send("CAP END")
     _send(f"JOIN :{channel}")
