@@ -6,12 +6,20 @@ import json
 
 from buildbot.plugins import worker, util, steps, schedulers, reporters, secrets
 from buildbot.steps.trigger import Trigger
+from buildbot.reporters.base import ReporterBase
 from buildbot.process import buildstep, logobserver
 from buildbot.process.properties import Properties, Interpolate
-from typing import Generator
+from buildbot.reporters.generators.build import BuildStatusGenerator
+from buildbot.reporters.message import MessageFormatter
+from typing import Generator, Optional, List
 from pathlib import Path
 from typing import Any, Dict, List
 from twisted.internet import defer
+import ssl
+import socket
+import base64
+import re
+from urllib.parse import urlparse
 
 
 def read_secret_file(secret_name: str) -> str:
@@ -88,6 +96,7 @@ class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
 
         return result
 
+
 class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
     def __init__(self, **kwargs):
         kwargs = self.setupShellMixin(kwargs)
@@ -102,7 +111,7 @@ class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
             attr = self.getProperty("attr")
             # show eval error
             self.build.results = util.FAILURE
-            log = yield self.addLog('nix-error')
+            log = yield self.addLog("nix-error")
             log.addStderr(f"{attr} failed to evaluate:\n{error}")
             return util.FAILURE
 
@@ -136,7 +145,7 @@ def nix_eval_config(worker_names: List[str]) -> util.BuilderConfig:
     )
 
     factory.addStep(
-       NixEvalCommand(
+        NixEvalCommand(
             env={},
             name="Eval flake",
             command=[
@@ -189,6 +198,202 @@ def nix_build_config(worker_names: List[str]) -> util.BuilderConfig:
     )
 
 
+DEBUG = False
+
+
+def _irc_send(
+    server: str,
+    nick: str,
+    channel: str,
+    sasl_password: Optional[str] = None,
+    server_password: Optional[str] = None,
+    tls: bool = True,
+    port: int = 6697,
+    messages: List[str] = [],
+) -> None:
+    if not messages:
+        return
+
+    # don't give a shit about legacy ip
+    sock = socket.socket(family=socket.AF_INET6)
+    if tls:
+        sock = ssl.wrap_socket(
+            sock, cert_reqs=ssl.CERT_NONE, ssl_version=ssl.PROTOCOL_TLSv1_2
+        )
+
+    def _send(command: str) -> int:
+        if DEBUG:
+            print(command)
+        return sock.send((f"{command}\r\n").encode())
+
+    def _pong(ping: str):
+        if ping.startswith("PING"):
+            sock.send(ping.replace("PING", "PONG").encode("ascii"))
+
+    recv_file = sock.makefile(mode="r")
+
+    print(f"connect {server}:{port}")
+    sock.connect((server, port))
+    if server_password:
+        _send(f"PASS {server_password}")
+    _send(f"USER {nick} 0 * :{nick}")
+    _send(f"NICK {nick}")
+    for line in recv_file.readline():
+        if re.match(r"^:[^ ]* (MODE|221|376|422) ", line):
+            break
+        else:
+            _pong(line)
+
+    if sasl_password:
+        _send("CAP REQ :sasl")
+        _send("AUTHENTICATE PLAIN")
+        auth = base64.encodebytes(f"{nick}\0{nick}\0{sasl_password}".encode("ascii"))
+        _send(f"AUTHENTICATE {auth.decode('ascii')}")
+        _send("CAP END")
+    _send(f"JOIN :{channel}")
+
+    for m in messages:
+        _send(f"PRIVMSG {channel} :{m}")
+
+    _send("INFO")
+    for line in recv_file:
+        if DEBUG:
+            print(line, end="")
+        # Assume INFO reply means we are done
+        if "End of /INFO" in line:
+            break
+        else:
+            _pong(line)
+
+    sock.send(b"QUIT")
+    print("disconnect")
+    sock.close()
+
+
+def irc_send(
+    url: str, notifications: List[str], password: Optional[str] = None
+) -> None:
+    parsed = urlparse(f"{url}")
+    username = parsed.username or "prometheus"
+    server = parsed.hostname or "chat.freenode.net"
+    if parsed.fragment != "":
+        channel = f"#{parsed.fragment}"
+    else:
+        channel = "#krebs-announce"
+    port = parsed.port or 6697
+    if not password:
+        password = parsed.password
+    if len(notifications) == 0:
+        return
+    _irc_send(
+        server=server,
+        nick=username,
+        sasl_password=password,
+        channel=channel,
+        port=port,
+        messages=notifications,
+        tls=parsed.scheme == "irc+tls",
+    )
+
+
+DEFAULT_MSG_TEMPLATE = """
+{{status_detected}} on builder {{ buildername }} ({{ build_url }})
+"""
+
+class IrcNotifier(ReporterBase):
+    def _generators(self) -> List[BuildStatusGenerator]:
+        formatter = MessageFormatter(
+            template_type="plain", template=DEFAULT_MSG_TEMPLATE
+        )
+        return [BuildStatusGenerator(message_formatter=formatter)]
+
+    def checkConfig(self, url: str, generators=None):
+        super().checkConfig(generators=self._generators())
+
+    @defer.inlineCallbacks
+    def reconfigService(self, url: str, generators=None) -> Generator[Any, object, Any]:
+        self.url = url
+        yield super().reconfigService(generators=self._generators())
+
+    def sendMessage(self, reports: list):
+        msgs = []
+        for r in reports:
+            subject = r["subject"]
+            body = r["body"]
+            msgs.append(f"{subject} {body}")
+        irc_send(self.url, notifications=msgs)
+
+    # @defer.inlineCallbacks
+    # def sendMessage(self, reports):
+    #    # Only use OAuth if basic auth has not been specified
+    #    if not self.auth:
+    #        request = yield self.oauthhttp.post("", data=_GET_TOKEN_DATA)
+    #        if request.code != 200:
+    #            content = yield request.content()
+    #            log.msg(f"{request.code}: unable to authenticate to Bitbucket {content}")
+    #            return
+    #        token = (yield request.json())['access_token']
+    #        self._http.updateHeaders({'Authorization': f'Bearer {token}'})
+
+    #    build = reports[0]['builds'][0]
+    #    if build['complete']:
+    #        status = BITBUCKET_SUCCESSFUL if build['results'] == SUCCESS else BITBUCKET_FAILED
+    #    else:
+    #        status = BITBUCKET_INPROGRESS
+
+    #    props = Properties.fromDict(build['properties'])
+    #    props.master = self.master
+
+    #    body = {
+    #        'state': status,
+    #        'key': (yield props.render(self.status_key)),
+    #        'name': (yield props.render(self.status_name)),
+    #        'description': reports[0]['subject'],
+    #        'url': build['url']
+    #    }
+
+    #    for sourcestamp in build['buildset']['sourcestamps']:
+    #        if not sourcestamp['repository']:
+    #            log.msg(f"Empty repository URL for Bitbucket status {body}")
+    #            continue
+    #        owner, repo = self.get_owner_and_repo(sourcestamp['repository'])
+
+    #        endpoint = (owner, repo, 'commit', sourcestamp['revision'], 'statuses', 'build')
+    #        bitbucket_uri = f"/{'/'.join(endpoint)}"
+
+    #        if self.debug:
+    #            log.msg(f"Bitbucket status {bitbucket_uri} {body}")
+
+    #        response = yield self._http.post(bitbucket_uri, json=body)
+    #        if response.code not in (200, 201):
+    #            content = yield response.content()
+    #            log.msg(f"{response.code}: unable to upload Bitbucket status {content}")
+
+    # def setServiceParent(self, parent) -> None:
+    #    StatusReceiverMultiService.setServiceParent(self, parent)
+    #    self.master_status = self.parent
+    #    self.master_status.subscribe(self)
+    #    self.master = self.master_status.master
+
+    # def disownServiceParent(self) -> None:
+    #    self.master_status.unsubscribe(self)
+    #    self.master_status = None
+    #    for w in self.watched:
+    #        w.unsubscribe(self)
+    #    return StatusReceiverMultiService.disownServiceParent(self)
+
+    # def builderAdded(self, name, builder) -> "IrcPush":
+    #    return self  # subscribe to this builder
+
+    # def buildFinished(self, builderName: str, build, result) -> None:
+    #    assert self.master_status is not None
+    #    url = self.master_status.getURLForThing(build)
+
+    #    message = "%s - %s - <%s>" % \
+    #        (builderName, Results[result].upper(), url)
+    #    irc_send(self.url,  notifications=[message])
+
+
 def build_config() -> dict[str, Any]:
     c = {}
     c["buildbotNetUsageData"] = None
@@ -211,22 +416,24 @@ def build_config() -> dict[str, Any]:
             token=github_api_token,
             context=Interpolate("buildbot/%(prop:virtual_builder_name)s"),
         ),
-        reporters.IRC(
-          host = "irc.r",
-          nick = "buildbot|mic92",
-          notify_events = [ 'finished', 'failure', 'success', 'exception', 'problem' ],
-          channels = [{"channel": "#xxx"}],
-          #showBlameList = True,
-          authz={'force': True},
-        )
+        IrcNotifier("irc://buildbot@irc.r:6667/#xxx")
+        #reporters.IRC(
+        #    host="irc.r",
+        #    nick="buildbot|mic92",
+        #    notify_events=["finished", "failure", "success", "exception", "problem"],
+        #    noticeOnChannel=True,
+        #    channels=[{"channel": "#xxx"}],
+        #    # showBlameList = True,
+        #    authz={"force": True},
+        #),
     ]
 
     worker_config = json.loads(read_secret_file("github-workers"))
 
-    #credentials = os.environ.get("CREDENTIALS_DIRECTORY")
-    #assert not credentials, "No CREDENTIALS_DIRECTORY has been provided"
+    # credentials = os.environ.get("CREDENTIALS_DIRECTORY")
+    # assert not credentials, "No CREDENTIALS_DIRECTORY has been provided"
 
-    #c['secretsProviders'] = [secrets.SecretInAFile(dirname=credentials)]
+    # c['secretsProviders'] = [secrets.SecretInAFile(dirname=credentials)]
     c["workers"] = [worker.Worker(item["name"], item["pass"]) for item in worker_config]
     worker_names = [item["name"] for item in worker_config]
     c["builders"] = [nix_eval_config(worker_names), nix_build_config(worker_names)]
