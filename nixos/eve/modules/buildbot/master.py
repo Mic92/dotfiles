@@ -296,16 +296,19 @@ def irc_send(
     )
 
 
-DEFAULT_MSG_TEMPLATE = """
-{{status_detected}} on builder {{ buildername }} ({{ build_url }})
-"""
+subject_template = '''\
+{{ '☠' if result_names[results] == 'failure' else '☺' if result_names[results] == 'success' else '☝' }} \
+Buildbot ({{ buildbot_title }}): {{ build['properties'].get('project', ['whole buildset'])[0] if is_buildset else buildername }} \
+- \
+{{ build['state_string'] }} \
+{{ '(%s)' % (build['properties']['branch'][0] if (build['properties']['branch'] and build['properties']['branch'][0]) else build['properties'].get('got_revision', ['(unknown revision)'])[0]) }} \
+({{ buildbot_url }})
+'''  # # noqa pylint: disable=line-too-long
 
 
 class IrcNotifier(ReporterBase):
     def _generators(self) -> List[BuildStatusGenerator]:
-        formatter = MessageFormatter(
-            template_type="plain", template=DEFAULT_MSG_TEMPLATE
-        )
+        formatter = MessageFormatter(template_type="plain", subject=subject_template)
         return [BuildStatusGenerator(message_formatter=formatter)]
 
     def checkConfig(self, url: str, generators=None):
@@ -317,11 +320,7 @@ class IrcNotifier(ReporterBase):
         yield super().reconfigService(generators=self._generators())
 
     def sendMessage(self, reports: list):
-        msgs = []
-        for r in reports:
-            subject = r["subject"]
-            body = r["body"]
-            msgs.append(f"s: {subject} b: {body}")
+        msgs = [r["subject"] for r in reports]
         irc_send(self.url, notifications=msgs)
 
 
