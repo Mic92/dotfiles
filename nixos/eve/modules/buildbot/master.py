@@ -302,7 +302,7 @@ Buildbot ({{ buildbot_title }}): {{ build['properties'].get('project', ['whole b
 - \
 {{ build['state_string'] }} \
 {{ '(%s)' % (build['properties']['branch'][0] if (build['properties']['branch'] and build['properties']['branch'][0]) else build['properties'].get('got_revision', ['(unknown revision)'])[0]) }} \
-({{ buildbot_url }})
+({{ build_url }})
 '''  # # noqa pylint: disable=line-too-long
 
 
