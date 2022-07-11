@@ -3,6 +3,7 @@
 import os
 import sys
 import json
+import threading
 
 from buildbot.plugins import worker, util, steps, schedulers, reporters, secrets
 from buildbot.steps.trigger import Trigger
@@ -172,7 +173,7 @@ def nix_eval_config(worker_names: List[str]) -> util.BuilderConfig:
     )
 
 
-def nix_build_config(worker_names: List[str]) -> util.BuilderConfig:
+def nix_build_config(worker_names: List[str], cachix_token: Optional[str] = None) -> util.BuilderConfig:
     factory = util.BuildFactory()
     factory.addStep(
         NixBuildCommand(
@@ -188,6 +189,17 @@ def nix_build_config(worker_names: List[str]) -> util.BuilderConfig:
             ],
         )
     )
+    if cachix_token is not None:
+        factory.addStep(
+            command=[
+                "sh",
+                "-c",
+                "CACHIX_TOKEN=$1 cachix upload $2",
+                util.Interpolate("%(secret:CACHIX_TOKEN)"),
+                util.Property("drv_path"),
+            ],
+            doStepIf=Interpolate("%(secret:CACHIX_TOKEN)") != ''
+        )
     return util.BuilderConfig(
         name="nix-build",
         workernames=worker_names,
@@ -285,42 +297,50 @@ def irc_send(
         password = parsed.password
     if len(notifications) == 0:
         return
-    _irc_send(
-        server=server,
-        nick=username,
-        sasl_password=password,
-        channel=channel,
-        port=port,
-        messages=notifications,
-        tls=parsed.scheme == "irc+tls",
+    # put this in a thread to not block buildbot
+    t = threading.Thread(
+        target=_irc_send,
+        kwargs=dict(
+            server=server,
+            nick=username,
+            sasl_password=password,
+            channel=channel,
+            port=port,
+            messages=notifications,
+            tls=parsed.scheme == "irc+tls",
+        ),
     )
+    t.start()
 
 
-subject_template = '''\
+subject_template = """\
 {{ '☠' if result_names[results] == 'failure' else '☺' if result_names[results] == 'success' else '☝' }} \
-Buildbot ({{ buildbot_title }}): {{ build['properties'].get('project', ['whole buildset'])[0] if is_buildset else buildername }} \
+{{ build['properties'].get('project', ['whole buildset'])[0] if is_buildset else buildername }} \
 - \
 {{ build['state_string'] }} \
 {{ '(%s)' % (build['properties']['branch'][0] if (build['properties']['branch'] and build['properties']['branch'][0]) else build['properties'].get('got_revision', ['(unknown revision)'])[0]) }} \
 ({{ build_url }})
-'''  # # noqa pylint: disable=line-too-long
+"""  # # noqa pylint: disable=line-too-long
 
 
-class IrcNotifier(ReporterBase):
+class NotifyFailedBuilds(ReporterBase):
     def _generators(self) -> List[BuildStatusGenerator]:
         formatter = MessageFormatter(template_type="plain", subject=subject_template)
         return [BuildStatusGenerator(message_formatter=formatter)]
 
-    def checkConfig(self, url: str, generators=None):
+    def checkConfig(self, url: str):
         super().checkConfig(generators=self._generators())
 
     @defer.inlineCallbacks
-    def reconfigService(self, url: str, generators=None) -> Generator[Any, object, Any]:
+    def reconfigService(self, url: str) -> Generator[Any, object, Any]:
         self.url = url
         yield super().reconfigService(generators=self._generators())
 
     def sendMessage(self, reports: list):
-        msgs = [r["subject"] for r in reports]
+        msgs = []
+        for r in reports:
+            if r["builds"][0]["state_string"] != "build successful":
+                msgs.append(r["subject"])
         irc_send(self.url, notifications=msgs)
 
 
@@ -346,7 +366,7 @@ def build_config() -> dict[str, Any]:
             token=github_api_token,
             context=Interpolate("buildbot/%(prop:virtual_builder_name)s"),
         ),
-        IrcNotifier("irc://buildbot@irc.r:6667/#spam"),
+        NotifyFailedBuilds("irc://buildbot|mic92@irc.r:6667/#spam"),
     ]
 
     worker_config = json.loads(read_secret_file("github-workers"))
