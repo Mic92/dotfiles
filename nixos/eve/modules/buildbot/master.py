@@ -59,11 +59,13 @@ class BuildTrigger(Trigger):
             attr = job.get("attr")
             drv_path = job.get("drvPath")
             error = job.get("error")
+            out_path = job.get("outputs", {}).get("out")
             props = Properties()
             props.setProperty("virtual_builder_name", attr, "spawner")
             props.setProperty("virtual_builder_tags", "", "spawner")
             props.setProperty("attr", attr, "spawner")
             props.setProperty("drv_path", drv_path, "spawner")
+            props.setProperty("out_path", out_path, "spawner")
             props.setProperty("error", error, "spawner")
             triggered_schedulers.append((sch, props))
         return triggered_schedulers
@@ -136,6 +138,25 @@ class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
         return result
 
 
+class UpdateBuildOutput(steps.BuildStep):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @defer.inlineCallbacks
+    def run(self) -> Generator[Any, object, Any]:
+        properties = self.build.getProperties()
+        props = {}
+        for key, value, _ in properties.asList():
+            props[key] = value
+        attr = os.path.basename(props["attr"])
+        out_path = props["out_path"]
+        p = Path("/var/lib/buildbot-worker/outputs/")
+        os.makedirs(p, exist_ok=True)
+        with open(p / attr, "w") as f:
+            f.write(out_path)
+        return util.SUCCESS
+
+
 def nix_eval_config(worker_names: List[str]) -> util.BuilderConfig:
     factory = util.BuildFactory()
     # check out the source
@@ -194,15 +215,16 @@ def nix_build_config(
     if enable_cachix:
         factory.addStep(
             steps.ShellCommand(
-                env = dict(CACHIX_SIGNING_KEY=util.Secret("cachix-token")),
+                env=dict(CACHIX_SIGNING_KEY=util.Secret("cachix-token")),
                 command=[
                     "cachix",
                     "push",
                     util.Secret("cachix-name"),
                     util.Interpolate("result-%(prop:attr)s"),
-                ]
+                ],
             )
         )
+    factory.addStep(UpdateBuildOutput())
     return util.BuilderConfig(
         name="nix-build",
         workernames=worker_names,
@@ -381,7 +403,10 @@ def build_config() -> dict[str, Any]:
     c["secretsProviders"] = [systemd_secrets]
     c["workers"] = [worker.Worker(item["name"], item["pass"]) for item in worker_config]
     worker_names = [item["name"] for item in worker_config]
-    c["builders"] = [nix_eval_config(worker_names), nix_build_config(worker_names, enable_cachix)]
+    c["builders"] = [
+        nix_eval_config(worker_names),
+        nix_build_config(worker_names, enable_cachix),
+    ]
 
     github_admins = os.environ.get("GITHUB_ADMINS", "").split(",")
 
