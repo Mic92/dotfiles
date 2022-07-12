@@ -142,7 +142,6 @@ class UpdateBuildOutput(steps.BuildStep):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-    @defer.inlineCallbacks
     def run(self) -> Generator[Any, object, Any]:
         properties = self.build.getProperties()
         props = {}
@@ -150,7 +149,8 @@ class UpdateBuildOutput(steps.BuildStep):
             props[key] = value
         attr = os.path.basename(props["attr"])
         out_path = props["out_path"]
-        p = Path("/var/lib/buildbot-worker/outputs/")
+        # XXX don't hardcode this
+        p = Path("/var/www/buildbot/nix-outputs/")
         os.makedirs(p, exist_ok=True)
         with open(p / attr, "w") as f:
             f.write(out_path)
@@ -178,6 +178,7 @@ def nix_eval_config(worker_names: List[str]) -> util.BuilderConfig:
                 "--workers",
                 "8",
                 "--gc-roots-dir",
+                # XXX don't hardcode this
                 "/var/lib/buildbot-worker/gcroot",
                 "--flake",
                 ".#hydraJobs",
@@ -215,6 +216,7 @@ def nix_build_config(
     if enable_cachix:
         factory.addStep(
             steps.ShellCommand(
+                name="Upload cachix",
                 env=dict(CACHIX_SIGNING_KEY=util.Secret("cachix-token")),
                 command=[
                     "cachix",
@@ -224,7 +226,7 @@ def nix_build_config(
                 ],
             )
         )
-    factory.addStep(UpdateBuildOutput())
+    factory.addStep(UpdateBuildOutput(name="Update build output"))
     return util.BuilderConfig(
         name="nix-build",
         workernames=worker_names,

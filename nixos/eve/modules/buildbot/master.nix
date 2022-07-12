@@ -62,5 +62,9 @@
       # raise the proxy timeout for the websocket
       extraConfig = "proxy_read_timeout 6000s;";
     };
+    locations."/nix-outputs".root = "/var/www/buildbot/";
   };
+  systemd.tmpfiles.rules = [
+    "d /var/www/buildbot/nix-outputs 0755 buildbot buildbot - -"
+  ];
 }
