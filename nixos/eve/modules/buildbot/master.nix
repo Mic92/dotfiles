@@ -3,7 +3,7 @@
 {
   services.buildbot-master = {
     enable = true;
-    masterCfg = ./master.py;
+    masterCfg = "${./.}/master.py";
     dbUrl = "postgresql://@/buildbot";
     pythonPackages = ps: [ ps.requests ps.treq ps.psycopg2 ];
   };
