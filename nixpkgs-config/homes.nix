@@ -6,6 +6,7 @@
     apps.hm = {
       type = "app";
       program = "${pkgs.writeScriptBin "hm" ''
+        export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.nixFlakes pkgs.jq]}
         declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie" ["grandalf"]="common-aarch64" ["yasmin"]="common-aarch64")
         profile=common
         if [[ -n ''${profiles[$HOSTNAME]:-} ]]; then
