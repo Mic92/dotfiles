@@ -42,18 +42,18 @@ with lib; {
   systemd.services.update-prefetch = {
     startAt = "hourly";
     script = ''
-      export PATH=${lib.makeBinPath (with pkgs; [config.nix.package pkgs.jq pkgs.curl pkgs.iproute2 pkgs.nettools])}
+      export PATH=${lib.makeBinPath (with pkgs; [config.nix.package pkgs.curl pkgs.iproute2 pkgs.nettools])}
       # skip service if do not have a default route
       if ! ip r g 8.8.8.8; then
         exit
       fi
-      out=$(curl -L 'https://gitlab.com/Mic92/dotfiles/-/jobs/artifacts/master/raw/jobs.json?job=eval' | jq -r "select(.attr | contains(\"nixos-$(hostname)\")) | .outputs.out")
-      nix-store --add-root /run/next-system -r "$out"
+      nix-store --add-root /run/next-system -r "$(curl -L buildbot.thalheim.io/nix-outputs/nixos-$HOST)"
+
+      if [[ -f /home/joerg/.homesick/repos/dotfiles/flake.nix ]]; then
+        profile=$(nix run "/home/joerg/.homesick/repos/dotfiles/#hm" -- profile)
+        nix-store --add-root /run/next-home -r "$(curl -L buildbot.thalheim.io/nix-outputs/home-manager-$profile)"
+      fi
     '';
-    # FIXME home-manager
-    #if [[ -x /home/joerg/.nix-profile/bin/home-manager ]]; then
-    #  nix run "github:Mic92/dotfiles/$last_build#hm-build" --  --out-link /run/next-home
-    #fi
     serviceConfig = {
       CPUSchedulingPolicy = "idle";
       IOSchedulingClass = "idle";
