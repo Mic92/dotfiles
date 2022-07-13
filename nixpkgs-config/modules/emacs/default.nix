@@ -15,7 +15,7 @@ with lib; let
       #!${pkgs.runtimeShell}
       export TERM=xterm-direct
       # breaks clipetty in combination with tmux + mosh? https://github.com/spudlyo/clipetty/pull/22
-      unset SSH_TTY
+      unset SSH_TTY TMUX
       exec -a emacs ${myemacs}/bin/emacsclient \
         --create-frame \
         --alternate-editor ${myemacs}/bin/emacs \
