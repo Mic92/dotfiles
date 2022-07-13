@@ -120,16 +120,16 @@ class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
 
 
 class UpdateBuildOutput(steps.BuildStep):
-    def __init__(self, **kwargs):
+    def __init__(self, branches: list[str], **kwargs):
+        self.branches = branches
         super().__init__(**kwargs)
 
     def run(self) -> Generator[Any, object, Any]:
-        properties = self.build.getProperties()
-        props = {}
-        for key, value, _ in properties.asList():
-            props[key] = value
-        attr = os.path.basename(props["attr"])
-        out_path = props["out_path"]
+        props = self.build.getProperties()
+        if props.getProperty("branch") not in self.branches:
+            return util.SKIPPED
+        attr = os.path.basename(props.getProperty("attr"))
+        out_path = props.getProperty("out_path")
         # XXX don't hardcode this
         p = Path("/var/www/buildbot/nix-outputs/")
         os.makedirs(p, exist_ok=True)
@@ -207,7 +207,7 @@ def nix_build_config(
                 ],
             )
         )
-    factory.addStep(UpdateBuildOutput(name="Update build output"))
+    factory.addStep(UpdateBuildOutput(name="Update build output", branches=["master"]))
     return util.BuilderConfig(
         name="nix-build",
         workernames=worker_names,
