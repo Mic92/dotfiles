@@ -3,34 +3,46 @@
     pkgs,
     ...
   }: {
-    apps.hm-build = {
+    apps.hm = {
       type = "app";
-      program = "${pkgs.writeScriptBin "hm-build" ''
-        #!${pkgs.runtimeShell}
-        set -eu -o pipefail
-        export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.nixFlakes pkgs.jq]}
+      program = "${pkgs.writeScriptBin "hm" ''
         declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie" ["grandalf"]="common-aarch64" ["yasmin"]="common-aarch64")
         profile=common
         if [[ -n ''${profiles[$HOSTNAME]:-} ]]; then
           profile=''${profiles[$HOSTNAME]}
         fi
-        nix build --no-link --show-trace --json "${toString ./..}#hmConfigurations.''${profile}.activationPackage" "$@" | jq -r '.[] | .outputs | .out'
-      ''}/bin/hm-build";
-    };
-    apps.hm-switch = {
-      type = "app";
-      program = "${pkgs.writeScriptBin "hm-switch" ''
-        #!${pkgs.runtimeShell}
-        export PATH=${pkgs.lib.makeBinPath [pkgs.nix pkgs.coreutils]}
-        set -eu -o pipefail -x
-        cd ${./..}
-        oldpath=$(realpath /nix/var/nix/profiles/per-user/$USER/home-manager)
-        path=$(nix run .#hm-build -- "$@")
-        if [[ -e $oldpath ]]; then
-          nix store diff-closures "$oldpath" "$path"
+        usage() {
+          echo "hm (profile|build|switch)"
+          exit 0
+        }
+        main() {
+          cmd=$1
+          shift
+          case "$cmd" in
+          -h|--help)
+            usage
+            ;;
+          profile)
+            echo "$profile"
+            ;;
+          build)
+            nix build --no-link --show-trace --json "${toString ./..}#hmConfigurations.''${profile}.activationPackage" "$@" | jq -r '.[] | .outputs | .out'
+            ;;
+          switch)
+            oldpath=$(realpath /nix/var/nix/profiles/per-user/$USER/home-manager)
+            path=$(main build "$@")
+            if [[ -e $oldpath ]]; then
+              nix store diff-closures "$oldpath" "$path"
+            fi
+            $path/activate
+            ;;
+          esac
+        }
+        if [[ "$#" -lt 1 ]]; then
+          usage
         fi
-        $path/activate
-      ''}/bin/hm-switch";
+        main "$@"
+      ''}/bin/hm";
     };
   };
 

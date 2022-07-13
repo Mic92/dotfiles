@@ -155,8 +155,10 @@ kpaste() {
   "${arg[@]}" | curl -sS http://p.r --data-binary @- | \
     sed '$ {p;s|http://p.r|https://p.krebsco.de|}'
 }
-xalias hm-switch="nix run $HOME/.homesick/repos/dotfiles#hm-switch --"
-xalias hm-build="nix run $HOME/.homesick/repos/dotfiles#hm-build --"
+
+hm(){
+  nix run "$HOME/.homesick/repos/dotfiles#hm" -- "$@"
+}
 nix-index-update() {
   filename="index-x86_64-$(uname | tr A-Z a-z)"
   mkdir -p ~/.cache/nix-index
