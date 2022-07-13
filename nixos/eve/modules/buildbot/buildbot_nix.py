@@ -159,7 +159,8 @@ def nix_eval_config(worker_names: list[str]) -> util.BuilderConfig:
                 "--workers",
                 "8",
                 "--gc-roots-dir",
-                f"{os.getcwd()}/gcroot",
+                # FIXME: don't hardcode this
+                "/var/lib/buildbot-worker/gcroot",
                 "--flake",
                 ".#hydraJobs",
             ],
