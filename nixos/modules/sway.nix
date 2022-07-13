@@ -99,7 +99,7 @@
   # for polkit
   environment.pathsToLink = ["/libexec"];
 
-  programs.qt5ct.enable = true;
+  qt5.platformTheme = "qt5ct";
 
   # brightnessctl
   users.users.joerg.extraGroups = ["video"];
