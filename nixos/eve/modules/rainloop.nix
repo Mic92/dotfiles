@@ -10,8 +10,8 @@
   };
 in {
   services.phpfpm.pools.rainloop = {
-    user = "rainloop";
-    group = "rainloop";
+    user = "snappymail";
+    group = "snappymail";
     phpOptions = toKeyValue {
       upload_max_filesize = maxUploadSize;
       post_max_size = maxUploadSize;
@@ -49,18 +49,29 @@ in {
       extraConfig = ''
         client_max_body_size ${maxUploadSize};
       '';
-      root = pkgs.rainloop-community.override {
-        dataPath = "/var/lib/rainloop";
+      root = pkgs.snappymail.override {
+        dataPath = "/var/lib/snappymail";
       };
+      #root = pkgs.rainloop-community.override {
+      #  dataPath = "/var/lib/rainloop";
+      #};
     };
   };
 
-  users.users.rainloop = {
+  users.users.snappymail = {
     isSystemUser = true;
     createHome = true;
-    home = "/var/lib/rainloop";
-    group = "rainloop";
+    home = "/var/lib/snappymail";
+    group = "snappymail";
   };
 
-  users.groups.rainloop = {};
+  users.groups.snappymail = {};
+  #users.users.rainloop = {
+  #  isSystemUser = true;
+  #  createHome = true;
+  #  home = "/var/lib/rainloop";
+  #  group = "rainloop";
+  #};
+
+  #users.groups.rainloop = {};
 }
