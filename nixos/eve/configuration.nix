@@ -28,6 +28,7 @@
     ./modules/dovecot.nix
     ./modules/drone
     ./modules/docker.nix
+    ./modules/et.nix
     ./modules/ejabberd.nix
     ./modules/gitea
     ./modules/gitlab/runner.nix

@@ -14,7 +14,6 @@
       [
         #(pkgs.callPackage /home/joerg/git/nix-review {})
         nur.repos.mic92.nixpkgs-review-unstable
-        nur.repos.mic92.mosh-ssh-agent
         nur.repos.mic92.tmux-thumbs
         (callPackage (fetchFromGitHub {
           owner = "nix-community";

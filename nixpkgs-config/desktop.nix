@@ -56,6 +56,7 @@ in {
       unifont
       twitter-color-emoji
       upterm
+      eternal-terminal
 
       arandr
       signal-desktop
