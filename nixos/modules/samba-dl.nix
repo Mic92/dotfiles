@@ -7,6 +7,8 @@
       "nofail"
       "noauto"
       "ro"
+      "rsize=16777216"
+      "cache=loose"
     ];
   };
   fileSystems."/data/torrent/download/catalonia" = {
@@ -17,6 +19,8 @@
       "nofail"
       "noauto"
       "ro"
+      "rsize=16777216"
+      "cache=loose"
     ];
   };
 }
