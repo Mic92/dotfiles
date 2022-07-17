@@ -60,6 +60,7 @@
     #    defaultPort = "80";
     #  })
     firefox-wayland
+    syncplay
     chromium
     celluloid
     vscode
