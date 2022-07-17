@@ -9,7 +9,7 @@
     mkKeyValue = lib.generators.mkKeyValueDefault {} " = ";
   };
 in {
-  services.phpfpm.pools.rainloop = {
+  services.phpfpm.pools.snappymail = {
     user = "snappymail";
     group = "snappymail";
     phpOptions = toKeyValue {
@@ -28,6 +28,14 @@ in {
     };
   };
 
+  services.postgresql.ensureDatabases = ["snappymail"];
+  services.postgresql.ensureUsers = [
+    {
+      name = "snappymail";
+      ensurePermissions."DATABASE snappymail" = "ALL PRIVILEGES";
+    }
+  ];
+
   services.nginx = {
     virtualHosts."mail.thalheim.io" = {
       useACMEHost = "thalheim.io";
@@ -44,7 +52,7 @@ in {
       locations."~ \.php$".extraConfig = ''
         include ${pkgs.nginx}/conf/fastcgi_params;
         fastcgi_param   SCRIPT_FILENAME $document_root$fastcgi_script_name;
-        fastcgi_pass unix:${config.services.phpfpm.pools.rainloop.socket};
+        fastcgi_pass unix:${config.services.phpfpm.pools.snappymail.socket};
       '';
       extraConfig = ''
         client_max_body_size ${maxUploadSize};
@@ -52,9 +60,6 @@ in {
       root = pkgs.snappymail.override {
         dataPath = "/var/lib/snappymail";
       };
-      #root = pkgs.rainloop-community.override {
-      #  dataPath = "/var/lib/rainloop";
-      #};
     };
   };
 
@@ -66,12 +71,4 @@ in {
   };
 
   users.groups.snappymail = {};
-  #users.users.rainloop = {
-  #  isSystemUser = true;
-  #  createHome = true;
-  #  home = "/var/lib/rainloop";
-  #  group = "rainloop";
-  #};
-
-  #users.groups.rainloop = {};
 }
