@@ -543,10 +543,6 @@ if [[ -S "/run/user/${UID}/ssh-agent" ]]; then
   export SSH_AUTH_SOCK="/run/user/${UID}/ssh-agent"
 fi
 
-if [[ -n ${commands[lesspipe.sh]} ]]; then
-  export LESSOPEN="| lesspipe.sh %s"
-fi
-
 unlock_root(){
   rbw get 'zfs encryption' | ssh -tt -v root@eve.i -p 2222
 }
