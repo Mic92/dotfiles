@@ -17,18 +17,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    rust-overlay.url = "github:oxalica/rust-overlay";
-    rust-overlay.inputs.nixpkgs.follows = "nixpkgs";
-    rust-overlay.inputs.flake-utils.follows = "flake-utils";
-
-    mars-std.url = "github:mars-research/mars-std";
-    mars-std.inputs.nixpkgs.follows = "nixpkgs";
-    mars-std.inputs.rust-overlay.follows = "rust-overlay";
-    mars-std.inputs.flake-utils.follows = "flake-utils";
-
-    miniond.url = "github:mars-research/miniond";
-    miniond.inputs.mars-std.follows = "mars-std";
-
     nixpkgs.url = "github:Mic92/nixpkgs/main";
     # for development
     #nixpkgs.url = "/home/joerg/git/nixpkgs";

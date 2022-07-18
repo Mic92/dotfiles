@@ -107,22 +107,6 @@
         "type": "github"
       }
     },
-    "flake-compat": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1627913399,
-        "narHash": "sha256-hY8g6H2KFL8ownSiFeMOjwPC8P0ueXpCVEbxgda3pko=",
-        "owner": "edolstra",
-        "repo": "flake-compat",
-        "rev": "12c64ca55c1014cdc1b16ed5a804aa8576601ff2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "edolstra",
-        "repo": "flake-compat",
-        "type": "github"
-      }
-    },
     "flake-parts": {
       "inputs": {
         "nixpkgs": [
@@ -192,53 +176,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
-        "type": "github"
-      }
-    },
-    "mars-std": {
-      "inputs": {
-        "flake-compat": "flake-compat",
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "rust-overlay": [
-          "rust-overlay"
-        ]
-      },
-      "locked": {
-        "lastModified": 1658059470,
-        "narHash": "sha256-GbX+M3lkVdxCIDTtCN+MaEhcT4FDg5/75FEeWR8K+K0=",
-        "owner": "mars-research",
-        "repo": "mars-std",
-        "rev": "11f52725424399170655f92b77e2e2fc9426121b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mars-research",
-        "repo": "mars-std",
-        "type": "github"
-      }
-    },
-    "miniond": {
-      "inputs": {
-        "mars-std": [
-          "mars-std"
-        ]
-      },
-      "locked": {
-        "lastModified": 1654556068,
-        "narHash": "sha256-Wx0V0tUpaby2GpX5XDDFsOGnFZzkYwz2a02PEldNQmw=",
-        "owner": "mars-research",
-        "repo": "miniond",
-        "rev": "f6356692fcd6da5805a6c631ea96d4d649296540",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mars-research",
-        "repo": "miniond",
         "type": "github"
       }
     },
@@ -457,8 +394,6 @@
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager",
-        "mars-std": "mars-std",
-        "miniond": "miniond",
         "nix-darwin": "nix-darwin",
         "nix-ld": "nix-ld",
         "nix2container": "nix2container",
@@ -468,7 +403,6 @@
         "nur": "nur",
         "poetry2nix": "poetry2nix",
         "retiolum": "retiolum",
-        "rust-overlay": "rust-overlay",
         "sops-nix": "sops-nix"
       }
     },
@@ -486,29 +420,6 @@
         "owner": "rust-lang",
         "ref": "nightly",
         "repo": "rust-analyzer",
-        "type": "github"
-      }
-    },
-    "rust-overlay": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1658026364,
-        "narHash": "sha256-dbPb5ddWfkACYNHZSIfxXYzLCLmApGd/n9jZnU5tayU=",
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "rev": "69133a80f7c1d13231e246a911aaad57d8dcd584",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oxalica",
-        "repo": "rust-overlay",
         "type": "github"
       }
     },

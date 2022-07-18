@@ -49,9 +49,6 @@
     }
   ];
 in {
-  imports = [
-    ./cloudlab.nix
-  ];
   flake.nixosConfigurations = {
     bernie = nixosSystem {
       system = "x86_64-linux";
