@@ -76,7 +76,10 @@ def build_config() -> dict[str, Any]:
             roleMatchers=[
                 util.RolesFromUsername(roles=["admin"], usernames=github_admins)
             ],
-            allowRules=[util.AnyEndpointMatcher(role="admin", defaultDeny=False)],
+            allowRules=[
+                util.AnyEndpointMatcher(role="admin", defaultDeny=False),
+                util.AnyControlEndpointMatcher(role="admins")
+            ],
         ),
         "plugins": dict(waterfall_view={}, console_view={}, grid_view={}),
         "change_hook_dialects": dict(
