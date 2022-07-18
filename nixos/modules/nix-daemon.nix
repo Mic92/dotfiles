@@ -9,6 +9,7 @@ with lib; {
   nix = {
     gc.automatic = true;
     gc.dates = "03:15";
+    gc.options = "--delete-older-than 10d";
     # should be enough?
     nrBuildUsers = lib.mkDefault 32;
 
