@@ -59,7 +59,9 @@ def build_config() -> dict[str, Any]:
     c["workers"] = [worker.Worker(item["name"], item["pass"]) for item in worker_config]
     worker_names = [item["name"] for item in worker_config]
     c["builders"] = [
-        nix_eval_config(worker_names),
+        # Since all workers run on the same machine, we only assign one of them to do the evaluation.
+        # This should prevent exessive memory usage.
+        nix_eval_config([worker_names[0]]),
         nix_build_config(worker_names, enable_cachix),
     ]
 
