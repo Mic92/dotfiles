@@ -548,7 +548,7 @@ if [[ -n ${commands[lesspipe.sh]} ]]; then
 fi
 
 unlock_root(){
-  bw get password aceb6d01-5bb5-4ff9-b40d-2cd8bee51417 | ssh -tt -v root@eve.i -p 2222
+  rbw get 'zfs encryption' | ssh -tt -v root@eve.i -p 2222
 }
 # Autoinstall Bundle
 bundle() {

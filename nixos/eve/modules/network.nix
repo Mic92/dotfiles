@@ -95,7 +95,7 @@ in {
         ];
       };
       postCommands = ''
-        echo "zpool import data && zfs load-key -a && killall zfs" >> /root/.profile
+        echo "zpool import data; zfs load-key -a && killall zfs" >> /root/.profile
 
         ip link set dev eth0 up
 
