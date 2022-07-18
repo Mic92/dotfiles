@@ -18,6 +18,7 @@
     };
 
     nixpkgs.url = "github:Mic92/nixpkgs/main";
+    nixpkgs-systemd.url = "github:Mic92/nixpkgs/systemd";
     # for development
     #nixpkgs.url = "/home/joerg/git/nixpkgs";
     nur.url = "github:nix-community/NUR";

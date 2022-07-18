@@ -70,6 +70,10 @@ in {
           nixos-hardware.nixosModules.framework
           nix-ld.nixosModules.nix-ld
           #inputs.envfs.nixosModules.envfs
+          #
+          ({pkgs, ...}: {
+            systemd.package = self.inputs.nixpkgs-systemd.legacyPackages.${pkgs.system}.systemd;
+          })
         ];
     };
 
