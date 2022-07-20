@@ -305,6 +305,9 @@ in {
     x509_cert = [
       {
         sources = [
+          # garnix.io
+          "https://garnix.io:443"
+
           # nginx
           "https://devkid.net:443"
           "https://thalheim.io:443"
