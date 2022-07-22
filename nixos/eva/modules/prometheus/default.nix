@@ -54,7 +54,7 @@ in {
               "matchbox.r:9273"
               "alertmanager.r:80"
               "prometheus.r:80"
-              "rock.r:9273"
+              #"rock.r:9273"
             ];
           }
           {

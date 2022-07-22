@@ -6,7 +6,7 @@
 }: let
   urls = [
     "eve"
-    "rock"
+    #"rock"
     "rauter"
     "matchbox"
   ];
@@ -240,7 +240,7 @@ in {
       }
       {
         urls = ["http://loki.r/ready"];
-        tags.host = "rock";
+        tags.host = "eva";
         tags.org = "private";
         response_string_match = "ready";
       }
