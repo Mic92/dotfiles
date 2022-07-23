@@ -310,4 +310,9 @@ in
         condition = ''abs(delta(alertmanager_silences{state="active"}[1h])) >= 1'';
         description = "alertmanager: number of active silences has changed: {{$value}}";
       };
+
+      navidrome_not_enough_albums = {
+        condition = ''http_navidrome_album_count != 1'';
+        description = "navidrome: not enough albums as expected: {{$value}}";
+      };
     })
