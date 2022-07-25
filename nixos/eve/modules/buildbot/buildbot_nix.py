@@ -2,11 +2,12 @@
 
 import json
 import os
+import re
 from pathlib import Path
 
 from buildbot.steps.trigger import Trigger
 from buildbot.plugins import util, steps
-from typing import Any, Generator
+from typing import Any, Generator, Optional
 from buildbot.process import buildstep, logobserver
 from buildbot.process.properties import Properties
 from twisted.internet import defer
@@ -138,7 +139,152 @@ class UpdateBuildOutput(steps.BuildStep):
         return util.SUCCESS
 
 
-def nix_eval_config(worker_names: list[str]) -> util.BuilderConfig:
+class MergePr(steps.ShellCommand):
+    def __init__(
+        self,
+        github_token_secret: str,
+        base_branches: list[str],
+        owners: list[str],
+        **kwargs: Any,
+    ) -> None:
+        self.github_token_secret = github_token_secret
+        self.base_branches = base_branches
+        self.rendered_token = None
+        self.owners = owners
+        super().__init__(**kwargs)
+
+    @defer.inlineCallbacks
+    def reconfigService(
+        self,
+        github_token_secret: str,
+        base_branches: list[str],
+        owners: list[str],
+        **kwargs: Any,
+    ) -> Generator[Any, object, Any]:
+        self.rendered_token = yield self.renderSecrets(github_token_secret)
+        self.base_branches = base_branches
+        self.owners = owners
+        super().reconfigService(**kwargs)
+
+    @defer.inlineCallbacks
+    def run(self) -> Generator[Any, object, Any]:
+        props = self.build.getProperties()
+        if props.getProperty("basename") not in self.base_branches:
+            return util.SKIPPED
+        if props.getProperty("event") not in ["pull_request"]:
+            return util.SKIPPED
+        if not any(owner in self.owners for owner in props.getProperty("owners")):
+            return util.SKIPPED
+
+        cmd = yield self.makeRemoteShellCommand()
+        yield self.runCommand(cmd)
+        return util.SUCCESS
+
+
+class CreatePr(steps.ShellCommand):
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
+        self.addLogObserver(
+            "stdio", logobserver.LineConsumerLogObserver(self.check_pr_exists)
+        )
+
+    def check_pr_exists(self):
+        msg = re.compile(
+            """a pull request for branch ".*" into branch ".*" already exists:"""
+        )
+        while True:
+            _, line = yield
+            if msg.search(line):
+                self.pr_exists = True
+
+    @defer.inlineCallbacks
+    def run(self):
+        self.pr_exists = False
+        cmd = yield self.makeRemoteShellCommand()
+        yield self.runCommand(cmd)
+        if self.pr_exists:
+            return util.SKIPPED
+        return cmd.results()
+
+
+def nix_update_flake_config(
+    worker_names: list[str], projectname: str, github_token_secret: str
+) -> util.BuilderConfig:
+    factory = util.BuildFactory()
+    url_with_secret = util.Interpolate(
+        f"https://git:%(secret:{github_token_secret})s@github.com/{projectname}"
+    )
+    factory.addStep(
+        steps.Git(
+            repourl=url_with_secret,
+            method="clean",
+            submodules=True,
+            haltOnFailure=True,
+        )
+    )
+    factory.addStep(
+        steps.ShellCommand(
+            name="Update flakes",
+            env=dict(
+                GIT_AUTHOR_NAME="buildbot",
+                GIT_AUTHOR_EMAIL="buildbot@thalheim.io",
+                GIT_COMMITTER_NAME="buildbot",
+                GIT_COMMITTER_EMAIL="buildbot@thalheim.io",
+            ),
+            command=[
+                "nix",
+                "flake",
+                "update",
+                "--commit-lock-file",
+                "--commit-lockfile-summary",
+                "flake.lock: Update",
+            ],
+            haltOnFailure=True,
+        )
+    )
+    factory.addStep(
+        steps.ShellCommand(
+            name="Force-Push to update_flake_lock branch",
+            command=[
+                "git",
+                "push",
+                "--force",
+                "origin",
+                "HEAD:refs/heads/update_flake_lock",
+            ],
+            haltOnFailure=True,
+        )
+    )
+    factory.addStep(
+        CreatePr(
+            name="Create pull-request",
+            env=dict(GITHUB_TOKEN=util.Secret(github_token_secret)),
+            command=[
+                "gh",
+                "pr",
+                "create",
+                "--repo",
+                projectname,
+                "--title",
+                "flake.lock: Update",
+                "--body",
+                "Automatic buildbot update",
+                "--head",
+                "refs/heads/update_flake_lock",
+                "--base",
+                "master",
+            ],
+        )
+    )
+    return util.BuilderConfig(
+        name="nix-update-flake",
+        workernames=worker_names,
+        factory=factory,
+        properties=dict(virtual_builder_name="nix-update-flake"),
+    )
+
+
+def nix_eval_config(worker_names: list[str], github_token_secret: str) -> util.BuilderConfig:
     factory = util.BuildFactory()
     # check out the source
     factory.addStep(
@@ -165,6 +311,25 @@ def nix_eval_config(worker_names: list[str]) -> util.BuilderConfig:
                 ".#hydraJobs",
             ],
             haltOnFailure=True,
+        )
+    )
+    # Merge flake-update pull requests if CI succeeds
+    factory.addStep(
+        MergePr(
+            name="Merge pull-request",
+            env=dict(GITHUB_TOKEN=util.Secret(github_token_secret)),
+            github_token_secret=util.Secret(github_token_secret),
+            base_branches=["master"],
+            owners=["mic92-buildbot"],
+            command=[
+                "gh",
+                "pr",
+                "merge",
+                "--repo",
+                util.Property("project"),
+                "--rebase",
+                util.Property("pullrequesturl"),
+            ],
         )
     )
 

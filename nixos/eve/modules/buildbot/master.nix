@@ -18,6 +18,7 @@
     serviceConfig = {
       LoadCredential = [
         "github-token:${config.sops.secrets.github-token.path}"
+        "bot-token:${config.sops.secrets.buildbot-github-token.path}"
         "github-webhook-secret:${config.sops.secrets.github-webhook-secret.path}"
         "github-oauth-secret:${config.sops.secrets.github-oauth-secret.path}"
         "github-workers:${config.sops.secrets.github-workers.path}"
@@ -29,6 +30,7 @@
   sops.secrets = {
     github-token = {};
     github-webhook-secret = {};
+    buildbot-github-token = {};
     github-oauth-secret = {};
     github-workers = {};
     buildbot-nix-worker-password.owner = "buildbot-worker";

@@ -13,7 +13,7 @@ from typing import Any
 sys.path.append(str(Path(__file__).parent))
 
 from irc_notify import NotifyFailedBuilds
-from buildbot_nix import nix_eval_config, nix_build_config
+from buildbot_nix import nix_eval_config, nix_build_config, nix_update_flake_config
 
 
 def read_secret_file(secret_name: str) -> str:
@@ -29,8 +29,14 @@ def build_config() -> dict[str, Any]:
     c["buildbotNetUsageData"] = None
 
     c["schedulers"] = [
-        schedulers.AnyBranchScheduler(
-            name="all",
+        schedulers.SingleBranchScheduler(
+            name="master",
+            change_filter=util.ChangeFilter(branch="master"),
+            builderNames=["nix-eval"],
+        ),
+        schedulers.SingleBranchScheduler(
+            name="prs",
+            change_filter=util.ChangeFilter(category="pull"),
             builderNames=["nix-eval"],
         ),
         schedulers.Triggerable(
@@ -38,6 +44,8 @@ def build_config() -> dict[str, Any]:
             builderNames=["nix-build"],
         ),
         schedulers.ForceScheduler(name="force", builderNames=["nix-eval"]),
+        schedulers.ForceScheduler(name="update-flake", builderNames=["nix-update-flake"], buttonName="Update flakes"),
+        schedulers.NightlyTriggerable(name='update-flake-weekly', builderNames=['nix-update-flake'], hour=3, minute=0, dayOfWeek=6)
     ]
 
     github_api_token = read_secret_file("github-token")
@@ -61,8 +69,9 @@ def build_config() -> dict[str, Any]:
     c["builders"] = [
         # Since all workers run on the same machine, we only assign one of them to do the evaluation.
         # This should prevent exessive memory usage.
-        nix_eval_config([worker_names[0]]),
+        nix_eval_config([worker_names[0]], github_token_secret="bot-token"),
         nix_build_config(worker_names, enable_cachix),
+        nix_update_flake_config(worker_names, "Mic92/dotfiles", github_token_secret="bot-token"),
     ]
 
     github_admins = os.environ.get("GITHUB_ADMINS", "").split(",")

@@ -1,3 +1,9 @@
+module "dotfiles" {
+  source = "../modules/github-push-bot"
+  repo_name = "Mic92/dotfiles"
+  github_token = data.sops_file.secrets.data["GITHUB_TOKEN"]
+  bot_github_token = data.sops_file.secrets.data["buildbot-token"]
+}
 module "sops-nix" {
   source = "../modules/github-push-bot"
   repo_name = "Mic92/sops-nix"
