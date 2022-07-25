@@ -7,6 +7,7 @@
   busybox,
   headscale,
   tcpdump,
+  cacert
 }: let
   kresd = knot-resolver.override {extraFeatures = true;};
   configFile = writeText "headscale.yaml" (builtins.toJSON {
@@ -50,6 +51,9 @@ in
   nix2container.buildImage {
     name = "mic92/headscale";
     config = {
+      Env = [
+        "SSL_CERT_FILE=${cacert}/etc/ssl/certs/ca-bundle.crt"
+      ];
       Entrypoint = [
         (writeScript "init" ''
           #!${busybox}/bin/sh
