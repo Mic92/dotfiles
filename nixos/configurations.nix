@@ -38,6 +38,7 @@
         ./modules/upgrade-diff.nix
         ./modules/nix-daemon.nix
         ./modules/minimal-docs.nix
+        ./modules/i18n.nix
         nur.nixosModules.nur
 
         ./modules/retiolum.nix

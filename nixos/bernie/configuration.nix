@@ -45,7 +45,6 @@
   networking.networkmanager.enable = true;
   time.timeZone = null;
   services.geoclue2.enable = true;
-  i18n.defaultLocale = "en_DK.UTF-8";
 
   programs.vim.defaultEditor = true;
 

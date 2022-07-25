@@ -27,6 +27,7 @@
     #./modules/minidlna.nix
 
     #../modules/podman.nix
+    ../modules/i18n.nix
     ../modules/tpm2.nix
     ../modules/pipewire.nix
     ../modules/rock-rdp.nix
@@ -87,8 +88,6 @@
   networking.hostName = "turingmachine";
 
   console.keyMap = "us";
-
-  i18n.defaultLocale = "en_DK.UTF-8";
 
   # Manual timezones, also see modules/networkmanager.py
   time.timeZone = null;

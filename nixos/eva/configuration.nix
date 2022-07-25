@@ -19,7 +19,6 @@
   networking.hostName = "eva";
 
   time.timeZone = "UTC";
-  i18n.defaultLocale = "en_DK.UTF-8";
 
   programs.vim.defaultEditor = true;
 
