@@ -43,7 +43,7 @@
         tmux-upterm() {
           upterm host --server ssh://upterm.thalheim.io:2323 \
             --force-command 'tmux attach -t pair-programming' \
-            -- bash -c "read -p 'Press enter to continue ' && tmux new -t pair-programming"
+            -- tmux new -t pair-programming
         }
         ```
 
