@@ -330,22 +330,6 @@
         "type": "github"
       }
     },
-    "nixpkgs-systemd": {
-      "locked": {
-        "lastModified": 1658145457,
-        "narHash": "sha256-liLpA+UN0RwK4FkFzVThtcgTpujebsx4BD1ym0v33Kk=",
-        "owner": "Mic92",
-        "repo": "nixpkgs",
-        "rev": "37613fff567b2d9705207f17bfc01b9bb45d0c57",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "ref": "systemd",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nur": {
       "locked": {
         "lastModified": 1658143576,
@@ -416,7 +400,6 @@
         "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-systemd": "nixpkgs-systemd",
         "nur": "nur",
         "poetry2nix": "poetry2nix",
         "retiolum": "retiolum",
