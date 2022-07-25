@@ -29,22 +29,28 @@ def build_config() -> dict[str, Any]:
     c["buildbotNetUsageData"] = None
 
     c["schedulers"] = [
+        # build all pushes to master
         schedulers.SingleBranchScheduler(
             name="master",
             change_filter=util.ChangeFilter(branch="master"),
             builderNames=["nix-eval"],
         ),
+        # build all pull requests
         schedulers.SingleBranchScheduler(
             name="prs",
             change_filter=util.ChangeFilter(category="pull"),
             builderNames=["nix-eval"],
         ),
+        # this is triggered from `nix-eval`
         schedulers.Triggerable(
             name="nix-build",
             builderNames=["nix-build"],
         ),
+        # allow to manually trigger a nix-build
         schedulers.ForceScheduler(name="force", builderNames=["nix-eval"]),
+        # allow to manually update flakes
         schedulers.ForceScheduler(name="update-flake", builderNames=["nix-update-flake"], buttonName="Update flakes"),
+        # updates flakes once a weeek
         schedulers.NightlyTriggerable(name='update-flake-weekly', builderNames=['nix-update-flake'], hour=3, minute=0, dayOfWeek=6)
     ]
 
@@ -52,11 +58,17 @@ def build_config() -> dict[str, Any]:
     c["services"] = [
         reporters.GitHubStatusPush(
             token=github_api_token,
+            # Since we dynamically create build steps,
+            # we use `virtual_builder_name` in the webinterface
+            # so that we distinguish what has beeing build
             context=Interpolate("buildbot/%(prop:virtual_builder_name)s"),
         ),
+        # Notify on irc
         NotifyFailedBuilds("irc://buildbot|mic92@irc.r:6667/#xxx"),
     ]
 
+    # Shape of this file:
+    # [ { "name": "<worker-name>", "pass": "<worker-password>" } ]
     worker_config = json.loads(read_secret_file("github-workers"))
 
     credentials = os.environ.get("CREDENTIALS_DIRECTORY", ".")

@@ -14,6 +14,10 @@ from twisted.internet import defer
 
 
 class BuildTrigger(Trigger):
+    """
+    Dynamic trigger that creates a build for every attribute.
+    """
+
     def __init__(self, scheduler: str, jobs: list[dict[str, str]], **kwargs):
         if "name" not in kwargs:
             kwargs["name"] = "trigger"
@@ -54,6 +58,11 @@ class BuildTrigger(Trigger):
 
 
 class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
+    """
+    Parses the output of `nix-eval-jobs` and triggers a `nix-build` build for
+    every attribute.
+    """
+
     def __init__(self, **kwargs):
         kwargs = self.setupShellMixin(kwargs)
         super().__init__(**kwargs)
@@ -83,6 +92,11 @@ class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
 
 
 class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
+    """
+    Builds a nix derivation if evaluation was successful,
+    otherwise this shows the evaluation error.
+    """
+
     def __init__(self, **kwargs):
         kwargs = self.setupShellMixin(kwargs)
         super().__init__(**kwargs)
@@ -104,23 +118,16 @@ class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
         cmd = yield self.makeRemoteShellCommand()
         yield self.runCommand(cmd)
 
-        # if the command passes extract the list of stages
-        result = cmd.results()
-        if result == util.SUCCESS:
-            # create a ShellCommand for each stage and add them to the build
-            jobs = []
-
-            for line in self.observer.getStdout().split("\n"):
-                if line != "":
-                    jobs.append(json.loads(line))
-            self.build.addStepsAfterCurrentStep(
-                [BuildTrigger(scheduler="nix-build", name="nix-build", jobs=jobs)]
-            )
-
-        return result
+        return cmd.results()
 
 
 class UpdateBuildOutput(steps.BuildStep):
+    """
+    Updates store paths in a public www directory.
+    This is useful to prefetch updates without having to evaluate
+    on the target machine.
+    """
+
     def __init__(self, branches: list[str], **kwargs):
         self.branches = branches
         super().__init__(**kwargs)
@@ -140,6 +147,10 @@ class UpdateBuildOutput(steps.BuildStep):
 
 
 class MergePr(steps.ShellCommand):
+    """
+    Merge a pull request for specified branches and pull request owners
+    """
+
     def __init__(
         self,
         github_token_secret: str,
@@ -182,6 +193,10 @@ class MergePr(steps.ShellCommand):
 
 
 class CreatePr(steps.ShellCommand):
+    """
+    Creates a pull request if none exists
+    """
+
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
         self.addLogObserver(
@@ -189,20 +204,23 @@ class CreatePr(steps.ShellCommand):
         )
 
     def check_pr_exists(self):
-        msg = re.compile(
-            """a pull request for branch ".*" into branch ".*" already exists:"""
-        )
+        ignores = [
+            re.compile(
+                """a pull request for branch ".*" into branch ".*" already exists:"""
+            ),
+            re.compile("No commits between .* and .*"),
+        ]
         while True:
             _, line = yield
-            if msg.search(line):
-                self.pr_exists = True
+            if any(ignore.search(line) is not None for ignore in ignores):
+                self.skipped = True
 
     @defer.inlineCallbacks
     def run(self):
-        self.pr_exists = False
+        self.skipped = False
         cmd = yield self.makeRemoteShellCommand()
         yield self.runCommand(cmd)
-        if self.pr_exists:
+        if self.skipped:
             return util.SKIPPED
         return cmd.results()
 
@@ -210,6 +228,9 @@ class CreatePr(steps.ShellCommand):
 def nix_update_flake_config(
     worker_names: list[str], projectname: str, github_token_secret: str
 ) -> util.BuilderConfig:
+    """
+    Updates the flake an opens a PR for it.
+    """
     factory = util.BuildFactory()
     url_with_secret = util.Interpolate(
         f"https://git:%(secret:{github_token_secret})s@github.com/{projectname}"
@@ -284,7 +305,15 @@ def nix_update_flake_config(
     )
 
 
-def nix_eval_config(worker_names: list[str], github_token_secret: str) -> util.BuilderConfig:
+def nix_eval_config(
+    worker_names: list[str], github_token_secret: str
+) -> util.BuilderConfig:
+    """
+    Uses nix-eval-jobs to evaluate hydraJobs from flake.nix in parallel.
+    For each evaluated attribute a new build pipeline is started.
+    If all builds succeed and the build was for a PR opened by the flake update bot,
+    this PR is merged.
+    """
     factory = util.BuildFactory()
     # check out the source
     factory.addStep(
@@ -344,6 +373,9 @@ def nix_eval_config(worker_names: list[str], github_token_secret: str) -> util.B
 def nix_build_config(
     worker_names: list[str], enable_cachix: bool
 ) -> util.BuilderConfig:
+    """
+    Builds one nix flake attribute.
+    """
     factory = util.BuildFactory()
     factory.addStep(
         NixBuildCommand(

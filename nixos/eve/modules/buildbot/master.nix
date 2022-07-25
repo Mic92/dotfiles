@@ -12,10 +12,13 @@
     environment = {
       PORT   = "1810";
       DB_URL = config.services.buildbot-master.dbUrl;
+      # Github app used for the login button
       GITHUB_OAUTH_ID = "d1b24258af1abc157934";
+      # comma seperated list of users that are allowed to login to buildbot and do stuff
       GITHUB_ADMINS = "Mic92";
     };
     serviceConfig = {
+      # in master.py we read secrets from $CREDENTIALS_DIRECTORY
       LoadCredential = [
         "github-token:${config.sops.secrets.github-token.path}"
         "bot-token:${config.sops.secrets.buildbot-github-token.path}"
@@ -37,6 +40,7 @@
     cachix-name = {};
     cachix-token = {};
   };
+
   services.postgresql = {
     ensureDatabases = ["buildbot"];
     ensureUsers = [
@@ -64,8 +68,12 @@
       # raise the proxy timeout for the websocket
       extraConfig = "proxy_read_timeout 6000s;";
     };
+
+    # In this directory we store the lastest build store paths for nix attributes
     locations."/nix-outputs".root = "/var/www/buildbot/";
   };
+
+  # Allow buildbot-master to write to this directory
   systemd.tmpfiles.rules = [
     "d /var/www/buildbot/nix-outputs 0755 buildbot buildbot - -"
   ];
