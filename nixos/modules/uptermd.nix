@@ -21,7 +21,7 @@
         On the machine where you want to share a tmux session with [upterm](https://github.com/owenthereal/upterm) first run:
 
         ```
-        upterm host --server ssh://upterm.thalheim.io:2323 --force-command 'tmux attach -t pair-programming' -- bash -c "read -p 'Press enter to continue ' && tmux new -t pair-programming"
+        upterm host --server ssh://upterm.thalheim.io:2323 --force-command 'tmux attach -t pair-programming' -- tmux new -t pair-programming
         ```
 
         This will output something like:
