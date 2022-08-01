@@ -2,9 +2,12 @@
 
 import os
 from io import open
+import socket
 
 from buildbot_worker.bot import Worker
 from twisted.application import service
+
+import multiprocessing
 
 
 def require_env(key: str) -> str:
@@ -14,13 +17,14 @@ def require_env(key: str) -> str:
 
 
 def setup_worker(application: service.Application, id: int) -> None:
-    basedir = f"{require_env('BUILDBOT_DIR')}-1"
+    basedir = f"{require_env('BUILDBOT_DIR')}-{id}"
     os.makedirs(basedir, mode=0o700, exist_ok=True)
 
     master_url_split = require_env("MASTER_URL").split(":")
     buildmaster_host = master_url_split[0]
     port = int(master_url_split[1])
-    workername = f"eve-{id}"
+    hostname = socket.gethostname()
+    workername = f"{hostname}-{id}"
 
     with open(
         require_env("WORKER_PASSWORD_FILE"), "r", encoding="utf-8"
@@ -52,5 +56,5 @@ def setup_worker(application: service.Application, id: int) -> None:
 # directory; do not edit it.
 application = service.Application("buildbot-worker")
 
-for i in range(8):
+for i in range(multiprocessing.cpu_count()):
     setup_worker(application, i)
