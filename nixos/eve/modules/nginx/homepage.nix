@@ -27,5 +27,20 @@
       forceSSL = true;
       globalRedirect = "thalheim.io";
     };
+
+    virtualHosts."reports.thalheim.io" = {
+      useACMEHost = "thalheim.io";
+      forceSSL = true;
+      root = "/var/www/reports.thalheim.io";
+      extraConfig = ''
+        index index.html;
+        charset utf-8;
+        source_charset utf-8;
+      '';
+    };
   };
+
+  systemd.tmpfiles.rules = [
+    "d /var/www/reports.thalheim.io 0750 joerg nginx - -"
+  ];
 }
