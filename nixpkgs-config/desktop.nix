@@ -3,25 +3,7 @@
   lib,
   config,
   ...
-}: let
-  vscodeExtensions =
-    (with pkgs.vscode-extensions; [
-      bbenoist.Nix
-      ms-python.python
-      ms-azuretools.vscode-docker
-      ms-vscode-remote.remote-ssh
-      ms-vscode.cpptools
-      vscodevim.vim
-    ])
-    ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
-      {
-        name = "remote-ssh-edit";
-        publisher = "ms-vscode-remote";
-        version = "0.50.0";
-        sha256 = "1b2lqd89vnynbzd3rss1jahc1zxs769s921rclgy1v7z1sd1kqxy";
-      }
-    ];
-in {
+}: {
   imports = [
     ./common.nix
     ./modules/rust.nix
@@ -46,10 +28,6 @@ in {
 
   home.packages = with pkgs;
     [
-      #(vscode-with-extensions.override {
-      #  inherit vscodeExtensions;
-      #})
-
       league-of-moveable-type
       dejavu_fonts
       ubuntu_font_family
@@ -100,6 +78,7 @@ in {
       # to fix xdg-open
       glib
       zoom-us
+      gnupg
       jmtpfs # needed for charging? WTF
       #
       (pkgs.callPackage ./pkgs/mpv-tv.nix {})
@@ -145,22 +124,4 @@ in {
         fonts = ["FiraCode"];
       })
     ]);
-
-  systemd.user.timers.mbsync = {
-    Unit.Description = "mbsync";
-    Timer.OnBootSec = "10m";
-    Timer.OnUnitInactiveSec = "10m";
-    Timer.Unit = "mbsync.service";
-    Install.WantedBy = ["timers.target"];
-  };
-
-  systemd.user.services.mbsync = {
-    Service.Type = "oneshot";
-    Service.Environment = "PATH=${pkgs.rbw}/bin";
-    # TODO: Fix ini generator in home-manager
-    Service.ExecStart = ''
-      -${pkgs.isync}/bin/mbsync -a --quiet
-      ExecStart=${pkgs.emacs}/bin/emacsclient -e (mu4e-update-index)
-    '';
-  };
 }

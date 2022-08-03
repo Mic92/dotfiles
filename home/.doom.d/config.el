@@ -54,59 +54,6 @@
 ;; they are implemented.
 
 
-(use-package! mu4e
-  :config
-  (setq mu4e-enable-mode-line t
-        mu4e-maildirs-extension-fake-maildir-separator "\\."
-        mu4e-enable-notifications t
-        mu4e-change-filenames-when-moving t
-        mu4e-maildir (expand-file-name "~/mail")
-        mu4e-sent-folder "/thalheim.io/.Sent"
-        mu4e-drafts-folder "/thalheim.io/.Drafts"
-        mu4e-trash-folder "/thalheim.io/.Trash"
-        mu4e-spam-folder "/thalheim.io/.Spam"
-        mu4e-enable-async-operations t
-        mu4e-use-maildirs-extension t
-        mu4e-view-show-addresses t
-        mu4e-maildirs-extension-hide-empty-maildirs t
-        mu4e-update-interval 300
-        mu4e-user-mail-address-list '("joerg@thalheim.io" "joerg@higgsboson.tk" "s1691654@sms.ed.ac.uk")
-        sendmail-program (executable-find "msmtp")
-        send-mail-function #'smtpmail-send-it
-        message-sendmail-f-is-evil t
-        message-sendmail-extra-arguments '("--read-envelope-from")
-        message-send-mail-function #'message-send-mail-with-sendmail
-        mu4e-headers-fields '((:human-date . 12) (:flags . 6) (:folder . 20) (:from . 22) (:subject))
-        mm-sign-option 'guided)
-
-  (setq nsm-settings-file (expand-file-name "~/.emacs.d/network-security.data"))
-
-  (add-to-list 'mu4e-header-info-custom
-               '(:folder . (:name "Folder"  ;; long name, as seen in the message-view
-                            :shortname "Folder"           ;; short name, as seen in the headers view
-                            :help "Mailbox folder of the message" ;; tooltip
-                            :function (lambda (msg) (replace-regexp-in-string "/thalheim.io/?\\(.zlist\\)?" "" (mu4e-message-field msg :maildir))))))
-  (add-to-list 'mu4e-headers-actions
-               '("Apply patch" . mu4e-action-git-apply-mbox) t)
-
-  ;; Mark as read and move to spam
-  (add-to-list 'mu4e-marks
-               '(spam
-                 :char       "S"
-                 :prompt     "Spam"
-                 :show-target (lambda (target) mu4e-spam-folder)
-                 :action      (lambda (docid msg target)
-                                (mu4e~proc-move docid mu4e-spam-folder "+S-u-N"))))
-
-  (mu4e~headers-defun-mark-for spam)
-  (map! :localleader
-        :map mu4e-headers-mode-map
-        :desc "Move to spam" "s" #'mu4e-headers-mark-for-spam)
-  (add-to-list 'mu4e-bookmarks '(:name "Big messages" :query "size:2M..500M" :key ?b))
-  (add-to-list 'mu4e-bookmarks '(:name "Unread messages without spam"
-                                 :query "flag:unread AND NOT flag:trashed AND NOT maildir:/thalheim.io/.Spam"
-                                 :key ?u)))
-
 (after! 'sh-script
   (lambda ()
     (setq sh-basic-offset 2 sh-indentation 2)))

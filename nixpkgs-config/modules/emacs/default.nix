@@ -96,13 +96,7 @@ in {
   home.packages = with pkgs; [
     myemacs
     ripgrep
-    mu
 
-    (editorScript {
-      name = "mu4e";
-      x11 = true;
-      extraArgs = ["--eval" "'(mu4e)'"];
-    })
     (editorScript {})
     gopls
     golangci-lint
