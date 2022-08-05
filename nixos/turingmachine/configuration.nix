@@ -28,7 +28,7 @@
 
     #../modules/podman.nix
     ../modules/i18n.nix
-    ../modules/tpm2.nix
+    #../modules/tpm2.nix
     ../modules/pipewire.nix
     ../modules/rock-rdp.nix
     ../modules/ip-update.nix
