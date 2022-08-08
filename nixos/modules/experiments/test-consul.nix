@@ -18,7 +18,6 @@ let
         "192.168.100.3"
         "192.168.100.4"
       ];
-      bootstrap_expect = 3;
       acl = {
         enabled = true;
         default_policy = "deny";
@@ -43,13 +42,14 @@ let
       ];
     };
     services.consul.extraConfig = {
+      bootstrap_expect = 3;
       server = true;
     };
   };
 in
 {
 
-  containers.consul0 = sharedSettings // {
+  containers.consul1 = sharedSettings // {
     localAddress = "192.168.100.2";
     config = { config, pkgs, ... }: {
       imports = [
@@ -79,27 +79,25 @@ in
     };
   };
 
-  containers.agent = sharedSettings // {
-    localAddress = "192.168.100.5";
+  containers.vault0 = sharedSettings // {
+    localAddress = "192.168.100.6";
+    privateNetwork = false;
     config = { config, pkgs, ... }: {
       imports = [
         sharedModule
         consulAgent
       ];
-    };
-  };
-
-  containers.vault0 = sharedSettings // {
-    localAddress = "192.168.100.6";
-    config = { config, pkgs, ... }: {
-      imports = [
-        sharedModule
+      networking.firewall.allowedTCPPorts = [
+        8300
       ];
       services.vault = {
         enable = true;
         dev = true;
         devRootTokenID = "phony-secret";
       };
+      services.consul.interface.bind = "dummy1";
+      systemd.services.consul.after = lib.mkForce [ ];
+      systemd.services.consul.bindsTo = lib.mkForce [ ];
     };
   };
 }

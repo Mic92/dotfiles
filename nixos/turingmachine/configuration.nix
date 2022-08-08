@@ -26,8 +26,9 @@
     ./modules/cntr.nix
     #./modules/minidlna.nix
 
-    #../modules/podman.nix
+    ../modules/touchpad-hack
     ../modules/i18n.nix
+    ../modules/podman.nix
     #../modules/tpm2.nix
     ../modules/pipewire.nix
     ../modules/rock-rdp.nix
@@ -135,9 +136,9 @@
     #rkt.enable = true;
     #rkt.enable = true;
     virtualbox.host.enable = false;
-    docker.enable = true;
-    docker.storageDriver = "zfs";
-    docker.extraOptions = "--storage-opt=zfs.fsname=zroot/docker";
+    #docker.enable = true;
+    #docker.storageDriver = "zfs";
+    #docker.extraOptions = "--storage-opt=zfs.fsname=zroot/docker";
   };
 
   networking.firewall.extraCommands = ''
@@ -228,5 +229,4 @@
 
   system.stateVersion = "18.03";
   boot.initrd.systemd.enable = true;
-
 }
