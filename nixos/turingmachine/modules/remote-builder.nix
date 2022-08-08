@@ -3,8 +3,8 @@
 
   nix.buildMachines = [
     {
-      #hostName = "ryan.dse.in.tum.de";
-      hostName = "ryan.r";
+      hostName = "ryan.dse.in.tum.de";
+      #hostName = "ryan.r";
       sshUser = "ssh-ng://nix";
       sshKey = config.sops.secrets.id_buildfarm.path;
       system = "x86_64-linux";
@@ -63,18 +63,18 @@
     #    "nixos-test"
     #  ];
     #}
-    #{
-    #  hostName = "yasmin.r";
-    #  sshUser = "ssh-ng://nix";
-    #  sshKey = config.sops.secrets.id_buildfarm.path;
-    #  system = "aarch64-linux";
-    #  maxJobs = 224;
-    #  supportedFeatures = [
-    #    "big-parallel"
-    #    "kvm"
-    #    "nixos-test"
-    #  ];
-    #}
+    {
+      hostName = "yasmin.dse.in.tum.de";
+      sshUser = "ssh-ng://nix";
+      sshKey = config.sops.secrets.id_buildfarm.path;
+      system = "aarch64-linux";
+      maxJobs = 224;
+      supportedFeatures = [
+        "big-parallel"
+        "kvm"
+        "nixos-test"
+      ];
+    }
     ##{
     ##  hostName = "martha.r";
     ##  sshUser = "ssh-ng://nix";
@@ -168,18 +168,18 @@
     #    sshUser = "nix";
     #    system = "aarch64-linux";
     #}
-    {
-      hostName = "aarch64.nixos.community";
-      maxJobs = 96;
-      sshKey = "/root/.ssh/id_ed25519";
-      sshUser = "ssh-ng://mic92";
-      system = "aarch64-linux";
-      supportedFeatures = [
-        "big-parallel"
-        "kvm"
-        "nixos-test"
-      ];
-    }
+    #{
+    #  hostName = "aarch64.nixos.community";
+    #  maxJobs = 96;
+    #  sshKey = "/root/.ssh/id_ed25519";
+    #  sshUser = "ssh-ng://mic92";
+    #  system = "aarch64-linux";
+    #  supportedFeatures = [
+    #    "big-parallel"
+    #    "kvm"
+    #    "nixos-test"
+    #  ];
+    #}
   ];
   sops.secrets.id_buildfarm = {};
 }
