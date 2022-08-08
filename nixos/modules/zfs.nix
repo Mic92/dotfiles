@@ -1,9 +1,10 @@
-{pkgs, ...}: {
+{pkgs, config, ...}: {
   services.zfs = {
     autoSnapshot.enable = true;
     autoSnapshot.monthly = 2;
     autoScrub.enable = true;
   };
+  boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
   environment.systemPackages = [
     pkgs.zfs-prune-snapshots
   ];
