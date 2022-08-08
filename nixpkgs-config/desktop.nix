@@ -38,6 +38,7 @@
 
       arandr
       signal-desktop
+      thunderbird
       nur.repos.mic92.pandoc-bin
       gnome.adwaita-icon-theme
       hicolor-icon-theme
@@ -60,6 +61,7 @@
       hydra-check
       xdg_utils
       patool
+      picocom
 
       (mpv.override {
         scripts = [mpvScripts.mpris];
