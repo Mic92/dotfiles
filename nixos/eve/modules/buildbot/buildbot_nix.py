@@ -4,6 +4,8 @@ import json
 import os
 import re
 from pathlib import Path
+import uuid
+from collections import defaultdict
 
 from buildbot.steps.trigger import Trigger
 from buildbot.plugins import util, steps
@@ -52,6 +54,8 @@ class BuildTrigger(Trigger):
             props.setProperty("attr", attr, "spawner")
             props.setProperty("drv_path", drv_path, "spawner")
             props.setProperty("out_path", out_path, "spawner")
+            # we use this to identify builds when running a retry
+            props.setProperty("build_uuid", str(uuid.uuid4()), "spawner")
             props.setProperty("error", error, "spawner")
             triggered_schedulers.append((sch, props))
         return triggered_schedulers
@@ -90,6 +94,22 @@ class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
 
         return result
 
+# FIXME this leaks memory... but probably not enough that we care
+class RetryCounter:
+    def __init__(self, retries: int) -> None:
+        self.builds: dict[uuid.UUID, int] = defaultdict(lambda: retries)
+
+    def retry_build(self, id: uuid.UUID) -> int:
+        retries =  self.builds[id]
+        if retries > 1:
+            self.builds[id] = retries - 1
+            return retries
+        else:
+            return 0
+
+# For now we limit this to two. Often this allows us to make the error log
+# shorter because we won't see the logs for all previous succeeded builds
+RETRY_COUNTER = RetryCounter(retries=2)
 
 class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
     """
@@ -110,7 +130,7 @@ class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
             attr = self.getProperty("attr")
             # show eval error
             self.build.results = util.FAILURE
-            log = yield self.addLog("nix-error")
+            log = yield self.addLog("nix_error")
             log.addStderr(f"{attr} failed to evaluate:\n{error}")
             return util.FAILURE
 
@@ -118,7 +138,12 @@ class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
         cmd = yield self.makeRemoteShellCommand()
         yield self.runCommand(cmd)
 
-        return cmd.results()
+        res = cmd.results()
+        if res == util.FAILURE:
+            retries = RETRY_COUNTER.retry_build(self.getProperty("build_uuid"))
+            if retries > 0:
+                return util.RETRY
+        return res
 
 
 class UpdateBuildOutput(steps.BuildStep):
@@ -389,6 +414,7 @@ def nix_build_config(
                 util.Interpolate("result-%(prop:attr)s"),
                 util.Property("drv_path"),
             ],
+            haltOnFailure=True,
         )
     )
     if enable_cachix:
