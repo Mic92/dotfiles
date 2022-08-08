@@ -81,9 +81,9 @@ def build_config() -> dict[str, Any]:
     c["builders"] = [
         # Since all workers run on the same machine, we only assign one of them to do the evaluation.
         # This should prevent exessive memory usage.
-        nix_eval_config([worker_names[0]], github_token_secret="bot-token"),
+        nix_eval_config([worker_names[0]], github_token_secret="github-token"),
         nix_build_config(worker_names, enable_cachix),
-        nix_update_flake_config(worker_names, "Mic92/dotfiles", github_token_secret="bot-token"),
+        nix_update_flake_config(worker_names, "Mic92/dotfiles", github_token_secret="github-token"),
     ]
 
     github_admins = os.environ.get("GITHUB_ADMINS", "").split(",")
