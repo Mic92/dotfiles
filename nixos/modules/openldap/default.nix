@@ -20,7 +20,7 @@
       "olcDatabase={1}mdb".attrs = {
         objectClass = ["olcDatabaseConfig" "olcMdbConfig"];
         olcDatabase = "{1}mdb";
-        olcDbDirectory = "/var/db/openldap";
+        olcDbDirectory = "/var/lib/openldap";
         olcRootPW.path = config.sops.secrets.openldap-rootpw.path;
         olcRootDN = "cn=admin,dc=eve";
         olcSuffix = "dc=eve";
