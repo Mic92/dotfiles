@@ -24,6 +24,7 @@
 
   imports = [
     ./modules/borgbackup-repos
+    ./modules/buildbot.nix
     ./modules/go-neb.nix
     ./modules/hardware-configuration.nix
     ./modules/prometheus
