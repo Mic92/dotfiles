@@ -97,6 +97,15 @@ in {
         ];
     };
 
+    blob64 = nixosSystem {
+      system = "aarch64-linux";
+      modules =
+        defaultModules
+        ++ [
+          ./blob64/configuration.nix
+        ];
+    };
+
     matchbox = nixosSystem {
       system = "aarch64-linux";
       modules =

@@ -10,6 +10,8 @@
     ./hardware-configuration.nix
   ];
 
+  sops.defaultSopsFile = ./secrets/secrets.yaml;
+
   # Fan speed adjustment
   systemd.services.fans = {
     wantedBy = ["multi-user.target"];
@@ -26,6 +28,8 @@
 
   networking.useNetworkd = true;
   boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
+
+  networking.hostName = "blob64";
 
   environment.systemPackages = with pkgs; [
     vim
