@@ -40,7 +40,13 @@ fn main() {
     let fans = fans;
     loop {
         for fan in &fans {
-            adjust(fan, &PathBuf::from("/sys/devices/virtual/thermal/thermal_zone0/hwmon2/temp1_input"))
+            for dir in read_dir("/sys/devices/virtual/thermal/thermal_zone0/").unwrap() {
+                let mut p = dir.unwrap().path();
+                if p.starts_with("hwmon") {
+                    p.push("temp1_input");
+                    adjust(fan, &p)
+                }
+            }
         }
         sleep(Duration::from_secs(5));
     }

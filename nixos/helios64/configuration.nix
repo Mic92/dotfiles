@@ -25,6 +25,7 @@
   users.users.root.password = "fnord23";
 
   networking.useNetworkd = true;
+  boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
   environment.systemPackages = with pkgs; [
     vim
