@@ -5,7 +5,12 @@
     enable = true;
     masterCfg = "${./.}/master.py";
     dbUrl = "postgresql://@/buildbot";
-    pythonPackages = ps: [ ps.requests ps.treq ps.psycopg2 ];
+    pythonPackages = ps: [
+      ps.requests
+      ps.treq
+      ps.psycopg2
+      ps.buildbot-worker
+    ];
   };
 
   systemd.services.buildbot-master = {
