@@ -20,9 +20,7 @@ def setup_worker(application: service.Application, id: int) -> None:
     basedir = f"{require_env('BUILDBOT_DIR')}-{id}"
     os.makedirs(basedir, mode=0o700, exist_ok=True)
 
-    master_url_split = require_env("MASTER_URL").split(":")
-    buildmaster_host = master_url_split[0]
-    port = int(master_url_split[1])
+    master_url = require_env("MASTER_URL")
     hostname = socket.gethostname()
     workername = f"{hostname}-{id}"
 
@@ -36,14 +34,14 @@ def setup_worker(application: service.Application, id: int) -> None:
     numcpus = None
     allow_shutdown = None
 
-    print(f"worker: {workername}:{passwd}")
     s = Worker(
-        buildmaster_host,
-        port,
+        None,
+        None,
         workername,
         passwd,
         basedir,
         keepalive,
+        connection_string=master_url,
         umask=umask,
         maxdelay=maxdelay,
         numcpus=numcpus,
