@@ -8,6 +8,7 @@ from buildbot.plugins import worker, util, schedulers, reporters, secrets
 from buildbot.process.properties import Interpolate
 from pathlib import Path
 from typing import Any
+from datetime import timedelta
 
 # allow to import modules
 sys.path.append(str(Path(__file__).parent))
@@ -27,6 +28,13 @@ def read_secret_file(secret_name: str) -> str:
 def build_config() -> dict[str, Any]:
     c = {}
     c["buildbotNetUsageData"] = None
+
+    # configure a janitor which will delete all logs older than one month, and will run on sundays at noon
+    c['configurators'] = [util.JanitorConfigurator(
+        logHorizon=timedelta(weeks=4),
+        hour=12,
+        dayOfWeek=6
+    )]
 
     c["schedulers"] = [
         # build all pushes to master
