@@ -8,6 +8,11 @@ export RETIOLUM_PATH=/var/lib/gitea/builds/retiolum
 export RETIOLUM_URL=gitea@git.thalheim.io:Mic92/retiolum
 export WEBROOT=/var/www/retiolum.thalheim.io
 
+export GIT_AUTHOR_NAME="gitea"
+export GIT_AUTHOR_EMAIL="gitea@thalheim.io"
+export GIT_COMMITTER_NAME="gitea"
+export GIT_COMMITTER_EMAIL="gitea@thalheim.io"
+
 mkdir -p $GIT_WORK_TREE
 cd $GIT_WORK_TREE
 
