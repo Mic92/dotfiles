@@ -30,7 +30,6 @@
     ./modules/et.nix
     ./modules/ejabberd.nix
     ./modules/gitea
-    ./modules/gitlab/runner.nix
     ./modules/grafana.nix
     ./modules/goatcounter.nix
     ./modules/home-assistant
