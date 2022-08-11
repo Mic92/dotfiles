@@ -11,6 +11,7 @@
   ];
 
   sops.defaultSopsFile = ./secrets/secrets.yaml;
+  system.stateVersion = "22.11";
 
   # Fan speed adjustment
   systemd.services.fans = {
@@ -38,6 +39,8 @@
     parted
     fio
     wget
+    hello
+    tcpdump
   ];
 
   boot.supportedFilesystems = ["zfs"];
