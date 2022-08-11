@@ -13,6 +13,7 @@
     ./muc.nix
     ./threema.nix
     ./retiolum.nix
+    ./mta-sts.nix
 
     ../../../modules/nginx.nix
   ];
