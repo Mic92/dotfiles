@@ -19,9 +19,9 @@
       FROM = "gitea@thalheim.io";
       USER = "gitea@thalheim.io";
       HOST = "mail.thalheim.io:587";
-      log.level = "Error";
-      service.DISABLE_REGISTRATION = true;
     };
+    settings.log.LEVEL = "Error";
+    settings.service.DISABLE_REGISTRATION = true;
     settings.metrics.ENABLED = true;
     settings.server.DISABLE_ROUTER_LOG = true;
     httpPort = 3002;
