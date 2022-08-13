@@ -11,16 +11,16 @@
       host = "/run/postgresql";
       port = 5432;
     };
-    log.level = "Error";
     domain = "git.thalheim.io";
     rootUrl = "https://git.thalheim.io";
     mailerPasswordFile = config.sops.secrets.gitea-mail.path;
-    disableRegistration = true;
     settings.mailer = {
       ENABLED = true;
       FROM = "gitea@thalheim.io";
       USER = "gitea@thalheim.io";
       HOST = "mail.thalheim.io:587";
+      log.level = "Error";
+      service.DISABLE_REGISTRATION = true;
     };
     settings.metrics.ENABLED = true;
     settings.server.DISABLE_ROUTER_LOG = true;
