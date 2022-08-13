@@ -16,6 +16,7 @@ from twisted.internet import defer
 from buildbot.process.results import ALL_RESULTS
 from buildbot.process.results import statusToString
 
+
 class BuildTrigger(Trigger):
     """
     Dynamic trigger that creates a build for every attribute.
@@ -66,15 +67,16 @@ class BuildTrigger(Trigger):
         The original build trigger will the generic builder name `nix-build` in this case, which is not helpful
         """
         if not self.triggeredNames:
-            return {'step': 'running'}
-        summary = ""
+            return {"step": "running"}
+        summary = []
         if self._result_list:
             for status in ALL_RESULTS:
                 count = self._result_list.count(status)
                 if count:
-                    summary = summary + (f", {self._result_list.count(status)} "
-                        f"{statusToString(status, count)}")
-        return {'step': f"-> {summary}"}
+                    summary.append(
+                        f"{self._result_list.count(status)} {statusToString(status, count)}"
+                    )
+        return {"step": f"{','.join(summary)}"}
 
 
 class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
@@ -110,22 +112,25 @@ class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
 
         return result
 
+
 # FIXME this leaks memory... but probably not enough that we care
 class RetryCounter:
     def __init__(self, retries: int) -> None:
         self.builds: dict[uuid.UUID, int] = defaultdict(lambda: retries)
 
     def retry_build(self, id: uuid.UUID) -> int:
-        retries =  self.builds[id]
+        retries = self.builds[id]
         if retries > 1:
             self.builds[id] = retries - 1
             return retries
         else:
             return 0
 
+
 # For now we limit this to two. Often this allows us to make the error log
 # shorter because we won't see the logs for all previous succeeded builds
 RETRY_COUNTER = RetryCounter(retries=2)
+
 
 class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
     """
