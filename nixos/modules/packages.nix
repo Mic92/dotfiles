@@ -1,9 +1,6 @@
 {pkgs, ...}: {
   environment.systemPackages = with pkgs; [
-    (neovim.override {
-      # no python2
-      withPython = false;
-    })
+    neovim
     libarchive
     psmisc
     sipcalc
