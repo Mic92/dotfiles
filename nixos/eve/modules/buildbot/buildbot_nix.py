@@ -13,7 +13,8 @@ from typing import Any, Generator, Optional
 from buildbot.process import buildstep, logobserver
 from buildbot.process.properties import Properties
 from twisted.internet import defer
-
+from buildbot.process.results import ALL_RESULTS
+from buildbot.process.results import statusToString
 
 class BuildTrigger(Trigger):
     """
@@ -59,6 +60,21 @@ class BuildTrigger(Trigger):
             props.setProperty("error", error, "spawner")
             triggered_schedulers.append((sch, props))
         return triggered_schedulers
+
+    def getCurrentSummary(self):
+        """
+        The original build trigger will the generic builder name `nix-build` in this case, which is not helpful
+        """
+        if not self.triggeredNames:
+            return {'step': 'running'}
+        summary = ""
+        if self._result_list:
+            for status in ALL_RESULTS:
+                count = self._result_list.count(status)
+                if count:
+                    summary = summary + (f", {self._result_list.count(status)} "
+                        f"{statusToString(status, count)}")
+        return {'step': f"-> {summary}"}
 
 
 class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):

@@ -140,6 +140,11 @@ class NotifyFailedBuilds(ReporterBase):
     def sendMessage(self, reports: list):
         msgs = []
         for r in reports:
-            if r["builds"][0]["state_string"] != "build successful":
+            build = r["builds"][0]
+            buildername = build["builder"]["name"]
+            # We don't want to report individual failures here to not spam the channel.
+            if buildername != "nix-eval":
+                continue
+            if build["state_string"] != "build successful":
                 msgs.append(r["subject"])
         irc_send(self.url, notifications=msgs)
