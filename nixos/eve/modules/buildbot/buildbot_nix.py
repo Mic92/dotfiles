@@ -76,7 +76,7 @@ class BuildTrigger(Trigger):
                     summary.append(
                         f"{self._result_list.count(status)} {statusToString(status, count)}"
                     )
-        return {"step": f"{','.join(summary)}"}
+        return {"step": f"({', '.join(summary)})"}
 
 
 class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
