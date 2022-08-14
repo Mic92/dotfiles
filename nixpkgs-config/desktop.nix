@@ -70,7 +70,7 @@
       playerctl
       yt-dlp
       mumble
-      #ferdi
+      ferdium
       msmtp
       kubectl
       terraform-ls
