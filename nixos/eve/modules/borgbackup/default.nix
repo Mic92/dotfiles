@@ -45,6 +45,8 @@
       "/home/joerg/work/kuutamo/core/src/kuutamod/.data"
       "/mnt/matchbox/ebooks"
       "/var/lib/containerd"
+      # already included in database backup
+      "/var/lib/postgresql"
       "/var/lib/docker/"
       "/var/log/journal"
       "/var/cache"
