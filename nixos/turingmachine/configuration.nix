@@ -86,6 +86,8 @@
     ];
   };
 
+  boot.plymouth.enable = true;
+
   networking.hostName = "turingmachine";
 
   console.keyMap = "us";
@@ -227,6 +229,6 @@
     139
   ];
 
-  system.stateVersion = "18.03";
+  system.stateVersion = "22.11";
   boot.initrd.systemd.enable = true;
 }
