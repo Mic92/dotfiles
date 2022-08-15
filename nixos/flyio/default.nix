@@ -4,5 +4,6 @@ with import <nixpkgs> {};
       bashInteractive
       flyctl
       skopeo
+      headscale
     ];
   }

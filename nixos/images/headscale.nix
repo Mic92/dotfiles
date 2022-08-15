@@ -11,7 +11,8 @@
   configFile = writeText "headscale.yaml" (builtins.toJSON {
     db_type = "sqlite3";
     db_path = "/var/lib/headscale/db.sqlite";
-    server_url = "http://headscale.thalheim.io";
+    #server_url = "https://headscale.thalheim.io";
+    server_url = "https://headscale.thalheim.io";
     listen_addr = "0.0.0.0:8080";
     grpc_listen_addr = "0.0.0.0:50443";
     tls_client_auth_mode = "relaxed";
@@ -34,9 +35,9 @@
       disable_check_updates = false;
       logtail.enabled = false;
     };
-    #tls_letsencrypt_challenge_type = "TLS-ALPN-01";
-    #tls_letsencrypt_listen: ":http"
-    #tls_letsencrypt_cache_dir = "/var/lib/headscale/cache";
+    tls_letsencrypt_challenge_type = "HTTP-01";
+    tls_letsencrypt_listen = ":8081";
+    tls_letsencrypt_cache_dir = "/var/lib/headscale/cache";
     ip_prefixes = [
       "100.64.0.0/10"
       "fd7a:115c:a1e0::/48"
@@ -58,11 +59,12 @@ in
           #!${busybox}/bin/sh
           set -x
           export PATH=${busybox}/bin
+          rm -rf /bin
           mkdir -p /bin /tmp
           busybox --install -s /bin
 
           for bin in ${tcpdump}/bin/*; do
-            ln -s "$bin" /bin/$(basename $bin)
+            ln -sf "$bin" /bin/$(basename $bin)
           done
           mkdir -p /etc/headscale /var/run/
           ln -s ${configFile} /etc/headscale/config.yaml

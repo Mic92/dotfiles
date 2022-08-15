@@ -6,9 +6,31 @@ app = "headscale-mic92"
   destination = "/var/lib/headscale"
   source = "headscale"
 
-#[services]
-#
-#  [[services.ports]]
-#    force_https = true
-#    handlers = ["http"]
-#    port = 80
+# HTTPS API
+[[services]]
+  internal_port = 8080
+  [[services.ports]]
+    handlers = []
+    port = 443
+
+# HTTP for HTTP-01 acme
+[[services]]
+  internal_port = 8081
+  [[services.ports]]
+    handlers = []
+    port = 80
+
+# GRPC
+[[services]]
+  internal_port = 50443
+  [[services.ports]]
+    handlers = []
+    port = 50443
+
+# DERP
+[[services]]
+  internal_port = 3478
+  protocol = "udp"
+  [[services.ports]]
+    handlers = []
+    port = 3478
