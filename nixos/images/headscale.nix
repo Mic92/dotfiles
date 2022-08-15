@@ -1,6 +1,5 @@
 {
-  nix2container,
-  knot-resolver,
+  dockerTools,
   writeText,
   writeScript,
   runtimeShell,
@@ -9,7 +8,6 @@
   tcpdump,
   cacert
 }: let
-  kresd = knot-resolver.override {extraFeatures = true;};
   configFile = writeText "headscale.yaml" (builtins.toJSON {
     db_type = "sqlite3";
     db_path = "/var/lib/headscale/db.sqlite";
@@ -40,16 +38,17 @@
     #tls_letsencrypt_listen: ":http"
     #tls_letsencrypt_cache_dir = "/var/lib/headscale/cache";
     ip_prefixes = [
-      "fd7a:115c:a1e0::/48"
       "100.64.0.0/10"
+      "fd7a:115c:a1e0::/48"
     ];
     ephemeral_node_inactivity_timeout = "600m";
     tls_letsencrypt_hostname = "headscale.thalheim.io";
     acme_email = "joerg@thalheim.io";
   });
 in
-  nix2container.buildImage {
-    name = "mic92/headscale";
+  dockerTools.streamLayeredImage {
+    name = "registry.fly.io/headscale-mic92";
+    tag = "latest";
     config = {
       Env = [
         "SSL_CERT_FILE=${cacert}/etc/ssl/certs/ca-bundle.crt"
@@ -65,23 +64,16 @@ in
           for bin in ${tcpdump}/bin/*; do
             ln -s "$bin" /bin/$(basename $bin)
           done
-          mkdir -p /etc/headscale
+          mkdir -p /etc/headscale /var/run/
           ln -s ${configFile} /etc/headscale/config.yaml
-
           exec ${headscale}/bin/headscale serve
         '')
       ];
-      Volumes = {
-        "/var/lib/headscale" = {};
-      };
+      Volumes."/var/lib/headscale" = {};
     };
-    layers = [
-      (nix2container.buildLayer {
-        deps = [
-          headscale
-          busybox
-          tcpdump
-        ];
-      })
+    contents = [
+      headscale
+      busybox
+      tcpdump
     ];
   }

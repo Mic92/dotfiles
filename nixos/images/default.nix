@@ -88,17 +88,7 @@
         inherit pkgs;
       };
 
-      #kresd-image = pkgs.callPackage ./kresd.nix {
-      #  inherit (containerPkgs) nix2container;
-      #};
-      #kresd-podman = copyToPodman selfPkgs.kresd-image;
-      #kresd-registry = selfPkgs.kresd-image.copyToRegistry;
-
-      headscale-registry = self'.packages.headscale-image.copyToRegistry;
-      headscale-podman = self'.packages.headscale-image.copyToPodman;
-      headscale-image = pkgs.callPackage ./headscale.nix {
-        inherit (containerPkgs) nix2container;
-      };
+      headscale-image = pkgs.callPackage ./headscale.nix {};
     };
   };
 }

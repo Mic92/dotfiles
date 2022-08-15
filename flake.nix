@@ -59,10 +59,6 @@
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix2container.url = "github:Mic92/nix2container/bump-nix";
-    nix2container.inputs.nixpkgs.follows = "nixpkgs";
-    nix2container.inputs.flake-utils.follows = "flake-utils";
-
     poetry2nix.url = "github:nix-community/poetry2nix";
     poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
     poetry2nix.inputs.flake-utils.follows = "flake-utils";

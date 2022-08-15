@@ -1,27 +1,14 @@
-app = "kresd"
+# fly.toml file generated for headscale-mic92 on 2022-07-24T15:30:43+02:00
 
-[[services]]
-  internal_port = "4443"
-  protocol = "tcp"
-
-  [[services.ports]]
-    port = "443"
-
-  [[services.tcp_checks]]
-    interval = 10000
-    timeout = 2000
-
-[[services]]
-  internal_port = "8853"
-  protocol = "tcp"
-
-  [[services.ports]]
-    port = "853"
-
-  [[services.tcp_checks]]
-    interval = 10000
-    timeout = 2000
+app = "headscale-mic92"
 
 [mounts]
-  source="kresdcache"
-  destination="/var/cache/knot-resolver"
+  destination = "/var/lib/headscale"
+  source = "headscale"
+
+#[services]
+#
+#  [[services.ports]]
+#    force_https = true
+#    handlers = ["http"]
+#    port = 80
