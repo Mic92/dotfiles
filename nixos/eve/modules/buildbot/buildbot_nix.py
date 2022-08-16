@@ -272,7 +272,7 @@ class CreatePr(steps.ShellCommand):
 
 
 def nix_update_flake_config(
-    worker_names: list[str], projectname: str, github_token_secret: str
+        worker_names: list[str], projectname: str, github_token_secret: str
 ) -> util.BuilderConfig:
     """
     Updates the flake an opens a PR for it.
@@ -284,6 +284,7 @@ def nix_update_flake_config(
     factory.addStep(
         steps.Git(
             repourl=url_with_secret,
+            alwaysUseLatest=True,
             method="clean",
             submodules=True,
             haltOnFailure=True,

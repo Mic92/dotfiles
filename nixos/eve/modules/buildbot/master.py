@@ -30,24 +30,33 @@ def build_config() -> dict[str, Any]:
     c["buildbotNetUsageData"] = None
 
     # configure a janitor which will delete all logs older than one month, and will run on sundays at noon
-    c['configurators'] = [util.JanitorConfigurator(
-        logHorizon=timedelta(weeks=4),
-        hour=12,
-        dayOfWeek=6
-    )]
+    c["configurators"] = [
+        util.JanitorConfigurator(logHorizon=timedelta(weeks=4), hour=12, dayOfWeek=6)
+    ]
 
     c["schedulers"] = [
         # build all pushes to master
         schedulers.SingleBranchScheduler(
             name="master",
             change_filter=util.ChangeFilter(branch="master"),
+            codebases=dict(
+                dotfiles=dict(repository="https://github.com/Mic92/dotfiles")
+            ),
             builderNames=["nix-eval"],
         ),
         # build all pull requests
         schedulers.SingleBranchScheduler(
             name="prs",
             change_filter=util.ChangeFilter(category="pull"),
+            codebases=dict(
+                dotfiles=dict(repository="https://github.com/Mic92/dotfiles")
+            ),
             builderNames=["nix-eval"],
+        ),
+        schedulers.SingleBranchScheduler(
+            name="flake-sources",
+            change_filter=util.ChangeFilter(repository="https://github.com/Mic92/nixpkgs", branch="main"),
+            builderNames=["nix-update-flake"],
         ),
         # this is triggered from `nix-eval`
         schedulers.Triggerable(
@@ -57,9 +66,19 @@ def build_config() -> dict[str, Any]:
         # allow to manually trigger a nix-build
         schedulers.ForceScheduler(name="force", builderNames=["nix-eval"]),
         # allow to manually update flakes
-        schedulers.ForceScheduler(name="update-flake", builderNames=["nix-update-flake"], buttonName="Update flakes"),
+        schedulers.ForceScheduler(
+            name="update-flake",
+            builderNames=["nix-update-flake"],
+            buttonName="Update flakes",
+        ),
         # updates flakes once a weeek
-        schedulers.NightlyTriggerable(name='update-flake-weekly', builderNames=['nix-update-flake'], hour=3, minute=0, dayOfWeek=6)
+        schedulers.NightlyTriggerable(
+            name="update-flake-weekly",
+            builderNames=["nix-update-flake"],
+            hour=3,
+            minute=0,
+            dayOfWeek=6,
+        ),
     ]
 
     github_api_token = read_secret_file("github-token")
@@ -97,7 +116,9 @@ def build_config() -> dict[str, Any]:
         # This should prevent exessive memory usage.
         nix_eval_config([worker_names[0]], github_token_secret="github-token"),
         nix_build_config(worker_names, enable_cachix),
-        nix_update_flake_config(worker_names, "Mic92/dotfiles", github_token_secret="github-token"),
+        nix_update_flake_config(
+            worker_names, "Mic92/dotfiles", github_token_secret="github-token"
+        ),
     ]
 
     github_admins = os.environ.get("GITHUB_ADMINS", "").split(",")
@@ -113,7 +134,7 @@ def build_config() -> dict[str, Any]:
             ],
             allowRules=[
                 util.AnyEndpointMatcher(role="admin", defaultDeny=False),
-                util.AnyControlEndpointMatcher(role="admins")
+                util.AnyControlEndpointMatcher(role="admins"),
             ],
         ),
         "plugins": dict(waterfall_view={}, console_view={}, grid_view={}),
