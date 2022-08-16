@@ -90,7 +90,7 @@
       sleep 1
     done
     id=$(headscale nodes list -o json | jq -r '.[] | select(.name == "headscale") | .id')
-    headscale nodes tag -i 3 --tags tag:exitnode
+    headscale routes enable --identifier "$id" --route '0.0.0.0/0' --route '::/0'
     killall tailscaled
   '';
 
