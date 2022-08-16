@@ -28,7 +28,7 @@
 
     ../modules/touchpad-hack
     ../modules/i18n.nix
-    ../modules/podman.nix
+    #../modules/podman.nix
     #../modules/tpm2.nix
     ../modules/pipewire.nix
     ../modules/rock-rdp.nix
@@ -46,6 +46,7 @@
     #./kde.nix
     #../modules/samba-dl.nix
     ../modules/sway.nix
+    ../modules/tailscale.nix
     #../modules/awesome.nix
     #../modules/gnome.nix
     ../modules/pki
@@ -138,9 +139,9 @@
     #rkt.enable = true;
     #rkt.enable = true;
     virtualbox.host.enable = false;
-    #docker.enable = true;
-    #docker.storageDriver = "zfs";
-    #docker.extraOptions = "--storage-opt=zfs.fsname=zroot/docker";
+    docker.enable = true;
+    docker.storageDriver = "zfs";
+    docker.extraOptions = "--storage-opt=zfs.fsname=zroot/docker";
   };
 
   networking.firewall.extraCommands = ''
