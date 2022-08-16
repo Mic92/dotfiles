@@ -44,7 +44,7 @@ def build_config() -> dict[str, Any]:
         # build all pull requests
         schedulers.SingleBranchScheduler(
             name="prs",
-            change_filter=util.ChangeFilter(repository="https://github.com/Mic92/dotfiles", branch="master"),
+            change_filter=util.ChangeFilter(repository="https://github.com/Mic92/dotfiles", category="pull"),
             builderNames=["nix-eval"],
         ),
         schedulers.SingleBranchScheduler(
