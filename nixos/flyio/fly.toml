@@ -34,3 +34,11 @@ app = "headscale-mic92"
   [[services.ports]]
     handlers = []
     port = 3478
+
+# tailscale
+[[services]]
+  internal_port = 41641
+  protocol = "udp"
+  [[services.ports]]
+    handlers = []
+    port = 41641
