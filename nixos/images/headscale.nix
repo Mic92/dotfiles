@@ -5,8 +5,11 @@
   runtimeShell,
   busybox,
   headscale,
+  tailscale,
+  iptables-legacy,
   tcpdump,
-  cacert
+  cacert,
+  pkgs
 }: let
   configFile = writeText "headscale.yaml" (builtins.toJSON {
     db_type = "sqlite3";
@@ -46,6 +49,47 @@
     tls_letsencrypt_hostname = "headscale.thalheim.io";
     acme_email = "joerg@thalheim.io";
   });
+
+  # FIXME: do I need iptables ?
+  tailscale' = tailscale.overrideAttrs (old: {
+    # avoid unecessary binaries
+    postInstall = "";
+  });
+
+  setupHeadscale = pkgs.writeScript "setup-headscale" ''
+    #!${busybox}/bin/sh
+    set -eux -o pipefail
+    while [[ ! -S /var/run/tailscale/tailscaled.sock ]]; then
+      sleep 1
+    done
+    while ! headscale nodes list; do
+      sleep 1
+    done
+
+    if ! headscale namespaces list | grep -q krebscale; then
+      headscale namespace create krebscale
+    fi
+    key=$(headscale --namespace krebscale preauthkeys create --reusable --expiration 1h | grep -v "An updated version")
+    while ! tailscale up --advertise-exit-node --login-server https://headscale.thalheim.io  --authkey "$key"; do
+      sleep 1
+    done
+  '';
+
+  headscaleSvc = pkgs.writeText "headscale" ''
+    #!${busybox}/bin/sh
+    exec ${headscale}/bin/headscale serve
+  '';
+
+  tailscaleSvc = pkgs.writeText "tailscale" ''
+    #!${busybox}/bin/sh
+    exec ${tailscale'}/bin/tailscaled --state=/var/lib/headscale/tailscaled.state --socket=/var/run/tailscale/tailscaled.sock --port 41641
+  '';
+
+  services = pkgs.runCommand "services" {} ''
+    install -D -m755 ${headscaleSvc} $out/headscale/run
+    install -D -m755 ${tailscaleSvc} $out/tailscale/run
+  '';
+  
 in
   dockerTools.streamLayeredImage {
     name = "registry.fly.io/headscale-mic92";
@@ -62,13 +106,29 @@ in
           rm -rf /bin
           mkdir -p /bin /tmp
           busybox --install -s /bin
+          export PATH=/bin
 
           for bin in ${tcpdump}/bin/*; do
-            ln -sf "$bin" /bin/$(basename $bin)
+            ln -s "$bin" /bin/$(basename $bin)
           done
+          ln -s ${headscale}/bin/headscale /bin/headscale
+          ln -s ${tailscale'}/bin/tailscale /bin/tailscale
+          ln -s ${iptables-legacy}/bin/iptables /bin/iptables
+          ln -s ${iptables-legacy}/bin/ip6tables /bin/ip6tables
+
+          hostname headscale
+
+          modprobe xt_mark
+          sysctl -w net.ipv4.ip_forward=1
+          sysctl -w net.ipv6.conf.all.forwarding=1
+          iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+          ip6tables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
           mkdir -p /etc/headscale /var/run/
           ln -s ${configFile} /etc/headscale/config.yaml
-          exec ${headscale}/bin/headscale serve
+
+          ${setupHeadscale} &
+          exec ${busybox}/bin/runsvdir ${services}
         '')
       ];
       Volumes."/var/lib/headscale" = {};
