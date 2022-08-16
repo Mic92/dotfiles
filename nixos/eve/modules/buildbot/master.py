@@ -38,19 +38,13 @@ def build_config() -> dict[str, Any]:
         # build all pushes to master
         schedulers.SingleBranchScheduler(
             name="master",
-            change_filter=util.ChangeFilter(branch="master"),
-            codebases=dict(
-                dotfiles=dict(repository="https://github.com/Mic92/dotfiles")
-            ),
+            change_filter=util.ChangeFilter(repository="https://github.com/Mic92/dotfiles", branch="master"),
             builderNames=["nix-eval"],
         ),
         # build all pull requests
         schedulers.SingleBranchScheduler(
             name="prs",
-            change_filter=util.ChangeFilter(category="pull"),
-            codebases=dict(
-                dotfiles=dict(repository="https://github.com/Mic92/dotfiles")
-            ),
+            change_filter=util.ChangeFilter(repository="https://github.com/Mic92/dotfiles", branch="master"),
             builderNames=["nix-eval"],
         ),
         schedulers.SingleBranchScheduler(
