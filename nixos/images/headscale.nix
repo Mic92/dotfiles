@@ -9,8 +9,22 @@
   iptables-legacy,
   tcpdump,
   cacert,
-  pkgs
+  jq,
+  pkgs,
 }: let
+  acls = writeText "acl.yaml" (builtins.toJSON {
+    # A device tagged security can advertise exit nodes that are auto-approved
+    autoApprovers = {
+      exitNode = ["tag:exitnode"];
+    };
+    acls = [
+      {
+        action = "accept";
+        src = ["tag:all"];
+        dst = ["tag:all:*"];
+      }
+    ];
+  });
   configFile = writeText "headscale.yaml" (builtins.toJSON {
     db_type = "sqlite3";
     db_path = "/var/lib/headscale/db.sqlite";
@@ -21,6 +35,7 @@
     tls_client_auth_mode = "relaxed";
     private_key_path = "/var/lib/headscale/private.key";
 
+    #acl_policy_path = acls;
     derp = {
       server = {
         enabled = true;
@@ -59,7 +74,7 @@
   setupHeadscale = pkgs.writeScript "setup-headscale" ''
     #!${busybox}/bin/sh
     set -eux -o pipefail
-    while [[ ! -S /var/run/tailscale/tailscaled.sock ]]; then
+    while [[ ! -S /var/run/tailscale/tailscaled.sock ]]; do
       sleep 1
     done
     while ! headscale nodes list; do
@@ -69,10 +84,14 @@
     if ! headscale namespaces list | grep -q krebscale; then
       headscale namespace create krebscale
     fi
-    key=$(headscale --namespace krebscale preauthkeys create --reusable --expiration 1h | grep -v "An updated version")
+
+    key=$(headscale --namespace krebscale preauthkeys create -o json --reusable --expiration 5m | jq -r .key)
     while ! tailscale up --advertise-exit-node --login-server https://headscale.thalheim.io  --authkey "$key"; do
       sleep 1
     done
+    id=$(headscale nodes list -o json | jq -r '.[] | select(.name == "headscale") | .id')
+    headscale nodes tag -i 3 --tags tag:exitnode
+    killall tailscaled
   '';
 
   headscaleSvc = pkgs.writeText "headscale" ''
@@ -89,7 +108,6 @@
     install -D -m755 ${headscaleSvc} $out/headscale/run
     install -D -m755 ${tailscaleSvc} $out/tailscale/run
   '';
-  
 in
   dockerTools.streamLayeredImage {
     name = "registry.fly.io/headscale-mic92";
@@ -113,6 +131,7 @@ in
           done
           ln -s ${headscale}/bin/headscale /bin/headscale
           ln -s ${tailscale'}/bin/tailscale /bin/tailscale
+          ln -s ${jq}/bin/jq /bin/jq
           ln -s ${iptables-legacy}/bin/iptables /bin/iptables
           ln -s ${iptables-legacy}/bin/ip6tables /bin/ip6tables
 
