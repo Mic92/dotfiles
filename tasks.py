@@ -3,14 +3,18 @@
 from invoke import task
 
 import sys
+import os
 from typing import List
 import subprocess
 import socket
 from deploy_nixos import DeployHost, DeployGroup, parse_hosts, HostKeyCheck
+from pathlib import Path
 
 
 RSYNC_EXCLUDES = ["gdb", "zsh", ".terraform", ".direnv", ".mypy-cache", ".git"]
 
+ROOT = Path(__file__).parent.resolve()
+os.chdir(ROOT)
 
 def deploy_nixos(hosts: List[DeployHost]) -> None:
     """
