@@ -1,6 +1,6 @@
 # fly.toml file generated for headscale-mic92 on 2022-07-24T15:30:43+02:00
 
-app = "headscale-mic92"
+app = "krebscale"
 
 [mounts]
   destination = "/var/lib/headscale"

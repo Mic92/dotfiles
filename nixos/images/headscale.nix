@@ -29,7 +29,7 @@
     db_type = "sqlite3";
     db_path = "/var/lib/headscale/db.sqlite";
     #server_url = "https://headscale.thalheim.io";
-    server_url = "https://headscale.thalheim.io";
+    server_url = "https://krebscale.thalheim.io";
     listen_addr = "0.0.0.0:8080";
     grpc_listen_addr = "0.0.0.0:50443";
     tls_client_auth_mode = "relaxed";
@@ -61,7 +61,7 @@
       "fd7a:115c:a1e0::/48"
     ];
     ephemeral_node_inactivity_timeout = "600m";
-    tls_letsencrypt_hostname = "headscale.thalheim.io";
+    tls_letsencrypt_hostname = "krebscale.thalheim.io";
     acme_email = "joerg@thalheim.io";
   });
 
@@ -77,14 +77,14 @@
     while [[ ! -S /var/run/tailscale/tailscaled.sock ]]; do
       sleep 1
     done
-    while ! headscale nodes list; do
+
+    while [[ ! -S /var/run/headscale.sock ]]; do
       sleep 1
     done
 
     if ! headscale namespaces list | grep -q krebscale; then
       headscale namespace create krebscale
     fi
-
     key=$(headscale --namespace krebscale preauthkeys create -o json --reusable --expiration 5m | jq -r .key)
     while ! tailscale up --advertise-exit-node --login-server https://headscale.thalheim.io  --authkey "$key"; do
       sleep 1
@@ -110,7 +110,7 @@
   '';
 in
   dockerTools.streamLayeredImage {
-    name = "registry.fly.io/headscale-mic92";
+    name = "registry.fly.io/krebscale";
     tag = "latest";
     config = {
       Env = [
@@ -135,7 +135,7 @@ in
           ln -s ${iptables-legacy}/bin/iptables /bin/iptables
           ln -s ${iptables-legacy}/bin/ip6tables /bin/ip6tables
 
-          hostname headscale
+          hostname krebscale
 
           modprobe xt_mark
           sysctl -w net.ipv4.ip_forward=1
