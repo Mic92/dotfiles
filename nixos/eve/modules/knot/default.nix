@@ -23,10 +23,6 @@
       @ IN NS ns2.thalheim.io.
     '';
 in {
-  imports = [
-    ./whoami.nix
-  ];
-
   #content of the secret
   #key:
   #- id: acme
