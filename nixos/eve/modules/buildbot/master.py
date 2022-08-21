@@ -50,6 +50,7 @@ def build_config() -> dict[str, Any]:
         schedulers.SingleBranchScheduler(
             name="flake-sources",
             change_filter=util.ChangeFilter(repository="https://github.com/Mic92/nixpkgs", branch="main"),
+            treeStableTimer=20,
             builderNames=["nix-update-flake"],
         ),
         # this is triggered from `nix-eval`
