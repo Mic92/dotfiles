@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. ns2.thalheim.io. 2022081901 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. ns2.thalheim.io. 2022082100 7200 3600 86400 3600
 
 ;;@ 3600 IN NS ns1
 @ 3600 IN NS ns2
@@ -156,6 +156,3 @@ git IN SSHFP 4 2 1b422e457dfec400db6a92cf9a7a5716d2ca2a7566a838545582891fb5d45de
 ;; Keybase & GPG
 joerg._pka IN TXT "v=pka1;fpr=4ABA07382AD57E6B9AA4E88DCA4106B8D7CC79FA;uri=https://thalheim.io/joerg/joerg.asc"
 _keybase IN TXT "keybase-site-verification=woupLHxi4iAKOAHIOaKDPJwR3GiAzVagmTp68g0b2uM"
-
-;; flyio
-krebscale IN CNAME krebscale.fly.dev.

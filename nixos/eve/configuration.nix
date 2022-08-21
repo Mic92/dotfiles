@@ -63,8 +63,10 @@
     ./modules/tts.nix
     ./modules/users.nix
     ./modules/wiki-backup.nix
+    ./modules/headscale.nix
     #./modules/wiregrill
 
+    ../modules/tailscale.nix
     ../modules/builder.nix
     ../modules/fast-network.nix
     ../modules/iperf.nix
