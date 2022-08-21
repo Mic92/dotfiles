@@ -8,8 +8,6 @@
     ./common.nix
   ];
   home.packages = let
-    # FIXME: upgrade to python310 when possible
-    python3Packages = pkgs.python38Packages;
     weechat-unwrapped = pkgs.weechat-unwrapped.override {
       inherit python3Packages;
     };
