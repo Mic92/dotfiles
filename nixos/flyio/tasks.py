@@ -12,6 +12,6 @@ def deploy(c):
 
 @task
 def provision(c):
-    c.run("flyctl apps create --network fra --name krebscale")
+    c.run("flyctl apps create --org krebs --network fra --name krebscale")
     c.run("flyctl volumes create --region fra --size 1 headscale")
     deploy(c)

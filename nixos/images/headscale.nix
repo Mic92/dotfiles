@@ -40,7 +40,7 @@
       server = {
         enabled = true;
         region_id = 999;
-        region_code = "headscale";
+        region_code = "fra";
         region_name = "Headscale Embedded DERP";
         # udp
         stun_listen_addr = "0.0.0.0:3478";
@@ -86,7 +86,7 @@
       headscale namespace create krebscale
     fi
     key=$(headscale --namespace krebscale preauthkeys create -o json --reusable --expiration 5m | jq -r .key)
-    while ! tailscale up --advertise-exit-node --login-server https://headscale.thalheim.io  --authkey "$key"; do
+    while ! tailscale up --advertise-exit-node --login-server https://krebscale.thalheim.io  --authkey "$key"; do
       sleep 1
     done
     id=$(headscale nodes list -o json | jq -r '.[] | select(.name == "headscale") | .id')
@@ -134,6 +134,7 @@ in
           ln -s ${jq}/bin/jq /bin/jq
           ln -s ${iptables-legacy}/bin/iptables /bin/iptables
           ln -s ${iptables-legacy}/bin/ip6tables /bin/ip6tables
+          ip address show
 
           hostname krebscale
 
