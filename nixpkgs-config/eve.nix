@@ -8,18 +8,12 @@
     ./common.nix
   ];
   home.packages = let
-    weechat-unwrapped = pkgs.weechat-unwrapped.override {
-      inherit python3Packages;
-    };
-    weechatScripts = pkgs.weechatScripts.override {
-      inherit python3Packages;
-    };
-    weechat = pkgs.wrapWeechat weechat-unwrapped {};
+    weechat = pkgs.wrapWeechat pkgs.weechat-unwrapped {};
   in [
     pkgs.profanity
     (weechat.override {
       configure = {availablePlugins, ...}: {
-        scripts = with weechatScripts; [
+        scripts = with pkgs.weechatScripts; [
           wee-slack
           multiline
           weechat-matrix
