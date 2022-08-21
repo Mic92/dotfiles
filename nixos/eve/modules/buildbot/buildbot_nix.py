@@ -431,6 +431,7 @@ def nix_build_config(
             command=[
                 "nix",
                 "build",
+                "--option", "keep-going", "true",
                 "-L",
                 "--out-link",
                 util.Interpolate("result-%(prop:attr)s"),
