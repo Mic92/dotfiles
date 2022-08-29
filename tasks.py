@@ -7,7 +7,7 @@ import os
 from typing import List
 import subprocess
 import socket
-from deploy_nixos import DeployHost, DeployGroup, parse_hosts, HostKeyCheck
+from deploykit import DeployHost, DeployGroup, parse_hosts, HostKeyCheck
 from pathlib import Path
 
 

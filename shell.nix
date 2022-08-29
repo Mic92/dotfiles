@@ -7,6 +7,7 @@
       sopsCreateGPGHome = true;
       nativeBuildInputs = [
         inputs'.sops-nix.packages.sops-import-keys-hook
+        inputs'.deploykit.packages.deploykit
         pkgs.python3.pkgs.invoke
       ];
     };

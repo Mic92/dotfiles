@@ -23,6 +23,29 @@
         "type": "github"
       }
     },
+    "deploykit": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1661774097,
+        "narHash": "sha256-dvWpOU3dU9TfSnK7I+CSDrCaASr+uR5VepG/SQs/RIg=",
+        "owner": "numtide",
+        "repo": "deploykit",
+        "rev": "c8cd9ddcd647e3116b07e920e53aebf047cbeac5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "deploykit",
+        "type": "github"
+      }
+    },
     "doom-emacs": {
       "flake": false,
       "locked": {
@@ -362,6 +385,7 @@
     "root": {
       "inputs": {
         "bme680-mqtt": "bme680-mqtt",
+        "deploykit": "deploykit",
         "doom-emacs": "doom-emacs",
         "emacs-overlay": "emacs-overlay",
         "envfs": "envfs",

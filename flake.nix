@@ -62,6 +62,10 @@
     poetry2nix.url = "github:nix-community/poetry2nix";
     poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
     poetry2nix.inputs.flake-utils.follows = "flake-utils";
+
+    deploykit.url = "github:numtide/deploykit";
+    deploykit.inputs.nixpkgs.follows = "nixpkgs";
+    deploykit.inputs.flake-parts.follows = "flake-parts";
   };
 
   #outputs = {...} @ args: import ./outputs.nix args;
