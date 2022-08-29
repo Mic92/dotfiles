@@ -42,7 +42,7 @@ fn main() {
         for fan in &fans {
             for dir in read_dir("/sys/devices/virtual/thermal/thermal_zone0/").unwrap() {
                 let mut p = dir.unwrap().path();
-                if p.starts_with("hwmon") {
+                if p.to_str().unwrap().contains("hwmon") {
                     p.push("temp1_input");
                     adjust(fan, &p)
                 }
