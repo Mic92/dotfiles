@@ -16,6 +16,7 @@ RSYNC_EXCLUDES = ["gdb", "zsh", ".terraform", ".direnv", ".mypy-cache", ".git"]
 ROOT = Path(__file__).parent.resolve()
 os.chdir(ROOT)
 
+
 def deploy_nixos(hosts: List[DeployHost]) -> None:
     """
     Deploy to all hosts in parallel
@@ -37,7 +38,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
             target_host = f"{target_user}@{target_host}"
         extra_args = h.meta.get("extra_args", "")
         h.run(
-            f"nixos-rebuild switch {extra_args} --fast --build-host localhost --target-host {target_host} --flake $(realpath {flake_path}){flake_attr}"
+            f"nixos-rebuild switch {extra_args} --option keep-going true --option accept-flake-config true --fast --build-host localhost --target-host {target_host} --flake $(realpath {flake_path}){flake_attr}"
         )
 
     g.run_function(deploy)
@@ -101,6 +102,24 @@ def deploy_bernie(c):
     Deploy to bernie
     """
     deploy_nixos([DeployHost(try_local("bernie"))])
+
+
+@task
+def deploy_blob64(c):
+    """
+    Deploy to blob64
+    """
+
+    deploy_nixos(
+        [
+            DeployHost(
+                "localhost",
+                forward_agent=True,
+                command_prefix="blob64.r",
+                meta=dict(target_host="blob64.r", flake_attr="blob64"),
+            )
+        ]
+    )
 
 
 @task
