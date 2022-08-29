@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. ns2.thalheim.io. 2022082905 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. ns2.thalheim.io. 2022082906 7200 3600 86400 3600
 
 ;;@ 3600 IN NS ns1
 @ 3600 IN NS ns2
@@ -157,8 +157,8 @@ git IN SSHFP 4 2 1b422e457dfec400db6a92cf9a7a5716d2ca2a7566a838545582891fb5d45de
 ;; $ nix shell nixpkgs#hash-slinger --command tlsa --create mail.thalheim.io
 _25._tcp.mail IN TLSA 3 0 1 09d2a4937895bee16449c9ab988111213a6171965ad4c4268454e67705e8a1ad
 _25._tcp.mail IN TLSA 3 0 1 09d2a4937895bee16449c9ab988111213a6171965ad4c4268454e67705e8a1ad
-_587._tcp.mail.thalheim.io. IN TLSA 3 0 1 09d2a4937895bee16449c9ab988111213a6171965ad4c4268454e67705e8a1ad
-_587._tcp.mail.thalheim.io. IN TLSA 3 0 1 09d2a4937895bee16449c9ab988111213a6171965ad4c4268454e67705e8a1ad
+_587._tcp.mail IN TLSA 3 0 1 09d2a4937895bee16449c9ab988111213a6171965ad4c4268454e67705e8a1ad
+_587._tcp.mail IN TLSA 3 0 1 09d2a4937895bee16449c9ab988111213a6171965ad4c4268454e67705e8a1ad
 
 ;; Keybase & GPG
 joerg._pka IN TXT "v=pka1;fpr=4ABA07382AD57E6B9AA4E88DCA4106B8D7CC79FA;uri=https://thalheim.io/joerg/joerg.asc"
