@@ -107,6 +107,9 @@ in {
       smtpd_tls_security_level = "may";
       smtpd_tls_auth_only = "yes";
 
+      smtp_dns_support_level = "dnssec";
+      smtp_tls_security_level = "dane";
+
       smtpd_tls_cert_file = "/var/lib/acme/mail.thalheim.io/full.pem";
       smtpd_tls_key_file = "/var/lib/acme/mail.thalheim.io/key.pem";
       smtpd_tls_CAfile = "/var/lib/acme/mail.thalheim.io/fullchain.pem";
