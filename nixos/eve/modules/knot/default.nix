@@ -67,6 +67,10 @@ in {
           key: turingmachine
           action: update
 
+        - id: blob64_acl
+          key: blob64
+          action: update
+
         - id: rauter_acl
           key: rauter
           action: update
@@ -189,6 +193,10 @@ in {
           file: "${dyndns "turingmachine.thalheim.io"}"
           template: dyndns
           acl: [ turingmachine_acl ]
+        - domain: blob64.thalheim.io
+          file: "${dyndns "blob64.thalheim.io"}"
+          template: dyndns
+          acl: [ blob64_acl ]
         - domain: rauter.thalheim.io
           file: "${dyndns "rauter.thalheim.io"}"
           template: dyndns

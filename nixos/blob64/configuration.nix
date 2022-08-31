@@ -7,6 +7,7 @@
     ../modules/users.nix
     ../modules/minimal-docs.nix
     ../modules/networkd.nix
+    ../modules/ip-update.nix
     ./hardware-configuration.nix
   ];
 
