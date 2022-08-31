@@ -24,8 +24,9 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
     g = DeployGroup(hosts)
 
     def deploy(h: DeployHost) -> None:
+        target = f"{h.user or 'root'}@{h.host}"
         h.run_local(
-            f"rsync {' --exclude '.join([''] + RSYNC_EXCLUDES)} -vaF --delete -e ssh . {h.user}@{h.host}:/etc/nixos"
+            f"rsync {' --exclude '.join([''] + RSYNC_EXCLUDES)} -vaF --delete -e ssh . {target}:/etc/nixos"
         )
 
         flake_path = "/etc/nixos"
@@ -51,12 +52,13 @@ def deploy(c):
     """
     deploy_nixos(
         [
-            DeployHost("eve.i"),
+            DeployHost("eve.i", user="root"),
             DeployHost(
                 "localhost", user="joerg", meta=dict(extra_args="--use-remote-sudo")
             ),
             DeployHost(
                 "eve.i",
+                user="root",
                 forward_agent=True,
                 command_prefix="eva.r",
                 meta=dict(target_host="eva.r", flake_attr="eva"),
@@ -74,14 +76,17 @@ def deploy_k3s(c):
         [
             DeployHost(
                 "node0.nixos-k3s.Serverless-tum.emulab.net",
+                user="root",
                 meta=dict(flake_attr="cloudlab-k3s-server"),
             ),
             DeployHost(
                 "node1.nixos-k3s.Serverless-tum.emulab.net",
+                user="root",
                 meta=dict(flake_attr="cloudlab-k3s-agent"),
             ),
             DeployHost(
                 "node2.nixos-k3s.Serverless-tum.emulab.net",
+                user="root",
                 meta=dict(flake_attr="cloudlab-k3s-agent"),
             ),
         ]
@@ -101,7 +106,7 @@ def deploy_bernie(c):
     """
     Deploy to bernie
     """
-    deploy_nixos([DeployHost(try_local("bernie"))])
+    deploy_nixos([DeployHost(try_local("bernie"), user="root")])
 
 
 @task
@@ -116,7 +121,8 @@ def deploy_blob64(c):
                 "localhost",
                 forward_agent=True,
                 command_prefix="blob64.r",
-                meta=dict(target_host="blob64.r", flake_attr="blob64"),
+                meta=dict(target_user="root", target_host="blob64.r", flake_attr="blob64"),
+                user="joerg",
             )
         ]
     )
@@ -132,7 +138,8 @@ def deploy_matchbox(c):
             DeployHost(
                 "localhost",
                 command_prefix="matchbox.r",
-                meta=dict(target_host="matchbox.r", flake_attr="matchbox"),
+                meta=dict(target_user="root", target_host="matchbox.r", flake_attr="matchbox"),
+                user="joerg",
             )
         ]
     )
