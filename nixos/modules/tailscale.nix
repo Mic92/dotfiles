@@ -8,17 +8,11 @@
     services.tailscale.enable = true;
     # this port is open in university so lets use it.
     services.tailscale.port = 51820;
-    networking.firewall.allowedUDPPorts = [ 51820 ];
+    networking.firewall.allowedUDPPorts = [
+      51820 # wireguard
+    ];
 
     networking.firewall.checkReversePath = "loose";
 
-    systemd.services.derper = {
-      after = ["network.target"];
-      wantedBy = ["multi-user.target"];
-      serviceConfig = {
-        StateDirectory = "derper";
-        ExecStart = "${pkgs.tailscale}/bin/derper --certdir /var/lib/derper --hostname=${config.networking.fqdn} --verify-clients";
-      };
-    };
   };
 }

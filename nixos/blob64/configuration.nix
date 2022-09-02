@@ -8,6 +8,7 @@
     ../modules/minimal-docs.nix
     ../modules/networkd.nix
     ../modules/ip-update.nix
+    #../modules/tailscale.nix
     ./hardware-configuration.nix
   ];
 
@@ -40,8 +41,11 @@
     parted
     fio
     wget
-    hello
+    htop
     tcpdump
+    nmap
+    python3
+    tmux
   ];
 
   boot.supportedFilesystems = ["zfs"];

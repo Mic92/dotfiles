@@ -63,6 +63,13 @@ def deploy(c):
                 command_prefix="eva.r",
                 meta=dict(target_host="eva.r", flake_attr="eva"),
             ),
+            DeployHost(
+                "localhost",
+                forward_agent=True,
+                command_prefix="blob64.r",
+                meta=dict(target_user="root", target_host="blob64.r", flake_attr="blob64"),
+                user="joerg",
+            )
         ]
     )
 
@@ -107,25 +114,6 @@ def deploy_bernie(c):
     Deploy to bernie
     """
     deploy_nixos([DeployHost(try_local("bernie"), user="root")])
-
-
-@task
-def deploy_blob64(c):
-    """
-    Deploy to blob64
-    """
-
-    deploy_nixos(
-        [
-            DeployHost(
-                "localhost",
-                forward_agent=True,
-                command_prefix="blob64.r",
-                meta=dict(target_user="root", target_host="blob64.r", flake_attr="blob64"),
-                user="joerg",
-            )
-        ]
-    )
 
 
 @task

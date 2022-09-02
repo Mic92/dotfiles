@@ -33,11 +33,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1662044328,
-        "narHash": "sha256-BmhnkypJpNbFHCuGd8Oqioe80CZDiD+66YUh1gSZNd4=",
+        "lastModified": 1662094942,
+        "narHash": "sha256-EgNKlwBkc+sFOE57Vg/4rO0TjVdIrn47fsrm59IZG30=",
         "owner": "numtide",
         "repo": "deploykit",
-        "rev": "a9ab1fe9f41a8f7315afb9ba48eeeb936632d311",
+        "rev": "b9744a109c52e817d99eac7d083c9958bd85efa8",
         "type": "github"
       },
       "original": {
@@ -369,11 +369,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1661978068,
-        "narHash": "sha256-lOblu7jEgiYhFARUCpmD+etwNEsLmX8khiu3C/OjABw=",
+        "lastModified": 1662094687,
+        "narHash": "sha256-9buruD/vdHXQ7W3UrEMGhkf6tAeNuaN04YLxVpzfaN8=",
         "ref": "refs/heads/master",
-        "rev": "84e9d0fdbc62a3c02fc76e0a316e88dbdace47bf",
-        "revCount": 232,
+        "rev": "500c1e7018cb387866c5008a2c7d307245445d1a",
+        "revCount": 233,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },

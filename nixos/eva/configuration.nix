@@ -15,7 +15,7 @@
 # $ systemd-nspawn --capability=CAP_NET_ADMIN -D /var/lib/machines/eva -b
 # or
 # $ machinectl start eva
-{
+{ pkgs, ... }: {
   networking.hostName = "eva";
 
   time.timeZone = "UTC";
@@ -25,6 +25,7 @@
   imports = [
     ./modules/borgbackup-repos
     ./modules/buildbot.nix
+    #./modules/derp.nix
     ./modules/go-neb.nix
     ./modules/hardware-configuration.nix
     ./modules/prometheus
@@ -34,6 +35,7 @@
     ./modules/sops.nix
     ./modules/telegraf
 
+    #../modules/tailscale.nix
     ../modules/fast-network.nix
     ../modules/mosh.nix
     ../modules/iperf.nix
@@ -62,6 +64,11 @@
   networking.usePredictableInterfaceNames = false;
 
   documentation.enable = false;
+
+  environment.systemPackages = [
+    pkgs.htop
+    pkgs.tmux
+  ];
 
   # The NixOS release to be compatible with for stateful data such as databases.
   system.stateVersion = "20.03";

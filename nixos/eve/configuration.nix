@@ -63,10 +63,10 @@
     ./modules/tts.nix
     ./modules/users.nix
     ./modules/wiki-backup.nix
-    ./modules/headscale.nix
+    #./modules/headscale.nix
     #./modules/wiregrill
 
-    ../modules/tailscale.nix
+    #../modules/tailscale.nix
     ../modules/builder.nix
     ../modules/fast-network.nix
     ../modules/iperf.nix
@@ -83,6 +83,7 @@
     ../modules/zsh.nix
     ../modules/uptermd.nix
   ];
+
 
   # The NixOS release to be compatible with for stateful data such as databases.
   system.stateVersion = "18.03";

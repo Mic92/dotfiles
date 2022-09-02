@@ -24,19 +24,46 @@
       derp = {
         server = {
           enabled = true;
-          region_id = 999;
-          region_code = "fra";
-          region_name = "Headscale Embedded DERP";
+          region_id = 900;
+          region_code = "hetzner-fra";
+          region_name = "Hetzner Frankfurt";
           # udp
-          stun_listen_addr = "[::]:3478";
+          stun_listen_addr = "[::]:10000";
         };
         urls = [
-          "https://controlplane.tailscale.com/derpmap/default"
+          #"https://controlplane.tailscale.com/derpmap/default"
         ];
         auto_update_enabled = "true";
         update_frequency = "24h";
         disable_check_updates = false;
         logtail.enabled = false;
+        paths = [
+          (pkgs.writeText "derp.yaml" ''
+            regions:
+              901:
+                regionid: 901
+                regioncode: muc
+                regionname: Munich (TUM)
+                nodes:
+                  - name: eva
+                    regionid: 901
+                    hostname: eva.thalheim.io
+                    ipv4: 131.159.102.4
+                    ipv6: 2a09:80c0:102::4
+                    stunport: 0
+                    stunonly: false
+                    derpport: 443
+                  #- name: blob64
+                  #  regionid: 901
+                  #  hostname: blob64.thalheim.io
+                  #  ipv4: 131.159.38.25
+                  #  ipv6: 2a09:80c0:38::25
+                  #  stunport: 3478
+                  #  stunonly: false
+                  #  derpport: 4443
+          ''
+          )
+        ];
       };
       ip_prefixes = [
         "100.64.0.0/10"
@@ -47,7 +74,7 @@
   };
 
   # Allow UDP for STUN
-  networking.firewall.allowedUDPPorts = [ 3478 ];
+  networking.firewall.allowedUDPPorts = [ 10000 ];
 
   environment.systemPackages = [
     pkgs.headscale
