@@ -23,7 +23,7 @@
     ../modules/networkd.nix
     ../modules/mosh.nix
     ../modules/promtail.nix
-    ../modules/ssh/tor.nix
+    ../modules/sshd/tor.nix
     ./modules/mycroft.nix
   ];
 
