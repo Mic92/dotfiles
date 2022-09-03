@@ -74,7 +74,7 @@
     ../modules/openldap
     ../modules/rtorrent.nix
     ../modules/samba-dl.nix
-    ../modules/tor-ssh.nix
+    ../modules/ssh/tor.nix
     ../modules/tracing.nix
     ../modules/promtail.nix
     #../modules/wezterm.nix

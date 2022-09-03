@@ -6,7 +6,7 @@
     ../modules/telegraf.nix
     ../modules/rpi3.nix
     ../modules/promtail.nix
-    ../modules/tailscale.nix
+    #../modules/tailscale.nix
 
     ./modules/borgbackup.nix
     ./modules/samba.nix

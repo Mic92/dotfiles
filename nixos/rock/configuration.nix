@@ -12,7 +12,6 @@
     ./modules/bme680-mqtt.nix
     ./modules/sops.nix
     ./modules/vlc-telnet.nix
-    ./modules/sshd.nix
 
     ../modules/hass-agent.nix
     ../modules/users.nix
@@ -24,6 +23,7 @@
     ../modules/networkd.nix
     ../modules/mosh.nix
     ../modules/promtail.nix
+    ../modules/ssh/tor.nix
     ./modules/mycroft.nix
   ];
 

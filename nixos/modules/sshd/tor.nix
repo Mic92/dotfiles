@@ -23,5 +23,5 @@
     };
   };
 
-  imports = [./sshd.nix];
+  imports = [./.];
 }

@@ -11,13 +11,13 @@
       fi
       HOST=$(</proc/sys/kernel/hostname)
       store_path="$(curl -L https://buildbot.thalheim.io/nix-outputs/nixos-$HOST)"
-      nix copy --no-check-sigs --from ssh-ng://binary-cache "$store_path"
+      nix copy --no-check-sigs --from ssh-ng://binary-cache.thalheim.io "$store_path"
       nix-store --add-root /run/next-system -r "$store_path"
 
       if [[ -f /home/joerg/.homesick/repos/dotfiles/flake.nix ]]; then
         profile=$(nix run "/home/joerg/.homesick/repos/dotfiles/#hm" -- profile)
         store_path="$(curl -L https://buildbot.thalheim.io/nix-outputs/home-manager-$profile)"
-        nix copy --no-check-sigs --from ssh-ng://binary-cache "$store_path"
+        nix copy --no-check-sigs --from ssh-ng://binary-cache.thalheim.io "$store_path"
         nix-store --add-root /run/next-home -r "$store_path"
       fi
     '';
@@ -28,9 +28,8 @@
   };
 
   programs.ssh.extraConfig = ''
-    Host binary-cache
+    Host binary-cache.thalheim.io
       User nix-ssh
-      HostName eve.thalheim.io
       IdentityFile ${config.sops.secrets.binary-cache-key.path}
   '';
   sops.secrets.binary-cache-key.sopsFile = ../secrets/secrets.yaml;

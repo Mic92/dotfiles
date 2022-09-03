@@ -6,7 +6,7 @@
   systemd.services.miniond.serviceConfig.RestartSec = 2;
 
   imports = [
-    ./sshd.nix
+    ./sshd
   ];
 
   # bootloader loads bootloader from first partition not disk!

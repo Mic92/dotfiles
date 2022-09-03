@@ -6,9 +6,6 @@
   imports = [../../modules/sshd.nix];
 
   services.openssh = {
-    extraConfig = ''
-      HostCertificate ${./eve-cert.pub}
-    '';
     listenAddresses = [
       {
         addr = "0.0.0.0";

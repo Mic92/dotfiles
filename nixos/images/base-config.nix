@@ -46,7 +46,7 @@
     };
 
   imports = [
-    ../modules/tor-ssh.nix
+    ../modules/ssh/tor.nix
     ../modules/nix-daemon.nix
   ];
 

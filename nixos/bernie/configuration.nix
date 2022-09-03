@@ -9,7 +9,6 @@
 }: {
   imports = [
     ./hardware-configuration.nix
-    ./modules/sshd.nix
 
     ../modules/gnome.nix
     ../modules/rock-rdp.nix

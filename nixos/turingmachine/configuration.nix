@@ -22,7 +22,6 @@
     ./modules/packages.nix
     ./modules/gnome-pim.nix
     ./modules/sops.nix
-    ./modules/sshd.nix
     ./modules/cntr.nix
     #./modules/minidlna.nix
 
@@ -46,7 +45,8 @@
     #./kde.nix
     #../modules/samba-dl.nix
     ../modules/sway.nix
-    ../modules/tailscale.nix
+    ../modules/sshd/tor.nix
+    #../modules/tailscale.nix
     #../modules/awesome.nix
     #../modules/gnome.nix
     ../modules/pki
@@ -99,10 +99,6 @@
   services = {
     gpm.enable = true;
     upower.enable = true;
-    openssh = {
-      enable = true;
-      forwardX11 = true;
-    };
 
     avahi.enable = true;
     avahi.nssmdns = true;
