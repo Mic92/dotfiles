@@ -33,6 +33,8 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
         flake_attr = h.meta.get("flake_attr", "")
         if flake_attr:
             flake_attr = "#" + flake_attr
+        #if flake_attr:
+        #    h.run("nix copy --no-check-sigs --from ssh-ng://binary-cache.thalheim.io \"$(curl -L https://buildbot.thalheim.io/nix-outputs/nixos-blob64)\"", check=False)
         target_host = h.meta.get("target_host", "localhost")
         target_user = h.meta.get("target_user")
         if target_user:
@@ -64,11 +66,11 @@ def deploy(c):
                 meta=dict(target_host="eva.r", flake_attr="eva"),
             ),
             DeployHost(
-                "localhost",
+                "eve.i",
                 forward_agent=True,
                 command_prefix="blob64.r",
                 meta=dict(target_user="root", target_host="blob64.r", flake_attr="blob64"),
-                user="joerg",
+                user="root",
             )
         ]
     )

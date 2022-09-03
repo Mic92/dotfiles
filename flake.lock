@@ -33,11 +33,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1662094942,
-        "narHash": "sha256-EgNKlwBkc+sFOE57Vg/4rO0TjVdIrn47fsrm59IZG30=",
+        "lastModified": 1662203145,
+        "narHash": "sha256-cLHzTWjsw5zhhDhyVeN5I8hZWLigG27HN3asugOUjBc=",
         "owner": "numtide",
         "repo": "deploykit",
-        "rev": "b9744a109c52e817d99eac7d083c9958bd85efa8",
+        "rev": "daca4fd46fde186622ed1620dac9065bd442396b",
         "type": "github"
       },
       "original": {
