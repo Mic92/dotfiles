@@ -3,7 +3,7 @@
   pkgs,
   ...
 }: {
-  imports = [../../modules/sshd.nix];
+  imports = [../../modules/sshd];
 
   services.openssh = {
     listenAddresses = [

@@ -2,7 +2,7 @@
   imports = [
     ../modules/users.nix
     ../modules/mosh.nix
-    ../modules/tor-ssh.nix
+    ../modules/sshd/tor.nix
     ../modules/telegraf.nix
     ../modules/rpi3.nix
     ../modules/promtail.nix
