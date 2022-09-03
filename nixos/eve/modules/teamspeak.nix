@@ -1,10 +1,6 @@
 {
   services.teamspeak3.enable = true;
 
-  systemd.services.teamspeak3-server.serviceConfig = {
-    Restart = "always";
-  };
-
   networking.firewall.allowedTCPPorts = [
     30033 # ts3_ft
     10011 # ts3_sq
