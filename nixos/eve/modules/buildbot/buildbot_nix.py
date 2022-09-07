@@ -47,7 +47,7 @@ class BuildTrigger(Trigger):
         sch = self.schedulerNames[0]
         triggered_schedulers = []
         for job in self.jobs:
-            attr = job.get("attr")
+            attr = job.get("attr", "eval-error")
             drv_path = job.get("drvPath")
             error = job.get("error")
             out_path = job.get("outputs", {}).get("out")
