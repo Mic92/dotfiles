@@ -4,6 +4,7 @@
   ...
 }: {
   imports = [
+    ./modules/borgbackup-repos
     ../modules/users.nix
     ../modules/minimal-docs.nix
     ../modules/networkd.nix

@@ -5,7 +5,7 @@
   ...
 }:
 with builtins; let
-  backupPath = "il1dsenixosbk@eva.r:/mnt/backup/turingmachine";
+  backupPath = "borg@blob64.r:/zdata/borg/turingmachine";
 in {
   sops.secrets.borgbackup = {};
   sops.secrets.ssh-borgbackup = {};
@@ -76,7 +76,7 @@ in {
       eval $(ssh-agent)
       ssh-add ${config.sops.secrets.ssh-borgbackup.path}
       export BORG_PASSCOMMAND='cat /run/secrets/borgbackup'
-      export BORG_REPO='il1dsenixosbk@eva.r:/mnt/backup/turingmachine'
+      export BORG_REPO='${backupPath}'
       borg break-lock
     '';
   };

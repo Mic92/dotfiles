@@ -53,7 +53,7 @@
       "/var/tmp"
       "/var/log"
     ];
-    repo = "il1dsenixosbk@eva.r:/mnt/backup/eve";
+    repo = "borg@blob64.r:/zdata/borg/eve";
     encryption = {
       mode = "repokey";
       passCommand = "cat ${config.sops.secrets.borg-passphrase.path}";
