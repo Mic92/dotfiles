@@ -24,6 +24,9 @@ def read_secret_file(secret_name: str) -> str:
         sys.exit(1)
     return Path(directory).joinpath(secret_name).read_text()
 
+ORG = os.environ["GITHUB_ORG"]
+REPO = os.environ["GITHUB_REPO"]
+BUILDBOT_URL = os.environ["BUILDBOT_URL"]
 
 def build_config() -> dict[str, Any]:
     c = {}
@@ -38,18 +41,18 @@ def build_config() -> dict[str, Any]:
         # build all pushes to master
         schedulers.SingleBranchScheduler(
             name="master",
-            change_filter=util.ChangeFilter(repository="https://github.com/Mic92/dotfiles", branch="master"),
+            change_filter=util.ChangeFilter(repository=f"https://github.com/{ORG}/{REPO}", branch="master"),
             builderNames=["nix-eval"],
         ),
         # build all pull requests
         schedulers.SingleBranchScheduler(
             name="prs",
-            change_filter=util.ChangeFilter(repository="https://github.com/Mic92/dotfiles", category="pull"),
+            change_filter=util.ChangeFilter(repository=f"https://github.com/{ORG}/{REPO}", category="pull"),
             builderNames=["nix-eval"],
         ),
         schedulers.SingleBranchScheduler(
             name="flake-sources",
-            change_filter=util.ChangeFilter(repository="https://github.com/Mic92/nixpkgs", branch="main"),
+            change_filter=util.ChangeFilter(repository=f"https://github.com/{ORG}/nixpkgs", branch="main"),
             treeStableTimer=20,
             builderNames=["nix-update-flake"],
         ),
@@ -91,7 +94,7 @@ def build_config() -> dict[str, Any]:
 
     # Shape of this file:
     # [ { "name": "<worker-name>", "pass": "<worker-password>", "cores": "<cpu-cores>" } ]
-    worker_config = json.loads(read_secret_file("github-workers"))
+    worker_config = json.loads(read_secret_file("buildbot-nix-workers"))
 
     credentials = os.environ.get("CREDENTIALS_DIRECTORY", ".")
     enable_cachix = os.path.isfile(os.path.join(credentials, "cachix-token"))
@@ -112,7 +115,9 @@ def build_config() -> dict[str, Any]:
         nix_eval_config([worker_names[0]], github_token_secret="github-token"),
         nix_build_config(worker_names, enable_cachix),
         nix_update_flake_config(
-            worker_names, "Mic92/dotfiles", github_token_secret="github-token"
+            worker_names,
+            f"{ORG}/{REPO}",
+            github_token_secret="github-token"
         ),
     ]
 
@@ -145,8 +150,8 @@ def build_config() -> dict[str, Any]:
 
     c["db"] = {"db_url": os.environ.get("DB_URL", "sqlite:///state.sqlite")}
 
-    c["protocols"] = {"pb": {"port": 9989}}
-    c["buildbotURL"] = "https://buildbot.thalheim.io/"
+    c["protocols"] = {"pb": {"port": "tcp:9989:interface=\\:\\:"}}
+    c["buildbotURL"] = BUILDBOT_URL
 
     return c
 

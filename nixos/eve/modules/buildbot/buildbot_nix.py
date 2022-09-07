@@ -3,13 +3,14 @@
 import json
 import os
 import re
+import multiprocessing
 from pathlib import Path
 import uuid
 from collections import defaultdict
 
 from buildbot.steps.trigger import Trigger
 from buildbot.plugins import util, steps
-from typing import Any, Generator, Optional
+from typing import Any, Generator
 from buildbot.process import buildstep, logobserver
 from buildbot.process.properties import Properties
 from twisted.internet import defer
@@ -199,12 +200,10 @@ class MergePr(steps.ShellCommand):
 
     def __init__(
         self,
-        github_token_secret: str,
         base_branches: list[str],
         owners: list[str],
         **kwargs: Any,
     ) -> None:
-        self.github_token_secret = github_token_secret
         self.base_branches = base_branches
         self.rendered_token = None
         self.owners = owners
@@ -213,12 +212,10 @@ class MergePr(steps.ShellCommand):
     @defer.inlineCallbacks
     def reconfigService(
         self,
-        github_token_secret: str,
         base_branches: list[str],
         owners: list[str],
         **kwargs: Any,
     ) -> Generator[Any, object, Any]:
-        self.rendered_token = yield self.renderSecrets(github_token_secret)
         self.base_branches = base_branches
         self.owners = owners
         super().reconfigService(**kwargs)
@@ -290,14 +287,15 @@ def nix_update_flake_config(
             haltOnFailure=True,
         )
     )
+    user = os.environ.get("BUILDBOT_GITHUB_USER", "buildbot")
     factory.addStep(
         steps.ShellCommand(
             name="Update flakes",
             env=dict(
-                GIT_AUTHOR_NAME="buildbot",
-                GIT_AUTHOR_EMAIL="buildbot@thalheim.io",
-                GIT_COMMITTER_NAME="buildbot",
-                GIT_COMMITTER_EMAIL="buildbot@thalheim.io",
+                GIT_AUTHOR_NAME=user,
+                GIT_AUTHOR_EMAIL=f"{user}@users.noreply.github.com",
+                GIT_COMMITTER_NAME=user,
+                GIT_COMMITTER_EMAIL=f"{user}@users.noreply.github.com",
             ),
             command=[
                 "nix",
@@ -363,9 +361,15 @@ def nix_eval_config(
     """
     factory = util.BuildFactory()
     # check out the source
+    url_with_secret = util.Interpolate(
+        f"https://git:%(secret:{github_token_secret})s@github.com/%(prop:project)s"
+    )
     factory.addStep(
-        steps.GitHub(
-            repourl=util.Property("repository"), method="clean", submodules=True
+        steps.Git(
+            repourl=url_with_secret,
+            method="clean",
+            submodules=True,
+            haltOnFailure=True,
         )
     )
 
@@ -379,7 +383,7 @@ def nix_eval_config(
                 "github:nix-community/nix-eval-jobs",
                 "--",
                 "--workers",
-                "8",
+                multiprocessing.cpu_count(),
                 "--gc-roots-dir",
                 # FIXME: don't hardcode this
                 "/var/lib/buildbot-worker/gcroot",
@@ -390,24 +394,26 @@ def nix_eval_config(
         )
     )
     # Merge flake-update pull requests if CI succeeds
-    factory.addStep(
-        MergePr(
-            name="Merge pull-request",
-            env=dict(GITHUB_TOKEN=util.Secret(github_token_secret)),
-            github_token_secret=util.Secret(github_token_secret),
-            base_branches=["master"],
-            owners=["mic92-buildbot"],
-            command=[
-                "gh",
-                "pr",
-                "merge",
-                "--repo",
-                util.Property("project"),
-                "--rebase",
-                util.Property("pullrequesturl"),
-            ],
-        )
-    )
+    user = os.environ.get("BUILDBOT_GITHUB_USER")
+    # Merge flake-update pull requests if CI succeeds
+    if user:
+        factory.addStep(
+            MergePr(
+                name="Merge pull-request",
+                env=dict(GITHUB_TOKEN=util.Secret(github_token_secret)),
+                base_branches=["master"],
+                owners=[user],
+                command=[
+                    "gh",
+                    "pr",
+                    "merge",
+                    "--repo",
+                    util.Property("project"),
+                    "--rebase",
+                    util.Property("pullrequesturl"),
+                ],
+            )
+           )
 
     return util.BuilderConfig(
         name="nix-eval",

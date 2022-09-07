@@ -1,5 +1,16 @@
 { config, lib, pkgs, ... }:
 
+let
+  # TODO: make this an option
+
+  # https://github.com/organizations/numtide/settings/applications
+  # Application name: BuildBot
+  # Homepage URL: https://buildbot.numtide.com
+  # Authorization callback URL: https://buildbot.numtide.com/auth/login
+  # oauth_token:  2516248ec6289e4d9818122cce0cbde39e4b788d
+  buildbotDomain = "buildbot.thalheim.io";
+  githubOauthId = "8708f4aa8c622b010660";
+in
 {
   services.buildbot-master = {
     enable = true;
@@ -18,7 +29,12 @@
       PORT   = "1810";
       DB_URL = config.services.buildbot-master.dbUrl;
       # Github app used for the login button
-      GITHUB_OAUTH_ID = "d1b24258af1abc157934";
+      GITHUB_OAUTH_ID = githubOauthId;
+      GITHUB_ORG = "Mic92";
+      GITHUB_REPO = "dotfiles";
+
+      BUILDBOT_URL = "https://${buildbotDomain}/";
+      BUILDBOT_GITHUB_USER = "mic92-buildbot";
       # comma seperated list of users that are allowed to login to buildbot and do stuff
       GITHUB_ADMINS = "Mic92";
     };
@@ -28,7 +44,7 @@
         "github-token:${config.sops.secrets.github-token.path}"
         "github-webhook-secret:${config.sops.secrets.github-webhook-secret.path}"
         "github-oauth-secret:${config.sops.secrets.github-oauth-secret.path}"
-        "github-workers:${config.sops.secrets.github-workers.path}"
+        "buildbot-nix-workers:${config.sops.secrets.buildbot-nix-workers.path}"
         "cachix-name:${config.sops.secrets.cachix-name.path}"
         "cachix-token:${config.sops.secrets.cachix-token.path}"
       ];
@@ -38,7 +54,7 @@
     github-token = {};
     github-webhook-secret = {};
     github-oauth-secret = {};
-    github-workers = {};
+    buildbot-nix-workers = {};
     cachix-name = {};
     cachix-token = {};
   };
@@ -53,7 +69,7 @@
     ];
   };
 
-  services.nginx.virtualHosts."buildbot.thalheim.io" = {
+  services.nginx.virtualHosts.${buildbotDomain} = {
     forceSSL = true;
     useACMEHost = "thalheim.io";
     locations."/".proxyPass = "http://127.0.0.1:1810/";
