@@ -43,6 +43,7 @@
         nur.nixosModules.nur
 
         ./modules/retiolum.nix
+        ./modules/update-prefetch.nix
         retiolum.nixosModules.retiolum
         retiolum.nixosModules.ca
 
@@ -53,7 +54,7 @@
 in {
   flake.nixosConfigurations = {
     bernie = nixosSystem {
-      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
       modules =
         defaultModules
         ++ [
@@ -64,7 +65,7 @@ in {
     };
 
     turingmachine = nixosSystem {
-      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
       modules =
         defaultModules
         ++ [
@@ -80,7 +81,7 @@ in {
     };
 
     eve = nixosSystem {
-      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
       modules =
         defaultModules
         ++ [
@@ -89,7 +90,7 @@ in {
     };
 
     rock = nixosSystem {
-      system = "aarch64-linux";
+      pkgs = nixpkgs.legacyPackages.aarch64-linux;
       modules =
         defaultModules
         ++ [
@@ -99,7 +100,7 @@ in {
     };
 
     blob64 = nixosSystem {
-      system = "aarch64-linux";
+      pkgs = nixpkgs.legacyPackages.aarch64-linux;
       modules =
         defaultModules
         ++ [
@@ -108,7 +109,7 @@ in {
     };
 
     matchbox = nixosSystem {
-      system = "aarch64-linux";
+      pkgs = nixpkgs.legacyPackages.aarch64-linux;
       modules =
         defaultModules
         ++ [
@@ -117,7 +118,7 @@ in {
     };
 
     eva = nixosSystem {
-      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.x86_64-linux;
       modules =
         defaultModules
         ++ [

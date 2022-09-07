@@ -38,7 +38,6 @@ with lib; {
 
   imports = [
     ./builder.nix
-    ./update-prefetch.nix
   ];
 
   programs.command-not-found.enable = false;
@@ -67,6 +66,4 @@ with lib; {
       files = ["/etc/flake-inputs.prom"];
     }
   ];
-
-  nixpkgs.config.allowUnfree = true;
 }

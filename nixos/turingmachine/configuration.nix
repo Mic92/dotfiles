@@ -168,10 +168,6 @@
   };
 
   security.audit.enable = false;
-  nixpkgs.config = {
-    allowUnfree = true;
-    android_sdk.accept_license = true;
-  };
 
   services.tor.client.enable = true;
 
