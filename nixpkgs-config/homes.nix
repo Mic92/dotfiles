@@ -61,6 +61,7 @@
             extraModules
             ++ [
               ./common.nix
+              nur.hmModules.nur
             ];
           home.username = "joerg";
           home.homeDirectory = "/home/joerg";

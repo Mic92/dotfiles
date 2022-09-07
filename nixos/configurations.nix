@@ -17,33 +17,34 @@
   nixosSystem = args:
     (lib.makeOverridable lib.nixosSystem)
     (lib.recursiveUpdate args {
-      modules = args.modules ++ [
-        {
-          config.nixpkgs.pkgs = lib.mkDefault args.pkgs;
-          config.nixpkgs.localSystem = lib.mkDefault args.pkgs.stdenv.hostPlatform;
-        }
-      ];
+      modules =
+        args.modules
+        ++ [
+          {
+            config.nixpkgs.pkgs = lib.mkDefault args.pkgs;
+            config.nixpkgs.localSystem = lib.mkDefault args.pkgs.stdenv.hostPlatform;
+          }
+        ];
     });
 
   defaultModules = [
     # make flake inputs accessiable in NixOS
-    {
+    ({config, ...}: {
       _module.args.self = self;
       _module.args.inputs = self.inputs;
-    }
-    {
+    })
+    ({pkgs, ...}: {
+      nix.nixPath = [
+        "nixpkgs=${pkgs.path}"
+        "home-manager=${home-manager}"
+        "nur=${nur}"
+      ];
+      nix.extraOptions = ''
+        flake-registry = ${flake-registry}/flake-registry.json
+      '';
+      documentation.info.enable = false;
+
       imports = [
-        ({pkgs, ...}: {
-          nix.nixPath = [
-            "nixpkgs=${pkgs.path}"
-            "home-manager=${home-manager}"
-            "nur=${nur}"
-          ];
-          nix.extraOptions = ''
-            flake-registry = ${flake-registry}/flake-registry.json
-          '';
-          documentation.info.enable = false;
-        })
         ./modules/upgrade-diff.nix
         ./modules/nix-daemon.nix
         ./modules/minimal-docs.nix
@@ -58,7 +59,7 @@
 
         sops-nix.nixosModules.sops
       ];
-    }
+    })
   ];
 in {
   flake.nixosConfigurations = {

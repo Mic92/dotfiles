@@ -13,8 +13,8 @@
     home.packages = with pkgs;
       [
         #(pkgs.callPackage /home/joerg/git/nix-review {})
-        nur.repos.mic92.nixpkgs-review-unstable
-        nur.repos.mic92.tmux-thumbs
+        config.nur.repos.mic92.nixpkgs-review-unstable
+        config.nur.repos.mic92.tmux-thumbs
         (callPackage (fetchFromGitHub {
           owner = "nix-community";
           repo = "comma";

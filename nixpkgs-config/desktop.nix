@@ -39,7 +39,7 @@
       arandr
       signal-desktop
       thunderbird
-      nur.repos.mic92.pandoc-bin
+      config.nur.repos.mic92.pandoc-bin
       gnome.adwaita-icon-theme
       hicolor-icon-theme
       graphicsmagick
@@ -117,7 +117,7 @@
 
       nixos-shell
     ]
-    ++ (with nur.repos.mic92; [
+    ++ (with config.nur.repos.mic92; [
       q
       speedscope
       inxi
