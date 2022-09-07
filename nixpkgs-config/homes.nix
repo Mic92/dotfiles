@@ -55,21 +55,13 @@
     }: (home-manager.lib.homeManagerConfiguration {
       modules = [
         {
+          _module.args.self = self;
+          _module.args.inputs = self.inputs;
           imports =
             extraModules
             ++ [
               ./common.nix
             ];
-          nixpkgs.config = import ./config.nix {
-            pkgs = nixpkgs;
-            nurFun = import nur;
-          };
-          nixpkgs.overlays = [
-            emacs-overlay.overlay
-            (self: super: {
-              doomEmacsRevision = doom-emacs.rev;
-            })
-          ];
           home.username = "joerg";
           home.homeDirectory = "/home/joerg";
         }

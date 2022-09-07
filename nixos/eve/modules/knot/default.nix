@@ -2,6 +2,7 @@
   pkgs,
   config,
   lib,
+  inputs,
   ...
 }: let
   ip4 = config.networking.eve.ipv4.address;
@@ -169,13 +170,13 @@ in {
           file: "${./lekwati.com.zone}"
           template: master
         - domain: r
-          file: "${pkgs.retiolum}/zones/r.zone"
+          file: "${inputs.retiolum}/zones/r.zone"
           template: retiolum
         - domain: w
-          file: "${pkgs.retiolum}/zones/w.zone"
+          file: "${inputs.retiolum}/zones/w.zone"
           template: retiolum
         - domain: i
-          file: "${pkgs.retiolum}/zones/i.zone"
+          file: "${inputs.retiolum}/zones/i.zone"
           template: retiolum
         - domain: rock.thalheim.io
           file: "${dyndns "rock.thalheim.io"}"

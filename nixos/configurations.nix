@@ -11,7 +11,19 @@
     nix-ld
     bme680-mqtt
     ;
-  nixosSystem = nixpkgs.lib.makeOverridable nixpkgs.lib.nixosSystem;
+
+  inherit (nixpkgs) lib;
+
+  nixosSystem = args:
+    (lib.makeOverridable lib.nixosSystem)
+    (lib.recursiveUpdate args {
+      modules = args.modules ++ [
+        {
+          config.nixpkgs.pkgs = lib.mkDefault args.pkgs;
+          config.nixpkgs.localSystem = lib.mkDefault args.pkgs.stdenv.hostPlatform;
+        }
+      ];
+    });
 
   defaultModules = [
     # make flake inputs accessiable in NixOS
@@ -31,9 +43,6 @@
             flake-registry = ${flake-registry}/flake-registry.json
           '';
           documentation.info.enable = false;
-          nixpkgs.config.packageOverrides = pkgs: {
-            inherit retiolum;
-          };
         })
         ./modules/upgrade-diff.nix
         ./modules/nix-daemon.nix
