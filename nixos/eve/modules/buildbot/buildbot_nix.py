@@ -48,11 +48,15 @@ class BuildTrigger(Trigger):
         triggered_schedulers = []
         for job in self.jobs:
             attr = job.get("attr", "eval-error")
+            name = attr
+            repo_name = job.get("github.repository.full_name", "")
+            if repo_name != "":
+                name = f"{repo_name}: {name}"
             drv_path = job.get("drvPath")
             error = job.get("error")
             out_path = job.get("outputs", {}).get("out")
             props = Properties()
-            props.setProperty("virtual_builder_name", attr, "spawner")
+            props.setProperty("virtual_builder_name", name, "spawner")
             props.setProperty("virtual_builder_tags", "", "spawner")
             props.setProperty("attr", attr, "spawner")
             props.setProperty("drv_path", drv_path, "spawner")
