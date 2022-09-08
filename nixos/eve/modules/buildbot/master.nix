@@ -9,7 +9,7 @@ let
   # Authorization callback URL: https://buildbot.numtide.com/auth/login
   # oauth_token:  2516248ec6289e4d9818122cce0cbde39e4b788d
   buildbotDomain = "buildbot.thalheim.io";
-  githubOauthId = "8708f4aa8c622b010660";
+  githubOauthId = "d1b24258af1abc157934";
 in
 {
   services.buildbot-master = {

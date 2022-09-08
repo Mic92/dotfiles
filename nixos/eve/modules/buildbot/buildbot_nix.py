@@ -44,12 +44,13 @@ class BuildTrigger(Trigger):
         return props
 
     def getSchedulersAndProperties(self):
+        props = self.build.getProperties()
+        repo_name = props.getProperty("github.repository.full_name", "")
         sch = self.schedulerNames[0]
         triggered_schedulers = []
         for job in self.jobs:
             attr = job.get("attr", "eval-error")
             name = attr
-            repo_name = job.get("github.repository.full_name", "")
             if repo_name != "":
                 name = f"{repo_name}: {name}"
             drv_path = job.get("drvPath")
@@ -110,7 +111,8 @@ class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
 
             for line in self.observer.getStdout().split("\n"):
                 if line != "":
-                    jobs.append(json.loads(line))
+                    job = json.loads(line)
+                    jobs.append(job)
             self.build.addStepsAfterCurrentStep(
                 [BuildTrigger(scheduler="nix-build", name="nix-build", jobs=jobs)]
             )
