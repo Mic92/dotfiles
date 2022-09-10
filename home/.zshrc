@@ -7,6 +7,9 @@ if [[ -n ${commands[tmux]} ]] && [[ "$TERM" != "linux" ]] && [[ "$TERM_PROGRAM" 
     tmux set-environment -g SSH_AUTH_SOCK "$SSH_AUTH_SOCK" 2>/dev/null
   fi
   tmux new-session -s "${TTY:t}" -t main || tmux attach-session -t "${TTY:t}"
+  if [[ $? == 0 ]]; then
+    exit
+  fi
 fi
 if [[ -f ~/.nix-profile/etc/profile.d/hm-session-vars.sh ]]; then
   source ~/.nix-profile/etc/profile.d/hm-session-vars.sh
