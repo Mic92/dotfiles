@@ -41,7 +41,6 @@ with lib; let
     fi
     git -C $HOME/.emacs.d remote add origin https://github.com/doomemacs/doomemacs.git || \
       git -C $HOME/.emacs.d remote set-url origin https://github.com/doomemacs/doomemacs.git
-;
     if [ $(git -C $HOME/.emacs.d rev-parse HEAD) != ${inputs.doom-emacs.rev} ]; then
       git -C $HOME/.emacs.d fetch https://github.com/doomemacs/doomemacs.git || true
       git -C $HOME/.emacs.d checkout ${inputs.doom-emacs.rev} || true
