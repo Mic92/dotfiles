@@ -10,7 +10,7 @@ from collections import defaultdict
 
 from buildbot.steps.trigger import Trigger
 from buildbot.plugins import util, steps
-from typing import Any, Generator
+from typing import Any, Generator, List
 from buildbot.process import buildstep, logobserver
 from buildbot.process.properties import Properties
 from twisted.internet import defer
@@ -44,14 +44,15 @@ class BuildTrigger(Trigger):
         return props
 
     def getSchedulersAndProperties(self):
-        props = self.build.getProperties()
-        repo_name = props.getProperty("github.repository.full_name", "")
+        build_props = self.build.getProperties()
+        repo_name = build_props.getProperty("github.repository.full_name")
+
         sch = self.schedulerNames[0]
         triggered_schedulers = []
         for job in self.jobs:
             attr = job.get("attr", "eval-error")
             name = attr
-            if repo_name != "":
+            if repo_name is not None:
                 name = f"{repo_name}: {name}"
             drv_path = job.get("drvPath")
             error = job.get("error")
@@ -210,10 +211,11 @@ class MergePr(steps.ShellCommand):
         owners: list[str],
         **kwargs: Any,
     ) -> None:
-        self.base_branches = base_branches
-        self.rendered_token = None
-        self.owners = owners
         super().__init__(**kwargs)
+        self.base_branches = base_branches
+        self.owners = owners
+        self.observer = logobserver.BufferLogObserver()
+        self.addLogObserver("stdio", self.observer)
 
     @defer.inlineCallbacks
     def reconfigService(
@@ -238,7 +240,7 @@ class MergePr(steps.ShellCommand):
 
         cmd = yield self.makeRemoteShellCommand()
         yield self.runCommand(cmd)
-        return util.SUCCESS
+        return cmd.results()
 
 
 class CreatePr(steps.ShellCommand):
@@ -275,7 +277,10 @@ class CreatePr(steps.ShellCommand):
 
 
 def nix_update_flake_config(
-        worker_names: list[str], projectname: str, github_token_secret: str
+    worker_names: list[str],
+    projectname: str,
+    github_token_secret: str,
+    github_bot_user: str
 ) -> util.BuilderConfig:
     """
     Updates the flake an opens a PR for it.
@@ -293,15 +298,14 @@ def nix_update_flake_config(
             haltOnFailure=True,
         )
     )
-    user = os.environ.get("BUILDBOT_GITHUB_USER", "buildbot")
     factory.addStep(
         steps.ShellCommand(
             name="Update flakes",
             env=dict(
-                GIT_AUTHOR_NAME=user,
-                GIT_AUTHOR_EMAIL=f"{user}@users.noreply.github.com",
-                GIT_COMMITTER_NAME=user,
-                GIT_COMMITTER_EMAIL=f"{user}@users.noreply.github.com",
+                GIT_AUTHOR_NAME=github_bot_user,
+                GIT_AUTHOR_EMAIL=f"{github_bot_user}@users.noreply.github.com",
+                GIT_COMMITTER_NAME=github_bot_user,
+                GIT_COMMITTER_EMAIL=f"{github_bot_user}@users.noreply.github.com",
             ),
             command=[
                 "nix",
@@ -357,7 +361,7 @@ def nix_update_flake_config(
 
 
 def nix_eval_config(
-    worker_names: list[str], github_token_secret: str
+    worker_names: list[str], github_token_secret: str, automerge_users: List[str] = []
 ) -> util.BuilderConfig:
     """
     Uses nix-eval-jobs to evaluate hydraJobs from flake.nix in parallel.
@@ -400,15 +404,13 @@ def nix_eval_config(
         )
     )
     # Merge flake-update pull requests if CI succeeds
-    user = os.environ.get("BUILDBOT_GITHUB_USER")
-    # Merge flake-update pull requests if CI succeeds
-    if user:
+    if len(automerge_users) > 0:
         factory.addStep(
             MergePr(
                 name="Merge pull-request",
                 env=dict(GITHUB_TOKEN=util.Secret(github_token_secret)),
                 base_branches=["master"],
-                owners=[user],
+                owners=automerge_users,
                 command=[
                     "gh",
                     "pr",
@@ -419,7 +421,7 @@ def nix_eval_config(
                     util.Property("pullrequesturl"),
                 ],
             )
-           )
+        )
 
     return util.BuilderConfig(
         name="nix-eval",
@@ -430,7 +432,9 @@ def nix_eval_config(
 
 
 def nix_build_config(
-    worker_names: list[str], enable_cachix: bool
+    worker_names: list[str],
+    has_cachix_auth_token: bool = False,
+    has_cachix_signing_key: bool = False,
 ) -> util.BuilderConfig:
     """
     Builds one nix flake attribute.
@@ -443,7 +447,9 @@ def nix_build_config(
             command=[
                 "nix",
                 "build",
-                "--option", "keep-going", "true",
+                "--option",
+                "keep-going",
+                "true",
                 "-L",
                 "--out-link",
                 util.Interpolate("result-%(prop:attr)s"),
@@ -452,11 +458,15 @@ def nix_build_config(
             haltOnFailure=True,
         )
     )
-    if enable_cachix:
+    if has_cachix_auth_token or has_cachix_signing_key:
+        if has_cachix_signing_key:
+            env = dict(CACHIX_SIGNING_KEY=util.Secret("cachix-signing-key"))
+        else:
+            env = dict(CACHIX_AUTH_TOKEN=util.Secret("cachix-auth-token"))
         factory.addStep(
             steps.ShellCommand(
                 name="Upload cachix",
-                env=dict(CACHIX_SIGNING_KEY=util.Secret("cachix-token")),
+                env=env,
                 command=[
                     "cachix",
                     "push",
