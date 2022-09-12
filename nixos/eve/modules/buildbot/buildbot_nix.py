@@ -45,7 +45,10 @@ class BuildTrigger(Trigger):
 
     def getSchedulersAndProperties(self):
         build_props = self.build.getProperties()
-        repo_name = build_props.getProperty("github.repository.full_name")
+        repo_name = build_probs.getProperty(
+            "github.base.repo.full_name",
+            build_props.getProperty("github.repository.full_name"),
+        )
 
         sch = self.schedulerNames[0]
         triggered_schedulers = []
@@ -280,7 +283,7 @@ def nix_update_flake_config(
     worker_names: list[str],
     projectname: str,
     github_token_secret: str,
-    github_bot_user: str
+    github_bot_user: str,
 ) -> util.BuilderConfig:
     """
     Updates the flake an opens a PR for it.
