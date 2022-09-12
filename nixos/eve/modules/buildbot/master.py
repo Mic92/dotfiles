@@ -45,6 +45,7 @@ def build_config() -> dict[str, Any]:
         schedulers.SingleBranchScheduler(
             name="master",
             change_filter=util.ChangeFilter(
+                repository=f"https://github.com/{ORG}/{REPO}",
                 filter_fn=lambda c: c.branch
                 == c.properties.getProperty("github.repository.default_branch"),
             ),
