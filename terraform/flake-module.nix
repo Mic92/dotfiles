@@ -12,7 +12,6 @@
             p.null
             p.dns
             p.digitalocean
-            p.gitlab
           ]
         ))
       ];

@@ -3,7 +3,7 @@ variable "tsig_key" {}
 provider "digitalocean" {}
 provider "dns" {
   update {
-    server        = "ns2.thalheim.io"
+    server        = "ns1.thalheim.io"
     key_name      = "bbc."
     key_algorithm = "hmac-sha256"
     key_secret    = var.tsig_key

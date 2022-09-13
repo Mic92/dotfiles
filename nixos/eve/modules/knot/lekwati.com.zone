@@ -1,4 +1,4 @@
-@ 3600 IN SOA lekwati.com. ns1.thalheim.io. 2022091301 7200 3600 86400 3600
+@ 3600 IN SOA lekwati.com. ns1.thalheim.io. 2022091302 7200 3600 86400 3600
 
 $TTL 600
 
@@ -32,3 +32,5 @@ _smtp._tls IN TXT "v=TLSRPTv1;rua=mailto:joerg.smtp-tls@thalheim.io"
 @ IN TXT "v=spf1 mx -all"
 _token._dnswl IN TXT "1vf4k8p0xvetb1y37xjrir5x7vtt1k11"
 @ IN TXT "google-site-verification=xxY6u05ueB-UbRdaGKjd1MpqbqhWLrUaQHNEjQ8Joq8"
+
+bbc IN NS ns1.thalheim.io.

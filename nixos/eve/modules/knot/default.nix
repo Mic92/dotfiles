@@ -81,6 +81,10 @@ in
           key: bernie
           action: update
 
+        - id: bbc_acl
+          key: bbc
+          action: update
+
       mod-rrl:
         - id: default
           rate-limit: 200   # Allow 200 resp/s for each flow
@@ -150,6 +154,14 @@ in
           zonefile-load: difference
           journal-content: changes
 
+        - id: bbc
+          semantic-checks: on
+          dnssec-signing: on
+          dnssec-policy: rsa2k
+          acl: [ bbc_acl ]
+          zonefile-sync: -1
+          zonefile-load: difference
+          journal-content: changes
       zone:
         - domain: thalheim.io
           file: "${./thalheim.io.zone}"
@@ -169,6 +181,10 @@ in
         - domain: i
           file: "${inputs.retiolum}/zones/i.zone"
           template: retiolum
+        - domain: bbc.lekwati.com
+          file: "${dyndns "bbc.lekwati.com"}"
+          template: dyndns
+          acl: [ bbc_acl ]
         - domain: matchbox.thalheim.io
           file: "${dyndns "matchbox.thalheim.io"}"
           template: dyndns
