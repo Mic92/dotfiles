@@ -32,7 +32,6 @@ resource "digitalocean_droplet" "bbc" {
 
 resource "dns_a_record_set" "bbc" {
   zone = "bbc.lekwati.com."
-  name = "@"
   addresses = [
     digitalocean_droplet.bbc.ipv4_address
   ]
@@ -41,7 +40,6 @@ resource "dns_a_record_set" "bbc" {
 
 resource "dns_aaaa_record_set" "bbc" {
   zone = "bbc.lekwati.com."
-  name = "@"
   addresses = [
     digitalocean_droplet.bbc.ipv6_address
   ]
