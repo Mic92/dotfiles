@@ -9,6 +9,8 @@
             p.github
             p.sops
             p.null
+            p.dns
+            p.digitalocean
           ]
         ))
       ];
