@@ -1,13 +1,5 @@
 variable "tsig_key" {}
 
-terraform {
-  required_providers {
-    digitalocean = {
-      source = "digitalocean/digitalocean"
-    }
-  }
-}
-
 provider "digitalocean" {}
 provider "dns" {
   update {

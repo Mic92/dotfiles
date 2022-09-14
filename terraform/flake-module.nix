@@ -3,6 +3,7 @@
     devShells.terraform = pkgs.mkShell {
       buildInputs = [
         pkgs.sops
+        pkgs.terragrunt
         (pkgs.terraform.withPlugins (
           p: [
             p.gitlab
