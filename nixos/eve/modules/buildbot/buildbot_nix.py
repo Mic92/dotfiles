@@ -45,7 +45,7 @@ class BuildTrigger(Trigger):
 
     def getSchedulersAndProperties(self):
         build_props = self.build.getProperties()
-        repo_name = build_probs.getProperty(
+        repo_name = build_props.getProperty(
             "github.base.repo.full_name",
             build_props.getProperty("github.repository.full_name"),
         )
