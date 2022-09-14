@@ -11,11 +11,11 @@ provider "dns" {
 }
 
 resource "digitalocean_droplet" "bbc" {
-  name = "bbc"
+  name   = "bbc"
   region = "lon1"
-  ipv6 = true
+  ipv6   = true
   image  = "ubuntu-22-04-x64"
-  size = "s-1vcpu-1gb"
+  size   = "s-1vcpu-1gb"
   ssh_keys = [
     36184046,
     36184041
