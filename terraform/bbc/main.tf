@@ -42,7 +42,7 @@ output "instruction" {
   value = <<EOT
 You can now login by running
 
-  ssh -D 1234 root@bbc.lekwati.com
+  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -D 1234 root@bbc.lekwati.com
 
 To stop run
 
