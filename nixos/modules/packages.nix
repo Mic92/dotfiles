@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     neovim
-    libarchive
+    ouch
     psmisc
     sipcalc
     iperf

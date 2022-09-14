@@ -30,6 +30,7 @@
         alejandra
         shfmt
         terraform-ls
+        ouch
 
         python3.pkgs.black
         pyright
