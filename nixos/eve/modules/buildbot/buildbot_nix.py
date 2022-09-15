@@ -393,7 +393,7 @@ def nix_eval_config(
             command=[
                 "nix",
                 "run",
-                "github:nix-community/nix-eval-jobs",
+                "github:nix-community/nix-eval-jobs/build-uncached",
                 "--",
                 "--workers",
                 multiprocessing.cpu_count(),
