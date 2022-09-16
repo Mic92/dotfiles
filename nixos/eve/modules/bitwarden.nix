@@ -43,8 +43,6 @@ in {
 
   systemd.services.vaultwarden.serviceConfig = {
     EnvironmentFile = [config.sops.secrets.bitwarden-smtp-password.path];
-    Restart = "on-failure";
-    RestartSec = "2s";
   };
 
   systemd.services.vaultwarden_ldap = {
@@ -59,6 +57,7 @@ in {
     '';
 
     serviceConfig = {
+      Restart = "on-failure";
       RestartSec = "2s";
       ExecStart = "${config.nur.repos.mic92.vaultwarden_ldap}/bin/vaultwarden_ldap";
       Environment = "CONFIG_PATH=/run/vaultwarden_ldap/config.toml";
