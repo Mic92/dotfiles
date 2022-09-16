@@ -59,7 +59,6 @@ in {
     '';
 
     serviceConfig = {
-      Restart = "on-failure";
       RestartSec = "2s";
       ExecStart = "${config.nur.repos.mic92.vaultwarden_ldap}/bin/vaultwarden_ldap";
       Environment = "CONFIG_PATH=/run/vaultwarden_ldap/config.toml";
