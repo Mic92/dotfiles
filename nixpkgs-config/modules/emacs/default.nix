@@ -6,7 +6,7 @@
   ...
 }:
 with lib; let
-  myemacs = pkgs.emacs-nox;
+  myemacs = pkgs.emacs;
   editorScript = {
     name ? "emacseditor",
     x11 ? false,
