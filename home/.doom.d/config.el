@@ -32,6 +32,7 @@
 (setq deft-directory "~/Sync/notes")
 (setq org-directory "~/Sync/notes")
 
+
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
@@ -64,7 +65,7 @@
   (setq lsp-enable-suggest-server-download nil))
 
 (setq projectile-project-search-path '("~/git"))
-(yas/load-directory "~/.homesick/repos/dotfiles/home/.emacs.d/snippets")
+
 
 (add-to-list '+format-on-save-enabled-modes 'go-mode t)
 
