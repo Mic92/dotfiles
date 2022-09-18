@@ -16,6 +16,8 @@
           "0.0.0.0/0 allow"
         ];
         prefetch = "yes";
+        prefetch-key = true;
+
         tls-service-key = "/var/lib/acme/dns.thalheim.io/key.pem";
         tls-service-pem = "/var/lib/acme/dns.thalheim.io/fullchain.pem";
         https-port = "8053";
