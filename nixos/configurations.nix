@@ -120,11 +120,7 @@ in {
 
     matchbox = nixosSystem {
       pkgs = nixpkgs.legacyPackages.aarch64-linux;
-      modules =
-        defaultModules
-        ++ [
-          ./matchbox/configuration.nix
-        ];
+      modules = defaultModules ++ [./matchbox/configuration.nix];
     };
 
     eva = nixosSystem {

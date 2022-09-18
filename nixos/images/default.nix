@@ -44,24 +44,7 @@
       #  format = "kexec";
       #};
 
-      sd-image-aarch64 = nixos-generators.nixosGenerate {
-        pkgs = nixpkgs.legacyPackages.aarch64-linux;
-        modules = [
-          defaultModule
-        ];
-        format = "install-iso";
-      };
-
-      matchbox-image = nixos-generators.nixosGenerate {
-        pkgs = nixpkgs.legacyPackages.aarch64-linux;
-        modules = [
-          ../matchbox/configuration.nix
-          self.inputs.sops-nix.nixosModules.sops
-          self.inputs.retiolum.nixosModules.retiolum
-          self.inputs.retiolum.nixosModules.ca
-        ];
-        format = "sd-aarch64-installer";
-      };
+      matchbox-image = self.nixosConfigurations.matchbox.config.system.build.sdImage;
 
       sd-image = nixos-generators.nixosGenerate {
         inherit pkgs;
