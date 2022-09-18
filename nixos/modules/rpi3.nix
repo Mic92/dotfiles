@@ -4,7 +4,7 @@
   documentation.enable = false;
 
   imports = [
-    "${modulesPath}/installer/sd-card/sd-image-raspberrypi.nix"
+    "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
   ];
 
   boot.kernelParams = ["cma=32M"];
