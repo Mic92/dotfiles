@@ -48,6 +48,7 @@
   recommit = !git commit -eF $(git rev-parse --git-dir)/COMMIT_EDITMSG
 [push]
   default = simple
+  autoSetupRemote = true
 [rerere]
   autoUpdate = true
   enabled = true
