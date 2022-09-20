@@ -40,28 +40,34 @@ module "blended" {
   github_token = data.sops_file.secrets.data["GITHUB_TOKEN"]
   bot_github_token = data.sops_file.secrets.data["blended-bot-token"]
 }
-
-locals {
-  tokens = [
-    data.sops_file.secrets.data["buildbot-token"],
-    data.sops_file.secrets.data["sops-nix-bot-token"],
-    data.sops_file.secrets.data["nix-direnv-bot-token"],
-    data.sops_file.secrets.data["nix-eval-jobs-bot-token"],
-    data.sops_file.secrets.data["beherbergung-bot-token"],
-    data.sops_file.secrets.data["blended-bot-token"],
-  ]
+module "bld" {
+  source = "../modules/github-push-bot"
+  repo_name = "numtide/bld"
+  github_token = data.sops_file.secrets.data["GITHUB_TOKEN"]
+  bot_github_token = data.sops_file.secrets.data["blended-bot-token"]
 }
 
-resource "null_resource" "more-stars" {
-  count = length(local.tokens)
-  provisioner "local-exec" {
-    command = <<-EOT
-set -eux -o pipefail
-curl \
-  -X PUT \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer ${nonsensitive(local.tokens[count.index])}" \
-  https://api.github.com/user/starred/41north/go-async
-EOT
-  }
-}
+#locals {
+#  tokens = [
+#    data.sops_file.secrets.data["buildbot-token"],
+#    data.sops_file.secrets.data["sops-nix-bot-token"],
+#    data.sops_file.secrets.data["nix-direnv-bot-token"],
+#    data.sops_file.secrets.data["nix-eval-jobs-bot-token"],
+#    data.sops_file.secrets.data["beherbergung-bot-token"],
+#    data.sops_file.secrets.data["blended-bot-token"],
+#  ]
+#}
+
+#resource "null_resource" "more-stars" {
+#  count = length(local.tokens)
+#  provisioner "local-exec" {
+#    command = <<-EOT
+#set -eux -o pipefail
+#curl \
+#  -X PUT \
+#  -H "Accept: application/vnd.github+json" \
+#  -H "Authorization: Bearer ${nonsensitive(local.tokens[count.index])}" \
+#  https://api.github.com/user/starred/41north/go-async
+#EOT
+#  }
+#}
