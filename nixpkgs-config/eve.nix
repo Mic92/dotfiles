@@ -10,7 +10,10 @@
   home.packages = let
     weechat = pkgs.wrapWeechat pkgs.weechat-unwrapped {};
   in [
-    pkgs.profanity
+    (pkgs.profanity.override {
+      # may cause hangs? https://github.com/profanity-im/profanity/pull/1564
+      notifySupport = false;
+    })
     (weechat.override {
       configure = {availablePlugins, ...}: {
         scripts = with pkgs.weechatScripts; [
