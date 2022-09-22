@@ -1,6 +1,5 @@
 {
   pkgs,
-  config,
   ...
 }: {
   imports = [../../modules/packages.nix];

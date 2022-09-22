@@ -1,9 +1,6 @@
 {
-  self,
-  config,
   pkgs,
   lib,
-  modulesPath,
   ...
 }: {
   imports = [

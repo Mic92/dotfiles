@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}: {
+{pkgs, ...}: {
   fileSystems."/mnt/backup" = {
     device = "UUID=11ac8bec-aef1-45ca-a530-2115d403ce53";
     fsType = "ext4";
