@@ -6,15 +6,6 @@
     ...
   }: let
     inherit (self.inputs) nixos-generators nur nixpkgs;
-
-    containerPkgs = inputs'.nix2container.packages;
-
-    copyToPodman = image:
-      pkgs.writeShellScriptBin "copy-to-podman" ''
-        ${containerPkgs.skopeo-nix2container}/bin/skopeo --insecure-policy copy nix:${image} containers-storage:${image.name}:${image.tag}
-        echo Docker image ${image.name}:${image.tag} have been loaded
-      '';
-
     defaultModule = { config, ... }: {
       imports = [
         ./base-config.nix
@@ -70,8 +61,6 @@
         inherit nixos-generators;
         inherit pkgs;
       };
-
-      headscale-image = pkgs.callPackage ./headscale.nix {};
     };
   };
 }

@@ -1,4 +1,5 @@
 {
+  pkgs,
   nurFun ? (import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz")),
 }: {
   allowUnfree = true;

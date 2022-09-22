@@ -29,7 +29,7 @@
 
   defaultModules = [
     # make flake inputs accessiable in NixOS
-    ({config, ...}: {
+    ({
       _module.args.self = self;
       _module.args.inputs = self.inputs;
     })

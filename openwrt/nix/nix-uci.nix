@@ -1,4 +1,4 @@
-{ buildPythonApplication, sops, lib, runCommand }:
+{ buildPythonApplication, lib, runCommand }:
 buildPythonApplication {
   pname = "nix-uci";
   version = "0.0.1";

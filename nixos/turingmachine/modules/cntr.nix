@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{
   #virtualisation.oci-containers = {
   #  containers.nginx = {
   #    image = "nginx-container";
