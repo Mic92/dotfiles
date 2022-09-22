@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{
   users.extraUsers.hass-agent = {
     isSystemUser = true;
     group = "hass-agent";

@@ -1,5 +1,9 @@
-{ config, lib, pkgs, ... }:
 {
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
   systemd.timers.update-prefetch.timerConfig.Persistent = "yes";
   systemd.services.update-prefetch = {
     startAt = "hourly";

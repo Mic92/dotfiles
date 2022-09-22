@@ -1,6 +1,9 @@
-{ config, lib, pkgs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   sharedSettings = {
     ephemeral = true;
     autoStart = true;
@@ -26,7 +29,7 @@ let
     };
   };
   consulServer = {
-    imports = [ consulAgent ];
+    imports = [consulAgent];
     networking.firewall = {
       allowedTCPPorts = [
         8301 # lan serf
@@ -46,58 +49,80 @@ let
       server = true;
     };
   };
-in
-{
-
-  containers.consul1 = sharedSettings // {
-    localAddress = "192.168.100.2";
-    config = { config, pkgs, ... }: {
-      imports = [
-        sharedModule
-        consulServer
-      ];
-    };
-  };
-
-  containers.consul2 = sharedSettings // {
-    localAddress = "192.168.100.3";
-    config = { config, pkgs, ... }: {
-      imports = [
-        sharedModule
-        consulServer
-      ];
-    };
-  };
-
-  containers.consul3 = sharedSettings // {
-    localAddress = "192.168.100.4";
-    config = { config, pkgs, ... }: {
-      imports = [
-        sharedModule
-        consulServer
-      ];
-    };
-  };
-
-  containers.vault0 = sharedSettings // {
-    localAddress = "192.168.100.6";
-    privateNetwork = false;
-    config = { config, pkgs, ... }: {
-      imports = [
-        sharedModule
-        consulAgent
-      ];
-      networking.firewall.allowedTCPPorts = [
-        8300
-      ];
-      services.vault = {
-        enable = true;
-        dev = true;
-        devRootTokenID = "phony-secret";
+in {
+  containers.consul1 =
+    sharedSettings
+    // {
+      localAddress = "192.168.100.2";
+      config = {
+        config,
+        pkgs,
+        ...
+      }: {
+        imports = [
+          sharedModule
+          consulServer
+        ];
       };
-      services.consul.interface.bind = "dummy1";
-      systemd.services.consul.after = lib.mkForce [ ];
-      systemd.services.consul.bindsTo = lib.mkForce [ ];
     };
-  };
+
+  containers.consul2 =
+    sharedSettings
+    // {
+      localAddress = "192.168.100.3";
+      config = {
+        config,
+        pkgs,
+        ...
+      }: {
+        imports = [
+          sharedModule
+          consulServer
+        ];
+      };
+    };
+
+  containers.consul3 =
+    sharedSettings
+    // {
+      localAddress = "192.168.100.4";
+      config = {
+        config,
+        pkgs,
+        ...
+      }: {
+        imports = [
+          sharedModule
+          consulServer
+        ];
+      };
+    };
+
+  containers.vault0 =
+    sharedSettings
+    // {
+      localAddress = "192.168.100.6";
+      privateNetwork = false;
+      config = {
+        config,
+        pkgs,
+        ...
+      }: {
+        imports = [
+          sharedModule
+          consulAgent
+        ];
+        networking.firewall.allowedTCPPorts = [
+          8300
+        ];
+        services.vault = {
+          enable = true;
+          dev = true;
+          devRootTokenID = "phony-secret";
+        };
+        services.consul.interface.bind = "dummy1";
+        systemd.services.consul.after = lib.mkForce [];
+        systemd.services.consul.bindsTo = lib.mkForce [];
+      };
+    };
 }

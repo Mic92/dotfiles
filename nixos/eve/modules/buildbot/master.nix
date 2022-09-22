@@ -1,8 +1,10 @@
-{ config, lib, pkgs, ... }:
-
-let
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}: let
   # TODO: make this an option
-
   # https://github.com/organizations/numtide/settings/applications
   # Application name: BuildBot
   # Homepage URL: https://buildbot.numtide.com
@@ -10,8 +12,7 @@ let
   # oauth_token:  2516248ec6289e4d9818122cce0cbde39e4b788d
   buildbotDomain = "buildbot.thalheim.io";
   githubOauthId = "d1b24258af1abc157934";
-in
-{
+in {
   services.buildbot-master = {
     enable = true;
     masterCfg = "${./.}/master.py";
@@ -26,7 +27,7 @@ in
 
   systemd.services.buildbot-master = {
     environment = {
-      PORT   = "1810";
+      PORT = "1810";
       DB_URL = config.services.buildbot-master.dbUrl;
       # Github app used for the login button
       GITHUB_OAUTH_ID = githubOauthId;

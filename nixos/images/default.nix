@@ -6,7 +6,7 @@
     ...
   }: let
     inherit (self.inputs) nixos-generators nur nixpkgs;
-    defaultModule = { config, ... }: {
+    defaultModule = {config, ...}: {
       imports = [
         ./base-config.nix
         self.inputs.nur.nixosModules.nur

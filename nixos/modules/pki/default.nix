@@ -17,8 +17,8 @@ in {
       ];
       parseInfoScript =
         /*
-         jq
-         */
+        jq
+        */
         ''
           ${builtins.toJSON certFile} as $certFile |
 
@@ -45,8 +45,8 @@ in {
       ];
     }
     /*
-     sh
-     */
+    sh
+    */
     ''
       mkdir nssdb
 

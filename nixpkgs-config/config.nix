@@ -4,7 +4,7 @@
 }: {
   allowUnfree = true;
   # https://github.com/nix-community/home-manager/issues/2942
-  allowUnfreePredicate = (_pkg: true);
+  allowUnfreePredicate = _pkg: true;
 
   pulseaudio = true;
   #allowUnsupportedSystem = true;

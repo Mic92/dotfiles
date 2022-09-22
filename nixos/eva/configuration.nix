@@ -15,7 +15,7 @@
 # $ systemd-nspawn --capability=CAP_NET_ADMIN -D /var/lib/machines/eva -b
 # or
 # $ machinectl start eva
-{ pkgs, ... }: {
+{pkgs, ...}: {
   networking.hostName = "eva";
 
   time.timeZone = "UTC";
@@ -25,7 +25,6 @@
   imports = [
     ./modules/borgbackup-repos
     ./modules/buildbot.nix
-    #./modules/derp.nix
     ./modules/go-neb.nix
     ./modules/hardware-configuration.nix
     ./modules/prometheus

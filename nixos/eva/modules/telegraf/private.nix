@@ -342,15 +342,18 @@ in {
       }
     ];
 
-    http = [{
-      urls = [
-        ''http://navidrome.r/rest/getAlbumList2?u=''${NAVIDROME_USER}&v=1.13.0&c=curl&p=''${NAVIDROME_PASSWORD}&type=alphabeticalByName&size=1&offset=5000''
-      ];
-      data_format = "xml";
-      xml = [{
-        fields_int.navidrome_album_count = "count(/subsonic-response/albumList2/album)";
-      }];
-    }];
-
+    http = [
+      {
+        urls = [
+          ''http://navidrome.r/rest/getAlbumList2?u=''${NAVIDROME_USER}&v=1.13.0&c=curl&p=''${NAVIDROME_PASSWORD}&type=alphabeticalByName&size=1&offset=5000''
+        ];
+        data_format = "xml";
+        xml = [
+          {
+            fields_int.navidrome_album_count = "count(/subsonic-response/albumList2/album)";
+          }
+        ];
+      }
+    ];
   };
 }

@@ -46,8 +46,6 @@
     #../modules/samba-dl.nix
     ../modules/sway.nix
     ../modules/sshd/tor.nix
-    #../modules/tailscale.nix
-    #../modules/awesome.nix
     #../modules/gnome.nix
     ../modules/pki
     #../modules/yubikey.nix

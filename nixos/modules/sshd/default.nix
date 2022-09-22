@@ -1,5 +1,8 @@
-{ config, lib, ...}:
-let
+{
+  config,
+  lib,
+  ...
+}: let
   cert = ./certs + "/${config.networking.hostName}-cert.pub";
 in {
   imports = [

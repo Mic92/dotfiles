@@ -16,10 +16,7 @@
   }:
     flake-parts.lib.mkFlake {inherit self;} {
       systems = ["x86_64-linux"];
-      perSystem = {
-        pkgs,
-        ...
-      }: let
+      perSystem = {pkgs, ...}: let
         poetry2nix = pkgs.callPackage self.inputs.poetry2nix {};
       in {
         devShells.default = pkgs.mkShell {

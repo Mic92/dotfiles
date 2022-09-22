@@ -83,7 +83,6 @@
     ../modules/uptermd.nix
   ];
 
-
   # The NixOS release to be compatible with for stateful data such as databases.
   system.stateVersion = "18.03";
 }

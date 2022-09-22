@@ -1,5 +1,4 @@
-{ self, ... }:
-let
+{self, ...}: let
   lib = self.inputs.nixpkgs.lib;
 in {
   flake.hydraJobs =

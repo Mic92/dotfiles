@@ -1,5 +1,9 @@
 {
-  perSystem = { inputs', pkgs, ... }: {
+  perSystem = {
+    inputs',
+    pkgs,
+    ...
+  }: {
     # Definitions like this are entirely equivalent to the ones
     # you may have directly in flake.nix.
     devShells.default = pkgs.mkShellNoCC {

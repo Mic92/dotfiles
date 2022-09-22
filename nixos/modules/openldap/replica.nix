@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: let
+{config, ...}: let
   passwordName =
     {
       eva = "openldap-syncpw-rid1";

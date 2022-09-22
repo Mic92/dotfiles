@@ -1,7 +1,6 @@
 {
   config,
   pkgs,
-  libs,
   ...
 }: {
   home.packages = with pkgs; [
@@ -13,9 +12,11 @@
     gopls
     stylua
     nodePackages.pyright
-    (if pkgs.stdenv.isDarwin
-    then pkgs.sumneko-lua-language-server-mac
-    else pkgs.sumneko-lua-language-server)
+    (
+      if pkgs.stdenv.isDarwin
+      then pkgs.sumneko-lua-language-server-mac
+      else pkgs.sumneko-lua-language-server
+    )
   ];
   xdg.dataHome = "${config.home.homeDirectory}/.data";
   # fzf-native

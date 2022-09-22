@@ -1,8 +1,5 @@
 {self, ...}: {
-  perSystem = {
-    pkgs,
-    ...
-  }: {
+  perSystem = {pkgs, ...}: {
     apps.hm = {
       type = "app";
       program = "${pkgs.writeScriptBin "hm" ''
