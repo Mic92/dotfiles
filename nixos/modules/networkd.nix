@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  resolved = pkgs.systemd.overrideAttrs (old: {
+  resolved = pkgs.systemd.overrideAttrs (_old: {
     buildPhase = ''
       ninja systemd-resolved
     '';

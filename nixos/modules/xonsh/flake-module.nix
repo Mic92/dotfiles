@@ -8,9 +8,9 @@
     poetryPackages =
       (poetry2nix.mkPoetryPackages {
         projectDir = ./.;
-        overrides = poetry2nix.overrides.withDefaults (self: super: {
+        overrides = poetry2nix.overrides.withDefaults (_self: super: {
           xontrib-dracula = super.xontrib-dracula.overridePythonAttrs (
-            old: {
+            _old: {
               nativeBuildInputs = [super.poetry-core];
             }
           );

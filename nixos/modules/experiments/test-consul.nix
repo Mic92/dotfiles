@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: let
+{lib, ...}: let
   sharedSettings = {
     ephemeral = true;
     autoStart = true;
@@ -55,10 +50,6 @@ in {
     // {
       localAddress = "192.168.100.2";
       config = {
-        config,
-        pkgs,
-        ...
-      }: {
         imports = [
           sharedModule
           consulServer
@@ -71,10 +62,6 @@ in {
     // {
       localAddress = "192.168.100.3";
       config = {
-        config,
-        pkgs,
-        ...
-      }: {
         imports = [
           sharedModule
           consulServer
@@ -87,10 +74,6 @@ in {
     // {
       localAddress = "192.168.100.4";
       config = {
-        config,
-        pkgs,
-        ...
-      }: {
         imports = [
           sharedModule
           consulServer
@@ -104,10 +87,6 @@ in {
       localAddress = "192.168.100.6";
       privateNetwork = false;
       config = {
-        config,
-        pkgs,
-        ...
-      }: {
         imports = [
           sharedModule
           consulAgent
