@@ -1,13 +1,11 @@
 {
   pkgs,
-  lib,
   config,
   ...
 }: {
   imports = [
     ./common.nix
     ./modules/rust.nix
-    #./modules/kak.nix
     ./modules/debugging.nix
     ./modules/default-apps.nix
   ];
