@@ -4,9 +4,7 @@
   lib,
   ...
 }: let
-  cfg = config.uci.settings;
   settingsFormat = pkgs.formats.json {};
-  settingsFile = settingsFormat.generate "settings.json" cfg.settings;
 in {
   options.uci = {
     settings = lib.mkOption {

@@ -1,10 +1,9 @@
 {
-  pkgs,
   nurFun ? (import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz")),
 }: {
   allowUnfree = true;
   # https://github.com/nix-community/home-manager/issues/2942
-  allowUnfreePredicate = (pkg: true);
+  allowUnfreePredicate = (_pkg: true);
 
   pulseaudio = true;
   #allowUnsupportedSystem = true;

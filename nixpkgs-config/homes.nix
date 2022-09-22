@@ -48,7 +48,7 @@
   };
 
   flake = let
-    inherit (self.inputs) nixpkgs home-manager nur doom-emacs emacs-overlay;
+    inherit (self.inputs) nixpkgs home-manager nur;
     hmConfiguration = {
       extraModules ? [],
       system ? "x86_64-linux",

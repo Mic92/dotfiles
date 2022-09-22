@@ -258,9 +258,6 @@
         "application/zip"
         "application/zstd"
       ];
-      directory = [
-        "inode/directory"
-      ];
       code = [
         "text/english"
         "text/plain"

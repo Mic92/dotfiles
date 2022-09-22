@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  config,
   inputs,
   ...
 }:
@@ -9,7 +8,6 @@ with lib; let
   myemacs = pkgs.emacs;
   editorScript = {
     name ? "emacseditor",
-    x11 ? false,
     extraArgs ? [],
   }:
     pkgs.writeScriptBin name ''
@@ -20,17 +18,9 @@ with lib; let
       exec -a emacs ${myemacs}/bin/emacsclient \
         --create-frame \
         --alternate-editor ${myemacs}/bin/emacs \
-        ${optionalString (!x11) "-nw"} \
+        -nw \
         ${toString extraArgs} "$@"
     '';
-
-  treeSitterGrammars = pkgs.runCommandLocal "grammars" {} ''
-    mkdir -p $out/bin
-    ${
-      lib.concatStringsSep "\n"
-      (lib.mapAttrsToList (name: src: "ln -s ${src}/parser $out/bin/${name}.so") pkgs.tree-sitter.builtGrammars)
-    };
-  '';
 
   daemonScript = pkgs.writeScript "emacs-daemon" ''
     #!${pkgs.zsh}/bin/zsh -l
@@ -51,10 +41,6 @@ with lib; let
     exec ${myemacs}/bin/emacs --daemon
   '';
 
-  editorScriptX11 = editorScript {
-    name = "emacs";
-    x11 = true;
-  };
   # list taken from here: https://github.com/emacs-tree-sitter/tree-sitter-langs/tree/e7b8db7c4006c04a4bc1fc6865ec31f223843192/repos
   # commented out are not yet packaged in nix
   langs = [

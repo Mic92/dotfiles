@@ -1,9 +1,4 @@
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
   imports = [./.];
 
   services.k3s.role = "agent";

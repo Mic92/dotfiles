@@ -3,7 +3,6 @@
   coreutils,
   mpv,
   lib,
-  fetchurl,
   writeShellScriptBin,
   gnused,
   curl,

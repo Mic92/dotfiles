@@ -85,7 +85,10 @@ in {
           #inputs.envfs.nixosModules.envfs
           # For testing systemd
           #({pkgs, ...}: {
-          #  systemd.package = self.inputs.nixpkgs-systemd.legacyPackages.${pkgs.system}.systemd;
+          #  #systemd.package = self.inputs.nixpkgs-systemd.legacyPackages.${pkgs.system}.systemd;
+          #  systemd.package = pkgs.systemd.overrideAttrs (old: {
+          #    src = self.inputs.systemd;
+          #  });
           #})
         ];
     };
