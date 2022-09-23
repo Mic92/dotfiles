@@ -50,10 +50,6 @@
     doom-emacs.url = "github:doomemacs/doomemacs/master";
     doom-emacs.flake = false;
 
-    emacs-overlay.url = "github:nix-community/emacs-overlay";
-    emacs-overlay.inputs.nixpkgs.follows = "nixpkgs";
-    emacs-overlay.inputs.flake-utils.follows = "flake-utils";
-
     flake-registry.url = "github:NixOS/flake-registry";
     flake-registry.flake = false;
 
@@ -67,10 +63,6 @@
 
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-
-    poetry2nix.url = "github:nix-community/poetry2nix";
-    poetry2nix.inputs.nixpkgs.follows = "nixpkgs";
-    poetry2nix.inputs.flake-utils.follows = "flake-utils";
 
     deploykit.url = "github:numtide/deploykit";
     deploykit.inputs.nixpkgs.follows = "nixpkgs";

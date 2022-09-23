@@ -63,29 +63,6 @@
         "type": "github"
       }
     },
-    "emacs-overlay": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1663823925,
-        "narHash": "sha256-6pBIJwpUuC17u/rjl0DH3tKsXKvOjacJNO8RWlxEQvo=",
-        "owner": "nix-community",
-        "repo": "emacs-overlay",
-        "rev": "6346fa5aa82fd663d340fe1e16e213128cad7542",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "emacs-overlay",
-        "type": "github"
-      }
-    },
     "envfs": {
       "inputs": {
         "nixpkgs": [
@@ -189,11 +166,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1663800189,
-        "narHash": "sha256-OzomhNhiKvHKr0qxASKNyuXpx6ilhflb/4P5Wsz2FGo=",
+        "lastModified": 1663835995,
+        "narHash": "sha256-XNHQ+mdHbjNR1Oit00SFAEcrAZoCS08E7uAFcVMtwhM=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "f17819f4f198a3973be76797aa8a9370e35c7ca6",
+        "rev": "bd83eab6220226085c82e637931a7ae3863d9893",
         "type": "github"
       },
       "original": {
@@ -331,39 +308,16 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1663827947,
-        "narHash": "sha256-QjJOABVlV1V380FbaXOxuwUA7RZJB9LC0paaKDcKlB8=",
+        "lastModified": 1663911606,
+        "narHash": "sha256-oZ5ATnP5KQM80XbUu2FwZ1KeMGnXa3XtWCqbkNmQCBI=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "bdfe254e6e37ccc25707846ba426ba89b4adef02",
+        "rev": "4e813680bc3b2c912015a443339f6d0e20cbebc8",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "repo": "NUR",
-        "type": "github"
-      }
-    },
-    "poetry2nix": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1663820080,
-        "narHash": "sha256-Gg4/3epAgeby9fTNW+0N49zi2uBXRFIkCLEuscxR1Wg=",
-        "owner": "nix-community",
-        "repo": "poetry2nix",
-        "rev": "5639642633a41ee41b4e8ce1939ab80cb747dee4",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "poetry2nix",
         "type": "github"
       }
     },
@@ -387,7 +341,6 @@
         "bme680-mqtt": "bme680-mqtt",
         "deploykit": "deploykit",
         "doom-emacs": "doom-emacs",
-        "emacs-overlay": "emacs-overlay",
         "envfs": "envfs",
         "fenix": "fenix",
         "flake-parts": "flake-parts",
@@ -400,7 +353,6 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nur": "nur",
-        "poetry2nix": "poetry2nix",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix"
       }
