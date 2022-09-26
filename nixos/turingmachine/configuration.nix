@@ -57,6 +57,8 @@
 
   hardware.video.hidpi.enable = true;
 
+  services.gvfs.enable = true;
+
   boot = {
     zfs.requestEncryptionCredentials = ["zroot/root"];
 
