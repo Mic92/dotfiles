@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. ns2.thalheim.io. 2022092607 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. ns2.thalheim.io. 2022092609 7200 3600 86400 3600
 
 ;;@ 3600 IN NS ns1
 @ 3600 IN NS ns2
@@ -68,7 +68,8 @@ rock IN NS ns2.thalheim.io.
 @ IN CAA 0 iodef "mailto:joerg.caa@thalheim.io"
 
 ;; University
-stable-diffusion.thalheim.io CNAME jack.dse.in.tum.de.
+stable-diffusion CNAME jack.dse.in.tum.de.
+stable-confusion CNAME jack.dse.in.tum.de.
 
 archfeed IN CNAME arch-pkg-feed.herokuapp.com.
 githubtags IN CNAME github-tags-feed.herokuapp.com.
