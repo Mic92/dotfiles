@@ -58,6 +58,7 @@
     #    defaultPort = "80";
     #  })
     firefox-wayland
+    sshuttle
     syncplay
     chromium
     celluloid

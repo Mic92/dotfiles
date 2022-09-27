@@ -42,10 +42,10 @@ output "instruction" {
   value = <<EOT
 You can now login by running
 
-  ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -D 1234 root@bbc.lekwati.com
+  sshuttle -r root@bbc.lekwati.com 0/0
 
 To stop run
 
-  terraform destroy
+  terragrunt destroy
 EOT
 }
