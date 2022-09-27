@@ -40,12 +40,13 @@ resource "dns_aaaa_record_set" "bbc" {
 
 output "instruction" {
   value = <<EOT
-You can now login by running
+You can now login by typing:
 
   sshuttle -r root@bbc.lekwati.com 0/0
 
 To stop run
 
-  terragrunt destroy
+  1. Press Ctrl-C
+  2. Type 'terragrunt destroy'
 EOT
 }
