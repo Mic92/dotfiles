@@ -86,27 +86,6 @@
         "type": "github"
       }
     },
-    "fenix": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "rust-analyzer-src": "rust-analyzer-src"
-      },
-      "locked": {
-        "lastModified": 1664261832,
-        "narHash": "sha256-UssYqWfA0ZkCPwFdrGdN7ow0pxfroObnIBT7Nfqo3/w=",
-        "owner": "nix-community",
-        "repo": "fenix",
-        "rev": "bb5b26514dae194134c2aa30ecdb9c1dc2a1abcd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "fenix",
-        "type": "github"
-      }
-    },
     "flake-parts": {
       "inputs": {
         "nixpkgs": [
@@ -342,7 +321,6 @@
         "deploykit": "deploykit",
         "doom-emacs": "doom-emacs",
         "envfs": "envfs",
-        "fenix": "fenix",
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
@@ -355,23 +333,6 @@
         "nur": "nur",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix"
-      }
-    },
-    "rust-analyzer-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1664184959,
-        "narHash": "sha256-Eb8L/wkV1HfZwcewAKrZRiwxTUluapFNVvf5vRdqsKg=",
-        "owner": "rust-lang",
-        "repo": "rust-analyzer",
-        "rev": "1a24003eb6bc8377e76cd9f70bf6700bc842e99b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "rust-lang",
-        "ref": "nightly",
-        "repo": "rust-analyzer",
-        "type": "github"
       }
     },
     "sops-nix": {

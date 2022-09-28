@@ -17,9 +17,6 @@
     #systemd.url = "git+file:///home/joerg/git/systemd";
     #systemd.flake = false;
 
-    fenix.url = "github:nix-community/fenix";
-    fenix.inputs.nixpkgs.follows = "nixpkgs";
-
     nixos-generators = {
       #url = "github:nix-community/nixos-generators";
       url = "github:Mic92/nixos-generators/fedf7136f27490402fe8ab93e67fafae80513e9b";
