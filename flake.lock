@@ -94,11 +94,11 @@
         "rust-analyzer-src": "rust-analyzer-src"
       },
       "locked": {
-        "lastModified": 1664175311,
-        "narHash": "sha256-70pWOhKXjWVmGdEZSLLSinKAKdGPHtZZYn4G1j325I4=",
+        "lastModified": 1664261832,
+        "narHash": "sha256-UssYqWfA0ZkCPwFdrGdN7ow0pxfroObnIBT7Nfqo3/w=",
         "owner": "nix-community",
         "repo": "fenix",
-        "rev": "9a7ebe366d3a756ce06b3eb0e170c85ce1d91570",
+        "rev": "bb5b26514dae194134c2aa30ecdb9c1dc2a1abcd",
         "type": "github"
       },
       "original": {
@@ -166,11 +166,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1664146938,
-        "narHash": "sha256-fIvsJ3qWiD6o3qH9iU66OsL8uG5C1FGXcuaNEctJv8M=",
+        "lastModified": 1664286632,
+        "narHash": "sha256-fKENvLanhmBENlIbmDAVB8SKSbwdLLBYKu6B7oJ0rLc=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "9e7394523eb4f298528d457e316fc752bdf07151",
+        "rev": "6dc8a43f397c92afbc3f771385ac803d96d5eeb5",
         "type": "github"
       },
       "original": {
@@ -186,11 +186,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1664143588,
-        "narHash": "sha256-I1qaa8VMISprKulco2bxiIJUaz1NGiKmlsQuM996yzM=",
+        "lastModified": 1664210064,
+        "narHash": "sha256-df6nKVZe/yAhmJ9csirTPahc0dldwm3HBhCVNA6qWr0=",
         "owner": "LnL7",
         "repo": "nix-darwin",
-        "rev": "95ba7e548d55e74c36369dbd6a4bfe99a543c835",
+        "rev": "02d2551c927b7d65ded1b3c7cd13da5cc7ae3fcf",
         "type": "github"
       },
       "original": {
@@ -292,11 +292,11 @@
     },
     "nixpkgs-22_05": {
       "locked": {
-        "lastModified": 1664063819,
-        "narHash": "sha256-5wXa+9uboo7UizMDeUTMoANv3pm0g9ze1NdTleY3rCE=",
+        "lastModified": 1664201777,
+        "narHash": "sha256-cUW9DqELUNi1jNMwVSbfq4yl5YGyOfeu+UHUUImbby0=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "aee4db5b9eaccd3fb7f16c742685fef9dc355077",
+        "rev": "00f877f4927b6f7d7b75731b5a1e2ae7324eaf14",
         "type": "github"
       },
       "original": {
@@ -308,11 +308,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1664179085,
-        "narHash": "sha256-qw7aqKbLJrQu+xZWdXohxaP9WEOl5q0b74ttj6xbFkY=",
+        "lastModified": 1664343176,
+        "narHash": "sha256-3UJnfUJsBInjHLc+yM7ynQ9fmIqDaTvFXmWU9sTLkiY=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "046cab87a6ee9a7f5191585f2c340a13323771f4",
+        "rev": "9dd8331154e6555760240be703fbf85dd3c41bab",
         "type": "github"
       },
       "original": {
@@ -323,11 +323,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1664018874,
-        "narHash": "sha256-EJxB2asKgpP8Gjf2IGJ/pWPeKvo+GvFEUjjz80xVMQc=",
+        "lastModified": 1664352907,
+        "narHash": "sha256-SGkiQ51OfPschW9aj782ldIas1xLYiiNvnRRLHmxr1M=",
         "ref": "refs/heads/master",
-        "rev": "93a66ba006335447a5b4ec22521f44e02a907a5f",
-        "revCount": 235,
+        "rev": "7cbbbc4ebb7fa391b536fbbdc896f230134c4bde",
+        "revCount": 238,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },
@@ -360,11 +360,11 @@
     "rust-analyzer-src": {
       "flake": false,
       "locked": {
-        "lastModified": 1664049888,
-        "narHash": "sha256-aCHudrXd8DKocehX6aWzlbZv4bq2l7MFXhM/wc2NdmI=",
+        "lastModified": 1664184959,
+        "narHash": "sha256-Eb8L/wkV1HfZwcewAKrZRiwxTUluapFNVvf5vRdqsKg=",
         "owner": "rust-lang",
         "repo": "rust-analyzer",
-        "rev": "73ab709b38b171d561c119f5c6f94af1bf2e4f3b",
+        "rev": "1a24003eb6bc8377e76cd9f70bf6700bc842e99b",
         "type": "github"
       },
       "original": {
@@ -382,11 +382,11 @@
         "nixpkgs-22_05": "nixpkgs-22_05"
       },
       "locked": {
-        "lastModified": 1664080128,
-        "narHash": "sha256-obau1+3+QiTtNGfoTcbSYB5Z4Gvf4o0Or85yLttSYt8=",
+        "lastModified": 1664204020,
+        "narHash": "sha256-LAey3hr8b9EAt3n304Wt9Vm4uQFd8pSRtLX8leuYFDs=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "17f009daf09992d2342657f9bd7b44d877cd00e1",
+        "rev": "912f9ff41fd9353dec1f783170793699789fe9aa",
         "type": "github"
       },
       "original": {
