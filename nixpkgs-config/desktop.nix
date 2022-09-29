@@ -57,7 +57,7 @@
       nix-index
       cheat
       hydra-check
-      xdg_utils
+      xdg-utils
       patool
       picocom
 

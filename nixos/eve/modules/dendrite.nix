@@ -10,7 +10,7 @@
   inherit (config.services.dendrite.settings.global) server_name;
   nginx-vhost = "matrix.thalheim.io";
   element-web-thalheim.io =
-    pkgs.runCommandNoCC "element-web-with-config" {
+    pkgs.runCommand "element-web-with-config" {
       nativeBuildInputs = [pkgs.buildPackages.jq];
     } ''
       cp -r ${pkgs.element-web} $out

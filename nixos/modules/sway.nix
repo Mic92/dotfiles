@@ -61,7 +61,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    xdg_utils
+    xdg-utils
     # polkit agent
     polkit_gnome
 
