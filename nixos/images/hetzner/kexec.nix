@@ -30,8 +30,6 @@
 }: {
   imports = [./base.nix];
 
-  nix.package = pkgs.nixFlakes;
-
   boot.initrd.network.enable = lib.mkForce false;
 }
 ## booting nixos from the rescue system

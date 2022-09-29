@@ -13,7 +13,7 @@
 # iso> mount -t zfs zroot/root/nixos /mnt
 # iso> mount -t zfs zroot/root/home /mnt
 # iso> mount /dev/nvme0n1p1 /mnt/boot
-# iso> nix-shell -p git -p nixFlakes --run 'nixos-install --impure --flake /mnt/home/joerg/.homesick/repos/dotfiles#turingmachine'
+# iso> nix-shell -p git -p nix --run 'nixos-install --impure --flake /mnt/home/joerg/.homesick/repos/dotfiles#turingmachine'
 {
   config,
   lib,

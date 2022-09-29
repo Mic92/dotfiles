@@ -36,7 +36,7 @@
         pyright
 
         du-dust
-        pkgs.nixFlakes
+        pkgs.nix
 
         tmux
         htop
