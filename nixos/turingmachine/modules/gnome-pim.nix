@@ -4,9 +4,9 @@
   services.gnome.gnome-online-accounts.enable = true;
   services.gnome.gnome-keyring.enable = true;
   environment.systemPackages = [
-    pkgs.gnome3.gnome-calendar
+    pkgs.gnome.gnome-calendar
     # broken
-    #pkgs.gnome3.gnome-todo
+    #pkgs.gnome.gnome-todo
     pkgs.evolution
   ];
 }

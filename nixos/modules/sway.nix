@@ -17,7 +17,7 @@
         extraLibs = [python3.pkgs.keyrings-alt python3.pkgs.paho-mqtt];
       })
       wofi
-      gnome3.eog
+      gnome.eog
       libnotify
       autotiling # https://github.com/nwg-piotr/autotiling
       dunst # notification daemon
@@ -35,8 +35,8 @@
       pamixer
       mpc_cli
       networkmanagerapplet
-      gnome3.file-roller
-      gnome3.nautilus
+      gnome.file-roller
+      gnome.nautilus
       firefox-wayland
       chromium
 

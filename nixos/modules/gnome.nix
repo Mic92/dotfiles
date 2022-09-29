@@ -7,8 +7,8 @@
     desktopManager.gnome.enable = true;
   };
   environment.systemPackages = [
-    pkgs.gnome3.gnome-tweaks
-    pkgs.gnome3.dconf-editor
+    pkgs.gnome.gnome-tweaks
+    pkgs.gnome.dconf-editor
     pkgs.gnomeExtensions.vitals
     pkgs.gnomeExtensions.forge
   ];
