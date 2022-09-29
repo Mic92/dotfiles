@@ -13,7 +13,7 @@ with pkgs; let
     installPhase = ''
       install -D -m755 $src $out/bin/dispatcher
       mypy $src
-      wrapProgram $out/bin/dispatcher --prefix PATH : ${lib.makeBinPath [systemd alsaUtils]}
+      wrapProgram $out/bin/dispatcher --prefix PATH : ${lib.makeBinPath [systemd alsa-utils]}
     '';
   };
 in {
