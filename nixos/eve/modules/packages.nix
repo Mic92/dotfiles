@@ -33,7 +33,7 @@
       nethogs
       iotop
       gnumake
-      pkgconfig
+      pkg-config
       cmake
       man-pages
       netcat
