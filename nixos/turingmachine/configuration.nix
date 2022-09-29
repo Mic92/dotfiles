@@ -8,7 +8,6 @@
 
     #../modules/libvirt.nix
     ./modules/caddy.nix
-    ./modules/dice.nix
     ./modules/eve-rdp.nix
     ./modules/backup.nix
     ./modules/hass-agent.nix
