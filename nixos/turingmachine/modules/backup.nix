@@ -82,7 +82,7 @@ in {
   };
 
   systemd.timers.borgbackup-job-turingmachine = {
-    timerConfig.OnCalendar = lib.mkForce "13:00:00";
+    timerConfig.OnCalendar = lib.mkForce "12:00:00";
   };
 
   systemd.services.borgbackup-job-turingmachine.serviceConfig.ReadWritePaths = [
