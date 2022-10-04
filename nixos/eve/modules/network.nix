@@ -95,8 +95,6 @@ in {
         ];
       };
       postCommands = ''
-        echo "zpool import data; zfs load-key -a && killall zfs" >> /root/.profile
-
         ip link set dev eth0 up
 
         ip addr add ${cfg.ipv4.address}/${cfg.ipv4.cidr} dev eth0
