@@ -33,16 +33,17 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
         flake_attr = h.meta.get("flake_attr", "")
         if flake_attr:
             flake_attr = "#" + flake_attr
-        #if flake_attr:
+        # if flake_attr:
         #    h.run("nix copy --no-check-sigs --from ssh-ng://binary-cache.thalheim.io \"$(curl -L https://buildbot.thalheim.io/nix-outputs/nixos-blob64)\"", check=False)
         target_host = h.meta.get("target_host", "localhost")
         target_user = h.meta.get("target_user")
         if target_user:
             target_host = f"{target_user}@{target_host}"
         extra_args = h.meta.get("extra_args", "")
-        h.run(
-            f"nixos-rebuild switch {extra_args} --option keep-going true --option accept-flake-config true --fast --build-host localhost --target-host {target_host} --flake $(realpath {flake_path}){flake_attr}"
-        )
+        cmd = f"nixos-rebuild switch {extra_args} --option keep-going true --option accept-flake-config true --fast --build-host localhost --target-host {target_host} --flake $(realpath {flake_path}){flake_attr}"
+        ret = h.run(cmd, check=False)
+        if ret.returncode != 0:
+            ret = h.run(cmd)
 
     g.run_function(deploy)
 
@@ -69,9 +70,11 @@ def deploy(c):
                 "eve.i",
                 forward_agent=True,
                 command_prefix="blob64.r",
-                meta=dict(target_user="root", target_host="blob64.r", flake_attr="blob64"),
+                meta=dict(
+                    target_user="root", target_host="blob64.r", flake_attr="blob64"
+                ),
                 user="root",
-            )
+            ),
         ]
     )
 
