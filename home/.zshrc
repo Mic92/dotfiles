@@ -544,7 +544,8 @@ if [[ -S "/run/user/${UID}/ssh-agent" ]]; then
 fi
 
 unlock_root(){
-  rbw get 'zfs encryption' | ssh -tt -v root@eve.i -p 2222
+  pw=$(rbw get 'zfs encryption')
+  ssh -tt -v root@eve.i -p 2222 "zpool import data; echo "${pw}" | zfs load-key -a && echo "${pw}" | zfs load-key -a && killall zfs"
 }
 # Autoinstall Bundle
 bundle() {
