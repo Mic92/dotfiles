@@ -705,7 +705,7 @@ EOF
 
 flakify() {
   if [ ! -e flake.nix ]; then
-    nix flake new -t github:nix-community/nix-direnv .
+    nix flake new -t github:hercules-ci/flake-parts .
   elif [ ! -e .envrc ]; then
     echo "use flake" > .envrc
     direnv allow
