@@ -63,6 +63,10 @@ in {
     };
   };
 
+  systemd.tmpfiles.rules = [
+    "d /var/lib/drone/ 0700 drone-runner-exec drone-runner-exec - -"
+  ];
+
   users.users.drone-runner-exec = {
     isSystemUser = true;
     group = "drone-runner-exec";
