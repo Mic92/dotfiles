@@ -62,6 +62,7 @@
   stat = true
   autoStash = true
   autoSquash = true
+  updateRefs = true
 
 [help]
   autocorrect = 1
