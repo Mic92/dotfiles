@@ -117,6 +117,11 @@ in {
   services.nginx.virtualHosts.${nginx-vhost} = {
     forceSSL = true;
     useACMEHost = "thalheim.io";
+    extraConfig = ''
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_read_timeout 600;
+    '';
     locations."/_matrix".proxyPass = "http://127.0.0.1:${toString config.services.dendrite.httpPort}";
     locations."/".root = element-web-thalheim.io;
   };
