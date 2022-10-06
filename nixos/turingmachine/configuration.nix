@@ -19,6 +19,7 @@
     ./modules/gnome-pim.nix
     ./modules/sops.nix
     ./modules/cntr.nix
+    ./modules/tum-vpn.nix
     #./modules/minidlna.nix
 
     ../modules/touchpad-hack
