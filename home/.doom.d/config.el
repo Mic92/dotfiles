@@ -128,4 +128,8 @@
     :config
     (envrc-global-mode))
 
+(use-package! lsp-mode
+  :config
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.terragrunt-cache\\'"))
+
 (set-formatter! 'alejandra  "alejandra --quiet" :modes '(nix-mode))
