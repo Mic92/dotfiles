@@ -14,7 +14,7 @@
         scripts = with pkgs.weechatScripts; [
           wee-slack
           multiline
-          weechat-matrix
+          #weechat-matrix
         ];
         plugins = [
           availablePlugins.python
@@ -26,7 +26,7 @@
 
     # for development
     pkgs.kubectl
-    pkgs.kotlin-language-server
+    pkgs.gomuks
     pkgs.yq-go
   ];
 }
