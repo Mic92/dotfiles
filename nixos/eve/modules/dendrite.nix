@@ -5,7 +5,9 @@
 }: let
   database = {
     connection_string = "postgres:///dendrite?host=/run/postgresql";
-    max_open_conns = 20;
+    max_open_conns = 100;
+    max_idle_conns = 5;
+    conn_max_lifetime = -1;
   };
   inherit (config.services.dendrite.settings.global) server_name;
   nginx-vhost = "matrix.thalheim.io";
