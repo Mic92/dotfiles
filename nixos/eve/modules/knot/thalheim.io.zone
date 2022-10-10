@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. ns2.thalheim.io. 2022092609 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. ns2.thalheim.io. 2022101000 7200 3600 86400 3600
 
 ;;@ 3600 IN NS ns1
 @ 3600 IN NS ns2
@@ -39,6 +39,8 @@ dns IN AAAA 2a01:4f8:10b:49f::5
 www IN A 88.99.244.96
 www IN AAAA 2a01:4f8:10b:49f::1
 * IN CNAME www
+
+dependable-virtualized-systems IN CNAME dependable-virtualized-systems.netlify.app.
 
 ip2 IN CNAME eva
 prometheus IN CNAME eva
