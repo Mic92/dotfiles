@@ -13,7 +13,7 @@
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
     flake-parts.url = "github:hercules-ci/flake-parts";
-    flake-parts.inputs.nixpkgs.follows = "nixpkgs";
+    flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
     #systemd.url = "git+file:///home/joerg/git/systemd";
     #systemd.flake = false;
 
