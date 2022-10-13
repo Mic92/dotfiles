@@ -48,6 +48,7 @@
     #../modules/yubikey.nix
     ../modules/zfs.nix
     ../modules/users.nix
+    ../modules/nsncd.nix
     #../modules/k3s/server.nix
   ];
 
