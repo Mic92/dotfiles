@@ -13,7 +13,7 @@ let
     };
 
     cargoSha256 = "sha256-lBK5Q/+FAvxgTQEudbYOGKJGtw0Lx5UJgUP8GTjAqAs=";
-    buildType = "debug";
+    #buildType = "debug";
   };
 in {
   systemd.services.nscd.serviceConfig.ExecStart = lib.mkForce "${nsncdPackage}/bin/nsncd";
