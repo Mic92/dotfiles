@@ -621,6 +621,23 @@ moshlogin(){
 }
 # List directory after changing directory
 chpwd() { ls; }
+
+# OSC-133
+precmd() {
+  print -Pn "\e]133;A\e\\"
+}
+
+function osc7 {
+    local LC_ALL=C uri input
+    export LC_ALL
+
+    setopt localoptions extendedglob
+    input=( ${(s::)PWD} )
+    uri=${(j::)input/(#b)([^A-Za-z0-9_.\!~*\'\(\)-\/])/%${(l:2::0:)$(([##16]#match))}}
+    print -n "\e]7;file://${HOSTNAME}${uri}\e\\"
+}
+add-zsh-hook -Uz chpwd osc7
+
 mkcd() { mkdir -p "$1" && cd "$1"; }
 # make cd accept files
 cd() {
