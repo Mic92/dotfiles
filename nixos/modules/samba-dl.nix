@@ -12,7 +12,7 @@
     ];
   };
   fileSystems."/data/torrent/download/catalonia" = {
-    device = "//catalonia.r/public";
+    device = "//sicily.r/public";
     fsType = "cifs";
     options = [
       "guest"
