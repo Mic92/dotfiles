@@ -9,6 +9,7 @@
     /^shannan.[^@.]+@lekwati\.com/ shannan@lekwati.com
     /^albert-[^@.]+@halfco\.de$/ albert@halfco.de
     /^devkid-[^@.]+@devkid\.net$/ devkid@devkid.net
+    /^ls1-logins-[^@.]+@thalheim.io$/ ls1-logins@lists.lrz.de
   '';
 
   domains = pkgs.writeText "domains.cf" ''
