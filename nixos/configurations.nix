@@ -39,6 +39,14 @@
         "home-manager=${home-manager}"
         "nur=${nur}"
       ];
+
+      #nix.extraOptions = let
+      #  registry = pkgs.runCommand "flake-registry.json" {} ''
+      #    jq 'setpath(;)' < ${flake-registry}/flake-registry.json > $out
+      #  '';
+      #in ''
+      #  flake-registry = ${registry}/flake-registry.json
+      #'';
       nix.extraOptions = ''
         flake-registry = ${flake-registry}/flake-registry.json
       '';
@@ -82,7 +90,7 @@ in {
           ./turingmachine/configuration.nix
           nixos-hardware.nixosModules.framework
           nix-ld.nixosModules.nix-ld
-          #inputs.envfs.nixosModules.envfs
+          self.inputs.envfs.nixosModules.envfs
           # For testing systemd
           #({pkgs, ...}: {
           #  #systemd.package = self.inputs.nixpkgs-systemd.legacyPackages.${pkgs.system}.systemd;
