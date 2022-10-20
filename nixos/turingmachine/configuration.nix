@@ -49,6 +49,7 @@
     ../modules/zfs.nix
     ../modules/users.nix
     ../modules/nsncd.nix
+    ../modules/nix-ld.nix
     #../modules/k3s/server.nix
   ];
 
