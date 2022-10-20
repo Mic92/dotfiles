@@ -107,6 +107,7 @@ in {
         defaultModules
         ++ [
           ./eve/configuration.nix
+          self.inputs.envfs.nixosModules.envfs
         ];
     };
 
