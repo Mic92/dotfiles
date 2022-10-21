@@ -31,7 +31,6 @@
       libnotify
       libpulseaudio
       libuuid
-      libsane
       xorg.libxcb
       libxkbcommon
       mesa
