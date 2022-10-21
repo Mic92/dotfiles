@@ -134,6 +134,15 @@
       }
       {
         urls = [
+          "http://stable-confusion.r"
+        ];
+        response_string_match = "Stable Diffusion";
+        tags.host = "jack";
+        tags.org = "krebs";
+        interface = "tinc.retiolum";
+      }
+      {
+        urls = [
           "http://c.r/ok"
         ];
         response_string_match = "ok";
