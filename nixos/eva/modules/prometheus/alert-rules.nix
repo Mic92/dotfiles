@@ -229,13 +229,13 @@ in
         description = "{{$labels.instance}}: There are no interal github action runner registerd with github (see https://github.com/organizations/ls1-sys-prog-course-internal/settings/actions)";
       };
 
-      public_github_action_runner = {
-        condition = ''count(kubernetes_pod_container_state_code{pod_name=~"runner-deployment.*", state="running",container_name="runner"}) == 0'';
+      cloudlab_github_action_runner = {
+        condition = ''count(kubernetes_pod_container_state_code{pod_name=~"cloudlab-runner-deployment.*", state="running",container_name="runner"}) == 0'';
         description = "{{$labels.instance}}: There are no github action runner {{$value}} for (https://github.com/organizations/ls1-sys-prog-course/settings/actions)";
       };
 
-      public_github_action_runner_present = {
-        condition = ''absent_over_time(kubernetes_pod_container_state_code{pod_name=~"runner-deployment.*", state="running",container_name="runner"}[10m])'';
+      cloudlab_github_action_runner_present = {
+        condition = ''absent_over_time(kubernetes_pod_container_state_code{pod_name=~"cloudlab-runner-deployment.*", state="running",container_name="runner"}[10m])'';
         description = "status of public github action runner is unknown: no data for 10 minutes";
       };
 
