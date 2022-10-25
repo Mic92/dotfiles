@@ -227,6 +227,6 @@
   # Make sure that secrets loaded with systemd's LoadCredential are not swapped to disk.
   boot.specialFileSystems."/run/credentials" = {
     fsType = "ramfs";
-    options = [ "nosuid" "nodev" "mode=750" ];
+    options = [ "nosuid" "nodev" "mode=751" ];
   };
 }
