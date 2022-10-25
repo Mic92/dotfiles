@@ -223,4 +223,10 @@
 
   system.stateVersion = "22.11";
   boot.initrd.systemd.enable = true;
+
+  # Make sure that secrets loaded with systemd's LoadCredential are not swapped to disk.
+  boot.specialFileSystems."/run/credentials" = {
+    fsType = "ramfs";
+    options = [ "nosuid" "nodev" "mode=750" ];
+  };
 }
