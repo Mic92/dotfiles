@@ -73,6 +73,7 @@
       kubectl
       terraform-ls
 
+      q
       rbw
       isync
       # to fix xdg-open
@@ -116,7 +117,6 @@
       nixos-shell
     ]
     ++ (with config.nur.repos.mic92; [
-      q
       speedscope
       inxi
       source-code-pro-nerdfonts
