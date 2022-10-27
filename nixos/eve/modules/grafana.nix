@@ -24,35 +24,41 @@
 in {
   services.grafana = {
     enable = true;
-    domain = "grafana.thalheim.io";
-    rootUrl = "https://grafana.thalheim.io";
-    analytics.reporting.enable = false;
-    extraOptions = {
-      SERVER_ENFORCE_DOMAIN = "true";
-      AUTH_LDAP_ENABLED = "true";
-      AUTH_LDAP_CONFIG_FILE = ldap;
+    settings = {
+      analytics.reporting.enable = false;
+      "auth.ldap".enabled = "true";
+      "auth.ldap".config_file = ldap;
 
-      AUTH_ANONYMOUS_ENABLED = "true";
-      AUTH_ANONYMOUS_ORG_NAME = "Main Org.";
-      AUTH_ANONYMOUS_ORG_ROLE = "Viewer";
-      SERVER_ENABLE_GZIP = "true";
+      "auth.anonymous".enabled = "true";
+      "auth.anonymous".org_name = "main org.";
+      "auth.anonymous".org_role = "viewer";
+
+      server = {
+        root_url = "https://grafana.thalheim.io";
+        domain = "grafana.thalheim.io";
+        enforce_domain = "true";
+        enable_gzip = "true";
+        http_addr = "0.0.0.0";
+        http_port = 3001;
+      };
+
+      smtp = {
+        enabled = true;
+        host = "mail.thalheim.io:587";
+        user = "grafana@thalheim.io";
+        password = "$__file{${config.sops.secrets.grafana-ldap-password.path}}";
+        fromAddress = "grafana@thalheim.io";
+      };
+
+      database = {
+        type = "postgres";
+        name = "grafana";
+        host = "/run/postgresql";
+        user = "grafana";
+      };
+
+      security.admin_password = "$__file{${config.sops.secrets.grafana-admin-password.path}}";
     };
-    smtp = {
-      enable = true;
-      host = "mail.thalheim.io:587";
-      user = "grafana@thalheim.io";
-      passwordFile = config.sops.secrets.grafana-ldap-password.path;
-      fromAddress = "grafana@thalheim.io";
-    };
-    database = {
-      type = "postgres";
-      name = "grafana";
-      host = "/run/postgresql";
-      user = "grafana";
-    };
-    security.adminPasswordFile = config.sops.secrets.grafana-admin-password.path;
-    addr = "0.0.0.0";
-    port = 3001;
   };
 
   services.nginx.virtualHosts."grafana.thalheim.io" = {
