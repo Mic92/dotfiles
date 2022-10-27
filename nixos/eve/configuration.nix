@@ -25,7 +25,6 @@
     ./modules/borgbackup
     ./modules/dendrite.nix
     ./modules/dovecot.nix
-    ./modules/drone
     ./modules/docker.nix
     ./modules/et.nix
     ./modules/ejabberd.nix
