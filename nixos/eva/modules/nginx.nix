@@ -38,7 +38,6 @@ in {
 
   services.nginx = {
     package = pkgs.nginxStable.override {
-      perl = null;
       modules = [pkgs.nginxModules.pam];
     };
     upstreams = {
