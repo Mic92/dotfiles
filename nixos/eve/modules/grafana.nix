@@ -25,19 +25,19 @@ in {
   services.grafana = {
     enable = true;
     settings = {
-      analytics.reporting.enable = false;
-      "auth.ldap".enabled = "true";
-      "auth.ldap".config_file = ldap;
+      analytics.reporting_enabled = false;
+      "auth.ldap".enabled = true;
+      "auth.ldap".config_file = toString ldap;
 
-      "auth.anonymous".enabled = "true";
+      "auth.anonymous".enabled = true;
       "auth.anonymous".org_name = "main org.";
       "auth.anonymous".org_role = "viewer";
 
       server = {
         root_url = "https://grafana.thalheim.io";
         domain = "grafana.thalheim.io";
-        enforce_domain = "true";
-        enable_gzip = "true";
+        enforce_domain = true;
+        enable_gzip = true;
         http_addr = "0.0.0.0";
         http_port = 3001;
       };
