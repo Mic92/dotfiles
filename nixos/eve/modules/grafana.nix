@@ -30,8 +30,8 @@ in {
       "auth.ldap".config_file = toString ldap;
 
       "auth.anonymous".enabled = true;
-      "auth.anonymous".org_name = "main org.";
-      "auth.anonymous".org_role = "viewer";
+      "auth.anonymous".org_name = "Main Org.";
+      "auth.anonymous".org_role = "Viewer";
 
       server = {
         root_url = "https://grafana.thalheim.io";
