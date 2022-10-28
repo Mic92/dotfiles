@@ -1,5 +1,6 @@
 host := "192.168.1.1"
-sysupgrade_url := "https://downloads.openwrt.org/releases/22.03.2/targets/mediatek/mt7622/openwrt-22.03.2-mediatek-mt7622-linksys_e8450-ubi-squashfs-sysupgrade.itb"
+version := "$(curl --silent https://api.github.com/repos/openwrt/openwrt/releases/latest | jq -r '.. .name? // empty')"
+sysupgrade_url := "https://downloads.openwrt.org/releases/" + version + "/targets/mediatek/mt7622/openwrt-" + version + "-mediatek-mt7622-linksys_e8450-ubi-squashfs-sysupgrade.itb"
 
 ssh +command:
   ssh "root@{{host}}" "{{command}}"
