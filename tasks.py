@@ -42,6 +42,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
         extra_args = h.meta.get("extra_args", "")
         cmd = f"nixos-rebuild switch {extra_args} --option keep-going true --option accept-flake-config true --fast --build-host localhost --target-host {target_host} --flake $(realpath {flake_path}){flake_attr}"
         ret = h.run(cmd, check=False)
+        # re-retry switch if the first time fails
         if ret.returncode != 0:
             ret = h.run(cmd)
 
