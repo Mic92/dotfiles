@@ -57,6 +57,7 @@
         ./modules/nix-daemon.nix
         ./modules/minimal-docs.nix
         ./modules/i18n.nix
+        ./modules/nsncd.nix
         ./modules/sshd
         nur.nixosModules.nur
 
