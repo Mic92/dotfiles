@@ -84,10 +84,4 @@
 
   # The NixOS release to be compatible with for stateful data such as databases.
   system.stateVersion = "21.11";
-
-  # Make sure that secrets loaded with systemd's LoadCredential are not swapped to disk.
-  boot.specialFileSystems."/run/credentials" = {
-    fsType = "ramfs";
-    options = [ "nosuid" "nodev" "mode=751" ];
-  };
 }
