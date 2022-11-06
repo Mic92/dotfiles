@@ -220,6 +220,15 @@
     139
   ];
 
+  boot.binfmt.emulatedSystems = [
+    "armv7l-linux"
+    "aarch64-linux"
+    "riscv32-linux"
+    "riscv64-linux"
+    "powerpc64-linux"
+    "powerpc64le-linux"
+  ];
+
   system.stateVersion = "22.11";
   boot.initrd.systemd.enable = true;
 }
