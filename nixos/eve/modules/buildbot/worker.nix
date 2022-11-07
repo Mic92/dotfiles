@@ -21,6 +21,7 @@ in {
   users.groups.buildbot-worker = {};
 
   systemd.services.buildbot-worker = {
+    reloadIfChanged = true;
     description = "Buildbot Worker.";
     after = ["network.target" "buildbot-master.service"];
     wantedBy = ["multi-user.target"];
@@ -36,6 +37,8 @@ in {
       Group = "buildbot-worker";
       WorkingDirectory = home;
 
+      # Restart buildbot with a delay. This time way we can use buildbot to deploy itself.
+      ExecReload = "+${pkgs.systemd}/bin/systemd-run --on-active=60 ${pkgs.systemd}/bin/systemctl restart buildbot-worker";
       ExecStart = "${python.pkgs.twisted}/bin/twistd --nodaemon --pidfile= --logfile - --python ${./worker.py}";
     };
   };
