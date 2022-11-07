@@ -60,6 +60,10 @@ class BuildTrigger(Trigger):
             drv_path = job.get("drvPath")
             error = job.get("error")
             out_path = job.get("outputs", {}).get("out")
+
+            build_props.setProperty(f"{attr}-out_path", out_path, "nix-eval")
+            build_props.setProperty(f"{attr}-drv_path", drv_path, "nix-eval")
+
             props = Properties()
             props.setProperty("virtual_builder_name", name, "spawner")
             props.setProperty("virtual_builder_tags", "", "spawner")
