@@ -59,8 +59,8 @@
       {
         urls = [
           "http://yellow.r"
-          "http://catalonia.r/"
-          "https://catalonia.r/"
+          "http://sicily.r/"
+          "https://sicily.r/"
         ];
         response_string_match = "Index of /";
         tags.org = "krebs";
