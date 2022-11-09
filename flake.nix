@@ -60,10 +60,6 @@
 
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
-
-    deploykit.url = "github:numtide/deploykit";
-    deploykit.inputs.nixpkgs.follows = "nixpkgs";
-    deploykit.inputs.flake-parts.follows = "flake-parts";
   };
 
   #outputs = {...} @ args: import ./outputs.nix args;
