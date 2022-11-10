@@ -2,10 +2,12 @@
   description = "NixOS configuration with flakes";
 
   nixConfig.extra-substituters = [
-    "https://mic92.cachix.org"
+    #"https://mic92.cachix.org"
+    "https://cache.thalheim.io"
   ];
   nixConfig.extra-trusted-public-keys = [
-    "mic92.cachix.org-1:gi8IhgiT3CYZnJsaW7fxznzTkMUOn1RY4GmXdT/nXYQ="
+    "cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc="
+    #"mic92.cachix.org-1:gi8IhgiT3CYZnJsaW7fxznzTkMUOn1RY4GmXdT/nXYQ="
   ];
 
   # To update all inputs:
@@ -43,6 +45,9 @@
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
+
+    harmonia.url = "github:helsinki-systems/harmonia";
+    harmonia.flake = false;
 
     doom-emacs.url = "github:doomemacs/doomemacs/master";
     doom-emacs.flake = false;

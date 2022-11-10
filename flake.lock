@@ -114,6 +114,22 @@
         "type": "github"
       }
     },
+    "harmonia": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1667981761,
+        "narHash": "sha256-3JGGIpQ0stcFHIj3KkrqIydkpMzIyxzurDFf8ge/k0A=",
+        "owner": "helsinki-systems",
+        "repo": "harmonia",
+        "rev": "141026853c50c71a1c099687dbbfcea43e047c71",
+        "type": "github"
+      },
+      "original": {
+        "owner": "helsinki-systems",
+        "repo": "harmonia",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -300,6 +316,7 @@
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
+        "harmonia": "harmonia",
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",
         "nix-ld": "nix-ld",
