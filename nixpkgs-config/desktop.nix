@@ -36,7 +36,6 @@
 
       arandr
       signal-desktop
-      thunderbird
       config.nur.repos.mic92.pandoc-bin
       gnome.adwaita-icon-theme
       hicolor-icon-theme
