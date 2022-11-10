@@ -108,11 +108,11 @@ in {
     config = {};
     mobile_app = {};
 
-    icloud = {
-      username = "!secret icloud_email";
-      password = "!secret icloud_password";
-      with_family = true;
-    };
+    #icloud = {
+    #  username = "!secret icloud_email";
+    #  password = "!secret icloud_password";
+    #  with_family = true;
+    #};
     cloud = {};
     network = {};
     zeroconf = {};
