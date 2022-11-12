@@ -121,15 +121,13 @@
 
 (setq sentence-end-double-space nil) ;period single space ends sentence
 
-(after! rustic
-  (setq rustic-lsp-server 'rust-analyzer))
-
 (use-package envrc
     :config
     (envrc-global-mode))
 
 (use-package! lsp-mode
   :config
-  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.terragrunt-cache\\'"))
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.terragrunt-cache\\'")
+  (setq lsp-nix-server-path "nil"))
 
 (set-formatter! 'alejandra  "alejandra --quiet" :modes '(nix-mode))
