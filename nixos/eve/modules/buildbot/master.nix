@@ -49,8 +49,9 @@ in {
         "github-webhook-secret:${config.sops.secrets.github-webhook-secret.path}"
         "github-oauth-secret:${config.sops.secrets.github-oauth-secret.path}"
         "buildbot-nix-workers:${config.sops.secrets.buildbot-nix-workers.path}"
-        "cachix-name:${config.sops.secrets.cachix-name.path}"
-        "cachix-signing-key:${config.sops.secrets.cachix-signing-key.path}"
+        # use harmonia instead
+        #"cachix-name:${config.sops.secrets.cachix-name.path}"
+        #"cachix-signing-key:${config.sops.secrets.cachix-signing-key.path}"
       ];
     };
   };
