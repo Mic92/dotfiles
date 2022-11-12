@@ -34,6 +34,7 @@
 
         python3.pkgs.black
         pyright
+        nil
 
         du-dust
         pkgs.nix
