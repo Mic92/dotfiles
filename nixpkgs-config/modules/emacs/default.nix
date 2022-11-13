@@ -38,6 +38,8 @@ with lib; let
     else
       nice -n19 $HOME/.emacs.d/bin/doom sync || true
     fi
+    # This files tends to accumulate a lot of project that it is trying to load at startup
+    rm "$HOME/.emacs.d/.local/cache/lsp-session"
     exec ${myemacs}/bin/emacs --daemon
   '';
 
