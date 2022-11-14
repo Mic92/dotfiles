@@ -8,6 +8,7 @@
     autoSnapshot.monthly = 2;
     autoScrub.enable = true;
   };
+  boot.zfs.enableUnstable = true;
   boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
   environment.systemPackages = [
     pkgs.zfs-prune-snapshots

@@ -9,6 +9,7 @@
     ../modules/minimal-docs.nix
     ../modules/networkd.nix
     ../modules/ip-update.nix
+    ../modules/zfs.nix
     #../modules/tailscale.nix
     ./hardware-configuration.nix
   ];
@@ -31,7 +32,6 @@
   users.users.root.password = "fnord23";
 
   networking.useNetworkd = true;
-  boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
 
   networking.hostName = "blob64";
 
