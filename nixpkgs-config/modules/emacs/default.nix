@@ -46,18 +46,15 @@ with lib; let
   # list taken from here: https://github.com/emacs-tree-sitter/tree-sitter-langs/tree/e7b8db7c4006c04a4bc1fc6865ec31f223843192/repos
   # commented out are not yet packaged in nix
   langs = [
-    "agda"
+    # "agda"
     "bash"
     "c"
     "c-sharp"
     "cpp"
     "css"
-    # "d"
-    "elixir"
     "elm"
-    "fluent"
+    #"fluent"
     "go"
-    "haskell"
     "hcl"
     "html"
     "janet-simple"
@@ -66,20 +63,15 @@ with lib; let
     "jsdoc"
     "json"
     "julia"
-    "nix"
     "ocaml"
     "pgn"
     "php"
-    "prisma"
     "python"
     "ruby"
     "rust"
     "scala"
     # "swift"
     "typescript"
-    "verilog"
-    "yaml"
-    "zig"
   ];
   grammars = lib.getAttrs (map (lang: "tree-sitter-${lang}") langs) pkgs.tree-sitter.builtGrammars;
 in {
