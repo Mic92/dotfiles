@@ -43,7 +43,7 @@ with lib; let
     exec ${myemacs}/bin/emacs --daemon
   '';
 
-  # list taken from here: https://github.com/emacs-tree-sitter/tree-sitter-langs/tree/e7b8db7c4006c04a4bc1fc6865ec31f223843192/repos
+  # list taken from here: (message "%s" tree-sitter-major-mode-language-alist)
   # commented out are not yet packaged in nix
   langs = [
     # "agda"
