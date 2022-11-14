@@ -17,13 +17,6 @@ resource "gitlab_project" "repos" {
   visibility_level = "public"
 }
 
-resource "gitlab_service_github" "github" {
-  for_each       = toset(data.github_repositories.my-repos.full_names)
-  project        = gitlab_project.repos[each.key].id
-  token          = data.sops_file.secrets.data["GITHUB_TOKEN"]
-  repository_url = "https://github.com/${each.key}"
-}
-
 resource "github_repository_webhook" "gitlab" {
   for_each   = toset(data.github_repositories.my-non-archived-repos.names)
   repository = each.key
