@@ -12,6 +12,7 @@
             p.null
             p.dns
             p.digitalocean
+            (pkgs.callPackage ./gitlab.nix {})
           ]
         ))
       ];
