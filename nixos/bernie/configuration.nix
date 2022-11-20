@@ -75,13 +75,14 @@
     hunspell
     hunspellDicts.en-gb-ise
     calibre
-    evolution
+    thunderbird
     signal-desktop
     gimp
     wl-clipboard
     poppler_utils
     focuswriter
   ];
+  fonts.enableDefaultFonts = true;
 
   documentation.doc.enable = false;
   documentation.man.enable = false;
@@ -94,4 +95,5 @@
   };
   sops.defaultSopsFile = ./secrets/secrets.yaml;
   system.stateVersion = "21.11";
+
 }
