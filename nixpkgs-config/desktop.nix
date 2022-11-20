@@ -63,7 +63,6 @@
       (mpv.override {
         scripts = [mpvScripts.mpris];
       })
-      wmc-mpris
       playerctl
       yt-dlp
       mumble

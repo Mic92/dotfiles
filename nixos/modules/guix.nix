@@ -1,15 +1,13 @@
 { config, lib, pkgs, ... }:
 
 let
-  buildUser = (i: lib.nameValuePair
-    "guixbuilder${i}"     # guixbuilder$i
-    {
-      group = "guixbuild";
-      extraGroups = ["guixbuild"];
-      home = "/var/empty";
-      description = "Guix build user ${i}";
-      isSystemUser = true;
-    });
+  buildUser = i: lib.nameValuePair "guixbuilder${i}" {
+    group = "guixbuild";
+    extraGroups = ["guixbuild"];
+    home = "/var/empty";
+    description = "Guix build user ${i}";
+    isSystemUser = true;
+  };
 in
 {
   users.users = lib.listToAttrs
