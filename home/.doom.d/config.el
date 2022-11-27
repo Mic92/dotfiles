@@ -128,6 +128,10 @@
 (use-package! lsp-mode
   :config
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.terragrunt-cache\\'")
-  (setq lsp-nix-server-path "nil"))
+  (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
+  (lsp-register-client
+   (make-lsp-client :new-connection (lsp-stdio-connection '("nil"))
+                    :major-modes '(nix-mode)
+                    :server-id 'nix)))
 
 (set-formatter! 'alejandra  "alejandra --quiet" :modes '(nix-mode))
