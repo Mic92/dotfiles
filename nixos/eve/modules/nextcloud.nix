@@ -12,6 +12,8 @@
 
     package = pkgs.nextcloud25;
 
+    enableBrokenCiphersForSSE = false;
+
     config = {
       dbtype = "pgsql";
       dbname = "nextcloud";
