@@ -33,14 +33,12 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
         flake_attr = h.meta.get("flake_attr", "")
         if flake_attr:
             flake_attr = "#" + flake_attr
-        # if flake_attr:
-        #    h.run("nix copy --no-check-sigs --from ssh-ng://binary-cache.thalheim.io \"$(curl -L https://buildbot.thalheim.io/nix-outputs/nixos-blob64)\"", check=False)
         target_host = h.meta.get("target_host", "localhost")
         target_user = h.meta.get("target_user")
         if target_user:
             target_host = f"{target_user}@{target_host}"
         extra_args = h.meta.get("extra_args", "")
-        cmd = f"nixos-rebuild switch {extra_args} --option keep-going true --option accept-flake-config true --fast --build-host localhost --target-host {target_host} --flake $(realpath {flake_path}){flake_attr}"
+        cmd = f"nixos-rebuild switch {extra_args} --fast --option keep-going true --option accept-flake-config true --fast --build-host localhost --target-host {target_host} --flake $(realpath {flake_path}){flake_attr}"
         ret = h.run(cmd, check=False)
         # re-retry switch if the first time fails
         if ret.returncode != 0:
@@ -54,9 +52,10 @@ def deploy(c):
     """
     Deploy to eve, eva and localhost
     """
+    eve = DeployHost("eve.i", user="root")
     deploy_nixos(
         [
-            DeployHost("eve.i", user="root"),
+            eve,
             DeployHost(
                 "localhost", user="joerg", meta=dict(extra_args="--use-remote-sudo")
             ),
@@ -78,6 +77,8 @@ def deploy(c):
             ),
         ]
     )
+    eve.run("systemctl restart buildbot-master")
+
 
 
 @task
