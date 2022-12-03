@@ -10,6 +10,7 @@
     nixos-hardware
     nix-ld
     bme680-mqtt
+    hyprland
     ;
 
   inherit (nixpkgs) lib;
@@ -92,6 +93,13 @@ in {
           nixos-hardware.nixosModules.framework
           nix-ld.nixosModules.nix-ld
           self.inputs.envfs.nixosModules.envfs
+          hyprland.nixosModules.default
+          #({pkgs, ...}: {
+          #  programs.hyprland.enable = true;
+          #  environment.systemPackages = [
+          #    hyprland.packages.${pkgs.system}.waybar-hyprland
+          #  ];
+          #})
           # For testing systemd
           #({pkgs, ...}: {
           #  #systemd.package = self.inputs.nixpkgs-systemd.legacyPackages.${pkgs.system}.systemd;

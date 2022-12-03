@@ -7,12 +7,10 @@
     enable = true;
     wrapperFeatures.gtk = true; # so that gtk works properly
     extraPackages = with pkgs; [
-      dex
       swaylock-effects # lockscreen
       pavucontrol
       swayidle
       xwayland
-      waybar # status bar
       (i3pystatus.override {
         extraLibs = [python3.pkgs.keyrings-alt python3.pkgs.paho-mqtt];
       })
@@ -25,15 +23,14 @@
       swappy
       wdisplays
       wl-clipboard
-      flameshot
       blueberry
+      grim
+      slurp
 
       pavucontrol
-      lightlocker
       evince
       libnotify
       pamixer
-      mpc_cli
       networkmanagerapplet
       gnome.file-roller
       gnome.nautilus
