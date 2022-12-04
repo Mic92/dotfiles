@@ -172,6 +172,26 @@
         "type": "github"
       }
     },
+    "hyprland-contrib": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1666104453,
+        "narHash": "sha256-gMH11FNZtnU7d+pIkwg9NmumJ6YvxyUP9Do43YKrd/E=",
+        "owner": "hyprwm",
+        "repo": "contrib",
+        "rev": "5b21c74a3200ffdd48ed7764c7041d43c3cd5588",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hyprwm",
+        "repo": "contrib",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -340,6 +360,7 @@
         "harmonia": "harmonia",
         "home-manager": "home-manager",
         "hyprland": "hyprland",
+        "hyprland-contrib": "hyprland-contrib",
         "nix-darwin": "nix-darwin",
         "nix-ld": "nix-ld",
         "nixos-generators": "nixos-generators",

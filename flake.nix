@@ -71,6 +71,11 @@
       # build with your own instance of nixpkgs
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    hyprland-contrib = {
+      url = "github:hyprwm/contrib";
+      # build with your own instance of nixpkgs
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   #outputs = {...} @ args: import ./outputs.nix args;
