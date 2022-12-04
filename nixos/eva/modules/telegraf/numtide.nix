@@ -3,8 +3,8 @@
   lib,
   pkgs,
   ...
-}: let
-in {
+}:
+{
   services.telegraf.extraConfig.inputs = {
     x509_cert = [
       {

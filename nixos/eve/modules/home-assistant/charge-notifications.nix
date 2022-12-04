@@ -1,4 +1,4 @@
-{...}: {
+{
   services.home-assistant.config = {
     automation = [
       {

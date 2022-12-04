@@ -1,4 +1,4 @@
-{...}: {
+{
   networking.firewall.allowedTCPPorts = [8200];
   services.minidlna = {
     enable = true;
