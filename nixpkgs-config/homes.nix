@@ -45,7 +45,7 @@
   };
 
   flake = let
-    inherit (self.inputs) nixpkgs home-manager nur hyprland;
+    inherit (self.inputs) nixpkgs home-manager nur hyprland hyprland-contrib;
     hmConfiguration = {
       extraModules ? [],
       system ? "x86_64-linux",
@@ -79,6 +79,9 @@
           hyprland.homeManagerModules.default
           ({ pkgs, ... }: {
             programs.waybar.package = hyprland.packages.${pkgs.system}.waybar-hyprland;
+            home.packages = [
+              hyprland-contrib.packages.${pkgs.system}.grimblast
+            ];
           })
         ];
       };
