@@ -40,7 +40,6 @@
     ./modules/navidrome.nix
     ./modules/unbound.nix
     ./modules/mastodon-hnbot.nix
-    ./modules/mediawiki.nix
     ./modules/network.nix
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
