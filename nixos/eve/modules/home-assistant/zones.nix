@@ -1,4 +1,4 @@
-{...}: {
+{
   services.home-assistant.config.homeassistant = {
     name = "Home";
     latitude = "!secret home_latitude";

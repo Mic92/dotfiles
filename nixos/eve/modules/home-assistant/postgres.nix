@@ -1,4 +1,4 @@
-{...}: {
+{
   services.home-assistant.config = {
     recorder.db_url = "postgresql://@/hass";
   };

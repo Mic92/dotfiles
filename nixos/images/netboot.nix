@@ -4,7 +4,7 @@
   extraModules ? [],
 }: let
   bootSystem = nixosSystem {
-    system = pkgs.system;
+    inherit (pkgs) system;
     modules = [
       ./base-config.nix
       ./zfs.nix

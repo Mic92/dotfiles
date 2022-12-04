@@ -2,8 +2,7 @@
   config,
   pkgs,
   ...
-}: let
-in {
+}: {
   sops.secrets.rock-rdp-password = {
     sopsFile = ../secrets/desktop.yaml;
     group = "users";

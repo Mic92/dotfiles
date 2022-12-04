@@ -2,13 +2,11 @@
   pkgs,
   lib,
   ...
-}: let
-  settingsFormat = pkgs.formats.json {};
-in {
+}: {
   options.uci = {
     settings = lib.mkOption {
       default = {};
-      type = settingsFormat.type;
+      inherit (pkgs.formats.json {}) type;
     };
     secrets.sops.files = lib.mkOption {
       default = [];

@@ -2,8 +2,8 @@
   pkgs,
   lib,
   ...
-}: let
-in {
+}:
+{
   imports = [
     ./bluetooth.nix
     ./bme680.nix
