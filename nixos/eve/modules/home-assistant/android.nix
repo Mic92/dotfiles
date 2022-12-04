@@ -1,9 +1,4 @@
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
   services.home-assistant.config.intent_script = {
     FindAndroid = {
       speech.text = "Send notification";

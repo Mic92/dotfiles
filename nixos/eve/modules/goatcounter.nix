@@ -1,8 +1,4 @@
 {
-  pkgs,
-  config,
-  ...
-}: {
   systemd.services.goatcounter = {
     wantedBy = ["multi-user.target"];
     # broken
