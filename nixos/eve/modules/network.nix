@@ -110,6 +110,10 @@ in {
         }
         ip -6 route add ${cfg.ipv6.gateway} dev eth0
         ip -6 route add default via ${cfg.ipv6.gateway} dev eth0
+
+        cat > /root/.profile <<EOF
+        systemd-tty-ask-password-agent --query
+        EOF
       '';
     };
     boot.initrd.kernelModules = ["e1000e"];
