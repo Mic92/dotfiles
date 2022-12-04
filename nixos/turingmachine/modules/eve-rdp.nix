@@ -2,8 +2,8 @@
   config,
   pkgs,
   ...
-}: let
-in {
+}:
+{
   sops.secrets.eve-rdp-password = {
     sopsFile = ../secrets/secrets.yaml;
     group = "users";

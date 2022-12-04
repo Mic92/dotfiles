@@ -5,7 +5,7 @@
 }: {
   programs.mosh.enable = true;
 
-  networking.firewall.allowedUDPPortRanges = lib.optionals (config.services.openssh.enable) [
+  networking.firewall.allowedUDPPortRanges = lib.optionals config.services.openssh.enable [
     # Mosh
     {
       from = 60000;
