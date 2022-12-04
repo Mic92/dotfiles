@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   ...
 }: let
@@ -26,7 +25,7 @@ in {
     after = ["network.target" "buildbot-master.service"];
     wantedBy = ["multi-user.target"];
     path = [pkgs.git pkgs.nix pkgs.cachix pkgs.gh];
-    environment.PYTHONPATH = "${python.withPackages (p: [package])}/${python.sitePackages}";
+    environment.PYTHONPATH = "${python.withPackages (_: [package])}/${python.sitePackages}";
     environment.MASTER_URL = ''tcp:host=localhost:port=9989'';
     environment.BUILDBOT_DIR = buildbotDir;
     environment.WORKER_PASSWORD_FILE = config.sops.secrets.buildbot-nix-worker-password.path;

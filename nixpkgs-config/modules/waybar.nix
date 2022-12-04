@@ -1,6 +1,4 @@
-{pkgs, ...}:
-
-let
+{pkgs, ...}: let
   terminal = "${pkgs.foot}/bin/footclient";
   systemMonitor = "${terminal} htop";
 in {

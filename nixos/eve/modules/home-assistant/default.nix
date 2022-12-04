@@ -1,9 +1,4 @@
-{
-  pkgs,
-  lib,
-  ...
-}:
-{
+{pkgs, ...}: {
   imports = [
     ./bluetooth.nix
     ./bme680.nix
@@ -35,7 +30,7 @@
           ps.psycopg2
         ];
       })
-      .overrideAttrs (old: {
+      .overrideAttrs (_: {
         patches = [./mqtt-5.patch];
       });
   };

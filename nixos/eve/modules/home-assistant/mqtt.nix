@@ -1,9 +1,4 @@
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
   services.home-assistant.config.mqtt = {};
   networking.firewall.allowedTCPPorts = [8883];
 

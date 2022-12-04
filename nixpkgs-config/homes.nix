@@ -77,7 +77,7 @@
         extraModules = [
           ./desktop.nix
           hyprland.homeManagerModules.default
-          ({ pkgs, ... }: {
+          ({pkgs, ...}: {
             programs.waybar.package = hyprland.packages.${pkgs.system}.waybar-hyprland;
             home.packages = [
               hyprland-contrib.packages.${pkgs.system}.grimblast

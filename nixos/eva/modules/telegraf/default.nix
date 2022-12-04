@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
+{config, ...}: {
   imports = [
     ../../../modules/telegraf.nix
     ./private.nix

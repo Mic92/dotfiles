@@ -1,10 +1,4 @@
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}:
-{
   services.telegraf.extraConfig.inputs = {
     x509_cert = [
       {

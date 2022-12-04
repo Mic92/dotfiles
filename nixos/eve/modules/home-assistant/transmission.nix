@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   pkgs,
   ...
 }: {
@@ -36,7 +35,6 @@
     };
   };
   services.home-assistant.config = {
-
     transmission = [];
     var.torrent_url = {
       friendly_name = "Torrent magnet url";

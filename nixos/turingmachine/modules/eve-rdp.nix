@@ -2,8 +2,7 @@
   config,
   pkgs,
   ...
-}:
-{
+}: {
   sops.secrets.eve-rdp-password = {
     sopsFile = ../secrets/secrets.yaml;
     group = "users";

@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{
   imports = [
     ../../modules/telegraf.nix
   ];

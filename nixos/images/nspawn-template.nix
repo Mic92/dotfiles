@@ -9,11 +9,7 @@
 nixos-generators.nixosGenerate {
   inherit pkgs;
   modules = [
-    ({
-      config,
-      modulesPath,
-      ...
-    }: {
+    ({config, ...}: {
       system.stateVersion = config.system.nixos.version;
 
       # include this in a normal profile

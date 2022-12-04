@@ -1,6 +1,4 @@
-{config, ...}: let
-  cfg = config.services.syncthing;
-in {
+{
   services.syncthing = {
     enable = true;
     group = "users";

@@ -1,4 +1,4 @@
-{lib, ...}: let
+let
   notifyJoerg = msg: {
     service = "notify.pushover";
     data_template.message = msg;

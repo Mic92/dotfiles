@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{
   services.nginx = {
     virtualHosts."phd.thalheim.io" = {
       useACMEHost = "thalheim.io";

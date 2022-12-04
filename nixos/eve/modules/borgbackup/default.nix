@@ -1,8 +1,4 @@
-{
-  pkgs,
-  config,
-  ...
-}: {
+{config, ...}: {
   sops.secrets.borg-passphrase = {};
   sops.secrets.borg-nas-ssh = {};
   sops.secrets.ssh-borgbackup = {};

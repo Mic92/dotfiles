@@ -1,8 +1,4 @@
-{
-  config,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   virtualisation.docker.storageDriver = "zfs";
 
   services.kubernetes = {

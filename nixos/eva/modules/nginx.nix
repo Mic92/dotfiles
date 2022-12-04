@@ -1,7 +1,6 @@
 {
   pkgs,
   config,
-  lib,
   ...
 }: let
   conf = pkgs.writeText "ldap.conf" ''

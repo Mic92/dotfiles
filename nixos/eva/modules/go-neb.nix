@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
+{config, ...}: {
   services.nginx.virtualHosts."go-neb.thalheim.io" = {
     forceSSL = true;
     enableACME = true;

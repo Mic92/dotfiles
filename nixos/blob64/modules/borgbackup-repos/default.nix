@@ -1,9 +1,4 @@
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
   services.borgbackup.repos = {
     eve = {
       path = "/zdata/borg/eve";

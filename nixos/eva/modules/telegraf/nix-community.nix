@@ -1,9 +1,4 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}: let
+let
   hosts = [
     "build01.nix-community.org"
     "build02.nix-community.org"

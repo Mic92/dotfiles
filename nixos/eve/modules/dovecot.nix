@@ -1,7 +1,6 @@
 {
   pkgs,
   config,
-  lib,
   ...
 }: let
   ldapConfig = pkgs.writeText "dovecot-ldap.conf" ''

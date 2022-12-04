@@ -1,9 +1,4 @@
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
   services.telegraf.extraConfig.inputs = {
     net_response =
       map

@@ -1,9 +1,4 @@
 {
-  config,
-  lib,
-  pkgs,
-  ...
-}: {
   fileSystems."/boot" = {
     fsType = "ext4";
     label = "boot";
