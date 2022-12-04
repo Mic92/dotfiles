@@ -16,25 +16,6 @@
     };
   in {
     packages = {
-      # nix build '.#kexec'
-      #kexec = nixos-generators.nixosGenerate {
-      #  inherit pkgs;
-      #  modules = [
-      #    defaultModule
-      #    ./kexec.nix
-      #  ];
-      #  format = "kexec";
-      #};
-
-      #kexec-aarch64 = nixos-generators.nixosGenerate {
-      #  pkgs = nixpkgs.legacyPackages.aarch64-linux;
-      #  modules = [
-      #    defaultModule
-      #    ./kexec.nix
-      #  ];
-      #  format = "kexec";
-      #};
-
       matchbox-image = self.nixosConfigurations.matchbox.config.system.build.sdImage;
 
       sd-image = nixos-generators.nixosGenerate {
