@@ -1,4 +1,4 @@
-{nurFun ? (import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz"))}: {
+{ pkgs, nurFun ? (import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz"))}: {
   allowUnfree = true;
   # https://github.com/nix-community/home-manager/issues/2942
   allowUnfreePredicate = _pkg: true;
