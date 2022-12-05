@@ -57,10 +57,18 @@ in {
         filesystem.directory = "/var/lib/loki/storage";
       };
 
+      limits_config.retention_period = "120h";
+
       # Table manager
       table_manager = {
         retention_deletes_enabled = true;
         retention_period = "120h";
+      };
+
+      compactor = {
+        retention_enabled = true;
+        compaction_interval = "10m";
+        working_directory = "/var/lib/loki/compactor";
       };
 
       # Schema
@@ -71,6 +79,7 @@ in {
           object_store = "filesystem";
           schema = "v11";
           index.prefix = "index_";
+          index.period = "120h";
         }
       ];
 
