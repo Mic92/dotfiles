@@ -47,14 +47,19 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
     g.run_function(deploy)
 
 
+def get_hosts(hosts: str) -> List[DeployHost]:
+    return [DeployHost(h, user="root") for h in hosts.split(",")]
+
 @task
-def deploy(c):
+def deploy(c, _hosts=""):
     """
     Deploy to eve, eva and localhost
     """
     eve = DeployHost("eve.i", user="root")
-    deploy_nixos(
-        [
+    if _hosts != "":
+        hosts = get_hosts(_hosts)
+    else:
+        hosts = [
             eve,
             DeployHost(
                 "localhost", user="joerg", meta=dict(extra_args="--use-remote-sudo")
@@ -76,7 +81,7 @@ def deploy(c):
                 user="root",
             ),
         ]
-    )
+    deploy_nixos(hosts)
     eve.run("systemctl restart buildbot-master")
 
 
