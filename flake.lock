@@ -50,11 +50,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1670174782,
-        "narHash": "sha256-QzGkgmcdKoBC8YLi4w8TVUplWXqn6rvosMb/aXLfGf4=",
+        "lastModified": 1670329910,
+        "narHash": "sha256-1sYqQEE6lzmmag8uQ5IXrux5aeZzVbfwfBSwUyXXhV8=",
         "owner": "Mic92",
         "repo": "envfs",
-        "rev": "b9bdfc55dc93ae44272ec8feb6b34a62b89febab",
+        "rev": "aec55d7b25a563ec8463b4922d627e11e95d59b5",
         "type": "github"
       },
       "original": {
@@ -117,11 +117,11 @@
     "harmonia": {
       "flake": false,
       "locked": {
-        "lastModified": 1670144089,
-        "narHash": "sha256-DJG52W6fcXaLwFnEYapDYmxJ0Hd0+uxk9O/HmtPQaN4=",
+        "lastModified": 1670319728,
+        "narHash": "sha256-7hsq6Sv06UcIjjlZTFlsYWDfGrc9u77OAr25SjnvZ4A=",
         "owner": "helsinki-systems",
         "repo": "harmonia",
-        "rev": "634dc577437ab4e1c4071e5fb0f62325ff1a0df7",
+        "rev": "f2476198fb8236c7c7eb432aab4472083cb9831d",
         "type": "github"
       },
       "original": {
@@ -138,11 +138,11 @@
         "utils": "utils"
       },
       "locked": {
-        "lastModified": 1670245450,
-        "narHash": "sha256-SSHD2iuPw7dKpAHX7DMTBKCm+/drigwC5//xkf+v/AM=",
+        "lastModified": 1670280307,
+        "narHash": "sha256-3x+0whP1nCz5adQMIsBA3L9fI/ABOpRUJdbw0AmxBnU=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "747e36476f341720404bd0d14d687a135a4ce5bf",
+        "rev": "2af0d07678fc15612345e0dd55337550dcf6465f",
         "type": "github"
       },
       "original": {
@@ -153,6 +153,7 @@
     },
     "hyprland": {
       "inputs": {
+        "hyprland-protocols": "hyprland-protocols",
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -160,11 +161,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1670202811,
-        "narHash": "sha256-/Mj5VQc5fQeY65XfCHHEBjMDCu1pNTeh8mpQz3D8Yvs=",
+        "lastModified": 1670331430,
+        "narHash": "sha256-UdXvsPJEu2ktOZwfGrVoR8gl9jHnE60CEZRvsEvNJBw=",
         "owner": "hyprwm",
         "repo": "Hyprland",
-        "rev": "f71f04db9e13950af4a97ae6c8cd31311f8cb6bd",
+        "rev": "7ed401e5e0779e851667c2e5d220c24e9a5b8737",
         "type": "github"
       },
       "original": {
@@ -194,6 +195,22 @@
       }
     },
     "hyprland-protocols": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1670258048,
+        "narHash": "sha256-Lm2sXnDVZNE+taHqsqVibvPmSdu65VHvXI507KVX4lg=",
+        "owner": "hyprwm",
+        "repo": "hyprland-protocols",
+        "rev": "0dcff94fc10df2bbb66d3e1b5a1d6cfd3ada5515",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hyprwm",
+        "repo": "hyprland-protocols",
+        "type": "github"
+      }
+    },
+    "hyprland-protocols_2": {
       "flake": false,
       "locked": {
         "lastModified": 1670185345,
@@ -306,11 +323,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1670249557,
-        "narHash": "sha256-48Qucbk+gLYPaAx9Sqkh8yHTeB5s+hAmhboEftMS1Rw=",
+        "lastModified": 1670330150,
+        "narHash": "sha256-IK89p16xmIBM3FYG463UGI2HiexVIgokGezHnOhEcL4=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "3e999938128eb735317e43fb454af46bbd9910bf",
+        "rev": "3373537a500cb0f489021b1490f77eb8173a1826",
         "type": "github"
       },
       "original": {
@@ -338,11 +355,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1669805596,
-        "narHash": "sha256-g1CPQZ+1jGhY4bsjppk+gH5jfzzqmPlqGHg0zSYS3Hw=",
+        "lastModified": 1670315682,
+        "narHash": "sha256-/v0RgZZIjvsFuJbJLUlzRbzSlYFXq3olgJTuJBNtcoY=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "c81b1e527f3a220abfa9bf8096153d52784c5007",
+        "rev": "af814db16c89385c65e758608296440555f61ccc",
         "type": "github"
       },
       "original": {
@@ -444,7 +461,7 @@
     },
     "xdph": {
       "inputs": {
-        "hyprland-protocols": "hyprland-protocols",
+        "hyprland-protocols": "hyprland-protocols_2",
         "nixpkgs": [
           "hyprland",
           "nixpkgs"
