@@ -86,6 +86,7 @@
         ${pkgs.openssh}/bin/ssh-add
         export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
         # first import environment variables from the login manager
+        systemctl --user unset-environment DISPLAY WAYLAND_DISPLAY
         systemctl --user import-environment
         # then start the service
         exec systemctl --user start sway.service
