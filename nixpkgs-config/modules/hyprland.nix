@@ -37,6 +37,8 @@
       $ws9 = 9
       $ws0 = 0
 
+      monitor=,preferred,auto,1
+
       workspace=,name:$ws1
 
       #-- Input ----------------------------------------------------
