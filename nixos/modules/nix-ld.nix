@@ -45,6 +45,9 @@
           pango
           pipewire
           systemd
+          icu
+          rocksdb
+          openssl
           xorg.libX11
           xorg.libXScrnSaver
           xorg.libXcomposite
