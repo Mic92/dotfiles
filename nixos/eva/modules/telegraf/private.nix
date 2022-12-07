@@ -165,12 +165,6 @@ in {
         response_string_match = "javascript";
       }
       {
-        urls = ["https://ist.devkid.net/wiki/Hauptseite"];
-        tags.host = "eve";
-        tags.org = "private";
-        response_string_match = "Informationssystemtechnik";
-      }
-      {
         urls = ["https://rss.devkid.net"];
         tags.org = "private";
         tags.host = "eve";
