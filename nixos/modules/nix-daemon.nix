@@ -18,8 +18,11 @@ with lib; {
     settings = {
       # https://github.com/NixOS/nix/issues/719
       builders-use-substitutes = true;
+
+      # for nix-direnv
       keep-outputs = true;
       keep-derivations = true;
+
       # in zfs we trust
       fsync-metadata = lib.boolToString (!config.boot.isContainer or config.fileSystems."/".fsType != "zfs");
       experimental-features = "nix-command flakes";
@@ -34,6 +37,15 @@ with lib; {
         "cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc="
       ];
       trusted-users = ["joerg" "root"];
+
+      connect-timeout = 5;
+      log-lines = 25;
+      min-free = 128000000;
+      max-free = 1000000000;
+
+      fallback = true;
+      warn-dirty = false;
+      auto-optimise-store = true;
     };
   };
 
