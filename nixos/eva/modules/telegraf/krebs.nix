@@ -33,6 +33,18 @@
         tags.host = "catalonia";
         tags.org = "krebs";
       }
+      {
+        sources = [
+          "https://jitsi.lassul.us"
+          "https://pad.lassul.us"
+          "https://mumble.lassul.us"
+          "https://lassul.us"
+          "https://social.krebsco.de"
+          "https://ca.r"
+        ];
+        tags.host = "prism";
+        tags.org = "krebs";
+      }
     ];
 
     http_response = [
@@ -45,7 +57,9 @@
       #  interface = "tinc.retiolum";
       #}
       {
-        urls = ["http://yellow.r:9091/transmission/web/"];
+        urls = [
+          "http://yellow.r:9091/transmission/web/"
+        ];
         response_string_match = "Transmission Web";
         tags.host = "yellow";
         tags.org = "krebs";
@@ -56,6 +70,7 @@
           "http://yellow.r"
           "http://sicily.r/"
           "https://sicily.r/"
+          "https://flix.r/"
         ];
         response_string_match = "Index of /";
         tags.org = "krebs";
@@ -115,6 +130,51 @@
           "http://cgit.prism.r"
         ];
         response_string_match = "cgit";
+        tags.org = "krebs";
+        interface = "tinc.retiolum";
+      }
+      {
+        urls = [
+          "http://jelly.r"
+        ];
+        response_string_match = "Jellyfin";
+        tags.host = "prism";
+        tags.org = "krebs";
+        interface = "tinc.retiolum";
+      }
+      {
+        urls = [
+          "https://jitsi.lassul.us"
+        ];
+        response_string_match = "Jitsi Meet";
+        tags.host = "prism";
+        tags.org = "krebs";
+        interface = "tinc.retiolum";
+      }
+      {
+        urls = [
+          "https://pad.lassul.us"
+        ];
+        response_string_match = "HedgeDoc";
+        tags.host = "prism";
+        tags.org = "krebs";
+        interface = "tinc.retiolum";
+      }
+      {
+        urls = [
+          "https://mumble.lassul.us"
+        ];
+        response_string_match = "Mumble";
+        tags.host = "prism";
+        tags.org = "krebs";
+        interface = "tinc.retiolum";
+      }
+      {
+        urls = [
+          "https://social.krebsco.de"
+        ];
+        response_string_match = "Mastodon";
+        tags.host = "prism";
         tags.org = "krebs";
         interface = "tinc.retiolum";
       }
