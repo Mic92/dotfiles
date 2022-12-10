@@ -58,7 +58,8 @@
       #}
       {
         urls = [
-          "http://yellow.r:9091/transmission/web/"
+          # currently turned off
+          #"http://yellow.r:9091/transmission/web/"
         ];
         response_string_match = "Transmission Web";
         tags.host = "yellow";
@@ -70,7 +71,7 @@
           "http://yellow.r"
           "http://sicily.r/"
           "https://sicily.r/"
-          "https://flix.r/"
+          "http://flix.r/"
         ];
         response_string_match = "Index of /";
         tags.org = "krebs";
@@ -135,7 +136,7 @@
       }
       {
         urls = [
-          "http://jelly.r"
+          "http://jelly.r/web/index.html"
         ];
         response_string_match = "Jellyfin";
         tags.host = "prism";
@@ -149,7 +150,6 @@
         response_string_match = "Jitsi Meet";
         tags.host = "prism";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
       }
       {
         urls = [
@@ -158,7 +158,6 @@
         response_string_match = "HedgeDoc";
         tags.host = "prism";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
       }
       {
         urls = [
@@ -167,7 +166,6 @@
         response_string_match = "Mumble";
         tags.host = "prism";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
       }
       {
         urls = [
@@ -176,7 +174,6 @@
         response_string_match = "Mastodon";
         tags.host = "prism";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
       }
       {
         urls = [
