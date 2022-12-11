@@ -15,7 +15,7 @@
 # $ systemd-nspawn --capability=CAP_NET_ADMIN -D /var/lib/machines/eva -b
 # or
 # $ machinectl start eva
-{pkgs, ...}: {
+{lib, pkgs, ...}: {
   networking.hostName = "eva";
 
   time.timeZone = "UTC";
