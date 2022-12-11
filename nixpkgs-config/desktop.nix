@@ -70,7 +70,6 @@
       yt-dlp
       mumble
       ferdium
-      msmtp
       kubectl
       terraform-ls
 
