@@ -1,4 +1,4 @@
-{pkgs, ...}: let
+{pkgs, lib, ...}: let
   resolved = pkgs.systemd.overrideAttrs (_old: {
     buildPhase = ''
       ninja systemd-resolved
@@ -17,15 +17,7 @@
   });
 in {
   systemd.network.enable = true;
-  #systemd.services.systemd-resolved.serviceConfig = {
-  #  ExecStart = [ "" "!!${resolved}/bin/systemd-resolved" ];
-  #};
 
-  #services.resolved.enable = true;
-  #networking.nameservers = [
-  #  "88.99.244.96#dns.thalheim.io"
-  #  "2a01:4f8:10b:49f::1#dns.thalheim.io"
-  #];
   services.resolved.extraConfig = ''
     #DNSOverTLS=yes
     # docker
@@ -35,7 +27,7 @@ in {
   services.resolved.dnssec = "false";
 
   # often hangs
-  systemd.services.systemd-networkd-wait-online.enable = false;
+  systemd.services.systemd-networkd-wait-online.enable = lib.mkForce false;
 
   # don't take down the network for too long
   systemd.services.systemd-networkd.stopIfChanged = false;

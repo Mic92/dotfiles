@@ -115,6 +115,6 @@ in {
     boot.initrd.kernelModules = ["e1000e"];
 
     # often hangs
-    systemd.services.systemd-networkd-wait-online.enable = false;
+    systemd.services.systemd-networkd-wait-online.enable = lib.mkForce false;
   };
 }

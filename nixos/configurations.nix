@@ -94,6 +94,8 @@ in {
           nix-ld.nixosModules.nix-ld
           self.inputs.envfs.nixosModules.envfs
           hyprland.nixosModules.default
+
+          #self.inputs.lanzaboote.nixosModules.lanzaboote
           #({pkgs, ...}: {
           #  programs.hyprland.enable = true;
           #  environment.systemPackages = [
