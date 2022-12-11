@@ -46,7 +46,7 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    harmonia.url = "github:helsinki-systems/harmonia";
+    harmonia.url = "github:Mic92/harmonia/fix-build";
     harmonia.flake = false;
 
     doom-emacs.url = "github:doomemacs/doomemacs/master";

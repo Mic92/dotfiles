@@ -117,15 +117,16 @@
     "harmonia": {
       "flake": false,
       "locked": {
-        "lastModified": 1670319728,
-        "narHash": "sha256-7hsq6Sv06UcIjjlZTFlsYWDfGrc9u77OAr25SjnvZ4A=",
-        "owner": "helsinki-systems",
+        "lastModified": 1670795617,
+        "narHash": "sha256-FxLO2+U2SPTvBHf7TyrXRVYGKPMS4mpErc4i1rNZ5as=",
+        "owner": "Mic92",
         "repo": "harmonia",
-        "rev": "f2476198fb8236c7c7eb432aab4472083cb9831d",
+        "rev": "11be418a4f7d4810d4d2f2331a3a1d513747ad11",
         "type": "github"
       },
       "original": {
-        "owner": "helsinki-systems",
+        "owner": "Mic92",
+        "ref": "fix-build",
         "repo": "harmonia",
         "type": "github"
       }
