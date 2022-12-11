@@ -39,6 +39,7 @@
       arandr
       signal-desktop
       config.nur.repos.mic92.pandoc-bin
+      nix-output-monitor
       gnome.adwaita-icon-theme
       hicolor-icon-theme
       graphicsmagick
