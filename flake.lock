@@ -162,11 +162,11 @@
         "xdph": "xdph"
       },
       "locked": {
-        "lastModified": 1670778902,
-        "narHash": "sha256-wqzR191Dr09be31QX17qTiHwhl8WdSa3Po1ziAq4UL4=",
+        "lastModified": 1670878280,
+        "narHash": "sha256-X84BtB+ruHqb1qZ6dCyB1mbvTYh6o/D97Cx4ifbbPFM=",
         "owner": "hyprwm",
         "repo": "Hyprland",
-        "rev": "e8b99ae13a0525f9fbd6899fe39fe723879f86b9",
+        "rev": "f8a6799d4e41662f8a624da3e4eb3622161dd705",
         "type": "github"
       },
       "original": {
@@ -198,11 +198,11 @@
     "hyprland-protocols": {
       "flake": false,
       "locked": {
-        "lastModified": 1670258048,
-        "narHash": "sha256-Lm2sXnDVZNE+taHqsqVibvPmSdu65VHvXI507KVX4lg=",
+        "lastModified": 1670703428,
+        "narHash": "sha256-4KUW5SKR0Y9uaYGcYwy53YJ3B/sgiprCL4fRGO+mpOA=",
         "owner": "hyprwm",
         "repo": "hyprland-protocols",
-        "rev": "0dcff94fc10df2bbb66d3e1b5a1d6cfd3ada5515",
+        "rev": "d0d6db8cb5bef6d93ca3ad8fb2124964173396da",
         "type": "github"
       },
       "original": {
@@ -324,11 +324,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1670794646,
-        "narHash": "sha256-KYhirZY8JW5ZdPfSqRO1rHNUA4+tb5u9jmTwUt2pRdY=",
+        "lastModified": 1670878467,
+        "narHash": "sha256-x9sh5OWbfQW84+FscmlUkBMDwdmbGUnyDdsY4RhMD1E=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "f2e3785feb5f71ebd1b6d1bc6d710296c71b2dd4",
+        "rev": "cea3e7e9b601cb95a315b83b30c054a15e014d00",
         "type": "github"
       },
       "original": {
@@ -356,11 +356,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1670779394,
-        "narHash": "sha256-Ofto34JMmbUK3sFoO7aR+fed71IC1RFqQKpWQpyV0b4=",
+        "lastModified": 1670819416,
+        "narHash": "sha256-ja1livEv48Y3piLmdKo0T+1cUHdSfmaHXOxOxJNbneA=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "16a52ef00d1c4a060fd69a503e5607f227ce9c10",
+        "rev": "068395203bcc46e2ed19843f508383982b153271",
         "type": "github"
       },
       "original": {
@@ -371,11 +371,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1670511615,
-        "narHash": "sha256-ay+GU3V/c5enPYjakzFN9L1lnD+odKBqYWuUt7SALgs=",
+        "lastModified": 1670860810,
+        "narHash": "sha256-Rc5QXOFHhzoPYVOLZrLrQLNLmJW/0+jn03AupuzkBGo=",
         "ref": "refs/heads/master",
-        "rev": "a8c49c2884c376502e6772f456399142fe71fc04",
-        "revCount": 256,
+        "rev": "7a210569569708d49be8adac463243538da1188b",
+        "revCount": 257,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },
@@ -469,11 +469,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1670593043,
-        "narHash": "sha256-tsDs6FB+7PlBOt46dMQFBMH5yPY/fduf4cYbQYhauhA=",
+        "lastModified": 1670797151,
+        "narHash": "sha256-ZFzJHqSXhGCjSeMgqTyJG1KJ2Nlwa+NEN9K4oGhWcjg=",
         "owner": "hyprwm",
         "repo": "xdg-desktop-portal-hyprland",
-        "rev": "5f7eecff553d82f21e049d79d8fb3f1f46568da0",
+        "rev": "36ffb6892e14b9c5be6e321b3c47fe286ac256e6",
         "type": "github"
       },
       "original": {
