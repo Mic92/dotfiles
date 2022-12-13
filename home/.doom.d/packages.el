@@ -17,10 +17,7 @@
 
 (package! mu4e-alert :disable t)
 
-;(package! bitwarden
-;  :recipe (:host github :repo "seanfarley/emacs-bitwarden"))
-;(package! company-tmux
-;  :recipe (:host github :repo "Mic92/company-tmux"))
+(package! blamer)
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
 ;(package! some-package)
