@@ -21,6 +21,7 @@
     ./modules/dendrite.nix
     ./modules/dovecot.nix
     ./modules/docker.nix
+    ./modules/ergo.nix
     ./modules/et.nix
     ./modules/ejabberd.nix
     ./modules/gitea
