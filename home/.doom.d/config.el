@@ -60,9 +60,9 @@
     (setq sh-basic-offset 2 sh-indentation 2)))
 
 (use-package! lsp
-  :config
-  (setq lsp-clients-clangd-args '("-background-index"))
-  (setq lsp-enable-suggest-server-download nil))
+  :custom
+  (lsp-clients-clangd-args '("-background-index"))
+  (lsp-enable-suggest-server-download nil))
 
 (setq projectile-project-search-path '("~/git"))
 
@@ -140,7 +140,7 @@
   :bind (("s-i" . blamer-show-commit-info))
   :defer 20
   :custom
-  (blamer-idle-time 0.3)
+  (blamer-idle-time 2)
   (blamer-min-offset 70)
   :custom-face
   (blamer-face ((t :foreground "#7a88cf"
