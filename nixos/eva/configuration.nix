@@ -54,7 +54,7 @@
     Unmanaged = yes
   '';
   # often hangs
-  systemd.services.systemd-networkd-wait-online.enable = lib.mkForce false;
+  systemd.network.wait-online.enable = false;
 
   services.resolved.enable = false;
 

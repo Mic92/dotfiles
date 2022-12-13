@@ -27,7 +27,7 @@ in {
   services.resolved.dnssec = "false";
 
   # often hangs
-  systemd.services.systemd-networkd-wait-online.enable = lib.mkForce false;
+  systemd.network.wait-online.enable = false;
 
   # don't take down the network for too long
   systemd.services.systemd-networkd.stopIfChanged = false;

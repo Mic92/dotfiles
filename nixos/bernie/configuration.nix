@@ -43,7 +43,7 @@
 
   networking.networkmanager.enable = true;
   # often hangs
-  systemd.services.systemd-networkd-wait-online.enable = lib.mkForce false;
+  systemd.network.wait-online.enable = false;
   time.timeZone = null;
   services.geoclue2.enable = true;
 
