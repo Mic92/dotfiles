@@ -343,6 +343,7 @@ alias wget='noglob wget'
 alias curl='noglob curl --compressed --proto-default https'
 alias nix='noglob nix'
 alias nom='noglob nom'
+alias nixos-remote='noglob nixos-remote'
 alias nixos-rebuild='noglob nixos-rebuild'
 if [[ -n ${commands[hub]} ]]; then
   alias git='noglob hub'
