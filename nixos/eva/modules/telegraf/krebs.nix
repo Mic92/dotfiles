@@ -58,8 +58,7 @@
       #}
       {
         urls = [
-          # currently turned off
-          #"http://yellow.r:9091/transmission/web/"
+          "http://yellow.r:9091/transmission/web/"
         ];
         response_string_match = "Transmission Web";
         tags.host = "yellow";
