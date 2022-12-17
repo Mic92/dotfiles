@@ -61,7 +61,8 @@
   # breaks loki
   networking.usePredictableInterfaceNames = false;
 
-  documentation.enable = false;
+  # lxc-container.nix sets this
+  documentation.enable = lib.mkForce false;
 
   environment.systemPackages = [
     pkgs.htop
