@@ -48,6 +48,13 @@
     ];
 
     http_response = [
+      {
+        urls = [
+          "http://lassul.us:8000/radio.ogg.m3u"
+        ];
+        tags.host = "prism";
+        tags.org = "krebs";
+      }
       #{
       #  urls = ["http://puyak.r"];
       #  headers.Host = "light.shack";
