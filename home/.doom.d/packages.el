@@ -15,6 +15,10 @@
 (package! jsonnet-mode)
 (package! just-mode)
 
+(package! envrc
+  :pin "0c220b033b627fb58fdeaaaa12ae868eb775ef6c"
+  :recipe (:host github :repo "Mic92/envrc"))
+
 (package! mu4e-alert :disable t)
 
 (package! blamer)
