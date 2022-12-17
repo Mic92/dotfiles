@@ -22,6 +22,12 @@ module "nix-eval-jobs" {
   github_token = data.sops_file.secrets.data["GITHUB_TOKEN"]
   bot_github_token = data.sops_file.secrets.data["nix-eval-jobs-bot-token"]
 }
+module "nixos-images" {
+  source = "../modules/github-push-bot"
+  repo_name = "nix-community/nixos-images"
+  github_token = data.sops_file.secrets.data["GITHUB_TOKEN"]
+  bot_github_token = data.sops_file.secrets.data["nix-eval-jobs-bot-token"]
+}
 module "beherbergung" {
   source = "../modules/github-push-bot"
   repo_name = "internet4refugees/beherbergung"
