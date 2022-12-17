@@ -79,13 +79,9 @@
   };
 
   #outputs = {...} @ args: import ./outputs.nix args;
-  outputs = {
-    self,
-    flake-parts,
-    ...
-  }:
+  outputs = inputs @ {flake-parts, ...}:
     (flake-parts.lib.evalFlakeModule
-      {inherit self;}
+      {inherit inputs;}
       {
         imports = [
           ./nixos/configurations.nix
