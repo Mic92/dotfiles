@@ -12,9 +12,9 @@
     ./modules/waybar.nix
   ];
 
-  manual.json.enable = true;
-
   fonts.fontconfig.enable = true;
+
+  programs.vscode.enable = true;
 
   systemd.user.services.mpris-proxy = {
     Unit.Description = "Mpris proxy";
