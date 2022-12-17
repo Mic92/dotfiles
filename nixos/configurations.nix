@@ -60,6 +60,7 @@
         ./modules/i18n.nix
         ./modules/nsncd.nix
         ./modules/sshd
+        ./modules/self.nix
         nur.nixosModules.nur
 
         ./modules/retiolum.nix
