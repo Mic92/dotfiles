@@ -16,7 +16,7 @@
 (package! just-mode)
 
 (package! envrc
-  :pin "0c220b033b627fb58fdeaaaa12ae868eb775ef6c"
+  :pin "a1082e45e6da784c66091f46b2c511bdbdb2bf1a"
   :recipe (:host github :repo "Mic92/envrc"))
 
 (package! mu4e-alert :disable t)
