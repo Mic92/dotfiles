@@ -8,7 +8,6 @@
     nur
     flake-registry
     nixos-hardware
-    nix-ld
     bme680-mqtt
     hyprland
     ;
@@ -92,7 +91,6 @@ in {
         ++ [
           ./turingmachine/configuration.nix
           nixos-hardware.nixosModules.framework
-          nix-ld.nixosModules.nix-ld
           self.inputs.envfs.nixosModules.envfs
           hyprland.nixosModules.default
 
