@@ -35,11 +35,11 @@ in {
     ];
   };
 
-  # Use mac address from thinkpad network dongle also for docking station,
-  # since we will not need more than two 1 Gigabyte uplinks
+  # Use mac address from thinkpad network dongle also for thinkpad docking
+  # station and screen, since we will not need more than two 1 Gigabyte uplinks
   systemd.network.links."00-docking-station".extraConfig = ''
     [Match]
-    MACAddress = 08:3a:88:59:80:71
+    MACAddress = 08:3a:88:59:80:71 f4:6b:8c:4a:81:c0
 
     [Link]
     MACAddress = 8c:8c:aa:da:9d:35
