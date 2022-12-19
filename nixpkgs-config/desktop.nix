@@ -61,7 +61,7 @@
       hydra-check
       xdg-utils
       patool
-      picocom
+      tio
 
       (mpv.override {
         scripts = [mpvScripts.mpris];
