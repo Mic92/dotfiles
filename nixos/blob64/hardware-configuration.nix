@@ -7,6 +7,13 @@
     fsType = "ext4";
     label = "root-ssd";
   };
+
+  fileSystems."/zdata" = {
+    device = "zdata";
+    fsType = "zfs";
+    options = ["zfsutil" "nofail"];
+  };
+
   boot.loader.grub.enable = false;
   boot.loader.generic-extlinux-compatible.enable = true;
   boot.kernelParams = [
