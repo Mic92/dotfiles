@@ -5,19 +5,18 @@
   ...
 }: let
   isVM = lib.any (mod: mod == "xen-blkfront" || mod == "virtio_console") config.boot.initrd.kernelModules;
+  # potentially wrong if the nvme is not used at boot...
+  hasNvme = lib.any (m: m == "nvme") config.boot.initrd.availableKernelModules;
 in {
   networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [9273];
 
-  systemd.services.telegraf.path = [pkgs.nvme-cli];
+  systemd.services.telegraf.path = lib.optional (!isVM && hasNvme) pkgs.nvme-cli;
 
   services.telegraf = {
     enable = true;
     extraConfig = {
       agent.interval = "60s";
       inputs = {
-        #syslog.server = "unixgram:///run/systemd/journal/syslog";
-        #syslog.best_effort = true;
-        #syslog.syslog_standard = "RFC3164";
         prometheus.urls = lib.mkIf config.services.promtail.enable [
           # default promtail port
           "http://localhost:9080/metrics"
