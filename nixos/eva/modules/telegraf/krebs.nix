@@ -207,6 +207,29 @@
         tags.org = "krebs";
         interface = "tinc.retiolum";
       }
+      {
+        urls = [
+          "http://p.r"
+        ];
+        tags.org = "krebs";
+        interface = "tinc.retiolum";
+      }
+      {
+        urls = [
+          "http://gosh.r"
+        ];
+        response_string_match = "gosh!";
+        tags.org = "krebs";
+        interface = "tinc.retiolum";
+      }
+      {
+        urls = [
+          "http://agenda.r"
+        ];
+        response_string_match = "Agenda";
+        tags.org = "krebs";
+        interface = "tinc.retiolum";
+      }
     ];
   };
 }
