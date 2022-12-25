@@ -28,7 +28,7 @@ $ sh ./install --daemon
 # Boostrap home-manager
 
 ```console
-$ hm-switch
+$ hm switch
 ```
 
 # Articles about my dotfile repo
