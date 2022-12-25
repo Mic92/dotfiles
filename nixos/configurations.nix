@@ -1,19 +1,6 @@
-{self, ...}: let
-  inherit
-    (self.inputs)
-    nixpkgs
-    retiolum
-    sops-nix
-    home-manager
-    nur
-    flake-registry
-    nixos-hardware
-    bme680-mqtt
-    hyprland
-    nix-index-database
-    ;
-
-  inherit (nixpkgs) lib;
+{self, inputs, ...}: let
+  inherit (inputs.nixpkgs) lib;
+  inherit (inputs) nixpkgs;
 
   nixosSystem = args:
     (lib.makeOverridable lib.nixosSystem)
@@ -37,8 +24,8 @@
     ({pkgs, ...}: {
       nix.nixPath = [
         "nixpkgs=${pkgs.path}"
-        "home-manager=${home-manager}"
-        "nur=${nur}"
+        "home-manager=${inputs.home-manager}"
+        "nur=${inputs.nur}"
       ];
 
       #nix.extraOptions = let
@@ -49,7 +36,7 @@
       #  flake-registry = ${registry}/flake-registry.json
       #'';
       nix.extraOptions = ''
-        flake-registry = ${flake-registry}/flake-registry.json
+        flake-registry = ${inputs.flake-registry}/flake-registry.json
       '';
       documentation.info.enable = false;
 
@@ -61,14 +48,14 @@
         ./modules/nsncd.nix
         ./modules/sshd
         ./modules/self.nix
-        nur.nixosModules.nur
+        inputs.nur.nixosModules.nur
 
         ./modules/retiolum.nix
         ./modules/update-prefetch.nix
-        retiolum.nixosModules.retiolum
-        retiolum.nixosModules.ca
+        inputs.retiolum.nixosModules.retiolum
+        inputs.retiolum.nixosModules.ca
 
-        sops-nix.nixosModules.sops
+        inputs.sops-nix.nixosModules.sops
       ];
     })
   ];
@@ -79,8 +66,8 @@ in {
       modules =
         defaultModules
         ++ [
-          nixos-hardware.nixosModules.lenovo-thinkpad-x13
-          home-manager.nixosModules.home-manager
+          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x13
+          inputs.home-manager.nixosModules.home-manager
           ./bernie/configuration.nix
         ];
     };
@@ -91,10 +78,10 @@ in {
         defaultModules
         ++ [
           ./turingmachine/configuration.nix
-          nixos-hardware.nixosModules.framework
-          nix-index-database.nixosModules.nix-index
-          self.inputs.envfs.nixosModules.envfs
-          hyprland.nixosModules.default
+          inputs.nixos-hardware.nixosModules.framework
+          inputs.nix-index-database.nixosModules.nix-index
+          inputs.inputs.envfs.nixosModules.envfs
+          inputs.hyprland.nixosModules.default
 
           #self.inputs.lanzaboote.nixosModules.lanzaboote
           #({pkgs, ...}: {
@@ -119,8 +106,8 @@ in {
         defaultModules
         ++ [
           ./eve/configuration.nix
-          self.inputs.envfs.nixosModules.envfs
-          "${self.inputs.harmonia}/module.nix"
+          inputs.envfs.nixosModules.envfs
+          "${inputs.harmonia}/module.nix"
           ({config, ...}: {
             services.harmonia.enable = true;
             services.harmonia.settings.sign_key_path = config.sops.secrets.harmonia-key.path;
@@ -150,7 +137,7 @@ in {
       modules =
         defaultModules
         ++ [
-          bme680-mqtt.nixosModules.bme680-mqtt
+          inputs.bme680-mqtt.nixosModules.bme680-mqtt
           ./rock/configuration.nix
         ];
     };
