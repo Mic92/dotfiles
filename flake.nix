@@ -38,7 +38,7 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     bme680-mqtt.url = "github:Mic92/bme680-mqtt";
-    bme680-mqtt.inputs.utils.follows = "flake-utils";
+    bme680-mqtt.inputs.flake-parts.follows = "flake-parts";
     bme680-mqtt.inputs.nixpkgs.follows = "nixpkgs";
 
     retiolum.url = "git+https://git.thalheim.io/Mic92/retiolum";
