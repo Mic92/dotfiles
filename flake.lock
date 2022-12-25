@@ -247,6 +247,22 @@
         "type": "github"
       }
     },
+    "nix-index-database": {
+      "locked": {
+        "lastModified": 1671957422,
+        "narHash": "sha256-vwP/RIcd4eNhPX+deXONbPPh/UfRZxQaDFLvBdcBFFY=",
+        "owner": "Mic92",
+        "repo": "nix-index-database",
+        "rev": "b60351178d53a2964cad4a86280194414082875e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "ref": "modules",
+        "repo": "nix-index-database",
+        "type": "github"
+      }
+    },
     "nixlib": {
       "locked": {
         "lastModified": 1636849918,
@@ -374,6 +390,7 @@
         "hyprland": "hyprland",
         "hyprland-contrib": "hyprland-contrib",
         "nix-darwin": "nix-darwin",
+        "nix-index-database": "nix-index-database",
         "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",

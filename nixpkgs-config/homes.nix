@@ -1,4 +1,4 @@
-{self, ...}: {
+{self, inputs, ...}: {
   perSystem = {pkgs, ...}: {
     apps.hm = {
       type = "app";
@@ -45,11 +45,10 @@
   };
 
   flake = let
-    inherit (self.inputs) nixpkgs home-manager nur hyprland hyprland-contrib;
     hmConfiguration = {
       extraModules ? [],
       system ? "x86_64-linux",
-    }: (home-manager.lib.homeManagerConfiguration {
+    }: (inputs.home-manager.lib.homeManagerConfiguration {
       modules = [
         {
           _module.args.self = self;
@@ -58,13 +57,13 @@
             extraModules
             ++ [
               ./common.nix
-              nur.hmModules.nur
+              inputs.nur.hmModules.nur
             ];
           home.username = "joerg";
           home.homeDirectory = "/home/joerg";
         }
       ];
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = inputs.nixpkgs.legacyPackages.${system};
     });
   in {
     hmConfigurations = {
@@ -76,11 +75,12 @@
       desktop = hmConfiguration {
         extraModules = [
           ./desktop.nix
-          hyprland.homeManagerModules.default
+          inputs.nix-index-database.hmModules.nix-index
+          inputs.hyprland.homeManagerModules.default
           ({pkgs, ...}: {
-            programs.waybar.package = hyprland.packages.${pkgs.system}.waybar-hyprland;
+            programs.waybar.package = inputs.hyprland.packages.${pkgs.system}.waybar-hyprland;
             home.packages = [
-              hyprland-contrib.packages.${pkgs.system}.grimblast
+              inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
             ];
           })
         ];
