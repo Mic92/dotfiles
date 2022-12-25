@@ -301,11 +301,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1671961790,
-        "narHash": "sha256-MjaPTELH1adYVvqwEb3eMAdVAsSmuwCDlDtzre7bpUY=",
+        "lastModified": 1671990539,
+        "narHash": "sha256-i/dYttMLdmArYP1zcWzJzbrpEzv2snZdmf2moFcYYfw=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "7d01ab90067873d14c67be2921f0aef5fcdcaec0",
+        "rev": "d78988812876c249bea2b36e0e045cf852a3a43d",
         "type": "github"
       },
       "original": {
