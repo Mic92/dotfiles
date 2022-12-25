@@ -10,6 +10,7 @@
     nixos-hardware
     bme680-mqtt
     hyprland
+    nix-index-database
     ;
 
   inherit (nixpkgs) lib;
@@ -91,6 +92,7 @@ in {
         ++ [
           ./turingmachine/configuration.nix
           nixos-hardware.nixosModules.framework
+          nix-index-database.nixosModules.nix-index
           self.inputs.envfs.nixosModules.envfs
           hyprland.nixosModules.default
 

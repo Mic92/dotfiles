@@ -17,7 +17,7 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
-    nix-index-database.url = "github:Mic92/nix-index-database/modules";
+    nix-index-database.url = "github:Mic92/nix-index-database";
     #systemd.url = "git+file:///home/joerg/git/systemd";
     #systemd.flake = false;
 
