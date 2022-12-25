@@ -56,7 +56,6 @@
       sshuttle
       jq
       go2nix
-      nix-index
       cheat
       hydra-check
       xdg-utils
