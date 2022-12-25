@@ -80,7 +80,7 @@ in {
           ./turingmachine/configuration.nix
           inputs.nixos-hardware.nixosModules.framework
           inputs.nix-index-database.nixosModules.nix-index
-          inputs.inputs.envfs.nixosModules.envfs
+          inputs.envfs.nixosModules.envfs
           inputs.hyprland.nixosModules.default
 
           #self.inputs.lanzaboote.nixosModules.lanzaboote
