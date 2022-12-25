@@ -21,6 +21,9 @@
 
 (package! mu4e-alert :disable t)
 
+(package! copilot
+  :recipe (:host github :repo "zerolfx/copilot.el" :files ("*.el" "dist")))
+
 (package! blamer)
 
 ;; To install SOME-PACKAGE from MELPA, ELPA or emacsmirror:
