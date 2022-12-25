@@ -13,7 +13,6 @@
   # To update all inputs:
   # $ nix flake update
   inputs = {
-    flake-utils.url = "github:numtide/flake-utils";
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
@@ -59,7 +58,7 @@
 
     envfs.url = "github:Mic92/envfs";
     envfs.inputs.nixpkgs.follows = "nixpkgs";
-    envfs.inputs.utils.follows = "flake-utils";
+    envfs.inputs.flake-parts.follows = "flake-parts";
 
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";

@@ -42,19 +42,19 @@
     },
     "envfs": {
       "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
         "nixpkgs": [
           "nixpkgs"
-        ],
-        "utils": [
-          "flake-utils"
         ]
       },
       "locked": {
-        "lastModified": 1670329910,
-        "narHash": "sha256-1sYqQEE6lzmmag8uQ5IXrux5aeZzVbfwfBSwUyXXhV8=",
+        "lastModified": 1671978847,
+        "narHash": "sha256-ToW41EeUxpKbDFzuIhR1UvvRsfRge/9x7igf5vtyBQI=",
         "owner": "Mic92",
         "repo": "envfs",
-        "rev": "aec55d7b25a563ec8463b4922d627e11e95d59b5",
+        "rev": "953f6afcbd3be96d3638af0abdb10e72fe7fb4c4",
         "type": "github"
       },
       "original": {
@@ -96,21 +96,6 @@
       "original": {
         "owner": "NixOS",
         "repo": "flake-registry",
-        "type": "github"
-      }
-    },
-    "flake-utils": {
-      "locked": {
-        "lastModified": 1667395993,
-        "narHash": "sha256-nuEHfE/LcWyuSWnS8t12N1wc105Qtau+/OdUAjtQ0rA=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "5aed5285a952e0b949eb3ba02c12fa4fcfef535f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
         "type": "github"
       }
     },
@@ -383,7 +368,6 @@
         "envfs": "envfs",
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
-        "flake-utils": "flake-utils",
         "harmonia": "harmonia",
         "home-manager": "home-manager",
         "hyprland": "hyprland",
