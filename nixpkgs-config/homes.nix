@@ -9,43 +9,13 @@
         if [[ -n ''${profiles[$HOSTNAME]:-} ]]; then
           profile=''${profiles[$HOSTNAME]}
         fi
-        usage() {
-          echo "hm (profile|build|switch)"
-          exit 0
-        }
-        main() {
-          cmd=$1
-          shift
-          case "$cmd" in
-          -h|--help)
-            usage
-            ;;
-          profile)
-            echo "$profile"
-            ;;
-          build)
-            nix build --no-link --show-trace --json "${toString ./..}#hmConfigurations.''${profile}.activationPackage" "$@" | jq -r '.[] | .outputs | .out'
-            ;;
-          switch)
-            oldpath=$(realpath /nix/var/nix/profiles/per-user/$USER/home-manager)
-            path=$(main build "$@")
-            if [[ -e $oldpath ]]; then
-              nix store diff-closures "$oldpath" "$path"
-            fi
-            $path/activate
-            ;;
-          esac
-        }
-        if [[ "$#" -lt 1 ]]; then
-          usage
-        fi
-        main "$@"
+        ${inputs.home-manager.packages.${pkgs.system}.home-manager}/bin/home-manager --flake "${self}#$profile" "$@"
       ''}/bin/hm";
     };
   };
 
   flake = let
-    hmConfiguration = {
+    homeManagerConfiguration = {
       extraModules ? [],
       system ? "x86_64-linux",
     }: (inputs.home-manager.lib.homeManagerConfiguration {
@@ -66,13 +36,13 @@
       pkgs = inputs.nixpkgs.legacyPackages.${system};
     });
   in {
-    hmConfigurations = {
-      common = hmConfiguration {};
-      common-aarch64 = hmConfiguration {
+    homeConfigurations = {
+      common = homeManagerConfiguration {};
+      common-aarch64 = homeManagerConfiguration {
         system = "aarch64-linux";
       };
 
-      desktop = hmConfiguration {
+      desktop = homeManagerConfiguration {
         extraModules = [
           ./desktop.nix
           inputs.nix-index-database.hmModules.nix-index
@@ -85,10 +55,10 @@
           })
         ];
       };
-      eve = hmConfiguration {
+      eve = homeManagerConfiguration {
         extraModules = [./eve.nix];
       };
-      bernie = hmConfiguration {
+      bernie = homeManagerConfiguration {
         extraModules = [./bernie.nix];
       };
     };
