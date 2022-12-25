@@ -182,14 +182,6 @@ in {
         routes = [
           {
             group_by = ["host"];
-            match_re.org = "it4r";
-            group_wait = "5m";
-            group_interval = "5m";
-            repeat_interval = "4h";
-            receiver = "it4r";
-          }
-          {
-            group_by = ["host"];
             match_re.org = "krebs";
             group_wait = "5m";
             group_interval = "5m";
@@ -214,14 +206,6 @@ in {
         ];
       };
       receivers = [
-        {
-          name = "it4r";
-          email_configs = [
-            {
-              to = "j03@c3d2.de";
-            }
-          ];
-        }
         {
           name = "krebs";
           webhook_configs = [
