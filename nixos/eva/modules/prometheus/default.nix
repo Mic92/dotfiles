@@ -73,6 +73,13 @@ in {
 
             labels.org = "krebs";
           }
+          #{
+          #  targets = [
+          #    "dev1.numtide.com.r:9273"
+          #  ];
+
+          #  labels.org = "numtide";
+          #}
           {
             targets = map (host: "${host}.r:9273") [
               # we are loosing more and more Edinburgh machines
@@ -105,6 +112,8 @@ in {
               "wilfred"
               "river"
               "jack"
+
+              "ruby"
             ];
 
             labels.org = "uni";
@@ -215,6 +224,15 @@ in {
             }
           ];
         }
+        #{
+        #  name = "numtide";
+        #  slack_configs = [
+        #    {
+        #      token = "$SLACK_TOKEN";
+        #      api_url = "https://";
+        #    }
+        #  ];
+        #}
         {
           name = "nix-community";
           webhook_configs = [
