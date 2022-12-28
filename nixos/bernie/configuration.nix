@@ -41,8 +41,6 @@
   networking.hostId = "ac174b52";
 
   networking.networkmanager.enable = true;
-  # often hangs
-  systemd.network.wait-online.enable = false;
   time.timeZone = null;
   services.geoclue2.enable = true;
 

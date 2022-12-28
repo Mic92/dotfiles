@@ -113,8 +113,5 @@ in {
       '';
     };
     boot.initrd.kernelModules = ["e1000e"];
-
-    # often hangs
-    systemd.network.wait-online.enable = false;
   };
 }

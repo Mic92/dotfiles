@@ -26,9 +26,6 @@ in {
   # dns.thalheim.io performs dnssec already
   services.resolved.dnssec = "false";
 
-  # often hangs
-  systemd.network.wait-online.enable = false;
-
   # don't take down the network for too long
   systemd.services.systemd-networkd.stopIfChanged = false;
   # Services that are only restarted might be not able to resolve when this is stopped before
