@@ -17,13 +17,13 @@ done
 
 password_file=$HOME/.openttd/password
 if [[ ! -f $password_file ]]; then
-  mkdir -p "$(dirname $password_file)"
+  mkdir -p "$(dirname "$password_file")"
   (
     trap '' pipe; # head will cause SIGPIPE in tr process
-    tr -dc _A-Z-a-z-0-9 < /dev/urandom | head -c10 > $password_file
+    tr -dc _A-Z-a-z-0-9 < /dev/urandom | head -c10 > "$password_file"
   )
 fi
-password="$(cat $password_file)"
+password=$(cat "$password_file")
 echo "Server password: ${password}"
 
 load_arg=
@@ -33,4 +33,4 @@ if [[ -n $best ]]; then
 fi
 
 # Run a dedicated server with the best file.
-exec openttd $load_arg -p "$password" -D "$@"
+exec openttd "$load_arg" -p "$password" -D "$@"
