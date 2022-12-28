@@ -416,16 +416,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1672224527,
-        "narHash": "sha256-URPRt/6yLnNI4c4Y9VjDRN/vm7q7wDR+4ScuXmo5u+M=",
+        "lastModified": 1672226718,
+        "narHash": "sha256-MQPRFRxaXZYW/QzSZreEGdemlgJhFtttzxxFTL09TWM=",
         "owner": "numtide",
         "repo": "srvos",
-        "rev": "379bf9c53824182e74966d77c56cae43046d3f80",
+        "rev": "1a0e43d82a50c2f4b0a855cdd645d9ed681bfaaa",
         "type": "github"
       },
       "original": {
         "owner": "numtide",
-        "ref": "flake-profile",
+        "ref": "mics-branch",
         "repo": "srvos",
         "type": "github"
       }

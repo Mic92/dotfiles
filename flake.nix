@@ -75,7 +75,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    srvos.url = "github:numtide/srvos/flake-profile";
+    srvos.url = "github:numtide/srvos/mics-branch";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
   };
 
