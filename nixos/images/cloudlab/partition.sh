@@ -24,7 +24,7 @@ if [[ ! -e /dev/disk/by-label/NIXOS_ROOT ]]; then
   1 : start=2048, type=L, bootable
 EOF
 
-  if [[ "$rootDevice" == /dev/nvme* ]]; then
+  if [[ $rootDevice == /dev/nvme* ]]; then
     x=p
   else
     x=

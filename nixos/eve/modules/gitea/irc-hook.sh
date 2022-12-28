@@ -1,11 +1,11 @@
 #! /usr/bin/env bash
 set -euf -x
 
-green()  { printf '\x0303,99%s\x0F' "$1"; }
-red()    { printf '\x0304,99%s\x0F' "$1"; }
+green() { printf '\x0303,99%s\x0F' "$1"; }
+red() { printf '\x0304,99%s\x0F' "$1"; }
 orange() { printf '\x0307,99%s\x0F' "$1"; }
-pink()   { printf '\x0313,99%s\x0F' "$1"; }
-gray()   { printf '\x0314,99%s\x0F' "$1"; }
+pink() { printf '\x0313,99%s\x0F' "$1"; }
+gray() { printf '\x0314,99%s\x0F' "$1"; }
 
 unset message
 add_message() {
@@ -37,18 +37,18 @@ while read -r oldrev newrev ref; do
   if [ "$newrev" = "$empty" ]; then id=$empty_tree; fi
   if [ "$oldrev" = "$empty" ]; then id2=$empty_tree; fi
 
-  link="${GIT_URL:-} $h"
+  link="${GIT_URL-} $h"
 
   add_message "$(pink push) $link $(gray "($receive_mode)")"
 
   add_message "$(
-  git log \
+    git log \
       --format="$(orange %h) %s $(gray '(%ar)')" \
       --reverse \
       $id2..$id
 
-  git diff --stat $id2..$id \
-    | sed '$!s/\(+*\)\(-*\)$/'"$(green '\1')$(red '\2')"'/'
+    git diff --stat $id2..$id |
+      sed '$!s/\(+*\)\(-*\)$/'"$(green '\1')$(red '\2')"'/'
   )"
 done
 

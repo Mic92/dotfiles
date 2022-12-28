@@ -21,7 +21,7 @@ git checkout -f
 git submodule update --init --recursive
 
 # Enter Directory
-cat > dummy.nix << 'EOF'
+cat >dummy.nix <<'EOF'
 { config, lib, pkgs, ... }: {
   imports = [ ./krebs ];
   krebs = {
@@ -33,7 +33,7 @@ cat > dummy.nix << 'EOF'
 }
 EOF
 
-cat > wiregrill.nix << 'EOF'
+cat >wiregrill.nix <<'EOF'
 with import <nixpkgs/nixos> {};
 with import <stockholm/lib>;
 let
@@ -71,14 +71,14 @@ nix build \
   -f '<nixpkgs/nixos>' \
   pkgs.krebs-hosts
 install -D -m644 result $WEBROOT/etc.hosts
-grep -E '^42:|.i |.i$' result > $WEBROOT/etc.hosts-v6only
+grep -E '^42:|.i |.i$' result >$WEBROOT/etc.hosts-v6only
 
 nix-build ./wiregrill.nix \
   -I secrets=./krebs/0tests/data/secrets \
   -I nixos-config=./dummy.nix \
   -I stockholm=./.
 
-jq < result > $WEBROOT/wiregrill.json
+jq <result >$WEBROOT/wiregrill.json
 
 unset GIT_WORK_TREE GIT_DIR
 
