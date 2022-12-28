@@ -31,7 +31,6 @@
     ./modules/influxdb.nix
     ./modules/harmonia.nix
     #./modules/jetbrains-remote.nix
-    ./modules/ssh-serve.nix
     #./modules/k8s.nix
     ./modules/knot
     ./modules/navidrome.nix

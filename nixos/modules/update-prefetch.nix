@@ -29,11 +29,4 @@
       IOSchedulingClass = "idle";
     };
   };
-
-  programs.ssh.extraConfig = ''
-    Host binary-cache.thalheim.io
-      User nix-ssh
-      IdentityFile ${config.sops.secrets.binary-cache-key.path}
-  '';
-  sops.secrets.binary-cache-key.sopsFile = ../secrets/secrets.yaml;
 }
