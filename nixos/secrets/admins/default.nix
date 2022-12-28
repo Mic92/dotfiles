@@ -1,8 +1,8 @@
-with import <nixpkgs> {};
-  mkShell {
-    nativeBuildInputs = [
-      bashInteractive
-      cfssl
-      sops
-    ];
-  }
+with import <nixpkgs> { };
+mkShell {
+  nativeBuildInputs = [
+    bashInteractive
+    cfssl
+    sops
+  ];
+}

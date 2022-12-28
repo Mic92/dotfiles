@@ -1,13 +1,13 @@
-{lib}:
+{ lib }:
 lib.mapAttrsToList
-(name: opts: {
-  alert = name;
-  expr = opts.condition;
-  for = opts.time or "2m";
-  labels = {};
-  annotations.description = opts.description;
-})
-({
+  (name: opts: {
+    alert = name;
+    expr = opts.condition;
+    for = opts.time or "2m";
+    labels = { };
+    annotations.description = opts.description;
+  })
+  ({
     prometheus_too_many_restarts = {
       condition = ''changes(process_start_time_seconds{job=~"prometheus|pushgateway|alertmanager|telegraf"}[15m]) > 2'';
       description = "Prometheus has restarted more than twice in the last 15 minutes. It might be crashlooping";
@@ -86,25 +86,26 @@ lib.mapAttrsToList
     };
   }
   // (lib.genAttrs [
-      "borgbackup-turingmachine"
-      "borgbackup-eve"
-      # currently unavailable (Edinburgh)
-      #"borgbackup-datastore"
-      "borgbackup-nfs-home"
-      "borgbackup-nfs-share"
-    ]
+    "borgbackup-turingmachine"
+    "borgbackup-eve"
+    # currently unavailable (Edinburgh)
+    #"borgbackup-datastore"
+    "borgbackup-nfs-home"
+    "borgbackup-nfs-share"
+  ]
     (name: {
       condition = ''absent_over_time(task_last_run{name="${name}"}[1d])'';
       description = "status of ${name} is unknown: no data for a day";
     }))
   // (lib.genAttrs [
-      "syncoid-home"
-      "syncoid-share"
-    ] (name: {
+    "syncoid-home"
+    "syncoid-share"
+  ]
+    (name: {
       condition = ''absent_over_time(task_last_run{name="${name}"}[10m])'';
       description = "status of ${name} is unknown: no data for 10 minutes";
     }))
-  // {
+    // {
     nixpkgs_out_of_date = {
       condition = ''(time() - flake_input_last_modified{input="nixpkgs",host!="matchbox"}) / (60*60*24) > 7'';
       description = "{{$labels.host}}: nixpkgs flake is older than a week";

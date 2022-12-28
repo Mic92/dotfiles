@@ -1,4 +1,4 @@
-{lib, ...}: {
+{ lib, ... }: {
   services.nginx.virtualHosts."muc.thalheim.io" = {
     useACMEHost = lib.mkForce "thalheim.io";
 

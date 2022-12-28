@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   users.extraUsers = {
     light = {
       isNormalUser = true;
@@ -12,6 +12,6 @@
   hardware.bluetooth.enable = true;
 
   environment.systemPackages = [
-    (pkgs.callPackage ./hue-bt-ctl.nix {})
+    (pkgs.callPackage ./hue-bt-ctl.nix { })
   ];
 }

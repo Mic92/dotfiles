@@ -1,13 +1,15 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   terminal = "${pkgs.foot}/bin/footclient";
   systemMonitor = "${terminal} htop";
-in {
+in
+{
   # https://github.com/nix-community/home-manager/blob/master/modules/programs/i3status-rust.nix
   programs.waybar = {
     enable = true;
     settings = {
       "bar" = {
-        output = ["eDP-1"];
+        output = [ "eDP-1" ];
         # mode = "dock";
         layer = "top";
         position = "top";
@@ -25,8 +27,8 @@ in {
         ipc = true;
 
         # Modules display
-        modules-left = ["wlr/workspaces"];
-        modules-center = [];
+        modules-left = [ "wlr/workspaces" ];
+        modules-center = [ ];
         modules-right = [
           "idle_inhibitor"
           "network"
@@ -64,7 +66,7 @@ in {
             phone = "";
             portable = "";
             car = "";
-            default = ["" "" ""];
+            default = [ "" "" "" ];
           };
           scroll-step = 5.0;
           on-click = "pamixer --toggle-mute";
@@ -98,7 +100,7 @@ in {
           rotate = 0;
           #"device": "amdgpu_bl0",
           format = "{icon} {percent}%";
-          format-icons = ["" "" "" ""];
+          format-icons = [ "" "" "" "" ];
           on-click = "";
           on-click-middle = "";
           on-click-right = "";
@@ -124,7 +126,7 @@ in {
           format-full = "{icon}  Full";
           # format-good = "";
           format-alt = "{icon} {time}";
-          format-icons = ["" "" "" "" ""];
+          format-icons = [ "" "" "" "" "" ];
           format-time = "{H}h {M}min";
           tooltip = true;
         };

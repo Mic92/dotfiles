@@ -1,4 +1,5 @@
-{lib, ...}: let
+{ lib, ... }:
+let
   sharedSettings = {
     ephemeral = true;
     autoStart = true;
@@ -24,7 +25,7 @@
     };
   };
   consulServer = {
-    imports = [consulAgent];
+    imports = [ consulAgent ];
     networking.firewall = {
       allowedTCPPorts = [
         8301 # lan serf
@@ -44,7 +45,8 @@
       server = true;
     };
   };
-in {
+in
+{
   containers.consul1 =
     sharedSettings
     // {
@@ -100,8 +102,8 @@ in {
           devRootTokenID = "phony-secret";
         };
         services.consul.interface.bind = "dummy1";
-        systemd.services.consul.after = lib.mkForce [];
-        systemd.services.consul.bindsTo = lib.mkForce [];
+        systemd.services.consul.after = lib.mkForce [ ];
+        systemd.services.consul.bindsTo = lib.mkForce [ ];
       };
     };
 }

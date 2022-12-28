@@ -1,14 +1,15 @@
-{
-  config,
-  pkgs,
-  ...
-}: let
+{ config
+, pkgs
+, ...
+}:
+let
   package = pkgs.python3Packages.buildbot-worker;
   python = package.pythonModule;
   home = "/var/lib/buildbot-worker";
   buildbotDir = "${home}/worker";
-in {
-  nix.settings.allowed-users = ["buildbot-worker"];
+in
+{
+  nix.settings.allowed-users = [ "buildbot-worker" ];
   users.users.buildbot-worker = {
     description = "Buildbot Worker User.";
     isSystemUser = true;
@@ -17,14 +18,14 @@ in {
     group = "buildbot-worker";
     useDefaultShell = true;
   };
-  users.groups.buildbot-worker = {};
+  users.groups.buildbot-worker = { };
 
   systemd.services.buildbot-worker = {
     reloadIfChanged = true;
     description = "Buildbot Worker.";
-    after = ["network.target" "buildbot-master.service"];
-    wantedBy = ["multi-user.target"];
-    path = [pkgs.git pkgs.nix pkgs.cachix pkgs.gh];
+    after = [ "network.target" "buildbot-master.service" ];
+    wantedBy = [ "multi-user.target" ];
+    path = [ pkgs.git pkgs.nix pkgs.cachix pkgs.gh ];
     environment.PYTHONPATH = "${python.withPackages (_: [package])}/${python.sitePackages}";
     environment.MASTER_URL = ''tcp:host=localhost:port=9989'';
     environment.BUILDBOT_DIR = buildbotDir;

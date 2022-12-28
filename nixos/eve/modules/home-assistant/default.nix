@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     ./bluetooth.nix
     ./bme680.nix
@@ -29,109 +29,110 @@
         extraPackages = ps: [
           ps.psycopg2
         ];
-      })
-      .overrideAttrs (_: {
-        patches = [./mqtt-5.patch];
+      }).overrideAttrs (_: {
+        patches = [ ./mqtt-5.patch ];
       });
   };
 
-  services.home-assistant.config = let
-    hiddenEntities = [
-      "sensor.last_boot"
-      "sensor.date"
-    ];
-  in {
-    frontend = {};
-    http = {
-      use_x_forwarded_for = true;
-      trusted_proxies = [
-        "127.0.0.1"
-        "::1"
+  services.home-assistant.config =
+    let
+      hiddenEntities = [
+        "sensor.last_boot"
+        "sensor.date"
       ];
-    };
-    history.exclude = {
-      entities = hiddenEntities;
-      domains = [
-        "automation"
-        "updater"
+    in
+    {
+      frontend = { };
+      http = {
+        use_x_forwarded_for = true;
+        trusted_proxies = [
+          "127.0.0.1"
+          "::1"
+        ];
+      };
+      history.exclude = {
+        entities = hiddenEntities;
+        domains = [
+          "automation"
+          "updater"
+        ];
+      };
+      "map" = { };
+      shopping_list = { };
+      backup = { };
+      logbook.exclude.entities = hiddenEntities;
+      logger.default = "info";
+      sun = { };
+      calendar = {
+        platform = "caldav";
+        url = "https://cloud.thalheim.io/remote.php/dav";
+        username = "hass@thalheim.io";
+        password = "!secret ldap_password";
+      };
+      prometheus.filter.include_domains = [
+        "persistent_notification"
       ];
-    };
-    "map" = {};
-    shopping_list = {};
-    backup = {};
-    logbook.exclude.entities = hiddenEntities;
-    logger.default = "info";
-    sun = {};
-    calendar = {
-      platform = "caldav";
-      url = "https://cloud.thalheim.io/remote.php/dav";
-      username = "hass@thalheim.io";
-      password = "!secret ldap_password";
-    };
-    prometheus.filter.include_domains = [
-      "persistent_notification"
-    ];
-    influxdb = {
-      username = "homeassistant";
-      host = "influxdb.thalheim.io";
-      password = "!secret influxdb";
-      database = "homeassistant";
-      ssl = true;
-      include.entities = [
-        "person.jorg_thalheim"
-        "person.shannan_lekwati"
-        "device_tracker.beatrice"
-        "device_tracker.android"
+      influxdb = {
+        username = "homeassistant";
+        host = "influxdb.thalheim.io";
+        password = "!secret influxdb";
+        database = "homeassistant";
+        ssl = true;
+        include.entities = [
+          "person.jorg_thalheim"
+          "person.shannan_lekwati"
+          "device_tracker.beatrice"
+          "device_tracker.android"
+        ];
+      };
+      notify = [
+        {
+          name = "Pushover";
+          platform = "pushover";
+          api_key = "!secret pushover_api_key";
+          user_key = "!secret pushover_user_key";
+        }
       ];
-    };
-    notify = [
-      {
-        name = "Pushover";
-        platform = "pushover";
-        api_key = "!secret pushover_api_key";
-        user_key = "!secret pushover_user_key";
-      }
-    ];
-    device_tracker = [
-      {
-        platform = "luci";
-        host = "rauter.r";
-        username = "!secret openwrt_user";
-        password = "!secret openwrt_password";
-      }
-    ];
-    config = {};
-    mobile_app = {};
+      device_tracker = [
+        {
+          platform = "luci";
+          host = "rauter.r";
+          username = "!secret openwrt_user";
+          password = "!secret openwrt_password";
+        }
+      ];
+      config = { };
+      mobile_app = { };
 
-    #icloud = {
-    #  username = "!secret icloud_email";
-    #  password = "!secret icloud_password";
-    #  with_family = true;
-    #};
-    cloud = {};
-    network = {};
-    zeroconf = {};
-    system_health = {};
-    default_config = {};
-    system_log = {};
-    vlc_telnet = {};
-    sensor = [
-      {
-        platform = "template";
-        sensors.shannan_joerg_distance.value_template = ''{{ distance('person.jorg_thalheim', 'person.shannan_lekwati') | round(2) }}'';
-        sensors.joerg_last_updated = {
-          friendly_name = "Jörg's last location update";
-          value_template = ''{{ states.person.jorg_thalheim.last_updated.strftime('%Y-%m-%dT%H:%M:%S') }}Z'';
-          device_class = "timestamp";
-        };
-        sensors.shannan_last_updated = {
-          friendly_name = "Shannan's last location update";
-          value_template = ''{{ states.person.shannan_lekwati.last_updated.strftime('%Y-%m-%dT%H:%M:%S') }}Z'';
-          device_class = "timestamp";
-        };
-      }
-    ];
-  };
+      #icloud = {
+      #  username = "!secret icloud_email";
+      #  password = "!secret icloud_password";
+      #  with_family = true;
+      #};
+      cloud = { };
+      network = { };
+      zeroconf = { };
+      system_health = { };
+      default_config = { };
+      system_log = { };
+      vlc_telnet = { };
+      sensor = [
+        {
+          platform = "template";
+          sensors.shannan_joerg_distance.value_template = ''{{ distance('person.jorg_thalheim', 'person.shannan_lekwati') | round(2) }}'';
+          sensors.joerg_last_updated = {
+            friendly_name = "Jörg's last location update";
+            value_template = ''{{ states.person.jorg_thalheim.last_updated.strftime('%Y-%m-%dT%H:%M:%S') }}Z'';
+            device_class = "timestamp";
+          };
+          sensors.shannan_last_updated = {
+            friendly_name = "Shannan's last location update";
+            value_template = ''{{ states.person.shannan_lekwati.last_updated.strftime('%Y-%m-%dT%H:%M:%S') }}Z'';
+            device_class = "timestamp";
+          };
+        }
+      ];
+    };
 
   services.nginx.virtualHosts."hass.thalheim.io" = {
     useACMEHost = "thalheim.io";
@@ -153,6 +154,6 @@
   sops.secrets."home-assistant-secrets.yaml" = {
     owner = "hass";
     path = "/var/lib/hass/secrets.yaml";
-    restartUnits = ["home-assistant.service"];
+    restartUnits = [ "home-assistant.service" ];
   };
 }

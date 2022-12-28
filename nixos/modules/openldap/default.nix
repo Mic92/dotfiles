@@ -1,7 +1,6 @@
-{
-  pkgs,
-  config,
-  ...
+{ pkgs
+, config
+, ...
 }: {
   services.openldap = {
     enable = true;
@@ -17,7 +16,7 @@
       ];
 
       "olcDatabase={1}mdb".attrs = {
-        objectClass = ["olcDatabaseConfig" "olcMdbConfig"];
+        objectClass = [ "olcDatabaseConfig" "olcMdbConfig" ];
         olcDatabase = "{1}mdb";
         olcDbDirectory = "/var/lib/openldap/data";
         olcRootPW.path = config.sops.secrets.openldap-rootpw.path;
@@ -40,13 +39,13 @@
         ];
       };
       "olcOverlay=syncprov,olcDatabase={1}mdb".attrs = {
-        objectClass = ["olcOverlayConfig" "olcSyncProvConfig"];
+        objectClass = [ "olcOverlayConfig" "olcSyncProvConfig" ];
         olcOverlay = "syncprov";
         olcSpSessionLog = "100";
       };
       "olcDatabase={2}monitor".attrs = {
         olcDatabase = "{2}monitor";
-        objectClass = ["olcDatabaseConfig" "olcMonitorConfig"];
+        objectClass = [ "olcDatabaseConfig" "olcMonitorConfig" ];
         olcAccess = [
           ''            {0}to *
                          by dn.exact="cn=netdata,ou=system,ou=users,dc=eve" read
@@ -277,5 +276,5 @@
     sopsFile = ../../secrets/ldap.yaml;
   };
 
-  networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [389];
+  networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 389 ];
 }

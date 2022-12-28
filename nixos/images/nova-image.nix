@@ -1,4 +1,4 @@
-{...}:
+{ ... }:
 # build openstack image:
 # $ nix-build '<nixpkgs/nixos>' -A config.system.build.novaImage --arg configuration "{ imports = [ ./nova-image.nix ]; }"
 {

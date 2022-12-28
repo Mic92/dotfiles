@@ -1,7 +1,6 @@
-{
-  config,
-  pkgs,
-  ...
+{ config
+, pkgs
+, ...
 }: {
   services.home-assistant.config = {
     intent_script.SuspendLaptop = {

@@ -1,9 +1,9 @@
-{
-  pkgs,
-  lib,
-  config,
-  ...
-}: let
+{ pkgs
+, lib
+, config
+, ...
+}:
+let
   virtualRegex = pkgs.writeText "virtual-regex" ''
     /^joerg\.[^@.]+@thalheim\.io$/ joerg@thalheim.io
     /^shannan.[^@.]+@lekwati\.com/ shannan@lekwati.com
@@ -54,7 +54,8 @@
     # pfpleisure.org
     95.141.161.114 OK
   '';
-in {
+in
+{
   services.postfix = {
     enable = true;
     enableSubmission = true;

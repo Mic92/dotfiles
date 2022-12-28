@@ -1,14 +1,15 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
-}: let
+{ pkgs
+, config
+, lib
+, ...
+}:
+let
   maxUploadSize = "256M";
   toKeyValue = lib.generators.toKeyValue {
-    mkKeyValue = lib.generators.mkKeyValueDefault {} " = ";
+    mkKeyValue = lib.generators.mkKeyValueDefault { } " = ";
   };
-in {
+in
+{
   services.phpfpm.pools.snappymail = {
     user = "snappymail";
     group = "snappymail";
@@ -28,7 +29,7 @@ in {
     };
   };
 
-  services.postgresql.ensureDatabases = ["snappymail"];
+  services.postgresql.ensureDatabases = [ "snappymail" ];
   services.postgresql.ensureUsers = [
     {
       name = "snappymail";
@@ -70,5 +71,5 @@ in {
     group = "snappymail";
   };
 
-  users.groups.snappymail = {};
+  users.groups.snappymail = { };
 }

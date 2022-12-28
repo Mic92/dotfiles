@@ -1,14 +1,14 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
+{ config
+, lib
+, pkgs
+, ...
 }:
 with builtins; let
   backupPath = "borg@blob64.r:/zdata/borg/turingmachine";
-in {
-  sops.secrets.borgbackup = {};
-  sops.secrets.ssh-borgbackup = {};
+in
+{
+  sops.secrets.borgbackup = { };
+  sops.secrets.ssh-borgbackup = { };
 
   services.borgbackup.jobs.turingmachine = {
     paths = [
@@ -71,7 +71,7 @@ in {
   };
 
   systemd.services.break-borgbackup-lock = {
-    path = [pkgs.borgbackup pkgs.openssh];
+    path = [ pkgs.borgbackup pkgs.openssh ];
     script = ''
       eval $(ssh-agent)
       ssh-add ${config.sops.secrets.ssh-borgbackup.path}

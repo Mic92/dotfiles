@@ -1,7 +1,6 @@
-{
-  config,
-  pkgs,
-  ...
+{ config
+, pkgs
+, ...
 }: {
   sops.secrets.rock-rdp-password = {
     sopsFile = ../secrets/desktop.yaml;
@@ -9,7 +8,7 @@
     mode = "0440";
   };
   environment.systemPackages = [
-    (pkgs.runCommand "rock" {} ''
+    (pkgs.runCommand "rock" { } ''
       mkdir -p $out/bin $out/share/applications
 
       cat > $out/bin/rock <<EOF

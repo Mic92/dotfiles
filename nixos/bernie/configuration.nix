@@ -1,11 +1,9 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{
-  config,
-  pkgs,
-  lib,
-  ...
+{ config
+, pkgs
+, ...
 }: {
   imports = [
     ./hardware-configuration.nix
@@ -29,7 +27,7 @@
   users.users.shannan = {
     isNormalUser = true;
     home = "/home/shannan";
-    extraGroups = ["wheel" "plugdev" "adbusers" "input" "kvm" "networkmanager"];
+    extraGroups = [ "wheel" "plugdev" "adbusers" "input" "kvm" "networkmanager" ];
     shell = "/run/current-system/sw/bin/zsh";
     uid = 1001;
     inherit (config.users.users.joerg) openssh;
@@ -87,7 +85,7 @@
   services.printing = {
     enable = true;
     browsing = true;
-    drivers = [pkgs.gutenprint];
+    drivers = [ pkgs.gutenprint ];
   };
   sops.defaultSopsFile = ./secrets/secrets.yaml;
   system.stateVersion = "21.11";

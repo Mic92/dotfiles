@@ -7,7 +7,8 @@ let
       data_template.device_name = device_name;
     };
   };
-in {
+in
+{
   services.home-assistant.config.intent_script = {
     FindIphone = notifyDevice "beatrice" "Shannan's phone";
     FindWatch = notifyDevice "shannansapple_watch" "Shannan's watch";

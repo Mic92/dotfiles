@@ -1,7 +1,6 @@
-{
-  pkgs,
-  config,
-  ...
+{ pkgs
+, config
+, ...
 }: {
   services.ejabberd = {
     enable = true;
@@ -12,7 +11,7 @@
     };
   };
 
-  services.postgresql.ensureDatabases = ["ejabberd"];
+  services.postgresql.ensureDatabases = [ "ejabberd" ];
   services.postgresql.ensureUsers = [
     {
       name = "ejabberd";
@@ -22,7 +21,7 @@
 
   security.dhparams = {
     enable = true;
-    params.nginx = {};
+    params.nginx = { };
   };
 
   environment.etc."ejabberd.yml" = {
@@ -276,24 +275,26 @@
   sops.secrets."ejabber-ldap-password.yml".owner = "ejabberd";
   sops.secrets."ejabber-postgres-password.yml".owner = "ejabberd";
 
-  security.acme.certs = let
-    cert = domain: {
-      inherit domain;
-      postRun = "systemctl restart ejabberd.service";
-      group = "ejabberd";
-      dnsProvider = "rfc2136";
-      credentialsFile = config.sops.secrets.lego-knot-credentials.path;
-      extraDomainNames = ["*.${domain}"];
+  security.acme.certs =
+    let
+      cert = domain: {
+        inherit domain;
+        postRun = "systemctl restart ejabberd.service";
+        group = "ejabberd";
+        dnsProvider = "rfc2136";
+        credentialsFile = config.sops.secrets.lego-knot-credentials.path;
+        extraDomainNames = [ "*.${domain}" ];
+      };
+    in
+    {
+      "ejabberd-anon.thalheim.io" = cert "anon.thalheim.io";
+      "ejabberd-devkid.net" = cert "devkid.net";
+      "ejabberd-thalheim.io" = cert "thalheim.io";
     };
-  in {
-    "ejabberd-anon.thalheim.io" = cert "anon.thalheim.io";
-    "ejabberd-devkid.net" = cert "devkid.net";
-    "ejabberd-thalheim.io" = cert "thalheim.io";
-  };
 
   services.tor.relay.onionServices."jabber".map = [
-    {port = 5222;}
-    {port = 5269;}
+    { port = 5222; }
+    { port = 5269; }
   ];
 
   networking.firewall.allowedTCPPorts = [

@@ -1,8 +1,8 @@
-{
-  pkgs,
-  config,
-  ...
-}: let
+{ pkgs
+, config
+, ...
+}:
+let
   conf = pkgs.writeText "ldap.conf" ''
     base dc=eve
     host localhost:389
@@ -22,7 +22,8 @@
     proxy_set_header X-Forwarded-Port 443;
     proxy_set_header X-Forwarded-Proto $scheme;
   '';
-in {
+in
+{
   security.pam.services.prometheus.text = ''
     auth required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${conf}
     account required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${conf}
@@ -33,7 +34,7 @@ in {
 
   services.nginx = {
     package = pkgs.nginxStable.override {
-      modules = [pkgs.nginxModules.pam];
+      modules = [ pkgs.nginxModules.pam ];
     };
 
     commonHttpConfig = ''

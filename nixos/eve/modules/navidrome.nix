@@ -1,4 +1,4 @@
-{config, ...}: {
+{ config, ... }: {
   services.navidrome.enable = true;
   services.navidrome.settings.MusicFolder = "/data/torrent/download";
   services.navidrome.settings.ReverseProxyWhitelist = "127.0.0.1/32";

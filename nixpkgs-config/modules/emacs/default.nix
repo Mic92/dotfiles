@@ -1,15 +1,15 @@
-{
-  pkgs,
-  lib,
-  inputs,
-  ...
+{ pkgs
+, lib
+, inputs
+, ...
 }:
 with lib; let
   myemacs = pkgs.emacs;
-  editorScript = {
-    name ? "emacseditor",
-    extraArgs ? [],
-  }:
+  editorScript =
+    { name ? "emacseditor"
+    , extraArgs ? [ ]
+    ,
+    }:
     pkgs.writeScriptBin name ''
       #!${pkgs.runtimeShell}
       export TERM=xterm-direct
@@ -74,8 +74,9 @@ with lib; let
     "typescript"
   ];
   grammars = lib.getAttrs (map (lang: "tree-sitter-${lang}") langs) pkgs.tree-sitter.builtGrammars;
-in {
-  home.file.".tree-sitter".source = pkgs.runCommand "grammars" {} ''
+in
+{
+  home.file.".tree-sitter".source = pkgs.runCommand "grammars" { } ''
     mkdir -p $out/bin
     ${
       lib.concatStringsSep "\n"
@@ -87,10 +88,10 @@ in {
     myemacs
     ripgrep
 
-    (editorScript {})
+    (editorScript { })
     gopls
     golangci-lint
-    (pkgs.runCommand "gotools-${gotools.version}" {} ''
+    (pkgs.runCommand "gotools-${gotools.version}" { } ''
       mkdir -p $out/bin
       # skip tools colliding with binutils
       for p in ${gotools}/bin/*; do
@@ -112,7 +113,7 @@ in {
 
   systemd = lib.mkIf (!pkgs.stdenv.isDarwin) {
     user.services.emacs-daemon = {
-      Install.WantedBy = ["default.target"];
+      Install.WantedBy = [ "default.target" ];
       Service = {
         Type = "forking";
         TimeoutStartSec = "10min";

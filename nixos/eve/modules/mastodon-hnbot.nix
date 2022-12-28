@@ -1,7 +1,6 @@
-{
-  pkgs,
-  config,
-  ...
+{ pkgs
+, config
+, ...
 }: {
   systemd.services.mastodon-hnbot = {
     path = [
@@ -26,14 +25,14 @@
           EOF
         ''
       }";
-      StateDirectory = ["mastodon-hnbot"];
+      StateDirectory = [ "mastodon-hnbot" ];
       User = "mastodon-hnbot";
     };
   };
 
   systemd.timers.mastodon-hnbot = {
     description = "Post hackernews posts to mastodon";
-    wantedBy = ["timers.target"];
+    wantedBy = [ "timers.target" ];
     timerConfig = {
       OnUnitActiveSec = "5min";
       OnBootSec = "5min";
@@ -46,7 +45,7 @@
     home = "/var/lib/mastodon-hnbot";
     group = "mastodon-hnbot";
   };
-  users.groups.mastodon-hnbot = {};
+  users.groups.mastodon-hnbot = { };
 
   sops.secrets.hnbot-password.owner = "mastodon-hnbot";
 }

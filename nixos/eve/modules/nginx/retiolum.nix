@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   services.nginx.virtualHosts."retiolum.thalheim.io" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;

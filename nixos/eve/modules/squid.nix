@@ -1,7 +1,6 @@
-{
-  pkgs,
-  config,
-  ...
+{ pkgs
+, config
+, ...
 }: {
   services.squid = {
     enable = true;
@@ -16,7 +15,7 @@
     '';
   };
 
-  networking.firewall.allowedTCPPorts = [8889];
+  networking.firewall.allowedTCPPorts = [ 8889 ];
 
   sops.secrets.squid-ldap.owner = "squid";
 }

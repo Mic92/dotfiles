@@ -1,11 +1,12 @@
-{config, ...}: let
+{ config, ... }:
+let
   passwordName =
     {
       eva = "openldap-syncpw-rid1";
       rock = "openldap-syncpw-rid2";
-    }
-    .${config.networking.hostName};
-in {
+    }.${config.networking.hostName};
+in
+{
   imports = [
     ./.
   ];

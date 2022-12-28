@@ -1,8 +1,7 @@
-{
-  lib,
-  config,
-  pkgs,
-  ...
+{ lib
+, config
+, pkgs
+, ...
 }: {
   services.k3s.enable = true;
   services.k3s.docker = lib.mkForce false;
@@ -11,7 +10,7 @@
   # management.
   networking.firewall.enable = false;
 
-  sops.secrets.k3s-server-token = {};
+  sops.secrets.k3s-server-token = { };
   services.k3s.tokenFile = config.sops.secrets.k3s-server-token.path;
 
   virtualisation.containerd.enable = true;
@@ -36,7 +35,7 @@
     ];
   };
   systemd.services.k3s = {
-    wants = ["containerd.service"];
-    after = ["containerd.service"];
+    wants = [ "containerd.service" ];
+    after = [ "containerd.service" ];
   };
 }

@@ -1,6 +1,6 @@
 {
-  services.home-assistant.config.mqtt = {};
-  networking.firewall.allowedTCPPorts = [8883];
+  services.home-assistant.config.mqtt = { };
+  networking.firewall.allowedTCPPorts = [ 8883 ];
 
   services.nginx = {
     streamConfig = ''

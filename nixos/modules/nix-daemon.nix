@@ -1,8 +1,6 @@
-{
-  lib,
-  config,
-  inputs,
-  ...
+{ lib
+, config
+, ...
 }:
 {
   # this extends srvos's common settings

@@ -1,11 +1,11 @@
-{
-  config,
-  lib,
-  ...
+{ config
+, lib
+, ...
 }:
 with lib; let
   cfg = config.networking.eve;
-in {
+in
+{
   options = {
     networking.eve.ipv4.address = mkOption {
       type = types.str;
@@ -53,7 +53,7 @@ in {
   config = {
     networking.dhcpcd.enable = false;
     services.resolved.enable = false;
-    networking.nameservers = ["127.0.0.1"];
+    networking.nameservers = [ "127.0.0.1" ];
     networking.usePredictableInterfaceNames = false;
 
     systemd.network = {
@@ -81,9 +81,9 @@ in {
     };
 
     # Hack so that network is considered up by boot.initrd.network and postCommands gets executed.
-    boot.kernelParams = ["ip=127.0.0.1:::::lo:none"];
+    boot.kernelParams = [ "ip=127.0.0.1:::::lo:none" ];
 
-    sops.secrets.initrd-ssh-key = {};
+    sops.secrets.initrd-ssh-key = { };
     boot.initrd.network = {
       enable = true;
       ssh = {
@@ -112,6 +112,6 @@ in {
         ip -6 route add default via ${cfg.ipv6.gateway} dev eth0
       '';
     };
-    boot.initrd.kernelModules = ["e1000e"];
+    boot.initrd.kernelModules = [ "e1000e" ];
   };
 }

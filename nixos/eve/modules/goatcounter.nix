@@ -1,12 +1,12 @@
 { config, ... }: {
   systemd.services.goatcounter = {
-    wantedBy = ["multi-user.target"];
+    wantedBy = [ "multi-user.target" ];
     enable = true;
 
     serviceConfig = {
       Restart = "on-failure";
       RestartSec = "2s";
-      EnvironmentFile = [config.sops.secrets.goatcounter-smtp-password.path];
+      EnvironmentFile = [ config.sops.secrets.goatcounter-smtp-password.path ];
       ExecStart = ''
         ${config.nur.repos.mic92.goatcounter}/bin/goatcounter \
           serve \
@@ -36,7 +36,7 @@
     config.nur.repos.mic92.goatcounter
   ];
 
-  services.postgresql.ensureDatabases = ["goatcounter"];
+  services.postgresql.ensureDatabases = [ "goatcounter" ];
   services.postgresql.ensureUsers = [
     {
       name = "goatcounter";
@@ -44,12 +44,12 @@
     }
   ];
 
-  sops.secrets.goatcounter-smtp-password = {};
+  sops.secrets.goatcounter-smtp-password = { };
 
   users.users.goatcounter = {
     isSystemUser = true;
     group = "goatcounter";
   };
 
-  users.groups.goatcounter = {};
+  users.groups.goatcounter = { };
 }

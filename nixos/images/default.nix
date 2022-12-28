@@ -1,46 +1,48 @@
-{self, ...}: {
-  perSystem = {
-    pkgs,
-    self',
-    ...
-  }: let
-    inherit (self.inputs) nixos-generators nur nixpkgs;
-    defaultModule = {config, ...}: {
-      imports = [
-        ./base-config.nix
-        self.inputs.nur.nixosModules.nur
-      ];
-      _module.args.inputs = self.inputs;
-      system.stateVersion = config.system.nixos.version;
-    };
-  in {
-    packages = {
-      matchbox-image = self.nixosConfigurations.matchbox.config.system.build.sdImage;
-
-      sd-image = nixos-generators.nixosGenerate {
-        inherit pkgs;
-        modules = [
-          defaultModule
+{ self, ... }: {
+  perSystem =
+    { pkgs
+    , self'
+    , ...
+    }:
+    let
+      inherit (self.inputs) nixos-generators nur nixpkgs;
+      defaultModule = { config, ... }: {
+        imports = [
+          ./base-config.nix
+          self.inputs.nur.nixosModules.nur
         ];
-        format = "install-iso";
+        _module.args.inputs = self.inputs;
+        system.stateVersion = config.system.nixos.version;
       };
+    in
+    {
+      packages = {
+        matchbox-image = self.nixosConfigurations.matchbox.config.system.build.sdImage;
 
-      netboot = pkgs.callPackage ./netboot.nix {
-        inherit pkgs;
-        inherit (nixpkgs.lib) nixosSystem;
-        extraModules = [
-          defaultModule
-        ];
-      };
+        sd-image = nixos-generators.nixosGenerate {
+          inherit pkgs;
+          modules = [
+            defaultModule
+          ];
+          format = "install-iso";
+        };
 
-      netboot-pixie-core = pkgs.callPackage ./netboot-pixie-core.nix {
-        inherit (self'.packages) netboot;
-      };
+        netboot = pkgs.callPackage ./netboot.nix {
+          inherit pkgs;
+          inherit (nixpkgs.lib) nixosSystem;
+          extraModules = [
+            defaultModule
+          ];
+        };
 
-      nspawn-template = import ./nspawn-template.nix {
-        inherit nixos-generators;
-        inherit pkgs;
+        netboot-pixie-core = pkgs.callPackage ./netboot-pixie-core.nix {
+          inherit (self'.packages) netboot;
+        };
+
+        nspawn-template = import ./nspawn-template.nix {
+          inherit nixos-generators;
+          inherit pkgs;
+        };
       };
     };
-  };
 }

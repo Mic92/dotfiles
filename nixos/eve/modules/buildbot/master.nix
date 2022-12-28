@@ -1,8 +1,8 @@
-{
-  config,
-  pkgs,
-  ...
-}: let
+{ config
+, pkgs
+, ...
+}:
+let
   # TODO: make this an option
   # https://github.com/organizations/numtide/settings/applications
   # Application name: BuildBot
@@ -11,7 +11,8 @@
   # oauth_token:  2516248ec6289e4d9818122cce0cbde39e4b788d
   buildbotDomain = "buildbot.thalheim.io";
   githubOauthId = "d1b24258af1abc157934";
-in {
+in
+{
   services.buildbot-master = {
     enable = true;
     masterCfg = "${./.}/master.py";
@@ -55,16 +56,16 @@ in {
     };
   };
   sops.secrets = {
-    github-token = {};
-    github-webhook-secret = {};
-    github-oauth-secret = {};
-    buildbot-nix-workers = {};
-    cachix-name = {};
-    cachix-signing-key = {};
+    github-token = { };
+    github-webhook-secret = { };
+    github-oauth-secret = { };
+    buildbot-nix-workers = { };
+    cachix-name = { };
+    cachix-signing-key = { };
   };
 
   services.postgresql = {
-    ensureDatabases = ["buildbot"];
+    ensureDatabases = [ "buildbot" ];
     ensureUsers = [
       {
         name = "buildbot";

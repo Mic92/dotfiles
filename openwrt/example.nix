@@ -1,4 +1,4 @@
-{lib, ...}: {
+{ lib, ... }: {
   uci.settings = {
     # The block below will translate to the following uci settings:
     # root@OpenWrt:~# uci show dropbear
@@ -61,7 +61,7 @@
           name = "br-lan";
           type = "bridge";
           # list options are also supported
-          ports = ["lan1" "lan2" "lan3" "lan4"];
+          ports = [ "lan1" "lan2" "lan3" "lan4" ];
         }
         {
           _type = "device";
@@ -125,14 +125,15 @@
       ];
     };
 
-    dhcp.host = lib.imap0 (id: host:
-      rec {
-        _type = "host";
-        dns = "1";
-        ip = "192.168.1.${hostid}";
-        hostid = toString (id + 2);
-      }
-      // host) [
+    dhcp.host = lib.imap0
+      (id: host:
+        rec {
+          _type = "host";
+          dns = "1";
+          ip = "192.168.1.${hostid}";
+          hostid = toString (id + 2);
+        }
+        // host) [
       {
         name = "rock";
         mac = "4a:4e:25:af:9e:0f";
@@ -151,48 +152,50 @@
       }
     ];
 
-    ddns = let
-      common = {
-        _type = "service";
-        enabled = "1";
-        service_name = "bind-nsupdate";
-        lookup_host = "rauter.thalheim.io";
-        domain = "rauter.thalheim.io.";
-        ip_source = "network";
-        dns_server = "ns2.thalheim.io";
-        use_syslog = "2";
-        username = "hmac-sha256:rauter";
-        password = "@tsig_key@";
-        check_unit = "minutes";
-        force_unit = "minutes";
-        retry_unit = "seconds";
-      };
-    in {
-      global = {
-        _type = "ddns";
-        ddns_dateformat = "%F %R";
-        ddns_loglines = "250";
-        ddns_rundir = "/var/run/ddns";
-        ddns_logdir = "/var/log/ddns";
-        upd_privateip = "0";
-      };
-
-      myddns_ipv4 =
-        common
-        // {
-          use_ipv6 = "0";
-          ip_network = "wan";
-          interface = "wan";
+    ddns =
+      let
+        common = {
+          _type = "service";
+          enabled = "1";
+          service_name = "bind-nsupdate";
+          lookup_host = "rauter.thalheim.io";
+          domain = "rauter.thalheim.io.";
+          ip_source = "network";
+          dns_server = "ns2.thalheim.io";
+          use_syslog = "2";
+          username = "hmac-sha256:rauter";
+          password = "@tsig_key@";
+          check_unit = "minutes";
+          force_unit = "minutes";
+          retry_unit = "seconds";
+        };
+      in
+      {
+        global = {
+          _type = "ddns";
+          ddns_dateformat = "%F %R";
+          ddns_loglines = "250";
+          ddns_rundir = "/var/run/ddns";
+          ddns_logdir = "/var/log/ddns";
+          upd_privateip = "0";
         };
 
-      myddns_ipv6 =
-        common
-        // {
-          use_ipv6 = "1";
-          ip_network = "wan_6";
-          interface = "wan_6";
-        };
-    };
+        myddns_ipv4 =
+          common
+          // {
+            use_ipv6 = "0";
+            ip_network = "wan";
+            interface = "wan";
+          };
+
+        myddns_ipv6 =
+          common
+          // {
+            use_ipv6 = "1";
+            ip_network = "wan_6";
+            interface = "wan_6";
+          };
+      };
 
     prometheus-node-exporter-lua.main = {
       _type = "prometheus-node-exporter-lua";
@@ -249,7 +252,7 @@
         src = "wan";
         proto = "icmp";
         src_ip = "fe80::/10";
-        icmp_type = ["130/0" "131/0" "132/0" "143/0"];
+        icmp_type = [ "130/0" "131/0" "132/0" "143/0" ];
         family = "ipv6";
         target = "ACCEPT";
       }

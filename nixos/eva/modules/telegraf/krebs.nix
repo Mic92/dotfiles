@@ -2,15 +2,15 @@
   services.telegraf.extraConfig.inputs = {
     net_response =
       map
-      (host: {
-        protocol = "tcp";
-        address = "6.${host}.r:22";
-        send = "SSH-2.0-Telegraf";
-        expect = "SSH-2.0";
-        tags.host = host;
-        tags.org = "krebs";
-        timeout = "10s";
-      }) [
+        (host: {
+          protocol = "tcp";
+          address = "6.${host}.r:22";
+          send = "SSH-2.0-Telegraf";
+          expect = "SSH-2.0";
+          tags.host = host;
+          tags.org = "krebs";
+          timeout = "10s";
+        }) [
         "hotdog"
         "yellow"
         "prism"

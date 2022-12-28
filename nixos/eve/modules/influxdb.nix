@@ -1,4 +1,4 @@
-{config, ...}: {
+{ config, ... }: {
   services.influxdb = {
     enable = true;
     extraConfig = {
@@ -12,7 +12,7 @@
     };
   };
 
-  networking.firewall.allowedTCPPorts = [8086];
+  networking.firewall.allowedTCPPorts = [ 8086 ];
 
   security.acme.certs."influxdb.thalheim.io" = {
     postRun = "systemctl restart influxdb.service";

@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   systemd.tmpfiles.rules = [
     "d /var/lib/backup/ 0700 - - - -"
   ];

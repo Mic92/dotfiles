@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     ./modules/borgbackup-repos
     ../modules/users.nix
@@ -14,8 +14,8 @@
 
   # Fan speed adjustment
   systemd.services.fans = {
-    wantedBy = ["multi-user.target"];
-    serviceConfig.ExecStart = pkgs.runCommandCC "fans" {nativeBuildInputs = [pkgs.rustc];} ''
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig.ExecStart = pkgs.runCommandCC "fans" { nativeBuildInputs = [ pkgs.rustc ]; } ''
       rustc ${./fancontrol.rs} -o $out
     '';
     serviceConfig.Restart = "always";
@@ -44,6 +44,6 @@
     tmux
   ];
 
-  boot.supportedFilesystems = ["zfs"];
+  boot.supportedFilesystems = [ "zfs" ];
   networking.hostId = "ac174b52";
 }

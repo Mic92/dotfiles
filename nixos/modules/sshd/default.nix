@@ -1,17 +1,18 @@
-{
-  config,
-  lib,
-  ...
-}: let
+{ config
+, lib
+, ...
+}:
+let
   cert = ./certs + "/${config.networking.hostName}-cert.pub";
-in {
+in
+{
   imports = [
     ../ssh.nix
   ];
 
   warnings =
     lib.optional (! builtins.pathExists cert)
-    "No ssh certificate found at ${toString cert}";
+      "No ssh certificate found at ${toString cert}";
 
   # srvos sets more sane defaults
   services.openssh = {

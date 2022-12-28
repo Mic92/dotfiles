@@ -1,4 +1,4 @@
-{config, ...}: {
+{ config, ... }: {
   nix.distributedBuilds = true;
   nix.buildMachines = [
     {
@@ -21,7 +21,7 @@
       sshKey = config.sops.secrets.tum-builder.path;
       protocol = "ssh-ng";
       sshUser = "nix";
-      systems = ["x86_64-linux" "i686-linux"];
+      systems = [ "x86_64-linux" "i686-linux" ];
       supportedFeatures = [
         "big-parallel"
         "kvm"
@@ -39,7 +39,7 @@
   #'';
   programs.ssh.knownHosts = {
     "aarch64.nixos.community" = {
-      hostNames = ["aarch64.nixos.community"];
+      hostNames = [ "aarch64.nixos.community" ];
       publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMUTz5i9u5H2FHNAmZJyoJfIGyUm/HfGhfwnc142L3ds";
     };
     #"login-builder" = {
@@ -47,6 +47,6 @@
     #  publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOdlUylM9WIFfIYZDK8rjVYQzX+RYwIlLgsEh4j0pNx6";
     #};
   };
-  sops.secrets.tum-builder = {};
-  sops.secrets.ssh-aarch64-builder = {};
+  sops.secrets.tum-builder = { };
+  sops.secrets.ssh-aarch64-builder = { };
 }

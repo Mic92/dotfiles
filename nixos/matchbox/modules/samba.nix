@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   services.samba = {
     enable = true;
     package = pkgs.samba;

@@ -1,9 +1,9 @@
 {
-  networking.firewall.allowedTCPPorts = [8200];
+  networking.firewall.allowedTCPPorts = [ 8200 ];
   services.minidlna = {
     enable = true;
     loglevel = "debug";
-    mediaDirs = ["V,/var/lib/minidlna"];
+    mediaDirs = [ "V,/var/lib/minidlna" ];
     friendlyName = "turingmachine";
     rootContainer = "V";
     extraConfig = ''

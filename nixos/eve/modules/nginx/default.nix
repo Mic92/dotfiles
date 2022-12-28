@@ -1,7 +1,6 @@
-{
-  config,
-  lib,
-  ...
+{ config
+, lib
+, ...
 }: {
   imports = [
     ./devkid.net.nix
@@ -69,28 +68,30 @@
     # RFC2136_TSIG_SECRET="00000000000000000000000000000000000000000000"
     sops.secrets.lego-knot-credentials.owner = "acme";
 
-    security.acme.certs = let
-      sanCertificate = {rsa ? false}: {
-        domain = "thalheim.io";
-        postRun = "systemctl reload nginx.service";
-        group = "nginx";
-        keyType =
-          if rsa
-          then "rsa2048"
-          else "ec384";
-        dnsProvider = "rfc2136";
-        extraDomainNames = [
-          "*.thalheim.io"
-          "devkid.net"
-          "*.devkid.net"
-          "lekwati.com"
-          "*.lekwati.com"
-        ];
-        credentialsFile = config.sops.secrets.lego-knot-credentials.path;
+    security.acme.certs =
+      let
+        sanCertificate = { rsa ? false }: {
+          domain = "thalheim.io";
+          postRun = "systemctl reload nginx.service";
+          group = "nginx";
+          keyType =
+            if rsa
+            then "rsa2048"
+            else "ec384";
+          dnsProvider = "rfc2136";
+          extraDomainNames = [
+            "*.thalheim.io"
+            "devkid.net"
+            "*.devkid.net"
+            "lekwati.com"
+            "*.lekwati.com"
+          ];
+          credentialsFile = config.sops.secrets.lego-knot-credentials.path;
+        };
+      in
+      {
+        "thalheim.io" = sanCertificate { };
+        "legacy-thalheim.io" = sanCertificate { rsa = true; };
       };
-    in {
-      "thalheim.io" = sanCertificate {};
-      "legacy-thalheim.io" = sanCertificate {rsa = true;};
-    };
   };
 }

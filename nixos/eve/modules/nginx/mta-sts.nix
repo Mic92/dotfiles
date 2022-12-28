@@ -1,4 +1,5 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   mta-sts-web = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
@@ -9,7 +10,8 @@
       max_age: 86400
     '';
   };
-in {
+in
+{
   services.nginx.virtualHosts."mta-sts.thalheim.io" = mta-sts-web;
   services.nginx.virtualHosts."mta-sts.devkid.net" = mta-sts-web;
   services.nginx.virtualHosts."mta-sts.lekwati.com" = mta-sts-web;

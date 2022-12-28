@@ -1,7 +1,6 @@
-{
-  pkgs,
-  lib,
-  ...
+{ pkgs
+, lib
+, ...
 }: {
   programs.sway = {
     enable = true;
@@ -12,7 +11,7 @@
       swayidle
       xwayland
       (i3pystatus.override {
-        extraLibs = [python3.pkgs.keyrings-alt python3.pkgs.paho-mqtt];
+        extraLibs = [ python3.pkgs.keyrings-alt python3.pkgs.paho-mqtt ];
       })
       wofi
       gnome.eog
@@ -76,46 +75,48 @@
       name = "startsway";
       destination = "/bin/startsway";
       executable = true;
-      text = let
-        schema = pkgs.gsettings-desktop-schemas;
-        datadir = "${schema}/share/gsettings-schemas/${schema.name}";
-      in ''
-        #! ${pkgs.bash}/bin/bash
+      text =
+        let
+          schema = pkgs.gsettings-desktop-schemas;
+          datadir = "${schema}/share/gsettings-schemas/${schema.name}";
+        in
+        ''
+          #! ${pkgs.bash}/bin/bash
 
-        ${pkgs.rbw}/bin/rbw unlock
-        ${pkgs.openssh}/bin/ssh-add
-        export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
-        # first import environment variables from the login manager
-        systemctl --user unset-environment DISPLAY WAYLAND_DISPLAY
-        systemctl --user import-environment
-        # then start the service
-        exec systemctl --user start sway.service
-      '';
+          ${pkgs.rbw}/bin/rbw unlock
+          ${pkgs.openssh}/bin/ssh-add
+          export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
+          # first import environment variables from the login manager
+          systemctl --user unset-environment DISPLAY WAYLAND_DISPLAY
+          systemctl --user import-environment
+          # then start the service
+          exec systemctl --user start sway.service
+        '';
     })
   ];
 
   # for polkit
-  environment.pathsToLink = ["/libexec"];
+  environment.pathsToLink = [ "/libexec" ];
 
   qt5.platformTheme = "qt5ct";
 
   # brightnessctl
-  users.users.joerg.extraGroups = ["video"];
+  users.users.joerg.extraGroups = [ "video" ];
 
   systemd.user.targets.sway-session = {
     description = "Sway compositor session";
-    documentation = ["man:systemd.special(7)"];
-    bindsTo = ["graphical-session.target"];
-    wants = ["graphical-session-pre.target"];
-    after = ["graphical-session-pre.target"];
+    documentation = [ "man:systemd.special(7)" ];
+    bindsTo = [ "graphical-session.target" ];
+    wants = [ "graphical-session-pre.target" ];
+    after = [ "graphical-session-pre.target" ];
   };
 
   systemd.user.services.sway = {
     description = "Sway - Wayland window manager";
-    documentation = ["man:sway(5)"];
-    bindsTo = ["graphical-session.target"];
-    wants = ["graphical-session-pre.target"];
-    after = ["graphical-session-pre.target"];
+    documentation = [ "man:sway(5)" ];
+    bindsTo = [ "graphical-session.target" ];
+    wants = [ "graphical-session-pre.target" ];
+    after = [ "graphical-session-pre.target" ];
     # We explicitly unset PATH here, as we want it to be set by
     # systemctl --user import-environment in startsway
     environment.PATH = lib.mkForce null;

@@ -1,8 +1,8 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   fileSystems."/mnt/backup" = {
     device = "UUID=11ac8bec-aef1-45ca-a530-2115d403ce53";
     fsType = "ext4";
-    options = ["noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s"];
+    options = [ "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s" ];
   };
 
   services.rsnapshot = {
@@ -45,5 +45,5 @@
     };
   };
 
-  sops.secrets.smb-secrets = {};
+  sops.secrets.smb-secrets = { };
 }

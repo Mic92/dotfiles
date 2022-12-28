@@ -1,14 +1,13 @@
-{
-  pkgs,
-  lib,
-  ...
+{ pkgs
+, lib
+, ...
 }:
 with pkgs; let
   networkmanager-hook = stdenv.mkDerivation {
     name = "networkmanager-hook";
     src = ./networkmanager.py;
-    buildInputs = [python3];
-    nativeBuildInputs = [makeWrapper python3.pkgs.mypy];
+    buildInputs = [ python3 ];
+    nativeBuildInputs = [ makeWrapper python3.pkgs.mypy ];
     dontUnpack = true;
     installPhase = ''
       install -D -m755 $src $out/bin/dispatcher
@@ -16,8 +15,9 @@ with pkgs; let
       wrapProgram $out/bin/dispatcher --prefix PATH : ${lib.makeBinPath [systemd alsa-utils]}
     '';
   };
-in {
-  users.users.joerg.extraGroups = ["networkmanager"];
+in
+{
+  users.users.joerg.extraGroups = [ "networkmanager" ];
   # breaks nixos-rebuild over network
   systemd.services.NetworkManager.restartIfChanged = false;
   networking.networkmanager = {

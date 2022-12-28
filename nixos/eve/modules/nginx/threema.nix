@@ -1,4 +1,4 @@
-{config, ...}: {
+{ config, ... }: {
   services.nginx = {
     virtualHosts."threema.thalheim.io" = {
       useACMEHost = "thalheim.io";

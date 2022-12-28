@@ -1,15 +1,16 @@
-{
-  config,
-  pkgs,
-  ...
-}: let
+{ config
+, pkgs
+, ...
+}:
+let
   conf = pkgs.writeText "ldap.conf" ''
     base dc=eve
     host localhost:389
     pam_login_attribute mail
     pam_filter objectClass=flood
   '';
-in {
+in
+{
   services.rtorrent.enable = true;
   services.rtorrent.user = "joerg";
   services.rtorrent.group = "users";
@@ -26,9 +27,9 @@ in {
   '';
 
   systemd.services.flood = {
-    wantedBy = ["multi-user.target"];
-    wants = ["rtorrent.service"];
-    after = ["rtorrent.service"];
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "rtorrent.service" ];
+    after = [ "rtorrent.service" ];
     serviceConfig = {
       User = "joerg";
       ExecStart = "${pkgs.nodePackages.flood}/bin/flood --auth none --port 3003 --rtsocket /run/rtorrent/rpc.sock";
@@ -39,7 +40,7 @@ in {
 
   services.nginx = {
     package = pkgs.nginxStable.override {
-      modules = [pkgs.nginxModules.pam];
+      modules = [ pkgs.nginxModules.pam ];
     };
     virtualHosts."flood.r" = {
       # TODO

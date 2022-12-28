@@ -3,7 +3,7 @@
     recorder.db_url = "postgresql://@/hass";
   };
   services.postgresql = {
-    ensureDatabases = ["hass"];
+    ensureDatabases = [ "hass" ];
     ensureUsers = [
       {
         name = "hass";

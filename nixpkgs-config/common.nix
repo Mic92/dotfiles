@@ -1,8 +1,7 @@
-{
-  pkgs,
-  config,
-  lib,
-  ...
+{ pkgs
+, config
+, lib
+, ...
 }: {
   imports = [
     #./modules/neovim.nix
@@ -15,12 +14,14 @@
         #(pkgs.callPackage /home/joerg/git/nix-review {})
         config.nur.repos.mic92.nixpkgs-review-unstable
         config.nur.repos.mic92.tmux-thumbs
-        (callPackage (fetchFromGitHub {
-          owner = "nix-community";
-          repo = "comma";
-          rev = "02e3e5545b0c62595a77f3d5de1223c536af0614";
-          sha256 = "sha256-WBIQmwlkb/GMoOq+Dnyrk8YmgiM/wJnc5HYZP8Uw72E=";
-        }) {})
+        (callPackage
+          (fetchFromGitHub {
+            owner = "nix-community";
+            repo = "comma";
+            rev = "02e3e5545b0c62595a77f3d5de1223c536af0614";
+            sha256 = "sha256-WBIQmwlkb/GMoOq+Dnyrk8YmgiM/wJnc5HYZP8Uw72E=";
+          })
+          { })
         nix-prefetch
 
         gdb
@@ -48,7 +49,7 @@
         delta
         scc
         direnv
-        (nix-direnv.override {enableFlakes = true;})
+        (nix-direnv.override { enableFlakes = true; })
         fzf
         lsd
         zoxide

@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   services.home-assistant.config = {
     light = {
       platform = "template";

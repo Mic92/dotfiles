@@ -1,4 +1,4 @@
-{config, ...}: {
+{ config, ... }: {
   sops.secrets.promtail-password = {
     owner = "promtail";
     sopsFile = ../secrets/secrets.yaml;
@@ -78,16 +78,16 @@
             }
             # silence nscd:
             # Oct 24 18:20:19 nardole nscd[1812]: 1812 ignored inotify event for `/etc/netgroup` (file exists)
-            {drop.expression = "ignored inotify event for";}
+            { drop.expression = "ignored inotify event for"; }
             # messages from rpi3
-            {drop.expression = "hwmon hwmon1: Undervoltage detected!";}
-            {drop.expression = "hwmon hwmon1: Voltage normalised";}
+            { drop.expression = "hwmon hwmon1: Undervoltage detected!"; }
+            { drop.expression = "hwmon hwmon1: Voltage normalised"; }
             # ignore random portscans on the internet
-            {drop.expression = "refused connection: IN=";}
+            { drop.expression = "refused connection: IN="; }
           ];
           relabel_configs = [
             {
-              source_labels = ["__journal__hostname"];
+              source_labels = [ "__journal__hostname" ];
               target_label = "host";
             }
           ];

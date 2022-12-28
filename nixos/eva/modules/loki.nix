@@ -1,8 +1,8 @@
-{
-  config,
-  pkgs,
-  ...
-}: let
+{ config
+, pkgs
+, ...
+}:
+let
   rulerConfig = {
     groups = [
       {
@@ -21,7 +21,8 @@
   };
 
   rulerDir = pkgs.writeTextDir "ruler/ruler.yml" (builtins.toJSON rulerConfig);
-in {
+in
+{
   systemd.tmpfiles.rules = [
     "d /var/lib/loki 0700 loki loki - -"
     "d /var/lib/loki/ruler 0700 loki loki - -"
@@ -45,7 +46,7 @@ in {
           kvstore.store = "inmemory";
           replication_factor = 1;
         };
-        lifecycler.interface_names = ["eth0" "en0" "ens192"];
+        lifecycler.interface_names = [ "eth0" "en0" "ens192" ];
         chunk_encoding = "snappy";
         # Disable block transfers on shutdown
         max_transfer_retries = 0;
@@ -134,5 +135,5 @@ in {
     };
   };
 
-  networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [80];
+  networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 80 ];
 }

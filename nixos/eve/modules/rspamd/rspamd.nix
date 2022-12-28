@@ -1,8 +1,8 @@
-{
-  pkgs,
-  config,
-  ...
-}: let
+{ pkgs
+, config
+, ...
+}:
+let
   localConfig = pkgs.writeText "local.conf" ''
     logging {
       level = "notice";
@@ -55,8 +55,9 @@
     }
   '';
 
-  sieve-spam-filter = pkgs.callPackage ../../pkgs/sieve-spam-filter {};
-in {
+  sieve-spam-filter = pkgs.callPackage ../../pkgs/sieve-spam-filter { };
+in
+{
   services.rspamd = {
     enable = true;
     extraConfig = ''
@@ -117,7 +118,7 @@ in {
     };
   };
 
-  systemd.services.rspamd.serviceConfig.SupplementaryGroups = ["redis-rspamd"];
+  systemd.services.rspamd.serviceConfig.SupplementaryGroups = [ "redis-rspamd" ];
 
   systemd.services.dovecot2.preStart = ''
     mkdir -p /var/lib/dovecot/sieve/

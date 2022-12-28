@@ -1,7 +1,6 @@
-{
-  lib,
-  modulesPath,
-  ...
+{ lib
+, modulesPath
+, ...
 }: {
   imports = [
     "${modulesPath}/installer/scan/not-detected.nix"
@@ -36,43 +35,43 @@
   fileSystems."/home" = {
     device = "zroot/root/home";
     fsType = "zfs";
-    options = ["nofail"];
+    options = [ "nofail" ];
   };
 
   fileSystems."/tmp" = {
     device = "zroot/root/tmp";
     fsType = "zfs";
-    options = ["nofail"];
+    options = [ "nofail" ];
   };
 
   fileSystems."/boot" = {
     device = "/dev/disk/by-label/NIXOS_BOOT";
     fsType = "ext4";
-    options = ["nofail"];
+    options = [ "nofail" ];
   };
 
   fileSystems."/data" = {
     device = "data/root/data";
     fsType = "zfs";
-    options = ["nofail"];
+    options = [ "nofail" ];
   };
 
   fileSystems."/data/backup" = {
     device = "data/root/backup";
     fsType = "zfs";
-    options = ["nofail"];
+    options = [ "nofail" ];
   };
 
   fileSystems."/data/backup/devkid" = {
     device = "data/root/backup/devkid";
     fsType = "zfs";
-    options = ["nofail"];
+    options = [ "nofail" ];
   };
 
   fileSystems."/var/lib/docker" = {
     device = "data/root/docker";
     fsType = "zfs";
-    options = ["nofail"];
+    options = [ "nofail" ];
   };
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";

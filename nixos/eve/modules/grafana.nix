@@ -1,8 +1,8 @@
-{
-  pkgs,
-  config,
-  ...
-}: let
+{ pkgs
+, config
+, ...
+}:
+let
   ldap = pkgs.writeTextFile {
     name = "ldap.toml";
     text = ''
@@ -21,7 +21,8 @@
       email =  "mail"
     '';
   };
-in {
+in
+{
   services.grafana = {
     enable = true;
     settings = {

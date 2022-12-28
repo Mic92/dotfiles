@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     ../modules/users.nix
     ../modules/mosh.nix
@@ -19,7 +19,7 @@
   fileSystems."/mnt/hdd" = {
     device = "UUID=1d377ab7-65ca-492d-9ea4-620034230192";
     fsType = "ext4";
-    options = ["defaults" "nofail" "x-systemd.device-timeouts=2"];
+    options = [ "defaults" "nofail" "x-systemd.device-timeouts=2" ];
   };
 
   networking.hostName = "matchbox";

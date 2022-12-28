@@ -1,7 +1,6 @@
-{
-  config,
-  pkgs,
-  ...
+{ config
+, pkgs
+, ...
 }: {
   services.home-assistant.customComponents = {
     var = pkgs.stdenv.mkDerivation rec {
@@ -35,7 +34,7 @@
     };
   };
   services.home-assistant.config = {
-    transmission = [];
+    transmission = [ ];
     var.torrent_url = {
       friendly_name = "Torrent magnet url";
       initial_value = "";
@@ -52,7 +51,7 @@
       {
         service = "var.set";
         data.value = "";
-        data.entity_id = ["var.torrent_url"];
+        data.entity_id = [ "var.torrent_url" ];
       }
     ];
     automation = [

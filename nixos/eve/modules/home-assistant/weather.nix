@@ -12,8 +12,8 @@
       name = "Rain notified today";
       icon = "mdi:weather-cloudy";
     };
-    openweathermap = {};
-    weather = {};
+    openweathermap = { };
+    weather = { };
     automation = [
       {
         alias = "rainy/snowy day notification";

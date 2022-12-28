@@ -1,5 +1,5 @@
 {
-  perSystem = {pkgs, ...}: {
+  perSystem = { pkgs, ... }: {
     devShells.terraform = pkgs.mkShell {
       buildInputs = [
         pkgs.sops

@@ -1,6 +1,6 @@
-{
-  nixos-generators,
-  pkgs,
+{ nixos-generators
+, pkgs
+,
 }:
 # $ nix build .#nspawn-template --builders ''
 # $ mkdir -p /var/lib/machines/joe02
@@ -9,7 +9,7 @@
 nixos-generators.nixosGenerate {
   inherit pkgs;
   modules = [
-    ({config, ...}: {
+    ({ config, ... }: {
       system.stateVersion = config.system.nixos.version;
 
       # include this in a normal profile

@@ -1,4 +1,4 @@
-{config, ...}: {
+{ config, ... }: {
   services.rsyncd = {
     enable = true;
     settings = {
@@ -15,7 +15,7 @@
       };
     };
   };
-  networking.firewall.allowedTCPPorts = [873];
+  networking.firewall.allowedTCPPorts = [ 873 ];
 
   users.users.rsyncd = {
     isSystemUser = true;
@@ -24,7 +24,7 @@
 
   sops.secrets.rsyncd-secrets.owner = "rsyncd";
 
-  users.groups.rsyncd = {};
+  users.groups.rsyncd = { };
 
   systemd.services.rsyncd.serviceConfig = {
     AmbientCapabilities = "cap_net_bind_service";

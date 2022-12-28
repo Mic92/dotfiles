@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   services.home-assistant.config = {
     sensor = [
       {
@@ -38,6 +38,6 @@
       action.data_template.media_content_type = "music";
       action.data_template.media_content_id = "{{ states.sensor.bbc_world_news.state }}";
     };
-    vlc_telnet = {};
+    vlc_telnet = { };
   };
 }

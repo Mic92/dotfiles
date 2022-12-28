@@ -5,7 +5,8 @@
 # to test it in a vm:
 #
 # $ nixos-generate --run -f vm -c yubikey-image.nix
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   guide = pkgs.stdenv.mkDerivation {
     name = "yubikey-guide-2020-08-12.html";
     src = pkgs.fetchFromGitHub {
@@ -14,13 +15,14 @@
       rev = "f7561616a541182554c2e16ec7c05ac1565a61d7";
       sha256 = "sha256-3CUqLde0NxFEQpYIbL0n7oueF7vEQRuz6tYerqPOL7k=";
     };
-    buildInputs = [pkgs.pandoc];
+    buildInputs = [ pkgs.pandoc ];
     installPhase = ''
       pandoc --highlight-style pygments -s --toc README.md | \
         sed -e 's/<keyid>/\&lt;keyid\&gt;/g' > $out
     '';
   };
-in {
+in
+{
   environment.interactiveShellInit = ''
     export GNUPGHOME=/run/user/$(id -u)/gnupghome
     if [ ! -d $GNUPGHOME ]; then
@@ -45,7 +47,7 @@ in {
     ctmg
   ];
 
-  services.udev.packages = with pkgs; [yubikey-personalization];
+  services.udev.packages = with pkgs; [ yubikey-personalization ];
   services.pcscd.enable = true;
 
   # make sure we are air-gapped
@@ -57,7 +59,7 @@ in {
   security.sudo.wheelNeedsPassword = false;
   users.users.yubikey = {
     isNormalUser = true;
-    extraGroups = ["wheel"];
+    extraGroups = [ "wheel" ];
     shell = "/run/current-system/sw/bin/bash";
   };
 

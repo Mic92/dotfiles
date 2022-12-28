@@ -1,8 +1,8 @@
-{
-  pkgs,
-  config,
-  ...
-}: let
+{ pkgs
+, config
+, ...
+}:
+let
   ldapConfig = {
     vaultwarden_url = "https://bitwarden.thalheim.io";
     vaultwarden_admin_token = "@ADMIN_TOKEN@";
@@ -16,15 +16,16 @@
 
   ldapConfigFile =
     pkgs.runCommand "config.toml"
-    {
-      buildInputs = [pkgs.remarshal];
-      preferLocalBuild = true;
-    } ''
+      {
+        buildInputs = [ pkgs.remarshal ];
+        preferLocalBuild = true;
+      } ''
       remarshal -if json -of toml \
       < ${pkgs.writeText "config.json" (builtins.toJSON ldapConfig)} \
       > $out
     '';
-in {
+in
+{
   services.vaultwarden = {
     enable = true;
     dbBackend = "postgresql";
@@ -42,11 +43,11 @@ in {
   };
 
   systemd.services.vaultwarden.serviceConfig = {
-    EnvironmentFile = [config.sops.secrets.bitwarden-smtp-password.path];
+    EnvironmentFile = [ config.sops.secrets.bitwarden-smtp-password.path ];
   };
 
   systemd.services.vaultwarden_ldap = {
-    wantedBy = ["multi-user.target"];
+    wantedBy = [ "multi-user.target" ];
 
     preStart = ''
       sed \
@@ -62,7 +63,7 @@ in {
       ExecStart = "${config.nur.repos.mic92.vaultwarden_ldap}/bin/vaultwarden_ldap";
       Environment = "CONFIG_PATH=/run/vaultwarden_ldap/config.toml";
 
-      RuntimeDirectory = ["vaultwarden_ldap"];
+      RuntimeDirectory = [ "vaultwarden_ldap" ];
       User = "vaultwarden_ldap";
     };
   };
@@ -100,5 +101,5 @@ in {
     group = "vaultwarden_ldap";
   };
 
-  users.groups.vaultwarden_ldap = {};
+  users.groups.vaultwarden_ldap = { };
 }

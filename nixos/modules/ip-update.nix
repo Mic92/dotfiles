@@ -1,19 +1,18 @@
-{
-  pkgs,
-  config,
-  ...
+{ pkgs
+, config
+, ...
 }: {
-  sops.secrets."ip-update-key" = {};
+  sops.secrets."ip-update-key" = { };
   systemd.timers.ip-update = {
     description = "Update ip address";
-    wantedBy = ["timers.target"];
+    wantedBy = [ "timers.target" ];
     timerConfig = {
       OnUnitActiveSec = "5min";
       OnBootSec = "5min";
     };
   };
   systemd.services.ip-update = {
-    path = [pkgs.bind.dnsutils pkgs.curl];
+    path = [ pkgs.bind.dnsutils pkgs.curl ];
     script = ''
       set -x
       ip=$(curl -4 https://ip.thalheim.io)

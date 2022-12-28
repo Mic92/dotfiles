@@ -3,9 +3,6 @@ import hashlib
 import logging
 import logging.handlers
 import os
-import random
-import socket
-import string
 import subprocess
 import urllib.request
 

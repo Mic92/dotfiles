@@ -1,4 +1,4 @@
-{config, ...}: {
+{ config, ... }: {
   services.nginx.virtualHosts."go-neb.thalheim.io" = {
     forceSSL = true;
     enableACME = true;
@@ -28,14 +28,14 @@
           Sync = true;
           AutoJoinRooms = true;
           DisplayName = "Alertmanager";
-          AcceptVerificationFromUsers = [":localhost:8008"];
+          AcceptVerificationFromUsers = [ ":localhost:8008" ];
         }
       ];
       realms = [
         {
           ID = "github_realm";
           Type = "github";
-          Config = {};
+          Config = { };
         }
       ];
       sessions = [
@@ -59,7 +59,7 @@
             RealmID = "github_realm";
             ClientUserID = "@mic92:nixos.dev";
             Rooms."!cBybDCkeRlSWfuaFvn:numtide.com".Repos = {
-              "nix-community/infra".Events = ["push" "issues" "pull_request"];
+              "nix-community/infra".Events = [ "push" "issues" "pull_request" ];
             };
           };
         }
@@ -87,5 +87,5 @@
     secretFile = config.sops.secrets.go-neb-secrets.path;
   };
 
-  sops.secrets.go-neb-secrets = {};
+  sops.secrets.go-neb-secrets = { };
 }

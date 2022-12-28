@@ -15,15 +15,15 @@
     ];
     net_response =
       map
-      (host: {
-        protocol = "tcp";
-        address = "${host}.numtide.com:22";
-        send = "SSH-2.0-Telegraf";
-        expect = "SSH-2.0";
-        tags.host = host;
-        tags.org = "numtide";
-        timeout = "10s";
-      }) [
+        (host: {
+          protocol = "tcp";
+          address = "${host}.numtide.com:22";
+          send = "SSH-2.0-Telegraf";
+          expect = "SSH-2.0";
+          tags.host = host;
+          tags.org = "numtide";
+          timeout = "10s";
+        }) [
         "matrix1"
       ];
     http_response = [

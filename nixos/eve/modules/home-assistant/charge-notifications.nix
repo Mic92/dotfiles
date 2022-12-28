@@ -13,18 +13,20 @@
           condition = "template";
           value_template = ''{{ state_attr("device_tracker.beatrice_icloud", "battery_status") == "NotCharging" }}'';
         };
-        action = let
-          msg = ''Iphone only got {{ state_attr("device_tracker.beatrice_icloud", "battery") | round(1) }}% battery left'';
-        in [
-          {
-            service = "notify.mobile_app_beatrice";
-            data_template.message = msg;
-          }
-          {
-            service = "notify.pushover";
-            data_template.message = msg;
-          }
-        ];
+        action =
+          let
+            msg = ''Iphone only got {{ state_attr("device_tracker.beatrice_icloud", "battery") | round(1) }}% battery left'';
+          in
+          [
+            {
+              service = "notify.mobile_app_beatrice";
+              data_template.message = msg;
+            }
+            {
+              service = "notify.pushover";
+              data_template.message = msg;
+            }
+          ];
       }
       {
         alias = "Apple watch battery warning";
@@ -38,18 +40,20 @@
           condition = "template";
           value_template = ''{{ state_attr("device_tracker.shannans_apple_watch", "battery_status") == "NotCharging" }}'';
         };
-        action = let
-          msg = ''Apple watch only got {{ state_attr("device_tracker.shannans_apple_watch", "battery") | round(1) }}% battery left'';
-        in [
-          {
-            service = "notify.mobile_app_beatrice";
-            data_template.message = msg;
-          }
-          {
-            service = "notify.pushover";
-            data_template.message = msg;
-          }
-        ];
+        action =
+          let
+            msg = ''Apple watch only got {{ state_attr("device_tracker.shannans_apple_watch", "battery") | round(1) }}% battery left'';
+          in
+          [
+            {
+              service = "notify.mobile_app_beatrice";
+              data_template.message = msg;
+            }
+            {
+              service = "notify.pushover";
+              data_template.message = msg;
+            }
+          ];
       }
       {
         alias = "Apple watch wearing reminder notification";
@@ -62,7 +66,7 @@
           conditions = [
             {
               condition = "time";
-              weekday = ["mon" "tue" "wed" "thu" "fri"];
+              weekday = [ "mon" "tue" "wed" "thu" "fri" ];
             }
             {
               condition = "template";

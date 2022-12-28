@@ -82,9 +82,9 @@
   };
 
   #outputs = {...} @ args: import ./outputs.nix args;
-  outputs = inputs @ {flake-parts, ...}:
+  outputs = inputs @ { flake-parts, ... }:
     (flake-parts.lib.evalFlakeModule
-      {inherit inputs;}
+      { inherit inputs; }
       {
         imports = [
           ./nixos/configurations.nix
@@ -94,12 +94,10 @@
           ./shell.nix
           ./ci.nix
         ];
-        systems = ["x86_64-linux" "aarch64-linux" "aarch64-darwin"];
-        perSystem = {inputs', ...}: {
+        systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
+        perSystem = { inputs', ... }: {
           # make pkgs available to all `perSystem` functions
           _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
         };
-      })
-    .config
-    .flake;
+      }).config.flake;
 }

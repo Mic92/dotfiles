@@ -6,11 +6,11 @@ locals {
 }
 
 resource "github_repository_webhook" "buildbot" {
-  for_each = toset(local.buildbot_repos)
+  for_each   = toset(local.buildbot_repos)
   repository = each.key
 
   configuration {
-    url          = "https://buildbot.thalheim.io/change_hook/github"
+    url = "https://buildbot.thalheim.io/change_hook/github"
     # needs to be kept in sync with eve's secrets
     secret       = data.sops_file.secrets.data["github-webhook-secret"]
     content_type = "form"

@@ -1,11 +1,10 @@
-{
-  lib,
-  pkgs,
-  ...
+{ lib
+, pkgs
+, ...
 }: {
   virtualisation = {
     podman.enable = true;
-    podman.extraPackages = [pkgs.zfs];
+    podman.extraPackages = [ pkgs.zfs ];
     podman.dockerCompat = true;
   };
 
@@ -36,8 +35,8 @@
         ipam = {
           type = "host-local";
           routes = [
-            {dst = "0.0.0.0/0";}
-            {dst = "::/0";}
+            { dst = "0.0.0.0/0"; }
+            { dst = "::/0"; }
           ];
           ranges = [
             [

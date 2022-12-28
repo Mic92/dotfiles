@@ -1,7 +1,6 @@
-{
-  lib,
-  pkgs,
-  ...
+{ lib
+, pkgs
+, ...
 }: {
   hardware.video.hidpi.enable = true;
   services.xserver.displayManager.setupCommands = ''

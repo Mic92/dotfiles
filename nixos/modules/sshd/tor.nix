@@ -1,7 +1,6 @@
-{
-  config,
-  lib,
-  ...
+{ config
+, lib
+, ...
 }: {
   services.tor = {
     enable = true;
@@ -13,7 +12,7 @@
     ];
     settings = {
       AutomapHostsOnResolve = true;
-      AutomapHostsSuffixes = [".exit" ".onion"];
+      AutomapHostsSuffixes = [ ".exit" ".onion" ];
       EnforceDistinctSubnets = true;
       UseEntryGuards = true;
       ExitNodes = "{de}";
@@ -23,5 +22,5 @@
     };
   };
 
-  imports = [./.];
+  imports = [ ./. ];
 }

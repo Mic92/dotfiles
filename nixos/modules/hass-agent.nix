@@ -8,15 +8,15 @@
     ];
   };
 
-  users.groups.hass-agent = {};
+  users.groups.hass-agent = { };
 
   security.sudo.extraRules = [
     {
-      users = ["hass-agent"];
+      users = [ "hass-agent" ];
       commands = [
         {
           command = "/run/current-system/sw/bin/systemctl suspend";
-          options = ["NOPASSWD"];
+          options = [ "NOPASSWD" ];
         }
       ];
     }

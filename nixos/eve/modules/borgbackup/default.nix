@@ -1,8 +1,8 @@
-{config, ...}: {
-  sops.secrets.borg-passphrase = {};
-  sops.secrets.borg-nas-ssh = {};
-  sops.secrets.ssh-borgbackup = {};
-  sops.secrets.nas-wakeup-password = {};
+{ config, ... }: {
+  sops.secrets.borg-passphrase = { };
+  sops.secrets.borg-nas-ssh = { };
+  sops.secrets.ssh-borgbackup = { };
+  sops.secrets.nas-wakeup-password = { };
 
   systemd.services.borgbackup-job-eva.serviceConfig.ReadWritePaths = [
     "/var/log/telegraf"

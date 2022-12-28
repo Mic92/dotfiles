@@ -1,7 +1,6 @@
-{
-  pkgs,
-  config,
-  ...
+{ pkgs
+, config
+, ...
 }: {
   imports = [
     ./common.nix
@@ -18,8 +17,8 @@
 
   systemd.user.services.mpris-proxy = {
     Unit.Description = "Mpris proxy";
-    Unit.After = ["network.target" "sound.target"];
-    Install.WantedBy = ["default.target"];
+    Unit.After = [ "network.target" "sound.target" ];
+    Install.WantedBy = [ "default.target" ];
     Service.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
     Service.Restart = "always";
   };
@@ -63,7 +62,7 @@
       tio
 
       (mpv.override {
-        scripts = [mpvScripts.mpris];
+        scripts = [ mpvScripts.mpris ];
       })
       playerctl
       yt-dlp
@@ -81,8 +80,8 @@
       gnupg
       jmtpfs # needed for charging? WTF
       #
-      (pkgs.callPackage ./pkgs/mpv-tv.nix {})
-      (pkgs.runCommand "slack-aliases" {} ''
+      (pkgs.callPackage ./pkgs/mpv-tv.nix { })
+      (pkgs.runCommand "slack-aliases" { } ''
         mkdir -p $out/bin
         declare -A rooms=([manifold]=manifoldfinance \
                [numtide]=numtide \
@@ -120,7 +119,7 @@
       inxi
       source-code-pro-nerdfonts
       (pkgs.nerdfonts.override {
-        fonts = ["FiraCode"];
+        fonts = [ "FiraCode" ];
       })
     ]);
 }

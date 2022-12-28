@@ -1,10 +1,10 @@
-{
-  pkgs,
-  config,
-  lib,
-  inputs,
-  ...
-}: let
+{ pkgs
+, config
+, lib
+, inputs
+, ...
+}:
+let
   ip4 = config.networking.eve.ipv4.address;
   ip6 = lib.head config.networking.eve.ipv6.addresses;
   acmeChallenge = domain:
@@ -23,7 +23,8 @@
 
       @ IN NS ns2.thalheim.io.
     '';
-in {
+in
+{
   #content of the secret
   #key:
   #- id: acme
@@ -249,6 +250,6 @@ in {
     '';
   };
 
-  networking.firewall.allowedTCPPorts = [53];
-  networking.firewall.allowedUDPPorts = [53];
+  networking.firewall.allowedTCPPorts = [ 53 ];
+  networking.firewall.allowedUDPPorts = [ 53 ];
 }

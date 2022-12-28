@@ -1,7 +1,6 @@
-{
-  pkgs,
-  lib,
-  ...
+{ pkgs
+, lib
+, ...
 }: {
   imports = [
     ./hardware-configuration.nix
@@ -57,7 +56,7 @@
   services.gvfs.enable = true;
 
   boot = {
-    zfs.requestEncryptionCredentials = ["zroot/root"];
+    zfs.requestEncryptionCredentials = [ "zroot/root" ];
 
     loader.systemd-boot.enable = true;
     # when installing toggle this
@@ -100,7 +99,7 @@
     printing = {
       enable = true;
       browsing = true;
-      drivers = [pkgs.gutenprint]; # pkgs.hplip
+      drivers = [ pkgs.gutenprint ]; # pkgs.hplip
     };
 
     logind.extraConfig = ''
@@ -112,7 +111,7 @@
 
   systemd.services.audio-off = {
     description = "Mute audio before suspend";
-    wantedBy = ["sleep.target"];
+    wantedBy = [ "sleep.target" ];
     serviceConfig = {
       Type = "oneshot";
       Environment = "XDG_RUNTIME_DIR=/run/user/1000";
@@ -139,7 +138,7 @@
   '';
 
   environment.etc."docker/daemon.json".text = builtins.toJSON {
-    dns = ["8.8.8.8" "8.8.4.4"];
+    dns = [ "8.8.8.8" "8.8.4.4" ];
   };
 
   fonts.fontDir.enable = true;

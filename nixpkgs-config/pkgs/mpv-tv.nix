@@ -1,11 +1,11 @@
-{
-  fzf,
-  coreutils,
-  mpv,
-  lib,
-  writeShellScriptBin,
-  gnused,
-  curl,
+{ fzf
+, coreutils
+, mpv
+, lib
+, writeShellScriptBin
+, gnused
+, curl
+,
 }:
 writeShellScriptBin "mpv-tv" ''
   set -eux -o pipefail

@@ -14,20 +14,20 @@ resource "gitlab_project" "repos" {
   mirror_trigger_builds               = true
   mirror_overwrites_diverged_branches = true
   shared_runners_enabled              = false
-  visibility_level = "public"
+  visibility_level                    = "public"
 }
 
 resource "github_repository_webhook" "gitlab" {
   for_each   = toset(data.github_repositories.my-non-archived-repos.names)
   repository = each.key
 
-   configuration {
+  configuration {
     url          = "https://gitlab.com/api/v4/projects/Mic92%2F${each.key}/mirror/pull?private_token=${data.sops_file.secrets.data["GITLAB_TOKEN"]}"
-     content_type = "form"
-     insecure_ssl = false
-   }
+    content_type = "form"
+    insecure_ssl = false
+  }
 
-   active = true
+  active = true
 
-   events = ["push", "pull_request"]
+  events = ["push", "pull_request"]
 }

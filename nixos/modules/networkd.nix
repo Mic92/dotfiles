@@ -1,4 +1,5 @@
-{pkgs, lib, ...}: let
+{ pkgs, ... }:
+let
   resolved = pkgs.systemd.overrideAttrs (_old: {
     buildPhase = ''
       ninja systemd-resolved
@@ -13,9 +14,10 @@
       install -D $shared $out/lib/$(basename $shared)
     '';
     postFixup = "";
-    outputs = ["out"];
+    outputs = [ "out" ];
   });
-in {
+in
+{
   systemd.network.enable = true;
 
   services.resolved.extraConfig = ''

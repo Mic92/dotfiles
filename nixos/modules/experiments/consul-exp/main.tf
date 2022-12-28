@@ -10,7 +10,7 @@ resource "vault_generic_secret" "consul" {
   ]
   disable_read = true
   data_json = jsonencode({
-    address="127.0.0.1:8500"
+    address = "127.0.0.1:8500"
   })
 }
 
@@ -22,11 +22,11 @@ resource "vault_consul_secret_backend_role" "admin" {
   backend = "consul"
   ttl     = 600
 
-  policies = [ "global-management" ]
+  policies = ["global-management"]
 
   # BUG global-management is detected as "consul_roles" when reading
   lifecycle {
-    ignore_changes  = [
+    ignore_changes = [
       policies,
       consul_roles
     ]

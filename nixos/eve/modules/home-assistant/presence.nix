@@ -15,7 +15,8 @@ let
       entity_id = "{{trigger.entity_id}}";
     };
   };
-in {
+in
+{
   services.home-assistant.pythonScripts = ./python-scripts;
   services.home-assistant.config = {
     input_boolean.shannan_joerg_not_together = {

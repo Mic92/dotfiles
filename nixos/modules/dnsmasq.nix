@@ -1,10 +1,11 @@
-{
-  config,
-  lib,
-  ...
-}: let
+{ config
+, lib
+, ...
+}:
+let
   external = "dock0";
-in {
+in
+{
   systemd.network.netdevs.internal.netdevConfig = {
     Name = "internal";
     Kind = "bridge";
@@ -48,7 +49,7 @@ in {
   networking.nat = {
     enable = true;
     externalInterface = external;
-    internalInterfaces = ["internal"];
+    internalInterfaces = [ "internal" ];
   };
 
   networking.firewall.allowedTCPPorts = [

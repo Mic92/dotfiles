@@ -1,11 +1,11 @@
-{
-  stdenv,
-  makeWrapper,
-  rspamd,
+{ stdenv
+, makeWrapper
+, rspamd
+,
 }:
 stdenv.mkDerivation {
   name = "sieve-rspamd-filter";
-  nativeBuildInputs = [makeWrapper];
+  nativeBuildInputs = [ makeWrapper ];
   src = ./src;
 
   installPhase = ''
