@@ -1,20 +1,23 @@
 #!/usr/bin/env python3
 
+import json
 import os
 import sys
-import json
-
-from buildbot.plugins import worker, util, schedulers, reporters, secrets
-from buildbot.process.properties import Interpolate
+from datetime import timedelta
 from pathlib import Path
 from typing import Any
-from datetime import timedelta
+
+from buildbot.plugins import reporters, schedulers, secrets, util, worker
+from buildbot.process.properties import Interpolate
 
 # allow to import modules
 sys.path.append(str(Path(__file__).parent))
 
+# ignore: E402
+from buildbot_nix import nix_build_config, nix_eval_config, nix_update_flake_config
+
+# ignore: E402
 from irc_notify import NotifyFailedBuilds
-from buildbot_nix import nix_eval_config, nix_build_config, nix_update_flake_config
 
 
 def read_secret_file(secret_name: str) -> str:

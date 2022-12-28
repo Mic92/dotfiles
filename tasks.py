@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 
-from invoke import task
-
-import sys
 import os
-from typing import List
-import subprocess
 import socket
-from deploykit import DeployHost, DeployGroup, parse_hosts, HostKeyCheck
+import subprocess
+import sys
 from pathlib import Path
+from typing import List
 
+from deploykit import DeployGroup, DeployHost, HostKeyCheck, parse_hosts
+from invoke import task
 
 RSYNC_EXCLUDES = ["gdb", "zsh", ".terraform", ".direnv", ".mypy-cache", ".git"]
 
@@ -192,7 +191,8 @@ EOF"""
 
 
 def wait_for_port(host: str, port: int, shutdown: bool = False) -> None:
-    import socket, time
+    import socket
+    import time
 
     while True:
         try:

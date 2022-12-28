@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 
-import socket
-import os
-import re
-import sys
+import base64
 import cgi
 import json
+import os
+import re
+import socket
 import ssl
-import base64
+import sys
 from http.server import BaseHTTPRequestHandler
-from typing import Tuple, Optional, List
+from typing import List, Optional, Tuple
 from urllib.parse import urlparse
 
 DEBUG = os.environ.get("DEBUG") is not None

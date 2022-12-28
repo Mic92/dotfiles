@@ -1,21 +1,20 @@
 #!/usr/bin/env python3
 
 import json
+import multiprocessing
 import os
 import re
-import multiprocessing
-from pathlib import Path
 import uuid
 from collections import defaultdict
-
-from buildbot.steps.trigger import Trigger
-from buildbot.plugins import util, steps
+from pathlib import Path
 from typing import Any, Generator, List
+
+from buildbot.plugins import steps, util
 from buildbot.process import buildstep, logobserver
 from buildbot.process.properties import Properties
+from buildbot.process.results import ALL_RESULTS, statusToString
+from buildbot.steps.trigger import Trigger
 from twisted.internet import defer
-from buildbot.process.results import ALL_RESULTS
-from buildbot.process.results import statusToString
 
 
 class BuildTrigger(Trigger):

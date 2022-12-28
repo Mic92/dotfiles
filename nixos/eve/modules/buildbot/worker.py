@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
+import multiprocessing
 import os
-from io import open
 import socket
+from io import open
 
 from buildbot_worker.bot import Worker
 from twisted.application import service
-
-import multiprocessing
 
 
 def require_env(key: str) -> str:

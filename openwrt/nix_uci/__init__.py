@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-import subprocess
-import sys
-from typing import Any, Dict, List, Type, Union
-from pathlib import Path
 import json
 import re
+import subprocess
+import sys
+from pathlib import Path
+from typing import Any, Dict, List, Type, Union
 
 ROOT = Path(__file__).parent.parent.resolve()
 

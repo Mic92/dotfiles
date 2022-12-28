@@ -1,10 +1,10 @@
-from typing import Optional, Generator, Any
+import base64
+import re
 import socket
 import ssl
 import threading
-import re
+from typing import Any, Generator, Optional
 from urllib.parse import urlparse
-import base64
 
 from buildbot.reporters.base import ReporterBase
 from buildbot.reporters.generators.build import BuildStatusGenerator
