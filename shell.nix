@@ -59,6 +59,7 @@
               "--" # this argument is ignored by bash
             ];
             includes = [ "*.py" ];
+            excludes = [ "gdb/*" ];
           };
         };
       };
