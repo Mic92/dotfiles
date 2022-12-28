@@ -42,6 +42,7 @@
       documentation.info.enable = false;
 
       imports = [
+        ./modules/acme.nix
         ./modules/nix-daemon.nix
         ./modules/minimal-docs.nix
         ./modules/i18n.nix
@@ -70,6 +71,7 @@ in {
         ++ [
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x13
           inputs.home-manager.nixosModules.home-manager
+          inputs.srvos.nixosModules.desktop
           ./bernie/configuration.nix
         ];
     };
@@ -83,6 +85,8 @@ in {
           inputs.nixos-hardware.nixosModules.framework
           inputs.nix-index-database.nixosModules.nix-index
           inputs.hyprland.nixosModules.default
+
+          inputs.srvos.nixosModules.desktop
 
           #self.inputs.lanzaboote.nixosModules.lanzaboote
           #({pkgs, ...}: {
