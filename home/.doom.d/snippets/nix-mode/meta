@@ -3,7 +3,7 @@
 # key: meta
 # --
 
-meta = with stdenv.lib; {
+meta = with lib; {
   description = "$1";
   homepage = "$2";
   license = licenses.mit;

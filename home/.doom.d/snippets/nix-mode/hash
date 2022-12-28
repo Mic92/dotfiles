@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: vanity checksum
+# key: hash
+# --
+hash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
