@@ -29,6 +29,7 @@
     ./modules/goatcounter.nix
     ./modules/home-assistant
     ./modules/influxdb.nix
+    ./modules/harmonia.nix
     #./modules/jetbrains-remote.nix
     ./modules/ssh-serve.nix
     #./modules/k8s.nix
