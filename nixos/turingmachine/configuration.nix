@@ -45,7 +45,6 @@
     #../modules/gnome.nix
     ../modules/pki
     #../modules/yubikey.nix
-    ../modules/zfs.nix
     ../modules/users.nix
     ../modules/nix-ld.nix
     #../modules/k3s/server.nix

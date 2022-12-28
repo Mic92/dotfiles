@@ -71,7 +71,6 @@
     ../modules/promtail.nix
     #../modules/wezterm.nix
     ../modules/wireguard.nix
-    ../modules/zfs.nix
     ../modules/zsh.nix
     ../modules/uptermd.nix
     ../modules/nix-ld.nix

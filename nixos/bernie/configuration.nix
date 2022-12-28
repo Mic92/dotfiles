@@ -18,13 +18,10 @@
     ../modules/powertop.nix
     ../modules/promtail.nix
     ../modules/users.nix
-    ../modules/zfs.nix
     ../modules/tracing.nix
     ../modules/pipewire.nix
   ];
 
-  boot.zfs.requestEncryptionCredentials = ["zroot/root"];
-  boot.zfs.enableUnstable = true;
   boot.loader.systemd-boot.enable = true;
   # when installing toggle this
   boot.loader.efi.canTouchEfiVariables = false;

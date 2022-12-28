@@ -47,6 +47,7 @@
         ./modules/minimal-docs.nix
         ./modules/i18n.nix
         ./modules/sshd
+        ./modules/zfs.nix
         inputs.nur.nixosModules.nur
         inputs.envfs.nixosModules.envfs
 

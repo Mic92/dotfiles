@@ -5,7 +5,6 @@
     ../modules/minimal-docs.nix
     ../modules/networkd.nix
     ../modules/ip-update.nix
-    ../modules/zfs.nix
     #../modules/tailscale.nix
     ./hardware-configuration.nix
   ];
