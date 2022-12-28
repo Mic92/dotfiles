@@ -57,10 +57,6 @@
     flake-registry.url = "github:NixOS/flake-registry";
     flake-registry.flake = false;
 
-    envfs.url = "github:Mic92/envfs";
-    envfs.inputs.nixpkgs.follows = "nixpkgs";
-    envfs.inputs.flake-parts.follows = "flake-parts";
-
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 

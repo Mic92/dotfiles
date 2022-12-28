@@ -40,29 +40,6 @@
         "type": "github"
       }
     },
-    "envfs": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1672137300,
-        "narHash": "sha256-aF8V1LwPGifFWoVxM0ydOnTX1pDVJ6HXevTxADJ/rsw=",
-        "owner": "Mic92",
-        "repo": "envfs",
-        "rev": "45fd64a43f192f7207a305428ee773e408ee85ae",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "envfs",
-        "type": "github"
-      }
-    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -370,7 +347,6 @@
       "inputs": {
         "bme680-mqtt": "bme680-mqtt",
         "doom-emacs": "doom-emacs",
-        "envfs": "envfs",
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
         "harmonia": "harmonia",

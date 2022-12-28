@@ -41,6 +41,7 @@ let
       '';
       srvos.flake = self;
       documentation.info.enable = false;
+      services.envfs.enable = true;
 
       imports = [
         ./modules/acme.nix
@@ -50,7 +51,6 @@ let
         ./modules/sshd
         ./modules/zfs.nix
         inputs.nur.nixosModules.nur
-        inputs.envfs.nixosModules.envfs
 
         inputs.srvos.nixosModules.common
         inputs.srvos.nixosModules.telegraf
