@@ -58,6 +58,9 @@
   };
 
   config = {
+    services.nginx.commonHttpConfig = ''
+      add_header Strict-Transport-Security 'max-age=31536000; includeSubDomains; preload' always;
+    '';
     services.logrotate.enable = true;
     # format:
     # RFC2136_NAMESERVER=ns1.thalheim.io

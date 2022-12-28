@@ -35,6 +35,11 @@ in {
     package = pkgs.nginxStable.override {
       modules = [pkgs.nginxModules.pam];
     };
+
+    commonHttpConfig = ''
+      add_header Strict-Transport-Security 'max-age=31536000; includeSubDomains; preload' always;
+    '';
+
     upstreams = {
       "@prometheus".extraConfig = "server localhost:9090;";
       "@alertmanager".extraConfig = "server localhost:9093;";
