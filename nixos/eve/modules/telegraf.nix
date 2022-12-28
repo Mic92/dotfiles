@@ -1,8 +1,4 @@
 {
-  imports = [
-    ../../modules/telegraf.nix
-  ];
-
   services.telegraf.extraConfig.inputs = {
     ping = let
       mobileUrls = [

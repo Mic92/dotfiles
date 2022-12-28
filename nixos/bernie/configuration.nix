@@ -20,7 +20,6 @@
     ../modules/users.nix
     ../modules/zfs.nix
     ../modules/tracing.nix
-    ../modules/telegraf.nix
     ../modules/pipewire.nix
   ];
 

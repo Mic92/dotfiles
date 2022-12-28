@@ -32,7 +32,6 @@
     ./modules/nginx.nix
     ./modules/sshd.nix
     ./modules/sops.nix
-    ./modules/telegraf
 
     ../modules/fast-network.nix
     ../modules/mosh.nix
@@ -43,7 +42,8 @@
     ../modules/users.nix
   ];
 
-  networking.firewall.enable = false;
+  # this is a container, and we leave the firewall to the host
+  networking.firewall.enable = lib.mkForce false;
 
   # let the host manage these
   systemd.network.networks."ethernet".extraConfig = ''

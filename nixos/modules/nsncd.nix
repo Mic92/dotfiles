@@ -1,3 +1,0 @@
-{
-  services.nscd.enableNsncd = true;
-}

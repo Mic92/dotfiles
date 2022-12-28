@@ -13,7 +13,6 @@
     ../modules/ip-update.nix
     ../modules/samba-dl.nix
     ../modules/mosh.nix
-    ../modules/telegraf.nix
     ../modules/pki
     ../modules/networkd.nix
     ../modules/mosh.nix
@@ -21,8 +20,6 @@
     ../modules/sshd/tor.nix
     ./modules/mycroft.nix
   ];
-
-  #services.telegraf.extraConfig.inputs.internet_speed.interval = 1800;
 
   programs.bcc.enable = true;
 

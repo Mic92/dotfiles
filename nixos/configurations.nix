@@ -38,17 +38,19 @@
       nix.extraOptions = ''
         flake-registry = ${inputs.flake-registry}/flake-registry.json
       '';
+      srvos.flake = self;
       documentation.info.enable = false;
 
       imports = [
-        ./modules/upgrade-diff.nix
         ./modules/nix-daemon.nix
         ./modules/minimal-docs.nix
         ./modules/i18n.nix
-        ./modules/nsncd.nix
         ./modules/sshd
-        ./modules/self.nix
         inputs.nur.nixosModules.nur
+        inputs.envfs.nixosModules.envfs
+
+        inputs.srvos.nixosModules.common
+        inputs.srvos.nixosModules.telegraf
 
         ./modules/retiolum.nix
         ./modules/update-prefetch.nix
@@ -80,7 +82,6 @@ in {
           ./turingmachine/configuration.nix
           inputs.nixos-hardware.nixosModules.framework
           inputs.nix-index-database.nixosModules.nix-index
-          inputs.envfs.nixosModules.envfs
           inputs.hyprland.nixosModules.default
 
           #self.inputs.lanzaboote.nixosModules.lanzaboote
@@ -106,8 +107,8 @@ in {
         defaultModules
         ++ [
           ./eve/configuration.nix
-          inputs.envfs.nixosModules.envfs
 
+          inputs.srvos.nixosModules.server
 
           "${inputs.harmonia}/module.nix"
         ];
@@ -118,6 +119,7 @@ in {
       modules =
         defaultModules
         ++ [
+          inputs.srvos.nixosModules.server
           inputs.bme680-mqtt.nixosModules.bme680-mqtt
           ./rock/configuration.nix
         ];
@@ -128,13 +130,17 @@ in {
       modules =
         defaultModules
         ++ [
+          inputs.srvos.nixosModules.server
           ./blob64/configuration.nix
         ];
     };
 
     matchbox = nixosSystem {
       pkgs = nixpkgs.legacyPackages.aarch64-linux;
-      modules = defaultModules ++ [./matchbox/configuration.nix];
+      modules = defaultModules ++ [
+        inputs.srvos.nixosModules.server
+        ./matchbox/configuration.nix
+      ];
     };
 
     eva = nixosSystem {
@@ -142,6 +148,7 @@ in {
       modules =
         defaultModules
         ++ [
+          inputs.srvos.nixosModules.server
           ./eva/configuration.nix
         ];
     };

@@ -13,14 +13,11 @@ in {
     lib.optional (! builtins.pathExists cert)
     "No ssh certificate found at ${toString cert}";
 
+  # srvos sets more sane defaults
   services.openssh = {
     enable = true;
-    passwordAuthentication = false;
-    useDns = false;
     extraConfig = ''
       ${lib.optionalString (builtins.pathExists cert) "HostCertificate ${cert}"}
-      # unbind gnupg sockets if they exists
-      StreamLocalBindUnlink yes
     '';
   };
 }

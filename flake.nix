@@ -74,6 +74,9 @@
       # build with your own instance of nixpkgs
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    srvos.url = "github:numtide/srvos/flake-profile";
+    srvos.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   #outputs = {...} @ args: import ./outputs.nix args;

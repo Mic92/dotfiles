@@ -38,7 +38,6 @@
     ../modules/networkd.nix
     ../modules/wireguard.nix
     ../modules/tracing.nix
-    ../modules/telegraf.nix
     #./kde.nix
     #../modules/samba-dl.nix
     ../modules/sway.nix
@@ -51,8 +50,6 @@
     ../modules/nix-ld.nix
     #../modules/k3s/server.nix
   ];
-
-  #services.telegraf.extraConfig.inputs.internet_speed.interval = 1800;
 
   #services.udev.packages = [ pkgs.platformio ];
 

@@ -1,6 +1,5 @@
 {config, ...}: {
   imports = [
-    ../../../modules/telegraf.nix
     ./private.nix
     ./uni.nix
     ./krebs.nix

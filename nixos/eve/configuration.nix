@@ -53,7 +53,6 @@
     ./modules/syncthing.nix
     ./modules/sops.nix
     ./modules/teamspeak.nix
-    ./modules/telegraf.nix
     ./modules/tt-rss.nix
     ./modules/tts.nix
     ./modules/users.nix

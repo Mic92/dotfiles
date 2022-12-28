@@ -3,7 +3,6 @@
     ../modules/users.nix
     ../modules/mosh.nix
     ../modules/sshd/tor.nix
-    ../modules/telegraf.nix
     ../modules/rpi3.nix
     ../modules/promtail.nix
     #../modules/tailscale.nix
