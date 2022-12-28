@@ -385,7 +385,8 @@
         "nur": "nur",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
-        "srvos": "srvos"
+        "srvos": "srvos",
+        "treefmt-nix": "treefmt-nix"
       }
     },
     "sops-nix": {
@@ -427,6 +428,21 @@
         "owner": "numtide",
         "ref": "mics-branch",
         "repo": "srvos",
+        "type": "github"
+      }
+    },
+    "treefmt-nix": {
+      "locked": {
+        "lastModified": 1672170030,
+        "narHash": "sha256-hvTMwlutePPQ4eNMVHiI0crixCyeSTKJIDhLD/66t2g=",
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "rev": "c97bb3db343ccd2f04dd4e5fa8750e821560e9ca",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "treefmt-nix",
         "type": "github"
       }
     },

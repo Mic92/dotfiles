@@ -77,6 +77,8 @@
 
     srvos.url = "github:numtide/srvos/mics-branch";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
+
+    treefmt-nix.url = "github:numtide/treefmt-nix";
   };
 
   #outputs = {...} @ args: import ./outputs.nix args;
