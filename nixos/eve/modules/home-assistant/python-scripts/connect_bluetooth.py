@@ -4,15 +4,12 @@ devices = [
     "phone",
 ]
 
-hosts = {
-    "turingmachine": "turingmachine.r",
-    "bernie": "bernie.r"
-}
+hosts = {"turingmachine": "turingmachine.r", "bernie": "bernie.r"}
 
 mac_addrs = {
     "headphone": "E8:07:BF:C8:6B:2C",
     "shannans_headphone": "00:6A:8E:60:0B:F7",
-    "speaker": "E6:4D:D6:0A:CC:9B"
+    "speaker": "E6:4D:D6:0A:CC:9B",
 }
 
 
@@ -27,11 +24,16 @@ def ssh_bluetooth(device: str, action: str, mac: str) -> None:
     if host is None:
         logger.warning(f"Unknown host: {host}")
         return
-    hass.services.call("shell_command", "ssh_bluetooth", {
-        "host": host,
-        "action": action,
-        "mac": mac,
-    }, blocking=False)
+    hass.services.call(
+        "shell_command",
+        "ssh_bluetooth",
+        {
+            "host": host,
+            "action": action,
+            "mac": mac,
+        },
+        blocking=False,
+    )
 
 
 def connect(device: str, mac: str) -> None:
@@ -65,7 +67,9 @@ def main() -> None:
 
     mac = mac_addrs.get(bluetooth_device, None)
     if not mac:
-        logger.warning("Called without unknown bluetooth device {bluetooth_device} parameter")
+        logger.warning(
+            "Called without unknown bluetooth device {bluetooth_device} parameter"
+        )
         return
 
     for d in devices:
@@ -75,5 +79,6 @@ def main() -> None:
     for d in devices:
         if d == device:
             connect(d, mac)
+
 
 main()

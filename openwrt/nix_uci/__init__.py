@@ -36,7 +36,7 @@ def serialize_option_val(
     elif isinstance(val, list):
         return [f"add_list {key}='{interpolate_secrets(v, secrets)}'" for v in val]
     else:
-        raise ConfigError(f"{context} is not a string")
+        raise ConfigError(f"{val} is not a string")
 
 
 def serialize_list_section(

@@ -49,6 +49,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
 def get_hosts(hosts: str) -> List[DeployHost]:
     return [DeployHost(h, user="root") for h in hosts.split(",")]
 
+
 @task
 def deploy(c, _hosts=""):
     """
@@ -82,7 +83,6 @@ def deploy(c, _hosts=""):
         ]
     deploy_nixos(hosts)
     eve.run("systemctl restart buildbot-master")
-
 
 
 @task
@@ -137,7 +137,9 @@ def deploy_matchbox(c):
             DeployHost(
                 "localhost",
                 command_prefix="matchbox.r",
-                meta=dict(target_user="root", target_host="matchbox.r", flake_attr="matchbox"),
+                meta=dict(
+                    target_user="root", target_host="matchbox.r", flake_attr="matchbox"
+                ),
                 user="joerg",
             )
         ]
@@ -203,7 +205,7 @@ def wait_for_port(host: str, port: int, shutdown: bool = False) -> None:
                     sys.stdout.flush()
                 else:
                     break
-        except OSError as ex:
+        except OSError:
             if shutdown:
                 break
             else:
@@ -238,7 +240,7 @@ def kexec_nixos(c, hosts=""):
 
         url = "https://boot.thalheim.io/kexec-image-$(uname -m).tar.xz"
         h.run(f"(wget {url} -qO- || curl {url}) | tar -C / -xJf -", become_root=True)
-        h.run(f"/kexec_nixos", become_root=True)
+        h.run("/kexec_nixos", become_root=True)
 
         print(f"Wait for {h.host} to start", end="")
         sys.stdout.flush()
@@ -253,7 +255,7 @@ def kexec_nixos(c, hosts=""):
 @task
 def add_github_user(c, hosts="", github_user="Mic92"):
     def add_user(h: DeployHost) -> None:
-        h.run(f"mkdir -m700 /root/.ssh")
+        h.run("mkdir -m700 /root/.ssh")
         out = h.run_local(
             f"curl https://github.com/{github_user}.keys", stdout=subprocess.PIPE
         )
@@ -278,16 +280,16 @@ def cloudlab_install(c, disk="/dev/sda", hosts=""):
         """,
             stdout=subprocess.PIPE,
         )
-        h.run(f"/etc/nixos/nixos/images/cloudlab/partition.sh")
+        h.run("/etc/nixos/nixos/images/cloudlab/partition.sh")
 
-        h.run(f"mkdir -p /mnt/var/lib/sops-nix")
+        h.run("mkdir -p /mnt/var/lib/sops-nix")
         h.run(f"echo '{out.stdout}' > /mnt/var/lib/sops-nix/key.txt")
-        h.run(f"chmod 400 /mnt/var/lib/sops-nix/key.txt")
+        h.run("chmod 400 /mnt/var/lib/sops-nix/key.txt")
 
-        h.run(f"mkdir -p /mnt/etc && cp -r /etc/nixos /mnt/etc/")
+        h.run("mkdir -p /mnt/etc && cp -r /etc/nixos /mnt/etc/")
 
         h.run(
-            f"""
+            """
         nix shell "nixpkgs#git" -c nixos-install --no-root-passwd --flake "/mnt/etc/nixos#cloudlab-node" && reboot
         """
         )

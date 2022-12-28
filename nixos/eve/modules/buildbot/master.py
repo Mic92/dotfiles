@@ -13,17 +13,18 @@ from buildbot.process.properties import Interpolate
 # allow to import modules
 sys.path.append(str(Path(__file__).parent))
 
-# ignore: E402
-from buildbot_nix import nix_build_config, nix_eval_config, nix_update_flake_config
-
-# ignore: E402
-from irc_notify import NotifyFailedBuilds
+from buildbot_nix import (  # noqa: E402
+    nix_build_config,
+    nix_eval_config,
+    nix_update_flake_config,
+)
+from irc_notify import NotifyFailedBuilds  # noqa: E402
 
 
 def read_secret_file(secret_name: str) -> str:
     directory = os.environ.get("CREDENTIALS_DIRECTORY")
     if directory is None:
-        print(f"directory not set", file=sys.stderr)
+        print("directory not set", file=sys.stderr)
         sys.exit(1)
     return Path(directory).joinpath(secret_name).read_text()
 
@@ -111,8 +112,12 @@ def build_config() -> dict[str, Any]:
     worker_config = json.loads(read_secret_file("buildbot-nix-workers"))
 
     credentials = os.environ.get("CREDENTIALS_DIRECTORY", ".")
-    has_cachix_auth_token = os.path.isfile(os.path.join(credentials, "cachix-auth-token"))
-    has_cachix_signing_key = os.path.isfile(os.path.join(credentials, "cachix-signing-key"))
+    has_cachix_auth_token = os.path.isfile(
+        os.path.join(credentials, "cachix-auth-token")
+    )
+    has_cachix_signing_key = os.path.isfile(
+        os.path.join(credentials, "cachix-signing-key")
+    )
 
     systemd_secrets = secrets.SecretInAFile(dirname=credentials)
     c["secretsProviders"] = [systemd_secrets]
@@ -127,10 +132,17 @@ def build_config() -> dict[str, Any]:
     c["builders"] = [
         # Since all workers run on the same machine, we only assign one of them to do the evaluation.
         # This should prevent exessive memory usage.
-        nix_eval_config([worker_names[0]], github_token_secret="github-token", automerge_users=[BUILDBOT_GITHUB_USER]),
+        nix_eval_config(
+            [worker_names[0]],
+            github_token_secret="github-token",
+            automerge_users=[BUILDBOT_GITHUB_USER],
+        ),
         nix_build_config(worker_names, has_cachix_auth_token, has_cachix_signing_key),
         nix_update_flake_config(
-            worker_names, f"{ORG}/{REPO}", github_token_secret="github-token", github_bot_user=BUILDBOT_GITHUB_USER
+            worker_names,
+            f"{ORG}/{REPO}",
+            github_token_secret="github-token",
+            github_bot_user=BUILDBOT_GITHUB_USER,
         ),
     ]
 

@@ -513,9 +513,9 @@ def nix_eval_config(
             )
         )
 
-    #factory.addStep(
+    # factory.addStep(
     #    DeployTrigger(scheduler="nixos-deploy", name="nixos-deploy", machines=machines)
-    #)
+    # )
     # factory.addStep(
     #    DeployNixOS(
     #        name="Deploy NixOS machines",

@@ -1,3 +1,5 @@
+# noqa: F821
+
 to_state = data.get("to_state")
 from_state = data.get("from_state")
 entity_id = data.get("entity_id")
@@ -54,7 +56,7 @@ def main():
     hass.services.call("notify", notify_service, {"message": message}, blocking=False)
 
     if joerg.state == shannan.state:
-        logger.info(f"shannan and joerg are together now")
+        logger.info("shannan and joerg are together now")
         hass.services.call(
             "input_boolean",
             "turn_off",
