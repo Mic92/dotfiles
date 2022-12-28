@@ -46,6 +46,7 @@
               "--"
             ];
             includes = [ "*.sh" ];
+            excludes = [ "zsh/*" ];
           };
 
           python = {
