@@ -14,8 +14,6 @@
     ./retiolum.nix
     ./mta-sts.nix
     ./phd-website.nix
-
-    ../../../modules/nginx.nix
   ];
 
   options.services.nginx.virtualHosts = lib.mkOption {

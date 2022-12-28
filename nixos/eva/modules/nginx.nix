@@ -23,10 +23,6 @@
     proxy_set_header X-Forwarded-Proto $scheme;
   '';
 in {
-  imports = [
-    ../../modules/nginx.nix
-  ];
-
   security.pam.services.prometheus.text = ''
     auth required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${conf}
     account required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${conf}

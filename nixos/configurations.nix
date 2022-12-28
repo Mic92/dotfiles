@@ -109,6 +109,7 @@ in {
           ./eve/configuration.nix
 
           inputs.srvos.nixosModules.server
+          inputs.srvos.nixosModules.nginx
 
           "${inputs.harmonia}/module.nix"
         ];
@@ -149,6 +150,7 @@ in {
         defaultModules
         ++ [
           inputs.srvos.nixosModules.server
+          inputs.srvos.nixosModules.nginx
           ./eva/configuration.nix
         ];
     };
