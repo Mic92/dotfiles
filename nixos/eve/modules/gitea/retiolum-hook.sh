@@ -2,7 +2,8 @@
 
 set -eux -o pipefail
 
-export GIT_DIR=$(pwd)
+GIT_DIR=$(pwd)
+export GIT_DIR
 export GIT_WORK_TREE=/var/lib/gitea/builds/stockholm
 export RETIOLUM_PATH=/var/lib/gitea/builds/retiolum
 export RETIOLUM_URL=gitea@git.thalheim.io:Mic92/retiolum
