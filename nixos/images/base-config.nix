@@ -59,6 +59,9 @@
   documentation.info.enable = false;
   environment.systemPackages = with pkgs; [ diskrsync partclone ntfsprogs ntfs3g ];
 
+  # so nixos-remote does not kexec
+  environment.etc.is_kexec.text = "true";
+
   systemd.services.hidden-ssh-announce = {
     description = "irc announce hidden ssh";
     after = [ "tor.service" "network-online.target" ];
