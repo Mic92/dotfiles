@@ -20,8 +20,6 @@
     ./base-config.nix
     ./zfs.nix
   ];
-
-  boot.supportedFilesystems = [ "bcachefs" ];
 }
 # legay cryptsetup:
 # iso> cryptsetup luksFormat /dev/sda2

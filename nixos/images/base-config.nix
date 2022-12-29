@@ -4,6 +4,7 @@
 , ...
 }: {
   networking.firewall.enable = false;
+  boot.supportedFilesystems = [ "bcachefs" ];
 
   services.resolved.enable = false;
   networking.nameservers = [

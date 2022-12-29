@@ -1,20 +1,19 @@
-{ self, ... }: {
+{ self, lib, ... }: let
+  inherit (self.inputs) nixos-generators nur nixpkgs;
+  defaultModule = { config, ... }: {
+    imports = [
+      ./base-config.nix
+      self.inputs.nur.nixosModules.nur
+    ];
+    _module.args.inputs = self.inputs;
+    system.stateVersion = config.system.nixos.version;
+  };
+in {
   perSystem =
     { pkgs
     , self'
     , ...
     }:
-    let
-      inherit (self.inputs) nixos-generators nur nixpkgs;
-      defaultModule = { config, ... }: {
-        imports = [
-          ./base-config.nix
-          self.inputs.nur.nixosModules.nur
-        ];
-        _module.args.inputs = self.inputs;
-        system.stateVersion = config.system.nixos.version;
-      };
-    in
     {
       packages = {
         matchbox-image = self.nixosConfigurations.matchbox.config.system.build.sdImage;
@@ -29,7 +28,7 @@
 
         netboot = pkgs.callPackage ./netboot.nix {
           inherit pkgs;
-          inherit (nixpkgs.lib) nixosSystem;
+          inherit (lib) nixosSystem;
           extraModules = [
             defaultModule
           ];
@@ -45,4 +44,15 @@
         };
       };
     };
+  # for debugging
+  #flake.nixosConfigurations = {
+  #  sd-image = lib.nixosSystem {
+  #    modules = [
+  #      {
+  #        nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  #      }
+  #      defaultModule
+  #    ];
+  #  };
+  #};
 }
