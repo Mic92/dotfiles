@@ -23,6 +23,27 @@
         "type": "github"
       }
     },
+    "disko": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1672336730,
+        "narHash": "sha256-bm9kSfJayR71/K3MmzhxJkKmVyNTrDUAkbfL/3Lj6/Q=",
+        "owner": "nix-community",
+        "repo": "disko",
+        "rev": "5de25916887518c0163a86336c4097673137999f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "ref": "bcachefs",
+        "repo": "disko",
+        "type": "github"
+      }
+    },
     "doom-emacs": {
       "flake": false,
       "locked": {
@@ -284,10 +305,10 @@
     "nixpkgs": {
       "locked": {
         "lastModified": 1672335763,
-        "narHash": "sha256-H0mOyxd9RMWO//um3n9AkEPxVqyaeaOT5fo4p7S+RYM=",
+        "narHash": "sha256-BVsKssEhro9bfI/FhZLyyuCoTC6WpgxT4vD846R1aFU=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "0e0393aa27b7dd4cfb6158456b55d5ea0c959160",
+        "rev": "e546fc26ce8b11232a67f7922d6a9fe4f8cd3183",
         "type": "github"
       },
       "original": {
@@ -346,6 +367,7 @@
     "root": {
       "inputs": {
         "bme680-mqtt": "bme680-mqtt",
+        "disko": "disko",
         "doom-emacs": "doom-emacs",
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",

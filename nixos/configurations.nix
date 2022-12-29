@@ -158,6 +158,9 @@ in
         ++ [
           inputs.srvos.nixosModules.server
           inputs.srvos.nixosModules.nginx
+          inputs.srvos.nixosModules.efi
+          inputs.disko.nixosModules.disko
+          { boot.loader.efi.canTouchEfiVariables = true; }
           ./eva/configuration.nix
         ];
     };
