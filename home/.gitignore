@@ -13,3 +13,8 @@ tags
 .ruff_cache/
 .cache/clangd
 .terraform/
+
+# Devenv
+.devenv*
+devenv.local.nix
+
