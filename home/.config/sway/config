@@ -283,6 +283,8 @@ assign [class=$docClasses] $wsDoc
 
 for_window [title="OpenSSH Authentication Passphrase request"] floating enable
 
+for_window [app_id="^chrome-.*"] shortcuts_inhibitor disable
+
 titlebar_border_thickness 2
 titlebar_padding 2
 
