@@ -6,13 +6,13 @@
   programs.vim.defaultEditor = true;
 
   imports = [
-    ./modules/buildbot.nix
     ./modules/go-neb.nix
     ./modules/hardware-configuration.nix
     ./modules/prometheus
     ./modules/loki.nix
     ./modules/nginx.nix
     ./modules/sops.nix
+    ./modules/unbound.nix
 
     ../modules/sshd
     ../modules/mosh.nix
