@@ -238,32 +238,6 @@ def wait_for_reboot(h: DeployHost):
 
 
 @task
-def kexec_nixos(c, hosts=""):
-    """
-    Boot into nixos via kexec: inv kexec-nixos --hosts
-    """
-
-    def kexec(h: DeployHost) -> None:
-        # in case the machine is still booting
-        print(f"Wait for {h.host} to start", end="")
-        sys.stdout.flush()
-        wait_for_port(h.host, h.port)
-
-        url = "https://boot.thalheim.io/kexec-image-$(uname -m).tar.xz"
-        h.run(f"(wget {url} -qO- || curl {url}) | tar -C / -xJf -", become_root=True)
-        h.run("/kexec_nixos", become_root=True)
-
-        print(f"Wait for {h.host} to start", end="")
-        sys.stdout.flush()
-        wait_for_port(h.host, h.port)
-        print("")
-
-    # avoid importing temporary ssh keys
-    g = parse_hosts(hosts, host_key_check=HostKeyCheck.NONE)
-    g.run_function(kexec)
-
-
-@task
 def add_github_user(c, hosts="", github_user="Mic92"):
     def add_user(h: DeployHost) -> None:
         h.run("mkdir -m700 /root/.ssh")
