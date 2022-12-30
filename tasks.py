@@ -45,6 +45,17 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
 
     g.run_function(deploy)
 
+@task
+def update_sops_files(c):
+    """
+    Update all sops yaml and json files according to .sops.yaml rules
+    """
+    c.run(
+        """
+        cd nixos && find . -type f \( -iname '*.enc.json' -o -iname '*.yaml' \) -print0 | \
+        xargs -0 -n1 sops updatekeys --yes
+"""
+    )
 
 def get_hosts(hosts: str) -> List[DeployHost]:
     return [DeployHost(h, user="root") for h in hosts.split(",")]
