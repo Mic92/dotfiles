@@ -80,7 +80,7 @@ def deploy(c, _hosts=""):
                 user="root",
                 forward_agent=True,
                 command_prefix="eva.r",
-                meta=dict(target_host="eva.r", flake_attr="eva"),
+                meta=dict(target_host="eva.i", flake_attr="eva"),
             ),
             DeployHost(
                 "eve.i",
