@@ -2,9 +2,8 @@ keys:
   - &joergold F095F28F7B1BA4DD0D93554EE179454B201E23CA
   - &joerg age17n64ahe3wesh8l8lj0zylf4nljdmqn28hvqns2g7hgm9mdkhlsvsjuvkxz
   - &blob64 age1lxw7n9xcnwf8wa83q23j479afp859x9j9x2vk2vgqapxq63kya5s4c76ht
-  - &j03 9EA68B7F21204979645182E4287B083353C3241C
   - &eve C5A6167F97F68FD053571E8B04188BA1509DCDC5
-  - &eva age1v8zjc47jmlqwefyu66s0d4ke98qr4vnuj3cpvs4z9npfdw833dxqwjrhzv
+  - &eva age1l5auf2gwt44c7nykau8z3vpesju9307zl6flgzs8njzumgnav4hs26w5qx
   - &turingmachine 50612B0983F7FA2F1985DA0F30371B437689ACFD
   - &matchbox age1e8qpkp0fj7s5rxqtu4fgvfnn03cx0gfmplcawr8ljcappskpf5msvn8kml
   - &rock F139840C191C75322AC3D4516BE2046130150E21
@@ -12,13 +11,6 @@ keys:
   - &jarvis age1e44vwuuguzn43yhcu9wfulrmpuxjvy50c8hlyqyaudkez7aty59q48qa3s
   - &cloudlab-age age1frtpu0fyht97cl4xv6rz2ga6euxz9xez8suggxlffxl3cre8rcfsnv8cqk
 creation_rules:
-  - path_regex: modules/it4r-containers/[^/]+\.yaml$
-    key_groups:
-    - age:
-      - *joerg
-      - *j03
-      pgp:
-      - *eve
   - path_regex: secrets/admins/[^/]+\.yaml$
     key_groups:
     - age:
