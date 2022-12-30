@@ -30,9 +30,9 @@
     ./modules/prometheus
     ./modules/loki.nix
     ./modules/nginx.nix
-    ./modules/sshd.nix
     ./modules/sops.nix
 
+    ../modules/sshd
     ../modules/mosh.nix
     ../modules/iperf.nix
     ../modules/openldap/replica.nix
@@ -41,17 +41,26 @@
     ../modules/users.nix
   ];
 
-  # this is a container, and we leave the firewall to the host
-  networking.firewall.enable = lib.mkForce false;
+  boot.initrd.systemd.enable = false;
 
-  # let the host manage these
-  systemd.network.networks."ethernet".extraConfig = ''
-    [Match]
-    Type = ether
+  systemd.network = {
+    enable = true;
+    networks."eth0".extraConfig = ''
+      [Match]
+      Name = eth0
 
-    [Link]
-    Unmanaged = yes
-  '';
+      [Network]
+      Address = 89.58.27.144/22
+      Gateway = 89.58.24.1
+      Address = 2a03:4000:62:fdb::/64
+      Gateway = fe80::1
+      IPv6AcceptRA = no
+      IPForward = yes
+
+      [DHCP]
+      UseDNS = no
+    '';
+  };
 
   services.resolved.enable = false;
 
