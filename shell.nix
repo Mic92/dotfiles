@@ -25,6 +25,11 @@
               ''
                 # First deadnix
                 ${pkgs.lib.getExe pkgs.deadnix} --edit "$@"
+                # Than statix
+                for i in "$@"; do
+                  ${pkgs.lib.getExe pkgs.statix} fix "$i"
+                  ${pkgs.lib.getExe pkgs.statix} check "$i"
+                done
                 # Then nixpkgs-fmt
                 ${pkgs.lib.getExe pkgs.nixpkgs-fmt} "$@"
               ''

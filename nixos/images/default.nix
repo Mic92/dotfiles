@@ -1,5 +1,6 @@
-{ self, lib, ... }: let
-  inherit (self.inputs) nixos-generators nur nixpkgs;
+{ self, lib, ... }:
+let
+  inherit (self.inputs) nixos-generators nur;
   defaultModule = { config, ... }: {
     imports = [
       ./base-config.nix
@@ -8,7 +9,8 @@
     _module.args.inputs = self.inputs;
     system.stateVersion = config.system.nixos.version;
   };
-in {
+in
+{
   perSystem =
     { pkgs
     , self'
