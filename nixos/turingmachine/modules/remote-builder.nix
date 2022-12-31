@@ -29,6 +29,17 @@
         "nixos-test"
       ];
     }
+    {
+      hostName = "mac01.numtide.com";
+      sshUser = "hetzner";
+      protocol = "ssh-ng";
+      sshKey = "/root/.ssh/id_ed25519";
+      system = "aarch64-darwin";
+      maxJobs = 8;
+      supportedFeatures = [
+        "big-parallel"
+      ];
+    }
     #{
     #  hostName = "aarch64.nixos.community";
     #  maxJobs = 96;
