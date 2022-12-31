@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. ns2.thalheim.io. 2022123000 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. ns2.thalheim.io. 2022123101 7200 3600 86400 3600
 
 ;;@ 3600 IN NS ns1
 @ 3600 IN NS ns2
@@ -65,6 +65,8 @@ bernie IN NS ns2.thalheim.io.
 matchbox IN NS ns2.thalheim.io.
 rauter IN NS ns2.thalheim.io.
 rock IN NS ns2.thalheim.io.
+blob64 IN ns2.thalheim.io.
+rauter IN ns2.thalheim.io.
 
 @ IN CAA 0 issue "letsencrypt.org"
 @ IN CAA 0 iodef "mailto:joerg.caa@thalheim.io"
