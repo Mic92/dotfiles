@@ -45,6 +45,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
 
     g.run_function(deploy)
 
+
 @task
 def update_sops_files(c):
     """
@@ -56,6 +57,7 @@ def update_sops_files(c):
         xargs -0 -n1 sops updatekeys --yes
 """
     )
+
 
 def get_hosts(hosts: str) -> List[DeployHost]:
     return [DeployHost(h, user="root") for h in hosts.split(",")]
