@@ -37,13 +37,6 @@
       }
       {
         urls = [
-          "https://vault.numtide.com/health"
-        ];
-        response_string_match = ''{"errors":[]}'';
-        tags.org = "numtide";
-      }
-      {
-        urls = [
           "https://upterm.numtide.com/"
         ];
         response_string_match = "Usage";
