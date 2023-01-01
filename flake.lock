@@ -415,16 +415,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1672588805,
+        "lastModified": 1672603492,
         "narHash": "sha256-2ihfON0EhEeL8yO8IbnD38QUAC+NmpLKQw2y6Y4+47E=",
         "owner": "numtide",
         "repo": "srvos",
-        "rev": "48152f8cefcf0c8e31857b9708d5b9a67bfaaccb",
+        "rev": "791e64c72c6c1b878654ff36bc95d64ae6b4b41e",
         "type": "github"
       },
       "original": {
         "owner": "numtide",
-        "ref": "mics-branch",
         "repo": "srvos",
         "type": "github"
       }

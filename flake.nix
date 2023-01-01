@@ -71,7 +71,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    srvos.url = "github:numtide/srvos/mics-branch";
+    srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
     disko.url = "github:nix-community/disko/bcachefs";
