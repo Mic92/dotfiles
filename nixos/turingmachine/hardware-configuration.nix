@@ -29,6 +29,8 @@ in
 
   # on demand
   services.fwupd.enable = true;
+  services.thermald.enable = true;
+  services.thermald.configFile = ./thermal-conf.xml.auto;
 
   boot.loader.systemd-boot.extraFiles = {
     "H2OFFT-Sx64.efi" = "${frameworkFirmware}/H2OFFT-Sx64.efi";
