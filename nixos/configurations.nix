@@ -53,7 +53,7 @@ let
         inputs.nur.nixosModules.nur
 
         inputs.srvos.nixosModules.common
-        inputs.srvos.nixosModules.telegraf
+        inputs.srvos.nixosModules.mixins-telegraf
         { networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 9273 ]; }
 
         ./modules/retiolum.nix
@@ -117,7 +117,7 @@ in
           ./eve/configuration.nix
 
           inputs.srvos.nixosModules.server
-          inputs.srvos.nixosModules.nginx
+          inputs.srvos.nixosModules.mixins-nginx
 
           "${inputs.harmonia}/module.nix"
         ];
@@ -158,8 +158,8 @@ in
         defaultModules
         ++ [
           inputs.srvos.nixosModules.server
-          inputs.srvos.nixosModules.nginx
-          inputs.srvos.nixosModules.efi
+          inputs.srvos.nixosModules.mixins-nginx
+          inputs.srvos.nixosModules.mixins-efi
           inputs.disko.nixosModules.disko
           { boot.loader.efi.canTouchEfiVariables = true; }
           ./eva/configuration.nix
