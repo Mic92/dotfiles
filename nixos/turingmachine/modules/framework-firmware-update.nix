@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 
 let
   frameworkFirmware = pkgs.stdenv.mkDerivation rec {
