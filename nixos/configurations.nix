@@ -159,7 +159,7 @@ in
         ++ [
           inputs.srvos.nixosModules.server
           inputs.srvos.nixosModules.mixins-nginx
-          inputs.srvos.nixosModules.mixins-efi
+          inputs.srvos.nixosModules.mixins-systemd-boot
           inputs.disko.nixosModules.disko
           { boot.loader.efi.canTouchEfiVariables = true; }
           ./eva/configuration.nix
