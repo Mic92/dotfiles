@@ -47,7 +47,7 @@ while read -r oldrev newrev ref; do
       --reverse \
       $id2..$id
 
-    git diff --stat $id2..$id |
+    git diff --stat "$id2..$id" |
       sed '$!s/\(+*\)\(-*\)$/'"$(green '\1')$(red '\2')"'/'
   )"
 done
