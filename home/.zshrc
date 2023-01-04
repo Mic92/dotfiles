@@ -464,8 +464,12 @@ path=($^path(N))
 export PATH
 cdpath=( ~/git )
 # Prefered programs
-export BROWSER=firefox
-export TERMINAL=wezterm
+if [ -z "$WAYLAND_DISPLAY" ] || [ -z "$DISPLAY" ]; then
+  export BROWSER=echo
+elif [ -n "${commands{firefox}" ]; then
+  export BROWSER=firefox
+fi
+export TERMINAL=footclient
 export PICTUREVIEW=eog
 if [[ -n ${commands[emacseditor]} ]] && [[ -n $XDG_RUNTIME_DIR ]]; then
   export EDITOR=emacseditor
