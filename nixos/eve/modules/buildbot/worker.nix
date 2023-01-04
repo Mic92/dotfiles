@@ -25,7 +25,13 @@ in
     description = "Buildbot Worker.";
     after = [ "network.target" "buildbot-master.service" ];
     wantedBy = [ "multi-user.target" ];
-    path = [ pkgs.git pkgs.nix pkgs.cachix pkgs.gh ];
+    path = [
+      pkgs.cachix
+      pkgs.git
+      pkgs.gh
+      pkgs.nix
+      pkgs.nix-output-monitor
+    ];
     environment.PYTHONPATH = "${python.withPackages (_: [package])}/${python.sitePackages}";
     environment.MASTER_URL = ''tcp:host=localhost:port=9989'';
     environment.BUILDBOT_DIR = buildbotDir;
