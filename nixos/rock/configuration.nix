@@ -18,7 +18,7 @@
     ../modules/mosh.nix
     ../modules/promtail.nix
     ../modules/sshd/tor.nix
-    ./modules/mycroft.nix
+    #./modules/mycroft.nix
   ];
 
   programs.bcc.enable = true;
