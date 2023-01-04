@@ -466,7 +466,7 @@ cdpath=( ~/git )
 # Prefered programs
 if [ -z "$WAYLAND_DISPLAY" ] || [ -z "$DISPLAY" ]; then
   export BROWSER=echo
-elif [ -n "${commands{firefox}" ]; then
+elif [ -n "${commands[firefox]}" ]; then
   export BROWSER=firefox
 fi
 export TERMINAL=footclient
