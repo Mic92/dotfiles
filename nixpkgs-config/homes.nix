@@ -54,6 +54,8 @@
               programs.waybar.package = inputs.hyprland.packages.${pkgs.system}.waybar-hyprland;
               home.packages = [
                 inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
+
+                inputs.nurl.packages.${pkgs.system}.default
               ];
             })
           ];
