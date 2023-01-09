@@ -562,12 +562,10 @@ def nix_build_config(
             env={},
             name="Build flake attr",
             command=[
-                "nom",
-                "build",
+                "nom-build",
                 "--option",
                 "keep-going",
                 "true",
-                "-L",
                 "--accept-flake-config",
                 "--out-link",
                 util.Interpolate("result-%(prop:attr)s"),

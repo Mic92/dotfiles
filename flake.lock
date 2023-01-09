@@ -370,11 +370,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1672621215,
-        "narHash": "sha256-qJo/1lXzVaPizEn0bA9s2/cOINXPB+/jrATjRoWtDhs=",
+        "lastModified": 1673168414,
+        "narHash": "sha256-9XVwB1yvFaQdEDw+yTSjB4QAUGq6iECmnvP11Apib/Y=",
         "ref": "refs/heads/master",
-        "rev": "8b100f9f7ade580991bba7c4093ee47851e4a3af",
-        "revCount": 265,
+        "rev": "1395f2b2906fcd03c5f38b8dc02624e336a7ef07",
+        "revCount": 268,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },
@@ -450,15 +450,16 @@
     },
     "treefmt-nix": {
       "locked": {
-        "lastModified": 1672770284,
-        "narHash": "sha256-jLwnD4gWGtcQvioCrQZs0rIlu7Zcnk21G6DdCxc8CWs=",
+        "lastModified": 1672909416,
+        "narHash": "sha256-hEfNPDfu7Yuplv9eZAbFltn4GxiAq2hy8Ql2YLxVA9M=",
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "rev": "10920dbc79435b25349377e799dd98bcee652b83",
+        "rev": "ad77feaad8c857681da6a68f351feafb19863a10",
         "type": "github"
       },
       "original": {
         "owner": "numtide",
+        "ref": "ci",
         "repo": "treefmt-nix",
         "type": "github"
       }
