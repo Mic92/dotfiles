@@ -35,7 +35,7 @@ with lib; let
     if ! git merge-base --is-ancestor "${inputs.doom-emacs.rev}" HEAD; then
       git -C $HOME/.emacs.d fetch https://github.com/doomemacs/doomemacs.git || true
       git -C $HOME/.emacs.d checkout ${inputs.doom-emacs.rev} || true
-      nice -n19 YES=1 FORCE=1 $HOME/.emacs.d/bin/doom sync -u || true
+      YES=1 FORCE=1 nice -n19 $HOME/.emacs.d/bin/doom sync -u || true
     else
       nice -n19 $HOME/.emacs.d/bin/doom sync || true
     fi
