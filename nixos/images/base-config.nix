@@ -3,8 +3,10 @@
 , config
 , ...
 }: {
+  system.stateVersion = config.system.nixos.version;
+
   networking.firewall.enable = false;
-  boot.supportedFilesystems = [ "bcachefs" ];
+  #boot.supportedFilesystems = [ "bcachefs" ];
 
   services.resolved.enable = false;
   networking.nameservers = [
@@ -56,11 +58,9 @@
   # no auto-updates
   systemd.services.update-prefetch.enable = false;
 
-  documentation.info.enable = false;
-  environment.systemPackages = with pkgs; [ diskrsync partclone ntfsprogs ntfs3g ];
-
-  # so nixos-remote does not kexec
-  environment.etc.is_kexec.text = "true";
+  environment.systemPackages = with pkgs; [
+    diskrsync partclone ntfsprogs ntfs3g
+  ];
 
   systemd.services.hidden-ssh-announce = {
     description = "irc announce hidden ssh";

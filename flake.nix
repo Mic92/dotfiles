@@ -77,7 +77,7 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
-    treefmt-nix.url = "github:numtide/treefmt-nix/ci";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
 
     nurl.url = "github:nix-community/nurl";
     nurl.inputs.nixpkgs.follows = "nixpkgs";
@@ -90,7 +90,7 @@
       {
         imports = [
           ./nixos/configurations.nix
-          ./nixos/images/default.nix
+          ./nixos/images/flake-module.nix
           ./nixpkgs-config/homes.nix
           ./terraform/flake-module.nix
           ./shell.nix

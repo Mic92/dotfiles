@@ -7,7 +7,6 @@ let
       self.inputs.nur.nixosModules.nur
     ];
     _module.args.inputs = self.inputs;
-    system.stateVersion = config.system.nixos.version;
   };
 in
 {
@@ -20,7 +19,7 @@ in
       packages = {
         matchbox-image = self.nixosConfigurations.matchbox.config.system.build.sdImage;
 
-        sd-image = nixos-generators.nixosGenerate {
+        install-iso = nixos-generators.nixosGenerate {
           inherit pkgs;
           modules = [
             defaultModule
