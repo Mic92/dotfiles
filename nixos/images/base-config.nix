@@ -59,7 +59,10 @@
   systemd.services.update-prefetch.enable = false;
 
   environment.systemPackages = with pkgs; [
-    diskrsync partclone ntfsprogs ntfs3g
+    diskrsync
+    partclone
+    ntfsprogs
+    ntfs3g
   ];
 
   systemd.services.hidden-ssh-announce = {
