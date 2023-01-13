@@ -168,6 +168,8 @@ nix-index-update() {
   ln -f $filename files
   popd
 }
+# merge after CI is green.
+alias bors-merge='gh pr create --body "bors merge"'
 
 ## Options
 setopt auto_name_dirs
