@@ -170,8 +170,8 @@ nix-index-update() {
 }
 # merge after CI is green.
 bors-review() {
-  if [[ -n ${commands[treefmt]} ]]; then
-    treefmt --fail-on-change
+  if [[ -n ${commands[treefmt]} ]] && ! treefmt --fail-on-change; then
+    return
   fi
   git push --force origin HEAD:ci
   gh pr create --title "CI" --body "bors merge" --head ci
