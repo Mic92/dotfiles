@@ -169,7 +169,7 @@ nix-index-update() {
   popd
 }
 # merge after CI is green.
-bors-merge() {
+bors-review() {
   git push --force origin HEAD:ci
   gh pr create --title "CI" --body "bors merge" --head ci
 }
