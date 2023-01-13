@@ -43,6 +43,7 @@
         tmux
         htop
         hub
+        gh
         tig
         lazygit
         git-absorb
