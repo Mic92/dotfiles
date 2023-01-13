@@ -16,7 +16,6 @@
     rsync
     git
     tig
-    python
     python3
     go
     gcc
