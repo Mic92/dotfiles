@@ -169,7 +169,10 @@ nix-index-update() {
   popd
 }
 # merge after CI is green.
-alias bors-merge='gh pr create --body "bors merge"'
+bors-merge() {
+  git push --force origin HEAD:ci
+  gh pr create --title "CI" --body "bors merge" --head ci
+}
 
 ## Options
 setopt auto_name_dirs
