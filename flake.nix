@@ -95,9 +95,11 @@
           ./devshell/flake-module.nix
         ];
         systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
-        perSystem = { inputs', ... }: {
+        perSystem = { config, inputs', ... }: {
           # make pkgs available to all `perSystem` functions
           _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
+
+          formatter = config.treefmt.build.wrapper;
         };
         # CI
         flake.hydraJobs =
