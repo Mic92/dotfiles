@@ -80,7 +80,6 @@
       gnupg
       jmtpfs # needed for charging? WTF
       #
-      (pkgs.callPackage ./pkgs/mpv-tv.nix { })
       (pkgs.runCommand "slack-aliases" { } ''
         mkdir -p $out/bin
         declare -A rooms=([manifold]=manifoldfinance \

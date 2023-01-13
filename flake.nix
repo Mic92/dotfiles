@@ -83,23 +83,31 @@
     nurl.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  #outputs = {...} @ args: import ./outputs.nix args;
-  outputs = inputs @ { flake-parts, ... }:
+  outputs = inputs @ { self, flake-parts, nixpkgs, ... }:
     (flake-parts.lib.evalFlakeModule
       { inherit inputs; }
       {
         imports = [
-          ./nixos/configurations.nix
+          ./nixos/flake-module.nix
           ./nixos/images/flake-module.nix
-          ./nixpkgs-config/homes.nix
+          ./home-manager/flake-module.nix
           ./terraform/flake-module.nix
-          ./shell.nix
-          ./ci.nix
+          ./devshell/flake-module.nix
         ];
         systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
         perSystem = { inputs', ... }: {
           # make pkgs available to all `perSystem` functions
           _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
         };
+        # CI
+        flake.hydraJobs =
+          let
+            inherit (nixpkgs) lib;
+          in
+          (lib.mapAttrs' (name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel) self.nixosConfigurations)
+          // (lib.mapAttrs' (name: config: lib.nameValuePair "home-manager-${name}" config.activation-script) self.homeConfigurations)
+          // {
+            inherit (self.checks.x86_64-linux) treefmt;
+          };
       }).config.flake;
 }
