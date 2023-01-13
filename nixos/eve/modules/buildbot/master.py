@@ -47,11 +47,19 @@ def build_config() -> dict[str, Any]:
     c["schedulers"] = [
         # build all pushes to default branch
         schedulers.SingleBranchScheduler(
-            name="master",
+            name="default-branch",
             change_filter=util.ChangeFilter(
                 repository=f"https://github.com/{ORG}/{REPO}",
                 filter_fn=lambda c: c.branch
                 == c.properties.getProperty("github.repository.default_branch"),
+            ),
+            builderNames=["nix-eval"],
+        ),
+        # this is compatible with bors or github's merge queue
+        schedulers.SingleBranchScheduler(
+            name="merge-queue",
+            change_filter=util.ChangeFilter(
+                branch_re="(gh-readonly-queue/.*|staging|trying)",
             ),
             builderNames=["nix-eval"],
         ),
