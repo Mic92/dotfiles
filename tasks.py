@@ -4,6 +4,8 @@ import os
 import socket
 import subprocess
 import sys
+import string
+import random
 from pathlib import Path
 from typing import List
 
@@ -74,6 +76,50 @@ def update_sops_files(c):
         xargs -0 -n1 sops updatekeys --yes
 """
     )
+
+
+@task
+def generate_password(c, user="root"):
+    """
+    Generate password hashes for users i.e. for root in ./hosts/$HOSTNAME.yml
+    """
+    passw = subprocess.run(
+        [
+            "nix",
+            "run",
+            "--inputs-from",
+            ".#",
+            "nixpkgs#xkcdpass",
+            "--",
+            "-d-",
+            "-n3",
+            "-C",
+            "capitalize",
+        ],
+        text=True,
+        check=True,
+        stdout=subprocess.PIPE,
+    ).stdout.strip()
+    hash = subprocess.run(
+        [
+            "nix",
+            "run",
+            "--inputs-from",
+            ".#",
+            "nixpkgs#mkpasswd",
+            "--",
+            "-m",
+            "sha-512",
+            "-s",
+        ],
+        text=True,
+        check=True,
+        stdout=subprocess.PIPE,
+        input=passw,
+    ).stdout.strip()
+    print("# Add the following secrets")
+    print(f"{user}-password: {passw}")
+    print(f"{user}-password-hash: {hash}")
 
 
 def get_hosts(hosts: str) -> List[DeployHost]:
