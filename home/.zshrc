@@ -176,6 +176,11 @@ bors-review() {
   git push --force origin HEAD:ci
   gh pr create --title "CI" --body "bors merge" --head ci
 }
+passgen() {
+  local pass
+  pass=$(nix run nixpkgs#xkcdpass -- -d '-' -n 3 -C capitalize "$@")
+  echo "${pass}$((RANDOM % 10))"
+}
 
 ## Options
 setopt auto_name_dirs
