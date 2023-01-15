@@ -24,20 +24,37 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
 
     def deploy(h: DeployHost) -> None:
         target = f"{h.user or 'root'}@{h.host}"
+        flake_path = h.meta.get("flake_path", "/etc/nixos")
         h.run_local(
-            f"rsync {' --exclude '.join([''] + RSYNC_EXCLUDES)} -vaF --delete -e ssh . {target}:/etc/nixos"
+            f"rsync {' --exclude '.join([''] + RSYNC_EXCLUDES)} -vaF --delete -e ssh . {target}:{flake_path}"
         )
 
-        flake_path = "/etc/nixos"
         flake_attr = h.meta.get("flake_attr", "")
         if flake_attr:
             flake_attr = "#" + flake_attr
-        target_host = h.meta.get("target_host", "localhost")
-        target_user = h.meta.get("target_user")
-        if target_user:
-            target_host = f"{target_user}@{target_host}"
-        extra_args = h.meta.get("extra_args", "")
-        cmd = f"nixos-rebuild switch {extra_args} --fast --option keep-going true --option accept-flake-config true --fast --target-host {target_host} --flake $(realpath {flake_path}){flake_attr}"
+        target_host = h.meta.get("target_host")
+        if target_host:
+            target_user = h.meta.get("target_user")
+            if target_user:
+                target_host = f"{target_user}@{target_host}"
+        extra_args = h.meta.get("extra_args", [])
+        cmd = (
+            ["nixos-rebuild", "switch"]
+            + extra_args
+            + [
+                "--fast",
+                "--option",
+                "keep-going",
+                "true",
+                "--option",
+                "accept-flake-config",
+                "true",
+                "--flake",
+                f"{flake_path}{flake_attr}",
+            ]
+        )
+        if target_host:
+            cmd.extend(["--target-host", target_host])
         ret = h.run(cmd, check=False)
         # re-retry switch if the first time fails
         if ret.returncode != 0:
@@ -75,7 +92,13 @@ def deploy(c, _hosts=""):
         hosts = [
             eve,
             DeployHost(
-                "localhost", user="joerg", meta=dict(extra_args="--use-remote-sudo"), forward_agent=True
+                "localhost",
+                user="joerg",
+                meta=dict(
+                    extra_args=["--use-remote-sudo"],
+                    flake_path="/home/joerg/.homesick/repos/dotfiles",
+                ),
+                forward_agent=True,
             ),
             DeployHost(
                 "eve.i",
