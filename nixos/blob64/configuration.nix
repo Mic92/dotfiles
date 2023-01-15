@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   imports = [
     ./modules/borgbackup-repos
     ../modules/users.nix
@@ -12,6 +13,9 @@
   sops.defaultSopsFile = ./secrets/secrets.yaml;
   system.stateVersion = "22.11";
 
+  sops.secrets.root-password-hash.neededForUsers = true;
+  users.users.root.passwordFile = config.sops.secrets.root-password-hash.path;
+
   # Fan speed adjustment
   systemd.services.fans = {
     wantedBy = [ "multi-user.target" ];
@@ -22,11 +26,6 @@
   };
 
   services.openssh.enable = true;
-
-  users.mutableUsers = false;
-  users.users.root.password = "fnord23";
-
-  networking.useNetworkd = true;
 
   networking.hostName = "blob64";
 
