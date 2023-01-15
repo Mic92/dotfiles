@@ -2,12 +2,14 @@
   perSystem = { pkgs, ... }: {
     apps.hm = {
       type = "app";
-      program = "${pkgs.writeScriptBin "hm" ''
-        export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.nix pkgs.jq]}
-        declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie" ["grandalf"]="common-aarch64" ["yasmin"]="common-aarch64")
-        profile=common
-        if [[ -n ''${profiles[$HOSTNAME]:-} ]]; then
-          profile=''${profiles[$HOSTNAME]}
+      program = "${pkgs.writeShellScriptBin "hm" ''
+        set -x
+        export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.nix pkgs.jq pkgs.unixtools.hostname]}
+        declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie")
+        profile="common-$(uname -s)-$(uname -m)"
+        hostname
+        if [[ -n ''${profiles[$(hostname)]:-} ]]; then
+          profile=''${profiles[$(hostname)]}
         fi
         ${inputs.home-manager.packages.${pkgs.system}.home-manager}/bin/home-manager --flake "${self}#$profile" "$@"
       ''}/bin/hm";
@@ -40,10 +42,13 @@
     in
     {
       homeConfigurations = {
-        common = homeManagerConfiguration { };
-        common-aarch64 = homeManagerConfiguration {
+        common-Linux-x86_64 = homeManagerConfiguration { };
+        common-Linux-aarch64 = homeManagerConfiguration {
           system = "aarch64-linux";
         };
+        common-Darwin-arm64 = homeManagerConfiguration {   
+          system = "aarch64-darwin";     
+        };                               
 
         desktop = homeManagerConfiguration {
           extraModules = [
