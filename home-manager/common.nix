@@ -24,7 +24,6 @@
           { })
         nix-prefetch
 
-        gdb
         hexyl
         binutils
         clang-tools
@@ -70,6 +69,7 @@
         strace
         psmisc
         glibcLocales
+        gdb
       ]);
 
     home.enableNixpkgsReleaseCheck = false;
