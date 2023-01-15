@@ -37,7 +37,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
         if target_user:
             target_host = f"{target_user}@{target_host}"
         extra_args = h.meta.get("extra_args", "")
-        cmd = f"nixos-rebuild switch {extra_args} --fast --option keep-going true --option accept-flake-config true --fast --build-host localhost --target-host {target_host} --flake $(realpath {flake_path}){flake_attr}"
+        cmd = f"nixos-rebuild switch {extra_args} --fast --option keep-going true --option accept-flake-config true --fast --target-host {target_host} --flake $(realpath {flake_path}){flake_attr}"
         ret = h.run(cmd, check=False)
         # re-retry switch if the first time fails
         if ret.returncode != 0:
@@ -75,7 +75,7 @@ def deploy(c, _hosts=""):
         hosts = [
             eve,
             DeployHost(
-                "localhost", user="joerg", meta=dict(extra_args="--use-remote-sudo")
+                "localhost", user="joerg", meta=dict(extra_args="--use-remote-sudo"), forward_agent=True
             ),
             DeployHost(
                 "eve.i",
@@ -86,12 +86,10 @@ def deploy(c, _hosts=""):
             ),
             DeployHost(
                 "eve.i",
+                user="root",
                 forward_agent=True,
                 command_prefix="blob64.r",
-                meta=dict(
-                    target_user="root", target_host="blob64.r", flake_attr="blob64"
-                ),
-                user="root",
+                meta=dict(target_host="blob64.r", flake_attr="blob64"),
             ),
         ]
     deploy_nixos(hosts)
