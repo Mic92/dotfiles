@@ -44,6 +44,11 @@
     tmux
   ];
 
+  systemd.network.networks."10-uplink" = {
+    matchConfig.Type = "ether";
+    networkConfig.DHCP = "yes";
+  };
+
   boot.supportedFilesystems = [ "zfs" ];
   networking.hostId = "ac174b52";
 }

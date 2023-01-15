@@ -16,10 +16,8 @@
 
   boot.loader.grub.enable = false;
   boot.loader.generic-extlinux-compatible.enable = true;
-  boot.kernelParams = [
-    "boot.shell_on_fail"
-    "console=ttyS2,115200"
-  ];
+  boot.kernelParams = [ "boot.shell_on_fail" ];
+  srvos.boot.consoles = [ "ttyS2,115200" ];
 
   boot.initrd.availableKernelModules = [
     "sd_mod"

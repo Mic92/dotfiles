@@ -28,6 +28,7 @@
     };
 
     nixpkgs.url = "github:Mic92/nixpkgs/main";
+    nixpkgs-systemd.url = "github:pennae/nixpkgs/systemd-oom";
     # for development
     #nixpkgs.url = "/home/joerg/git/nixpkgs";
     nur.url = "github:nix-community/NUR";
@@ -71,7 +72,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    srvos.url = "github:numtide/srvos";
+    #srvos.url = "github:numtide/srvos";
+    srvos.url = "github:numtide/srvos/console";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
     disko.url = "github:nix-community/disko";
