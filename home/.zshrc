@@ -174,7 +174,11 @@ bors-review() {
     return
   fi
   git push --force origin HEAD:ci
-  gh pr create --title "CI" --body "bors merge" --head ci
+  if gh pr view -c ci; then
+    gh pr comment ci --body "bors merge"
+  else
+    gh pr create --title "CI" --body "bors merge" --head ci
+  fi
 }
 passgen() {
   local pass
