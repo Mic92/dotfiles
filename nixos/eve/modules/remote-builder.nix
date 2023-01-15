@@ -53,6 +53,10 @@
       hostNames = [ "aarch64.nixos.community" ];
       publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMUTz5i9u5H2FHNAmZJyoJfIGyUm/HfGhfwnc142L3ds";
     };
+    "mac01.numtide.com" = {
+      hostNames = [ "mac01.numtide.com" ];
+      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDrUaBPZktk41hYHN95IIHBL4bn7LbZy1aLra/ONv4go";
+    };
     #"login-builder" = {
     #  hostNames = ["login.dse.in.tum.de"];
     #  publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOdlUylM9WIFfIYZDK8rjVYQzX+RYwIlLgsEh4j0pNx6";
