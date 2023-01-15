@@ -41,8 +41,8 @@
   uncommit = reset --soft HEAD^
   pr = !"pr() { git fetch origin pull/$1/head:pr-$1; git checkout pr-$1; }; pr"
   backport = cherry-pick -x
-  cp = cherry-pick
   reset-pr = reset --hard FETCH_HEAD
+  force-push = push --force-with-lease
   publish = !git pull && git push
   # recover failed commit messages: https://stackoverflow.com/questions/9133526/git-recover-failed-commits-message
   recommit = !git commit -eF $(git rev-parse --git-dir)/COMMIT_EDITMSG
