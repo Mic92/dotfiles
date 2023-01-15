@@ -173,11 +173,12 @@ bors-review() {
   if [[ -n ${commands[treefmt]} ]] && ! treefmt --fail-on-change; then
     return
   fi
-  git push --force origin HEAD:ci
-  if gh pr view -c ci; then
-    gh pr comment ci --body "bors merge"
+  branch=$(id -un)-ci
+  git push --force origin "HEAD:$branch"
+  if gh pr view -c "$branch"; then
+    gh pr comment "$branch" --body "bors merge"
   else
-    gh pr create --title "CI" --body "bors merge" --head ci
+    gh pr create --title "CI" --body "bors merge" --head "$branch"
   fi
 }
 passgen() {
