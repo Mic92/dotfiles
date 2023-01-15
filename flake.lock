@@ -322,6 +322,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-systemd": {
+      "locked": {
+        "lastModified": 1673697145,
+        "narHash": "sha256-7Ea8bGBf198g/+AKUfZd4QjDeA64LCewfdFPt1mVzUc=",
+        "owner": "pennae",
+        "repo": "nixpkgs",
+        "rev": "6c8657b9c207a13ab9759c072e945f9069d71d22",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pennae",
+        "ref": "systemd-oom",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nur": {
       "locked": {
         "lastModified": 1673615086,
@@ -388,6 +404,7 @@
         "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-systemd": "nixpkgs-systemd",
         "nur": "nur",
         "nurl": "nurl",
         "retiolum": "retiolum",
@@ -424,11 +441,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1673794138,
-        "narHash": "sha256-nQNMbLwHplJbtgTK0Kyyrjolrzt7vgAsva1NpehaKl0=",
+        "lastModified": 1673801451,
+        "narHash": "sha256-IdCujfV/Xb92YEZoonO4Bq5BikZP74VRVYfmb+nLKDE=",
         "owner": "numtide",
         "repo": "srvos",
-        "rev": "7d30469792ed94a00d5c1ad3db058db749932dbe",
+        "rev": "ebbec71d5c2e5a7c8d28f1f0a561105ba7e33200",
         "type": "github"
       },
       "original": {

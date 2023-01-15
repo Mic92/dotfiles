@@ -1,5 +1,6 @@
 { pkgs
 , lib
+, inputs
 , ...
 }: {
   imports = [
@@ -50,6 +51,7 @@
   ];
 
   #services.udev.packages = [ pkgs.platformio ];
+  systemd.package = inputs.nixpkgs-systemd.legacyPackages.${pkgs.system}.systemd;
 
   hardware.video.hidpi.enable = true;
 
