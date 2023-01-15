@@ -46,9 +46,9 @@
         common-Linux-aarch64 = homeManagerConfiguration {
           system = "aarch64-linux";
         };
-        common-Darwin-arm64 = homeManagerConfiguration {   
-          system = "aarch64-darwin";     
-        };                               
+        common-Darwin-arm64 = homeManagerConfiguration {
+          system = "aarch64-darwin";
+        };
 
         desktop = homeManagerConfiguration {
           extraModules = [
