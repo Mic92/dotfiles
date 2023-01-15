@@ -175,10 +175,10 @@ bors-review() {
   fi
   branch=$(id -un)-ci
   git push --force origin "HEAD:$branch"
-  if gh pr view -c "$branch"; then
-    gh pr comment "$branch" --body "bors merge"
-  else
+  if [[ $(gh pr view --json state --template '{{.state}}' "$branch") != "OPEN" ]]; then
     gh pr create --title "CI" --body "bors merge" --head "$branch"
+  else
+    gh pr comment "$branch" --body "bors merge"
   fi
 }
 passgen() {
