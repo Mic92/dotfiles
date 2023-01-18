@@ -8,6 +8,14 @@ let
 in
 {
   services.telegraf.extraConfig.inputs = {
+    http_response = [
+      {
+        urls = [ "https://search.nix-community.org/" ];
+        response_string_match = "Hound";
+        tags.host = "build03.nix-community.org";
+        tags.org = "nix-community";
+      }
+    ];
     net_response =
       map
         (host: {
