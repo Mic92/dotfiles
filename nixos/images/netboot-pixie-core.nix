@@ -1,6 +1,5 @@
 { pkgs
 , netboot
-,
 }:
 # 1. Enable nixos/modules/dnsmasq.nix
 # $ sudo ip l set $if master internal
