@@ -49,6 +49,8 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
                 "--option",
                 "accept-flake-config",
                 "true",
+                "--build-host",
+                "",
                 "--flake",
                 f"{flake_path}{flake_attr}",
             ]
