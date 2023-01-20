@@ -59,7 +59,7 @@
             RealmID = "github_realm";
             ClientUserID = "@mic92:nixos.dev";
             Rooms."!cBybDCkeRlSWfuaFvn:numtide.com".Repos = {
-              "nix-community/infra".Events = [ "push" "issues" "pull_request" ];
+              "nix-community/infra".Events = [ "issues" "pull_request" ];
             };
           };
         }
