@@ -844,6 +844,7 @@ if [[ $commands[kubectl] ]]; then
    source <(kubectl completion zsh)
 fi
 alias tf=terraform
+alias tg=terragrunt
 
 if [[ -n "${commands[fzf-share]}" ]]; then
   FZF_CTRL_R_OPTS=--reverse
