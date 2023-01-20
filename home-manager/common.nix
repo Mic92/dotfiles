@@ -27,7 +27,7 @@
         hexyl
         binutils
         clang-tools
-        alejandra
+        nixpkgs-fmt
         shfmt
         terraform-ls
         ouch

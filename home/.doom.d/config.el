@@ -134,8 +134,6 @@
                     :major-modes '(nix-mode)
                     :server-id 'nix)))
 
-(set-formatter! 'alejandra  "alejandra --quiet" :modes '(nix-mode))
-
 (use-package blamer
   :bind (("s-i" . blamer-show-commit-info))
   :defer 20
