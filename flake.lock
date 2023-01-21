@@ -99,11 +99,11 @@
     "harmonia": {
       "flake": false,
       "locked": {
-        "lastModified": 1671138451,
-        "narHash": "sha256-3o33AS5ZTuVk5Nv153POj3N6ylMD0qw8uoK+MzFR4Hk=",
+        "lastModified": 1674059028,
+        "narHash": "sha256-hBL+Bcj6WwKDCytXaBtMsUBAAdAEACyd7FBnPMmE5/k=",
         "owner": "Mic92",
         "repo": "harmonia",
-        "rev": "cc8447a4b67e38312c7a591280da152de41da77c",
+        "rev": "6637bae4ffcd449c3aeccf7eb17b7c36b8d1e24b",
         "type": "github"
       },
       "original": {
@@ -457,11 +457,11 @@
     },
     "treefmt-nix": {
       "locked": {
-        "lastModified": 1672931382,
-        "narHash": "sha256-lgtc2Sct/xtvqkdzlJ4AL3Vesw0Wz/fxqNGOBFS7YXU=",
+        "lastModified": 1674297056,
+        "narHash": "sha256-IheUucTSpBsZ3JhAnrx2RWXf0Z5ekNGiW6ojct3FcZo=",
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "rev": "6717065d6a432bc3f5b827007ad959e6032d5856",
+        "rev": "c117283f7482b99a89de0d6ae4b77318ad283294",
         "type": "github"
       },
       "original": {
