@@ -79,9 +79,6 @@
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
-
-    nurl.url = "github:nix-community/nurl";
-    nurl.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ { self, flake-parts, nixpkgs, ... }:

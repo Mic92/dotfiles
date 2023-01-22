@@ -353,26 +353,6 @@
         "type": "github"
       }
     },
-    "nurl": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1674274293,
-        "narHash": "sha256-d+zgOOwIQ7fvd9Sa45RHzU6YHLlVmwTh32/SNaQp7/M=",
-        "owner": "nix-community",
-        "repo": "nurl",
-        "rev": "b97a16d0e0596bfcb9b5a4a2f1576fc887278899",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "nurl",
-        "type": "github"
-      }
-    },
     "retiolum": {
       "locked": {
         "lastModified": 1674140414,
@@ -406,7 +386,6 @@
         "nixpkgs": "nixpkgs",
         "nixpkgs-systemd": "nixpkgs-systemd",
         "nur": "nur",
-        "nurl": "nurl",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
         "srvos": "srvos",

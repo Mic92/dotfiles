@@ -40,6 +40,7 @@
         pkgs.nix
 
         tmux
+        nurl
         htop
         hub
         gh

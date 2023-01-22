@@ -52,8 +52,6 @@
                 wayland.windowManager.hyprland.enable = true;
                 home.packages = [
                   inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
-
-                  inputs.nurl.packages.${pkgs.system}.default
                 ];
               })
             ];
