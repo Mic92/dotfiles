@@ -72,8 +72,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    #srvos.url = "github:numtide/srvos";
-    srvos.url = "github:numtide/srvos/console";
+    srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
     disko.url = "github:nix-community/disko";
