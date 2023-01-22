@@ -15,6 +15,7 @@ in
   services.rtorrent.user = "joerg";
   services.rtorrent.group = "users";
   services.rtorrent.dataDir = "/data/torrent";
+  services.rtorrent.dataPermissions = "0755";
   services.rtorrent.configText = ''
     schedule2 = watch_start, 10, 10, ((load.start, (cat, (cfg.watch), "start/*.torrent")))
     schedule2 = watch_load, 11, 10, ((load.normal, (cat, (cfg.watch), "load/*.torrent")))
