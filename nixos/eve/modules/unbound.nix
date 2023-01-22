@@ -3,19 +3,17 @@
 , config
 , ...
 }: {
+  imports = [
+    ../../modules/unbound.nix
+  ];
   services.unbound = {
-    enable = true;
-    package = pkgs.unbound.override {
-      withDoH = true;
-    };
+    package = pkgs.unbound.override { withDoH = true; };
     settings = {
       server = {
         access-control = [
           "::/0 allow"
           "0.0.0.0/0 allow"
         ];
-        prefetch = "yes";
-        prefetch-key = true;
 
         tls-service-key = "/var/lib/acme/dns.thalheim.io/key.pem";
         tls-service-pem = "/var/lib/acme/dns.thalheim.io/fullchain.pem";
@@ -32,9 +30,6 @@
       };
     };
   };
-  # Since we use this for local dns resolving, we don't want to stop/start but
-  # just restart, so we quickly get it back.
-  systemd.services.unbound.stopIfChanged = false;
 
   # dns.thalheim.io
   networking.firewall.allowedTCPPorts = [ 853 ];

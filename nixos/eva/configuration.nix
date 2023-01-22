@@ -12,7 +12,6 @@
     ./modules/loki.nix
     ./modules/nginx.nix
     ./modules/sops.nix
-    ./modules/unbound.nix
 
     ../modules/sshd
     ../modules/mosh.nix
@@ -21,6 +20,7 @@
     ../modules/promtail.nix
     ../modules/tracing.nix
     ../modules/users.nix
+    ../modules/unbound.nix
   ];
 
   boot.initrd.systemd.enable = false;
