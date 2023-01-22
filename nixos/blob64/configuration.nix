@@ -19,9 +19,11 @@
   # Fan speed adjustment
   systemd.services.fans = {
     wantedBy = [ "multi-user.target" ];
-    serviceConfig.ExecStart = pkgs.runCommandCC "fans" { nativeBuildInputs = [ pkgs.rustc ]; } ''
-      rustc ${./fancontrol.rs} -o $out
-    '';
+    serviceConfig.ExecStart = pkgs.rustPlatform.buildRustPackage {
+      name = "fancontrol";
+      src = ./fancontrol;
+      cargoLock.lockFile = ./fancontrol/Cargo.lock;
+    };
     serviceConfig.Restart = "always";
   };
 
