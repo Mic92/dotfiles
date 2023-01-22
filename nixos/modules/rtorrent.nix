@@ -37,10 +37,14 @@ in
   };
 
   security.acme.certs."flood.r".server = config.retiolum.ca.acmeURL;
+  #security.acme.certs."warez.r".server = config.retiolum.ca.acmeURL;
 
   services.nginx = {
     package = pkgs.nginxStable.override {
-      modules = [ pkgs.nginxModules.pam ];
+      modules = [
+        pkgs.nginxModules.pam
+        pkgs.nginxModules.fancyindex
+      ];
     };
     virtualHosts."flood.r" = {
       # TODO
@@ -56,6 +60,16 @@ in
         auth_pam "Ldap password";
         auth_pam_service_name "flood";
         try_files $uri /index.html;
+      '';
+    };
+    virtualHosts."warez.r" = {
+      # TODO
+      #enableACME = true;
+      #addSSL = true;
+      root = "/data/torrent/download";
+      locations."/" .extraConfig = ''
+        fancyindex on;              # Enable fancy indexes.
+        fancyindex_exact_size off;  # Output human-readable file sizes.
       '';
     };
   };
