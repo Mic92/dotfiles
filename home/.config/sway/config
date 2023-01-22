@@ -178,8 +178,7 @@ bindsym XF86AudioPause exec playerctl pause
 bindsym XF86AudioNext exec playerctl next
 bindsym XF86AudioPrev exec playerctl previous
 bindsym $mod+p exec playerctl play-pause
-#
-bindsym $mod+Print exec flameshot
+bindsym $mod+Print exec notify-send screenshot "$(grimshot save window ~/upload/$(date +"%Y%m%d-%H%M").png)"
 
 #
 # Start i3bar to display a workspace bar (plus the system information i3status
