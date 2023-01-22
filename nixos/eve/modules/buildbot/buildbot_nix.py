@@ -357,7 +357,7 @@ def nix_update_flake_config(
                 "--head",
                 "refs/heads/update_flake_lock",
                 "--base",
-                "master",
+                "main",
             ],
         )
     )
