@@ -32,6 +32,9 @@
       };
     };
   };
+  # Since we use this for local dns resolving, we don't want to stop/start but
+  # just restart, so we quickly get it back.
+  systemd.services.unbound.stopIfChanged = false;
 
   # dns.thalheim.io
   networking.firewall.allowedTCPPorts = [ 853 ];
