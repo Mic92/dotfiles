@@ -30,7 +30,6 @@ in
       pkgs.git
       pkgs.gh
       pkgs.nix
-      pkgs.nix-output-monitor
     ];
     environment.PYTHONPATH = "${python.withPackages (_: [package])}/${python.sitePackages}";
     environment.MASTER_URL = ''tcp:host=localhost:port=9989'';

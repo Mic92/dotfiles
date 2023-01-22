@@ -562,7 +562,9 @@ def nix_build_config(
             env={},
             name="Build flake attr",
             command=[
-                "nom-build",
+                "nix",
+                "build",
+                "-L",
                 "--option",
                 "keep-going",
                 "true",
