@@ -19,12 +19,11 @@
       autotiling # https://github.com/nwg-piotr/autotiling
       dunst # notification daemon
       kanshi # autorandr
-      swappy
       wdisplays
       wl-clipboard
       blueberry
-      grim
-      slurp
+      sway-contrib.grimshot # screenshots
+      wtype
 
       pavucontrol
       evince
