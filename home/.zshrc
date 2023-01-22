@@ -178,6 +178,7 @@ bors-review() {
   if [[ $(gh pr view --json state --template '{{.state}}' "$branch") != "OPEN" ]]; then
     gh pr create --title "CI" --body "bors merge" --head "$branch"
   else
+    sleep 3 # work around to wait for bors to cancel the old PR
     gh pr comment "$branch" --body "bors merge"
   fi
 }
