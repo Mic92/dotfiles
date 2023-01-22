@@ -1,5 +1,5 @@
 { self, inputs, ... }: {
-  perSystem = { pkgs, ... }:
+  perSystem = { pkgs, lib, ... }:
     let
       homeManagerConfiguration =
         { extraModules ? [ ]
@@ -41,7 +41,7 @@
       legacyPackages = {
         homeConfigurations = {
           common = homeManagerConfiguration { };
-
+        } // lib.optionalAttrs (pkgs.hostPlatform.system == "x86_64-linux") {
           desktop = homeManagerConfiguration {
             extraModules = [
               ./desktop.nix
