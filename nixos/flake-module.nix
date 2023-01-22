@@ -118,8 +118,7 @@ in
 
           inputs.srvos.nixosModules.server
           inputs.srvos.nixosModules.mixins-nginx
-
-          "${inputs.harmonia}/module.nix"
+          inputs.harmonia.nixosModules.harmonia
         ];
     };
 

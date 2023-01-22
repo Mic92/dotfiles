@@ -97,18 +97,24 @@
       }
     },
     "harmonia": {
-      "flake": false,
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "lastModified": 1674059028,
-        "narHash": "sha256-hBL+Bcj6WwKDCytXaBtMsUBAAdAEACyd7FBnPMmE5/k=",
-        "owner": "Mic92",
+        "lastModified": 1674425892,
+        "narHash": "sha256-GUaBiqkx4XimCVmuNiTR4MPEYOhNV7Jn3S/SN1gBcHc=",
+        "owner": "nix-community",
         "repo": "harmonia",
-        "rev": "6637bae4ffcd449c3aeccf7eb17b7c36b8d1e24b",
+        "rev": "f38be4d849a5dd9c5dae5c83c4a48a40014a2a1f",
         "type": "github"
       },
       "original": {
-        "owner": "Mic92",
-        "ref": "fix-build",
+        "owner": "nix-community",
         "repo": "harmonia",
         "type": "github"
       }
