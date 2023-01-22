@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 {
   imports = [
     ./modules/borgbackup-repos
@@ -17,15 +17,19 @@
   users.users.root.passwordFile = config.sops.secrets.root-password-hash.path;
 
   # Fan speed adjustment
-  systemd.services.fans = {
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig.ExecStart = pkgs.rustPlatform.buildRustPackage {
-      name = "fancontrol";
-      src = ./fancontrol;
-      cargoLock.lockFile = ./fancontrol/Cargo.lock;
+  systemd.services.fans =
+    let
+      fancontrol = pkgs.rustPlatform.buildRustPackage {
+        name = "fancontrol";
+        src = ./fancontrol;
+        cargoLock.lockFile = ./fancontrol/Cargo.lock;
+      };
+    in
+    {
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig.ExecStart = lib.getExe fancontrol;
+      serviceConfig.Restart = "always";
     };
-    serviceConfig.Restart = "always";
-  };
 
   services.openssh.enable = true;
 
