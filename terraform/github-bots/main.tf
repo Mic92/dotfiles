@@ -52,12 +52,12 @@ module "home-manager" {
 #  github_token     = data.sops_file.secrets.data["GITHUB_TOKEN"]
 #  bot_github_token = data.sops_file.secrets.data["blended-bot-token"]
 #}
-module "bld" {
-  source           = "../modules/github-push-bot"
-  repo_name        = "numtide/bld"
-  github_token     = data.sops_file.secrets.data["GITHUB_TOKEN"]
-  bot_github_token = data.sops_file.secrets.data["blended-bot-token"]
-}
+#module "bld" {
+#  source           = "../modules/github-push-bot"
+#  repo_name        = "numtide/bld"
+#  github_token     = data.sops_file.secrets.data["GITHUB_TOKEN"]
+#  bot_github_token = data.sops_file.secrets.data["blended-bot-token"]
+#}
 
 #locals {
 #  tokens = [

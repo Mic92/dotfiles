@@ -28,7 +28,7 @@ data "github_user" "current" {
 resource "github_repository_collaborator" "bot" {
   repository = local.repo
   username   = data.github_user.current.login
-  permission = "push"
+  permission = "maintain" # maintain is needed for bors
   provider   = github.owner
 }
 
