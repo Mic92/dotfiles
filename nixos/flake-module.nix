@@ -161,7 +161,7 @@ in
           inputs.srvos.nixosModules.mixins-systemd-boot
           inputs.disko.nixosModules.disko
           ({ pkgs, lib, ... }: {
-            boot.kernelPackages = lib.mkForce inputs.disko.packages.${pkgs.system}.linuxPackages_bcachefs;
+            boot.kernelPackages = lib.mkForce inputs.disko.legacyPackages.${pkgs.system}.linuxPackages_bcachefs;
           })
           { boot.loader.efi.canTouchEfiVariables = true; }
           ./eva/configuration.nix
