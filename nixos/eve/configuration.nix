@@ -56,6 +56,7 @@
     ./modules/tts.nix
     ./modules/users.nix
     ./modules/wiki-backup.nix
+    ./modules/onlyoffice.nix
     #./modules/headscale.nix
     #./modules/wiregrill
 
