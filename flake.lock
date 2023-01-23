@@ -30,16 +30,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1674467811,
-        "narHash": "sha256-WqCakZznsrz3QIhHD5KuWi2mWNp8HkQQx/lstJvULxQ=",
+        "lastModified": 1674484560,
+        "narHash": "sha256-VhAgNQSSWeX53PXRaszaBW39f1ekvKSQhH5Ijy0H/RM=",
         "owner": "nix-community",
         "repo": "disko",
-        "rev": "232aed177d049ef5861b18b8c92fabba1e59b772",
+        "rev": "d7e178126f05d9b1e5bfbf115c36ec9f75b85e8b",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
-        "ref": "bcachefs-fixes",
         "repo": "disko",
         "type": "github"
       }
