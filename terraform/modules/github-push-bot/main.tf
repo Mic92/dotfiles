@@ -28,7 +28,8 @@ data "github_user" "current" {
 resource "github_repository_collaborator" "bot" {
   repository = local.repo
   username   = data.github_user.current.login
-  permission = "maintain" # maintain is needed for bors
+  # maintain is needed for bors, we cannot use "maintain" for user-level repository
+  permission = local.owner == "Mic92" ? "admin" : "maintain"
   provider   = github.owner
 }
 
