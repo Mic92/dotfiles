@@ -32,7 +32,7 @@ module "disko" {
   source           = "../modules/github-push-bot"
   repo_name        = "nix-community/disko"
   github_token     = data.sops_file.secrets.data["GITHUB_TOKEN"]
-  bot_github_token = data.sops_file.secrets.data["nix-eval-jobs-bot-token"]
+  bot_github_token = data.sops_file.secrets.data["disko-bot-token"]
 }
 module "beherbergung" {
   source           = "../modules/github-push-bot"
@@ -46,12 +46,12 @@ module "home-manager" {
   github_token     = data.sops_file.secrets.data["GITHUB_TOKEN"]
   bot_github_token = data.sops_file.secrets.data["home-manager-bot-token"]
 }
-module "blended" {
-  source           = "../modules/github-push-bot"
-  repo_name        = "numtide/blended"
-  github_token     = data.sops_file.secrets.data["GITHUB_TOKEN"]
-  bot_github_token = data.sops_file.secrets.data["blended-bot-token"]
-}
+#module "blended" {
+#  source           = "../modules/github-push-bot"
+#  repo_name        = "numtide/blended"
+#  github_token     = data.sops_file.secrets.data["GITHUB_TOKEN"]
+#  bot_github_token = data.sops_file.secrets.data["blended-bot-token"]
+#}
 module "bld" {
   source           = "../modules/github-push-bot"
   repo_name        = "numtide/bld"
