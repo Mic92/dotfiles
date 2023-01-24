@@ -95,6 +95,12 @@
         done
         chmod +x $out/bin/slack-*
       '')
+      (retroarch.override {
+        cores = [
+          libretro.bsnes-hd
+          libretro.mupen64plus
+        ];
+      })
 
       (pkgs.writeScriptBin "rhasspy-play" ''
         #!${pkgs.runtimeShell}

@@ -52,6 +52,13 @@
     #    defaultPort = "80";
     #  })
     firefox-wayland
+    (retroarch.override {
+      cores = [
+        libretro.bsnes-hd
+        libretro.mupen64plus
+      ];
+    })
+    hedgewars
     sshuttle
     syncplay
     chromium
