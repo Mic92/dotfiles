@@ -10,6 +10,12 @@ module "sops-nix" {
   github_token     = data.sops_file.secrets.data["GITHUB_TOKEN"]
   bot_github_token = data.sops_file.secrets.data["sops-nix-bot-token"]
 }
+module "infra" {
+  source           = "../modules/github-push-bot"
+  repo_name        = "nix-community/infra"
+  github_token     = data.sops_file.secrets.data["GITHUB_TOKEN"]
+  bot_github_token = data.sops_file.secrets.data["nix-infra-bot-token"]
+}
 module "nix-direnv" {
   source           = "../modules/github-push-bot"
   repo_name        = "nix-community/nix-direnv"
