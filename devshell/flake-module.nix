@@ -24,10 +24,8 @@
             options = [
               "-eucx"
               ''
-                export PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.findutils pkgs.statix pkgs.deadnix pkgs.nixpkgs-fmt ]}
+                export PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.findutils pkgs.deadnix pkgs.nixpkgs-fmt ]}
                 deadnix --edit "$@"
-                # statix breaks flake.nix's requirement for making outputs a function
-                echo "$@" | xargs -P$(nproc) -n1 statix fix -i flake.nix node-env.nix
                 nixpkgs-fmt "$@"
               ''
               "--"
