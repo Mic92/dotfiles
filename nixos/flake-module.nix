@@ -55,6 +55,7 @@ let
         inputs.srvos.nixosModules.common
         inputs.srvos.nixosModules.mixins-telegraf
         { networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 9273 ]; }
+        inputs.srvos.nixosModules.mixins-trusted-nix-caches
 
         ./modules/retiolum.nix
         ./modules/update-prefetch.nix
