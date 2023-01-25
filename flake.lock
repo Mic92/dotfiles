@@ -10,11 +10,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1674634638,
-        "narHash": "sha256-tHQ8ixu69ml603isMiha3XXPexYRK56lVbk548iudkc=",
+        "lastModified": 1674635899,
+        "narHash": "sha256-D5pr5Cfzq604cwG9DXlhUVFDO8VBuXidtxlou4CNFd0=",
         "owner": "Mic92",
         "repo": "bme680-mqtt",
-        "rev": "ae9ced6c4903faaad7a944455dd14e5891d671c8",
+        "rev": "f5c8f25b70cd2c3e41cfc0b2d5a6813e4e55c418",
         "type": "github"
       },
       "original": {
