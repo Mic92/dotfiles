@@ -70,6 +70,7 @@
       ferdium
       kubectl
       terraform-ls
+      hyperfine
 
       q
       rbw
