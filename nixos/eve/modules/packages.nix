@@ -1,6 +1,5 @@
 { pkgs, ... }: {
   environment.systemPackages = with pkgs; [
-    ruby.devEnv
     # must have
     psmisc
     openssl
@@ -17,16 +16,10 @@
     git
     tig
     python3
-    go
-    gcc
-    rustc
     strace
     ltrace
     nethogs
     iotop
-    gnumake
-    pkg-config
-    cmake
     man-pages
     netcat
     mtr
