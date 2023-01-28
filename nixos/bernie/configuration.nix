@@ -58,9 +58,9 @@
         libretro.mupen64plus
       ];
     })
+    jellyfin-media-player
     hedgewars
     sshuttle
-    syncplay
     chromium
     celluloid
     vscode
