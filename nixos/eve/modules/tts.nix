@@ -6,11 +6,15 @@
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
     path = [ pkgs.espeak ];
+    environment.HOME = "/var/lib/tts";
     serviceConfig = {
+      StateDirectory = "tts";
+      DynamicUser = true;
+      User = "tts";
+      Group = "tts";
       ExecStart = ''
         ${pkgs.tts}/bin/tts-server --model_name tts_models/en/ljspeech/vits --port 5004
       '';
-      User = "joerg";
     };
   };
 
