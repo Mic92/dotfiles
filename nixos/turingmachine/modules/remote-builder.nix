@@ -4,7 +4,6 @@
   nix.buildMachines = [
     {
       hostName = "ryan.dse.in.tum.de";
-      #hostName = "ryan.r";
       sshUser = "nix";
       protocol = "ssh-ng";
       sshKey = config.sops.secrets.id_buildfarm.path;

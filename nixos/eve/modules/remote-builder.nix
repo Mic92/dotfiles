@@ -40,14 +40,6 @@
       ];
     }
   ];
-  #programs.ssh.extraConfig = ''
-  #  Host ryan-builder
-  #    ProxyJump tunnel@login-builder
-  #    IdentityFile ${config.sops.secrets.tum-builder.path}
-  #  Host login-builder
-  #    HostName login.dse.in.tum.de
-  #    IdentityFile ${config.sops.secrets.tum-builder.path}
-  #'';
   programs.ssh.knownHosts = {
     "aarch64.nixos.community" = {
       hostNames = [ "aarch64.nixos.community" ];
@@ -57,10 +49,6 @@
       hostNames = [ "mac01.numtide.com" ];
       publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDrUaBPZktk41hYHN95IIHBL4bn7LbZy1aLra/ONv4go";
     };
-    #"login-builder" = {
-    #  hostNames = ["login.dse.in.tum.de"];
-    #  publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOdlUylM9WIFfIYZDK8rjVYQzX+RYwIlLgsEh4j0pNx6";
-    #};
   };
   sops.secrets.tum-builder = { };
   sops.secrets.ssh-aarch64-builder = { };

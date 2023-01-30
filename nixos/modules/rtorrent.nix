@@ -45,6 +45,7 @@ in
       modules = [
         pkgs.nginxModules.pam
         pkgs.nginxModules.fancyindex
+        pkgs.nginxModules.zstd
       ];
     };
     virtualHosts."flood.r" = {
