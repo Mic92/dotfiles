@@ -729,26 +729,18 @@ untilport(){
 }
 
 nixify() {
-  if [ ! -e ./.envrc ]; then
+  if [[ ! -e shell.nix ]] && [[ ! -e default.nix ]]; then
+    nix flake new -t github:Mic92/flake-templates#nix-shell .
+  elif [ ! -e ./.envrc ]; then
     echo "use nix" > .envrc
     direnv allow
   fi
-  if [[ ! -e shell.nix ]] && [[ ! -e default.nix ]]; then
-    cat > default.nix <<'EOF'
-with import <nixpkgs> {};
-mkShell {
-  nativeBuildInputs = [
-    bashInteractive
-  ];
-}
-EOF
-    ${EDITOR:-vim} default.nix
-  fi
+  ${EDITOR:-vim} default.nix
 }
 
 flakify() {
   if [ ! -e flake.nix ]; then
-    nix flake new -t github:hercules-ci/flake-parts .
+    nix flake new -t github:Mic92/flake-templates#nix-develop .
   elif [ ! -e .envrc ]; then
     echo "use flake" > .envrc
     direnv allow
