@@ -176,7 +176,7 @@ bors-review() {
   branch=$(id -un)-ci
   git push --force origin "HEAD:$branch"
   if [[ $(gh pr view --json state --template '{{.state}}' "$branch") != "OPEN" ]]; then
-    gh pr create --title "CI" --body "bors merge" --head "$branch"
+    gh pr create --body "bors merge" --head "$branch"
   else
     sleep 3 # work around to wait for bors to cancel the old PR
     gh pr comment "$branch" --body "bors merge"
@@ -733,8 +733,8 @@ nixify() {
     nix flake new -t github:Mic92/flake-templates#nix-shell .
   elif [ ! -e ./.envrc ]; then
     echo "use nix" > .envrc
-    direnv allow
   fi
+  direnv allow
   ${EDITOR:-vim} default.nix
 }
 
@@ -743,8 +743,8 @@ flakify() {
     nix flake new -t github:Mic92/flake-templates#nix-develop .
   elif [ ! -e .envrc ]; then
     echo "use flake" > .envrc
-    direnv allow
   fi
+  direnv allow
   ${EDITOR:-vim} flake.nix
 }
 
