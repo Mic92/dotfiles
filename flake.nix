@@ -80,6 +80,8 @@
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
+
+    lanzaboote.url = "github:nix-community/lanzaboote";
   };
 
   outputs = inputs @ { self, flake-parts, nixpkgs, ... }:
