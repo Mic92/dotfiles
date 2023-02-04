@@ -93,6 +93,8 @@ in
 
           inputs.srvos.nixosModules.desktop
 
+          inputs.lanzaboote.nixosModules.lanzaboote
+
           #self.inputs.lanzaboote.nixosModules.lanzaboote
           #({pkgs, ...}: {
           #  programs.hyprland.enable = true;
@@ -120,6 +122,7 @@ in
           inputs.srvos.nixosModules.server
           inputs.srvos.nixosModules.mixins-nginx
           inputs.harmonia.nixosModules.harmonia
+          #inputs.lightning-knd.nixosModules.lightning-knd
         ];
     };
 

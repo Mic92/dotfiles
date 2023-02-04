@@ -60,7 +60,6 @@
   boot = {
     zfs.requestEncryptionCredentials = [ "zroot/root" ];
 
-    loader.systemd-boot.enable = true;
     # when installing toggle this
     loader.efi.canTouchEfiVariables = false;
 
@@ -228,4 +227,10 @@
 
   system.stateVersion = "22.11";
   boot.initrd.systemd.enable = true;
+
+  boot.loader.systemd-boot.enable = lib.mkForce false;
+  boot.lanzaboote = {
+    enable = true;
+    pkiBundle = "/etc/secureboot";
+  };
 }
