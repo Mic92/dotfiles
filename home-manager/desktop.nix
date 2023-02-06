@@ -71,6 +71,7 @@
       kubectl
       terraform-ls
       hyperfine
+      inkscape
 
       q
       rbw
