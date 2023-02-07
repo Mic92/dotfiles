@@ -343,7 +343,9 @@
         "flake-compat": "flake-compat_2",
         "flake-parts": "flake-parts_2",
         "flake-utils": "flake-utils",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "nixpkgs-test": "nixpkgs-test",
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
         "rust-overlay": "rust-overlay"
@@ -456,16 +458,16 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1673039641,
-        "narHash": "sha256-Bc9FVhyLxp2mX2SXr0N4Fj4St7o4yaYEXpd12etSNBY=",
-        "owner": "NixOS",
+        "lastModified": 1675758962,
+        "narHash": "sha256-8QKxjisn3CtE8Whji/YwfrZSfRYhz7vpCrfMnqxa42M=",
+        "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "d9f73e41fd3c8e85b266bdb91cb7535600010798",
+        "rev": "e56a7f6dd22e581263f17f8a42dd5ea2f9ba6915",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
-        "ref": "nixos-unstable-small",
+        "owner": "Mic92",
+        "ref": "main",
         "repo": "nixpkgs",
         "type": "github"
       }
@@ -553,22 +555,6 @@
       }
     },
     "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1675758962,
-        "narHash": "sha256-8QKxjisn3CtE8Whji/YwfrZSfRYhz7vpCrfMnqxa42M=",
-        "owner": "Mic92",
-        "repo": "nixpkgs",
-        "rev": "e56a7f6dd22e581263f17f8a42dd5ea2f9ba6915",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "ref": "main",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_3": {
       "locked": {
         "lastModified": 1675545634,
         "narHash": "sha256-TbQeQcM5TA/wIho6xtzG+inUfiGzUXi8ewwttiQWYJE=",
@@ -658,7 +644,7 @@
         "nix-index-database": "nix-index-database",
         "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "nixpkgs-systemd": "nixpkgs-systemd",
         "nur": "nur",
         "retiolum": "retiolum",
@@ -735,7 +721,7 @@
     },
     "treefmt-nix": {
       "inputs": {
-        "nixpkgs": "nixpkgs_3"
+        "nixpkgs": "nixpkgs_2"
       },
       "locked": {
         "lastModified": 1675588998,

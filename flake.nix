@@ -82,6 +82,7 @@
     treefmt-nix.url = "github:numtide/treefmt-nix";
 
     lanzaboote.url = "github:nix-community/lanzaboote";
+    lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = inputs @ { self, flake-parts, nixpkgs, ... }:

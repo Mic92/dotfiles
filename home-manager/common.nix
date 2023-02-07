@@ -39,6 +39,7 @@
         du-dust
         pkgs.nix
 
+        socat
         tmux
         nurl
         htop
