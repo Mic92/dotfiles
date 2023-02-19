@@ -767,11 +767,6 @@ if [[ $TERM = linux ]]; then
   setterm -regtabs 2 # set tab width of 4 (only works on TTY)
 fi
 
-## Per machine zshrc
-if [[ -f "$HOME/.zshrc.$HOST" ]]; then
-  source "$HOME/.zshrc.$HOST"
-fi
-
 # Plugins
 if [[ -f ~/.zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
   source ~/.zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -814,7 +809,6 @@ fi
 if [[ -f ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]]; then
   source ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 fi
-
 
 # prevent broken terminals
 ttyctl -f
