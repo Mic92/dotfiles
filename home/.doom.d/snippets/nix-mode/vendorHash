@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: vanity checksum for go
+# key: vendorHash
+# --
+vendorHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
