@@ -20,6 +20,9 @@ if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then
   # shellcheck disable=SC1091
   . ~/.nix-profile/etc/profile.d/nix.sh
 fi
+
+source ~/.zsh-autocomplete/zsh-autocomplete.plugin.zsh
+
 if [[ -d ~/git/nixpkgs ]]; then
   export NIX_PATH="nixpkgs=$HOME/git/nixpkgs:$NIX_PATH"
 fi
@@ -225,18 +228,18 @@ bindkey '^X^e' edit-command-line
 
 ## Completion
 autoload colors; colors;
-autoload -zU compinit
+#autoload -zU compinit
 fignore=(.DS_Store $fignore)
 [[ -d ~/.zsh-completions/src ]] && fpath+=(~/.zsh-completions/src)
 [[ -d ~/.nix-profile/share/zsh/site-functions ]] && fpath+=(~/.nix-profile/share/zsh/site-functions)
 [[ -d /run/current-system/sw/share/zsh/site-functions/ ]] && fpath+=(/run/current-system/sw/share/zsh/site-functions/)
 
 # only update zsh completion once a day
-if [[ -n ${ZDOTDIR:-${HOME}}/$ZSH_COMPDUMP(#qN.mh+24) ]]; then
-  compinit -d $ZSH_COMPDUMP
-else
-  compinit -C
-fi
+#if [[ -n ${ZDOTDIR:-${HOME}}/$ZSH_COMPDUMP(#qN.mh+24) ]]; then
+#  compinit -d $ZSH_COMPDUMP
+#else
+#  compinit -C
+#fi
 zmodload -i zsh/complist
 setopt complete_in_word
 unsetopt always_to_end
