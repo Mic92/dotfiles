@@ -21,7 +21,6 @@ if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then
   . ~/.nix-profile/etc/profile.d/nix.sh
 fi
 
-source ~/.zsh-autocomplete/zsh-autocomplete.plugin.zsh
 
 if [[ -d ~/git/nixpkgs ]]; then
   export NIX_PATH="nixpkgs=$HOME/git/nixpkgs:$NIX_PATH"
@@ -73,6 +72,7 @@ if [[ -n $HOST && "$__host__" != "$HOST" ]]; then
   tmux set -g status-bg "colour$(string_hash "$HOST" 255)"
   export __host__=$HOST
 fi
+
 
 ##  Helpers
 # xalias - only supposed to be used with simple aliases.
@@ -228,36 +228,22 @@ bindkey '^X^e' edit-command-line
 
 ## Completion
 autoload colors; colors;
-#autoload -zU compinit
+
+zstyle ':autocomplete:*' insert-unambiguous yes
+zstyle ':autocomplete:*' fzf-completion yes
+zstyle ':autocomplete:*' widget-style menu-complete
+
+source ~/.zsh-autocomplete/zsh-autocomplete.plugin.zsh
+
+zstyle ':completion:*:paths' path-completion yes
+
 fignore=(.DS_Store $fignore)
 [[ -d ~/.zsh-completions/src ]] && fpath+=(~/.zsh-completions/src)
 [[ -d ~/.nix-profile/share/zsh/site-functions ]] && fpath+=(~/.nix-profile/share/zsh/site-functions)
 [[ -d /run/current-system/sw/share/zsh/site-functions/ ]] && fpath+=(/run/current-system/sw/share/zsh/site-functions/)
 
-# only update zsh completion once a day
-#if [[ -n ${ZDOTDIR:-${HOME}}/$ZSH_COMPDUMP(#qN.mh+24) ]]; then
-#  compinit -d $ZSH_COMPDUMP
-#else
-#  compinit -C
-#fi
-zmodload -i zsh/complist
 setopt complete_in_word
 unsetopt always_to_end
-zstyle ':completion:*' insert-tab pending
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
-highlights='${PREFIX:+=(#bi)($PREFIX:t)(?)*==31=1;32}':${(s.:.)LS_COLORS}}
-highlights2='=(#bi) #([0-9]#) #([^ ]#) #([^ ]#) ##*($PREFIX)*==1;31=1;35=1;33=1;32=}'
-zstyle -e ':completion:*' list-colors 'if [[ $words[1] != kill && $words[1] != strace ]]; then reply=( "'$highlights'" ); else reply=( "'$highlights2'" ); fi'
-unset highlights
-zstyle ':completion:*' squeeze-slashes true
-zstyle ':completion:*' expand 'yes'
-zstyle ':completion:*:match:*' original only
-zstyle ':completion:*:approximate:*' max-errors 1 numeric
-zstyle ':completion::complete:*' use-cache 1
-zstyle ':completion::complete:*' cache-path ~/.zsh/cache/
-zstyle ':completion:*:cd:*' ignore-parents parent pwd
-zstyle ':completion:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
-zstyle ':completion:*:*:*:processes' command "ps -u $(whoami) -o pid,user,comm -w -w"
 
 ## Prompt
 PURE_GIT_UNTRACKED_DIRTY=0 PURE_GIT_PULL=0
@@ -703,13 +689,6 @@ make(){
   local build_path="$(dirname "$(upfind "Makefile")")"
   command make -C "${build_path:-.}" "$@"
 }
-cargo(){
-  local build_path="$(dirname "$(upfind "Cargo.toml")")"
-  (
-    builtin cd "${build_path:-.}" >/dev/null || true
-    command cargo "$@"
-  )
-}
 real-which(){
   readlink -f "$(command which "$@")"
 }
@@ -780,13 +759,6 @@ tmux-upterm() {
 
 ## Autocycle
 setopt autopushd
-# Cycle directory with Ctrl-Right and Ctrl-Left
-eval "insert-cycledleft () { zle push-line; LBUFFER='pushd -q +1'; zle accept-line }"
-zle -N insert-cycledleft
-bindkey "^[[1;5C" insert-cycledleft
-eval "insert-cycledright () { zle push-line; LBUFFER='pushd -q -0'; zle accept-line }"
-zle -N insert-cycledright
-bindkey "^[[1;5D" insert-cycledright
 
 ## Terminal stuff
 ulimit -S -c 0 # disable core dumps
@@ -800,13 +772,7 @@ if [[ -f "$HOME/.zshrc.$HOST" ]]; then
   source "$HOME/.zshrc.$HOST"
 fi
 
-## Plugins
-if [[ -f ~/.zsh-history-substring-search/zsh-history-substring-search.zsh ]]; then
-  source ~/.zsh-history-substring-search/zsh-history-substring-search.zsh
-  # bind P and N for EMACS mode
-  bindkey -M emacs '^P' history-substring-search-up
-  bindkey -M emacs '^N' history-substring-search-down
-fi
+# Plugins
 if [[ -f ~/.zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
   source ~/.zsh-autosuggestions/zsh-autosuggestions.zsh
   export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE=fg=60
@@ -817,7 +783,6 @@ fi
 if [[ -f ~/.zsh-autopair/autopair.zsh ]]; then
   source ~/.zsh-autopair/autopair.zsh
 fi
-source ~/.zsh-termsupport
 
 if [ -n "${commands[r2]}" ]; then
   r2() {
