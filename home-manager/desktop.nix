@@ -102,6 +102,7 @@
           libretro.bsnes-hd
           libretro.mupen64plus
           libretro.beetle-psx-hw
+          libretro.dolphin
         ];
       })
 
