@@ -169,8 +169,21 @@ bors-review() {
   fi
   branch=$(id -un)-ci
   git push --force origin "HEAD:$branch"
+  targetBranch=$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)
+  if [[ $(git remote) =~ upstream ]]; then
+    remoteName=upstream
+  else
+    remoteName=origin
+  fi
   if [[ $(gh pr view --json state --template '{{.state}}' "$branch") != "OPEN" ]]; then
-    gh pr create --body "bors merge" --head "$branch"
+    BUFFER=$(git log --reverse --pretty="format:%s%n%n%b%n%n" "$remoteName/$targetBranch..HEAD")
+    edit-command-line
+    firstLine=${BUFFER%%$'\n'*}
+    rest=${BUFFER#*$'\n'}
+    if [[ $firstLine == $rest ]]; then
+      rest=""
+    fi
+    gh pr create --title "$firstLine" --body "$rest" --base "$targetBranch" --head "$branch"
   else
     sleep 3 # work around to wait for bors to cancel the old PR
     gh pr comment "$branch" --body "bors merge"
