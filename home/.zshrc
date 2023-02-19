@@ -162,15 +162,6 @@ kpaste() {
 hm(){
   nix run "$HOME/.homesick/repos/dotfiles#hm" -- "$@"
 }
-nix-index-update() {
-  filename="index-x86_64-$(uname | tr A-Z a-z)"
-  mkdir -p ~/.cache/nix-index
-  pushd ~/.cache/nix-index
-  # -N will only download a new version if there is an update.
-  wget -q -N https://github.com/Mic92/nix-index-database/releases/latest/download/$filename
-  ln -f $filename files
-  popd
-}
 # merge after CI is green.
 bors-review() {
   if [[ -n ${commands[treefmt]} ]] && ! treefmt --fail-on-change; then
