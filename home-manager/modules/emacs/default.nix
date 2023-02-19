@@ -22,28 +22,6 @@ with lib; let
         ${toString extraArgs} "$@"
     '';
 
-  daemonScript = pkgs.writeScript "emacs-daemon" ''
-    #!${pkgs.zsh}/bin/zsh -l
-    export PATH=$PATH:${lib.makeBinPath [pkgs.git pkgs.sqlite pkgs.unzip]}
-    if [ ! -d $HOME/.emacs.d/.git ]; then
-      mkdir -p $HOME/.emacs.d
-      git -C $HOME/.emacs.d init
-    fi
-    git -C $HOME/.emacs.d remote add origin https://github.com/doomemacs/doomemacs.git || \
-      git -C $HOME/.emacs.d remote set-url origin https://github.com/doomemacs/doomemacs.git
-    # do not downgrade...
-    if ! git merge-base --is-ancestor "${inputs.doom-emacs.rev}" HEAD; then
-      git -C $HOME/.emacs.d fetch https://github.com/doomemacs/doomemacs.git || true
-      git -C $HOME/.emacs.d checkout ${inputs.doom-emacs.rev} || true
-      YES=1 FORCE=1 nice -n19 $HOME/.emacs.d/bin/doom sync -u || true
-    else
-      nice -n19 $HOME/.emacs.d/bin/doom sync || true
-    fi
-    # This files tends to accumulate a lot of project that it is trying to load at startup
-    rm "$HOME/.emacs.d/.local/cache/lsp-session"
-    exec ${myemacs}/bin/emacs --daemon
-  '';
-
   # list taken from here: (message "%s" tree-sitter-major-mode-language-alist)
   # commented out are not yet packaged in nix
   langs = [
@@ -114,12 +92,45 @@ in
 
   systemd = lib.mkIf (!pkgs.stdenv.isDarwin) {
     user.services.emacs-daemon = {
+
       Install.WantedBy = [ "default.target" ];
       Service = {
-        Type = "forking";
+        Environment = "";
+        Type = "notify";
         TimeoutStartSec = "10min";
-        Restart = "always";
-        ExecStart = toString daemonScript;
+
+        # Emacs will exit with status 15 after having received SIGTERM, which
+        # is the default "KillSignal" value systemd uses to stop services.
+        SuccessExitStatus = 15;
+
+        Restart = "on-failure";
+
+        ExecStartPre = toString (pkgs.writeScript "updateDoom" ''
+          #!${pkgs.zsh}/bin/zsh -l
+          export PATH=${lib.makeBinPath [ pkgs.git pkgs.sqlite pkgs.unzip pkgs.nodejs ]}:$PATH
+          if [ ! -d $HOME/.emacs.d/.git ]; then
+            mkdir -p $HOME/.emacs.d
+            git -C $HOME/.emacs.d init
+          fi
+          git -C $HOME/.emacs.d remote add origin https://github.com/doomemacs/doomemacs.git || \
+            git -C $HOME/.emacs.d remote set-url origin https://github.com/doomemacs/doomemacs.git
+          # do not downgrade...
+          if ! git merge-base --is-ancestor "${inputs.doom-emacs.rev}" HEAD; then
+            git -C $HOME/.emacs.d fetch https://github.com/doomemacs/doomemacs.git || true
+            git -C $HOME/.emacs.d checkout ${inputs.doom-emacs.rev} || true
+            YES=1 FORCE=1 nice -n19 $HOME/.emacs.d/bin/doom sync -u || true
+          else
+            nice -n19 $HOME/.emacs.d/bin/doom sync || true
+          fi
+          # This files tends to accumulate a lot of project that it is trying to load at startup
+          rm -f "$HOME/.emacs.d/.local/cache/lsp-session"
+        '');
+
+        ExecStart = toString (pkgs.writeScript "emacs-daemon" ''
+          #!${pkgs.zsh}/bin/zsh -l
+          export PATH=${lib.makeBinPath [ pkgs.git pkgs.sqlite pkgs.unzip pkgs.nodejs ]}:$PATH
+          exec ${myemacs}/bin/emacs --fg-daemon
+        '');
       };
     };
   };
