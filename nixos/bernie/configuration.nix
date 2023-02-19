@@ -56,6 +56,7 @@
       cores = [
         libretro.bsnes-hd
         libretro.mupen64plus
+        libretro.beetle-psx-hw
       ];
     })
     jellyfin-media-player
