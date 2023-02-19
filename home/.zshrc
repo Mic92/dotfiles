@@ -229,9 +229,8 @@ bindkey '^X^e' edit-command-line
 ## Completion
 autoload colors; colors;
 
-zstyle ':autocomplete:*' insert-unambiguous yes
 zstyle ':autocomplete:*' fzf-completion yes
-zstyle ':autocomplete:*' widget-style menu-complete
+zstyle ':autocomplete:*' widget-style menu-select
 
 source ~/.zsh-autocomplete/zsh-autocomplete.plugin.zsh
 
