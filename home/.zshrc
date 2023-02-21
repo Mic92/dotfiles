@@ -176,6 +176,8 @@ bors-review() {
     remoteName=origin
   fi
   if [[ $(gh pr view --json state --template '{{.state}}' "$branch") != "OPEN" ]]; then
+    # BUFFER is an internal variable used by edit-command-line
+    # We fill it with commit subject and body seperated by newlines
     BUFFER=$(git log --reverse --pretty="format:%s%n%n%b%n%n" "$remoteName/$targetBranch..HEAD")
     edit-command-line
     firstLine=${BUFFER%%$'\n'*}
@@ -183,7 +185,8 @@ bors-review() {
     if [[ $firstLine == $rest ]]; then
       rest=""
     fi
-    gh pr create --title "$firstLine" --body "$rest" --base "$targetBranch" --head "$branch"
+    body=$(printf '%s\nbors merge' "$rest" )
+    gh pr create --title "$firstLine" --body "$body" --base "$targetBranch" --head "$branch"
   else
     sleep 3 # work around to wait for bors to cancel the old PR
     gh pr comment "$branch" --body "bors merge"
