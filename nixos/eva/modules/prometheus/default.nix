@@ -70,6 +70,7 @@ in
             targets = [
               "prism.r:9273"
               "gum.r:9273"
+              "kelle.r:9273"
             ];
 
             labels.org = "krebs";
