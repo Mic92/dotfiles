@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: sleep
+# key: sleep
+# --
+import time; time.sleep()
