@@ -228,6 +228,8 @@
   system.stateVersion = "22.11";
   boot.initrd.systemd.enable = true;
 
+  programs.gamemode.enable = true;
+
   boot.loader.systemd-boot.enable = lib.mkForce false;
   boot.lanzaboote = {
     enable = true;
