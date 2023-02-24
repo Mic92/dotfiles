@@ -34,6 +34,7 @@
       twitter-color-emoji
       upterm
       eternal-terminal
+      gimp
 
       arandr
       signal-desktop
