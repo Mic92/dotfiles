@@ -11,6 +11,7 @@ let
     /^devkid-[^@.]+@devkid\.net$/ devkid@devkid.net
     /^ls1-logins-[^@.]+@thalheim.io$/ ls1-logins@lists.lrz.de
     /^info\.[^@.]+@davhau\.com$/ info@davhau.com
+    /^dave\.[^@.]+@davhau\.com$/ info@davhau.com
   '';
 
   domains = pkgs.writeText "domains.cf" ''
