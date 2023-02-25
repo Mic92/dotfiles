@@ -10,6 +10,7 @@ let
     /^albert-[^@.]+@halfco\.de$/ albert@halfco.de
     /^devkid-[^@.]+@devkid\.net$/ devkid@devkid.net
     /^ls1-logins-[^@.]+@thalheim.io$/ ls1-logins@lists.lrz.de
+    /^info\.[^@.]+@davhau\.com$/ info@davhau.com
   '';
 
   domains = pkgs.writeText "domains.cf" ''
