@@ -1,0 +1,25 @@
+name: "Update zsh submodules"
+on:
+  repository_dispatch:
+  workflow_dispatch:
+  schedule:
+    - cron:  '51 2 * * *'
+jobs:
+  updateAlerts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Update zsh submodules
+        run: git submodule foreach sh -c "git pull origin main || git pull origin master"
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          commit-message: Upgrade submodules
+          branch: mimir-alerts
+          token: ${{ secrets.GH_TOKEN_FOR_CI }}
+          delete-branch: true
+          title: Upgrade submodules
+          body: |
+            bors merge
