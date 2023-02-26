@@ -24,5 +24,5 @@ customCommands:
     subprocess: true
   - key: '<c-a>'
     context: "global"
-    command: 'for b in upstream/main upstream/master origin/main origin/master; do if git rev-parse --verify $b; then git absorb --and-rebase --base $b; break; fi; done'
+    command: 'for b in upstream/main upstream/master origin/main origin/master origin/dev; do if git rev-parse --verify $b; then git absorb --and-rebase --base $b; break; fi; done'
     subprocess: true
