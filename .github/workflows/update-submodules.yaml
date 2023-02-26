@@ -18,7 +18,6 @@ jobs:
         with:
           commit-message: Upgrade submodules
           branch: mimir-alerts
-          token: ${{ secrets.GH_TOKEN_FOR_CI }}
           delete-branch: true
           title: Upgrade submodules
           body: |
