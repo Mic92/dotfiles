@@ -12,13 +12,12 @@ jobs:
         with:
           submodules: true
       - name: Update zsh submodules
-        run: git submodule foreach sh -c "git pull origin main || git pull origin master"
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
-        with:
-          commit-message: Upgrade submodules
-          branch: mimir-alerts
-          delete-branch: true
-          title: Upgrade submodules
-          body: |
-            bors merge
+        run: |
+          git pull --recurse-submodules
+          git submodule update --remote --recursive
+      - name: Commit update
+        run: |
+          git config --global user.name 'Git bot'
+          git config --global user.email 'bot@noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git commit -am "Auto updated submodule references" && git push || echo "No changes to commit"
