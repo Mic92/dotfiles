@@ -107,6 +107,7 @@ in
 
         ExecStartPre = toString (pkgs.writeScript "updateDoom" ''
           #!${pkgs.zsh}/bin/zsh -l
+          set -x
           export PATH=${lib.makeBinPath [ pkgs.git pkgs.sqlite pkgs.unzip pkgs.nodejs ]}:$PATH
           if [ ! -d $HOME/.emacs.d/.git ]; then
             mkdir -p $HOME/.emacs.d
@@ -115,12 +116,13 @@ in
           git -C $HOME/.emacs.d remote add origin https://github.com/doomemacs/doomemacs.git || \
             git -C $HOME/.emacs.d remote set-url origin https://github.com/doomemacs/doomemacs.git
           # do not downgrade...
-          if ! git merge-base --is-ancestor "${inputs.doom-emacs.rev}" HEAD; then
+          if [[ "$(git -C $HOME/.emacs.d rev-parse HEAD)" == "${inputs.doom-emacs.rev}" ]] \
+             || git -C $HOME/.emacs.d merge-base --is-ancestor "${inputs.doom-emacs.rev}" HEAD; then
+            nice -n19 $HOME/.emacs.d/bin/doom sync || true
+          else
             git -C $HOME/.emacs.d fetch https://github.com/doomemacs/doomemacs.git || true
             git -C $HOME/.emacs.d checkout ${inputs.doom-emacs.rev} || true
             YES=1 FORCE=1 nice -n19 $HOME/.emacs.d/bin/doom sync -u || true
-          else
-            nice -n19 $HOME/.emacs.d/bin/doom sync || true
           fi
           # This files tends to accumulate a lot of project that it is trying to load at startup
           rm -f "$HOME/.emacs.d/.local/cache/lsp-session"
