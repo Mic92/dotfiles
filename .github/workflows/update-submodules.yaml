@@ -13,8 +13,8 @@ jobs:
           submodules: true
       - name: Update zsh submodules
         run: |
-          git pull --recurse-submodules
-          git submodule update --remote --recursive
+          git submodule update --init --recursive
+          git submodule update --recursive --remote
       - name: Commit update
         run: |
           git config --global user.name 'Git bot'
