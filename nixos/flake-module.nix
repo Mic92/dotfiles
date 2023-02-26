@@ -23,27 +23,13 @@ let
       _module.args.inputs = self.inputs;
     }
     ({ pkgs, ... }: {
-      nix.nixPath = [
-        "nixpkgs=${pkgs.path}"
-        "home-manager=${inputs.home-manager}"
-        "nur=${inputs.nur}"
-      ];
-
-      #nix.extraOptions = let
-      #  registry = pkgs.runCommand "flake-registry.json" {} ''
-      #    jq 'setpath(;)' < ${flake-registry}/flake-registry.json > $out
-      #  '';
-      #in ''
-      #  flake-registry = ${registry}/flake-registry.json
-      #'';
-      nix.extraOptions = ''
-        flake-registry = ${inputs.flake-registry}/flake-registry.json
-      '';
       srvos.flake = self;
       documentation.info.enable = false;
       services.envfs.enable = true;
 
       imports = [
+        ./modules/nix-path.nix
+        ./modules/pinned-registry.nix
         ./modules/acme.nix
         ./modules/nix-daemon.nix
         ./modules/minimal-docs.nix
