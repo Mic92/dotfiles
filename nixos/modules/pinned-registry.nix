@@ -11,10 +11,8 @@ let
     overrides = json.load(open(sys.argv[1]))
     registry = json.load(sys.stdin)
     for entry in registry["flakes"]:
-        replacement = overrides.get(entry["from"]["id"])
-        if replacement:
+        if replacement := overrides.get(entry["from"]["id"]):
             entry["to"] = dict(type="path", path=replacement)
-
     json.dump(registry, sys.stdout)
   '';
 in {
