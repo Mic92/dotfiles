@@ -22,7 +22,7 @@ let
       _module.args.self = self;
       _module.args.inputs = self.inputs;
     }
-    ({ pkgs, ... }: {
+    ({ ... }: {
       srvos.flake = self;
       documentation.info.enable = false;
       services.envfs.enable = true;
