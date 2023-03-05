@@ -353,12 +353,12 @@ ip() {
     fi
 }
 xalias objdump='objdump -M intel'
-alias wget='noglob wget'
 alias curl='noglob curl --compressed --proto-default https'
 alias nix='noglob nix'
 alias nom='noglob nom'
 alias nixos-remote='noglob nixos-remote'
 alias nixos-rebuild='noglob nixos-rebuild'
+alias wget='noglob wget --continue --show-progress --progress=bar:force:noscroll'
 if [[ -n ${commands[hub]} ]]; then
   alias git='noglob hub'
 else
@@ -612,7 +612,11 @@ vil() {
   setopt shwordsplit
   IFS=':' ARGS=($@)
   unsetopt shwordsplit
-  vim +${ARGS[2]} ${ARGS[1]}
+  if [[ ${#ARGS[@]} -lt 2 ]]; then
+    vim ${ARGS[1]} # no line number given
+  else
+    vim +${ARGS[2]} ${ARGS[1]}
+  fi
 }
 # force output to be on a single line
 ss() {
@@ -626,19 +630,12 @@ ss() {
 sieve-edit() {
     local passwordfd
     exec {passwordfd} < <(rbw get Eve)
-    nix shell -f '<nixpkgs>' sieve-connect -c sieve-connect --passwordfd $passwordfd -s imap.thalheim.io -u joerg@higgsboson.tk --remotesieve Filter --edit
+    nix run nixpkgs#sieve-connect --passwordfd $passwordfd -s imap.thalheim.io -u joerg@higgsboson.tk --remotesieve Filter --edit
     exec {passwordfd}>&-
 }
 # Autossh - try to connect every 0.5 secs (modulo timeouts)
 sssh(){ while true; do command ssh -q "$@"; [ $? -ne 0 ] && break || sleep 0.5; done; }
 dumbssh(){ TERM=screen-256color ssh "$@"; }
-moshlogin(){
-  if ssh-add -L | grep -q "no identities"; then
-    ssh-add ~/.ssh/id_{rsa,ecdsa,ed25519}
-  fi
-  ssh -v eve killall mosh-server
-  mosh -A eve.mosh
-}
 # List directory after changing directory
 chpwd() { ls; }
 
@@ -646,7 +643,6 @@ chpwd() { ls; }
 precmd() {
   print -Pn "\e]133;A\e\\"
 }
-
 function osc7 {
     local LC_ALL=C uri input
     export LC_ALL
@@ -816,5 +812,5 @@ if [[ -f ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]]; the
   source ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 fi
 
-# prevent broken terminals
+# prevent broken terminals by resetting to sane defaults after a command
 ttyctl -f

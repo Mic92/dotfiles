@@ -83,7 +83,6 @@
       gnupg
       jmtpfs # needed for charging? WTF
       lorri
-      #
       (pkgs.runCommand "slack-aliases" { } ''
         mkdir -p $out/bin
         declare -A rooms=([manifold]=manifoldfinance \
