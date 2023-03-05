@@ -39,10 +39,6 @@ if [[ -S /nix/var/nix/daemon-socket/socket ]]; then
   export NIX_REMOTE=daemon
 fi
 
-function faketty {
-  script -qfc "$(printf "%q " "$@")";
-}
-
 export NIX_USER_PROFILE_DIR=${NIX_USER_PROFILE_DIR:-/nix/var/nix/profiles/per-user/${USER}}
 export NIX_PROFILES=${NIX_PROFILES:-$HOME/.nix-profile}
 
@@ -465,7 +461,6 @@ path=(
     $HOME/.cabal/bin
     $HOME/.cargo/bin
     $HOME/go/bin
-    $HOME/.go/bin
     $HOME/.gem/ruby/*.*.*/bin(NOn[1])
     # python
     $HOME/.local/bin/
@@ -752,6 +747,7 @@ fixssh() {
     fi
   done
 }
+function faketty { script -qfc "$(printf "%q " "$@")"; }
 
 tmux-upterm() {
   upterm host --server ssh://upterm.thalheim.io:2323 \
