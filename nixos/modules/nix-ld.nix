@@ -6,7 +6,6 @@
 
   programs.nix-ld.libraries = with pkgs; [
     stdenv.cc.cc
-    zlib
     fuse3
     alsa-lib
     at-spi2-atk
