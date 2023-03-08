@@ -84,17 +84,11 @@ in
           #}
           {
             targets = map (host: "${host}.r:9273") [
-              # we are loosing more and more Edinburgh machines
-              #"clara"
-              #"doctor"
-              #"grandalf"
-              #"sauron"
-              #"rose"
-              #"martha"
-              #"donna"
-              #"amy"
-
               # university
+              "amy"
+              "clara"
+              "rose"
+
               "astrid"
               "dan"
               "mickey"
