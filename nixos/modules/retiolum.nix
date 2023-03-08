@@ -5,4 +5,7 @@
   };
   sops.secrets.tinc-ed25519 = { };
   sops.secrets.tinc-rsa = { };
+
+  # only allow connections from hosts specified in our retiolum hosts.
+  services.tinc.networks.retiolum.extraConfig = "StrictSubnets yes";
 }
