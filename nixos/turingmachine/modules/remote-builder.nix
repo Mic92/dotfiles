@@ -7,7 +7,7 @@
       sshUser = "nix";
       protocol = "ssh-ng";
       sshKey = config.sops.secrets.id_buildfarm.path;
-      system = "x86_64-linux";
+      systems = [ "x86_64-linux" "i686-linux" ];
       maxJobs = 64;
       supportedFeatures = [
         "big-parallel"
@@ -33,7 +33,7 @@
       sshUser = "hetzner";
       protocol = "ssh-ng";
       sshKey = "/root/.ssh/id_ed25519";
-      system = "aarch64-darwin";
+      systems = [ "aarch64-darwin" "x86_64-darwin" ];
       maxJobs = 8;
       supportedFeatures = [
         "big-parallel"
