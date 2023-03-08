@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 import os
 import socket
 import subprocess
@@ -9,8 +10,6 @@ from typing import List
 
 from deploykit import DeployGroup, DeployHost, HostKeyCheck, parse_hosts
 from invoke import task
-
-RSYNC_EXCLUDES = ["gdb", "zsh", ".terraform", ".direnv", ".mypy-cache", ".git"]
 
 ROOT = Path(__file__).parent.resolve()
 os.chdir(ROOT)
@@ -22,12 +21,19 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
     """
     g = DeployGroup(hosts)
 
+    res = subprocess.run(
+        ["nix", "flake", "metadata", "--json"],
+        check=True,
+        text=True,
+        stdout=subprocess.PIPE,
+    )
+    data = json.loads(res.stdout)
+    path = data["path"]
+
     def deploy(h: DeployHost) -> None:
         target = f"{h.user or 'root'}@{h.host}"
         flake_path = h.meta.get("flake_path", "/etc/nixos")
-        h.run_local(
-            f"rsync {' --exclude '.join([''] + RSYNC_EXCLUDES)} -vaF --delete -e ssh . {target}:{flake_path}"
-        )
+        h.run_local(f"rsync -vaF --delete -e ssh {path}/ {target}:{flake_path}")
 
         flake_attr = h.meta.get("flake_attr", "")
         if flake_attr:
@@ -139,11 +145,7 @@ def deploy(c, _hosts=""):
             eve,
             DeployHost(
                 "localhost",
-                user="joerg",
-                meta=dict(
-                    extra_args=["--use-remote-sudo"],
-                    flake_path="/home/joerg/.homesick/repos/dotfiles",
-                ),
+                user="root",
                 forward_agent=True,
             ),
             DeployHost(
