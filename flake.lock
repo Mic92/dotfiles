@@ -236,14 +236,15 @@
         ],
         "nixpkgs": [
           "nixpkgs"
-        ]
+        ],
+        "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1677831817,
-        "narHash": "sha256-dcXHq1Kk1cx8EFh/W4lq8KZWIVIaFU6uKekRAZMUbH0=",
+        "lastModified": 1678638312,
+        "narHash": "sha256-yy7QaDXfkY2izNG70s8+/F7Bzav2hL6v55q2sijuN8A=",
         "owner": "nix-community",
         "repo": "harmonia",
-        "rev": "caa5aff87f4455510b4c6270bcda36e3b6b0ceec",
+        "rev": "aaa8dd986aa34273c3ec6fe324edbf11ed75b0f9",
         "type": "github"
       },
       "original": {
@@ -650,7 +651,7 @@
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
-        "treefmt-nix": "treefmt-nix"
+        "treefmt-nix": "treefmt-nix_2"
       }
     },
     "rust-overlay": {
@@ -720,6 +721,27 @@
       }
     },
     "treefmt-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "harmonia",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1678616506,
+        "narHash": "sha256-JBlOlpPj7VtzFTApEHioFl8YSVhyT0dMgymV8t7sW1g=",
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "rev": "5ec73d38dde4c766a9ae19840fc6afa724096f00",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "treefmt-nix_2": {
       "inputs": {
         "nixpkgs": "nixpkgs_2"
       },
