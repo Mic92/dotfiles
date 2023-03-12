@@ -52,6 +52,7 @@
     harmonia.url = "github:nix-community/harmonia";
     harmonia.inputs.flake-parts.follows = "flake-parts";
     harmonia.inputs.nixpkgs.follows = "nixpkgs";
+    harmonia.inputs.treefmt-nix.follows = "treefmt-nix";
 
     doom-emacs.url = "github:doomemacs/doomemacs/master";
     doom-emacs.flake = false;
