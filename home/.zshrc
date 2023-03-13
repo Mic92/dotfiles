@@ -625,7 +625,7 @@ ss() {
 sieve-edit() {
     local passwordfd
     exec {passwordfd} < <(rbw get Eve)
-    nix run nixpkgs#sieve-connect --passwordfd $passwordfd -s imap.thalheim.io -u joerg@higgsboson.tk --remotesieve Filter --edit
+    nix run nixpkgs#sieve-connect -- --passwordfd $passwordfd -s imap.thalheim.io -u joerg@higgsboson.tk --remotesieve Filter --edit
     exec {passwordfd}>&-
 }
 # Autossh - try to connect every 0.5 secs (modulo timeouts)
