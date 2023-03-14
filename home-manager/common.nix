@@ -45,6 +45,9 @@
         htop
         hub
         gh
+        hyperfine
+        jq
+        yq-go
         tig
         lazygit
         git-absorb
