@@ -26,9 +26,6 @@
         };
       })
 
-      # for development
-      pkgs.kubectl
-      pkgs.gomuks
-      pkgs.yq-go
+      pkgs.matterbridge
     ];
 }
