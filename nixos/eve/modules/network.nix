@@ -84,6 +84,12 @@ in
     boot.kernelParams = [ "ip=127.0.0.1:::::lo:none" ];
 
     sops.secrets.initrd-ssh-key = { };
+    boot.initrd.postDeviceCommands = ''
+      while ! test -f /root/decrypted; do
+        echo "wait for zfs to be decrypted"
+        sleep 1
+      done
+    '';
     boot.initrd.network = {
       enable = true;
       ssh = {
