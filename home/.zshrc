@@ -560,7 +560,7 @@ fi
 
 unlock_root(){
   pw=$(rbw get 'zfs encryption')
-  ssh root@eve.i -p 2222 "zpool import -a; echo "${pw}" | zfs load-key -a; echo "${pw}" | zfs load-key -a; killall zfs"
+  ssh root@eve.i -p 2222 "zpool import -a; echo "${pw}" | zfs load-key -a; echo "${pw}" | zfs load-key -a; touch /root/decrypted; sleep 9999"
 }
 # Autoinstall Bundle
 bundle() {
