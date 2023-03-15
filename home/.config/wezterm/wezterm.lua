@@ -11,23 +11,6 @@ return {
       bootstrap_via_ssh = "eve.thalheim.io",
       expected_cn = "eve"
     },
-    {
-      -- This name identifies the domain
-      name = "bill",
-
-      -- The address to connect to
-      remote_address = "bill.r:60000",
-      bootstrap_via_ssh = "bill.r",
-    },
-    {
-      -- This name identifies the domain
-      name = "rose",
-
-      -- The address to connect to
-      remote_address = "rose.r:60000",
-      bootstrap_via_ssh = "rose.r",
-      expected_cn = "rose"
-    }
   },
   --unix_domains = {
   --  {
