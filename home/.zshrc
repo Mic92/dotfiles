@@ -534,11 +534,7 @@ export MANWIDTH=80
 # If the execution of a command takes longer than
 # REPORTTIME (in seconds),  time statistics are printed
 export REPORTTIME=4
-if [[ $OSTYPE == darwin* ]] || [[ $OSTYPE == freebsd* ]]; then
-  export LC_ALL=en_US.UTF-8
-else
-  export LC_ALL=en_DK.UTF-8
-fi
+export LC_ALL=en_US.UTF-8
 export PERL_CPANM_OPT="--local-lib=~/.perl5"
 export PERL5LIB=~/.perl5/lib/perl5
 
