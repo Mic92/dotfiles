@@ -18,3 +18,10 @@ jobs:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Update flake.lock
         uses: Mic92/update-flake-lock@main
+        with:
+          pr-body: |
+            Automated changes by the update-flake-lock
+            ```
+            {{ env.GIT_COMMIT_MESSAGE }}
+            ```
+            bors merge
