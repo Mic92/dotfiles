@@ -461,11 +461,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1679077297,
-        "narHash": "sha256-tdGX0toFth1oiYeFZayS/Xqp4TrYT4PTW3iMTSAgAuQ=",
+        "lastModified": 1679077971,
+        "narHash": "sha256-pLUdL2BdceTY1xOyEwJgA4QLl5QQtlqP1KzXWxkSp+c=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "c2d069bea9585b2e3668980768635cadab5f993e",
+        "rev": "ef08fa5fc061a406de3105bd9c83ec38794cb38f",
         "type": "github"
       },
       "original": {
