@@ -66,6 +66,9 @@ in
       push_server = {
         inherit database;
       };
+      relay_api = {
+        inherit database;
+      };
       mscs = {
         inherit database;
         mscs = [ "msc2836" "msc2946" ];
