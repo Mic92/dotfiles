@@ -1,5 +1,5 @@
 { pkgs, ... }: {
-  users.extraUsers = {
+  users.users = {
     light = {
       isNormalUser = true;
       shell = "/run/current-system/sw/bin/bash";

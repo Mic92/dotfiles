@@ -26,7 +26,7 @@ in
 {
   security.sudo.wheelNeedsPassword = false;
 
-  users.extraUsers = {
+  users.users = {
     devkid = {
       isNormalUser = true;
       uid = 2002;

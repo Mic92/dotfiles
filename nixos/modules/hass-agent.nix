@@ -1,5 +1,5 @@
 {
-  users.extraUsers.hass-agent = {
+  users.users.hass-agent = {
     isSystemUser = true;
     group = "hass-agent";
     shell = "/run/current-system/sw/bin/bash";
