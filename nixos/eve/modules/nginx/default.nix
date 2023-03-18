@@ -11,6 +11,7 @@
     ./muc.nix
     ./threema.nix
     ./retiolum.nix
+    ./screenshare
     ./mta-sts.nix
     ./phd-website.nix
   ];

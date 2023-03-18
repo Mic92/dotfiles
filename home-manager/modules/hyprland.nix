@@ -1,10 +1,11 @@
-{
+{ pkgs, ... }: {
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland = {
       enable = true;
       hidpi = true;
     };
+    package = pkgs.hyprland;
     extraConfig = ''
       #-- Monitors ----------------------------------------------------
       # Configure your Display resolution, offset, scale and Monitors here, use `hyprctl monitors` to get the info.
