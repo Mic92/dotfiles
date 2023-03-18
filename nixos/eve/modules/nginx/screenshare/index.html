@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Jitsii screenshare</title>
+        <meta name="description" content="Share your screen without audio/video">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <script src='https://jitsi.lassul.us//external_api.js'></script>
+
+        <style>
+         #jitsiConferenceFrame0 {
+             /* Make the iframe fill the page */
+             position: absolute;
+         }
+         /* Show url on top of the iframe */
+         #share-url {
+             position: absolute;
+             top: 0;
+             left: 0;
+             background: #fff;
+             padding: 10px;
+             border: 1px solid #ccc;
+             border-radius: 5px;
+             margin: 10px;
+         }
+        </style>
+    </head>
+    <body>
+        <!-- Share url label -->
+        <div id="share-url">https://jitsi.lassul.us/@roomName@</div>
+        <div id="jitsi-container"></div>
+        <script>
+            const domain = "jitsi.lassul.us";
+            const options = {
+                roomName: '@roomName@',
+                width: '100%',
+                height: '100%',
+                parentNode: document.querySelector('#jitsi-container'),
+                configOverwrite: {
+                    startWithAudioMuted: true,
+                    startWithVideoMuted: true,
+                    startSilent: true,
+                    toolbarButtons: [ "desktop", "camera", "chat", "fullscreen"],
+                    disableInitialGUM: true,
+                }
+            };
+            const api = new JitsiMeetExternalAPI(domain, options);
+        </script>
+    </body>
+</html>
