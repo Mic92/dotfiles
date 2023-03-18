@@ -3,7 +3,6 @@
     let
       homeManagerConfiguration =
         { extraModules ? [ ]
-        , system ? "x86_64-linux"
         ,
         }: (inputs.home-manager.lib.homeManagerConfiguration {
           modules = [
@@ -20,7 +19,7 @@
               home.homeDirectory = "/home/joerg";
             }
           ];
-          pkgs = inputs.nixpkgs.legacyPackages.${system};
+          inherit pkgs;
         });
     in
     {
