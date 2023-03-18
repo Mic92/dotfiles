@@ -33,7 +33,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
     def deploy(h: DeployHost) -> None:
         target = f"{h.user or 'root'}@{h.host}"
         flake_path = h.meta.get("flake_path", "/etc/nixos")
-        h.run_local(f"rsync -vaF --delete -e ssh {path}/ {target}:{flake_path}")
+        h.run_local(f"rsync --checksum -vaF --delete -e ssh {path}/ {target}:{flake_path}")
 
         flake_attr = h.meta.get("flake_attr", "")
         if flake_attr:
