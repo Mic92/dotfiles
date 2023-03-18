@@ -134,8 +134,11 @@
       # Example windowrule v2
       # windowrulev2 = float,class:^(kitty)$,title:^(kitty)$
       # See https://wiki.hyprland.org/Configuring/Window-Rules/ for more
-      windowrulev2 = workspace name:$ws1,class:^(firefox|Chromium)$
-      windowrulev2 = fullscreen,class:^(firefox|Chromium)$
+
+      windowrulev2 = workspace name:$ws1,fullscreen,class:^(firefox|Chromium)$
+      # make firefox share indicator float
+      windowrulev2 = float,nofullscreen,class:firefox,title:^Firefox — Sharing Indicator$
+
       windowrulev2 = workspace name:$ws2,class:^(xterm|urxvt|aterm|URxvt|XTerm|Alacritty|Emacs|foot)$
       windowrulev2 = workspace name:$ws3,class:^(Kopete|Pidgin|gajim|rambox|Dino|.gam-wrapped|Daily|birdie|evolution|Ferdi|Ferdium)$
       windowrulev2 = workspace name:$ws4,class:^(signal)$
