@@ -1,5 +1,5 @@
 {
-  users.extraUsers.nix = {
+  users.users.nix = {
     isNormalUser = true;
     home = "/home/nix";
     openssh.authorizedKeys.keys = [

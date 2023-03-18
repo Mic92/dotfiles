@@ -5,7 +5,7 @@ let
   ];
 in
 {
-  users.extraUsers = {
+  users.users = {
     joerg = {
       isNormalUser = true;
       home = "/home/joerg";
