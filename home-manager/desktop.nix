@@ -9,6 +9,7 @@
     ./modules/default-apps.nix
     ./modules/hyprland.nix
     ./modules/waybar.nix
+    ./modules/heygpt.nix
   ];
 
   fonts.fontconfig.enable = true;

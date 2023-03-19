@@ -373,6 +373,13 @@ xalias vim="nvim"
 xalias xclip="xclip -selection clipboard"
 xalias cloc=scc
 
+if [[ -n ${commands[heygpt]} ]]; then
+  heygpt() {
+    export OPENAI_API_KEY=$(rbw get openai-api-key)
+    command heygpt "$@"
+  }
+fi
+
 if [[ -n ${commands[nix]} ]]; then
   n() {
     NIX_RUN_ARGS="$@${NIX_RUN_ARGS+ }${NIX_RUN_ARGS}" nix shell "$@" -f '<nixpkgs>' -c zsh
