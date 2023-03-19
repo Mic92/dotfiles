@@ -268,6 +268,7 @@ exec_always {
 ## Rules
 set $webClasses "^(firefox|Chromium)$"
 assign [app_id=$webClasses] $wsWeb
+for_window [app_id=$webClasses,title="Firefox — Sharing Indicator"] floating enable
 #
 set $devClasses "^(xterm|urxvt|aterm|URxvt|XTerm|Alacritty|Emacs)$"
 assign [app_id=$devClasses] $wsDev
@@ -278,10 +279,10 @@ assign [class=$imClasses] $wsIm
 #
 set $docClasses "^(Evince|GVim|keepassx|libreoffice)$"
 assign [class=$docClasses] $wsDoc
-#
 
 for_window [title="OpenSSH Authentication Passphrase request"] floating enable
 
+# don't let chrome stealing keys
 for_window [app_id="^chrome-.*"] shortcuts_inhibitor disable
 
 titlebar_border_thickness 2
