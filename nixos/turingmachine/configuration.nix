@@ -51,10 +51,10 @@
     #../modules/k3s/server.nix
   ];
 
+  hardware.keyboard.qmk.enable = true;
+
   #services.udev.packages = [ pkgs.platformio ];
   systemd.package = inputs.nixpkgs-systemd.legacyPackages.${pkgs.system}.systemd;
-
-  hardware.video.hidpi.enable = true;
 
   services.gvfs.enable = true;
 
