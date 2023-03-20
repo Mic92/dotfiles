@@ -268,7 +268,7 @@ exec_always {
 ## Rules
 set $webClasses "^(firefox|Chromium)$"
 assign [app_id=$webClasses] $wsWeb
-for_window [app_id=$webClasses,title="Firefox — Sharing Indicator"] floating enable
+for_window [title="Firefox — Sharing Indicator"] floating enable
 #
 set $devClasses "^(xterm|urxvt|aterm|URxvt|XTerm|Alacritty|Emacs)$"
 assign [app_id=$devClasses] $wsDev
