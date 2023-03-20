@@ -54,7 +54,6 @@ class BuildTrigger(Trigger):
         sch = self.schedulerNames[0]
         triggered_schedulers = []
         for job in self.jobs:
-
             attr = job.get("attr", "eval-error")
             name = attr
             if repo_name is not None:
