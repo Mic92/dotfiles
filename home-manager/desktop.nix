@@ -10,6 +10,7 @@
     ./modules/hyprland.nix
     ./modules/waybar.nix
     ./modules/heygpt.nix
+    ./modules/pipewire-rnnoise.nix
   ];
 
   fonts.fontconfig.enable = true;
