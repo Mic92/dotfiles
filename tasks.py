@@ -371,6 +371,12 @@ def reboot(c, hosts=""):
         wait_for_reboot(h)
 
 
+# curl -L https://github.com/nix-community/nixos-images/releases/download/nixos-unstable/nixos-kexec-installer-x86_64-linux.tar.gz | tar -xzf- -C /root
+# /root/kexec/run
+# zpool import -a; zfs load-key -a; mount -t zfs zroot/root/nixos /mnt; mount /dev/nvme
+# nixos-install --flake github:mic92/dotfiles#eve
+
+
 @task
 def cleanup_gcroots(c, hosts=""):
     deploy_hosts = [DeployHost(h) for h in hosts.split(",")]
