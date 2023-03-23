@@ -18,6 +18,11 @@ profile docked4 {
   output 'Lenovo Group Limited P27u-20 V909K38H' enable scale 1
 }
 
+profile docked5 {
+  output eDP-1 disable
+  output 'Lenovo Group Limited P27u-20 V90A479D' enable scale 1
+}
+
 profile mobile {
   output eDP-1 enable scale 1
 }
