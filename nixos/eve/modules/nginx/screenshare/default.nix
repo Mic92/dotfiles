@@ -17,6 +17,7 @@ in
 {
   services.nginx = {
     virtualHosts."screenshare.thalheim.io" = screenshareWebsite "screenshare";
+    virtualHosts."screenshare-numtide.thalheim.io" = screenshareWebsite "numtide";
     virtualHosts."screenshare2.thalheim.io" = screenshareWebsite "screenshare2";
 
     virtualHosts."www.screenshare.thalheim.io" = {
