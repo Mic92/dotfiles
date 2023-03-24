@@ -62,6 +62,7 @@ nix build \
   -I nixos-config=./dummy.nix \
   -I stockholm=./. \
   -f '<nixpkgs/nixos>' \
+  --builders '' \
   config.krebs.tinc.retiolum.hostsArchive
 install -D -m644 result $WEBROOT/tinc-hosts.tar.bz2
 nix build \
@@ -69,6 +70,7 @@ nix build \
   -I nixos-config=./dummy.nix \
   -I stockholm=./. \
   -f '<nixpkgs/nixos>' \
+  --builders '' \
   pkgs.krebs-hosts
 install -D -m644 result $WEBROOT/etc.hosts
 grep -E '^42:|.i |.i$' result >$WEBROOT/etc.hosts-v6only
@@ -76,7 +78,8 @@ grep -E '^42:|.i |.i$' result >$WEBROOT/etc.hosts-v6only
 nix-build ./wiregrill.nix \
   -I secrets=./krebs/0tests/data/secrets \
   -I nixos-config=./dummy.nix \
-  -I stockholm=./.
+  -I stockholm=./. \
+  --option builders ''
 
 jq <result >$WEBROOT/wiregrill.json
 
