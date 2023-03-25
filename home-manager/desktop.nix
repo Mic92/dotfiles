@@ -106,6 +106,7 @@
           libretro.mupen64plus
           libretro.beetle-psx-hw
           libretro.dolphin
+          libretro.pcsx2
         ];
       })
 
