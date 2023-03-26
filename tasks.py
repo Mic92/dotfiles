@@ -222,27 +222,11 @@ def deploy_matchbox(c):
                 "localhost",
                 command_prefix="matchbox.r",
                 meta=dict(
-                    target_user="root", target_host="matchbox.r", flake_attr="matchbox"
+                    target_user="root",
+                    target_host=try_local("matchbox"),
+                    flake_attr="matchbox",
                 ),
-                user="joerg",
-            )
-        ]
-    )
-
-
-@task
-def deploy_rock(c):
-    """
-    Deploy to rock
-    """
-    deploy_nixos(
-        [
-            DeployHost(
-                "localhost",
-                meta=dict(
-                    target_user="root", target_host=try_local("rock"), flake_attr="rock"
-                ),
-                user="joerg",
+                user="root",
             )
         ]
     )

@@ -8,23 +8,12 @@
     "/var/log/telegraf"
   ];
 
-  fileSystems."/mnt/matchbox" = {
-    device = "//matchbox.r/public";
-    fsType = "cifs";
-    options = [
-      "guest"
-      "nofail"
-      "ro"
-    ];
-  };
-
   services.borgbackup.jobs.eva = {
     paths = [
       "/home"
       "/etc"
       "/var"
       "/root"
-      "/mnt/matchbox"
     ];
     exclude = [
       "*.pyc"
@@ -39,7 +28,6 @@
       "/home/*/.config/Ferdi/Partitions"
       "/home/*/.mozilla/firefox/*/storage"
       "/home/joerg/work/kuutamo/core/src/kuutamod/.data"
-      "/mnt/matchbox/ebooks"
       "/var/lib/containerd"
       # already included in database backup
       "/var/lib/postgresql"
