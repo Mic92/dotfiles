@@ -288,6 +288,9 @@ for_window [title="OpenSSH Authentication Passphrase request"] floating enable
 # don't let chrome stealing keys
 for_window [app_id="^chrome-.*"] shortcuts_inhibitor disable
 
+for_window [class=".*"] inhibit_idle fullscreen
+for_window [app_id=".*"] inhibit_idle fullscreen
+
 titlebar_border_thickness 2
 titlebar_padding 2
 
