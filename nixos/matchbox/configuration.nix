@@ -20,6 +20,8 @@
 
   time.timeZone = "UTC";
 
+  services.getty.autologinUser = "root";
+
   environment.systemPackages = with pkgs; [
     tmux
     htop
@@ -35,6 +37,23 @@
   systemd.services.update-prefetch.enable = false;
 
   system.stateVersion = "18.09";
-  networking.dhcpcd.enable = true;
+
+  networking.dhcpcd.enable = false;
+  systemd.network.networks.ethernet.extraConfig = ''
+    [Match]
+    Type = ether
+
+    [Network]
+    DHCP = both
+    LLMNR = true
+    IPv4LL = true
+    LLDP = true
+    IPv6AcceptRA = true
+    IPv6Token = ::fd87:20d6:a932:6605
+
+    [DHCP]
+    UseHostname = false
+    RouteMetric = 512
+  '';
   services.resolved.enable = false;
 }
