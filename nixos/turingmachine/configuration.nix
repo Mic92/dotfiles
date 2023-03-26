@@ -44,7 +44,6 @@
     #../modules/i3.nix
     ../modules/sshd/tor.nix
     #../modules/gnome.nix
-    ../modules/pki
     #../modules/yubikey.nix
     ../modules/users.nix
     ../modules/nix-ld.nix

@@ -13,7 +13,6 @@
     ../modules/ip-update.nix
     ../modules/samba-dl.nix
     ../modules/mosh.nix
-    ../modules/pki
     ../modules/networkd.nix
     ../modules/mosh.nix
     ../modules/promtail.nix
