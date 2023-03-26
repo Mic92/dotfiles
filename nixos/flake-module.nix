@@ -112,17 +112,6 @@ in
         ];
     };
 
-    rock = nixosSystem {
-      pkgs = nixpkgs.legacyPackages.aarch64-linux;
-      modules =
-        defaultModules
-        ++ [
-          inputs.srvos.nixosModules.server
-          inputs.bme680-mqtt.nixosModules.bme680-mqtt
-          ./rock/configuration.nix
-        ];
-    };
-
     blob64 = nixosSystem {
       pkgs = nixpkgs.legacyPackages.aarch64-linux;
       modules =

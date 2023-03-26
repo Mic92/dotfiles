@@ -30,5 +30,19 @@
     fsType = "ext4";
   };
 
+  fileSystems."/mnt/hdd" = {
+    device = "UUID=1d377ab7-65ca-492d-9ea4-620034230192";
+    fsType = "ext4";
+    options = [ "defaults" "nofail" "x-systemd.device-timeouts=2" ];
+  };
+
+  # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
+  boot.loader.grub.enable = false;
+  # Enables the generation of /boot/extlinux/extlinux.conf
+  boot.loader.generic-extlinux-compatible.enable = true;
+
+  # latest kernel does not boot
+  boot.kernelPackages = pkgs.linuxPackages_5_15;
+
   powerManagement.cpuFreqGovernor = lib.mkDefault "ondemand";
 }

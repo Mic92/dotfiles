@@ -5,8 +5,7 @@ keys:
   - &eve C5A6167F97F68FD053571E8B04188BA1509DCDC5
   - &eva age1l5auf2gwt44c7nykau8z3vpesju9307zl6flgzs8njzumgnav4hs26w5qx
   - &turingmachine 50612B0983F7FA2F1985DA0F30371B437689ACFD
-  - &matchbox age1e8qpkp0fj7s5rxqtu4fgvfnn03cx0gfmplcawr8ljcappskpf5msvn8kml
-  - &rock F139840C191C75322AC3D4516BE2046130150E21
+  - &matchbox F139840C191C75322AC3D4516BE2046130150E21
   - &bernie 6be0cdb876ff7fcb2e0721bcd05c8bd9edd15816
   - &jarvis age1e44vwuuguzn43yhcu9wfulrmpuxjvy50c8hlyqyaudkez7aty59q48qa3s
   - &cloudlab-age age1frtpu0fyht97cl4xv6rz2ga6euxz9xez8suggxlffxl3cre8rcfsnv8cqk
@@ -59,6 +58,7 @@ creation_rules:
     key_groups:
     - age:
       - *joerg
+      pgp:
       - *matchbox
   - path_regex: bernie/secrets/[^/]+\.yaml$
     key_groups:
@@ -70,7 +70,6 @@ creation_rules:
     key_groups:
     - pgp:
         - *eve
-        - *rock
       age:
         - *joerg
         - *eva
@@ -81,21 +80,14 @@ creation_rules:
         - *turingmachine
       age:
         - *joerg
-  - path_regex: rock/secrets/[^/]+\.yaml$
-    key_groups:
-    - pgp:
-      - *rock
-      age:
-      - *joerg
   - path_regex: secrets/[^/]+\.yaml$
     key_groups:
     - pgp:
         - *eve
         - *turingmachine
-        - *rock
         - *bernie
+        - *matchbox
       age:
         - *eva
         - *joerg
         - *blob64
-        - *matchbox
