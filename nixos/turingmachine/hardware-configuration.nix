@@ -91,5 +91,4 @@
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
-  hardware.video.hidpi.enable = lib.mkDefault true;
 }

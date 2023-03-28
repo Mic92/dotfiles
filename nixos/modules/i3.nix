@@ -1,7 +1,6 @@
 { pkgs, ... }: {
   imports = [
     ./xserver.nix
-    ./high-dpi.nix
     ./flameshot.nix
   ];
   services.xserver.windowManager.i3.enable = true;
