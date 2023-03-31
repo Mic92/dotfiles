@@ -1,6 +1,6 @@
 { config, ... }: {
   sops.secrets.borgbackup-passphrase = { };
-  sops.secrets.ssh-borgbackup = { };
+  sops.secrets.borgbackup-ssh = { };
 
   systemd.services.borgbackup-job-eva.serviceConfig.ReadWritePaths = [
     "/var/log/telegraf"
@@ -45,7 +45,7 @@
     preHook = ''
       set -x
       eval $(ssh-agent)
-      ssh-add ${config.sops.secrets.ssh-borgbackup.path}
+      ssh-add ${config.sops.secrets.borgbackup-ssh.path}
     '';
 
     postHook = ''
