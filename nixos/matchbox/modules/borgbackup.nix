@@ -27,6 +27,7 @@
       "/home/*/.config/Ferdi/Partitions"
       "/home/*/.mozilla/firefox/*/storage"
       "/var/lib/containerd"
+      "/mnt/hdd"
       # already included in database backup
       "/var/lib/postgresql"
       "/var/lib/docker/"
