@@ -1,5 +1,5 @@
 { config, ... }: {
-  sops.secrets.borg-passphrase = { };
+  sops.secrets.borgbackup-passphrase = { };
   sops.secrets.ssh-borgbackup = { };
 
   systemd.services.borgbackup-job-eva.serviceConfig.ReadWritePaths = [
@@ -38,7 +38,7 @@
     repo = "borg@blob64.r:/zdata/borg/eve";
     encryption = {
       mode = "repokey";
-      passCommand = "cat ${config.sops.secrets.borg-passphrase.path}";
+      passCommand = "cat ${config.sops.secrets.borgbackup-passphrase.path}";
     };
     compression = "auto,zstd";
     startAt = "daily";
