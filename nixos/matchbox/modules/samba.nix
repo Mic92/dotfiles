@@ -7,7 +7,7 @@
       netbios name = MATCHBOX
       server string = Raspberry Pi
       hosts allow = 192.168.178.0/255.255.255.0 42:0:3c46:70c7:8526:2adf:7451:8bbb/128
-      interfaces = tinc.retiolum eth*
+      interfaces = tinc.retiolum eth* end*
       map to guest = Bad User
       max log size = 50
       dns proxy = no
