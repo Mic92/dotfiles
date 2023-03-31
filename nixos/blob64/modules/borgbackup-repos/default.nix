@@ -7,6 +7,13 @@
       ];
     };
 
+    matchbox = {
+      path = "/zdata/borg/matchbox";
+      authorizedKeys = [
+        (builtins.readFile ./matchbox-borgbackup.pub)
+      ];
+    };
+
     turingmachine = {
       path = "/zdata/borg/turingmachine";
       authorizedKeys = [
