@@ -5,6 +5,10 @@
     options = [ "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s" ];
   };
 
+  systemd.tmpfiles.rules = [
+    "d /mnt/backup 0755 root root -"
+  ];
+
   services.rsnapshot = {
     enable = true;
     enableManualRsnapshot = true;
