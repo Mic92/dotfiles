@@ -2,10 +2,13 @@
 {
   services.photoprism = {
     enable = true;
-    address = "192.168.178.2";
-    port = 80;
     originalsPath = "/mnt/hdd/public/Bilder";
     settings.PHOTOPRISM_AUTH_MODE = "public";
+  };
+
+  services.nginx = {
+    enable = true;
+    virtualHosts."192.168.178.2".locations."/".proxyPass = "http://localhost:2342";
   };
 
   fileSystems."/var/lib/private/photoprism" = {
@@ -13,5 +16,5 @@
     options = [ "bind" "nofail" ];
   };
 
-  networking.firewall.allowedTCPPorts = [ 2342 ];
+  networking.firewall.allowedTCPPorts = [ 80 ];
 }
