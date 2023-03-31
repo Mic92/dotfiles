@@ -1,8 +1,6 @@
 { config, ... }: {
-  sops.secrets.borg-passphrase = { };
-  sops.secrets.borg-nas-ssh = { };
-  sops.secrets.ssh-borgbackup = { };
-  sops.secrets.nas-wakeup-password = { };
+  sops.secrets.borgbackup-passphrase = { };
+  sops.secrets.borgbackup-ssh = { };
 
   systemd.services.borgbackup-job-eva.serviceConfig.ReadWritePaths = [
     "/var/log/telegraf"
@@ -40,14 +38,14 @@
     repo = "borg@blob64.r:/zdata/borg/eve";
     encryption = {
       mode = "repokey";
-      passCommand = "cat ${config.sops.secrets.borg-passphrase.path}";
+      passCommand = "cat ${config.sops.secrets.borgbackup-passphrase.path}";
     };
     compression = "auto,zstd";
     startAt = "daily";
     preHook = ''
       set -x
       eval $(ssh-agent)
-      ssh-add ${config.sops.secrets.ssh-borgbackup.path}
+      ssh-add ${config.sops.secrets.borgbackup-ssh.path}
     '';
 
     postHook = ''

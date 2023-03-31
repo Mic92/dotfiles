@@ -9,7 +9,7 @@
     #../modules/libvirt.nix
     ./modules/caddy.nix
     ./modules/eve-rdp.nix
-    ./modules/backup.nix
+    ./modules/borgbackup.nix
     ./modules/hass-agent.nix
     ./modules/nfs.nix
     ./modules/remote-builder.nix
