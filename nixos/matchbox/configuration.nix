@@ -12,6 +12,7 @@
     ./modules/samba.nix
     ./modules/rsyncd.nix
     ./modules/sops.nix
+    ./modules/photoprism.nix
   ];
 
   documentation.enable = false;
