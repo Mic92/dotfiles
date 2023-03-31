@@ -1,11 +1,11 @@
 { config, ... }:
 {
-  sops.secrets."photoprism-password" = {};
   services.photoprism = {
     enable = true;
     address = "192.168.178.2";
+    port = 80;
     originalsPath = "/mnt/hdd/public/Bilder";
-    passwordFile = config.sops.secrets."photoprism-password".path;
+    settings.PHOTOPRISM_AUTH_MODE = "public";
   };
 
   fileSystems."/var/lib/private/photoprism" = {
