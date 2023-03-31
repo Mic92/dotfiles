@@ -1,4 +1,4 @@
-{ config, ... }:
+{ ... }:
 {
   services.photoprism = {
     enable = true;
@@ -8,7 +8,10 @@
 
   services.nginx = {
     enable = true;
-    virtualHosts."192.168.178.2".locations."/".proxyPass = "http://localhost:2342";
+    virtualHosts."192.168.178.2" = {
+      locations."/".proxyPass = "http://localhost:2342";
+      listenAddresses = [ "192.168.178.2" ];
+    };
   };
 
   fileSystems."/var/lib/private/photoprism" = {
