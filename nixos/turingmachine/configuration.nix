@@ -52,8 +52,6 @@
 
   hardware.keyboard.qmk.enable = true;
 
-  fonts.optimizeForVeryHighDPI = false;
-
   #services.udev.packages = [ pkgs.platformio ];
   systemd.package = inputs.nixpkgs-systemd.legacyPackages.${pkgs.system}.systemd;
 
