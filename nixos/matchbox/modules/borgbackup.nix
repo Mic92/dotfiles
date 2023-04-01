@@ -43,7 +43,6 @@
     };
     compression = "auto,zstd";
     startAt = "daily";
-    doInit = true;
     preHook = ''
       set -x
       eval $(ssh-agent)
