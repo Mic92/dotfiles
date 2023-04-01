@@ -38,6 +38,20 @@
     options = [ "defaults" "nofail" "x-systemd.device-timeouts=2" ];
   };
 
+  # avoid overheating
+  systemd.services.limit-cpufreq = {
+    description = "Limit CPU frequency to 1.0 GHz";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = ''
+        for i in /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq; do
+          echo 816000 > $i
+        done
+      '';
+    };
+  };
+
   # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
   boot.loader.grub.enable = false;
   # Enables the generation of /boot/extlinux/extlinux.conf
