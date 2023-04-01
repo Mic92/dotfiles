@@ -75,19 +75,11 @@ in
           ./turingmachine/configuration.nix
           inputs.nixos-hardware.nixosModules.framework
           inputs.nix-index-database.nixosModules.nix-index
-          inputs.hyprland.nixosModules.default
 
           inputs.srvos.nixosModules.desktop
 
           inputs.lanzaboote.nixosModules.lanzaboote
 
-          #self.inputs.lanzaboote.nixosModules.lanzaboote
-          #({pkgs, ...}: {
-          #  programs.hyprland.enable = true;
-          #  environment.systemPackages = [
-          #    hyprland.packages.${pkgs.system}.waybar-hyprland
-          #  ];
-          #})
           # For testing systemd
           #({pkgs, ...}: {
           #  #systemd.package = self.inputs.nixpkgs-systemd.legacyPackages.${pkgs.system}.systemd;
