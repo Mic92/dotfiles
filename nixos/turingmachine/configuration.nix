@@ -53,7 +53,6 @@
   hardware.keyboard.qmk.enable = true;
 
   #services.udev.packages = [ pkgs.platformio ];
-  systemd.package = inputs.nixpkgs-systemd.legacyPackages.${pkgs.system}.systemd;
 
   services.gvfs.enable = true;
 
