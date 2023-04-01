@@ -42,14 +42,12 @@
   systemd.services.limit-cpufreq = {
     description = "Limit CPU frequency to 1.0 GHz";
     wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = ''
-        for i in /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq; do
-          echo 816000 > $i
-        done
-      '';
-    };
+    script = ''
+      for i in /sys/devices/system/cpu/cpu*/cpufreq/scaling_max_freq; do
+        echo 816000 > $i
+      done
+    '';
+    serviceConfig.Type = "oneshot";
   };
 
   # Use the extlinux boot loader. (NixOS wants to enable GRUB by default)
