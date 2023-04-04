@@ -9,7 +9,7 @@
 
     caching.apcu = true;
 
-    package = pkgs.nextcloud25;
+    package = pkgs.nextcloud26;
 
     enableBrokenCiphersForSSE = false;
 
