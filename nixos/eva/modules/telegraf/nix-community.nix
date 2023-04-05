@@ -1,9 +1,11 @@
 let
   hosts = [
+    "aarch64.nixos.community"
     "build01.nix-community.org"
     "build02.nix-community.org"
     "build03.nix-community.org"
     "build04.nix-community.org"
+    "darwin01.nix-community.org"
   ];
 in
 {
