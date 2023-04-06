@@ -7,6 +7,16 @@
     "/var/log/telegraf"
   ];
 
+  environment.systemPackages = with pkgs; [
+    (pkgs.writeShellScriptBin "borgbackup-job-blob64-break-lock" ''
+      set -eux -o pipefail
+      eval $(ssh-agent)
+      ssh-add ${config.sops.secrets.borgbackup-ssh.path}
+      borg-job-blob64 break-lock
+      kill $SSH_AGENT_PID
+    '')
+  ];
+
   services.borgbackup.jobs.blob64 = {
     paths = [
       "/home"
