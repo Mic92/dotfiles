@@ -8,7 +8,7 @@
   ];
 
   environment.systemPackages = with pkgs; [
-    (pkgs.writeShellScriptBin "borgbackup-job-blob64-break-lock" ''
+    (pkgs.writeShellScriptBin "borg-job-blob64-break-lock" ''
       set -eux -o pipefail
       eval $(ssh-agent)
       ssh-add ${config.sops.secrets.borgbackup-ssh.path}
