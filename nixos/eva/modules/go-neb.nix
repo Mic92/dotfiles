@@ -13,6 +13,14 @@
       proxy_set_header X-Forwarded-Proto $scheme;
     '';
   };
+
+  systemd.services.go-neb = {
+    serviceConfig = {
+      Restart = "always";
+      RestartSec = 5;
+    };
+  };
+
   services.go-neb = {
     enable = true;
     baseUrl = "https://go-neb.thalheim.io";
