@@ -21,7 +21,7 @@ in
       ps.requests
       ps.treq
       ps.psycopg2
-      ps.buildbot-worker
+      (ps.toPythonModule pkgs.buildbot-worker)
     ];
   };
 
