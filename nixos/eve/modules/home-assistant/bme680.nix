@@ -1,5 +1,11 @@
 {
   services.home-assistant.config = {
+    conversation.intents = {
+      RoomTemperature =  [
+        "(How|What) is the (temperature|air quality|humidity)"
+        "(How|What) is the (temperature|air quality|humidity) in the room"
+      ];
+    };
     intent_script.RoomTemperature.speech.text =
       "It is {{ states('sensor.bme680_temperature') | round(0) }} degrees inside. "
       + "The air quality is {{ states('sensor.bme680_air_quality') | round(0) }} percent and the humidity is {{ states('sensor.bme680_humidity') | round(0) }}.";

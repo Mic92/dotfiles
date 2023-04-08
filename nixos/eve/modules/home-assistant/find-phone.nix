@@ -9,9 +9,22 @@ let
   };
 in
 {
-  services.home-assistant.config.intent_script = {
-    FindIphone = notifyDevice "beatrice" "Shannan's phone";
-    FindWatch = notifyDevice "shannansapple_watch" "Shannan's watch";
-    FindMacbook = notifyDevice "herbert" "Shannan's laptop";
+  services.home-assistant.config = {
+    conversation.intents = {
+      FindIphone = [
+        "find [Shannans] (phone|IPhone)"
+      ];
+      FindWatch = [
+        "find [Shannans] (Watch|Apple Watch)"
+      ];
+      FindMacbook = [
+        "find [Shannans] (laptop|Macbook)"
+      ];
+    };
+    intent_script = {
+      FindIphone = notifyDevice "beatrice" "Shannan's phone";
+      FindWatch = notifyDevice "shannansapple_watch" "Shannan's watch";
+      FindMacbook = notifyDevice "herbert" "Shannan's laptop";
+    };
   };
 }

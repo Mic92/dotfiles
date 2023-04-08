@@ -1,5 +1,23 @@
 { pkgs, ... }: {
   services.home-assistant.config = {
+    conversation.intents = {
+      PlayerStart = [
+        "start"
+        "play"
+      ];
+      PlayerPause = [
+        "pause"
+        "stop"
+      ];
+      PlayMinimix = [
+        "play minimix"
+        "play minimix radio"
+      ];
+      PlayBBC = [
+        "play BBC"
+        "play BBC radio"
+      ];
+    };
     sensor = [
       {
         name = "Random minimix";

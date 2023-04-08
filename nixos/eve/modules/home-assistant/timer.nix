@@ -19,7 +19,34 @@ in
       rhasspy = { };
       pause_rhasspy = { };
     };
-    intent = { };
+
+    conversation.intents = {
+      Nap = [
+        "(Did|Have) you (had|have) a (nap|sleep|rest|break|pause|siesta) [today]"
+      ];
+      Pause = [
+        "(Pause|Suspend) for {{ duration }} {{ unit }}"
+      ];
+      GetTime = [
+        "What (day|date|time) is it"
+        "What is the (day|date|time)"
+        "What is today's (day|date|time)"
+        "What is the (day|date|time) today"
+        "What is today?"
+      ];
+      GetTimer = [
+        "How much time is left [on the (timer|alarm|clock)]"
+      ];
+      CancelTimer = [
+        "Cancel the (timer|alarm|clock)"
+        "Stop the (timer|alarm|clock)"
+      ];
+      SetTimer = [
+        "Set a (timer|alarm|clock) for {{ duration }} {{ unit }}"
+      ];
+    };
+
+    intent = {};
     intent_script = {
       Pause = {
         speech.text = "Suspend Jarvis for {{ duration }} {{ unit }}.";

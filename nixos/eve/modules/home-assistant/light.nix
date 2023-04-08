@@ -1,5 +1,12 @@
 { pkgs, ... }: {
   services.home-assistant.config = {
+    conversation.intents = {
+      ToggleLight = [
+        "Toggle light"
+        "Turn light on"
+        "Turn light off"
+      ];
+    };
     light = {
       platform = "template";
       lights.bedroom = {

@@ -5,6 +5,9 @@
   sops.secrets.ssh-homeassistant.owner = "hass";
 
   services.home-assistant.config = {
+    conversation.intents.ConnectBluetooth = [
+      "Connect [my] (headphone|speaker) to my (turingmachine|bernie|phone)"
+    ];
     intent_script.ConnectBluetooth = {
       speech.text = "Connect {{ bluetooth_device }} to {{ device }}.";
       action = {
