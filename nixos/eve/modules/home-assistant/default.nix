@@ -28,7 +28,7 @@
           ps.psycopg2
         ];
       }).overrideAttrs (old: {
-        patches = (old.patches or []) ++ [
+        patches = (old.patches or [ ]) ++ [
           ./0001-Bump-transmission-to-4.1.5.patch
         ];
       });

@@ -1,6 +1,6 @@
 {
   services.home-assistant.config = {
-    conversation.intents =  {
+    conversation.intents = {
       WeatherToday = [
         "(What's|What is|How's|How is) the (weather|temperature) (like|outside) (today|right now|now|outside)"
         "(What's|What is|How's|How is) the (weather|temperature) (like|outside|right now|now|today)"

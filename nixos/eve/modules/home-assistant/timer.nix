@@ -46,7 +46,7 @@ in
       ];
     };
 
-    intent = {};
+    intent = { };
     intent_script = {
       Pause = {
         speech.text = "Suspend Jarvis for {{ duration }} {{ unit }}.";

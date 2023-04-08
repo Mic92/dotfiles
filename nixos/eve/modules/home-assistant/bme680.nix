@@ -1,7 +1,7 @@
 {
   services.home-assistant.config = {
     conversation.intents = {
-      RoomTemperature =  [
+      RoomTemperature = [
         "(How|What) is the (temperature|air quality|humidity)"
         "(How|What) is the (temperature|air quality|humidity) in the room"
       ];
