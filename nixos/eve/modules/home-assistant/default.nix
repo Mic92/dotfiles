@@ -4,7 +4,6 @@
     ./bme680.nix
     ./charge-notifications.nix
     ./find-phone.nix
-    #./german.nix
     ./jokes.nix
     ./laptops.nix
     ./light.nix
@@ -19,7 +18,6 @@
     ./vlc.nix
     ./weather.nix
     ./zones.nix
-    #./coding.nix
   ];
 
   services.home-assistant = {

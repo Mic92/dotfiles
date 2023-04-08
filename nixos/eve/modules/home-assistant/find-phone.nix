@@ -12,13 +12,13 @@ in
   services.home-assistant.config = {
     conversation.intents = {
       FindIphone = [
-        "find [Shannans] (phone|IPhone)"
+        "find [(Shannan's|Shannon's)] (phone|IPhone)"
       ];
       FindWatch = [
-        "find [Shannans] (Watch|Apple Watch)"
+        "find [(Shannan's|Shannon's)] (watch|Apple Watch)"
       ];
       FindMacbook = [
-        "find [Shannans] (laptop|Macbook)"
+        "find [(Shannan's|Shannon's)] (laptop|Macbook)"
       ];
     };
     intent_script = {
