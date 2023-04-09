@@ -166,7 +166,8 @@ def deploy(c, _hosts=""):
             ),
         ]
     deploy_nixos(hosts)
-    eve.run("systemctl restart buildbot-master")
+    if _hosts == "":
+        eve.run("systemctl restart buildbot-master")
 
 
 @task

@@ -207,19 +207,17 @@
       listen_port = "9273";
     };
 
-    firewall.redirect = [
-      {
-        _type = "redirect";
-        enabled = "1";
-        name = "Forward-ESPHome";
-        src = "wan";
-        dest = "lan";
-        dest_ip = "192.168.1.6"; # livingroom
-        proto = "tcp";
-        src_dport = 6053;
-        dest_port = 6053;
-      }
-    ];
+    firewall.redirect = [{
+      _type = "redirect";
+      enabled = "1";
+      name = "Forward-ESPHome";
+      src = "wan";
+      dest = "lan";
+      dest_ip = "192.168.1.6"; # livingroom
+      proto = "tcp";
+      src_dport = 6053;
+      dest_port = 6053;
+    }];
 
     firewall.rule = [
       # Not needed for pppoe
