@@ -150,6 +150,10 @@
         name = "oneplus-nord";
         mac = "D0:49:7C:36:5B:80";
       }
+      {
+        name = "livingroom";
+        mac = "7C:DF:A1:B5:11:B0";
+      }
     ];
 
     ddns =
@@ -202,6 +206,20 @@
       listen_interface = "vpn";
       listen_port = "9273";
     };
+
+    firewall.redirect = [
+      {
+        _type = "redirect";
+        enabled = "1";
+        name = "Forward-ESPHome";
+        src = "wan";
+        dest = "lan";
+        dest_ip = "192.168.1.6"; # livingroom
+        proto = "tcp";
+        src_dport = 6053;
+        dest_port = 6053;
+      }
+    ];
 
     firewall.rule = [
       # Not needed for pppoe
