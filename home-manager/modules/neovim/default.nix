@@ -11,9 +11,11 @@
     "cpp"
     "css"
     "elm"
+    "elisp"
     #"fluent"
     "go"
     "hcl"
+    "haskell"
     "html"
     "janet-simple"
     "java"
@@ -37,9 +39,6 @@
     "perl"
     "make"
   ];
-
-  grammars = lib.getAttrs (map (lang: "tree-sitter-${lang}") langs) pkgs.tree-sitter.builtGrammars;
-
 in {
   home.packages = with pkgs; [
     neovim
@@ -64,8 +63,8 @@ in {
   # tree-sitter parsers
   #xdg.configFile."nvim/init.lua".source = ./init.lua;
 
-  xdg.configFile = lib.mapAttrs (name: value: {
-    source = "${value}/parser";
-    target = "nvim/parser/${lib.removePrefix "tree-sitter-" name}.so";
-  }) grammars;
+  xdg.configFile = lib.mapAttrs (name: _: {
+    source = "${pkgs.tree-sitter.builtGrammars."tree-sitter-${name}"}/parser";
+    target = "nvim/parser/${name}.so";
+  }) (lib.genAttrs langs (lang: lang));
 }
