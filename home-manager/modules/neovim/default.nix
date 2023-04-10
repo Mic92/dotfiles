@@ -39,6 +39,7 @@
     "markdown-inline"
     "perl"
     "make"
+    "toml"
   ];
 in {
   home.packages = with pkgs; [
