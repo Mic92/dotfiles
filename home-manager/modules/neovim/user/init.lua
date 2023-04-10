@@ -28,6 +28,10 @@ return {
       clangd = {
         cmd = { "clangd", "--offset-encoding=utf-16" },
       },
+      vale = {
+        cmd = { "vale", "--lsp" },
+        filetypes = { "markdown", "text" },
+      },
     },
     -- customize lsp formatting options
     formatting = {
@@ -58,7 +62,7 @@ return {
       "terraformls",
       "lua_ls",
       "vale",
-      "rust-analyzer",
+      "rust_analyzer",
       "gopls"
     },
   },

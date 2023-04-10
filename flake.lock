@@ -1,5 +1,21 @@
 {
   "nodes": {
+    "astro-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1681132727,
+        "narHash": "sha256-Fq9zMLxFR2NZH1AZASv3hwy2gvRdfJGEUqvIf33/Q0E=",
+        "owner": "AstroNvim",
+        "repo": "AstroNvim",
+        "rev": "1162a347a63c3d74f0ce5d344e69361e1cd1956e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AstroNvim",
+        "repo": "AstroNvim",
+        "type": "github"
+      }
+    },
     "bme680-mqtt": {
       "inputs": {
         "flake-parts": [
@@ -647,6 +663,7 @@
     },
     "root": {
       "inputs": {
+        "astro-nvim": "astro-nvim",
         "bme680-mqtt": "bme680-mqtt",
         "disko": "disko",
         "doom-emacs": "doom-emacs",

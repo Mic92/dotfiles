@@ -1,6 +1,7 @@
 { config
 , pkgs
 , lib
+, inputs
 , ...
 }: let
   langs = [
@@ -42,8 +43,8 @@
 in {
   home.packages = with pkgs; [
     neovim
-    nodejs
-    rnix-lsp
+    nodejs # copilot
+    nil
     rust-analyzer
     vale
     shellcheck
@@ -59,11 +60,17 @@ in {
   ];
   xdg.dataHome = "${config.home.homeDirectory}/.data";
   xdg.dataFile."nvim/lazy/telescope-fzf-native.nvim/build/libfzf.so".source = "${pkgs.vimPlugins.telescope-fzf-native-nvim}/build/libfzf.so";
-  # tree-sitter parsers
-  #xdg.configFile."nvim/init.lua".source = ./init.lua;
+  xdg.configFile."nvim".source = pkgs.runCommand "nvim" {} ''
+    mkdir -p $out/parser
 
-  xdg.configFile = lib.mapAttrs (name: _: {
-    source = "${pkgs.tree-sitter.builtGrammars."tree-sitter-${name}"}/parser";
-    target = "nvim/parser/${name}.so";
-  }) (lib.genAttrs langs (lang: lang));
+    ln -s ${inputs.astro-nvim}/* $out/
+    rm $out/lua
+    mkdir -p $out/lua
+    ln -s ${inputs.astro-nvim}/lua/* $out/lua
+    ln -s ${./user} $out/lua/user
+
+    ${lib.concatMapStringsSep "\n" (name: ''
+      ln -s ${pkgs.tree-sitter.builtGrammars."tree-sitter-${name}"}/parser $out/parser/${name}.so
+    '') langs}
+  '';
 }

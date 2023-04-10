@@ -54,6 +54,9 @@
     harmonia.inputs.nixpkgs.follows = "nixpkgs";
     harmonia.inputs.treefmt-nix.follows = "treefmt-nix";
 
+    astro-nvim.url = "github:AstroNvim/AstroNvim";
+    astro-nvim.flake = false;
+
     doom-emacs.url = "github:doomemacs/doomemacs/master";
     doom-emacs.flake = false;
 
