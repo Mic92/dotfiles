@@ -9,7 +9,6 @@
     ./modules/default-apps.nix
     ./modules/hyprland.nix
     ./modules/waybar.nix
-    ./modules/heygpt.nix
     ./modules/pipewire-rnnoise.nix
   ];
 
@@ -131,6 +130,7 @@
       speedscope
       inxi
       source-code-pro-nerdfonts
+      edge-gpt
       (pkgs.nerdfonts.override {
         fonts = [ "FiraCode" ];
       })
