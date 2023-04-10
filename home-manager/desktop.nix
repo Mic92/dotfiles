@@ -4,7 +4,6 @@
 }: {
   imports = [
     ./common.nix
-    ./modules/neovim
     ./modules/rust.nix
     ./modules/debugging.nix
     ./modules/default-apps.nix

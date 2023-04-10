@@ -4,8 +4,8 @@
 , ...
 }: {
   imports = [
-    #./modules/neovim.nix
-    ./modules/emacs
+    ./modules/neovim
+    #./modules/emacs
   ];
 
   config = {

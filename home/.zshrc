@@ -369,7 +369,7 @@ alias gdb='gdb --quiet --args'
 alias readelf='readelf -W'
 # Editors
 [[ -n ${commands[vi]} ]] && alias vi=vim
-xalias vim="nvim"
+xalias vim="vimeditor"
 xalias xclip="xclip -selection clipboard"
 xalias cloc=scc
 
@@ -487,13 +487,16 @@ elif [ -n "${commands[firefox]}" ]; then
 fi
 export TERMINAL=footclient
 export PICTUREVIEW=eog
-if [[ -n ${commands[emacseditor]} ]] && [[ -n $XDG_RUNTIME_DIR ]]; then
+
+if [[ -n ${commands[vimeditor]} ]]; then
+  export EDITOR=vimeditor
+elif [[ -n ${commands[emacseditor]} ]]; then
   export EDITOR=emacseditor
-  alias vim=emacseditor
+elif [[ -n ${commands$[nvim]} ]]; then
+  export EDITOR=nvim
 else
   export EDITOR=vim
 fi
-
 if [[ -n ${command[nvim]} ]]; then
     export ALTERNATE_EDITOR=nvim
 elif [[ -n ${command[vim]} ]]; then
@@ -611,9 +614,9 @@ vil() {
   IFS=':' ARGS=($@)
   unsetopt shwordsplit
   if [[ ${#ARGS[@]} -lt 2 ]]; then
-    vim ${ARGS[1]} # no line number given
+    vimeditor ${ARGS[1]} # no line number given
   else
-    vim +${ARGS[2]} ${ARGS[1]}
+    vimeditor +${ARGS[2]} ${ARGS[1]}
   fi
 }
 # force output to be on a single line
