@@ -1,5 +1,5 @@
 return {
   {
-    "Mofiqul/dracula.nvim"
+    "catppuccin/nvim",
   },
 }
