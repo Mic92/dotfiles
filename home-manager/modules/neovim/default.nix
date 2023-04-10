@@ -58,8 +58,7 @@ in {
     )
   ];
   xdg.dataHome = "${config.home.homeDirectory}/.data";
-  # fzf-native
-  xdg.dataFile."nvim/site/pack/packer/start/telescope-fzf-native.nvim/build/libfzf.so".source = "${pkgs.vimPlugins.telescope-fzf-native-nvim}/share/vim-plugins/telescope-fzf-native-nvim/build/libfzf.so";
+  xdg.dataFile."nvim/lazy/telescope-fzf-native.nvim/build/libfzf.so".source = "${pkgs.vimPlugins.telescope-fzf-native-nvim}/build/libfzf.so";
   # tree-sitter parsers
   #xdg.configFile."nvim/init.lua".source = ./init.lua;
 
