@@ -42,6 +42,7 @@
       ];
     in
     {
+      icloud = { };
       frontend = { };
       http = {
         use_x_forwarded_for = true;
