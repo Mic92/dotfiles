@@ -369,7 +369,7 @@ alias gdb='gdb --quiet --args'
 alias readelf='readelf -W'
 # Editors
 [[ -n ${commands[vi]} ]] && alias vi=vim
-xalias vim="vimeditor"
+xalias vim="nvim"
 xalias xclip="xclip -selection clipboard"
 xalias cloc=scc
 
@@ -488,19 +488,17 @@ fi
 export TERMINAL=footclient
 export PICTUREVIEW=eog
 
-if [[ -n ${commands[vimeditor]} ]]; then
-  export EDITOR=vimeditor
+if [[ -n ${commands[nvim]} ]]; then
+  export EDITOR=nvim
 elif [[ -n ${commands[emacseditor]} ]]; then
   export EDITOR=emacseditor
-elif [[ -n ${commands$[nvim]} ]]; then
-  export EDITOR=nvim
 else
   export EDITOR=vim
 fi
 if [[ -n ${command[nvim]} ]]; then
-    export ALTERNATE_EDITOR=nvim
+  export ALTERNATE_EDITOR=nvim
 elif [[ -n ${command[vim]} ]]; then
-    export ALTERNATE_EDITOR=vim
+  export ALTERNATE_EDITOR=vim
 fi
 
 export VISUAL=$EDITOR

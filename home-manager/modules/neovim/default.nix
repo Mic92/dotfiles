@@ -41,20 +41,8 @@
     "make"
   ];
 in {
-  systemd.user.services.nvim-server = {
-    Install.WantedBy = [ "default.target" ];
-    Service = {
-      Type = "simple";
-      ExecStart = "${pkgs.neovim}/bin/nvim --headless --listen ~/.cache/nvim/server.pipe";
-      Restart = "always";
-      RestartSec = 1;
-    };
-  };
   home.packages = with pkgs; [
-    (writeScriptBin "vimeditor" ''
-      #!${pkgs.runtimeShell}
-      exec ${pkgs.neovim}/bin/nvim --server ~/.cache/nvim/server.pipe --remote-ui --remote "$@"
-    '')
+    neovim
 
     nodejs # copilot
     nil
