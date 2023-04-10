@@ -6,7 +6,7 @@ import socket
 import subprocess
 import sys
 from pathlib import Path
-from typing import List
+from typing import List, Any
 
 from deploykit import DeployGroup, DeployHost, HostKeyCheck, parse_hosts
 from invoke import task
@@ -135,7 +135,7 @@ def get_hosts(hosts: str) -> List[DeployHost]:
 
 
 @task
-def deploy(c, _hosts=""):
+def deploy(c, _hosts=""): # type: (Any, str) -> None
     """
     Deploy to eve, eva and localhost
     """
@@ -171,7 +171,7 @@ def deploy(c, _hosts=""):
 
 
 @task
-def deploy_k3s(c):
+def deploy_k3s(c): # type: (Any) -> None
     """
     Deploy k3s cluster to cloudlab
     """
@@ -205,7 +205,7 @@ def try_local(host: str) -> str:
 
 
 @task
-def deploy_bernie(c):
+def deploy_bernie(c): # type: (Any) -> None
     """
     Deploy to bernie
     """
@@ -213,7 +213,7 @@ def deploy_bernie(c):
 
 
 @task
-def deploy_matchbox(c):
+def deploy_matchbox(c): # type: (Any) -> None
     """
     Deploy to matchbox
     """
@@ -234,7 +234,7 @@ def deploy_matchbox(c):
 
 
 @task
-def deploy_dotfiles(c):
+def deploy_dotfiles(c): # type: (Any) -> None
     """
     Deploy to dotfiles
     """
@@ -283,9 +283,10 @@ def wait_for_port(host: str, port: int, shutdown: bool = False) -> None:
                 sys.stdout.flush()
 
 
-def wait_for_reboot(h: DeployHost):
+def wait_for_reboot(h: DeployHost) -> None:
     print(f"Wait for {h.host} to shutdown", end="")
     sys.stdout.flush()
+    assert h.port is not None, "port is not set"
     wait_for_port(h.host, h.port, shutdown=True)
     print("")
 
@@ -296,7 +297,7 @@ def wait_for_reboot(h: DeployHost):
 
 
 @task
-def add_github_user(c, hosts="", github_user="Mic92"):
+def add_github_user(c, hosts="", github_user="Mic92"): # type: (Any, str, str) -> None
     def add_user(h: DeployHost) -> None:
         h.run("mkdir -m700 /root/.ssh")
         out = h.run_local(
@@ -311,40 +312,7 @@ def add_github_user(c, hosts="", github_user="Mic92"):
 
 
 @task
-def cloudlab_install(c, disk="/dev/sda", hosts=""):
-    def install(h: DeployHost) -> None:
-        ssh_cmd = "ssh -oStrictHostKeyChecking=no -oUserKnownHostsFile=/dev/null"
-        h.run_local(
-            f"rsync --exclude='.git/' --exclude='.mypy_cache' -aF --delete -e '{ssh_cmd}' . {h.user}@{h.host}:/etc/nixos",
-        )
-        out = h.run_local(
-            """
-        sops -d --extract '["cloudlab-age"]' ./nixos/secrets/admins/sops-keys.yaml
-        """,
-            stdout=subprocess.PIPE,
-        )
-        h.run("/etc/nixos/nixos/images/cloudlab/partition.sh")
-
-        h.run("mkdir -p /mnt/var/lib/sops-nix")
-        h.run(f"echo '{out.stdout}' > /mnt/var/lib/sops-nix/key.txt")
-        h.run("chmod 400 /mnt/var/lib/sops-nix/key.txt")
-
-        h.run("mkdir -p /mnt/etc && cp -r /etc/nixos /mnt/etc/")
-
-        h.run(
-            """
-        nix shell "nixpkgs#git" -c nixos-install --no-root-passwd --flake "/mnt/etc/nixos#cloudlab-node" && reboot
-        """
-        )
-
-        wait_for_reboot(h)
-
-    g = parse_hosts(hosts, host_key_check=HostKeyCheck.NONE)
-    g.run_function(install)
-
-
-@task
-def reboot(c, hosts=""):
+def reboot(c, hosts=""): # type: (Any, str) -> None
     """
     Reboot hosts. example usage: fab --hosts clara.r,donna.r reboot
     """
@@ -363,7 +331,7 @@ def reboot(c, hosts=""):
 
 
 @task
-def cleanup_gcroots(c, hosts=""):
+def cleanup_gcroots(c, hosts=""): # type: (Any, str) -> None
     deploy_hosts = [DeployHost(h) for h in hosts.split(",")]
     for h in deploy_hosts:
         g = DeployGroup([h])
