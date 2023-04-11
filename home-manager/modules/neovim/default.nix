@@ -56,11 +56,7 @@ in
     stylua
     terraform-ls
     nodePackages.pyright
-    (
-      if pkgs.stdenv.isDarwin
-      then pkgs.sumneko-lua-language-server-mac
-      else pkgs.sumneko-lua-language-server
-    )
+    sumneko-lua-language-server
   ];
   xdg.dataHome = "${config.home.homeDirectory}/.data";
   xdg.dataFile."nvim/lazy/telescope-fzf-native.nvim/build/libfzf.so".source = "${pkgs.vimPlugins.telescope-fzf-native-nvim}/build/libfzf.so";
