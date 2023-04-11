@@ -3,7 +3,8 @@
 , lib
 , inputs
 , ...
-}: let
+}:
+let
   langs = [
     # "agda"
     "bash"
@@ -41,7 +42,8 @@
     "make"
     "toml"
   ];
-in {
+in
+{
   home.packages = with pkgs; [
     neovim
 
@@ -62,7 +64,7 @@ in {
   ];
   xdg.dataHome = "${config.home.homeDirectory}/.data";
   xdg.dataFile."nvim/lazy/telescope-fzf-native.nvim/build/libfzf.so".source = "${pkgs.vimPlugins.telescope-fzf-native-nvim}/build/libfzf.so";
-  xdg.configFile."nvim".source = pkgs.runCommand "nvim" {} ''
+  xdg.configFile."nvim".source = pkgs.runCommand "nvim" { } ''
     mkdir -p $out/parser
 
     ln -s ${inputs.astro-nvim}/* $out/

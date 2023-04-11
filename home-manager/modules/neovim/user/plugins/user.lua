@@ -1,5 +1,1 @@
-return {
-  {
-    "catppuccin/nvim",
-  },
-}
+return {}
