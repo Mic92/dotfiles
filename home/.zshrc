@@ -612,9 +612,9 @@ vil() {
   IFS=':' ARGS=($@)
   unsetopt shwordsplit
   if [[ ${#ARGS[@]} -lt 2 ]]; then
-    vimeditor ${ARGS[1]} # no line number given
+    vim ${ARGS[1]} # no line number given
   else
-    vimeditor +${ARGS[2]} ${ARGS[1]}
+    vim +${ARGS[2]} ${ARGS[1]}
   fi
 }
 # force output to be on a single line
