@@ -48,15 +48,31 @@ in
     neovim
 
     nodejs # copilot
-    nil
-    rust-analyzer
     vale
-    shellcheck
-    gopls
-    stylua
     terraform-ls
     nodePackages.pyright
     sumneko-lua-language-server
+
+    # based on ./suggested-pkgs.json
+    delve
+    gopls
+    nodePackages.bash-language-server
+    taplo-lsp
+    marksman
+    rust-analyzer
+    yaml-language-server
+    nil
+    gomodifytags
+    gofumpt
+    iferr
+    impl
+    gotools
+    shellcheck
+    shfmt
+    isort
+    black
+    nodePackages.prettier
+    stylua
   ];
   xdg.dataHome = "${config.home.homeDirectory}/.data";
   xdg.dataFile."nvim/lazy/telescope-fzf-native.nvim/build/libfzf.so".source = "${pkgs.vimPlugins.telescope-fzf-native-nvim}/build/libfzf.so";
