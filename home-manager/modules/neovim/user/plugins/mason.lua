@@ -5,6 +5,7 @@ return {
     "williamboman/mason-lspconfig.nvim",
     -- overrides `require("mason-lspconfig").setup(...)`
     opts = {
+      automatic_installation = false,
       -- ensure_installed = { "lua_ls" },
     },
   },
@@ -13,6 +14,7 @@ return {
     "jay-babu/mason-null-ls.nvim",
     -- overrides `require("mason-null-ls").setup(...)`
     opts = {
+      automatic_installation = false,
       -- ensure_installed = { "prettier", "stylua" },
     },
   },
@@ -20,6 +22,7 @@ return {
     "jay-babu/mason-nvim-dap.nvim",
     -- overrides `require("mason-nvim-dap").setup(...)`
     opts = {
+      automatic_installation = false,
       -- ensure_installed = { "python" },
     },
   },

@@ -7,4 +7,13 @@ return {
  { import = "astrocommunity.completion.copilot-lua" },
  { import = "astrocommunity.completion.copilot-lua-cmp" },
  { import = "astrocommunity.project.project-nvim" },
+ { import = "astrocommunity.pack.go" },
+ { import = "astrocommunity.pack.bash" },
+ { import = "astrocommunity.pack.python" },
+ { import = "astrocommunity.pack.lua" },
+ { import = "astrocommunity.pack.toml" },
+ { import = "astrocommunity.pack.markdown" },
+ { import = "astrocommunity.pack.rust" },
+ { import = "astrocommunity.pack.yaml" },
+ { import = "astrocommunity.pack.nix" },
 }
