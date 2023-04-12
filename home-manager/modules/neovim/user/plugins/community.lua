@@ -6,4 +6,5 @@ return {
  { import = "astrocommunity.colorscheme.gruvbox" },
  { import = "astrocommunity.completion.copilot-lua" },
  { import = "astrocommunity.completion.copilot-lua-cmp" },
+ { import = "astrocommunity.project.project-nvim" },
 }
