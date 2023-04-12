@@ -1,0 +1,1 @@
+["delve", "bash", "python", "codelldb", "gopls", "bashls", "pyright", "ruff_lsp", "lua_ls", "taplo", "marksman", "rust_analyzer", "yamlls", "rnix", "gomodifytags", "gofumpt", "iferr", "impl", "goimports", "shellcheck", "shfmt", "isort", "black", "stylua", "prettierd"]
