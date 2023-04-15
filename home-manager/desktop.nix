@@ -98,6 +98,15 @@
         done
         chmod +x $out/bin/slack-*
       '')
+      (pkgs.writeScriptBin "jellyfinmediaplayer" ''
+        # bluetooth speaker
+        bluetoothctl connect E6:4D:D6:0A:CC:9B &
+        systemd-inhibit \
+          --why="Jellyfin Media Player" \
+          --who="Jellyfin Media Player" \
+          --mode=block \
+          ${pkgs.jellyfin-media-player}/bin/jellyfinmediaplayer
+      '')
       (retroarch.override {
         cores = [
           libretro.bsnes-hd
