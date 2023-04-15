@@ -628,7 +628,8 @@ ss() {
 }
 sieve-edit() {
   local passwordfd
-  exec {passwordfd} < <(rbw get Eve)
+  password=$(rbw get Eve)
+  exec {passwordfd} < <(echo "$password")
   nix run nixpkgs#sieve-connect -- --passwordfd $passwordfd -s imap.thalheim.io -u joerg@higgsboson.tk --remotesieve Filter --edit
   exec {passwordfd}>&-
 }
