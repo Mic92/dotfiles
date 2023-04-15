@@ -29,6 +29,8 @@
       "/var/lib/containerd"
       # already included in database backup
       "/var/lib/postgresql"
+      # not so important
+      "/var/db/influxdb"
       "/var/lib/docker/"
       "/var/log/journal"
       "/var/cache"
