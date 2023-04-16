@@ -16,6 +16,29 @@
         "type": "github"
       }
     },
+    "bing-gpt-server": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1681672518,
+        "narHash": "sha256-qOpa6fW2LRpzG1wFVPb0N5zudml3kpC0KlX6SX/VOwE=",
+        "owner": "Mic92",
+        "repo": "bing-gpt-server",
+        "rev": "3c332679763a25275848303e8df1d44495b60f9c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "bing-gpt-server",
+        "type": "github"
+      }
+    },
     "bme680-mqtt": {
       "inputs": {
         "flake-parts": [
@@ -614,11 +637,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1681246809,
-        "narHash": "sha256-3RUAwk0ApPjq2Ms8KiAh+gG6EJKWurIur612w2m3Zu8=",
+        "lastModified": 1681672417,
+        "narHash": "sha256-OtylBgnCkHKDTXIxmfX1rK/FyYBlIVFPQ9HY4oztBSs=",
         "ref": "refs/heads/master",
-        "rev": "c8ddb36f3d85be762aeb1893a79da36014f55658",
-        "revCount": 296,
+        "rev": "bac05971f2bfa5b5179d04e088bf0740e9ea86a1",
+        "revCount": 297,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },
@@ -630,6 +653,7 @@
     "root": {
       "inputs": {
         "astro-nvim": "astro-nvim",
+        "bing-gpt-server": "bing-gpt-server",
         "bme680-mqtt": "bme680-mqtt",
         "disko": "disko",
         "flake-parts": "flake-parts",
