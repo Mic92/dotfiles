@@ -42,6 +42,10 @@
     bme680-mqtt.inputs.flake-parts.follows = "flake-parts";
     bme680-mqtt.inputs.nixpkgs.follows = "nixpkgs";
 
+    bing-gpt-server.url = "github:Mic92/bing-gpt-server";
+    bing-gpt-server.inputs.flake-parts.follows = "flake-parts";
+    bing-gpt-server.inputs.nixpkgs.follows = "nixpkgs";
+
     retiolum.url = "git+https://git.thalheim.io/Mic92/retiolum";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";

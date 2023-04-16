@@ -15,6 +15,7 @@
     ./hardware-configuration.nix
     ./modules/adminer.nix
     ./modules/bitwarden.nix
+    ./modules/bing-gpt-server.nix
     ./modules/buildbot/master.nix
     ./modules/buildbot/worker.nix
     ./modules/borgbackup.nix
