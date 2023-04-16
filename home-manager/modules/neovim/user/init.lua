@@ -1,3 +1,7 @@
+if vim.fn.has("nvim") == 1 then
+  vim.env.GIT_EDITOR = "nvr --remote-tab"
+end
+
 return {
   -- Configure AstroNvim updates
   updater = {
