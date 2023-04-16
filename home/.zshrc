@@ -594,7 +594,7 @@ retry() {
   done
 }
 say() {
-  _say() { curl -sSG http://tts.r/api/tts --data-urlencode text@- | mpv --no-resume-playback -; }
+  _say() { curl -sSG http://tts.r/api/tts --data-urlencode text@- | mpv --keep-open=no --no-resume-playback -; }
   if [[ "$#" -eq 0 ]]; then
     _say
   else
