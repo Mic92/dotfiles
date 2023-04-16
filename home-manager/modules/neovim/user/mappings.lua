@@ -6,6 +6,9 @@
 return {
   -- first key is the mode
   n = {
+    -- Don't error if file doesn't exist
+    ["gf"] = { ":e <cfile><cr>", desc = "Open existing or new file" },
+
     -- second key is the lefthand side of the map
     -- mappings seen under group name "Buffer"
     ["<leader>bn"] = { "<cmd>tabnew<cr>", desc = "New tab" },
