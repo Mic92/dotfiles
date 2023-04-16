@@ -48,6 +48,7 @@ in
     neovim
 
     nodejs # copilot
+    deno # lsp
     vale
     terraform-ls
     nodePackages.pyright
@@ -56,6 +57,7 @@ in
     # based on ./suggested-pkgs.json
     delve
     gopls
+    golangci-lint
     nodePackages.bash-language-server
     taplo-lsp
     marksman
@@ -71,6 +73,8 @@ in
     shfmt
     isort
     black
+    ruff
+
     nodePackages.prettier
     stylua
   ];

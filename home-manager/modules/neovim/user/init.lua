@@ -69,6 +69,7 @@ return {
       "rust_analyzer",
       "gopls",
       "yamlls",
+      "denols",
     },
   },
   -- Configure require("lazy").setup() options
