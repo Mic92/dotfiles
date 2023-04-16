@@ -89,23 +89,6 @@
         "type": "github"
       }
     },
-    "doom-emacs": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1681326563,
-        "narHash": "sha256-Xhhcuwf4wIuEdSN+v09npcGwWdsW0vC12QAHePWULP0=",
-        "owner": "doomemacs",
-        "repo": "doomemacs",
-        "rev": "042fe0c43831c8575abfdec4196ebd7305fa16ac",
-        "type": "github"
-      },
-      "original": {
-        "owner": "doomemacs",
-        "ref": "master",
-        "repo": "doomemacs",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -649,7 +632,6 @@
         "astro-nvim": "astro-nvim",
         "bme680-mqtt": "bme680-mqtt",
         "disko": "disko",
-        "doom-emacs": "doom-emacs",
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
         "harmonia": "harmonia",
