@@ -368,8 +368,6 @@ xalias ctl='sudo systemctl'
 alias gdb='gdb --quiet --args'
 alias readelf='readelf -W'
 # Editors
-[[ -n ${commands[vi]} ]] && alias vi=vim
-xalias vim="nvim"
 xalias xclip="xclip -selection clipboard"
 xalias cloc=scc
 
@@ -488,8 +486,13 @@ fi
 export TERMINAL=footclient
 export PICTUREVIEW=eog
 
-if [[ -n ${commands[nvim]} ]]; then
+if [[ -n ${commands[nvr]} ]]; then
+  export EDITOR=nvr
+  export NVR_CMD="nvim --listen $HOME/.data/nvim/sock"
+  alias vim="nvr"
+elif [[ -n ${commands[nvim]} ]]; then
   export EDITOR=nvim
+  alias vim="nvim"
 elif [[ -n ${commands[emacseditor]} ]]; then
   export EDITOR=emacseditor
 else
@@ -591,7 +594,7 @@ retry() {
   done
 }
 say() {
-  _say() { curl -sSG http://tts.r/api/tts --data-urlencode text@- | mpv --no-resume-playback -; }
+  _say() { curl -sSG http://tts.r/api/tts --data-urlencode text@- | mpv --keep-open=no --no-resume-playback -; }
   if [[ "$#" -eq 0 ]]; then
     _say
   else

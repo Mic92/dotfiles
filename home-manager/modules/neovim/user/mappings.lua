@@ -28,4 +28,8 @@ return {
     -- setting a mapping to false will disable it
     -- ["<esc>"] = false,
   },
+  c = {
+    -- setting a mapping to false will disable it
+    ["w!!"] = { "w !sudo tee > /dev/null %", desc = "Write as sudo" },
+  }
 }

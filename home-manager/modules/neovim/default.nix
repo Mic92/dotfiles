@@ -46,6 +46,7 @@ in
 {
   home.packages = with pkgs; [
     neovim
+    neovim-remote
 
     nodejs # copilot
     deno # lsp
