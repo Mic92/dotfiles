@@ -74,6 +74,15 @@
       }
       {
         urls = [
+          "http://yellow.r/chatty/index.html"
+        ];
+        response_string_match = "shoutbox";
+        tags.host = "yellow";
+        tags.org = "krebs";
+        interface = "tinc.retiolum";
+      }
+      {
+        urls = [
           "http://yellow.r"
           "http://sicily.r/"
           "https://sicily.r/"
