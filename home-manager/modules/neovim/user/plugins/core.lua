@@ -26,7 +26,13 @@ return {
       opts.current_line_blame =true
       return opts
     end,
-  }
+  },
+  {
+    "nvim-neo-tree/neo-tree.nvim",
+    opts = {
+      follow_current_file = true,
+    }
+  },
   -- You can disable default plugins as follows:
   -- { "max397574/better-escape.nvim", enabled = false },
   --
