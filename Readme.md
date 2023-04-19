@@ -34,6 +34,3 @@ $ hm switch
 # Articles about my dotfile repo
 
 - Explains basic structure: https://samleathers.com/posts/2022-02-03-my-new-network-and-deploy-rs.html
-
-
-This is a simple sentence.
