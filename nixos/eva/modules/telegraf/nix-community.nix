@@ -12,8 +12,8 @@ in
   services.telegraf.extraConfig.inputs = {
     http_response = [
       {
-        urls = [ "https://search.nix-community.org/" ];
-        response_string_match = "Hound";
+        urls = [ "https://nur-update.nix-community.org/" ];
+        response_string_match = "NUR update endpoint";
         tags.host = "build03.nix-community.org";
         tags.org = "nix-community";
       }
