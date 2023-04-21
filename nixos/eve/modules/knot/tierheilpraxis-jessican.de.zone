@@ -8,5 +8,4 @@
 
 $TTL 600
 
-www IN CNAME justazes.github.io.
 @ IN CNAME justazes.github.io.
