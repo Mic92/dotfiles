@@ -154,6 +154,9 @@ in
         - domain: thalheim.io
           file: "${./thalheim.io.zone}"
           template: master
+        - domain: tierheilpraxis-jessican.de
+          file: "${./tierheilpraxis-jessican.de.zone}"
+          template: master
         - domain: lekwati.com
           file: "${./lekwati.com.zone}"
           template: master
