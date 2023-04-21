@@ -1,4 +1,4 @@
-@ 3600 IN SOA tierheilpraxis-jessican.de. ns2.thalheim.io. 2022123104 7200 3600 86400 3600
+@ 3600 IN SOA tierheilpraxis-jessican.de. ns2.thalheim.io. 2022123105 7200 3600 86400 3600
 
 @ 3600 IN NS ns2.thalheim.io.
 @ 3600 IN NS ns2.he.net.
@@ -16,3 +16,4 @@ $TTL 600
 @ IN AAAA 2606:50c0:8001::153
 @ IN AAAA 2606:50c0:8002::153
 @ IN AAAA 2606:50c0:8003::153
+www in CNAME justazes.github.io
