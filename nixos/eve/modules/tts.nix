@@ -13,7 +13,7 @@
       User = "tts";
       Group = "tts";
       ExecStart = ''
-        ${pkgs.tts}/bin/tts-server --model_name tts_models/en/ljspeech/vits --port 5004
+        ${pkgs.tts}/bin/tts-server --model_name tts_models/en/ljspeech/tacotron2-DDC --port 5004
       '';
     };
   };
