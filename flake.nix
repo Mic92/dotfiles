@@ -35,8 +35,8 @@
     # for development
     #sops-nix.url = "/home/joerg/git/sops-nix";
     sops-nix.url = "github:Mic92/sops-nix";
-
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    sops-nix.inputs.nixpkgs-stable.follows = "";
 
     bme680-mqtt.url = "github:Mic92/bme680-mqtt";
     bme680-mqtt.inputs.flake-parts.follows = "flake-parts";
@@ -87,7 +87,9 @@
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    lanzaboote.url = "github:nix-community/lanzaboote";
+    # https://github.com/nix-community/lanzaboote/pull/157
+    lanzaboote.url = "github:Mic92/lanzaboote/flake-compat";
+    lanzaboote.inputs.flake-compat.follows = "";
     #lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
   };
 
