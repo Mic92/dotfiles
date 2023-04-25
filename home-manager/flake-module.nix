@@ -30,7 +30,6 @@
         export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.nix pkgs.jq pkgs.unixtools.hostname]}
         declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie")
         profile="common"
-        hostname
         if [[ -n ''${profiles[$(hostname)]:-} ]]; then
           profile=''${profiles[$(hostname)]}
         fi
