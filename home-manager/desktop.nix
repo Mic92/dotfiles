@@ -5,6 +5,7 @@
   imports = [
     ./common.nix
     ./modules/rust.nix
+    ./modules/heygpt.nix
     ./modules/debugging.nix
     ./modules/default-apps.nix
     ./modules/hyprland.nix
