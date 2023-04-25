@@ -3,11 +3,10 @@ let
   heygpt = pkgs.rustPlatform.buildRustPackage {
     name = "heygpt";
     src = pkgs.fetchFromGitHub {
-      # https://github.com/fuyufjh/heygpt/pull/4
-      owner = "Mic92";
+      owner = "fuyufjh";
       repo = "heygpt";
-      rev = "84a0330364cd3669fa100f0e6241fa554fabfa6e";
-      hash = "sha256-XKeGvG+KUxM2l/OplrGqY+SCEFKOWxBtIIaKjtQeyPc=";
+      rev = "b84947025821ce4b3d7f96b8c0c2409b2d6743f9";
+      hash = "sha256-+Kx8OmUbqL9FRD8uA2W2iSmsKxHzHYTZVgCKEO0gC30=";
     };
     cargoHash = "sha256-ag3QfjCZgw9qR8gjZ3KyhY+X5IEmbZD3U/ai20zVtzE=";
 
