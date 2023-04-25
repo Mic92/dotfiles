@@ -35,6 +35,6 @@ $ hm switch
 
 - Explains basic structure: https://samleathers.com/posts/2022-02-03-my-new-network-and-deploy-rs.html
 
-# Need professional help with nix?
+# Need help with nix?
 
 Drop me an email at joerg@thalheim.io to book consultation on Nix/NixOS/DevOps related topics
