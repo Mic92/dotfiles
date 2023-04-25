@@ -34,6 +34,10 @@
         if [[ -n ''${profiles[$(hostname)]:-} ]]; then
           profile=''${profiles[$(hostname)]}
         fi
+        if [[ "''${1:-}" == profile ]]; then
+          echo $profile
+          exit 0
+        fi
         ${inputs.home-manager.packages.${pkgs.system}.home-manager}/bin/home-manager --flake "${self}#$profile" "$@"
       ''}/bin/hm";
       };
