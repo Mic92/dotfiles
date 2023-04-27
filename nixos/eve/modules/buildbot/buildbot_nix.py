@@ -120,7 +120,10 @@ class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
 
             for line in self.observer.getStdout().split("\n"):
                 if line != "":
-                    job = json.loads(line)
+                    try:
+                        job = json.loads(line)
+                    except json.JSONDecodeError as e:
+                        raise Exception(f"Failed to parse line: {line}") from e
                     jobs.append(job)
             self.build.addStepsAfterCurrentStep(
                 [BuildTrigger(scheduler="nix-build", name="nix-build", jobs=jobs)]
