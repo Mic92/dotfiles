@@ -326,21 +326,19 @@
         "flake-parts": "flake-parts_2",
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
-        "nixpkgs-test": "nixpkgs-test",
         "pre-commit-hooks-nix": "pre-commit-hooks-nix",
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1682243709,
-        "narHash": "sha256-LhyBZsNQtLbyv6g/Cx40IpIfo7BpR0UiC/X1J3/HZ/U=",
-        "owner": "Mic92",
+        "lastModified": 1682610266,
+        "narHash": "sha256-uBu76p9z59HXrRvxDvwqXmlUYvKeTYC9soUf4bIMEc0=",
+        "owner": "nix-community",
         "repo": "lanzaboote",
-        "rev": "0e68a1dd3ee124ca6718af9ce7ed899eec3cc586",
+        "rev": "c60e039ee968f208bd4bbd4557c41fe451a41d97",
         "type": "github"
       },
       "original": {
-        "owner": "Mic92",
-        "ref": "flake-compat",
+        "owner": "nix-community",
         "repo": "lanzaboote",
         "type": "github"
       }
@@ -481,22 +479,6 @@
       "original": {
         "owner": "pennae",
         "ref": "systemd-oom",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-test": {
-      "locked": {
-        "lastModified": 1679009563,
-        "narHash": "sha256-jizICiQOqUcYFNHRNNOo69bfyNo36iyuRAHem5z68LQ=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "371d3778c4f9cee7d5cf014e6ce400d57366570f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "qemu-boot-disk-using-make-disk-image",
         "repo": "nixpkgs",
         "type": "github"
       }
