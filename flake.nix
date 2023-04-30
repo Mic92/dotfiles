@@ -87,8 +87,7 @@
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    # https://github.com/nix-community/lanzaboote/pull/157
-    lanzaboote.url = "github:Mic92/lanzaboote/flake-compat";
+    lanzaboote.url = "github:nix-community/lanzaboote";
     lanzaboote.inputs.flake-compat.follows = "";
     #lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
   };
