@@ -1,6 +1,6 @@
 -- customize mason plugins
 local suggested_packages = {}
-local utils = require "astrocommunity.utils"
+local utils = require "astronvim.utils"
 
 local disable_auto_install = function(_, opts)
   local data_dir = vim.fn.stdpath("data")
