@@ -487,10 +487,9 @@ fi
 export TERMINAL=footclient
 export PICTUREVIEW=eog
 
-if [[ -n ${commands[nvr]} ]]; then
-  export EDITOR=nvr
-  export NVR_CMD="nvim --listen $HOME/.data/nvim/sock"
-  alias vim="nvr"
+if [[ -n ${commands[nvim-open]} ]]; then
+  export EDITOR=nvim-open
+  alias vim="nvim-open"
 elif [[ -n ${commands[nvim]} ]]; then
   export EDITOR=nvim
   alias vim="nvim"
@@ -607,18 +606,6 @@ own() {
     sudo chown -R "$USER:$(id -gn)" "$@"
   else
     chown -R "$USER:$(id -gn)" "$@"
-  fi
-}
-# usage
-# vil file:20 -> opens file on line 20
-vil() {
-  setopt shwordsplit
-  IFS=':' ARGS=($@)
-  unsetopt shwordsplit
-  if [[ ${#ARGS[@]} -lt 2 ]]; then
-    vim ${ARGS[1]} # no line number given
-  else
-    vim +${ARGS[2]} ${ARGS[1]}
   fi
 }
 # force output to be on a single line
