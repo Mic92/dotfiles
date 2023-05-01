@@ -277,7 +277,7 @@ set $devClasses "^(xterm|urxvt|aterm|URxvt|XTerm|Alacritty|Emacs)$"
 assign [app_id=$devClasses] $wsDev
 #
 # Daily == thunderbird
-set $imClasses "^(Kopete|Pidgin|gajim|rambox|Dino|.gam-wrapped|Daily|birdie|evolution|Ferdi|Ferdium|signal)$"
+set $imClasses "^(Kopete|Pidgin|gajim|rambox|Dino|.gam-wrapped|Daily|birdie|evolution|Ferdi|Ferdium|[Ss]ignal)$"
 assign [class=$imClasses] $wsIm
 #
 set $docClasses "^(Evince|GVim|keepassx|libreoffice)$"
