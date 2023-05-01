@@ -41,30 +41,25 @@ def main() -> None:
             path = path.parent.joinpath(args[0])
             if path.exists():
                 line = args[1]
-                sys.argv[1] = str(path)
+                sys.argv[1] = str(path.resolve())
         if path.is_file():
             project_root = find_project_root(path.parent.resolve())
         else:
-            project_root = path.resolve()
+            project_root = path.parent.resolve()
 
     sock_hash = hashlib.md5(str(project_root).encode("utf-8")).hexdigest()
     sock = Path.home().joinpath(".data/nvim/").joinpath(f"sock-{sock_hash}")
 
-    try:
-        os.chdir(project_root)
-    except OSError as e:
-        print(f"Could not change directory to {project_root}: {e}", file=sys.stderr)
-        pass
+    os.environ["TTY"] = str(os.ttyname(sys.stdout.fileno()))
     os.environ["NVIM_LISTEN_ADDRESS"] = str(sock)
 
     args = [
         "nvr",
-        "--servername",
-        str(sock),
         "+{}".format(line),
         "-c",
-        f"lcd {project_root}",
+        f"lcd {project_root} | RaiseTmuxPane",
     ] + sys.argv[1:]
+    print(args)
     return nvr.main(args)
 
 
