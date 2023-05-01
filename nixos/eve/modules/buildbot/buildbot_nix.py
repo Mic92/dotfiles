@@ -206,8 +206,7 @@ class UpdateBuildOutput(steps.BuildStep):
         # XXX don't hardcode this
         p = Path("/var/www/buildbot/nix-outputs/")
         os.makedirs(p, exist_ok=True)
-        with open(p / attr, "w") as f:
-            f.write(out_path)
+        (p / attr).write_text(out_path)
         return util.SUCCESS
 
 
@@ -521,27 +520,6 @@ def nix_eval_config(
             )
         )
 
-    # factory.addStep(
-    #    DeployTrigger(scheduler="nixos-deploy", name="nixos-deploy", machines=machines)
-    # )
-    # factory.addStep(
-    #    DeployNixOS(
-    #        name="Deploy NixOS machines",
-    #        env=dict(GITHUB_TOKEN=util.Secret(github_token_secret)),
-    #        base_branches=["master"],
-    #        owners=automerge_users,
-    #        command=[
-    #            "gh",
-    #            "pr",
-    #            "merge",
-    #            "--repo",
-    #            util.Property("project"),
-    #            "--rebase",
-    #            util.Property("pullrequesturl"),
-    #        ],
-    #    )
-    # )
-
     return util.BuilderConfig(
         name="nix-eval",
         workernames=worker_names,
@@ -595,7 +573,9 @@ def nix_build_config(
                 ],
             )
         )
-    factory.addStep(UpdateBuildOutput(name="Update build output", branches=["master"]))
+    factory.addStep(
+        UpdateBuildOutput(name="Update build output", branches=["master", "main"])
+    )
     return util.BuilderConfig(
         name="nix-build",
         workernames=worker_names,
@@ -604,33 +584,3 @@ def nix_build_config(
         env={},
         factory=factory,
     )
-
-
-# def nixos_deployment_config(worker_names: list[str]) -> util.BuilderConfig:
-#    factory = util.BuildFactory()
-#    factory.addStep(
-#        NixBuildCommand(
-#            env={},
-#            name="Deploy NixOS",
-#            command=[
-#                "nix",
-#                "build",
-#                "--option",
-#                "keep-going",
-#                "true",
-#                "-L",
-#                "--out-link",
-#                util.Interpolate("result-%(prop:attr)s"),
-#                util.Property("drv_path"),
-#            ],
-#            haltOnFailure=True,
-#        )
-#    )
-#    return util.BuilderConfig(
-#        name="nix-build",
-#        workernames=worker_names,
-#        properties=[],
-#        collapseRequests=False,
-#        env={},
-#        factory=factory,
-#    )
