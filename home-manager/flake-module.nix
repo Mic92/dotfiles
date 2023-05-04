@@ -1,5 +1,5 @@
 { self, inputs, ... }: {
-  perSystem = { pkgs, lib, ... }:
+  perSystem = { config, pkgs, lib, ... }:
     let
       homeManagerConfiguration =
         { extraModules ? [ ]
@@ -40,6 +40,23 @@
         ${inputs.home-manager.packages.${pkgs.system}.home-manager}/bin/home-manager --flake "${self}#$profile" "$@"
       ''}/bin/hm";
       };
+
+      apps.bootstrap-dotfiles = {
+        type = "app";
+        program = "${pkgs.writeShellScriptBin "bootstrap-dotfiles" ''
+          set -x
+          export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.nix pkgs.jq]}
+          if [ ! -d $HOME/.homesick/repos/homeshick ]; then
+            git clone --depth=1 https://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
+          fi
+          if [ ! -d $HOME/.homesick/repos/dotfiles ]; then
+            HOME/.homesick/repos/homeshick/bin/homeshick clone https://github.com/Mic92/dotfiles.git
+          fi
+          nix run ${self}#hm -- "$@"
+        ''}/bin/bootstrap-dotfiles";
+      };
+      apps.default = config.apps.bootstrap-dotfiles;
+
       legacyPackages = {
         homeConfigurations = {
           common = homeManagerConfiguration { };

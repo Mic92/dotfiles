@@ -2,7 +2,13 @@
 
 For bootstraping on [legacy operating systems](https://github.com/Mic92/dotfiles/wiki#bootstrap-for-legacy-operating-systems)
 
-# Boostrap homeshick
+# Bootstrap dotfiles when having nix
+
+```
+$ nix run github:Mic92/dotfiles
+```
+
+# Boostrap homeshick without nix
 
 ```
 $ nix-shell -p git
@@ -10,6 +16,7 @@ nix-shell> git clone --depth=1 https://github.com/andsens/homeshick.git $HOME/.h
 nix-shell> alias homeshick="$HOME/.homesick/repos/homeshick/bin/homeshick"
 nix-shell> homeshick clone https://github.com/Mic92/dotfiles.git
 ```
+
 
 # Boostrap single user nix:
 
