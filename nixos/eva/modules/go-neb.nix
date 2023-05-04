@@ -29,10 +29,10 @@
     config = {
       clients = [
         {
-          UserID = "@nix-community-bot:nixos.dev";
+          UserID = "@nix-community-bot:thalheim.io";
           AccessToken = "$ACCESS_TOKEN";
           DeviceID = "eva";
-          HomeserverURL = "https://matrix.nixos.dev";
+          HomeserverURL = "https://thalheim.io";
           Sync = true;
           AutoJoinRooms = true;
           DisplayName = "Alertmanager";
@@ -50,7 +50,7 @@
         {
           SessionID = "your_github_session";
           RealmID = "github_realm";
-          UserID = "@mic92:nixos.dev";
+          UserID = "@joerg:thalheim.io";
           Config = {
             # Populate these fields by generating a "Personal Access Token" on github.com
             AccessToken = "$GITHUB_TOKEN";
@@ -62,10 +62,10 @@
         {
           ID = "github_webhook_service";
           Type = "github-webhook";
-          UserID = "@nix-community-bot:nixos.dev";
+          UserID = "@nix-community-bot:thalheim.io";
           Config = {
             RealmID = "github_realm";
-            ClientUserID = "@mic92:nixos.dev";
+            ClientUserID = "@joerg:thalheim.io";
             Rooms."!cBybDCkeRlSWfuaFvn:numtide.com".Repos = {
               "nix-community/infra".Events = [ "issues" "pull_request" ];
             };
@@ -74,7 +74,7 @@
         {
           ID = "alertmanager_service";
           Type = "alertmanager";
-          UserID = "@nix-community-bot:nixos.dev";
+          UserID = "@nix-community-bot:thalheim.io";
           Config = {
             # This is for information purposes only. It should point to Go-NEB path as follows:
             # `/services/hooks/<base64 encoded service ID>`
