@@ -32,7 +32,7 @@
           UserID = "@nix-community-bot:thalheim.io";
           AccessToken = "$ACCESS_TOKEN";
           DeviceID = "eva";
-          HomeserverURL = "https://thalheim.io";
+          HomeserverURL = "https://matrix.thalheim.io";
           Sync = true;
           AutoJoinRooms = true;
           DisplayName = "Alertmanager";
