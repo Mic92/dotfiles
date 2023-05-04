@@ -26,10 +26,13 @@ in
 {
   # $ nix-shell -p dendrite --run 'generate-keys --private-key /tmp/key'
   sops.secrets.matrix-server-key = { };
+  sops.secrets.registration-secret = { };
 
   services.dendrite = {
     enable = true;
     httpPort = 8043;
+    environmentFile = config.sops.secrets.registration-secret.path;
+
     settings = {
       global = {
         server_name = "thalheim.io";
@@ -55,6 +58,7 @@ in
       client_api = {
         registration_disabled = true;
         rate_limiting.enabled = false;
+        registration_shared_secret = ''''${REGISTRATION_SHARED_SECRET}'';
       };
       media_api = {
         inherit database;
