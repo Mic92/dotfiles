@@ -46,11 +46,11 @@
         program = "${pkgs.writeShellScriptBin "bootstrap-dotfiles" ''
           set -x
           export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.nix pkgs.jq]}
-          if [ ! -d $HOME/.homesick/repos/homeshick ]; then
-            git clone --depth=1 https://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
+          if [ ! -d "$HOME/.homesick/repos/homeshick" ]; then
+            git clone --depth=1 https://github.com/andsens/homeshick.git "$HOME/.homesick/repos/homeshick"
           fi
-          if [ ! -d $HOME/.homesick/repos/dotfiles ]; then
-            HOME/.homesick/repos/homeshick/bin/homeshick clone https://github.com/Mic92/dotfiles.git
+          if [ ! -d "$HOME/.homesick/repos/dotfiles" ]; then
+            "$HOME/.homesick/repos/homeshick/bin/homeshick" clone https://github.com/Mic92/dotfiles.git
           fi
           nix run ${self}#hm -- "$@"
         ''}/bin/bootstrap-dotfiles";
