@@ -109,6 +109,11 @@ matrix IN A 88.99.244.96
 matrix IN AAAA 2a01:4f8:10b:49f::1
 _matrix._tcp IN SRV 0 5 443 matrix
 
+nixos-wiki IN NS dns1.p01.nsone.net.
+nixos-wiki IN NS dns2.p01.nsone.net.
+nixos-wiki IN NS dns3.p01.nsone.net.
+nixos-wiki IN NS dns4.p01.nsone.net.
+
 ;; SSHFP Records
 @ IN SSHFP 1 1 307bf9d2a0066efcb78b7b243da920dc36d03060
 @ IN SSHFP 1 2 b31f94a8ab37255d4dca36f8e7b27044b96bed238e967ec220486c2596fc44d4

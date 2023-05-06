@@ -59,6 +59,7 @@ def main() -> None:
         "-cc",
         f"lcd {project_root} | RaiseTmuxPane",
         "--remote-silent",
+        "-s",
     ] + sys.argv[1:]
     return nvr.main(args)
 
