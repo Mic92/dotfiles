@@ -1,3 +1,16 @@
+function open_or_create_file(tfilename)
+    -- complete filepath from the file where this is called
+    local parent = vim.fn.expand('%:p:h')
+    local newfilepath = parent .. '/' .. vim.fn.expand(tfilename)
+
+    if vim.fn.filereadable(newfilepath) ~= 1 then
+        -- create parent directory
+        vim.fn.system('mkdir -p ' .. vim.fn.shellescape(parent))
+        vim.fn.system('touch ' .. vim.fn.shellescape(newfilepath))
+    end
+    vim.cmd(':e ' .. newfilepath)
+end
+
 -- Mapping data with "desc" stored directly by vim.keymap.set().
 --
 -- Please use this mappings table to set keyboard mapping since this is the
@@ -7,7 +20,7 @@ return {
   -- first key is the mode
   n = {
     -- Don't error if file doesn't exist
-    ["gf"] = { ":e <cfile><cr>", desc = "Open existing or new file" },
+    ["gf"] = { function() open_or_create_file(vim.fn.expand("<cfile>")) end, desc = "Create file" },
     ["<leader>*"] = { function() require("telescope.builtin").grep_string() end, desc = "Find for word under cursor", },
     ["<leader><leader>"] = { function() require("telescope.builtin").find_files() end, desc = "Find files" },
     -- second key is the lefthand side of the map

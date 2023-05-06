@@ -1,5 +1,3 @@
-if vim.fn.has "nvim" == 1 then vim.env.GIT_EDITOR = "nvr --remote-tab" end
-
 vim.api.nvim_create_user_command("RaiseTmuxPane", function()
   -- run shell command
 
