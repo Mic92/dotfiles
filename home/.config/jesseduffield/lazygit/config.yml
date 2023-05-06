@@ -4,6 +4,11 @@ update:
 gui:
   showFileTree: true
   showIcons: true
+os:
+  edit: 'nvim-open {{filename}}'
+  editAtLine: 'nvim-open +{{line}} {{filename}}'
+  editAtLineAndWait: 'nvim-open --remote-wait +{{line}} {{filename}}'
+  editInTerminal: true
 git:
   paging:
     colorArg: always
