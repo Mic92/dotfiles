@@ -18,7 +18,6 @@
     ../modules/iperf.nix
     ../modules/openldap/replica.nix
     ../modules/promtail.nix
-    ../modules/tracing.nix
     ../modules/users.nix
     ../modules/unbound.nix
   ];
