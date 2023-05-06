@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. ns2.thalheim.io. 2022123102 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. ns2.thalheim.io. 2022123103 7200 3600 86400 3600
 
 ;;@ 3600 IN NS ns1
 @ 3600 IN NS ns2
