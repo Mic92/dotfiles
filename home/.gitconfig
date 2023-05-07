@@ -14,7 +14,7 @@
   status = true
 [core]
   pager = delta --color-only
-  editor = nvim-open --remote-wait-silent
+  editor = nvim-open
 [push]
   recurseSubmodules = on-demand
 [am]
