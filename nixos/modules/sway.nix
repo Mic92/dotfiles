@@ -16,7 +16,7 @@
       wofi
       gnome.eog
       libnotify
-      autotiling # https://github.com/nwg-piotr/autotiling
+      autotiling-rs # https://github.com/ammgws/autotiling-rs
       dunst # notification daemon
       kanshi # autorandr
       wdisplays
