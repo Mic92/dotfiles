@@ -16,9 +16,8 @@
       wofi
       gnome.eog
       libnotify
-      autotiling # https://github.com/nwg-piotr/autotiling
       dunst # notification daemon
-      kanshi # autorandr
+      kanshi # auto-configure display outputs
       wdisplays
       wl-clipboard
       blueberry
