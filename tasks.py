@@ -6,7 +6,7 @@ import socket
 import subprocess
 import sys
 from pathlib import Path
-from typing import List
+from typing import Any, List
 
 from deploykit import DeployGroup, DeployHost, HostKeyCheck, parse_hosts
 from invoke import task
@@ -135,7 +135,7 @@ def get_hosts(hosts: str) -> List[DeployHost]:
 
 
 @task
-def deploy(c, _hosts=""):  # type: (Any, str) -> None
+def deploy(c: Any, _hosts: str = "") -> None:
     """
     Deploy to eve, eva and localhost
     """
@@ -171,7 +171,7 @@ def deploy(c, _hosts=""):  # type: (Any, str) -> None
 
 
 @task
-def deploy_k3s(c):  # type: (Any) -> None
+def deploy_k3s(c: Any) -> None:
     """
     Deploy k3s cluster to cloudlab
     """
@@ -205,7 +205,7 @@ def try_local(host: str) -> str:
 
 
 @task
-def deploy_bernie(c):  # type: (Any) -> None
+def deploy_bernie(c: Any) -> None:
     """
     Deploy to bernie
     """
@@ -213,7 +213,7 @@ def deploy_bernie(c):  # type: (Any) -> None
 
 
 @task
-def deploy_matchbox(c):  # type: (Any) -> None
+def deploy_matchbox(c: Any) -> None:
     """
     Deploy to matchbox
     """
@@ -234,7 +234,7 @@ def deploy_matchbox(c):  # type: (Any) -> None
 
 
 @task
-def deploy_dotfiles(c):  # type: (Any) -> None
+def deploy_dotfiles(c: Any) -> None:
     """
     Deploy to dotfiles
     """
@@ -297,7 +297,7 @@ def wait_for_reboot(h: DeployHost) -> None:
 
 
 @task
-def add_github_user(c, hosts="", github_user="Mic92"):  # type: (Any, str, str) -> None
+def add_github_user(c: Any, hosts: str = "", github_user: str = "Mic92") -> None:
     def add_user(h: DeployHost) -> None:
         h.run("mkdir -m700 /root/.ssh")
         out = h.run_local(
@@ -312,7 +312,7 @@ def add_github_user(c, hosts="", github_user="Mic92"):  # type: (Any, str, str) 
 
 
 @task
-def reboot(c, hosts=""):  # type: (Any, str) -> None
+def reboot(c: Any, hosts: str = "") -> None:
     """
     Reboot hosts. example usage: fab --hosts clara.r,donna.r reboot
     """
@@ -331,7 +331,7 @@ def reboot(c, hosts=""):  # type: (Any, str) -> None
 
 
 @task
-def cleanup_gcroots(c, hosts=""):  # type: (Any, str) -> None
+def cleanup_gcroots(c: Any, hosts: str = "") -> None:
     deploy_hosts = [DeployHost(h) for h in hosts.split(",")]
     for h in deploy_hosts:
         g = DeployGroup([h])
