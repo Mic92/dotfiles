@@ -18,7 +18,10 @@ customCommands:
     command: 'git rebase --interactive "{{.SelectedLocalCommit.Sha}}"'
     context: 'commits'
     subprocess: true
-
+  - key: "<c-g>"
+    command: "gh pr create --fill --web"
+    context: "global"
+    loadingText: "Creating pull request on GitHub"
   - key: '<c-n>'
     prompts:
       - type: 'input'
