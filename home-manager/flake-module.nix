@@ -65,14 +65,6 @@
             extraModules = [
               ./desktop.nix
               inputs.nix-index-database.hmModules.nix-index
-              inputs.hyprland.homeManagerModules.default
-              ({ pkgs, ... }: {
-                programs.waybar.package = inputs.hyprland.packages.${pkgs.system}.waybar-hyprland;
-                wayland.windowManager.hyprland.enable = true;
-                home.packages = [
-                  inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
-                ];
-              })
             ];
           };
 

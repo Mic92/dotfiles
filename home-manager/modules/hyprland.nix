@@ -5,6 +5,7 @@
       enable = true;
       hidpi = true;
     };
+    wayland.windowManager.hyprland.enable = true;
     package = pkgs.hyprland;
     extraConfig = ''
       #-- Monitors ----------------------------------------------------

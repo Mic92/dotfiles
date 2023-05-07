@@ -14,7 +14,6 @@
         #(pkgs.callPackage /home/joerg/git/nix-review {})
         config.nur.repos.mic92.nixpkgs-review-unstable
         config.nur.repos.mic92.tmux-thumbs
-        comma
         nix-prefetch
 
         hexyl
@@ -71,6 +70,7 @@
       ]);
 
     home.enableNixpkgsReleaseCheck = false;
+    programs.nix-index-database.comma.enable = true;
 
     home.stateVersion = "20.09";
     home.username = "joerg";

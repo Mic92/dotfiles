@@ -75,6 +75,7 @@ in
           ./turingmachine/configuration.nix
           inputs.nixos-hardware.nixosModules.framework
           inputs.nix-index-database.nixosModules.nix-index
+          { programs.nix-index-database.comma.enable = true; }
 
           inputs.srvos.nixosModules.desktop
 
