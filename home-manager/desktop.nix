@@ -8,7 +8,6 @@
     ./modules/heygpt.nix
     ./modules/debugging.nix
     ./modules/default-apps.nix
-    ./modules/hyprland.nix
     ./modules/waybar.nix
   ];
 

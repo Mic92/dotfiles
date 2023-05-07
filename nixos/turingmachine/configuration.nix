@@ -40,6 +40,7 @@
     #./kde.nix
     #../modules/samba-dl.nix
     ../modules/sway.nix
+    ../modules/hyprland.nix
     #../modules/i3.nix
     ../modules/sshd/tor.nix
     #../modules/gnome.nix
