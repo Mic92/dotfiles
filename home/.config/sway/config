@@ -303,7 +303,6 @@ exec nm-applet --indicator
 exec kanshi
 exec dunst
 exec foot --server
-exec autotiling-rs
 exec ferdium
 exec signal-desktop --enable-features=UseOzonePlatform --ozone-platform=wayland
 
