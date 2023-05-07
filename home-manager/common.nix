@@ -70,7 +70,6 @@
       ]);
 
     home.enableNixpkgsReleaseCheck = false;
-    programs.nix-index-database.comma.enable = true;
 
     home.stateVersion = "20.09";
     home.username = "joerg";
