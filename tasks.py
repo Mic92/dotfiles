@@ -6,6 +6,7 @@ import socket
 import subprocess
 import sys
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any, List
 
 from deploykit import DeployGroup, DeployHost, HostKeyCheck, parse_hosts
@@ -259,6 +260,37 @@ EOF"""
         )
 
     g.run_function(deploy_homemanager)
+
+
+@task
+def install_machine(c: Any, flake_attr: str, hostname: str) -> None:
+    """
+    Install nixos on a machine
+    """
+    ask = input(f"Install {hostname} with {flake_attr}? [y/N] ")
+    if ask != "y":
+        return
+    with TemporaryDirectory() as d:
+        root = Path(d) / "root"
+        root.mkdir(parents=True, exist_ok=True)
+        root.chmod(0o755)
+        host_key = root / "etc/ssh/ssh_host_ed25519_key"
+        host_key.parent.mkdir(parents=True, exist_ok=True)
+        subprocess.run(
+            [
+                "sops",
+                "--extract",
+                '["ssh_host_ed25519_key"]',
+                "-d",
+                f"nixos/{flake_attr}/secrets/secrets.yaml",
+            ],
+            check=True,
+            stdout=host_key.open("w"),
+        )
+        c.run(
+            f"nix run github:numtide/nixos-anywhere -- {hostname} --debug --flake .#{flake_attr} --extra-files {root}",
+            echo=True,
+        )
 
 
 def wait_for_port(host: str, port: int, shutdown: bool = False) -> None:
