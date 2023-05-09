@@ -212,32 +212,6 @@
         "type": "github"
       }
     },
-    "harmonia": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1683479347,
-        "narHash": "sha256-erBmPXMyIYxRLbYG35vH67MypJoXomUEFOVu6IhmEWs=",
-        "owner": "nix-community",
-        "repo": "harmonia",
-        "rev": "e57624730745101f5776ad4b5b2837b1574ece21",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "harmonia",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -507,7 +481,6 @@
         "disko": "disko",
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
-        "harmonia": "harmonia",
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
         "nix-darwin": "nix-darwin",

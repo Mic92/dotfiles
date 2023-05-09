@@ -53,11 +53,6 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    harmonia.url = "github:nix-community/harmonia";
-    harmonia.inputs.flake-parts.follows = "flake-parts";
-    harmonia.inputs.nixpkgs.follows = "nixpkgs";
-    harmonia.inputs.treefmt-nix.follows = "treefmt-nix";
-
     astro-nvim.url = "github:AstroNvim/AstroNvim";
     astro-nvim.flake = false;
 

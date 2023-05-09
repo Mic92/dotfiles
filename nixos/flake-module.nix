@@ -100,7 +100,6 @@ in
 
           inputs.srvos.nixosModules.server
           inputs.srvos.nixosModules.mixins-nginx
-          inputs.harmonia.nixosModules.harmonia
           inputs.bing-gpt-server.nixosModules.bing-gpt-server
         ];
     };
