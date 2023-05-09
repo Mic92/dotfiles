@@ -8,4 +8,6 @@
 
     boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
   };
+
+  boot.zfs.removeLinuxDRM = pkgs.hostPlatform.isAarch64;
 }
