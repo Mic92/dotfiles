@@ -13,7 +13,8 @@
       (i3pystatus.override {
         extraLibs = [ python3.pkgs.keyrings-alt python3.pkgs.paho-mqtt ];
       })
-      wofi
+      rofi-wayland
+      rofi-rbw
       gnome.eog
       libnotify
       dunst # notification daemon
