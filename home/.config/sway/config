@@ -17,7 +17,7 @@ set $wsDev 2:dev
 set $wsIm 3:im
 set $wsDoc 4:doc
 #
-set $font pango:SauceCodePro Nerd Font Mono 10
+set $font pango:SauceCodePro Nerd Font Mono 11
 #
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -43,7 +43,7 @@ bindsym $mod+Shift+q kill
 bindsym $mod+Ctrl+l exec swaylock
 
 # start rofi (a program launcher)
-bindsym  $mod+d exec wofi --show run --gtk-dark
+bindsym  $mod+d exec rofi --show run
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.

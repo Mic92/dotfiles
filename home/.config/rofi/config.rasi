@@ -1,0 +1,5 @@
+@theme "dracula"
+
+configuration { 
+  run-command: "bash -c 'systemd-run --user --unit=app-rofi-\$(systemd-escape {cmd})-\$RANDOM {cmd}'";
+}
