@@ -43,7 +43,9 @@ bindsym $mod+Shift+q kill
 bindsym $mod+Ctrl+l exec swaylock
 
 # start rofi (a program launcher)
-bindsym  $mod+d exec rofi --show run
+bindsym  $mod+d exec rofi -show run
+bindsym  $mod+Shift+d exec rofi -show drun
+bindsym  $mod+Shift+p exec rofi-rbw
 # There also is the (new) i3-dmenu-desktop which only displays applications
 # shipping a .desktop file. It is a wrapper around dmenu, so you need that
 # installed.
