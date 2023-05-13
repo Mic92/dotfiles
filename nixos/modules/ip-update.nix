@@ -21,7 +21,7 @@
         exit 0
       fi
       (
-        echo "server ns2.thalheim.io"
+        echo "server ns1.thalheim.io"
         echo "zone ${config.networking.hostName}.thalheim.io."
         echo "update delete ${config.networking.hostName}.thalheim.io. A"
         if [[ -n "$ip" ]]; then

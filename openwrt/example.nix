@@ -165,7 +165,7 @@
           lookup_host = "rauter.thalheim.io";
           domain = "rauter.thalheim.io.";
           ip_source = "network";
-          dns_server = "ns2.thalheim.io";
+          dns_server = "ns1.thalheim.io";
           use_syslog = "2";
           username = "hmac-sha256:rauter";
           password = "@tsig_key@";

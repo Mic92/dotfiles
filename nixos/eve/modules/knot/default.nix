@@ -9,19 +9,19 @@ let
   ip6 = lib.head config.networking.eve.ipv6.addresses;
   acmeChallenge = domain:
     pkgs.writeText "_acme-challenge.${domain}.zone" ''
-      @ 3600 IN SOA _acme-challenge.${domain}. root.thalheim.io. 2021013110 7200 3600 86400 3600
+      @ 3600 IN SOA _acme-challenge.${domain}. ns1.thalheim.io. 2021013110 7200 3600 86400 3600
 
       $TTL 600
 
-      @ IN NS ns2.thalheim.io.
+      @ IN NS ns1.thalheim.io.
     '';
   dyndns = domain:
     pkgs.writeText "${domain}.zone" ''
-      @ 3600 IN SOA ${domain}. root.thalheim.io. 2021013110 7200 3600 86400 3600
+      @ 3600 IN SOA ${domain}. ns1.thalheim.io. 2021013110 7200 3600 86400 3600
 
       $TTL 300
 
-      @ IN NS ns2.thalheim.io.
+      @ IN NS ns1.thalheim.io.
     '';
 in
 {

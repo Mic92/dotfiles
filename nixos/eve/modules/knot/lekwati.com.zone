@@ -1,8 +1,8 @@
-@ 3600 IN SOA lekwati.com. ns2.thalheim.io. 2022091300 7200 3600 86400 3600
+@ 3600 IN SOA lekwati.com. ns1.thalheim.io. 2022091300 7200 3600 86400 3600
 
 $TTL 600
 
-@ 3600 IN NS ns2.thalheim.io.
+@ 3600 IN NS ns1.thalheim.io.
 @ 3600 IN NS ns2.he.net.
 @ 3600 IN NS ns3.he.net.
 @ 3600 IN NS ns4.he.net.
@@ -20,7 +20,7 @@ blog IN CNAME slekwati.github.io.
 writey-things IN CNAME slekwati.github.io.
 desperate-chef IN CNAME slekwati.github.io.
 for-marks IN CNAME slekwati.github.io.
-_acme-challenge IN NS ns2.thalheim.io.
+_acme-challenge IN NS ns1.thalheim.io.
 
 ;; TXT Records
 _mta-sts IN TXT "v=STSv1; id=20181027085700Z;"
@@ -32,5 +32,3 @@ _smtp._tls IN TXT "v=TLSRPTv1;rua=mailto:joerg.smtp-tls@thalheim.io"
 @ IN TXT "v=spf1 mx -all"
 _token._dnswl IN TXT "1vf4k8p0xvetb1y37xjrir5x7vtt1k11"
 @ IN TXT "google-site-verification=xxY6u05ueB-UbRdaGKjd1MpqbqhWLrUaQHNEjQ8Joq8"
-
-bbc IN NS ns2.thalheim.io.
