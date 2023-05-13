@@ -28,6 +28,7 @@ in
     path = [
       pkgs.cachix
       pkgs.git
+      pkgs.openssh
       pkgs.gh
       pkgs.nix
     ];
