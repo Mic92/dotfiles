@@ -10,8 +10,6 @@
       host = "/run/postgresql";
       port = 5432;
     };
-    domain = "git.thalheim.io";
-    rootUrl = "https://git.thalheim.io";
     mailerPasswordFile = config.sops.secrets.gitea-mail.path;
     settings.mailer = {
       ENABLED = true;
@@ -22,8 +20,12 @@
     settings.log.LEVEL = "Error";
     settings.service.DISABLE_REGISTRATION = true;
     settings.metrics.ENABLED = true;
-    settings.server.DISABLE_ROUTER_LOG = true;
-    httpPort = 3002;
+    settings.server = {
+      DISABLE_ROUTER_LOG = true;
+      ROOT_URL = "https://git.thalheim.io";
+      HTTP_PORT = 3002;
+      DOMAIN = "thalheim.io";
+    };
   };
 
   systemd.services.gitea = {
