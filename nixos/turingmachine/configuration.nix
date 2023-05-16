@@ -47,6 +47,7 @@
     #../modules/yubikey.nix
     ../modules/users.nix
     ../modules/nix-ld.nix
+    ../modules/yggdrasil.nix
     #../modules/k3s/server.nix
   ];
 
