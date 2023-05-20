@@ -26,11 +26,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1684299957,
-        "narHash": "sha256-Ru6gYv/N2Ln3/L2CXw4bUW2zO3X9wNQe5+Zv8f//usw=",
+        "lastModified": 1684571928,
+        "narHash": "sha256-CM2RJaqP8fhnsgUb0MyD38zcT6a8X6S2y4ib2DM+4ig=",
         "owner": "Mic92",
         "repo": "bing-gpt-server",
-        "rev": "38033ac5f70c705ec54ecfe328d245142d360d8f",
+        "rev": "3df3f90c3686469549bd1e673806633dfb6524a0",
         "type": "github"
       },
       "original": {
@@ -414,11 +414,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1684555660,
-        "narHash": "sha256-z5TvFQ5oqQm+d0RBHi8AEGVKRqOgRV6bnVBAIeDM06E=",
+        "lastModified": 1684572185,
+        "narHash": "sha256-dDssxsmmWaD256+OpeHvkxq82BnLYwtJaoE5GNKBXRQ=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "99d629e44e1229f35e1291e69d597d449bddc1df",
+        "rev": "e7fed5a8ca91d460178cde4f73458e0dda45faef",
         "type": "github"
       },
       "original": {
@@ -529,11 +529,11 @@
         "nixpkgs-stable": []
       },
       "locked": {
-        "lastModified": 1684032930,
-        "narHash": "sha256-ueeSYDii2e5bkKrsSdP12JhkW9sqgYrUghLC8aDfYGQ=",
+        "lastModified": 1684571352,
+        "narHash": "sha256-342PCrDSZ70qVX5hwz1M0cYNBdEcIBVzxyjrU/Um3RU=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "a376127bb5277cd2c337a9458744f370aaf2e08d",
+        "rev": "df8b52249e78a0ac33680c9e0b7a029ec22cd8f5",
         "type": "github"
       },
       "original": {
