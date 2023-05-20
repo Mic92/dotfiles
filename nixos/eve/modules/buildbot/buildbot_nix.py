@@ -506,7 +506,7 @@ def nix_eval_config(
             MergePr(
                 name="Merge pull-request",
                 env=dict(GITHUB_TOKEN=util.Secret(github_token_secret)),
-                base_branches=["master"],
+                base_branches=["master", "main"],
                 owners=automerge_users,
                 command=[
                     "gh",
