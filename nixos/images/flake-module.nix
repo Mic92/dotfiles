@@ -17,8 +17,6 @@ in
     }:
     {
       packages = {
-        matchbox-image = self.nixosConfigurations.matchbox.config.system.build.sdImage;
-
         install-iso = nixos-generators.nixosGenerate {
           inherit pkgs;
           modules = [
