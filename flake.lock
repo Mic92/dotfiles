@@ -115,6 +115,32 @@
         "type": "github"
       }
     },
+    "fast-flake-update": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1684610798,
+        "narHash": "sha256-7qRF6hKW4PRlmMamXSayDNpHzsVp9J5j8A+6KZH3Z8A=",
+        "owner": "Mic92",
+        "repo": "fast-flake-update",
+        "rev": "3a34fc7d334da13df3d8491a6659e0c8d44c347b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "fast-flake-update",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -351,10 +377,10 @@
     "nixpkgs": {
       "locked": {
         "lastModified": 1684077912,
-        "narHash": "sha256-HNuVjMGmSp3H1MM4ymne3r07ldIB54GgPQViUZjk5Wc=",
+        "narHash": "sha256-PEDIT36dVP064n/6FxfJCGn/mNVvUoP+/URJXnqSkSY=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "57ace723895c43160e102cc126933d8b395391ea",
+        "rev": "40044ecd682a83de88d4ce682d0f1028878ca558",
         "type": "github"
       },
       "original": {
@@ -479,6 +505,7 @@
         "bing-gpt-server": "bing-gpt-server",
         "bme680-mqtt": "bme680-mqtt",
         "disko": "disko",
+        "fast-flake-update": "fast-flake-update",
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
         "home-manager": "home-manager",
