@@ -12,7 +12,7 @@
     home.packages = with pkgs;
       [
         #(pkgs.callPackage /home/joerg/git/nix-review {})
-        config.nur.repos.mic92.nixpkgs-review-unstable
+        nixpkgs-review
         config.nur.repos.mic92.tmux-thumbs
         nix-prefetch
 
