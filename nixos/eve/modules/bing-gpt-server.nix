@@ -8,6 +8,6 @@
 
   services.nginx = {
     enable = true;
-    virtualHosts."bing-gpt.r".locations."/".proxyPass = "http://localhost:8683";
+    virtualHosts."bing-gpt.r".locations."/".proxyPass = "http://127.0.0.1:8683";
   };
 }
