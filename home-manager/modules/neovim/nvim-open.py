@@ -37,7 +37,8 @@ def main() -> None:
     if len(sys.argv) >= 2:
         path = Path(sys.argv[1])
         args = path.name.split(":")
-        if len(args) == 2:
+        # len == 2: file:line, len == 3: file:line:column
+        if len(args) == 2 or len(args) == 3:
             path = path.parent.joinpath(args[0])
             if path.exists():
                 line = args[1]
