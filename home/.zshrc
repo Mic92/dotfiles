@@ -318,7 +318,12 @@ else
   alias ls='ls --color=auto --classify --human-readable'
 fi
 alias sl=ls
-alias tempdir='cd $(TMPDIR=/tmp mktemp -d);'
+function tempdir() {
+  local random_adjective=$(shuf -n 1 $HOME/.zsh/random-adjective.txt)
+  local random_name=$(shuf -n 1 $HOME/.zsh/random-name.txt)
+
+  cd "$(mktemp -d "/tmp/$random_adjective-$random_name-XXXXXX")"
+}
 alias rm='rm -rv'
 function cp() {
   if [[ "$#" -ne 1 ]] || [[ ! -f "$1" ]]; then
