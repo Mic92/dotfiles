@@ -144,6 +144,20 @@ wttr() {
   [ "$COLUMNS" -lt 125 ] && request+='?n'
   curl -H "Accept-Language: ${LANG%_*}" --compressed "$request"
 }
+edge-gpt() {
+  if [ $# -eq 0 ]; then
+    (
+      tmp=$(mktemp -d)
+      trap 'rm -rf "$tmp"' EXIT
+      nvim "$tmp/prompt.txt"
+      local prompt_text=$(<"$tmp/prompt.txt")
+      rbw get bing-gpt > "$tmp/cookies.json"
+      edge-gpt --prompt "$prompt_text" --cookie-file "$tmp/cookies.json"
+    )
+  else
+    command edge-gpt "$@"
+  fi
+}
 kpaste() {
   arg=cat
   if [[ $# -ne 0 ]]; then
