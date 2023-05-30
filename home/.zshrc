@@ -409,11 +409,13 @@ if [[ -n ${commands[nix]} ]]; then
 fi
 
 nix-call-package() {
-    if [ $# != 1 ]; then
+    if [ $# -lt 1 ]; then
         echo "USAGE: $0" >&2
         return 1
     fi
-    nix-build -E "with import <nixpkgs> {}; pkgs.callPackage $1 {}"
+    file=$1
+    shift
+    nix-build -E "with import <nixpkgs> {}; pkgs.callPackage $file {}" "$@"
 }
 
 nix-pkg-path() {
