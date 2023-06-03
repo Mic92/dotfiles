@@ -15,7 +15,7 @@
     #./modules/minidlna.nix
     ./modules/networkmanager.nix
     ./modules/packages.nix
-    ./modules/gnome-pim.nix
+    #./modules/gnome-pim.nix
     ./modules/sops.nix
     ./modules/cntr.nix
     ./modules/tum-vpn.nix

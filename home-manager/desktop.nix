@@ -106,15 +106,15 @@
           --mode=block \
           ${pkgs.jellyfin-media-player}/bin/jellyfinmediaplayer
       '')
-      (retroarch.override {
-        cores = [
-          libretro.bsnes-hd
-          libretro.mupen64plus
-          libretro.beetle-psx-hw
-          libretro.dolphin
-          libretro.pcsx2
-        ];
-      })
+      #(retroarch.override {
+      #  cores = [
+      #    libretro.bsnes-hd
+      #    libretro.mupen64plus
+      #    libretro.beetle-psx-hw
+      #    libretro.dolphin
+      #    libretro.pcsx2
+      #  ];
+      #})
 
       (pkgs.writeScriptBin "rhasspy-play" ''
         #!${pkgs.runtimeShell}
