@@ -139,7 +139,7 @@ def filter_hosts(host_spec: str, hosts: dict[str, DeployHost]) -> List[DeployHos
         if h in hosts:
             host_list.append(hosts[h])
         else:
-            raise ValueError(f"Unknown host {h}")
+            raise ValueError(f"Unknown host {h}, known hosts: {' '.join(hosts.keys())}")
     return host_list
 
 
