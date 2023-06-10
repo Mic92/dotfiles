@@ -150,26 +150,26 @@ def deploy(c: Any, _hosts: str = "") -> None:
     """
     eve = DeployHost("eve.i", user="root")
     hosts = {
-     "eve": eve,
-     "eva": DeployHost(
-               "eve.i",
-                user="root",
-                forward_agent=True,
-                command_prefix="eva.r",
-                meta=dict(target_host="eva.i", flake_attr="eva"),
-                ),
-     "localhost": DeployHost(
-                "localhost",
-                user="root",
-                forward_agent=True,
-                ),
-     "blob64": DeployHost(
-                "eve.i",
-                user="root",
-                forward_agent=True,
-                command_prefix="blob64.r",
-                meta=dict(target_host="blob64.r", flake_attr="blob64"),
-                )
+        "eve": eve,
+        "eva": DeployHost(
+            "eve.i",
+            user="root",
+            forward_agent=True,
+            command_prefix="eva.r",
+            meta=dict(target_host="eva.i", flake_attr="eva"),
+        ),
+        "localhost": DeployHost(
+            "localhost",
+            user="root",
+            forward_agent=True,
+        ),
+        "blob64": DeployHost(
+            "eve.i",
+            user="root",
+            forward_agent=True,
+            command_prefix="blob64.r",
+            meta=dict(target_host="blob64.r", flake_attr="blob64"),
+        ),
     }
     host_list = filter_hosts(_hosts, hosts)
     deploy_nixos(host_list)
