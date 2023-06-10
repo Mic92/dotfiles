@@ -14,6 +14,7 @@
     ./screenshare
     ./mta-sts.nix
     ./phd-website.nix
+    ./photoprism.nix
   ];
 
   options.services.nginx.virtualHosts = lib.mkOption {
