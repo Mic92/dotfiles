@@ -17,8 +17,6 @@
                   inputs.nix-index-database.hmModules.nix-index
                   { programs.nix-index-database.comma.enable = true; }
                 ];
-              home.username = "joerg";
-              home.homeDirectory = "/home/joerg";
             }
           ];
           inherit pkgs;

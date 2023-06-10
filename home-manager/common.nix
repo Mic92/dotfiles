@@ -73,7 +73,7 @@
 
     home.stateVersion = "20.09";
     home.username = "joerg";
-    home.homeDirectory = "/home/joerg";
+    home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/${config.home.username}" else "/home/${config.home.username}";
     programs.home-manager.enable = true;
   };
 }
