@@ -7,7 +7,6 @@
     ];
 
     boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
-    # re-enable once we have zfs compatible with linux 6.2 or newer
-    #boot.zfs.removeLinuxDRM = pkgs.hostPlatform.isAarch64;
+    boot.zfs.removeLinuxDRM = pkgs.hostPlatform.isAarch64;
   };
 }
