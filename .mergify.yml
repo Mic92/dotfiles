@@ -1,0 +1,13 @@
+queue_rules:
+  - name: staging
+    merge_conditions:
+      - check-success=buildbot/nix-eval
+    queue_branch_prefix: staging
+
+pull_request_rules:
+  - name: merge using the merge queue
+    conditions:
+      - base=main
+      - label=merge-queue
+    actions:
+      queue:
