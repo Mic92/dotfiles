@@ -1,5 +1,5 @@
 queue_rules:
-  - name: staging
+  - name: default
     merge_conditions:
       - check-success=buildbot/nix-eval
     queue_branch_prefix: staging
