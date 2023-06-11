@@ -2,7 +2,6 @@ queue_rules:
   - name: default
     merge_conditions:
       - check-success=buildbot/nix-eval
-    queue_branch_prefix: gh-readonly-queue/
 
 pull_request_rules:
   - name: merge using the merge queue
