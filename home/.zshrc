@@ -172,7 +172,32 @@ kpaste() {
 hm(){
   nix run "$HOME/.homesick/repos/dotfiles#hm" -- "$@"
 }
-# merge after CI is green.
+# merge after CI is green with mergify
+merge-after-ci() {
+  if [[ -n ${commands[treefmt]} ]] && ! treefmt --fail-on-change; then
+    return
+  fi
+  branch=$(id -un)-ci
+  git push --force origin "HEAD:$branch"
+  targetBranch=$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)
+  if [[ $(git remote) =~ upstream ]]; then
+    remoteName=upstream
+  else
+    remoteName=origin
+  fi
+  if [[ $(gh pr view --json state --template '{{.state}}' "$branch") != "OPEN" ]]; then
+    # BUFFER is an internal variable used by edit-command-line
+    # We fill it with commit subject and body seperated by newlines
+    BUFFER=$(git log --reverse --pretty="format:%s%n%n%b%n%n" "$remoteName/$targetBranch..HEAD")
+    edit-command-line
+    firstLine=${BUFFER%%$'\n'*}
+    rest=${BUFFER#*$'\n'}
+    if [[ $firstLine == $rest ]]; then
+      rest=""
+    fi
+    gh pr create --title "$firstLine" --body "$body" --base "$targetBranch" --head "$branch" --label merge-queue
+  fi
+}
 bors-review() {
   if [[ -n ${commands[treefmt]} ]] && ! treefmt --fail-on-change; then
     return
