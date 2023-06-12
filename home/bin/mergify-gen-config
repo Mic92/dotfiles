@@ -177,10 +177,8 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
     for suite in suites["check_suites"]:
         runs = client.fetch_check_runs(args.owner, args.repo, suite["id"])
         for r in runs["check_runs"]:
-            print(r)
             if r["app"]["slug"] == "mergify":
                 continue
-            print(r["name"])
             check_runs.add(r["name"])
     mergify_config = Path(".mergify.yml")
     if mergify_config.exists():
