@@ -19,10 +19,5 @@ jobs:
       - name: Update flake.lock
         uses: Mic92/update-flake-lock@main
         with:
-          pr-body: |
-            Automated changes by the update-flake-lock
-            ```
-            {{ env.GIT_COMMIT_MESSAGE }}
-            ```
           pr-labels: |                  # Labels to be set on the PR
             merge-queue
