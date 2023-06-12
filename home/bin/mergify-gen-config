@@ -9,6 +9,7 @@ import subprocess
 import sys
 import urllib.parse
 import urllib.request
+from shutil import which
 from pathlib import Path
 from typing import Any, NoReturn, Optional, Tuple
 
@@ -48,6 +49,9 @@ class GithubClient:
     def fetch_check_suites(self, owner: str, repo: str, ref: str) -> dict[str, Any]:
         return self.get(f"repos/{owner}/{repo}/commits/{ref}/check-suites")
 
+    def fetch_repo(self, owner: str, repo: str) -> dict[str, Any]:
+        return self.get(f"repos/{owner}/{repo}")
+
     def fetch_check_runs(
         self,
         owner: str,
@@ -75,20 +79,22 @@ def read_github_token() -> Optional[str]:
     token = os.environ.get("GITHUB_OAUTH_TOKEN", os.environ.get("GITHUB_TOKEN"))
     if token:
         return token
-    paths = [hub_config_path(), Path.home().joinpath(".config", "gh", "hosts.yml")]
-    for path in paths:
-        try:
-            with open(path) as f:
-                for line in f:
-                    # Allow substring match as hub uses yaml. Example string we match:
-                    # " - oauth_token: ghp_abcdefghijklmnopqrstuvwxyzABCDEF1234\n"
-                    token_match = re.search(
-                        r"\s*oauth_token:\s+((?:gh[po]_)?[A-Za-z0-9]+)", line
-                    )
-                    if token_match:
-                        return token_match.group(1)
-        except OSError:
-            pass
+    try:
+        with open(hub_config_path()) as f:
+            for line in f:
+                # Allow substring match as hub uses yaml. Example string we match:
+                # " - oauth_token: ghp_abcdefghijklmnopqrstuvwxyzABCDEF1234\n"
+                token_match = re.search(
+                    r"\s*oauth_token:\s+((?:gh[po]_)?[A-Za-z0-9]+)", line
+                )
+                if token_match:
+                    return token_match.group(1)
+    except OSError:
+        pass
+    if which("gh"):
+        r = subprocess.run(["gh", "auth", "token"], stdout=subprocess.PIPE, text=True)
+        if r.returncode == 0:
+            return r.stdout.strip()
     return None
 
 
@@ -145,7 +151,6 @@ def update_mergify_config(mergify_config: Path, runs: list[str]) -> dict[str, An
     with mergify_config.open() as stream:
         config = yaml.load(stream)
         for rule in config["queue_rules"]:
-            breakpoint()
             new_rules = ["check-success=" + run for run in runs]
             if rule["name"] == "default":
                 for check in rule["merge_conditions"]:
@@ -199,6 +204,7 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
         #      - label=merge-queue
         #    actions:
         #      queue:
+        default_branch = client.fetch_repo(args.owner, args.repo)["default_branch"]
         rules = {
             "queue_rules": [
                 {
@@ -216,7 +222,7 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
             "pull_request_rules": [
                 {
                     "name": "merge using the merge queue",
-                    "conditions": ["base=main", "label=merge-queue"],
+                    "conditions": [f"base={default_branch}", "label=merge-queue"],
                     "actions": {"queue": {}},
                 }
             ],
@@ -227,3 +233,5 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
 
 if __name__ == "__main__":
     main()
+
+# vim: set syntax=python:
