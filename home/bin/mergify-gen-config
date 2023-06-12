@@ -190,7 +190,10 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
         #  - name: default
         #    merge_conditions:
         #      - check-success=buildbot/nix-eval
-        #
+        # defaults:
+        #    actions:
+        #      queue:
+        #        allow_merging_configuration_change: true
         # pull_request_rules:
         #  - name: merge using the merge queue
         #    conditions:
@@ -207,6 +210,11 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
                     ],
                 }
             ],
+            "defaults": {
+                "actions": {
+                    "queue": {"allow_merging_configuration_change": True}
+                }
+            },
             "pull_request_rules": [
                 {
                     "name": "merge using the merge queue",
