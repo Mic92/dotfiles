@@ -49,6 +49,7 @@
     ../modules/nix-ld.nix
     ../modules/yggdrasil.nix
     ../modules/keyd.nix
+    ../modules/no-hz.nix
     #../modules/k3s/server.nix
   ];
 
