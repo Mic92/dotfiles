@@ -1,0 +1,40 @@
+#!/usr/bin/env nix-shell
+#!nix-shell -p nginx-config-formatter python3 -i python3
+
+
+import os
+import re
+import shutil
+import subprocess
+import sys
+from tempfile import TemporaryDirectory
+
+
+def nginx_config() -> str:
+    reload_config ="/etc/nginx/nginx.conf"
+    if os.path.exists(reload_config):
+        return reload_config
+    out = subprocess.check_output(["systemctl", "cat", "nginx"])
+    match = re.search(r"-c '(\S+-nginx\.conf)", out.decode("utf-8"))
+    if not match:
+        print("Could not find nginx.conf in nginx.service", file=sys.stderr)
+        sys.exit(1)
+
+    return match.group(1)
+
+
+def main():
+    config_path = nginx_config()
+    with TemporaryDirectory() as temp_dir:
+        temp_path = os.path.join(temp_dir, "nginx.conf")
+        with open(temp_path, "wb+") as temp_file, \
+                open(config_path, "rb") as config_file:
+            shutil.copyfileobj(config_file, temp_file)
+            temp_file.flush()
+            subprocess.check_call(["nginxfmt", temp_file.name])
+            editor = os.environ.get("EDITOR", "cat")
+            subprocess.check_call([editor, temp_file.name] + sys.argv[1:])
+
+
+if __name__ == "__main__":
+    main()
