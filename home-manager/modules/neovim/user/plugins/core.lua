@@ -23,7 +23,7 @@ return {
   {
     "gitsigns.nvim",
     opts = function(_, opts)
-      opts.current_line_blame =true
+      opts.current_line_blame = true
       return opts
     end,
   },
@@ -31,8 +31,11 @@ return {
     "nvim-neo-tree/neo-tree.nvim",
     opts = {
       follow_current_file = true,
-    }
+    },
   },
+  -- override make command build since we provide the shared library with home-manager already
+  { "nvim-telescope/telescope-fzf-native.nvim", build = "true", },
+
   -- You can disable default plugins as follows:
   -- { "max397574/better-escape.nvim", enabled = false },
   --
