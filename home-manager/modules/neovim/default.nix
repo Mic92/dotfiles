@@ -85,6 +85,7 @@ in
     isort
     black
     ruff
+    nixpkgs-fmt
 
     nodePackages.prettier
     stylua
