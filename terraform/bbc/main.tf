@@ -42,7 +42,7 @@ output "instruction" {
   value = <<EOT
 You can now login by typing:
 
-  sshuttle -r root@bbc.lekwati.com 0/0
+  sshuttle -r root@bbc.lekwati.com 0/0 ::/0
 
 To stop run
 
