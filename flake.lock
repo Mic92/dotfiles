@@ -26,11 +26,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1686376575,
-        "narHash": "sha256-1Z8zl4RTbtUuRdzV1/6ZWqdXH1p4Z6f8UOGooZhHPwc=",
+        "lastModified": 1686740674,
+        "narHash": "sha256-hIXx/zZDGm4+bpDEl7QDyITzE6cOrFUkHK1vTCHc0MY=",
         "owner": "Mic92",
         "repo": "bing-gpt-server",
-        "rev": "520c33507794561530aacd7e115050fe684bbf9b",
+        "rev": "fe6b74a19364aad361833662e6b1b9d8785026f3",
         "type": "github"
       },
       "original": {
@@ -274,11 +274,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1686574167,
-        "narHash": "sha256-hxE8z+S9E4Qw03D2VQRaJUmj9zep3FvhKz316JUZuPA=",
+        "lastModified": 1686740472,
+        "narHash": "sha256-b668DY2qGdBCUwIkk6Z32bcpCsUISQJrEEvhtn1gGgY=",
         "owner": "Mic92",
         "repo": "nix-index-database",
-        "rev": "7e83b70f31f4483c07e6939166cb667ecb8d05d5",
+        "rev": "e11c61073b777e025993c5ef63ddbf776a9cca15",
         "type": "github"
       },
       "original": {
