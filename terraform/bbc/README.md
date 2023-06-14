@@ -1,5 +1,11 @@
 # For shannan:
 
+0. Change directory
+
+```
+$ cd $HOME/.homesick/repos/dotfiles/terraform/bbc
+```
+
 1. Create the droplet
 
 ```
