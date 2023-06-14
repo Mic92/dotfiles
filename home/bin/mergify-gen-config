@@ -201,7 +201,7 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
         #  - name: merge using the merge queue
         #    conditions:
         #      - base=main
-        #      - label=merge-queue
+        #      - label~=merge-queue|dependencies
         #    actions:
         #      queue:
         default_branch = client.fetch_repo(args.owner, args.repo)["default_branch"]
@@ -222,7 +222,11 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
             "pull_request_rules": [
                 {
                     "name": "merge using the merge queue",
-                    "conditions": [f"base={default_branch}", "label=merge-queue"],
+                    "conditions": [
+                        f"base={default_branch}",
+                        # merge-queue or dependabot
+                        "label~=merge-queue|dependencies"
+                    ],
                     "actions": {"queue": {}},
                 }
             ],
