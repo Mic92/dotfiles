@@ -20,6 +20,9 @@ resource "digitalocean_droplet" "bbc" {
     36184046,
     36184041
   ]
+  provisioner "local-exec" {
+    command = "ssh-keygen -R bbc.lekwati.com"
+  }
 }
 
 resource "dns_a_record_set" "bbc" {
@@ -42,7 +45,7 @@ output "instruction" {
   value = <<EOT
 You can now login by typing:
 
-  sshuttle -r root@bbc.lekwati.com 0/0
+  sshuttle -r root@bbc.lekwati.com 0/0 ::/0
 
 To stop run
 
