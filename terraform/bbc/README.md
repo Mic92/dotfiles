@@ -14,8 +14,9 @@ $ sshuttle -r root@bbc.lekwati.com 0/0 ::/0
 
 3. Enjoy
 
+4. Press Ctrl-C to stop sshutttle
 
-4. Destroy
+5. Destroy
 
 ```
 $ terragrunt destroy

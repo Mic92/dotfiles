@@ -20,6 +20,9 @@ resource "digitalocean_droplet" "bbc" {
     36184046,
     36184041
   ]
+  provisioner "local-exec" {
+    command = "ssh-keygen -R bbc.lekwati.com"
+  }
 }
 
 resource "dns_a_record_set" "bbc" {
