@@ -60,6 +60,21 @@ class GithubClient:
     ) -> dict[str, Any]:
         return self.get(f"repos/{owner}/{repo}/check-suites/{id}/check-runs")
 
+    def fetch_labels(self, owner: str, repo: str) -> list[dict[str, Any]]:
+        return self.get(f"repos/{owner}/{repo}/labels")
+
+    def create_label(
+        self, owner: str, repo: str, name: str, color: str, description: str
+    ) -> None:
+        self.post(
+            f"repos/{owner}/{repo}/labels",
+            {
+                "name": name,
+                "color": color,
+                "description": description,
+            },
+        )
+
 
 def hub_config_path() -> Path:
     raw_hub_path = os.environ.get("HUB_CONFIG", None)
@@ -144,8 +159,10 @@ def die(msg: str) -> NoReturn:
     print(msg, file=sys.stderr)
     sys.exit(1)
 
-yaml = ruamel.yaml.YAML() # also preserves comments
+
+yaml = ruamel.yaml.YAML()  # also preserves comments
 yaml.indent(mapping=2, sequence=4, offset=2)
+
 
 def update_mergify_config(mergify_config: Path, runs: list[str]) -> dict[str, Any]:
     with mergify_config.open() as stream:
@@ -159,6 +176,60 @@ def update_mergify_config(mergify_config: Path, runs: list[str]) -> dict[str, An
                 rule["merge_conditions"] = new_rules
         return config
 
+
+def new_mergify_config(
+    args: argparse.Namespace, check_runs: list[str]
+) -> dict[str, Any]:
+    # queue_rules:
+    #  - name: default
+    #    merge_conditions:
+    #      - check-success=buildbot/nix-eval
+    # defaults:
+    #    actions:
+    #      queue:
+    #        allow_merging_configuration_change: true
+    # pull_request_rules:
+    #  - name: merge using the merge queue
+    #    conditions:
+    #      - base=main
+    #      - label~=merge-queue|dependencies
+    #    actions:
+    #      queue:
+    default_branch = client.fetch_repo(args.owner, args.repo)["default_branch"]
+    rules = {
+        "queue_rules": [
+            {
+                "name": "default",
+                "merge_conditions": [
+                    f"check-success={check_run}" for check_run in sorted(check_runs)
+                ],
+            }
+        ],
+        "defaults": {
+            "actions": {"queue": {"allow_merging_configuration_change": True}}
+        },
+        "pull_request_rules": [
+            {
+                "name": "merge using the merge queue",
+                "conditions": [
+                    f"base={default_branch}",
+                    # merge-queue or dependabot
+                    "label~=merge-queue|dependencies",
+                ],
+                "actions": {"queue": {}},
+            }
+        ],
+    }
+    return rules
+
+
+def ensure_merge_label(client: GithubClient, args: argparse.Namespace) -> None:
+    labels = client.fetch_labels(args.owner, args.repo)
+    if any(label["name"] == "merge-queue" for label in labels):
+        return
+    label = client.create_label(
+        args.owner, args.repo, "merge-queue", "05B11B", "merge after ci succeeds"
+    )
 
 
 def main(_args: list[str] = sys.argv[1:]) -> None:
@@ -178,61 +249,22 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
 
     client = GithubClient(read_github_token())
     suites = client.fetch_check_suites(args.owner, args.repo, args.branch)
-    check_runs = set()
+    check_run_set = set()
     for suite in suites["check_suites"]:
         runs = client.fetch_check_runs(args.owner, args.repo, suite["id"])
         for r in runs["check_runs"]:
             if r["app"]["slug"] == "mergify":
                 continue
-            check_runs.add(r["name"])
+            check_run_set.add(r["name"])
+    check_runs = list(sorted(check_run_set))
     mergify_config = Path(".mergify.yml")
     if mergify_config.exists():
-        rules = update_mergify_config(mergify_config, list(sorted(check_runs)))
+        rules = update_mergify_config(mergify_config, check_runs)
     else:
-        # queue_rules:
-        #  - name: default
-        #    merge_conditions:
-        #      - check-success=buildbot/nix-eval
-        # defaults:
-        #    actions:
-        #      queue:
-        #        allow_merging_configuration_change: true
-        # pull_request_rules:
-        #  - name: merge using the merge queue
-        #    conditions:
-        #      - base=main
-        #      - label~=merge-queue|dependencies
-        #    actions:
-        #      queue:
-        default_branch = client.fetch_repo(args.owner, args.repo)["default_branch"]
-        rules = {
-            "queue_rules": [
-                {
-                    "name": "default",
-                    "merge_conditions": [
-                        f"check-success={check_run}" for check_run in sorted(check_runs)
-                    ],
-                }
-            ],
-            "defaults": {
-                "actions": {
-                    "queue": {"allow_merging_configuration_change": True}
-                }
-            },
-            "pull_request_rules": [
-                {
-                    "name": "merge using the merge queue",
-                    "conditions": [
-                        f"base={default_branch}",
-                        # merge-queue or dependabot
-                        "label~=merge-queue|dependencies"
-                    ],
-                    "actions": {"queue": {}},
-                }
-            ],
-        }
+        rules = new_mergify_config(args, check_runs)
     with mergify_config.open("w") as f:
         yaml.dump(rules, f)
+    ensure_merge_label(client, args)
 
 
 if __name__ == "__main__":
