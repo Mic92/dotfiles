@@ -174,11 +174,15 @@ def update_mergify_config(mergify_config: Path, runs: list[str]) -> dict[str, An
                     if not check.startswith("check-success="):
                         new_rules.append(check)
                 rule["merge_conditions"] = new_rules
+
+        config["defaults"].setdefault("actions", {})
+        config["defaults"]["actions"].setdefault("queue", {})
+        config["defaults"]["actions"]["queue"]["rebase"] = True
         return config
 
 
 def new_mergify_config(
-    args: argparse.Namespace, check_runs: list[str]
+    client: GithubClient, args: argparse.Namespace, check_runs: list[str]
 ) -> dict[str, Any]:
     # queue_rules:
     #  - name: default
@@ -188,6 +192,7 @@ def new_mergify_config(
     #    actions:
     #      queue:
     #        allow_merging_configuration_change: true
+    #        method: rebase
     # pull_request_rules:
     #  - name: merge using the merge queue
     #    conditions:
@@ -206,7 +211,10 @@ def new_mergify_config(
             }
         ],
         "defaults": {
-            "actions": {"queue": {"allow_merging_configuration_change": True}}
+            "actions": {"queue": {
+                 "allow_merging_configuration_change": True,
+                 "method": "rebase"
+            }}
         },
         "pull_request_rules": [
             {
@@ -227,7 +235,7 @@ def ensure_merge_label(client: GithubClient, args: argparse.Namespace) -> None:
     labels = client.fetch_labels(args.owner, args.repo)
     if any(label["name"] == "merge-queue" for label in labels):
         return
-    label = client.create_label(
+    client.create_label(
         args.owner, args.repo, "merge-queue", "05B11B", "merge after ci succeeds"
     )
 
@@ -255,13 +263,16 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
         for r in runs["check_runs"]:
             if r["app"]["slug"] == "mergify":
                 continue
+            # flake update lockfile is not a check
+            if r["name"] == "lockfile":
+                continue
             check_run_set.add(r["name"])
     check_runs = list(sorted(check_run_set))
     mergify_config = Path(".mergify.yml")
     if mergify_config.exists():
         rules = update_mergify_config(mergify_config, check_runs)
     else:
-        rules = new_mergify_config(args, check_runs)
+        rules = new_mergify_config(client, args, check_runs)
     with mergify_config.open("w") as f:
         yaml.dump(rules, f)
     ensure_merge_label(client, args)
