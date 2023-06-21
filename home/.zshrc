@@ -277,6 +277,9 @@ zstyle -e ':autocomplete:*' list-lines 'reply=( $(( LINES / 3 )) )'
 
 source ~/.zsh-autocomplete/zsh-autocomplete.plugin.zsh
 
+bindkey '\t' menu-select "$terminfo[kcbt]" menu-select
+bindkey -M menuselect '\t' menu-complete "$terminfo[kcbt]" reverse-menu-complete
+
 zstyle ':completion:*:paths' path-completion yes
 
 fignore=(.DS_Store $fignore)
