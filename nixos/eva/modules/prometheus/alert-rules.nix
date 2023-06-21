@@ -88,8 +88,6 @@ lib.mapAttrsToList
   // (lib.genAttrs [
     "borgbackup-turingmachine"
     "borgbackup-eve"
-    # currently unavailable (Edinburgh)
-    #"borgbackup-datastore"
     "borgbackup-nfs-home"
     "borgbackup-nfs-share"
   ]
