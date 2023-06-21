@@ -26,11 +26,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1687025254,
-        "narHash": "sha256-OGga7A93HAAvxm73DqcF52sk6d/R1FjczVhqtiwg8b0=",
+        "lastModified": 1687336433,
+        "narHash": "sha256-dN0g4m1J0wbnZZtR4IADJuToP15ahcqp8mg2+n+wtOE=",
         "owner": "Mic92",
         "repo": "bing-gpt-server",
-        "rev": "58cc2d9b0339820803c4f0ecd2ee7af83bc98694",
+        "rev": "9cc3d1ed04e03cbf7e83a3a8e37ad2cec3c0bfd0",
         "type": "github"
       },
       "original": {
