@@ -44,6 +44,7 @@
     ./modules/packages.nix
     ./modules/postfix.nix
     ./modules/postgresql.nix
+    ./modules/shadowsocks.nix
     ./modules/snappymail.nix
     ./modules/remote-builder.nix
     ./modules/redis.nix
