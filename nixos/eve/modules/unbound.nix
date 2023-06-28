@@ -1,5 +1,4 @@
 { pkgs
-, lib
 , config
 , ...
 }: {
@@ -7,7 +6,7 @@
     ../../modules/unbound.nix
   ];
   services.unbound = {
-    package = pkgs.unbound.override { withDoH = true; };
+    package = pkgs.unbound-with-systemd.override { withDoH = true; };
     settings = {
       server = {
         access-control = [
@@ -40,9 +39,6 @@
     dnsProvider = "rfc2136";
     credentialsFile = config.sops.secrets.lego-knot-credentials.path;
   };
-
-  # times out?
-  systemd.services.unbound.serviceConfig.Type = lib.mkForce "simple";
 
   services.nginx = {
     virtualHosts."dns.thalheim.io" = {
