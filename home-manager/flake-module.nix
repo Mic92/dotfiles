@@ -28,7 +28,7 @@
         program = "${pkgs.writeShellScriptBin "hm" ''
         set -x
         export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.nix pkgs.jq pkgs.unixtools.hostname]}
-        declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["eve"]="eve" ["bernie"]="bernie")
+        declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["dev2"]="dev2" ["eve"]="eve" ["bernie"]="bernie")
         profile="common"
         if [[ -n ''${profiles[$(hostname)]:-} ]]; then
           profile=''${profiles[$(hostname)]}
@@ -65,6 +65,9 @@
             extraModules = [
               ./desktop.nix
             ];
+          };
+          dev2 = homeManagerConfiguration {
+            extraModules = [ { home.username = "mic92"; } ];
           };
 
           eve = homeManagerConfiguration {
