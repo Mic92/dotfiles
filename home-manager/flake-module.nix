@@ -52,6 +52,7 @@
           if [ ! -d "$HOME/.homesick/repos/dotfiles" ]; then
             "$HOME/.homesick/repos/homeshick/bin/homeshick" clone https://github.com/Mic92/dotfiles.git
           fi
+          "$HOME/.homesick/repos/homeshick/bin/homeshick" symlink
           nix run ${self}#hm -- switch
         ''}/bin/bootstrap-dotfiles";
       };
