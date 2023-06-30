@@ -68,7 +68,7 @@
             ];
           };
           dev2 = homeManagerConfiguration {
-            extraModules = [ { home.username = "mic92"; } ];
+            extraModules = [{ home.username = "mic92"; }];
           };
 
           eve = homeManagerConfiguration {
