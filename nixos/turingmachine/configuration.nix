@@ -5,6 +5,7 @@
   imports = [
     ./hardware-configuration.nix
 
+    ../modules/zerotier.nix
     #../modules/libvirt.nix
     ./modules/caddy.nix
     ./modules/eve-rdp.nix
