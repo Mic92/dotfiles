@@ -7,6 +7,7 @@ let
     "build04.nix-community.org"
     "darwin01.nix-community.org"
     "darwin02.nix-community.org"
+    "web01.nix-community.org"
   ];
 in
 {

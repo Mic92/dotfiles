@@ -121,6 +121,7 @@ in
               "build03.nix-community.org:9273"
               "build04.nix-community.org:9273"
               "darwin02.nix-community.org:9273"
+              "web01.nix-community.org:9273"
             ];
             labels.org = "nix-community";
           }
