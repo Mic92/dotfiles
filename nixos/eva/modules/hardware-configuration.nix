@@ -1,4 +1,4 @@
-{ lib, modulesPath, ... }: {
+{ pkgs, lib, modulesPath, ... }: {
   imports = [
     (modulesPath + "/profiles/qemu-guest.nix")
   ];
@@ -14,6 +14,10 @@
   ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
+  # it's a vm, so we can just update efivars on every switch
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  boot.kernelPackages = lib.mkForce pkgs.linuxKernel.packages.linux_testing_bcachefs;
 
   # checkout the example folder for how to configure different disko layouts
   disko.devices = {
