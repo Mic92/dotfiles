@@ -28,7 +28,7 @@
         program = "${pkgs.writeShellScriptBin "hm" ''
         set -x
         export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.nix pkgs.jq pkgs.unixtools.hostname]}
-        declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["dev2"]="dev2" ["eve"]="eve" ["bernie"]="bernie")
+        declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["dev2"]="dev2" ["eve"]="eve" ["bernie"]="bernie" ["mac01.numtide.com"]="mac-hetzner")
         profile="common"
         if [[ -n ''${profiles[$(hostname)]:-} ]]; then
           profile=''${profiles[$(hostname)]}
@@ -61,6 +61,11 @@
       legacyPackages = {
         homeConfigurations = {
           common = homeManagerConfiguration { };
+
+          mac-hetzner = homeManagerConfiguration {
+            extraModules = [{ home.username = "hetzner"; }];
+          };
+
         } // lib.optionalAttrs (pkgs.hostPlatform.system == "x86_64-linux") {
           desktop = homeManagerConfiguration {
             extraModules = [
