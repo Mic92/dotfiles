@@ -272,6 +272,7 @@ bindkey '^X^e' edit-command-line
 autoload colors; colors;
 
 zstyle ':autocomplete:*' fzf-completion yes
+zstyle ':autocomplete:*' insert-unambiguous yes
 zstyle ':autocomplete:*' widget-style menu-select
 zstyle -e ':autocomplete:*' list-lines 'reply=( $(( LINES / 3 )) )'
 
