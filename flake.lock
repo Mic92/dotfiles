@@ -3,11 +3,11 @@
     "astro-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1688583089,
-        "narHash": "sha256-5ypBVNhkJLVQMeRlHUb3llbJbJGwxbFme6M1XyMH3V8=",
+        "lastModified": 1688728193,
+        "narHash": "sha256-6UMIb7d+UADbf6p5FJU2AArNDk7Ur9Lzb+WykQkNB/I=",
         "owner": "AstroNvim",
         "repo": "AstroNvim",
-        "rev": "219e1c7050f27e930f24a156c7c9394bb4c181ce",
+        "rev": "346c19a0ed1473a64b7495c26ade14760c41b7c7",
         "type": "github"
       },
       "original": {
@@ -26,11 +26,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1688119243,
-        "narHash": "sha256-NPqEdOezAA8EzdMzhJNyGvDH5s80uDrnXHGNjfI0ut4=",
+        "lastModified": 1688798372,
+        "narHash": "sha256-cjvXxTOmLW5HAjiJ7VrcQIXpT0J20vYHi2wyunUjBww=",
         "owner": "Mic92",
         "repo": "bing-gpt-server",
-        "rev": "826d467974eee057ab7450815ec34cb795140c1c",
+        "rev": "c5f115e4d21d5a6d6ba72303c19504f36b2bb978",
         "type": "github"
       },
       "original": {
@@ -212,11 +212,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1688552611,
-        "narHash": "sha256-pV/1/AU1l5CNFeKmdJ1jofcaKHhtKAbxY4gazeCyoSo=",
+        "lastModified": 1688853517,
+        "narHash": "sha256-oatIWiJI13an13XOX43pnKMRmqzQOUgF/IVNG73r8nA=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "b23c7501f7e0a001486c9a5555a6c53ac7b08e85",
+        "rev": "e15010ee6e9bd356a6746ff9b9f9a9097ee8ddcf",
         "type": "github"
       },
       "original": {
@@ -254,11 +254,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1688307440,
-        "narHash": "sha256-7PTjbN+/+b799YN7Tk2SS5Vh8A0L3gBo8hmB7Y0VXug=",
+        "lastModified": 1688857248,
+        "narHash": "sha256-hvoc5uLtxMNh1qCZpM3ikiMNllNI9tff5ovBH0K5gM4=",
         "owner": "LnL7",
         "repo": "nix-darwin",
-        "rev": "b06bab83bdf285ea0ae3c8e145a081eb95959047",
+        "rev": "4272af4079164cc89a1c1d90d04b35a9f0da04f7",
         "type": "github"
       },
       "original": {
@@ -326,11 +326,11 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1686838567,
-        "narHash": "sha256-aqKCUD126dRlVSKV6vWuDCitfjFrZlkwNuvj5LtjRRU=",
+        "lastModified": 1688798314,
+        "narHash": "sha256-MFG5rx7L756rtrPHsL662m64AZ4sKqUcApaiYgSKfNM=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "429f232fe1dc398c5afea19a51aad6931ee0fb89",
+        "rev": "47dca15d86fdd2eabcf434d7cc0b5baa8d1a463c",
         "type": "github"
       },
       "original": {
@@ -389,11 +389,11 @@
     },
     "nur": {
       "locked": {
-        "lastModified": 1688618918,
-        "narHash": "sha256-yhJMe1hb3gC+qZAF9U7Tarei+gRTzWCKqdQewn59B08=",
+        "lastModified": 1688863826,
+        "narHash": "sha256-6LJMOQdugKK0cR02bfyiL+ulzxx4sVRMI6hmCqd+z9U=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "838700808edc766065bf82e046435c2712ccfef5",
+        "rev": "7a85833f758ac5ad9f6e3620cf1445f7907073e3",
         "type": "github"
       },
       "original": {
@@ -435,11 +435,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1688554810,
-        "narHash": "sha256-/BVlQvvuXapwa8VHIBZXWTRrEhH2Vz2TcAgu6E8XKmg=",
+        "lastModified": 1688824809,
+        "narHash": "sha256-Qe1ooPYuM10EI2rE4CORV9rXoh8yrdbR5mhgJiuzXJ0=",
         "ref": "refs/heads/master",
-        "rev": "e33df85e1515dd3deaed948098c08425a35976c1",
-        "revCount": 309,
+        "rev": "4e2f9841ea09012261fca1c7e734f449ca39d55a",
+        "revCount": 311,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },
@@ -534,11 +534,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1688026376,
-        "narHash": "sha256-qJmkr9BWDpqblk4E9/rCsAEl39y2n4Ycw6KRopvpUcY=",
+        "lastModified": 1688722492,
+        "narHash": "sha256-xsB+kY+l980D0V2Qgya4EyWV9fdoBz96OFvPeUwEC7U=",
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "rev": "df3f32b0cc253dfc7009b7317e8f0e7ccd70b1cf",
+        "rev": "de2c2d438f549542ccf8b7ffe31abb96539761e7",
         "type": "github"
       },
       "original": {
