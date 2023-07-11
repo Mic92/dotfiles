@@ -12,16 +12,16 @@
     ];
   };
 
-  systemd.network.networks.zerotier.extraConfig = ''
-    [Match]
-    Name=zt*
-
-    [Network]
-    LLMNR=true
-    LLDP=true
-    MulticastDNS=true
-    KeepConfiguration=static
-  '';
+  # Note avahi was super slow. systemd-resolved worked much faster for mdns
+  systemd.network.networks.zerotier = {
+    matchConfig.Name = "zt*";
+    networkConfig = {
+      LLMNR = true;
+      LLDP = true;
+      MulticastDNS = true;
+      KeepConfiguration = "static";
+    };
+  };
 
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
     "zerotierone"
