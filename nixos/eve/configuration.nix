@@ -76,6 +76,7 @@
     ../modules/zsh.nix
     ../modules/uptermd.nix
     ../modules/nix-ld.nix
+    ../modules/zerotier.nix
   ];
 
   # The NixOS release to be compatible with for stateful data such as databases.

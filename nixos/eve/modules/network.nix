@@ -52,7 +52,6 @@ in
   };
   config = {
     networking.dhcpcd.enable = false;
-    services.resolved.enable = false;
     networking.nameservers = [ "127.0.0.1" ];
     networking.usePredictableInterfaceNames = false;
 
