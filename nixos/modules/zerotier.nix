@@ -2,25 +2,30 @@
 {
   networking.firewall.allowedTCPPorts = [ 9993 ];
   networking.firewall.allowedUDPPorts = [ 9993 ];
+  networking.firewall.interfaces."zt+".allowedTCPPorts = [ 5353 ];
+  networking.firewall.interfaces."zt+".allowedUDPPorts = [ 5353 ];
+
   services.zerotierone = {
     enable = true;
     joinNetworks = [
-      "b15644912ea8230e" # krebs testnet on https://my.zerotier.com/network/b15644912ea8230e
-      #"65af404b79112bbe"
+      "33d87fa6bd93423e"
     ];
   };
+
+  systemd.network.networks.zerotier.extraConfig = ''
+    [Match]
+    Name=zt*
+
+    [Network]
+    LLMNR=true
+    LLDP=true
+    MulticastDNS=true
+    KeepConfiguration=static
+  '';
+
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
     "zerotierone"
   ];
-
-  # we need this to autoassign 42::/16 ips
-  systemd.services.zerotierone.serviceConfig = {
-    ExecStartPost = pkgs.writers.writeDash "configure-zerotier" ''
-      until ${pkgs.zerotierone}/bin/zerotier-cli set b15644912ea8230e allowGlobal=1; do
-        sleep 1
-      done
-    '';
-  };
 
   systemd.tmpfiles.rules = [
     "L+ /var/lib/zerotier-one/local.conf - - - - ${pkgs.writeText "local.conf" (builtins.toJSON {
@@ -42,4 +47,3 @@
 
   networking.networkmanager.unmanaged = [ "interface-name:zt*" ];
 }
-

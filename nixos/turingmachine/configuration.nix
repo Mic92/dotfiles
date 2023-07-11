@@ -97,9 +97,6 @@
     gpm.enable = true;
     upower.enable = true;
 
-    avahi.enable = true;
-    avahi.nssmdns = true;
-
     printing = {
       enable = true;
       browsing = true;
