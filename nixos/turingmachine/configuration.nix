@@ -93,6 +93,8 @@
   # Manual timezones, also see modules/networkmanager.py
   time.timeZone = null;
 
+  programs.wireshark.enable = true;
+
   services = {
     gpm.enable = true;
     upower.enable = true;
