@@ -36,6 +36,7 @@
         nurl
         htop
         hub
+        tea
         gh
         hyperfine
         jq
