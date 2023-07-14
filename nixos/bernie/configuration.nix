@@ -13,7 +13,6 @@
     ../modules/hass-agent.nix
     ../modules/ip-update.nix
     ../modules/packages.nix
-    ../modules/powertop.nix
     ../modules/promtail.nix
     ../modules/users.nix
     ../modules/tracing.nix
