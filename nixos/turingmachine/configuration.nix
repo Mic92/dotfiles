@@ -55,6 +55,9 @@
     #../modules/k3s/server.nix
   ];
 
+  # Better than tlp? https://github.com/NixOS/nixos-hardware/pull/669#issuecomment-1632099013
+  services.power-profiles-daemon.enable = true;
+
   hardware.keyboard.qmk.enable = true;
 
   #services.udev.packages = [ pkgs.platformio ];
