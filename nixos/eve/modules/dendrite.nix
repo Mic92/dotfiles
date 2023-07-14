@@ -26,6 +26,7 @@ in
 {
   # $ nix-shell -p dendrite --run 'generate-keys --private-key /tmp/key'
   sops.secrets.matrix-server-key = { };
+  # $ echo "REGISTRATION_SHARED_SECRET=$(openssl rand -base64 32)"
   sops.secrets.registration-secret = { };
 
   services.dendrite = {
@@ -34,6 +35,10 @@ in
     environmentFile = config.sops.secrets.registration-secret.path;
 
     settings = {
+      sync_api.search = {
+        enabled = true;
+        index_path = "/var/lib/dendrite/searchindex";
+      };
       global = {
         server_name = "thalheim.io";
         # `private_key` has the type `path`
