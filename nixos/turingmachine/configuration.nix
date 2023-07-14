@@ -24,6 +24,7 @@
 
     ../modules/touchpad-hack
     ../modules/i18n.nix
+    ../modules/make-linux-fast.nix
     #../modules/podman.nix
     #../modules/tpm2.nix
     ../modules/pipewire.nix
@@ -65,23 +66,6 @@
 
     # when installing toggle this
     loader.efi.canTouchEfiVariables = false;
-
-    # It may leak your data, but look how FAST it is!1!!
-    # https://make-linux-fast-again.com/
-    kernelParams = [
-      "noibrs"
-      "noibpb"
-      "nopti"
-      "nospectre_v2"
-      "nospectre_v1"
-      "l1tf=off"
-      "nospec_store_bypass_disable"
-      "no_stf_barrier"
-      "mds=off"
-      "tsx=on"
-      "tsx_async_abort=off"
-      "mitigations=off"
-    ];
   };
 
   boot.plymouth.enable = true;
@@ -134,14 +118,6 @@
     docker.enable = true;
     docker.storageDriver = "zfs";
     docker.extraOptions = "--storage-opt=zfs.fsname=zroot/docker";
-  };
-
-  networking.firewall.extraCommands = ''
-    iptables -t nat -A PREROUTING -p tcp -d 88.99.244.96 --dport 53 -j DNAT --to-destination 172.17.0.1
-  '';
-
-  environment.etc."docker/daemon.json".text = builtins.toJSON {
-    dns = [ "8.8.8.8" "8.8.4.4" ];
   };
 
   fonts.fontDir.enable = true;
