@@ -42,13 +42,10 @@
       mode = "repokey";
       passCommand = "cat ${config.sops.secrets.borgbackup-passphrase.path}";
     };
+    environment.BORG_RSH = "ssh -i ${config.sops.secrets.borgbackup-ssh.path}";
     compression = "auto,zstd";
     startAt = "daily";
-    preHook = ''
-      set -x
-      eval $(ssh-agent)
-      ssh-add ${config.sops.secrets.borgbackup-ssh.path}
-    '';
+    preHook = "set -x";
 
     postHook = ''
       cat > /var/log/telegraf/borgbackup-eve <<EOF
