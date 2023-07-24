@@ -1,7 +1,7 @@
 { ... }: {
   services.keyd = {
     enable = true;
-    settings = {
+    keyboards.default.settings = {
       main.capslock = "enter";
       # Does not work?
       #main.backspace = "overload(alt,delete)";
