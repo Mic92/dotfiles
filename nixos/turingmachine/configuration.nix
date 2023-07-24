@@ -33,6 +33,7 @@
     #../modules/iwd.nix
     ../modules/dnsmasq.nix
     ../modules/promtail.nix
+    ../modules/powertop.nix
     #../modules/macos-kvm.nix
     ../modules/mosh.nix
     ../modules/networkd.nix
@@ -51,9 +52,12 @@
     ../modules/yggdrasil.nix
     ../modules/keyd.nix
     ../modules/no-hz.nix
-    ../modules/system76-power.nix
     #../modules/k3s/server.nix
   ];
+
+  # https://community.frame.work/t/guide-linux-battery-life-tuning/6665
+  services.tlp.enable = true;
+  services.tlp.settings."PCIE_ASPM_ON_BAT" = "powersupersave";
 
   hardware.keyboard.qmk.enable = true;
 

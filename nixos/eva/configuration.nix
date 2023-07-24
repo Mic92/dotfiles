@@ -20,6 +20,7 @@
     ../modules/promtail.nix
     ../modules/users.nix
     ../modules/unbound.nix
+    ../modules/zerotier.nix
   ];
 
   boot.initrd.systemd.enable = false;
