@@ -55,8 +55,9 @@
     #../modules/k3s/server.nix
   ];
 
-  # Better than tlp? https://github.com/NixOS/nixos-hardware/pull/669#issuecomment-1632099013
-  services.power-profiles-daemon.enable = true;
+  # https://community.frame.work/t/guide-linux-battery-life-tuning/6665
+  services.tlp.enable = true;
+  services.tlp.settings."PCIE_ASPM_ON_BAT" = "powersupersave";
 
   hardware.keyboard.qmk.enable = true;
 
