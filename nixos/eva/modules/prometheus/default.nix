@@ -77,7 +77,7 @@ in
           }
           {
             targets = [
-              "web01.local:9273/metrics"
+              "web01.local:9273"
             ];
 
             labels.org = "clan-lol";
