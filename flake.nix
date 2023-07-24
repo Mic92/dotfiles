@@ -69,7 +69,9 @@
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     lanzaboote.url = "github:nix-community/lanzaboote";
+    lanzaboote.inputs.flake-parts.follows = "flake-parts";
     lanzaboote.inputs.flake-compat.follows = "";
+
     #lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
 
     fast-flake-update.url = "github:Mic92/fast-flake-update";
