@@ -17,6 +17,6 @@ return {
  { import = "astrocommunity.pack.yaml" },
  { import = "astrocommunity.pack.nix" },
  { import = "astrocommunity.terminal-integration.vim-tpipeline" },
- { import = "astrocommunity.editing-support.nvim-ts-rainbow2" },
+ { import = "astrocommunity.editing-support.rainbow-delimiters-nvim" },
  { import = "astrocommunity.editing-support.auto-save-nvim" },
 }
