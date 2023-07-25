@@ -1,10 +1,8 @@
 { self, inputs, ... }: {
   perSystem = { config, pkgs, lib, ... }:
     let
-      homeManagerConfiguration =
-        { extraModules ? [ ]
-        ,
-        }: (inputs.home-manager.lib.homeManagerConfiguration {
+      homeManagerConfiguration = { extraModules ? [ ] }:
+        (inputs.home-manager.lib.homeManagerConfiguration {
           modules = [
             {
               _module.args.self = self;
@@ -60,6 +58,7 @@
 
       legacyPackages = {
         homeConfigurations = {
+          # this one should work for aarch64-liuux/x86_64-linux and macos
           common = homeManagerConfiguration { };
 
           mac-hetzner = homeManagerConfiguration {
@@ -68,9 +67,7 @@
 
         } // lib.optionalAttrs (pkgs.hostPlatform.system == "x86_64-linux") {
           desktop = homeManagerConfiguration {
-            extraModules = [
-              ./desktop.nix
-            ];
+            extraModules = [ ./desktop.nix ];
           };
           dev2 = homeManagerConfiguration {
             extraModules = [{ home.username = "mic92"; }];
