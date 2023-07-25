@@ -687,16 +687,17 @@ chpwd() { ls; }
 precmd() {
   print -Pn "\e]133;A\e\\"
 }
-function osc7 {
-    local LC_ALL=C uri input
-    export LC_ALL
-
-    setopt localoptions extendedglob
-    input=( ${(s::)PWD} )
-    uri=${(j::)input/(#b)([^A-Za-z0-9_.\!~*\'\(\)-\/])/%${(l:2::0:)$(([##16]#match))}}
-    print -n "\e]7;file://${HOSTNAME}${uri}\e\\"
+function osc7-pwd() {
+    emulate -L zsh # also sets localoptions for us
+    setopt extendedglob
+    local LC_ALL=C
+    printf '\e]7;file://%s%s\e\' $HOST ${PWD//(#m)([^@-Za-z&-;_~])/%${(l:2::0:)$(([##16]#MATCH))}}
 }
-add-zsh-hook -Uz chpwd osc7
+
+function chpwd-osc7-pwd() {
+    (( ZSH_SUBSHELL )) || osc7-pwd
+}
+add-zsh-hook -Uz chpwd chpwd-osc7-pwd
 
 mkcd() { mkdir -p "$1" && cd "$1"; }
 # make cd accept files
