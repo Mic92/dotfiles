@@ -58,7 +58,7 @@
 
       legacyPackages = {
         homeConfigurations = {
-          # this one should work for aarch64-liuux/x86_64-linux and macos
+          # this one should work for aarch64-linux/x86_64-linux and macos
           common = homeManagerConfiguration { };
 
           mac-hetzner = homeManagerConfiguration {
