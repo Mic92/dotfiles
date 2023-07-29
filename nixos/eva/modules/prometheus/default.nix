@@ -130,6 +130,7 @@ in
               "darwin02.nix-community.org:9273"
               "darwin03.nix-community.org:9273"
               "web01.nix-community.org:9273"
+              "web02.nix-community.org:9273"
             ];
             labels.org = "nix-community";
           }
