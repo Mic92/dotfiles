@@ -9,6 +9,7 @@ let
     "darwin02.nix-community.org"
     "darwin03.nix-community.org"
     "web01.nix-community.org"
+    "web02.nix-community.org"
   ];
 in
 {
