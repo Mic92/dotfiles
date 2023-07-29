@@ -1,0 +1,19 @@
+name: "os-on-demand"
+on:
+  workflow_dispatch:
+    inputs:
+      os:
+        description: 'OS to boot'
+        required: true
+        default: 'macos-latest'
+        type: choice
+        options:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+jobs:
+  test:
+    runs-on: ${{ inputs.os }}
+    steps:
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
