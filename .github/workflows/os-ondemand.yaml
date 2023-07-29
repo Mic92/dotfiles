@@ -1,4 +1,4 @@
-name: "os-on-demand"
+name: "OS ondemand"
 on:
   workflow_dispatch:
     inputs:
