@@ -18,5 +18,6 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         with:
+          title: Update zsh modules
           pr-labels: |                  # Labels to be set on the PR
             merge-queue
