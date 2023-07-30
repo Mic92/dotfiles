@@ -11,7 +11,6 @@
     gc.options = "--delete-older-than 10d";
     # should be enough?
     nrBuildUsers = lib.mkDefault 32;
-    package = pkgs.nixVersions.unstable;
 
     settings = {
       # for nix-direnv
