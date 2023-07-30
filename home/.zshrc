@@ -679,6 +679,9 @@ sieve-edit() {
 }
 # Autossh - try to connect every 0.5 secs (modulo timeouts)
 sssh(){ while true; do command ssh -q "$@"; [ $? -ne 0 ] && break || sleep 0.5; done; }
+# SSH to ephemeral machine without storing host key
+ssh-ephermal(){ ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no "$@"; }
+
 dumbssh(){ TERM=screen-256color ssh "$@"; }
 # List directory after changing directory
 chpwd() { ls; }
