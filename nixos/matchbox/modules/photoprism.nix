@@ -20,6 +20,9 @@
     device = "/mnt/hdd/photoprism";
     options = [ "bind" "nofail" ];
   };
+  systemd.services.photoprism = {
+    unitConfig.RequiresMountsFor = "/var/lib/private/photoprism";
+  };
 
   networking.firewall.allowedTCPPorts = [ 80 ];
 }
