@@ -13,6 +13,9 @@
           "::/0 allow"
           "0.0.0.0/0 allow"
         ];
+        # Too many broken dnssec setups even at big companies such as amazon.
+        # Breaks my email setup. Better rely on tls for security.
+        val-permissive-mode = "yes";
 
         tls-service-key = "/var/lib/acme/dns.thalheim.io/key.pem";
         tls-service-pem = "/var/lib/acme/dns.thalheim.io/fullchain.pem";
