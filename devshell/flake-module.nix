@@ -78,6 +78,7 @@
         sopsCreateGPGHome = true;
         nativeBuildInputs = [
           inputs'.sops-nix.packages.sops-import-keys-hook
+          inputs'.fast-flake-update.packages.default
           pkgs.python3.pkgs.invoke
           pkgs.python3.pkgs.deploykit
 

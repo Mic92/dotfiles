@@ -350,6 +350,11 @@ def add_github_user(c: Any, hosts: str = "", github_user: str = "Mic92") -> None
 
 
 @task
+def update_nixpkgs(c: Any) -> None:
+    c.run("fast-flake-update --rev origin/main nixpkgs ~/git/nixpkgs")
+
+
+@task
 def reboot(c: Any, hosts: str = "") -> None:
     """
     Reboot hosts. example usage: fab --hosts clara.r,donna.r reboot
