@@ -177,6 +177,10 @@ hm(){
 }
 # merge after CI is green with mergify
 merge-after-ci() {
+  if [[ -n ${commands[merge-after-ci]} ]]; then
+    command merge-after-ci "$@"
+    return
+  fi
   if [[ -n ${commands[treefmt]} ]] && ! treefmt --fail-on-change; then
     return
   fi
