@@ -31,7 +31,7 @@
     ../modules/rock-rdp.nix
     ../modules/ip-update.nix
     #../modules/iwd.nix
-    ../modules/dnsmasq.nix
+    #../modules/dnsmasq.nix
     ../modules/promtail.nix
     ../modules/powertop.nix
     #../modules/macos-kvm.nix

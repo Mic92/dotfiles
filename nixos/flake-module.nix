@@ -69,6 +69,13 @@ in
 
     turingmachine = nixosSystem {
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
+      specialArgs = {
+        self = {
+          inputs = self.inputs;
+          nixosModules = self.nixosModules;
+          packages = self.packages.x86_64-linux;
+        };
+      };
       modules =
         defaultModules
         ++ [
@@ -76,7 +83,13 @@ in
           inputs.nixos-hardware.nixosModules.framework
           inputs.nix-index-database.nixosModules.nix-index
           { programs.nix-index-database.comma.enable = true; }
-
+          #{
+          #  imports = [
+          #    ./turingmachine/modules/microvm.nix
+          #    # for declarative MicroVM management
+          #    self.inputs.microvm.nixosModules.host
+          #  ];
+          #}
           inputs.srvos.nixosModules.desktop
 
           inputs.lanzaboote.nixosModules.lanzaboote
