@@ -71,7 +71,7 @@
       mkdir -p $out/bin
       cat > $out/bin/ferdium <<EOF
       #!${runtimeShell}
-      exec ${lib.getExe pkgs.ferdium} --ozone-platform-hint=auto --enable-features=WaylandWindowDecorations "$@"
+      exec ${pkgs.ferdium}/bin/ferdium --ozone-platform-hint=auto --enable-features=WaylandWindowDecorations "$@"
       EOF
       chmod +x $out/bin/ferdium
     '')

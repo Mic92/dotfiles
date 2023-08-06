@@ -39,9 +39,9 @@
               "-eucx"
               ''
                 # First shellcheck
-                ${pkgs.lib.getExe pkgs.shellcheck} --external-sources --source-path=SCRIPTDIR "$@"
+                ${pkgs.shellcheck}/bin/shellcheck --external-sources --source-path=SCRIPTDIR "$@"
                 # Then format
-                ${pkgs.lib.getExe pkgs.shfmt} -i 2 -s -w "$@"
+                ${pkgs.shfmt}/bin/shfmt -i 2 -s -w "$@"
               ''
               "--"
             ];
@@ -57,8 +57,8 @@
             options = [
               "-eucx"
               ''
-                ${pkgs.lib.getExe pkgs.ruff} --fix "$@"
-                ${pkgs.lib.getExe pkgs.python3.pkgs.black} "$@"
+                ${pkgs.ruff}/bin/ruff --fix "$@"
+                ${pkgs.python3.pkgs.black}/bin/black "$@"
               ''
               "--" # this argument is ignored by bash
             ];

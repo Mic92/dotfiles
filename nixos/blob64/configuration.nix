@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, ... }:
 {
   imports = [
     ./modules/borgbackup-repos
@@ -28,7 +28,7 @@
     in
     {
       wantedBy = [ "multi-user.target" ];
-      serviceConfig.ExecStart = lib.getExe fancontrol;
+      serviceConfig.ExecStart = "${fancontrol}/bin/fancontrol";
       serviceConfig.Restart = "always";
     };
 

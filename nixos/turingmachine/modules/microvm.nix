@@ -100,7 +100,7 @@ in
   # Nested MicroVMs
   microvm.vms.internet = {
     inherit pkgs;
-    config = { config, ... }: {
+    config = { ... }: {
       imports = [ vmBaseConfig ];
       # We use network manager to manage wifi.
       #networking.networkmanager.enable = true;
@@ -184,7 +184,7 @@ in
 
   microvm.vms.wallet = {
     inherit pkgs;
-    config = { config, lib, ... }: {
+    config = { ... }: {
       imports = [
         vmBaseConfig
         internetAccess
@@ -194,13 +194,17 @@ in
 
       # breaks display
       microvm.qemu.bios.enable = false;
-      microvm.qemu.extraArgs = [ 
-        "-vnc" ":0"
-        "-vga" "std" 
+      microvm.qemu.extraArgs = [
+        "-vnc"
+        ":0"
+        "-vga"
+        "std"
         # needed for mounse/keyboard input via vnc
-        "-device" "virtio-keyboard"
-        "-usb" 
-        "-device" "usb-tablet,bus=usb-bus.0"
+        "-device"
+        "virtio-keyboard"
+        "-usb"
+        "-device"
+        "usb-tablet,bus=usb-bus.0"
       ];
 
       users.users.user = {
@@ -223,7 +227,7 @@ in
         xkbOptions = "caps:ctrl_modifier,compose:menu";
         displayManager.autoLogin.user = "user";
         displayManager.sessionCommands = ''
-          ${lib.getExe pkgs.electrum} &
+          ${pkgs.electrum}/bin/electrum &
         '';
       };
 
