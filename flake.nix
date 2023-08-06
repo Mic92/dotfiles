@@ -79,9 +79,9 @@
 
     flake-utils.url = "github:numtide/flake-utils";
 
-    microvm.url = "github:astro/microvm.nix";
-    microvm.inputs.nixpkgs.follows = "nixpkgs";
-    microvm.inputs.flake-utils.follows = "flake-utils";
+    #microvm.url = "github:astro/microvm.nix";
+    #microvm.inputs.nixpkgs.follows = "nixpkgs";
+    #microvm.inputs.flake-utils.follows = "flake-utils";
   };
 
   outputs = inputs @ { self, flake-parts, nixpkgs, ... }:
