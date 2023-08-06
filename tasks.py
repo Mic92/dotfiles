@@ -2,9 +2,9 @@
 
 import json
 import os
-import socket
 import subprocess
 import sys
+import time
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from typing import Any, List
@@ -131,6 +131,71 @@ def generate_password(c, user="root"):
     print(f"{user}-password-hash: {hash}")
 
 
+#  decrypt = nixpkgs.writeShellScriptBin "decrypt" ''
+#    set -euox pipefail
+#
+#    export PATH=${lib.makeBinPath (with nixpkgs; [ coreutils sops openssh nix ])}:$PATH
+#    HOST=${hostname}
+#    temp=$(mktemp -d)
+#    trap 'rm -rf $temp' EXIT
+#    sops --extract '["cryptsetup_key"]' -d secrets.yaml > $temp/secret.key
+#
+#    while ! ping -4 -W 1 -c 1 $HOST; do
+#      sleep 1
+#    done
+#    while ! timeout 4 ssh -p 2222 "root@$HOST" true; do
+#      sleep 1
+#    done
+#
+#    cat $temp/secret.key | ssh -p 2222 "root@$HOST" "cat > /crypt-ramfs/passphrase"
+#  '';
+#
+#  reboot = nixpkgs.writeShellScriptBin "reboot" ''
+#    ssh "root@${hostname}" reboot
+#    echo "waiting for ${hostname} to go down"
+#    while ping -4 -W 1 -c 1 "${hostname}"; do
+#      sleep 1
+#    done
+#    echo "waiting for ${hostname} to come back up"
+#    pw=$(rbw get 'zfs encryption')
+#    ssh root@eve.i -p 2222 "zpool import -a; echo "${pw}" | zfs load-key -a; echo "${pw}" | zfs load-key -a; touch /root/decrypted; sleep 9999"
+#  '';
+
+
+@task
+def reboot_and_decrypt(c, hosts: str = "") -> None:
+    """
+    Reboot hosts and decrypt secrets
+    """
+    eve = DeployHost("eve.i", user="root")
+    eve_initrd = DeployHost("eve.i", user="root", port=2222)
+    eve.run("reboot")
+    print("waiting for eve to go down")
+    while eve.run("ping -4 -W 1 -c 1 eve.i", check=False).returncode == 0:
+        pass
+    print("waiting for eve to come back up")
+    while eve.run("ping -4 -W 1 -c 1 eve.i", check=False).returncode != 0:
+        pass
+    while True:
+        try:
+            eve_initrd.run("true", check=True, timeout=4)
+            break
+        except Exception as e:  # timeout
+            print(e)
+    while eve_initrd.run("true", check=False, timeout=4).returncode != 0:
+        time.sleep(1)
+    pw = subprocess.run(
+        ["rbw", "get", "zfs encryption"],
+        text=True,
+        check=True,
+        stdout=subprocess.PIPE,
+    ).stdout.strip()
+    eve_initrd.run("zpool import -a")
+    eve_initrd.run(f'echo "{pw}" | zfs load-key -a', input=pw)
+    eve_initrd.run(f'echo "{pw}" | zfs load-key -a')
+    eve_initrd.run("touch /root/decrypted")
+
+
 def filter_hosts(host_spec: str, hosts: dict[str, DeployHost]) -> List[DeployHost]:
     host_list = []
     if host_spec == "":
@@ -204,11 +269,12 @@ def deploy_k3s(c: Any) -> None:
 
 
 def try_local(host: str) -> str:
-    try:
-        socket.gethostbyname(f"{host}.lan")
-        return f"{host}.lan"
-    except socket.error:
-        return f"{host}.r"
+    return f"{host}.r"
+    # try:
+    #    socket.gethostbyname(f"{host}.lan")
+    #    return f"{host}.lan"
+    # except socket.error:
+    #    return f"{host}.r"
 
 
 @task
@@ -301,7 +367,6 @@ def install_machine(c: Any, flake_attr: str, hostname: str) -> None:
 
 def wait_for_port(host: str, port: int, shutdown: bool = False) -> None:
     import socket
-    import time
 
     while True:
         try:
