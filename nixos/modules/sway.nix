@@ -44,6 +44,7 @@
 
   xdg.portal.enable = true;
   xdg.portal.wlr.enable = true;
+  fonts.enableDefaultPackages = true;
 
   environment.sessionVariables = {
     MOZ_ENABLE_WAYLAND = "1";
