@@ -32,6 +32,7 @@
       };
     };
   };
+  services.resolved.enable = false;
 
   # dns.thalheim.io
   networking.firewall.allowedTCPPorts = [ 853 ];
