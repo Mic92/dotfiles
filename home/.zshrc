@@ -741,7 +741,7 @@ ninja(){
 }
 make(){
   local build_path="$(dirname "$(upfind "Makefile")")"
-  command make -C "${build_path:-.}" "$@"
+  command make -C "${build_path:-.}" -j$(nproc) "$@" 
 }
 real-which(){
   readlink -f "$(command which "$@")"
