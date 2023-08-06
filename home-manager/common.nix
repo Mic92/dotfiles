@@ -13,7 +13,6 @@
       [
         #(pkgs.callPackage /home/joerg/git/nix-review {})
         nixpkgs-review
-        config.nur.repos.mic92.tmux-thumbs
         nix-prefetch
 
         hexyl
