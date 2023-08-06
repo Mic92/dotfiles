@@ -84,7 +84,7 @@
     poppler_utils
     focuswriter
   ];
-  fonts.enableDefaultFonts = true;
+  fonts.enableDefaultPackages = true;
 
   documentation.doc.enable = false;
   documentation.man.enable = false;
