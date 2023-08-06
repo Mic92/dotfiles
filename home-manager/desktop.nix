@@ -142,7 +142,6 @@
     speedscope
     inxi
     source-code-pro-nerdfonts
-    edge-gpt
     (pkgs.nerdfonts.override {
       fonts = [ "FiraCode" ];
     })
