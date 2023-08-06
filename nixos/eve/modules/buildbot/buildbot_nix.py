@@ -485,9 +485,12 @@ def nix_eval_config(
                 "accept-flake-config",
                 "true",
                 "github:nix-community/nix-eval-jobs",
+                "--max-memory-size",
+                "3072",
                 "--",
+                # reduced to avoid OOM
                 "--workers",
-                multiprocessing.cpu_count(),
+                multiprocessing.cpu_count() / 2,
                 "--option",
                 "accept-flake-config",
                 "true",
