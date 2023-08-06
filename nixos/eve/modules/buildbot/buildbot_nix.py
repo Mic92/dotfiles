@@ -484,7 +484,7 @@ def nix_eval_config(
                 "--option",
                 "accept-flake-config",
                 "true",
-                "github:nix-community/nix-eval-jobs/release-2.16",
+                "github:nix-community/nix-eval-jobs",
                 "--max-memory-size",
                 "3072",
                 "--",
