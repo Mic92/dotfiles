@@ -341,6 +341,11 @@ xalias lg='lazygit'
 xalias dig='q'
 alias free='free -m'
 alias fuser="fuser -v"
+if [[ -n ${commands[procs]} ]]; then
+  alias ps='procs'
+else
+  alias ps='ps auxf'
+fi
 if [[ -n ${commands[dust]} ]]; then
   du() {
     args=()

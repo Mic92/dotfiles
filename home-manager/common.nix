@@ -30,6 +30,7 @@
 
         du-dust
         pkgs.nix
+        procs
 
         socat
         tmux
