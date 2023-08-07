@@ -389,13 +389,13 @@ def wait_for_port(host: str, port: int, shutdown: bool = False) -> None:
 def wait_for_reboot(h: DeployHost) -> None:
     print(f"Wait for {h.host} to shutdown", end="")
     sys.stdout.flush()
-    assert h.port is not None, "port is not set"
-    wait_for_port(h.host, h.port, shutdown=True)
+    port = h.port or 22
+    wait_for_port(h.host, port, shutdown=True)
     print("")
 
     print(f"Wait for {h.host} to start", end="")
     sys.stdout.flush()
-    wait_for_port(h.host, h.port)
+    wait_for_port(h.host, port)
     print("")
 
 
@@ -420,7 +420,7 @@ def update_nixpkgs(c: Any) -> None:
 
 
 @task
-def reboot(c: Any, hosts: str = "") -> None:
+def reboot(c: Any, hosts) -> None:
     """
     Reboot hosts. example usage: fab --hosts clara.r,donna.r reboot
     """
@@ -439,7 +439,7 @@ def reboot(c: Any, hosts: str = "") -> None:
 
 
 @task
-def cleanup_gcroots(c: Any, hosts: str = "") -> None:
+def cleanup_gcroots(c: Any, hosts) -> None:
     deploy_hosts = [DeployHost(h) for h in hosts.split(",")]
     for h in deploy_hosts:
         g = DeployGroup([h])
