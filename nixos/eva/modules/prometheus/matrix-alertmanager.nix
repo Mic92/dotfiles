@@ -23,7 +23,13 @@ in
     HTTPAddress = "127.0.0.1"
   '';
   sops.templates."config.toml".owner = "matrix-alertmanager-receiver";
-  sops.templates."config.toml".group = "matrix-alertmanager-receiver";
+
+  users.users.matrix-alertmanager-receiver = {
+    isSystemUser = true;
+    group = "matrix-alertmanager-receiver";
+  };
+  users.groups.matrix-alertmanager-receiver = { };
+
   systemd.services.matrix-alertmanager-receiver = {
     description = "Matrix Alertmanager Receiver";
     after = [ "network.target" ];
@@ -37,9 +43,4 @@ in
       Group = "matrix-alertmanager-receiver";
     };
   };
-  users.users.matrix-alertmanager-receiver = {
-    isSystemUser = true;
-    group = "matrix-alertmanager-receiver";
-  };
-  users.groups.matrix-alertmanager-receiver = { };
 }
