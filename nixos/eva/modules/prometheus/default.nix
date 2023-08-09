@@ -70,7 +70,7 @@
           }
           {
             targets = [
-              "web01.local:9273"
+              "clan.lol:9273"
             ];
 
             labels.org = "clan-lol";
