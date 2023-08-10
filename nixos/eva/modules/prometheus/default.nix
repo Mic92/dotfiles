@@ -246,7 +246,7 @@
           name = "nix-community";
           webhook_configs = [
             {
-              url = "http://localhost:4050/alert";
+              url = "http://localhost:9088/alert";
               max_alerts = 5;
             }
           ];
