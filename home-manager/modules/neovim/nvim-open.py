@@ -34,7 +34,7 @@ def find_project_root(initial_path: Path) -> Path:
 
 def main() -> None:
     line = 0
-    project_root = os.getcwd()
+    project_root = Path(os.getcwd())
     if len(sys.argv) >= 2:
         path = Path(sys.argv[1])
         args = path.name.split(":")
@@ -63,11 +63,23 @@ def main() -> None:
     os.environ["TTY"] = str(os.ttyname(sys.stdout.fileno()))
     os.environ["NVIM_LISTEN_ADDRESS"] = str(sock)
 
+    vim_commands = ""
+    if project_root.exists():
+        if project_root.is_dir():
+            vim_commands = f"lcd {project_root}"
+    else:
+        try:
+            project_root.mkdir(parents=True, exist_ok=True)
+            vim_commands += f"lcd {project_root}"
+        except OSError:
+            pass
+    vim_commands += " | RaiseTmuxPane"
+
     args = [
         "nvr",
         "+{}".format(line),
         "-cc",
-        f"lcd {project_root} | RaiseTmuxPane",
+        vim_commands,
         "--remote-silent",
         "-s",
     ] + sys.argv[1:]

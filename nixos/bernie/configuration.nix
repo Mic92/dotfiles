@@ -20,6 +20,9 @@
     ../modules/pipewire.nix
   ];
 
+  boot.plymouth.enable = true;
+
+  boot.initrd.systemd.enable = true;
   boot.loader.systemd-boot.enable = true;
   # when installing toggle this
   boot.loader.efi.canTouchEfiVariables = false;

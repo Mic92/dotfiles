@@ -20,7 +20,7 @@ in
     MXID = "@nix-community-bot:thalheim.io"
     MXToken = "${config.sops.placeholder.nix-community-bot-access-token}"
     HTTPPort = 9088
-    HTTPAddress = "127.0.0.1"
+    HTTPAddress = "::1"
   '';
   sops.templates."config.toml".owner = "matrix-alertmanager-receiver";
 
