@@ -69,19 +69,6 @@
       prometheus.filter.include_domains = [
         "persistent_notification"
       ];
-      influxdb = {
-        username = "homeassistant";
-        host = "influxdb.thalheim.io";
-        password = "!secret influxdb";
-        database = "homeassistant";
-        ssl = true;
-        include.entities = [
-          "person.jorg_thalheim"
-          "person.shannan_lekwati"
-          "device_tracker.beatrice"
-          "device_tracker.android"
-        ];
-      };
       notify = [
         {
           name = "Pushover";
