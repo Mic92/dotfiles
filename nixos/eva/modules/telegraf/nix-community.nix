@@ -1,33 +1,10 @@
 let
   hosts = [
-    "aarch64.nixos.community"
-    "build01.nix-community.org"
-    "build02.nix-community.org"
-    "build03.nix-community.org"
-    "build04.nix-community.org"
-    "darwin01.nix-community.org"
-    "darwin02.nix-community.org"
-    "darwin03.nix-community.org"
-    "web01.nix-community.org"
     "web02.nix-community.org"
   ];
 in
 {
   services.telegraf.extraConfig.inputs = {
-    http_response = [
-      {
-        urls = [ "https://lemmy.nix-community.org/" ];
-        response_string_match = "Lemmy for Nix";
-        tags.host = "web01.nix-community.org";
-        tags.org = "nix-community";
-      }
-      {
-        urls = [ "https://nur-update.nix-community.org/" ];
-        response_string_match = "NUR update endpoint";
-        tags.host = "build03.nix-community.org";
-        tags.org = "nix-community";
-      }
-    ];
     net_response =
       map
         (host: {
