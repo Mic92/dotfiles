@@ -6,6 +6,8 @@ lib.mapAttrsToList
     for = opts.time or "2m";
     labels = { };
     annotations.description = opts.description;
+    # for matrix alert-receiver
+    annotations.summary = opts.description;
   })
   ({
     prometheus_too_many_restarts = {
