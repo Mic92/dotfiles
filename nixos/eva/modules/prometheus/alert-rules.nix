@@ -272,7 +272,7 @@ lib.mapAttrsToList
     # ignore devices that disabled S.M.A.R.T (example if attached via USB)
     # Also ignore nix-community server ci server until nvme actually fails
     smart_errors = {
-      condition = ''smart_device_health_ok{enabled!="Disabled", instance!="build03.nix-community.org:9273"} != 1'';
+      condition = ''smart_device_health_ok{enabled!="Disabled", instance!="(build02|build03).nix-community.org:9273"} != 1'';
       description = "{{$labels.instance}}: S.M.A.R.T reports: {{$labels.device}} ({{$labels.model}}) has errors";
     };
 
