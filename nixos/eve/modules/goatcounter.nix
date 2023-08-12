@@ -1,4 +1,4 @@
-{ config, ... }: {
+{ config, pkgs, inputs, lib, ... }: {
   systemd.services.goatcounter = {
     wantedBy = [ "multi-user.target" ];
     enable = true;
@@ -8,7 +8,7 @@
       RestartSec = "2s";
       EnvironmentFile = [ config.sops.secrets.goatcounter-smtp-password.path ];
       ExecStart = ''
-        ${config.nur.repos.mic92.goatcounter}/bin/goatcounter \
+        ${inputs.nur-packages.packages.${pkgs.hostPlatform.system}.goatcounter}/bin/goatcounter \
           serve \
           -automigrate \
           -listen localhost:3004 \
@@ -33,7 +33,7 @@
   };
 
   environment.systemPackages = [
-    config.nur.repos.mic92.goatcounter
+    inputs.nur-packages.packages.${pkgs.hostPlatform.system}.goatcounter
   ];
 
   services.postgresql.ensureDatabases = [ "goatcounter" ];

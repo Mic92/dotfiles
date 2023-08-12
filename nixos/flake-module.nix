@@ -36,7 +36,6 @@ let
         ./modules/i18n.nix
         ./modules/sshd
         ./modules/zfs.nix
-        inputs.nur.nixosModules.nur
 
         inputs.srvos.nixosModules.common
         inputs.srvos.nixosModules.mixins-telegraf

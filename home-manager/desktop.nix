@@ -1,5 +1,5 @@
 { pkgs
-, config
+, inputs
 , ...
 }: {
   imports = [
@@ -37,7 +37,7 @@
 
     arandr
     signal-desktop
-    config.nur.repos.mic92.pandoc-bin
+    inputs.nur-packages.packages.${pkgs.hostPlatform.system}.pandoc-bin
     nix-output-monitor
     gnome.adwaita-icon-theme
     hicolor-icon-theme
@@ -138,7 +138,7 @@
 
     nixos-shell
   ]
-  ++ (with config.nur.repos.mic92; [
+  ++ (with inputs.nur-packages.packages.${pkgs.hostPlatform.system}; [
     speedscope
     inxi
     source-code-pro-nerdfonts

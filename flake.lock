@@ -422,18 +422,23 @@
         "type": "github"
       }
     },
-    "nur": {
+    "nur-packages": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
       "locked": {
-        "lastModified": 1691814736,
-        "narHash": "sha256-hk1PmKF/y3NP9/gaZoQ97ySmxifnhyG/TrWcewjAV98=",
-        "owner": "nix-community",
-        "repo": "NUR",
-        "rev": "68008bb1e456742f6f4cba73ecd94b0c197e5a61",
+        "lastModified": 1691851881,
+        "narHash": "sha256-I0B0ub44iFodoLcovB7emDw9I3ORHftIJ+3b4ftoWdw=",
+        "owner": "Mic92",
+        "repo": "nur-packages",
+        "rev": "ae7a64029e769b6e708e284591042d785f2cfe96",
         "type": "github"
       },
       "original": {
-        "owner": "nix-community",
-        "repo": "NUR",
+        "owner": "Mic92",
+        "repo": "nur-packages",
         "type": "github"
       }
     },
@@ -500,7 +505,7 @@
         "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
-        "nur": "nur",
+        "nur-packages": "nur-packages",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
@@ -540,11 +545,11 @@
         "nixpkgs-stable": []
       },
       "locked": {
-        "lastModified": 1690199016,
-        "narHash": "sha256-yTLL72q6aqGmzHq+C3rDp3rIjno7EJZkFLof6Ika7cE=",
+        "lastModified": 1691830846,
+        "narHash": "sha256-ffR5maL8R4gsoF43YZRSBVzB7qYxzG+Ssjjktg80Wy4=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "c36df4fe4bf4bb87759b1891cab21e7a05219500",
+        "rev": "5f5d9a3c8bc247eb574823b9f16a79e054dafe73",
         "type": "github"
       },
       "original": {

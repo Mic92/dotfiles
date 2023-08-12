@@ -1,4 +1,4 @@
-{ config
+{ inputs
 , pkgs
 , ...
 }: {
@@ -19,7 +19,7 @@
     };
   };
   services.home-assistant.customCards = {
-    "lovelace-multiline-text-input-card.js" = pkgs.stdenv.mkDerivation rec {
+    "lovelace-multiline-text-input-card.js" = pkgs.stdenv.mkDerivation {
       name = "lovelace-multiline-text-input-card.js";
       src = pkgs.fetchFromGitHub {
         owner = "faeibson";
@@ -80,7 +80,7 @@
       {
         name = "irc_flix";
         platform = "command_line";
-        command = ''${config.nur.repos.mic92.ircsink}/bin/ircsink --server=irc.r --nick=transmission --target="#flix"'';
+        command = ''${inputs.nur-packages.packages.${pkgs.hostPlatform.system}.ircsink}/bin/ircsink --server=irc.r --nick=transmission --target="#flix"'';
       }
     ];
   };

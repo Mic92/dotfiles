@@ -1,6 +1,7 @@
 { lib
 , pkgs
 , config
+, inputs
 , ...
 }: {
   system.stateVersion = config.system.nixos.version;
@@ -77,7 +78,7 @@
       sleep 1
       done
       echo "SSH Hidden Service at $(cat /var/lib/tor/onion/ssh/hostname)" | \
-        ${config.nur.repos.mic92.ircsink}/bin/ircsink \
+        ${inputs.nur-packages.packages.${pkgs.hostPlatform.system}.ircsink}/bin/ircsink \
         --port=6697 --secure --server=irc.hackint.org --nick=nixos-installer --target="#krebs-announce"
 
     '';
