@@ -61,7 +61,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
                 "--build-host",
                 "",
                 "--flake",
-                f"{flake_path}{flake_attr}",
+                f"{flake_path}{flake_attr}"
             ]
         )
         if target_host:
@@ -81,7 +81,7 @@ def update_sops_files(c: Any) -> None:
     """
     c.run(
         """
-        cd nixos && find . -type f \( -iname '*.enc.json' -o -iname '*.yaml' \) -print0 | \
+        cd nixos && find . -type f \\( -iname '*.enc.json' -o -iname '*.yaml' \\) -print0 | \
         xargs -0 -n1 sops updatekeys --yes
 """
     )
