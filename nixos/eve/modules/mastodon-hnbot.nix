@@ -1,10 +1,11 @@
 { pkgs
 , config
+, inputs
 , ...
 }: {
   systemd.services.mastodon-hnbot = {
     path = [
-      config.nur.repos.mic92.mastodon-hnbot
+      inputs.nur-packages.packages.${pkgs.hostPlatform.system}.mastodon-hnbot
     ];
     script = ''
       exec hnbot \

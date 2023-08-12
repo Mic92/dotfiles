@@ -1,10 +1,9 @@
 { self, lib, ... }:
 let
-  inherit (self.inputs) nixos-generators nur;
+  inherit (self.inputs) nixos-generators;
   defaultModule = { ... }: {
     imports = [
       ./base-config.nix
-      self.inputs.nur.nixosModules.nur
     ];
     _module.args.inputs = self.inputs;
   };

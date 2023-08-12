@@ -11,7 +11,6 @@
                 extraModules
                 ++ [
                   ./common.nix
-                  inputs.nur.hmModules.nur
                   inputs.nix-index-database.hmModules.nix-index
                   { programs.nix-index-database.comma.enable = true; }
                 ];

@@ -28,7 +28,8 @@
     nixpkgs.url = "github:Mic92/nixpkgs/main";
     # for development
     #nixpkgs.url = "/home/joerg/git/nixpkgs";
-    nur.url = "github:nix-community/NUR";
+    nur-packages.url = "github:Mic92/nur-packages";
+    nur-packages.inputs.nixpkgs.follows = "nixpkgs";
     # for development
     #sops-nix.url = "/home/joerg/git/sops-nix";
     sops-nix.url = "github:Mic92/sops-nix";

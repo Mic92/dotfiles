@@ -1,6 +1,7 @@
 { config
 , pkgs
 , lib
+, inputs
 , ...
 }: {
   services.gitea = {
@@ -46,7 +47,9 @@
           wrapProgram $out/bin/retiolum \
             --set PATH ${lib.makeBinPath (with pkgs; [git openssh gnutar gnugrep coreutils nix coreutils bzip2 jq bash])}
           wrapProgram $out/bin/irc-notify \
-            --set PATH ${lib.makeBinPath (with pkgs; [git openssh coreutils gnugrep gnused config.nur.repos.mic92.ircsink bash])}
+            --set PATH ${lib.makeBinPath (with pkgs; [
+            git openssh coreutils gnugrep gnused inputs.nur-packages.packages.${pkgs.hostPlatform.system}.ircsink bash
+          ])}
           cat > $out/bin/irc-stockholm <<EOF
           #!/usr/bin/env bash
           export GIT_URL=https://git.thalheim.io/Mic92/stockholm

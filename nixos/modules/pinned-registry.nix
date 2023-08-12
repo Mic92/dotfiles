@@ -9,9 +9,5 @@
       type = "path";
       path = inputs.nixpkgs;
     };
-    nur.to = {
-      type = "path";
-      path = inputs.nur;
-    };
   };
 }
