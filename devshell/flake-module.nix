@@ -17,6 +17,22 @@
         programs.terraform.enable = true;
         programs.mypy.enable = true;
         programs.mypy.directories = {
+          "tasks" = {
+            directory = ".";
+            modules = [ ];
+            files = [ "**/tasks.py" ];
+            extraPythonPackages = [
+              pkgs.python3.pkgs.deploykit
+              (pkgs.python3.pkgs.buildPythonPackage rec {
+                pname = "types-invoke";
+                version = "2.0.0.9";
+                src = pkgs.python3.pkgs.fetchPypi {
+                  inherit pname version;
+                  hash = "sha256-5l+xnf3ZIztpwhoPK7mnm1FwWggVfc7O2TFnKGQsbds=";
+                };
+              })
+            ];
+          };
           "eve/modules/buildbot" = { };
           "eva/modules/prometheus" = { };
           "openwrt" = { };
