@@ -219,6 +219,7 @@ bindsym XF86AudioMute exec pamixer --toggle-mute
 bindsym XF86WakeUp exec autorandr --change
 bindsym XF86MonBrightnessUp exec brightnessctl set +10%
 bindsym XF86MonBrightnessDown exec brightnessctl set 10%-
+bindsym XF86Calculator exec foot python
 
 # Media player controls
 bindsym XF86AudioPlay exec playerctl play
