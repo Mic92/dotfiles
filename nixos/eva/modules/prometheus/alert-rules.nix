@@ -140,9 +140,8 @@ lib.mapAttrsToList
     };
 
     # user@$uid.service and similar sometimes fail, we don't care about those services.
-    # nixpkgs-update also constantly fails and ryan does not fix it.
     systemd_service_failed = {
-      condition = ''systemd_units_active_code{name!~"user@\\d+.service|nixpkgs-update.*"} == 3'';
+      condition = ''systemd_units_active_code{name!~"user@\\d+.service} == 3'';
       description = "{{$labels.host}} failed to (re)start service {{$labels.name}}";
     };
 
@@ -163,7 +162,7 @@ lib.mapAttrsToList
       description = "{{$labels.host}} is using at least 95% of its RAM for at least 1 hour";
     };
     load15 = {
-      condition = ''system_load15 / system_n_cpus{org!="nix-community"} >= 2.0'';
+      condition = ''system_load15 / system_n_cpus >= 2.0'';
       time = "10m";
       description = "{{$labels.host}} is running with load15 > 1 for at least 5 minutes: {{$value}}";
     };
@@ -270,9 +269,8 @@ lib.mapAttrsToList
     };
 
     # ignore devices that disabled S.M.A.R.T (example if attached via USB)
-    # Also ignore nix-community server ci server until nvme actually fails
     smart_errors = {
-      condition = ''smart_device_health_ok{enabled!="Disabled", instance!~"(build02|build03).nix-community.org:9273"} != 1'';
+      condition = ''smart_device_health_ok{enabled!="Disabled"} != 1'';
       description = "{{$labels.instance}}: S.M.A.R.T reports: {{$labels.device}} ({{$labels.model}}) has errors";
     };
 
