@@ -46,6 +46,7 @@
     ./modules/postgresql.nix
     ./modules/shadowsocks.nix
     ./modules/snappymail.nix
+    ./modules/renovate
     ./modules/remote-builder.nix
     ./modules/redis.nix
     ./modules/rspamd/rspamd.nix
