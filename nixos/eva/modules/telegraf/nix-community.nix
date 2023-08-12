@@ -5,6 +5,14 @@ let
 in
 {
   services.telegraf.extraConfig.inputs = {
+    http_response = [
+      {
+        urls = [ "https://prometheus.nix-community.org/" ];
+        response_string_match = "Prometheus Time Series Collection";
+        tags.host = "web02.nix-community.org";
+        tags.org = "nix-community";
+      }
+    ];
     net_response =
       map
         (host: {
