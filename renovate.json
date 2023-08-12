@@ -1,9 +1,3 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "nix": {
-    "enabled": true
-  },
-  "lockFileMaintenance": {
-    "enabled": true
-  }
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json"
 }
