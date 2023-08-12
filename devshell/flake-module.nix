@@ -8,8 +8,6 @@
   perSystem =
     { inputs'
     , pkgs
-    , config
-    , lib
     , ...
     }: {
       treefmt = {
@@ -17,6 +15,15 @@
         projectRootFile = "flake.lock";
 
         programs.terraform.enable = true;
+        programs.mypy.enable = true;
+        programs.mypy.directories = {
+          "eve/modules/buildbot" = { };
+          "eva/modules/prometheus" = { };
+          "openwrt" = { };
+          "home-manager/modules/neovim" = {
+            options = [ "--ignore-missing-imports" ];
+          };
+        };
 
         settings.formatter = {
           nix = {
@@ -24,9 +31,8 @@
             options = [
               "-eucx"
               ''
-                export PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.findutils pkgs.deadnix pkgs.nixpkgs-fmt ]}
-                deadnix --edit "$@"
-                nixpkgs-fmt "$@"
+                ${pkgs.deadnix}/bin/deadnix --edit "$@"
+                ${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt "$@"
               ''
               "--"
             ];
@@ -81,8 +87,6 @@
           inputs'.fast-flake-update.packages.default
           pkgs.python3.pkgs.invoke
           pkgs.python3.pkgs.deploykit
-
-          config.treefmt.build.wrapper
         ];
       };
     };
