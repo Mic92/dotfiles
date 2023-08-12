@@ -33,7 +33,7 @@ def find_project_root(initial_path: Path) -> Path:
 
 
 def main() -> None:
-    line = 0
+    line = "0"
     project_root = Path(os.getcwd())
     if len(sys.argv) >= 2:
         path = Path(sys.argv[1])

@@ -75,7 +75,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
 
 
 @task
-def update_sops_files(c):
+def update_sops_files(c: Any) -> None:
     """
     Update all sops yaml and json files according to .sops.yaml rules
     """
@@ -88,7 +88,7 @@ def update_sops_files(c):
 
 
 @task
-def generate_password(c, user="root"):
+def generate_password(c: Any, user: str = "root") -> None:
     """
     Generate password hashes for users i.e. for root in ./hosts/$HOSTNAME.yml
     """
@@ -163,7 +163,7 @@ def generate_password(c, user="root"):
 
 
 @task
-def reboot_and_decrypt(c, hosts: str = "") -> None:
+def reboot_and_decrypt(c: Any, hosts: str = "") -> None:
     """
     Reboot hosts and decrypt secrets
     """
@@ -191,7 +191,7 @@ def reboot_and_decrypt(c, hosts: str = "") -> None:
         stdout=subprocess.PIPE,
     ).stdout.strip()
     eve_initrd.run("zpool import -a")
-    eve_initrd.run(f'echo "{pw}" | zfs load-key -a', input=pw)
+    eve_initrd.run(f'echo "{pw}" | zfs load-key -a')
     eve_initrd.run(f'echo "{pw}" | zfs load-key -a')
     eve_initrd.run("touch /root/decrypted")
 
@@ -420,7 +420,7 @@ def update_nixpkgs(c: Any) -> None:
 
 
 @task
-def reboot(c: Any, hosts) -> None:
+def reboot(c: Any, hosts: str) -> None:
     """
     Reboot hosts. example usage: fab --hosts clara.r,donna.r reboot
     """
@@ -439,7 +439,7 @@ def reboot(c: Any, hosts) -> None:
 
 
 @task
-def cleanup_gcroots(c: Any, hosts) -> None:
+def cleanup_gcroots(c: Any, hosts: str) -> None:
     deploy_hosts = [DeployHost(h) for h in hosts.split(",")]
     for h in deploy_hosts:
         g = DeployGroup([h])
