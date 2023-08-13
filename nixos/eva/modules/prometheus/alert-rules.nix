@@ -94,7 +94,6 @@ lib.mapAttrsToList
     "borgbackup-job-nfs-share.service"
     # TODO: rename
     "borgbackup-matchbox"
-    "borgbackup-nixpkgs-update"
   ]
     (name: {
       condition = ''absent_over_time(task_last_run{name="${name}"}[1d])'';
