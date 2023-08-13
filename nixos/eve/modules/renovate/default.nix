@@ -13,7 +13,7 @@ in
 {
   sops.templates."renovate.json" = {
     content = builtins.toJSON {
-      labels = [ "dependencies,renovate" ];
+      labels = [ "dependencies" "renovate" ];
       nix.enabled = true;
       lockFileMaintenance.enabled = true;
       autodiscover = true;
