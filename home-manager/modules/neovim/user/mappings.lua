@@ -11,6 +11,7 @@ function open_or_create_file(tfilename)
     vim.cmd(':e ' .. newfilepath)
 end
 
+
 -- Mapping data with "desc" stored directly by vim.keymap.set().
 --
 -- Please use this mappings table to set keyboard mapping since this is the
@@ -19,13 +20,18 @@ end
 return {
   -- first key is the mode
   n = {
-    -- Don't error if file doesn't exist
-    ["gf"] = { function() open_or_create_file(vim.fn.expand("<cfile>")) end, desc = "Create file" },
-    ["<leader>*"] = { function() require("telescope.builtin").grep_string() end, desc = "Find for word under cursor", },
-    ["<leader><leader>"] = { function() require("telescope.builtin").find_files() end, desc = "Find files" },
     -- second key is the lefthand side of the map
+
+    -- navigate buffer tabs with `H` and `L`
+    -- L = {
+    --   function() require("astronvim.utils.buffer").nav(vim.v.count > 0 and vim.v.count or 1) end,
+    --   desc = "Next buffer",
+    -- },
+    -- H = {
+    --   function() require("astronvim.utils.buffer").nav(-(vim.v.count > 0 and vim.v.count or 1)) end,
+    --   desc = "Previous buffer",
+    -- },
     -- mappings seen under group name "Buffer"
-    ["<leader>bn"] = { "<cmd>tabnew<cr>", desc = "New tab" },
     ["<leader>bD"] = {
       function()
         require("astronvim.utils.status").heirline.buffer_picker(function(bufnr) require("astronvim.utils.buffer").close(bufnr) end)
@@ -37,6 +43,11 @@ return {
     ["<leader>b"] = { name = "Buffers" },
     -- quick save
     -- ["<C-s>"] = { ":w!<cr>", desc = "Save File" },  -- change description but the same command
+
+    -- Don't error if file doesn't exist
+    ["gf"] = { function() open_or_create_file(vim.fn.expand("<cfile>")) end, desc = "Create file" },
+    ["<leader>*"] = { function() require("telescope.builtin").grep_string() end, desc = "Find for word under cursor", },
+    ["<leader><leader>"] = { function() require("telescope.builtin").find_files() end, desc = "Find files" },
   },
   t = {
     -- setting a mapping to false will disable it
