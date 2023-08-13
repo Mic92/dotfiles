@@ -100,6 +100,8 @@ return {
   -- Configure require("lazy").setup() options
   lazy = {
     defaults = { lazy = true },
+    -- Disable change detection because it caused nvim to constantly need 3-5% CPU, which is bad for battery life
+    change_detection = { enabled = false, },
     performance = {
       rtp = {
         -- customize default disabled vim plugins
