@@ -92,6 +92,8 @@ lib.mapAttrsToList
     "borgbackup-job-eve.service"
     "borgbackup-job-nfs-home.service"
     "borgbackup-job-nfs-share.service"
+    # TODO: rename
+    "borgbackup-matchbox"
     "borgbackup-nixpkgs-update"
   ]
     (name: {
