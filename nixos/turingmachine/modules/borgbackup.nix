@@ -3,7 +3,7 @@
 , pkgs
 , ...
 }:
-with builtins; let
+let
   backupPath = "borg@blob64.r:/zdata/borg/turingmachine";
 in
 {
