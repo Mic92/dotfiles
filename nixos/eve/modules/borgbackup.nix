@@ -2,7 +2,7 @@
   sops.secrets.borgbackup-passphrase = { };
   sops.secrets.borgbackup-ssh = { };
 
-  systemd.services.borgbackup-job-eva.serviceConfig.ReadWritePaths = [
+  systemd.services.borgbackup-job-eve.serviceConfig.ReadWritePaths = [
     "/var/log/telegraf"
   ];
 
