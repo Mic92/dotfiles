@@ -88,10 +88,10 @@ lib.mapAttrsToList
     };
   }
   // (lib.genAttrs [
-    "borgbackup-turingmachine"
-    "borgbackup-eve"
-    "borgbackup-nfs-home"
-    "borgbackup-nfs-share"
+    "borgbackup-job-turingmachine.service"
+    "borgbackup-job-eve.service"
+    "borgbackup-job-nfs-home.service"
+    "borgbackup-job-nfs-share.service"
     "borgbackup-nixpkgs-update"
   ]
     (name: {

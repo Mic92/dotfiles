@@ -6,7 +6,7 @@
     "/var/log/telegraf"
   ];
 
-  services.borgbackup.jobs.eva = {
+  services.borgbackup.jobs.eve = {
     paths = [
       "/home"
       "/etc"
@@ -48,7 +48,7 @@
     preHook = "set -x";
 
     postHook = ''
-      cat > /var/log/telegraf/borgbackup-eve <<EOF
+      cat > /var/log/telegraf/borgbackup-job-eve.service <<EOF
       task,frequency=daily last_run=$(date +%s)i,state="$([[ $exitStatus == 0 ]] && echo ok || echo fail)"
       EOF
     '';
