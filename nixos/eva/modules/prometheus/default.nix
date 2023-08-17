@@ -114,19 +114,6 @@
 
             labels.org = "uni";
           }
-          {
-            targets = [
-              "build01.nix-community.org:9273"
-              "build02.nix-community.org:9273"
-              "build03.nix-community.org:9273"
-              "build04.nix-community.org:9273"
-              "darwin02.nix-community.org:9273"
-              "darwin03.nix-community.org:9273"
-              "web01.nix-community.org:9273"
-              "web02.nix-community.org:9273"
-            ];
-            labels.org = "nix-community";
-          }
         ];
       }
       {
