@@ -142,6 +142,7 @@ in
           inputs.srvos.nixosModules.server
           inputs.srvos.nixosModules.mixins-nginx
           inputs.srvos.nixosModules.mixins-systemd-boot
+          inputs.srvos.nixosModules.roles-prometheus
           inputs.disko.nixosModules.disko
           ./eva/configuration.nix
         ];
