@@ -193,13 +193,14 @@ class UpdateBuildOutput(steps.BuildStep):
     on the target machine.
     """
 
-    def __init__(self, branches: list[str], **kwargs):
-        self.branches = branches
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def run(self) -> Generator[Any, object, Any]:
         props = self.build.getProperties()
-        if props.getProperty("branch") not in self.branches:
+        if props.getProperty("branch") != props.getProperty(
+            "github.repository.default_branch"
+        ):
             return util.SKIPPED
         attr = os.path.basename(props.getProperty("attr"))
         out_path = props.getProperty("out_path")
@@ -217,12 +218,10 @@ class MergePr(steps.ShellCommand):
 
     def __init__(
         self,
-        base_branches: list[str],
         owners: list[str],
         **kwargs: Any,
     ) -> None:
         super().__init__(**kwargs)
-        self.base_branches = base_branches
         self.owners = owners
         self.observer = logobserver.BufferLogObserver()
         self.addLogObserver("stdio", self.observer)
@@ -230,18 +229,18 @@ class MergePr(steps.ShellCommand):
     @defer.inlineCallbacks
     def reconfigService(
         self,
-        base_branches: list[str],
         owners: list[str],
         **kwargs: Any,
     ) -> Generator[Any, object, Any]:
-        self.base_branches = base_branches
         self.owners = owners
         super().reconfigService(**kwargs)
 
     @defer.inlineCallbacks
     def run(self) -> Generator[Any, object, Any]:
         props = self.build.getProperties()
-        if props.getProperty("basename") not in self.base_branches:
+        if props.getProperty("basename") not in props.getProperty(
+            "github.repository.default_branch"
+        ):
             return util.SKIPPED
         if props.getProperty("event") not in ["pull_request"]:
             return util.SKIPPED
@@ -525,7 +524,6 @@ def nix_eval_config(
             MergePr(
                 name="Merge pull-request",
                 env=dict(GITHUB_TOKEN=util.Secret(github_token_secret)),
-                base_branches=["master", "main"],
                 owners=automerge_users,
                 command=[
                     "gh",
@@ -605,7 +603,8 @@ def nix_build_config(
                 "-r",
                 util.Property("out_path"),
             ],
-            branches=["master", "main"],
+            doStepIf=util.Interpolate("branch")
+            == util.Interpolate("github.repository.default_branch"),
         )
     )
     factory.addStep(
@@ -614,9 +613,7 @@ def nix_build_config(
             command=["rm", "-f", util.Interpolate("result-%(prop:attr)s")],
         )
     )
-    factory.addStep(
-        UpdateBuildOutput(name="Update build output", branches=["master", "main"])
-    )
+    factory.addStep(UpdateBuildOutput(name="Update build output"))
     return util.BuilderConfig(
         name="nix-build",
         workernames=worker_names,
