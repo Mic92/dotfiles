@@ -3,7 +3,6 @@
 import json
 import multiprocessing
 import os
-import re
 import uuid
 from collections import defaultdict
 from pathlib import Path
@@ -211,80 +210,6 @@ class UpdateBuildOutput(steps.BuildStep):
         return util.SUCCESS
 
 
-class MergePr(steps.ShellCommand):
-    """
-    Merge a pull request for specified branches and pull request owners
-    """
-
-    def __init__(
-        self,
-        owners: list[str],
-        **kwargs: Any,
-    ) -> None:
-        super().__init__(**kwargs)
-        self.owners = owners
-        self.observer = logobserver.BufferLogObserver()
-        self.addLogObserver("stdio", self.observer)
-
-    @defer.inlineCallbacks
-    def reconfigService(
-        self,
-        owners: list[str],
-        **kwargs: Any,
-    ) -> Generator[Any, object, Any]:
-        self.owners = owners
-        super().reconfigService(**kwargs)
-
-    @defer.inlineCallbacks
-    def run(self) -> Generator[Any, object, Any]:
-        props = self.build.getProperties()
-        if props.getProperty("basename") == props.getProperty(
-            "github.repository.default_branch"
-        ):
-            return util.SKIPPED
-        if props.getProperty("event") not in ["pull_request"]:
-            return util.SKIPPED
-        if not any(owner in self.owners for owner in props.getProperty("owners")):
-            return util.SKIPPED
-
-        cmd = yield self.makeRemoteShellCommand()
-        yield self.runCommand(cmd)
-        return cmd.results()
-
-
-class CreatePr(steps.ShellCommand):
-    """
-    Creates a pull request if none exists
-    """
-
-    def __init__(self, **kwargs: Any) -> None:
-        super().__init__(**kwargs)
-        self.addLogObserver(
-            "stdio", logobserver.LineConsumerLogObserver(self.check_pr_exists)
-        )
-
-    def check_pr_exists(self):
-        ignores = [
-            re.compile(
-                """a pull request for branch ".*" into branch ".*" already exists:"""
-            ),
-            re.compile("No commits between .* and .*"),
-        ]
-        while True:
-            _, line = yield
-            if any(ignore.search(line) is not None for ignore in ignores):
-                self.skipped = True
-
-    @defer.inlineCallbacks
-    def run(self):
-        self.skipped = False
-        cmd = yield self.makeRemoteShellCommand()
-        yield self.runCommand(cmd)
-        if self.skipped:
-            return util.SKIPPED
-        return cmd.results()
-
-
 def nix_update_flake_config(
     worker_names: list[str],
     projectname: str,
@@ -359,7 +284,7 @@ def nix_update_flake_config(
         )
     )
     factory.addStep(
-        CreatePr(
+        steps.ShellCommand(
             name="Create pull-request",
             env=dict(GITHUB_TOKEN=util.Secret(github_token_secret)),
             command=[
@@ -518,13 +443,11 @@ def nix_eval_config(
             haltOnFailure=True,
         )
     )
-    # Merge flake-update pull requests if CI succeeds
     if len(automerge_users) > 0:
         factory.addStep(
-            MergePr(
+            steps.ShellCommand(
                 name="Merge pull-request",
                 env=dict(GITHUB_TOKEN=util.Secret(github_token_secret)),
-                owners=automerge_users,
                 command=[
                     "gh",
                     "pr",
@@ -534,6 +457,12 @@ def nix_eval_config(
                     "--rebase",
                     util.Property("pullrequesturl"),
                 ],
+                doStepIf=lambda step: step.getProperty("basename")
+                == step.getProperty("github.repository.default_branch")
+                and steps.getProperty("event") == "pull_request"
+                and any(
+                    owner in automerge_users for owner in step.getProperty("owners")
+                ),
             )
         )
 
