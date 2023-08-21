@@ -34,6 +34,7 @@ in
       GITHUB_OAUTH_ID = githubOauthId;
       GITHUB_ORG = "Mic92";
       GITHUB_REPO = "dotfiles";
+      GITHUB_BRANCH = "main";
 
       BUILDBOT_URL = "https://${buildbotDomain}/";
       BUILDBOT_GITHUB_USER = "mic92-buildbot";
