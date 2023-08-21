@@ -238,7 +238,7 @@ class MergePr(steps.ShellCommand):
     @defer.inlineCallbacks
     def run(self) -> Generator[Any, object, Any]:
         props = self.build.getProperties()
-        if props.getProperty("basename") not in props.getProperty(
+        if props.getProperty("basename") == props.getProperty(
             "github.repository.default_branch"
         ):
             return util.SKIPPED
