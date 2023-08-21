@@ -1,46 +1,47 @@
 { config, pkgs, ... }:
 let
-  matrix-alertmanager-receiver = pkgs.buildGoModule rec {
-    pname = "matrix-alertmanager-receiver";
-    version = "0.1.2";
-    src = pkgs.fetchFromSourcehut {
-      owner = "~fnux";
-      repo = "matrix-alertmanager-receiver";
+  matrix-hook = pkgs.buildGoModule rec {
+    pname = "matrix-hook";
+    version = "unstable-2021-04-15";
+    src = pkgs.fetchFromGitHub {
+      owner = "pinpox";
+      repo = "matrix-hook";
       rev = version;
-      hash = "sha256-F6Cn0lmASAjWGEBCmyLdfz4r06fDTEfZQcynfA/RRtI=";
+      hash = "sha256-G5pq9sIz94V2uTYBcuHJsqD2/pMtxhWkAO8B0FncLbE=";
     };
-    vendorHash = "sha256-7tRCX9FzOsLXCTWWjLp3hr1kegt1dxsbCKfC7tICreo=";
+    vendorHash = "sha256-185Wz9IpJRBmunl+KGj/iy37YeszbT3UYzyk9V994oQ=";
+    postInstall = ''
+      install message.html.tmpl -Dt $out
+    '';
   };
 in
 {
+  # format: MX_TOKEN=<token>
   sops.secrets.nix-community-bot-access-token = { };
-  sops.templates."config.toml".content = ''
-    Homeserver = "https://matrix.thalheim.io"
-    TargetRoomID = "!cBybDCkeRlSWfuaFvn:numtide.com"
-    MXID = "@nix-community-bot:thalheim.io"
-    MXToken = "${config.sops.placeholder.nix-community-bot-access-token}"
-    HTTPPort = 9088
-    HTTPAddress = "[::1]"
-  '';
-  sops.templates."config.toml".owner = "matrix-alertmanager-receiver";
 
-  users.users.matrix-alertmanager-receiver = {
-    isSystemUser = true;
-    group = "matrix-alertmanager-receiver";
-  };
-  users.groups.matrix-alertmanager-receiver = { };
-
-  systemd.services.matrix-alertmanager-receiver = {
-    description = "Matrix Alertmanager Receiver";
+  systemd.services.matrix-hook = {
+    description = "Matrix Hook";
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];
+    environment = {
+      HTTP_ADDRESS = "[::1]";
+      HTTP_PORT = "9088";
+      MX_HOMESERVER = "https://matrix.thalheim.io";
+      MX_ID = "@nix-community-bot:thalheim.io";
+      MX_ROOMID = "!cBybDCkeRlSWfuaFvn:numtide.com";
+      MX_MSG_TEMPLATE = "${matrix-hook}/message.html.tmpl";
+    };
     serviceConfig = {
+      EnvironmentFile = [
+        config.sops.secrets.nix-community-bot-access-token.path
+      ];
       Type = "simple";
-      ExecStart = "${matrix-alertmanager-receiver}/bin/matrix-alertmanager-receiver -config ${config.sops.templates."config.toml".path}";
+      ExecStart = "${matrix-hook}/bin/matrix-hook";
       Restart = "always";
       RestartSec = "10";
-      User = "matrix-alertmanager-receiver";
-      Group = "matrix-alertmanager-receiver";
+      DynamicUser = true;
+      User = "matrix-hook";
+      Group = "matrix-hook";
     };
   };
 }
