@@ -291,6 +291,7 @@ def nix_update_flake_config(
     projectname: str,
     github_token_secret: str,
     github_bot_user: str,
+    branch: str,
 ) -> util.BuilderConfig:
     """
     Updates the flake an opens a PR for it.
@@ -342,6 +343,23 @@ def nix_update_flake_config(
         )
     )
     factory.addStep(
+        steps.SetPropertyFromCommand(
+            env=dict(GITHUB_TOKEN=util.Secret(github_token_secret)),
+            command=[
+                "gh",
+                "pr",
+                "view",
+                "--json",
+                "state",
+                "--template",
+                "{{.state}}",
+                "update_flake_lock",
+            ],
+            decodeRC={0: "SUCCESS", 1: "SUCCESS"},
+            property="has_pr",
+        )
+    )
+    factory.addStep(
         CreatePr(
             name="Create pull-request",
             env=dict(GITHUB_TOKEN=util.Secret(github_token_secret)),
@@ -358,8 +376,9 @@ def nix_update_flake_config(
                 "--head",
                 "refs/heads/update_flake_lock",
                 "--base",
-                "main",
+                branch,
             ],
+            doStepIf=util.Interpolate("has_pr") != "OPEN",
         )
     )
     return util.BuilderConfig(
