@@ -19,7 +19,8 @@
 
       if [[ -f /home/joerg/.homesick/repos/dotfiles/flake.nix ]]; then
         profile=$(nix run "/home/joerg/.homesick/repos/dotfiles/#hm" -- profile)
-        store_path="$(curl -L https://buildbot.thalheim.io/nix-outputs/home-manager-$profile)"
+        system=$(nix eval --impure --raw --expr 'builtins.currentSystem')
+        store_path="$(curl -L https://buildbot.thalheim.io/nix-outputs/home-manager-$profile-$system)"
         nix-store --add-root /run/next-home -r "$store_path"
       fi
     '';
