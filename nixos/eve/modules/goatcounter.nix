@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, lib, ... }: {
+{ config, pkgs, inputs, ... }: {
   systemd.services.goatcounter = {
     wantedBy = [ "multi-user.target" ];
     enable = true;
