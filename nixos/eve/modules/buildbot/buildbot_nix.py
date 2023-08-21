@@ -570,7 +570,7 @@ def nix_build_config(
                 "--accept-flake-config",
                 "--out-link",
                 util.Interpolate("result-%(prop:attr)s"),
-                util.Property("drv_path"),
+                util.Interpolate("%(prop:drv_path)s^*"),
             ],
             haltOnFailure=True,
         )
