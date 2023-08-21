@@ -593,6 +593,28 @@ def nix_build_config(
             )
         )
     factory.addStep(
+        steps.ShellCommand(
+            name="Register gcroot",
+            command=[
+                "nix-store",
+                "--add-root",
+                # FIXME: cleanup old build attributes
+                util.Interpolate(
+                    "/nix/var/nix/profiles/per-user/buildbot-worker/result-%(prop:attr)s"
+                ),
+                "-r",
+                util.Property("out_path"),
+            ],
+            branches=["master", "main"],
+        )
+    )
+    factory.addStep(
+        steps.ShellCommand(
+            name="Delete temporary gcroots",
+            command=["rm", "-f", util.Interpolate("result-%(prop:attr)s")],
+        )
+    )
+    factory.addStep(
         UpdateBuildOutput(name="Update build output", branches=["master", "main"])
     )
     return util.BuilderConfig(
