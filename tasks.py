@@ -61,7 +61,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
                 "--build-host",
                 "",
                 "--flake",
-                f"{flake_path}{flake_attr}"
+                f"{flake_path}{flake_attr}",
             ]
         )
         if target_host:

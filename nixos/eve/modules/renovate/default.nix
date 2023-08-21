@@ -34,10 +34,10 @@ in
       LOG_LEVEL = "debug";
     };
     startAt = "weekly";
-    path = [ 
-      pkgs.git 
-      pkgs.openssh 
-      config.nix.package 
+    path = [
+      pkgs.git
+      pkgs.openssh
+      config.nix.package
       # for Cargo.lock
       pkgs.rustc
       pkgs.cargo
