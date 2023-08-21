@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -eux -o pipefail
+
+cd $HOME/git/nixpkgs
+git fetch upstream
+git checkout release-23.05-backports
+git rebase upstream/release-23.05
+git push tum +HEAD:release-23.05-backports
+git checkout main
+git rebase upstream/main
+git push origin +HEAD:main
