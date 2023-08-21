@@ -7,7 +7,7 @@
     };
     home-manager.to = {
       type = "path";
-      path = inputs.nixpkgs;
+      path = inputs.home-manager;
     };
   };
 }
