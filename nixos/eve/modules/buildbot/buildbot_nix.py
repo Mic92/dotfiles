@@ -446,19 +446,20 @@ def nix_eval_config(
     if len(automerge_users) > 0:
 
         def check_auto_merge(step: steps.BuildStep) -> bool:
-            log = yield step.addLog("merge-check")
-            if step.getProperty("event") != "pull_request":
-                log.addStderr("Not a pull request")
+            print("Checking if we should merge")
+            props = step.build.getProperties()
+            if props.getProperty("event") != "pull_request":
+                print("Not a pull request")
                 return False
-            if step.getProperty("github.repository.default_branch") != step.getProperty(
-                "branch"
-            ):
-                log.addStderr("Not on default branch")
+            if props.getProperty(
+                "github.repository.default_branch"
+            ) != props.getProperty("branch"):
+                print("Not on default branch")
                 return False
             if not any(
-                owner in automerge_users for owner in step.getProperty("owners")
+                owner in automerge_users for owner in props.getProperty("owners")
             ):
-                log.addStderr(
+                print(
                     f"PR opened by {step.getProperty('owner')} not in {automerge_users}"
                 )
                 return False
