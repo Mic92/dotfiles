@@ -215,14 +215,14 @@ def nix_update_flake_config(
     projectname: str,
     github_token_secret: str,
     github_bot_user: str,
-    branch: str,
 ) -> util.BuilderConfig:
     """
     Updates the flake an opens a PR for it.
     """
     factory = util.BuildFactory()
+    parts = projectname.split("/")
     url_with_secret = util.Interpolate(
-        f"https://git:%(secret:{github_token_secret})s@github.com/{projectname}"
+        f"https://git:%(secret:{github_token_secret})s@github.com/{parts[0]}/{parts[1]}"
     )
     factory.addStep(
         steps.Git(
@@ -300,7 +300,7 @@ def nix_update_flake_config(
                 "--head",
                 "refs/heads/update_flake_lock",
                 "--base",
-                branch,
+                parts[2],
             ],
             doStepIf=util.Interpolate("has_pr") != "OPEN",
         )

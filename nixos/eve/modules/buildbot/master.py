@@ -29,9 +29,8 @@ def read_secret_file(secret_name: str) -> str:
     return Path(directory).joinpath(secret_name).read_text()
 
 
-ORG = os.environ["GITHUB_ORG"]
-REPO = os.environ["GITHUB_REPO"]
-BRANCH = os.environ["GITHUB_BRANCH"]
+REPO_REGEX = os.environ["GITHUB_REPO_REGEX"]
+REPO_FOR_FLAKE_UPDATE = os.environ["REPO_FOR_FLAKE_UPDATE"]
 BUILDBOT_URL = os.environ["BUILDBOT_URL"]
 BUILDBOT_GITHUB_USER = os.environ["BUILDBOT_GITHUB_USER"]
 
@@ -50,7 +49,7 @@ def build_config() -> dict[str, Any]:
         schedulers.SingleBranchScheduler(
             name="default-branch",
             change_filter=util.ChangeFilter(
-                repository=f"https://github.com/{ORG}/{REPO}",
+                repository_re=REPO_REGEX,
                 filter_fn=lambda c: c.branch
                 == c.properties.getProperty("github.repository.default_branch"),
             ),
@@ -67,15 +66,15 @@ def build_config() -> dict[str, Any]:
         # build all pull requests
         schedulers.SingleBranchScheduler(
             name="prs",
-            change_filter=util.ChangeFilter(
-                repository=f"https://github.com/{ORG}/{REPO}", category="pull"
-            ),
+            change_filter=util.ChangeFilter(repository_re=REPO_REGEX, category="pull"),
             builderNames=["nix-eval"],
         ),
         schedulers.SingleBranchScheduler(
-            name="flake-sources",
+            name="nixpkgs",
             change_filter=util.ChangeFilter(
-                repository=f"https://github.com/{ORG}/nixpkgs", branch="main"
+                repository_re="nixpkgs",
+                filter_fn=lambda c: c.branch
+                == c.properties.getProperty("github.repository.default_branch"),
             ),
             treeStableTimer=20,
             builderNames=["nix-update-flake"],
@@ -149,10 +148,9 @@ def build_config() -> dict[str, Any]:
         nix_build_config(worker_names, has_cachix_auth_token, has_cachix_signing_key),
         nix_update_flake_config(
             worker_names,
-            f"{ORG}/{REPO}",
+            REPO_FOR_FLAKE_UPDATE,
             github_token_secret="github-token",
             github_bot_user=BUILDBOT_GITHUB_USER,
-            branch=BRANCH,
         ),
     ]
 
