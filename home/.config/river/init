@@ -79,16 +79,16 @@ do
     tags=$((1 << ($i - 1)))
 
     # Super+[1-9] to focus tag [0-8]
-    riverctl map normal Super $i set-focused-tags $tags
+    riverctl map normal Super "$i" set-focused-tags "$tags"
 
     # Super+Shift+[1-9] to tag focused view with tag [0-8]
-    riverctl map normal Super+Shift $i set-view-tags $tags
+    riverctl map normal Super+Shift "$i" set-view-tags "$tags"
 
     # Super+Control+[1-9] to toggle focus of tag [0-8]
-    riverctl map normal Super+Control $i toggle-focused-tags $tags
+    riverctl map normal Super+Control "$i" toggle-focused-tags "$tags"
 
     # Super+Shift+Control+[1-9] to toggle tag [0-8] of focused view
-    riverctl map normal Super+Shift+Control $i toggle-view-tags $tags
+    riverctl map normal Super+Shift+Control "$i" toggle-view-tags "$tags"
 done
 
 # Super+0 to focus all tags
@@ -160,4 +160,4 @@ riverctl rule-add csd -app-id "bar"
 # River will send the process group of the init executable SIGTERM on exit.
 riverctl default-layout rivertile
 rivertile -view-padding 6 -outer-padding 6 &
-/tmp/vigilant-jackson-8KydqQ/i3bar-river/target/debug/i3bar-river &
+i3bar-river &
