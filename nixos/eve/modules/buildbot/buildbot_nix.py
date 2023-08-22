@@ -215,14 +215,14 @@ def nix_update_flake_config(
     projectname: str,
     github_token_secret: str,
     github_bot_user: str,
-    branch: str,
 ) -> util.BuilderConfig:
     """
     Updates the flake an opens a PR for it.
     """
     factory = util.BuildFactory()
+    parts = projectname.split("/")
     url_with_secret = util.Interpolate(
-        f"https://git:%(secret:{github_token_secret})s@github.com/{projectname}"
+        f"https://git:%(secret:{github_token_secret})s@github.com/{parts[0]}/{parts[1]}"
     )
     factory.addStep(
         steps.Git(
@@ -300,7 +300,7 @@ def nix_update_flake_config(
                 "--head",
                 "refs/heads/update_flake_lock",
                 "--base",
-                branch,
+                parts[2],
             ],
             doStepIf=util.Interpolate("has_pr") != "OPEN",
         )
@@ -446,19 +446,20 @@ def nix_eval_config(
     if len(automerge_users) > 0:
 
         def check_auto_merge(step: steps.BuildStep) -> bool:
-            log = yield step.addLog("merge-check")
-            if step.getProperty("event") != "pull_request":
-                log.addStderr("Not a pull request")
+            print("Checking if we should merge")
+            props = step.build.getProperties()
+            if props.getProperty("event") != "pull_request":
+                print("Not a pull request")
                 return False
-            if step.getProperty("github.repository.default_branch") != step.getProperty(
-                "branch"
-            ):
-                log.addStderr("Not on default branch")
+            if props.getProperty(
+                "github.repository.default_branch"
+            ) != props.getProperty("branch"):
+                print("Not on default branch")
                 return False
             if not any(
-                owner in automerge_users for owner in step.getProperty("owners")
+                owner in automerge_users for owner in props.getProperty("owners")
             ):
-                log.addStderr(
+                print(
                     f"PR opened by {step.getProperty('owner')} not in {automerge_users}"
                 )
                 return False

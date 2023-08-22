@@ -42,6 +42,7 @@
     #./kde.nix
     #../modules/samba-dl.nix
     ../modules/sway.nix
+    #../modules/river
     #../modules/hyprland.nix
     #../modules/i3.nix
     ../modules/sshd/tor.nix
