@@ -437,8 +437,9 @@ def nix_eval_config(
                 "--gc-roots-dir",
                 # FIXME: don't hardcode this
                 "/var/lib/buildbot-worker/gcroot",
+                "--force-recurse",
                 "--flake",
-                ".#hydraJobs",
+                ".#checks",
             ],
             haltOnFailure=True,
         )

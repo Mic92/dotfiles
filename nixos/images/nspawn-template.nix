@@ -19,7 +19,7 @@ nixos-generators.nixosGenerate {
       services.openssh = {
         enable = true;
         passwordAuthentication = false;
-        useDns = false;
+        settings.UseDns = false;
       };
       systemd.network.enable = true;
       networking.useDHCP = false;

@@ -15,7 +15,7 @@ in
     , ...
     }:
     {
-      packages = {
+      packages = lib.optionalAttrs pkgs.stdenv.isLinux {
         install-iso = nixos-generators.nixosGenerate {
           inherit pkgs;
           modules = [
