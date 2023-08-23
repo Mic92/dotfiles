@@ -38,7 +38,7 @@
           annotations.description = "homeassistant notification {{$labels.entity}} ({{$labels.friendly_name}}): {{$value}}";
         };
 
-        Filesystem80percentFull = {
+        Filesystem80percentFull = lib.mkForce {
           expr = ''disk_used_percent{mode!="ro", org!="krebs"} >= 80'';
           for = "10m";
           annotations.description = "{{$labels.instance}} device {{$labels.device}} on {{$labels.path}} got less than 20% space left on its filesystem";
@@ -55,9 +55,9 @@
           annotations.description = "{{$labels.instance}}: gitea instances error rate went up: {{$value}} errors in 5 minutes";
         };
 
-        Uptime = {
+        Uptime = lib.mkForce {
           # too scared to upgrade matchbox
-          expr = ''system_uptime {host!~"^(matchbox|grandalf)$"} > 2592000'';
+          expr = ''system_uptime {host!="matchbox"} > 2592000'';
           annotations.description = "Uptime monster: {{$labels.host}} has been up for more than 30 days";
         };
 

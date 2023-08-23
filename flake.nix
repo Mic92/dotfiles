@@ -20,8 +20,7 @@
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
     nixos-generators = {
-      #url = "github:nix-community/nixos-generators";
-      url = "github:Mic92/nixos-generators/fedf7136f27490402fe8ab93e67fafae80513e9b";
+      url = "github:nix-community/nixos-generators";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -97,25 +96,17 @@
           ./devshell/flake-module.nix
         ];
         systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
-        perSystem = { config, inputs', ... }: {
+        perSystem = { config, inputs', self', lib, ... }: {
           # make pkgs available to all `perSystem` functions
           _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
 
           formatter = config.treefmt.build.wrapper;
+
+          checks = lib.mapAttrs' (name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel) self.nixosConfigurations
+            // lib.mapAttrs' (n: lib.nameValuePair "package-${n}") self'.packages
+            // lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells
+            // lib.mapAttrs' (name: config: lib.nameValuePair "home-manager-${name}" config.activation-script) (self'.legacyPackages.homeConfigurations or { });
         };
         # CI
-        flake.hydraJobs =
-          let
-            inherit (nixpkgs) lib;
-            buildHomeManager = arch:
-              lib.mapAttrs' (name: config: lib.nameValuePair "home-manager-${name}-${arch}" config.activation-script) self.legacyPackages.${arch}.homeConfigurations;
-          in
-          (lib.mapAttrs' (name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel) self.nixosConfigurations)
-          // (buildHomeManager "x86_64-linux")
-          // (buildHomeManager "aarch64-linux")
-          // (buildHomeManager "aarch64-darwin")
-          // {
-            inherit (self.checks.x86_64-linux) treefmt;
-          };
       }).config.flake;
 }
