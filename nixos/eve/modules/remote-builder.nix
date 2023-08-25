@@ -19,7 +19,7 @@
       sshUser = "hetzner";
       protocol = "ssh-ng";
       sshKey = config.sops.secrets.ssh-aarch64-builder.path;
-      system = "aarch64-darwin";
+      systems = [ "aarch64-darwin" "x86_64-darwin" ];
       maxJobs = 8;
       supportedFeatures = [
         "big-parallel"
