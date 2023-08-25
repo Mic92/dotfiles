@@ -212,6 +212,7 @@ class UpdateBuildOutput(steps.BuildStep):
 
 def nix_update_flake_config(
     worker_names: list[str],
+    project: str,
     projectname: str,
     github_token_secret: str,
     github_bot_user: str,
@@ -307,6 +308,7 @@ def nix_update_flake_config(
     )
     return util.BuilderConfig(
         name="nix-update-flake",
+        project=project,
         workernames=worker_names,
         factory=factory,
         properties=dict(virtual_builder_name="nix-update-flake"),
@@ -393,6 +395,7 @@ class DeployTrigger(Trigger):
 
 def nix_eval_config(
     worker_names: list[str],
+    project: str,
     github_token_secret: str,
     automerge_users: List[str] = [],
     machines: list[Machine] = [],
@@ -486,6 +489,7 @@ def nix_eval_config(
     return util.BuilderConfig(
         name="nix-eval",
         workernames=worker_names,
+        project=project,
         factory=factory,
         properties=dict(virtual_builder_name="nix-eval"),
     )
@@ -493,6 +497,7 @@ def nix_eval_config(
 
 def nix_build_config(
     worker_names: list[str],
+    project: str,
     has_cachix_auth_token: bool = False,
     has_cachix_signing_key: bool = False,
 ) -> util.BuilderConfig:
@@ -562,6 +567,7 @@ def nix_build_config(
     factory.addStep(UpdateBuildOutput(name="Update build output"))
     return util.BuilderConfig(
         name="nix-build",
+        project=project,
         workernames=worker_names,
         properties=[],
         collapseRequests=False,
