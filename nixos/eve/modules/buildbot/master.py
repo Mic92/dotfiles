@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from buildbot.plugins import reporters, schedulers, secrets, util, worker
+from buildbot.process.project import Project
 from buildbot.process.properties import Interpolate
 
 # allow to import modules
@@ -130,6 +131,7 @@ def build_config() -> dict[str, Any]:
     systemd_secrets = secrets.SecretInAFile(dirname=credentials)
     c["secretsProviders"] = [systemd_secrets]
     c["workers"] = []
+    c["projects"] = [Project("nix")]
     worker_names = []
     for item in worker_config:
         cores = item.get("cores", 0)
@@ -142,12 +144,16 @@ def build_config() -> dict[str, Any]:
         # This should prevent exessive memory usage.
         nix_eval_config(
             [worker_names[0]],
+            "nix",
             github_token_secret="github-token",
             automerge_users=[BUILDBOT_GITHUB_USER],
         ),
-        nix_build_config(worker_names, has_cachix_auth_token, has_cachix_signing_key),
+        nix_build_config(
+            worker_names, "nix", has_cachix_auth_token, has_cachix_signing_key
+        ),
         nix_update_flake_config(
             worker_names,
+            "nix",
             REPO_FOR_FLAKE_UPDATE,
             github_token_secret="github-token",
             github_bot_user=BUILDBOT_GITHUB_USER,
