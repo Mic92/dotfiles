@@ -102,10 +102,16 @@
 
           formatter = config.treefmt.build.wrapper;
 
-          checks = lib.mapAttrs' (name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel) self.nixosConfigurations
-            // lib.mapAttrs' (n: lib.nameValuePair "package-${n}") self'.packages
-            // lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells
-            // lib.mapAttrs' (name: config: lib.nameValuePair "home-manager-${name}" config.activation-script) (self'.legacyPackages.homeConfigurations or { });
+          checks =
+            let
+              nixosMachines = lib.mapAttrs' (name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel) self.nixosConfigurations;
+              blacklistPackages = [ "install-iso" "nspawn-template" "netboot-pixie-core" "netboot" ];
+              packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") (lib.filterAttrs (n: v: !(builtins.elem n blacklistPackages)) self'.packages);
+              devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
+              homeConfigurations = lib.mapAttrs' (name: config: lib.nameValuePair "home-manager-${name}" config.activation-script) (self'.legacyPackages.homeConfigurations or { });
+            in
+            nixosMachines // packages // devShells // homeConfigurations;
+
         };
         # CI
       }).config.flake;
