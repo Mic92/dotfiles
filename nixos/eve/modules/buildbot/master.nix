@@ -22,6 +22,8 @@ in
       ps.treq
       ps.psycopg2
       (ps.toPythonModule pkgs.buildbot-worker)
+      pkgs.buildbot-plugins.www
+      pkgs.buildbot-plugins.www-react
     ];
   };
 

@@ -171,7 +171,9 @@ def build_config() -> dict[str, Any]:
                 util.AnyControlEndpointMatcher(role="admins"),
             ],
         ),
-        "plugins": dict(waterfall_view={}, console_view={}, grid_view={}),
+        "plugins": dict(
+            base_react={}, waterfall_view={}, console_view={}, grid_view={}
+        ),
         "change_hook_dialects": dict(
             github={
                 "secret": read_secret_file("github-webhook-secret"),
