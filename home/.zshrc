@@ -274,6 +274,7 @@ bindkey -e
 autoload edit-command-line
 zle -N edit-command-line
 bindkey '^X^e' edit-command-line
+bindkey "^[[3~" delete-char # bind delete key
 
 ## Completion
 autoload colors; colors;
