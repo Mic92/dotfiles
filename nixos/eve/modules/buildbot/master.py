@@ -73,7 +73,7 @@ def build_config() -> dict[str, Any]:
         schedulers.SingleBranchScheduler(
             name="nixpkgs",
             change_filter=util.ChangeFilter(
-                repository_re="nixpkgs",
+                repository_re=r"https://github\.com/.*/nixpkgs",
                 filter_fn=lambda c: c.branch
                 == c.properties.getProperty("github.repository.default_branch"),
             ),
