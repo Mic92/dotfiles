@@ -140,7 +140,7 @@ rust-doc(){
 }
 
 wttr() {
-  local request="wttr.in/${1-muc}"
+  local request="wttr.in/${1-Neufahrn}"
   [ "$COLUMNS" -lt 125 ] && request+='?n'
   curl -H "Accept-Language: ${LANG%_*}" --compressed "$request"
 }
