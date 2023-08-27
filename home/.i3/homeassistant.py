@@ -1,12 +1,12 @@
 import http.client
 import json
 import time
-from typing import Any, Dict, Optional, Tuple
 from threading import Thread
+from typing import Any, Dict, Optional, Tuple
 
+import color
 from bitwarden import BitwardenPassword
 from i3pystatus import IntervalModule
-import color
 
 
 def request(path: str,

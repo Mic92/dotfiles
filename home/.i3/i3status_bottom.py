@@ -1,16 +1,12 @@
-# -*- coding: utf-8 -*-
 
 import multiprocessing
 import os
-import subprocess
 
 import color
 import icons
 from i3pystatus import Status
-from rhasspy import Rhasspy
 from prometheus import Prometheus
-
-import yubikey
+from rhasspy import Rhasspy
 
 status = Status(standalone=True)
 

@@ -77,7 +77,7 @@ def main() -> None:
 
     args = [
         "nvr",
-        "+{}".format(line),
+        f"+{line}",
         "-cc",
         vim_commands,
         "--remote-silent",

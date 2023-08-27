@@ -2,6 +2,7 @@ import glob
 
 from i3pystatus import IntervalModule
 
+
 class FileCount(IntervalModule):
     """
     """

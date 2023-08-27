@@ -145,8 +145,7 @@ def ensure_dict(parent: Dict[str, Any], key: str) -> Dict:
 def load_sops_file(file: str) -> Dict[str, str]:
     res = subprocess.run(
         ["sops", "-d", "--output-type", "json", file],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
+        capture_output=True,
         text=True,
     )
     if res.returncode != 0:

@@ -61,7 +61,7 @@ def _irc_send(
     if sasl_password:
         _send("CAP REQ :sasl")
         _send("AUTHENTICATE PLAIN")
-        auth = base64.encodebytes(f"{nick}\0{nick}\0{sasl_password}".encode("utf-8"))
+        auth = base64.encodebytes(f"{nick}\0{nick}\0{sasl_password}".encode())
         _send(f"AUTHENTICATE {auth.decode('ascii')}")
         _send("CAP END")
     _send(f"JOIN :{channel}")

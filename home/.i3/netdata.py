@@ -1,8 +1,8 @@
 import http.client
 import json
 import ssl
+from typing import Any, Dict
 from urllib.parse import urlparse
-from typing import Dict, Any
 
 from i3pystatus import IntervalModule
 from i3pystatus.core.util import internet, require

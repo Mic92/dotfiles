@@ -1,9 +1,9 @@
-from i3pystatus import Module
-
-import time
 import socket
+import time
 from os.path import expanduser, expandvars
 from threading import Thread
+
+from i3pystatus import Module
 
 
 class YubiKeyTouchDetector(Module):

@@ -1,14 +1,13 @@
-# -*- coding: utf-8 -*-
 
 import glob
 import os
-import subprocess
 
 import color
 import icons
-from i3pystatus import Status
+
 #from homeassistant import PhoneBattery, BikeBattery, Shannan, WeatherIcon, WeatherText
 from homeassistant import PhoneBattery, Shannan, WeatherText
+from i3pystatus import Status
 
 status = Status(standalone=True)
 

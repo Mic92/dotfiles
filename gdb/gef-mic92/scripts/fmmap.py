@@ -4,8 +4,8 @@ class FMMapCommand(GenericCommand):
     filter out the mapping whose pathname do not match that filter."""
 
     _cmdline_ = "fmmap"
-    _syntax_  = "{:s} [FILTER]".format(_cmdline_)
-    _example_ = "{:s} libc".format(_cmdline_)
+    _syntax_  = f"{_cmdline_:s} [FILTER]"
+    _example_ = f"{_cmdline_:s} libc"
 
     @only_if_gdb_running
     def do_invoke(self, argv):

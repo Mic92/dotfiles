@@ -4,7 +4,7 @@
 def bt(depth):
     format_args = []
     for i in range(depth):
-        format_args.append(f"%p")
+        format_args.append("%p")
     return_addrs = []
     for i in range(depth):
         return_addrs.append(f"r({i})")

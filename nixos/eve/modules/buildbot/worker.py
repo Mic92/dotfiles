@@ -3,7 +3,6 @@
 import multiprocessing
 import os
 import socket
-from io import open
 
 from buildbot_worker.bot import Worker
 from twisted.application import service
@@ -24,7 +23,7 @@ def setup_worker(application: service.Application, id: int) -> None:
     workername = f"{hostname}-{id}"
 
     with open(
-        require_env("WORKER_PASSWORD_FILE"), "r", encoding="utf-8"
+        require_env("WORKER_PASSWORD_FILE"), encoding="utf-8"
     ) as passwd_file:
         passwd = passwd_file.read().strip("\r\n")
     keepalive = 600

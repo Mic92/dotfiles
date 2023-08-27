@@ -1,13 +1,13 @@
-from threading import Thread
-from typing import Any
-from enum import Enum
 import json
-import time
 import os
 import subprocess
+import time
+from enum import Enum
+from threading import Thread
+from typing import Any
 
-from i3pystatus import Module
 import paho.mqtt.client as mqtt
+from i3pystatus import Module
 from i3pystatus.core.desktop import DesktopNotification
 
 
