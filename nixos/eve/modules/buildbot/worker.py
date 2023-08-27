@@ -3,6 +3,7 @@
 import multiprocessing
 import os
 import socket
+from pathlib import Path
 
 from buildbot_worker.bot import Worker
 from twisted.application import service
@@ -14,18 +15,17 @@ def require_env(key: str) -> str:
     return val
 
 
+PASSWD = Path(require_env("WORKER_PASSWORD_FILE")).read_text().strip("\r\n")
+BUILDBOT_DIR = require_env("BUILDBOT_DIR")
+MASTER_URL = require_env("MASTER_URL")
+
+
 def setup_worker(application: service.Application, id: int) -> None:
-    basedir = f"{require_env('BUILDBOT_DIR')}-{id}"
+    basedir = f"{BUILDBOT_DIR}-{id}"
     os.makedirs(basedir, mode=0o700, exist_ok=True)
 
-    master_url = require_env("MASTER_URL")
     hostname = socket.gethostname()
     workername = f"{hostname}-{id}"
-
-    with open(
-        require_env("WORKER_PASSWORD_FILE"), encoding="utf-8"
-    ) as passwd_file:
-        passwd = passwd_file.read().strip("\r\n")
     keepalive = 600
     umask = None
     maxdelay = 300
@@ -36,10 +36,10 @@ def setup_worker(application: service.Application, id: int) -> None:
         None,
         None,
         workername,
-        passwd,
+        PASSWD,
         basedir,
         keepalive,
-        connection_string=master_url,
+        connection_string=MASTER_URL,
         umask=umask,
         maxdelay=maxdelay,
         numcpus=numcpus,
