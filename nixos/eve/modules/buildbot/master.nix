@@ -45,8 +45,6 @@ in
       GITHUB_ADMINS = "Mic92";
     };
     serviceConfig = {
-      # Restart buildbot with a delay. This time way we can use buildbot to deploy itself.
-      ExecReload = "+${pkgs.systemd}/bin/systemd-run --on-active=60 ${pkgs.systemd}/bin/systemctl restart buildbot-master";
       # in master.py we read secrets from $CREDENTIALS_DIRECTORY
       LoadCredential = [
         "github-token:${config.sops.secrets.github-token.path}"
