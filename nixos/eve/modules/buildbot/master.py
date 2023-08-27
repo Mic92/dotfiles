@@ -3,6 +3,7 @@
 import json
 import os
 import sys
+import urllib.request
 from datetime import timedelta
 from pathlib import Path
 from typing import Any
@@ -30,10 +31,39 @@ def read_secret_file(secret_name: str) -> str:
     return Path(directory).joinpath(secret_name).read_text()
 
 
+GITHUB_OAUTH_ID = os.environ.get("GITHUB_OAUTH_ID")
+GITHUB_OAUTH_SECRET = read_secret_file("github-oauth-secret")
+GITHUB_TOKEN_SECRET_NAME = "github-token"
+GITHUB_TOKEN = read_secret_file(GITHUB_TOKEN_SECRET_NAME)
+GITHUB_WEBHOOK_SECRET = read_secret_file("github-webhook-secret")
+# Shape of this file:
+# [ { "name": "<worker-name>", "pass": "<worker-password>", "cores": "<cpu-cores>" } ]
+BUILDBOT_NIX_WORKERS = read_secret_file("buildbot-nix-workers")
 REPO_REGEX = os.environ["GITHUB_REPO_REGEX"]
 REPO_FOR_FLAKE_UPDATE = os.environ["REPO_FOR_FLAKE_UPDATE"]
 BUILDBOT_URL = os.environ["BUILDBOT_URL"]
 BUILDBOT_GITHUB_USER = os.environ["BUILDBOT_GITHUB_USER"]
+
+
+def http_request(
+    url: str,
+    method: str = "GET",
+    headers: dict[str, str] = {},
+    data: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    body = None
+    if data:
+        body = json.dumps(data).encode("ascii")
+    headers = headers.copy()
+    headers["User-Agent"] = "buildbot-nix"
+    req = urllib.request.Request(url, headers=headers, method=method, data=body)
+    resp = urllib.request.urlopen(req)
+    return json.load(resp)
+
+
+def github_repositories(token: str, topic: str):
+    # user/repos?per_page=100
+    resp = http_request("https://api.github.com/user/repos?per_page=100", headers={f"Authorization": f"token {token}"})
 
 
 def build_config() -> dict[str, Any]:
@@ -44,7 +74,6 @@ def build_config() -> dict[str, Any]:
     c["configurators"] = [
         util.JanitorConfigurator(logHorizon=timedelta(weeks=4), hour=12, dayOfWeek=6)
     ]
-
     c["schedulers"] = [
         # build all pushes to default branch
         schedulers.SingleBranchScheduler(
@@ -103,10 +132,9 @@ def build_config() -> dict[str, Any]:
         ),
     ]
 
-    github_api_token = read_secret_file("github-token")
     c["services"] = [
         reporters.GitHubStatusPush(
-            token=github_api_token,
+            token=GITHUB_TOKEN,
             # Since we dynamically create build steps,
             # we use `virtual_builder_name` in the webinterface
             # so that we distinguish what has beeing build
@@ -116,9 +144,7 @@ def build_config() -> dict[str, Any]:
         NotifyFailedBuilds("irc://buildbot|mic92@irc.r:6667/#xxx"),
     ]
 
-    # Shape of this file:
-    # [ { "name": "<worker-name>", "pass": "<worker-password>", "cores": "<cpu-cores>" } ]
-    worker_config = json.loads(read_secret_file("buildbot-nix-workers"))
+    worker_config = json.loads(BUILDBOT_NIX_WORKERS)
 
     credentials = os.environ.get("CREDENTIALS_DIRECTORY", ".")
     has_cachix_auth_token = os.path.isfile(
@@ -145,7 +171,7 @@ def build_config() -> dict[str, Any]:
         nix_eval_config(
             [worker_names[0]],
             "nix",
-            github_token_secret="github-token",
+            github_token_secret=GITHUB_TOKEN_SECRET_NAME,
             automerge_users=[BUILDBOT_GITHUB_USER],
         ),
         nix_build_config(
@@ -155,7 +181,7 @@ def build_config() -> dict[str, Any]:
             worker_names,
             "nix",
             REPO_FOR_FLAKE_UPDATE,
-            github_token_secret="github-token",
+            github_token_secret=GITHUB_TOKEN_SECRET_NAME,
             github_bot_user=BUILDBOT_GITHUB_USER,
         ),
     ]
@@ -165,9 +191,7 @@ def build_config() -> dict[str, Any]:
     c["www"] = {
         "avatar_methods": [util.AvatarGitHub()],
         "port": int(os.environ.get("PORT", "1810")),
-        "auth": util.GitHubAuth(
-            os.environ.get("GITHUB_OAUTH_ID"), read_secret_file("github-oauth-secret")
-        ),
+        "auth": util.GitHubAuth(GITHUB_OAUTH_ID, GITHUB_OAUTH_SECRET),
         "authz": util.Authz(
             roleMatchers=[
                 util.RolesFromUsername(roles=["admin"], usernames=github_admins)
@@ -182,9 +206,9 @@ def build_config() -> dict[str, Any]:
         ),
         "change_hook_dialects": dict(
             github={
-                "secret": read_secret_file("github-webhook-secret"),
+                "secret": GITHUB_WEBHOOK_SECRET,
                 "strict": True,
-                "token": github_api_token,
+                "token": GITHUB_TOKEN,
                 "github_property_whitelist": "*",
             }
         ),
