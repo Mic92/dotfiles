@@ -317,11 +317,10 @@ def nix_update_flake_config(
         )
     )
     return util.BuilderConfig(
-        name=f"{project.id}-update-flake",
+        name=f"{project.name}/update-flake",
         project=project.name,
         workernames=worker_names,
         factory=factory,
-        properties=dict(virtual_builder_name="{project.name}/update-flake"),
     )
 
 
@@ -418,7 +417,7 @@ def nix_eval_config(
         )
 
     return util.BuilderConfig(
-        name=f"{project.id}-nix-eval",
+        name=f"{project.name}/nix-eval",
         workernames=worker_names,
         project=project.name,
         factory=factory,
@@ -497,7 +496,7 @@ def nix_build_config(
     )
     factory.addStep(UpdateBuildOutput(name="Update build output"))
     return util.BuilderConfig(
-        name=f"{project.id}-nix-build",
+        name=f"{project.name}/nix-build",
         project=project.name,
         workernames=worker_names,
         collapseRequests=False,
