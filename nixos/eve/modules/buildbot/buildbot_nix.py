@@ -134,10 +134,10 @@ class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
                 build_props.getProperty("github.repository.full_name"),
             )
             project_id = repo_name.replace("/", "-")
-            builder = f"{project_id}-nix-build"
+            scheduler = f"{project_id}-nix-build"
 
             self.build.addStepsAfterCurrentStep(
-                [BuildTrigger(scheduler=builder, name=builder, jobs=jobs)]
+                [BuildTrigger(scheduler=scheduler, name="build flake", jobs=jobs)]
             )
 
         return result
@@ -317,11 +317,10 @@ def nix_update_flake_config(
         )
     )
     return util.BuilderConfig(
-        name=f"{project.id}-update-flake",
+        name=f"{project.name}/update-flake",
         project=project.name,
         workernames=worker_names,
         factory=factory,
-        properties=dict(virtual_builder_name="{project.name}/update-flake"),
     )
 
 
@@ -418,11 +417,11 @@ def nix_eval_config(
         )
 
     return util.BuilderConfig(
-        name=f"{project.id}-nix-eval",
+        name=f"{project.name}/nix-eval",
         workernames=worker_names,
         project=project.name,
         factory=factory,
-        properties=dict(virtual_builder_name=f"{project.name}/nix-eval"),
+        properties=dict(virtual_builder_name="nix-eval"),
     )
 
 
@@ -497,10 +496,10 @@ def nix_build_config(
     )
     factory.addStep(UpdateBuildOutput(name="Update build output"))
     return util.BuilderConfig(
-        name=f"{project.id}-nix-build",
+        name=f"{project.name}/nix-build",
         project=project.name,
         workernames=worker_names,
         collapseRequests=False,
         env={},
-        factory=factory
+        factory=factory,
     )

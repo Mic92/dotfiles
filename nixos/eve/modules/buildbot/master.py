@@ -61,7 +61,7 @@ def config_for_project(
                     filter_fn=lambda c: c.branch
                     == c.properties.getProperty("github.repository.default_branch"),
                 ),
-                builderNames=[f"{project.id}-nix-eval"],
+                builderNames=[f"{project.name}/nix-eval"],
             ),
             # this is compatible with bors or github's merge queue
             schedulers.SingleBranchScheduler(
@@ -70,7 +70,7 @@ def config_for_project(
                     repository=project.url,
                     branch_re="(gh-readonly-queue/.*|staging|trying)",
                 ),
-                builderNames=[f"{project.id}-nix-eval"],
+                builderNames=[f"{project.name}/nix-eval"],
             ),
             # build all pull requests
             schedulers.SingleBranchScheduler(
@@ -78,27 +78,27 @@ def config_for_project(
                 change_filter=util.ChangeFilter(
                     repository=project.url, category="pull"
                 ),
-                builderNames=[f"{project.id}-nix-eval"],
+                builderNames=[f"{project.name}/nix-eval"],
             ),
             # this is triggered from `nix-eval`
             schedulers.Triggerable(
                 name=f"{project.id}-nix-build",
-                builderNames=[f"{project.id}-nix-build"],
+                builderNames=[f"{project.name}/nix-build"],
             ),
             # allow to manually trigger a nix-build
             schedulers.ForceScheduler(
-                name=f"{project.id}-force", builderNames=[f"{project.id}-nix-eval"]
+                name=f"{project.id}-force", builderNames=[f"{project.name}/nix-eval"]
             ),
             # allow to manually update flakes
             schedulers.ForceScheduler(
                 name=f"{project.id}-update-flake",
-                builderNames=[f"{project.id}-update-flake"],
+                builderNames=[f"{project.name}/update-flake"],
                 buttonName="Update flakes",
             ),
             # updates flakes once a weeek
             schedulers.NightlyTriggerable(
                 name=f"{project.id}-update-flake-weekly",
-                builderNames=[f"{project.id}-update-flake"],
+                builderNames=[f"{project.name}/update-flake"],
                 hour=3,
                 minute=0,
                 dayOfWeek=6,
@@ -159,7 +159,7 @@ def build_config() -> dict[str, Any]:
                 == c.properties.getProperty("github.repository.default_branch"),
             ),
             treeStableTimer=20,
-            builderNames=["Mic92-dotfiles-update-flake"],
+            builderNames=["Mic92/dotfiles/update-flake"],
         ),
     ]
     c["builders"] = []
