@@ -133,15 +133,15 @@ class PrometheusWebHook(BaseHTTPRequestHandler):
         self.wfile.write(b"ok")
 
     def do_POST(self) -> None:
-        content_type, _ = cgi.parse_header(self.headers.get("content-type"))
+        content_type = self.headers.get("content-type", "")
+        content_type, _ = cgi.parse_header(content_type)
 
         # refuse to receive non-json content
         if content_type != "application/json":
             self.send_response(400)
             self.end_headers()
             return
-
-        length = int(self.headers.get("content-length"))
+        length = int(self.headers.get("content-length", 0))
         payload = json.loads(self.rfile.read(length))
         messages = []
         for alert in payload["alerts"]:
