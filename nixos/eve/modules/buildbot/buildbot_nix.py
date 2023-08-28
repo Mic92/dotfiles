@@ -60,7 +60,9 @@ class BuildTrigger(Trigger):
             attr = job.get("attr", "eval-error")
             name = attr
             if repo_name is not None:
-                name = f"{repo_name}: {name}"
+                name = f"github:{repo_name}#checks.{name}"
+            else:
+                name = f"checks.{name}"
             drv_path = job.get("drvPath")
             error = job.get("error")
             out_path = job.get("outputs", {}).get("out")
