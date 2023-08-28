@@ -421,7 +421,7 @@ def nix_eval_config(
         workernames=worker_names,
         project=project.name,
         factory=factory,
-        properties=dict(virtual_builder_name=f"{project.name}/nix-eval"),
+        properties=dict(virtual_builder_name="nix-eval"),
     )
 
 
