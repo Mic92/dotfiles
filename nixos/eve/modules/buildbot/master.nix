@@ -28,7 +28,6 @@ in
   };
 
   systemd.services.buildbot-master = {
-    reloadIfChanged = true;
     environment = {
       PORT = "1810";
       DB_URL = config.services.buildbot-master.dbUrl;

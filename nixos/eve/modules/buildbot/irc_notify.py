@@ -39,7 +39,7 @@ def _irc_send(
             print(command)
         return sock.send((f"{command}\r\n").encode())
 
-    def _pong(ping: str):
+    def _pong(ping: str) -> None:
         if ping.startswith("PING"):
             sock.send(ping.replace("PING", "PONG").encode("ascii"))
 
@@ -129,7 +129,7 @@ class NotifyFailedBuilds(ReporterBase):
         formatter = MessageFormatter(template_type="plain", subject=subject_template)
         return [BuildStatusGenerator(message_formatter=formatter)]
 
-    def checkConfig(self, url: str):
+    def checkConfig(self, url: str) -> None:
         super().checkConfig(generators=self._generators())
 
     @defer.inlineCallbacks
@@ -137,7 +137,7 @@ class NotifyFailedBuilds(ReporterBase):
         self.url = url
         yield super().reconfigService(generators=self._generators())
 
-    def sendMessage(self, reports: list):
+    def sendMessage(self, reports: list) -> None:
         msgs = []
         for r in reports:
             build = r["builds"][0]

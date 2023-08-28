@@ -9,10 +9,12 @@ from pathlib import Path
 from typing import Any, Generator, List
 
 from buildbot.plugins import steps, util
-from buildbot.process import buildstep, logobserver
+from buildbot.process import buildstep, logobserver, remotecommand
+from buildbot.process.log import Log
 from buildbot.process.properties import Properties
 from buildbot.process.results import ALL_RESULTS, statusToString
 from buildbot.steps.trigger import Trigger
+from github_projects import GithubProject
 from twisted.internet import defer
 
 
@@ -21,7 +23,9 @@ class BuildTrigger(Trigger):
     Dynamic trigger that creates a build for every attribute.
     """
 
-    def __init__(self, scheduler: str, jobs: list[dict[str, str]], **kwargs):
+    def __init__(
+        self, scheduler: str, jobs: list[dict[str, Any]], **kwargs: Any
+    ) -> None:
         if "name" not in kwargs:
             kwargs["name"] = "trigger"
         self.jobs = jobs
@@ -38,17 +42,17 @@ class BuildTrigger(Trigger):
             **kwargs,
         )
 
-    def createTriggerProperties(self, props):
+    def createTriggerProperties(self, props: Any) -> Any:
         return props
 
-    def getSchedulersAndProperties(self):
+    def getSchedulersAndProperties(self) -> list[tuple[str, Properties]]:
         build_props = self.build.getProperties()
         repo_name = build_props.getProperty(
             "github.base.repo.full_name",
             build_props.getProperty("github.repository.full_name"),
         )
-
-        # parent_buildid
+        project_id = repo_name.replace("/", "-")
+        source = f"nix-eval-{project_id}"
 
         sch = self.schedulerNames[0]
         triggered_schedulers = []
@@ -61,22 +65,22 @@ class BuildTrigger(Trigger):
             error = job.get("error")
             out_path = job.get("outputs", {}).get("out")
 
-            build_props.setProperty(f"{attr}-out_path", out_path, "nix-eval")
-            build_props.setProperty(f"{attr}-drv_path", drv_path, "nix-eval")
+            build_props.setProperty(f"{attr}-out_path", out_path, source)
+            build_props.setProperty(f"{attr}-drv_path", drv_path, source)
 
             props = Properties()
-            props.setProperty("virtual_builder_name", name, "nix-eval")
-            props.setProperty("virtual_builder_tags", "", "nix-eval")
-            props.setProperty("attr", attr, "nix-eval")
-            props.setProperty("drv_path", drv_path, "nix-eval")
-            props.setProperty("out_path", out_path, "nix-eval")
+            props.setProperty("virtual_builder_name", name, source)
+            props.setProperty("virtual_builder_tags", "", source)
+            props.setProperty("attr", attr, source)
+            props.setProperty("drv_path", drv_path, source)
+            props.setProperty("out_path", out_path, source)
             # we use this to identify builds when running a retry
-            props.setProperty("build_uuid", str(uuid.uuid4()), "nix-eval")
-            props.setProperty("error", error, "nix-eval")
+            props.setProperty("build_uuid", str(uuid.uuid4()), source)
+            props.setProperty("error", error, source)
             triggered_schedulers.append((sch, props))
         return triggered_schedulers
 
-    def getCurrentSummary(self):
+    def getCurrentSummary(self) -> dict[str, str]:
         """
         The original build trigger will the generic builder name `nix-build` in this case, which is not helpful
         """
@@ -99,7 +103,7 @@ class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
     every attribute.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         kwargs = self.setupShellMixin(kwargs)
         super().__init__(**kwargs)
         self.observer = logobserver.BufferLogObserver()
@@ -108,7 +112,7 @@ class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
     @defer.inlineCallbacks
     def run(self) -> Generator[Any, object, Any]:
         # run nix-instanstiate to generate the dict of stages
-        cmd = yield self.makeRemoteShellCommand()
+        cmd: remotecommand.RemoteCommand = yield self.makeRemoteShellCommand()
         yield self.runCommand(cmd)
 
         # if the command passes extract the list of stages
@@ -124,8 +128,16 @@ class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
                     except json.JSONDecodeError as e:
                         raise Exception(f"Failed to parse line: {line}") from e
                     jobs.append(job)
+            build_props = self.build.getProperties()
+            repo_name = build_props.getProperty(
+                "github.base.repo.full_name",
+                build_props.getProperty("github.repository.full_name"),
+            )
+            project_id = repo_name.replace("/", "-")
+            builder = f"{project_id}-nix-build"
+
             self.build.addStepsAfterCurrentStep(
-                [BuildTrigger(scheduler="nix-build", name="nix-build", jobs=jobs)]
+                [BuildTrigger(scheduler=builder, name=builder, jobs=jobs)]
             )
 
         return result
@@ -156,7 +168,7 @@ class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
     otherwise this shows the evaluation error.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         kwargs = self.setupShellMixin(kwargs)
         super().__init__(**kwargs)
         self.observer = logobserver.BufferLogObserver()
@@ -169,12 +181,12 @@ class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
             attr = self.getProperty("attr")
             # show eval error
             self.build.results = util.FAILURE
-            log = yield self.addLog("nix_error")
+            log: Log = yield self.addLog("nix_error")
             log.addStderr(f"{attr} failed to evaluate:\n{error}")
             return util.FAILURE
 
         # run `nix build`
-        cmd = yield self.makeRemoteShellCommand()
+        cmd: remotecommand.RemoteCommand = yield self.makeRemoteShellCommand()
         yield self.runCommand(cmd)
 
         res = cmd.results()
@@ -192,7 +204,7 @@ class UpdateBuildOutput(steps.BuildStep):
     on the target machine.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)
 
     def run(self) -> Generator[Any, object, Any]:
@@ -211,9 +223,8 @@ class UpdateBuildOutput(steps.BuildStep):
 
 
 def nix_update_flake_config(
+    project: GithubProject,
     worker_names: list[str],
-    project: str,
-    projectname: str,
     github_token_secret: str,
     github_bot_user: str,
 ) -> util.BuilderConfig:
@@ -221,9 +232,8 @@ def nix_update_flake_config(
     Updates the flake an opens a PR for it.
     """
     factory = util.BuildFactory()
-    parts = projectname.split("/")
     url_with_secret = util.Interpolate(
-        f"https://git:%(secret:{github_token_secret})s@github.com/{parts[0]}/{parts[1]}"
+        f"https://git:%(secret:{github_token_secret})s@github.com/{project.name}"
     )
     factory.addStep(
         steps.Git(
@@ -293,7 +303,7 @@ def nix_update_flake_config(
                 "pr",
                 "create",
                 "--repo",
-                projectname,
+                project.name,
                 "--title",
                 "flake.lock: Update",
                 "--body",
@@ -301,104 +311,25 @@ def nix_update_flake_config(
                 "--head",
                 "refs/heads/update_flake_lock",
                 "--base",
-                parts[2],
+                project.default_branch,
             ],
             doStepIf=util.Interpolate("has_pr") != "OPEN",
         )
     )
     return util.BuilderConfig(
-        name="nix-update-flake",
-        project=project,
+        name=f"{project.id}-update-flake",
+        project=project.name,
         workernames=worker_names,
         factory=factory,
-        properties=dict(virtual_builder_name="nix-update-flake"),
+        properties=dict(virtual_builder_name="{project.name}/update-flake"),
     )
 
 
-class Machine:
-    def __init__(self, hostname: str, attr_name: str) -> None:
-        self.hostname = hostname
-        self.attr_name = attr_name
-
-
-class DeployTrigger(Trigger):
-    """
-    Dynamic trigger that creates a deploy step for every machine.
-    """
-
-    def __init__(self, scheduler: str, machines: list[Machine], **kwargs):
-        if "name" not in kwargs:
-            kwargs["name"] = "trigger"
-        self.machines = machines
-        self.config = None
-        Trigger.__init__(
-            self,
-            waitForFinish=True,
-            schedulerNames=[scheduler],
-            haltOnFailure=True,
-            flunkOnFailure=True,
-            sourceStamps=[],
-            alwaysUseLatest=False,
-            updateSourceStamp=False,
-            **kwargs,
-        )
-
-    def createTriggerProperties(self, props):
-        return props
-
-    def getSchedulersAndProperties(self):
-        build_props = self.build.getProperties()
-        repo_name = build_props.getProperty(
-            "github.base.repo.full_name",
-            build_props.getProperty("github.repository.full_name"),
-        )
-
-        sch = self.schedulerNames[0]
-
-        triggered_schedulers = []
-        for m in self.machines:
-            out_path = build_props.getProperty(f"nixos-{m.attr_name}-out_path")
-            props = Properties()
-            name = m.attr_name
-            if repo_name is not None:
-                name = f"{repo_name}: Deploy {name}"
-            props.setProperty("virtual_builder_name", name, "deploy")
-            props.setProperty("attr", m.attr_name, "deploy")
-            props.setProperty("out_path", out_path, "deploy")
-            triggered_schedulers.append((sch, props))
-        return triggered_schedulers
-
-    @defer.inlineCallbacks
-    def run(self):
-        props = self.build.getProperties()
-        if props.getProperty("branch") not in self.branches:
-            return util.SKIPPED
-        res = yield super().__init__()
-        return res
-
-    def getCurrentSummary(self):
-        """
-        The original build trigger will the generic builder name `nix-build` in this case, which is not helpful
-        """
-        if not self.triggeredNames:
-            return {"step": "running"}
-        summary = []
-        if self._result_list:
-            for status in ALL_RESULTS:
-                count = self._result_list.count(status)
-                if count:
-                    summary.append(
-                        f"{self._result_list.count(status)} {statusToString(status, count)}"
-                    )
-        return {"step": f"({', '.join(summary)})"}
-
-
 def nix_eval_config(
+    project: GithubProject,
     worker_names: list[str],
-    project: str,
     github_token_secret: str,
     automerge_users: List[str] = [],
-    machines: list[Machine] = [],
 ) -> util.BuilderConfig:
     """
     Uses nix-eval-jobs to evaluate hydraJobs from flake.nix in parallel.
@@ -487,17 +418,17 @@ def nix_eval_config(
         )
 
     return util.BuilderConfig(
-        name="nix-eval",
+        name=f"{project.id}-nix-eval",
         workernames=worker_names,
-        project=project,
+        project=project.name,
         factory=factory,
-        properties=dict(virtual_builder_name="nix-eval"),
+        properties=dict(virtual_builder_name=f"{project.name}/nix-eval"),
     )
 
 
 def nix_build_config(
+    project: GithubProject,
     worker_names: list[str],
-    project: str,
     has_cachix_auth_token: bool = False,
     has_cachix_signing_key: bool = False,
 ) -> util.BuilderConfig:
@@ -566,11 +497,10 @@ def nix_build_config(
     )
     factory.addStep(UpdateBuildOutput(name="Update build output"))
     return util.BuilderConfig(
-        name="nix-build",
-        project=project,
+        name=f"{project.id}-nix-build",
+        project=project.name,
         workernames=worker_names,
-        properties=[],
         collapseRequests=False,
         env={},
-        factory=factory,
+        factory=factory
     )

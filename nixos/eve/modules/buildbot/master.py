@@ -3,7 +3,6 @@
 import json
 import os
 import sys
-import urllib.request
 from datetime import timedelta
 from pathlib import Path
 from typing import Any
@@ -20,6 +19,7 @@ from buildbot_nix import (  # noqa: E402
     nix_eval_config,
     nix_update_flake_config,
 )
+from github_projects import GithubProject, load_projects  # noqa: E402
 from irc_notify import NotifyFailedBuilds  # noqa: E402
 
 
@@ -45,60 +45,112 @@ BUILDBOT_URL = os.environ["BUILDBOT_URL"]
 BUILDBOT_GITHUB_USER = os.environ["BUILDBOT_GITHUB_USER"]
 
 
-def http_request(
-    url: str,
-    method: str = "GET",
-    headers: dict[str, str] = {},
-    data: dict[str, Any] | None = None,
-) -> dict[str, Any]:
-    body = None
-    if data:
-        body = json.dumps(data).encode("ascii")
-    headers = headers.copy()
-    headers["User-Agent"] = "buildbot-nix"
-    req = urllib.request.Request(url, headers=headers, method=method, data=body)
-    resp = urllib.request.urlopen(req)
-    return json.load(resp)
+def config_for_project(
+    config: dict[str, Any],
+    project: GithubProject,
+    credentials: str,
+    worker_names: list[str],
+) -> Project:
+    config["projects"].append(Project(project.name))
+    config["schedulers"].extend(
+        [
+            schedulers.SingleBranchScheduler(
+                name=f"default-branch-{project.id}",
+                change_filter=util.ChangeFilter(
+                    repository=project.url,
+                    filter_fn=lambda c: c.branch
+                    == c.properties.getProperty("github.repository.default_branch"),
+                ),
+                builderNames=[f"{project.id}-nix-eval"],
+            ),
+            # this is compatible with bors or github's merge queue
+            schedulers.SingleBranchScheduler(
+                name=f"merge-queue-{project.id}",
+                change_filter=util.ChangeFilter(
+                    repository=project.url,
+                    branch_re="(gh-readonly-queue/.*|staging|trying)",
+                ),
+                builderNames=[f"{project.id}-nix-eval"],
+            ),
+            # build all pull requests
+            schedulers.SingleBranchScheduler(
+                name=f"prs-{project.id}",
+                change_filter=util.ChangeFilter(
+                    repository=project.url, category="pull"
+                ),
+                builderNames=[f"{project.id}-nix-eval"],
+            ),
+            # this is triggered from `nix-eval`
+            schedulers.Triggerable(
+                name=f"{project.id}-nix-build",
+                builderNames=[f"{project.id}-nix-build"],
+            ),
+            # allow to manually trigger a nix-build
+            schedulers.ForceScheduler(
+                name=f"{project.id}-force", builderNames=[f"{project.id}-nix-eval"]
+            ),
+            # allow to manually update flakes
+            schedulers.ForceScheduler(
+                name=f"{project.id}-update-flake",
+                builderNames=[f"{project.id}-update-flake"],
+                buttonName="Update flakes",
+            ),
+            # updates flakes once a weeek
+            schedulers.NightlyTriggerable(
+                name=f"{project.id}-update-flake-weekly",
+                builderNames=[f"{project.id}-update-flake"],
+                hour=3,
+                minute=0,
+                dayOfWeek=6,
+            ),
+        ]
+    )
+    has_cachix_auth_token = os.path.isfile(
+        os.path.join(credentials, "cachix-auth-token")
+    )
+    has_cachix_signing_key = os.path.isfile(
+        os.path.join(credentials, "cachix-signing-key")
+    )
+    config["builders"].extend(
+        [
+            # Since all workers run on the same machine, we only assign one of them to do the evaluation.
+            # This should prevent exessive memory usage.
+            nix_eval_config(
+                project,
+                [worker_names[0]],
+                github_token_secret=GITHUB_TOKEN_SECRET_NAME,
+                automerge_users=[BUILDBOT_GITHUB_USER],
+            ),
+            nix_build_config(
+                project, worker_names, has_cachix_auth_token, has_cachix_signing_key
+            ),
+            nix_update_flake_config(
+                project,
+                worker_names,
+                github_token_secret=GITHUB_TOKEN_SECRET_NAME,
+                github_bot_user=BUILDBOT_GITHUB_USER,
+            ),
+        ]
+    )
 
 
-def github_repositories(token: str, topic: str):
-    # user/repos?per_page=100
-    resp = http_request("https://api.github.com/user/repos?per_page=100", headers={f"Authorization": f"token {token}"})
+PROJECT_CACHE_FILE = Path("github-project-cache.json")
 
 
 def build_config() -> dict[str, Any]:
-    c = {}
-    c["buildbotNetUsageData"] = None
+    projects = load_projects(GITHUB_TOKEN, PROJECT_CACHE_FILE)
+    projects = [p for p in projects if "build-with-buildbot" in p.topics]
+    import pprint
 
+    pprint.pprint(projects)
+    c: dict[str, Any] = {}
+    c["buildbotNetUsageData"] = None
     # configure a janitor which will delete all logs older than one month, and will run on sundays at noon
     c["configurators"] = [
         util.JanitorConfigurator(logHorizon=timedelta(weeks=4), hour=12, dayOfWeek=6)
     ]
+    credentials = os.environ.get("CREDENTIALS_DIRECTORY", ".")
     c["schedulers"] = [
-        # build all pushes to default branch
-        schedulers.SingleBranchScheduler(
-            name="default-branch",
-            change_filter=util.ChangeFilter(
-                repository_re=REPO_REGEX,
-                filter_fn=lambda c: c.branch
-                == c.properties.getProperty("github.repository.default_branch"),
-            ),
-            builderNames=["nix-eval"],
-        ),
-        # this is compatible with bors or github's merge queue
-        schedulers.SingleBranchScheduler(
-            name="merge-queue",
-            change_filter=util.ChangeFilter(
-                branch_re="(gh-readonly-queue/.*|staging|trying)",
-            ),
-            builderNames=["nix-eval"],
-        ),
-        # build all pull requests
-        schedulers.SingleBranchScheduler(
-            name="prs",
-            change_filter=util.ChangeFilter(repository_re=REPO_REGEX, category="pull"),
-            builderNames=["nix-eval"],
-        ),
         schedulers.SingleBranchScheduler(
             name="nixpkgs",
             change_filter=util.ChangeFilter(
@@ -107,30 +159,24 @@ def build_config() -> dict[str, Any]:
                 == c.properties.getProperty("github.repository.default_branch"),
             ),
             treeStableTimer=20,
-            builderNames=["nix-update-flake"],
-        ),
-        # this is triggered from `nix-eval`
-        schedulers.Triggerable(
-            name="nix-build",
-            builderNames=["nix-build"],
-        ),
-        # allow to manually trigger a nix-build
-        schedulers.ForceScheduler(name="force", builderNames=["nix-eval"]),
-        # allow to manually update flakes
-        schedulers.ForceScheduler(
-            name="update-flake",
-            builderNames=["nix-update-flake"],
-            buttonName="Update flakes",
-        ),
-        # updates flakes once a weeek
-        schedulers.NightlyTriggerable(
-            name="update-flake-weekly",
-            builderNames=["nix-update-flake"],
-            hour=3,
-            minute=0,
-            dayOfWeek=6,
+            builderNames=["Mic92-dotfiles-update-flake"],
         ),
     ]
+    c["builders"] = []
+    c["projects"] = []
+    c["workers"] = []
+
+    worker_config = json.loads(BUILDBOT_NIX_WORKERS)
+    worker_names = []
+    for item in worker_config:
+        cores = item.get("cores", 0)
+        for i in range(cores):
+            worker_name = f"{item['name']}-{i}"
+            c["workers"].append(worker.Worker(worker_name, item["pass"]))
+            worker_names.append(worker_name)
+
+    for project in projects:
+        config_for_project(c, project, credentials, worker_names)
 
     c["services"] = [
         reporters.GitHubStatusPush(
@@ -144,47 +190,8 @@ def build_config() -> dict[str, Any]:
         NotifyFailedBuilds("irc://buildbot|mic92@irc.r:6667/#xxx"),
     ]
 
-    worker_config = json.loads(BUILDBOT_NIX_WORKERS)
-
-    credentials = os.environ.get("CREDENTIALS_DIRECTORY", ".")
-    has_cachix_auth_token = os.path.isfile(
-        os.path.join(credentials, "cachix-auth-token")
-    )
-    has_cachix_signing_key = os.path.isfile(
-        os.path.join(credentials, "cachix-signing-key")
-    )
-
     systemd_secrets = secrets.SecretInAFile(dirname=credentials)
     c["secretsProviders"] = [systemd_secrets]
-    c["workers"] = []
-    c["projects"] = [Project("nix")]
-    worker_names = []
-    for item in worker_config:
-        cores = item.get("cores", 0)
-        for i in range(cores):
-            worker_name = f"{item['name']}-{i}"
-            c["workers"].append(worker.Worker(worker_name, item["pass"]))
-            worker_names.append(worker_name)
-    c["builders"] = [
-        # Since all workers run on the same machine, we only assign one of them to do the evaluation.
-        # This should prevent exessive memory usage.
-        nix_eval_config(
-            [worker_names[0]],
-            "nix",
-            github_token_secret=GITHUB_TOKEN_SECRET_NAME,
-            automerge_users=[BUILDBOT_GITHUB_USER],
-        ),
-        nix_build_config(
-            worker_names, "nix", has_cachix_auth_token, has_cachix_signing_key
-        ),
-        nix_update_flake_config(
-            worker_names,
-            "nix",
-            REPO_FOR_FLAKE_UPDATE,
-            github_token_secret=GITHUB_TOKEN_SECRET_NAME,
-            github_bot_user=BUILDBOT_GITHUB_USER,
-        ),
-    ]
 
     github_admins = os.environ.get("GITHUB_ADMINS", "").split(",")
 
