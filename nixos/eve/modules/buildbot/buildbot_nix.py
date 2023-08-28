@@ -70,6 +70,7 @@ class BuildTrigger(Trigger):
 
             props = Properties()
             props.setProperty("virtual_builder_name", name, source)
+            props.setProperty("status_name", f"nix-build .#checks.{attr}", source)
             props.setProperty("virtual_builder_tags", "", source)
             props.setProperty("attr", attr, source)
             props.setProperty("drv_path", drv_path, source)
@@ -421,7 +422,7 @@ def nix_eval_config(
         workernames=worker_names,
         project=project.name,
         factory=factory,
-        properties=dict(virtual_builder_name="nix-eval"),
+        properties=dict(status_name="nix-eval"),
     )
 
 
