@@ -502,5 +502,5 @@ def nix_build_config(
         workernames=worker_names,
         collapseRequests=False,
         env={},
-        factory=factory
+        factory=factory,
     )
