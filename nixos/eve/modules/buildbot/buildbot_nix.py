@@ -354,7 +354,7 @@ def nix_eval_config(
     factory.addStep(
         NixEvalCommand(
             env={},
-            name="Eval flake",
+            name="evaluate flake",
             command=[
                 "nix",
                 "run",
