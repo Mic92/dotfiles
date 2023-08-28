@@ -134,10 +134,10 @@ class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
                 build_props.getProperty("github.repository.full_name"),
             )
             project_id = repo_name.replace("/", "-")
-            builder = f"{project_id}-nix-build"
+            scheduler = f"{project_id}-nix-build"
 
             self.build.addStepsAfterCurrentStep(
-                [BuildTrigger(scheduler=builder, name=builder, jobs=jobs)]
+                [BuildTrigger(scheduler=scheduler, name="build flake", jobs=jobs)]
             )
 
         return result
