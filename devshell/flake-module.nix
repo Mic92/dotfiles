@@ -33,8 +33,8 @@
               })
             ];
           };
-          "eve/modules/buildbot" = { };
-          "eva/modules/prometheus" = { };
+          "nixos/eve/modules/buildbot" = { };
+          "nixos/eva/modules/prometheus" = { };
           "openwrt" = { };
           "home-manager/modules/neovim" = {
             options = [ "--ignore-missing-imports" ];
