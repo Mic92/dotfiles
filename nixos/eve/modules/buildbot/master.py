@@ -14,14 +14,6 @@ from buildbot.process.properties import Interpolate
 # allow to import modules
 sys.path.append(str(Path(__file__).parent))
 
-import buildbot_nix
-import github_projects
-import irc_notify
-import importlib
-importlib.reload(buildbot_nix)
-importlib.reload(github_projects)
-importlib.reload(irc_notify)
-
 from buildbot_nix import (  # noqa: E402
     nix_build_config,
     nix_eval_config,
