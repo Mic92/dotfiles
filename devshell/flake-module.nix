@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 {
 
   imports = [
@@ -103,7 +103,7 @@
           inputs'.fast-flake-update.packages.default
           pkgs.python3.pkgs.invoke
           pkgs.python3.pkgs.deploykit
-        ];
+        ] ++ lib.optional (!pkgs.stdenv.isDarwin) inputs'.clan-core.packages.default;
       };
     };
 }
