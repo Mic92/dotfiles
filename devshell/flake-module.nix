@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 {
 
   imports = [
@@ -99,12 +99,11 @@
         sopsPGPKeyDirs = [ "./nixos/secrets/keys" ];
         sopsCreateGPGHome = true;
         nativeBuildInputs = [
-          inputs'.clan-core.packages.default
           inputs'.sops-nix.packages.sops-import-keys-hook
           inputs'.fast-flake-update.packages.default
           pkgs.python3.pkgs.invoke
           pkgs.python3.pkgs.deploykit
-        ];
+        ] ++ lib.optional (!pkgs.stdenv.isDarwin) inputs'.clan-core.packages.default;
       };
     };
 }
