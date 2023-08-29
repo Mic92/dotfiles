@@ -10,18 +10,13 @@
 {
   imports = [
     "${modulesPath}/installer/scan/not-detected.nix"
-    #./modules/framework-firmware-update.nix
   ];
 
-  # on demand
   services.fwupd.enable = true;
+  services.fwupd.extraRemotes = [ "lvfs-testing" ];
+  services.fwupd.uefiCapsuleSettings.DisableCapsuleUpdateOnDisk = true;
+
   services.thermald.enable = true;
-  # FIXME: what does this profile do?
-  #services.thermald.configFile = ./thermal-conf.xml.auto;
-  # Profile generated from dptfxtract
-  # $ git clone 'https://github.com/intel/dptfxtract'
-  # $ sudo dptfxtract/dptfxtract-static
-  # $ cp /etc/thermald/thermal-conf.xml.auto /etc/nixos/nixos/turingmachine
 
   # xps
   #boot.initrd.availableKernelModules = [

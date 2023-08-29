@@ -22,6 +22,7 @@
     ./modules/tum-vpn.nix
     #./modules/minidlna.nix
 
+    ../modules/nncp.nix
     ../modules/touchpad-hack
     ../modules/i18n.nix
     ../modules/make-linux-fast.nix

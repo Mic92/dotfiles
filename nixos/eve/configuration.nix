@@ -63,6 +63,7 @@
     #./modules/headscale.nix
     #./modules/wiregrill
 
+    ../modules/nncp.nix
     #../modules/tailscale.nix
     ../modules/builder.nix
     ../modules/iperf.nix

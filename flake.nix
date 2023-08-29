@@ -62,6 +62,14 @@
     srvos.url = "github:numtide/srvos/prometheus";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
+    clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=simplify-template";
+    clan-core.inputs.nixpkgs.follows = "nixpkgs";
+    clan-core.inputs.sops-nix.follows = "sops-nix";
+    clan-core.inputs.treefmt-nix.follows = "treefmt-nix";
+    clan-core.inputs.disko.follows = "disko";
+    clan-core.inputs.flake-parts.follows = "flake-parts";
+    clan-core.inputs.nixos-generators.follows = "nixos-generators";
+
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 

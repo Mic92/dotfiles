@@ -1,20 +1,7 @@
 { self, inputs, ... }:
 let
   inherit (inputs.nixpkgs) lib;
-  inherit (inputs) nixpkgs;
-
-  nixosSystem = args:
-    (lib.makeOverridable lib.nixosSystem)
-      (lib.recursiveUpdate args {
-        modules =
-          args.modules
-          ++ [
-            {
-              config.nixpkgs.pkgs = lib.mkDefault args.pkgs;
-              config.nixpkgs.localSystem = lib.mkDefault args.pkgs.stdenv.hostPlatform;
-            }
-          ];
-      });
+  inherit (inputs) nixpkgs clan-core;
 
   defaultModules = [
     # make flake inputs accessiable in NixOS
@@ -53,31 +40,30 @@ let
   ];
 in
 {
-  flake.nixosConfigurations = {
-    bernie = nixosSystem {
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      modules =
-        defaultModules
-        ++ [
+  flake.nixosConfigurations = clan-core.lib.buildClan {
+    directory = ./.;
+    specialArgs = {
+      self = {
+        inputs = self.inputs;
+        nixosModules = self.nixosModules;
+        packages = self.packages.x86_64-linux;
+      };
+    };
+    machines = {
+      bernie = {
+        _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
+        imports = defaultModules
+          ++ [
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x13
           inputs.home-manager.nixosModules.home-manager
           inputs.srvos.nixosModules.desktop
           ./bernie/configuration.nix
         ];
-    };
-
-    turingmachine = nixosSystem {
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      specialArgs = {
-        self = {
-          inputs = self.inputs;
-          nixosModules = self.nixosModules;
-          packages = self.packages.x86_64-linux;
-        };
       };
-      modules =
-        defaultModules
-        ++ [
+      turingmachine = {
+        _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
+        imports = defaultModules
+          ++ [
           ./turingmachine/configuration.nix
           inputs.nixos-hardware.nixosModules.framework
           inputs.nix-index-database.nixosModules.nix-index
@@ -101,51 +87,49 @@ in
           #  });
           #})
         ];
-    };
-
-    eve = nixosSystem {
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      modules =
-        defaultModules
-        ++ [
+      };
+      eve = {
+        _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
+        imports = defaultModules
+          ++ [
           ./eve/configuration.nix
 
           inputs.srvos.nixosModules.server
           inputs.srvos.nixosModules.mixins-nginx
           inputs.bing-gpt-server.nixosModules.bing-gpt-server
         ];
-    };
+      };
 
-    blob64 = nixosSystem {
-      pkgs = nixpkgs.legacyPackages.aarch64-linux;
-      modules =
-        defaultModules
-        ++ [
+      eva = {
+        _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
+        modules =
+          defaultModules
+          ++ [
+            inputs.srvos.nixosModules.server
+            inputs.srvos.nixosModules.mixins-nginx
+            inputs.srvos.nixosModules.mixins-systemd-boot
+            inputs.srvos.nixosModules.roles-prometheus
+            inputs.disko.nixosModules.disko
+            ./eva/configuration.nix
+          ];
+      };
+
+      blob64 = {
+        _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.aarch64-linux;
+        imports = defaultModules
+          ++ [
           inputs.srvos.nixosModules.server
           ./blob64/configuration.nix
         ];
-    };
+      };
 
-    matchbox = nixosSystem {
-      pkgs = nixpkgs.legacyPackages.aarch64-linux;
-      modules = defaultModules ++ [
-        inputs.srvos.nixosModules.server
-        ./matchbox/configuration.nix
-      ];
-    };
-
-    eva = nixosSystem {
-      pkgs = nixpkgs.legacyPackages.x86_64-linux;
-      modules =
-        defaultModules
-        ++ [
+      matchbox = {
+        _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.aarch64-linux;
+        modules = defaultModules ++ [
           inputs.srvos.nixosModules.server
-          inputs.srvos.nixosModules.mixins-nginx
-          inputs.srvos.nixosModules.mixins-systemd-boot
-          inputs.srvos.nixosModules.roles-prometheus
-          inputs.disko.nixosModules.disko
-          ./eva/configuration.nix
+          ./matchbox/configuration.nix
         ];
+      };
     };
   };
 }

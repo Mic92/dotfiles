@@ -14,6 +14,7 @@
 
     ../modules/sshd
     ../modules/mosh.nix
+    ../modules/nncp.nix
     ../modules/iperf.nix
     ../modules/openldap/replica.nix
     ../modules/promtail.nix
