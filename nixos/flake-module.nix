@@ -47,18 +47,19 @@ in
       bernie = {
         _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
         imports = [
+          ./bernie/configuration.nix
           defaultModule
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x13
           inputs.home-manager.nixosModules.home-manager
           inputs.srvos.nixosModules.desktop
-          ./bernie/configuration.nix
         ];
       };
+
       turingmachine = {
         _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
         imports = [
-          defaultModule
           ./turingmachine/configuration.nix
+          defaultModule
           inputs.nixos-hardware.nixosModules.framework
           inputs.nix-index-database.nixosModules.nix-index
           { programs.nix-index-database.comma.enable = true; }
@@ -86,7 +87,7 @@ in
         _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
         imports = [
           ./eve/configuration.nix
-
+          defaultModule
           inputs.srvos.nixosModules.server
           inputs.srvos.nixosModules.mixins-nginx
           inputs.bing-gpt-server.nixosModules.bing-gpt-server
@@ -96,31 +97,31 @@ in
       eva = {
         _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
         modules = [
+          ./eva/configuration.nix
           defaultModule
           inputs.srvos.nixosModules.server
           inputs.srvos.nixosModules.mixins-nginx
           inputs.srvos.nixosModules.mixins-systemd-boot
           inputs.srvos.nixosModules.roles-prometheus
           inputs.disko.nixosModules.disko
-          ./eva/configuration.nix
         ];
       };
 
       blob64 = {
         _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.aarch64-linux;
         imports = [
+          ./blob64/configuration.nix
           defaultModule
           inputs.srvos.nixosModules.server
-          ./blob64/configuration.nix
         ];
       };
 
       matchbox = {
         _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.aarch64-linux;
         modules = [
+          ./matchbox/configuration.nix
           defaultModule
           inputs.srvos.nixosModules.server
-          ./matchbox/configuration.nix
         ];
       };
     };
