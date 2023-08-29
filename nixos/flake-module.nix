@@ -3,41 +3,34 @@ let
   inherit (inputs.nixpkgs) lib;
   inherit (inputs) nixpkgs clan-core;
 
-  defaultModules = [
-    # make flake inputs accessiable in NixOS
-    {
-      _module.args.self = self;
-      _module.args.inputs = self.inputs;
-    }
-    ({ ... }: {
-      srvos.flake = self;
-      documentation.info.enable = false;
-      services.envfs.enable = true;
+  defaultModule = {
+    srvos.flake = self;
+    documentation.info.enable = false;
+    services.envfs.enable = true;
 
-      imports = [
-        ./modules/nix-path.nix
-        ./modules/pinned-registry.nix
-        ./modules/acme.nix
-        ./modules/nix-daemon.nix
-        ./modules/minimal-docs.nix
-        ./modules/i18n.nix
-        ./modules/sshd
-        ./modules/zfs.nix
+    imports = [
+      ./modules/nix-path.nix
+      ./modules/pinned-registry.nix
+      ./modules/acme.nix
+      ./modules/nix-daemon.nix
+      ./modules/minimal-docs.nix
+      ./modules/i18n.nix
+      ./modules/sshd
+      ./modules/zfs.nix
 
-        inputs.srvos.nixosModules.common
-        inputs.srvos.nixosModules.mixins-telegraf
-        { networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 9273 ]; }
-        inputs.srvos.nixosModules.mixins-trusted-nix-caches
+      inputs.srvos.nixosModules.common
+      inputs.srvos.nixosModules.mixins-telegraf
+      { networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 9273 ]; }
+      inputs.srvos.nixosModules.mixins-trusted-nix-caches
 
-        ./modules/retiolum.nix
-        ./modules/update-prefetch.nix
-        inputs.retiolum.nixosModules.retiolum
-        inputs.retiolum.nixosModules.ca
+      ./modules/retiolum.nix
+      ./modules/update-prefetch.nix
+      inputs.retiolum.nixosModules.retiolum
+      inputs.retiolum.nixosModules.ca
 
-        inputs.sops-nix.nixosModules.sops
-      ];
-    })
-  ];
+      inputs.sops-nix.nixosModules.sops
+    ];
+  };
 in
 {
   flake.nixosConfigurations = clan-core.lib.buildClan {
@@ -48,12 +41,13 @@ in
         nixosModules = self.nixosModules;
         packages = self.packages.x86_64-linux;
       };
+      inputs = inputs;
     };
     machines = {
       bernie = {
         _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
-        imports = defaultModules
-          ++ [
+        imports = [
+          defaultModule
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x13
           inputs.home-manager.nixosModules.home-manager
           inputs.srvos.nixosModules.desktop
@@ -62,8 +56,8 @@ in
       };
       turingmachine = {
         _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
-        imports = defaultModules
-          ++ [
+        imports = [
+          defaultModule
           ./turingmachine/configuration.nix
           inputs.nixos-hardware.nixosModules.framework
           inputs.nix-index-database.nixosModules.nix-index
@@ -90,8 +84,7 @@ in
       };
       eve = {
         _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
-        imports = defaultModules
-          ++ [
+        imports = [
           ./eve/configuration.nix
 
           inputs.srvos.nixosModules.server
@@ -102,22 +95,21 @@ in
 
       eva = {
         _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
-        modules =
-          defaultModules
-          ++ [
-            inputs.srvos.nixosModules.server
-            inputs.srvos.nixosModules.mixins-nginx
-            inputs.srvos.nixosModules.mixins-systemd-boot
-            inputs.srvos.nixosModules.roles-prometheus
-            inputs.disko.nixosModules.disko
-            ./eva/configuration.nix
-          ];
+        modules = [
+          defaultModule
+          inputs.srvos.nixosModules.server
+          inputs.srvos.nixosModules.mixins-nginx
+          inputs.srvos.nixosModules.mixins-systemd-boot
+          inputs.srvos.nixosModules.roles-prometheus
+          inputs.disko.nixosModules.disko
+          ./eva/configuration.nix
+        ];
       };
 
       blob64 = {
         _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.aarch64-linux;
-        imports = defaultModules
-          ++ [
+        imports = [
+          defaultModule
           inputs.srvos.nixosModules.server
           ./blob64/configuration.nix
         ];
@@ -125,7 +117,8 @@ in
 
       matchbox = {
         _module.args.pkgs = lib.mkForce nixpkgs.legacyPackages.aarch64-linux;
-        modules = defaultModules ++ [
+        modules = [
+          defaultModule
           inputs.srvos.nixosModules.server
           ./matchbox/configuration.nix
         ];
