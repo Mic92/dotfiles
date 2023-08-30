@@ -11,26 +11,21 @@ let
   appLogin = "Mic92"; # user or organization name that installed the app
 in
 {
-  sops.templates."renovate.json" = {
-    content = builtins.toJSON {
-      labels = [ "dependencies" "renovate" ];
-      nix.enabled = true;
-      lockFileMaintenance.enabled = true;
-      autodiscover = true;
-      autodiscoverTopics = [ "managed-by-renovate" ];
-      baseDir = "/var/lib/renovate/";
-      cacheDir = "/var/lib/renovate/cache";
-      username = "mic92-renovate[bot]";
-      gitAuthor = "Mic92's Renovate Bot <142113131+mic92-renovate[bot]@users.noreply.github.com>";
-    };
-    owner = "renovate";
-  };
-
   sops.secrets.github-renovate-app-private-key = { };
 
   systemd.services.renovate = {
     environment = {
-      RENOVATE_CONFIG_FILE = config.sops.templates."renovate.json".path;
+      RENOVATE_CONFIG_FILE = pkgs.writers.writeJSON "renovate.json" {
+        labels = [ "dependencies" "renovate" ];
+        nix.enabled = true;
+        lockFileMaintenance.enabled = true;
+        autodiscover = true;
+        autodiscoverTopics = [ "managed-by-renovate" ];
+        baseDir = "/var/lib/renovate/";
+        cacheDir = "/var/lib/renovate/cache";
+        username = "mic92-renovate[bot]";
+        gitAuthor = "Mic92's Renovate Bot <142113131+mic92-renovate[bot]@users.noreply.github.com>";
+      };
       LOG_LEVEL = "debug";
     };
     startAt = "weekly";
