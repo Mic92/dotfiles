@@ -38,10 +38,13 @@ def paginated_github_request(url: str, token: str) -> list[dict[str, Any]]:
     next_url: str | None = url
     repos = []
     while next_url:
-        res = http_request(
-            next_url,
-            headers={"Authorization": f"token {token}"},
-        )
+        try:
+            res = http_request(
+                    next_url,
+                    headers={"Authorization": f"token {token}"},
+                    )
+        except OSError as e:
+            raise Exception(f"failed to fetch {next_url}: {e}") from e
         next_url = None
         link = res.headers()["Link"]
         if link is not None:
