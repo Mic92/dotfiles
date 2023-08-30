@@ -40,9 +40,9 @@ def paginated_github_request(url: str, token: str) -> list[dict[str, Any]]:
     while next_url:
         try:
             res = http_request(
-                    next_url,
-                    headers={"Authorization": f"token {token}"},
-                    )
+                next_url,
+                headers={"Authorization": f"token {token}"},
+            )
         except OSError as e:
             raise Exception(f"failed to fetch {next_url}: {e}") from e
         next_url = None
