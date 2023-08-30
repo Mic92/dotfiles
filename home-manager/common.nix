@@ -13,6 +13,7 @@
       #(pkgs.callPackage /home/joerg/git/nix-review {})
       nixpkgs-review
       nix-prefetch
+      atuin
 
       hexyl
       binutils

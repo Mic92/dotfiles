@@ -13,6 +13,7 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./modules/atuin.nix
     ./modules/adminer.nix
     ./modules/bitwarden.nix
     ./modules/bing-gpt-server.nix

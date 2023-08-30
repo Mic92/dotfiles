@@ -850,6 +850,7 @@ if [ -n "${commands[r2]}" ]; then
   }
 fi
 
+
 if [ -n "$WAYLAND_DISPLAY" ]; then
   alias chromium="chromium --enable-features=UseOzonePlatform --ozone-platform=wayland"
 fi
@@ -869,6 +870,17 @@ if [[ -n "${commands[fzf-share]}" ]]; then
 fi
 if [[ -f ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]]; then
   source ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+fi
+
+if [[ -n "${commands[atuin]}" ]]; then
+  export ATUIN_NOBIND="true"
+  eval "$(atuin init zsh)"
+  
+  bindkey '^r' _atuin_search_widget
+  
+  # depends on terminal mode
+  bindkey '^[[A' _atuin_search_widget
+  bindkey '^[OA' _atuin_search_widget
 fi
 
 # prevent broken terminals by resetting to sane defaults after a command
