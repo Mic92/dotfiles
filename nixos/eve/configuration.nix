@@ -50,6 +50,7 @@
     ./modules/remote-builder.nix
     ./modules/redis.nix
     ./modules/rspamd/rspamd.nix
+    ./modules/shiori.nix
     ./modules/sshd.nix
     ./modules/squid.nix
     ./modules/syncthing.nix
