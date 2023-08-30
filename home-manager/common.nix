@@ -27,7 +27,7 @@
       nil
 
       du-dust
-      pkgs.nix
+      nixVersions.unstable
       procs
 
       socat
