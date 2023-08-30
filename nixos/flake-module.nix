@@ -45,7 +45,7 @@ in
     };
     machines = {
       bernie = {
-        nixpkgs.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
+        nixpkgs.pkgs = nixpkgs.legacyPackages.x86_64-linux;
         imports = [
           ./bernie/configuration.nix
           defaultModule
@@ -56,7 +56,7 @@ in
       };
 
       turingmachine = {
-        nixpkgs.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
+        nixpkgs.pkgs = nixpkgs.legacyPackages.x86_64-linux;
         imports = [
           ./turingmachine/configuration.nix
           defaultModule
@@ -84,7 +84,7 @@ in
         ];
       };
       eve = {
-        nixpkgs.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
+        nixpkgs.pkgs = nixpkgs.legacyPackages.x86_64-linux;
         imports = [
           ./eve/configuration.nix
           defaultModule
@@ -95,7 +95,7 @@ in
       };
 
       eva = {
-        nixpkgs.pkgs = lib.mkForce nixpkgs.legacyPackages.x86_64-linux;
+        nixpkgs.pkgs = nixpkgs.legacyPackages.x86_64-linux;
         imports = [
           ./eva/configuration.nix
           defaultModule
@@ -108,7 +108,7 @@ in
       };
 
       blob64 = {
-        nixpkgs.pkgs = lib.mkForce nixpkgs.legacyPackages.aarch64-linux;
+        nixpkgs.pkgs = nixpkgs.legacyPackages.aarch64-linux;
         imports = [
           ./blob64/configuration.nix
           defaultModule
@@ -117,7 +117,7 @@ in
       };
 
       matchbox = {
-        nixpkgs.pkgs = lib.mkForce nixpkgs.legacyPackages.aarch64-linux;
+        nixpkgs.pkgs = nixpkgs.legacyPackages.aarch64-linux;
         imports = [
           ./matchbox/configuration.nix
           defaultModule
