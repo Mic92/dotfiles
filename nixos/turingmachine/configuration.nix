@@ -1,5 +1,6 @@
 { pkgs
 , lib
+, config
 , ...
 }: {
   imports = [
@@ -56,6 +57,12 @@
     ../modules/no-hz.nix
     #../modules/k3s/server.nix
   ];
+
+  users.mutableUsers = false;
+  sops.secrets.root-password-hash.neededForUsers = true;
+  users.users.root.passwordFile = config.sops.secrets.root-password-hash.path;
+  sops.secrets.joerg-password-hash.neededForUsers = true;
+  users.users.joerg.passwordFile = config.sops.secrets.joerg-password-hash.path;
 
   # https://community.frame.work/t/guide-linux-battery-life-tuning/6665
   services.tlp.enable = true;
