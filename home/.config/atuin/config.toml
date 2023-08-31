@@ -1,2 +1,3 @@
 ## address of the sync server
 sync_address = "https://atuin.thalheim.io"
+invert = true
