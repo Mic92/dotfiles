@@ -3,7 +3,7 @@
   services.shiori.port = 4378;
   services.shiori.package = pkgs.shiori.overrideAttrs (_: {
     patches = [
-      ./0001-drop-password.patch
+      ./0001-set-saner-postgresql-connection-default-and-make-use.patch
     ];
   });
   systemd.services.shiori.environment = {
