@@ -1,4 +1,6 @@
 { self, inputs, ... }: {
+  imports = [ ./modules/neovim/flake-module.nix ];
+
   perSystem = { config, pkgs, lib, ... }:
     let
       homeManagerConfiguration = { extraModules ? [ ] }:
