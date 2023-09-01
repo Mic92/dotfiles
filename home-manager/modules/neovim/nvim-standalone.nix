@@ -6,6 +6,7 @@
 , stdenv
 , fetchFromGitHub
 , luajit
+, nvim-appname
 }:
 let
   # https://github.com/kmarius/jsregexp
@@ -32,17 +33,17 @@ writeShellScriptBin "nvim" ''
     name = "lsp-servers";
     paths = astro-nvim-config.lspPackages;
   }}/bin:$PATH
-  export NVIM_APPNAME=lvim
+  export NVIM_APPNAME=${nvim-appname}
 
   mkdir -p $HOME/.config $HOME/.data/
-  nvim --headless -c 'quitall'
-  ln -sfT ${astro-nvim-config} "$HOME"/.config/lvim
-  if [[ -d $HOME/.data/lvim/lazy/telescope-fzf-native.nvim ]]; then
-    mkdir -p "$HOME/.data/lvim/lazy/telescope-fzf-native.nvim/build"
-    ln -sf "${vimPlugins.telescope-fzf-native-nvim}/build/libfzf.so" "$HOME/.data/lvim/lazy/telescope-fzf-native.nvim/build/libfzf.so"
+  ${neovim}/bin/nvim --headless -c 'quitall'
+  ln -sfT ${astro-nvim-config} "$HOME"/.config/$NVIM_APPNAME
+  if [[ -d $HOME/.data/$NVIM_APPNAME/lazy/telescope-fzf-native.nvim ]]; then
+    mkdir -p "$HOME/.data/$NVIM_APPNAME/lazy/telescope-fzf-native.nvim/build"
+    ln -sf "${vimPlugins.telescope-fzf-native-nvim}/build/libfzf.so" "$HOME/.data/$NVIM_APPNAME/lazy/telescope-fzf-native.nvim/build/libfzf.so"
   fi
-  if [[ -d $HOME/.data/lvim/lazy/LuaSnip/deps/jsregexp ]]; then
-    ln -sf "${jsregexp}/lib/jsregexp.so" "$HOME/.data/lvim/lazy/LuaSnip/deps/jsregexp/jsregexp.so"
+  if [[ -d $HOME/.data/$NVIM_APPNAME/lazy/LuaSnip/deps/jsregexp ]]; then
+    ln -sf "${jsregexp}/lib/jsregexp.so" "$HOME/.data/$NVIM_APPNAME/lazy/LuaSnip/deps/jsregexp/jsregexp.so"
   fi
   exec ${neovim}/bin/nvim "$@"
 ''
