@@ -1,5 +1,5 @@
 { inputs, ... }: {
-  perSystem = { config, self', pkgs, lib, ... }: {
+  perSystem = { self', pkgs, ... }: {
     packages = {
       astro-nvim-config = pkgs.callPackage ./astro-nvim-config.nix { inherit inputs; };
       nvim-open = pkgs.python3Packages.callPackage ./nvim-open.nix { };

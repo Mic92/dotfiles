@@ -18,7 +18,7 @@
       DynamicUser = lib.mkForce false;
       User = "shiori";
       Group = "shiori";
-      RestrictAddressFamilies= [ "AF_UNIX" ];
+      RestrictAddressFamilies = [ "AF_UNIX" ];
       BindPaths = [ "/run/postgresql" ];
     };
   };
@@ -27,7 +27,7 @@
     home = "/var/lib/shiori";
     group = "shiori";
   };
-  users.groups.shiori = {};
+  users.groups.shiori = { };
 
   services.postgresql.ensureDatabases = [ "shiori" ];
   services.postgresql.ensureUsers = [{
