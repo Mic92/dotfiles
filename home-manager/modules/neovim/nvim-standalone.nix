@@ -28,10 +28,10 @@ in
 writeShellScriptBin "nvim" ''
   set -efux
   unset VIMINIT
-  export PATH=$PATH:${buildEnv {
+  export PATH=${buildEnv {
     name = "lsp-servers";
     paths = astro-nvim-config.lspPackages;
-  }}/bin
+  }}/bin:$PATH
   export NVIM_APPNAME=lvim
 
   mkdir -p $HOME/.config $HOME/.data/
