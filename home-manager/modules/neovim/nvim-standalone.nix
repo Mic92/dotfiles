@@ -25,7 +25,7 @@ let
     '';
   };
 in
-writeShellScriptBin "vim" ''
+writeShellScriptBin "nvim" ''
   set -efux
   unset VIMINIT
   export PATH=$PATH:${buildEnv {
