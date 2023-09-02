@@ -50,7 +50,6 @@ let
     sumneko-lua-language-server
 
     # based on ./suggested-pkgs.json
-    stdenv.cc.cc
     go
     delve
     gopls
