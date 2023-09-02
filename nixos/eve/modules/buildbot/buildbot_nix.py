@@ -197,6 +197,12 @@ class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
             log: Log = yield self.addLog("nix_error")
             log.addStderr(f"{attr} failed to evaluate:\n{error}")
             return util.FAILURE
+        path = self.getProperty("out_path")
+
+        # FIXME: actually we should check if it exists in the remote machine
+        if os.path.exists(path):
+            # build already succeeded
+            return util.SKIPPED
 
         # run `nix build`
         cmd: remotecommand.RemoteCommand = yield self.makeRemoteShellCommand()
