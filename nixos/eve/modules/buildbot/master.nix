@@ -42,6 +42,8 @@ in
       BUILDBOT_GITHUB_USER = "mic92-buildbot";
       # comma seperated list of users that are allowed to login to buildbot and do stuff
       GITHUB_ADMINS = "Mic92";
+      NIX_SUPPORTED_SYSTEMS = builtins.toString [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+      NIX_EVAL_MAX_MEMORY_SIZE = "2048";
     };
     serviceConfig = {
       # in master.py we read secrets from $CREDENTIALS_DIRECTORY
