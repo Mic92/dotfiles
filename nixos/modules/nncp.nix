@@ -25,7 +25,6 @@ let
   nodesJson = builtins.toFile "nodes.json" (builtins.toJSON nodes);
 in
 {
-  sops.secrets.nncp = { };
   networking.firewall.allowedTCPPorts = [ 5400 ];
   services.nncp.daemon = {
     enable = true;
@@ -54,7 +53,7 @@ in
   ];
   programs.nncp = {
     enable = true;
-    secrets = [ config.sops.secrets.nncp.path ];
+    secrets = [ config.sops.secrets."${config.clanCore.machineName}-nncp".path ];
     settings.neigh = lib.mapAttrs
       (name: node: node // {
         exec = {

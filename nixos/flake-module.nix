@@ -31,7 +31,7 @@ let
 in
 {
   flake.nixosConfigurations = clan-core.lib.buildClan {
-    directory = ./.;
+    directory = self;
     specialArgs = {
       self = {
         inputs = self.inputs;
