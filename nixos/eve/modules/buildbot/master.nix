@@ -48,23 +48,18 @@ in
     serviceConfig = {
       # in master.py we read secrets from $CREDENTIALS_DIRECTORY
       LoadCredential = [
-        "github-token:${config.sops.secrets.github-token.path}"
-        "github-webhook-secret:${config.sops.secrets.github-webhook-secret.path}"
-        "github-oauth-secret:${config.sops.secrets.github-oauth-secret.path}"
+        "github-token:${config.sops.secrets.buildbot-github-token.path}"
+        "github-webhook-secret:${config.sops.secrets.buildbot-github-webhook-secret.path}"
+        "github-oauth-secret:${config.sops.secrets.buildbot-github-oauth-secret.path}"
         "buildbot-nix-workers:${config.sops.secrets.buildbot-nix-workers.path}"
-        # use harmonia instead
-        #"cachix-name:${config.sops.secrets.cachix-name.path}"
-        #"cachix-signing-key:${config.sops.secrets.cachix-signing-key.path}"
       ];
     };
   };
   sops.secrets = {
-    github-token = { };
-    github-webhook-secret = { };
-    github-oauth-secret = { };
+    buildbot-github-token = { };
+    buildbot-github-webhook-secret = { };
+    buildbot-github-oauth-secret = { };
     buildbot-nix-workers = { };
-    cachix-name = { };
-    cachix-signing-key = { };
   };
 
   services.postgresql = {
