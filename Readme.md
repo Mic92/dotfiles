@@ -17,7 +17,6 @@ nix-shell> alias homeshick="$HOME/.homesick/repos/homeshick/bin/homeshick"
 nix-shell> homeshick clone https://github.com/Mic92/dotfiles.git
 ```
 
-
 # Boostrap single user nix:
 
 ```console
@@ -36,6 +35,12 @@ $ sh ./install --daemon
 
 ```console
 $ hm switch
+```
+
+# Use my nvim configuration as a standalone without installing dotfiles
+
+```console
+$ nix run 'github:Mic92/dotfiles#nvim'
 ```
 
 # Articles about my dotfile repo
