@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
   imports = [
     ./modules/borgbackup-repos
@@ -12,9 +12,6 @@
   ];
 
   system.stateVersion = "22.11";
-
-  sops.secrets.root-password-hash.neededForUsers = true;
-  users.users.root.passwordFile = config.sops.secrets.root-password-hash.path;
 
   # Fan speed adjustment
   systemd.services.fans =

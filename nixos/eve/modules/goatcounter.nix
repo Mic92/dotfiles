@@ -50,6 +50,4 @@
     isSystemUser = true;
     group = "goatcounter";
   };
-
-  users.groups.goatcounter = { };
 }

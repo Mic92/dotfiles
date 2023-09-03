@@ -9,7 +9,6 @@
     ../modules/zerotier.nix
     #../modules/libvirt.nix
     ./modules/caddy.nix
-    ./modules/eve-rdp.nix
     ./modules/borgbackup.nix
     ./modules/hass-agent.nix
     ./modules/nfs.nix
@@ -50,17 +49,14 @@
     #../modules/yubikey.nix
     ../modules/users.nix
     ../modules/nix-ld.nix
-    ../modules/yggdrasil.nix
     ../modules/keyd.nix
     ../modules/no-hz.nix
     #../modules/k3s/server.nix
   ];
 
   users.mutableUsers = false;
-  sops.secrets.root-password-hash.neededForUsers = true;
-  users.users.root.passwordFile = config.sops.secrets.root-password-hash.path;
-  sops.secrets.joerg-password-hash.neededForUsers = true;
-  users.users.joerg.passwordFile = config.sops.secrets.joerg-password-hash.path;
+  sops.secrets.eve-joerg-password-hash.neededForUsers = true;
+  users.users.eve-joerg.passwordFile = config.sops.secrets.eve-joerg-password-hash.path;
 
   # https://community.frame.work/t/guide-linux-battery-life-tuning/6665
   services.tlp.enable = true;

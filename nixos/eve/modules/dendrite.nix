@@ -24,15 +24,11 @@ let
     '';
 in
 {
-  # $ nix-shell -p dendrite --run 'generate-keys --private-key /tmp/key'
-  sops.secrets.matrix-server-key = { };
-  # $ echo "REGISTRATION_SHARED_SECRET=$(openssl rand -base64 32)"
-  sops.secrets.registration-secret = { };
-
   services.dendrite = {
     enable = true;
     httpPort = 8043;
-    environmentFile = config.sops.secrets.registration-secret.path;
+    # $ echo "REGISTRATION_SHARED_SECRET=$(openssl rand -base64 32)"
+    environmentFile = config.sops.secrets.matrix-registration-secret.path;
 
     settings = {
       sync_api.search = {
@@ -116,6 +112,7 @@ in
   };
 
   systemd.services.dendrite.serviceConfig.LoadCredential = [
+    # $ nix-shell -p dendrite --run 'generate-keys --private-key /tmp/key'
     "matrix-server-key:${config.sops.secrets.matrix-server-key.path}"
   ];
 

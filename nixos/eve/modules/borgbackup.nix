@@ -1,7 +1,4 @@
 { config, ... }: {
-  sops.secrets.borgbackup-passphrase = { };
-  sops.secrets.borgbackup-ssh = { };
-
   systemd.services.borgbackup-job-eve.serviceConfig.ReadWritePaths = [
     "/var/log/telegraf"
   ];
@@ -40,9 +37,9 @@
     repo = "borg@blob64.r:/zdata/borg/eve";
     encryption = {
       mode = "repokey";
-      passCommand = "cat ${config.sops.secrets.borgbackup-passphrase.path}";
+      passCommand = "cat ${config.sops.secrets.eve-borgbackup-passphrase.path}";
     };
-    environment.BORG_RSH = "ssh -i ${config.sops.secrets.borgbackup-ssh.path}";
+    environment.BORG_RSH = "ssh -i ${config.sops.secrets.eve-borgbackup-ssh.path}";
     compression = "auto,zstd";
     startAt = "daily";
     preHook = "set -x";

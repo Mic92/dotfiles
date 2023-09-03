@@ -11,8 +11,6 @@ let
   };
 in
 {
-  sops.secrets.prometheus-irc-password = { };
-
   systemd.sockets =
     lib.mapAttrs'
       (name: opts:

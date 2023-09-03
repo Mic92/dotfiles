@@ -16,9 +16,6 @@ let
   };
 in
 {
-  # format: MX_TOKEN=<token>
-  sops.secrets.nix-community-bot-access-token = { };
-
   systemd.services.matrix-hook = {
     description = "Matrix Hook";
     after = [ "network.target" ];
@@ -33,6 +30,7 @@ in
     };
     serviceConfig = {
       EnvironmentFile = [
+        # format: MX_TOKEN=<token>
         config.sops.secrets.nix-community-bot-access-token.path
       ];
       Type = "simple";

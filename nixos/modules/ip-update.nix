@@ -2,7 +2,6 @@
 , config
 , ...
 }: {
-  sops.secrets."ip-update-key" = { };
   systemd.timers.ip-update = {
     description = "Update ip address";
     wantedBy = [ "timers.target" ];
@@ -32,7 +31,7 @@
           echo "update add ${config.networking.hostName}.thalheim.io. 600 AAAA $ip6"
         fi
         echo "send"
-      ) | nsupdate -k ${config.sops.secrets."ip-update-key".path} -v
+      ) | nsupdate -k ${config.sops.secrets."${config.clanCore.machineName}-ip-update-key".path} -v
     '';
     serviceConfig.Type = "oneshot";
     serviceConfig.Restart = "on-failure";

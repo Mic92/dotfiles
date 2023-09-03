@@ -82,7 +82,6 @@ in
     # Hack so that network is considered up by boot.initrd.network and postCommands gets executed.
     boot.kernelParams = [ "ip=127.0.0.1:::::lo:none" ];
 
-    sops.secrets.initrd-ssh-key = { };
     boot.initrd.postDeviceCommands = ''
       while ! test -f /root/decrypted; do
         echo "wait for zfs to be decrypted"
@@ -95,7 +94,7 @@ in
         enable = true;
         port = 2222;
         hostKeys = [
-          #config.sops.secrets.initrd-ssh-key.path
+          #config.sops.secrets.eve-initrd-ssh-key.path
           "/var/lib/initrd-ssh-key"
         ];
       };

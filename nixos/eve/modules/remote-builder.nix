@@ -29,7 +29,7 @@
     {
       hostName = "amy.dse.in.tum.de";
       maxJobs = 92;
-      sshKey = config.sops.secrets.tum-builder.path;
+      sshKey = config.sops.secrets.ssh-tum-builder.path;
       protocol = "ssh-ng";
       sshUser = "nix";
       systems = [ "x86_64-linux" "i686-linux" ];
@@ -42,7 +42,7 @@
     {
       hostName = "clara.dse.in.tum.de";
       maxJobs = 92;
-      sshKey = config.sops.secrets.tum-builder.path;
+      sshKey = config.sops.secrets.ssh-tum-builder.path;
       protocol = "ssh-ng";
       sshUser = "nix";
       systems = [ "x86_64-linux" "i686-linux" ];
@@ -55,7 +55,7 @@
     {
       hostName = "rose.dse.in.tum.de";
       maxJobs = 92;
-      sshKey = config.sops.secrets.tum-builder.path;
+      sshKey = config.sops.secrets.ssh-tum-builder.path;
       protocol = "ssh-ng";
       sshUser = "nix";
       systems = [ "x86_64-linux" "i686-linux" ];
@@ -76,6 +76,4 @@
       publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDrUaBPZktk41hYHN95IIHBL4bn7LbZy1aLra/ONv4go";
     };
   };
-  sops.secrets.tum-builder = { };
-  sops.secrets.ssh-aarch64-builder = { };
 }

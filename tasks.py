@@ -242,32 +242,6 @@ def deploy(c: Any, _hosts: str = "") -> None:
         eve.run("systemctl restart buildbot-master")
 
 
-@task
-def deploy_k3s(c: Any) -> None:
-    """
-    Deploy k3s cluster to cloudlab
-    """
-    deploy_nixos(
-        [
-            DeployHost(
-                "node0.nixos-k3s.Serverless-tum.emulab.net",
-                user="root",
-                meta=dict(flake_attr="cloudlab-k3s-server"),
-            ),
-            DeployHost(
-                "node1.nixos-k3s.Serverless-tum.emulab.net",
-                user="root",
-                meta=dict(flake_attr="cloudlab-k3s-agent"),
-            ),
-            DeployHost(
-                "node2.nixos-k3s.Serverless-tum.emulab.net",
-                user="root",
-                meta=dict(flake_attr="cloudlab-k3s-agent"),
-            ),
-        ]
-    )
-
-
 def try_local(host: str) -> str:
     return f"{host}.r"
     # try:

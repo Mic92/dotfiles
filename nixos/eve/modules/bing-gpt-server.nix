@@ -1,5 +1,4 @@
 { config, ... }: {
-  sops.secrets."bing-gpt-cookies" = { };
   services.bing-gpt-server = {
     enable = true;
     port = 8683;

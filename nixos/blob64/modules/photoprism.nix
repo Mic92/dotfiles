@@ -1,5 +1,4 @@
 { config, ... }: {
-  sops.secrets.photoprism = { };
   services.photoprism = {
     enable = true;
     address = "[::]";

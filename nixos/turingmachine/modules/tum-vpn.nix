@@ -5,5 +5,4 @@
       exec "${pkgs.openvpn}/bin/openvpn" ${./vpn-il1-standard.ovpn}
     '')
   ];
-  sops.secrets.tum-vpn-auth = { };
 }

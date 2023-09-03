@@ -11,8 +11,6 @@ let
   appLogin = "Mic92"; # user or organization name that installed the app
 in
 {
-  sops.secrets.github-renovate-app-private-key = { };
-
   systemd.services.renovate = {
     environment = {
       RENOVATE_CONFIG_FILE = pkgs.writers.writeJSON "renovate.json" {

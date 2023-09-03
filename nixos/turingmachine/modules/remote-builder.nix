@@ -6,7 +6,7 @@
       hostName = "ryan.dse.in.tum.de";
       sshUser = "nix";
       protocol = "ssh-ng";
-      sshKey = config.sops.secrets.id_buildfarm.path;
+      sshKey = config.sops.secrets.ssh-remote-builder.path;
       systems = [ "x86_64-linux" "i686-linux" ];
       maxJobs = 64;
       supportedFeatures = [
@@ -19,7 +19,7 @@
       hostName = "yasmin.dse.in.tum.de";
       sshUser = "nix";
       protocol = "ssh-ng";
-      sshKey = config.sops.secrets.id_buildfarm.path;
+      sshKey = config.sops.secrets.ssh-remote-builder.path;
       system = "aarch64-linux";
       maxJobs = 224;
       supportedFeatures = [
@@ -52,5 +52,4 @@
     #  ];
     #}
   ];
-  sops.secrets.id_buildfarm = { };
 }

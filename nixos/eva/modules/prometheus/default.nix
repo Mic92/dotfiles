@@ -2,8 +2,7 @@
 , ...
 }:
 {
-  sops.secrets.alertmanager = { };
-  sops.secrets.hass-token.owner = "prometheus";
+  sops.secrets.prometheus-hass-token.owner = "prometheus";
 
   imports = [
     ./matrix-alertmanager.nix
@@ -107,7 +106,7 @@
         scrape_interval = "60s";
         metrics_path = "/api/prometheus";
 
-        authorization.credentials_file = config.sops.secrets.hass-token.path;
+        authorization.credentials_file = config.sops.secrets.prometheus-hass-token.path;
 
         scheme = "https";
         static_configs = [

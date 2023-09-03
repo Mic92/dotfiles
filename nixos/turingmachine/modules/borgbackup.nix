@@ -7,9 +7,6 @@ let
   backupPath = "borg@blob64.r:/zdata/borg/turingmachine";
 in
 {
-  sops.secrets.borgbackup = { };
-  sops.secrets.ssh-borgbackup = { };
-
   services.borgbackup.jobs.turingmachine = {
     paths = [
       "/home"
@@ -49,12 +46,12 @@ in
     ];
     encryption = {
       mode = "repokey";
-      passCommand = "cat ${config.sops.secrets.borgbackup.path}";
+      passCommand = "cat ${config.sops.secrets.turingmachine-borgbackup.path}";
     };
     preHook = ''
       set -x
       eval $(ssh-agent)
-      ssh-add ${config.sops.secrets.ssh-borgbackup.path}
+      ssh-add ${config.sops.secrets.turingmachine-ssh-borgbackup.path}
     '';
     postHook = ''
       cat > /var/log/telegraf/borgbackup-job-turingmachine.service <<EOF
@@ -74,7 +71,7 @@ in
     path = [ pkgs.borgbackup pkgs.openssh ];
     script = ''
       eval $(ssh-agent)
-      ssh-add ${config.sops.secrets.ssh-borgbackup.path}
+      ssh-add ${config.sops.secrets.turingmachine-ssh-borgbackup.path}
       export BORG_PASSCOMMAND='cat /run/secrets/borgbackup'
       export BORG_REPO='${backupPath}'
       borg break-lock

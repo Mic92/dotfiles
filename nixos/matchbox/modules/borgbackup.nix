@@ -1,17 +1,13 @@
 { config, pkgs, ... }: {
-
-  sops.secrets.borgbackup-passphrase = { };
-  sops.secrets.borgbackup-ssh = { };
-
   systemd.services.borgbackup-job-blob64.serviceConfig.ReadWritePaths = [
     "/var/log/telegraf"
   ];
 
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = [
     (pkgs.writeShellScriptBin "borg-job-blob64-break-lock" ''
       set -eux -o pipefail
       eval $(ssh-agent)
-      ssh-add ${config.sops.secrets.borgbackup-ssh.path}
+      ssh-add ${config.sops.secrets.matchbox-borgbackup-ssh.path}
       borg-job-blob64 break-lock
       kill $SSH_AGENT_PID
     '')
@@ -49,14 +45,14 @@
     repo = "borg@blob64.r:/zdata/borg/matchbox";
     encryption = {
       mode = "repokey";
-      passCommand = "cat ${config.sops.secrets.borgbackup-passphrase.path}";
+      passCommand = "cat ${config.sops.secrets.matchbox-borgbackup-passphrase.path}";
     };
     compression = "auto,zstd";
     startAt = "daily";
     preHook = ''
       set -x
       eval $(ssh-agent)
-      ssh-add ${config.sops.secrets.borgbackup-ssh.path}
+      ssh-add ${config.sops.secrets.matchbox-borgbackup-ssh.path}
     '';
 
     postHook = ''

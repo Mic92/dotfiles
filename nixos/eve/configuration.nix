@@ -32,8 +32,6 @@
     ./modules/home-assistant
     ./modules/influxdb.nix
     ./modules/harmonia.nix
-    #./modules/jetbrains-remote.nix
-    #./modules/k8s.nix
     ./modules/knot
     ./modules/navidrome.nix
     ./modules/unbound.nix

@@ -150,7 +150,6 @@ in
     params.dovecot2 = { };
   };
 
-  sops.secrets.dovecot-ldap-password = { };
   systemd.services.dovecot2.preStart = ''
     sed -e "s!@ldap-password@!$(<${config.sops.secrets.dovecot-ldap-password.path})!" ${ldapConfig} > /run/dovecot2/ldap.conf
   '';
