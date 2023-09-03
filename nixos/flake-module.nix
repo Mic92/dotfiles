@@ -26,8 +26,6 @@ let
       ./modules/update-prefetch.nix
       inputs.retiolum.nixosModules.retiolum
       inputs.retiolum.nixosModules.ca
-
-      inputs.sops-nix.nixosModules.sops
     ];
   };
 in
