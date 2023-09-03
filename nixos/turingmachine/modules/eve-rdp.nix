@@ -3,13 +3,11 @@
 , ...
 }: {
   sops.secrets.eve-rdp-password = {
-    sopsFile = ../secrets/secrets.yaml;
     group = "users";
 
     mode = "0440";
   };
   sops.secrets.ryan-rdp-password = {
-    sopsFile = ../secrets/secrets.yaml;
     group = "users";
 
     mode = "0440";
