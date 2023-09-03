@@ -19,6 +19,7 @@ let
       sha256 = "sha256-vE2N1VKaEBeJ8IHuP+n0MwIzmkpgh/Ak50nWJUVqfgM=";
     };
     buildInputs = [ luajit ];
+    makeFlags = [ "CC=${stdenv.cc.targetPrefix}cc" ];
     installPhase = ''
       runHook preInstall
       install -m755 -D jsregexp.so $out/lib/jsregexp.so
