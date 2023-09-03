@@ -11,7 +11,6 @@
     ./modules/borgbackup.nix
     ./modules/samba.nix
     ./modules/rsyncd.nix
-    ./modules/sops.nix
     ./modules/photoprism.nix
   ];
 

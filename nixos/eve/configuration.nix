@@ -55,7 +55,6 @@
     ./modules/sshd.nix
     ./modules/squid.nix
     ./modules/syncthing.nix
-    ./modules/sops.nix
     ./modules/teamspeak.nix
     ./modules/tt-rss.nix
     ./modules/tts.nix

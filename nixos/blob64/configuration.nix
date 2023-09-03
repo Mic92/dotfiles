@@ -11,7 +11,6 @@
     ./hardware-configuration.nix
   ];
 
-  sops.defaultSopsFile = ./secrets/secrets.yaml;
   system.stateVersion = "22.11";
 
   sops.secrets.root-password-hash.neededForUsers = true;

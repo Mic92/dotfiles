@@ -10,7 +10,6 @@
     ./modules/prometheus
     ./modules/loki.nix
     ./modules/nginx.nix
-    ./modules/sops.nix
 
     ../modules/sshd
     ../modules/mosh.nix
