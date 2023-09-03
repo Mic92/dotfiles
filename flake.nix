@@ -62,7 +62,7 @@
     srvos.url = "github:numtide/srvos/prometheus";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
-    clan-core.url = "git+https://git.clan.lol/clan/clan-core";
+    clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=build-clan-fix";
     clan-core.inputs.nixpkgs.follows = "nixpkgs";
     clan-core.inputs.sops-nix.follows = "sops-nix";
     clan-core.inputs.treefmt-nix.follows = "treefmt-nix";
