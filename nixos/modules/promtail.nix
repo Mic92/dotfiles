@@ -1,8 +1,5 @@
 { config, ... }: {
-  sops.secrets.promtail-password = {
-    owner = "promtail";
-    sopsFile = ../secrets/secrets.yaml;
-  };
+  sops.secrets.promtail-password.owner = "promtail";
   services.promtail = {
     enable = true;
     configuration = {
