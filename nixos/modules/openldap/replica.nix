@@ -24,8 +24,5 @@ in
     olcSyncRepl.path = config.sops.secrets.${passwordName}.path;
   };
 
-  sops.secrets.${passwordName} = {
-    owner = "openldap";
-    sopsFile = ../../secrets/ldap.yaml;
-  };
+  sops.secrets.${passwordName}.owner = "openldap";
 }

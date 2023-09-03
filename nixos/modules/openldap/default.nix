@@ -272,10 +272,7 @@
     };
   };
 
-  sops.secrets.openldap-rootpw = {
-    owner = "openldap";
-    sopsFile = ../../secrets/ldap.yaml;
-  };
+  sops.secrets.openldap-rootpw.owner = "openldap";
 
   networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 389 ];
 }
