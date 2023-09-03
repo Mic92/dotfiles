@@ -65,6 +65,7 @@ class BuildTrigger(Trigger):
                 name = f"checks.{name}"
             drv_path = job.get("drvPath")
             error = job.get("error")
+            system = job.get("system")
             out_path = job.get("outputs", {}).get("out")
 
             build_props.setProperty(f"{attr}-out_path", out_path, source)
@@ -75,6 +76,7 @@ class BuildTrigger(Trigger):
             props.setProperty("status_name", f"nix-build .#checks.{attr}", source)
             props.setProperty("virtual_builder_tags", "", source)
             props.setProperty("attr", attr, source)
+            props.setProperty("system", system, source)
             props.setProperty("drv_path", drv_path, source)
             props.setProperty("out_path", out_path, source)
             # we use this to identify builds when running a retry
@@ -106,11 +108,12 @@ class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
     every attribute.
     """
 
-    def __init__(self, **kwargs: Any) -> None:
+    def __init__(self, supported_systems: list[str], **kwargs: Any) -> None:
         kwargs = self.setupShellMixin(kwargs)
         super().__init__(**kwargs)
         self.observer = logobserver.BufferLogObserver()
         self.addLogObserver("stdio", self.observer)
+        self.supported_systems = supported_systems
 
     @defer.inlineCallbacks
     def run(self) -> Generator[Any, object, Any]:
@@ -138,6 +141,13 @@ class NixEvalCommand(buildstep.ShellMixin, steps.BuildStep):
             )
             project_id = repo_name.replace("/", "-")
             scheduler = f"{project_id}-nix-build"
+            filtered_jobs = []
+            for job in jobs:
+                system = job.get("system")
+                if not system:  # report eval errors
+                    filtered_jobs.append(job)
+                elif system in self.supported_systems:
+                    filtered_jobs.append(job)
 
             self.build.addStepsAfterCurrentStep(
                 [BuildTrigger(scheduler=scheduler, name="build flake", jobs=jobs)]
@@ -187,6 +197,12 @@ class NixBuildCommand(buildstep.ShellMixin, steps.BuildStep):
             log: Log = yield self.addLog("nix_error")
             log.addStderr(f"{attr} failed to evaluate:\n{error}")
             return util.FAILURE
+        path = self.getProperty("out_path")
+
+        # FIXME: actually we should check if it exists in the remote machine
+        if os.path.exists(path):
+            # build already succeeded
+            return util.SKIPPED
 
         # run `nix build`
         cmd: remotecommand.RemoteCommand = yield self.makeRemoteShellCommand()
@@ -331,7 +347,9 @@ def nix_eval_config(
     project: GithubProject,
     worker_names: list[str],
     github_token_secret: str,
+    supported_systems: list[str],
     automerge_users: List[str] = [],
+    max_memory_size: int = 4096,
 ) -> util.BuilderConfig:
     """
     Uses nix-eval-jobs to evaluate hydraJobs from flake.nix in parallel.
@@ -357,6 +375,7 @@ def nix_eval_config(
         NixEvalCommand(
             env={},
             name="evaluate flake",
+            supported_systems=supported_systems,
             command=[
                 "nix",
                 "run",
@@ -367,6 +386,8 @@ def nix_eval_config(
                 "--",
                 "--workers",
                 multiprocessing.cpu_count(),
+                "--max-memory-size",
+                str(max_memory_size),
                 "--option",
                 "accept-flake-config",
                 "true",

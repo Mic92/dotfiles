@@ -1,6 +1,5 @@
 { self, inputs, ... }:
 let
-  inherit (inputs.nixpkgs) lib;
   inherit (inputs) nixpkgs clan-core;
 
   defaultModule = {

@@ -1,6 +1,6 @@
 locals {
   buildbot_repos               = ["dotfiles", "nixpkgs"]
-  buildbot_repos_nix_community = ["harmonia"]
+  buildbot_repos_nix_community = ["harmonia", "disko"]
   buildbot_repos_numtide       = ["nixos-anywhere"]
 }
 

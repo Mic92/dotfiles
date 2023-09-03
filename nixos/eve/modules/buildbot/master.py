@@ -43,6 +43,8 @@ REPO_REGEX = os.environ["GITHUB_REPO_REGEX"]
 REPO_FOR_FLAKE_UPDATE = os.environ["REPO_FOR_FLAKE_UPDATE"]
 BUILDBOT_URL = os.environ["BUILDBOT_URL"]
 BUILDBOT_GITHUB_USER = os.environ["BUILDBOT_GITHUB_USER"]
+NIX_SUPPORTED_SYSTEMS = os.environ["NIX_SUPPORTED_SYSTEMS"].split(" ")
+NIX_EVAL_MAX_MEMORY_SIZE = int(os.environ.get("NIX_EVAL_MAX_MEMORY_SIZE", "4096"))
 
 
 def config_for_project(
@@ -119,10 +121,15 @@ def config_for_project(
                 project,
                 [worker_names[0]],
                 github_token_secret=GITHUB_TOKEN_SECRET_NAME,
+                supported_systems=NIX_SUPPORTED_SYSTEMS,
                 automerge_users=[BUILDBOT_GITHUB_USER],
+                max_memory_size=NIX_EVAL_MAX_MEMORY_SIZE,
             ),
             nix_build_config(
-                project, worker_names, has_cachix_auth_token, has_cachix_signing_key
+                project,
+                worker_names,
+                has_cachix_auth_token,
+                has_cachix_signing_key,
             ),
             nix_update_flake_config(
                 project,
