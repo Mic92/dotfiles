@@ -7,7 +7,7 @@ in
   services.telegraf.extraConfig.inputs = {
     http_response = [
       {
-        urls = [ "https://prometheus.nix-community.org/graph" ];
+        urls = [ "https://monitoring.nix-community.org/prometheus/graph" ];
         response_string_match = "Prometheus Time Series Collection";
         tags.host = "web02.nix-community.org";
         tags.org = "nix-community";
