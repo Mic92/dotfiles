@@ -112,6 +112,14 @@
       }
       {
         urls = [
+          "http://ca.r/"
+        ];
+        tags.host = "hotdog";
+        tags.org = "krebs";
+        interface = "tinc.retiolum";
+      }
+      {
+        urls = [
           "http://rss.r/?action=display&bridge=HeiseBridge&category=https%3A%2F%2Fwww.heise.de%2Fnewsticker%2Fheise-atom.xml&limit=5&format=Atom"
         ];
         tags.host = "news";
