@@ -151,7 +151,6 @@
     environmentFile = config.sops.secrets.alertmanager.path;
     webExternalUrl = "https://alertmanager.thalheim.io";
     listenAddress = "[::1]";
-    extraFlags = [ "--cluster.listen-address=''" ];
     configuration = {
       global = {
         # The smarthost and SMTP sender used for mail notifications.

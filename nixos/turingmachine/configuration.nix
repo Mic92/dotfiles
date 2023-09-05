@@ -55,8 +55,8 @@
   ];
 
   users.mutableUsers = false;
-  sops.secrets.eve-joerg-password-hash.neededForUsers = true;
-  users.users.eve-joerg.passwordFile = config.sops.secrets.eve-joerg-password-hash.path;
+  sops.secrets.turingmachine-joerg-password-hash.neededForUsers = true;
+  users.users.joerg.passwordFile = config.sops.secrets.turingmachine-joerg-password-hash.path;
 
   # https://community.frame.work/t/guide-linux-battery-life-tuning/6665
   services.tlp.enable = true;

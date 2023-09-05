@@ -36,7 +36,7 @@ def build_jwt_payload(app_id: str) -> dict[str, Any]:
 
 def request_access_token(
     app_login: str, app_id: str, app_private_key: str, github_host: str = "github.com"
-):
+) -> str:
     uri = (
         f"https://api.{github_host}"
         if github_host == "github.com"
