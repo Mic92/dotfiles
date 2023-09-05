@@ -43,7 +43,7 @@
     http_response = [
       {
         urls = [
-          "http://lassul.us:8000/radio.ogg.m3u"
+          "http://radio.lassul.us/radio.ogg.m3u"
         ];
         tags.host = "prism";
         tags.org = "krebs";
