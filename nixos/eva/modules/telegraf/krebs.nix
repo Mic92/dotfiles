@@ -16,13 +16,6 @@
         "prism"
         #"puyak"
         "ni"
-      ]
-      ++ [
-        {
-          protocol = "tcp";
-          address = "lassul.us:1935"; # rtmp
-          tags.org = "krebs";
-        }
       ];
 
     x509_cert = [
@@ -108,17 +101,16 @@
       }
       {
         urls = [
-          "http://search.r/"
+          "http://ca.r/"
         ];
-        tags.host = "prism";
-        response_string_match = "searx";
+        tags.host = "hotdog";
         tags.org = "krebs";
         interface = "tinc.retiolum";
         response_status_code = 200;
       }
       {
         urls = [
-          "http://ca.r/"
+          "http://calendar.r/.web/"
         ];
         tags.host = "hotdog";
         tags.org = "krebs";
@@ -161,7 +153,7 @@
         urls = [
           "http://cgit.ni.r"
           "http://cgit.gum.r"
-          "http://cgit.prism.r"
+          "http://cgit.orange.r"
         ];
         response_string_match = "cgit";
         tags.org = "krebs";
