@@ -247,6 +247,8 @@
         urls = [
           "http://p.r"
         ];
+        body = "ok";
+        method = "POST";
         tags.org = "krebs";
         interface = "tinc.retiolum";
         response_status_code = 200;
