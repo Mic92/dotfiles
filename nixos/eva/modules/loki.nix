@@ -59,6 +59,13 @@ in
       };
 
       limits_config.retention_period = "120h";
+      limits_config.ingestion_burst_size_mb = 16;
+      limits_config.reject_old_samples = true;
+      limits_config.reject_old_samples_max_age = "12h";
+
+      chunk_store_config = {
+        max_look_back_period = "120h";
+      };
 
       # Table manager
       table_manager = {
@@ -69,7 +76,11 @@ in
       compactor = {
         retention_enabled = true;
         compaction_interval = "10m";
+        shared_store = "filesystem";
         working_directory = "/var/lib/loki/compactor";
+        delete_request_cancel_period = "10m"; # don't wait 24h before processing the delete_request
+        retention_delete_delay = "2h";
+        retention_delete_worker_count = 150;
       };
 
       # Schema
@@ -84,7 +95,6 @@ in
         }
       ];
 
-      limits_config.ingestion_burst_size_mb = 16;
 
       ruler = {
         storage = {
