@@ -131,10 +131,27 @@
         urls = [
           "http://news.r/"
           "http://brockman.r/"
-          "http://go.r/"
         ];
         tags.host = "news";
         method = "HEAD";
+        tags.org = "krebs";
+        interface = "tinc.retiolum";
+        response_status_code = 200;
+      }
+      {
+        urls = [
+          "http://go.r"
+        ];
+        tags.host = "news";
+        method = "POST";
+        headers."Content-Type" = "multipart/form-data; boundary=------------------------04afef05eaafa8d5";
+        body = ''
+          --------------------------04afef05eaafa8d5
+          Content-Disposition: form-data; name="uri"
+
+          google.com
+          --------------------------04afef05eaafa8d5--
+        '';
         tags.org = "krebs";
         interface = "tinc.retiolum";
         response_status_code = 200;
@@ -184,15 +201,6 @@
           "https://pad.lassul.us"
         ];
         response_string_match = "HedgeDoc";
-        tags.host = "prism";
-        tags.org = "krebs";
-        response_status_code = 200;
-      }
-      {
-        urls = [
-          "https://mumble.lassul.us"
-        ];
-        response_string_match = "Mumble";
         tags.host = "prism";
         tags.org = "krebs";
         response_status_code = 200;
