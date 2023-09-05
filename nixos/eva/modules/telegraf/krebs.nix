@@ -59,7 +59,7 @@
       #}
       {
         urls = [
-          "http://yellow.r:9091/transmission/web/"
+          "http://transmission.r/transmission/web/"
         ];
         response_string_match = "Transmission Web";
         tags.host = "yellow";
