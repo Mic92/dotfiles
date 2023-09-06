@@ -1,6 +1,7 @@
 { pkgs, ... }: {
   imports = [
     ./common.nix
+    ./modules/atuin-autosync.nix
   ];
   home.packages =
     let
