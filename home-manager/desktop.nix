@@ -4,6 +4,7 @@
 }: {
   imports = [
     ./common.nix
+    ./modules/atuin-autosync.nix
     ./modules/rust.nix
     ./modules/heygpt.nix
     ./modules/debugging.nix
@@ -15,14 +16,7 @@
 
   programs.vscode.enable = true;
 
-  systemd.user.services.mpris-proxy = {
-    Unit.Description = "Mpris proxy";
-    Unit.After = [ "network.target" "sound.target" ];
-    Install.WantedBy = [ "default.target" ];
-    Service.ExecStart = "${pkgs.bluez}/bin/mpris-proxy";
-    Service.Restart = "always";
-  };
-
+  services.mpris-proxy.enable = true;
   services.syncthing.enable = true;
 
   home.packages = with pkgs; [

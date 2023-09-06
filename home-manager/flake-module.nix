@@ -29,8 +29,8 @@
         type = "app";
         program = "${pkgs.writeShellScriptBin "hm" ''
         set -x
-        export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.nix pkgs.jq pkgs.unixtools.hostname]}
-        declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["dev2"]="dev2" ["eve"]="eve" ["bernie"]="bernie" ["mac01.numtide.com"]="mac-hetzner")
+        export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.findutils pkgs.nix pkgs.jq pkgs.unixtools.hostname]}
+        declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["web01"]="mic92" ["bld2"]="mic92" ["eve"]="eve" ["bernie"]="bernie" ["mac01.numtide.com"]="mac-hetzner")
         profile="common"
         if [[ -n ''${profiles[$(hostname)]:-} ]]; then
           profile=''${profiles[$(hostname)]}
@@ -47,7 +47,7 @@
         type = "app";
         program = "${pkgs.writeShellScriptBin "bootstrap-dotfiles" ''
           set -x
-          export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.nix pkgs.jq pkgs.bash]}
+          export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.findutils pkgs.nix pkgs.jq pkgs.bash]}
           if [ ! -d "$HOME/.homesick/repos/homeshick" ]; then
             git clone --depth=1 https://github.com/andsens/homeshick.git "$HOME/.homesick/repos/homeshick"
           fi
@@ -73,7 +73,9 @@
           desktop = homeManagerConfiguration {
             extraModules = [ ./desktop.nix ];
           };
-          dev2 = homeManagerConfiguration {
+
+          # different username
+          mic92 = homeManagerConfiguration {
             extraModules = [{ home.username = "mic92"; }];
           };
 

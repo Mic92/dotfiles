@@ -1,6 +1,7 @@
 { pkgs, ... }: {
   imports = [
     ./common.nix
+    ./modules/atuin-autosync.nix
   ];
   home.packages =
     let
@@ -15,7 +16,6 @@
         configure = { availablePlugins, ... }: {
           scripts = with pkgs.weechatScripts; [
             wee-slack
-            multiline
             weechat-matrix
           ];
           plugins = [
