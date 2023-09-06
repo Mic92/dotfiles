@@ -44,8 +44,6 @@
     }
   ];
 
-  sops.secrets.goatcounter-smtp-password = { };
-
   users.users.goatcounter = {
     isSystemUser = true;
     group = "goatcounter";
