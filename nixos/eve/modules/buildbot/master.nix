@@ -33,7 +33,6 @@ in
       DB_URL = config.services.buildbot-master.dbUrl;
       # Github app used for the login button
       GITHUB_OAUTH_ID = githubOauthId;
-      GITHUB_REPO_REGEX = "^https://github\\.com/(nix-community|numtide|Mic92)/(?!nixpkgs$).*$";
 
       # XXX replace this with renovate
       REPO_FOR_FLAKE_UPDATE = "Mic92/dotfiles/main";
