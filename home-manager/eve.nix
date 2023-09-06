@@ -15,7 +15,6 @@
         configure = { availablePlugins, ... }: {
           scripts = with pkgs.weechatScripts; [
             wee-slack
-            multiline
             weechat-matrix
           ];
           plugins = [
