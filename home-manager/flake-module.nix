@@ -47,7 +47,7 @@
         type = "app";
         program = "${pkgs.writeShellScriptBin "bootstrap-dotfiles" ''
           set -x
-          export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.nix pkgs.jq pkgs.bash]}
+          export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.findutils pkgs.nix pkgs.jq pkgs.bash]}
           if [ ! -d "$HOME/.homesick/repos/homeshick" ]; then
             git clone --depth=1 https://github.com/andsens/homeshick.git "$HOME/.homesick/repos/homeshick"
           fi
