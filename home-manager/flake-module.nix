@@ -29,7 +29,7 @@
         type = "app";
         program = "${pkgs.writeShellScriptBin "hm" ''
         set -x
-        export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.nix pkgs.jq pkgs.unixtools.hostname]}
+        export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.findutils pkgs.nix pkgs.jq pkgs.unixtools.hostname]}
         declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["web01"]="mic92" ["bld2"]="mic92" ["eve"]="eve" ["bernie"]="bernie" ["mac01.numtide.com"]="mac-hetzner")
         profile="common"
         if [[ -n ''${profiles[$(hostname)]:-} ]]; then
