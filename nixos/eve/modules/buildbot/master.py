@@ -39,7 +39,6 @@ GITHUB_WEBHOOK_SECRET = read_secret_file("github-webhook-secret")
 # Shape of this file:
 # [ { "name": "<worker-name>", "pass": "<worker-password>", "cores": "<cpu-cores>" } ]
 BUILDBOT_NIX_WORKERS = read_secret_file("buildbot-nix-workers")
-REPO_REGEX = os.environ["GITHUB_REPO_REGEX"]
 REPO_FOR_FLAKE_UPDATE = os.environ["REPO_FOR_FLAKE_UPDATE"]
 BUILDBOT_URL = os.environ["BUILDBOT_URL"]
 BUILDBOT_GITHUB_USER = os.environ["BUILDBOT_GITHUB_USER"]
