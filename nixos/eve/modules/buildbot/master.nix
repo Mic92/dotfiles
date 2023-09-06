@@ -34,14 +34,12 @@ in
       # Github app used for the login button
       GITHUB_OAUTH_ID = githubOauthId;
 
-      # XXX replace this with renovate
-      REPO_FOR_FLAKE_UPDATE = "Mic92/dotfiles/main";
-
       BUILDBOT_URL = "https://${buildbotDomain}/";
       BUILDBOT_GITHUB_USER = "mic92-buildbot";
       # comma seperated list of users that are allowed to login to buildbot and do stuff
       GITHUB_ADMINS = "Mic92";
       NIX_SUPPORTED_SYSTEMS = builtins.toString [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+      FLAKE_UPDATE_PULLREQUEST_LABELS = builtins.toString [ "dependencies" ];
       NIX_EVAL_MAX_MEMORY_SIZE = "2048";
     };
     serviceConfig = {
@@ -53,12 +51,6 @@ in
         "buildbot-nix-workers:${config.sops.secrets.buildbot-nix-workers.path}"
       ];
     };
-  };
-  sops.secrets = {
-    buildbot-github-token = { };
-    buildbot-github-webhook-secret = { };
-    buildbot-github-oauth-secret = { };
-    buildbot-nix-workers = { };
   };
 
   services.postgresql = {

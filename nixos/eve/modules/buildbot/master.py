@@ -39,11 +39,15 @@ GITHUB_WEBHOOK_SECRET = read_secret_file("github-webhook-secret")
 # Shape of this file:
 # [ { "name": "<worker-name>", "pass": "<worker-password>", "cores": "<cpu-cores>" } ]
 BUILDBOT_NIX_WORKERS = read_secret_file("buildbot-nix-workers")
-REPO_FOR_FLAKE_UPDATE = os.environ["REPO_FOR_FLAKE_UPDATE"]
 BUILDBOT_URL = os.environ["BUILDBOT_URL"]
 BUILDBOT_GITHUB_USER = os.environ["BUILDBOT_GITHUB_USER"]
 NIX_SUPPORTED_SYSTEMS = os.environ["NIX_SUPPORTED_SYSTEMS"].split(" ")
 NIX_EVAL_MAX_MEMORY_SIZE = int(os.environ.get("NIX_EVAL_MAX_MEMORY_SIZE", "4096"))
+FLAKE_UPDATE_PULLREQUEST_LABELS = os.environ.get(
+    "FLAKE_UPDATE_PULLREQUEST_LABELS", ""
+).split(" ")
+if FLAKE_UPDATE_PULLREQUEST_LABELS[0] == "":
+    FLAKE_UPDATE_PULLREQUEST_LABELS = []
 
 
 def config_for_project(
@@ -135,6 +139,7 @@ def config_for_project(
                 worker_names,
                 github_token_secret=GITHUB_TOKEN_SECRET_NAME,
                 github_bot_user=BUILDBOT_GITHUB_USER,
+                labels=FLAKE_UPDATE_PULLREQUEST_LABELS,
             ),
         ]
     )
