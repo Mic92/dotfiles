@@ -44,15 +44,11 @@ in
       "/var/tmp"
       "/var/log"
     ];
+    environment.BORG_RSH = "ssh -i ${config.sops.secrets.turingmachine-ssh-borgbackup.path}";
     encryption = {
       mode = "repokey";
       passCommand = "cat ${config.sops.secrets.turingmachine-borgbackup.path}";
     };
-    preHook = ''
-      set -x
-      eval $(ssh-agent)
-      ssh-add ${config.sops.secrets.turingmachine-ssh-borgbackup.path}
-    '';
     postHook = ''
       cat > /var/log/telegraf/borgbackup-job-turingmachine.service <<EOF
       task,frequency=daily last_run=$(date +%s)i,state="$([[ $exitStatus == 0 ]] && echo ok || echo fail)"

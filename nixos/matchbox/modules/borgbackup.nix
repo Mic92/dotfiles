@@ -3,17 +3,7 @@
     "/var/log/telegraf"
   ];
 
-  environment.systemPackages = [
-    (pkgs.writeShellScriptBin "borg-job-blob64-break-lock" ''
-      set -eux -o pipefail
-      eval $(ssh-agent)
-      ssh-add ${config.sops.secrets.matchbox-borgbackup-ssh.path}
-      borg-job-blob64 break-lock
-      kill $SSH_AGENT_PID
-    '')
-  ];
-
-  services.borgbackup.jobs.blob64 = {
+  services.borgbackup.jobs.matchbox = {
     paths = [
       "/home"
       "/etc"
@@ -43,20 +33,17 @@
       "/var/log"
     ];
     repo = "borg@blob64.r:/zdata/borg/matchbox";
+    # TODO: BORG_WORKAROUNDS=ignore_invalid_archive_tam borg-job-matchbox upgrade --archives-tam
+    environment.BORG_RSH = "ssh -i ${config.sops.secrets.turingmachine-ssh-borgbackup.path}";
     encryption = {
       mode = "repokey";
       passCommand = "cat ${config.sops.secrets.matchbox-borgbackup-passphrase.path}";
     };
     compression = "auto,zstd";
     startAt = "daily";
-    preHook = ''
-      set -x
-      eval $(ssh-agent)
-      ssh-add ${config.sops.secrets.matchbox-borgbackup-ssh.path}
-    '';
 
     postHook = ''
-      cat > /var/log/telegraf/borgbackup-matchbox <<EOF
+      cat > /var/log/telegraf/borgbackup-job-matchbox.service <<EOF
       task,frequency=daily last_run=$(date +%s)i,state="$([[ $exitStatus == 0 ]] && echo ok || echo fail)"
       EOF
     '';
@@ -95,7 +82,7 @@
       cmd_postexec	${
         pkgs.writeShellScript "umount" ''
           set -eux -o pipefail
-          cat > /var/log/telegraf/borgbackup-matchbox <<EOF
+          cat > /var/log/telegraf/borgbackup-matchbox.service <<EOF
           task,frequency=weekly last_run=$(date +%s)i,state="ok"
           EOF
           ${pkgs.util-linux}/bin/umount /mnt/backup
