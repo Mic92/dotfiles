@@ -16,29 +16,6 @@
         "type": "github"
       }
     },
-    "bing-gpt-server": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1691855502,
-        "narHash": "sha256-tfRBjWr5BypIYp938kxDe4Ihfdm6ThKOrTJuWABwJ4c=",
-        "owner": "Mic92",
-        "repo": "bing-gpt-server",
-        "rev": "4fd00b307e1df7481656448c42022bd1d10bfadf",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "bing-gpt-server",
-        "type": "github"
-      }
-    },
     "bme680-mqtt": {
       "inputs": {
         "flake-parts": [
@@ -547,7 +524,6 @@
     "root": {
       "inputs": {
         "astro-nvim": "astro-nvim",
-        "bing-gpt-server": "bing-gpt-server",
         "bme680-mqtt": "bme680-mqtt",
         "clan-core": "clan-core",
         "disko": "disko",

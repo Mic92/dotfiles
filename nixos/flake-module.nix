@@ -87,7 +87,6 @@ in
           defaultModule
           inputs.srvos.nixosModules.server
           inputs.srvos.nixosModules.mixins-nginx
-          inputs.bing-gpt-server.nixosModules.bing-gpt-server
         ];
       };
 
