@@ -8,6 +8,12 @@ return {
  { import = "astrocommunity.completion.copilot-lua-cmp" },
  { import = "astrocommunity.project.project-nvim" },
  { import = "astrocommunity.pack.go" },
+ {
+  "ray-x/go.nvim",
+  -- don't install go binaries with the plugin
+  -- instead we install these with nix: https://github.com/ray-x/go.nvim#go-binaries-install-and-update
+  build = "true",
+ },
  { import = "astrocommunity.pack.bash" },
  { import = "astrocommunity.pack.python" },
  { import = "astrocommunity.pack.lua" },

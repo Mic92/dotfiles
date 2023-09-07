@@ -50,8 +50,6 @@ let
     sumneko-lua-language-server
 
     # based on ./suggested-pkgs.json
-    go
-    delve
     gopls
     golangci-lint
     nodePackages.bash-language-server
@@ -60,11 +58,6 @@ let
     rust-analyzer
     yaml-language-server
     nil
-    gomodifytags
-    gofumpt
-    iferr
-    impl
-    gotools
     shellcheck
     shfmt
     isort
@@ -75,6 +68,22 @@ let
     clang-tools
     nodePackages.prettier
     stylua
+    # based on https://github.com/ray-x/go.nvim#go-binaries-install-and-update
+    go
+    gofumpt
+    gomodifytags
+    gotools
+    delve
+    golines
+    gomodifytags
+    gotests
+    iferr
+    impl
+    reftools
+    ginkgo
+    richgo
+    govulncheck
+
     # does not build yet on aarch64
   ] ++ lib.optional (pkgs.stdenv.hostPlatform.system == "x86_64-linux") pkgs.deno;
 in
