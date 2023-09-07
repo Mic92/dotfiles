@@ -255,18 +255,18 @@
       }
       {
         urls = [
-          "http://gosh.r"
+          "http://agenda.r"
         ];
-        response_string_match = "gosh!";
+        response_string_match = "Agenda";
         tags.org = "krebs";
         interface = "tinc.retiolum";
         response_status_code = 200;
       }
       {
         urls = [
-          "http://agenda.r"
+          "http://calendar.r/.web/"
         ];
-        response_string_match = "Agenda";
+        response_string_match = "Login";
         tags.org = "krebs";
         interface = "tinc.retiolum";
         response_status_code = 200;
