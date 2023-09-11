@@ -71,12 +71,6 @@
     options = [ "nofail" "zfsutil" ];
   };
 
-  fileSystems."/home/joerg/Musik/podcasts" = {
-    device = "/home/joerg/gPodder/Downloads";
-    fsType = "none";
-    options = [ "bind" "nofail" ];
-  };
-
   fileSystems."/tmp" = {
     device = "zroot/root/tmp";
     fsType = "zfs";
