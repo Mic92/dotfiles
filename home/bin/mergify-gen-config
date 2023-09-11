@@ -9,8 +9,8 @@ import subprocess
 import sys
 import urllib.parse
 import urllib.request
-from shutil import which
 from pathlib import Path
+from shutil import which
 from typing import Any, NoReturn, Optional, Tuple
 
 import ruamel.yaml
@@ -34,7 +34,16 @@ class GithubClient:
             body = json.dumps(data).encode("ascii")
 
         req = urllib.request.Request(url, headers=headers, method=method, data=body)
-        resp = urllib.request.urlopen(req)
+        try:
+            resp = urllib.request.urlopen(req)
+        except urllib.error.HTTPError as e:
+            if e.status != 307:
+                raise  # not a status code that can be handled here
+            # retry with the new location
+            req = urllib.request.Request(
+                e.headers["Location"], headers=headers, method=method, data=body
+            )
+            resp = urllib.request.urlopen(req)
         return json.loads(resp.read())
 
     def get(self, path: str) -> Any:
@@ -211,10 +220,12 @@ def new_mergify_config(
             }
         ],
         "defaults": {
-            "actions": {"queue": {
-                 "allow_merging_configuration_change": True,
-                 "method": "rebase"
-            }}
+            "actions": {
+                "queue": {
+                    "allow_merging_configuration_change": True,
+                    "method": "rebase",
+                }
+            }
         },
         "pull_request_rules": [
             {
@@ -281,4 +292,4 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
 if __name__ == "__main__":
     main()
 
-# vim: set syntax=python:
+# vim: set syntax=python
