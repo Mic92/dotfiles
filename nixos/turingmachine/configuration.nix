@@ -9,7 +9,6 @@
     ../modules/zerotier.nix
     #../modules/libvirt.nix
     ./modules/caddy.nix
-    ./modules/borgbackup.nix
     ./modules/hass-agent.nix
     ./modules/nfs.nix
     ./modules/remote-builder.nix
@@ -21,6 +20,7 @@
     ./modules/tum-vpn.nix
     #./modules/minidlna.nix
 
+    ../modules/borgbackup.nix
     ../modules/nncp.nix
     ../modules/touchpad-hack
     ../modules/i18n.nix

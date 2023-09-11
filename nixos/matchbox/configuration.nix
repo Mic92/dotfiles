@@ -2,16 +2,16 @@
   nixpkgs.localSystem.system = "aarch64-linux";
 
   imports = [
+    ./hardware-configuration.nix
+    ./modules/samba.nix
+    ./modules/rsyncd.nix
+    ./modules/photoprism.nix
+
+    ../modules/borgbackup.nix
     ../modules/users.nix
     ../modules/mosh.nix
     ../modules/sshd/tor.nix
     ../modules/promtail.nix
-
-    ./hardware-configuration.nix
-    ./modules/borgbackup.nix
-    ./modules/samba.nix
-    ./modules/rsyncd.nix
-    ./modules/photoprism.nix
   ];
 
   documentation.enable = false;

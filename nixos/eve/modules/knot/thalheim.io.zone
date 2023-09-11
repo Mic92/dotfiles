@@ -36,6 +36,8 @@ ns2 IN AAAA 2a01:4f8:10b:49f::1
 dns IN A 88.99.244.96
 dns IN AAAA 2a01:4f8:10b:49f::5
 
+buildbot2 IN A 135.181.24.254
+
 www IN A 88.99.244.96
 www IN AAAA 2a01:4f8:10b:49f::1
 * IN CNAME www

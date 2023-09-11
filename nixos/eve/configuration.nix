@@ -18,7 +18,6 @@
     ./modules/bitwarden.nix
     ./modules/buildbot/master.nix
     ./modules/buildbot/worker.nix
-    ./modules/borgbackup.nix
     ./modules/dendrite.nix
     ./modules/dovecot.nix
     ./modules/docker.nix
@@ -61,6 +60,7 @@
     #./modules/headscale.nix
     #./modules/wiregrill
 
+    ../modules/borgbackup.nix
     ../modules/nncp.nix
     #../modules/tailscale.nix
     ../modules/builder.nix

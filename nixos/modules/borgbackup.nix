@@ -1,9 +1,9 @@
 { config, ... }: {
-  systemd.services.borgbackup-job-eve.serviceConfig.ReadWritePaths = [
+  systemd.services."borgbackup-job-${config.networking.hostName}".serviceConfig.ReadWritePaths = [
     "/var/log/telegraf"
   ];
 
-  services.borgbackup.jobs.eve = {
+  services.borgbackup.jobs.${config.networking.hostName} = {
     paths = [
       "/home"
       "/etc"
@@ -14,15 +14,14 @@
       "*.pyc"
       "/home/*/.direnv"
       "/home/*/.cache"
-      "/home/*/.cargo"
       "/home/*/.npm"
       "/home/*/.m2"
       "/home/*/.gradle"
       "/home/*/.opam"
       "/home/*/.clangd"
-      "/home/*/.config/Ferdi/Partitions"
+      "/home/*/.config/Ferdium/Partitions"
       "/home/*/.mozilla/firefox/*/storage"
-      "/home/joerg/work/kuutamo/core/src/kuutamod/.data"
+      "/home/*/Android"
       "/var/lib/containerd"
       # already included in database backup
       "/var/lib/postgresql"
@@ -30,22 +29,30 @@
       "/var/db/influxdb"
       "/var/lib/docker/"
       "/var/log/journal"
+      "/var/lib/containerd"
+      "/var/lib/systemd" # not so interesting state so far
       "/var/cache"
       "/var/tmp"
       "/var/log"
+
+      "/home/joerg/sync"
+      "/home/joerg/Videos"
+      "/home/joerg/mnt"
+      # eve
+      "/home/joerg/work/kuutamo/core/src/kuutamod/.data"
     ];
-    repo = "borg@blob64.r:/zdata/borg/eve";
+    repo = "borg@blob64.r:/zdata/borg/${config.networking.hostName}";
     encryption = {
       mode = "repokey";
-      passCommand = "cat ${config.sops.secrets.eve-borgbackup-passphrase.path}";
+      passCommand = "cat ${config.sops.secrets."${config.networking.hostName}-borgbackup-passphrase".path}";
     };
-    environment.BORG_RSH = "ssh -i ${config.sops.secrets.eve-borgbackup-ssh.path}";
+    environment.BORG_RSH = "ssh -i ${config.sops.secrets."${config.networking.hostName}-borgbackup-ssh".path}";
     compression = "auto,zstd";
     startAt = "daily";
     preHook = "set -x";
 
     postHook = ''
-      cat > /var/log/telegraf/borgbackup-job-eve.service <<EOF
+      cat > /var/log/telegraf/borgbackup-job-${config.networking.hostName}.service <<EOF
       task,frequency=daily last_run=$(date +%s)i,state="$([[ $exitStatus == 0 ]] && echo ok || echo fail)"
       EOF
     '';

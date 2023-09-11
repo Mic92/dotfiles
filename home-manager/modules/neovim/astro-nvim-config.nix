@@ -7,7 +7,9 @@
 let
   langs = [
     # "agda"
-    "bash"
+    #Error executing vim.schedule lua callback: UnhandledPromiseRejection with the reason:                                      
+    #...ed-0.9.1/share/nvim/runtime/lua/vim/treesitter/query.lua:259: query: invalid node type at position 195 for language bash
+    #"bash"
     "c"
     "c-sharp"
     "cpp"
