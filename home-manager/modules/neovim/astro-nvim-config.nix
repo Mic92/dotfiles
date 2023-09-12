@@ -1,49 +1,9 @@
 { inputs
-, tree-sitter
 , lib
 , pkgs
 , stdenv
 }:
 let
-  langs = [
-    # "agda"
-    #Error executing vim.schedule lua callback: UnhandledPromiseRejection with the reason:                                      
-    #...ed-0.9.1/share/nvim/runtime/lua/vim/treesitter/query.lua:259: query: invalid node type at position 195 for language bash
-    #"bash"
-    "c"
-    "c-sharp"
-    "cpp"
-    "css"
-    "elm"
-    "elisp"
-    #"fluent"
-    "go"
-    "hcl"
-    "haskell"
-    "html"
-    "janet-simple"
-    "java"
-    "javascript"
-    "jsdoc"
-    "json"
-    "julia"
-    "ocaml"
-    "pgn"
-    "php"
-    "python"
-    "ruby"
-    "rust"
-    "scala"
-    # "swift"
-    "typescript"
-    "yaml"
-    "nix"
-    "lua"
-    "markdown-inline"
-    "perl"
-    "make"
-    "toml"
-  ];
   lspPackages = with pkgs; [
     nodejs # copilot
     vale
@@ -94,16 +54,15 @@ stdenv.mkDerivation {
   phases = "installPhase";
   installPhase = ''
     mkdir -p $out/parser
-
     ln -s ${inputs.astro-nvim}/* $out/
     rm $out/lua
     mkdir -p $out/lua
     ln -s ${inputs.astro-nvim}/lua/* $out/lua
     ln -s ${./user} $out/lua/user
 
-    ${lib.concatMapStringsSep "\n" (name: ''
-      ln -s ${tree-sitter.builtGrammars."tree-sitter-${name}"}/parser $out/parser/${name}.so
-    '') langs}
+    ${lib.concatMapStringsSep "\n" (grammar: ''
+      ln -s $(readlink -f ${grammar}/parser/*.so) $out/parser/${lib.last (builtins.split "-" grammar.name)}.so
+    '') pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies}
   '';
   passthru.lspPackages = lspPackages;
 }
