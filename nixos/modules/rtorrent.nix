@@ -42,7 +42,7 @@ in
   #security.acme.certs."warez.r".server = config.retiolum.ca.acmeURL;
 
   services.nginx = {
-    package = pkgs.nginxStable.override {
+    package = pkgs.nginxQuic.override {
       modules = [
         pkgs.nginxModules.pam
         pkgs.nginxModules.fancyindex
