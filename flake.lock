@@ -39,6 +39,31 @@
         "type": "github"
       }
     },
+    "buildbot-nix": {
+      "inputs": {
+        "disko": "disko",
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "srvos": "srvos"
+      },
+      "locked": {
+        "lastModified": 1694346684,
+        "narHash": "sha256-H/P4NlvjZcH4P9UoWX+d7djSKvOjecx9y1D+bEjexro=",
+        "owner": "Mic92",
+        "repo": "buildbot-nix",
+        "rev": "2176c86f1b9cba0c7d2456c86a754b3cf0d7df2c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "buildbot-nix",
+        "type": "github"
+      }
+    },
     "clan-core": {
       "inputs": {
         "disko": [
@@ -109,6 +134,27 @@
       }
     },
     "disko": {
+      "inputs": {
+        "nixpkgs": [
+          "buildbot-nix",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1694266353,
+        "narHash": "sha256-NutPFFKc5FK05zq8JYm8quBKJ93goYowxjW/FKcXAdI=",
+        "owner": "nix-community",
+        "repo": "disko",
+        "rev": "f9907fcf6df79a76ea7e3a3afe9340a672cb9c6e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "disko",
+        "type": "github"
+      }
+    },
+    "disko_2": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
@@ -525,8 +571,9 @@
       "inputs": {
         "astro-nvim": "astro-nvim",
         "bme680-mqtt": "bme680-mqtt",
+        "buildbot-nix": "buildbot-nix",
         "clan-core": "clan-core",
-        "disko": "disko",
+        "disko": "disko_2",
         "fast-flake-update": "fast-flake-update",
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
@@ -541,7 +588,7 @@
         "nur-packages": "nur-packages",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
-        "srvos": "srvos",
+        "srvos": "srvos_2",
         "treefmt-nix": "treefmt-nix"
       }
     },
@@ -592,6 +639,27 @@
       }
     },
     "srvos": {
+      "inputs": {
+        "nixpkgs": [
+          "buildbot-nix",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1694049767,
+        "narHash": "sha256-/S1mbeHO1JAV0hIBK8b92lBw2V34oPfhYPzXr73JCy4=",
+        "owner": "numtide",
+        "repo": "srvos",
+        "rev": "6a824ca672288a6c8e4b8ade835f01b7b25fca2c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "srvos",
+        "type": "github"
+      }
+    },
+    "srvos_2": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"

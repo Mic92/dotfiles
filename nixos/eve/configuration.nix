@@ -16,8 +16,9 @@
     ./modules/atuin.nix
     ./modules/adminer.nix
     ./modules/bitwarden.nix
-    ./modules/buildbot/master.nix
-    ./modules/buildbot/worker.nix
+    ./modules/buildbot.nix
+    #./modules/buildbot/master.nix
+    #./modules/buildbot/worker.nix
     ./modules/dendrite.nix
     ./modules/dovecot.nix
     ./modules/docker.nix
