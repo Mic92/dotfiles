@@ -22,21 +22,16 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
     """
     g = DeployGroup(hosts)
 
-    res = subprocess.run(
-        ["nix", "flake", "metadata", "--json"],
-        check=True,
-        text=True,
-        stdout=subprocess.PIPE,
-    )
-    data = json.loads(res.stdout)
-    path = data["path"]
-
     def deploy(h: DeployHost) -> None:
         target = f"{h.user or 'root'}@{h.host}"
-        flake_path = h.meta.get("flake_path", "/etc/nixos")
-        h.run_local(
-            f"rsync --checksum -vaF --delete -e ssh {path}/ {target}:{flake_path}"
+        res = subprocess.run(
+            ["nix", "flake", "archive", "--to", f"ssh://{target}", "--json"],
+            check=True,
+            text=True,
+            stdout=subprocess.PIPE,
         )
+        data = json.loads(res.stdout)
+        path = data["path"]
 
         flake_attr = h.meta.get("flake_attr", "")
         if flake_attr:
@@ -61,7 +56,7 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
                 "--build-host",
                 "",
                 "--flake",
-                f"{flake_path}{flake_attr}",
+                f"{path}{flake_attr}",
             ]
         )
         if target_host:
