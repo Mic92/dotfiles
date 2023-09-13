@@ -56,7 +56,7 @@
 
   users.mutableUsers = false;
   sops.secrets.turingmachine-joerg-password-hash.neededForUsers = true;
-  users.users.joerg.passwordFile = config.sops.secrets.turingmachine-joerg-password-hash.path;
+  users.users.joerg.hashedPasswordFile = config.sops.secrets.turingmachine-joerg-password-hash.path;
 
   # https://community.frame.work/t/guide-linux-battery-life-tuning/6665
   services.tlp.enable = true;

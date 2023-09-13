@@ -3,11 +3,11 @@
     "astro-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1694014051,
-        "narHash": "sha256-8EEvIud5iaCWxOIkfQqOTnPUF66MwHS4sFI5yn2T6Yc=",
+        "lastModified": 1694637169,
+        "narHash": "sha256-YUIvUcWHcDF8pSudh67bTk4asCcHImPpyCuY3Z2z2gg=",
         "owner": "AstroNvim",
         "repo": "AstroNvim",
-        "rev": "dad0bec1fef2833561d04ea446a544fbfde92539",
+        "rev": "6d5750bb4fbefeb816bf6d9d088df72dfefb9724",
         "type": "github"
       },
       "original": {
@@ -39,6 +39,29 @@
         "type": "github"
       }
     },
+    "buildbot-nix": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1694641581,
+        "narHash": "sha256-2ermlY2RCVX6s296fJhCPEpO61hgz7ZQe0sEpJ/s/do=",
+        "owner": "Mic92",
+        "repo": "buildbot-nix",
+        "rev": "61151c0ad9143fc308643269ed33a32e63ccb951",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "buildbot-nix",
+        "type": "github"
+      }
+    },
     "clan-core": {
       "inputs": {
         "disko": [
@@ -62,11 +85,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1694514720,
-        "narHash": "sha256-+kRtMI5KmqRtwTMDlOlLtGRXXxUihR5zcRsSyHhEMwQ=",
+        "lastModified": 1694616162,
+        "narHash": "sha256-tdmB+6NKI72jLjcpBNUoKzQUE7WV6atKr90iBV6kLTg=",
         "ref": "refs/heads/main",
-        "rev": "d74dc7fe22e7dc826beb8b5e3445344e75578e91",
-        "revCount": 614,
+        "rev": "e4e888251e3f01f34140f10a20288d9311dec4a5",
+        "revCount": 631,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
@@ -276,11 +299,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1694585439,
-        "narHash": "sha256-70BlfEsdURx5f8sioj8JuM+R4/SZFyE8UYrULMknxlI=",
+        "lastModified": 1694636981,
+        "narHash": "sha256-nRy7migOn3i3NZwSlCepol1Bx/xZ/XEigy2O15+COrw=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "a0ddf43b6268f1717afcda54133dea30435eb178",
+        "rev": "aed5ed979eced3790a39d069f08884061bda3c82",
         "type": "github"
       },
       "original": {
@@ -508,11 +531,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1693818010,
-        "narHash": "sha256-A6p33I4ByqXoSXJL87t+FDbm1TjeHMj+E0cLq6v6TnU=",
+        "lastModified": 1694638810,
+        "narHash": "sha256-StHXfluA9gFbRqLXeiP4sQU7JB3iOv8ckRCnhBpooGs=",
         "ref": "refs/heads/master",
-        "rev": "4d9b888cb2683cb97a1bc3b8b4eb06ea8fbe3277",
-        "revCount": 316,
+        "rev": "720693006ecde14153d562f26d1aac149ccc837e",
+        "revCount": 317,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },
@@ -525,6 +548,7 @@
       "inputs": {
         "astro-nvim": "astro-nvim",
         "bme680-mqtt": "bme680-mqtt",
+        "buildbot-nix": "buildbot-nix",
         "clan-core": "clan-core",
         "disko": "disko",
         "fast-flake-update": "fast-flake-update",

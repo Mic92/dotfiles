@@ -19,7 +19,7 @@ in
     root.openssh.authorizedKeys.keys = keys;
   };
 
-  users.users.root.passwordFile = config.sops.secrets."${config.clanCore.machineName}-root-password-hash".path;
+  users.users.root.hashedPasswordFile = config.sops.secrets."${config.clanCore.machineName}-root-password-hash".path;
   boot.initrd.network.ssh.authorizedKeys = keys;
 
   security.sudo.wheelNeedsPassword = false;
