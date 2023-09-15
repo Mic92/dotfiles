@@ -30,9 +30,10 @@ in
       config.quic = true;
     });
   };
-  networking.firewall.allowedUDPPorts = [ 443 ]; # quic
 
   config = {
+    networking.firewall.allowedUDPPorts = [ 443 ]; # quic
+
     security.pam.services.prometheus.text = ''
       auth required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${conf}
       account required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${conf}
