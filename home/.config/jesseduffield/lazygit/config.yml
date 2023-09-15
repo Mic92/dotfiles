@@ -30,6 +30,14 @@ customCommands:
     command: 'git fetch upstream master && git branch --merged upstream/master | xargs --no-run-if-empty git branch -D && git checkout -b "{{index .PromptResponses 0}}" upstream/master && git cherry-pick "{{.SelectedLocalCommit.Sha}}" && git push -u origin {{index .PromptResponses 0}}'
     context: 'commits'
     subprocess: true
+  - key: '<c-p>'
+    prompts:
+      - type: 'input'
+        title: 'What is the new branch name?'
+        initialValue: ''
+    command: 'git fetch origin main && git branch --merged origin/main | xargs --no-run-if-empty git branch -D && git checkout -b "{{index .PromptResponses 0}}" origin/main && git cherry-pick "{{.SelectedLocalCommit.Sha}}" && git push -u origin {{index .PromptResponses 0}}'
+    context: 'commits'
+    subprocess: true
   - key: '<c-a>'
     context: "global"
     command: 'for b in upstream/main upstream/master origin/main origin/master origin/dev; do if git rev-parse --verify $b; then git absorb --force --and-rebase --base $b; break; fi; done'
