@@ -7,7 +7,7 @@
       tokenFile = config.sops.secrets.buildbot-github-token.path;
       webhookSecretFile = config.sops.secrets.buildbot-github-webhook-secret.path;
       oauthSecretFile = config.sops.secrets.buildbot-github-oauth-secret.path;
-      oauthId = "2516248ec6289e4d9818122cce0cbde39e4b788d";
+      oauthId = "d1b24258af1abc157934";
       githubUser = "mic92-buildbot";
       githubAdmins = [ "Mic92" ];
     };
