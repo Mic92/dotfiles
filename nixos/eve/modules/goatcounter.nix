@@ -48,4 +48,5 @@
     isSystemUser = true;
     group = "goatcounter";
   };
+  groups.groups.goatcounter = {};
 }
