@@ -30,6 +30,7 @@ in
       config.quic = true;
     });
   };
+  networking.firewall.allowedUDPPorts = [ 443 ]; # quic
 
   config = {
     security.pam.services.prometheus.text = ''
