@@ -205,35 +205,6 @@ merge-after-ci() {
     gh pr create --title "$firstLine" --body "$body" --base "$targetBranch" --head "$branch" --label merge-queue
   fi
 }
-bors-review() {
-  if [[ -n ${commands[treefmt]} ]] && ! treefmt --fail-on-change; then
-    return
-  fi
-  branch=$(id -un)-ci
-  git push --force origin "HEAD:$branch"
-  targetBranch=$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)
-  if [[ $(git remote) =~ upstream ]]; then
-    remoteName=upstream
-  else
-    remoteName=origin
-  fi
-  if [[ $(gh pr view --json state --template '{{.state}}' "$branch") != "OPEN" ]]; then
-    # BUFFER is an internal variable used by edit-command-line
-    # We fill it with commit subject and body seperated by newlines
-    BUFFER=$(git log --reverse --pretty="format:%s%n%n%b%n%n" "$remoteName/$targetBranch..HEAD")
-    edit-command-line
-    firstLine=${BUFFER%%$'\n'*}
-    rest=${BUFFER#*$'\n'}
-    if [[ $firstLine == $rest ]]; then
-      rest=""
-    fi
-    body=$(printf '%s\nbors merge' "$rest" )
-    gh pr create --title "$firstLine" --body "$body" --base "$targetBranch" --head "$branch"
-  else
-    sleep 3 # work around to wait for bors to cancel the old PR
-    gh pr comment "$branch" --body "bors merge"
-  fi
-}
 passgen() {
   local pass
   pass=$(nix run nixpkgs#xkcdpass -- -d '-' -n 3 -C capitalize "$@")
@@ -333,6 +304,10 @@ if [[ -n ${commands[zoxide]} ]]; then
   eval "$(zoxide init zsh)"
 else
   alias z="builtin cd"
+fi
+if [[ -n ${commands[nom-build]} ]]; then
+  alias nix-build=nom-build
+  alias nix=nom
 fi
 alias pgrep='pgrep -a'
 
@@ -872,16 +847,17 @@ if [[ -f ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]]; the
   source ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 fi
 
-if [[ -n "${commands[atuin]}" ]]; then
-  export ATUIN_NOBIND="true"
-  eval "$(atuin init zsh)"
-  
-  bindkey '^r' _atuin_search_widget
-  
-  # depends on terminal mode
-  bindkey '^[[A' _atuin_search_widget
-  bindkey '^[OA' _atuin_search_widget
-fi
+# Slow on zfs
+#if [[ -n "${commands[atuin]}" ]]; then
+#  export ATUIN_NOBIND="true"
+#  eval "$(atuin init zsh)"
+#  
+#  bindkey '^r' _atuin_search_widget
+#  
+#  # depends on terminal mode
+#  bindkey '^[[A' _atuin_search_widget
+#  bindkey '^[OA' _atuin_search_widget
+#fi
 
 # prevent broken terminals by resetting to sane defaults after a command
 ttyctl -f
