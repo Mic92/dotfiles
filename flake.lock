@@ -85,11 +85,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1694616162,
-        "narHash": "sha256-tdmB+6NKI72jLjcpBNUoKzQUE7WV6atKr90iBV6kLTg=",
+        "lastModified": 1694854792,
+        "narHash": "sha256-zUpFPWb5rdzEhVkZXaVjUYSOPP8O4WbgQgE2jPvLGxk=",
         "ref": "refs/heads/main",
-        "rev": "e4e888251e3f01f34140f10a20288d9311dec4a5",
-        "revCount": 631,
+        "rev": "8dc70659d498c77311d8a4fdb6ce55f0c7a960f3",
+        "revCount": 686,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
@@ -138,11 +138,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1694654374,
-        "narHash": "sha256-cQnlJCp4RGMtVfghufkHihGe2qgB8p//fXTXsbZ8a2g=",
+        "lastModified": 1694808292,
+        "narHash": "sha256-zSZ8IfZfv6nK0z+wNuM0Tqx6c9b4+Q5Xn9FIpunWBwA=",
         "owner": "nix-community",
         "repo": "disko",
-        "rev": "6133a16d685cad59fe6573090c115a03a30fdd31",
+        "rev": "0faae8adf6d790df2c3d00437ccad7cd5c531c70",
         "type": "github"
       },
       "original": {
@@ -299,11 +299,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1694642908,
-        "narHash": "sha256-0Opzs/56VW03COlVdoBrHJZGxQ7gzLDEWADnccC8ras=",
+        "lastModified": 1694643239,
+        "narHash": "sha256-pv2k/5FvyirDE8g4TNehzwZ0T4UOMMmqWSQnM/luRtE=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "b62f549653e97d78392c1e282b8ca76546a86585",
+        "rev": "d9b88b43524db1591fb3d9410a21428198d75d49",
         "type": "github"
       },
       "original": {
@@ -346,11 +346,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1694497842,
-        "narHash": "sha256-z03v/m0OwcLBok97KcUgMl8ZFw5Xwsi2z+n6nL7JdXY=",
+        "lastModified": 1694810318,
+        "narHash": "sha256-LuvrVj2oj9TzdnnwtQUClqcXjpgwCP01FFVBM7azGV8=",
         "owner": "LnL7",
         "repo": "nix-darwin",
-        "rev": "4496ab26628c5f43d2a5c577a06683c753e32fe2",
+        "rev": "80bb201f4925cdda5a7a3c7b1900fb26bb2af2e8",
         "type": "github"
       },
       "original": {
@@ -417,11 +417,11 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1694591211,
-        "narHash": "sha256-NPP7XGZH+Q5ey7nE2zGLrBrzKmLYPhj8YgsTSdhH0D4=",
+        "lastModified": 1694710316,
+        "narHash": "sha256-uRh46iIC86D8BD1wCDA5gRrt+hslUXiD0kx/UjnjBcs=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "3ccd87fcdae4732fe33773cefa4375c641a057e7",
+        "rev": "570256327eb6ca6f7bebe8d93af49459092a0c43",
         "type": "github"
       },
       "original": {
@@ -464,11 +464,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1694593686,
-        "narHash": "sha256-68YhVonX2eQ+u+rtVn/SUazsCFdQt+A7XdlCFCG3RCE=",
+        "lastModified": 1694867243,
+        "narHash": "sha256-InA4kecz/E6Vg7Fs5Vdop+1bi6LvtJobKzwtveP0H8c=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "3e63daf2cacb47d0a81b3066d7db331afdf54002",
+        "rev": "f89d20fba55aaaac9e0047f3d6a6e68f0f301206",
         "type": "github"
       },
       "original": {
@@ -531,11 +531,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1694638810,
-        "narHash": "sha256-StHXfluA9gFbRqLXeiP4sQU7JB3iOv8ckRCnhBpooGs=",
+        "lastModified": 1694786409,
+        "narHash": "sha256-aYpXy5XnTdF9PV6lEgyNnEsXI9s/ccADHxiV6EKrHH4=",
         "ref": "refs/heads/master",
-        "rev": "720693006ecde14153d562f26d1aac149ccc837e",
-        "revCount": 317,
+        "rev": "43d5a6ae57ae4a9051724767df133da4064d3461",
+        "revCount": 319,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/retiolum"
       },
@@ -622,11 +622,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1694654558,
-        "narHash": "sha256-cN4H3qmdfXRFZamC3LwhF2+4HDh9G6kxIfnSdxROpsE=",
+        "lastModified": 1694782968,
+        "narHash": "sha256-/rSi0XhhiKCfdfgd1a+ba8UkJyH4j3iWrKjKI0Vz9Xc=",
         "owner": "numtide",
         "repo": "srvos",
-        "rev": "002980949f51b673beb1015f4487d8f2c574b0b0",
+        "rev": "487d72e894b990761024e349b4a71844e71c5c6a",
         "type": "github"
       },
       "original": {
