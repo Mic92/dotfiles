@@ -36,7 +36,6 @@
     #../modules/macos-kvm.nix
     ../modules/mosh.nix
     ../modules/networkd.nix
-    ../modules/wireguard.nix
     ../modules/tracing.nix
     #./kde.nix
     #../modules/samba-dl.nix

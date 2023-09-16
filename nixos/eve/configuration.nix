@@ -56,6 +56,7 @@
     ./modules/tt-rss.nix
     ./modules/tts.nix
     ./modules/users.nix
+    ./modules/wireguard.nix
     ./modules/wiki-backup.nix
     ./modules/onlyoffice.nix
     #./modules/headscale.nix
@@ -73,7 +74,6 @@
     ../modules/tracing.nix
     ../modules/promtail.nix
     #../modules/wezterm.nix
-    ../modules/wireguard.nix
     ../modules/zsh.nix
     ../modules/uptermd.nix
     ../modules/nix-ld.nix
