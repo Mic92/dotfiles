@@ -58,6 +58,7 @@
     ./modules/users.nix
     ./modules/wireguard.nix
     ./modules/wiki-backup.nix
+    ./modules/nixos-wiki.nix
     ./modules/onlyoffice.nix
     #./modules/headscale.nix
     #./modules/wiregrill
