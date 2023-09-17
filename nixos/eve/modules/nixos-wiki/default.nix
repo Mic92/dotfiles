@@ -1,9 +1,11 @@
-{ config, ... }: {
+{ config, ... }: let
+  hostname = "nixos-wiki.thalheim.io";
+in {
   services.mediawiki = {
     enable = true;
     webserver = "nginx";
     database.type = "postgres";
-    nginx.hostName = "nixos-wiki.thalheim.io";
+    nginx.hostName = hostname;
     passwordFile = config.sops.secrets."nixos-wiki".path;
     extensions.SyntaxHighlight_GeSHi = null;
     extensions.ParserFunctions = null;
@@ -12,13 +14,16 @@
     extraConfig = ''
       $wgGroupPermissions['*']['createaccount'] = false;
       $wgMainCacheType = CACHE_ACCEL;
+      $wgLogo = 'https://${config.services.mediawiki.nginx.hostName}/images/nixos.svg.png';
+      $wgDefaultSkin = 'vector-2022';
     '';
   };
 
   sops.secrets."nixos-wiki".owner = config.services.phpfpm.pools.mediawiki.user;
 
-  services.nginx.virtualHosts."nixos-wiki.thalheim.io" = {
+  services.nginx.virtualHosts.${config.services.mediawiki.nginx.hostName} = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
+    locations."=/images/nixos.svg.png".alias = ./nixos.svg.png;
   };
 }
