@@ -1,9 +1,14 @@
 { config, ... }: {
-  services.mediawiki.enable = true;
-  services.mediawiki.webserver = "none";
-  services.mediawiki.database.type = "postgres";
-  services.mediawiki.url = "https://nixos-wiki.thalheim.io";
-  services.mediawiki.passwordFile = config.sops.secrets."nixos-wiki".path;
+  services.mediawiki = {
+    enable = true;
+    webserver = "none";
+    database.type = "postgres";
+    url = "https://nixos-wiki.thalheim.io";
+    passwordFile = config.sops.secrets."nixos-wiki".path;
+    extraConfig = ''
+      $wgGroupPermissions['*']['createaccount'] = false;
+    '';
+  };
 
   services.mediawiki.poolConfig = {
     "listen.owner" = "nginx";
