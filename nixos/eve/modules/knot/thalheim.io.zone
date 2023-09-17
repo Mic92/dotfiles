@@ -125,15 +125,6 @@ git IN SSHFP 1 2 b31f94a8ab37255d4dca36f8e7b27044b96bed238e967ec220486c2596fc44d
 git IN SSHFP 4 1 3c6fcd32d8a16556af4d2f77470013184f2bc81a
 git IN SSHFP 4 2 1b422e457dfec400db6a92cf9a7a5716d2ca2a7566a838545582891fb5d45de2
 
-;; TLSA Records
-;; $ nix shell nixpkgs#hash-slinger --command tlsa --create mail.thalheim.io
-;;_25._tcp.mail IN TLSA 3 0 1 09d2a4937895bee16449c9ab988111213a6171965ad4c4268454e67705e8a1ad
-;;_25._tcp.mail IN TLSA 3 0 1 09d2a4937895bee16449c9ab988111213a6171965ad4c4268454e67705e8a1ad
-;;_587._tcp.mail IN TLSA 3 0 1 09d2a4937895bee16449c9ab988111213a6171965ad4c4268454e67705e8a1ad
-;;_587._tcp.mail IN TLSA 3 0 1 09d2a4937895bee16449c9ab988111213a6171965ad4c4268454e67705e8a1ad
-;;_143._tcp.imap IN TLSA 3 0 1 cfb6572103bea720c51f05767c3c6716ead39460749f772e0536f1aa32ac2cf8
-;;_143._tcp.imap IN TLSA 3 0 1 cfb6572103bea720c51f05767c3c6716ead39460749f772e0536f1aa32ac2cf8
-
 ;; Keybase & GPG
 joerg._pka IN TXT "v=pka1;fpr=4ABA07382AD57E6B9AA4E88DCA4106B8D7CC79FA;uri=https://thalheim.io/joerg/joerg.asc"
 _keybase IN TXT "keybase-site-verification=woupLHxi4iAKOAHIOaKDPJwR3GiAzVagmTp68g0b2uM"
