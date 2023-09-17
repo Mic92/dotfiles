@@ -5,8 +5,13 @@
     database.type = "postgres";
     nginx.hostName = "nixos-wiki.thalheim.io";
     passwordFile = config.sops.secrets."nixos-wiki".path;
+    extensions.SyntaxHighlight_GeSHi = null;
+    extensions.ParserFunctions = null;
+    extensions.Cite = null;
+
     extraConfig = ''
       $wgGroupPermissions['*']['createaccount'] = false;
+      $wgMainCacheType = CACHE_ACCEL;
     '';
   };
 
