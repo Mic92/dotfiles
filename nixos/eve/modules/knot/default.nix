@@ -103,16 +103,12 @@ in
 
         - id: retiolum
           semantic-checks: on
-          dnssec-signing: on
-          dnssec-policy: rsa2k
           zonefile-sync: -1
           zonefile-load: difference
           journal-content: changes
 
         - id: master
           semantic-checks: on
-          dnssec-signing: on
-          dnssec-policy: rsa2k
           notify: [ he_ip4 ]
           acl: [ he_acl ]
           zonefile-sync: -1
@@ -121,8 +117,6 @@ in
 
         - id: acme
           semantic-checks: on
-          dnssec-signing: on
-          dnssec-policy: rsa2k
           acl: [ acme_acl ]
           zonefile-sync: -1
           zonefile-load: difference
@@ -130,16 +124,12 @@ in
 
         - id: dyndns
           semantic-checks: on
-          dnssec-signing: on
-          dnssec-policy: rsa2k
           zonefile-sync: -1
           zonefile-load: difference
           journal-content: changes
 
         - id: bernie
           semantic-checks: on
-          dnssec-signing: on
-          dnssec-policy: rsa2k
           acl: [ bernie_acl ]
           zonefile-sync: -1
           zonefile-load: difference
@@ -147,8 +137,6 @@ in
 
         - id: matchbox
           semantic-checks: on
-          dnssec-signing: on
-          dnssec-policy: rsa2k
           acl: [ matchbox_acl ]
           zonefile-sync: -1
           zonefile-load: difference
@@ -156,8 +144,6 @@ in
 
         - id: bbc
           semantic-checks: on
-          dnssec-signing: on
-          dnssec-policy: rsa2k
           acl: [ bbc_acl ]
           zonefile-sync: -1
           zonefile-load: difference
