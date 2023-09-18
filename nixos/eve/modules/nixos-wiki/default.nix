@@ -34,7 +34,10 @@ let
       runuser -u postgres -- dropdb mediawiki
       systemctl restart postgresql
       systemctl restart mediawiki-init.service
-      echo Main_Page | runuser -u mediawiki -- mediawiki-maintenance deleteBatch.php
+      cat <<EOF | runuser -u mediawiki -- mediawiki-maintenance deleteBatch.php
+      Main_Page
+      MediaWiki:About
+      EOF
       trap cleanup EXIT
       cp ${wikiDump} "$tmpdir"
       chown mediawiki:mediawiki "$tmpdir/wikidump.xml.gz"
