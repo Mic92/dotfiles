@@ -99,7 +99,7 @@
 
         ## Overrides from srvos:
 
-        NixpkgsOutOfDate.expr = lib.mkForce ''(time() - flake_input_last_modified{input="nixpkgs",host=!="matchbox"}) / (60 * 60 * 24) > 7'';
+        NixpkgsOutOfDate.expr = lib.mkForce ''(time() - flake_input_last_modified{input="nixpkgs", host!="matchbox"}) / (60 * 60 * 24) > 7'';
       };
   };
 }
