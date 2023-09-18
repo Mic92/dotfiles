@@ -1,20 +1,88 @@
 { config, pkgs, ... }:
 let
   hostname = "nixos-wiki.thalheim.io";
+  mediawiki-maintenance = pkgs.runCommand "mediawiki-maintenance"
+    {
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      preferLocalBuild = true;
+    } ''
+    mkdir -p $out/bin
+    makeWrapper ${pkgs.php}/bin/php $out/bin/mediawiki-maintenance \
+      --set MEDIAWIKI_CONFIG ${config.services.phpfpm.pools.mediawiki.phpEnv.MEDIAWIKI_CONFIG} \
+      --add-flags ${config.services.mediawiki.finalPackage}/share/mediawiki/maintenance/run.php
+  '';
+
+  wikiDump = "/var/backup/wikidump.xml.gz";
+
+  wiki-restore = pkgs.writeShellApplication {
+    name = "wiki-restore";
+    runtimeInputs = [
+      pkgs.postgresql
+      pkgs.coreutils
+      pkgs.util-linux
+      mediawiki-maintenance
+    ];
+    text = ''
+      tmpdir=$(mktemp -d)
+      cleanup() { rm -rf "$tmpdir"; }
+      cd "$tmpdir"
+      chown mediawiki:mediawiki "$tmpdir"
+
+      rm -rf /var/lib/mediawiki-uploads
+      install -d -m 755 -o mediawiki -g mediawiki /var/lib/mediawiki-uploads
+      runuser -u postgres -- dropdb mediawiki 
+      systemctl stop phpfpm-mediawiki.service
+      systemctl restart postgresql
+      systemctl restart mediawiki-init.service
+      #echo Main_Page | runuser -u mediawiki -- mediawiki-maintenance deleteBatch.php
+      trap cleanup EXIT
+      cp ${wikiDump} "$tmpdir"
+      chown mediawiki:mediawiki "$tmpdir/wikidump.xml.gz"
+      chmod 644 "$tmpdir/wikidump.xml.gz"
+      runuser -u mediawiki -- mediawiki-maintenance importDump.php --uploads "$tmpdir/wikidump.xml.gz"
+      runuser -u mediawiki -- mediawiki-maintenance rebuildrecentchanges.php
+      systemctl start phpfpm-mediawiki.service
+    '';
+  };
 in
 {
+  environment.systemPackages = [ mediawiki-maintenance ];
+
+  systemd.services.wiki-backup = {
+    startAt = "hourly";
+
+    serviceConfig = {
+      ExecStart = [
+        "${pkgs.wget}/bin/wget https://nixos.wiki/images/wikidump.xml.gz -O ${wikiDump}.new"
+        "${pkgs.coreutils}/bin/mv ${wikiDump}.new ${wikiDump}"
+      ];
+      Type = "oneshot";
+    };
+  };
+
+  systemd.services.wiki-restore = {
+    startAt = "daily";
+    path = [ pkgs.postgresql mediawiki-maintenance ];
+
+    serviceConfig = {
+      ExecStart = "${wiki-restore}/bin/wiki-restore";
+      Type = "oneshot";
+    };
+  };
+
   services.mediawiki = {
     enable = true;
     webserver = "nginx";
     database.type = "postgres";
     nginx.hostName = hostname;
+    uploadsDir = "/var/lib/mediawiki-uploads";
     passwordFile = config.sops.secrets."nixos-wiki".path;
 
     extensions.SyntaxHighlight_GeSHi = null; # provides <SyntaxHighlight> tags
     extensions.ParserFunctions = null;
     extensions.Cite = null;
     extensions.VisualEditor = null;
-    extensions.ConfirmEdit = null;  # Combat SPAM with a simple Captcha
+    extensions.ConfirmEdit = null; # Combat SPAM with a simple Captcha
     extensions.StopForumSpam = pkgs.fetchzip {
       url = "https://extdist.wmflabs.org/dist/extensions/StopForumSpam-REL1_40-71b57ba.tar.gz";
       hash = "sha256-g8v4zr11c2e4bY0BNipJ48miyAF4WTNvlSMgb/NxPBA=";
@@ -75,5 +143,6 @@ in
     useACMEHost = "thalheim.io";
     forceSSL = true;
     locations."=/nixos.png".alias = ./nixos.png;
+    locations."=/wikidump.xml.gz".alias = wikiDump;
   };
 }
