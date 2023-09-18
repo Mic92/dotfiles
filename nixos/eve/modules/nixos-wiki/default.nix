@@ -15,7 +15,11 @@ in {
     extraConfig = ''
       $wgGroupPermissions['*']['createaccount'] = false;
       $wgMainCacheType = CACHE_ACCEL;
-      $wgLogo = '/nixos.png';
+      # FIXME: we need some logos here for vector-2022: https://www.mediawiki.org/wiki/Manual:$wgLogos
+      $wgLogos = [
+        '1x' => '/nixos.png',	
+        'icon' => '/nixos.png',	
+      ];
       $wgDefaultSkin = 'vector-2022';
     '';
   };
