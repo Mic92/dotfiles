@@ -46,18 +46,22 @@
         ],
         "nixpkgs": [
           "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
         ]
       },
       "locked": {
-        "lastModified": 1694926081,
-        "narHash": "sha256-AQub1QQO3dCMY1P2iRFx51FC2+6A3sa5CFxFxDPfKkM=",
+        "lastModified": 1695043065,
+        "narHash": "sha256-C0aRCYQweGoQYmjc5RA5pzjAWgGNL+odLPZE+6rF/jE=",
         "owner": "Mic92",
         "repo": "buildbot-nix",
-        "rev": "c09566cfbae73c6646771dd566581894b848545e",
+        "rev": "7d15dd27c4e813e65453ade7912978090e554a27",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
+        "ref": "cleanups",
         "repo": "buildbot-nix",
         "type": "github"
       }
