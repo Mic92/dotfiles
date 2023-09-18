@@ -101,8 +101,9 @@
       }
       {
         urls = [
-          "http://ca.r/"
+          "http://ca.r/health"
         ];
+        response_string_match = ''{"status":"ok"}'';
         tags.host = "hotdog";
         tags.org = "krebs";
         interface = "tinc.retiolum";
