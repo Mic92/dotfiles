@@ -1,4 +1,3 @@
-{ pkgs, ... }:
 let
   urls = [
     "eve"
