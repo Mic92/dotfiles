@@ -96,6 +96,10 @@
           expr = ''http_navidrome_album_count != 1'';
           annotations.description = "navidrome: not enough albums as expected: {{$value}}";
         };
+
+        ## Overrides from srvos:
+
+        NixpkgsOutOfDate.expr = lib.mkForce ''(time() - flake_input_last_modified{input="nixpkgs",host=!="matchbox"}) / (60 * 60 * 24) > 7'';
       };
   };
 }
