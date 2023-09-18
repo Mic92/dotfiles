@@ -26,7 +26,6 @@
               pkgs.python3.pkgs.invoke
             ];
           };
-          "nixos/eve/modules/buildbot" = { };
           "nixos/eva/modules/prometheus" = { };
           "openwrt" = { };
           "home-manager/modules/neovim" = {

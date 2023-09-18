@@ -55,11 +55,8 @@
           annotations.description = "{{$labels.instance}}: gitea instances error rate went up: {{$value}} errors in 5 minutes";
         };
 
-        Uptime = lib.mkForce {
-          # too scared to upgrade matchbox
-          expr = ''system_uptime {host!="matchbox"} > 2592000'';
-          annotations.description = "Uptime monster: {{$labels.host}} has been up for more than 30 days";
-        };
+        # too scared to upgrade matchbox
+        Uptime.expr = lib.mkForce ''system_uptime {host!="matchbox"} > 2592000'';
 
         PublicRunnerActionOnline = {
           expr = ''count(http_busy{name=~"runner.*", status="online"}) < 2'';
