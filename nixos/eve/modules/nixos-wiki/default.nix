@@ -30,8 +30,8 @@ let
 
       rm -rf /var/lib/mediawiki-uploads
       install -d -m 755 -o mediawiki -g mediawiki /var/lib/mediawiki-uploads
-      runuser -u postgres -- dropdb mediawiki 
       systemctl stop phpfpm-mediawiki.service
+      runuser -u postgres -- dropdb mediawiki
       systemctl restart postgresql
       systemctl restart mediawiki-init.service
       #echo Main_Page | runuser -u mediawiki -- mediawiki-maintenance deleteBatch.php
