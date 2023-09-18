@@ -10,11 +10,12 @@ in {
     extensions.SyntaxHighlight_GeSHi = null;
     extensions.ParserFunctions = null;
     extensions.Cite = null;
+    extensions.VisualEditor = null;
 
     extraConfig = ''
       $wgGroupPermissions['*']['createaccount'] = false;
       $wgMainCacheType = CACHE_ACCEL;
-      $wgLogo = 'https://${config.services.mediawiki.nginx.hostName}/images/nixos.svg.png';
+      $wgLogo = '/nixos.png';
       $wgDefaultSkin = 'vector-2022';
     '';
   };
@@ -24,6 +25,6 @@ in {
   services.nginx.virtualHosts.${config.services.mediawiki.nginx.hostName} = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
-    locations."=/images/nixos.svg.png".alias = ./nixos.svg.png;
+    locations."=/nixos.png".alias = ./nixos.png;
   };
 }
