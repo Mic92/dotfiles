@@ -34,13 +34,16 @@ let
       runuser -u postgres -- dropdb mediawiki
       systemctl restart postgresql
       systemctl restart mediawiki-init.service
-      #echo Main_Page | runuser -u mediawiki -- mediawiki-maintenance deleteBatch.php
+      echo Main_Page | runuser -u mediawiki -- mediawiki-maintenance deleteBatch.php
       trap cleanup EXIT
       cp ${wikiDump} "$tmpdir"
       chown mediawiki:mediawiki "$tmpdir/wikidump.xml.gz"
       chmod 644 "$tmpdir/wikidump.xml.gz"
       runuser -u mediawiki -- mediawiki-maintenance importDump.php --uploads "$tmpdir/wikidump.xml.gz"
       runuser -u mediawiki -- mediawiki-maintenance rebuildrecentchanges.php
+      # can make mediawiki do this automatically with the correct permissions?
+      find /var/lib/mediawiki-uploads -type d -print0 | xargs -0 chmod o+rx 
+      find /var/lib/mediawiki-uploads -type f -print0 | xargs -0 chmod o+r
       systemctl start phpfpm-mediawiki.service
     '';
   };
@@ -75,7 +78,7 @@ in
     webserver = "nginx";
     database.type = "postgres";
     nginx.hostName = hostname;
-    uploadsDir = "/var/lib/mediawiki-uploads";
+    uploadsDir = "/var/lib/mediawiki-uploads/";
     passwordFile = config.sops.secrets."nixos-wiki".path;
 
     extensions.SyntaxHighlight_GeSHi = null; # provides <SyntaxHighlight> tags
