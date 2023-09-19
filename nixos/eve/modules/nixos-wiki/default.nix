@@ -44,9 +44,6 @@ let
       chmod 644 "$tmpdir/wikidump.xml.gz"
       runuser -u mediawiki -- mediawiki-maintenance importDump.php --uploads "$tmpdir/wikidump.xml.gz"
       runuser -u mediawiki -- mediawiki-maintenance rebuildrecentchanges.php
-      # can make mediawiki do this automatically with the correct permissions?
-      find /var/lib/mediawiki-uploads -type d -print0 | xargs -0 chmod o+rx 
-      find /var/lib/mediawiki-uploads -type f -print0 | xargs -0 chmod o+r
       systemctl start phpfpm-mediawiki.service
     '';
   };

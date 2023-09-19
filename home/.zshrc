@@ -754,6 +754,20 @@ nixify() {
   direnv allow
   ${EDITOR:-vim} default.nix
 }
+nix-update() {
+  if [[ -f $HOME/git/nix-update/flake.nix ]]; then
+    nix run $HOME/git/nix-update#nix-update -- "$@"
+  else
+    nix run nixpkgs#nix-update -- "$@"
+  fi
+}
+nix-ci-build() {
+  if [[ -f $HOME/git/nix-ci-build/flake.nix ]]; then
+    nix run $HOME/git/nix-ci-build#nix-ci-build -- "$@"
+  else
+    nix run github:mic92/nix-ci-build -- "$@"
+  fi
+}
 
 flakify() {
   if [ ! -e flake.nix ]; then
