@@ -23,8 +23,10 @@
           On the machine where you want to share a tmux session with [upterm](https://github.com/owenthereal/upterm) first run:
 
           ```
-          upterm host --server ssh://upterm.thalheim.io:2323 --force-command 'tmux attach -t pair-programming' -- tmux new -t pair-programming
+          upterm host --github-user 'githubusername' --server ssh://upterm.thalheim.io:2323 --force-command 'tmux attach -t pair-programming' -- tmux new -t pair-programming
           ```
+
+          Replace `githubusername` with the user you want to share the session with.
 
           This will output something like:
 
@@ -43,7 +45,11 @@
 
           ```
           tmux-upterm() {
-            upterm host --server ssh://upterm.thalheim.io:2323 \
+            if [ -z "$1" ]; then
+              echo "Usage: tmux-upterm <github-username>"
+              return 1
+            fi
+            upterm host --github-user "$1" --server ssh://upterm.thalheim.io:2323 \
               --force-command 'tmux attach -t pair-programming' \
               -- tmux new -t pair-programming
           }
