@@ -52,16 +52,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1695049267,
+        "lastModified": 1695049726,
         "narHash": "sha256-r0qJVhmAdfM8k7thzsAySTyL4Xk7UHrwwiT5bV3RsAI=",
         "owner": "Mic92",
         "repo": "buildbot-nix",
-        "rev": "2488ef4424918c28fb2b2ff4749a2327c5af33e0",
+        "rev": "cb356fc0066a1280c8027a96a2c164aea53609ac",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
-        "ref": "cleanups",
         "repo": "buildbot-nix",
         "type": "github"
       }
@@ -74,7 +73,7 @@
         "flake-parts": [
           "flake-parts"
         ],
-        "floco": "floco",
+        "floco": [],
         "nixos-generators": [
           "nixos-generators"
         ],
@@ -250,27 +249,6 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "floco": {
-      "inputs": {
-        "nixpkgs": [
-          "clan-core",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1694873346,
-        "narHash": "sha256-Uvh03bg0a6ZnNWiX1Gb8g+m343wSJ/wb8ryUASt0loc=",
-        "owner": "aakropotkin",
-        "repo": "floco",
-        "rev": "d16bd444ab9d29a6640f52ee4e43a66528e07515",
-        "type": "github"
-      },
-      "original": {
-        "owner": "aakropotkin",
-        "repo": "floco",
         "type": "github"
       }
     },
