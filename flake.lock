@@ -89,11 +89,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1694874693,
-        "narHash": "sha256-xMqT5csfPAbLghUr6OXCpOTM9Fk/Azwg7xYnEYCEsaQ=",
+        "lastModified": 1695217364,
+        "narHash": "sha256-+tBWHeOboScFZu1P+qQ6JgJMKq0+n2Cf0IIuOJcNY4A=",
         "ref": "refs/heads/main",
-        "rev": "4a1dcc16395a5423023ac10d4be3640d1bb88fdc",
-        "revCount": 690,
+        "rev": "8e157f891fcfc81821c2c81570ac139808cb1b86",
+        "revCount": 725,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
@@ -261,11 +261,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1691024356,
-        "narHash": "sha256-uGLyhkwew6ORO6nAz0Y7KHdiQrDJVI2n6rl4gl7mWzk=",
+        "lastModified": 1694873346,
+        "narHash": "sha256-Uvh03bg0a6ZnNWiX1Gb8g+m343wSJ/wb8ryUASt0loc=",
         "owner": "aakropotkin",
         "repo": "floco",
-        "rev": "1e84b4b16bba5746e1195fa3a4d8addaaf2d9ef4",
+        "rev": "d16bd444ab9d29a6640f52ee4e43a66528e07515",
         "type": "github"
       },
       "original": {
