@@ -30,7 +30,7 @@ let
   };
 in
 {
-  flake.nixosConfigurations = clan-core.lib.buildClan {
+  flake = clan-core.lib.buildClan {
     directory = self;
     specialArgs = {
       self = {
