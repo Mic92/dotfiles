@@ -88,17 +88,18 @@
         ]
       },
       "locked": {
-        "lastModified": 1695217364,
-        "narHash": "sha256-+tBWHeOboScFZu1P+qQ6JgJMKq0+n2Cf0IIuOJcNY4A=",
-        "ref": "refs/heads/main",
-        "rev": "8e157f891fcfc81821c2c81570ac139808cb1b86",
-        "revCount": 725,
+        "lastModified": 1695365706,
+        "narHash": "sha256-YrdghngMitwPqiEHiQZl7ARw3+JllkF0jR7Sh7mlo8E=",
+        "ref": "main",
+        "rev": "05337bb2cdfee8c12f98a472a575bb74c423555e",
+        "revCount": 744,
         "type": "git",
-        "url": "https://git.clan.lol/clan/clan-core"
+        "url": "file:///home/joerg/work/clan/clan-core"
       },
       "original": {
+        "ref": "main",
         "type": "git",
-        "url": "https://git.clan.lol/clan/clan-core"
+        "url": "file:///home/joerg/work/clan/clan-core"
       }
     },
     "crane": {
