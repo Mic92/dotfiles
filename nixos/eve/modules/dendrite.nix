@@ -24,6 +24,11 @@ let
     '';
 in
 {
+  services.matrix-synapse.sliding-sync = {
+    enable = true;
+    settings.SYNCV3_SERVER = "https://${nginx-vhost}";
+    environmentFile = config.sops.secrets.matrix-sliding-sync-secret.path;
+  };
   services.dendrite = {
     enable = true;
     httpPort = 8043;
@@ -138,6 +143,12 @@ in
     locations."/_matrix".proxyPass = "http://127.0.0.1:${toString config.services.dendrite.httpPort}";
     # for remote admin access
     locations."/_synapse".proxyPass = "http://127.0.0.1:${toString config.services.dendrite.httpPort}";
+
+    # sliding sync
+    locations."~ ^/(client/|_matrix/client/unstable/org.matrix.msc3575/sync)" = {
+      proxyPass = "http://${config.services.matrix-synapse.sliding-sync.settings.SYNCV3_BINDADDR}";
+    };
+
     locations."/".root = element-web-thalheim.io;
   };
 }
