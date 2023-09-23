@@ -7,7 +7,6 @@
     ./modules/neovim
     #./modules/emacs
   ];
-
   home.packages = with pkgs;
     [
       #(pkgs.callPackage /home/joerg/git/nix-review {})
@@ -62,13 +61,12 @@
       ncurses
       coreutils
       git
-    ]
-    ++ (lib.optionals pkgs.stdenv.isLinux [
+    ] ++ lib.optionals pkgs.stdenv.isLinux [
       strace
       psmisc
       glibcLocales
       gdb
-    ]);
+    ] ++ lib.optional (pkgs.hostPlatform.system != "riscv64-linux") nix-output-monitor;
 
   home.enableNixpkgsReleaseCheck = false;
 
