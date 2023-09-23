@@ -6,8 +6,6 @@
           "https://numtide.com:443"
           "https://matrix.numtide.com:443"
           "https://upterm.numtide.com:443"
-          "https://mumble.numtide.com:443"
-          "tcp://mumble.numtide.com:64738"
         ];
         tags.host = "matrix1";
         tags.org = "numtide";

@@ -57,7 +57,6 @@
     ./modules/tts.nix
     ./modules/users.nix
     ./modules/wireguard.nix
-    ./modules/wiki-backup.nix
     ./modules/nixos-wiki
     ./modules/onlyoffice.nix
     #./modules/headscale.nix
