@@ -32,7 +32,6 @@
     arandr
     signal-desktop
     inputs.nur-packages.packages.${pkgs.hostPlatform.system}.pandoc-bin
-    nix-output-monitor
     gnome.adwaita-icon-theme
     hicolor-icon-theme
     graphicsmagick
