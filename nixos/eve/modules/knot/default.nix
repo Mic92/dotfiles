@@ -17,7 +17,7 @@ let
     '';
   dyndns = domain:
     pkgs.writeText "${domain}.zone" ''
-      @ 3600 IN SOA ${domain}. ns1.thalheim.io. 2021013110 7200 3600 86400 3600
+      @ 3600 IN SOA ${domain}. ns1.thalheim.io. 2021013112 7200 3600 86400 3600
 
       $TTL 300
 
