@@ -455,9 +455,9 @@ nix-unpack() {
 }
 
 killp() {
-  local pid=$(command ps -ef | sed 1d | eval "fzf ${FZF_DEFAULT_OPTS} -m --header='[kill:process]'" | awk '{print $2}')
+  local pid=$(procs --color=always "$1" | fzf --ansi -m --header='[kill:process]' --header-lines 2 | awk '{print $1}')
   if [[ "$pid" != "" ]]; then
-    echo $pid | xargs sudo kill -${1:-9}
+    echo $pid | xargs sudo kill -${2:-9}
     killp
   fi
 }
