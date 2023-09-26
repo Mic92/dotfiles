@@ -27,6 +27,7 @@ in
   services.matrix-synapse.sliding-sync = {
     enable = true;
     settings.SYNCV3_SERVER = "https://${nginx-vhost}";
+    # $ echo SYNCV3_SECRET=$(openssl rand -base64 32)
     environmentFile = config.sops.secrets.matrix-sliding-sync-secret.path;
   };
   services.dendrite = {
