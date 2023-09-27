@@ -73,7 +73,7 @@
     clan-core.inputs.nixos-generators.follows = "nixos-generators";
     clan-core.inputs.floco.follows = "";
 
-    disko.url = "github:nix-community/disko/party";
+    disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
