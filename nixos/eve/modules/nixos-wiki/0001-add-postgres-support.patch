@@ -1,0 +1,75 @@
+From 64815bb043bffa7a444872a85f3cb27d6abf0e21 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Thu, 28 Sep 2023 08:47:38 +0200
+Subject: [PATCH] add postgres support
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ ...nagerOAuthPrimaryAuthenticationProvider.php |  2 +-
+ includes/Hooks.php                             |  2 +-
+ .../authmanageroauth_linked_accounts.sql       |  0
+ .../authmanageroauth_linked_accounts.sql       | 18 ++++++++++++++++++
+ 4 files changed, 20 insertions(+), 2 deletions(-)
+ rename includes/sql/{ => mysql}/authmanageroauth_linked_accounts.sql (100%)
+ create mode 100644 includes/sql/postgres/authmanageroauth_linked_accounts.sql
+
+diff --git a/includes/AuthManagerOAuthPrimaryAuthenticationProvider.php b/includes/AuthManagerOAuthPrimaryAuthenticationProvider.php
+index dc6b1ec..ac5142d 100644
+--- a/includes/AuthManagerOAuthPrimaryAuthenticationProvider.php
++++ b/includes/AuthManagerOAuthPrimaryAuthenticationProvider.php
+@@ -240,7 +240,7 @@ public function continuePrimaryAuthentication( array $reqs ) {
+ 			$result = $dbr->select(
+ 				'authmanageroauth_linked_accounts',
+ 				[ 'amoa_provider', 'amoa_remote_user', 'amoa_local_user' ],
+-				[ 'amoa_provider' => $req->amoa_provider, 'amoa_remote_user' => $resp->linkRequest->amoa_remote_user ],
++				[ 'amoa_provider' => $req->amoa_provider, 'amoa_remote_user' => strval($resp->linkRequest->amoa_remote_user) ],
+ 				__METHOD__,
+ 			);
+ 			$create_user_req = new LocalUsernameInputRequest( $resp->linkRequest->username );
+diff --git a/includes/Hooks.php b/includes/Hooks.php
+index 2c8553b..4659141 100644
+--- a/includes/Hooks.php
++++ b/includes/Hooks.php
+@@ -28,7 +28,7 @@ class Hooks implements \MediaWiki\Installer\Hook\LoadExtensionSchemaUpdatesHook
+ 	public function onLoadExtensionSchemaUpdates( $updater ) {
+ 		$updater->addExtensionTable(
+ 			'authmanageroauth_linked_accounts',
+-			__DIR__ . '/sql/authmanageroauth_linked_accounts.sql'
++			__DIR__ . '/sql/' . $updater->getDB()->getType() . '/authmanageroauth_linked_accounts.sql'
+ 		);
+ 	}
+ 
+diff --git a/includes/sql/authmanageroauth_linked_accounts.sql b/includes/sql/mysql/authmanageroauth_linked_accounts.sql
+similarity index 100%
+rename from includes/sql/authmanageroauth_linked_accounts.sql
+rename to includes/sql/mysql/authmanageroauth_linked_accounts.sql
+diff --git a/includes/sql/postgres/authmanageroauth_linked_accounts.sql b/includes/sql/postgres/authmanageroauth_linked_accounts.sql
+new file mode 100644
+index 0000000..aecadd4
+--- /dev/null
++++ b/includes/sql/postgres/authmanageroauth_linked_accounts.sql
+@@ -0,0 +1,18 @@
++CREATE TABLE /*_*/authmanageroauth_linked_accounts(
++    -- the provider name
++    amoa_provider VARCHAR(255) NOT NULL,
++
++    -- the local user id
++    amoa_local_user INTEGER NOT NULL,
++
++    -- the remote user identifier
++    amoa_remote_user VARCHAR(255) NOT NULL,
++
++    PRIMARY KEY(amoa_provider, amoa_local_user, amoa_remote_user)
++)/*$wgDBTableOptions*/;
++
++-- used for searching linked accounts by local user
++CREATE INDEX amoa_local_index ON /*_*/authmanageroauth_linked_accounts (amoa_local_user);
++
++-- used for searching all local accounts liked with a remote account
++CREATE INDEX amoa_remote_index ON /*_*/authmanageroauth_linked_accounts (amoa_provider,amoa_remote_user);
+-- 
+2.42.0
+
