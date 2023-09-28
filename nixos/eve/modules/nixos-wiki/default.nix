@@ -26,10 +26,10 @@ let
       tmpdir=$(mktemp -d)
       cleanup() { rm -rf "$tmpdir"; }
       cd "$tmpdir"
-      chown mediawiki:mediawiki "$tmpdir"
+      chown mediawiki:nginx "$tmpdir"
 
       rm -rf /var/lib/mediawiki-uploads
-      install -d -m 755 -o mediawiki -g mediawiki /var/lib/mediawiki-uploads
+      install -d -m 755 -o mediawiki -g nginx /var/lib/mediawiki-uploads
       systemctl stop phpfpm-mediawiki.service
       runuser -u postgres -- dropdb mediawiki
       systemctl restart postgresql
@@ -40,7 +40,7 @@ let
       EOF
       trap cleanup EXIT
       cp ${wikiDump} "$tmpdir"
-      chown mediawiki:mediawiki "$tmpdir/wikidump.xml.gz"
+      chown mediawiki:nginx "$tmpdir/wikidump.xml.gz"
       chmod 644 "$tmpdir/wikidump.xml.gz"
       runuser -u mediawiki -- mediawiki-maintenance importDump.php --uploads "$tmpdir/wikidump.xml.gz"
       runuser -u mediawiki -- mediawiki-maintenance rebuildrecentchanges.php
@@ -73,6 +73,8 @@ in
     };
   };
 
+  sops.secrets.nixos-wiki-github-client-secret.owner = config.services.phpfpm.pools.mediawiki.user;
+
   services.mediawiki = {
     enable = true;
     webserver = "nginx";
@@ -85,6 +87,15 @@ in
     extensions.ParserFunctions = null;
     extensions.Cite = null;
     extensions.VisualEditor = null;
+    extensions.AuthManagerOAuth = pkgs.fetchzip {
+      url = "https://github.com/mohe2015/AuthManagerOAuth/releases/download/v0.2.0/AuthManagerOAuth.zip";
+      sha256 = "sha256-SMfUR2okG3Wp8FZG99V01w2nBcbEAVvHRzkzFGHi0ZY=";
+      # postgresql support
+      postFetch = ''
+        cd $out
+        patch -p1 < ${./0001-add-postgres-support.patch}
+      '';
+    }; # Github login
     extensions.ConfirmEdit = null; # Combat SPAM with a simple Captcha
     extensions.StopForumSpam = pkgs.fetchzip {
       url = "https://extdist.wmflabs.org/dist/extensions/StopForumSpam-REL1_40-71b57ba.tar.gz";
@@ -92,8 +103,22 @@ in
     };
 
     extraConfig = ''
-      # Disable account creation globally
-      $wgGroupPermissions['*']['createaccount'] = false;
+      #$wgDebugLogFile = "/var/log/mediawiki/debug.log";
+
+      # allow local login
+      $wgAuthManagerOAuthConfig = [
+        'github' => [
+          'clientId'                => 'Iv1.95ed182c83df1d22',
+          'clientSecret'            => file_get_contents("${config.sops.secrets.nixos-wiki-github-client-secret.path}"),
+          'urlAuthorize'            => 'https://github.com/login/oauth/authorize',
+          'urlAccessToken'          => 'https://github.com/login/oauth/access_token',
+          'urlResourceOwnerDetails' => 'https://api.github.com/user'
+        ],
+      ];
+
+      # Enable account creation globally
+      $wgGroupPermissions['*']['createaccount'] = true;
+      $wgGroupPermissions['*']['autocreateaccount'] = true;
 
       # Disable anonymous editing
       $wgGroupPermissions['*']['edit'] = false;
