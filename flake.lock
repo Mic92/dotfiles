@@ -88,17 +88,18 @@
         ]
       },
       "locked": {
-        "lastModified": 1695842922,
-        "narHash": "sha256-1sTzRIz7Vou7rinjkt3xP1+cI9vBXKkGGrq7ndAFWQk=",
-        "ref": "refs/heads/main",
-        "rev": "96df913184e5185cae2463fb2c8b444541e71e54",
-        "revCount": 867,
+        "lastModified": 1695916722,
+        "narHash": "sha256-b3mZCm3dzzqRqwaD+Sz+JLfDpZow4WYxIIv/P1EVSf4=",
+        "ref": "main",
+        "rev": "739d3b3578d2f869cafbe878ce2ae052bed4207b",
+        "revCount": 888,
         "type": "git",
-        "url": "https://git.clan.lol/clan/clan-core"
+        "url": "file:///home/joerg/work/clan/clan-core"
       },
       "original": {
+        "ref": "main",
         "type": "git",
-        "url": "https://git.clan.lol/clan/clan-core"
+        "url": "file:///home/joerg/work/clan/clan-core"
       }
     },
     "crane": {
@@ -399,11 +400,11 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1695541019,
-        "narHash": "sha256-rs++zfk41K9ArWkDAlmBDlGlKO8qeRIRzdjo+9SmNFI=",
+        "lastModified": 1695887975,
+        "narHash": "sha256-u3+5FR12dI305jCMb0fJNQx2qwoQ54lv1tPoEWp0hmg=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "61283b30d11f27d5b76439d43f20d0c0c8ff5296",
+        "rev": "adcfd6aa860d1d129055039696bc457af7d50d0e",
         "type": "github"
       },
       "original": {
