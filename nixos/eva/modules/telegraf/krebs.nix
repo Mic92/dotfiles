@@ -80,8 +80,9 @@
       {
         urls = [
           "http://yellow.r"
-          "http://sicily.r/"
-          "https://sicily.r/"
+          # currently broken
+          #"http://sicily.r/"
+          #"https://sicily.r/"
           "http://flix.r/"
         ];
         response_string_match = "Index of /";
