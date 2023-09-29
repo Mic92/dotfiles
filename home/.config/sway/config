@@ -210,8 +210,6 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-
-
 # Pulse Audio controls
 bindsym XF86AudioRaiseVolume exec pamixer --increase 5
 bindsym XF86AudioLowerVolume exec pamixer --decrease 5
