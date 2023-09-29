@@ -59,6 +59,7 @@
     ./modules/wireguard.nix
     ./modules/nixos-wiki
     ./modules/onlyoffice.nix
+    ./modules/zerotier.nix
     #./modules/headscale.nix
     #./modules/wiregrill
 
@@ -77,7 +78,7 @@
     ../modules/zsh.nix
     ../modules/uptermd.nix
     ../modules/nix-ld.nix
-    ../modules/zerotier.nix
+    #../modules/zerotier.nix
   ];
 
   # The NixOS release to be compatible with for stateful data such as databases.

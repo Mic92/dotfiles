@@ -1,31 +1,6 @@
-{ lib, pkgs, ... }:
+{ pkgs, ... }:
 {
-  networking.firewall.allowedTCPPorts = [ 9993 ];
-  networking.firewall.allowedUDPPorts = [ 9993 ];
-  networking.firewall.interfaces."zt+".allowedTCPPorts = [ 5353 ];
-  networking.firewall.interfaces."zt+".allowedUDPPorts = [ 5353 ];
-
-  services.zerotierone = {
-    enable = true;
-    joinNetworks = [
-      "33d87fa6bd93423e"
-    ];
-  };
-
-  # Note avahi was super slow. systemd-resolved worked much faster for mdns
-  systemd.network.networks.zerotier = {
-    matchConfig.Name = "zt*";
-    networkConfig = {
-      LLMNR = true;
-      LLDP = true;
-      MulticastDNS = true;
-      KeepConfiguration = "static";
-    };
-  };
-
-  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-    "zerotierone"
-  ];
+  clan.networking.zerotier.networkId = builtins.readFile ../../machines/eve/facts/zerotier-network-id;
 
   systemd.tmpfiles.rules = [
     "L+ /var/lib/zerotier-one/local.conf - - - - ${pkgs.writeText "local.conf" (builtins.toJSON {
@@ -35,13 +10,6 @@
         "10.250.0.0/16".blacklist = true;
         "42::/16".blacklist = true;
       };
-      # virtual = {
-      #   feedbeef12 = {
-      #     role = "UPSTREAM";
-      #     try = [ "10.10.20.1/9993" ];
-      #     blacklist = [ "192.168.0.0/24" ];
-      #   }
-      # };
     })}"
   ];
 
