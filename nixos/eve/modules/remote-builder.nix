@@ -27,34 +27,8 @@
     }
     # direct connection sometimes break, too many connections?
     {
-      hostName = "amy.dse.in.tum.de";
-      maxJobs = 92;
-      sshKey = config.sops.secrets.ssh-tum-builder.path;
-      protocol = "ssh-ng";
-      sshUser = "nix";
-      systems = [ "x86_64-linux" "i686-linux" ];
-      supportedFeatures = [
-        "big-parallel"
-        "kvm"
-        "nixos-test"
-      ];
-    }
-    {
-      hostName = "clara.dse.in.tum.de";
-      maxJobs = 92;
-      sshKey = config.sops.secrets.ssh-tum-builder.path;
-      protocol = "ssh-ng";
-      sshUser = "nix";
-      systems = [ "x86_64-linux" "i686-linux" ];
-      supportedFeatures = [
-        "big-parallel"
-        "kvm"
-        "nixos-test"
-      ];
-    }
-    {
-      hostName = "rose.dse.in.tum.de";
-      maxJobs = 92;
+      hostName = "vislor.dse.in.tum.de";
+      maxJobs = 128;
       sshKey = config.sops.secrets.ssh-tum-builder.path;
       protocol = "ssh-ng";
       sshUser = "nix";
