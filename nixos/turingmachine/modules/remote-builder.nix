@@ -3,7 +3,7 @@
 
   nix.buildMachines = [
     {
-      hostName = "vislor.dse.in.tum.de";
+      hostName = "vislor.dos.cit.tum.de";
       sshUser = "nix";
       protocol = "ssh-ng";
       sshKey = config.sops.secrets.ssh-remote-builder.path;
