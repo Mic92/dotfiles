@@ -32,7 +32,7 @@
     ./modules/influxdb.nix
     ./modules/harmonia.nix
     ./modules/knot
-    ./modules/navidrome.nix
+    #./modules/navidrome.nix
     ./modules/unbound.nix
     ./modules/mastodon-hnbot.nix
     ./modules/network.nix
