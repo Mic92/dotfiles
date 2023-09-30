@@ -1,6 +1,7 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
-  clan.networking.zerotier.networkId = builtins.readFile ../../machines/eve/facts/zerotier-network-id;
+
+  clan.networking.zerotier.networkId = builtins.readFile (config.clanCore.clanDir + "/machines/eve/facts/zerotier-network-id");
 
   systemd.tmpfiles.rules = [
     "L+ /var/lib/zerotier-one/local.conf - - - - ${pkgs.writeText "local.conf" (builtins.toJSON {
