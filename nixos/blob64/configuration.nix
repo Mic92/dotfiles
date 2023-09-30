@@ -7,7 +7,7 @@
     ../modules/networkd.nix
     ../modules/ip-update.nix
     ./modules/photoprism.nix
-    #../modules/tailscale.nix
+    ../modules/zerotier.nix
     ./hardware-configuration.nix
   ];
 
