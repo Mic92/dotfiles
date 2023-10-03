@@ -31,6 +31,7 @@
       "/var/log/journal"
       "/var/lib/containerd"
       "/var/lib/systemd" # not so interesting state so far
+      "/var/lib/private/dendrite/searchindex"
       "/var/cache"
       "/var/tmp"
       "/var/log"
