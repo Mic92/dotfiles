@@ -404,9 +404,10 @@ alias su='su - '
 xalias ctl='sudo systemctl'
 alias gdb='gdb --quiet --args'
 alias readelf='readelf -W'
-# Editors
 xalias xclip="xclip -selection clipboard"
 xalias cloc=scc
+# higher priority to get no packet loss
+xalias mumble="nice -10 mumble"
 
 if [[ -n ${commands[heygpt]} ]]; then
   heygpt() {
