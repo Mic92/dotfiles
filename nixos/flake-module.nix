@@ -6,7 +6,7 @@ let
     srvos.flake = self;
     documentation.info.enable = false;
     services.envfs.enable = true;
-    clan.networking.deploymentAddress = "${config.networking.hostName}.r";
+    clan.networking.deploymentAddress = "root@${config.networking.hostName}.r";
 
     imports = [
       ./modules/nix-path.nix
