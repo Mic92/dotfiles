@@ -1,14 +1,8 @@
 {
   description = "NixOS configuration with flakes";
 
-  nixConfig.extra-substituters = [
-    #"https://mic92.cachix.org"
-    "https://cache.thalheim.io"
-  ];
-  nixConfig.extra-trusted-public-keys = [
-    "cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc="
-    #"mic92.cachix.org-1:gi8IhgiT3CYZnJsaW7fxznzTkMUOn1RY4GmXdT/nXYQ="
-  ];
+  nixConfig.extra-substituters = [ "https://cache.thalheim.io" ];
+  nixConfig.extra-trusted-public-keys = [ "cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc=" ];
 
   # To update all inputs:
   # $ nix flake update
