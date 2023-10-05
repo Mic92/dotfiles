@@ -41,7 +41,7 @@
       fallback = true;
       warn-dirty = false;
       auto-optimise-store = true;
-      experimental-features = [ "repl-flake" ];
+      experimental-features = [ "repl-flake" "impure-derivations" "auto-allocate-uids" ];
     };
   };
 
