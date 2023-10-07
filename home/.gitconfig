@@ -26,13 +26,15 @@
 [gpg]
   format = ssh
 [diff]
-  tool = vim -d
   compactionHeuristic = true
   renames = true
   colorMoved = default
 [merge]
-  tool = vim -d
+	tool = vimdiff
+  keepBackup = false
   conflictstyle = zdiff3
+[mergetool "vimdiff"]
+  cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
 [alias]
   rb = "rebase origin/HEAD"
   get = clone --recursive
