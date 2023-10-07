@@ -6,7 +6,9 @@
   services.xserver.windowManager.i3.enable = true;
   services.xserver.displayManager.defaultSession = "none+i3";
 
+  services.dbus.packages = [ pkgs.flameshot ];
   environment.systemPackages = with pkgs; [
+    flameshot
     xorg.xmodmap
     firefox
     chromium

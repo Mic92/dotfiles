@@ -9,8 +9,6 @@
     gc.automatic = true;
     gc.dates = "03:15";
     gc.options = "--delete-older-than 10d";
-    # should be enough?
-    nrBuildUsers = lib.mkDefault 32;
     package = pkgs.nixVersions.unstable;
 
     settings = {
@@ -41,7 +39,9 @@
       fallback = true;
       warn-dirty = false;
       auto-optimise-store = true;
-      experimental-features = [ "repl-flake" "impure-derivations" "auto-allocate-uids" ];
+      auto-allocate-uids = true;
+      system-features = lib.mkDefault [ "uid-range" ];
+      experimental-features = [ "repl-flake" "impure-derivations" "auto-allocate-uids" "cgroups" ];
     };
   };
 
