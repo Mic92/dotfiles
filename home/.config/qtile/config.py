@@ -27,6 +27,7 @@
 import re
 
 from libqtile import bar, layout, widget
+from libqtile.backend.wayland import InputConfig
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
@@ -186,14 +187,14 @@ cpu_graph = widget.CPUGraph(
     samples=50, line_width=1, width=50, graph_color="FF2020", fill_color="C01010"
 )
 memory_widget = widget.Memory(measure_mem="G")
-#net_graph = widget.NetGraph(
+# net_graph = widget.NetGraph(
 #    samples=50,
 #    line_width=1,
 #    width=50,
 #    interface="wlp170s0",
 #    graph_color="22FF44",
 #    fill_color="11AA11",
-#)
+# )
 bottom_widgets = [
     # widget.Notify(foreground="FF0000", fontsize=14),
     widget.TextBox("", name="default"),
@@ -201,7 +202,7 @@ bottom_widgets = [
     widget.TextBox("", name="default"),
     memory_widget,
     widget.TextBox("ﯴ", name="default"),
-    widget.Net(format='{down:.0f}{down_suffix} ↓↑ {up:.0f}{up_suffix}'),
+    widget.Net(format="{down:.0f}{down_suffix} ↓↑ {up:.0f}{up_suffix}"),
 ]
 
 screens = [
@@ -257,8 +258,13 @@ reconfigure_screens = True
 # focus, should we respect this or not?
 auto_minimize = True
 
-# When using the Wayland backend, this can be used to configure input devices.
-wl_input_rules = None
+
+wl_input_rules = {
+    "type:touchpad": InputConfig(
+        dwt=True, tap=True, natural_scroll=True, middle_emulation=True
+    ),
+}
+
 
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
 # string besides java UI toolkits; you can see several discussions on the
