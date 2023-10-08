@@ -60,7 +60,14 @@
     playerctl
     yt-dlp
     mumble
-    ferdium
+    (pkgs.runCommand "ferdium" { } ''
+      mkdir -p $out/bin
+      cat > $out/bin/ferdium <<'EOF'
+      #!${runtimeShell}
+      exec ${pkgs.ferdium}/bin/ferdium --ozone-platform=wayland --enable-features=UseOzonePlatform "$@"
+      EOF
+      chmod +x $out/bin/ferdium
+    '')
     kubectl
     hyperfine
     inkscape

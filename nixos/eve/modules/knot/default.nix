@@ -38,187 +38,250 @@ in
     keyFiles = [
       config.sops.secrets."knot-keys.conf".path
     ];
-    extraConfig = ''
-      server:
-        listen: ${ip4}@53
-        listen: ${ip6}@53
+    settings = {
+      server = {
+        listen = [ "${ip4}@53" "${ip6}@53" ];
+      };
 
-      remote:
-        - id: he_ip4
-          address: 216.218.130.2
+      remote = [{
+        id = "he_ip4";
+        address = "216.218.130.2";
         # does not accept NOTIFY yet
         #- id: he_ip6
         #  address: 2001:470:100::2
+      }];
 
       # to generate TSIG key
       # for i in host; do keymgr -t $i; done
-      acl:
-        - id: he_acl
-          key: he1
-          action: transfer
+      acl = [
+        {
 
-        - id: acme_acl
-          key: acme
-          action: update
+          id = "he_acl";
+          key = "he1";
+          action = "transfer";
+        }
+        {
+          id = "acme_acl";
+          key = "acme";
+          action = "update";
+        }
+        {
+          id = "matchbox_acl";
+          key = "matchbox";
+          action = "update";
+        }
+        {
+          id = "turingmachine_acl";
+          key = "turingmachine";
+          action = "update";
+        }
+        {
+          id = "blob64_acl";
+          key = "blob64";
+          action = "update";
+        }
+        {
+          id = "rauter_acl";
+          key = "rauter";
+          action = "update";
+        }
+        {
+          id = "bernie_acl";
+          key = "bernie";
+          action = "update";
+        }
+        {
+          id = "bbc_acl";
+          key = "bbc";
+          action = "update";
+        }
+      ];
 
-        - id: matchbox_acl
-          key: matchbox
-          action: update
+      mod-rrl = [{
+        id = "default";
+        rate-limit = 200;
+        slip = 2;
+      }];
 
-        - id: turingmachine_acl
-          key: turingmachine
-          action: update
+      policy = [{
+        id = "default";
+        algorithm = "RSASHA256";
+        ksk-size = 4096;
+        zsk-size = 2048;
+      }];
 
-        - id: blob64_acl
-          key: blob64
-          action: update
 
-        - id: rauter_acl
-          key: rauter
-          action: update
-
-        - id: bernie_acl
-          key: bernie
-          action: update
-
-        - id: bbc_acl
-          key: bbc
-          action: update
-
-      mod-rrl:
-        - id: default
-          rate-limit: 200   # Allow 200 resp/s for each flow
-          slip: 2           # Every other response slips
-
-      policy:
-        - id: rsa2k
-          algorithm: RSASHA256
-          ksk-size: 4096
-          zsk-size: 2048
-
-      template:
-        - id: default
-          semantic-checks: on
-          global-module: mod-rrl/default
-
-        - id: retiolum
-          semantic-checks: on
-          zonefile-sync: -1
-          zonefile-load: difference
-          journal-content: changes
-
-        - id: master
-          semantic-checks: on
-          notify: [ he_ip4 ]
-          acl: [ he_acl ]
-          zonefile-sync: -1
-          zonefile-load: difference
-          journal-content: changes
-
-        - id: acme
-          semantic-checks: on
-          acl: [ acme_acl ]
-          zonefile-sync: -1
-          zonefile-load: difference
-          journal-content: changes
-
-        - id: dyndns
-          semantic-checks: on
-          zonefile-sync: -1
-          zonefile-load: difference
-          journal-content: changes
-
-        - id: bernie
-          semantic-checks: on
-          acl: [ bernie_acl ]
-          zonefile-sync: -1
-          zonefile-load: difference
-          journal-content: changes
-
-        - id: matchbox
-          semantic-checks: on
-          acl: [ matchbox_acl ]
-          zonefile-sync: -1
-          zonefile-load: difference
-          journal-content: changes
-
-        - id: bbc
-          semantic-checks: on
-          acl: [ bbc_acl ]
-          zonefile-sync: -1
-          zonefile-load: difference
-          journal-content: changes
-      zone:
-        - domain: thalheim.io
-          file: "${./thalheim.io.zone}"
-          template: master
-        - domain: tierheilpraxis-jessican.de
-          file: "${./tierheilpraxis-jessican.de.zone}"
-          template: master
-        - domain: lekwati.com
-          file: "${./lekwati.com.zone}"
-          template: master
-        - domain: r
-          file: "${inputs.retiolum}/zones/r.zone"
-          template: retiolum
-        - domain: w
-          file: "${inputs.retiolum}/zones/w.zone"
-          template: retiolum
-        - domain: i
-          file: "${inputs.retiolum}/zones/i.zone"
-          template: retiolum
-        - domain: bbc.lekwati.com
-          file: "${dyndns "bbc.lekwati.com"}"
-          template: dyndns
-          acl: [ bbc_acl ]
-        - domain: matchbox.thalheim.io
-          file: "${dyndns "matchbox.thalheim.io"}"
-          template: dyndns
-          acl: [ matchbox_acl ]
-        - domain: bernie.thalheim.io
-          file: "${dyndns "bernie.thalheim.io"}"
-          template: dyndns
-          acl: [ bernie_acl ]
-        - domain: turingmachine.thalheim.io
-          file: "${dyndns "turingmachine.thalheim.io"}"
-          template: dyndns
-          acl: [ turingmachine_acl ]
-        - domain: blob64.thalheim.io
-          file: "${dyndns "blob64.thalheim.io"}"
-          template: dyndns
-          acl: [ blob64_acl ]
-        - domain: rauter.thalheim.io
-          file: "${dyndns "rauter.thalheim.io"}"
-          template: dyndns
-          acl: [ rauter_acl ]
-        - domain: _acme-challenge.thalheim.io
-          file: "${acmeChallenge "thalheim.io"}"
-          template: acme
-        - domain: _acme-challenge.anon.thalheim.io
-          file: "${acmeChallenge "anon.thalheim.io"}"
-          template: acme
-        - domain: _acme-challenge.dns.thalheim.io
-          file: "${acmeChallenge "dns.thalheim.io"}"
-          template: acme
-        - domain: _acme-challenge.imap.thalheim.io
-          file: "${acmeChallenge "imap.thalheim.io"}"
-          template: acme
-        - domain: _acme-challenge.mail.thalheim.io
-          file: "${acmeChallenge "mail.thalheim.io"}"
-          template: acme
-        - domain: _acme-challenge.influxdb.thalheim.io
-          file: "${acmeChallenge "influxdb.thalheim.io"}"
-          template: acme
-        - domain: _acme-challenge.lekwati.com
-          file: "${acmeChallenge "lekwati.com"}"
-          template: acme
-        - domain: _acme-challenge.devkid.net
-          file: "${acmeChallenge "devkid.net"}"
-          template: acme
-        - domain: _acme-challenge.imap.devkid.net
-          file: "${acmeChallenge "imap.devkid.net"}"
-          template: acme
-    '';
+      template = [
+        {
+          id = "default";
+          semantic-checks = "on";
+          global-module = "mod-rrl/default";
+        }
+        {
+          id = "retiolum";
+          semantic-checks = "on";
+          zonefile-sync = "-1";
+          zonefile-load = "difference";
+          journal-content = "changes";
+        }
+        {
+          id = "master";
+          semantic-checks = "on";
+          notify = [ "he_ip4" ];
+          acl = [ "he_acl" ];
+          zonefile-sync = "-1";
+          zonefile-load = "difference";
+          journal-content = "changes";
+        }
+        {
+          id = "acme";
+          semantic-checks = "on";
+          acl = [ "acme_acl" ];
+          zonefile-sync = "-1";
+          zonefile-load = "difference";
+          journal-content = "changes";
+        }
+        {
+          id = "dyndns";
+          semantic-checks = "on";
+          zonefile-sync = "-1";
+          zonefile-load = "difference";
+          journal-content = "changes";
+        }
+        {
+          id = "bernie";
+          semantic-checks = "on";
+          acl = [ "bernie_acl" ];
+          zonefile-sync = "-1";
+          zonefile-load = "difference";
+          journal-content = "changes";
+        }
+        {
+          id = "matchbox";
+          semantic-checks = "on";
+          acl = [ "matchbox_acl" ];
+          zonefile-sync = "-1";
+          zonefile-load = "difference";
+          journal-content = "changes";
+        }
+        {
+          id = "bbc";
+          semantic-checks = "on";
+          acl = [ "bbc_acl" ];
+          zonefile-sync = "-1";
+          zonefile-load = "difference";
+          journal-content = "changes";
+        }
+      ];
+      zone = [
+        {
+          domain = "thalheim.io";
+          file = "${./thalheim.io.zone}";
+          template = "master";
+        }
+        {
+          domain = "tierheilpraxis-jessican.de";
+          file = "${./tierheilpraxis-jessican.de.zone}";
+          template = "master";
+        }
+        {
+          domain = "lekwati.com";
+          file = "${./lekwati.com.zone}";
+          template = "master";
+        }
+        {
+          domain = "r";
+          file = "${inputs.retiolum}/zones/r.zone";
+          template = "retiolum";
+        }
+        {
+          domain = "w";
+          file = "${inputs.retiolum}/zones/w.zone";
+          template = "retiolum";
+        }
+        {
+          domain = "bbc.lekwati.com";
+          file = "${dyndns "bbc.lekwati.com"}";
+          template = "dyndns";
+          acl = [ "bbc_acl" ];
+        }
+        {
+          domain = "matchbox.thalheim.io";
+          file = "${dyndns "matchbox.thalheim.io"}";
+          template = "dyndns";
+          acl = [ "matchbox_acl" ];
+        }
+        {
+          domain = "bernie.thalheim.io";
+          file = "${dyndns "bernie.thalheim.io"}";
+          template = "dyndns";
+          acl = [ "bernie_acl" ];
+        }
+        {
+          domain = "turingmachine.thalheim.io";
+          file = "${dyndns "turingmachine.thalheim.io"}";
+          template = "dyndns";
+          acl = [ "turingmachine_acl" ];
+        }
+        {
+          domain = "blob64.thalheim.io";
+          file = "${dyndns "blob64.thalheim.io"}";
+          template = "dyndns";
+          acl = [ "blob64_acl" ];
+        }
+        {
+          domain = "rauter.thalheim.io";
+          file = "${dyndns "rauter.thalheim.io"}";
+          template = "dyndns";
+          acl = [ "rauter_acl" ];
+        }
+        {
+          domain = "_acme-challenge.thalheim.io";
+          file = "${acmeChallenge "thalheim.io"}";
+          template = "acme";
+        }
+        {
+          domain = "_acme-challenge.anon.thalheim.io";
+          file = "${acmeChallenge "anon.thalheim.io"}";
+          template = "acme";
+        }
+        {
+          domain = "_acme-challenge.dns.thalheim.io";
+          file = "${acmeChallenge "dns.thalheim.io"}";
+          template = "acme";
+        }
+        {
+          domain = "_acme-challenge.imap.thalheim.io";
+          file = "${acmeChallenge "imap.thalheim.io"}";
+          template = "acme";
+        }
+        {
+          domain = "_acme-challenge.mail.thalheim.io";
+          file = "${acmeChallenge "mail.thalheim.io"}";
+          template = "acme";
+        }
+        {
+          domain = "_acme-challenge.influxdb.thalheim.io";
+          file = "${acmeChallenge "influxdb.thalheim.io"}";
+          template = "acme";
+        }
+        {
+          domain = "_acme-challenge.lekwati.com";
+          file = "${acmeChallenge "lekwati.com"}";
+          template = "acme";
+        }
+        {
+          domain = "_acme-challenge.devkid.net";
+          file = "${acmeChallenge "devkid.net"}";
+          template = "acme";
+        }
+        {
+          domain = "_acme-challenge.imap.devkid.net";
+          file = "${acmeChallenge "imap.devkid.net"}";
+          template = "acme";
+        }
+      ];
+    };
   };
 
   networking.firewall.allowedTCPPorts = [ 53 ];

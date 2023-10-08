@@ -48,7 +48,7 @@
     blueberry
     sway-contrib.grimshot # screenshots
     wtype
-    
+
     pavucontrol
     evince
     libnotify
