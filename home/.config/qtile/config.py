@@ -117,15 +117,15 @@ groups = [
     ),
     Group(
         "3:im",
-        init=False,
+        init=True,
         persist=False,
         position=3,
-        matches=[Match(wm_class="ferdium")],
+        matches=[Match(wm_class="Ferdium")],
     ),
 ]
 
 for i in range(4, 10):
-    groups.append(Group(str(i), init=False, persist=False, position=i))
+    groups.append(Group(str(i), init=True, persist=False, position=i))
 
 for i, group in enumerate(groups):
     keys.extend(
@@ -175,7 +175,7 @@ widget_defaults = dict(
 extension_defaults = widget_defaults.copy()
 
 top_widgets = [
-    widget.GroupBox(),
+    widget.GroupBox(hide_unused=True),
     widget.Prompt(),
     widget.WindowName(),
     widget.StatusNotifier(),
