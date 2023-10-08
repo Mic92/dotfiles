@@ -180,7 +180,7 @@ top_widgets = [
     widget.WindowName(),
     widget.StatusNotifier(),
     widget.PulseVolume(),
-    widget.Clock(format="%Y-%m-%d %a %I:%M %p"),
+    widget.Clock(format="%a %-d %b %T KW%V"),
 ]
 cpu_graph = widget.CPUGraph(
     samples=50, line_width=1, width=50, graph_color="FF2020", fill_color="C01010"
