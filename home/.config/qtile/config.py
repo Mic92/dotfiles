@@ -25,12 +25,14 @@
 # SOFTWARE.
 
 import re
+import subprocess
 
-from libqtile import bar, layout, widget
+from libqtile import bar, layout, widget, hook
 from libqtile.backend.wayland import InputConfig
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
+
 
 mod = "mod4"
 terminal = guess_terminal()
@@ -103,6 +105,7 @@ groups = [
         init=True,
         persist=False,
         position=1,
+        layout="max",
         matches=[
             Match(
                 wm_class=re.compile("chromium|firefox"),
@@ -114,6 +117,7 @@ groups = [
         init=True,
         persist=False,
         position=2,
+        layout="max",
         matches=[Match(wm_class="foot")],
     ),
     Group(
@@ -121,7 +125,8 @@ groups = [
         init=True,
         persist=False,
         position=3,
-        matches=[Match(wm_class="Ferdium")],
+        layout="max",
+        matches=[Match(wm_class=re.compile("ferdium|Signal"))],
     ),
 ]
 
@@ -178,8 +183,10 @@ extension_defaults = widget_defaults.copy()
 top_widgets = [
     widget.GroupBox(hide_unused=True),
     widget.Prompt(),
-    widget.WindowName(),
+    widget.WindowTabs(),
     widget.StatusNotifier(),
+    widget.TextBox("󰁹"),
+    widget.Battery(charge_char="+", discharge_char="-", full_char="↯"),
     widget.PulseVolume(),
     widget.Clock(format="%a %-d %b %T KW%V"),
 ]
@@ -264,6 +271,21 @@ wl_input_rules = {
         dwt=True, tap=True, natural_scroll=True, middle_emulation=True
     ),
 }
+
+@hook.subscribe.startup_once
+def autostart():
+    commands = [
+            ["systemctl", "--user", "import-environment", "XDG_SESSION_PATH", "WAYLAND_DISPLAY"],
+            ["firefox"],
+            ["nm-applet", "--indicator"],
+            ["kanshi"],
+            ["dunst"],
+            ["foot", "--server"],
+            ["ferdium"],
+            ["signal-desktop"],
+    ]
+    for command in commands:
+        subprocess.Popen(command)
 
 
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this
