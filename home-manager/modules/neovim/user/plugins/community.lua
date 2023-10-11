@@ -25,11 +25,4 @@ return {
  { import = "astrocommunity.terminal-integration.vim-tpipeline" },
  { import = "astrocommunity.editing-support.rainbow-delimiters-nvim" },
  { import = "astrocommunity.editing-support.auto-save-nvim" },
- { import = "astrocommunity.editing-support.chatgpt-nvim" },
- {
-  "jackMort/ChatGPT.nvim",
-  opts = {
-   api_key_cmd = "rbw get openai-api-key",
-  },
- },
 }

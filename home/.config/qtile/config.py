@@ -27,12 +27,11 @@
 import re
 import subprocess
 
-from libqtile import bar, layout, widget, hook
+from libqtile import bar, hook, layout, widget
 from libqtile.backend.wayland import InputConfig
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
-
 
 mod = "mod4"
 terminal = guess_terminal()
@@ -174,8 +173,8 @@ layouts = [
 ]
 
 widget_defaults = dict(
-    font="sans",
-    fontsize=12,
+    font="SauceCodePro Nerd Font Mono",
+    fontsize=13,
     padding=3,
 )
 extension_defaults = widget_defaults.copy()
@@ -185,9 +184,15 @@ top_widgets = [
     widget.Prompt(),
     widget.WindowTabs(),
     widget.StatusNotifier(),
-    widget.TextBox("󰁹"),
+    widget.Sep(),
+    widget.TextBox("󰁹", fontsize=17),
     widget.Battery(charge_char="+", discharge_char="-", full_char="↯"),
+    widget.Sep(),
     widget.PulseVolume(),
+    widget.Sep(),
+    widget.TextBox(" ", name="default", fontsize=17),
+    widget.Wlan(),
+    widget.Sep(),
     widget.Clock(format="%a %-d %b %T KW%V"),
 ]
 cpu_graph = widget.CPUGraph(
@@ -204,11 +209,12 @@ memory_widget = widget.Memory(measure_mem="G")
 # )
 bottom_widgets = [
     # widget.Notify(foreground="FF0000", fontsize=14),
-    widget.TextBox("", name="default"),
+    widget.TextBox("", name="default", fontsize=17),
     cpu_graph,
-    widget.TextBox("", name="default"),
+    
+    widget.TextBox("󰍛", name="default", fontsize=17),
     memory_widget,
-    widget.TextBox("ﯴ", name="default"),
+    widget.TextBox(" ", name="default", fontsize=17),
     widget.Net(format="{down:.0f}{down_suffix} ↓↑ {up:.0f}{up_suffix}"),
 ]
 
@@ -272,20 +278,49 @@ wl_input_rules = {
     ),
 }
 
-@hook.subscribe.startup_once
+
+def systemd_run(command: list[str]) -> list[str]:
+    return [
+        "systemd-run",
+        "--collect",
+        "--user",
+        f"--unit={command[0]}",
+        "--",
+    ] + command
+
+
+@hook.subscribe.startup
 def autostart():
     commands = [
-            ["systemctl", "--user", "import-environment", "XDG_SESSION_PATH", "WAYLAND_DISPLAY"],
-            ["firefox"],
-            ["nm-applet", "--indicator"],
-            ["kanshi"],
-            ["dunst"],
-            ["foot", "--server"],
-            ["ferdium"],
-            ["signal-desktop"],
+        [
+            "systemctl",
+            "--user",
+            "import-environment",
+            "XDG_SESSION_PATH",
+            "WAYLAND_DISPLAY",
+        ],
+        ["firefox"],
+        ["nm-applet", "--indicator"],
+        ["kanshi"],
+        ["mako"],
+        ["foot", "--server"],
+        ["ferdium"],
+        [
+            "signal-desktop",
+            "--ozone-platform=wayland",
+            "--enable-features=UseOzonePlatform",
+            "--disable-gpu",
+        ],
+        # start it twice because it doesn't create a window the first time
+        [
+            "signal-desktop",
+            "--ozone-platform=wayland",
+            "--enable-features=UseOzonePlatform",
+            "--disable-gpu",
+        ],
     ]
     for command in commands:
-        subprocess.Popen(command)
+        subprocess.Popen(systemd_run(command))
 
 
 # XXX: Gasp! We're lying here. In fact, nobody really uses or cares about this

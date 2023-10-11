@@ -1,19 +1,14 @@
 { pkgs
 , lib
 , ...
-}: {
-  #programs.sway = {
-  #  enable = true;
-  #  wrapperFeatures.gtk = true; # so that gtk works properly
-  #  extraPackages = with pkgs; [
-
-  #    # Somehow xdg.portal services do not really work for me.
-  #    # Instead I re-start xdg-desktop-portal and xdg-desktop-portal wlr from sway itself
-  #    xdg-desktop-portal
-  #    xdg-desktop-portal-wlr
-  #  ];
-  #};
-
+}:
+let
+  pyEnv = pkgs.python3.withPackages (_p: [
+    pkgs.python3.pkgs.qtile
+    pkgs.python3.pkgs.iwlib
+  ]);
+in
+{
   xdg.portal.enable = true;
   xdg.portal.wlr.enable = true;
   fonts.enableDefaultPackages = true;
@@ -33,15 +28,11 @@
     swaylock-effects # lockscreen
     pavucontrol
     swayidle
-    #xwayland
-    #(i3pystatus.override {
-    #  extraLibs = [ python3.pkgs.keyrings-alt python3.pkgs.paho-mqtt ];
-    #})
     rofi-wayland
     rofi-rbw
     gnome.eog
     libnotify
-    #dunst # notification daemon
+    mako # notifications
     kanshi # auto-configure display outputs
     wdisplays
     wl-clipboard
@@ -65,7 +56,6 @@
     gtk-engine-murrine
     gtk_engines
     gsettings-desktop-schemas
-    lxappearance
 
     # screen brightness
     brightnessctl
@@ -120,9 +110,10 @@
     # We explicitly unset PATH here, as we want it to be set by
     # systemctl --user import-environment in startqtile
     environment.PATH = lib.mkForce null;
+    environment.PYTHONPATH = lib.mkForce null;
     serviceConfig = {
       Type = "simple";
-      ExecStart = "${pkgs.qtile}/bin/qtile start -b wayland -c /home/joerg/.config/qtile/config.py";
+      ExecStart = "${pyEnv}/bin/qtile start -b wayland -c /home/joerg/.config/qtile/config.py";
       Restart = "on-failure";
       RestartSec = 1;
       TimeoutStopSec = 10;
