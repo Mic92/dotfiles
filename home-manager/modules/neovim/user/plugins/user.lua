@@ -1,6 +1,12 @@
 return {
   {
     "lewis6991/spaceless.nvim",
-    config = function() require("spaceless").setup() end,
+    init = function() require("spaceless").setup() end,
+  },
+  {
+    "ziontee113/icon-picker.nvim",
+    init = function()
+      require("icon-picker").setup({ disable_legacy_commands = true})
+    end,
   },
 }
