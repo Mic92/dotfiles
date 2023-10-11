@@ -106,7 +106,7 @@ keys = [
         lazy.window.toggle_floating(),
         desc="Toggle floating on the focused window",
     ),
-    Key([mod, "control"], "r", lazy.reload_config, desc="Reload the config"),
+    Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
     Key(
@@ -221,13 +221,13 @@ cpu_graph = widget.CPUGraph(
 )
 memory_widget = widget.Memory(measure_mem="G")
 bottom_widgets = [
-    widget.TextBox("", name="default", fontsize=17),
+    widget.TextBox("", name="default", fontsize=17),
     cpu_graph,
     widget.Sep(),
     widget.TextBox("󰍛", name="default", fontsize=17),
     memory_widget,
     widget.Sep(),
-    widget.TextBox(" ", name="default", fontsize=17),
+    widget.TextBox("", name="default", fontsize=17),
     widget.Net(format="{down:.0f}{down_suffix} ↓↑ {up:.0f}{up_suffix}"),
 ]
 
