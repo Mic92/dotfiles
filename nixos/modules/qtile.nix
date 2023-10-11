@@ -37,7 +37,7 @@ in
     wdisplays
     wl-clipboard
     blueberry
-    sway-contrib.grimshot # screenshots
+    grim # screenshots
     wtype
 
     pavucontrol

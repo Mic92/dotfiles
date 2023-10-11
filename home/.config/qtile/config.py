@@ -24,17 +24,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import os
 import re
+import shlex
 import subprocess
+from datetime import datetime
 
 from libqtile import bar, hook, layout, widget
 from libqtile.backend.wayland import InputConfig
 from libqtile.config import Click, Drag, Group, Key, Match, Screen
+from libqtile.core.manager import Qtile
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 
 mod = "mod4"
 terminal = guess_terminal()
+
+
+@lazy.function
+def create_screenshot(qtile: Qtile) -> None:
+    target = os.path.expanduser(f"~/upload/{datetime.now():%Y%m%d-%H%M%S}.png")
+    qtile.cmd_spawn(f"grim {shlex.quote(target)}")
+    qtile.cmd_spawn(f"wl-copy {shlex.quote(target)}")
+    qtile.cmd_spawn(f'notify-send "Screenshot saved at {target}"')
+
 
 keys = [
     # A list of available commands that can be bound to keys can be found
@@ -93,9 +106,16 @@ keys = [
         lazy.window.toggle_floating(),
         desc="Toggle floating on the focused window",
     ),
-    Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
+    Key([mod, "control"], "r", lazy.reload_config, desc="Reload the config"),
     Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+    Key(
+        [mod],
+        "Print",
+        create_screenshot,
+        desc="Take a screenshot of the focused window",
+    ),
+    Key([mod], "s", create_screenshot, desc="Take a screenshot of the focused window"),
 ]
 
 groups = [
@@ -140,14 +160,14 @@ for i, group in enumerate(groups):
                 [mod],
                 str(i + 1),
                 lazy.group[group.name].toscreen(),
-                desc="Switch to group {}".format(group.name),
+                desc=f"Switch to group {group.name}",
             ),
             # mod1 + shift + letter of group = switch to & move focused window to group
             Key(
                 [mod, "shift"],
                 str(i + 1),
                 lazy.window.togroup(group.name, switch_group=True),
-                desc="Switch to & move focused window to group {}".format(group.name),
+                desc=f"Switch to & move focused window to group {group.name}",
             ),
             # Or, use below if you prefer not to switch to that group.
             # # mod1 + shift + letter of group = move focused window to group
@@ -188,10 +208,11 @@ top_widgets = [
     widget.TextBox("󰁹", fontsize=17),
     widget.Battery(charge_char="+", discharge_char="-", full_char="↯"),
     widget.Sep(),
+    widget.TextBox("🔉", name="default", fontsize=17),
     widget.PulseVolume(),
     widget.Sep(),
-    widget.TextBox(" ", name="default", fontsize=17),
-    widget.Wlan(),
+    widget.TextBox("📶", name="default", fontsize=17),
+    widget.Wlan(interface="wlp170s0"),
     widget.Sep(),
     widget.Clock(format="%a %-d %b %T KW%V"),
 ]
@@ -199,21 +220,13 @@ cpu_graph = widget.CPUGraph(
     samples=50, line_width=1, width=50, graph_color="FF2020", fill_color="C01010"
 )
 memory_widget = widget.Memory(measure_mem="G")
-# net_graph = widget.NetGraph(
-#    samples=50,
-#    line_width=1,
-#    width=50,
-#    interface="wlp170s0",
-#    graph_color="22FF44",
-#    fill_color="11AA11",
-# )
 bottom_widgets = [
-    # widget.Notify(foreground="FF0000", fontsize=14),
     widget.TextBox("", name="default", fontsize=17),
     cpu_graph,
-    
+    widget.Sep(),
     widget.TextBox("󰍛", name="default", fontsize=17),
     memory_widget,
+    widget.Sep(),
     widget.TextBox(" ", name="default", fontsize=17),
     widget.Net(format="{down:.0f}{down_suffix} ↓↑ {up:.0f}{up_suffix}"),
 ]
