@@ -44,7 +44,6 @@ in
     evince
     libnotify
     pamixer
-    networkmanagerapplet
     gnome.file-roller
     firefox-wayland
     chromium
@@ -53,8 +52,6 @@ in
     polkit_gnome
 
     # gtk3 themes
-    gtk-engine-murrine
-    gtk_engines
     gsettings-desktop-schemas
 
     # screen brightness
@@ -113,7 +110,7 @@ in
     environment.PYTHONPATH = lib.mkForce null;
     serviceConfig = {
       Type = "simple";
-      ExecStart = "${pyEnv}/bin/qtile start -b wayland -c /home/joerg/.config/qtile/config.py";
+      ExecStart = "${pyEnv}/bin/qtile start -b wayland";
       Restart = "on-failure";
       RestartSec = 1;
       TimeoutStopSec = 10;
