@@ -8,8 +8,8 @@
       webhookSecretFile = config.sops.secrets.buildbot-github-webhook-secret.path;
       oauthSecretFile = config.sops.secrets.buildbot-github-oauth-secret.path;
       oauthId = "d1b24258af1abc157934";
-      githubUser = "mic92-buildbot";
-      githubAdmins = [ "Mic92" "DavHau" ];
+      user = "mic92-buildbot";
+      admins = [ "Mic92" "DavHau" ];
     };
   };
   services.buildbot-nix.worker = {
