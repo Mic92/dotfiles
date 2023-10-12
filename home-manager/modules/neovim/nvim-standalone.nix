@@ -14,12 +14,15 @@ writeShellScriptBin "nvim" ''
   }}/bin:$PATH
   export NVIM_APPNAME=${nvim-appname}
 
-  mkdir -p $HOME/.config $HOME/.data/
-  ln -sfT ${astro-nvim-config} "$HOME"/.config/$NVIM_APPNAME
+  XDG_CONFIG_HOME=''${XDG_CONFIG_HOME:-$HOME/.config}
+  XDG_DATA_HOME=''${XDG_DATA_HOME:-$HOME/.local/share}
+
+  mkdir -p "$XDG_CONFIG_HOME" "$XDG_DATA_HOME"
+  ln -sfT ${astro-nvim-config} "$XDG_CONFIG_HOME/$NVIM_APPNAME"
   ${neovim}/bin/nvim --headless -c 'quitall' # install plugins
   if [[ -d $HOME/.data/$NVIM_APPNAME/lazy/telescope-fzf-native.nvim ]]; then
-    mkdir -p "$HOME/.data/$NVIM_APPNAME/lazy/telescope-fzf-native.nvim/build"
-    ln -sf "${vimPlugins.telescope-fzf-native-nvim}/build/libfzf.so" "$HOME/.data/$NVIM_APPNAME/lazy/telescope-fzf-native.nvim/build/libfzf.so"
+    mkdir -p "$XDG_DATA_HOME/$NVIM_APPNAME/lazy/telescope-fzf-native.nvim/build"
+    ln -sf "${vimPlugins.telescope-fzf-native-nvim}/build/libfzf.so" "$XDG_DATA_HOME/$NVIM_APPNAME/lazy/telescope-fzf-native.nvim/build/libfzf.so"
   fi
   exec ${neovim}/bin/nvim "$@"
 ''
