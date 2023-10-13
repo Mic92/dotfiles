@@ -24,11 +24,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+import json
 import os
 import re
 import shlex
 import subprocess
+from collections import defaultdict
+from dataclasses import dataclass
 from datetime import datetime
+from typing import DefaultDict
 
 from libqtile import bar, hook, layout, widget
 from libqtile.backend.wayland import InputConfig
@@ -36,6 +40,7 @@ from libqtile.config import Click, Drag, Group, Key, Match, Screen
 from libqtile.core.manager import Qtile
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
+from libqtile.widget import base
 
 mod = "mod4"
 terminal = guess_terminal()
@@ -220,6 +225,155 @@ cpu_graph = widget.CPUGraph(
     samples=50, line_width=1, width=50, graph_color="FF2020", fill_color="C01010"
 )
 memory_widget = widget.Memory(measure_mem="G")
+
+@dataclass
+class IOStat:
+    device: str
+    read: int
+    write: int
+
+
+class DiskIO(base.ThreadPoolText):
+    defaults = [
+        ("update_interval", 3, "update time in seconds"),
+    ]
+    last_stats: dict[str, IOStat] = {}
+    last_update = datetime.now()
+
+    def __init__(self, **config: dict[str, int | float | str]) -> None:
+        base.ThreadPoolText.__init__(self, "", **config)
+        self.add_defaults(DiskIO.defaults)
+
+    def _configure(self, qtile: Qtile, bar: bar.Bar) -> None:
+        base.ThreadPoolText._configure(self, qtile, bar)
+        self.add_callbacks({"Button1": self.force_update})
+
+    def parse_line(self, line: str) -> IOStat:
+        cols = line.split()
+        return IOStat(cols[2], int(cols[5]), int(cols[9]))
+
+    def diskio(self) -> str:
+        now = datetime.now()
+        interval = max((now - self.last_update).seconds, 1)
+        read = 0
+        write = 0
+        # Linux kernel documentation: Documentation/iostats.txt
+        with open("/proc/diskstats") as f:
+            for line in f:
+                stat = self.parse_line(line)
+                last_stat = self.last_stats.get(stat.device, stat)
+                # Check for overflows and counter resets (> 2^32)
+                if last_stat.read > stat.read or last_stat.write > stat.write:
+                    last_stat = stat
+                # Diskstats are absolute, substract our last reading
+                # * divide by timediff because we don't know the timer value
+                read += (stat.read - last_stat.read) / interval
+                write += (stat.write - last_stat.write) / interval
+                self.last_stats[stat.device] = stat
+        self.last_update = now
+        return f"R: {read/2048:.0f} MB/s W: {write/2048:.0f} MB/s"
+
+    def poll(self) -> str:
+        try:
+           return self.diskio()
+        except Exception as e:
+           return f"Error: {e}"
+
+class FPing(base.ThreadPoolText):
+    defaults = [
+        ("update_interval", 60, "update time in seconds"),
+    ]
+
+    def __init__(self, **config: dict[str, int | float | str]) -> None:
+        base.ThreadPoolText.__init__(self, "", **config)
+        self.add_defaults(FPing.defaults)
+
+    def _configure(self, qtile: Qtile, bar: bar.Bar) -> None:
+        base.ThreadPoolText._configure(self, qtile, bar)
+        self.add_callbacks({"Button1": self.force_update})
+
+    def parse_line(self, line: str) -> dict[str, str | int | float | None]:
+        # fping -q -c2 1.1.1.1 _gateway 2606:4700:4700::1111 192.168.59.1
+        # 1.1.1.1              : xmt/rcv/%loss = 2/2/0%, min/avg/max = 12.6/13.7/14.9
+        # _gateway             : xmt/rcv/%loss = 2/2/0%, min/avg/max = 2.43/3.58/4.73
+        # 2606:4700:4700::1111 : xmt/rcv/%loss = 2/0/100%
+        # 192.168.59.1         : xmt/rcv/%loss = 2/0/100%
+        m = re.match(
+            r"([a-zA-Z0-9.:_]+)\s*: xmt/rcv/%loss = (\d+)/(\d+)/(\d+)%(?:, min/avg/max = (\d+\.\d+)/(\d+\.\d+)/(\d+\.\d+))?",
+            line,
+        )
+        data: DefaultDict[str, str | int | float | None] = defaultdict(lambda: None)
+        if m is None:
+            return data
+        data["addr"] = m.group(1)
+        data["xmt"] = int(m.group(2))
+        data["rcv"] = int(m.group(3))
+        data["loss"] = float(m.group(4))
+        if m.group(5) is not None:
+            data["min"] = float(m.group(5))
+            data["avg"] = float(m.group(6))
+            data["max"] = float(m.group(7))
+        return data
+
+    def format_target(self, data: dict[str, int | float | None]) -> str:
+        if avg := data["avg"]:
+            return f"{avg}ms"
+        return "N/A"
+
+    def fping(self) -> str:
+        addrs = ["1.1.1.1", "_gateway", "2606:4700:4700::1111"]
+        cmd = [
+            "fping",
+            "-q",
+            "-c2",
+        ] + addrs
+
+        process = subprocess.run(cmd, capture_output=True, text=True)
+
+        stats = {}
+        for line in process.stderr.split("\n"):
+            if line == "":
+                continue
+            data = self.parse_line(line)
+            stats[data["addr"]] = data
+        msg = "v4: " + self.format_target(stats["1.1.1.1"])
+        msg += " / "
+        msg += "v6: " + self.format_target(stats["2606:4700:4700::1111"])
+        if gw := stats.get("_gateway"):
+            msg += " / "
+            msg += "gw: " + self.format_target(gw)
+        return msg
+
+    def poll(self) -> str:
+        try:
+            return self.fping()
+        except Exception as e:
+            return f"Error: {e}"
+
+
+class Net(widget.Net):
+    def interface_get(self) -> list[str]:
+        now = datetime.now()
+        if self.cached_interfaces and (now - self.last_update).seconds < 120:
+            return self.cached_interfaces
+        proc = subprocess.run(["ip", "--json", "link"], check=True, capture_output=True)
+        interfaces = json.loads(proc.stdout)
+        self.cached_interfaces = []
+        for interface in interfaces:
+            name = interface["ifname"]
+            if name.startswith("e") or name.startswith("wl"):
+                self.cached_interfaces.append(name)
+        self.last_update = now
+        return self.cached_interfaces
+
+    def interface_set(self, _: list[str]):
+        pass
+
+    interface = property(interface_get, interface_set)
+    cached_interfaces: None | list[str] = None
+    last_update = datetime.now()
+
+
 bottom_widgets = [
     widget.TextBox("", name="default", fontsize=17),
     cpu_graph,
@@ -228,7 +382,15 @@ bottom_widgets = [
     memory_widget,
     widget.Sep(),
     widget.TextBox("", name="default", fontsize=17),
-    widget.Net(format="{down:.0f}{down_suffix} ↓↑ {up:.0f}{up_suffix}"),
+    Net(format="{down:.0f}{down_suffix} ↓↑ {up:.0f}{up_suffix}"),
+    widget.Sep(),
+    widget.ThermalSensor(),
+    widget.Sep(),
+    widget.Load(),
+    widget.Sep(),
+    FPing(),
+    widget.Sep(),
+    DiskIO(),
 ]
 
 screens = [
@@ -313,7 +475,6 @@ def autostart():
             "WAYLAND_DISPLAY",
         ],
         ["firefox"],
-        ["nm-applet", "--indicator"],
         ["kanshi"],
         ["mako"],
         ["foot", "--server"],

@@ -23,6 +23,13 @@ in
     _JAVA_AWT_WM_NONREPARENTING = "1";
   };
 
+  security.wrappers.fping = {
+    source = "${pkgs.fping}/bin/fping";
+    capabilities = "cap_net_raw+p";
+    owner = "root";
+    group = "root";
+  };
+
   environment.systemPackages = with pkgs; [
     qtile
     swaylock-effects # lockscreen
