@@ -20,6 +20,7 @@
     #./modules/buildbot/master.nix
     #./modules/buildbot/worker.nix
     ./modules/dendrite.nix
+    ./modules/disko.nix
     ./modules/dovecot.nix
     ./modules/docker.nix
     ./modules/ergo.nix

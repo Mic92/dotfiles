@@ -90,6 +90,7 @@ in
           inputs.srvos.nixosModules.mixins-nginx
           inputs.buildbot-nix.nixosModules.buildbot-worker
           inputs.buildbot-nix.nixosModules.buildbot-master
+          inputs.disko.nixosModules.disko
         ];
       };
 
