@@ -62,7 +62,7 @@ in
             options = {
               mountpoint = "none";
               encryption = "aes-256-gcm";
-              keyformat = "hex";
+              keyformat = "passphrase";
               #keylocation = "file:///tmp/secret.key";
               keylocation = "prompt";
             };

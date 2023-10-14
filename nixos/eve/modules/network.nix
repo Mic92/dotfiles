@@ -94,6 +94,7 @@ in
         enable = true;
         port = 2222;
         hostKeys = [
+          #FIXME this has to be manually uploaded during installation...
           #config.sops.secrets.eve-initrd-ssh-key.path
           "/var/lib/initrd-ssh-key"
         ];
