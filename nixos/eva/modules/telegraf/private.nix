@@ -220,7 +220,8 @@ in
         urls = [ "https://buildbot.thalheim.io" ];
         tags.host = "eve";
         tags.org = "private";
-        response_string_match = ''"20'';
+        response_string_match = "Buildbot";
+        response_status_code = 200;
       }
       {
         urls = [ "https://thalheim.io" ];
