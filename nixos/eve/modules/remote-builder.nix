@@ -27,7 +27,7 @@
     }
     # direct connection sometimes break, too many connections?
     {
-      hostName = "vislor.dos.cit.tum.de";
+      hostName = "vislor";
       maxJobs = 128;
       sshKey = config.sops.secrets.ssh-tum-builder.path;
       protocol = "ssh-ng";
@@ -40,6 +40,17 @@
       ];
     }
   ];
+  programs.ssh.extraConfig = ''
+    Host vislor
+      User nix
+      ProxyJump login-tum
+      HostName vislor.dos.cit.tum.de
+      IdentityFile ${config.sops.secrets.ssh-tum-builder.path}
+    Host login-tum
+      User tunnel
+      HostName login.dse.in.tum.de
+      IdentityFile ${config.sops.secrets.ssh-tum-builder.path}
+  '';
   programs.ssh.knownHosts = {
     "aarch64.nixos.community" = {
       hostNames = [ "aarch64.nixos.community" ];
