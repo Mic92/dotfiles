@@ -46,7 +46,7 @@
       delta
       scc
       direnv
-      (nix-direnv.override { enableFlakes = true; })
+      nix-direnv
       fzf
       lsd
       zoxide
