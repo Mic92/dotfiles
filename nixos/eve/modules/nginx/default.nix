@@ -26,8 +26,8 @@
         { addr = "[42:0:3c46:70c7:8526:2adf:7451:8bbb]"; port = 80; }
         { addr = "[42:0:3c46:70c7:8526:2adf:7451:8bbb]"; port = 443; ssl = true; }
         # ipv6 public
-        { addr = "[2a01:4f8:10b:49f::1]"; port = 80; ssl = false; }
-        { addr = "[2a01:4f8:10b:49f::1]"; port = 443; ssl = true; }
+        { addr = "[${config.networking.eve.ipv6.address}]"; port = 80; ssl = false; }
+        { addr = "[${config.networking.eve.ipv6.address}]"; port = 443; ssl = true; }
         # ipv4 public
         { addr = "0.0.0.0"; port = 80; ssl = false; }
         { addr = "0.0.0.0"; port = 443; ssl = true; }
