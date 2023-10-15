@@ -6,7 +6,7 @@
 }:
 let
   ip4 = config.networking.eve.ipv4.address;
-  ip6 = lib.head config.networking.eve.ipv6.addresses;
+  ip6 = config.networking.eve.ipv6.address;
   acmeChallenge = domain:
     pkgs.writeText "_acme-challenge.${domain}.zone" ''
       @ 3600 IN SOA _acme-challenge.${domain}. ns1.thalheim.io. 2021013110 7200 3600 86400 3600
@@ -243,11 +243,6 @@ in
         {
           domain = "_acme-challenge.anon.thalheim.io";
           file = "${acmeChallenge "anon.thalheim.io"}";
-          template = "acme";
-        }
-        {
-          domain = "_acme-challenge.dns.thalheim.io";
-          file = "${acmeChallenge "dns.thalheim.io"}";
           template = "acme";
         }
         {

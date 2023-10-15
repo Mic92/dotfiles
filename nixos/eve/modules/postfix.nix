@@ -41,13 +41,7 @@ let
 
   helo_access = pkgs.writeText "helo_access" ''
     ${config.networking.eve.ipv4.address}   REJECT Get lost - you're lying about who you are
-    ${
-      lib.concatMapStringsSep "\n"
-      (address: ''
-        ${address}   REJECT Get lost - you're lying about who you are
-      '')
-      config.networking.eve.ipv6.addresses
-    }
+    ${config.networking.eve.ipv6.address}   REJECT Get lost - you're lying about who you are
     thalheim.io   REJECT Get lost - you're lying about who you are
     lekwati.com   REJECT Get lost - you're lying about who you are
   '';

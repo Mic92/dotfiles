@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2023101101 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2023101401 7200 3600 86400 3600
 
 ;;@ 3600 IN NS ns1
 @ 3600 IN NS ns1
@@ -15,31 +15,29 @@ he IN NS ns3.he.net.
 he IN NS ns4.he.net.
 he IN NS ns5.he.net.
 
-@ IN A 88.99.244.96
-@ IN AAAA 2a01:4f8:10b:49f::1
-eve IN A 88.99.244.96
-4.eve IN A 88.99.244.96
-eve IN AAAA 2a01:4f8:10b:49f::2
-6.eve IN AAAA 2a01:4f8:10b:49f::2
+@ IN A 95.217.199.121
+@ IN AAAA 2a01:4f9:4a:42e8::1
+eve IN A 95.217.199.121
+4.eve IN A 95.217.199.121
+eve IN AAAA 2a01:4f9:4a:42e8::1
+6.eve IN AAAA 2a01:4f9:4a:42e8::1
 
 eva IN A 89.58.27.144
 4.eva IN A 89.58.27.144
 eva IN AAAA 2a03:4000:62:fdb::
 6.eva IN AAAA 2a03:4000:62:fdb::
 
-git IN A 88.99.244.96
-git IN AAAA 2a01:4f8:10b:49f::1
-ns1 IN A 88.99.244.96
-ns1 IN AAAA 2a01:4f8:10b:49f::1
-ns2 IN A 88.99.244.96
-ns2 IN AAAA 2a01:4f8:10b:49f::1
-dns IN A 88.99.244.96
-dns IN AAAA 2a01:4f8:10b:49f::5
+git IN A 95.217.199.121
+git IN AAAA 2a01:4f9:4a:42e8::1
+ns1 IN A 95.217.199.121
+ns1 IN AAAA 2a01:4f9:4a:42e8::1
+ns2 IN A 95.217.199.121
+ns2 IN AAAA 2a01:4f9:4a:42e8::1
 
 buildbot2 IN A 135.181.24.254
 
-www IN A 88.99.244.96
-www IN AAAA 2a01:4f8:10b:49f::1
+www IN A 95.217.199.121
+www IN AAAA 2a01:4f9:4a:42e8::1
 * IN CNAME www
 
 dependable-virtualized-systems IN CNAME dependable-virtualized-systems.netlify.app.
@@ -77,38 +75,34 @@ rauter IN NS ns1.thalheim.io.
 stable-diffusion CNAME jack.dse.in.tum.de.
 stable-confusion CNAME jack.dse.in.tum.de.
 
-archfeed IN CNAME arch-pkg-feed.herokuapp.com.
-githubtags IN CNAME github-tags-feed.herokuapp.com.
-reisekosten IN CNAME reisekosten.herokuapp.com.
-
 ;; Mail
 @ IN MX 3 mail
-mail IN A 88.99.244.96
-mail IN AAAA 2a01:4f8:10b:49f::1
-imap IN A 88.99.244.96
-imap IN AAAA 2a01:4f8:10b:49f::1
+mail IN A 95.217.199.121
+mail IN AAAA 2a01:4f9:4a:42e8::1
+imap IN A 95.217.199.121
+imap IN AAAA 2a01:4f9:4a:42e8::1
 _mta-sts IN TXT "v=STSv1; id=20181027085700Z;"
 smtp._tls IN TXT "v=TLSRPTv1;rua=mailto:joerg.tls-report@thalheim.io"
 ;
 _adsp._domainkey IN TXT "dkim=all;"
 default._domainkey IN TXT "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgVpKyJL+JXhYefL05+wal58+PK1s5y1nf1uI7aguTbQFaM3wo3cs/7CaxBK1a+JNCd7f1sgmbdR17CzsiUUQO5GLsyl6bS4VGZv1XMMSuTdCpOT08iY0s9JikME6kPg9rxbo35ET9DtDDEqmgwbUcIfl/eD8G4jwTvyPYJPfFKQIDAQAB"
 _dmarc IN TXT "v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:joerc.dmarc@thalheim.io; ruf=mailto:joerg.dmarc@thalheim.io; pct=100"
-@ IN TXT "v=spf1 ip4:88.99.244.96 ip6:2a01:4f8:10b:49f::/64 -all"
+@ IN TXT "v=spf1 ip4:95.217.199.121 ip6:2a01:4f9:4a:42e8::/64 -all"
 
 _token._dnswl IN TXT "v6e9a15zje7o03w1oos9ashj258elvdh"
 @ IN TXT "google-site-verification=TGvlDYzS1IB0wcHO32Bnzfb5IVFbYm6Roeg27TU6XjY"
 _smtp._tls IN TXT "v=TLSRPTv1;rua=mailto:joerg.smtp-tls@thalheim.io"
 
 ;; XMPP
-jabber IN A 88.99.244.96
-jabber IN AAAA 2a01:4f8:10b:49f::1
+jabber IN A 95.217.199.121
+jabber IN AAAA 2a01:4f9:4a:42e8::1
 muc IN CNAME www
 _xmpp-client._tcp IN SRV 0 5 5222 jabber
 _xmpp-server._tcp IN SRV 0 5 5269 jabber
 _xmpp-server._tcp.muc IN SRV 0 5 5269 jabber
 ;; Matrix
-matrix IN A 88.99.244.96
-matrix IN AAAA 2a01:4f8:10b:49f::1
+matrix IN A 95.217.199.121
+matrix IN AAAA 2a01:4f9:4a:42e8::1
 _matrix._tcp IN SRV 0 5 443 matrix
 
 ;; https://github.com/Mic92/nixos-wiki-infra

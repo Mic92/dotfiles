@@ -12,6 +12,10 @@
       http_access allow ldapauth
 
       https_port 8889 cert=/var/lib/acme/thalheim.io/fullchain.pem key=/var/lib/acme/thalheim.io/key.pem
+
+      cache_log       syslog
+      access_log      syslog
+      cache_store_log syslog
     '';
   };
 
