@@ -479,18 +479,9 @@ def autostart():
         ["mako"],
         ["foot", "--server"],
         ["ferdium"],
-        [
-            "signal-desktop",
-            "--ozone-platform=wayland",
-            "--enable-features=UseOzonePlatform",
-            "--disable-gpu",
-        ],
         # start it twice because it doesn't create a window the first time
         [
-            "signal-desktop",
-            "--ozone-platform=wayland",
-            "--enable-features=UseOzonePlatform",
-            "--disable-gpu",
+            "signal-desktop"
         ],
     ]
     for command in commands:
