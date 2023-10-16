@@ -11,6 +11,7 @@
     ./muc.nix
     ./retiolum.nix
     ./screenshare
+    ./mergebot.nix
     ./mta-sts.nix
     ./phd-website.nix
     ./photoprism.nix

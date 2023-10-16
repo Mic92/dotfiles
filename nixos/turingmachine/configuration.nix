@@ -201,6 +201,8 @@
     139
   ];
 
+  networking.firewall.allowedTCPPorts = [ 8080 ];
+
   boot.binfmt.emulatedSystems = [
     "armv7l-linux"
     "aarch64-linux"
