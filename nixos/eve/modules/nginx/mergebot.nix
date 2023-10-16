@@ -3,7 +3,7 @@
     forceSSL = true;
     enableACME = true;
     locations."/" = {
-      proxyPass = "http://turingmachine.r:8080";
+      proxyPass = "http://turingmachine.r:8081";
       proxyWebsockets = true;
       recommendedProxySettings = true;
     };
