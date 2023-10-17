@@ -451,6 +451,7 @@ wl_input_rules = {
     "type:touchpad": InputConfig(
         dwt=True, tap=True, natural_scroll=True, middle_emulation=True
     ),
+    "type:keyboard": InputConfig(kb_options="ctrl:nocaps", kb_layout="us", kb_variant="altgr-intl"),
 }
 
 
