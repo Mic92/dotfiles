@@ -20,6 +20,7 @@
     ./modules/tum-vpn.nix
     #./modules/minidlna.nix
 
+    ../modules/suspend-on-low-power.nix
     ../modules/borgbackup.nix
     ../modules/nncp.nix
     ../modules/touchpad-hack
