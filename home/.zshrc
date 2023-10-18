@@ -340,7 +340,7 @@ alias df='df -hT'
 # File management
 if [[ -n ${commands[lsd]} ]]; then
   if [ -n "${commands[vivid]}" ]; then
-    export LS_COLORS="$(vivid generate dracula)"
+    export LS_COLORS="$(vivid generate solarized-light)"
   fi
   alias ls="lsd --classify --date=relative"
 elif [[ $OSTYPE == freebsd* ]] ||  [[ $OSTYPE == darwin* ]]; then
