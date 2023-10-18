@@ -9,7 +9,7 @@
       oauthSecretFile = config.sops.secrets.buildbot-github-oauth-secret.path;
       oauthId = "d1b24258af1abc157934";
       user = "mic92-buildbot";
-      admins = [ "Mic92" "DavHau" ];
+      admins = [ "Mic92" "DavHau" "lassulus" ];
     };
   };
   services.buildbot-nix.worker = {
