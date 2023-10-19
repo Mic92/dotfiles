@@ -272,17 +272,18 @@ unsetopt always_to_end
 
 ## Prompt
 PURE_GIT_UNTRACKED_DIRTY=0 PURE_GIT_PULL=0
-
-PURE_PROMPT_SYMBOL="%F{blue}╰─ %(?.%F{green}.%F{red})%%%f"
-source $HOME/.zsh-pure/async.zsh
-source $HOME/.zsh-pure/pure.zsh
+#
+PURE_PROMPT_SYMBOL="%(?.%F{green}.%F{red})%%%f"
+fpath+=($HOME/.zsh-pure)
 zstyle :prompt:pure:path color yellow
 zstyle :prompt:pure:git:branch color yellow
 zstyle :prompt:pure:user color cyan
 zstyle :prompt:pure:host color yellow
 zstyle :prompt:pure:git:branch:cached color red
-# non-zero exit code in right prompt
+## non-zero exit code in right prompt
 RPS1='%(?.%F{magenta}.%F{red}(%?%) %F{magenta})'
+autoload -U promptinit; promptinit
+prompt pure
 
 ## Aliases
 # Basic commands

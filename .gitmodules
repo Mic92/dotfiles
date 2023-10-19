@@ -6,7 +6,7 @@
 	url = https://github.com/zsh-users/zsh-autosuggestions.git
 [submodule "zsh/pure"]
 	path = zsh/pure
-	url = https://github.com/Mic92/pure.git
+	url = https://github.com/sindresorhus/pure.git
 [submodule "zsh/zsh-autopair"]
 	path = zsh/zsh-autopair
 	url = https://github.com/hlissner/zsh-autopair.git
