@@ -119,45 +119,46 @@
         interface = "tinc.retiolum";
         response_status_code = 200;
       }
-      {
-        urls = [
-          "http://rss.r/?action=display&bridge=HeiseBridge&category=https%3A%2F%2Fwww.heise.de%2Fnewsticker%2Fheise-atom.xml&limit=5&format=Atom"
-        ];
-        tags.host = "news";
-        response_string_match = "rss";
-        tags.org = "krebs";
-        interface = "tinc.retiolum";
-        response_status_code = 200;
-      }
-      {
-        urls = [
-          "http://news.r/"
-          "http://brockman.r/"
-        ];
-        tags.host = "news";
-        method = "HEAD";
-        tags.org = "krebs";
-        interface = "tinc.retiolum";
-        response_status_code = 200;
-      }
-      {
-        urls = [
-          "http://go.r"
-        ];
-        tags.host = "news";
-        method = "POST";
-        headers."Content-Type" = "multipart/form-data; boundary=------------------------04afef05eaafa8d5";
-        body = ''
-          --------------------------04afef05eaafa8d5
-          Content-Disposition: form-data; name="uri"
+      # currently broken
+      #{
+      #  urls = [
+      #    "http://rss.r/?action=display&bridge=HeiseBridge&category=https%3A%2F%2Fwww.heise.de%2Fnewsticker%2Fheise-atom.xml&limit=5&format=Atom"
+      #  ];
+      #  tags.host = "news";
+      #  response_string_match = "rss";
+      #  tags.org = "krebs";
+      #  interface = "tinc.retiolum";
+      #  response_status_code = 200;
+      #}
+      #{
+      #  urls = [
+      #    "http://news.r/"
+      #    "http://brockman.r/"
+      #  ];
+      #  tags.host = "news";
+      #  method = "HEAD";
+      #  tags.org = "krebs";
+      #  interface = "tinc.retiolum";
+      #  response_status_code = 200;
+      #}
+      #{
+      #  urls = [
+      #    "http://go.r"
+      #  ];
+      #  tags.host = "news";
+      #  method = "POST";
+      #  headers."Content-Type" = "multipart/form-data; boundary=------------------------04afef05eaafa8d5";
+      #  body = ''
+      #    --------------------------04afef05eaafa8d5
+      #    Content-Disposition: form-data; name="uri"
 
-          google.com
-          --------------------------04afef05eaafa8d5--
-        '';
-        tags.org = "krebs";
-        interface = "tinc.retiolum";
-        response_status_code = 200;
-      }
+      #    google.com
+      #    --------------------------04afef05eaafa8d5--
+      #  '';
+      #  tags.org = "krebs";
+      #  interface = "tinc.retiolum";
+      #  response_status_code = 200;
+      #}
       {
         urls = [
           "http://graph.r"
