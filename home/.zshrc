@@ -255,6 +255,9 @@ zstyle ':autocomplete:*' insert-unambiguous yes
 zstyle ':autocomplete:*' widget-style menu-select
 zstyle -e ':autocomplete:*' list-lines 'reply=( $(( LINES / 3 )) )'
 
+# recent directory completion is sometimes a bit confusing
++autocomplete:recent-directories() { }
+
 source ~/.zsh-autocomplete/zsh-autocomplete.plugin.zsh
 
 bindkey '\t' menu-select "$terminfo[kcbt]" menu-select
