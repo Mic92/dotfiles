@@ -12,7 +12,7 @@
   services.tt-rss = {
     enable = true;
     virtualHost = "rss.devkid.net";
-    selfUrlPath = "https://rss.devkid.net";
+    selfUrlPath = "https://";
 
     pluginPackages = [
       pkgs.tt-rss-plugin-auth-ldap
