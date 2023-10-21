@@ -23,12 +23,15 @@ in
     _JAVA_AWT_WM_NONREPARENTING = "1";
   };
 
+  # used in ping widget
   security.wrappers.fping = {
     source = "${pkgs.fping}/bin/fping";
     capabilities = "cap_net_raw+p";
     owner = "root";
     group = "root";
   };
+
+  programs.wshowkeys.enable = true;
 
   environment.systemPackages = with pkgs; [
     qtile
@@ -41,8 +44,10 @@ in
     libnotify
     mako # notifications
     kanshi # auto-configure display outputs
-    wdisplays
+    wdisplays # buggy with qtile?
+    wlr-randr
     wl-clipboard
+    wev
     blueberry
     grim # screenshots
     wtype
@@ -78,7 +83,9 @@ in
           #! ${pkgs.bash}/bin/bash
 
           ${pkgs.rbw}/bin/rbw unlock
-          ${pkgs.openssh}/bin/ssh-add
+          if [[ $(ssh-add -l | wc -l) -eq 0 ]]; then
+            ${pkgs.openssh}/bin/ssh-add
+          fi
           export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
           # first import environment variables from the login manager
           systemctl --user unset-environment DISPLAY WAYLAND_DISPLAY

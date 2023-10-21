@@ -121,6 +121,9 @@ keys = [
         desc="Take a screenshot of the focused window",
     ),
     Key([mod], "s", create_screenshot, desc="Take a screenshot of the focused window"),
+
+    # screen key on framework
+    Key([mod], "p", lazy.spawn("wlr-randr --output eDP-1 --on"), desc="Launch firefox"),
 ]
 
 groups = [
@@ -393,6 +396,7 @@ bottom_widgets = [
     DiskIO(),
 ]
 
+
 screens = [
     Screen(
         top=bar.Bar(top_widgets, 24),
@@ -405,6 +409,7 @@ screens = [
         # x11_drag_polling_rate = 60,
     ),
 ]
+screens.append(screens[0])
 
 # Drag floating layouts.
 mouse = [
@@ -467,14 +472,8 @@ def systemd_run(command: list[str]) -> list[str]:
 
 @hook.subscribe.startup
 def autostart():
+    subprocess.run(["systemctl", "--user","import-environment", "XDG_SESSION_PATH", "WAYLAND_DISPLAY"])
     commands = [
-        [
-            "systemctl",
-            "--user",
-            "import-environment",
-            "XDG_SESSION_PATH",
-            "WAYLAND_DISPLAY",
-        ],
         ["firefox"],
         ["kanshi"],
         ["mako"],
