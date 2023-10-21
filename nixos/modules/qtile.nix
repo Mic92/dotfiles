@@ -13,6 +13,12 @@ in
   xdg.portal.wlr.enable = true;
   fonts.enableDefaultPackages = true;
 
+  security.polkit.enable = true;
+  security.pam.services.swaylock = { };
+
+  programs.dconf.enable = lib.mkDefault true;
+  programs.xwayland.enable = lib.mkDefault true;
+
   environment.sessionVariables = {
     MOZ_ENABLE_WAYLAND = "1";
     XDG_SESSION_TYPE = "wayland";
@@ -83,7 +89,7 @@ in
           #! ${pkgs.bash}/bin/bash
 
           ${pkgs.rbw}/bin/rbw unlock
-          if [[ $(ssh-add -l | wc -l) -eq 0 ]]; then
+          if ssh-add -l | grep -q 'The agent has no identities.'; then
             ${pkgs.openssh}/bin/ssh-add
           fi
           export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
