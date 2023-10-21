@@ -78,7 +78,6 @@
     # to fix xdg-open
     glib
     zoom-us
-    gnupg
     jmtpfs # needed for charging? WTF
     (pkgs.runCommand "slack-aliases" { } ''
       mkdir -p $out/bin
