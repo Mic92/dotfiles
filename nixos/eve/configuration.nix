@@ -2,7 +2,6 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { lib, ... }: {
-  clan.networking.deploymentAddress = lib.mkForce "root@95.217.199.121";
   networking.hostName = "eve";
   networking.hostId = "8425e349";
 
