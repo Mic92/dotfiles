@@ -29,7 +29,6 @@
 
     # additional
     mosh
-    gnupg1compat
     socat
     whois
   ];

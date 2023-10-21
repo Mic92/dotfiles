@@ -18,7 +18,7 @@ in
           tags.org = "private";
           count = 5;
         })
-        [ "turingmachine.r" "herbert.r" ])
+        [ "turingmachine.r" "bernie.r" ])
       ++ (map
         (url: {
           method = "native";

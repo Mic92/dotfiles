@@ -255,6 +255,9 @@ zstyle ':autocomplete:*' insert-unambiguous yes
 zstyle ':autocomplete:*' widget-style menu-select
 zstyle -e ':autocomplete:*' list-lines 'reply=( $(( LINES / 3 )) )'
 
+# recent directory completion is sometimes a bit confusing
++autocomplete:recent-directories() { }
+
 source ~/.zsh-autocomplete/zsh-autocomplete.plugin.zsh
 
 bindkey '\t' menu-select "$terminfo[kcbt]" menu-select
@@ -272,17 +275,18 @@ unsetopt always_to_end
 
 ## Prompt
 PURE_GIT_UNTRACKED_DIRTY=0 PURE_GIT_PULL=0
-
-PURE_PROMPT_SYMBOL="%F{blue}╰─ %(?.%F{green}.%F{red})%%%f"
-source $HOME/.zsh-pure/async.zsh
-source $HOME/.zsh-pure/pure.zsh
+#
+PURE_PROMPT_SYMBOL="%(?.%F{green}.%F{red})%%%f"
+fpath+=($HOME/.zsh-pure)
 zstyle :prompt:pure:path color yellow
 zstyle :prompt:pure:git:branch color yellow
 zstyle :prompt:pure:user color cyan
 zstyle :prompt:pure:host color yellow
 zstyle :prompt:pure:git:branch:cached color red
-# non-zero exit code in right prompt
+## non-zero exit code in right prompt
 RPS1='%(?.%F{magenta}.%F{red}(%?%) %F{magenta})'
+autoload -U promptinit; promptinit
+prompt pure
 
 ## Aliases
 # Basic commands
@@ -340,7 +344,7 @@ alias df='df -hT'
 # File management
 if [[ -n ${commands[lsd]} ]]; then
   if [ -n "${commands[vivid]}" ]; then
-    export LS_COLORS="$(vivid generate dracula)"
+    export LS_COLORS="$(vivid generate solarized-light)"
   fi
   alias ls="lsd --classify --date=relative"
 elif [[ $OSTYPE == freebsd* ]] ||  [[ $OSTYPE == darwin* ]]; then

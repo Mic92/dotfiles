@@ -13,6 +13,12 @@ in
   xdg.portal.wlr.enable = true;
   fonts.enableDefaultPackages = true;
 
+  security.polkit.enable = true;
+  security.pam.services.swaylock = { };
+
+  programs.dconf.enable = lib.mkDefault true;
+  programs.xwayland.enable = lib.mkDefault true;
+
   environment.sessionVariables = {
     MOZ_ENABLE_WAYLAND = "1";
     XDG_SESSION_TYPE = "wayland";
@@ -23,12 +29,15 @@ in
     _JAVA_AWT_WM_NONREPARENTING = "1";
   };
 
+  # used in ping widget
   security.wrappers.fping = {
     source = "${pkgs.fping}/bin/fping";
     capabilities = "cap_net_raw+p";
     owner = "root";
     group = "root";
   };
+
+  programs.wshowkeys.enable = true;
 
   environment.systemPackages = with pkgs; [
     qtile
@@ -41,8 +50,10 @@ in
     libnotify
     mako # notifications
     kanshi # auto-configure display outputs
-    wdisplays
+    wdisplays # buggy with qtile?
+    wlr-randr
     wl-clipboard
+    wev
     blueberry
     grim # screenshots
     wtype
@@ -78,7 +89,9 @@ in
           #! ${pkgs.bash}/bin/bash
 
           ${pkgs.rbw}/bin/rbw unlock
-          ${pkgs.openssh}/bin/ssh-add
+          if ssh-add -l | grep -q 'The agent has no identities.'; then
+            ${pkgs.openssh}/bin/ssh-add
+          fi
           export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
           # first import environment variables from the login manager
           systemctl --user unset-environment DISPLAY WAYLAND_DISPLAY

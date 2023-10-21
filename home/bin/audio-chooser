@@ -1,29 +1,40 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -exuo pipefail
 
-choices=("headphones" "speakers" "headphones (output-only)")
+choices=("headphones" "speakers" "headphones (output-only)" "earphones")
 selected=$(for c in "${choices[@]}"; do echo "$c"; done | rofi -dmenu -p "Select Audio Setup: ")
 
 echo You Picked: " $selected"
 
 headset=alsa_card.usb-0b0e_Jabra_Link_380_08C8C2E6DA47-00
 speakers=alsa_card.pci-0000_00_1f.3
+earphones=bluez_card.5C_56_A4_74_38_19
 
 case $selected in
 headphones)
   echo "Setting up Headphones"
-  pactl set-card-profile "$headset" output:analog-stereo+input:mono-fallback
-  pactl set-card-profile "$speakers" off
+  pactl set-card-profile "$headset" output:analog-stereo+input:mono-fallback || true
+  pactl set-card-profile "$speakers" off || true
+  pactl set-card-profile "$earphones" off || true
   ;;
 speakers)
   echo "Setting up Speakers"
-  pactl set-card-profile "$speakers" output:analog-stereo+input:analog-stereo
-  pactl set-card-profile "$headset" off
+  pactl set-card-profile "$speakers" output:analog-stereo+input:analog-stereo || true
+  pactl set-card-profile "$headset" off || true
+  pactl set-card-profile "$earphones" off || true
   ;;
 "headphones (output-only)")
   echo "Setting up Headphones (Output-Only)"
-  pactl set-card-profile "$headset" output:analog-stereo
-  pactl set-card-profile "$speakers" off
+  pactl set-card-profile "$headset" output:analog-stereo || true
+  pactl set-card-profile "$speakers" off || true
+  pactl set-card-profile "$earphones" off || true
+  ;;
+"earphones")
+  bluetoothctl connect "5C:56:A4:74:38:19"
+  echo "Setting up Earphones"
+  pactl set-card-profile "$earphones" a2dp-sink || true
+  pactl set-card-profile "$headset" off || true
+  pactl set-card-profile "$speakers" off || true
   ;;
 *)
   echo "Invalid Option $selected"

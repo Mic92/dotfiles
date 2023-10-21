@@ -3,11 +3,11 @@
     "astro-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1697064365,
-        "narHash": "sha256-LHGH6kAxiBQwy1uA8oSa8cuI+OBQF0b+cTtmLPNbgvs=",
+        "lastModified": 1697633970,
+        "narHash": "sha256-BP0Cj9CKg4JJ7s5KWxcydDRLzIv5ppaaM9o82IGGRVU=",
         "owner": "AstroNvim",
         "repo": "AstroNvim",
-        "rev": "fb497c6739f5d368fcba2357b02303a8c82e3ec5",
+        "rev": "3a72c6e1f89c682564c47cf0a2b6f2ecf9b442d8",
         "type": "github"
       },
       "original": {
@@ -52,11 +52,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1697478112,
-        "narHash": "sha256-DKojHSxRmPEaOtm18zyTuU/BYhz2Ja89JBlHfDVatgM=",
+        "lastModified": 1697710816,
+        "narHash": "sha256-H03eOegMFtZEhaT0x75LBgZ3d5chEO2psAWJSf0gVCk=",
         "owner": "Mic92",
         "repo": "buildbot-nix",
-        "rev": "b042eb801127e0d31f394bcb0de74eb420507761",
+        "rev": "a78f6f9a01e2fe3ab51116f662a2bbb7ed77fd92",
         "type": "github"
       },
       "original": {
@@ -282,11 +282,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1697410455,
-        "narHash": "sha256-jCs/ffIP3tUPN7HWWuae4BB8+haAw2NI02z5BQvWMGM=",
+        "lastModified": 1697688028,
+        "narHash": "sha256-d9CAOd9W2iTrgB31a8Dvyp6Vgn/gxASCNrD4Z9yzUOY=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "78125bc681d12364cb65524eaa887354134053d0",
+        "rev": "c5c1ea85181d2bb44e46e8a944a8a3f56ad88f19",
         "type": "github"
       },
       "original": {
@@ -605,11 +605,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1697419494,
-        "narHash": "sha256-7oMGO3w6/UppnH7bM0L81JoKSQjZotsyERO/9SptDu4=",
+        "lastModified": 1697678634,
+        "narHash": "sha256-qO0ZQtX8+tHJq2rxgn7m76pZ8Q+O1vdtQpsh+gNE4gg=",
         "owner": "numtide",
         "repo": "srvos",
-        "rev": "13fb9123d8b175579fd660a392740e702a363dfa",
+        "rev": "773baff17c53a055504071d27bd6d0999d8bdf83",
         "type": "github"
       },
       "original": {

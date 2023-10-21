@@ -121,6 +121,8 @@ keys = [
         desc="Take a screenshot of the focused window",
     ),
     Key([mod], "s", create_screenshot, desc="Take a screenshot of the focused window"),
+    # screen key on framework
+    Key([mod], "p", lazy.spawn("wlr-randr --output eDP-1 --on"), desc="Launch firefox"),
 ]
 
 groups = [
@@ -226,6 +228,7 @@ cpu_graph = widget.CPUGraph(
 )
 memory_widget = widget.Memory(measure_mem="G")
 
+
 @dataclass
 class IOStat:
     device: str
@@ -275,9 +278,10 @@ class DiskIO(base.ThreadPoolText):
 
     def poll(self) -> str:
         try:
-           return self.diskio()
+            return self.diskio()
         except Exception as e:
-           return f"Error: {e}"
+            return f"Error: {e}"
+
 
 class FPing(base.ThreadPoolText):
     defaults = [
@@ -393,6 +397,7 @@ bottom_widgets = [
     DiskIO(),
 ]
 
+
 screens = [
     Screen(
         top=bar.Bar(top_widgets, 24),
@@ -405,6 +410,7 @@ screens = [
         # x11_drag_polling_rate = 60,
     ),
 ]
+screens.append(screens[0])
 
 # Drag floating layouts.
 mouse = [
@@ -451,7 +457,9 @@ wl_input_rules = {
     "type:touchpad": InputConfig(
         dwt=True, tap=True, natural_scroll=True, middle_emulation=True
     ),
-    "type:keyboard": InputConfig(kb_options="ctrl:nocaps", kb_layout="us", kb_variant="altgr-intl"),
+    "type:keyboard": InputConfig(
+        kb_options="ctrl:nocaps", kb_layout="us", kb_variant="altgr-intl"
+    ),
 }
 
 
@@ -467,24 +475,50 @@ def systemd_run(command: list[str]) -> list[str]:
 
 @hook.subscribe.startup
 def autostart():
-    commands = [
+    subprocess.run(
         [
             "systemctl",
             "--user",
             "import-environment",
             "XDG_SESSION_PATH",
             "WAYLAND_DISPLAY",
-        ],
+        ]
+    )
+    # fmt: off
+    sway_lock = [
+        "swaylock",
+        "--screenshots",
+        "--clock",
+        "--indicator",
+        "--indicator-radius", "100",
+        "--indicator-thickness", "7",
+        "--effect-blur", "7x5",
+        "--effect-vignette", "0.5:0.5",
+        "--ring-color", "bb00cc",
+        "--key-hl-color", "880033",
+        "--line-color", "00000000",
+        "--inside-color", "00000088",
+        "--separator-color", "00000000",
+        "--grace", "10",
+        "--fade-in", "0.2",
+    ]
+    commands = [
         ["firefox"],
         ["kanshi"],
         ["mako"],
         ["foot", "--server"],
         ["ferdium"],
         # start it twice because it doesn't create a window the first time
+        ["signal-desktop"],
         [
-            "signal-desktop"
+            "swayidle",
+            "-w",
+            "timeout", "300", shlex.join(sway_lock),
+            "timeout", "3600", "systemctl suspend",
+            "before-sleep", shlex.join(sway_lock),
         ],
     ]
+    # fmt: on
     for command in commands:
         subprocess.Popen(systemd_run(command))
 

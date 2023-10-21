@@ -55,6 +55,8 @@
     #../modules/k3s/server.nix
   ];
 
+  services.pcscd.enable = true;
+
   users.mutableUsers = false;
   sops.secrets.turingmachine-joerg-password-hash.neededForUsers = true;
   users.users.joerg.hashedPasswordFile = config.sops.secrets.turingmachine-joerg-password-hash.path;
