@@ -13,18 +13,21 @@ earphones=bluez_card.5C_56_A4_74_38_19
 case $selected in
 headphones)
   echo "Setting up Headphones"
+  bluetoothctl disconnect "5C:56:A4:74:38:19" || true
   pactl set-card-profile "$headset" output:analog-stereo+input:mono-fallback || true
   pactl set-card-profile "$speakers" off || true
   pactl set-card-profile "$earphones" off || true
   ;;
 speakers)
   echo "Setting up Speakers"
+  bluetoothctl disconnect "5C:56:A4:74:38:19" || true
   pactl set-card-profile "$speakers" output:analog-stereo+input:analog-stereo || true
   pactl set-card-profile "$headset" off || true
   pactl set-card-profile "$earphones" off || true
   ;;
 "headphones (output-only)")
   echo "Setting up Headphones (Output-Only)"
+  bluetoothctl disconnect "5C:56:A4:74:38:19" || true
   pactl set-card-profile "$headset" output:analog-stereo || true
   pactl set-card-profile "$speakers" off || true
   pactl set-card-profile "$earphones" off || true
