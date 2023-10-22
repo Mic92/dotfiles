@@ -47,9 +47,8 @@
     sshfs-fuse
     sshuttle
     jq
-    go2nix
+    git-lfs
     cheat
-    hydra-check
     xdg-utils
     patool
     tio
