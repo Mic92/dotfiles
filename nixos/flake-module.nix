@@ -20,6 +20,7 @@ let
 
       inputs.srvos.nixosModules.common
       inputs.srvos.nixosModules.mixins-telegraf
+      inputs.srvos.nixosModules.mixins-nix-experimental
       { networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 9273 ]; }
       inputs.srvos.nixosModules.mixins-trusted-nix-caches
 
