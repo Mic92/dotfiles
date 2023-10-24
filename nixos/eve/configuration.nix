@@ -60,6 +60,7 @@
     ./modules/users.nix
     ./modules/wireguard.nix
     ./modules/nixos-wiki
+    ./modules/nixos-wiki/backup.nix
     ./modules/zerotier.nix
     #./modules/headscale.nix
     #./modules/wiregrill
