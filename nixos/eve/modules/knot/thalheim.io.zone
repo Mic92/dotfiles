@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2023101504 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2023102400 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -105,10 +105,10 @@ matrix IN AAAA 2a01:4f9:4a:42e8::1
 _matrix._tcp IN SRV 0 5 443 matrix
 
 ;; https://github.com/Mic92/nixos-wiki-infra
-nixos-wiki-backup IN NS dns1.p01.nsone.net.
-nixos-wiki-backup IN NS dns2.p01.nsone.net.
-nixos-wiki-backup IN NS dns3.p01.nsone.net.
-nixos-wiki-backup IN NS dns4.p01.nsone.net.
+nixos-wiki2 IN NS dns1.p01.nsone.net.
+nixos-wiki2 IN NS dns2.p01.nsone.net.
+nixos-wiki2 IN NS dns3.p01.nsone.net.
+nixos-wiki2 IN NS dns4.p01.nsone.net.
 
 ;; SSHFP Records
 @ IN SSHFP 1 1 183d8a19ce46d00f2a2bc8795088deb5d1154c46
