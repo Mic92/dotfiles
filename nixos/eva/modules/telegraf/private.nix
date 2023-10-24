@@ -147,13 +147,6 @@ in
 
     http_response = [
       {
-        urls = [ "https://www.wikipedia.org/" ];
-        http_proxy = ''https://telegraf%40thalheim.io:''${LDAP_PASSWORD}@devkid.net:8889'';
-        tags.host = "eve";
-        tags.org = "private";
-        response_string_match = "wikipedia.org";
-      }
-      {
         urls = [ "https://adminer.thalheim.io/" ];
         tags.host = "eve";
         tags.org = "private";
@@ -290,8 +283,6 @@ in
           "https://loki.r:443"
           "https://prometheus.r:443"
           "https://alertmanager.r:443"
-          # squid
-          "https://devkid.net:8889"
           # dovecot
           "tcp://imap.thalheim.io:993"
           "tcp://imap.devkid.net:993"
