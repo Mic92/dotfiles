@@ -88,13 +88,8 @@ in
     extensions.Cite = null;
     extensions.VisualEditor = null;
     extensions.AuthManagerOAuth = pkgs.fetchzip {
-      url = "https://github.com/mohe2015/AuthManagerOAuth/releases/download/v0.2.0/AuthManagerOAuth.zip";
-      sha256 = "sha256-SMfUR2okG3Wp8FZG99V01w2nBcbEAVvHRzkzFGHi0ZY=";
-      # postgresql support
-      postFetch = ''
-        cd $out
-        patch -p1 < ${./0001-add-postgres-support.patch}
-      '';
+      url = "https://github.com/mohe2015/AuthManagerOAuth/releases/download/v0.3.0/AuthManagerOAuth.zip";
+      hash = "sha256-4ev8LwuConmHzFm5cPr+ni9aYPDOHLArGoJhzdugEn4=";
     }; # Github login
     extensions.ConfirmEdit = null; # Combat SPAM with a simple Captcha
     extensions.StopForumSpam = pkgs.fetchzip {

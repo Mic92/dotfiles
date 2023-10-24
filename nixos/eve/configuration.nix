@@ -52,7 +52,6 @@
     ./modules/rspamd/rspamd.nix
     ./modules/shiori
     ./modules/sshd.nix
-    ./modules/squid.nix
     ./modules/syncthing.nix
     ./modules/sops.nix
     ./modules/teamspeak.nix
@@ -61,7 +60,6 @@
     ./modules/users.nix
     ./modules/wireguard.nix
     ./modules/nixos-wiki
-    ./modules/onlyoffice.nix
     ./modules/zerotier.nix
     #./modules/headscale.nix
     #./modules/wiregrill

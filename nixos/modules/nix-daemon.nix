@@ -39,9 +39,6 @@
       fallback = true;
       warn-dirty = false;
       auto-optimise-store = true;
-      auto-allocate-uids = true;
-      system-features = lib.mkDefault [ "uid-range" ];
-      experimental-features = [ "repl-flake" "impure-derivations" "auto-allocate-uids" "cgroups" ];
     };
   };
 
