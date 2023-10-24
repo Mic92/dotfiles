@@ -52,7 +52,6 @@
     ./modules/rspamd/rspamd.nix
     ./modules/shiori
     ./modules/sshd.nix
-    ./modules/squid.nix
     ./modules/syncthing.nix
     ./modules/sops.nix
     ./modules/teamspeak.nix
