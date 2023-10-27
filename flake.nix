@@ -84,6 +84,14 @@
 
     flake-utils.url = "github:numtide/flake-utils";
 
+    nixos-wiki.url = "github:Mic92/nixos-wiki-infra";
+    nixos-wiki.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-wiki.inputs.flake-parts.follows = "flake-parts";
+    nixos-wiki.inputs.treefmt-nix.follows = "treefmt-nix";
+    nixos-wiki.inputs.disko.follows = "disko";
+    nixos-wiki.inputs.sops-nix.follows = "sops-nix";
+    nixos-wiki.inputs.srvos.follows = "srvos";
+
     #microvm.url = "github:astro/microvm.nix";
     #microvm.inputs.nixpkgs.follows = "nixpkgs";
     #microvm.inputs.flake-utils.follows = "flake-utils";

@@ -93,6 +93,8 @@ in
           inputs.buildbot-nix.nixosModules.buildbot-worker
           inputs.buildbot-nix.nixosModules.buildbot-master
           inputs.disko.nixosModules.disko
+          inputs.nixos-wiki.nixosModules.nixos-wiki
+          inputs.nixos-wiki.nixosModules.nixos-wiki-backup
         ];
       };
 

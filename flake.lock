@@ -52,11 +52,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1697710816,
-        "narHash": "sha256-H03eOegMFtZEhaT0x75LBgZ3d5chEO2psAWJSf0gVCk=",
+        "lastModified": 1698388014,
+        "narHash": "sha256-YAZM28dB0hzeJUYKjMxAvfMx41yLgiSzZT1BDl1cBKE=",
         "owner": "Mic92",
         "repo": "buildbot-nix",
-        "rev": "a78f6f9a01e2fe3ab51116f662a2bbb7ed77fd92",
+        "rev": "3e4964c4ccd0bf19448ff051c7db4c8b3f12194b",
         "type": "github"
       },
       "original": {
@@ -413,6 +413,41 @@
         "type": "github"
       }
     },
+    "nixos-wiki": {
+      "inputs": {
+        "disko": [
+          "disko"
+        ],
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "sops-nix": [
+          "sops-nix"
+        ],
+        "srvos": [
+          "srvos"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1698166409,
+        "narHash": "sha256-fvy+NF8HPwICa9ow751QmR+nn7svCV8xlBtqkfwJEs8=",
+        "owner": "Mic92",
+        "repo": "nixos-wiki-infra",
+        "rev": "01c7bb163be0eeb6330d315e4e7eb081e8505406",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "nixos-wiki-infra",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1682741954,
@@ -447,11 +482,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1698134225,
-        "narHash": "sha256-oeWaAcAgDlSf3Ga0QsRj7tt+CILEVmECuW555jr7hYo=",
+        "lastModified": 1698385460,
+        "narHash": "sha256-Ev9rNZMu5HJUqJ/bqYSHfb/Cq+FVLHEoFZ0sk5TdXUg=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "e689648b04f1295cec4fb57979bedb2201ca4a0a",
+        "rev": "aba21eae776972efd9e3ce460890621e0673751f",
         "type": "github"
       },
       "original": {
@@ -544,6 +579,7 @@
         "nix-index-database": "nix-index-database",
         "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
+        "nixos-wiki": "nixos-wiki",
         "nixpkgs": "nixpkgs_2",
         "nur-packages": "nur-packages",
         "retiolum": "retiolum",
