@@ -38,6 +38,9 @@ return {
   -- disable building since it's optional
   { "L3MON4D3/LuaSnip", build = "true", },
 
+  -- lazy keeps downgrading this package for some reason
+  { "lukas-reineke/indent-blankline.nvim", version = ">=3", opts = {} },
+
   -- You can disable default plugins as follows:
   -- { "max397574/better-escape.nvim", enabled = false },
   --
