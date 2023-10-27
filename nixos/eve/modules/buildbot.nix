@@ -3,6 +3,11 @@
     enable = true;
     domain = "buildbot.thalheim.io";
     workersFile = config.sops.secrets.buildbot-nix-workers.path;
+    buildSystems = [
+      "aarch64-linux"
+      "x86_64-linux"
+      "aarch64-darwin"
+    ];
     github = {
       tokenFile = config.sops.secrets.buildbot-github-token.path;
       webhookSecretFile = config.sops.secrets.buildbot-github-webhook-secret.path;
