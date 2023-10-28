@@ -17,6 +17,8 @@
 { modulesPath, ... }: {
   imports = [
     (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
+    # saves disk by including nixpkgs in the installer
+    { system.installer.channel.enable = false; }
     ./base-config.nix
     ./zfs.nix
   ];
