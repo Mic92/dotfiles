@@ -14,9 +14,9 @@
 # iso> mount -t zfs zroot/root/home /mnt
 # iso> mount /dev/nvme0n1p1 /mnt/boot
 # iso> nix-shell -p git -p nix --run 'nixos-install --impure --flake /mnt/home/joerg/.homesick/repos/dotfiles#turingmachine'
-{
+{ modulesPath, ... }: {
   imports = [
-    <nixpkgs/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix>
+    (modulesPath + "/installer/cd-dvd/installation-cd-minimal.nix")
     ./base-config.nix
     ./zfs.nix
   ];
@@ -45,4 +45,3 @@
 # chmod 777 /mnt/tmp
 # nixos-generate-config  --root /mnt
 # nixos-install
-
