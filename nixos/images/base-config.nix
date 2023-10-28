@@ -9,7 +9,6 @@
   networking.firewall.enable = false;
   #boot.supportedFilesystems = [ "bcachefs" ];
 
-  services.resolved.enable = false;
   networking.nameservers = [
     # hurricane electric
     "74.82.42.42"
@@ -18,28 +17,27 @@
 
   networking.usePredictableInterfaceNames = false;
   systemd.network.enable = true;
+  networking.useNetworkd = true;
+
   systemd.network.networks =
     lib.mapAttrs'
       (num: _:
         lib.nameValuePair "eth${num}" {
-          extraConfig = ''
-            [Match]
-            Name = eth${num}
-
-            [Network]
-            DHCP = both
-            LLMNR = true
-            IPv4LL = true
-            LLDP = true
-            IPv6AcceptRA = true
-            IPv6Token = ::521a:c5ff:fefe:65d9
+          matchConfig.Name = "eth${num}";
+          networkConfig = {
+            DHCP = "yes";
+            LLMNR = true;
+            IPv4LLRoute = true;
+            LLDP = true;
+            IPv6AcceptRA = true;
             # used to have a stable address for zfs send
-            Address = fd42:4492:6a6d:43:1::${num}/64
-
-            [DHCP]
-            UseHostname = false
-            RouteMetric = 512
-          '';
+            Address = "fd42:4492:6a6d:43:1::${num}/64";
+          };
+          dhcpConfig = {
+            UseHostname = false;
+            RouteMetric = 512;
+          };
+          ipv6AcceptRAConfig.Token = "::521a:c5ff:fefe:65d9";
         })
       {
         "0" = { };
