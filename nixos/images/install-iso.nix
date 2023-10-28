@@ -1,6 +1,6 @@
 # build with:
 # $ nix-build '<nixpkgs/nixos>' -A config.system.build.isoImage -I nixos-config=./install-iso.nix
-# $ dd if=result/iso/nixos-*.iso of=/dev/sdb
+# $ dd status=progress bs=4M conv=fsync oflag=direct iflag=direct if=result/iso/nixos-*.iso of=/dev/sdb
 # iso>
 # iso> sgdisk -n 1:0:+1000M -N 2 -t 1:ef00 -t 2:8304 /dev/nvme0n1
 # iso> mkfs.vfat -b32 /dev/nvme0n1p1 -N NIXOS_BOOT
