@@ -220,7 +220,6 @@ setopt auto_cd
 setopt correct
 setopt multios
 setopt cdablevarS
-setopt extended_glob
 autoload -U url-quote-magic
 zle -N self-insert url-quote-magic
 bindkey "^[m" copy-prev-shell-word
