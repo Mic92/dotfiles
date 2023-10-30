@@ -63,7 +63,7 @@ in
     libnotify
     pamixer
     gnome.file-roller
-    firefox-wayland
+    firefox
     chromium
     xdg-utils
     # polkit agent

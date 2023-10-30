@@ -53,7 +53,7 @@
     #    defaultHost = "tts.r";
     #    defaultPort = "80";
     #  })
-    firefox-wayland
+    firefox
     (retroarch.override {
       cores = [
         libretro.bsnes-hd

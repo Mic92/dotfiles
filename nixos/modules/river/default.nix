@@ -36,7 +36,7 @@ in
       networkmanagerapplet
       gnome.file-roller
       gnome.nautilus
-      firefox-wayland
+      firefox
       chromium
 
       # Somehow xdg.portal services do not really work for me.
