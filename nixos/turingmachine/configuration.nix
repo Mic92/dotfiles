@@ -51,7 +51,9 @@
     ../modules/users.nix
     ../modules/nix-ld.nix
     ../modules/keyd.nix
+    ../modules/lanzaboote.nix
     ../modules/no-hz.nix
+
     #../modules/k3s/server.nix
   ];
 
@@ -75,7 +77,7 @@
     zfs.requestEncryptionCredentials = [ "zroot/root" ];
 
     # when installing toggle this
-    loader.efi.canTouchEfiVariables = false;
+    loader.efi.canTouchEfiVariables = true;
   };
 
   boot.plymouth.enable = true;
@@ -219,10 +221,5 @@
   boot.initrd.systemd.enable = true;
 
   programs.gamemode.enable = true;
-
-  boot.loader.systemd-boot.enable = lib.mkForce false;
-  boot.lanzaboote = {
-    enable = true;
-    pkiBundle = "/etc/secureboot";
-  };
+  security.sudo.wheelNeedsPassword = lib.mkForce true; # fprint
 }
