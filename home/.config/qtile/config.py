@@ -514,7 +514,6 @@ def autostart():
             "swayidle",
             "-w",
             "timeout", "300", shlex.join(sway_lock),
-            "timeout", "3600", "systemctl suspend",
             "before-sleep", shlex.join(sway_lock),
         ],
     ]
