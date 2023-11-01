@@ -36,6 +36,7 @@ in
         http_listen_port = 3100;
         log_level = "warn";
       };
+      common.instance_interface_names = [ "eth0" ];
 
       # Distributor
       distributor.ring.kvstore.store = "inmemory";
@@ -46,7 +47,6 @@ in
           kvstore.store = "inmemory";
           replication_factor = 1;
         };
-        lifecycler.interface_names = [ "eth0" "en0" "ens192" ];
         chunk_encoding = "snappy";
         # Disable block transfers on shutdown
         max_transfer_retries = 0;
