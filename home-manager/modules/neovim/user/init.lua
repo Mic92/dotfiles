@@ -4,7 +4,7 @@ vim.api.nvim_create_user_command("RaiseTmuxPane", function()
   local out = vim.fn.system "tmux list-panes -a -F '#I #{pane_tty}'"
   local tty = vim.env.TTY
   if tty == nil then return end
-  local _, _, window_id = string.find(out, "(%d+) " .. tty)
+  local _, _, window_id = string.find(out, "(%d+) " .. tty .. "$")
   if window_id == nil then return end
   vim.fn.system("tmux select-window -t '" .. window_id .. "'")
 end, {})
