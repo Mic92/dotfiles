@@ -53,6 +53,7 @@
     ../modules/keyd.nix
     ../modules/lanzaboote.nix
     ../modules/no-hz.nix
+    ../modules/ksmbd.nix
 
     #../modules/k3s/server.nix
   ];
@@ -222,4 +223,14 @@
 
   programs.gamemode.enable = true;
   security.sudo.wheelNeedsPassword = lib.mkForce true; # fprint
+
+  services.ksmbd.enable = true;
+  services.ksmbd.openFirewall = true;
+  services.ksmbd.shares.public = {
+    path = "/var/lib/ksmbd";
+    "read only" = true;
+    browseable = "yes";
+    "guest ok" = "yes";
+    comment = "Public samba share.";
+  };
 }
