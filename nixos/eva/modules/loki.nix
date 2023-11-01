@@ -36,34 +36,30 @@ in
         http_listen_port = 3100;
         log_level = "warn";
       };
-      common.instance_interface_names = [ "eth0" ];
-
-      # Distributor
-      distributor.ring.kvstore.store = "inmemory";
-
-      # Ingester
-      ingester = {
-        lifecycler.ring = {
-          kvstore.store = "inmemory";
-          replication_factor = 1;
+      common = {
+        path_prefix = config.services.loki.dataDir;
+        storage.filesystem = {
+          chunks_directory = "${config.services.loki.dataDir}/chunks";
+          rules_directory = "${config.services.loki.dataDir}/rules";
         };
+        replication_factor = 1;
+        ring.kvstore.store = "inmemory";
+        ring.instance_addr = "127.0.0.1";
+      };
+
+      ingester = {
         chunk_encoding = "snappy";
         # Disable block transfers on shutdown
         max_transfer_retries = 0;
       };
 
-      # Storage
-      storage_config = {
-        boltdb.directory = "/var/lib/loki/boltdb";
-        filesystem.directory = "/var/lib/loki/storage";
+      limits_config = {
+        retention_period = "120h";
+        ingestion_burst_size_mb = 16;
+        reject_old_samples = true;
+        reject_old_samples_max_age = "12h";
       };
 
-      limits_config.retention_period = "120h";
-      limits_config.ingestion_burst_size_mb = 16;
-      limits_config.reject_old_samples = true;
-      limits_config.reject_old_samples_max_age = "12h";
-
-      # Table manager
       table_manager = {
         retention_deletes_enabled = true;
         retention_period = "120h";
@@ -73,33 +69,30 @@ in
         retention_enabled = true;
         compaction_interval = "10m";
         shared_store = "filesystem";
-        working_directory = "/var/lib/loki/compactor";
+        working_directory = "${config.services.loki.dataDir}/compactor";
         delete_request_cancel_period = "10m"; # don't wait 24h before processing the delete_request
         retention_delete_delay = "2h";
         retention_delete_worker_count = 150;
       };
 
-      # Schema
       schema_config.configs = [
         {
           from = "2020-11-08";
-          store = "boltdb";
+          store = "boltdb-shipper";
           object_store = "filesystem";
           schema = "v11";
           index.prefix = "index_";
-          index.period = "120h";
+          index.period = "24h";
         }
       ];
-
 
       ruler = {
         storage = {
           type = "local";
           local.directory = rulerDir;
         };
-        rule_path = "/var/lib/loki/ruler";
+        rule_path = "${config.services.loki.dataDir}/ruler";
         alertmanager_url = "http://alertmanager.r";
-        ring.kvstore.store = "inmemory";
       };
 
       query_range.cache_results = true;
