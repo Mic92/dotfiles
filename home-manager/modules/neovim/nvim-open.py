@@ -10,25 +10,26 @@ import nvr
 
 
 def find_project_root(initial_path: Path) -> Path:
-    path = initial_path
-    while path.parent == path:
-        print(path)
-        project_files = [
-            ".git",
-            "_darcs",
-            ".hg",
-            ".bzr",
-            ".svn",
-            "Makefile",
-            "package.json",
-            "setup.py",
-            "setup.cfg",
-            "pyproject.toml",
-        ]
-        for project_file in project_files:
+    project_files = [
+        ".git",
+        "_darcs",
+        ".hg",
+        ".bzr",
+        ".svn",
+        "Makefile",
+        "package.json",
+        "setup.py",
+        "setup.cfg",
+        "pyproject.toml",
+        "flake.nix",
+        "Cargo.toml",
+    ]
+    for project_file in project_files:
+        path = initial_path
+        while path.parent != path:
             if (path / project_file).exists():
                 return path
-        path = path.parent
+            path = path.parent
     return initial_path
 
 
