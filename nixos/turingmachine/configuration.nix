@@ -198,14 +198,6 @@
   #    };
   #  };
   #};
-  networking.firewall.interfaces."virbr1".allowedTCPPorts = [
-    445
-    139
-  ];
-  networking.firewall.interfaces."virbr1".allowedUDPPorts = [
-    445
-    139
-  ];
 
   networking.firewall.allowedTCPPorts = [ 8081 ];
 
