@@ -34,8 +34,6 @@
         "cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc="
       ];
 
-      trusted-users = [ "@wheel" "root" ];
-
       fallback = true;
       warn-dirty = false;
       auto-optimise-store = true;
