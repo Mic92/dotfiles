@@ -4,13 +4,13 @@ For bootstraping on [legacy operating systems](https://github.com/Mic92/dotfiles
 
 # Bootstrap dotfiles when having nix
 
-```
+```console
 $ nix run github:Mic92/dotfiles
 ```
 
 # Boostrap homeshick without nix
 
-```
+```console
 $ nix-shell -p git
 nix-shell> git clone --depth=1 https://github.com/andsens/homeshick.git $HOME/.homesick/repos/homeshick
 nix-shell> alias homeshick="$HOME/.homesick/repos/homeshick/bin/homeshick"
