@@ -16,6 +16,7 @@
       user = "mic92-buildbot";
       admins = [ "Mic92" "DavHau" "Lassulus" ];
     };
+    outputsPath = "/var/www/buildbot/nix-outputs";
   };
   services.buildbot-nix.worker = {
     enable = true;
