@@ -32,7 +32,9 @@
     # first import environment variables from the login manager
     export XDG_DATA_DIRS=/run/current-system/sw/share/gsettings-schemas:$XDG_DATA_DIRS
     systemctl --user unset-environment DISPLAY WAYLAND_DISPLAY
-    systemctl --user import-environment XDG_DATA_DIRS
+
+    zsh --login -c "systemctl --user import-environment XDG_DATA_DIRS PATH"
+
     # then start the service
     exec systemctl --user --wait start qtile.service
   ''}";
