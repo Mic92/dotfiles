@@ -123,6 +123,13 @@ keys = [
     Key([mod], "s", create_screenshot, desc="Take a screenshot of the focused window"),
     # screen key on framework
     Key([mod], "p", lazy.spawn("wlr-randr --output eDP-1 --on"), desc="Launch firefox"),
+
+    Key(["control", "mod1"], "F1", lazy.core.change_vt(1), desc="Switch to VT 1"),
+    Key(["control", "mod1"], "F2", lazy.core.change_vt(2), desc="Switch to VT 2"),
+    Key(["control", "mod1"], "F3", lazy.core.change_vt(3), desc="Switch to VT 3"),
+    Key(["control", "mod1"], "F4", lazy.core.change_vt(4), desc="Switch to VT 4"),
+    Key(["control", "mod1"], "F5", lazy.core.change_vt(5), desc="Switch to VT 5"),
+    Key(["control", "mod1"], "F6", lazy.core.change_vt(6), desc="Switch to VT 6"),
 ]
 
 groups = [
