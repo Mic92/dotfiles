@@ -487,7 +487,6 @@ def autostart():
             "systemctl",
             "--user",
             "import-environment",
-            "XDG_SESSION_PATH",
             "WAYLAND_DISPLAY",
         ]
     )
