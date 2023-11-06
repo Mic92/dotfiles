@@ -70,32 +70,22 @@
           #}
           {
             targets = map (host: "${host}.r:9273") [
-              # university
-              "amy"
-              "clara"
-              "rose"
-
-              "astrid"
-              "dan"
-              "mickey"
-              "bill"
-              "nardole"
-              "yasmin"
-              "ryan"
-              "graham"
-
-              "astrid"
-              "dan"
-              "mickey"
-
-              "jackson"
-              "christina"
               "adelaide"
-              "wilfred"
-              "river"
+              "astrid"
+              "bill"
+              "christina"
+              "dan"
+              "graham"
               "jack"
-
+              "jackson"
+              "mickey"
+              "nardole"
+              "river"
               "ruby"
+              "ryan"
+              "vislor"
+              "wilfred"
+              "yasmin"
             ];
 
             labels.org = "uni";
