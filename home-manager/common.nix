@@ -12,7 +12,7 @@
       #(pkgs.callPackage /home/joerg/git/nix-review {})
       nixpkgs-review
       nix-prefetch
-      (pkgs.callPackage ./pkgs/atuin {})
+      (pkgs.callPackage ./pkgs/atuin { })
 
       hexyl
       binutils
