@@ -1,4 +1,4 @@
-From dd6e0ddd02ee55488b6fa3b7293097fd4159297c Mon Sep 17 00:00:00 2001
+From b75e6fd3159896966dce2cf3af5b5be7e286ce1a Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
 Date: Mon, 6 Nov 2023 15:56:26 +0100
 Subject: [PATCH] make atuin on zfs fast again
@@ -13,7 +13,7 @@ Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
  2 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/atuin-client/src/database.rs b/atuin-client/src/database.rs
-index c4b45302..ff367612 100644
+index c4b45302..29006d59 100644
 --- a/atuin-client/src/database.rs
 +++ b/atuin-client/src/database.rs
 @@ -130,7 +130,8 @@ pub async fn new(path: impl AsRef<Path>) -> Result<Self> {
@@ -21,13 +21,13 @@ index c4b45302..ff367612 100644
  
          let opts = SqliteConnectOptions::from_str(path.as_os_str().to_str().unwrap())?
 -            .journal_mode(SqliteJournalMode::Wal)
-+            .journal_mode(SqliteJournalMode::Delete)
++            .journal_mode(SqliteJournalMode::Memory)
 +            .synchronous(sqlx::sqlite::SqliteSynchronous::Off)
              .create_if_missing(true);
  
          let pool = SqlitePoolOptions::new().connect_with(opts).await?;
 diff --git a/atuin-client/src/record/sqlite_store.rs b/atuin-client/src/record/sqlite_store.rs
-index db709f20..f8e2d5ed 100644
+index db709f20..eaed6f7a 100644
 --- a/atuin-client/src/record/sqlite_store.rs
 +++ b/atuin-client/src/record/sqlite_store.rs
 @@ -37,7 +37,8 @@ pub async fn new(path: impl AsRef<Path>) -> Result<Self> {
@@ -35,7 +35,7 @@ index db709f20..f8e2d5ed 100644
  
          let opts = SqliteConnectOptions::from_str(path.as_os_str().to_str().unwrap())?
 -            .journal_mode(SqliteJournalMode::Wal)
-+            .journal_mode(SqliteJournalMode::Delete)
++            .journal_mode(SqliteJournalMode::Memory)
 +            .synchronous(sqlx::sqlite::SqliteSynchronous::Off)
              .create_if_missing(true);
  

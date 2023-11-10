@@ -1,19 +1,19 @@
 { config, ... }: {
   nix.distributedBuilds = true;
   nix.buildMachines = [
-    {
-      hostName = "aarch64.nixos.community";
-      maxJobs = 96;
-      sshKey = config.sops.secrets.ssh-aarch64-builder.path;
-      protocol = "ssh-ng";
-      sshUser = "mic92";
-      system = "aarch64-linux";
-      supportedFeatures = [
-        "big-parallel"
-        "kvm"
-        "nixos-test"
-      ];
-    }
+    #{
+    #  hostName = "aarch64.nixos.community";
+    #  maxJobs = 96;
+    #  sshKey = config.sops.secrets.ssh-aarch64-builder.path;
+    #  protocol = "ssh-ng";
+    #  sshUser = "mic92";
+    #  system = "aarch64-linux";
+    #  supportedFeatures = [
+    #    "big-parallel"
+    #    "kvm"
+    #    "nixos-test"
+    #  ];
+    #}
     {
       hostName = "mac01.numtide.com";
       sshUser = "hetzner";
@@ -39,12 +39,30 @@
         "nixos-test"
       ];
     }
+    {
+      hostName = "yasmin";
+      maxJobs = 128;
+      sshKey = config.sops.secrets.ssh-tum-builder.path;
+      protocol = "ssh-ng";
+      sshUser = "nix";
+      systems = [ "aarch64-linux" ];
+      supportedFeatures = [
+        "big-parallel"
+        "kvm"
+        "nixos-test"
+      ];
+    }
   ];
   programs.ssh.extraConfig = ''
     Host vislor
       User nix
       ProxyJump login-tum
       HostName vislor.dos.cit.tum.de
+      IdentityFile ${config.sops.secrets.ssh-tum-builder.path}
+    Host yasmin
+      User nix
+      ProxyJump login-tum
+      HostName yasmin.dos.cit.tum.de
       IdentityFile ${config.sops.secrets.ssh-tum-builder.path}
     Host login-tum
       User tunnel
