@@ -8,6 +8,7 @@
       "x86_64-linux"
       "aarch64-darwin"
     ];
+    evalWorkerCount = 8;
     github = {
       tokenFile = config.sops.secrets.buildbot-github-token.path;
       webhookSecretFile = config.sops.secrets.buildbot-github-webhook-secret.path;
