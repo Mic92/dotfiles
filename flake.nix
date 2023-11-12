@@ -54,7 +54,10 @@
     nix-darwin.url = "github:LnL7/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    srvos.url = "github:numtide/srvos";
+    nix-ld-rs.url = "github:nix-community/nix-ld-rs";
+    nix-ld-rs.inputs.nixpkgs.follows = "nixpkgs";
+
+    srvos.url = "github:numtide/srvos/sudo";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
     srvos.inputs.nixos-23_05.follows = "";
 
