@@ -210,7 +210,7 @@
     "powerpc64le-linux"
   ];
 
-  system.stateVersion = "22.11";
+  system.stateVersion = "23.11";
   boot.initrd.systemd.enable = true;
 
   programs.gamemode.enable = true;

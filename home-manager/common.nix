@@ -75,7 +75,7 @@
   manual.manpages.enable = false;
   manual.json.enable = false;
 
-  home.stateVersion = "20.09";
+  home.stateVersion = "23.11";
   home.username = lib.mkDefault "joerg";
   home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/${config.home.username}" else "/home/${config.home.username}";
   programs.home-manager.enable = true;

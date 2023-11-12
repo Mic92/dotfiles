@@ -11,7 +11,7 @@
     ./hardware-configuration.nix
   ];
 
-  system.stateVersion = "22.11";
+  system.stateVersion = "23.11";
 
   # Fan speed adjustment
   systemd.services.fans =

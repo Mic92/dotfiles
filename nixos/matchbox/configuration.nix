@@ -36,7 +36,7 @@
 
   systemd.services.update-prefetch.enable = false;
 
-  system.stateVersion = "18.09";
+  system.stateVersion = "23.11";
 
   networking.dhcpcd.enable = false;
   systemd.network.networks.ethernet.extraConfig = ''
