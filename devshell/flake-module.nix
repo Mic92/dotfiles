@@ -14,7 +14,7 @@
         # Used to find the project root
         projectRootFile = ".git/config";
 
-        programs.terraform.enable = true;
+        programs.hclfmt.enable = true;
         programs.mypy.enable = true;
         programs.mypy.directories = {
           "tasks" = {
