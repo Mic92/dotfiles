@@ -4,7 +4,7 @@
       buildInputs = [
         pkgs.sops
         pkgs.terragrunt
-        (pkgs.terraform.withPlugins (
+        (pkgs.opentofu.withPlugins (
           p: [
             p.gitlab
             p.github
