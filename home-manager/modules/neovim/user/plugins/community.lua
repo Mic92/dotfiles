@@ -6,6 +6,14 @@ return {
  { import = "astrocommunity.colorscheme.gruvbox-nvim" },
  { import = "astrocommunity.completion.copilot-lua" },
  { import = "astrocommunity.completion.copilot-lua-cmp" },
+ {
+  "zbirenbaum/copilot.lua",
+  opts = {
+   filetypes = {
+    gitcommit = true,
+   },
+  },
+ },
  { import = "astrocommunity.project.project-nvim" },
  { import = "astrocommunity.pack.go" },
  {
