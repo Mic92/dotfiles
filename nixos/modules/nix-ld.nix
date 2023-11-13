@@ -40,6 +40,8 @@
     systemd
     icu
     openssl
+    libunwind
+    libglvnd
     xorg.libX11
     xorg.libXScrnSaver
     xorg.libXcomposite
