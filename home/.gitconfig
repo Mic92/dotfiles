@@ -109,7 +109,7 @@
 [credential]
   helper = store
 # sucks with lazygit
-#[commit]
-#  gpgsign = true
+[commit]
+  gpgsign = true
 [commit]
 	verbose = true
