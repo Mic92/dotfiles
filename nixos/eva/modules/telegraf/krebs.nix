@@ -66,6 +66,7 @@
         tags.org = "krebs";
         interface = "tinc.retiolum";
         response_status_code = 200;
+        response_timeout = "60s";
       }
       {
         urls = [
