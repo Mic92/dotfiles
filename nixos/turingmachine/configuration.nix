@@ -38,7 +38,7 @@
     ../modules/mosh.nix
     ../modules/networkd.nix
     ../modules/tracing.nix
-    #./kde.nix
+    ../modules/kde.nix
     #../modules/samba-dl.nix
     #../modules/sway.nix
     ../modules/qtile.nix
@@ -65,8 +65,8 @@
   users.users.joerg.hashedPasswordFile = config.sops.secrets.turingmachine-joerg-password-hash.path;
 
   # https://community.frame.work/t/guide-linux-battery-life-tuning/6665
-  services.tlp.enable = true;
-  services.tlp.settings."PCIE_ASPM_ON_BAT" = "powersupersave";
+  #services.tlp.enable = true;
+  #services.tlp.settings."PCIE_ASPM_ON_BAT" = "powersupersave";
 
   hardware.keyboard.qmk.enable = true;
 

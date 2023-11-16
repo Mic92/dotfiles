@@ -1,4 +1,4 @@
-{
+{ config, lib, ... }: {
   powerManagement.powertop.enable = true;
   systemd.services.powertop.postStart = ''
     HIDDEVICES=$(ls /sys/bus/usb/drivers/usbhid | grep -oE '^[0-9]+-[0-9\.]+' | sort -u)
@@ -12,5 +12,5 @@
     Restart = "on-failure";
     RestartSec = "2s";
   };
-  systemd.services.tlp.after = [ "powertop.service" ];
+  systemd.services.tlp.after = lib.mkIf (config.services.tlp.enable) [ "powertop.service" ];
 }
