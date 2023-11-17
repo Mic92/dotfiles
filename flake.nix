@@ -88,7 +88,7 @@
 
     flake-utils.url = "github:numtide/flake-utils";
 
-    nixos-wiki.url = "github:Mic92/nixos-wiki-infra/drop-patches";
+    nixos-wiki.url = "github:Mic92/nixos-wiki-infra";
     nixos-wiki.inputs.nixpkgs.follows = "nixpkgs";
     nixos-wiki.inputs.flake-parts.follows = "flake-parts";
     nixos-wiki.inputs.treefmt-nix.follows = "treefmt-nix";

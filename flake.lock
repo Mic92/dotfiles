@@ -491,16 +491,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1700213415,
-        "narHash": "sha256-p5/jLH32X7qmmtA11qrfIM1cOI4l8S7uhnkCxPQ6XVY=",
+        "lastModified": 1700214721,
+        "narHash": "sha256-/sm7v3/Pz05oBqeEZC8UQheiyex/pY20SM+CXw5ySRk=",
         "owner": "Mic92",
         "repo": "nixos-wiki-infra",
-        "rev": "ba27f34841ff9c48d148a871df65f768ba7d97c4",
+        "rev": "6eadd359084ce9f73ad6d3d9365facddfcd4778a",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
-        "ref": "drop-patches",
         "repo": "nixos-wiki-infra",
         "type": "github"
       }
