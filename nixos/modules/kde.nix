@@ -7,5 +7,9 @@
     NIX_PROFILES = "${pkgs.lib.concatStringsSep " " (pkgs.lib.reverseList config.environment.profiles)}";
   };
 
-  environment.systemPackages = with pkgs; [ kmail kalendar ];
+  environment.systemPackages = with pkgs; [
+    kmail
+    kalendar
+    ferdium
+  ];
 }
