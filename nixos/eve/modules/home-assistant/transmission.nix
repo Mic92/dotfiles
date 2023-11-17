@@ -2,8 +2,8 @@
 , pkgs
 , ...
 }: {
-  services.home-assistant.customComponents = {
-    var = pkgs.stdenv.mkDerivation rec {
+  services.home-assistant.customComponents = [
+    (pkgs.stdenv.mkDerivation rec {
       pname = "home-assistant-variables";
       version = "0.15.0";
       src = pkgs.fetchFromGitHub {
@@ -16,8 +16,8 @@
       installPhase = ''
         cp -r custom_components/var $out
       '';
-    };
-  };
+    })
+  ];
   services.home-assistant.customCards = {
     "lovelace-multiline-text-input-card.js" = pkgs.stdenv.mkDerivation {
       name = "lovelace-multiline-text-input-card.js";
