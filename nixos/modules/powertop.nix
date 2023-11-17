@@ -12,5 +12,7 @@
     Restart = "on-failure";
     RestartSec = "2s";
   };
-  systemd.services.tlp.after = lib.mkIf (config.services.tlp.enable) [ "powertop.service" ];
+  systemd.services.tlp = lib.mkIf (config.services.tlp.enable) {
+    after = [ "powertop.service" ];
+  };
 }

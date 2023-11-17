@@ -1,6 +1,6 @@
 { pkgs, config, ... }: {
   services.xserver.desktopManager.plasma5.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
+  #services.xserver.displayManager.gdm.enable = true;
 
   # https://nixos.wiki/wiki/KDE#KMail_Renders_Blank_Messages
   environment.sessionVariables = {
