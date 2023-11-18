@@ -10,7 +10,7 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
-    nix-index-database.url = "github:nix-community/nix-index-database";
+    nix-index-database.url = "github:nix-community/nix-index-database/fix-imports";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
     nixos-generators = {
