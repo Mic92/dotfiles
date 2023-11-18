@@ -197,7 +197,7 @@ merge-after-ci() {
     # We fill it with commit subject and body seperated by newlines
     tmpdir=$(mktemp -d)
     trap 'rm -rf "$tmpdir"' EXIT
-    echo git log --reverse --pretty="format:%s%n%n%b%n%n" "$remoteName/$targetBranch..HEAD" > "$tmpdir/COMMIT_EDITMSG"
+    git log --reverse --pretty="format:%s%n%n%b%n%n" "$remoteName/$targetBranch..HEAD" > "$tmpdir/COMMIT_EDITMSG"
     ${EDITOR:-vim} "$tmpdir/COMMIT_EDITMSG"
     msg=$(<"$tmpdir/COMMIT_EDITMSG")
     firstLine=${msg%%$'\n'*}
