@@ -33,7 +33,7 @@ in
   services.postgresql.ensureUsers = [
     {
       name = "snappymail";
-      ensurePermissions."DATABASE snappymail" = "ALL PRIVILEGES";
+      ensureDBOwnership = true;
     }
   ];
 

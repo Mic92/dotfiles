@@ -32,7 +32,7 @@
   services.postgresql.ensureDatabases = [ "shiori" ];
   services.postgresql.ensureUsers = [{
     name = "shiori";
-    ensurePermissions."DATABASE shiori" = "ALL PRIVILEGES";
+    ensureDBOwnership = true;
   }];
   services.nginx.virtualHosts."shiori.thalheim.io" = {
     useACMEHost = "thalheim.io";

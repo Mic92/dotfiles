@@ -15,7 +15,7 @@
   services.postgresql.ensureUsers = [
     {
       name = "ejabberd";
-      ensurePermissions."DATABASE ejabberd" = "ALL PRIVILEGES";
+      ensureDBOwnership = true;
     }
   ];
 
