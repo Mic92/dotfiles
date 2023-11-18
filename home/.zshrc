@@ -195,10 +195,13 @@ merge-after-ci() {
   if [[ $(gh pr view --json state --template '{{.state}}' "$branch") != "OPEN" ]]; then
     # BUFFER is an internal variable used by edit-command-line
     # We fill it with commit subject and body seperated by newlines
-    BUFFER=$(git log --reverse --pretty="format:%s%n%n%b%n%n" "$remoteName/$targetBranch..HEAD")
-    edit-command-line
-    firstLine=${BUFFER%%$'\n'*}
-    rest=${BUFFER#*$'\n'}
+    tmpdir=$(mktemp -d)
+    trap 'rm -rf "$tmpdir"' EXIT
+    echo git log --reverse --pretty="format:%s%n%n%b%n%n" "$remoteName/$targetBranch..HEAD" > "$tmpdir/COMMIT_EDITMSG"
+    ${EDITOR:-vim} "$tmpdir/COMMIT_EDITMSG"
+    msg=$(<"$tmpdir/COMMIT_EDITMSG")
+    firstLine=${msg%%$'\n'*}
+    rest=${msg#*$'\n'}
     if [[ $firstLine == $rest ]]; then
       rest=""
     fi

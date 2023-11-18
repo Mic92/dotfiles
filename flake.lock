@@ -52,11 +52,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1700298704,
-        "narHash": "sha256-Wi2ef91SGdbBRhIsaQDyux2lMONWEGkZkixNz7YSNxI=",
+        "lastModified": 1700312163,
+        "narHash": "sha256-P505GQ4/28hbRHCDYikVqB9EPAac1Db5ElaGPwOdzr8=",
         "owner": "Mic92",
         "repo": "buildbot-nix",
-        "rev": "a7c54826a714e3f9b503a6651b4b66b0cc27b1f9",
+        "rev": "c8bbe1b333bb7a66c830c6c1fb567b9a60ff358f",
         "type": "github"
       },
       "original": {
@@ -383,15 +383,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1699760693,
-        "narHash": "sha256-u/gkNUHQR/q23voqE5J4xmEWQIAqR+g3lUnCtzn0k7Y=",
+        "lastModified": 1700309748,
+        "narHash": "sha256-ch00/e3exUkgLmK9Q4DEKdQ4VBvEZDBEpLUdEPmMKDs=",
         "owner": "nix-community",
         "repo": "nix-index-database",
-        "rev": "8aff4ca3dee60d1422489fe8d52c2f837b3ad113",
+        "rev": "b90d3d8af3ae6c545e4c615a3010a751ac11c88c",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
+        "ref": "fix-imports",
         "repo": "nix-index-database",
         "type": "github"
       }
