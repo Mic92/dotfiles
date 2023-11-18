@@ -11,5 +11,8 @@
     kmail
     kalendar
     ferdium
+    firefox
+    chromium
+    pavucontrol
   ];
 }
