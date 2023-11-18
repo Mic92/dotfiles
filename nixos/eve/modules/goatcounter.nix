@@ -40,7 +40,7 @@
   services.postgresql.ensureUsers = [
     {
       name = "goatcounter";
-      ensurePermissions."DATABASE goatcounter" = "ALL PRIVILEGES";
+      ensureDBOwnership = true;
     }
   ];
 
