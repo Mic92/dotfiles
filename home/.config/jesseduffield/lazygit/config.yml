@@ -3,7 +3,7 @@ update:
     method: never
 gui:
   showFileTree: true
-  showIcons: true
+  nerdFontsVersion: 3
 os:
   edit: 'nvim-open {{filename}}'
   editAtLine: 'nvim-open +{{line}} {{filename}}'
