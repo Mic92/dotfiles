@@ -6,7 +6,6 @@
     ./common.nix
     ./modules/atuin-autosync.nix
     ./modules/rust.nix
-    ./modules/heygpt.nix
     ./modules/debugging.nix
     ./modules/default-apps.nix
     ./modules/waybar.nix
@@ -52,6 +51,7 @@
     xdg-utils
     patool
     tio
+    heygpt
 
     (mpv.override {
       scripts = [ mpvScripts.mpris ];
