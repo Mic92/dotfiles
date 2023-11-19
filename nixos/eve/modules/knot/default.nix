@@ -255,11 +255,6 @@ in
           template = "acme";
         }
         {
-          domain = "_acme-challenge.influxdb.thalheim.io";
-          file = "${acmeChallenge "influxdb.thalheim.io"}";
-          template = "acme";
-        }
-        {
           domain = "_acme-challenge.lekwati.com";
           file = "${acmeChallenge "lekwati.com"}";
           template = "acme";

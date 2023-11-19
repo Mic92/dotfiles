@@ -243,11 +243,6 @@ in
         tags.org = "private";
         response_string_match = "Nextcloud";
       }
-      {
-        urls = [ "https://influxdb.thalheim.io:8086/ping" ];
-        tags.org = "private";
-        tags.host = "eve";
-      }
     ];
 
     dns_query = {

@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2023102400 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2023102500 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -47,7 +47,6 @@ alertmanager IN CNAME eva
 telegraf IN CNAME eva
 go-neb IN CNAME eva
 ;; needed because of acme challenge
-influxdb IN CNAME www
 anon IN CNAME www
 
 blog IN CNAME mic92.github.io.
@@ -55,7 +54,6 @@ blog IN CNAME mic92.github.io.
 _acme-challenge IN NS ns1.thalheim.io.
 _acme-challenge.imap IN NS ns1.thalheim.io.
 _acme-challenge.mail IN NS ns1.thalheim.io.
-_acme-challenge.influxdb IN NS ns1.thalheim.io.
 _acme-challenge.anon IN NS ns1.thalheim.io.
 _acme-challenge.dns IN NS ns1.thalheim.io.
 

@@ -31,7 +31,6 @@
     ./modules/grafana.nix
     ./modules/goatcounter.nix
     ./modules/home-assistant
-    ./modules/influxdb.nix
     ./modules/harmonia.nix
     ./modules/knot
     ./modules/navidrome.nix
