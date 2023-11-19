@@ -12,6 +12,7 @@ let
             type = "filesystem";
             format = "vfat";
             mountpoint = "/boot${idx}";
+            options = [ "nofail" ];
           };
         };
         zfs = {
@@ -38,8 +39,8 @@ in
     efiSupport = true;
     efiInstallAsRemovable = true;
     mirroredBoots = [
-      { path = "/boot0"; devices = [ "nodev" "nofail" ]; }
-      { path = "/boot1"; devices = [ "nodev" "nofail" ]; }
+      { path = "/boot0"; devices = [ "nodev" ]; }
+      { path = "/boot1"; devices = [ "nodev" ]; }
     ];
   };
 
