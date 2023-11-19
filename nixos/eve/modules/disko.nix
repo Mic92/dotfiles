@@ -12,7 +12,7 @@ let
             type = "filesystem";
             format = "vfat";
             mountpoint = "/boot${idx}";
-            options = [ "nofail" ];
+            mountOptions = [ "nofail" ];
           };
         };
         zfs = {
