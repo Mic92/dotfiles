@@ -74,9 +74,9 @@ in
       };
       postCommands = ''
         ls -la
-        ip a
         while ! ip link show dev eth0; do
           echo "wait for eth0 to be available"
+          ip a
           sleep 1
         done
         ip link set dev eth0 up
