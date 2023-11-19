@@ -73,6 +73,12 @@ in
         ];
       };
       postCommands = ''
+        ls -la
+        ip a
+        while ! ip link show dev eth0; do
+          echo "wait for eth0 to be available"
+          sleep 1
+        done
         ip link set dev eth0 up
 
         ip addr add ${cfg.ipv4.address}/${cfg.ipv4.cidr} dev eth0
