@@ -124,69 +124,30 @@ def generate_password(c: Any, user: str = "root") -> None:
     print(f"{user}-password-hash: {hash}")
 
 
-#  decrypt = nixpkgs.writeShellScriptBin "decrypt" ''
-#    set -euox pipefail
-#
-#    export PATH=${lib.makeBinPath (with nixpkgs; [ coreutils sops openssh nix ])}:$PATH
-#    HOST=${hostname}
-#    temp=$(mktemp -d)
-#    trap 'rm -rf $temp' EXIT
-#    sops --extract '["cryptsetup_key"]' -d secrets.yaml > $temp/secret.key
-#
-#    while ! ping -4 -W 1 -c 1 $HOST; do
-#      sleep 1
-#    done
-#    while ! timeout 4 ssh -p 2222 "root@$HOST" true; do
-#      sleep 1
-#    done
-#
-#    cat $temp/secret.key | ssh -p 2222 "root@$HOST" "cat > /crypt-ramfs/passphrase"
-#  '';
-#
-#  reboot = nixpkgs.writeShellScriptBin "reboot" ''
-#    ssh "root@${hostname}" reboot
-#    echo "waiting for ${hostname} to go down"
-#    while ping -4 -W 1 -c 1 "${hostname}"; do
-#      sleep 1
-#    done
-#    echo "waiting for ${hostname} to come back up"
-#    pw=$(rbw get 'zfs encryption')
-#    ssh root@eve.i -p 2222 "zpool import -a; echo "${pw}" | zfs load-key -a; echo "${pw}" | zfs load-key -a; touch /root/decrypted; sleep 9999"
-#  '';
-
-
 @task
-def reboot_and_decrypt(c: Any, hosts: str = "") -> None:
+def decrypt_eve(c: Any) -> None:
     """
     Reboot hosts and decrypt secrets
     """
-    eve = DeployHost("eve.i", user="root")
-    eve_initrd = DeployHost("eve.i", user="root", port=2222)
-    eve.run("reboot")
-    print("waiting for eve to go down")
-    while eve.run("ping -4 -W 1 -c 1 eve.i", check=False).returncode == 0:
-        pass
-    print("waiting for eve to come back up")
-    while eve.run("ping -4 -W 1 -c 1 eve.i", check=False).returncode != 0:
-        pass
-    while True:
-        try:
-            eve_initrd.run("true", check=True, timeout=4)
-            break
-        except Exception as e:  # timeout
-            print(e)
-    while eve_initrd.run("true", check=False, timeout=4).returncode != 0:
-        time.sleep(1)
+    eve_initrd = DeployHost("95.217.199.121", user="root", port=2222)
     pw = subprocess.run(
         ["rbw", "get", "zfs encryption"],
         text=True,
         check=True,
         stdout=subprocess.PIPE,
     ).stdout.strip()
-    eve_initrd.run("zpool import -a")
-    eve_initrd.run(f'echo "{pw}" | zfs load-key -a')
-    eve_initrd.run(f'echo "{pw}" | zfs load-key -a')
-    eve_initrd.run("touch /root/decrypted")
+    eve_initrd.run(f'echo "{pw}" | systemd-tty-ask-password-agent')
+
+
+@task
+def reboot_and_decrypt_eve(c: Any, hosts: str = "") -> None:
+    """
+    Reboot hosts and decrypt secrets
+    """
+    eve = DeployHost("95.217.199.121", user="root")
+    eve.run("reboot &")
+    wait_for_reboot(eve)
+    decrypt_eve(c)
 
 
 def filter_hosts(host_spec: str, hosts: dict[str, DeployHost]) -> List[DeployHost]:
@@ -332,37 +293,31 @@ def install_machine(c: Any, flake_attr: str, hostname: str) -> None:
         )
 
 
-def wait_for_port(host: str, port: int, shutdown: bool = False) -> None:
-    import socket
-
+def wait_for_host(h: DeployHost, shutdown: bool = False) -> None:
     while True:
-        try:
-            with socket.create_connection((host, port), timeout=1):
-                if shutdown:
-                    time.sleep(1)
-                    sys.stdout.write(".")
-                    sys.stdout.flush()
-                else:
-                    break
-        except OSError:
-            if shutdown:
+        res = subprocess.run(
+            ["ping", "-q", "-c", "1", "-w", "2", h.host], stdout=subprocess.DEVNULL
+        )
+        if shutdown:
+            if res.returncode == 1:
                 break
-            else:
-                time.sleep(0.01)
-                sys.stdout.write(".")
-                sys.stdout.flush()
+        else:
+            if res.returncode == 0:
+                break
+        time.sleep(1)
+        sys.stdout.write(".")
+        sys.stdout.flush()
 
 
 def wait_for_reboot(h: DeployHost) -> None:
     print(f"Wait for {h.host} to shutdown", end="")
     sys.stdout.flush()
-    port = h.port or 22
-    wait_for_port(h.host, port, shutdown=True)
+    wait_for_host(h, shutdown=True)
     print("")
 
     print(f"Wait for {h.host} to start", end="")
     sys.stdout.flush()
-    wait_for_port(h.host, port)
+    wait_for_host(h)
     print("")
 
 
@@ -403,10 +358,61 @@ def reboot(c: Any, hosts: str) -> None:
         wait_for_reboot(h)
 
 
-# curl -L https://github.com/nix-community/nixos-images/releases/download/nixos-unstable/nixos-kexec-installer-x86_64-linux.tar.gz | tar -xzf- -C /root
-# /root/kexec/run
-# zpool import -a; zfs load-key -a; mount -t zfs zroot/root/nixos /mnt; mount /dev/nvme
-# nixos-install --flake github:mic92/dotfiles#eve
+@task
+def kexec_installer(c: Any, hosts: str) -> None:
+    """
+    Kexec into nixos installer, i.e. inv kexec-installer --hosts root@95.217.199.121
+    """
+
+    def do_kexec(h: DeployHost) -> None:
+        h.run(
+            "curl -L https://github.com/nix-community/nixos-images/releases/download/nixos-unstable/nixos-kexec-installer-noninteractive-x86_64-linux.tar.gz | tar -xzf- -C /root"
+        )
+        h.run("/root/kexec/run")
+        wait_for_reboot(h)
+
+    g = parse_hosts(hosts, host_key_check=HostKeyCheck.NONE)
+    g.run_function(do_kexec)
+
+
+@task
+def disko_mount_from_recovery(c: Any, host: str, flake: str) -> None:
+    """
+    Mount the system disk from a recovery system, i.e. inv disko-mount-from-recovery --host root@eve.i --flake github:mic92/dotfiles#eve
+    """
+    h = DeployHost(host)
+    h.run(
+        f"""nix --extra-experimental-features "nix-command flakes" shell nixpkgs#git -c nix run --extra-experimental-features "nix-command flakes" github:nix-community/disko -- --flake {flake} --mode mount"""
+    )
+
+
+@task
+def boot_eve_into_recovery(c: Any) -> None:
+    """
+    Mount the system disk from a recovery system, i.e. inv disko-mount-from-recovery --host root@eve.i --flake github:mic92/dotfiles#eve
+    """
+    eve_hostname = "root@95.217.199.121"
+    host = parse_hosts(eve_hostname).hosts[0]
+    kexec_installer(c, hosts=eve_hostname)
+    pw = subprocess.run(
+        ["rbw", "get", "zfs encryption"],
+        text=True,
+        check=True,
+        stdout=subprocess.PIPE,
+    ).stdout.strip()
+    # FIXME: disko does not support interactive zfs load-key:
+    host.run(f'zpool import -a; echo "{pw}" | zfs load-key -a')
+    disko_mount_from_recovery(c, host=eve_hostname, flake="github:mic92/dotfiles#eve")
+
+
+@task
+def unmount_from_recovery(c: Any, hosts: str, flake: str) -> None:
+    """
+    Unmount the system disk from a recovery system, i.e. inv unmount-from-recovery --host root@eve.i
+    """
+    g = DeployGroup([DeployHost(h) for h in hosts.split(",")])
+    g.run("umount -R /mnt")
+    g.run("zpool export -a")
 
 
 @task

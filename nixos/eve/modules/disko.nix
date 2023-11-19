@@ -27,13 +27,6 @@ let
   };
 in
 {
-  boot.initrd.postDeviceCommands = ''
-    while ! test -f /tmp/decrypted; do
-      echo "wait for zfs to be decrypted"
-      sleep 1
-    done
-  '';
-
   boot.loader.grub = {
     enable = true;
     efiSupport = true;
