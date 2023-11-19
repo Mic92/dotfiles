@@ -9,6 +9,7 @@
       "ro"
       "rsize=16777216"
       "cache=loose"
+      "x-systemd.after=network.target"
     ];
   };
 
@@ -22,6 +23,7 @@
       "ro"
       "rsize=16777216"
       "cache=loose"
+      "x-systemd.after=network.target"
     ];
   };
 }
