@@ -74,20 +74,20 @@ in
       };
       postCommands = ''
         ls -la
-        while ! ip link show dev eth0; do
-          echo "wait for eth0 to be available"
+        while ! ip link show dev enp35s0; do
+          echo "wait for enp35s0 to be available"
           ip a
           sleep 1
         done
-        ip link set dev eth0 up
+        ip link set dev enp35s0 up
 
-        ip addr add ${cfg.ipv4.address}/${cfg.ipv4.cidr} dev eth0
-        ip route add ${cfg.ipv4.gateway} dev eth0
-        ip route add default via ${cfg.ipv4.gateway} dev eth0
+        ip addr add ${cfg.ipv4.address}/${cfg.ipv4.cidr} dev enp35s0
+        ip route add ${cfg.ipv4.gateway} dev enp35s0
+        ip route add default via ${cfg.ipv4.gateway} dev enp35s0
 
-        ip -6 addr add ${cfg.ipv6.address}/${cfg.ipv6.cidr} dev eth0
-        ip -6 route add ${cfg.ipv6.gateway} dev eth0
-        ip -6 route add default via ${cfg.ipv6.gateway} dev eth0
+        ip -6 addr add ${cfg.ipv6.address}/${cfg.ipv6.cidr} dev enp35s0
+        ip -6 route add ${cfg.ipv6.gateway} dev enp35s0
+        ip -6 route add default via ${cfg.ipv6.gateway} dev enp35s0
       '';
     };
     boot.initrd.kernelModules = [ "igb" ];
