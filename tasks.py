@@ -136,6 +136,13 @@ def decrypt_eve(c: Any) -> None:
         check=True,
         stdout=subprocess.PIPE,
     ).stdout.strip()
+    # ssh may timeout, so we try multiple times
+    for _ in range(3):
+        try:
+            eve_initrd.run("true")
+        except subprocess.CalledProcessError:
+            pass
+
     eve_initrd.run(f'echo "{pw}" | systemd-tty-ask-password-agent')
 
 
