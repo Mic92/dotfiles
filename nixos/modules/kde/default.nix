@@ -12,7 +12,11 @@
     kalendar
     ferdium
     firefox
-    chromium
+    #chromium
     pavucontrol
+    bottles
+
+    wayland-utils # wl-copy / wl-paste
+    (pkgs.callPackage ./audio-chooser.nix { })
   ];
 }

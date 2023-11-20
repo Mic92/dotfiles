@@ -38,7 +38,7 @@
     ../modules/mosh.nix
     ../modules/networkd.nix
     ../modules/tracing.nix
-    ../modules/kde.nix
+    ../modules/kde
     #../modules/samba-dl.nix
     #../modules/sway.nix
     #../modules/qtile.nix
@@ -213,7 +213,6 @@
   system.stateVersion = "23.11";
   boot.initrd.systemd.enable = true;
 
-  programs.gamemode.enable = true;
   security.sudo.wheelNeedsPassword = lib.mkForce true; # fprint
 
   services.ksmbd.enable = true;
