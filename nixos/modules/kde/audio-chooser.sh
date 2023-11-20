@@ -1,8 +1,16 @@
-#!/usr/bin/env bash
+#!/usr/bin/nix-shell
+#!nix-shell -i bash -p kdialog pamixer pulseaudio
+#shellcheck shell=bash
 set -exuo pipefail
 
 choices=("headphones" "speakers" "headphones (output-only)" "earphones")
-selected=$(for c in "${choices[@]}"; do echo "$c"; done | rofi -dmenu -p "Select Audio Setup: ")
+args=()
+for c in "${choices[@]}"; do
+  args+=("$c")
+  args+=("$c")
+done
+
+selected=$(kdialog --menu "Select Audio Setup" "${args[@]}")
 
 echo You Picked: " $selected"
 

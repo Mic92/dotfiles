@@ -9,7 +9,6 @@ let
     vale
     terraform-ls
     nodePackages.pyright
-    sumneko-lua-language-server
 
     # based on ./suggested-pkgs.json
     gopls
@@ -45,9 +44,9 @@ let
     ginkgo
     richgo
     govulncheck
-
     # does not build yet on aarch64
-  ] ++ lib.optional (pkgs.stdenv.hostPlatform.system == "x86_64-linux") pkgs.deno;
+  ] ++ lib.optional (pkgs.stdenv.hostPlatform.system == "x86_64-linux") pkgs.deno
+  ++ lib.optional (!pkgs.stdenv.hostPlatform.isDarwin) sumneko-lua-language-server;
 in
 stdenv.mkDerivation {
   name = "astro-nvim-config";

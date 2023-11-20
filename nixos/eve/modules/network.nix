@@ -2,42 +2,39 @@
 , lib
 , ...
 }:
-with lib; let
-  cfg = config.networking.eve;
-in
 {
   options = {
-    networking.eve.ipv4.address = mkOption {
-      type = types.str;
+    networking.eve.ipv4.address = lib.mkOption {
+      type = lib.types.str;
       default = "95.217.199.121";
 
     };
-    networking.eve.ipv4.cidr = mkOption {
-      type = types.str;
+    networking.eve.ipv4.cidr = lib.mkOption {
+      type = lib.types.str;
       default = "26";
     };
 
-    networking.eve.ipv4.gateway = mkOption {
-      type = types.str;
+    networking.eve.ipv4.gateway = lib.mkOption {
+      type = lib.types.str;
       default = "95.217.199.65";
     };
 
-    networking.eve.ipv6.address = mkOption {
-      type = types.str;
+    networking.eve.ipv6.address = lib.mkOption {
+      type = lib.types.str;
       default = "2a01:4f9:4a:42e8::1";
     };
 
-    networking.eve.ipv6.subnet = mkOption {
-      type = types.str;
+    networking.eve.ipv6.subnet = lib.mkOption {
+      type = lib.types.str;
       default = "2a01:4f9:4a:42e8::/64";
     };
 
-    networking.eve.ipv6.cidr = mkOption {
-      type = types.str;
+    networking.eve.ipv6.cidr = lib.mkOption {
+      type = lib.types.str;
       default = "64";
     };
-    networking.eve.ipv6.gateway = mkOption {
-      type = types.str;
+    networking.eve.ipv6.gateway = lib.mkOption {
+      type = lib.types.str;
       default = "fe80::1";
     };
   };

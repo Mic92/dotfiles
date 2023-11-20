@@ -12,7 +12,7 @@
   services.tt-rss = {
     enable = true;
     virtualHost = "rss.devkid.net";
-    selfUrlPath = "https://";
+    selfUrlPath = "https://rss.devkid.net";
 
     pluginPackages = [
       pkgs.tt-rss-plugin-auth-ldap
@@ -52,14 +52,15 @@
     '';
   };
 
+  # NOTE: No configuration is done if not using virtual host
   services.nginx = {
     virtualHosts."rss.thalheim.io" = {
       useACMEHost = "thalheim.io";
       forceSSL = true;
-      globalRedirect = "rss.devkid.net";
+      globalRedirect = config.services.tt-rss.virtualHost;
     };
 
-    virtualHosts."rss.devkid.net" = {
+    virtualHosts.${config.services.tt-rss.virtualHost} = {
       useACMEHost = "thalheim.io";
       forceSSL = true;
     };
