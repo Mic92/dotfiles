@@ -1,5 +1,6 @@
 #!/usr/bin/nix-shell
 #!nix-shell -i bash -p kdialog pamixer pulseaudio
+#shellcheck shell=bash
 set -exuo pipefail
 
 choices=("headphones" "speakers" "headphones (output-only)" "earphones")
