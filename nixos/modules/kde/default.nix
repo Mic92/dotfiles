@@ -21,7 +21,7 @@
     pavucontrol
     bottles
 
-    wayland-utils # wl-copy / wl-paste
+    wl-clipboard # wl-copy / wl-paste
     (pkgs.callPackage ./audio-chooser.nix { })
   ];
 }
