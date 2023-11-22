@@ -30,10 +30,22 @@
         program = "${pkgs.writeShellScriptBin "hm" ''
         set -x
         export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.findutils pkgs.nix pkgs.jq pkgs.unixtools.hostname]}
-        declare -A profiles=(["turingmachine"]="desktop" ["eddie"]="desktop" ["web01"]="mic92" ["bld2"]="mic92" ["eve"]="eve" ["bernie"]="bernie" ["mac01.numtide.com"]="mac-hetzner")
+        declare -A profiles=(
+          ["turingmachine"]="desktop"
+          ["bernie-joerg"]="desktop"
+          ["bernie"]="bernie"
+          ["web01"]="mic92"
+          ["bld2"]="mic92"
+          ["eve"]="eve"
+          ["mac01.numtide.com"]="mac-hetzner"
+        )
         profile="common"
-        if [[ -n ''${profiles[$(hostname)]:-} ]]; then
-          profile=''${profiles[$(hostname)]}
+        user=$(id -un)
+        host=$(hostname)
+        if [[ -n ''${profiles["$host-$user"]} ]]; then
+          profile=''${profiles["$host-$user"]};
+        elif [[ -n ''${profiles[$host]:-} ]]; then
+          profile=''${profiles[$host]}
         fi
         if [[ "''${1:-}" == profile ]]; then
           echo $profile
