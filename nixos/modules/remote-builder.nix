@@ -3,7 +3,7 @@
 
   nix.buildMachines = [
     {
-      hostName = "vislor.dos.cit.tum.de";
+      hostName = "vislor";
       sshUser = "nix";
       protocol = "ssh-ng";
       sshKey = config.sops.secrets.ssh-remote-builder.path;
@@ -16,7 +16,7 @@
       ];
     }
     {
-      hostName = "yasmin.dse.in.tum.de";
+      hostName = "yasmin";
       sshUser = "nix";
       protocol = "ssh-ng";
       sshKey = config.sops.secrets.ssh-remote-builder.path;
@@ -52,4 +52,21 @@
     #  ];
     #}
   ];
+
+  programs.ssh.extraConfig = ''
+    Host vislor
+      User nix
+      ProxyJump login-tum
+      HostName vislor.dos.cit.tum.de
+      IdentityFile ${config.sops.secrets.ssh-remote-builder.path}
+    Host yasmin
+      User nix
+      ProxyJump login-tum
+      HostName yasmin.dos.cit.tum.de
+      IdentityFile ${config.sops.secrets.ssh-remote-builder.path}
+    Host login-tum
+      User tunnel
+      HostName login.dse.in.tum.de
+      IdentityFile ${config.sops.secrets.ssh-remote-builder.path}
+  '';
 }
