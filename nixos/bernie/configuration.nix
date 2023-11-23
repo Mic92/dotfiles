@@ -15,11 +15,13 @@
     ../modules/powertop.nix
     ../modules/promtail.nix
     ../modules/users.nix
+    ../modules/remote-builder.nix
     ../modules/tracing.nix
     ../modules/pipewire.nix
   ];
 
   boot.plymouth.enable = true;
+  services.fwupd.enable = true;
   hardware.keyboard.qmk.enable = true;
 
   boot.initrd.systemd.enable = true;
