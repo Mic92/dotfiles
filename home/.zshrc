@@ -886,6 +886,9 @@ alias tg=terragrunt
 
 if [[ -n "${commands[fzf-share]}" ]]; then
   FZF_CTRL_R_OPTS=--reverse
+  if [[ -n "${commands[fd]}" ]]; then
+    export FZF_DEFAULT_COMMAND='fd --type f'
+  fi
   source "$(fzf-share)/key-bindings.zsh"
 fi
 if [[ -f ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]]; then
