@@ -11,7 +11,6 @@
     ./modules/caddy.nix
     ./modules/hass-agent.nix
     ./modules/nfs.nix
-    ./modules/remote-builder.nix
     #./modules/minidlna.nix
     ./modules/networkmanager.nix
     ./modules/packages.nix
@@ -45,6 +44,7 @@
     #../modules/river
     #../modules/hyprland.nix
     #../modules/i3.nix
+    ../modules/remote-builder.nix
     ../modules/sshd/tor.nix
     #../modules/gnome.nix
     #../modules/yubikey.nix
