@@ -10,6 +10,9 @@
     noReplyAddress = "nixos-wiki-no-reply@thalheim.io";
   };
 
+  sops.secrets.nixos-wiki.owner = config.services.phpfpm.pools.mediawiki.user;
+  sops.secrets.nixos-wiki-github-client-secret.owner = config.services.phpfpm.pools.mediawiki.user;
+
   services.nginx.virtualHosts.${config.services.mediawiki.nginx.hostName} = {
     enableACME = lib.mkForce false;
     useACMEHost = "thalheim.io";
