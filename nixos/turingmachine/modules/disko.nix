@@ -17,6 +17,10 @@
                 mountOptions = [ "nofail" ];
               };
             };
+            windows = {
+              size = "250G";
+              type = "0700";
+            };
             zfs = {
               size = "100%";
               content = {
