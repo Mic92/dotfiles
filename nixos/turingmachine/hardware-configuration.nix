@@ -63,30 +63,6 @@
   # for pactl
   environment.systemPackages = with pkgs; [ pulseaudio ];
 
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-label/SYSTEM";
-    fsType = "vfat";
-    options = [ "nofail" ];
-  };
-
-  fileSystems."/" = {
-    device = "zroot/root/nixos";
-    fsType = "zfs";
-    options = [ "zfsutil" ];
-  };
-
-  fileSystems."/home" = {
-    device = "zroot/root/home";
-    fsType = "zfs";
-    options = [ "nofail" "zfsutil" ];
-  };
-
-  fileSystems."/tmp" = {
-    device = "zroot/root/tmp";
-    fsType = "zfs";
-    options = [ "nofail" "zfsutil" ];
-  };
-
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";

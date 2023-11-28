@@ -6,56 +6,39 @@
   imports = [
     ./hardware-configuration.nix
 
-    ../modules/zerotier.nix
-    #../modules/libvirt.nix
     ./modules/caddy.nix
-    ./modules/hass-agent.nix
-    ./modules/nfs.nix
-    #./modules/minidlna.nix
-    ./modules/networkmanager.nix
-    ./modules/packages.nix
-    #./modules/gnome-pim.nix
     ./modules/cntr.nix
+    ./modules/disko.nix
+    ./modules/hass-agent.nix
+    ./modules/networkmanager.nix
+    ./modules/nfs.nix
+    ./modules/packages.nix
     ./modules/tum-vpn.nix
-    #./modules/minidlna.nix
 
-    ../modules/suspend-on-low-power.nix
     ../modules/borgbackup.nix
-    ../modules/nncp.nix
-    ../modules/touchpad-hack
     ../modules/i18n.nix
-    ../modules/make-linux-fast.nix
-    #../modules/podman.nix
-    #../modules/tpm2.nix
-    ../modules/pipewire.nix
     ../modules/ip-update.nix
-    #../modules/iwd.nix
-    #../modules/dnsmasq.nix
-    ../modules/promtail.nix
-    ../modules/powertop.nix
-    #../modules/macos-kvm.nix
+    ../modules/kde
+    ../modules/keyd.nix
+    ../modules/ksmbd.nix
+    ../modules/lanzaboote.nix
+    ../modules/make-linux-fast.nix
     ../modules/mosh.nix
     ../modules/networkd.nix
-    ../modules/tracing.nix
-    ../modules/kde
-    #../modules/samba-dl.nix
-    #../modules/sway.nix
-    #../modules/qtile.nix
-    #../modules/river
-    #../modules/hyprland.nix
-    #../modules/i3.nix
+    ../modules/nix-ld.nix
+    ../modules/nncp.nix
+    ../modules/no-hz.nix
+    ../modules/pipewire.nix
+    ../modules/powertop.nix
+    ../modules/promtail.nix
     ../modules/remote-builder.nix
     ../modules/sshd/tor.nix
-    #../modules/gnome.nix
-    #../modules/yubikey.nix
+    ../modules/suspend-on-low-power.nix
+    ../modules/touchpad-hack
+    ../modules/tracing.nix
     ../modules/users.nix
-    ../modules/nix-ld.nix
-    ../modules/keyd.nix
-    ../modules/lanzaboote.nix
-    ../modules/no-hz.nix
-    ../modules/ksmbd.nix
+    ../modules/zerotier.nix
 
-    #../modules/k3s/server.nix
   ];
 
   services.pcscd.enable = true;
