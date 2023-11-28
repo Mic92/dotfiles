@@ -48,6 +48,8 @@ in
         mode = "mirror";
         rootFsOptions = {
           compression = "lz4";
+          acltype = "posixacl";
+          xattr = "sa";
           "com.sun:auto-snapshot" = "true";
         };
         datasets = {
@@ -70,6 +72,14 @@ in
             type = "zfs_fs";
             options.mountpoint = "/home";
             mountpoint = "/home";
+          };
+          "root/tmp" = {
+            type = "zfs_fs";
+            mountpoint = "/tmp";
+            options = {
+              mountpoint = "/tmp";
+              sync = "disabled";
+            };
           };
         };
       };

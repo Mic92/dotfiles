@@ -31,9 +31,10 @@
     zpool = {
       zroot = {
         type = "zpool";
-        mode = "mirror";
         rootFsOptions = {
           compression = "lz4";
+          acltype = "posixacl";
+          xattr = "sa";
           "com.sun:auto-snapshot" = "true";
         };
         options.ashift = "12";
@@ -60,8 +61,11 @@
           };
           "root/tmp" = {
             type = "zfs_fs";
-            options.mountpoint = "/tmp";
             mountpoint = "/tmp";
+            options = {
+              mountpoint = "/tmp";
+              sync = "disabled";
+            };
           };
         };
       };
