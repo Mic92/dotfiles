@@ -3,7 +3,7 @@
 , ...
 }:
 let
-  external = "dock0";
+  external = "wlp0s20f3";
 in
 {
   systemd.network.netdevs.internal.netdevConfig = {

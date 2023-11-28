@@ -60,7 +60,7 @@ in
         imports = [
           ./turingmachine/configuration.nix
           defaultModule
-          inputs.nixos-hardware.nixosModules.framework-11th-gen-intel
+          inputs.nixos-hardware.nixosModules.framework-13th-gen-intel
           inputs.nix-index-database.nixosModules.nix-index
           inputs.disko.nixosModules.disko
           { programs.nix-index-database.comma.enable = true; }
