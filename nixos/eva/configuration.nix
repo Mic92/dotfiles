@@ -6,10 +6,11 @@
   programs.vim.defaultEditor = true;
 
   imports = [
+    ./modules/disko.nix
     ./modules/hardware-configuration.nix
-    ./modules/prometheus
     ./modules/loki.nix
     ./modules/nginx.nix
+    ./modules/prometheus
     ./modules/telegraf
 
     ../modules/sshd
