@@ -36,6 +36,7 @@
       zroot = {
         type = "zpool";
         rootFsOptions = {
+          mountpoint = "none";
           compression = "lz4";
           acltype = "posixacl";
           xattr = "sa";
