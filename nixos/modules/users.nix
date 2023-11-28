@@ -20,6 +20,8 @@ in
   };
 
   users.users.root.hashedPasswordFile = config.sops.secrets."${config.clanCore.machineName}-root-password-hash".path;
+  sops.secrets."${config.clanCore.machineName}-root-password-hash".neededForUsers = true;
+
   boot.initrd.network.ssh.authorizedKeys = keys;
 
   security.sudo.wheelNeedsPassword = false;
