@@ -81,6 +81,9 @@
         "nixpkgs": [
           "nixpkgs"
         ],
+        "nixpkgs-for-deal": [
+          "nixpkgs"
+        ],
         "sops-nix": [
           "sops-nix"
         ],
@@ -89,15 +92,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1698421348,
-        "narHash": "sha256-4Ub5M7a7j1G+gc10FSEuiljAnipwwFxuCVinXgTqBsw=",
-        "rev": "cc96fcf91668485250b30f3c030ec3adaac28864",
-        "revCount": 1072,
+        "lastModified": 1701043551,
+        "narHash": "sha256-EBh/IvhRkjAAgJj4sP7r8dPun6i5fQQTZFHeg/qaTLg=",
+        "ref": "refs/heads/main",
+        "rev": "f7422e2a35d03904a4017c2713185920ccb5f0c8",
+        "revCount": 1400,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
       "original": {
-        "rev": "cc96fcf91668485250b30f3c030ec3adaac28864",
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       }

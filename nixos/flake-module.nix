@@ -33,6 +33,7 @@ let
 in
 {
   flake = clan-core.lib.buildClan {
+    clanName = "mic92";
     directory = self;
     specialArgs = {
       self = {
