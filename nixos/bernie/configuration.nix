@@ -88,6 +88,8 @@
     wl-clipboard
     poppler_utils
     focuswriter
+    spicy
+    virt-viewer
   ];
   fonts.enableDefaultPackages = true;
 
