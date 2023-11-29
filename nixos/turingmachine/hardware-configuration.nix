@@ -61,9 +61,10 @@
   };
 
   # for pactl
-  environment.systemPackages = with pkgs; [ pulseaudio ];
+  environment.systemPackages = [ pkgs.pulseaudio ];
 
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 }
