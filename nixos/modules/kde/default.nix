@@ -8,10 +8,6 @@
     NIX_PROFILES = "${pkgs.lib.concatStringsSep " " (pkgs.lib.reverseList config.environment.profiles)}";
   };
 
-  # I see weird power-throttling when this is enabled?
-  # power-profiles-daemon should already be doing this.
-  services.thermald.enable = false;
-
   environment.systemPackages = with pkgs; [
     kmail
     kalendar

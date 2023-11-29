@@ -43,6 +43,8 @@
   #services.fwupd.extraRemotes = [ "lvfs-testing" ];
   #services.fwupd.uefiCapsuleSettings.DisableCapsuleUpdateOnDisk = true;
 
+  services.thermald.enable = true;
+
   # framework
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "thunderbolt" ];
   boot.kernelModules = [ "kvm-intel" ];
