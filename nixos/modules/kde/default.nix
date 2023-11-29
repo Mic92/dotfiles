@@ -17,7 +17,7 @@
     kalendar
     ferdium
     firefox
-    #chromium
+    chromium
     pavucontrol
     bottles
 
