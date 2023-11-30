@@ -39,7 +39,7 @@
   #  options startup.nsh
   #'';
 
-  #services.fwupd.enable = true;
+  services.fwupd.enable = true;
   #services.fwupd.extraRemotes = [ "lvfs-testing" ];
   #services.fwupd.uefiCapsuleSettings.DisableCapsuleUpdateOnDisk = true;
 
