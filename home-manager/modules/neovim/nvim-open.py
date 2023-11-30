@@ -3,6 +3,7 @@
 import hashlib
 import os
 import socket
+import subprocess
 import sys
 from pathlib import Path
 
@@ -33,6 +34,17 @@ def find_project_root(initial_path: Path) -> Path:
     return initial_path
 
 
+open_directly_files = {
+    "COMMIT_EDITMSG",
+    "MERGE_MSG",
+    "TAG_EDITMSG",
+    "NOTES_EDITMSG",
+    "PULLREQ_EDITMSG",
+    "SQUASH_MSG",
+    "git-rebase-todo",
+}
+
+
 def main() -> None:
     line = "0"
     project_root = Path(os.getcwd())
@@ -49,6 +61,8 @@ def main() -> None:
             project_root = find_project_root(path.parent.resolve())
         else:
             project_root = path.parent.resolve()
+        if path.name in open_directly_files:
+            os.execlp("nvim", "nvim", str(path))
 
     sock_hash = hashlib.md5(str(project_root).encode("utf-8")).hexdigest()
     sock = Path.home().joinpath(".data/nvim/").joinpath(f"sock-{sock_hash}")
