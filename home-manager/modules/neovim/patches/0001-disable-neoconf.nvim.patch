@@ -1,0 +1,69 @@
+From d016bd83ac699899012904bea8b01c04ece21ca7 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Fri, 1 Dec 2023 11:02:01 +0100
+Subject: [PATCH] disable neoconf.nvim
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+throws an error message
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ lua/plugins/lsp.lua | 40 ++++++++++++++++++++--------------------
+ 1 file changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/lua/plugins/lsp.lua b/lua/plugins/lsp.lua
+index e117709..7c825f9 100644
+--- a/lua/plugins/lsp.lua
++++ b/lua/plugins/lsp.lua
+@@ -17,26 +17,26 @@ return {
+   {
+     "neovim/nvim-lspconfig",
+     dependencies = {
+-      {
+-        "folke/neoconf.nvim",
+-        opts = function()
+-          local global_settings, file_found
+-          local _, depth = vim.fn.stdpath("config"):gsub("/", "")
+-          for _, dir in ipairs(astronvim.supported_configs) do
+-            dir = dir .. "/lua/user"
+-            if vim.fn.isdirectory(dir) == 1 then
+-              local path = dir .. "/neoconf.json"
+-              if vim.fn.filereadable(path) == 1 then
+-                file_found = true
+-                global_settings = path
+-              elseif not file_found then
+-                global_settings = path
+-              end
+-            end
+-          end
+-          return { global_settings = global_settings and string.rep("../", depth):sub(1, -2) .. global_settings }
+-        end,
+-      },
++      --{
++      --  "folke/neoconf.nvim",
++      --  opts = function()
++      --    local global_settings, file_found
++      --    local _, depth = vim.fn.stdpath("config"):gsub("/", "")
++      --    for _, dir in ipairs(astronvim.supported_configs) do
++      --      dir = dir .. "/lua/user"
++      --      if vim.fn.isdirectory(dir) == 1 then
++      --        local path = dir .. "/neoconf.json"
++      --        if vim.fn.filereadable(path) == 1 then
++      --          file_found = true
++      --          global_settings = path
++      --        elseif not file_found then
++      --          global_settings = path
++      --        end
++      --      end
++      --    end
++      --    return { global_settings = global_settings and string.rep("../", depth):sub(1, -2) .. global_settings }
++      --  end,
++      --},
+       {
+         "williamboman/mason-lspconfig.nvim",
+         cmd = { "LspInstall", "LspUninstall" },
+-- 
+2.42.0
+

@@ -53,10 +53,13 @@ stdenv.mkDerivation {
   phases = "installPhase";
   installPhase = ''
     mkdir -p $out/parser
-    ln -s ${inputs.astro-nvim}/* $out/
-    rm $out/lua
-    mkdir -p $out/lua
-    ln -s ${inputs.astro-nvim}/lua/* $out/lua
+    cp -r --reflink=auto ${inputs.astro-nvim}/* $out/
+
+    pushd $out
+    chmod -R +w .
+    patch -p1 < ${./patches/0001-disable-neoconf.nvim.patch}
+    popd
+
     ln -s ${./user} $out/lua/user
 
     ${lib.concatMapStringsSep "\n" (grammar: ''
