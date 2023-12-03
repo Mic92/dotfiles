@@ -60,6 +60,7 @@
   enabled = true
 [branch]
   autosetuprebase = always
+  autoSetupMerge = true
 [pull]
   rebase = true
   autostash = true
