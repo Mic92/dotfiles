@@ -52,11 +52,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1701768268,
-        "narHash": "sha256-/6XgNcygCQCBE1aOmTFnRf/nb1DvGvdVRkwUhMWZTJw=",
+        "lastModified": 1701768752,
+        "narHash": "sha256-XT+95FraCXjeEFmUVLLGIs3fPX8z6wvzB5umZsWMlt8=",
         "owner": "Mic92",
         "repo": "buildbot-nix",
-        "rev": "1f8c982522518513794bd2daee625a3606eee1bc",
+        "rev": "9ed820141e4652a49a857fa39c9eefba3acbf1df",
         "type": "github"
       },
       "original": {
