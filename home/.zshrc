@@ -422,15 +422,9 @@ if [[ -n ${commands[heygpt]} ]]; then
   }
 fi
 
-if [[ -n ${commands[nix]} ]]; then
-  n() {
-    NIX_RUN_ARGS="$@${NIX_RUN_ARGS+ }${NIX_RUN_ARGS}" nix shell "$@" -f '<nixpkgs>' -c zsh
-  }
-  nbuild() {
-    nix build --no-link "$@"
-    nix path-info "$@"
-  }
-fi
+n() {
+  NIX_RUN_ARGS="$@${NIX_RUN_ARGS+ }${NIX_RUN_ARGS}" nix shell "$@" -f '<nixpkgs>' -c zsh
+}
 
 nix-call-package() {
     if [ $# -lt 1 ]; then
@@ -440,6 +434,16 @@ nix-call-package() {
     file=$1
     shift
     nix-build -E "with import <nixpkgs> {}; pkgs.callPackage $file {}" "$@"
+}
+nixos-build() {
+    if [ $# -lt 1 ]; then
+        echo "USAGE: $0 machineName" >&2
+        return 1
+    fi
+    name=$1
+    shift
+
+    command nixos-rebuild build --flake ".#$name" "$@"
 }
 
 nix-pkg-path() {
