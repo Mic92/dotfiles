@@ -19,6 +19,7 @@
     ../modules/i18n.nix
     ../modules/ip-update.nix
     ../modules/kde
+    #../modules/qtile.nix
     ../modules/keyd.nix
     ../modules/ksmbd.nix
     ../modules/lanzaboote.nix
