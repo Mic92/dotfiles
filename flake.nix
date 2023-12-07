@@ -58,7 +58,7 @@
     nix-ld-rs.url = "github:nix-community/nix-ld-rs";
     nix-ld-rs.inputs.nixpkgs.follows = "nixpkgs";
 
-    srvos.url = "github:numtide/srvos/nix-experimental";
+    srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
     srvos.inputs.nixos-23_05.follows = "";
 
