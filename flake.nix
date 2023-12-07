@@ -25,7 +25,7 @@
     nur-packages.inputs.nixpkgs.follows = "nixpkgs";
     # for development
     #sops-nix.url = "/home/joerg/git/sops-nix";
-    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.url = "github:Mic92/sops-nix/multiple-sops-files";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.inputs.nixpkgs-stable.follows = "";
 
