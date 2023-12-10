@@ -10,7 +10,7 @@
     ./modules/cntr.nix
     ./modules/disko.nix
     ./modules/hass-agent.nix
-    ./modules/networkmanager.nix
+    ./modules/networkmanager
     ./modules/nfs.nix
     ./modules/packages.nix
     ./modules/tum-vpn.nix
