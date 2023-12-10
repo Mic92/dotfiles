@@ -39,7 +39,6 @@ in
   };
 
   security.acme.certs."flood.r".server = config.retiolum.ca.acmeURL;
-  #security.acme.certs."warez.r".server = config.retiolum.ca.acmeURL;
 
   services.nginx = {
     package = pkgs.nginxQuic.override {
