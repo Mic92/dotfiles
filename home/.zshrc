@@ -296,7 +296,7 @@ alias zcat='zcat -f'
 alias dd='dd status=progress'
 if [[ -n ${commands[rg]} ]]; then
   rg() {
-    command rg --sort path --pretty --smart-case --fixed-strings "$@" | less -R
+    command rg -C1 --sort path --pretty --smart-case --fixed-strings "$@" | less -R
   }
   ag() {
     echo "use rg instead"
