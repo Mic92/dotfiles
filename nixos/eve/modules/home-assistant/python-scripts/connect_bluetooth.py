@@ -68,7 +68,7 @@ def main() -> None:
     mac = mac_addrs.get(bluetooth_device, None)
     if not mac:
         logger.warning(
-            "Called without unknown bluetooth device {bluetooth_device} parameter"
+            "Called without unknown bluetooth device {bluetooth_device} parameter",
         )
         return
 

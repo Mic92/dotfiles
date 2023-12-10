@@ -6,6 +6,6 @@ stdenv.mkDerivation {
   pythonPath = [ (toPythonModule neovim-remote) ];
   preFixup = "wrapPythonPrograms";
   installPhase = ''
-    install -D -m755 ${./nvim-open.py} $out/bin/nvim-open
+    install -D -m755 ${./nvim_open/__init__.py} $out/bin/nvim-open
   '';
 }

@@ -1,7 +1,7 @@
 import http.client
 import json
 import ssl
-from typing import Any, Dict
+from typing import Any
 from urllib.parse import urlparse
 
 from i3pystatus import IntervalModule
@@ -30,7 +30,7 @@ class Netdata(IntervalModule):
         "format",
     )
 
-    def request(self, path: str) -> Dict[str, Any]:
+    def request(self, path: str) -> dict[str, Any]:
         url = urlparse(self.base_url)
         context = None
         if self.ca_file != "":
@@ -55,7 +55,7 @@ class Netdata(IntervalModule):
         ok = 0
         for service in resp["alarms"]:
             status = service["status"]
-            if status == "CLEAR" or status == "UNDEFINED":
+            if status in ("CLEAR", "UNDEFINED"):
                 ok += 1
             elif status == "WARNING":
                 warning += 1

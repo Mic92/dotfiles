@@ -32,7 +32,6 @@ import subprocess
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime
-from typing import DefaultDict
 
 from libqtile import bar, hook, layout, widget
 from libqtile.backend.wayland import InputConfig
@@ -313,7 +312,7 @@ class FPing(base.ThreadPoolText):
             r"([a-zA-Z0-9.:_]+)\s*: xmt/rcv/%loss = (\d+)/(\d+)/(\d+)%(?:, min/avg/max = (\d+\.\d+)/(\d+\.\d+)/(\d+\.\d+))?",
             line,
         )
-        data: DefaultDict[str, str | int | float | None] = defaultdict(lambda: None)
+        data: defaultdict[str, str | int | float | None] = defaultdict(lambda: None)
         if m is None:
             return data
         data["addr"] = m.group(1)
@@ -333,11 +332,7 @@ class FPing(base.ThreadPoolText):
 
     def fping(self) -> str:
         addrs = ["1.1.1.1", "_gateway", "2606:4700:4700::1111"]
-        cmd = [
-            "fping",
-            "-q",
-            "-c2",
-        ] + addrs
+        cmd = ["fping", "-q", "-c2", *addrs]
 
         process = subprocess.run(cmd, capture_output=True, text=True)
 
@@ -372,7 +367,7 @@ class Net(widget.Net):
         self.cached_interfaces = []
         for interface in interfaces:
             name = interface["ifname"]
-            if name.startswith("e") or name.startswith("wl"):
+            if name.startswith(("e", "wl")):
                 self.cached_interfaces.append(name)
         self.last_update = now
         return self.cached_interfaces
@@ -471,13 +466,7 @@ wl_input_rules = {
 
 
 def systemd_run(command: list[str]) -> list[str]:
-    return [
-        "systemd-run",
-        "--collect",
-        "--user",
-        f"--unit={command[0]}",
-        "--",
-    ] + command
+    return ["systemd-run", "--collect", "--user", f"--unit={command[0]}", "--", *command]
 
 
 @hook.subscribe.startup

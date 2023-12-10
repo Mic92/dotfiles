@@ -117,7 +117,8 @@ class Rhasspy(Module):
             full_text = self.format_disconnected
             color = self.color_disconnected
         else:
-            raise RuntimeError("invalid state: {self.state}")
+            msg = "invalid state: {self.state}"
+            raise RuntimeError(msg)
         self.output = dict(
             full_text=full_text,
             color=color

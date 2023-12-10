@@ -8,7 +8,7 @@ class FMMapCommand(GenericCommand):
     _example_ = f"{_cmdline_:s} libc"
 
     @only_if_gdb_running
-    def do_invoke(self, argv):
+    def do_invoke(self, argv) -> None:
         vmmap = get_process_maps()
         if not vmmap:
             err("No address mapping information found")
@@ -39,7 +39,7 @@ class FMMapCommand(GenericCommand):
             self.print_entry(entry)
         return
 
-    def print_entry(self, entry):
+    def print_entry(self, entry) -> None:
         line_color = ""
         if entry.path == "[stack]":
             line_color = get_gef_setting("theme.address_stack")
@@ -62,9 +62,8 @@ class FMMapCommand(GenericCommand):
         line = " ".join(l)
 
         gef_print(line)
-        return
 
-    def show_legend(self):
+    def show_legend(self) -> None:
         code_addr_color = get_gef_setting("theme.address_code")
         stack_addr_color = get_gef_setting("theme.address_stack")
         heap_addr_color = get_gef_setting("theme.address_heap")
@@ -73,7 +72,6 @@ class FMMapCommand(GenericCommand):
                                                      Color.colorify("Heap", heap_addr_color),
                                                      Color.colorify("Stack", stack_addr_color)
         ))
-        return
 
 if __name__ == "__main__":
     register_external_command( FMMapCommand() )

@@ -3,11 +3,11 @@ forecast = weather.attributes["forecast"]
 notified_today = hass.states.get("input_boolean.rain_notified_today")
 
 
-def format_time(time):
+def format_time(time: "datetime.datetime") -> str:
     return f"{time.hour:02}:{time.minute:02}"
 
 
-def main():
+def main() -> None:
     if notified_today.state == "on":
         return
 
@@ -54,7 +54,10 @@ def main():
 
     hass.services.call("notify", "pushover", {"message": message}, blocking=False)
     hass.services.call(
-        "notify", "mobile_app_beatrice", {"message": message}, blocking=False
+        "notify",
+        "mobile_app_beatrice",
+        {"message": message},
+        blocking=False,
     )
 
     hass.services.call(

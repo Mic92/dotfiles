@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-def bt(depth):
+def bt(depth) -> str:
     format_args = []
     for i in range(depth):
         format_args.append("%p")

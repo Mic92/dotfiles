@@ -72,7 +72,7 @@
               "-eucx"
               ''
                 ${pkgs.ruff}/bin/ruff --fix "$@"
-                ${pkgs.python3.pkgs.black}/bin/black "$@"
+                ${pkgs.ruff}/bin/ruff format "$@"
               ''
               "--" # this argument is ignored by bash
             ];
