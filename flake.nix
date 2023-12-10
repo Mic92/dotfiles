@@ -10,7 +10,7 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
-    nix-index-database.url = "github:nix-community/nix-index-database/fix-imports";
+    nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
     nixos-generators = {
@@ -38,7 +38,7 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    buildbot-nix.url = "github:Mic92/buildbot-nix/fixes";
+    buildbot-nix.url = "github:Mic92/buildbot-nix";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
