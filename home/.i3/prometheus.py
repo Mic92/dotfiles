@@ -1,6 +1,6 @@
 import http.client
 import json
-from typing import Any, Dict
+from typing import Any
 from urllib.parse import urlparse
 
 from i3pystatus import IntervalModule
@@ -24,7 +24,7 @@ class Prometheus(IntervalModule):
         "format",
     )
 
-    def request(self, path: str) -> Dict[str, Any]:
+    def request(self, path: str) -> dict[str, Any]:
         url = urlparse(self.base_url)
         if url.scheme == "http":
             conn = http.client.HTTPConnection(url.netloc)
@@ -45,7 +45,7 @@ class Prometheus(IntervalModule):
         pending = 0
         firing = 0
         for alert in resp["data"]["alerts"]:
-            if alert["state"] == 'pending':
+            if alert["state"] == "pending":
                 pending += 1
             else:
                 firing += 1

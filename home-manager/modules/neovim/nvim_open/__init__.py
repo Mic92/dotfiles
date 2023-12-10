@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import hashlib
 import os
 import socket
@@ -46,7 +44,7 @@ open_directly_files = {
 
 def main() -> None:
     line = "0"
-    project_root = Path(os.getcwd())
+    project_root = Path.cwd()
     if len(sys.argv) >= 2:
         path = Path(sys.argv[1])
         args = path.name.split(":")
@@ -61,18 +59,18 @@ def main() -> None:
         else:
             project_root = path.parent.resolve()
         if path.name in open_directly_files:
-            os.execlp("nvim", "nvim", str(path))
+            os.execlp("nvim", "nvim", str(path))  # noqa: S606
 
-    sock_hash = hashlib.md5(str(project_root).encode("utf-8")).hexdigest()
+    sock_hash = hashlib.blake2s(str(project_root).encode("utf-8")).hexdigest()
     sock = Path.home().joinpath(".data/nvim/").joinpath(f"sock-{sock_hash}")
 
-    if os.path.exists(sock):
+    if sock.exists():
         # cleanup stale socket
         try:
             with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
                 s.connect(str(sock))
         except ConnectionRefusedError:
-            os.remove(sock)
+            sock.unlink()
 
     os.environ["TTY"] = str(os.ttyname(sys.stdout.fileno()))
     os.environ["NVIM_LISTEN_ADDRESS"] = str(sock)

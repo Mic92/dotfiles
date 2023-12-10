@@ -5,7 +5,7 @@
 with pkgs; let
   networkmanager-hook = stdenv.mkDerivation {
     name = "networkmanager-hook";
-    src = ./networkmanager.py;
+    src = ./__init__.py;
     buildInputs = [ python3 ];
     nativeBuildInputs = [ makeWrapper python3.pkgs.mypy ];
     dontUnpack = true;

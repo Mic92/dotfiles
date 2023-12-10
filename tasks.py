@@ -1,13 +1,13 @@
-#!/usr/bin/env python3
-
+import contextlib
 import json
 import os
+import socket
 import subprocess
 import sys
 import time
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import Any, List
+from typing import Any
 
 from deploykit import DeployGroup, DeployHost, HostKeyCheck, parse_hosts
 from invoke import task
@@ -16,10 +16,8 @@ ROOT = Path(__file__).parent.resolve()
 os.chdir(ROOT)
 
 
-def deploy_nixos(hosts: List[DeployHost]) -> None:
-    """
-    Deploy to all hosts in parallel
-    """
+def deploy_nixos(hosts: list[DeployHost]) -> None:
+    """Deploy to all hosts in parallel"""
     g = DeployGroup(hosts)
 
     def deploy(h: DeployHost) -> None:
@@ -40,23 +38,22 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
             if target_user:
                 target_host = f"{target_user}@{target_host}"
         extra_args = h.meta.get("extra_args", [])
-        cmd = (
-            ["nixos-rebuild", "switch"]
-            + extra_args
-            + [
-                "--fast",
-                "--option",
-                "keep-going",
-                "true",
-                "--option",
-                "accept-flake-config",
-                "true",
-                "--build-host",
-                "",
-                "--flake",
-                f"{path}{flake_attr}",
-            ]
-        )
+        cmd = [
+            "nixos-rebuild",
+            "switch",
+            *extra_args,
+            "--fast",
+            "--option",
+            "keep-going",
+            "true",
+            "--option",
+            "accept-flake-config",
+            "true",
+            "--build-host",
+            "",
+            "--flake",
+            f"{path}{flake_attr}",
+        ]
         if target_host:
             cmd.extend(["--target-host", target_host])
         ret = h.run(cmd, check=False)
@@ -69,22 +66,18 @@ def deploy_nixos(hosts: List[DeployHost]) -> None:
 
 @task
 def update_sops_files(c: Any) -> None:
-    """
-    Update all sops yaml and json files according to .sops.yaml rules
-    """
+    """Update all sops yaml and json files according to .sops.yaml rules"""
     c.run(
         """
         cd nixos && find . -type f \\( -iname '*.enc.json' -o -iname '*.yaml' \\) -print0 | \
         xargs -0 -n1 sops updatekeys --yes
-"""
+""",
     )
 
 
 @task
 def generate_password(c: Any, user: str = "root") -> None:
-    """
-    Generate password hashes for users i.e. for root in ./hosts/$HOSTNAME.yml
-    """
+    """Generate password hashes for users i.e. for root in ./hosts/$HOSTNAME.yml"""
     passw = subprocess.run(
         [
             "nix",
@@ -102,7 +95,7 @@ def generate_password(c: Any, user: str = "root") -> None:
         check=True,
         stdout=subprocess.PIPE,
     ).stdout.strip()
-    hash = subprocess.run(
+    password_hash = subprocess.run(
         [
             "nix",
             "run",
@@ -121,14 +114,12 @@ def generate_password(c: Any, user: str = "root") -> None:
     ).stdout.strip()
     print("# Add the following secrets")
     print(f"{user}-password: {passw}")
-    print(f"{user}-password-hash: {hash}")
+    print(f"{user}-password-hash: {password_hash}")
 
 
 @task
-def decrypt_eve(c: Any) -> None:
-    """
-    Reboot hosts and decrypt secrets
-    """
+def decrypt_eve(_c: Any) -> None:
+    """Reboot hosts and decrypt secrets"""
     eve_initrd = DeployHost("95.217.199.121", user="root", port=2222)
     pw = subprocess.run(
         ["rbw", "get", "zfs encryption"],
@@ -138,26 +129,22 @@ def decrypt_eve(c: Any) -> None:
     ).stdout.strip()
     # ssh may timeout, so we try multiple times
     for _ in range(3):
-        try:
+        with contextlib.suppress(subprocess.CalledProcessError):
             eve_initrd.run("true")
-        except subprocess.CalledProcessError:
-            pass
 
     eve_initrd.run(f'echo "{pw}" | systemd-tty-ask-password-agent')
 
 
 @task
-def reboot_and_decrypt_eve(c: Any, hosts: str = "") -> None:
-    """
-    Reboot hosts and decrypt secrets
-    """
+def reboot_and_decrypt_eve(c: Any) -> None:
+    """Reboot hosts and decrypt secrets"""
     eve = DeployHost("95.217.199.121", user="root")
     eve.run("reboot &")
     wait_for_reboot(eve)
     decrypt_eve(c)
 
 
-def filter_hosts(host_spec: str, hosts: dict[str, DeployHost]) -> List[DeployHost]:
+def filter_hosts(host_spec: str, hosts: dict[str, DeployHost]) -> list[DeployHost]:
     host_list = []
     if host_spec == "":
         return list(hosts.values())
@@ -165,15 +152,14 @@ def filter_hosts(host_spec: str, hosts: dict[str, DeployHost]) -> List[DeployHos
         if h in hosts:
             host_list.append(hosts[h])
         else:
-            raise ValueError(f"Unknown host {h}, known hosts: {' '.join(hosts.keys())}")
+            msg = f"Unknown host {h}, known hosts: {' '.join(hosts.keys())}"
+            raise ValueError(msg)
     return host_list
 
 
 @task
 def deploy(c: Any, _hosts: str = "") -> None:
-    """
-    Deploy to eve, eva and localhost
-    """
+    """Deploy to eve, eva and localhost"""
     eve = DeployHost("eve.i", user="root")
     hosts = {
         "eve": eve,
@@ -204,27 +190,23 @@ def deploy(c: Any, _hosts: str = "") -> None:
 
 
 def try_local(host: str) -> str:
-    return f"{host}.r"
-    # try:
-    #    socket.gethostbyname(f"{host}.lan")
-    #    return f"{host}.lan"
-    # except socket.error:
-    #    return f"{host}.r"
+    try:
+        socket.gethostbyname(f"{host}.lan")
+    except OSError:
+        return f"{host}.r"
+    else:
+        return f"{host}.lan"
 
 
 @task
 def deploy_bernie(c: Any) -> None:
-    """
-    Deploy to bernie
-    """
+    """Deploy to bernie"""
     deploy_nixos([DeployHost(try_local("bernie"), user="root")])
 
 
 @task
 def deploy_matchbox(c: Any) -> None:
-    """
-    Deploy to matchbox
-    """
+    """Deploy to matchbox"""
     deploy_nixos(
         [
             DeployHost(
@@ -236,17 +218,14 @@ def deploy_matchbox(c: Any) -> None:
                     flake_attr="matchbox",
                 ),
                 user="root",
-            )
-        ]
+            ),
+        ],
     )
 
 
 @task
 def deploy_dotfiles(c: Any) -> None:
-    """
-    Deploy to dotfiles
-    """
-
+    """Deploy to dotfiles"""
     hosts = [
         DeployHost("localhost", meta=dict(flake_attr="desktop")),
         DeployHost("eve.r", meta=dict(flake_attr="eve")),
@@ -263,7 +242,7 @@ homeshick symlink
 homeshick cd dotfiles
 nix build --out-link $HOME/.hm-activate ".#hmConfigurations.{host.meta["flake_attr"]}.activation-script"
 $HOME/.hm-activate/activate
-EOF"""
+EOF""",
         )
 
     g.run_function(deploy_homemanager)
@@ -271,9 +250,7 @@ EOF"""
 
 @task
 def install_machine(c: Any, flake_attr: str, hostname: str) -> None:
-    """
-    Install nixos on a machine
-    """
+    """Install nixos on a machine"""
     ask = input(f"Install {hostname} with {flake_attr}? [y/N] ")
     if ask != "y":
         return
@@ -300,17 +277,15 @@ def install_machine(c: Any, flake_attr: str, hostname: str) -> None:
         )
 
 
-def wait_for_host(h: DeployHost, shutdown: bool = False) -> None:
+def wait_for_host(h: DeployHost, shutdown: bool) -> None:
     while True:
         res = subprocess.run(
-            ["ping", "-q", "-c", "1", "-w", "2", h.host], stdout=subprocess.DEVNULL
+            ["ping", "-q", "-c", "1", "-w", "2", h.host],
+            stdout=subprocess.DEVNULL,
+            check=False,
         )
-        if shutdown:
-            if res.returncode == 1:
-                break
-        else:
-            if res.returncode == 0:
-                break
+        if (shutdown and res.returncode == 1) or (not shutdown and res.returncode == 0):
+            break
         time.sleep(1)
         sys.stdout.write(".")
         sys.stdout.flush()
@@ -324,7 +299,7 @@ def wait_for_reboot(h: DeployHost) -> None:
 
     print(f"Wait for {h.host} to start", end="")
     sys.stdout.flush()
-    wait_for_host(h)
+    wait_for_host(h, shutdown=True)
     print("")
 
 
@@ -333,10 +308,11 @@ def add_github_user(c: Any, hosts: str = "", github_user: str = "Mic92") -> None
     def add_user(h: DeployHost) -> None:
         h.run("mkdir -m700 /root/.ssh")
         out = h.run_local(
-            f"curl https://github.com/{github_user}.keys", stdout=subprocess.PIPE
+            f"curl https://github.com/{github_user}.keys",
+            stdout=subprocess.PIPE,
         )
         h.run(
-            f"echo '{out.stdout}' >> /root/.ssh/authorized_keys && chmod 700 /root/.ssh/authorized_keys"
+            f"echo '{out.stdout}' >> /root/.ssh/authorized_keys && chmod 700 /root/.ssh/authorized_keys",
         )
 
     g = parse_hosts(hosts, host_key_check=HostKeyCheck.NONE)
@@ -354,9 +330,7 @@ def update_flakes(c: Any) -> None:
 
 @task
 def reboot(c: Any, hosts: str) -> None:
-    """
-    Reboot hosts. example usage: fab --hosts clara.r,donna.r reboot
-    """
+    """Reboot hosts. example usage: fab --hosts clara.r,donna.r reboot"""
     deploy_hosts = [DeployHost(h) for h in hosts.split(",")]
     for h in deploy_hosts:
         g = DeployGroup([h])
@@ -367,13 +341,11 @@ def reboot(c: Any, hosts: str) -> None:
 
 @task
 def kexec_installer(c: Any, hosts: str) -> None:
-    """
-    Kexec into nixos installer, i.e. inv kexec-installer --hosts root@95.217.199.121
-    """
+    """Kexec into nixos installer, i.e. inv kexec-installer --hosts root@95.217.199.121"""
 
     def do_kexec(h: DeployHost) -> None:
         h.run(
-            "curl -L https://github.com/nix-community/nixos-images/releases/download/nixos-unstable/nixos-kexec-installer-noninteractive-x86_64-linux.tar.gz | tar -xzf- -C /root"
+            "curl -L https://github.com/nix-community/nixos-images/releases/download/nixos-unstable/nixos-kexec-installer-noninteractive-x86_64-linux.tar.gz | tar -xzf- -C /root",
         )
         h.run("/root/kexec/run")
         wait_for_reboot(h)
@@ -384,20 +356,16 @@ def kexec_installer(c: Any, hosts: str) -> None:
 
 @task
 def disko_mount_from_recovery(c: Any, host: str, flake: str) -> None:
-    """
-    Mount the system disk from a recovery system, i.e. inv disko-mount-from-recovery --host root@eve.i --flake github:mic92/dotfiles#eve
-    """
+    """Mount the system disk from a recovery system, i.e. inv disko-mount-from-recovery --host root@eve.i --flake github:mic92/dotfiles#eve"""
     h = DeployHost(host)
     h.run(
-        f"""nix --extra-experimental-features "nix-command flakes" shell nixpkgs#git -c nix run --extra-experimental-features "nix-command flakes" github:nix-community/disko -- --flake {flake} --mode mount"""
+        f"""nix --extra-experimental-features "nix-command flakes" shell nixpkgs#git -c nix run --extra-experimental-features "nix-command flakes" github:nix-community/disko -- --flake {flake} --mode mount""",
     )
 
 
 @task
 def boot_eve_into_recovery(c: Any) -> None:
-    """
-    Mount the system disk from a recovery system, i.e. inv disko-mount-from-recovery --host root@eve.i --flake github:mic92/dotfiles#eve
-    """
+    """Mount the system disk from a recovery system, i.e. inv disko-mount-from-recovery --host root@eve.i --flake github:mic92/dotfiles#eve"""
     eve_hostname = "root@95.217.199.121"
     host = parse_hosts(eve_hostname).hosts[0]
     kexec_installer(c, hosts=eve_hostname)
@@ -414,9 +382,7 @@ def boot_eve_into_recovery(c: Any) -> None:
 
 @task
 def unmount_from_recovery(c: Any, hosts: str, flake: str) -> None:
-    """
-    Unmount the system disk from a recovery system, i.e. inv unmount-from-recovery --host root@eve.i
-    """
+    """Unmount the system disk from a recovery system, i.e. inv unmount-from-recovery --host root@eve.i"""
     g = DeployGroup([DeployHost(h) for h in hosts.split(",")])
     g.run("umount -R /mnt")
     g.run("zpool export -a")

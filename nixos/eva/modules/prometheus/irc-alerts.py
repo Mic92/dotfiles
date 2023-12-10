@@ -9,7 +9,7 @@ import socket
 import ssl
 import sys
 from http.server import BaseHTTPRequestHandler
-from typing import List, Optional, Tuple
+from pathlib import Path
 from urllib.parse import urlparse
 
 DEBUG = os.environ.get("DEBUG") is not None
@@ -19,11 +19,11 @@ def _irc_send(
     server: str,
     nick: str,
     channel: str,
-    sasl_password: Optional[str] = None,
-    server_password: Optional[str] = None,
+    messages: list[str],
+    sasl_password: str | None = None,
+    server_password: str | None = None,
     tls: bool = True,
     port: int = 6697,
-    messages: List[str] = [],
 ) -> None:
     if not messages:
         return
@@ -32,7 +32,9 @@ def _irc_send(
     sock = socket.socket(family=socket.AF_INET6)
     if tls:
         sock = ssl.wrap_socket(
-            sock, cert_reqs=ssl.CERT_NONE, ssl_version=ssl.PROTOCOL_TLSv1_2
+            sock,
+            cert_reqs=ssl.CERT_NONE,
+            ssl_version=ssl.PROTOCOL_TLSv1_2,
         )
 
     def _send(command: str) -> int:
@@ -40,7 +42,7 @@ def _irc_send(
             print(command)
         return sock.send((f"{command}\r\n").encode())
 
-    def _pong(ping: str):
+    def _pong(ping: str) -> None:
         if ping.startswith("PING"):
             sock.send(ping.replace("PING", "PONG").encode("ascii"))
 
@@ -55,8 +57,7 @@ def _irc_send(
     for line in recv_file.readline():
         if re.match(r"^:[^ ]* (MODE|221|376|422) ", line):
             break
-        else:
-            _pong(line)
+        _pong(line)
 
     if sasl_password:
         _send("CAP REQ :sasl")
@@ -76,8 +77,7 @@ def _irc_send(
         # Assume INFO reply means we are done
         if "End of /INFO" in line:
             break
-        else:
-            _pong(line)
+        _pong(line)
 
     sock.send(b"QUIT")
     print("disconnect")
@@ -85,15 +85,14 @@ def _irc_send(
 
 
 def irc_send(
-    url: str, notifications: List[str], password: Optional[str] = None
+    url: str,
+    notifications: list[str],
+    password: str | None = None,
 ) -> None:
     parsed = urlparse(f"{url}")
     username = parsed.username or "prometheus"
     server = parsed.hostname or "chat.freenode.net"
-    if parsed.fragment != "":
-        channel = f"#{parsed.fragment}"
-    else:
-        channel = "#krebs-announce"
+    channel = f"#{parsed.fragment}" if parsed.fragment != "" else "#krebs-announce"
     port = parsed.port or 6697
     if not password:
         password = parsed.password
@@ -115,8 +114,8 @@ class PrometheusWebHook(BaseHTTPRequestHandler):
         self,
         irc_url: str,
         conn: socket.socket,
-        addr: Tuple[str, int],
-        password: Optional[str] = None,
+        addr: tuple[str, int],
+        password: str | None = None,
     ) -> None:
         self.irc_url = irc_url
         self.password = password
@@ -126,13 +125,13 @@ class PrometheusWebHook(BaseHTTPRequestHandler):
         self.handle()
 
     # for testing
-    def do_GET(self) -> None:
+    def do_GET(self) -> None:  # noqa: N802
         self.send_response(200)
         self.send_header("Content-type", "text/plain")
         self.end_headers()
         self.wfile.write(b"ok")
 
-    def do_POST(self) -> None:
+    def do_POST(self) -> None:  # noqa: N802
         content_type = self.headers.get("content-type", "")
         content_type, _ = cgi.parse_header(content_type)
 
@@ -164,8 +163,7 @@ def systemd_socket_response() -> None:
     password = None
     irc_password_file = os.environ.get("IRC_PASSWORD_FILE", None)
     if irc_password_file:
-        with open(irc_password_file) as f:
-            password = f.read()
+        password = Path(irc_password_file).read_text().strip()
 
     msgs = sys.argv[1:]
 

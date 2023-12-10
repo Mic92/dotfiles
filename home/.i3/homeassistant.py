@@ -1,8 +1,9 @@
+import contextlib
 import http.client
 import json
 import time
 from threading import Thread
-from typing import Any, Dict, Optional, Tuple
+from typing import Any
 
 import color
 from bitwarden import BitwardenPassword
@@ -11,7 +12,7 @@ from i3pystatus import IntervalModule
 
 def request(path: str,
             token: str,
-            data: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+            data: dict[str, Any] | None = None) -> dict[str, Any]:
     conn = http.client.HTTPSConnection("hass.thalheim.io")
 
     headers = {
@@ -29,8 +30,8 @@ def request(path: str,
 
 
 class State:
-    def __init__(self, password: BitwardenPassword):
-        self.entities: Optional[Dict[str, Any]] = None
+    def __init__(self, password: BitwardenPassword) -> None:
+        self.entities: dict[str, Any] | None = None
         self.password = password
         thread = Thread(target=self.update_state)
         thread.daemon = True
@@ -38,10 +39,8 @@ class State:
 
     def update_state(self):
         while True:
-            try:
+            with contextlib.suppress(Exception):
                 self.update()
-            except Exception:
-                pass
             time.sleep(30)
 
     def update(self):
@@ -51,7 +50,7 @@ class State:
             entities[entity["entity_id"]] = entity
         self.entities = entities
 
-    def get(self, entity_id: str) -> Optional[Dict[str, Any]]:
+    def get(self, entity_id: str) -> dict[str, Any] | None:
         while self.entities is None:
             time.sleep(1)
         return self.entities.get(entity_id)
@@ -105,14 +104,14 @@ class Shannan(IntervalModule):
         }
         if shannan is None or distance is None:
             return
-        location = locations.get(shannan['state'], shannan['state'])
+        location = locations.get(shannan["state"], shannan["state"])
         self.output = dict(full_text=f"{location} ({distance['state']}km)")
 
 
 status_symbols = {"off": "-", "on": "+", "FULL": "↯"}
 
 
-def charge_state(level: int, state: str) -> Tuple[str, bool]:
+def charge_state(level: int, state: str) -> tuple[str, bool]:
     if level == 100:
         status = status_symbols["FULL"]
     elif state in ["discharging", "NotCharging"]:
@@ -122,7 +121,7 @@ def charge_state(level: int, state: str) -> Tuple[str, bool]:
     return f"{status}{level}%", level < 40
 
 
-def charge_state_android(state: State, device: str) -> Tuple[str, bool]:
+def charge_state_android(state: State, device: str) -> tuple[str, bool]:
     battery_level = state.get(f"sensor.{device}_battery_level")
     battery_state = state.get(f"sensor.{device}_battery_state")
 
@@ -131,7 +130,7 @@ def charge_state_android(state: State, device: str) -> Tuple[str, bool]:
     return charge_state(int(battery_level["state"]), battery_state["state"])
 
 
-def charge_state_ios(state: State, device: str) -> Tuple[str, bool]:
+def charge_state_ios(state: State, device: str) -> tuple[str, bool]:
     battery = state.get(f"sensor.{device}_battery_state")
 
     if battery is None or "battery" not in battery["attributes"]:

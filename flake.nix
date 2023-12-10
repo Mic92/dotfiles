@@ -10,7 +10,7 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
-    nix-index-database.url = "github:nix-community/nix-index-database/fix-imports";
+    nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
     nixos-generators = {
@@ -25,7 +25,7 @@
     nur-packages.inputs.nixpkgs.follows = "nixpkgs";
     # for development
     #sops-nix.url = "/home/joerg/git/sops-nix";
-    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.url = "github:Mic92/sops-nix/multiple-sops-files";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.inputs.nixpkgs-stable.follows = "";
 
@@ -38,7 +38,7 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    buildbot-nix.url = "github:Mic92/buildbot-nix/fixes";
+    buildbot-nix.url = "github:Mic92/buildbot-nix";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
@@ -58,7 +58,7 @@
     nix-ld-rs.url = "github:nix-community/nix-ld-rs";
     nix-ld-rs.inputs.nixpkgs.follows = "nixpkgs";
 
-    srvos.url = "github:numtide/srvos/nix-experimental";
+    srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
     srvos.inputs.nixos-23_05.follows = "";
 

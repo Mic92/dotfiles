@@ -1,11 +1,9 @@
-#!/usr/bin/env python
-
 import json
 import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Type, Union
+from typing import Any, TypeVar
 
 ROOT = Path(__file__).parent.parent.resolve()
 
@@ -14,38 +12,43 @@ class ConfigError(Exception):
     pass
 
 
-def interpolate_secrets(option_val: str, secrets: Dict[str, str]) -> str:
+def interpolate_secrets(option_val: str, secrets: dict[str, str]) -> str:
     def substitute_secrets(matchobj: re.Match) -> str:
         name = matchobj.group(1)
         val = secrets.get(name)
         if val:
             return str(val)
+        msg = f"Tried to use secret {name}, but no secret with this name specified."
         raise ConfigError(
-            f"Tried to use secret {name}, but no secret with this name specified."
+            msg,
         )
 
     return re.sub("@(.+)@", substitute_secrets, option_val)
 
 
 def serialize_option_val(
-    key: str, val: Union[List, str], secrets: Dict[str, str]
-) -> List[str]:
-    if isinstance(val, str) or isinstance(val, float) or isinstance(val, int):
+    key: str,
+    val: list | str,
+    secrets: dict[str, str],
+) -> list[str]:
+    if isinstance(val, float | int | str):
         val = interpolate_secrets(str(val), secrets)
         return [f"set {key}='{val}'"]
-    elif isinstance(val, list):
+
+    if isinstance(val, list):
         return [f"add_list {key}='{interpolate_secrets(v, secrets)}'" for v in val]
-    else:
-        raise ConfigError(f"{val} is not a string")
+
+    msg = f"{val} is not a string"
+    raise ConfigError(msg)
 
 
 def serialize_list_section(
     config_name: str,
     section_name: str,
     idx: int,
-    list_obj: Dict[str, str],
-    secrets: Dict[str, str],
-) -> List[str]:
+    list_obj: dict[str, str],
+    secrets: dict[str, str],
+) -> list[str]:
     lines = []
     _type = None
 
@@ -54,15 +57,18 @@ def serialize_list_section(
 
     _type = list_obj.get("_type")
     if _type is None:
-        raise ConfigError(f"{config_name}.@{section_name}[{idx}] has no type!")
+        msg = f"{config_name}.@{section_name}[{idx}] has no type!"
+        raise ConfigError(msg)
     del list_obj["_type"]
     lines.append(f"set {config_name}.@{section_name}[{idx}]={_type}")
 
     for option_name, option in list_obj.items():
         lines.extend(
             serialize_option_val(
-                f"{config_name}.@{section_name}[{idx}].{option_name}", option, secrets
-            )
+                f"{config_name}.@{section_name}[{idx}].{option_name}",
+                option,
+                secrets,
+            ),
         )
     return lines
 
@@ -70,9 +76,9 @@ def serialize_list_section(
 def serialize_named_section(
     config_name: str,
     section_name: str,
-    section: Dict[str, str],
-    secrets: Dict[str, str],
-) -> List[str]:
+    section: dict[str, str],
+    secrets: dict[str, str],
+) -> list[str]:
     lines = []
     _type = None
     # truncate section so we can start from fresh
@@ -80,7 +86,8 @@ def serialize_named_section(
 
     _type = section.get("_type")
     if _type is None:
-        raise ConfigError(f"{config_name}.{section_name} has no type")
+        msg = f"{config_name}.{section_name} has no type"
+        raise ConfigError(msg)
     del section["_type"]
     lines.append(f"set {config_name}.{section_name}={_type}")
 
@@ -88,84 +95,105 @@ def serialize_named_section(
         # FIXME: how does escaping work?
         lines.extend(
             serialize_option_val(
-                f"{config_name}.{section_name}.{option_name}", option, secrets
-            )
+                f"{config_name}.{section_name}.{option_name}",
+                option,
+                secrets,
+            ),
         )
     return lines
 
 
-def serialize_uci(configs: Dict[str, Any], secrets: Dict[str, str]) -> str:
-    lines = []
+def serialize_uci(configs: dict[str, Any], secrets: dict[str, str]) -> str:
+    lines: list[str] = []
     config_names = []
     for config_name, sections in configs.items():
         config_names.append(config_name)
-        if not isinstance(sections, Dict):
+        if not isinstance(sections, dict):
+            msg = f"{config_name} is not a valid config object, expected dict, got: {type(sections).__name__}"
             raise ConfigError(
-                f"{config_name} is not a valid config object, expected dict, got: {type(sections).__name__}"
+                msg,
             )
 
         for section_name, section in sections.items():
-            if isinstance(section, List):
+            if isinstance(section, list):
                 # HACK: there seem no better way to clear out a list
-                for i in range(10):
-                    lines.append(f"delete {config_name}.@{section_name}[0]")
-                for i in range(len(section)):
-                    lines.append(f"add {config_name} {section_name}")
+                lines.extend(
+                    f"delete {config_name}.@{section_name}[0]" for _i in range(10)
+                )
+                lines.extend(
+                    f"add {config_name} {section_name}" for _i in range(len(section))
+                )
 
                 for idx, list_obj in enumerate(section):
                     lines.extend(
                         serialize_list_section(
-                            config_name, section_name, idx, list_obj, secrets
-                        )
+                            config_name,
+                            section_name,
+                            idx,
+                            list_obj,
+                            secrets,
+                        ),
                     )
                 # for option_name, option in section:
-            elif isinstance(section, Dict):
+            elif isinstance(section, dict):
                 lines.extend(
-                    serialize_named_section(config_name, section_name, section, secrets)
+                    serialize_named_section(
+                        config_name, section_name, section, secrets
+                    ),
                 )
             else:
+                msg = f"{config_name}.{section_name} is not a valid section object, expected dict, got: {type(section).__name__}"
                 raise ConfigError(
-                    f"{config_name}.{section_name} is not a valid section object, expected dict, got: {type(section).__name__}"
+                    msg,
                 )
 
     return "\n".join(lines)
 
 
-def ensure_type(parent: Dict[str, Any], key: str, t: Type) -> Dict:
+T = TypeVar("T")
+
+
+def ensure_type(parent: dict[str, Any], key: str, t: type[T]) -> T:
     val = parent.get(key, {})
     if not isinstance(val, t):
-        raise ConfigError(f"{key} is not of type: {t}")
+        msg = f"{key} is not of type: {t}"
+        raise ConfigError(msg)
     return val
 
 
-def ensure_dict(parent: Dict[str, Any], key: str) -> Dict:
+def ensure_dict(parent: dict[str, Any], key: str) -> dict:
     return ensure_type(parent, key, dict)
 
 
-def load_sops_file(file: str) -> Dict[str, str]:
+def load_sops_file(file: str) -> dict[str, str]:
     res = subprocess.run(
         ["sops", "-d", "--output-type", "json", file],
         capture_output=True,
         text=True,
+        check=False,
     )
     if res.returncode != 0:
-        raise ConfigError(f"Cannot decrypt '{file}' with sops:\n{res.stderr}")
+        msg = f"Cannot decrypt '{file}' with sops:\n{res.stderr}"
+        raise ConfigError(msg)
     return json.loads(res.stdout)
 
 
-def convert_file(path: str) -> str:
-    with open(path) as f:
-        uci_json = json.load(f)
-    if not isinstance(uci_json, Dict):
-        raise ConfigError("json file has no settings attribute set")
+def convert_file(path: Path) -> str:
+    uci_json = json.load(path.open())
+    if not isinstance(uci_json, dict):
+        msg = "json file has no settings attribute set"
+        raise ConfigError(msg)
 
     settings = ensure_dict(uci_json, "settings")
     if not settings:
-        raise ConfigError("json file has no settings attribute set")
+        msg = "json file has no settings attribute set"
+        raise ConfigError(msg)
 
     uci_json.get("secrets", {})
     sops_files = ensure_type(
-        ensure_dict(ensure_dict(uci_json, "secrets"), "sops"), "files", list
+        ensure_dict(ensure_dict(uci_json, "secrets"), "sops"),
+        "files",
+        list,
     )
     secrets = {}
     for sops_file in sops_files:
@@ -179,7 +207,7 @@ def main() -> None:
         if len(sys.argv) < 2:
             print(f"USAGE: {sys.argv[0]} JSON_FILE")
             sys.exit(1)
-        print(convert_file(sys.argv[1]))
+        print(convert_file(Path(sys.argv[1])))
 
     except ConfigError as e:
         print(e, file=sys.stderr)

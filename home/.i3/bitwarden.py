@@ -1,10 +1,9 @@
 import subprocess
-from typing import Optional
 
 
 class BitwardenPassword:
-    def __init__(self, name: str):
-        self.password: Optional[str] = None
+    def __init__(self, name: str) -> None:
+        self.password: str | None = None
         self.name = name
 
     def get(self) -> str:

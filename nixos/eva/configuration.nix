@@ -28,7 +28,7 @@
 
   systemd.network = {
     enable = true;
-    networks."eth0".extraConfig = ''
+    networks."40-eth0".extraConfig = ''
       [Match]
       Name = eth0
 
