@@ -61,6 +61,7 @@
     #    defaultPort = "80";
     #  })
     firefox
+    bottles
     (retroarch.override {
       cores = [
         libretro.bsnes-hd
