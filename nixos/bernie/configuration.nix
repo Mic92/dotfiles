@@ -46,6 +46,10 @@
 
   programs.vim.defaultEditor = true;
 
+  hardware = {
+    opengl.enable = true;
+    opengl.driSupport32Bit = true;
+  };
   environment.systemPackages = with pkgs; [
     #(pkgs.callPackage (pkgs.fetchFromGitHub {
     #    owner = "Mic92";
