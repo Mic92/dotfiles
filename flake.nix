@@ -71,7 +71,6 @@
     clan-core.inputs.disko.follows = "disko";
     clan-core.inputs.flake-parts.follows = "flake-parts";
     clan-core.inputs.nixos-generators.follows = "nixos-generators";
-    clan-core.inputs.floco.follows = "";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";

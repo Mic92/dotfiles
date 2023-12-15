@@ -3,11 +3,11 @@
     "astro-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1702478391,
-        "narHash": "sha256-C16keSib/0z1d12yh3wqXgJktQUdZsCVLuaKkHkuipM=",
+        "lastModified": 1702659104,
+        "narHash": "sha256-h019vKDgaOk0VL+bnAPOUoAL8VAkhY6MGDbqEy+uAKg=",
         "owner": "AstroNvim",
         "repo": "AstroNvim",
-        "rev": "4a5721d40707744a30ff67f529e4c92e2af7fa41",
+        "rev": "271c9c3f71c2e315cb16c31276dec81ddca6a5a6",
         "type": "github"
       },
       "original": {
@@ -73,7 +73,6 @@
         "flake-parts": [
           "flake-parts"
         ],
-        "floco": [],
         "nixos-generators": [
           "nixos-generators"
         ],
@@ -91,11 +90,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1702583954,
-        "narHash": "sha256-A7wFfMxe3E1PGOz5jyA0DgkcU7J9AwzCAwFxXPTm8Fc=",
+        "lastModified": 1702646301,
+        "narHash": "sha256-zJLow07QqKK6G63i3U/jMOACGsGcaguHNNrX6wVULCs=",
         "ref": "refs/heads/main",
-        "rev": "b7bda330b3b6442efe030fbaab609b22d62ebe97",
-        "revCount": 1575,
+        "rev": "590d39a29bb1be2f68745980a58e718489059c55",
+        "revCount": 1586,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
