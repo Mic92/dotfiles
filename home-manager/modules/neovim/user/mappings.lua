@@ -44,6 +44,10 @@ return {
     -- quick save
     -- ["<C-s>"] = { ":w!<cr>", desc = "Save File" },  -- change description but the same command
 
+    -- Switch between tabs
+    ['<S-Tab>'] = { ':bprev<CR>' },
+    ['<Tab>'] = { ':bnext<CR>' },
+
     -- Don't error if file doesn't exist
     ["gf"] = { function() open_or_create_file(vim.fn.expand("<cfile>")) end, desc = "Create file" },
     ["<leader>*"] = { function() require("telescope.builtin").grep_string() end, desc = "Find for word under cursor", },
