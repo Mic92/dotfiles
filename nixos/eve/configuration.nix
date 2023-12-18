@@ -33,6 +33,7 @@
     ./modules/home-assistant
     ./modules/harmonia.nix
     ./modules/knot
+    ./modules/kanidm.nix
     ./modules/navidrome.nix
     ./modules/unbound.nix
     ./modules/mastodon-hnbot.nix
@@ -55,7 +56,6 @@
     ./modules/sops.nix
     ./modules/teamspeak.nix
     ./modules/tt-rss.nix
-    ./modules/tts.nix
     ./modules/users.nix
     ./modules/wireguard.nix
     ./modules/nixos-wiki

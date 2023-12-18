@@ -13,6 +13,7 @@
     ./modules/networkmanager
     ./modules/nfs.nix
     ./modules/packages.nix
+    ./modules/postgresql.nix
     ./modules/tum-vpn.nix
 
     ../modules/borgbackup.nix

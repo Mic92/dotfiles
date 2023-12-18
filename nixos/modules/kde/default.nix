@@ -9,8 +9,7 @@
   };
 
   environment.systemPackages = with pkgs; [
-    kmail
-    kalendar
+    thunderbird
     ferdium
     firefox
     chromium

@@ -60,7 +60,7 @@
 
     srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
-    srvos.inputs.nixos-23_05.follows = "";
+    srvos.inputs.nixos-stable.follows = "";
 
     clan-core.url = "git+https://git.clan.lol/clan/clan-core";
     #clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=main";
@@ -71,7 +71,6 @@
     clan-core.inputs.disko.follows = "disko";
     clan-core.inputs.flake-parts.follows = "flake-parts";
     clan-core.inputs.nixos-generators.follows = "nixos-generators";
-    clan-core.inputs.floco.follows = "";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
