@@ -310,6 +310,29 @@
         "type": "github"
       }
     },
+    "hercules-ci-effects": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1701009247,
+        "narHash": "sha256-GuX16rzRze2y7CsewJLTV6qXkXWyEwp6VCZXi8HLruU=",
+        "owner": "hercules-ci",
+        "repo": "hercules-ci-effects",
+        "rev": "31b6cd7569191bfcd0a548575b0e2ef953ed7d09",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "hercules-ci-effects",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -630,6 +653,7 @@
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
+        "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
         "nix-darwin": "nix-darwin",

@@ -10,6 +10,10 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
+    hercules-ci-effects.url = "github:hercules-ci/hercules-ci-effects";
+    hercules-ci-effects.inputs.nixpkgs.follows = "nixpkgs";
+    hercules-ci-effects.inputs.flake-parts.follows = "flake-parts";
+
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -112,6 +116,7 @@
           ./home-manager/flake-module.nix
           ./terraform/flake-module.nix
           ./devshell/flake-module.nix
+          inputs.hercules-ci-effects.flakeModule
         ];
         systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
         perSystem = { config, inputs', self', lib, system, ... }: {
