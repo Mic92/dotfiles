@@ -52,11 +52,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1702983326,
-        "narHash": "sha256-OHufdCCV7oOm7qtxPmhsx17d6OJKok284NfoKD6bKKA=",
+        "lastModified": 1703123088,
+        "narHash": "sha256-E4evVtqLk/pAsAeWWLscAZCtS2qp+igw3cnnRqIj2bU=",
         "owner": "Mic92",
         "repo": "buildbot-nix",
-        "rev": "e1cfbe699006a56a97e210a8c06eb6ac98e00d7a",
+        "rev": "db05604600f0cb03ac5e241af57f0189635aebbd",
         "type": "github"
       },
       "original": {
@@ -310,6 +310,29 @@
         "type": "github"
       }
     },
+    "hercules-ci-effects": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1701009247,
+        "narHash": "sha256-GuX16rzRze2y7CsewJLTV6qXkXWyEwp6VCZXi8HLruU=",
+        "owner": "hercules-ci",
+        "repo": "hercules-ci-effects",
+        "rev": "31b6cd7569191bfcd0a548575b0e2ef953ed7d09",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "hercules-ci-effects",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -539,11 +562,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1703062040,
-        "narHash": "sha256-6keDQnbkgMyQk1VwmuCUgbnw8xekwtENuZjEN/FYb3s=",
+        "lastModified": 1703146081,
+        "narHash": "sha256-o6cNeiyZ5yUg8lV8vpWZfBJavQURBkOUbWc8KwNDbvU=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "1c548789ded08ae4abfc920db51dc7d0566cbdbd",
+        "rev": "f4489a0877e342b83e9fd3442e0189e7fbf0d405",
         "type": "github"
       },
       "original": {
@@ -630,6 +653,7 @@
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
+        "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
         "nix-darwin": "nix-darwin",
@@ -701,11 +725,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1703119061,
-        "narHash": "sha256-opgej0cayt+fTHSy8rB7ahbJpNO0Hn/S+qECiwjejI0=",
+        "lastModified": 1703123383,
+        "narHash": "sha256-QxiQqL+blpH6SLsXZGbxCOxLTCLa9WJv9uB+jafU/c8=",
         "owner": "numtide",
         "repo": "srvos",
-        "rev": "29e87ddc9f118f760ebc6da99ae9888ea40d2c7f",
+        "rev": "608e7e13de1c052742a9549608691cea0b4c2e91",
         "type": "github"
       },
       "original": {
