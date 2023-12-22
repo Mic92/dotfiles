@@ -40,7 +40,7 @@
   cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
 [alias]
   rb = "rebase origin/HEAD"
-  get = clone --recursive
+  clone = clone --recursive
   blame = -w -M
   update = !git pull && git submodule update --init --recursive
   comma = commit --amend
