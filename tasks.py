@@ -43,6 +43,7 @@ def deploy_nixos(hosts: list[DeployHost]) -> None:
             "switch",
             *extra_args,
             "--fast",
+            "--use-substitutes",
             "--option",
             "keep-going",
             "true",
