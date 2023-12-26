@@ -52,11 +52,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1703607049,
-        "narHash": "sha256-gIead2nvVYieO7hDwd46AbQ1sY0on2p9NCcZ0CK/lpw=",
+        "lastModified": 1703626727,
+        "narHash": "sha256-NJAaB4m6DU95uDHirz/eDSd+62zT5SO0gRi9a39ETKw=",
         "owner": "Mic92",
         "repo": "buildbot-nix",
-        "rev": "05d12f9c93d2733ed2edb89836554a790e2991a6",
+        "rev": "22b4caf6fce21567fbe9b052457d9ea0919a4497",
         "type": "github"
       },
       "original": {
@@ -562,11 +562,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1703591139,
-        "narHash": "sha256-EUmkDQ62bw1mxC5QNJLuPj0XBKyByMO+pUYY2voRkqo=",
+        "lastModified": 1703609754,
+        "narHash": "sha256-a04sKjnXnFdkVgXFTOxukScl3h7A7x+xAMOOjHnItts=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "a5853fd6b085b810fe6318eb1a26e5c516bbd5da",
+        "rev": "7f157a0c54aa7f0cf9e46c67a9df8f3053946157",
         "type": "github"
       },
       "original": {
