@@ -60,13 +60,6 @@
 
   services.gvfs.enable = true;
 
-  boot = {
-    zfs.requestEncryptionCredentials = [ "zroot/root" ];
-
-    # when installing toggle this
-    loader.efi.canTouchEfiVariables = true;
-  };
-
   boot.plymouth.enable = true;
 
   networking.hostName = "turingmachine";
