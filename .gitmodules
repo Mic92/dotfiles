@@ -21,4 +21,4 @@
 	url = https://github.com/hugsy/gef
 [submodule "zsh/zsh-autocomplete"]
 	path = zsh/zsh-autocomplete
-	url = https://github.com/Mic92/zsh-autocomplete
+	url = https://github.com/marlonrichert/zsh-autocomplete
