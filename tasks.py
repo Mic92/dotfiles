@@ -217,7 +217,7 @@ def deploy_matchbox(c: Any) -> None:
                     target_host=try_local("matchbox"),
                     flake_attr="matchbox",
                 ),
-                user="root",
+                user="joerg",
             ),
         ],
     )

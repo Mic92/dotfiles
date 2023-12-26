@@ -109,7 +109,7 @@
   outputs = inputs @ { self, flake-parts, nixpkgs, ... }:
     (flake-parts.lib.evalFlakeModule
       { inherit inputs; }
-      ({ config, withSystem, lib, ... }: {
+      ({ config, withSystem, ... }: {
         imports = [
           ./nixos/flake-module.nix
           ./nixos/images/flake-module.nix
