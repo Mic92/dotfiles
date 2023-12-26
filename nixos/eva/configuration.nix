@@ -5,6 +5,10 @@
 
   programs.vim.defaultEditor = true;
 
+  # we use age instead of ssh keys
+  sops.age.sshKeyPaths = lib.mkForce [ ];
+  sops.gnupg.sshKeyPaths = lib.mkForce [ ];
+
   imports = [
     ./modules/disko.nix
     ./modules/hardware-configuration.nix
