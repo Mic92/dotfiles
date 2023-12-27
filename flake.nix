@@ -42,7 +42,7 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    buildbot-nix.url = "github:Mic92/buildbot-nix";
+    buildbot-nix.url = "github:Mic92/buildbot-nix/fixes";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
@@ -120,15 +120,36 @@
         ];
         systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
 
-        herculesCI = herculesCI: {
-          onPush.default.outputs.hci-effects.deploy = withSystem config.defaultEffectSystem ({ pkgs, hci-effects, ... }:
-            hci-effects.runIf (herculesCI.config.repo.branch == "main") (hci-effects.mkEffect {
+        flake.effects = { branch, ... }: withSystem "x86_64-linux" (
+          { config, hci-effects, pkgs, inputs', ... }:
+          {
+            deploy = hci-effects.runIf (branch == "main") (hci-effects.mkEffect {
               effectScript = ''
                 ${pkgs.hello}/bin/hello
               '';
-            })
-          );
-        };
+            });
+            deploy2 = hci-effects.mkEffect {
+              effectScript = ''
+                ${pkgs.hello}/bin/hello
+              '';
+            };
+            deploy3 = hci-effects.runIf (branch == "bar") (hci-effects.mkEffect {
+              effectScript = ''
+                ${pkgs.hello}/bin/hello
+              '';
+            });
+          }
+        );
+
+        #herculesCI = herculesCI: {
+        #  onPush.default.outputs.hci-effects.deploy = withSystem config.defaultEffectSystem ({ pkgs, hci-effects, ... }:
+        #    hci-effects.runIf (herculesCI.config.repo.branch == "main") (hci-effects.mkEffect {
+        #      effectScript = ''
+        #        ${pkgs.hello}/bin/hello
+        #      '';
+        #    })
+        #  );
+        #};
 
         perSystem = { config, inputs', self', lib, system, ... }: {
           # make pkgs available to all `perSystem` functions
