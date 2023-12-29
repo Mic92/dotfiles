@@ -418,7 +418,8 @@ xalias mumble="nice -10 mumble"
 if [[ -n ${commands[heygpt]} ]]; then
   heygpt() {
     export OPENAI_API_KEY=$(rbw get openai-api-key)
-    command heygpt "$@"
+    export OPENAI_API_BASE="https://api.openai.com/v1"
+    command heygpt --model gpt-4 "$@"
   }
 fi
 
