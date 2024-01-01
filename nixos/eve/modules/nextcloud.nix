@@ -9,7 +9,7 @@
 
     caching.apcu = true;
 
-    package = pkgs.nextcloud27;
+    package = pkgs.nextcloud28;
 
     config = {
       dbtype = "pgsql";
@@ -19,10 +19,8 @@
       dbhost = "/run/postgresql";
       adminuser = "nextcloudadmin";
       adminpassFile = config.sops.secrets.nextcloud-admin-password.path;
-      extraTrustedDomains = [
-        "pim.devkid.net"
-      ];
     };
+    extraOptions.trusted_domains = [ "pim.devkid.net" ];
 
     poolSettings = {
       "pm" = "ondemand";
