@@ -24,7 +24,7 @@ let
     '';
 in
 {
-  services.matrix-synapse.sliding-sync = {
+  services.matrix-sliding-sync = {
     enable = true;
     settings.SYNCV3_SERVER = "https://${nginx-vhost}";
     # $ echo SYNCV3_SECRET=$(openssl rand -base64 32)
@@ -147,7 +147,7 @@ in
 
     # sliding sync
     locations."~ ^/(client/|_matrix/client/unstable/org.matrix.msc3575/sync)" = {
-      proxyPass = "http://${config.services.matrix-synapse.sliding-sync.settings.SYNCV3_BINDADDR}";
+      proxyPass = "http://${config.services.matrix-sliding-sync.settings.SYNCV3_BINDADDR}";
     };
 
     locations."/".root = element-web-thalheim.io;
