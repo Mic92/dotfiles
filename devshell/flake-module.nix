@@ -92,8 +92,10 @@
           inputs'.fast-flake-update.packages.default
           pkgs.python3.pkgs.invoke
           pkgs.python3.pkgs.deploykit
+        ] ++ lib.optionals (!pkgs.stdenv.isDarwin) [
+          inputs'.clan-core.packages.default
           pkgs.bubblewrap
-        ] ++ lib.optional (!pkgs.stdenv.isDarwin) inputs'.clan-core.packages.default;
+        ];
       };
     };
 }
