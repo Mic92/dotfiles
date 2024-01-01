@@ -108,7 +108,7 @@
   outputs = inputs @ { self, flake-parts, nixpkgs, ... }:
     (flake-parts.lib.evalFlakeModule
       { inherit inputs; }
-      ({ config, withSystem, ... }: {
+      ({ withSystem, ... }: {
         imports = [
           ./nixos/flake-module.nix
           ./nixos/images/flake-module.nix
@@ -120,7 +120,7 @@
         systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
 
         flake.effects = { branch, ... }: withSystem "x86_64-linux" (
-          { config, hci-effects, pkgs, inputs', ... }:
+          { hci-effects, pkgs, ... }:
           {
             deploy = hci-effects.runIf (branch == "main") (hci-effects.mkEffect {
               effectScript = ''
