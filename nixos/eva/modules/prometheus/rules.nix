@@ -4,6 +4,7 @@
       (lib.genAttrs [
         "borgbackup-job-turingmachine.service"
         "borgbackup-job-eve.service"
+        "borgbackup-job-matchbox.service"
         "borgbackup-job-nfs-home.service"
         "borgbackup-job-nfs-share.service"
         # TODO: rename
@@ -22,16 +23,6 @@
           annotations.description = "status of ${name} is unknown: no data for 10 minutes";
         })) //
       {
-        BorgbackupMatchboxNotRun = {
-          # give 6 hours grace period
-          expr = ''time() - task_last_run{state="ok",frequency="daily",name="borgbackup-matchbox"} > 7 * 24 * 60 * 60'';
-          annotations.description = "{{$labels.host}}: {{$labels.name}} was not run in the last week";
-        };
-
-        BorgbackupMatchbox = {
-          expr = ''absent_over_time(task_last_run{name="borgbackup-matchbox"}[7d])'';
-          annotations.description = "status of borgbackup-matchbox is unknown: no data for a week";
-        };
 
         Homeassistant = {
           expr = ''homeassistant_entity_available{domain="persistent_notification", entity!~"persistent_notification.http_login|persistent_notification.recorder_database_migration"} >= 0'';
