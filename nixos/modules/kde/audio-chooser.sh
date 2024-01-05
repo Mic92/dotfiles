@@ -1,16 +1,10 @@
 #!/usr/bin/nix-shell
-#!nix-shell -i bash -p kdialog pamixer pulseaudio
+#!nix-shell -i bash -p fuzzel pamixer pulseaudio
 #shellcheck shell=bash
 set -exuo pipefail
 
 choices=("headphones" "speakers" "headphones (output-only)" "earphones")
-args=()
-for c in "${choices[@]}"; do
-  args+=("$c")
-  args+=("$c")
-done
-
-selected=$(kdialog --menu "Select Audio Setup" "${args[@]}")
+selected=$(printf "\n%s" "${choices[@]}" | fuzzel -d)
 
 echo You Picked: " $selected"
 
