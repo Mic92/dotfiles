@@ -33,6 +33,7 @@
     libusb1
     libuuid
     libxkbcommon
+    libxml2
     mesa
     nspr
     nss
