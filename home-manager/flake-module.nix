@@ -32,7 +32,6 @@
         export PATH=${pkgs.lib.makeBinPath [pkgs.git pkgs.coreutils pkgs.findutils pkgs.nix pkgs.jq pkgs.unixtools.hostname]}
         declare -A profiles=(
           ["turingmachine"]="desktop"
-          ["bernie-joerg"]="desktop"
           ["bernie"]="bernie"
           ["web01"]="mic92"
           ["bld2"]="mic92"
