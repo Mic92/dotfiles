@@ -28,6 +28,6 @@
     options = [ "bind" "nofail" ];
   };
 
-  networking.firewall.allowedTCPPorts = [ 22000 ];
-  networking.firewall.allowedUDPPorts = [ 21027 ];
+  networking.firewall.allowedTCPPorts = [ 22000 ]; # tcp
+  networking.firewall.allowedUDPPorts = [ 22000 ]; # quic
 }
