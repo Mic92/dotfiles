@@ -446,6 +446,14 @@ nixos-build() {
 
     command nixos-rebuild build --flake ".#$name" "$@"
 }
+flake-check() {
+    if [ $# -lt 1 ]; then
+      nix flake check
+    fi
+    for arg in "$@"; do
+      nix build ".#checks.$(nix eval --impure --raw --expr builtins.currentSystem).$1"
+    done
+}
 
 nix-pkg-path() {
     if [ $# != 1 ]; then
