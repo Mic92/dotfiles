@@ -192,9 +192,6 @@
   system.stateVersion = "23.11";
   boot.initrd.systemd.enable = true;
 
-  sops.age.sshKeyPaths = lib.mkForce [ ];
-  sops.gnupg.sshKeyPaths = lib.mkForce [ ];
-
   security.sudo.wheelNeedsPassword = lib.mkForce true; # fprint
 
   services.ksmbd.enable = true;
