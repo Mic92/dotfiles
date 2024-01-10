@@ -53,7 +53,6 @@
     ./modules/shiori
     ./modules/sshd.nix
     ./modules/syncthing.nix
-    ./modules/sops.nix
     ./modules/teamspeak.nix
     ./modules/tt-rss.nix
     ./modules/users.nix
