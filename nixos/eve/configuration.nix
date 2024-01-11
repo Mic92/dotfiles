@@ -33,7 +33,7 @@
     ./modules/home-assistant
     ./modules/harmonia.nix
     ./modules/knot
-    ./modules/kanidm.nix
+    #./modules/kanidm.nix
     ./modules/navidrome.nix
     ./modules/unbound.nix
     ./modules/mastodon-hnbot.nix
