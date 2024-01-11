@@ -108,7 +108,7 @@
   outputs = inputs @ { self, flake-parts, nixpkgs, ... }:
     (flake-parts.lib.evalFlakeModule
       { inherit inputs; }
-      ({ withSystem, ... }: {
+      ({ withSystem, config, ... }: {
         imports = [
           ./nixos/flake-module.nix
           ./nixos/images/flake-module.nix
@@ -119,36 +119,15 @@
         ];
         systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
 
-        flake.effects = { branch, ... }: withSystem "x86_64-linux" (
-          { hci-effects, pkgs, ... }:
-          {
-            deploy = hci-effects.runIf (branch == "main") (hci-effects.mkEffect {
+        herculesCI = herculesCI: {
+          onPush.default.outputs.effects.deploy = withSystem config.defaultEffectSystem ({ pkgs, hci-effects, ... }:
+            hci-effects.runIf (herculesCI.config.repo.branch == "main") (hci-effects.mkEffect {
               effectScript = ''
                 ${pkgs.hello}/bin/hello
               '';
-            });
-            deploy2 = hci-effects.mkEffect {
-              effectScript = ''
-                ${pkgs.hello}/bin/hello
-              '';
-            };
-            deploy3 = hci-effects.runIf (branch == "bar") (hci-effects.mkEffect {
-              effectScript = ''
-                ${pkgs.hello}/bin/hello
-              '';
-            });
-          }
-        );
-
-        #herculesCI = herculesCI: {
-        #  onPush.default.outputs.hci-effects.deploy = withSystem config.defaultEffectSystem ({ pkgs, hci-effects, ... }:
-        #    hci-effects.runIf (herculesCI.config.repo.branch == "main") (hci-effects.mkEffect {
-        #      effectScript = ''
-        #        ${pkgs.hello}/bin/hello
-        #      '';
-        #    })
-        #  );
-        #};
+            })
+          );
+        };
 
         perSystem = { config, inputs', self', lib, system, ... }: {
           # make pkgs available to all `perSystem` functions
