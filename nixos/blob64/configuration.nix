@@ -53,4 +53,6 @@
 
   boot.supportedFilesystems = [ "zfs" ];
   networking.hostId = "ac174b52";
+
+  services.zerotierone.localConf.settings.forceTcpRelay = true;
 }
