@@ -12,6 +12,7 @@
     ./modules/nginx.nix
     ./modules/prometheus
     ./modules/telegraf
+    ./modules/zerotier.nix
 
     ../modules/sshd
     ../modules/mosh.nix
@@ -21,7 +22,6 @@
     ../modules/promtail.nix
     ../modules/users.nix
     ../modules/unbound.nix
-    ../modules/zerotier.nix
   ];
 
   boot.initrd.systemd.enable = false;

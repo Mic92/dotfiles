@@ -9,4 +9,6 @@
     "10.250.0.0/16".blacklist = true;
     "42::/16".blacklist = true;
   };
+
+  clan.networking.zerotier.moon.orbitMoons = [ "267efd4a15" "a03b47494d" ];
 }
