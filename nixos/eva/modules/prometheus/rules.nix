@@ -7,8 +7,6 @@
         "borgbackup-job-matchbox.service"
         "borgbackup-job-nfs-home.service"
         "borgbackup-job-nfs-share.service"
-        # TODO: rename
-        "borgbackup-matchbox"
       ]
         (name: {
           expr = ''absent_over_time(task_last_run{name="${name}"}[1d])'';
