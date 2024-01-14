@@ -61,10 +61,11 @@
 
     nix-ld-rs.url = "github:nix-community/nix-ld-rs";
     nix-ld-rs.inputs.nixpkgs.follows = "nixpkgs";
+    nix-ld-rs.inputs.flake-utils.follows = "flake-utils";
 
     srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
-    srvos.inputs.nixos-stable.follows = "";
+    srvos.inputs.flake-parts.follows = "flake-parts";
 
     clan-core.url = "git+https://git.clan.lol/clan/clan-core";
     #clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=zerotier";
@@ -81,9 +82,11 @@
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    lanzaboote.url = "github:nix-community/lanzaboote/v0.3.0";
+    lanzaboote.url = "github:nix-community/lanzaboote/pre-commit-hooks-nix";
     lanzaboote.inputs.flake-parts.follows = "flake-parts";
+    lanzaboote.inputs.flake-utils.follows = "flake-utils";
     lanzaboote.inputs.flake-compat.follows = "";
+    lanzaboote.inputs.pre-commit-hooks-nix.follows = "";
 
     fast-flake-update.url = "github:Mic92/fast-flake-update";
     fast-flake-update.inputs.nixpkgs.follows = "nixpkgs";
