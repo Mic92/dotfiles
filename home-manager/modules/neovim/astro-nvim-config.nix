@@ -45,8 +45,8 @@ let
     richgo
     govulncheck
 
-    ocaml-ng.ocamlPackages_5_0.ocaml-lsp
-    ocaml-ng.ocamlPackages_5_0.ocamlformat
+    #ocaml-ng.ocamlPackages_5_0.ocaml-lsp
+    #ocaml-ng.ocamlPackages_5_0.ocamlformat
     # does not build yet on aarch64
   ] ++ lib.optional (pkgs.stdenv.hostPlatform.system == "x86_64-linux") pkgs.deno
   ++ lib.optional (!pkgs.stdenv.hostPlatform.isDarwin) sumneko-lua-language-server;
