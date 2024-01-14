@@ -1,7 +1,8 @@
 [core]
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
-  pager = delta
+  pager = delta --color-only
+  editor = nvim-open
 [include]
   path = ~/.gitconfig.local
 [interactive]
@@ -12,9 +13,6 @@
   branch = true
   diff = true
   status = true
-[core]
-  pager = delta --color-only
-  editor = nvim-open
 [push]
   recurseSubmodules = on-demand
 [delta]
