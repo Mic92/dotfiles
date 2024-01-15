@@ -23,7 +23,17 @@ def deploy_nixos(hosts: list[DeployHost]) -> None:
     def deploy(h: DeployHost) -> None:
         target = f"{h.user or 'root'}@{h.host}"
         res = h.run_local(
-            ["nix", "flake", "archive", "--to", f"ssh://{target}", "--json"],
+            [
+                "nix",
+                "flake",
+                "archive",
+                "--to",
+                f"ssh://{target}",
+                "--json",
+                "--option",
+                "builders-use-substitutes",
+                "true",
+            ],
             stdout=subprocess.PIPE,
         )
         data = json.loads(res.stdout)
