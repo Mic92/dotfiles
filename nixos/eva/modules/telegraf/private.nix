@@ -222,12 +222,12 @@ in
         tags.org = "private";
         response_string_match = "Jörg Thalheim";
       }
-      {
-        urls = [ "http://tts.r" ];
-        tags.host = "eve";
-        tags.org = "private";
-        response_string_match = "TTS";
-      }
+      #{
+      #  urls = [ "http://tts.r" ];
+      #  tags.host = "eve";
+      #  tags.org = "private";
+      #  response_string_match = "TTS";
+      #}
       {
         urls = [ "http://loki.r/ready" ];
         tags.host = "eva";
