@@ -1,9 +1,10 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
 int main() {
-  if (system("lsmod | grep -q i8042") == 0) {
+  struct stat st = {0};
+  if (stat("/sys/module/i8042", &st) != 0) {
     printf("Disabling keyboard\n");
     execlp("rmmod", "rmmod", "i8042", NULL);
     perror("fail to rmmod");
