@@ -15,6 +15,7 @@
     ./modules/packages.nix
     ./modules/postgresql.nix
     ./modules/tum-vpn.nix
+    ./modules/toggle-keyboard
 
     ../modules/borgbackup.nix
     ../modules/i18n.nix
