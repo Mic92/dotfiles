@@ -272,8 +272,8 @@ in
           # nginx
           "https://devkid.net:443"
           "https://thalheim.io:443"
-          "https://tts.r:443"
-          #"https://navidrome.r:443"
+          #"https://tts.r:443"
+          "https://navidrome.r:443"
           "https://flood.r:443"
           "https://loki.r:443"
           "https://prometheus.r:443"
