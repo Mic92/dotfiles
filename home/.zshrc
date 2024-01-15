@@ -740,6 +740,9 @@ ninja(){
   local build_path="$(dirname "$(upfind "build.ninja")")"
   command ninja -C "${build_path:-.}" "$@"
 }
+cal() {
+  LC_ALL=de_DE.UTF-8 command cal "$@"
+}
 make(){
   local build_path="$(dirname "$(upfind "Makefile")")"
   command make -C "${build_path:-.}" -j$(nproc) "$@" 
