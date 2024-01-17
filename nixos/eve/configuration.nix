@@ -14,69 +14,64 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ./modules/atuin.nix
     ./modules/adminer.nix
+    ./modules/atuin.nix
     ./modules/bitwarden.nix
     ./modules/buildbot.nix
-    #./modules/buildbot/master.nix
-    #./modules/buildbot/worker.nix
     ./modules/dendrite.nix
     ./modules/disko.nix
-    ./modules/dovecot.nix
     ./modules/docker.nix
+    ./modules/dovecot.nix
+    ./modules/ejabberd.nix
     ./modules/ergo.nix
     ./modules/et.nix
-    ./modules/ejabberd.nix
     ./modules/gitea
-    ./modules/grafana.nix
     ./modules/goatcounter.nix
-    ./modules/home-assistant
+    ./modules/grafana.nix
     ./modules/harmonia.nix
-    ./modules/knot
+    ./modules/home-assistant
     #./modules/kanidm.nix
-    ./modules/navidrome.nix
-    ./modules/unbound.nix
+    ./modules/knot
     ./modules/mastodon-hnbot.nix
+    ./modules/navidrome.nix
     ./modules/network.nix
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
+    ./modules/nixos-wiki
     ./modules/openttd
+    ./modules/owncast.nix
     ./modules/packages.nix
     ./modules/postfix.nix
     ./modules/postgresql.nix
-    ./modules/shadowsocks.nix
-    ./modules/snappymail.nix
-    ./modules/renovate
-    ./modules/remote-builder.nix
     ./modules/redis.nix
+    ./modules/remote-builder.nix
+    ./modules/renovate
     ./modules/rspamd/rspamd.nix
+    ./modules/shadowsocks.nix
     ./modules/shiori
+    ./modules/snappymail.nix
     ./modules/sshd.nix
     ./modules/syncthing.nix
     ./modules/teamspeak.nix
     ./modules/tt-rss.nix
+    ./modules/unbound.nix
     ./modules/users.nix
     ./modules/wireguard.nix
-    ./modules/nixos-wiki
     ./modules/zerotier.nix
-    #./modules/headscale.nix
-    #./modules/wiregrill
 
     ../modules/borgbackup.nix
-    ../modules/nncp.nix
-    #../modules/tailscale.nix
     ../modules/builder.nix
     ../modules/iperf.nix
     ../modules/mosh.nix
+    ../modules/nix-ld.nix
+    ../modules/nncp.nix
     ../modules/openldap
+    ../modules/promtail.nix
     ../modules/rtorrent.nix
     ../modules/samba-dl.nix
     ../modules/tracing.nix
-    ../modules/promtail.nix
-    #../modules/wezterm.nix
-    ../modules/zsh.nix
     ../modules/uptermd.nix
-    ../modules/nix-ld.nix
+    ../modules/zsh.nix
   ];
 
   # The NixOS release to be compatible with for stateful data such as databases.
