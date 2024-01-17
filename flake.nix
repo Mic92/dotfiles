@@ -82,7 +82,7 @@
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    lanzaboote.url = "github:nix-community/lanzaboote/pre-commit-hooks-nix";
+    lanzaboote.url = "github:nix-community/lanzaboote";
     lanzaboote.inputs.flake-parts.follows = "flake-parts";
     lanzaboote.inputs.flake-utils.follows = "flake-utils";
     lanzaboote.inputs.flake-compat.follows = "";
