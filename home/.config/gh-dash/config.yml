@@ -19,7 +19,7 @@ issuesSections:
 defaults:
   preview:
     open: true
-    width: 50
+    width: 150
   prsLimit: 50
   issuesLimit: 20
   view: prs
@@ -51,4 +51,23 @@ keybindings:
 repoPaths:
   NixOS/nixpkgs: ~/git/nixpkgs
 pager:
-  diff: ""
+  diff: delta
+theme:
+  ui:
+    table:
+      showSeparator: true
+  colors:
+    text:
+      primary: "#657b83"  # foreground
+      secondary: "#586e75"  # bright6
+      inverted: "#fdf6e3"  # background
+      faint: "#93a1a1"  # bright2
+      warning: "#dc322f"  # regular1
+      success: "#859900"  # regular2
+    background:
+      selected: "#eee8d5"  # regular0
+    border:
+      primary: "#073642"  # regular7
+      secondary: "#002b36"  # bright7
+      faint: "#839496"  # bright3
+
