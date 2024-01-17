@@ -114,7 +114,7 @@ in
       };
 
       blob64 = {
-        nixpkgs.pkgs = nixpkgs.legacyPackages.aarch64-linux;
+        nixpkgs.hostPlatform = "aarch64-linux";
         imports = [
           ./blob64/configuration.nix
           defaultModule
