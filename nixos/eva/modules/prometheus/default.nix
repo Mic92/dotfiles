@@ -12,6 +12,7 @@
 
   services.prometheus = {
     webExternalUrl = "https://prometheus.thalheim.io";
+    extraFlags = [ "--storage.tsdb.retention.time=30d" ];
     scrapeConfigs = [
       {
         job_name = "telegraf";
