@@ -95,7 +95,7 @@ return {
       "gopls",
       "yamlls",
       "denols",
-      --"ocamllsp",
+      "ocamllsp",
     },
   },
   -- Configure require("lazy").setup() options
