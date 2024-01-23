@@ -73,8 +73,7 @@
     jmtpfs # needed for charging? WTF
     (pkgs.runCommand "slack-aliases" { } ''
       mkdir -p $out/bin
-      declare -A rooms=([manifold]=manifoldfinance \
-             [numtide]=numtide \
+      declare -A rooms=([numtide]=numtide \
              ["numtide-labs"]="numtide-labs" \
              ["tum"]="ls1-tum" \
              ["tum-courses"]="ls1-tum-course")
