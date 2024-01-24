@@ -5,11 +5,11 @@
 }: {
   imports = [
     ./modules/neovim
+    ./modules/tmux-thumbs.nix
     #./modules/emacs
   ];
   home.packages = with pkgs;
     [
-      #(pkgs.callPackage /home/joerg/git/nix-review {})
       nixpkgs-review
       nix-prefetch
       (pkgs.callPackage ./pkgs/atuin { })
