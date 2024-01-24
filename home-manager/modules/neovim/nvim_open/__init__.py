@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import hashlib
 import os
+import re
 import socket
 import sys
 from pathlib import Path
@@ -41,25 +42,57 @@ open_directly_files = {
     "SQUASH_MSG",
     "git-rebase-todo",
 }
+# zsh's Ctrl-X Ctrl-E
+open_directly_regexes = [re.compile(r"^.*zsh.*\.zsh$")]
+
+
+def should_open_directly(path: Path) -> bool:
+    if path.name in open_directly_files:
+        return True
+    match = (r.match(str(path)) is not None for r in open_directly_regexes)
+    return any(match)
+
+
+def filter_args(args: list[str]) -> list[str]:
+    new_args = []
+    while args:
+        arg = args.pop(0)
+        match arg:
+            case "-c" | "-t" | "-L" | "-u":
+                if args:
+                    args.pop(0)
+            case "--":
+                new_args += args
+                return new_args
+            case arg if re.match(r"-[a-zA-Z]+", arg) is not None:
+                pass
+            case arg if re.match(r"--[a-zA-Z]+", arg) is not None:
+                pass
+            case arg if re.match(r"\+[a-zA-Z0-9]+", arg) is not None:
+                pass
+            case _:
+                new_args.append(arg)
+    return new_args
 
 
 def main() -> None:
     line = "0"
     project_root = Path.cwd()
-    if len(sys.argv) >= 2:
-        path = Path(sys.argv[1])
-        args = path.name.split(":")
+    args = filter_args(sys.argv[1:])
+    if len(args) >= 1:
+        path = Path(args[0])
+        splitted = path.name.split(":")
         # len == 2: file:line, len == 3: file:line:column
-        if len(args) == 2 or len(args) == 3:
-            path = path.parent.joinpath(args[0])
+        if len(splitted) == 2 or len(splitted) == 3:
+            path = path.parent.joinpath(splitted[0])
             if path.exists():
-                line = args[1]
-                sys.argv[1] = str(path.resolve())
+                line = splitted[1]
+                args[0] = str(path.resolve())
         if path.is_file():
             project_root = find_project_root(path.parent.resolve())
         else:
             project_root = path.parent.resolve()
-        if path.name in open_directly_files:
+        if should_open_directly(path):
             os.execlp("nvim", "nvim", str(path))  # noqa: S606
 
     sock_hash = hashlib.blake2s(str(project_root).encode("utf-8")).hexdigest()
