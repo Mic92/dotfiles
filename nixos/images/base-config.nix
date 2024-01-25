@@ -66,8 +66,8 @@
 
   systemd.services.hidden-ssh-announce = {
     description = "irc announce hidden ssh";
-    after = [ "tor.service" "network-online.target" ];
-    wants = [ "tor.service" ];
+    after = [ "tor.service" "network.target" ];
+    wants = [ "tor.service" "network.target" ];
     wantedBy = [ "multi-user.target" ];
     script = ''
       set -efu
