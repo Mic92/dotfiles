@@ -1,6 +1,4 @@
-{ lib, pkgs, ... }: {
-  boot.kernelPackages = lib.mkForce pkgs.linuxKernel.packages.linux_testing;
-
+{
   # checkout the example folder for how to configure different disko layouts
   disko.devices = {
     disk.sda = {
