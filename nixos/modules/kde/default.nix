@@ -19,4 +19,5 @@
     wl-clipboard # wl-copy / wl-paste
     (pkgs.callPackage ./audio-chooser.nix { })
   ];
+  programs.kdeconnect.enable = true;
 }
