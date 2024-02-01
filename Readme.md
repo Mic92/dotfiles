@@ -8,7 +8,7 @@ For bootstraping on [legacy operating systems](https://github.com/Mic92/dotfiles
 $ nix run github:Mic92/dotfiles
 ```
 
-# Boostrap homeshick without nix
+# Bootstrap homeshick without nix
 
 ```console
 $ nix-shell -p git
@@ -17,21 +17,21 @@ nix-shell> alias homeshick="$HOME/.homesick/repos/homeshick/bin/homeshick"
 nix-shell> homeshick clone https://github.com/Mic92/dotfiles.git
 ```
 
-# Boostrap single user nix:
+# Bootstrap single user nix:
 
 ```console
 $ install -d -m755 -o joerg -g joerg /nix
 $ curl https://nixos.org/nix/install | sh
 ```
 
-# Boostrap multi-user nix:
+# Bootstrap multi-user nix:
 
 ```console
 $ curl https://nixos.org/nix/install -o install
 $ sh ./install --daemon
 ```
 
-# Boostrap home-manager
+# Bootstrap home-manager
 
 ```console
 $ hm switch
