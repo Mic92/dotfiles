@@ -22,7 +22,7 @@ set $wsDev 2:dev
 set $wsIm 3:im
 set $wsDoc 4:doc
 #
-set $font pango:SauceCodePro Nerd Font Mono 11
+set $font pango:SauceCodePro Nerd Font Mono 10
 #
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.

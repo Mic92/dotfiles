@@ -260,6 +260,7 @@ zstyle -e ':autocomplete:*' list-lines 'reply=( $(( LINES / 3 )) )'
 # recent directory completion is sometimes a bit confusing
 +autocomplete:recent-directories() { }
 
+bindkey "${key[Up]}" up-line-or-search # https://nixos.wiki/index.php?title=Zsh&oldid=11045#Zsh-autocomplete_not_working
 source ~/.zsh-autocomplete/zsh-autocomplete.plugin.zsh
 
 bindkey '\t' menu-select "$terminfo[kcbt]" menu-select
