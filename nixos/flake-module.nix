@@ -2,11 +2,11 @@
 let
   inherit (inputs) nixpkgs clan-core;
 
-  defaultModule = { config, ... }: {
+  defaultModule = { config, lib, ... }: {
     srvos.flake = self;
     documentation.info.enable = false;
     services.envfs.enable = true;
-    clan.networking.targetHost = "root@${config.networking.hostName}.r";
+    clan.networking.targetHost = lib.mkDefault "root@${config.networking.hostName}.r";
 
     imports = [
       ./modules/nix-path.nix
