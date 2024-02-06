@@ -20,7 +20,7 @@
       adminuser = "nextcloudadmin";
       adminpassFile = config.sops.secrets.nextcloud-admin-password.path;
     };
-    extraOptions.trusted_domains = [ "pim.devkid.net" ];
+    settings.trusted_domains = [ "pim.devkid.net" ];
 
     poolSettings = {
       "pm" = "ondemand";
