@@ -1,3 +1,4 @@
+{ lib, ... }:
 let
   mirrorBoot = idx: {
     type = "disk";
@@ -5,13 +6,14 @@ let
     content = {
       type = "gpt";
       partitions = {
-        ESP = {
+        ESP = lib.mkIf (idx == "0") {
           size = "1G";
           type = "EF00";
           content = {
             type = "filesystem";
             format = "vfat";
-            mountpoint = "/boot${idx}";
+            #mountpoint = "/boot${idx}";
+            mountpoint = "/boot";
             mountOptions = [ "nofail" ];
           };
         };
@@ -27,15 +29,18 @@ let
   };
 in
 {
-  boot.loader.grub = {
-    enable = true;
-    efiSupport = true;
-    efiInstallAsRemovable = true;
-    mirroredBoots = [
-      { path = "/boot0"; devices = [ "nodev" ]; }
-      { path = "/boot1"; devices = [ "nodev" ]; }
-    ];
-  };
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  # FIXME: grub doesn't boot default entry? -> maybe add mirrored boots to systemd-boot?
+  #boot.loader.grub = {
+  #  enable = true;
+  #  efiSupport = true;
+  #  efiInstallAsRemovable = true;
+  #  mirroredBoots = [
+  #    { path = "/boot0"; devices = [ "nodev" ]; }
+  #    { path = "/boot1"; devices = [ "nodev" ]; }
+  #  ];
+  #};
 
   disko.devices = {
     disk = {
