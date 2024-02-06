@@ -24,6 +24,8 @@
   services.fwupd.enable = true;
   hardware.keyboard.qmk.enable = true;
 
+  clan.deployment.requireExplicitUpdate = true;
+
   boot.initrd.systemd.enable = true;
   boot.loader.systemd-boot.enable = true;
   # when installing toggle this

@@ -15,6 +15,7 @@
   ];
 
   documentation.enable = false;
+  clan.deployment.requireExplicitUpdate = true;
 
   networking.hostName = "matchbox";
 
