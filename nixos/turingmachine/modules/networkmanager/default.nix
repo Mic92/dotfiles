@@ -11,6 +11,7 @@ with pkgs; let
     dontUnpack = true;
     installPhase = ''
       install -D -m755 $src $out/bin/dispatcher
+      patchShebangs $out/bin/dispatcher
       mypy $src
       wrapProgram $out/bin/dispatcher --prefix PATH : ${lib.makeBinPath [systemd alsa-utils]}
     '';
