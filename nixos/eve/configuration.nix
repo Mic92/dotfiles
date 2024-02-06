@@ -3,6 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 { lib, ... }: {
   networking.hostName = "eve";
+  clan.networking.targetHost = "root@eve.i";
   networking.hostId = "8425e349";
 
   time.timeZone = "UTC";

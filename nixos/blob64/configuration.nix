@@ -11,6 +11,8 @@
     ./hardware-configuration.nix
   ];
 
+  clan.networking.buildHost = "root@eve.i";
+
   system.stateVersion = "23.11";
 
   # Fan speed adjustment
