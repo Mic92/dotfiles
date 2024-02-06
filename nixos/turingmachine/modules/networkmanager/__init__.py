@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import hashlib
 import logging
 import logging.handlers
@@ -45,3 +46,7 @@ def main() -> None:
             hook(action)
         except OSError as e:
             logger.warning(f"hook {hook.__name__} failed with {e}")
+
+
+if __name__ == "__main__":
+    main()
