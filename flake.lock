@@ -3,11 +3,11 @@
     "astro-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1707141002,
-        "narHash": "sha256-/Qp/+38hgrTb24vGKgWEBbGgfRRgbxJ+jnKeE2d/MOE=",
+        "lastModified": 1707224064,
+        "narHash": "sha256-zAvuwDLyROsawVlRsxHAR82coUpyZm/Piha0TWMs7sk=",
         "owner": "AstroNvim",
         "repo": "AstroNvim",
-        "rev": "67d6925bac883b7828e9783a2151a30b14d5593f",
+        "rev": "d64a25ef218761f46c15a5bfe6143356ca9895d0",
         "type": "github"
       },
       "original": {
@@ -87,11 +87,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1707193253,
-        "narHash": "sha256-+t1Xp1LXH8gLk0eS/jwY23CTG6/Lt8Hx2S+flgKJTO8=",
+        "lastModified": 1707222572,
+        "narHash": "sha256-RQHhwmp4bdK+ppY09JJjsfSReTBRv0dU9+G+X5PuaZI=",
         "ref": "refs/heads/main",
-        "rev": "99c432fcb8fafa55553a66dc8d808880ea4425ea",
-        "revCount": 1932,
+        "rev": "4d18ce2366077e0673b9c419e2053efe3edbe73a",
+        "revCount": 1936,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
@@ -476,11 +476,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1707212368,
-        "narHash": "sha256-A4BPoDhQoPvpBChe4jdYk26U8AYb3/xkII11W6vmPtY=",
+        "lastModified": 1707224756,
+        "narHash": "sha256-56wof5PuLu1f9guGfLWppIVl52Klq3s8sQl6FdL3ZqM=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "3d177dd8b3756d45eb987555a17857adc44a9645",
+        "rev": "9e87fc7491098016f80e0098d59a766c89d4c94e",
         "type": "github"
       },
       "original": {
