@@ -1,7 +1,7 @@
 { lib, config, ... }:
 {
   clan.networking.zerotier.networkId = lib.mkDefault (builtins.readFile (config.clanCore.clanDir + "/machines/eve/facts/zerotier-network-id"));
-  services.zerotierone.joinNetworks = [ "7c31a21e86f9a75c" ];
+  services.zerotierone.joinNetworks = [ "ccc5da5295c853d4" ];
 
   services.zerotierone.localConf.settings = {
     interfacePrefixBlacklist = [ "tinc" "wiregrill" ];

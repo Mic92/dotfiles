@@ -308,6 +308,29 @@
         "type": "github"
       }
     },
+    "nether": {
+      "inputs": {
+        "clan-core": [
+          "clan-core"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1707119821,
+        "narHash": "sha256-seifaHDFLMmvSsVYdjs6/BJkzPriKiXO8wEAScoZX5Q=",
+        "owner": "Lassulus",
+        "repo": "nether",
+        "rev": "5ed4b8992a9b2424b1903ebb60f39be0045bd99f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Lassulus",
+        "repo": "nether",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -539,6 +562,7 @@
         "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
+        "nether": "nether",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nix-ld-rs": "nix-ld-rs",

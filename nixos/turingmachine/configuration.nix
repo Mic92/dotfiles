@@ -40,7 +40,6 @@
     ../modules/touchpad-hack
     ../modules/tracing.nix
     ../modules/users.nix
-    ../modules/zerotier.nix
   ];
 
   services.udev.packages = with pkgs; [ platformio-core.udev ];

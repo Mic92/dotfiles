@@ -28,6 +28,9 @@ let
       ./modules/update-prefetch.nix
       inputs.retiolum.nixosModules.retiolum
       inputs.retiolum.nixosModules.ca
+
+      ./modules/zerotier.nix
+      inputs.nether.nixosModules.hosts
     ];
   };
 in

@@ -103,6 +103,10 @@
     nixos-wiki.inputs.sops-nix.follows = "sops-nix";
     nixos-wiki.inputs.srvos.follows = "srvos";
 
+    nether.url = "github:Lassulus/nether";
+    nether.inputs.clan-core.follows = "clan-core";
+    nether.inputs.nixpkgs.follows = "nixpkgs";
+
     #microvm.url = "github:astro/microvm.nix";
     #microvm.inputs.nixpkgs.follows = "nixpkgs";
     #microvm.inputs.flake-utils.follows = "flake-utils";
