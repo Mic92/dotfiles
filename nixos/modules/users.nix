@@ -18,19 +18,18 @@ in
     root.openssh.authorizedKeys.keys = keys;
   };
 
-  users.extraUsers.root.hashedPasswordFile =
-    config.clanCore.secrets.root-password.secrets.root-password-hash.path;
+  users.extraUsers.root.initialHashedPassword =
+    config.clanCore.secrets.root-password.facts.root-password-hash.value;
+
   clanCore.secrets.root-password = {
     secrets.root-password = { };
-    secrets.root-password-hash = { };
+    facts.root-password-hash = { };
     generator.path = with pkgs; [ coreutils xkcdpass mkpasswd ];
     generator.script = ''
       xkcdpass -n 3 -d - > $secrets/root-password
-      cat $secrets/root-password | mkpasswd -s -m sha-512 > $secrets/root-password-hash
+      cat $secrets/root-password | mkpasswd -s -m sha-512 > $facts/root-password-hash
     '';
   };
-
-  sops.secrets."${config.clanCore.machineName}-root-password-hash".neededForUsers = true;
 
   boot.initrd.network.ssh.authorizedKeys = keys;
 
