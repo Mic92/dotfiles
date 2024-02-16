@@ -7,7 +7,6 @@
     ./hardware-configuration.nix
 
     ./modules/caddy.nix
-    ./modules/cntr.nix
     ./modules/disko.nix
     ./modules/hass-agent.nix
     ./modules/networkmanager
@@ -46,9 +45,9 @@
 
   services.pcscd.enable = true;
 
+  systemd.sysusers.enable = true;
   users.mutableUsers = false;
-  sops.secrets.turingmachine-joerg-password-hash.neededForUsers = true;
-  users.users.joerg.hashedPasswordFile = config.sops.secrets.turingmachine-joerg-password-hash.path;
+  users.users.joerg.initialHashedPassword = config.clanCore.secrets.root-password.facts.root-password-hash.value;
 
   # https://community.frame.work/t/guide-linux-battery-life-tuning/6665
   #services.tlp.enable = true;
