@@ -65,7 +65,6 @@
 
     srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
-    srvos.inputs.flake-parts.follows = "flake-parts";
 
     clan-core.url = "git+https://git.clan.lol/clan/clan-core";
     #clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=target_host";
