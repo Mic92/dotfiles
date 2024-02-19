@@ -3,7 +3,6 @@ return {
  "AstroNvim/astrocommunity",
  -- example of imporing a plugin, comment out to use it or add your own
  -- available plugins can be found at https://github.com/AstroNvim/astrocommunity
- { import = "astrocommunity.colorscheme.neosolarized-nvim" },
  { import = "astrocommunity.completion.copilot-lua" },
  { import = "astrocommunity.completion.copilot-lua-cmp" },
  {
@@ -30,7 +29,14 @@ return {
  { import = "astrocommunity.pack.rust" },
  { import = "astrocommunity.pack.yaml" },
  { import = "astrocommunity.pack.nix" },
- { import = "astrocommunity.terminal-integration.vim-tpipeline" },
  { import = "astrocommunity.editing-support.rainbow-delimiters-nvim" },
  { import = "astrocommunity.editing-support.auto-save-nvim" },
+ {
+  "Tsuzat/NeoSolarized.nvim",
+  name = "NeoSolarized.nvim",
+  opts = {
+    style = "light", -- "dark" or "light"
+    transparent = false,
+  },
+ },
 }
