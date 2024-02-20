@@ -468,11 +468,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1708199206,
-        "narHash": "sha256-tV7qArgCi7fTiELKMavKMN73JXmWNgrjVVaJ3XXS2Wg=",
+        "lastModified": 1708413243,
+        "narHash": "sha256-qIyTAjdJGpwJ33t776Y2DjTiuB/rga5NQUUZcAVb89A=",
         "owner": "Mic92",
         "repo": "nixos-wiki-infra",
-        "rev": "6af6143428e9be9e2abc882c051d23a85b7a3be3",
+        "rev": "545ab6d3f1b83abbf6d44215f3b2db764f8fa898",
         "type": "github"
       },
       "original": {
