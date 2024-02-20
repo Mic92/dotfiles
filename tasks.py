@@ -130,7 +130,7 @@ def generate_password(c: Any, user: str = "root") -> None:
 
 @task
 def decrypt_eve(_c: Any) -> None:
-    """Reboot hosts and decrypt secrets"""
+    """Decrypt secrets"""
     eve_initrd = DeployHost("95.217.199.121", user="root", port=2222)
     pw = subprocess.run(
         ["rbw", "get", "zfs encryption"],
