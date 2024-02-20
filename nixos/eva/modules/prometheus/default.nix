@@ -56,11 +56,12 @@
             labels.org = "krebs";
           }
           {
-            targets = [
-              "clan.lol:9273"
-            ];
-
+            targets = [ "clan.lol:9273" ];
             labels.org = "clan-lol";
+          }
+          {
+            targets = [ "[2a01:4f9:c012:8178::1]:9273" ];
+            labels.org = "nixos-wiki";
           }
           #{
           #  targets = [
@@ -164,11 +165,11 @@
           }
           {
             group_by = [ "host" ];
-            match_re.org = "nix-community";
+            match_re.org = "nixos-wiki";
             group_wait = "5m";
             group_interval = "5m";
             repeat_interval = "4h";
-            receiver = "nix-community";
+            receiver = "nixos-wiki";
           }
           {
             group_by = [ "host" ];
@@ -207,7 +208,7 @@
         #  ];
         #}
         {
-          name = "nix-community";
+          name = "nixos-wiki";
           webhook_configs = [
             {
               url = "http://localhost:9088/alert";

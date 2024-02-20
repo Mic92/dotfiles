@@ -8,14 +8,14 @@
       HTTP_ADDRESS = "[::1]";
       HTTP_PORT = "9088";
       MX_HOMESERVER = "https://matrix.thalheim.io";
-      MX_ID = "@nix-community-bot:thalheim.io";
-      MX_ROOMID = "!cBybDCkeRlSWfuaFvn:numtide.com";
+      MX_ID = "@nixos-wiki-alert-bot:thalheim.io";
+      MX_ROOMID = "!GQ4C83PZIEwhEmoO:thalheim.io";
       MX_MSG_TEMPLATE = "${pkgs.matrix-hook}/message.html.tmpl";
     };
     serviceConfig = {
       EnvironmentFile = [
         # format: MX_TOKEN=<token>
-        config.sops.secrets.nix-community-bot-access-token.path
+        config.sops.secrets.nixos-wiki-alert-bot-access-token.path
       ];
       Type = "simple";
       ExecStart = "${pkgs.matrix-hook}/bin/matrix-hook";
