@@ -4,6 +4,7 @@
     ./uni.nix
     ./krebs.nix
     ./nix-community.nix
+    ./nixos-wiki-infra.nix
     ./numtide.nix
   ];
 
