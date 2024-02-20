@@ -142,6 +142,7 @@ in
       proxy_read_timeout 600;
     '';
     locations."/_matrix".proxyPass = "http://127.0.0.1:${toString config.services.dendrite.httpPort}";
+    locations."/_dendrite".proxyPass = "http://127.0.0.1:${toString config.services.dendrite.httpPort}";
     # for remote admin access
     locations."/_synapse".proxyPass = "http://127.0.0.1:${toString config.services.dendrite.httpPort}";
 
