@@ -46,6 +46,8 @@ in
       };
       inputs = inputs;
     };
+    pkgsForSystem = system: nixpkgs.legacyPackages.${system};
+
     machines = {
       bernie = {
         nixpkgs.pkgs = nixpkgs.legacyPackages.x86_64-linux;
