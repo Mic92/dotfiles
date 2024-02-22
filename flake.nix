@@ -67,7 +67,7 @@
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
     clan-core.url = "git+https://git.clan.lol/clan/clan-core";
-    #clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=fix-cross-system";
+    #clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=main";
     clan-core.inputs.nixpkgs.follows = "nixpkgs";
     clan-core.inputs.sops-nix.follows = "sops-nix";
     clan-core.inputs.treefmt-nix.follows = "treefmt-nix";

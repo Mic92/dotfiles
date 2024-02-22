@@ -18,6 +18,8 @@ let
       ./modules/sshd
       ./modules/zfs.nix
 
+      inputs.clan-core.clanModules.borgbackup
+
       inputs.srvos.nixosModules.common
       inputs.srvos.nixosModules.mixins-telegraf
       inputs.srvos.nixosModules.mixins-nix-experimental
