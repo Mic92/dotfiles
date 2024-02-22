@@ -3,13 +3,14 @@
     eve = {
       path = "/zdata/borg/eve";
       authorizedKeys = [
-        (builtins.readFile ./eve-borgbackup.pub)
+        (builtins.readFile ../../../../machines/eve/facts/borgbackup.ssh.pub)
       ];
     };
 
     matchbox = {
       path = "/zdata/borg/matchbox";
       authorizedKeys = [
+        # TODO: migrate to clan-backup
         (builtins.readFile ./matchbox-borgbackup.pub)
       ];
     };
@@ -17,7 +18,7 @@
     turingmachine = {
       path = "/zdata/borg/turingmachine";
       authorizedKeys = [
-        (builtins.readFile ./turingmachine-borgbackup.pub)
+        (builtins.readFile ../../../../machines/turingmachine/facts/borgbackup.ssh.pub)
       ];
     };
   };
