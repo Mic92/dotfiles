@@ -15,19 +15,19 @@
         "nixos-test"
       ];
     }
-    {
-      hostName = "yasmin";
-      sshUser = "nix";
-      protocol = "ssh-ng";
-      sshKey = config.sops.secrets.ssh-remote-builder.path;
-      system = "aarch64-linux";
-      maxJobs = 224;
-      supportedFeatures = [
-        "big-parallel"
-        "kvm"
-        "nixos-test"
-      ];
-    }
+    #{
+    #  hostName = "yasmin";
+    #  sshUser = "nix";
+    #  protocol = "ssh-ng";
+    #  sshKey = config.sops.secrets.ssh-remote-builder.path;
+    #  system = "aarch64-linux";
+    #  maxJobs = 224;
+    #  supportedFeatures = [
+    #    "big-parallel"
+    #    "kvm"
+    #    "nixos-test"
+    #  ];
+    #}
     {
       hostName = "mac01.numtide.com";
       sshUser = "hetzner";
@@ -39,18 +39,18 @@
         "big-parallel"
       ];
     }
-    #{
-    #  hostName = "aarch64.nixos.community";
-    #  maxJobs = 96;
-    #  sshKey = "/root/.ssh/id_ed25519";
-    #  sshUser = "ssh-ng://mic92";
-    #  system = "aarch64-linux";
-    #  supportedFeatures = [
-    #    "big-parallel"
-    #    "kvm"
-    #    "nixos-test"
-    #  ];
-    #}
+    {
+      hostName = "aarch64.nixos.community";
+      maxJobs = 96;
+      sshKey = "/root/.ssh/id_ed25519";
+      sshUser = "ssh-ng://mic92";
+      system = "aarch64-linux";
+      supportedFeatures = [
+        "big-parallel"
+        "kvm"
+        "nixos-test"
+      ];
+    }
   ];
 
   programs.ssh.extraConfig = ''
