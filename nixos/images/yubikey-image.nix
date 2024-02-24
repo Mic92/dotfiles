@@ -45,7 +45,6 @@ in
     paperkey
     gnupg
     ctmg
-    rng-tools
   ];
 
   services.udev.packages = with pkgs; [ yubikey-personalization ];
