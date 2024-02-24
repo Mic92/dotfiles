@@ -8,12 +8,12 @@
 { pkgs, ... }:
 let
   guide = pkgs.stdenv.mkDerivation {
-    name = "yubikey-guide-2020-08-12.html";
+    name = "yubikey-guide-2024-02-12.html";
     src = pkgs.fetchFromGitHub {
       owner = "drduh";
       repo = "YubiKey-Guide";
-      rev = "f7561616a541182554c2e16ec7c05ac1565a61d7";
-      sha256 = "sha256-3CUqLde0NxFEQpYIbL0n7oueF7vEQRuz6tYerqPOL7k=";
+      rev = "53ed405";
+      sha256 = "sha256-dY8MFYJ9WSnvcfa8d1a3gNt52No7eN8aacky1zwJpbI=";
     };
     buildInputs = [ pkgs.pandoc ];
     installPhase = ''
@@ -30,8 +30,8 @@ in
     fi
     cp ${
       pkgs.fetchurl {
-        url = "https://raw.githubusercontent.com/drduh/config/75ec3f35c6977722d4dba17732d526f704f256ff/gpg.conf";
-        sha256 = "sha256-LK29P4+ZAvy9ObNGDNBGP/8+MIUY3/Uo4eJtXhwMoE0=";
+        url = "https://raw.githubusercontent.com/drduh/config/944faed/gpg.conf";
+        sha256 = "sha256-3oTHeGZ9nGJ+g+lnRSEcyifNca+V9SlpjBV1VNvrnNU=";
       }
     } "$GNUPGHOME/gpg.conf"
     echo "\$GNUPGHOME has been set up for you. Generated keys will be in $GNUPGHOME."
@@ -45,6 +45,7 @@ in
     paperkey
     gnupg
     ctmg
+    rng-tools
   ];
 
   services.udev.packages = with pkgs; [ yubikey-personalization ];
@@ -70,7 +71,7 @@ in
     displayManager.defaultSession = "xfce";
     displayManager.sessionCommands = ''
       ${pkgs.midori}/bin/midori ${guide} &
-      ${pkgs.xfce.terminal}/bin/xfce4-terminal &
+      ${pkgs.xfce.xfce4-terminal}/bin/xfce4-terminal &
     '';
 
     desktopManager = {
