@@ -15,6 +15,7 @@
     chromium
     pavucontrol
     bottles
+    libnotify
 
     wl-clipboard # wl-copy / wl-paste
     (pkgs.callPackage ./audio-chooser.nix { })
