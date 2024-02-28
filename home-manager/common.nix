@@ -29,6 +29,7 @@
       du-dust
       nixVersions.unstable
       procs
+      xcp
 
       socat
       tmux

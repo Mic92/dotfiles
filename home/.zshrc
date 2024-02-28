@@ -365,12 +365,20 @@ function tempdir() {
 alias rm='rm -rv'
 function cp() {
   if [[ "$#" -ne 1 ]] || [[ ! -f "$1" ]]; then
-    command cp --reflink=auto -arv "$@"
+    if [[ -n ${commands[xcp]} ]]; then
+      command xcp -r "$@"
+    else
+      command cp --reflink=auto -arv "$@"
+    fi
     return
   fi
   newfilename="$1"
   vared newfilename
-  command cp --reflink=auto -arv -- "$1" "$newfilename"
+  if [[ -n ${commands[xcp]} ]]; then
+    command xcp -r "$1" "$newfilename"
+  else
+    command cp --reflink=auto -arv -- "$1" "$newfilename"
+  fi
 }
 alias ln="nocorrect ln"
 function mv() {
