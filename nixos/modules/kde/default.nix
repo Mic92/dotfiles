@@ -18,7 +18,7 @@
     libnotify
 
     wl-clipboard # wl-copy / wl-paste
-    (pkgs.callPackage ./audio-chooser.nix { })
+    (pkgs.callPackage ./choosers.nix { })
   ];
   programs.kdeconnect.enable = true;
 }
