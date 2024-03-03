@@ -10,7 +10,8 @@ echo You Picked: " $selected"
 
 headset=alsa_card.usb-0b0e_Jabra_Link_380_08C8C2E6DA47-00
 speakers=alsa_card.pci-0000_00_1f.3
-earphones=bluez_card.5C_56_A4_74_38_19
+earphones=bluez_output.50_C2_75_67_67_8C.1
+address="50:C2:75:67:67:8C"
 
 case $selected in
 headphones)
@@ -22,20 +23,20 @@ headphones)
   ;;
 speakers)
   echo "Setting up Speakers"
-  bluetoothctl disconnect "5C:56:A4:74:38:19" || true
+  bluetoothctl disconnect "$address" || true
   pactl set-card-profile "$speakers" output:analog-stereo+input:analog-stereo || true
   pactl set-card-profile "$headset" off || true
   pactl set-card-profile "$earphones" off || true
   ;;
 "headphones (output-only)")
   echo "Setting up Headphones (Output-Only)"
-  bluetoothctl disconnect "5C:56:A4:74:38:19" || true
+  bluetoothctl disconnect "$address" || true
   pactl set-card-profile "$headset" output:analog-stereo || true
   pactl set-card-profile "$speakers" off || true
   pactl set-card-profile "$earphones" off || true
   ;;
 "earphones")
-  bluetoothctl connect "5C:56:A4:74:38:19"
+  bluetoothctl connect "$address"
   echo "Setting up Earphones"
   pactl set-card-profile "$earphones" a2dp-sink || true
   pactl set-card-profile "$headset" off || true
