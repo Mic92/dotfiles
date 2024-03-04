@@ -50,6 +50,14 @@ let
     # does not build yet on aarch64
   ] ++ lib.optional (pkgs.stdenv.hostPlatform.system == "x86_64-linux") pkgs.deno
   ++ lib.optional (!pkgs.stdenv.hostPlatform.isDarwin) sumneko-lua-language-server;
+
+  neovim' = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped (pkgs.neovimUtils.makeNeovimConfig {
+    wrapRc = false;
+    extraPython3Packages = _ps: [
+      # required by https://github.com/CopilotC-Nvim/CopilotChat.nvim
+      # ps.python-dotenv ps.requests ps.prompt-toolkit
+    ];
+  });
 in
 stdenv.mkDerivation {
   name = "astro-nvim-config";
@@ -70,4 +78,5 @@ stdenv.mkDerivation {
     '') pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies}
   '';
   passthru.lspPackages = lspPackages;
+  passthru.neovim = neovim';
 }
