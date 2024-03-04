@@ -424,11 +424,10 @@ xalias cloc=scc
 # higher priority to get no packet loss
 xalias mumble="nice -10 mumble"
 
-if [[ -n ${commands[heygpt]} ]]; then
-  heygpt() {
+if [[ -n ${commands[shell-gpt]} ]]; then
+  shell-gpt() {
     export OPENAI_API_KEY=$(rbw get openai-api-key)
-    export OPENAI_API_BASE="https://api.openai.com/v1"
-    command heygpt --model gpt-4 "$@"
+    command shell-gpt "$@"
   }
 fi
 

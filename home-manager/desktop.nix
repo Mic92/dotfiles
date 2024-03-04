@@ -51,7 +51,7 @@
     xdg-utils
     patool
     tio
-    heygpt
+    shell_gpt
 
     (mpv.override {
       scripts = [ mpvScripts.mpris ];
