@@ -26,7 +26,7 @@ in
       };
       LOG_LEVEL = "debug";
     };
-    startAt = "weekly";
+    startAt = "hourly";
     path = [
       pkgs.git
       pkgs.openssh
