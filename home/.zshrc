@@ -424,10 +424,10 @@ xalias cloc=scc
 # higher priority to get no packet loss
 xalias mumble="nice -10 mumble"
 
-if [[ -n ${commands[shell-gpt]} ]]; then
-  shell-gpt() {
+if [[ -n ${commands[sgpt]} ]]; then
+  sgpt() {
     export OPENAI_API_KEY=$(rbw get openai-api-key)
-    command shell-gpt "$@"
+    command sgpt "$@"
   }
 fi
 
