@@ -1,9 +1,13 @@
-{ pkgs, lib ... }: {
-  boot.zfs.enableUnstable = true;
-  boot.zfs.requestEncryptionCredentials = true;
-  boot.kernelPackages = lib.mkDefault (pkgs.zfsUnstable.override {
+{ pkgs }:
+let
+  zfsPackage = pkgs.zfsUnstable.override {
     removeLinuxDRM = pkgs.hostPlatform.isAarch64;
-  }).latestCompatibleLinuxPackages;
+  };
+in
+{
+  boot.zfs.package = zfsPackage;
+  boot.zfs.requestEncryptionCredentials = true;
+  boot.kernelPackages = zfsPackage.latestCompatibleLinuxPackages;
   boot.supportedFilesystems = [ "zfs" ];
   networking.hostId = "ac174b52";
   environment.systemPackages = [
