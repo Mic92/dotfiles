@@ -7,6 +7,7 @@
         "borgbackup-job-matchbox.service"
         "borgbackup-job-nfs-home.service"
         "borgbackup-job-nfs-share.service"
+        "borgbackup-job-wiki.service"
       ]
         (name: {
           expr = ''absent_over_time(task_last_run{name="${name}"}[1d])'';
