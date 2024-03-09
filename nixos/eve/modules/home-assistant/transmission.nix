@@ -33,8 +33,9 @@
       '';
     };
   };
+  services.home-assistant.extraComponents = [ "transmission" ];
+
   services.home-assistant.config = {
-    transmission = [ ];
     var.torrent_url = {
       friendly_name = "Torrent magnet url";
       initial_value = "";
@@ -43,7 +44,7 @@
     script.add_torrent.sequence = [
       {
         service = "transmission.add_torrent";
-        data_template = {
+        data = {
           name = "Transmission";
           torrent = ''{{ states("var.torrent_url") }}'';
         };
@@ -64,11 +65,11 @@
         action = [
           {
             service = "notify.irc_flix";
-            data_template.message = "torrent completed: {{trigger.event.data.name}}";
+            data.message = "torrent completed: {{trigger.event.data.name}}";
           }
           {
             service = "notify.mobile_app_beatrice";
-            data_template = {
+            data = {
               title = "Torrent completed!";
               message = ": {{trigger.event.data.name}}";
             };

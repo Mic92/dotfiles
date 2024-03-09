@@ -12,7 +12,7 @@
       speech.text = "Connect {{ bluetooth_device }} to {{ device }}.";
       action = {
         service = "python_script.connect_bluetooth";
-        data_template = {
+        data = {
           action = "connect";
           bluetooth_device = "{{ bluetooth_device }}";
           device = "{{ device }}";
@@ -23,7 +23,7 @@
       speech.text = "Disconnect {{ bluetooth_device }}.";
       action = {
         service = "python_script.connect_bluetooth";
-        data_template = {
+        data = {
           action = "disconnect";
           bluetooth_device = "{{ bluetooth_device }}";
         };

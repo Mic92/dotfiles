@@ -3,8 +3,8 @@ let
     speech.text = "Notified ${name}";
     action = {
       service = "icloud.play_sound";
-      data_template.account = "slekwati@outlook.com";
-      data_template.device_name = device_name;
+      data.account = "slekwati@outlook.com";
+      data.device_name = device_name;
     };
   };
 in

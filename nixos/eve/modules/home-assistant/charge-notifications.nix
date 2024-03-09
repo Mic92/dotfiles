@@ -20,11 +20,11 @@
           [
             {
               service = "notify.mobile_app_beatrice";
-              data_template.message = msg;
+              data.message = msg;
             }
             {
               service = "notify.pushover";
-              data_template.message = msg;
+              data.message = msg;
             }
           ];
       }
@@ -47,11 +47,11 @@
           [
             {
               service = "notify.mobile_app_beatrice";
-              data_template.message = msg;
+              data.message = msg;
             }
             {
               service = "notify.pushover";
-              data_template.message = msg;
+              data.message = msg;
             }
           ];
       }
@@ -77,7 +77,7 @@
         action = [
           {
             service = "notify.mobile_app_beatrice";
-            data_template.message = ''Apple watch is still on charge ({{ state_attr("device_tracker.shannans_apple_watch", "battery") | round(1) }}%)'';
+            data.message = ''Apple watch is still on charge ({{ state_attr("device_tracker.shannans_apple_watch", "battery") | round(1) }}%)'';
           }
         ];
       }
@@ -96,7 +96,7 @@
         action = [
           {
             service = "notify.mobile_app_beatrice";
-            data_template.message = ''Apple watch was charged up to {{ state_attr("device_tracker.shannans_apple_watch", "battery") | round(1) }}%'';
+            data.message = ''Apple watch was charged up to {{ state_attr("device_tracker.shannans_apple_watch", "battery") | round(1) }}%'';
           }
         ];
       }
@@ -116,7 +116,7 @@
         action = [
           {
             service = "notify.pushover";
-            data_template.message = ''Android only has {{ states("sensor.android_battery_level")  }}% battery left'';
+            data.message = ''Android only has {{ states("sensor.android_battery_level")  }}% battery left'';
           }
         ];
       }
@@ -135,7 +135,7 @@
         action = [
           {
             service = "notify.pushover";
-            data_template.message = ''Android was charged up {{ states("sensor.android_battery_level") }}%'';
+            data.message = ''Android was charged up {{ states("sensor.android_battery_level") }}%'';
           }
         ];
       }

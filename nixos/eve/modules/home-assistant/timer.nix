@@ -55,11 +55,11 @@ in
           {
             service = "timer.start";
             entity_id = "timer.pause_rhasspy";
-            data_template.duration = convertDuration;
+            data.duration = convertDuration;
           }
           {
             service = "shell_command.ssh_rhasspy_mqtt";
-            data_template = {
+            data = {
               state = "Off";
               host = "turingmachine.r";
             };
@@ -73,11 +73,11 @@ in
           {
             service = "timer.start";
             entity_id = "timer.pause_rhasspy";
-            data_template.duration = "{{ 60 * 20 }}";
+            data.duration = "{{ 60 * 20 }}";
           }
           {
             service = "shell_command.ssh_rhasspy_mqtt";
-            data_template = {
+            data = {
               state = "Off";
               host = "turingmachine.r";
             };
@@ -93,7 +93,7 @@ in
           {
             service = "timer.start";
             entity_id = "timer.rhasspy";
-            data_template.duration = convertDuration;
+            data.duration = convertDuration;
           }
         ];
       };
@@ -130,11 +130,11 @@ in
         action = [
           {
             service = "notify.pushover";
-            data_template.message = ''timer for {{ state_attr("timer.rhasspy", "duration") }} is up!'';
+            data.message = ''timer for {{ state_attr("timer.rhasspy", "duration") }} is up!'';
           }
           {
             service = "rest_command.tts";
-            data_template.message = ''Timer for {{ state_attr("timer.rhasspy", "duration") }} is up!'';
+            data.message = ''Timer for {{ state_attr("timer.rhasspy", "duration") }} is up!'';
           }
         ];
       }
@@ -148,14 +148,14 @@ in
         action = [
           {
             service = "shell_command.ssh_rhasspy_mqtt";
-            data_template = {
+            data = {
               state = "On";
               host = "turingmachine.r";
             };
           }
           {
             service = "rest_command.tts";
-            data_template.message = ''Listening again'';
+            data.message = ''Listening again'';
           }
         ];
       }
