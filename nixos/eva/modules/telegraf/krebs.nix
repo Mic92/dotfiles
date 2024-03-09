@@ -154,6 +154,7 @@
           "http://cgit.ni.r"
           "http://cgit.gum.r"
           "http://cgit.orange.r"
+          "https://cgit.lassul.us"
         ];
         response_string_match = "cgit";
         tags.org = "krebs";
