@@ -1,4 +1,7 @@
 {
+  services.home-assistant.extraComponents = [
+    "openweathermap"
+  ];
   services.home-assistant.config = {
     conversation.intents = {
       WeatherToday = [
@@ -22,7 +25,6 @@
       name = "Rain notified today";
       icon = "mdi:weather-cloudy";
     };
-    openweathermap = { };
     weather = { };
     automation = [
       {
