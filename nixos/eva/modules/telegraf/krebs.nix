@@ -49,14 +49,6 @@
         tags.org = "krebs";
         response_status_code = 200;
       }
-      #{
-      #  urls = ["http://puyak.r"];
-      #  headers.Host = "light.shack";
-      #  response_string_match = "shackspace";
-      #  tags.host = "puyak";
-      #  tags.org = "krebs";
-      #  interface = "tinc.retiolum";
-      #}
       {
         urls = [
           "http://transmission.r/transmission/web/"
@@ -70,20 +62,7 @@
       }
       {
         urls = [
-          "http://yellow.r/chatty/index.html"
-        ];
-        response_string_match = "shoutbox";
-        tags.host = "yellow";
-        tags.org = "krebs";
-        interface = "tinc.retiolum";
-        response_status_code = 200;
-      }
-      {
-        urls = [
           "http://yellow.r"
-          # currently broken
-          #"http://sicily.r/"
-          #"https://sicily.r/"
           "http://flix.r/"
         ];
         response_string_match = "Index of /";
