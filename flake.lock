@@ -16,29 +16,6 @@
         "type": "github"
       }
     },
-    "bme680-mqtt": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1674635899,
-        "narHash": "sha256-D5pr5Cfzq604cwG9DXlhUVFDO8VBuXidtxlou4CNFd0=",
-        "owner": "Mic92",
-        "repo": "bme680-mqtt",
-        "rev": "f5c8f25b70cd2c3e41cfc0b2d5a6813e4e55c418",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "bme680-mqtt",
-        "type": "github"
-      }
-    },
     "buildbot-nix": {
       "inputs": {
         "flake-parts": [
@@ -551,7 +528,6 @@
     "root": {
       "inputs": {
         "astro-nvim": "astro-nvim",
-        "bme680-mqtt": "bme680-mqtt",
         "buildbot-nix": "buildbot-nix",
         "clan-core": "clan-core",
         "disko": "disko",

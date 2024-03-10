@@ -23,7 +23,6 @@
     ./modules/disko.nix
     ./modules/docker.nix
     ./modules/dovecot.nix
-    ./modules/ejabberd.nix
     ./modules/ergo.nix
     ./modules/et.nix
     ./modules/gitea
