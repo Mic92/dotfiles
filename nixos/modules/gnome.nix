@@ -6,6 +6,10 @@
     displayManager.defaultSession = "gnome";
     desktopManager.gnome.enable = true;
   };
+  programs.kdeconnect = {
+    package = pkgs.gnomeExtensions.gsconnect;
+    enable = true;
+  };
   environment.systemPackages = [
     pkgs.gnome.gnome-tweaks
     pkgs.gnome.dconf-editor
