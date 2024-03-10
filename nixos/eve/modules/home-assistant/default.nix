@@ -9,7 +9,6 @@
     ./light.nix
     ./ldap.nix
     ./noops.nix
-    ./mqtt.nix
     ./presence.nix
     ./postgres.nix
     ./android.nix
