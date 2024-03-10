@@ -39,20 +39,16 @@
     ];
 
     network = {
-      wan = {
-        _type = "interface";
-        proto = "pppoe";
-        # values with @key@ are replaced by secrets loaded via the sops files at the end of this module
-        username = "@pppoe_username@";
-        password = "@pppoe_password@";
-        ipv6 = "auto";
-        device = "wan.7";
-      };
       vpn = {
         _type = "interface";
         ifname = "tun0";
         proto = "static";
         ip6addr = "42:0:3c46:3f4b:cbe8:e276:a769:2a99/12";
+      };
+      lan = {
+        _type = "interface";
+        device = "br-lan";
+        proto = "dhcp";
       };
       # When overriding `network.device`, don't forget to re-add `br-lan`, or you will log yourself out!
       device = [
@@ -61,14 +57,7 @@
           name = "br-lan";
           type = "bridge";
           # list options are also supported
-          ports = [ "lan1" "lan2" "lan3" "lan4" ];
-        }
-        {
-          _type = "device";
-          name = "wan.7";
-          type = "8021q";
-          ifname = "wan";
-          vid = "7";
+          ports = [ "lan1" "lan2" "lan3" "lan4" "wan" ];
         }
       ];
     };
@@ -77,7 +66,7 @@
         _type = "wifi-device";
         type = "mac80211";
         path = "platform/18000000.wmac";
-        channel = "1";
+        channel = "auto";
         band = "2g";
         htmode = "HT20";
         country = "DE";
@@ -87,9 +76,9 @@
         _type = "wifi-device";
         type = "mac80211";
         path = "1a143000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0";
-        channel = "36";
+        channel = "auto";
         band = "5g";
-        htmode = "HE80";
+        htmode = "HE160";
         country = "DE";
         cell_density = "0";
       };
@@ -124,37 +113,6 @@
         "prism"
       ];
     };
-
-    dhcp.host = lib.imap0
-      (id: host:
-        rec {
-          _type = "host";
-          dns = "1";
-          ip = "192.168.1.${hostid}";
-          hostid = toString (id + 2);
-        }
-        // host) [
-      {
-        name = "rock";
-        mac = "4a:4e:25:af:9e:0f";
-      }
-      {
-        name = "turingmachine";
-        mac = "c4:03:a8:86:a2:95";
-      }
-      {
-        name = "bernie";
-        mac = "14:18:C3:BB:6F:07";
-      }
-      {
-        name = "oneplus-nord";
-        mac = "D0:49:7C:36:5B:80";
-      }
-      {
-        name = "livingroom";
-        mac = "7C:DF:A1:B5:11:B0";
-      }
-    ];
 
     ddns =
       let
@@ -206,142 +164,6 @@
       listen_interface = "vpn";
       listen_port = "9273";
     };
-
-    firewall.redirect = [{
-      _type = "redirect";
-      enabled = "1";
-      name = "Forward-ESPHome";
-      src = "wan";
-      dest = "lan";
-      dest_ip = "192.168.1.6"; # livingroom
-      proto = "tcp";
-      src_dport = 6053;
-      dest_port = 6053;
-    }];
-
-    firewall.rule = [
-      # Not needed for pppoe
-      #{
-      #  _type = "rule";
-      #  name = "Allow-DHCP-Renew";
-      #  proto = "udp";
-      #  src = "wan";
-      #  dest_port = 68;
-      #  family = "ipv4";
-      #  target = "ACCEPT";
-      #}
-      # only needed for ISP iptv
-      #{
-      #  _type = "rule";
-      #  name = "Allow-IGMP";
-      #  proto = "icmp";
-      #  src = "wan";
-      #  icmp_type = "echo-request";
-      #  family = "ipv4";
-      #  target = "ACCEPT";
-      #}
-      {
-        _type = "rule";
-        name = "Allow-Ping";
-        proto = "icmp";
-        src = "wan";
-        icmp_type = "echo-request";
-        family = "ipv4";
-        target = "ACCEPT";
-      }
-      {
-        _type = "rule";
-        name = "Allow-DHCPv6";
-        src = "wan";
-        proto = "udp";
-        src_ip = "fc00::/6";
-        dest_ip = "fc00::/6";
-        dest_port = 546;
-        family = "ipv6";
-        target = "ACCEPT";
-      }
-      # "The WAN port should at least respond to MLD queries as otherwise a
-      # snooping bridge/switch might drop traffic."
-      {
-        _type = "rule";
-        name = "Allow-MLD";
-        src = "wan";
-        proto = "icmp";
-        src_ip = "fe80::/10";
-        icmp_type = [ "130/0" "131/0" "132/0" "143/0" ];
-        family = "ipv6";
-        target = "ACCEPT";
-      }
-      {
-        _type = "rule";
-        name = "Allow-ICMPv6-Input";
-        src = "wan";
-        proto = "icmp";
-        src_ip = "fe80::/10";
-        icmp_type = [
-          "echo-request"
-          "echo-reply"
-          "destination-unreachable"
-          "packet-too-big"
-          "time-exceeded"
-          "bad-header"
-          "unknown-header-type"
-          "router-solicitation"
-          "neighbour-solicitation"
-          "router-advertisement"
-          "neighbour-advertisement"
-        ];
-        limit = "1000/sec";
-        family = "ipv6";
-        target = "ACCEPT";
-      }
-      {
-        _type = "rule";
-        name = "Allow-ICMPv6-Forward";
-        src = "wan";
-        dest = "*";
-        icmp_type = [
-          "echo-request"
-          "echo-reply"
-          "destination-unreachable"
-          "packet-too-big"
-          "time-exceeded"
-          "bad-header"
-          "unknown-header-type"
-        ];
-        limit = "1000/sec";
-        family = "ipv6";
-        target = "ACCEPT";
-      }
-      # no need for ipsec
-      #{
-      #  _type = "rule";
-      #  name = "Allow-IPSec-ESP";
-      #  src = "wan";
-      #  dest = "lan";
-      #  proto = "esp";
-      #  target = "ACCEPT";
-      #}
-      #{
-      #  _type = "rule";
-      #  name = "Allow-ISAKMP";
-      #  src = "wan";
-      #  dest = "lan";
-      #  dest_port = "500";
-      #  proto = "udp";
-      #  target = "ACCEPT";
-      #}
-      # own rules follow here
-      {
-        _type = "rule";
-        name = "Allow-Tinc";
-        src = "wan";
-        dest = "lan";
-        dest_port = "655";
-        family = "ipv6";
-        target = "ACCEPT";
-      }
-    ];
   };
   uci.secrets = {
     sops.files = [
