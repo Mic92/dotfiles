@@ -1,15 +1,15 @@
 let
   notifyJoerg = msg: {
     service = "notify.pushover";
-    data_template.message = msg;
+    data.message = msg;
   };
   notifyShannan = msg: {
     service = "notify.mobile_app_beatrice";
-    data_template.message = msg;
+    data.message = msg;
   };
   presenceScript = {
     service = "python_script.presence";
-    data_template = {
+    data = {
       from_state = "{{trigger.from_state.state}}";
       to_state = "{{trigger.to_state.state}}";
       entity_id = "{{trigger.entity_id}}";

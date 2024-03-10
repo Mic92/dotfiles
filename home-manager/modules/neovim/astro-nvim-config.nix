@@ -53,9 +53,8 @@ let
 
   neovim' = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped (pkgs.neovimUtils.makeNeovimConfig {
     wrapRc = false;
-    extraPython3Packages = _ps: [
-      # required by https://github.com/CopilotC-Nvim/CopilotChat.nvim
-      # ps.python-dotenv ps.requests ps.prompt-toolkit
+    extraLuaPackages = ps: [
+      (ps.callPackage ./lua-tiktoken.nix {})
     ];
   });
 in

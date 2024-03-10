@@ -2,6 +2,7 @@
   services.home-assistant.config.homeassistant = {
     name = "Home";
     latitude = "!secret home_latitude";
+    country = "DE";
     longitude = "!secret home_longitude";
     elevation = "!secret home_elevation";
     unit_system = "metric";
@@ -16,7 +17,7 @@
       radius = "300";
     }
     {
-      name = "Grunecker";
+      name = "Vertex";
       icon = "mdi:briefcase";
       latitude = "!secret work_latitude";
       longitude = "!secret work_longitude";

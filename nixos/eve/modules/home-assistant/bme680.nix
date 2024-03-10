@@ -21,7 +21,7 @@
         action = [
           {
             service = "rest_command.tts";
-            data_template.message = ''Open a window, please.'';
+            data.message = ''Open a window, please.'';
           }
         ];
       }
@@ -36,7 +36,7 @@
         action = [
           {
             service = "rest_command.tts";
-            data_template.message = ''Close the window, please.'';
+            data.message = ''Close the window, please.'';
           }
         ];
       }

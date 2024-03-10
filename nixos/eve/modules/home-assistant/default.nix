@@ -15,7 +15,6 @@
     ./android.nix
     ./timer.nix
     ./transmission.nix
-    ./vlc.nix
     ./weather.nix
     ./zones.nix
   ];
@@ -29,7 +28,9 @@
         ];
       });
   };
-
+  services.home-assistant.extraComponents = [
+    "pushover"
+  ];
   services.home-assistant.config =
     let
       hiddenEntities = [
@@ -60,22 +61,8 @@
       logbook.exclude.entities = hiddenEntities;
       logger.default = "info";
       sun = { };
-      calendar = {
-        platform = "caldav";
-        url = "https://cloud.thalheim.io/remote.php/dav";
-        username = "hass@thalheim.io";
-        password = "!secret ldap_password";
-      };
       prometheus.filter.include_domains = [
         "persistent_notification"
-      ];
-      notify = [
-        {
-          name = "Pushover";
-          platform = "pushover";
-          api_key = "!secret pushover_api_key";
-          user_key = "!secret pushover_user_key";
-        }
       ];
       device_tracker = [
         {
@@ -99,7 +86,6 @@
       system_health = { };
       default_config = { };
       system_log = { };
-      vlc_telnet = { };
       sensor = [
         {
           platform = "template";

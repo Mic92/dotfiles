@@ -20,12 +20,12 @@
     intent_script.SuspendLaptop = {
       speech.text = "Suspend laptop";
       action.service = "shell_command.suspend_laptop";
-      action.data_template.host = "turingmachine.r";
+      action.data.host = "turingmachine.r";
     };
     intent_script.SuspendBernie = {
       speech.text = "Suspend laptop";
       action.service = "shell_command.suspend_laptop";
-      action.data_template.host = "bernie.r";
+      action.data.host = "bernie.r";
     };
     intent_script.UpdateShannansLocation = {
       speech.text = "Updated Shannan's location";

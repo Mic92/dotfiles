@@ -7,42 +7,61 @@ return {
     "ziontee113/icon-picker.nvim",
     init = function() require("icon-picker").setup { disable_legacy_commands = true } end,
   },
-  -- Doesn't work, wait for the lua rewrite
-  --{
-  --  "CopilotC-Nvim/CopilotChat.nvim",
-  --  -- Not sure how "VeryLazy" is supposed to work?
-  --  event = "VeryLazy",
-  --  keys = {
-  --    { "<leader>ccb", ":CopilotChatBuffer ",         desc = "CopilotChat - Chat with current buffer" },
-  --    { "<leader>cce", "<cmd>CopilotChatExplain<cr>", desc = "CopilotChat - Explain code" },
-  --    { "<leader>cct", "<cmd>CopilotChatTests<cr>",   desc = "CopilotChat - Generate tests" },
-  --    {
-  --      "<leader>ccT",
-  --      "<cmd>CopilotChatVsplitToggle<cr>",
-  --      desc = "CopilotChat - Toggle Vsplit", -- Toggle vertical split
-  --    },
-  --    {
-  --      "<leader>ccv",
-  --      ":CopilotChatVisual ",
-  --      mode = "x",
-  --      desc = "CopilotChat - Open in vertical split",
-  --    },
-  --    {
-  --      "<leader>ccx",
-  --      ":CopilotChatInPlace<cr>",
-  --      mode = "x",
-  --      desc = "CopilotChat - Run in-place code",
-  --    },
-  --    {
-  --      "<leader>ccf",
-  --      "<cmd>CopilotChatFixDiagnostic<cr>", -- Get a fix for the diagnostic message under the cursor.
-  --      desc = "CopilotChat - Fix diagnostic",
-  --    },
-  --    {
-  --      "<leader>ccr",
-  --      "<cmd>CopilotChatReset<cr>", -- Reset chat history and clear buffer.
-  --      desc = "CopilotChat - Reset chat history and clear buffer",
-  --    },
-  --  },
-  --},
+  {
+    "CopilotC-Nvim/CopilotChat.nvim",
+    branch = "canary",
+    dependencies = {
+      { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
+      { "nvim-lua/plenary.nvim" },  -- for curl, log wrapper
+    },
+    lazy = false,
+    keys = function()
+      local select = require "CopilotChat.select"
+      local telescope = require "CopilotChat.integrations.telescope"
+      local actions = require "CopilotChat.actions"
+
+      return {
+        {
+          "<leader>ccq",
+          function()
+            local input = vim.fn.input "Quick Chat: "
+            if input ~= "" then require("CopilotChat").ask(input, { selection = select.buffer }) end
+          end,
+          desc = "CopilotChat - Quick chat",
+        },
+        {
+          "<leader>ccq",
+          function()
+            local input = vim.fn.input "Quick Chat: "
+            if input ~= "" then require("CopilotChat").ask(input, { selection = select.visual }) end
+          end,
+          desc = "CopilotChat - Quick chat",
+          mode = "v",
+        },
+        {
+          "<leader>cch",
+          function() telescope.pick(actions.help_actions(), { selection = select.buffer }) end,
+          desc = "CopilotChat - Help actions",
+        },
+        {
+          "<leader>cch",
+          function() telescope.pick(actions.help_actions(), { selection = select.visual }) end,
+          desc = "CopilotChat - Help actions",
+          mode = "v",
+        },
+        {
+          "<leader>ccp",
+          function() telescope.pick(actions.prompt_actions(), { selection = select.visual }) end,
+          desc = "CopilotChat - Prompt actions",
+        },
+        {
+          "<leader>ccp",
+          function() telescope.pick(actions.prompt_actions(), { selection = select.visual }) end,
+          desc = "CopilotChat - Prompt actions",
+          mode = "v",
+        },
+      }
+    end,
+    opts = {},
+  },
 }

@@ -43,7 +43,8 @@
       hostName = "aarch64.nixos.community";
       maxJobs = 96;
       sshKey = "/root/.ssh/id_ed25519";
-      sshUser = "ssh-ng://mic92";
+      protocol = "ssh-ng";
+      sshUser = "mic92";
       system = "aarch64-linux";
       supportedFeatures = [
         "big-parallel"
