@@ -1,5 +1,5 @@
 #!/usr/bin/nix-shell
-#!nix-shell -i bash -p fuzzel pamixer pulseaudio
+#!nix-shell -i bash -p fuzzel pamixer pulseaudio libnotify bluez
 #shellcheck shell=bash
 set -exuo pipefail
 
@@ -13,37 +13,42 @@ speakers=alsa_card.pci-0000_00_1f.3
 earphones=bluez_output.50_C2_75_67_67_8C.1
 address="50:C2:75:67:67:8C"
 
+notify() {
+  notify-send -a audio-chooser "Audio Chooser" "$1"
+}
+
 case $selected in
 headphones)
-  echo "Setting up Headphones"
   bluetoothctl disconnect "5C:56:A4:74:38:19" || true
   pactl set-card-profile "$headset" output:analog-stereo+input:mono-fallback || true
   pactl set-card-profile "$speakers" off || true
   pactl set-card-profile "$earphones" off || true
+  notify "Headphones Connected"
   ;;
 speakers)
-  echo "Setting up Speakers"
   bluetoothctl disconnect "$address" || true
   pactl set-card-profile "$speakers" output:analog-stereo+input:analog-stereo || true
   pactl set-card-profile "$headset" off || true
   pactl set-card-profile "$earphones" off || true
+  notify "Speakers Connected"
   ;;
 "headphones (output-only)")
-  echo "Setting up Headphones (Output-Only)"
   bluetoothctl disconnect "$address" || true
   pactl set-card-profile "$headset" output:analog-stereo || true
   pactl set-card-profile "$speakers" off || true
   pactl set-card-profile "$earphones" off || true
+  notify "Headphones (Output-Only) Connected"
   ;;
 "earphones")
   bluetoothctl connect "$address"
-  echo "Setting up Earphones"
   pactl set-card-profile "$earphones" a2dp-sink || true
   pactl set-card-profile "$headset" off || true
   pactl set-card-profile "$speakers" off || true
+  notify "Earphones Connected"
   ;;
 *)
   echo "Invalid Option $selected"
+  notify "Invalid Option $selected"
   exit 1
   ;;
 esac
