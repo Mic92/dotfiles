@@ -1,4 +1,4 @@
-{ lib, ... }: {
+{
   uci.settings = {
     # The block below will translate to the following uci settings:
     # root@OpenWrt:~# uci show dropbear
