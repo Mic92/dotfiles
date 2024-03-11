@@ -11,6 +11,8 @@
     enable = true;
   };
   environment.systemPackages = [
+    pkgs.playerctl # gsconnect play/pause command
+    pkgs.pamixer # gcsconnect volume control
     pkgs.gnome.gnome-tweaks
     pkgs.gnome.dconf-editor
     pkgs.gnomeExtensions.vitals
