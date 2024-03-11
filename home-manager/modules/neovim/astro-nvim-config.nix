@@ -54,7 +54,7 @@ let
   neovim' = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped (pkgs.neovimUtils.makeNeovimConfig {
     wrapRc = false;
     extraLuaPackages = ps: [
-      (ps.callPackage ./lua-tiktoken.nix {})
+      (ps.callPackage ./lua-tiktoken.nix { })
     ];
   });
 in
