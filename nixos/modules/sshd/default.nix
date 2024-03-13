@@ -11,7 +11,7 @@
   # srvos sets more sane defaults
   services.openssh = {
     enable = true;
-    settings.HostCertificate = "${config.clanCore.secrets.openssh-interactive.facts."ssh.id_ed25519-cert.pub"}";
+    settings.HostCertificate = config.clanCore.secrets.openssh-interactive.facts."ssh.id_ed25519-cert.pub".path;
   };
 
   clanCore.secrets.openssh-interactive = {
