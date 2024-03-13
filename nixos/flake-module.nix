@@ -71,6 +71,10 @@ in
           inputs.nixos-hardware.nixosModules.framework-13th-gen-intel
           inputs.nix-index-database.nixosModules.nix-index
           inputs.disko.nixosModules.disko
+
+          inputs.spora.nixosModules.mycelium
+          inputs.spora.nixosModules.hosts
+
           { programs.nix-index-database.comma.enable = true; }
           #{
           #  imports = [
@@ -118,6 +122,9 @@ in
           inputs.srvos.nixosModules.mixins-systemd-boot
           inputs.srvos.nixosModules.roles-prometheus
           inputs.disko.nixosModules.disko
+
+          inputs.spora.nixosModules.mycelium
+          inputs.spora.nixosModules.hosts
         ];
       };
 

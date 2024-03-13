@@ -550,6 +550,7 @@
         "nur-packages": "nur-packages",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
+        "spora": "spora",
         "srvos": "srvos",
         "treefmt-nix": "treefmt-nix"
       }
@@ -597,6 +598,26 @@
       "original": {
         "owner": "Mic92",
         "repo": "sops-nix",
+        "type": "github"
+      }
+    },
+    "spora": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1710332101,
+        "narHash": "sha256-9I+QYMZADrEJh0T0pLJIDpHUPWGKHUmgcChMySMzfUQ=",
+        "owner": "krebs",
+        "repo": "spora",
+        "rev": "76fc6502de6f42572c04d803e172b8f30acc9201",
+        "type": "github"
+      },
+      "original": {
+        "owner": "krebs",
+        "repo": "spora",
         "type": "github"
       }
     },
