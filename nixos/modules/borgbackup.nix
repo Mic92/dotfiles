@@ -1,5 +1,4 @@
 { config, ... }: {
-  clan.borgbackup.enable = true;
   clan.borgbackup.destinations.${config.networking.hostName} = {
     repo = "borg@blob64.r:/zdata/borg/${config.networking.hostName}";
   };
