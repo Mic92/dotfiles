@@ -64,16 +64,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1710258558,
-        "narHash": "sha256-9pi73xQf+1mQCMXlZE2hjq8/ZC3OxOpwCeCyEOOC6q4=",
-        "ref": "main",
-        "rev": "6ae2615d3194508e040650db462cf02319106079",
-        "revCount": 2223,
+        "lastModified": 1710323307,
+        "narHash": "sha256-0L3T3tCpzmIwQ+QQCy/9s/GvXiDTCzRoOGjKXPuBk54=",
+        "ref": "docs",
+        "rev": "2984c44dc9e228869aa3a1e49be2936a2dec732a",
+        "revCount": 2253,
         "type": "git",
         "url": "file:///home/joerg/work/clan/clan-core"
       },
       "original": {
-        "ref": "main",
+        "ref": "docs",
         "type": "git",
         "url": "file:///home/joerg/work/clan/clan-core"
       }

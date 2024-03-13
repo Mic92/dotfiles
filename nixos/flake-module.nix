@@ -18,6 +18,7 @@ let
       ./modules/sshd
       ./modules/zfs.nix
 
+      inputs.clan-core.clanModules.sshd
       inputs.clan-core.clanModules.borgbackup
 
       inputs.srvos.nixosModules.common
