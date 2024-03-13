@@ -6,9 +6,12 @@
     ../modules/minimal-docs.nix
     ../modules/networkd.nix
     ../modules/ip-update.nix
+    ../modules/packages.nix
     ./modules/photoprism.nix
     ./hardware-configuration.nix
   ];
+
+  networking.hostName = "blob64";
 
   clan.networking.buildHost = "root@eve.i";
 
@@ -30,22 +33,6 @@
     };
 
   services.openssh.enable = true;
-
-  networking.hostName = "blob64";
-
-  environment.systemPackages = with pkgs; [
-    vim
-    ethtool
-    iperf
-    parted
-    fio
-    wget
-    htop
-    tcpdump
-    nmap
-    python3
-    tmux
-  ];
 
   systemd.network.networks."10-uplink" = {
     matchConfig.Type = "ether";
