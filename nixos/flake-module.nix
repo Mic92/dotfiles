@@ -72,8 +72,7 @@ in
           inputs.nix-index-database.nixosModules.nix-index
           inputs.disko.nixosModules.disko
 
-          inputs.spora.nixosModules.mycelium
-          inputs.spora.nixosModules.hosts
+          inputs.spora.nixosModules.spora
 
           { programs.nix-index-database.comma.enable = true; }
           #{
@@ -123,8 +122,7 @@ in
           inputs.srvos.nixosModules.roles-prometheus
           inputs.disko.nixosModules.disko
 
-          inputs.spora.nixosModules.mycelium
-          inputs.spora.nixosModules.hosts
+          inputs.spora.nixosModules.spora
         ];
       };
 
