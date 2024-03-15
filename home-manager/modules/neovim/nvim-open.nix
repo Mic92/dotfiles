@@ -1,4 +1,11 @@
-{ stdenv, neovim-remote, makeWrapper, makePythonPath, toPythonModule, python3 }:
+{
+  stdenv,
+  neovim-remote,
+  makeWrapper,
+  makePythonPath,
+  toPythonModule,
+  python3,
+}:
 stdenv.mkDerivation {
   name = "nvim-open";
   unpackPhase = ":";

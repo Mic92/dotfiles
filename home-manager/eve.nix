@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   imports = [
     ./common.nix
     ./modules/atuin-autosync.nix
@@ -13,17 +14,19 @@
         notifySupport = false;
       })
       (weechat.override {
-        configure = { availablePlugins, ... }: {
-          scripts = with pkgs.weechatScripts; [
-            wee-slack
-            weechat-matrix
-          ];
-          plugins = [
-            availablePlugins.python
-            availablePlugins.perl
-            availablePlugins.lua
-          ];
-        };
+        configure =
+          { availablePlugins, ... }:
+          {
+            scripts = with pkgs.weechatScripts; [
+              wee-slack
+              weechat-matrix
+            ];
+            plugins = [
+              availablePlugins.python
+              availablePlugins.perl
+              availablePlugins.lua
+            ];
+          };
       })
 
       pkgs.matterbridge

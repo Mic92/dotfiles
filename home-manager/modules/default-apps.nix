@@ -1,4 +1,5 @@
-{ lib, ... }: {
+{ lib, ... }:
+{
   xdg.mimeApps = {
     enable = true;
     defaultApplications =
@@ -217,6 +218,9 @@
       // (lib.genAttrs urls (_: [ "firefox.desktop" ]))
       // (lib.genAttrs documents (_: [ "org.gnome.Evince.desktop" ]))
       // (lib.genAttrs audioVideo (_: [ "mpv.desktop" ]))
-      // (lib.genAttrs [ "x-scheme-handler/sgnl" "x-scheme-handler/signalcaptcha" ] (_: [ "signal-desktop.desktop" ]));
+      // (lib.genAttrs [
+        "x-scheme-handler/sgnl"
+        "x-scheme-handler/signalcaptcha"
+      ] (_: [ "signal-desktop.desktop" ]));
   };
 }

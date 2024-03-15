@@ -66,7 +66,11 @@ in
             phone = "";
             portable = "";
             car = "";
-            default = [ "" "" "" ];
+            default = [
+              ""
+              ""
+              ""
+            ];
           };
           scroll-step = 5.0;
           on-click = "pamixer --toggle-mute";
@@ -100,7 +104,12 @@ in
           rotate = 0;
           #"device": "amdgpu_bl0",
           format = "{icon} {percent}%";
-          format-icons = [ "" "" "" "" ];
+          format-icons = [
+            ""
+            ""
+            ""
+            ""
+          ];
           on-click = "";
           on-click-middle = "";
           on-click-right = "";
@@ -126,7 +135,13 @@ in
           format-full = "{icon}  Full";
           # format-good = "";
           format-alt = "{icon} {time}";
-          format-icons = [ "" "" "" "" "" ];
+          format-icons = [
+            ""
+            ""
+            ""
+            ""
+            ""
+          ];
           format-time = "{H}h {M}min";
           tooltip = true;
         };

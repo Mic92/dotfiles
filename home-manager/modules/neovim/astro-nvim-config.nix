@@ -1,62 +1,66 @@
-{ inputs
-, lib
-, pkgs
-, stdenv
+{
+  inputs,
+  lib,
+  pkgs,
+  stdenv,
 }:
 let
-  lspPackages = with pkgs; [
-    nodejs # copilot
-    vale
-    terraform-ls
-    nodePackages.pyright
+  lspPackages =
+    with pkgs;
+    [
+      nodejs # copilot
+      vale
+      terraform-ls
+      nodePackages.pyright
 
-    # based on ./suggested-pkgs.json
-    gopls
-    golangci-lint
-    nodePackages.bash-language-server
-    taplo-lsp
-    marksman
-    rust-analyzer
-    yaml-language-server
-    nil
-    shellcheck
-    shfmt
-    isort
-    black
-    ruff
-    nixfmt-rfc-style
-    terraform-ls
-    clang-tools
-    nodePackages.prettier
-    stylua
-    # based on https://github.com/ray-x/go.nvim#go-binaries-install-and-update
-    go
-    gofumpt
-    gomodifytags
-    gotools
-    delve
-    golines
-    gomodifytags
-    gotests
-    iferr
-    impl
-    reftools
-    ginkgo
-    richgo
-    govulncheck
+      # based on ./suggested-pkgs.json
+      gopls
+      golangci-lint
+      nodePackages.bash-language-server
+      taplo-lsp
+      marksman
+      rust-analyzer
+      yaml-language-server
+      nil
+      shellcheck
+      shfmt
+      isort
+      black
+      ruff
+      nixfmt-rfc-style
+      terraform-ls
+      clang-tools
+      nodePackages.prettier
+      stylua
+      # based on https://github.com/ray-x/go.nvim#go-binaries-install-and-update
+      go
+      gofumpt
+      gomodifytags
+      gotools
+      delve
+      golines
+      gomodifytags
+      gotests
+      iferr
+      impl
+      reftools
+      ginkgo
+      richgo
+      govulncheck
 
-    #ocaml-ng.ocamlPackages_5_0.ocaml-lsp
-    #ocaml-ng.ocamlPackages_5_0.ocamlformat
-    # does not build yet on aarch64
-  ] ++ lib.optional (pkgs.stdenv.hostPlatform.system == "x86_64-linux") pkgs.deno
-  ++ lib.optional (!pkgs.stdenv.hostPlatform.isDarwin) sumneko-lua-language-server;
+      #ocaml-ng.ocamlPackages_5_0.ocaml-lsp
+      #ocaml-ng.ocamlPackages_5_0.ocamlformat
+      # does not build yet on aarch64
+    ]
+    ++ lib.optional (pkgs.stdenv.hostPlatform.system == "x86_64-linux") pkgs.deno
+    ++ lib.optional (!pkgs.stdenv.hostPlatform.isDarwin) sumneko-lua-language-server;
 
-  neovim' = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped (pkgs.neovimUtils.makeNeovimConfig {
-    wrapRc = false;
-    extraLuaPackages = ps: [
-      (ps.callPackage ./lua-tiktoken.nix { })
-    ];
-  });
+  neovim' = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped (
+    pkgs.neovimUtils.makeNeovimConfig {
+      wrapRc = false;
+      extraLuaPackages = ps: [ (ps.callPackage ./lua-tiktoken.nix { }) ];
+    }
+  );
 in
 stdenv.mkDerivation {
   name = "astro-nvim-config";

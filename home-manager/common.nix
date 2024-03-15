@@ -1,13 +1,16 @@
-{ pkgs
-, config
-, lib
-, ...
-}: {
+{
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+{
   imports = [
     ./modules/neovim
     ./modules/tmux-thumbs.nix
   ];
-  home.packages = with pkgs;
+  home.packages =
+    with pkgs;
     [
       nixpkgs-review
       nix-prefetch
@@ -57,12 +60,14 @@
       ncurses
       coreutils
       git
-    ] ++ lib.optionals pkgs.stdenv.isLinux [
+    ]
+    ++ lib.optionals pkgs.stdenv.isLinux [
       strace
       psmisc
       glibcLocales
       gdb
-    ] ++ lib.optional (pkgs.hostPlatform.system != "riscv64-linux") nix-output-monitor;
+    ]
+    ++ lib.optional (pkgs.hostPlatform.system != "riscv64-linux") nix-output-monitor;
 
   home.enableNixpkgsReleaseCheck = false;
 
@@ -73,6 +78,7 @@
 
   home.stateVersion = "23.11";
   home.username = lib.mkDefault "joerg";
-  home.homeDirectory = if pkgs.stdenv.isDarwin then "/Users/${config.home.username}" else "/home/${config.home.username}";
+  home.homeDirectory =
+    if pkgs.stdenv.isDarwin then "/Users/${config.home.username}" else "/home/${config.home.username}";
   programs.home-manager.enable = true;
 }

@@ -1,17 +1,20 @@
-{ writeShellScriptBin
-, astro-nvim-config
-, buildEnv
-, vimPlugins
-, neovim
-, nvim-appname
+{
+  writeShellScriptBin,
+  astro-nvim-config,
+  buildEnv,
+  vimPlugins,
+  neovim,
+  nvim-appname,
 }:
 writeShellScriptBin "nvim" ''
   set -efux
   unset VIMINIT
-  export PATH=${buildEnv {
-    name = "lsp-servers";
-    paths = astro-nvim-config.lspPackages;
-  }}/bin:$PATH
+  export PATH=${
+    buildEnv {
+      name = "lsp-servers";
+      paths = astro-nvim-config.lspPackages;
+    }
+  }/bin:$PATH
   export NVIM_APPNAME=${nvim-appname}
 
   XDG_CONFIG_HOME=''${XDG_CONFIG_HOME:-$HOME/.config}

@@ -1,10 +1,11 @@
-{ fetchFromGitHub
-, buildLuarocksPackage
-, lua
-, luarocks-build-rust-mlua
-, cargo
-, rustc
-, rustPlatform
+{
+  fetchFromGitHub,
+  buildLuarocksPackage,
+  lua,
+  luarocks-build-rust-mlua,
+  cargo,
+  rustc,
+  rustPlatform,
 }:
 let
   src = fetchFromGitHub {
@@ -24,7 +25,11 @@ buildLuarocksPackage rec {
     hash = "sha256-1UXTom5LpDqSOgBrGc8INq1Y0VNYZnXtavD1hIctFfs=";
   };
 
-  buildInputs = [ cargo rustc rustPlatform.cargoSetupHook ];
+  buildInputs = [
+    cargo
+    rustc
+    rustPlatform.cargoSetupHook
+  ];
   propagatedBuildInputs = [
     lua
     luarocks-build-rust-mlua

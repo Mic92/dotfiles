@@ -1,8 +1,9 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   systemd.user.timers.atuin-sync = {
-    Unit = { Description = "Atuin auto sync"; };
-    Timer = { OnUnitActiveSec = "1h"; };
-    Install = { WantedBy = [ "timers.target" ]; };
+    Unit.Description = "Atuin auto sync";
+    Timer.OnUnitActiveSec = "1h";
+    Install.WantedBy = [ "timers.target" ];
   };
 
   systemd.user.services.atuin-sync = {

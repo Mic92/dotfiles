@@ -2,7 +2,9 @@
   description = "NixOS configuration with flakes";
 
   nixConfig.extra-substituters = [ "https://cache.thalheim.io" ];
-  nixConfig.extra-trusted-public-keys = [ "cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc=" ];
+  nixConfig.extra-trusted-public-keys = [
+    "cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc="
+  ];
 
   # To update all inputs:
   # $ nix flake update
@@ -66,8 +68,8 @@
     srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
-    clan-core.url = "git+https://git.clan.lol/clan/clan-core";
-    #clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=openssh";
+    #clan-core.url = "git+https://git.clan.lol/clan/clan-core";
+    clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=openssh";
     clan-core.inputs.nixpkgs.follows = "nixpkgs";
     clan-core.inputs.sops-nix.follows = "sops-nix";
     clan-core.inputs.treefmt-nix.follows = "treefmt-nix";
@@ -112,10 +114,16 @@
     #microvm.inputs.flake-utils.follows = "flake-utils";
   };
 
-  outputs = inputs @ { self, flake-parts, nixpkgs, ... }:
-    (flake-parts.lib.evalFlakeModule
-      { inherit inputs; }
-      ({ withSystem, config, ... }: {
+  outputs =
+    inputs@{
+      self,
+      flake-parts,
+      nixpkgs,
+      ...
+    }:
+    (flake-parts.lib.evalFlakeModule { inherit inputs; } (
+      { withSystem, config, ... }:
+      {
         imports = [
           ./nixos/flake-module.nix
           ./nixos/images/flake-module.nix
@@ -124,34 +132,62 @@
           ./devshell/flake-module.nix
           inputs.hercules-ci-effects.flakeModule
         ];
-        systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" ];
+        systems = [
+          "x86_64-linux"
+          "aarch64-linux"
+          "aarch64-darwin"
+        ];
 
         herculesCI = herculesCI: {
-          onPush.default.outputs.effects.deploy = withSystem config.defaultEffectSystem ({ pkgs, hci-effects, ... }:
-            hci-effects.runIf (herculesCI.config.repo.branch == "main") (hci-effects.mkEffect {
-              effectScript = ''
-                ${pkgs.hello}/bin/hello
-              '';
-            })
+          onPush.default.outputs.effects.deploy = withSystem config.defaultEffectSystem (
+            { pkgs, hci-effects, ... }:
+            hci-effects.runIf (herculesCI.config.repo.branch == "main") (
+              hci-effects.mkEffect {
+                effectScript = ''
+                  ${pkgs.hello}/bin/hello
+                '';
+              }
+            )
           );
         };
 
-        perSystem = { config, inputs', self', lib, system, ... }: {
-          # make pkgs available to all `perSystem` functions
-          _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
+        perSystem =
+          {
+            config,
+            inputs',
+            self',
+            lib,
+            system,
+            ...
+          }:
+          {
+            # make pkgs available to all `perSystem` functions
+            _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
 
-          formatter = config.treefmt.build.wrapper;
+            formatter = config.treefmt.build.wrapper;
 
-          checks =
-            let
-              nixosMachines = lib.mapAttrs' (name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel) ((lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations);
-              blacklistPackages = [ "install-iso" "nspawn-template" "netboot-pixie-core" "netboot" ];
-              packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") (lib.filterAttrs (n: _v: !(builtins.elem n blacklistPackages)) self'.packages);
-              devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
-              homeConfigurations = lib.mapAttrs' (name: config: lib.nameValuePair "home-manager-${name}" config.activation-script) (self'.legacyPackages.homeConfigurations or { });
-            in
-            nixosMachines // packages // devShells // homeConfigurations;
-        };
+            checks =
+              let
+                nixosMachines = lib.mapAttrs' (
+                  name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel
+                ) ((lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations);
+                blacklistPackages = [
+                  "install-iso"
+                  "nspawn-template"
+                  "netboot-pixie-core"
+                  "netboot"
+                ];
+                packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") (
+                  lib.filterAttrs (n: _v: !(builtins.elem n blacklistPackages)) self'.packages
+                );
+                devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
+                homeConfigurations = lib.mapAttrs' (
+                  name: config: lib.nameValuePair "home-manager-${name}" config.activation-script
+                ) (self'.legacyPackages.homeConfigurations or { });
+              in
+              nixosMachines // packages // devShells // homeConfigurations;
+          };
         # CI
-      })).config.flake;
+      }
+    )).config.flake;
 }
