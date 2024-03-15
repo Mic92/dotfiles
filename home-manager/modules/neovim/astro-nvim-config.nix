@@ -24,7 +24,7 @@ let
     isort
     black
     ruff
-    nixpkgs-fmt
+    nixfmt-rfc-style
     terraform-ls
     clang-tools
     nodePackages.prettier

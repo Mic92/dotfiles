@@ -333,7 +333,7 @@ def add_github_user(c: Any, hosts: str = "", github_user: str = "Mic92") -> None
 @task
 def update_flakes(c: Any) -> None:
     c.run(
-        "TMPDIR=/run/user/$(id -u)/ fast-flake-update --rev origin/main nixpkgs_2 ~/git/nixpkgs",
+        "TMPDIR=/run/user/$(id -u)/ fast-flake-update --rev origin/main nixpkgs ~/git/nixpkgs",
         echo=True,
     )
     c.run("nix flake update --commit-lock-file", echo=True)

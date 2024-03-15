@@ -6,7 +6,6 @@
   imports = [
     ./modules/neovim
     ./modules/tmux-thumbs.nix
-    #./modules/emacs
   ];
   home.packages = with pkgs;
     [
@@ -16,10 +15,6 @@
 
       hexyl
       binutils
-      clang-tools
-      nixpkgs-fmt
-      shfmt
-      terraform-ls
       ouch
 
       python3.pkgs.black

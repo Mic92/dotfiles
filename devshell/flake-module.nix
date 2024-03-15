@@ -8,6 +8,7 @@
   perSystem =
     { inputs'
     , pkgs
+    , config
     , ...
     }: {
       treefmt = {
@@ -40,7 +41,7 @@
               "-eucx"
               ''
                 ${pkgs.deadnix}/bin/deadnix --edit "$@"
-                ${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt "$@"
+                ${config.packages.nixfmt-rfc-style}/bin/nixfmt "$@"
               ''
               "--"
             ];
