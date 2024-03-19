@@ -1,6 +1,5 @@
 { lib
 , config
-, pkgs
 , ...
 }:
 {
@@ -9,7 +8,8 @@
     gc.automatic = true;
     gc.dates = "03:15";
     gc.options = "--delete-older-than 10d";
-    package = pkgs.nixVersions.unstable;
+    # Bugs!
+    #package = pkgs.nixVersions.unstable;
 
     settings = {
       # for nix-direnv
