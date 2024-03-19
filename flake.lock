@@ -119,6 +119,32 @@
         "type": "github"
       }
     },
+    "envfs": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1710842169,
+        "narHash": "sha256-h4A+7EdmWUCJ4QwuY/9veme0vu//nDZhhXH9MnsE1QU=",
+        "owner": "Mic92",
+        "repo": "envfs",
+        "rev": "37996c55ece7d603f2d39ea92f229479bea6f18a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "envfs",
+        "type": "github"
+      }
+    },
     "fast-flake-update": {
       "inputs": {
         "flake-parts": [
@@ -505,6 +531,7 @@
         "buildbot-nix": "buildbot-nix",
         "clan-core": "clan-core",
         "disko": "disko",
+        "envfs": "envfs",
         "fast-flake-update": "fast-flake-update",
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
@@ -561,15 +588,16 @@
         "nixpkgs-stable": []
       },
       "locked": {
-        "lastModified": 1710433464,
-        "narHash": "sha256-IXlPoWgIRovZ32mYvqqdBgOQln71LouE/HBhbKc1wcw=",
+        "lastModified": 1710774322,
+        "narHash": "sha256-exqEIgsh+gkhGHdawCttZWWzkY7ub4E+8RW5YjT5OeM=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "6c32d3b9c7593f4b466ec5404e59fc09a803a090",
+        "rev": "b9d74d0991f009816aca0856ee06180fa5696e35",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
+        "ref": "yubikey-support",
         "repo": "sops-nix",
         "type": "github"
       }
