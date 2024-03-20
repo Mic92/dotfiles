@@ -73,20 +73,6 @@ in
           address = "imap.thalheim.io:4190";
         }
         {
-          # xmpp-client
-          protocol = "tcp";
-          tags.host = "eve";
-          tags.org = "private";
-          address = "jabber.thalheim.io:5222";
-        }
-        {
-          # xmpp-server
-          protocol = "tcp";
-          tags.host = "eve";
-          tags.org = "private";
-          address = "jabber.thalheim.io:5269";
-        }
-        {
           # openldap
           protocol = "tcp";
           tags.host = "eve";
