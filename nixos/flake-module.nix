@@ -73,6 +73,7 @@ in
           inputs.nixos-hardware.nixosModules.framework-13th-gen-intel
           inputs.nix-index-database.nixosModules.nix-index
           inputs.disko.nixosModules.disko
+          inputs.clan-core.clanModules.localbackup
 
           inputs.spora.nixosModules.spora
 

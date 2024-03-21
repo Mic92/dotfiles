@@ -15,6 +15,7 @@
     ./modules/postgresql.nix
     ./modules/tum-vpn.nix
     ./modules/toggle-keyboard
+    ./modules/localbackup.nix
 
     ../modules/borgbackup.nix
     ../modules/i18n.nix
@@ -45,7 +46,7 @@
 
   services.pcscd.enable = true;
 
-  systemd.sysusers.enable = true;
+  #systemd.sysusers.enable = true;
   users.mutableUsers = false;
   users.users.joerg.initialHashedPassword = config.clanCore.secrets.root-password.facts.root-password-hash.value;
 
