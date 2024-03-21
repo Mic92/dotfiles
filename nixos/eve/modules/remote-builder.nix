@@ -15,7 +15,7 @@
     #  ];
     #}
     {
-      hostName = "mac01.numtide.com";
+      hostName = "mac01";
       sshUser = "hetzner";
       protocol = "ssh-ng";
       sshKey = config.sops.secrets.ssh-aarch64-builder.path;
@@ -54,6 +54,10 @@
     }
   ];
   programs.ssh.extraConfig = ''
+    Host mac01
+      User hetzner
+      HostName mac01.numtide.com
+      IdentityFile ${config.sops.secrets.ssh-aarch64-builder.path}
     Host vislor
       User nix
       ProxyJump login-tum
