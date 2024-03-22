@@ -305,7 +305,7 @@ if [[ -n ${commands[rg]} ]]; then
     rg "$@"
   }
 elif [[ -n ${commands[ag]} ]]; then
-  alias ag='ag --color --smart-case --literal --pager=less'
+  alias ag="ag --color --smart-case --literal --pager=$PAGER"
 fi
 if [[ -n ${commands[zoxide]} ]]; then
   eval "$(zoxide init zsh)"
@@ -506,7 +506,6 @@ alias -g W='| wc -l'
 # generic aliases
 # diff format like git
 xalias diff='diff -Naur --strip-trailing-cr'
-[ -z "${commands[ping6]}" ] && alias ping6="ping -6"
 alias :q=exit
 alias grep="grep --binary-files=without-match --directories=skip --color=auto"
 alias R="R --quiet"
@@ -564,19 +563,20 @@ elif [[ -n ${commands[emacseditor]} ]]; then
 else
   export EDITOR=vim
 fi
-if [[ -n ${command[nvim]} ]]; then
+if [[ -n ${commands[nvim]} ]]; then
   export ALTERNATE_EDITOR=nvim
-elif [[ -n ${command[vim]} ]]; then
+elif [[ -n ${commands[vim]} ]]; then
   export ALTERNATE_EDITOR=vim
 fi
 
 export VISUAL=$EDITOR
-export READNULLCMD=$PAGER
-if [[ -n ${command[moar]} ]]; then
+if [[ -n ${commands[moar]} ]]; then
   export MANPAGER="moar"
+  alias less="moar"
 else
   export MANPAGER="less"
 fi
+export READNULLCMD=$PAGER
 export pacman_program=pacman-color
 # X11, Sound, Graphic
 export XDG_CACHE_HOME=~/.cache
@@ -746,7 +746,7 @@ pwd() {
 }
 urlencode() { python3 -c "import sys, urllib.parse as parse; print(parse.quote(sys.argv[1]))" $1; }
 urldecode() { python3 -c "import sys, urllib.parse as parse; print(parse.unquote(sys.argv[1]))" $1; }
-cheat() { command cheat -c "$@" | less; }
+cheat() { command cheat -c "$@" | "$PAGER"; }
 ninja(){
   local build_path="$(dirname "$(upfind "build.ninja")")"
   command ninja -C "${build_path:-.}" "$@"
