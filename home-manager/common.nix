@@ -52,6 +52,7 @@
       pinentry
       fd
       bat
+      moar
       vivid
       ripgrep
       zsh

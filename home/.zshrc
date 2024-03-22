@@ -571,9 +571,12 @@ elif [[ -n ${command[vim]} ]]; then
 fi
 
 export VISUAL=$EDITOR
-export PAGER=less
-export ACK_PAGER=$PAGER
 export READNULLCMD=$PAGER
+if [[ -n ${command[moar]} ]]; then
+  export MANPAGER="moar"
+else
+  export MANPAGER="less"
+fi
 export pacman_program=pacman-color
 # X11, Sound, Graphic
 export XDG_CACHE_HOME=~/.cache
