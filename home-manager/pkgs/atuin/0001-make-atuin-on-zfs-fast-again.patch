@@ -1,6 +1,6 @@
-From 57a572ebfbad06ed8b2f653246aeacdeb27730f7 Mon Sep 17 00:00:00 2001
+From 4797a2f62ab3d2716d313aa4a3170ba9672a93b6 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
-Date: Mon, 6 Nov 2023 15:56:26 +0100
+Date: Fri, 22 Mar 2024 08:46:07 +0100
 Subject: [PATCH] make atuin on zfs fast again
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -13,10 +13,10 @@ Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
  2 files changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/atuin-client/src/database.rs b/atuin-client/src/database.rs
-index e67fe06d..b502a2ee 100644
+index b0bcae31..d8db492b 100644
 --- a/atuin-client/src/database.rs
 +++ b/atuin-client/src/database.rs
-@@ -139,9 +139,9 @@ pub async fn new(path: impl AsRef<Path>, timeout: f64) -> Result<Self> {
+@@ -137,9 +137,9 @@ pub async fn new(path: impl AsRef<Path>, timeout: f64) -> Result<Self> {
          }
  
          let opts = SqliteConnectOptions::from_str(path.as_os_str().to_str().unwrap())?
@@ -25,9 +25,9 @@ index e67fe06d..b502a2ee 100644
              .optimize_on_close(true, None)
 -            .synchronous(SqliteSynchronous::Normal)
 +            .synchronous(sqlx::sqlite::SqliteSynchronous::Off)
+             .with_regexp()
              .create_if_missing(true);
  
-         let pool = SqlitePoolOptions::new()
 diff --git a/atuin-client/src/record/sqlite_store.rs b/atuin-client/src/record/sqlite_store.rs
 index 6333bb27..1f25a55b 100644
 --- a/atuin-client/src/record/sqlite_store.rs
@@ -42,5 +42,5 @@ index 6333bb27..1f25a55b 100644
              .create_if_missing(true);
  
 -- 
-2.43.0
+2.43.1
 
