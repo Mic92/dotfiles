@@ -69,7 +69,7 @@
           fi
           ${
             inputs.home-manager.packages.${pkgs.system}.home-manager
-          }/bin/home-manager --flake "${self}#$profile" "$@"
+          }/bin/home-manager --option keep-going true --flake "${self}#$profile" "$@"
         ''}/bin/hm";
       };
 
