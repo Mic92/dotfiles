@@ -1,11 +1,23 @@
-{ config, ... }: {
+{ config, lib, ... }:
+{
   clan.borgbackup.destinations.${config.networking.hostName} = {
     repo = "borg@blob64.r:/zdata/borg/${config.networking.hostName}";
   };
-  clanCore.state.system.folders = [ "/home" "/etc" "/var" "/root" ];
+  clanCore.state.system.folders = [
+    "/home"
+    "/etc"
+    "/var"
+    "/root"
+  ];
 
   services.borgbackup.jobs.${config.networking.hostName} = {
     postHook = ''
+      ${lib.optional config.networking.networkmanager.enable ''
+        # wait until network is available and not metered
+        while ! nm-online && nmcli --terse --fields GENERAL.METERED dev show 2>/dev/null | grep --quiet "yes"; then
+          sleep 60
+        fi
+      ''}
       cat > /var/log/telegraf/borgbackup-job-${config.networking.hostName}.service <<EOF
       task,frequency=daily last_run=$(date +%s)i,state="$([[ $exitStatus == 0 ]] && echo ok || echo fail)"
       EOF
