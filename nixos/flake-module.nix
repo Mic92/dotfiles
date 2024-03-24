@@ -75,7 +75,7 @@ in
           inputs.disko.nixosModules.disko
           inputs.clan-core.clanModules.localbackup
 
-          inputs.spora.nixosModules.spora
+          #inputs.spora.nixosModules.spora
 
           { programs.nix-index-database.comma.enable = true; }
           #{
@@ -125,7 +125,7 @@ in
           inputs.srvos.nixosModules.roles-prometheus
           inputs.disko.nixosModules.disko
 
-          inputs.spora.nixosModules.spora
+          #inputs.spora.nixosModules.spora
         ];
       };
 
