@@ -39,8 +39,8 @@
     #retiolum.url = "git+https://git.thalheim.io/Mic92/retiolum";
     retiolum.url = "github:Mic92/retiolum";
 
-    spora.url = "github:krebs/spora";
-    spora.inputs.nixpkgs.follows = "nixpkgs";
+    #spora.url = "github:krebs/spora";
+    #spora.inputs.nixpkgs.follows = "nixpkgs";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
@@ -68,8 +68,14 @@
     srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
-    #clan-core.url = "git+https://git.clan.lol/clan/clan-core";
-    clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=openssh";
+    envfs.url = "github:Mic92/envfs";
+    envfs.inputs.nixpkgs.follows = "nixpkgs";
+    envfs.inputs.flake-parts.follows = "flake-parts";
+    envfs.inputs.treefmt-nix.follows = "treefmt-nix";
+
+    clan-core.url = "git+https://git.clan.lol/clan/clan-core";
+    #clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=localbackup";
+    #clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=yubikey-support";
     clan-core.inputs.nixpkgs.follows = "nixpkgs";
     clan-core.inputs.sops-nix.follows = "sops-nix";
     clan-core.inputs.treefmt-nix.follows = "treefmt-nix";
