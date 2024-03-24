@@ -68,11 +68,6 @@
     srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
-    envfs.url = "github:Mic92/envfs";
-    envfs.inputs.nixpkgs.follows = "nixpkgs";
-    envfs.inputs.flake-parts.follows = "flake-parts";
-    envfs.inputs.treefmt-nix.follows = "treefmt-nix";
-
     clan-core.url = "git+https://git.clan.lol/clan/clan-core";
     #clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=localbackup";
     #clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=yubikey-support";

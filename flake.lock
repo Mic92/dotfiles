@@ -118,32 +118,6 @@
         "type": "github"
       }
     },
-    "envfs": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1711224565,
-        "narHash": "sha256-Y11A0pn3cxBMZNhjBzt4jYwvrX3ZkPCsHOQJlJtVNDM=",
-        "owner": "Mic92",
-        "repo": "envfs",
-        "rev": "1c15ca7b334c934ba249035675924eb586142091",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "envfs",
-        "type": "github"
-      }
-    },
     "fast-flake-update": {
       "inputs": {
         "flake-parts": [
@@ -530,7 +504,6 @@
         "buildbot-nix": "buildbot-nix",
         "clan-core": "clan-core",
         "disko": "disko",
-        "envfs": "envfs",
         "fast-flake-update": "fast-flake-update",
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",

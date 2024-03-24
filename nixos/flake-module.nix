@@ -5,7 +5,7 @@ let
   defaultModule = { config, lib, ... }: {
     srvos.flake = self;
     documentation.info.enable = false;
-    #services.envfs.enable = true;
+    services.envfs.enable = true;
     clan.networking.targetHost = lib.mkDefault "root@${config.networking.hostName}.r";
 
     imports = [
@@ -20,8 +20,6 @@ let
 
       inputs.clan-core.clanModules.sshd
       inputs.clan-core.clanModules.borgbackup
-
-      inputs.envfs.nixosModules.envfs
 
       inputs.srvos.nixosModules.common
       inputs.srvos.nixosModules.mixins-telegraf
