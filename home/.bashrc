@@ -78,3 +78,7 @@ alias grep="grep --binary-files=without-match --directories=skip --color=auto"
 if [[ -r ~/.bashrc."$HOSTNAME" ]]; then
   . ~/.bashrc."$HOSTNAME"
 fi
+
+if command -v direnv &>/dev/null; then
+  eval "$(direnv hook bash)"
+fi
