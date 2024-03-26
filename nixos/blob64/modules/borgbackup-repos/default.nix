@@ -10,8 +10,7 @@
     matchbox = {
       path = "/zdata/borg/matchbox";
       authorizedKeys = [
-        # TODO: migrate to clan-backup
-        (builtins.readFile ./matchbox-borgbackup.pub)
+        (builtins.readFile ../../../../machines/matchbox/facts/borgbackup.ssh.pub)
       ];
     };
 
