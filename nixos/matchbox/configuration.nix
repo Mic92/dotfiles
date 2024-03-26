@@ -13,6 +13,7 @@
     ../modules/sshd/tor.nix
     ../modules/promtail.nix
   ];
+  clanCore.state.pictures.folders = [ "/mnt/hdd" ];
 
   documentation.enable = false;
   clan.deployment.requireExplicitUpdate = true;
