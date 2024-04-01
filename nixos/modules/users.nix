@@ -19,11 +19,11 @@ in
   };
 
   users.extraUsers.root.initialHashedPassword =
-    config.clanCore.secrets.root-password.facts.root-password-hash.value;
+    config.clanCore.facts.services.root-password.public.root-password-hash.value;
 
-  clanCore.secrets.root-password = {
-    secrets.root-password = { };
-    facts.root-password-hash = { };
+  clanCore.facts.services.root-password = {
+    secret.root-password = { };
+    public.root-password-hash = { };
     generator.path = with pkgs; [ coreutils xkcdpass mkpasswd ];
     generator.script = ''
       xkcdpass -n 3 -d - > $secrets/root-password
