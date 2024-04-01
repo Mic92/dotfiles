@@ -49,7 +49,7 @@
       fzf
       lsd
       zoxide
-      pinentry
+      pinentry-curses
       fd
       bat
       moar
