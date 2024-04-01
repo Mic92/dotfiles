@@ -322,7 +322,7 @@ alias pgrep='pgrep -a'
 xalias top='htop'
 xalias lg='lazygit'
 xalias dig='q'
-alias free='free -m'
+alias free='free -g'
 alias fuser="fuser -v"
 if [[ -n ${commands[procs]} ]]; then
   alias ps='procs'
