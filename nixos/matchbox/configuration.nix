@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   nixpkgs.localSystem.system = "aarch64-linux";
 
   imports = [

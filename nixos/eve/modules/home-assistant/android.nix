@@ -1,9 +1,7 @@
 {
   services.home-assistant.config = {
     conversation.intents = {
-      FindAndroid = [
-        "(Find|Fight) my (phone|android|android phone)"
-      ];
+      FindAndroid = [ "(Find|Fight) my (phone|android|android phone)" ];
     };
     intent_script = {
       FindAndroid = {

@@ -16,9 +16,7 @@
         }
         {
           method = "native";
-          urls = [
-            "4.eva.thalheim.io"
-          ];
+          urls = [ "4.eva.thalheim.io" ];
         }
         {
           method = "native";

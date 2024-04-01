@@ -1,10 +1,6 @@
-{ config
-, pkgs
-, ...
-}: {
-  imports = [
-    ../../modules/xrdp.nix
-  ];
+{ config, pkgs, ... }:
+{
+  imports = [ ../../modules/xrdp.nix ];
   environment.systemPackages = [
     pkgs.jetbrains.idea-ultimate
     pkgs.firefox

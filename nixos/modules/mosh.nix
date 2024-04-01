@@ -1,7 +1,5 @@
-{ config
-, lib
-, ...
-}: {
+{ config, lib, ... }:
+{
   programs.mosh.enable = true;
 
   networking.firewall.allowedUDPPortRanges = lib.optionals config.services.openssh.enable [

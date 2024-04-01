@@ -1,16 +1,11 @@
 { inputs, lib, ... }:
 {
 
-  imports = [
-    inputs.treefmt-nix.flakeModule
-  ];
+  imports = [ inputs.treefmt-nix.flakeModule ];
 
   perSystem =
-    { inputs'
-    , pkgs
-    , config
-    , ...
-    }: {
+    { inputs', pkgs, ... }:
+    {
       treefmt = {
         # Used to find the project root
         projectRootFile = ".git/config";
@@ -89,14 +84,16 @@
       # Definitions like this are entirely equivalent to the ones
       # you may have directly in flake.nix.
       devShells.default = pkgs.mkShellNoCC {
-        nativeBuildInputs = [
-          inputs'.fast-flake-update.packages.default
-          pkgs.python3.pkgs.invoke
-          pkgs.python3.pkgs.deploykit
-        ] ++ lib.optionals (!pkgs.stdenv.isDarwin) [
-          inputs'.clan-core.packages.default
-          pkgs.bubblewrap
-        ];
+        nativeBuildInputs =
+          [
+            inputs'.fast-flake-update.packages.default
+            pkgs.python3.pkgs.invoke
+            pkgs.python3.pkgs.deploykit
+          ]
+          ++ lib.optionals (!pkgs.stdenv.isDarwin) [
+            inputs'.clan-core.packages.default
+            pkgs.bubblewrap
+          ];
       };
     };
 }

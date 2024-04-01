@@ -1,27 +1,32 @@
-{ lib, ... }: {
+{ lib, ... }:
+{
   srvos.prometheus = {
     ruleGroups.srvosAlerts.alertRules =
-      (lib.genAttrs [
-        "borgbackup-job-turingmachine.service"
-        "borgbackup-job-eve.service"
-        "borgbackup-job-matchbox.service"
-        "borgbackup-job-nfs-home.service"
-        "borgbackup-job-nfs-share.service"
-        "borgbackup-job-wiki.service"
-      ]
+      (lib.genAttrs
+        [
+          "borgbackup-job-turingmachine.service"
+          "borgbackup-job-eve.service"
+          "borgbackup-job-matchbox.service"
+          "borgbackup-job-nfs-home.service"
+          "borgbackup-job-nfs-share.service"
+          "borgbackup-job-wiki.service"
+        ]
         (name: {
           expr = ''absent_over_time(task_last_run{name="${name}"}[1d])'';
           annotations.description = "status of ${name} is unknown: no data for a day";
-        })) //
-      (lib.genAttrs [
-        "syncoid-home"
-        "syncoid-share"
-      ]
+        })
+      )
+      // (lib.genAttrs
+        [
+          "syncoid-home"
+          "syncoid-share"
+        ]
         (name: {
           expr = ''absent_over_time(task_last_run{name="${name}"}[10m])'';
           annotations.description = "status of ${name} is unknown: no data for 10 minutes";
-        })) //
-      {
+        })
+      )
+      // {
 
         Homeassistant = {
           expr = ''homeassistant_entity_available{domain="persistent_notification", entity!~"persistent_notification.http_login|persistent_notification.recorder_database_migration"} >= 0'';

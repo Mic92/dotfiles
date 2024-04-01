@@ -1,7 +1,4 @@
-{ config
-, pkgs
-, ...
-}:
+{ config, pkgs, ... }:
 let
   database = {
     connection_string = "postgres:///dendrite?host=/run/postgresql";
@@ -12,16 +9,14 @@ let
   inherit (config.services.dendrite.settings.global) server_name;
   nginx-vhost = "matrix.thalheim.io";
   element-web-thalheim.io =
-    pkgs.runCommand "element-web-with-config"
-      {
-        nativeBuildInputs = [ pkgs.buildPackages.jq ];
-      } ''
-      cp -r ${pkgs.element-web} $out
-      chmod -R u+w $out
-      jq '."default_server_config"."m.homeserver" = { "base_url": "https://${nginx-vhost}:443", "server_name": "${server_name}" }' \
-        > $out/config.json < ${pkgs.element-web}/config.json
-      ln -s $out/config.json $out/config.${nginx-vhost}.json
-    '';
+    pkgs.runCommand "element-web-with-config" { nativeBuildInputs = [ pkgs.buildPackages.jq ]; }
+      ''
+        cp -r ${pkgs.element-web} $out
+        chmod -R u+w $out
+        jq '."default_server_config"."m.homeserver" = { "base_url": "https://${nginx-vhost}:443", "server_name": "${server_name}" }' \
+          > $out/config.json < ${pkgs.element-web}/config.json
+        ln -s $out/config.json $out/config.${nginx-vhost}.json
+      '';
 in
 {
   services.matrix-sliding-sync = {
@@ -82,7 +77,10 @@ in
       };
       mscs = {
         inherit database;
-        mscs = [ "msc2836" "msc2946" ];
+        mscs = [
+          "msc2836"
+          "msc2946"
+        ];
       };
       sync_api = {
         inherit database;

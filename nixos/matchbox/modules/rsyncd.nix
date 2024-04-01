@@ -1,4 +1,5 @@
-{ config, ... }: {
+{ config, ... }:
+{
   services.rsyncd = {
     enable = true;
     settings = {

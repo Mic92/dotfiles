@@ -57,7 +57,13 @@
           name = "br-lan";
           type = "bridge";
           # list options are also supported
-          ports = [ "lan1" "lan2" "lan3" "lan4" "wan" ];
+          ports = [
+            "lan1"
+            "lan2"
+            "lan3"
+            "lan4"
+            "wan"
+          ];
         }
       ];
     };
@@ -142,21 +148,17 @@
           upd_privateip = "0";
         };
 
-        myddns_ipv4 =
-          common
-          // {
-            use_ipv6 = "0";
-            ip_network = "wan";
-            interface = "wan";
-          };
+        myddns_ipv4 = common // {
+          use_ipv6 = "0";
+          ip_network = "wan";
+          interface = "wan";
+        };
 
-        myddns_ipv6 =
-          common
-          // {
-            use_ipv6 = "1";
-            ip_network = "wan_6";
-            interface = "wan_6";
-          };
+        myddns_ipv6 = common // {
+          use_ipv6 = "1";
+          ip_network = "wan_6";
+          interface = "wan_6";
+        };
       };
 
     prometheus-node-exporter-lua.main = {

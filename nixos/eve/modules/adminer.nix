@@ -1,7 +1,5 @@
-{ pkgs
-, config
-, ...
-}: {
+{ pkgs, config, ... }:
+{
   services.phpfpm.pools.adminer = {
     user = "adminer";
     group = "adminer";

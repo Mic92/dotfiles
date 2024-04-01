@@ -1,7 +1,5 @@
-{ config
-, pkgs
-, ...
-}: {
+{ config, pkgs, ... }:
+{
   services.phpfpm.pools.tt-rss.settings = {
     "pm" = "ondemand";
     "pm.max_children" = 32;
@@ -14,12 +12,8 @@
     virtualHost = "rss.devkid.net";
     selfUrlPath = "https://rss.devkid.net";
 
-    pluginPackages = [
-      pkgs.tt-rss-plugin-auth-ldap
-    ];
-    themePackages = [
-      pkgs.tt-rss-theme-feedly
-    ];
+    pluginPackages = [ pkgs.tt-rss-plugin-auth-ldap ];
+    themePackages = [ pkgs.tt-rss-theme-feedly ];
     plugins = [
       "auth_internal"
       "auth_ldap"

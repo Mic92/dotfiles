@@ -1,4 +1,5 @@
-{ config, ... }: {
+{ config, ... }:
+{
   nix.distributedBuilds = true;
   nix.buildMachines = [
     #{
@@ -19,11 +20,12 @@
       sshUser = "hetzner";
       protocol = "ssh-ng";
       sshKey = config.sops.secrets.ssh-aarch64-builder.path;
-      systems = [ "aarch64-darwin" "x86_64-darwin" ];
-      maxJobs = 8;
-      supportedFeatures = [
-        "big-parallel"
+      systems = [
+        "aarch64-darwin"
+        "x86_64-darwin"
       ];
+      maxJobs = 8;
+      supportedFeatures = [ "big-parallel" ];
     }
     # direct connection sometimes break, too many connections?
     {
@@ -32,7 +34,10 @@
       sshKey = config.sops.secrets.ssh-tum-builder.path;
       protocol = "ssh-ng";
       sshUser = "nix";
-      systems = [ "x86_64-linux" "i686-linux" ];
+      systems = [
+        "x86_64-linux"
+        "i686-linux"
+      ];
       supportedFeatures = [
         "big-parallel"
         "kvm"

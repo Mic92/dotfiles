@@ -1,4 +1,5 @@
-{ config, ... }: {
+{ config, ... }:
+{
   services.shadowsocks = {
     enable = true;
     passwordFile = config.sops.secrets.shadowsocks.path;

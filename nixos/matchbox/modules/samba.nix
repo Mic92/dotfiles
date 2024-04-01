@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   services.samba = {
     enable = true;
     package = pkgs.samba;
@@ -29,9 +30,7 @@
     };
   };
 
-  systemd.tmpfiles.rules = [
-    "d /var/spool/samba 1777 root root -"
-  ];
+  systemd.tmpfiles.rules = [ "d /var/spool/samba 1777 root root -" ];
 
   networking.firewall.allowedTCPPorts = [
     139

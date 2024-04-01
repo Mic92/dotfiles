@@ -1,7 +1,6 @@
-{ config, ... }: {
-  imports = [
-    ../../modules/openldap
-  ];
+{ config, ... }:
+{
+  imports = [ ../../modules/openldap ];
 
   services.openldap.settings.children."olcDatabase={1}mdb".attrs = {
     # Current value (must be stored completly in file)

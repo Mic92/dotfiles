@@ -1,10 +1,9 @@
-{ lib, pkgs, ... }: {
+{ lib, pkgs, ... }:
+{
   services.shiori.enable = true;
   services.shiori.port = 4378;
   services.shiori.package = pkgs.shiori.overrideAttrs (_: {
-    patches = [
-      ./0001-set-saner-postgresql-connection-default-and-make-use.patch
-    ];
+    patches = [ ./0001-set-saner-postgresql-connection-default-and-make-use.patch ];
   });
   systemd.services.shiori.environment = {
     SHIORI_PG_HOST = "/run/postgresql";
@@ -30,10 +29,12 @@
   users.groups.shiori = { };
 
   services.postgresql.ensureDatabases = [ "shiori" ];
-  services.postgresql.ensureUsers = [{
-    name = "shiori";
-    ensureDBOwnership = true;
-  }];
+  services.postgresql.ensureUsers = [
+    {
+      name = "shiori";
+      ensureDBOwnership = true;
+    }
+  ];
   services.nginx.virtualHosts."shiori.thalheim.io" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;

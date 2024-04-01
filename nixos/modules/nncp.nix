@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   nodes = {
     eve = {
@@ -28,14 +33,27 @@ in
   networking.firewall.allowedTCPPorts = [ 5400 ];
   services.nncp.daemon = {
     enable = true;
-    extraArgs = [ "-autotoss" "-autotoss-gen-ack" ];
+    extraArgs = [
+      "-autotoss"
+      "-autotoss-gen-ack"
+    ];
     socketActivation.enable = true;
   };
   environment.systemPackages = [
     (pkgs.writeScriptBin "nncp-nix-update" ''
       #!${pkgs.bash}/bin/bash
       set -euo pipefail -x
-      export PATH=${lib.makeBinPath [ pkgs.coreutils pkgs.nncp config.nix.package pkgs.jq pkgs.gnutar pkgs.zstd pkgs.git ]}
+      export PATH=${
+        lib.makeBinPath [
+          pkgs.coreutils
+          pkgs.nncp
+          config.nix.package
+          pkgs.jq
+          pkgs.gnutar
+          pkgs.zstd
+          pkgs.git
+        ]
+      }
       if [[ $# -lt 1 ]]; then
         echo "Usage: $0 <node>"
         exit 1
@@ -54,12 +72,20 @@ in
   programs.nncp = {
     enable = true;
     secrets = [ config.sops.secrets."${config.clanCore.machineName}-nncp".path ];
-    settings.neigh = lib.mapAttrs
-      (name: node: node // {
+    settings.neigh = lib.mapAttrs (
+      name: node:
+      node
+      // {
         exec = {
           "nixos-rebuild" = [
             (pkgs.writeShellScript "nixos-rebuild" ''
-              export PATH=${lib.makeBinPath [ pkgs.nncp pkgs.gnutar pkgs.zstd ]}
+              export PATH=${
+                lib.makeBinPath [
+                  pkgs.nncp
+                  pkgs.gnutar
+                  pkgs.zstd
+                ]
+              }
               set -euo pipefail -x
               (if [[ "$NNCP_SENDER" == "${nodes.turingmachine.id}" ]]; then
                 if ! tar -C /etc/nixos --zstd -x -f -; then
@@ -100,7 +126,13 @@ in
                   env = os.environ.copy()
                   env["XDG_RUNTIME_DIR"] = f"/run/user/${builtins.toString config.users.users.joerg.uid}"
                   env["DISPLAY"] = ":0"
-                  env["PATH"] = "${lib.makeBinPath [ pkgs.libnotify pkgs.dbus pkgs.utillinux ]}"
+                  env["PATH"] = "${
+                    lib.makeBinPath [
+                      pkgs.libnotify
+                      pkgs.dbus
+                      pkgs.utillinux
+                    ]
+                  }"
                   subprocess.run(["runuser", "-u", "joerg", "notify-send", f"nixos-rebuild from {sender}"], env=env)
                   with open("/tmp/nixos-rebuild.log", "w") as f:
                     f.write(f"nixos-rebuild from {sender}:\n")
@@ -113,9 +145,7 @@ in
           ];
         };
         addrs.tinc = "${name}.r:5400";
-      })
-      (nodes // {
-        self = nodes.${config.networking.hostName};
-      });
+      }
+    ) (nodes // { self = nodes.${config.networking.hostName}; });
   };
 }

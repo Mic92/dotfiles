@@ -1,6 +1,4 @@
-{ config
-, ...
-}:
+{ config, ... }:
 {
   sops.secrets.prometheus-hass-token.owner = "prometheus";
 
@@ -39,9 +37,7 @@
             ];
           }
           {
-            targets = [
-              "rauter.r:9273"
-            ];
+            targets = [ "rauter.r:9273" ];
             # to make it compatible with the node-exporter dashboard
             labels.host = "rauter.r:9273";
           }
@@ -103,13 +99,7 @@
         authorization.credentials_file = config.sops.secrets.prometheus-hass-token.path;
 
         scheme = "https";
-        static_configs = [
-          {
-            targets = [
-              "hass.thalheim.io:443"
-            ];
-          }
-        ];
+        static_configs = [ { targets = [ "hass.thalheim.io:443" ]; } ];
       }
       #{
       #  metrics_path = "/prometheus";
@@ -121,24 +111,10 @@
         metrics_path = "/metrics";
 
         scheme = "https";
-        static_configs = [
-          {
-            targets = [
-              "git.thalheim.io:443"
-            ];
-          }
-        ];
+        static_configs = [ { targets = [ "git.thalheim.io:443" ]; } ];
       }
     ];
-    alertmanagers = [
-      {
-        static_configs = [
-          {
-            targets = [ "localhost:9093" ];
-          }
-        ];
-      }
-    ];
+    alertmanagers = [ { static_configs = [ { targets = [ "localhost:9093" ]; } ]; } ];
   };
   services.prometheus.alertmanager = {
     enable = true;
@@ -237,11 +213,8 @@
             }
           ];
         }
-        {
-          name = "default";
-        }
+        { name = "default"; }
       ];
     };
   };
-
 }

@@ -1,6 +1,5 @@
-{ pkgs
-, ...
-}: {
+{ pkgs, ... }:
+{
   virtualisation = {
     podman.enable = true;
     podman.extraPackages = [ pkgs.zfs ];

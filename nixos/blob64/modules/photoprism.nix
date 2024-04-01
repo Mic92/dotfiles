@@ -1,4 +1,5 @@
-{ config, ... }: {
+{ config, ... }:
+{
   services.photoprism = {
     enable = true;
     address = "[::]";
@@ -18,7 +19,10 @@
 
   fileSystems."/var/lib/private/photoprism" = {
     device = "/zdata/photoprism";
-    options = [ "bind" "nofail" ];
+    options = [
+      "bind"
+      "nofail"
+    ];
   };
 
   systemd.services.photoprism = {

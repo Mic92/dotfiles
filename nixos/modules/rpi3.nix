@@ -1,16 +1,16 @@
-{ pkgs
-, modulesPath
-, config
-, lib
-, ...
-}: {
+{
+  pkgs,
+  modulesPath,
+  config,
+  lib,
+  ...
+}:
+{
   nixpkgs.localSystem.system = "aarch64-linux";
 
   documentation.enable = false;
 
-  imports = [
-    "${modulesPath}/installer/sd-card/sd-image-aarch64.nix"
-  ];
+  imports = [ "${modulesPath}/installer/sd-card/sd-image-aarch64.nix" ];
 
   boot.kernelParams = [ "cma=32M" ];
 

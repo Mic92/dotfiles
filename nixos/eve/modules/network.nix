@@ -1,13 +1,9 @@
-{ config
-, lib
-, ...
-}:
+{ config, lib, ... }:
 {
   options = {
     networking.eve.ipv4.address = lib.mkOption {
       type = lib.types.str;
       default = "95.217.199.121";
-
     };
     networking.eve.ipv4.cidr = lib.mkOption {
       type = lib.types.str;

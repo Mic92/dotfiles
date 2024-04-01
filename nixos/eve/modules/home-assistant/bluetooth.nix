@@ -1,7 +1,5 @@
-{ pkgs
-, config
-, ...
-}: {
+{ pkgs, config, ... }:
+{
   sops.secrets.ssh-homeassistant.owner = "hass";
 
   services.home-assistant.config = {

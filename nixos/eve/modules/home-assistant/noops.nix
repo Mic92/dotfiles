@@ -10,16 +10,12 @@
         "Stop"
         "Stop (it|that|doing that|talking)"
       ];
-      Psst = [
-        "Psst"
-      ];
+      Psst = [ "Psst" ];
       ThankYou = [
         "Thank you"
         "Thanks"
       ];
-      NotAGirl = [
-        "Good girl"
-      ];
+      NotAGirl = [ "Good girl" ];
       FuckOff = [
         "Fuck (you|off)"
         "Screw you"
@@ -43,15 +39,16 @@
       FuckOff.speech.text = "Fuck yourself.";
       NotAGirl.speech.text = "Not a girl!";
       Siri.speech.text = "Siri is a cunt";
-      PersonLocation.speech.text = ''      {% if person == "Jork" or person == "joergi" %}
-           Joerg is {{ states.person.jorg_thalheim.state }} and {{ states.sensor.shannan_joerg_distance.state }} kilometer away from you.
-           His phone reports, he is {% set activity = states.sensor.android_detected_activity.state %} {% if activity == "still" %} stationary {% else %} {{ activity }} {% endif %}!
-         {% else %}
-           Shannan is {{ states.person.shannan_lekwati.state }} and {{ states.sensor.shannan_joerg_distance.state }} kilometer away from you.
-           {% if states.sensor.beatrice_activity.state != "Unknown" %}
-           Her phone reports, she is {{ states.sensor.beatrice_activity.state }}!
+      PersonLocation.speech.text = ''
+        {% if person == "Jork" or person == "joergi" %}
+             Joerg is {{ states.person.jorg_thalheim.state }} and {{ states.sensor.shannan_joerg_distance.state }} kilometer away from you.
+             His phone reports, he is {% set activity = states.sensor.android_detected_activity.state %} {% if activity == "still" %} stationary {% else %} {{ activity }} {% endif %}!
+           {% else %}
+             Shannan is {{ states.person.shannan_lekwati.state }} and {{ states.sensor.shannan_joerg_distance.state }} kilometer away from you.
+             {% if states.sensor.beatrice_activity.state != "Unknown" %}
+             Her phone reports, she is {{ states.sensor.beatrice_activity.state }}!
+             {% endif %}
            {% endif %}
-         {% endif %}
       '';
     };
   };

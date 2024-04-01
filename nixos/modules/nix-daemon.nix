@@ -1,7 +1,4 @@
-{ lib
-, config
-, ...
-}:
+{ lib, config, ... }:
 {
   # this extends srvos's common settings
   nix = {
@@ -17,7 +14,9 @@
       keep-derivations = true;
 
       # in zfs we trust
-      fsync-metadata = lib.boolToString (!config.boot.isContainer or config.fileSystems."/".fsType != "zfs");
+      fsync-metadata = lib.boolToString (
+        !config.boot.isContainer or config.fileSystems."/".fsType != "zfs"
+      );
       substituters = [
         "https://nix-community.cachix.org"
         #"https://mic92.cachix.org"
@@ -34,7 +33,10 @@
         "cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc="
       ];
 
-      trusted-users = [ "@wheel" "root" ];
+      trusted-users = [
+        "@wheel"
+        "root"
+      ];
 
       fallback = true;
       warn-dirty = false;
@@ -42,9 +44,7 @@
     };
   };
 
-  imports = [
-    ./builder.nix
-  ];
+  imports = [ ./builder.nix ];
 
   programs.command-not-found.enable = false;
 }

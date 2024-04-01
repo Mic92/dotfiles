@@ -4,12 +4,11 @@ let
     {
       eva = "openldap-syncpw-rid1";
       rock = "openldap-syncpw-rid2";
-    }.${config.networking.hostName};
+    }
+    .${config.networking.hostName};
 in
 {
-  imports = [
-    ./.
-  ];
+  imports = [ ./. ];
 
   services.openldap.settings.children."olcDatabase={1}mdb".attrs = {
     # Current value (must be stored completly in file)

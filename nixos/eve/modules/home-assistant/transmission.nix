@@ -1,7 +1,5 @@
-{ inputs
-, pkgs
-, ...
-}: {
+{ inputs, pkgs, ... }:
+{
   services.home-assistant.customComponents = [
     (pkgs.stdenv.mkDerivation rec {
       pname = "home-assistant-variables";
@@ -81,7 +79,9 @@
       {
         name = "irc_flix";
         platform = "command_line";
-        command = ''${inputs.nur-packages.packages.${pkgs.hostPlatform.system}.ircsink}/bin/ircsink --server=irc.r --nick=transmission --target="#flix"'';
+        command = ''${
+          inputs.nur-packages.packages.${pkgs.hostPlatform.system}.ircsink
+        }/bin/ircsink --server=irc.r --nick=transmission --target="#flix"'';
       }
     ];
   };

@@ -18,7 +18,6 @@ let
   shannan = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOBXTForyB6oNMK5bbGpALKU4lPsKRGxNLhrE/PnHHq7 shannan@bernie"
   ];
-
 in
 {
   security.sudo.wheelNeedsPassword = false;
@@ -29,12 +28,10 @@ in
       uid = 2002;
       extraGroups = [ "wheel" ];
       shell = "/run/current-system/sw/bin/zsh";
-      openssh.authorizedKeys.keys =
-        alfred
-        ++ [
-          ''command="${pkgs.borgbackup}/bin/borg serve --restrict-to-path /data/backup/devkid/pi0",no-pty,no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-user-rc ${alfredsPi}''
-          ''command="${pkgs.borgbackup}/bin/borg serve --restrict-to-path /data/backup/devkid/nas",no-pty,no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-user-rc ${alfredsNas}''
-        ];
+      openssh.authorizedKeys.keys = alfred ++ [
+        ''command="${pkgs.borgbackup}/bin/borg serve --restrict-to-path /data/backup/devkid/pi0",no-pty,no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-user-rc ${alfredsPi}''
+        ''command="${pkgs.borgbackup}/bin/borg serve --restrict-to-path /data/backup/devkid/nas",no-pty,no-agent-forwarding,no-port-forwarding,no-X11-forwarding,no-user-rc ${alfredsNas}''
+      ];
     };
 
     joerg = {
@@ -56,5 +53,8 @@ in
     root.openssh.authorizedKeys.keys = alfred ++ joerg ++ shannan;
   };
 
-  nix.settings.allowed-users = [ "devkid" "shannan" ];
+  nix.settings.allowed-users = [
+    "devkid"
+    "shannan"
+  ];
 }

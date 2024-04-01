@@ -1,7 +1,5 @@
 {
-  services.home-assistant.extraComponents = [
-    "openweathermap"
-  ];
+  services.home-assistant.extraComponents = [ "openweathermap" ];
   services.home-assistant.config = {
     conversation.intents = {
       WeatherToday = [
@@ -37,11 +35,7 @@
           condition = "template";
           value_template = ''{{ states.input_boolean.rain_notified_today.state == "off" }}'';
         };
-        action = [
-          {
-            service = "python_script.weather";
-          }
-        ];
+        action = [ { service = "python_script.weather"; } ];
       }
       {
         alias = "Reset rain notified today";

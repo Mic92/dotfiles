@@ -23,7 +23,8 @@
 # kexec> mount -t zfs zroot/root/home /mnt/home/
 # kexec> mount -t zfs zroot/root/tmp /mnt/tmp/
 # continue with hetzner-bootstrap.nix
-{ lib, ... }: {
+{ lib, ... }:
+{
   imports = [ ./base.nix ];
 
   boot.initrd.network.enable = lib.mkForce false;
@@ -32,4 +33,3 @@
 # rescue> mount /dev/sda2 /mnt; tar -C / -xf /mnt/nixos-system-x86_64-linux.tar.xz; /kexec_nixos
 # kexec> zpool import zroot; zfs load-key -a; mount -t zfs zroot/root/nixos /mnt; mount /dev/sda2 /mnt/boot/; mount -t zfs zroot/root/home /mnt/home/; mount -t zfs zroot/root/tmp /mnt/tmp/
 # kexec> nixos-enter # will mount
-

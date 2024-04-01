@@ -1,4 +1,5 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   services.buildbot-nix.master = {
     enable = true;
     domain = "buildbot.thalheim.io";
@@ -16,7 +17,11 @@
       oauthSecretFile = config.sops.secrets.buildbot-github-oauth-secret.path;
       oauthId = "d1b24258af1abc157934";
       user = "mic92-buildbot";
-      admins = [ "Mic92" "DavHau" "Lassulus" ];
+      admins = [
+        "Mic92"
+        "DavHau"
+        "Lassulus"
+      ];
     };
     outputsPath = "/var/www/buildbot/nix-outputs";
   };
@@ -25,7 +30,10 @@
       from buildbot.manhole import AuthorizedKeysManhole
       c['manhole'] = AuthorizedKeysManhole("tcp:12456", "/etc/ssh/authorized_keys.d/joerg", "/var/lib/buildbot/master/ssh/")
     '';
-    pythonPackages = ps: [ ps.bcrypt ps.cryptography ];
+    pythonPackages = ps: [
+      ps.bcrypt
+      ps.cryptography
+    ];
   };
   systemd.services.buildbot-master.path = [ pkgs.openssh ];
   systemd.services.buildbot-master.preStart = ''

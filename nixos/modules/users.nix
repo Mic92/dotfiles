@@ -10,7 +10,18 @@ in
     joerg = {
       isNormalUser = true;
       home = "/home/joerg";
-      extraGroups = [ "audio" "wheel" "docker" "plugdev" "vboxusers" "adbusers" "input" "kvm" "wireshark" "dialout" ];
+      extraGroups = [
+        "audio"
+        "wheel"
+        "docker"
+        "plugdev"
+        "vboxusers"
+        "adbusers"
+        "input"
+        "kvm"
+        "wireshark"
+        "dialout"
+      ];
       shell = "/run/current-system/sw/bin/zsh";
       uid = 1000;
       openssh.authorizedKeys.keys = keys;
@@ -24,7 +35,11 @@ in
   clanCore.facts.services.root-password = {
     secret.root-password = { };
     public.root-password-hash = { };
-    generator.path = with pkgs; [ coreutils xkcdpass mkpasswd ];
+    generator.path = with pkgs; [
+      coreutils
+      xkcdpass
+      mkpasswd
+    ];
     generator.script = ''
       xkcdpass -n 3 -d - > $secrets/root-password
       cat $secrets/root-password | mkpasswd -s -m sha-512 > $facts/root-password-hash

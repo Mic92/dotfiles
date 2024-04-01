@@ -1,10 +1,8 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{ config
-, pkgs
-, ...
-}: {
+{ config, pkgs, ... }:
+{
   imports = [
     ./hardware-configuration.nix
 
@@ -34,7 +32,14 @@
   users.users.shannan = {
     isNormalUser = true;
     home = "/home/shannan";
-    extraGroups = [ "wheel" "plugdev" "adbusers" "input" "kvm" "networkmanager" ];
+    extraGroups = [
+      "wheel"
+      "plugdev"
+      "adbusers"
+      "input"
+      "kvm"
+      "networkmanager"
+    ];
     shell = "/run/current-system/sw/bin/zsh";
     uid = 1001;
     inherit (config.users.users.joerg) openssh;

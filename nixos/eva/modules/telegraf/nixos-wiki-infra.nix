@@ -1,7 +1,5 @@
 let
-  hosts = [
-    "wiki.staging.julienmalka.me"
-  ];
+  hosts = [ "wiki.staging.julienmalka.me" ];
 in
 {
   services.telegraf.extraConfig.inputs = {
@@ -13,17 +11,14 @@ in
         tags.org = "nixos-wiki";
       }
     ];
-    net_response =
-      map
-        (host: {
-          protocol = "tcp";
-          address = "${host}:22";
-          send = "SSH-2.0-Telegraf";
-          expect = "SSH-2.0";
-          tags.host = host;
-          tags.org = "nixos-wiki";
-          timeout = "10s";
-        })
-        hosts;
+    net_response = map (host: {
+      protocol = "tcp";
+      address = "${host}:22";
+      send = "SSH-2.0-Telegraf";
+      expect = "SSH-2.0";
+      tags.host = host;
+      tags.org = "nixos-wiki";
+      timeout = "10s";
+    }) hosts;
   };
 }

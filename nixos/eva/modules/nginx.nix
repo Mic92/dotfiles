@@ -1,7 +1,8 @@
-{ pkgs
-, config
-, lib
-, ...
+{
+  pkgs,
+  config,
+  lib,
+  ...
 }:
 let
   conf = pkgs.writeText "ldap.conf" ''
@@ -26,9 +27,7 @@ let
 in
 {
   options.services.nginx.virtualHosts = lib.mkOption {
-    type = lib.types.attrsOf (lib.types.submodule {
-      config.quic = true;
-    });
+    type = lib.types.attrsOf (lib.types.submodule { config.quic = true; });
   };
 
   config = {
@@ -43,9 +42,7 @@ in
     security.acme.certs."alertmanager.r".server = config.retiolum.ca.acmeURL;
 
     services.nginx = {
-      package = pkgs.nginxQuic.override {
-        modules = [ pkgs.nginxModules.pam ];
-      };
+      package = pkgs.nginxQuic.override { modules = [ pkgs.nginxModules.pam ]; };
 
       commonHttpConfig = ''
         add_header Strict-Transport-Security 'max-age=31536000; includeSubDomains; preload' always;

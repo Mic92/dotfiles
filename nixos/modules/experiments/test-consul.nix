@@ -47,63 +47,53 @@ let
   };
 in
 {
-  containers.consul1 =
-    sharedSettings
-    // {
-      localAddress = "192.168.100.2";
-      config = {
-        imports = [
-          sharedModule
-          consulServer
-        ];
-      };
+  containers.consul1 = sharedSettings // {
+    localAddress = "192.168.100.2";
+    config = {
+      imports = [
+        sharedModule
+        consulServer
+      ];
     };
+  };
 
-  containers.consul2 =
-    sharedSettings
-    // {
-      localAddress = "192.168.100.3";
-      config = {
-        imports = [
-          sharedModule
-          consulServer
-        ];
-      };
+  containers.consul2 = sharedSettings // {
+    localAddress = "192.168.100.3";
+    config = {
+      imports = [
+        sharedModule
+        consulServer
+      ];
     };
+  };
 
-  containers.consul3 =
-    sharedSettings
-    // {
-      localAddress = "192.168.100.4";
-      config = {
-        imports = [
-          sharedModule
-          consulServer
-        ];
-      };
+  containers.consul3 = sharedSettings // {
+    localAddress = "192.168.100.4";
+    config = {
+      imports = [
+        sharedModule
+        consulServer
+      ];
     };
+  };
 
-  containers.vault0 =
-    sharedSettings
-    // {
-      localAddress = "192.168.100.6";
-      privateNetwork = false;
-      config = {
-        imports = [
-          sharedModule
-          consulAgent
-        ];
-        networking.firewall.allowedTCPPorts = [
-          8300
-        ];
-        services.vault = {
-          enable = true;
-          dev = true;
-          devRootTokenID = "phony-secret";
-        };
-        services.consul.interface.bind = "dummy1";
-        systemd.services.consul.after = lib.mkForce [ ];
-        systemd.services.consul.bindsTo = lib.mkForce [ ];
+  containers.vault0 = sharedSettings // {
+    localAddress = "192.168.100.6";
+    privateNetwork = false;
+    config = {
+      imports = [
+        sharedModule
+        consulAgent
+      ];
+      networking.firewall.allowedTCPPorts = [ 8300 ];
+      services.vault = {
+        enable = true;
+        dev = true;
+        devRootTokenID = "phony-secret";
       };
+      services.consul.interface.bind = "dummy1";
+      systemd.services.consul.after = lib.mkForce [ ];
+      systemd.services.consul.bindsTo = lib.mkForce [ ];
     };
+  };
 }

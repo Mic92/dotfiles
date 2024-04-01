@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   imports = [
     ./bluetooth.nix
     ./bme680.nix
@@ -20,16 +21,9 @@
 
   services.home-assistant = {
     enable = true;
-    package =
-      (pkgs.home-assistant.override {
-        extraPackages = ps: [
-          ps.psycopg2
-        ];
-      });
+    package = (pkgs.home-assistant.override { extraPackages = ps: [ ps.psycopg2 ]; });
   };
-  services.home-assistant.extraComponents = [
-    "pushover"
-  ];
+  services.home-assistant.extraComponents = [ "pushover" ];
   services.home-assistant.config =
     let
       hiddenEntities = [
@@ -60,9 +54,7 @@
       logbook.exclude.entities = hiddenEntities;
       logger.default = "info";
       sun = { };
-      prometheus.filter.include_domains = [
-        "persistent_notification"
-      ];
+      prometheus.filter.include_domains = [ "persistent_notification" ];
       device_tracker = [
         {
           platform = "luci";

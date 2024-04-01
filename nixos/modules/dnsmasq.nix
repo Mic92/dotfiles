@@ -1,7 +1,4 @@
-{ config
-, lib
-, ...
-}:
+{ config, lib, ... }:
 let
   external = "wlp0s20f3";
 in
@@ -35,7 +32,10 @@ in
     # disable dns
     port = 0;
     # no gateway and no dns
-    dhcp-option = [ 3 6 ];
+    dhcp-option = [
+      3
+      6
+    ];
     # static leases
     dhcp-host = [
       "52:54:00:1d:e1:33,192.168.32.2"

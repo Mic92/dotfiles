@@ -1,7 +1,5 @@
-{ pkgs
-, config
-, ...
-}: {
+{ pkgs, config, ... }:
+{
   systemd.services.tts = {
     after = [ "network.target" ];
     wantedBy = [ "multi-user.target" ];

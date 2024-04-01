@@ -1,8 +1,9 @@
-{ config
-, lib
-, pkgs
-, modulesPath
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  modulesPath,
+  ...
 }:
 #let
 #  frameworkFirmware = pkgs.stdenv.mkDerivation rec {
@@ -20,9 +21,7 @@
 #  };
 #in
 {
-  imports = [
-    "${modulesPath}/installer/scan/not-detected.nix"
-  ];
+  imports = [ "${modulesPath}/installer/scan/not-detected.nix" ];
 
   # XXX: this only works with systemd-boot, not with lanzaboote
   #boot.loader.systemd-boot.extraFiles = {
@@ -46,7 +45,11 @@
   services.thermald.enable = true;
 
   # framework
-  boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "thunderbolt" ];
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "nvme"
+    "thunderbolt"
+  ];
   boot.kernelModules = [ "kvm-intel" ];
 
   # for zfs
@@ -64,7 +67,6 @@
   environment.systemPackages = [ pkgs.pulseaudio ];
 
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
-
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 }

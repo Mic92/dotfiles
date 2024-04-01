@@ -1,13 +1,12 @@
-{ pkgs
-, config
-, lib
-, ...
+{
+  pkgs,
+  config,
+  lib,
+  ...
 }:
 let
   maxUploadSize = "256M";
-  toKeyValue = lib.generators.toKeyValue {
-    mkKeyValue = lib.generators.mkKeyValueDefault { } " = ";
-  };
+  toKeyValue = lib.generators.toKeyValue { mkKeyValue = lib.generators.mkKeyValueDefault { } " = "; };
 in
 {
   services.phpfpm.pools.snappymail = {
@@ -58,9 +57,7 @@ in
       extraConfig = ''
         client_max_body_size ${maxUploadSize};
       '';
-      root = pkgs.snappymail.override {
-        dataPath = "/var/lib/snappymail";
-      };
+      root = pkgs.snappymail.override { dataPath = "/var/lib/snappymail"; };
     };
   };
 

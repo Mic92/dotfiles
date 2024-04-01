@@ -1,7 +1,6 @@
-{ lib, modulesPath, ... }: {
-  imports = [
-    (modulesPath + "/profiles/qemu-guest.nix")
-  ];
+{ lib, modulesPath, ... }:
+{
+  imports = [ (modulesPath + "/profiles/qemu-guest.nix") ];
 
   # based on nixos-generate-config --dir /tmp/config
   boot.initrd.availableKernelModules = [

@@ -17,7 +17,5 @@
     };
   };
 
-  systemd.tmpfiles.rules = [
-    "d /var/www/phd-website 0755 syncthing users - -"
-  ];
+  systemd.tmpfiles.rules = [ "d /var/www/phd-website 0755 syncthing users - -" ];
 }

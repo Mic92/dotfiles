@@ -1,9 +1,7 @@
 {
   services.home-assistant.config = {
     conversation.intents = {
-      TellJoke = [
-        "Tell [me] (a joke|something funny|a dad joke)"
-      ];
+      TellJoke = [ "Tell [me] (a joke|something funny|a dad joke)" ];
     };
     sensor = [
       {

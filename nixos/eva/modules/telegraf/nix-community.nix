@@ -1,7 +1,5 @@
 let
-  hosts = [
-    "web02.nix-community.org"
-  ];
+  hosts = [ "web02.nix-community.org" ];
 in
 {
   services.telegraf.extraConfig.inputs = {
@@ -13,17 +11,14 @@ in
         tags.org = "nix-community";
       }
     ];
-    net_response =
-      map
-        (host: {
-          protocol = "tcp";
-          address = "${host}:22";
-          send = "SSH-2.0-Telegraf";
-          expect = "SSH-2.0";
-          tags.host = host;
-          tags.org = "nix-community";
-          timeout = "10s";
-        })
-        hosts;
+    net_response = map (host: {
+      protocol = "tcp";
+      address = "${host}:22";
+      send = "SSH-2.0-Telegraf";
+      expect = "SSH-2.0";
+      tags.host = host;
+      tags.org = "nix-community";
+      timeout = "10s";
+    }) hosts;
   };
 }

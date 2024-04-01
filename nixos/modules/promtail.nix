@@ -1,4 +1,5 @@
-{ config, ... }: {
+{ config, ... }:
+{
   sops.secrets.promtail-password.owner = "promtail";
   services.promtail = {
     enable = true;
@@ -55,9 +56,7 @@
                 template = "{{if .coredump_exe}}{{.coredump_exe}} core dumped (user: {{.coredump_uid}}/{{.coredump_gid}}, command: {{.coredump_cmdline}}){{else}}{{.msg}}{{end}}";
               };
             }
-            {
-              labels.coredump_unit = "coredump_unit";
-            }
+            { labels.coredump_unit = "coredump_unit"; }
             {
               # Normalize session IDs (session-1234.scope -> session.scope) to limit number of label values
               replace = {
@@ -66,9 +65,7 @@
                 replace = "session.scope";
               };
             }
-            {
-              labels.unit = "unit";
-            }
+            { labels.unit = "unit"; }
             {
               # Write the proper message instead of JSON
               output.source = "msg";

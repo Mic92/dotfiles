@@ -1,7 +1,8 @@
-{ pkgs
-, config
-, inputs
-, ...
+{
+  pkgs,
+  config,
+  inputs,
+  ...
 }:
 let
   ldapConfig = {
@@ -20,11 +21,12 @@ let
       {
         buildInputs = [ pkgs.remarshal ];
         preferLocalBuild = true;
-      } ''
-      remarshal -if json -of toml \
-      < ${pkgs.writeText "config.json" (builtins.toJSON ldapConfig)} \
-      > $out
-    '';
+      }
+      ''
+        remarshal -if json -of toml \
+        < ${pkgs.writeText "config.json" (builtins.toJSON ldapConfig)} \
+        > $out
+      '';
 in
 {
   services.vaultwarden = {
@@ -61,7 +63,9 @@ in
     serviceConfig = {
       Restart = "on-failure";
       RestartSec = "2s";
-      ExecStart = "${inputs.nur-packages.packages.${pkgs.hostPlatform.system}.vaultwarden_ldap}/bin/vaultwarden_ldap";
+      ExecStart = "${
+        inputs.nur-packages.packages.${pkgs.hostPlatform.system}.vaultwarden_ldap
+      }/bin/vaultwarden_ldap";
       Environment = "CONFIG_PATH=/run/vaultwarden_ldap/config.toml";
 
       RuntimeDirectory = [ "vaultwarden_ldap" ];

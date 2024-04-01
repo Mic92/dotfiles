@@ -1,9 +1,11 @@
-{ lib
-, pkgs
-, config
-, inputs
-, ...
-}: {
+{
+  lib,
+  pkgs,
+  config,
+  inputs,
+  ...
+}:
+{
   system.stateVersion = config.system.nixos.version;
 
   networking.firewall.enable = false;
@@ -21,7 +23,8 @@
 
   systemd.network.networks =
     lib.mapAttrs'
-      (num: _:
+      (
+        num: _:
         lib.nameValuePair "eth${num}" {
           matchConfig.Name = "eth${num}";
           networkConfig = {
@@ -38,7 +41,8 @@
             RouteMetric = 512;
           };
           ipv6AcceptRAConfig.Token = "::521a:c5ff:fefe:65d9";
-        })
+        }
+      )
       {
         "0" = { };
         "1" = { };
@@ -66,8 +70,14 @@
 
   systemd.services.hidden-ssh-announce = {
     description = "irc announce hidden ssh";
-    after = [ "tor.service" "network.target" ];
-    wants = [ "tor.service" "network.target" ];
+    after = [
+      "tor.service"
+      "network.target"
+    ];
+    wants = [
+      "tor.service"
+      "network.target"
+    ];
     wantedBy = [ "multi-user.target" ];
     script = ''
       set -efu

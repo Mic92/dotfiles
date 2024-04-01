@@ -1,21 +1,11 @@
-{ config
-, pkgs
-, ...
-}: {
+{ config, pkgs, ... }:
+{
   services.home-assistant.config = {
     conversation.intents = {
-      SuspendLaptop = [
-        "Suspend [my] laptop"
-      ];
-      SuspendBernie = [
-        "Suspend Bernie"
-      ];
-      UpdateShannansLocation = [
-        "Update Shannan's location"
-      ];
-      UpdateJoergsLocation = [
-        "Update York's location"
-      ];
+      SuspendLaptop = [ "Suspend [my] laptop" ];
+      SuspendBernie = [ "Suspend Bernie" ];
+      UpdateShannansLocation = [ "Update Shannan's location" ];
+      UpdateJoergsLocation = [ "Update York's location" ];
     };
     intent_script.SuspendLaptop = {
       speech.text = "Suspend laptop";

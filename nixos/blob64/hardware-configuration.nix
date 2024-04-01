@@ -11,7 +11,10 @@
   fileSystems."/zdata" = {
     device = "zdata";
     fsType = "zfs";
-    options = [ "zfsutil" "nofail" ];
+    options = [
+      "zfsutil"
+      "nofail"
+    ];
   };
 
   boot.loader.grub.enable = false;

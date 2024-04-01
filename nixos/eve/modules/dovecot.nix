@@ -1,7 +1,4 @@
-{ pkgs
-, config
-, ...
-}:
+{ pkgs, config, ... }:
 let
   ldapConfig = pkgs.writeText "dovecot-ldap.conf" ''
     hosts = 127.0.0.1
@@ -129,12 +126,8 @@ in
       # Read multiple mails in parallel, improves performance
       mail_prefetch_count = 20
     '';
-    modules = [
-      pkgs.dovecot_pigeonhole
-    ];
-    protocols = [
-      "sieve"
-    ];
+    modules = [ pkgs.dovecot_pigeonhole ];
+    protocols = [ "sieve" ];
   };
 
   users.users.vmail = {
@@ -157,10 +150,11 @@ in
   security.acme.certs =
     let
       cert =
-        { domain
-        , extraDomainNames ? [ ]
-        ,
-        }: {
+        {
+          domain,
+          extraDomainNames ? [ ],
+        }:
+        {
           postRun = "systemctl restart dovecot2.service";
           group = "dovecot2";
           dnsProvider = "rfc2136";
@@ -169,15 +163,11 @@ in
         };
     in
     {
-      "imap.thalheim.io" = cert {
-        domain = "imap.thalheim.io";
-      };
+      "imap.thalheim.io" = cert { domain = "imap.thalheim.io"; };
       # validation for subdomain does not work, might need _acme-challenge.imap.devkid.net
       "imap.devkid.net" = cert {
         domain = "devkid.net";
-        extraDomainNames = [
-          "*.devkid.net"
-        ];
+        extraDomainNames = [ "*.devkid.net" ];
       };
     };
 

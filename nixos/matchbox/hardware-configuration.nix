@@ -1,10 +1,6 @@
-{ lib
-, modulesPath
-, ...
-}: {
-  imports = [
-    "${modulesPath}/installer/scan/not-detected.nix"
-  ];
+{ lib, modulesPath, ... }:
+{
+  imports = [ "${modulesPath}/installer/scan/not-detected.nix" ];
 
   boot.kernelParams = [
     "earlycon=uart8250,mmio32,0xff130000"
@@ -35,7 +31,11 @@
   fileSystems."/mnt/hdd" = {
     device = "UUID=1d377ab7-65ca-492d-9ea4-620034230192";
     fsType = "ext4";
-    options = [ "defaults" "nofail" "x-systemd.device-timeouts=2" ];
+    options = [
+      "defaults"
+      "nofail"
+      "x-systemd.device-timeouts=2"
+    ];
   };
 
   # avoid overheating

@@ -1,19 +1,22 @@
-{ formats
-, lib
-, writeShellScript
-, pkgs
-,
+{
+  formats,
+  lib,
+  writeShellScript,
+  pkgs,
 }:
 let
   nix-uci = pkgs.python3.pkgs.callPackage ./nix-uci.nix { };
 in
 {
-  writeUci = configuration:
+  writeUci =
+    configuration:
     let
       res = lib.evalModules {
         modules = [
           {
-            _module.args = { inherit pkgs; };
+            _module.args = {
+              inherit pkgs;
+            };
           }
           ./module-options.nix
           configuration

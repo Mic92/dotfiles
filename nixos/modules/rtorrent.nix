@@ -1,7 +1,4 @@
-{ config
-, pkgs
-, ...
-}:
+{ config, pkgs, ... }:
 let
   conf = pkgs.writeText "ldap.conf" ''
     base dc=eve
@@ -69,7 +66,7 @@ in
       #enableACME = true;
       #addSSL = true;
       root = "/data/torrent/download";
-      locations."/" .extraConfig = ''
+      locations."/".extraConfig = ''
         fancyindex on;              # Enable fancy indexes.
         fancyindex_exact_size off;  # Output human-readable file sizes.
       '';

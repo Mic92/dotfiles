@@ -18,7 +18,10 @@
 
   fileSystems."/var/lib/private/photoprism" = {
     device = "/mnt/hdd/photoprism";
-    options = [ "bind" "nofail" ];
+    options = [
+      "bind"
+      "nofail"
+    ];
   };
   systemd.services.photoprism = {
     unitConfig.RequiresMountsFor = "/var/lib/private/photoprism";

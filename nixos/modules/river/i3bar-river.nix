@@ -1,10 +1,11 @@
-{ lib
-, rustPlatform
-, fetchFromGitHub
-, pkg-config
-, cairo
-, glib
-, pango
+{
+  lib,
+  rustPlatform,
+  fetchFromGitHub,
+  pkg-config,
+  cairo,
+  glib,
+  pango,
 }:
 
 rustPlatform.buildRustPackage {
@@ -20,9 +21,7 @@ rustPlatform.buildRustPackage {
 
   cargoHash = "sha256-ekovq0yBkT01U3aLktgrzA6KZoAyn05GB7wok4rIwHE=";
 
-  nativeBuildInputs = [
-    pkg-config
-  ];
+  nativeBuildInputs = [ pkg-config ];
 
   buildInputs = [
     cairo

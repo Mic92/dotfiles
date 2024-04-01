@@ -1,7 +1,7 @@
-{ buildPythonApplication
-, lib
-, runCommand
-,
+{
+  buildPythonApplication,
+  lib,
+  runCommand,
 }:
 buildPythonApplication {
   pname = "nix-uci";

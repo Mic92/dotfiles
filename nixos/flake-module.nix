@@ -2,40 +2,42 @@
 let
   inherit (inputs) nixpkgs clan-core;
 
-  defaultModule = { config, lib, ... }: {
-    srvos.flake = self;
-    documentation.info.enable = false;
-    services.envfs.enable = true;
-    clan.networking.targetHost = lib.mkDefault "root@${config.networking.hostName}.r";
+  defaultModule =
+    { config, lib, ... }:
+    {
+      srvos.flake = self;
+      documentation.info.enable = false;
+      services.envfs.enable = true;
+      clan.networking.targetHost = lib.mkDefault "root@${config.networking.hostName}.r";
 
-    imports = [
-      ./modules/nix-path.nix
-      ./modules/pinned-registry.nix
-      ./modules/acme.nix
-      ./modules/nix-daemon.nix
-      ./modules/minimal-docs.nix
-      ./modules/i18n.nix
-      ./modules/sshd
-      ./modules/zfs.nix
+      imports = [
+        ./modules/nix-path.nix
+        ./modules/pinned-registry.nix
+        ./modules/acme.nix
+        ./modules/nix-daemon.nix
+        ./modules/minimal-docs.nix
+        ./modules/i18n.nix
+        ./modules/sshd
+        ./modules/zfs.nix
 
-      inputs.clan-core.clanModules.sshd
-      inputs.clan-core.clanModules.borgbackup
+        inputs.clan-core.clanModules.sshd
+        inputs.clan-core.clanModules.borgbackup
 
-      inputs.srvos.nixosModules.common
-      inputs.srvos.nixosModules.mixins-telegraf
-      inputs.srvos.nixosModules.mixins-nix-experimental
-      { networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 9273 ]; }
-      inputs.srvos.nixosModules.mixins-trusted-nix-caches
+        inputs.srvos.nixosModules.common
+        inputs.srvos.nixosModules.mixins-telegraf
+        inputs.srvos.nixosModules.mixins-nix-experimental
+        { networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 9273 ]; }
+        inputs.srvos.nixosModules.mixins-trusted-nix-caches
 
-      ./modules/retiolum.nix
-      ./modules/update-prefetch.nix
-      inputs.retiolum.nixosModules.retiolum
-      inputs.retiolum.nixosModules.ca
+        ./modules/retiolum.nix
+        ./modules/update-prefetch.nix
+        inputs.retiolum.nixosModules.retiolum
+        inputs.retiolum.nixosModules.ca
 
-      ./modules/zerotier.nix
-      inputs.nether.nixosModules.hosts
-    ];
-  };
+        ./modules/zerotier.nix
+        inputs.nether.nixosModules.hosts
+      ];
+    };
 in
 {
   flake = clan-core.lib.buildClan {

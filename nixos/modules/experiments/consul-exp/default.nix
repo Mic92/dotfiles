@@ -3,12 +3,10 @@ mkShell {
   nativeBuildInputs = [
     bashInteractive
 
-    (pkgs.terraform.withPlugins (
-      p: [
-        p.vault
-        p.consul
-      ]
-    ))
+    (pkgs.terraform.withPlugins (p: [
+      p.vault
+      p.consul
+    ]))
     consul
     vault
   ];

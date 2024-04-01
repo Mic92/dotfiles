@@ -1,4 +1,5 @@
-{ config, ... }: {
+{ config, ... }:
+{
   services.kanidm.enableServer = true;
   services.kanidm.serverSettings = {
     tls_chain = "/var/lib/acme/kanidm.thalheim.io/fullchain.pem";

@@ -1,22 +1,21 @@
-{ config
-, pkgs
-, ...
-}:
+{ config, pkgs, ... }:
 {
-  imports = [
-    ../ssh.nix
-  ];
+  imports = [ ../ssh.nix ];
 
   # srvos sets more sane defaults
   services.openssh = {
     enable = true;
-    settings.HostCertificate = config.clanCore.facts.services.openssh-interactive.public."ssh.id_ed25519-cert.pub".path;
+    settings.HostCertificate =
+      config.clanCore.facts.services.openssh-interactive.public."ssh.id_ed25519-cert.pub".path;
   };
 
   clanCore.facts.services.openssh-interactive = {
     public."ssh.id_ed25519-cert.pub" = { };
     secret = { };
-    generator.path = [ pkgs.coreutils pkgs.openssh ];
+    generator.path = [
+      pkgs.coreutils
+      pkgs.openssh
+    ];
     generator.prompt = ''
       Provide a the host ssh certificate public key ${config.networking.hostName}
       Run this script:

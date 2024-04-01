@@ -1,7 +1,4 @@
-{ pkgs
-, lib
-, ...
-}:
+{ pkgs, lib, ... }:
 let
   i3bar-river = pkgs.callPackage ./i3bar-river.nix { };
 in
@@ -14,7 +11,10 @@ in
       swayidle
       xwayland
       (i3pystatus.override {
-        extraLibs = [ python3.pkgs.keyrings-alt python3.pkgs.paho-mqtt ];
+        extraLibs = [
+          python3.pkgs.keyrings-alt
+          python3.pkgs.paho-mqtt
+        ];
       })
       i3bar-river
       rofi-wayland

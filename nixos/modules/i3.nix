@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   imports = [
     ./xserver.nix
     ./flameshot.nix
@@ -33,7 +34,10 @@
     xorg.xprop
     alacritty
     (i3pystatus.override {
-      extraLibs = with python3.pkgs; [ keyrings-alt paho-mqtt ];
+      extraLibs = with python3.pkgs; [
+        keyrings-alt
+        paho-mqtt
+      ];
     })
     networkmanagerapplet
     gnome.file-roller

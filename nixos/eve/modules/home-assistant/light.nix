@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   services.home-assistant.config = {
     conversation.intents = {
       ToggleLight = [

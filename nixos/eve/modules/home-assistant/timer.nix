@@ -1,7 +1,4 @@
-{ config
-, pkgs
-, ...
-}:
+{ config, pkgs, ... }:
 let
   convertDuration = ''
     {% if unit == "seconds" %}
@@ -21,12 +18,8 @@ in
     };
 
     conversation.intents = {
-      Nap = [
-        "(Did|Have) you (had|have) a (nap|sleep|rest|break|pause|siesta) [today]"
-      ];
-      Pause = [
-        "(Pause|Suspend) for {{ duration }} {{ unit }}"
-      ];
+      Nap = [ "(Did|Have) you (had|have) a (nap|sleep|rest|break|pause|siesta) [today]" ];
+      Pause = [ "(Pause|Suspend) for {{ duration }} {{ unit }}" ];
       GetTime = [
         "What (day|date|time) is it"
         "What is the (day|date|time)"
@@ -34,16 +27,12 @@ in
         "What is the (day|date|time) today"
         "What is today?"
       ];
-      GetTimer = [
-        "How much time is left [on the (timer|alarm|clock)]"
-      ];
+      GetTimer = [ "How much time is left [on the (timer|alarm|clock)]" ];
       CancelTimer = [
         "Cancel the (timer|alarm|clock)"
         "Stop the (timer|alarm|clock)"
       ];
-      SetTimer = [
-        "Set a (timer|alarm|clock) for {{ duration }} {{ unit }}"
-      ];
+      SetTimer = [ "Set a (timer|alarm|clock) for {{ duration }} {{ unit }}" ];
     };
 
     intent = { };

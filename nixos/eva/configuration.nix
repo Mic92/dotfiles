@@ -1,4 +1,5 @@
-{ lib, pkgs, ... }: {
+{ lib, pkgs, ... }:
+{
   networking.hostName = "eva";
 
   time.timeZone = "UTC";

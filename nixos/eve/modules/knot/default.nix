@@ -1,12 +1,14 @@
-{ pkgs
-, config
-, inputs
-, ...
+{
+  pkgs,
+  config,
+  inputs,
+  ...
 }:
 let
   ip4 = config.networking.eve.ipv4.address;
   ip6 = config.networking.eve.ipv6.address;
-  acmeChallenge = domain:
+  acmeChallenge =
+    domain:
     pkgs.writeText "_acme-challenge.${domain}.zone" ''
       @ 3600 IN SOA _acme-challenge.${domain}. ns1.thalheim.io. 2021013110 7200 3600 86400 3600
 
@@ -14,7 +16,8 @@ let
 
       @ IN NS ns1.thalheim.io.
     '';
-  dyndns = domain:
+  dyndns =
+    domain:
     pkgs.writeText "${domain}.zone" ''
       @ 3600 IN SOA ${domain}. ns1.thalheim.io. 2021013112 7200 3600 86400 3600
 
@@ -34,21 +37,24 @@ in
 
   services.knot = {
     enable = true;
-    keyFiles = [
-      config.sops.secrets."knot-keys.conf".path
-    ];
+    keyFiles = [ config.sops.secrets."knot-keys.conf".path ];
     settings = {
       server = {
-        listen = [ "${ip4}@53" "${ip6}@53" ];
+        listen = [
+          "${ip4}@53"
+          "${ip6}@53"
+        ];
       };
 
-      remote = [{
-        id = "he_ip4";
-        address = "216.218.130.2";
-        # does not accept NOTIFY yet
-        #- id: he_ip6
-        #  address: 2001:470:100::2
-      }];
+      remote = [
+        {
+          id = "he_ip4";
+          address = "216.218.130.2";
+          # does not accept NOTIFY yet
+          #- id: he_ip6
+          #  address: 2001:470:100::2
+        }
+      ];
 
       # to generate TSIG key
       # for i in host; do keymgr -t $i; done
@@ -96,19 +102,22 @@ in
         }
       ];
 
-      mod-rrl = [{
-        id = "default";
-        rate-limit = 200;
-        slip = 2;
-      }];
+      mod-rrl = [
+        {
+          id = "default";
+          rate-limit = 200;
+          slip = 2;
+        }
+      ];
 
-      policy = [{
-        id = "default";
-        algorithm = "RSASHA256";
-        ksk-size = 4096;
-        zsk-size = 2048;
-      }];
-
+      policy = [
+        {
+          id = "default";
+          algorithm = "RSASHA256";
+          ksk-size = 4096;
+          zsk-size = 2048;
+        }
+      ];
 
       template = [
         {

@@ -1,4 +1,5 @@
-{ config, ... }: {
+{ config, ... }:
+{
   services.owncast = {
     enable = true;
     port = 3012;

@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   environment.systemPackages = with pkgs; [
     gnupg
     yubikey-personalization
@@ -10,7 +11,5 @@
     SUBSYSTEM=="usb", ATTR{idVendor}=="1050", ATTR{idProduct}=="0406", ENV{ID_SECURITY_TOKEN}="1", GROUP="wheel"
   '';
 
-  services.udev.packages = with pkgs; [
-    yubikey-personalization
-  ];
+  services.udev.packages = with pkgs; [ yubikey-personalization ];
 }

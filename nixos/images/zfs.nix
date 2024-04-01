@@ -1,8 +1,6 @@
 { pkgs }:
 let
-  zfsPackage = pkgs.zfsUnstable.override {
-    removeLinuxDRM = pkgs.hostPlatform.isAarch64;
-  };
+  zfsPackage = pkgs.zfsUnstable.override { removeLinuxDRM = pkgs.hostPlatform.isAarch64; };
 in
 {
   boot.zfs.package = zfsPackage;

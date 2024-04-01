@@ -1,7 +1,5 @@
-{ pkgs
-, lib
-, ...
-}: {
+{ pkgs, lib, ... }:
+{
   options.uci = {
     settings = lib.mkOption {
       default = { };

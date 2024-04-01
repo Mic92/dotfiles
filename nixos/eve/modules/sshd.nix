@@ -1,7 +1,5 @@
 {
-  imports = [
-    ../../modules/sshd/tor.nix
-  ];
+  imports = [ ../../modules/sshd/tor.nix ];
 
   services.openssh = {
     listenAddresses = [
@@ -20,5 +18,8 @@
     ];
   };
 
-  networking.firewall.allowedTCPPorts = [ 22 443 ];
+  networking.firewall.allowedTCPPorts = [
+    22
+    443
+  ];
 }

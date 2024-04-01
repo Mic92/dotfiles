@@ -1,4 +1,5 @@
-{ config, ... }: {
+{ config, ... }:
+{
   services.harmonia.enable = true;
   services.harmonia.signKeyPath = config.sops.secrets.harmonia-key.path;
 

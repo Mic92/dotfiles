@@ -1,4 +1,5 @@
-{ config, ... }: {
+{ config, ... }:
+{
   nix.distributedBuilds = true;
 
   nix.buildMachines = [
@@ -7,7 +8,10 @@
       sshUser = "nix";
       protocol = "ssh-ng";
       sshKey = config.sops.secrets.ssh-remote-builder.path;
-      systems = [ "x86_64-linux" "i686-linux" ];
+      systems = [
+        "x86_64-linux"
+        "i686-linux"
+      ];
       maxJobs = 64;
       supportedFeatures = [
         "big-parallel"
@@ -33,11 +37,12 @@
       sshUser = "hetzner";
       protocol = "ssh-ng";
       sshKey = "/root/.ssh/id_ed25519";
-      systems = [ "aarch64-darwin" "x86_64-darwin" ];
-      maxJobs = 8;
-      supportedFeatures = [
-        "big-parallel"
+      systems = [
+        "aarch64-darwin"
+        "x86_64-darwin"
       ];
+      maxJobs = 8;
+      supportedFeatures = [ "big-parallel" ];
     }
     {
       hostName = "aarch64.nixos.community";

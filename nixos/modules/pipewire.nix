@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   # for pactl
   environment.systemPackages = with pkgs; [
     pulseaudio

@@ -1,8 +1,17 @@
-{ config, pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 let
   apptoken = pkgs.writeShellApplication {
     name = "apptoken";
-    runtimeInputs = with pkgs; [ jq openssl curl ];
+    runtimeInputs = with pkgs; [
+      jq
+      openssl
+      curl
+    ];
     text = builtins.readFile ./apptoken.sh;
   };
   # Based on https://docs.renovatebot.com/modules/platform/github/#running-as-a-github-app
@@ -14,7 +23,10 @@ in
   systemd.services.renovate = {
     environment = {
       RENOVATE_CONFIG_FILE = pkgs.writers.writeJSON "renovate.json" {
-        labels = [ "dependencies" "renovate" ];
+        labels = [
+          "dependencies"
+          "renovate"
+        ];
         nix.enabled = true;
         lockFileMaintenance.enabled = true;
         autodiscover = true;

@@ -1,19 +1,23 @@
-{ config, pkgs, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   cfg = config.services.ksmbd;
 
-  smbToString = x:
-    if builtins.typeOf x == "bool"
-    then lib.boolToString x
-    else toString x;
+  smbToString = x: if builtins.typeOf x == "bool" then lib.boolToString x else toString x;
 
-  shareConfig = name:
-    let share = lib.getAttr name cfg.shares; in
-    "[${name}]\n " + (smbToString (
-      map
-        (key: "${key} = ${smbToString (lib.getAttr key share)}\n")
-        (lib.attrNames share)
+  shareConfig =
+    name:
+    let
+      share = lib.getAttr name cfg.shares;
+    in
+    "[${name}]\n "
+    + (smbToString (
+      map (key: "${key} = ${smbToString (lib.getAttr key share)}\n") (lib.attrNames share)
     ));
 in
 {
@@ -68,16 +72,14 @@ in
 
       users = lib.mkOption {
         default = [ ];
-        type = lib.types.listOf (lib.types.submodule {
-          options = {
-            user = lib.mkOption {
-              type = lib.types.str;
+        type = lib.types.listOf (
+          lib.types.submodule {
+            options = {
+              user = lib.mkOption { type = lib.types.str; };
+              passwordFile = lib.mkOption { type = lib.types.path; };
             };
-            passwordFile = lib.mkOption {
-              type = lib.types.path;
-            };
-          };
-        });
+          }
+        );
       };
     };
   };
@@ -97,8 +99,9 @@ in
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
       path = [ pkgs.ksmbd-tools ];
-      preStart = builtins.concatStringsSep "\n"
-        (map (it: "ksmbd.adduser -i /run/ksmbd/passwd -a ${it.user} < ${it.passwordFile}") cfg.users);
+      preStart = builtins.concatStringsSep "\n" (
+        map (it: "ksmbd.adduser -i /run/ksmbd/passwd -a ${it.user} < ${it.passwordFile}") cfg.users
+      );
       serviceConfig = {
         Type = "forking";
         ExecStart = "${pkgs.ksmbd-tools}/bin/ksmbd.mountd -C /etc/ksmbd/ksmbd.conf -P /run/ksmbd/passwd";

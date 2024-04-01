@@ -1,13 +1,13 @@
-{ stdenv
-, fetchFromGitHub
-, makeWrapper
-, openldap
-, coreutils
-, gnused
-, gnugrep
-, ldapPasswordFile
-, lib
-,
+{
+  stdenv,
+  fetchFromGitHub,
+  makeWrapper,
+  openldap,
+  coreutils,
+  gnused,
+  gnugrep,
+  ldapPasswordFile,
+  lib,
 }:
 stdenv.mkDerivation {
   name = "ldap-auth-sh";
@@ -47,7 +47,14 @@ stdenv.mkDerivation {
     EOF
     install -D -m755 ldap-auth.sh $out/bin/ldap-auth.sh
     wrapProgram $out/bin/ldap-auth.sh \
-      --prefix PATH : ${lib.makeBinPath [openldap coreutils gnused gnugrep]} \
+      --prefix PATH : ${
+        lib.makeBinPath [
+          openldap
+          coreutils
+          gnused
+          gnugrep
+        ]
+      } \
       --add-flags "$out/etc/home-assistant.cfg"
   '';
 }

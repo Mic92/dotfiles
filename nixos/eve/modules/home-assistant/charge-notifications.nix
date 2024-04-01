@@ -66,7 +66,13 @@
           conditions = [
             {
               condition = "time";
-              weekday = [ "mon" "tue" "wed" "thu" "fri" ];
+              weekday = [
+                "mon"
+                "tue"
+                "wed"
+                "thu"
+                "fri"
+              ];
             }
             {
               condition = "template";

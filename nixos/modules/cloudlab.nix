@@ -5,9 +5,7 @@
   systemd.services.miniond.serviceConfig.Restart = "on-failure";
   systemd.services.miniond.serviceConfig.RestartSec = 2;
 
-  imports = [
-    ./sshd
-  ];
+  imports = [ ./sshd ];
 
   # bootloader loads bootloader from first partition not disk!
   boot.loader.grub = {

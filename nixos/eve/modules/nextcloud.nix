@@ -1,7 +1,5 @@
-{ config
-, pkgs
-, ...
-}: {
+{ config, pkgs, ... }:
+{
   services.nextcloud = {
     enable = true;
     hostName = "cloud.thalheim.io";

@@ -1,7 +1,4 @@
-{ pkgs
-, config
-, ...
-}:
+{ pkgs, config, ... }:
 let
   localConfig = pkgs.writeText "local.conf" ''
     logging {

@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   environment.systemPackages = [
     (pkgs.writeScriptBin "openvpn-tum" ''
       export PATH=$PATH:${pkgs.iproute2}/bin

@@ -1,7 +1,5 @@
-{ pkgs
-, lib
-, ...
-}: {
+{ pkgs, lib, ... }:
+{
   programs.sway = {
     enable = true;
     wrapperFeatures.gtk = true; # so that gtk works properly
@@ -11,7 +9,10 @@
       swayidle
       xwayland
       (i3pystatus.override {
-        extraLibs = [ python3.pkgs.keyrings-alt python3.pkgs.paho-mqtt ];
+        extraLibs = [
+          python3.pkgs.keyrings-alt
+          python3.pkgs.paho-mqtt
+        ];
       })
       rofi-wayland
       rofi-rbw

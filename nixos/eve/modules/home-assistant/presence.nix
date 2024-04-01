@@ -98,7 +98,8 @@ in
         };
         condition = {
           condition = "template";
-          value_template = ''            {{ states("input_boolean.shannan_jorg_not_together") == "on" and
+          value_template = ''
+            {{ states("input_boolean.shannan_jorg_not_together") == "on" and
                                           states("person.jorg_thalheim") == "not_home" and
                                           states("device_tracker.beatrice") == "not_home" }}'';
         };
@@ -107,12 +108,8 @@ in
             service = "input_boolean.turn_off";
             entity_id = "input_boolean.shannan_joerg_not_together";
           }
-          (
-            notifyJoerg "Shannan is close to you {{ sensor.distance_joerg_shannan | round(2)}}km"
-          )
-          (
-            notifyShannan "Jörg is close to you {{ sensor.distance_joerg_shannan | round(2)}}km"
-          )
+          (notifyJoerg "Shannan is close to you {{ sensor.distance_joerg_shannan | round(2)}}km")
+          (notifyShannan "Jörg is close to you {{ sensor.distance_joerg_shannan | round(2)}}km")
         ];
       }
     ];
