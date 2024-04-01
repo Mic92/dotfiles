@@ -41,7 +41,7 @@
               "-eucx"
               ''
                 ${pkgs.deadnix}/bin/deadnix --edit "$@"
-                ${config.packages.nixfmt-rfc-style}/bin/nixfmt "$@"
+                ${pkgs.nixfmt-rfc-style}/bin/nixfmt "$@"
               ''
               "--"
             ];
