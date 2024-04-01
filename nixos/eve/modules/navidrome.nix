@@ -1,8 +1,16 @@
-{ config, ... }: {
+{ config, lib, ... }: {
   services.navidrome.enable = true;
   services.navidrome.settings.MusicFolder = "/data/torrent/download";
   services.navidrome.settings.ReverseProxyWhitelist = "127.0.0.1/32";
   services.navidrome.settings.ScanSchedule = "@every 1h";
+
+  systemd.services.navidrome.serviceConfig.PrivateUsers = lib.mkForce false; # breaks in weird ways?
+  users.users.navidrome = {
+    isSystemUser = true;
+    home = "/var/lib/navidrome";
+    group = "navidrome";
+  };
+  users.groups.navidrome = { };
 
   systemd.services.navidrome.unitConfig.RequiresMountsFor = [
     "/data/torrent/download/catalonia"
