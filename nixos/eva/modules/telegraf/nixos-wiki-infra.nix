@@ -1,11 +1,11 @@
 let
-  hosts = [ "wiki.staging.julienmalka.me" ];
+  hosts = [ "wiki.nixos.org" ];
 in
 {
   services.telegraf.extraConfig.inputs = {
     http_response = [
       {
-        urls = [ "https://wiki.staging.julienmalka.me/wiki/Main_Page" ];
+        urls = [ "https://wiki.nixos.org/wiki/Main_Page" ];
         response_string_match = "NixOS Wiki";
         tags.host = "nixos-wiki";
         tags.org = "nixos-wiki";
