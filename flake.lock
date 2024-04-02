@@ -1,21 +1,5 @@
 {
   "nodes": {
-    "astro-nvim": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1710957235,
-        "narHash": "sha256-69DBcOpjDZBMOQGz8obMBFpEBeoSWuXZ4CNAK2GqI+M=",
-        "owner": "AstroNvim",
-        "repo": "AstroNvim",
-        "rev": "0da3fa834137597f13e53196c8c6f7e1425601ea",
-        "type": "github"
-      },
-      "original": {
-        "owner": "AstroNvim",
-        "repo": "AstroNvim",
-        "type": "github"
-      }
-    },
     "buildbot-nix": {
       "inputs": {
         "flake-parts": [
@@ -463,6 +447,35 @@
         "type": "github"
       }
     },
+    "nixvim": {
+      "inputs": {
+        "devshell": [],
+        "flake-compat": [],
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "home-manager": [],
+        "nix-darwin": [],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "pre-commit-hooks": []
+      },
+      "locked": {
+        "lastModified": 1712069886,
+        "narHash": "sha256-o5BgGNHPt2qh+kTl8mj1Y0pZ9hKaQF/7kAVH5xY9dP0=",
+        "owner": "Mic92",
+        "repo": "nixvim",
+        "rev": "0bf21f9cb10293134d7df16dfc60809e1464c510",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "ref": "optional-flakes",
+        "repo": "nixvim",
+        "type": "github"
+      }
+    },
     "nur-packages": {
       "inputs": {
         "nixpkgs": [
@@ -500,7 +513,6 @@
     },
     "root": {
       "inputs": {
-        "astro-nvim": "astro-nvim",
         "buildbot-nix": "buildbot-nix",
         "clan-core": "clan-core",
         "disko": "disko",
@@ -519,6 +531,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixos-wiki": "nixos-wiki",
         "nixpkgs": "nixpkgs",
+        "nixvim": "nixvim",
         "nur-packages": "nur-packages",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
