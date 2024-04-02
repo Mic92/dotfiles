@@ -64,18 +64,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1711969466,
-        "narHash": "sha256-CwddFkWei798LtbxOBiuBvDMD5zV/a15GvfqVwfVrGE=",
-        "ref": "fact_refactor2",
-        "rev": "a84a00195d692c1850d6868b19cf5c7937ecb3d9",
-        "revCount": 2385,
+        "lastModified": 1712058953,
+        "narHash": "sha256-3PyhG+n2/w+76whbWsn35Gyq+ce1ou7Q8qj1/qQagm4=",
+        "ref": "refs/heads/main",
+        "rev": "69aa46a1d5e11c35f0bb8b3fcc2fb59292f741e6",
+        "revCount": 2401,
         "type": "git",
-        "url": "file:///home/joerg/work/clan/clan-core"
+        "url": "https://git.clan.lol/clan/clan-core"
       },
       "original": {
-        "ref": "fact_refactor2",
         "type": "git",
-        "url": "file:///home/joerg/work/clan/clan-core"
+        "url": "https://git.clan.lol/clan/clan-core"
       }
     },
     "crane": {
@@ -168,11 +167,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1709336216,
-        "narHash": "sha256-Dt/wOWeW6Sqm11Yh+2+t0dfEWxoMxGBvv3JpIocFl9E=",
+        "lastModified": 1712014858,
+        "narHash": "sha256-sB4SWl2lX95bExY2gMFG5HIzvva5AVMJd4Igm+GpZNw=",
         "owner": "hercules-ci",
         "repo": "flake-parts",
-        "rev": "f7b3c975cf067e56e7cda6cb098ebe3fb4d74ca2",
+        "rev": "9126214d0a59633752a136528f5f3b9aa8565b7d",
         "type": "github"
       },
       "original": {
@@ -245,11 +244,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1711915616,
-        "narHash": "sha256-co6LoFA+j6BZEeJNSR8nZ4oOort5qYPskjrDHBaJgmo=",
+        "lastModified": 1712016346,
+        "narHash": "sha256-O2nO7pD+krq+4HgkLB4VThRtAucIPfXDs/jJqCGlK1w=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "820be197ccf3adaad9a8856ef255c13b6cc561a6",
+        "rev": "4be0464472675212654dedf3e021bd5f1d58b92f",
         "type": "github"
       },
       "original": {
@@ -435,11 +434,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1709763231,
-        "narHash": "sha256-AbbF4EzGTHnRXYgn2AtlFpE29uhdjJPO09OwU34DBzs=",
+        "lastModified": 1712047353,
+        "narHash": "sha256-0xiYBKRe3BiaUe5PiN7Wvry8dCbuJgdyyzczqPNAcpU=",
         "owner": "Mic92",
         "repo": "nixos-wiki-infra",
-        "rev": "dbc4a2947b5839fe7d3e3f70e0917c58fe2ec252",
+        "rev": "6fda3306efb68ae42b06868a6bbf069c333fa076",
         "type": "github"
       },
       "original": {
