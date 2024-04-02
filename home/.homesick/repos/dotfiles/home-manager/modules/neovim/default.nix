@@ -1,15 +1,16 @@
 {
-  inputs,
-  lib,
+  config,
   pkgs,
-  stdenv,
+  self,
+  ...
 }:
 let
+  inherit (self.packages.${pkgs.hostPlatform.system}) nvim nvim-open treesitter-grammars;
+
   lspPackages =
     with pkgs;
     [
       nodejs # copilot
-      vale
       terraform-ls
       nodePackages.pyright
 
@@ -24,9 +25,8 @@ let
       nil
       shellcheck
       shfmt
-      isort
-      black
       ruff
+      ruff-lsp
       nixfmt-rfc-style
       terraform-ls
       clang-tools
@@ -54,32 +54,17 @@ let
     ]
     ++ lib.optional (pkgs.stdenv.hostPlatform.system == "x86_64-linux") pkgs.deno
     ++ lib.optional (!pkgs.stdenv.hostPlatform.isDarwin) sumneko-lua-language-server;
-
-  neovim' = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped (
-    pkgs.neovimUtils.makeNeovimConfig {
-      wrapRc = false;
-      extraLuaPackages = ps: [ (ps.callPackage ./lua-tiktoken.nix { }) ];
-    }
-  );
 in
-stdenv.mkDerivation {
-  name = "astro-nvim-config";
-  phases = "installPhase";
-  installPhase = ''
-    mkdir -p $out/parser
-    cp -r --reflink=auto ${inputs.astro-nvim}/* $out/
-
-    pushd $out
-    chmod -R +w .
-    patch -p1 < ${./patches/0001-disable-neoconf.nvim.patch}
-    popd
-
-    ln -s ${./user} $out/lua/user
-
-    ${lib.concatMapStringsSep "\n" (grammar: ''
-      ln -s $(readlink -f ${grammar}/parser/*.so) $out/parser/${lib.last (builtins.split "-" grammar.name)}.so
-    '') pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies}
-  '';
-  passthru.lspPackages = lspPackages;
-  passthru.neovim = neovim';
+{
+  home.packages = lspPackages ++ [
+    nvim
+    #nvim-open
+  ]; # ++ astro-nvim-config.lspPackages;
+  #home.packages = [
+  #  nvim
+  #  nvim-open
+  #];# ++ astro-nvim-config.lspPackages;
+  #xdg.dataHome = "${config.home.homeDirectory}/.data";
+  # treesitter-grammars
+  xdg.dataFile."nvim/site/parser".source = treesitter-grammars;
 }

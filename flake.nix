@@ -52,18 +52,6 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    nixvim.url = "github:Mic92/nixvim/optional-flakes";
-    nixvim.inputs.nixpkgs.follows = "nixpkgs";
-    nixvim.inputs.flake-parts.follows = "flake-parts";
-    nixvim.inputs.home-manager.follows = "";
-    nixvim.inputs.pre-commit-hooks.follows = "";
-    nixvim.inputs.nix-darwin.follows = "";
-    nixvim.inputs.flake-compat.follows = "";
-    nixvim.inputs.devshell.follows = "";
-
-    #astro-nvim.url = "github:AstroNvim/AstroNvim";
-    #astro-nvim.flake = false;
-
     flake-registry.url = "github:NixOS/flake-registry";
     flake-registry.flake = false;
 

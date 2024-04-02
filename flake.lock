@@ -447,35 +447,6 @@
         "type": "github"
       }
     },
-    "nixvim": {
-      "inputs": {
-        "devshell": [],
-        "flake-compat": [],
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "home-manager": [],
-        "nix-darwin": [],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "pre-commit-hooks": []
-      },
-      "locked": {
-        "lastModified": 1712069886,
-        "narHash": "sha256-o5BgGNHPt2qh+kTl8mj1Y0pZ9hKaQF/7kAVH5xY9dP0=",
-        "owner": "Mic92",
-        "repo": "nixvim",
-        "rev": "0bf21f9cb10293134d7df16dfc60809e1464c510",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "ref": "optional-flakes",
-        "repo": "nixvim",
-        "type": "github"
-      }
-    },
     "nur-packages": {
       "inputs": {
         "nixpkgs": [
@@ -531,7 +502,6 @@
         "nixos-hardware": "nixos-hardware",
         "nixos-wiki": "nixos-wiki",
         "nixpkgs": "nixpkgs",
-        "nixvim": "nixvim",
         "nur-packages": "nur-packages",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",

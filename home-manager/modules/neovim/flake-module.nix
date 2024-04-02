@@ -1,15 +1,27 @@
-{ inputs, ... }:
+{ lib, ... }:
 {
   perSystem =
-    { self', pkgs, ... }:
+    {
+      self',
+      inputs',
+      pkgs,
+      ...
+    }:
     {
       packages = {
-        astro-nvim-config = pkgs.callPackage ./astro-nvim-config.nix { inherit inputs; };
         nvim-open = pkgs.python3Packages.callPackage ./nvim-open.nix { };
-        nvim = pkgs.callPackage ./nvim-standalone.nix {
-          inherit (self'.packages) astro-nvim-config;
-          nvim-appname = "mic92-vim";
-        };
+        nvim = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped (
+          pkgs.neovimUtils.makeNeovimConfig {
+            wrapRc = false;
+            extraLuaPackages = ps: [ (ps.callPackage ./lua-tiktoken.nix { }) ];
+          }
+        );
+        treesitter-grammars = pkgs.runCommand "treesitter-grammars" { } (
+          lib.concatMapStringsSep "\n" (grammar: ''
+            mkdir -p $out
+            ln -s $(readlink -f ${grammar}/parser/*.so) $out/${lib.last (builtins.split "-" grammar.name)}.so
+          '') pkgs.vimPlugins.nvim-treesitter.withAllGrammars.dependencies
+        );
       };
     };
 }

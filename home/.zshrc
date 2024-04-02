@@ -552,10 +552,11 @@ fi
 export TERMINAL=footclient
 export PICTUREVIEW=eog
 
-if [[ -n ${commands[nvim-open]} ]]; then
-  export EDITOR=nvim-open
-  alias vim="nvim-open"
-elif [[ -n ${commands[nvim]} ]]; then
+#if [[ -n ${commands[nvim-open]} ]]; then
+#  export EDITOR=nvim-open
+#  alias vim="nvim-open"
+#elif [[ -n ${commands[nvim]} ]]; then
+if [[ -n ${commands[nvim]} ]]; then
   export EDITOR=nvim
   alias vim="nvim"
 elif [[ -n ${commands[emacseditor]} ]]; then
@@ -579,9 +580,6 @@ fi
 export READNULLCMD=$PAGER
 export pacman_program=pacman-color
 # X11, Sound, Graphic
-export XDG_CACHE_HOME=~/.cache
-export XDG_CONFIG_HOME=~/.config
-export XDG_DATA_HOME=~/.data
 export XDG_DESKTOP_DIR="$HOME/Desktop"
 export XDG_DOCUMENTS_DIR="$HOME/Documents"
 export XDG_DOWNLOAD_DIR="$HOME/Downloads"

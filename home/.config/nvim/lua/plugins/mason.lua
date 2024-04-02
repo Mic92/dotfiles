@@ -1,10 +1,10 @@
 -- customize mason plugins
 local suggested_packages = {}
-local utils = require "astronvim.utils"
 
 local disable_auto_install = function(_, opts)
+  local core = require("astrocore")
   local data_dir = vim.fn.stdpath("data")
-  utils.list_insert_unique(suggested_packages, opts.ensure_installed or {})
+  core.list_insert_unique(suggested_packages, opts.ensure_installed or {})
   local f = io.open(data_dir .. "/suggested-pkgs.json", "w")
   f:write(vim.fn.json_encode(suggested_packages))
   f:close()
