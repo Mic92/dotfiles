@@ -1,4 +1,4 @@
-{ config, lib, ... }:
+{ config, lib, pkgs, ... }:
 {
   clan.borgbackup.destinations.${config.networking.hostName} = {
     repo = "borg@blob64.r:/zdata/borg/${config.networking.hostName}";
@@ -14,7 +14,7 @@
     postHook = ''
       ${lib.optionalString config.networking.networkmanager.enable ''
         # wait until network is available and not metered
-        while ! nm-online --quiet || nmcli --terse --fields GENERAL.METERED dev show 2>/dev/null | grep --quiet "yes"; do
+        while ! ${pkgs.networkmanager}/bin/nm-online --quiet || ${pkgs.networkmanager}/bin/nmcli --terse --fields GENERAL.METERED dev show 2>/dev/null | grep --quiet "yes"; do
           sleep 60
         done
       ''}
