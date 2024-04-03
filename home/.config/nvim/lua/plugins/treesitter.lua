@@ -1,6 +1,5 @@
 local nvim_data_dir = vim.fn.stdpath("data")
 local command = "ln -sf " .. nvim_data_dir .. "/site/parser/*.so " .. nvim_data_dir .. "/lazy/nvim-treesitter/parser"
-print(command)
 
 return {
   "nvim-treesitter/nvim-treesitter",
