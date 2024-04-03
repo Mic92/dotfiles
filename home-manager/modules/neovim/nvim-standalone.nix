@@ -8,7 +8,10 @@
   buildEnv,
 }:
 let
-  lspEnv = buildEnv { name = "lsp-servers"; paths = nvim-lsp-packages; };
+  lspEnv = buildEnv {
+    name = "lsp-servers";
+    paths = nvim-lsp-packages;
+  };
 in
 writeShellScriptBin "nvim" ''
   set -efux

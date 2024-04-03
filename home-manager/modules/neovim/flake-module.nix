@@ -1,13 +1,7 @@
 { lib, ... }:
 {
   perSystem =
-    {
-      self',
-      inputs',
-      pkgs,
-      config,
-      ...
-    }:
+    { pkgs, config, ... }:
     {
       legacyPackages = {
         nvim-lsp-packages =
