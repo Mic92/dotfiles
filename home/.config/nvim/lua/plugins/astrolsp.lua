@@ -25,5 +25,7 @@ return {
 			"ocamllsp",
 			-- add more servers as needed...
 		})
+		opts.formatting = opts.formatting or {}
+		opts.formatting.format_on_save = false
 	end,
 }

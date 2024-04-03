@@ -1,9 +1,11 @@
+local nvim_data_dir = vim.fn.stdpath("data")
+local command = "ln -sf " .. nvim_data_dir .. "/site/parser/*.so " .. nvim_data_dir .. "/lazy/nvim-treesitter/parser"
+print(command)
+
 return {
   "nvim-treesitter/nvim-treesitter",
-  build = "true",
+  build = command,
   opts = function(_, opts)
-    vim.fn.system(
-      "ln -sf ${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/parser/*.so ${XDG_DATA_HOME:-$HOME/.local/share}/nvim/lazy/nvim-treesitter/parser"
-    )
+    vim.fn.system(command)
   end,
 }
