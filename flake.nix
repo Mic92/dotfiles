@@ -120,7 +120,7 @@
       nixpkgs,
       ...
     }:
-    (flake-parts.lib.evalFlakeModule { inherit inputs; } (
+    flake-parts.lib.mkFlake { inherit inputs; } (
       { withSystem, config, ... }:
       {
         imports = [
@@ -189,5 +189,5 @@
           };
         # CI
       }
-    )).config.flake;
+    );
 }
