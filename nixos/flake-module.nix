@@ -1,8 +1,6 @@
 { self, inputs, ... }:
-let
-  inherit (inputs) nixpkgs clan-core;
-
-  defaultModule =
+{
+  flake.nixosModules.default =
     { config, lib, ... }:
     {
       srvos.flake = self;
@@ -38,9 +36,7 @@ let
         inputs.nether.nixosModules.hosts
       ];
     };
-in
-{
-  flake = clan-core.lib.buildClan {
+  clan = {
     clanName = "mic92";
     directory = self;
     specialArgs = {
@@ -51,14 +47,14 @@ in
       };
       inputs = inputs;
     };
-    pkgsForSystem = system: nixpkgs.legacyPackages.${system};
+    pkgsForSystem = system: inputs.nixpkgs.legacyPackages.${system};
 
     machines = {
       bernie = {
-        nixpkgs.pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
         imports = [
           ./bernie/configuration.nix
-          defaultModule
+          self.nixosModules.default
           inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x13
           inputs.home-manager.nixosModules.home-manager
           inputs.srvos.nixosModules.desktop
@@ -66,10 +62,10 @@ in
       };
 
       turingmachine = {
-        nixpkgs.pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
         imports = [
           ./turingmachine/configuration.nix
-          defaultModule
+          self.nixosModules.default
           inputs.nixos-hardware.nixosModules.framework-13th-gen-intel
           inputs.nix-index-database.nixosModules.nix-index
           inputs.disko.nixosModules.disko
@@ -99,10 +95,10 @@ in
         ];
       };
       eve = {
-        nixpkgs.pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
         imports = [
           ./eve/configuration.nix
-          defaultModule
+          self.nixosModules.default
           inputs.srvos.nixosModules.server
           inputs.srvos.nixosModules.mixins-nginx
           inputs.srvos.nixosModules.hardware-hetzner-online-amd
@@ -115,10 +111,10 @@ in
       };
 
       eva = {
-        nixpkgs.pkgs = nixpkgs.legacyPackages.x86_64-linux;
+        nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
         imports = [
           ./eva/configuration.nix
-          defaultModule
+          self.nixosModules.default
           inputs.srvos.nixosModules.server
           inputs.srvos.nixosModules.mixins-nginx
           inputs.srvos.nixosModules.mixins-systemd-boot
@@ -130,19 +126,19 @@ in
       };
 
       blob64 = {
-        nixpkgs.pkgs = nixpkgs.legacyPackages.aarch64-linux;
+        nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.aarch64-linux;
         imports = [
           ./blob64/configuration.nix
-          defaultModule
+          self.nixosModules.default
           inputs.srvos.nixosModules.server
         ];
       };
 
       matchbox = {
-        nixpkgs.pkgs = nixpkgs.legacyPackages.aarch64-linux;
+        nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.aarch64-linux;
         imports = [
           ./matchbox/configuration.nix
-          defaultModule
+          self.nixosModules.default
           inputs.srvos.nixosModules.server
         ];
       };
