@@ -1,4 +1,9 @@
-{ self, lib, ... }:
+{
+  self,
+  inputs,
+  lib,
+  ...
+}:
 let
   inherit (self.inputs) nixos-generators;
   defaultModule =
@@ -13,11 +18,11 @@ in
     { pkgs, self', ... }:
     {
       packages = lib.optionalAttrs pkgs.stdenv.isLinux {
-        install-iso = nixos-generators.nixosGenerate {
-          inherit pkgs;
-          modules = [ defaultModule ];
-          format = "install-iso";
-        };
+        #install-iso = nixos-generators.nixosGenerate {
+        #  inherit pkgs;
+        #  modules = [ defaultModule ];
+        #  format = "install-iso";
+        #};
 
         netboot = pkgs.callPackage ./netboot.nix {
           inherit pkgs;
@@ -35,15 +40,14 @@ in
         };
       };
     };
-  # for debugging
-  #flake.nixosConfigurations = {
-  #  sd-image = lib.nixosSystem {
-  #    modules = [
-  #      {
-  #        nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
-  #      }
-  #      defaultModule
-  #    ];
-  #  };
-  #};
+  clan.machines = {
+    installer = {
+      imports = [
+        defaultModule
+        inputs.clan-core.clanModules.diskLayouts
+      ];
+      clan.diskLayouts.singleDiskExt4.device = "/dev/invalid";
+      nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+    };
+  };
 }
