@@ -77,8 +77,6 @@
       ];
     })
     jellyfin-media-player
-    hedgewars
-    sshuttle
     chromium
     celluloid
     vscode
