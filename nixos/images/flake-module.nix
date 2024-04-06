@@ -41,13 +41,20 @@ in
       };
     };
   clan.machines = {
-    installer = {
-      imports = [
-        defaultModule
-        inputs.clan-core.clanModules.diskLayouts
-      ];
-      clan.diskLayouts.singleDiskExt4.device = "/dev/invalid";
-      nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-    };
+    installer = (
+      { modulesPath, ... }:
+      {
+        imports = [
+          defaultModule
+          inputs.clan-core.clanModules.diskLayouts
+
+          "${toString modulesPath}/profiles/installation-device.nix"
+          "${toString modulesPath}/profiles/base.nix"
+          "${toString modulesPath}/profiles/all-hardware.nix"
+        ];
+        clan.diskLayouts.singleDiskExt4.device = "/dev/invalid";
+        nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+      }
+    );
   };
 }
