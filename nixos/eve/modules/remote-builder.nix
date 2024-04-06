@@ -29,7 +29,7 @@
     }
     # direct connection sometimes break, too many connections?
     {
-      hostName = "vislor";
+      hostName = "irene";
       maxJobs = 128;
       sshKey = config.sops.secrets.ssh-tum-builder.path;
       protocol = "ssh-ng";
