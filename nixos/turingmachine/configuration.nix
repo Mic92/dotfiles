@@ -18,6 +18,7 @@
     ./modules/tum-vpn.nix
     ./modules/toggle-keyboard
     ./modules/localbackup.nix
+    ./modules/test.nix
 
     ../modules/borgbackup.nix
     ../modules/i18n.nix

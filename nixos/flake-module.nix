@@ -43,6 +43,7 @@
       self = {
         inputs = self.inputs;
         nixosModules = self.nixosModules;
+        nixosConfigurations = self.nixosConfigurations;
         packages = self.packages.x86_64-linux;
       };
       inputs = inputs;
