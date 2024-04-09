@@ -29,7 +29,7 @@
     }
     # direct connection sometimes break, too many connections?
     {
-      hostName = "irene";
+      hostName = "graham";
       maxJobs = 128;
       sshKey = config.sops.secrets.ssh-tum-builder.path;
       protocol = "ssh-ng";
@@ -63,15 +63,10 @@
       User hetzner
       HostName mac01.numtide.com
       IdentityFile ${config.sops.secrets.ssh-aarch64-builder.path}
-    Host irene
+    Host graham
       User nix
       ProxyJump login-tum
-      HostName irene.dos.cit.tum.de
-      IdentityFile ${config.sops.secrets.ssh-tum-builder.path}
-    Host vislor
-      User nix
-      ProxyJump login-tum
-      HostName vislor.dos.cit.tum.de
+      HostName graham.dos.cit.tum.de
       IdentityFile ${config.sops.secrets.ssh-tum-builder.path}
     Host yasmin
       User nix

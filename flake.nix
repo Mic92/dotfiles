@@ -44,7 +44,7 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    buildbot-nix.url = "github:Mic92/buildbot-nix";
+    buildbot-nix.url = "github:Mic92/buildbot-nix/authz-fix";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
@@ -65,7 +65,7 @@
     srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
-    clan-core.url = "git+https://git.clan.lol/clan/clan-core";
+    clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=networkd";
     #clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=main";
     #clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=fact_refactor2";
     #clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=fact_refactor2";

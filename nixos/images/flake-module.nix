@@ -57,45 +57,4 @@ in
       }
     );
   };
-
-  flake.nixosConfigurations.your-machine = inputs.nixpkgs.lib.nixosSystem {
-    system = "x86_64-linux";
-    modules = [
-      {
-        # TODO: add your NixOS configuration here
-        boot.loader.systemd-boot.enable = true;
-        imports = [ self.inputs.disko.nixosModules.disko ];
-        disko.devices = {
-          disk = {
-            vdb = {
-              device = "/dev/disk/by-id/some-disk-id";
-              type = "disk";
-              content = {
-                type = "gpt";
-                partitions = {
-                  ESP = {
-                    type = "EF00";
-                    size = "500M";
-                    content = {
-                      type = "filesystem";
-                      format = "vfat";
-                      mountpoint = "/boot";
-                    };
-                  };
-                  root = {
-                    size = "100%";
-                    content = {
-                      type = "filesystem";
-                      format = "ext4";
-                      mountpoint = "/";
-                    };
-                  };
-                };
-              };
-            };
-          };
-        };
-      }
-    ];
-  };
 }

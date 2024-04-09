@@ -40,12 +40,7 @@
     clanName = "mic92";
     directory = self;
     specialArgs = {
-      self = {
-        inputs = self.inputs;
-        nixosModules = self.nixosModules;
-        nixosConfigurations = self.nixosConfigurations;
-        packages = self.packages.x86_64-linux;
-      };
+      self = self;
       inputs = inputs;
     };
     pkgsForSystem = system: inputs.nixpkgs.legacyPackages.${system};

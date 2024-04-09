@@ -4,7 +4,7 @@
 
   nix.buildMachines = [
     {
-      hostName = "irene";
+      hostName = "graham";
       sshUser = "nix";
       protocol = "ssh-ng";
       sshKey = config.sops.secrets.ssh-remote-builder.path;
@@ -64,6 +64,11 @@
       User nix
       ProxyJump login-tum
       HostName irene.dos.cit.tum.de
+      IdentityFile ${config.sops.secrets.ssh-remote-builder.path}
+    Host graham
+      User nix
+      ProxyJump login-tum
+      HostName graham.dos.cit.tum.de
       IdentityFile ${config.sops.secrets.ssh-remote-builder.path}
     Host yasmin
       User nix
