@@ -251,22 +251,28 @@ bindkey "^[[3~" delete-char # bind delete key
 
 ## Completion
 autoload colors; colors;
+autoload -Uz compinit
+compinit
 
-zstyle ':autocomplete:*' fzf-completion yes
-zstyle ':autocomplete:*' insert-unambiguous yes
-zstyle ':autocomplete:*' widget-style menu-select
-zstyle -e ':autocomplete:*' list-lines 'reply=( $(( LINES / 3 )) )'
-
-# recent directory completion is sometimes a bit confusing
-+autocomplete:recent-directories() { }
-
-bindkey "${key[Up]}" up-line-or-search # https://nixos.wiki/index.php?title=Zsh&oldid=11045#Zsh-autocomplete_not_working
-source ~/.zsh-autocomplete/zsh-autocomplete.plugin.zsh
-
-bindkey '\t' menu-select "$terminfo[kcbt]" menu-select
-bindkey -M menuselect '\t' menu-complete "$terminfo[kcbt]" reverse-menu-complete
-
-zstyle ':completion:*:paths' path-completion yes
+if [[ -n ${commands[fzf]} ]]; then
+  source ~/.zsh-fzf-tab/fzf-tab.zsh
+  if [ -n $TMUX ]; then
+    zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+  fi
+  # disable sort when completing `git checkout`
+  zstyle ':completion:*:git-checkout:*' sort false
+  # set descriptions format to enable group support
+  # NOTE: don't use escape sequences here, fzf-tab will ignore them
+  zstyle ':completion:*:descriptions' format '[%d]'
+  # set list-colors to enable filename colorizing
+  zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+  # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
+  zstyle ':completion:*' menu no
+  # preview directory's content with eza when completing cd
+  zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+  # switch group using `<` and `>`
+  zstyle ':fzf-tab:*' switch-group '<' '>'
+fi
 
 fignore=(.DS_Store $fignore)
 [[ -d ~/.zsh-completions/src ]] && fpath+=(~/.zsh-completions/src)

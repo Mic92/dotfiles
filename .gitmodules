@@ -22,3 +22,6 @@
 [submodule "zsh/zsh-autocomplete"]
 	path = zsh/zsh-autocomplete
 	url = https://github.com/marlonrichert/zsh-autocomplete
+[submodule "zsh/fzf-tab"]
+	path = zsh/fzf-tab
+	url = https://github.com/Aloxaf/fzf-tab
