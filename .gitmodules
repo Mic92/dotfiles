@@ -19,6 +19,6 @@
 [submodule "gdb/gef"]
 	path = gdb/gef
 	url = https://github.com/hugsy/gef
-[submodule "zsh/zsh-autocomplete"]
-	path = zsh/zsh-autocomplete
-	url = https://github.com/marlonrichert/zsh-autocomplete
+[submodule "zsh/fzf-tab"]
+	path = zsh/fzf-tab
+	url = https://github.com/Aloxaf/fzf-tab
