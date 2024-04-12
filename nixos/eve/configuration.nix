@@ -34,7 +34,6 @@
     #./modules/kanidm.nix
     ./modules/knot
     ./modules/mastodon-hnbot.nix
-    ./modules/navidrome.nix
     ./modules/network.nix
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix

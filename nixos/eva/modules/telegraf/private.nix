@@ -210,12 +210,6 @@ in
         tags.org = "private";
         response_string_match = "Jörg Thalheim";
       }
-      #{
-      #  urls = [ "http://tts.r" ];
-      #  tags.host = "eve";
-      #  tags.org = "private";
-      #  response_string_match = "TTS";
-      #}
       {
         urls = [ "http://loki.r/ready" ];
         tags.host = "eva";
@@ -260,8 +254,6 @@ in
           # nginx
           "https://devkid.net:443"
           "https://thalheim.io:443"
-          #"https://tts.r:443"
-          "https://navidrome.r:443"
           "https://flood.r:443"
           "https://loki.r:443"
           "https://prometheus.r:443"
@@ -288,19 +280,5 @@ in
         tags.org = "private";
       }
     ];
-
-    #http = [
-    #  {
-    #    urls = [
-    #      ''http://navidrome.r/rest/getAlbumList2?u=''${NAVIDROME_USER}&v=1.13.0&c=curl&p=''${NAVIDROME_PASSWORD}&type=alphabeticalByName&size=1&offset=5000''
-    #    ];
-    #    data_format = "xml";
-    #    xml = [
-    #      {
-    #        fields_int.navidrome_album_count = "count(/subsonic-response/albumList2/album)";
-    #      }
-    #    ];
-    #  }
-    #];
   };
 }
