@@ -48,10 +48,9 @@
 
   services.pcscd.enable = true;
 
-  #systemd.sysusers.enable = true;
   users.mutableUsers = false;
-  users.users.joerg.initialHashedPassword =
-    config.clanCore.facts.services.root-password.public.root-password-hash.value;
+  users.users.joerg.hashedPasswordFile =
+    config.clanCore.facts.services.root-password.secret.password-hash.path;
 
   # https://community.frame.work/t/guide-linux-battery-life-tuning/6665
   #services.tlp.enable = true;

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ inputs, ... }:
 let
   keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbBp2dH2X3dcU1zh+xW3ZsdYROKpJd3n13ssOP092qE joerg@turingmachine"
@@ -29,26 +29,12 @@ in
     root.openssh.authorizedKeys.keys = keys;
   };
 
-  users.extraUsers.root.initialHashedPassword =
-    config.clanCore.facts.services.root-password.public.root-password-hash.value;
-
-  clanCore.facts.services.root-password = {
-    secret.root-password = { };
-    public.root-password-hash = { };
-    generator.path = with pkgs; [
-      coreutils
-      xkcdpass
-      mkpasswd
-    ];
-    generator.script = ''
-      xkcdpass -n 3 -d - > $secrets/root-password
-      cat $secrets/root-password | mkpasswd -s -m sha-512 > $facts/root-password-hash
-    '';
-  };
-
   boot.initrd.network.ssh.authorizedKeys = keys;
 
   security.sudo.wheelNeedsPassword = false;
 
-  imports = [ ./zsh.nix ];
+  imports = [
+    ./zsh.nix
+    inputs.clan-core.clanModules.root-password
+  ];
 }
