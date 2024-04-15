@@ -13,11 +13,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1712454158,
-        "narHash": "sha256-HlwszmWGmERzJji0wuuoy5K7cxoGkBve+5+DV7xJIjo=",
+        "lastModified": 1713062567,
+        "narHash": "sha256-Iil5jfB7QZJ8SnRWzvs7KjyIoe4NOyisNlTZ3g0uC/s=",
         "owner": "Mic92",
         "repo": "buildbot-nix",
-        "rev": "c2d4007e6bbd7ac6b8fcb8b8af4fac273ec15768",
+        "rev": "13323c8443e2bf13885482456f9386b4fc08f7b7",
         "type": "github"
       },
       "original": {
@@ -48,11 +48,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1712921853,
-        "narHash": "sha256-BDpajkqFu4/2UrAFPGEkS0aKAVvWV1cOawzw2zQzqPI=",
+        "lastModified": 1712926011,
+        "narHash": "sha256-WqvFUP8O9jREb6xESsXVFPr9r4aQaC+uY2T+cySVbjI=",
         "ref": "docs",
-        "rev": "8ce34eea583ae9acc9698970d663c30f4d50217a",
-        "revCount": 2477,
+        "rev": "b3522b73aa3ff87e13150c7d390a981eb0a9de32",
+        "revCount": 2481,
         "type": "git",
         "url": "file:///home/joerg/work/clan/clan-core"
       },
