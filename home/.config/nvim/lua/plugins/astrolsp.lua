@@ -26,6 +26,14 @@ return {
 			-- add more servers as needed...
 		})
 		opts.formatting = opts.formatting or {}
+		-- disrupts the workflow
 		opts.formatting.format_on_save = false
+
+		opts.config = opts.config or {}
+		opts.config.clangd = opts.config.clangd or {}
+		opts.config.clangd.capabilities = {
+			offsetEncoding = "utf-8"
+		}
+
 	end,
 }
