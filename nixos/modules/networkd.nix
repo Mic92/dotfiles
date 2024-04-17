@@ -14,5 +14,7 @@
   # Services that are only restarted might be not able to resolve when this is stopped before
   systemd.services.systemd-resolved.stopIfChanged = false;
 
+  networking.firewall.allowedUDPPorts = [ 5353 ];
+
   networking.dhcpcd.enable = false;
 }
