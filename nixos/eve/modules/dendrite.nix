@@ -65,6 +65,7 @@ in
       media_api = {
         inherit database;
         dynamic_thumbnails = true;
+        max_file_size_bytes = 31457280; # 30M
       };
       room_server = {
         inherit database;
@@ -138,6 +139,7 @@ in
       proxy_set_header Host $host;
       proxy_set_header X-Real-IP $remote_addr;
       proxy_read_timeout 600;
+      client_max_body_size 30M;
     '';
     locations."/_matrix".proxyPass = "http://127.0.0.1:${toString config.services.dendrite.httpPort}";
     locations."/_dendrite".proxyPass = "http://127.0.0.1:${toString config.services.dendrite.httpPort}";
