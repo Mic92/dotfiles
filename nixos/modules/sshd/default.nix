@@ -10,12 +10,16 @@
   # srvos sets more sane defaults
   services.openssh = {
     enable = true;
-    settings.HostCertificate = config.clanCore.facts.services.openssh-interactive.public."ssh.id_ed25519-cert.pub".path;
+    settings.HostCertificate =
+      config.clanCore.facts.services.openssh-interactive.public."ssh.id_ed25519-cert.pub".path;
   };
 
   clanCore.facts.services.openssh-interactive =
-  # hack to emulate dependent secrets
-    lib.mkIf (builtins.pathExists (config.clanCore.clanDir + "/machines/${config.clanCore.machineName}/facts/ssh.id_ed25519.pub"))
+    # hack to emulate dependent secrets
+    lib.mkIf
+      (builtins.pathExists (
+        config.clanCore.clanDir + "/machines/${config.clanCore.machineName}/facts/ssh.id_ed25519.pub"
+      ))
       {
         public."ssh.id_ed25519-cert.pub" = { };
         secret = { };
