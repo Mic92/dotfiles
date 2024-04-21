@@ -4,6 +4,7 @@
     pkgs.sunshine
     pkgs.moonlight-qt # for testing purposes.
   ];
+  services.udev.packages = [ pkgs.sunshine ];
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [
