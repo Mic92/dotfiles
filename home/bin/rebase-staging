@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -eux -o pipefail
+
+git fetch upstream
+git rebase --onto upstream/staging... upstream/master
+git push origin --force-with-lease
+gh pr edit --base staging
