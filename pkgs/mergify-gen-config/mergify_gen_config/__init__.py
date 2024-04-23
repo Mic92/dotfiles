@@ -189,14 +189,14 @@ def update_mergify_config(mergify_config: Path, runs: list[str]) -> dict[str, An
         for rule in config["queue_rules"]:
             new_rules = ["check-success=" + run for run in runs]
             if rule["name"] == "default":
-                for check in rule["merge_conditions"]:
-                    if not check.startswith("check-success="):
-                        new_rules.append(check)
                 new_rules.extend(
                     check
                     for check in rule["merge_conditions"]
                     if not check.startswith("check-success=")
                 )
+                rule["merge_conditions"] = new_rules
+
+        config["defaults"].setdefault("actions", {})
         config["defaults"]["actions"].setdefault("queue", {})
         config["defaults"]["actions"]["queue"]["method"] = "rebase"
         return config
@@ -222,10 +222,10 @@ def new_mergify_config(
     #    actions:
     #      queue:
     default_branch = client.fetch_repo(args.owner, args.repo)["default_branch"]
-    rules = {
+    return {
         "queue_rules": [
             {
-    return {
+                "name": "default",
                 "merge_conditions": [
                     f"check-success={check_run}" for check_run in sorted(check_runs)
                 ],
@@ -251,9 +251,9 @@ def new_mergify_config(
             }
         ],
     }
-    return rules
 
 
+def ensure_merge_label(client: GithubClient, args: argparse.Namespace) -> None:
     labels = client.fetch_labels(args.owner, args.repo)
     if any(label["name"] == "merge-queue" for label in labels):
         return
