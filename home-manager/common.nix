@@ -20,10 +20,6 @@
       binutils
       ouch
 
-      python3.pkgs.black
-      pyright
-      nil
-
       du-dust
       nixVersions.unstable
       procs
