@@ -128,6 +128,7 @@
           ./home-manager/flake-module.nix
           ./terraform/flake-module.nix
           ./devshell/flake-module.nix
+          ./pkgs/flake-module.nix
           inputs.hercules-ci-effects.flakeModule
           inputs.clan-core.flakeModules.default
         ];
