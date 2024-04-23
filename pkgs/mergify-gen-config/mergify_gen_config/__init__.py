@@ -201,6 +201,8 @@ def update_mergify_config(mergify_config: Path, runs: list[str]) -> dict[str, An
         config["defaults"]["actions"]["queue"]["merge_method"] = "rebase"
         if "method" in config["defaults"]["actions"]["queue"]:
             del config["defaults"]["actions"]["queue"]["method"]
+        if "allow_merging_configuration_change" in config["defaults"]["actions"]["queue"]:
+            del config["defaults"]["actions"]["queue"]["allow_merging_configuration_change"]
 
         return config
 
