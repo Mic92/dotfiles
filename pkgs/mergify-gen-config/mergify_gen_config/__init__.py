@@ -198,7 +198,10 @@ def update_mergify_config(mergify_config: Path, runs: list[str]) -> dict[str, An
 
         config["defaults"].setdefault("actions", {})
         config["defaults"]["actions"].setdefault("queue", {})
-        config["defaults"]["actions"]["queue"]["method"] = "rebase"
+        config["defaults"]["actions"]["queue"]["merge_method"] = "rebase"
+        if "method" in config["defaults"]["actions"]["queue"]:
+            del config["defaults"]["actions"]["queue"]["method"]
+
         return config
 
 
@@ -212,8 +215,7 @@ def new_mergify_config(
     # defaults:
     #    actions:
     #      queue:
-    #        allow_merging_configuration_change: true
-    #        method: rebase
+    #        merge_method: rebase
     # pull_request_rules:
     #  - name: merge using the merge queue
     #    conditions:
@@ -234,8 +236,7 @@ def new_mergify_config(
         "defaults": {
             "actions": {
                 "queue": {
-                    "allow_merging_configuration_change": True,
-                    "method": "rebase",
+                    "merge_method": "rebase",
                 }
             }
         },
