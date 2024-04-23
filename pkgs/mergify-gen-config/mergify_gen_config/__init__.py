@@ -1,5 +1,4 @@
-#!/usr/bin/env nix-shell
-#!nix-shell -i python3 -p python3 python3Packages.ruamel-yaml
+#!/usr/bin/env python3
 
 import argparse
 import json
@@ -11,17 +10,17 @@ import urllib.parse
 import urllib.request
 from pathlib import Path
 from shutil import which
-from typing import Any, NoReturn, Optional, Tuple
+from typing import Any, NoReturn
 
 import ruamel.yaml
 
 
 class GithubClient:
-    def __init__(self, api_token: Optional[str]) -> None:
+    def __init__(self, api_token: str | None) -> None:
         self.api_token = api_token
 
     def _request(
-        self, path: str, method: str, data: Optional[dict[str, Any]] = None
+        self, path: str, method: str, data: dict[str, Any] | None = None
     ) -> Any:
         url = urllib.parse.urljoin("https://api.github.com/", path)
         print(url)
@@ -33,17 +32,26 @@ class GithubClient:
         if data:
             body = json.dumps(data).encode("ascii")
 
-        req = urllib.request.Request(url, headers=headers, method=method, data=body)
+        if not url.startswith("https://"):
+            msg = f"unexpected url {url}"
+            raise ValueError(msg)
+        req = urllib.request.Request(  # noqa: S310
+            url, headers=headers, method=method, data=body
+        )
         try:
-            resp = urllib.request.urlopen(req)
+            resp = urllib.request.urlopen(req)  # noqa: S310
         except urllib.error.HTTPError as e:
             if e.status != 307:
                 raise  # not a status code that can be handled here
             # retry with the new location
-            req = urllib.request.Request(
+            url = e.headers["Location"]
+            if not url.startswith("https://"):
+                msg = f"unexpected redirect to {url}"
+                raise ValueError(msg) from e
+            req = urllib.request.Request(  # noqa: S310
                 e.headers["Location"], headers=headers, method=method, data=body
             )
-            resp = urllib.request.urlopen(req)
+            resp = urllib.request.urlopen(req)  # noqa: S310
         return json.loads(resp.read())
 
     def get(self, path: str) -> Any:
@@ -65,9 +73,9 @@ class GithubClient:
         self,
         owner: str,
         repo: str,
-        id: str,
+        check_id: str,
     ) -> dict[str, Any]:
-        return self.get(f"repos/{owner}/{repo}/check-suites/{id}/check-runs")
+        return self.get(f"repos/{owner}/{repo}/check-suites/{check_id}/check-runs")
 
     def fetch_labels(self, owner: str, repo: str) -> list[dict[str, Any]]:
         return self.get(f"repos/{owner}/{repo}/labels")
@@ -89,25 +97,24 @@ def hub_config_path() -> Path:
     raw_hub_path = os.environ.get("HUB_CONFIG", None)
     if raw_hub_path:
         return Path(raw_hub_path)
+    raw_config_home = os.environ.get("XDG_CONFIG_HOME", None)
+    if raw_config_home is None:
+        config_home = Path.home().joinpath(".config")
     else:
-        raw_config_home = os.environ.get("XDG_CONFIG_HOME", None)
-        if raw_config_home is None:
-            config_home = Path.home().joinpath(".config")
-        else:
-            config_home = Path(raw_config_home)
-        return config_home.joinpath("hub")
+        config_home = Path(raw_config_home)
+    return config_home.joinpath("hub")
 
 
-def read_github_token() -> Optional[str]:
+def read_github_token() -> str | None:
     # for backwards compatibility we also accept GITHUB_OAUTH_TOKEN.
     token = os.environ.get("GITHUB_OAUTH_TOKEN", os.environ.get("GITHUB_TOKEN"))
     if token:
         return token
     try:
-        with open(hub_config_path()) as f:
+        with hub_config_path().open() as f:
             for line in f:
                 # Allow substring match as hub uses yaml. Example string we match:
-                # " - oauth_token: ghp_abcdefghijklmnopqrstuvwxyzABCDEF1234\n"
+                #  - oauth_token: ghp_abcdefghijklmnopqrstuvwxyzABCDEF1234\n
                 token_match = re.search(
                     r"\s*oauth_token:\s+((?:gh[po]_)?[A-Za-z0-9]+)", line
                 )
@@ -116,7 +123,9 @@ def read_github_token() -> Optional[str]:
     except OSError:
         pass
     if which("gh"):
-        r = subprocess.run(["gh", "auth", "token"], stdout=subprocess.PIPE, text=True)
+        r = subprocess.run(
+            ["gh", "auth", "token"], stdout=subprocess.PIPE, text=True, check=False
+        )
         if r.returncode == 0:
             return r.stdout.strip()
     return None
@@ -141,12 +150,13 @@ def parse_args(args: list[str]) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
-def get_github_info() -> Optional[Tuple[str, str]]:
+def get_github_info() -> tuple[str, str] | None:
     # Get the remote origin URL
     res = subprocess.run(
         ["git", "config", "--get", "remote.origin.url"],
         stdout=subprocess.PIPE,
         text=True,
+        check=False,
     )
     if res.returncode != 0:
         return None
@@ -179,14 +189,19 @@ def update_mergify_config(mergify_config: Path, runs: list[str]) -> dict[str, An
         for rule in config["queue_rules"]:
             new_rules = ["check-success=" + run for run in runs]
             if rule["name"] == "default":
-                for check in rule["merge_conditions"]:
-                    if not check.startswith("check-success="):
-                        new_rules.append(check)
+                new_rules.extend(
+                    check
+                    for check in rule["merge_conditions"]
+                    if not check.startswith("check-success=")
+                )
                 rule["merge_conditions"] = new_rules
 
         config["defaults"].setdefault("actions", {})
         config["defaults"]["actions"].setdefault("queue", {})
-        config["defaults"]["actions"]["queue"]["method"] = "rebase"
+        config["defaults"]["actions"]["queue"]["merge_method"] = "rebase"
+        if "method" in config["defaults"]["actions"]["queue"]:
+            del config["defaults"]["actions"]["queue"]["method"]
+
         return config
 
 
@@ -200,8 +215,7 @@ def new_mergify_config(
     # defaults:
     #    actions:
     #      queue:
-    #        allow_merging_configuration_change: true
-    #        method: rebase
+    #        merge_method: rebase
     # pull_request_rules:
     #  - name: merge using the merge queue
     #    conditions:
@@ -210,7 +224,7 @@ def new_mergify_config(
     #    actions:
     #      queue:
     default_branch = client.fetch_repo(args.owner, args.repo)["default_branch"]
-    rules = {
+    return {
         "queue_rules": [
             {
                 "name": "default",
@@ -222,8 +236,7 @@ def new_mergify_config(
         "defaults": {
             "actions": {
                 "queue": {
-                    "allow_merging_configuration_change": True,
-                    "method": "rebase",
+                    "merge_method": "rebase",
                 }
             }
         },
@@ -239,7 +252,6 @@ def new_mergify_config(
             }
         ],
     }
-    return rules
 
 
 def ensure_merge_label(client: GithubClient, args: argparse.Namespace) -> None:
@@ -278,7 +290,7 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
             if r["name"] == "lockfile":
                 continue
             check_run_set.add(r["name"])
-    check_runs = list(sorted(check_run_set))
+    check_runs = sorted(check_run_set)
     mergify_config = Path(".mergify.yml")
     if mergify_config.exists():
         rules = update_mergify_config(mergify_config, check_runs)
@@ -291,5 +303,4 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
 
 if __name__ == "__main__":
     main()
-
-# vim: set syntax=python
+# vim: set filetype=python

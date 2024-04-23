@@ -67,7 +67,7 @@
             options = [
               "-eucx"
               ''
-                ${pkgs.ruff}/bin/ruff check --fix "$@"
+                ${pkgs.ruff}/bin/ruff check --unsafe-fixes --fix "$@"
                 ${pkgs.ruff}/bin/ruff format "$@"
               ''
               "--" # this argument is ignored by bash

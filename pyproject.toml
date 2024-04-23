@@ -2,8 +2,8 @@
 line-length = 88
 target-version = "py311"
 
-select = ["ALL"]
-ignore = [
+lint.select = ["ALL"]
+lint.ignore = [
   # pydocstyle
   "D",
   # todo comments
@@ -22,6 +22,8 @@ ignore = [
   "COM812",
   # Unnecessary `dict` call (rewrite as a literal)
   "C408",
+  # Found commented-out code
+  "ERA001",
   # Boolean-typed positional argument in function definition
   "FBT001",
   # Logging statement uses f-string
@@ -45,16 +47,13 @@ ignore = [
   # $X is too complex
   "C901",
 
-  "E501", # line too long
-  "T201", # `print` found
+  "E501",    # line too long
+  "T201",    # `print` found
   "PLR2004", # Magic value used in comparison
 ]
-exclude = [
-  "zsh/*",
-  "gdb/*"
-]
+exclude = ["zsh/*", "gdb/*"]
 
-[tool.ruff.per-file-ignores]
+[tool.ruff.lint.per-file-ignores]
 # home-assistant has implicit variables
 "nixos/eve/modules/home-assistant/python-scripts/*" = ["F821", "INP001"]
 

@@ -1,0 +1,10 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mergify-gen-config"
+version = "1.0.0"
+
+[project.scripts]
+mergify-gen-config = "mergify_gen_config:main"
