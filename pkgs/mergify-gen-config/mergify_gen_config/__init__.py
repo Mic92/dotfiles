@@ -16,11 +16,11 @@ import ruamel.yaml
 
 
 class GithubClient:
-    def __init__(self, api_token: Optional[str]) -> None:
+    def __init__(self, api_token: str | None) -> None:
         self.api_token = api_token
 
     def _request(
-        self, path: str, method: str, data: Optional[dict[str, Any]] = None
+        self, path: str, method: str, data: dict[str, Any] | None = None
     ) -> Any:
         url = urllib.parse.urljoin("https://api.github.com/", path)
         print(url)
@@ -105,7 +105,7 @@ def hub_config_path() -> Path:
     return config_home.joinpath("hub")
 
 
-def read_github_token() -> Optional[str]:
+def read_github_token() -> str | None:
     # for backwards compatibility we also accept GITHUB_OAUTH_TOKEN.
     token = os.environ.get("GITHUB_OAUTH_TOKEN", os.environ.get("GITHUB_TOKEN"))
     if token:
@@ -123,7 +123,9 @@ def read_github_token() -> Optional[str]:
     except OSError:
         pass
     if which("gh"):
-        r = subprocess.run(["gh", "auth", "token"], stdout=subprocess.PIPE, text=True)
+        r = subprocess.run(
+            ["gh", "auth", "token"], stdout=subprocess.PIPE, text=True, check=False
+        )
         if r.returncode == 0:
             return r.stdout.strip()
     return None
@@ -148,12 +150,13 @@ def parse_args(args: list[str]) -> argparse.Namespace:
     return parser.parse_args(args)
 
 
-def get_github_info() -> Optional[Tuple[str, str]]:
+def get_github_info() -> tuple[str, str] | None:
     # Get the remote origin URL
     res = subprocess.run(
         ["git", "config", "--get", "remote.origin.url"],
         stdout=subprocess.PIPE,
         text=True,
+        check=False,
     )
     if res.returncode != 0:
         return None
@@ -286,7 +289,7 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
             if r["name"] == "lockfile":
                 continue
             check_run_set.add(r["name"])
-    check_runs = list(sorted(check_run_set))
+    check_runs = sorted(check_run_set)
     mergify_config = Path(".mergify.yml")
     if mergify_config.exists():
         rules = update_mergify_config(mergify_config, check_runs)
