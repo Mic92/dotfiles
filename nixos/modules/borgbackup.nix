@@ -16,13 +16,13 @@
   ];
 
   services.borgbackup.jobs.${config.networking.hostName} = {
+    preHook = lib.optionalString config.networking.networkmanager.enable ''
+      # wait until network is available and not metered
+      while ! ${pkgs.networkmanager}/bin/nm-online --quiet || ${pkgs.networkmanager}/bin/nmcli --terse --fields GENERAL.METERED dev show 2>/dev/null | grep --quiet "yes"; do
+        sleep 60
+      done
+    '';
     postHook = ''
-      ${lib.optionalString config.networking.networkmanager.enable ''
-        # wait until network is available and not metered
-        while ! ${pkgs.networkmanager}/bin/nm-online --quiet || ${pkgs.networkmanager}/bin/nmcli --terse --fields GENERAL.METERED dev show 2>/dev/null | grep --quiet "yes"; do
-          sleep 60
-        done
-      ''}
       cat > /var/log/telegraf/borgbackup-job-${config.networking.hostName}.service <<EOF
       task,frequency=daily last_run=$(date +%s)i,state="$([[ $exitStatus == 0 ]] && echo ok || echo fail)"
       EOF
