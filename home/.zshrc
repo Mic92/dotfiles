@@ -268,8 +268,10 @@ if [[ -n ${commands[fzf]} ]]; then
   zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
   # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
   zstyle ':completion:*' menu no
-  # preview directory's content with eza when completing cd
-  zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --color=always $realpath'
+  # preview directory's content with lsd when completing cd
+  if [[ -n ${commands[lsd]} ]]; then
+    zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd -1 --color=always $realpath'
+  fi
   # switch group using `<` and `>`
   zstyle ':fzf-tab:*' switch-group '<' '>'
 fi
