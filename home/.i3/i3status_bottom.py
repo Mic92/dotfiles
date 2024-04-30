@@ -1,4 +1,3 @@
-
 import multiprocessing
 import os
 
@@ -18,7 +17,7 @@ status.register(
     format_up="{v4cidr} {bytes_sent}/s|{bytes_recv}/s",
     color_down=color.text_down,
     color_up=color.text_up,
-    auto_units=True
+    auto_units=True,
 )
 icons.nerdfont(status, "ﯴ")
 
@@ -46,17 +45,31 @@ status.register("cpu_usage", format="/".join(fmt), color=color.text_normal)
 icons.nerdfont(status, "")
 
 status.register("ping", host="1.1.1.1", color=color.text_normal)
-status.register("ping", format="GW: {ping}ms", format_down="GW: N/A", host="_gateway", color=color.text_normal)
-status.register("ping", format="V6: {ping}ms", format_down="V6: N/A", host="2606:4700:4700::1111", color=color.text_normal)
+status.register(
+    "ping",
+    format="GW: {ping}ms",
+    format_down="GW: N/A",
+    host="_gateway",
+    color=color.text_normal,
+)
+status.register(
+    "ping",
+    format="V6: {ping}ms",
+    format_down="V6: N/A",
+    host="2606:4700:4700::1111",
+    color=color.text_normal,
+)
 
-status.register(Prometheus,
-                base_url="http://prometheus.r",
-                color=color.text_normal,
-                warning_color=color.text_warn,
-                critical_color=color.text_down,
-                interval=30)
+status.register(
+    Prometheus,
+    base_url="http://prometheus.r",
+    color=color.text_normal,
+    warning_color=color.text_warn,
+    critical_color=color.text_down,
+    interval=30,
+)
 
-#status.register(yubikey.YubiKeyTouchDetector, hints={"markup": "pango"})
+# status.register(yubikey.YubiKeyTouchDetector, hints={"markup": "pango"})
 
 status.register(Rhasspy)
 

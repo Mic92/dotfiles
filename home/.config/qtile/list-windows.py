@@ -7,5 +7,6 @@ def main() -> None:
         for window in group["windows"]:
             print(c.group[name].info_by_name(window))
 
+
 if __name__ == "__main__":
     main()

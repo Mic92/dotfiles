@@ -14,7 +14,7 @@ terraform {
   required_providers {
     digitalocean = { source = "digitalocean/digitalocean" }
     github       = { source = "integrations/github" }
-    sops         = { source  = "carlpett/sops" }
-    gitlab       = { source  = "gitlabhq/gitlab" }
+    sops         = { source = "carlpett/sops" }
+    gitlab       = { source = "gitlabhq/gitlab" }
   }
 }

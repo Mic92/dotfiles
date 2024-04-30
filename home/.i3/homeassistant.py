@@ -10,9 +10,9 @@ from bitwarden import BitwardenPassword
 from i3pystatus import IntervalModule
 
 
-def request(path: str,
-            token: str,
-            data: dict[str, Any] | None = None) -> dict[str, Any]:
+def request(
+    path: str, token: str, data: dict[str, Any] | None = None
+) -> dict[str, Any]:
     conn = http.client.HTTPSConnection("hass.thalheim.io")
 
     headers = {
@@ -135,8 +135,9 @@ def charge_state_ios(state: State, device: str) -> tuple[str, bool]:
 
     if battery is None or "battery" not in battery["attributes"]:
         return "N/A", False
-    return charge_state(battery["attributes"]["battery"],
-                        battery["attributes"]["battery_status"])
+    return charge_state(
+        battery["attributes"]["battery"], battery["attributes"]["battery_status"]
+    )
 
 
 class PhoneBattery(IntervalModule):
