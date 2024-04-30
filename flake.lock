@@ -13,15 +13,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1714407398,
-        "narHash": "sha256-Rp6wxBaHoKLnaF9DhzGh/wKKUM1Kkvm2gcy32XcLuhU=",
-        "owner": "Mic92",
+        "lastModified": 1714408215,
+        "narHash": "sha256-jdTHiOGnqo9S4lzSPsGZECUIePrOE0/COCCP4lzBW9A=",
+        "owner": "MagicRB",
         "repo": "buildbot-nix",
-        "rev": "35a1162d8407206e27fe9101c6e23e0feb8a0ccf",
+        "rev": "3f01a961479910c036925c51939de5150bfb93dc",
         "type": "github"
       },
       "original": {
-        "owner": "Mic92",
+        "owner": "MagicRB",
+        "ref": "remove_github_assumption",
         "repo": "buildbot-nix",
         "type": "github"
       }
