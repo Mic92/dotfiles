@@ -6,80 +6,62 @@
   perSystem =
     { inputs', pkgs, ... }:
     {
-      treefmt = {
-        # Used to find the project root
-        projectRootFile = ".git/config";
+      treefmt =
+        { ... }:
+        {
+          # Used to find the project root
+          projectRootFile = ".git/config";
 
-        programs.hclfmt.enable = true;
-        programs.mypy.enable = true;
-        programs.mypy.directories = {
-          "tasks" = {
-            directory = ".";
-            modules = [ ];
-            files = [ "**/tasks.py" ];
-            extraPythonPackages = [
-              pkgs.python3.pkgs.deploykit
-              pkgs.python3.pkgs.invoke
-            ];
+          programs.hclfmt.enable = true;
+          programs.mypy.enable = true;
+          programs.mypy.directories = {
+            "tasks" = {
+              directory = ".";
+              modules = [ ];
+              files = [ "**/tasks.py" ];
+              extraPythonPackages = [
+                pkgs.python3.pkgs.deploykit
+                pkgs.python3.pkgs.invoke
+              ];
+            };
+            "nixos/eva/modules/prometheus" = { };
+            "openwrt" = { };
+            "home-manager/modules/neovim" = {
+              options = [ "--ignore-missing-imports" ];
+            };
           };
-          "nixos/eva/modules/prometheus" = { };
-          "openwrt" = { };
-          "home-manager/modules/neovim" = {
-            options = [ "--ignore-missing-imports" ];
-          };
+          programs.deadnix.enable = true;
+          programs.nixfmt.enable = true;
+          programs.nixfmt.package = pkgs.nixfmt-rfc-style;
+          programs.shellcheck.enable = true;
+
+          settings.formatter.shellcheck.options = [
+            "--external-sources"
+            "--source-path=SCRIPTDIR"
+          ];
+
+          programs.shfmt.enable = true;
+
+          programs.ruff.format = true;
+          programs.ruff.check = true;
+
+          settings.formatter.ruff-check.excludes = [
+            "gdb/*"
+            "zsh/*"
+          ];
+          settings.formatter.ruff-format.excludes = [
+            "gdb/*"
+            "zsh/*"
+          ];
+          settings.formatter.shfmt.excludes = [
+            "gdb/*"
+            "zsh/*"
+          ];
+          settings.formatter.shellcheck.excludes = [
+            "gdb/*"
+            "zsh/*"
+          ];
         };
-
-        settings.formatter = {
-          nix = {
-            command = "sh";
-            options = [
-              "-eucx"
-              ''
-                ${pkgs.deadnix}/bin/deadnix --edit "$@"
-                ${pkgs.nixfmt-rfc-style}/bin/nixfmt "$@"
-              ''
-              "--"
-            ];
-            includes = [ "*.nix" ];
-            excludes = [ "nix/sources.nix" ];
-          };
-          shell = {
-            command = "sh";
-            options = [
-              "-eucx"
-              ''
-                # First shellcheck
-                ${pkgs.shellcheck}/bin/shellcheck --external-sources --source-path=SCRIPTDIR "$@"
-                # Then format
-                ${pkgs.shfmt}/bin/shfmt -i 2 -s -w "$@"
-              ''
-              "--"
-            ];
-            includes = [ "*.sh" ];
-            excludes = [
-              "zsh/*"
-              "gdb/*"
-            ];
-          };
-
-          python = {
-            command = "sh";
-            options = [
-              "-eucx"
-              ''
-                ${pkgs.ruff}/bin/ruff check --unsafe-fixes --fix "$@"
-                ${pkgs.ruff}/bin/ruff format "$@"
-              ''
-              "--" # this argument is ignored by bash
-            ];
-            includes = [ "*.py" ];
-            excludes = [
-              "gdb/*"
-              "zsh/*"
-            ];
-          };
-        };
-      };
 
       # Definitions like this are entirely equivalent to the ones
       # you may have directly in flake.nix.
