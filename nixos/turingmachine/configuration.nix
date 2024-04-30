@@ -138,49 +138,6 @@
 
   services.tor.client.enable = true;
 
-  #services.samba = {
-  #  enable = true;
-  #  securityType = "user";
-  #  enableWinbindd = false;
-  #  extraConfig = ''
-  #    workgroup = WORKGROUP
-  #    server string = smbnix
-  #    netbios name = smbnix
-  #    security = user
-  #    hosts allow = 0.0.0.0/0
-  #    guest account = nobody
-  #    map to guest = bad user
-  #    # Use sendfile() for performance gain
-  #    use sendfile = true
-
-  #    # No NetBIOS is needed
-  #    disable netbios = true
-
-  #    # Only mangle non-valid NTFS names, don't care about DOS support
-  #    mangled names = illegal
-
-  #    # Performance optimizations
-  #    socket options = TCP_NODELAY IPTOS_LOWDELAY SO_RCVBUF=65536 SO_SNDBUF=65536
-
-  #    # Disable all printing
-  #    load printers = false
-  #    disable spoolss = true
-  #    printcap name = /dev/null
-  #  '';
-  #  shares = {
-  #    public = {
-  #      path = "/home/joerg/web/upload";
-  #      browseable = "yes";
-  #      "read only" = "no";
-  #      "guest ok" = "yes";
-  #      "create mask" = "0644";
-  #      "directory mask" = "0755";
-  #      "force user" = "joerg";
-  #      "force group" = "users";
-  #    };
-  #  };
-  #};
-
   networking.firewall.allowedTCPPorts = [ 8081 ];
 
   boot.binfmt.emulatedSystems = [
