@@ -54,11 +54,9 @@ class Rhasspy(Module):
         ("format_listening", "Text color"),
     )
 
-    def on_connect(self,
-                   client: mqtt.Client,
-                   userdata: Any,
-                   flags: int,
-                   rc: int) -> None:
+    def on_connect(
+        self, client: mqtt.Client, userdata: Any, flags: int, rc: int
+    ) -> None:
         client.subscribe(Topic.SESSION_STARTED)
         client.subscribe(Topic.TEXT_CAPTURED)
         client.subscribe(Topic.INTENT_PARSED)
@@ -72,10 +70,12 @@ class Rhasspy(Module):
     def on_disconnect(self, client: mqtt.Client, userdata: Any, rc: int) -> None:
         self.state = RhasspyState.disconnected
 
-    def notify(self, text: str, title: str="Rhasspy:") -> None:
+    def notify(self, text: str, title: str = "Rhasspy:") -> None:
         DesktopNotification(title=title, body=text).display()
 
-    def on_message(self, client: mqtt.Client, userdata: Any, msg: mqtt.MQTTMessage) -> None:
+    def on_message(
+        self, client: mqtt.Client, userdata: Any, msg: mqtt.MQTTMessage
+    ) -> None:
         payload = json.loads(msg.payload)
 
         if msg.topic == Topic.SESSION_STARTED:
@@ -94,7 +94,14 @@ class Rhasspy(Module):
             self.notify(payload["text"])
         elif msg.topic == Topic.TTS_ENDED:
             if "neutral-janet" in payload["sessionId"]:
-                subprocess.Popen(["paplay", os.path.expanduser("~/.config/rhasspy/profiles/en/end-of-conversation.wav")])
+                subprocess.Popen(
+                    [
+                        "paplay",
+                        os.path.expanduser(
+                            "~/.config/rhasspy/profiles/en/end-of-conversation.wav"
+                        ),
+                    ]
+                )
 
     def init(self) -> None:
         self.output = dict(
@@ -119,10 +126,7 @@ class Rhasspy(Module):
         else:
             msg = "invalid state: {self.state}"
             raise RuntimeError(msg)
-        self.output = dict(
-            full_text=full_text,
-            color=color
-        )
+        self.output = dict(full_text=full_text, color=color)
 
     def _run(self):
         while True:

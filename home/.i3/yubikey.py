@@ -28,9 +28,7 @@ class YubiKeyTouchDetector(Module):
             self.socket.connect(self._socket_path)
         except Exception:
             self.socket = None
-            self.output = {
-                "full_text": "Cannot connect to yubikey-touch-detector"
-            }
+            self.output = {"full_text": "Cannot connect to yubikey-touch-detector"}
 
     def update_status(self):
         if len(self.requests) > 0:
@@ -38,10 +36,7 @@ class YubiKeyTouchDetector(Module):
         else:
             full_text = ""
 
-        self.output = dict(
-            full_text=full_text,
-            color=self.color
-        )
+        self.output = dict(full_text=full_text, color=self.color)
 
     def _run(self):
         while True:

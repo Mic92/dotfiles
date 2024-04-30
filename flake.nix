@@ -81,6 +81,9 @@
     treefmt-nix.url = "github:brianmcgee/treefmt-nix/feat/pipelines";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
+    treefmt-go.url = "git+https://git.numtide.com/numtide/treefmt";
+    treefmt-go.inputs.nixpkgs.follows = "nixpkgs";
+
     lanzaboote.url = "github:nix-community/lanzaboote";
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
     lanzaboote.inputs.flake-parts.follows = "flake-parts";

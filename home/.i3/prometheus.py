@@ -50,9 +50,7 @@ class Prometheus(IntervalModule):
             else:
                 firing += 1
         not_ok = pending + firing
-        text = self.format.format(
-            pending=pending, firing=firing, not_ok=not_ok
-        )
+        text = self.format.format(pending=pending, firing=firing, not_ok=not_ok)
         if firing > 0:
             color = self.critical_color
         elif pending > 0:

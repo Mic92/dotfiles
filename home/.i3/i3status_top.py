@@ -1,11 +1,10 @@
-
 import glob
 import os
 
 import color
 import icons
 
-#from homeassistant import PhoneBattery, BikeBattery, Shannan, WeatherIcon, WeatherText
+# from homeassistant import PhoneBattery, BikeBattery, Shannan, WeatherIcon, WeatherText
 from homeassistant import PhoneBattery, Shannan, WeatherText
 from i3pystatus import Status
 
@@ -41,8 +40,7 @@ for bat_path in glob.glob("/sys/class/power_supply/BAT*"):
         charging_color=color.text_normal,
         full_color=color.text_normal,
         critical_color=color.text_down,
-        hints={"separator": False,
-               "separator_block_width": 5} if bat == "BAT1" else {},
+        hints={"separator": False, "separator_block_width": 5} if bat == "BAT1" else {},
     )
 
 icons.nerdfont(status, "")
@@ -52,6 +50,6 @@ icons.nerdfont(status, "", size="medium")
 status.register(Shannan, interval=60)
 icons.nerdfont(status, "", size="x-large")
 status.register(WeatherText, interval=60)
-#status.register(WeatherIcon, interval=60)
+# status.register(WeatherIcon, interval=60)
 
 status.run()
