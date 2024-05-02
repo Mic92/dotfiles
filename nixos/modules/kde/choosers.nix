@@ -37,6 +37,7 @@ runCommand "audio-chooser" { } ''
     [
       "audio-chooser"
       "internet-chooser"
+      "display-chooser"
     ]
   }
 ''
