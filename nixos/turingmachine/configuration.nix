@@ -45,6 +45,8 @@
     ../modules/users.nix
   ];
 
+  services.ollama.enable = true;
+
   services.udev.packages = with pkgs; [ platformio-core.udev ];
 
   services.pcscd.enable = true;
