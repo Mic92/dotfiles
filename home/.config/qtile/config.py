@@ -476,14 +476,15 @@ def systemd_run(command: list[str]) -> list[str]:
 
 
 @hook.subscribe.startup
-def autostart():
+def autostart() -> None:
     subprocess.run(
         [
             "systemctl",
             "--user",
             "import-environment",
             "WAYLAND_DISPLAY",
-        ]
+        ],
+        check=False,
     )
     # fmt: off
     sway_lock = [

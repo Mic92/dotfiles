@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from libqtile.command.client import InteractiveCommandClient
 
 

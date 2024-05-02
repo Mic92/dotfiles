@@ -19,13 +19,13 @@ class Function(OpenAISchema):
         title = "execute_shell_command"
 
     @classmethod
-    def execute(cls, shell_command: str) -> str:
+    def execute(cls: object, shell_command: str) -> str:
         yes_no = input(f"Execute shell command: '{shell_command}'? (yes/no): ")
         if yes_no.lower() != "yes":
             return "Aborted."
 
         process = subprocess.Popen(
-            shell_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+            shell_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT # noqa: S602
         )
         output, _ = process.communicate()
         exit_code = process.returncode

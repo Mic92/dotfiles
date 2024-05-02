@@ -1,13 +1,11 @@
 #!/usr/bin/env python3
 
+from pathlib import Path
 
-def bt(depth) -> str:
-    format_args = []
-    for i in range(depth):
-        format_args.append("%p")
-    return_addrs = []
-    for i in range(depth):
-        return_addrs.append(f"r({i})")
+
+def bt(depth: int) -> str:
+    format_args = ["%p"] * depth
+    return_addrs = [f"r({i})" for i in range(depth)]
     return f"""
 # -*- mode: snippet -*-
 # name: poormans backtrace (depth: {depth})
@@ -22,7 +20,7 @@ int printf(const char* f,...); printf("%s() at %s:%d\\n {" ".join(format_args)}\
 
 def main() -> None:
     for depth in range(1, 31):
-        with open(f"c-mode/bt{depth}", "w") as f:
+        with Path(f"c-mode/bt{depth}").open("w") as f:
             f.write(bt(depth))
 
 
