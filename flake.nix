@@ -44,7 +44,7 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    buildbot-nix.url = "github:MagicRB/buildbot-nix/remove_github_assumption";
+    buildbot-nix.url = "github:Mic92/buildbot-nix/gitea-fixes";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
