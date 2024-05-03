@@ -12,7 +12,7 @@
           # Used to find the project root
           projectRootFile = ".git/config";
 
-          package = inputs'.treefmt-go.packages.default;
+          #package = inputs'.treefmt-go.packages.default;
 
           programs.hclfmt.enable = true;
           programs.mypy.enable = true;
@@ -50,6 +50,8 @@
           settings.formatter.ruff-check.excludes = [
             "gdb/*"
             "zsh/*"
+            "home/.config/qtile/*"
+            "home/.emacs/*"
           ];
           settings.formatter.ruff-format.excludes = [
             "gdb/*"
