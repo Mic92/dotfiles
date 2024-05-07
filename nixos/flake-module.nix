@@ -66,6 +66,7 @@
           inputs.nix-index-database.nixosModules.nix-index
           inputs.disko.nixosModules.disko
           inputs.clan-core.clanModules.localbackup
+          inputs.agenix.nixosModules.default
 
           #inputs.spora.nixosModules.spora
 
