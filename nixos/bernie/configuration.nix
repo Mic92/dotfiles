@@ -22,6 +22,7 @@
   services.fwupd.enable = true;
   hardware.keyboard.qmk.enable = true;
 
+  sops.secrets.shannan-password.neededForUsers = true;
   users.users.shannan.hashedPasswordFile = config.sops.secrets.shannan-password.path;
 
   clan.deployment.requireExplicitUpdate = true;
