@@ -5,6 +5,7 @@
     settings.PHOTOPRISM_AUTH_MODE = "public";
     settings.PHOTOPRISM_UPLOAD_NSFW = "true";
     settings.PHOTOPRISM_DETECT_NSFW = "false";
+    settings.PHOTOPRISM_SPONSOR = "true";
   };
 
   services.nginx = {
