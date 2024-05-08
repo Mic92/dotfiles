@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2023102500 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2023102501 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -50,6 +50,7 @@ go-neb IN CNAME eva
 anon IN CNAME www
 
 blog IN CNAME mic92.github.io.
+vmsh IN CNAME mic92.github.io.
 
 _acme-challenge IN NS ns1.thalheim.io.
 _acme-challenge.imap IN NS ns1.thalheim.io.
