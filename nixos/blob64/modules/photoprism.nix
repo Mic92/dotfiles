@@ -6,6 +6,7 @@
     settings.PHOTOPRISM_AUTH_MODE = "password";
     settings.PHOTOPRISM_UPLOAD_NSFW = "true";
     settings.PHOTOPRISM_DETECT_NSFW = "false";
+    settings.PHOTOPRISM_SPONSOR = "true";
     settings.PHOTOPRISM_SITE_URL = "https://photoprism.thalheim.io";
     originalsPath = "/zdata/photos";
     passwordFile = config.sops.secrets.photoprism.path;
