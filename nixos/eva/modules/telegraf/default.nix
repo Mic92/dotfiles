@@ -2,6 +2,7 @@
 {
   imports = [
     ./private.nix
+    ./dave.nix
     ./uni.nix
     ./krebs.nix
     ./nix-community.nix
