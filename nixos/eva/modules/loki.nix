@@ -102,7 +102,7 @@ in
   security.acme.certs."loki.r".server = config.retiolum.ca.acmeURL;
   services.nginx = {
     enable = true;
-    virtualHosts.loki = {
+    virtualHosts."loki.r" = {
       serverName = "loki.r";
       enableACME = true;
       addSSL = true;
