@@ -60,6 +60,12 @@
             targets = [ "[2a01:4f9:c012:8178::1]:9273" ];
             labels.org = "nixos-wiki";
           }
+          {
+            targets = [
+              "[fc9f:379f:7191:058f:82a1:0000:0000:0001]:9273" # nas
+            ];
+            labels.org = "dave";
+          }
           #{
           #  targets = [
           #    "dev1.numtide.com.r:9273"
@@ -158,6 +164,14 @@
           }
           {
             group_by = [ "host" ];
+            match_re.org = "dave";
+            group_wait = "5m";
+            group_interval = "5m";
+            repeat_interval = "4h";
+            receiver = "dave";
+          }
+          {
+            group_by = [ "host" ];
             group_wait = "30s";
             group_interval = "2m";
             repeat_interval = "2h";
@@ -201,6 +215,15 @@
             #  url = "http://localhost:4050/services/hooks/YWxlcnRtYW5hZ2VyX3NlcnZpY2U";
             #  max_alerts = 5;
             #}
+          ];
+        }
+        {
+          name = "dave";
+          telegram_configs = [
+            {
+              chat_id = 42927997;
+              bot_token = "$TELEGRAM_BOT_TOKEN";
+            }
           ];
         }
         {
