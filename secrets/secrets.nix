@@ -3,5 +3,8 @@ let
   turingmachine = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBIvs+qolz8zktc/rXU4a7fUNdD+FIJRJU/9cg0YOkLp";
 in
 {
-  "secret1.age".publicKeys = [ joerg turingmachine ];
+  "secret1.age".publicKeys = [
+    joerg
+    turingmachine
+  ];
 }
