@@ -51,7 +51,7 @@
       xdg-utils
       patool
       tio
-      shell_gpt
+      shell-gpt
 
       (mpv.override { scripts = [ mpvScripts.mpris ]; })
       playerctl

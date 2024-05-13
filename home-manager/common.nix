@@ -21,7 +21,7 @@
       ouch
 
       du-dust
-      nixVersions.unstable
+      nixVersions.latest
       procs
       xcp
 
