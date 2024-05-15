@@ -17,12 +17,13 @@ let
     ];
   };
 
-  rulerDir = pkgs.writeTextDir "ruler/ruler.yml" (builtins.toJSON rulerConfig);
+  rulerFile = pkgs.writeText "ruler.yml" (builtins.toJSON rulerConfig);
 in
 {
   systemd.tmpfiles.rules = [
     "d /var/lib/loki 0700 loki loki - -"
-    "d /var/lib/loki/ruler 0700 loki loki - -"
+    "d /var/lib/loki/rules 0700 loki loki - -"
+    "L /var/lib/loki/ruler/ruler.yml - - - - ${rulerFile}"
   ];
   services.loki = {
     enable = true;
@@ -44,11 +45,7 @@ in
         ring.instance_addr = "127.0.0.1";
       };
 
-      ingester = {
-        chunk_encoding = "snappy";
-        # Disable block transfers on shutdown
-        max_transfer_retries = 0;
-      };
+      ingester.chunk_encoding = "snappy";
 
       limits_config = {
         retention_period = "120h";
@@ -65,19 +62,19 @@ in
       compactor = {
         retention_enabled = true;
         compaction_interval = "10m";
-        shared_store = "filesystem";
         working_directory = "${config.services.loki.dataDir}/compactor";
         delete_request_cancel_period = "10m"; # don't wait 24h before processing the delete_request
         retention_delete_delay = "2h";
         retention_delete_worker_count = 150;
+        delete_request_store = "filesystem";
       };
 
       schema_config.configs = [
         {
           from = "2020-11-08";
-          store = "boltdb-shipper";
+          store = "tsdb";
           object_store = "filesystem";
-          schema = "v11";
+          schema = "v13";
           index.prefix = "index_";
           index.period = "24h";
         }
@@ -86,9 +83,9 @@ in
       ruler = {
         storage = {
           type = "local";
-          local.directory = rulerDir;
+          local.directory = "${config.services.loki.dataDir}/ruler";
         };
-        rule_path = "${config.services.loki.dataDir}/ruler";
+        rule_path = "${config.services.loki.dataDir}/rules";
         alertmanager_url = "http://alertmanager.r";
       };
 
@@ -98,6 +95,7 @@ in
   };
 
   sops.secrets.promtail-nginx-password.owner = "nginx";
+  systemd.services.loki.reloadTriggers = [ rulerFile ];
 
   security.acme.certs."loki.r".server = config.retiolum.ca.acmeURL;
   services.nginx = {
