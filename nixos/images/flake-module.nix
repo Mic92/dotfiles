@@ -44,6 +44,7 @@ in
     installer = (
       { modulesPath, ... }:
       {
+        clan.deployment.requireExplicitUpdate = true;
         imports = [
           defaultModule
           inputs.clan-core.clanModules.diskLayouts
