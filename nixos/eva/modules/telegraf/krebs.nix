@@ -141,11 +141,16 @@
           "http://cgit.ni.r"
           "http://cgit.gum.r"
           "http://cgit.orange.r"
-          "https://cgit.lassul.us"
         ];
         response_string_match = "cgit";
         tags.org = "krebs";
         interface = "tinc.retiolum";
+        response_status_code = 200;
+      }
+      {
+        urls = [ "https://cgit.lassul.us" ];
+        response_string_match = "cgit";
+        tags.org = "krebs";
         response_status_code = 200;
       }
       {
@@ -217,7 +222,7 @@
       }
       {
         urls = [ "http://calendar.r/.web/" ];
-        response_string_match = "Login";
+        response_string_match = "Sign In";
         tags.org = "krebs";
         interface = "tinc.retiolum";
         response_status_code = 200;
