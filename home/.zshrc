@@ -560,10 +560,6 @@ fi
 export TERMINAL=footclient
 export PICTUREVIEW=eog
 
-#if [[ -n ${commands[nvim-open]} ]]; then
-#  export EDITOR=nvim-open
-#  alias vim="nvim-open"
-#elif [[ -n ${commands[nvim]} ]]; then
 if [[ -n ${commands[nvim]} ]]; then
   export EDITOR=nvim
   alias vim="nvim"

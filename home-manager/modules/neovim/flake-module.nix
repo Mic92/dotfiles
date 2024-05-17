@@ -54,7 +54,6 @@
           ++ lib.optional (!pkgs.stdenv.hostPlatform.isDarwin) sumneko-lua-language-server;
       };
       packages = {
-        nvim-open = pkgs.python3Packages.callPackage ./nvim-open.nix { };
         neovim = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped (
           pkgs.neovimUtils.makeNeovimConfig {
             wrapRc = false;
