@@ -138,6 +138,9 @@
     };
   };
 
+  system.switch.enableNg = true;
+  system.switch.enable = false;
+
   security.audit.enable = false;
 
   services.tor.client.enable = true;
