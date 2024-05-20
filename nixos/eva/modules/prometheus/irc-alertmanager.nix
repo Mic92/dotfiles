@@ -53,5 +53,9 @@ in
           RuntimeDirectory = serviceName;
         };
     }
-  ) { krebs.url = "irc://prometheus@irc.r:6667/#xxx"; };
+  ) {
+    krebs.url = "irc://prometheus@irc.r:6667/#xxx";
+    numtide.url = "irc+tls://prometheus@irc.numtide.com:6669/#mon";
+    numtide.passwordFile = config.sops.secrets.numtide-monitoring-irc-password.path;
+  };
 }
