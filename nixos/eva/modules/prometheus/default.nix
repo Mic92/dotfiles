@@ -66,13 +66,10 @@
             ];
             labels.org = "dave";
           }
-          #{
-          #  targets = [
-          #    "dev1.numtide.com.r:9273"
-          #  ];
-
-          #  labels.org = "numtide";
-          #}
+          {
+            targets = [ "irc.numtide.com:9273" ];
+            labels.org = "numtide";
+          }
           {
             targets = map (host: "${host}.r:9273") [
               "adelaide"
@@ -156,6 +153,14 @@
           }
           {
             group_by = [ "host" ];
+            match_re.org = "numtide";
+            group_wait = "5m";
+            group_interval = "5m";
+            repeat_interval = "4h";
+            receiver = "numtide";
+          }
+          {
+            group_by = [ "host" ];
             match_re.org = "clan-lol";
             group_wait = "5m";
             group_interval = "5m";
@@ -189,15 +194,15 @@
             }
           ];
         }
-        #{
-        #  name = "numtide";
-        #  slack_configs = [
-        #    {
-        #      token = "$SLACK_TOKEN";
-        #      api_url = "https://";
-        #    }
-        #  ];
-        #}
+        {
+          name = "numtide";
+          webhook_configs = [
+            {
+              url = "http://127.0.0.1:9224/";
+              max_alerts = 5;
+            }
+          ];
+        }
         {
           name = "nixos-wiki";
           webhook_configs = [

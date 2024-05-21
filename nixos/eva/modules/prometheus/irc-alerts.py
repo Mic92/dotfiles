@@ -52,12 +52,6 @@ def _irc_send(
     sock.connect((server, port))
     if server_password:
         _send(f"PASS {server_password}")
-    _send(f"USER {nick} 0 * :{nick}")
-    _send(f"NICK {nick}")
-    for line in recv_file.readline():
-        if re.match(r"^:[^ ]* (MODE|221|376|422) ", line):
-            break
-        _pong(line)
 
     if sasl_password:
         _send("CAP REQ :sasl")
@@ -65,6 +59,14 @@ def _irc_send(
         auth = base64.encodebytes(f"{nick}\0{nick}\0{sasl_password}".encode())
         _send(f"AUTHENTICATE {auth.decode('ascii')}")
         _send("CAP END")
+
+    _send(f"USER {nick} 0 * :{nick}")
+    _send(f"NICK {nick}")
+    for line in recv_file.readline():
+        if re.match(r"^:[^ ]* (MODE|221|376|422) ", line):
+            break
+        _pong(line)
+
     _send(f"JOIN :{channel}")
 
     for m in messages:
