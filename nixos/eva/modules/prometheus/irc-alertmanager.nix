@@ -16,46 +16,55 @@ let
   };
 in
 {
-  systemd.sockets = lib.mapAttrs' (
-    name: opts:
-    lib.nameValuePair "irc-alerts-${name}" {
-      description = "Receive http hook and send irc message for ${name}";
-      wantedBy = [ "sockets.target" ];
-      listenStreams = [ "[::]:${builtins.toString opts.port}" ];
-    }
-  ) { krebs.port = 9223; };
-
-  systemd.services = lib.mapAttrs' (
-    name: opts:
-    let
-      serviceName = "irc-alerts-${name}";
-      hasPassword = opts.passwordFile or null != null;
-    in
-    lib.nameValuePair serviceName {
-      description = "Receive http hook and send irc message for ${name}";
-      requires = [ "irc-alerts-${name}.socket" ];
-      serviceConfig =
-        {
-          Environment = [
-            "IRC_URL=${opts.url}"
-          ] ++ lib.optional hasPassword "IRC_PASSWORD_FILE=/run/${serviceName}/password";
-          DynamicUser = true;
-          User = serviceName;
-          ExecStart = "${irc-alerts}/bin/irc-alerts";
+  systemd.sockets =
+    lib.mapAttrs'
+      (
+        name: opts:
+        lib.nameValuePair "irc-alerts-${name}" {
+          description = "Receive http hook and send irc message for ${name}";
+          wantedBy = [ "sockets.target" ];
+          listenStreams = [ "[::]:${builtins.toString opts.port}" ];
         }
-        // lib.optionalAttrs hasPassword {
-          PermissionsStartOnly = true;
-          ExecStartPre =
-            "${pkgs.coreutils}/bin/install -m400 "
-            + "-o ${serviceName} -g ${serviceName} "
-            + "${config.sops.secrets.prometheus-irc-password.path} "
-            + "/run/${serviceName}/password";
-          RuntimeDirectory = serviceName;
-        };
-    }
-  ) {
-    krebs.url = "irc://prometheus@irc.r:6667/#xxx";
-    numtide.url = "irc+tls://prometheus@irc.numtide.com:6669/#mon";
-    numtide.passwordFile = config.sops.secrets.numtide-monitoring-irc-password.path;
-  };
+      )
+      {
+        krebs.port = 9223;
+        numtide.port = 9224;
+      };
+
+  systemd.services =
+    lib.mapAttrs'
+      (
+        name: opts:
+        let
+          serviceName = "irc-alerts-${name}";
+          hasPassword = opts.passwordFile or null != null;
+        in
+        lib.nameValuePair serviceName {
+          description = "Receive http hook and send irc message for ${name}";
+          requires = [ "irc-alerts-${name}.socket" ];
+          serviceConfig =
+            {
+              Environment = [
+                "IRC_URL=${opts.url}"
+              ] ++ lib.optional hasPassword "IRC_PASSWORD_FILE=/run/${serviceName}/password";
+              DynamicUser = true;
+              User = serviceName;
+              ExecStart = "${irc-alerts}/bin/irc-alerts";
+            }
+            // lib.optionalAttrs hasPassword {
+              PermissionsStartOnly = true;
+              ExecStartPre =
+                "${pkgs.coreutils}/bin/install -m400 "
+                + "-o ${serviceName} -g ${serviceName} "
+                + "${opts.passwordFile} "
+                + "/run/${serviceName}/password";
+              RuntimeDirectory = serviceName;
+            };
+        }
+      )
+      {
+        krebs.url = "irc://prometheus@irc.r:6667/#xxx";
+        numtide.url = "irc+tls://prometheus@irc.numtide.com:6697/#mon";
+        numtide.passwordFile = config.sops.secrets.numtide-monitoring-irc-password.path;
+      };
 }
