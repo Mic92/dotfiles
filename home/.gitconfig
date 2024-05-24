@@ -2,7 +2,7 @@
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
   pager = delta --color-only
-  editor = nvim-open
+  editor = nvim
 [include]
   path = ~/.gitconfig.local
 [interactive]
