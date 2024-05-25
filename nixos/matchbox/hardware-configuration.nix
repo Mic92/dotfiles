@@ -10,6 +10,8 @@
     "serial=\${serial#}"
   ];
 
+  boot.initrd.availableKernelModules = [ "usb_storage" ];
+
   # The last console gets the systemd status messages.
   # Assume more people will find HDMI more useful than serial.
   srvos.boot.consoles = [
