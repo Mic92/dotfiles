@@ -6,6 +6,7 @@
     ./hardware-configuration.nix
     ./modules/samba.nix
     ./modules/rsyncd.nix
+    ./modules/rsnapshot.nix
     ./modules/photoprism.nix
 
     ../modules/borgbackup.nix
