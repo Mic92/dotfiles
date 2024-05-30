@@ -7,4 +7,5 @@
     shared_buffers = "80MB";
   };
   services.postgresqlBackup.enable = true;
+  services.postgresqlBackup.backupAll = true;
 }
