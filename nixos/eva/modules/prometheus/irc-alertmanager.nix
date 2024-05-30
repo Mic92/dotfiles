@@ -16,20 +16,14 @@ let
   };
 in
 {
-  systemd.sockets =
-    lib.mapAttrs'
-      (
-        name: opts:
-        lib.nameValuePair "irc-alerts-${name}" {
-          description = "Receive http hook and send irc message for ${name}";
-          wantedBy = [ "sockets.target" ];
-          listenStreams = [ "[::]:${builtins.toString opts.port}" ];
-        }
-      )
-      {
-        krebs.port = 9223;
-        numtide.port = 9224;
-      };
+  systemd.sockets = lib.mapAttrs' (
+    name: opts:
+    lib.nameValuePair "irc-alerts-${name}" {
+      description = "Receive http hook and send irc message for ${name}";
+      wantedBy = [ "sockets.target" ];
+      listenStreams = [ "[::]:${builtins.toString opts.port}" ];
+    }
+  ) { krebs.port = 9223; };
 
   systemd.services =
     lib.mapAttrs'
@@ -61,10 +55,15 @@ in
               RuntimeDirectory = serviceName;
             };
         }
-      )
-      {
-        krebs.url = "irc://prometheus@irc.r:6667/#xxx";
-        numtide.url = "irc+tls://prometheus@irc.numtide.com:6697/#mon";
-        numtide.passwordFile = config.sops.secrets.numtide-monitoring-irc-password.path;
-      };
+        // lib.optionalAttrs hasPassword {
+          PermissionsStartOnly = true;
+          ExecStartPre =
+            "${pkgs.coreutils}/bin/install -m400 "
+            + "-o ${serviceName} -g ${serviceName} "
+            + "${opts.passwordFile} "
+            + "/run/${serviceName}/password";
+          RuntimeDirectory = serviceName;
+        };
+    }
+  ) { krebs.url = "irc://prometheus@irc.r:6667/#xxx"; };
 }

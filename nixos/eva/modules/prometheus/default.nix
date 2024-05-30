@@ -67,7 +67,7 @@
             labels.org = "dave";
           }
           {
-            targets = [ "irc.numtide.com:9273" ];
+            targets = [ ];
             labels.org = "numtide";
           }
           {
@@ -197,10 +197,11 @@
         {
           name = "numtide";
           webhook_configs = [
-            {
-              url = "http://127.0.0.1:9224/";
-              max_alerts = 5;
-            }
+            # TODO
+            #{
+            #  send_resolved = true;
+            #  url = "https://chat.ntd.one/plugins/alertmanager/api/webhook?token='xxxxxxxxxxxxxxxxxxx-yyyyyyy'";
+            #}
           ];
         }
         {
