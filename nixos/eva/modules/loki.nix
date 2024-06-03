@@ -95,7 +95,7 @@ in
   };
 
   sops.secrets.promtail-nginx-password.owner = "nginx";
-  systemd.services.loki.reloadTriggers = [ rulerFile ];
+  systemd.services.loki.restartTriggers = [ rulerFile ];
 
   security.acme.certs."loki.r".server = config.retiolum.ca.acmeURL;
   services.nginx = {
