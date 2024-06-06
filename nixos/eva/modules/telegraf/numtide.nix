@@ -28,12 +28,6 @@
         tags.org = "numtide";
       }
       {
-        urls = [ "https://upterm.numtide.com/" ];
-        response_string_match = "Usage";
-        tags.host = "matrix1";
-        tags.org = "numtide";
-      }
-      {
         urls = [ "https://matrix.numtide.com/_matrix/static/" ];
         response_string_match = "Synapse";
         tags.host = "matrix1";
