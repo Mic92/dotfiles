@@ -37,7 +37,7 @@
       ];
     };
   clan = {
-    clanName = "mic92";
+    meta.name = "mic92";
     directory = self;
     specialArgs = {
       self = self;
