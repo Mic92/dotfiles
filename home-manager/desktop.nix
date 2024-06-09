@@ -6,7 +6,7 @@
     ./modules/rust.nix
     ./modules/debugging.nix
     ./modules/default-apps.nix
-    ./modules/waybar.nix
+    #./modules/waybar.nix
   ];
 
   fonts.fontconfig.enable = true;
