@@ -13,10 +13,14 @@ speakers=alsa_card.pci-0000_00_1f.3
 earphones=bluez_output.50_C2_75_67_67_8C.1
 address="50:C2:75:67:67:8C"
 soundbar=alsa_card.usb-DELL_DELL_Slim_Soundbar_SB522A_0-02
+webcam="alsa_card.usb-046d_C505e_HD_Webcam_C614D880-02"
 
 notify() {
   notify-send -a audio-chooser "Audio Chooser" "$1"
 }
+
+# always disable webcam mic
+pactl set-card-profile "$webcam" off || true
 
 case $selected in
 headphones)
