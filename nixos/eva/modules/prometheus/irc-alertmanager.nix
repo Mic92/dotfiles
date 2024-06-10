@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  lib,
-  ...
-}:
+{ pkgs, lib, ... }:
 let
   irc-alerts = pkgs.stdenv.mkDerivation {
     name = "irc-alerts";
@@ -25,35 +20,23 @@ in
     }
   ) { krebs.port = 9223; };
 
-  systemd.services =
-    lib.mapAttrs'
-      (
-        name: opts:
-        let
-          serviceName = "irc-alerts-${name}";
-          hasPassword = opts.passwordFile or null != null;
-        in
-        lib.nameValuePair serviceName {
-          description = "Receive http hook and send irc message for ${name}";
-          requires = [ "irc-alerts-${name}.socket" ];
-          serviceConfig =
-            {
-              Environment = [
-                "IRC_URL=${opts.url}"
-              ] ++ lib.optional hasPassword "IRC_PASSWORD_FILE=/run/${serviceName}/password";
-              DynamicUser = true;
-              User = serviceName;
-              ExecStart = "${irc-alerts}/bin/irc-alerts";
-            }
-            // lib.optionalAttrs hasPassword {
-              PermissionsStartOnly = true;
-              ExecStartPre =
-                "${pkgs.coreutils}/bin/install -m400 "
-                + "-o ${serviceName} -g ${serviceName} "
-                + "${opts.passwordFile} "
-                + "/run/${serviceName}/password";
-              RuntimeDirectory = serviceName;
-            };
+  systemd.services = lib.mapAttrs' (
+    name: opts:
+    let
+      serviceName = "irc-alerts-${name}";
+      hasPassword = opts.passwordFile or null != null;
+    in
+    lib.nameValuePair serviceName {
+      description = "Receive http hook and send irc message for ${name}";
+      requires = [ "irc-alerts-${name}.socket" ];
+      serviceConfig =
+        {
+          Environment = [
+            "IRC_URL=${opts.url}"
+          ] ++ lib.optional hasPassword "IRC_PASSWORD_FILE=/run/${serviceName}/password";
+          DynamicUser = true;
+          User = serviceName;
+          ExecStart = "${irc-alerts}/bin/irc-alerts";
         }
         // lib.optionalAttrs hasPassword {
           PermissionsStartOnly = true;
