@@ -75,11 +75,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1717891502,
-        "narHash": "sha256-zy329KehAQGKOXKe304JGyYF357oG9CGBj9TqksNZ0g=",
+        "lastModified": 1718142558,
+        "narHash": "sha256-5LAyJ5GMIc3Z1i+odvBS30HuhLXFbET1zGP1zJbc4Lg=",
         "ref": "refs/heads/main",
-        "rev": "ef42bcc525dbfbdf686796c118206b004b4c31b8",
-        "revCount": 3073,
+        "rev": "1f3c4f4ac381136e2c56378513e52cb53d6d1269",
+        "revCount": 3115,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
@@ -407,22 +407,6 @@
         "type": "github"
       }
     },
-    "nixos-2311": {
-      "locked": {
-        "lastModified": 1717017538,
-        "narHash": "sha256-S5kltvDDfNQM3xx9XcvzKEOyN2qk8Sa+aSOLqZ+1Ujc=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "64e468fd2652105710d86cd2ae3e65a5a6d58dec",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "release-23.11",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
     "nixos-generators": {
       "inputs": {
         "nixlib": [
@@ -463,18 +447,20 @@
     },
     "nixos-images": {
       "inputs": {
-        "nixos-2311": "nixos-2311",
+        "nixos-stable": [
+          "clan-core"
+        ],
         "nixos-unstable": [
           "clan-core",
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1717040312,
-        "narHash": "sha256-yI/en4IxuCEClIUpIs3QTyYCCtmSPLOhwLJclfNwdeg=",
+        "lastModified": 1717770332,
+        "narHash": "sha256-NQmFHj0hTCUgnMAsaNTu6sNTRyo0rFQEe+/lVgV5yxU=",
         "owner": "nix-community",
         "repo": "nixos-images",
-        "rev": "47bfb55316e105390dd761e0b6e8e0be09462b67",
+        "rev": "72771bd35f4e19e32d6f652528483b5e07fc317b",
         "type": "github"
       },
       "original": {
