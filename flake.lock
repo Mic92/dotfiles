@@ -636,15 +636,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1718239576,
-        "narHash": "sha256-Afdz9oCQf8VCGXUhI8KxdJg9gc+fepZK//mYsijfhFw=",
+        "lastModified": 1718283353,
+        "narHash": "sha256-J7badeTJ54gJWbL5paz2Duju3Z8mLMaJgndNX+L0VSU=",
         "owner": "numtide",
         "repo": "srvos",
-        "rev": "d6280e5c12c4ddb26f0807387777786c66e4c552",
+        "rev": "a2761f0616ded532845bb069375ffbfa60093ff9",
         "type": "github"
       },
       "original": {
         "owner": "numtide",
+        "ref": "darwin-support",
         "repo": "srvos",
         "type": "github"
       }

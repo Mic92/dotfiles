@@ -42,9 +42,9 @@
               pkgs.git
               pkgs.coreutils
               pkgs.findutils
-              pkgs.nix
               pkgs.jq
               pkgs.unixtools.hostname
+              pkgs.nixVersions.latest
             ]
           }
           declare -A profiles=(
@@ -54,7 +54,7 @@
             ["bld2"]="mic92"
             ["eve"]="eve"
             ["mac01.numtide.com"]="mac-hetzner"
-            ["Joergs-Laptop.local"]="mac-laptop"
+            ["evo"]="mac-laptop"
           )
           profile="common"
           user=$(id -un)

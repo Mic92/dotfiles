@@ -66,7 +66,7 @@
     nix-ld-rs.inputs.nixpkgs.follows = "nixpkgs";
     nix-ld-rs.inputs.flake-utils.follows = "flake-utils";
 
-    srvos.url = "github:numtide/srvos";
+    srvos.url = "github:numtide/srvos/darwin-support";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
     clan-core.url = "git+https://git.clan.lol/clan/clan-core";
@@ -127,6 +127,7 @@
       { withSystem, config, ... }:
       {
         imports = [
+          ./darwin/flake-module.nix
           ./nixos/flake-module.nix
           ./nixos/images/flake-module.nix
           ./home-manager/flake-module.nix
