@@ -54,6 +54,7 @@
             ["bld2"]="mic92"
             ["eve"]="eve"
             ["mac01.numtide.com"]="mac-hetzner"
+            ["Joergs-Laptop.local"]="mac-laptop"
           )
           profile="common"
           user=$(id -un)
@@ -106,6 +107,7 @@
             common = homeManagerConfiguration { };
 
             mac-hetzner = homeManagerConfiguration { extraModules = [ { home.username = "hetzner"; } ]; };
+            mac-laptop = homeManagerConfiguration { extraModules = [ ./graphical.nix ]; };
           }
           // lib.optionalAttrs (pkgs.hostPlatform.system == "x86_64-linux") {
             desktop = homeManagerConfiguration { extraModules = [ ./desktop.nix ]; };
