@@ -38,16 +38,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1718206603,
-        "narHash": "sha256-a250Wv7IzwhxRQ8RbUhYPhyGwKD7MkLK51BfqVvO+0g=",
-        "owner": "MagicRB",
+        "lastModified": 1718280173,
+        "narHash": "sha256-QLiId8mztl2YwOXJkElKfoJAU8N9uv3slOAuQI1QuMY=",
+        "owner": "nix-community",
         "repo": "buildbot-nix",
-        "rev": "0ac5dcb33d894dd16a590ccaf72a10ab4c4c98f6",
+        "rev": "5d13fbf2a5d1077c8749b07d7950d807d09220ec",
         "type": "github"
       },
       "original": {
-        "owner": "MagicRB",
-        "ref": "github_app",
+        "owner": "nix-community",
+        "ref": "debug-jwt",
         "repo": "buildbot-nix",
         "type": "github"
       }
