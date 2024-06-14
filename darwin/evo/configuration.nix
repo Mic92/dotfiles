@@ -9,6 +9,7 @@
     ../modules/nix-daemon.nix
     ../modules/homebrew.nix
     ../modules/secretiv.nix
+    ../modules/openssh.nix
   ];
 
   srvos.flake = self;
