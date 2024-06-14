@@ -13,7 +13,6 @@
     evalWorkerCount = 6;
     github = {
       webhookSecretFile = config.sops.secrets.buildbot-github-webhook-secret.path;
-      user = "mic92-buildbot";
 
       oauthId = "Iv23ctDGhrm116Be1LhO";
       oauthSecretFile = config.sops.secrets.buildbot-github-oauth-secret.path;
