@@ -41,5 +41,8 @@ require("lazy").setup({
     version = "^4",
     import = "astronvim.plugins",
   },
+
+  -- make sure we use the commit from nixpkgs that is compatible with our grammars.
+  { "nvim-treesitter/nvim-treesitter", commit = vim.fn.readfile(vim.fn.stdpath('config') .. "/treesitter-rev", '', 1)[1] },
   { import = "plugins" },
 })
