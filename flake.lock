@@ -506,7 +506,7 @@
     "nixpkgs": {
       "locked": {
         "lastModified": 1718456374,
-        "narHash": "sha256-OXftwW8ZnSQ6t4UHqUx4fh1r92H0Od4U4uhNxbuT3kc=",
+        "narHash": "sha256-zh9ZPYX+yn3SCTEUINmr6WjshSLB6S3TEIaerb9ywDA=",
         "owner": "Mic92",
         "repo": "nixpkgs",
         "rev": "acb17a3044e7f5a696639c9457bcaff97e15638e",
