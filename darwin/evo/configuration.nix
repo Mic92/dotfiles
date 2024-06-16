@@ -9,6 +9,7 @@
     ../modules/nix-daemon.nix
     ../modules/homebrew.nix
     ../modules/secretiv.nix
+    ../modules/firefox.nix
     ../modules/openssh.nix
   ];
 
