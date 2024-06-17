@@ -8,7 +8,7 @@
   clan.borgbackup.destinations.${config.networking.hostName} = {
     repo = "borg@blob64.r:/zdata/borg/${config.networking.hostName}";
   };
-  clanCore.state.system.folders = [
+  clan.core.state.system.folders = [
     "/home"
     "/etc"
     "/var"

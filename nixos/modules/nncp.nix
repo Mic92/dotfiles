@@ -71,7 +71,7 @@ in
   ];
   programs.nncp = {
     enable = true;
-    secrets = [ config.sops.secrets."${config.clanCore.machineName}-nncp".path ];
+    secrets = [ config.sops.secrets."${config.clan.core.machineName}-nncp".path ];
     settings.neigh = lib.mapAttrs (
       name: node:
       node

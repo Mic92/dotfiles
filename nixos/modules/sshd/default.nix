@@ -11,15 +11,15 @@
   services.openssh = {
     enable = true;
     settings.HostCertificate = lib.mkIf (builtins.pathExists (
-      config.clanCore.clanDir + "/machines/${config.clanCore.machineName}/facts/ssh.id_ed25519.pub"
-    )) config.clanCore.facts.services.openssh-interactive.public."ssh.id_ed25519-cert.pub".path;
+      config.clan.core.clanDir + "/machines/${config.clan.core.machineName}/facts/ssh.id_ed25519.pub"
+    )) config.clan.core.facts.services.openssh-interactive.public."ssh.id_ed25519-cert.pub".path;
   };
 
-  clanCore.facts.services.openssh-interactive =
+  clan.core.facts.services.openssh-interactive =
     # hack to emulate dependent secrets
     lib.mkIf
       (builtins.pathExists (
-        config.clanCore.clanDir + "/machines/${config.clanCore.machineName}/facts/ssh.id_ed25519.pub"
+        config.clan.core.clanDir + "/machines/${config.clan.core.machineName}/facts/ssh.id_ed25519.pub"
       ))
       {
         public."ssh.id_ed25519-cert.pub" = { };

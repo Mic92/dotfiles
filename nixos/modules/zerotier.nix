@@ -1,7 +1,7 @@
 { lib, config, ... }:
 {
   clan.networking.zerotier.networkId = lib.mkDefault (
-    builtins.readFile (config.clanCore.clanDir + "/machines/eve/facts/zerotier-network-id")
+    builtins.readFile (config.clan.core.clanDir + "/machines/eve/facts/zerotier-network-id")
   );
   services.zerotierone.joinNetworks = [
     "ccc5da5295c853d4"

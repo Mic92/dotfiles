@@ -15,7 +15,7 @@
     ../modules/sshd/tor.nix
     ../modules/promtail.nix
   ];
-  clanCore.state.pictures.folders = [ "/mnt/hdd" ];
+  clan.core.state.pictures.folders = [ "/mnt/hdd" ];
 
   clan.networking.targetHost = "root@matchbox.r";
   clan.networking.buildHost = "root@eve.i";

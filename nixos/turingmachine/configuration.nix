@@ -55,7 +55,7 @@
 
   users.mutableUsers = false;
   users.users.joerg.hashedPasswordFile =
-    config.clanCore.facts.services.root-password.secret.password-hash.path;
+    config.clan.core.facts.services.root-password.secret.password-hash.path;
 
   # https://community.frame.work/t/guide-linux-battery-life-tuning/6665
   #services.tlp.enable = true;

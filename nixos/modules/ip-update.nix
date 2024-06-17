@@ -32,7 +32,7 @@
           echo "update add ${config.networking.hostName}.thalheim.io. 600 AAAA $ip6"
         fi
         echo "send"
-      ) | nsupdate -k ${config.sops.secrets."${config.clanCore.machineName}-ip-update-key".path} -v
+      ) | nsupdate -k ${config.sops.secrets."${config.clan.core.machineName}-ip-update-key".path} -v
     '';
     serviceConfig.Type = "oneshot";
     serviceConfig.Restart = "on-failure";
