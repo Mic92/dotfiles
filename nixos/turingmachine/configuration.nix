@@ -131,7 +131,6 @@
       '';
     };
     adb.enable = true;
-    bash.enableCompletion = true;
     zsh = {
       enable = true;
       promptInit = "";
