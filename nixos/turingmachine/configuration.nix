@@ -62,10 +62,14 @@
   #services.tlp.settings."PCIE_ASPM_ON_BAT" = "powersupersave";
 
   hardware.keyboard.qmk.enable = true;
+  hardware.intel.opencl.runtime = "intel-compute-runtime";
 
   #services.udev.packages = [ pkgs.platformio ];
 
   services.gvfs.enable = true;
+
+  #environment.sessionVariables.KWIN_DRM_ALLOW_INTEL_COLORSPACE = "1";
+  #services.displayManager.environment.KWIN_DRM_ALLOW_INTEL_COLORSPACE = "1";
 
   boot.plymouth.enable = true;
 
