@@ -7,11 +7,15 @@
     inputs.srvos.darwinModules.common
     inputs.srvos.darwinModules.mixins-telegraf
     ../modules/nix-daemon.nix
+    ../modules/amethyst.nix
     ../modules/homebrew.nix
     ../modules/secretiv.nix
     ../modules/firefox.nix
+    ../modules/iterm2.nix
     ../modules/openssh.nix
   ];
+
+  security.pam.enableSudoTouchIdAuth = true;
 
   srvos.flake = self;
 }
