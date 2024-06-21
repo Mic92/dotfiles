@@ -69,7 +69,7 @@
     srvos.url = "github:numtide/srvos/darwin-support";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
-    clan-core.url = "git+https://git.clan.lol/clan/clan-core";
+    clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
     # clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=docs";
     #clan-core.url = "path:///Users/joerg/git/clan-core";
     #clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=fact_refactor2";
