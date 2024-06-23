@@ -2,6 +2,7 @@
   pkgs,
   config,
   lib,
+  self,
   ...
 }:
 {
@@ -57,6 +58,8 @@
       ncurses
       coreutils
       git
+
+      self.packages.${pkgs.stdenv.hostPlatform.system}.mergify-gen-config
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       strace
