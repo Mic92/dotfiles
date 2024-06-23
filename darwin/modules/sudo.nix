@@ -1,0 +1,3 @@
+{
+  security.pam.enableSudoTouchIdAuth = true;
+}

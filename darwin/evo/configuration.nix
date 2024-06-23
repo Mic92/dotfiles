@@ -13,9 +13,9 @@
     ../modules/firefox.nix
     ../modules/iterm2.nix
     ../modules/openssh.nix
+    ../modules/sudo.nix
   ];
 
-  security.pam.enableSudoTouchIdAuth = true;
 
   srvos.flake = self;
 }

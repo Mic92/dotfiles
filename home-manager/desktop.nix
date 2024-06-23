@@ -118,11 +118,11 @@
       '')
 
       nixos-shell
+      (pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; })
     ]
     ++ (with inputs.nur-packages.packages.${pkgs.hostPlatform.system}; [
       speedscope
       inxi
       source-code-pro-nerdfonts
-      (pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; })
     ]);
 }
