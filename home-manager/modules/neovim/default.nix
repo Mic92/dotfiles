@@ -1,4 +1,9 @@
-{ config, pkgs, self, ... }:
+{
+  config,
+  pkgs,
+  self,
+  ...
+}:
 let
   inherit (self.packages.${pkgs.hostPlatform.system}) neovim treesitter-grammars;
   inherit (self.legacyPackages.${pkgs.hostPlatform.system}) nvim-lsp-packages;

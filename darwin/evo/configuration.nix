@@ -16,6 +16,5 @@
     ../modules/sudo.nix
   ];
 
-
   srvos.flake = self;
 }
