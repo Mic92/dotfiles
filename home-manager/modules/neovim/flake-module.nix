@@ -60,17 +60,22 @@
             extraLuaPackages = ps: [ (ps.callPackage ./lua-tiktoken.nix { }) ];
           }
         );
-        treesitter-grammars = let
-          grammars = lib.filterAttrs (n: _: lib.hasPrefix "tree-sitter-" n) pkgs.vimPlugins.nvim-treesitter.builtGrammars;
-          symlinks = lib.mapAttrsToList
-            (name: grammar: "ln -s ${grammar}/parser $out/${lib.removePrefix "tree-sitter-" name}.so")
-            grammars;
-        in (pkgs.runCommand "treesitter-grammars" { } ''
-          mkdir -p $out
-          ${lib.concatStringsSep "\n" symlinks}
-        '').overrideAttrs (_: {
-          passthru.rev = pkgs.vimPlugins.nvim-treesitter.src.rev;
-        });
+        treesitter-grammars =
+          let
+            grammars = lib.filterAttrs (
+              n: _: lib.hasPrefix "tree-sitter-" n
+            ) pkgs.vimPlugins.nvim-treesitter.builtGrammars;
+            symlinks = lib.mapAttrsToList (
+              name: grammar: "ln -s ${grammar}/parser $out/${lib.removePrefix "tree-sitter-" name}.so"
+            ) grammars;
+          in
+          (pkgs.runCommand "treesitter-grammars" { } ''
+            mkdir -p $out
+            ${lib.concatStringsSep "\n" symlinks}
+          '').overrideAttrs
+            (_: {
+              passthru.rev = pkgs.vimPlugins.nvim-treesitter.src.rev;
+            });
 
         nvim = pkgs.callPackage ./nvim-standalone.nix {
           nvim-appname = "nvim-mic92";
