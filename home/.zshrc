@@ -585,6 +585,7 @@ export READNULLCMD=$PAGER
 export pacman_program=pacman-color
 # X11, Sound, Graphic
 export XDG_DESKTOP_DIR="$HOME/Desktop"
+export XDG_CONFIG_HOME="$HOME/.config" # for macos
 export XDG_DOCUMENTS_DIR="$HOME/Documents"
 export XDG_DOWNLOAD_DIR="$HOME/Downloads"
 export XDG_MUSIC_DIR="$HOME/Music"
