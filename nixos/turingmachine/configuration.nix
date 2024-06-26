@@ -62,7 +62,6 @@
   #services.tlp.settings."PCIE_ASPM_ON_BAT" = "powersupersave";
 
   hardware.keyboard.qmk.enable = true;
-  hardware.intel.opencl.runtime = "intel-compute-runtime";
 
   #services.udev.packages = [ pkgs.platformio ];
 
