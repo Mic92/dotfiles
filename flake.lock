@@ -74,11 +74,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1719391562,
-        "narHash": "sha256-mDMnw6L7CfA5PfKMouDNve+amw9IXo4kZkil1G2qqqw=",
-        "rev": "1a8abaa2acd89aa7446bb435b559b07eeaae161a",
+        "lastModified": 1719395380,
+        "narHash": "sha256-lhUrNAz2HNEHtu6mLH07Z06a9KlhVl58Vvqn9lD1J0A=",
+        "rev": "cecd6011d61b4b15a8e0f2066a1e5ea1668c032e",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/1a8abaa2acd89aa7446bb435b559b07eeaae161a.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/cecd6011d61b4b15a8e0f2066a1e5ea1668c032e.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -566,11 +566,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1715540413,
-        "narHash": "sha256-K2JRa9OrnA1ypL4CWJpe6/23EM5nqY6YF3MkATTW7jA=",
+        "lastModified": 1719392416,
+        "narHash": "sha256-aYWEFGHxg+eyej62PpqKqN/zRg+0LPe0IQkL0OcbbQE=",
         "owner": "Mic92",
         "repo": "retiolum",
-        "rev": "e847829a0d491fa85e6a083ed634d461e5779d5c",
+        "rev": "5dd82a3a3212aa3ef184077b1f02c29cdaf75f63",
         "type": "github"
       },
       "original": {
