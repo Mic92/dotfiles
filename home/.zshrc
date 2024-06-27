@@ -184,6 +184,10 @@ merge-after-ci() {
   if [[ -n ${commands[treefmt]} ]] && ! treefmt --fail-on-change; then
     return
   fi
+  # detect treefmt
+  if [[ $(nix eval .#formatter --impure --apply '(val: val ? ${builtins.currentSystem}) && val.${builtins.currentSystem}.name == treefmt') == true ]] && ! nix fmt -- --fail-on-change; then
+    return
+  fi
   branch=$(id -un)-ci
   git push --force origin "HEAD:$branch"
   targetBranch=$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)
