@@ -74,11 +74,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1719395380,
-        "narHash": "sha256-lhUrNAz2HNEHtu6mLH07Z06a9KlhVl58Vvqn9lD1J0A=",
-        "rev": "cecd6011d61b4b15a8e0f2066a1e5ea1668c032e",
+        "lastModified": 1719415368,
+        "narHash": "sha256-dMN2AXh27fSmfV4vCGSgbff2C4YHX9dUyvsKgeFXvAE=",
+        "rev": "27b0d18f0df967e4508f6bc915f4e226a78fd177",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/cecd6011d61b4b15a8e0f2066a1e5ea1668c032e.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/27b0d18f0df967e4508f6bc915f4e226a78fd177.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -135,11 +135,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1719236180,
-        "narHash": "sha256-VZAfBk2Lo8hQy/NQ4XVSpTICT0ownXBUi1QvGfdlxaM=",
+        "lastModified": 1719451710,
+        "narHash": "sha256-h+bFEQHQ46pBkEsOXbxmmY6QNPPGrgpDbNlHtAKG49M=",
         "owner": "nix-community",
         "repo": "disko",
-        "rev": "dd4d1663ccf7fbdb32361b9afe9e71206584cd4c",
+        "rev": "8767dbf5d723b1b6834f4d09b217da7c31580d58",
         "type": "github"
       },
       "original": {
@@ -161,11 +161,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1719189960,
-        "narHash": "sha256-Y4tIs2y1E4ohi9BqlnqT43vRgY0JJnreL18ZiSGkTWk=",
+        "lastModified": 1719449012,
+        "narHash": "sha256-pnmc3CjOqsWemn3UsMB7iEdNVOTu372XCE5MUL5acgQ=",
         "owner": "Mic92",
         "repo": "fast-flake-update",
-        "rev": "f5753641efe53295271f893cb91dc52fbdc45223",
+        "rev": "a9cd7797080d1018b74d484e3919d04c2fac1ee2",
         "type": "github"
       },
       "original": {
@@ -244,33 +244,6 @@
         "type": "github"
       }
     },
-    "harmonia": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1718460426,
-        "narHash": "sha256-seUMtGcp0GwFEoBEHaWpJWsDykf+70+4MKEUOwoO910=",
-        "owner": "clerie",
-        "repo": "harmonia",
-        "rev": "9af8fdabb05bc0d701332d0c0d7b828c36eceda9",
-        "type": "github"
-      },
-      "original": {
-        "owner": "clerie",
-        "ref": "clerie/multiple-signing-keys",
-        "repo": "harmonia",
-        "type": "github"
-      }
-    },
     "hercules-ci-effects": {
       "inputs": {
         "flake-parts": [
@@ -301,11 +274,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1719385710,
-        "narHash": "sha256-0yb5D0wCEtXoTi4ssNZxwvLTrahTwlHYPtx252FZ1MU=",
+        "lastModified": 1719438532,
+        "narHash": "sha256-/Vmso2ZMoFE3M7d1MRsQ2K5sR8CVKnrM6t1ys9Xjpz4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "92a26bf6df1f00cbbed16a99d2547531ff4b3a83",
+        "rev": "1a4f12ae0bda877ec4099b429cf439aad897d7e9",
         "type": "github"
       },
       "original": {
@@ -441,11 +414,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1718025593,
-        "narHash": "sha256-WZ1gdKq/9u1Ns/oXuNsDm+W0salonVA0VY1amw8urJ4=",
+        "lastModified": 1719450236,
+        "narHash": "sha256-fh0l6pLvuTrTBakFMQfK7lwpjvWd5i+CFyVs8TMzPNo=",
         "owner": "nix-community",
         "repo": "nixos-generators",
-        "rev": "35c20ba421dfa5059e20e0ef2343c875372bdcf3",
+        "rev": "1867f28f87fcf4e817f165003aff967a5280aaab",
         "type": "github"
       },
       "original": {
@@ -456,11 +429,11 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1719391814,
-        "narHash": "sha256-zlRvpIUQrxMSOi+1lVFuJNvIJt9LB93c05tYQ1KSdRg=",
+        "lastModified": 1719413427,
+        "narHash": "sha256-WS087+fEO804gWvwqEfclbLFw6xdrrtZZULSyQafMdg=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "aab67495e34365045f9dfbe58725cc6fa03607b7",
+        "rev": "901bc809b5d3e73a609a167385df23311d81b39c",
         "type": "github"
       },
       "original": {
@@ -530,11 +503,11 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1719392172,
-        "narHash": "sha256-XoYhY1WSGVZvPZBJ89EdWX+mqplz5ffpc1Gf0NJuawk=",
+        "lastModified": 1719409662,
+        "narHash": "sha256-oXwV+apfBo6r8vsZnaFuxEJm71baQD7y9hOZYz1LhIg=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "69fcc29fb04f14edfd08a3a59857e860fe123acc",
+        "rev": "163dfdcc4e58ef1a1212cadc9e522e72422df592",
         "type": "github"
       },
       "original": {
@@ -589,7 +562,6 @@
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
-        "harmonia": "harmonia",
         "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
