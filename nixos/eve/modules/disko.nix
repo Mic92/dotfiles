@@ -58,6 +58,7 @@ in
           "com.sun:auto-snapshot" = "true";
           mountpoint = "none";
         };
+        options.ashift = "12";
         datasets = {
           "root" = {
             type = "zfs_fs";
