@@ -1,32 +1,17 @@
-{ lib, pkgs, ... }:
+{ config, pkgs, ... }:
 {
   services.shiori.enable = true;
   services.shiori.port = 4378;
-  services.shiori.package = pkgs.shiori.overrideAttrs (_: {
-    patches = [ ./0001-set-saner-postgresql-connection-default-and-make-use.patch ];
-  });
-  systemd.services.shiori.environment = {
-    SHIORI_PG_HOST = "/run/postgresql";
-    SHIORI_PG_PORT = "5432";
-    SHIORI_PG_USER = "shiori";
-    SHIORI_PG_NAME = "shiori";
-    SHIORI_DBMS = "postgresql";
+  services.shiori.environmentFile = config.clan.core.facts.services.shiori.secret.shiori-env.path;
+  services.shiori.databaseUrl = "postgres:///shiori?host=/run/postgresql";
+
+  clan.core.facts.services.shiori = {
+    secret."shiori-env" = { };
+    generator.path = [ pkgs.openssl ];
+    generator.script = ''
+      printf "SHIORI_HTTP_SECRET_KEY=%s\n" "$(openssl rand -hex 16)" > $secrets/shiori-env
+    '';
   };
-  systemd.services.shiori = {
-    serviceConfig = {
-      DynamicUser = lib.mkForce false;
-      User = "shiori";
-      Group = "shiori";
-      RestrictAddressFamilies = [ "AF_UNIX" ];
-      BindPaths = [ "/run/postgresql" ];
-    };
-  };
-  users.users.shiori = {
-    isSystemUser = true;
-    home = "/var/lib/shiori";
-    group = "shiori";
-  };
-  users.groups.shiori = { };
 
   services.postgresql.ensureDatabases = [ "shiori" ];
   services.postgresql.ensureUsers = [
