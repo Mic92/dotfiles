@@ -1,4 +1,4 @@
-{ pkgs, self, inputs, ... }:
+{ self, inputs, ... }:
 {
   networking.hostName = "evo";
   nixpkgs.hostPlatform = "aarch64-darwin";
@@ -14,6 +14,7 @@
     ../modules/firefox.nix
     ../modules/iterm2.nix
     ../modules/openssh.nix
+    ../modules/nix-index.nix
     ../modules/sudo.nix
   ];
 
