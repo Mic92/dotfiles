@@ -209,7 +209,7 @@ merge-after-ci() {
     if [[ $firstLine == $rest ]]; then
       rest=""
     fi
-    gh pr create --title "$firstLine" --body "$body" --base "$targetBranch" --head "$branch" --label merge-queue
+    gh pr create --title "$firstLine" --body "$rest" --base "$targetBranch" --head "$branch" --label merge-queue
   fi
 }
 passgen() {
