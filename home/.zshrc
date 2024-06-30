@@ -185,7 +185,7 @@ merge-after-ci() {
     return
   fi
   # detect treefmt
-  if [[ $(nix eval .#formatter --impure --apply '(val: val ? ${builtins.currentSystem}) && val.${builtins.currentSystem}.name == treefmt') == true ]] && ! nix fmt -- --fail-on-change; then
+  if [[ $(nix eval .#formatter --impure --apply '(val: val ? ${builtins.currentSystem} && val.${builtins.currentSystem}.name == "treefmt")') == true ]] && ! nix fmt -- --fail-on-change; then
     return
   fi
   branch=$(id -un)-ci
