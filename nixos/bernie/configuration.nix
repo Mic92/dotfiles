@@ -57,8 +57,8 @@
   programs.vim.defaultEditor = true;
 
   hardware = {
-    opengl.enable = true;
-    opengl.driSupport32Bit = true;
+    graphics.enable = true;
+    graphics.enable32Bit = true;
   };
   environment.systemPackages = with pkgs; [
     #(pkgs.callPackage (pkgs.fetchFromGitHub {
