@@ -66,7 +66,7 @@
     nix-ld-rs.inputs.nixpkgs.follows = "nixpkgs";
     nix-ld-rs.inputs.flake-utils.follows = "flake-utils";
 
-    srvos.url = "github:numtide/srvos/darwin-support";
+    srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
     clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
