@@ -71,13 +71,6 @@
           #inputs.spora.nixosModules.spora
 
           { programs.nix-index-database.comma.enable = true; }
-          #{
-          #  imports = [
-          #    ./turingmachine/modules/microvm.nix
-          #    # for declarative MicroVM management
-          #    self.inputs.microvm.nixosModules.host
-          #  ];
-          #}
           inputs.srvos.nixosModules.desktop
 
           inputs.lanzaboote.nixosModules.lanzaboote
