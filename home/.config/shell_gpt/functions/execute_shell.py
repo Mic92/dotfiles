@@ -25,7 +25,10 @@ class Function(OpenAISchema):
             return "Aborted."
 
         process = subprocess.Popen(
-            shell_command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT # noqa: S602
+            shell_command,
+            shell=True,  # noqa: S602
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
         )
         output, _ = process.communicate()
         exit_code = process.returncode

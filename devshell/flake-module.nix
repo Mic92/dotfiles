@@ -12,8 +12,26 @@
           # Used to find the project root
           projectRootFile = ".git/config";
 
+          settings.global.excludes = [
+            # generated files
+            "sops/*"
+            "terraform.tfstate"
+            "*.tfvars.sops.json"
+            "*nixos-vars.json"
+            "secrets.yaml"
+            "secrets.yml"
+            "machines/*/facts/*"
+            "*.pub"
+            "*.sieve"
+            "*.patch"
+            "home/.emacs.d/templates/*"
+            "home/.doom.d/snippets/*"
+            "secrets.enc.json"
+            "lazy-lock.json"
+          ];
+
           programs.hclfmt.enable = true;
-          programs.mypy.enable = true;
+          programs.yamlfmt.enable = true;
           programs.mypy.directories = {
             "tasks" = {
               directory = ".";
@@ -31,6 +49,8 @@
             };
           };
           programs.deadnix.enable = true;
+          programs.clang-format.enable = true;
+          programs.deno.enable = true;
           programs.nixfmt.enable = true;
           programs.nixfmt.package = pkgs.nixfmt-rfc-style;
           programs.shellcheck.enable = true;
@@ -41,6 +61,7 @@
           ];
 
           programs.shfmt.enable = true;
+          settings.formatter.shfmt.includes = [ "*.envrc" ];
 
           programs.ruff.format = true;
           programs.ruff.check = true;

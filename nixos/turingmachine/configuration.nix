@@ -45,9 +45,7 @@
     ../modules/users.nix
   ];
 
-  environment.systemPackages = with pkgs; [
-    sunshine
-  ];
+  environment.systemPackages = with pkgs; [ sunshine ];
 
   hardware.saleae-logic.enable = true;
 

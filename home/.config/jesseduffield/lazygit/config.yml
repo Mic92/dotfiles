@@ -1,6 +1,6 @@
 reporting: "off"
 update:
-    method: never
+  method: never
 gui:
   showFileTree: true
   nerdFontsVersion: 3

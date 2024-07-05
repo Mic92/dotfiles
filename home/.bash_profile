@@ -45,9 +45,8 @@ export MANWIDTH=80
 
 # path
 PATH=$HOME/bin:$HOME/.cabal/bin:$HOME/.gems/bin:$PATH
-export CDPATH=.:/home/git:/var/abs/local/yaourtbuild:/var/log
+export CDPATH=.:/home/git
 
 [ -n $BASH -a -r ~/.bashrc ] && . ~/.bashrc
 
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 if [ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]; then . $HOME/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer

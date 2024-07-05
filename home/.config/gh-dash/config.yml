@@ -1,8 +1,8 @@
 prSections:
-- title: Nixpkgs
-  filters: is:open -is:draft -author:@me repo:NixOS/nixpkgs
-- title: Nixpkgs (pings)
-  filters: is:open -is:draft involves:@me -author:@me repo:NixOS/nixpkgs
+  - title: Nixpkgs
+    filters: is:open -is:draft -author:@me repo:NixOS/nixpkgs
+  - title: Nixpkgs (pings)
+    filters: is:open -is:draft involves:@me -author:@me repo:NixOS/nixpkgs
 #- title: My Pull Requests
 #  filters: is:open author:@me
 #- title: Needs My Review
@@ -10,12 +10,12 @@ prSections:
 #- title: Involved
 #  filters: is:open involves:@me -author:@me
 issuesSections:
-- title: My Issues
-  filters: is:open author:@me
-- title: Assigned
-  filters: is:open assignee:@me
-- title: Involved
-  filters: is:open involves:@me -author:@me
+  - title: My Issues
+    filters: is:open author:@me
+  - title: Assigned
+    filters: is:open assignee:@me
+  - title: Involved
+    filters: is:open involves:@me -author:@me
 defaults:
   preview:
     open: true
@@ -48,6 +48,7 @@ keybindings:
     - key: n
       command: >
         tmux new-window -c {{.RepoPath}} 'gh pr diff --patch {{.PrNumber}} | delta | less -R && gh pr view --comments {{.PrNumber}} && nixpkgs-review pr {{.PrNumber}} || cat'
+
 repoPaths:
   NixOS/nixpkgs: ~/git/nixpkgs
 pager:
@@ -58,16 +59,15 @@ theme:
       showSeparator: true
   colors:
     text:
-      primary: "#657b83"  # foreground
-      secondary: "#586e75"  # bright6
-      inverted: "#fdf6e3"  # background
-      faint: "#93a1a1"  # bright2
-      warning: "#dc322f"  # regular1
-      success: "#859900"  # regular2
+      primary: "#657b83" # foreground
+      secondary: "#586e75" # bright6
+      inverted: "#fdf6e3" # background
+      faint: "#93a1a1" # bright2
+      warning: "#dc322f" # regular1
+      success: "#859900" # regular2
     background:
-      selected: "#eee8d5"  # regular0
+      selected: "#eee8d5" # regular0
     border:
-      primary: "#073642"  # regular7
-      secondary: "#002b36"  # bright7
-      faint: "#839496"  # bright3
-
+      primary: "#073642" # regular7
+      secondary: "#002b36" # bright7
+      faint: "#839496" # bright3
