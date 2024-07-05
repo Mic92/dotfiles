@@ -18,16 +18,17 @@
             "terraform.tfstate"
             "*.tfvars.sops.json"
             "*nixos-vars.json"
-            "secrets.yaml"
-            "secrets.yml"
+            "*/secrets.yaml"
+            "*/secrets.yml"
             "machines/*/facts/*"
             "*.pub"
             "*.sieve"
             "*.patch"
+            "*.zone"
             "home/.emacs.d/templates/*"
             "home/.doom.d/snippets/*"
-            "secrets.enc.json"
-            "lazy-lock.json"
+            "*/secrets.enc.json"
+            "*/lazy-lock.json"
           ];
 
           programs.hclfmt.enable = true;
@@ -49,6 +50,7 @@
             };
           };
           programs.deadnix.enable = true;
+          programs.stylua.enable = true;
           programs.clang-format.enable = true;
           programs.deno.enable = true;
           programs.nixfmt.enable = true;
@@ -61,7 +63,11 @@
           ];
 
           programs.shfmt.enable = true;
-          settings.formatter.shfmt.includes = [ "*.envrc" ];
+          settings.formatter.shfmt.includes = [
+            "*.envrc"
+            "*.bashrc"
+            "*.bashrc.load"
+          ];
 
           programs.ruff.format = true;
           programs.ruff.check = true;
