@@ -45,6 +45,12 @@
     ../modules/users.nix
   ];
 
+  environment.systemPackages = with pkgs; [
+    sunshine
+  ];
+
+  hardware.saleae-logic.enable = true;
+
   age.secrets.secret1.file = ../../secrets/secret1.age;
 
   services.ollama.enable = true;
