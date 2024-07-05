@@ -12,13 +12,14 @@
     config = {
       dbtype = "pgsql";
       dbname = "nextcloud";
-      dbtableprefix = "oc_";
       dbuser = "nextcloud";
       dbhost = "/run/postgresql";
       adminuser = "nextcloudadmin";
       adminpassFile = config.sops.secrets.nextcloud-admin-password.path;
     };
+
     settings.trusted_domains = [ "pim.devkid.net" ];
+    settings.dbtableprefix = "oc_";
 
     poolSettings = {
       "pm" = "ondemand";
