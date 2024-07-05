@@ -1,24 +1,19 @@
----
 # The editor to use with 'cheat -e <sheet>'. Defaults to $EDITOR or $VISUAL.
 # editor: vim
 
 # Should 'cheat' always colorize output?
 colorize: true
-
 # Which 'chroma' colorscheme should be applied to the output?
 # Options are available here:
 #   https://github.com/alecthomas/chroma/tree/master/styles
 style: solarized-light
-
 # Which 'chroma' "formatter" should be applied?
 # One of: "terminal", "terminal256", "terminal16m"
 formatter: terminal16m
-
 # Through which pager should output be piped?
 # 'less -FRX' is recommended on Unix systems
 # 'more' is recommended on Windows
 pager: less -FRX
-
 # Cheatpaths are paths at which cheatsheets are available on your local
 # filesystem.
 #
@@ -61,22 +56,21 @@ cheatpaths:
   #   'readonly': shall user-created ('cheat -e') cheatsheets be saved here?
   - name: community
     path: ~/git/cheatsheets
-    tags: [ community ]
+    tags: [community]
     readonly: true
-
   # If you have personalized cheatsheets, list them last. They will take
   # precedence over the more global cheatsheets.
   - name: personal
     path: ~/git/x86_64-linux-cheatsheats/pages
-    tags: [ personal ]
+    tags: [personal]
     readonly: false
 
-  # While it requires no configuration here, it's also worth noting that
-  # cheat will automatically append directories named '.cheat' within the
-  # current working directory to the 'cheatpath'. This can be very useful if
-  # you'd like to closely associate cheatsheets with, for example, a directory
-  # containing source code.
-  #
-  # Such "directory-scoped" cheatsheets will be treated as the most "local"
-  # cheatsheets, and will override less "local" cheatsheets. Similarly,
-  # directory-scoped cheatsheets will always be editable ('readonly: false').
+# While it requires no configuration here, it's also worth noting that
+# cheat will automatically append directories named '.cheat' within the
+# current working directory to the 'cheatpath'. This can be very useful if
+# you'd like to closely associate cheatsheets with, for example, a directory
+# containing source code.
+#
+# Such "directory-scoped" cheatsheets will be treated as the most "local"
+# cheatsheets, and will override less "local" cheatsheets. Similarly,
+# directory-scoped cheatsheets will always be editable ('readonly: false').

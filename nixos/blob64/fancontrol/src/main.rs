@@ -1,15 +1,14 @@
 use std::cmp::{max, min};
-use std::path::PathBuf;
 use std::fs::{read_dir, read_to_string, write};
+use std::path::PathBuf;
 use std::thread::sleep;
 use std::time::Duration;
 
-const MINTEMP : i32 = 50000;
-const MAXTEMP : i32 = 80000;
-const MINSTART : i32 = 60;
-const MINSTOP : i32 = 29;
-const MAXPWM : i32 = 255;
-
+const MINTEMP: i32 = 50000;
+const MAXTEMP: i32 = 80000;
+const MINSTART: i32 = 60;
+const MINSTOP: i32 = 29;
+const MAXPWM: i32 = 255;
 
 fn adjust(fan: &PathBuf, sensor: &PathBuf) {
     let temp: i32 = read_to_string(sensor).unwrap().trim().parse().unwrap();
@@ -19,7 +18,14 @@ fn adjust(fan: &PathBuf, sensor: &PathBuf) {
     pwm = (temp - MINTEMP) * 255 / (MAXTEMP - MINTEMP);
     pwm = max(pwm, 0);
     if pwm > 0 {
-        pwm = max(pwm, if prev_pwm < MINSTOP { MINSTART } else { MINSTOP });
+        pwm = max(
+            pwm,
+            if prev_pwm < MINSTOP {
+                MINSTART
+            } else {
+                MINSTOP
+            },
+        );
         pwm = min(pwm, MAXPWM);
     }
     //println!("sensor: {}, pwm: {}", temp, pwm);
@@ -28,7 +34,12 @@ fn adjust(fan: &PathBuf, sensor: &PathBuf) {
 
 fn main() {
     let mut fans = Vec::new();
-    for hwmon_dir in ["/sys/devices/platform/fan1/hwmon", "/sys/devices/platform/fan2/hwmon"].iter() {
+    for hwmon_dir in [
+        "/sys/devices/platform/fan1/hwmon",
+        "/sys/devices/platform/fan2/hwmon",
+    ]
+    .iter()
+    {
         for dir in read_dir(hwmon_dir).unwrap() {
             let mut p = dir.unwrap().path();
             p.push("pwm1");

@@ -32,8 +32,7 @@ return {
 		opts.config = opts.config or {}
 		opts.config.clangd = opts.config.clangd or {}
 		opts.config.clangd.capabilities = {
-			offsetEncoding = "utf-8"
+			offsetEncoding = "utf-8",
 		}
-
 	end,
 }
