@@ -38,16 +38,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1720176380,
-        "narHash": "sha256-W6c3Nn7fDf0F6tStaYKSwsTXMCL95hyxrpe+c7GnDgE=",
-        "owner": "nix-community",
+        "lastModified": 1720019526,
+        "narHash": "sha256-tNK4ZzNTqqUkY08ordsPLT4SOucmmBNqhZ753aOQIi8=",
+        "owner": "MagicRB",
         "repo": "buildbot-nix",
-        "rev": "81c2357fb218deea8eceafe3ad28cc2198442c65",
+        "rev": "e864c8acb496fef7d11ede6277a1106c4ac7b7de",
         "type": "github"
       },
       "original": {
-        "owner": "nix-community",
-        "ref": "restart-builds",
+        "owner": "MagicRB",
+        "ref": "defer-hook-creation",
         "repo": "buildbot-nix",
         "type": "github"
       }
