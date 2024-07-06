@@ -17,10 +17,6 @@
       oauthId = "Iv23ctDGhrm116Be1LhO";
       oauthSecretFile = config.sops.secrets.buildbot-github-oauth-secret.path;
 
-      #authType.legacy = {
-      #  tokenFile = config.sops.secrets.buildbot-github-token.path;
-      #};
-
       authType.app = {
         id = 915265;
         secretKeyFile = config.sops.secrets.buildbot-github-app-secret-key.path;
