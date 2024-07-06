@@ -46,6 +46,8 @@ in
       # for Cargo.lock
       pkgs.rustc
       pkgs.cargo
+      # for go.mod
+      pkgs.go
     ];
     serviceConfig = {
       Type = "oneshot";
