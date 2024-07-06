@@ -1,0 +1,23 @@
+name: "Update nvim plugins"
+on:
+  repository_dispatch:
+  workflow_dispatch:
+  schedule:
+    - cron: '51 2 * * *'
+jobs:
+  update-nvim-plugins:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: cachix/install-nix-action@v27
+      - name: Update vim plugins
+        run: |
+          nix run .#nvim -- --headless "+Lazy! update" +qa
+          cp $HOME/.config/nvim-mic92/lazy-lock.json home/.config/nvim/lazy-lock.json
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          title: Update vim plugins
+          labels: merge-queue
