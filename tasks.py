@@ -16,118 +16,6 @@ ROOT = Path(__file__).parent.resolve()
 os.chdir(ROOT)
 
 
-def deploy_nixos(hosts: list[DeployHost]) -> None:
-    """Deploy to all hosts in parallel"""
-    g = DeployGroup(hosts)
-
-    def deploy(h: DeployHost) -> None:
-        target = f"{h.user or 'root'}@{h.host}"
-        res = h.run_local(
-            [
-                "nix",
-                "flake",
-                "archive",
-                "--to",
-                f"ssh://{target}",
-                "--json",
-                "--option",
-                "builders-use-substitutes",
-                "true",
-            ],
-            stdout=subprocess.PIPE,
-        )
-        data = json.loads(res.stdout)
-        path = data["path"]
-
-        flake_attr = h.meta.get("flake_attr", "")
-        if flake_attr:
-            flake_attr = "#" + flake_attr
-        target_host = h.meta.get("target_host")
-        if target_host:
-            target_user = h.meta.get("target_user")
-            if target_user:
-                target_host = f"{target_user}@{target_host}"
-        extra_args = h.meta.get("extra_args", [])
-        cmd = [
-            "nixos-rebuild",
-            "switch",
-            *extra_args,
-            "--fast",
-            "--use-substitutes",
-            "--option",
-            "keep-going",
-            "true",
-            "--option",
-            "accept-flake-config",
-            "true",
-            "--build-host",
-            "",
-            "--flake",
-            f"{path}{flake_attr}",
-        ]
-        if target_host:
-            cmd.extend(["--target-host", target_host])
-        ret = h.run(cmd, check=False)
-        # re-retry switch if the first time fails
-        if ret.returncode != 0:
-            ret = h.run(cmd)
-
-    g.run_function(deploy)
-
-
-@task
-def update_sops_files(c: Any) -> None:
-    """Update all sops yaml and json files according to .sops.yaml rules"""
-    c.run(
-        """
-        cd nixos && find . -type f \\( -iname '*.enc.json' -o -iname '*.yaml' \\) -print0 | \
-        xargs -0 -n1 sops updatekeys --yes
-""",
-    )
-
-
-@task
-def generate_password(c: Any, user: str = "root") -> None:
-    """Generate password hashes for users i.e. for root in ./hosts/$HOSTNAME.yml"""
-    passw = subprocess.run(
-        [
-            "nix",
-            "run",
-            "--inputs-from",
-            ".#",
-            "nixpkgs#xkcdpass",
-            "--",
-            "-d-",
-            "-n3",
-            "-C",
-            "capitalize",
-        ],
-        text=True,
-        check=True,
-        stdout=subprocess.PIPE,
-    ).stdout.strip()
-    password_hash = subprocess.run(
-        [
-            "nix",
-            "run",
-            "--inputs-from",
-            ".#",
-            "nixpkgs#mkpasswd",
-            "--",
-            "-m",
-            "sha-512",
-            "-s",
-        ],
-        text=True,
-        check=True,
-        stdout=subprocess.PIPE,
-        input=passw,
-    ).stdout.strip()
-    print("# Add the following secrets")
-    print(f"{user}-password: {passw}")
-    print(f"{user}-password-hash: {password_hash}")
-
-
 @task
 def decrypt_eve(_c: Any) -> None:
     """Decrypt secrets"""
@@ -155,49 +43,10 @@ def reboot_and_decrypt_eve(c: Any) -> None:
     decrypt_eve(c)
 
 
-def filter_hosts(host_spec: str, hosts: dict[str, DeployHost]) -> list[DeployHost]:
-    host_list = []
-    if host_spec == "":
-        return list(hosts.values())
-    for h in host_spec.split(","):
-        if h in hosts:
-            host_list.append(hosts[h])
-        else:
-            msg = f"Unknown host {h}, known hosts: {' '.join(hosts.keys())}"
-            raise ValueError(msg)
-    return host_list
-
-
 @task
 def deploy(c: Any, _hosts: str = "") -> None:
-    """Deploy to eve, eva and localhost"""
-    eve = DeployHost("eve.i", user="root")
-    hosts = {
-        "eve": eve,
-        "eva": DeployHost(
-            "eve.i",
-            user="root",
-            forward_agent=True,
-            command_prefix="eva.r",
-            meta=dict(target_host="eva.i", flake_attr="eva"),
-        ),
-        "localhost": DeployHost(
-            "localhost",
-            user="root",
-            forward_agent=True,
-        ),
-        "blob64": DeployHost(
-            "eve.i",
-            user="root",
-            forward_agent=True,
-            command_prefix="blob64.r",
-            meta=dict(target_host="blob64.r", flake_attr="blob64"),
-        ),
-    }
-    host_list = filter_hosts(_hosts, hosts)
-    deploy_nixos(host_list)
-    if _hosts == "":
-        eve.run("systemctl restart buildbot-master")
+    """Deploy to eve, eva, blob64 and localhost"""
+    c.run("clan machines update")
 
 
 def try_local(host: str) -> str:
@@ -212,26 +61,13 @@ def try_local(host: str) -> str:
 @task
 def deploy_bernie(c: Any) -> None:
     """Deploy to bernie"""
-    deploy_nixos([DeployHost(try_local("bernie"), user="root")])
+    c.run("clan machines update bernie")
 
 
 @task
 def deploy_matchbox(c: Any) -> None:
     """Deploy to matchbox"""
-    deploy_nixos(
-        [
-            DeployHost(
-                "localhost",
-                command_prefix="matchbox.r",
-                meta=dict(
-                    target_user="root",
-                    target_host=try_local("matchbox"),
-                    flake_attr="matchbox",
-                ),
-                user="joerg",
-            ),
-        ],
-    )
+    c.run("clan machines update matchbox")
 
 
 @task
