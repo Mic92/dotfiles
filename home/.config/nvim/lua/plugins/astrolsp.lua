@@ -23,6 +23,7 @@ return {
 			"yamlls",
 			"denols",
 			"ocamllsp",
+			"phpactor", -- mediawiki
 			-- add more servers as needed...
 		})
 		opts.formatting = opts.formatting or {}
