@@ -38,11 +38,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1720183724,
-        "narHash": "sha256-4+WXQzgpsWSDBelP4QREhEKxIlmRm1gfSUwzEq/Pgec=",
+        "lastModified": 1720248892,
+        "narHash": "sha256-r6HiSdc2IhKfKoSixH5fBMx8hWO/eoSUJJM71aeDbkE=",
         "owner": "nix-community",
         "repo": "buildbot-nix",
-        "rev": "bb9c1103557e8fef35243667022d23452829e752",
+        "rev": "d1d3746aa7111f0f8bb2e48d5da9995356170249",
         "type": "github"
       },
       "original": {
@@ -74,11 +74,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1720172904,
-        "narHash": "sha256-TjJPIUYyoXZGNuBi0nooyr3nm8yyKeZQy6PLjXPFTSE=",
-        "rev": "fb38516a867c1aa62eb9cc14aaf7903b13e1ae83",
+        "lastModified": 1720281687,
+        "narHash": "sha256-jlVDciiDu7QPKs3eq5cLWsBqWcVcEFBKcrZ/VYl3YEo=",
+        "rev": "770a2c3e1e4a6f3fc5aed3528d72074c778eca31",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/fb38516a867c1aa62eb9cc14aaf7903b13e1ae83.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/770a2c3e1e4a6f3fc5aed3528d72074c778eca31.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -274,11 +274,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1720188602,
-        "narHash": "sha256-lC3byBmhVZFzWl/dCic8+cKUEEAXAswWOYjq4paFmbo=",
+        "lastModified": 1720289319,
+        "narHash": "sha256-E3CjSsXNDWYqoNjrKQLPdEZDLR+mVI9HMa+jY//FjBY=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "e3582e5151498bc4d757e8361431ace8529e7bb7",
+        "rev": "10486e6b311b3c5ae1c3477fee058704cea7cb4a",
         "type": "github"
       },
       "original": {
@@ -488,11 +488,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1720148424,
-        "narHash": "sha256-T+0EmDTTaF9DLkQYq6ccKYXxWIa9jRvwf8dYOsvx/ZY=",
+        "lastModified": 1720260384,
+        "narHash": "sha256-bmtlq7U9fN4QO4iZmGY+Ykq/8MW9/mYlTDxSEhGlts0=",
         "owner": "Mic92",
         "repo": "nixos-wiki-infra",
-        "rev": "f96fce77ce9158cbaea8b0c506920822ca949fe6",
+        "rev": "f64584984f5506dfeb6ddf5c1f8f8a80acd9fbfc",
         "type": "github"
       },
       "original": {
