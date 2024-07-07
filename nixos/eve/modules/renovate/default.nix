@@ -1,9 +1,4 @@
-{
-  config,
-  pkgs,
-  inputs,
-  ...
-}:
+{ config, pkgs, ... }:
 let
   apptoken = pkgs.writeShellApplication {
     name = "apptoken";
@@ -70,7 +65,7 @@ in
       set -exuo pipefail
       export $(cat /var/lib/renovate/env)
       rm /var/lib/renovate/env
-      ${inputs.nur-packages.packages.${pkgs.hostPlatform.system}.renovate}/bin/renovate
+      ${pkgs.lib.getExe pkgs.renovate}
     '';
   };
   users.users.renovate = {
