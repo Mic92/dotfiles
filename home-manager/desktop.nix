@@ -31,7 +31,7 @@
       arandr
       signal-desktop
       inputs.nur-packages.packages.${pkgs.hostPlatform.system}.pandoc-bin
-      gnome.adwaita-icon-theme
+      adwaita-icon-theme
       hicolor-icon-theme
       graphicsmagick
       aspell
