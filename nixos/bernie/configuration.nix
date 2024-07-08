@@ -6,7 +6,8 @@
   imports = [
     ./hardware-configuration.nix
 
-    ../modules/gnome.nix
+    #../modules/gnome.nix
+    ../modules/kde
     ../modules/hass-agent.nix
     ../modules/ip-update.nix
     ../modules/packages.nix
