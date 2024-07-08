@@ -19,6 +19,7 @@
     pavucontrol
     bottles
     libnotify
+    kwalletcli
 
     wl-clipboard # wl-copy / wl-paste
     (pkgs.callPackage ./choosers.nix { })
