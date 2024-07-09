@@ -23,12 +23,6 @@
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
-    nixos-generators = {
-      url = "github:nix-community/nixos-generators";
-      inputs.nixlib.follows = "nixpkgs";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
     nixpkgs.url = "github:Mic92/nixpkgs/main";
     # for development
     #nixpkgs.url = "/home/joerg/git/nixpkgs";
@@ -78,7 +72,6 @@
     clan-core.inputs.treefmt-nix.follows = "treefmt-nix";
     clan-core.inputs.disko.follows = "disko";
     clan-core.inputs.flake-parts.follows = "flake-parts";
-    clan-core.inputs.nixos-generators.follows = "nixos-generators";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
