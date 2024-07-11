@@ -125,6 +125,30 @@
         "type": "github"
       }
     },
+    "data-mesher": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1720694512,
+        "narHash": "sha256-tbXFYUB6EYhJI3YJ7k4TmiUY8redS5mg64deGnNnDPU=",
+        "rev": "0e577a679d26e7631efc60ef4c7adcd8f67ff257",
+        "type": "tarball",
+        "url": "https://git.clan.lol/api/v1/repos/clan/data-mesher/archive/0e577a679d26e7631efc60ef4c7adcd8f67ff257.tar.gz"
+      },
+      "original": {
+        "type": "tarball",
+        "url": "https://git.clan.lol/clan/data-mesher/archive/main.tar.gz"
+      }
+    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -424,29 +448,6 @@
         "type": "github"
       }
     },
-    "nixos-generators": {
-      "inputs": {
-        "nixlib": [
-          "nixpkgs"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1720055043,
-        "narHash": "sha256-SKizewU4UeYrkZWPUjur8EoxscGoNb0pGcrNL4YzAIg=",
-        "owner": "nix-community",
-        "repo": "nixos-generators",
-        "rev": "168b220231a70e47cc1f0919048fa5914415fb18",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "nixos-generators",
-        "type": "github"
-      }
-    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1720515935,
@@ -577,6 +578,7 @@
         "agenix": "agenix",
         "buildbot-nix": "buildbot-nix",
         "clan-core": "clan-core",
+        "data-mesher": "data-mesher",
         "disko": "disko",
         "fast-flake-update": "fast-flake-update",
         "flake-parts": "flake-parts",
@@ -589,7 +591,6 @@
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nix-ld-rs": "nix-ld-rs",
-        "nixos-generators": "nixos-generators",
         "nixos-hardware": "nixos-hardware",
         "nixos-wiki": "nixos-wiki",
         "nixpkgs": "nixpkgs",
@@ -705,11 +706,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1720507012,
-        "narHash": "sha256-QIeZ43t9IVB4dLsFaWh2f4C7JSRfK7p+Y1U9dULsLXU=",
+        "lastModified": 1720645794,
+        "narHash": "sha256-vAeYp+WH7i/DlBM5xNt9QeWiOiqzzf5abO8DYGkbUxg=",
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "rev": "8b63fe8cf7892c59b3df27cbcab4d5644035d72f",
+        "rev": "750dfb555b5abdab4d3266b3f9a05dec6d205c04",
         "type": "github"
       },
       "original": {
@@ -725,16 +726,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1714382886,
-        "narHash": "sha256-+gooxbbYcP+MORKQ7W/C2ATvlonW+dyHgCUPnu5dfco=",
-        "owner": "brianmcgee",
+        "lastModified": 1720645794,
+        "narHash": "sha256-vAeYp+WH7i/DlBM5xNt9QeWiOiqzzf5abO8DYGkbUxg=",
+        "owner": "numtide",
         "repo": "treefmt-nix",
-        "rev": "535e6904c34964ce56d8c092835c11fe6341acc8",
+        "rev": "750dfb555b5abdab4d3266b3f9a05dec6d205c04",
         "type": "github"
       },
       "original": {
-        "owner": "brianmcgee",
-        "ref": "feat/pipelines",
+        "owner": "numtide",
         "repo": "treefmt-nix",
         "type": "github"
       }

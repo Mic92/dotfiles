@@ -16,6 +16,11 @@
     agenix.inputs.nixpkgs.follows = "nixpkgs";
     agenix.inputs.home-manager.follows = "home-manager";
 
+    data-mesher.url = "https://git.clan.lol/clan/data-mesher/archive/main.tar.gz";
+    data-mesher.inputs.nixpkgs.follows = "nixpkgs";
+    data-mesher.inputs.flake-parts.follows = "flake-parts";
+    data-mesher.inputs.treefmt-nix.follows = "treefmt-nix";
+
     hercules-ci-effects.url = "github:hercules-ci/hercules-ci-effects";
     hercules-ci-effects.inputs.nixpkgs.follows = "nixpkgs";
     hercules-ci-effects.inputs.flake-parts.follows = "flake-parts";
@@ -76,7 +81,7 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
-    treefmt-nix.url = "github:brianmcgee/treefmt-nix/feat/pipelines";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     lanzaboote.url = "github:nix-community/lanzaboote";
