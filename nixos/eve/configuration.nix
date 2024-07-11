@@ -62,6 +62,7 @@
 
     ../modules/borgbackup.nix
     ../modules/builder.nix
+    ../modules/data-mesher.nix
     ../modules/iperf.nix
     ../modules/mosh.nix
     ../modules/nix-ld.nix

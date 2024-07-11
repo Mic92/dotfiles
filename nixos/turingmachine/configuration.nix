@@ -42,6 +42,7 @@
     ../modules/suspend-on-low-power.nix
     ../modules/touchpad-hack
     ../modules/tracing.nix
+    ../modules/data-mesher.nix
     ../modules/users.nix
   ];
 
