@@ -47,7 +47,8 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    buildbot-nix.url = "github:nix-community/buildbot-nix/retries";
+    buildbot-nix.url = "github:nix-community/buildbot-nix/max-silent-time";
+
     #buildbot-nix.url = "github:MagicRB/buildbot-nix/dont-pass-token-into-githubavatar-service";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
