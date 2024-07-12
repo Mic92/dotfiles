@@ -3,6 +3,7 @@
   services.buildbot-nix.master = {
     enable = true;
     domain = "buildbot.thalheim.io";
+    buildRetries = 0;
     workersFile = config.sops.secrets.buildbot-nix-workers.path;
     buildSystems = [
       "i686-linux"
