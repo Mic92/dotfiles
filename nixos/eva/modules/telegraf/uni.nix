@@ -22,7 +22,8 @@ let
     "ruby.r"
     "ryan.r"
     "tegan.r"
-    "vicki.r"
+    # TODO: add tower
+    #"vicki.r"
     "vislor.r"
     "wilfred.r"
     "xavier.r"
