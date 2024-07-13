@@ -38,11 +38,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1720879693,
-        "narHash": "sha256-RLeT8lIdrQJ9VCNAKL0IhB3ok1kbEDhef1oweCab+Hw=",
+        "lastModified": 1720880501,
+        "narHash": "sha256-7jS5PJSHE/RcogeqcMwXmqpo0IQaALqEDyA7mKzY2cs=",
         "owner": "MagicRB",
         "repo": "buildbot-nix",
-        "rev": "6ecdb9203e8caee7c6d816d7f7296e3d172de293",
+        "rev": "b599a033e5964db4f71917e094ace760b5bcaf77",
         "type": "github"
       },
       "original": {
