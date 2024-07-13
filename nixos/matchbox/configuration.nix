@@ -17,8 +17,8 @@
   ];
   clan.core.state.pictures.folders = [ "/mnt/hdd" ];
 
-  clan.networking.targetHost = "root@matchbox.r";
-  clan.networking.buildHost = "root@eve.i";
+  clan.core.networking.targetHost = "root@matchbox.r";
+  clan.core.networking.buildHost = "root@eve.i";
 
   documentation.enable = false;
   clan.deployment.requireExplicitUpdate = true;

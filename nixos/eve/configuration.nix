@@ -4,7 +4,7 @@
 { lib, ... }:
 {
   networking.hostName = "eve";
-  clan.networking.targetHost = "root@eve.i";
+  clan.core.networking.targetHost = "root@eve.i";
   networking.hostId = "8425e349";
 
   time.timeZone = "UTC";

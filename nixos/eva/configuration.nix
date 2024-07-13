@@ -26,8 +26,8 @@
   ];
 
   boot.initrd.systemd.enable = false;
-  clan.networking.targetHost = "root@eva.i";
-  clan.networking.buildHost = "root@eve.i";
+  clan.core.networking.targetHost = "root@eva.i";
+  clan.core.networking.buildHost = "root@eve.i";
 
   systemd.network = {
     enable = true;

@@ -13,7 +13,7 @@
 
   networking.hostName = "blob64";
 
-  clan.networking.buildHost = "root@eve.i";
+  clan.core.networking.buildHost = "root@eve.i";
 
   system.stateVersion = "23.11";
 

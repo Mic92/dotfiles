@@ -8,7 +8,7 @@ in
     enable = true;
     tld = "d";
     initNetwork = config.clan.core.machineName == "eve";
-    interface = config.clan.networking.zerotier.name;
+    interface = config.clan.core.networking.zerotier.name;
     bootstrapPeers = [ "http://[${readFact "eve" "zerotier-ip"}]:7331" ];
     openFirewall = true;
   };

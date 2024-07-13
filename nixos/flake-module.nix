@@ -6,7 +6,7 @@
       srvos.flake = self;
       documentation.info.enable = false;
       services.envfs.enable = true;
-      clan.networking.targetHost = lib.mkDefault "root@${config.networking.hostName}.r";
+      clan.core.networking.targetHost = lib.mkDefault "root@${config.networking.hostName}.r";
 
       imports = [
         ./modules/nix-path.nix

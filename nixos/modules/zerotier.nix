@@ -1,6 +1,6 @@
 { lib, config, ... }:
 {
-  clan.networking.zerotier.networkId = lib.mkDefault (
+  clan.core.networking.zerotier.networkId = lib.mkDefault (
     builtins.readFile (config.clan.core.clanDir + "/machines/eve/facts/zerotier-network-id")
   );
   services.zerotierone.joinNetworks = [
@@ -15,7 +15,7 @@
     ];
   };
 
-  clan.networking.zerotier.moon.orbitMoons = [
+  clan.core.networking.zerotier.moon.orbitMoons = [
     "267efd4a15"
     "a03b47494d"
   ];
