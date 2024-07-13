@@ -141,12 +141,12 @@ def wait_for_reboot(h: DeployHost) -> None:
     print(f"Wait for {h.host} to shutdown", end="")
     sys.stdout.flush()
     wait_for_host(h, shutdown=True)
-    print("")
+    print()
 
     print(f"Wait for {h.host} to start", end="")
     sys.stdout.flush()
     wait_for_host(h, shutdown=True)
-    print("")
+    print()
 
 
 @task

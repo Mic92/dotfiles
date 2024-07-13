@@ -71,6 +71,8 @@
           "zsh/*"
           "home/.config/qtile/*"
           "home/.emacs/*"
+          # bug in ruff
+          "home/.config/shell_gpt/functions/execute_shell.py"
         ];
         settings.formatter.ruff-format.excludes = [
           "gdb/*"
