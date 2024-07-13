@@ -44,6 +44,9 @@ in
       # for go.mod
       pkgs.go
     ];
+    # We don't want to restart the service on updates
+    # as the timer will run the new version eventually anyway.
+    restartIfChanged = true;
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
