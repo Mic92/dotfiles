@@ -60,6 +60,7 @@
       git
 
       self.packages.${pkgs.stdenv.hostPlatform.system}.mergify-gen-config
+      self.packages.${pkgs.stdenv.hostPlatform.system}.merge-when-green
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       strace
