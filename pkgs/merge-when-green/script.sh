@@ -9,6 +9,11 @@ fi
 if [[ -n ${commands[treefmt]} ]] && ! treefmt --fail-on-change; then
   return
 fi
+
+targetBranch=$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)
+
+git pull --rebase origin "$targetBranch"
+
 # detect treefmt embedded in a flake
 # shellcheck disable=SC2016
 readonly has_treefmt='(val: val ? ${builtins.currentSystem} && val.${builtins.currentSystem}.name == "treefmt")'
@@ -23,7 +28,6 @@ if [[ $is_open == "OPEN" ]]; then
   gh pr checks "$targetBranch"
 fi
 git push --force origin "HEAD:$branch"
-targetBranch=$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)
 remoteName=origin
 if [[ $(git remote) =~ upstream ]]; then
   remoteName=upstream
