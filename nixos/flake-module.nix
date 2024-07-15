@@ -45,6 +45,19 @@
     };
     pkgsForSystem = system: inputs.nixpkgs.legacyPackages.${system};
 
+    #inventory.services = {
+    #  borgbackup.blob64 = {
+    #    roles.server.machines = [ "blob64" ];
+    #    roles.client.tags = [ "backup" ];
+    #  };
+    #};
+    #inventory.machines = {
+    #  bernie.tags = [ "backup" ];
+    #  turingmachine.tags = [ "backup" ];
+    #  eve.tags = [ "backup" ];
+    #  eva.tags = [ "backup" ];
+    #};
+
     machines = {
       bernie = {
         nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
