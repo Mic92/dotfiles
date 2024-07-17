@@ -20,7 +20,6 @@
     ./modules/localbackup.nix
     ./modules/sunshine.nix
 
-    ../modules/borgbackup.nix
     ../modules/i18n.nix
     ../modules/ip-update.nix
     ../modules/kde

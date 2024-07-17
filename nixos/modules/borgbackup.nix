@@ -12,7 +12,7 @@
     "/root"
   ];
 
-  services.borgbackup.jobs.${config.networking.hostName} = {
+  services.borgbackup.jobs = lib.mapAttrs (_name: _job: {
     preHook = lib.optionalString config.networking.networkmanager.enable ''
       # wait until network is available and not metered
       while ! ${pkgs.networkmanager}/bin/nm-online --quiet || ${pkgs.networkmanager}/bin/nmcli --terse --fields GENERAL.METERED dev show 2>/dev/null | grep --quiet "yes"; do
@@ -52,7 +52,7 @@
       "/home/joerg/Videos"
       "/home/joerg/mnt"
     ];
-  };
+  }) config.clan.borgbackup.destinations;
 
   systemd.services."borgbackup-job-${config.networking.hostName}".serviceConfig.ReadWritePaths = [
     "/var/log/telegraf"
