@@ -9,7 +9,6 @@
     ./modules/rsnapshot.nix
     ./modules/photoprism.nix
 
-    ../modules/borgbackup.nix
     ../modules/users.nix
     ../modules/mosh.nix
     ../modules/sshd/tor.nix
