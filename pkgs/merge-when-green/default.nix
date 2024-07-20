@@ -1,11 +1,12 @@
-{ stdenv
-, openssh
-, gitMinimal
-, nixVersions
-, gh
-, coreutils
-, lib
-, makeWrapper
+{
+  stdenv,
+  openssh,
+  gitMinimal,
+  nixVersions,
+  gh,
+  coreutils,
+  lib,
+  makeWrapper,
 }:
 let
   runtimeDeps = [
