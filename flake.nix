@@ -47,7 +47,8 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    buildbot-nix.url = "github:nix-community/buildbot-nix/hercules";
+    #buildbot-nix.url = "github:nix-community/buildbot-nix/hercules";
+    buildbot-nix.url = "github:MagicRB/buildbot-nix/pydantic-convert";
     #buildbot-nix.url = "github:MagicRB/buildbot-nix/per-installation-tokens-in-github";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
