@@ -43,9 +43,6 @@
 
   services.thermald.enable = true;
 
-  # framework
-  boot.kernelModules = [ "kvm-intel" ];
-
   # for zfs
   networking.hostId = "8425e349";
 
