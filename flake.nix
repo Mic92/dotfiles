@@ -56,6 +56,10 @@
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
 
+    # https://github.com/numtide/nixos-facter-modules/tree/feat/simplify-usage
+    nixos-facter-modules.url = "github:numtide/nixos-facter-modules/feat/simplify-usage";
+    nixos-facter-modules.inputs.nixpkgs.follows = "nixpkgs";
+
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -88,8 +92,7 @@
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    #lanzaboote.url = "github:nix-community/lanzaboote";
-    lanzaboote.url = "git+file:///home/joerg/git/nixpkgs/lanzaboote";
+    lanzaboote.url = "github:nix-community/lanzaboote";
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
     lanzaboote.inputs.flake-parts.follows = "flake-parts";
     lanzaboote.inputs.flake-compat.follows = "";

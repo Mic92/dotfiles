@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   modulesPath,
@@ -45,11 +44,6 @@
   services.thermald.enable = true;
 
   # framework
-  boot.initrd.availableKernelModules = [
-    "xhci_pci"
-    "nvme"
-    "thunderbolt"
-  ];
   boot.kernelModules = [ "kvm-intel" ];
 
   # for zfs
@@ -66,7 +60,7 @@
   # for pactl
   environment.systemPackages = [ pkgs.pulseaudio ];
 
-  hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+  #hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
 
   powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 }
