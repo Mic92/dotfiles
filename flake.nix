@@ -28,6 +28,9 @@
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
+    #nix.url = "github:Mic92/nix-1/less-alloc";
+    nix.url = "github:NixOS/nix";
+
     nixpkgs.url = "github:Mic92/nixpkgs/main";
     # for development
     #nixpkgs.url = "/home/joerg/git/nixpkgs";
@@ -47,9 +50,8 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    #buildbot-nix.url = "github:nix-community/buildbot-nix/hercules";
-    buildbot-nix.url = "github:MagicRB/buildbot-nix/pydantic-convert";
-    #buildbot-nix.url = "github:MagicRB/buildbot-nix/per-installation-tokens-in-github";
+    buildbot-nix.url = "github:nix-community/buildbot-nix/hercules";
+    #buildbot-nix.url = "github:MagicRB/buildbot-nix/pydantic-convert";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
@@ -86,7 +88,8 @@
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
-    lanzaboote.url = "github:nix-community/lanzaboote";
+    #lanzaboote.url = "github:nix-community/lanzaboote";
+    lanzaboote.url = "git+file:///home/joerg/git/nixpkgs/lanzaboote";
     lanzaboote.inputs.nixpkgs.follows = "nixpkgs";
     lanzaboote.inputs.flake-parts.follows = "flake-parts";
     lanzaboote.inputs.flake-compat.follows = "";
