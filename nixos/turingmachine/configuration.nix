@@ -45,6 +45,8 @@
     ../modules/users.nix
   ];
 
+  system.etc.overlay.enable = true;
+
   environment.systemPackages = with pkgs; [ sunshine ];
 
   hardware.saleae-logic.enable = true;
