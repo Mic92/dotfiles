@@ -51,7 +51,6 @@
         response_string_match = "Transmission Web";
         tags.host = "yellow";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
         response_status_code = 200;
         response_timeout = "60s";
       }
@@ -62,7 +61,6 @@
         ];
         response_string_match = "Index of /";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
         response_status_code = 200;
       }
       {
@@ -70,7 +68,6 @@
         tags.host = "hotdog";
         response_string_match = "gollum";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
         response_status_code = 200;
       }
       {
@@ -78,14 +75,12 @@
         response_string_match = ''{"status":"ok"}'';
         tags.host = "hotdog";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
         response_status_code = 200;
       }
       {
         urls = [ "http://calendar.r/.web/" ];
         tags.host = "hotdog";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
         response_status_code = 200;
       }
       # currently broken
@@ -96,7 +91,6 @@
       #  tags.host = "news";
       #  response_string_match = "rss";
       #  tags.org = "krebs";
-      #  interface = "tinc.retiolum";
       #  response_status_code = 200;
       #}
       #{
@@ -107,7 +101,6 @@
       #  tags.host = "news";
       #  method = "HEAD";
       #  tags.org = "krebs";
-      #  interface = "tinc.retiolum";
       #  response_status_code = 200;
       #}
       #{
@@ -125,7 +118,6 @@
       #    --------------------------04afef05eaafa8d5--
       #  '';
       #  tags.org = "krebs";
-      #  interface = "tinc.retiolum";
       #  response_status_code = 200;
       #}
       {
@@ -133,7 +125,6 @@
         tags.host = "gum";
         response_string_match = "tinc network map";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
         response_status_code = 200;
       }
       {
@@ -144,7 +135,6 @@
         ];
         response_string_match = "cgit";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
         response_status_code = 200;
       }
       {
@@ -158,7 +148,6 @@
         response_string_match = "Jellyfin";
         tags.host = "prism";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
         response_status_code = 200;
       }
       {
@@ -187,7 +176,6 @@
         response_string_match = "Buildbot";
         tags.host = "hotdog";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
         response_status_code = 200;
       }
       {
@@ -195,14 +183,12 @@
         response_string_match = "Stable Diffusion";
         tags.host = "jack";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
         response_status_code = 200;
       }
       {
         urls = [ "http://c.r/ok" ];
         response_string_match = "ok";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
         response_status_code = 200;
       }
       {
@@ -210,21 +196,18 @@
         body = "ok";
         method = "POST";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
         response_status_code = 200;
       }
       {
         urls = [ "http://agenda.r" ];
         response_string_match = "Agenda";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
         response_status_code = 200;
       }
       {
         urls = [ "http://calendar.r/.web/" ];
         response_string_match = "Sign In";
         tags.org = "krebs";
-        interface = "tinc.retiolum";
         response_status_code = 200;
       }
     ];
