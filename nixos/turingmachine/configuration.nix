@@ -48,7 +48,6 @@
     ../modules/users.nix
   ];
 
-
   nix.package = inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
 
   system.etc.overlay.enable = true;

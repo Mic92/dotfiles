@@ -1,5 +1,4 @@
 {
-  config,
   lib,
   pkgs,
   modulesPath,
@@ -45,11 +44,6 @@
   services.thermald.enable = true;
 
   # framework
-  #boot.initrd.availableKernelModules = [
-  #  "xhci_pci"
-  #  "nvme"
-  #  "thunderbolt"
-  #];
   boot.kernelModules = [ "kvm-intel" ];
 
   # for zfs
