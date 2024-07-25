@@ -7,8 +7,10 @@
 }:
 {
   imports = [
-    ./hardware-configuration.nix
+    inputs.nixos-facter-modules.nixosModules.facter
+    { config.facter.reportPath = ./report.json; }
 
+    ./hardware-configuration.nix
     ./modules/caddy.nix
     ./modules/disko.nix
     ./modules/hass-agent.nix
@@ -45,6 +47,7 @@
     ../modules/data-mesher.nix
     ../modules/users.nix
   ];
+
 
   nix.package = inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
 
