@@ -9,8 +9,6 @@
 
   time.timeZone = "UTC";
 
-  programs.vim.defaultEditor = true;
-
   srvos.boot.consoles = lib.mkDefault [ ];
 
   imports = [

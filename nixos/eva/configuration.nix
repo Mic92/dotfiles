@@ -4,8 +4,6 @@
 
   time.timeZone = "UTC";
 
-  programs.vim.defaultEditor = true;
-
   imports = [
     ./modules/disko.nix
     ./modules/hardware-configuration.nix
