@@ -2,6 +2,7 @@
   lib,
   config,
   pkgs,
+  inputs,
   ...
 }:
 {
@@ -10,7 +11,7 @@
     gc.automatic = true;
     gc.dates = "03:15";
     gc.options = "--delete-older-than 10d";
-    package = pkgs.nixVersions.latest;
+    package = lib.mkDefault pkgs.nixVersions.latest;
 
     settings = {
       # for nix-direnv
