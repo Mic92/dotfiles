@@ -55,8 +55,6 @@
   time.timeZone = null;
   services.geoclue2.enable = true;
 
-  programs.vim.defaultEditor = true;
-
   hardware = {
     graphics.enable = true;
     graphics.enable32Bit = true;
