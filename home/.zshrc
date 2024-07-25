@@ -756,12 +756,12 @@ urldecode() { python3 -c "import sys, urllib.parse as parse; print(parse.unquote
 cheat() { command cheat -c "$@" | "$PAGER"; }
 ninja(){
   local build_path="$(dirname "$(upfind "build.ninja")")"
-  command ninja -C "${build_path:-.}" "$@"
+  command nice -n10 ninja -C "${build_path:-.}" "$@"
 }
 alias cal="cal -m"
 make(){
   local build_path="$(dirname "$(upfind "Makefile")")"
-  command make -C "${build_path:-.}" -j$(nproc) "$@" 
+  command nice -n10 make -C "${build_path:-.}" -j$(nproc) "$@"
 }
 real-which(){
   readlink -f "$(command which "$@")"
