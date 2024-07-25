@@ -57,7 +57,7 @@
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
 
     # https://github.com/numtide/nixos-facter-modules/tree/feat/simplify-usage
-    nixos-facter-modules.url = "github:numtide/nixos-facter-modules/feat/simplify-usage";
+    nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     nixos-facter-modules.inputs.nixpkgs.follows = "nixpkgs";
 
     home-manager.url = "github:nix-community/home-manager";
