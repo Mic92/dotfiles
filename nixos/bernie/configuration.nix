@@ -19,6 +19,13 @@
     ../modules/pipewire.nix
   ];
 
+  boot.loader.systemd-boot.bootCounting.enable = true;
+  systemd.services.openssh = {
+    before = [ "boot-complete.target" ];
+    wantedBy = [ "boot-complete.target" ];
+    unitConfig.FailureAction = "reboot";
+  };
+
   boot.plymouth.enable = true;
   services.fwupd.enable = true;
   hardware.keyboard.qmk.enable = true;
