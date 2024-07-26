@@ -65,16 +65,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1721973742,
-        "narHash": "sha256-tQbM5PgombsygswNqGZHbPSZ8lH3p6GX8vWhqlMgFN4=",
+        "lastModified": 1721987586,
+        "narHash": "sha256-yQq4Q005r9wbsL+PjMkgv4D3FrGumebAzjdSt3xjz5M=",
         "owner": "MagicRB",
         "repo": "buildbot-nix",
-        "rev": "5907ad9126e23f8ef4cfeb5db8b7649f2463d35d",
+        "rev": "0ecf33f8d404fc017c0d88e36895bc82a4951442",
         "type": "github"
       },
       "original": {
         "owner": "MagicRB",
-        "ref": "pydantic-convert",
+        "ref": "combined-build-reports-github",
         "repo": "buildbot-nix",
         "type": "github"
       }
