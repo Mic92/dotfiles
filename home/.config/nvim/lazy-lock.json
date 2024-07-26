@@ -1,10 +1,10 @@
 {
   "AstroNvim": { "branch": "main", "commit": "bfa02306c91c53f9b5782103f530ff729d6fd5b3" },
   "Comment.nvim": { "branch": "master", "commit": "e30b7f2008e52442154b66f7c519bfd2f1e32acb" },
-  "CopilotChat.nvim": { "branch": "canary", "commit": "f7861cb7d0ea46d57f67595876c8d2835eae29a2" },
+  "CopilotChat.nvim": { "branch": "canary", "commit": "f20a0425b33c1704133bdef5ec10c4e94f6efdc6" },
   "LuaSnip": { "branch": "master", "commit": "03c8e67eb7293c404845b3982db895d59c0d1538" },
   "NeoSolarized.nvim": { "branch": "master", "commit": "bdfcdd056c4c73b10fc6f42f0c2d0df839ff49ae" },
-  "SchemaStore.nvim": { "branch": "main", "commit": "bb370d8ea2055ec3807205367a91d12b9c13dae9" },
+  "SchemaStore.nvim": { "branch": "main", "commit": "6eb8cee613518fb065d23a81d01eeb42365d59c1" },
   "aerial.nvim": { "branch": "master", "commit": "7e2615991cf110f6688112abcb45cf338248d1f6" },
   "alpha-nvim": { "branch": "main", "commit": "41283fb402713fc8b327e60907f74e46166f4cfd" },
   "astrocommunity": { "branch": "main", "commit": "de5139ef600346f700b6950e8b90afc053710b00" },
