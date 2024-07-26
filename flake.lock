@@ -65,16 +65,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1721641772,
-        "narHash": "sha256-USJE9NFrwKUxwc17jf0tnp60GIUrNSJT9VK/JkXfpoA=",
-        "owner": "nix-community",
+        "lastModified": 1721973742,
+        "narHash": "sha256-tQbM5PgombsygswNqGZHbPSZ8lH3p6GX8vWhqlMgFN4=",
+        "owner": "MagicRB",
         "repo": "buildbot-nix",
-        "rev": "2e564ab4edc18056882775f996ebe9c7b5709b80",
+        "rev": "5907ad9126e23f8ef4cfeb5db8b7649f2463d35d",
         "type": "github"
       },
       "original": {
-        "owner": "nix-community",
-        "ref": "hercules",
+        "owner": "MagicRB",
+        "ref": "pydantic-convert",
         "repo": "buildbot-nix",
         "type": "github"
       }
