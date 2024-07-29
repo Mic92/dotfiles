@@ -50,7 +50,8 @@
 
   nix.package = inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
 
-  system.etc.overlay.enable = true;
+  # upgrading fails with "umount busy" errors
+  system.etc.overlay.enable = false;
 
   environment.systemPackages = with pkgs; [ sunshine ];
 
