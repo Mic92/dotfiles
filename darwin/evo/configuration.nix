@@ -7,14 +7,17 @@
     inputs.srvos.darwinModules.common
     inputs.srvos.darwinModules.mixins-telegraf
     inputs.srvos.darwinModules.mixins-terminfo
+    inputs.srvos.darwinModules.mixins-nix-experimental
     ../modules/nix-daemon.nix
     ../modules/amethyst.nix
-    ../modules/homebrew.nix
-    ../modules/secretiv.nix
     ../modules/firefox.nix
+    ../modules/ferdium.nix
+    ../modules/homebrew.nix
     ../modules/iterm2.nix
-    ../modules/openssh.nix
+    ../modules/nix-daemon.nix
     ../modules/nix-index.nix
+    ../modules/openssh.nix
+    ../modules/secretiv.nix
     ../modules/sudo.nix
   ];
 

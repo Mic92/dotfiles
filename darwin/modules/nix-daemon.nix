@@ -35,7 +35,6 @@
 
       fallback = true;
       warn-dirty = false;
-      auto-optimise-store = true;
     };
   };
 }
