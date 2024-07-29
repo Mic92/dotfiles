@@ -13,6 +13,7 @@ git:
   paging:
     colorArg: always
     pager: delta --syntax-theme "Solarized (light)" --paging=never
+  autoFetch: False
 customCommands:
   - key: '<c-r>'
     command: 'git rebase --interactive "{{.SelectedLocalCommit.Sha}}"'

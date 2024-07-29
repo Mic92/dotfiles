@@ -1,16 +1,10 @@
-{
-  lib,
-  config,
-  pkgs,
-  ...
-}:
+{ lib, config, ... }:
 {
   # this extends srvos's common settings
   nix = {
     gc.automatic = true;
     gc.dates = "03:15";
     gc.options = "--delete-older-than 10d";
-    package = lib.mkDefault pkgs.nixVersions.latest;
 
     settings = {
       # for nix-direnv
