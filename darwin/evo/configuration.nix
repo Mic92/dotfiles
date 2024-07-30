@@ -1,4 +1,10 @@
-{ self, inputs, ... }:
+{
+  self,
+  inputs,
+  config,
+  lib,
+  ...
+}:
 {
   networking.hostName = "evo";
   nixpkgs.hostPlatform = "aarch64-darwin";
@@ -20,6 +26,11 @@
     ../modules/secretiv.nix
     ../modules/sudo.nix
   ];
+
+  # fix vim repeat key
+  system.activationScripts.defaults.text = ''
+    defaults write -g ApplePressAndHoldEnabled -bool false
+  '';
 
   programs.zsh.enable = true;
 
