@@ -1,10 +1,4 @@
-{
-  self,
-  inputs,
-  config,
-  lib,
-  ...
-}:
+{ self, inputs, ... }:
 {
   networking.hostName = "evo";
   nixpkgs.hostPlatform = "aarch64-darwin";
@@ -15,9 +9,6 @@
     inputs.srvos.darwinModules.mixins-terminfo
     inputs.srvos.darwinModules.mixins-nix-experimental
     ../modules/nix-daemon.nix
-    ../modules/amethyst.nix
-    ../modules/firefox.nix
-    ../modules/ferdium.nix
     ../modules/homebrew.nix
     ../modules/iterm2.nix
     ../modules/nix-daemon.nix

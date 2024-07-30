@@ -8,4 +8,10 @@
       fi
     ''
   );
+  homebrew.casks = [
+    "amethyst"
+    "ferdium"
+    "firefox"
+    "signal"
+  ];
 }
