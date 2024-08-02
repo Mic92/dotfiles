@@ -21,6 +21,7 @@
             rust-analyzer
             yaml-language-server
             nil
+            nixd
             shellcheck
             shfmt
             ruff
