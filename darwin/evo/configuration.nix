@@ -16,6 +16,7 @@
     ../modules/openssh.nix
     ../modules/secretiv.nix
     ../modules/sudo.nix
+    ../modules/yabai.nix
   ];
 
   # fix vim repeat key
