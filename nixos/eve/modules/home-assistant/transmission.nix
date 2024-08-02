@@ -14,6 +14,7 @@
       installPhase = ''
         cp -r custom_components/var $out
       '';
+      passthru.isHomeAssistantComponent = true;
     })
   ];
   services.home-assistant.customCards = {
