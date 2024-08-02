@@ -107,7 +107,9 @@
             common = homeManagerConfiguration { };
 
             mac-hetzner = homeManagerConfiguration { extraModules = [ { home.username = "hetzner"; } ]; };
-            mac-laptop = homeManagerConfiguration { extraModules = [ ./graphical.nix ]; };
+            mac-laptop = homeManagerConfiguration {
+              extraModules = [ ./macos-desktop.nix ];
+            };
           }
           // lib.optionalAttrs (pkgs.hostPlatform.system == "x86_64-linux") {
             desktop = homeManagerConfiguration { extraModules = [ ./desktop.nix ]; };
