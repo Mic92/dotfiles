@@ -50,8 +50,7 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    #buildbot-nix.url = "github:nix-community/buildbot-nix/hercules";
-    buildbot-nix.url = "github:MagicRB/buildbot-nix/combined-build-reports-github";
+    buildbot-nix.url = "github:nix-community/buildbot-nix";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
@@ -73,7 +72,7 @@
     nix-ld-rs.inputs.nixpkgs.follows = "nixpkgs";
     nix-ld-rs.inputs.flake-utils.follows = "flake-utils";
 
-    srvos.url = "github:numtide/srvos/nix-experimental";
+    srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
     clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
