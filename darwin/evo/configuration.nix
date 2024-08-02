@@ -8,7 +8,7 @@
     inputs.srvos.darwinModules.mixins-telegraf
     inputs.srvos.darwinModules.mixins-terminfo
     inputs.srvos.darwinModules.mixins-nix-experimental
-    ../modules/nix-daemon.nix
+    ../modules/app-store
     ../modules/homebrew.nix
     ../modules/iterm2.nix
     ../modules/nix-daemon.nix
