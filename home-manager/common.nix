@@ -68,6 +68,7 @@
       glibcLocales
       gdb
     ]
+    ++ lib.optionals pkgs.stdenv.isDarwin [ darwin.iproute2mac ]
     ++ lib.optional (pkgs.hostPlatform.system != "riscv64-linux") nix-output-monitor;
 
   home.enableNixpkgsReleaseCheck = false;
