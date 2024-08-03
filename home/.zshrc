@@ -758,7 +758,9 @@ ninja(){
   local build_path="$(dirname "$(upfind "build.ninja")")"
   command nice -n10 ninja -C "${build_path:-.}" "$@"
 }
-alias cal="cal -m"
+if [[ $OSTYPE == linux* ]]; then
+  alias cal="cal -m"
+fi
 make(){
   local build_path="$(dirname "$(upfind "Makefile")")"
   command nice -n10 make -C "${build_path:-.}" -j$(nproc) "$@"
