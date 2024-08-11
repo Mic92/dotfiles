@@ -406,10 +406,17 @@ function mv() {
 
 alias mkdir='nocorrect mkdir -p'
 ip() {
+    colour=-c
+    brief=-br
+    if [[ $OSTYPE == darwin* ]]; then
+      # iproute2mac
+      colour=
+      brief=
+    fi
     if [[ $# -eq 0 ]]; then
-        command ip -c -br a
+        command ip $colour $brief a
     else
-        command ip -c "$@"
+        command ip $colour "$@"
     fi
 }
 xalias objdump='objdump -M intel'
