@@ -8,6 +8,7 @@
     inputs.srvos.darwinModules.mixins-telegraf
     inputs.srvos.darwinModules.mixins-terminfo
     inputs.srvos.darwinModules.mixins-nix-experimental
+    inputs.sops-nix.darwinModules.sops
     ../modules/app-store
     ../modules/homebrew.nix
     ../modules/iterm2.nix
@@ -15,6 +16,7 @@
     ../modules/nix-index.nix
     ../modules/openssh.nix
     ../modules/secretiv.nix
+    ../modules/remote-builder.nix
     ../modules/sudo.nix
     ../modules/yabai.nix
   ];
