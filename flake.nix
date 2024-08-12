@@ -38,7 +38,7 @@
     nur-packages.inputs.nixpkgs.follows = "nixpkgs";
     # for development
     #sops-nix.url = "/home/joerg/git/sops-nix";
-    sops-nix.url = "github:Mic92/sops-nix/yubikey-support";
+    sops-nix.url = "github:Mic92/sops-nix/nix-darwin";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.inputs.nixpkgs-stable.follows = "";
 
@@ -65,7 +65,7 @@
     flake-registry.url = "github:NixOS/flake-registry";
     flake-registry.flake = false;
 
-    nix-darwin.url = "github:LnL7/nix-darwin";
+    nix-darwin.url = "github:Mic92/nix-darwin/ssh";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     nix-ld-rs.url = "github:nix-community/nix-ld-rs";
@@ -122,12 +122,7 @@
   };
 
   outputs =
-    inputs@{
-      self,
-      flake-parts,
-      nixpkgs,
-      ...
-    }:
+    inputs@{ self, flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } (
       { withSystem, config, ... }:
       {

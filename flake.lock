@@ -659,15 +659,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1722924007,
-        "narHash": "sha256-+CQDamNwqO33REJLft8c26NbUi2Td083hq6SvAm2xkU=",
-        "owner": "LnL7",
+        "lastModified": 1723451294,
+        "narHash": "sha256-R9umESKw46NKEDQkN60LVkFmNA0DqKOTJFUT8USlER4=",
+        "owner": "Mic92",
         "repo": "nix-darwin",
-        "rev": "91010a5613ffd7ee23ee9263213157a1c422b705",
+        "rev": "db7955cc2b8ef4808e12b9b28805c2e84203c51f",
         "type": "github"
       },
       "original": {
-        "owner": "LnL7",
+        "owner": "Mic92",
+        "ref": "ssh",
         "repo": "nix-darwin",
         "type": "github"
       }
@@ -1025,16 +1026,16 @@
         "nixpkgs-stable": []
       },
       "locked": {
-        "lastModified": 1711119062,
-        "narHash": "sha256-pJGGsuQpVvZwMxJfQH0DGtIEFc25MdqLiWeJfGcSJIY=",
+        "lastModified": 1723452406,
+        "narHash": "sha256-CtbmrKLxsPwy2XY7y65cWsmfWoqVO8EcCbSTJO7wEWs=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "de84e9c41eb67c121bb9bfd19361351e6b68dd84",
+        "rev": "ee9d86c9821b915173f5abecae32655c6a0e5304",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
-        "ref": "yubikey-support",
+        "ref": "nix-darwin",
         "repo": "sops-nix",
         "type": "github"
       }
