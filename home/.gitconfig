@@ -37,7 +37,6 @@
 [mergetool "vimdiff"]
   cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
 [alias]
-  rb = "rebase origin/HEAD"
   clone = clone --recursive
   blame = -w -M
   update = !git pull && git submodule update --init --recursive
@@ -45,6 +44,7 @@
   uncommit = reset --soft HEAD^
   backport = cherry-pick -x
   checkout-pr = !"pr() { git fetch origin pull/$1/head:pr-$1; git checkout pr-$1; }; pr"
+  pick-pr = !"am() { git fetch origin pull/$1/head:pr-$1; git cherry-pick HEAD..pr-$1; }; am"
   reset-pr = reset --hard FETCH_HEAD
   force-push = push --force-with-lease
   publish = !git pull && git push
