@@ -10,16 +10,21 @@
     inputs.srvos.darwinModules.mixins-nix-experimental
     inputs.sops-nix.darwinModules.sops
     ../modules/app-store
+    ../modules/clan/default.nix
     ../modules/homebrew.nix
     ../modules/iterm2.nix
     ../modules/nix-daemon.nix
     ../modules/nix-index.nix
     ../modules/openssh.nix
-    ../modules/secretiv.nix
     ../modules/remote-builder.nix
+    ../modules/secretiv.nix
     ../modules/sudo.nix
     ../modules/yabai.nix
   ];
+
+  clan.core.clanDir = ../..;
+  clan.core.machineName = "evo";
+  sops.age.keyFile = "/Library/Application Support/sops-nix/age-key.txt";
 
   # fix vim repeat key
   system.activationScripts.defaults.text = ''
