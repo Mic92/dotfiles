@@ -187,27 +187,23 @@ def update_mergify_config(mergify_config: Path, runs: list[str]) -> dict[str, An
     with mergify_config.open() as stream:
         config = yaml.load(stream)
         for rule in config["queue_rules"]:
-            new_rules = ["check-success=" + run for run in runs]
-            if rule["name"] == "default":
-                new_rules.extend(
-                    check
-                    for check in rule["merge_conditions"]
-                    if not check.startswith("check-success=")
-                )
-                rule["merge_conditions"] = new_rules
+            if rule["name"] != "default":
+                continue
+            new_conditions = ["check-success=" + run for run in runs]
+            new_conditions.extend(
+                check
+                for check in rule["merge_conditions"]
+                if not check.startswith("check-success=")
+            )
+            rule["merge_conditions"] = new_conditions
+            if "batch_size" not in rule:
+                rule["batch_size"] = 5
+            if "merge_method" not in rule:
+                rule["merge_method"] = "rebase"
 
-        config["defaults"].setdefault("actions", {})
-        config["defaults"]["actions"].setdefault("queue", {})
-        config["defaults"]["actions"]["queue"]["merge_method"] = "rebase"
-        if "method" in config["defaults"]["actions"]["queue"]:
-            del config["defaults"]["actions"]["queue"]["method"]
-        if (
-            "allow_merging_configuration_change"
-            in config["defaults"]["actions"]["queue"]
-        ):
-            del config["defaults"]["actions"]["queue"][
-                "allow_merging_configuration_change"
-            ]
+        # a bit unsound, but mergify removes most of the defaults now anyway
+        if "defaults" in config:
+            del config["defaults"]
 
         return config
 
@@ -219,10 +215,8 @@ def new_mergify_config(
     #  - name: default
     #    merge_conditions:
     #      - check-success=buildbot/nix-eval
-    # defaults:
-    #    actions:
-    #      queue:
-    #        merge_method: rebase
+    #    merge_method: rebase
+    #    batch_size: 5
     # pull_request_rules:
     #  - name: merge using the merge queue
     #    conditions:
@@ -238,15 +232,10 @@ def new_mergify_config(
                 "merge_conditions": [
                     f"check-success={check_run}" for check_run in sorted(check_runs)
                 ],
+                "merge_method": "rebase",
+                "batch_size": 5,
             }
         ],
-        "defaults": {
-            "actions": {
-                "queue": {
-                    "merge_method": "rebase",
-                }
-            }
-        },
         "pull_request_rules": [
             {
                 "name": "merge using the merge queue",
