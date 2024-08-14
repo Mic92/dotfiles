@@ -27,8 +27,12 @@
     '';
     exclude = [
       "*.pyc"
+      "*.o"
+      "*/node_modules/*"
+      "/home/*/go/"
       "/home/*/.direnv"
       "/home/*/.cache"
+      "/home/*/.cargo"
       "/home/*/.npm"
       "/home/*/.m2"
       "/home/*/.gradle"
