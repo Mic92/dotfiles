@@ -173,7 +173,7 @@
   system.stateVersion = "23.11";
   boot.initrd.systemd.enable = true;
 
-  security.sudo.wheelNeedsPassword = lib.mkForce true; # fprint
+  security.sudo.wheelNeedsPassword = lib.mkForce (!config.services.fprintd.enable); # fprint
 
   services.ksmbd.enable = true;
   services.ksmbd.openFirewall = true;
