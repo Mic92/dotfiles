@@ -68,10 +68,6 @@
     nix-darwin.url = "github:Mic92/nix-darwin/ssh";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix-ld-rs.url = "github:nix-community/nix-ld-rs";
-    nix-ld-rs.inputs.nixpkgs.follows = "nixpkgs";
-    nix-ld-rs.inputs.flake-utils.follows = "flake-utils";
-
     srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
