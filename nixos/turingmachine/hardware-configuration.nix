@@ -7,10 +7,10 @@
 #let
 #  frameworkFirmware = pkgs.stdenv.mkDerivation rec {
 #    pname = "framework-firmware-update";
-#    version = "3.17";
+#    version = "3.05";
 #    src = pkgs.fetchzip {
-#      url = "https://downloads.frame.work/bios/Framework_Laptop_11th_gen_Intel_Core_BIOS_${version}_EFI.zip";
-#      sha256 = "sha256-AeKlRCH8Np7OMxMbEI6pHd8OXfK4pHJTMK8FY0Y6uhs=";
+#      url = "https://downloads.frame.work/bios/Framework_Laptop_13_13th_Gen_Intel_Core_BIOS__${version}_EFI.zip";
+#      sha256 = "sha256-AeKlRCH8Np7OMxMbEI6pHd8OXfK4pHJTMK8FY0Y6uh0=";
 #      stripRoot = false;
 #    };
 #    installPhase = ''
@@ -23,19 +23,19 @@
   imports = [ "${modulesPath}/installer/scan/not-detected.nix" ];
 
   # XXX: this only works with systemd-boot, not with lanzaboote
-  #boot.loader.systemd-boot.extraFiles = {
-  #  "H2OFFT-Sx64.efi" = "${frameworkFirmware}/H2OFFT-Sx64.efi";
-  #  "startup.nsh" = "${frameworkFirmware}/startup.nsh";
-  #  "hx20_capsule_${frameworkFirmware.version}.bin" = "${frameworkFirmware}/hx20_capsule_${frameworkFirmware.version}.bin";
-  #  "efi/edk2/shell.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
-  #};
+    #boot.loader.systemd-boot.extraFiles = {
+    #  "H2OFFT-Sx64.efi" = "${frameworkFirmware}/H2OFFT-Sx64.efi";
+    #  "startup.nsh" = "${frameworkFirmware}/startup.nsh";
+    #  "hx20_capsule_${frameworkFirmware.version}.bin" = "${frameworkFirmware}/hx20_capsule_${frameworkFirmware.version}.bin";
+    #  "efi/edk2/shell.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
+    #};
 
-  # When running this, have a usb stick installer at your hand as it will reset all your NVRAM and boot loader entries!
-  #boot.loader.systemd-boot.extraEntries."framework-firmware-upgrade.conf" = ''
-  #  title  Framwork Firmware Upgrade
-  #  efi    /efi/edk2/shell.efi
-  #  options startup.nsh
-  #'';
+    ## When running this, have a usb stick installer at your hand as it will reset all your NVRAM and boot loader entries!
+    #boot.loader.systemd-boot.extraEntries."framework-firmware-upgrade.conf" = ''
+    #  title  Framwork Firmware Upgrade
+    #  efi    /efi/edk2/shell.efi
+    #  options startup.nsh
+    #'';
 
   services.fwupd.enable = true;
   #services.fwupd.extraRemotes = [ "lvfs-testing" ];
