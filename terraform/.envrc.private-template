@@ -1,2 +1,3 @@
+# shellcheck shell=bash
 export TF_VAR_tsig_key="<FIXME>"
 export DIGITALOCEAN_TOKEN="<FIXME>"
