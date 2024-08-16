@@ -59,7 +59,5 @@
     ];
   }) config.clan.borgbackup.destinations;
 
-  systemd.services."borgbackup-job-blob64".serviceConfig.ReadWritePaths = [
-    "/var/log/telegraf"
-  ];
+  systemd.services."borgbackup-job-blob64".serviceConfig.ReadWritePaths = [ "/var/log/telegraf" ];
 }

@@ -30,6 +30,9 @@
 
     #nix.url = "github:Mic92/nix-1/less-alloc";
     nix.url = "github:NixOS/nix";
+    nix.inputs.flake-parts.follows = "";
+    nix.inputs.nixpkgs-regression.follows = "";
+    nix.inputs.nixpkgs-23-11.follows = "";
 
     nixpkgs.url = "github:Mic92/nixpkgs/main";
     # for development
@@ -58,6 +61,7 @@
     # https://github.com/numtide/nixos-facter-modules/tree/feat/simplify-usage
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     nixos-facter-modules.inputs.nixpkgs.follows = "nixpkgs";
+    nixos-facter-modules.inputs.treefmt-nix.follows = "treefmt-nix";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -68,7 +72,7 @@
     nix-darwin.url = "github:Mic92/nix-darwin/ssh";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    srvos.url = "github:numtide/srvos";
+    srvos.url = "github:numtide/srvos/impure-derivations";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
     clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
@@ -111,6 +115,9 @@
     nether.url = "github:Lassulus/nether";
     nether.inputs.clan-core.follows = "clan-core";
     nether.inputs.nixpkgs.follows = "nixpkgs";
+    nether.inputs.treefmt-nix.follows = "treefmt-nix";
+    nether.inputs.data-mesher.follows = "data-mesher";
+    nether.inputs.flake-parts.follows = "flake-parts";
 
     #microvm.url = "github:astro/microvm.nix";
     #microvm.inputs.nixpkgs.follows = "nixpkgs";

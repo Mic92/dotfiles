@@ -23,19 +23,19 @@
   imports = [ "${modulesPath}/installer/scan/not-detected.nix" ];
 
   # XXX: this only works with systemd-boot, not with lanzaboote
-    #boot.loader.systemd-boot.extraFiles = {
-    #  "H2OFFT-Sx64.efi" = "${frameworkFirmware}/H2OFFT-Sx64.efi";
-    #  "startup.nsh" = "${frameworkFirmware}/startup.nsh";
-    #  "hx20_capsule_${frameworkFirmware.version}.bin" = "${frameworkFirmware}/hx20_capsule_${frameworkFirmware.version}.bin";
-    #  "efi/edk2/shell.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
-    #};
+  #boot.loader.systemd-boot.extraFiles = {
+  #  "H2OFFT-Sx64.efi" = "${frameworkFirmware}/H2OFFT-Sx64.efi";
+  #  "startup.nsh" = "${frameworkFirmware}/startup.nsh";
+  #  "hx20_capsule_${frameworkFirmware.version}.bin" = "${frameworkFirmware}/hx20_capsule_${frameworkFirmware.version}.bin";
+  #  "efi/edk2/shell.efi" = "${pkgs.edk2-uefi-shell}/shell.efi";
+  #};
 
-    ## When running this, have a usb stick installer at your hand as it will reset all your NVRAM and boot loader entries!
-    #boot.loader.systemd-boot.extraEntries."framework-firmware-upgrade.conf" = ''
-    #  title  Framwork Firmware Upgrade
-    #  efi    /efi/edk2/shell.efi
-    #  options startup.nsh
-    #'';
+  ## When running this, have a usb stick installer at your hand as it will reset all your NVRAM and boot loader entries!
+  #boot.loader.systemd-boot.extraEntries."framework-firmware-upgrade.conf" = ''
+  #  title  Framwork Firmware Upgrade
+  #  efi    /efi/edk2/shell.efi
+  #  options startup.nsh
+  #'';
 
   services.fwupd.enable = true;
   #services.fwupd.extraRemotes = [ "lvfs-testing" ];
