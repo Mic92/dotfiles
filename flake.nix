@@ -58,7 +58,6 @@
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
 
-    # https://github.com/numtide/nixos-facter-modules/tree/feat/simplify-usage
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
     nixos-facter-modules.inputs.nixpkgs.follows = "nixpkgs";
     nixos-facter-modules.inputs.treefmt-nix.follows = "treefmt-nix";
