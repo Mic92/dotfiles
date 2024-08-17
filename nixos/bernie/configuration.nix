@@ -19,7 +19,6 @@
     ../modules/pipewire.nix
   ];
 
-  boot.loader.systemd-boot.bootCounting.enable = true;
   systemd.services.openssh = {
     before = [ "boot-complete.target" ];
     wantedBy = [ "boot-complete.target" ];
