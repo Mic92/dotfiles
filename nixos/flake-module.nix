@@ -79,13 +79,13 @@
           self.nixosModules.default
           inputs.nixos-hardware.nixosModules.framework-13th-gen-intel
           inputs.nix-index-database.nixosModules.nix-index
+          { programs.nix-index-database.comma.enable = true; }
           inputs.disko.nixosModules.disko
           inputs.clan-core.clanModules.localbackup
           inputs.agenix.nixosModules.default
 
           #inputs.spora.nixosModules.spora
 
-          { programs.nix-index-database.comma.enable = true; }
           inputs.srvos.nixosModules.desktop
 
           inputs.lanzaboote.nixosModules.lanzaboote
@@ -110,6 +110,9 @@
           inputs.buildbot-nix.nixosModules.buildbot-worker
           inputs.buildbot-nix.nixosModules.buildbot-master
           inputs.disko.nixosModules.disko
+
+          inputs.nix-index-database.nixosModules.nix-index
+          { programs.nix-index-database.comma.enable = true; }
           #inputs.nixos-wiki.nixosModules.nixos-wiki
           #inputs.nixos-wiki.nixosModules.nixos-wiki-backup
         ];
