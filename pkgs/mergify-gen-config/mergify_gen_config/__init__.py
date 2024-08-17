@@ -186,6 +186,7 @@ yaml.indent(mapping=2, sequence=4, offset=2)
 def update_mergify_config(mergify_config: Path, runs: list[str]) -> dict[str, Any]:
     with mergify_config.open() as stream:
         config = yaml.load(stream)
+        config.setdefault("queue_rules", [])
         for rule in config["queue_rules"]:
             if rule["name"] != "default":
                 continue
