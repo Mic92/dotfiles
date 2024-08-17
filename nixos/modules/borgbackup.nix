@@ -12,7 +12,8 @@
     "/root"
   ];
 
-  services.borgbackup.jobs = lib.mapAttrs (_name: _job: {
+  services.borgbackup.jobs = lib.mapAttrs (name: _job: {
+    repo = lib.mkForce "borg@${name}.r:/zdata/borg/${config.networking.hostName}";
     preHook = lib.optionalString config.networking.networkmanager.enable ''
       # wait until network is available and not metered
       while ! ${pkgs.networkmanager}/bin/nm-online --quiet || ${pkgs.networkmanager}/bin/nmcli --terse --fields GENERAL.METERED dev show 2>/dev/null | grep --quiet "yes"; do
@@ -26,8 +27,12 @@
     '';
     exclude = [
       "*.pyc"
+      "*.o"
+      "*/node_modules/*"
+      "/home/*/go/"
       "/home/*/.direnv"
       "/home/*/.cache"
+      "/home/*/.cargo"
       "/home/*/.npm"
       "/home/*/.m2"
       "/home/*/.gradle"
@@ -54,7 +59,5 @@
     ];
   }) config.clan.borgbackup.destinations;
 
-  systemd.services."borgbackup-job-${config.networking.hostName}".serviceConfig.ReadWritePaths = [
-    "/var/log/telegraf"
-  ];
+  systemd.services."borgbackup-job-blob64".serviceConfig.ReadWritePaths = [ "/var/log/telegraf" ];
 }

@@ -50,7 +50,8 @@
 
   nix.package = inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
 
-  system.etc.overlay.enable = true;
+  # upgrading fails with "umount busy" errors
+  system.etc.overlay.enable = false;
 
   environment.systemPackages = with pkgs; [ sunshine ];
 
@@ -172,7 +173,7 @@
   system.stateVersion = "23.11";
   boot.initrd.systemd.enable = true;
 
-  security.sudo.wheelNeedsPassword = lib.mkForce true; # fprint
+  security.sudo.wheelNeedsPassword = lib.mkForce (!config.services.fprintd.enable); # fprint
 
   services.ksmbd.enable = true;
   services.ksmbd.openFirewall = true;

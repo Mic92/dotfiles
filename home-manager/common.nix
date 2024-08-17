@@ -10,6 +10,9 @@
     ./modules/neovim
     ./modules/tmux-thumbs.nix
   ];
+
+  nix.package = lib.mkDefault pkgs.nixVersions.latest;
+
   home.packages =
     with pkgs;
     [
@@ -22,7 +25,7 @@
       ouch
 
       du-dust
-      nixVersions.latest
+
       procs
       xcp
 
