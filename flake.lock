@@ -63,11 +63,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1723686396,
-        "narHash": "sha256-tL7V+/7Mcweqdd4Dbwsr/e8uRKKb2Jh/JFxAn5mB8Ho=",
+        "lastModified": 1723946210,
+        "narHash": "sha256-3ZligQQqpa/t7WEiWKSeRJMhDxWHPXDqQgJoC1D82kQ=",
         "owner": "nix-community",
         "repo": "buildbot-nix",
-        "rev": "9d33309cccf590c2f85866dc9016207614be3ad6",
+        "rev": "698e734f793935aa10067a1334f9c54c2a94def0",
         "type": "github"
       },
       "original": {
@@ -97,11 +97,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1723799298,
-        "narHash": "sha256-aRDLr14YCfpjqBnmC5Ms/mlcT15xZEeIA9j9ZirgWss=",
-        "rev": "ab5425e1f3d7a0bd6042feb2cdb5c2965549d2f1",
+        "lastModified": 1723903256,
+        "narHash": "sha256-H/0dUM/oDfeCB9PCP7n7BbHNPrOHXpyK4umUdhEnId0=",
+        "rev": "d0d95d01899bbf45ae3400bf58b2237d77da85ec",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/ab5425e1f3d7a0bd6042feb2cdb5c2965549d2f1.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/d0d95d01899bbf45ae3400bf58b2237d77da85ec.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -452,11 +452,11 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1723880433,
-        "narHash": "sha256-b/2B+mnlIIk/MToUTeCzm6/xLKUJBme8BGummY/0jSo=",
+        "lastModified": 1723893121,
+        "narHash": "sha256-m05Z19oAmCHQvrbE1okcQzKbSuieefgGC+DDpKHbFUk=",
         "owner": "NixOS",
         "repo": "nix",
-        "rev": "b7d80d002f8a3885e9f98b5944e283c2b7f861e6",
+        "rev": "c45859864742dea6cacf84b83b577c3be0744bf1",
         "type": "github"
       },
       "original": {
@@ -623,11 +623,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1723892521,
-        "narHash": "sha256-WWmeMsjoRJGf5YIvY30OgemuW11fFs0GFJXKDZNNiG8=",
+        "lastModified": 1723893037,
+        "narHash": "sha256-4ZFxF+0lpHl35twtDq0hmbJDAjCCr+GEadyA+zSIYKw=",
         "owner": "Mic92",
         "repo": "nixpkgs",
-        "rev": "739f6ccdbd1e92494351b2bb3b897b685a15fd2f",
+        "rev": "8dbb3ec126ecb967707114981507887624500301",
         "type": "github"
       },
       "original": {
