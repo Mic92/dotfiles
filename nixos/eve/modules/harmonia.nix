@@ -1,7 +1,7 @@
 { config, ... }:
 {
   services.harmonia.enable = true;
-  services.harmonia.signKeyPath = config.sops.secrets.harmonia-key.path;
+  services.harmonia.signKeyPaths = [ config.sops.secrets.harmonia-key.path ];
 
   nix.settings.allowed-users = [ "harmonia" ];
 
