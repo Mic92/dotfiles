@@ -25,11 +25,15 @@
     hercules-ci-effects.inputs.nixpkgs.follows = "nixpkgs";
     hercules-ci-effects.inputs.flake-parts.follows = "flake-parts";
 
+    harmonia.url = "github:nix-community/harmonia";
+    harmonia.inputs.nixpkgs.follows = "nixpkgs";
+    harmonia.inputs.flake-parts.follows = "flake-parts";
+    harmonia.inputs.treefmt-nix.follows = "treefmt-nix";
+
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
-    #nix.url = "github:Mic92/nix-1/less-alloc";
-    nix.url = "github:NixOS/nix";
+    nix.url = "github:Mic92/nix-1";
     nix.inputs.flake-parts.follows = "";
     nix.inputs.nixpkgs-regression.follows = "";
     nix.inputs.nixpkgs-23-11.follows = "";
