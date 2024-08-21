@@ -322,6 +322,32 @@
         "type": "github"
       }
     },
+    "harmonia": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1724084420,
+        "narHash": "sha256-jg4ezQLW6oOBU0mCTs/PfwwCg/oxOjahoYx2JRui8Kg=",
+        "owner": "nix-community",
+        "repo": "harmonia",
+        "rev": "e4ce4d1c6ac670fe41e525ca42a51a3e0fdd3318",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "harmonia",
+        "type": "github"
+      }
+    },
     "hercules-ci-effects": {
       "inputs": {
         "flake-parts": [
@@ -452,16 +478,16 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1724126328,
-        "narHash": "sha256-HvCwy7TCnOYjVtjaFepOqay+ywwPUYUlCBWj8MfnZSs=",
-        "owner": "NixOS",
-        "repo": "nix",
-        "rev": "6accf8692333f27d60ab4e24cf5dbe5e7a1f92e3",
+        "lastModified": 1724215578,
+        "narHash": "sha256-jCtSQE5c+4DADpAwsdU3uqiDswGDWPzi9xp/oP1ljeU=",
+        "owner": "Mic92",
+        "repo": "nix-1",
+        "rev": "047c0af427ad32dfd7f4bf09135ec3829ff3193e",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
-        "repo": "nix",
+        "owner": "Mic92",
+        "repo": "nix-1",
         "type": "github"
       }
     },
@@ -683,6 +709,7 @@
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
+        "harmonia": "harmonia",
         "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
         "lanzaboote": "lanzaboote",
