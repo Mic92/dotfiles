@@ -1,7 +1,8 @@
-{ config, ... }:
+{ config, inputs, ... }:
 {
-  services.harmonia.enable = true;
-  services.harmonia.signKeyPaths = [ config.sops.secrets.harmonia-key.path ];
+  imports = [ inputs.harmonia.nixosModules.harmonia ];
+  services.harmonia-dev.enable = true;
+  services.harmonia-dev.signKeyPaths = [ config.sops.secrets.harmonia-key.path ];
 
   nix.settings.allowed-users = [ "harmonia" ];
 
