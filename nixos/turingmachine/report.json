@@ -24,28 +24,26 @@
     "bluetooth": [
       {
         "bus_type": {
-          "value": 134,
-          "name": "USB"
+          "name": "USB",
+          "value": 134
         },
         "slot": 0,
         "base_class": {
-          "value": 277,
-          "name": "Bluetooth Device"
+          "name": "Bluetooth Device",
+          "value": 277
         },
         "vendor": {
-          "type": "usb",
-          "value": 32903,
-          "name": "Intel Corp."
+          "name": "Intel Corp.",
+          "value": 32903
         },
         "device": {
-          "type": "usb",
-          "value": 50,
-          "name": "AX210 Bluetooth"
+          "name": "AX210 Bluetooth",
+          "value": 50
         },
         "model": "Intel AX210 Bluetooth",
-        "attached_to": 59,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-10/3-10:1.0",
-        "sysfs_bus_id": "3-10:1.0",
+        "attached_to": 71,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-10/1-10:1.0",
+        "sysfs_bus_id": "1-10:1.0",
         "resources": [
           {
             "type": "baud",
@@ -92,35 +90,31 @@
     "bridge": [
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 31,
         "base_class": {
-          "value": 6,
-          "name": "Bridge"
+          "name": "Bridge",
+          "value": 6
         },
         "sub_class": {
-          "value": 1,
-          "name": "ISA bridge"
+          "name": "ISA bridge",
+          "value": 1
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 20893,
-          "name": "Raptor Lake LPC/eSPI Controller"
+          "name": "Raptor Lake LPC/eSPI Controller",
+          "value": 20893
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "revision": {
@@ -144,39 +138,35 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 7,
         "base_class": {
-          "value": 6,
-          "name": "Bridge"
+          "name": "Bridge",
+          "value": 6
         },
         "sub_class": {
-          "value": 4,
-          "name": "PCI bridge"
+          "name": "PCI bridge",
+          "value": 4
         },
         "pci_interface": {
-          "value": 0,
-          "name": "Normal decode"
+          "name": "Normal decode",
+          "value": 0
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 42799,
-          "name": "Raptor Lake-P Thunderbolt 4 PCI Express Root Port #2"
+          "name": "Raptor Lake-P Thunderbolt 4 PCI Express Root Port #2",
+          "value": 42799
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "model": "Intel Raptor Lake-P Thunderbolt 4 PCI Express Root Port #2",
@@ -209,39 +199,35 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 7,
         "base_class": {
-          "value": 6,
-          "name": "Bridge"
+          "name": "Bridge",
+          "value": 6
         },
         "sub_class": {
-          "value": 4,
-          "name": "PCI bridge"
+          "name": "PCI bridge",
+          "value": 4
         },
         "pci_interface": {
-          "value": 0,
-          "name": "Normal decode"
+          "name": "Normal decode",
+          "value": 0
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 42862,
-          "name": "Raptor Lake-P Thunderbolt 4 PCI Express Root Port #0"
+          "name": "Raptor Lake-P Thunderbolt 4 PCI Express Root Port #0",
+          "value": 42862
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "model": "Intel Raptor Lake-P Thunderbolt 4 PCI Express Root Port #0",
@@ -274,35 +260,31 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 0,
         "base_class": {
-          "value": 6,
-          "name": "Bridge"
+          "name": "Bridge",
+          "value": 6
         },
         "sub_class": {
-          "value": 0,
-          "name": "Host bridge"
+          "name": "Host bridge",
+          "value": 0
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 42759,
-          "name": "Raptor Lake-P/U 4p+8e cores Host Bridge/DRAM Controller"
+          "name": "Raptor Lake-P/U 4p+8e cores Host Bridge/DRAM Controller",
+          "value": 42759
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "model": "Intel Raptor Lake-P/U 4p+8e cores Host Bridge/DRAM Controller",
@@ -331,39 +313,35 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 6,
         "base_class": {
-          "value": 6,
-          "name": "Bridge"
+          "name": "Bridge",
+          "value": 6
         },
         "sub_class": {
-          "value": 4,
-          "name": "PCI bridge"
+          "name": "PCI bridge",
+          "value": 4
         },
         "pci_interface": {
-          "value": 0,
-          "name": "Normal decode"
+          "name": "Normal decode",
+          "value": 0
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 42829,
-          "name": "Raptor Lake PCIe 4.0 Graphics Port"
+          "name": "Raptor Lake PCIe 4.0 Graphics Port",
+          "value": 42829
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "model": "Intel Raptor Lake PCIe 4.0 Graphics Port",
@@ -396,38 +374,34 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 7,
         "base_class": {
-          "value": 6,
-          "name": "Bridge"
+          "name": "Bridge",
+          "value": 6
         },
         "sub_class": {
-          "value": 4,
-          "name": "PCI bridge"
+          "name": "PCI bridge",
+          "value": 4
         },
         "pci_interface": {
-          "value": 0,
-          "name": "Normal decode"
+          "name": "Normal decode",
+          "value": 0
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
           "value": 42783
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "model": "Intel PCI bridge",
@@ -460,39 +434,35 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 29,
         "base_class": {
-          "value": 6,
-          "name": "Bridge"
+          "name": "Bridge",
+          "value": 6
         },
         "sub_class": {
-          "value": 4,
-          "name": "PCI bridge"
+          "name": "PCI bridge",
+          "value": 4
         },
         "pci_interface": {
-          "value": 0,
-          "name": "Normal decode"
+          "name": "Normal decode",
+          "value": 0
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 20912,
-          "name": "Alder Lake PCI Express Root Port #9"
+          "name": "Alder Lake PCI Express Root Port #9",
+          "value": 20912
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "revision": {
@@ -528,38 +498,34 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 7,
         "base_class": {
-          "value": 6,
-          "name": "Bridge"
+          "name": "Bridge",
+          "value": 6
         },
         "sub_class": {
-          "value": 4,
-          "name": "PCI bridge"
+          "name": "PCI bridge",
+          "value": 4
         },
         "pci_interface": {
-          "value": 0,
-          "name": "Normal decode"
+          "name": "Normal decode",
+          "value": 0
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
           "value": 42815
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "model": "Intel PCI bridge",
@@ -767,35 +733,31 @@
     "disk": [
       {
         "bus_type": {
-          "value": 150,
-          "name": "NVME"
+          "name": "NVME",
+          "value": 150
         },
         "slot": 0,
         "base_class": {
-          "value": 262,
-          "name": "Mass Storage Device"
+          "name": "Mass Storage Device",
+          "value": 262
         },
         "sub_class": {
-          "value": 0,
-          "name": "Disk"
+          "name": "Disk",
+          "value": 0
         },
         "vendor": {
-          "type": "pci",
-          "value": 5559,
-          "name": "Sandisk Corp"
+          "name": "Sandisk Corp",
+          "value": 5559
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 5559,
-          "name": "Sandisk Corp"
+          "name": "Sandisk Corp",
+          "value": 5559
         },
         "device": {
-          "type": "pci",
-          "value": 20528,
-          "name": "WD Black SN850X NVMe SSD"
+          "name": "WD Black SN850X NVMe SSD",
+          "value": 20528
         },
         "sub_device": {
-          "type": "pci",
           "value": 20528
         },
         "model": "Sandisk WD Black SN850X NVMe SSD",
@@ -810,6 +772,14 @@
           "minor": 0,
           "range": 0
         },
+        "unix_device_names": [
+          "/dev/disk/by-diskseq/1",
+          "/dev/disk/by-id/nvme-WD_BLACK_SN850X_2000GB_23130X800799",
+          "/dev/disk/by-id/nvme-WD_BLACK_SN850X_2000GB_23130X800799_1",
+          "/dev/disk/by-id/nvme-eui.e8238fa6bf530001001b448b4e3dbb51",
+          "/dev/disk/by-path/pci-0000:01:00.0-nvme-1",
+          "/dev/nvme0n1"
+        ],
         "rom_id": "0x80",
         "resources": [
           {
@@ -843,39 +813,35 @@
     "graphics_card": [
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 2,
         "base_class": {
-          "value": 3,
-          "name": "Display controller"
+          "name": "Display controller",
+          "value": 3
         },
         "sub_class": {
-          "value": 0,
-          "name": "VGA compatible controller"
+          "name": "VGA compatible controller",
+          "value": 0
         },
         "pci_interface": {
-          "value": 0,
-          "name": "VGA"
+          "name": "VGA",
+          "value": 0
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 42912,
-          "name": "Raptor Lake-P [Iris Xe Graphics]"
+          "name": "Raptor Lake-P [Iris Xe Graphics]",
+          "value": 42912
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "revision": {
@@ -886,12 +852,17 @@
         "sysfs_bus_id": "0000:00:02.0",
         "resources": [
           {
-            "type": "mem",
-            "base": 413860364288,
-            "range": 16777216,
+            "type": "io",
+            "base": 12288,
+            "range": 64,
             "enabled": true,
-            "access": "read_write",
-            "prefetch": "no"
+            "access": "read_write"
+          },
+          {
+            "type": "irq",
+            "base": 174,
+            "triggered": 0,
+            "enabled": true
           },
           {
             "type": "mem",
@@ -902,11 +873,12 @@
             "prefetch": "no"
           },
           {
-            "type": "io",
-            "base": 12288,
-            "range": 64,
+            "type": "mem",
+            "base": 413860364288,
+            "range": 16777216,
             "enabled": true,
-            "access": "read_write"
+            "access": "read_write",
+            "prefetch": "no"
           },
           {
             "type": "mem",
@@ -915,12 +887,6 @@
             "enabled": false,
             "access": "read_write",
             "prefetch": "no"
-          },
-          {
-            "type": "irq",
-            "base": 177,
-            "triggered": 0,
-            "enabled": true
           }
         ],
         "detail": {
@@ -928,7 +894,7 @@
           "command": 1031,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 177,
+          "irq": 174,
           "prog_if": 0
         },
         "hotplug": "none",
@@ -948,214 +914,30 @@
     "hub": [
       {
         "bus_type": {
-          "value": 134,
-          "name": "USB"
+          "name": "USB",
+          "value": 134
         },
         "slot": 0,
         "base_class": {
-          "value": 266,
-          "name": "Hub"
+          "name": "Hub",
+          "value": 266
         },
         "vendor": {
-          "type": "usb",
-          "value": 2578,
-          "name": "Cambridge Silicon Radio, Ltd"
+          "name": "Lenovo",
+          "value": 6127
         },
         "device": {
-          "type": "usb",
-          "value": 16400,
-          "name": "Mpow HC5 Headset in charging mode - USB Hub"
+          "name": "USB3.2 Hub",
+          "value": 4165
         },
         "revision": {
-          "value": 0,
-          "name": "16.80"
-        },
-        "model": "Cambridge Silicon Radio Mpow HC5 Headset in charging mode - USB Hub",
-        "attached_to": 59,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3:1.0",
-        "sysfs_bus_id": "3-3:1.0",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 12000000,
-          "device_class": "hub",
-          "interface_class": "hub",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v0A12p4010d1680dc09dsc00dp00ic09isc00ip00in00"
-      },
-      {
-        "bus_type": {
-          "value": 134,
-          "name": "USB"
-        },
-        "slot": 0,
-        "base_class": {
-          "value": 266,
-          "name": "Hub"
-        },
-        "vendor": {
-          "type": "usb",
-          "value": 32903,
-          "name": "Intel Corp."
-        },
-        "device": {
-          "type": "usb",
-          "value": 2880,
-          "name": "USB3.0 Hub"
-        },
-        "revision": {
-          "value": 0,
-          "name": "12.34"
-        },
-        "model": "Intel USB3.0 Hub",
-        "attached_to": 80,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-1/2-1:1.0",
-        "sysfs_bus_id": "2-1:1.0",
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 0,
-          "manufacturer": "Intel Corporation.",
-          "product": "USB3.0 Hub",
-          "device_class": "hub",
-          "device_protocol": 3,
-          "interface_class": "hub",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v8087p0B40d1234dc09dsc00dp03ic09isc00ip00in00"
-      },
-      {
-        "bus_type": {
-          "value": 134,
-          "name": "USB"
-        },
-        "slot": 0,
-        "base_class": {
-          "value": 266,
-          "name": "Hub"
-        },
-        "vendor": {
-          "type": "usb",
-          "value": 7531,
-          "name": "Linux Foundation"
-        },
-        "device": {
-          "type": "usb",
-          "value": 2,
-          "name": "2.0 root hub"
-        },
-        "revision": {
-          "value": 0,
-          "name": "6.10"
-        },
-        "model": "Linux Foundation 2.0 root hub",
-        "attached_to": 42,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-0:1.0",
-        "sysfs_bus_id": "3-0:1.0",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 480000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 480000000,
-          "manufacturer": "Linux 6.10.6 xhci-hcd",
-          "product": "xHCI Host Controller",
-          "device_class": "hub",
-          "device_protocol": 1,
-          "interface_class": "hub",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v1D6Bp0002d0610dc09dsc00dp01ic09isc00ip00in00"
-      },
-      {
-        "bus_type": {
-          "value": 134,
-          "name": "USB"
-        },
-        "slot": 0,
-        "base_class": {
-          "value": 266,
-          "name": "Hub"
-        },
-        "vendor": {
-          "type": "usb",
-          "value": 6127,
-          "name": "Lenovo"
-        },
-        "device": {
-          "type": "usb",
-          "value": 4165,
-          "name": "USB3.2 Hub"
-        },
-        "revision": {
-          "value": 0,
-          "name": "1.47"
+          "name": "1.47",
+          "value": 0
         },
         "model": "Lenovo USB3.2 Hub",
-        "attached_to": 75,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-1/2-1.4/2-1.4.1/2-1.4.1:1.0",
-        "sysfs_bus_id": "2-1.4.1:1.0",
+        "attached_to": 76,
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb4/4-1/4-1.4/4-1.4.1/4-1.4.1:1.0",
+        "sysfs_bus_id": "4-1.4.1:1.0",
         "detail": {
           "bus": 0,
           "device_number": 0,
@@ -1185,339 +967,30 @@
       },
       {
         "bus_type": {
-          "value": 134,
-          "name": "USB"
+          "name": "USB",
+          "value": 134
         },
         "slot": 0,
         "base_class": {
-          "value": 266,
-          "name": "Hub"
+          "name": "Hub",
+          "value": 266
         },
         "vendor": {
-          "type": "usb",
-          "value": 6127,
-          "name": "Lenovo"
+          "name": "Lenovo",
+          "value": 6127
         },
         "device": {
-          "type": "usb",
-          "value": 1584,
-          "name": "USB2.1 Hub"
+          "name": "USB2.1 Hub",
+          "value": 21521
         },
         "revision": {
-          "value": 0,
-          "name": "11.32"
+          "name": "1.47",
+          "value": 0
         },
         "model": "Lenovo USB2.1 Hub",
-        "attached_to": 77,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.3/3-2.3:1.0",
-        "sysfs_bus_id": "3-2.3:1.0",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 480000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 480000000,
-          "manufacturer": "GenesysLogic",
-          "product": "USB2.1 Hub",
-          "device_class": "hub",
-          "device_protocol": 2,
-          "interface_class": "hub",
-          "interface_protocol": 2,
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v17EFp0630d1132dc09dsc00dp02ic09isc00ip02in00"
-      },
-      {
-        "bus_type": {
-          "value": 134,
-          "name": "USB"
-        },
-        "slot": 0,
-        "base_class": {
-          "value": 266,
-          "name": "Hub"
-        },
-        "vendor": {
-          "type": "usb",
-          "value": 7531,
-          "name": "Linux Foundation"
-        },
-        "device": {
-          "type": "usb",
-          "value": 3,
-          "name": "3.0 root hub"
-        },
-        "revision": {
-          "value": 0,
-          "name": "6.10"
-        },
-        "model": "Linux Foundation 3.0 root hub",
-        "attached_to": 42,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb4/4-0:1.0",
-        "sysfs_bus_id": "4-0:1.0",
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 0,
-          "manufacturer": "Linux 6.10.6 xhci-hcd",
-          "product": "xHCI Host Controller",
-          "device_class": "hub",
-          "device_protocol": 3,
-          "interface_class": "hub",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v1D6Bp0003d0610dc09dsc00dp03ic09isc00ip00in00"
-      },
-      {
-        "bus_type": {
-          "value": 134,
-          "name": "USB"
-        },
-        "slot": 0,
-        "base_class": {
-          "value": 266,
-          "name": "Hub"
-        },
-        "vendor": {
-          "type": "usb",
-          "value": 7531,
-          "name": "Linux Foundation"
-        },
-        "device": {
-          "type": "usb",
-          "value": 2,
-          "name": "2.0 root hub"
-        },
-        "revision": {
-          "value": 0,
-          "name": "6.10"
-        },
-        "model": "Linux Foundation 2.0 root hub",
-        "attached_to": 21,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb1/1-0:1.0",
-        "sysfs_bus_id": "1-0:1.0",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 480000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 480000000,
-          "manufacturer": "Linux 6.10.6 xhci-hcd",
-          "product": "xHCI Host Controller",
-          "device_class": "hub",
-          "device_protocol": 1,
-          "interface_class": "hub",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v1D6Bp0002d0610dc09dsc00dp01ic09isc00ip00in00"
-      },
-      {
-        "bus_type": {
-          "value": 134,
-          "name": "USB"
-        },
-        "slot": 0,
-        "base_class": {
-          "value": 266,
-          "name": "Hub"
-        },
-        "vendor": {
-          "type": "usb",
-          "value": 6127,
-          "name": "Lenovo"
-        },
-        "device": {
-          "type": "usb",
-          "value": 4164,
-          "name": "USB3.2 Hub"
-        },
-        "revision": {
-          "value": 0,
-          "name": "11.32"
-        },
-        "model": "Lenovo USB3.2 Hub",
         "attached_to": 58,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-1/2-1.4/2-1.4:1.0",
-        "sysfs_bus_id": "2-1.4:1.0",
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 0,
-          "manufacturer": "GenesysLogic",
-          "product": "USB3.2 Hub",
-          "device_class": "hub",
-          "device_protocol": 3,
-          "interface_class": "hub",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v17EFp1044d1132dc09dsc00dp03ic09isc00ip00in00"
-      },
-      {
-        "bus_type": {
-          "value": 134,
-          "name": "USB"
-        },
-        "slot": 0,
-        "base_class": {
-          "value": 266,
-          "name": "Hub"
-        },
-        "vendor": {
-          "type": "usb",
-          "value": 7516,
-          "name": "Fresco Logic"
-        },
-        "device": {
-          "type": "usb",
-          "value": 22529,
-          "name": "USB2.0 Hub"
-        },
-        "revision": {
-          "value": 0,
-          "name": "1.01"
-        },
-        "model": "Fresco Logic USB2.0 Hub",
-        "attached_to": 59,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2:1.0",
-        "sysfs_bus_id": "3-2:1.0",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 480000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 480000000,
-          "manufacturer": "Fresco Logic, Inc.",
-          "product": "USB2.0 Hub",
-          "device_class": "hub",
-          "device_protocol": 2,
-          "interface_class": "hub",
-          "interface_protocol": 2,
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v1D5Cp5801d0101dc09dsc00dp02ic09isc00ip02in00"
-      },
-      {
-        "bus_type": {
-          "value": 134,
-          "name": "USB"
-        },
-        "slot": 0,
-        "base_class": {
-          "value": 266,
-          "name": "Hub"
-        },
-        "vendor": {
-          "type": "usb",
-          "value": 6127,
-          "name": "Lenovo"
-        },
-        "device": {
-          "type": "usb",
-          "value": 21521,
-          "name": "USB2.1 Hub"
-        },
-        "revision": {
-          "value": 0,
-          "name": "1.47"
-        },
-        "model": "Lenovo USB2.1 Hub",
-        "attached_to": 64,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.3/3-2.3.1/3-2.3.1:1.0",
-        "sysfs_bus_id": "3-2.3.1:1.0",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.3/1-2.3.1/1-2.3.1:1.0",
+        "sysfs_bus_id": "1-2.3.1:1.0",
         "resources": [
           {
             "type": "baud",
@@ -1558,31 +1031,502 @@
       },
       {
         "bus_type": {
-          "value": 134,
-          "name": "USB"
+          "name": "USB",
+          "value": 134
         },
         "slot": 0,
         "base_class": {
-          "value": 266,
-          "name": "Hub"
+          "name": "Hub",
+          "value": 266
         },
         "vendor": {
-          "type": "usb",
-          "value": 7531,
-          "name": "Linux Foundation"
+          "name": "Fresco Logic",
+          "value": 7516
         },
         "device": {
-          "type": "usb",
-          "value": 3,
-          "name": "3.0 root hub"
+          "name": "USB2.0 Hub",
+          "value": 22529
         },
         "revision": {
-          "value": 0,
-          "name": "6.10"
+          "name": "1.01",
+          "value": 0
+        },
+        "model": "Fresco Logic USB2.0 Hub",
+        "attached_to": 71,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2:1.0",
+        "sysfs_bus_id": "1-2:1.0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 480000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 480000000,
+          "manufacturer": "Fresco Logic, Inc.",
+          "product": "USB2.0 Hub",
+          "device_class": "hub",
+          "device_protocol": 2,
+          "interface_class": "hub",
+          "interface_protocol": 2,
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v1D5Cp5801d0101dc09dsc00dp02ic09isc00ip02in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
+          "name": "Lenovo",
+          "value": 6127
+        },
+        "device": {
+          "name": "USB2.1 Hub",
+          "value": 1584
+        },
+        "revision": {
+          "name": "11.32",
+          "value": 0
+        },
+        "model": "Lenovo USB2.1 Hub",
+        "attached_to": 57,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.3/1-2.3:1.0",
+        "sysfs_bus_id": "1-2.3:1.0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 480000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 480000000,
+          "manufacturer": "GenesysLogic",
+          "product": "USB2.1 Hub",
+          "device_class": "hub",
+          "device_protocol": 2,
+          "interface_class": "hub",
+          "interface_protocol": 2,
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v17EFp0630d1132dc09dsc00dp02ic09isc00ip02in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
+          "name": "Linux Foundation",
+          "value": 7531
+        },
+        "device": {
+          "name": "2.0 root hub",
+          "value": 2
+        },
+        "revision": {
+          "name": "6.10",
+          "value": 0
+        },
+        "model": "Linux Foundation 2.0 root hub",
+        "attached_to": 21,
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb3/3-0:1.0",
+        "sysfs_bus_id": "3-0:1.0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 480000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 480000000,
+          "manufacturer": "Linux 6.10.6 xhci-hcd",
+          "product": "xHCI Host Controller",
+          "device_class": "hub",
+          "device_protocol": 1,
+          "interface_class": "hub",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v1D6Bp0002d0610dc09dsc00dp01ic09isc00ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
+          "name": "Cambridge Silicon Radio, Ltd",
+          "value": 2578
+        },
+        "device": {
+          "name": "Mpow HC5 Headset in charging mode - USB Hub",
+          "value": 16400
+        },
+        "revision": {
+          "name": "16.80",
+          "value": 0
+        },
+        "model": "Cambridge Silicon Radio Mpow HC5 Headset in charging mode - USB Hub",
+        "attached_to": 71,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-3/1-3:1.0",
+        "sysfs_bus_id": "1-3:1.0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 12000000,
+          "device_class": "hub",
+          "interface_class": "hub",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v0A12p4010d1680dc09dsc00dp00ic09isc00ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
+          "name": "Linux Foundation",
+          "value": 7531
+        },
+        "device": {
+          "name": "3.0 root hub",
+          "value": 3
+        },
+        "revision": {
+          "name": "6.10",
+          "value": 0
         },
         "model": "Linux Foundation 3.0 root hub",
         "attached_to": 21,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-0:1.0",
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb4/4-0:1.0",
+        "sysfs_bus_id": "4-0:1.0",
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 0,
+          "manufacturer": "Linux 6.10.6 xhci-hcd",
+          "product": "xHCI Host Controller",
+          "device_class": "hub",
+          "device_protocol": 3,
+          "interface_class": "hub",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v1D6Bp0003d0610dc09dsc00dp03ic09isc00ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
+          "name": "Linux Foundation",
+          "value": 7531
+        },
+        "device": {
+          "name": "2.0 root hub",
+          "value": 2
+        },
+        "revision": {
+          "name": "6.10",
+          "value": 0
+        },
+        "model": "Linux Foundation 2.0 root hub",
+        "attached_to": 42,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-0:1.0",
+        "sysfs_bus_id": "1-0:1.0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 480000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 480000000,
+          "manufacturer": "Linux 6.10.6 xhci-hcd",
+          "product": "xHCI Host Controller",
+          "device_class": "hub",
+          "device_protocol": 1,
+          "interface_class": "hub",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v1D6Bp0002d0610dc09dsc00dp01ic09isc00ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
+          "name": "Intel Corp.",
+          "value": 32903
+        },
+        "device": {
+          "name": "USB3.0 Hub",
+          "value": 2880
+        },
+        "revision": {
+          "name": "12.34",
+          "value": 0
+        },
+        "model": "Intel USB3.0 Hub",
+        "attached_to": 68,
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb4/4-1/4-1:1.0",
+        "sysfs_bus_id": "4-1:1.0",
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 0,
+          "manufacturer": "Intel Corporation.",
+          "product": "USB3.0 Hub",
+          "device_class": "hub",
+          "device_protocol": 3,
+          "interface_class": "hub",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v8087p0B40d1234dc09dsc00dp03ic09isc00ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
+          "name": "Lenovo",
+          "value": 6127
+        },
+        "device": {
+          "name": "USB3.2 Hub",
+          "value": 4164
+        },
+        "revision": {
+          "name": "11.32",
+          "value": 0
+        },
+        "model": "Lenovo USB3.2 Hub",
+        "attached_to": 72,
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb4/4-1/4-1.4/4-1.4:1.0",
+        "sysfs_bus_id": "4-1.4:1.0",
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 0,
+          "manufacturer": "GenesysLogic",
+          "product": "USB3.2 Hub",
+          "device_class": "hub",
+          "device_protocol": 3,
+          "interface_class": "hub",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v17EFp1044d1132dc09dsc00dp03ic09isc00ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
+          "name": "Linux Foundation",
+          "value": 7531
+        },
+        "device": {
+          "name": "3.0 root hub",
+          "value": 3
+        },
+        "revision": {
+          "name": "6.10",
+          "value": 0
+        },
+        "model": "Linux Foundation 3.0 root hub",
+        "attached_to": 42,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb2/2-0:1.0",
         "sysfs_bus_id": "2-0:1.0",
         "detail": {
           "bus": 0,
@@ -1615,36 +1559,34 @@
     "keyboard": [
       {
         "bus_type": {
-          "value": 134,
-          "name": "USB"
+          "name": "USB",
+          "value": 134
         },
         "slot": 0,
         "base_class": {
-          "value": 264,
-          "name": "Keyboard"
+          "name": "Keyboard",
+          "value": 264
         },
         "sub_class": {
-          "value": 0,
-          "name": "Keyboard"
+          "name": "Keyboard",
+          "value": 0
         },
         "vendor": {
-          "type": "usb",
-          "value": 13364,
-          "name": "Keychron"
+          "name": "Keychron",
+          "value": 13364
         },
         "device": {
-          "type": "usb",
-          "value": 611,
-          "name": "Keychron K6 Pro"
+          "name": "Keychron K6 Pro",
+          "value": 611
         },
         "revision": {
-          "value": 0,
-          "name": "1.00"
+          "name": "1.00",
+          "value": 0
         },
         "model": "Keychron K6 Pro",
-        "attached_to": 79,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.3/3-2.3.1/3-2.3.1.1/3-2.3.1.1:1.0",
-        "sysfs_bus_id": "3-2.3.1.1:1.0",
+        "attached_to": 54,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.3/1-2.3.1/1-2.3.1.1/1-2.3.1.1:1.0",
+        "sysfs_bus_id": "1-2.3.1.1:1.0",
         "unix_device_name": "/dev/input/event6",
         "unix_device_number": {
           "type": 99,
@@ -1652,6 +1594,12 @@
           "minor": 70,
           "range": 1
         },
+        "unix_device_names": [
+          "/dev/input/by-id/usb-Keychron_Keychron_K6_Pro-event-kbd",
+          "/dev/input/by-path/pci-0000:00:14.0-usb-0:2.3.1.1:1.0-event-kbd",
+          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:2.3.1.1:1.0-event-kbd",
+          "/dev/input/event6"
+        ],
         "resources": [
           {
             "type": "baud",
@@ -1700,36 +1648,34 @@
       },
       {
         "bus_type": {
-          "value": 134,
-          "name": "USB"
+          "name": "USB",
+          "value": 134
         },
         "slot": 0,
         "base_class": {
-          "value": 264,
-          "name": "Keyboard"
+          "name": "Keyboard",
+          "value": 264
         },
         "sub_class": {
-          "value": 0,
-          "name": "Keyboard"
+          "name": "Keyboard",
+          "value": 0
         },
         "vendor": {
-          "type": "usb",
-          "value": 1133,
-          "name": "Logitech, Inc."
+          "name": "Logitech, Inc.",
+          "value": 1133
         },
         "device": {
-          "type": "usb",
-          "value": 50504,
-          "name": "Logi Bolt Receiver"
+          "name": "Logi Bolt Receiver",
+          "value": 50504
         },
         "revision": {
-          "value": 0,
-          "name": "5.03"
+          "name": "5.03",
+          "value": 0
         },
         "model": "Logitech Logi Bolt Receiver",
-        "attached_to": 79,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.3/3-2.3.1/3-2.3.1.2/3-2.3.1.2:1.0",
-        "sysfs_bus_id": "3-2.3.1.2:1.0",
+        "attached_to": 54,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.3/1-2.3.1/1-2.3.1.2/1-2.3.1.2:1.0",
+        "sysfs_bus_id": "1-2.3.1.2:1.0",
         "unix_device_name": "/dev/input/event11",
         "unix_device_number": {
           "type": 99,
@@ -1737,6 +1683,12 @@
           "minor": 75,
           "range": 1
         },
+        "unix_device_names": [
+          "/dev/input/by-id/usb-Logitech_USB_Receiver-event-kbd",
+          "/dev/input/by-path/pci-0000:00:14.0-usb-0:2.3.1.2:1.0-event-kbd",
+          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:2.3.1.2:1.0-event-kbd",
+          "/dev/input/event11"
+        ],
         "resources": [
           {
             "type": "baud",
@@ -1791,20 +1743,18 @@
       {
         "slot": 0,
         "base_class": {
-          "value": 256,
-          "name": "Monitor"
+          "name": "Monitor",
+          "value": 256
         },
         "sub_class": {
-          "value": 2,
-          "name": "LCD Monitor"
+          "name": "LCD Monitor",
+          "value": 2
         },
         "vendor": {
-          "type": "eisa",
-          "value": 2533,
-          "name": "BOE CQ"
+          "name": "BOE CQ",
+          "value": 2533
         },
         "device": {
-          "type": "eisa",
           "value": 3018
         },
         "model": "BOE CQ LCD Monitor",
@@ -1864,58 +1814,28 @@
       {
         "slot": 1,
         "base_class": {
-          "value": 256,
-          "name": "Monitor"
+          "name": "Monitor",
+          "value": 256
         },
         "sub_class": {
-          "value": 2,
-          "name": "LCD Monitor"
+          "name": "LCD Monitor",
+          "value": 2
         },
         "vendor": {
-          "type": "eisa",
-          "value": 12462,
-          "name": "Lenovo"
+          "name": "Lenovo",
+          "value": 12462
         },
         "device": {
-          "type": "eisa",
-          "value": 25291,
-          "name": "P27u-20"
+          "name": "P27u-20",
+          "value": 25291
         },
         "model": "Lenovo P27u-20",
         "attached_to": 41,
         "resources": [
           {
             "type": "monitor",
-            "width": 720,
-            "height": 400,
-            "vertical_frequency": 70,
-            "interlaced": false
-          },
-          {
-            "type": "monitor",
-            "width": 640,
-            "height": 480,
-            "vertical_frequency": 60,
-            "interlaced": false
-          },
-          {
-            "type": "monitor",
-            "width": 800,
-            "height": 600,
-            "vertical_frequency": 60,
-            "interlaced": false
-          },
-          {
-            "type": "monitor",
             "width": 1024,
             "height": 768,
-            "vertical_frequency": 60,
-            "interlaced": false
-          },
-          {
-            "type": "monitor",
-            "width": 1280,
-            "height": 720,
             "vertical_frequency": 60,
             "interlaced": false
           },
@@ -1928,8 +1848,36 @@
           },
           {
             "type": "monitor",
+            "width": 1280,
+            "height": 720,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
             "width": 3840,
             "height": 2160,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 640,
+            "height": 480,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 720,
+            "height": 400,
+            "vertical_frequency": 70,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 800,
+            "height": 600,
             "vertical_frequency": 60,
             "interlaced": false
           },
@@ -2009,46 +1957,36 @@
     "mouse": [
       {
         "bus_type": {
-          "value": 134,
-          "name": "USB"
+          "name": "USB",
+          "value": 134
         },
         "slot": 0,
         "base_class": {
-          "value": 261,
-          "name": "Mouse"
+          "name": "Mouse",
+          "value": 261
         },
         "sub_class": {
-          "value": 3,
-          "name": "USB Mouse"
+          "name": "USB Mouse",
+          "value": 3
         },
         "vendor": {
-          "type": "usb",
-          "value": 13364,
-          "name": "Keychron"
+          "name": "Keychron",
+          "value": 13364
         },
         "device": {
-          "type": "usb",
-          "value": 611,
-          "name": "Keychron K6 Pro"
+          "name": "Keychron K6 Pro",
+          "value": 611
         },
         "revision": {
-          "value": 0,
-          "name": "1.00"
+          "name": "1.00",
+          "value": 0
         },
-        "compat_vendor": {
-          "type": "special",
-          "value": 512,
-          "name": "Unknown"
-        },
-        "compat_device": {
-          "type": "special",
-          "value": 1,
-          "name": "Generic USB Mouse"
-        },
+        "compat_vendor": "Unknown",
+        "compat_device": "Generic USB Mouse",
         "model": "Keychron K6 Pro",
-        "attached_to": 79,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.3/3-2.3.1/3-2.3.1.1/3-2.3.1.1:1.2",
-        "sysfs_bus_id": "3-2.3.1.1:1.2",
+        "attached_to": 54,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.3/1-2.3.1/1-2.3.1.1/1-2.3.1.1:1.2",
+        "sysfs_bus_id": "1-2.3.1.1:1.2",
         "unix_device_name": "/dev/input/mice",
         "unix_device_number": {
           "type": 99,
@@ -2056,6 +1994,9 @@
           "minor": 63,
           "range": 1
         },
+        "unix_device_names": [
+          "/dev/input/mice"
+        ],
         "unix_device_name_2": "/dev/input/mouse3",
         "unix_device_number_2": {
           "type": 99,
@@ -2115,46 +2056,36 @@
       },
       {
         "bus_type": {
-          "value": 134,
-          "name": "USB"
+          "name": "USB",
+          "value": 134
         },
         "slot": 0,
         "base_class": {
-          "value": 261,
-          "name": "Mouse"
+          "name": "Mouse",
+          "value": 261
         },
         "sub_class": {
-          "value": 3,
-          "name": "USB Mouse"
+          "name": "USB Mouse",
+          "value": 3
         },
         "vendor": {
-          "type": "usb",
-          "value": 1133,
-          "name": "Logitech, Inc."
+          "name": "Logitech, Inc.",
+          "value": 1133
         },
         "device": {
-          "type": "usb",
-          "value": 50504,
-          "name": "Logi Bolt Receiver"
+          "name": "Logi Bolt Receiver",
+          "value": 50504
         },
         "revision": {
-          "value": 0,
-          "name": "5.03"
+          "name": "5.03",
+          "value": 0
         },
-        "compat_vendor": {
-          "type": "special",
-          "value": 512,
-          "name": "Unknown"
-        },
-        "compat_device": {
-          "type": "special",
-          "value": 1,
-          "name": "Generic USB Mouse"
-        },
+        "compat_vendor": "Unknown",
+        "compat_device": "Generic USB Mouse",
         "model": "Logitech Logi Bolt Receiver",
-        "attached_to": 79,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.3/3-2.3.1/3-2.3.1.2/3-2.3.1.2:1.1",
-        "sysfs_bus_id": "3-2.3.1.2:1.1",
+        "attached_to": 54,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.3/1-2.3.1/1-2.3.1.2/1-2.3.1.2:1.1",
+        "sysfs_bus_id": "1-2.3.1.2:1.1",
         "unix_device_name": "/dev/input/mice",
         "unix_device_number": {
           "type": 99,
@@ -2162,11 +2093,14 @@
           "minor": 63,
           "range": 1
         },
-        "unix_device_name_2": "/dev/input/mouse6",
+        "unix_device_names": [
+          "/dev/input/mice"
+        ],
+        "unix_device_name_2": "/dev/input/mouse4",
         "unix_device_number_2": {
           "type": 99,
           "major": 13,
-          "minor": 38,
+          "minor": 36,
           "range": 1
         },
         "resources": [
@@ -2225,37 +2159,33 @@
     "network_controller": [
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 43520,
         "base_class": {
-          "value": 2,
-          "name": "Network controller"
+          "name": "Network controller",
+          "value": 2
         },
         "sub_class": {
-          "value": 130,
-          "name": "WLAN controller"
+          "name": "WLAN controller",
+          "value": 130
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "device": {
-          "type": "pci",
-          "value": 10021,
-          "name": "Wi-Fi 6E(802.11ax) AX210/AX1675* 2x2 [Typhoon Peak]"
+          "name": "Wi-Fi 6E(802.11ax) AX210/AX1675* 2x2 [Typhoon Peak]",
+          "value": 10021
         },
         "sub_device": {
-          "type": "pci",
-          "value": 36,
-          "name": "Wi-Fi 6 AX210 160MHz"
+          "name": "Wi-Fi 6 AX210 160MHz",
+          "value": 36
         },
         "revision": {
           "value": 26
@@ -2265,7 +2195,20 @@
         "sysfs_id": "/devices/pci0000:00/0000:00:1d.0/0000:aa:00.0",
         "sysfs_bus_id": "0000:aa:00.0",
         "unix_device_name": "wlp170s0",
+        "unix_device_names": [
+          "wlp170s0"
+        ],
         "resources": [
+          {
+            "type": "hwaddr",
+            "address": 55
+          },
+          {
+            "type": "irq",
+            "base": 16,
+            "triggered": 0,
+            "enabled": true
+          },
           {
             "type": "mem",
             "base": 2048917504,
@@ -2275,22 +2218,8 @@
             "prefetch": "no"
           },
           {
-            "type": "irq",
-            "base": 16,
-            "triggered": 0,
-            "enabled": true
-          },
-          {
-            "type": "hwaddr",
-            "address": 55
-          },
-          {
             "type": "phwaddr",
             "address": 55
-          },
-          {
-            "Type": "link",
-            "connected": true
           },
           {
             "type": "wlan",
@@ -2401,37 +2330,38 @@
       },
       {
         "bus_type": {
-          "value": 134,
-          "name": "USB"
+          "name": "USB",
+          "value": 134
         },
         "slot": 0,
         "base_class": {
-          "value": 2,
-          "name": "Network controller"
+          "name": "Network controller",
+          "value": 2
         },
         "sub_class": {
-          "value": 0,
-          "name": "Ethernet controller"
+          "name": "Ethernet controller",
+          "value": 0
         },
         "vendor": {
-          "type": "usb",
-          "value": 3034,
-          "name": "Realtek Semiconductor Corp."
+          "name": "Realtek Semiconductor Corp.",
+          "value": 3034
         },
         "device": {
-          "type": "usb",
-          "value": 33107,
-          "name": "RTL8153 Gigabit Ethernet Adapter"
+          "name": "RTL8153 Gigabit Ethernet Adapter",
+          "value": 33107
         },
         "revision": {
-          "value": 0,
-          "name": "31.23"
+          "name": "31.23",
+          "value": 0
         },
         "model": "Realtek RTL8153 Gigabit Ethernet Adapter",
-        "attached_to": 60,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-1/2-1.4/2-1.4.1/2-1.4.1.3/2-1.4.1.3:1.0",
-        "sysfs_bus_id": "2-1.4.1.3:1.0",
+        "attached_to": 52,
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb4/4-1/4-1.4/4-1.4.1/4-1.4.1.3/4-1.4.1.3:1.0",
+        "sysfs_bus_id": "4-1.4.1.3:1.0",
         "unix_device_name": "eth0",
+        "unix_device_names": [
+          "eth0"
+        ],
         "resources": [
           {
             "type": "hwaddr",
@@ -2440,10 +2370,6 @@
           {
             "type": "phwaddr",
             "address": 102
-          },
-          {
-            "Type": "link",
-            "connected": true
           }
         ],
         "detail": {
@@ -2481,18 +2407,21 @@
       {
         "slot": 0,
         "base_class": {
-          "value": 263,
-          "name": "Network Interface"
+          "name": "Network Interface",
+          "value": 263
         },
         "sub_class": {
-          "value": 1,
-          "name": "Ethernet"
+          "name": "Ethernet",
+          "value": 1
         },
         "model": "Ethernet network interface",
-        "attached_to": 63,
+        "attached_to": 60,
         "sysfs_id": "/class/net/eth0",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:0d.0/usb2/2-1/2-1.4/2-1.4.1/2-1.4.1.3/2-1.4.1.3:1.0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:0d.0/usb4/4-1/4-1.4/4-1.4.1/4-1.4.1.3/4-1.4.1.3:1.0",
         "unix_device_name": "eth0",
+        "unix_device_names": [
+          "eth0"
+        ],
         "resources": [
           {
             "type": "hwaddr",
@@ -2501,10 +2430,6 @@
           {
             "type": "phwaddr",
             "address": 102
-          },
-          {
-            "Type": "link",
-            "connected": true
           }
         ],
         "hotplug": "none",
@@ -2522,18 +2447,21 @@
       {
         "slot": 0,
         "base_class": {
-          "value": 263,
-          "name": "Network Interface"
+          "name": "Network Interface",
+          "value": 263
         },
         "sub_class": {
-          "value": 1,
-          "name": "Ethernet"
+          "name": "Ethernet",
+          "value": 1
         },
         "model": "Ethernet network interface",
         "attached_to": 38,
         "sysfs_id": "/class/net/wlp170s0",
         "sysfs_device_link": "/devices/pci0000:00/0000:00:1d.0/0000:aa:00.0",
         "unix_device_name": "wlp170s0",
+        "unix_device_names": [
+          "wlp170s0"
+        ],
         "resources": [
           {
             "type": "hwaddr",
@@ -2542,10 +2470,6 @@
           {
             "type": "phwaddr",
             "address": 55
-          },
-          {
-            "Type": "link",
-            "connected": true
           }
         ],
         "hotplug": "none",
@@ -2563,21 +2487,18 @@
       {
         "slot": 0,
         "base_class": {
-          "value": 263,
-          "name": "Network Interface"
+          "name": "Network Interface",
+          "value": 263
         },
         "sub_class": {
-          "value": 0,
-          "name": "Loopback"
+          "name": "Loopback",
+          "value": 0
         },
         "model": "Loopback network interface",
         "sysfs_id": "/class/net/lo",
         "unix_device_name": "lo",
-        "resources": [
-          {
-            "Type": "link",
-            "connected": true
-          }
+        "unix_device_names": [
+          "lo"
         ],
         "hotplug": "none",
         "hotplug_slot": 0,
@@ -2587,38 +2508,34 @@
     "sound": [
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 31,
         "base_class": {
-          "value": 4,
-          "name": "Multimedia controller"
+          "name": "Multimedia controller",
+          "value": 4
         },
         "sub_class": {
-          "value": 3,
-          "name": "Audio device"
+          "name": "Audio device",
+          "value": 3
         },
         "pci_interface": {
           "value": 128
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 20938,
-          "name": "Raptor Lake-P/U/H cAVS"
+          "name": "Raptor Lake-P/U/H cAVS",
+          "value": 20938
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "revision": {
@@ -2629,12 +2546,10 @@
         "sysfs_bus_id": "0000:00:1f.3",
         "resources": [
           {
-            "type": "mem",
-            "base": 413878976512,
-            "range": 16384,
-            "enabled": true,
-            "access": "read_write",
-            "prefetch": "no"
+            "type": "irq",
+            "base": 213,
+            "triggered": 0,
+            "enabled": true
           },
           {
             "type": "mem",
@@ -2645,10 +2560,12 @@
             "prefetch": "no"
           },
           {
-            "type": "irq",
-            "base": 213,
-            "triggered": 0,
-            "enabled": true
+            "type": "mem",
+            "base": 413878976512,
+            "range": 16384,
+            "enabled": true,
+            "access": "read_write",
+            "prefetch": "no"
           }
         ],
         "detail": {
@@ -2674,36 +2591,34 @@
       },
       {
         "bus_type": {
-          "value": 134,
-          "name": "USB"
+          "name": "USB",
+          "value": 134
         },
         "slot": 0,
         "base_class": {
-          "value": 4,
-          "name": "Multimedia controller"
+          "name": "Multimedia controller",
+          "value": 4
         },
         "sub_class": {
-          "value": 1,
-          "name": "Multimedia audio controller"
+          "name": "Multimedia audio controller",
+          "value": 1
         },
         "vendor": {
-          "type": "usb",
-          "value": 2830,
-          "name": "GN Netcom"
+          "name": "GN Netcom",
+          "value": 2830
         },
         "device": {
-          "type": "usb",
-          "value": 9415,
-          "name": "Jabra Link 380"
+          "name": "Jabra Link 380",
+          "value": 9415
         },
         "revision": {
-          "value": 0,
-          "name": "1.16"
+          "name": "1.16",
+          "value": 0
         },
         "model": "GN Netcom Jabra Link 380",
-        "attached_to": 52,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3.1/3-3.1:1.2",
-        "sysfs_bus_id": "3-3.1:1.2",
+        "attached_to": 66,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-3/1-3.1/1-3.1:1.1",
+        "sysfs_bus_id": "1-3.1:1.1",
         "resources": [
           {
             "type": "baud",
@@ -2723,7 +2638,7 @@
           "count": 0,
           "connections": 0,
           "used_connections": 0,
-          "interface_descriptor": 2,
+          "interface_descriptor": 1,
           "speed": 12000000,
           "product": "Jabra Link 380",
           "interface_class": "audio",
@@ -2741,45 +2656,41 @@
         "driver_modules": [
           "snd_usb_audio"
         ],
-        "module_alias": "usb:v0B0Ep24C7d0116dc00dsc00dp00ic01isc02ip00in02"
+        "module_alias": "usb:v0B0Ep24C7d0116dc00dsc00dp00ic01isc02ip00in01"
       }
     ],
     "storage_controller": [
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 256,
         "base_class": {
-          "value": 1,
-          "name": "Mass storage controller"
+          "name": "Mass storage controller",
+          "value": 1
         },
         "sub_class": {
-          "value": 8,
-          "name": "Non-Volatile memory controller"
+          "name": "Non-Volatile memory controller",
+          "value": 8
         },
         "pci_interface": {
-          "value": 2,
-          "name": "NVM Express"
+          "name": "NVM Express",
+          "value": 2
         },
         "vendor": {
-          "type": "pci",
-          "value": 5559,
-          "name": "Sandisk Corp"
+          "name": "Sandisk Corp",
+          "value": 5559
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 5559,
-          "name": "Sandisk Corp"
+          "name": "Sandisk Corp",
+          "value": 5559
         },
         "device": {
-          "type": "pci",
-          "value": 20528,
-          "name": "WD Black SN850X NVMe SSD"
+          "name": "WD Black SN850X NVMe SSD",
+          "value": 20528
         },
         "sub_device": {
-          "type": "pci",
           "value": 20528
         },
         "revision": {
@@ -2791,18 +2702,18 @@
         "sysfs_bus_id": "0000:01:00.0",
         "resources": [
           {
+            "type": "irq",
+            "base": 16,
+            "triggered": 0,
+            "enabled": true
+          },
+          {
             "type": "mem",
             "base": 2049966080,
             "range": 16384,
             "enabled": true,
             "access": "read_write",
             "prefetch": "no"
-          },
-          {
-            "type": "irq",
-            "base": 16,
-            "triggered": 0,
-            "enabled": true
           }
         ],
         "detail": {
@@ -2833,35 +2744,31 @@
     "unknown": [
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 8,
         "base_class": {
-          "value": 8,
-          "name": "Generic system peripheral"
+          "name": "Generic system peripheral",
+          "value": 8
         },
         "sub_class": {
-          "value": 128,
-          "name": "System peripheral"
+          "name": "System peripheral",
+          "value": 128
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 42831,
-          "name": "GNA Scoring Accelerator module"
+          "name": "GNA Scoring Accelerator module",
+          "value": 42831
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "model": "Intel GNA Scoring Accelerator module",
@@ -2869,18 +2776,18 @@
         "sysfs_bus_id": "0000:00:08.0",
         "resources": [
           {
+            "type": "irq",
+            "base": 255,
+            "triggered": 0,
+            "enabled": true
+          },
+          {
             "type": "mem",
             "base": 413879042048,
             "range": 4096,
             "enabled": true,
             "access": "read_write",
             "prefetch": "no"
-          },
-          {
-            "type": "irq",
-            "base": 255,
-            "triggered": 0,
-            "enabled": true
           }
         ],
         "detail": {
@@ -2898,35 +2805,31 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 21,
         "base_class": {
-          "value": 12,
-          "name": "Serial bus controller"
+          "name": "Serial bus controller",
+          "value": 12
         },
         "sub_class": {
-          "value": 128,
-          "name": "Serial bus controller"
+          "name": "Serial bus controller",
+          "value": 128
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 20969,
-          "name": "Alder Lake PCH Serial IO I2C Controller #1"
+          "name": "Alder Lake PCH Serial IO I2C Controller #1",
+          "value": 20969
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "revision": {
@@ -2937,18 +2840,18 @@
         "sysfs_bus_id": "0000:00:15.1",
         "resources": [
           {
+            "type": "irq",
+            "base": 40,
+            "triggered": 0,
+            "enabled": true
+          },
+          {
             "type": "mem",
             "base": 275263787008,
             "range": 4096,
             "enabled": true,
             "access": "read_write",
             "prefetch": "no"
-          },
-          {
-            "type": "irq",
-            "base": 40,
-            "triggered": 0,
-            "enabled": true
           }
         ],
         "detail": {
@@ -2974,35 +2877,31 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 4,
         "base_class": {
-          "value": 17,
-          "name": "Signal processing controller"
+          "name": "Signal processing controller",
+          "value": 17
         },
         "sub_class": {
-          "value": 128,
-          "name": "Signal processing controller"
+          "name": "Signal processing controller",
+          "value": 128
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 42781,
-          "name": "Raptor Lake Dynamic Platform and Thermal Framework Processor Participant"
+          "name": "Raptor Lake Dynamic Platform and Thermal Framework Processor Participant",
+          "value": 42781
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "model": "Intel Raptor Lake Dynamic Platform and Thermal Framework Processor Participant",
@@ -3010,18 +2909,18 @@
         "sysfs_bus_id": "0000:00:04.0",
         "resources": [
           {
+            "type": "irq",
+            "base": 16,
+            "triggered": 0,
+            "enabled": true
+          },
+          {
             "type": "mem",
             "base": 413878714368,
             "range": 131072,
             "enabled": true,
             "access": "read_write",
             "prefetch": "no"
-          },
-          {
-            "type": "irq",
-            "base": 16,
-            "triggered": 0,
-            "enabled": true
           }
         ],
         "detail": {
@@ -3047,35 +2946,31 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 22,
         "base_class": {
-          "value": 7,
-          "name": "Communication controller"
+          "name": "Communication controller",
+          "value": 7
         },
         "sub_class": {
-          "value": 128,
-          "name": "Communication controller"
+          "name": "Communication controller",
+          "value": 128
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 20960,
-          "name": "Alder Lake PCH HECI Controller"
+          "name": "Alder Lake PCH HECI Controller",
+          "value": 20960
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "revision": {
@@ -3086,18 +2981,18 @@
         "sysfs_bus_id": "0000:00:16.0",
         "resources": [
           {
+            "type": "irq",
+            "base": 128,
+            "triggered": 0,
+            "enabled": true
+          },
+          {
             "type": "mem",
             "base": 413879013376,
             "range": 4096,
             "enabled": true,
             "access": "read_write",
             "prefetch": "no"
-          },
-          {
-            "type": "irq",
-            "base": 194,
-            "triggered": 0,
-            "enabled": true
           }
         ],
         "detail": {
@@ -3105,7 +3000,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 194,
+          "irq": 128,
           "prog_if": 0
         },
         "hotplug": "none",
@@ -3123,35 +3018,31 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 31,
         "base_class": {
-          "value": 12,
-          "name": "Serial bus controller"
+          "name": "Serial bus controller",
+          "value": 12
         },
         "sub_class": {
-          "value": 128,
-          "name": "Serial bus controller"
+          "name": "Serial bus controller",
+          "value": 128
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 20900,
-          "name": "Alder Lake-P PCH SPI Controller"
+          "name": "Alder Lake-P PCH SPI Controller",
+          "value": 20900
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "revision": {
@@ -3193,35 +3084,31 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 21,
         "base_class": {
-          "value": 12,
-          "name": "Serial bus controller"
+          "name": "Serial bus controller",
+          "value": 12
         },
         "sub_class": {
-          "value": 128,
-          "name": "Serial bus controller"
+          "name": "Serial bus controller",
+          "value": 128
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 20968,
-          "name": "Alder Lake PCH Serial IO I2C Controller #0"
+          "name": "Alder Lake PCH Serial IO I2C Controller #0",
+          "value": 20968
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "revision": {
@@ -3232,18 +3119,18 @@
         "sysfs_bus_id": "0000:00:15.0",
         "resources": [
           {
+            "type": "irq",
+            "base": 27,
+            "triggered": 0,
+            "enabled": true
+          },
+          {
             "type": "mem",
             "base": 275263782912,
             "range": 4096,
             "enabled": true,
             "access": "read_write",
             "prefetch": "no"
-          },
-          {
-            "type": "irq",
-            "base": 27,
-            "triggered": 0,
-            "enabled": true
           }
         ],
         "detail": {
@@ -3269,39 +3156,35 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 22,
         "base_class": {
-          "value": 7,
-          "name": "Communication controller"
+          "name": "Communication controller",
+          "value": 7
         },
         "sub_class": {
-          "value": 0,
-          "name": "Serial controller"
+          "name": "Serial controller",
+          "value": 0
         },
         "pci_interface": {
-          "value": 2,
-          "name": "16550"
+          "name": "16550",
+          "value": 2
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 20963,
-          "name": "Alder Lake AMT SOL Redirection"
+          "name": "Alder Lake AMT SOL Redirection",
+          "value": 20963
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "revision": {
@@ -3319,18 +3202,18 @@
             "access": "read_write"
           },
           {
+            "type": "irq",
+            "base": 19,
+            "triggered": 0,
+            "enabled": true
+          },
+          {
             "type": "mem",
             "base": 2051084288,
             "range": 4096,
             "enabled": true,
             "access": "read_write",
             "prefetch": "no"
-          },
-          {
-            "type": "irq",
-            "base": 19,
-            "triggered": 0,
-            "enabled": true
           }
         ],
         "detail": {
@@ -3356,35 +3239,31 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 20,
         "base_class": {
-          "value": 5,
-          "name": "Memory controller"
+          "name": "Memory controller",
+          "value": 5
         },
         "sub_class": {
-          "value": 0,
-          "name": "RAM memory"
+          "name": "RAM memory",
+          "value": 0
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 20975,
-          "name": "Alder Lake PCH Shared SRAM"
+          "name": "Alder Lake PCH Shared SRAM",
+          "value": 20975
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "revision": {
@@ -3426,35 +3305,31 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 31,
         "base_class": {
-          "value": 12,
-          "name": "Serial bus controller"
+          "name": "Serial bus controller",
+          "value": 12
         },
         "sub_class": {
-          "value": 5,
-          "name": "SMBus"
+          "name": "SMBus",
+          "value": 5
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 20899,
-          "name": "Alder Lake PCH-P SMBus Host Controller"
+          "name": "Alder Lake PCH-P SMBus Host Controller",
+          "value": 20899
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "revision": {
@@ -3464,14 +3339,6 @@
         "sysfs_id": "/devices/pci0000:00/0000:00:1f.4",
         "sysfs_bus_id": "0000:00:1f.4",
         "resources": [
-          {
-            "type": "mem",
-            "base": 413879009280,
-            "range": 256,
-            "enabled": true,
-            "access": "read_write",
-            "prefetch": "no"
-          },
           {
             "type": "io",
             "base": 61344,
@@ -3484,6 +3351,14 @@
             "base": 16,
             "triggered": 0,
             "enabled": true
+          },
+          {
+            "type": "mem",
+            "base": 413879009280,
+            "range": 256,
+            "enabled": true,
+            "access": "read_write",
+            "prefetch": "no"
           }
         ],
         "detail": {
@@ -3509,35 +3384,31 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 21,
         "base_class": {
-          "value": 12,
-          "name": "Serial bus controller"
+          "name": "Serial bus controller",
+          "value": 12
         },
         "sub_class": {
-          "value": 128,
-          "name": "Serial bus controller"
+          "name": "Serial bus controller",
+          "value": 128
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 20971,
-          "name": "Alder Lake PCH Serial IO I2C Controller #3"
+          "name": "Alder Lake PCH Serial IO I2C Controller #3",
+          "value": 20971
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "revision": {
@@ -3548,18 +3419,18 @@
         "sysfs_bus_id": "0000:00:15.3",
         "resources": [
           {
+            "type": "irq",
+            "base": 43,
+            "triggered": 0,
+            "enabled": true
+          },
+          {
             "type": "mem",
             "base": 275263791104,
             "range": 4096,
             "enabled": true,
             "access": "read_write",
             "prefetch": "no"
-          },
-          {
-            "type": "irq",
-            "base": 43,
-            "triggered": 0,
-            "enabled": true
           }
         ],
         "detail": {
@@ -3585,35 +3456,31 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 10,
         "base_class": {
-          "value": 17,
-          "name": "Signal processing controller"
+          "name": "Signal processing controller",
+          "value": 17
         },
         "sub_class": {
-          "value": 128,
-          "name": "Signal processing controller"
+          "name": "Signal processing controller",
+          "value": 128
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 42877,
-          "name": "Raptor Lake Crashlog and Telemetry"
+          "name": "Raptor Lake Crashlog and Telemetry",
+          "value": 42877
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "revision": {
@@ -3656,23 +3523,26 @@
       {
         "slot": 0,
         "base_class": {
-          "value": 7,
-          "name": "Communication controller"
+          "name": "Communication controller",
+          "value": 7
         },
         "sub_class": {
-          "value": 0,
-          "name": "Serial controller"
+          "name": "Serial controller",
+          "value": 0
         },
         "pci_interface": {
-          "value": 2,
-          "name": "16550"
+          "name": "16550",
+          "value": 2
         },
         "device": {
-          "value": 0,
-          "name": "16550A"
+          "name": "16550A",
+          "value": 0
         },
         "model": "16550A",
         "unix_device_name": "/dev/ttyS0",
+        "unix_device_names": [
+          "/dev/ttyS0"
+        ],
         "resources": [
           {
             "type": "io",
@@ -3694,36 +3564,308 @@
       },
       {
         "bus_type": {
-          "value": 134,
-          "name": "USB"
+          "name": "USB",
+          "value": 134
         },
         "slot": 0,
         "base_class": {
-          "value": 0,
-          "name": "Unclassified device"
+          "name": "Unclassified device",
+          "value": 0
         },
         "sub_class": {
-          "value": 0,
-          "name": "Unclassified device"
+          "name": "Unclassified device",
+          "value": 0
         },
         "vendor": {
-          "type": "usb",
-          "value": 3034,
-          "name": "Realtek Semiconductor Corp."
+          "name": "Shenzhen Goodix Technology Co.,Ltd.",
+          "value": 10182
         },
         "device": {
-          "type": "usb",
-          "value": 22068,
-          "name": "Laptop Camera"
+          "name": "Goodix Fingerprint USB Device",
+          "value": 24732
         },
         "revision": {
-          "value": 0,
-          "name": "0.21"
+          "name": "1.00",
+          "value": 0
+        },
+        "model": "Shenzhen Goodix Technology Co.,Ltd Goodix Fingerprint USB Device",
+        "attached_to": 71,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-9/1-9:1.0",
+        "sysfs_bus_id": "1-9:1.0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 12000000,
+          "manufacturer": "Goodix Technology Co., Ltd.",
+          "product": "Goodix Fingerprint USB Device",
+          "device_class": "miscellaneous",
+          "interface_class": "vendor_spec",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "module_alias": "usb:v27C6p609Cd0100dcEFdsc00dp00icFFisc00ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": {
+          "name": "GN Netcom",
+          "value": 2830
+        },
+        "device": {
+          "name": "Jabra Link 380",
+          "value": 9415
+        },
+        "revision": {
+          "name": "1.16",
+          "value": 0
+        },
+        "model": "GN Netcom Jabra Link 380",
+        "attached_to": 66,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-3/1-3.1/1-3.1:1.3",
+        "sysfs_bus_id": "1-3.1:1.3",
+        "unix_device_name": "/dev/input/event2",
+        "unix_device_number": {
+          "type": 99,
+          "major": 13,
+          "minor": 66,
+          "range": 1
+        },
+        "unix_device_names": [
+          "/dev/input/by-id/usb-0b0e_Jabra_Link_380_08C8C2E6DA47-event-if03",
+          "/dev/input/by-path/pci-0000:00:14.0-usb-0:3.1:1.3-event",
+          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:3.1:1.3-event",
+          "/dev/input/event2"
+        ],
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 3,
+          "speed": 12000000,
+          "product": "Jabra Link 380",
+          "interface_class": "hid",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "usbhid",
+        "driver_module": "usbhid",
+        "drivers": [
+          "usbhid"
+        ],
+        "driver_modules": [
+          "usbhid"
+        ],
+        "module_alias": "usb:v0B0Ep24C7d0116dc00dsc00dp00ic03isc00ip00in03"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Logitech, Inc.",
+          "value": 1133
+        },
+        "device": {
+          "name": "Logi Bolt Receiver",
+          "value": 50504
+        },
+        "revision": {
+          "name": "5.03",
+          "value": 0
+        },
+        "model": "Logitech Logi Bolt Receiver",
+        "attached_to": 54,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.3/1-2.3.1/1-2.3.1.2/1-2.3.1.2:1.2",
+        "sysfs_bus_id": "1-2.3.1.2:1.2",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 2,
+          "speed": 12000000,
+          "manufacturer": "Logitech",
+          "product": "USB Receiver",
+          "interface_class": "hid",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "usbhid",
+        "driver_module": "usbhid",
+        "drivers": [
+          "usbhid"
+        ],
+        "driver_modules": [
+          "usbhid"
+        ],
+        "module_alias": "usb:v046DpC548d0503dc00dsc00dp00ic03isc00ip00in02"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Lenovo",
+          "value": 6127
+        },
+        "device": {
+          "name": "P27u-20",
+          "value": 42055
+        },
+        "revision": {
+          "name": "0.01",
+          "value": 0
+        },
+        "model": "Lenovo P27u-20",
+        "attached_to": 57,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.2/1-2.2:1.1",
+        "sysfs_bus_id": "1-2.2:1.1",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 1,
+          "speed": 12000000,
+          "manufacturer": "Lenovo",
+          "product": "P27u-20",
+          "interface_class": "vendor_spec",
+          "interface_subclass": 3,
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "module_alias": "usb:v17EFpA447d0001dc00dsc00dp00icFFisc03ip00in01"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Realtek Semiconductor Corp.",
+          "value": 3034
+        },
+        "device": {
+          "name": "Laptop Camera",
+          "value": 22068
+        },
+        "revision": {
+          "name": "0.21",
+          "value": 0
         },
         "model": "Realtek Laptop Camera",
-        "attached_to": 59,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-7/3-7:1.0",
-        "sysfs_bus_id": "3-7:1.0",
+        "attached_to": 71,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-7/1-7:1.0",
+        "sysfs_bus_id": "1-7:1.0",
         "resources": [
           {
             "type": "baud",
@@ -3766,319 +3908,40 @@
           "uvcvideo"
         ],
         "module_alias": "usb:v0BDAp5634d0021dcEFdsc02dp01ic0Eisc01ip00in00"
-      },
-      {
-        "bus_type": {
-          "value": 134,
-          "name": "USB"
-        },
-        "slot": 0,
-        "base_class": {
-          "value": 0,
-          "name": "Unclassified device"
-        },
-        "sub_class": {
-          "value": 0,
-          "name": "Unclassified device"
-        },
-        "vendor": {
-          "type": "usb",
-          "value": 6127,
-          "name": "Lenovo"
-        },
-        "device": {
-          "type": "usb",
-          "value": 42055,
-          "name": "P27u-20"
-        },
-        "revision": {
-          "value": 0,
-          "name": "0.01"
-        },
-        "model": "Lenovo P27u-20",
-        "attached_to": 77,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.2/3-2.2:1.0",
-        "sysfs_bus_id": "3-2.2:1.0",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 12000000,
-          "manufacturer": "Lenovo",
-          "product": "P27u-20",
-          "interface_class": "billboard",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "module_alias": "usb:v17EFpA447d0001dc00dsc00dp00ic11isc00ip00in00"
-      },
-      {
-        "bus_type": {
-          "value": 134,
-          "name": "USB"
-        },
-        "slot": 0,
-        "base_class": {
-          "value": 0,
-          "name": "Unclassified device"
-        },
-        "sub_class": {
-          "value": 0,
-          "name": "Unclassified device"
-        },
-        "vendor": {
-          "type": "usb",
-          "value": 1133,
-          "name": "Logitech, Inc."
-        },
-        "device": {
-          "type": "usb",
-          "value": 50504,
-          "name": "Logi Bolt Receiver"
-        },
-        "revision": {
-          "value": 0,
-          "name": "5.03"
-        },
-        "model": "Logitech Logi Bolt Receiver",
-        "attached_to": 79,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.3/3-2.3.1/3-2.3.1.2/3-2.3.1.2:1.2",
-        "sysfs_bus_id": "3-2.3.1.2:1.2",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 2,
-          "speed": 12000000,
-          "manufacturer": "Logitech",
-          "product": "USB Receiver",
-          "interface_class": "hid",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "usbhid",
-        "driver_module": "usbhid",
-        "drivers": [
-          "usbhid"
-        ],
-        "driver_modules": [
-          "usbhid"
-        ],
-        "module_alias": "usb:v046DpC548d0503dc00dsc00dp00ic03isc00ip00in02"
-      },
-      {
-        "bus_type": {
-          "value": 134,
-          "name": "USB"
-        },
-        "slot": 0,
-        "base_class": {
-          "value": 0,
-          "name": "Unclassified device"
-        },
-        "sub_class": {
-          "value": 0,
-          "name": "Unclassified device"
-        },
-        "vendor": {
-          "type": "usb",
-          "value": 2830,
-          "name": "GN Netcom"
-        },
-        "device": {
-          "type": "usb",
-          "value": 9415,
-          "name": "Jabra Link 380"
-        },
-        "revision": {
-          "value": 0,
-          "name": "1.16"
-        },
-        "model": "GN Netcom Jabra Link 380",
-        "attached_to": 52,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3.1/3-3.1:1.3",
-        "sysfs_bus_id": "3-3.1:1.3",
-        "unix_device_name": "/dev/input/event5",
-        "unix_device_number": {
-          "type": 99,
-          "major": 13,
-          "minor": 69,
-          "range": 1
-        },
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 3,
-          "speed": 12000000,
-          "product": "Jabra Link 380",
-          "interface_class": "hid",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "usbhid",
-        "driver_module": "usbhid",
-        "drivers": [
-          "usbhid"
-        ],
-        "driver_modules": [
-          "usbhid"
-        ],
-        "module_alias": "usb:v0B0Ep24C7d0116dc00dsc00dp00ic03isc00ip00in03"
-      },
-      {
-        "bus_type": {
-          "value": 134,
-          "name": "USB"
-        },
-        "slot": 0,
-        "base_class": {
-          "value": 0,
-          "name": "Unclassified device"
-        },
-        "sub_class": {
-          "value": 0,
-          "name": "Unclassified device"
-        },
-        "vendor": {
-          "type": "usb",
-          "value": 10182,
-          "name": "Shenzhen Goodix Technology Co.,Ltd."
-        },
-        "device": {
-          "type": "usb",
-          "value": 24732,
-          "name": "Goodix Fingerprint USB Device"
-        },
-        "revision": {
-          "value": 0,
-          "name": "1.00"
-        },
-        "model": "Shenzhen Goodix Technology Co.,Ltd Goodix Fingerprint USB Device",
-        "attached_to": 59,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-9/3-9:1.0",
-        "sysfs_bus_id": "3-9:1.0",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 12000000,
-          "manufacturer": "Goodix Technology Co., Ltd.",
-          "product": "Goodix Fingerprint USB Device",
-          "device_class": "miscellaneous",
-          "interface_class": "vendor_spec",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "module_alias": "usb:v27C6p609Cd0100dcEFdsc00dp00icFFisc00ip00in00"
       }
     ],
     "usb_controller": [
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 13,
         "base_class": {
-          "value": 12,
-          "name": "Serial bus controller"
+          "name": "Serial bus controller",
+          "value": 12
         },
         "sub_class": {
-          "value": 3,
-          "name": "USB Controller"
+          "name": "USB Controller",
+          "value": 3
         },
         "pci_interface": {
-          "value": 48,
-          "name": "XHCI"
+          "name": "XHCI",
+          "value": 48
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 42782,
-          "name": "Raptor Lake-P Thunderbolt 4 USB Controller"
+          "name": "Raptor Lake-P Thunderbolt 4 USB Controller",
+          "value": 42782
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "model": "Intel Raptor Lake-P Thunderbolt 4 USB Controller",
@@ -4086,18 +3949,18 @@
         "sysfs_bus_id": "0000:00:0d.0",
         "resources": [
           {
+            "type": "irq",
+            "base": 191,
+            "triggered": 0,
+            "enabled": true
+          },
+          {
             "type": "mem",
             "base": 413878845440,
             "range": 65536,
             "enabled": true,
             "access": "read_write",
             "prefetch": "no"
-          },
-          {
-            "type": "irq",
-            "base": 128,
-            "triggered": 0,
-            "enabled": true
           }
         ],
         "detail": {
@@ -4105,7 +3968,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 128,
+          "irq": 191,
           "prog_if": 48
         },
         "hotplug": "none",
@@ -4123,45 +3986,47 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 13,
         "base_class": {
-          "value": 12,
-          "name": "Serial bus controller"
+          "name": "Serial bus controller",
+          "value": 12
         },
         "sub_class": {
-          "value": 3,
-          "name": "USB Controller"
+          "name": "USB Controller",
+          "value": 3
         },
         "pci_interface": {
-          "value": 64,
-          "name": "USB4 Host Interface"
+          "name": "USB4 Host Interface",
+          "value": 64
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 42861,
-          "name": "Raptor Lake-P Thunderbolt 4 NHI #1"
+          "name": "Raptor Lake-P Thunderbolt 4 NHI #1",
+          "value": 42861
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "model": "Intel Raptor Lake-P Thunderbolt 4 NHI #1",
         "sysfs_id": "/devices/pci0000:00/0000:00:0d.3",
         "sysfs_bus_id": "0000:00:0d.3",
         "resources": [
+          {
+            "type": "irq",
+            "base": 16,
+            "triggered": 0,
+            "enabled": true
+          },
           {
             "type": "mem",
             "base": 413878190080,
@@ -4177,12 +4042,6 @@
             "enabled": true,
             "access": "read_write",
             "prefetch": "no"
-          },
-          {
-            "type": "irq",
-            "base": 16,
-            "triggered": 0,
-            "enabled": true
           }
         ],
         "detail": {
@@ -4208,39 +4067,35 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 20,
         "base_class": {
-          "value": 12,
-          "name": "Serial bus controller"
+          "name": "Serial bus controller",
+          "value": 12
         },
         "sub_class": {
-          "value": 3,
-          "name": "USB Controller"
+          "name": "USB Controller",
+          "value": 3
         },
         "pci_interface": {
-          "value": 48,
-          "name": "XHCI"
+          "name": "XHCI",
+          "value": 48
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 20973,
-          "name": "Alder Lake PCH USB 3.2 xHCI Host Controller"
+          "name": "Alder Lake PCH USB 3.2 xHCI Host Controller",
+          "value": 20973
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "revision": {
@@ -4251,18 +4106,18 @@
         "sysfs_bus_id": "0000:00:14.0",
         "resources": [
           {
+            "type": "irq",
+            "base": 149,
+            "triggered": 0,
+            "enabled": true
+          },
+          {
             "type": "mem",
             "base": 2051014656,
             "range": 65536,
             "enabled": true,
             "access": "read_write",
             "prefetch": "no"
-          },
-          {
-            "type": "irq",
-            "base": 136,
-            "triggered": 0,
-            "enabled": true
           }
         ],
         "detail": {
@@ -4270,7 +4125,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 136,
+          "irq": 149,
           "prog_if": 48
         },
         "hotplug": "none",
@@ -4288,45 +4143,47 @@
       },
       {
         "bus_type": {
-          "value": 4,
-          "name": "PCI"
+          "name": "PCI",
+          "value": 4
         },
         "slot": 13,
         "base_class": {
-          "value": 12,
-          "name": "Serial bus controller"
+          "name": "Serial bus controller",
+          "value": 12
         },
         "sub_class": {
-          "value": 3,
-          "name": "USB Controller"
+          "name": "USB Controller",
+          "value": 3
         },
         "pci_interface": {
-          "value": 64,
-          "name": "USB4 Host Interface"
+          "name": "USB4 Host Interface",
+          "value": 64
         },
         "vendor": {
-          "type": "pci",
-          "value": 32902,
-          "name": "Intel Corporation"
+          "name": "Intel Corporation",
+          "value": 32902
         },
         "sub_vendor": {
-          "type": "pci",
-          "value": 61713,
-          "name": "Framework Computer Inc."
+          "name": "Framework Computer Inc.",
+          "value": 61713
         },
         "device": {
-          "type": "pci",
-          "value": 42814,
-          "name": "Raptor Lake-P Thunderbolt 4 NHI #0"
+          "name": "Raptor Lake-P Thunderbolt 4 NHI #0",
+          "value": 42814
         },
         "sub_device": {
-          "type": "pci",
           "value": 3
         },
         "model": "Intel Raptor Lake-P Thunderbolt 4 NHI #0",
         "sysfs_id": "/devices/pci0000:00/0000:00:0d.2",
         "sysfs_bus_id": "0000:00:0d.2",
         "resources": [
+          {
+            "type": "irq",
+            "base": 16,
+            "triggered": 0,
+            "enabled": true
+          },
           {
             "type": "mem",
             "base": 413878452224,
@@ -4342,12 +4199,6 @@
             "enabled": true,
             "access": "read_write",
             "prefetch": "no"
-          },
-          {
-            "type": "irq",
-            "base": 16,
-            "triggered": 0,
-            "enabled": true
           }
         ],
         "detail": {
@@ -4374,205 +4225,42 @@
     ]
   },
   "smbios": {
-    "SmbiosType(128)": [
-      {
-        "handle": 41,
-        "data": "0x8055000000002100",
-        "strings": [
-          "Oem Type 128 Test 1",
-          "Oem Type 128 Test 2"
-        ]
-      }
-    ],
-    "SmbiosType(129)": [
-      {
-        "handle": 42,
-        "data": "0x8101000000002100",
-        "strings": [
-          "Insyde_ASF_001",
-          "Insyde_ASF_002"
-        ]
-      }
-    ],
-    "SmbiosType(130)": [
-      {
-        "handle": 43,
-        "data": "0x822401018045510083350000f80031014c00fe0000267600"
-      }
-    ],
-    "SmbiosType(131)": [
-      {
-        "handle": 44,
-        "data": "0x83350000f80031014c00fe00002676000000f100c0008340b00000002c0000000000000000000000000000000000000000000000000000000000000000000000"
-      }
-    ],
-    "SmbiosType(136)": [
-      {
-        "handle": 45,
-        "data": "0x88ff00000000"
-      }
-    ],
-    "SmbiosType(219)": [
-      {
-        "handle": 46,
-        "data": "0xdb01028100401f03ffffffffffff0380000000000000000000000000000051001e00ab0e34203030203830203030203430203134203030206666206666206666206666206666206666203030203830203030203030203030203030203034203030203030203030203030",
-        "strings": [
-          "MEI1",
-          "MEI2",
-          "MEI3",
-          "MEI4"
-        ]
-      }
-    ],
-    "SmbiosType(221)": [
-      {
-        "handle": 47,
-        "data": "0xdd01000000003100dd030002",
-        "strings": [
-          "FSP Binary Version"
-        ]
+    "bios": {
+      "handle": 0,
+      "vendor": "INSYDE Corp.",
+      "version": "03.04",
+      "date": "05/24/2023",
+      "features": [
+        "PCI supported",
+        "BIOS flashable",
+        "BIOS shadowing allowed",
+        "CD boot supported",
+        "Selectable boot supported",
+        "8042 Keyboard Services supported",
+        "CGA/Mono Video supported",
+        "ACPI supported",
+        "USB Legacy supported",
+        "BIOS Boot Spec supported"
+      ],
+      "start_address": "0xe0000",
+      "rom_size": 16777216
+    },
+    "board": {
+      "handle": 2,
+      "manufacturer": "Framework",
+      "product": "FRANMCCP06",
+      "version": "A6",
+      "board_type": {
+        "name": "Motherboard",
+        "value": 10
       },
-      {
-        "handle": 48,
-        "data": "0xdd0300024100000000002100464272656f0021000000d0000000",
-        "strings": [
-          "Reference Code - CPU",
-          "uCode Version",
-          "TXT ACM version"
-        ]
-      },
-      {
-        "handle": 49,
-        "data": "0xdd03000200044c0000006100dd0b0002040040ffff00070000ff",
-        "strings": [
-          "Reference Code - ME",
-          "MEBx version",
-          "ME Firmware Version",
-          "Corporate SKU"
-        ]
-      },
-      {
-        "handle": 50,
-        "data": "0xdd060002ff0001ff004607000000a1003c2037315d646e633034302e316e2c723a42442e4b6f20796f65724b726f73",
-        "strings": [
-          "Reference Code - PCH",
-          "PCH-CRID Status",
-          "Disabled",
-          "PCH-CRID Original Value",
-          "PCH-CRID New Value",
-          "OPROM - RST - RAID",
-          "PCH Hsio Version"
-        ]
-      },
-      {
-        "handle": 51,
-        "data": "0xdd0b0002040040ffff00070000ff2400000b0000ff00210052726564200021000000a000000021004d207300000021004000e000000021004d696156690021008000200000002100436f6555000021000000",
-        "strings": [
-          "Reference Code - SA - System Agent",
-          "Reference Code - MRC",
-          "SA - PCIe Version",
-          "SA-CRID Status",
-          "Disabled",
-          "SA-CRID Original Value",
-          "SA-CRID New Value",
-          "OPROM - VBIOS",
-          "IO Manageability Engine FW Version",
-          "PHY Build Version",
-          "Thunderbolt(TM) FW Version",
-          "System Agent Manageability Engine FW Version"
-        ]
-      },
-      {
-        "handle": 52,
-        "data": "0xdd0eff02ff04ffffffff09ff00ffff00210dff00001316ff11ff11003300ab0e6569626965207673792f655f434e58305f3330396569626170303a302d652f2f6b2d6e2d424b385f303230305f64642f69766565386230303434620a352031002f692f534d2f33",
-        "strings": [
-          "Lan Phy Version",
-          "Sensor Firmware Version",
-          "Debug Mode Status",
-          "Disabled",
-          "Performance Mode Status",
-          "Disabled",
-          "Debug Use USB(Disabled:Serial)",
-          "Disabled",
-          "ICC Overclocking Version",
-          "UNDI Version",
-          "EC FW Version",
-          "GOP Version",
-          "Royal Park Version",
-          "Platform Version",
-          "RST PreOS Version",
-          "TCSS PD0 Version",
-          "TCSS PD1 Version"
-        ]
-      }
-    ],
-    "additional_info": [
-      {
-        "handle": 38,
-        "data": "0x28020500000041006d6c6d20686e74526f",
-        "strings": [
-          "PCIExpressx16",
-          "Compiler Version: VC 9.0"
-        ]
-      }
-    ],
-    "battery": [
-      {
-        "handle": 31,
-        "data": "0x1601050f0007000000002100c000400000002100475669000000",
-        "strings": [
-          "Front",
-          "*",
-          "2023/7/7",
-          "01F1",
-          "FRANMCCP",
-          "",
-          "*",
-          "LithiumPolymer"
-        ]
-      }
-    ],
-    "bios": [
-      {
-        "handle": 0,
-        "vendor": "INSYDE Corp.",
-        "version": "03.04",
-        "date": "05/24/2023",
-        "features": [
-          "PCI supported",
-          "BIOS flashable",
-          "BIOS shadowing allowed",
-          "CD boot supported",
-          "Selectable boot supported",
-          "8042 Keyboard Services supported",
-          "CGA/Mono Video supported",
-          "ACPI supported",
-          "USB Legacy supported",
-          "BIOS Boot Spec supported"
-        ],
-        "start_address": "0xe0000",
-        "rom_size": 16777216
-      }
-    ],
-    "board": [
-      {
-        "handle": 2,
-        "manufacturer": "Framework",
-        "product": "FRANMCCP06",
-        "version": "A6",
-        "asset_tag": "*",
-        "board_type": {
-          "value": 10,
-          "name": "Motherboard"
-        },
-        "features": [
-          "Hosting Board",
-          "Replaceable"
-        ],
-        "location": "*",
-        "chassis": 3
-      }
-    ],
+      "features": [
+        "Hosting Board",
+        "Replaceable"
+      ],
+      "location": "*",
+      "chassis": 3
+    },
     "cache": [
       {
         "handle": 5,
@@ -4581,27 +4269,27 @@
         "size_current": 192,
         "speed": 0,
         "mode": {
-          "value": 1,
-          "name": "Write Back"
+          "name": "Write Back",
+          "value": 1
         },
         "enabled": true,
         "location": {
-          "value": 0,
-          "name": "Internal"
+          "name": "Internal",
+          "value": 0
         },
         "socketed": false,
         "level": 0,
         "ecc": {
-          "value": 4,
-          "name": "Parity"
+          "name": "Parity",
+          "value": 4
         },
         "cache_type": {
-          "value": 4,
-          "name": "Data"
+          "name": "Data",
+          "value": 4
         },
         "associativity": {
-          "value": 9,
-          "name": "Other"
+          "name": "Other",
+          "value": 9
         },
         "sram_type_current": [
           "Synchronous"
@@ -4617,27 +4305,27 @@
         "size_current": 128,
         "speed": 0,
         "mode": {
-          "value": 1,
-          "name": "Write Back"
+          "name": "Write Back",
+          "value": 1
         },
         "enabled": true,
         "location": {
-          "value": 0,
-          "name": "Internal"
+          "name": "Internal",
+          "value": 0
         },
         "socketed": false,
         "level": 0,
         "ecc": {
-          "value": 4,
-          "name": "Parity"
+          "name": "Parity",
+          "value": 4
         },
         "cache_type": {
-          "value": 3,
-          "name": "Instruction"
+          "name": "Instruction",
+          "value": 3
         },
         "associativity": {
-          "value": 7,
-          "name": "8-way Set-Associative"
+          "name": "8-way Set-Associative",
+          "value": 7
         },
         "sram_type_current": [
           "Synchronous"
@@ -4653,27 +4341,27 @@
         "size_current": 5120,
         "speed": 0,
         "mode": {
-          "value": 1,
-          "name": "Write Back"
+          "name": "Write Back",
+          "value": 1
         },
         "enabled": true,
         "location": {
-          "value": 0,
-          "name": "Internal"
+          "name": "Internal",
+          "value": 0
         },
         "socketed": false,
         "level": 1,
         "ecc": {
-          "value": 5,
-          "name": "Single-bit"
+          "name": "Single-bit",
+          "value": 5
         },
         "cache_type": {
-          "value": 5,
-          "name": "Unified"
+          "name": "Unified",
+          "value": 5
         },
         "associativity": {
-          "value": 1,
-          "name": "Other"
+          "name": "Other",
+          "value": 1
         },
         "sram_type_current": [
           "Synchronous"
@@ -4689,27 +4377,27 @@
         "size_current": 18432,
         "speed": 0,
         "mode": {
-          "value": 1,
-          "name": "Write Back"
+          "name": "Write Back",
+          "value": 1
         },
         "enabled": true,
         "location": {
-          "value": 0,
-          "name": "Internal"
+          "name": "Internal",
+          "value": 0
         },
         "socketed": false,
         "level": 2,
         "ecc": {
-          "value": 6,
-          "name": "Multi-bit"
+          "name": "Multi-bit",
+          "value": 6
         },
         "cache_type": {
-          "value": 5,
-          "name": "Unified"
+          "name": "Unified",
+          "value": 5
         },
         "associativity": {
-          "value": 9,
-          "name": "Other"
+          "name": "Other",
+          "value": 9
         },
         "sram_type_current": [
           "Synchronous"
@@ -4725,27 +4413,27 @@
         "size_current": 256,
         "speed": 0,
         "mode": {
-          "value": 1,
-          "name": "Write Back"
+          "name": "Write Back",
+          "value": 1
         },
         "enabled": true,
         "location": {
-          "value": 0,
-          "name": "Internal"
+          "name": "Internal",
+          "value": 0
         },
         "socketed": false,
         "level": 0,
         "ecc": {
-          "value": 4,
-          "name": "Parity"
+          "name": "Parity",
+          "value": 4
         },
         "cache_type": {
-          "value": 4,
-          "name": "Data"
+          "name": "Data",
+          "value": 4
         },
         "associativity": {
-          "value": 7,
-          "name": "8-way Set-Associative"
+          "name": "8-way Set-Associative",
+          "value": 7
         },
         "sram_type_current": [
           "Synchronous"
@@ -4761,27 +4449,27 @@
         "size_current": 512,
         "speed": 0,
         "mode": {
-          "value": 1,
-          "name": "Write Back"
+          "name": "Write Back",
+          "value": 1
         },
         "enabled": true,
         "location": {
-          "value": 0,
-          "name": "Internal"
+          "name": "Internal",
+          "value": 0
         },
         "socketed": false,
         "level": 0,
         "ecc": {
-          "value": 4,
-          "name": "Parity"
+          "name": "Parity",
+          "value": 4
         },
         "cache_type": {
-          "value": 3,
-          "name": "Instruction"
+          "name": "Instruction",
+          "value": 3
         },
         "associativity": {
-          "value": 7,
-          "name": "8-way Set-Associative"
+          "name": "8-way Set-Associative",
+          "value": 7
         },
         "sram_type_current": [
           "Synchronous"
@@ -4797,27 +4485,27 @@
         "size_current": 4096,
         "speed": 0,
         "mode": {
-          "value": 1,
-          "name": "Write Back"
+          "name": "Write Back",
+          "value": 1
         },
         "enabled": true,
         "location": {
-          "value": 0,
-          "name": "Internal"
+          "name": "Internal",
+          "value": 0
         },
         "socketed": false,
         "level": 1,
         "ecc": {
-          "value": 5,
-          "name": "Single-bit"
+          "name": "Single-bit",
+          "value": 5
         },
         "cache_type": {
-          "value": 5,
-          "name": "Unified"
+          "name": "Unified",
+          "value": 5
         },
         "associativity": {
-          "value": 8,
-          "name": "16-way Set-Associative"
+          "name": "16-way Set-Associative",
+          "value": 8
         },
         "sram_type_current": [
           "Synchronous"
@@ -4833,27 +4521,27 @@
         "size_current": 18432,
         "speed": 0,
         "mode": {
-          "value": 1,
-          "name": "Write Back"
+          "name": "Write Back",
+          "value": 1
         },
         "enabled": true,
         "location": {
-          "value": 0,
-          "name": "Internal"
+          "name": "Internal",
+          "value": 0
         },
         "socketed": false,
         "level": 2,
         "ecc": {
-          "value": 6,
-          "name": "Multi-bit"
+          "name": "Multi-bit",
+          "value": 6
         },
         "cache_type": {
-          "value": 5,
-          "name": "Unified"
+          "name": "Unified",
+          "value": 5
         },
         "associativity": {
-          "value": 9,
-          "name": "Other"
+          "name": "Other",
+          "value": 9
         },
         "sram_type_current": [
           "Synchronous"
@@ -4868,62 +4556,38 @@
         "handle": 3,
         "manufacturer": "Framework",
         "version": "A6",
-        "asset_tag": "FRANMCCPA641060012",
         "chassis_type": {
-          "value": 10,
-          "name": "Notebook"
+          "name": "Notebook",
+          "value": 10
         },
         "lock_present": false,
         "bootup_state": {
-          "value": 3,
-          "name": "Safe"
+          "name": "Safe",
+          "value": 3
         },
         "power_state": {
-          "value": 3,
-          "name": "Safe"
+          "name": "Safe",
+          "value": 3
         },
         "thermal_state": {
-          "value": 3,
-          "name": "Safe"
+          "name": "Safe",
+          "value": 3
         },
         "security_state": {
-          "value": 3,
-          "name": "None"
+          "name": "None",
+          "value": 3
         },
         "oem": "0x0"
       }
     ],
-    "config": [
-      {
-        "handle": 20,
-        "options": [
-          "ConfigOptions1",
-          "ConfigOptions2",
-          "ConfigOptions3"
-        ]
-      }
-    ],
-    "cooling_device": [
-      {
-        "handle": 34,
-        "data": "0x1b2300000000410061657373336970",
-        "strings": [
-          "Cooling Device Description"
-        ]
-      }
-    ],
-    "end_of_table": [
-      {
-        "handle": 65279,
-        "data": "0x7f000000"
-      }
-    ],
-    "event_log": [
-      {
-        "handle": 23,
-        "data": "0x0f0000780080000000002100526c72656f002100b000a0000000210050"
-      }
-    ],
+    "config": {
+      "handle": 20,
+      "options": [
+        "ConfigOptions1",
+        "ConfigOptions2",
+        "ConfigOptions3"
+      ]
+    },
     "group_associations": [
       {
         "handle": 22,
@@ -4949,49 +4613,46 @@
       {
         "handle": 32,
         "power": {
-          "value": 0,
-          "name": "Disabled"
+          "name": "Disabled",
+          "value": 0
         },
         "keyboard": {
-          "value": 2,
-          "name": "Not Implemented"
+          "name": "Not Implemented",
+          "value": 2
         },
         "admin": {
-          "value": 0,
-          "name": "Disabled"
+          "name": "Disabled",
+          "value": 0
         },
         "reset": {
-          "value": 2,
-          "name": "Not Implemented"
+          "name": "Not Implemented",
+          "value": 2
         }
       }
     ],
-    "language": [
-      {
-        "handle": 21,
-        "languages": [
-          "en|US|iso8859-1,0",
-          "fr|FR|iso8859-1,0",
-          "zh|TW|unicode,0",
-          "ja|JP|unicode,0"
-        ],
-        "current_language": "en|US|iso8859-1,0"
-      }
-    ],
+    "language": {
+      "handle": 21,
+      "languages": [
+        "en|US|iso8859-1,0",
+        "fr|FR|iso8859-1,0",
+        "zh|TW|unicode,0",
+        "ja|JP|unicode,0"
+      ]
+    },
     "memory_array": [
       {
         "handle": 24,
         "location": {
-          "value": 3,
-          "name": "Motherboard"
+          "name": "Motherboard",
+          "value": 3
         },
         "usage": {
-          "value": 3,
-          "name": "System memory"
+          "name": "System memory",
+          "value": 3
         },
         "ecc": {
-          "value": 3,
-          "name": "None"
+          "name": "None",
+          "value": 3
         },
         "max_size": 67108864,
         "error_handle": 65534,
@@ -5013,7 +4674,6 @@
         "location": "Controller0-ChannelA-DIMM0",
         "bank_location": "BANK 0",
         "manufacturer": "Crucial Technology",
-        "asset_tag": "9876543210",
         "part_number": "CT32G4SFD832A.M16FE",
         "array_handle": 24,
         "error_handle": 65534,
@@ -5021,13 +4681,13 @@
         "ecc_bits": 0,
         "size": 33554432,
         "form_factor": {
-          "value": 13,
-          "name": "SODIMM"
+          "name": "SODIMM",
+          "value": 13
         },
         "set": 0,
         "memory_type": {
-          "value": 26,
-          "name": "Other"
+          "name": "Other",
+          "value": 26
         },
         "memory_type_details": [
           "Synchronous"
@@ -5039,7 +4699,6 @@
         "location": "Controller1-ChannelA-DIMM0",
         "bank_location": "BANK 0",
         "manufacturer": "Crucial Technology",
-        "asset_tag": "9876543210",
         "part_number": "CT32G4SFD832A.M16FE",
         "array_handle": 24,
         "error_handle": 65534,
@@ -5047,13 +4706,13 @@
         "ecc_bits": 0,
         "size": 33554432,
         "form_factor": {
-          "value": 13,
-          "name": "SODIMM"
+          "name": "SODIMM",
+          "value": 13
         },
         "set": 0,
         "memory_type": {
-          "value": 26,
-          "name": "Other"
+          "name": "Other",
+          "value": 26
         },
         "memory_type_details": [
           "Synchronous"
@@ -5083,59 +4742,16 @@
         "interleave_depth": 1
       }
     ],
-    "oem_strings": [
-      {
-        "handle": 19,
-        "strings": [
-          "FRANMCCPA641060012",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000",
-          "000000000000000000"
-        ]
-      }
-    ],
-    "onboard_extended": [
-      {
-        "handle": 39,
-        "data": "0x290100000000310053636c",
-        "strings": [
-          "IGD"
-        ]
-      }
-    ],
     "pointing_device": [
       {
         "handle": 30,
         "mouse_type": {
-          "value": 7,
-          "name": "Touch Pad"
+          "name": "Touch Pad",
+          "value": 7
         },
         "interface": {
-          "value": 4,
-          "name": "PS/2"
+          "name": "PS/2",
+          "value": 4
         },
         "buttons": 4
       }
@@ -5144,52 +4760,52 @@
       {
         "handle": 13,
         "port_type": {
-          "value": 16,
-          "name": "USB"
+          "name": "USB",
+          "value": 16
         },
         "internal_reference_designator": "JTYPEC0",
         "external_connector_type": {
-          "value": 18,
-          "name": "Access Bus [USB]"
+          "name": "Access Bus [USB]",
+          "value": 18
         },
         "external_reference_designator": "USB"
       },
       {
         "handle": 14,
         "port_type": {
-          "value": 16,
-          "name": "USB"
+          "name": "USB",
+          "value": 16
         },
         "internal_reference_designator": "JTYPEC1",
         "external_connector_type": {
-          "value": 18,
-          "name": "Access Bus [USB]"
+          "name": "Access Bus [USB]",
+          "value": 18
         },
         "external_reference_designator": "USB"
       },
       {
         "handle": 15,
         "port_type": {
-          "value": 16,
-          "name": "USB"
+          "name": "USB",
+          "value": 16
         },
         "internal_reference_designator": "JTYPEC2",
         "external_connector_type": {
-          "value": 18,
-          "name": "Access Bus [USB]"
+          "name": "Access Bus [USB]",
+          "value": 18
         },
         "external_reference_designator": "USB"
       },
       {
         "handle": 16,
         "port_type": {
-          "value": 16,
-          "name": "USB"
+          "name": "USB",
+          "value": 16
         },
         "internal_reference_designator": "JTYPEC3",
         "external_connector_type": {
-          "value": 18,
-          "name": "Access Bus [USB]"
+          "name": "Access Bus [USB]",
+          "value": 18
         },
         "external_reference_designator": "USB"
       }
@@ -5199,30 +4815,27 @@
         "handle": 4,
         "socket": "U3E1",
         "socket_type": {
-          "value": 65,
-          "name": "Other"
+          "name": "Other",
+          "value": 65
         },
         "socket_populated": true,
         "manufacturer": "Intel(R) Corporation",
         "version": "13th Gen Intel(R) Core(TM) i7-1360P",
-        "asset_tag": "To Be Filled By O.E.M.",
         "part": "To Be Filled By O.E.M.",
         "processor_type": {
-          "value": 3,
-          "name": "CPU"
+          "name": "CPU",
+          "value": 3
         },
         "processor_family": {
-          "value": 198,
-          "name": "Other"
+          "name": "Other",
+          "value": 198
         },
         "processor_status": {
-          "value": 1,
-          "name": "Enabled"
+          "name": "Enabled",
+          "value": 1
         },
-        "voltage": 10,
         "clock_ext": 100,
         "clock_max": 5000,
-        "clock_current": 3465,
         "cache_handle_l1": 10,
         "cache_handle_l2": 11,
         "cache_handle_l3": 12
@@ -5233,20 +4846,20 @@
         "handle": 17,
         "designation": "JWLAN",
         "slot_type": {
-          "value": 21,
-          "name": "Other"
+          "name": "Other",
+          "value": 21
         },
         "bus_width": {
-          "value": 8,
-          "name": "Other"
+          "name": "Other",
+          "value": 8
         },
         "usage": {
-          "value": 4,
-          "name": "In Use"
+          "name": "In Use",
+          "value": 4
         },
         "length": {
-          "value": 1,
-          "name": "Other"
+          "name": "Other",
+          "value": 1
         },
         "id": 1,
         "features": [
@@ -5257,20 +4870,20 @@
         "handle": 18,
         "designation": "JSSD",
         "slot_type": {
-          "value": 22,
-          "name": "Other"
+          "name": "Other",
+          "value": 22
         },
         "bus_width": {
-          "value": 10,
-          "name": "Other"
+          "name": "Other",
+          "value": 10
         },
         "usage": {
-          "value": 4,
-          "name": "In Use"
+          "name": "In Use",
+          "value": 4
         },
         "length": {
-          "value": 1,
-          "name": "Other"
+          "name": "Other",
+          "value": 1
         },
         "id": 2,
         "features": [
@@ -5278,65 +4891,15 @@
         ]
       }
     ],
-    "system": [
-      {
-        "handle": 1,
-        "manufacturer": "Framework",
-        "product": "Laptop (13th Gen Intel Core)",
-        "version": "A6",
-        "wake_up": {
-          "value": 6,
-          "name": "Power Switch"
-        }
+    "system": {
+      "handle": 1,
+      "manufacturer": "Framework",
+      "product": "Laptop (13th Gen Intel Core)",
+      "version": "A6",
+      "wake_up": {
+        "name": "Power Switch",
+        "value": 6
       }
-    ],
-    "system_boot": [
-      {
-        "handle": 36,
-        "data": "0x2000000000003100382062"
-      }
-    ],
-    "system_power_supply": [
-      {
-        "handle": 37,
-        "data": "0x2700044bffff21004c50566900003100700040000000",
-        "strings": [
-          "OEM Define 0",
-          "OEM Define 1",
-          "OEM Define 2",
-          "OEM Define 3",
-          "OEM Define 4",
-          "OEM Define 5",
-          "OEM Define 6"
-        ]
-      }
-    ],
-    "temperature": [
-      {
-        "handle": 35,
-        "data": "0x1c01000000002100536f6961566931002000500000000000",
-        "strings": [
-          "Temperature Probe Description"
-        ]
-      }
-    ],
-    "tpm": [
-      {
-        "handle": 40,
-        "data": "0x2b4e020702000000000071003c2035375d6232655365657520657235696f74",
-        "strings": [
-          "TPM Device"
-        ]
-      }
-    ],
-    "voltage": [
-      {
-        "handle": 33,
-        "data": "0x1a0100000000210044676474730031003000000000000000",
-        "strings": [
-          "Voltage Probe Description"
-        ]
-      }
-    ]
+    }
   }
 }
