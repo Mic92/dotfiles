@@ -41,7 +41,7 @@
           "value": 50
         },
         "model": "Intel AX210 Bluetooth",
-        "attached_to": 71,
+        "attached_to": 59,
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-10/1-10:1.0",
         "sysfs_bus_id": "1-10:1.0",
         "resources": [
@@ -860,7 +860,7 @@
           },
           {
             "type": "irq",
-            "base": 174,
+            "base": 169,
             "triggered": 0,
             "enabled": true
           },
@@ -894,7 +894,7 @@
           "command": 1031,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 174,
+          "irq": 169,
           "prog_if": 0
         },
         "hotplug": "none",
@@ -912,251 +912,6 @@
       }
     ],
     "hub": [
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Hub",
-          "value": 266
-        },
-        "vendor": {
-          "name": "Lenovo",
-          "value": 6127
-        },
-        "device": {
-          "name": "USB3.2 Hub",
-          "value": 4165
-        },
-        "revision": {
-          "name": "1.47",
-          "value": 0
-        },
-        "model": "Lenovo USB3.2 Hub",
-        "attached_to": 76,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb4/4-1/4-1.4/4-1.4.1/4-1.4.1:1.0",
-        "sysfs_bus_id": "4-1.4.1:1.0",
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 0,
-          "manufacturer": "Generic",
-          "product": "USB3.2 Hub",
-          "device_class": "hub",
-          "device_protocol": 3,
-          "interface_class": "hub",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v17EFp1045d0147dc09dsc00dp03ic09isc00ip00in00"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Hub",
-          "value": 266
-        },
-        "vendor": {
-          "name": "Lenovo",
-          "value": 6127
-        },
-        "device": {
-          "name": "USB2.1 Hub",
-          "value": 21521
-        },
-        "revision": {
-          "name": "1.47",
-          "value": 0
-        },
-        "model": "Lenovo USB2.1 Hub",
-        "attached_to": 58,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.3/1-2.3.1/1-2.3.1:1.0",
-        "sysfs_bus_id": "1-2.3.1:1.0",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 480000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 480000000,
-          "manufacturer": "Generic",
-          "product": "USB2.1 Hub",
-          "device_class": "hub",
-          "device_protocol": 2,
-          "interface_class": "hub",
-          "interface_protocol": 2,
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v17EFp5411d0147dc09dsc00dp02ic09isc00ip02in00"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Hub",
-          "value": 266
-        },
-        "vendor": {
-          "name": "Fresco Logic",
-          "value": 7516
-        },
-        "device": {
-          "name": "USB2.0 Hub",
-          "value": 22529
-        },
-        "revision": {
-          "name": "1.01",
-          "value": 0
-        },
-        "model": "Fresco Logic USB2.0 Hub",
-        "attached_to": 71,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2:1.0",
-        "sysfs_bus_id": "1-2:1.0",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 480000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 480000000,
-          "manufacturer": "Fresco Logic, Inc.",
-          "product": "USB2.0 Hub",
-          "device_class": "hub",
-          "device_protocol": 2,
-          "interface_class": "hub",
-          "interface_protocol": 2,
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v1D5Cp5801d0101dc09dsc00dp02ic09isc00ip02in00"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Hub",
-          "value": 266
-        },
-        "vendor": {
-          "name": "Lenovo",
-          "value": 6127
-        },
-        "device": {
-          "name": "USB2.1 Hub",
-          "value": 1584
-        },
-        "revision": {
-          "name": "11.32",
-          "value": 0
-        },
-        "model": "Lenovo USB2.1 Hub",
-        "attached_to": 57,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.3/1-2.3:1.0",
-        "sysfs_bus_id": "1-2.3:1.0",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 480000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 480000000,
-          "manufacturer": "GenesysLogic",
-          "product": "USB2.1 Hub",
-          "device_class": "hub",
-          "device_protocol": 2,
-          "interface_class": "hub",
-          "interface_protocol": 2,
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v17EFp0630d1132dc09dsc00dp02ic09isc00ip02in00"
-      },
       {
         "bus_type": {
           "name": "USB",
@@ -1243,7 +998,7 @@
           "value": 0
         },
         "model": "Cambridge Silicon Radio Mpow HC5 Headset in charging mode - USB Hub",
-        "attached_to": 71,
+        "attached_to": 59,
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-3/1-3:1.0",
         "sysfs_bus_id": "1-3:1.0",
         "resources": [
@@ -1407,112 +1162,6 @@
           "value": 266
         },
         "vendor": {
-          "name": "Intel Corp.",
-          "value": 32903
-        },
-        "device": {
-          "name": "USB3.0 Hub",
-          "value": 2880
-        },
-        "revision": {
-          "name": "12.34",
-          "value": 0
-        },
-        "model": "Intel USB3.0 Hub",
-        "attached_to": 68,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb4/4-1/4-1:1.0",
-        "sysfs_bus_id": "4-1:1.0",
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 0,
-          "manufacturer": "Intel Corporation.",
-          "product": "USB3.0 Hub",
-          "device_class": "hub",
-          "device_protocol": 3,
-          "interface_class": "hub",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v8087p0B40d1234dc09dsc00dp03ic09isc00ip00in00"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Hub",
-          "value": 266
-        },
-        "vendor": {
-          "name": "Lenovo",
-          "value": 6127
-        },
-        "device": {
-          "name": "USB3.2 Hub",
-          "value": 4164
-        },
-        "revision": {
-          "name": "11.32",
-          "value": 0
-        },
-        "model": "Lenovo USB3.2 Hub",
-        "attached_to": 72,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb4/4-1/4-1.4/4-1.4:1.0",
-        "sysfs_bus_id": "4-1.4:1.0",
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 0,
-          "manufacturer": "GenesysLogic",
-          "product": "USB3.2 Hub",
-          "device_class": "hub",
-          "device_protocol": 3,
-          "interface_class": "hub",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v17EFp1044d1132dc09dsc00dp03ic09isc00ip00in00"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Hub",
-          "value": 266
-        },
-        "vendor": {
           "name": "Linux Foundation",
           "value": 7531
         },
@@ -1554,186 +1203,6 @@
           "hub"
         ],
         "module_alias": "usb:v1D6Bp0003d0610dc09dsc00dp03ic09isc00ip00in00"
-      }
-    ],
-    "keyboard": [
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Keyboard",
-          "value": 264
-        },
-        "sub_class": {
-          "name": "Keyboard",
-          "value": 0
-        },
-        "vendor": {
-          "name": "Keychron",
-          "value": 13364
-        },
-        "device": {
-          "name": "Keychron K6 Pro",
-          "value": 611
-        },
-        "revision": {
-          "name": "1.00",
-          "value": 0
-        },
-        "model": "Keychron K6 Pro",
-        "attached_to": 54,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.3/1-2.3.1/1-2.3.1.1/1-2.3.1.1:1.0",
-        "sysfs_bus_id": "1-2.3.1.1:1.0",
-        "unix_device_name": "/dev/input/event6",
-        "unix_device_number": {
-          "type": 99,
-          "major": 13,
-          "minor": 70,
-          "range": 1
-        },
-        "unix_device_names": [
-          "/dev/input/by-id/usb-Keychron_Keychron_K6_Pro-event-kbd",
-          "/dev/input/by-path/pci-0000:00:14.0-usb-0:2.3.1.1:1.0-event-kbd",
-          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:2.3.1.1:1.0-event-kbd",
-          "/dev/input/event6"
-        ],
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 12000000,
-          "manufacturer": "Keychron",
-          "product": "Keychron K6 Pro",
-          "interface_class": "hid",
-          "interface_subclass": 1,
-          "interface_protocol": 1,
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "usbhid",
-        "driver_module": "usbhid",
-        "drivers": [
-          "usbhid"
-        ],
-        "driver_modules": [
-          "usbhid"
-        ],
-        "driver_info": {
-          "type": "keyboard",
-          "xkb_rules": "xfree86",
-          "xkb_model": "pc104"
-        },
-        "module_alias": "usb:v3434p0263d0100dc00dsc00dp00ic03isc01ip01in00"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Keyboard",
-          "value": 264
-        },
-        "sub_class": {
-          "name": "Keyboard",
-          "value": 0
-        },
-        "vendor": {
-          "name": "Logitech, Inc.",
-          "value": 1133
-        },
-        "device": {
-          "name": "Logi Bolt Receiver",
-          "value": 50504
-        },
-        "revision": {
-          "name": "5.03",
-          "value": 0
-        },
-        "model": "Logitech Logi Bolt Receiver",
-        "attached_to": 54,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.3/1-2.3.1/1-2.3.1.2/1-2.3.1.2:1.0",
-        "sysfs_bus_id": "1-2.3.1.2:1.0",
-        "unix_device_name": "/dev/input/event11",
-        "unix_device_number": {
-          "type": 99,
-          "major": 13,
-          "minor": 75,
-          "range": 1
-        },
-        "unix_device_names": [
-          "/dev/input/by-id/usb-Logitech_USB_Receiver-event-kbd",
-          "/dev/input/by-path/pci-0000:00:14.0-usb-0:2.3.1.2:1.0-event-kbd",
-          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:2.3.1.2:1.0-event-kbd",
-          "/dev/input/event11"
-        ],
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 12000000,
-          "manufacturer": "Logitech",
-          "product": "USB Receiver",
-          "interface_class": "hid",
-          "interface_subclass": 1,
-          "interface_protocol": 1,
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "usbhid",
-        "driver_module": "usbhid",
-        "drivers": [
-          "usbhid"
-        ],
-        "driver_modules": [
-          "usbhid"
-        ],
-        "driver_info": {
-          "type": "keyboard",
-          "xkb_rules": "xfree86",
-          "xkb_model": "pc104"
-        },
-        "module_alias": "usb:v046DpC548d0503dc00dsc00dp00ic03isc01ip01in00"
       }
     ],
     "memory": [
@@ -1810,350 +1279,6 @@
         "hotplug": "none",
         "hotplug_slot": 0,
         "is": {}
-      },
-      {
-        "slot": 1,
-        "base_class": {
-          "name": "Monitor",
-          "value": 256
-        },
-        "sub_class": {
-          "name": "LCD Monitor",
-          "value": 2
-        },
-        "vendor": {
-          "name": "Lenovo",
-          "value": 12462
-        },
-        "device": {
-          "name": "P27u-20",
-          "value": 25291
-        },
-        "model": "Lenovo P27u-20",
-        "attached_to": 41,
-        "resources": [
-          {
-            "type": "monitor",
-            "width": 1024,
-            "height": 768,
-            "vertical_frequency": 60,
-            "interlaced": false
-          },
-          {
-            "type": "monitor",
-            "width": 1280,
-            "height": 1024,
-            "vertical_frequency": 60,
-            "interlaced": false
-          },
-          {
-            "type": "monitor",
-            "width": 1280,
-            "height": 720,
-            "vertical_frequency": 60,
-            "interlaced": false
-          },
-          {
-            "type": "monitor",
-            "width": 3840,
-            "height": 2160,
-            "vertical_frequency": 60,
-            "interlaced": false
-          },
-          {
-            "type": "monitor",
-            "width": 640,
-            "height": 480,
-            "vertical_frequency": 60,
-            "interlaced": false
-          },
-          {
-            "type": "monitor",
-            "width": 720,
-            "height": 400,
-            "vertical_frequency": 70,
-            "interlaced": false
-          },
-          {
-            "type": "monitor",
-            "width": 800,
-            "height": 600,
-            "vertical_frequency": 60,
-            "interlaced": false
-          },
-          {
-            "type": "size",
-            "unit": "mm",
-            "value_1": 597,
-            "value_2": 336
-          }
-        ],
-        "detail": {
-          "manufacture_year": 2022,
-          "manufacture_week": 4,
-          "vertical_sync": {
-            "min": 50,
-            "max": 70
-          },
-          "horizontal_sync": {
-            "min": 30,
-            "max": 140
-          },
-          "horizontal_sync_timings": {
-            "disp": 3840,
-            "sync_start": 3888,
-            "sync_end": 3920,
-            "total": 4000
-          },
-          "vertical_sync_timings": {
-            "disp": 2160,
-            "sync_start": 2163,
-            "sync_end": 2168,
-            "total": 2222
-          },
-          "clock": 533250,
-          "width": 3840,
-          "height": 2160,
-          "width_millimetres": 597,
-          "height_millimetres": 336,
-          "horizontal_flag": 45,
-          "vertical_flag": 43,
-          "vendor": "",
-          "name": "P27u-20"
-        },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver_info": {
-          "type": "display",
-          "width": 3840,
-          "height": 2160,
-          "vertical_sync": {
-            "min": 50,
-            "max": 70
-          },
-          "horizontal_sync": {
-            "min": 30,
-            "max": 140
-          },
-          "bandwidth": 0,
-          "horizontal_sync_timings": {
-            "disp": 3840,
-            "sync_start": 3888,
-            "sync_end": 3920,
-            "total": 4000
-          },
-          "vertical_sync_timings": {
-            "disp": 2160,
-            "sync_start": 2163,
-            "sync_end": 2168,
-            "total": 2222
-          },
-          "horizontal_flag": 45,
-          "vertical_flag": 43
-        }
-      }
-    ],
-    "mouse": [
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Mouse",
-          "value": 261
-        },
-        "sub_class": {
-          "name": "USB Mouse",
-          "value": 3
-        },
-        "vendor": {
-          "name": "Keychron",
-          "value": 13364
-        },
-        "device": {
-          "name": "Keychron K6 Pro",
-          "value": 611
-        },
-        "revision": {
-          "name": "1.00",
-          "value": 0
-        },
-        "compat_vendor": "Unknown",
-        "compat_device": "Generic USB Mouse",
-        "model": "Keychron K6 Pro",
-        "attached_to": 54,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.3/1-2.3.1/1-2.3.1.1/1-2.3.1.1:1.2",
-        "sysfs_bus_id": "1-2.3.1.1:1.2",
-        "unix_device_name": "/dev/input/mice",
-        "unix_device_number": {
-          "type": 99,
-          "major": 13,
-          "minor": 63,
-          "range": 1
-        },
-        "unix_device_names": [
-          "/dev/input/mice"
-        ],
-        "unix_device_name_2": "/dev/input/mouse3",
-        "unix_device_number_2": {
-          "type": 99,
-          "major": 13,
-          "minor": 35,
-          "range": 1
-        },
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 2,
-          "speed": 12000000,
-          "manufacturer": "Keychron",
-          "product": "Keychron K6 Pro",
-          "interface_class": "hid",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "usbhid",
-        "driver_module": "usbhid",
-        "drivers": [
-          "usbhid"
-        ],
-        "driver_modules": [
-          "usbhid"
-        ],
-        "driver_info": {
-          "type": "mouse",
-          "db_entry_0": [
-            "explorerps/2",
-            "exps2"
-          ],
-          "xf86": "explorerps/2",
-          "gpm": "exps2",
-          "buttons": -1,
-          "wheels": -1
-        },
-        "module_alias": "usb:v3434p0263d0100dc00dsc00dp00ic03isc00ip00in02"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Mouse",
-          "value": 261
-        },
-        "sub_class": {
-          "name": "USB Mouse",
-          "value": 3
-        },
-        "vendor": {
-          "name": "Logitech, Inc.",
-          "value": 1133
-        },
-        "device": {
-          "name": "Logi Bolt Receiver",
-          "value": 50504
-        },
-        "revision": {
-          "name": "5.03",
-          "value": 0
-        },
-        "compat_vendor": "Unknown",
-        "compat_device": "Generic USB Mouse",
-        "model": "Logitech Logi Bolt Receiver",
-        "attached_to": 54,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.3/1-2.3.1/1-2.3.1.2/1-2.3.1.2:1.1",
-        "sysfs_bus_id": "1-2.3.1.2:1.1",
-        "unix_device_name": "/dev/input/mice",
-        "unix_device_number": {
-          "type": 99,
-          "major": 13,
-          "minor": 63,
-          "range": 1
-        },
-        "unix_device_names": [
-          "/dev/input/mice"
-        ],
-        "unix_device_name_2": "/dev/input/mouse4",
-        "unix_device_number_2": {
-          "type": 99,
-          "major": 13,
-          "minor": 36,
-          "range": 1
-        },
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 1,
-          "speed": 12000000,
-          "manufacturer": "Logitech",
-          "product": "USB Receiver",
-          "interface_class": "hid",
-          "interface_subclass": 1,
-          "interface_protocol": 2,
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "usbhid",
-        "driver_module": "usbhid",
-        "drivers": [
-          "usbhid"
-        ],
-        "driver_modules": [
-          "usbhid"
-        ],
-        "driver_info": {
-          "type": "mouse",
-          "db_entry_0": [
-            "explorerps/2",
-            "exps2"
-          ],
-          "xf86": "explorerps/2",
-          "gpm": "exps2",
-          "buttons": -1,
-          "wheels": -1
-        },
-        "module_alias": "usb:v046DpC548d0503dc00dsc00dp00ic03isc01ip02in01"
       }
     ],
     "network_controller": [
@@ -2327,123 +1452,9 @@
           "iwlwifi"
         ],
         "module_alias": "pci:v00008086d00002725sv00008086sd00000024bc02sc80i00"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Network controller",
-          "value": 2
-        },
-        "sub_class": {
-          "name": "Ethernet controller",
-          "value": 0
-        },
-        "vendor": {
-          "name": "Realtek Semiconductor Corp.",
-          "value": 3034
-        },
-        "device": {
-          "name": "RTL8153 Gigabit Ethernet Adapter",
-          "value": 33107
-        },
-        "revision": {
-          "name": "31.23",
-          "value": 0
-        },
-        "model": "Realtek RTL8153 Gigabit Ethernet Adapter",
-        "attached_to": 52,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb4/4-1/4-1.4/4-1.4.1/4-1.4.1.3/4-1.4.1.3:1.0",
-        "sysfs_bus_id": "4-1.4.1.3:1.0",
-        "unix_device_name": "eth0",
-        "unix_device_names": [
-          "eth0"
-        ],
-        "resources": [
-          {
-            "type": "hwaddr",
-            "address": 102
-          },
-          {
-            "type": "phwaddr",
-            "address": 102
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 0,
-          "manufacturer": "Realtek",
-          "product": "USB 10/100/1000 LAN",
-          "interface_class": "vendor_spec",
-          "interface_subclass": 255,
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "r8152",
-        "driver_module": "r8152",
-        "drivers": [
-          "r8152"
-        ],
-        "driver_modules": [
-          "r8152"
-        ],
-        "module_alias": "usb:v0BDAp8153d3123dc00dsc00dp00icFFiscFFip00in00"
       }
     ],
     "network_interface": [
-      {
-        "slot": 0,
-        "base_class": {
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "name": "Ethernet",
-          "value": 1
-        },
-        "model": "Ethernet network interface",
-        "attached_to": 60,
-        "sysfs_id": "/class/net/eth0",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:0d.0/usb4/4-1/4-1.4/4-1.4.1/4-1.4.1.3/4-1.4.1.3:1.0",
-        "unix_device_name": "eth0",
-        "unix_device_names": [
-          "eth0"
-        ],
-        "resources": [
-          {
-            "type": "hwaddr",
-            "address": 102
-          },
-          {
-            "type": "phwaddr",
-            "address": 102
-          }
-        ],
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "r8152",
-        "driver_module": "r8152",
-        "drivers": [
-          "r8152"
-        ],
-        "driver_modules": [
-          "r8152"
-        ]
-      },
       {
         "slot": 0,
         "base_class": {
@@ -2616,7 +1627,7 @@
           "value": 0
         },
         "model": "GN Netcom Jabra Link 380",
-        "attached_to": 66,
+        "attached_to": 55,
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-3/1-3.1/1-3.1:1.1",
         "sysfs_bus_id": "1-3.1:1.1",
         "resources": [
@@ -2982,7 +1993,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 128,
+            "base": 194,
             "triggered": 0,
             "enabled": true
           },
@@ -3000,7 +2011,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 128,
+          "irq": 194,
           "prog_if": 0
         },
         "hotplug": "none",
@@ -3063,7 +2074,7 @@
         ],
         "detail": {
           "function": 5,
-          "command": 1026,
+          "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
           "irq": 0,
@@ -3589,7 +2600,7 @@
           "value": 0
         },
         "model": "Shenzhen Goodix Technology Co.,Ltd Goodix Fingerprint USB Device",
-        "attached_to": 71,
+        "attached_to": 59,
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-9/1-9:1.0",
         "sysfs_bus_id": "1-9:1.0",
         "resources": [
@@ -3651,21 +2662,21 @@
           "value": 0
         },
         "model": "GN Netcom Jabra Link 380",
-        "attached_to": 66,
+        "attached_to": 55,
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-3/1-3.1/1-3.1:1.3",
         "sysfs_bus_id": "1-3.1:1.3",
-        "unix_device_name": "/dev/input/event2",
+        "unix_device_name": "/dev/input/event17",
         "unix_device_number": {
           "type": 99,
           "major": 13,
-          "minor": 66,
+          "minor": 81,
           "range": 1
         },
         "unix_device_names": [
           "/dev/input/by-id/usb-0b0e_Jabra_Link_380_08C8C2E6DA47-event-if03",
           "/dev/input/by-path/pci-0000:00:14.0-usb-0:3.1:1.3-event",
           "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:3.1:1.3-event",
-          "/dev/input/event2"
+          "/dev/input/event17"
         ],
         "resources": [
           {
@@ -3720,137 +2731,6 @@
           "value": 0
         },
         "vendor": {
-          "name": "Logitech, Inc.",
-          "value": 1133
-        },
-        "device": {
-          "name": "Logi Bolt Receiver",
-          "value": 50504
-        },
-        "revision": {
-          "name": "5.03",
-          "value": 0
-        },
-        "model": "Logitech Logi Bolt Receiver",
-        "attached_to": 54,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.3/1-2.3.1/1-2.3.1.2/1-2.3.1.2:1.2",
-        "sysfs_bus_id": "1-2.3.1.2:1.2",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 2,
-          "speed": 12000000,
-          "manufacturer": "Logitech",
-          "product": "USB Receiver",
-          "interface_class": "hid",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "usbhid",
-        "driver_module": "usbhid",
-        "drivers": [
-          "usbhid"
-        ],
-        "driver_modules": [
-          "usbhid"
-        ],
-        "module_alias": "usb:v046DpC548d0503dc00dsc00dp00ic03isc00ip00in02"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Unclassified device",
-          "value": 0
-        },
-        "sub_class": {
-          "name": "Unclassified device",
-          "value": 0
-        },
-        "vendor": {
-          "name": "Lenovo",
-          "value": 6127
-        },
-        "device": {
-          "name": "P27u-20",
-          "value": 42055
-        },
-        "revision": {
-          "name": "0.01",
-          "value": 0
-        },
-        "model": "Lenovo P27u-20",
-        "attached_to": 57,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-2/1-2.2/1-2.2:1.1",
-        "sysfs_bus_id": "1-2.2:1.1",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 1,
-          "speed": 12000000,
-          "manufacturer": "Lenovo",
-          "product": "P27u-20",
-          "interface_class": "vendor_spec",
-          "interface_subclass": 3,
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "module_alias": "usb:v17EFpA447d0001dc00dsc00dp00icFFisc03ip00in01"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Unclassified device",
-          "value": 0
-        },
-        "sub_class": {
-          "name": "Unclassified device",
-          "value": 0
-        },
-        "vendor": {
           "name": "Realtek Semiconductor Corp.",
           "value": 3034
         },
@@ -3863,7 +2743,7 @@
           "value": 0
         },
         "model": "Realtek Laptop Camera",
-        "attached_to": 71,
+        "attached_to": 59,
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-7/1-7:1.0",
         "sysfs_bus_id": "1-7:1.0",
         "resources": [
@@ -3950,7 +2830,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 191,
+            "base": 186,
             "triggered": 0,
             "enabled": true
           },
@@ -3968,7 +2848,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 191,
+          "irq": 186,
           "prog_if": 48
         },
         "hotplug": "none",
@@ -4107,7 +2987,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 149,
+            "base": 144,
             "triggered": 0,
             "enabled": true
           },
@@ -4125,7 +3005,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 149,
+          "irq": 144,
           "prog_if": 48
         },
         "hotplug": "none",
