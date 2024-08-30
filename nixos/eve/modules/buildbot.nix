@@ -3,7 +3,6 @@
   services.buildbot-nix.master = {
     enable = true;
     domain = "buildbot.thalheim.io";
-    buildRetries = 1;
 
     jobReportLimit = 1;
 
@@ -31,7 +30,7 @@
       "DavHau"
       "Lassulus"
     ];
-    outputsPath = "/var/www/buildbot/nix-outputs";
+    outputsPath = "/var/www/buildbot/nix-outputs/";
   };
   services.buildbot-master = {
     extraConfig = ''
