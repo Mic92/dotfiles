@@ -26,7 +26,7 @@
       };
     };
     admins = [
-      #"Mic92"
+      "Mic92"
       "DavHau"
       "Lassulus"
     ];
