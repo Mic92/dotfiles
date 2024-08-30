@@ -22,6 +22,8 @@
     ./modules/toggle-keyboard
     ./modules/localbackup.nix
     ./modules/sunshine.nix
+    ./modules/ghaf-hardware.nix
+    ./modules/ghaf-facter.nix
 
     ../modules/i18n.nix
     ../modules/ip-update.nix
