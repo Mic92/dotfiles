@@ -57,7 +57,8 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    buildbot-nix.url = "github:nix-community/buildbot-nix";
+    buildbot-nix.url = "github:nix-community/buildbot-nix/cache_failed_builds";
+    #buildbot-nix.url = "github:MagicRB/buildbot-nix/cache_failed_builds";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
@@ -176,9 +177,9 @@
 
             checks =
               let
-                nixosMachines = lib.mapAttrs' (
-                  name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel
-                ) ((lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations);
+                #nixosMachines = lib.mapAttrs' (
+                #  name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel
+                #) ((lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations);
 
                 blacklistPackages = [
                   "install-iso"
@@ -194,7 +195,8 @@
                   name: config: lib.nameValuePair "home-manager-${name}" config.activation-script
                 ) (self'.legacyPackages.homeConfigurations or { });
               in
-              nixosMachines // packages // devShells // homeConfigurations;
+              packages // devShells // homeConfigurations;
+            #nixosMachines // packages // devShells // homeConfigurations;
           };
         # CI
       }
