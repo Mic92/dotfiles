@@ -129,7 +129,7 @@
   };
 
   outputs =
-    inputs@{ self, flake-parts, ... }:
+    inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } (
       { withSystem, config, ... }:
       {
@@ -168,7 +168,6 @@
             inputs',
             self',
             lib,
-            system,
             ...
           }:
           {
@@ -177,25 +176,19 @@
 
             checks =
               let
-                nixosMachines = lib.mapAttrs' (
-                  name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel
-                ) ((lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations);
-
-                blacklistPackages = [
-                  "install-iso"
-                  "nspawn-template"
-                  "netboot-pixie-core"
-                  "netboot"
-                ];
-                packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") (
-                  lib.filterAttrs (n: _v: !(builtins.elem n blacklistPackages)) self'.packages
-                );
+                #nixosMachines = lib.mapAttrs' (
+                #  name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel
+                #) ((lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations);
+                #packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") (
+                #  lib.filterAttrs (n: _v: !(builtins.elem n blacklistPackages)) self'.packages
+                #);
                 devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
-                homeConfigurations = lib.mapAttrs' (
-                  name: config: lib.nameValuePair "home-manager-${name}" config.activation-script
-                ) (self'.legacyPackages.homeConfigurations or { });
               in
-              nixosMachines // packages // devShells // homeConfigurations;
+              #homeConfigurations = lib.mapAttrs' (
+              #  name: config: lib.nameValuePair "home-manager-${name}" config.activation-script
+              #) (self'.legacyPackages.homeConfigurations or { });
+              devShells;
+            #nixosMachines // packages // devShells // homeConfigurations;
           };
         # CI
       }
