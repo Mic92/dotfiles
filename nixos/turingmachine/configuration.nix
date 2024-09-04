@@ -8,7 +8,7 @@
 {
   imports = [
     inputs.nixos-facter-modules.nixosModules.facter
-    { config.facter.reportPath = ./report.json; }
+    { config.facter.reportPath = ./facter.json; }
 
     ./hardware-configuration.nix
     ./modules/caddy.nix
