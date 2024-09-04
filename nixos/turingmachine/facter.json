@@ -42,8 +42,8 @@
         },
         "model": "Intel AX210 Bluetooth",
         "attached_to": 59,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-10/1-10:1.0",
-        "sysfs_bus_id": "1-10:1.0",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-10/3-10:1.0",
+        "sysfs_bus_id": "3-10:1.0",
         "resources": [
           {
             "type": "baud",
@@ -780,7 +780,6 @@
           "/dev/disk/by-path/pci-0000:01:00.0-nvme-1",
           "/dev/nvme0n1"
         ],
-        "rom_id": "0x80",
         "resources": [
           {
             "type": "disk_geo",
@@ -808,6 +807,50 @@
         "driver_modules": [
           "nvme"
         ]
+      },
+      {
+        "slot": 0,
+        "base_class": {
+          "name": "Mass Storage Device",
+          "value": 262
+        },
+        "sub_class": {
+          "name": "Disk",
+          "value": 0
+        },
+        "model": "Disk",
+        "sysfs_id": "/class/block/zd0",
+        "unix_device_name": "/dev/zd0",
+        "unix_device_number": {
+          "type": 98,
+          "major": 230,
+          "minor": 0,
+          "range": 16
+        },
+        "unix_device_names": [
+          "/dev/disk/by-diskseq/10",
+          "/dev/zd0",
+          "/dev/zvol/zroot/test"
+        ],
+        "resources": [
+          {
+            "type": "disk_geo",
+            "cylinders": 20805,
+            "heads": 16,
+            "sectors": 63,
+            "size": 0,
+            "geo_type": "logical"
+          },
+          {
+            "type": "size",
+            "unit": "sectors",
+            "value_1": 20971520,
+            "value_2": 512
+          }
+        ],
+        "hotplug": "none",
+        "hotplug_slot": 0,
+        "is": {}
       }
     ],
     "graphics_card": [
@@ -860,7 +903,7 @@
           },
           {
             "type": "irq",
-            "base": 169,
+            "base": 161,
             "triggered": 0,
             "enabled": true
           },
@@ -894,7 +937,7 @@
           "command": 1031,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 169,
+          "irq": 161,
           "prog_if": 0
         },
         "hotplug": "none",
@@ -923,6 +966,119 @@
           "value": 266
         },
         "vendor": {
+          "name": "Cambridge Silicon Radio, Ltd",
+          "value": 2578
+        },
+        "device": {
+          "name": "Mpow HC5 Headset in charging mode - USB Hub",
+          "value": 16400
+        },
+        "revision": {
+          "name": "16.80",
+          "value": 0
+        },
+        "model": "Cambridge Silicon Radio Mpow HC5 Headset in charging mode - USB Hub",
+        "attached_to": 59,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3:1.0",
+        "sysfs_bus_id": "3-3:1.0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 12000000,
+          "device_class": "hub",
+          "interface_class": "hub",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v0A12p4010d1680dc09dsc00dp00ic09isc00ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
+          "name": "Microchip Technology, Inc. (formerly SMSC)",
+          "value": 1060
+        },
+        "device": {
+          "name": "USB7206 Smart Hub",
+          "value": 29190
+        },
+        "revision": {
+          "name": "6.25",
+          "value": 0
+        },
+        "model": "Microchip Technology, Inc. (formerly SMSC) USB7206 Smart Hub",
+        "attached_to": 88,
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-1/2-1:1.0",
+        "sysfs_bus_id": "2-1:1.0",
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 0,
+          "manufacturer": "Microchip",
+          "product": "USB7206 Smart Hub",
+          "device_class": "hub",
+          "device_protocol": 3,
+          "interface_class": "hub",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v0424p7206d0625dc09dsc00dp03ic09isc00ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
           "name": "Linux Foundation",
           "value": 7531
         },
@@ -935,8 +1091,8 @@
           "value": 0
         },
         "model": "Linux Foundation 2.0 root hub",
-        "attached_to": 21,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb3/3-0:1.0",
+        "attached_to": 42,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-0:1.0",
         "sysfs_bus_id": "3-0:1.0",
         "resources": [
           {
@@ -986,66 +1142,6 @@
           "value": 266
         },
         "vendor": {
-          "name": "Cambridge Silicon Radio, Ltd",
-          "value": 2578
-        },
-        "device": {
-          "name": "Mpow HC5 Headset in charging mode - USB Hub",
-          "value": 16400
-        },
-        "revision": {
-          "name": "16.80",
-          "value": 0
-        },
-        "model": "Cambridge Silicon Radio Mpow HC5 Headset in charging mode - USB Hub",
-        "attached_to": 59,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-3/1-3:1.0",
-        "sysfs_bus_id": "1-3:1.0",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 12000000,
-          "device_class": "hub",
-          "interface_class": "hub",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v0A12p4010d1680dc09dsc00dp00ic09isc00ip00in00"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Hub",
-          "value": 266
-        },
-        "vendor": {
           "name": "Linux Foundation",
           "value": 7531
         },
@@ -1058,8 +1154,8 @@
           "value": 0
         },
         "model": "Linux Foundation 3.0 root hub",
-        "attached_to": 21,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb4/4-0:1.0",
+        "attached_to": 42,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb4/4-0:1.0",
         "sysfs_bus_id": "4-0:1.0",
         "detail": {
           "bus": 0,
@@ -1099,6 +1195,70 @@
           "value": 266
         },
         "vendor": {
+          "name": "Microchip Technology, Inc. (formerly SMSC)",
+          "value": 1060
+        },
+        "device": {
+          "name": "USB4216 Smart Hub",
+          "value": 16918
+        },
+        "revision": {
+          "name": "1.91",
+          "value": 0
+        },
+        "model": "Microchip Technology, Inc. (formerly SMSC) USB4216 Smart Hub",
+        "attached_to": 81,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.4/3-2.4:1.0",
+        "sysfs_bus_id": "3-2.4:1.0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 480000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 480000000,
+          "manufacturer": "Microchip",
+          "product": "USB4216 Smart Hub",
+          "device_class": "hub",
+          "device_protocol": 2,
+          "interface_class": "hub",
+          "interface_protocol": 2,
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v0424p4216d0191dc09dsc00dp02ic09isc00ip02in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
           "name": "Linux Foundation",
           "value": 7531
         },
@@ -1111,8 +1271,8 @@
           "value": 0
         },
         "model": "Linux Foundation 2.0 root hub",
-        "attached_to": 42,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-0:1.0",
+        "attached_to": 21,
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb1/1-0:1.0",
         "sysfs_bus_id": "1-0:1.0",
         "resources": [
           {
@@ -1162,6 +1322,123 @@
           "value": 266
         },
         "vendor": {
+          "name": "Microchip Technology, Inc. (formerly SMSC)",
+          "value": 1060
+        },
+        "device": {
+          "name": "USB7216 Smart Hub",
+          "value": 29206
+        },
+        "revision": {
+          "name": "1.91",
+          "value": 0
+        },
+        "model": "Microchip Technology, Inc. (formerly SMSC) USB7216 Smart Hub",
+        "attached_to": 58,
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-1/2-1.4/2-1.4:1.0",
+        "sysfs_bus_id": "2-1.4:1.0",
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 0,
+          "manufacturer": "Microchip",
+          "product": "USB7216 Smart Hub",
+          "device_class": "hub",
+          "device_protocol": 3,
+          "interface_class": "hub",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v0424p7216d0191dc09dsc00dp03ic09isc00ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
+          "name": "Microchip Technology, Inc. (formerly SMSC)",
+          "value": 1060
+        },
+        "device": {
+          "name": "USB4206 Smart Hub",
+          "value": 16902
+        },
+        "revision": {
+          "name": "6.25",
+          "value": 0
+        },
+        "model": "Microchip Technology, Inc. (formerly SMSC) USB4206 Smart Hub",
+        "attached_to": 59,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2:1.0",
+        "sysfs_bus_id": "3-2:1.0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 480000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 480000000,
+          "manufacturer": "Microchip",
+          "product": "USB4206 Smart Hub",
+          "device_class": "hub",
+          "device_protocol": 2,
+          "interface_class": "hub",
+          "interface_protocol": 2,
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v0424p4206d0625dc09dsc00dp02ic09isc00ip02in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
           "name": "Linux Foundation",
           "value": 7531
         },
@@ -1174,8 +1451,8 @@
           "value": 0
         },
         "model": "Linux Foundation 3.0 root hub",
-        "attached_to": 42,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb2/2-0:1.0",
+        "attached_to": 21,
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-0:1.0",
         "sysfs_bus_id": "2-0:1.0",
         "detail": {
           "bus": 0,
@@ -1205,12 +1482,362 @@
         "module_alias": "usb:v1D6Bp0003d0610dc09dsc00dp03ic09isc00ip00in00"
       }
     ],
+    "keyboard": [
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Keyboard",
+          "value": 264
+        },
+        "sub_class": {
+          "name": "Keyboard",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Logitech, Inc.",
+          "value": 1133
+        },
+        "device": {
+          "name": "Logi Bolt Receiver",
+          "value": 50504
+        },
+        "revision": {
+          "name": "5.01",
+          "value": 0
+        },
+        "model": "Logitech Logi Bolt Receiver",
+        "attached_to": 81,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.3/3-2.3:1.0",
+        "sysfs_bus_id": "3-2.3:1.0",
+        "unix_device_name": "/dev/input/event9",
+        "unix_device_number": {
+          "type": 99,
+          "major": 13,
+          "minor": 73,
+          "range": 1
+        },
+        "unix_device_names": [
+          "/dev/input/by-id/usb-Logitech_USB_Receiver-event-kbd",
+          "/dev/input/by-path/pci-0000:00:14.0-usb-0:2.3:1.0-event-kbd",
+          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:2.3:1.0-event-kbd",
+          "/dev/input/event9"
+        ],
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 12000000,
+          "manufacturer": "Logitech",
+          "product": "USB Receiver",
+          "interface_class": "hid",
+          "interface_subclass": 1,
+          "interface_protocol": 1,
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "usbhid",
+        "driver_module": "usbhid",
+        "drivers": [
+          "usbhid"
+        ],
+        "driver_modules": [
+          "usbhid"
+        ],
+        "driver_info": {
+          "type": "keyboard",
+          "xkb_rules": "xfree86",
+          "xkb_model": "pc104"
+        },
+        "module_alias": "usb:v046DpC548d0501dc00dsc00dp00ic03isc01ip01in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Keyboard",
+          "value": 264
+        },
+        "sub_class": {
+          "name": "Keyboard",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Keychron",
+          "value": 13364
+        },
+        "device": {
+          "name": "Keychron Q12",
+          "value": 465
+        },
+        "revision": {
+          "name": "1.00",
+          "value": 0
+        },
+        "model": "Keychron Q12",
+        "attached_to": 76,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.4/3-2.4.2/3-2.4.2:1.0",
+        "sysfs_bus_id": "3-2.4.2:1.0",
+        "unix_device_name": "/dev/input/event13",
+        "unix_device_number": {
+          "type": 99,
+          "major": 13,
+          "minor": 77,
+          "range": 1
+        },
+        "unix_device_names": [
+          "/dev/input/by-id/usb-Keychron_Keychron_Q12-event-kbd",
+          "/dev/input/by-path/pci-0000:00:14.0-usb-0:2.4.2:1.0-event-kbd",
+          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:2.4.2:1.0-event-kbd",
+          "/dev/input/event13"
+        ],
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 12000000,
+          "manufacturer": "Keychron",
+          "product": "Keychron Q12",
+          "interface_class": "hid",
+          "interface_subclass": 1,
+          "interface_protocol": 1,
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "usbhid",
+        "driver_module": "usbhid",
+        "drivers": [
+          "usbhid"
+        ],
+        "driver_modules": [
+          "usbhid"
+        ],
+        "driver_info": {
+          "type": "keyboard",
+          "xkb_rules": "xfree86",
+          "xkb_model": "pc104"
+        },
+        "module_alias": "usb:v3434p01D1d0100dc00dsc00dp00ic03isc01ip01in00"
+      }
+    ],
     "memory": [
       null
     ],
     "monitor": [
       {
         "slot": 0,
+        "base_class": {
+          "name": "Monitor",
+          "value": 256
+        },
+        "sub_class": {
+          "name": "LCD Monitor",
+          "value": 2
+        },
+        "vendor": {
+          "name": "DELL",
+          "value": 4268
+        },
+        "device": {
+          "name": "DELL U3223QE",
+          "value": 17014
+        },
+        "model": "DELL U3223QE",
+        "attached_to": 41,
+        "resources": [
+          {
+            "type": "monitor",
+            "width": 1024,
+            "height": 768,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 1024,
+            "height": 768,
+            "vertical_frequency": 75,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 1280,
+            "height": 1024,
+            "vertical_frequency": 75,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 1600,
+            "height": 1200,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 1920,
+            "height": 1080,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 3840,
+            "height": 2160,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 640,
+            "height": 480,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 640,
+            "height": 480,
+            "vertical_frequency": 75,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 720,
+            "height": 400,
+            "vertical_frequency": 70,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 800,
+            "height": 600,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 800,
+            "height": 600,
+            "vertical_frequency": 75,
+            "interlaced": false
+          },
+          {
+            "type": "size",
+            "unit": "mm",
+            "value_1": 698,
+            "value_2": 393
+          }
+        ],
+        "detail": {
+          "manufacture_year": 2023,
+          "manufacture_week": 43,
+          "vertical_sync": {
+            "min": 23,
+            "max": 86
+          },
+          "horizontal_sync": {
+            "min": 15,
+            "max": 140
+          },
+          "horizontal_sync_timings": {
+            "disp": 3840,
+            "sync_start": 3888,
+            "sync_end": 3920,
+            "total": 4000
+          },
+          "vertical_sync_timings": {
+            "disp": 2160,
+            "sync_start": 2163,
+            "sync_end": 2168,
+            "total": 2222
+          },
+          "clock": 533250,
+          "width": 3840,
+          "height": 2160,
+          "width_millimetres": 698,
+          "height_millimetres": 393,
+          "horizontal_flag": 45,
+          "vertical_flag": 43,
+          "vendor": "",
+          "name": "DELL U3223QE"
+        },
+        "hotplug": "none",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver_info": {
+          "type": "display",
+          "width": 3840,
+          "height": 2160,
+          "vertical_sync": {
+            "min": 23,
+            "max": 86
+          },
+          "horizontal_sync": {
+            "min": 15,
+            "max": 140
+          },
+          "bandwidth": 0,
+          "horizontal_sync_timings": {
+            "disp": 3840,
+            "sync_start": 3888,
+            "sync_end": 3920,
+            "total": 4000
+          },
+          "vertical_sync_timings": {
+            "disp": 2160,
+            "sync_start": 2163,
+            "sync_end": 2168,
+            "total": 2222
+          },
+          "horizontal_flag": 45,
+          "vertical_flag": 43
+        }
+      },
+      {
+        "slot": 1,
         "base_class": {
           "name": "Monitor",
           "value": 256
@@ -1279,6 +1906,208 @@
         "hotplug": "none",
         "hotplug_slot": 0,
         "is": {}
+      }
+    ],
+    "mouse": [
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Mouse",
+          "value": 261
+        },
+        "sub_class": {
+          "name": "USB Mouse",
+          "value": 3
+        },
+        "vendor": {
+          "name": "Keychron",
+          "value": 13364
+        },
+        "device": {
+          "name": "Keychron Q12",
+          "value": 465
+        },
+        "revision": {
+          "name": "1.00",
+          "value": 0
+        },
+        "compat_vendor": "Unknown",
+        "compat_device": "Generic USB Mouse",
+        "model": "Keychron Q12",
+        "attached_to": 76,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.4/3-2.4.2/3-2.4.2:1.2",
+        "sysfs_bus_id": "3-2.4.2:1.2",
+        "unix_device_name": "/dev/input/mice",
+        "unix_device_number": {
+          "type": 99,
+          "major": 13,
+          "minor": 63,
+          "range": 1
+        },
+        "unix_device_names": [
+          "/dev/input/mice"
+        ],
+        "unix_device_name_2": "/dev/input/mouse3",
+        "unix_device_number_2": {
+          "type": 99,
+          "major": 13,
+          "minor": 35,
+          "range": 1
+        },
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 2,
+          "speed": 12000000,
+          "manufacturer": "Keychron",
+          "product": "Keychron Q12",
+          "interface_class": "hid",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "usbhid",
+        "driver_module": "usbhid",
+        "drivers": [
+          "usbhid"
+        ],
+        "driver_modules": [
+          "usbhid"
+        ],
+        "driver_info": {
+          "type": "mouse",
+          "db_entry_0": [
+            "explorerps/2",
+            "exps2"
+          ],
+          "xf86": "explorerps/2",
+          "gpm": "exps2",
+          "buttons": -1,
+          "wheels": -1
+        },
+        "module_alias": "usb:v3434p01D1d0100dc00dsc00dp00ic03isc00ip00in02"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Mouse",
+          "value": 261
+        },
+        "sub_class": {
+          "name": "USB Mouse",
+          "value": 3
+        },
+        "vendor": {
+          "name": "Logitech, Inc.",
+          "value": 1133
+        },
+        "device": {
+          "name": "Logi Bolt Receiver",
+          "value": 50504
+        },
+        "revision": {
+          "name": "5.01",
+          "value": 0
+        },
+        "compat_vendor": "Unknown",
+        "compat_device": "Generic USB Mouse",
+        "model": "Logitech Logi Bolt Receiver",
+        "attached_to": 81,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.3/3-2.3:1.1",
+        "sysfs_bus_id": "3-2.3:1.1",
+        "unix_device_name": "/dev/input/mice",
+        "unix_device_number": {
+          "type": 99,
+          "major": 13,
+          "minor": 63,
+          "range": 1
+        },
+        "unix_device_names": [
+          "/dev/input/mice"
+        ],
+        "unix_device_name_2": "/dev/input/mouse2",
+        "unix_device_number_2": {
+          "type": 99,
+          "major": 13,
+          "minor": 34,
+          "range": 1
+        },
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 1,
+          "speed": 12000000,
+          "manufacturer": "Logitech",
+          "product": "USB Receiver",
+          "interface_class": "hid",
+          "interface_subclass": 1,
+          "interface_protocol": 2,
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "usbhid",
+        "driver_module": "usbhid",
+        "drivers": [
+          "usbhid"
+        ],
+        "driver_modules": [
+          "usbhid"
+        ],
+        "driver_info": {
+          "type": "mouse",
+          "db_entry_0": [
+            "explorerps/2",
+            "exps2"
+          ],
+          "xf86": "explorerps/2",
+          "gpm": "exps2",
+          "buttons": -1,
+          "wheels": -1
+        },
+        "module_alias": "usb:v046DpC548d0501dc00dsc00dp00ic03isc01ip02in01"
       }
     ],
     "network_controller": [
@@ -1452,9 +2281,143 @@
           "iwlwifi"
         ],
         "module_alias": "pci:v00008086d00002725sv00008086sd00000024bc02sc80i00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Network controller",
+          "value": 2
+        },
+        "sub_class": {
+          "name": "Ethernet controller",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Realtek Semiconductor Corp.",
+          "value": 3034
+        },
+        "device": {
+          "name": "RTL8153 Gigabit Ethernet Adapter",
+          "value": 33107
+        },
+        "revision": {
+          "name": "33.10",
+          "value": 0
+        },
+        "model": "Realtek RTL8153 Gigabit Ethernet Adapter",
+        "attached_to": 79,
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-1/2-1.4/2-1.4.3/2-1.4.3:1.0",
+        "sysfs_bus_id": "2-1.4.3:1.0",
+        "unix_device_name": "enp0s13f0u1u4u3",
+        "unix_device_names": [
+          "enp0s13f0u1u4u3"
+        ],
+        "resources": [
+          {
+            "type": "hwaddr",
+            "address": 99
+          },
+          {
+            "type": "phwaddr",
+            "address": 99
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 0,
+          "manufacturer": "Realtek",
+          "product": "USB 10/100/1000 LAN",
+          "interface_class": "vendor_spec",
+          "interface_subclass": 255,
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "r8152",
+        "driver_module": "r8152",
+        "drivers": [
+          "r8152"
+        ],
+        "driver_modules": [
+          "r8152"
+        ],
+        "module_alias": "usb:v0BDAp8153d3310dc00dsc00dp00icFFiscFFip00in00"
       }
     ],
     "network_interface": [
+      {
+        "slot": 0,
+        "base_class": {
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "name": "Loopback",
+          "value": 0
+        },
+        "model": "Loopback network interface",
+        "sysfs_id": "/class/net/lo",
+        "unix_device_name": "lo",
+        "unix_device_names": [
+          "lo"
+        ],
+        "hotplug": "none",
+        "hotplug_slot": 0,
+        "is": {}
+      },
+      {
+        "slot": 0,
+        "base_class": {
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "name": "Ethernet",
+          "value": 1
+        },
+        "model": "Ethernet network interface",
+        "attached_to": 82,
+        "sysfs_id": "/class/net/enp0s13f0u1u4u3",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:0d.0/usb2/2-1/2-1.4/2-1.4.3/2-1.4.3:1.0",
+        "unix_device_name": "enp0s13f0u1u4u3",
+        "unix_device_names": [
+          "enp0s13f0u1u4u3"
+        ],
+        "resources": [
+          {
+            "type": "hwaddr",
+            "address": 99
+          },
+          {
+            "type": "phwaddr",
+            "address": 99
+          }
+        ],
+        "hotplug": "none",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "r8152",
+        "driver_module": "r8152",
+        "drivers": [
+          "r8152"
+        ],
+        "driver_modules": [
+          "r8152"
+        ]
+      },
       {
         "slot": 0,
         "base_class": {
@@ -1494,26 +2457,6 @@
         "driver_modules": [
           "iwlwifi"
         ]
-      },
-      {
-        "slot": 0,
-        "base_class": {
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "name": "Loopback",
-          "value": 0
-        },
-        "model": "Loopback network interface",
-        "sysfs_id": "/class/net/lo",
-        "unix_device_name": "lo",
-        "unix_device_names": [
-          "lo"
-        ],
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {}
       }
     ],
     "sound": [
@@ -1558,7 +2501,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 213,
+            "base": 204,
             "triggered": 0,
             "enabled": true
           },
@@ -1584,7 +2527,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 213,
+          "irq": 204,
           "prog_if": 128
         },
         "hotplug": "none",
@@ -1627,9 +2570,9 @@
           "value": 0
         },
         "model": "GN Netcom Jabra Link 380",
-        "attached_to": 55,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-3/1-3.1/1-3.1:1.1",
-        "sysfs_bus_id": "1-3.1:1.1",
+        "attached_to": 53,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3.1/3-3.1:1.2",
+        "sysfs_bus_id": "3-3.1:1.2",
         "resources": [
           {
             "type": "baud",
@@ -1649,7 +2592,7 @@
           "count": 0,
           "connections": 0,
           "used_connections": 0,
-          "interface_descriptor": 1,
+          "interface_descriptor": 2,
           "speed": 12000000,
           "product": "Jabra Link 380",
           "interface_class": "audio",
@@ -1667,7 +2610,7 @@
         "driver_modules": [
           "snd_usb_audio"
         ],
-        "module_alias": "usb:v0B0Ep24C7d0116dc00dsc00dp00ic01isc02ip00in01"
+        "module_alias": "usb:v0B0Ep24C7d0116dc00dsc00dp00ic01isc02ip00in02"
       }
     ],
     "storage_controller": [
@@ -2074,7 +3017,7 @@
         ],
         "detail": {
           "function": 5,
-          "command": 1030,
+          "command": 1026,
           "header_type": 0,
           "secondary_bus": 0,
           "irq": 0,
@@ -2588,21 +3531,90 @@
           "value": 0
         },
         "vendor": {
-          "name": "Shenzhen Goodix Technology Co.,Ltd.",
-          "value": 10182
+          "name": "Realtek Semiconductor Corp.",
+          "value": 3034
         },
         "device": {
-          "name": "Goodix Fingerprint USB Device",
-          "value": 24732
+          "name": "Laptop Camera",
+          "value": 22068
         },
         "revision": {
-          "name": "1.00",
+          "name": "0.21",
           "value": 0
         },
-        "model": "Shenzhen Goodix Technology Co.,Ltd Goodix Fingerprint USB Device",
+        "model": "Realtek Laptop Camera",
         "attached_to": 59,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-9/1-9:1.0",
-        "sysfs_bus_id": "1-9:1.0",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-7/3-7:1.0",
+        "sysfs_bus_id": "3-7:1.0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 480000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 480000000,
+          "manufacturer": "Generic",
+          "product": "Laptop Camera",
+          "device_class": "miscellaneous",
+          "device_subclass": 2,
+          "device_protocol": 1,
+          "interface_class": "video",
+          "interface_subclass": 1,
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "uvcvideo",
+        "driver_module": "uvcvideo",
+        "drivers": [
+          "uvcvideo"
+        ],
+        "driver_modules": [
+          "uvcvideo"
+        ],
+        "module_alias": "usb:v0BDAp5634d0021dcEFdsc02dp01ic0Eisc01ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Dell Computer Corp.",
+          "value": 16700
+        },
+        "device": {
+          "name": "DELL Slim Soundbar SB522A",
+          "value": 33284
+        },
+        "model": "Dell DELL Slim Soundbar SB522A",
+        "attached_to": 81,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.2/3-2.2:1.0",
+        "sysfs_bus_id": "3-2.2:1.0",
         "resources": [
           {
             "type": "baud",
@@ -2624,16 +3636,301 @@
           "used_connections": 0,
           "interface_descriptor": 0,
           "speed": 12000000,
-          "manufacturer": "Goodix Technology Co., Ltd.",
-          "product": "Goodix Fingerprint USB Device",
+          "manufacturer": "DELL",
+          "product": "DELL Slim Soundbar SB522A",
           "device_class": "miscellaneous",
-          "interface_class": "vendor_spec",
+          "device_subclass": 2,
+          "device_protocol": 1,
+          "interface_class": "comm",
+          "interface_subclass": 2,
+          "interface_protocol": 1,
           "country": 0
         },
         "hotplug": "usb",
         "hotplug_slot": 0,
         "is": {},
-        "module_alias": "usb:v27C6p609Cd0100dcEFdsc00dp00icFFisc00ip00in00"
+        "driver": "cdc_acm",
+        "driver_module": "cdc_acm",
+        "drivers": [
+          "cdc_acm"
+        ],
+        "driver_modules": [
+          "cdc_acm"
+        ],
+        "module_alias": "usb:v413Cp8204d0000dcEFdsc02dp01ic02isc02ip01in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Logitech, Inc.",
+          "value": 1133
+        },
+        "device": {
+          "name": "C505e HD Webcam",
+          "value": 2276
+        },
+        "revision": {
+          "name": "0.21",
+          "value": 0
+        },
+        "model": "Logitech C505e HD Webcam",
+        "attached_to": 81,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.1/3-2.1:1.3",
+        "sysfs_bus_id": "3-2.1:1.3",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 480000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 3,
+          "speed": 480000000,
+          "product": "C505e HD Webcam",
+          "device_class": "miscellaneous",
+          "device_subclass": 2,
+          "device_protocol": 1,
+          "interface_class": "audio",
+          "interface_subclass": 2,
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "snd-usb-audio",
+        "driver_module": "snd_usb_audio",
+        "drivers": [
+          "snd-usb-audio"
+        ],
+        "driver_modules": [
+          "snd_usb_audio"
+        ],
+        "module_alias": "usb:v046Dp08E4d0021dcEFdsc02dp01ic01isc02ip00in03"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Logitech, Inc.",
+          "value": 1133
+        },
+        "device": {
+          "name": "Logi Bolt Receiver",
+          "value": 50504
+        },
+        "revision": {
+          "name": "5.01",
+          "value": 0
+        },
+        "model": "Logitech Logi Bolt Receiver",
+        "attached_to": 81,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.3/3-2.3:1.2",
+        "sysfs_bus_id": "3-2.3:1.2",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 2,
+          "speed": 12000000,
+          "manufacturer": "Logitech",
+          "product": "USB Receiver",
+          "interface_class": "hid",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "usbhid",
+        "driver_module": "usbhid",
+        "drivers": [
+          "usbhid"
+        ],
+        "driver_modules": [
+          "usbhid"
+        ],
+        "module_alias": "usb:v046DpC548d0501dc00dsc00dp00ic03isc00ip00in02"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Microchip Technology, Inc. (formerly SMSC)",
+          "value": 1060
+        },
+        "device": {
+          "name": "USB2 Controller Hub",
+          "value": 29248
+        },
+        "revision": {
+          "name": "2.07",
+          "value": 0
+        },
+        "model": "Microchip Technology, Inc. (formerly SMSC) USB2 Controller Hub",
+        "attached_to": 76,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.4/3-2.4.5/3-2.4.5:1.0",
+        "sysfs_bus_id": "3-2.4.5:1.0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 480000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 480000000,
+          "manufacturer": "Microchip Tech",
+          "product": "USB2 Controller Hub",
+          "interface_class": "vendor_spec",
+          "interface_subclass": 255,
+          "interface_protocol": 255,
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "module_alias": "usb:v0424p7240d0207dc00dsc00dp00icFFiscFFipFFin00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": 0,
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Microchip Technology, Inc. (formerly SMSC)",
+          "value": 1060
+        },
+        "device": {
+          "name": "USB2 Controller Hub",
+          "value": 29280
+        },
+        "revision": {
+          "name": "6.25",
+          "value": 0
+        },
+        "model": "Microchip Technology, Inc. (formerly SMSC) USB2 Controller Hub",
+        "attached_to": 81,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.5/3-2.5:1.1",
+        "sysfs_bus_id": "3-2.5:1.1",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 480000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 1,
+          "speed": 480000000,
+          "manufacturer": "Microchip Tech",
+          "product": "USB2 Controller Hub",
+          "interface_class": "hid",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "hotplug_slot": 0,
+        "is": {},
+        "driver": "usbhid",
+        "driver_module": "usbhid",
+        "drivers": [
+          "usbhid"
+        ],
+        "driver_modules": [
+          "usbhid"
+        ],
+        "module_alias": "usb:v0424p7260d0625dc00dsc00dp00ic03isc00ip00in01"
       },
       {
         "bus_type": {
@@ -2662,21 +3959,21 @@
           "value": 0
         },
         "model": "GN Netcom Jabra Link 380",
-        "attached_to": 55,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-3/1-3.1/1-3.1:1.3",
-        "sysfs_bus_id": "1-3.1:1.3",
-        "unix_device_name": "/dev/input/event17",
+        "attached_to": 53,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3.1/3-3.1:1.3",
+        "sysfs_bus_id": "3-3.1:1.3",
+        "unix_device_name": "/dev/input/event2",
         "unix_device_number": {
           "type": 99,
           "major": 13,
-          "minor": 81,
+          "minor": 66,
           "range": 1
         },
         "unix_device_names": [
           "/dev/input/by-id/usb-0b0e_Jabra_Link_380_08C8C2E6DA47-event-if03",
           "/dev/input/by-path/pci-0000:00:14.0-usb-0:3.1:1.3-event",
           "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:3.1:1.3-event",
-          "/dev/input/event17"
+          "/dev/input/event2"
         ],
         "resources": [
           {
@@ -2731,25 +4028,25 @@
           "value": 0
         },
         "vendor": {
-          "name": "Realtek Semiconductor Corp.",
-          "value": 3034
+          "name": "Shenzhen Goodix Technology Co.,Ltd.",
+          "value": 10182
         },
         "device": {
-          "name": "Laptop Camera",
-          "value": 22068
+          "name": "Goodix Fingerprint USB Device",
+          "value": 24732
         },
         "revision": {
-          "name": "0.21",
+          "name": "1.00",
           "value": 0
         },
-        "model": "Realtek Laptop Camera",
+        "model": "Shenzhen Goodix Technology Co.,Ltd Goodix Fingerprint USB Device",
         "attached_to": 59,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb1/1-7/1-7:1.0",
-        "sysfs_bus_id": "1-7:1.0",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-9/3-9:1.0",
+        "sysfs_bus_id": "3-9:1.0",
         "resources": [
           {
             "type": "baud",
-            "speed": 480000000,
+            "speed": 12000000,
             "bits": 0,
             "stop_bits": 0,
             "parity": 0,
@@ -2766,28 +4063,17 @@
           "connections": 0,
           "used_connections": 0,
           "interface_descriptor": 0,
-          "speed": 480000000,
-          "manufacturer": "Generic",
-          "product": "Laptop Camera",
+          "speed": 12000000,
+          "manufacturer": "Goodix Technology Co., Ltd.",
+          "product": "Goodix Fingerprint USB Device",
           "device_class": "miscellaneous",
-          "device_subclass": 2,
-          "device_protocol": 1,
-          "interface_class": "video",
-          "interface_subclass": 1,
+          "interface_class": "vendor_spec",
           "country": 0
         },
         "hotplug": "usb",
         "hotplug_slot": 0,
         "is": {},
-        "driver": "uvcvideo",
-        "driver_module": "uvcvideo",
-        "drivers": [
-          "uvcvideo"
-        ],
-        "driver_modules": [
-          "uvcvideo"
-        ],
-        "module_alias": "usb:v0BDAp5634d0021dcEFdsc02dp01ic0Eisc01ip00in00"
+        "module_alias": "usb:v27C6p609Cd0100dcEFdsc00dp00icFFisc00ip00in00"
       }
     ],
     "usb_controller": [
@@ -2830,7 +4116,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 186,
+            "base": 128,
             "triggered": 0,
             "enabled": true
           },
@@ -2848,7 +4134,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 186,
+          "irq": 128,
           "prog_if": 48
         },
         "hotplug": "none",
@@ -2987,7 +4273,7 @@
         "resources": [
           {
             "type": "irq",
-            "base": 144,
+            "base": 136,
             "triggered": 0,
             "enabled": true
           },
@@ -3005,7 +4291,7 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 144,
+          "irq": 136,
           "prog_if": 48
         },
         "hotplug": "none",
@@ -3431,35 +4717,33 @@
         ]
       }
     ],
-    "chassis": [
-      {
-        "handle": 3,
-        "manufacturer": "Framework",
-        "version": "A6",
-        "chassis_type": {
-          "name": "Notebook",
-          "value": 10
-        },
-        "lock_present": false,
-        "bootup_state": {
-          "name": "Safe",
-          "value": 3
-        },
-        "power_state": {
-          "name": "Safe",
-          "value": 3
-        },
-        "thermal_state": {
-          "name": "Safe",
-          "value": 3
-        },
-        "security_state": {
-          "name": "None",
-          "value": 3
-        },
-        "oem": "0x0"
-      }
-    ],
+    "chassis": {
+      "handle": 3,
+      "manufacturer": "Framework",
+      "version": "A6",
+      "chassis_type": {
+        "name": "Notebook",
+        "value": 10
+      },
+      "lock_present": false,
+      "bootup_state": {
+        "name": "Safe",
+        "value": 3
+      },
+      "power_state": {
+        "name": "Safe",
+        "value": 3
+      },
+      "thermal_state": {
+        "name": "Safe",
+        "value": 3
+      },
+      "security_state": {
+        "name": "None",
+        "value": 3
+      },
+      "oem": "0x0"
+    },
     "config": {
       "handle": 20,
       "options": [
@@ -3487,9 +4771,7 @@
           223338299443,
           141733920820
         ]
-      }
-    ],
-    "hardware_security": [
+      },
       {
         "handle": 32,
         "power": {
