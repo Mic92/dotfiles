@@ -138,14 +138,16 @@ def wait_for_host(h: DeployHost, shutdown: bool) -> None:
 
 
 @task
-def generate_facter_json(c: Any, hosts: str) -> None:
+def generate_facter_json(
+    c: Any, hosts: str, facter: str = "github:numtide/nixos-facter"
+) -> None:
     """
     Deploy to servers
     """
 
     def deploy(h: DeployHost) -> None:
         ret = h.run(
-            ["nix", "run", "--refresh", "github:numtide/nixos-facter"],
+            ["nix", "run", "--refresh", facter],
             stdout=subprocess.PIPE,
         )
         name = h.host.split(".")[0]
