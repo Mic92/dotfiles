@@ -137,6 +137,26 @@ def wait_for_host(h: DeployHost, shutdown: bool) -> None:
         sys.stdout.flush()
 
 
+@task
+def generate_facter_json(c: Any, hosts: str) -> None:
+    """
+    Deploy to servers
+    """
+
+    def deploy(h: DeployHost) -> None:
+        ret = h.run(
+            ["nix", "run", "--refresh", "github:numtide/nixos-facter"],
+            stdout=subprocess.PIPE,
+        )
+        name = h.host.split(".")[0]
+        path = ROOT / "nixos" / name / "facter.json"
+        path.write_text(ret.stdout)
+
+    host_list = hosts.split(",")
+    g = DeployGroup([DeployHost(h, user="root") for h in host_list])
+    g.run_function(deploy)
+
+
 def wait_for_reboot(h: DeployHost) -> None:
     print(f"Wait for {h.host} to shutdown", end="")
     sys.stdout.flush()
