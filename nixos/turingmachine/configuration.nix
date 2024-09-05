@@ -54,6 +54,7 @@
 
   # upgrading fails with "umount busy" errors
   system.etc.overlay.enable = false;
+  services.userborn.enable = true;
 
   environment.systemPackages = with pkgs; [ sunshine ];
 
