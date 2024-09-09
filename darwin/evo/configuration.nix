@@ -20,6 +20,7 @@
     ../modules/secretiv.nix
     ../modules/sudo.nix
     ../modules/yabai.nix
+    ../modules/alacritty.nix
   ];
 
   clan.core.clanDir = ../..;
