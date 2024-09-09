@@ -7,9 +7,6 @@
 }:
 {
   imports = [
-    inputs.nixos-facter-modules.nixosModules.facter
-    { config.facter.reportPath = ./facter.json; }
-
     ./hardware-configuration.nix
     ./modules/caddy.nix
     ./modules/disko.nix
