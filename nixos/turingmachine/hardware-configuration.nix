@@ -46,12 +46,9 @@
   # for zfs
   networking.hostId = "8425e349";
 
-  hardware = {
-    bluetooth.enable = true;
-    graphics = {
-      enable = true;
-      enable32Bit = true;
-    };
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
   };
 
   # for pactl
