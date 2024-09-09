@@ -59,7 +59,9 @@
         "flake-parts": [
           "flake-parts"
         ],
-        "nixos-facter-modules": "nixos-facter-modules",
+        "nixos-facter-modules": [
+          "nixos-facter-modules"
+        ],
         "nixos-images": "nixos-images",
         "nixpkgs": [
           "nixpkgs"
@@ -478,32 +480,17 @@
       }
     },
     "nixos-facter-modules": {
-      "flake": false,
       "locked": {
-        "lastModified": 1724681057,
-        "narHash": "sha256-wxx2Sh/urE3sKY/1v3tmrWTNMIQ3RoJtd7bcuqVpY2Y=",
+        "lastModified": 1725883242,
+        "narHash": "sha256-7gEsXL3FRnqp8w6PEP8YSAjMr1olTJSZjyAh1usKyl0=",
         "owner": "numtide",
         "repo": "nixos-facter-modules",
-        "rev": "55088bf19810d23ca7cb86fb71516c95d97f035b",
+        "rev": "d279bbbb0cebdc1d5515bd68d5b41ff41421b5ba",
         "type": "github"
       },
       "original": {
         "owner": "numtide",
-        "repo": "nixos-facter-modules",
-        "type": "github"
-      }
-    },
-    "nixos-facter-modules_2": {
-      "locked": {
-        "lastModified": 1725379040,
-        "narHash": "sha256-yJIy595vpcdAYznxamszZhteQCIZM3OJUOIKeU4cIq4=",
-        "owner": "numtide",
-        "repo": "nixos-facter-modules",
-        "rev": "a389bf16ed7db1f7e6a5e9dc4b5547e927498803",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
+        "ref": "bluetooth",
         "repo": "nixos-facter-modules",
         "type": "github"
       }
@@ -668,7 +655,7 @@
         "nix": "nix",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
-        "nixos-facter-modules": "nixos-facter-modules_2",
+        "nixos-facter-modules": "nixos-facter-modules",
         "nixos-hardware": "nixos-hardware",
         "nixos-wiki": "nixos-wiki",
         "nixpkgs": "nixpkgs_2",
