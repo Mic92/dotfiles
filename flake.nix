@@ -37,6 +37,7 @@
     nix.inputs.flake-parts.follows = "";
     nix.inputs.nixpkgs-regression.follows = "";
     nix.inputs.nixpkgs-23-11.follows = "";
+    nix.inputs.git-hooks-nix.follows = "";
 
     nixpkgs.url = "github:Mic92/nixpkgs/main";
     # for development
@@ -44,7 +45,6 @@
     nur-packages.url = "github:Mic92/nur-packages";
     nur-packages.inputs.nixpkgs.follows = "nixpkgs";
     # for development
-    #sops-nix.url = "/home/joerg/git/sops-nix";
     sops-nix.url = "github:Mic92/sops-nix/nix-darwin";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.inputs.nixpkgs-stable.follows = "";
