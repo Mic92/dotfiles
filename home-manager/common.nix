@@ -58,6 +58,9 @@
       zsh
       less
       bashInteractive
+      gnused
+      gnugrep
+      findutils
       ncurses
       coreutils
       git
