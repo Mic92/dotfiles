@@ -1,0 +1,134 @@
+#!/usr/bin/env python
+
+import subprocess
+import argparse
+
+from pathlib import Path
+import json
+import sys
+import shutil
+import os
+from dataclasses import dataclass
+from tempfile import TemporaryDirectory
+
+
+@dataclass
+class Filesystem:
+    mountpoint: Path
+    device: str
+    fstype: str
+
+
+class Error(Exception):
+    pass
+
+
+def find_mount(name: str, is_path: bool = False) -> list[Filesystem]:
+    args = ["findmnt", "--json"]
+    if is_path:
+        args.append("--target")
+    args.append(name)
+
+    cmd = subprocess.run(args, stdout=subprocess.PIPE, check=True, text=True)
+    output = json.loads(cmd.stdout)
+    return [
+        Filesystem(
+            mountpoint=Path(fs["target"]), device=fs["source"], fstype=fs["fstype"]
+        )
+        for fs in output["filesystems"]
+    ]
+
+
+def find_dataset_filesystem(fs: Filesystem) -> Filesystem:
+    # bind mounts do this: zroot/root/nixos[/nix/store]
+    canonical_device = fs.device.split("[", 1)[0]
+    if fs.device == canonical_device:
+        return fs
+
+    filesystems2 = find_mount(canonical_device)
+    for filesystem in filesystems2:
+        if filesystem.device == canonical_device:
+            fs = filesystem
+            break
+    else:
+        raise Error(f"Could not find zfs mounpoint, candidates {filesystems2}")
+
+
+def atomic_restore(source: Path, target: Path) -> None:
+    with TemporaryDirectory(prefix=str(target.parent / "zfs-restore")) as dir:
+        temp_location = Path(dir) / source.name
+        subprocess.run(["cp", "-a", source, temp_location])
+        os.rename(temp_location, target)
+
+
+def find_existing_parent(target: Path) -> Path:
+    while target.parent != target and not target.exists():
+        target = target.parent
+    return target
+
+
+def select_snapshot(mountpoint: Path, relative_target: Path) -> Path:
+    snapshots = []
+    for path in (mountpoint / ".zfs" / "snapshot").iterdir():
+        if (path / relative_target).exists():
+            snapshots.append(path)
+    if not snapshots:
+        raise Error("no snapshots found")
+    out = subprocess.run(
+        ["fzf", "--header", "Select a snapshot to restore from"],
+        input="\n".join(map(str, snapshots)),
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    if out.returncode != 0:
+        return
+    return out.stdout.rstrip()
+
+
+@dataclass
+class Options:
+    target: str
+
+
+def parse_args() -> Options:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("target")
+
+
+def restore_command(args: list[str]) -> None:
+    if len(args) < 2:
+        raise Error(f"USAGE: {args[0]} target")
+    target = Path(sys.argv[1]).resolve()
+
+    filesystems = find_mount(str(find_existing_parent(target)), is_path=True)
+    assert len(filesystems) == 1, f"Expected one filesytem, got:\n{filesystems}"
+    fs = filesystems[0]
+
+    if fs.fstype != "zfs":
+        raise Error(f"{target} is not located on a zfs filesystem, but {fs.fstype}")
+
+    fs = find_dataset_filesystem(fs)
+
+    relative_target = target.relative_to(fs.mountpoint)
+    selected_snapshot = select_snapshot(fs.mountpoint, relative_target)
+
+    if target.exists():
+        answer = input(f"'{target}' already exists, delete (y|n)?")
+        if answer.lower() != "y":
+            return
+        shutil.rmtree(target)
+    target.parent.mkdir(exist_ok=True)
+
+    atomic_restore(selected_snapshot / relative_target, target)
+
+
+def main() -> None:
+    try:
+        restore_command(sys.argv)
+    except Error as e:
+        print(e, file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
