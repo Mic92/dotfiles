@@ -481,16 +481,15 @@
     },
     "nixos-facter-modules": {
       "locked": {
-        "lastModified": 1725888529,
+        "lastModified": 1725888568,
         "narHash": "sha256-7gEsXL3FRnqp8w6PEP8YSAjMr1olTJSZjyAh1usKyl0=",
         "owner": "numtide",
         "repo": "nixos-facter-modules",
-        "rev": "6030a8ac25e4b0e4aab7da13c92319e960dee999",
+        "rev": "e7088e04ee56e5e560ef8faccd24ee6c7f221f4b",
         "type": "github"
       },
       "original": {
         "owner": "numtide",
-        "ref": "bluetooth",
         "repo": "nixos-facter-modules",
         "type": "github"
       }
