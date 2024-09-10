@@ -12,10 +12,6 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
-    agenix.url = "github:ryantm/agenix";
-    agenix.inputs.nixpkgs.follows = "nixpkgs";
-    agenix.inputs.home-manager.follows = "home-manager";
-
     data-mesher.url = "https://git.clan.lol/clan/data-mesher/archive/main.tar.gz";
     data-mesher.inputs.nixpkgs.follows = "nixpkgs";
     data-mesher.inputs.flake-parts.follows = "flake-parts";
