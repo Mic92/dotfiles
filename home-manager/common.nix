@@ -3,6 +3,7 @@
   config,
   lib,
   self,
+  inputs,
   ...
 }:
 {
@@ -11,7 +12,7 @@
     ./modules/tmux-thumbs.nix
   ];
 
-  nix.package = lib.mkDefault pkgs.nixVersions.latest;
+  nix.package = inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
 
   home.packages =
     with pkgs;
