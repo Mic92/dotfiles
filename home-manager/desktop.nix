@@ -9,8 +9,6 @@
     #./modules/waybar.nix
   ];
 
-  nix.package = inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
-
   fonts.fontconfig.enable = true;
 
   programs.vscode.enable = true;

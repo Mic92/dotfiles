@@ -2,7 +2,6 @@
   pkgs,
   lib,
   config,
-  inputs,
   ...
 }:
 {
@@ -46,8 +45,6 @@
     ../modules/data-mesher.nix
     ../modules/users.nix
   ];
-
-  nix.package = inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
 
   # upgrading fails with "umount busy" errors
   system.etc.overlay.enable = false;
