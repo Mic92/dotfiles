@@ -88,7 +88,6 @@
               "jack"
               "jackson"
               "mickey"
-              "nardole"
               "river"
               "ruby"
               "ryan"
