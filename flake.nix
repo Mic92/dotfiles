@@ -35,7 +35,7 @@
     nix.inputs.nixpkgs-23-11.follows = "";
     nix.inputs.git-hooks-nix.follows = "";
 
-    nixpkgs.url = "github:Mic92/nixpkgs/main";
+    nixpkgs.url = "git+https://github.com/Mic92/nixpkgs?shallow=1";
     # for development
     #nixpkgs.url = "/home/joerg/git/nixpkgs";
     nur-packages.url = "github:Mic92/nur-packages";
