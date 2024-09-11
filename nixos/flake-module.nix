@@ -28,7 +28,6 @@
         inputs.srvos.nixosModules.mixins-trusted-nix-caches
 
         ./modules/retiolum.nix
-        ./modules/update-prefetch.nix
         inputs.retiolum.nixosModules.retiolum
         inputs.retiolum.nixosModules.ca
 
