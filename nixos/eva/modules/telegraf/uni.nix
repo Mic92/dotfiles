@@ -16,7 +16,6 @@ let
     "jack.r"
     "jackson.r"
     "mickey.r"
-    "nardole.r"
     "river.r"
     "rose.r"
     "ruby.r"
