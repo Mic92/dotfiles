@@ -125,7 +125,12 @@
   outputs =
     inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } (
-      { withSystem, config, ... }:
+      {
+        withSystem,
+        self,
+        config,
+        ...
+      }:
       {
         imports = [
           ./darwin/flake-module.nix
@@ -162,6 +167,7 @@
             inputs',
             self',
             lib,
+            system,
             ...
           }:
           {
@@ -170,25 +176,25 @@
 
             checks =
               let
-                #nixosMachines = lib.mapAttrs' (
-                #  name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel
-                #) ((lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations);
+                nixosMachines = lib.mapAttrs' (
+                  name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel
+                ) ((lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations);
 
-                #blacklistPackages = [
-                #  "install-iso"
-                #  "nspawn-template"
-                #  "netboot-pixie-core"
-                #  "netboot"
-                #];
-                #packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") (
-                #  lib.filterAttrs (n: _v: !(builtins.elem n blacklistPackages)) self'.packages
-                #);
-                #devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
+                blacklistPackages = [
+                  "install-iso"
+                  "nspawn-template"
+                  "netboot-pixie-core"
+                  "netboot"
+                ];
+                packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") (
+                  lib.filterAttrs (n: _v: !(builtins.elem n blacklistPackages)) self'.packages
+                );
+                devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
                 homeConfigurations = lib.mapAttrs' (
                   name: config: lib.nameValuePair "home-manager-${name}" config.activation-script
                 ) (self'.legacyPackages.homeConfigurations or { });
               in
-              homeConfigurations;
+              nixosMachines ++ packages ++ devShells ++ homeConfigurations;
           };
         # CI
       }
