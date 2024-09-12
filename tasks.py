@@ -188,15 +188,6 @@ def add_github_user(c: Any, hosts: str = "", github_user: str = "Mic92") -> None
 
 
 @task
-def update_flakes(c: Any) -> None:
-    c.run(
-        "TMPDIR=/run/user/$(id -u)/ fast-flake-update --rev origin/main nixpkgs ~/git/nixpkgs",
-        echo=True,
-    )
-    c.run("nix flake update --commit-lock-file", echo=True)
-
-
-@task
 def reboot(c: Any, hosts: str) -> None:
     """Reboot hosts. example usage: fab --hosts clara.r,donna.r reboot"""
     deploy_hosts = [DeployHost(h) for h in hosts.split(",")]
