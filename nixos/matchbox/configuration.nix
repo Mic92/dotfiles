@@ -18,9 +18,9 @@
 
   clan.core.networking.targetHost = "root@matchbox.r";
   clan.core.networking.buildHost = "root@eve.i";
+  clan.core.deployment.requireExplicitUpdate = true;
 
   documentation.enable = false;
-  clan.deployment.requireExplicitUpdate = true;
 
   networking.hostName = "matchbox";
 

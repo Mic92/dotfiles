@@ -32,7 +32,7 @@
   sops.secrets.shannan-password.neededForUsers = true;
   users.users.shannan.hashedPasswordFile = config.sops.secrets.shannan-password.path;
 
-  clan.deployment.requireExplicitUpdate = true;
+  clan.core.deployment.requireExplicitUpdate = true;
 
   boot.initrd.systemd.enable = true;
   boot.loader.systemd-boot.enable = true;
