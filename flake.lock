@@ -378,11 +378,11 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1726078029,
-        "narHash": "sha256-NkGIg8FxlbBivFlpkgEYqo+buxx5mGLCRD35j3+WQTw=",
+        "lastModified": 1726132084,
+        "narHash": "sha256-mRWrJ/GVQAf8S4Axv2cuZnOOyAojVEkmLnLLz4pnjjs=",
         "owner": "Mic92",
         "repo": "nix-1",
-        "rev": "dd71e80bef9b17460c0327d391e00c94a5b889d2",
+        "rev": "2ef698b79fffd1a992d4aee90fbef674f12083ba",
         "type": "github"
       },
       "original": {
@@ -541,16 +541,16 @@
       "locked": {
         "lastModified": 1726054243,
         "narHash": "sha256-klApgtgBNjQb+PLooyo7N9EgJ4T4ilaL0PA3Il4y5Kc=",
-        "owner": "Mic92",
-        "repo": "nixpkgs",
+        "ref": "refs/heads/main",
         "rev": "6ea2c239aa42d5c49d9682c1e1383bb0e22b071d",
-        "type": "github"
+        "shallow": true,
+        "type": "git",
+        "url": "https://github.com/Mic92/nixpkgs"
       },
       "original": {
-        "owner": "Mic92",
-        "ref": "main",
-        "repo": "nixpkgs",
-        "type": "github"
+        "shallow": true,
+        "type": "git",
+        "url": "https://github.com/Mic92/nixpkgs"
       }
     },
     "nur-packages": {
