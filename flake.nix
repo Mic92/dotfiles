@@ -53,6 +53,7 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
+    #buildbot-nix.url = "github:nix-community/buildbot-nix/push-wymqutmrkkuw";
     buildbot-nix.url = "github:nix-community/buildbot-nix/push-wymqutmrkkuw";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
