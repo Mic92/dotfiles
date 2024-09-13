@@ -19,7 +19,6 @@
     inputs.disko.nixosModules.disko
 
     ./modules/disko.nix
-    ./modules/hardware-configuration.nix
     ./modules/loki.nix
     ./modules/nginx.nix
     ./modules/prometheus
@@ -36,6 +35,7 @@
     ../modules/unbound.nix
   ];
   nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+  boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.systemd.enable = false;
   clan.core.networking.targetHost = "root@eva.i";
