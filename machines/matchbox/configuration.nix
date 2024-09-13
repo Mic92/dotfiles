@@ -1,8 +1,16 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  self,
+  inputs,
+  ...
+}:
 {
   nixpkgs.localSystem.system = "aarch64-linux";
 
   imports = [
+    self.nixosModules.default
+    inputs.srvos.nixosModules.server
+
     ./hardware-configuration.nix
     ./modules/samba.nix
     ./modules/rsyncd.nix
@@ -14,6 +22,7 @@
     ../modules/sshd/tor.nix
     ../modules/promtail.nix
   ];
+  nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.aarch64-linux;
   clan.core.state.pictures.folders = [ "/mnt/hdd" ];
 
   clan.core.networking.targetHost = "root@matchbox.r";

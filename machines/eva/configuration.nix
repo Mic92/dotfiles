@@ -1,10 +1,23 @@
-{ lib, pkgs, ... }:
+{
+  lib,
+  pkgs,
+  self,
+  inputs,
+  ...
+}:
 {
   networking.hostName = "eva";
 
   time.timeZone = "UTC";
 
   imports = [
+    self.nixosModules.default
+    inputs.srvos.nixosModules.server
+    inputs.srvos.nixosModules.mixins-nginx
+    inputs.srvos.nixosModules.mixins-systemd-boot
+    inputs.srvos.nixosModules.roles-prometheus
+    inputs.disko.nixosModules.disko
+
     ./modules/disko.nix
     ./modules/hardware-configuration.nix
     ./modules/loki.nix
@@ -22,6 +35,7 @@
     ../modules/users.nix
     ../modules/unbound.nix
   ];
+  nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
 
   boot.initrd.systemd.enable = false;
   clan.core.networking.targetHost = "root@eva.i";
