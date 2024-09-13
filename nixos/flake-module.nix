@@ -60,92 +60,15 @@
     };
 
     machines = {
-      bernie = {
-        nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-        imports = [
-          ./bernie/configuration.nix
-          self.nixosModules.default
-          inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x13
-          inputs.home-manager.nixosModules.home-manager
-          inputs.srvos.nixosModules.desktop
-        ];
-      };
-
-      turingmachine = {
-        nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-        imports = [
-          ./turingmachine/configuration.nix
-          self.nixosModules.default
-          inputs.nixos-hardware.nixosModules.framework-13th-gen-intel
-          inputs.nix-index-database.nixosModules.nix-index
-          { programs.nix-index-database.comma.enable = true; }
-          inputs.disko.nixosModules.disko
-          inputs.clan-core.clanModules.localbackup
-
-          #inputs.spora.nixosModules.spora
-
-          inputs.srvos.nixosModules.desktop
-
-          inputs.lanzaboote.nixosModules.lanzaboote
-
-          # For testing systemd
-          #({pkgs, ...}: {
-          #  #systemd.package = self.inputs.nixpkgs-systemd.legacyPackages.${pkgs.system}.systemd;
-          #  systemd.package = pkgs.systemd.overrideAttrs (old: {
-          #    src = self.inputs.systemd;
-          #  });
-          #})
-        ];
-      };
-      eve = {
-        nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-        imports = [
-          ./eve/configuration.nix
-          self.nixosModules.default
-          inputs.srvos.nixosModules.server
-          inputs.srvos.nixosModules.mixins-nginx
-          inputs.srvos.nixosModules.hardware-hetzner-online-amd
-          inputs.buildbot-nix.nixosModules.buildbot-worker
-          inputs.buildbot-nix.nixosModules.buildbot-master
-          inputs.disko.nixosModules.disko
-
-          inputs.nix-index-database.nixosModules.nix-index
-          { programs.nix-index-database.comma.enable = true; }
-          #inputs.nixos-wiki.nixosModules.nixos-wiki
-          #inputs.nixos-wiki.nixosModules.nixos-wiki-backup
-        ];
-      };
-
-      eva = {
-        nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
-        imports = [
-          ./eva/configuration.nix
-          self.nixosModules.default
-          inputs.srvos.nixosModules.server
-          inputs.srvos.nixosModules.mixins-nginx
-          inputs.srvos.nixosModules.mixins-systemd-boot
-          inputs.srvos.nixosModules.roles-prometheus
-          inputs.disko.nixosModules.disko
-
-          #inputs.spora.nixosModules.spora
-        ];
-      };
-
-      blob64 = {
-        nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.aarch64-linux;
-        imports = [
-          ./blob64/configuration.nix
-          self.nixosModules.default
-          inputs.srvos.nixosModules.server
-        ];
-      };
+      bernie.imports = [ ./bernie/configuration.nix ];
+      turingmachine.imports = [ ./turingmachine/configuration.nix ];
+      eve.imports = [ ./eve/configuration.nix ];
+      eva.imports = [ ./eva/configuration.nix ];
+      blob64.imports = [ ./blob64/configuration.nix ];
 
       matchbox = {
-        nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.aarch64-linux;
         imports = [
           ./matchbox/configuration.nix
-          self.nixosModules.default
-          inputs.srvos.nixosModules.server
         ];
       };
     };

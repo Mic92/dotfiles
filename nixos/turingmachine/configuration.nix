@@ -2,10 +2,25 @@
   pkgs,
   lib,
   config,
+  inputs,
+  self,
   ...
 }:
 {
   imports = [
+    self.nixosModules.default
+    inputs.nixos-hardware.nixosModules.framework-13th-gen-intel
+    inputs.nix-index-database.nixosModules.nix-index
+    { programs.nix-index-database.comma.enable = true; }
+    inputs.disko.nixosModules.disko
+    inputs.clan-core.clanModules.localbackup
+
+    #inputs.spora.nixosModules.spora
+
+    inputs.srvos.nixosModules.desktop
+
+    inputs.lanzaboote.nixosModules.lanzaboote
+
     ./hardware-configuration.nix
     ./modules/caddy.nix
     ./modules/disko.nix
@@ -45,6 +60,8 @@
     ../modules/data-mesher.nix
     ../modules/users.nix
   ];
+
+  nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
 
   # upgrading fails with "umount busy" errors
   system.etc.overlay.enable = false;
