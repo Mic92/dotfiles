@@ -1,4 +1,9 @@
-{ pkgs, inputs, self, ... }:
+{
+  pkgs,
+  inputs,
+  self,
+  ...
+}:
 {
   imports = [
     self.nixosModules.default

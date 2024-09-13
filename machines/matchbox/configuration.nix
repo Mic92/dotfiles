@@ -1,4 +1,9 @@
-{ pkgs, self, inputs, ... }:
+{
+  pkgs,
+  self,
+  inputs,
+  ...
+}:
 {
   nixpkgs.localSystem.system = "aarch64-linux";
 
