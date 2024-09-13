@@ -14,7 +14,6 @@
     ../modules/ip-update.nix
     ../modules/packages.nix
     ./modules/photoprism.nix
-    ./hardware-configuration.nix
   ];
 
   nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.aarch64-linux;
