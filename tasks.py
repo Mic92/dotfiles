@@ -151,7 +151,7 @@ def generate_facter_json(
             stdout=subprocess.PIPE,
         )
         name = h.host.split(".")[0]
-        path = ROOT / "nixos" / name / "facter.json"
+        path = ROOT / "machines" / name / "facter.json"
         path.write_text(ret.stdout)
 
     host_list = hosts.split(",")

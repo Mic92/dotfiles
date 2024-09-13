@@ -1,0 +1,1647 @@
+{
+  "version": 1,
+  "system": "x86_64-linux",
+  "virtualisation": "kvm",
+  "hardware": {
+    "bios": {
+      "apm_info": {
+        "supported": false,
+        "enabled": false,
+        "version": 0,
+        "sub_version": 0,
+        "bios_flags": 0
+      },
+      "vbe_info": {
+        "version": 0,
+        "video_memory": 0
+      },
+      "pnp": false,
+      "pnp_id": 0,
+      "lba_support": false,
+      "low_memory_size": 0,
+      "smbios_version": 520
+    },
+    "bridge": [
+      {
+        "bus_type": {
+          "name": "PCI",
+          "value": 4
+        },
+        "slot": {
+          "bus": 0,
+          "number": 1
+        },
+        "base_class": {
+          "name": "Bridge",
+          "value": 6
+        },
+        "sub_class": {
+          "name": "ISA bridge",
+          "value": 1
+        },
+        "vendor": {
+          "name": "Intel Corporation",
+          "value": 32902
+        },
+        "sub_vendor": {
+          "value": 6900
+        },
+        "device": {
+          "value": 28672
+        },
+        "sub_device": {
+          "value": 4352
+        },
+        "model": "Intel ISA bridge",
+        "sysfs_id": "/devices/pci0000:00/0000:00:01.0",
+        "sysfs_bus_id": "0000:00:01.0",
+        "detail": {
+          "function": 0,
+          "command": 7,
+          "header_type": 0,
+          "secondary_bus": 0,
+          "irq": 0,
+          "prog_if": 0
+        },
+        "module_alias": "pci:v00008086d00007000sv00001AF4sd00001100bc06sc01i00"
+      },
+      {
+        "bus_type": {
+          "name": "PCI",
+          "value": 4
+        },
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "name": "Bridge",
+          "value": 6
+        },
+        "sub_class": {
+          "name": "Host bridge",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Intel Corporation",
+          "value": 32902
+        },
+        "sub_vendor": {
+          "value": 6900
+        },
+        "device": {
+          "value": 4663
+        },
+        "sub_device": {
+          "value": 4352
+        },
+        "revision": {
+          "value": 2
+        },
+        "model": "Intel Host bridge",
+        "sysfs_id": "/devices/pci0000:00/0000:00:00.0",
+        "sysfs_bus_id": "0000:00:00.0",
+        "detail": {
+          "function": 0,
+          "command": 7,
+          "header_type": 0,
+          "secondary_bus": 0,
+          "irq": 0,
+          "prog_if": 0
+        },
+        "module_alias": "pci:v00008086d00001237sv00001AF4sd00001100bc06sc00i00"
+      },
+      {
+        "bus_type": {
+          "name": "PCI",
+          "value": 4
+        },
+        "slot": {
+          "bus": 0,
+          "number": 1
+        },
+        "base_class": {
+          "name": "Bridge",
+          "value": 6
+        },
+        "sub_class": {
+          "name": "Bridge",
+          "value": 128
+        },
+        "vendor": {
+          "name": "Intel Corporation",
+          "value": 32902
+        },
+        "sub_vendor": {
+          "value": 6900
+        },
+        "device": {
+          "value": 28947
+        },
+        "sub_device": {
+          "value": 4352
+        },
+        "revision": {
+          "value": 3
+        },
+        "model": "Intel Bridge",
+        "sysfs_id": "/devices/pci0000:00/0000:00:01.3",
+        "sysfs_bus_id": "0000:00:01.3",
+        "resources": [
+          {
+            "type": "irq",
+            "base": 9,
+            "triggered": 0,
+            "enabled": true
+          }
+        ],
+        "detail": {
+          "function": 3,
+          "command": 7,
+          "header_type": 0,
+          "secondary_bus": 0,
+          "irq": 9,
+          "prog_if": 0
+        },
+        "driver": "piix4_smbus",
+        "driver_module": "i2c_piix4",
+        "drivers": [
+          "piix4_smbus"
+        ],
+        "driver_modules": [
+          "i2c_piix4"
+        ],
+        "module_alias": "pci:v00008086d00007113sv00001AF4sd00001100bc06sc80i00"
+      }
+    ],
+    "cdrom": [
+      {
+        "bus_type": {
+          "name": "SCSI",
+          "value": 132
+        },
+        "slot": {
+          "bus": 1,
+          "number": 0
+        },
+        "base_class": {
+          "name": "Mass Storage Device",
+          "value": 262
+        },
+        "sub_class": {
+          "name": "CD-ROM",
+          "value": 2
+        },
+        "pci_interface": {
+          "name": "DVD",
+          "value": 3
+        },
+        "vendor": {
+          "name": "QEMU",
+          "value": 0
+        },
+        "device": {
+          "name": "QEMU DVD-ROM",
+          "value": 0
+        },
+        "revision": {
+          "name": "2.5+",
+          "value": 0
+        },
+        "model": "QEMU DVD-ROM",
+        "sysfs_id": "/class/block/sr0",
+        "sysfs_bus_id": "1:0:0:0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:01.1/ata2/host1/target1:0:0/1:0:0:0",
+        "unix_device_name": "/dev/sr0",
+        "unix_device_number": {
+          "type": 98,
+          "major": 11,
+          "minor": 0,
+          "range": 1
+        },
+        "unix_device_names": [
+          "/dev/cdrom",
+          "/dev/disk/by-diskseq/2",
+          "/dev/disk/by-id/ata-QEMU_DVD-ROM_QM00003",
+          "/dev/disk/by-path/pci-0000:00:01.1-ata-2",
+          "/dev/disk/by-path/pci-0000:00:01.1-ata-2.0",
+          "/dev/sr0"
+        ],
+        "unix_device_name2": "/dev/sg0",
+        "unix_device_number2": {
+          "type": 99,
+          "major": 21,
+          "minor": 0,
+          "range": 1
+        },
+        "driver": "ata_piix",
+        "driver_module": "ata_piix",
+        "drivers": [
+          "ata_piix",
+          "sr"
+        ],
+        "driver_modules": [
+          "ata_piix",
+          "sr_mod"
+        ]
+      }
+    ],
+    "cpu": [
+      {
+        "architecture": "x86_64",
+        "vendor_name": "AuthenticAMD",
+        "family": 15,
+        "model": 107,
+        "stepping": 1,
+        "features": [
+          "fpu",
+          "de",
+          "pse",
+          "tsc",
+          "msr",
+          "pae",
+          "mce",
+          "cx8",
+          "apic",
+          "sep",
+          "mtrr",
+          "pge",
+          "mca",
+          "cmov",
+          "pat",
+          "pse36",
+          "clflush",
+          "mmx",
+          "fxsr",
+          "sse",
+          "sse2",
+          "ht",
+          "syscall",
+          "nx",
+          "lm",
+          "rep_good",
+          "nopl",
+          "cpuid",
+          "extd_apicid",
+          "tsc_known_freq",
+          "pni",
+          "pclmulqdq",
+          "ssse3",
+          "cx16",
+          "sse4_1",
+          "sse4_2",
+          "x2apic",
+          "popcnt",
+          "aes",
+          "xsave",
+          "avx",
+          "rdrand",
+          "hypervisor",
+          "lahf_lm",
+          "cmp_legacy",
+          "abm",
+          "3dnowprefetch",
+          "ssbd",
+          "ibpb",
+          "vmmcall",
+          "arch_capabilities"
+        ],
+        "bugs": [
+          "fxsave_leak",
+          "sysret_ss_attrs",
+          "null_seg",
+          "swapgs_fence",
+          "amd_e400",
+          "spectre_v1",
+          "spectre_v2"
+        ],
+        "bogo": 3992.49,
+        "cache": 512,
+        "units": 2,
+        "physical_id": 0,
+        "siblings": 2,
+        "cores": 2,
+        "fpu": true,
+        "fpu_exception": true,
+        "cpuid_level": 13,
+        "write_protect": false,
+        "tlb_size": 1024,
+        "clflush_size": 64,
+        "cache_alignment": 64,
+        "address_sizes": {
+          "physical": 40,
+          "virtual": 48
+        }
+      }
+    ],
+    "disk": [
+      {
+        "bus_type": {
+          "name": "SCSI",
+          "value": 132
+        },
+        "slot": {
+          "bus": 2,
+          "number": 0
+        },
+        "base_class": {
+          "name": "Mass Storage Device",
+          "value": 262
+        },
+        "sub_class": {
+          "name": "Disk",
+          "value": 0
+        },
+        "vendor": {
+          "name": "QEMU",
+          "value": 0
+        },
+        "device": {
+          "name": "QEMU HARDDISK",
+          "value": 0
+        },
+        "revision": {
+          "name": "2.5+",
+          "value": 0
+        },
+        "model": "QEMU HARDDISK",
+        "sysfs_id": "/class/block/sda",
+        "sysfs_bus_id": "2:0:0:0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:1d.0/virtio2/host2/target2:0:0/2:0:0:0",
+        "unix_device_name": "/dev/sda",
+        "unix_device_number": {
+          "type": 98,
+          "major": 8,
+          "minor": 0,
+          "range": 16
+        },
+        "unix_device_names": [
+          "/dev/disk/by-diskseq/3",
+          "/dev/disk/by-id/scsi-0QEMU_QEMU_HARDDISK_drive-scsi0-0-0-0",
+          "/dev/disk/by-path/pci-0000:00:1d.0-scsi-0:0:0:0",
+          "/dev/sda"
+        ],
+        "unix_device_name2": "/dev/sg1",
+        "unix_device_number2": {
+          "type": 99,
+          "major": 21,
+          "minor": 1,
+          "range": 1
+        },
+        "rom_id": "0x80",
+        "resources": [
+          {
+            "type": "disk_geo",
+            "cylinders": 40960,
+            "heads": 64,
+            "sectors": 32,
+            "size": 0,
+            "geo_type": "logical"
+          },
+          {
+            "type": "size",
+            "unit": "sectors",
+            "value_1": 83886080,
+            "value_2": 512
+          }
+        ],
+        "driver": "virtio_scsi",
+        "driver_module": "virtio_scsi",
+        "drivers": [
+          "sd",
+          "virtio_scsi"
+        ],
+        "driver_modules": [
+          "sd_mod",
+          "virtio_scsi"
+        ]
+      }
+    ],
+    "graphics_card": [
+      {
+        "bus_type": {
+          "name": "PCI",
+          "value": 4
+        },
+        "slot": {
+          "bus": 0,
+          "number": 2
+        },
+        "base_class": {
+          "name": "Display controller",
+          "value": 3
+        },
+        "sub_class": {
+          "name": "VGA compatible controller",
+          "value": 0
+        },
+        "pci_interface": {
+          "name": "VGA",
+          "value": 0
+        },
+        "vendor": {
+          "value": 4660
+        },
+        "sub_vendor": {
+          "value": 6900
+        },
+        "device": {
+          "value": 4369
+        },
+        "sub_device": {
+          "value": 4352
+        },
+        "revision": {
+          "value": 2
+        },
+        "model": "VGA compatible controller",
+        "sysfs_id": "/devices/pci0000:00/0000:00:02.0",
+        "sysfs_bus_id": "0000:00:02.0",
+        "resources": [
+          {
+            "type": "mem",
+            "base": 2147483648,
+            "range": 8388608,
+            "enabled": true,
+            "access": "read_only",
+            "prefetch": "no"
+          },
+          {
+            "type": "mem",
+            "base": 2156146688,
+            "range": 4096,
+            "enabled": true,
+            "access": "read_write",
+            "prefetch": "no"
+          },
+          {
+            "type": "mem",
+            "base": 786432,
+            "range": 131072,
+            "enabled": false,
+            "access": "read_write",
+            "prefetch": "no"
+          }
+        ],
+        "detail": {
+          "function": 0,
+          "command": 7,
+          "header_type": 0,
+          "secondary_bus": 0,
+          "irq": 0,
+          "prog_if": 0
+        },
+        "driver": "bochs-drm",
+        "driver_module": "bochs",
+        "drivers": [
+          "bochs-drm"
+        ],
+        "driver_modules": [
+          "bochs"
+        ],
+        "module_alias": "pci:v00001234d00001111sv00001AF4sd00001100bc03sc00i00"
+      }
+    ],
+    "hub": [
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
+          "name": "Linux 6.8.9 uhci_hcd",
+          "value": 7531
+        },
+        "device": {
+          "name": "UHCI Host Controller",
+          "value": 1
+        },
+        "revision": {
+          "name": "6.08",
+          "value": 0
+        },
+        "serial": "0000:00:01.2",
+        "model": "Linux 6.8.9 uhci_hcd UHCI Host Controller",
+        "sysfs_id": "/devices/pci0000:00/0000:00:01.2/usb1/1-0:1.0",
+        "sysfs_bus_id": "1-0:1.0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 12000000,
+          "manufacturer": "Linux 6.8.9 uhci_hcd",
+          "product": "UHCI Host Controller",
+          "device_class": "hub",
+          "interface_class": "hub",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v1D6Bp0001d0608dc09dsc00dp00ic09isc00ip00in00"
+      }
+    ],
+    "memory": [
+      {
+        "base_class": {
+          "name": "Internally Used Class",
+          "value": 257
+        },
+        "sub_class": {
+          "name": "Main Memory",
+          "value": 2
+        },
+        "model": "Main Memory",
+        "resources": [
+          {
+            "type": "mem",
+            "base": 0,
+            "range": 2063863808,
+            "enabled": true,
+            "access": "read_write",
+            "prefetch": "unknown"
+          },
+          {
+            "type": "phys_mem",
+            "range": 2013265920
+          }
+        ]
+      }
+    ],
+    "monitor": [
+      {
+        "base_class": {
+          "name": "Monitor",
+          "value": 256
+        },
+        "sub_class": {
+          "name": "LCD Monitor",
+          "value": 2
+        },
+        "vendor": {
+          "value": 18708
+        },
+        "device": {
+          "name": "QEMU Monitor",
+          "value": 4660
+        },
+        "serial": "0",
+        "model": "QEMU Monitor",
+        "resources": [
+          {
+            "type": "monitor",
+            "width": 1024,
+            "height": 768,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 1600,
+            "height": 1200,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 1920,
+            "height": 1080,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 2048,
+            "height": 1152,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 640,
+            "height": 480,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "monitor",
+            "width": 800,
+            "height": 600,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "size",
+            "unit": "mm",
+            "value_1": 260,
+            "value_2": 195
+          }
+        ],
+        "detail": {
+          "manufacture_year": 2014,
+          "manufacture_week": 42,
+          "vertical_sync": {
+            "min": 50,
+            "max": 125
+          },
+          "horizontal_sync": {
+            "min": 30,
+            "max": 160
+          },
+          "horizontal_sync_timings": {
+            "disp": 1024,
+            "sync_start": 1280,
+            "sync_end": 1310,
+            "total": 1382
+          },
+          "vertical_sync_timings": {
+            "disp": 768,
+            "sync_start": 771,
+            "sync_end": 774,
+            "total": 794
+          },
+          "clock": 82290,
+          "width": 1024,
+          "height": 768,
+          "width_millimetres": 260,
+          "height_millimetres": 195,
+          "horizontal_flag": 45,
+          "vertical_flag": 45,
+          "vendor": "",
+          "name": "QEMU Monitor"
+        },
+        "driver_info": {
+          "type": "display",
+          "width": 2048,
+          "height": 1152,
+          "vertical_sync": {
+            "min": 50,
+            "max": 125
+          },
+          "horizontal_sync": {
+            "min": 30,
+            "max": 160
+          },
+          "bandwidth": 0,
+          "horizontal_sync_timings": {
+            "disp": 1024,
+            "sync_start": 1280,
+            "sync_end": 1310,
+            "total": 1382
+          },
+          "vertical_sync_timings": {
+            "disp": 768,
+            "sync_start": 771,
+            "sync_end": 774,
+            "total": 794
+          },
+          "horizontal_flag": 45,
+          "vertical_flag": 45
+        }
+      }
+    ],
+    "mouse": [
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "name": "Mouse",
+          "value": 261
+        },
+        "sub_class": {
+          "name": "USB Mouse",
+          "value": 3
+        },
+        "vendor": {
+          "name": "QEMU",
+          "value": 1575
+        },
+        "device": {
+          "name": "QEMU USB Tablet",
+          "value": 1
+        },
+        "serial": "28754-0000:00:01.2-1",
+        "compat_vendor": "Unknown",
+        "compat_device": "Generic USB Mouse",
+        "model": "QEMU USB Tablet",
+        "sysfs_id": "/devices/pci0000:00/0000:00:01.2/usb1/1-1/1-1:1.0",
+        "sysfs_bus_id": "1-1:1.0",
+        "unix_device_name": "/dev/input/mice",
+        "unix_device_number": {
+          "type": 99,
+          "major": 13,
+          "minor": 63,
+          "range": 1
+        },
+        "unix_device_names": [
+          "/dev/input/mice"
+        ],
+        "unix_device_name2": "/dev/input/mouse0",
+        "unix_device_number2": {
+          "type": 99,
+          "major": 13,
+          "minor": 32,
+          "range": 1
+        },
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 12000000,
+          "manufacturer": "QEMU",
+          "product": "QEMU USB Tablet",
+          "interface_class": "hid",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "driver": "usbhid",
+        "driver_module": "usbhid",
+        "drivers": [
+          "usbhid"
+        ],
+        "driver_modules": [
+          "usbhid"
+        ],
+        "driver_info": {
+          "type": "mouse",
+          "db_entry_0": [
+            "explorerps/2",
+            "exps2"
+          ],
+          "xf86": "explorerps/2",
+          "gpm": "exps2",
+          "buttons": -1,
+          "wheels": -1
+        },
+        "module_alias": "usb:v0627p0001d0000dc00dsc00dp00ic03isc00ip00in00"
+      }
+    ],
+    "network_controller": [
+      {
+        "bus_type": {
+          "name": "Virtio",
+          "value": 143
+        },
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "name": "Network controller",
+          "value": 2
+        },
+        "sub_class": {
+          "name": "Ethernet controller",
+          "value": 0
+        },
+        "vendor": "Virtio",
+        "device": "Ethernet Card 0",
+        "model": "Virtio Ethernet Card 0",
+        "sysfs_id": "/devices/pci0000:00/0000:00:03.0/virtio0",
+        "sysfs_bus_id": "virtio0",
+        "unix_device_name": "eth0",
+        "unix_device_names": [
+          "eth0"
+        ],
+        "resources": [
+          {
+            "type": "hwaddr",
+            "address": 49
+          },
+          {
+            "type": "phwaddr",
+            "address": 49
+          }
+        ],
+        "driver": "virtio_net",
+        "driver_module": "virtio_net",
+        "drivers": [
+          "virtio_net"
+        ],
+        "driver_modules": [
+          "virtio_net"
+        ],
+        "module_alias": "virtio:d00000001v00001AF4"
+      }
+    ],
+    "network_interface": [
+      {
+        "base_class": {
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "name": "Loopback",
+          "value": 0
+        },
+        "model": "Loopback network interface",
+        "sysfs_id": "/class/net/lo",
+        "unix_device_name": "lo",
+        "unix_device_names": [
+          "lo"
+        ]
+      },
+      {
+        "base_class": {
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "name": "Ethernet",
+          "value": 1
+        },
+        "model": "Ethernet network interface",
+        "sysfs_id": "/class/net/eth0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:03.0/virtio0",
+        "unix_device_name": "eth0",
+        "unix_device_names": [
+          "eth0"
+        ],
+        "resources": [
+          {
+            "type": "hwaddr",
+            "address": 49
+          },
+          {
+            "type": "phwaddr",
+            "address": 49
+          }
+        ],
+        "driver": "virtio_net",
+        "driver_module": "virtio_net",
+        "drivers": [
+          "virtio_net"
+        ],
+        "driver_modules": [
+          "virtio_net"
+        ]
+      }
+    ],
+    "storage_controller": [
+      {
+        "bus_type": {
+          "name": "PCI",
+          "value": 4
+        },
+        "slot": {
+          "bus": 0,
+          "number": 1
+        },
+        "base_class": {
+          "name": "Mass storage controller",
+          "value": 1
+        },
+        "sub_class": {
+          "name": "IDE interface",
+          "value": 1
+        },
+        "pci_interface": {
+          "value": 128
+        },
+        "vendor": {
+          "name": "Intel Corporation",
+          "value": 32902
+        },
+        "sub_vendor": {
+          "value": 6900
+        },
+        "device": {
+          "value": 28688
+        },
+        "sub_device": {
+          "value": 4352
+        },
+        "model": "Intel IDE interface",
+        "sysfs_id": "/devices/pci0000:00/0000:00:01.1",
+        "sysfs_bus_id": "0000:00:01.1",
+        "resources": [
+          {
+            "type": "io",
+            "base": 1014,
+            "range": 1,
+            "enabled": true,
+            "access": "read_write"
+          },
+          {
+            "type": "io",
+            "base": 368,
+            "range": 8,
+            "enabled": true,
+            "access": "read_write"
+          },
+          {
+            "type": "io",
+            "base": 49408,
+            "range": 16,
+            "enabled": true,
+            "access": "read_write"
+          },
+          {
+            "type": "io",
+            "base": 496,
+            "range": 8,
+            "enabled": true,
+            "access": "read_write"
+          },
+          {
+            "type": "io",
+            "base": 886,
+            "range": 1,
+            "enabled": true,
+            "access": "read_write"
+          }
+        ],
+        "detail": {
+          "function": 1,
+          "command": 7,
+          "header_type": 0,
+          "secondary_bus": 0,
+          "irq": 0,
+          "prog_if": 128
+        },
+        "driver": "ata_piix",
+        "driver_module": "ata_piix",
+        "drivers": [
+          "ata_piix"
+        ],
+        "driver_modules": [
+          "ata_piix"
+        ],
+        "module_alias": "pci:v00008086d00007010sv00001AF4sd00001100bc01sc01i80"
+      },
+      {
+        "bus_type": {
+          "name": "PCI",
+          "value": 4
+        },
+        "slot": {
+          "bus": 0,
+          "number": 29
+        },
+        "base_class": {
+          "name": "Mass storage controller",
+          "value": 1
+        },
+        "sub_class": {
+          "name": "SCSI storage controller",
+          "value": 0
+        },
+        "vendor": {
+          "value": 6900
+        },
+        "sub_vendor": {
+          "value": 6900
+        },
+        "device": {
+          "value": 4100
+        },
+        "sub_device": {
+          "value": 8
+        },
+        "model": "SCSI storage controller",
+        "sysfs_id": "/devices/pci0000:00/0000:00:1d.0",
+        "sysfs_bus_id": "0000:00:1d.0",
+        "resources": [
+          {
+            "type": "io",
+            "base": 49216,
+            "range": 64,
+            "enabled": true,
+            "access": "read_write"
+          },
+          {
+            "type": "irq",
+            "base": 10,
+            "triggered": 0,
+            "enabled": true
+          },
+          {
+            "type": "mem",
+            "base": 2156134400,
+            "range": 4096,
+            "enabled": true,
+            "access": "read_write",
+            "prefetch": "no"
+          },
+          {
+            "type": "mem",
+            "base": 34359771136,
+            "range": 16384,
+            "enabled": true,
+            "access": "read_only",
+            "prefetch": "no"
+          }
+        ],
+        "detail": {
+          "function": 0,
+          "command": 1031,
+          "header_type": 0,
+          "secondary_bus": 0,
+          "irq": 10,
+          "prog_if": 0
+        },
+        "driver": "virtio-pci",
+        "driver_module": "virtio_pci",
+        "drivers": [
+          "virtio-pci"
+        ],
+        "driver_modules": [
+          "virtio_pci"
+        ],
+        "module_alias": "pci:v00001AF4d00001004sv00001AF4sd00000008bc01sc00i00"
+      }
+    ],
+    "system": {
+      "form_factor": "desktop"
+    },
+    "unknown": [
+      {
+        "bus_type": {
+          "name": "PCI",
+          "value": 4
+        },
+        "slot": {
+          "bus": 0,
+          "number": 28
+        },
+        "base_class": {
+          "name": "Communication controller",
+          "value": 7
+        },
+        "sub_class": {
+          "name": "Communication controller",
+          "value": 128
+        },
+        "vendor": {
+          "value": 6900
+        },
+        "sub_vendor": {
+          "value": 6900
+        },
+        "device": {
+          "value": 4099
+        },
+        "sub_device": {
+          "value": 3
+        },
+        "model": "Communication controller",
+        "sysfs_id": "/devices/pci0000:00/0000:00:1c.0",
+        "sysfs_bus_id": "0000:00:1c.0",
+        "resources": [
+          {
+            "type": "io",
+            "base": 49280,
+            "range": 64,
+            "enabled": true,
+            "access": "read_write"
+          },
+          {
+            "type": "irq",
+            "base": 11,
+            "triggered": 0,
+            "enabled": true
+          },
+          {
+            "type": "mem",
+            "base": 2156138496,
+            "range": 4096,
+            "enabled": true,
+            "access": "read_write",
+            "prefetch": "no"
+          },
+          {
+            "type": "mem",
+            "base": 34359754752,
+            "range": 16384,
+            "enabled": true,
+            "access": "read_only",
+            "prefetch": "no"
+          }
+        ],
+        "detail": {
+          "function": 0,
+          "command": 1031,
+          "header_type": 0,
+          "secondary_bus": 0,
+          "irq": 11,
+          "prog_if": 0
+        },
+        "driver": "virtio-pci",
+        "driver_module": "virtio_pci",
+        "drivers": [
+          "virtio-pci"
+        ],
+        "driver_modules": [
+          "virtio_pci"
+        ],
+        "module_alias": "pci:v00001AF4d00001003sv00001AF4sd00000003bc07sc80i00"
+      },
+      {
+        "bus_type": {
+          "name": "PCI",
+          "value": 4
+        },
+        "slot": {
+          "bus": 0,
+          "number": 30
+        },
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "value": 255
+        },
+        "vendor": {
+          "value": 6900
+        },
+        "sub_vendor": {
+          "value": 6900
+        },
+        "device": {
+          "value": 4098
+        },
+        "sub_device": {
+          "value": 5
+        },
+        "model": "Unclassified device",
+        "sysfs_id": "/devices/pci0000:00/0000:00:1e.0",
+        "sysfs_bus_id": "0000:00:1e.0",
+        "resources": [
+          {
+            "type": "io",
+            "base": 49152,
+            "range": 64,
+            "enabled": true,
+            "access": "read_write"
+          },
+          {
+            "type": "irq",
+            "base": 11,
+            "triggered": 0,
+            "enabled": true
+          },
+          {
+            "type": "mem",
+            "base": 34359787520,
+            "range": 16384,
+            "enabled": true,
+            "access": "read_only",
+            "prefetch": "no"
+          }
+        ],
+        "detail": {
+          "function": 0,
+          "command": 7,
+          "header_type": 0,
+          "secondary_bus": 0,
+          "irq": 11,
+          "prog_if": 0
+        },
+        "driver": "virtio-pci",
+        "driver_module": "virtio_pci",
+        "drivers": [
+          "virtio-pci"
+        ],
+        "driver_modules": [
+          "virtio_pci"
+        ],
+        "module_alias": "pci:v00001AF4d00001002sv00001AF4sd00000005bc00scFFi00"
+      },
+      {
+        "bus_type": {
+          "name": "PCI",
+          "value": 4
+        },
+        "slot": {
+          "bus": 0,
+          "number": 3
+        },
+        "base_class": {
+          "name": "Network controller",
+          "value": 2
+        },
+        "sub_class": {
+          "name": "Ethernet controller",
+          "value": 0
+        },
+        "vendor": {
+          "value": 6900
+        },
+        "sub_vendor": {
+          "value": 6900
+        },
+        "device": {
+          "value": 4096
+        },
+        "sub_device": {
+          "value": 1
+        },
+        "model": "Ethernet controller",
+        "sysfs_id": "/devices/pci0000:00/0000:00:03.0",
+        "sysfs_bus_id": "0000:00:03.0",
+        "resources": [
+          {
+            "type": "io",
+            "base": 49344,
+            "range": 32,
+            "enabled": true,
+            "access": "read_write"
+          },
+          {
+            "type": "irq",
+            "base": 10,
+            "triggered": 0,
+            "enabled": true
+          },
+          {
+            "type": "mem",
+            "base": 2155872256,
+            "range": 262144,
+            "enabled": false,
+            "access": "read_only",
+            "prefetch": "no"
+          },
+          {
+            "type": "mem",
+            "base": 2156142592,
+            "range": 4096,
+            "enabled": true,
+            "access": "read_write",
+            "prefetch": "no"
+          },
+          {
+            "type": "mem",
+            "base": 34359738368,
+            "range": 16384,
+            "enabled": true,
+            "access": "read_only",
+            "prefetch": "no"
+          }
+        ],
+        "detail": {
+          "function": 0,
+          "command": 1031,
+          "header_type": 0,
+          "secondary_bus": 0,
+          "irq": 10,
+          "prog_if": 0
+        },
+        "driver": "virtio-pci",
+        "driver_module": "virtio_pci",
+        "drivers": [
+          "virtio-pci"
+        ],
+        "driver_modules": [
+          "virtio_pci"
+        ],
+        "module_alias": "pci:v00001AF4d00001000sv00001AF4sd00000001bc02sc00i00"
+      },
+      {
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": "Virtio",
+        "device": "",
+        "model": "Virtio Unclassified device",
+        "sysfs_id": "/devices/pci0000:00/0000:00:1c.0/virtio1",
+        "sysfs_bus_id": "virtio1",
+        "driver": "virtio_console",
+        "driver_module": "virtio_console",
+        "drivers": [
+          "virtio_console"
+        ],
+        "driver_modules": [
+          "virtio_console"
+        ],
+        "module_alias": "virtio:d00000003v00001AF4"
+      },
+      {
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": "Virtio",
+        "device": "",
+        "model": "Virtio Unclassified device",
+        "sysfs_id": "/devices/pci0000:00/0000:00:1d.0/virtio2",
+        "sysfs_bus_id": "virtio2",
+        "driver": "virtio_scsi",
+        "driver_module": "virtio_scsi",
+        "drivers": [
+          "virtio_scsi"
+        ],
+        "driver_modules": [
+          "virtio_scsi"
+        ],
+        "module_alias": "virtio:d00000008v00001AF4"
+      },
+      {
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": "Virtio",
+        "device": "",
+        "model": "Virtio Unclassified device",
+        "sysfs_id": "/devices/pci0000:00/0000:00:1e.0/virtio3",
+        "sysfs_bus_id": "virtio3",
+        "driver": "virtio_balloon",
+        "driver_module": "virtio_balloon",
+        "drivers": [
+          "virtio_balloon"
+        ],
+        "driver_modules": [
+          "virtio_balloon"
+        ],
+        "module_alias": "virtio:d00000005v00001AF4"
+      }
+    ],
+    "usb_controller": [
+      {
+        "bus_type": {
+          "name": "PCI",
+          "value": 4
+        },
+        "slot": {
+          "bus": 0,
+          "number": 1
+        },
+        "base_class": {
+          "name": "Serial bus controller",
+          "value": 12
+        },
+        "sub_class": {
+          "name": "USB Controller",
+          "value": 3
+        },
+        "pci_interface": {
+          "name": "UHCI",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Intel Corporation",
+          "value": 32902
+        },
+        "sub_vendor": {
+          "value": 6900
+        },
+        "device": {
+          "value": 28704
+        },
+        "sub_device": {
+          "value": 4352
+        },
+        "revision": {
+          "value": 1
+        },
+        "model": "Intel USB Controller",
+        "sysfs_id": "/devices/pci0000:00/0000:00:01.2",
+        "sysfs_bus_id": "0000:00:01.2",
+        "resources": [
+          {
+            "type": "io",
+            "base": 49376,
+            "range": 32,
+            "enabled": true,
+            "access": "read_write"
+          },
+          {
+            "type": "irq",
+            "base": 11,
+            "triggered": 0,
+            "enabled": true
+          }
+        ],
+        "detail": {
+          "function": 2,
+          "command": 7,
+          "header_type": 0,
+          "secondary_bus": 0,
+          "irq": 11,
+          "prog_if": 0
+        },
+        "driver": "uhci_hcd",
+        "driver_module": "uhci_hcd",
+        "drivers": [
+          "uhci_hcd"
+        ],
+        "driver_modules": [
+          "uhci_hcd"
+        ],
+        "driver_info": {
+          "type": "module",
+          "db_entry_0": [
+            "uhci-hcd"
+          ],
+          "active": true,
+          "modprobe": true,
+          "names": [
+            "uhci-hcd"
+          ],
+          "module_args": [
+            ""
+          ],
+          "conf": ""
+        },
+        "module_alias": "pci:v00008086d00007020sv00001AF4sd00001100bc0Csc03i00"
+      }
+    ]
+  },
+  "smbios": {
+    "bios": {
+      "handle": 0,
+      "vendor": "netcup",
+      "version": "VPS 200 G10s",
+      "date": "12/29/2022",
+      "features": null,
+      "start_address": "0xe8000",
+      "rom_size": 65536
+    },
+    "chassis": {
+      "handle": 768,
+      "manufacturer": "QEMU",
+      "version": "pc-i440fx-6.2",
+      "chassis_type": {
+        "name": "Other",
+        "value": 1
+      },
+      "lock_present": false,
+      "bootup_state": {
+        "name": "Safe",
+        "value": 3
+      },
+      "power_state": {
+        "name": "Safe",
+        "value": 3
+      },
+      "thermal_state": {
+        "name": "Safe",
+        "value": 3
+      },
+      "security_state": {
+        "name": "Unknown",
+        "value": 2
+      },
+      "oem": "0x0"
+    },
+    "memory_array": [
+      {
+        "handle": 4096,
+        "location": {
+          "name": "Other",
+          "value": 1
+        },
+        "usage": {
+          "name": "System memory",
+          "value": 3
+        },
+        "ecc": {
+          "name": "Multi-bit",
+          "value": 6
+        },
+        "max_size": 2097152,
+        "error_handle": 65534,
+        "slots": 1
+      }
+    ],
+    "memory_array_mapped_address": [
+      {
+        "handle": 4864,
+        "array_handle": 4096,
+        "start_address": 0,
+        "end_address": 2147483648,
+        "part_width": 1
+      }
+    ],
+    "memory_device": [
+      {
+        "handle": 4352,
+        "location": "DIMM 0",
+        "bank_location": "",
+        "manufacturer": "QEMU",
+        "part_number": "",
+        "array_handle": 4096,
+        "error_handle": 65534,
+        "width": 0,
+        "ecc_bits": 0,
+        "size": 2097152,
+        "form_factor": {
+          "name": "DIMM",
+          "value": 9
+        },
+        "set": 0,
+        "memory_type": {
+          "name": "RAM",
+          "value": 7
+        },
+        "memory_type_details": [
+          "Other"
+        ],
+        "speed": 0
+      }
+    ],
+    "processor": [
+      {
+        "handle": 1024,
+        "socket": "CPU 0",
+        "socket_type": {
+          "name": "Other",
+          "value": 1
+        },
+        "socket_populated": true,
+        "manufacturer": "QEMU",
+        "version": "pc-i440fx-6.2",
+        "part": "",
+        "processor_type": {
+          "name": "CPU",
+          "value": 3
+        },
+        "processor_family": {
+          "name": "Other",
+          "value": 1
+        },
+        "processor_status": {
+          "name": "Enabled",
+          "value": 1
+        },
+        "clock_ext": 0,
+        "clock_max": 2000,
+        "cache_handle_l1": 0,
+        "cache_handle_l2": 0,
+        "cache_handle_l3": 0
+      }
+    ],
+    "system": {
+      "handle": 256,
+      "manufacturer": "netcup",
+      "product": "KVM Server",
+      "version": "VPS 200 G10s",
+      "wake_up": {
+        "name": "Power Switch",
+        "value": 6
+      }
+    }
+  }
+}
