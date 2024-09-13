@@ -30,8 +30,6 @@
 
     #inputs.nixos-wiki.nixosModules.nixos-wiki
     #inputs.nixos-wiki.nixosModules.nixos-wiki-backup
-    # Include the results of the hardware scan.
-    ./hardware-configuration.nix
     ./modules/adminer.nix
     ./modules/atuin.nix
     ./modules/bitwarden.nix

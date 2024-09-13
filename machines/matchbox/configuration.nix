@@ -11,7 +11,6 @@
     self.nixosModules.default
     inputs.srvos.nixosModules.server
 
-    ./hardware-configuration.nix
     ./modules/samba.nix
     ./modules/rsyncd.nix
     ./modules/rsnapshot.nix

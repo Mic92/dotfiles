@@ -21,7 +21,6 @@
 
     inputs.lanzaboote.nixosModules.lanzaboote
 
-    ./hardware-configuration.nix
     ./modules/caddy.nix
     ./modules/disko.nix
     ./modules/hass-agent.nix
