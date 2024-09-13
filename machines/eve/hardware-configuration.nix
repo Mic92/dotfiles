@@ -8,6 +8,4 @@
     "sd_mod"
     "nvme"
   ];
-
-  powerManagement.cpuFreqGovernor = lib.mkDefault "powersave";
 }
