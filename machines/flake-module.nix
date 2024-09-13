@@ -17,6 +17,7 @@
         ./modules/i18n.nix
         ./modules/sshd
         ./modules/zfs.nix
+        ./modules/thermald.nix
 
         inputs.clan-core.clanModules.sshd
         inputs.clan-core.clanModules.borgbackup
