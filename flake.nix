@@ -135,11 +135,11 @@
       {
         imports = [
           ./darwin/flake-module.nix
-          ./nixos/flake-module.nix
-          ./nixos/images/flake-module.nix
+          ./machines/flake-module.nix
           ./home-manager/flake-module.nix
           ./terraform/flake-module.nix
           ./devshell/flake-module.nix
+          ./pkgs/images/flake-module.nix
           ./pkgs/flake-module.nix
           inputs.hercules-ci-effects.flakeModule
           inputs.clan-core.flakeModules.default

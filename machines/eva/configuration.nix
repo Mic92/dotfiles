@@ -1,4 +1,10 @@
-{ lib, pkgs, self, inputs, ... }:
+{
+  lib,
+  pkgs,
+  self,
+  inputs,
+  ...
+}:
 {
   networking.hostName = "eva";
 

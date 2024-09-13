@@ -34,7 +34,7 @@
               pkgs.python3.pkgs.invoke
             ];
           };
-          "nixos/eva/modules/prometheus" = { };
+          "machines/eva/modules/prometheus" = { };
           "openwrt" = { };
           "home-manager/modules/neovim" = {
             options = [ "--ignore-missing-imports" ];
@@ -73,6 +73,7 @@
           "home/.emacs/*"
           # bug in ruff
           "home/.config/shell_gpt/functions/execute_shell.py"
+          "machines/eve/modules/home-assistant/*"
         ];
         settings.formatter.ruff-format.excludes = [
           "gdb/*"
@@ -155,10 +156,10 @@
           "home/.zsh-termsupport"
           "home/.zshrc"
           "home/bin/*"
-          "nixos/eve/modules/nginx/screenshare/index.html"
-          "nixos/eve/pkgs/logo.png"
-          "nixos/turingmachine/modules/vpn-il1-standard.ovpn"
-          "nixos/turingmachine/thermal-conf.xml.auto"
+          "machines/eve/modules/nginx/screenshare/index.html"
+          "machines/eve/pkgs/logo.png"
+          "machines/turingmachine/modules/vpn-il1-standard.ovpn"
+          "machines/turingmachine/thermal-conf.xml.auto"
           "openwrt/Justfile"
           "openwrt/bin/nix-uci"
           "openwrt/setup.cfg"

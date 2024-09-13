@@ -48,7 +48,7 @@
       borgbackup.blob64 = {
         roles.server.machines = [ "blob64" ];
         roles.client.tags = [ "backup" ];
-        roles.client.imports = [ "nixos/modules/borgbackup.nix" ];
+        roles.client.imports = [ "machines/modules/borgbackup.nix" ];
       };
     };
     inventory.machines = {
@@ -57,20 +57,6 @@
       eve.tags = [ "backup" ];
       eva.tags = [ "backup" ];
       matchbox.tags = [ "backup" ];
-    };
-
-    machines = {
-      bernie.imports = [ ./bernie/configuration.nix ];
-      turingmachine.imports = [ ./turingmachine/configuration.nix ];
-      eve.imports = [ ./eve/configuration.nix ];
-      eva.imports = [ ./eva/configuration.nix ];
-      blob64.imports = [ ./blob64/configuration.nix ];
-
-      matchbox = {
-        imports = [
-          ./matchbox/configuration.nix
-        ];
-      };
     };
   };
 }
