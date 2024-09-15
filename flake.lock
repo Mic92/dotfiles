@@ -51,11 +51,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1726222929,
-        "narHash": "sha256-QEGUXGKcuuIgqsvOtjKMUS051/tr4N07HP/Lp6gAAX8=",
-        "rev": "f48e1f2918161c3c9860ef92fe6bb44b00544674",
+        "lastModified": 1726339325,
+        "narHash": "sha256-bJhxZywuBdQ4vk/t12U1Y9pKKM5VbchKvvM95838+bQ=",
+        "rev": "17da259ff99e2d4079f686ba837eb55a2ac9e79b",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/f48e1f2918161c3c9860ef92fe6bb44b00544674.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/17da259ff99e2d4079f686ba837eb55a2ac9e79b.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -114,11 +114,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1726219040,
-        "narHash": "sha256-u/2xSCp/7sE7XViv6QR2jMw7Rrx/PXJtmeVLYv+Qbpo=",
+        "lastModified": 1726325969,
+        "narHash": "sha256-Mlw7009cdFry9OHpS6jy294lXhb+gcRa0iS2hYhkC6s=",
         "owner": "nix-community",
         "repo": "disko",
-        "rev": "4ef99d8ec41369b6fbe83479b5566c2b8856972c",
+        "rev": "3632080c41d7a657995807689a08ef6c4bcb2c72",
         "type": "github"
       },
       "original": {
@@ -279,11 +279,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1726222338,
-        "narHash": "sha256-KuA8ciNR8qCF3dQaCaeh0JWyQUgEwkwDHr/f49Q5/e8=",
+        "lastModified": 1726357542,
+        "narHash": "sha256-p4OrJL2weh0TRtaeu1fmNYP6+TOp/W2qdaIJxxQay4c=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "503af483e1b328691ea3a434d331995595fb2e3d",
+        "rev": "e524c57b1fa55d6ca9d8354c6ce1e538d2a1f47f",
         "type": "github"
       },
       "original": {
@@ -435,11 +435,11 @@
     },
     "nixos-facter-modules": {
       "locked": {
-        "lastModified": 1726156394,
-        "narHash": "sha256-+o1VIOxS5VoWkQIVikzLdMI9pJIQyOuCsrMdmQ/QW3A=",
+        "lastModified": 1726241088,
+        "narHash": "sha256-WX3zghV8praMXUOMf8Jy9NGh8KU8p/ETgI3Ukvh/O50=",
         "owner": "numtide",
         "repo": "nixos-facter-modules",
-        "rev": "d3270d84a27da96aaf130ce5e578f4c626f7dcf2",
+        "rev": "d78cd60464df85279cbdddaba0e3d8d8ee6ab00c",
         "type": "github"
       },
       "original": {
