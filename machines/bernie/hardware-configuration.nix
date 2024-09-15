@@ -33,6 +33,4 @@
     fsType = "zfs";
     options = [ "nofail" ];
   };
-
-  swapDevices = [ ];
 }
