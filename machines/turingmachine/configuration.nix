@@ -62,8 +62,8 @@
 
   nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
 
-  # upgrading fails with "umount busy" errors
-  system.etc.overlay.enable = false;
+  system.etc.overlay.enable = true;
+  system.etc.overlay.mutable = true;
   services.userborn.enable = true;
 
   environment.systemPackages = with pkgs; [ sunshine ];
