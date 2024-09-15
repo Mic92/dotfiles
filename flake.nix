@@ -70,7 +70,8 @@
     nix-darwin.url = "github:Mic92/nix-darwin/ssh";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    srvos.url = "github:numtide/srvos/impure-derivations";
+    #srvos.url = "github:numtide/srvos/impure-derivations";
+    srvos.url = "github:Mic92/srvos/dotfiles";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
     clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";

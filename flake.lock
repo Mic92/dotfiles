@@ -668,16 +668,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1723788350,
-        "narHash": "sha256-i3zHLpleHkLgCoX+E9c5x2vkpfeOb7NJdR4hD8vEk5A=",
-        "owner": "numtide",
+        "lastModified": 1726329123,
+        "narHash": "sha256-xdreaAsWbwQLwiNpfDoARUmaGRA885TaCtPvlI73kx8=",
+        "owner": "Mic92",
         "repo": "srvos",
-        "rev": "92acb82fc37124d68e401ac96d6d31095d058fb8",
+        "rev": "0b5b3ea922ac25ef3cf4491c4190c7e500ed66e9",
         "type": "github"
       },
       "original": {
-        "owner": "numtide",
-        "ref": "impure-derivations",
+        "owner": "Mic92",
+        "ref": "dotfiles",
         "repo": "srvos",
         "type": "github"
       }
