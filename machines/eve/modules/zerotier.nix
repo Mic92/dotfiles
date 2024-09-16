@@ -1,4 +1,6 @@
 {
+  imports = [ ../../modules/zerotier.nix ];
+
   clan.core.networking.zerotier.controller.enable = true;
   clan.core.networking.zerotier.moon.stableEndpoints = [
     "95.217.199.121"
