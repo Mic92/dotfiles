@@ -178,9 +178,23 @@
 
             checks =
               let
-                nixosMachines = lib.mapAttrs' (
-                  name: config: lib.nameValuePair "nixos-${name}" config.config.system.build.toplevel
-                ) ((lib.filterAttrs (_: config: config.pkgs.system == system)) self.nixosConfigurations);
+                machinesPerSystem = {
+                  aarch64-linux = [
+                    "blob64"
+                    "matchbox"
+                  ];
+                  x86_64-linux = [
+                    "eve"
+                    "eva"
+                    "turingmachine"
+                    "bernie"
+                  ];
+                };
+                nixosMachines = lib.mapAttrs' (n: lib.nameValuePair "nixos-${n}") (
+                  lib.genAttrs (machinesPerSystem.${system} or [ ]) (
+                    name: self.nixosConfigurations.${name}.config.system.build.toplevel
+                  )
+                );
 
                 blacklistPackages = [
                   "install-iso"
