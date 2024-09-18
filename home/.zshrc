@@ -497,7 +497,7 @@ nix-unpack() {
     fi
     pkg=$1
     nix-shell \
-      -E "with import <nixpkgs> {}; mkShell { buildInputs = [ (srcOnly pkgs.\"$pkg\") ]; }" \
+      -E "with import <nixpkgs> {}; mkShell { buildInputs = [ (srcOnly pkgs.$pkg) ]; }" \
       --run "cp -r \$buildInputs $pkg; chmod -R +w $pkg"
 }
 
