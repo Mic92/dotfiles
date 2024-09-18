@@ -49,7 +49,7 @@
       borgbackup.blob64 = {
         roles.server.machines = [ "blob64" ];
         roles.client.tags = [ "backup" ];
-        roles.client.imports = [ "machines/modules/borgbackup.nix" ];
+        roles.client.extraModules = [ "machines/modules/borgbackup.nix" ];
       };
     };
     inventory.machines = {

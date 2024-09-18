@@ -88,6 +88,7 @@
     #  })
     firefox
     bottles
+    geary
     (retroarch.override {
       cores = [
         libretro.bsnes-hd
