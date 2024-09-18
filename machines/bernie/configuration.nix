@@ -89,6 +89,8 @@
     firefox
     bottles
     geary
+    teams-for-linux
+    zoom-us
     (retroarch.override {
       cores = [
         libretro.bsnes-hd
