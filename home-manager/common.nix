@@ -17,6 +17,7 @@
   home.packages =
     with pkgs;
     [
+      inputs.nix.packages.${pkgs.hostPlatform.system}.nix
       nixpkgs-review
       nix-prefetch
       (pkgs.callPackage ./pkgs/atuin { })
