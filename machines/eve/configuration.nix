@@ -79,7 +79,6 @@
     ../modules/data-mesher.nix
     ../modules/iperf.nix
     ../modules/mosh.nix
-    ../modules/nix-ld.nix
     ../modules/nncp.nix
     ../modules/openldap
     ../modules/promtail.nix

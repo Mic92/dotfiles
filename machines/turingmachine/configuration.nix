@@ -45,7 +45,6 @@
     ../modules/make-linux-fast.nix
     ../modules/mosh.nix
     ../modules/networkd.nix
-    ../modules/nix-ld.nix
     ../modules/nncp.nix
     ../modules/no-hz.nix
     ../modules/pipewire.nix
