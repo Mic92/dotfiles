@@ -75,6 +75,7 @@
   hardware = {
     graphics.enable = true;
     graphics.enable32Bit = true;
+    bluetooth.enable = true;
   };
   environment.systemPackages = with pkgs; [
     #(pkgs.callPackage (pkgs.fetchFromGitHub {
