@@ -9,6 +9,8 @@
   documentation.info.enable = false;
   clan.core.networking.targetHost = lib.mkDefault "root@${config.networking.hostName}.r";
 
+  security.sudo.execWheelOnly = lib.mkForce false;
+
   imports = [
     ./nix-path.nix
     ./acme.nix
