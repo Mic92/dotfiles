@@ -669,11 +669,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1726411789,
-        "narHash": "sha256-FWVm3/Kz84NylSF66FdmgWsFkU4nNkJrkTUSJWQIFM0=",
+        "lastModified": 1726853110,
+        "narHash": "sha256-BVjMSLY9neOGcwNcQmO+7BvBh16IVQ68v9BYpZDnelk=",
         "owner": "Mic92",
         "repo": "srvos",
-        "rev": "4a49f07b31482f7ea2bb4a39bb2c9caa0f7849b7",
+        "rev": "13af80e58b62f9856817470fcb7492cff09a722e",
         "type": "github"
       },
       "original": {
