@@ -716,14 +716,16 @@ own() {
   fi
 }
 # force output to be on a single line
-ss() {
-  # -p requires sudo to see all processes
-  if echo "$@" | grep -q "p"; then
-    sudo ss "$@" | tee
-  else
-    command ss "$@" | tee
-  fi
-}
+if [[ $OSTYPE == linux* ]]; then
+  ss() {
+    # -p requires sudo to see all processes
+    if echo "$@" | grep -q "p"; then
+      sudo ss "$@" | tee
+    else
+      command ss "$@" | tee
+    fi
+  }
+fi
 sieve-edit() {
   local passwordfd
   password=$(rbw get Eve)
