@@ -39,7 +39,7 @@
     ../modules/ip-update.nix
     ../modules/kde
     #../modules/qtile.nix
-    ../modules/keyd.nix
+    #../modules/keyd.nix
     ../modules/ksmbd.nix
     ../modules/lanzaboote.nix
     ../modules/make-linux-fast.nix
