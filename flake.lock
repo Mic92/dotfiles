@@ -13,16 +13,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1726156769,
-        "narHash": "sha256-9GSwGmU/S2iBt3B3w7lA2Kme+2fSafhWXrZSf7SNCOY=",
-        "owner": "nix-community",
+        "lastModified": 1727089628,
+        "narHash": "sha256-RIXHh+GrWWB3TniuXC+xZxSuH4uI7bSlJV/Hgd3aD0o=",
+        "owner": "MagicRB",
         "repo": "buildbot-nix",
-        "rev": "3dbf4d9da7e1d99ce2adf72f156ba6c2aedc699b",
+        "rev": "681aa60e9498a1d874e2f4e4b40abd8b4e11a8ea",
         "type": "github"
       },
       "original": {
-        "owner": "nix-community",
-        "ref": "push-wymqutmrkkuw",
+        "owner": "MagicRB",
+        "ref": "link-back-to-cached-failures",
         "repo": "buildbot-nix",
         "type": "github"
       }
@@ -669,11 +669,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1726853110,
-        "narHash": "sha256-BVjMSLY9neOGcwNcQmO+7BvBh16IVQ68v9BYpZDnelk=",
+        "lastModified": 1727020284,
+        "narHash": "sha256-DcBrO5WU64xsqBHjpEwoD8rjY3M3tebSLwWzOdVKdLQ=",
         "owner": "Mic92",
         "repo": "srvos",
-        "rev": "13af80e58b62f9856817470fcb7492cff09a722e",
+        "rev": "3a47ab1810ca5c11cdfa3694b1e6ced331325c49",
         "type": "github"
       },
       "original": {

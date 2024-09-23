@@ -54,7 +54,8 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     #buildbot-nix.url = "github:nix-community/buildbot-nix/push-wymqutmrkkuw";
-    buildbot-nix.url = "github:nix-community/buildbot-nix/push-wymqutmrkkuw";
+    #buildbot-nix.url = "github:nix-community/buildbot-nix/integration-branch";
+      buildbot-nix.url = "github:MagicRB/buildbot-nix/link-back-to-cached-failures";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
