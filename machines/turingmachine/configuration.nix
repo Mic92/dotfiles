@@ -67,7 +67,10 @@
   system.etc.overlay.mutable = true;
   services.userborn.enable = true;
 
-  environment.systemPackages = with pkgs; [ sunshine ];
+  environment.systemPackages = with pkgs; [
+    sunshine
+    nixos-facter
+  ];
 
   hardware.saleae-logic.enable = true;
 
