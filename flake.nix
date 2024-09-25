@@ -32,7 +32,6 @@
     nix.url = "github:Mic92/nix-1";
     nix.inputs.flake-parts.follows = "";
     nix.inputs.nixpkgs-regression.follows = "";
-    nix.inputs.nixpkgs-23-11.follows = "";
     nix.inputs.git-hooks-nix.follows = "";
 
     nixpkgs.url = "git+https://github.com/Mic92/nixpkgs?shallow=1";
@@ -58,7 +57,7 @@
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
 
-    nixos-facter-modules.url = "github:numtide/nixos-facter-modules/graphics";
+    nixos-facter-modules.url = "github:numtide/nixos-facter-modules/hardware-config";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
