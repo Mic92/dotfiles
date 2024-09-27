@@ -13,15 +13,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1727098656,
-        "narHash": "sha256-YzzqDIR+nuB+JsiQ7BTMuXzHe06vnFw/+AEo6en/hx4=",
+        "lastModified": 1727439227,
+        "narHash": "sha256-e4QOn4pd6mlskhbQjzk8o7+fu39nzMElp+/tHf5GUd8=",
         "owner": "nix-community",
         "repo": "buildbot-nix",
-        "rev": "3ac54ba1cc53aae01dd27055a710fbebab19acfe",
+        "rev": "3fae0fd59f9d151c101763c62fb1b1a6a29d67ac",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
+        "ref": "failed-db",
         "repo": "buildbot-nix",
         "type": "github"
       }
@@ -415,11 +416,11 @@
     },
     "nixos-facter-modules": {
       "locked": {
-        "lastModified": 1727272645,
-        "narHash": "sha256-MHoLp/ZKhcqQuA+9kAb9ijPqM7nx97xPUjLKf5kxJh0=",
+        "lastModified": 1727278934,
+        "narHash": "sha256-qX4p4HrXIwmhcDTNi7q3xg7yCieQ+OryECjTwOEEkTk=",
         "owner": "numtide",
         "repo": "nixos-facter-modules",
-        "rev": "7bc4cd41c33bc11e60f565de643df96dba59641e",
+        "rev": "fdf703e13c24235ac4fd167b614e3a259a03e6cf",
         "type": "github"
       },
       "original": {
