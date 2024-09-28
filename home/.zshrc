@@ -453,6 +453,30 @@ fi
 n() {
   NIX_RUN_ARGS="$@${NIX_RUN_ARGS+ }${NIX_RUN_ARGS}" nix shell "$@" -f '<nixpkgs>' -c zsh
 }
+nix-fmt() {
+  local toplevel currentSystem
+  currentSystem=$(command nix eval --raw --impure --expr builtins.currentSystem)
+  toplevel=$(command git rev-parse --show-toplevel)
+  buildArgs=()
+  fmt=
+  if [[ -n "$toplevel" ]]; then
+    buildArgs+=("-o" "$toplevel"/.git/nix-fmt)
+    for file in flake.nix flake.lock; do
+      if [[ "$file" -nt "$toplevel"/.git/nix-fmt ]]; then
+        need_update=1
+        break
+      fi
+    done
+  fi
+  for file in "${watches[@]}"; do
+    if [[ $file -nt $profile_rc ]]; then
+      break
+    fi
+  done
+  fmt=$(command nix build --builders '' "${buildArgs[@]}"  ".#formatter.${currentSystem}" --print-out-paths)
+
+  "$fmt/bin/"*
+}
 
 nix-call-package() {
     if [ $# -lt 1 ]; then
