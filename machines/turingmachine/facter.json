@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 1,
   "system": "x86_64-linux",
   "virtualisation": "none",
   "hardware": {
@@ -27,24 +27,23 @@
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Bluetooth Device",
           "value": 277
         },
         "vendor": {
-          "name": "Intel Corp.",
           "value": 32903
         },
         "device": {
-          "name": "AX210 Bluetooth",
           "value": 50
         },
-        "model": "Intel AX210 Bluetooth",
-        "attached_to": 59,
+        "model": "Bluetooth Device",
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-10/3-10:1.0",
         "sysfs_bus_id": "3-10:1.0",
-        "sysfs_iommu_group_id": 0,
         "resources": [
           {
             "type": "baud",
@@ -75,8 +74,6 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "btusb",
         "driver_module": "btusb",
         "drivers": [
@@ -94,7 +91,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 31,
+        "slot": {
+          "bus": 0,
+          "number": 31
+        },
         "base_class": {
           "name": "Bridge",
           "value": 6
@@ -108,11 +108,9 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Raptor Lake LPC/eSPI Controller",
           "value": 20893
         },
         "sub_device": {
@@ -121,7 +119,7 @@
         "revision": {
           "value": 1
         },
-        "model": "Intel Raptor Lake LPC/eSPI Controller",
+        "model": "Intel ISA bridge",
         "sysfs_id": "/devices/pci0000:00/0000:00:1f.0",
         "sysfs_bus_id": "0000:00:1f.0",
         "sysfs_iommu_group_id": 15,
@@ -133,9 +131,6 @@
           "irq": 0,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "module_alias": "pci:v00008086d0000519Dsv0000F111sd00000003bc06sc01i00"
       },
       {
@@ -143,7 +138,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 7,
+        "slot": {
+          "bus": 0,
+          "number": 7
+        },
         "base_class": {
           "name": "Bridge",
           "value": 6
@@ -161,17 +159,15 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Raptor Lake-P Thunderbolt 4 PCI Express Root Port #2",
           "value": 42799
         },
         "sub_device": {
           "value": 3
         },
-        "model": "Intel Raptor Lake-P Thunderbolt 4 PCI Express Root Port #2",
+        "model": "Intel PCI bridge",
         "sysfs_id": "/devices/pci0000:00/0000:00:07.2",
         "sysfs_bus_id": "0000:00:07.2",
         "sysfs_iommu_group_id": 6,
@@ -191,9 +187,6 @@
           "irq": 125,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "pcieport",
         "drivers": [
           "pcieport"
@@ -205,7 +198,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 7,
+        "slot": {
+          "bus": 0,
+          "number": 7
+        },
         "base_class": {
           "name": "Bridge",
           "value": 6
@@ -223,17 +219,15 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Raptor Lake-P Thunderbolt 4 PCI Express Root Port #0",
           "value": 42862
         },
         "sub_device": {
           "value": 3
         },
-        "model": "Intel Raptor Lake-P Thunderbolt 4 PCI Express Root Port #0",
+        "model": "Intel PCI bridge",
         "sysfs_id": "/devices/pci0000:00/0000:00:07.0",
         "sysfs_bus_id": "0000:00:07.0",
         "sysfs_iommu_group_id": 4,
@@ -253,9 +247,6 @@
           "irq": 123,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "pcieport",
         "drivers": [
           "pcieport"
@@ -267,7 +258,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Bridge",
           "value": 6
@@ -281,17 +275,15 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Raptor Lake-P/U 4p+8e cores Host Bridge/DRAM Controller",
           "value": 42759
         },
         "sub_device": {
           "value": 3
         },
-        "model": "Intel Raptor Lake-P/U 4p+8e cores Host Bridge/DRAM Controller",
+        "model": "Intel Host bridge",
         "sysfs_id": "/devices/pci0000:00/0000:00:00.0",
         "sysfs_bus_id": "0000:00:00.0",
         "sysfs_iommu_group_id": 1,
@@ -303,9 +295,6 @@
           "irq": 0,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "igen6_edac",
         "driver_module": "igen6_edac",
         "drivers": [
@@ -321,7 +310,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 6,
+        "slot": {
+          "bus": 0,
+          "number": 6
+        },
         "base_class": {
           "name": "Bridge",
           "value": 6
@@ -339,17 +331,15 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Raptor Lake PCIe 4.0 Graphics Port",
           "value": 42829
         },
         "sub_device": {
           "value": 3
         },
-        "model": "Intel Raptor Lake PCIe 4.0 Graphics Port",
+        "model": "Intel PCI bridge",
         "sysfs_id": "/devices/pci0000:00/0000:00:06.0",
         "sysfs_bus_id": "0000:00:06.0",
         "sysfs_iommu_group_id": 3,
@@ -369,9 +359,6 @@
           "irq": 122,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "pcieport",
         "drivers": [
           "pcieport"
@@ -383,7 +370,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 7,
+        "slot": {
+          "bus": 0,
+          "number": 7
+        },
         "base_class": {
           "name": "Bridge",
           "value": 6
@@ -401,7 +391,6 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
@@ -430,9 +419,6 @@
           "irq": 126,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "pcieport",
         "drivers": [
           "pcieport"
@@ -444,7 +430,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 29,
+        "slot": {
+          "bus": 0,
+          "number": 29
+        },
         "base_class": {
           "name": "Bridge",
           "value": 6
@@ -462,11 +451,9 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Alder Lake PCI Express Root Port #9",
           "value": 20912
         },
         "sub_device": {
@@ -475,7 +462,7 @@
         "revision": {
           "value": 1
         },
-        "model": "Intel Alder Lake PCI Express Root Port #9",
+        "model": "Intel PCI bridge",
         "sysfs_id": "/devices/pci0000:00/0000:00:1d.0",
         "sysfs_bus_id": "0000:00:1d.0",
         "sysfs_iommu_group_id": 14,
@@ -495,9 +482,6 @@
           "irq": 127,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "pcieport",
         "drivers": [
           "pcieport"
@@ -509,7 +493,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 7,
+        "slot": {
+          "bus": 0,
+          "number": 7
+        },
         "base_class": {
           "name": "Bridge",
           "value": 6
@@ -527,7 +514,6 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
@@ -556,9 +542,6 @@
           "irq": 124,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "pcieport",
         "drivers": [
           "pcieport"
@@ -745,7 +728,10 @@
           "name": "NVME",
           "value": 150
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Mass Storage Device",
           "value": 262
@@ -755,26 +741,23 @@
           "value": 0
         },
         "vendor": {
-          "name": "Sandisk Corp",
           "value": 5559
         },
         "sub_vendor": {
-          "name": "Sandisk Corp",
           "value": 5559
         },
         "device": {
-          "name": "WD Black SN850X NVMe SSD",
+          "name": "WD_BLACK SN850X 2000GB",
           "value": 20528
         },
         "sub_device": {
           "value": 20528
         },
-        "model": "Sandisk WD Black SN850X NVMe SSD",
-        "attached_to": 27,
+        "serial": "23130X800799",
+        "model": "WD_BLACK SN850X 2000GB",
         "sysfs_id": "/class/block/nvme0n1",
         "sysfs_bus_id": "nvme0",
         "sysfs_device_link": "/devices/pci0000:00/0000:00:06.0/0000:01:00.0/nvme/nvme0",
-        "sysfs_iommu_group_id": 0,
         "unix_device_name": "/dev/nvme0n1",
         "unix_device_number": {
           "type": 98,
@@ -806,9 +789,6 @@
             "value_2": 512
           }
         ],
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "nvme",
         "driver_module": "nvme",
         "drivers": [
@@ -819,7 +799,6 @@
         ]
       },
       {
-        "slot": 0,
         "base_class": {
           "name": "Mass Storage Device",
           "value": 262
@@ -830,7 +809,6 @@
         },
         "model": "Disk",
         "sysfs_id": "/class/block/zd0",
-        "sysfs_iommu_group_id": 0,
         "unix_device_name": "/dev/zd0",
         "unix_device_number": {
           "type": 98,
@@ -839,7 +817,7 @@
           "range": 16
         },
         "unix_device_names": [
-          "/dev/disk/by-diskseq/10",
+          "/dev/disk/by-diskseq/2",
           "/dev/zd0",
           "/dev/zvol/zroot/test"
         ],
@@ -858,10 +836,7 @@
             "value_1": 20971520,
             "value_2": 512
           }
-        ],
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {}
+        ]
       }
     ],
     "graphics_card": [
@@ -870,7 +845,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 2,
+        "slot": {
+          "bus": 0,
+          "number": 2
+        },
         "base_class": {
           "name": "Display controller",
           "value": 3
@@ -888,11 +866,9 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Raptor Lake-P [Iris Xe Graphics]",
           "value": 42912
         },
         "sub_device": {
@@ -901,7 +877,7 @@
         "revision": {
           "value": 4
         },
-        "model": "Intel Raptor Lake-P [Iris Xe Graphics]",
+        "model": "Intel VGA compatible controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:02.0",
         "sysfs_bus_id": "0000:00:02.0",
         "sysfs_iommu_group_id": 0,
@@ -915,7 +891,7 @@
           },
           {
             "type": "irq",
-            "base": 161,
+            "base": 177,
             "triggered": 0,
             "enabled": true
           },
@@ -949,12 +925,9 @@
           "command": 1031,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 161,
+          "irq": 177,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "i915",
         "driver_module": "i915",
         "drivers": [
@@ -972,28 +945,80 @@
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Hub",
           "value": 266
         },
         "vendor": {
-          "name": "Cambridge Silicon Radio, Ltd",
+          "name": "Standard Microsystems Corp.",
+          "value": 1060
+        },
+        "device": {
+          "name": "USB7206 Smart Hub",
+          "value": 29190
+        },
+        "revision": {
+          "name": "6.25",
+          "value": 0
+        },
+        "model": "Standard Microsystems USB7206 Smart Hub",
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-4/2-4:1.0",
+        "sysfs_bus_id": "2-4:1.0",
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 0,
+          "manufacturer": "Microchip",
+          "product": "USB7206 Smart Hub",
+          "device_class": "hub",
+          "device_protocol": 3,
+          "interface_class": "hub",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v0424p7206d0625dc09dsc00dp03ic09isc00ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
           "value": 2578
         },
         "device": {
-          "name": "Mpow HC5 Headset in charging mode - USB Hub",
           "value": 16400
         },
         "revision": {
           "name": "16.80",
           "value": 0
         },
-        "model": "Cambridge Silicon Radio Mpow HC5 Headset in charging mode - USB Hub",
-        "attached_to": 59,
+        "model": "Hub",
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3:1.0",
         "sysfs_bus_id": "3-3:1.0",
-        "sysfs_iommu_group_id": 0,
         "resources": [
           {
             "type": "baud",
@@ -1020,8 +1045,6 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "hub",
         "drivers": [
           "hub"
@@ -1033,82 +1056,30 @@
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
-        "base_class": {
-          "name": "Hub",
-          "value": 266
-        },
-        "vendor": {
-          "name": "Microchip Technology, Inc. (formerly SMSC)",
-          "value": 1060
-        },
-        "device": {
-          "name": "USB7206 Smart Hub",
-          "value": 29190
-        },
-        "revision": {
-          "name": "6.25",
-          "value": 0
-        },
-        "model": "Microchip Technology, Inc. (formerly SMSC) USB7206 Smart Hub",
-        "attached_to": 88,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-1/2-1:1.0",
-        "sysfs_bus_id": "2-1:1.0",
-        "sysfs_iommu_group_id": 0,
-        "detail": {
+        "slot": {
           "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 0,
-          "manufacturer": "Microchip",
-          "product": "USB7206 Smart Hub",
-          "device_class": "hub",
-          "device_protocol": 3,
-          "interface_class": "hub",
-          "country": 0
+          "number": 0
         },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v0424p7206d0625dc09dsc00dp03ic09isc00ip00in00"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
         "base_class": {
           "name": "Hub",
           "value": 266
         },
         "vendor": {
-          "name": "Linux Foundation",
+          "name": "Linux 6.10.11 xhci-hcd",
           "value": 7531
         },
         "device": {
-          "name": "2.0 root hub",
+          "name": "xHCI Host Controller",
           "value": 2
         },
         "revision": {
           "name": "6.10",
           "value": 0
         },
-        "model": "Linux Foundation 2.0 root hub",
-        "attached_to": 42,
+        "serial": "0000:00:14.0",
+        "model": "Linux 6.10.11 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-0:1.0",
         "sysfs_bus_id": "3-0:1.0",
-        "sysfs_iommu_group_id": 0,
         "resources": [
           {
             "type": "baud",
@@ -1130,7 +1101,7 @@
           "used_connections": 0,
           "interface_descriptor": 0,
           "speed": 480000000,
-          "manufacturer": "Linux 6.10.6 xhci-hcd",
+          "manufacturer": "Linux 6.10.11 xhci-hcd",
           "product": "xHCI Host Controller",
           "device_class": "hub",
           "device_protocol": 1,
@@ -1138,8 +1109,6 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "hub",
         "drivers": [
           "hub"
@@ -1151,67 +1120,16 @@
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
-        "base_class": {
-          "name": "Hub",
-          "value": 266
-        },
-        "vendor": {
-          "name": "Linux Foundation",
-          "value": 7531
-        },
-        "device": {
-          "name": "3.0 root hub",
-          "value": 3
-        },
-        "revision": {
-          "name": "6.10",
-          "value": 0
-        },
-        "model": "Linux Foundation 3.0 root hub",
-        "attached_to": 42,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb4/4-0:1.0",
-        "sysfs_bus_id": "4-0:1.0",
-        "sysfs_iommu_group_id": 0,
-        "detail": {
+        "slot": {
           "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 0,
-          "manufacturer": "Linux 6.10.6 xhci-hcd",
-          "product": "xHCI Host Controller",
-          "device_class": "hub",
-          "device_protocol": 3,
-          "interface_class": "hub",
-          "country": 0
+          "number": 0
         },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v1D6Bp0003d0610dc09dsc00dp03ic09isc00ip00in00"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
         "base_class": {
           "name": "Hub",
           "value": 266
         },
         "vendor": {
-          "name": "Microchip Technology, Inc. (formerly SMSC)",
+          "name": "Standard Microsystems Corp.",
           "value": 1060
         },
         "device": {
@@ -1222,11 +1140,9 @@
           "name": "1.91",
           "value": 0
         },
-        "model": "Microchip Technology, Inc. (formerly SMSC) USB4216 Smart Hub",
-        "attached_to": 81,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.4/3-2.4:1.0",
-        "sysfs_bus_id": "3-2.4:1.0",
-        "sysfs_iommu_group_id": 0,
+        "model": "Standard Microsystems USB4216 Smart Hub",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-5/3-5.4/3-5.4:1.0",
+        "sysfs_bus_id": "3-5.4:1.0",
         "resources": [
           {
             "type": "baud",
@@ -1257,8 +1173,6 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "hub",
         "drivers": [
           "hub"
@@ -1270,92 +1184,30 @@
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Hub",
           "value": 266
         },
         "vendor": {
-          "name": "Linux Foundation",
+          "name": "Linux 6.10.11 xhci-hcd",
           "value": 7531
         },
         "device": {
-          "name": "2.0 root hub",
-          "value": 2
+          "name": "xHCI Host Controller",
+          "value": 3
         },
         "revision": {
           "name": "6.10",
           "value": 0
         },
-        "model": "Linux Foundation 2.0 root hub",
-        "attached_to": 21,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb1/1-0:1.0",
-        "sysfs_bus_id": "1-0:1.0",
-        "sysfs_iommu_group_id": 0,
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 480000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 480000000,
-          "manufacturer": "Linux 6.10.6 xhci-hcd",
-          "product": "xHCI Host Controller",
-          "device_class": "hub",
-          "device_protocol": 1,
-          "interface_class": "hub",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "hub",
-        "drivers": [
-          "hub"
-        ],
-        "module_alias": "usb:v1D6Bp0002d0610dc09dsc00dp01ic09isc00ip00in00"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Hub",
-          "value": 266
-        },
-        "vendor": {
-          "name": "Microchip Technology, Inc. (formerly SMSC)",
-          "value": 1060
-        },
-        "device": {
-          "name": "USB7216 Smart Hub",
-          "value": 29206
-        },
-        "revision": {
-          "name": "1.91",
-          "value": 0
-        },
-        "model": "Microchip Technology, Inc. (formerly SMSC) USB7216 Smart Hub",
-        "attached_to": 58,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-1/2-1.4/2-1.4:1.0",
-        "sysfs_bus_id": "2-1.4:1.0",
-        "sysfs_iommu_group_id": 0,
+        "serial": "0000:00:14.0",
+        "model": "Linux 6.10.11 xhci-hcd xHCI Host Controller",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb4/4-0:1.0",
+        "sysfs_bus_id": "4-0:1.0",
         "detail": {
           "bus": 0,
           "device_number": 0,
@@ -1367,34 +1219,35 @@
           "used_connections": 0,
           "interface_descriptor": 0,
           "speed": 0,
-          "manufacturer": "Microchip",
-          "product": "USB7216 Smart Hub",
+          "manufacturer": "Linux 6.10.11 xhci-hcd",
+          "product": "xHCI Host Controller",
           "device_class": "hub",
           "device_protocol": 3,
           "interface_class": "hub",
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "hub",
         "drivers": [
           "hub"
         ],
-        "module_alias": "usb:v0424p7216d0191dc09dsc00dp03ic09isc00ip00in00"
+        "module_alias": "usb:v1D6Bp0003d0610dc09dsc00dp03ic09isc00ip00in00"
       },
       {
         "bus_type": {
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Hub",
           "value": 266
         },
         "vendor": {
-          "name": "Microchip Technology, Inc. (formerly SMSC)",
+          "name": "Standard Microsystems Corp.",
           "value": 1060
         },
         "device": {
@@ -1405,11 +1258,9 @@
           "name": "6.25",
           "value": 0
         },
-        "model": "Microchip Technology, Inc. (formerly SMSC) USB4206 Smart Hub",
-        "attached_to": 59,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2:1.0",
-        "sysfs_bus_id": "3-2:1.0",
-        "sysfs_iommu_group_id": 0,
+        "model": "Standard Microsystems USB4206 Smart Hub",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-5/3-5:1.0",
+        "sysfs_bus_id": "3-5:1.0",
         "resources": [
           {
             "type": "baud",
@@ -1440,8 +1291,6 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "hub",
         "drivers": [
           "hub"
@@ -1453,28 +1302,29 @@
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Hub",
           "value": 266
         },
         "vendor": {
-          "name": "Linux Foundation",
-          "value": 7531
+          "name": "Standard Microsystems Corp.",
+          "value": 1060
         },
         "device": {
-          "name": "3.0 root hub",
-          "value": 3
+          "name": "USB7216 Smart Hub",
+          "value": 29206
         },
         "revision": {
-          "name": "6.10",
+          "name": "1.91",
           "value": 0
         },
-        "model": "Linux Foundation 3.0 root hub",
-        "attached_to": 21,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-0:1.0",
-        "sysfs_bus_id": "2-0:1.0",
-        "sysfs_iommu_group_id": 0,
+        "model": "Standard Microsystems USB7216 Smart Hub",
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-4/2-4.4/2-4.4:1.0",
+        "sysfs_bus_id": "2-4.4:1.0",
         "detail": {
           "bus": 0,
           "device_number": 0,
@@ -1486,7 +1336,125 @@
           "used_connections": 0,
           "interface_descriptor": 0,
           "speed": 0,
-          "manufacturer": "Linux 6.10.6 xhci-hcd",
+          "manufacturer": "Microchip",
+          "product": "USB7216 Smart Hub",
+          "device_class": "hub",
+          "device_protocol": 3,
+          "interface_class": "hub",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v0424p7216d0191dc09dsc00dp03ic09isc00ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
+          "name": "Linux 6.10.11 xhci-hcd",
+          "value": 7531
+        },
+        "device": {
+          "name": "xHCI Host Controller",
+          "value": 2
+        },
+        "revision": {
+          "name": "6.10",
+          "value": 0
+        },
+        "serial": "0000:00:0d.0",
+        "model": "Linux 6.10.11 xhci-hcd xHCI Host Controller",
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb1/1-0:1.0",
+        "sysfs_bus_id": "1-0:1.0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 480000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 480000000,
+          "manufacturer": "Linux 6.10.11 xhci-hcd",
+          "product": "xHCI Host Controller",
+          "device_class": "hub",
+          "device_protocol": 1,
+          "interface_class": "hub",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "driver": "hub",
+        "drivers": [
+          "hub"
+        ],
+        "module_alias": "usb:v1D6Bp0002d0610dc09dsc00dp01ic09isc00ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "name": "Hub",
+          "value": 266
+        },
+        "vendor": {
+          "name": "Linux 6.10.11 xhci-hcd",
+          "value": 7531
+        },
+        "device": {
+          "name": "xHCI Host Controller",
+          "value": 3
+        },
+        "revision": {
+          "name": "6.10",
+          "value": 0
+        },
+        "serial": "0000:00:0d.0",
+        "model": "Linux 6.10.11 xhci-hcd xHCI Host Controller",
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-0:1.0",
+        "sysfs_bus_id": "2-0:1.0",
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 0,
+          "manufacturer": "Linux 6.10.11 xhci-hcd",
           "product": "xHCI Host Controller",
           "device_class": "hub",
           "device_protocol": 3,
@@ -1494,8 +1462,6 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "hub",
         "drivers": [
           "hub"
@@ -1509,7 +1475,10 @@
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Keyboard",
           "value": 264
@@ -1519,34 +1488,32 @@
           "value": 0
         },
         "vendor": {
-          "name": "Logitech, Inc.",
+          "name": "Logitech Inc.",
           "value": 1133
         },
         "device": {
-          "name": "Logi Bolt Receiver",
+          "name": "USB Receiver",
           "value": 50504
         },
         "revision": {
           "name": "5.01",
           "value": 0
         },
-        "model": "Logitech Logi Bolt Receiver",
-        "attached_to": 81,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.3/3-2.3:1.0",
-        "sysfs_bus_id": "3-2.3:1.0",
-        "sysfs_iommu_group_id": 0,
-        "unix_device_name": "/dev/input/event9",
+        "model": "Logitech USB Receiver",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-5/3-5.3/3-5.3:1.0",
+        "sysfs_bus_id": "3-5.3:1.0",
+        "unix_device_name": "/dev/input/event6",
         "unix_device_number": {
           "type": 99,
           "major": 13,
-          "minor": 73,
+          "minor": 70,
           "range": 1
         },
         "unix_device_names": [
           "/dev/input/by-id/usb-Logitech_USB_Receiver-event-kbd",
-          "/dev/input/by-path/pci-0000:00:14.0-usb-0:2.3:1.0-event-kbd",
-          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:2.3:1.0-event-kbd",
-          "/dev/input/event9"
+          "/dev/input/by-path/pci-0000:00:14.0-usb-0:5.3:1.0-event-kbd",
+          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:5.3:1.0-event-kbd",
+          "/dev/input/event6"
         ],
         "resources": [
           {
@@ -1577,8 +1544,6 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "usbhid",
         "driver_module": "usbhid",
         "drivers": [
@@ -1599,7 +1564,10 @@
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Keyboard",
           "value": 264
@@ -1621,22 +1589,20 @@
           "value": 0
         },
         "model": "Keychron Q12",
-        "attached_to": 76,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.4/3-2.4.2/3-2.4.2:1.0",
-        "sysfs_bus_id": "3-2.4.2:1.0",
-        "sysfs_iommu_group_id": 0,
-        "unix_device_name": "/dev/input/event13",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-5/3-5.4/3-5.4.2/3-5.4.2:1.0",
+        "sysfs_bus_id": "3-5.4.2:1.0",
+        "unix_device_name": "/dev/input/event10",
         "unix_device_number": {
           "type": 99,
           "major": 13,
-          "minor": 77,
+          "minor": 74,
           "range": 1
         },
         "unix_device_names": [
           "/dev/input/by-id/usb-Keychron_Keychron_Q12-event-kbd",
-          "/dev/input/by-path/pci-0000:00:14.0-usb-0:2.4.2:1.0-event-kbd",
-          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:2.4.2:1.0-event-kbd",
-          "/dev/input/event13"
+          "/dev/input/by-path/pci-0000:00:14.0-usb-0:5.4.2:1.0-event-kbd",
+          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:5.4.2:1.0-event-kbd",
+          "/dev/input/event10"
         ],
         "resources": [
           {
@@ -1667,8 +1633,6 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "usbhid",
         "driver_module": "usbhid",
         "drivers": [
@@ -1686,11 +1650,101 @@
       }
     ],
     "memory": [
-      null
+      {
+        "base_class": {
+          "name": "Internally Used Class",
+          "value": 257
+        },
+        "sub_class": {
+          "name": "Main Memory",
+          "value": 2
+        },
+        "model": "Main Memory",
+        "resources": [
+          {
+            "type": "mem",
+            "base": 0,
+            "range": 67126001664,
+            "enabled": true,
+            "access": "read_write",
+            "prefetch": "unknown"
+          },
+          {
+            "type": "phys_mem",
+            "range": 68719476736
+          }
+        ]
+      }
     ],
     "monitor": [
       {
-        "slot": 0,
+        "base_class": {
+          "name": "Monitor",
+          "value": 256
+        },
+        "sub_class": {
+          "name": "LCD Monitor",
+          "value": 2
+        },
+        "vendor": {
+          "name": "BOE CQ",
+          "value": 2533
+        },
+        "device": {
+          "value": 3018
+        },
+        "serial": "0",
+        "model": "BOE CQ LCD Monitor",
+        "resources": [
+          {
+            "type": "monitor",
+            "width": 2256,
+            "height": 1504,
+            "vertical_frequency": 60,
+            "interlaced": false
+          },
+          {
+            "type": "size",
+            "unit": "mm",
+            "value_1": 285,
+            "value_2": 190
+          }
+        ],
+        "detail": {
+          "manufacture_year": 2022,
+          "manufacture_week": 47,
+          "vertical_sync": {
+            "min": 0,
+            "max": 0
+          },
+          "horizontal_sync": {
+            "min": 0,
+            "max": 0
+          },
+          "horizontal_sync_timings": {
+            "disp": 2256,
+            "sync_start": 2304,
+            "sync_end": 2336,
+            "total": 2536
+          },
+          "vertical_sync_timings": {
+            "disp": 1504,
+            "sync_start": 1507,
+            "sync_end": 1513,
+            "total": 1549
+          },
+          "clock": 188550,
+          "width": 2256,
+          "height": 1504,
+          "width_millimetres": 285,
+          "height_millimetres": 190,
+          "horizontal_flag": 45,
+          "vertical_flag": 43,
+          "vendor": "BOE CQ",
+          "name": ""
+        }
+      },
+      {
         "base_class": {
           "name": "Monitor",
           "value": 256
@@ -1707,9 +1761,8 @@
           "name": "DELL U3223QE",
           "value": 17014
         },
+        "serial": "5V6Y9P3",
         "model": "DELL U3223QE",
-        "attached_to": 41,
-        "sysfs_iommu_group_id": 0,
         "resources": [
           {
             "type": "monitor",
@@ -1828,9 +1881,6 @@
           "vendor": "",
           "name": "DELL U3223QE"
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver_info": {
           "type": "display",
           "width": 3840,
@@ -1859,78 +1909,6 @@
           "horizontal_flag": 45,
           "vertical_flag": 43
         }
-      },
-      {
-        "slot": 1,
-        "base_class": {
-          "name": "Monitor",
-          "value": 256
-        },
-        "sub_class": {
-          "name": "LCD Monitor",
-          "value": 2
-        },
-        "vendor": {
-          "name": "BOE CQ",
-          "value": 2533
-        },
-        "device": {
-          "value": 3018
-        },
-        "model": "BOE CQ LCD Monitor",
-        "attached_to": 41,
-        "sysfs_iommu_group_id": 0,
-        "resources": [
-          {
-            "type": "monitor",
-            "width": 2256,
-            "height": 1504,
-            "vertical_frequency": 60,
-            "interlaced": false
-          },
-          {
-            "type": "size",
-            "unit": "mm",
-            "value_1": 285,
-            "value_2": 190
-          }
-        ],
-        "detail": {
-          "manufacture_year": 2022,
-          "manufacture_week": 47,
-          "vertical_sync": {
-            "min": 0,
-            "max": 0
-          },
-          "horizontal_sync": {
-            "min": 0,
-            "max": 0
-          },
-          "horizontal_sync_timings": {
-            "disp": 2256,
-            "sync_start": 2304,
-            "sync_end": 2336,
-            "total": 2536
-          },
-          "vertical_sync_timings": {
-            "disp": 1504,
-            "sync_start": 1507,
-            "sync_end": 1513,
-            "total": 1549
-          },
-          "clock": 188550,
-          "width": 2256,
-          "height": 1504,
-          "width_millimetres": 285,
-          "height_millimetres": 190,
-          "horizontal_flag": 45,
-          "vertical_flag": 43,
-          "vendor": "BOE CQ",
-          "name": ""
-        },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {}
       }
     ],
     "mouse": [
@@ -1939,7 +1917,10 @@
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Mouse",
           "value": 261
@@ -1963,10 +1944,8 @@
         "compat_vendor": "Unknown",
         "compat_device": "Generic USB Mouse",
         "model": "Keychron Q12",
-        "attached_to": 76,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.4/3-2.4.2/3-2.4.2:1.2",
-        "sysfs_bus_id": "3-2.4.2:1.2",
-        "sysfs_iommu_group_id": 0,
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-5/3-5.4/3-5.4.2/3-5.4.2:1.2",
+        "sysfs_bus_id": "3-5.4.2:1.2",
         "unix_device_name": "/dev/input/mice",
         "unix_device_number": {
           "type": 99,
@@ -1977,11 +1956,11 @@
         "unix_device_names": [
           "/dev/input/mice"
         ],
-        "unix_device_name_2": "/dev/input/mouse3",
-        "unix_device_number_2": {
+        "unix_device_name2": "/dev/input/mouse1",
+        "unix_device_number2": {
           "type": 99,
           "major": 13,
-          "minor": 35,
+          "minor": 33,
           "range": 1
         },
         "resources": [
@@ -2011,8 +1990,6 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "usbhid",
         "driver_module": "usbhid",
         "drivers": [
@@ -2039,7 +2016,10 @@
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Mouse",
           "value": 261
@@ -2049,11 +2029,11 @@
           "value": 3
         },
         "vendor": {
-          "name": "Logitech, Inc.",
+          "name": "Logitech Inc.",
           "value": 1133
         },
         "device": {
-          "name": "Logi Bolt Receiver",
+          "name": "USB Receiver",
           "value": 50504
         },
         "revision": {
@@ -2062,11 +2042,9 @@
         },
         "compat_vendor": "Unknown",
         "compat_device": "Generic USB Mouse",
-        "model": "Logitech Logi Bolt Receiver",
-        "attached_to": 81,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.3/3-2.3:1.1",
-        "sysfs_bus_id": "3-2.3:1.1",
-        "sysfs_iommu_group_id": 0,
+        "model": "Logitech USB Receiver",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-5/3-5.3/3-5.3:1.1",
+        "sysfs_bus_id": "3-5.3:1.1",
         "unix_device_name": "/dev/input/mice",
         "unix_device_number": {
           "type": 99,
@@ -2077,11 +2055,11 @@
         "unix_device_names": [
           "/dev/input/mice"
         ],
-        "unix_device_name_2": "/dev/input/mouse2",
-        "unix_device_number_2": {
+        "unix_device_name2": "/dev/input/mouse0",
+        "unix_device_number2": {
           "type": 99,
           "major": 13,
-          "minor": 34,
+          "minor": 32,
           "range": 1
         },
         "resources": [
@@ -2113,8 +2091,6 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "usbhid",
         "driver_module": "usbhid",
         "drivers": [
@@ -2143,7 +2119,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 43520,
+        "slot": {
+          "bus": 170,
+          "number": 0
+        },
         "base_class": {
           "name": "Network controller",
           "value": 2
@@ -2161,18 +2140,15 @@
           "value": 32902
         },
         "device": {
-          "name": "Wi-Fi 6E(802.11ax) AX210/AX1675* 2x2 [Typhoon Peak]",
           "value": 10021
         },
         "sub_device": {
-          "name": "Wi-Fi 6 AX210 160MHz",
           "value": 36
         },
         "revision": {
           "value": 26
         },
-        "model": "Intel Wi-Fi 6 AX210 160MHz",
-        "attached_to": 37,
+        "model": "Intel WLAN controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:1d.0/0000:aa:00.0",
         "sysfs_bus_id": "0000:aa:00.0",
         "sysfs_iommu_group_id": 17,
@@ -2295,11 +2271,6 @@
           "irq": 16,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {
-          "wlan": true
-        },
         "driver": "iwlwifi",
         "driver_module": "iwlwifi",
         "drivers": [
@@ -2315,7 +2286,10 @@
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Network controller",
           "value": 2
@@ -2325,25 +2299,24 @@
           "value": 0
         },
         "vendor": {
-          "name": "Realtek Semiconductor Corp.",
+          "name": "Realtek",
           "value": 3034
         },
         "device": {
-          "name": "RTL8153 Gigabit Ethernet Adapter",
+          "name": "USB 10/100/1000 LAN",
           "value": 33107
         },
         "revision": {
           "name": "33.10",
           "value": 0
         },
-        "model": "Realtek RTL8153 Gigabit Ethernet Adapter",
-        "attached_to": 79,
-        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-1/2-1.4/2-1.4.3/2-1.4.3:1.0",
-        "sysfs_bus_id": "2-1.4.3:1.0",
-        "sysfs_iommu_group_id": 0,
-        "unix_device_name": "enp0s13f0u1u4u3",
+        "serial": "0133000001",
+        "model": "Realtek USB 10/100/1000 LAN",
+        "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-4/2-4.4/2-4.4.3/2-4.4.3:1.0",
+        "sysfs_bus_id": "2-4.4.3:1.0",
+        "unix_device_name": "enp0s13f0u4u4u3",
         "unix_device_names": [
-          "enp0s13f0u1u4u3"
+          "enp0s13f0u4u4u3"
         ],
         "resources": [
           {
@@ -2373,8 +2346,6 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "r8152",
         "driver_module": "r8152",
         "drivers": [
@@ -2388,7 +2359,6 @@
     ],
     "network_interface": [
       {
-        "slot": 0,
         "base_class": {
           "name": "Network Interface",
           "value": 263
@@ -2399,17 +2369,12 @@
         },
         "model": "Loopback network interface",
         "sysfs_id": "/class/net/lo",
-        "sysfs_iommu_group_id": 0,
         "unix_device_name": "lo",
         "unix_device_names": [
           "lo"
-        ],
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {}
+        ]
       },
       {
-        "slot": 0,
         "base_class": {
           "name": "Network Interface",
           "value": 263
@@ -2419,13 +2384,11 @@
           "value": 1
         },
         "model": "Ethernet network interface",
-        "attached_to": 82,
-        "sysfs_id": "/class/net/enp0s13f0u1u4u3",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:0d.0/usb2/2-1/2-1.4/2-1.4.3/2-1.4.3:1.0",
-        "sysfs_iommu_group_id": 0,
-        "unix_device_name": "enp0s13f0u1u4u3",
+        "sysfs_id": "/class/net/enp0s13f0u4u4u3",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:0d.0/usb2/2-4/2-4.4/2-4.4.3/2-4.4.3:1.0",
+        "unix_device_name": "enp0s13f0u4u4u3",
         "unix_device_names": [
-          "enp0s13f0u1u4u3"
+          "enp0s13f0u4u4u3"
         ],
         "resources": [
           {
@@ -2437,9 +2400,6 @@
             "address": 99
           }
         ],
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "r8152",
         "driver_module": "r8152",
         "drivers": [
@@ -2450,7 +2410,6 @@
         ]
       },
       {
-        "slot": 0,
         "base_class": {
           "name": "Network Interface",
           "value": 263
@@ -2460,10 +2419,8 @@
           "value": 1
         },
         "model": "Ethernet network interface",
-        "attached_to": 38,
         "sysfs_id": "/class/net/wlp170s0",
         "sysfs_device_link": "/devices/pci0000:00/0000:00:1d.0/0000:aa:00.0",
-        "sysfs_iommu_group_id": 0,
         "unix_device_name": "wlp170s0",
         "unix_device_names": [
           "wlp170s0"
@@ -2478,9 +2435,6 @@
             "address": 55
           }
         ],
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "iwlwifi",
         "driver_module": "iwlwifi",
         "drivers": [
@@ -2497,13 +2451,15 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 31,
+        "slot": {
+          "bus": 0,
+          "number": 31
+        },
         "base_class": {
           "name": "Multimedia controller",
           "value": 4
         },
         "sub_class": {
-          "name": "Audio device",
           "value": 3
         },
         "pci_interface": {
@@ -2514,11 +2470,9 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Raptor Lake-P/U/H cAVS",
           "value": 20938
         },
         "sub_device": {
@@ -2527,14 +2481,14 @@
         "revision": {
           "value": 1
         },
-        "model": "Intel Raptor Lake-P/U/H cAVS",
+        "model": "Intel Multimedia controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:1f.3",
         "sysfs_bus_id": "0000:00:1f.3",
         "sysfs_iommu_group_id": 15,
         "resources": [
           {
             "type": "irq",
-            "base": 204,
+            "base": 213,
             "triggered": 0,
             "enabled": true
           },
@@ -2560,12 +2514,9 @@
           "command": 1030,
           "header_type": 0,
           "secondary_bus": 0,
-          "irq": 204,
+          "irq": 213,
           "prog_if": 128
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "snd_hda_intel",
         "driver_module": "snd_hda_intel",
         "drivers": [
@@ -2581,7 +2532,10 @@
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Multimedia controller",
           "value": 4
@@ -2591,7 +2545,6 @@
           "value": 1
         },
         "vendor": {
-          "name": "GN Netcom",
           "value": 2830
         },
         "device": {
@@ -2602,11 +2555,10 @@
           "name": "1.16",
           "value": 0
         },
-        "model": "GN Netcom Jabra Link 380",
-        "attached_to": 53,
+        "serial": "08C8C2E6DA47",
+        "model": "Jabra Link 380",
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3.1/3-3.1:1.2",
         "sysfs_bus_id": "3-3.1:1.2",
-        "sysfs_iommu_group_id": 0,
         "resources": [
           {
             "type": "baud",
@@ -2634,8 +2586,6 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "snd-usb-audio",
         "driver_module": "snd_usb_audio",
         "drivers": [
@@ -2653,29 +2603,27 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 256,
+        "slot": {
+          "bus": 1,
+          "number": 0
+        },
         "base_class": {
           "name": "Mass storage controller",
           "value": 1
         },
         "sub_class": {
-          "name": "Non-Volatile memory controller",
           "value": 8
         },
         "pci_interface": {
-          "name": "NVM Express",
           "value": 2
         },
         "vendor": {
-          "name": "Sandisk Corp",
           "value": 5559
         },
         "sub_vendor": {
-          "name": "Sandisk Corp",
           "value": 5559
         },
         "device": {
-          "name": "WD Black SN850X NVMe SSD",
           "value": 20528
         },
         "sub_device": {
@@ -2684,8 +2632,7 @@
         "revision": {
           "value": 1
         },
-        "model": "Sandisk WD Black SN850X NVMe SSD",
-        "attached_to": 34,
+        "model": "Mass storage controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:06.0/0000:01:00.0",
         "sysfs_bus_id": "0000:01:00.0",
         "sysfs_iommu_group_id": 16,
@@ -2713,9 +2660,6 @@
           "irq": 16,
           "prog_if": 2
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "nvme",
         "driver_module": "nvme",
         "drivers": [
@@ -2736,7 +2680,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 8,
+        "slot": {
+          "bus": 0,
+          "number": 8
+        },
         "base_class": {
           "name": "Generic system peripheral",
           "value": 8
@@ -2750,17 +2697,15 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "GNA Scoring Accelerator module",
           "value": 42831
         },
         "sub_device": {
           "value": 3
         },
-        "model": "Intel GNA Scoring Accelerator module",
+        "model": "Intel System peripheral",
         "sysfs_id": "/devices/pci0000:00/0000:00:08.0",
         "sysfs_bus_id": "0000:00:08.0",
         "sysfs_iommu_group_id": 8,
@@ -2788,9 +2733,6 @@
           "irq": 255,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "module_alias": "pci:v00008086d0000A74Fsv0000F111sd00000003bc08sc80i00"
       },
       {
@@ -2798,13 +2740,15 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 21,
+        "slot": {
+          "bus": 0,
+          "number": 21
+        },
         "base_class": {
           "name": "Serial bus controller",
           "value": 12
         },
         "sub_class": {
-          "name": "Serial bus controller",
           "value": 128
         },
         "vendor": {
@@ -2812,11 +2756,9 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Alder Lake PCH Serial IO I2C Controller #1",
           "value": 20969
         },
         "sub_device": {
@@ -2825,7 +2767,7 @@
         "revision": {
           "value": 1
         },
-        "model": "Intel Alder Lake PCH Serial IO I2C Controller #1",
+        "model": "Intel Serial bus controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:15.1",
         "sysfs_bus_id": "0000:00:15.1",
         "sysfs_iommu_group_id": 12,
@@ -2853,9 +2795,6 @@
           "irq": 40,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "intel-lpss",
         "driver_module": "intel_lpss_pci",
         "drivers": [
@@ -2871,7 +2810,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 4,
+        "slot": {
+          "bus": 0,
+          "number": 4
+        },
         "base_class": {
           "name": "Signal processing controller",
           "value": 17
@@ -2885,17 +2827,15 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Raptor Lake Dynamic Platform and Thermal Framework Processor Participant",
           "value": 42781
         },
         "sub_device": {
           "value": 3
         },
-        "model": "Intel Raptor Lake Dynamic Platform and Thermal Framework Processor Participant",
+        "model": "Intel Signal processing controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:04.0",
         "sysfs_bus_id": "0000:00:04.0",
         "sysfs_iommu_group_id": 2,
@@ -2923,9 +2863,6 @@
           "irq": 16,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "proc_thermal_pci",
         "driver_module": "processor_thermal_device_pci",
         "drivers": [
@@ -2941,7 +2878,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 22,
+        "slot": {
+          "bus": 0,
+          "number": 22
+        },
         "base_class": {
           "name": "Communication controller",
           "value": 7
@@ -2955,11 +2895,9 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Alder Lake PCH HECI Controller",
           "value": 20960
         },
         "sub_device": {
@@ -2968,7 +2906,7 @@
         "revision": {
           "value": 1
         },
-        "model": "Intel Alder Lake PCH HECI Controller",
+        "model": "Intel Communication controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:16.0",
         "sysfs_bus_id": "0000:00:16.0",
         "sysfs_iommu_group_id": 13,
@@ -2996,9 +2934,6 @@
           "irq": 194,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "mei_me",
         "driver_module": "mei_me",
         "drivers": [
@@ -3014,13 +2949,15 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 31,
+        "slot": {
+          "bus": 0,
+          "number": 31
+        },
         "base_class": {
           "name": "Serial bus controller",
           "value": 12
         },
         "sub_class": {
-          "name": "Serial bus controller",
           "value": 128
         },
         "vendor": {
@@ -3028,11 +2965,9 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Alder Lake-P PCH SPI Controller",
           "value": 20900
         },
         "sub_device": {
@@ -3041,7 +2976,7 @@
         "revision": {
           "value": 1
         },
-        "model": "Intel Alder Lake-P PCH SPI Controller",
+        "model": "Intel Serial bus controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:1f.5",
         "sysfs_bus_id": "0000:00:1f.5",
         "sysfs_iommu_group_id": 15,
@@ -3063,9 +2998,6 @@
           "irq": 0,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "intel-spi",
         "driver_module": "spi_intel_pci",
         "drivers": [
@@ -3081,13 +3013,15 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 21,
+        "slot": {
+          "bus": 0,
+          "number": 21
+        },
         "base_class": {
           "name": "Serial bus controller",
           "value": 12
         },
         "sub_class": {
-          "name": "Serial bus controller",
           "value": 128
         },
         "vendor": {
@@ -3095,11 +3029,9 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Alder Lake PCH Serial IO I2C Controller #0",
           "value": 20968
         },
         "sub_device": {
@@ -3108,7 +3040,7 @@
         "revision": {
           "value": 1
         },
-        "model": "Intel Alder Lake PCH Serial IO I2C Controller #0",
+        "model": "Intel Serial bus controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:15.0",
         "sysfs_bus_id": "0000:00:15.0",
         "sysfs_iommu_group_id": 12,
@@ -3136,9 +3068,6 @@
           "irq": 27,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "intel-lpss",
         "driver_module": "intel_lpss_pci",
         "drivers": [
@@ -3154,7 +3083,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 22,
+        "slot": {
+          "bus": 0,
+          "number": 22
+        },
         "base_class": {
           "name": "Communication controller",
           "value": 7
@@ -3172,11 +3104,9 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Alder Lake AMT SOL Redirection",
           "value": 20963
         },
         "sub_device": {
@@ -3185,7 +3115,7 @@
         "revision": {
           "value": 1
         },
-        "model": "Intel Alder Lake AMT SOL Redirection",
+        "model": "Intel Serial controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:16.3",
         "sysfs_bus_id": "0000:00:16.3",
         "sysfs_iommu_group_id": 13,
@@ -3220,9 +3150,6 @@
           "irq": 19,
           "prog_if": 2
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "serial",
         "driver_module": "8250_pci",
         "drivers": [
@@ -3238,7 +3165,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 20,
+        "slot": {
+          "bus": 0,
+          "number": 20
+        },
         "base_class": {
           "name": "Memory controller",
           "value": 5
@@ -3252,11 +3182,9 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Alder Lake PCH Shared SRAM",
           "value": 20975
         },
         "sub_device": {
@@ -3265,7 +3193,7 @@
         "revision": {
           "value": 1
         },
-        "model": "Intel Alder Lake PCH Shared SRAM",
+        "model": "Intel RAM memory",
         "sysfs_id": "/devices/pci0000:00/0000:00:14.2",
         "sysfs_bus_id": "0000:00:14.2",
         "sysfs_iommu_group_id": 11,
@@ -3295,9 +3223,6 @@
           "irq": 0,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "module_alias": "pci:v00008086d000051EFsv0000F111sd00000003bc05sc00i00"
       },
       {
@@ -3305,7 +3230,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 31,
+        "slot": {
+          "bus": 0,
+          "number": 31
+        },
         "base_class": {
           "name": "Serial bus controller",
           "value": 12
@@ -3319,11 +3247,9 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Alder Lake PCH-P SMBus Host Controller",
           "value": 20899
         },
         "sub_device": {
@@ -3332,7 +3258,7 @@
         "revision": {
           "value": 1
         },
-        "model": "Intel Alder Lake PCH-P SMBus Host Controller",
+        "model": "Intel SMBus",
         "sysfs_id": "/devices/pci0000:00/0000:00:1f.4",
         "sysfs_bus_id": "0000:00:1f.4",
         "sysfs_iommu_group_id": 15,
@@ -3367,9 +3293,6 @@
           "irq": 16,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "i801_smbus",
         "driver_module": "i2c_i801",
         "drivers": [
@@ -3385,13 +3308,15 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 21,
+        "slot": {
+          "bus": 0,
+          "number": 21
+        },
         "base_class": {
           "name": "Serial bus controller",
           "value": 12
         },
         "sub_class": {
-          "name": "Serial bus controller",
           "value": 128
         },
         "vendor": {
@@ -3399,11 +3324,9 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Alder Lake PCH Serial IO I2C Controller #3",
           "value": 20971
         },
         "sub_device": {
@@ -3412,7 +3335,7 @@
         "revision": {
           "value": 1
         },
-        "model": "Intel Alder Lake PCH Serial IO I2C Controller #3",
+        "model": "Intel Serial bus controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:15.3",
         "sysfs_bus_id": "0000:00:15.3",
         "sysfs_iommu_group_id": 12,
@@ -3440,9 +3363,6 @@
           "irq": 43,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "intel-lpss",
         "driver_module": "intel_lpss_pci",
         "drivers": [
@@ -3458,7 +3378,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 10,
+        "slot": {
+          "bus": 0,
+          "number": 10
+        },
         "base_class": {
           "name": "Signal processing controller",
           "value": 17
@@ -3472,11 +3395,9 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Raptor Lake Crashlog and Telemetry",
           "value": 42877
         },
         "sub_device": {
@@ -3485,7 +3406,7 @@
         "revision": {
           "value": 1
         },
-        "model": "Intel Raptor Lake Crashlog and Telemetry",
+        "model": "Intel Signal processing controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:0a.0",
         "sysfs_bus_id": "0000:00:0a.0",
         "sysfs_iommu_group_id": 9,
@@ -3507,9 +3428,6 @@
           "irq": 0,
           "prog_if": 0
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "intel_vsec",
         "driver_module": "intel_vsec",
         "drivers": [
@@ -3521,7 +3439,6 @@
         "module_alias": "pci:v00008086d0000A77Dsv0000F111sd00000003bc11sc80i00"
       },
       {
-        "slot": 0,
         "base_class": {
           "name": "Communication controller",
           "value": 7
@@ -3539,7 +3456,6 @@
           "value": 0
         },
         "model": "16550A",
-        "sysfs_iommu_group_id": 0,
         "unix_device_name": "/dev/ttyS0",
         "unix_device_names": [
           "/dev/ttyS0"
@@ -3558,17 +3474,17 @@
             "triggered": 0,
             "enabled": true
           }
-        ],
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {}
+        ]
       },
       {
         "bus_type": {
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Unclassified device",
           "value": 0
@@ -3578,7 +3494,80 @@
           "value": 0
         },
         "vendor": {
-          "name": "Realtek Semiconductor Corp.",
+          "name": "Logitech Inc.",
+          "value": 1133
+        },
+        "device": {
+          "name": "C505e HD Webcam",
+          "value": 2276
+        },
+        "revision": {
+          "name": "0.21",
+          "value": 0
+        },
+        "serial": "C614D880",
+        "model": "Logitech C505e HD Webcam",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-5/3-5.1/3-5.1:1.3",
+        "sysfs_bus_id": "3-5.1:1.3",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 480000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 3,
+          "speed": 480000000,
+          "product": "C505e HD Webcam",
+          "device_class": "miscellaneous",
+          "device_subclass": 2,
+          "device_protocol": 1,
+          "interface_class": "audio",
+          "interface_subclass": 2,
+          "country": 0
+        },
+        "hotplug": "usb",
+        "driver": "snd-usb-audio",
+        "driver_module": "snd_usb_audio",
+        "drivers": [
+          "snd-usb-audio"
+        ],
+        "driver_modules": [
+          "snd_usb_audio"
+        ],
+        "module_alias": "usb:v046Dp08E4d0021dcEFdsc02dp01ic01isc02ip00in03"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Generic",
           "value": 3034
         },
         "device": {
@@ -3589,11 +3578,10 @@
           "name": "0.21",
           "value": 0
         },
-        "model": "Realtek Laptop Camera",
-        "attached_to": 59,
+        "serial": "200901010001",
+        "model": "Generic Laptop Camera",
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-7/3-7:1.0",
         "sysfs_bus_id": "3-7:1.0",
-        "sysfs_iommu_group_id": 0,
         "resources": [
           {
             "type": "baud",
@@ -3625,8 +3613,6 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "uvcvideo",
         "driver_module": "uvcvideo",
         "drivers": [
@@ -3642,78 +3628,10 @@
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
-        "base_class": {
-          "name": "Unclassified device",
-          "value": 0
-        },
-        "sub_class": {
-          "name": "Unclassified device",
-          "value": 0
-        },
-        "vendor": {
-          "name": "Dell Computer Corp.",
-          "value": 16700
-        },
-        "device": {
-          "name": "DELL Slim Soundbar SB522A",
-          "value": 33284
-        },
-        "model": "Dell DELL Slim Soundbar SB522A",
-        "attached_to": 81,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.2/3-2.2:1.0",
-        "sysfs_bus_id": "3-2.2:1.0",
-        "sysfs_iommu_group_id": 0,
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
+        "slot": {
           "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 12000000,
-          "manufacturer": "DELL",
-          "product": "DELL Slim Soundbar SB522A",
-          "device_class": "miscellaneous",
-          "device_subclass": 2,
-          "device_protocol": 1,
-          "interface_class": "comm",
-          "interface_subclass": 2,
-          "interface_protocol": 1,
-          "country": 0
+          "number": 0
         },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "cdc_acm",
-        "driver_module": "cdc_acm",
-        "drivers": [
-          "cdc_acm"
-        ],
-        "driver_modules": [
-          "cdc_acm"
-        ],
-        "module_alias": "usb:v413Cp8204d0000dcEFdsc02dp01ic02isc02ip01in00"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
         "base_class": {
           "name": "Unclassified device",
           "value": 0
@@ -3723,95 +3641,20 @@
           "value": 0
         },
         "vendor": {
-          "name": "Logitech, Inc.",
+          "name": "Logitech Inc.",
           "value": 1133
         },
         "device": {
-          "name": "C505e HD Webcam",
-          "value": 2276
-        },
-        "revision": {
-          "name": "0.21",
-          "value": 0
-        },
-        "model": "Logitech C505e HD Webcam",
-        "attached_to": 81,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.1/3-2.1:1.3",
-        "sysfs_bus_id": "3-2.1:1.3",
-        "sysfs_iommu_group_id": 0,
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 480000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 3,
-          "speed": 480000000,
-          "product": "C505e HD Webcam",
-          "device_class": "miscellaneous",
-          "device_subclass": 2,
-          "device_protocol": 1,
-          "interface_class": "audio",
-          "interface_subclass": 2,
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "snd-usb-audio",
-        "driver_module": "snd_usb_audio",
-        "drivers": [
-          "snd-usb-audio"
-        ],
-        "driver_modules": [
-          "snd_usb_audio"
-        ],
-        "module_alias": "usb:v046Dp08E4d0021dcEFdsc02dp01ic01isc02ip00in03"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Unclassified device",
-          "value": 0
-        },
-        "sub_class": {
-          "name": "Unclassified device",
-          "value": 0
-        },
-        "vendor": {
-          "name": "Logitech, Inc.",
-          "value": 1133
-        },
-        "device": {
-          "name": "Logi Bolt Receiver",
+          "name": "USB Receiver",
           "value": 50504
         },
         "revision": {
           "name": "5.01",
           "value": 0
         },
-        "model": "Logitech Logi Bolt Receiver",
-        "attached_to": 81,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.3/3-2.3:1.2",
-        "sysfs_bus_id": "3-2.3:1.2",
-        "sysfs_iommu_group_id": 0,
+        "model": "Logitech USB Receiver",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-5/3-5.3/3-5.3:1.2",
+        "sysfs_bus_id": "3-5.3:1.2",
         "resources": [
           {
             "type": "baud",
@@ -3839,8 +3682,6 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "usbhid",
         "driver_module": "usbhid",
         "drivers": [
@@ -3856,7 +3697,10 @@
           "name": "USB",
           "value": 134
         },
-        "slot": 0,
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
         "base_class": {
           "name": "Unclassified device",
           "value": 0
@@ -3866,7 +3710,302 @@
           "value": 0
         },
         "vendor": {
-          "name": "Microchip Technology, Inc. (formerly SMSC)",
+          "name": "Standard Microsystems Corp.",
+          "value": 1060
+        },
+        "device": {
+          "name": "USB2 Controller Hub",
+          "value": 29280
+        },
+        "revision": {
+          "name": "6.25",
+          "value": 0
+        },
+        "model": "Standard Microsystems USB2 Controller Hub",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-5/3-5.5/3-5.5:1.1",
+        "sysfs_bus_id": "3-5.5:1.1",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 480000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 1,
+          "speed": 480000000,
+          "manufacturer": "Microchip Tech",
+          "product": "USB2 Controller Hub",
+          "interface_class": "hid",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "driver": "usbhid",
+        "driver_module": "usbhid",
+        "drivers": [
+          "usbhid"
+        ],
+        "driver_modules": [
+          "usbhid"
+        ],
+        "module_alias": "usb:v0424p7260d0625dc00dsc00dp00ic03isc00ip00in01"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": {
+          "name": "DELL",
+          "value": 16700
+        },
+        "device": {
+          "name": "DELL Slim Soundbar SB522A",
+          "value": 33284
+        },
+        "serial": "0",
+        "model": "DELL Slim Soundbar SB522A",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-5/3-5.2/3-5.2:1.5",
+        "sysfs_bus_id": "3-5.2:1.5",
+        "unix_device_name": "/dev/input/event5",
+        "unix_device_number": {
+          "type": 99,
+          "major": 13,
+          "minor": 69,
+          "range": 1
+        },
+        "unix_device_names": [
+          "/dev/input/by-id/usb-DELL_DELL_Slim_Soundbar_SB522A_0-event-if05",
+          "/dev/input/by-path/pci-0000:00:14.0-usb-0:5.2:1.5-event",
+          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:5.2:1.5-event",
+          "/dev/input/event5"
+        ],
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 5,
+          "speed": 12000000,
+          "manufacturer": "DELL",
+          "product": "DELL Slim Soundbar SB522A",
+          "device_class": "miscellaneous",
+          "device_subclass": 2,
+          "device_protocol": 1,
+          "interface_class": "hid",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "driver": "usbhid",
+        "driver_module": "usbhid",
+        "drivers": [
+          "usbhid"
+        ],
+        "driver_modules": [
+          "usbhid"
+        ],
+        "module_alias": "usb:v413Cp8204d0000dcEFdsc02dp01ic03isc00ip00in05"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": {
+          "value": 2830
+        },
+        "device": {
+          "name": "Jabra Link 380",
+          "value": 9415
+        },
+        "revision": {
+          "name": "1.16",
+          "value": 0
+        },
+        "serial": "08C8C2E6DA47",
+        "model": "Jabra Link 380",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3.1/3-3.1:1.3",
+        "sysfs_bus_id": "3-3.1:1.3",
+        "unix_device_name": "/dev/input/event17",
+        "unix_device_number": {
+          "type": 99,
+          "major": 13,
+          "minor": 81,
+          "range": 1
+        },
+        "unix_device_names": [
+          "/dev/input/by-id/usb-0b0e_Jabra_Link_380_08C8C2E6DA47-event-if03",
+          "/dev/input/by-path/pci-0000:00:14.0-usb-0:3.1:1.3-event",
+          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:3.1:1.3-event",
+          "/dev/input/event17"
+        ],
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 3,
+          "speed": 12000000,
+          "product": "Jabra Link 380",
+          "interface_class": "hid",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "driver": "usbhid",
+        "driver_module": "usbhid",
+        "drivers": [
+          "usbhid"
+        ],
+        "driver_modules": [
+          "usbhid"
+        ],
+        "module_alias": "usb:v0B0Ep24C7d0116dc00dsc00dp00ic03isc00ip00in03"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Goodix Technology Co., Ltd.",
+          "value": 10182
+        },
+        "device": {
+          "name": "Goodix Fingerprint USB Device",
+          "value": 24732
+        },
+        "revision": {
+          "name": "1.00",
+          "value": 0
+        },
+        "serial": "UID0DEF56BA_XXXX_MOC_B0",
+        "model": "Goodix Fingerprint USB Device",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-9/3-9:1.0",
+        "sysfs_bus_id": "3-9:1.0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          }
+        ],
+        "detail": {
+          "bus": 0,
+          "device_number": 0,
+          "lev": 0,
+          "parent": 0,
+          "port": 0,
+          "count": 0,
+          "connections": 0,
+          "used_connections": 0,
+          "interface_descriptor": 0,
+          "speed": 12000000,
+          "manufacturer": "Goodix Technology Co., Ltd.",
+          "product": "Goodix Fingerprint USB Device",
+          "device_class": "miscellaneous",
+          "interface_class": "vendor_spec",
+          "country": 0
+        },
+        "hotplug": "usb",
+        "module_alias": "usb:v27C6p609Cd0100dcEFdsc00dp00icFFisc00ip00in00"
+      },
+      {
+        "bus_type": {
+          "name": "USB",
+          "value": 134
+        },
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "sub_class": {
+          "name": "Unclassified device",
+          "value": 0
+        },
+        "vendor": {
+          "name": "Standard Microsystems Corp.",
           "value": 1060
         },
         "device": {
@@ -3877,11 +4016,9 @@
           "name": "2.07",
           "value": 0
         },
-        "model": "Microchip Technology, Inc. (formerly SMSC) USB2 Controller Hub",
-        "attached_to": 76,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.4/3-2.4.5/3-2.4.5:1.0",
-        "sysfs_bus_id": "3-2.4.5:1.0",
-        "sysfs_iommu_group_id": 0,
+        "model": "Standard Microsystems USB2 Controller Hub",
+        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-5/3-5.4/3-5.4.5/3-5.4.5:1.0",
+        "sysfs_bus_id": "3-5.4.5:1.0",
         "resources": [
           {
             "type": "baud",
@@ -3911,224 +4048,7 @@
           "country": 0
         },
         "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
         "module_alias": "usb:v0424p7240d0207dc00dsc00dp00icFFiscFFipFFin00"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Unclassified device",
-          "value": 0
-        },
-        "sub_class": {
-          "name": "Unclassified device",
-          "value": 0
-        },
-        "vendor": {
-          "name": "Microchip Technology, Inc. (formerly SMSC)",
-          "value": 1060
-        },
-        "device": {
-          "name": "USB2 Controller Hub",
-          "value": 29280
-        },
-        "revision": {
-          "name": "6.25",
-          "value": 0
-        },
-        "model": "Microchip Technology, Inc. (formerly SMSC) USB2 Controller Hub",
-        "attached_to": 81,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-2/3-2.5/3-2.5:1.1",
-        "sysfs_bus_id": "3-2.5:1.1",
-        "sysfs_iommu_group_id": 0,
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 480000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 1,
-          "speed": 480000000,
-          "manufacturer": "Microchip Tech",
-          "product": "USB2 Controller Hub",
-          "interface_class": "hid",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "usbhid",
-        "driver_module": "usbhid",
-        "drivers": [
-          "usbhid"
-        ],
-        "driver_modules": [
-          "usbhid"
-        ],
-        "module_alias": "usb:v0424p7260d0625dc00dsc00dp00ic03isc00ip00in01"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Unclassified device",
-          "value": 0
-        },
-        "sub_class": {
-          "name": "Unclassified device",
-          "value": 0
-        },
-        "vendor": {
-          "name": "GN Netcom",
-          "value": 2830
-        },
-        "device": {
-          "name": "Jabra Link 380",
-          "value": 9415
-        },
-        "revision": {
-          "name": "1.16",
-          "value": 0
-        },
-        "model": "GN Netcom Jabra Link 380",
-        "attached_to": 53,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-3/3-3.1/3-3.1:1.3",
-        "sysfs_bus_id": "3-3.1:1.3",
-        "sysfs_iommu_group_id": 0,
-        "unix_device_name": "/dev/input/event2",
-        "unix_device_number": {
-          "type": 99,
-          "major": 13,
-          "minor": 66,
-          "range": 1
-        },
-        "unix_device_names": [
-          "/dev/input/by-id/usb-0b0e_Jabra_Link_380_08C8C2E6DA47-event-if03",
-          "/dev/input/by-path/pci-0000:00:14.0-usb-0:3.1:1.3-event",
-          "/dev/input/by-path/pci-0000:00:14.0-usbv2-0:3.1:1.3-event",
-          "/dev/input/event2"
-        ],
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 3,
-          "speed": 12000000,
-          "product": "Jabra Link 380",
-          "interface_class": "hid",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "driver": "usbhid",
-        "driver_module": "usbhid",
-        "drivers": [
-          "usbhid"
-        ],
-        "driver_modules": [
-          "usbhid"
-        ],
-        "module_alias": "usb:v0B0Ep24C7d0116dc00dsc00dp00ic03isc00ip00in03"
-      },
-      {
-        "bus_type": {
-          "name": "USB",
-          "value": 134
-        },
-        "slot": 0,
-        "base_class": {
-          "name": "Unclassified device",
-          "value": 0
-        },
-        "sub_class": {
-          "name": "Unclassified device",
-          "value": 0
-        },
-        "vendor": {
-          "name": "Shenzhen Goodix Technology Co.,Ltd.",
-          "value": 10182
-        },
-        "device": {
-          "name": "Goodix Fingerprint USB Device",
-          "value": 24732
-        },
-        "revision": {
-          "name": "1.00",
-          "value": 0
-        },
-        "model": "Shenzhen Goodix Technology Co.,Ltd Goodix Fingerprint USB Device",
-        "attached_to": 59,
-        "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-9/3-9:1.0",
-        "sysfs_bus_id": "3-9:1.0",
-        "sysfs_iommu_group_id": 0,
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "detail": {
-          "bus": 0,
-          "device_number": 0,
-          "lev": 0,
-          "parent": 0,
-          "port": 0,
-          "count": 0,
-          "connections": 0,
-          "used_connections": 0,
-          "interface_descriptor": 0,
-          "speed": 12000000,
-          "manufacturer": "Goodix Technology Co., Ltd.",
-          "product": "Goodix Fingerprint USB Device",
-          "device_class": "miscellaneous",
-          "interface_class": "vendor_spec",
-          "country": 0
-        },
-        "hotplug": "usb",
-        "hotplug_slot": 0,
-        "is": {},
-        "module_alias": "usb:v27C6p609Cd0100dcEFdsc00dp00icFFisc00ip00in00"
       }
     ],
     "usb_controller": [
@@ -4137,7 +4057,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 13,
+        "slot": {
+          "bus": 0,
+          "number": 13
+        },
         "base_class": {
           "name": "Serial bus controller",
           "value": 12
@@ -4147,7 +4070,6 @@
           "value": 3
         },
         "pci_interface": {
-          "name": "XHCI",
           "value": 48
         },
         "vendor": {
@@ -4155,17 +4077,15 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Raptor Lake-P Thunderbolt 4 USB Controller",
           "value": 42782
         },
         "sub_device": {
           "value": 3
         },
-        "model": "Intel Raptor Lake-P Thunderbolt 4 USB Controller",
+        "model": "Intel USB Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:0d.0",
         "sysfs_bus_id": "0000:00:0d.0",
         "sysfs_iommu_group_id": 10,
@@ -4193,9 +4113,6 @@
           "irq": 128,
           "prog_if": 48
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "xhci_hcd",
         "driver_module": "xhci_pci",
         "drivers": [
@@ -4211,7 +4128,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 13,
+        "slot": {
+          "bus": 0,
+          "number": 13
+        },
         "base_class": {
           "name": "Serial bus controller",
           "value": 12
@@ -4221,7 +4141,6 @@
           "value": 3
         },
         "pci_interface": {
-          "name": "USB4 Host Interface",
           "value": 64
         },
         "vendor": {
@@ -4229,17 +4148,15 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Raptor Lake-P Thunderbolt 4 NHI #1",
           "value": 42861
         },
         "sub_device": {
           "value": 3
         },
-        "model": "Intel Raptor Lake-P Thunderbolt 4 NHI #1",
+        "model": "Intel USB Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:0d.3",
         "sysfs_bus_id": "0000:00:0d.3",
         "sysfs_iommu_group_id": 10,
@@ -4275,9 +4192,6 @@
           "irq": 16,
           "prog_if": 64
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "thunderbolt",
         "driver_module": "thunderbolt",
         "drivers": [
@@ -4293,7 +4207,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 20,
+        "slot": {
+          "bus": 0,
+          "number": 20
+        },
         "base_class": {
           "name": "Serial bus controller",
           "value": 12
@@ -4303,7 +4220,6 @@
           "value": 3
         },
         "pci_interface": {
-          "name": "XHCI",
           "value": 48
         },
         "vendor": {
@@ -4311,11 +4227,9 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Alder Lake PCH USB 3.2 xHCI Host Controller",
           "value": 20973
         },
         "sub_device": {
@@ -4324,7 +4238,7 @@
         "revision": {
           "value": 1
         },
-        "model": "Intel Alder Lake PCH USB 3.2 xHCI Host Controller",
+        "model": "Intel USB Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0",
         "sysfs_bus_id": "0000:00:14.0",
         "sysfs_iommu_group_id": 11,
@@ -4352,9 +4266,6 @@
           "irq": 136,
           "prog_if": 48
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "xhci_hcd",
         "driver_module": "xhci_pci",
         "drivers": [
@@ -4370,7 +4281,10 @@
           "name": "PCI",
           "value": 4
         },
-        "slot": 13,
+        "slot": {
+          "bus": 0,
+          "number": 13
+        },
         "base_class": {
           "name": "Serial bus controller",
           "value": 12
@@ -4380,7 +4294,6 @@
           "value": 3
         },
         "pci_interface": {
-          "name": "USB4 Host Interface",
           "value": 64
         },
         "vendor": {
@@ -4388,17 +4301,15 @@
           "value": 32902
         },
         "sub_vendor": {
-          "name": "Framework Computer Inc.",
           "value": 61713
         },
         "device": {
-          "name": "Raptor Lake-P Thunderbolt 4 NHI #0",
           "value": 42814
         },
         "sub_device": {
           "value": 3
         },
-        "model": "Intel Raptor Lake-P Thunderbolt 4 NHI #0",
+        "model": "Intel USB Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:0d.2",
         "sysfs_bus_id": "0000:00:0d.2",
         "sysfs_iommu_group_id": 10,
@@ -4434,9 +4345,6 @@
           "irq": 16,
           "prog_if": 64
         },
-        "hotplug": "none",
-        "hotplug_slot": 0,
-        "is": {},
         "driver": "thunderbolt",
         "driver_module": "thunderbolt",
         "drivers": [
