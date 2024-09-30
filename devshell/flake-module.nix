@@ -45,7 +45,6 @@
         programs.clang-format.enable = true;
         programs.deno.enable = true;
         programs.nixfmt.enable = true;
-        programs.nixfmt.package = pkgs.nixfmt-rfc-style;
         programs.shellcheck.enable = true;
 
         settings.formatter.shellcheck.options = [
