@@ -72,6 +72,8 @@
     nixos-facter
   ];
 
+  services.fwupd.enable = true;
+
   hardware.saleae-logic.enable = true;
 
   services.ollama.enable = true;
