@@ -3,7 +3,7 @@
 set -eu -o pipefail
 
 if command -v merge-after-ci 2>/dev/null; then # clan-project
-  command merge-after-ci "$@"
+  command merge-after-ci --no-review "$@"
   return
 fi
 if [[ -n ${commands[treefmt]} ]] && ! treefmt --fail-on-change; then
@@ -18,7 +18,11 @@ git pull --rebase origin "$targetBranch"
 # shellcheck disable=SC2016
 readonly has_treefmt='(val: val ? ${builtins.currentSystem} && val.${builtins.currentSystem}.name == "treefmt")'
 if [[ $(nix eval .#formatter --impure --apply "$has_treefmt") == true ]]; then
-  if ! nix fmt -- --fail-on-change; then
+  # shellcheck disable=SC2016
+  formatter=$(nix build -o .git/treefmt '.#formatter.${builtins.currentSystem}' --print-out-paths)
+  if ! "$formatter/bin/treefmt" --fail-on-change; then
+    git absorb --force --and-rebase --base "origin/$targetBranch"
+    lazygit
     return
   fi
 fi
