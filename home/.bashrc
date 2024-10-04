@@ -12,7 +12,6 @@ shopt -s checkwinsize checkhash
 shopt -s histverify histappend histreedit cmdhist
 
 set -o notify    # notify of completed background jobs immediately
-set -o noclobber # don\'t overwrite files by accident
 ulimit -S -c 0   # disable core dumps
 stty -ctlecho    # turn off control character echoing
 
