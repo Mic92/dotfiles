@@ -24,7 +24,6 @@
     ./update-prefetch.nix
 
     inputs.clan-core.clanModules.sshd
-    inputs.clan-core.clanModules.borgbackup
 
     inputs.srvos.nixosModules.common
     inputs.srvos.nixosModules.mixins-telegraf
