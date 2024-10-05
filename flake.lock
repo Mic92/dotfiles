@@ -51,11 +51,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1727268516,
-        "narHash": "sha256-fBSxjBSB/46LkcMd1uewSkQfIcZH0yssLPMJCtNpXnA=",
-        "rev": "51a578368ae61ce127a8201369e36059ccfef157",
+        "lastModified": 1728059795,
+        "narHash": "sha256-fE7MYU9VZsT2mXVfoAUjcaJk58X8jzaJy9RsaqDsB3A=",
+        "rev": "f920098d66c6aa17abff79e08821ee131b416fa7",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/51a578368ae61ce127a8201369e36059ccfef157.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/f920098d66c6aa17abff79e08821ee131b416fa7.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -360,11 +360,11 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1727431387,
-        "narHash": "sha256-dCoGJSkz5UAM2lzDa1zxPAix1pHmcm0pMlu1fE7Qxgg=",
+        "lastModified": 1727535514,
+        "narHash": "sha256-xxeLtKKdaewJ3S6QQ5d/FuJhmREGIIEB6KGprsv1pMw=",
         "owner": "Mic92",
         "repo": "nix-1",
-        "rev": "28d72a7dbafe55cc38d342484de5cb24ccc4af6b",
+        "rev": "f09e1151f362491d8576a663d4ea03347c858f46",
         "type": "github"
       },
       "original": {
@@ -432,11 +432,11 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1727040444,
-        "narHash": "sha256-19FNN5QT9Z11ZUMfftRplyNN+2PgcHKb3oq8KMW/hDA=",
+        "lastModified": 1728056216,
+        "narHash": "sha256-IrO06gFUDTrTlIP3Sz+mRB6WUoO2YsgMtOD3zi0VEt0=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "d0cb432a9d28218df11cbd77d984a2a46caeb5ac",
+        "rev": "b7ca02c7565fbf6d27ff20dd6dbd49c5b82eef28",
         "type": "github"
       },
       "original": {
@@ -522,10 +522,10 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1727270958,
-        "narHash": "sha256-qBM/EphquczbMv3TKnyR1bCtoXJ+wsYdB6JDYf/aHlg=",
+        "lastModified": 1727611560,
+        "narHash": "sha256-G2aDZs1idFFIHjvlk/QPQC558WDqKYi9Poe4mXXpM0Q=",
         "ref": "refs/heads/main",
-        "rev": "bf3f48363cb7dc97c1f1d9ab9f00d88053b54f3e",
+        "rev": "6e37911e080025fb37dd6a7c42d7c59f48fa1aed",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
