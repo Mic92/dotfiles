@@ -52,7 +52,7 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    buildbot-nix.url = "github:nix-community/buildbot-nix/failed-db";
+    buildbot-nix.url = "github:nix-community/buildbot-nix";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
@@ -73,7 +73,6 @@
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
     clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
-    #clan-core.url = "git+file:///home/joerg/work/clan/clan-core?ref=init/zerotier-inventory";
     #clan-core.url = "path:///Users/joerg/git/clan-core";
     #clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=fact_refactor2";
     clan-core.inputs.nixpkgs.follows = "nixpkgs";
