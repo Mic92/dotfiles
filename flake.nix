@@ -52,7 +52,7 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    buildbot-nix.url = "github:nix-community/buildbot-nix/74cb72063affa880c86a9fef34a07e38fe67ab4f";
+    buildbot-nix.url = "github:nix-community/buildbot-nix/fix-async";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
