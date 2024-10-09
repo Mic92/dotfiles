@@ -17,6 +17,7 @@
         roles.client.extraModules = [ "machines/modules/borgbackup.nix" ];
       };
     };
+
     inventory.machines = {
       bernie.tags = [ "backup" ];
       turingmachine.tags = [ "backup" ];

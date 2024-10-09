@@ -11,9 +11,9 @@ shopt -s autocd cdspell dirspell extglob no_empty_cmd_completion
 shopt -s checkwinsize checkhash
 shopt -s histverify histappend histreedit cmdhist
 
-set -o notify    # notify of completed background jobs immediately
-ulimit -S -c 0   # disable core dumps
-stty -ctlecho    # turn off control character echoing
+set -o notify  # notify of completed background jobs immediately
+ulimit -S -c 0 # disable core dumps
+stty -ctlecho  # turn off control character echoing
 
 if [[ $TERM == linux ]]; then
   setterm -regtabs 2 # set tab width of 4 (only works on TTY)
