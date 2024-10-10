@@ -28,8 +28,6 @@
     inputs.nix-index-database.nixosModules.nix-index
     { programs.nix-index-database.comma.enable = true; }
 
-    #inputs.nixos-wiki.nixosModules.nixos-wiki
-    #inputs.nixos-wiki.nixosModules.nixos-wiki-backup
     ./modules/adminer.nix
     ./modules/atuin.nix
     ./modules/bitwarden.nix

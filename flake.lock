@@ -13,15 +13,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1728380577,
-        "narHash": "sha256-RHgkJU9sLWD/VIxewVISkbaHvhi5Ld2pfUcEI8fcGCM=",
+        "lastModified": 1728462002,
+        "narHash": "sha256-IW1MXmaFC4sneNOJWzv7qp/kXoyjyGCcnCeSovKkGYk=",
         "owner": "nix-community",
         "repo": "buildbot-nix",
-        "rev": "4dcb7a33ce59167b55affda15bc84b61a15d6225",
+        "rev": "40fb81d3c8de189299bb212b6e876d514027f164",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
+        "ref": "fix-async",
         "repo": "buildbot-nix",
         "type": "github"
       }
@@ -44,7 +45,9 @@
         "sops-nix": [
           "sops-nix"
         ],
-        "systems": "systems",
+        "systems": [
+          "systems"
+        ],
         "treefmt-nix": [
           "treefmt-nix"
         ]
@@ -206,7 +209,9 @@
     },
     "flake-utils": {
       "inputs": {
-        "systems": "systems_2"
+        "systems": [
+          "systems"
+        ]
       },
       "locked": {
         "lastModified": 1726560853,
@@ -468,41 +473,6 @@
         "type": "github"
       }
     },
-    "nixos-wiki": {
-      "inputs": {
-        "disko": [
-          "disko"
-        ],
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "sops-nix": [
-          "sops-nix"
-        ],
-        "srvos": [
-          "srvos"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1726801853,
-        "narHash": "sha256-WQC5L8vniRlkyLmVQjAaZDGOOvs99e+TsRyIp04ayYA=",
-        "owner": "Mic92",
-        "repo": "nixos-wiki-infra",
-        "rev": "bc4b0dee64d35bb2258484d7e5fb8430ebe69220",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "nixos-wiki-infra",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1726871744,
@@ -521,10 +491,10 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1727611560,
-        "narHash": "sha256-G2aDZs1idFFIHjvlk/QPQC558WDqKYi9Poe4mXXpM0Q=",
+        "lastModified": 1728552926,
+        "narHash": "sha256-Ey46BF00m//ofMop9Mvg3u4Jr4NEdakpRexyz3vwcDc=",
         "ref": "refs/heads/main",
-        "rev": "6e37911e080025fb37dd6a7c42d7c59f48fa1aed",
+        "rev": "c439b06ff1775a2643781df86cac4d1e4a7e091d",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -590,12 +560,12 @@
         "nix-index-database": "nix-index-database",
         "nixos-facter-modules": "nixos-facter-modules",
         "nixos-hardware": "nixos-hardware",
-        "nixos-wiki": "nixos-wiki",
         "nixpkgs": "nixpkgs_2",
         "nur-packages": "nur-packages",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
+        "systems": "systems",
         "treefmt-nix": "treefmt-nix"
       }
     },
@@ -664,21 +634,6 @@
       }
     },
     "systems": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
-    "systems_2": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",

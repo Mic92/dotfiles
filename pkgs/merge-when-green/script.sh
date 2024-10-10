@@ -6,7 +6,7 @@ if command -v merge-after-ci 2>/dev/null; then # clan-project
   command merge-after-ci --no-review "$@"
   return
 fi
-if [[ -n ${commands[treefmt]} ]] && ! treefmt --fail-on-change; then
+if command -v treefmt 2>/dev/null && ! treefmt --fail-on-change; then
   return
 fi
 

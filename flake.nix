@@ -52,7 +52,9 @@
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
-    buildbot-nix.url = "github:nix-community/buildbot-nix";
+    systems.url = "github:nix-systems/default";
+
+    buildbot-nix.url = "github:nix-community/buildbot-nix/fix-async";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
@@ -81,6 +83,7 @@
     clan-core.inputs.disko.follows = "disko";
     clan-core.inputs.flake-parts.follows = "flake-parts";
     clan-core.inputs.nixos-facter-modules.follows = "nixos-facter-modules";
+    clan-core.inputs.systems.follows = "systems";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
@@ -100,14 +103,7 @@
     fast-flake-update.inputs.treefmt-nix.follows = "treefmt-nix";
 
     flake-utils.url = "github:numtide/flake-utils";
-
-    nixos-wiki.url = "github:Mic92/nixos-wiki-infra";
-    nixos-wiki.inputs.nixpkgs.follows = "nixpkgs";
-    nixos-wiki.inputs.flake-parts.follows = "flake-parts";
-    nixos-wiki.inputs.treefmt-nix.follows = "treefmt-nix";
-    nixos-wiki.inputs.disko.follows = "disko";
-    nixos-wiki.inputs.sops-nix.follows = "sops-nix";
-    nixos-wiki.inputs.srvos.follows = "srvos";
+    flake-utils.inputs.systems.follows = "systems";
 
     nether.url = "github:Lassulus/nether";
     nether.inputs.clan-core.follows = "clan-core";
