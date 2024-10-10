@@ -45,7 +45,9 @@
         "sops-nix": [
           "sops-nix"
         ],
-        "systems": "systems",
+        "systems": [
+          "systems"
+        ],
         "treefmt-nix": [
           "treefmt-nix"
         ]
@@ -207,7 +209,9 @@
     },
     "flake-utils": {
       "inputs": {
-        "systems": "systems_2"
+        "systems": [
+          "systems"
+        ]
       },
       "locked": {
         "lastModified": 1726560853,
@@ -522,10 +526,10 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1727611560,
-        "narHash": "sha256-G2aDZs1idFFIHjvlk/QPQC558WDqKYi9Poe4mXXpM0Q=",
+        "lastModified": 1728552926,
+        "narHash": "sha256-Ey46BF00m//ofMop9Mvg3u4Jr4NEdakpRexyz3vwcDc=",
         "ref": "refs/heads/main",
-        "rev": "6e37911e080025fb37dd6a7c42d7c59f48fa1aed",
+        "rev": "c439b06ff1775a2643781df86cac4d1e4a7e091d",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -597,6 +601,7 @@
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
+        "systems": "systems",
         "treefmt-nix": "treefmt-nix"
       }
     },
@@ -665,21 +670,6 @@
       }
     },
     "systems": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
-    "systems_2": {
       "locked": {
         "lastModified": 1681028828,
         "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
