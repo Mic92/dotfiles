@@ -473,41 +473,6 @@
         "type": "github"
       }
     },
-    "nixos-wiki": {
-      "inputs": {
-        "disko": [
-          "disko"
-        ],
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "sops-nix": [
-          "sops-nix"
-        ],
-        "srvos": [
-          "srvos"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1726801853,
-        "narHash": "sha256-WQC5L8vniRlkyLmVQjAaZDGOOvs99e+TsRyIp04ayYA=",
-        "owner": "Mic92",
-        "repo": "nixos-wiki-infra",
-        "rev": "bc4b0dee64d35bb2258484d7e5fb8430ebe69220",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "nixos-wiki-infra",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1726871744,
@@ -595,7 +560,6 @@
         "nix-index-database": "nix-index-database",
         "nixos-facter-modules": "nixos-facter-modules",
         "nixos-hardware": "nixos-hardware",
-        "nixos-wiki": "nixos-wiki",
         "nixpkgs": "nixpkgs_2",
         "nur-packages": "nur-packages",
         "retiolum": "retiolum",
