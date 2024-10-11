@@ -54,12 +54,12 @@
 
     systems.url = "github:nix-systems/default";
 
-    buildbot-nix.url = "github:nix-community/buildbot-nix";
+    buildbot-nix.url = "github:MagicRB/buildbot-nix/restart-specific-builds";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
 
-    nixos-facter-modules.url = "github:numtide/nixos-facter-modules/hardware-config";
+    nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
