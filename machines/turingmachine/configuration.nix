@@ -41,7 +41,7 @@
     #../modules/qtile.nix
     #../modules/keyd.nix
     ../modules/ksmbd.nix
-    ../modules/lanzaboote.nix
+    #../modules/lanzaboote.nix
     ../modules/make-linux-fast.nix
     ../modules/mosh.nix
     ../modules/networkd.nix
@@ -58,6 +58,8 @@
     ../modules/data-mesher.nix
     ../modules/users.nix
   ];
+
+  boot.loader.systemd-boot.enable = true;
 
   hardware.graphics.enable32Bit = config.hardware.graphics.enable;
 

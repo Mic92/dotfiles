@@ -13,16 +13,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1728642397,
-        "narHash": "sha256-1eDEholKpw5jw4AKQsFZUszW0QxWUfTpYtmQ+8zbpic=",
-        "owner": "MagicRB",
+        "lastModified": 1728647136,
+        "narHash": "sha256-7iuFuYszo17nNin969zd1oIHnXrgGwunJdHSyfrx/P8=",
+        "owner": "nix-community",
         "repo": "buildbot-nix",
-        "rev": "35e2f86064c8bdcf818c875f9a7035bee1bdfe25",
+        "rev": "f67a5abd71cb11f82b8767fa953e6cbee3da7240",
         "type": "github"
       },
       "original": {
-        "owner": "MagicRB",
-        "ref": "restart-specific-builds",
+        "owner": "nix-community",
         "repo": "buildbot-nix",
         "type": "github"
       }
@@ -490,10 +489,10 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1728564232,
-        "narHash": "sha256-QDerQcqc0fHq+MNCg5mcl2zPilWCt1IOaqQPdojWqBY=",
+        "lastModified": 1728731533,
+        "narHash": "sha256-L6RWrhFFBMUdYXEVqORD7b0SUeFuqcw7QFxxlGTgFKE=",
         "ref": "refs/heads/main",
-        "rev": "0800594ee8e520bb63b84dd40fe6927ef5fd5d24",
+        "rev": "7cadf64253537f81d7b3a1d1a21b5cd74c05cbf2",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
