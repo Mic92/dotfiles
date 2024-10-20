@@ -177,40 +177,8 @@ hm(){
 }
 # merge after CI is green with mergify
 merge-after-ci() {
-  if [[ -n ${commands[merge-after-ci]} ]]; then
-    command merge-after-ci "$@"
-    return
-  fi
-  if [[ -n ${commands[treefmt]} ]] && ! treefmt --fail-on-change; then
-    return
-  fi
-  # detect treefmt
-  if [[ $(nix eval .#formatter --impure --apply '(val: val ? ${builtins.currentSystem} && val.${builtins.currentSystem}.name == "treefmt")') == true ]] && ! nix fmt -- --fail-on-change; then
-    return
-  fi
-  branch=$(id -un)-ci
-  git push --force origin "HEAD:$branch"
-  targetBranch=$(gh repo view --json defaultBranchRef --jq .defaultBranchRef.name)
-  if [[ $(git remote) =~ upstream ]]; then
-    remoteName=upstream
-  else
-    remoteName=origin
-  fi
-  if [[ $(gh pr view --json state --template '{{.state}}' "$branch") != "OPEN" ]]; then
-    # BUFFER is an internal variable used by edit-command-line
-    # We fill it with commit subject and body seperated by newlines
-    tmpdir=$(mktemp -d)
-    trap 'rm -rf "$tmpdir"' EXIT
-    git log --reverse --pretty="format:%s%n%n%b%n%n" "$remoteName/$targetBranch..HEAD" > "$tmpdir/COMMIT_EDITMSG"
-    ${EDITOR:-vim} "$tmpdir/COMMIT_EDITMSG"
-    msg=$(<"$tmpdir/COMMIT_EDITMSG")
-    firstLine=${msg%%$'\n'*}
-    rest=${msg#*$'\n'}
-    if [[ $firstLine == $rest ]]; then
-      rest=""
-    fi
-    gh pr create --title "$firstLine" --body "$rest" --base "$targetBranch" --head "$branch" --label merge-queue
-  fi
+  echo "use merge-when-green instead" 2>&1
+  return 1
 }
 passgen() {
   local pass
