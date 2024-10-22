@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu -o pipefail
+set -xeu -o pipefail
 
 cleanupHooks=()
 runCleanupHooks() {
@@ -42,7 +42,7 @@ runTreefmt() {
   # detect treefmt embedded in a flake
   # shellcheck disable=SC2016
   hasTreefmt='(val: val ? ${builtins.currentSystem} && val.${builtins.currentSystem}.name == "treefmt")'
-  if [[ $(nix eval .#formatter --impure --apply "$hasTreefmt") != true ]]; then
+  if [[ $(nix eval .#formatter --impure --apply "$hasTreefmt" 2>/dev/null || true) != true ]]; then
     return 0
   fi
 
@@ -74,7 +74,7 @@ main() {
   branch=merge-when-green-$(id -un)
   isOpen=$(gh pr view --json state --template '{{.state}}' "$branch" || true)
   if [[ $isOpen == "OPEN" ]]; then
-    gh pr checks "$targetBranch"
+    gh pr checks "$targetBranch" || true
   fi
   git push --force origin "HEAD:$branch"
 
