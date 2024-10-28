@@ -422,26 +422,26 @@ n() {
   NIX_RUN_ARGS="$@${NIX_RUN_ARGS+ }${NIX_RUN_ARGS}" nix shell "$@" -f '<nixpkgs>' -c zsh
 }
 nix-fmt() {
-  local toplevel currentSystem
+  local toplevel currentSystem needsUpdate=0 fmt referenceTime
   currentSystem=$(command nix eval --raw --impure --expr builtins.currentSystem)
   toplevel=$(command git rev-parse --show-toplevel)
   buildArgs=()
-  fmt=
-  if [[ -n "$toplevel" ]]; then
+  fmt="$toplevel/.git/nix-fmt"
+  if [[ ! -f "$toplevel/.git/nix-fmt/bin/treefmt" ]]; then
+    needsUpdate=1
+  elif [[ -n "$toplevel" ]]; then
     buildArgs+=("-o" "$toplevel"/.git/nix-fmt)
+    referenceTime=$(stat -c %Y "$toplevel"/.git/nix-fmt)
     for file in flake.nix flake.lock; do
-      if [[ "$file" -nt "$toplevel"/.git/nix-fmt ]]; then
-        need_update=1
+      if [[ "$(stat -c %Y $file)" -gt "$referenceTime" ]]; then
+        needsUpdate=1
         break
       fi
     done
   fi
-  for file in "${watches[@]}"; do
-    if [[ $file -nt $profile_rc ]]; then
-      break
-    fi
-  done
-  fmt=$(command nix build --builders '' "${buildArgs[@]}"  ".#formatter.${currentSystem}" --print-out-paths)
+  if [[ "$needsUpdate" == 1 ]]; then
+    fmt=$(command nix build --builders '' "${buildArgs[@]}"  ".#formatter.${currentSystem}" --print-out-paths)
+  fi
 
   "$fmt/bin/"*
 }
