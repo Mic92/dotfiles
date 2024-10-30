@@ -5,7 +5,7 @@ set -xeu -o pipefail
 cleanupHooks=()
 runCleanupHooks() {
   local hook
-  for hook in "${cleanupHooks[@]}"; do "$hook"; done
+  for hook in "${cleanupHooks[@]}"; do "$hook" || true; done
 }
 trap runCleanupHooks EXIT
 

@@ -3,7 +3,7 @@ on:
   repository_dispatch:
   workflow_dispatch:
   schedule:
-    - cron: '38 0 * * 0,4'
+    - cron: "38 0 * * 0,4"
 permissions:
   pull-requests: write
   contents: write
