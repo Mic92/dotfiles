@@ -35,6 +35,7 @@
     ../modules/unbound.nix
   ];
   nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.systemd.enable = false;
