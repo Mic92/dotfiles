@@ -8,6 +8,6 @@ in
   environment.systemPackages = [ pkgs.mas ];
   system.activationScripts.xcode.text = ''
     echo "Syncing apps from the App Store..."
-    ${pkgs.python3.interpreter} ${./declarative-app-store} ${builtins.toString apps}
+    ${pkgs.python3.interpreter} ${./declarative-app-store.py} ${builtins.toString apps}
   '';
 }
