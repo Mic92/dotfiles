@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
     inputs:
       os:
-        description: 'OS to boot'
+        description: "OS to boot"
         required: true
-        default: 'macos-latest'
+        default: "macos-latest"
         type: choice
         options:
           - ubuntu-latest
