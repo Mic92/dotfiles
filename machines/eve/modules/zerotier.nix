@@ -1,5 +1,5 @@
 {
-  #imports = [ ../../modules/zerotier.nix ];
+  imports = [ ../../modules/zerotier.nix ];
 
   clan.core.networking.zerotier.controller.enable = true;
   clan.core.networking.zerotier.moon.stableEndpoints = [

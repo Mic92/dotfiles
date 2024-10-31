@@ -70,7 +70,7 @@
     ./modules/unbound.nix
     ./modules/users.nix
     ./modules/wireguard.nix
-    #./modules/zerotier.nix
+    ./modules/zerotier.nix
 
     ../modules/borgbackup.nix
     ../modules/builder.nix
