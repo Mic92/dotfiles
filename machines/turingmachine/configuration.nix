@@ -60,6 +60,7 @@
   ];
 
   boot.loader.systemd-boot.enable = true;
+  programs.steam.enable = true;
 
   hardware.graphics.enable32Bit = config.hardware.graphics.enable;
 

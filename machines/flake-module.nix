@@ -16,14 +16,34 @@
         roles.client.tags = [ "backup" ];
         roles.client.extraModules = [ "machines/modules/borgbackup.nix" ];
       };
+
+      zerotier.mic92 = {
+        roles.controller.machines = [ "eve" ];
+        roles.peer.tags = [ "vpn" ];
+      };
     };
 
     inventory.machines = {
-      bernie.tags = [ "backup" ];
-      turingmachine.tags = [ "backup" ];
-      eve.tags = [ "backup" ];
-      eva.tags = [ "backup" ];
-      matchbox.tags = [ "backup" ];
+      bernie.tags = [
+        "vpn"
+        "backup"
+      ];
+      turingmachine.tags = [
+        "vpn"
+        "backup"
+      ];
+      eve.tags = [
+        "vpn"
+        "backup"
+      ];
+      eva.tags = [
+        "vpn"
+        "backup"
+      ];
+      matchbox.tags = [
+        "vpn"
+        "backup"
+      ];
     };
   };
 }

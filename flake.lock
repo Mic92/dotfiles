@@ -13,15 +13,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1730217287,
-        "narHash": "sha256-AcT/htLaUyFMUWjIsZECu0BUroAcuwA+uF32s8dSLHw=",
-        "owner": "nix-community",
+        "lastModified": 1730390256,
+        "narHash": "sha256-J51woyBvgzI0jGUjigrynUkfNiBolN6rJxwNQsYS2Jg=",
+        "owner": "MagicRB",
         "repo": "buildbot-nix",
-        "rev": "313246e39bf2630af713c0a7154ecd00c7c52a76",
+        "rev": "b4d97c5180c2e2b711a919a84780a46ca4a2ca1d",
         "type": "github"
       },
       "original": {
-        "owner": "nix-community",
+        "owner": "MagicRB",
+        "ref": "per-repo-configuration",
         "repo": "buildbot-nix",
         "type": "github"
       }
@@ -51,15 +52,18 @@
         ]
       },
       "locked": {
-        "lastModified": 1730206838,
-        "narHash": "sha256-bIFPg8qmazkE5gQr4DZXvoq7+oqtumfBNp7GaOejzYY=",
-        "rev": "48e1dcb0f2b0b8a6a083d93dccc90af542915a79",
-        "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/48e1dcb0f2b0b8a6a083d93dccc90af542915a79.tar.gz"
+        "lastModified": 1730387913,
+        "narHash": "sha256-q1VcvNuDqDCb/RbDfPcpoc+OX/IrLanGmi4Y7/ubGRs=",
+        "ref": "init/zerotier-inventory",
+        "rev": "bf0b381370c641f9dab4e35fbb8160dc36c3a34c",
+        "revCount": 4537,
+        "type": "git",
+        "url": "file:///home/joerg/work/clan/clan-core"
       },
       "original": {
-        "type": "tarball",
-        "url": "https://git.clan.lol/clan/clan-core/archive/main.tar.gz"
+        "ref": "init/zerotier-inventory",
+        "type": "git",
+        "url": "file:///home/joerg/work/clan/clan-core"
       }
     },
     "crane": {

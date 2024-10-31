@@ -23,7 +23,7 @@
     ./modules/nginx.nix
     ./modules/prometheus
     ./modules/telegraf
-    ./modules/zerotier.nix
+    #./modules/zerotier.nix
 
     ../modules/sshd
     ../modules/mosh.nix
