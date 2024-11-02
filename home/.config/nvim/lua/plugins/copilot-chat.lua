@@ -1,3 +1,14 @@
+local function get_recent_commit_messages(count)
+	local handle = io.popen("git log -n " .. count .. " --pretty=format:'%s'")
+	if not handle then
+		return "No recent commit messages found."
+	end
+
+	local result = handle:read("*a")
+	handle:close()
+	return result
+end
+
 return {
 	"CopilotC-Nvim/CopilotChat.nvim",
 	branch = "canary",
@@ -21,6 +32,17 @@ return {
 					end
 				end,
 				desc = "CopilotChat - Quick chat",
+			},
+			{
+				"<leader>ccr",
+				function()
+					-- Get recent commit messages for context
+					local commit_messages = get_recent_commit_messages(3)
+					local input = "Resolve the merge conflict in the selected code. Recent commit messages:\n"
+						.. commit_messages
+					require("CopilotChat").ask(input, { selection = select.visual })
+				end,
+				desc = "CopilotChat - Resolve merge conflict in selection with commit context",
 			},
 			{
 				"<leader>ccq",
