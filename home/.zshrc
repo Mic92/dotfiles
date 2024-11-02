@@ -427,7 +427,7 @@ nix-fmt() {
   toplevel=$(command git rev-parse --show-toplevel)
   buildArgs=()
   fmt="$toplevel/.git/nix-fmt"
-  if [[ ! -f "$toplevel/.git/nix-fmt/bin/treefmt" ]]; then
+  if [[ ! -d "$toplevel/.git/nix-fmt" ]]; then
     needsUpdate=1
   elif [[ -n "$toplevel" ]]; then
     buildArgs+=("-o" "$toplevel"/.git/nix-fmt)
@@ -442,8 +442,17 @@ nix-fmt() {
   if [[ "$needsUpdate" == 1 ]]; then
     fmt=$(command nix build --builders '' "${buildArgs[@]}"  ".#formatter.${currentSystem}" --print-out-paths)
   fi
+  ln -sf "$fmt" "$toplevel/.git/nix-fmt"
 
-  "$fmt/bin/"*
+  # treefmt has multiple outputs
+  if [[ -x "$fmt/bin/treefmt" ]]; then
+    "$fmt/bin/treefmt" "$@"
+    return
+  fi
+  for file in "$fmt/bin/"*; do
+    "$file" "$@"
+    return
+  done
 }
 
 nix-call-package() {
