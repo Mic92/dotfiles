@@ -41,7 +41,7 @@
     #../modules/qtile.nix
     #../modules/keyd.nix
     ../modules/ksmbd.nix
-    #../modules/lanzaboote.nix
+    ../modules/lanzaboote.nix
     ../modules/make-linux-fast.nix
     ../modules/mosh.nix
     ../modules/networkd.nix
