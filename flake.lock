@@ -352,7 +352,9 @@
         "flake-compat": "flake-compat",
         "flake-parts": [],
         "git-hooks-nix": [],
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "nixpkgs-regression": []
       },
       "locked": {
@@ -442,26 +444,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1726871744,
-        "narHash": "sha256-V5LpfdHyQkUF7RfOaDPrZDP+oqz88lTJrMT1+stXNwo=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "a1d92660c6b3b7c26fb883500a80ea9d33321be2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixpkgs-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1730293612,
-        "narHash": "sha256-Fo55ceEblQsxXcg1xGXkuREUOiz2CAIn6A5HL4sdigM=",
+        "lastModified": 1730543270,
+        "narHash": "sha256-tum4kS12v9s/A1Kp6jIZS2wHBadk9QX+fJTlFvLBRi8=",
         "ref": "refs/heads/main",
-        "rev": "aed993733203b1b403e7ce8a4ab8255f9a1db456",
+        "rev": "c2a2344b69164098adfac97b1ed554cf5a8001d9",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -527,7 +513,7 @@
         "nix-index-database": "nix-index-database",
         "nixos-facter-modules": "nixos-facter-modules",
         "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "nur-packages": "nur-packages",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
