@@ -30,6 +30,7 @@
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
     nix.url = "github:Mic92/nix-1";
+    nix.inputs.nixpkgs.follows = "nixpkgs";
     nix.inputs.flake-parts.follows = "";
     nix.inputs.nixpkgs-regression.follows = "";
     nix.inputs.git-hooks-nix.follows = "";
