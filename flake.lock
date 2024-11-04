@@ -51,11 +51,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1730206838,
-        "narHash": "sha256-bIFPg8qmazkE5gQr4DZXvoq7+oqtumfBNp7GaOejzYY=",
-        "rev": "48e1dcb0f2b0b8a6a083d93dccc90af542915a79",
+        "lastModified": 1730729437,
+        "narHash": "sha256-JVrfr/3uNetjXMu6k62MkHhHBjady/t6GwnpbiPyxsA=",
+        "rev": "80d72df1ad8286554be3249ac2cb9943b80eb7cb",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/48e1dcb0f2b0b8a6a083d93dccc90af542915a79.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/80d72df1ad8286554be3249ac2cb9943b80eb7cb.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -414,15 +414,16 @@
     },
     "nixos-facter-modules": {
       "locked": {
-        "lastModified": 1730026316,
-        "narHash": "sha256-AzP+trH/ykBJGTx3twkpuwbkhFSmsY1PJDQtRmK4k4c=",
+        "lastModified": 1730736962,
+        "narHash": "sha256-tklHQLhcZOv3/CdqJPB++GcjysNADK6Nu378wVUpUk8=",
         "owner": "numtide",
         "repo": "nixos-facter-modules",
-        "rev": "15b6531d44aa6f0bbd2fd8309cd2a6d7f183ba32",
+        "rev": "39c2a1e6b1a9137fc96c18295fc7fa1f311055fa",
         "type": "github"
       },
       "original": {
         "owner": "numtide",
+        "ref": "fingerprint-sensors",
         "repo": "nixos-facter-modules",
         "type": "github"
       }
