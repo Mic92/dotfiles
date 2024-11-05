@@ -22,6 +22,8 @@
     ../modules/tracing.nix
     ../modules/pipewire.nix
 
+    ./filesystems.nix
+
     self.nixosModules.default
     inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x13
     inputs.home-manager.nixosModules.home-manager
