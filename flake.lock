@@ -414,16 +414,15 @@
     },
     "nixos-facter-modules": {
       "locked": {
-        "lastModified": 1730736962,
-        "narHash": "sha256-tklHQLhcZOv3/CdqJPB++GcjysNADK6Nu378wVUpUk8=",
+        "lastModified": 1730798058,
+        "narHash": "sha256-2KexAe17KRg2191SdBxVXqJKwV6MxKzlE35DDcAX+Ds=",
         "owner": "numtide",
         "repo": "nixos-facter-modules",
-        "rev": "39c2a1e6b1a9137fc96c18295fc7fa1f311055fa",
+        "rev": "d0e205eafca7091caad3925ff82a46fea08351e1",
         "type": "github"
       },
       "original": {
         "owner": "numtide",
-        "ref": "fingerprint-sensors",
         "repo": "nixos-facter-modules",
         "type": "github"
       }
