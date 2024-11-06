@@ -11,8 +11,6 @@
 
   fonts.fontconfig.enable = true;
 
-  programs.vscode.enable = true;
-
   services.mpris-proxy.enable = true;
   services.syncthing.enable = true;
 
@@ -27,6 +25,7 @@
       upterm
       eternal-terminal
       gimp
+      zed-editor
 
       arandr
       signal-desktop
