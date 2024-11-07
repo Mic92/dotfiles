@@ -16,14 +16,37 @@
         roles.client.tags = [ "backup" ];
         roles.client.extraModules = [ "machines/modules/borgbackup.nix" ];
       };
+      zerotier.mic92 = {
+        roles.controller.machines = [ "eve" ];
+        roles.moon.machines = [
+          "eva"
+          "eve"
+        ];
+        roles.peer.tags = [ "zerotier" ];
+      };
     };
 
     inventory.machines = {
-      bernie.tags = [ "backup" ];
-      turingmachine.tags = [ "backup" ];
-      eve.tags = [ "backup" ];
-      eva.tags = [ "backup" ];
-      matchbox.tags = [ "backup" ];
+      bernie.tags = [
+        "backup"
+        "zerotier"
+      ];
+      turingmachine.tags = [
+        "backup"
+        "zerotier"
+      ];
+      eve.tags = [
+        "backup"
+        "zerotier"
+      ];
+      eva.tags = [
+        "backup"
+        "zerotier"
+      ];
+      matchbox.tags = [
+        "backup"
+        "zerotier"
+      ];
     };
   };
 }

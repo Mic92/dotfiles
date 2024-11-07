@@ -41,7 +41,8 @@
     nur-packages.url = "github:Mic92/nur-packages";
     nur-packages.inputs.nixpkgs.follows = "nixpkgs";
     # for development
-    sops-nix.url = "github:Mic92/sops-nix/nix-darwin";
+    #sops-nix.url = "github:Mic92/sops-nix/nix-darwin";
+    sops-nix.url = "github:jfly/sops-nix/templates-refactoring";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.inputs.nixpkgs-stable.follows = "";
 
@@ -76,9 +77,10 @@
     srvos.url = "github:Mic92/srvos/dotfiles";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
-    clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
+    # clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
     #clan-core.url = "path:///Users/joerg/git/clan-core";
-    #clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=fact_refactor2";
+    clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=init/zerotier-inventory";
+    #clan-core.url = "git+file:///home/joerg/work/clan/clan-core";
     clan-core.inputs.nixpkgs.follows = "nixpkgs";
     clan-core.inputs.sops-nix.follows = "sops-nix";
     clan-core.inputs.treefmt-nix.follows = "treefmt-nix";

@@ -51,15 +51,18 @@
         ]
       },
       "locked": {
-        "lastModified": 1730729437,
-        "narHash": "sha256-JVrfr/3uNetjXMu6k62MkHhHBjady/t6GwnpbiPyxsA=",
-        "rev": "80d72df1ad8286554be3249ac2cb9943b80eb7cb",
-        "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/80d72df1ad8286554be3249ac2cb9943b80eb7cb.tar.gz"
+        "lastModified": 1730997773,
+        "narHash": "sha256-k3afpbI0B0OKx3I9pcDOdXt3H+2NFla9yNvVmCC5YYc=",
+        "ref": "init/zerotier-inventory",
+        "rev": "8766bd14bf1439f83fd19cce3f03f0b4d2f825be",
+        "revCount": 4570,
+        "type": "git",
+        "url": "https://git.clan.lol/clan/clan-core"
       },
       "original": {
-        "type": "tarball",
-        "url": "https://git.clan.lol/clan/clan-core/archive/main.tar.gz"
+        "ref": "init/zerotier-inventory",
+        "type": "git",
+        "url": "https://git.clan.lol/clan/clan-core"
       }
     },
     "crane": {
@@ -358,11 +361,11 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1729700737,
-        "narHash": "sha256-fzCTneSHHcJjepyIadavtxYhwIexwVF8a1vNIsJHxBs=",
+        "lastModified": 1730929898,
+        "narHash": "sha256-DNrhGK+icXrLkMHJBCflG2NFQyPsE3bdPD2uwMR5nk0=",
         "owner": "Mic92",
         "repo": "nix-1",
-        "rev": "9b669ba0eef82208455e63af5a9f2ea68785ad0d",
+        "rev": "051e869b9bde48a0ce825739ea9ca89ec07cd3e3",
         "type": "github"
       },
       "original": {
@@ -551,16 +554,16 @@
         "nixpkgs-stable": []
       },
       "locked": {
-        "lastModified": 1728378187,
-        "narHash": "sha256-H4JrDQBJ+cfb8UIlsmT4SN8ckNJFIcySJjSCNinM0c4=",
-        "owner": "Mic92",
+        "lastModified": 1730847716,
+        "narHash": "sha256-iD66B67U+wstfYcWOi9eI9I+TpaZ0kkMD8NRcG1/kJM=",
+        "owner": "jfly",
         "repo": "sops-nix",
-        "rev": "f8d22da5c0f1b9fd7745e31a3549a6add413d840",
+        "rev": "15d02b6c31b3aecdee96bb28b669b566e467e9e2",
         "type": "github"
       },
       "original": {
-        "owner": "Mic92",
-        "ref": "nix-darwin",
+        "owner": "jfly",
+        "ref": "templates-refactoring",
         "repo": "sops-nix",
         "type": "github"
       }
