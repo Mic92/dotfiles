@@ -51,10 +51,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1730997773,
-        "narHash": "sha256-k3afpbI0B0OKx3I9pcDOdXt3H+2NFla9yNvVmCC5YYc=",
+        "lastModified": 1730998083,
+        "narHash": "sha256-KNWMIYsqR5rlLT6jj+iUDEdz7c3MNgwF3yFGRQzRhlE=",
         "ref": "init/zerotier-inventory",
-        "rev": "8766bd14bf1439f83fd19cce3f03f0b4d2f825be",
+        "rev": "20279cec09a8d6ec722398b8f309dd7a3e8c305e",
         "revCount": 4570,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
@@ -554,16 +554,15 @@
         "nixpkgs-stable": []
       },
       "locked": {
-        "lastModified": 1730847716,
-        "narHash": "sha256-iD66B67U+wstfYcWOi9eI9I+TpaZ0kkMD8NRcG1/kJM=",
-        "owner": "jfly",
+        "lastModified": 1731047660,
+        "narHash": "sha256-iyp51lPWEQz4c5VH9bVbAuBcFP4crETU2QJYh5V0NYA=",
+        "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "15d02b6c31b3aecdee96bb28b669b566e467e9e2",
+        "rev": "60e1bce1999f126e3b16ef45f89f72f0c3f8d16f",
         "type": "github"
       },
       "original": {
-        "owner": "jfly",
-        "ref": "templates-refactoring",
+        "owner": "Mic92",
         "repo": "sops-nix",
         "type": "github"
       }

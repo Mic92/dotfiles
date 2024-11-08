@@ -41,8 +41,7 @@
     nur-packages.url = "github:Mic92/nur-packages";
     nur-packages.inputs.nixpkgs.follows = "nixpkgs";
     # for development
-    #sops-nix.url = "github:Mic92/sops-nix/nix-darwin";
-    sops-nix.url = "github:jfly/sops-nix/templates-refactoring";
+    sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.inputs.nixpkgs-stable.follows = "";
 
