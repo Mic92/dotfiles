@@ -1,27 +1,29 @@
 { pkgs, config, ... }:
-let
-  ldapConfig = pkgs.writeText "dovecot-ldap.conf" ''
-    hosts = 127.0.0.1
-    dn = "cn=dovecot,dc=mail,dc=eve"
-    dnpass = "@ldap-password@"
-    tls = no
-    auth_bind = no
-    ldap_version = 3
-    base = ou=users,dc=eve
-    user_filter = (&(objectClass=mailAccount)(mail=%u))
-    user_attrs = \
-      quota=quota_rule=*:bytes=%$, \
-      =home=/var/vmail/%d/%n/, \
-      =mail=maildir:/var/vmail/%d/%n/Maildir
-    pass_attrs = mail=user,userPassword=password
-    pass_filter = (&(objectClass=mailAccount)(mail=%u))
-    iterate_attrs = =user=%{ldap:mail}
-    iterate_filter = (objectClass=mailAccount)
-    scope = subtree
-    default_pass_scheme = SSHA
-  '';
-in
 {
+  sops.templates."dovecot-ldap.conf" = {
+    content = ''
+      hosts = 127.0.0.1
+      dn = "cn=dovecot,dc=mail,dc=eve"
+      dnpass = "${config.sops.placeholder.dovecot-ldap-password}"
+      tls = no
+      auth_bind = no
+      ldap_version = 3
+      base = ou=users,dc=eve
+      user_filter = (&(objectClass=mailAccount)(mail=%u))
+      user_attrs = \
+        quota=quota_rule=*:bytes=%$, \
+        =home=/var/vmail/%d/%n/, \
+        =mail=maildir:/var/vmail/%d/%n/Maildir
+      pass_attrs = mail=user,userPassword=password
+      pass_filter = (&(objectClass=mailAccount)(mail=%u))
+      iterate_attrs = =user=%{ldap:mail}
+      iterate_filter = (objectClass=mailAccount)
+      scope = subtree
+      default_pass_scheme = SSHA
+    '';
+    owner = "dovecot2";
+  };
+
   services.dovecot2 = {
     enable = true;
     enableImap = true;
@@ -87,11 +89,11 @@ in
         }
       }
       userdb {
-        args = /run/dovecot2/ldap.conf
+        args = ${config.sops.templates."dovecot-ldap.conf".path}
         driver = ldap
       }
       passdb {
-        args = /run/dovecot2/ldap.conf
+        args = ${config.sops.templates."dovecot-ldap.conf".path}
         driver = ldap
       }
 
@@ -142,10 +144,6 @@ in
     enable = true;
     params.dovecot2 = { };
   };
-
-  systemd.services.dovecot2.preStart = ''
-    sed -e "s!@ldap-password@!$(<${config.sops.secrets.dovecot-ldap-password.path})!" ${ldapConfig} > /run/dovecot2/ldap.conf
-  '';
 
   security.acme.certs =
     let
