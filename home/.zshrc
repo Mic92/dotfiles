@@ -275,22 +275,23 @@ prompt pure
 # Basic commands
 alias zcat='zcat -f'
 alias dd='dd status=progress'
-if [[ -n ${commands[rg]} ]]; then
-  rg() {
-    command rg -C1 --sort path --pretty --smart-case --fixed-strings "$@" | less -R
-  }
-  ag() {
-    echo "use rg instead"
-    sleep 1
-    rg "$@"
-  }
-elif [[ -n ${commands[ag]} ]]; then
-  alias ag="ag --color --smart-case --literal --pager=$PAGER"
-fi
+rg() {
+  local pager=$PAGER
+
+  if [[ -n ${commands[delta]} ]]; then
+    pager=delta
+  fi
+
+  if [[ -n ${commands[rg]} ]]; then
+    ( command rg --json -C 2 "$@"; command rg --files | command rg --no-line-number --json -C 2 "$@" ) | $pager
+  elif [[ -n ${commands[ag]} ]]; then
+    command ag -C2 --smart-case --literal --pager="$pager" "$@"
+  else
+    grep -r -C 2 "$@"
+  fi
+}
 if [[ -n ${commands[zoxide]} ]]; then
   eval "$(zoxide init zsh)"
-else
-  alias z="builtin cd"
 fi
 if [[ -n ${commands[nom-build]} ]]; then
   alias nix-build=nom-build
@@ -734,6 +735,16 @@ function chpwd-osc7-pwd() {
     (( ZSH_SUBSHELL )) || osc7-pwd
 }
 add-zsh-hook -Uz chpwd chpwd-osc7-pwd
+
+function delta_sidebyside {
+  if [[ COLUMNS -ge 120 ]]; then
+    export DELTA_FEATURES='side-by-side'
+  else
+    export DELTA_FEATURES=''
+  fi
+}
+trap delta_sidebyside WINCH
+
 
 mkcd() { mkdir -p "$1" && cd "$1"; }
 # make cd accept files

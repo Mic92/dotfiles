@@ -1,12 +1,13 @@
 [core]
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
-  pager = delta --color-only
+  pager = delta
   editor = nvim
 [include]
   path = ~/.gitconfig.local
 [interactive]
   singlekey = true
+  diffFilter = delta --color-only
 [format]
   signoff = true
 [color]
@@ -17,7 +18,7 @@
   recurseSubmodules = on-demand
 [delta]
   navigate = true    # use n and N to move between diff sections
-  light = false      # set to true if you're in a terminal w/ a light background color (e.g. the defau
+  syntax-theme = Solarized (light)
 [am]
   threeWay = true
 [user]
@@ -30,6 +31,7 @@
   compactionHeuristic = true
   renames = true
   colorMoved = default
+	noprefix = true
 [merge]
 	tool = vimdiff
   keepBackup = false
