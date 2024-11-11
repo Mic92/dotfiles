@@ -275,22 +275,19 @@ prompt pure
 # Basic commands
 alias zcat='zcat -f'
 alias dd='dd status=progress'
-if [[ -n ${commands[rg]} ]]; then
-  rg() {
-    command rg -C1 --sort path --pretty --smart-case --fixed-strings "$@" | less -R
-  }
-  ag() {
-    echo "use rg instead"
-    sleep 1
-    rg "$@"
-  }
-elif [[ -n ${commands[ag]} ]]; then
-  alias ag="ag --color --smart-case --literal --pager=$PAGER"
-fi
+rg() {
+  if [[ -n ${commands[delta]} ]]; then
+    command rg --json -C 2 "$@" | delta
+  elif [[ -n ${commands[rg]} ]]; then
+    command rg -C1 --sort path --pretty --smart-case --fixed-strings "$@" | $PAGER
+  elif [[ -n ${commands[ag]} ]]; then
+    command ag -C2 --smart-case --literal --pager="$PAGER" "$@"
+  else
+    grep -r -C 2 "$@"
+  fi
+}
 if [[ -n ${commands[zoxide]} ]]; then
   eval "$(zoxide init zsh)"
-else
-  alias z="builtin cd"
 fi
 if [[ -n ${commands[nom-build]} ]]; then
   alias nix-build=nom-build
@@ -743,6 +740,7 @@ function delta_sidebyside {
   fi
 }
 trap delta_sidebyside WINCH
+
 
 mkcd() { mkdir -p "$1" && cd "$1"; }
 # make cd accept files
