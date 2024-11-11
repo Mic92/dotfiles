@@ -276,12 +276,16 @@ prompt pure
 alias zcat='zcat -f'
 alias dd='dd status=progress'
 rg() {
+  local pager=$PAGER
+
   if [[ -n ${commands[delta]} ]]; then
-    command rg --json -C 2 "$@" | delta
-  elif [[ -n ${commands[rg]} ]]; then
-    command rg -C1 --sort path --pretty --smart-case --fixed-strings "$@" | $PAGER
+    pager=delta
+  fi
+
+  if [[ -n ${commands[rg]} ]]; then
+    ( command rg --json -C 2 "$@"; command rg --files | command rg --no-line-number --json -C 2 "$@" ) | $pager
   elif [[ -n ${commands[ag]} ]]; then
-    command ag -C2 --smart-case --literal --pager="$PAGER" "$@"
+    command ag -C2 --smart-case --literal --pager="$pager" "$@"
   else
     grep -r -C 2 "$@"
   fi
