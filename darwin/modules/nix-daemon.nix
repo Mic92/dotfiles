@@ -16,6 +16,8 @@
       keep-derivations = true;
 
       substituters = [
+        "https://nixos.tvix.store"
+
         "https://nix-community.cachix.org"
         "https://cache.thalheim.io"
       ];
