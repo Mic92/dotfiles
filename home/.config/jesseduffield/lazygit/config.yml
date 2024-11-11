@@ -12,7 +12,7 @@ os:
 git:
   paging:
     colorArg: always
-    pager: delta --syntax-theme "Solarized (light)" --paging=never
+    pager: delta --paging=never
   autoFetch: False
 customCommands:
   - key: "<c-r>"

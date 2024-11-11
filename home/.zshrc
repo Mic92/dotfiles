@@ -735,6 +735,15 @@ function chpwd-osc7-pwd() {
 }
 add-zsh-hook -Uz chpwd chpwd-osc7-pwd
 
+function delta_sidebyside {
+  if [[ COLUMNS -ge 120 ]]; then
+    export DELTA_FEATURES='side-by-side'
+  else
+    export DELTA_FEATURES=''
+  fi
+}
+trap delta_sidebyside WINCH
+
 mkcd() { mkdir -p "$1" && cd "$1"; }
 # make cd accept files
 cd() {
