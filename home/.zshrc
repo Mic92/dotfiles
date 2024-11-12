@@ -283,7 +283,7 @@ rg() {
   fi
 
   if [[ -n ${commands[rg]} ]]; then
-    ( command rg --json -C 2 "$@"; command rg --files | command rg --no-line-number --json -C 2 "$@" ) | $pager
+    ( command rg --sort path --smart-case --fixed-strings --json -C 2 "$@"; command rg --files | command rg --no-line-number --json -C 2 "$@" ) | $pager
   elif [[ -n ${commands[ag]} ]]; then
     command ag -C2 --smart-case --literal --pager="$pager" "$@"
   else
@@ -467,11 +467,16 @@ nix-call-package() {
 }
 nixos-build() {
     if [ $# -lt 1 ]; then
-        echo "USAGE: $0 machineName" >&2
-        return 1
+        if [ $OSTYPE = linux* ]; then
+          name=$(</proc/sys/kernel/hostname)
+        else
+          echo "USAGE: $0 name" >&2
+          return 1
+        fi
+    else
+        name=$1
+        shift
     fi
-    name=$1
-    shift
 
     command nixos-rebuild build --flake ".#$name" "$@"
 }
