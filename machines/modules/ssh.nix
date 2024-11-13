@@ -1,15 +1,9 @@
 {
-  programs.ssh.knownHosts.ssh-ca = {
-    certAuthority = true;
-    extraHostNames = [
-      "*.r"
-      "*.i"
-      "*.thalheim.io"
-      "*.dse.in.tum.de"
-      "*.dos.cit.tum.de"
-    ];
-    publicKeyFile = ./ssh-ca.pub;
-  };
+  # extra host names for the ssh-ca defined in clan
+  programs.ssh.knownHosts.ssh-ca.extraHostNames = [
+    "*.dse.in.tum.de"
+    "*.dos.cit.tum.de"
+  ];
   programs.ssh.extraConfig = ''
     Host *.dse.in.tum.de !login.dse.in.tum.de !sarah.dse.in.tum.de !donna.dse.in.tum.de
       ProxyJump tunnel@login.dse.in.tum.de

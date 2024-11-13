@@ -17,13 +17,11 @@
     ./nix-daemon.nix
     ./minimal-docs.nix
     ./i18n.nix
-    ./sshd
     ./zfs.nix
     ./thermald.nix
     ./fhs-compat.nix
     ./update-prefetch.nix
 
-    inputs.clan-core.clanModules.sshd
 
     inputs.srvos.nixosModules.common
     inputs.srvos.nixosModules.mixins-telegraf

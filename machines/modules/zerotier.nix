@@ -1,4 +1,3 @@
-{ lib, config, ... }:
 {
   #clan.core.networking.zerotier.networkId = lib.mkDefault (
   #  builtins.readFile (config.clan.core.clanDir + "/machines/eve/facts/zerotier-network-id")

@@ -25,7 +25,6 @@
     ./modules/telegraf
     ./modules/zerotier.nix
 
-    ../modules/sshd
     ../modules/mosh.nix
     ../modules/nncp.nix
     ../modules/iperf.nix

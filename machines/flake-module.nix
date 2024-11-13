@@ -3,6 +3,7 @@
   flake.nixosModules.default = ./modules/default.nix;
   clan = {
     meta.name = "mic92";
+
     directory = self;
     specialArgs = {
       self = self;
@@ -11,8 +12,13 @@
     pkgsForSystem = system: inputs.nixpkgs.legacyPackages.${system};
 
     inventory = {
-
+      tags =
+        { config, ... }:
+        {
+          backup = builtins.filter (name: name != "blob64") config.all;
+        };
       services = {
+
         borgbackup.blob64 = {
           roles.server.machines = [ "blob64" ];
           roles.client.tags = [ "backup" ];
@@ -24,31 +30,20 @@
             "eva"
             "eve"
           ];
-          roles.peer.tags = [ "zerotier" ];
+          roles.peer.tags = [ "all" ];
         };
-      };
 
-      machines = {
-        bernie.tags = [
-          "backup"
-          "zerotier"
-        ];
-        turingmachine.tags = [
-          "backup"
-          "zerotier"
-        ];
-        eve.tags = [
-          "backup"
-          "zerotier"
-        ];
-        eva.tags = [
-          "backup"
-          "zerotier"
-        ];
-        matchbox.tags = [
-          "backup"
-          "zerotier"
-        ];
+        sshd.mic92 = {
+          roles.server.tags = [ "all" ];
+          roles.client.tags = [ "all" ];
+          roles.client.extraModules = [ "machines/modules/ssh.nix" ];
+
+          config.certificate.searchDomains = [
+            "i"
+            "r"
+            "thalheim.io"
+          ];
+        };
       };
     };
   };

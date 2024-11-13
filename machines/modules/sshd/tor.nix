@@ -18,6 +18,4 @@
       HiddenServiceSingleHopMode = !config.services.tor.client.enable;
     };
   };
-
-  imports = [ ./. ];
 }
