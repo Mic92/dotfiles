@@ -36,6 +36,7 @@
         sshd.mic92 = {
           roles.server.tags = [ "all" ];
           roles.client.tags = [ "all" ];
+          # tor-hidden-service
           roles.client.extraModules = [ "machines/modules/ssh.nix" ];
 
           config.certificate.searchDomains = [
