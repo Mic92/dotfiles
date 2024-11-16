@@ -51,16 +51,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1730998083,
-        "narHash": "sha256-KNWMIYsqR5rlLT6jj+iUDEdz7c3MNgwF3yFGRQzRhlE=",
-        "ref": "init/zerotier-inventory",
-        "rev": "20279cec09a8d6ec722398b8f309dd7a3e8c305e",
-        "revCount": 4570,
+        "lastModified": 1731595936,
+        "narHash": "sha256-fnFjTrjzg9grpIp8Yqck1SXZeMJ+tmabxOHXZ+4mODc=",
+        "ref": "ssh-ca",
+        "rev": "a173010f387735e602cfa8f27241b6cf61fadeb2",
+        "revCount": 4709,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
       "original": {
-        "ref": "init/zerotier-inventory",
+        "ref": "ssh-ca",
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       }
@@ -291,6 +291,29 @@
         "type": "github"
       }
     },
+    "hyprspace": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1731579568,
+        "narHash": "sha256-Y75KsOwCQlOFnYBZkMyJstF0qmAV829B7h1befUHh4g=",
+        "owner": "hyprspace",
+        "repo": "hyprspace",
+        "rev": "83e755f445ac5baf4a0fa54fd9cea179efabc773",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hyprspace",
+        "repo": "hyprspace",
+        "type": "github"
+      }
+    },
     "lanzaboote": {
       "inputs": {
         "crane": "crane",
@@ -432,25 +455,26 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1730161780,
-        "narHash": "sha256-z5ILcmwMtiCoHTXS1KsQWqigO7HJO8sbyK7f7wn9F/E=",
-        "owner": "NixOS",
+        "lastModified": 1731765610,
+        "narHash": "sha256-iizDxxdt18c+sS1ot1obGTLyIxMhCmp1SsMEJkWODTU=",
+        "owner": "Mic92",
         "repo": "nixos-hardware",
-        "rev": "07d15e8990d5d86a631641b4c429bc0a7400cfb8",
+        "rev": "23ef53a7c46b4f3b155ce74e1e6bd7886054f431",
         "type": "github"
       },
       "original": {
-        "owner": "NixOS",
+        "owner": "Mic92",
+        "ref": "framework-13-audio-improvements",
         "repo": "nixos-hardware",
         "type": "github"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1730543270,
-        "narHash": "sha256-tum4kS12v9s/A1Kp6jIZS2wHBadk9QX+fJTlFvLBRi8=",
+        "lastModified": 1731141787,
+        "narHash": "sha256-9H5c4j+OVMO/Nz4Dw+j8cw4gAdBVtTU0mMwHblZVoyg=",
         "ref": "refs/heads/main",
-        "rev": "c2a2344b69164098adfac97b1ed554cf5a8001d9",
+        "rev": "2ba6688b6f1ef965dffc11af4dfceb778db3cb0e",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -509,6 +533,7 @@
         "harmonia": "harmonia",
         "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
+        "hyprspace": "hyprspace",
         "lanzaboote": "lanzaboote",
         "nether": "nether",
         "nix": "nix",
@@ -554,11 +579,11 @@
         "nixpkgs-stable": []
       },
       "locked": {
-        "lastModified": 1731047660,
-        "narHash": "sha256-iyp51lPWEQz4c5VH9bVbAuBcFP4crETU2QJYh5V0NYA=",
+        "lastModified": 1731213149,
+        "narHash": "sha256-jR8i6nFLmSmm0cIoeRQ8Q4EBARa3oGaAtEER/OMMxus=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "60e1bce1999f126e3b16ef45f89f72f0c3f8d16f",
+        "rev": "f1675e3b0e1e663a4af49be67ecbc9e749f85eb7",
         "type": "github"
       },
       "original": {

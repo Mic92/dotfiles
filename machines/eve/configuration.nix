@@ -85,6 +85,7 @@
     ../modules/tracing.nix
     ../modules/uptermd.nix
     ../modules/zsh.nix
+    ../modules/hyprspace.nix
   ];
   nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
 

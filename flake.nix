@@ -51,7 +51,8 @@
     #spora.url = "github:krebs/spora";
     #spora.inputs.nixpkgs.follows = "nixpkgs";
 
-    nixos-hardware.url = "github:NixOS/nixos-hardware";
+    #nixos-hardware.url = "github:NixOS/nixos-hardware";
+    nixos-hardware.url = "github:Mic92/nixos-hardware/framework-13-audio-improvements";
 
     systems.url = "github:nix-systems/default";
 
@@ -60,6 +61,10 @@
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
+
+    hyprspace.url = "github:hyprspace/hyprspace";
+    hyprspace.inputs.flake-parts.follows = "flake-parts";
+    hyprspace.inputs.nixpkgs.follows = "nixpkgs";
 
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
 
@@ -76,9 +81,9 @@
     srvos.url = "github:Mic92/srvos/dotfiles";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
-    # clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
+    #clan-core.url = "https://git.clan.lol/clan/clan-core/archive/simplify-system.tar.gz";
     #clan-core.url = "path:///Users/joerg/git/clan-core";
-    clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=init/zerotier-inventory";
+    clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=ssh-ca";
     #clan-core.url = "git+file:///home/joerg/work/clan/clan-core";
     clan-core.inputs.nixpkgs.follows = "nixpkgs";
     clan-core.inputs.sops-nix.follows = "sops-nix";

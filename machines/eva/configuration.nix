@@ -32,6 +32,7 @@
     ../modules/promtail.nix
     ../modules/users.nix
     ../modules/unbound.nix
+    ../modules/hyprspace.nix
   ];
   nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
   boot.loader.efi.canTouchEfiVariables = true;

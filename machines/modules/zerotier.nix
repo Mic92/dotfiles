@@ -11,6 +11,7 @@
     interfacePrefixBlacklist = [
       "tinc"
       "wiregrill"
+      "hyprspace"
     ];
   };
 

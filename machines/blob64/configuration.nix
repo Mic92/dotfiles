@@ -13,6 +13,7 @@
     ../modules/networkd.nix
     ../modules/ip-update.nix
     ../modules/packages.nix
+    ../modules/hyprspace.nix
     ./modules/photoprism.nix
   ];
 

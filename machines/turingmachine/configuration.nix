@@ -57,6 +57,7 @@
     ../modules/tracing.nix
     ../modules/data-mesher.nix
     ../modules/users.nix
+    ../modules/hyprspace.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
