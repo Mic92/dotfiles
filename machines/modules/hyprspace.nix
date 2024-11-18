@@ -51,8 +51,7 @@
     ];
     script = ''
       hyprspace init -c $out/hyprspace.json  | tail -n+3 | jq '.name = "${config.clan.core.machineName}"' > $out/peer-id
-      key=$(jq -r '.privateKey' < $out/hyprspace.json)
-      echo $key > $out/private-key
+      jq -r '.privateKey' < $out/hyprspace.json > $out/private-key
     '';
   };
 
