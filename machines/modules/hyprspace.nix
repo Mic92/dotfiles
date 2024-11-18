@@ -14,7 +14,7 @@
     enable = true;
 
     # To get a private key and peer ID, use `hyprspace init`
-    privateKeyFile = "/run/credentials/hyprspace.service/private-key";
+    privateKeyFile = config.clan.core.vars.generators.hyprspace.files.private-key.path;
 
     # Same as the config file
     settings.peers =
@@ -38,12 +38,6 @@
 
   networking.firewall.allowedTCPPorts = [ 8001 ];
   networking.firewall.allowedUDPPorts = [ 8001 ];
-
-  systemd.services.hyprspace = {
-    serviceConfig.LoadCredential = [
-      "private-key:${config.clan.core.vars.generators.hyprspace.files.private-key.path}"
-    ];
-  };
 
   clan.core.vars.generators.hyprspace = {
     files.private-key = { };
