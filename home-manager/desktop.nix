@@ -26,7 +26,7 @@
       eternal-terminal
       gimp
       zed-editor
-      jj
+      jujutsu
       lazyjj
 
       arandr
