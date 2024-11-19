@@ -26,6 +26,8 @@
       eternal-terminal
       gimp
       zed-editor
+      jj
+      lazyjj
 
       arandr
       signal-desktop
