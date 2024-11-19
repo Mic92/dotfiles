@@ -301,11 +301,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1731579568,
-        "narHash": "sha256-Y75KsOwCQlOFnYBZkMyJstF0qmAV829B7h1befUHh4g=",
+        "lastModified": 1731864001,
+        "narHash": "sha256-Ckq6fF4H/6+3HHTHwSHOk+22FgTz5tdGJ+Q5tzFeXsI=",
         "owner": "hyprspace",
         "repo": "hyprspace",
-        "rev": "83e755f445ac5baf4a0fa54fd9cea179efabc773",
+        "rev": "fc42d2eec0b2582f6386b07ec2c24a8c37bc1a3b",
         "type": "github"
       },
       "original": {
