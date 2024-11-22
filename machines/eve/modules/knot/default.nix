@@ -116,8 +116,9 @@ in
           id = "retiolum";
           semantic-checks = "on";
           zonefile-sync = "-1";
-          zonefile-load = "difference";
-          journal-content = "changes";
+          zonefile-load = "difference-no-serial";
+          serial-policy = "dateserial";
+          journal-content = "all";
         }
         {
           id = "master";
@@ -125,46 +126,60 @@ in
           notify = [ "he_ip4" ];
           acl = [ "he_acl" ];
           zonefile-sync = "-1";
-          zonefile-load = "difference";
-          journal-content = "changes";
+          zonefile-load = "difference-no-serial";
+          serial-policy = "dateserial";
+          journal-content = "all";
         }
         {
           id = "acme";
           semantic-checks = "on";
           acl = [ "acme_acl" ];
           zonefile-sync = "-1";
-          zonefile-load = "difference";
-          journal-content = "changes";
+          zonefile-load = "difference-no-serial";
+          serial-policy = "dateserial";
+          journal-content = "all";
         }
         {
           id = "dyndns";
           semantic-checks = "on";
           zonefile-sync = "-1";
-          zonefile-load = "difference";
-          journal-content = "changes";
+          zonefile-load = "difference-no-serial";
+          serial-policy = "dateserial";
+          journal-content = "all";
         }
         {
           id = "bernie";
           semantic-checks = "on";
           acl = [ "bernie_acl" ];
           zonefile-sync = "-1";
-          zonefile-load = "difference";
-          journal-content = "changes";
+          zonefile-load = "difference-no-serial";
+          serial-policy = "dateserial";
+          journal-content = "all";
         }
         {
           id = "matchbox";
           semantic-checks = "on";
           acl = [ "matchbox_acl" ];
           zonefile-sync = "-1";
-          zonefile-load = "difference";
-          journal-content = "changes";
+          zonefile-load = "difference-no-serial";
+          serial-policy = "dateserial";
+          journal-content = "all";
         }
       ];
       zone =
         [
           {
             domain = "thalheim.io";
-            file = "${./thalheim.io.zone}";
+            file = builtins.toString (
+              pkgs.writeText "thalheim.io.zone" ''
+                ${builtins.readFile ./thalheim.io.zone}
+                ${lib.concatMapStringsSep "\n" (name: "_acme-challenge.${name}. IN NS ns1.thalheim.io.") (
+                  builtins.filter (name: lib.strings.hasSuffix ".thalheim.io" name) (
+                    builtins.attrNames config.security.acme.certs
+                  )
+                )}
+              ''
+            );
             template = "master";
           }
           {
@@ -218,21 +233,19 @@ in
             acl = [ "rauter_acl" ];
           }
         ]
-        ++ lib.mapAttrsToList (
-          name: cert: {
-            domain = "_acme-challenge.${name}";
+        ++ lib.mapAttrsToList (name: _cert: {
+          domain = "_acme-challenge.${name}";
 
-            file = "${pkgs.writeText "_acme-challenge.${name}.zone" ''
-              @ 3600 IN SOA _acme-challenge.${name}. ns1.thalheim.io. 2021013110 7200 3600 86400 3600
+          file = "${pkgs.writeText "_acme-challenge.${name}.zone" ''
+            @ 3600 IN SOA _acme-challenge.${name}. ns1.thalheim.io. 2021013110 7200 3600 86400 3600
 
-              $TTL 600
+            $TTL 600
 
-              @ IN NS ns1.thalheim.io.
-            ''}";
+            @ IN NS ns1.thalheim.io.
+          ''}";
 
-            template = "acme";
-          }
-        ) config.security.acme.certs;
+          template = "acme";
+        }) config.security.acme.certs;
     };
   };
 
