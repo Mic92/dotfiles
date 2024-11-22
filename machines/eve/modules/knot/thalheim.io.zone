@@ -44,18 +44,9 @@ prometheus IN CNAME eva
 alertmanager IN CNAME eva
 telegraf IN CNAME eva
 go-neb IN CNAME eva
-;; needed because of acme challenge
-anon IN CNAME www
 
 blog IN CNAME mic92.github.io.
 vmsh IN CNAME mic92.github.io.
-
-_acme-challenge IN NS ns1.thalheim.io.
-_acme-challenge.imap IN NS ns1.thalheim.io.
-_acme-challenge.mail IN NS ns1.thalheim.io.
-_acme-challenge.anon IN NS ns1.thalheim.io.
-_acme-challenge.dns IN NS ns1.thalheim.io.
-_acme-challenge.kanidm IN NS ns1.thalheim.io.
 
 turingmachine IN NS ns1.thalheim.io.
 bernie IN NS ns1.thalheim.io.
@@ -90,23 +81,10 @@ _token._dnswl IN TXT "v6e9a15zje7o03w1oos9ashj258elvdh"
 @ IN TXT "google-site-verification=TGvlDYzS1IB0wcHO32Bnzfb5IVFbYm6Roeg27TU6XjY"
 _smtp._tls IN TXT "v=TLSRPTv1;rua=mailto:joerg.smtp-tls@thalheim.io"
 
-;; XMPP
-jabber IN A 95.217.199.121
-jabber IN AAAA 2a01:4f9:4a:42e8::1
-muc IN CNAME www
-_xmpp-client._tcp IN SRV 0 5 5222 jabber
-_xmpp-server._tcp IN SRV 0 5 5269 jabber
-_xmpp-server._tcp.muc IN SRV 0 5 5269 jabber
 ;; Matrix
 matrix IN A 95.217.199.121
 matrix IN AAAA 2a01:4f9:4a:42e8::1
 _matrix._tcp IN SRV 0 5 443 matrix
-
-;; https://github.com/Mic92/nixos-wiki-infra
-nixos-wiki2 IN NS dns1.p01.nsone.net.
-nixos-wiki2 IN NS dns2.p01.nsone.net.
-nixos-wiki2 IN NS dns3.p01.nsone.net.
-nixos-wiki2 IN NS dns4.p01.nsone.net.
 
 ;; SSHFP Records
 ;@ IN SSHFP 1 1 8d70780fc074aeae1bea82f64d9b4a396604b570
