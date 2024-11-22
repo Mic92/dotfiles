@@ -2,20 +2,12 @@
   pkgs,
   config,
   inputs,
+  lib,
   ...
 }:
 let
   ip4 = config.networking.eve.ipv4.address;
   ip6 = config.networking.eve.ipv6.address;
-  acmeChallenge =
-    domain:
-    pkgs.writeText "_acme-challenge.${domain}.zone" ''
-      @ 3600 IN SOA _acme-challenge.${domain}. ns1.thalheim.io. 2021013110 7200 3600 86400 3600
-
-      $TTL 600
-
-      @ IN NS ns1.thalheim.io.
-    '';
   dyndns =
     domain:
     pkgs.writeText "${domain}.zone" ''
@@ -95,11 +87,6 @@ in
           key = "bernie";
           action = "update";
         }
-        {
-          id = "bbc_acl";
-          key = "bbc";
-          action = "update";
-        }
       ];
 
       mod-rrl = [
@@ -172,113 +159,80 @@ in
           zonefile-load = "difference";
           journal-content = "changes";
         }
-        {
-          id = "bbc";
-          semantic-checks = "on";
-          acl = [ "bbc_acl" ];
-          zonefile-sync = "-1";
-          zonefile-load = "difference";
-          journal-content = "changes";
-        }
       ];
-      zone = [
-        {
-          domain = "thalheim.io";
-          file = "${./thalheim.io.zone}";
-          template = "master";
-        }
-        {
-          domain = "tierheilpraxis-jessican.de";
-          file = "${./tierheilpraxis-jessican.de.zone}";
-          template = "master";
-        }
-        {
-          domain = "lekwati.com";
-          file = "${./lekwati.com.zone}";
-          template = "master";
-        }
-        {
-          domain = "r";
-          file = "${inputs.retiolum}/zones/r.zone";
-          template = "retiolum";
-        }
-        {
-          domain = "w";
-          file = "${inputs.retiolum}/zones/w.zone";
-          template = "retiolum";
-        }
-        {
-          domain = "bbc.lekwati.com";
-          file = "${dyndns "bbc.lekwati.com"}";
-          template = "dyndns";
-          acl = [ "bbc_acl" ];
-        }
-        {
-          domain = "matchbox.thalheim.io";
-          file = "${dyndns "matchbox.thalheim.io"}";
-          template = "dyndns";
-          acl = [ "matchbox_acl" ];
-        }
-        {
-          domain = "bernie.thalheim.io";
-          file = "${dyndns "bernie.thalheim.io"}";
-          template = "dyndns";
-          acl = [ "bernie_acl" ];
-        }
-        {
-          domain = "turingmachine.thalheim.io";
-          file = "${dyndns "turingmachine.thalheim.io"}";
-          template = "dyndns";
-          acl = [ "turingmachine_acl" ];
-        }
-        {
-          domain = "blob64.thalheim.io";
-          file = "${dyndns "blob64.thalheim.io"}";
-          template = "dyndns";
-          acl = [ "blob64_acl" ];
-        }
-        {
-          domain = "rauter.thalheim.io";
-          file = "${dyndns "rauter.thalheim.io"}";
-          template = "dyndns";
-          acl = [ "rauter_acl" ];
-        }
-        {
-          domain = "_acme-challenge.thalheim.io";
-          file = "${acmeChallenge "thalheim.io"}";
-          template = "acme";
-        }
-        {
-          domain = "_acme-challenge.anon.thalheim.io";
-          file = "${acmeChallenge "anon.thalheim.io"}";
-          template = "acme";
-        }
-        {
-          domain = "_acme-challenge.imap.thalheim.io";
-          file = "${acmeChallenge "imap.thalheim.io"}";
-          template = "acme";
-        }
-        {
-          domain = "_acme-challenge.mail.thalheim.io";
-          file = "${acmeChallenge "mail.thalheim.io"}";
-          template = "acme";
-        }
-        {
-          domain = "_acme-challenge.lekwati.com";
-          file = "${acmeChallenge "lekwati.com"}";
-          template = "acme";
-        }
-        {
-          domain = "_acme-challenge.devkid.net";
-          file = "${acmeChallenge "devkid.net"}";
-          template = "acme";
-        }
-        {
-          domain = "_acme-challenge.imap.devkid.net";
-          file = "${acmeChallenge "imap.devkid.net"}";
-          template = "acme";
-        }
-      ];
+      zone =
+        [
+          {
+            domain = "thalheim.io";
+            file = "${./thalheim.io.zone}";
+            template = "master";
+          }
+          {
+            domain = "tierheilpraxis-jessican.de";
+            file = "${./tierheilpraxis-jessican.de.zone}";
+            template = "master";
+          }
+          {
+            domain = "lekwati.com";
+            file = "${./lekwati.com.zone}";
+            template = "master";
+          }
+          {
+            domain = "r";
+            file = "${inputs.retiolum}/zones/r.zone";
+            template = "retiolum";
+          }
+          {
+            domain = "w";
+            file = "${inputs.retiolum}/zones/w.zone";
+            template = "retiolum";
+          }
+          {
+            domain = "matchbox.thalheim.io";
+            file = "${dyndns "matchbox.thalheim.io"}";
+            template = "dyndns";
+            acl = [ "matchbox_acl" ];
+          }
+          {
+            domain = "bernie.thalheim.io";
+            file = "${dyndns "bernie.thalheim.io"}";
+            template = "dyndns";
+            acl = [ "bernie_acl" ];
+          }
+          {
+            domain = "turingmachine.thalheim.io";
+            file = "${dyndns "turingmachine.thalheim.io"}";
+            template = "dyndns";
+            acl = [ "turingmachine_acl" ];
+          }
+          {
+            domain = "blob64.thalheim.io";
+            file = "${dyndns "blob64.thalheim.io"}";
+            template = "dyndns";
+            acl = [ "blob64_acl" ];
+          }
+          {
+            domain = "rauter.thalheim.io";
+            file = "${dyndns "rauter.thalheim.io"}";
+            template = "dyndns";
+            acl = [ "rauter_acl" ];
+          }
+        ]
+        ++ lib.mapAttrsToList (
+          name: cert: {
+            domain = "_acme-challenge.${name}";
+
+            file = "${pkgs.writeText "_acme-challenge.${name}.zone" ''
+              @ 3600 IN SOA _acme-challenge.${name}. ns1.thalheim.io. 2021013110 7200 3600 86400 3600
+
+              $TTL 600
+
+              @ IN NS ns1.thalheim.io.
+            ''}";
+
+            template = "acme";
+          }
+        ) config.security.acme.certs;
     };
   };
 
