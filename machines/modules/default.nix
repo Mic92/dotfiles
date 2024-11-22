@@ -22,7 +22,6 @@
     ./fhs-compat.nix
     ./update-prefetch.nix
 
-
     inputs.srvos.nixosModules.common
     inputs.srvos.nixosModules.mixins-telegraf
     inputs.srvos.nixosModules.mixins-nix-experimental

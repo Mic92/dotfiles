@@ -17,6 +17,17 @@ let
 
       @ IN NS ns1.thalheim.io.
     '';
+
+  zoneWithAcme =
+    name:
+    pkgs.writeText "${name}.zone" ''
+      ${builtins.readFile (./. + "/${name}.zone")}
+      ${lib.concatMapStringsSep "\n" (name: "_acme-challenge.${name}. IN NS ns1.thalheim.io.") (
+        builtins.filter (name: lib.strings.hasSuffix ".${name}" name) (
+          builtins.attrNames config.security.acme.certs
+        )
+      )}
+    '';
 in
 {
   #content of the secret
@@ -170,26 +181,17 @@ in
         [
           {
             domain = "thalheim.io";
-            file = builtins.toString (
-              pkgs.writeText "thalheim.io.zone" ''
-                ${builtins.readFile ./thalheim.io.zone}
-                ${lib.concatMapStringsSep "\n" (name: "_acme-challenge.${name}. IN NS ns1.thalheim.io.") (
-                  builtins.filter (name: lib.strings.hasSuffix ".thalheim.io" name) (
-                    builtins.attrNames config.security.acme.certs
-                  )
-                )}
-              ''
-            );
-            template = "master";
-          }
-          {
-            domain = "tierheilpraxis-jessican.de";
-            file = "${./tierheilpraxis-jessican.de.zone}";
+            file = zoneWithAcme "thalheim.io";
             template = "master";
           }
           {
             domain = "lekwati.com";
-            file = "${./lekwati.com.zone}";
+            file = zoneWithAcme "lekwati.com";
+            template = "master";
+          }
+          {
+            domain = "tierheilpraxis-jessican.de";
+            file = ./tierheilpraxis-jessican.de.zone;
             template = "master";
           }
           {
@@ -204,31 +206,31 @@ in
           }
           {
             domain = "matchbox.thalheim.io";
-            file = "${dyndns "matchbox.thalheim.io"}";
+            file = dyndns "matchbox.thalheim.io";
             template = "dyndns";
             acl = [ "matchbox_acl" ];
           }
           {
             domain = "bernie.thalheim.io";
-            file = "${dyndns "bernie.thalheim.io"}";
+            file = dyndns "bernie.thalheim.io";
             template = "dyndns";
             acl = [ "bernie_acl" ];
           }
           {
             domain = "turingmachine.thalheim.io";
-            file = "${dyndns "turingmachine.thalheim.io"}";
+            file = dyndns "turingmachine.thalheim.io";
             template = "dyndns";
             acl = [ "turingmachine_acl" ];
           }
           {
             domain = "blob64.thalheim.io";
-            file = "${dyndns "blob64.thalheim.io"}";
+            file = dyndns "blob64.thalheim.io";
             template = "dyndns";
             acl = [ "blob64_acl" ];
           }
           {
             domain = "rauter.thalheim.io";
-            file = "${dyndns "rauter.thalheim.io"}";
+            file = dyndns "rauter.thalheim.io";
             template = "dyndns";
             acl = [ "rauter_acl" ];
           }
