@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2023071201 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2024112201 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -39,8 +39,6 @@ www IN A 95.217.199.121
 www IN AAAA 2a01:4f9:4a:42e8::1
 * IN CNAME www
 
-dependable-virtualized-systems IN CNAME dependable-virtualized-systems.netlify.app.
-
 ip2 IN CNAME eva
 prometheus IN CNAME eva
 alertmanager IN CNAME eva
@@ -57,6 +55,7 @@ _acme-challenge.imap IN NS ns1.thalheim.io.
 _acme-challenge.mail IN NS ns1.thalheim.io.
 _acme-challenge.anon IN NS ns1.thalheim.io.
 _acme-challenge.dns IN NS ns1.thalheim.io.
+_acme-challenge.kanidm IN NS ns1.thalheim.io.
 
 turingmachine IN NS ns1.thalheim.io.
 bernie IN NS ns1.thalheim.io.
