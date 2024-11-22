@@ -33,19 +33,17 @@
             stylua
             # based on https://github.com/ray-x/go.nvim#go-binaries-install-and-update
             go
-            gofumpt
-            gomodifytags
-            gotools
             delve
+            ginkgo
+            gofumpt
             golines
             gomodifytags
             gotests
+            gotestsum
+            gotools
+            govulncheck
             iferr
             impl
-            reftools
-            ginkgo
-            richgo
-            govulncheck
 
             #ocaml-ng.ocamlPackages_5_0.ocaml-lsp
             #ocaml-ng.ocamlPackages_5_0.ocamlformat
