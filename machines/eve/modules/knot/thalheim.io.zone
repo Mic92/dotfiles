@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2023071201 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2024112202 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -39,24 +39,17 @@ www IN A 95.217.199.121
 www IN AAAA 2a01:4f9:4a:42e8::1
 * IN CNAME www
 
-dependable-virtualized-systems IN CNAME dependable-virtualized-systems.netlify.app.
+;; why do I need this explicitely?
+kanidm IN CNAME www
 
 ip2 IN CNAME eva
 prometheus IN CNAME eva
 alertmanager IN CNAME eva
 telegraf IN CNAME eva
 go-neb IN CNAME eva
-;; needed because of acme challenge
-anon IN CNAME www
 
 blog IN CNAME mic92.github.io.
 vmsh IN CNAME mic92.github.io.
-
-_acme-challenge IN NS ns1.thalheim.io.
-_acme-challenge.imap IN NS ns1.thalheim.io.
-_acme-challenge.mail IN NS ns1.thalheim.io.
-_acme-challenge.anon IN NS ns1.thalheim.io.
-_acme-challenge.dns IN NS ns1.thalheim.io.
 
 turingmachine IN NS ns1.thalheim.io.
 bernie IN NS ns1.thalheim.io.
@@ -91,39 +84,10 @@ _token._dnswl IN TXT "v6e9a15zje7o03w1oos9ashj258elvdh"
 @ IN TXT "google-site-verification=TGvlDYzS1IB0wcHO32Bnzfb5IVFbYm6Roeg27TU6XjY"
 _smtp._tls IN TXT "v=TLSRPTv1;rua=mailto:joerg.smtp-tls@thalheim.io"
 
-;; XMPP
-jabber IN A 95.217.199.121
-jabber IN AAAA 2a01:4f9:4a:42e8::1
-muc IN CNAME www
-_xmpp-client._tcp IN SRV 0 5 5222 jabber
-_xmpp-server._tcp IN SRV 0 5 5269 jabber
-_xmpp-server._tcp.muc IN SRV 0 5 5269 jabber
 ;; Matrix
 matrix IN A 95.217.199.121
 matrix IN AAAA 2a01:4f9:4a:42e8::1
 _matrix._tcp IN SRV 0 5 443 matrix
-
-;; https://github.com/Mic92/nixos-wiki-infra
-nixos-wiki2 IN NS dns1.p01.nsone.net.
-nixos-wiki2 IN NS dns2.p01.nsone.net.
-nixos-wiki2 IN NS dns3.p01.nsone.net.
-nixos-wiki2 IN NS dns4.p01.nsone.net.
-
-;; SSHFP Records
-;@ IN SSHFP 1 1 8d70780fc074aeae1bea82f64d9b4a396604b570
-;@ IN SSHFP 1 2 9c1c0e22fb5b4f164a4944250962c9a877b134f1898a2a1b2c45d51e01612aec
-;@ IN SSHFP 4 1 02137f60baa6c39af5a4702f21887fa060013fda
-;@ IN SSHFP 4 2 9928918da15fb19c804a2beb3395ec1aeff1a5f0fa5474499c10e96207f093e3
-;
-;eve IN SSHFP 1 1 8d70780fc074aeae1bea82f64d9b4a396604b570
-;eve IN SSHFP 1 2 9c1c0e22fb5b4f164a4944250962c9a877b134f1898a2a1b2c45d51e01612aec
-;eve IN SSHFP 4 1 02137f60baa6c39af5a4702f21887fa060013fda
-;eve IN SSHFP 4 2 9928918da15fb19c804a2beb3395ec1aeff1a5f0fa5474499c10e96207f093e3
-;
-;git IN SSHFP 1 1 8d70780fc074aeae1bea82f64d9b4a396604b570
-;git IN SSHFP 1 2 9c1c0e22fb5b4f164a4944250962c9a877b134f1898a2a1b2c45d51e01612aec
-;git IN SSHFP 4 1 02137f60baa6c39af5a4702f21887fa060013fda
-;git IN SSHFP 4 2 9928918da15fb19c804a2beb3395ec1aeff1a5f0fa5474499c10e96207f093e3
 
 ;; Keybase & GPG
 joerg._pka IN TXT "v=pka1;fpr=4ABA07382AD57E6B9AA4E88DCA4106B8D7CC79FA;uri=https://thalheim.io/joerg/joerg.asc"
