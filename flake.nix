@@ -29,7 +29,7 @@
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix.url = "github:Mic92/nix-1";
+    nix.url = "git+https://github.com/Mic92/nix-1?shallow=1";
     nix.inputs.nixpkgs.follows = "nixpkgs";
     nix.inputs.flake-parts.follows = "";
     nix.inputs.nixpkgs-regression.follows = "";
@@ -61,6 +61,7 @@
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
+    buildbot-nix.inputs.hercules-ci-effects.follows = "";
 
     hyprspace.url = "github:hyprspace/hyprspace";
     hyprspace.inputs.flake-parts.follows = "flake-parts";

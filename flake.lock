@@ -5,6 +5,7 @@
         "flake-parts": [
           "flake-parts"
         ],
+        "hercules-ci-effects": [],
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -13,11 +14,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1730391307,
-        "narHash": "sha256-olDwthnw46I8MAn5eYOQwysMvMfK9z7BctAxWqpa6LQ=",
+        "lastModified": 1732578586,
+        "narHash": "sha256-kR2RwG4H32zRkyVVfDKUnoPxORb6DzztE16oc98ZzSg=",
         "owner": "nix-community",
         "repo": "buildbot-nix",
-        "rev": "0e0314988f86de1e6816658325850cf743149765",
+        "rev": "037344cad03e933ea370c0766b39b959820446e5",
         "type": "github"
       },
       "original": {
@@ -384,17 +385,18 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1732136054,
-        "narHash": "sha256-hjIQNzE5r9REtPeyYy7VCqRowsyja0/T+aNZ9gLXawE=",
-        "owner": "Mic92",
-        "repo": "nix-1",
-        "rev": "591f6433ce6db30d0745bdcac0d7b91b7c8af24f",
-        "type": "github"
+        "lastModified": 1732603831,
+        "narHash": "sha256-jxaldi0VNTiWhDS/ajtQh3MQ13SjBhCuUbDilSJHdN0=",
+        "ref": "refs/heads/master",
+        "rev": "f977f98db656ac2ae6e0ea782196d69b768fb991",
+        "shallow": true,
+        "type": "git",
+        "url": "https://github.com/Mic92/nix-1"
       },
       "original": {
-        "owner": "Mic92",
-        "repo": "nix-1",
-        "type": "github"
+        "shallow": true,
+        "type": "git",
+        "url": "https://github.com/Mic92/nix-1"
       }
     },
     "nix-darwin": {
