@@ -21,18 +21,8 @@ if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then
   . ~/.nix-profile/etc/profile.d/nix.sh
 fi
 
-
-if [[ -d ~/git/nixpkgs ]]; then
-  export NIX_PATH="nixpkgs=$HOME/git/nixpkgs:$NIX_PATH"
-fi
-if [[ -d ~/.nix-defexpr/channels ]]; then
-  export NIX_PATH="$NIX_PATH:$HOME/.nix-defexpr/channels"
-fi
 if [[ $OSTYPE == darwin* ]]; then
   export NIX_PATH="$NIX_PATH:darwin-config=$HOME/.config/nixpkgs/darwin-configuration.nix"
-  if [[ -d ~/git/nix-darwin ]]; then
-    export NIX_PATH="$NIX_PATH:darwin=$HOME/git/nix-darwin"
-  fi
 fi
 
 if [[ -S /nix/var/nix/daemon-socket/socket ]]; then
