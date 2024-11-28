@@ -73,6 +73,7 @@
   environment.systemPackages = with pkgs; [
     sunshine
     nixos-facter
+    nixos-rebuild-ng
   ];
 
   services.fwupd.enable = true;
@@ -129,8 +130,6 @@
     '';
     journald.extraConfig = "SystemMaxUse=1G";
   };
-
-  hardware.framework.laptop13.audioEnhancement.enabled = true;
 
   systemd.services.audio-off = {
     description = "Mute audio before suspend";
