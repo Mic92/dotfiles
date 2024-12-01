@@ -1,5 +1,5 @@
 { pkgs, ... }:
 {
   homebrew.casks = [ "iterm2" ];
-  fonts.packages = [ (pkgs.nerdfonts.override { fonts = [ "FiraCode" ]; }) ];
+  fonts.packages = [ pkgs.nerd-fonts.fira-code ];
 }
