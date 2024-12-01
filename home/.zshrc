@@ -273,7 +273,11 @@ rg() {
   fi
 
   if [[ -n ${commands[rg]} ]]; then
-    ( command rg --sort path --smart-case --fixed-strings --json -C 2 "$@"; command rg --files | command rg --no-line-number --json -C 2 "$@" ) | $pager
+    (
+      command rg --sort path --smart-case --fixed-strings --json -C 2 "$@";
+      if [[ -t 0 ]]; then
+        command rg --files | command rg --no-line-number --json -C 2 "$@"
+      fi) | $pager
   elif [[ -n ${commands[ag]} ]]; then
     command ag -C2 --smart-case --literal --pager="$pager" "$@"
   else
