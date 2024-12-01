@@ -43,7 +43,6 @@
     # for development
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
-    sops-nix.inputs.nixpkgs-stable.follows = "";
 
     #retiolum.url = "git+https://git.thalheim.io/Mic92/retiolum";
     retiolum.url = "github:Mic92/retiolum";
@@ -57,7 +56,7 @@
     systems.url = "github:nix-systems/default";
 
     #buildbot-nix.url = "github:MagicRB/buildbot-nix/per-repo-configuration";
-    buildbot-nix.url = "github:nix-community/buildbot-nix";
+    buildbot-nix.url = "github:nix-community/buildbot-nix/hercules";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
@@ -84,7 +83,7 @@
 
     #clan-core.url = "https://git.clan.lol/clan/clan-core/archive/simplify-system.tar.gz";
     #clan-core.url = "path:///Users/joerg/git/clan-core";
-    clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=ssh-ca";
+    clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=nixos-rebuild";
     #clan-core.url = "git+file:///home/joerg/work/clan/clan-core";
     clan-core.inputs.nixpkgs.follows = "nixpkgs";
     clan-core.inputs.sops-nix.follows = "sops-nix";
@@ -159,6 +158,7 @@
             hci-effects.runIf (herculesCI.config.repo.branch == "main") (
               hci-effects.mkEffect {
                 effectScript = ''
+                  echo "${builtins.toJSON { inherit (herculesCI.config.repo) branch tag rev; }}"
                   ${pkgs.hello}/bin/hello
                 '';
               }
