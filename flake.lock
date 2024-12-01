@@ -14,11 +14,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1732715202,
-        "narHash": "sha256-njHYdr08ceJrL7z06jtG4nmMLb9EOYRJ+viuwGqeKfM=",
+        "lastModified": 1733048330,
+        "narHash": "sha256-TPDpYNBeBMQmLYb0hUdiDXhi9zGuIDq+M6N9unnN6Pg=",
         "owner": "nix-community",
         "repo": "buildbot-nix",
-        "rev": "7c4a88d3a036e61eba1b7d871fd5ba31274ce9f0",
+        "rev": "13510a4edb55da079868b28298c17be3ecb33e94",
         "type": "github"
       },
       "original": {
@@ -123,32 +123,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "disko",
-        "type": "github"
-      }
-    },
-    "fast-flake-update": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1732496171,
-        "narHash": "sha256-dW7OrYx4K27eZ3rxQjdxnG122tfLGj4/8oPXCIC8mvM=",
-        "owner": "Mic92",
-        "repo": "fast-flake-update",
-        "rev": "781b265e93cf2e514500dafeae99c16b3a54ea27",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "fast-flake-update",
         "type": "github"
       }
     },
@@ -474,10 +448,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1732419038,
-        "narHash": "sha256-KLx6GO1JBmhRl3PKVA+YfEXqr7/vYdYMsxFh1wZGuAY=",
+        "lastModified": 1733060063,
+        "narHash": "sha256-2aJDl8lNKcrnW8r+H2CujTO42qC5/Uy1xSiSQdJTEA4=",
         "ref": "refs/heads/main",
-        "rev": "dc70162b4cec125043d1a04d13e4f4f7520970c0",
+        "rev": "b6b79790f486db31a037a5fd3c81801864d74153",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -529,7 +503,6 @@
         "clan-core": "clan-core",
         "data-mesher": "data-mesher",
         "disko": "disko",
-        "fast-flake-update": "fast-flake-update",
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",

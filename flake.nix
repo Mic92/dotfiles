@@ -105,11 +105,6 @@
     lanzaboote.inputs.flake-compat.follows = "";
     lanzaboote.inputs.pre-commit-hooks-nix.follows = "";
 
-    fast-flake-update.url = "github:Mic92/fast-flake-update";
-    fast-flake-update.inputs.nixpkgs.follows = "nixpkgs";
-    fast-flake-update.inputs.flake-parts.follows = "flake-parts";
-    fast-flake-update.inputs.treefmt-nix.follows = "treefmt-nix";
-
     flake-utils.url = "github:numtide/flake-utils";
     flake-utils.inputs.systems.follows = "systems";
 
