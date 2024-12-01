@@ -39,15 +39,16 @@ runTreefmt() {
     treefmt --fail-on-change
     return 0
   fi
+  currentSystem=$(nix config show system)
   # detect treefmt embedded in a flake
   # shellcheck disable=SC2016
-  hasTreefmt='(val: val ? ${builtins.currentSystem} && val.${builtins.currentSystem}.name == "treefmt")'
-  if [[ $(nix eval .#formatter --impure --apply "$hasTreefmt" 2>/dev/null || true) != true ]]; then
+  hasTreefmt="(val: val ? $currentSystem && val.${currentSystem}.name == \"treefmt\")"
+  if [[ $(nix eval .#formatter --apply "$hasTreefmt" 2>/dev/null || true) != true ]]; then
     return 0
   fi
 
   # shellcheck disable=SC2016
-  formatter=$(nix build -o .git/treefmt '.#formatter.${builtins.currentSystem}' --print-out-paths)
+  formatter=$(nix build -o .git/treefmt ".#formatter.${currentSystem}" --print-out-paths)
 
   if "$formatter/bin/treefmt" --fail-on-change; then
     return 0
