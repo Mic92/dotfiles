@@ -42,7 +42,7 @@ runTreefmt() {
   currentSystem=$(nix config show system)
   # detect treefmt embedded in a flake
   # shellcheck disable=SC2016
-  hasTreefmt="(val: val ? $currentSystem && val.${currentSystem}.name == \"treefmt\")"
+  hasTreefmt="(val: val ? $currentSystem && (val.${currentSystem}.name == \"treefmt\" || val.${currentSystem}.name == \"treefmt-nix\")"
   if [[ $(nix eval .#formatter --apply "$hasTreefmt" 2>/dev/null || true) != true ]]; then
     return 0
   fi
