@@ -21,6 +21,7 @@
       nixpkgs-review
       nix-prefetch
       (pkgs.callPackage ./pkgs/atuin { })
+      mergiraf
 
       hexyl
       binutils
