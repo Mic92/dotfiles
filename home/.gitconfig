@@ -59,8 +59,8 @@
   autoUpdate = true
   enabled = true
 [branch]
-  autosetuprebase = always
-  autoSetupMerge = true
+  autoSetupRebase = always
+  autoSetupMerge = always
 [pull]
   rebase = true
   autostash = true
