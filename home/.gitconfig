@@ -38,6 +38,11 @@
   conflictstyle = zdiff3
 [mergetool "vimdiff"]
   cmd = nvim -d $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
+[merge "mergiraf"]
+  name = mergiraf
+  driver = mergiraf merge --git %O %A %B -s %S -x %X -y %Y -p %P
+[core]
+  attributesfile = ~/.gitattributes
 [alias]
   clone = clone --recursive
   blame = -w -M
