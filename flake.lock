@@ -126,11 +126,11 @@
     "flake-compat": {
       "flake": false,
       "locked": {
-        "lastModified": 1696426674,
-        "narHash": "sha256-kvjfFW7WAETZlt09AgDn1MrtKzP7t90Vf7vypd3OL1U=",
+        "lastModified": 1732722421,
+        "narHash": "sha256-HRJ/18p+WoXpWJkcdsk9St5ZiukCqSDgbOGFa8Okehg=",
         "owner": "edolstra",
         "repo": "flake-compat",
-        "rev": "0f9255e01c2351cc7d116c072cb317785dd33b33",
+        "rev": "9ed2ac151eada2306ca8c418ebd97807bb08f6ac",
         "type": "github"
       },
       "original": {
@@ -357,10 +357,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1732603831,
-        "narHash": "sha256-jxaldi0VNTiWhDS/ajtQh3MQ13SjBhCuUbDilSJHdN0=",
+        "lastModified": 1733239043,
+        "narHash": "sha256-Qw9G/HbtsUPvgtlbyJNZ8dJ7jnBfOEaCrwr57A78eQo=",
         "ref": "refs/heads/master",
-        "rev": "f977f98db656ac2ae6e0ea782196d69b768fb991",
+        "rev": "7ec4c79ffe4dae6c931aa10d083a41f2ff993513",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
