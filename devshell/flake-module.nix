@@ -109,6 +109,7 @@
           "*.vim"
           "*.el"
           "*.config"
+          "home/.gdbinit-gef.py"
           "home/.emacs.d/templates/*"
           "home/.doom.d/snippets/*"
           "*/secrets.enc.json"
