@@ -94,13 +94,13 @@
     geary
     teams-for-linux
     zoom-us
-    (retroarch.override {
-      cores = [
-        libretro.bsnes-hd
-        libretro.mupen64plus
-        libretro.beetle-psx-hw
-      ];
-    })
+    #(retroarch.override {
+    #  cores = [
+    #    libretro.bsnes-hd
+    #    libretro.mupen64plus
+    #    libretro.beetle-psx-hw
+    #  ];
+    #})
     jellyfin-media-player
     chromium
     celluloid
