@@ -44,6 +44,7 @@
             govulncheck
             iferr
             impl
+            zls
 
             #ocaml-ng.ocamlPackages_5_0.ocaml-lsp
             #ocaml-ng.ocamlPackages_5_0.ocamlformat
