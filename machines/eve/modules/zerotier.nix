@@ -1,5 +1,5 @@
 {
-  imports = [ ../../modules/zerotier.nix ];
+  imports = [ ../../../nixosModules/zerotier.nix ];
 
   clan.zerotier.moon.stableEndpoints = [
     "95.217.199.121"

@@ -8,12 +8,12 @@
   imports = [
     self.nixosModules.default
     inputs.srvos.nixosModules.server
-    ../modules/users.nix
-    ../modules/minimal-docs.nix
-    ../modules/networkd.nix
-    ../modules/ip-update.nix
-    ../modules/packages.nix
-    ../modules/hyprspace.nix
+    ../../nixosModules/users.nix
+    ../../nixosModules/minimal-docs.nix
+    ../../nixosModules/networkd.nix
+    ../../nixosModules/ip-update.nix
+    ../../nixosModules/packages.nix
+    ../../nixosModules/hyprspace.nix
     ./modules/photoprism.nix
   ];
 

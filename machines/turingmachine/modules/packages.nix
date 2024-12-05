@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
-  imports = [ ../../modules/packages.nix ];
+  imports = [ ../../../nixosModules/packages.nix ];
 
   environment.systemPackages = with pkgs; [
     cntr

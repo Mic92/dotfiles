@@ -1,5 +1,5 @@
 {
-  imports = [ ../../modules/sshd/tor.nix ];
+  imports = [ ../../../nixosModules/sshd/tor.nix ];
 
   services.openssh = {
     listenAddresses = [

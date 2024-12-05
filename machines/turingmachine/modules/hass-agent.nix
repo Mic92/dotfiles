@@ -1,5 +1,5 @@
 { pkgs, ... }:
 {
-  imports = [ ../../modules/hass-agent.nix ];
+  imports = [ ../../../nixosModules/hass-agent.nix ];
   users.users.hass-agent.packages = [ pkgs.mosquitto ];
 }

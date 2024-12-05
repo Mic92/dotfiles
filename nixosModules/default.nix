@@ -10,6 +10,7 @@
   clan.core.networking.targetHost = lib.mkDefault "root@${config.networking.hostName}.r";
 
   security.sudo.execWheelOnly = lib.mkForce false;
+  programs.nano.enable = false;
 
   imports = [
     ./nix-path.nix

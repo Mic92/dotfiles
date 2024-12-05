@@ -1,6 +1,6 @@
 { self, inputs, ... }:
 {
-  flake.nixosModules.default = ./modules/default.nix;
+  flake.nixosModules.default = ../nixosModules/default.nix;
   clan = {
     meta.name = "mic92";
 
@@ -22,7 +22,7 @@
         borgbackup.blob64 = {
           roles.server.machines = [ "blob64" ];
           roles.client.tags = [ "backup" ];
-          roles.client.extraModules = [ "machines/modules/borgbackup.nix" ];
+          roles.client.extraModules = [ "nixosModules/borgbackup.nix" ];
         };
         zerotier.mic92 = {
           roles.controller.machines = [ "eve" ];
@@ -37,7 +37,7 @@
           roles.server.tags = [ "all" ];
           roles.client.tags = [ "all" ];
           # tor-hidden-service
-          roles.client.extraModules = [ "machines/modules/ssh.nix" ];
+          roles.client.extraModules = [ "nixosModules/ssh.nix" ];
 
           config.certificate.searchDomains = [
             "i"

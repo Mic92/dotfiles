@@ -16,10 +16,10 @@
     ./modules/rsnapshot.nix
     ./modules/photoprism.nix
 
-    ../modules/users.nix
-    ../modules/mosh.nix
-    ../modules/sshd/tor.nix
-    ../modules/promtail.nix
+    ../../nixosModules/users.nix
+    ../../nixosModules/mosh.nix
+    ../../nixosModules/sshd/tor.nix
+    ../../nixosModules/promtail.nix
   ];
   nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.aarch64-linux;
   clan.core.state.pictures.folders = [ "/mnt/hdd" ];

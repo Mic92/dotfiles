@@ -25,14 +25,14 @@
     ./modules/telegraf
     ./modules/zerotier.nix
 
-    ../modules/mosh.nix
-    ../modules/nncp.nix
-    ../modules/iperf.nix
-    ../modules/openldap/replica.nix
-    ../modules/promtail.nix
-    ../modules/users.nix
-    ../modules/unbound.nix
-    ../modules/hyprspace.nix
+    ../../nixosModules/mosh.nix
+    ../../nixosModules/nncp.nix
+    ../../nixosModules/iperf.nix
+    ../../nixosModules/openldap/replica.nix
+    ../../nixosModules/promtail.nix
+    ../../nixosModules/users.nix
+    ../../nixosModules/unbound.nix
+    ../../nixosModules/hyprspace.nix
   ];
   nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
   boot.loader.efi.canTouchEfiVariables = true;

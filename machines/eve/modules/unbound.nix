@@ -1,5 +1,5 @@
 {
-  imports = [ ../../modules/unbound.nix ];
+  imports = [ ../../../nixosModules/unbound.nix ];
   # don't conflict with unbound
   services.unbound.settings.server.interface = [
     "::1"

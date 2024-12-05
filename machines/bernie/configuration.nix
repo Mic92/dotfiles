@@ -10,17 +10,17 @@
 }:
 {
   imports = [
-    #../modules/gnome.nix
-    ../modules/kde
-    ../modules/hass-agent.nix
-    ../modules/ip-update.nix
-    ../modules/packages.nix
-    ../modules/powertop.nix
-    ../modules/promtail.nix
-    ../modules/users.nix
-    ../modules/remote-builder.nix
-    ../modules/tracing.nix
-    ../modules/pipewire.nix
+    #../../nixosModules/gnome.nix
+    ../../nixosModules/kde
+    ../../nixosModules/hass-agent.nix
+    ../../nixosModules/ip-update.nix
+    ../../nixosModules/packages.nix
+    ../../nixosModules/powertop.nix
+    ../../nixosModules/promtail.nix
+    ../../nixosModules/users.nix
+    ../../nixosModules/remote-builder.nix
+    ../../nixosModules/tracing.nix
+    ../../nixosModules/pipewire.nix
 
     ./filesystems.nix
 

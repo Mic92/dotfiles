@@ -72,20 +72,20 @@
     ./modules/wireguard.nix
     ./modules/zerotier.nix
 
-    ../modules/borgbackup.nix
-    ../modules/builder.nix
-    ../modules/data-mesher.nix
-    ../modules/iperf.nix
-    ../modules/mosh.nix
-    ../modules/nncp.nix
-    ../modules/openldap
-    ../modules/promtail.nix
-    ../modules/rtorrent.nix
-    ../modules/samba-dl.nix
-    ../modules/tracing.nix
-    ../modules/uptermd.nix
-    ../modules/zsh.nix
-    ../modules/hyprspace.nix
+    ../../nixosModules/borgbackup.nix
+    ../../nixosModules/builder.nix
+    ../../nixosModules/data-mesher.nix
+    ../../nixosModules/iperf.nix
+    ../../nixosModules/mosh.nix
+    ../../nixosModules/nncp.nix
+    ../../nixosModules/openldap
+    ../../nixosModules/promtail.nix
+    ../../nixosModules/rtorrent.nix
+    ../../nixosModules/samba-dl.nix
+    ../../nixosModules/tracing.nix
+    ../../nixosModules/uptermd.nix
+    ../../nixosModules/zsh.nix
+    ../../nixosModules/hyprspace.nix
   ];
   nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
 

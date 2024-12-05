@@ -35,29 +35,29 @@
     ./modules/ghaf-hardware.nix
     ./modules/ghaf-facter.nix
 
-    ../modules/i18n.nix
-    ../modules/ip-update.nix
-    ../modules/kde
-    #../modules/qtile.nix
-    #../modules/keyd.nix
-    ../modules/ksmbd.nix
-    ../modules/lanzaboote.nix
-    ../modules/make-linux-fast.nix
-    ../modules/mosh.nix
-    ../modules/networkd.nix
-    ../modules/nncp.nix
-    ../modules/no-hz.nix
-    ../modules/pipewire.nix
-    ../modules/powertop.nix
-    ../modules/promtail.nix
-    ../modules/remote-builder.nix
-    ../modules/sshd/tor.nix
-    ../modules/suspend-on-low-power.nix
-    ../modules/touchpad-hack
-    ../modules/tracing.nix
-    ../modules/data-mesher.nix
-    ../modules/users.nix
-    ../modules/hyprspace.nix
+    ../../nixosModules/i18n.nix
+    ../../nixosModules/ip-update.nix
+    ../../nixosModules/kde
+    #../../nixosModules/qtile.nix
+    #../../nixosModules/keyd.nix
+    ../../nixosModules/ksmbd.nix
+    ../../nixosModules/lanzaboote.nix
+    ../../nixosModules/make-linux-fast.nix
+    ../../nixosModules/mosh.nix
+    ../../nixosModules/networkd.nix
+    ../../nixosModules/nncp.nix
+    ../../nixosModules/no-hz.nix
+    ../../nixosModules/pipewire.nix
+    ../../nixosModules/powertop.nix
+    ../../nixosModules/promtail.nix
+    ../../nixosModules/remote-builder.nix
+    ../../nixosModules/sshd/tor.nix
+    ../../nixosModules/suspend-on-low-power.nix
+    ../../nixosModules/touchpad-hack
+    ../../nixosModules/tracing.nix
+    ../../nixosModules/data-mesher.nix
+    ../../nixosModules/users.nix
+    ../../nixosModules/hyprspace.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
