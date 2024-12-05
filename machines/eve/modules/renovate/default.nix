@@ -48,7 +48,7 @@ in
     # as the timer will run the new version eventually anyway.
     restartIfChanged = true;
     serviceConfig = {
-      Type = "oneshot";
+      Type = "simple";
       RemainAfterExit = true;
       Restart = "on-failure";
       StartLimitBurst = 3;
