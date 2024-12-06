@@ -235,7 +235,7 @@ in
             acl = [ "rauter_acl" ];
           }
         ]
-        ++ lib.mapAttrsToList (name: _cert: {
+        ++ builtins.map (name: {
           domain = "_acme-challenge.${name}";
 
           file = "${pkgs.writeText "_acme-challenge.${name}.zone" ''
@@ -247,7 +247,7 @@ in
           ''}";
 
           template = "acme";
-        }) config.security.acme.certs;
+        }) ((builtins.attrNames config.security.acme.certs) ++ [ "devkid.net" ]);
     };
   };
 

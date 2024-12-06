@@ -100,6 +100,16 @@
 
   services.gvfs.enable = true;
 
+  # For the future: enable lc3
+  # https://gitlab.freedesktop.org/pipewire/pipewire/-/wikis/LE-Audio-+-LC3-support
+  #hardware.bluetooth.settings = {
+  #  General = {
+  #    ControllerMode = "le";
+  #    Experimental = true;
+  #    KernelExperimental = true;
+  #  };
+  #};
+
   #environment.sessionVariables.KWIN_DRM_ALLOW_INTEL_COLORSPACE = "1";
   #services.displayManager.environment.KWIN_DRM_ALLOW_INTEL_COLORSPACE = "1";
 
