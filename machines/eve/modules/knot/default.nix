@@ -247,7 +247,7 @@ in
           ''}";
 
           template = "acme";
-        }) ((builtins.attrNames config.security.acme.certs) ++ [ "devkid.net" ]);
+        }) ((builtins.attrNames config.security.acme.certs) ++ [ "devkid.net" "lekwati.com" ]);
     };
   };
 
