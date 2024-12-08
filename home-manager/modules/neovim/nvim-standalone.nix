@@ -5,6 +5,7 @@
   vimPlugins,
   neovim,
   nvim-appname,
+  lua-config ? ../../../home/.config/nvim,
   buildEnv,
 }:
 let
@@ -25,7 +26,7 @@ writeShellScriptBin "nvim" ''
   mkdir -p "$XDG_CONFIG_HOME/$NVIM_APPNAME" "$XDG_DATA_HOME"
   chmod -R u+w "$XDG_CONFIG_HOME/$NVIM_APPNAME"
   rm -rf "$XDG_CONFIG_HOME/$NVIM_APPNAME"
-  cp -arfT '${../../../home/.config/nvim}'/ "$XDG_CONFIG_HOME/$NVIM_APPNAME"
+  cp -arfT '${lua-config}'/ "$XDG_CONFIG_HOME/$NVIM_APPNAME"
   chmod -R u+w "$XDG_CONFIG_HOME/$NVIM_APPNAME"
   echo "${treesitter-grammars.rev}" > "$XDG_CONFIG_HOME/$NVIM_APPNAME/treesitter-rev"
 
