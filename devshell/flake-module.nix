@@ -88,6 +88,7 @@
 
         settings.global.excludes = [
           "sops/*"
+          "vars/*"
           "terraform.tfstate"
           "*.tfvars.sops.json"
           "gdb/*"
