@@ -235,19 +235,27 @@ in
             acl = [ "rauter_acl" ];
           }
         ]
-        ++ builtins.map (name: {
-          domain = "_acme-challenge.${name}";
+        ++ builtins.map
+          (name: {
+            domain = "_acme-challenge.${name}";
 
-          file = "${pkgs.writeText "_acme-challenge.${name}.zone" ''
-            @ 3600 IN SOA _acme-challenge.${name}. ns1.thalheim.io. 2021013110 7200 3600 86400 3600
+            file = "${pkgs.writeText "_acme-challenge.${name}.zone" ''
+              @ 3600 IN SOA _acme-challenge.${name}. ns1.thalheim.io. 2021013110 7200 3600 86400 3600
 
-            $TTL 600
+              $TTL 600
 
-            @ IN NS ns1.thalheim.io.
-          ''}";
+              @ IN NS ns1.thalheim.io.
+            ''}";
 
-          template = "acme";
-        }) ((builtins.attrNames config.security.acme.certs) ++ [ "devkid.net" "lekwati.com" ]);
+            template = "acme";
+          })
+          (
+            (builtins.attrNames config.security.acme.certs)
+            ++ [
+              "devkid.net"
+              "lekwati.com"
+            ]
+          );
     };
   };
 
