@@ -88,6 +88,12 @@
 
         settings.global.excludes = [
           "sops/*"
+          "vars/*"
+          "zsh/*"
+          "home/.zsh-*"
+          "home/.fast-syntax-highlighting"
+          "home/.config/nixpkgs"
+          "home/.gef-*"
           "terraform.tfstate"
           "*.tfvars.sops.json"
           "gdb/*"
