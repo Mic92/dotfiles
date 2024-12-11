@@ -28,7 +28,6 @@
     inputs.nix-index-database.nixosModules.nix-index
     { programs.nix-index-database.comma.enable = true; }
 
-    ./modules/adminer.nix
     ./modules/atuin.nix
     ./modules/bitwarden.nix
     ./modules/buildbot.nix
