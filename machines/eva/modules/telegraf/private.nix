@@ -135,12 +135,6 @@ in
 
     http_response = [
       {
-        urls = [ "https://adminer.thalheim.io/" ];
-        tags.host = "eve";
-        tags.org = "private";
-        response_string_match = "Login";
-      }
-      {
         urls = [ "https://mail.thalheim.io" ];
         tags.host = "eve";
         tags.org = "private";
