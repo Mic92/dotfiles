@@ -1,6 +1,11 @@
 { config, ... }:
 {
-  sops.secrets.promtail-password.owner = "promtail";
+  clan.core.vars.generators.promtail = {
+    files."password" = { };
+    prompts.password.type = "hidden";
+    share = true;
+  };
+
   services.promtail = {
     enable = true;
     configuration = {
@@ -10,7 +15,7 @@
       clients = [
         {
           basic_auth.username = "promtail@thalheim.io";
-          basic_auth.password_file = config.sops.secrets.promtail-password.path;
+          basic_auth.password_file = config.clan.core.vars.generators.promtail.files."password".path;
           url = "http://loki.r/loki/api/v1/push";
         }
       ];

@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   services.rsyncd = {
     enable = true;
@@ -12,7 +12,7 @@
         comment = "Public rsync share.";
         path = "/mnt/hdd/public";
         "auth users" = "backup";
-        "secrets file" = config.sops.secrets.rsyncd-secrets.path;
+        "secrets file" = config.clan.core.vars.generators.rsyncd.files.secret-file.path;
       };
     };
   };
@@ -23,11 +23,18 @@
     group = "rsyncd";
   };
 
-  sops.secrets.rsyncd-secrets.owner = "rsyncd";
-
   users.groups.rsyncd = { };
 
   systemd.services.rsyncd.serviceConfig = {
     AmbientCapabilities = "cap_net_bind_service";
+  };
+
+  clan.core.vars.generators.rsyncd = {
+    files.secret-file.owner = "rsyncd";
+    runtimeInputs = with pkgs; [ openssl ];
+    script = ''
+      echo "backup:$(openssl rand -base64 32)" > "$out"/secret-file
+    '';
+    share = true;
   };
 }
