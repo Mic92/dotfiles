@@ -8,7 +8,7 @@ selected=$(printf "\n%s" "${choices[@]}" | fuzzel -d)
 
 echo You Picked: " $selected"
 
-headset=alsa_card.usb-0b0e_Jabra_Link_380_08C8C2E6DA47-00
+headset=alsa_card.usb-Audeze_LLC_Audeze_Maxwell_PS_Dongle_0000000000000000-01
 speakers=alsa_card.pci-0000_00_1f.3
 earphones=bluez_output.50_C2_75_67_67_8C.1
 address="50:C2:75:67:67:8C"
