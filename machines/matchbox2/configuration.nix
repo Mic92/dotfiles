@@ -26,8 +26,8 @@
 
   nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
 
-  clan.core.networking.targetHost = "root@matchbox2.hyperspace";
-  clan.core.networking.buildHost = "root@eve.i";
+  clan.core.networking.targetHost = "root@192.168.188.106";
+  #clan.core.networking.buildHost = "root@eve.i";
   clan.core.deployment.requireExplicitUpdate = true;
 
   time.timeZone = "UTC";
@@ -65,5 +65,5 @@
     '';
   };
 
-  services.resolved.enable = false;
+  services.resolved.enable = true;
 }

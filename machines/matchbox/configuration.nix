@@ -69,5 +69,5 @@
     UseHostname = false
     RouteMetric = 512
   '';
-  services.resolved.enable = false;
+  services.resolved.enable = true;
 }
