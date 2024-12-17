@@ -23,18 +23,19 @@
   services.greetd.enable = true;
 
   # For greetd, we need a shell script into path, which lets us start qtile.service (after importing the environment of the login shell).
-  services.greetd.settings.default_session.command = "${pkgs.greetd.tuigreet}/bin/tuigreet --remember --cmd ${pkgs.writeScript "startqtile" ''
-    #! ${pkgs.bash}/bin/bash
+  services.greetd.settings.default_session.command =
+    "${pkgs.greetd.tuigreet}/bin/tuigreet --remember --cmd ${pkgs.writeScript "startqtile" ''
+      #! ${pkgs.bash}/bin/bash
 
-    # first import environment variables from the login manager
-    export XDG_DATA_DIRS=/run/current-system/sw/share/gsettings-schemas:$XDG_DATA_DIRS
-    systemctl --user unset-environment DISPLAY WAYLAND_DISPLAY
+      # first import environment variables from the login manager
+      export XDG_DATA_DIRS=/run/current-system/sw/share/gsettings-schemas:$XDG_DATA_DIRS
+      systemctl --user unset-environment DISPLAY WAYLAND_DISPLAY
 
-    zsh --login -c "systemctl --user import-environment XDG_DATA_DIRS PATH"
+      zsh --login -c "systemctl --user import-environment XDG_DATA_DIRS PATH"
 
-    # then start the service
-    exec systemctl --user --wait start qtile.service
-  ''}";
+      # then start the service
+      exec systemctl --user --wait start qtile.service
+    ''}";
 
   # used in ping widget
   security.wrappers.fping = {
