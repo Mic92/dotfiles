@@ -11,8 +11,10 @@
     files."retiolum.ed25519_key.priv" = { };
     files."retiolum.rsa_key.pub".secret = false;
     files."retiolum.ed25519_key.pub".secret = false;
-    migrateFact = "retiolum";
-    runtimeInputs = with pkgs; [ coreutils tinc_pre ];
+    runtimeInputs = with pkgs; [
+      coreutils
+      tinc_pre
+    ];
     script = ''
       tinc --config "$out" generate-keys 4096 >/dev/null
       mv "$out"/rsa_key.priv "$out"/retiolum.rsa_key.priv
