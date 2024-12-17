@@ -52,11 +52,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1733515969,
-        "narHash": "sha256-KiTFwfS5I0jCtnqGhoyB02T3fcD9nf0z9nBBnY7BFOE=",
-        "rev": "3e05edbeb47f606a06b01d21e3e876c03352f610",
+        "lastModified": 1734426161,
+        "narHash": "sha256-gsdZAoHvGl0/5lp0KzaCMK0c9gtTGmPUii7FIq/jR/A=",
+        "rev": "8780f8697b8e23167052704e1e823266c53816bd",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/3e05edbeb47f606a06b01d21e3e876c03352f610.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/8780f8697b8e23167052704e1e823266c53816bd.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -119,22 +119,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "disko",
-        "type": "github"
-      }
-    },
-    "flake-compat": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1732722421,
-        "narHash": "sha256-HRJ/18p+WoXpWJkcdsk9St5ZiukCqSDgbOGFa8Okehg=",
-        "owner": "edolstra",
-        "repo": "flake-compat",
-        "rev": "9ed2ac151eada2306ca8c418ebd97807bb08f6ac",
-        "type": "github"
-      },
-      "original": {
-        "owner": "edolstra",
-        "repo": "flake-compat",
         "type": "github"
       }
     },
@@ -347,7 +331,7 @@
     },
     "nix": {
       "inputs": {
-        "flake-compat": "flake-compat",
+        "flake-compat": [],
         "flake-parts": [],
         "git-hooks-nix": [],
         "nixpkgs": [
@@ -356,10 +340,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1733239043,
-        "narHash": "sha256-Qw9G/HbtsUPvgtlbyJNZ8dJ7jnBfOEaCrwr57A78eQo=",
-        "ref": "refs/heads/master",
-        "rev": "7ec4c79ffe4dae6c931aa10d083a41f2ff993513",
+        "lastModified": 1734434657,
+        "narHash": "sha256-rga0sZx8A1LF0WVqwOujZDhaw7k/vopuYS08QxCatvY=",
+        "ref": "refs/heads/main",
+        "rev": "661356b16e25d3f3dfd32dbe51ba0a13aee2c284",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
@@ -444,10 +428,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1733140873,
-        "narHash": "sha256-sqpSStoSxaocX2KFuTAOaWKJltdPshlptavn/siE1Ew=",
+        "lastModified": 1734335998,
+        "narHash": "sha256-+NEm/mhnQfBCIW/7G+DthKjOSK6sGXYsi1jaDmG7awk=",
         "ref": "refs/heads/main",
-        "rev": "69d855f0238e4781b087c8e8f3cbeb525a47d3c8",
+        "rev": "8369e3584a320c186a1bf2f8b71443ded89839b3",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"

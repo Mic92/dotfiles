@@ -32,6 +32,7 @@
     nix.url = "git+https://github.com/Mic92/nix-1?shallow=1";
     nix.inputs.nixpkgs.follows = "nixpkgs";
     nix.inputs.flake-parts.follows = "";
+    nix.inputs.flake-compat.follows = "";
     nix.inputs.nixpkgs-regression.follows = "";
     nix.inputs.git-hooks-nix.follows = "";
 
