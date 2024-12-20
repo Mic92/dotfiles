@@ -21,6 +21,9 @@
 
         borgbackup.blob64 = {
           roles.server.machines = [ "blob64" ];
+          roles.server.config = {
+            directory = "/zdata/borg";
+          };
           roles.client.tags = [ "backup" ];
           roles.client.extraModules = [ "nixosModules/borgbackup.nix" ];
         };
