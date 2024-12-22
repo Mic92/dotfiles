@@ -75,7 +75,7 @@ customCommands:
     context: remoteBranches
     description: tig branch (`t` again to browse files at revision)
     subprocess: true
-  # File histroy
+  # File history
   - key: t
     command: tig {{.SelectedSubCommit.Sha}} -- {{.SelectedCommitFile.Name}}
     context: commitFiles

@@ -8,7 +8,7 @@
           name = "\"hyprspace.\"";
           forward-addr = "127.43.104.80@11355";
         }
-        # not implemeneted in hyprspace yet
+        # not implemented in hyprspace yet
         #{
         #  name = "\"0.0.0.0.0.0.0.0.0.0.5.6.3.6.1.6.0.7.3.7.2.7.0.7.9.7.8.6.0.0.d.f.ip6.arpa.\"";
         #  forward-addr = "127.43.104.80@11355";

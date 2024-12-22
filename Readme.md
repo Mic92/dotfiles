@@ -1,6 +1,6 @@
 # My personal bootstrap process
 
-For bootstraping on
+For bootstrapping on
 [legacy operating systems](https://github.com/Mic92/dotfiles/wiki#bootstrap-for-legacy-operating-systems)
 
 # Bootstrap dotfiles when having nix

@@ -55,12 +55,12 @@
 
         PublicRunnerActionOnline = {
           expr = ''count(http_busy{name=~"runner.*", status="online"}) < 2'';
-          annotations.description = "{{$labels.instance}}: There are no public github action runner registerd with github (see https://github.com/organizations/ls1-sys-prog-course/settings/actions)";
+          annotations.description = "{{$labels.instance}}: There are no public github action runner registered with github (see https://github.com/organizations/ls1-sys-prog-course/settings/actions)";
         };
 
         InternalRunnerActionOnline = {
           expr = ''count(http_busy{name=~"internal-runner.*", status="online"}) < 1'';
-          annotations.description = "{{$labels.instance}}: There are no interal github action runner registerd with github (see https://github.com/organizations/ls1-sys-prog-course-internal/settings/actions)";
+          annotations.description = "{{$labels.instance}}: There are no internal github action runner registered with github (see https://github.com/organizations/ls1-sys-prog-course-internal/settings/actions)";
         };
 
         # we don't have this course this semester

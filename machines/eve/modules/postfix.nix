@@ -89,7 +89,7 @@ in
       virtual_alias_maps = "ldap:${accountsmap},ldap:${aliases},regexp:/var/lib/postfix/conf/virtual-regex";
       virtual_transport = "lmtp:unix:private/dovecot-lmtp";
 
-      # bigger attachement size
+      # bigger attachment size
       mailbox_size_limit = "202400000";
       message_size_limit = "51200000";
       smtpd_helo_required = "yes";

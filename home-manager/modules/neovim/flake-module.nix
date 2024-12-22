@@ -26,6 +26,7 @@
             shfmt
             ruff
             typos-lsp
+            typos
             nixfmt-rfc-style
             terraform-ls
             clang-tools

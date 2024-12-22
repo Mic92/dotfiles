@@ -3,7 +3,7 @@
   imports = [ ../../../nixosModules/openldap ];
 
   services.openldap.settings.children."olcDatabase={1}mdb".attrs = {
-    # Current value (must be stored completly in file)
+    # Current value (must be stored completely in file)
     # provider=ldap://eve.r:389
     # type=refreshOnly
     # interval=01:00:00:00

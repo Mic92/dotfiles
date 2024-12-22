@@ -20,6 +20,7 @@
         # Used to find the project root
         projectRootFile = ".git/config";
 
+        programs.typos.enable = true;
         programs.terraform.enable = true;
         programs.hclfmt.enable = true;
         programs.yamlfmt.enable = true;
@@ -101,6 +102,7 @@
           "*/secrets.yaml"
           "*/secrets.yml"
           "machines/*/facts/*"
+          "*/facter.json"
           "*.pub"
           "*.pem"
           "*.conf"

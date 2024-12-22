@@ -1,0 +1,28 @@
+[default]
+extend-ignore-identifiers-re = [
+  # long base64 strings
+  "[a-zA-Z0-9+/]{50,}",
+  # google-site-verification
+  "xxY6u05ueB",
+  # zerotier
+  "b15644912e61dbe0",
+  "iterm2",
+  "hass",
+  "helo",
+  "mosquitto",
+  "fpr",
+  "tio",
+  "hda",
+  "browseable",
+  "LESS_TERMCAP_ue",
+]
+
+[files]
+extend-exclude = [
+  "zsh/*",
+  "gdb/*",
+  "sops/*",
+  "vars/*",
+  "facter.json",
+  "secrets.enc.json",
+]
