@@ -20,7 +20,7 @@ export XDG_CACHE_HOME=~/.cache
 export XDG_CONFIG_HOME=~/.config
 export XDG_DATA_HOME=~/.data
 export ERRFILE=~/.xsession-errors
-# Antialising
+# Antialiasing
 export QT_XFT=1
 export GDK_USE_XFT=1
 export GTK2_RC_FILES="$HOME/.gtkrc-2.0"

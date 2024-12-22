@@ -273,7 +273,7 @@ class DiskIO(base.ThreadPoolText):
                 # Check for overflows and counter resets (> 2^32)
                 if last_stat.read > stat.read or last_stat.write > stat.write:
                     last_stat = stat
-                # Diskstats are absolute, substract our last reading
+                # Diskstats are absolute, subtract our last reading
                 # * divide by timediff because we don't know the timer value
                 read += (stat.read - last_stat.read) / interval
                 write += (stat.write - last_stat.write) / interval

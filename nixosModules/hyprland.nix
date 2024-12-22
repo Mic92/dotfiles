@@ -145,7 +145,7 @@
   #    windowrulev2 = float,nofullscreen,class:firefox,title:^Firefox — Sharing Indicator$
 
   #    windowrulev2 = workspace name:$ws2,class:^(xterm|urxvt|aterm|URxvt|XTerm|Alacritty|Emacs|foot)$
-  #    windowrulev2 = workspace name:$ws3,class:^(Kopete|Pidgin|gajim|rambox|Dino|.gam-wrapped|Daily|birdie|evolution|Ferdi|Ferdium)$
+  #    windowrulev2 = workspace name:$ws3,class:^(Kopete|Pidgin|gajim|rambox|Dino|Daily|birdie|evolution|Ferdi|Ferdium)$
   #    windowrulev2 = workspace name:$ws4,class:^(signal)$
   #    windowrulev2 = workspace name:$ws5,class:^(Evince|GVim|keepassx|libreoffice)$
 

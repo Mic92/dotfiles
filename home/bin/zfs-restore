@@ -51,7 +51,7 @@ def find_dataset_filesystem(fs: Filesystem) -> Filesystem:
             fs = filesystem
             break
     else:
-        raise Error(f"Could not find zfs mounpoint, candidates {filesystems2}")
+        raise Error(f"Could not find zfs mountpoint, candidates {filesystems2}")
 
 
 def atomic_restore(source: Path, target: Path) -> None:
@@ -101,7 +101,7 @@ def restore_command(args: list[str]) -> None:
     target = Path(sys.argv[1]).resolve()
 
     filesystems = find_mount(str(find_existing_parent(target)), is_path=True)
-    assert len(filesystems) == 1, f"Expected one filesytem, got:\n{filesystems}"
+    assert len(filesystems) == 1, f"Expected one filesystem, got:\n{filesystems}"
     fs = filesystems[0]
 
     if fs.fstype != "zfs":
