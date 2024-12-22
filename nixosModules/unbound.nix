@@ -28,6 +28,7 @@
         # Breaks my email setup. Better rely on tls for security.
         val-permissive-mode = "yes";
       };
+      remote-control.control-enable = true;
     };
   };
 
