@@ -7,23 +7,21 @@ return {
 		-- safely extend the servers list
 		opts.servers = opts.servers or {}
 		vim.list_extend(opts.servers, {
-			"pyright",
-			"clangd",
 			"bashls",
-			"gopls",
-			"taplo",
-			"marksman",
-			"pyright",
-			"nil_ls",
-			"terraformls",
-			"lua_ls",
-			"ruff_lsp",
-			"rust_analyzer",
-			"gopls",
-			"yamlls",
+			"clangd",
 			"denols",
+			"gopls",
+			"lua_ls",
+			"marksman",
+			"nil_ls",
 			"ocamllsp",
-			"phpactor", -- mediawiki
+			"pyright",
+			"ruff",
+			"rust_analyzer",
+			"taplo",
+			"terraformls",
+			"typos_lsp",
+			"yamlls",
 			-- add more servers as needed...
 		})
 		opts.formatting = opts.formatting or {}

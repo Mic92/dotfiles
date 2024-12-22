@@ -25,6 +25,7 @@
             shellcheck
             shfmt
             ruff
+            typos-lsp
             nixfmt-rfc-style
             terraform-ls
             clang-tools
