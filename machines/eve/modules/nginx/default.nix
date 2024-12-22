@@ -6,7 +6,6 @@
     ./glowing-bear.nix
     ./homepage.nix
     ./ip.nix
-    ./muc.nix
     ./retiolum.nix
     ./screenshare
     ./mergebot.nix
