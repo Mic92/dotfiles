@@ -13,12 +13,10 @@ function _clean_up_path
 end
 _clean_up_path
 
-set -x CDPATH . ~/git ./.direnv/ruby-2.1.1/gems
-set -x BUNDLEPATH ~/.bundle
+set -x CDPATH . ~/git
 
 set -x BROWSER firefox
-set -x TERMINAL urxvt
-set -x PICTUREVIEW eog
+set -x TERMINAL foot
 set -x EDITOR vim
 set -x VISUAL $EDITOR
 set -x ALTERNATE_EDITOR emacs
@@ -28,8 +26,8 @@ set -x READNULLCMD $PAGER
 set -x GREP_OPTIONS "--binary-files=without-match --directories=skip --color=auto"
 set -x MANWIDTH 80
 # locales
-set -x LANG de_DE.UTF-8
-set -x LC_ALL $LANG
+#set -x LANG de_DE.UTF-8
+#set -x LC_ALL $LANG
 # less
 set -x LESS "R"
 set -x LESS_TERMCAP_mb \e\[01\;31m      # begin blinking
@@ -38,25 +36,3 @@ set -x LESS_TERMCAP_se \e\[0m           # end standout-mode
 set -x LESS_TERMCAP_so \e\[01\;44\;33m  # begin standout-mode - info box
 set -x LESS_TERMCAP_ue \e\[0m           # end underline
 set -x LESS_TERMCAP_us \e\[03\;33\;146m # begin underline is now yellow, italic
-
-# X11, Sound, Graphic
-set -x XDG_CACHE_HOME ~/.cache
-set -x XDG_CONFIG_HOME ~/.config
-set -x XDG_DATA_HOME ~/.data
-set -x XDG_CURRENT_DESKTOP LXDE
-set -x ERRFILE ~/.xsession-errors
-# Antialising
-set -x QT_XFT 1
-set -x GDK_USE_XFT 1
-# To enable Graphic Hardware acceleration
-#set LIBGL_ALWAYS_INDIRECT 1
-set -x INTEL_BATCH 1
-# Enable Pulse for SDL
-set -x SDL_AUDIODRIVER pulse
-# fix broken xdg-open
-set -x GDMSESSION 1
-set -x GNOME_DESKTOP_SESSION_ID 1
-
-# make OpenJDK working with awesome wm
-set -x _JAVA_AWT_WM_NONREPARENTING 1
-set -x JAVA_FONTS /usr/share/fonts/TTF
