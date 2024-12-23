@@ -57,17 +57,7 @@ alias locate "locate --existing --follow --basename --ignore-case"
 alias wget "wget -c"
 
 # Root
-alias su 'su'
-alias sync 'sudo sync'
-alias sync 'sudo updatedb'
-alias sless 'sudo less'
-alias stail 'sudo tail'
-alias svim 'sudo vim'
-alias svim 'sudo vimdiff'
-alias vim 'vi'
-# reboot/halt/suspend
-alias shutdown='sudo shutdown'
-alias reboot='sudo reboot'
+alias vim 'nvim'
 
 if is_command python;
   function pretty_json; python -mjson.tool; end
