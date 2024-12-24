@@ -19,6 +19,7 @@
     ../../nixosModules/mosh.nix
     ../../nixosModules/sshd/tor.nix
     ../../nixosModules/promtail.nix
+    ../../nixosModules/hyprspace.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -26,7 +27,7 @@
 
   nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
 
-  clan.core.networking.targetHost = "root@192.168.178.186";
+  clan.core.networking.targetHost = "root@matchbox.local";
   #clan.core.networking.buildHost = "root@eve.i";
   clan.core.deployment.requireExplicitUpdate = true;
 
