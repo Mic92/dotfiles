@@ -31,6 +31,14 @@
           };
         };
       };
+      data = {
+        type = "disk";
+        device = "/dev/disk/by-id/wwn-0x5000c500af8b2a14";
+        content = {
+          type = "zfs";
+          pool = "zdata";
+        };
+      };
     };
     zpool = {
       zroot = {
@@ -65,6 +73,24 @@
               mountpoint = "/tmp";
               sync = "disabled";
             };
+          };
+        };
+      };
+      zdata = {
+        type = "zpool";
+        options.ashift = "12";
+        rootFsOptions = {
+          mountpoint = "none";
+          compression = "lz4";
+          acltype = "posixacl";
+          xattr = "sa";
+          "com.sun:auto-snapshot" = "true";
+        };
+        datasets = {
+          "nas" = {
+            type = "zfs_fs";
+            mountpoint = "/mnt/hdd";
+            mountOptions = [ "nofail" ];
           };
         };
       };
