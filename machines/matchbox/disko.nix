@@ -25,8 +25,13 @@
               };
             };
             zil = {
+              # for install test
+              #size = "2G";
               size = "10G";
-              type = "0700";
+              content = {
+                type = "zfs";
+                pool = "zdata";
+              };
             };
           };
         };
@@ -85,6 +90,23 @@
           acltype = "posixacl";
           xattr = "sa";
           "com.sun:auto-snapshot" = "true";
+        };
+        mode = {
+          topology = {
+            type = "topology";
+            vdev = [
+              {
+                members = [ "/dev/disk/by-id/wwn-0x5000c500af8b2a14" ];
+                # for tests
+                #members = [ "/dev/vdb" ];
+              }
+            ];
+            log = [
+              {
+                members = [ "/dev/disk/by-partlabel/disk-root-zil" ];
+              }
+            ];
+          };
         };
         datasets = {
           "nas" = {
