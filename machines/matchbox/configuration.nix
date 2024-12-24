@@ -5,11 +5,10 @@
   ...
 }:
 {
-  nixpkgs.localSystem.system = "aarch64-linux";
-
   imports = [
     self.nixosModules.default
     inputs.srvos.nixosModules.server
+    inputs.clan-core.clanModules.state-version
 
     ./modules/samba.nix
     ./modules/rsyncd.nix
@@ -21,16 +20,15 @@
     ../../nixosModules/sshd/tor.nix
     ../../nixosModules/promtail.nix
   ];
-  nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.aarch64-linux;
-  clan.core.state.pictures.folders = [ "/mnt/hdd" ];
 
-  clan.core.networking.targetHost = "root@matchbox.r";
-  clan.core.networking.buildHost = "root@eve.i";
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+
+  nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+
+  clan.core.networking.targetHost = "root@192.168.178.186";
+  #clan.core.networking.buildHost = "root@eve.i";
   clan.core.deployment.requireExplicitUpdate = true;
-
-  documentation.enable = false;
-
-  networking.hostName = "matchbox";
 
   time.timeZone = "UTC";
 
@@ -48,26 +46,24 @@
     vim
   ];
 
-  systemd.services.update-prefetch.enable = false;
+  systemd.network.networks.ethernet = {
+    matchConfig.Type = "ether";
+    networkConfig = {
+      DHCP = true;
+      LLMNR = true;
+      LinkLocalAddressing = true;
+      LLDP = true;
+      IPv6AcceptRA = true;
+    };
+    dhcpConfig = {
+      UseHostname = false;
+      RouteMetric = 512;
+    };
+    extraConfig = ''
+      [Network]
+      IPv6Token = "::fd87:20d6:a932:6605";
+    '';
+  };
 
-  system.stateVersion = "23.11";
-
-  networking.dhcpcd.enable = false;
-  systemd.network.networks.ethernet.extraConfig = ''
-    [Match]
-    Type = ether
-
-    [Network]
-    DHCP = both
-    LLMNR = true
-    IPv4LL = true
-    LLDP = true
-    IPv6AcceptRA = true
-    IPv6Token = ::fd87:20d6:a932:6605
-
-    [DHCP]
-    UseHostname = false
-    RouteMetric = 512
-  '';
   services.resolved.enable = true;
 }
