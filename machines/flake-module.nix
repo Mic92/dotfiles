@@ -45,6 +45,9 @@
           config.certificate.searchDomains = [
             "i"
             "r"
+            "hyprspace"
+            "local"
+            "onion"
             "thalheim.io"
           ];
         };
