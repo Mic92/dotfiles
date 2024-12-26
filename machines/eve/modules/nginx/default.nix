@@ -88,7 +88,7 @@
           }:
           {
             domain = "thalheim.io";
-            postRun = "systemctl reload nginx.service";
+            postRun = "systemctl --no-block reload nginx.service";
             group = "nginx";
             keyType = if rsa then "rsa2048" else "ec384";
             dnsProvider = "rfc2136";

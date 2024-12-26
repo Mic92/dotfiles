@@ -51,20 +51,17 @@ go-neb IN CNAME eva
 blog IN CNAME mic92.github.io.
 vmsh IN CNAME mic92.github.io.
 
-turingmachine IN NS ns1.thalheim.io.
+_acme-challenge IN NS ns1.thalheim.io.
 bernie IN NS ns1.thalheim.io.
+blob64 IN NS ns1.thalheim.io.
 matchbox IN NS ns1.thalheim.io.
 rauter IN NS ns1.thalheim.io.
-rock IN NS ns1.thalheim.io.
-blob64 IN NS ns1.thalheim.io.
 rauter IN NS ns1.thalheim.io.
+rock IN NS ns1.thalheim.io.
+turingmachine IN NS ns1.thalheim.io.
 
 @ IN CAA 0 issue "letsencrypt.org"
 @ IN CAA 0 iodef "mailto:joerg.caa@thalheim.io"
-
-;; University
-stable-diffusion CNAME jack.dse.in.tum.de.
-stable-confusion CNAME jack.dse.in.tum.de.
 
 ;; Mail
 @ IN MX 3 mail

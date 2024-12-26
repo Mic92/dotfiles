@@ -180,7 +180,7 @@ in
   };
 
   security.acme.certs."mail.thalheim.io" = {
-    postRun = "systemctl restart postfix.service";
+    postRun = "systemctl --no-block restart postfix.service";
     group = "postfix";
     dnsProvider = "rfc2136";
     credentialsFile = config.sops.secrets.lego-knot-credentials.path;
