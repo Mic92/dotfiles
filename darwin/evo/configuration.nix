@@ -34,5 +34,7 @@
 
   programs.zsh.enable = true;
 
+  system.stateVersion = 5;
+
   srvos.flake = self;
 }
