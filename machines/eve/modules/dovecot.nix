@@ -153,7 +153,7 @@
           extraDomainNames ? [ ],
         }:
         {
-          postRun = "systemctl restart dovecot2.service";
+          postRun = "systemctl --no-block restart dovecot2.service";
           group = "dovecot2";
           dnsProvider = "rfc2136";
           credentialsFile = config.sops.secrets.lego-knot-credentials.path;

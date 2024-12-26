@@ -18,7 +18,7 @@
   };
 
   security.acme.certs."kanidm.thalheim.io" = {
-    postRun = "systemctl restart kanidm.service";
+    postRun = "systemctl --no-block restart kanidm.service";
     group = "kanidm";
     dnsProvider = "rfc2136";
     credentialsFile = config.sops.secrets.lego-knot-credentials.path;
