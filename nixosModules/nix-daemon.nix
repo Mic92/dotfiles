@@ -23,7 +23,7 @@
         !config.boot.isContainer or config.fileSystems."/".fsType != "zfs"
       );
       substituters = [
-        "https://nixos.tvix.store"
+        "https://hetzner-cache.numtide.com"
 
         "https://nix-community.cachix.org"
         "https://cache.thalheim.io"
