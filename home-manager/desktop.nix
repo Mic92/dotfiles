@@ -40,7 +40,7 @@
     hunspell
     hunspellDicts.en-gb-ise
     dino
-    foot
+    ghostty
     screen-message
     sshfs-fuse
     sshuttle
