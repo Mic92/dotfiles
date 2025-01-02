@@ -8,4 +8,5 @@
   };
   services.postgresqlBackup.enable = true;
   services.postgresqlBackup.backupAll = true;
+  services.postgresqlBackup.compression = "zstd";
 }
