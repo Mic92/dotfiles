@@ -1,0 +1,10 @@
+font-family = ""
+font-family = "FiraCode Nerd Font"
+window-decoration = false
+window-height = 4000
+window-width = 4000
+clipboard-read = allow
+clipboard-write = allow
+
+#theme = light:"Builtin Solarized Light",dark:"Builtin Solarized Dark"
+theme = Builtin Solarized Light

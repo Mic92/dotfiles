@@ -62,6 +62,8 @@
 
   boot.loader.systemd-boot.enable = true;
 
+  programs.direnv.enable = true;
+
   hardware.graphics.enable32Bit = config.hardware.graphics.enable;
 
   nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
