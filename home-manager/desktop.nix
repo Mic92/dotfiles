@@ -29,7 +29,6 @@
 
     arandr
     signal-desktop
-    inputs.nur-packages.packages.${pkgs.hostPlatform.system}.pandoc-bin
     adwaita-icon-theme
     hicolor-icon-theme
     graphicsmagick
