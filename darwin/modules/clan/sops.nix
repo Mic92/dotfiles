@@ -5,8 +5,8 @@
   ...
 }:
 let
-  secretsDir = config.clan.core.clanDir + "/sops/secrets";
-  groupsDir = config.clan.core.clanDir + "/sops/groups";
+  secretsDir = config.clan.core.settings.directory + "/sops/secrets";
+  groupsDir = config.clan.core.settings.directory + "/sops/groups";
 
   # My symlink is in the nixos module detected as a directory also it works in the repl. Is this because of pure evaluation?
   containsSymlink =
@@ -16,7 +16,8 @@ let
 
   containsMachine =
     parent: name: type:
-    type == "directory" && containsSymlink "${parent}/${name}/machines/${config.clan.core.machineName}";
+    type == "directory"
+    && containsSymlink "${parent}/${name}/machines/${config.clan.core.settings.machine.name}";
 
   containsMachineOrGroups =
     name: type:
@@ -53,7 +54,7 @@ in
     );
 
     sops.age.keyFile = lib.mkIf (builtins.pathExists (
-      config.clan.core.clanDir + "/sops/secrets/${config.clan.core.machineName}-age.key/secret"
+      config.clan.core.clanDir + "/sops/secrets/${config.clan.core.settings.machine.name}-age.key/secret"
     )) (lib.mkDefault "/var/lib/sops-nix/key.txt");
   };
 }
