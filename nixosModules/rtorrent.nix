@@ -9,7 +9,6 @@ let
 in
 {
   services.rtorrent.enable = true;
-  services.rtorrent.package = pkgs.jesec-rtorrent;
   services.rtorrent.user = "joerg";
   services.rtorrent.group = "users";
   services.rtorrent.dataDir = "/data/torrent";

@@ -23,8 +23,8 @@
     ../modules/alacritty.nix
   ];
 
-  clan.core.clanDir = ../..;
-  clan.core.machineName = "evo";
+  clan.core.settings.directory = ../..;
+  clan.core.settings.machine.name = "evo";
   sops.age.keyFile = "/Library/Application Support/sops-nix/age-key.txt";
 
   # fix vim repeat key
