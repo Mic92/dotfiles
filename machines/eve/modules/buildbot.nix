@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, options, ... }:
 {
   services.buildbot-nix.master = {
     enable = true;
@@ -57,6 +57,9 @@
   services.buildbot-nix.worker = {
     enable = true;
     workerPasswordFile = config.sops.secrets.buildbot-nix-worker-password.path;
+    nixEvalJobs.package = options.services.buildbot-nix.worker.nixEvalJobs.package.default.override {
+      nix = config.package.nix;
+    };
   };
 
   services.nginx.virtualHosts."buildbot.thalheim.io" = {
