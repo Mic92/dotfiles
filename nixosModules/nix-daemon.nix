@@ -2,13 +2,13 @@
   lib,
   config,
   pkgs,
+  inputs,
   ...
 }:
 {
   # this extends srvos's common settings
   nix = {
-    #package = inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
-    package = pkgs.nix;
+    package = inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
     gc.automatic = true;
     gc.dates = "03:15";
     gc.options = "--delete-older-than 10d";
