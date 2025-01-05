@@ -35,6 +35,7 @@
     nix.inputs.flake-compat.follows = "";
     nix.inputs.nixpkgs-regression.follows = "";
     nix.inputs.git-hooks-nix.follows = "";
+    nix.inputs.nixpkgs-23-11.follows = "";
 
     nixpkgs.url = "git+https://github.com/Mic92/nixpkgs?shallow=1";
     # for development
@@ -63,7 +64,8 @@
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
     buildbot-nix.inputs.hercules-ci-effects.follows = "";
 
-    hyprspace.url = "github:hyprspace/hyprspace";
+    #hyprspace.url = "github:hyprspace/hyprspace";
+    hyprspace.url = "github:Mic92/hyprspace/structured-attrs";
     hyprspace.inputs.flake-parts.follows = "flake-parts";
     hyprspace.inputs.nixpkgs.follows = "nixpkgs";
 

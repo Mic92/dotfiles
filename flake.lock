@@ -259,15 +259,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1731864001,
-        "narHash": "sha256-Ckq6fF4H/6+3HHTHwSHOk+22FgTz5tdGJ+Q5tzFeXsI=",
-        "owner": "hyprspace",
+        "lastModified": 1736105470,
+        "narHash": "sha256-lcgS8Fe+eyBUCvYLhDvb27l69f3Kts2cX1o27qMUtFk=",
+        "owner": "Mic92",
         "repo": "hyprspace",
-        "rev": "fc42d2eec0b2582f6386b07ec2c24a8c37bc1a3b",
+        "rev": "2fe267ef258db62d693db79fe49931c8c6e19eb8",
         "type": "github"
       },
       "original": {
-        "owner": "hyprspace",
+        "owner": "Mic92",
+        "ref": "structured-attrs",
         "repo": "hyprspace",
         "type": "github"
       }
@@ -339,13 +340,14 @@
         "nixpkgs": [
           "nixpkgs"
         ],
+        "nixpkgs-23-11": [],
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1734863546,
-        "narHash": "sha256-+VDLjAUD104VkXRqBfAJ2hWcUqRqMmKrfTXmL4rFNQE=",
+        "lastModified": 1736104469,
+        "narHash": "sha256-gSblvy45DBV8wb7Y1qS1kCYDvjFpwBQt6sM6RXc613s=",
         "ref": "refs/heads/main",
-        "rev": "3b5d50cfa884d071e31d8b46cbb8cdc7d568d0d5",
+        "rev": "d2bddf58d35edcb6de5a3362d8319354da64b526",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
