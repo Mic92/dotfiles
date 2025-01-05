@@ -1,12 +1,17 @@
 # generate intermediate certificate with generate-krebs-intermediate-ca
-{ config, lib, pkgs, ... }: let
+{ config, pkgs, ... }:
+let
   domain = "ca.r";
-in {
+in
+{
   security.acme = {
     acceptTerms = true; # kinda pointless since we never use upstream
     certs.${domain}.server = "https://${domain}:1443/acme/acme/directory"; # use 1443 here cause bootstrapping loop
   };
-  networking.firewall.allowedTCPPorts = [ 80 443 ];
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
   services.nginx = {
     enable = true;
     recommendedProxySettings = true;
@@ -17,7 +22,8 @@ in {
         proxyPass = "https://localhost:1443";
       };
       # TODO
-      locations."= /ca.crt".alias = config.clan.core.vars.generators.step-intermediate-cert.files."intermediate.crt".value;
+      locations."= /ca.crt".alias =
+        config.clan.core.vars.generators.step-intermediate-cert.files."intermediate.crt".value;
     };
   };
 
@@ -30,15 +36,15 @@ in {
     runtimeInputs = [ pkgs.step-cli ];
     script = ''
       step certificate create --template ${pkgs.writeText "root.tmpl" ''
-        {
-	        "subject": {{ toJson .Subject }},
-	        "issuer": {{ toJson .Subject }},
-	        "keyUsage": ["certSign", "crlSign"],
-	        "basicConstraints": {
-	        	"isCA": true,
-	        	"maxPathLen": 1
-	        }
-        }
+                {
+        	        "subject": {{ toJson .Subject }},
+        	        "issuer": {{ toJson .Subject }},
+        	        "keyUsage": ["certSign", "crlSign"],
+        	        "basicConstraints": {
+        	        	"isCA": true,
+        	        	"maxPathLen": 1
+        	        }
+                }
       ''} "Krebs Root CA" $out/ca.crt $out/ca.key
     '';
   };
@@ -103,11 +109,13 @@ in {
         dataSource = "/var/lib/step-ca/db";
       };
       authority = {
-        provisioners = [{
-          type = "ACME";
-          name = "acme";
-          forceCN = true;
-        }];
+        provisioners = [
+          {
+            type = "ACME";
+            name = "acme";
+            forceCN = true;
+          }
+        ];
         claims = {
           maxTLSCertDuration = "2160h";
           defaultTLSCertDuration = "2160h";
