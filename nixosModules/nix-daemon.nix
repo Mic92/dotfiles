@@ -13,6 +13,9 @@
     gc.dates = "03:15";
     gc.options = "--delete-older-than 10d";
 
+    # set legacy nixpkgs path to flake reference
+    nixPath = [ "nixpkgs=flake:nixpkgs" ];
+
     settings = {
       # for nix-direnv
       keep-outputs = true;
