@@ -169,20 +169,11 @@
             self',
             lib,
             system,
-            pkgs,
             ...
           }:
           {
             # make pkgs available to all `perSystem` functions
             _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
-
-            packages = {
-              failing-build = pkgs.runCommand "failing-build" { } ''
-                echo 123
-                echo "failing-build" | ${pkgs.lolcat}/bin/lolcat
-                exit 1
-              '';
-            };
 
             checks =
               let
