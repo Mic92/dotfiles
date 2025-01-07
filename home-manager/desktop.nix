@@ -25,7 +25,6 @@
     gimp
     zed-editor
     jujutsu
-    lazyjj
 
     arandr
     signal-desktop

@@ -196,7 +196,6 @@
 
   boot.binfmt.emulatedSystems = [
     "armv7l-linux"
-    "aarch64-linux"
     "riscv32-linux"
     "riscv64-linux"
     "powerpc64-linux"

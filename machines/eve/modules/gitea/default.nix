@@ -111,5 +111,6 @@
     locations."/".extraConfig = ''
       proxy_pass http://localhost:3002;
     '';
+    locations."= /robots.txt".alias = ./robots.txt;
   };
 }

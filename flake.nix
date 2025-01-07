@@ -35,6 +35,7 @@
     nix.inputs.flake-compat.follows = "";
     nix.inputs.nixpkgs-regression.follows = "";
     nix.inputs.git-hooks-nix.follows = "";
+    nix.inputs.nixpkgs-23-11.follows = "";
 
     nixpkgs.url = "git+https://github.com/Mic92/nixpkgs?shallow=1";
     # for development
@@ -51,18 +52,19 @@
     #spora.url = "github:krebs/spora";
     #spora.inputs.nixpkgs.follows = "nixpkgs";
 
-    #nixos-hardware.url = "github:NixOS/nixos-hardware";
-    nixos-hardware.url = "github:Mic92/nixos-hardware/framework-13-audio-improvements";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     systems.url = "github:nix-systems/default";
 
-    buildbot-nix.url = "github:nix-community/buildbot-nix";
+    buildbot-nix.url = "git+https://github.com/nix-community/buildbot-nix?shallow=1&ref=pty";
+    #buildbot-nix.url = "github:nix-community/buildbot-nix/pty";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
     buildbot-nix.inputs.hercules-ci-effects.follows = "";
 
-    hyprspace.url = "github:hyprspace/hyprspace";
+    #hyprspace.url = "github:hyprspace/hyprspace";
+    hyprspace.url = "github:Mic92/hyprspace/structured-attrs";
     hyprspace.inputs.flake-parts.follows = "flake-parts";
     hyprspace.inputs.nixpkgs.follows = "nixpkgs";
 

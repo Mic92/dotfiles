@@ -1,0 +1,117 @@
+# sane defaults for a Forgejo instance
+# - https://codeberg.org/robots.txt
+
+User-agent: *
+Disallow: /api/*
+Disallow: /avatars
+Disallow: /user/*
+Disallow: /*/*/src/commit/*
+Disallow: /*/*/commit/*
+Disallow: /*/*/*/refs/*
+Disallow: /*/*/*/star
+Disallow: /*/*/*/watch
+Disallow: /*/*/labels
+Disallow: /*/*/activity/*
+Disallow: /vendor/*
+Disallow: /swagger.*.json
+
+Disallow: /explore/*?*
+
+Disallow: /repo/create
+Disallow: /repo/migrate
+Disallow: /org/create
+Disallow: /*/*/fork
+
+Disallow: /*/*/watchers
+Disallow: /*/*/stargazers
+Disallow: /*/*/forks
+
+Disallow: /*/*/activity
+Disallow: /*/*/projects
+Disallow: /*/*/commits/
+Disallow: /*/*/branches
+Disallow: /*/*/tags
+Disallow: /*/*/compare
+Disallow: /*/*/lastcommit/*
+
+Disallow: /*/*/issues/new
+Disallow: /*/*/issues/?*
+Disallow: /*/*/issues?*
+Disallow: /*/*/pulls/?*
+Disallow: /*/*/pulls?*
+Disallow: /*/*/pulls/*/files
+
+Disallow: /*/tree/
+Disallow: /*/download
+Disallow: /*/revisions
+Disallow: /*/commits/*?author
+Disallow: /*/commits/*?path
+Disallow: /*/comments
+Disallow: /*/blame/
+Disallow: /*/raw/
+Disallow: /*/cache/
+Disallow: /.git/
+Disallow: */.git/
+Disallow: /*.git
+Disallow: /*.atom
+Disallow: /*.rss
+
+Disallow: /*/*/archive/
+Disallow: *.bundle
+Disallow: */commit/*.patch
+Disallow: */commit/*.diff
+
+Disallow: /*lang=*
+Disallow: /*source=*
+Disallow: /*ref_cta=*
+Disallow: /*plan=*
+Disallow: /*return_to=*
+Disallow: /*ref_loc=*
+Disallow: /*setup_organization=*
+Disallow: /*source_repo=*
+Disallow: /*ref_page=*
+Disallow: /*source=*
+Disallow: /*referrer=*
+Disallow: /*report=*
+Disallow: /*author=*
+Disallow: /*since=*
+Disallow: /*until=*
+Disallow: /*commits?author=*
+Disallow: /*tab=*
+Disallow: /*q=*
+Disallow: /*repo-search-archived=*
+
+# Codeberg-specific changes
+Disallow: /mirror   ## huge linux mirror, pointless to index
+
+Crawl-delay: 2
+
+User-agent: Amazonbot
+User-agent: anthropic-ai
+User-agent: Applebot-Extended
+User-agent: Bytespider
+User-agent: CCBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-Web
+User-agent: cohere-ai
+User-agent: Diffbot
+User-agent: FacebookBot
+User-agent: facebookexternalhit
+User-agent: FriendlyCrawler
+User-agent: Google-Extended
+User-agent: GPTBot
+User-agent: ICC-Crawler
+User-agent: ImagesiftBot
+User-agent: img2dataset
+User-agent: meta-externalagent
+User-agent: OAI-SearchBot
+User-agent: Omgili
+User-agent: Omgilibot
+User-agent: PerplexityBot
+User-agent: PetalBot
+User-agent: Scrapy
+User-agent: Timpibot
+User-agent: VelenPublicWebCrawler
+User-agent: YouBot
+Disallow: /
