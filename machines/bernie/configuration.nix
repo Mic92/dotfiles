@@ -21,6 +21,7 @@
     ../../nixosModules/remote-builder.nix
     ../../nixosModules/tracing.nix
     ../../nixosModules/pipewire.nix
+    ../../nixosModules/hyprspace.nix
 
     ./filesystems.nix
 
