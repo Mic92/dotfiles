@@ -1,4 +1,8 @@
-{ config, pkgs, options, ... }:
+{
+  config,
+  pkgs,
+  ...
+}:
 {
   services.buildbot-nix.master = {
     enable = true;
@@ -57,9 +61,20 @@
   services.buildbot-nix.worker = {
     enable = true;
     workerPasswordFile = config.sops.secrets.buildbot-nix-worker-password.path;
-    nixEvalJobs.package = options.services.buildbot-nix.worker.nixEvalJobs.package.default.override {
-      nix = config.package.nix;
-    };
+    nixEvalJobs.package =
+      (pkgs.nix-eval-jobs.override {
+        nix = config.nix.package;
+      }).overrideAttrs
+        (_oldAttrs: {
+          src = pkgs.fetchFromGitHub {
+            owner = "nix-community";
+            repo = "nix-eval-jobs";
+            # https://github.com/nix-community/nix-eval-jobs/pull/341
+            rev = "331aa136a3414f41e7524c9614d29a35122d6275";
+            sha256 = "sha256-+ga7K6xenkpyoJgsM7ZYjacTLIoaCVxt33SzfTQrZpE=";
+          };
+        });
+
   };
 
   services.nginx.virtualHosts."buildbot.thalheim.io" = {
