@@ -52,8 +52,7 @@
     #spora.url = "github:krebs/spora";
     #spora.inputs.nixpkgs.follows = "nixpkgs";
 
-    #nixos-hardware.url = "github:NixOS/nixos-hardware";
-    nixos-hardware.url = "github:Mic92/nixos-hardware/framework-13-audio-improvements";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     systems.url = "github:nix-systems/default";
 
