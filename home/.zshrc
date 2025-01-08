@@ -589,9 +589,12 @@ fi
 export VISUAL=$EDITOR
 if [[ -n ${commands[moar]} ]]; then
   export MANPAGER="moar"
-  alias less="moar"
-else
+  export PAGER="moar"
+  export MOAR='--no-linenumbers'
+  alias less='moar'
+elif [[ -n ${commands[less]} ]]; then
   export MANPAGER="less"
+  export PAGER="less"
 fi
 export READNULLCMD=$PAGER
 export pacman_program=pacman-color
