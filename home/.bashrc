@@ -71,7 +71,6 @@ alias lla='ls -la --color'
 alias ls='ls --group-directories-first --color'
 alias sudo='sudo '
 alias webshare='python -m http.server 8080'
-alias wgetxc='wget $(xclip -o)'
 alias grep="grep --binary-files=without-match --directories=skip --color=auto"
 
 if [[ -r ~/.bashrc."$HOSTNAME" ]]; then

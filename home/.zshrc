@@ -597,7 +597,6 @@ elif [[ -n ${commands[less]} ]]; then
   export PAGER="less"
 fi
 export READNULLCMD=$PAGER
-export pacman_program=pacman-color
 # X11, Sound, Graphic
 export XDG_DESKTOP_DIR="$HOME/Desktop"
 export XDG_CONFIG_HOME="$HOME/.config" # for macos
@@ -609,7 +608,7 @@ export XDG_PUBLICSHARE_DIR="$HOME/Public"
 export XDG_TEMPLATES_DIR="$HOME/.Templates"
 export XDG_VIDEOS_DIR="$HOME/Videos"
 export ERRFILE=~/.xsession-errors
-# Antialising
+# Antialiasing
 export _JAVA_OPTIONS="$_JAVA_OPTIONS -Dawt.useSystemAAFontSettings=lcd -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
 # Enable Pipewire for SDL
 export SDL_AUDIODRIVER=pipewire
