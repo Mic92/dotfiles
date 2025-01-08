@@ -590,7 +590,7 @@ export VISUAL=$EDITOR
 if [[ -n ${commands[moar]} ]]; then
   export MANPAGER="moar"
   export PAGER="moar"
-  export MOAR='--no-linenumbers'
+  export MOAR='--no-linenumbers --quit-if-one-screen'
   alias less='moar'
 elif [[ -n ${commands[less]} ]]; then
   export MANPAGER="less"
@@ -617,15 +617,6 @@ export ALSOFT_DRIVERS=pipewire
 export GDMSESSION=1 GNOME_DESKTOP_SESSION_ID=1
 # less
 export LESS=-FXisRM
-export LESS_TERMCAP_mb=$'\E[01;31m'     # begin blinking
-export LESS_TERMCAP_me=$'\E[0m'         # end mode
-export LESS_TERMCAP_se=$'\E[0m'         # end standout-mode
-export LESS_TERMCAP_so=$'\E[01;44;33m'  # begin standout-mode - info box
-export LESS_TERMCAP_ue=$'\E[0m'         # end underline
-export LESS_TERMCAP_us=$'\E[03;33;146m' # begin underline is now yellow, italic
-#                           |  |  |
-#                           |  |----------------- yellow
-#                           |-------------------- italic
 # Man
 export MANWIDTH=80
 # If the execution of a command takes longer than
