@@ -9,7 +9,7 @@
     wget
     direnv
     htop
-    silver-searcher
+    ripgrep
     lsof
     tcpdump
     tmux
