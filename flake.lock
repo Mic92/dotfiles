@@ -14,16 +14,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1736240091,
-        "narHash": "sha256-FVjTtT4MGn02pz+1owDxlMM5BhJP/AWz0qzkIz9U6j8=",
-        "ref": "pty",
-        "rev": "d11813ded8c06a9cb388e3314fa3f26409ef5f3e",
+        "lastModified": 1736334909,
+        "narHash": "sha256-yLfFlHqUC9hGYPlYoOIcVoLEPYBhHv3zxAIYceUIjLY=",
+        "ref": "better-logs",
+        "rev": "05316395d096d4c2a3d51f3504b65661673d482e",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
       },
       "original": {
-        "ref": "pty",
+        "ref": "better-logs",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
@@ -344,10 +344,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1736200077,
-        "narHash": "sha256-gSblvy45DBV8wb7Y1qS1kCYDvjFpwBQt6sM6RXc613s=",
+        "lastModified": 1736328166,
+        "narHash": "sha256-E6c8eLAWYCFPxAK17RGMkAjnXI8PTpcGfeqcPYHkSK0=",
         "ref": "refs/heads/main",
-        "rev": "9e3989a2fe4523644db756866996be3afc5497cd",
+        "rev": "20e84256c0450d531f417d7c009b35fc96570542",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
