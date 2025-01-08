@@ -23,8 +23,8 @@
     },
     "bluetooth": [
       {
-        "index": 30,
-        "attached_to": 29,
+        "index": 31,
+        "attached_to": 30,
         "class_list": [
           "usb",
           "bluetooth"
@@ -105,8 +105,8 @@
         "module_alias": "usb:v0BDApB85Bd0000dcE0dsc01dp01icE0isc01ip01in00"
       },
       {
-        "index": 33,
-        "attached_to": 29,
+        "index": 34,
+        "attached_to": 30,
         "class_list": [
           "usb",
           "bluetooth"
@@ -820,20 +820,103 @@
       },
       {
         "index": 28,
-        "attached_to": 25,
+        "attached_to": 9,
         "class_list": [
           "disk",
-          "usb",
-          "scsi",
+          "ide",
           "block_device"
         ],
         "bus_type": {
-          "hex": "0084",
-          "name": "SCSI",
-          "value": 132
+          "hex": "0085",
+          "name": "IDE",
+          "value": 133
         },
         "slot": {
-          "bus": 2,
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "hex": "0106",
+          "name": "Mass Storage Device",
+          "value": 262
+        },
+        "sub_class": {
+          "hex": "0000",
+          "name": "Disk",
+          "value": 0
+        },
+        "device": {
+          "hex": "0000",
+          "name": "ST10000NM0046",
+          "value": 0
+        },
+        "revision": {
+          "hex": "0000",
+          "name": "G00A",
+          "value": 0
+        },
+        "serial": "ZA24JZRZ",
+        "model": "ST10000NM0046",
+        "sysfs_id": "/class/block/sdb",
+        "sysfs_bus_id": "0:0:0:0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:17.0/ata1/host0/target0:0:0/0:0:0:0",
+        "unix_device_name": "/dev/sdb",
+        "unix_device_number": {
+          "type": 98,
+          "major": 8,
+          "minor": 16,
+          "range": 16
+        },
+        "unix_device_names": [
+          "/dev/disk/by-diskseq/3",
+          "/dev/disk/by-id/ata-ST10000NM0046_ZA24JZRZ",
+          "/dev/disk/by-id/wwn-0x5000c500af8b2a14",
+          "/dev/disk/by-path/pci-0000:00:17.0-ata-1",
+          "/dev/disk/by-path/pci-0000:00:17.0-ata-1.0",
+          "/dev/sdb"
+        ],
+        "resources": [
+          {
+            "type": "disk_geo",
+            "cylinders": 1216974,
+            "heads": 255,
+            "sectors": 63,
+            "size": 0,
+            "geo_type": "logical"
+          },
+          {
+            "type": "size",
+            "unit": "sectors",
+            "value_1": 19550689200,
+            "value_2": 512
+          }
+        ],
+        "driver": "ahci",
+        "driver_module": "ahci",
+        "drivers": [
+          "ahci",
+          "sd"
+        ],
+        "driver_modules": [
+          "ahci",
+          "sd_mod"
+        ]
+      },
+      {
+        "index": 29,
+        "attached_to": 9,
+        "class_list": [
+          "disk",
+          "ide",
+          "block_device"
+        ],
+        "bus_type": {
+          "hex": "0085",
+          "name": "IDE",
+          "value": 133
+        },
+        "slot": {
+          "bus": 1,
           "number": 0
         },
         "base_class": {
@@ -847,25 +930,25 @@
           "value": 0
         },
         "vendor": {
-          "hex": "2174",
-          "name": "ESD310C",
-          "value": 8564
+          "hex": "0000",
+          "name": "WDC",
+          "value": 0
         },
         "device": {
-          "hex": "2100",
-          "name": "TS256GESD310C",
-          "value": 8448
+          "hex": "0000",
+          "name": "WD20EARX-00P",
+          "value": 0
         },
         "revision": {
           "hex": "0000",
-          "name": "1000",
+          "name": "AB51",
           "value": 0
         },
-        "serial": "FA27828AI893358A0008",
-        "model": "TS256GESD310C",
+        "serial": "WD-WCAZAD901596",
+        "model": "WDC WD20EARX-00P",
         "sysfs_id": "/class/block/sda",
-        "sysfs_bus_id": "2:0:0:0",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:14.0/usb4/4-1/4-1:1.0/host2/target2:0:0/2:0:0:0",
+        "sysfs_bus_id": "1:0:0:0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:17.0/ata2/host1/target1:0:0/1:0:0:0",
         "unix_device_name": "/dev/sda",
         "unix_device_number": {
           "type": 98,
@@ -875,23 +958,16 @@
         },
         "unix_device_names": [
           "/dev/disk/by-diskseq/2",
-          "/dev/disk/by-id/ata-TS256GESD310C_FA27828AI893358A0008",
-          "/dev/disk/by-id/usb-ESD310C_TS256GESD310C_FA27828AI893358A0008-0:0",
-          "/dev/disk/by-path/pci-0000:00:14.0-usb-0:1:1.0-scsi-0:0:0:0",
-          "/dev/disk/by-path/pci-0000:00:14.0-usbv3-0:1:1.0-scsi-0:0:0:0",
+          "/dev/disk/by-id/ata-WDC_WD20EARX-00PASB0_WD-WCAZAD901596",
+          "/dev/disk/by-id/wwn-0x50014ee2b1aa5815",
+          "/dev/disk/by-path/pci-0000:00:17.0-ata-2",
+          "/dev/disk/by-path/pci-0000:00:17.0-ata-2.0",
           "/dev/sda"
         ],
-        "unix_device_name2": "/dev/sg0",
-        "unix_device_number2": {
-          "type": 99,
-          "major": 21,
-          "minor": 0,
-          "range": 1
-        },
         "resources": [
           {
             "type": "disk_geo",
-            "cylinders": 31130,
+            "cylinders": 243201,
             "heads": 255,
             "sectors": 63,
             "size": 0,
@@ -900,21 +976,20 @@
           {
             "type": "size",
             "unit": "sectors",
-            "value_1": 500118192,
+            "value_1": 3907029168,
             "value_2": 512
           }
         ],
-        "driver": "uas",
-        "driver_module": "uas",
+        "driver": "ahci",
+        "driver_module": "ahci",
         "drivers": [
-          "sd",
-          "uas"
+          "ahci",
+          "sd"
         ],
         "driver_modules": [
-          "sd_mod",
-          "uas"
-        ],
-        "module_alias": "usb:v2174p2100d0100dc00dsc00dp00ic08isc06ip62in00"
+          "ahci",
+          "sd_mod"
+        ]
       }
     ],
     "graphics_card": [
@@ -1022,7 +1097,7 @@
     ],
     "hub": [
       {
-        "index": 29,
+        "index": 30,
         "attached_to": 25,
         "class_list": [
           "usb",
@@ -1044,7 +1119,7 @@
         },
         "vendor": {
           "hex": "1d6b",
-          "name": "Linux 6.11.10 xhci-hcd",
+          "name": "Linux 6.11.11 xhci-hcd",
           "value": 7531
         },
         "device": {
@@ -1058,7 +1133,7 @@
           "value": 0
         },
         "serial": "0000:00:14.0",
-        "model": "Linux 6.11.10 xhci-hcd xHCI Host Controller",
+        "model": "Linux 6.11.11 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb3/3-0:1.0",
         "sysfs_bus_id": "3-0:1.0",
         "resources": [
@@ -1105,7 +1180,7 @@
         "module_alias": "usb:v1D6Bp0002d0611dc09dsc00dp01ic09isc00ip00in00"
       },
       {
-        "index": 31,
+        "index": 32,
         "attached_to": 25,
         "class_list": [
           "usb",
@@ -1127,7 +1202,7 @@
         },
         "vendor": {
           "hex": "1d6b",
-          "name": "Linux 6.11.10 xhci-hcd",
+          "name": "Linux 6.11.11 xhci-hcd",
           "value": 7531
         },
         "device": {
@@ -1141,7 +1216,7 @@
           "value": 0
         },
         "serial": "0000:00:14.0",
-        "model": "Linux 6.11.10 xhci-hcd xHCI Host Controller",
+        "model": "Linux 6.11.11 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:14.0/usb4/4-0:1.0",
         "sysfs_bus_id": "4-0:1.0",
         "detail": {
@@ -1178,7 +1253,7 @@
         "module_alias": "usb:v1D6Bp0003d0611dc09dsc00dp03ic09isc00ip00in00"
       },
       {
-        "index": 32,
+        "index": 33,
         "attached_to": 11,
         "class_list": [
           "usb",
@@ -1200,7 +1275,7 @@
         },
         "vendor": {
           "hex": "1d6b",
-          "name": "Linux 6.11.10 xhci-hcd",
+          "name": "Linux 6.11.11 xhci-hcd",
           "value": 7531
         },
         "device": {
@@ -1214,7 +1289,7 @@
           "value": 0
         },
         "serial": "0000:00:0d.0",
-        "model": "Linux 6.11.10 xhci-hcd xHCI Host Controller",
+        "model": "Linux 6.11.11 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb1/1-0:1.0",
         "sysfs_bus_id": "1-0:1.0",
         "resources": [
@@ -1283,7 +1358,7 @@
         },
         "vendor": {
           "hex": "1d6b",
-          "name": "Linux 6.11.10 xhci-hcd",
+          "name": "Linux 6.11.11 xhci-hcd",
           "value": 7531
         },
         "device": {
@@ -1297,7 +1372,7 @@
           "value": 0
         },
         "serial": "0000:00:0d.0",
-        "model": "Linux 6.11.10 xhci-hcd xHCI Host Controller",
+        "model": "Linux 6.11.11 xhci-hcd xHCI Host Controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:0d.0/usb2/2-0:1.0",
         "sysfs_bus_id": "2-0:1.0",
         "detail": {
@@ -1356,7 +1431,7 @@
           {
             "type": "mem",
             "base": 0,
-            "range": 16504758272,
+            "range": 16504729600,
             "enabled": true,
             "access": "read_write",
             "prefetch": "unknown"
@@ -1641,9 +1716,9 @@
         "model": "WLAN controller",
         "sysfs_id": "/devices/pci0000:00/0000:00:1d.1/0000:04:00.0",
         "sysfs_bus_id": "0000:04:00.0",
-        "unix_device_name": "wlan0",
+        "unix_device_name": "wlp4s0",
         "unix_device_names": [
-          "wlan0"
+          "wlp4s0"
         ],
         "resources": [
           {
@@ -1780,91 +1855,7 @@
     ],
     "network_interface": [
       {
-        "index": 36,
-        "attached_to": 13,
-        "class_list": [
-          "network_interface"
-        ],
-        "base_class": {
-          "hex": "0107",
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "hex": "0001",
-          "name": "Ethernet",
-          "value": 1
-        },
-        "model": "Ethernet network interface",
-        "sysfs_id": "/class/net/enp2s0",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:1c.6/0000:02:00.0",
-        "unix_device_name": "enp2s0",
-        "unix_device_names": [
-          "enp2s0"
-        ],
-        "resources": [
-          {
-            "type": "hwaddr",
-            "address": 99
-          },
-          {
-            "type": "phwaddr",
-            "address": 99
-          }
-        ],
-        "driver": "igc",
-        "driver_module": "igc",
-        "drivers": [
-          "igc"
-        ],
-        "driver_modules": [
-          "igc"
-        ]
-      },
-      {
         "index": 37,
-        "attached_to": 23,
-        "class_list": [
-          "network_interface"
-        ],
-        "base_class": {
-          "hex": "0107",
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "hex": "000a",
-          "name": "WLAN",
-          "value": 10
-        },
-        "model": "WLAN network interface",
-        "sysfs_id": "/class/net/wlan0",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:1d.1/0000:04:00.0",
-        "unix_device_name": "wlan0",
-        "unix_device_names": [
-          "wlan0"
-        ],
-        "resources": [
-          {
-            "type": "hwaddr",
-            "address": 98
-          },
-          {
-            "type": "phwaddr",
-            "address": 98
-          }
-        ],
-        "driver": "rtw89_8852be",
-        "driver_module": "rtw89_8852be",
-        "drivers": [
-          "rtw89_8852be"
-        ],
-        "driver_modules": [
-          "rtw89_8852be"
-        ]
-      },
-      {
-        "index": 38,
         "attached_to": 8,
         "class_list": [
           "network_interface"
@@ -1906,7 +1897,7 @@
         ]
       },
       {
-        "index": 39,
+        "index": 38,
         "attached_to": 0,
         "class_list": [
           "network_interface"
@@ -1926,6 +1917,90 @@
         "unix_device_name": "lo",
         "unix_device_names": [
           "lo"
+        ]
+      },
+      {
+        "index": 41,
+        "attached_to": 13,
+        "class_list": [
+          "network_interface"
+        ],
+        "base_class": {
+          "hex": "0107",
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "hex": "0001",
+          "name": "Ethernet",
+          "value": 1
+        },
+        "model": "Ethernet network interface",
+        "sysfs_id": "/class/net/enp2s0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:1c.6/0000:02:00.0",
+        "unix_device_name": "enp2s0",
+        "unix_device_names": [
+          "enp2s0"
+        ],
+        "resources": [
+          {
+            "type": "hwaddr",
+            "address": 99
+          },
+          {
+            "type": "phwaddr",
+            "address": 99
+          }
+        ],
+        "driver": "igc",
+        "driver_module": "igc",
+        "drivers": [
+          "igc"
+        ],
+        "driver_modules": [
+          "igc"
+        ]
+      },
+      {
+        "index": 44,
+        "attached_to": 23,
+        "class_list": [
+          "network_interface"
+        ],
+        "base_class": {
+          "hex": "0107",
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "hex": "0001",
+          "name": "Ethernet",
+          "value": 1
+        },
+        "model": "Ethernet network interface",
+        "sysfs_id": "/class/net/wlp4s0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:1d.1/0000:04:00.0",
+        "unix_device_name": "wlp4s0",
+        "unix_device_names": [
+          "wlp4s0"
+        ],
+        "resources": [
+          {
+            "type": "hwaddr",
+            "address": 98
+          },
+          {
+            "type": "phwaddr",
+            "address": 98
+          }
+        ],
+        "driver": "rtw89_8852be",
+        "driver_module": "rtw89_8852be",
+        "drivers": [
+          "rtw89_8852be"
+        ],
+        "driver_modules": [
+          "rtw89_8852be"
         ]
       }
     ],
@@ -2645,7 +2720,7 @@
         ],
         "detail": {
           "function": 0,
-          "command": 1030,
+          "command": 1026,
           "header_type": 0,
           "secondary_bus": 0,
           "irq": 129,
