@@ -259,16 +259,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1736105470,
-        "narHash": "sha256-lcgS8Fe+eyBUCvYLhDvb27l69f3Kts2cX1o27qMUtFk=",
+        "lastModified": 1736347197,
+        "narHash": "sha256-z0yncRXsUjkibBczDfR20LnqRAW1UstA5x7MN7+TGF0=",
         "owner": "Mic92",
         "repo": "hyprspace",
-        "rev": "2fe267ef258db62d693db79fe49931c8c6e19eb8",
+        "rev": "0a37667718686a540d24647374d7499a98c03bcb",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
-        "ref": "structured-attrs",
+        "ref": "jsonschema",
         "repo": "hyprspace",
         "type": "github"
       }
@@ -430,10 +430,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1736346051,
-        "narHash": "sha256-j0A6kBaaneCRU98+AmpyJ+pRJopVFN0U0lvg+l1wJ7g=",
+        "lastModified": 1736347621,
+        "narHash": "sha256-OecvFZly+1pD2mHde+GmY6p7fUvtymNsMUZd79TCeM0=",
         "ref": "refs/heads/main",
-        "rev": "65c373f42d17281ea5aa57e2413c5198a7491793",
+        "rev": "9ace8b23dd7b0e6b8776ab1992d8d14a2053ad61",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -556,11 +556,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1735219398,
-        "narHash": "sha256-fpWxQClzCXSV3bNCKRr8vwqjFOf+351tx4jqAu8cnaY=",
+        "lastModified": 1736347460,
+        "narHash": "sha256-b7OaipvqYgbPZjPoa0gQPlpStoK70I+HpJMK8BwPPgI=",
         "owner": "numtide",
         "repo": "srvos",
-        "rev": "90c879aadaa624f9caa5fed05e4e304aa9c6e574",
+        "rev": "fb202a7c560ce0c2dd2d2deead8a5ca615842ad7",
         "type": "github"
       },
       "original": {

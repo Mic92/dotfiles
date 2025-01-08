@@ -63,7 +63,7 @@
     buildbot-nix.inputs.hercules-ci-effects.follows = "";
 
     #hyprspace.url = "github:hyprspace/hyprspace";
-    hyprspace.url = "github:Mic92/hyprspace/structured-attrs";
+    hyprspace.url = "github:Mic92/hyprspace/jsonschema";
     hyprspace.inputs.flake-parts.follows = "flake-parts";
     hyprspace.inputs.nixpkgs.follows = "nixpkgs";
 
