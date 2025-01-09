@@ -32,6 +32,11 @@
     mailLocation = "maildir:/var/vmail/%d/%n/Maildir";
     mailUser = "vmail";
     mailGroup = "vmail";
+    mailPlugins.globally.enable = [
+      "virtual"
+      "fts"
+      "fts_lucene"
+    ];
     extraConfig = ''
       ssl = yes
       ssl_cert = </var/lib/acme/imap.thalheim.io/fullchain.pem
@@ -52,8 +57,6 @@
       ssl_cipher_list = EECDH+AESGCM:EDH+AESGCM
       ssl_prefer_server_ciphers = yes
       ssl_dh=<${config.security.dhparams.params.dovecot2.path}
-
-      mail_plugins = virtual fts fts_lucene
 
       service lmtp {
         user = vmail
