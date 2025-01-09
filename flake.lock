@@ -259,16 +259,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1736347197,
-        "narHash": "sha256-z0yncRXsUjkibBczDfR20LnqRAW1UstA5x7MN7+TGF0=",
+        "lastModified": 1736418292,
+        "narHash": "sha256-v4pmfHApR11CNLVMko9uqDU3jYFYrNkEYB/5gLf7ubY=",
         "owner": "Mic92",
         "repo": "hyprspace",
-        "rev": "0a37667718686a540d24647374d7499a98c03bcb",
+        "rev": "6121b1c84dce485079d62f62c47bdd5d0c7c88da",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
-        "ref": "jsonschema",
+        "ref": "libp2p-update",
         "repo": "hyprspace",
         "type": "github"
       }
