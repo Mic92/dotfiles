@@ -14,16 +14,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1736335220,
-        "narHash": "sha256-M4rcKTaLZSTHEdIAWPu23x6lw18ScFqAMBccUv0TQ+E=",
-        "ref": "better-logs",
-        "rev": "16956e233e3c6befda93b02dc14dbe33a0491591",
+        "lastModified": 1736432828,
+        "narHash": "sha256-cAgDOnxa3Ya2Y/oG5zsQlGF2YxPsXT7YxPPWK333MUk=",
+        "ref": "buildbot-gitea",
+        "rev": "a2c852d0e794db4feb7aa26fa6f5601dc2394f00",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
       },
       "original": {
-        "ref": "better-logs",
+        "ref": "buildbot-gitea",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
@@ -430,10 +430,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1736347621,
-        "narHash": "sha256-OecvFZly+1pD2mHde+GmY6p7fUvtymNsMUZd79TCeM0=",
+        "lastModified": 1736424634,
+        "narHash": "sha256-EHmylB7G03fwCCeeBGgtqTsMAkaWCvfs7UPSF2zuZqw=",
         "ref": "refs/heads/main",
-        "rev": "9ace8b23dd7b0e6b8776ab1992d8d14a2053ad61",
+        "rev": "8f9eca119dcd63fd78491645278a7ef428b823dc",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"

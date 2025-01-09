@@ -56,7 +56,7 @@
 
     systems.url = "github:nix-systems/default";
 
-    buildbot-nix.url = "git+https://github.com/nix-community/buildbot-nix?shallow=1&ref=better-logs";
+    buildbot-nix.url = "git+https://github.com/nix-community/buildbot-nix?shallow=1&ref=buildbot-gitea";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
