@@ -1,5 +1,32 @@
 {
   "nodes": {
+    "blueprint": {
+      "inputs": {
+        "nixpkgs": [
+          "nether",
+          "data-mesher",
+          "nixpkgs"
+        ],
+        "systems": [
+          "nether",
+          "data-mesher",
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1731533095,
+        "narHash": "sha256-pygcMp4/86QT0HtXxhgpCOtGjJ5AMPfDoAiM8uIKsaQ=",
+        "owner": "numtide",
+        "repo": "blueprint",
+        "rev": "74abd5643eb9825331b30b55ebc023036c1465bb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "blueprint",
+        "type": "github"
+      }
+    },
     "buildbot-nix": {
       "inputs": {
         "flake-parts": [
@@ -54,11 +81,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1736155658,
-        "narHash": "sha256-FaxO4QrMny810ovEVwzrproD2vhGdf7ADGBYGAuaz7k=",
-        "rev": "3811db2b0b51e7eab17e2cc7b22fedd183e72436",
+        "lastModified": 1736575635,
+        "narHash": "sha256-FebK6y/PD7EZ0MraGbMZSC72KiH8ekiAzdLO+Eq2H3Q=",
+        "rev": "cd48ad1bbcae1312a12e1bb3ba47c100d932c8cd",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/3811db2b0b51e7eab17e2cc7b22fedd183e72436.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/cd48ad1bbcae1312a12e1bb3ba47c100d932c8cd.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -82,22 +109,21 @@
     },
     "data-mesher": {
       "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
+        "blueprint": "blueprint",
+        "flake-utils": "flake-utils_2",
         "nixpkgs": [
+          "nether",
           "nixpkgs"
         ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
+        "systems": "systems",
+        "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1727355895,
-        "narHash": "sha256-grZIaLgk5GgoDuTt49RTCLBh458H4YJdIAU4B3onXRw=",
-        "rev": "c7e39452affcc0f89e023091524e38b3aaf109e9",
+        "lastModified": 1736527664,
+        "narHash": "sha256-zv2i7YqfSPDUAOJ4FsOXp6peTVC+RAnOwSvk+zYap34=",
+        "rev": "91ae8e86e90a28f1c3831b2316e266e722e3e6e9",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/data-mesher/archive/c7e39452affcc0f89e023091524e38b3aaf109e9.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/data-mesher/archive/91ae8e86e90a28f1c3831b2316e266e722e3e6e9.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -163,6 +189,28 @@
     "flake-utils": {
       "inputs": {
         "systems": [
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flake-utils_2": {
+      "inputs": {
+        "systems": [
+          "nether",
+          "data-mesher",
           "systems"
         ]
       },
@@ -305,9 +353,7 @@
         "clan-core": [
           "clan-core"
         ],
-        "data-mesher": [
-          "data-mesher"
-        ],
+        "data-mesher": "data-mesher",
         "flake-parts": [
           "flake-parts"
         ],
@@ -483,7 +529,6 @@
       "inputs": {
         "buildbot-nix": "buildbot-nix",
         "clan-core": "clan-core",
-        "data-mesher": "data-mesher",
         "disko": "disko",
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
@@ -504,8 +549,8 @@
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
-        "systems": "systems",
-        "treefmt-nix": "treefmt-nix"
+        "systems": "systems_2",
+        "treefmt-nix": "treefmt-nix_2"
       }
     },
     "rust-overlay": {
@@ -536,11 +581,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1736064798,
-        "narHash": "sha256-xJRN0FmX9QJ6+w8eIIIxzBU1AyQcLKJ1M/Gp6lnSD20=",
+        "lastModified": 1736515725,
+        "narHash": "sha256-4P99yL8vGehwzytkpP87eklBePt6aqeEC5JFsIzhfUs=",
         "owner": "Mic92",
         "repo": "sops-nix",
-        "rev": "5dc08f9cc77f03b43aacffdfbc8316807773c930",
+        "rev": "f214c1b76c347a4e9c8fb68c73d4293a6820d125",
         "type": "github"
       },
       "original": {
@@ -585,7 +630,44 @@
         "type": "github"
       }
     },
+    "systems_2": {
+      "locked": {
+        "lastModified": 1681028828,
+        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
+        "owner": "nix-systems",
+        "repo": "default",
+        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-systems",
+        "repo": "default",
+        "type": "github"
+      }
+    },
     "treefmt-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nether",
+          "data-mesher",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1732187120,
+        "narHash": "sha256-XdW2mYXvPHYtZ8oQqO3tRYtxx7kI0Hs3NU64IwAtD68=",
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "rev": "37f8f47cb618eddee0c0dd31a582b1cd3013c7f6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "treefmt-nix_2": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
