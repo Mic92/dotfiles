@@ -55,7 +55,6 @@
     ../../nixosModules/suspend-on-low-power.nix
     ../../nixosModules/touchpad-hack
     ../../nixosModules/tracing.nix
-    ../../nixosModules/data-mesher.nix
     ../../nixosModules/users.nix
     ../../nixosModules/hyprspace.nix
   ];

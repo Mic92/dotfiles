@@ -73,7 +73,6 @@
 
     ../../nixosModules/borgbackup.nix
     ../../nixosModules/builder.nix
-    ../../nixosModules/data-mesher.nix
     ../../nixosModules/iperf.nix
     ../../nixosModules/mosh.nix
     ../../nixosModules/nncp.nix

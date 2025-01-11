@@ -12,11 +12,6 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
 
-    data-mesher.url = "https://git.clan.lol/clan/data-mesher/archive/main.tar.gz";
-    data-mesher.inputs.nixpkgs.follows = "nixpkgs";
-    data-mesher.inputs.flake-parts.follows = "flake-parts";
-    data-mesher.inputs.treefmt-nix.follows = "treefmt-nix";
-
     hercules-ci-effects.url = "github:hercules-ci/hercules-ci-effects";
     hercules-ci-effects.inputs.nixpkgs.follows = "nixpkgs";
     hercules-ci-effects.inputs.flake-parts.follows = "flake-parts";
@@ -113,7 +108,6 @@
     nether.inputs.clan-core.follows = "clan-core";
     nether.inputs.nixpkgs.follows = "nixpkgs";
     nether.inputs.treefmt-nix.follows = "treefmt-nix";
-    nether.inputs.data-mesher.follows = "data-mesher";
     nether.inputs.flake-parts.follows = "flake-parts";
 
     #microvm.url = "github:astro/microvm.nix";
