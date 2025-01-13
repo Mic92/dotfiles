@@ -59,6 +59,8 @@
     ../../nixosModules/hyprspace.nix
   ];
 
+  services.dbus.implementation = "broker";
+
   boot.loader.systemd-boot.enable = true;
 
   programs.direnv.enable = true;
