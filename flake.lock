@@ -278,16 +278,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1736418292,
+        "lastModified": 1736693502,
         "narHash": "sha256-v4pmfHApR11CNLVMko9uqDU3jYFYrNkEYB/5gLf7ubY=",
-        "owner": "Mic92",
+        "owner": "hyprspace",
         "repo": "hyprspace",
-        "rev": "6121b1c84dce485079d62f62c47bdd5d0c7c88da",
+        "rev": "a5957e485ff0c2e9133e7da5408ec1273681688e",
         "type": "github"
       },
       "original": {
-        "owner": "Mic92",
-        "ref": "libp2p-update",
+        "owner": "hyprspace",
         "repo": "hyprspace",
         "type": "github"
       }
