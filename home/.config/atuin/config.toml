@@ -4,3 +4,34 @@ invert = true
 # use systemd timer instead
 auto_sync = false
 workspaces = true
+prefers_reduced_motion = true
+enabled = true
+
+common_subcommands = [
+  "apt",
+  "cargo",
+  "composer",
+  "dnf",
+  "docker",
+  "git",
+  "go",
+  "ip",
+  "kubectl",
+  "nix",
+  "nmcli",
+  "npm",
+  "pecl",
+  "pnpm",
+  "podman",
+  "port",
+  "systemctl",
+  "tmux",
+  "yarn",
+  "nix"
+]
+
+common_prefix = [
+  "sudo",
+  # comma and nix alias
+  ",", "n",
+]
