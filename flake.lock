@@ -1,5 +1,30 @@
 {
   "nodes": {
+    "blueprint": {
+      "inputs": {
+        "nixpkgs": [
+          "data-mesher",
+          "nixpkgs"
+        ],
+        "systems": [
+          "data-mesher",
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1736520168,
+        "narHash": "sha256-usR9nq9S4974pF1MVWGIAf4FNfiiS2Lx0XYh4BMrsUg=",
+        "owner": "numtide",
+        "repo": "blueprint",
+        "rev": "3da8b35043a1baad88eb4be979840380c95b821f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "blueprint",
+        "type": "github"
+      }
+    },
     "buildbot-nix": {
       "inputs": {
         "flake-parts": [
@@ -82,23 +107,31 @@
     },
     "data-mesher": {
       "inputs": {
-        "flake-parts": "flake-parts_2",
+        "blueprint": "blueprint",
         "nixpkgs": [
-          "nether",
           "nixpkgs"
         ],
-        "treefmt-nix": "treefmt-nix"
+        "systems": [
+          "systems"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
       },
       "locked": {
-        "lastModified": 1726067582,
-        "narHash": "sha256-YAvfP6wZZuAAz7ZdWEsePDzUM7aQJEGsINkGf76eqvk=",
-        "rev": "8e4ee1bf99479544823c89bc6dfbc81abe5a7a50",
-        "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/data-mesher/archive/8e4ee1bf99479544823c89bc6dfbc81abe5a7a50.tar.gz"
+        "lastModified": 1736868318,
+        "narHash": "sha256-aQ932PRNxVhmmHOjWbiMRvaBAJQuBGxC7PxeCu70Um0=",
+        "ref": "main",
+        "rev": "86318987c867cfc53e741378b9051e5ee9e23150",
+        "shallow": true,
+        "type": "git",
+        "url": "https://git.clan.lol/clan/data-mesher"
       },
       "original": {
-        "type": "tarball",
-        "url": "https://git.clan.lol/clan/data-mesher/archive/main.tar.gz"
+        "ref": "main",
+        "shallow": true,
+        "type": "git",
+        "url": "https://git.clan.lol/clan/data-mesher"
       }
     },
     "disko": {
@@ -133,28 +166,6 @@
         "owner": "hercules-ci",
         "repo": "flake-parts",
         "rev": "b905f6fc23a9051a6e1b741e1438dbfc0634c6de",
-        "type": "github"
-      },
-      "original": {
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
-        "type": "github"
-      }
-    },
-    "flake-parts_2": {
-      "inputs": {
-        "nixpkgs-lib": [
-          "nether",
-          "data-mesher",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1725234343,
-        "narHash": "sha256-+ebgonl3NbiKD2UD0x4BszCZQ6sTfL4xioaM49o5B3Y=",
-        "owner": "hercules-ci",
-        "repo": "flake-parts",
-        "rev": "567b938d64d4b4112ee253b9274472dc3a346eb6",
         "type": "github"
       },
       "original": {
@@ -323,7 +334,9 @@
         "clan-core": [
           "clan-core"
         ],
-        "data-mesher": "data-mesher",
+        "data-mesher": [
+          "data-mesher"
+        ],
         "flake-parts": [
           "flake-parts"
         ],
@@ -446,10 +459,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1736549526,
-        "narHash": "sha256-lt0qouetC7Dr8xTnvxUP0rJYkQsjVCP1ZOlMVDfhB/4=",
+        "lastModified": 1736798586,
+        "narHash": "sha256-3q2Kfwm0Y0mmTuvpg/JJGPTDV9U71uWPchiFHlfv4Xc=",
         "ref": "refs/heads/main",
-        "rev": "170c0a403be2434408199fa0ab466b4f92ae08fd",
+        "rev": "9ccae315fc56b98da9211f5e369ac7146da48236",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -499,6 +512,7 @@
       "inputs": {
         "buildbot-nix": "buildbot-nix",
         "clan-core": "clan-core",
+        "data-mesher": "data-mesher",
         "disko": "disko",
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
@@ -520,7 +534,7 @@
         "sops-nix": "sops-nix",
         "srvos": "srvos",
         "systems": "systems",
-        "treefmt-nix": "treefmt-nix_2"
+        "treefmt-nix": "treefmt-nix"
       }
     },
     "rust-overlay": {
@@ -601,28 +615,6 @@
       }
     },
     "treefmt-nix": {
-      "inputs": {
-        "nixpkgs": [
-          "nether",
-          "data-mesher",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1725271838,
-        "narHash": "sha256-VcqxWT0O/gMaeWTTjf1r4MOyG49NaNxW4GHTO3xuThE=",
-        "owner": "numtide",
-        "repo": "treefmt-nix",
-        "rev": "9fb342d14b69aefdf46187f6bb80a4a0d97007cd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "treefmt-nix",
-        "type": "github"
-      }
-    },
-    "treefmt-nix_2": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
