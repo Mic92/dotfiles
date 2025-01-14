@@ -279,7 +279,7 @@ class DiskIO(base.ThreadPoolText):
                 write += (stat.write - last_stat.write) / interval
                 self.last_stats[stat.device] = stat
         self.last_update = now
-        return f"R: {read/2048:.0f} MB/s W: {write/2048:.0f} MB/s"
+        return f"R: {read / 2048:.0f} MB/s W: {write / 2048:.0f} MB/s"
 
     def poll(self) -> str:
         try:

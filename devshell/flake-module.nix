@@ -72,7 +72,6 @@
           "home/.emacs/*"
           # bug in ruff
           "home/.config/shell_gpt/functions/execute_shell.py"
-          "machines/eve/modules/home-assistant/*"
         ];
         settings.formatter.ruff-format.excludes = [
           "gdb/*"

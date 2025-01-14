@@ -41,7 +41,6 @@
     ./modules/goatcounter.nix
     ./modules/grafana.nix
     ./modules/harmonia.nix
-    ./modules/home-assistant
     ./modules/kanidm.nix
     ./modules/knot
     ./modules/mastodon-hnbot.nix

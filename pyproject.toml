@@ -53,10 +53,6 @@ lint.ignore = [
 ]
 exclude = ["zsh/*", "gdb/*"]
 
-[tool.ruff.lint.per-file-ignores]
-# home-assistant has implicit variables
-"nixos/eve/modules/home-assistant/python-scripts/*" = ["F821", "INP001"]
-
 [tool.mypy]
 python_version = "3.11"
 warn_redundant_casts = true
