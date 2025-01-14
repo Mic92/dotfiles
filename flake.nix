@@ -51,6 +51,11 @@
 
     systems.url = "github:nix-systems/default";
 
+    data-mesher.url = "git+https://git.clan.lol/clan/data-mesher?shallow=1&ref=main";
+    data-mesher.inputs.nixpkgs.follows = "nixpkgs";
+    data-mesher.inputs.systems.follows = "systems";
+    data-mesher.inputs.treefmt-nix.follows = "treefmt-nix";
+
     buildbot-nix.url = "git+https://github.com/nix-community/buildbot-nix?shallow=1&ref=logs";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
@@ -108,6 +113,7 @@
     nether.inputs.nixpkgs.follows = "nixpkgs";
     nether.inputs.treefmt-nix.follows = "treefmt-nix";
     nether.inputs.flake-parts.follows = "flake-parts";
+    nether.inputs.data-mesher.follows = "data-mesher";
 
     #microvm.url = "github:astro/microvm.nix";
     #microvm.inputs.nixpkgs.follows = "nixpkgs";
