@@ -607,14 +607,9 @@ export XDG_PICTURES_DIR="$HOME/Pictures"
 export XDG_PUBLICSHARE_DIR="$HOME/Public"
 export XDG_TEMPLATES_DIR="$HOME/.Templates"
 export XDG_VIDEOS_DIR="$HOME/Videos"
-export ERRFILE=~/.xsession-errors
-# Antialiasing
-export _JAVA_OPTIONS="$_JAVA_OPTIONS -Dawt.useSystemAAFontSettings=lcd -Dswing.defaultlaf=com.sun.java.swing.plaf.gtk.GTKLookAndFeel"
 # Enable Pipewire for SDL
 export SDL_AUDIODRIVER=pipewire
 export ALSOFT_DRIVERS=pipewire
-# fix broken xdg-open
-export GDMSESSION=1 GNOME_DESKTOP_SESSION_ID=1
 # less
 export LESS=-FXisRM
 # Man
