@@ -386,7 +386,6 @@ xalias objdump='objdump -M intel'
 alias curl='noglob curl --compressed --proto-default https'
 alias nix='noglob nix'
 alias nom='noglob nom'
-alias nixos-remote='noglob nixos-remote'
 alias nixos-rebuild='noglob sudo nixos-rebuild'
 alias wget='noglob wget --continue --show-progress --progress=bar:force:noscroll'
 if [[ -n ${commands[hub]} ]]; then
@@ -403,8 +402,6 @@ alias gdb='gdb --quiet --args'
 alias readelf='readelf -W'
 xalias xclip="xclip -selection clipboard"
 xalias cloc=scc
-# higher priority to get no packet loss
-xalias mumble="nice -10 mumble"
 
 if [[ -n ${commands[sgpt]} ]]; then
   sgpt() {
@@ -536,8 +533,6 @@ if [ -n "${commands[bat]}" ]; then
     if [[ -t 1 ]] && [[ -o interactive ]]; then
         if [[ -n "$WAYLAND_DISPLAY" ]]; then
             wl-copy < "$1" 2>/dev/null &
-        elif [[ -n "$DISPLAY" ]]; then
-            xclip -selection clipboard < "$1" 2>/dev/null &
         fi
         bat "$@"
     else
@@ -569,7 +564,7 @@ if [ -z "$WAYLAND_DISPLAY" ] || [ -z "$DISPLAY" ]; then
 elif [ -n "${commands[firefox]}" ]; then
   export BROWSER=firefox
 fi
-export TERMINAL=footclient
+export TERMINAL=ghostty
 export PICTUREVIEW=eog
 
 if [[ -n ${commands[nvim]} ]]; then
@@ -665,14 +660,6 @@ retry() {
       sleep $sleep_time
   done
 }
-say() {
-  _say() { curl -sSG http://tts.r/api/tts --data-urlencode text@- | mpv --keep-open=no --no-resume-playback -; }
-  if [[ "$#" -eq 0 ]]; then
-    _say
-  else
-    echo "$@" | _say
-  fi
-}
 own() {
   if [[ -n "${commands[sudo]}" ]]; then
     sudo chown -R "$USER:$(id -gn)" "$@"
@@ -749,16 +736,6 @@ cd() {
     __zoxide_z "$to"
   fi
 }
-pwd() {
-    if [[ -t 1 ]] && [[ -o interactive ]]; then
-        if [[ -n "$WAYLAND_DISPLAY" ]]; then
-            echo $PWD | wl-copy
-        elif [[ -n "$DISPLAY" ]]; then
-            echo $PWD | xclip -selection clipboard
-        fi
-    fi
-    builtin pwd
-}
 urlencode() { python3 -c "import sys, urllib.parse as parse; print(parse.quote(sys.argv[1]))" $1; }
 urldecode() { python3 -c "import sys, urllib.parse as parse; print(parse.unquote(sys.argv[1]))" $1; }
 cheat() { command cheat -c "$@" | "$PAGER"; }
@@ -810,11 +787,11 @@ nix-update() {
     nix run nixpkgs#nix-update -- "$@"
   fi
 }
-nix-ci-build() {
-  if [[ -f $HOME/git/nix-ci-build/flake.nix ]]; then
-    nix run $HOME/git/nix-ci-build#nix-ci-build -- "$@"
+nix-fast-build() {
+  if [[ -f $HOME/git/nix-fast-build/flake.nix ]]; then
+    nix run $HOME/git/nix-fast-build#nix-ci-build -- "$@"
   else
-    nix run github:mic92/nix-ci-build -- "$@"
+    nix run github:mic92/nix-fast-build -- "$@"
   fi
 }
 
