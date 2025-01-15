@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, pkgs, ... }:
 let
   keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbBp2dH2X3dcU1zh+xW3ZsdYROKpJd3n13ssOP092qE joerg@turingmachine"
@@ -25,12 +25,13 @@ in
         "wireshark"
         "dialout"
       ];
-      shell = "/run/current-system/sw/bin/zsh";
+      shell = pkgs.fish;
       uid = 1000;
       openssh.authorizedKeys.keys = keys;
     };
     root.openssh.authorizedKeys.keys = keys;
   };
+  programs.fish.enable = true;
 
   boot.initrd.network.ssh.authorizedKeys = keys;
 
