@@ -45,7 +45,7 @@ function tempdir
 end
 function fd
     if is_command fd
-        fd "$argv"
+        command fd "$argv"
     else
         find . -iname "*$argv*" 2>/dev/null
     end
@@ -94,6 +94,45 @@ end
 function mkcd
   mkdir -p "$argv[1]"; and cd "$argv[1]"
 end
+if is_command zoxide
+  zoxide init fish | source
+end
+#function cd
+#    if test "$argv[1]" = "--"
+#        set argv $argv[2..-1]
+#    end
+#
+#    if test (count $argv) -eq 0
+#        builtin cd
+#        return
+#    end
+#
+#    if test -f "$to"
+#        set to (dirname $to)
+#    end
+#
+#    # fallback to zoxide if builtin cd fails
+#    if not builtin cd "$to" 2>/dev/null
+#        if type -q zoxide
+#            __zoxide_z $to
+#        end
+#    end
+#end
+function unlock_root
+  set -l pw (rbw get 'zfs encryption')
+  ssh root@eve.i -p 2222 "echo $pw | systemd-tty-ask-password-agent"
+end
+if string match --quiet "linux*" "$OSTYPE"
+    function ss
+        # -p requires sudo to see all processes
+        if echo "$argv" | grep -q "p"; then
+            sudo ss "$argv" | tee
+        else
+            command ss "$argv" | tee
+        end
+    end
+end
+
 
 # Filemanagement
 alias free "free -g"
@@ -112,6 +151,7 @@ else
   alias ls 'ls --color=auto --classify --human-readable'
 end
 alias sl ls
+
 
 alias rm "rm -rv"
 alias cp "cp -rpv"
@@ -143,7 +183,6 @@ function mv
     read -p 'set_color green; echo -n "> "; set_color normal' -c "$argv[1]" newfilename
     command mv -v -- $argv[1] $newfilename
 end
-alias mv "mv -v"
 alias mkdir "mkdir -p"
 alias lg lazygit
 if is_command q

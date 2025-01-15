@@ -72,6 +72,6 @@ set -g _old_pwd $PWD
 function _ls_after_cd --on-event fish_prompt;
   if test "$_old_pwd" != "$PWD"
     set _old_pwd $PWD
-    ls --color
+    ls
   end
 end
