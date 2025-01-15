@@ -6,11 +6,12 @@ if status --is-login
   posix_source --sh /etc/profile
 end
 
-set COMMANDS (find $PATH -not -type d 2>/dev/null | sed 's,.*/,,')
+set OSTYPE (uname)
+set UID (id -u)
 
 function is_command
     if test (count $argv) -eq 1
-        contains $argv[1] $COMMANDS
+        test -n (command -s $argv[1])
     else
         echo "USAGE: is_command command"
         return 1
@@ -36,14 +37,62 @@ function r
 end
 
 function tempdir
-    set -l dir (mktemp -d -t "$template.XXXX")
-    cd $dir
+    set random_adjective (shuf -n 1 $HOME/.zsh/random-adjective.txt)
+    set random_name (shuf -n 1 $HOME/.zsh/random-name.txt)
+
+    # Create a temporary directory with a random name
+    cd (mktemp -d "/tmp/$random_adjective-$random_name-XXXXXX")
 end
-function ff
-    find . -iname "*$argv*"
+function fd
+    if is_command fd
+        fd "$argv"
+    else
+        find . -iname "*$argv*" 2>/dev/null
+    end
 end
-function browse
-    $BROWSER file://"`pwd`/$1"
+function own
+    if is_command sudo
+        sudo chown -R $USER:(id -gn) "$argv"
+    else
+        chown -R "$USER:$(id -gn)" "$argv"
+    end
+end
+function nixify
+    set -q EDITOR; or set -l EDITOR vim
+    if not test -e shell.nix -a -e default.nix
+        nix flake new -t github:Mic92/flake-templates#nix-shell .
+    else if not test -e ./.envrc
+        echo "use nix" > .envrc
+    end
+    direnv allow
+    "$EDITOR" default.nix
+end
+function nix-update
+    if test -e "$HOME/git/nix-update/flake.nix"
+        nix run "$HOME/git/nix-update#nix-update" -- "$argv"
+    else
+        nix run nixpkgs#nix-update -- "$argv"
+    end
+end
+function nix-fast-build
+    if test -e "$HOME/git/nix-fast-build/flake.nix"
+        nix run "$HOME/git/nix-fast-build#nix-ci-build" -- "$argv"
+    else
+        nix run github:mic92/nix-fast-build -- "$argv"
+    end
+end
+function flakify
+    set -q EDITOR; or set -l EDITOR vim
+    if not test -e flake.nix
+        nix flake new -t github:Mic92/flake-templates#nix-develop .
+    else if not test -e .envrc
+        echo "use flake" > .envrc
+    end
+    direnv allow
+    "$EDITOR" default.nix
+end
+function mkcd
+  mkdir -p "$argv[1]"; and cd "$argv[1]"
 end
 
 # Filemanagement
@@ -52,75 +101,134 @@ alias fuser "fuser -v"
 alias du "du -hc"
 alias df "df -hT"
 # File management
-#if is_command lsd; then
-#  if is_command vivid; then
-#    export LS_COLORS="$(vivid generate solarized-light)"
-#  fi
-#  alias ls="lsd --classify --date=relative"
-##elif [[ $OSTYPE == freebsd* ]] ||  [[ $OSTYPE == darwin* ]]; then
-#  alias ls='ls -G'
-#else
-#  alias ls='ls --color=auto --classify --human-readable'
-#fi
-#alias sl=ls
+if is_command lsd
+  if is_command vivid
+    set -x LS_COLORS (vivid generate solarized-light)
+  end
+  alias ls "lsd --classify --date=relative"
+else if string match --quiet "freebsd*" "$OSTYPE"; or string match --quiet "darwin*" "$OSTYPE"
+  alias ls 'ls -G'
+else
+  alias ls 'ls --color=auto --classify --human-readable'
+end
+alias sl ls
 
 alias rm "rm -rv"
 alias cp "cp -rpv"
-alias cpv "rsync -pogr --progress"
+function cp
+    if test (count $argv) -ne 1 -o ! -e $argv[1]
+        if test -n (command -s xcp)
+            command xcp -r $argv
+        else
+            command cp --reflink=auto -arv $argv
+        end
+        return
+    end
+
+    set -l newfilename
+    read -p 'set_color green; echo -n "> "; set_color normal' -c "$argv[1]" newfilename
+    if test -n (command -s xcp)
+        command xcp -r $argv[1] $newfilename
+    else
+        command cp --reflink=auto -arv -- $argv[1] $newfilename
+    end
+end
+function mv
+    if test (count $argv) -ne 1 -o ! -e $argv[1]
+        command mv -v $argv
+        return
+    end
+
+    set -l newfilename
+    read -p 'set_color green; echo -n "> "; set_color normal' -c "$argv[1]" newfilename
+    command mv -v -- $argv[1] $newfilename
+end
 alias mv "mv -v"
 alias mkdir "mkdir -p"
-alias locate "locate --existing --follow --basename --ignore-case"
 alias lg lazygit
 if is_command q
-    then
     alias dig='q'
 end
 if is_command procs
-    then
     alias ps procs
 else
     alias ps 'ps auxf'
 end
+function ip
+    set -l colour -c
+    set -l brief -br
+    if string match --quiet "darwin*" $OSTYPE
+        # iproute2mac
+        set colour
+        set brief
+    end
+    if test (count $argv) -eq 0
+        command ip $colour $brief a
+    else
+        command ip $colour $argv
+    end
+end
 
-alias wget "wget -c"
+
+alias wget "wget --continue --show-progress --progress=bar:force:noscroll"
+alias curl 'curl --compressed --proto-default https'
+alias nixos-rebuild 'nixos-rebuild --use-remote-sudo'
+if is_command nix
+    alias nix-env 'nix-env -i'
+end
+if is_command hub
+    alias git 'hub'
+end
+if is_command scc
+    alias cloc=scc
+end
+if is_command sgpt
+    function sgpt
+        set -l api_key (rbw get openai-api-key)
+        if test -n "$api_key"
+            OPENAI_API_KEY=$api_key command sgpt $argv
+        else
+            echo "No API key found"
+        end
+    end
+end
+if is_command fzf-share
+    set -x FZF_CTRL_R_OPTS --reverse
+    if is_command fd
+        set -x FZF_DEFAULT_COMMAND 'fd --type f'
+    end
+    # defaults to 30ms which is insanely fast
+    set fish_escape_delay_ms 500
+    source (fzf-share)/key-bindings.fish
+end
 
 # Root
-alias vim nvim
-
-if is_command python
-    function pretty_json
-        python -mjson.tool
-    end
-    function pretty_curl
-        curl -sS $args | pretty_json
-    end
+if is_command nvim
+   alias vim nvim
 end
 
-# Misc
-alias rot13 'tr A-Za-z N-ZA-Mn-za-m'
+# Miscellanious
 # diff format like git
 alias diff 'diff -Naur --strip-trailing-cr'
-alias todotxt "vim ~/Dropbox/todo/todo.txt"
-
-function md5
-    echo -n $1 | openssl md5 /dev/stdin
-end
-function sha1
-    echo -n $1 | openssl sha1 /dev/stdin
-end
-function sha256
-    echo -n $1 | openssl dgst -sha256 /dev/stdin
-end
-function sha512
-    echo -n $1 | openssl dgst -sha512 /dev/stdin
-end
+alias :q exit
+alias grep "grep --binary-files=without-match --directories=skip --color=auto"
+alias R "R --quiet"
+alias strace "strace -yy"
 
 if is_command direnv
     eval (direnv hook fish)
 end
-
-function _current_epoch
-    echo (math (date +%s) / 60 / 60 / 24)
+if is_command bat
+    function cat
+        if test -t 1; and status --is-interactive
+            if test -n "$WAYLAND_DISPLAY"
+                wl-copy < "$1" 2>/dev/null &
+            end
+            bat "$argv"
+        else
+            command cat "$argv"
+        end
+    end
 end
 
 set -x PATH ~/bin ~/.cabal/bin $HOME/.cargo/bin $HOME/go/bin /home/joerg/.npm-packages/bin /usr/local/bin $PATH
@@ -140,15 +248,26 @@ _clean_up_path
 
 set -x CDPATH . ~/git
 
-set -x BROWSER firefox
-set -x TERMINAL foot
-set -x EDITOR vim
-set -x VISUAL $EDITOR
-set -x ALTERNATE_EDITOR emacs
-set -x PAGER moar
+if test -n "$WAYLAND_DISPLAY" -o -n "$DISPLAY"
+    if is_command firefox
+        set -x BROWSER firefox
+    end
+else
+    set -x BROWSER echo
+end
+set -x TERMINAL ghostty
+set -x PICTUREVIEW gwenview
+
+if is_command nvim
+    set -x EDITOR nvim
+    set -x VISUAL nvim
+else if is_command vim
+    set -x EDITOR vim
+    set -x VISUAL vim
+end
+export VISUAL=$EDITOR
 
 if is_command moar
-    then
     set -x MANPAGER moar
     set -x PAGER moar
     set -x MOAR '--no-linenumbers --quit-if-one-screen'
@@ -196,4 +315,10 @@ if test -n "$TMUX" -a -n (command -v tput)
     end
 end
 
-source $HOME/.config/fish/solarized.fish
+set -x GOPATH "$HOME/go"
+if ! test -d "$GOPATH"
+    mkdir -p "$GOPATH/src" 2>/dev/null
+end
+if test -S "/run/user/$UID/ssh-agent"
+    set -x SSH_AUTH_SOCK "/run/user/$UID/ssh-agent"
+end
