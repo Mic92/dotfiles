@@ -2,10 +2,6 @@ if test -f "$HOME/.homesick/repos/homeshick/homeshick.fish"
   source "$HOME/.homesick/repos/homeshick/homeshick.fish"
 end
 
-if status --is-login
-  posix_source --sh /etc/profile
-end
-
 set OSTYPE (uname)
 set UID (id -u)
 
