@@ -23,11 +23,6 @@ if is_command tmux
     end
 end
 
-# Run in background
-function r
-    eval "$argv &" 2>&1 >/dev/null
-end
-
 function tempdir
     set random_adjective (shuf -n 1 $HOME/.zsh/random-adjective.txt)
     set random_name (shuf -n 1 $HOME/.zsh/random-name.txt)
