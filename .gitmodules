@@ -25,3 +25,6 @@
 [submodule "fish/pure"]
 	path = fish/pure
 	url = https://github.com/pure-fish/pure
+[submodule "fish/fish-async-prompt"]
+	path = fish/fish-async-prompt
+	url = https://github.com/acomagu/fish-async-prompt

@@ -1,7 +1,3 @@
-if test -f "$HOME/.homesick/repos/homeshick/homeshick.fish"
-  source "$HOME/.homesick/repos/homeshick/homeshick.fish"
-end
-
 set OSTYPE (uname)
 set UID (id -u)
 
@@ -58,7 +54,7 @@ function nixify
     if not test -e shell.nix -a -e default.nix
         nix flake new -t github:Mic92/flake-templates#nix-shell .
     else if not test -e ./.envrc
-        echo "use nix" > .envrc
+        echo "use nix" >.envrc
     end
     direnv allow
     "$EDITOR" default.nix
@@ -82,16 +78,16 @@ function flakify
     if not test -e flake.nix
         nix flake new -t github:Mic92/flake-templates#nix-develop .
     else if not test -e .envrc
-        echo "use flake" > .envrc
+        echo "use flake" >.envrc
     end
     direnv allow
     "$EDITOR" default.nix
 end
 function mkcd
-  mkdir -p "$argv[1]"; and cd "$argv[1]"
+    mkdir -p "$argv[1]"; and cd "$argv[1]"
 end
 if is_command zoxide
-  zoxide init fish | source
+    zoxide init fish | source
 end
 #function cd
 #    if test "$argv[1]" = "--"
@@ -115,13 +111,14 @@ end
 #    end
 #end
 function unlock_root
-  set -l pw (rbw get 'zfs encryption')
-  ssh root@eve.i -p 2222 "echo $pw | systemd-tty-ask-password-agent"
+    set -l pw (rbw get 'zfs encryption')
+    ssh root@eve.i -p 2222 "echo $pw | systemd-tty-ask-password-agent"
 end
 if string match --quiet "linux*" "$OSTYPE"
     function ss
         # -p requires sudo to see all processes
-        if echo "$argv" | grep -q "p"; then
+        if echo "$argv" | grep -q p
+            then
             sudo ss "$argv" | tee
         else
             command ss "$argv" | tee
@@ -137,14 +134,14 @@ alias du "du -hc"
 alias df "df -hT"
 # File management
 if is_command lsd
-  if is_command vivid
-    set -x LS_COLORS (vivid generate solarized-light)
-  end
-  alias ls "lsd --classify --date=relative"
+    if is_command vivid
+        set -x LS_COLORS (vivid generate solarized-light)
+    end
+    alias ls "lsd --classify --date=relative"
 else if string match --quiet "freebsd*" "$OSTYPE"; or string match --quiet "darwin*" "$OSTYPE"
-  alias ls 'ls -G'
+    alias ls 'ls -G'
 else
-  alias ls 'ls --color=auto --classify --human-readable'
+    alias ls 'ls --color=auto --classify --human-readable'
 end
 alias sl ls
 
@@ -212,7 +209,7 @@ if is_command nix
     alias nix-env 'nix-env -i'
 end
 if is_command hub
-    alias git 'hub'
+    alias git hub
 end
 if is_command scc
     alias cloc=scc
@@ -239,7 +236,7 @@ end
 
 # Root
 if is_command nvim
-   alias vim nvim
+    alias vim nvim
 end
 
 # Miscellanious
@@ -257,7 +254,7 @@ if is_command bat
     function cat
         if test -t 1; and status --is-interactive
             if test -n "$WAYLAND_DISPLAY"
-                wl-copy < "$1" 2>/dev/null &
+                wl-copy <"$1" 2>/dev/null &
             end
             bat "$argv"
         else
@@ -357,3 +354,17 @@ end
 if test -S "/run/user/$UID/ssh-agent"
     set -x SSH_AUTH_SOCK "/run/user/$UID/ssh-agent"
 end
+
+if test -f "$HOME/.homesick/repos/homeshick/homeshick.fish"
+    source "$HOME/.homesick/repos/homeshick/homeshick.fish"
+end
+
+if test -f "$HOME/.fish-pure/conf.d/pure.fish"
+    set fish_function_path "$HOME/.fish-pure/functions" $fish_function_path
+    source "$HOME/.fish-pure/conf.d/pure.fish"
+end
+
+if test -f "$HOME/.fish-async-prompt/conf.d/__async_prompt.fish"
+    source "$HOME/.fish-async-prompt/conf.d/__async_prompt.fish"
+end
+set -g async_prompt_functions _pure_prompt_git
