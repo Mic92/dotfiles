@@ -134,23 +134,6 @@ wttr() {
   [ "$COLUMNS" -lt 125 ] && request+='?n'
   curl -H "Accept-Language: ${LANG%_*}" --compressed "$request"
 }
-mensa() {
-  curl -s "https://tum-dev.github.io/eat-api/mensa-garching/$(date +'%Y')/$(date +'%U').json" | jq -j .days\[$((($(date +%-u)-1)))\].dishes'[]| .dish_type,": ", .name,"\n"'
-}
-edge-gpt() {
-  if [ $# -eq 0 ]; then
-    (
-      tmp=$(mktemp -d)
-      trap 'rm -rf "$tmp"' EXIT
-      nvim "$tmp/prompt.txt"
-      local prompt_text=$(<"$tmp/prompt.txt")
-      rbw get bing-gpt > "$tmp/cookies.json"
-      edge-gpt --prompt "$prompt_text" --cookie-file "$tmp/cookies.json"
-    )
-  else
-    command edge-gpt "$@"
-  fi
-}
 kpaste() {
   arg=cat
   if [[ $# -ne 0 ]]; then
