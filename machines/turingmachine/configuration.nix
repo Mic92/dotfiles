@@ -22,6 +22,7 @@
     inputs.lanzaboote.nixosModules.lanzaboote
 
     ./modules/caddy.nix
+    ./modules/data-mesher.nix
     ./modules/disko.nix
     ./modules/hass-agent.nix
     ./modules/networkmanager
@@ -91,7 +92,7 @@
 
   users.mutableUsers = false;
   users.users.joerg.hashedPasswordFile =
-    config.clan.core.facts.services.root-password.secret.password-hash.path;
+    config.clan.core.vars.generators.root-password.files.password-hash.path;
 
   # https://community.frame.work/t/guide-linux-battery-life-tuning/6665
   #services.tlp.enable = true;

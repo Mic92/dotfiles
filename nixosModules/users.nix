@@ -1,4 +1,9 @@
-{ inputs, pkgs, ... }:
+{
+  lib,
+  inputs,
+  pkgs,
+  ...
+}:
 let
   keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbBp2dH2X3dcU1zh+xW3ZsdYROKpJd3n13ssOP092qE joerg@turingmachine"
@@ -32,6 +37,12 @@ in
     root.openssh.authorizedKeys.keys = keys;
   };
   programs.fish.enable = true;
+  # shadows better builtin completions
+  environment.etc."fish/generated_completions".source = lib.mkForce (
+    pkgs.writeText "fish-completions" ''
+      mkdir $out
+    ''
+  );
 
   boot.initrd.network.ssh.authorizedKeys = keys;
 
