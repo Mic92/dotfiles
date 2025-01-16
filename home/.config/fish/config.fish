@@ -148,9 +148,9 @@ if is_command zoxide
 end
 functions --copy cd _cd
 function cd
-    if test "$argv[1]" = "--"
+    if test "$argv[1]" = --
         set argv $argv[2..-1]
-    else if test "$argv[1]" = "-"
+    else if test "$argv[1]" = -
         _cd -
         return
     end
@@ -200,6 +200,36 @@ if string match --quiet "linux*" "$OSTYPE"
 end
 if is_command atuin
     atuin init fish | source
+end
+function wttr
+    if count $argv -gt 0
+        set city $argv[1]
+    end
+    curl --compressed "wttr.in/$city"
+end
+
+function kpaste
+    set -l arg cat
+    if test (count $argv) -ne 0
+        set -a arg $argv
+    else if test -t 0; and status --is-interactive
+        set arg wl-paste
+    end
+    command $arg | curl -sS http://p.r --data-binary @- | sed '$ {p;s|http://p.r|https://p.krebsco.de|}'
+end
+
+function hm
+    nix run "$HOME/.homesick/repos/dotfiles#hm" -- $argv
+end
+
+function merge-after-ci
+    echo "use merge-when-green instead" >&2
+    return 1
+end
+
+function passgen
+    set -l pass (nix run nixpkgs#xkcdpass -- -d '-' -n 3 -C capitalize $argv)
+    echo "$pass$(random 1 10)"
 end
 
 
