@@ -5,15 +5,17 @@
   ...
 }:
 {
-  clan.core.state.system.folders = [
-    "/home"
-    "/var"
-    "/root"
-  ];
 
-  clan.core.state.networkmanager.folders = lib.mkIf (config.services.networkmanager.enable) [
-    "/etc/NetworkManager"
-  ];
+  clan.core.state = {
+    networkmanager = lib.mkIf (config.networking.networkmanager.enable) {
+      folders = [ "/etc/NetworkManager" ];
+    };
+    system.folders = [
+      "/home"
+      "/var"
+      "/root"
+    ];
+  };
 
   services.borgbackup.jobs = lib.mapAttrs (name: _job: {
     repo = lib.mkForce "borg@${name}.r:/zdata/borg/${config.networking.hostName}";
