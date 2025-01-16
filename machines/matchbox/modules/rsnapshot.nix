@@ -1,8 +1,9 @@
 { pkgs, ... }:
 {
   fileSystems."/mnt/backup" = {
-    device = "UUID=11ac8bec-aef1-45ca-a530-2115d403ce53";
+    device = "/dev/disk/by-id/ata-WDC_WD20EARX-00PASB0_WD-WCAZAD901596";
     fsType = "ext4";
+    autoFormat = true;
     options = [
       "noauto,x-systemd.idle-timeout=60,x-systemd.device-timeout=10s,x-systemd.mount-timeout=10s"
     ];
