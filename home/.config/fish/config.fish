@@ -23,6 +23,62 @@ if is_command tmux
     end
 end
 
+function upfind
+    set -l previous ""
+    set -l current $PWD
+
+    if test (count $argv) -ne 1
+        echo "$argv[0] FILE_NAME"
+        return 1
+    end
+
+    while test -d "$current" -a "$current" != "$previous"
+        set -l target_path "$current/$argv[1]"
+        if test -f "$target_path"
+            echo "$target_path"
+            return 0
+        else
+            set previous $current
+            set current (dirname $current)
+        end
+    end
+    return 1
+end
+
+function clone
+    if test (count $argv) -eq 0
+        echo "clone <GIT_CLONE_URL>"
+        return 1
+    end
+
+    cd (mktemp -d) || return 1
+    git clone --depth=1 "$argv[1]"
+end
+
+function ninja
+    set -l build_path (dirname (upfind "build.ninja"))
+    command nice -n19 ninja -C (string length -- $build_path > /dev/null; and echo $build_path; or echo ".") $argv
+end
+
+function make
+    set -l build_path (dirname (upfind "Makefile"))
+    command nice -n19 make -C (string length -- $build_path > /dev/null; and echo $build_path; or echo ".") -j(nproc) $argv
+end
+
+function real-which
+    readlink -f (command which $argv)
+end
+
+function copypath
+    set p (realpath (or $argv[1] "."))
+    if test -n "$WAYLAND_DISPLAY"
+        echo "$p" | wl-copy 2>/dev/null
+    else if test -n "$DISPLAY"
+        echo "$p" | xclip -selection clipboard 2>/dev/null
+    end
+    echo "$p"
+end
+
 function tempdir
     set random_adjective (shuf -n 1 $HOME/.zsh/random-adjective.txt)
     set random_name (shuf -n 1 $HOME/.zsh/random-name.txt)
@@ -30,6 +86,7 @@ function tempdir
     # Create a temporary directory with a random name
     cd (mktemp -d "/tmp/$random_adjective-$random_name-XXXXXX")
 end
+
 function fd
     if is_command fd
         command fd "$argv"
@@ -84,27 +141,43 @@ end
 if is_command zoxide
     zoxide init fish | source
 end
-#function cd
-#    if test "$argv[1]" = "--"
-#        set argv $argv[2..-1]
-#    end
-#
-#    if test (count $argv) -eq 0
-#        builtin cd
-#        return
-#    end
-#
-#    if test -f "$to"
-#        set to (dirname $to)
-#    end
-#
-#    # fallback to zoxide if builtin cd fails
-#    if not builtin cd "$to" 2>/dev/null
-#        if type -q zoxide
-#            __zoxide_z $to
-#        end
-#    end
-#end
+functions --copy cd _cd
+function cd
+    if test "$argv[1]" = "--"
+        set argv $argv[2..-1]
+    else if test "$argv[1]" = "-"
+        _cd -
+        return
+    end
+
+    if test (count $argv) -eq 0
+        _cd
+        return
+    end
+    set -l to $argv[1]
+
+    if test -f "$to"
+        set to (dirname $to)
+    end
+
+    _cd "$to"
+
+    ## fallback to zoxide if builtin cd fails
+    if not _cd "$to"
+        if type -q zoxide
+            __zoxide_z $to
+        end
+    end
+end
+function untilport
+    if test (count $argv) -lt 2
+        echo "$argv[0]: host port"
+        return 1
+    end
+    while not nc -z $argv
+        sleep 1
+    end
+end
 function unlock_root
     set -l pw (rbw get 'zfs encryption')
     ssh root@eve.i -p 2222 "echo $pw | systemd-tty-ask-password-agent"
@@ -344,8 +417,8 @@ end
 
 set -x GOPATH "$HOME/go"
 if is_command kubectl
-   alias k=kubectl
-   kubectl completion fish | source
+    alias k=kubectl
+    kubectl completion fish | source
 end
 alias tf=terraform
 alias tg=terragrunt
@@ -369,3 +442,10 @@ if test -f "$HOME/.fish-async-prompt/conf.d/__async_prompt.fish"
     source "$HOME/.fish-async-prompt/conf.d/__async_prompt.fish"
 end
 set -g async_prompt_functions _pure_prompt_git
+set -g _old_pwd $PWD
+function _ls_after_cd --on-event fish_prompt
+    if test "$_old_pwd" != "$PWD"
+        set _old_pwd $PWD
+        ls
+    end
+end
