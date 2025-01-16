@@ -1,6 +1,10 @@
 set OSTYPE (uname)
 set UID (id -u)
 
+if test -e $HOME/.nix-profile/etc/profile.d/nix-daemon.fish
+    source $HOME/.nix-profile/etc/profile.d/nix-daemon.fish
+end
+
 function is_command
     if test (count $argv) -eq 1
         test -n (command -s $argv[1])
@@ -22,6 +26,7 @@ if is_command tmux
         end
     end
 end
+
 
 function upfind
     set -l previous ""
