@@ -5,19 +5,10 @@ if test -e $HOME/.nix-profile/etc/profile.d/nix-daemon.fish
     source $HOME/.nix-profile/etc/profile.d/nix-daemon.fish
 end
 
-function is_command
-    if test (count $argv) -eq 1
-        test -n (command -s $argv[1])
-    else
-        echo "USAGE: is_command command"
-        return 1
-    end
-end
-
 # early, fast invocation of tmux
 # - only if tmux is installed
 # - no nested tmux sessions
-if is_command tmux
+if type -q tmux
     if test -z "$TMUX"
         if tmux attach-session
             exec true
@@ -93,14 +84,14 @@ function tempdir
 end
 
 function fd
-    if is_command fd
+    if type -q fd
         command fd "$argv"
     else
         find . -iname "*$argv*" 2>/dev/null
     end
 end
 function own
-    if is_command sudo
+    if type -q sudo
         sudo chown -R $USER:(id -gn) "$argv"
     else
         chown -R "$USER:$(id -gn)" "$argv"
@@ -143,7 +134,7 @@ end
 function mkcd
     mkdir -p "$argv[1]"; and cd "$argv[1]"
 end
-if is_command zoxide
+if type -q zoxide
     zoxide init fish | source
 end
 functions --copy cd _cd
@@ -198,7 +189,7 @@ if string match --quiet "linux*" "$OSTYPE"
         end
     end
 end
-if is_command atuin
+if type -q atuin
     atuin init fish | source
 end
 function wttr
@@ -239,8 +230,8 @@ alias fuser "fuser -v"
 alias du "du -hc"
 alias df "df -hT"
 # File management
-if is_command lsd
-    if is_command vivid
+if type -q lsd
+    if type -q vivid
         set -x LS_COLORS (vivid generate solarized-light)
     end
     alias ls "lsd --classify --date=relative"
@@ -251,6 +242,28 @@ else
 end
 alias sl ls
 
+# Basic commands
+alias zcat 'zcat -f'
+alias dd 'dd status=progress'
+function rg
+  set -l pager $PAGER
+
+  if type -q delta
+    set pager delta
+  end
+
+  if type -q rg
+    begin
+      command rg --sort path --smart-case --fixed-strings --json -C 2 $argv
+      if test -t 0
+        command rg --files | command rg --no-line-number --json -C 2 $argv
+      end
+    end | $pager
+  else
+    grep -r -C 2 $argv
+  end
+end
+alias pgrep 'pgrep -a'
 
 alias rm "rm -rv"
 alias cp "cp -rpv"
@@ -284,10 +297,10 @@ function mv
 end
 alias mkdir "mkdir -p"
 alias lg lazygit
-if is_command q
+if type -q q
     alias dig='q'
 end
-if is_command procs
+if type -q procs
     alias ps procs
 else
     alias ps 'ps auxf'
@@ -311,16 +324,17 @@ end
 alias wget "wget --continue --show-progress --progress=bar:force:noscroll"
 alias curl 'curl --compressed --proto-default https'
 alias nixos-rebuild 'nixos-rebuild --use-remote-sudo'
-if is_command nix
-    alias nix-env 'nix-env -i'
+if type -q nom
+  alias nix-build nom-build
+  alias nix nom
 end
-if is_command hub
+if type -q hub
     alias git hub
 end
-if is_command scc
+if type -q scc
     alias cloc=scc
 end
-if is_command sgpt
+if type -q sgpt
     function sgpt
         set -l api_key (rbw get openai-api-key)
         if test -n "$api_key"
@@ -330,9 +344,9 @@ if is_command sgpt
         end
     end
 end
-if is_command fzf-share
+if type -q fzf-share
     set -x FZF_CTRL_R_OPTS --reverse
-    if is_command fd
+    if type -q fd
         set -x FZF_DEFAULT_COMMAND 'fd --type f'
     end
     # defaults to 30ms which is insanely fast
@@ -341,7 +355,7 @@ if is_command fzf-share
 end
 
 # Root
-if is_command nvim
+if type -q nvim
     alias vim nvim
 end
 
@@ -353,10 +367,10 @@ alias grep "grep --binary-files=without-match --directories=skip --color=auto"
 alias R "R --quiet"
 alias strace "strace -yy"
 
-if is_command direnv
+if type -q direnv
     eval (direnv hook fish)
 end
-if is_command bat
+if type -q bat
     function cat
         if test -t 1; and status --is-interactive
             if test -n "$WAYLAND_DISPLAY"
@@ -387,7 +401,7 @@ _clean_up_path
 set -x CDPATH . ~/git
 
 if test -n "$WAYLAND_DISPLAY" -o -n "$DISPLAY"
-    if is_command firefox
+    if type -q firefox
         set -x BROWSER firefox
     end
 else
@@ -396,21 +410,21 @@ end
 set -x TERMINAL ghostty
 set -x PICTUREVIEW gwenview
 
-if is_command nvim
+if type -q nvim
     set -x EDITOR nvim
     set -x VISUAL nvim
-else if is_command vim
+else if type -q vim
     set -x EDITOR vim
     set -x VISUAL vim
 end
 export VISUAL=$EDITOR
 
-if is_command moar
+if type -q moar
     set -x MANPAGER moar
     set -x PAGER moar
     set -x MOAR '--no-linenumbers --quit-if-one-screen'
     alias less moar
-else if is_command less
+else if type -q less
     set -x MANPAGER less
     set -x PAGER less
 end
@@ -454,7 +468,7 @@ if test -n "$TMUX" -a -n (command -v tput)
 end
 
 set -x GOPATH "$HOME/go"
-if is_command kubectl
+if type -q kubectl
     alias k=kubectl
     kubectl completion fish | source
 end
