@@ -239,7 +239,7 @@ if is_command nvim
     alias vim nvim
 end
 
-# Miscellanious
+# Miscellaneous
 # diff format like git
 alias diff 'diff -Naur --strip-trailing-cr'
 alias :q exit
@@ -348,6 +348,12 @@ if test -n "$TMUX" -a -n (command -v tput)
 end
 
 set -x GOPATH "$HOME/go"
+if is_command kubectl
+   alias k=kubectl
+   kubectl completion fish | source
+end
+alias tf=terraform
+alias tg=terragrunt
 if ! test -d "$GOPATH"
     mkdir -p "$GOPATH/src" 2>/dev/null
 end
