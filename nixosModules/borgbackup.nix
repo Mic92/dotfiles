@@ -7,9 +7,12 @@
 {
   clan.core.state.system.folders = [
     "/home"
-    "/etc"
     "/var"
     "/root"
+  ];
+
+  clan.core.state.networkmanager.folders = lib.mkIf (config.services.networkmanager.enable) [
+    "/etc/NetworkManager"
   ];
 
   services.borgbackup.jobs = lib.mapAttrs (name: _job: {
