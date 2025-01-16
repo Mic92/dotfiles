@@ -193,6 +193,9 @@ if string match --quiet "linux*" "$OSTYPE"
         end
     end
 end
+if is_command atuin
+    atuin init fish | source
+end
 
 
 # Filemanagement
