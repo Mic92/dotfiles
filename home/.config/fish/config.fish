@@ -71,7 +71,6 @@ function term-notify -a title message
 end
 
 function command_ended --on-event fish_postexec
-    set -l exit_status $status
     set -l duration $CMD_DURATION
     if not test $duration; or test $duration -le 5000
         return
@@ -362,7 +361,6 @@ alias curl 'curl --compressed --proto-default https'
 alias nixos-rebuild 'nixos-rebuild --use-remote-sudo'
 if type -q nom
   alias nix-build nom-build
-  alias nix nom
 end
 if type -q hub
     alias git hub
