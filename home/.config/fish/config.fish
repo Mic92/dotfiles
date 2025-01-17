@@ -174,6 +174,14 @@ function untilport
         sleep 1
     end
 end
+# enable side-by-side diff if terminal is wide enough
+function my_signal_handler --on-signal WINCH
+    if test $COLUMNS -ge 140
+        set -x DELTA_FEATURES side-by-side
+    else
+        set -x DELTA_FEATURES ''
+    end
+end
 function unlock_root
     set -l pw (rbw get 'zfs encryption')
     ssh root@eve.i -p 2222 "echo $pw | systemd-tty-ask-password-agent"
@@ -197,6 +205,20 @@ function wttr
         set city $argv[1]
     end
     curl --compressed "wttr.in/$city"
+end
+function r2
+    if test (count $argv) -eq 0
+        command r2 -
+    else
+        command r2 $argv
+    end
+end
+
+# The latest shell will mirror these env vars into all other shells. This is useful for ssh agent forwarding
+for var in SSH_AUTH_SOCK SSH_CONNECTION SSH_CLIENT
+    if set -q $var
+        set -Ux $var
+    end
 end
 
 function kpaste
