@@ -161,6 +161,8 @@
           "home/.xinitrc"
           "home/.zsh-termsupport"
           "home/.zshrc"
+          "home/.fish-pure"
+          "fish/*"
           "home/bin/*"
           "machines/eve/modules/nginx/screenshare/index.html"
           "machines/eve/pkgs/logo.png"
