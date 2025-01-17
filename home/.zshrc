@@ -823,13 +823,6 @@ tmux-upterm() {
 ## Autocycle
 setopt autopushd
 
-## Terminal stuff
-ulimit -S -c 0 # disable core dumps
-stty -ctlecho # turn off control character echoing
-if [[ $TERM = linux ]]; then
-  setterm -regtabs 2 # set tab width of 4 (only works on TTY)
-fi
-
 # Plugins
 if [[ -f ~/.zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
   source ~/.zsh-autosuggestions/zsh-autosuggestions.zsh
