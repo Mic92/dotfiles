@@ -1,0 +1,51 @@
+{
+  "machines": {
+    "bernie": {
+      "name": "bernie"
+    },
+    "blob64": {
+      "name": "blob64"
+    },
+    "eva": {
+      "name": "eva"
+    },
+    "eve": {
+      "name": "eve"
+    },
+    "matchbox": {
+      "name": "matchbox"
+    },
+    "turingmachine": {
+      "name": "turingmachine"
+    },
+    "installer": {
+      "name": "installer"
+    }
+  },
+  "services": {
+    "borgbackup": {
+      "blob64": {
+        "enabled": true,
+        "meta": {
+          "name": "blob64"
+        }
+      }
+    },
+    "sshd": {
+      "mic92": {
+        "enabled": true,
+        "meta": {
+          "name": "mic92"
+        }
+      }
+    },
+    "zerotier": {
+      "mic92": {
+        "enabled": true,
+        "meta": {
+          "name": "mic92"
+        }
+      }
+    }
+  }
+}
