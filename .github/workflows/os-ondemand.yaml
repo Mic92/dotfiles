@@ -10,7 +10,9 @@ on:
         options:
           - ubuntu-latest
           - macos-latest
+          - macos-13
           - windows-latest
+          - ubuntu-22.04-arm
 jobs:
   test:
     runs-on: ${{ inputs.os }}
