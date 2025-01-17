@@ -1,21 +1,17 @@
-set OSTYPE (uname)
-set UID (id -u)
-
-if test -e $HOME/.nix-profile/etc/profile.d/nix-daemon.fish
-    source $HOME/.nix-profile/etc/profile.d/nix-daemon.fish
-end
-
+# fish behaves very weirdly in a linux console
+if test "$TERM" = linux
+    exec zsh; or exec bash
 # early, fast invocation of tmux
 # - only if tmux is installed
 # - no nested tmux sessions
-if type -q tmux
-    if test -z "$TMUX"
-        if tmux attach-session
-            exec true
-        else
-            tmux; and exec true
-        end
-    end
+else if type -q tmux; and test -z "$TMUX"
+    tmux attach-session; or tmux
+end
+
+set OSTYPE (uname)
+set UID (id -u)
+if test -e $HOME/.nix-profile/etc/profile.d/nix-daemon.fish
+    source $HOME/.nix-profile/etc/profile.d/nix-daemon.fish
 end
 
 
