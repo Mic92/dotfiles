@@ -21,12 +21,14 @@ let
         wrapProgram $out/bin/jj-fzf \
           --prefix PATH : ${
             lib.makeBinPath [
-              pkgs.fzf
-              pkgs.jujutsu
-              pkgs.gnused
-              pkgs.gawk
-              pkgs.coreutils
               pkgs.bashInteractive
+              pkgs.coreutils
+              pkgs.findutils
+              pkgs.fzf
+              pkgs.gawk
+              pkgs.gnused
+              pkgs.jujutsu
+              pkgs.which
             ]
           }
       '';
