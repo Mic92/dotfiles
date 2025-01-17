@@ -61,6 +61,24 @@ function real-which
     readlink -f (command which $argv)
 end
 
+function term-notify -a title message
+   # requires this in tmux.conf: set allow-passthrough on
+   if test $TMUX
+      printf "\x1bPtmux;\x1b\x1b]777;notify;%s;%s\a\x1b\\" $title $message
+    else
+      printf "\x1b]777;notify;%s;%s\a" $title $message
+    end
+end
+
+function command_ended --on-event fish_postexec
+    set -l exit_status $status
+    set -l duration $CMD_DURATION
+    if not test $duration; or test $duration -le 5000
+        return
+    end
+    echo -e "\a" # bell sound -> will be urgent notification
+end
+
 function copypath
     set p (realpath (or $argv[1] "."))
     if test -n "$WAYLAND_DISPLAY"
@@ -258,7 +276,7 @@ else if string match --quiet "freebsd*" "$OSTYPE"; or string match --quiet "darw
 else
     alias ls 'ls --color=auto --classify --human-readable'
 end
-alias sl ls
+abbr -a sl ls
 
 # Basic commands
 alias zcat 'zcat -f'
@@ -314,7 +332,7 @@ function mv
     command mv -v -- $argv[1] $newfilename
 end
 alias mkdir "mkdir -p"
-alias lg lazygit
+abbr -a lg lazygit
 if type -q q
     alias dig='q'
 end
@@ -350,7 +368,7 @@ if type -q hub
     alias git hub
 end
 if type -q scc
-    alias cloc=scc
+    alias cloc scc
 end
 if type -q sgpt
     function sgpt
@@ -380,7 +398,7 @@ end
 # Miscellaneous
 # diff format like git
 alias diff 'diff -Naur --strip-trailing-cr'
-alias :q exit
+abbr -a :q exit
 alias grep "grep --binary-files=without-match --directories=skip --color=auto"
 alias R "R --quiet"
 alias strace "strace -yy"
@@ -401,7 +419,7 @@ if type -q bat
     end
 end
 
-set -x PATH ~/bin ~/.cabal/bin $HOME/.cargo/bin $HOME/go/bin /home/joerg/.npm-packages/bin /usr/local/bin $PATH
+fish_add_path ~/bin ~/.cabal/bin $HOME/.cargo/bin $HOME/go/bin /home/joerg/.npm-packages/bin /usr/local/bin
 
 function _clean_up_path
     set -l new_path
