@@ -79,7 +79,12 @@ function command_ended --on-event fish_postexec
 end
 
 function copypath
-    set p (realpath (or $argv[1] "."))
+    if test (count $argv) -eq 0
+        set p $PWD
+    else
+        set p $argv[1]
+    end
+    set p (realpath "$p")
     if test -n "$WAYLAND_DISPLAY"
         echo "$p" | wl-copy 2>/dev/null
     else if test -n "$DISPLAY"
@@ -336,7 +341,7 @@ if type -q q
     alias dig='q'
 end
 if type -q procs
-    alias ps procs
+    alias ps 'procs --theme light'
 else
     alias ps 'ps auxf'
 end
