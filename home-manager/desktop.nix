@@ -47,7 +47,7 @@
     patool
     tio
     shell-gpt
-    git-stack
+    git-ps-rs
 
     (mpv.override { scripts = [ mpvScripts.mpris ]; })
     playerctl
