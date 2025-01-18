@@ -283,7 +283,7 @@ xalias dig='q'
 alias free='free -g'
 alias fuser="fuser -v"
 if [[ -n ${commands[procs]} ]]; then
-  alias ps='procs'
+  alias ps='procs --theme light'
 else
   alias ps='ps auxf'
 fi
