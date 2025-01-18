@@ -1,38 +1,4 @@
-{ pkgs, lib, ... }:
-let
-
-  jj-fzf-src = pkgs.fetchFromGitHub {
-    owner = "tim-janik";
-    repo = "jj-fzf";
-    rev = "b81c9d61e4a91679f88171793143e893e6e37421";
-    sha256 = "sha256-Lz05VXfks6buUE2Poula6lg+Yw9OjS0q3LWafzsibdQ=";
-  };
-  jj-fzf =
-    pkgs.runCommand "jj-fzf"
-      {
-        nativeBuildInputs = [
-          pkgs.makeWrapper
-          pkgs.bashInteractive
-        ];
-      }
-      ''
-        mkdir -p $out/bin
-        install -m755 ${jj-fzf-src}/jj-fzf $out/bin/jj-fzf
-        wrapProgram $out/bin/jj-fzf \
-          --prefix PATH : ${
-            lib.makeBinPath [
-              pkgs.bashInteractive
-              pkgs.coreutils
-              pkgs.findutils
-              pkgs.fzf
-              pkgs.gawk
-              pkgs.gnused
-              pkgs.jujutsu
-              pkgs.which
-            ]
-          }
-      '';
-in
+{ pkgs, ... }:
 {
   imports = [
     ./common.nix
@@ -58,8 +24,6 @@ in
     eternal-terminal
     gimp
     zed-editor
-    jujutsu
-    jj-fzf
     arandr
     signal-desktop
     adwaita-icon-theme
@@ -83,6 +47,7 @@ in
     patool
     tio
     shell-gpt
+    git-stack
 
     (mpv.override { scripts = [ mpvScripts.mpris ]; })
     playerctl

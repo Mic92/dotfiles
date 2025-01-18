@@ -57,6 +57,12 @@
   publish = !git pull && git push
   # recover failed commit messages: https://stackoverflow.com/questions/9133526/git-recover-failed-commits-message
   recommit = !git commit -eF $(git rev-parse --git-dir)/COMMIT_EDITMSG
+  next = stack next
+  prev = stack previous
+  reword = stack reword
+  amend = stack amend
+  sync = stack sync
+  run = stack run
 [push]
   default = simple
   autoSetupRemote = true
