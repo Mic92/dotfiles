@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+
+# request_review_post_sync hook using GitHub CLI (https://cli.github.com)
+#
+# This hook handles requesting review after the sync step of the request review
+# command has completed.
+#
+# In this particular case it is creating a pull request within GitHub by using
+# the GitHub CLI. Therefore, you need to make sure that you have the GitHub CLI
+# installed, in your PATH, and have logged into it for this hook to work.
+#
+# Setup
+#
+# - install github cli - on macOS - brew install gh
+# - login to github cli - gh auth login
+
+patch_upstream_branch_name=$1                          # string of the patch's associated upstream branch name (e.g. ps/rr/your-patches-branch-name)
+patch_stack_upstream_branch_name_relative_to_remote=$2 # string of the patch stack's branch name (e.g. main)
+patch_stack_upstream_remote_name=$3                    # string of the patch stack's remote name (e.g. origin)
+patch_stack_upstream_remote_url=$4                     # string of the patch stack's remote url
+
+cleanupHooks=()
+runCleanupHooks() {
+  local hook
+  for hook in "${cleanupHooks[@]}"; do "$hook" || true; done
+}
+trap runCleanupHooks EXIT
+
+gh pr -R "$patch_stack_upstream_remote_url" view $patch_upstream_branch_name
+if [ $? -eq 0 ]; then
+  echo "gh pr -R \"$patch_stack_upstream_remote_url\" view $patch_upstream_branch_name succeeded"
+
+  closed=$(gh pr -R "$patch_stack_upstream_remote_url" view $patch_upstream_branch_name --json closed --jq '.closed')
+  if [ $? -eq 0 ]; then
+    echo "gh pr -R \"$patch_stack_upstream_remote_url\" view $patch_upstream_branch_name --json closed --jq '.closed' succeeded"
+    echo "closed=$closed"
+    if [ $closed != "true" ]; then
+      echo "An open PR was found for the branch, so exiting to prevent duplicate PR creation."
+      exit 0
+    fi
+  fi
+fi
+
+extra_flags=()
+if [[ -n "$GITHUB_LABEL" ]]; then
+  extra_flags+=("--label" "$GITHUB_LABEL")
+fi
+
+gh pr create \
+  --web --fill \
+  --base "$patch_stack_upstream_branch_name_relative_to_remote" \
+  --head "$patch_upstream_branch_name" \
+  -R "$patch_stack_upstream_remote_url" \
+  "${extra_flags[@]}"
+
+# Note: In the case where we already have a PR opened we don't want to do
+# anything in the hook other than exit successfully because all we want to
+# happen is that the remote branch is pushed up. The sync step of the request
+# review command takes care of this. Hence, there is nothing for us to do here.
+# If this hook was implementing say an email based workflow then it would
+# likely create and send a new email.
