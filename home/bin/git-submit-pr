@@ -1,0 +1,119 @@
+#!/usr/bin/env python3
+
+import subprocess
+import sys
+import argparse
+import contextlib
+from collections.abc import Iterator
+from dataclasses import dataclass
+
+
+class GitError(Exception):
+    pass
+
+
+def get_commits_between_head_and_upstream() -> list[str]:
+    """
+    Get a list of all commits between HEAD and the tracked upstream branch.
+    Returns:
+        List[str]: List of commit hashes (in reverse chronological order).
+    """
+    try:
+        # Get the upstream branch reference
+        upstream_branch = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
+            text=True,
+            check=True,
+            stdout=subprocess.PIPE,
+        ).stdout.strip()
+
+        # Get all commits between HEAD and the upstream branch
+        commits = (
+            subprocess.run(
+                ["git", "log", "--reverse", "--format=%H", f"{upstream_branch}..HEAD"],
+                text=True,
+                check=True,
+                stdout=subprocess.PIPE,
+            )
+            .stdout.strip()
+            .split("\n")
+        )
+
+    except subprocess.CalledProcessError as e:
+        msg = f"Error while running git command: {e}"
+        raise GitError(msg) from e
+    else:
+        return commits
+
+
+def find_commit_index(commit_hash: str, commits: list[str]) -> int:
+    """
+    Find the index of a specific commit in the list of commits.
+    Args:
+        commit_hash (str): The commit hash to find.
+        commits (List[str]): The list of commits.
+
+    Returns:
+        int: The index of the commit in the list, or -1 if not found.
+    """
+    try:
+        return commits.index(commit_hash)
+    except ValueError:
+        return -1
+
+
+@dataclass
+class Args:
+    commit_hash: str
+    branch: str | None = None
+
+
+def submit_pr(args: Args) -> None:
+    # Get all commits
+    commits = get_commits_between_head_and_upstream()
+
+    # Find the index of the specified commit
+    index = find_commit_index(args.commit_hash, commits)
+
+    if index == -1:
+        msg = f"Commit {args.commit_hash} not found in the range between HEAD and the upstream branch."
+        raise GitError(msg)
+
+    command = ["gps", "request-review"]
+    if args.branch:
+        command.extend(["--branch", args.branch])
+    command.append(str(index))
+
+    subprocess.run(
+        command,
+        text=True,
+        check=True,
+    )
+
+
+def parse_args() -> Args:
+    parser = argparse.ArgumentParser(
+        description="Submit a pull request for a specific commit."
+    )
+    parser.add_argument(
+        "--branch",
+        help="The branch to submit a pull request for. Defaults to the current branch.",
+    )
+    parser.add_argument(
+        "commit_hash", help="The commit hash to submit a pull request for."
+    )
+    args = parser.parse_args()
+    return Args(args.commit_hash, args.branch)
+
+
+def main() -> None:
+    args = parse_args()
+    try:
+        submit_pr(args)
+    except GitError as e:
+        print(f"[{sys.argv[0]}]: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
