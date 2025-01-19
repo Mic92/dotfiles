@@ -103,16 +103,16 @@ end
 
 function fd
     if type -q fd
-        command fd "$argv"
+        command fd $argv
     else
-        find . -iname "*$argv*" 2>/dev/null
+        find . -iname "*$argv[0]*" 2>/dev/null
     end
 end
 function own
     if type -q sudo
-        sudo chown -R $USER:(id -gn) "$argv"
+        sudo chown -R $USER:(id -gn) $argv
     else
-        chown -R "$USER:$(id -gn)" "$argv"
+        chown -R "$USER:$(id -gn)" $argv
     end
 end
 function nixify
@@ -127,16 +127,16 @@ function nixify
 end
 function nix-update
     if test -e "$HOME/git/nix-update/flake.nix"
-        nix run "$HOME/git/nix-update#nix-update" -- "$argv"
+        nix run "$HOME/git/nix-update#nix-update" -- $argv
     else
-        nix run nixpkgs#nix-update -- "$argv"
+        nix run nixpkgs#nix-update -- $argv
     end
 end
 function nix-fast-build
     if test -e "$HOME/git/nix-fast-build/flake.nix"
-        nix run "$HOME/git/nix-fast-build#nix-ci-build" -- "$argv"
+        nix run "$HOME/git/nix-fast-build#nix-ci-build" -- $argv
     else
-        nix run github:mic92/nix-fast-build -- "$argv"
+        nix run github:mic92/nix-fast-build -- $argv
     end
 end
 function flakify
@@ -207,11 +207,11 @@ end
 if string match --quiet "linux*" "$OSTYPE"
     function ss
         # -p requires sudo to see all processes
-        if echo "$argv" | grep -q p
+        if echo $argv | grep -q p
             then
-            sudo ss "$argv" | tee
+            sudo ss $argv | tee
         else
-            command ss "$argv" | tee
+            command ss $argv | tee
         end
     end
 end
@@ -320,9 +320,9 @@ function cp
     set -l newfilename
     read -p 'set_color green; echo -n "> "; set_color normal' -c "$argv[1]" newfilename
     if test -n (command -s xcp)
-        command xcp -r $argv[1] $newfilename
+        command xcp -r "$argv[1]" "$newfilename"
     else
-        command cp --reflink=auto -arv -- $argv[1] $newfilename
+        command cp --reflink=auto -arv -- "$argv[1]" "$newfilename"
     end
 end
 function mv
@@ -333,7 +333,7 @@ function mv
 
     set -l newfilename
     read -p 'set_color green; echo -n "> "; set_color normal' -c "$argv[1]" newfilename
-    command mv -v -- $argv[1] $newfilename
+    command mv -v -- "$argv[1]" "$newfilename"
 end
 alias mkdir "mkdir -p"
 abbr -a lg lazygit
@@ -413,11 +413,11 @@ if type -q bat
     function cat
         if test -t 1; and status --is-interactive
             if test -n "$WAYLAND_DISPLAY"
-                wl-copy <"$1" 2>/dev/null &
+                wl-copy < "$argv[0]" 2>/dev/null &
             end
-            bat "$argv"
+            bat $argv
         else
-            command cat "$argv"
+            command cat $argv
         end
     end
 end
