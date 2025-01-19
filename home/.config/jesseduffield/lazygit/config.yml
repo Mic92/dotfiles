@@ -16,7 +16,7 @@ git:
   autoFetch: False
 customCommands:
   - key: "<c-r>"
-    command: 'git rebase --interactive "{{.SelectedLocalCommit.Sha}}"'
+    command: 'git rebase --interactive "{{.SelectedCommit.Sha}}"'
     context: "commits"
     subprocess: true
   - key: "<c-g>"
@@ -26,9 +26,9 @@ customCommands:
   - key: "<c-n>"
     prompts:
       - type: "input"
-        title: "What is the new branch name?"
+        title: "What is the new branch name? Empty for automatic branch name"
         initialValue: ""
-    command: 'git fetch upstream master && git branch --merged upstream/master | xargs --no-run-if-empty git branch -D && git checkout -b "{{index .PromptResponses 0}}" upstream/master && git cherry-pick "{{.SelectedLocalCommit.Sha}}" && git push -u origin {{index .PromptResponses 0}}'
+    command: 'git-submit-pr --branch "{{index .PromptResponses 0}}" "{{.SelectedCommit.Sha}}"'
     context: "commits"
     subprocess: true
   - key: "<c-p>"
@@ -36,7 +36,7 @@ customCommands:
       - type: "input"
         title: "What is the new branch name?"
         initialValue: ""
-    command: 'git fetch origin main && git branch --merged origin/main | xargs --no-run-if-empty git branch -D && git checkout -b "{{index .PromptResponses 0}}" origin/main && git cherry-pick "{{.SelectedLocalCommit.Sha}}" && git push -u origin {{index .PromptResponses 0}}'
+    command: 'git fetch origin main && git branch --merged origin/main | xargs --no-run-if-empty git branch -D && git checkout -b "{{index .PromptResponses 0}}" origin/main && git cherry-pick "{{.SelectedCommit.Sha}}" && git push -u origin {{index .PromptResponses 0}}'
     context: "commits"
     subprocess: true
   - key: "<c-a>"
