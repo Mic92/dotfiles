@@ -45,6 +45,7 @@ function clone
 
     cd (mktemp -d) || return 1
     git clone --depth=1 "$argv[1]"
+    _cd *
 end
 
 function ninja
