@@ -20,9 +20,6 @@ return {
 			null_ls.builtins.diagnostics.golangci_lint,
 			null_ls.builtins.code_actions.impl,
 
-			-- nix
-			null_ls.builtins.formatting.nixfmt,
-
 			-- c/c++
 			null_ls.builtins.formatting.clang_format,
 
@@ -30,6 +27,9 @@ return {
 			null_ls.builtins.formatting.shfmt.with({
 				args = { "-i", "2" },
 			}),
+
+			-- nix fmt
+			null_ls.builtins.formatting.nix_flake_fmt,
 		}
 		return config -- return final config table
 	end,
