@@ -12,25 +12,44 @@ class Error(Exception):
     pass
 
 
-def get_commits_between_head_and_upstream() -> list[str]:
+@dataclass
+class TrackedRemote:
+    remote: str
+    branch: str
+
+
+def tracked_remote() -> TrackedRemote:
+    try:
+        data = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
+            text=True,
+            check=True,
+            stdout=subprocess.PIPE,
+        ).stdout.strip()
+        remote, branch = data.split("/", 1)
+        return TrackedRemote(remote, branch)
+    except subprocess.CalledProcessError as e:
+        msg = f"Error while running git command: {e}"
+        raise Error(msg) from e
+
+
+def get_commits_between_head_and_target(target: TrackedRemote) -> list[str]:
     """
     Get a list of all commits between HEAD and the tracked upstream branch.
     Returns:
         List[str]: List of commit hashes (in reverse chronological order).
     """
     try:
-        # Get the upstream branch reference
-        upstream_branch = subprocess.run(
-            ["git", "rev-parse", "--abbrev-ref", "--symbolic-full-name", "@{u}"],
-            text=True,
-            check=True,
-            stdout=subprocess.PIPE,
-        ).stdout.strip()
-
         # Get all commits between HEAD and the upstream branch
         commits = (
             subprocess.run(
-                ["git", "log", "--reverse", "--format=%H", f"{upstream_branch}..HEAD"],
+                [
+                    "git",
+                    "log",
+                    "--reverse",
+                    "--format=%H",
+                    f"{target.remote}/{target.branch}..HEAD",
+                ],
                 text=True,
                 check=True,
                 stdout=subprocess.PIPE,
@@ -69,7 +88,7 @@ class Args:
     label: str | None = None
 
 
-def run_treefmt(target_branch: str) -> None:
+def run_treefmt(target: TrackedRemote) -> None:
     if shutil.which("treefmt"):
         result = subprocess.run(["treefmt", "--fail-on-change"], check=False)
         if result.returncode == 0:
@@ -82,7 +101,7 @@ def run_treefmt(target_branch: str) -> None:
             stdout=subprocess.PIPE,
         ).stdout.strip()
 
-        has_treefmt = f"(val: val ? {current_system} && (val.{current_system}.name == 'treefmt' || val.{current_system}.name == 'treefmt-nix'))"
+        has_treefmt = f"(val: val ? {current_system} && (val.{current_system}.name == \"treefmt\" || val.{current_system}.name == \"treefmt-nix\"))"
         result = subprocess.run(
             ["nix", "eval", ".#formatter", "--apply", has_treefmt],
             stdout=subprocess.PIPE,
@@ -115,17 +134,24 @@ def run_treefmt(target_branch: str) -> None:
             return
 
     subprocess.run(
-        ["git", "absorb", "--force", "--and-rebase", f"--base=origin/{target_branch}"],
+        [
+            "git",
+            "absorb",
+            "--force",
+            "--and-rebase",
+            f"--base={target.remote}/{target.branch}",
+        ],
         check=True,
     )
-    subprocess.run(["lazygit"], check=False)
     msg = "Treefmt failed, please fix the formatting and try again."
     raise Error(msg)
 
 
 def submit_pr(args: Args) -> None:
+    target = tracked_remote()
+    run_treefmt(target)
     # Get all commits
-    commits = get_commits_between_head_and_upstream()
+    commits = get_commits_between_head_and_target(target)
 
     # Find the index of the specified commit
     index = find_commit_index(args.commit_hash, commits)
