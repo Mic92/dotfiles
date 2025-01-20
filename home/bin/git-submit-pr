@@ -26,7 +26,12 @@ def tracked_remote() -> TrackedRemote:
             check=True,
             stdout=subprocess.PIPE,
         ).stdout.strip()
-        remote, branch = data.split("/", 1)
+        parts = data.split("/")
+        if len(parts) == 1:  # FIXME: there got to be a better way to detect this.
+            remote = "origin"
+            branch = parts[0]
+        else:
+            remote, branch = parts
         return TrackedRemote(remote, branch)
     except subprocess.CalledProcessError as e:
         msg = f"Error while running git command: {e}"
@@ -101,7 +106,7 @@ def run_treefmt(target: TrackedRemote) -> None:
             stdout=subprocess.PIPE,
         ).stdout.strip()
 
-        has_treefmt = f"(val: val ? {current_system} && (val.{current_system}.name == \"treefmt\" || val.{current_system}.name == \"treefmt-nix\"))"
+        has_treefmt = f'(val: val ? {current_system} && (val.{current_system}.name == "treefmt" || val.{current_system}.name == "treefmt-nix"))'
         result = subprocess.run(
             ["nix", "eval", ".#formatter", "--apply", has_treefmt],
             stdout=subprocess.PIPE,
