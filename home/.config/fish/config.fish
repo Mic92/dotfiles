@@ -175,8 +175,6 @@ function cd
         set to (dirname $to)
     end
 
-    _cd "$to"
-
     ## fallback to zoxide if builtin cd fails
     if not _cd "$to"
         if type -q zoxide
