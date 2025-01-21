@@ -1,4 +1,9 @@
-{ inputs, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
 {
   imports = [
     inputs.data-mesher.nixosModules.data-mesher
@@ -11,7 +16,7 @@
     settings = {
       log_level = "debug";
 
-      key_path = "/run/dm.pem";
+      key_path = config.clan.core.vars.generators.data-mesher.files."dm.pem".path;
       host.names = [
         "turingmachine"
         #"earth"
@@ -36,4 +41,14 @@
     #};
   };
   services.tailscale.enable = true;
+
+  clan.core.vars.generators.data-mesher = {
+    files."dm.pem".owner = "data-mesher";
+    runtimeInputs = [
+      pkgs.openssl
+    ];
+    script = ''
+      openssl genpkey -algorithm ed25519 -out $out/dm.pem
+    '';
+  };
 }
