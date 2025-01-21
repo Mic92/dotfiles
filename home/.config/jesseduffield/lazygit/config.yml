@@ -26,17 +26,9 @@ customCommands:
   - key: "<c-n>"
     prompts:
       - type: "input"
-        title: "What is the new branch name? Empty for automatic branch name"
+        title: "What is the new branch name?"
         initialValue: ""
-      - type: "menu"
-        title: "Merge after CI?"
-        key: "BranchType"
-        options:
-          - name: "yes"
-            value: "--label merge-queue"
-          - name: "no"
-            value: " "
-    command: 'git-submit-pr  --branch "{{index .PromptResponses 0}}" {{index .PromptResponses 1}} "{{.SelectedCommit.Sha}}"'
+    command: 'git fetch upstream master && git branch --merged upstream/master | xargs --no-run-if-empty git branch -D && git checkout -b "{{index .PromptResponses 0}}" upstream/master && git cherry-pick "{{.SelectedLocalCommit.Sha}}" && git push -u origin {{index .PromptResponses 0}}'
     context: "commits"
     subprocess: true
   - key: "<c-p>"
