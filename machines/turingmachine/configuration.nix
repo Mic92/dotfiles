@@ -74,6 +74,8 @@
   system.etc.overlay.mutable = true;
   services.userborn.enable = true;
 
+  system.rebuild.enableNg = true;
+
   environment.systemPackages = with pkgs; [
     sunshine
     nixos-facter
