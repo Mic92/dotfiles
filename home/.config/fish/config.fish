@@ -539,7 +539,7 @@ function _ls_after_cd --on-event fish_prompt
         ls
     end
 end
-if test -f "$HOME/.fish-autopair/"
+if test -d "$HOME/.fish-autopair/"
     set fish_function_path "$HOME/.fish-autopair/functions" $fish_function_path
-    source "$HOME/.fish-async-prompt/conf.d/autopair.fish"
+    source "$HOME/.fish-autopair/conf.d/autopair.fish"
 end
