@@ -356,10 +356,6 @@ def create_pr(args: CreateArgs) -> None:
             ["git", "cherry-pick", "--signoff", commit_range_str],
         )
 
-    run(
-        ["git", "push", "-u", "--force", remote, f"HEAD:refs/heads/{branch_name}"],
-    )
-
     forge.submit_pr(branch, args.label, args.reviewer)
 
     run(
