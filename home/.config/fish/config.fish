@@ -366,6 +366,21 @@ alias nixos-rebuild 'nixos-rebuild --use-remote-sudo'
 if type -q nom
   alias nix-build nom-build
 end
+function nixos-build
+    if test (count $argv) -lt 1
+        if test (uname) = "Linux"
+            set name (cat /proc/sys/kernel/hostname)
+        else
+            echo "USAGE: $argv[0] name" >&2
+            return 1
+        end
+    else
+        set name $argv[1]
+        set argv (count $argv) > /dev/null; and set argv $argv[2..-1]
+    end
+
+    command nixos-rebuild build --flake ".#$name" $argv
+end
 if type -q hub
     alias git hub
 end
