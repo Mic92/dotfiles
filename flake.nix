@@ -51,7 +51,7 @@
 
     systems.url = "github:nix-systems/default";
 
-    data-mesher.url = "git+https://git.clan.lol/clan/data-mesher?shallow=1";
+    data-mesher.url = "git+https://git.clan.lol/clan/data-mesher?shallow=1&ref=flake-update";
     data-mesher.inputs.nixpkgs.follows = "nixpkgs";
     data-mesher.inputs.systems.follows = "systems";
     data-mesher.inputs.treefmt-nix.follows = "treefmt-nix";
