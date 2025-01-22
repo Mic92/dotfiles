@@ -1,0 +1,507 @@
+#!/usr/bin/env python3
+
+import argparse
+import re
+import json
+import shutil
+import subprocess
+import sys
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from typing import override
+from urllib.error import URLError
+from urllib.request import urlopen
+import shlex
+
+
+class Error(Exception):
+    pass
+
+
+IO = int | None
+
+
+def run(
+    cmd: list[str],
+    check: bool = True,
+    text: bool = True,
+    stdout: IO = None,
+    stderr: IO = None,
+    quiet: bool = True,
+) -> subprocess.CompletedProcess:
+    if quiet:
+        print(f"$ {' '.join(shlex.quote(str(arg)) for arg in cmd)}")
+    return subprocess.run(cmd, check=check, text=text, stdout=stdout, stderr=stderr)
+
+
+def run_treefmt(merge_base: str) -> None:
+    if shutil.which("treefmt"):
+        result = run(["treefmt", "--fail-on-change"], check=False)
+        if result.returncode == 0:
+            return
+    else:
+        current_system = run(
+            ["nix", "config", "show", "system"],
+            stdout=subprocess.PIPE,
+            quiet=True,
+        ).stdout.strip()
+
+        has_treefmt = f'(val: val ? {current_system} && (val.{current_system}.name == "treefmt" || val.{current_system}.name == "treefmt-nix"))'
+        result = run(
+            ["nix", "eval", ".#formatter", "--apply", has_treefmt],
+            stdout=subprocess.PIPE,
+        )
+
+        if result.stdout.strip() != "true":
+            return
+
+        formatter = run(
+            [
+                "nix",
+                "build",
+                "-o",
+                ".git/treefmt",
+                f".#formatter.{current_system}",
+                "--print-out-paths",
+            ],
+            stdout=subprocess.PIPE,
+        ).stdout.strip()
+
+        result = run(
+            [f"{formatter}/bin/treefmt", "--fail-on-change"],
+            check=False,
+        )
+        if result.returncode == 0:
+            return
+
+    run(
+        [
+            "git",
+            "absorb",
+            "--force",
+            "--and-rebase",
+            f"--base={merge_base}",
+        ],
+    )
+    msg = "Treefmt failed, please fix the formatting and try again."
+    raise Error(msg)
+
+
+KNOWN_GITEA_HOSTS = ["codeberg.org", "gitea.com", "akkoma.dev"]
+
+
+def is_gitea_host(host: str) -> bool:
+    if host in KNOWN_GITEA_HOSTS:
+        return True
+    endpoint = f"https://{host}/api/v1/signing-key.gpg"
+    try:
+        resp = urlopen(endpoint)  # noqa: S310
+    except URLError:
+        return False
+    else:
+        return resp.status == 200
+
+
+class Forge(ABC):
+    @abstractmethod
+    def submit_pr(
+        self, remote_branch: str, labels: list[str], reviewers: list[str]
+    ) -> None:
+        pass
+
+    @abstractmethod
+    def get_upstream_branch(self) -> str:
+        pass
+
+    @abstractmethod
+    def get_upstream_remote(self) -> str:
+        pass
+
+    @abstractmethod
+    def get_base_branch(self, pr_number: str) -> str:
+        pass
+
+
+class GitHub(Forge):
+    @override
+    def submit_pr(
+        self, remote_branch: str, labels: list[str], reviewers: list[str]
+    ) -> None:
+        command = ["gh", "pr", "create", "--web", "--base", remote_branch]
+        for label in labels:
+            command.extend(["--label", label])
+        for reviewer in reviewers:
+            command.extend(["--reviewer", reviewer])
+        run(command)
+
+    @override
+    def get_upstream_branch(self) -> str:
+        res = run(
+            [
+                "gh",
+                "repo",
+                "view",
+                "--json",
+                "defaultBranchRef",
+                "--jq",
+                ".defaultBranchRef",
+            ],
+            stdout=subprocess.PIPE,
+        )
+        data = json.loads(res.stdout)
+        return data["name"]
+
+    @override
+    def get_upstream_remote(self) -> str:
+        res = run(
+            ["gh", "repo", "view", "--json", "sshUrl", "--jq", ".sshUrl"],
+            stdout=subprocess.PIPE,
+        )
+        return res.stdout.strip()
+
+    @override
+    def get_base_branch(self, pr_number: str) -> str:
+        res = run(
+            [
+                "gh",
+                "pr",
+                "view",
+                pr_number,
+                "--json",
+                "baseRefName",
+                "--jq",
+                ".baseRefName",
+            ],
+            stdout=subprocess.PIPE,
+        )
+        return res.stdout.strip()
+
+
+class GitLab(Forge):
+    @override
+    def submit_pr(
+        self, remote_branch: str, labels: list[str], reviewers: list[str]
+    ) -> None:
+        raise NotImplementedError
+
+    @override
+    def get_upstream_branch(self) -> str:
+        raise NotImplementedError
+
+    @override
+    def get_upstream_remote(self) -> str:
+        raise NotImplementedError
+
+    @override
+    def get_base_branch(self, pr_number: str) -> str:
+        raise NotImplementedError
+
+
+class Gitea(Forge):
+    @override
+    def submit_pr(
+        self, remote_branch: str, labels: list[str], reviewers: list[str]
+    ) -> None:
+        raise NotImplementedError
+
+    @override
+    def get_upstream_branch(self) -> str:
+        raise NotImplementedError
+
+    @override
+    def get_upstream_remote(self) -> str:
+        raise NotImplementedError
+
+    @override
+    def get_base_branch(self, pr_number: str) -> str:
+        raise NotImplementedError
+
+
+def detect_forge() -> Forge:
+    try:
+        url = run(
+            ["git", "remote", "get-url", "origin"],
+            stdout=subprocess.PIPE,
+        ).stdout.strip()
+        if "github.com" in url:
+            return GitHub()
+        if "gitlab.com" in url:  # TODO: self-hosted GitLab
+            return GitLab()
+        if "bitbucket.org" in url:
+            msg = "Bitbucket is not supported."
+            raise Error(msg)
+        if is_gitea_host(url):
+            return Gitea()
+        msg = f"Unknown forge. {url}"
+        raise Error(msg)
+    except subprocess.CalledProcessError as e:
+        msg = f"Error while running git command: {e}"
+        raise Error(msg) from e
+
+
+def is_git_repository() -> bool:
+    rc = run(
+        ["git", "rev-parse", "--is-inside-work-tree"],
+        check=False,
+        stderr=subprocess.DEVNULL,
+    )
+    return rc.returncode == 0
+
+
+@dataclass
+class CreateArgs:
+    commit_range: str
+    branch: str | None = None
+    remote: str | None = None
+    label: list[str] = field(default_factory=list)
+    reviewer: list[str] = field(default_factory=list)
+    no_treefmt: bool = False
+
+
+@dataclass
+class ApplyArgs:
+    number_or_url: str
+    remote: str | None = None
+
+
+CHARS_TO_ESCAPE = " /:;()[]{}`"
+BRANCH_NAME_TABLE = str.maketrans(CHARS_TO_ESCAPE, "-" * len(CHARS_TO_ESCAPE))
+
+
+def create_pr(args: CreateArgs) -> None:
+    if not is_git_repository():
+        msg = "Not a git repository."
+        raise Error(msg)
+    forge = detect_forge()
+    branch = forge.get_upstream_branch() if args.branch is None else args.branch
+    remote = forge.get_upstream_remote() if args.remote is None else args.remote
+
+    run(
+        [
+            "git",
+            "fetch",
+            remote,
+            f"{branch}:refs/submit-pr/upstream",
+        ],
+        check=True,
+    )
+
+    merge_base = run(
+        ["git", "merge-base", "HEAD", "refs/submit-pr/upstream"],
+        stdout=subprocess.PIPE,
+        quiet=True,
+    ).stdout.strip()
+
+    if not args.no_treefmt:
+        run_treefmt(merge_base)
+
+    commit_range = []
+    for commit in args.commit_range.split("..", 1):
+        res = run(
+            ["git", "rev-parse", commit],
+            stdout=subprocess.PIPE,
+            quiet=True,
+        )
+        commit_range.append(res.stdout.strip())
+    commit_range_str = "..".join(commit_range)
+    first_commit = commit_range[0]
+    # get title
+    title = run(
+        ["git", "log", "-1", "--format=%s", first_commit], quiet=True,
+        stdout=subprocess.PIPE,
+    ).stdout.strip()
+
+    branch_name = title.translate(BRANCH_NAME_TABLE).lower()
+    # replace -- with -
+    branch_name = re.sub(r"-+", "-", branch_name)
+    # replace leading/trailing -
+    branch_name = re.sub(r"^-+|-+$", "", branch_name)
+    branch_name = branch_name[:50]
+
+    # if we have the current branch checkout out, error out
+
+    if (
+        run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+            stdout=subprocess.PIPE,
+            quiet=True,
+        ).stdout.strip()
+        == branch_name
+    ):
+        msg = "Our current branch is the same as the branch we want to push to. Please checkout a different branch."
+        raise Error(msg)
+
+    run(
+        [
+            "git",
+            "branch",
+            "-f",
+            branch_name,
+            "refs/submit-pr/upstream",
+        ],
+    )
+
+    # rebase our commits on top of the merge base onto branch_name
+    run(
+        ["git", "checkout", branch_name],
+    )
+
+    if (
+        run(
+            ["git", "config", "format.signoff"], stdout=subprocess.PIPE, quiet=True
+        ).stdout.strip()
+        == "true"
+    ):
+        run(
+            ["git", "cherry-pick", "--signoff", commit_range_str],
+        )
+
+    run(
+        ["git", "push", "-u", "--force", remote, f"HEAD:refs/heads/{branch_name}"],
+    )
+
+    forge.submit_pr(branch, args.label, args.reviewer)
+
+    run(
+        ["git", "checkout", "-"],
+    )
+
+
+def apply_pr(args: ApplyArgs) -> None:
+    if not is_git_repository():
+        msg = "Not a git repository."
+        raise Error(msg)
+    forge = detect_forge()
+    remote = forge.get_upstream_remote() if args.remote is None else args.remote
+
+    if args.number_or_url.isdigit():
+        pr_number = args.number_or_url
+    else:
+        pr_number = args.number_or_url.split("/")[-1]
+
+    head_branch = forge.get_base_branch(pr_number)
+
+    head = run(
+        ["git", "rev-parse", "--abbrev-ref", "HEAD"],
+        stdout=subprocess.PIPE,
+        quiet=True,
+    )
+
+    branch = head.stdout.strip()
+    if branch == "HEAD":
+        msg = "Cannot pull a PR when in detached HEAD state."
+        raise Error(msg)
+
+    run(
+        [
+            "git",
+            "fetch",
+            remote,
+            f"pull/{pr_number}/head:refs/submit-pr/pr-{pr_number}",
+            f"{head_branch}:refs/submit-pr/upstream",
+        ],
+    )
+
+    merge_base = run(
+        ["git", "merge-base", head.stdout.strip(), f"refs/submit-pr/pr-{pr_number}"],
+        stdout=subprocess.PIPE,
+    ).stdout.strip()
+
+    # rebase the PR on top of the merge base of the current branch
+    run(
+        [
+            "git",
+            "rebase",
+            "--onto",
+            merge_base,
+            "refs/submit-pr/upstream",
+            f"refs/submit-pr/pr-{pr_number}",
+        ],
+    )
+
+    run(
+        ["git", "rebase", f"refs/submit-pr/pr-{pr_number}", branch],
+    )
+
+    run(
+        ["git", "branch", "-D", f"refs/submit-pr/pr-{pr_number}"],
+    )
+
+
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Submit a pull request for a specific commit."
+    )
+    subparsers = parser.add_subparsers()
+    subparsers.required = True
+    subparsers.dest = "command"
+
+    create_command = subparsers.add_parser(
+        "create", help="Creates a pull request for the specified commit range."
+    )
+    create_command.add_argument(
+        "--remote",
+        help="the remote to submit the pull request to. By default the tracked remote.",
+    )
+    create_command.add_argument(
+        "--branch",
+        help="The branch to submit a pull request for. By default a branch is computed.",
+    )
+    create_command.add_argument(
+        "--label",
+        default=[],
+        action="append",
+        help="Label to add to the pull request.",
+    )
+    create_command.add_argument(
+        "--no-treefmt",
+        default=False,
+        action="store_true",
+        help="Do not run treefmt before submitting the pull request.",
+    )
+    create_command.add_argument(
+        "--reviewer",
+        default=[],
+        action="append",
+        help="Do not run treefmt before submitting the pull request.",
+    )
+    create_command.add_argument(
+        "commit_range",
+        help="The commit hash to submit a pull request for. By default the current commit.",
+        default="HEAD",
+        nargs="?",
+    )
+    create_command.set_defaults(subcommand=create_pr, arg_class=CreateArgs)
+
+    apply_command = subparsers.add_parser(
+        "apply",
+        help="Rebases the current branch on top of a changes of a pull request.",
+    )
+    apply_command.add_argument(
+        "number_or_url",
+        help="The pull request number or URL to pull.",
+    )
+    apply_command.add_argument(
+        "--remote",
+        help="the remote to submit the pull request to. By default the tracked remote.",
+    )
+    apply_command.set_defaults(subcommand=apply_pr, arg_class=ApplyArgs)
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = parse_args()
+    try:
+        flags = {}
+        for key, value in vars(args).items():
+            if key in {"command", "func", "arg_class", "subcommand"}:
+                continue
+            flags[key] = value
+        args.subcommand(args.arg_class(**flags))
+    except Error as e:
+        print(f"[{sys.argv[0]}]: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
