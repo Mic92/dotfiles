@@ -51,12 +51,12 @@
 
     systems.url = "github:nix-systems/default";
 
-    data-mesher.url = "git+https://git.clan.lol/clan/data-mesher?shallow=1&ref=flake-update";
+    data-mesher.url = "git+https://git.clan.lol/clan/data-mesher?shallow=1";
     data-mesher.inputs.nixpkgs.follows = "nixpkgs";
     data-mesher.inputs.systems.follows = "systems";
     data-mesher.inputs.treefmt-nix.follows = "treefmt-nix";
 
-    buildbot-nix.url = "git+https://github.com/nix-community/buildbot-nix?shallow=1&ref=logs";
+    buildbot-nix.url = "git+https://github.com/nix-community/buildbot-nix?shallow=1&ref=buildbot-effects";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";

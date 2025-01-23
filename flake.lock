@@ -39,16 +39,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1736434762,
-        "narHash": "sha256-T3vBIX0UxKmKJ3gafMo11Q7HY8Eg2i7Hrvt6w8lSHKo=",
-        "ref": "logs",
-        "rev": "910f724e3043093091ed1c2ac8b7b5e3a6a10d1e",
+        "lastModified": 1737647775,
+        "narHash": "sha256-GGb3XNPw+GSz1XYE+ZiaCwjQACXa+I8enZFuCo296h8=",
+        "ref": "buildbot-effects",
+        "rev": "052b9be6a9b6c2b94139493f7fce69a15d25eda7",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
       },
       "original": {
-        "ref": "logs",
+        "ref": "buildbot-effects",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
@@ -119,16 +119,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1737555898,
-        "narHash": "sha256-54CiLRAP8uVnOb/7pk8KLUIjjSWDHhQQCV7Uh60y54I=",
-        "ref": "flake-update",
-        "rev": "9994c5b685c845ff68743ea46e6bbae754451e33",
+        "lastModified": 1737628042,
+        "narHash": "sha256-8oyN2RNrkKieppTmU0r3zGDu93p8mAuExeqHvBUqakE=",
+        "ref": "refs/heads/main",
+        "rev": "44a3b7d71aaca2be66b7039d2081db186fe4d445",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
       },
       "original": {
-        "ref": "flake-update",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
