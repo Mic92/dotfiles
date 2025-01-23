@@ -127,7 +127,7 @@ class GitHub(Forge):
     def submit_pr(
         self, remote_branch: str, labels: list[str], reviewers: list[str]
     ) -> None:
-        command = ["gh", "pr", "create", "--web", "--base", remote_branch]
+        command = ["gh", "pr", "create", "--web"]
         for label in labels:
             command.extend(["--label", label])
         for reviewer in reviewers:
@@ -357,7 +357,15 @@ def create_pr(args: CreateArgs) -> None:
         )
 
     run(
-        ["git", "push", "-u", "--force", remote, f"HEAD:refs/heads/{branch_name}"],
+        ["git", "config", "--local", "--replace", f"branch.{branch_name}.remote", remote],
+    )
+
+    run(
+        ["git", "config", "--local", "--replace", f"branch.{branch_name}.merge", branch],
+    )
+
+    run(
+        ["git", "push", "--force", "origin", f"{branch_name}:refs/heads/{branch_name}"],
     )
 
     forge.submit_pr(branch, args.label, args.reviewer)

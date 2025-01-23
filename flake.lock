@@ -39,16 +39,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1736434762,
-        "narHash": "sha256-T3vBIX0UxKmKJ3gafMo11Q7HY8Eg2i7Hrvt6w8lSHKo=",
-        "ref": "logs",
-        "rev": "910f724e3043093091ed1c2ac8b7b5e3a6a10d1e",
+        "lastModified": 1737647775,
+        "narHash": "sha256-GGb3XNPw+GSz1XYE+ZiaCwjQACXa+I8enZFuCo296h8=",
+        "ref": "buildbot-effects",
+        "rev": "052b9be6a9b6c2b94139493f7fce69a15d25eda7",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
       },
       "original": {
-        "ref": "logs",
+        "ref": "buildbot-effects",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
@@ -79,11 +79,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1737536575,
-        "narHash": "sha256-ht8ee6wMubUsNSzN96EWrWbz3EfwZKVGG8hhE+131vk=",
-        "rev": "fe399f773e3746244f9a292ef95ca956d147eba6",
+        "lastModified": 1737548818,
+        "narHash": "sha256-MH8yM/+XDzTXuu3xA8Nhi9pEOs5kXjrW8k7p13yOCEg=",
+        "rev": "dfdcad7fc52f9a3702629212a18fb83ddb582dd2",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/fe399f773e3746244f9a292ef95ca956d147eba6.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/dfdcad7fc52f9a3702629212a18fb83ddb582dd2.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -119,16 +119,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1737477796,
-        "narHash": "sha256-pivAdn3mVLJfGUs54Fcop6NbwBo0PtbG21Cjgrc7sx0=",
-        "ref": "flake-update",
-        "rev": "a0abc1c591d543d5c834fd723e91b508764070b7",
+        "lastModified": 1737628042,
+        "narHash": "sha256-8oyN2RNrkKieppTmU0r3zGDu93p8mAuExeqHvBUqakE=",
+        "ref": "refs/heads/main",
+        "rev": "44a3b7d71aaca2be66b7039d2081db186fe4d445",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
       },
       "original": {
-        "ref": "flake-update",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
