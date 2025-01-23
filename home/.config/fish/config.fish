@@ -49,12 +49,18 @@ function clone
 end
 
 function ninja
-    set -l build_path (dirname (upfind "build.ninja"))
+    set -l build_path (upfind "build.ninja")
+    if test -n "$build_path"
+       set -l build_path (dirname build_path)
+    end
     command nice -n19 ninja -C (string length -- $build_path > /dev/null; and echo $build_path; or echo ".") $argv
 end
 
 function make
-    set -l build_path (dirname (upfind "Makefile"))
+    set -l build_path (upfind "Makefile")
+    if test -z "$build_path"
+        set -l build_path (dirname build_path)
+    end
     command nice -n19 make -C (string length -- $build_path > /dev/null; and echo $build_path; or echo ".") -j(nproc) $argv
 end
 
