@@ -127,7 +127,7 @@ class GitHub(Forge):
     def submit_pr(
         self, remote_branch: str, labels: list[str], reviewers: list[str]
     ) -> None:
-        command = ["gh", "pr", "create", "--web"]
+        command = ["gh", "pr", "create", "--web", "--base", remote_branch]
         for label in labels:
             command.extend(["--label", label])
         for reviewer in reviewers:
