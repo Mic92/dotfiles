@@ -1,0 +1,208 @@
+#!/usr/bin/env python3
+
+import argparse
+import configparser
+import subprocess
+import sys
+from dataclasses import dataclass
+from datetime import datetime
+from pathlib import Path
+
+
+@dataclass
+class NetworkConnection:
+    name: str
+    uuid: str
+    timestamp: int
+    filename: Path
+    ssid: str | None = None
+    type: str = ""
+
+    def __str__(self) -> str:
+        return (
+            f"Connection: {self.name}\n"
+            f"  SSID: {self.ssid}\n"
+            f"  UUID: {self.uuid}\n"
+            f"  Last used: {datetime.fromtimestamp(self.timestamp)}\n"
+            f"  File: {self.filename}"
+        )
+
+
+def parse_args() -> argparse.Namespace:
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Deduplicate NetworkManager wireless connections based on SSID."
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Show what would be done without making any changes",
+    )
+    parser.add_argument(
+        "-y",
+        "--yes",
+        action="store_true",
+        help="Automatically answer yes to prompts (non-interactive mode)",
+    )
+    return parser.parse_args()
+
+
+def parse_nmcli_output() -> list[NetworkConnection]:
+    """Parse nmcli output and return a list of NetworkConnection objects."""
+    cmd = ["sudo", "nmcli", "-f", "all", "--mode", "multiline", "-t", "conn", "show"]
+
+    try:
+        output = subprocess.check_output(cmd, text=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error running nmcli: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    connections = []
+    current_conn = {}
+
+    for line in output.splitlines():
+        if not line:
+            continue
+
+        key, value = line.split(":", 1)
+
+        if key == "NAME" and current_conn:
+            # Process previous connection
+            connections.append(create_connection(current_conn))
+            current_conn = {}
+
+        current_conn[key] = value
+
+    # Don't forget to process the last connection
+    if current_conn:
+        connections.append(create_connection(current_conn))
+
+    return connections
+
+
+def create_connection(data: dict[str, str]) -> NetworkConnection:
+    """Create a NetworkConnection object from parsed data."""
+    conn = NetworkConnection(
+        name=data.get("NAME", ""),
+        uuid=data.get("UUID", ""),
+        timestamp=int(data.get("TIMESTAMP", 0)),
+        filename=Path(data.get("FILENAME", "")),
+        type=data.get("TYPE", ""),
+    )
+
+    # Parse SSID from the connection file if it's a wireless connection
+    if conn.type == "802-11-wireless" and conn.filename.exists():
+        conn.ssid = get_ssid_from_file(conn.filename)
+
+    return conn
+
+
+def get_ssid_from_file(filename: Path) -> str | None:
+    """Extract SSID from NetworkManager connection file."""
+    config = configparser.ConfigParser()
+
+    try:
+        config.read(filename)
+        return config.get("wifi", "ssid", fallback=None)
+    except (configparser.Error, PermissionError) as e:
+        print(f"Warning: Could not read SSID from {filename}: {e}", file=sys.stderr)
+        return None
+
+
+def deduplicate_connections(
+    connections: list[NetworkConnection],
+) -> list[NetworkConnection]:
+    """Group connections by SSID and keep only the most recent one."""
+    # Group wireless connections by SSID
+    ssid_groups: dict[str, list[NetworkConnection]] = {}
+    non_wireless: list[NetworkConnection] = []
+
+    for conn in connections:
+        if conn.type == "802-11-wireless" and conn.ssid:
+            ssid_groups.setdefault(conn.ssid, []).append(conn)
+        else:
+            non_wireless.append(conn)
+
+    # Keep only the most recent connection for each SSID
+    deduped = []
+    for ssid, conns in ssid_groups.items():
+        most_recent = max(conns, key=lambda x: x.timestamp)
+        deduped.append(most_recent)
+
+        # List connections to be removed
+        for conn in conns:
+            if conn != most_recent:
+                print(
+                    f"Will remove duplicate connection: {conn.name} ({conn.filename})",
+                    file=sys.stderr,
+                )
+
+    return deduped + non_wireless
+
+
+def remove_connection(conn: NetworkConnection, dry_run: bool = False) -> bool:
+    """Remove a NetworkManager connection."""
+    if dry_run:
+        print(f"Would remove connection: {conn.name} (UUID: {conn.uuid})")
+        return True
+
+    try:
+        subprocess.run(
+            ["sudo", "nmcli", "connection", "delete", conn.uuid],
+            check=True,
+            capture_output=True,
+        )
+        return True
+    except subprocess.CalledProcessError as e:
+        print(f"Error removing connection {conn.name}: {e}", file=sys.stderr)
+        return False
+
+
+def main() -> None:
+    args = parse_args()
+
+    # Parse all connections
+    connections = parse_nmcli_output()
+
+    # Get the list of connections to keep
+    connections_to_keep = deduplicate_connections(connections)
+
+    # Find connections to remove
+    connections_to_remove = [
+        conn
+        for conn in connections
+        if conn.type == "802-11-wireless" and conn not in connections_to_keep
+    ]
+
+    if not connections_to_remove:
+        print("No duplicate connections found.")
+        return
+
+    # Show what will be done
+    print("\nThe following connections will be removed:")
+    for conn in connections_to_remove:
+        print(f"\n{conn}")
+
+    if args.dry_run:
+        print("\nDry run - no changes were made.")
+        return
+
+    # Ask for confirmation unless -y/--yes was specified
+    if not args.yes:
+        response = input("\nProceed with removal? [y/N] ").lower()
+        if response != "y":
+            print("Operation cancelled.")
+            return
+
+    # Remove duplicate connections
+    removed_count = 0
+    for conn in connections_to_remove:
+        if remove_connection(conn, dry_run=args.dry_run):
+            removed_count += 1
+
+    if not args.dry_run:
+        print(f"\nRemoved {removed_count} duplicate connections.")
+
+
+if __name__ == "__main__":
+    main()
