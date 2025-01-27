@@ -17,6 +17,7 @@
     ./acme.nix
     ./nix-daemon.nix
     ./minimal-docs.nix
+    ./nftables.nix
     ./i18n.nix
     ./zfs.nix
     ./thermald.nix

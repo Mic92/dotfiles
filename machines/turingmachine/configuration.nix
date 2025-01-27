@@ -62,6 +62,8 @@
 
   services.dbus.implementation = "broker";
 
+  networking.nftables.enable = true;
+
   boot.loader.systemd-boot.enable = true;
 
   programs.direnv.enable = true;
