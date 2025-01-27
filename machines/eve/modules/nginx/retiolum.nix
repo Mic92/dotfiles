@@ -20,7 +20,7 @@
       git push --force origin master
     '';
     path = [
-      pkgs.git
+      pkgs.gitMinimal
       pkgs.openssh
     ];
     serviceConfig = {

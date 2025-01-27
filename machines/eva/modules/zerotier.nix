@@ -4,4 +4,5 @@
     "89.58.27.144"
     "2a03:4000:62:fdb::"
   ];
+  services.zerotierone.blockRfc1918Addresses = true;
 }

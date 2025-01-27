@@ -12,11 +12,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1737148031,
-        "narHash": "sha256-rIkW13S9BLcdPYRVwGJfPUj1PctAfFOsJp03de2XxzE=",
+        "lastModified": 1737728850,
+        "narHash": "sha256-vzDmgZ1kabldBXqRKmOWBUkQ3mhrthnlZKagNhpi6Gg=",
         "owner": "numtide",
         "repo": "blueprint",
-        "rev": "321795e9d9b287c35d1735807d6d0a55f2ff032a",
+        "rev": "d9d31d08528233f08f1040b0495ca9e53943314a",
         "type": "github"
       },
       "original": {
@@ -119,10 +119,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1737628042,
-        "narHash": "sha256-8oyN2RNrkKieppTmU0r3zGDu93p8mAuExeqHvBUqakE=",
+        "lastModified": 1737936017,
+        "narHash": "sha256-2tu0Q0/PQw6z/jelaYNqnQ7akfALaiE81qg5QXW3BPk=",
         "ref": "refs/heads/main",
-        "rev": "44a3b7d71aaca2be66b7039d2081db186fe4d445",
+        "rev": "c5cefcac827ecb67b68fe593146cab4a2a784ed7",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
@@ -494,11 +494,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1731340814,
-        "narHash": "sha256-2SiSp+UV9c45FPeDUUtjiIOMgyOKYAbpO0IEEjkgb54=",
+        "lastModified": 1737987273,
+        "narHash": "sha256-WQCLoDbthUO5PcdYDBxZZQgpQbEXab50EcwChkukxN4=",
         "owner": "Mic92",
         "repo": "retiolum",
-        "rev": "30c7f45de25bd35641ba09bd7bbde084804f2b61",
+        "rev": "514fe96610f745435b89355822691b1961dc4857",
         "type": "github"
       },
       "original": {

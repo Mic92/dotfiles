@@ -16,7 +16,7 @@
           pkgs.curl
           pkgs.iproute2
           pkgs.nettools
-          pkgs.git
+          pkgs.gitMinimal
           pkgs.openssh
           pkgs.util-linux
         ]

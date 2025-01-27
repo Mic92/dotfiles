@@ -39,7 +39,7 @@
           set -x
           export PATH=${
             pkgs.lib.makeBinPath [
-              pkgs.git
+              pkgs.gitMinimal
               pkgs.coreutils
               pkgs.findutils
               pkgs.jq
@@ -80,7 +80,7 @@
           set -x
           export PATH=${
             pkgs.lib.makeBinPath [
-              pkgs.git
+              pkgs.gitMinimal
               pkgs.coreutils
               pkgs.findutils
               pkgs.nix

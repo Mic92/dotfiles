@@ -82,7 +82,7 @@
     ../../nixosModules/tracing.nix
     ../../nixosModules/uptermd.nix
     ../../nixosModules/zsh.nix
-    ../../nixosModules/hyprspace.nix
+    ../../nixosModules/hyprspace-public.nix
   ];
   nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
 

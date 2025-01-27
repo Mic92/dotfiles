@@ -28,6 +28,7 @@
         bootstrap_peers = [
           "[fd7a:115c:a1e0::8f01:9e1f]:7946"
         ];
+        push_pull_interval = "15s";
       };
     };
 

@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import subprocess
-import argparse
 
 from pathlib import Path
 import json
@@ -48,8 +47,7 @@ def find_dataset_filesystem(fs: Filesystem) -> Filesystem:
     filesystems2 = find_mount(canonical_device)
     for filesystem in filesystems2:
         if filesystem.device == canonical_device:
-            fs = filesystem
-            break
+            return filesystem
     else:
         raise Error(f"Could not find zfs mountpoint, candidates {filesystems2}")
 
@@ -67,11 +65,12 @@ def find_existing_parent(target: Path) -> Path:
     return target
 
 
-def select_snapshot(mountpoint: Path, relative_target: Path) -> Path:
+def select_snapshot(mountpoint: Path, relative_target: Path) -> Path | None:
     snapshots = []
     for path in (mountpoint / ".zfs" / "snapshot").iterdir():
         if (path / relative_target).exists():
             snapshots.append(path)
+    snapshots = sorted(snapshots, key=lambda x: str(x.name))
     if not snapshots:
         raise Error("no snapshots found")
     out = subprocess.run(
@@ -81,18 +80,8 @@ def select_snapshot(mountpoint: Path, relative_target: Path) -> Path:
         text=True,
     )
     if out.returncode != 0:
-        return
-    return out.stdout.rstrip()
-
-
-@dataclass
-class Options:
-    target: str
-
-
-def parse_args() -> Options:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("target")
+        return None
+    return Path(out.stdout.rstrip())
 
 
 def restore_command(args: list[str]) -> None:
@@ -111,12 +100,15 @@ def restore_command(args: list[str]) -> None:
 
     relative_target = target.relative_to(fs.mountpoint)
     selected_snapshot = select_snapshot(fs.mountpoint, relative_target)
+    if selected_snapshot is None:
+        return
 
     if target.exists():
         answer = input(f"'{target}' already exists, delete (y|n)?")
         if answer.lower() != "y":
             return
-        shutil.rmtree(target)
+        if target.is_dir():
+            shutil.rmtree(target)
     target.parent.mkdir(exist_ok=True)
 
     atomic_restore(selected_snapshot / relative_target, target)

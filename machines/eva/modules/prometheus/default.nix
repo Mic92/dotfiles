@@ -79,20 +79,30 @@
           }
           {
             targets = map (host: "${host}.r:9273") [
+              "ace"
               "adelaide"
+              "amy"
               "astrid"
               "bill"
               "christina"
+              "clara"
               "dan"
+              "doctor"
+              "donna"
+              "ian"
               "graham"
+              "irene"
               "jack"
               "jackson"
               "mickey"
               "river"
+              "rose"
               "ruby"
               "ryan"
+              "tegan"
               "vislor"
               "wilfred"
+              "xavier"
               "yasmin"
             ];
 

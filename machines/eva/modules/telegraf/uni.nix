@@ -2,6 +2,7 @@
 let
   urls = [
     # university
+    "ace.r"
     "adelaide.r"
     "amy.r"
     "astrid.r"
@@ -11,6 +12,7 @@ let
     "dan.r"
     "doctor.r"
     "donna.r"
+    "ian.r"
     "graham.r"
     "irene.r"
     "jack.r"
@@ -21,12 +23,12 @@ let
     "ruby.r"
     "ryan.r"
     "tegan.r"
-    # TODO: add tower
-    #"vicki.r"
     "vislor.r"
     "wilfred.r"
     "xavier.r"
     "yasmin.r"
+    # TODO: add tower
+    #"vicki.r"
   ];
 in
 {

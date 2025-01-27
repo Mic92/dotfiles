@@ -51,7 +51,7 @@ in
           pkgs.jq
           pkgs.gnutar
           pkgs.zstd
-          pkgs.git
+          pkgs.gitMinimal
         ]
       }
       if [[ $# -lt 1 ]]; then
