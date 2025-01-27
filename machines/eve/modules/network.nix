@@ -1,6 +1,6 @@
 { config, lib, ... }:
 {
-  
+
   options = {
     networking.eve.ipv4.address = lib.mkOption {
       type = lib.types.str;
