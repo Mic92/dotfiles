@@ -30,6 +30,7 @@ createPR() {
     rest=""
   fi
   gh pr create --title "$firstLine" --body "$rest" --base "$targetBranch" --head "$branch" --label merge-queue
+  gh pr merge "$branch" --auto
 }
 
 runTreefmt() {
