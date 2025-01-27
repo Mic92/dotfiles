@@ -21,7 +21,6 @@ class Filesystem:
 class Error(Exception):
     pass
 
-
 def find_mount(name: str, is_path: bool = False) -> list[Filesystem]:
     args = ["findmnt", "--json"]
     if is_path:
