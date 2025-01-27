@@ -29,12 +29,6 @@
     adwaita-icon-theme
     hicolor-icon-theme
     graphicsmagick
-    aspell
-    aspellDicts.de
-    aspellDicts.fr
-    aspellDicts.en
-    hunspell
-    hunspellDicts.en-gb-ise
     dino
     ghostty
     screen-message
