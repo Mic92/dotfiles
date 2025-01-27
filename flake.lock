@@ -494,11 +494,11 @@
     },
     "retiolum": {
       "locked": {
-        "lastModified": 1731340814,
-        "narHash": "sha256-2SiSp+UV9c45FPeDUUtjiIOMgyOKYAbpO0IEEjkgb54=",
+        "lastModified": 1737987273,
+        "narHash": "sha256-WQCLoDbthUO5PcdYDBxZZQgpQbEXab50EcwChkukxN4=",
         "owner": "Mic92",
         "repo": "retiolum",
-        "rev": "30c7f45de25bd35641ba09bd7bbde084804f2b61",
+        "rev": "514fe96610f745435b89355822691b1961dc4857",
         "type": "github"
       },
       "original": {
