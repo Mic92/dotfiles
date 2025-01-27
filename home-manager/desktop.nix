@@ -44,7 +44,6 @@
     git-lfs
     cheat
     xdg-utils
-    patool
     tio
     shell-gpt
     git-ps-rs
