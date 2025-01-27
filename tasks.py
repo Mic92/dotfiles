@@ -1,11 +1,9 @@
 import contextlib
 import os
-import socket
 import subprocess
 import sys
 import time
 from pathlib import Path
-from tempfile import TemporaryDirectory
 from typing import Any
 
 from deploykit import DeployGroup, DeployHost, HostKeyCheck, parse_hosts
@@ -43,33 +41,6 @@ def reboot_and_decrypt_eve(c: Any) -> None:
 
 
 @task
-def deploy(c: Any, _hosts: str = "") -> None:
-    """Deploy to eve, eva, blob64 and localhost"""
-    c.run("clan machines update")
-
-
-def try_local(host: str) -> str:
-    try:
-        socket.gethostbyname(f"{host}.lan")
-    except OSError:
-        return f"{host}.r"
-    else:
-        return f"{host}.lan"
-
-
-@task
-def deploy_bernie(c: Any) -> None:
-    """Deploy to bernie"""
-    c.run("clan machines update bernie")
-
-
-@task
-def deploy_matchbox(c: Any) -> None:
-    """Deploy to matchbox"""
-    c.run("clan machines update matchbox")
-
-
-@task
 def deploy_dotfiles(c: Any) -> None:
     """Deploy to dotfiles"""
     hosts = [
@@ -94,35 +65,6 @@ EOF""",
     g.run_function(deploy_homemanager)
 
 
-@task
-def install_machine(c: Any, flake_attr: str, hostname: str) -> None:
-    """Install nixos on a machine"""
-    ask = input(f"Install {hostname} with {flake_attr}? [y/N] ")
-    if ask != "y":
-        return
-    with TemporaryDirectory() as d:
-        root = Path(d) / "root"
-        root.mkdir(parents=True, exist_ok=True)
-        root.chmod(0o755)
-        host_key = root / "etc/ssh/ssh_host_ed25519_key"
-        host_key.parent.mkdir(parents=True, exist_ok=True)
-        subprocess.run(
-            [
-                "sops",
-                "--extract",
-                '["ssh_host_ed25519_key"]',
-                "-d",
-                f"nixos/{flake_attr}/secrets/secrets.yaml",
-            ],
-            check=True,
-            stdout=host_key.open("w"),
-        )
-        c.run(
-            f"nix run github:numtide/nixos-anywhere -- {hostname} --debug --flake .#{flake_attr} --extra-files {root}",
-            echo=True,
-        )
-
-
 def wait_for_host(h: DeployHost, shutdown: bool) -> None:
     while True:
         res = subprocess.run(
@@ -135,28 +77,6 @@ def wait_for_host(h: DeployHost, shutdown: bool) -> None:
         time.sleep(1)
         sys.stdout.write(".")
         sys.stdout.flush()
-
-
-@task
-def generate_facter_json(
-    c: Any, hosts: str, facter: str = "github:numtide/nixos-facter"
-) -> None:
-    """
-    Deploy to servers
-    """
-
-    def deploy(h: DeployHost) -> None:
-        ret = h.run(
-            ["nix", "run", "--refresh", facter],
-            stdout=subprocess.PIPE,
-        )
-        name = h.host.split(".")[0]
-        path = ROOT / "machines" / name / "facter.json"
-        path.write_text(ret.stdout)
-
-    host_list = hosts.split(",")
-    g = DeployGroup([DeployHost(h, user="root") for h in host_list])
-    g.run_function(deploy)
 
 
 def wait_for_reboot(h: DeployHost) -> None:
