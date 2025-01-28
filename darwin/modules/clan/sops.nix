@@ -45,7 +45,7 @@ in
     #clan.core.facts.secretUploadDirectory = lib.mkDefault "/var/lib/sops-nix";
 
     sops.secrets = builtins.mapAttrs (name: _: {
-      sopsFile = config.clan.core.clanDir + "/sops/secrets/${name}/secret";
+      sopsFile = config.clan.core.settings.directory + "/sops/secrets/${name}/secret";
       format = "binary";
     }) secrets;
     # To get proper error messages about missing secrets we need a dummy secret file that is always present
@@ -54,7 +54,8 @@ in
     );
 
     sops.age.keyFile = lib.mkIf (builtins.pathExists (
-      config.clan.core.clanDir + "/sops/secrets/${config.clan.core.settings.machine.name}-age.key/secret"
+      config.clan.core.settings.directory
+      + "/sops/secrets/${config.clan.core.settings.machine.name}-age.key/secret"
     )) (lib.mkDefault "/var/lib/sops-nix/key.txt");
   };
 }
