@@ -19,8 +19,7 @@
     ../modules/remote-builder.nix
     ../modules/secretiv.nix
     ../modules/sudo.nix
-    ../modules/yabai.nix
-    ../modules/alacritty.nix
+    ../modules/ghostty.nix
   ];
 
   clan.core.settings.directory = ../..;
