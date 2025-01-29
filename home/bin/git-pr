@@ -432,7 +432,7 @@ def apply_pr(args: ApplyArgs) -> None:
     )
 
     run(
-        ["git", "branch", "-D", f"refs/submit-pr/pr-{pr_number}"],
+        ["git", "update-ref", "-d", f"refs/submit-pr/pr-{pr_number}"],
     )
 
 
