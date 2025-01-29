@@ -73,6 +73,12 @@ main() {
 
   git pull --rebase origin "$targetBranch"
 
+  # check if we have any commits on top of $targetBranch
+  if git diff --quiet "origin/$targetBranch"; then
+    echo "No changes to merge"
+    return 0
+  fi
+
   branch=merge-when-green-$(id -un)
   isOpen=$(gh pr view --json state --template '{{.state}}' "$branch" || true)
   if [[ $isOpen == "OPEN" ]]; then
