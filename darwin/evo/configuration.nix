@@ -1,4 +1,9 @@
-{ self, inputs, ... }:
+{
+  self,
+  inputs,
+  pkgs,
+  ...
+}:
 {
   networking.hostName = "evo";
   nixpkgs.hostPlatform = "aarch64-darwin";
@@ -30,6 +35,10 @@
   system.activationScripts.defaults.text = ''
     defaults write -g ApplePressAndHoldEnabled -bool false
   '';
+
+  environment.systemPackages = [
+    pkgs.python3
+  ];
 
   programs.zsh.enable = true;
 
