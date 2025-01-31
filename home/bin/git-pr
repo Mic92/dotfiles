@@ -122,12 +122,62 @@ class Forge(ABC):
         pass
 
 
+@dataclass
+class GithubRepoInfo:
+    upstream_owner: str
+    upstream_repo: str
+    upstream_default_branch: str
+    upstream_ssh_url: str
+
+
 class GitHub(Forge):
+    def __init__(self) -> None:
+        self._repo_info: GithubRepoInfo | None = None
+
+    def _get_repo_info(self) -> GithubRepoInfo:
+        if self._repo_info is not None:
+            return self._repo_info
+
+        # gh repo view --json parent
+        res = run(
+            ["gh", "repo", "view", "--json", "parent"],
+            stdout=subprocess.PIPE,
+        )
+        data = json.loads(res.stdout.strip())
+        parent = data["parent"]
+
+        command = ["gh", "repo", "view", "--json", "sshUrl,name,owner,defaultBranchRef"]
+        if parent is not None:
+            command += [f"{parent['owner']['login']}/{parent['name']}"]
+        res = run(
+            command,
+            stdout=subprocess.PIPE,
+        )
+        data = json.loads(res.stdout.strip())
+        self._repo_info = GithubRepoInfo(
+            upstream_owner=data["owner"]["login"],
+            upstream_repo=data["name"],
+            upstream_default_branch=data["defaultBranchRef"]["name"],
+            upstream_ssh_url=data["sshUrl"],
+        )
+        return self._repo_info
+
     @override
     def submit_pr(
         self, remote_branch: str, labels: list[str], reviewers: list[str]
     ) -> None:
-        command = ["gh", "pr", "create", "--web", "--base", remote_branch]
+        repo_info = self._get_repo_info()
+        # https://github.com/NixOS/nixpkgs/raw/refs/heads/{remote_branch}/.github/PULL_REQUEST_TEMPLATE.md
+        command = [
+            "gh",
+            "pr",
+            "create",
+            "--repo",
+            f"{repo_info.upstream_owner}/{repo_info.upstream_repo}",
+            "--web",
+            "--base",
+            remote_branch,
+        ]
         for label in labels:
             command.extend(["--label", label])
         for reviewer in reviewers:
@@ -136,28 +186,11 @@ class GitHub(Forge):
 
     @override
     def get_upstream_branch(self) -> str:
-        res = run(
-            [
-                "gh",
-                "repo",
-                "view",
-                "--json",
-                "defaultBranchRef",
-                "--jq",
-                ".defaultBranchRef",
-            ],
-            stdout=subprocess.PIPE,
-        )
-        data = json.loads(res.stdout)
-        return data["name"]
+        return self._get_repo_info().upstream_default_branch
 
     @override
     def get_upstream_remote(self) -> str:
-        res = run(
-            ["gh", "repo", "view", "--json", "sshUrl", "--jq", ".sshUrl"],
-            stdout=subprocess.PIPE,
-        )
-        return res.stdout.strip()
+        return self._get_repo_info().upstream_ssh_url
 
     @override
     def get_base_branch(self, pr_number: str) -> str:
@@ -307,7 +340,8 @@ def create_pr(args: CreateArgs) -> None:
     first_commit = commit_range[0]
     # get title
     title = run(
-        ["git", "log", "-1", "--format=%s", first_commit], quiet=True,
+        ["git", "log", "-1", "--format=%s", first_commit],
+        quiet=True,
         stdout=subprocess.PIPE,
     ).stdout.strip()
 
@@ -357,11 +391,25 @@ def create_pr(args: CreateArgs) -> None:
         )
 
     run(
-        ["git", "config", "--local", "--replace", f"branch.{branch_name}.remote", remote],
+        [
+            "git",
+            "config",
+            "--local",
+            "--replace",
+            f"branch.{branch_name}.remote",
+            remote,
+        ],
     )
 
     run(
-        ["git", "config", "--local", "--replace", f"branch.{branch_name}.merge", branch],
+        [
+            "git",
+            "config",
+            "--local",
+            "--replace",
+            f"branch.{branch_name}.merge",
+            branch,
+        ],
     )
 
     run(
