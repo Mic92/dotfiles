@@ -15,6 +15,7 @@
 
     settings = {
       log_level = "debug";
+      network.id = "dontknow";
 
       key_path = config.clan.core.vars.generators.data-mesher.files."dm.pem".path;
       host.names = [
