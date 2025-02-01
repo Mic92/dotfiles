@@ -16,6 +16,8 @@
   status = true
 [push]
   recurseSubmodules = on-demand
+[submodule]
+  fetchJobs = 0
 [delta]
   navigate = true    # use n and N to move between diff sections
   syntax-theme = Solarized (light)
