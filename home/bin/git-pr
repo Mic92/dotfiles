@@ -6,6 +6,8 @@ import json
 import shutil
 import subprocess
 import sys
+import webbrowser
+from urllib.parse import urljoin, quote_plus, urlencode
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 from typing import override
@@ -105,7 +107,7 @@ def is_gitea_host(host: str) -> bool:
 class Forge(ABC):
     @abstractmethod
     def submit_pr(
-        self, remote_branch: str, labels: list[str], reviewers: list[str]
+        self, local_branch: str, remote_branch: str, labels: list[str], reviewers: list[str]
     ) -> None:
         pass
 
@@ -115,6 +117,10 @@ class Forge(ABC):
 
     @abstractmethod
     def get_upstream_remote(self) -> str:
+        pass
+
+    @abstractmethod
+    def get_fork_remote(self) -> str:
         pass
 
     @abstractmethod
@@ -129,6 +135,11 @@ class GithubRepoInfo:
     upstream_default_branch: str
     upstream_ssh_url: str
 
+    fork_owner: str
+    fork_repo: str
+    fork_ssh_url: str
+    fork_default_branch: str
+
 
 class GitHub(Forge):
     def __init__(self) -> None:
@@ -140,21 +151,49 @@ class GitHub(Forge):
 
         # gh repo view --json parent
         res = run(
-            ["gh", "repo", "view", "--json", "parent"],
+            [
+                "gh",
+                "repo",
+                "view",
+                "--json",
+                "parent,sshUrl,name,owner,defaultBranchRef",
+            ],
             stdout=subprocess.PIPE,
         )
-        data = json.loads(res.stdout.strip())
-        parent = data["parent"]
+        fork_data = json.loads(res.stdout.strip())
+        parent = fork_data["parent"]
 
-        command = ["gh", "repo", "view", "--json", "sshUrl,name,owner,defaultBranchRef"]
-        if parent is not None:
-            command += [f"{parent['owner']['login']}/{parent['name']}"]
+        if parent is None:
+            return GithubRepoInfo(
+                fork_owner=fork_data["owner"]["login"],
+                fork_repo=fork_data["name"],
+                fork_default_branch=fork_data["defaultBranchRef"]["name"],
+                fork_ssh_url=fork_data["sshUrl"],
+                upstream_owner=fork_data["owner"]["login"],
+                upstream_repo=fork_data["name"],
+                upstream_default_branch=fork_data["defaultBranchRef"]["name"],
+                upstream_ssh_url=fork_data["sshUrl"],
+            )
+
+        command = [
+            "gh",
+            "repo",
+            "view",
+            "--json",
+            "sshUrl,name,owner,defaultBranchRef",
+            f"{parent['owner']['login']}/{parent['name']}",
+        ]
         res = run(
             command,
             stdout=subprocess.PIPE,
+            quiet=True,
         )
         data = json.loads(res.stdout.strip())
         self._repo_info = GithubRepoInfo(
+            fork_owner=fork_data["owner"]["login"],
+            fork_repo=fork_data["name"],
+            fork_default_branch=fork_data["defaultBranchRef"]["name"],
+            fork_ssh_url=fork_data["sshUrl"],
             upstream_owner=data["owner"]["login"],
             upstream_repo=data["name"],
             upstream_default_branch=data["defaultBranchRef"]["name"],
@@ -164,25 +203,61 @@ class GitHub(Forge):
 
     @override
     def submit_pr(
-        self, remote_branch: str, labels: list[str], reviewers: list[str]
+        self, local_branch: str, remote_branch: str, labels: list[str], reviewers: list[str]
     ) -> None:
         repo_info = self._get_repo_info()
-        # https://github.com/NixOS/nixpkgs/raw/refs/heads/{remote_branch}/.github/PULL_REQUEST_TEMPLATE.md
-        command = [
-            "gh",
-            "pr",
-            "create",
-            "--repo",
-            f"{repo_info.upstream_owner}/{repo_info.upstream_repo}",
-            "--web",
-            "--base",
-            remote_branch,
-        ]
-        for label in labels:
-            command.extend(["--label", label])
-        for reviewer in reviewers:
-            command.extend(["--reviewer", reviewer])
-        run(command)
+        # check if a pull request already exists
+        res = run(
+            [
+                "gh",
+                "-R",
+                f"{repo_info.upstream_owner}/{repo_info.upstream_repo}",
+                "pr",
+                "view",
+                "--json", "closed",
+                "--jq", ".closed",
+                local_branch,
+
+            ],
+            stdout=subprocess.PIPE,
+            quiet=True,
+            check=False,
+        )
+        if res.returncode == 0 and res.stdout.strip() == "false":
+            print("Pull request already exists.")
+            return
+
+        base_url = "https://github.com/"
+        compare_url = urljoin(
+            base_url,
+            "/".join(
+                [
+                    quote_plus(repo_info.upstream_owner),
+                    quote_plus(repo_info.upstream_repo),
+                    "compare",
+                    quote_plus(repo_info.upstream_default_branch)
+                    + "..."
+                    + quote_plus(repo_info.fork_owner)
+                    + ":"
+                    + quote_plus(local_branch),
+                ]
+            ),
+        )
+
+        query_params = {}
+
+        if reviewers:
+            query_params["reviewers"] = ",".join(reviewers)
+
+        if labels:
+            query_params["labels"] = ",".join(labels)
+
+        # Combine URL parts
+        if query_params:
+            compare_url += "?" + urlencode(query_params)
+
+        # add label
+        webbrowser.open_new_tab(compare_url)
 
     @override
     def get_upstream_branch(self) -> str:
@@ -191,6 +266,10 @@ class GitHub(Forge):
     @override
     def get_upstream_remote(self) -> str:
         return self._get_repo_info().upstream_ssh_url
+
+    @override
+    def get_fork_remote(self) -> str:
+        return self._get_repo_info().fork_ssh_url
 
     @override
     def get_base_branch(self, pr_number: str) -> str:
@@ -213,7 +292,7 @@ class GitHub(Forge):
 class GitLab(Forge):
     @override
     def submit_pr(
-        self, remote_branch: str, labels: list[str], reviewers: list[str]
+        self, local_branch: str, remote_branch: str, labels: list[str], reviewers: list[str]
     ) -> None:
         raise NotImplementedError
 
@@ -223,6 +302,10 @@ class GitLab(Forge):
 
     @override
     def get_upstream_remote(self) -> str:
+        raise NotImplementedError
+
+    @override
+    def get_fork_remote(self) -> str:
         raise NotImplementedError
 
     @override
@@ -233,7 +316,7 @@ class GitLab(Forge):
 class Gitea(Forge):
     @override
     def submit_pr(
-        self, remote_branch: str, labels: list[str], reviewers: list[str]
+        self, local_branch: str, remote_branch: str, labels: list[str], reviewers: list[str]
     ) -> None:
         raise NotImplementedError
 
@@ -243,6 +326,10 @@ class Gitea(Forge):
 
     @override
     def get_upstream_remote(self) -> str:
+        raise NotImplementedError
+
+    @override
+    def get_fork_remote(self) -> str:
         raise NotImplementedError
 
     @override
@@ -297,7 +384,7 @@ class ApplyArgs:
     remote: str | None = None
 
 
-CHARS_TO_ESCAPE = " /:;()[]{}`"
+CHARS_TO_ESCAPE = " /:;()[]{}`+\"'"
 BRANCH_NAME_TABLE = str.maketrans(CHARS_TO_ESCAPE, "-" * len(CHARS_TO_ESCAPE))
 
 
@@ -306,15 +393,18 @@ def create_pr(args: CreateArgs) -> None:
         msg = "Not a git repository."
         raise Error(msg)
     forge = detect_forge()
-    branch = forge.get_upstream_branch() if args.branch is None else args.branch
-    remote = forge.get_upstream_remote() if args.remote is None else args.remote
+    upstream_branch = forge.get_upstream_branch() if args.branch is None else args.branch
+    upstream_remote = (
+        forge.get_upstream_remote() if args.remote is None else args.remote
+    )
+    push_remote = forge.get_fork_remote()
 
     run(
         [
             "git",
             "fetch",
-            remote,
-            f"{branch}:refs/submit-pr/upstream",
+            upstream_remote,
+            f"{upstream_branch}:refs/submit-pr/upstream",
         ],
         check=True,
     )
@@ -397,8 +487,9 @@ def create_pr(args: CreateArgs) -> None:
             "--local",
             "--replace",
             f"branch.{branch_name}.remote",
-            remote,
+            upstream_remote,
         ],
+        quiet=True,
     )
 
     run(
@@ -408,15 +499,28 @@ def create_pr(args: CreateArgs) -> None:
             "--local",
             "--replace",
             f"branch.{branch_name}.merge",
-            branch,
+            upstream_branch,
         ],
+        quiet=True,
+    )
+
+    run(
+        [
+            "git",
+            "config",
+            "--local",
+            "--replace",
+            f"branch.{branch_name}.pushremote",
+            push_remote,
+        ],
+        quiet=True,
     )
 
     run(
         ["git", "push", "--force", "origin", f"{branch_name}:refs/heads/{branch_name}"],
     )
 
-    forge.submit_pr(branch, args.label, args.reviewer)
+    forge.submit_pr(branch_name, upstream_branch, args.label, args.reviewer)
 
     run(
         ["git", "checkout", "-"],
