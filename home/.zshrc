@@ -21,6 +21,11 @@ if [ -e ~/.nix-profile/etc/profile.d/nix.sh ]; then
   . ~/.nix-profile/etc/profile.d/nix.sh
 fi
 
+if [ -f ~/.nix-profile/zsh/ghostty-integration ]; then
+  # shellcheck disable=SC1091
+  . ~/.nix-profile/zsh/ghostty-integration
+fi
+
 if [[ $OSTYPE == darwin* ]]; then
   export NIX_PATH="$NIX_PATH:darwin-config=$HOME/.config/nixpkgs/darwin-configuration.nix"
 fi
