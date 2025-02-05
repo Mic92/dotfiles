@@ -30,19 +30,12 @@ in
         "wireshark"
         "dialout"
       ];
-      shell = pkgs.fish;
+      shell = pkgs.zsh;
       uid = 1000;
       openssh.authorizedKeys.keys = keys;
     };
     root.openssh.authorizedKeys.keys = keys;
   };
-  programs.fish.enable = true;
-  # shadows better builtin completions
-  environment.etc."fish/generated_completions".source = lib.mkForce (
-    pkgs.writeText "fish-completions" ''
-      mkdir $out
-    ''
-  );
 
   boot.initrd.network.ssh.authorizedKeys = keys;
 
