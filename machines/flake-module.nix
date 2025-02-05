@@ -4,7 +4,6 @@
   clan = {
     meta.name = "mic92";
 
-    directory = self;
     specialArgs = {
       self = self;
       inputs = inputs;
