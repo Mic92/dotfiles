@@ -52,6 +52,8 @@ def run_treefmt(merge_base: str) -> None:
         result = run(
             ["nix", "eval", ".#formatter", "--apply", has_treefmt],
             stdout=subprocess.PIPE,
+            stderr=subprocess.DEVNULL,
+            check=False,
         )
 
         if result.stdout.strip() != "true":
