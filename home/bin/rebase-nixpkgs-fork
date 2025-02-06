@@ -12,3 +12,9 @@ git rebase upstream/nixpkgs-unstable main
 
 git push --force tum "${RELEASE_BRANCH}-backports"
 git push --force origin main
+
+(
+  cd /home/joerg/.homesick/repos/dotfiles
+  nix flake update --commit-lock-file nixpkgs
+  merge-after-green
+)
