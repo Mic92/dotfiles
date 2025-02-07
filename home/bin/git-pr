@@ -31,7 +31,7 @@ def run(
     stderr: IO = None,
     quiet: bool = True,
 ) -> subprocess.CompletedProcess:
-    if quiet:
+    if not quiet:
         print(f"$ {' '.join(shlex.quote(str(arg)) for arg in cmd)}")
     return subprocess.run(cmd, check=check, text=text, stdout=stdout, stderr=stderr)
 
@@ -428,7 +428,11 @@ def create_pr(args: CreateArgs) -> None:
             quiet=True,
         )
         commit_range.append(res.stdout.strip())
-    commit_range_str = "..".join(commit_range)
+    if len(commit_range) == 1:
+        commit_range_str = commit_range[0]
+    else:
+        first_commit, last_commit = commit_range
+        commit_range_str = f"{first_commit}^..{last_commit}"
     first_commit = commit_range[0]
     # get title
     title = run(
