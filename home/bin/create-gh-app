@@ -1,0 +1,181 @@
+#!/usr/bin/env python3
+from urllib.parse import quote, urlencode
+from dataclasses import dataclass
+import argparse
+import webbrowser
+
+
+@dataclass
+class CreateGhAppArgs:
+    name: str
+    repository: str
+    username: str | None
+    organisation: str | None
+    description: str
+    callback_urls: list[str]
+    request_oauth_on_install: bool
+    public: bool
+    webhook_url: str | None
+    events: list[str]
+    permissions: dict[str, str]
+    url: str
+    setup_url: str | None
+
+
+class Error(Exception):
+    pass
+
+
+def create_gh_app(args: CreateGhAppArgs) -> str:
+    parameters = [
+        ("name", args.name),
+        ("request_oauth_on_install", str(args.request_oauth_on_install).lower()),
+    ]
+    if args.description:
+        parameters.append(("description", args.description))
+    if args.url:
+        parameters.append(("url", args.url))
+    if args.public:
+        parameters.append(("public", "true"))
+    if args.setup_url:
+        parameters.append(("setup_url", args.setup_url))
+    if args.webhook_url:
+        parameters.append(("webhook_url", args.webhook_url))
+        parameters.append(("webhook_active", "true"))
+    else:
+        parameters.append(("webhook_active", "false"))
+    for callback_url in args.callback_urls:
+        parameters.append(("callback_urls[]", callback_url))
+    for event in args.events:
+        parameters.append(("events[]", event))
+    for permission, access in args.permissions.items():
+        parameters.append((permission, access))
+
+    query = urlencode(parameters, quote_via=quote)
+    if args.organisation:
+        return f"https://github.com/organizations/{args.organisation}/settings/apps/new?{query}"
+    else:
+        return f"https://github.com/settings/apps/new?{query}"
+
+
+def parse_args() -> CreateGhAppArgs:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("name", type=str, help="The name of the app")
+    parser.add_argument("--url", type=str, default="", help="The full URL of the app")
+    parser.add_argument(
+        "--setup-url",
+        type=str,
+        default="",
+        help="The full URL after someone installs the app",
+    )
+    parser.add_argument(
+        "--org",
+        type=str,
+        default=None,
+        help="Organisation to create the app in, if not provided the app will be created in the user's account",
+    )
+    parser.add_argument(
+        "--username",
+        type=str,
+        default=None,
+        help="Username of the repository. Defaults to --org",
+    )
+    parser.add_argument(
+        "--repository", type=str, default="", help="Repository to add the app to"
+    )
+    parser.add_argument(
+        "--description", type=str, default="", help="Description of the app"
+    )
+    parser.add_argument(
+        "--callback-urls",
+        type=str,
+        nargs="+",
+        default=[],
+        help="Callback URLs to redirect to after authorisation",
+    )
+    parser.add_argument(
+        "--request-oauth-on-install",
+        action="store_true",
+        help="Request OAuth on install",
+    )
+    parser.add_argument("--public", action="store_true", help="Make the app public")
+    parser.add_argument(
+        "--webhook-url", type=str, default="", help="The URL to send webhooks to"
+    )
+    parser.add_argument(
+        "--events",
+        type=str,
+        nargs="+",
+        default=[],
+        help="Events to subscribe to. i.e. --events push",
+    )
+    parser.add_argument(
+        "--permission",
+        type=str,
+        nargs=2,
+        action="append",
+        metavar=("permission", "access"),
+        default=[],
+        help="Add a permission with the given access level i.e. --permission contents write",
+    )
+
+    args = parser.parse_args()
+    if not args.username:
+        if args.org:
+            args.username = args.org
+    if not args.url and args.repository and args.username:
+        args.url = f"https://github.com/{args.username}/{args.repository}"
+
+    return CreateGhAppArgs(
+        name=args.name,
+        organisation=args.org,
+        username=args.username,
+        repository=args.repository,
+        description=args.description,
+        callback_urls=args.callback_urls,
+        request_oauth_on_install=args.request_oauth_on_install,
+        public=args.public,
+        events=args.events,
+        permissions=dict(args.permission),
+        url=args.url,
+        setup_url=args.setup_url,
+        webhook_url=args.webhook_url,
+    )
+
+
+def main():
+    args = parse_args()
+    url = create_gh_app(args)
+    try:
+        webbrowser.open(url)
+    except webbrowser.Error:
+        print(f"Please open the following URL in your browser:\n{url}")
+
+    if args.organisation:
+        print(
+            f"1. Install the app: https://github.com/organizations/{args.organisation}/settings/apps/{args.name}/installations"
+        )
+    else:
+        print(
+            "1. Install the app: https://github.com/settings/apps/{args.name}/installations"
+        )
+
+    if args.organisation:
+        print(
+            f"2. Go to https://github.com/organizations/{args.organisation}/settings/apps/{args.name}"
+        )
+    else:
+        print(f"2. Go to https://github.com/settings/apps/{args.name}")
+
+    if not args.repository or not args.username:
+        return
+    print(
+        f"3. And copy app id and save it as CI_APP_ID in https://github.com/{args.username}/{args.repository}/settings/variables/actions"
+    )
+    print(
+        f"4. Generate a private key and save it as CI_APP_PRIVATE_KEY in https://github.com/{args.username}/{args.repository}/settings/secrets/actions"
+    )
+
+
+if __name__ == "__main__":
+    main()
