@@ -8,10 +8,7 @@ jobs:
       contents: write
       pull-requests: write
     concurrency:
-      group: "auto-merge-dependency-updates:${{ github.head_ref }}"
+      group: "auto-merge:${{ github.head_ref }}"
       cancel-in-progress: true
     steps:
-      - uses: tjenkinson/gh-action-auto-merge-dependency-updates@v1
-        with:
-          use-auto-merge: true
-          allowed-actors: mic92-dotfiles-ci[bot]
+      - uses: Mic92/auto-merge@master
