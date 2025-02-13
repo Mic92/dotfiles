@@ -79,7 +79,7 @@
   updateRefs = true
 
 [help]
-  autocorrect = 1
+  autocorrect = 10
 [mergetool]
   prompt = false
   path = nvim-open

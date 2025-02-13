@@ -16,5 +16,5 @@ git push --force origin main
 (
   cd /home/joerg/.homesick/repos/dotfiles
   nix flake update --commit-lock-file nixpkgs
-  merge-after-green
+  merge-when-green
 )

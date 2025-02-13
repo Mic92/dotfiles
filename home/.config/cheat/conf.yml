@@ -1,6 +1,5 @@
 # The editor to use with 'cheat -e <sheet>'. Defaults to $EDITOR or $VISUAL.
 # editor: vim
-
 # Should 'cheat' always colorize output?
 colorize: true
 # Which 'chroma' colorscheme should be applied to the output?
