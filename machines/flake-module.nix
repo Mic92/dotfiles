@@ -17,7 +17,6 @@
           backup = builtins.filter (name: name != "blob64") config.all;
         };
       services = {
-
         borgbackup.blob64 = {
           roles.server.machines = [ "blob64" ];
           roles.server.config = {
@@ -26,6 +25,7 @@
           roles.client.tags = [ "backup" ];
           roles.client.extraModules = [ "nixosModules/borgbackup.nix" ];
         };
+
         zerotier.mic92 = {
           roles.controller.machines = [ "eve" ];
           roles.moon.machines = [
