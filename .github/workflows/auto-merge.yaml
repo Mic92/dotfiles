@@ -11,4 +11,4 @@ jobs:
       group: "auto-merge:${{ github.head_ref }}"
       cancel-in-progress: true
     steps:
-      - uses: Mic92/auto-merge@master
+      - uses: Mic92/auto-merge@main
