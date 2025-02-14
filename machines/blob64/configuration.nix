@@ -31,6 +31,7 @@
       fancontrol = pkgs.rustPlatform.buildRustPackage {
         name = "fancontrol";
         src = ./fancontrol;
+        fetchCargoVendor = true;
         cargoLock.lockFile = ./fancontrol/Cargo.lock;
       };
     in
