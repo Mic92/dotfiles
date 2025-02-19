@@ -2,6 +2,7 @@
   self,
   inputs,
   pkgs,
+  config,
   ...
 }:
 {
@@ -29,12 +30,17 @@
 
   clan.core.settings.directory = ../..;
   clan.core.settings.machine.name = "evo";
+
   sops.age.keyFile = "/Library/Application Support/sops-nix/age-key.txt";
 
   # fix vim repeat key
   system.activationScripts.defaults.text = ''
     defaults write -g ApplePressAndHoldEnabled -bool false
   '';
+
+  users.users.joerg.home = "/Users/joerg";
+
+  environment.etc."nix-darwin".source = "${config.users.users.joerg.home}/.homesick/repos/dotfiles";
 
   environment.systemPackages = [
     pkgs.python3
