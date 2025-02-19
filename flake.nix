@@ -32,6 +32,7 @@
     nix.inputs.git-hooks-nix.follows = "";
     nix.inputs.nixpkgs-23-11.follows = "";
 
+    # https://github.com/LnL7/nix-darwin/pull/1344
     nixpkgs.url = "git+https://github.com/Mic92/nixpkgs?shallow=1";
     # for development
     #nixpkgs.url = "/home/joerg/git/nixpkgs";
@@ -74,7 +75,7 @@
     flake-registry.url = "github:NixOS/flake-registry";
     flake-registry.flake = false;
 
-    nix-darwin.url = "github:LnL7/nix-darwin";
+    nix-darwin.url = "github:Mic92/nix-darwin/fix_pam_module";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     #srvos.url = "github:numtide/srvos/impure-derivations";
