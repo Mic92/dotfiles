@@ -162,18 +162,18 @@ def main():
 
     if args.organisation:
         print(
-            f"2. Go to https://github.com/organizations/{args.organisation}/settings/apps/{args.name}"
+            f"2. Go to https://github.com/organizations/{args.organisation}/settings/apps/{args.name} ..."
         )
     else:
-        print(f"2. Go to https://github.com/settings/apps/{args.name}")
+        print(f"2. Go to https://github.com/settings/apps/{args.name} ...")
 
     if not args.repository or not args.username:
         return
     print(
-        f"3. And copy app id and save it as CI_APP_ID in https://github.com/{args.username}/{args.repository}/settings/variables/actions"
+        f"2.1 And copy app id and save it as CI_APP_ID in https://github.com/{args.username}/{args.repository}/settings/variables/actions"
     )
     print(
-        f"4. Generate a private key and save it as CI_APP_PRIVATE_KEY in https://github.com/{args.username}/{args.repository}/settings/secrets/actions"
+        f"2.2. Generate a private key and save it as CI_APP_PRIVATE_KEY in https://github.com/{args.username}/{args.repository}/settings/secrets/actions"
     )
 
 
