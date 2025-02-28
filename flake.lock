@@ -412,16 +412,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1739950105,
-        "narHash": "sha256-zC/PrB0hcov7Lc14bZKs1kHp7aIj3v1NZchFgCeMli4=",
-        "owner": "Mic92",
+        "lastModified": 1740636552,
+        "narHash": "sha256-vBtVB8uU4Bxbyz43MhldAGX91i15j4LJI1Ss3mCCO7s=",
+        "owner": "LnL7",
         "repo": "nix-darwin",
-        "rev": "9646928ff6bdd7e4a754ef740a7abd5a0dcb0837",
+        "rev": "665cc04a60eb8ba47d41eadbe6264ca8a71943e8",
         "type": "github"
       },
       "original": {
-        "owner": "Mic92",
-        "ref": "fix_pam_module",
+        "owner": "LnL7",
         "repo": "nix-darwin",
         "type": "github"
       }
@@ -496,10 +495,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1739508870,
-        "narHash": "sha256-07+5W51x+m7D1khMuLES+VIjHqJ2hhsD6UyUtmtYuN8=",
+        "lastModified": 1739868681,
+        "narHash": "sha256-zBXCVVqVyd/6bwhViFZ7iSOSf8BZbjoSlJerB0lfJ+g=",
         "ref": "refs/heads/main",
-        "rev": "923f4860998cf62106921e23f5ff0332e46eb7ca",
+        "rev": "5cee05d92d3e9939946c8e461b94616485920a85",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
