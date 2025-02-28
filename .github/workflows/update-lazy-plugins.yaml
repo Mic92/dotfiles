@@ -26,5 +26,5 @@ jobs:
         with:
           title: Update vim plugins
           token: ${{ steps.app-token.outputs.token }}
-          pr-labels: |
+          labels: |
             auto-merge
