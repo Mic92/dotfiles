@@ -1,7 +1,7 @@
 {
   "AstroNvim": { "branch": "main", "commit": "1411df4d970e59f1b5721556a043c5c828daf5ad" },
   "Comment.nvim": { "branch": "master", "commit": "e30b7f2008e52442154b66f7c519bfd2f1e32acb" },
-  "CopilotChat.nvim": { "branch": "main", "commit": "a0b1e415336fa2562ad8e14553f7888b7acb1010" },
+  "CopilotChat.nvim": { "branch": "main", "commit": "736fabd590df20c9a4301211f3c133d4d2b72deb" },
   "LuaSnip": { "branch": "master", "commit": "03c8e67eb7293c404845b3982db895d59c0d1538" },
   "NeoSolarized.nvim": { "branch": "master", "commit": "fb395ea220c9befc06a91bd97e80fbfec939add5" },
   "SchemaStore.nvim": { "branch": "main", "commit": "b649fb35ddb1863c9f40fedfd04f1f3829a62006" },
@@ -74,7 +74,7 @@
   "telescope.nvim": { "branch": "master", "commit": "78857db9e8d819d3cc1a9a7bdc1d39d127a36495" },
   "todo-comments.nvim": { "branch": "main", "commit": "ae0a2afb47cf7395dc400e5dc4e05274bf4fb9e0" },
   "toggleterm.nvim": { "branch": "main", "commit": "50ea089fc548917cc3cc16b46a8211833b9e3c7c" },
-  "undotree": { "branch": "master", "commit": "2556c6800b210b2096b55b66e74b4cc1d9ebbe4f" },
+  "undotree": { "branch": "master", "commit": "86df4075f0e24ebae8b6190621a48b1f0eb488d3" },
   "venv-selector.nvim": { "branch": "regexp", "commit": "e82594274bf7b54387f9a2abe65f74909ac66e97" },
   "vim-illuminate": { "branch": "master", "commit": "b5713e6ca3f627b46968386d6d3f24d374d3cb17" },
   "which-key.nvim": { "branch": "main", "commit": "fcbf4eea17cb299c02557d576f0d568878e354a4" },
