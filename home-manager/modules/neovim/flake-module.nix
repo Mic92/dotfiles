@@ -59,7 +59,7 @@
           pkgs.neovimUtils.makeNeovimConfig {
             wrapRc = false;
             withRuby = false;
-            extraLuaPackages = ps: [ (ps.callPackage ./lua-tiktoken.nix { }) ];
+            extraLuaPackages = ps: [ ps.tiktoken_core ];
           }
         );
         treesitter-grammars =
