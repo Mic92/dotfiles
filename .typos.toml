@@ -15,6 +15,7 @@ extend-ignore-identifiers-re = [
   "hda",
   "browseable",
   "LESS_TERMCAP_ue",
+  "typ",
 ]
 
 [files]
