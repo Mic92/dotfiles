@@ -33,7 +33,7 @@
     nix.inputs.nixpkgs-23-11.follows = "";
 
     # https://github.com/LnL7/nix-darwin/pull/1344
-    nixpkgs.url = "git+https://github.com/Mic92/nixpkgs?shallow=1";
+    nixpkgs.url = "git+https://github.com/Mic92/nixpkgs?shallow=1&ref=main";
     # for development
     #nixpkgs.url = "/home/joerg/git/nixpkgs";
     nur-packages.url = "github:Mic92/nur-packages";
