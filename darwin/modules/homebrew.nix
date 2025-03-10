@@ -13,11 +13,17 @@
       fi
     ''
   );
+
+  # Don't quarantine apps installed by homebrew with gatekeeper
+  homebrew.caskArgs.no_quarantine = true;
+  # Remove all homebrew packages when they get removed from the configuration
   homebrew.onActivation.cleanup = "uninstall";
+
   homebrew.casks = [
     "ferdium"
     "firefox"
     "signal"
     "ghostty"
+    "via"
   ];
 }
