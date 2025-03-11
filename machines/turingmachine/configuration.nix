@@ -211,6 +211,11 @@
     "powerpc64le-linux"
   ];
 
+  boot.kernelParams = [
+    # defaults is 5, but this can be quite slow for sqlite databases
+    "zfs.zfs_txg_timeout=2"
+  ];
+
   system.stateVersion = "23.11";
   boot.initrd.systemd.enable = true;
 
