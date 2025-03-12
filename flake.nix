@@ -24,7 +24,7 @@
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix.url = "git+https://github.com/Mic92/nix-1?shallow=1&ref=main";
+    nix.url = "git+https://github.com/Mic92/nix-1?shallow=1";
     nix.inputs.nixpkgs.follows = "nixpkgs";
     nix.inputs.flake-parts.follows = "";
     nix.inputs.flake-compat.follows = "";
@@ -43,7 +43,8 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     #retiolum.url = "git+https://git.thalheim.io/Mic92/retiolum";
-    retiolum.url = "github:Mic92/retiolum";
+    #retiolum.url = "github:Mic92/retiolum";
+    retiolum.url = "git+https://github.com/Mic92/retiolum?shallow=1";
 
     #spora.url = "github:krebs/spora";
     #spora.inputs.nixpkgs.follows = "nixpkgs";

@@ -372,16 +372,15 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1741779697,
-        "narHash": "sha256-S/sC1HCJsBAmhBFNzwGWFEJUwHjT6utwg1gDO5TYRZM=",
-        "ref": "main",
-        "rev": "ce67f3e69a7349e389a41a1058a0fe0d3b468078",
+        "lastModified": 1741781067,
+        "narHash": "sha256-5+tBEDsBHWb+1Ctzhxxa4IG9NfLBQlrApXOqts8sxJI=",
+        "ref": "refs/heads/main",
+        "rev": "450deca08b82f8ee592ba16df23dbc437b971e2e",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
       },
       "original": {
-        "ref": "main",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
@@ -498,15 +497,16 @@
       "locked": {
         "lastModified": 1737987273,
         "narHash": "sha256-WQCLoDbthUO5PcdYDBxZZQgpQbEXab50EcwChkukxN4=",
-        "owner": "Mic92",
-        "repo": "retiolum",
+        "ref": "refs/heads/master",
         "rev": "514fe96610f745435b89355822691b1961dc4857",
-        "type": "github"
+        "shallow": true,
+        "type": "git",
+        "url": "https://github.com/Mic92/retiolum"
       },
       "original": {
-        "owner": "Mic92",
-        "repo": "retiolum",
-        "type": "github"
+        "shallow": true,
+        "type": "git",
+        "url": "https://github.com/Mic92/retiolum"
       }
     },
     "root": {
