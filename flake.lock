@@ -374,13 +374,14 @@
       "locked": {
         "lastModified": 1741311875,
         "narHash": "sha256-qWRP+nM2vtUX3XzXDK32LaviojoLdsVK/psb+145E+c=",
-        "ref": "refs/heads/main",
+        "ref": "main",
         "rev": "749ffbedde9448035ac0207e9e05288b9f194d99",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
       },
       "original": {
+        "ref": "main",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
