@@ -16,8 +16,8 @@
     #  ];
     #}
     {
-      hostName = "mac01";
-      sshUser = "hetzner";
+      hostName = "mac02";
+      sshUser = "customer";
       protocol = "ssh-ng";
       sshKey = config.sops.secrets.ssh-aarch64-builder.path;
       systems = [
@@ -59,9 +59,9 @@
     }
   ];
   programs.ssh.extraConfig = ''
-    Host mac01
+    Host mac02
       User hetzner
-      HostName mac01.numtide.com
+      HostName mac02.numtide.com
       IdentityFile ${config.sops.secrets.ssh-aarch64-builder.path}
     Host graham
       User nix
@@ -83,9 +83,9 @@
       hostNames = [ "aarch64.nixos.community" ];
       publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMUTz5i9u5H2FHNAmZJyoJfIGyUm/HfGhfwnc142L3ds";
     };
-    "mac01.numtide.com" = {
-      hostNames = [ "mac01.numtide.com" ];
-      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDrUaBPZktk41hYHN95IIHBL4bn7LbZy1aLra/ONv4go";
+    "mac02.numtide.com" = {
+      hostNames = [ "mac02.numtide.com" ];
+      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGX2wsoPj5j08Uuzt0AF5gA6lPiZS6fU3gKSf9XMcoXd";
     };
   };
 }
