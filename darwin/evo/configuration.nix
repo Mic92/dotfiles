@@ -46,9 +46,7 @@
   };
 
   # fix vim repeat key
-  system.activationScripts.defaults.text = ''
-    defaults write -g ApplePressAndHoldEnabled -bool false
-  '';
+  system.defaults.NSGlobalDomain.ApplePressAndHoldEnabled = false;
 
   users.users.joerg.home = "/Users/joerg";
 
