@@ -1,7 +1,6 @@
 keys:
   - &mic92-darwin age1nnm255ah9wa4gpsaq0v023a75lnmlcxszt9lc6az3mtwzxgrucfq45rp7h
   - &evo age165555xde02v7u74m04qw9m92kqc9quwdy6nq0cg3na89pdg7he0sfff9zy
-
 creation_rules:
   - path_regex: darwin/evo/test-secrets.yml
     key_groups:

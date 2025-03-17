@@ -565,16 +565,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1742206722,
-        "narHash": "sha256-47/1bOPBGhmAegF06nxLN15d/MClCAkk8s/+WOhJJAM=",
-        "owner": "ddormer",
+        "lastModified": 1742213827,
+        "narHash": "sha256-TTCN2qsPOPa9BtZCebdvak/8B3at70xDnSzTocoCMjo=",
+        "owner": "dkowis",
         "repo": "sops-nix",
-        "rev": "2861cb4258acf639676b6485e7cd596092a6b238",
+        "rev": "3ecc9f0a6d142cdae4dc13bd118787875f5efc40",
         "type": "github"
       },
       "original": {
-        "owner": "ddormer",
-        "ref": "fix-darwin-secure-symlink-chown",
+        "owner": "dkowis",
+        "ref": "uid_gid_for_templates",
         "repo": "sops-nix",
         "type": "github"
       }

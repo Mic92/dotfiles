@@ -101,6 +101,7 @@
           "*/secrets.yaml"
           "*/secrets.yml"
           "machines/*/facts/*"
+          "darwin/*/*.yml"
           "*/facter.json"
           "*.pub"
           "*.pem"
