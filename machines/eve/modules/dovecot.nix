@@ -131,9 +131,12 @@
       # Read multiple mails in parallel, improves performance
       mail_prefetch_count = 20
     '';
-    modules = [ pkgs.dovecot_pigeonhole ];
     protocols = [ "sieve" ];
   };
+
+  environment.systemPackages = [
+    pkgs.dovecot_pigeonhole
+  ];
 
   users.users.vmail = {
     home = "/var/vmail";
