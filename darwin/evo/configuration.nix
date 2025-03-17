@@ -33,6 +33,12 @@
 
   sops.age.keyFile = "/Library/Application Support/sops-nix/age-key.txt";
 
+  sops.secrets.test-secret = {
+    owner = "joerg";
+    path = "${config.users.users.joerg.home}/.foo";
+    sopsFile = ./test-secrets.yml;
+  };
+
   # fix vim repeat key
   system.activationScripts.defaults.text = ''
     defaults write -g ApplePressAndHoldEnabled -bool false

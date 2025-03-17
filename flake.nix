@@ -39,7 +39,7 @@
     nur-packages.url = "github:Mic92/nur-packages";
     nur-packages.inputs.nixpkgs.follows = "nixpkgs";
     # for development
-    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.url = "github:ddormer/sops-nix/fix-darwin-secure-symlink-chown";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     #retiolum.url = "git+https://git.thalheim.io/Mic92/retiolum";

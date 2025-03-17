@@ -565,15 +565,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1739262228,
-        "narHash": "sha256-7JAGezJ0Dn5qIyA2+T4Dt/xQgAbhCglh6lzCekTVMeU=",
-        "owner": "Mic92",
+        "lastModified": 1742206722,
+        "narHash": "sha256-47/1bOPBGhmAegF06nxLN15d/MClCAkk8s/+WOhJJAM=",
+        "owner": "ddormer",
         "repo": "sops-nix",
-        "rev": "07af005bb7d60c7f118d9d9f5530485da5d1e975",
+        "rev": "2861cb4258acf639676b6485e7cd596092a6b238",
         "type": "github"
       },
       "original": {
-        "owner": "Mic92",
+        "owner": "ddormer",
+        "ref": "fix-darwin-secure-symlink-chown",
         "repo": "sops-nix",
         "type": "github"
       }
