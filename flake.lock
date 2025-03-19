@@ -371,10 +371,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1741856615,
-        "narHash": "sha256-N4r2GLqHaEyb7OKdUsFOIBwqDpe+4ZTtOI0JAiI9XJI=",
+        "lastModified": 1742389567,
+        "narHash": "sha256-AlPUxnVYQUYNmz09itGEts3W7unay6g2P2FDpuPRrRo=",
         "ref": "refs/heads/main",
-        "rev": "16785c9d56284f5a2c77eee06d33247135558a08",
+        "rev": "61015b9250147ff84babc2a2f3caf52c66f495ad",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
