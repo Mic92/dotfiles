@@ -52,9 +52,7 @@
 
   environment.etc."nix-darwin".source = "${config.users.users.joerg.home}/.homesick/repos/dotfiles";
 
-  environment.systemPackages = [
-    pkgs.python3
-  ];
+  environment.systemPackages = [ pkgs.python3 ];
 
   programs.zsh.enable = true;
 
