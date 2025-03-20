@@ -78,11 +78,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1742387148,
-        "narHash": "sha256-nrkZSQQfzAwwiZhUyUDvzjd2v00t5pQqt8Qvg1Gvns4=",
-        "rev": "a5c5033273e53a60db35e2b7b52d255d826d3d5d",
+        "lastModified": 1742433615,
+        "narHash": "sha256-5kIZyztUG1mDF/WyxpRJcAbAm/RrMM9hmxaX4zU9IFg=",
+        "rev": "60d56c4e3bf7e6cf2d7ee0731a7ef114f1076b6e",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/a5c5033273e53a60db35e2b7b52d255d826d3d5d.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/60d56c4e3bf7e6cf2d7ee0731a7ef114f1076b6e.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -118,10 +118,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1742377844,
-        "narHash": "sha256-OiAtdEs3uGSWm30MN+D1cp7R4GgWsMG2LS0i9j85Szo=",
+        "lastModified": 1742406634,
+        "narHash": "sha256-Y+/v05dE1W7l/06St60/k6TtWIj45spkdDplHWg2Fdw=",
         "ref": "refs/heads/main",
-        "rev": "96349b7d148394d7abc198afc514a2443c927a2a",
+        "rev": "644571908a1c78427449a7f55615e6ee49ebc258",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
@@ -264,11 +264,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1742326330,
-        "narHash": "sha256-Tumt3tcMXJniSh7tw2gW+WAnVLeB3WWm+E+yYFnLBXo=",
+        "lastModified": 1742434866,
+        "narHash": "sha256-RIa4WyQX9hicMCG+cSYJfWFws2tfwO+Ty1NcIoIA/2U=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "22a36aa709de7dd42b562a433b9cefecf104a6ee",
+        "rev": "cfaa4426a3eee6e71ab02a4d72410e69abf06a12",
         "type": "github"
       },
       "original": {
@@ -371,10 +371,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1742389567,
-        "narHash": "sha256-AlPUxnVYQUYNmz09itGEts3W7unay6g2P2FDpuPRrRo=",
+        "lastModified": 1742403453,
+        "narHash": "sha256-Q9NWqJtf75kBh9j1eXj41FB7Wf2175wV77DFKmmR1ms=",
         "ref": "refs/heads/main",
-        "rev": "61015b9250147ff84babc2a2f3caf52c66f495ad",
+        "rev": "4fc889eb505d12aee06b4a850354a6369fa80c49",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
