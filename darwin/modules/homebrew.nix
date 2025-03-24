@@ -25,5 +25,6 @@
     "signal"
     "ghostty"
     "via"
+    "amethyst"
   ];
 }
