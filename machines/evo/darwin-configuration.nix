@@ -15,17 +15,17 @@
     inputs.srvos.darwinModules.mixins-terminfo
     inputs.srvos.darwinModules.mixins-nix-experimental
     inputs.sops-nix.darwinModules.sops
-    ../modules/app-store
-    ../modules/clan/default.nix
-    ../modules/homebrew.nix
-    ../modules/iterm2.nix
-    ../modules/nix-daemon.nix
-    ../modules/nix-index.nix
-    ../modules/openssh.nix
-    ../modules/remote-builder.nix
-    ../modules/secretiv.nix
-    ../modules/sudo.nix
-    ../modules/ghostty.nix
+    ../../darwinModules/app-store
+    ../../darwinModules/clan/default.nix
+    ../../darwinModules/homebrew.nix
+    ../../darwinModules/iterm2.nix
+    ../../darwinModules/nix-daemon.nix
+    ../../darwinModules/nix-index.nix
+    ../../darwinModules/openssh.nix
+    ../../darwinModules/remote-builder.nix
+    ../../darwinModules/secretiv.nix
+    ../../darwinModules/sudo.nix
+    ../../darwinModules/ghostty.nix
   ];
 
   system.activationScripts.postActivation.text = ''

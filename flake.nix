@@ -83,7 +83,7 @@
     srvos.url = "github:numtide/srvos/dotfiles";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
-    clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
+    clan-core.url = "https://git.clan.lol/clan/clan-core/archive/mac.tar.gz";
     #clan-core.url = "path:///Users/joerg/git/clan-core";
     #clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=nixos-rebuild";
     #clan-core.url = "git+file:///home/joerg/work/clan/clan-core";
@@ -94,6 +94,7 @@
     clan-core.inputs.flake-parts.follows = "flake-parts";
     clan-core.inputs.nixos-facter-modules.follows = "nixos-facter-modules";
     clan-core.inputs.systems.follows = "systems";
+    clan-core.inputs.nix-darwin.follows = "nix-darwin";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
@@ -133,7 +134,6 @@
       }:
       {
         imports = [
-          ./darwin/flake-module.nix
           ./machines/flake-module.nix
           ./home-manager/flake-module.nix
           ./terraform/flake-module.nix
