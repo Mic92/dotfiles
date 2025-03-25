@@ -12,11 +12,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1742457865,
-        "narHash": "sha256-pSs0DuhXhXgjpIj+R+KitAcFYbHTiHmMqdYYhVPI4+Q=",
+        "lastModified": 1742810182,
+        "narHash": "sha256-K0VpsMJHQcIfOXoYW/IDa5HNhLp02XEfUt5fCjmRQBA=",
         "owner": "numtide",
         "repo": "blueprint",
-        "rev": "7ae8756a68c662d551e354beb537f365b80e5108",
+        "rev": "5663edeaef8952926ce96d34a3c40d240717efcf",
         "type": "github"
       },
       "original": {
@@ -121,10 +121,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1742583655,
-        "narHash": "sha256-4vlqIDycZgvpLcNB9soHm405UPia1tQtZyy2mtnYca8=",
+        "lastModified": 1742866832,
+        "narHash": "sha256-QbN55/Fs1awtErlJrSofuLqTuFwrScFK+AzLnF8tVDQ=",
         "ref": "refs/heads/main",
-        "rev": "44412da6f6024b03f2a7c3ef79702eebe1a70de9",
+        "rev": "f94850f89b42f814a41f5e5be642363b70a80747",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
@@ -224,11 +224,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1741628020,
-        "narHash": "sha256-KENiEcWjxZ81F3zmPyerjcHxmtNtX/jDlVL7dBoToTk=",
+        "lastModified": 1742837882,
+        "narHash": "sha256-AW1WWqE69APbGhwhr6WKdYYeffc0GpB2CeMZz8B3Sf0=",
         "owner": "nix-community",
         "repo": "harmonia",
-        "rev": "04eb7b52301a8971c4e8f024a34e7cc9c7b85dbe",
+        "rev": "1dd77f7fb40d373e84d6fdc301a86e97965852ef",
         "type": "github"
       },
       "original": {
@@ -267,11 +267,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1742771635,
-        "narHash": "sha256-HQHzQPrg+g22tb3/K/4tgJjPzM+/5jbaujCZd8s2Mls=",
+        "lastModified": 1742871411,
+        "narHash": "sha256-F3xBdOs5m0SE6Gq3jz+JxDOPvsLs22vbGfD05uF6xEc=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "ad0614a1ec9cce3b13169e20ceb7e55dfaf2a818",
+        "rev": "869f2ec2add75ce2a70a6dbbf585b8399abec625",
         "type": "github"
       },
       "original": {
@@ -374,10 +374,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1742807934,
-        "narHash": "sha256-v9mfw/bUVmGr5ajmXv4Yt2mRNKN650AqvQfEvA2x06w=",
+        "lastModified": 1742808286,
+        "narHash": "sha256-FWx6ifvb7dXdiSGuNOPilm1iY7+GtMpGiC83yDhrCIo=",
         "ref": "refs/heads/main",
-        "rev": "00b99a1caf5b5470be2744101e9656a3ea68d894",
+        "rev": "05322855db002fb256130e58b10bbc5c77f2f862",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
@@ -445,11 +445,11 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1742631601,
-        "narHash": "sha256-yJ3OOAmsGAxSl0bTmKUp3+cEYtSS+V6hUPK2rYhIPr8=",
+        "lastModified": 1742806253,
+        "narHash": "sha256-zvQ4GsCJT6MTOzPKLmlFyM+lxo0JGQ0cSFaZSACmWfY=",
         "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "380ed15bcd6440606c6856db44a99140d422b46f",
+        "rev": "ecaa2d911e77c265c2a5bac8b583c40b0f151726",
         "type": "github"
       },
       "original": {
@@ -460,10 +460,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1742899706,
-        "narHash": "sha256-5sh5bvaNgSWRMMRawEkAPINWRSCi39K6C8d6Q29vce0=",
+        "lastModified": 1742900123,
+        "narHash": "sha256-L0onn7lzJqCe5J2Mk4PtVgLZGacLDIVNM2uG3t6zNPs=",
         "ref": "main",
-        "rev": "b5f759e943e6cd31041125f749efa54a6b199790",
+        "rev": "5bee05b195148ca7b253a21ea1591370eeba986e",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
