@@ -18,7 +18,6 @@
     ../../darwinModules/app-store
     ../../darwinModules/clan/default.nix
     ../../darwinModules/homebrew.nix
-    ../../darwinModules/iterm2.nix
     ../../darwinModules/nix-daemon.nix
     ../../darwinModules/nix-index.nix
     ../../darwinModules/openssh.nix
@@ -38,6 +37,8 @@
 
   clan.core.settings.directory = ../..;
   clan.core.settings.machine.name = "evo";
+
+  fonts.packages = [ pkgs.nerd-fonts.fira-code ];
 
   sops.age.keyFile = "/Library/Application Support/sops-nix/age-key.txt";
 
