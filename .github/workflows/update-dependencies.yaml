@@ -3,7 +3,10 @@ on:
   repository_dispatch:
   workflow_dispatch:
   schedule:
-    - cron: "51 2 * * *"
+    - cron: "38 0 * * *"
+    - cron: "38 6 * * *"
+    - cron: "38 12 * * *"
+    - cron: "38 18 * * *"
 jobs:
   update-everything:
     runs-on: ubuntu-latest
