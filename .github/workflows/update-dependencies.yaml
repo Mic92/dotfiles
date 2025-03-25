@@ -1,17 +1,18 @@
-name: "Update nvim plugins"
+name: "Update Flake inputs + nvim plugins"
 on:
   repository_dispatch:
   workflow_dispatch:
   schedule:
     - cron: "51 2 * * *"
 jobs:
-  update-nvim-plugins:
+  update-everything:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: true
       - uses: cachix/install-nix-action@v31
+      - run: nix flake update
       - name: Update vim plugins
         run: |
           nix run .#nvim -- --headless "+Lazy! update" +qa
@@ -24,7 +25,7 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
         with:
-          title: Update vim plugins
+          title: Update flakes and vim plugins
           token: ${{ steps.app-token.outputs.token }}
           labels: |
             auto-merge
