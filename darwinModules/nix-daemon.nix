@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, ... }:
 {
   # this extends srvos's common settings
   nix = {
@@ -8,7 +8,8 @@
       Minute = 15;
     };
     gc.options = "--delete-older-than 10d";
-    package = inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
+    #package = inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
+    package = pkgs.nixVersions.latest;
 
     settings = {
       # for nix-direnv
