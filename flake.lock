@@ -12,11 +12,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1742810182,
-        "narHash": "sha256-K0VpsMJHQcIfOXoYW/IDa5HNhLp02XEfUt5fCjmRQBA=",
+        "lastModified": 1743008896,
+        "narHash": "sha256-mU0WYwrgN8Sus4ktBsSzkvs0++vAKrhNE0A0vWo8AzY=",
         "owner": "numtide",
         "repo": "blueprint",
-        "rev": "5663edeaef8952926ce96d34a3c40d240717efcf",
+        "rev": "7ae2142c8b5a47bed6d403fdd5f5a1215961e10c",
         "type": "github"
       },
       "original": {
@@ -39,10 +39,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1742696571,
-        "narHash": "sha256-QUWVwXfb6UQKX3bi3IeC6m+HlTf3KhGLbCDOIrdSDBQ=",
+        "lastModified": 1743008411,
+        "narHash": "sha256-lulGdN2fSAMOWb5j9fXOSqgowixLdmDv0IjCP47KMwM=",
         "ref": "refs/heads/main",
-        "rev": "f2e3a0b65632114c33de799cae0962c891c3db43",
+        "rev": "1d0161f4afa4638cca1ea7ebebd72ac15d2fa8c7",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
@@ -121,10 +121,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1742983233,
-        "narHash": "sha256-foqbIDZT1eJ62/8VTIKatey5eQ8Wurci6Xe3CJ87McI=",
+        "lastModified": 1743009633,
+        "narHash": "sha256-o1PuNNZc7ZMJ1SBeY/aOumSS93tpRpubv7dSbr+Eu3w=",
         "ref": "refs/heads/main",
-        "rev": "75cfc5633e63e8cdfac443fce4eef1b582403c11",
+        "rev": "77b64b4f323628338c8c6e146d0954e4cabfc4fe",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
@@ -267,11 +267,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1742957044,
-        "narHash": "sha256-gwW0tBIA77g6qq45y220drTy0DmThF3fJMwVFUtYV9c=",
+        "lastModified": 1742996658,
+        "narHash": "sha256-snxgTLVq6ooaD3W3mPHu7LVWpoZKczhxHAUZy2ea4oA=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "ce287a5cd3ef78203bc78021447f937a988d9f6f",
+        "rev": "693840c01b9bef9e54100239cef937e53d4661bf",
         "type": "github"
       },
       "original": {
