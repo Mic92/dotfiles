@@ -20,7 +20,7 @@
   "cmp-path": { "branch": "main", "commit": "91ff86cd9c29299a64f968ebb45846c485725f23" },
   "cmp-tmux": { "branch": "main", "commit": "95b1b921802e6f60627b3e76afb9380fddd87f9a" },
   "cmp_luasnip": { "branch": "master", "commit": "98d9cb5c2c38532bd9bdb481067b20fea8f32e90" },
-  "copilot.lua": { "branch": "master", "commit": "0e3585bb9d482336aeb43811e9d7cd09e33edada" },
+  "copilot.lua": { "branch": "master", "commit": "0da7ebc11bf63fe0591f664430266dfc87d77dbf" },
   "crates.nvim": { "branch": "main", "commit": "fd2bbca7aa588f24ffc3517831934b4c4a9588e9" },
   "dressing.nvim": { "branch": "master", "commit": "3a45525bb182730fe462325c99395529308f431e" },
   "friendly-snippets": { "branch": "main", "commit": "efff286dd74c22f731cdec26a70b46e5b203c619" },
