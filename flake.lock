@@ -39,10 +39,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1743041766,
-        "narHash": "sha256-QTv3CdbNOPiak4eycho8yd0yJGRlppt6QS9TSPVXTeY=",
+        "lastModified": 1743067894,
+        "narHash": "sha256-Qi8647t9g6zi8OZ2sg8I8wBB5rUnTp7cMuTslHHC3Ro=",
         "ref": "refs/heads/main",
-        "rev": "b9568a88d770e8b43c16673e8d913c8990a0db24",
+        "rev": "04f1424e97f23b85d5ceeda2f3da8ce58234a383",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
@@ -374,10 +374,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1742808286,
-        "narHash": "sha256-FWx6ifvb7dXdiSGuNOPilm1iY7+GtMpGiC83yDhrCIo=",
+        "lastModified": 1743071374,
+        "narHash": "sha256-On5Wiw4E5P4SnJl9KoTwfoisXl547d9XRkCpF8+vX4Q=",
         "ref": "refs/heads/main",
-        "rev": "05322855db002fb256130e58b10bbc5c77f2f862",
+        "rev": "3847a696d24e87c3d49bbdaa14e2100fc0ba30bc",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
