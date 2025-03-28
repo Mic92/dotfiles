@@ -9,6 +9,17 @@
 
     Host *.dos.cit.tum.de !login.dos.cit.tum.de !sarah.dos.cit.tum.de !donna.dos.cit.tum.de
       ProxyJump tunnel@login.dse.in.tum.de
+
+    Host *.vpn.clan.lol
+      ProxyJump tunnel@clan.lol
+
+    Host storinator01
+      ProxyJump tunnel@clan.lol
+      Hostname fda9:b487:2919:3547:3699:9393:7f57:6e6b
+
+    Host build02
+      ProxyJump tunnel@clan.lol
+      Hostname 100.98.54.8
   '';
 
   programs.ssh.knownHosts.ssh-ca = {
