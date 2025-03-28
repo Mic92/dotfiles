@@ -23,7 +23,6 @@
     upterm
     eternal-terminal
     gimp
-    zed-editor
     arandr
     signal-desktop
     adwaita-icon-theme
