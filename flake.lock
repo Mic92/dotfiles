@@ -457,7 +457,7 @@
     "nixpkgs": {
       "locked": {
         "lastModified": 1743168342,
-        "narHash": "sha256-b9fLJ9Rf9WJiBXHB5JOvHJzqbV7nS43GCj4IPJtABdU=",
+        "narHash": "sha256-zh2Izt0VyhfCoeypj3HtWonaZJZaXdCSudx+An5oFiA=",
         "ref": "main",
         "rev": "12a6bcd86a24f97f0b55959b96c637b3f53ce19c",
         "shallow": true,
