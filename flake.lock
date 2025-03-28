@@ -1,30 +1,5 @@
 {
   "nodes": {
-    "blueprint": {
-      "inputs": {
-        "nixpkgs": [
-          "data-mesher",
-          "nixpkgs"
-        ],
-        "systems": [
-          "data-mesher",
-          "systems"
-        ]
-      },
-      "locked": {
-        "lastModified": 1743008896,
-        "narHash": "sha256-mU0WYwrgN8Sus4ktBsSzkvs0++vAKrhNE0A0vWo8AzY=",
-        "owner": "numtide",
-        "repo": "blueprint",
-        "rev": "7ae2142c8b5a47bed6d403fdd5f5a1215961e10c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "blueprint",
-        "type": "github"
-      }
-    },
     "buildbot-nix": {
       "inputs": {
         "flake-parts": [
@@ -109,7 +84,7 @@
     },
     "data-mesher": {
       "inputs": {
-        "blueprint": "blueprint",
+        "flake-parts": "flake-parts",
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -121,10 +96,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1743094584,
-        "narHash": "sha256-W81Xna127MQqKn7Qmi2JF4Vb7GG/xUZEus+yJqbxp/s=",
+        "lastModified": 1743162789,
+        "narHash": "sha256-zCkYVM3Q5ieLK3sII2bmsH+LfViRJhPPxH69lJDX/KE=",
         "ref": "refs/heads/main",
-        "rev": "2fb314d8dc6d8d153f4ce4180a2dcd7458f9f3a0",
+        "rev": "8ea1971154a39210c3056afea6cb8e70dededb93",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
@@ -156,6 +131,27 @@
       }
     },
     "flake-parts": {
+      "inputs": {
+        "nixpkgs-lib": [
+          "data-mesher",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1741352980,
+        "narHash": "sha256-+u2UunDA4Cl5Fci3m7S643HzKmIDAe+fiXrLqYsR2fs=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "f4330d22f1c5d2ba72d3d22df5597d123fdb60a9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
+    "flake-parts_2": {
       "inputs": {
         "nixpkgs-lib": [
           "nixpkgs"
@@ -517,7 +513,7 @@
         "clan-core": "clan-core",
         "data-mesher": "data-mesher",
         "disko": "disko",
-        "flake-parts": "flake-parts",
+        "flake-parts": "flake-parts_2",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
         "harmonia": "harmonia",
