@@ -163,7 +163,7 @@ def main():
     app_url = f"https://github.com/settings/apps/{args.name}"
 
     if args.organisation:
-        app_url = "https://github.com/organizations/{args.organisation}/settings/apps/{args.name}"
+        app_url = f"https://github.com/organizations/{args.organisation}/settings/apps/{args.name}"
 
     if not args.repository or not args.username:
         return
