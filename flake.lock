@@ -96,10 +96,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1743379277,
-        "narHash": "sha256-4BNv+I6hksqZeRCrEHcQygK0MV1acjA8+L2TtA11H3c=",
+        "lastModified": 1743436837,
+        "narHash": "sha256-hJ+hQqJLeEeN8JJMRuK/gzU7I/HA6qzNLCg+ZUirUdc=",
         "ref": "refs/heads/main",
-        "rev": "bf8c5448d826e047b842d6f2ac0fc698e976dda5",
+        "rev": "fbacb64797fc67a2a113d13a527bc570b80f6489",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
@@ -220,11 +220,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1742837882,
-        "narHash": "sha256-AW1WWqE69APbGhwhr6WKdYYeffc0GpB2CeMZz8B3Sf0=",
+        "lastModified": 1743439089,
+        "narHash": "sha256-qp73MqfwV/jejvrKhhoHwbzD97yoy1d1aAifhEwR/fA=",
         "owner": "nix-community",
         "repo": "harmonia",
-        "rev": "1dd77f7fb40d373e84d6fdc301a86e97965852ef",
+        "rev": "8d5c13142183b40e7cd5ec997e593d6c91faca26",
         "type": "github"
       },
       "original": {
@@ -263,11 +263,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1743360001,
-        "narHash": "sha256-HtpS/ZdgWXw0y+aFdORcX5RuBGTyz3WskThspNR70SM=",
+        "lastModified": 1743438213,
+        "narHash": "sha256-ZZDN+0v1r4I1xkQWlt8euOJv5S4EvElUCZMrDjTCEsY=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "b6fd653ef8fbeccfd4958650757e91767a65506d",
+        "rev": "ccd7df836e1f42ea84806760f25b77b586370259",
         "type": "github"
       },
       "original": {
