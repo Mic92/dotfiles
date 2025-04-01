@@ -20,6 +20,7 @@ let
   };
 in
 {
+  nix.settings.allowed-users = [ "renovate" ];
   services.renovate = {
     enable = true;
     runtimePackages = [
