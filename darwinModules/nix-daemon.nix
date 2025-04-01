@@ -40,4 +40,8 @@
       warn-dirty = false;
     };
   };
+
+  launchd.daemons.nix-daemon = {
+    serviceConfig.Nice = -10;
+  };
 }
