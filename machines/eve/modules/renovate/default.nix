@@ -43,8 +43,6 @@ in
       automerge = true;
       autodiscover = true;
       autodiscoverTopics = [ "managed-by-renovate" ];
-      platform = "gitea";
-      endpoint = "https://git.clan.lol/api/v1/";
       onboarding = true;
       username = "mic92-renovate[bot]";
       gitAuthor = "Mic92's Renovate Bot <142113131+mic92-renovate[bot]@users.noreply.github.com>";
@@ -69,18 +67,20 @@ in
       }
     );
   };
-  systemd.services.renovate-token = {
+  systemd.services.renovate = {
+    serviceConfig.RuntimeDirectory = [ "renovate" ];
     serviceConfig.ExecStartPre = [
       "+${pkgs.writeShellScript "setup-apptoken" ''
         set -euo pipefail
         export APP_ID=${appId}
         export APP_LOGIN=${appLogin}
         export APP_PRIVATE_KEY=$(cat ${config.clan.core.vars.generators.renovate.files.app-private-key.path})
-        export "RENOVATE_TOKEN=$(${apptoken}/bin/apptoken)" > /var/lib/renovate/env
+        echo "RENOVATE_TOKEN=$(${apptoken}/bin/apptoken)" > /run/renovate/env
+        chown renovate:renovate /run/renovate/env
       ''}"
     ];
     script = lib.mkBefore ''
-      source "/var/lib/renovate/env"
+      export $(cat /run/renovate/env)
     '';
   };
 
