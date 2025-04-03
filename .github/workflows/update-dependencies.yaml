@@ -20,7 +20,7 @@ jobs:
         run: |
           nix run .#nvim -- --headless "+Lazy! update" +qa
           cp $HOME/.config/nvim-mic92/lazy-lock.json home/.config/nvim/lazy-lock.json
-      - uses: actions/create-github-app-token@v1
+      - uses: actions/create-github-app-token@v2
         id: app-token
         with:
           app-id: ${{ vars.CI_APP_ID }}
