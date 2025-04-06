@@ -2,7 +2,6 @@
   writeShellScriptBin,
   nvim-lsp-packages,
   treesitter-grammars,
-  vimPlugins,
   neovim,
   nvim-appname,
   lua-config ? ../../../home/.config/nvim,
@@ -38,7 +37,6 @@ writeShellScriptBin "nvim" ''
     nvim --headless -c 'quitall' # install plugins, if needed
   fi
   mkdir -p "$XDG_DATA_HOME/$NVIM_APPNAME/lib/" "$XDG_DATA_HOME/$NVIM_APPNAME/site/"
-  ln -sfT "${vimPlugins.telescope-fzf-native-nvim}/build/libfzf.so" "$XDG_DATA_HOME/$NVIM_APPNAME/lib/libfzf.so"
   ln -sfT "${treesitter-grammars}" "$XDG_DATA_HOME/$NVIM_APPNAME/site/parser"
 
   exec nvim "$@"

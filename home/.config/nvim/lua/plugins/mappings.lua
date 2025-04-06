@@ -48,13 +48,15 @@ return {
 				},
 				["<leader>*"] = {
 					function()
-						require("telescope.builtin").grep_string()
+						require("snacks").picker.grep_word()
 					end,
 					desc = "Find for word under cursor",
 				},
 				["<leader><leader>"] = {
 					function()
-						require("telescope.builtin").find_files()
+						require("snacks").picker.files({
+							hidden = vim.tbl_get((vim.uv or vim.loop).fs_stat(".git") or {}, "type") == "directory",
+						})
 					end,
 					desc = "Find files",
 				},
