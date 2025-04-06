@@ -14,7 +14,6 @@ return {
 			"lua_ls",
 			"marksman",
 			"nil_ls",
-			"ocamllsp",
 			"basedpyright",
 			"ruff",
 			"rust_analyzer",
