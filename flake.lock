@@ -30,6 +30,7 @@
     },
     "clan-core": {
       "inputs": {
+        "data-mesher": "data-mesher",
         "disko": [
           "disko"
         ],
@@ -56,11 +57,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1742895438,
-        "narHash": "sha256-Y9Xl4+vrQGHnHTyPsVGpDw7X1EoL6ZWlFkLINYgzlHU=",
-        "rev": "11c4ccc9c221394e3a89ca7e0d967fdda577ce2c",
+        "lastModified": 1743955755,
+        "narHash": "sha256-OwJs2FsW6bPTFXEWGgaOIdu8SFpAnDUfmGOBNdoSTUc=",
+        "rev": "ba480c07c0540a69c25984c9003d90a0c6f75b67",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/11c4ccc9c221394e3a89ca7e0d967fdda577ce2c.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/ba480c07c0540a69c25984c9003d90a0c6f75b67.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -83,6 +84,39 @@
       }
     },
     "data-mesher": {
+      "inputs": {
+        "flake-parts": [
+          "clan-core",
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "clan-core",
+          "nixpkgs"
+        ],
+        "systems": [
+          "clan-core",
+          "systems"
+        ],
+        "treefmt-nix": [
+          "clan-core",
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1743921030,
+        "narHash": "sha256-b2RP9FKJPsRewTYvvARoCk+pbHMeCkwSR5GqBbg0HCI=",
+        "ref": "refs/heads/main",
+        "rev": "3239dc2a6b1aea89b1d474b8770e9df41c0ab3cb",
+        "revCount": 388,
+        "type": "git",
+        "url": "https://git.clan.lol/clan/data-mesher"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://git.clan.lol/clan/data-mesher"
+      }
+    },
+    "data-mesher_2": {
       "inputs": {
         "flake-parts": "flake-parts",
         "nixpkgs": [
@@ -511,7 +545,7 @@
       "inputs": {
         "buildbot-nix": "buildbot-nix",
         "clan-core": "clan-core",
-        "data-mesher": "data-mesher",
+        "data-mesher": "data-mesher_2",
         "disko": "disko",
         "flake-parts": "flake-parts_2",
         "flake-registry": "flake-registry",
