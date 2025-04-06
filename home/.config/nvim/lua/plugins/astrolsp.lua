@@ -15,7 +15,7 @@ return {
 			"marksman",
 			"nil_ls",
 			"ocamllsp",
-			"pyright",
+			"basedpyright",
 			"ruff",
 			"rust_analyzer",
 			"taplo",
