@@ -4,55 +4,50 @@
     { pkgs, config, ... }:
     {
       legacyPackages = {
-        nvim-lsp-packages =
-          with pkgs;
-          [
-            nodejs # copilot
-            terraform-ls
-            pyright
+        nvim-lsp-packages = with pkgs; [
+          nodejs # copilot
 
-            # based on ./suggested-pkgs.json
-            gopls
-            golangci-lint
-            nodePackages.bash-language-server
-            taplo-lsp
-            marksman
-            selene
-            rust-analyzer
-            yaml-language-server
-            nil
-            nixd
-            shellcheck
-            shfmt
-            ruff
-            typos-lsp
-            typos
-            nixfmt-rfc-style
-            terraform-ls
-            clang-tools
-            nodePackages.prettier
-            stylua
-            # based on https://github.com/ray-x/go.nvim#go-binaries-install-and-update
-            go
-            delve
-            ginkgo
-            gofumpt
-            golines
-            gomodifytags
-            gotests
-            gotestsum
-            gotools
-            govulncheck
-            iferr
-            impl
-            zls
+          # based on ./suggested-pkgs.json
+          basedpyright
+          bash-language-server
+          clang-tools
+          golangci-lint
+          gopls
+          lua-language-server
+          marksman
+          nil
+          nixd
+          nixfmt-rfc-style
+          prettierd
+          ruff
+          selene
+          shellcheck
+          shfmt
+          stylua
+          yaml-language-server
+          # based on https://github.com/ray-x/go.nvim#go-binaries-install-and-update
+          go
+          delve
+          ginkgo
+          gofumpt
+          golines
+          gomodifytags
+          gotests
+          gotestsum
+          gotools
+          govulncheck
+          iferr
+          impl
 
-            #ocaml-ng.ocamlPackages_5_0.ocaml-lsp
-            #ocaml-ng.ocamlPackages_5_0.ocamlformat
-            # does not build yet on aarch64
-          ]
-          ++ lib.optional (pkgs.stdenv.hostPlatform.system == "x86_64-linux") pkgs.deno
-          ++ lib.optional (!pkgs.stdenv.hostPlatform.isDarwin) sumneko-lua-language-server;
+          # others
+          rust-analyzer
+          zls
+          terraform-ls
+          deno
+          taplo-lsp
+          typos
+          typos-lsp
+        ];
       };
       packages = {
         neovim = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped (

@@ -27,9 +27,6 @@ return {
 			null_ls.builtins.formatting.shfmt.with({
 				args = { "-i", "2" },
 			}),
-
-			-- nix fmt
-			null_ls.builtins.formatting.nix_flake_fmt,
 		}
 		return config -- return final config table
 	end,
