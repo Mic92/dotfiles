@@ -23,7 +23,4 @@ in
       fi
     fi
   '';
-
-  xdg.dataFile."nvim/lib/libfzf.so".source =
-    "${pkgs.vimPlugins.telescope-fzf-native-nvim}/build/libfzf.so";
 }
