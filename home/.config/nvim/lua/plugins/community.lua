@@ -5,9 +5,17 @@ return {
 	-- example of importing a plugin, comment out to use it or add your own
 	-- available plugins can be found at https://github.com/AstroNvim/astrocommunity
 	{ import = "astrocommunity.completion.copilot-lua" },
-	{ import = "astrocommunity.completion.copilot-vim-cmp" },
+	{ import = "astrocommunity.completion.copilot-lua-cmp" },
 	{ import = "astrocommunity.editing-support.copilotchat-nvim" },
 	{ import = "astrocommunity.completion.blink-cmp-tmux" },
+	{
+		"zbirenbaum/copilot.lua",
+		opts = {
+			filetypes = {
+				gitcommit = true,
+			},
+		},
+	},
 	{ import = "astrocommunity.project.project-nvim" },
 	{ import = "astrocommunity.pack.go" },
 	{
