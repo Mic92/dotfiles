@@ -16,6 +16,9 @@
         {
           backup = builtins.filter (name: name != "blob64") config.all;
         };
+
+      machineClass.evo = "darwin";
+
       services = {
         borgbackup.blob64 = {
           roles.server.machines = [ "blob64" ];
