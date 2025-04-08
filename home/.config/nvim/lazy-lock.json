@@ -6,7 +6,7 @@
   "NeoSolarized.nvim": { "branch": "master", "commit": "fb395ea220c9befc06a91bd97e80fbfec939add5" },
   "SchemaStore.nvim": { "branch": "main", "commit": "c61a74033522c3efbb8465fe6e9c75b27f5c3667" },
   "aerial.nvim": { "branch": "master", "commit": "3284a2cb858ba009c79da87d5e010ccee3c99c4d" },
-  "astrocommunity": { "branch": "main", "commit": "a1c93ca441edc98bb659799de5af0bf59a6a6548" },
+  "astrocommunity": { "branch": "main", "commit": "ae2437d7ef450cc9022b5090161162b3f2bba89b" },
   "astrocore": { "branch": "main", "commit": "5d6b00072ef226507d68ef88857aa522b126f7a8" },
   "astrolsp": { "branch": "main", "commit": "bb0051597474971b93e1cde2fd960dda978c2378" },
   "astrotheme": { "branch": "main", "commit": "f12dcf64b1f9a05839c3ac2146f550f43bae9dab" },
