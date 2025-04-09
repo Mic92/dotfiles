@@ -1,5 +1,7 @@
 # My personal bootstrap process
 
+test
+
 For bootstrapping on
 [legacy operating systems](https://github.com/Mic92/dotfiles/wiki#bootstrap-for-legacy-operating-systems)
 
