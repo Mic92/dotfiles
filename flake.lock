@@ -130,10 +130,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1744132274,
-        "narHash": "sha256-y4tqWfuE2qmaznnPGmaqyiGO6NvIsSHBfJ2Y+cEih80=",
+        "lastModified": 1744178449,
+        "narHash": "sha256-zEtSg/VXQFEUI03UlEOqyoE6zLXHHPF+VLUJ3Jctnrg=",
         "ref": "refs/heads/main",
-        "rev": "a592e34dfdba33d16ed75aedc41e1b11b75900f0",
+        "rev": "dd4dfee7aaabde38567f4b10598e7ea587665f38",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
@@ -490,10 +490,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1744041269,
-        "narHash": "sha256-BPtpqfg5Ri1blQz+mwjbsY4+IIYbVd8um/FO/4d2TuM=",
+        "lastModified": 1744171864,
+        "narHash": "sha256-r6Mzpic60v0OW3IxuRcnL+HogU+KBFKzudVwLJ+jFy4=",
         "ref": "main",
-        "rev": "3a2683d99608103dc80b8fec553de6c9e8e4227a",
+        "rev": "8b30b43081fc0f691c8eae669e8ebe7b4cd386ae",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
