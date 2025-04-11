@@ -61,8 +61,11 @@ in
       {
         patches = patches ++ [
           (pkgs.fetchpatch {
-            url = "https://github.com/renovatebot/renovate/pull/33991.diff";
-            hash = "sha256-3sN9a0ydk/ZLzPGVkir3mnM3f70dS3kyqezwBg/WWkQ=";
+            # https://github.com/renovatebot/renovate/pull/33991
+            url = "https://github.com/renovatebot/renovate/compare/main...Mic92:renovate:fix-nix.patch";
+            hash = "sha256-aggafF9YN2HexfMH6Ir8kRJHYxy4vW5Ji0FL2/WzqHM=";
+            #url = "https://github.com/renovatebot/renovate/pull/33991.diff";
+            #hash = "sha256-3sN9a0ydk/ZLzPGVkir3mnM3f70dS3kyqezwBg/WWkQ=";
           })
         ];
       }
