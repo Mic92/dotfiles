@@ -62,7 +62,7 @@ in
         patches = patches ++ [
           (pkgs.fetchpatch {
             url = "https://github.com/renovatebot/renovate/pull/33991.diff";
-            hash = "sha256-6ME048IiptweOkJhnK9QvQqfJ6QaXWX23SlY5TAmsFE=";
+            hash = "sha256-3sN9a0ydk/ZLzPGVkir3mnM3f70dS3kyqezwBg/WWkQ=";
           })
         ];
       }
