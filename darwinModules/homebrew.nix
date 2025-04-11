@@ -26,5 +26,6 @@
     "ghostty"
     "via"
     "amethyst"
+    "gather"
   ];
 }
