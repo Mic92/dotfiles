@@ -208,11 +208,11 @@
     "flake-registry": {
       "flake": false,
       "locked": {
-        "lastModified": 1734450202,
-        "narHash": "sha256-/3gigrEBFORQs6a8LL5twoHs7biu08y/8Xc5aQmk3b0=",
+        "lastModified": 1744623129,
+        "narHash": "sha256-nlQTQrHqM+ywXN0evDXnYEV6z6WWZB5BFQ2TkXsduKw=",
         "owner": "NixOS",
         "repo": "flake-registry",
-        "rev": "02fe640c9e117dd9d6a34efc7bcb8bd09c08111d",
+        "rev": "1322f33d5836ae757d2e6190239252cf8402acf6",
         "type": "github"
       },
       "original": {
