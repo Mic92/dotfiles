@@ -24,21 +24,10 @@
         programs.terraform.enable = true;
         programs.hclfmt.enable = true;
         programs.yamlfmt.enable = true;
+        programs.mypy.enable = true;
         programs.mypy.directories = {
-          "tasks" = {
-            directory = ".";
-            modules = [ ];
-            files = [ "**/tasks.py" ];
-            extraPythonPackages = [
-              pkgs.python3.pkgs.deploykit
-              pkgs.python3.pkgs.invoke
-            ];
-          };
           "machines/eva/modules/prometheus" = { };
           "openwrt" = { };
-          "home-manager/modules/neovim" = {
-            options = [ "--ignore-missing-imports" ];
-          };
         };
         programs.deadnix.enable = true;
         programs.stylua.enable = true;

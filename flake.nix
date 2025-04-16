@@ -99,7 +99,7 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
-    treefmt-nix.url = "github:numtide/treefmt-nix";
+    treefmt-nix.url = "github:numtide/treefmt-nix/mypy-globbing";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
     lanzaboote.url = "github:nix-community/lanzaboote";
