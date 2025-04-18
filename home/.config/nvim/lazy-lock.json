@@ -1,5 +1,5 @@
 {
-  "AstroNvim": { "branch": "main", "commit": "3341c85fa48ab979b905f42b9785a62a976e4d42" },
+  "AstroNvim": { "branch": "main", "commit": "c4b969ba16c945e077f033f4f9bd5529d29983cb" },
   "Comment.nvim": { "branch": "master", "commit": "e30b7f2008e52442154b66f7c519bfd2f1e32acb" },
   "CopilotChat.nvim": { "branch": "main", "commit": "a89f5f1162b04a0962e5f4c3cdf248a81e7e53cb" },
   "LuaSnip": { "branch": "master", "commit": "03c8e67eb7293c404845b3982db895d59c0d1538" },
