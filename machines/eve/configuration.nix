@@ -57,7 +57,6 @@
     ./modules/remote-builder.nix
     ./modules/renovate
     ./modules/rspamd/rspamd.nix
-    ./modules/signald.nix
     ./modules/shadowsocks.nix
     ./modules/shiori
     ./modules/snappymail.nix
