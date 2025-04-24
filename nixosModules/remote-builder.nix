@@ -33,8 +33,8 @@
       ];
     }
     {
-      hostName = "mac01.numtide.com";
-      sshUser = "hetzner";
+      hostName = "mac02.numtide.com";
+      sshUser = "customer";
       protocol = "ssh-ng";
       sshKey = "/root/.ssh/id_ed25519";
       systems = [
