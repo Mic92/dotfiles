@@ -16,7 +16,6 @@
     inputs.srvos.darwinModules.mixins-nix-experimental
     inputs.sops-nix.darwinModules.sops
     ../../darwinModules/app-store
-    ../../darwinModules/clan/default.nix
     ../../darwinModules/homebrew.nix
     ../../darwinModules/nix-daemon.nix
     ../../darwinModules/nix-index.nix
@@ -34,9 +33,6 @@
     mkdir -p /nix/.fseventsd
     test -e /nix/.fseventsd/no_log || touch /nix/.fseventsd/no_log
   '';
-
-  clan.core.settings.directory = ../..;
-  clan.core.settings.machine.name = "evo";
 
   fonts.packages = [ pkgs.nerd-fonts.fira-code ];
 
