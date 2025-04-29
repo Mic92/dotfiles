@@ -58,11 +58,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1745890809,
-        "narHash": "sha256-fgYTkAR80u6jSCKDQRdYqv8rQ1wNYFdTYaeSyNy9XZ8=",
-        "rev": "a79c79ffecafba770be402d3d9085d2b480ea84e",
+        "lastModified": 1745904144,
+        "narHash": "sha256-8GlPueaW9aTNNPUhi72CoUa5FDnjstX8Es75WuVEKIU=",
+        "rev": "852fdc2846d4e67bc1e702ea6e57cd264d578861",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/a79c79ffecafba770be402d3d9085d2b480ea84e.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/852fdc2846d4e67bc1e702ea6e57cd264d578861.tar.gz"
       },
       "original": {
         "type": "tarball",
