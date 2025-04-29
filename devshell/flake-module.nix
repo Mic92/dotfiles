@@ -9,11 +9,16 @@
       # Definitions like this are entirely equivalent to the ones
       # you may have directly in flake.nix.
       devShells.default = pkgs.mkShellNoCC {
-        nativeBuildInputs = [
-          pkgs.python3.pkgs.invoke
-          pkgs.python3.pkgs.deploykit
-          inputs'.clan-core.packages.default
-        ] ++ lib.optionals (!pkgs.stdenv.isDarwin) [ pkgs.bubblewrap ];
+        nativeBuildInputs =
+          [
+            pkgs.python3.pkgs.invoke
+            pkgs.python3.pkgs.deploykit
+            inputs'.clan-core.packages.default
+            inputs'.clan-core.packages.clan-app
+          ]
+          ++ lib.optionals (!pkgs.stdenv.isDarwin) [
+            pkgs.bubblewrap
+          ];
       };
 
       treefmt = {
