@@ -14,7 +14,7 @@
       tags =
         { config, ... }:
         {
-          backup = builtins.filter (name: name != "blob64") config.all;
+          backup = builtins.filter (name: name != "blob64") config.nixos;
         };
 
       machines.evo.machineClass = "darwin";
@@ -35,12 +35,12 @@
             "eva"
             "eve"
           ];
-          roles.peer.tags = [ "all" ];
+          roles.peer.tags = [ "nixos" ];
         };
 
         sshd.mic92 = {
-          roles.server.tags = [ "all" ];
-          roles.client.tags = [ "all" ];
+          roles.server.tags = [ "nixos" ];
+          roles.client.tags = [ "nixos" ];
           # tor-hidden-service
           roles.client.extraModules = [ "nixosModules/ssh.nix" ];
 
