@@ -6,7 +6,7 @@
   ...
 }:
 {
-  clan.core.networking.targetHost = "evo.local";
+  clan.core.networking.targetHost = "joerg@evo.local";
 
   networking.hostName = "evo";
   nixpkgs.hostPlatform = "aarch64-darwin";
