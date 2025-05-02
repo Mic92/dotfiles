@@ -724,6 +724,9 @@ cd() {
     __zoxide_z "$to"
   fi
 }
+reporoot() {
+  cd "$(git rev-parse --show-toplevel)"
+}
 urlencode() { python3 -c "import sys, urllib.parse as parse; print(parse.quote(sys.argv[1]))" $1; }
 urldecode() { python3 -c "import sys, urllib.parse as parse; print(parse.unquote(sys.argv[1]))" $1; }
 cheat() { command cheat -c "$@" | "$PAGER"; }
