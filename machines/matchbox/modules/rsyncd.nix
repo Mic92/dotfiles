@@ -3,12 +3,12 @@
   services.rsyncd = {
     enable = true;
     settings = {
-      global = {
+      globalSection = {
         user = "rsyncd";
         group = "rsyncd";
         "use chroot" = false;
       };
-      public = {
+      sections.public = {
         comment = "Public rsync share.";
         path = "/mnt/hdd/public";
         "auth users" = "backup";
