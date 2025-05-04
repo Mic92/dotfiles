@@ -58,11 +58,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1746286817,
-        "narHash": "sha256-lX9jukU0oOyq/fxFjIGf1iVvgs+tg1VD4fmjXIINNso=",
-        "rev": "13497e0dd0cf7b957cee4228d85e1f3cca0a39eb",
+        "lastModified": 1746336494,
+        "narHash": "sha256-N+BkGyXO425Z2OdWOOCf3ltF/+j/6XdLJIftcfP7xWk=",
+        "rev": "541fcf021d257555c440440a9cdda923405acf00",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/13497e0dd0cf7b957cee4228d85e1f3cca0a39eb.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/541fcf021d257555c440440a9cdda923405acf00.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -104,17 +104,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1746261045,
-        "narHash": "sha256-TMeHPoa0M35lhmywE7pb3eQ43uqDwoAcc+U8LnMBzY0=",
-        "ref": "refs/heads/main",
-        "rev": "642de2502ccc6a197707cd6c33c88f21e8756175",
-        "revCount": 427,
-        "type": "git",
-        "url": "https://git.clan.lol/clan/data-mesher"
+        "lastModified": 1746334246,
+        "narHash": "sha256-YU4wtH9Y5yRjqbMwczOdDakOjSiTkOUP/JAYd1f3jBc=",
+        "rev": "607ce65fbfe20bb38170b76826a11006f526c05d",
+        "type": "tarball",
+        "url": "https://git.clan.lol/api/v1/repos/clan/data-mesher/archive/607ce65fbfe20bb38170b76826a11006f526c05d.tar.gz"
       },
       "original": {
-        "type": "git",
-        "url": "https://git.clan.lol/clan/data-mesher"
+        "type": "tarball",
+        "url": "https://git.clan.lol/clan/data-mesher/archive/main.tar.gz"
       }
     },
     "data-mesher_2": {
@@ -463,15 +461,13 @@
       "locked": {
         "lastModified": 1745005516,
         "narHash": "sha256-IVaoOGDIvAa/8I0sdiiZuKptDldrkDWUNf/+ezIRhyc=",
-        "ref": "refs/heads/main",
         "rev": "69d8bf596194c5c35a4e90dd02c52aa530caddf8",
-        "revCount": 40,
-        "type": "git",
-        "url": "https://git.clan.lol/clan/nix-select"
+        "type": "tarball",
+        "url": "https://git.clan.lol/api/v1/repos/clan/nix-select/archive/69d8bf596194c5c35a4e90dd02c52aa530caddf8.tar.gz"
       },
       "original": {
-        "type": "git",
-        "url": "https://git.clan.lol/clan/nix-select"
+        "type": "tarball",
+        "url": "https://git.clan.lol/clan/nix-select/archive/main.tar.gz"
       }
     },
     "nixos-facter-modules": {
