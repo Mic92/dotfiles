@@ -107,7 +107,6 @@ def main() -> None:
         except ConnectionRefusedError:
             sock.unlink()
 
-    os.environ["TTY"] = str(os.ttyname(sys.stdout.fileno()))
     os.environ["NVIM_LISTEN_ADDRESS"] = str(sock)
 
     args = [
