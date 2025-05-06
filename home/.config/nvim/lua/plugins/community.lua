@@ -8,6 +8,7 @@ return {
 	{ import = "astrocommunity.completion.copilot-lua-cmp" },
 	{ import = "astrocommunity.editing-support.copilotchat-nvim" },
 	{ import = "astrocommunity.completion.blink-cmp-tmux" },
+	{ import = "astrocommunity.completion.avante-nvim" },
 	{
 		"zbirenbaum/copilot.lua",
 		opts = {
