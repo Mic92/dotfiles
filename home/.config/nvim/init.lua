@@ -7,18 +7,19 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 vim.api.nvim_create_user_command("RaiseTmuxPane", function()
-	-- run shell command
+	-- Get the current tmux pane ID
+	local current_pane = vim.fn.environ()["TMUX_PANE"]
 
-	local out = vim.fn.system("tmux list-panes -a -F '#I #{pane_tty}'")
-	local tty = vim.env.TTY
-	if tty == nil then
+	-- If we're not in tmux, notify and exit
+	if not current_pane or current_pane == "" then
+		vim.notify("Not running inside tmux", vim.log.levels.WARN)
 		return
 	end
-	local _, _, window_id = string.find(out, "(%d+) " .. tty)
-	if window_id == nil then
-		return
-	end
-	vim.fn.system("tmux select-window -t '" .. window_id .. "'")
+
+	-- Select the window containing this pane
+	vim.fn.system("tmux select-window -t " .. current_pane)
+
+	vim.notify("Raised tmux window", vim.log.levels.INFO)
 end, {})
 
 vim.api.nvim_create_user_command("Nurl", function()

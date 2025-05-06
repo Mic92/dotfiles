@@ -5,11 +5,14 @@
   ...
 }:
 let
-  inherit (self.packages.${pkgs.hostPlatform.system}) neovim treesitter-grammars;
+  inherit (self.packages.${pkgs.hostPlatform.system}) neovim treesitter-grammars nvim-open;
   inherit (self.legacyPackages.${pkgs.hostPlatform.system}) nvim-lsp-packages;
 in
 {
-  home.packages = nvim-lsp-packages ++ [ neovim ];
+  home.packages = nvim-lsp-packages ++ [
+    neovim
+    nvim-open
+  ];
   # treesitter-grammars
   xdg.dataFile."nvim/site/parser".source = treesitter-grammars;
 
