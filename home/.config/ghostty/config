@@ -6,6 +6,7 @@ clipboard-read = allow
 clipboard-write = allow
 # do this in the shell
 shell-integration = none
+macos-option-as-alt = true
 
 #theme = light:"Builtin Solarized Light",dark:"Builtin Solarized Dark"
 theme = Builtin Solarized Light
