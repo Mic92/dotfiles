@@ -54,7 +54,6 @@
     ../../nixosModules/remote-builder.nix
     ../../nixosModules/sshd/tor.nix
     ../../nixosModules/suspend-on-low-power.nix
-    ../../nixosModules/touchpad-hack
     ../../nixosModules/tracing.nix
     ../../nixosModules/users.nix
     ../../nixosModules/hyprspace.nix
