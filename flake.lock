@@ -631,11 +631,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1746407175,
-        "narHash": "sha256-8boiOaVo0c4MEgcoeiLeZU9kiQLf3+LHmsjBLTJoggo=",
+        "lastModified": 1746666190,
+        "narHash": "sha256-XZMa4o1tJQER0jQ+Yjx3MB5P9wRuDuAU3pTm4QgEjC0=",
         "owner": "numtide",
         "repo": "srvos",
-        "rev": "beeea09cd4aa38fc1889c4a48d97cc93b9c9eff6",
+        "rev": "7aefe82e5d2b362e3b569d6ccbed4c54f49e74c4",
         "type": "github"
       },
       "original": {
