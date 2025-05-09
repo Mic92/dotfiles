@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: breakpoint
-# key: int3
-# --
-int printf(const char* f,...); printf("%s() at %s:%d\n", __func__, __FILE__, __LINE__); __asm__("int3; nop" ::: "memory");

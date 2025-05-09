@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: debug print green
-# key: dbg-green
-# --
-int printf(const char* f,...); printf("\033[32;1m%s() at %s:%d \033[0m\n", __func__, __FILE__, __LINE__);
