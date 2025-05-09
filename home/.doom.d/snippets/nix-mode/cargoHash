@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: vanity checksum for rust
-# key: cargoHash
-# --
-cargoHash = "sha256-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";

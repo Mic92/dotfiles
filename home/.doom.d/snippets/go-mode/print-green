@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: debug print green
-# key: print-green
-# --
-__pc__, __file__, __line__, _ := runtime.Caller(0)
-fmt.Printf("\033[32;1m %s at %s:%d \033[0m\n", runtime.FuncForPC(__pc__).Name(), __file__, __line__);

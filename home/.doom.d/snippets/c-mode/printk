@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: debug printk
-# key: kdbg
-# --
-printk(KERN_INFO "%s() at %s:%d\n", __func__, __FILE__, __LINE__);

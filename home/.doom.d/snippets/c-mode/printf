@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: debug print with include
-# key: dbg2
-# --
-int printf(const char* f,...); printf("%s() at %s:%d\n", __func__, __FILE__, __LINE__);

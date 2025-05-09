@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: trace function
-# key: trace2
-# --
-#include <linux/trace-helper.h>
-TRACE_TIME(1000);
