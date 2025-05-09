@@ -1,7 +1,12 @@
 { lib, ... }:
 {
   perSystem =
-    { pkgs, config, ... }:
+    {
+      self',
+      pkgs,
+      config,
+      ...
+    }:
     {
       legacyPackages = {
         nvim-lsp-packages = with pkgs; [
@@ -47,6 +52,8 @@
           taplo-lsp
           typos
           typos-lsp
+
+          self'.packages.nvim-install-treesitter
         ];
       };
       packages = {
@@ -58,18 +65,17 @@
           }
         );
         nvim-open = pkgs.python3.pkgs.callPackage ./nvim-open.nix { };
-        treesitter-grammars =
+        nvim-install-treesitter =
           let
             grammars = lib.filterAttrs (
               n: _: lib.hasPrefix "tree-sitter-" n
             ) pkgs.vimPlugins.nvim-treesitter.builtGrammars;
-            symlinks = lib.mapAttrsToList (
-              name: grammar: "ln -s ${grammar}/parser $out/${lib.removePrefix "tree-sitter-" name}.so"
-            ) grammars;
           in
-          (pkgs.runCommand "treesitter-grammars" { } ''
-            mkdir -p $out
-            ${lib.concatStringsSep "\n" symlinks}
+          (pkgs.writeShellScriptBin "nvim-install-treesitter" ''
+            rm parser/*.so
+            ${lib.concatMapStringsSep "\n" (name: ''
+              ln -s ${grammars.${name}}/parser parser/${lib.removePrefix "tree-sitter-" name}.so
+            '') (builtins.attrNames grammars)}
           '').overrideAttrs
             (_: {
               passthru.rev = pkgs.vimPlugins.nvim-treesitter.src.rev;
@@ -77,7 +83,7 @@
 
         nvim = pkgs.callPackage ./nvim-standalone.nix {
           nvim-appname = "nvim-mic92";
-          inherit (config.packages) treesitter-grammars;
+          inherit (config.packages) nvim-install-treesitter;
           inherit (config.legacyPackages) nvim-lsp-packages;
         };
       };
