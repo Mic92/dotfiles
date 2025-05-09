@@ -8,7 +8,6 @@ return {
 	{ import = "astrocommunity.completion.copilot-lua-cmp" },
 	{ import = "astrocommunity.editing-support.copilotchat-nvim" },
 	{ import = "astrocommunity.completion.blink-cmp-tmux" },
-	{ import = "astrocommunity.completion.avante-nvim" },
 	{
 		"zbirenbaum/copilot.lua",
 		opts = {
@@ -38,5 +37,6 @@ return {
 	{ import = "astrocommunity.editing-support.rainbow-delimiters-nvim" },
 	{ import = "astrocommunity.editing-support.auto-save-nvim" },
 	{ import = "astrocommunity.motion.nvim-surround" },
+	{ import = "astrocommunity.motion.leap-nvim" },
 	{ import = "astrocommunity.editing-support.undotree" },
 }
