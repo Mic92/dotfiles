@@ -55,6 +55,7 @@
     ../../nixosModules/sshd/tor.nix
     ../../nixosModules/suspend-on-low-power.nix
     ../../nixosModules/tracing.nix
+    ../../nixosModules/ssh-tpm-agent.nix
     ../../nixosModules/users.nix
     ../../nixosModules/hyprspace.nix
   ];
