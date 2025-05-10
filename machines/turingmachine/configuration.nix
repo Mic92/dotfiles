@@ -60,6 +60,8 @@
     ../../nixosModules/hyprspace.nix
   ];
 
+  documentation.man.generateCaches = true;
+
   services.dbus.implementation = "broker";
 
   networking.nftables.enable = true;
