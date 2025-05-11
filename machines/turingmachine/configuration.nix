@@ -177,10 +177,8 @@
 
   fonts.fontDir.enable = true;
 
-  environment.variables.SSH_ASKPASS = lib.mkForce "${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
   programs = {
     ssh = {
-      startAgent = true;
       askPassword = "${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
       extraConfig = ''
         SendEnv LANG LC_*
