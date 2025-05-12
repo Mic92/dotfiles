@@ -27,10 +27,10 @@ writeShellScriptBin "nvim" ''
   rm -rf "$XDG_CONFIG_HOME/$NVIM_APPNAME"
   cp -arfT '${lua-config}'/ "$XDG_CONFIG_HOME/$NVIM_APPNAME"
   chmod -R u+w "$XDG_CONFIG_HOME/$NVIM_APPNAME"
-  echo "${nvim-install-treesitter.rev}" > "$XDG_CONFIG_HOME/$NVIM_APPNAME/treesitter-rev"
 
   # lock file is not in sync with treesitter-rev, force update of lazy-lock.json
   if ! grep -q "${nvim-install-treesitter.rev}" "$XDG_CONFIG_HOME/$NVIM_APPNAME/lazy-lock.json"; then
+    echo "${nvim-install-treesitter.rev}" > "$XDG_CONFIG_HOME/$NVIM_APPNAME/treesitter-rev"
     # annoyingly we would run this on every nvim invocation again because we overwrite the lock file
     nvim --headless "+Lazy! update" +qa
   else
