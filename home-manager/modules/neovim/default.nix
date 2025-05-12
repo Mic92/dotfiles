@@ -5,13 +5,19 @@
   ...
 }:
 let
-  inherit (self.packages.${pkgs.hostPlatform.system}) neovim nvim-install-treesitter nvim-open;
+  inherit (self.packages.${pkgs.hostPlatform.system})
+    neovim
+    nvim-install-treesitter
+    nvim-open
+    nvim-treesitter-plugins
+    ;
   inherit (self.legacyPackages.${pkgs.hostPlatform.system}) nvim-lsp-packages;
 in
 {
   home.packages = nvim-lsp-packages ++ [
     neovim
     nvim-open
+    nvim-treesitter-plugins
   ];
 
   home.activation.nvim = ''
