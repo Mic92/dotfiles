@@ -72,7 +72,8 @@
             ) pkgs.vimPlugins.nvim-treesitter.builtGrammars;
           in
           (pkgs.writeShellScriptBin "nvim-install-treesitter" ''
-            rm parser/*.so
+            set -euo pipefail
+            rm -f parser/*.so
             ${lib.concatMapStringsSep "\n" (name: ''
               ln -s ${grammars.${name}}/parser parser/${lib.removePrefix "tree-sitter-" name}.so
             '') (builtins.attrNames grammars)}
