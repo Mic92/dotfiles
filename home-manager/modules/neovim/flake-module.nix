@@ -29,7 +29,9 @@
           shellcheck
           shfmt
           stylua
+          vtsls
           yaml-language-server
+          vscode-langservers-extracted
           # based on https://github.com/ray-x/go.nvim#go-binaries-install-and-update
           go
           delve
@@ -48,7 +50,6 @@
           rust-analyzer
           zls
           terraform-ls
-          deno
           taplo-lsp
           typos
           typos-lsp
