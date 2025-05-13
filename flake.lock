@@ -191,15 +191,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1743550720,
-        "narHash": "sha256-hIshGgKZCgWh6AYJpJmRgFdR3WUbkY04o82X05xqQiY=",
-        "owner": "hercules-ci",
+        "lastModified": 1747060254,
+        "narHash": "sha256-X9HU8nRIqIwtfQqmL/icLtVLo342TBqSbyDbWqLbRC0=",
+        "owner": "Mic92",
         "repo": "flake-parts",
-        "rev": "c621e8422220273271f52058f618c94e405bb0f5",
+        "rev": "23e7641cb8cfef9834314852b4200d7b3ca0e380",
         "type": "github"
       },
       "original": {
-        "owner": "hercules-ci",
+        "owner": "Mic92",
+        "ref": "darwin-configuration",
         "repo": "flake-parts",
         "type": "github"
       }
