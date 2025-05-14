@@ -27,7 +27,6 @@
     adwaita-icon-theme
     hicolor-icon-theme
     graphicsmagick
-    dino
     ghostty
     screen-message
     sshfs-fuse
@@ -37,8 +36,6 @@
     cheat
     xdg-utils
     tio
-    shell-gpt
-    git-ps-rs
 
     (mpv.override { scripts = [ mpvScripts.mpris ]; })
     playerctl
@@ -47,29 +44,12 @@
     ferdium
     kubectl
     hyperfine
-    inkscape
 
     q
     rbw
-    isync
     # to fix xdg-open
     glib
     zoom-us
-    jmtpfs # needed for charging? WTF
-    (pkgs.runCommand "slack-aliases" { } ''
-      mkdir -p $out/bin
-      declare -A rooms=([numtide]=numtide \
-             ["numtide-labs"]="numtide-labs" \
-             ["tum"]="ls1-tum" \
-             ["tum-courses"]="ls1-tum-course")
-      for name in "''${!rooms[@]}"; do
-        cat > "$out/bin/slack-''${name}" <<EOF
-      #!${runtimeShell}
-      exec chromium --app="https://''${rooms[$name]}.slack.com" "$@"
-      EOF
-      done
-      chmod +x $out/bin/slack-*
-    '')
     (pkgs.writeScriptBin "jellyfinmediaplayer" ''
       # bluetooth speaker
       bluetoothctl connect E6:4D:D6:0A:CC:9B &
