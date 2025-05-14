@@ -23,7 +23,6 @@
     upterm
     eternal-terminal
     gimp
-    arandr
     signal-desktop
     adwaita-icon-theme
     hicolor-icon-theme
