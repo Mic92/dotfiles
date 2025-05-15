@@ -1,6 +1,5 @@
 { pkgs, ... }:
 {
-  services.weechat.enable = true;
   services.nginx = {
     virtualHosts."glowing-bear.thalheim.io" = {
       useACMEHost = "thalheim.io";
@@ -15,16 +14,6 @@
     virtualHosts."lekwati.com" = {
       useACMEHost = "thalheim.io";
       forceSSL = true;
-    };
-
-    virtualHosts."glowing-bear.lekwati.com" = {
-      useACMEHost = "thalheim.io";
-      forceSSL = true;
-      locations."^~ /weechat" = {
-        proxyPass = "http://127.0.0.1:4243";
-        proxyWebsockets = true;
-      };
-      locations."/".root = pkgs.glowing-bear;
     };
   };
 }
