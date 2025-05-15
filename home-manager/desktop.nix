@@ -5,7 +5,6 @@
     ./modules/atuin-autosync.nix
     ./modules/rust.nix
     ./modules/debugging.nix
-    ./modules/default-apps.nix
     #./modules/waybar.nix
   ];
 
