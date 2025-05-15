@@ -48,6 +48,9 @@
 
           # others
           rust-analyzer
+          clippy
+          rustfmt
+
           zls
           terraform-ls
           taplo-lsp
