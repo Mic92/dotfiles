@@ -68,6 +68,7 @@
       ncurses
       coreutils
       git
+      radare2
 
       self.packages.${pkgs.stdenv.hostPlatform.system}.mergify-gen-config
       self.packages.${pkgs.stdenv.hostPlatform.system}.merge-when-green
