@@ -3,7 +3,6 @@
   imports = [
     ./common.nix
     ./modules/atuin-autosync.nix
-    ./modules/rust.nix
     #./modules/waybar.nix
   ];
 
