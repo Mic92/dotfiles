@@ -3,7 +3,6 @@
   imports = [
     ./common.nix
     ./modules/atuin-autosync.nix
-    #./modules/waybar.nix
   ];
 
   fonts.fontconfig.enable = true;
