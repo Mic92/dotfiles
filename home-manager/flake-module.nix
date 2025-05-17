@@ -53,7 +53,6 @@
             ["web01"]="mic92"
             ["bld2"]="mic92"
             ["eve"]="eve"
-            ["mac01.numtide.com"]="mac-hetzner"
             ["evo"]="mac-desktop"
           )
           profile="common"
@@ -105,9 +104,9 @@
           {
             # this one should work for aarch64-linux/x86_64-linux and macos
             common = homeManagerConfiguration { };
-
-            mac-hetzner = homeManagerConfiguration { extraModules = [ { home.username = "hetzner"; } ]; };
-            mac-desktop = homeManagerConfiguration { extraModules = [ ./macos-desktop.nix ]; };
+          }
+          // lib.optionalAttrs (pkgs.hostPlatform.system == "aarch64-darwin") {
+            macos = homeManagerConfiguration { extraModules = [ ./macos.nix ]; };
           }
           // lib.optionalAttrs (pkgs.hostPlatform.system == "x86_64-linux") {
             desktop = homeManagerConfiguration { extraModules = [ ./desktop.nix ]; };
