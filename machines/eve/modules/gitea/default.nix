@@ -55,16 +55,15 @@
                 lib.makeBinPath (
                   with pkgs;
                   [
-                    git
-                    openssh
-                    gnutar
-                    gnugrep
-                    coreutils
-                    nix
-                    coreutils
-                    bzip2
-                    jq
                     bash
+                    bzip2
+                    coreutils
+                    git
+                    gnugrep
+                    gnutar
+                    jq
+                    nix
+                    openssh
                   ]
                 )
               }
