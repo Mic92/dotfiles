@@ -66,7 +66,12 @@
       gnugrep
       findutils
       ncurses
-      coreutils
+      (pkgs.runCommand "uutils-coreutils" { } ''
+        mkdir -p $out/bin
+        for i in ${pkgs.uutils-coreutils}/bin/*; do
+          ln -s "$i" "$out/bin/$(basename "''${i#${pkgs.uutils-coreutils}/bin/uutils-}")"
+        done
+      '')
       git
       radare2
 
