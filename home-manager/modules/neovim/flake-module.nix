@@ -85,14 +85,15 @@
 
         nvim-install-treesitter =
           (pkgs.writeShellScriptBin "nvim-install-treesitter" ''
-            set -euo pipefail
-            rm -rf parser/
+            set -euo pipefail nullglob
+            mkdir -p parser
+            rm -rf parser/*.so
 
             # prefer home-manager version if it exists, because it doesn't get stale links.
             if [ -d $HOME/.nix-profile/lib/nvim-treesitter-plugins ]; then
-              ln -s $HOME/.nix-profile/lib/nvim-treesitter-plugins/lib/nvim-treesitter-gammars parser
+              ln -s $HOME/.nix-profile/lib/nvim-treesitter-plugins/lib/nvim-treesitter-gammars/*.so parser
             else
-              ln -s ${self'.packages.nvim-treesitter-plugins}/lib/nvim-treesitter-gammars parser
+              ln -s ${self'.packages.nvim-treesitter-plugins}/lib/nvim-treesitter-gammars/*.so parser
             fi
           '').overrideAttrs
             (_: {
