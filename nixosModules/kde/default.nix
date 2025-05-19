@@ -12,8 +12,8 @@
   };
 
   environment.systemPackages = with pkgs; [
-    thunderbird
     ferdium
+    librewolf
     firefox
     chromium
     pavucontrol
