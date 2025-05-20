@@ -7,6 +7,7 @@
 }:
 {
   clan.core.networking.targetHost = "root@evo.local";
+  system.primaryUser = "joerg";
 
   networking.hostName = "evo";
   nixpkgs.hostPlatform = "aarch64-darwin";
