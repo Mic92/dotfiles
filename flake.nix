@@ -75,7 +75,7 @@
     flake-registry.url = "github:NixOS/flake-registry";
     flake-registry.flake = false;
 
-    nix-darwin.url = "github:LnL7/nix-darwin";
+    nix-darwin.url = "github:nix-darwin/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     srvos.url = "github:numtide/srvos";
