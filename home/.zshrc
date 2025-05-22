@@ -459,6 +459,17 @@ nixos-build() {
 
     command nixos-rebuild build --flake ".#$name" "$@"
 }
+
+darwin-build() {
+    if [ $# -lt 1 ]; then
+      echo "USAGE: $0 name" >&2
+    fi
+    name=$1
+    shift
+
+    command nix build ".#darwinConfigurations.$name.config.system.build.toplevel" "$@"
+}
+
 flake-check() {
     if [ $# -lt 1 ]; then
       nix flake check
