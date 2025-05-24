@@ -53,24 +53,26 @@ in
       #];
     };
     schedule = "*:0/10";
+
     package = pkgs.renovate.overrideAttrs (
-      {
-        patches ? [ ],
-        ...
-      }:
-      {
-        patches = patches ++ [
-          (pkgs.fetchpatch {
-            # https://github.com/renovatebot/renovate/pull/33991
-            url = "https://github.com/renovatebot/renovate/compare/main...Mic92:renovate:fix-nix.patch";
-            hash = "sha256-aggafF9YN2HexfMH6Ir8kRJHYxy4vW5Ji0FL2/WzqHM=";
-            #url = "https://github.com/renovatebot/renovate/pull/33991.diff";
-            #hash = "sha256-3sN9a0ydk/ZLzPGVkir3mnM3f70dS3kyqezwBg/WWkQ=";
-          })
-        ];
+      final: prev: {
+        version = "40.0.6+sandro";
+
+        src = pkgs.fetchFromGitHub {
+          owner = "SuperSandro2000";
+          repo = "renovate";
+          rev = "d3c715c0285f2d1186dcb2e889e0bda96d093cb6";
+          hash = "sha256-dviGWdVtBBD9PvXv5EJDy+s+wT/fcIhKYtO+mCzBD5o=";
+        };
+
+        pnpmDeps = prev.pnpmDeps.override {
+          inherit (final) pname version src;
+          hash = "sha256-v3coZiCgZm2eQDQTFtTdGqqUOXmjMIXuCHqJk1tdFys=";
+        };
       }
     );
   };
+
   systemd.services.renovate = {
     serviceConfig.RuntimeDirectory = [ "renovate" ];
     serviceConfig.ExecStartPre = [
