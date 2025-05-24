@@ -1,4 +1,3 @@
-font-family = ""
 font-family = "FiraCode Nerd Font"
 window-height = 4000
 window-width = 4000
@@ -10,3 +9,6 @@ macos-option-as-alt = true
 
 #theme = light:"Builtin Solarized Light",dark:"Builtin Solarized Dark"
 theme = Builtin Solarized Light
+
+keybind = performable:copy=copy_to_clipboard
+keybind = performable:paste=paste_from_clipboard
