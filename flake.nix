@@ -78,6 +78,9 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
+    ghostty.url = "github:Mic92/ghostty/copy-paste";
+    ghostty.inputs.nixpkgs-stable.follows = "nixpkgs";
+
     srvos.url = "github:numtide/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
