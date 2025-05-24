@@ -241,6 +241,34 @@
         "type": "github"
       }
     },
+    "ghostty": {
+      "inputs": {
+        "flake-compat": [],
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs-stable": [
+          "nixpkgs"
+        ],
+        "nixpkgs-unstable": "nixpkgs-unstable",
+        "zig": "zig",
+        "zon2nix": "zon2nix"
+      },
+      "locked": {
+        "lastModified": 1748096352,
+        "narHash": "sha256-MKqg+r+d+xr2Yz3+qkjfUIYN58K5dylnn3ZTCogqXsE=",
+        "owner": "Mic92",
+        "repo": "ghostty",
+        "rev": "68f9409bc97e1bcb1b8eec0837bb021700d6d561",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "ref": "build-fix",
+        "repo": "ghostty",
+        "type": "github"
+      }
+    },
     "harmonia": {
       "inputs": {
         "flake-parts": [
@@ -503,10 +531,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1746861386,
-        "narHash": "sha256-Pv2vFY1VjqXmZKpXR1A9Zy1awIi48+s1qIYj/5u5hEQ=",
+        "lastModified": 1748095762,
+        "narHash": "sha256-Arf5jiEoqL6x9OGKBOKNN7JH4y2TeggXmIeHSff71Nc=",
         "ref": "main",
-        "rev": "6a44a8cecaaf2f2317825403a109f19aa60dcf4a",
+        "rev": "975600d79420a25d898f28a1b45c935d11475508",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -516,6 +544,22 @@
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
+      }
+    },
+    "nixpkgs-unstable": {
+      "locked": {
+        "lastModified": 1741865919,
+        "narHash": "sha256-4thdbnP6dlbdq+qZWTsm4ffAwoS8Tiq1YResB+RP6WE=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "573c650e8a14b2faa0041645ab18aed7e60f0c9a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
       }
     },
     "nur-packages": {
@@ -563,6 +607,7 @@
         "flake-parts": "flake-parts_2",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
+        "ghostty": "ghostty",
         "harmonia": "harmonia",
         "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
@@ -677,6 +722,60 @@
         "owner": "numtide",
         "ref": "mypy-globbing",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "zig": {
+      "inputs": {
+        "flake-compat": [
+          "ghostty"
+        ],
+        "flake-utils": [
+          "ghostty",
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "ghostty",
+          "nixpkgs-stable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1741825901,
+        "narHash": "sha256-aeopo+aXg5I2IksOPFN79usw7AeimH1+tjfuMzJHFdk=",
+        "owner": "mitchellh",
+        "repo": "zig-overlay",
+        "rev": "0b14285e283f5a747f372fb2931835dd937c4383",
+        "type": "github"
+      },
+      "original": {
+        "owner": "mitchellh",
+        "repo": "zig-overlay",
+        "type": "github"
+      }
+    },
+    "zon2nix": {
+      "inputs": {
+        "flake-utils": [
+          "ghostty",
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "ghostty",
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1742104771,
+        "narHash": "sha256-LhidlyEA9MP8jGe1rEnyjGFCzLLgCdDpYeWggibayr0=",
+        "owner": "jcollie",
+        "repo": "zon2nix",
+        "rev": "56c159be489cc6c0e73c3930bd908ddc6fe89613",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jcollie",
+        "ref": "56c159be489cc6c0e73c3930bd908ddc6fe89613",
+        "repo": "zon2nix",
         "type": "github"
       }
     }
