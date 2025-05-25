@@ -21,6 +21,8 @@ let
   };
 in
 {
+
+  imports = [ inputs.renovate.nixosModules.renovate ];
   nix.settings.allowed-users = [ "renovate" ];
   services.renovate = {
     enable = true;
@@ -54,8 +56,6 @@ in
       #];
     };
     schedule = "*:0/10";
-
-    package = inputs.renovate.packages.${pkgs.hostPlatform.system}.renovate;
   };
 
   systemd.services.renovate = {
