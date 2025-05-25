@@ -19,7 +19,7 @@ customCommands:
   - key: "<c-r>"
     command: 'git rebase --interactive "{{.SelectedCommit.Sha}}"'
     context: "commits"
-    subprocess: true
+    output: terminal
   - key: "<c-g>"
     command: "gh pr create --fill --web"
     context: "global"
@@ -31,7 +31,7 @@ customCommands:
         initialValue: ""
     command: 'git fetch upstream master && git branch --merged upstream/master | xargs --no-run-if-empty git branch -D && git checkout -b "{{index .PromptResponses 0}}" upstream/master && git cherry-pick "{{.SelectedLocalCommit.Sha}}" && git push -u origin {{index .PromptResponses 0}}'
     context: "commits"
-    subprocess: true
+    output: terminal
   - key: "<c-p>"
     prompts:
       - type: "input"
@@ -39,51 +39,51 @@ customCommands:
         initialValue: ""
     command: 'git fetch origin main && git branch --merged origin/main | xargs --no-run-if-empty git branch -D && git checkout -b "{{index .PromptResponses 0}}" origin/main && git cherry-pick "{{.SelectedCommit.Sha}}" && git push -u origin {{index .PromptResponses 0}}'
     context: "commits"
-    subprocess: true
+    output: terminal
   - key: "<c-a>"
     context: "global"
     command: "for b in upstream/main upstream/master origin/main origin/master origin/dev; do if git rev-parse --verify $b; then git absorb --force --and-rebase --base $b; break; fi; done"
-    subprocess: true
+    output: terminal
   # Blame via tig
   - key: b
     command: tig blame -- {{.SelectedFile.Name}}
     context: files
     description: blame file at tree
-    subprocess: true
+    output: terminal
   - key: b
     command: tig blame {{.SelectedSubCommit.Sha}} -- {{.SelectedCommitFile.Name}}
     context: commitFiles
     description: blame file at revision
-    subprocess: true
+    output: terminal
   - key: B
     command: tig blame -- {{.SelectedCommitFile.Name}}
     context: commitFiles
     description: blame file at tree
-    subprocess: true
+    output: terminal
   # Browse files at revision via tig
   - key: t
     command: tig show {{.SelectedSubCommit.Sha}}
     context: subCommits
     description: tig commit (`t` again to browse files at revision)
-    subprocess: true
+    output: terminal
   - key: t
     command: tig show {{.SelectedLocalBranch.Name}}
     context: localBranches
     description: tig branch (`t` again to browse files at revision)
-    subprocess: true
+    output: terminal
   - key: t
     command: tig show {{.SelectedRemoteBranch.RemoteName}}/{{.SelectedRemoteBranch.Name}}
     context: remoteBranches
     description: tig branch (`t` again to browse files at revision)
-    subprocess: true
+    output: terminal
   # File history
   - key: t
     command: tig {{.SelectedSubCommit.Sha}} -- {{.SelectedCommitFile.Name}}
     context: commitFiles
     description: tig file (history of commits affecting file)
-    subprocess: true
+    output: terminal
   - key: t
     command: tig -- {{.SelectedFile.Name}}
     context: files
     description: tig file (history of commits affecting file)
-    subprocess: true
+    output: terminal
