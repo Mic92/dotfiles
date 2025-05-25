@@ -23,6 +23,9 @@
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
+    renovate.url = "github:Mic92/renovate";
+    renovate.inputs.nixpkgs.follows = "nixpkgs";
+
     nix.url = "git+https://github.com/Mic92/nix-1?shallow=1";
     nix.inputs.nixpkgs.follows = "nixpkgs";
     nix.inputs.flake-parts.follows = "";
