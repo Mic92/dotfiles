@@ -14,6 +14,7 @@ git:
     colorArg: always
     pager: delta --paging=never
   autoFetch: False
+  autoStageResolvedConflicts: False
 customCommands:
   - key: "<c-r>"
     command: 'git rebase --interactive "{{.SelectedCommit.Sha}}"'
