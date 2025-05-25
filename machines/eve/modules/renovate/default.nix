@@ -56,18 +56,18 @@ in
 
     package = pkgs.renovate.overrideAttrs (
       final: prev: {
-        version = "40.0.6+sandro";
+        version = "40.0.6+mic92";
 
         src = pkgs.fetchFromGitHub {
-          owner = "SuperSandro2000";
+          owner = "Mic92";
           repo = "renovate";
-          rev = "d3c715c0285f2d1186dcb2e889e0bda96d093cb6";
-          hash = "sha256-dviGWdVtBBD9PvXv5EJDy+s+wT/fcIhKYtO+mCzBD5o=";
+          rev = "fix-nix";
+          hash = "sha256-MKSsD44varifx9VzM5J1/Y9CTgmORvSsM4EnhOzjOlg=";
         };
 
         pnpmDeps = prev.pnpmDeps.override {
           inherit (final) pname version src;
-          hash = "sha256-v3coZiCgZm2eQDQTFtTdGqqUOXmjMIXuCHqJk1tdFys=";
+          hash = "sha256-unj6CbzV+K1cRVneChQDwaekpKpjKLU8fH+c4Y2KzrU=";
         };
       }
     );
