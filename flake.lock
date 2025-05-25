@@ -581,6 +581,26 @@
         "type": "github"
       }
     },
+    "renovate": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1748176883,
+        "narHash": "sha256-QlXfOGrydYm+I485Q3cqOxnyxqj5NnN+v179i9+3ylQ=",
+        "owner": "Mic92",
+        "repo": "renovate",
+        "rev": "fe425eac1c4953419da321d47fe1a6e63bb2b0c8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "renovate",
+        "type": "github"
+      }
+    },
     "retiolum": {
       "locked": {
         "lastModified": 1737987273,
@@ -620,6 +640,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nur-packages": "nur-packages",
+        "renovate": "renovate",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
         "srvos": "srvos",

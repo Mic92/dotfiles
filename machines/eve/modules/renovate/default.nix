@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  inputs,
   ...
 }:
 let
@@ -54,23 +55,7 @@ in
     };
     schedule = "*:0/10";
 
-    package = pkgs.renovate.overrideAttrs (
-      final: prev: {
-        version = "40.0.6+mic92";
-
-        src = pkgs.fetchFromGitHub {
-          owner = "Mic92";
-          repo = "renovate";
-          rev = "fix-nix";
-          hash = "sha256-MKSsD44varifx9VzM5J1/Y9CTgmORvSsM4EnhOzjOlg=";
-        };
-
-        pnpmDeps = prev.pnpmDeps.override {
-          inherit (final) pname version src;
-          hash = "sha256-unj6CbzV+K1cRVneChQDwaekpKpjKLU8fH+c4Y2KzrU=";
-        };
-      }
-    );
+    package = inputs.renovate.packages.${pkgs.hostPlatform.system}.renovate;
   };
 
   systemd.services.renovate = {
