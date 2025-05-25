@@ -53,24 +53,34 @@ in
       #];
     };
     schedule = "*:0/10";
+
     package = pkgs.renovate.overrideAttrs (
-      {
-        patches ? [ ],
-        ...
-      }:
-      {
-        patches = patches ++ [
-          (pkgs.fetchpatch {
-            # https://github.com/renovatebot/renovate/pull/33991
-            url = "https://github.com/renovatebot/renovate/compare/main...Mic92:renovate:fix-nix.patch";
-            hash = "sha256-aggafF9YN2HexfMH6Ir8kRJHYxy4vW5Ji0FL2/WzqHM=";
-            #url = "https://github.com/renovatebot/renovate/pull/33991.diff";
-            #hash = "sha256-3sN9a0ydk/ZLzPGVkir3mnM3f70dS3kyqezwBg/WWkQ=";
-          })
-        ];
+      final: prev: {
+        # Remove `version`, `src` and `pnpmDeps` once we have a newer version in Nixpkgs
+        version =
+          assert lib.versionOlder prev.version "40.0.6";
+          "40.0.6+sandro";
+
+        # using it as a patch does not apply over any version that I know of...
+        # so let's just use Sandro's branch directly
+        src = pkgs.fetchFromGitHub {
+          owner = "SuperSandro2000";
+          repo = "renovate";
+          rev = "d3c715c0285f2d1186dcb2e889e0bda96d093cb6";
+          hash = "sha256-dviGWdVtBBD9PvXv5EJDy+s+wT/fcIhKYtO+mCzBD5o=";
+        };
+
+        # use `fetchDeps.override` when https://github.com/NixOS/nixpkgs/pull/407784 is merged
+        pnpmDeps =
+          assert !prev.pnpmDeps ? override;
+          pkgs.pnpm_10.fetchDeps {
+            inherit (final) pname version src;
+            hash = "sha256-v3coZiCgZm2eQDQTFtTdGqqUOXmjMIXuCHqJk1tdFys=";
+          };
       }
     );
   };
+
   systemd.services.renovate = {
     serviceConfig.RuntimeDirectory = [ "renovate" ];
     serviceConfig.ExecStartPre = [
