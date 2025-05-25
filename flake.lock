@@ -255,16 +255,15 @@
         "zon2nix": "zon2nix"
       },
       "locked": {
-        "lastModified": 1748096352,
-        "narHash": "sha256-MKqg+r+d+xr2Yz3+qkjfUIYN58K5dylnn3ZTCogqXsE=",
-        "owner": "Mic92",
+        "lastModified": 1748096269,
+        "narHash": "sha256-B1VEZQDJ1Q3VjR8egAI7Hyn3kTsIYkzgQEfwChJIROM=",
+        "owner": "ghostty-org",
         "repo": "ghostty",
-        "rev": "68f9409bc97e1bcb1b8eec0837bb021700d6d561",
+        "rev": "034c1c12ef22005ddb7042d4e9a1c315d5432dfe",
         "type": "github"
       },
       "original": {
-        "owner": "Mic92",
-        "ref": "build-fix",
+        "owner": "ghostty-org",
         "repo": "ghostty",
         "type": "github"
       }
