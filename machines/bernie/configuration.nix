@@ -118,7 +118,6 @@
     hunspell
     hunspellDicts.en-gb-ise
     calibre
-    thunderbird
     signal-desktop
     gimp
     wl-clipboard
