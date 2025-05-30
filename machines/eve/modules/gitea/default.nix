@@ -2,7 +2,7 @@
   config,
   pkgs,
   lib,
-  inputs,
+  self,
   ...
 }:
 {
@@ -77,7 +77,7 @@
                     coreutils
                     gnugrep
                     gnused
-                    inputs.nur-packages.packages.${pkgs.hostPlatform.system}.ircsink
+                    self.inputs.nur-packages.packages.${pkgs.hostPlatform.system}.ircsink
                     bash
                   ]
                 )

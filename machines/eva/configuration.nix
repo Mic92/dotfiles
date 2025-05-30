@@ -2,7 +2,6 @@
   lib,
   pkgs,
   self,
-  inputs,
   ...
 }:
 {
@@ -12,11 +11,11 @@
 
   imports = [
     self.nixosModules.default
-    inputs.srvos.nixosModules.server
-    inputs.srvos.nixosModules.mixins-nginx
-    inputs.srvos.nixosModules.mixins-systemd-boot
-    inputs.srvos.nixosModules.roles-prometheus
-    inputs.disko.nixosModules.disko
+    self.inputs.srvos.nixosModules.server
+    self.inputs.srvos.nixosModules.mixins-nginx
+    self.inputs.srvos.nixosModules.mixins-systemd-boot
+    self.inputs.srvos.nixosModules.roles-prometheus
+    self.inputs.disko.nixosModules.disko
 
     ./modules/disko.nix
     ./modules/loki.nix
@@ -34,7 +33,7 @@
     ../../nixosModules/unbound.nix
     ../../nixosModules/hyprspace-public.nix
   ];
-  nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+  nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.systemd.enable = false;

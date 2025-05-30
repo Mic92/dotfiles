@@ -1,14 +1,13 @@
 {
   pkgs,
   self,
-  inputs,
   ...
 }:
 {
   imports = [
     self.nixosModules.default
-    inputs.srvos.nixosModules.server
-    inputs.clan-core.clanModules.state-version
+    self.inputs.srvos.nixosModules.server
+    self.inputs.clan-core.clanModules.state-version
 
     ./modules/samba.nix
     ./modules/rsyncd.nix
@@ -25,7 +24,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+  nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
   clan.core.networking.targetHost = "root@matchbox.local";
   #clan.core.networking.buildHost = "root@eve.i";

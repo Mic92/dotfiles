@@ -5,7 +5,6 @@
   config,
   pkgs,
   self,
-  inputs,
   ...
 }:
 {
@@ -26,12 +25,12 @@
     ./filesystems.nix
 
     self.nixosModules.default
-    inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x13
-    inputs.home-manager.nixosModules.home-manager
-    inputs.srvos.nixosModules.desktop
+    self.inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x13
+    self.inputs.home-manager.nixosModules.home-manager
+    self.inputs.srvos.nixosModules.desktop
   ];
 
-  nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+  nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
   systemd.services.openssh = {
     before = [ "boot-complete.target" ];

@@ -1,11 +1,11 @@
 {
-  inputs,
+  self,
   config,
   lib,
   ...
 }:
 {
-  srvos.flake = inputs.self;
+  srvos.flake = self;
   documentation.info.enable = false;
   clan.core.networking.targetHost = lib.mkDefault "root@${config.networking.hostName}.hyprspace";
 
@@ -24,17 +24,17 @@
     ./fhs-compat.nix
     ./update-prefetch.nix
 
-    inputs.srvos.nixosModules.common
-    inputs.srvos.nixosModules.mixins-telegraf
-    inputs.srvos.nixosModules.mixins-nix-experimental
+    self.inputs.srvos.nixosModules.common
+    self.inputs.srvos.nixosModules.mixins-telegraf
+    self.inputs.srvos.nixosModules.mixins-nix-experimental
     { networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 9273 ]; }
-    inputs.srvos.nixosModules.mixins-trusted-nix-caches
+    self.inputs.srvos.nixosModules.mixins-trusted-nix-caches
 
     ./retiolum.nix
-    inputs.retiolum.nixosModules.retiolum
-    inputs.retiolum.nixosModules.ca
+    self.inputs.retiolum.nixosModules.retiolum
+    self.inputs.retiolum.nixosModules.ca
 
     ./zerotier.nix
-    inputs.nether.nixosModules.hosts
+    self.inputs.nether.nixosModules.hosts
   ];
 }

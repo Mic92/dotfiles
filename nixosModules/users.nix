@@ -1,5 +1,5 @@
 {
-  inputs,
+  self,
   pkgs,
   ...
 }:
@@ -42,6 +42,6 @@ in
 
   imports = [
     ./zsh.nix
-    inputs.clan-core.clanModules.root-password
+    self.inputs.clan-core.clanModules.root-password
   ];
 }

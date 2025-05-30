@@ -1,13 +1,12 @@
 {
   pkgs,
-  inputs,
   self,
   ...
 }:
 {
   imports = [
     self.nixosModules.default
-    inputs.srvos.nixosModules.server
+    self.inputs.srvos.nixosModules.server
     ../../nixosModules/users.nix
     ../../nixosModules/minimal-docs.nix
     ../../nixosModules/networkd.nix
@@ -17,7 +16,7 @@
     ./modules/photoprism.nix
   ];
 
-  nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.aarch64-linux;
+  nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.aarch64-linux;
 
   networking.hostName = "blob64";
 

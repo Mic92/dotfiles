@@ -1,7 +1,7 @@
 {
   pkgs,
   config,
-  inputs,
+  self,
   lib,
   ...
 }:
@@ -196,12 +196,12 @@ in
           }
           {
             domain = "r";
-            file = "${inputs.retiolum}/zones/r.zone";
+            file = "${self.inputs.retiolum}/zones/r.zone";
             template = "retiolum";
           }
           {
             domain = "w";
-            file = "${inputs.retiolum}/zones/w.zone";
+            file = "${self.inputs.retiolum}/zones/w.zone";
             template = "retiolum";
           }
           {
