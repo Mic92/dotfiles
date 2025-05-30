@@ -58,15 +58,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1748601680,
-        "narHash": "sha256-MeDgqGKAAuKtTeI7P3V0MrN+Ew8UJYDhOKbQkkCPink=",
-        "rev": "c375a39137cb77fe5ed4c4cc3b769b0878150442",
+        "lastModified": 1748627592,
+        "narHash": "sha256-oCA6KIG2A/noakyIf161yZbWSXgVIKa66qR0s8VDlk4=",
+        "rev": "646a3d56ced3de2e8cbb8414b62e618824602243",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/c375a39137cb77fe5ed4c4cc3b769b0878150442.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/646a3d56ced3de2e8cbb8414b62e618824602243.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.clan.lol/clan/clan-core/archive/main.tar.gz"
+        "url": "https://git.clan.lol/clan/clan-core/archive/templates.tar.gz"
       }
     },
     "crane": {
@@ -247,7 +247,9 @@
         "flake-utils": [
           "flake-utils"
         ],
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "zig": "zig",
         "zon2nix": "zon2nix"
       },
@@ -527,23 +529,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1748189127,
-        "narHash": "sha256-zRDR+EbbeObu4V2X5QCd2Bk5eltfDlCr5yvhBwUT6pY=",
-        "rev": "7c43f080a7f28b2774f3b3f43234ca11661bf334",
-        "type": "tarball",
-        "url": "https://releases.nixos.org/nixos/25.05/nixos-25.05.802491.7c43f080a7f2/nixexprs.tar.xz"
-      },
-      "original": {
-        "type": "tarball",
-        "url": "https://channels.nixos.org/nixos-25.05/nixexprs.tar.xz"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1748531823,
-        "narHash": "sha256-OpBZXeyZJGCYq2YNbN3/Z3SXTO2se4VS9YeUKgT4cx4=",
+        "lastModified": 1748623709,
+        "narHash": "sha256-A/50t0LoH67Uv12PeD/z624qllOkTL1HFTzdpqdk3yA=",
         "ref": "main",
-        "rev": "c5b5f99ab7ce83841f7142f074c2a57865f63622",
+        "rev": "f046daebce23a9b0f9f3c56c26d83949669b4a37",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -632,7 +621,7 @@
         "nix-index-database": "nix-index-database",
         "nixos-facter-modules": "nixos-facter-modules",
         "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs_2",
+        "nixpkgs": "nixpkgs",
         "nur-packages": "nur-packages",
         "renovate": "renovate",
         "retiolum": "retiolum",
