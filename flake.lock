@@ -247,19 +247,16 @@
         "flake-utils": [
           "flake-utils"
         ],
-        "nixpkgs-stable": [
-          "nixpkgs"
-        ],
-        "nixpkgs-unstable": "nixpkgs-unstable",
+        "nixpkgs": "nixpkgs",
         "zig": "zig",
         "zon2nix": "zon2nix"
       },
       "locked": {
-        "lastModified": 1748096269,
-        "narHash": "sha256-B1VEZQDJ1Q3VjR8egAI7Hyn3kTsIYkzgQEfwChJIROM=",
+        "lastModified": 1748576020,
+        "narHash": "sha256-wSUKJP0+TIFiOd3fM9TTV8n4LCk07Fb0bmRzfmROun4=",
         "owner": "ghostty-org",
         "repo": "ghostty",
-        "rev": "034c1c12ef22005ddb7042d4e9a1c315d5432dfe",
+        "rev": "c4088f0c73af1c153c743fc006637cc76c1ee127",
         "type": "github"
       },
       "original": {
@@ -324,11 +321,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1748570847,
-        "narHash": "sha256-XU1a6wFctd+s3ZvBIFB6s4GhPJ+Oc6pkeOrEsbA2fMo=",
+        "lastModified": 1748609854,
+        "narHash": "sha256-2MItENIGSGmsimnUsJiPjmhs19Dj/7BbZxY7Lnq9Un0=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "4e9efaa68b0be7e19127dad4f0506a9b89e28ef4",
+        "rev": "d3a3aee558979d9b0dde1c0814d8f9f96884aeed",
         "type": "github"
       },
       "original": {
@@ -530,35 +527,32 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1748351848,
-        "narHash": "sha256-ouuHrUaA87pqxM8PmQf+kri0TZveoDlPM+6++b6z/sc=",
-        "ref": "main",
-        "rev": "a64d81e858598b757bd43a47fd4e1bf8f381a49c",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/Mic92/nixpkgs"
+        "lastModified": 1748189127,
+        "narHash": "sha256-zRDR+EbbeObu4V2X5QCd2Bk5eltfDlCr5yvhBwUT6pY=",
+        "rev": "7c43f080a7f28b2774f3b3f43234ca11661bf334",
+        "type": "tarball",
+        "url": "https://releases.nixos.org/nixos/25.05/nixos-25.05.802491.7c43f080a7f2/nixexprs.tar.xz"
       },
       "original": {
-        "ref": "main",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/Mic92/nixpkgs"
+        "type": "tarball",
+        "url": "https://channels.nixos.org/nixos-25.05/nixexprs.tar.xz"
       }
     },
-    "nixpkgs-unstable": {
+    "nixpkgs_2": {
       "locked": {
-        "lastModified": 1741865919,
-        "narHash": "sha256-4thdbnP6dlbdq+qZWTsm4ffAwoS8Tiq1YResB+RP6WE=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "573c650e8a14b2faa0041645ab18aed7e60f0c9a",
-        "type": "github"
+        "lastModified": 1748531823,
+        "narHash": "sha256-OpBZXeyZJGCYq2YNbN3/Z3SXTO2se4VS9YeUKgT4cx4=",
+        "ref": "main",
+        "rev": "c5b5f99ab7ce83841f7142f074c2a57865f63622",
+        "shallow": true,
+        "type": "git",
+        "url": "https://github.com/Mic92/nixpkgs"
       },
       "original": {
-        "owner": "nixos",
-        "ref": "nixpkgs-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
+        "ref": "main",
+        "shallow": true,
+        "type": "git",
+        "url": "https://github.com/Mic92/nixpkgs"
       }
     },
     "nur-packages": {
@@ -638,7 +632,7 @@
         "nix-index-database": "nix-index-database",
         "nixos-facter-modules": "nixos-facter-modules",
         "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": "nixpkgs_2",
         "nur-packages": "nur-packages",
         "renovate": "renovate",
         "retiolum": "retiolum",
@@ -755,15 +749,15 @@
         ],
         "nixpkgs": [
           "ghostty",
-          "nixpkgs-stable"
+          "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1741825901,
-        "narHash": "sha256-aeopo+aXg5I2IksOPFN79usw7AeimH1+tjfuMzJHFdk=",
+        "lastModified": 1748261582,
+        "narHash": "sha256-3i0IL3s18hdDlbsf0/E+5kyPRkZwGPbSFngq5eToiAA=",
         "owner": "mitchellh",
         "repo": "zig-overlay",
-        "rev": "0b14285e283f5a747f372fb2931835dd937c4383",
+        "rev": "aafb1b093fb838f7a02613b719e85ec912914221",
         "type": "github"
       },
       "original": {
@@ -780,7 +774,7 @@
         ],
         "nixpkgs": [
           "ghostty",
-          "nixpkgs-unstable"
+          "nixpkgs"
         ]
       },
       "locked": {
