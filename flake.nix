@@ -82,7 +82,7 @@
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
     ghostty.url = "github:/ghostty-org/ghostty";
-    ghostty.inputs.nixpkgs-stable.follows = "nixpkgs";
+    ghostty.inputs.nixpkgs.follows = "nixpkgs";
     ghostty.inputs.flake-utils.follows = "flake-utils";
     ghostty.inputs.flake-compat.follows = "";
 
