@@ -325,7 +325,7 @@
         "narHash": "sha256-XrNoXAbUenzde4NKMsuCYdmW8t+2/Ks+vcFrlwRh4K4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "214f9bd3a693bbc8cc6d705d01421787e04eaacd",
+        "rev": "d36ac1f0db0bc5e8f6ac4e230c9cca7f9e35a179",
         "type": "github"
       },
       "original": {
