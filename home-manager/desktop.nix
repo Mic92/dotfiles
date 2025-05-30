@@ -1,4 +1,4 @@
-{ inputs, pkgs, ... }:
+{ self, pkgs, ... }:
 {
   imports = [
     ./common.nix
@@ -23,7 +23,7 @@
     adwaita-icon-theme
     hicolor-icon-theme
     graphicsmagick
-    inputs.ghostty.packages.${pkgs.system}.ghostty
+    self.inputs.ghostty.packages.${pkgs.system}.ghostty
     screen-message
     sshfs-fuse
     sshuttle

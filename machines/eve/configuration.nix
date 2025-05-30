@@ -3,7 +3,6 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
   lib,
-  inputs,
   self,
   ...
 }:
@@ -18,14 +17,14 @@
 
   imports = [
     self.nixosModules.default
-    inputs.srvos.nixosModules.server
-    inputs.srvos.nixosModules.mixins-nginx
-    inputs.srvos.nixosModules.hardware-hetzner-online-amd
-    inputs.buildbot-nix.nixosModules.buildbot-worker
-    inputs.buildbot-nix.nixosModules.buildbot-master
-    inputs.disko.nixosModules.disko
+    self.inputs.srvos.nixosModules.server
+    self.inputs.srvos.nixosModules.mixins-nginx
+    self.inputs.srvos.nixosModules.hardware-hetzner-online-amd
+    self.inputs.buildbot-nix.nixosModules.buildbot-worker
+    self.inputs.buildbot-nix.nixosModules.buildbot-master
+    self.inputs.disko.nixosModules.disko
 
-    inputs.nix-index-database.nixosModules.nix-index
+    self.inputs.nix-index-database.nixosModules.nix-index
     { programs.nix-index-database.comma.enable = true; }
 
     ./modules/atuin.nix
@@ -83,7 +82,7 @@
     ../../nixosModules/zsh.nix
     ../../nixosModules/hyprspace-public.nix
   ];
-  nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+  nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
   # The NixOS release to be compatible with for stateful data such as databases.
   system.stateVersion = "23.11";

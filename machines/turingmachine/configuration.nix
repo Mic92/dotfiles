@@ -2,24 +2,23 @@
   pkgs,
   lib,
   config,
-  inputs,
   self,
   ...
 }:
 {
   imports = [
     self.nixosModules.default
-    inputs.nixos-hardware.nixosModules.framework-13th-gen-intel
-    inputs.nix-index-database.nixosModules.nix-index
+    self.inputs.nixos-hardware.nixosModules.framework-13th-gen-intel
+    self.inputs.nix-index-database.nixosModules.nix-index
     { programs.nix-index-database.comma.enable = true; }
-    inputs.disko.nixosModules.disko
-    inputs.clan-core.clanModules.localbackup
+    self.inputs.disko.nixosModules.disko
+    self.inputs.clan-core.clanModules.localbackup
 
-    #inputs.spora.nixosModules.spora
+    #self.inputs.spora.nixosModules.spora
 
-    inputs.srvos.nixosModules.desktop
+    self.inputs.srvos.nixosModules.desktop
 
-    inputs.lanzaboote.nixosModules.lanzaboote
+    self.inputs.lanzaboote.nixosModules.lanzaboote
 
     ./modules/caddy.nix
     ./modules/data-mesher.nix
@@ -60,6 +59,8 @@
     ../../nixosModules/hyprspace.nix
   ];
 
+  services.openssh.settings.PasswordAuthentication = lib.mkForce true;
+
   documentation.man.generateCaches = true;
 
   services.dbus.implementation = "broker";
@@ -72,7 +73,7 @@
 
   hardware.graphics.enable32Bit = config.hardware.graphics.enable;
 
-  nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+  nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
   system.etc.overlay.enable = true;
   system.etc.overlay.mutable = true;

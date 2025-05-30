@@ -2,7 +2,7 @@
   config,
   pkgs,
   lib,
-  inputs,
+  self,
   ...
 }:
 let
@@ -22,7 +22,7 @@ let
 in
 {
 
-  imports = [ inputs.renovate.nixosModules.renovate ];
+  imports = [ self.inputs.renovate.nixosModules.renovate ];
   nix.settings.allowed-users = [ "renovate" ];
   services.renovate = {
     enable = true;

@@ -1,14 +1,10 @@
-{ self, inputs, ... }:
+{ self, ... }:
 {
   flake.nixosModules.default = ../nixosModules/default.nix;
   clan = {
     meta.name = "mic92";
 
-    specialArgs = {
-      self = self;
-      inputs = inputs;
-    };
-    pkgsForSystem = system: inputs.nixpkgs.legacyPackages.${system};
+    pkgsForSystem = system: self.inputs.nixpkgs.legacyPackages.${system};
 
     inventory = {
       tags =

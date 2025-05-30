@@ -1,5 +1,5 @@
 {
-  inputs,
+  self,
   pkgs,
   config,
   lib,
@@ -7,7 +7,7 @@
 }:
 {
   imports = [
-    inputs.hyprspace.nixosModules.default
+    self.inputs.hyprspace.nixosModules.default
   ];
 
   options = {
@@ -67,7 +67,7 @@
         secret = false;
       };
       runtimeInputs = [
-        inputs.hyprspace.packages.${pkgs.hostPlatform.system}.hyprspace
+        self.inputs.hyprspace.packages.${pkgs.hostPlatform.system}.hyprspace
         pkgs.jq
       ];
       script = ''

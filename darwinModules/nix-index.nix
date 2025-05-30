@@ -1,5 +1,5 @@
-{ inputs, ... }:
+{ self, ... }:
 {
-  imports = [ inputs.nix-index-database.darwinModules.nix-index ];
+  imports = [ self.inputs.nix-index-database.darwinModules.nix-index ];
   programs.nix-index-database.comma.enable = true;
 }

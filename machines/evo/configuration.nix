@@ -1,6 +1,5 @@
 {
   self,
-  inputs,
   pkgs,
   config,
   ...
@@ -13,11 +12,11 @@
   nixpkgs.hostPlatform = "aarch64-darwin";
 
   imports = [
-    inputs.srvos.darwinModules.common
-    inputs.srvos.darwinModules.mixins-telegraf
-    inputs.srvos.darwinModules.mixins-terminfo
-    inputs.srvos.darwinModules.mixins-nix-experimental
-    inputs.sops-nix.darwinModules.sops
+    self.inputs.srvos.darwinModules.common
+    self.inputs.srvos.darwinModules.mixins-telegraf
+    self.inputs.srvos.darwinModules.mixins-terminfo
+    self.inputs.srvos.darwinModules.mixins-nix-experimental
+    self.inputs.sops-nix.darwinModules.sops
     ../../darwinModules/app-store
     ../../darwinModules/homebrew.nix
     ../../darwinModules/nix-daemon.nix

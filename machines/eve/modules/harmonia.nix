@@ -1,6 +1,6 @@
-{ config, inputs, ... }:
+{ config, self, ... }:
 {
-  imports = [ inputs.harmonia.nixosModules.harmonia ];
+  imports = [ self.inputs.harmonia.nixosModules.harmonia ];
   services.harmonia-dev.enable = true;
   services.harmonia-dev.signKeyPaths = [ config.sops.secrets.harmonia-key.path ];
 
