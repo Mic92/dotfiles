@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, self, ... }:
 {
   imports = [ ../../../nixosModules/packages.nix ];
 
@@ -6,5 +6,6 @@
     cntr
     ntfs3g
     sunshine
+    self.packages.${pkgs.hostPlatform.system}.sengi
   ];
 }
