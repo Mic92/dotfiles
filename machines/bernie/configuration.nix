@@ -21,6 +21,7 @@
     ../../nixosModules/tracing.nix
     ../../nixosModules/pipewire.nix
     ../../nixosModules/hyprspace.nix
+    ../../nixosModules/samba-movieshare.nix
 
     ./filesystems.nix
 
