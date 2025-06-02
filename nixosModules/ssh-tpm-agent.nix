@@ -22,7 +22,10 @@ in
   security.tpm2.tctiEnvironment.enable = true; # TPM2TOOLS_TCTI and TPM2_PKCS11_TCTI env variables
   users.users.joerg.extraGroups = [ "tss" ]; # tss group has access to TPM devices
 
-  environment.systemPackages = [ pkgs.ssh-tpm-agent ];
+  environment.systemPackages = [
+    pkgs.ssh-tpm-agent
+    pkgs.keyutils
+  ];
 
   systemd.user.services.ssh-tpm-agent = {
     path = [ pkgs.gnused ];
