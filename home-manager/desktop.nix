@@ -3,7 +3,6 @@
   imports = [
     ./common.nix
     ./modules/atuin-autosync.nix
-    ./modules/zed-editor.nix
   ];
 
   fonts.fontconfig.enable = true;
