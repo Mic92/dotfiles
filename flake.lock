@@ -60,7 +60,7 @@
       "locked": {
         "lastModified": 1748627592,
         "narHash": "sha256-oCA6KIG2A/noakyIf161yZbWSXgVIKa66qR0s8VDlk4=",
-        "rev": "7b44e68280f6eda093e4fc994a806be61940d4d9",
+        "rev": "dbae114233f6299eb5cb1c6e4f05e6b5e3cdd8d6",
         "type": "tarball",
         "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/646a3d56ced3de2e8cbb8414b62e618824602243.tar.gz"
       },
