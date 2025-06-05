@@ -8,11 +8,13 @@
 /.clangd/
 /.ccls-cache/
 tags
+CLAUDE.md
 .mypy_cache/
 .pytest_cache/
 .ruff_cache/
 .cache/clangd
 .terraform/
+.claude/
 
 # Devenv
 .devenv*

@@ -11,6 +11,7 @@
   services.syncthing.enable = true;
 
   home.packages = with pkgs; [
+    claude-code
     league-of-moveable-type
     dejavu_fonts
     ubuntu_font_family
