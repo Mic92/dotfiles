@@ -451,11 +451,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1749189731,
-        "narHash": "sha256-9d6cTnzc5PADsByqTV8lHDTTqI6o85XcRBukXO9EKHM=",
+        "lastModified": 1749194393,
+        "narHash": "sha256-vt6hM9DNywnXXuW1qPDLzECmbDcmxhh58wpb0EEQjAo=",
         "owner": "nix-darwin",
         "repo": "nix-darwin",
-        "rev": "9753a8706bad53ac98a3cd187323f412987aa4a1",
+        "rev": "19346808c445f23b08652971be198b9df6c33edc",
         "type": "github"
       },
       "original": {
