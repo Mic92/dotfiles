@@ -58,15 +58,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1748627592,
-        "narHash": "sha256-oCA6KIG2A/noakyIf161yZbWSXgVIKa66qR0s8VDlk4=",
-        "rev": "1fc1f05d7f905f594c2d11dca0e01ece7f6282e5",
+        "lastModified": 1749195611,
+        "narHash": "sha256-L97vnUP5mtjEPbQF4qMNVDW1jwsf0Fepl1q+0JvnT08=",
+        "rev": "68d4fcfa4304ffd9866f69b0327833012474393c",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/646a3d56ced3de2e8cbb8414b62e618824602243.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/68d4fcfa4304ffd9866f69b0327833012474393c.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.clan.lol/clan/clan-core/archive/templates.tar.gz"
+        "url": "https://git.clan.lol/clan/clan-core/archive/main.tar.gz"
       }
     },
     "crane": {
@@ -430,10 +430,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1748959420,
-        "narHash": "sha256-QR5sABEU43dBZzCNViTG+YgOrOsPBePRP20WYHqrV00=",
+        "lastModified": 1749197599,
+        "narHash": "sha256-HLIk/HXgD/LVqx6tKxA8t31TQJBKS++aQvR3SuDAvxU=",
         "ref": "refs/heads/main",
-        "rev": "457eacec0d908a2129c707cd80e3b9ca6f03ee87",
+        "rev": "96adedf4a1b8a56bdf5a0eb72edee394bf5bba1a",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
