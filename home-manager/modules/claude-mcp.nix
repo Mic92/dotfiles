@@ -1,53 +1,45 @@
 {
-  inputs,
   pkgs,
   self,
+  lib,
   ...
 }:
 
 let
-  # Claude wrapper script that ensures MCP server is configured and runs claude
-  claudeWrapper = pkgs.writeShellScriptBin "claude" ''
-    set -euo pipefail
+  # Helper function to create wrapped MCP servers with environment variables
+  wrapMcpServer =
+    {
+      package,
+      envVars ? { },
+    }:
+    pkgs.writeShellScriptBin package.pname ''
+      ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: value: "export ${name}=${value}") envVars)}
+      exec ${package}/bin/${package.meta.mainProgram or package.pname} "$@"
+    '';
 
-    # Get the current MCP server list once
-    mcp_list=$(${pkgs.claude-code}/bin/claude mcp list 2>/dev/null || echo "")
+  # Wrapped MCP servers with their required environment variables
+  github-mcp-wrapped = wrapMcpServer {
+    package = pkgs.github-mcp-server;
+    envVars = {
+      GITHUB_PERSONAL_ACCESS_TOKEN = "$(${pkgs.gh}/bin/gh auth token 2>/dev/null || { echo 'Warning: Failed to get GitHub token from gh auth' >&2; exit 1; })";
+    };
+  };
 
-    # Define MCP plugins as associative array (name -> command)
-    declare -A mcp_plugins=(
-      ["github"]="${
-        inputs.mcp-servers-nix.packages.${pkgs.system}.mcp-server-github
-      }/bin/mcp-server-github"
-      ["gitea"]="${self.packages.${pkgs.system}.gitea-mcp}/bin/gitea-mcp"
-    )
+  gitea-mcp-wrapped = wrapMcpServer {
+    package = self.packages.${pkgs.system}.gitea-mcp;
+    envVars = {
+      GITEA_TOKEN = "$(${pkgs.gawk}/bin/awk '/token:/ {print $2}' $HOME/.config/tea/config.yml 2>/dev/null || { echo 'Warning: Failed to get Gitea token from tea config' >&2; exit 1; })";
+    };
+  };
 
-    # Define environment variables for plugins
-    declare -A mcp_envs=(
-      ["github"]="GITHUB_PERSONAL_ACCESS_TOKEN=$(${pkgs.gh}/bin/gh auth token)"
-      ["gitea"]=""
-    )
-
-    # Setup missing MCP plugins
-    for plugin in "''${!mcp_plugins[@]}"; do
-      if ! echo "$mcp_list" | grep -q "$plugin"; then
-        echo "Setting up $plugin MCP server..."
-        if [ -n "''${mcp_envs[$plugin]}" ]; then
-          ${pkgs.claude-code}/bin/claude mcp add "$plugin" -e "''${mcp_envs[$plugin]}" -- "''${mcp_plugins[$plugin]}"
-        else
-          ${pkgs.claude-code}/bin/claude mcp add "$plugin" -- "''${mcp_plugins[$plugin]}"
-        fi
-      fi
-    done
-
-    # Run the actual claude command
-    exec ${pkgs.claude-code}/bin/claude "$@"
-  '';
-
+  # Create the claude-code package with the server packages
+  claude-code-pkg = self.packages.${pkgs.system}.claude-code.override {
+    servers = {
+      github = github-mcp-wrapped;
+      gitea = gitea-mcp-wrapped;
+    };
+  };
 in
 {
-  home.packages = [
-    inputs.mcp-servers-nix.packages.${pkgs.system}.mcp-server-github
-    self.packages.${pkgs.system}.gitea-mcp
-    claudeWrapper
-  ];
+  home.packages = claude-code-pkg.packages;
 }
