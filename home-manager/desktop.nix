@@ -3,6 +3,7 @@
   imports = [
     ./common.nix
     ./modules/atuin-autosync.nix
+    ./modules/claude-mcp.nix
   ];
 
   fonts.fontconfig.enable = true;
@@ -11,7 +12,6 @@
   services.syncthing.enable = true;
 
   home.packages = with pkgs; [
-    claude-code
     league-of-moveable-type
     dejavu_fonts
     ubuntu_font_family

@@ -387,6 +387,26 @@
         "type": "github"
       }
     },
+    "mcp-servers-nix": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1748985951,
+        "narHash": "sha256-Im8CqWpacXaCzUPgcnV2TeJuLKryBQWV0HlrNXK5e/o=",
+        "owner": "natsukium",
+        "repo": "mcp-servers-nix",
+        "rev": "48b57659a0dcf8753974bbadea6f661b6b06bd60",
+        "type": "github"
+      },
+      "original": {
+        "owner": "natsukium",
+        "repo": "mcp-servers-nix",
+        "type": "github"
+      }
+    },
     "nether": {
       "inputs": {
         "clan-core": [
@@ -616,6 +636,7 @@
         "home-manager": "home-manager",
         "hyprspace": "hyprspace",
         "lanzaboote": "lanzaboote",
+        "mcp-servers-nix": "mcp-servers-nix",
         "nether": "nether",
         "nix": "nix",
         "nix-darwin": "nix-darwin",
