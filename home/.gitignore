@@ -8,7 +8,7 @@
 /.clangd/
 /.ccls-cache/
 tags
-CLAUDE.md
+CLAUDE.local.md
 .mypy_cache/
 .pytest_cache/
 .ruff_cache/
