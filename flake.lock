@@ -106,7 +106,7 @@
       "locked": {
         "lastModified": 1749398429,
         "narHash": "sha256-YngRIv5Ic11GAtashuQMQYAUTCftT+k9aZ0+TrZpKHE=",
-        "rev": "24b49dbd4db0d58530acc268bec3374495984643",
+        "rev": "ae2b263f5daba519ef2c5994fec23675a2373963",
         "type": "tarball",
         "url": "https://git.clan.lol/api/v1/repos/clan/data-mesher/archive/24b49dbd4db0d58530acc268bec3374495984643.tar.gz"
       },
