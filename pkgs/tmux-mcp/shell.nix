@@ -11,6 +11,7 @@ pkgs.mkShell {
     python3Packages.mcp
     python3Packages.pydantic
     python3Packages.anyio
+    ripgrep
   ];
 
   shellHook = ''
