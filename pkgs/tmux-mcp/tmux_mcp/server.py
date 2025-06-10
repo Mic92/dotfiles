@@ -630,6 +630,109 @@ async def tmux_get_command_output(
         )
 
 
+async def tmux_ripgrep_command_output(
+    pane_id: str, pattern: str, flags: str | None = None, cursor: str | None = None
+) -> CommandResult:
+    """Run ripgrep on cached output from a previously executed command."""
+    if pane_id not in _output_cache:
+        return CommandResult(
+            pane_id=pane_id,
+            exit_code=-1,
+            output="",
+            command=f"rg {pattern}",
+            error=f"No cached output found for pane {pane_id}. Output may have been cleaned up or pane never existed.",
+        )
+
+    output_file = _output_cache[pane_id]
+    if not output_file.exists():
+        # Clean up stale cache entry
+        _output_cache.pop(pane_id, None)
+        if pane_id in _cache_cleanup_tasks:
+            _cache_cleanup_tasks[pane_id].cancel()
+            _cache_cleanup_tasks.pop(pane_id, None)
+
+        return CommandResult(
+            pane_id=pane_id,
+            exit_code=-1,
+            output="",
+            command=f"rg {pattern}",
+            error=f"Cached output file for pane {pane_id} no longer exists",
+        )
+
+    try:
+        # Build ripgrep command
+        rg_args = ["rg"]
+        if flags:
+            # Split flags on spaces and add them
+            rg_args.extend(flags.split())
+        rg_args.extend([pattern, str(output_file)])
+
+        # Run ripgrep on the cached output file
+        proc = await asyncio.create_subprocess_exec(
+            *rg_args,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+
+        stdout, stderr = await proc.communicate()
+        output_text = stdout.decode()
+        error_text = stderr.decode()
+
+        # Ripgrep exit codes: 0 = matches found, 1 = no matches, 2+ = error
+        exit_code = proc.returncode if proc.returncode is not None else -1
+        if exit_code == 1:
+            output_text = f"No matches found for pattern: {pattern}"
+        elif exit_code > 1:
+            output_text = f"Ripgrep error: {error_text}"
+        # Apply pagination to ripgrep results only if cursor is provided
+        elif cursor:
+            lines = output_text.splitlines(keepends=True)
+            total_lines = len(lines)
+            start_line, max_lines = _parse_cursor(cursor)
+
+            # Apply pagination if specified
+            if max_lines > 0:
+                end_line = start_line + max_lines
+                displayed_lines = lines[start_line:end_line]
+                next_cursor = _create_next_cursor(start_line, max_lines, total_lines)
+            else:
+                # No pagination - return all lines from start_line
+                displayed_lines = lines[start_line:] if start_line > 0 else lines
+                next_cursor = None
+
+            output_text = "".join(displayed_lines)
+
+            pagination_info = PaginationInfo(
+                total_lines=total_lines,
+                displayed_lines=len(displayed_lines),
+                start_line=start_line,
+                next_cursor=next_cursor,
+            )
+
+            return CommandResult(
+                pane_id=pane_id,
+                exit_code=exit_code,
+                output=output_text,
+                command=f"rg {' '.join(flags.split()) if flags else ''} {pattern}".strip(),
+                pagination=pagination_info,
+            )
+
+        return CommandResult(
+            pane_id=pane_id,
+            exit_code=exit_code,
+            output=output_text,
+            command=f"rg {' '.join(flags.split()) if flags else ''} {pattern}".strip(),
+        )
+    except (OSError, ValueError) as e:
+        return CommandResult(
+            pane_id=pane_id,
+            exit_code=-1,
+            output="",
+            command=f"rg {pattern}",
+            error=f"Failed to run ripgrep on cached output for pane {pane_id}: {e}",
+        )
+
+
 # Create the MCP server
 server: Server[Any] = Server("tmux-mcp")
 
@@ -754,6 +857,32 @@ async def handle_list_tools() -> list[Tool]:
                 "required": ["pane_id"],
             },
         ),
+        Tool(
+            name="tmux_ripgrep_command_output",
+            description="Run ripgrep (rg) on cached output from a previously executed command. Searches through the full output regardless of pagination.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "pane_id": {
+                        "type": "string",
+                        "description": "The tmux pane ID from a completed command",
+                    },
+                    "pattern": {
+                        "type": "string",
+                        "description": "The regex pattern to search for",
+                    },
+                    "flags": {
+                        "type": "string",
+                        "description": "Optional ripgrep flags (e.g., '-i' for case insensitive, '-n' for line numbers, '-C 3' for context)",
+                    },
+                    "cursor": {
+                        "type": "string",
+                        "description": "Pagination cursor from previous response (format: 'start_line:max_lines'). Use '0:100' to get first 100 lines, '100:100' for next 100, etc.",
+                    },
+                },
+                "required": ["pane_id", "pattern"],
+            },
+        ),
     ]
 
 
@@ -796,6 +925,12 @@ async def _handle_tool_call(  # noqa: PLR0911
             pane_id = arguments["pane_id"]
             cursor = arguments.get("cursor")
             return await tmux_get_command_output(pane_id, cursor)
+        case "tmux_ripgrep_command_output":
+            pane_id = arguments["pane_id"]
+            pattern = arguments["pattern"]
+            flags = arguments.get("flags")
+            cursor = arguments.get("cursor")
+            return await tmux_ripgrep_command_output(pane_id, pattern, flags, cursor)
         case _:
             msg = f"Unknown tool: {name}"
             raise ValueError(msg)

@@ -13,6 +13,7 @@ from tmux_mcp.server import (
     tmux_kill_pane,
     tmux_list_panes,
     tmux_list_sessions,
+    tmux_ripgrep_command_output,
     tmux_run_command,
     tmux_send_input,
 )
@@ -346,3 +347,163 @@ class TestTmuxIntegration:
         assert pagination.displayed_lines == 10
         assert pagination.start_line == 0
         assert pagination.next_cursor is None  # No pagination applied
+
+    @pytest.mark.asyncio  # type: ignore[misc]
+    async def test_tmux_ripgrep_command_output_basic(self, tmux_server: str) -> None:
+        """Test basic ripgrep functionality on cached command output."""
+        _ = tmux_server  # Use the fixture to set up test environment
+
+        # Generate output with specific patterns
+        result = await tmux_run_command(
+            'echo "ERROR: Something went wrong"; echo "INFO: Everything is fine"; echo "DEBUG: More details"',
+            timeout_seconds=10,
+        )
+        pane_id = result.pane_id
+
+        # Search for ERROR pattern
+        rg_result = await tmux_ripgrep_command_output(pane_id, "ERROR")
+
+        assert rg_result.error is None
+        assert rg_result.exit_code == 0
+        assert "ERROR: Something went wrong" in rg_result.output
+        assert "INFO:" not in rg_result.output
+        assert rg_result.command == "rg ERROR"
+
+    @pytest.mark.asyncio  # type: ignore[misc]
+    async def test_tmux_ripgrep_command_output_with_flags(
+        self, tmux_server: str
+    ) -> None:
+        """Test ripgrep with flags on cached command output."""
+        _ = tmux_server  # Use the fixture to set up test environment
+
+        # Generate output with specific patterns
+        result = await tmux_run_command(
+            'echo "error: lowercase error"; echo "ERROR: uppercase error"; echo "Info: mixed case"',
+            timeout_seconds=10,
+        )
+        pane_id = result.pane_id
+
+        # Search case-insensitively with line numbers
+        rg_result = await tmux_ripgrep_command_output(pane_id, "error", "-i -n")
+
+        assert rg_result.error is None
+        assert rg_result.exit_code == 0
+        assert "error: lowercase error" in rg_result.output
+        assert "ERROR: uppercase error" in rg_result.output
+        assert "Info:" not in rg_result.output
+        assert rg_result.command == "rg -i -n error"
+
+    @pytest.mark.asyncio  # type: ignore[misc]
+    async def test_tmux_ripgrep_command_output_no_matches(
+        self, tmux_server: str
+    ) -> None:
+        """Test ripgrep when no matches are found."""
+        _ = tmux_server  # Use the fixture to set up test environment
+
+        # Generate output without the search pattern
+        result = await tmux_run_command(
+            'echo "Line 1"; echo "Line 2"; echo "Line 3"',
+            timeout_seconds=10,
+        )
+        pane_id = result.pane_id
+
+        # Search for non-existent pattern
+        rg_result = await tmux_ripgrep_command_output(pane_id, "NOTFOUND")
+
+        assert rg_result.error is None
+        assert rg_result.exit_code == 1
+        assert "No matches found for pattern: NOTFOUND" in rg_result.output
+
+    @pytest.mark.asyncio  # type: ignore[misc]
+    async def test_tmux_ripgrep_command_output_invalid_pane(
+        self, tmux_server: str
+    ) -> None:
+        """Test ripgrep with invalid pane ID."""
+        _ = tmux_server  # Use the fixture to set up test environment
+
+        # Try to search in non-existent pane
+        rg_result = await tmux_ripgrep_command_output("%999", "test")
+
+        assert rg_result.error is not None
+        assert "No cached output found" in rg_result.error
+        assert rg_result.pane_id == "%999"
+        assert rg_result.exit_code == -1
+
+    @pytest.mark.asyncio  # type: ignore[misc]
+    async def test_tmux_ripgrep_pagination_basic(self, tmux_server: str) -> None:
+        """Test basic ripgrep pagination functionality."""
+        _ = tmux_server  # Use the fixture to set up test environment
+
+        # Generate output with many matching lines
+        result = await tmux_run_command(
+            'for i in {1..150}; do echo "Match line $i: ERROR found"; done',
+            timeout_seconds=10,
+        )
+        pane_id = result.pane_id
+
+        # Search with pagination (first 10 matches)
+        rg_result = await tmux_ripgrep_command_output(pane_id, "ERROR", cursor="0:10")
+
+        assert rg_result.error is None
+        assert rg_result.exit_code == 0
+        assert rg_result.pagination is not None
+        pagination = rg_result.pagination
+        assert pagination.total_lines == 150
+        assert pagination.displayed_lines == 10
+        assert pagination.start_line == 0
+        assert pagination.next_cursor == "10:10"
+        assert "Match line 1: ERROR found" in rg_result.output
+        assert "Match line 10: ERROR found" in rg_result.output
+        assert "Match line 11: ERROR found" not in rg_result.output
+
+    @pytest.mark.asyncio  # type: ignore[misc]
+    async def test_tmux_ripgrep_pagination_next_page(self, tmux_server: str) -> None:
+        """Test ripgrep pagination with next page."""
+        _ = tmux_server  # Use the fixture to set up test environment
+
+        # Generate output
+        result = await tmux_run_command(
+            'for i in {1..50}; do echo "Line $i: DEBUG message"; done',
+            timeout_seconds=10,
+        )
+        pane_id = result.pane_id
+
+        # Get first page
+        first_page = await tmux_ripgrep_command_output(pane_id, "DEBUG", cursor="0:20")
+        assert first_page.pagination is not None
+        assert first_page.pagination.displayed_lines == 20
+
+        # Get second page using cursor
+        next_cursor = first_page.pagination.next_cursor
+        second_page = await tmux_ripgrep_command_output(
+            pane_id, "DEBUG", cursor=next_cursor
+        )
+
+        assert second_page.error is None
+        assert second_page.pagination is not None
+        assert second_page.pagination.displayed_lines == 20
+        assert second_page.pagination.start_line == 20
+        assert "Line 21: DEBUG message" in second_page.output
+        assert "Line 40: DEBUG message" in second_page.output
+
+    @pytest.mark.asyncio  # type: ignore[misc]
+    async def test_tmux_ripgrep_no_pagination(self, tmux_server: str) -> None:
+        """Test ripgrep without pagination returns all matches."""
+        _ = tmux_server  # Use the fixture to set up test environment
+
+        # Generate output with few matches
+        result = await tmux_run_command(
+            'echo "Line 1: INFO"; echo "Line 2: ERROR"; echo "Line 3: INFO"; echo "Line 4: ERROR"',
+            timeout_seconds=10,
+        )
+        pane_id = result.pane_id
+
+        # Search without cursor (no pagination)
+        rg_result = await tmux_ripgrep_command_output(pane_id, "ERROR")
+
+        assert rg_result.error is None
+        assert rg_result.exit_code == 0
+        assert "Line 2: ERROR" in rg_result.output
+        assert "Line 4: ERROR" in rg_result.output
+        # When no pagination cursor is provided, pagination info should not be included
+        assert rg_result.pagination is None

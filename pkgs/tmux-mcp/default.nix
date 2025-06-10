@@ -1,6 +1,8 @@
 {
   lib,
   python3,
+  ripgrep,
+  makeWrapper,
 }:
 
 python3.pkgs.buildPythonApplication {
@@ -9,6 +11,8 @@ python3.pkgs.buildPythonApplication {
   pyproject = true;
 
   src = ./.;
+
+  nativeBuildInputs = [ makeWrapper ];
 
   build-system = with python3.pkgs; [
     setuptools
@@ -24,6 +28,7 @@ python3.pkgs.buildPythonApplication {
   nativeCheckInputs = with python3.pkgs; [
     pytest
     pytest-asyncio
+    ripgrep
   ];
 
   # Enable tests
@@ -31,6 +36,12 @@ python3.pkgs.buildPythonApplication {
 
   # Test configuration
   pytestFlagsArray = [ "tests/" ];
+
+  # Wrap the binary to include ripgrep in PATH
+  postInstall = ''
+    wrapProgram $out/bin/tmux-mcp \
+      --prefix PATH : ${lib.makeBinPath [ ripgrep ]}
+  '';
 
   meta = with lib; {
     description = "Model Context Protocol server for tmux integration";
