@@ -127,9 +127,6 @@
     #microvm.url = "github:astro/microvm.nix";
     #microvm.inputs.nixpkgs.follows = "nixpkgs";
     #microvm.inputs.flake-utils.follows = "flake-utils";
-
-    mcp-servers-nix.url = "github:natsukium/mcp-servers-nix";
-    mcp-servers-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
