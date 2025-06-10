@@ -13,9 +13,12 @@ let
       set -euo pipefail
 
       # Define MCP plugins as associative array (name -> command)
+      # Use nix-profile paths instead of direct package paths
       declare -A mcp_plugins=(
        ${pkgs.lib.concatStringsSep "\n" (
-         pkgs.lib.mapAttrsToList (name: package: "[\"${name}\"]=\"${pkgs.lib.getExe package}\"") servers
+         pkgs.lib.mapAttrsToList (
+           name: package: "[\"${name}\"]=\"$HOME/.nix-profile/bin/${package.name}\""
+         ) servers
        )}
       )
 
@@ -23,7 +26,7 @@ let
       declare -A existing_servers=()
       while IFS= read -r server; do
         [ -n "$server" ] && existing_servers["$server"]=1
-      done < <(claude mcp list 2>/dev/null | awk 'NF {print $1}' || true)
+      done < <(claude mcp list 2>/dev/null | awk -F': ' 'NF {print $1}' || true)
 
       # Remove unwanted servers
       for server in "''${!existing_servers[@]}"; do
