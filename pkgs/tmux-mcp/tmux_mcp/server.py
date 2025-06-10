@@ -2,7 +2,6 @@
 
 import asyncio
 import contextlib
-import json
 import logging
 import os
 import shlex
@@ -312,7 +311,7 @@ def _cache_output_file(pane_id: str, output_file: Path) -> None:
 
 async def _read_command_output(
     output_file: Path, cursor: str | None = None
-) -> tuple[str, dict[str, Any]]:
+) -> tuple[str, PaginationInfo]:
     """Read the output file from the executed command with pagination support.
 
     Args:
@@ -321,7 +320,7 @@ async def _read_command_output(
 
     Returns:
         tuple: (output_content, pagination_info)
-        pagination_info contains MCP-style pagination with nextCursor
+        pagination_info contains MCP-style pagination with next_cursor
     """
     try:
         if output_file.exists():
@@ -343,49 +342,22 @@ async def _read_command_output(
 
             output_content = "".join(displayed_lines)
 
-            pagination_info: dict[str, Any] = {
-                "total_lines": total_lines,
-                "displayed_lines": len(displayed_lines),
-                "start_line": start_line,
-            }
-
-            if next_cursor:
-                pagination_info["nextCursor"] = next_cursor
+            pagination_info = PaginationInfo(
+                total_lines=total_lines,
+                displayed_lines=len(displayed_lines),
+                start_line=start_line,
+                next_cursor=next_cursor,
+            )
 
             return output_content, pagination_info
     except OSError:
         pass
 
-    return "Failed to read command output", {
-        "total_lines": 0,
-        "displayed_lines": 0,
-        "start_line": 0,
-    }
-
-
-def _create_result_json(
-    pane_id: str,
-    exit_code: int,
-    output: str,
-    command: str,
-    working_dir: str | None,
-    error: str | None = None,
-    pagination: dict[str, Any] | None = None,
-) -> str:
-    """Create a JSON result for the command execution."""
-    result = {
-        "pane_id": pane_id,
-        "exit_code": exit_code,
-        "output": output,
-        "command": command,
-        "working_dir": working_dir,
-    }
-    if error:
-        result["error"] = error
-    if pagination:
-        result["pagination"] = pagination
-
-    return json.dumps(result, indent=2)
+    return "Failed to read command output", PaginationInfo(
+        total_lines=0,
+        displayed_lines=0,
+        start_line=0,
+    )
 
 
 async def tmux_run_command(
@@ -394,7 +366,7 @@ async def tmux_run_command(
     session_name: str | None = None,
     timeout_seconds: int = 300,
     keep_pane: bool = False,
-) -> str:
+) -> CommandResult:
     """Run a command in a new tmux pane and wait for completion using FIFO synchronization."""
     logger.debug(
         f"Starting tmux_run_command: command={command!r}, working_dir={working_dir!r}, session_name={session_name!r}, timeout={timeout_seconds}"
@@ -467,23 +439,23 @@ async def tmux_run_command(
                             f"Failed to kill pane {pane_id} after timeout: {e}"
                         )
 
-                return _create_result_json(
-                    pane_id,
-                    -1,
-                    f"Command timed out after {timeout_seconds} seconds",
-                    command,
-                    working_dir,
-                    "timeout",
+                return CommandResult(
+                    pane_id=pane_id,
+                    exit_code=-1,
+                    output=f"Command timed out after {timeout_seconds} seconds",
+                    command=command,
+                    working_dir=working_dir,
+                    error="timeout",
                 )
 
             if not success:
-                return _create_result_json(
-                    pane_id,
-                    -1,
-                    "Failed to receive completion signal",
-                    command,
-                    working_dir,
-                    "completion_signal_failed",
+                return CommandResult(
+                    pane_id=pane_id,
+                    exit_code=-1,
+                    output="Failed to receive completion signal",
+                    command=command,
+                    working_dir=working_dir,
+                    error="completion_signal_failed",
                 )
 
             # Read the output for initial response (first 100 lines by default)
@@ -501,12 +473,12 @@ async def tmux_run_command(
                     logger.debug(f"Failed to kill pane {pane_id}: {e}")
                     # Don't fail the whole operation if we can't kill the pane
 
-            return _create_result_json(
-                pane_id,
-                exit_code,
-                output,
-                command,
-                working_dir,
+            return CommandResult(
+                pane_id=pane_id,
+                exit_code=exit_code,
+                output=output,
+                command=command,
+                working_dir=working_dir,
                 pagination=pagination_info,
             )
 
@@ -520,7 +492,14 @@ async def tmux_run_command(
                 logger.debug(f"Failed to clean up temp dir {temp_dir}: {e}")
 
     except TmuxCommandError as e:
-        return _create_result_json("", -1, "", command, working_dir, str(e))
+        return CommandResult(
+            pane_id="",
+            exit_code=-1,
+            output="",
+            command=command,
+            working_dir=working_dir,
+            error=str(e),
+        )
 
 
 async def tmux_send_input(pane_id: str, input_text: str) -> str:
@@ -603,15 +582,17 @@ async def tmux_capture_pane(pane_id: str, start_line: int | None = None) -> str:
         return output if output else f"No output captured from pane {pane_id}"
 
 
-async def tmux_get_command_output(pane_id: str, cursor: str | None = None) -> str:
+async def tmux_get_command_output(
+    pane_id: str, cursor: str | None = None
+) -> CommandResult:
     """Get paginated output from a previously executed command."""
     if pane_id not in _output_cache:
-        return json.dumps(
-            {
-                "error": f"No cached output found for pane {pane_id}. Output may have been cleaned up or pane never existed.",
-                "pane_id": pane_id,
-            },
-            indent=2,
+        return CommandResult(
+            pane_id=pane_id,
+            exit_code=-1,
+            output="",
+            command="",
+            error=f"No cached output found for pane {pane_id}. Output may have been cleaned up or pane never existed.",
         )
 
     output_file = _output_cache[pane_id]
@@ -622,29 +603,30 @@ async def tmux_get_command_output(pane_id: str, cursor: str | None = None) -> st
             _cache_cleanup_tasks[pane_id].cancel()
             _cache_cleanup_tasks.pop(pane_id, None)
 
-        return json.dumps(
-            {
-                "error": f"Cached output file for pane {pane_id} no longer exists",
-                "pane_id": pane_id,
-            },
-            indent=2,
+        return CommandResult(
+            pane_id=pane_id,
+            exit_code=-1,
+            output="",
+            command="",
+            error=f"Cached output file for pane {pane_id} no longer exists",
         )
 
     try:
         output, pagination_info = await _read_command_output(output_file, cursor)
-        result = {
-            "pane_id": pane_id,
-            "output": output,
-            "pagination": pagination_info,
-        }
-        return json.dumps(result, indent=2)
+        return CommandResult(
+            pane_id=pane_id,
+            exit_code=0,
+            output=output,
+            command="",
+            pagination=pagination_info,
+        )
     except (OSError, ValueError) as e:
-        return json.dumps(
-            {
-                "error": f"Failed to read cached output for pane {pane_id}: {e}",
-                "pane_id": pane_id,
-            },
-            indent=2,
+        return CommandResult(
+            pane_id=pane_id,
+            exit_code=-1,
+            output="",
+            command="",
+            error=f"Failed to read cached output for pane {pane_id}: {e}",
         )
 
 
@@ -786,28 +768,8 @@ async def _handle_tool_call(  # noqa: PLR0911
             session_name = arguments.get("session_name")
             timeout_seconds = arguments.get("timeout", 300)
             keep_pane = arguments.get("keep_pane", False)
-            result_json = await tmux_run_command(
+            return await tmux_run_command(
                 command, working_dir, session_name, timeout_seconds, keep_pane
-            )
-            # Parse JSON and convert to dataclass
-            data = json.loads(result_json)
-            pagination = None
-            if "pagination" in data:
-                pag = data["pagination"]
-                pagination = PaginationInfo(
-                    total_lines=pag["total_lines"],
-                    displayed_lines=pag["displayed_lines"],
-                    start_line=pag["start_line"],
-                    next_cursor=pag.get("nextCursor"),
-                )
-            return CommandResult(
-                pane_id=data["pane_id"],
-                exit_code=data["exit_code"],
-                output=data["output"],
-                command=data["command"],
-                working_dir=data.get("working_dir"),
-                error=data.get("error"),
-                pagination=pagination,
             )
         case "tmux_send_input":
             pane_id = arguments["pane_id"]
@@ -833,27 +795,7 @@ async def _handle_tool_call(  # noqa: PLR0911
         case "tmux_get_command_output":
             pane_id = arguments["pane_id"]
             cursor = arguments.get("cursor")
-            result_json = await tmux_get_command_output(pane_id, cursor)
-            # Parse JSON and convert to dataclass
-            data = json.loads(result_json)
-            pagination = None
-            if "pagination" in data:
-                pag = data["pagination"]
-                pagination = PaginationInfo(
-                    total_lines=pag["total_lines"],
-                    displayed_lines=pag["displayed_lines"],
-                    start_line=pag["start_line"],
-                    next_cursor=pag.get("nextCursor"),
-                )
-            return CommandResult(
-                pane_id=data["pane_id"],
-                exit_code=data.get("exit_code", 0),
-                output=data["output"],
-                command="",  # Not available for get_command_output
-                working_dir=None,
-                error=data.get("error"),
-                pagination=pagination,
-            )
+            return await tmux_get_command_output(pane_id, cursor)
         case _:
             msg = f"Unknown tool: {name}"
             raise ValueError(msg)

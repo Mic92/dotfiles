@@ -1,7 +1,6 @@
 """Real-world integration tests for tmux MCP server high-level tools."""
 
 import contextlib
-import json
 import subprocess
 import tempfile
 from collections.abc import Generator
@@ -72,12 +71,11 @@ class TestTmuxIntegration:
     async def test_tmux_run_simple_command(self, tmux_server: str) -> None:
         """Test running a simple command in tmux."""
         _ = tmux_server  # Use the fixture to set up test environment
-        result_json = await tmux_run_command("echo 'Hello World'", timeout_seconds=10)
-        result = json.loads(result_json)
+        result = await tmux_run_command("echo 'Hello World'", timeout_seconds=10)
 
-        assert result["exit_code"] == 0
-        assert "Hello World" in result["output"]
-        assert result["pane_id"].startswith("%")
+        assert result.exit_code == 0
+        assert "Hello World" in result.output
+        assert result.pane_id.startswith("%")
 
     @pytest.mark.asyncio  # type: ignore[misc]
     async def test_tmux_run_command_with_working_dir(self, tmux_server: str) -> None:
@@ -88,26 +86,22 @@ class TestTmuxIntegration:
             test_file = Path(temp_dir) / "test.txt"
             test_file.write_text("test content")
 
-            result_json = await tmux_run_command(
+            result = await tmux_run_command(
                 "ls test.txt", working_dir=temp_dir, timeout_seconds=10
             )
-            result = json.loads(result_json)
 
-            assert result["exit_code"] == 0
-            assert "test.txt" in result["output"]
-            assert result["working_dir"] == temp_dir
+            assert result.exit_code == 0
+            assert "test.txt" in result.output
+            assert result.working_dir == temp_dir
 
     @pytest.mark.asyncio  # type: ignore[misc]
     async def test_tmux_run_command_failure(self, tmux_server: str) -> None:
         """Test running a command that fails."""
         _ = tmux_server  # Use the fixture to set up test environment
-        result_json = await tmux_run_command(
-            "nonexistent_command_12345", timeout_seconds=10
-        )
-        result = json.loads(result_json)
+        result = await tmux_run_command("nonexistent_command_12345", timeout_seconds=10)
 
-        assert result["exit_code"] != 0
-        assert result["pane_id"].startswith("%")
+        assert result.exit_code != 0
+        assert result.pane_id.startswith("%")
 
     @pytest.mark.asyncio  # type: ignore[misc]
     async def test_tmux_list_sessions(self, tmux_server: str) -> None:
@@ -134,13 +128,12 @@ class TestTmuxIntegration:
         """Test sending input to a pane and capturing output."""
         _ = tmux_server  # Use the fixture to set up test environment
         # Start a long-running command that waits for input, keep pane for interaction
-        result_json = await tmux_run_command("cat", timeout_seconds=2, keep_pane=True)
-        result = json.loads(result_json)
+        result = await tmux_run_command("cat", timeout_seconds=2, keep_pane=True)
 
         # The cat command should timeout since it waits for input
-        assert result["exit_code"] == -1
-        assert "timed out" in result["output"]
-        pane_id = result["pane_id"]
+        assert result.exit_code == -1
+        assert "timed out" in result.output
+        pane_id = result.pane_id
 
         # Send input to the pane
         send_result = await tmux_send_input(pane_id, "Hello from input")
@@ -158,12 +151,11 @@ class TestTmuxIntegration:
     async def test_tmux_run_command_timeout(self, tmux_server: str) -> None:
         """Test command timeout behavior."""
         _ = tmux_server  # Use the fixture to set up test environment
-        result_json = await tmux_run_command("sleep 10", timeout_seconds=2)
-        result = json.loads(result_json)
+        result = await tmux_run_command("sleep 10", timeout_seconds=2)
 
-        assert result["exit_code"] == -1
-        assert "timed out" in result["output"]
-        assert result["error"] == "timeout"
+        assert result.exit_code == -1
+        assert "timed out" in result.output
+        assert result.error == "timeout"
 
         # No need to clean up the pane - it should be auto-cleaned due to timeout
 
@@ -172,32 +164,27 @@ class TestTmuxIntegration:
         """Test running multiple commands in sequence."""
         _ = tmux_server  # Use the fixture to set up test environment
         # Run first command
-        result1_json = await tmux_run_command("echo 'First command'", timeout_seconds=5)
-        result1 = json.loads(result1_json)
-        assert result1["exit_code"] == 0
+        result1 = await tmux_run_command("echo 'First command'", timeout_seconds=5)
+        assert result1.exit_code == 0
 
         # Run second command
-        result2_json = await tmux_run_command(
-            "echo 'Second command'", timeout_seconds=5
-        )
-        result2 = json.loads(result2_json)
-        assert result2["exit_code"] == 0
+        result2 = await tmux_run_command("echo 'Second command'", timeout_seconds=5)
+        assert result2.exit_code == 0
 
         # Should have different pane IDs
-        assert result1["pane_id"] != result2["pane_id"]
+        assert result1.pane_id != result2.pane_id
 
     @pytest.mark.asyncio  # type: ignore[misc]
     async def test_tmux_capture_pane_with_start_line(self, tmux_server: str) -> None:
         """Test capturing pane output with start line parameter."""
         _ = tmux_server  # Use the fixture to set up test environment
         # Run a command that produces multiple lines, keep pane for capture test
-        result_json = await tmux_run_command(
+        result = await tmux_run_command(
             "echo 'Line 1'; echo 'Line 2'; echo 'Line 3'",
             timeout_seconds=5,
             keep_pane=True,
         )
-        result = json.loads(result_json)
-        pane_id = result["pane_id"]
+        pane_id = result.pane_id
 
         # Capture from a specific start line
         capture_result = await tmux_capture_pane(pane_id, start_line=0)
@@ -228,10 +215,9 @@ class TestTmuxIntegration:
         _ = tmux_server  # Use the fixture to set up test environment
 
         # Run a command (should auto-close pane by default)
-        result_json = await tmux_run_command("echo 'test cleanup'", timeout_seconds=5)
-        result = json.loads(result_json)
-        assert result["exit_code"] == 0
-        pane_id = result["pane_id"]
+        result = await tmux_run_command("echo 'test cleanup'", timeout_seconds=5)
+        assert result.exit_code == 0
+        pane_id = result.pane_id
 
         # Verify the pane is automatically gone by trying to capture it
         # This should fail because the pane was auto-closed
@@ -248,12 +234,11 @@ class TestTmuxIntegration:
         initial_count = initial_panes.count("%")
 
         # Run a command with keep_pane=True
-        result_json = await tmux_run_command(
+        result = await tmux_run_command(
             "echo 'test keep pane'", timeout_seconds=5, keep_pane=True
         )
-        result = json.loads(result_json)
-        assert result["exit_code"] == 0
-        pane_id = result["pane_id"]
+        assert result.exit_code == 0
+        pane_id = result.pane_id
 
         # Check that pane is still there
         final_panes = await tmux_list_panes()
@@ -276,34 +261,33 @@ class TestTmuxIntegration:
         _ = tmux_server  # Use the fixture to set up test environment
 
         # Generate multi-line output for pagination testing
-        result_json = await tmux_run_command(
+        result = await tmux_run_command(
             'for i in {1..150}; do echo "Line $i: This is line number $i"; done',
             timeout_seconds=10,
         )
-        result = json.loads(result_json)
 
-        assert result["exit_code"] == 0
-        pane_id = result["pane_id"]
+        assert result.exit_code == 0
+        pane_id = result.pane_id
 
         # Check that pagination info is present in initial response (first 100 lines)
-        assert "pagination" in result
-        pagination = result["pagination"]
-        assert pagination["total_lines"] == 150
-        assert pagination["displayed_lines"] == 100
-        assert pagination["start_line"] == 0
-        assert "nextCursor" in pagination
+        assert result.pagination is not None
+        pagination = result.pagination
+        assert pagination.total_lines == 150
+        assert pagination.displayed_lines == 100
+        assert pagination.start_line == 0
+        assert pagination.next_cursor is not None
 
         # Get next page using cursor
-        next_cursor = pagination["nextCursor"]
-        next_page_json = await tmux_get_command_output(pane_id, next_cursor)
-        next_page = json.loads(next_page_json)
+        next_cursor = pagination.next_cursor
+        next_page = await tmux_get_command_output(pane_id, next_cursor)
 
-        assert "error" not in next_page
-        assert next_page["pane_id"] == pane_id
-        next_pagination = next_page["pagination"]
-        assert next_pagination["displayed_lines"] == 50  # Remaining lines
-        assert next_pagination["start_line"] == 100
-        assert "nextCursor" not in next_pagination  # No more pages
+        assert next_page.error is None
+        assert next_page.pane_id == pane_id
+        assert next_page.pagination is not None
+        next_pagination = next_page.pagination
+        assert next_pagination.displayed_lines == 50  # Remaining lines
+        assert next_pagination.start_line == 100
+        assert next_pagination.next_cursor is None  # No more pages
 
     @pytest.mark.asyncio  # type: ignore[misc]
     async def test_tmux_pagination_custom_cursor(self, tmux_server: str) -> None:
@@ -311,23 +295,22 @@ class TestTmuxIntegration:
         _ = tmux_server  # Use the fixture to set up test environment
 
         # Generate output
-        result_json = await tmux_run_command(
+        result = await tmux_run_command(
             'for i in {1..50}; do echo "Test line $i"; done',
             timeout_seconds=10,
         )
-        result = json.loads(result_json)
-        pane_id = result["pane_id"]
+        pane_id = result.pane_id
 
         # Get specific range: lines 10-19 (10 lines starting from line 10)
-        page_json = await tmux_get_command_output(pane_id, "10:10")
-        page = json.loads(page_json)
+        page = await tmux_get_command_output(pane_id, "10:10")
 
-        assert "error" not in page
-        pagination = page["pagination"]
-        assert pagination["displayed_lines"] == 10
-        assert pagination["start_line"] == 10
-        assert "Test line 11" in page["output"]  # Line 11 (index 10)
-        assert "Test line 20" in page["output"]  # Line 20 (index 19)
+        assert page.error is None
+        assert page.pagination is not None
+        pagination = page.pagination
+        assert pagination.displayed_lines == 10
+        assert pagination.start_line == 10
+        assert "Test line 11" in page.output  # Line 11 (index 10)
+        assert "Test line 20" in page.output  # Line 20 (index 19)
 
     @pytest.mark.asyncio  # type: ignore[misc]
     async def test_tmux_pagination_invalid_pane(self, tmux_server: str) -> None:
@@ -335,12 +318,11 @@ class TestTmuxIntegration:
         _ = tmux_server  # Use the fixture to set up test environment
 
         # Try to get output from non-existent pane
-        result_json = await tmux_get_command_output("%999", "0:10")
-        result = json.loads(result_json)
+        result = await tmux_get_command_output("%999", "0:10")
 
-        assert "error" in result
-        assert "No cached output found" in result["error"]
-        assert result["pane_id"] == "%999"
+        assert result.error is not None
+        assert "No cached output found" in result.error
+        assert result.pane_id == "%999"
 
     @pytest.mark.asyncio  # type: ignore[misc]
     async def test_tmux_pagination_no_cursor(self, tmux_server: str) -> None:
@@ -348,20 +330,19 @@ class TestTmuxIntegration:
         _ = tmux_server  # Use the fixture to set up test environment
 
         # Generate small output
-        result_json = await tmux_run_command(
+        result = await tmux_run_command(
             'for i in {1..10}; do echo "Line $i"; done',
             timeout_seconds=10,
         )
-        result = json.loads(result_json)
-        pane_id = result["pane_id"]
+        pane_id = result.pane_id
 
         # Get all output without cursor (no pagination)
-        full_output_json = await tmux_get_command_output(pane_id)
-        full_output = json.loads(full_output_json)
+        full_output = await tmux_get_command_output(pane_id)
 
-        assert "error" not in full_output
-        pagination = full_output["pagination"]
-        assert pagination["total_lines"] == 10
-        assert pagination["displayed_lines"] == 10
-        assert pagination["start_line"] == 0
-        assert "nextCursor" not in pagination  # No pagination applied
+        assert full_output.error is None
+        assert full_output.pagination is not None
+        pagination = full_output.pagination
+        assert pagination.total_lines == 10
+        assert pagination.displayed_lines == 10
+        assert pagination.start_line == 0
+        assert pagination.next_cursor is None  # No pagination applied
