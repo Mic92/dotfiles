@@ -33,6 +33,13 @@
         programs.mypy.directories = {
           "machines/eva/modules/prometheus" = { };
           "openwrt" = { };
+          "pkgs/tmux-mcp" = {
+            extraPythonPackages = with pkgs.python3.pkgs; [
+              mcp
+              pydantic
+              types-setuptools
+            ];
+          };
         };
         programs.deadnix.enable = true;
         programs.stylua.enable = true;
