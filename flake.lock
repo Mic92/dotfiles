@@ -394,11 +394,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1749348840,
-        "narHash": "sha256-cVvpbnluwi+glhcPbsjEg3MRZw371Os+nWhk5y18IuU=",
+        "lastModified": 1749666917,
+        "narHash": "sha256-sVCBJdPlI6toJPuEl5BgvY19SC8etijAg34XoXEXjFo=",
         "owner": "natsukium",
         "repo": "mcp-servers-nix",
-        "rev": "ea598bcf7fa43a9f71563c77d6da79d91f0b2670",
+        "rev": "cb23ffc59555ab227b37d1b8f3157d6799fe8c55",
         "type": "github"
       },
       "original": {
@@ -550,10 +550,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1749505304,
-        "narHash": "sha256-I/gjYSYnaFqawZUBYpeBVWnJl476i4dfuKpFZf7u6GU=",
+        "lastModified": 1749651367,
+        "narHash": "sha256-DyuBxc118H64lQR+xqf1/r81DqrhNBPLPR7NFXj7N+A=",
         "ref": "main",
-        "rev": "c659bb8f23fadcc41f95007f2894993ffff98c29",
+        "rev": "aa091b171e2095e660676ef32d158552c8229018",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
