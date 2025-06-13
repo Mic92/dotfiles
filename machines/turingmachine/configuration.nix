@@ -69,7 +69,8 @@
 
   boot.loader.systemd-boot.enable = true;
 
-  programs.direnv.enable = true;
+  # Disabled: using custom async direnv integration in zshrc
+  # programs.direnv.enable = true;
 
   hardware.graphics.enable32Bit = config.hardware.graphics.enable;
 
