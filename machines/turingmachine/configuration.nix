@@ -215,7 +215,18 @@
   boot.kernelParams = [
     # defaults is 5, but this can be quite slow for sqlite databases
     "zfs.zfs_txg_timeout=2"
+    # Enable zswap
+    "zswap.enabled=1"
   ];
+
+  # Enable zswap with lz4 compression
+  boot.kernelModules = [
+    "lz4"
+    "lz4_compress"
+  ];
+  boot.extraModprobeConfig = ''
+    options zswap enabled=1 compressor=lz4 zpool=z3fold
+  '';
 
   system.stateVersion = "23.11";
   boot.initrd.systemd.enable = true;
