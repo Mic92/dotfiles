@@ -249,6 +249,12 @@ RPS1='%(?.%F{magenta}.%F{red}(%?%) %F{magenta})'
 autoload -U promptinit; promptinit
 prompt pure
 
+# Load direnv-instant integration for non-blocking prompt
+if [ -n "${commands[direnv]}" ]; then
+  source "$HOME/.homesick/repos/dotfiles/zsh/direnv-instant.zsh"
+fi
+
+
 ## Aliases
 # Basic commands
 alias zcat='zcat -f'
@@ -885,9 +891,6 @@ if [ -n "${commands[r2]}" ]; then
 fi
 
 
-if [ -n "${commands[direnv]}" ]; then
-  eval "$(direnv hook zsh)"
-fi
 if [[ $commands[kubectl] ]]; then
    alias k=kubectl
    source <(kubectl completion zsh)
