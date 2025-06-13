@@ -65,6 +65,7 @@
       gnugrep
       findutils
       ncurses
+      glow
       (pkgs.runCommand "uutils-coreutils" { } ''
         mkdir -p $out/bin
         for i in ${pkgs.uutils-coreutils}/bin/*; do
