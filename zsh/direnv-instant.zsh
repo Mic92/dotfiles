@@ -116,36 +116,34 @@ _direnv_tmux_manager() {
     # Set up trap to clean up on exit
     trap '_direnv_cleanup' EXIT INT TERM
     
-    # Choose execution strategy based on environment
+    # Only run if we have network connectivity
     if ! _direnv_has_network; then
         return 0
-    elif [[ -n "$TMUX" ]]; then
-        # Save entire environment to restore in tmux pane
-        local _env_dump="${_temp_file}.env"
-        # Use declare -p to properly escape all environment variables
-        typeset -px > "$_env_dump"
-        
-        # In tmux with network: create visible pane with restored environment
-        _pane=$(command tmux split-window -d -P -F "#{pane_id}" -l 10 \
-            "source '$_env_dump' && \
-             cd '$_pwd' && \
-             $_direnv_cmd export zsh > '$_temp_file' && \
-             result=\$? && \
-             if [ \$result -eq 0 ]; then \
-                 command mv -f '$_temp_file' '$_env_file'; \
-                 command sleep 4; \
-             else \
-                 echo 'direnv failed with exit code:' \$result; \
-                 read -k1 '?Press any key to close...'; \
-             fi")
-        
-        # Wait for pane to close
-        while command tmux list-panes -a -F "#{pane_id}" 2>/dev/null | command grep -q "^${_pane}$"; do
-            command sleep 0.5
-        done
-    else
-        cd "$_pwd" && $_direnv_cmd export zsh > "$_temp_file" 2>&1 && command mv -f "$_temp_file" "$_env_file"
     fi
+    
+    # Save entire environment to restore in tmux pane
+    local _env_dump="${_temp_file}.env"
+    # Use declare -p to properly escape all environment variables
+    typeset -px > "$_env_dump"
+    
+    # In tmux with network: create visible pane with restored environment
+    _pane=$(command tmux split-window -d -P -F "#{pane_id}" -l 10 \
+        "source '$_env_dump' && \
+         cd '$_pwd' && \
+         $_direnv_cmd export zsh > '$_temp_file' && \
+         result=\$? && \
+         if [ \$result -eq 0 ]; then \
+             command mv -f '$_temp_file' '$_env_file'; \
+             command sleep 4; \
+         else \
+             echo 'direnv failed with exit code:' \$result; \
+             read -k1 '?Press any key to close...'; \
+         fi")
+    
+    # Wait for pane to close
+    while command tmux list-panes -a -F "#{pane_id}" 2>/dev/null | command grep -q "^${_pane}$"; do
+        command sleep 0.5
+    done
     
     # Signal parent that environment is ready
     command kill -USR1 $_parent_pid 2>/dev/null || true
@@ -169,6 +167,12 @@ _direnv_find_envrc() {
 # Main hook called on directory changes and prompts
 _direnv_hook() {
     [[ -z "${commands[direnv]}" ]] && return 0
+    
+    # For non-tmux environments, just use direnv synchronously
+    if [[ -z "$TMUX" ]]; then
+        eval "$(${commands[direnv]} export zsh)"
+        return 0
+    fi
     
     _direnv_load_env
     
