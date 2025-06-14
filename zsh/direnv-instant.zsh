@@ -3,17 +3,11 @@
 # Provides instant prompts by running direnv asynchronously in the background
 
 # Global state variables
-typeset -g __DIRENV_INSTANT_MONITOR_PID=""
-typeset -g __DIRENV_INSTANT_ENV_FILE=""
-typeset -g __DIRENV_INSTANT_ENV_MTIME=""
 typeset -g __DIRENV_INSTANT_CURRENT_DIR=""
-typeset -g __DIRENV_INSTANT_PID_FILE=""
+typeset -g __DIRENV_INSTANT_ENV_FILE=""
+typeset -g __DIRENV_INSTANT_STDERR_FILE=""
+typeset -g __DIRENV_INSTANT_MONITOR_PID=""
 
-# Get file modification time using zsh builtin stat
-_direnv_get_mtime() {
-    local _file="$1"
-    zstat +mtime "$_file" 2>/dev/null
-}
 
 _direnv_has_route() {
     case "$OSTYPE" in
@@ -37,16 +31,16 @@ _direnv_has_route() {
 
 _direnv_can_reach_internet() {
     command -v ping >/dev/null 2>&1 || return 1
-    
+
     # Try IPv4 first (9.9.9.9 - Quad9 DNS)
     command ping -c 1 -W 1 9.9.9.9 >/dev/null 2>&1 && return 0
-    
+
     # Try IPv6 (2620:fe::fe - Quad9 DNS)
     command ping6 -c 1 -W 1 2620:fe::fe >/dev/null 2>&1 && return 0
-    
+
     # Some systems use unified ping command for IPv6
     command ping -c 1 -W 1 2620:fe::fe >/dev/null 2>&1 && return 0
-    
+
     return 1
 }
 
@@ -57,101 +51,97 @@ _direnv_has_network() {
 
 # Kill monitor process only
 _direnv_kill_monitor() {
-    # Read PID from file if available
-    local _pid=""
-    if [[ -f "$__DIRENV_INSTANT_PID_FILE" ]]; then
-        _pid=$(<"$__DIRENV_INSTANT_PID_FILE" 2>/dev/null)
-        command rm -f "$__DIRENV_INSTANT_PID_FILE" 2>/dev/null
-    fi
-    
-    # Use PID from file or fall back to variable
-    [[ -z "$_pid" ]] && _pid="$__DIRENV_INSTANT_MONITOR_PID"
-    
-    if [[ -n "$_pid" ]]; then
+    if [[ -n "$__DIRENV_INSTANT_MONITOR_PID" ]]; then
         # Kill just the process, not the process group
-        command kill "$_pid" 2>/dev/null
+        command kill "$__DIRENV_INSTANT_MONITOR_PID" 2>/dev/null
+        # Wait for the process to exit
+        wait "$__DIRENV_INSTANT_MONITOR_PID" 2>/dev/null
         __DIRENV_INSTANT_MONITOR_PID=""
     fi
-    
+
     __DIRENV_INSTANT_CURRENT_DIR=""
+
+    # Clean up any pending files
+    [[ -n "$__DIRENV_INSTANT_ENV_FILE" ]] && command rm -f "$__DIRENV_INSTANT_ENV_FILE" 2>/dev/null
+    if [[ -n "$__DIRENV_INSTANT_STDERR_FILE" ]]; then
+        local _stderr_file="$__DIRENV_INSTANT_STDERR_FILE"
+        __DIRENV_INSTANT_STDERR_FILE=""
+        command rm -f "$_stderr_file" 2>/dev/null
+    fi
+    __DIRENV_INSTANT_ENV_FILE=""
 }
 
-# Load environment from file if it has changed
-_direnv_load_env() {
-    [[ -z "$__DIRENV_INSTANT_ENV_FILE" ]] || [[ ! -f "$__DIRENV_INSTANT_ENV_FILE" ]] && return 0
-    
-    local _current_mtime=$(_direnv_get_mtime "$__DIRENV_INSTANT_ENV_FILE")
-    if [[ "$_current_mtime" != "$__DIRENV_INSTANT_ENV_MTIME" ]]; then
-        __DIRENV_INSTANT_ENV_MTIME="$_current_mtime"
-        eval "$(<"$__DIRENV_INSTANT_ENV_FILE")" 2>/dev/null || true
-    fi
-}
 
 # Background process that manages direnv execution and tmux pane
 _direnv_tmux_manager() {
-    local _env_file="$1"
-    local _parent_pid="$2"
-    local _pwd="$3"
-    local _direnv_cmd="$4"
-    local _pid_file="$5"
-    local _pane=""
-    local _temp_file="${_env_file}.tmp.$$"
-    
-    # Write our PID to file
-    echo $$ > "$_pid_file"
-    
-    # Cleanup function for resources
-    _direnv_cleanup() {
-        # Clean up tmux pane
-        if [[ -n "$_pane" ]] && command tmux list-panes -a -F "#{pane_id}" 2>/dev/null | command grep -q "^${_pane}$"; then
-            command tmux kill-pane -t "$_pane" 2>/dev/null || true
-        fi
-        # Clean up temp files
-        [[ -f "$_temp_file" ]] && command rm -f "$_temp_file" 2>/dev/null || true
-        [[ -f "${_temp_file}.env" ]] && command rm -f "${_temp_file}.env" 2>/dev/null || true
-        # Clean up PID file
-        [[ -f "$_pid_file" ]] && command rm -f "$_pid_file" 2>/dev/null || true
-    }
-    
-    # Set up trap to clean up on exit
-    trap '_direnv_cleanup' EXIT INT TERM
-    
-    # Only run if we have network connectivity
+    local _parent_pid="$1"
+    local _direnv_cmd="$2"
+    local _envrc_dir="$3"
+    local _env_file="$4"
+    local _stderr_file="$5"
+    local _temp_file="$_envrc_dir/.direnv/env.$_parent_pid.tmp"
+
+    # Clean up on exit
+    trap "command rm -rf '$_temp_file' 2>/dev/null" EXIT INT TERM
+
+    # Set manual reload flag if no network
     if ! _direnv_has_network; then
-        return 0
+        export _nix_direnv_manual_reload=1
     fi
-    
-    # Save entire environment to restore in tmux pane
-    local _env_dump="${_temp_file}.env"
-    # Use declare -p to properly escape all environment variables
-    typeset -px > "$_env_dump"
-    
-    # In tmux with network: create visible pane with restored environment
-    _pane=$(command tmux split-window -d -P -F "#{pane_id}" -l 10 \
-        "source '$_env_dump' && \
-         cd '$_pwd' && \
-         $_direnv_cmd export zsh > '$_temp_file' && \
-         result=\$? && \
-         if [ \$result -eq 0 ]; then \
-             command mv -f '$_temp_file' '$_env_file'; \
-             command sleep 4; \
-         else \
-             echo 'direnv failed with exit code:' \$result; \
-             read -k1 '?Press any key to close...'; \
-         fi")
-    
-    # Wait for pane to close
-    while command tmux list-panes -a -F "#{pane_id}" 2>/dev/null | command grep -q "^${_pane}$"; do
-        command sleep 0.5
-    done
-    
-    # Signal parent that environment is ready
-    command kill -USR1 $_parent_pid 2>/dev/null || true
+
+    # Run direnv with script to capture all output
+    # stdout goes to _temp_file, stderr is captured by script (not shown directly)
+    script -qfc "$_direnv_cmd export zsh > $_temp_file" /dev/null > "$_stderr_file" </dev/null &
+    local script_pid=$!
+
+    # Start monitoring for stderr output in background
+    (
+        sleep 4
+        # Create tmux pane to show loading messages
+        exec tmux split-window -d -l 10 zsh -c "
+            command tail -f '$_stderr_file' &
+            tail_pid=\$!
+
+            # Wait for direnv to complete
+            while [[ -f '$_temp_file' ]]; do
+                sleep 0.1
+            done
+
+            command kill \$tail_pid 2>/dev/null
+        "
+    ) &
+
+    # Wait for direnv to finish
+    wait $script_pid
+    local result=$?
+
+    tmux_pid=$!
+    kill $tmux_pid 2>/dev/null
+
+    # Move files to their final locations
+    if [[ $result -eq 0 && -f "$_temp_file" ]]; then
+        command mv -f "$_temp_file" "$_env_file"
+        kill -USR1 "$_parent_pid" 2>/dev/null
+    fi
 }
 
 # SIGUSR1 handler - loads environment when signaled by background process
 _direnv_handler() {
-    _direnv_load_env
+    # Display stderr output if available
+    if [[ -n "$__DIRENV_INSTANT_STDERR_FILE" ]] && [[ -f "$__DIRENV_INSTANT_STDERR_FILE" ]]; then
+        if [[ -s "$__DIRENV_INSTANT_STDERR_FILE" ]]; then
+            echo  "$(< $__DIRENV_INSTANT_STDERR_FILE)"
+        fi
+        command rm -f "$__DIRENV_INSTANT_STDERR_FILE" 2>/dev/null || true
+        __DIRENV_INSTANT_STDERR_FILE=""
+    fi
+
+    # Load environment variables
+    if [[ -n "$__DIRENV_INSTANT_ENV_FILE" ]] && [[ -f "$__DIRENV_INSTANT_ENV_FILE" ]]; then
+        eval "$(<"$__DIRENV_INSTANT_ENV_FILE")"
+        command rm -f "$__DIRENV_INSTANT_ENV_FILE"
+        __DIRENV_INSTANT_ENV_FILE=""
+    fi
 }
 
 # Find closest parent directory containing .envrc
@@ -167,70 +157,50 @@ _direnv_find_envrc() {
 # Main hook called on directory changes and prompts
 _direnv_hook() {
     [[ -z "${commands[direnv]}" ]] && return 0
-    
+
     # For non-tmux environments, just use direnv synchronously
     if [[ -z "$TMUX" ]]; then
         eval "$(${commands[direnv]} export zsh)"
         return 0
     fi
-    
-    _direnv_load_env
-    
+
     # Check if we're in a directory with .envrc
     local _envrc_dir=$(_direnv_find_envrc)
-    
+
     if [[ -z "$_envrc_dir" ]]; then
         # No .envrc: clean up and unload
         _direnv_kill_monitor
-        __DIRENV_INSTANT_ENV_FILE=""
-        __DIRENV_INSTANT_ENV_MTIME=""
-        __DIRENV_INSTANT_PID_FILE=""
         eval "$(${commands[direnv]} export zsh)" 2>/dev/null
         return 0
     fi
-    
+
     # Check if we need to restart monitor (different directory)
     if [[ "$_envrc_dir" != "$__DIRENV_INSTANT_CURRENT_DIR" ]]; then
         _direnv_kill_monitor
-        __DIRENV_INSTANT_ENV_FILE=""
-        __DIRENV_INSTANT_ENV_MTIME=""
-        __DIRENV_INSTANT_PID_FILE=""
     fi
-    
-    # Set up environment file path if not set
-    if [[ -z "$__DIRENV_INSTANT_ENV_FILE" ]]; then
-        local _direnv_dir="$_envrc_dir/.direnv"
-        [[ -d "$_direnv_dir" ]] || command mkdir -p "$_direnv_dir"
-        __DIRENV_INSTANT_ENV_FILE="$_direnv_dir/instant-export"
-        __DIRENV_INSTANT_PID_FILE="$_direnv_dir/instant-pid"
-    fi
-    
-    # Check if we already have a valid environment file
-    if [[ -f "$__DIRENV_INSTANT_ENV_FILE" ]] && [[ -n "$__DIRENV_INSTANT_ENV_MTIME" ]]; then
-        # Environment already loaded, no need to start monitor
+
+    # Set up paths
+    local _direnv_dir="$_envrc_dir/.direnv"
+    [[ -d "$_direnv_dir" ]] || command mkdir -p "$_direnv_dir"
+    local _env_file="$_direnv_dir/env.$$"
+
+    # Check if monitor is already running
+    if [[ -n "$__DIRENV_INSTANT_MONITOR_PID" ]] && command kill -0 "$__DIRENV_INSTANT_MONITOR_PID" 2>/dev/null; then
         return 0
     fi
-    
-    # Check if monitor is already running via PID file
-    if [[ -f "$__DIRENV_INSTANT_PID_FILE" ]]; then
-        local _existing_pid=$(<"$__DIRENV_INSTANT_PID_FILE" 2>/dev/null)
-        if [[ -n "$_existing_pid" ]] && command kill -0 "$_existing_pid" 2>/dev/null; then
-            # Monitor is still running
-            return 0
-        else
-            # Stale PID file, clean it up
-            command rm -f "$__DIRENV_INSTANT_PID_FILE" 2>/dev/null
-        fi
-    fi
-    
+
     # Start new monitor
     __DIRENV_INSTANT_CURRENT_DIR="$_envrc_dir"
-    
+    __DIRENV_INSTANT_ENV_FILE="$_env_file"
+    __DIRENV_INSTANT_STDERR_FILE="$_env_file.stderr"
+
+    parent_pid=$$
+
     # Launch background process
     (
-        _direnv_tmux_manager "$__DIRENV_INSTANT_ENV_FILE" $$ "$PWD" "${commands[direnv]}" "$__DIRENV_INSTANT_PID_FILE"
+        _direnv_tmux_manager "$parent_pid" "${commands[direnv]}" "$_envrc_dir" "$__DIRENV_INSTANT_ENV_FILE" "$__DIRENV_INSTANT_STDERR_FILE"
     ) &|
-    
+
     __DIRENV_INSTANT_MONITOR_PID=$!
 }
 
@@ -247,19 +217,16 @@ _direnv_exit_cleanup() {
 # Initialize hooks if not already done
 if [[ -z "${__DIRENV_INSTANT_HOOKED}" ]]; then
     typeset -g __DIRENV_INSTANT_HOOKED=1
-    
-    # Load zsh stat module for file modification time
-    zmodload -F zsh/stat b:zstat
-    
+
     # Set up signal handler
     trap '_direnv_handler' USR1
-    
+
     # Register zsh hooks
     autoload -Uz add-zsh-hook
     add-zsh-hook precmd _direnv_hook
     add-zsh-hook chpwd _direnv_hook
     add-zsh-hook zshexit _direnv_exit_cleanup
-    
+
     # Run initial hook
     _direnv_hook
 fi
