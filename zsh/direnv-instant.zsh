@@ -108,7 +108,7 @@ _direnv_tmux_manager() {
         fi
         # Clean up temp files
         [[ -f "$_temp_file" ]] && command rm -f "$_temp_file" 2>/dev/null || true
-        [[ -f "${_temp_file}.diff" ]] && command rm -f "${_temp_file}.diff" 2>/dev/null || true
+        [[ -f "${_temp_file}.env" ]] && command rm -f "${_temp_file}.env" 2>/dev/null || true
         # Clean up PID file
         [[ -f "$_pid_file" ]] && command rm -f "$_pid_file" 2>/dev/null || true
     }
@@ -120,37 +120,31 @@ _direnv_tmux_manager() {
     if ! _direnv_has_network; then
         return 0
     elif [[ -n "$TMUX" ]]; then
-        # Save DIRENV_DIFF to a file if it exists
-        local _diff_file="${_temp_file}.diff"
-        if [[ -n "$DIRENV_DIFF" ]]; then
-            echo "$DIRENV_DIFF" > "$_diff_file"
-        fi
+        # Save entire environment to restore in tmux pane
+        local _env_dump="${_temp_file}.env"
+        # Use declare -p to properly escape all environment variables
+        typeset -px > "$_env_dump"
         
-        # In tmux with network: create visible pane
+        # In tmux with network: create visible pane with restored environment
         _pane=$(command tmux split-window -d -P -F "#{pane_id}" -l 10 \
-            "cd '$_pwd' && \
-             [[ -f '$_diff_file' ]] && export DIRENV_DIFF=\"\$(< '$_diff_file')\" && \
-             command rm -f '$_diff_file' && \
+            "source '$_env_dump' && \
+             cd '$_pwd' && \
              $_direnv_cmd export zsh > '$_temp_file' && \
              result=\$? && \
              if [ \$result -eq 0 ]; then \
                  command mv -f '$_temp_file' '$_env_file'; \
-                 command sleep 5; \
+                 command sleep 4; \
              else \
                  echo 'direnv failed with exit code:' \$result; \
                  read -k1 '?Press any key to close...'; \
-             fi; \
-             ")
+             fi")
         
         # Wait for pane to close
         while command tmux list-panes -a -F "#{pane_id}" 2>/dev/null | command grep -q "^${_pane}$"; do
             command sleep 0.5
         done
     else
-        # Not in tmux: run silently only if we have network
-        if _direnv_has_network; then
-            cd "$_pwd" && $_direnv_cmd export zsh > "$_temp_file" 2>&1 && command mv -f "$_temp_file" "$_env_file"
-        fi
+        cd "$_pwd" && $_direnv_cmd export zsh > "$_temp_file" 2>&1 && command mv -f "$_temp_file" "$_env_file"
     fi
     
     # Signal parent that environment is ready
