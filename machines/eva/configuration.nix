@@ -37,7 +37,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.systemd.enable = false;
-  clan.core.networking.targetHost = "root@eva.i";
+  clan.core.networking.targetHost = lib.mkForce "root@eva.i";
   clan.core.networking.buildHost = "root@eve.i";
 
   systemd.network = {
