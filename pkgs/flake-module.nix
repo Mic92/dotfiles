@@ -1,9 +1,10 @@
 {
+  self,
   ...
 }:
 {
   perSystem =
-    { pkgs, ... }:
+    { pkgs, system, ... }:
     {
       packages =
         {
@@ -12,6 +13,10 @@
           gitea-mcp = pkgs.callPackage ./gitea-mcp { };
           tmux-mcp = pkgs.callPackage ./tmux-mcp { };
           claude-code = pkgs.callPackage ./claude-code { };
+          ghostty = pkgs.callPackage ./ghostty {
+            ghostty = self.inputs.ghostty.packages.${system}.ghostty;
+            inherit (pkgs) lib;
+          };
         }
         // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
           sengi = pkgs.callPackage ./sengi { };

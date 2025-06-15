@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+# email-sync - Sync emails from IMAP and tag with afew
+
+set -euo pipefail
+
+# Sync emails from IMAP servers (folders already organized by Sieve)
+echo "Syncing emails from IMAP servers..."
+mbsync -a
+
+# Initialize notmuch if needed
+if [ ! -d "$HOME/mail/.notmuch" ]; then
+    echo "Initializing notmuch database..."
+    notmuch new
+fi
+
+# Index new emails
+echo "Indexing new emails..."
+notmuch new
+
+# The post-new hook will run afew automatically to tag emails
+# based on the filters in ~/.config/afew/config
+
+# Show summary
+echo
+echo "Email Summary:"
+echo "=============="
+echo -n "Inbox: "
+notmuch count "tag:inbox AND tag:unread"
+echo -n "Lists: "
+notmuch count "tag:lists AND tag:unread"
+echo -n "Dev/GitHub: "
+notmuch count "tag:dev AND tag:unread"
+echo -n "Personal: "
+notmuch count "tag:personal AND tag:unread"
+echo -n "Work: "
+notmuch count "tag:work AND tag:unread"
+echo -n "Finance: "
+notmuch count "tag:finance AND tag:unread"
+echo -n "University: "
+notmuch count "tag:uni AND tag:unread"

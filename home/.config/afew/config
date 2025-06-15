@@ -1,0 +1,108 @@
+# afew configuration
+# This complements the server-side Sieve rules with additional client-side tagging
+
+# Tag emails based on which folder they're in (set by Sieve)
+[FolderNameFilter]
+# This filter adds tags based on folder names
+# It automatically handles the folder structure created by Sieve
+
+# Additional client-side tagging for better organization
+[Filter.1]
+# Tag all mailing list emails from zlist folders
+message = Tag mailing lists
+query = folder:/^zlist\./
+tags = +lists
+
+[Filter.2] 
+# Tag specific important mailing lists
+message = Tag nixpkgs
+query = folder:zlist.nixpkgs
+tags = +nixpkgs
+
+[Filter.3]
+# Tag GitHub notifications for quick access
+message = Tag GitHub notifications
+query = from:noreply@github.com OR from:notifications@github.com
+tags = +github
+
+[Filter.4]
+# Tag pull requests
+message = Tag pull requests
+query = subject:"[PR]" OR subject:"Pull Request" OR (from:noreply@github.com AND subject:"#")
+tags = +pr
+
+[Filter.5]
+# Tag CI/CD notifications
+message = Tag CI/CD
+query = from:builds@travis-ci.org OR from:builds@travis-ci.com OR from:gitlab@mg.gitlab.com OR subject:"Build failed" OR subject:"Build passed"
+tags = +ci
+
+[Filter.6]
+# Tag security notifications
+message = Tag security
+query = subject:security OR subject:vulnerability OR subject:CVE OR from:security@
+tags = +security
+
+[Filter.7]
+# Tag package/dependency updates
+message = Tag updates
+query = subject:"dependency update" OR subject:"package update" OR from:renovate OR from:dependabot
+tags = +updates
+
+[Filter.8]
+# Tag based on existing folder structure
+message = Tag by folder
+query = folder:Entwickler
+tags = +dev
+
+[Filter.9]
+message = Tag by folder
+query = folder:Netzwerke
+tags = +social
+
+[Filter.10]
+message = Tag by folder
+query = folder:Benachrichtigung
+tags = +notifications
+
+[Filter.11]
+message = Tag by folder
+query = folder:Geld
+tags = +finance
+
+[Filter.12]
+message = Tag by folder
+query = folder:Privat
+tags = +personal
+
+[Filter.13]
+message = Tag by folder
+query = folder:Arbeit
+tags = +work
+
+[Filter.14]
+message = Tag by folder
+query = folder:Uni
+tags = +uni
+
+[Filter.15]
+# Tag today's emails for quick access
+message = Tag today's emails
+query = date:today
+tags = +today
+
+[Filter.16]
+# Tag emails that need response
+message = Tag emails needing response
+query = tag:inbox AND NOT tag:lists AND NOT tag:notifications AND NOT from:noreply@
+tags = +needs-reply
+
+# Standard filters
+[ListMailsFilter]
+# Additional list detection based on headers
+
+[KillThreadsFilter]
+# Kill threads marked as killed
+
+[InboxFilter]
+# Ensure unprocessed emails stay in inbox

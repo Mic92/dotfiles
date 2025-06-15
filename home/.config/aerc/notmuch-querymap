@@ -1,0 +1,38 @@
+# Query map for aerc with notmuch
+# Maps folder names to notmuch queries
+
+# Main folders
+INBOX=tag:inbox
+Archive=NOT tag:inbox AND NOT tag:trash AND NOT tag:spam AND NOT tag:sent
+Sent=tag:sent
+Drafts=tag:draft
+Trash=tag:trash
+Spam=tag:spam
+
+# Organized folders (matching Sieve rules)
+Entwickler=tag:dev
+Netzwerke=tag:social
+Benachrichtigung=tag:notifications
+Geld=tag:finance
+Privat=tag:personal
+Arbeit=tag:work
+Uni=tag:uni
+
+# Mailing lists
+Lists=tag:lists
+Lists/nixpkgs=tag:nixpkgs
+Lists/staff-tum=tag:staff-tum
+Lists/dse-application=tag:dse-application
+Lists/chameleon=tag:chameleoncloud
+
+# Smart folders
+Unread=tag:unread
+Today=tag:today
+This Week=date:7d..
+GitHub=tag:github
+Pull Requests=tag:pr
+CI/CD=tag:ci
+Security=tag:security
+Updates=tag:updates
+Needs Reply=tag:needs-reply
+Important=tag:flagged OR tag:important

@@ -4,6 +4,7 @@
     ./common.nix
     ./modules/atuin-autosync.nix
     ./modules/claude-mcp.nix
+    ./modules/mail.nix
   ];
 
   fonts.fontconfig.enable = true;
@@ -24,7 +25,7 @@
     adwaita-icon-theme
     hicolor-icon-theme
     graphicsmagick
-    self.inputs.ghostty.packages.${pkgs.system}.ghostty
+    self.packages.${pkgs.system}.ghostty
     screen-message
     sshfs-fuse
     sshuttle
