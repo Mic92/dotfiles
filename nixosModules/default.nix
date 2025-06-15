@@ -7,7 +7,7 @@
 {
   srvos.flake = self;
   documentation.info.enable = false;
-  clan.core.networking.targetHost = lib.mkDefault "root@${config.networking.hostName}.hyprspace";
+  clan.core.networking.targetHost = "root@${config.networking.hostName}.hyprspace";
 
   security.sudo.execWheelOnly = lib.mkForce false;
   programs.nano.enable = false;

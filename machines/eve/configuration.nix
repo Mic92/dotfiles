@@ -8,7 +8,7 @@
 }:
 {
   networking.hostName = "eve";
-  clan.core.networking.targetHost = "root@eve.i";
+  clan.core.networking.targetHost = lib.mkForce "root@eve.i";
   networking.hostId = "8425e349";
 
   time.timeZone = "UTC";

@@ -1,6 +1,7 @@
 {
   pkgs,
   self,
+  lib,
   ...
 }:
 {
@@ -26,7 +27,7 @@
 
   nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
-  clan.core.networking.targetHost = "root@matchbox.local";
+  clan.core.networking.targetHost = lib.mkForce "root@matchbox.local";
   #clan.core.networking.buildHost = "root@eve.i";
   clan.core.deployment.requireExplicitUpdate = true;
 
