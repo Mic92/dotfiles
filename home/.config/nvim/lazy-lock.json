@@ -4,7 +4,7 @@
   "CopilotChat.nvim": { "branch": "main", "commit": "eddc9a98930cda0b3819cc1d93427b402697dfab" },
   "LuaSnip": { "branch": "master", "commit": "458560534a73f7f8d7a11a146c801db00b081df0" },
   "NeoSolarized.nvim": { "branch": "master", "commit": "3c55ad358c062aa4879950c4f83b4deeac6b72df" },
-  "SchemaStore.nvim": { "branch": "main", "commit": "a3a7a4f1963ee4eb7d4274e4381f5d5338179cf3" },
+  "SchemaStore.nvim": { "branch": "main", "commit": "19158d5cb9d5e066d41d7510a1588719bf48542c" },
   "aerial.nvim": { "branch": "master", "commit": "3284a2cb858ba009c79da87d5e010ccee3c99c4d" },
   "astrocommunity": { "branch": "main", "commit": "9b7d85c1f7d78dda6a83bda5d2094f406c952389" },
   "astrocore": { "branch": "main", "commit": "c797dd5a592e2bd154f2503e231b8a4083659534" },
