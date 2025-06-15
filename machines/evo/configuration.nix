@@ -2,10 +2,11 @@
   self,
   pkgs,
   config,
+  lib,
   ...
 }:
 {
-  clan.core.networking.targetHost = "root@evo.local";
+  clan.core.networking.targetHost = lib.mkForce "root@evo.local";
   system.primaryUser = "joerg";
 
   networking.hostName = "evo";
