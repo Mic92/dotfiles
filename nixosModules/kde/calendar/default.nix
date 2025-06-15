@@ -31,10 +31,10 @@ let
           IFS='|' read -r DATETIME TITLE EVENT_UID <<< "$event"
           TIME=$(echo "$DATETIME" | cut -d' ' -f2)
           DATE=$(echo "$DATETIME" | cut -d' ' -f1)
-          
+
           # Create unique event ID
           EVENT_ID="$DATE $TIME $EVENT_UID"
-          
+
           # Check if already notified
           if ! grep -qF "|$EVENT_ID" "$STATE_FILE" 2>/dev/null; then
             # Send notification
@@ -44,7 +44,7 @@ let
               --icon=office-calendar \
               "Event at $TIME" \
               "$TITLE"
-            
+
             # Record notification
             echo "$(date +%s)|$EVENT_ID" >> "$STATE_FILE"
           fi
