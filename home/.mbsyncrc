@@ -26,28 +26,3 @@ Expunge Both
 # Save the synchronization state files in the relevant directory
 SyncState *
 Patterns *
-
-IMAPAccount edinburgh
-# Address to connect to
-Host outlook.office365.com
-User s1691654@ed.ac.uk
-Port 993
-PassCmd "rbw get EASE"
-# Use SSL
-SSLType IMAPS
-# The following line should work. If get certificate errors, uncomment the two
-# following lines and read the "Troubleshooting" section.
-CertificateFile /etc/ssl/certs/ca-certificates.crt
-
-IMAPStore edinburgh-remote
-Account edinburgh
-
-Channel thalheim2
-Far :edinburgh-remote:
-Near :thalheim-local:
-# Automatically create missing mailboxes, both locally and on the server
-Create Near
-Expunge None
-Sync Pull New
-# Save the synchronization state files in the relevant directory
-Patterns INBOX
