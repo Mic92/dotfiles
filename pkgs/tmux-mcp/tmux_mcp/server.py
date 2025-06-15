@@ -7,7 +7,6 @@ import os
 import shlex
 import subprocess
 import tempfile
-import time
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
@@ -68,6 +67,8 @@ logger = logging.getLogger("tmux-mcp")
 _output_cache: dict[str, Path] = {}
 # Cache cleanup registry
 _cache_cleanup_tasks: dict[str, asyncio.Task[None]] = {}
+# Window cleanup registry
+_window_cleanup_tasks: dict[str, asyncio.Task[None]] = {}
 
 
 def run_tmux_command(args: list[str]) -> str:
@@ -136,12 +137,17 @@ echo "done:$exit_code" > {quoted_completion_fifo}
 
 
 def _create_tmux_window(
-    target_session: str, working_dir: str | None, shell_command: str
+    target_session: str,
+    working_dir: str | None,
+    shell_command: str,
+    window_name: str | None = None,
 ) -> str:
     """Create a new tmux window and return its unique name."""
     import random
 
-    window_name = f"cmd-{int(time.time())}-{random.randint(1000, 9999)}"  # noqa: S311
+    # Use provided window name or generate a unique one
+    if not window_name:
+        window_name = f"claude-{random.randint(100, 9999)}"  # noqa: S311
 
     # First create the window with a shell
     window_args = [
@@ -286,6 +292,26 @@ async def _cleanup_cached_output(pane_id: str, delay_seconds: int = 300) -> None
         raise
 
 
+async def _cleanup_tmux_window(pane_id: str, delay_seconds: int = 60) -> None:
+    """Clean up tmux window after a delay."""
+    try:
+        await asyncio.sleep(delay_seconds)
+        try:
+            # Kill the pane which will close the window if it's the only pane
+            run_tmux_command(["kill-pane", "-t", pane_id])
+            logger.debug(
+                f"Cleaned up tmux window for pane {pane_id} after {delay_seconds}s delay"
+            )
+        except TmuxError as e:
+            logger.debug(f"Failed to clean up window for pane {pane_id}: {e}")
+        finally:
+            _window_cleanup_tasks.pop(pane_id, None)
+    except asyncio.CancelledError:
+        # Task was cancelled, still clean up tracking
+        _window_cleanup_tasks.pop(pane_id, None)
+        raise
+
+
 def _cache_output_file(pane_id: str, output_file: Path) -> None:
     """Cache an output file for later pagination."""
     # Cancel any existing cleanup task for this pane (safely)
@@ -304,6 +330,28 @@ def _cache_output_file(pane_id: str, output_file: Path) -> None:
         if not loop.is_closed():
             cleanup_task = asyncio.create_task(_cleanup_cached_output(pane_id))
             _cache_cleanup_tasks[pane_id] = cleanup_task
+    except RuntimeError:
+        # No running event loop - skip cleanup task scheduling
+        pass
+
+
+def _schedule_window_cleanup(pane_id: str, delay_seconds: int = 60) -> None:
+    """Schedule window cleanup after a delay."""
+    # Cancel any existing cleanup task for this pane (safely)
+    if pane_id in _window_cleanup_tasks:
+        with contextlib.suppress(RuntimeError):
+            # Event loop might be closed - ignore cancellation errors
+            _window_cleanup_tasks[pane_id].cancel()
+        _window_cleanup_tasks.pop(pane_id, None)
+
+    # Schedule cleanup (only if event loop is running)
+    try:
+        loop = asyncio.get_running_loop()
+        if not loop.is_closed():
+            cleanup_task = asyncio.create_task(
+                _cleanup_tmux_window(pane_id, delay_seconds)
+            )
+            _window_cleanup_tasks[pane_id] = cleanup_task
     except RuntimeError:
         # No running event loop - skip cleanup task scheduling
         pass
@@ -366,10 +414,11 @@ async def tmux_run_command(
     session_name: str | None = None,
     timeout_seconds: int = 300,
     keep_pane: bool = False,
+    window_name: str | None = None,
 ) -> CommandResult:
     """Run a command in a new tmux pane and wait for completion using FIFO synchronization."""
     logger.debug(
-        f"Starting tmux_run_command: command={command!r}, working_dir={working_dir!r}, session_name={session_name!r}, timeout={timeout_seconds}"
+        f"Starting tmux_run_command: command={command!r}, working_dir={working_dir!r}, session_name={session_name!r}, timeout={timeout_seconds}, window_name={window_name!r}"
     )
 
     try:
@@ -402,12 +451,12 @@ async def tmux_run_command(
             )
             logger.debug(f"Built shell command: {shell_command}")
 
-            window_name = _create_tmux_window(
-                target_session, working_dir, shell_command
+            window_name_result = _create_tmux_window(
+                target_session, working_dir, shell_command, window_name
             )
-            logger.debug(f"Created window: {window_name}")
+            logger.debug(f"Created window: {window_name_result}")
 
-            pane_id = _find_pane_id(target_session, window_name)
+            pane_id = _find_pane_id(target_session, window_name_result)
             logger.debug(f"Found pane ID: {pane_id}")
 
             # Wait for completion with timeout
@@ -429,15 +478,12 @@ async def tmux_run_command(
                 with contextlib.suppress(asyncio.CancelledError):
                     await completion_task
 
-                # Kill the pane since it timed out (unless keep_pane is True)
+                # Schedule window cleanup with 60s delay since it timed out (unless keep_pane is True)
                 if not keep_pane:
-                    try:
-                        run_tmux_command(["kill-pane", "-t", pane_id])
-                        logger.debug(f"Killed pane {pane_id} after timeout")
-                    except TmuxError as e:
-                        logger.debug(
-                            f"Failed to kill pane {pane_id} after timeout: {e}"
-                        )
+                    _schedule_window_cleanup(pane_id, delay_seconds=60)
+                    logger.debug(
+                        f"Scheduled window cleanup for pane {pane_id} in 60s after timeout"
+                    )
 
                 return CommandResult(
                     pane_id=pane_id,
@@ -464,14 +510,10 @@ async def tmux_run_command(
             # Cache the output file for pagination
             _cache_output_file(pane_id, output_file)
 
-            # Kill the pane now that the command is complete (unless keep_pane is True)
+            # Schedule window cleanup with 60s delay (unless keep_pane is True)
             if not keep_pane:
-                try:
-                    run_tmux_command(["kill-pane", "-t", pane_id])
-                    logger.debug(f"Killed pane {pane_id} after command completion")
-                except TmuxError as e:
-                    logger.debug(f"Failed to kill pane {pane_id}: {e}")
-                    # Don't fail the whole operation if we can't kill the pane
+                _schedule_window_cleanup(pane_id, delay_seconds=60)
+                logger.debug(f"Scheduled window cleanup for pane {pane_id} in 60s")
 
             return CommandResult(
                 pane_id=pane_id,
@@ -743,7 +785,7 @@ async def handle_list_tools() -> list[Tool]:
     return [
         Tool(
             name="tmux_run_command",
-            description="Run a command in a new tmux window and return output when complete. Uses the current tmux session by default. Automatically closes the pane after completion unless keep_pane is True.",
+            description="Run a command in a new tmux window and return output when complete. Uses the current tmux session by default. Automatically closes the window after 60 seconds unless keep_pane is True.",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -766,6 +808,10 @@ async def handle_list_tools() -> list[Tool]:
                         "type": "boolean",
                         "description": "Keep the pane open after command completion for inspection (defaults to False)",
                         "default": False,
+                    },
+                    "window_name": {
+                        "type": "string",
+                        "description": "Custom name for the tmux window (defaults to auto-generated name)",
                     },
                 },
                 "required": ["command"],
@@ -897,8 +943,14 @@ async def _handle_tool_call(  # noqa: PLR0911
             session_name = arguments.get("session_name")
             timeout_seconds = arguments.get("timeout", 300)
             keep_pane = arguments.get("keep_pane", False)
+            window_name = arguments.get("window_name")
             return await tmux_run_command(
-                command, working_dir, session_name, timeout_seconds, keep_pane
+                command,
+                working_dir,
+                session_name,
+                timeout_seconds,
+                keep_pane,
+                window_name,
             )
         case "tmux_send_input":
             pane_id = arguments["pane_id"]

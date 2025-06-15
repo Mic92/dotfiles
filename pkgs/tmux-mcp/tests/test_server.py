@@ -1,5 +1,6 @@
 """Real-world integration tests for tmux MCP server high-level tools."""
 
+import asyncio
 import contextlib
 import subprocess
 import tempfile
@@ -211,19 +212,27 @@ class TestTmuxIntegration:
         assert "Error" in result
 
     @pytest.mark.asyncio  # type: ignore[misc]
-    async def test_tmux_automatic_pane_cleanup(self, tmux_server: str) -> None:
-        """Test that panes are automatically cleaned up after command completion."""
+    async def test_tmux_delayed_window_cleanup(self, tmux_server: str) -> None:
+        """Test that windows are cleaned up after 60s delay when keep_pane=False."""
         _ = tmux_server  # Use the fixture to set up test environment
 
-        # Run a command (should auto-close pane by default)
+        # Run a command (should schedule delayed cleanup)
         result = await tmux_run_command("echo 'test cleanup'", timeout_seconds=5)
         assert result.exit_code == 0
         pane_id = result.pane_id
 
-        # Verify the pane is automatically gone by trying to capture it
-        # This should fail because the pane was auto-closed
+        # Immediately after completion, the pane should still exist
         capture_result = await tmux_capture_pane(pane_id)
-        assert "Error" in capture_result
+        assert "Error" not in capture_result
+        assert "test cleanup" in capture_result
+
+        # Wait a short time (less than 60s) - pane should still exist
+        await asyncio.sleep(2)
+        capture_result = await tmux_capture_pane(pane_id)
+        assert "Error" not in capture_result
+
+        # Note: We can't test the full 60s delay in unit tests as it would be too slow
+        # The actual cleanup behavior is tested manually
 
     @pytest.mark.asyncio  # type: ignore[misc]
     async def test_tmux_keep_pane_option(self, tmux_server: str) -> None:
@@ -507,3 +516,60 @@ class TestTmuxIntegration:
         assert "Line 4: ERROR" in rg_result.output
         # When no pagination cursor is provided, pagination info should not be included
         assert rg_result.pagination is None
+
+    @pytest.mark.asyncio  # type: ignore[misc]
+    async def test_tmux_custom_window_name(self, tmux_server: str) -> None:
+        """Test running command with custom window name."""
+        _ = tmux_server  # Use the fixture to set up test environment
+
+        # Run command with custom window name
+        result = await tmux_run_command(
+            "echo 'Test with custom window'",
+            timeout_seconds=10,
+            window_name="my-custom-window",
+        )
+
+        assert result.exit_code == 0
+        assert "Test with custom window" in result.output
+        assert result.pane_id.startswith("%")
+
+    @pytest.mark.asyncio  # type: ignore[misc]
+    async def test_tmux_auto_generated_window_name(self, tmux_server: str) -> None:
+        """Test that auto-generated window names use 'claude' prefix."""
+        _ = tmux_server  # Use the fixture to set up test environment
+
+        # Run command without custom window name to test auto-generation
+        result = await tmux_run_command(
+            "echo 'Test auto-generated window'",
+            timeout_seconds=10,
+            keep_pane=True,  # Keep pane so we can check the window name
+        )
+
+        assert result.exit_code == 0
+        assert result.pane_id.startswith("%")
+
+        # Get window info to verify the name
+        try:
+            proc = await asyncio.create_subprocess_exec(
+                "tmux",
+                "display-message",
+                "-t",
+                result.pane_id,
+                "-p",
+                "#{window_name}",
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            stdout, stderr = await proc.communicate()
+
+            if proc.returncode != 0:
+                error_msg = f"tmux command failed: {stderr.decode()}"
+                raise RuntimeError(error_msg)
+
+            window_info = stdout.decode().strip()
+
+            # Check that the window name starts with 'claude-'
+            assert window_info.startswith("claude-")
+        finally:
+            # Clean up the kept pane
+            await tmux_kill_pane(result.pane_id)
