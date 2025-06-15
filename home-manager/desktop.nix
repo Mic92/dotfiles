@@ -4,6 +4,7 @@
     ./common.nix
     ./modules/atuin-autosync.nix
     ./modules/claude-mcp.nix
+    ./modules/mail.nix
   ];
 
   fonts.fontconfig.enable = true;

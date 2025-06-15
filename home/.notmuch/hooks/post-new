@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+# Run afew to tag new messages based on filters
+# We only tag, not move, since Sieve handles folder organization server-side
+afew --tag --new
+
+# Remove the 'new' tag from all messages
+notmuch tag -new -- tag:new
