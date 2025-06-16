@@ -18,7 +18,6 @@
           # ghostty only supports Linux platforms
           ghostty = pkgs.callPackage ./ghostty {
             ghostty = self.inputs.ghostty.packages.${system}.ghostty;
-            inherit (pkgs) lib stdenv;
           };
         }
         // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
