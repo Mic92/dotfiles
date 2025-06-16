@@ -23,3 +23,9 @@ tags = +pr
 message = Tag CI/CD
 query = (from:notifications@github.com AND (subject:"Run failed" OR subject:"Run cancelled"))
 tags = +ci;-github
+
+[Filter.5]
+# Tag verification codes and magic links
+message = Tag verification codes and magic links
+query = subject:"verification code" OR subject:"magic link" OR subject:"secure link to log in" OR subject:"sign in link" OR body:"verification code is" OR body:"magic link" OR body:"secure link to log in"
+tags = +verification-code

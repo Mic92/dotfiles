@@ -20,6 +20,14 @@ notmuch new
 # The post-new hook will run afew automatically to tag emails
 # based on the filters in ~/.config/afew/config
 
+# Run afew to tag new emails (including verification codes)
+echo "Tagging emails with afew..."
+afew -tn
+
 # Clean up old CI failure notifications (but keep regular GitHub notifications)
 echo "Cleaning up old CI failures..."
-notmuch tag +trash -- 'tag:ci AND from:notifications@github.com AND (subject:"Run failed" OR subject:"Run cancelled") AND date:..2days'
+notmuch tag +trash -- 'tag:ci AND date:..2days'
+
+# Clean up old verification codes and magic links (now using the verification-code tag)
+echo "Cleaning up old verification codes and magic links..."
+notmuch tag +trash -- 'tag:verification-code AND date:..1week'
