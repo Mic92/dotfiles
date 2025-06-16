@@ -64,7 +64,7 @@
       nerd-fonts.fira-code
       inxi
     ]
-    ++ lib.optionals pkgs.stdenv.isLinux [
+    ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
       self.packages.${pkgs.system}.ghostty
     ];
 }
