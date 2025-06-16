@@ -2,37 +2,70 @@
 # Maps folder names to notmuch queries
 
 # Main folders
-INBOX=tag:inbox
-Archive=NOT tag:inbox AND NOT tag:trash AND NOT tag:spam AND NOT tag:sent
-Sent=tag:sent
-Drafts=tag:draft
+INBOX=(folder:thalheim.io OR folder:Entwickler OR folder:Netzwerke OR folder:Benachrichtigung OR folder:Geld OR folder:Privat OR folder:Arbeit OR folder:Uni) AND date:7d..
+Entwickler=folder:Entwickler AND NOT tag:trash
+Netzwerke=folder:Netzwerke AND NOT tag:trash
+Benachrichtigung=folder:Benachrichtigung AND NOT tag:trash
+Geld=folder:Geld AND NOT tag:trash
+Privat=folder:Privat AND NOT tag:trash
+Arbeit=folder:Arbeit AND NOT tag:trash
+Uni=folder:Uni AND NOT tag:trash
+Sent=folder:Sent
+Drafts=folder:Drafts
 Trash=tag:trash
-Spam=tag:spam
+Spam=folder:spam
 
-# Organized folders (matching Sieve rules)
-Entwickler=tag:dev
-Netzwerke=tag:social
-Benachrichtigung=tag:notifications
-Geld=tag:finance
-Privat=tag:personal
-Arbeit=tag:work
-Uni=tag:uni
-
-# Mailing lists
-Lists=tag:lists
-Lists/nixpkgs=tag:nixpkgs
-Lists/staff-tum=tag:staff-tum
-Lists/dse-application=tag:dse-application
-Lists/chameleon=tag:chameleoncloud
 
 # Smart folders
-Unread=tag:unread
-Today=tag:today
-This Week=date:7d..
-GitHub=tag:github
-Pull Requests=tag:pr
-CI/CD=tag:ci
-Security=tag:security
-Updates=tag:updates
-Needs Reply=tag:needs-reply
-Important=tag:flagged OR tag:important
+GitHub=tag:github AND NOT tag:trash
+Pull Requests=tag:pr AND NOT tag:trash
+CI/CD=tag:ci AND NOT tag:trash
+
+# Other folders
+Whisp=folder:Whisp AND NOT tag:trash
+Queue=folder:Queue AND NOT tag:trash
+
+# Mailing lists
+z/all-help=folder:zlist.all-help AND NOT tag:trash
+z/c3d2=folder:zlist.c3d2 AND NOT tag:trash
+z/cfead=folder:zlist.cfead AND NOT tag:trash
+z/chameleon=folder:zlist.chameleoncloud AND NOT tag:trash
+z/cloudlab=folder:zlist.cloudlab-users AND NOT tag:trash
+z/datenspuren=folder:zlist.datenspuren AND NOT tag:trash
+z/dmarc=folder:zlist.dmarc AND NOT tag:trash
+z/dse-application=folder:zlist.dse-application AND NOT tag:trash
+z/eleanor=folder:zlist.eleanor-users AND NOT tag:trash
+z/exc-students=folder:zlist.exc-students AND NOT tag:trash
+z/icsa-members=folder:zlist.icsa-members AND NOT tag:trash
+z/icsa-students=folder:zlist.icsa-students AND NOT tag:trash
+z/if-people=folder:zlist.if-people AND NOT tag:trash
+z/inf-general=folder:zlist.inf-general AND NOT tag:trash
+z/inf-people=folder:zlist.inf-people AND NOT tag:trash
+z/internet-refugees=folder:zlist.internet-for-refugees AND NOT tag:trash
+z/it4refugees=folder:zlist.it4refugees AND NOT tag:trash
+z/jirabruegge=folder:zlist.jirabruegge AND NOT tag:trash
+z/kvm=folder:zlist.kvm AND NOT tag:trash
+z/level1people=folder:zlist.level1people AND NOT tag:trash
+z/limbo=folder:zlist.limbo AND NOT tag:trash
+z/ls1=folder:zlist.ls1 AND NOT tag:trash
+z/ls1-logins=folder:zlist.ls1-logins AND NOT tag:trash
+z/matemat=folder:zlist.matemat AND NOT tag:trash
+z/mitglieder=folder:zlist.mitglieder AND NOT tag:trash
+z/netzbiotop=folder:zlist.netzbiotop AND NOT tag:trash
+z/nixpkgs=folder:zlist.nixpkgs AND NOT tag:trash
+z/phd-1styr=folder:zlist.phd-1styr AND NOT tag:trash
+z/phd-continuing=folder:zlist.phd-continuing AND NOT tag:trash
+z/phd-degree=folder:zlist.phd-degree-students AND NOT tag:trash
+z/ppar-affiliates=folder:zlist.Ppar-affiliates AND NOT tag:trash
+z/ppar-announce=folder:zlist.ppar-announce AND NOT tag:trash
+z/research-students=folder:zlist.research-students AND NOT tag:trash
+z/staff-tum=folder:zlist.staff-tum AND NOT tag:trash
+z/students=folder:zlist.students AND NOT tag:trash
+z/sys-announce=folder:zlist.sys-announce AND NOT tag:trash
+z/tsp-contract=folder:zlist.tsp-contract AND NOT tag:trash
+z/unknown=folder:zlist.unknown AND NOT tag:trash
+z/zentral-alle=folder:zlist.zentral_alle AND NOT tag:trash
+z/zentral-studierende=folder:zlist.zentral_studierende AND NOT tag:trash
+z/uni-greifswald=folder:zlist.uni-greifswald AND NOT tag:trash
+z/acm=folder:zlist.acm AND NOT tag:trash
+z/tum=folder:zlist.tum AND NOT tag:trash

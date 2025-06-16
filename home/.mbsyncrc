@@ -3,8 +3,8 @@ IMAPAccount thalheim
 Host imap.thalheim.io
 User joerg@higgsboson.tk
 PassCmd "rbw get Eve"
-# Use SSL
-SSLType STARTTLS
+# Use TLS
+TLSType STARTTLS
 # The following line should work. If get certificate errors, uncomment the two
 # following lines and read the "Troubleshooting" section.
 CertificateFile /etc/ssl/certs/ca-certificates.crt

@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Count messages in trash
+COUNT=$(notmuch count tag:trash)
+
+if [ "$COUNT" -eq 0 ]; then
+    echo "No messages in trash"
+    exit 0
+fi
+
+# Prompt for confirmation
+echo "Found $COUNT messages in trash."
+read -p "Permanently delete all? [y/N] " -n 1 -r
+echo
+
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    echo "Deleting trash messages..."
+    notmuch search --output=files tag:trash | xargs -I {} rm -f {}
+    notmuch new
+    echo "Trash emptied."
+else
+    echo "Cancelled."
+fi
