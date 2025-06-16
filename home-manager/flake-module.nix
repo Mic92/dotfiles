@@ -53,7 +53,7 @@
             ["web01"]="mic92"
             ["bld2"]="mic92"
             ["eve"]="eve"
-            ["evo"]="mac-desktop"
+            ["evo"]="macos"
           )
           profile="common"
           user=$(id -un)
