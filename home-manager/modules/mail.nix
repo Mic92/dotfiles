@@ -14,6 +14,9 @@
     afew # notmuch tagging tool
     notmuch-addrlookup
 
+    # Contacts management
+    khard # CardDAV address book
+
     # Password management for email
     rbw # Bitwarden CLI (already used in your mbsync config)
 
