@@ -5,7 +5,6 @@
   ...
 }:
 let
-  inherit (self.inputs) nixos-generators;
   defaultModule =
     { ... }:
     {
@@ -35,7 +34,6 @@ in
         };
 
         nspawn-template = import ./nspawn-template.nix {
-          inherit nixos-generators;
           inherit pkgs;
         };
       };
