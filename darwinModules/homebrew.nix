@@ -19,13 +19,18 @@
   # Remove all homebrew packages when they get removed from the configuration
   homebrew.onActivation.cleanup = "uninstall";
 
+  homebrew.taps = [
+    "deskflow/homebrew-tap"
+  ];
   homebrew.casks = [
+    "alt-tab"
     "ferdium"
+    "deskflow"
     "firefox"
     "signal"
     "ghostty"
     "via"
-    "amethyst"
     "gather"
+    "claude"
   ];
 }
