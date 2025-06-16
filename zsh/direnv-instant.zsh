@@ -46,7 +46,13 @@ _direnv_tmux_manager() {
 
     # Run direnv with script to capture all output
     # stdout goes to _temp_file, stderr is captured by script (not shown directly)
-    script -qfc "$_direnv_cmd export zsh > $_temp_file" /dev/null > "$_stderr_file" </dev/null &
+    if [[ "$OSTYPE" == darwin* ]]; then
+        # macOS: run direnv directly without script due to TTY requirements
+        ( $_direnv_cmd export zsh > "$_temp_file" 2> "$_stderr_file" ) &
+    else
+        # Linux: use script with -f flag for flush
+        script -qfc "$_direnv_cmd export zsh > $_temp_file" /dev/null > "$_stderr_file" </dev/null &
+    fi
     local script_pid=$!
 
     # Start monitoring for stderr output in background
