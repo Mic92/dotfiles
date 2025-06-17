@@ -106,7 +106,7 @@
       "locked": {
         "lastModified": 1749836431,
         "narHash": "sha256-TygKDHK5tAzl9vPh0HcCzWQ5leNh1fCratxkHLFFaRA=",
-        "rev": "5a273ea113a80127d17c0df996fe8378e7203fa4",
+        "rev": "b7cc9ee5989081fe7f11959b647792f267319441",
         "type": "tarball",
         "url": "https://git.clan.lol/api/v1/repos/clan/data-mesher/archive/b7cc9ee5989081fe7f11959b647792f267319441.tar.gz"
       },
@@ -129,10 +129,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1750183231,
-        "narHash": "sha256-QRQJ0OU98Fn4JAYCQR2KAePOmwj7l57OXV96nQ17WpY=",
+        "lastModified": 1750183842,
+        "narHash": "sha256-znYkJ+9GUNQCmFtEhGvMRZPRP3fdGmbiuTyyrJRKUGA=",
         "ref": "refs/heads/main",
-        "rev": "5a273ea113a80127d17c0df996fe8378e7203fa4",
+        "rev": "cb75111e4c99c7a960cfdd0d743f75663e36cbfa",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
@@ -258,7 +258,7 @@
         "narHash": "sha256-/kOOgeUyZDYQVIgYWWOr6pB59kfhGSXdbxCnhya0F5A=",
         "owner": "ghostty-org",
         "repo": "ghostty",
-        "rev": "f794693bdc161efc18942bbc5cd26cc3b7b71336",
+        "rev": "a2b4a2c0e42cb2bdf970598083e59e5be88f511d",
         "type": "github"
       },
       "original": {
