@@ -40,6 +40,21 @@ notmuch tag +trash -- 'tag:calendar AND NOT tag:calendar-reminder AND date:..1ye
 echo "Cleaning up old calendar reminders..."
 notmuch tag +trash -- 'tag:calendar-reminder AND date:..2days'
 
+# Send desktop notifications for new emails (if in graphical session)
+if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then
+    echo "Checking for new email notifications..."
+    
+    # Query for new emails in inbox folders from the last 7 days
+    # that haven't been notified yet
+    NEW_EMAILS=$(notmuch search --output=messages '(folder:thalheim.io OR folder:Entwickler OR folder:Netzwerke OR folder:Benachrichtigung OR folder:Geld OR folder:Privat OR folder:Arbeit OR folder:Uni) AND date:7d.. AND NOT tag:notified AND NOT tag:trash' 2>/dev/null || true)
+    
+    if [ -n "$NEW_EMAILS" ]; then
+        # Process each new email
+        while IFS= read -r msg_id; do
+            # Get email details
+            FROM=$(notmuch show --format=json "$msg_id" | jq -r '.[0][0][0].headers.From' | sed 's/<.*>//g' | xargs)
+            SUBJECT=$(notmuch show --format=json "$msg_id" | jq -r '.[0][0][0].headers.Subject')
+            
             # Send desktop notification
             notify-send "New Email" "$FROM: $SUBJECT" --icon=mail-unread
             

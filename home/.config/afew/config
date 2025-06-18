@@ -29,3 +29,21 @@ tags = +ci;-github
 message = Tag verification codes and magic links
 query = subject:"verification code" OR subject:"magic link" OR subject:"secure link to log in" OR subject:"sign in link" OR body:"verification code is" OR body:"magic link" OR body:"secure link to log in"
 tags = +verification-code
+
+[Filter.6]
+# Tag Google Calendar emails
+message = Tag Google Calendar emails
+query = from:calendar-notification@google.com
+tags = +calendar
+
+[Filter.7]
+# Tag Nextcloud calendar emails
+message = Tag Nextcloud calendar emails
+query = from:nextcloud@thalheim.io AND body:"Calendar:"
+tags = +calendar
+
+[Filter.8]
+# Tag calendar reminder emails
+message = Tag calendar reminder emails
+query = (from:calendar-notification@google.com AND subject:Notification) OR (from:nextcloud@thalheim.io AND subject:"New notification" AND body:"Calendar:")
+tags = +calendar-reminder
