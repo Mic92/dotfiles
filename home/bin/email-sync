@@ -31,3 +31,20 @@ notmuch tag +trash -- 'tag:ci AND date:..2days'
 # Clean up old verification codes and magic links (now using the verification-code tag)
 echo "Cleaning up old verification codes and magic links..."
 notmuch tag +trash -- 'tag:verification-code AND date:..1week'
+
+# Clean up old calendar emails (older than 1 year)
+echo "Cleaning up old calendar emails..."
+notmuch tag +trash -- 'tag:calendar AND NOT tag:calendar-reminder AND date:..1year'
+
+# Clean up old calendar reminders (older than 2 days)
+echo "Cleaning up old calendar reminders..."
+notmuch tag +trash -- 'tag:calendar-reminder AND date:..2days'
+
+            # Send desktop notification
+            notify-send "New Email" "$FROM: $SUBJECT" --icon=mail-unread
+            
+            # Mark as notified so we don't notify again
+            notmuch tag +notified -- "$msg_id"
+        done <<< "$NEW_EMAILS"
+    fi
+fi
