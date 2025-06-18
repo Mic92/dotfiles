@@ -22,6 +22,7 @@
       nix-prefetch
       (pkgs.callPackage ./pkgs/atuin { })
       mergiraf
+      jujutsu
 
       hexyl
       binutils
