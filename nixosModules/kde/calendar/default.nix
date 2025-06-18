@@ -65,6 +65,7 @@ in
   environment.systemPackages = with pkgs; [
     khal
     vdirsyncer
+    todoman
     calendarNotifyScript
     calendarSyncScript
   ];

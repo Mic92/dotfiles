@@ -26,7 +26,7 @@ afew -tn
 
 # Run afew cleanup configuration on ALL emails
 echo "Running cleanup rules on all emails..."
-afew --tag --all -C ~/.config/afew/cleanup.conf
+XDG_CONFIG_HOME=~/.config/afew-cleanup afew --tag --all
 
 # Send desktop notifications for new emails (if in graphical session)
 if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then

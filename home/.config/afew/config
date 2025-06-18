@@ -7,43 +7,49 @@
 # It automatically handles the folder structure created by Sieve
 
 [Filter.2]
-# Tag GitHub notifications for quick access
-message = Tag GitHub notifications
-query = from:noreply@github.com OR from:notifications@github.com
-tags = +github
-
-[Filter.3]
 # Tag pull requests
 message = Tag pull requests
 query = subject:"[PR]" OR subject:"Pull Request" OR (from:noreply@github.com AND subject:"#")
 tags = +pr
 
-[Filter.4]
+[Filter.3]
 # Tag CI/CD notifications
 message = Tag CI/CD
 query = (from:notifications@github.com AND (subject:"Run failed" OR subject:"Run cancelled"))
-tags = +ci;-github
+tags = +ci
 
-[Filter.5]
+[Filter.4]
 # Tag verification codes and magic links
 message = Tag verification codes and magic links
 query = subject:"verification code" OR subject:"magic link" OR subject:"secure link to log in" OR subject:"sign in link" OR body:"verification code is" OR body:"magic link" OR body:"secure link to log in"
 tags = +verification-code
 
-[Filter.6]
-# Tag Google Calendar emails
+[Filter.5]
+# Tag Google Calendar emails and invitations
 message = Tag Google Calendar emails
-query = from:calendar-notification@google.com OR from:noreply-calendar-sync@google.com
+query = from:calendar-notification@google.com OR from:noreply-calendar-sync@google.com OR subject:"Updated invitation:" OR subject:"Invitation:" OR subject:"Cancelled event:" OR subject:"Declined:"
 tags = +calendar
 
-[Filter.7]
+[Filter.6]
 # Tag Nextcloud calendar emails
 message = Tag Nextcloud calendar emails
 query = from:nextcloud@thalheim.io AND body:"Calendar:"
 tags = +calendar
 
-[Filter.8]
+[Filter.7]
 # Tag calendar reminder emails
 message = Tag calendar reminder emails
-query = ((from:calendar-notification@google.com OR from:noreply-calendar-sync@google.com) AND subject:Notification) OR (from:nextcloud@thalheim.io AND subject:"New notification" AND body:"Calendar:")
+query = ((from:calendar-notification@google.com OR from:noreply-calendar-sync@google.com) AND subject:Notification) OR (from:nextcloud@thalheim.io AND subject:"New notification" AND body:"Calendar:") OR (subject:"Reminder:" AND tag:calendar)
 tags = +calendar-reminder
+
+[Filter.8]
+# Tag development service notifications
+message = Tag dev notifications
+query = from:noreply@github.com OR from:notifications@github.com OR from:support@github.com OR from:gitlab@mg.gitlab.com OR from:bitbucket.org OR from:gitea@clan.lol OR from:builds@travis-ci.org OR from:builds@travis-ci.com OR from:aur.archlinux.org OR from:buildbot OR from:jenkins OR from:circleci.com OR from:codeberg.org OR from:git.sr.ht OR from:sourcehut.org OR from:discourse.nixos.org OR from:discourse@discourse.nixos.org
+tags = +dev-notification
+
+[Filter.9]
+# Tag social network notifications
+message = Tag social notifications
+query = from:facebookmail.com OR from:notification@slack.com OR from:linkedin.com OR from:twitter.com OR from:info@meetup.com OR from:xing.com OR from:instagram.com OR from:pinterest.com OR from:notifications@vk.com OR from:mastodon OR from:diaspora OR from:matrix.org
+tags = +social-notification
