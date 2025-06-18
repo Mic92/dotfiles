@@ -784,7 +784,7 @@ async def handle_list_tools() -> list[Tool]:
     """List available tmux tools."""
     return [
         Tool(
-            name="tmux_run_command",
+            name="run_command",
             description="Run a command in a new tmux window and return output when complete. Uses the current tmux session by default. Automatically closes the window after 60 seconds unless keep_pane is True.",
             inputSchema={
                 "type": "object",
@@ -818,7 +818,7 @@ async def handle_list_tools() -> list[Tool]:
             },
         ),
         Tool(
-            name="tmux_send_input",
+            name="send_input",
             description="Send input to a running command in a tmux pane",
             inputSchema={
                 "type": "object",
@@ -836,12 +836,12 @@ async def handle_list_tools() -> list[Tool]:
             },
         ),
         Tool(
-            name="tmux_list_sessions",
+            name="list_sessions",
             description="List all tmux sessions",
             inputSchema={"type": "object", "properties": {}},
         ),
         Tool(
-            name="tmux_list_panes",
+            name="list_panes",
             description="List panes in the current tmux session (or specify a different session)",
             inputSchema={
                 "type": "object",
@@ -854,7 +854,7 @@ async def handle_list_tools() -> list[Tool]:
             },
         ),
         Tool(
-            name="tmux_kill_pane",
+            name="kill_pane",
             description="Kill a specific tmux pane",
             inputSchema={
                 "type": "object",
@@ -868,7 +868,7 @@ async def handle_list_tools() -> list[Tool]:
             },
         ),
         Tool(
-            name="tmux_capture_pane",
+            name="capture_pane",
             description="Capture output from a tmux pane",
             inputSchema={
                 "type": "object",
@@ -886,7 +886,7 @@ async def handle_list_tools() -> list[Tool]:
             },
         ),
         Tool(
-            name="tmux_get_command_output",
+            name="get_command_output",
             description="Get paginated output from a previously executed command. Use the cursor from pagination info to get subsequent pages.",
             inputSchema={
                 "type": "object",
@@ -904,7 +904,7 @@ async def handle_list_tools() -> list[Tool]:
             },
         ),
         Tool(
-            name="tmux_ripgrep_command_output",
+            name="ripgrep_command_output",
             description="Run ripgrep (rg) on cached output from a previously executed command. Searches through the full output regardless of pagination.",
             inputSchema={
                 "type": "object",
@@ -937,7 +937,7 @@ async def _handle_tool_call(  # noqa: PLR0911
 ) -> CommandResult | SimpleResult:
     """Handle individual tool calls and return result."""
     match name:
-        case "tmux_run_command":
+        case "run_command":
             command = arguments["command"]
             working_dir = arguments.get("working_dir")
             session_name = arguments.get("session_name")
@@ -952,32 +952,32 @@ async def _handle_tool_call(  # noqa: PLR0911
                 keep_pane,
                 window_name,
             )
-        case "tmux_send_input":
+        case "send_input":
             pane_id = arguments["pane_id"]
             input_text = arguments["input_text"]
             message = await tmux_send_input(pane_id, input_text)
             return SimpleResult(output=message)
-        case "tmux_list_sessions":
+        case "list_sessions":
             sessions = await tmux_list_sessions()
             return SimpleResult(output=sessions)
-        case "tmux_list_panes":
+        case "list_panes":
             session_name = arguments.get("session_name")
             panes = await tmux_list_panes(session_name)
             return SimpleResult(output=panes)
-        case "tmux_kill_pane":
+        case "kill_pane":
             pane_id = arguments["pane_id"]
             message = await tmux_kill_pane(pane_id)
             return SimpleResult(output=message)
-        case "tmux_capture_pane":
+        case "capture_pane":
             pane_id = arguments["pane_id"]
             start_line = arguments.get("start_line")
             output = await tmux_capture_pane(pane_id, start_line)
             return SimpleResult(output=output)
-        case "tmux_get_command_output":
+        case "get_command_output":
             pane_id = arguments["pane_id"]
             cursor = arguments.get("cursor")
             return await tmux_get_command_output(pane_id, cursor)
-        case "tmux_ripgrep_command_output":
+        case "ripgrep_command_output":
             pane_id = arguments["pane_id"]
             pattern = arguments["pattern"]
             flags = arguments.get("flags")
