@@ -49,7 +49,7 @@ other_email=joerg@thalheim.io;
 #
 [new]
 tags=unread;inbox;
-ignore=.mbsyncstate;.uidvalidity
+ignore=.mbsyncstate;.uidvalidity;.cmeta;initial_terminal
 
 # Search configuration
 #

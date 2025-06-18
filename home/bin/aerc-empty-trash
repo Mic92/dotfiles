@@ -16,7 +16,8 @@ echo
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo "Deleting trash messages..."
-    notmuch search --output=files tag:trash | xargs -I {} rm -f {}
+    # Use xargs with -P for parallel deletion and no -I for batch processing
+    notmuch search --output=files tag:trash | xargs -P 8 -n 500 rm -f
     notmuch new
     echo "Trash emptied."
 else
