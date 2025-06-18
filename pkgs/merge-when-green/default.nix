@@ -1,5 +1,5 @@
 {
-  stdenv,
+  python3,
   openssh,
   gitMinimal,
   nixVersions,
@@ -16,13 +16,16 @@ let
     gh
   ];
 in
-stdenv.mkDerivation {
+python3.pkgs.buildPythonApplication {
   pname = "merge-when-green";
-  version = "0.1.0";
+  version = "0.2.0";
   src = ./.;
+  format = "other";
+
   nativeBuildInputs = [ makeWrapper ];
+
   installPhase = ''
-    install -D -m 0755 script.sh $out/bin/merge-when-green
+    install -D -m 0755 merge-when-green.py $out/bin/merge-when-green
 
     # We prefer the system's openssh over our own, since it might come with features not present in ours:
     # https://github.com/nix-community/nixos-anywhere/issues/62
@@ -34,5 +37,6 @@ stdenv.mkDerivation {
     description = "Merge a PR when the CI is green";
     license = licenses.mit;
     platforms = platforms.all;
+    mainProgram = "merge-when-green";
   };
 }
