@@ -332,12 +332,15 @@ def wait_for_checks(branch: str, interval: int = 30) -> tuple[bool, str]:
             # For gh pr checks, state can be: SUCCESS, FAILURE, PENDING, etc.
             # Also check the bucket field which has simpler values
             bucket = check.get("bucket", "")
-            
+
             if state in ["SUCCESS", "NEUTRAL", "SKIPPED"] or bucket == "pass":
                 passed.append(name)
             elif state in ["FAILURE", "CANCELLED"] or bucket == "fail":
                 failed.append(name)
-            elif state in ["PENDING", "QUEUED", "IN_PROGRESS"] or bucket in ["pending", ""]:
+            elif state in ["PENDING", "QUEUED", "IN_PROGRESS"] or bucket in [
+                "pending",
+                "",
+            ]:
                 pending.append(name)
             else:
                 # Unknown states are treated as pending

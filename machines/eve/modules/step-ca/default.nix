@@ -1,17 +1,19 @@
-# generate intermediate certificate with generate-krebs-intermediate-ca
+# Self-hosted ACME CA using step-ca with ca.r domain
 { config, pkgs, ... }:
 let
   domain = "ca.r";
 in
 {
   security.acme = {
-    acceptTerms = true; # kinda pointless since we never use upstream
-    certs.${domain}.server = "https://${domain}:1443/acme/acme/directory"; # use 1443 here cause bootstrapping loop
+    acceptTerms = true;
+    certs.${domain}.server = "https://${domain}:1443/acme/acme/directory";
   };
+
   networking.firewall.allowedTCPPorts = [
     80
     443
   ];
+
   services.nginx = {
     enable = true;
     recommendedProxySettings = true;
@@ -21,75 +23,82 @@ in
       locations."/" = {
         proxyPass = "https://localhost:1443";
       };
-      # TODO
       locations."= /ca.crt".alias =
         config.clan.core.vars.generators.step-intermediate-cert.files."intermediate.crt".value;
     };
   };
 
-  clan.core.vars.generators.step-ca = {
-    files."ca.key" = {
-      secret = true;
-      deploy = false;
-    };
-    files."ca.crt".secret = false;
-    runtimeInputs = [ pkgs.step-cli ];
-    script = ''
-      step certificate create --template ${pkgs.writeText "root.tmpl" ''
-                {
-        	        "subject": {{ toJson .Subject }},
-        	        "issuer": {{ toJson .Subject }},
-        	        "keyUsage": ["certSign", "crlSign"],
-        	        "basicConstraints": {
-        	        	"isCA": true,
-        	        	"maxPathLen": 1
-        	        }
-                }
-      ''} "Krebs Root CA" $out/ca.crt $out/ca.key
-    '';
-  };
-
-  clan.core.vars.generators.step-intermediate-key = {
-    files."intermediate.key" = {
-      secret = true;
-      deploy = true;
-    };
-    dependencies = [
-      "step-intermediate-key"
-    ];
-    runtimeInputs = [
-      pkgs.step-cli
-    ];
-    script = ''
-      step crypto keypair --no-password --insecure $out/intermediate.pub $out/intermediate.key
-    '';
-  };
-
-  clan.core.vars.generators.step-intermediate-cert = {
-    files."intermediate.crt".secret = false;
-    dependencies = [
-      "step-ca"
-      "step-intermediate-key"
-    ];
-    runtimeInputs = [
-      pkgs.step-cli
-    ];
-    script = ''
-      step certificate ca renew --ca $in/step-ca/ca.crt $in/step-ca/ca.key --offline --root $in/step-ca/ca.crt --ca-config ${pkgs.writeText "intermediate.tmpl" ''
-        {
-          "subject": {{ toJson .Subject }},
-          "keyUsage": ["certSign", "crlSign"],
-          "basicConstraints": {
-            "isCA": true,
-            "maxPathLen": 0
-          },
-          "nameConstraints": {
-            "critical": true,
-            "permittedDNSDomains": ["r" ,"w"]
+  # Clan vars generators for certificate generation
+  clan.core.vars.generators = {
+    # Root CA generator
+    "step-ca" = {
+      files."ca.key" = {
+        secret = true;
+        deploy = false;
+      };
+      files."ca.crt".secret = false;
+      runtimeInputs = [ pkgs.step-cli ];
+      script = ''
+        step certificate create --template ${pkgs.writeText "root.tmpl" ''
+          {
+            "subject": {{ toJson .Subject }},
+            "issuer": {{ toJson .Subject }},
+            "keyUsage": ["certSign", "crlSign"],
+            "basicConstraints": {
+              "isCA": true,
+              "maxPathLen": 1
+            }
           }
-        }
-      ''}
-    '';
+        ''} "Krebs Root CA" $out/ca.crt $out/ca.key
+      '';
+    };
+
+    # Intermediate key generator
+    "step-intermediate-key" = {
+      files."intermediate.key" = {
+        secret = true;
+        deploy = true;
+      };
+      runtimeInputs = [ pkgs.step-cli ];
+      script = ''
+        step crypto keypair --no-password --insecure $out/intermediate.pub $out/intermediate.key
+      '';
+    };
+
+    # Intermediate certificate generator
+    "step-intermediate-cert" = {
+      files."intermediate.crt".secret = false;
+      dependencies = [
+        "step-ca"
+        "step-intermediate-key"
+      ];
+      runtimeInputs = [ pkgs.step-cli ];
+      script = ''
+        # Create intermediate certificate
+        step certificate create "Krebs Intermediate CA" \
+          $out/intermediate.crt $in/step-intermediate-key/intermediate.key \
+          --ca $in/step-ca/ca.crt \
+          --ca-key $in/step-ca/ca.key \
+          --no-password --insecure \
+          --not-after 8760h \
+          --ca \
+          --max-path-len 0 \
+          --template ${pkgs.writeText "intermediate.tmpl" ''
+            {
+              "subject": {{ toJson .Subject }},
+              "keyUsage": ["certSign", "crlSign"],
+              "basicConstraints": {
+                "isCA": true,
+                "maxPathLen": 0
+              },
+              "nameConstraints": {
+                "critical": true,
+                "permittedDNSDomains": ["r", "w"]
+              }
+            }
+          ''}
+      '';
+    };
   };
 
   services.step-ca = {
@@ -98,10 +107,9 @@ in
     address = "0.0.0.0";
     port = 1443;
     settings = {
-      root = config.clan.core.vars.generators.step-intermediate-cert.files."ca.crt".value;
-      #root = pkgs.writeText "root.crt" config.krebs.ssl.rootCA;
-      crt = pkgs.writeText "intermediate.crt" config.krebs.ssl.intermediateCA;
-      key = "/var/lib/step-ca/intermediate_ca.key";
+      root = config.clan.core.vars.generators.step-ca.files."ca.crt".value;
+      crt = config.clan.core.vars.generators.step-intermediate-cert.files."intermediate.crt".value;
+      key = config.clan.core.vars.generators.step-intermediate-key.files."intermediate.key".value;
       dnsNames = [ domain ];
       logger.format = "text";
       db = {
