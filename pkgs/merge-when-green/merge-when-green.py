@@ -48,11 +48,7 @@ def print_warning(message: str) -> None:
 
 def print_header(message: str) -> None:
     """Print a header message in bold."""
-    # Remove merge-when-green header since it doesn't need emoji
-    if message == "merge-when-green":
-        print(f"\n{Colors.BOLD}{message}{Colors.RESET}")
-    else:
-        print(f"\n{Colors.BOLD}📌 {message}{Colors.RESET}")
+    print(f"\n{Colors.BOLD}{message}{Colors.RESET}")
 
 
 def print_subtle(message: str) -> None:
@@ -62,7 +58,7 @@ def print_subtle(message: str) -> None:
 
 def print_command(cmd_str: str) -> None:
     """Print a command in blue."""
-    print(f"{Colors.BLUE}🚀 {cmd_str}{Colors.RESET}", file=sys.stderr)
+    print(f"{Colors.BLUE}+ {cmd_str}{Colors.RESET}", file=sys.stderr)
 
 
 def log_command(cmd: list[str]) -> None:
@@ -145,9 +141,9 @@ def run_treefmt(target_branch: str) -> bool:
     if shutil.which("treefmt"):
         result = run_command(["treefmt", "--fail-on-change"], check=False)
         if result.returncode == 0:
-            print_success("✅ Code formatting check passed")
+            print_success("✓ Code formatting check passed")
             return True
-        print_warning("🔧 Code formatting issues detected")
+        print_warning("Code formatting issues detected")
 
     # Check if treefmt is in the flake
     current_system = run_command(
@@ -160,11 +156,11 @@ def run_treefmt(target_branch: str) -> bool:
     )
 
     if check_result.stdout.strip() != "true":
-        print_subtle("📋 No treefmt configuration found")
+        print_subtle("No treefmt configuration found")
         return True  # No treefmt, that's fine
 
     # Build and run treefmt
-    print_warning("🔨 Building treefmt from flake...")
+    print_warning("Building treefmt from flake...")
     build_result = run_command(
         [
             "nix",
@@ -185,7 +181,7 @@ def run_treefmt(target_branch: str) -> bool:
         return True
 
     # If formatting failed, try to absorb changes
-    print_warning("🔧 Attempting to fix formatting issues...")
+    print_warning("Attempting to fix formatting issues...")
     run_command(
         [
             "git",
@@ -225,7 +221,7 @@ def create_pr(branch: str, target_branch: str) -> None:
         f.flush()
 
         editor = os.environ.get("EDITOR", "vim")
-        print_warning(f"✏️  Opening {editor} to edit PR description...")
+        print_warning(f"Opening {editor} to edit PR description...")
         subprocess.run([editor, f.name], check=True)
 
         f.seek(0)
@@ -258,9 +254,9 @@ def create_pr(branch: str, target_branch: str) -> None:
     )
 
     # Enable auto-merge
-    print_warning("🔄 Enabling auto-merge...")
+    print_warning("Enabling auto-merge...")
     run_command(["gh", "pr", "merge", branch, "--auto", "--rebase"])
-    print_success("✅ Pull request created and auto-merge enabled 🚀")
+    print_success("✓ Pull request created and auto-merge enabled")
 
 
 def get_pr_state(branch: str) -> str | None:
@@ -353,14 +349,14 @@ def wait_for_checks(branch: str, interval: int = 5) -> tuple[bool, str]:
         print_info(f"  {Colors.YELLOW}Pending: {len(pending)}{Colors.RESET}")
 
         if failed:
-            print_error("\n❌ Failed checks:")
+            print_error("\nFailed checks:")
             for name in failed:
-                print_error(f"  ❌ {name}")
+                print_error(f"  ✗ {name}")
 
         if pending:
-            print_warning("\n⏳ Pending checks:")
+            print_warning("\nPending checks:")
             for name in pending:
-                print_warning(f"  ⏳ {name}")
+                print_warning(f"  - {name}")
 
         # Check if done - all checks should have a definitive state
         total_checks = len(passed) + len(failed) + len(pending)
@@ -372,7 +368,7 @@ def wait_for_checks(branch: str, interval: int = 5) -> tuple[bool, str]:
             return False, "No checks found or all checks in unknown state"
 
         # Wait before next check
-        print_subtle(f"\n⏱️  Waiting {interval} seconds before next check...")
+        print_subtle(f"\nWaiting {interval} seconds before next check...")
         time.sleep(interval)
 
 
@@ -388,7 +384,7 @@ def main() -> int:
 
     # Check if merge-after-ci exists (clan-project)
     if shutil.which("merge-after-ci"):
-        print_warning("🔀 Detected clan-project, delegating to merge-after-ci")
+        print_warning("Detected clan-project, delegating to merge-after-ci")
         cmd = ["merge-after-ci", "--no-review"]
         if args.wait:
             # merge-after-ci might have its own wait functionality
@@ -411,7 +407,7 @@ def main() -> int:
 
     # Check if we have changes
     if not has_changes("origin", target_branch):
-        print_success("\n✅ No changes to merge 💤")
+        print_success("\n✓ No changes to merge")
         return 0
 
     # Determine branch name
@@ -421,7 +417,7 @@ def main() -> int:
     # Check if PR already exists
     pr_state = get_pr_state(branch)
     if pr_state == "OPEN":
-        print_warning("\n🔍 Existing PR found, checking status...")
+        print_warning("\nExisting PR found, checking status...")
         run_command(["gh", "pr", "checks", target_branch], check=False)
 
     # Push changes
@@ -432,18 +428,18 @@ def main() -> int:
     if pr_state != "OPEN":
         create_pr(branch, target_branch)
     else:
-        print_success("\n✅ Using existing PR 📋")
+        print_success("\n✓ Using existing PR")
 
     # Wait for checks if requested
     if args.wait:
-        success, message = wait_for_checks(branch, args.interval)
+        success, message = wait_for_checks(branch)
         if success:
-            print_success(f"\n✅ {message} 🎉")
+            print_success(f"\n✓ {message}")
         else:
-            print_error(f"\n❌ {message}")
+            print_error(f"\n✗ {message}")
         return 0 if success else 1
 
-    print_success("\n✅ Done! 🎉")
+    print_success("\n✓ Done!")
     return 0
 
 
@@ -451,7 +447,7 @@ if __name__ == "__main__":
     try:
         sys.exit(main())
     except KeyboardInterrupt:
-        print_warning("\n⚠️  Interrupted by user")
+        print_warning("\nInterrupted by user")
         sys.exit(130)
     except subprocess.CalledProcessError as e:
         sys.exit(e.returncode)
