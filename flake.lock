@@ -58,11 +58,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1750261148,
-        "narHash": "sha256-yd/rCN5CpQKBZsWRDdWoBne2+IoSJ3IIFV8j43GXknA=",
-        "rev": "f4a7016ece67c0f5591f3d0e26f9f0223fa9d297",
+        "lastModified": 1750272736,
+        "narHash": "sha256-Um2JHuGWMGDaZHzCFqMcAiRcwPvA6InJfs47RBNmmbU=",
+        "rev": "c8f1434b5f6b3d8f61b80b5a677bff171d119fdc",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/f4a7016ece67c0f5591f3d0e26f9f0223fa9d297.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/c8f1434b5f6b3d8f61b80b5a677bff171d119fdc.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -258,7 +258,7 @@
         "narHash": "sha256-/kOOgeUyZDYQVIgYWWOr6pB59kfhGSXdbxCnhya0F5A=",
         "owner": "ghostty-org",
         "repo": "ghostty",
-        "rev": "d0e145292e35994bf86908ac27864ff267ce0e4c",
+        "rev": "a2b4a2c0e42cb2bdf970598083e59e5be88f511d",
         "type": "github"
       },
       "original": {
@@ -431,10 +431,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1749999402,
-        "narHash": "sha256-bz5UUQ5J2zCzEK1KSci4Z/oxmZo8VeJLj0i717eKzTs=",
+        "lastModified": 1750272652,
+        "narHash": "sha256-gHzOiz3iv+swSE5kexiMbzINXDj4WjO1+xUnWPNNi2A=",
         "ref": "refs/heads/main",
-        "rev": "e11663e194f8b73ea2d7f9c19ac376008d9b542e",
+        "rev": "a6fd5712e1e42341cbf924c05e4324edad0fa07b",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
