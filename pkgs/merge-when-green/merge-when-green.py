@@ -197,7 +197,7 @@ def run_treefmt(target_branch: str) -> bool:
     return False
 
 
-def create_pr(branch: str, target_branch: str) -> None:
+def create_pr(branch: str, target_branch: str, message: str | None = None) -> None:
     """Create a pull request with commit messages as description."""
     print_header("Creating pull request...")
     remote = get_git_remote()
@@ -213,26 +213,32 @@ def create_pr(branch: str, target_branch: str) -> None:
         ]
     )
 
-    # Open editor for commit message
-    with tempfile.NamedTemporaryFile(
-        mode="w+", suffix="_COMMIT_EDITMSG", delete=False
-    ) as f:
-        f.write(result.stdout)
-        f.flush()
+    if message:
+        # Use provided message
+        lines = message.split("\n", 1)
+        first_line = lines[0]
+        rest = lines[1] if len(lines) > 1 else ""
+    else:
+        # Open editor for commit message
+        with tempfile.NamedTemporaryFile(
+            mode="w+", suffix="_COMMIT_EDITMSG", delete=False
+        ) as f:
+            f.write(result.stdout)
+            f.flush()
 
-        editor = os.environ.get("EDITOR", "vim")
-        print_warning(f"Opening {editor} to edit PR description...")
-        subprocess.run([editor, f.name], check=True)
+            editor = os.environ.get("EDITOR", "vim")
+            print_warning(f"Opening {editor} to edit PR description...")
+            subprocess.run([editor, f.name], check=True)
 
-        f.seek(0)
-        msg = f.read()
+            f.seek(0)
+            msg = f.read()
 
-    Path(f.name).unlink()
+        Path(f.name).unlink()
 
-    # Parse message
-    lines = msg.split("\n", 1)
-    first_line = lines[0]
-    rest = lines[1] if len(lines) > 1 else ""
+        # Parse message
+        lines = msg.split("\n", 1)
+        first_line = lines[0]
+        rest = lines[1] if len(lines) > 1 else ""
 
     # Create PR
     run_command(
@@ -378,6 +384,11 @@ def main() -> int:
     parser.add_argument(
         "--wait", "-w", action="store_true", help="Wait for CI checks to complete"
     )
+    parser.add_argument(
+        "--message",
+        "-m",
+        help="PR title and body (separated by newline). If not provided, opens editor.",
+    )
     args = parser.parse_args()
 
     print_header("merge-when-green")
@@ -426,7 +437,7 @@ def main() -> int:
 
     # Create PR if needed
     if pr_state != "OPEN":
-        create_pr(branch, target_branch)
+        create_pr(branch, target_branch, args.message)
     else:
         print_success("\n✓ Using existing PR")
 
