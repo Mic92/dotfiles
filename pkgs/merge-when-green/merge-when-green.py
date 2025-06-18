@@ -279,15 +279,37 @@ def wait_for_checks(branch: str, interval: int = 30) -> tuple[bool, str]:
     """Wait for CI checks to complete. Returns (success, status_message)."""
     print_header(f"Waiting for CI checks to complete on '{branch}'...")
 
+    # First try to get the PR number for more reliable check status
+    pr_number = None
+    pr_result = run_command(
+        ["gh", "pr", "view", branch, "--json", "number"],
+        check=False,
+        silent=True,
+    )
+    if pr_result.returncode == 0:
+        try:
+            pr_data = json.loads(pr_result.stdout)
+            pr_number = pr_data.get("number")
+            if pr_number:
+                print_info(f"Found PR #{pr_number}")
+        except json.JSONDecodeError:
+            pass
+
     while True:
-        # Get check status - gh pr checks uses different field names
+        # Get check status - try with PR number if available, otherwise use branch
+        check_target = str(pr_number) if pr_number else branch
         result = run_command(
-            ["gh", "pr", "checks", branch, "--json", "state,name,bucket"],
+            ["gh", "pr", "checks", check_target, "--json", "state,name,bucket"],
             check=False,
             silent=True,
         )
 
         if result.returncode != 0:
+            # If no checks found, it might mean CI hasn't started yet
+            if "no checks reported" in result.stderr:
+                print_warning("No checks reported yet, waiting for CI to start...")
+                time.sleep(interval)
+                continue
             return False, f"Failed to get check status: {result.stderr}"
 
         try:
@@ -307,12 +329,15 @@ def wait_for_checks(branch: str, interval: int = 30) -> tuple[bool, str]:
             name = check.get("name", "unknown")
             state = check.get("state", "unknown")
 
-            # For gh pr checks, state can be: pass, fail, pending, etc.
-            if state == "pass":
+            # For gh pr checks, state can be: SUCCESS, FAILURE, PENDING, etc.
+            # Also check the bucket field which has simpler values
+            bucket = check.get("bucket", "")
+            
+            if state in ["SUCCESS", "NEUTRAL", "SKIPPED"] or bucket == "pass":
                 passed.append(name)
-            elif state == "fail":
+            elif state in ["FAILURE", "CANCELLED"] or bucket == "fail":
                 failed.append(name)
-            elif state in ["pending", "queued"]:
+            elif state in ["PENDING", "QUEUED", "IN_PROGRESS"] or bucket in ["pending", ""]:
                 pending.append(name)
             else:
                 # Unknown states are treated as pending
