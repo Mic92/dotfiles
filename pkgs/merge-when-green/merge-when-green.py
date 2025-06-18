@@ -275,7 +275,7 @@ def get_pr_state(branch: str) -> str | None:
     return None
 
 
-def wait_for_checks(branch: str, interval: int = 30) -> tuple[bool, str]:
+def wait_for_checks(branch: str, interval: int = 5) -> tuple[bool, str]:
     """Wait for CI checks to complete. Returns (success, status_message)."""
     print_header(f"Waiting for CI checks to complete on '{branch}'...")
 
@@ -381,13 +381,6 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Create PR and merge when CI passes")
     parser.add_argument(
         "--wait", "-w", action="store_true", help="Wait for CI checks to complete"
-    )
-    parser.add_argument(
-        "--interval",
-        "-i",
-        type=int,
-        default=30,
-        help="Check interval in seconds (default: 30)",
     )
     args = parser.parse_args()
 
