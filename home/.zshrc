@@ -587,13 +587,18 @@ elif [[ -n ${commands[vim]} ]]; then
 fi
 
 export VISUAL=$EDITOR
-if [[ -n ${commands[moar]} ]]; then
+if [[ -n ${commands[nvim]} ]]; then
+  export MANPAGER="nvim +Man!"
+elif [[ -n ${commands[moar]} ]]; then
   export MANPAGER="moar"
-  export PAGER="moar"
   export MOAR='--no-linenumbers --quit-if-one-screen'
   alias less='moar'
 elif [[ -n ${commands[less]} ]]; then
   export MANPAGER="less"
+fi
+if [[ -n ${commands[moar]} ]]; then
+  export PAGER="moar"
+elif [[ -n ${commands[less]} ]]; then
   export PAGER="less"
 fi
 export READNULLCMD=$PAGER

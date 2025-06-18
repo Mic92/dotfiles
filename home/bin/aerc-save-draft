@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Manually save aerc draft to maildir and reindex with notmuch
+
+# Create temp file for the message
+tmpfile=$(mktemp)
+trap "rm -f $tmpfile" EXIT
+
+# Read the full message from stdin
+cat > "$tmpfile"
+
+# Generate unique filename for maildir
+timestamp=$(date +%s.%N)
+hostname=$(hostname)
+pid=$$
+random=$RANDOM
+# D flag for Draft, S flag for Seen
+filename="${timestamp%%.*}.${pid}_${random}.${hostname}:2,DS"
+
+# Ensure Drafts directory exists
+drafts_dir="$HOME/mail/thalheim.io/.Drafts"
+mkdir -p "$drafts_dir/cur" "$drafts_dir/new" "$drafts_dir/tmp"
+
+# Save to Drafts/cur directory
+cp "$tmpfile" "$drafts_dir/cur/$filename"
+
+# Update notmuch database
+notmuch new >/dev/null 2>&1
+
+echo "Draft saved successfully"
