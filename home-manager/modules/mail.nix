@@ -13,6 +13,7 @@
     # Email organization tools
     afew # notmuch tagging tool
     notmuch-addrlookup
+    mblaze # maildir manipulation tools
 
     # Contacts management
     khard # CardDAV address book

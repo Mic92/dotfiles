@@ -2,7 +2,7 @@
 # Maps folder names to notmuch queries
 
 # Main folders
-INBOX=(folder:thalheim.io OR folder:Entwickler OR folder:Netzwerke OR folder:Benachrichtigung OR folder:Geld OR folder:Privat OR folder:Arbeit OR folder:Uni) AND date:7d..
+INBOX=(folder:thalheim.io OR folder:Entwickler OR folder:Netzwerke OR folder:Benachrichtigung OR folder:Geld OR folder:Privat OR folder:Arbeit OR folder:Uni) AND date:7d.. AND NOT tag:trash
 Entwickler=folder:Entwickler AND NOT tag:trash
 Netzwerke=folder:Netzwerke AND NOT tag:trash
 Benachrichtigung=folder:Benachrichtigung AND NOT tag:trash

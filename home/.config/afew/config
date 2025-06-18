@@ -33,7 +33,7 @@ tags = +verification-code
 [Filter.6]
 # Tag Google Calendar emails
 message = Tag Google Calendar emails
-query = from:calendar-notification@google.com
+query = from:calendar-notification@google.com OR from:noreply-calendar-sync@google.com
 tags = +calendar
 
 [Filter.7]
@@ -45,5 +45,5 @@ tags = +calendar
 [Filter.8]
 # Tag calendar reminder emails
 message = Tag calendar reminder emails
-query = (from:calendar-notification@google.com AND subject:Notification) OR (from:nextcloud@thalheim.io AND subject:"New notification" AND body:"Calendar:")
+query = ((from:calendar-notification@google.com OR from:noreply-calendar-sync@google.com) AND subject:Notification) OR (from:nextcloud@thalheim.io AND subject:"New notification" AND body:"Calendar:")
 tags = +calendar-reminder
