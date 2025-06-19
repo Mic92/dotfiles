@@ -474,6 +474,10 @@ def wait_for_checks(
             missing_required = []
             if required_checks:
                 missing_required = [c for c in required_checks if c not in check_names]
+                if missing_required and checks:
+                    # Debug: show what checks we have vs what we're waiting for
+                    print_subtle(f"Current checks: {', '.join(sorted(check_names))}")
+                    print_subtle(f"Waiting for: {', '.join(missing_required)}")
 
             # Print current status
             print_check_status(passed, failed, pending, missing_required)
