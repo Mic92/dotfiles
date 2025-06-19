@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+# Format Nix code using the project's formatter
+
+set -euo pipefail
+
+needsUpdate=0
+currentSystem=$(nix eval --raw --impure --expr builtins.currentSystem)
+toplevel=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
+buildArgs=()
+fmt="$toplevel/.git/nix-fmt"
+
+if [[ ! -d "$toplevel/.git/nix-fmt" ]]; then
+    needsUpdate=1
+elif [[ -n "$toplevel" ]]; then
+    buildArgs+=("-o" "$toplevel"/.git/nix-fmt)
+    referenceTime=$(stat -c %Y "$toplevel"/.git/nix-fmt)
+    for file in flake.nix flake.lock; do
+        if [[ -f "$file" ]] && [[ "$(stat -c %Y "$file")" -gt "$referenceTime" ]]; then
+            needsUpdate=1
+            break
+        fi
+    done
+fi
+
+if [[ "$needsUpdate" == 1 ]]; then
+    fmt=$(nix build --builders '' "${buildArgs[@]}" ".#formatter.${currentSystem}" --print-out-paths)
+    ln -sf "$fmt" "$toplevel/.git/nix-fmt"
+fi
+
+# treefmt has multiple outputs
+if [[ -x "$fmt/bin/treefmt" ]]; then
+    "$fmt/bin/treefmt" "$@"
+    exit $?
+fi
+
+for file in "$fmt/bin/"*; do
+    "$file" "$@"
+    exit $?
+done
