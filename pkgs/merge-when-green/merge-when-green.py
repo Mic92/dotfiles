@@ -82,14 +82,14 @@ def log_command(cmd: list[str]) -> None:
 def run_command(
     cmd: list[str],
     check: bool = True,
-    capture_output: bool = True,
+    capture_stdout: bool = False,
     silent: bool = False,
 ) -> subprocess.CompletedProcess[str]:
     """Run a command and return the result."""
     if not silent:
         log_command(cmd)
 
-    if capture_output:
+    if capture_stdout:
         result = subprocess.run(cmd, check=False, stdout=subprocess.PIPE, text=True)
         if result.returncode != 0 and check:
             print_error(f"Command failed with exit code {result.returncode}")
@@ -102,7 +102,7 @@ def run_command(
 
 def get_git_remote() -> str:
     """Get the appropriate git remote (upstream or origin)."""
-    result = run_command(["git", "remote"], silent=True)
+    result = run_command(["git", "remote"], silent=True, capture_stdout=True)
     remotes = result.stdout.strip().split("\n")
     return "upstream" if "upstream" in remotes else "origin"
 
@@ -118,7 +118,8 @@ def get_default_branch() -> str:
             "defaultBranchRef",
             "--jq",
             ".defaultBranchRef.name",
-        ]
+        ],
+        capture_stdout=True,
     )
     return result.stdout.strip()
 
@@ -145,12 +146,14 @@ def run_treefmt(target_branch: str) -> bool:
 
     # Check if treefmt is in the flake
     current_system = run_command(
-        ["nix", "config", "show", "system"], silent=True
+        ["nix", "config", "show", "system"], silent=True, capture_stdout=True
     ).stdout.strip()
 
     has_treefmt_check = f'(val: val ? {current_system} && (val.{current_system}.name == "treefmt" || val.{current_system}.name == "treefmt-nix"))'
     check_result = run_command(
-        ["nix", "eval", ".#formatter", "--apply", has_treefmt_check], check=False
+        ["nix", "eval", ".#formatter", "--apply", has_treefmt_check],
+        check=False,
+        capture_stdout=True,
     )
 
     if check_result.stdout.strip() != "true":
@@ -167,7 +170,8 @@ def run_treefmt(target_branch: str) -> bool:
             ".git/treefmt",
             f".#formatter.{current_system}",
             "--print-out-paths",
-        ]
+        ],
+        capture_stdout=True,
     )
     formatter_path = build_result.stdout.strip()
 
@@ -193,7 +197,7 @@ def run_treefmt(target_branch: str) -> bool:
     )
     # Only open lazygit if we're in an interactive shell
     if sys.stdin.isatty() and sys.stdout.isatty():
-        run_command(["lazygit"], check=False, capture_output=False)
+        run_command(["lazygit"], check=False)
     else:
         print_error("Formatting issues detected. Please run 'nix fmt' manually.")
     return False
@@ -212,7 +216,8 @@ def create_pr(branch: str, target_branch: str, message: str | None = None) -> No
             "--reverse",
             "--pretty=format:%s%n%n%b%n%n",
             f"{remote}/{target_branch}..HEAD",
-        ]
+        ],
+        capture_stdout=True,
     )
 
     if message:
@@ -273,6 +278,7 @@ def get_pr_state(branch: str) -> str | None:
         ["gh", "pr", "view", "--json", "state", "--template", "{{.state}}", branch],
         check=False,
         silent=True,
+        capture_stdout=True,
     )
     if result.returncode == 0:
         return result.stdout.strip()
@@ -322,6 +328,7 @@ def wait_for_pr_completion(branch: str, interval: int = 10) -> tuple[bool, str]:
             ],
             check=False,
             silent=True,
+            capture_stdout=True,
         )
 
         if result.returncode != 0:
@@ -423,11 +430,19 @@ def main() -> int:
 
     # Push changes
     print_header("Pushing changes...")
-    run_command(["git", "push", "--force", "origin", f"HEAD:{branch}"])
+    push_result = run_command(
+        ["git", "push", "--force", "origin", f"HEAD:{branch}"],
+        check=False,
+        capture_stdout=True,
+    )
+
+    if push_result.returncode != 0:
+        print_error(f"Failed to push changes: {push_result.stdout}")
+        return 1
 
     # Get the commit we just pushed
     pushed_commit = run_command(
-        ["git", "rev-parse", "HEAD"], silent=True
+        ["git", "rev-parse", "HEAD"], silent=True, capture_stdout=True
     ).stdout.strip()
 
     # Create PR if needed
@@ -446,6 +461,7 @@ def main() -> int:
                 ["gh", "pr", "view", branch, "--json", "headRefOid"],
                 check=False,
                 silent=True,
+                capture_stdout=True,
             )
             if result.returncode == 0:
                 try:
