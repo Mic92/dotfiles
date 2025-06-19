@@ -194,7 +194,11 @@ def run_treefmt(target_branch: str) -> bool:
         ],
         check=False,
     )
-    run_command(["lazygit"], check=False, capture_output=False)
+    # Only open lazygit if we're in an interactive shell
+    if sys.stdin.isatty() and sys.stdout.isatty():
+        run_command(["lazygit"], check=False, capture_output=False)
+    else:
+        print_error("Formatting issues detected. Please run 'nix fmt' manually.")
     return False
 
 
@@ -572,7 +576,7 @@ def main() -> int:
 
     # Push changes
     print_header("Pushing changes...")
-    run_command(["git", "push", "--force", "origin", f"HEAD:{branch}"])
+    run_command(["git", "push", "--force-with-lease", "origin", f"HEAD:{branch}"])
 
     # Create PR if needed
     if pr_state != "OPEN":
