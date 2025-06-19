@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 let
+  # aerc with compose pipe support
+  aerc-patched = pkgs.callPackage ../../pkgs/aerc-patched.nix { 
+    inherit (pkgs) aerc;
+  };
   # msmtp wrapper that saves sent mail to maildir
   msmtp-with-sent = pkgs.writeShellScriptBin "msmtp" ''
     # Wrapper for msmtp that saves sent mail to maildir
@@ -45,7 +49,7 @@ in
     notmuch
 
     # CLI email clients
-    aerc
+    aerc-patched
     neomutt # alternative to aerc
 
     # Email organization tools

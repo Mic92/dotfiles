@@ -1,0 +1,278 @@
+From 2b38a78945902ce66e26906a8f1f8b4b17d92e60 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Thu, 19 Jun 2025 09:03:48 +0200
+Subject: [PATCH 1/2] pipe: refactor to move out doExec/doTerm functions
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Move doExec and doTerm functions to package level.
+Both functions now accept parameters for command, reader,
+name, and callback. doTerm additionally accepts a silent flag.
+
+This refactoring is a preparation to add COMPOSE_REVIEW to the supported contexts.
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ commands/msg/pipe.go | 126 ++++++++++++++++++++++---------------------
+ 1 file changed, 64 insertions(+), 62 deletions(-)
+
+diff --git a/commands/msg/pipe.go b/commands/msg/pipe.go
+index c160247a..9db75dbc 100644
+--- a/commands/msg/pipe.go
++++ b/commands/msg/pipe.go
+@@ -38,7 +38,7 @@ func (Pipe) Description() string {
+ }
+ 
+ func (Pipe) Context() commands.CommandContext {
+-	return commands.MESSAGE_LIST | commands.MESSAGE_VIEWER
++	return commands.MESSAGE_LIST | commands.MESSAGE_VIEWER | commands.COMPOSE_REVIEW
+ }
+ 
+ func (Pipe) Aliases() []string {
+@@ -49,6 +49,61 @@ func (p Pipe) Execute(args []string) error {
+ 	return p.Run(nil)
+ }
+ 
++// doTerm executes the command in an interactive terminal tab
++func doTerm(command string, reader io.Reader, name string, silent bool, cb func()) {
++	cmd := []string{"sh", "-c", command}
++	term, err := commands.QuickTerm(cmd, reader, silent)
++	if err != nil {
++		app.PushError(err.Error())
++		return
++	}
++	if cb != nil {
++		last := term.OnClose
++		term.OnClose = func(err error) {
++			if last != nil {
++				last(err)
++			}
++			cb()
++		}
++	}
++	app.NewTab(term, name)
++}
++
++// doExec executes the command in the background
++func doExec(command string, reader io.Reader, name string, cb func()) {
++	ecmd := exec.Command("sh", "-c", command)
++	pipe, err := ecmd.StdinPipe()
++	if err != nil {
++		return
++	}
++	go func() {
++		defer log.PanicHandler()
++
++		defer pipe.Close()
++		_, err := io.Copy(pipe, reader)
++		if err != nil {
++			log.Errorf("failed to send data to pipe: %v", err)
++		}
++	}()
++	err = ecmd.Run()
++	if err != nil {
++		app.PushError(err.Error())
++	} else {
++		if ecmd.ProcessState.ExitCode() != 0 {
++			app.PushError(fmt.Sprintf(
++				"%s: completed with status %d", name,
++				ecmd.ProcessState.ExitCode()))
++		} else {
++			app.PushStatus(fmt.Sprintf(
++				"%s: completed with status %d", name,
++				ecmd.ProcessState.ExitCode()), 10*time.Second)
++		}
++	}
++	if cb != nil {
++		cb()
++	}
++}
++
+ func (p Pipe) Run(cb func()) error {
+ 	if p.Decrypt {
+ 		// Decrypt implies fetching the full message
+@@ -71,59 +126,6 @@ func (p Pipe) Run(cb func()) error {
+ 		}
+ 	}
+ 
+-	doTerm := func(reader io.Reader, name string) {
+-		cmd := []string{"sh", "-c", p.Command}
+-		term, err := commands.QuickTerm(cmd, reader, p.Silent)
+-		if err != nil {
+-			app.PushError(err.Error())
+-			return
+-		}
+-		if cb != nil {
+-			last := term.OnClose
+-			term.OnClose = func(err error) {
+-				if last != nil {
+-					last(err)
+-				}
+-				cb()
+-			}
+-		}
+-		app.NewTab(term, name)
+-	}
+-
+-	doExec := func(reader io.Reader) {
+-		ecmd := exec.Command("sh", "-c", p.Command)
+-		pipe, err := ecmd.StdinPipe()
+-		if err != nil {
+-			return
+-		}
+-		go func() {
+-			defer log.PanicHandler()
+-
+-			defer pipe.Close()
+-			_, err := io.Copy(pipe, reader)
+-			if err != nil {
+-				log.Errorf("failed to send data to pipe: %v", err)
+-			}
+-		}()
+-		err = ecmd.Run()
+-		if err != nil {
+-			app.PushError(err.Error())
+-		} else {
+-			if ecmd.ProcessState.ExitCode() != 0 {
+-				app.PushError(fmt.Sprintf(
+-					"%s: completed with status %d", name,
+-					ecmd.ProcessState.ExitCode()))
+-			} else {
+-				app.PushStatus(fmt.Sprintf(
+-					"%s: completed with status %d", name,
+-					ecmd.ProcessState.ExitCode()), 10*time.Second)
+-			}
+-		}
+-		if cb != nil {
+-			cb()
+-		}
+-	}
+-
+ 	app.PushStatus("Fetching messages ...", 10*time.Second)
+ 
+ 	if p.Full {
+@@ -136,11 +138,11 @@ func (p Pipe) Run(cb func()) error {
+ 			if mv, ok := provider.(*app.MessageViewer); ok {
+ 				mv.MessageView().FetchFull(func(reader io.Reader) {
+ 					if p.Background {
+-						doExec(reader)
++						doExec(p.Command, reader, name, cb)
+ 					} else {
+-						doTerm(reader,
++						doTerm(p.Command, reader,
+ 							fmt.Sprintf("%s <%s",
+-								name, title))
++								name, title), p.Silent, cb)
+ 					}
+ 				})
+ 				return nil
+@@ -247,9 +249,9 @@ func (p Pipe) Run(cb func()) error {
+ 
+ 			reader := newMessagesReader(messages, len(messages) > 1)
+ 			if p.Background {
+-				doExec(reader)
++				doExec(p.Command, reader, name, cb)
+ 			} else {
+-				doTerm(reader, fmt.Sprintf("%s <%s", name, title))
++				doTerm(p.Command, reader, fmt.Sprintf("%s <%s", name, title), p.Silent, cb)
+ 			}
+ 		}()
+ 	} else if p.Part {
+@@ -263,11 +265,11 @@ func (p Pipe) Run(cb func()) error {
+ 		}
+ 		mv.MessageView().FetchBodyPart(part.Index, func(reader io.Reader) {
+ 			if p.Background {
+-				doExec(reader)
++				doExec(p.Command, reader, name, cb)
+ 			} else {
+-				name := fmt.Sprintf("%s <%s/[%d]",
++				termName := fmt.Sprintf("%s <%s/[%d]",
+ 					name, part.Msg.Envelope.Subject, part.Index)
+-				doTerm(reader, name)
++				doTerm(p.Command, reader, termName, p.Silent, cb)
+ 			}
+ 		})
+ 	}
+-- 
+2.49.0
+
+
+From 566159ea324eda2f75436c5c496696d31ffe5525 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Thu, 19 Jun 2025 09:19:30 +0200
+Subject: [PATCH 2/2] pipe: add support for piping messages in compose review
+ mode
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Allow the pipe command to work when reviewing a message before sending.
+This enables use cases like saving drafts or running custom scripts on
+composed messages before they are sent.
+
+The implementation creates a pipe to the composed message content and
+passes it to either doExec or doTerm depending on the -b flag.
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ commands/msg/pipe.go | 29 ++++++++++++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/commands/msg/pipe.go b/commands/msg/pipe.go
+index 9db75dbc..b68a112d 100644
+--- a/commands/msg/pipe.go
++++ b/commands/msg/pipe.go
+@@ -2,7 +2,6 @@ package msg
+ 
+ import (
+ 	"bytes"
+-	"errors"
+ 	"fmt"
+ 	"io"
+ 	"os/exec"
+@@ -11,6 +10,8 @@ import (
+ 	"strings"
+ 	"time"
+ 
++	"github.com/pkg/errors"
++
+ 	"git.sr.ht/~rjarry/aerc/app"
+ 	"git.sr.ht/~rjarry/aerc/commands"
+ 	cryptoutil "git.sr.ht/~rjarry/aerc/lib/crypto/util"
+@@ -114,6 +115,32 @@ func (p Pipe) Run(cb func()) error {
+ 	}
+ 	name, _, _ := strings.Cut(p.Command, " ")
+ 
++	// Special handling for Composer in review mode
++	if composer, ok := app.SelectedTabContent().(*app.Composer); ok && composer.Bindings() == "compose::review" {
++		// Get the message content
++		header, err := composer.PrepareHeader()
++		if err != nil {
++			return errors.Wrap(err, "PrepareHeader")
++		}
++
++		pr, pw := io.Pipe()
++		go func() {
++			defer log.PanicHandler()
++			defer pw.Close()
++			err := composer.WriteMessage(header, pw)
++			if err != nil {
++				log.Errorf("failed to write message: %v", err)
++			}
++		}()
++
++		if p.Background {
++			doExec(p.Command, pr, name, cb)
++		} else {
++			doTerm(p.Command, pr, fmt.Sprintf("%s <review>", name), p.Silent, cb)
++		}
++		return nil
++	}
++
+ 	provider := app.SelectedTabContent().(app.ProvidesMessage)
+ 	if !p.Full && !p.Part {
+ 		if _, ok := provider.(*app.MessageViewer); ok {
+-- 
+2.49.0
+
