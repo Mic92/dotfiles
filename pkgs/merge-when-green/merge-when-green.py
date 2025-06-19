@@ -423,7 +423,7 @@ def main() -> int:
 
     # Push changes
     print_header("Pushing changes...")
-    run_command(["git", "push", "--force-with-lease", "origin", f"HEAD:{branch}"])
+    run_command(["git", "push", "--force", "origin", f"HEAD:{branch}"])
 
     # Get the commit we just pushed
     pushed_commit = run_command(
