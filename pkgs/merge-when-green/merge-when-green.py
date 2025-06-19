@@ -12,6 +12,7 @@ import sys
 import tempfile
 import time
 from pathlib import Path
+from typing import Any
 
 
 class Colors:
@@ -84,7 +85,7 @@ def run_command(
     check: bool = True,
     capture_output: bool = True,
     silent: bool = False,
-) -> subprocess.CompletedProcess:
+) -> subprocess.CompletedProcess[str]:
     """Run a command and return the result."""
     if not silent:
         log_command(cmd)
@@ -277,12 +278,26 @@ def get_pr_state(branch: str) -> str | None:
     return None
 
 
-def wait_for_checks(branch: str, interval: int = 5) -> tuple[bool, str]:
-    """Wait for CI checks to complete. Returns (success, status_message)."""
-    print_header(f"Waiting for CI checks to complete on '{branch}'...")
+def get_required_checks(target_branch: str) -> list[str]:
+    """Get list of required checks for the target branch."""
+    result = run_command(
+        [
+            "gh",
+            "api",
+            f"repos/:owner/:repo/branches/{target_branch}/protection",
+            "--jq",
+            ".required_status_checks.contexts[]",
+        ],
+        check=False,
+        silent=True,
+    )
+    if result.returncode == 0 and result.stdout.strip():
+        return result.stdout.strip().split("\n")
+    return []
 
-    # First try to get the PR number for more reliable check status
-    pr_number = None
+
+def get_pr_number(branch: str) -> str | None:
+    """Get PR number for a branch."""
     pr_result = run_command(
         ["gh", "pr", "view", branch, "--json", "number"],
         check=False,
@@ -294,84 +309,196 @@ def wait_for_checks(branch: str, interval: int = 5) -> tuple[bool, str]:
             pr_number = pr_data.get("number")
             if pr_number:
                 print_info(f"Found PR #{pr_number}")
+                return str(pr_number)
         except json.JSONDecodeError:
             pass
+    return None
 
-    while True:
-        # Get check status - try with PR number if available, otherwise use branch
-        check_target = str(pr_number) if pr_number else branch
-        result = run_command(
-            ["gh", "pr", "checks", check_target, "--json", "state,name,bucket"],
-            check=False,
-            silent=True,
+
+def fetch_check_status(branch: str, pr_number: str | None) -> list[dict[str, Any]]:
+    """Fetch current check status from GitHub."""
+    check_target = pr_number if pr_number else branch
+    result = run_command(
+        ["gh", "pr", "checks", check_target, "--json", "state,name,bucket"],
+        check=False,
+        silent=True,
+    )
+
+    if result.returncode != 0:
+        if "no checks reported" in result.stderr:
+            print_warning("No checks reported yet, waiting for CI to start...")
+            return []
+        error_msg = f"Failed to get check status: {result.stderr}"
+        raise RuntimeError(error_msg)
+
+    try:
+        checks: list[dict[str, Any]] = json.loads(result.stdout)
+    except json.JSONDecodeError as e:
+        error_msg = "Failed to parse check status"
+        raise RuntimeError(error_msg) from e
+    else:
+        return checks
+
+
+def categorize_checks(
+    checks: list[dict[str, Any]],
+) -> tuple[list[str], list[str], list[str], set[str]]:
+    """Categorize checks into passed, failed, pending, and return all check names."""
+    passed = []
+    failed = []
+    pending = []
+    check_names = set()
+
+    for check in checks:
+        name = check.get("name", "unknown")
+        state = check.get("state", "unknown")
+        check_names.add(name)
+
+        # For gh pr checks, state can be: SUCCESS, FAILURE, PENDING, etc.
+        # Also check the bucket field which has simpler values
+        bucket = check.get("bucket", "")
+
+        if state in ["SUCCESS", "NEUTRAL", "SKIPPED"] or bucket == "pass":
+            passed.append(name)
+        elif state in ["FAILURE", "CANCELLED"] or bucket == "fail":
+            failed.append(name)
+        elif state in ["PENDING", "QUEUED", "IN_PROGRESS"] or bucket in ["pending", ""]:
+            pending.append(name)
+        else:
+            # Unknown states are treated as pending
+            pending.append(f"{name} ({state})")
+
+    return passed, failed, pending, check_names
+
+
+def print_check_status(
+    passed: list[str],
+    failed: list[str],
+    pending: list[str],
+    missing_required: list[str],
+) -> None:
+    """Print the current check status."""
+    print(f"\n[{time.strftime('%H:%M:%S')}] Check status:")
+    print_info(f"  {Colors.GREEN}Passed: {len(passed)}{Colors.RESET}")
+    print_info(f"  {Colors.RED}Failed: {len(failed)}{Colors.RESET}")
+    print_info(f"  {Colors.YELLOW}Pending: {len(pending)}{Colors.RESET}")
+
+    if missing_required:
+        print_warning("\nWaiting for required checks to appear:")
+        for name in missing_required:
+            print_warning(f"  ⏳ {name}")
+
+    if failed:
+        print_error("\nFailed checks:")
+        for name in failed:
+            print_error(f"  ✗ {name}")
+
+    if pending:
+        print_warning("\nPending checks:")
+        for name in pending:
+            print_warning(f"  - {name}")
+
+
+def determine_completion_status(
+    passed: list[str],
+    failed: list[str],
+    pending: list[str],
+    missing_required: list[str],
+    required_checks: list[str],
+    time_since_first_check: float,
+    min_wait_after_first_check: int,
+) -> tuple[bool, str] | None:
+    """Determine if checks are complete and return status. Returns None if should continue waiting."""
+    if missing_required or pending:
+        # Still waiting for checks
+        return None
+
+    # All required checks have appeared and no checks are pending
+    should_exit = (
+        required_checks or time_since_first_check >= min_wait_after_first_check
+    )
+
+    if not should_exit:
+        # No required checks configured, so wait a bit to ensure all checks have started
+        wait_time = int(min_wait_after_first_check - time_since_first_check)
+        print_info(
+            f"\nAll current checks complete, but waiting {wait_time}s more to ensure all checks have started..."
+        )
+        return None
+
+    # Determine final status
+    if failed:
+        return False, f"{len(failed)} checks failed"
+    if passed:
+        return True, f"All {len(passed)} checks passed"
+    return False, "No checks found or all checks in unknown state"
+
+
+def wait_for_checks(
+    branch: str, target_branch: str, interval: int = 5
+) -> tuple[bool, str]:
+    """Wait for CI checks to complete. Returns (success, status_message)."""
+    print_header(f"Waiting for CI checks to complete on '{branch}'...")
+
+    # Get required checks
+    required_checks = get_required_checks(target_branch)
+    if required_checks:
+        print_info(f"Required checks: {', '.join(required_checks)}")
+    else:
+        print_warning(
+            "No required checks configured, waiting for any checks to appear..."
         )
 
-        if result.returncode != 0:
-            # If no checks found, it might mean CI hasn't started yet
-            if "no checks reported" in result.stderr:
-                print_warning("No checks reported yet, waiting for CI to start...")
-                time.sleep(interval)
-                continue
-            return False, f"Failed to get check status: {result.stderr}"
+    # Get PR number for more reliable check status
+    pr_number = get_pr_number(branch)
 
+    # Track when we first see checks
+    first_check_time = None
+    min_wait_after_first_check = (
+        30  # Wait at least 30 seconds after first check appears
+    )
+
+    while True:
         try:
-            checks = json.loads(result.stdout)
-        except json.JSONDecodeError:
-            return False, "Failed to parse check status"
+            # Fetch current check status
+            checks = fetch_check_status(branch, pr_number)
 
-        if not checks:
-            return False, "No checks found"
+            # Track when we first see checks
+            if checks and first_check_time is None:
+                first_check_time = time.time()
 
-        # Check status
-        pending = []
-        failed = []
-        passed = []
+            # Categorize checks
+            passed, failed, pending, check_names = categorize_checks(checks)
 
-        for check in checks:
-            name = check.get("name", "unknown")
-            state = check.get("state", "unknown")
+            # Check if all required checks have appeared
+            missing_required = []
+            if required_checks:
+                missing_required = [c for c in required_checks if c not in check_names]
 
-            # For gh pr checks, state can be: SUCCESS, FAILURE, PENDING, etc.
-            # Also check the bucket field which has simpler values
-            bucket = check.get("bucket", "")
+            # Print current status
+            print_check_status(passed, failed, pending, missing_required)
 
-            if state in ["SUCCESS", "NEUTRAL", "SKIPPED"] or bucket == "pass":
-                passed.append(name)
-            elif state in ["FAILURE", "CANCELLED"] or bucket == "fail":
-                failed.append(name)
-            elif state in ["PENDING", "QUEUED", "IN_PROGRESS"] or bucket in [
-                "pending",
-                "",
-            ]:
-                pending.append(name)
-            else:
-                # Unknown states are treated as pending
-                pending.append(f"{name} ({state})")
+            # Calculate time since first check
+            time_since_first_check = (
+                time.time() - first_check_time if first_check_time else 0
+            )
 
-        # Print status
-        print(f"\n[{time.strftime('%H:%M:%S')}] Check status:")
-        print_info(f"  {Colors.GREEN}Passed: {len(passed)}{Colors.RESET}")
-        print_info(f"  {Colors.RED}Failed: {len(failed)}{Colors.RESET}")
-        print_info(f"  {Colors.YELLOW}Pending: {len(pending)}{Colors.RESET}")
+            # Check if we're done
+            result = determine_completion_status(
+                passed,
+                failed,
+                pending,
+                missing_required,
+                required_checks,
+                time_since_first_check,
+                min_wait_after_first_check,
+            )
 
-        if failed:
-            print_error("\nFailed checks:")
-            for name in failed:
-                print_error(f"  ✗ {name}")
+            if result is not None:
+                return result
 
-        if pending:
-            print_warning("\nPending checks:")
-            for name in pending:
-                print_warning(f"  - {name}")
-
-        # Check if done - all checks should have a definitive state
-        total_checks = len(passed) + len(failed) + len(pending)
-        if not pending or total_checks == 0:
-            if failed:
-                return False, f"{len(failed)} checks failed"
-            if passed:
-                return True, f"All {len(passed)} checks passed"
-            return False, "No checks found or all checks in unknown state"
+        except RuntimeError as e:
+            return False, str(e)
 
         # Wait before next check
         print_subtle(f"\nWaiting {interval} seconds before next check...")
@@ -443,7 +570,7 @@ def main() -> int:
 
     # Wait for checks if requested
     if args.wait:
-        success, message = wait_for_checks(branch)
+        success, message = wait_for_checks(branch, target_branch)
         if success:
             print_success(f"\n✓ {message}")
         else:
