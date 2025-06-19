@@ -90,11 +90,9 @@ def run_command(
         log_command(cmd)
 
     if capture_output:
-        result = subprocess.run(cmd, check=False, capture_output=True, text=True)
+        result = subprocess.run(cmd, check=False, stdout=subprocess.PIPE, text=True)
         if result.returncode != 0 and check:
             print_error(f"Command failed with exit code {result.returncode}")
-            if result.stderr:
-                print_error(f"stderr: {result.stderr}")
             raise subprocess.CalledProcessError(
                 result.returncode, cmd, result.stdout, result.stderr
             )
