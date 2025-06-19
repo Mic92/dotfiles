@@ -9,6 +9,10 @@ toplevel=$(git rev-parse --show-toplevel 2>/dev/null || echo ".")
 buildArgs=()
 fmt="$toplevel/.git/nix-fmt"
 
+if command -v treefmt &>/dev/null; then
+    exec treefmt "$@"
+fi
+
 if [[ ! -d "$toplevel/.git/nix-fmt" ]]; then
     needsUpdate=1
 elif [[ -n "$toplevel" ]]; then
@@ -29,11 +33,12 @@ fi
 
 # treefmt has multiple outputs
 if [[ -x "$fmt/bin/treefmt" ]]; then
-    "$fmt/bin/treefmt" "$@"
-    exit $?
+    exec "$fmt/bin/treefmt" "$@"
 fi
 
 for file in "$fmt/bin/"*; do
-    "$file" "$@"
-    exit $?
+    # shellcheck disable=SC2068
+    exec "$file" "$@"
 done
+echo "No formatter found in $fmt/bin"
+exit 1
