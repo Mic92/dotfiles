@@ -3,7 +3,7 @@
 
 # Create temp file for the message
 tmpfile=$(mktemp)
-trap "rm -f $tmpfile" EXIT
+trap 'rm -f "$tmpfile"' EXIT
 
 # Read the full message from stdin
 cat > "$tmpfile"

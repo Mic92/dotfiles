@@ -2,7 +2,7 @@
 
 let
   # aerc with compose pipe support
-  aerc-patched = pkgs.callPackage ../../pkgs/aerc-patched.nix { 
+  aerc-patched = pkgs.callPackage ../../pkgs/aerc-patched.nix {
     inherit (pkgs) aerc;
   };
   # msmtp wrapper that saves sent mail to maildir
