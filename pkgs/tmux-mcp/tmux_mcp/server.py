@@ -4,7 +4,9 @@ import asyncio
 import contextlib
 import logging
 import os
+import random
 import shlex
+import shutil
 import subprocess
 import tempfile
 from dataclasses import dataclass
@@ -143,8 +145,6 @@ def _create_tmux_window(
     window_name: str | None = None,
 ) -> str:
     """Create a new tmux window and return its unique name."""
-    import random
-
     # Use provided window name or generate a unique one
     if not window_name:
         window_name = f"claude-{random.randint(100, 9999)}"  # noqa: S311
@@ -527,8 +527,6 @@ async def tmux_run_command(
         finally:
             # Clean up temp directory (but keep output file for caching)
             try:
-                import shutil
-
                 shutil.rmtree(temp_dir, ignore_errors=True)
             except OSError as e:
                 logger.debug(f"Failed to clean up temp dir {temp_dir}: {e}")
@@ -1042,8 +1040,6 @@ async def main() -> None:
 
 def cli() -> None:
     """CLI entry point for setuptools."""
-    import anyio
-
     anyio.run(main)
 
 
