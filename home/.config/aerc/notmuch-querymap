@@ -11,7 +11,7 @@ Privat=folder:Privat AND NOT tag:trash
 Arbeit=folder:Arbeit AND NOT tag:trash
 Uni=folder:Uni AND NOT tag:trash
 Sent=tag:Sent AND NOT tag:trash
-Drafts=tag:Drafts AND NOT tag:trash
+Drafts=folder:thalheim.io/.Drafts AND NOT tag:trash
 Spam=tag:Spam AND NOT tag:trash
 Trash=tag:trash
 

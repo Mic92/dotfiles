@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+# Correct email content using Claude while preserving email encoding
+# This script is designed to work with aerc's pipe functionality
+# Use --draft flag to save as draft instead of outputting to stdout
+
+set -euo pipefail
+
+# Check for --draft flag
+SAVE_AS_DRAFT=false
+if [[ "${1:-}" == "--draft" ]]; then
+    SAVE_AS_DRAFT=true
+fi
+
+# Check if claude command exists
+if ! command -v claude &> /dev/null; then
+    echo "Error: claude command not found. Please install Claude CLI." >&2
+    exit 1
+fi
+
+# Create temporary directory
+TMPDIR=$(mktemp -d)
+trap 'rm -rf "$TMPDIR"' EXIT
+
+# Read email from stdin
+cat > "$TMPDIR/email.raw"
+
+# Use mshow to properly parse the email and extract text parts
+if ! command -v mshow &> /dev/null; then
+    echo "Error: mshow (from mblaze) not found" >&2
+    cat "$TMPDIR/email.raw"  # Return original
+    exit 1
+fi
+
+# Check if this is a complete email with headers or just body text
+# Extract headers (everything before first empty line)
+sed '/^$/q' "$TMPDIR/email.raw" > "$TMPDIR/headers"
+
+# Check Content-Type
+content_type=$(grep -i "^Content-Type:" "$TMPDIR/headers" | head -1 || echo "")
+
+if echo "$content_type" | grep -qi "multipart"; then
+    # Multipart email - need more complex handling
+    echo "Error: Multipart emails not yet supported" >&2
+    cat "$TMPDIR/email.raw"
+    exit 1
+fi
+
+# Extract body (everything after first empty line)
+sed '1,/^$/d' "$TMPDIR/email.raw" > "$TMPDIR/body.raw"
+
+# Check for Content-Transfer-Encoding
+encoding=$(grep -i "^Content-Transfer-Encoding:" "$TMPDIR/headers" | head -1 | cut -d: -f2 | tr -d ' \r' || echo "")
+
+# Decode body based on encoding
+case "$encoding" in
+    "quoted-printable")
+        # Decode quoted-printable
+        perl -pe 's/=([0-9A-Fa-f]{2})/chr(hex($1))/eg; s/=\r?\n//g' < "$TMPDIR/body.raw" > "$TMPDIR/body.decoded"
+        ;;
+    "base64")
+        # Decode base64
+        base64 -d < "$TMPDIR/body.raw" > "$TMPDIR/body.decoded" 2>/dev/null || cp "$TMPDIR/body.raw" "$TMPDIR/body.decoded"
+        ;;
+    *)
+        # 7bit, 8bit, or unspecified - use as is
+        cp "$TMPDIR/body.raw" "$TMPDIR/body.decoded"
+        ;;
+esac
+
+# Correct the body with Claude
+# For full emails, we need to be extra clear about what we want
+prompt="Correct grammar and spelling errors. Output ONLY the corrected text - no explanations, no preamble, no 'Here's the corrected text:', just the raw corrected content exactly as it should appear."
+
+if ! claude "$prompt" < "$TMPDIR/body.decoded" > "$TMPDIR/body.corrected" 2>&1; then
+    echo "Error: Claude correction failed" >&2
+    cat "$TMPDIR/email.raw"
+    exit 1
+fi
+
+# Prepare the corrected email
+{
+    # Output headers
+    cat "$TMPDIR/headers"
+    echo ""  # Empty line between headers and body
+
+    # Re-encode body if needed
+    case "$encoding" in
+        "quoted-printable")
+            # Re-encode to quoted-printable
+            perl -pe 's/([^\x20-\x7E])/sprintf("=%02X", ord($1))/eg' < "$TMPDIR/body.corrected"
+            ;;
+        "base64")
+            # Re-encode to base64
+            base64 -w 76 < "$TMPDIR/body.corrected"
+            ;;
+        *)
+            # Output as-is
+            cat "$TMPDIR/body.corrected"
+            ;;
+    esac
+} > "$TMPDIR/final.eml"
+
+# Either save as draft or output to stdout
+if [[ "$SAVE_AS_DRAFT" == "true" ]]; then
+    # Check if aerc-save-draft exists
+    if command -v aerc-save-draft &> /dev/null; then
+        # Save as draft, redirecting any stdout from aerc-save-draft to stderr
+        cat "$TMPDIR/final.eml" | aerc-save-draft >&2
+        echo "Corrected email saved as draft. Check your Drafts folder." >&2
+        # Output the corrected content back to aerc so it shows in the compose window
+        cat "$TMPDIR/final.eml"
+    else
+        echo "Error: aerc-save-draft command not found" >&2
+        cat "$TMPDIR/final.eml"  # Fallback to stdout
+        exit 1
+    fi
+else
+    # Output to stdout
+    cat "$TMPDIR/final.eml"
+fi
