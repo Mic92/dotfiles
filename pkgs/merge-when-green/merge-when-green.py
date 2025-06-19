@@ -396,15 +396,6 @@ def main() -> int:
 
     print_header("merge-when-green")
 
-    # Check if merge-after-ci exists (clan-project)
-    if shutil.which("merge-after-ci"):
-        print_warning("Detected clan-project, delegating to merge-after-ci")
-        cmd = ["merge-after-ci", "--no-review"]
-        if args.wait:
-            # merge-after-ci might have its own wait functionality
-            pass
-        return subprocess.run(cmd + sys.argv[1:], check=False).returncode
-
     # Get target branch
     print_header("Getting repository information...")
     target_branch = get_default_branch()
