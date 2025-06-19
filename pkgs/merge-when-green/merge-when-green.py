@@ -292,7 +292,11 @@ def get_required_checks(target_branch: str) -> list[str]:
         silent=True,
     )
     if result.returncode == 0 and result.stdout.strip():
-        return result.stdout.strip().split("\n")
+        checks = result.stdout.strip().split("\n")
+        print_subtle(f"Debug: Found required checks from API: {checks}")
+        return checks
+    else:
+        print_subtle(f"Debug: No required checks found (returncode: {result.returncode}, stderr: {result.stderr})")
     return []
 
 
@@ -448,6 +452,9 @@ def wait_for_checks(
         print_warning(
             "No required checks configured, waiting for any checks to appear..."
         )
+    
+    # Debug output
+    print_subtle(f"Debug: required_checks = {required_checks}")
 
     # Get PR number for more reliable check status
     pr_number = get_pr_number(branch)
