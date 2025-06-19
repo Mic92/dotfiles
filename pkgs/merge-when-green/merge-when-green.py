@@ -12,7 +12,6 @@ import sys
 import tempfile
 import time
 from pathlib import Path
-from typing import Any
 
 
 class Colors:
@@ -194,7 +193,11 @@ def run_treefmt(target_branch: str) -> bool:
         ],
         check=False,
     )
-    run_command(["lazygit"], check=False, capture_output=False)
+    # Only open lazygit if we're in an interactive shell
+    if sys.stdin.isatty() and sys.stdout.isatty():
+        run_command(["lazygit"], check=False, capture_output=False)
+    else:
+        print_error("Formatting issues detected. Please run 'nix fmt' manually.")
     return False
 
 
@@ -278,229 +281,102 @@ def get_pr_state(branch: str) -> str | None:
     return None
 
 
-def get_required_checks(target_branch: str) -> list[str]:
-    """Get list of required checks for the target branch."""
-    result = run_command(
-        [
-            "gh",
-            "api",
-            f"repos/:owner/:repo/branches/{target_branch}/protection",
-            "--jq",
-            ".required_status_checks.contexts[]",
-        ],
-        check=False,
-        silent=True,
-    )
-    if result.returncode == 0 and result.stdout.strip():
-        return result.stdout.strip().split("\n")
-    return []
-
-
-def get_pr_number(branch: str) -> str | None:
-    """Get PR number for a branch."""
-    pr_result = run_command(
-        ["gh", "pr", "view", branch, "--json", "number"],
-        check=False,
-        silent=True,
-    )
-    if pr_result.returncode == 0:
-        try:
-            pr_data = json.loads(pr_result.stdout)
-            pr_number = pr_data.get("number")
-            if pr_number:
-                print_info(f"Found PR #{pr_number}")
-                return str(pr_number)
-        except json.JSONDecodeError:
-            pass
-    return None
-
-
-def fetch_check_status(branch: str, pr_number: str | None) -> list[dict[str, Any]]:
-    """Fetch current check status from GitHub."""
-    check_target = pr_number if pr_number else branch
-    result = run_command(
-        ["gh", "pr", "checks", check_target, "--json", "state,name,bucket"],
-        check=False,
-        silent=True,
-    )
-
-    if result.returncode != 0:
-        if "no checks reported" in result.stderr:
-            print_warning("No checks reported yet, waiting for CI to start...")
-            return []
-        error_msg = f"Failed to get check status: {result.stderr}"
-        raise RuntimeError(error_msg)
-
-    try:
-        checks: list[dict[str, Any]] = json.loads(result.stdout)
-    except json.JSONDecodeError as e:
-        error_msg = "Failed to parse check status"
-        raise RuntimeError(error_msg) from e
-    else:
-        return checks
-
-
-def categorize_checks(
-    checks: list[dict[str, Any]],
-) -> tuple[list[str], list[str], list[str], set[str]]:
-    """Categorize checks into passed, failed, pending, and return all check names."""
-    passed = []
-    failed = []
-    pending = []
-    check_names = set()
-
-    for check in checks:
-        name = check.get("name", "unknown")
-        state = check.get("state", "unknown")
-        check_names.add(name)
-
-        # For gh pr checks, state can be: SUCCESS, FAILURE, PENDING, etc.
-        # Also check the bucket field which has simpler values
-        bucket = check.get("bucket", "")
-
-        if state in ["SUCCESS", "NEUTRAL", "SKIPPED"] or bucket == "pass":
-            passed.append(name)
-        elif state in ["FAILURE", "CANCELLED"] or bucket == "fail":
-            failed.append(name)
-        elif state in ["PENDING", "QUEUED", "IN_PROGRESS"] or bucket in ["pending", ""]:
-            pending.append(name)
-        else:
-            # Unknown states are treated as pending
-            pending.append(f"{name} ({state})")
-
-    return passed, failed, pending, check_names
-
-
-def print_check_status(
-    passed: list[str],
-    failed: list[str],
-    pending: list[str],
-    missing_required: list[str],
-) -> None:
-    """Print the current check status."""
-    print(f"\n[{time.strftime('%H:%M:%S')}] Check status:")
-    print_info(f"  {Colors.GREEN}Passed: {len(passed)}{Colors.RESET}")
-    print_info(f"  {Colors.RED}Failed: {len(failed)}{Colors.RESET}")
-    print_info(f"  {Colors.YELLOW}Pending: {len(pending)}{Colors.RESET}")
-
-    if missing_required:
-        print_warning("\nWaiting for required checks to appear:")
-        for name in missing_required:
-            print_warning(f"  ⏳ {name}")
-
-    if failed:
-        print_error("\nFailed checks:")
-        for name in failed:
-            print_error(f"  ✗ {name}")
-
-    if pending:
-        print_warning("\nPending checks:")
-        for name in pending:
-            print_warning(f"  - {name}")
-
-
-def determine_completion_status(
-    passed: list[str],
-    failed: list[str],
-    pending: list[str],
-    missing_required: list[str],
-    required_checks: list[str],
-    time_since_first_check: float,
-    min_wait_after_first_check: int,
+def check_pr_completion(
+    pr_data: dict, pending: int, failed: int
 ) -> tuple[bool, str] | None:
-    """Determine if checks are complete and return status. Returns None if should continue waiting."""
-    if missing_required or pending:
-        # Still waiting for checks
-        return None
+    """Check if PR has reached a completion state. Returns None if still waiting."""
+    state = pr_data.get("state", "UNKNOWN")
+    mergeable = pr_data.get("mergeable", "UNKNOWN")
+    auto_merge = pr_data.get("autoMergeRequest") is not None
 
-    # All required checks have appeared and no checks are pending
-    should_exit = (
-        required_checks or time_since_first_check >= min_wait_after_first_check
-    )
+    if state == "MERGED":
+        return True, "PR successfully merged!"
 
-    if not should_exit:
-        # No required checks configured, so wait a bit to ensure all checks have started
-        wait_time = int(min_wait_after_first_check - time_since_first_check)
-        print_info(
-            f"\nAll current checks complete, but waiting {wait_time}s more to ensure all checks have started..."
-        )
-        return None
+    if state == "CLOSED":
+        return False, "PR was closed"
 
-    # Determine final status
-    if failed:
-        return False, f"{len(failed)} checks failed"
-    if passed:
-        return True, f"All {len(passed)} checks passed"
-    return False, "No checks found or all checks in unknown state"
+    if not auto_merge:
+        return False, "Auto-merge was disabled"
+
+    if mergeable == "CONFLICTING":
+        return False, "PR has merge conflicts"
+
+    if failed > 0 and pending == 0:
+        return False, f"{failed} checks failed"
+
+    return None  # Still waiting
 
 
-def wait_for_checks(
-    branch: str, target_branch: str, interval: int = 5
-) -> tuple[bool, str]:
-    """Wait for CI checks to complete. Returns (success, status_message)."""
-    print_header(f"Waiting for CI checks to complete on '{branch}'...")
-
-    # Get required checks
-    required_checks = get_required_checks(target_branch)
-    if required_checks:
-        print_info(f"Required checks: {', '.join(required_checks)}")
-    else:
-        print_warning(
-            "No required checks configured, waiting for any checks to appear..."
-        )
-
-    # Get PR number for more reliable check status
-    pr_number = get_pr_number(branch)
-
-    # Track when we first see checks
-    first_check_time = None
-    min_wait_after_first_check = (
-        30  # Wait at least 30 seconds after first check appears
-    )
+def wait_for_pr_completion(branch: str, interval: int = 10) -> tuple[bool, str]:
+    """Wait for PR to be merged or reach a final state."""
+    print_header(f"Waiting for PR completion on '{branch}'...")
 
     while True:
+        # Get comprehensive PR status
+        result = run_command(
+            [
+                "gh",
+                "pr",
+                "view",
+                branch,
+                "--json",
+                "state,mergeable,autoMergeRequest,statusCheckRollup",
+            ],
+            check=False,
+            silent=True,
+        )
+
+        if result.returncode != 0:
+            return False, "Failed to get PR status"
+
         try:
-            # Fetch current check status
-            checks = fetch_check_status(branch, pr_number)
+            pr_data = json.loads(result.stdout)
+        except json.JSONDecodeError:
+            return False, "Failed to parse PR status"
 
-            # Track when we first see checks
-            if checks and first_check_time is None:
-                first_check_time = time.time()
+        state = pr_data.get("state", "UNKNOWN")
+        mergeable = pr_data.get("mergeable", "UNKNOWN")
+        auto_merge = pr_data.get("autoMergeRequest") is not None
+        checks = pr_data.get("statusCheckRollup", [])
 
-            # Categorize checks
-            passed, failed, pending, check_names = categorize_checks(checks)
+        # Count check states
+        pending = failed = passed = 0
+        for check in checks:
+            if check.get("__typename") == "CheckRun":
+                status = check.get("status")
+                conclusion = check.get("conclusion")
+                if status != "COMPLETED":
+                    pending += 1
+                elif conclusion in ["SUCCESS", "NEUTRAL", "SKIPPED"]:
+                    passed += 1
+                else:
+                    failed += 1
+            elif check.get("__typename") == "StatusContext":
+                check_state = check.get("state")
+                if check_state == "PENDING":
+                    pending += 1
+                elif check_state in ["SUCCESS", "NEUTRAL"]:
+                    passed += 1
+                else:
+                    failed += 1
 
-            # Check if all required checks have appeared
-            missing_required = []
-            if required_checks:
-                missing_required = [c for c in required_checks if c not in check_names]
+        # Print status
+        print(f"\n[{time.strftime('%H:%M:%S')}] PR Status:")
+        print_info(f"  State: {state}")
+        print_info(f"  Auto-merge: {'enabled' if auto_merge else 'disabled'}")
+        print_info(f"  Mergeable: {mergeable}")
+        print_info(
+            f"  Checks - {Colors.GREEN}Passed: {passed}{Colors.RESET}, "
+            f"{Colors.RED}Failed: {failed}{Colors.RESET}, "
+            f"{Colors.YELLOW}Pending: {pending}{Colors.RESET}"
+        )
 
-            # Print current status
-            print_check_status(passed, failed, pending, missing_required)
+        # Check for completion
+        result = check_pr_completion(pr_data, pending, failed)
+        if result is not None:
+            return result
 
-            # Calculate time since first check
-            time_since_first_check = (
-                time.time() - first_check_time if first_check_time else 0
-            )
-
-            # Check if we're done
-            result = determine_completion_status(
-                passed,
-                failed,
-                pending,
-                missing_required,
-                required_checks,
-                time_since_first_check,
-                min_wait_after_first_check,
-            )
-
-            if result is not None:
-                return result
-
-        except RuntimeError as e:
-            return False, str(e)
-
-        # Wait before next check
+        # Still waiting
         print_subtle(f"\nWaiting {interval} seconds before next check...")
         time.sleep(interval)
 
@@ -560,7 +436,12 @@ def main() -> int:
 
     # Push changes
     print_header("Pushing changes...")
-    run_command(["git", "push", "--force", "origin", f"HEAD:{branch}"])
+    run_command(["git", "push", "--force-with-lease", "origin", f"HEAD:{branch}"])
+
+    # Get the commit we just pushed
+    pushed_commit = run_command(
+        ["git", "rev-parse", "HEAD"], silent=True
+    ).stdout.strip()
 
     # Create PR if needed
     if pr_state != "OPEN":
@@ -570,7 +451,33 @@ def main() -> int:
 
     # Wait for checks if requested
     if args.wait:
-        success, message = wait_for_checks(branch, target_branch)
+        # Wait for PR to be updated with our pushed commit
+        print_info("\nWaiting for PR to be updated with pushed changes...")
+        wait_start = time.time()
+        while True:
+            result = run_command(
+                ["gh", "pr", "view", branch, "--json", "headRefOid"],
+                check=False,
+                silent=True,
+            )
+            if result.returncode == 0:
+                try:
+                    pr_data = json.loads(result.stdout)
+                    pr_commit = pr_data.get("headRefOid", "")
+                    if pr_commit == pushed_commit:
+                        print_success("✓ PR updated with latest commit")
+                        break
+                except json.JSONDecodeError:
+                    pass
+
+            if time.time() - wait_start > 30:
+                print_error("✗ Timeout waiting for PR to update")
+                return 1
+
+            time.sleep(2)
+
+        # Now wait for completion
+        success, message = wait_for_pr_completion(branch)
         if success:
             print_success(f"\n✓ {message}")
         else:
