@@ -1,0 +1,144 @@
+#!/usr/bin/env bash
+# Import calendar invites (.ics files) from email to Nextcloud calendar via vdirsyncer
+
+set -euo pipefail
+
+# Default calendar to import to
+CALENDAR="${CALENDAR:-personal}"
+CALENDAR_DIR="$HOME/.local/share/calendars/$CALENDAR"
+
+# Function to print usage
+usage() {
+    echo "Usage: $0 [OPTIONS] [FILE]"
+    echo "Import .ics calendar invites to Nextcloud calendar"
+    echo ""
+    echo "OPTIONS:"
+    echo "  -c, --calendar NAME    Calendar name (default: personal)"
+    echo "  -h, --help            Show this help message"
+    echo ""
+    echo "If FILE is not provided, reads from stdin (for aerc pipe)"
+    exit 0
+}
+
+# Parse arguments
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -c|--calendar)
+            CALENDAR="$2"
+            CALENDAR_DIR="$HOME/.local/share/calendars/$CALENDAR"
+            shift 2
+            ;;
+        -h|--help)
+            usage
+            ;;
+        *)
+            FILE="$1"
+            shift
+            ;;
+    esac
+done
+
+# Check if calendar directory exists
+if [[ ! -d "$CALENDAR_DIR" ]]; then
+    echo "Error: Calendar '$CALENDAR' not found at $CALENDAR_DIR" >&2
+    echo "Available calendars:" >&2
+    ls "$HOME/.local/share/calendars/" 2>/dev/null || echo "No calendars found" >&2
+    exit 1
+fi
+
+# Create temporary directory for processing
+TMPDIR=$(mktemp -d)
+trap 'rm -rf "$TMPDIR"' EXIT
+
+# Function to import a single .ics file
+import_ics() {
+    local ics_file="$1"
+    local basename
+    basename=$(basename "$ics_file")
+    
+    # Generate unique filename with timestamp
+    local timestamp
+    timestamp=$(date +%Y%m%d%H%M%S)
+    local random
+    random=$(head -c 6 /dev/urandom | base64 | tr -d '/+=' | head -c 6)
+    local new_name="${timestamp}-${random}.ics"
+    
+    # Copy to calendar directory
+    cp "$ics_file" "$CALENDAR_DIR/$new_name"
+    echo "Imported: $basename -> $CALENDAR/$new_name"
+}
+
+# Process input
+if [[ -n "${FILE:-}" ]]; then
+    # File provided as argument
+    if [[ ! -f "$FILE" ]]; then
+        echo "Error: File '$FILE' not found" >&2
+        exit 1
+    fi
+    
+    if [[ "$FILE" == *.ics ]]; then
+        # Direct .ics file
+        import_ics "$FILE"
+    else
+        # Assume it's an email, extract attachments
+        echo "Extracting .ics attachments from email..."
+        # Use mshow to find calendar parts
+        calendar_parts=$(mshow -t "$FILE" | grep -E 'text/calendar|application/ics|\.ics' | awk '{print $1}' | tr -d ':')
+        if [[ -z "$calendar_parts" ]]; then
+            echo "No calendar attachments found in email" >&2
+            exit 1
+        fi
+        # Extract calendar parts (mshow needs to run in the target directory)
+        # shellcheck disable=SC2086
+        (cd "$TMPDIR" && mshow -x "$FILE" $calendar_parts 2>/dev/null) || {
+            echo "Error: Failed to extract attachments. Is mshow (mblaze) installed?" >&2
+            exit 1
+        }
+    fi
+else
+    # Read from stdin (for aerc pipe)
+    cat > "$TMPDIR/email.eml"
+    
+    # Extract attachments
+    calendar_parts=$(mshow -t "$TMPDIR/email.eml" | grep -E 'text/calendar|application/ics|\.ics' | awk '{print $1}' | tr -d ':')
+    if [[ -z "$calendar_parts" ]]; then
+        echo "No calendar attachments found in email" >&2
+        exit 1
+    fi
+    # shellcheck disable=SC2086
+    (cd "$TMPDIR" && mshow -x "$TMPDIR/email.eml" $calendar_parts 2>/dev/null) || {
+        echo "Error: Failed to extract attachments. Is mshow (mblaze) installed?" >&2
+        exit 1
+    }
+fi
+
+# Import all .ics files found
+ics_count=0
+
+# Check if we already imported a direct .ics file
+if [[ -n "${FILE:-}" ]] && [[ "$FILE" == *.ics ]]; then
+    ics_count=1
+else
+    # Look for extracted .ics files and text/calendar parts
+    for ics_file in "$TMPDIR"/*; do
+        if [[ -f "$ics_file" ]]; then
+            # Check if it's an .ics file or has text/calendar MIME type
+            mime_type=$(file -b --mime-type "$ics_file" 2>/dev/null || echo "")
+            if [[ "$ics_file" == *.ics ]] || [[ "$mime_type" == "text/calendar" ]] || grep -q "BEGIN:VCALENDAR" "$ics_file" 2>/dev/null; then
+                import_ics "$ics_file"
+                ((ics_count++))
+            fi
+        fi
+    done
+fi
+
+if [[ $ics_count -eq 0 ]]; then
+    echo "No .ics files found in the email" >&2
+    exit 1
+fi
+
+# Sync with Nextcloud
+echo "Syncing with Nextcloud..."
+vdirsyncer sync "$CALENDAR" 2>/dev/null || vdirsyncer sync
+
+echo "Successfully imported $ics_count calendar invite(s) to $CALENDAR"
