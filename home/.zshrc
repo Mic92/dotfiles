@@ -407,40 +407,6 @@ fi
 n() {
   NIX_RUN_ARGS="$@${NIX_RUN_ARGS+ }${NIX_RUN_ARGS}" nix shell "$@" -f '<nixpkgs>' -c zsh
 }
-nix-fmt() {
-  local toplevel currentSystem needsUpdate=0 fmt referenceTime
-  currentSystem=$(command nix eval --raw --impure --expr builtins.currentSystem)
-  toplevel=$(command git rev-parse --show-toplevel)
-  buildArgs=()
-  fmt="$toplevel/.git/nix-fmt"
-  if [[ ! -d "$toplevel/.git/nix-fmt" ]]; then
-    needsUpdate=1
-  elif [[ -n "$toplevel" ]]; then
-    buildArgs+=("-o" "$toplevel"/.git/nix-fmt)
-    referenceTime=$(stat -c %Y "$toplevel"/.git/nix-fmt)
-    for file in flake.nix flake.lock; do
-      if [[ "$(stat -c %Y $file)" -gt "$referenceTime" ]]; then
-        needsUpdate=1
-        break
-      fi
-    done
-  fi
-  if [[ "$needsUpdate" == 1 ]]; then
-    fmt=$(command nix build --builders '' "${buildArgs[@]}"  ".#formatter.${currentSystem}" --print-out-paths)
-  fi
-  ln -sf "$fmt" "$toplevel/.git/nix-fmt"
-
-  # treefmt has multiple outputs
-  if [[ -x "$fmt/bin/treefmt" ]]; then
-    "$fmt/bin/treefmt" "$@"
-    return
-  fi
-  for file in "$fmt/bin/"*; do
-    "$file" "$@"
-    return
-  done
-}
-
 nix-call-package() {
     if [ $# -lt 1 ]; then
         echo "USAGE: $0" >&2
