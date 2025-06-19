@@ -87,9 +87,6 @@
   folder = "Drafts"
 	host = imaps://imap.thalheim.io
   user = joerg@higgsboson.tk
-	authMethod = LOGIN
-	sslverify = false
-	port = 993
 [sendemail]
   from = joerg@thalheim.io <joerg@thalheim.io>
   smtpserver = smtp.thalheim.io
@@ -130,5 +127,3 @@
 	helper = !gh auth git-credential
 [http]
   cookiefile = ~/.gitcookies
-[imapstore "default"]
-	folder = Drafts
