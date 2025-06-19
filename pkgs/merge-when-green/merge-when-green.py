@@ -392,8 +392,6 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    print_header("merge-when-green")
-
     # Get target branch
     print_header("Getting repository information...")
     target_branch = get_default_branch()
