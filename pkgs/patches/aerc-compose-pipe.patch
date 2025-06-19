@@ -1,7 +1,7 @@
-From 2b38a78945902ce66e26906a8f1f8b4b17d92e60 Mon Sep 17 00:00:00 2001
+From 2c611d1f9f3897c98fc10f56d9ae5469bcfa695f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
 Date: Thu, 19 Jun 2025 09:03:48 +0200
-Subject: [PATCH 1/2] pipe: refactor to move out doExec/doTerm functions
+Subject: [PATCH aerc 1/2] pipe: refactor to move out doExec/doTerm functions
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -198,11 +198,11 @@ index c160247a..9db75dbc 100644
 2.49.0
 
 
-From 566159ea324eda2f75436c5c496696d31ffe5525 Mon Sep 17 00:00:00 2001
+From aced943c26ac61a0cb794e41de086492b3629053 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
 Date: Thu, 19 Jun 2025 09:19:30 +0200
-Subject: [PATCH 2/2] pipe: add support for piping messages in compose review
- mode
+Subject: [PATCH aerc 2/2] pipe: add support for piping messages in compose
+ review mode
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -214,10 +214,13 @@ composed messages before they are sent.
 The implementation creates a pipe to the composed message content and
 passes it to either doExec or doTerm depending on the -b flag.
 
+Changelog-added: The `:pipe` command now works in the compose review mode,
+  allowing users to pipe draft messages to external commands before sending.
 Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
 ---
  commands/msg/pipe.go | 29 ++++++++++++++++++++++++++++-
- 1 file changed, 28 insertions(+), 1 deletion(-)
+ doc/aerc.1.scd       |  3 ++-
+ 2 files changed, 30 insertions(+), 2 deletions(-)
 
 diff --git a/commands/msg/pipe.go b/commands/msg/pipe.go
 index 9db75dbc..b68a112d 100644
@@ -273,6 +276,20 @@ index 9db75dbc..b68a112d 100644
  	provider := app.SelectedTabContent().(app.ProvidesMessage)
  	if !p.Full && !p.Part {
  		if _, ok := provider.(*app.MessageViewer); ok {
+diff --git a/doc/aerc.1.scd b/doc/aerc.1.scd
+index 643365f7..86fe296f 100644
+--- a/doc/aerc.1.scd
++++ b/doc/aerc.1.scd
+@@ -439,7 +439,8 @@ message list, the message in the message viewer, etc).
+ 	Downloads and pipes the selected message into the given shell command
+ 	(executed with _sh -c "<cmd>"_), and opens a new terminal tab to show
+ 	the result. By default, the selected message part is used in the message
+-	viewer and the full message is used in the message list.
++	viewer and the full message is used in the message list. In the compose
++	review mode, pipes the composed message that is about to be sent.
+ 
+ 	Operates on multiple messages when they are marked. When piping multiple
+ 	messages, aerc will write them with mbox format separators.
 -- 
 2.49.0
 
