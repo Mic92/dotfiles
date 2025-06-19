@@ -88,12 +88,9 @@
 	host = imaps://imap.thalheim.io
   user = joerg@higgsboson.tk
 [sendemail]
-  from = joerg@thalheim.io <joerg@thalheim.io>
-  smtpserver = smtp.thalheim.io
-  smtpuser = joerg@higgsboson.tk
-  smtpencryption = tls
+  from = Joerg Thalheim <joerg@thalheim.io>
   chainreplyto = false
-  smtpserverport = 587
+  sendmailcmd = msmtp
 [http "github.com"]
   SSLCypherList = "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH"
 [filter "lfs"]
