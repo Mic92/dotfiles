@@ -3,28 +3,25 @@
   stdenv,
   fetchFromGitHub,
   darwin,
+
 }:
 
 stdenv.mkDerivation rec {
   pname = "blueutil";
   version = "2.10.0";
-
   src = fetchFromGitHub {
     owner = "toy";
     repo = pname;
     rev = "v${version}";
     sha256 = "sha256-x2khx8Y0PolpMiyrBatT2aHHyacrQVU/02Z4Dz9fBtI=";
   };
-
   buildInputs = lib.optionals stdenv.isDarwin [
     darwin.apple_sdk.frameworks.Foundation
     darwin.apple_sdk.frameworks.IOBluetooth
   ];
-
   makeFlags = [
     "PREFIX=$(out)"
   ];
-
   installPhase = ''
     runHook preInstall
 
@@ -33,17 +30,14 @@ stdenv.mkDerivation rec {
 
     runHook postInstall
   '';
-
   NIX_LDFLAGS = lib.optionals stdenv.isDarwin [
     "-framework Foundation"
     "-framework IOBluetooth"
   ];
-
   meta = with lib; {
     description = "Command-line utility to control Bluetooth on macOS";
     homepage = "https://github.com/toy/blueutil";
     license = licenses.mit;
-    maintainers = with maintainers; [ ];
     platforms = platforms.darwin;
     mainProgram = "blueutil";
     longDescription = ''
