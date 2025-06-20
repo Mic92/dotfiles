@@ -63,6 +63,7 @@
   environment.systemPackages = [
     pkgs.python3
     pkgs.nixos-rebuild
+    self.packages.${pkgs.system}.blueutil
   ];
 
   programs.zsh.enable = true;

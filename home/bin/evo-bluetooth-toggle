@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+# Toggle Bluetooth on evo (Mac) remotely
+
+ssh joerg@evo.local "blueutil -p toggle && echo \"Bluetooth is now: \$(blueutil -p | sed 's/0/OFF/; s/1/ON/')\""
