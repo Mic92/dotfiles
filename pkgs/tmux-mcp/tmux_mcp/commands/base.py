@@ -119,10 +119,11 @@ async def wait_for_pattern(
     start_time = asyncio.get_event_loop().time()
     poll_interval = 0.1  # Start with 100ms
 
-    while True:
-        # Check if timeout exceeded
-        elapsed = asyncio.get_event_loop().time() - start_time
-        if elapsed >= timeout_seconds:
+    try:
+        while True:
+            # Check if timeout exceeded
+            elapsed = asyncio.get_event_loop().time() - start_time
+            if elapsed >= timeout_seconds:
             # Get final output state
             current_output = ""
             if output_file and output_file.exists():

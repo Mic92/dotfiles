@@ -2,12 +2,15 @@
 
 import asyncio
 import logging
+import signal
+import sys
 from typing import Any
 
+from anyio import BrokenResourceError
 from mcp.server import Server
 from mcp.server.models import InitializationOptions
 from mcp.server.stdio import stdio_server
-from mcp.types import ServerCapabilities, TextContent, Tool
+from mcp.types import ServerCapabilities, TextContent, Tool, ToolsCapability
 
 from .commands import (
     capture_pane_tool,
@@ -178,22 +181,55 @@ async def handle_call_tool(name: str, arguments: dict[str, Any]) -> list[TextCon
 
 async def _run_server() -> None:
     """Run the server with stdio transport."""
-    async with stdio_server() as (read_stream, write_stream):
-        await server.run(
-            read_stream,
-            write_stream,
-            InitializationOptions(
-                server_name="tmux-mcp",
-                server_version="0.1.0",
-                capabilities=ServerCapabilities(),
-            ),
-        )
+    try:
+        async with stdio_server() as (read_stream, write_stream):
+            await server.run(
+                read_stream,
+                write_stream,
+                InitializationOptions(
+                    server_name="tmux-mcp",
+                    server_version="0.1.0",
+                    capabilities=ServerCapabilities(tools=ToolsCapability()),
+                ),
+            )
+    except BrokenResourceError:
+        logger.info("Connection closed by client")
+    except Exception as e:
+        logger.error(f"Server error: {e}", exc_info=True)
+        raise
+
+
+def handle_signals() -> None:
+    """Set up signal handlers for graceful shutdown."""
+    def signal_handler(signum: int, frame: Any) -> None:
+        logger.info(f"Received signal {signum}, shutting down gracefully...")
+        sys.exit(0)
+    
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
 
 
 def main() -> None:
     """Run the MCP server using stdin/stdout."""
     logger.info("Starting Tmux MCP Server...")
-    asyncio.run(_run_server())
+    handle_signals()
+    
+    try:
+        asyncio.run(_run_server())
+    except KeyboardInterrupt:
+        logger.info("Server stopped by user")
+    except BrokenResourceError:
+        logger.info("Connection closed")
+    except ExceptionGroup as eg:
+        # Handle ExceptionGroup from anyio TaskGroup
+        for exc in eg.exceptions:
+            if isinstance(exc, BrokenResourceError):
+                logger.info("Connection closed during task group operation")
+            else:
+                logger.error(f"Error in task group: {exc}", exc_info=True)
+    except Exception as e:
+        logger.error(f"Server crashed: {e}", exc_info=True)
+        sys.exit(1)
 
 
 if __name__ == "__main__":
