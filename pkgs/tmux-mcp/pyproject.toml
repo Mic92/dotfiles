@@ -21,7 +21,7 @@ test = [
 ]
 
 [project.scripts]
-tmux-mcp = "tmux_mcp.server:cli"
+tmux-mcp = "tmux_mcp.server:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
