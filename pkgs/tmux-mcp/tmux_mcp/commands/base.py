@@ -124,53 +124,61 @@ async def wait_for_pattern(
             # Check if timeout exceeded
             elapsed = asyncio.get_event_loop().time() - start_time
             if elapsed >= timeout_seconds:
-            # Get final output state
-            current_output = ""
-            if output_file and output_file.exists():
-                try:
-                    current_output = output_file.read_text()
-                except Exception:
-                    logger.exception("Failed to read output file on timeout")
+                # Get final output state
+                current_output = ""
+                if output_file and output_file.exists():
+                    try:
+                        current_output = output_file.read_text()
+                    except Exception:
+                        logger.exception("Failed to read output file on timeout")
 
-            if not current_output:
-                # Fall back to tmux capture
-                try:
+                if not current_output:
+                    # Fall back to tmux capture
+                    try:
+                        current_output = run_tmux_command(
+                            ["capture-pane", "-t", pane_id, "-p"]
+                        )
+                    except Exception:
+                        logger.exception("Failed to capture pane on timeout")
+
+                return (
+                    False,
+                    f"Pattern '{pattern}' not found within {timeout_seconds}s timeout",
+                    current_output,
+                )
+
+            # Get current output
+            try:
+                if output_file and output_file.exists():
+                    # Prefer reading from output file for clean output
+                    current_output = output_file.read_text()
+                else:
+                    # Fall back to tmux capture (e.g., for send_input, capture_pane)
                     current_output = run_tmux_command(
                         ["capture-pane", "-t", pane_id, "-p"]
                     )
-                except Exception:
-                    logger.exception("Failed to capture pane on timeout")
+            except (TmuxError, OSError) as e:
+                logger.debug(f"Failed to get output: {e}")
+                await asyncio.sleep(poll_interval)
+                # Exponential backoff with max of 1 second
+                poll_interval = min(poll_interval * 1.5, 1.0)
+                continue
 
-            return (
-                False,
-                f"Pattern '{pattern}' not found within {timeout_seconds}s timeout",
-                current_output,
-            )
+            # Check for pattern
+            match = regex.search(current_output)
+            if match:
+                return True, match.group(0), current_output
 
-        # Get current output
-        try:
-            if output_file and output_file.exists():
-                # Prefer reading from output file for clean output
-                current_output = output_file.read_text()
-            else:
-                # Fall back to tmux capture (e.g., for send_input, capture_pane)
-                current_output = run_tmux_command(["capture-pane", "-t", pane_id, "-p"])
-        except (TmuxError, OSError) as e:
-            logger.debug(f"Failed to get output: {e}")
+            # Wait before next check
             await asyncio.sleep(poll_interval)
             # Exponential backoff with max of 1 second
             poll_interval = min(poll_interval * 1.5, 1.0)
-            continue
-
-        # Check for pattern
-        match = regex.search(current_output)
-        if match:
-            return True, match.group(0), current_output
-
-        # Wait before next check
-        await asyncio.sleep(poll_interval)
-        # Exponential backoff with max of 1 second
-        poll_interval = min(poll_interval * 1.5, 1.0)
+    except asyncio.CancelledError:
+        logger.debug("Pattern wait cancelled")
+        raise
+    except Exception as e:
+        logger.exception("Error waiting for pattern")
+        return False, f"Error waiting for pattern: {e}", ""
 
 
 async def cleanup_output_file(file_path: Path, delay_seconds: int = 300) -> None:
