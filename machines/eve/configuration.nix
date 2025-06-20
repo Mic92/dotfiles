@@ -50,6 +50,7 @@
     ./modules/openttd
     ./modules/owncast.nix
     ./modules/packages.nix
+    ./modules/paperless.nix
     ./modules/postfix.nix
     ./modules/postgresql.nix
     ./modules/redis.nix

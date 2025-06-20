@@ -30,6 +30,7 @@
                            by dn.base="cn=dovecot,dc=mail,dc=eve" read
                            by dn.base="cn=gitlab,ou=system,ou=users,dc=eve" read
                            by dn.base="cn=nextcloud,ou=system,ou=users,dc=eve" read
+                           by dn.base="cn=paperless,ou=system,ou=users,dc=eve" read
                            by dn.base="cn=ldapsync,ou=system,ou=users,dc=eve"
                            read by * none''
           ''{1}to attrs=loginShell  by self write  by * read''
@@ -37,6 +38,7 @@
             {2}to dn.subtree="ou=system,ou=users,dc=eve"
                            by dn.base="cn=dovecot,dc=mail,dc=eve" read
                            by dn.base="cn=nextcloud,ou=system,ou=users,dc=eve" read
+                           by dn.base="cn=paperless,ou=system,ou=users,dc=eve" read
                            by dn.subtree="ou=system,ou=users,dc=eve" read
                            by * none''
           ''{3}to dn.subtree="ou=jabber,ou=users,dc=eve"  by dn.base="cn=prosody,ou=system,ou=users,dc=eve" write  by * read''
@@ -273,6 +275,18 @@
             (1.3.6.1.4.1.28300.1.2.4 NAME 'flood'
                          SUP uidObject AUXILIARY
                          DESC 'Added to an account to allow flood access'
+                         MUST (mail))
+          ''
+        ];
+      };
+      "cn={1}paperlessUser,cn=schema".attrs = {
+        cn = "{1}paperlessUser";
+        objectClass = "olcSchemaConfig";
+        olcObjectClasses = [
+          ''
+            (1.3.6.1.4.1.28301.1.2.4 NAME 'paperlessUser'
+                         SUP uidObject AUXILIARY
+                         DESC 'Added to an account to allow paperless-ngx access'
                          MUST (mail))
           ''
         ];
