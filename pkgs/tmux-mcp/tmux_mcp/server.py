@@ -188,23 +188,24 @@ async def _run_server() -> None:
                 write_stream,
                 InitializationOptions(
                     server_name="tmux-mcp",
-                    server_version="0.1.0",
+                    server_version="0.1.1",
                     capabilities=ServerCapabilities(tools=ToolsCapability()),
                 ),
             )
     except BrokenResourceError:
         logger.info("Connection closed by client")
-    except Exception as e:
-        logger.error(f"Server error: {e}", exc_info=True)
+    except Exception:
+        logger.exception("Server error")
         raise
 
 
 def handle_signals() -> None:
     """Set up signal handlers for graceful shutdown."""
+
     def signal_handler(signum: int, frame: Any) -> None:
         logger.info(f"Received signal {signum}, shutting down gracefully...")
         sys.exit(0)
-    
+
     signal.signal(signal.SIGINT, signal_handler)
     signal.signal(signal.SIGTERM, signal_handler)
 
@@ -213,7 +214,7 @@ def main() -> None:
     """Run the MCP server using stdin/stdout."""
     logger.info("Starting Tmux MCP Server...")
     handle_signals()
-    
+
     try:
         asyncio.run(_run_server())
     except KeyboardInterrupt:
@@ -226,9 +227,9 @@ def main() -> None:
             if isinstance(exc, BrokenResourceError):
                 logger.info("Connection closed during task group operation")
             else:
-                logger.error(f"Error in task group: {exc}", exc_info=True)
-    except Exception as e:
-        logger.error(f"Server crashed: {e}", exc_info=True)
+                logger.exception("Error in task group")
+    except Exception:
+        logger.exception("Server crashed")
         sys.exit(1)
 
 
