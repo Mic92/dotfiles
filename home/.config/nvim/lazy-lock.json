@@ -16,7 +16,7 @@
   "blink.cmp": { "branch": "main", "commit": "9bcb14b43852a6f2bfd5ac9ef29cb5cf09b1b39b" },
   "blink.compat": { "branch": "main", "commit": "2ed6d9a28b07fa6f3bface818470605f8896408c" },
   "clangd_extensions.nvim": { "branch": "main", "commit": "db28f29be928d18cbfb86fbfb9f83f584f658feb" },
-  "claudecode.nvim": { "branch": "main", "commit": "db91a0ac731a936c2d7e7c9ce34e6876cb99d061" },
+  "claudecode.nvim": { "branch": "main", "commit": "3f09b5163af9ce6e1869ea3220c77f8229d934c5" },
   "cmake-tools.nvim": { "branch": "master", "commit": "17244215b1a96e4b2a83a16abd6719197f270f96" },
   "cmp-dap": { "branch": "master", "commit": "ea92773e84c0ad3288c3bc5e452ac91559669087" },
   "copilot.lua": { "branch": "master", "commit": "c1bb86abbed1a52a11ab3944ef00c8410520543d" },
