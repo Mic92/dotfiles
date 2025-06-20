@@ -258,7 +258,7 @@
         "narHash": "sha256-/kOOgeUyZDYQVIgYWWOr6pB59kfhGSXdbxCnhya0F5A=",
         "owner": "ghostty-org",
         "repo": "ghostty",
-        "rev": "d0e145292e35994bf86908ac27864ff267ce0e4c",
+        "rev": "a2b4a2c0e42cb2bdf970598083e59e5be88f511d",
         "type": "github"
       },
       "original": {
@@ -530,10 +530,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1750411054,
-        "narHash": "sha256-65Sy3cfK5yTyDi3Ae7BYdcDZC8T5A94hc1qX0/ca6UU=",
+        "lastModified": 1750425565,
+        "narHash": "sha256-jiPyOAM/2OvsVioV+OHeORZagOu3ZUiH4G1Ohorg3hk=",
         "ref": "main",
-        "rev": "d8a5a7a7e121305705b4e65fd03e00a23061da02",
+        "rev": "6ba5797a86f689bfb9bb7f75c75b81de2ef80655",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
