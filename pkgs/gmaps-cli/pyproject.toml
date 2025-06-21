@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gmaps-cli"
+version = "0.1.0"
+description = "CLI tool to manage Google Maps lists and places"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+gmaps-cli = "gmaps_cli:main"
+
+[tool.setuptools]
+py-modules = ["gmaps_cli"]
