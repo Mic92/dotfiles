@@ -196,6 +196,16 @@ def get_directions(
         )
         with urllib.request.urlopen(request, timeout=10) as response:  # noqa: S310
             data = json.loads(response.read())
+    except urllib.error.HTTPError as e:
+        error_data = e.read().decode("utf-8")
+        print(f"Error: HTTP Error {e.code}: {e.reason}")
+        try:
+            error_json = json.loads(error_data)
+            if "error" in error_json:
+                print(f"API Error: {error_json['error']}")
+        except json.JSONDecodeError:
+            print(f"Response: {error_data}")
+        return None
     except (urllib.error.URLError, json.JSONDecodeError) as e:
         print(f"Error: {e}")
         return None
@@ -265,6 +275,20 @@ def get_directions(
                             ].get("name", "")
                         if "stopCount" in stops:
                             step_info["transit"]["stop_count"] = stops["stopCount"]
+
+                    # Time details
+                    if "localizedValues" in transit:
+                        loc_vals = transit["localizedValues"]
+                        if "departureTime" in loc_vals:
+                            step_info["transit"]["departure_time"] = (
+                                loc_vals["departureTime"]
+                                .get("time", {})
+                                .get("text", "")
+                            )
+                        if "arrivalTime" in loc_vals:
+                            step_info["transit"]["arrival_time"] = (
+                                loc_vals["arrivalTime"].get("time", {}).get("text", "")
+                            )
 
                 steps.append(step_info)
 
@@ -490,9 +514,19 @@ def route(
                 vehicle = transit.get("vehicle", "").replace("_", " ").title()
                 print(f"   Take {vehicle}: {transit['line_name']}")
             if "departure_stop" in transit:
-                print(f"   From: {transit['departure_stop']}")
+                dep_time = (
+                    f" at {transit['departure_time']}"
+                    if transit.get("departure_time")
+                    else ""
+                )
+                print(f"   From: {transit['departure_stop']}{dep_time}")
             if "arrival_stop" in transit:
-                print(f"   To: {transit['arrival_stop']}")
+                arr_time = (
+                    f" at {transit['arrival_time']}"
+                    if transit.get("arrival_time")
+                    else ""
+                )
+                print(f"   To: {transit['arrival_stop']}{arr_time}")
             if "stop_count" in transit:
                 print(f"   Stops: {transit['stop_count']}")
 
