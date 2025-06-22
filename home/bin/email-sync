@@ -28,6 +28,10 @@ afew -tn
 echo "Running cleanup rules on all emails..."
 XDG_CONFIG_HOME=~/.config/afew-cleanup afew --tag --all
 
+# Move emails to appropriate folders based on MailMover rules
+echo "Moving emails to appropriate folders..."
+afew --move-mails --all
+
 # Send desktop notifications for new emails (if in graphical session)
 if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then
     echo "Checking for new email notifications..."
