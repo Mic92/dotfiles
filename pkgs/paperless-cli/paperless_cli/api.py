@@ -26,9 +26,7 @@ class PaperlessClient:
 
         # Validate base URL
         parsed = urllib.parse.urlparse(self.url)
-        assert parsed.scheme in ("http", "https"), (
-            f"Invalid URL scheme: {parsed.scheme}"
-        )
+        assert parsed.scheme in ("http", "https"), f"Invalid URL scheme: {parsed.scheme}"
         assert parsed.netloc, "URL must have a valid netloc"
 
     def _request(
@@ -43,9 +41,7 @@ class PaperlessClient:
 
         # Validate URL scheme for security
         parsed_url = urllib.parse.urlparse(url)
-        assert parsed_url.scheme in ("http", "https"), (
-            f"Invalid URL scheme: {parsed_url.scheme}"
-        )
+        assert parsed_url.scheme in ("http", "https"), f"Invalid URL scheme: {parsed_url.scheme}"
         assert parsed_url.netloc, "URL must have a valid netloc"
 
         if params:
@@ -187,7 +183,9 @@ class PaperlessClient:
 
         # Add file field
         body_parts.append(f"------{boundary}")
-        body_parts.append(f'Content-Disposition: form-data; name="document"; filename="{Path(file_path).name}"')
+        body_parts.append(
+            f'Content-Disposition: form-data; name="document"; filename="{Path(file_path).name}"'
+        )
         body_parts.append(f"Content-Type: {mime_type}")
         body_parts.append("")
 

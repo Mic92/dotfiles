@@ -1,7 +1,7 @@
 # Paperless-ngx CLI
 
-A command-line interface for managing Paperless-ngx documents, mail accounts, mail
-rules, and tags.
+A command-line interface for managing Paperless-ngx documents, mail accounts,
+mail rules, and tags.
 
 ## Installation
 
