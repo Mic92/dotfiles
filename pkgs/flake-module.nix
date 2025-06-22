@@ -1,5 +1,4 @@
 {
-  self,
   ...
 }:
 {
@@ -23,10 +22,6 @@
           blueutil = pkgs.callPackage ./blueutil { };
         }
         // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
-          # ghostty only supports x86_64-linux
-          ghostty = pkgs.callPackage ./ghostty {
-            ghostty = self.inputs.ghostty.packages.${system}.ghostty;
-          };
           sengi = pkgs.callPackage ./sengi { };
         };
     };

@@ -65,6 +65,6 @@
       self.packages.${pkgs.stdenv.hostPlatform.system}.gmaps-cli
     ]
     ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
-      self.packages.${pkgs.system}.ghostty
+      pkgs.ghostty
     ];
 }
