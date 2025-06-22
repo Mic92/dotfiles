@@ -333,7 +333,7 @@ class FPing(base.ThreadPoolText):
         addrs = ["1.1.1.1", "_gateway", "2606:4700:4700::1111"]
         cmd = ["fping", "-q", "-c2", *addrs]
 
-        process = subprocess.run(cmd, capture_output=True, text=True)
+        process = subprocess.run(cmd, check=False, capture_output=True, text=True)
 
         stats = {}
         for line in process.stderr.split("\n"):
@@ -371,7 +371,7 @@ class Net(widget.Net):
         self.last_update = now
         return self.cached_interfaces
 
-    def interface_set(self, _: list[str]):
+    def interface_set(self, _: list[str]) -> None:
         pass
 
     interface = property(interface_get, interface_set)
