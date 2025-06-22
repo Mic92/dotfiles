@@ -5,12 +5,40 @@ import subprocess
 import urllib.error
 import urllib.parse
 import urllib.request
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
 
 # Config directory
 CONFIG_DIR = Path.home() / ".config" / "gmaps-cli"
 CONFIG_FILE = CONFIG_DIR / "config.json"
+
+
+def parse_datetime(dt_str: str) -> str:
+    """Parse datetime string and convert to ISO 8601 format for Google API"""
+    # Try parsing common formats
+    formats = [
+        "%Y-%m-%d %H:%M",
+        "%Y-%m-%d %H:%M:%S",
+        "%Y-%m-%dT%H:%M:%S",
+        "%Y-%m-%dT%H:%M:%SZ",
+        "%Y-%m-%dT%H:%M:%S%z",
+    ]
+
+    for fmt in formats:
+        try:
+            # Parse as timezone-aware datetime
+            if "%z" in fmt or "Z" in fmt:
+                dt = datetime.strptime(dt_str, fmt)  # noqa: DTZ007
+            else:
+                # For formats without timezone, create timezone-aware datetime assuming local time
+                dt = datetime.strptime(dt_str, fmt).astimezone()
+            return dt.isoformat()
+        except ValueError:
+            continue
+
+    # If no format matched, return as-is (might already be in correct format)
+    return dt_str
 
 
 def search_place(api_key: str, query: str) -> dict[str, Any] | None:
@@ -120,7 +148,12 @@ def search_places_nearby(
 
 
 def get_directions(
-    api_key: str, origin: str, destination: str, mode: str = "driving"
+    api_key: str,
+    origin: str,
+    destination: str,
+    mode: str = "driving",
+    departure_time: str | None = None,
+    arrival_time: str | None = None,
 ) -> dict[str, Any] | None:
     """Get directions between two places using Routes API"""
     endpoint = "https://routes.googleapis.com/directions/v2:computeRoutes"
@@ -147,6 +180,12 @@ def get_directions(
         "languageCode": "en-US",
         "units": "METRIC",
     }
+
+    # Add departure or arrival time if specified
+    if departure_time:
+        body["departureTime"] = departure_time
+    elif arrival_time:
+        body["arrivalTime"] = arrival_time
 
     try:
         request = urllib.request.Request(  # noqa: S310
@@ -342,7 +381,13 @@ def nearby(query: str, location: str | None = None, limit: int = 5) -> None:
             print(f"   Rating: {place['rating']} {price}")
 
 
-def route(origin: str, destination: str, mode: str = "driving") -> None:
+def route(
+    origin: str,
+    destination: str,
+    mode: str = "driving",
+    departure_time: str | None = None,
+    arrival_time: str | None = None,
+) -> None:
     """Get directions between two places"""
     config = load_config()
     if "api_key_command" not in config:
@@ -354,7 +399,15 @@ def route(origin: str, destination: str, mode: str = "driving") -> None:
         print("Failed to get API key from command")
         return
 
-    directions = get_directions(api_key, origin, destination, mode)
+    # Parse datetime arguments if provided
+    if departure_time:
+        departure_time = parse_datetime(departure_time)
+    if arrival_time:
+        arrival_time = parse_datetime(arrival_time)
+
+    directions = get_directions(
+        api_key, origin, destination, mode, departure_time, arrival_time
+    )
 
     if not directions:
         print(f"No route found from '{origin}' to '{destination}'")
@@ -363,6 +416,36 @@ def route(origin: str, destination: str, mode: str = "driving") -> None:
     print(f"Route from {directions['start_address']} to {directions['end_address']}")
     print(f"Distance: {directions['distance']}")
     print(f"Duration: {directions['duration']}")
+
+    # If arrival time was specified, calculate and show departure time
+    if arrival_time:
+        try:
+            # Parse the arrival time and duration to calculate departure
+            arrival_dt = datetime.fromisoformat(arrival_time)
+            duration_str = directions["duration"]
+
+            # Parse duration (e.g., "51 mins" or "1 hour 45 mins")
+            total_minutes = 0
+            if "hour" in duration_str:
+                parts = duration_str.split()
+                for i, part in enumerate(parts):
+                    if "hour" in part:
+                        total_minutes += int(parts[i - 1]) * 60
+                    elif "min" in part and i > 0 and "hour" not in parts[i - 1]:
+                        total_minutes += int(parts[i - 1])
+            else:
+                # Just minutes
+                total_minutes = int(duration_str.split()[0])
+
+            # Calculate departure time
+            departure_dt = arrival_dt - timedelta(minutes=total_minutes)
+            print(
+                f"\nTo arrive by {arrival_dt.strftime('%Y-%m-%d %H:%M')}, depart at: {departure_dt.strftime('%Y-%m-%d %H:%M')}"
+            )
+        except (ValueError, KeyError, AttributeError):
+            # Skip if parsing fails
+            pass
+
     print("\nDirections:")
 
     for i, step in enumerate(directions["steps"], 1):
@@ -411,6 +494,14 @@ def main() -> None:
         default="driving",
         help="Travel mode",
     )
+    route_parser.add_argument(
+        "--departure-time",
+        help="Departure time (e.g., '2025-06-23 04:00' or '2025-06-23T04:00:00Z')",
+    )
+    route_parser.add_argument(
+        "--arrival-time",
+        help="Desired arrival time (e.g., '2025-06-23 05:40' or '2025-06-23T05:40:00Z')",
+    )
 
     args = parser.parse_args()
 
@@ -421,7 +512,13 @@ def main() -> None:
     elif args.command == "nearby":
         nearby(args.query, args.location, args.limit)
     elif args.command == "route":
-        route(args.origin, args.destination, args.mode)
+        route(
+            args.origin,
+            args.destination,
+            args.mode,
+            args.departure_time,
+            args.arrival_time,
+        )
     else:
         parser.print_help()
 
