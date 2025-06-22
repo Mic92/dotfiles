@@ -26,3 +26,25 @@ Expunge Both
 # Save the synchronization state files in the relevant directory
 SyncState *
 Patterns *
+
+IMAPAccount bills
+Host imap.thalheim.io
+User bills@thalheim.io
+PassCmd "rbw get 'Bills email account'"
+TLSType STARTTLS
+CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+IMAPStore bills-remote
+Account bills
+
+MaildirStore bills-local
+Inbox ~/mail/bills/
+SubFolders Maildir++
+
+Channel bills
+Far :bills-remote:
+Near :bills-local:
+Create Both
+Expunge Both
+SyncState *
+Patterns *
