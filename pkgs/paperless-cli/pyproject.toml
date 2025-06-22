@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "paperless-cli"
+version = "0.1.0"
+description = "CLI tool for managing Paperless-ngx documents, mail accounts, and rules"
+readme = "README.md"
+requires-python = ">=3.12"
+
+[project.scripts]
+paperless-cli = "paperless_cli:main"
+
+[tool.setuptools]
+packages = ["paperless_cli", "paperless_cli.cli"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
