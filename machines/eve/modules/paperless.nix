@@ -159,5 +159,21 @@ in
         proxy_set_header Authorization "";
       '';
     };
+    locations."~ ^/api/" = {
+      proxyPass = "http://127.0.0.1:${toString config.services.paperless.port}";
+      proxyWebsockets = true;
+      recommendedProxySettings = true;
+      priority = 100;  # Higher priority than "/"
+      extraConfig = ''
+        client_max_body_size 200M;
+        proxy_read_timeout 300s;
+        proxy_connect_timeout 300s;
+        proxy_send_timeout 300s;
+
+        # No PAM authentication for API endpoints - uses token auth
+        # Explicitly clear Remote-User header to prevent header injection
+        proxy_set_header Remote-User "";
+      '';
+    };
   };
 }
