@@ -175,8 +175,8 @@ def upload_document(client: PaperlessClient, cmd: DocumentsUploadCommand) -> Non
         tag_ids = [int(tag_id.strip()) for tag_id in cmd.tags.split(",")]
 
     try:
-        result = client.upload_document(cmd.file_path, cmd.title, tag_ids)
-        print(f"Document uploaded successfully. Task ID: {result.get('task_id', 'unknown')}")
+        client.upload_document(cmd.file_path, cmd.title, tag_ids)
+        print("Document uploaded successfully")
     except PaperlessAPIError as e:
         print(f"Error uploading document: {e}")
 

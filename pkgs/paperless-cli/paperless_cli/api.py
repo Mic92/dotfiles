@@ -220,7 +220,11 @@ class PaperlessClient:
             with urllib.request.urlopen(request) as response:  # noqa: S310
                 response_text = response.read().decode("utf-8")
                 if response_text:
-                    return cast("dict[str, Any]", json.loads(response_text))
+                    try:
+                        return cast("dict[str, Any]", json.loads(response_text))
+                    except json.JSONDecodeError:
+                        message = f"Failed to decode JSON response: {response_text}"
+                        raise PaperlessAPIError(message)
                 return {"status": "success"}
         except urllib.error.HTTPError as e:
             error_body = e.read().decode("utf-8")
