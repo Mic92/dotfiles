@@ -1,6 +1,12 @@
 # afew configuration
 # This complements the server-side Sieve rules with additional client-side tagging
 
+[ClaudeSpamFilter]
+# Only analyze emails from unknown senders
+# Results are cached to avoid re-analyzing
+# Restrict to main maildir (no subfolders)
+maildir_path = thalheim.io
+
 # Tag emails based on which folder they're in (set by Sieve)
 [FolderNameFilter]
 # This filter adds tags based on folder names
@@ -53,3 +59,10 @@ tags = +dev-notification
 message = Tag social notifications
 query = from:facebookmail.com OR from:notification@slack.com OR from:linkedin.com OR from:twitter.com OR from:info@meetup.com OR from:xing.com OR from:instagram.com OR from:pinterest.com OR from:notifications@vk.com OR from:mastodon OR from:diaspora OR from:matrix.org
 tags = +social-notification
+
+[MailMover]
+# Define folders to check for moving emails
+folders = thalheim.io
+
+# Move spam emails to .Spam folder
+thalheim.io = 'tag:spam':thalheim.io/.Spam
