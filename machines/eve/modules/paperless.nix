@@ -6,6 +6,7 @@
 }:
 let
   hostname = "paperless.thalheim.io";
+  apiHostname = "paperless-api.thalheim.io";
   ldapConf = pkgs.writeText "paperless-ldap.conf" ''
     base dc=eve
     host localhost:389
@@ -44,9 +45,9 @@ in
       ];
       PAPERLESS_FILENAME_FORMAT = "{created_year}/{correspondent}/{title}";
       PAPERLESS_FILENAME_FORMAT_REMOVE_NONE = true;
-      PAPERLESS_ALLOWED_HOSTS = hostname;
-      PAPERLESS_CORS_ALLOWED_HOSTS = "https://${hostname}";
-      PAPERLESS_CSRF_TRUSTED_ORIGINS = "https://${hostname}";
+      PAPERLESS_ALLOWED_HOSTS = "${hostname},${apiHostname}";
+      PAPERLESS_CORS_ALLOWED_HOSTS = "https://${hostname},https://${apiHostname}";
+      PAPERLESS_CSRF_TRUSTED_ORIGINS = "https://${hostname},https://${apiHostname}";
       PAPERLESS_ENABLE_HTTP_REMOTE_USER = true;
       PAPERLESS_HTTP_REMOTE_USER_HEADER_NAME = "HTTP_REMOTE_USER";
       PAPERLESS_LOGOUT_REDIRECT_URL = "/"; # Redirect to root after logout
@@ -98,12 +99,12 @@ in
       else:
           print("Editors group already exists")
 
-      # Grant all view and change permissions (but not delete or admin)
+      # Grant all view, change, add, and delete permissions (but not admin)
       permissions_to_add = []
       for ct in ContentType.objects.all():
           permissions = Permission.objects.filter(
               content_type=ct,
-              codename__regex=r"^(view|change|add)_"
+              codename__regex=r"^(view|change|add|delete)_"
           )
           permissions_to_add.extend(permissions)
 
@@ -159,18 +160,23 @@ in
         proxy_set_header Authorization "";
       '';
     };
-    locations."~ ^/api/" = {
+  };
+
+  # Separate API domain without PAM authentication
+  services.nginx.virtualHosts.${apiHostname} = {
+    useACMEHost = "thalheim.io";
+    forceSSL = true;
+    locations."/" = {
       proxyPass = "http://127.0.0.1:${toString config.services.paperless.port}";
       proxyWebsockets = true;
       recommendedProxySettings = true;
-      priority = 100;  # Higher priority than "/"
       extraConfig = ''
         client_max_body_size 200M;
         proxy_read_timeout 300s;
         proxy_connect_timeout 300s;
         proxy_send_timeout 300s;
 
-        # No PAM authentication for API endpoints - uses token auth
+        # No PAM authentication for API domain - uses token auth
         # Explicitly clear Remote-User header to prevent header injection
         proxy_set_header Remote-User "";
       '';
