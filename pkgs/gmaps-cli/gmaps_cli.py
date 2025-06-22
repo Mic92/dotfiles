@@ -161,7 +161,7 @@ def get_directions(
     headers = {
         "Content-Type": "application/json",
         "X-Goog-Api-Key": api_key,
-        "X-Goog-FieldMask": "routes.legs.steps.navigationInstruction,routes.legs.steps.localizedValues,routes.legs.localizedValues,routes.legs.polyline,routes.distanceMeters,routes.duration",
+        "X-Goog-FieldMask": "routes.legs.steps.navigationInstruction,routes.legs.steps.localizedValues,routes.legs.localizedValues,routes.legs.polyline,routes.distanceMeters,routes.duration,routes.legs.steps.transitDetails",
     }
 
     # Map mode to travel mode
@@ -220,28 +220,60 @@ def get_directions(
             else:
                 duration_text = f"{minutes} min{'s' if minutes != 1 else ''}"
 
+            steps = []
+            for step in leg.get("steps", []):
+                if not step.get("navigationInstruction"):
+                    continue
+
+                step_info = {
+                    "instruction": step.get("navigationInstruction", {}).get(
+                        "instructions", "Continue"
+                    ),
+                    "distance": step.get("localizedValues", {})
+                    .get("distance", {})
+                    .get("text", ""),
+                    "duration": step.get("localizedValues", {})
+                    .get("staticDuration", {})
+                    .get("text", ""),
+                }
+
+                # Add transit details if available
+                if "transitDetails" in step:
+                    transit = step["transitDetails"]
+                    step_info["transit"] = {}
+
+                    # Transit line info
+                    if "transitLine" in transit:
+                        line = transit["transitLine"]
+                        step_info["transit"]["line_name"] = line.get(
+                            "nameShort"
+                        ) or line.get("name", "")
+                        step_info["transit"]["vehicle"] = line.get("vehicle", {}).get(
+                            "type", ""
+                        )
+
+                    # Stop details
+                    if "stopDetails" in transit:
+                        stops = transit["stopDetails"]
+                        if "departureStop" in stops:
+                            step_info["transit"]["departure_stop"] = stops[
+                                "departureStop"
+                            ].get("name", "")
+                        if "arrivalStop" in stops:
+                            step_info["transit"]["arrival_stop"] = stops[
+                                "arrivalStop"
+                            ].get("name", "")
+                        if "stopCount" in stops:
+                            step_info["transit"]["stop_count"] = stops["stopCount"]
+
+                steps.append(step_info)
+
             return {
                 "distance": distance_text,
                 "duration": duration_text,
                 "start_address": origin,
                 "end_address": destination,
-                "steps": [
-                    {
-                        "instruction": step.get("navigationInstruction", {}).get(
-                            "instructions", "Continue"
-                        ),
-                        "distance": step.get("localizedValues", {})
-                        .get("distance", {})
-                        .get("text", ""),
-                        "duration": step.get("localizedValues", {})
-                        .get("staticDuration", {})
-                        .get("text", ""),
-                    }
-                    for step in leg.get("steps", [])
-                    if step.get(
-                        "navigationInstruction"
-                    )  # Only include steps with instructions
-                ],
+                "steps": steps,
             }
     return None
 
@@ -450,6 +482,20 @@ def route(
 
     for i, step in enumerate(directions["steps"], 1):
         print(f"\n{i}. {step['instruction']}")
+
+        # Show transit details if available
+        if "transit" in step:
+            transit = step["transit"]
+            if "line_name" in transit:
+                vehicle = transit.get("vehicle", "").replace("_", " ").title()
+                print(f"   Take {vehicle}: {transit['line_name']}")
+            if "departure_stop" in transit:
+                print(f"   From: {transit['departure_stop']}")
+            if "arrival_stop" in transit:
+                print(f"   To: {transit['arrival_stop']}")
+            if "stop_count" in transit:
+                print(f"   Stops: {transit['stop_count']}")
+
         print(f"   {step['distance']} - {step['duration']}")
 
 
