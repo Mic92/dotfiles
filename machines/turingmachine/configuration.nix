@@ -197,9 +197,6 @@
   # clan
   services.zerotierone.joinNetworks = [ "a9b4872919354736" ];
 
-  system.switch.enableNg = true;
-  system.switch.enable = false;
-
   security.audit.enable = false;
 
   services.tor.client.enable = true;
