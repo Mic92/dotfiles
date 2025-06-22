@@ -73,13 +73,15 @@ def search_documents(client: PaperlessClient, cmd: DocumentsSearchCommand) -> No
             if corr:
                 correspondent = corr["name"]
 
-        rows.append([
-            doc["id"],
-            doc.get("title", "Untitled"),
-            correspondent or "-",
-            doc.get("created", "-")[:10],  # Just date part
-            ", ".join(tag_names) if tag_names else "-"
-        ])
+        rows.append(
+            [
+                doc["id"],
+                doc.get("title", "Untitled"),
+                correspondent or "-",
+                doc.get("created", "-")[:10],  # Just date part
+                ", ".join(tag_names) if tag_names else "-",
+            ]
+        )
 
     print_table(headers, rows)
 

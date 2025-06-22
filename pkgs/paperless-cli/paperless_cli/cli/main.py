@@ -157,15 +157,11 @@ def parse_args() -> Options:
     # Delete tag
     delete_tag_parser = tags_subparsers.add_parser("delete", help="Delete a tag")
     delete_tag_parser.add_argument("tag_id", type=int, help="Tag ID")
-    delete_tag_parser.add_argument(
-        "-f", "--force", action="store_true", help="Skip confirmation"
-    )
+    delete_tag_parser.add_argument("-f", "--force", action="store_true", help="Skip confirmation")
 
     # Mail rules commands
     rules_parser = subparsers.add_parser("mail-rules", help="Manage mail rules")
-    rules_subparsers = rules_parser.add_subparsers(
-        dest="action", help="Mail rules actions"
-    )
+    rules_subparsers = rules_parser.add_subparsers(dest="action", help="Mail rules actions")
 
     # List rules
     rules_subparsers.add_parser("list", help="List all mail rules")
@@ -178,9 +174,7 @@ def parse_args() -> Options:
     create_parser = rules_subparsers.add_parser("create", help="Create a new mail rule")
     create_parser.add_argument("name", help="Rule name")
     create_parser.add_argument("--order", type=int, default=0, help="Rule order")
-    create_parser.add_argument(
-        "--enabled", action="store_true", default=True, help="Enable rule"
-    )
+    create_parser.add_argument("--enabled", action="store_true", default=True, help="Enable rule")
     create_parser.add_argument(
         "--disabled", dest="enabled", action="store_false", help="Disable rule"
     )
@@ -207,9 +201,7 @@ def parse_args() -> Options:
         type=int,
         help="Assign correspondent from (0=from, 1=to, 2=custom)",
     )
-    create_parser.add_argument(
-        "--assign-tags", help="Comma-separated list of tag IDs to assign"
-    )
+    create_parser.add_argument("--assign-tags", help="Comma-separated list of tag IDs to assign")
     create_parser.add_argument(
         "--assign-document-type", type=int, help="Document type ID to assign"
     )
@@ -218,9 +210,7 @@ def parse_args() -> Options:
     )
 
     # Update rule
-    update_parser = rules_subparsers.add_parser(
-        "update", help="Update an existing mail rule"
-    )
+    update_parser = rules_subparsers.add_parser("update", help="Update an existing mail rule")
     update_parser.add_argument("rule_id", type=int, help="Rule ID")
     update_parser.add_argument("--name", help="New rule name")
     update_parser.add_argument("--order", type=int, help="New rule order")
@@ -251,9 +241,7 @@ def parse_args() -> Options:
         type=int,
         help="Assign correspondent from (0=from, 1=to, 2=custom)",
     )
-    update_parser.add_argument(
-        "--assign-tags", help="Comma-separated list of tag IDs to assign"
-    )
+    update_parser.add_argument("--assign-tags", help="Comma-separated list of tag IDs to assign")
     update_parser.add_argument(
         "--assign-document-type", type=int, help="Document type ID to assign"
     )
@@ -264,9 +252,7 @@ def parse_args() -> Options:
     # Delete rule
     delete_parser = rules_subparsers.add_parser("delete", help="Delete a mail rule")
     delete_parser.add_argument("rule_id", type=int, help="Rule ID")
-    delete_parser.add_argument(
-        "-f", "--force", action="store_true", help="Skip confirmation"
-    )
+    delete_parser.add_argument("-f", "--force", action="store_true", help="Skip confirmation")
 
     # Documents commands
     docs_parser = subparsers.add_parser("documents", help="Manage documents")
@@ -282,7 +268,9 @@ def parse_args() -> Options:
     get_parser = docs_subparsers.add_parser("get", help="Get document details or download")
     get_parser.add_argument("document_id", type=int, help="Document ID")
     get_parser.add_argument("--download", action="store_true", help="Download the document")
-    get_parser.add_argument("--original", action="store_true", help="Download original if available")
+    get_parser.add_argument(
+        "--original", action="store_true", help="Download original if available"
+    )
     get_parser.add_argument("-o", "--output", help="Output filename for download")
     get_parser.add_argument("--metadata", action="store_true", help="Show document metadata")
 
@@ -295,9 +283,7 @@ def parse_args() -> Options:
     # Delete document
     delete_doc_parser = docs_subparsers.add_parser("delete", help="Delete a document")
     delete_doc_parser.add_argument("document_id", type=int, help="Document ID")
-    delete_doc_parser.add_argument(
-        "-f", "--force", action="store_true", help="Skip confirmation"
-    )
+    delete_doc_parser.add_argument("-f", "--force", action="store_true", help="Skip confirmation")
 
     # Parse arguments
     args = parser.parse_args()
@@ -312,9 +298,7 @@ def parse_args() -> Options:
 
     # Create appropriate command object
     if args.command == "mail-accounts":
-        options.command = MailAccountsCommand(
-            action=getattr(args, "action", "list") or "list"
-        )
+        options.command = MailAccountsCommand(action=getattr(args, "action", "list") or "list")
     elif args.command == "tags":
         action = getattr(args, "action", None)
         if action == "create":
@@ -361,26 +345,20 @@ def parse_args() -> Options:
                 rule_action=getattr(args, "rule_action", None),
                 action_parameter=getattr(args, "action_parameter", None),
                 assign_title_from=getattr(args, "assign_title_from", None),
-                assign_correspondent_from=getattr(
-                    args, "assign_correspondent_from", None
-                ),
+                assign_correspondent_from=getattr(args, "assign_correspondent_from", None),
                 assign_tags=getattr(args, "assign_tags", None),
                 assign_document_type=getattr(args, "assign_document_type", None),
                 assign_correspondent=getattr(args, "assign_correspondent", None),
             )
         elif action == "delete":
-            options.command = MailRulesDeleteCommand(
-                rule_id=args.rule_id, force=args.force
-            )
+            options.command = MailRulesDeleteCommand(rule_id=args.rule_id, force=args.force)
         else:  # list or None
             options.command = MailRulesListCommand()
     elif args.command == "documents":
         action = getattr(args, "action", None)
         if action == "search":
             options.command = DocumentsSearchCommand(
-                query=getattr(args, "query", None),
-                page=args.page,
-                page_size=args.page_size
+                query=getattr(args, "query", None), page=args.page, page_size=args.page_size
             )
         elif action == "get":
             options.command = DocumentsGetCommand(
@@ -388,19 +366,16 @@ def parse_args() -> Options:
                 download=args.download,
                 original=args.original,
                 output=args.output,
-                metadata=args.metadata
+                metadata=args.metadata,
             )
         elif action == "upload":
             options.command = DocumentsUploadCommand(
                 file_path=args.file_path,
                 title=getattr(args, "title", None),
-                tags=getattr(args, "tags", None)
+                tags=getattr(args, "tags", None),
             )
         elif action == "delete":
-            options.command = DocumentsDeleteCommand(
-                document_id=args.document_id,
-                force=args.force
-            )
+            options.command = DocumentsDeleteCommand(document_id=args.document_id, force=args.force)
 
     return options
 
@@ -431,15 +406,11 @@ def main() -> None:
     # Get URL from args, env, or config
     url = options.url or config.get("url")
     if not url:
-        print(
-            "Error: Paperless URL not provided. Use --url, set PAPERLESS_URL, or add to config"
-        )
+        print("Error: Paperless URL not provided. Use --url, set PAPERLESS_URL, or add to config")
         sys.exit(1)
 
     # Get token from args, env, command, or config
-    token = get_token(
-        options.token, options.token_command or config.get("token_command")
-    )
+    token = get_token(options.token, options.token_command or config.get("token_command"))
     if not token:
         print(
             "Error: API token not provided. Use --token, set PAPERLESS_TOKEN, --token-command, or add to config"
