@@ -30,8 +30,8 @@ path=/home/joerg/mail
 #
 [user]
 name=Jörg Thalheim
-primary_email=joerg@higgsboson.tk
-other_email=joerg@thalheim.io;
+primary_email=joerg@thalheim.io
+other_email=jthalheim@gmail.com
 
 # Configuration for "notmuch new"
 #
