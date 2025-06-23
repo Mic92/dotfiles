@@ -32,6 +32,9 @@ XDG_CONFIG_HOME=~/.config/afew-cleanup afew --tag --all
 echo "Moving emails to appropriate folders..."
 afew --move-mails --all
 
+# After moving emails, we might got rid of spam.
+mbsync thalheim:Spam thalheim:INBOX
+
 # Send desktop notifications for new emails (if in graphical session)
 if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then
     echo "Checking for new email notifications..."
