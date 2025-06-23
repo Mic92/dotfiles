@@ -60,6 +60,11 @@ message = Tag social notifications
 query = from:facebookmail.com OR from:notification@slack.com OR from:linkedin.com OR from:twitter.com OR from:info@meetup.com OR from:xing.com OR from:instagram.com OR from:pinterest.com OR from:notifications@vk.com OR from:mastodon OR from:diaspora OR from:matrix.org
 tags = +social-notification
 
+[Filter.10]
+# Tag bank notifications
+query = from:kontowecker.de OR from:noreply@wise.com
+tags = +bank-notification
+
 [MailMover]
 # Define folders to check for moving emails
 folders = thalheim.io

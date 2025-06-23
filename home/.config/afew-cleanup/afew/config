@@ -4,7 +4,7 @@
 
 [global]
 # Only run our custom cleanup filters
-filters = Filter.1,Filter.2,Filter.3,Filter.4,Filter.5,Filter.6,Filter.7
+filters = Filter.1,Filter.2,Filter.3,Filter.4,Filter.5,Filter.6,Filter.7,Filter.8
 
 [Filter.1]
 # Clean up old CI failure notifications (older than 2 days)
@@ -46,4 +46,10 @@ tags = +trash
 # Clean up old social notification emails (older than 1 month)
 message = Clean up old social notifications
 query = tag:social-notification AND date:..1month
+tags = +trash
+
+[Filter.8]
+# Clean up bank notifications (older than 1 month)
+message = Clean up old bank notifications
+query = tag:bank-notification AND date:..1month
 tags = +trash
