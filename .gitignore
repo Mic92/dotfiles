@@ -7,6 +7,7 @@ home/.emacs.elc
 nixos/vms/eve/secrets
 .direnv
 .mypy_cache/
+node_modules/
 
 .terraform
 .terraform.lock.hcl
