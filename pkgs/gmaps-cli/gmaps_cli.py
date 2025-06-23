@@ -14,6 +14,39 @@ CONFIG_DIR = Path.home() / ".config" / "gmaps-cli"
 CONFIG_FILE = CONFIG_DIR / "config.json"
 
 
+def generate_maps_url(
+    url_type: str,
+    query: str | None = None,
+    place_id: str | None = None,
+    lat: float | None = None,
+    lng: float | None = None,
+    origin: str | None = None,
+    destination: str | None = None,
+    mode: str | None = None,
+) -> str:
+    """Generate a Google Maps URL for various purposes"""
+    base_url = "https://www.google.com/maps"
+
+    if url_type == "search":
+        if place_id and query:
+            # Prefer place_id when available
+            return f"{base_url}/search/?api=1&query={urllib.parse.quote(query)}&query_place_id={place_id}"
+        if lat is not None and lng is not None:
+            # Fallback to coordinates
+            return f"{base_url}/search/?api=1&query={lat},{lng}"
+        if query:
+            # Just query
+            return f"{base_url}/search/?api=1&query={urllib.parse.quote(query)}"
+
+    elif url_type == "directions" and origin and destination:
+        url = f"{base_url}/dir/?api=1&origin={urllib.parse.quote(origin)}&destination={urllib.parse.quote(destination)}"
+        if mode and mode != "driving":
+            url += f"&travelmode={mode}"
+        return url
+
+    return ""
+
+
 def parse_datetime(dt_str: str) -> str:
     """Parse datetime string and convert to ISO 8601 format for Google API"""
     # Try parsing common formats
@@ -384,6 +417,16 @@ def search(query: str) -> None:
     if place_data["rating"]:
         print(f"Rating: {place_data['rating']} ({place_data['ratings_total']} reviews)")
 
+    # Add Google Maps link
+    maps_url = generate_maps_url(
+        "search",
+        query=place_data["name"],
+        place_id=place_data.get("place_id"),
+        lat=place_data.get("lat"),
+        lng=place_data.get("lng"),
+    )
+    print(f"\nView on Google Maps: {maps_url}")
+
 
 def nearby(query: str, location: str | None = None, limit: int = 5) -> None:
     """Search for places nearby"""
@@ -436,6 +479,16 @@ def nearby(query: str, location: str | None = None, limit: int = 5) -> None:
             )
             print(f"   Rating: {place['rating']} {price}")
 
+        # Add Google Maps link for each place
+        maps_url = generate_maps_url(
+            "search",
+            query=place["name"],
+            place_id=place.get("place_id"),
+            lat=place.get("lat"),
+            lng=place.get("lng"),
+        )
+        print(f"   Maps: {maps_url}")
+
 
 def route(
     origin: str,
@@ -472,6 +525,21 @@ def route(
     print(f"Route from {directions['start_address']} to {directions['end_address']}")
     print(f"Distance: {directions['distance']}")
     print(f"Duration: {directions['duration']}")
+
+    # Add Google Maps link
+    maps_url = generate_maps_url(
+        "directions",
+        origin=origin,
+        destination=destination,
+        mode=mode,
+    )
+    print(f"\nView on Google Maps: {maps_url}")
+
+    # Add note about transit times if using transit mode
+    if mode == "transit":
+        print(
+            "\nNote: Transit times shown are scheduled times, not real-time arrivals."
+        )
 
     # If arrival time was specified, calculate and show departure time
     if arrival_time:
@@ -513,24 +581,37 @@ def route(
             if "line_name" in transit:
                 vehicle = transit.get("vehicle", "").replace("_", " ").title()
                 print(f"   Take {vehicle}: {transit['line_name']}")
-            if "departure_stop" in transit:
-                dep_time = (
-                    f" at {transit['departure_time']}"
-                    if transit.get("departure_time")
-                    else ""
-                )
-                print(f"   From: {transit['departure_stop']}{dep_time}")
-            if "arrival_stop" in transit:
-                arr_time = (
-                    f" at {transit['arrival_time']}"
-                    if transit.get("arrival_time")
-                    else ""
-                )
-                print(f"   To: {transit['arrival_stop']}{arr_time}")
-            if "stop_count" in transit:
-                print(f"   Stops: {transit['stop_count']}")
 
-        print(f"   {step['distance']} - {step['duration']}")
+            # Display departure and arrival with better formatting
+            if "departure_stop" in transit and "departure_time" in transit:
+                print(f"   From: {transit['departure_stop']}")
+                print(f"   Departs: {transit['departure_time']}")
+            elif "departure_stop" in transit:
+                print(f"   From: {transit['departure_stop']}")
+
+            if "arrival_stop" in transit and "arrival_time" in transit:
+                print(f"   To: {transit['arrival_stop']}")
+                print(f"   Arrives: {transit['arrival_time']}")
+            elif "arrival_stop" in transit:
+                print(f"   To: {transit['arrival_stop']}")
+
+            # Show duration info with the transit line
+            if step.get("duration"):
+                duration_info = (
+                    f" ({step['duration']} on {transit.get('line_name', 'transit')})"
+                )
+            else:
+                duration_info = ""
+
+            if "stop_count" in transit:
+                stops_text = "stop" if transit["stop_count"] == 1 else "stops"
+                print(
+                    f"   {transit['stop_count']} intermediate {stops_text}{duration_info}"
+                )
+
+            print()  # Add visual separation
+        else:
+            print(f"   {step['distance']} - {step['duration']}")
 
 
 def main() -> None:
