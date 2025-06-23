@@ -9,46 +9,6 @@ typeset -g __DIRENV_INSTANT_STDERR_FILE=""
 typeset -g __DIRENV_INSTANT_MONITOR_PID=""
 
 
-_direnv_has_route() {
-    case "$OSTYPE" in
-        darwin*)
-            command netstat -nr 2>/dev/null | command grep -q '^default'
-            ;;
-        *bsd*)
-            command netstat -rn 2>/dev/null | command grep -q '^default'
-            ;;
-        *)
-            # Linux: try ip command first, fall back to route
-            if command -v ip >/dev/null 2>&1; then
-                command ip -4 route show default 2>/dev/null | command grep -q '^default' || \
-                command ip -6 route show default 2>/dev/null | command grep -q '^default'
-            else
-                command route -n 2>/dev/null | command grep -q '^0\.0\.0\.0'
-            fi
-            ;;
-    esac
-}
-
-_direnv_can_reach_internet() {
-    command -v ping >/dev/null 2>&1 || return 1
-
-    # Try IPv4 first (9.9.9.9 - Quad9 DNS)
-    command ping -c 1 -W 1 9.9.9.9 >/dev/null 2>&1 && return 0
-
-    # Try IPv6 (2620:fe::fe - Quad9 DNS)
-    command ping6 -c 1 -W 1 2620:fe::fe >/dev/null 2>&1 && return 0
-
-    # Some systems use unified ping command for IPv6
-    command ping -c 1 -W 1 2620:fe::fe >/dev/null 2>&1 && return 0
-
-    return 1
-}
-
-# Check if we have working network connectivity
-_direnv_has_network() {
-    _direnv_has_route && _direnv_can_reach_internet
-}
-
 # Kill monitor process only
 _direnv_kill_monitor() {
     if [[ -n "$__DIRENV_INSTANT_MONITOR_PID" ]]; then
@@ -83,11 +43,6 @@ _direnv_tmux_manager() {
 
     # Clean up on exit
     trap "command rm -rf '$_temp_file' 2>/dev/null" EXIT INT TERM
-
-    # Set manual reload flag if no network
-    if ! _direnv_has_network; then
-        export _nix_direnv_manual_reload=1
-    fi
 
     # Run direnv with script to capture all output
     # stdout goes to _temp_file, stderr is captured by script (not shown directly)
