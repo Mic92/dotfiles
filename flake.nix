@@ -26,7 +26,7 @@
     renovate.url = "github:Mic92/renovate";
     renovate.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix.url = "git+https://github.com/Mic92/nix-1?shallow=1";
+    nix.url = "github:nix-security/nix/fod-cves-2.28";
     nix.inputs.nixpkgs.follows = "nixpkgs";
     nix.inputs.flake-parts.follows = "";
     nix.inputs.flake-compat.follows = "";

@@ -15,6 +15,7 @@
           gmaps-cli = pkgs.python3.pkgs.callPackage ./gmaps-cli { };
           paperless-cli = pkgs.callPackage ./paperless-cli { };
           db-cli = pkgs.callPackage ./db-cli { };
+          direnv-instant = pkgs.callPackage ./direnv-instant { };
         }
         // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
           blueutil = pkgs.callPackage ./blueutil { };

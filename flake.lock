@@ -404,18 +404,18 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1750775441,
-        "narHash": "sha256-beothLPvvuZ7XPlptT9NB+OJ+JH2xvS1+Cje+DcZKY8=",
-        "ref": "refs/heads/main",
-        "rev": "f1c1385d6d72962497fbaf8aa6cade7dc623c3d8",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/Mic92/nix-1"
+        "lastModified": 1750344011,
+        "narHash": "sha256-If+wV/4Qj8M/ZU7yaQYeoNPs2jpAyfbkWiZsaYO01hE=",
+        "owner": "nix-security",
+        "repo": "nix",
+        "rev": "24c1aa735a40d3bf5361755fa10ac0e577a55eed",
+        "type": "github"
       },
       "original": {
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/Mic92/nix-1"
+        "owner": "nix-security",
+        "ref": "fod-cves-2.28",
+        "repo": "nix",
+        "type": "github"
       }
     },
     "nix-darwin": {
