@@ -35,6 +35,16 @@ afew --move-mails --all
 # After moving emails, we might got rid of spam.
 mbsync thalheim:Spam thalheim:INBOX
 
+# Delete emails in trash older than 3 months
+echo "Deleting old trash emails (older than 3 months)..."
+TRASH_COUNT=$(notmuch count 'folder:Trash AND date:..3months')
+if [ "$TRASH_COUNT" -gt 0 ]; then
+    echo "Deleting $TRASH_COUNT old trash emails..."
+    notmuch search --output=files 'folder:Trash AND date:..3months' | xargs -r rm
+    # Update notmuch database to remove deleted emails
+    notmuch new
+fi
+
 # Send desktop notifications for new emails (if in graphical session)
 if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then
     echo "Checking for new email notifications..."
