@@ -68,6 +68,8 @@ tags = +bank-notification
 [MailMover]
 # Define folders to check for moving emails
 folders = thalheim.io
+# Rename files when moving to avoid UID conflicts
+rename = True
 
 # Move spam emails to .Spam folder
 thalheim.io = 'tag:spam':thalheim.io/.Spam
