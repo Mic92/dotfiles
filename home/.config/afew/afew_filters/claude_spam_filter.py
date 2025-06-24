@@ -8,11 +8,12 @@ import subprocess
 from pathlib import Path
 from typing import Any, cast
 
-from afew.FilterRegistry import register_filter  # type: ignore[import-untyped]
-from afew.filters.BaseFilter import Filter  # type: ignore[import-untyped]
+from afew.FilterRegistry import register_filter  # type: ignore[import-not-found]
+from afew.filters.BaseFilter import Filter  # type: ignore[import-not-found]
+from notmuch.errors import NullPointerError  # type: ignore[import-not-found]
 
 # Type alias for notmuch message
-from notmuch.message import Message  # type: ignore[import-untyped]
+from notmuch.message import Message  # type: ignore[import-not-found]
 
 from .spam_database import SpamDatabase
 
@@ -165,20 +166,30 @@ class ClaudeSpamFilter(Filter):  # type: ignore[misc]
 
     def _extract_headers(self, message: Message) -> dict[str, str]:
         """Extract all relevant headers from the message."""
-        return {
-            "subject": message.get_header("Subject") or "",
-            "from_addr": message.get_header("From") or "",
-            "to_addr": message.get_header("To") or "",
-            "date": message.get_header("Date") or "",
-            "reply_to": message.get_header("Reply-To") or "",
-            "return_path": message.get_header("Return-Path") or "",
-            "received": message.get_header("Received") or "",
-            "list_unsubscribe": message.get_header("List-Unsubscribe") or "",
-            "x_mailer": message.get_header("X-Mailer") or "",
-            "content_type": message.get_header("Content-Type") or "",
-            "cc": message.get_header("Cc") or "",
-            "bcc": message.get_header("Bcc") or "",
+        headers = {}
+        header_map = {
+            "subject": "Subject",
+            "from_addr": "From",
+            "to_addr": "To",
+            "date": "Date",
+            "reply_to": "Reply-To",
+            "return_path": "Return-Path",
+            "received": "Received",
+            "list_unsubscribe": "List-Unsubscribe",
+            "x_mailer": "X-Mailer",
+            "content_type": "Content-Type",
+            "cc": "Cc",
+            "bcc": "Bcc",
         }
+
+        for key, header_name in header_map.items():
+            try:
+                headers[key] = message.get_header(header_name) or ""
+            except NullPointerError:
+                # Handle NullPointerError when mail file doesn't exist or file descriptors exhausted
+                headers[key] = ""
+
+        return headers
 
     def _create_claude_prompt(
         self, headers: dict[str, str], body: str, attachments: list[str]
