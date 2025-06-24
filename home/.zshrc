@@ -880,6 +880,10 @@ if [[ -f ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh ]]; the
   source ~/.fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
 fi
 
+if [[ -n $GHOSTTY_RESOURCES_DIR ]]; then
+  source "$GHOSTTY_RESOURCES_DIR"/shell-integration/zsh/ghostty-integration
+fi
+
 if [[ -n "${commands[atuin]}" ]]; then
   export ATUIN_NOBIND="true"
   eval "$(atuin init zsh)"
