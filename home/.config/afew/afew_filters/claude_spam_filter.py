@@ -244,7 +244,7 @@ indicators, suspicious attachments, etc."""
                 check=False,
                 capture_output=True,
                 text=True,
-                timeout=30,
+                timeout=100,
             )
 
             if result.returncode == 0:
