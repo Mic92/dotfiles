@@ -1,6 +1,7 @@
 use std::env;
 use std::fs::{self, File};
 use std::io::Write;
+use std::os::unix::fs::PermissionsExt;
 use std::os::unix::io::{AsRawFd, AsFd, BorrowedFd, FromRawFd, OwnedFd, RawFd};
 use std::os::unix::net::{UnixListener, UnixStream};
 use std::os::unix::process::CommandExt;
@@ -29,6 +30,28 @@ fn find_envrc_dir(start: &Path) -> Option<PathBuf> {
         if !dir.pop() {
             return None;
         }
+    }
+}
+
+fn direnv_export_command() -> Command {
+    let mut cmd = Command::new("direnv");
+    cmd.args(&["export", "zsh"]);
+    cmd
+}
+
+fn run_direnv_export() -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    let output = direnv_export_command()
+        .output()
+        .map_err(|e| format!("Failed to run direnv: {}. Is direnv installed?", e))?;
+    
+    if output.status.success() {
+        Ok(output.stdout)
+    } else {
+        Err(format!(
+            "direnv failed with status {}: {}",
+            output.status,
+            String::from_utf8_lossy(&output.stderr)
+        ).into())
     }
 }
 
@@ -85,22 +108,10 @@ fn run_hook() -> Result<(), Box<dyn std::error::Error>> {
     let cwd = env::current_dir()?;
     let shell_pid = std::process::id();
 
-    // Check if direnv exists
-    let direnv_path = match Command::new("which").arg("direnv").output() {
-        Ok(output) if output.status.success() => {
-            String::from_utf8_lossy(&output.stdout).trim().to_string()
-        }
-        _ => return Ok(()), // No direnv, nothing to do
-    };
-
     // For non-tmux environments, just run direnv synchronously
     if env::var("TMUX").is_err() {
-        let output = Command::new(&direnv_path)
-            .args(&["export", "zsh"])
-            .output()?;
-
-        if output.status.success() {
-            print!("{}", String::from_utf8_lossy(&output.stdout));
+        if let Ok(output) = run_direnv_export() {
+            print!("{}", String::from_utf8_lossy(&output));
         }
         return Ok(());
     }
@@ -113,13 +124,8 @@ fn run_hook() -> Result<(), Box<dyn std::error::Error>> {
         Some(dir) => dir,
         None => {
             // No .envrc: unload any environment
-            let output = Command::new(&direnv_path)
-                .args(&["export", "zsh"])
-                .stderr(Stdio::null())
-                .output()?;
-
-            if output.status.success() {
-                print!("{}", String::from_utf8_lossy(&output.stdout));
+            if let Ok(output) = run_direnv_export() {
+                print!("{}", String::from_utf8_lossy(&output));
             }
 
             // Clear tracking variables
@@ -186,7 +192,7 @@ fn run_hook() -> Result<(), Box<dyn std::error::Error>> {
             }
 
             // Run the daemon logic with the FIFO path
-            if let Err(e) = run_daemon(&direnv_path, &envrc_dir, &fifo_path, shell_pid) {
+            if let Err(e) = run_daemon(&envrc_dir, &fifo_path, shell_pid) {
                 eprintln!("Daemon error: {}", e);
             }
 
@@ -465,7 +471,6 @@ fn process_direnv_output(
 }
 
 fn run_daemon(
-    direnv_path: &str,
     envrc_dir: &Path,
     fifo_path: &Path,
     parent_pid: u32,
@@ -553,8 +558,7 @@ fn run_daemon(
                 drop(slave);
             }
 
-            let err = Command::new(direnv_path)
-                .args(&["export", "zsh"])
+            let err = direnv_export_command()
                 .current_dir(envrc_dir)
                 .exec();
 
