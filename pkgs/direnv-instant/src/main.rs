@@ -1,7 +1,7 @@
 use std::env;
 use std::fs::{self, File};
 use std::io::Write;
-use std::os::unix::io::{AsRawFd, BorrowedFd, RawFd};
+use std::os::unix::io::{AsRawFd, AsFd, BorrowedFd, FromRawFd, OwnedFd, RawFd};
 use std::os::unix::net::{UnixListener, UnixStream};
 use std::os::unix::process::CommandExt;
 use std::path::{Path, PathBuf};
@@ -67,9 +67,8 @@ fn cleanup_stale_fifos() {
                         OFlag::O_WRONLY | OFlag::O_NONBLOCK,
                         Mode::empty(),
                     ) {
-                        Ok(fd) => {
-                            // There's a reader, close and keep the fifo
-                            let _ = unistd::close(fd);
+                        Ok(_fd) => {
+                            // There's a reader, fd will be closed automatically when dropped
                         }
                         Err(_) => {
                             // No reader, remove stale fifo
@@ -178,10 +177,13 @@ fn run_hook() -> Result<(), Box<dyn std::error::Error>> {
 
             // Redirect stdin/stdout/stderr to /dev/null
             let devnull = File::open("/dev/null")?;
-            let devnull_fd = devnull.as_raw_fd();
-            unistd::dup2(devnull_fd, 0)?;
-            unistd::dup2(devnull_fd, 1)?;
-            unistd::dup2(devnull_fd, 2)?;
+            // dup2 with raw fd to avoid ownership issues
+            let devnull_raw = devnull.as_raw_fd();
+            unsafe {
+                libc::dup2(devnull_raw, 0);
+                libc::dup2(devnull_raw, 1);
+                libc::dup2(devnull_raw, 2);
+            }
 
             // Run the daemon logic with the FIFO path
             if let Err(e) = run_daemon(&direnv_path, &envrc_dir, &fifo_path, shell_pid) {
@@ -198,9 +200,10 @@ fn run_hook() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-fn send_fd(socket: &UnixStream, fd: RawFd) -> Result<(), Box<dyn std::error::Error>> {
+fn send_fd<Fd: AsFd>(socket: &UnixStream, fd: &Fd) -> Result<(), Box<dyn std::error::Error>> {
     let msg = [0u8];
-    let fds = [fd];
+    let raw_fd = fd.as_fd().as_raw_fd();
+    let fds = [raw_fd];
     let cmsg = ControlMessage::ScmRights(&fds);
 
     sendmsg::<()>(
@@ -213,7 +216,7 @@ fn send_fd(socket: &UnixStream, fd: RawFd) -> Result<(), Box<dyn std::error::Err
     Ok(())
 }
 
-fn recv_fd(socket: &UnixStream) -> Result<RawFd, Box<dyn std::error::Error>> {
+fn recv_fd(socket: &UnixStream) -> Result<OwnedFd, Box<dyn std::error::Error>> {
     let mut buf = [0u8; 1];
     let mut cmsg_buf = cmsg_space!([RawFd; 1]);
     let mut iov = [std::io::IoSliceMut::new(&mut buf)];
@@ -228,7 +231,7 @@ fn recv_fd(socket: &UnixStream) -> Result<RawFd, Box<dyn std::error::Error>> {
     for cmsg in msg.cmsgs()? {
         if let ControlMessageOwned::ScmRights(fds) = cmsg {
             if !fds.is_empty() {
-                return Ok(fds[0]);
+                return Ok(unsafe { OwnedFd::from_raw_fd(fds[0]) });
             }
         }
     }
@@ -241,20 +244,17 @@ fn run_tmux_client(daemon_pid: u32) -> Result<(), Box<dyn std::error::Error>> {
 
     // Save current terminal settings for stderr
     let stderr = std::io::stderr();
-    let stderr_fd = stderr.as_raw_fd();
-    let orig_termios = unsafe { termios::tcgetattr(BorrowedFd::borrow_raw(stderr_fd)).ok() };
+    let orig_termios = termios::tcgetattr(&stderr).ok();
 
     // Set stderr to raw mode if it's a terminal
     if let Some(termios) = orig_termios.as_ref() {
         let mut raw_termios = termios.clone();
         termios::cfmakeraw(&mut raw_termios);
-        let _ = unsafe {
-            termios::tcsetattr(
-                BorrowedFd::borrow_raw(stderr_fd),
-                termios::SetArg::TCSANOW,
-                &raw_termios,
-            )
-        };
+        let _ = termios::tcsetattr(
+            &stderr,
+            termios::SetArg::TCSANOW,
+            &raw_termios,
+        );
     }
 
     // Connect to daemon socket
@@ -266,7 +266,7 @@ fn run_tmux_client(daemon_pid: u32) -> Result<(), Box<dyn std::error::Error>> {
     // Read from pty_fd and output to our stderr
     let mut buffer = [0u8; 4096];
     loop {
-        match unistd::read(pty_fd, &mut buffer) {
+        match unistd::read(&pty_fd, &mut buffer) {
             Ok(0) => break, // EOF - daemon closed connection
             Ok(n) => {
                 std::io::stderr().write_all(&buffer[..n])?;
@@ -279,17 +279,12 @@ fn run_tmux_client(daemon_pid: u32) -> Result<(), Box<dyn std::error::Error>> {
 
     // Restore original terminal settings
     if let Some(termios) = orig_termios {
-        let _ = unsafe {
-            termios::tcsetattr(
-                BorrowedFd::borrow_raw(stderr_fd),
-                termios::SetArg::TCSANOW,
-                &termios,
-            )
-        };
+        let _ = termios::tcsetattr(
+            &stderr,
+            termios::SetArg::TCSANOW,
+            &termios,
+        );
     }
-
-    // Clean up
-    let _ = unistd::close(pty_fd);
 
     Ok(())
 }
@@ -303,7 +298,7 @@ struct DaemonPaths {
 
 struct DaemonState {
     stderr_buffer: Arc<Mutex<Vec<u8>>>,
-    pty_fd: Arc<Mutex<Option<RawFd>>>,
+    pty_fd: Arc<Mutex<Option<OwnedFd>>>,
     tmux_connected: Arc<Mutex<bool>>,
 }
 
@@ -338,7 +333,7 @@ fn start_lifetime_monitor(fifo_path: &Path) {
             Ok(fd) => {
                 let mut buffer = [0u8; 1];
                 loop {
-                    match unistd::read(fd, &mut buffer) {
+                    match unistd::read(&fd, &mut buffer) {
                         Ok(0) | Err(_) => {
                             std::process::exit(0);
                         }
@@ -362,7 +357,7 @@ fn start_socket_listener(listener: UnixListener, state: &DaemonState, temp_file:
         for stream in listener.incoming() {
             if let Ok(mut stream) = stream {
                 if let Ok(guard) = pty_fd_clone.lock() {
-                    if let Some(fd) = *guard {
+                    if let Some(ref fd) = *guard {
                         if send_fd(&stream, fd).is_ok() {
                             if let Ok(mut connected) = tmux_connected_clone.lock() {
                                 *connected = true;
@@ -409,7 +404,7 @@ fn start_tmux_launcher(daemon_pid: u32, temp_file: PathBuf, daemon_start: Instan
 }
 
 fn handle_direnv_output(
-    master_fd: RawFd,
+    master_fd: BorrowedFd,
     stderr_file_handle: &mut File,
     state: &DaemonState,
 ) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
@@ -501,8 +496,8 @@ fn run_daemon(
 
     // Create PTY for direnv - get terminal attributes from current stderr if available
     let term_attrs = if let Ok(fd) = nix::fcntl::open("/dev/tty", OFlag::O_RDWR, Mode::empty()) {
-        let attrs = unsafe { termios::tcgetattr(BorrowedFd::borrow_raw(fd)).ok() };
-        let _ = unistd::close(fd);
+        let attrs = termios::tcgetattr(&fd).ok();
+        // fd will be closed automatically when dropped
         attrs
     } else {
         None
@@ -510,9 +505,12 @@ fn run_daemon(
 
     let OpenptyResult { master, slave } = openpty(None, term_attrs.as_ref())?;
 
-    // Store PTY fd for tmux
+    // Store PTY fd for tmux - we need to clone it for the state
     if let Ok(mut guard) = state.pty_fd.lock() {
-        *guard = Some(master.as_raw_fd());
+        // Try to duplicate the master fd using nix
+        if let Ok(dup_fd) = unistd::dup(&master) {
+            *guard = Some(dup_fd);
+        }
     }
 
     // Fork process to run direnv
@@ -521,7 +519,7 @@ fn run_daemon(
             drop(slave);
 
             let all_output =
-                handle_direnv_output(master.as_raw_fd(), &mut stderr_file_handle, &state)?;
+                handle_direnv_output(master.as_fd(), &mut stderr_file_handle, &state)?;
 
             // Wait for child to complete
             match waitpid(child, None)? {
@@ -543,12 +541,15 @@ fn run_daemon(
         unistd::ForkResult::Child => {
             drop(master);
 
-            let slave_fd = slave.as_raw_fd();
-            unistd::dup2(slave_fd, 0)?;
-            unistd::dup2(slave_fd, 1)?;
-            unistd::dup2(slave_fd, 2)?;
+            // dup2 with raw fd to avoid ownership issues
+            let slave_raw = slave.as_raw_fd();
+            unsafe {
+                libc::dup2(slave_raw, 0);
+                libc::dup2(slave_raw, 1);
+                libc::dup2(slave_raw, 2);
+            }
 
-            if slave_fd > 2 {
+            if slave_raw > 2 {
                 drop(slave);
             }
 
