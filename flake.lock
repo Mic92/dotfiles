@@ -37,6 +37,7 @@
         "flake-parts": [
           "flake-parts"
         ],
+        "flake-utils": "flake-utils",
         "nix-darwin": [
           "nix-darwin"
         ],
@@ -47,6 +48,7 @@
         "nixpkgs": [
           "nixpkgs"
         ],
+        "nuschtos": "nuschtos",
         "sops-nix": [
           "sops-nix"
         ],
@@ -58,11 +60,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1750829616,
-        "narHash": "sha256-WrDa0eSdNniuYyxdLWwNhSolOYac7lGWhv/vQuYK8uo=",
-        "rev": "ae1a139818ba4b981726172b9e5b3b90856e16be",
+        "lastModified": 1750834615,
+        "narHash": "sha256-X7o8vlm5XG+Je9/mnxa//Kwd/EodAHfibaahR2nuOh4=",
+        "rev": "d1163bc2c5358b850995b61b86f33abd21a38d76",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/ae1a139818ba4b981726172b9e5b3b90856e16be.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/d1163bc2c5358b850995b61b86f33abd21a38d76.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -224,6 +226,27 @@
     "flake-utils": {
       "inputs": {
         "systems": [
+          "clan-core",
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1731533236,
+        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flake-utils_2": {
+      "inputs": {
+        "systems": [
           "systems"
         ]
       },
@@ -330,6 +353,34 @@
       "original": {
         "owner": "hyprspace",
         "repo": "hyprspace",
+        "type": "github"
+      }
+    },
+    "ixx": {
+      "inputs": {
+        "flake-utils": [
+          "clan-core",
+          "nuschtos",
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "clan-core",
+          "nuschtos",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1748294338,
+        "narHash": "sha256-FVO01jdmUNArzBS7NmaktLdGA5qA3lUMJ4B7a05Iynw=",
+        "owner": "NuschtOS",
+        "repo": "ixx",
+        "rev": "cc5f390f7caf265461d4aab37e98d2292ebbdb85",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NuschtOS",
+        "ref": "v0.0.8",
+        "repo": "ixx",
         "type": "github"
       }
     },
@@ -538,6 +589,32 @@
         "type": "github"
       }
     },
+    "nuschtos": {
+      "inputs": {
+        "flake-utils": [
+          "clan-core",
+          "flake-utils"
+        ],
+        "ixx": "ixx",
+        "nixpkgs": [
+          "clan-core",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1749730855,
+        "narHash": "sha256-L3x2nSlFkXkM6tQPLJP3oCBMIsRifhIDPMQQdHO5xWo=",
+        "owner": "NuschtOS",
+        "repo": "search",
+        "rev": "8dfe5879dd009ff4742b668d9c699bc4b9761742",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NuschtOS",
+        "repo": "search",
+        "type": "github"
+      }
+    },
     "renovate": {
       "inputs": {
         "nixpkgs": [
@@ -582,7 +659,7 @@
         "disko": "disko",
         "flake-parts": "flake-parts_2",
         "flake-registry": "flake-registry",
-        "flake-utils": "flake-utils",
+        "flake-utils": "flake-utils_2",
         "harmonia": "harmonia",
         "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
