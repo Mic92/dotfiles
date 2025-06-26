@@ -17,6 +17,7 @@
           db-cli = pkgs.callPackage ./db-cli { };
           direnv-instant = pkgs.callPackage ./direnv-instant { };
           kagi-search = pkgs.python3.pkgs.callPackage ./kagi-search { };
+          claudia = pkgs.callPackage ./claudia { };
         }
         // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
           blueutil = pkgs.callPackage ./blueutil { };
