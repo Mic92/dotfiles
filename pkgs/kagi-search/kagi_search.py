@@ -19,6 +19,10 @@ from bs4 import BeautifulSoup
 import time
 from dataclasses import dataclass
 import argparse
+import logging
+
+# Module-level logger
+logger = logging.getLogger(__name__)
 
 
 def colorize(text: str, color: str = "", bold: bool = False, dim: bool = False) -> str:
@@ -101,6 +105,16 @@ class SearchResult:
     title: str
     url: str
     snippet: str
+
+
+@dataclass
+class QuickAnswer:
+    """Represents a Kagi Quick Answer response."""
+
+    html: str
+    markdown: str
+    raw_text: str
+    references: List[Dict[str, Any]]
 
 
 class KagiSearch:
@@ -315,6 +329,105 @@ class KagiSearch:
 
         return []
 
+    def get_quick_answer(self, query: str) -> Optional[QuickAnswer]:
+        """
+        Get Kagi Quick Answer for a query.
+
+        Args:
+            query: Search query
+
+        Returns:
+            QuickAnswer object or None if no answer available
+        """
+        # Construct Quick Answer URL
+        params = {"q": query, "stream": "1"}
+        quick_answer_url = f"{self.base_url}/mother/context?{urlencode(params)}"
+        logger.debug(f"Quick Answer URL: {quick_answer_url}")
+        logger.info("Fetching Quick Answer...")
+
+        try:
+            # Create request with headers
+            request = Request(quick_answer_url)
+            request.add_header("User-Agent", self.user_agent)
+            request.add_header("Accept", "application/vnd.kagi.stream")
+            request.add_header("Accept-Language", "en-US,en;q=0.5")
+            request.add_header("Accept-Encoding", "gzip, deflate, br, zstd")
+            request.add_header("Referer", f"{self.base_url}/search?q={query}")
+            request.add_header("DNT", "1")
+            request.add_header("Connection", "keep-alive")
+
+            # Make request using opener (with cookies)
+            logger.debug("Making Quick Answer request...")
+            response = self.opener.open(request, timeout=30)
+            logger.debug(f"Response status: {response.getcode()}")
+
+            # Check if we're redirected to sign in
+            final_url = response.geturl()
+            logger.debug(f"Final URL: {final_url}")
+            if "/signin" in final_url or "/welcome" in final_url:
+                raise Exception(f"Authentication failed - redirected to {final_url}")
+
+            # Read response
+            content = response.read()
+            logger.debug(f"Response content length: {len(content)} bytes")
+
+            # Handle gzip encoding if present
+            if response.headers.get("Content-Encoding") == "gzip":
+                logger.debug("Decompressing gzip content")
+                content = gzip.decompress(content)
+
+            # Parse streaming response - split by null bytes
+            messages = content.decode("utf-8").split("\x00")
+            logger.debug(f"Response has {len(messages)} messages")
+            final_data = None
+
+            for message in messages:
+                if message.strip():
+                    logger.debug(f"Processing message: {message[:100]}...")  # Log first 100 chars
+                    # Each message starts with "update:" or "final:"
+                    if message.startswith("final:"):
+                        json_str = message[6:]  # Remove "final:" prefix
+                        logger.debug(f"Parsing final JSON: {json_str[:200]}...")
+                        try:
+                            final_data = json.loads(json_str)
+                            logger.debug("Successfully parsed final data")
+                        except json.JSONDecodeError as e:
+                            logger.error(f"Failed to parse final JSON: {e}")
+                            logger.debug(f"Full message: {message}")
+                        break
+
+            if not final_data:
+                logger.debug("No final data found in response")
+                return None
+
+            if "output_data" not in final_data:
+                logger.debug(f"No output_data in final response: {final_data.keys()}")
+                return None
+
+            output_data = final_data["output_data"]
+
+            # Extract data with defaults
+            html = final_data.get("output_text", "")
+            markdown = output_data.get("markdown", "")
+            raw_text = output_data.get("raw_text", "")
+            references = output_data.get("references", [])
+
+            # If no content, return None
+            if not html and not markdown and not raw_text:
+                logger.debug("No content found in Quick Answer")
+                return None
+
+            logger.debug(f"Quick Answer found with {len(references)} references")
+
+            return QuickAnswer(
+                html=html, markdown=markdown, raw_text=raw_text, references=references
+            )
+
+        except Exception as e:
+            # Quick Answer might not be available for all queries
+            logger.debug(f"Quick Answer error: {type(e).__name__}: {e}")
+            return None
+
 
 def main():
     """Main entry point for command line usage."""
@@ -326,8 +439,17 @@ def main():
     parser.add_argument("-t", "--token", help="Session token (overrides config)")
     parser.add_argument("-c", "--config", help="Config file path")
     parser.add_argument("-j", "--json", action="store_true", help="Output as JSON")
+    parser.add_argument("-d", "--debug", action="store_true", help="Enable debug logging to stderr")
 
     args = parser.parse_args()
+
+    # Configure logging - always to stderr
+    log_level = logging.DEBUG if args.debug else logging.WARNING
+    logging.basicConfig(
+        level=log_level,
+        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        stream=sys.stderr,
+    )
 
     # If no query provided, read from stdin
     if not args.query:
@@ -346,6 +468,7 @@ def main():
     # Perform search
     try:
         results = client.search(args.query, limit=args.num_results)
+        quick_answer = client.get_quick_answer(args.query)
     except Exception as e:
         error_msg = colorize(f"Search failed: {e}", color="red", bold=True)
         print(error_msg, file=sys.stderr)
@@ -353,9 +476,45 @@ def main():
 
     # Output results
     if args.json:
-        output = [{"title": r.title, "url": r.url, "snippet": r.snippet} for r in results]
+        output = {
+            "results": [{"title": r.title, "url": r.url, "snippet": r.snippet} for r in results]
+        }
+        if quick_answer:
+            output["quick_answer"] = {
+                "markdown": quick_answer.markdown,
+                "raw_text": quick_answer.raw_text,
+                "references": quick_answer.references,
+            }
         print(json.dumps(output, indent=2))
     else:
+        # Display Quick Answer if available
+        if quick_answer:
+            qa_title = colorize("Quick Answer", color="cyan", bold=True)
+            print(f"\n{qa_title}")
+            print(colorize("─" * 80, color="cyan", dim=True))
+
+            # Display raw text for terminal (cleaner than HTML)
+            if quick_answer.raw_text:
+                print(quick_answer.raw_text)
+            elif quick_answer.markdown:
+                # Fallback to markdown if no raw text
+                print(quick_answer.markdown)
+
+            # Display references
+            if quick_answer.references:
+                print()
+                refs_title = colorize("References:", color="cyan", dim=True)
+                print(refs_title)
+                for i, ref in enumerate(quick_answer.references[:5], 1):  # Limit to 5 refs
+                    ref_num = colorize(f"[{i}]", color="cyan", dim=True)
+                    ref_title = ref.get("title", "")
+                    ref_url = ref.get("url", "")
+                    if ref_title and ref_url:
+                        ref_link = hyperlink(ref_url, colorize(ref_title, color="blue"))
+                        print(f"  {ref_num} {ref_link}")
+
+            print(colorize("─" * 80, color="cyan", dim=True))
+            print()  # Extra newline before search results
         for i, result in enumerate(results, 1):
             # Result number in yellow/bold
             number = colorize(f"{i}.", color="yellow", bold=True)

@@ -18,17 +18,23 @@ Create `~/.config/kagi/config.json`:
 ## Usage
 
 ```bash
-# Search using password manager
+# Search using password manager (includes Quick Answer by default)
 kagi-search "search query"
 
 # With explicit token
 kagi-search -t "TOKEN" "search query"
 
 # JSON output
-kagi-search -j "search query" | jq '.[0].url'
+kagi-search -j "search query" | jq '.results[0].url'
+
+# Extract Quick Answer from JSON
+kagi-search -j "search query" | jq '.quick_answer.markdown'
 
 # Limit results
 kagi-search -n 5 "search query"
+
+# Enable debug logging
+kagi-search -d "search query"
 ```
 
 ## Getting Your Token
