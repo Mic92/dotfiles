@@ -53,6 +53,7 @@
           ''
             install -D -m755 ${./retiolum-hook.sh} $out/bin/retiolum
             install -D -m755 ${./irc-hook.sh} $out/bin/irc-notify
+            install -D -m755 ${./homepage-hook.sh} $out/bin/homepage
             wrapProgram $out/bin/retiolum \
               --set PATH ${
                 lib.makeBinPath (
@@ -91,6 +92,18 @@
             exec $out/bin/irc-notify --server=irc.r --nick=gitea --target="#xxx"
             EOF
             chmod +x $out/bin/irc-stockholm
+            wrapProgram $out/bin/homepage \
+              --set PATH ${
+                lib.makeBinPath (
+                  with pkgs;
+                  [
+                    bash
+                    coreutils
+                    git
+                    nix
+                  ]
+                )
+              }
 
             for bin in $out/bin/*; do
               patchShebangs $bin
@@ -101,6 +114,7 @@
     [
       "L+ /var/lib/gitea/repositories/mic92/stockholm.git/hooks/post-receive.d/retiolum - - - - ${hooks}/bin/retiolum"
       "L+ /var/lib/gitea/repositories/mic92/stockholm.git/hooks/post-receive.d/irc-stockholm - - - - ${hooks}/bin/irc-stockholm"
+      "L+ /var/lib/gitea/repositories/mic92/homepage.git/hooks/post-receive.d/homepage - - - - ${hooks}/bin/homepage"
     ];
 
   sops.secrets.gitea-mail.owner = config.systemd.services.gitea.serviceConfig.User;
