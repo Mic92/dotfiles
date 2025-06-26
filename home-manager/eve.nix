@@ -25,6 +25,6 @@
           };
       })
 
-      pkgs.matterbridge
+      pkgs.claude-code
     ];
 }
