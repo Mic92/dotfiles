@@ -40,5 +40,8 @@
     };
   };
 
-  systemd.tmpfiles.rules = [ "d /var/www/reports.thalheim.io 0750 joerg nginx - -" ];
+  systemd.tmpfiles.rules = [
+    "d /var/www/reports.thalheim.io 0750 joerg nginx - -"
+    "d /var/www/higgsboson.tk 0755 gitea nginx - -"
+  ];
 }
