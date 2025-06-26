@@ -16,6 +16,7 @@
           paperless-cli = pkgs.callPackage ./paperless-cli { };
           db-cli = pkgs.callPackage ./db-cli { };
           direnv-instant = pkgs.callPackage ./direnv-instant { };
+          kagi-search = pkgs.python3.pkgs.callPackage ./kagi-search { };
         }
         // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
           blueutil = pkgs.callPackage ./blueutil { };
