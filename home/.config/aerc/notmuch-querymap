@@ -2,15 +2,15 @@
 # Maps folder names to notmuch queries
 
 # Main folders
-INBOX=(folder:thalheim.io OR folder:Entwickler OR folder:Netzwerke OR folder:Benachrichtigung OR folder:Geld OR folder:Privat OR folder:Arbeit OR folder:Uni) AND date:7d.. AND NOT tag:trash
-Entwickler=folder:Entwickler AND NOT tag:trash
-Netzwerke=folder:Netzwerke AND NOT tag:trash
-Benachrichtigung=folder:Benachrichtigung AND NOT tag:trash
-Geld=folder:Geld AND NOT tag:trash
-Privat=folder:Privat AND NOT tag:trash
-Arbeit=folder:Arbeit AND NOT tag:trash
-Uni=folder:Uni AND NOT tag:trash
-Sent=tag:Sent AND NOT tag:trash
+INBOX=(folder:thalheim.io OR folder:thalheim.io/.Netzwerke OR folder:thalheim.io/.Benachrichtigung OR folder:thalheim.io/.Geld OR folder:thalheim.io/.Privat OR folder:thalheim.io/.Arbeit OR folder:thalheim.io/.Uni) AND date:7d.. AND NOT tag:trash
+Entwickler=folder:thalheim.io/.Entwickler AND NOT tag:trash
+Netzwerke=folder:thalheim.io/.Netzwerke AND NOT tag:trash
+Benachrichtigung=folder:thalheim.io/.Benachrichtigung AND NOT tag:trash
+Geld=folder:thalheim.io/.Geld AND NOT tag:trash
+Privat=folder:thalheim.io/.Privat AND NOT tag:trash
+Arbeit=folder:thalheim.io/.Arbeit AND NOT tag:trash
+Uni=folder:thalheim.io/.Uni AND NOT tag:trash
+Sent=folder:thalheim.io/.Sent AND NOT tag:trash
 Drafts=folder:thalheim.io/.Drafts AND NOT tag:trash
 Spam=tag:Spam AND NOT tag:trash
 Trash=tag:trash
@@ -22,8 +22,8 @@ Pull Requests=tag:pr AND NOT tag:trash
 CI/CD=tag:ci AND NOT tag:trash
 
 # Other folders
-Whisp=folder:Whisp AND NOT tag:trash
-Queue=folder:Queue AND NOT tag:trash
+Whisp=folder:thalheim.io/.Whisp AND NOT tag:trash
+Queue=folder:thalheim.io/.Queue AND NOT tag:trash
 
 # Mailing lists
 z/all-help=folder:zlist.all-help AND NOT tag:trash
