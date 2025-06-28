@@ -9,7 +9,7 @@
   # To update all inputs:
   # $ nix flake update
   inputs = {
-    flake-parts.url = "github:Mic92/flake-parts/darwin-configuration";
+    flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
     hercules-ci-effects.url = "github:hercules-ci/hercules-ci-effects";
     hercules-ci-effects.inputs.nixpkgs.follows = "nixpkgs";
