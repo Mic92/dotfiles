@@ -68,12 +68,11 @@
           }
           {
             targets = [
-              "bld2.numtide.com:9273"
+              "bld1.numtide.com:9273"
               "bld3.numtide.com:9273"
               # "mac01.numtide.com:9273"
               "git.numtide.com:9273"
               "matrix.numtide.com:9273"
-              "chat.ntd.one:9273"
             ];
             labels.org = "numtide";
           }
