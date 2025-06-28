@@ -1,0 +1,25 @@
+{
+  "KPlugin": {
+    "Authors": [
+      {
+        "Email": "joerg@thalheim.io",
+        "Name": "Joerg Thalheim"
+      }
+    ],
+    "Category": "Utilities",
+    "Description": "Display the number of active Prometheus alerts",
+    "Icon": "dialog-warning",
+    "Id": "com.thalheim.alertmanager-widget",
+    "License": "MIT",
+    "Name": "Prometheus Alerts",
+    "ServiceTypes": [
+      "Plasma/Applet"
+    ],
+    "Version": "1.0.0",
+    "Website": "https://github.com/Mic92/dotfiles"
+  },
+  "KPackageStructure": "Plasma/Applet",
+  "X-Plasma-API": "declarativeappletscript",
+  "X-Plasma-MainScript": "ui/main.qml",
+  "X-Plasma-API-Minimum-Version": "6.0"
+}
