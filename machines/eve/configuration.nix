@@ -61,6 +61,7 @@
     ./modules/shiori
     ./modules/snappymail.nix
     ./modules/sshd.nix
+    ./modules/step-ca/default.nix
     ./modules/syncthing.nix
     ./modules/teamspeak.nix
     ./modules/tt-rss.nix
