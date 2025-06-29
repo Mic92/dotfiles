@@ -21,9 +21,6 @@
         // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
           blueutil = pkgs.callPackage ./blueutil { };
         }
-        // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
-          blueutil = pkgs.callPackage ./blueutil { };
-        }
         // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
           sengi = pkgs.callPackage ./sengi { };
           claudia = pkgs.callPackage ./claudia { };
