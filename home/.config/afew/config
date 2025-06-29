@@ -65,6 +65,12 @@ tags = +social-notification
 query = from:kontowecker.de OR from:noreply@wise.com
 tags = +bank-notification
 
+[Filter.11]
+# Tag Harvest time tracking notifications
+message = Tag Harvest notifications
+query = from:notifications@harvestapp.com OR from:harvest
+tags = +harvest-notification
+
 [MailMover]
 # Define folders to check for moving emails
 folders = thalheim.io
