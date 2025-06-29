@@ -450,6 +450,10 @@ def main() -> int:
         create_pr(branch, target_branch, args.message)
     else:
         print_success("\n✓ Using existing PR")
+        # Enable auto-merge for existing PR
+        print_warning("Enabling auto-merge for existing PR...")
+        run_command(["gh", "pr", "merge", branch, "--auto", "--rebase"])
+        print_success("✓ Auto-merge enabled")
 
     # Wait for checks if requested
     if args.wait:

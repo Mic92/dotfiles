@@ -50,6 +50,7 @@ in
             }
           }
         ''} "Krebs Root CA" $out/ca.crt $out/ca.key \
+          --kty EC --curve P-256 \
           --no-password --insecure
       '';
     };
@@ -64,7 +65,7 @@ in
       };
       runtimeInputs = [ pkgs.step-cli ];
       script = ''
-        step crypto keypair --no-password --insecure $out/intermediate.pub $out/intermediate.key
+        step crypto keypair --kty EC --curve P-256 --no-password --insecure $out/intermediate.pub $out/intermediate.key
       '';
     };
 
