@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
   services.kanidm.enableServer = true;
   services.kanidm.package = pkgs.kanidm_1_5;
@@ -16,13 +16,6 @@
       path = "/var/lib/kanidm/backup";
       schedule = "0 0 * * *";
     };
-  };
-
-  security.acme.certs."kanidm.thalheim.io" = {
-    postRun = "systemctl --no-block restart kanidm.service";
-    group = "kanidm";
-    dnsProvider = "rfc2136";
-    credentialsFile = config.sops.secrets.lego-knot-credentials.path;
   };
 
   services.nginx.virtualHosts."kanidm.thalheim.io" = {
