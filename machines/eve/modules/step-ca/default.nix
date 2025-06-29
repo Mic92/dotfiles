@@ -24,7 +24,7 @@ in
         proxyPass = "https://localhost:1443";
       };
       locations."= /ca.crt".alias =
-        config.clan.core.vars.generators.step-intermediate-cert.files."intermediate.crt".value;
+        config.clan.core.vars.generators.step-intermediate-cert.files."intermediate.crt".path;
     };
   };
 
@@ -49,7 +49,8 @@ in
               "maxPathLen": 1
             }
           }
-        ''} "Krebs Root CA" $out/ca.crt $out/ca.key
+        ''} "Krebs Root CA" $out/ca.crt $out/ca.key \
+          --no-password --insecure
       '';
     };
 
@@ -75,14 +76,11 @@ in
       runtimeInputs = [ pkgs.step-cli ];
       script = ''
         # Create intermediate certificate
-        step certificate create "Krebs Intermediate CA" \
-          $out/intermediate.crt $in/step-intermediate-key/intermediate.key \
+        step certificate create \
           --ca $in/step-ca/ca.crt \
           --ca-key $in/step-ca/ca.key \
-          --no-password --insecure \
-          --not-after 8760h \
-          --ca \
-          --max-path-len 0 \
+          --ca-password-file /dev/null \
+          --key $in/step-intermediate-key/intermediate.key \
           --template ${pkgs.writeText "intermediate.tmpl" ''
             {
               "subject": {{ toJson .Subject }},
@@ -96,7 +94,11 @@ in
                 "permittedDNSDomains": ["r", "w"]
               }
             }
-          ''}
+          ''} \
+          --not-after 8760h \
+          --no-password --insecure \
+          "Krebs Intermediate CA" \
+          $out/intermediate.crt
       '';
     };
   };
@@ -107,9 +109,9 @@ in
     address = "0.0.0.0";
     port = 1443;
     settings = {
-      root = config.clan.core.vars.generators.step-ca.files."ca.crt".value;
-      crt = config.clan.core.vars.generators.step-intermediate-cert.files."intermediate.crt".value;
-      key = config.clan.core.vars.generators.step-intermediate-key.files."intermediate.key".value;
+      root = config.clan.core.vars.generators.step-ca.files."ca.crt".path;
+      crt = config.clan.core.vars.generators.step-intermediate-cert.files."intermediate.crt".path;
+      key = config.clan.core.vars.generators.step-intermediate-key.files."intermediate.key".path;
       dnsNames = [ domain ];
       logger.format = "text";
       db = {
