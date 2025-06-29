@@ -390,7 +390,7 @@ def main() -> int:
     """Main entry point."""
     parser = argparse.ArgumentParser(description="Create PR and merge when CI passes")
     parser.add_argument(
-        "--wait", "-w", action="store_true", help="Wait for CI checks to complete"
+        "--no-wait", action="store_true", help="Don't wait for CI checks to complete"
     )
     parser.add_argument(
         "--message",
@@ -455,8 +455,8 @@ def main() -> int:
         run_command(["gh", "pr", "merge", branch, "--auto", "--rebase"])
         print_success("✓ Auto-merge enabled")
 
-    # Wait for checks if requested
-    if args.wait:
+    # Wait for checks unless --no-wait is specified
+    if not args.no_wait:
         # Wait for PR to be updated with our pushed commit
         print_info("\nWaiting for PR to be updated with pushed changes...")
         wait_start = time.time()
