@@ -101,6 +101,7 @@
                     coreutils
                     git
                     nix
+                    rsync
                   ]
                 )
               }
