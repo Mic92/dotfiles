@@ -59,6 +59,8 @@ in
       files."intermediate.key" = {
         secret = true;
         deploy = true;
+        owner = "step-ca";
+        group = "step-ca";
       };
       runtimeInputs = [ pkgs.step-cli ];
       script = ''

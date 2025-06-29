@@ -23,6 +23,7 @@ BUILD_RESULT=$(nix build --no-link --print-out-paths)
 # Deploy to nginx directory
 echo "Deploying website to $DEPLOY_DIR..."
 mkdir -p "$DEPLOY_DIR"
-cp -r "$BUILD_RESULT"/* "$DEPLOY_DIR/"
+# Use rsync without preserving timestamps to ensure proper cache busting
+rsync -rlpgoDv --delete "$BUILD_RESULT"/ "$DEPLOY_DIR/"
 
 echo "Deployment complete!"
