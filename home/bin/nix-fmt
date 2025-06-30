@@ -27,8 +27,7 @@ elif [[ -n "$toplevel" ]]; then
 fi
 
 if [[ "$needsUpdate" == 1 ]]; then
-    fmt=$(nix build --builders '' "${buildArgs[@]}" ".#formatter.${currentSystem}" --print-out-paths)
-    ln -sf "$fmt" "$toplevel/.git/nix-fmt"
+    fmt=$(nix build --out-link "$toplevel/.git/nix-fmt" --builders '' "${buildArgs[@]}" ".#formatter.${currentSystem}" --print-out-paths)
 fi
 
 # treefmt has multiple outputs
