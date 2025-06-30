@@ -64,6 +64,7 @@
     pkgs.python3
     pkgs.nixos-rebuild
     self.packages.${pkgs.system}.blueutil
+    self.packages.${pkgs.system}.systemctl-macos
   ];
 
   programs.zsh.enable = true;
