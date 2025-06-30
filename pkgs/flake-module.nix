@@ -20,6 +20,7 @@
         }
         // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
           blueutil = pkgs.callPackage ./blueutil { };
+          systemctl-macos = pkgs.callPackage ./systemctl { };
         }
         // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
           sengi = pkgs.callPackage ./sengi { };
