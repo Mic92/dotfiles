@@ -342,11 +342,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1736693502,
-        "narHash": "sha256-v4pmfHApR11CNLVMko9uqDU3jYFYrNkEYB/5gLf7ubY=",
+        "lastModified": 1751358665,
+        "narHash": "sha256-TUD3NV5QNGOBKhD+CUwhYx/REWGcmMpNnLW+YVZSkaI=",
         "owner": "hyprspace",
         "repo": "hyprspace",
-        "rev": "a5957e485ff0c2e9133e7da5408ec1273681688e",
+        "rev": "359adb47fad203c0777b96bbca10faf99554e97a",
         "type": "github"
       },
       "original": {
