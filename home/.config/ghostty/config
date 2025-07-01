@@ -12,3 +12,4 @@ theme = Builtin Solarized Light
 
 keybind = performable:copy=copy_to_clipboard
 keybind = performable:paste=paste_from_clipboard
+keybind = shift+enter=text:\n
