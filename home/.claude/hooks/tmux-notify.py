@@ -114,7 +114,7 @@ class ClaudeTmuxNotifier:
                         "tmux",
                         "display-message",
                         "-d",
-                        "2000",  # Display for 3 seconds
+                        "5000",  # Display for 5 seconds
                         f"⚡ {message}",
                     ],
                     check=True,
@@ -152,6 +152,70 @@ def main() -> None:
         notifier.log_debug("Detected Notification event")
         # Use the full message from the hook data
         full_message = hook_data.get("message", "Claude needs permission")
+
+        # Try to get tool arguments from transcript
+        transcript_path = hook_data.get("transcript_path", "")
+        notifier.log_debug(f"Transcript path: {transcript_path}")
+        if transcript_path and Path(transcript_path).exists():
+            try:
+                # Read last few lines of transcript to find tool use
+                with Path(transcript_path).open("r") as f:
+                    lines = f.readlines()
+                    notifier.log_debug(f"Read {len(lines)} lines from transcript")
+                    # Look for recent tool_use entries (search last 30 lines)
+                    for line in reversed(lines[-30:]):
+                        try:
+                            entry = json.loads(line.strip())
+                            # Check if this is an assistant message with tool_use
+                            if entry.get("type") == "assistant" and entry.get(
+                                "message"
+                            ):
+                                message = entry["message"]
+                                content = message.get("content", [])
+                                if content and isinstance(content, list):
+                                    for item in content:
+                                        if item.get("type") == "tool_use":
+                                            tool_use = item
+                                            tool_name = tool_use.get("name", "")
+                                            params = tool_use.get("input", {})
+                                            notifier.log_debug(
+                                                f"Found tool use: {tool_name} with params: {params}"
+                                            )
+
+                                            # Add relevant param info to message
+                                            if (
+                                                tool_name == "Bash"
+                                                and "command" in params
+                                            ):
+                                                cmd = params["command"]
+                                                # Truncate long commands
+                                                if len(cmd) > 50:
+                                                    cmd = cmd[:47] + "..."
+                                                full_message = f"{full_message}: {cmd}"
+                                            elif (
+                                                tool_name
+                                                in ["Edit", "Write", "MultiEdit"]
+                                                and "file_path" in params
+                                            ) or (
+                                                tool_name == "Read"
+                                                and "file_path" in params
+                                            ):
+                                                file_path = params["file_path"]
+                                                # Show just filename
+                                                file_name = Path(file_path).name
+                                                full_message = (
+                                                    f"{full_message}: {file_name}"
+                                                )
+                                            break
+                                if full_message != hook_data.get(
+                                    "message", "Claude needs permission"
+                                ):
+                                    break
+                        except (json.JSONDecodeError, KeyError):
+                            continue
+            except (OSError, ValueError) as e:
+                notifier.log_debug(f"Failed to read transcript: {e}")
+
         notifier.notify(full_message)
     else:
         notifier.log_debug("no message found in hook data, skipping notification")
