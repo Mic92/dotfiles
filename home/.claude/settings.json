@@ -1,0 +1,27 @@
+{
+  "model": "opus",
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/tmux-notify.py"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/tmux-notify.py"
+          }
+        ]
+      }
+    ]
+  }
+}
