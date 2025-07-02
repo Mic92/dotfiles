@@ -10,6 +10,7 @@ import subprocess
 import sys
 from datetime import UTC, datetime
 from pathlib import Path
+from typing import Any
 
 
 class ClaudeTmuxNotifier:
@@ -124,24 +125,85 @@ class ClaudeTmuxNotifier:
                 self.log_debug(f"Failed to send tmux display message: {e}")
 
 
+def read_hook_data(notifier: ClaudeTmuxNotifier) -> dict[str, Any]:
+    """Read and parse JSON hook data from stdin"""
+    try:
+        input_data = sys.stdin.read()
+        notifier.log_debug(f"Input data received: {input_data!r}")
+
+        if input_data:
+            data: dict[str, Any] = json.loads(input_data)
+            return data
+        notifier.log_debug("No input data received")
+    except json.JSONDecodeError as e:
+        notifier.log_debug(f"JSON decode error: {e}")
+    return {}
+
+
+def extract_tool_info(tool_use: dict[str, Any]) -> str | None:
+    """Extract relevant information from tool use parameters"""
+    tool_name = tool_use.get("name", "")
+    params = tool_use.get("input", {})
+
+    if tool_name == "Bash" and "command" in params:
+        cmd = params["command"]
+        # Truncate long commands
+        if len(cmd) > 50:
+            cmd = cmd[:47] + "..."
+        return str(cmd)
+    if tool_name in ["Edit", "Write", "MultiEdit", "Read"] and "file_path" in params:
+        file_path = params["file_path"]
+        # Show just filename
+        return Path(file_path).name
+
+    return None
+
+
+def find_tool_use_in_transcript(
+    transcript_path: str, notifier: ClaudeTmuxNotifier
+) -> str | None:
+    """Search transcript for recent tool use and return relevant info"""
+    if not transcript_path or not Path(transcript_path).exists():
+        return None
+
+    try:
+        with Path(transcript_path).open("r") as f:
+            lines = f.readlines()
+            notifier.log_debug(f"Read {len(lines)} lines from transcript")
+
+            # Look for recent tool_use entries (search last 30 lines)
+            for line in reversed(lines[-30:]):
+                try:
+                    entry = json.loads(line.strip())
+                    # Check if this is an assistant message with tool_use
+                    if entry.get("type") == "assistant" and entry.get("message"):
+                        message = entry["message"]
+                        content = message.get("content", [])
+                        if content and isinstance(content, list):
+                            for item in content:
+                                if item.get("type") == "tool_use":
+                                    notifier.log_debug(
+                                        f"Found tool use: {item.get('name', '')} with params: {item.get('input', {})}"
+                                    )
+                                    tool_info = extract_tool_info(item)
+                                    if tool_info:
+                                        return tool_info
+                except (json.JSONDecodeError, KeyError):
+                    continue
+    except (OSError, ValueError) as e:
+        notifier.log_debug(f"Failed to read transcript: {e}")
+
+    return None
+
+
 def main() -> None:
     # Initialize notifier first for logging
     notifier = ClaudeTmuxNotifier()
     notifier.log_debug("=== Hook script started ===")
 
     # Read JSON input from stdin
-    try:
-        input_data = sys.stdin.read()
-        notifier.log_debug(f"Input data received: {input_data!r}")
-
-        if input_data:
-            hook_data = json.loads(input_data)
-        else:
-            hook_data = {}
-            notifier.log_debug("No input data received")
-    except json.JSONDecodeError as e:
-        # If JSON parsing fails, exit gracefully
-        notifier.log_debug(f"JSON decode error: {e}")
+    hook_data = read_hook_data(notifier)
+    if not hook_data:
         sys.exit(0)
 
     # Check if this is a simple notification message
@@ -156,65 +218,10 @@ def main() -> None:
         # Try to get tool arguments from transcript
         transcript_path = hook_data.get("transcript_path", "")
         notifier.log_debug(f"Transcript path: {transcript_path}")
-        if transcript_path and Path(transcript_path).exists():
-            try:
-                # Read last few lines of transcript to find tool use
-                with Path(transcript_path).open("r") as f:
-                    lines = f.readlines()
-                    notifier.log_debug(f"Read {len(lines)} lines from transcript")
-                    # Look for recent tool_use entries (search last 30 lines)
-                    for line in reversed(lines[-30:]):
-                        try:
-                            entry = json.loads(line.strip())
-                            # Check if this is an assistant message with tool_use
-                            if entry.get("type") == "assistant" and entry.get(
-                                "message"
-                            ):
-                                message = entry["message"]
-                                content = message.get("content", [])
-                                if content and isinstance(content, list):
-                                    for item in content:
-                                        if item.get("type") == "tool_use":
-                                            tool_use = item
-                                            tool_name = tool_use.get("name", "")
-                                            params = tool_use.get("input", {})
-                                            notifier.log_debug(
-                                                f"Found tool use: {tool_name} with params: {params}"
-                                            )
 
-                                            # Add relevant param info to message
-                                            if (
-                                                tool_name == "Bash"
-                                                and "command" in params
-                                            ):
-                                                cmd = params["command"]
-                                                # Truncate long commands
-                                                if len(cmd) > 50:
-                                                    cmd = cmd[:47] + "..."
-                                                full_message = f"{full_message}: {cmd}"
-                                            elif (
-                                                tool_name
-                                                in ["Edit", "Write", "MultiEdit"]
-                                                and "file_path" in params
-                                            ) or (
-                                                tool_name == "Read"
-                                                and "file_path" in params
-                                            ):
-                                                file_path = params["file_path"]
-                                                # Show just filename
-                                                file_name = Path(file_path).name
-                                                full_message = (
-                                                    f"{full_message}: {file_name}"
-                                                )
-                                            break
-                                if full_message != hook_data.get(
-                                    "message", "Claude needs permission"
-                                ):
-                                    break
-                        except (json.JSONDecodeError, KeyError):
-                            continue
-            except (OSError, ValueError) as e:
-                notifier.log_debug(f"Failed to read transcript: {e}")
+        tool_info = find_tool_use_in_transcript(transcript_path, notifier)
+        if tool_info:
+            full_message = f"{full_message}: {tool_info}"
 
         notifier.notify(full_message)
     else:
