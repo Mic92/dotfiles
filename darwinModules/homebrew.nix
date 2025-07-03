@@ -27,6 +27,7 @@
     "ferdium"
     "deskflow"
     "firefox"
+    "chromium"
     "signal"
     "ghostty"
     "via"
