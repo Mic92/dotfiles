@@ -51,44 +51,44 @@ let
     fi
   '';
 in
-{
-  home.packages = with pkgs; [
-    # Email sync
-    isync # mbsync
-    notmuch
-    email-sync # our email sync script
+lib.mkMerge [
+  {
+    home.packages = with pkgs; [
+      # Email sync
+      isync # mbsync
+      notmuch
+      email-sync # our email sync script
 
-    # CLI email clients
-    aerc-patched
-    neomutt # alternative to aerc
+      # CLI email clients
+      aerc-patched
+      neomutt # alternative to aerc
 
-    # Email organization tools
-    afew # notmuch tagging tool
-    notmuch-addrlookup
-    mblaze # maildir manipulation tools
+      # Email organization tools
+      afew # notmuch tagging tool
+      notmuch-addrlookup
+      mblaze # maildir manipulation tools
 
-    # Contacts management
-    khard # CardDAV address book
+      # Contacts management
+      khard # CardDAV address book
 
-    # Password management for email
-    rbw # Bitwarden CLI (already used in your mbsync config)
+      # Password management for email
+      rbw # Bitwarden CLI (already used in your mbsync config)
 
-    # Optional tools
-    msmtp-with-sent # msmtp wrapper that saves to Sent folder
-    w3m # for HTML email viewing
-  ];
+      # Optional tools
+      msmtp-with-sent # msmtp wrapper that saves to Sent folder
+      w3m # for HTML email viewing
+    ];
 
-  # All config files are managed by homeshick:
-  # - .mbsyncrc
-  # - .notmuch-config
-  # - .config/aerc/accounts.conf
-  # - .config/aerc/aerc.conf
-  # - .config/aerc/notmuch-querymap
-  # - bin/email-sync
+    # All config files are managed by homeshick:
+    # - .mbsyncrc
+    # - .notmuch-config
+    # - .config/aerc/accounts.conf
+    # - .config/aerc/aerc.conf
+    # - .config/aerc/notmuch-querymap
+    # - bin/email-sync
 
-  # notmuch post-new hook is managed by homeshick in home/.notmuch/hooks/
-}
-// lib.mkMerge [
+    # notmuch post-new hook is managed by homeshick in home/.notmuch/hooks/
+  }
   # Email sync automation - use systemd on Linux, launchd on macOS
   (lib.mkIf pkgs.stdenv.isLinux {
     # Systemd timer for email sync (Linux only)
