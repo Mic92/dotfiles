@@ -1,10 +1,19 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 
 let
   # aerc with compose pipe support
   aerc-patched = pkgs.callPackage ../../pkgs/aerc-patched.nix {
     inherit (pkgs) aerc;
   };
+
+  # email-sync script
+  email-sync = pkgs.callPackage ../../pkgs/email-sync { };
+
   # msmtp wrapper that saves sent mail to maildir
   msmtp-with-sent = pkgs.writeShellScriptBin "msmtp" ''
     # Wrapper for msmtp that saves sent mail to maildir
@@ -47,6 +56,7 @@ in
     # Email sync
     isync # mbsync
     notmuch
+    email-sync # our email sync script
 
     # CLI email clients
     aerc-patched
@@ -76,29 +86,53 @@ in
   # - .config/aerc/notmuch-querymap
   # - bin/email-sync
 
-  # Systemd timer for email sync (optional)
-  systemd.user.services.mbsync = {
-    Unit = {
-      Description = "Mailbox synchronization";
-    };
-    Service = {
-      Type = "oneshot";
-      ExecStart = "${config.home.homeDirectory}/.homesick/repos/dotfiles/home/bin/email-sync";
-    };
-  };
-
-  systemd.user.timers.mbsync = {
-    Unit = {
-      Description = "Mailbox synchronization timer";
-    };
-    Timer = {
-      OnBootSec = "2m";
-      OnUnitActiveSec = "5m";
-    };
-    Install = {
-      WantedBy = [ "timers.target" ];
-    };
-  };
-
   # notmuch post-new hook is managed by homeshick in home/.notmuch/hooks/
 }
+// lib.mkMerge [
+  # Email sync automation - use systemd on Linux, launchd on macOS
+  (lib.mkIf pkgs.stdenv.isLinux {
+    # Systemd timer for email sync (Linux only)
+    systemd.user.services.mbsync = {
+      Unit = {
+        Description = "Mailbox synchronization";
+      };
+      Service = {
+        Type = "oneshot";
+        ExecStart = "${email-sync}/bin/email-sync";
+      };
+    };
+
+    systemd.user.timers.mbsync = {
+      Unit = {
+        Description = "Mailbox synchronization timer";
+      };
+      Timer = {
+        OnBootSec = "2m";
+        OnUnitActiveSec = "5m";
+      };
+      Install = {
+        WantedBy = [ "timers.target" ];
+      };
+    };
+  })
+
+  (lib.mkIf pkgs.stdenv.isDarwin {
+    # Launchd agent for email sync (macOS only)
+    launchd.enable = true;
+    launchd.agents.mbsync = {
+      enable = true;
+      config = {
+        ProgramArguments = [
+          "${email-sync}/bin/email-sync"
+        ];
+        StartInterval = 300; # 5 minutes in seconds
+        RunAtLoad = true;
+        StandardOutPath = "${config.home.homeDirectory}/.mbsync.log";
+        StandardErrorPath = "${config.home.homeDirectory}/.mbsync.error.log";
+        EnvironmentVariables = {
+          HOME = config.home.homeDirectory;
+        };
+      };
+    };
+  })
+]
