@@ -11,6 +11,7 @@
   libnotify,
   khard,
   w3m,
+  rbw,
 }:
 
 writeShellApplication {
@@ -26,6 +27,7 @@ writeShellApplication {
       jq
       khard
       w3m
+      rbw
     ]
     ++ lib.optionals stdenv.isLinux [
       libnotify
