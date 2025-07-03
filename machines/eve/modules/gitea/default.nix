@@ -19,6 +19,7 @@
       FROM = "gitea@thalheim.io";
       USER = "gitea@thalheim.io";
       HOST = "mail.thalheim.io:587";
+      SENDMAIL_PATH = "/run/wrappers/bin/sendmail";
     };
     settings.log.LEVEL = "Error";
     settings.service.DISABLE_REGISTRATION = true;
