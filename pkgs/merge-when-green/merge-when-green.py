@@ -339,9 +339,6 @@ def wait_for_pr_completion(branch: str, interval: int = 10) -> tuple[bool, str]:
         except json.JSONDecodeError:
             return False, "Failed to parse PR status"
 
-        state = pr_data.get("state", "UNKNOWN")
-        mergeable = pr_data.get("mergeable", "UNKNOWN")
-        auto_merge = pr_data.get("autoMergeRequest") is not None
         checks = pr_data.get("statusCheckRollup", [])
 
         # Count check states
@@ -365,13 +362,10 @@ def wait_for_pr_completion(branch: str, interval: int = 10) -> tuple[bool, str]:
                 else:
                     failed += 1
 
-        # Print status
-        print(f"\n[{time.strftime('%H:%M:%S')}] PR Status:")
-        print_info(f"  State: {state}")
-        print_info(f"  Auto-merge: {'enabled' if auto_merge else 'disabled'}")
-        print_info(f"  Mergeable: {mergeable}")
-        print_info(
-            f"  Checks - {Colors.GREEN}Passed: {passed}{Colors.RESET}, "
+        # Print status - only show checks
+        print(
+            f"[{time.strftime('%H:%M:%S')}] "
+            f"Checks - {Colors.GREEN}Passed: {passed}{Colors.RESET}, "
             f"{Colors.RED}Failed: {failed}{Colors.RESET}, "
             f"{Colors.YELLOW}Pending: {pending}{Colors.RESET}"
         )
@@ -382,7 +376,6 @@ def wait_for_pr_completion(branch: str, interval: int = 10) -> tuple[bool, str]:
             return result
 
         # Still waiting
-        print_subtle(f"\nWaiting {interval} seconds before next check...")
         time.sleep(interval)
 
 
