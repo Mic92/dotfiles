@@ -30,6 +30,10 @@ let
     servers = {
       tmux = tmux-mcp-wrapped;
     };
+    # added manually in some projects
+    keepServers = {
+      browser-mcp = true;
+    };
   };
 in
 {

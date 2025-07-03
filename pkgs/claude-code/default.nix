@@ -3,6 +3,7 @@
   writeShellApplication,
   claude-code,
   servers ? { },
+  keepServers ? { },
 }:
 
 let
@@ -21,6 +22,11 @@ let
          ) servers
        )}
       )
+      declare -A ignore_plugins=(
+        ${pkgs.lib.concatStringsSep "\n" (
+          pkgs.lib.mapAttrsToList (name: _: "[\"${name}\"]=1") keepServers
+        )}
+      )
 
       # Get existing MCP servers as associative array
       declare -A existing_servers=()
@@ -28,9 +34,9 @@ let
         [ -n "$server" ] && existing_servers["$server"]=1
       done < <(claude mcp list 2>/dev/null | awk -F': ' 'NF {print $1}' || true)
 
-      # Remove unwanted servers
+      # Remove unwanted servers (except whitelisted ones)
       for server in "''${!existing_servers[@]}"; do
-        if [[ ! "''${mcp_plugins[$server]+exists}" ]]; then
+        if [[ ! "''${mcp_plugins[$server]+exists}" ]] && [[ ! "''${ignore_plugins[$server]+exists}" ]]; then
           echo "Removing unwanted MCP server: $server"
           claude mcp remove "$server" 2>/dev/null || true
         fi
