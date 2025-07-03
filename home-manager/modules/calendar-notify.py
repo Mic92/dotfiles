@@ -231,7 +231,7 @@ def send_notification(title: str, time_str: str, body: str = "") -> None:
         notification_title = notification_title.replace('"', '\\"')
         notification_text = notification_text.replace('"', '\\"')
 
-        script = f'''display notification "{notification_text}" with title "{notification_title}" sound name "Glass"'''
+        script = f"""display alert "{notification_title}" message "{notification_text}" as critical"""
 
         result = subprocess.run(
             ["osascript", "-e", script],
