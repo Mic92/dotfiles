@@ -1,6 +1,10 @@
 { pkgs, ... }:
 {
-  imports = [ ./modules/claude-mcp.nix ];
+  imports = [
+    ./modules/calendar.nix
+    ./modules/claude-mcp.nix
+    ./modules/mail.nix
+  ];
   home.packages = [
     pkgs.eternal-terminal
     pkgs.rbw

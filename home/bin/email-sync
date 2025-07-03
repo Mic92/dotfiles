@@ -46,7 +46,7 @@ if [ "$TRASH_COUNT" -gt 0 ]; then
 fi
 
 # Send desktop notifications for new emails (if in graphical session)
-if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then
+if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ] || [[ "$OSTYPE" == "darwin"* ]]; then
     echo "Checking for new email notifications..."
     
     # Query for new emails in inbox folders from the last 7 days
@@ -60,8 +60,14 @@ if [ -n "${DISPLAY:-}" ] || [ -n "${WAYLAND_DISPLAY:-}" ]; then
             FROM=$(notmuch show --format=json "$msg_id" | jq -r '.[0][0][0].headers.From' | sed 's/<.*>//g' | xargs)
             SUBJECT=$(notmuch show --format=json "$msg_id" | jq -r '.[0][0][0].headers.Subject')
             
-            # Send desktop notification
-            notify-send "New Email" "$FROM: $SUBJECT" --icon=mail-unread
+            # Send desktop notification based on OS
+            if [[ "$OSTYPE" == "darwin"* ]]; then
+                # macOS notification using osascript
+                osascript -e "display notification \"$FROM: $SUBJECT\" with title \"New Email\""
+            else
+                # Linux notification using notify-send
+                notify-send "New Email" "$FROM: $SUBJECT" --icon=mail-unread
+            fi
             
             # Mark as notified so we don't notify again
             notmuch tag +notified -- "$msg_id"

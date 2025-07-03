@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import dbm
 import logging
+import platform
 import subprocess
 import sys
 from datetime import UTC, date, datetime, timedelta
@@ -220,18 +221,39 @@ def save_notified_event(db: Any, event_id: str) -> None:
 def send_notification(title: str, time_str: str, body: str = "") -> None:
     """Send desktop notification."""
     logger.info(f"Sending notification: '{title}' at {time_str}")
-    result = subprocess.run(
-        [
-            "notify-send",
-            "--urgency=critical",  # Critical urgency keeps notification open
-            "--expire-time=0",  # Never expire (0 means persistent)
-            "--app-name=Calendar",
-            "--icon=office-calendar",
-            f"Event at {time_str}",
-            title + ("\n" + body if body else ""),
-        ],
-        check=False,
-    )
+
+    if platform.system() == "Darwin":
+        # macOS notification using osascript
+        notification_title = f"Event at {time_str}"
+        notification_text = title + ("\n" + body if body else "")
+
+        # Escape quotes for AppleScript
+        notification_title = notification_title.replace('"', '\\"')
+        notification_text = notification_text.replace('"', '\\"')
+
+        script = f'''display notification "{notification_text}" with title "{notification_title}" sound name "Glass"'''
+
+        result = subprocess.run(
+            ["osascript", "-e", script],
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+    else:
+        # Linux notification using notify-send
+        result = subprocess.run(
+            [
+                "notify-send",
+                "--urgency=critical",  # Critical urgency keeps notification open
+                "--expire-time=0",  # Never expire (0 means persistent)
+                "--app-name=Calendar",
+                "--icon=office-calendar",
+                f"Event at {time_str}",
+                title + ("\n" + body if body else ""),
+            ],
+            check=False,
+        )
+
     if result.returncode == 0:
         logger.info("Notification sent successfully")
     else:
