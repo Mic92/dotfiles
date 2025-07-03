@@ -127,8 +127,8 @@ lib.mkMerge [
         ];
         StartInterval = 300; # 5 minutes in seconds
         RunAtLoad = true;
-        StandardOutPath = "${config.home.homeDirectory}/.mbsync.log";
-        StandardErrorPath = "${config.home.homeDirectory}/.mbsync.error.log";
+        StandardOutPath = "${config.home.homeDirectory}/.local/state/mbsync.log";
+        StandardErrorPath = "${config.home.homeDirectory}/.local/state/mbsync.err";
         EnvironmentVariables = {
           HOME = config.home.homeDirectory;
         };
