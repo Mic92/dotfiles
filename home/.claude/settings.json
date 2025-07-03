@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "~/.claude/hooks/tmux-notify.py"
+            "command": "~/.claude/hooks/bell-notify.py"
           }
         ]
       }
