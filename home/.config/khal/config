@@ -1,0 +1,35 @@
+[calendars]
+
+[[local]]
+path = ~/.contacts/*
+type = discover
+
+[[personal]]
+path = ~/.local/share/calendars/Personal/
+type = discover
+color = light blue
+
+[[joergshannan]]
+path = ~/.local/share/calendars/Joerg+Shannan/
+type = discover
+color = light green
+
+[locale]
+timeformat = %H:%M
+dateformat = %Y-%m-%d
+longdateformat = %Y-%m-%d
+datetimeformat = %Y-%m-%d %H:%M
+longdatetimeformat = %Y-%m-%d %H:%M
+
+[default]
+default_calendar = Personal
+
+[view]
+theme = light
+
+[palette]
+# Make field labels (Title:, Location:, etc.) more readable on light background
+caption = dark blue, '', '', '#000080', ''
+# Make edit fields have better contrast on light background
+edit = black, '', '', '#000000', ''
+edit focus = black, light gray, '', '#000000', '#D0D0D0'
