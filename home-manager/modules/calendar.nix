@@ -109,8 +109,8 @@ in
               Minute = 45;
             }
           ];
-          StandardOutPath = "/tmp/calendar-sync.log";
-          StandardErrorPath = "/tmp/calendar-sync.err";
+          StandardOutPath = "${config.home.homeDirectory}/.local/state/calendar-sync.log";
+          StandardErrorPath = "${config.home.homeDirectory}/.local/state/calendar-sync.err";
         };
       };
 
@@ -156,8 +156,8 @@ in
               Minute = 55;
             }
           ];
-          StandardOutPath = "/tmp/calendar-notify.log";
-          StandardErrorPath = "/tmp/calendar-notify.err";
+          StandardOutPath = "${config.home.homeDirectory}/.local/state/calendar-notify.log";
+          StandardErrorPath = "${config.home.homeDirectory}/.local/state/calendar-notify.err";
         };
       };
     };
