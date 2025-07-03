@@ -1,0 +1,34 @@
+[general]
+status_path = "~/.vdirsyncer/status/"
+
+[pair contacts]
+a = "local"
+b = "owncloud"
+collections = ["default", "joergshannan"]
+
+[storage local]
+type = "filesystem"
+path = "~/.contacts/"
+fileext = ".vcf"
+
+[storage owncloud]
+type = "carddav"
+url = "https://cloud.thalheim.io/remote.php/dav/addressbooks/users/joerg@higgsboson.tk/"
+username = "joerg@higgsboson.tk"
+password.fetch = ["command", "rbw", "get", "Eve"]
+
+[pair calendar]
+a = "owncloud2"
+b = "local2"
+collections = [["personal", "personal", "Personal"], ["joergshannan", "joergshannan", "Joerg+Shannan"], ["gifts", "2962744672686588805", "Geschenke"], ["shopping", "D5363A60-71DE-4D58-8AFF-0F9CAF36C05E_shared_by_shannan@lekwati.com", "Shopping List (Shannan Lekwati)"], ["food", "food", "Food"], ["movies", "movie-list_shared_by_shannan@lekwati.com", "Movies and TV (Shannan Lekwati)"], ["places", "places-to-go_shared_by_shannan@lekwati.com", "Places to go (Shannan Lekwati)"], ["restaurants", "CD1F7B53-4B01-4B2A-A909-33B02586F49C_shared_by_shannan@lekwati.com", "Restaurants To Visit (Shannan Lekwati)"]]
+
+[storage local2]
+type = "filesystem"
+path = "~/.local/share/calendars/"
+fileext = ".ics"
+
+[storage owncloud2]
+type = "caldav"
+url = "https://cloud.thalheim.io/remote.php/dav/calendars/joerg@higgsboson.tk/"
+username = "joerg@higgsboson.tk"
+password.fetch = ["command", "rbw", "get", "Eve"]
