@@ -12,6 +12,8 @@
   khard,
   w3m,
   rbw,
+  claude-code,
+  terminal-notifier,
 }:
 
 writeShellApplication {
@@ -28,9 +30,13 @@ writeShellApplication {
       khard
       w3m
       rbw
+      claude-code
     ]
     ++ lib.optionals stdenv.isLinux [
       libnotify
+    ]
+    ++ lib.optionals stdenv.isDarwin [
+      terminal-notifier
     ];
 
   text = ''
@@ -97,8 +103,8 @@ writeShellApplication {
                 
                 # Send desktop notification based on OS
                 if [[ "$OSTYPE" == "darwin"* ]]; then
-                    # macOS notification using osascript
-                    osascript -e "display notification \"$FROM: $SUBJECT\" with title \"New Email\""
+                    # macOS notification using terminal-notifier
+                    terminal-notifier -title "New Email" -message "$FROM: $SUBJECT"
                 else
                     # Linux notification using notify-send
                     notify-send "New Email" "$FROM: $SUBJECT" --icon=mail-unread
