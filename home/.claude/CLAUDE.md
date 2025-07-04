@@ -1,8 +1,8 @@
 - Use `--log-format bar-with-logs` with Nix for improved build log output.
 - Add new untracked files in Nix flakes with `git add`.
 - Tools that can be used: fd, rg, dnsutils, lsof
-- Format code with `nix-fmt` if the current project has a flake with a formatter
-  defined.
+- Format code with `flake-fmt` if the current project has a flake with a
+  formatter defined.
 - Write shell scripts that pass `shellcheck`.
 - Write Python code for 3.13 that conforms to `ruff format`, `ruff check` and
   `mypy`

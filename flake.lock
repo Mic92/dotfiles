@@ -165,6 +165,26 @@
         "type": "github"
       }
     },
+    "flake-fmt": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1751626967,
+        "narHash": "sha256-D5GYgLXSeP5+iTTCQhZQND93FT5BgAVdTY0Qm1lL8aY=",
+        "owner": "Mic92",
+        "repo": "flake-fmt",
+        "rev": "0616f5724f6d28022b177148bf32042c580db0d4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "flake-fmt",
+        "type": "github"
+      }
+    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -683,6 +703,7 @@
         "clan-core": "clan-core",
         "data-mesher": "data-mesher_2",
         "disko": "disko",
+        "flake-fmt": "flake-fmt",
         "flake-parts": "flake-parts_2",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils_2",
