@@ -25,8 +25,6 @@ class ClaudeSpamFilter(Filter):  # type: ignore[misc]
     """Use Claude Code to analyze emails from unknown senders for spam detection."""
 
     message = "Analyzing emails from unknown senders with Claude Code"
-    # Default query - will be modified based on maildir_path config
-    query = "NOT tag:spam AND NOT tag:ham AND NOT tag:claude-analyzed"
     # Configuration option for restricting to specific maildir path
     maildir_path = None
 
@@ -50,6 +48,25 @@ class ClaudeSpamFilter(Filter):  # type: ignore[misc]
 
         # Initialize khard contacts as None - will be loaded lazily
         self.khard_contacts: set[str] | None = None
+
+        # Check if we have too many messages to process
+        try:
+            # Count messages matching our query using afew's database wrapper
+            messages = database.get_messages(self.query)
+            self.message_count = len(list(messages))
+            self.max_initial_messages = 40  # Limit for initial run
+            self.skip_claude = self.message_count > self.max_initial_messages
+
+            if self.skip_claude:
+                logger.warning(
+                    "Found %d unanalyzed messages (limit: %d). Skipping Claude analysis to save tokens.",
+                    self.message_count,
+                    self.max_initial_messages,
+                )
+        except Exception:
+            logger.exception("Error counting messages")
+            self.skip_claude = False
+            self.message_count = 0
 
     def _get_khard_contacts(self) -> set[str]:
         """Get all email addresses from khard."""
@@ -303,6 +320,12 @@ indicators, suspicious attachments, etc."""
 
     def handle_message(self, message: Message) -> None:
         """Process each message."""
+        # Check if we should skip Claude analysis due to too many messages
+        if self.skip_claude:
+            # Just tag as analyzed and move on
+            self.add_tags(message, "claude-analyzed", "claude-skipped-bulk")
+            return
+
         from_addr = message.get_header("From") or ""
         email = self.spam_db.extract_email_address(from_addr)
 
