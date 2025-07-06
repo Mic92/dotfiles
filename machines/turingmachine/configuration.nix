@@ -8,7 +8,7 @@
 {
   imports = [
     self.nixosModules.default
-    self.inputs.nixos-hardware.nixosModules.framework-13th-gen-intel
+    self.inputs.nixos-hardware.nixosModules.framework-amd-ai-300-series
     self.inputs.nix-index-database.nixosModules.nix-index
     { programs.nix-index-database.comma.enable = true; }
     self.inputs.disko.nixosModules.disko
