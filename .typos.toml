@@ -26,4 +26,5 @@ extend-exclude = [
   "vars/*",
   "facter.json",
   "secrets.enc.json",
+  "pkgs/buildbot-pr-check/tests/cassettes/*",
 ]
