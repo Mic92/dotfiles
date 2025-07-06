@@ -44,24 +44,47 @@ gh auth login
 buildbot-pr-check https://github.com/TUM-DSE/doctor-cluster-config/pull/459
 ```
 
-## Output
+## Demo Output
+
+```
+$ buildbot-pr-check https://github.com/TUM-DSE/doctor-cluster-config/pull/459
+🔎 Checking PR #459 in TUM-DSE/doctor-cluster-config (github)
+════════════════════════════════════════════════════════════════════════════════
+Found 30 buildbot build(s)
+
+Found 1 build(s) with triggered sub-builds
+
+🔍 Checking: https://buildbot.dse.in.tum.de/#/builders/18/builds/712
+────────────────────────────────────────────────────────────────────────────────
+Found 35 triggered builds
+
+📊 Build Summary:
+  ❌ FAILURE: 4 builds
+  ✅ SUCCESS: 31 builds
+
+❌ Failed builds (4 total):
+  → checks.x86_64-linux.nixos-martha
+    Log URLs:
+      • Build flake attr (stdio): https://buildbot.dse.in.tum.de/api/v2/logs/41100/raw_inline
+  → checks.x86_64-linux.nixos-jack
+    Log URLs:
+      • Build flake attr (stdio): https://buildbot.dse.in.tum.de/api/v2/logs/41103/raw_inline
+  → checks.x86_64-linux.nixos-ruby
+    Log URLs:
+      • Build flake attr (stdio): https://buildbot.dse.in.tum.de/api/v2/logs/41108/raw_inline
+  → checks.x86_64-linux.nixos-tegan
+    Log URLs:
+      • Build flake attr (stdio): https://buildbot.dse.in.tum.de/api/v2/logs/41111/raw_inline
+```
+
+## Output Details
 
 The script provides:
 
-1. **Per-build analysis**: Shows triggered builds and their statuses
-2. **Canceled builds**: Lists all canceled builds with their names
-3. **Failed builds**: Lists failed builds with direct links to raw logs
-4. **Overall summary**: Final count of issues found
-
-Example output for failed builds:
-
-```
-Failed builds (1 total):
-  - x86_64-linux.nixos-xavier
-    Log URLs:
-      • git (stdio): https://buildbot.dse.in.tum.de/api/v2/logs/12345/raw_inline
-      • build (stdio): https://buildbot.dse.in.tum.de/api/v2/logs/12346/raw_inline
-```
+1. **Build Discovery**: Automatically finds all Buildbot builds from PR statuses
+2. **Build Filtering**: Only shows builds that have triggered sub-builds
+3. **Status Summary**: Color-coded summary with Unicode icons for quick scanning
+4. **Failed Builds**: Displays flake attributes and direct links to build logs
 
 ## Exit Codes
 
@@ -77,3 +100,16 @@ The script is designed for CI pipelines:
   run: |
     buildbot-pr-check ${{ github.event.pull_request.html_url }}
 ```
+
+## Testing
+
+The project includes integration tests using VCR.py to record and replay HTTP
+requests:
+
+```bash
+# Run tests with direnv
+direnv exec . pytest tests/ -v
+```
+
+The tests use pre-recorded HTTP cassettes, so they don't require network access
+or API credentials.

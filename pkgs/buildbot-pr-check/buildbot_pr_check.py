@@ -4,10 +4,114 @@ import os
 import re
 import subprocess
 import sys
-import traceback
 import urllib.error
 import urllib.parse
 import urllib.request
+from dataclasses import dataclass
+
+
+# Color codes for terminal output
+class Colors:
+    """ANSI color codes for terminal output"""
+
+    RED = "\033[91m"
+    GREEN = "\033[92m"
+    YELLOW = "\033[93m"
+    BLUE = "\033[94m"
+    CYAN = "\033[96m"
+    RESET = "\033[0m"
+    BOLD = "\033[1m"
+
+
+def use_color() -> bool:
+    """Check if we should use colored output"""
+    # Respect NO_COLOR environment variable
+    if os.environ.get("NO_COLOR"):
+        return False
+    # Check if stdout is a TTY
+    return sys.stdout.isatty()
+
+
+def colorize(text: str, color: str) -> str:
+    """Apply color to text if colors are enabled"""
+    if use_color():
+        return f"{color}{text}{Colors.RESET}"
+    return text
+
+
+@dataclass
+class BuildInfo:
+    """Information extracted from a buildbot URL"""
+
+    base_url: str | None
+    builder_id: str | None
+    build_num: str | None
+
+
+@dataclass
+class BuildRequestStatus:
+    """Status information for a build request"""
+
+    request_id: int
+    status: str
+    build_id: int | None
+    virtual_builder_name: str | None = None
+
+
+@dataclass
+class BuildWithTriggers:
+    """A build that has triggered sub-builds"""
+
+    url: str
+    base_url: str
+    builder_id: str
+    build_num: str
+    build_requests: list[int]
+
+
+@dataclass
+class LogUrl:
+    """Log URL information"""
+
+    step_name: str
+    log_name: str
+    url: str
+
+
+class BuildbotCheckError(Exception):
+    """Base exception for buildbot-pr-check errors"""
+
+    pass
+
+
+class InvalidPRURLError(BuildbotCheckError):
+    """Raised when PR URL is invalid or unsupported"""
+
+    pass
+
+
+class APIError(BuildbotCheckError):
+    """Raised when API calls fail"""
+
+    pass
+
+
+class BuildbotAPIError(APIError):
+    """Raised when Buildbot API calls fail"""
+
+    pass
+
+
+class GitHubAPIError(APIError):
+    """Raised when GitHub API calls fail"""
+
+    pass
+
+
+class GiteaAPIError(APIError):
+    """Raised when Gitea API calls fail"""
+
+    pass
 
 
 def is_safe_url(url: str) -> bool:
@@ -31,8 +135,7 @@ def get_pr_info(pr_url: str) -> tuple[str, str, str, str]:
     if match:
         return "gitea", match.group(2), match.group(3), match.group(4)
 
-    msg = f"Invalid PR URL: {pr_url}. Supported: GitHub and Gitea"
-    raise ValueError(msg)
+    raise InvalidPRURLError(f"Invalid PR URL: {pr_url}. Supported: GitHub and Gitea")
 
 
 def get_github_token() -> str | None:
@@ -70,9 +173,14 @@ def get_buildbot_urls_from_github(owner: str, repo: str, pr_num: str) -> list[st
     if github_token:
         req.add_header("Authorization", f"token {github_token}")
 
-    with urllib.request.urlopen(req) as response:  # noqa: S310
-        pr_data = json.loads(response.read())
-        head_sha = pr_data["head"]["sha"]
+    try:
+        with urllib.request.urlopen(req) as response:  # noqa: S310
+            pr_data = json.loads(response.read())
+            head_sha = pr_data["head"]["sha"]
+    except (urllib.error.URLError, urllib.error.HTTPError) as e:
+        raise GitHubAPIError(f"Failed to fetch PR data from GitHub: {e}")
+    except json.JSONDecodeError as e:
+        raise GitHubAPIError(f"Failed to parse GitHub API response: {e}")
 
     # Get check runs for the commit
     checks_url = (
@@ -184,13 +292,16 @@ def get_buildbot_urls_from_gitea(
     return list(set(buildbot_urls))
 
 
-def extract_build_info(buildbot_url: str) -> tuple[str, str, str]:
+def extract_build_info(buildbot_url: str) -> BuildInfo:
     """Extract builder and build number from buildbot URL"""
     # Pattern: https://buildbot.dse.in.tum.de/#/builders/18/builds/710
     match = re.search(r"/builders/(\d+)/builds/(\d+)", buildbot_url)
     if match:
-        return buildbot_url.split("/")[2], match.group(1), match.group(2)
-    return None, None, None
+        base_url = buildbot_url.split("/")[2]
+        return BuildInfo(
+            base_url=base_url, builder_id=match.group(1), build_num=match.group(2)
+        )
+    return BuildInfo(base_url=None, builder_id=None, build_num=None)
 
 
 def get_triggered_builds(base_url: str, builder_id: str, build_num: str) -> list[int]:
@@ -202,30 +313,30 @@ def get_triggered_builds(base_url: str, builder_id: str, build_num: str) -> list
 
     build_requests = []
 
-    with urllib.request.urlopen(api_url) as response:  # noqa: S310
-        data = json.loads(response.read())
+    try:
+        with urllib.request.urlopen(api_url) as response:  # noqa: S310
+            data = json.loads(response.read())
+    except (urllib.error.URLError, urllib.error.HTTPError) as e:
+        raise BuildbotAPIError(f"Failed to fetch build steps from Buildbot: {e}")
+    except json.JSONDecodeError as e:
+        raise BuildbotAPIError(f"Failed to parse Buildbot API response: {e}")
 
-        for step in data.get("steps", []):
-            if (
-                step.get("name") == "build flake"
-                or "build" in step.get("name", "").lower()
-            ):
-                # Extract build request IDs from URLs
-                for url_info in step.get("urls", []):
-                    url = url_info.get("url", "")
-                    if "buildrequests" in url:
-                        match = re.search(r"buildrequests/(\d+)", url)
-                        if match:
-                            build_requests.append(int(match.group(1)))
+    for step in data.get("steps", []):
+        if step.get("name") == "build flake" or "build" in step.get("name", "").lower():
+            # Extract build request IDs from URLs
+            for url_info in step.get("urls", []):
+                url = url_info.get("url", "")
+                if "buildrequests" in url:
+                    match = re.search(r"buildrequests/(\d+)", url)
+                    if match:
+                        build_requests.append(int(match.group(1)))
 
     return sorted(build_requests)
 
 
-def check_build_request_status(
-    base_url: str, request_id: int
-) -> tuple[str, str, int | None]:
+def check_build_request_status(base_url: str, request_id: int) -> BuildRequestStatus:
     """Check the status of a build request and return build ID"""
-    api_url = f"https://{base_url}/api/v2/buildrequests/{request_id}"
+    api_url = f"https://{base_url}/api/v2/buildrequests/{request_id}?property=*"
 
     result_meanings = {
         0: "SUCCESS",
@@ -243,18 +354,47 @@ def check_build_request_status(
             request = data["buildrequests"][0]
             result = request.get("results")
             status = result_meanings.get(result, f"UNKNOWN({result})")
-            build_id = request.get("buildid")
-            return request_id, status, build_id
+
+            # Get virtual_builder_name from properties
+            virtual_builder_name = None
+            properties = request.get("properties", {})
+            if properties and "virtual_builder_name" in properties:
+                virtual_builder_name = properties["virtual_builder_name"][0]
+
+            # Get build ID from the builds endpoint
+            build_id = None
+            if request.get("complete"):
+                builds_url = (
+                    f"https://{base_url}/api/v2/buildrequests/{request_id}/builds"
+                )
+                try:
+                    with urllib.request.urlopen(builds_url) as builds_response:  # noqa: S310
+                        builds_data = json.loads(builds_response.read())
+                        if builds_data.get("builds"):
+                            build_id = builds_data["builds"][0].get("buildid")
+                except (
+                    urllib.error.URLError,
+                    urllib.error.HTTPError,
+                    json.JSONDecodeError,
+                ):
+                    pass
+
+            return BuildRequestStatus(
+                request_id=request_id,
+                status=status,
+                build_id=build_id,
+                virtual_builder_name=virtual_builder_name,
+            )
     except (
         urllib.error.URLError,
         urllib.error.HTTPError,
         json.JSONDecodeError,
         KeyError,
     ):
-        return request_id, "ERROR", None
+        return BuildRequestStatus(request_id=request_id, status="ERROR", build_id=None)
 
 
-def get_build_log_urls(base_url: str, build_id: int) -> list[dict[str, str]]:
+def get_build_log_urls(base_url: str, build_id: int) -> list[LogUrl]:
     """Get log URLs for a build"""
     if build_id is None:
         return []
@@ -281,13 +421,11 @@ def get_build_log_urls(base_url: str, build_id: int) -> list[dict[str, str]]:
                                 if log_id:
                                     raw_log_url = f"https://{base_url}/api/v2/logs/{log_id}/raw_inline"
                                     log_urls.append(
-                                        {
-                                            "step_name": step.get(
-                                                "name", "Unknown step"
-                                            ),
-                                            "log_name": log.get("name", "stdio"),
-                                            "url": raw_log_url,
-                                        }
+                                        LogUrl(
+                                            step_name=step.get("name", "Unknown step"),
+                                            log_name=log.get("name", "stdio"),
+                                            url=raw_log_url,
+                                        )
                                     )
                     except (
                         urllib.error.URLError,
@@ -336,6 +474,145 @@ def get_build_names(base_url: str, builder_id: str, build_num: str) -> dict[int,
     return request_to_name
 
 
+def filter_builds_with_triggers(buildbot_urls: list[str]) -> list[BuildWithTriggers]:
+    """Filter buildbot URLs to only include those with triggered sub-builds."""
+    builds_with_triggers = []
+
+    for url in buildbot_urls:
+        build_info = extract_build_info(url)
+        if build_info.base_url and build_info.builder_id and build_info.build_num:
+            try:
+                build_requests = get_triggered_builds(
+                    build_info.base_url, build_info.builder_id, build_info.build_num
+                )
+                if build_requests:
+                    builds_with_triggers.append(
+                        BuildWithTriggers(
+                            url=url,
+                            base_url=build_info.base_url,
+                            builder_id=build_info.builder_id,
+                            build_num=build_info.build_num,
+                            build_requests=build_requests,
+                        )
+                    )
+            except BuildbotAPIError as e:
+                print(f"Warning: Could not fetch triggered builds for {url}: {e}")
+                continue
+
+    return builds_with_triggers
+
+
+@dataclass
+class BuildStatusReport:
+    """Status report for a build"""
+
+    statuses: dict[str, list[int]]
+    build_id_map: dict[int, int | None]
+    name_map: dict[int, str]
+    virtual_builder_map: dict[int, str | None]
+
+
+def check_build_status(build: BuildWithTriggers) -> BuildStatusReport:
+    """Check status of all build requests for a build."""
+    print(f"\n{colorize('🔍 Checking:', Colors.CYAN)} {build.url}")
+    print("─" * 80)
+    print(
+        f"Found {colorize(str(len(build.build_requests)), Colors.BOLD)} triggered builds"
+    )
+
+    # Get build names mapping
+    name_map = get_build_names(build.base_url, build.builder_id, build.build_num)
+
+    # Check status of each build request
+    statuses: dict[str, list[int]] = {}
+    build_id_map = {}
+    virtual_builder_map = {}
+
+    for req_id in build.build_requests:
+        req_status = check_build_request_status(build.base_url, req_id)
+        if req_status.status not in statuses:
+            statuses[req_status.status] = []
+        statuses[req_status.status].append(req_id)
+        build_id_map[req_id] = req_status.build_id
+        virtual_builder_map[req_id] = req_status.virtual_builder_name
+
+    return BuildStatusReport(
+        statuses=statuses,
+        build_id_map=build_id_map,
+        name_map=name_map,
+        virtual_builder_map=virtual_builder_map,
+    )
+
+
+def print_build_report(build: BuildWithTriggers, report: BuildStatusReport) -> None:
+    """Print detailed report for a build."""
+    # Report summary
+    print(f"\n{colorize('📊 Build Summary:', Colors.BOLD)}")
+    for status, requests in sorted(report.statuses.items()):
+        if status == "SUCCESS":
+            icon = "✅"
+            status_colored = colorize(status, Colors.GREEN)
+        elif status == "FAILURE":
+            icon = "❌"
+            status_colored = colorize(status, Colors.RED)
+        elif status == "CANCELLED":
+            icon = "⚠️"
+            status_colored = colorize(status, Colors.YELLOW)
+        else:
+            icon = "•"
+            status_colored = status
+        print(f"  {icon} {status_colored}: {len(requests)} builds")
+
+    # Show canceled builds with names
+    if "CANCELLED" in report.statuses:
+        print(
+            f"\n{colorize('⚠️  Canceled builds', Colors.YELLOW)} ({len(report.statuses['CANCELLED'])} total):"
+        )
+        for req_id in sorted(report.statuses["CANCELLED"]):
+            # Use virtual_builder_name if available, otherwise fall back to name_map
+            virtual_name = report.virtual_builder_map.get(req_id)
+            if virtual_name:
+                # Extract just the flake attribute part
+                if "#" in virtual_name:
+                    display_name = virtual_name.split("#", 1)[1]
+                else:
+                    display_name = virtual_name
+            else:
+                display_name = report.name_map.get(req_id, f"Request {req_id}")
+
+            print(f"  → {colorize(display_name, Colors.YELLOW)}")
+
+    # Show failed builds with names and log URLs
+    if "FAILURE" in report.statuses:
+        print(
+            f"\n{colorize('❌ Failed builds', Colors.RED)} ({len(report.statuses['FAILURE'])} total):"
+        )
+        for req_id in sorted(report.statuses["FAILURE"]):
+            # Use virtual_builder_name if available, otherwise fall back to name_map
+            virtual_name = report.virtual_builder_map.get(req_id)
+            if virtual_name:
+                # Extract just the flake attribute part
+                if "#" in virtual_name:
+                    display_name = virtual_name.split("#", 1)[1]
+                else:
+                    display_name = virtual_name
+            else:
+                display_name = report.name_map.get(req_id, f"Request {req_id}")
+
+            print(f"  → {colorize(display_name, Colors.RED)}")
+
+            # Get log URLs for this failed build
+            build_id = report.build_id_map.get(req_id)
+            if build_id:
+                log_urls = get_build_log_urls(build.base_url, build_id)
+                if log_urls:
+                    print(f"    {colorize('Log URLs:', Colors.CYAN)}")
+                    for log in log_urls:
+                        print(
+                            f"      • {log.step_name} ({log.log_name}): {colorize(log.url, Colors.BLUE)}"
+                        )
+
+
 def check_pr(pr_url: str) -> int:
     """Check buildbot status for a pull request.
 
@@ -347,8 +624,10 @@ def check_pr(pr_url: str) -> int:
     """
     try:
         platform, owner, repo, pr_num = get_pr_info(pr_url)
-        print(f"Checking PR #{pr_num} in {owner}/{repo} ({platform})")
-        print("=" * 80)
+        print(
+            f"{colorize('🔎 Checking PR', Colors.BOLD)} #{colorize(pr_num, Colors.CYAN)} in {colorize(f'{owner}/{repo}', Colors.BLUE)} ({platform})"
+        )
+        print("═" * 80)
 
         # Get buildbot URLs from PR
         if platform == "github":
@@ -365,126 +644,53 @@ def check_pr(pr_url: str) -> int:
             print("  - PR comments")
             sys.exit(0)
 
-        print(f"Found {len(buildbot_urls)} buildbot build(s)")
+        print(
+            f"Found {colorize(str(len(buildbot_urls)), Colors.BOLD)} buildbot build(s)"
+        )
 
-        for url in buildbot_urls:
-            print(f"\nChecking: {url}")
-            print("-" * 80)
+        # Filter out builds without triggered builds
+        builds_with_triggers = filter_builds_with_triggers(buildbot_urls)
 
-            base_url, builder_id, build_num = extract_build_info(url)
-            if not base_url:
-                print("Could not parse buildbot URL")
-                continue
+        if not builds_with_triggers:
+            print(
+                f"\n{colorize('No buildbot builds with triggered sub-builds found', Colors.YELLOW)}"
+            )
+            print(
+                "All CI statuses appear to be for builds without triggered sub-builds"
+            )
+            sys.exit(0)
 
-            # Get triggered builds
-            build_requests = get_triggered_builds(base_url, builder_id, build_num)
+        print(
+            f"\nFound {colorize(str(len(builds_with_triggers)), Colors.BOLD)} build(s) with triggered sub-builds"
+        )
 
-            if not build_requests:
-                print("No triggered builds found")
-                continue
+        # Process each build
+        exit_code = 0
+        for build in builds_with_triggers:
+            report = check_build_status(build)
+            print_build_report(build, report)
 
-            print(f"Found {len(build_requests)} triggered builds")
+            # Set exit code to 1 if there are any failures or cancellations
+            if "FAILURE" in report.statuses or "CANCELLED" in report.statuses:
+                exit_code = 1
 
-            # Get build names mapping
-            name_map = get_build_names(base_url, builder_id, build_num)
+        return exit_code
 
-            # Check status of each build request
-            statuses: dict[str, list[int]] = {}
-            build_info = {}  # Store build IDs for each request
-            for req_id in build_requests:
-                _, status, build_id = check_build_request_status(base_url, req_id)
-                if status not in statuses:
-                    statuses[status] = []
-                statuses[status].append(req_id)
-                build_info[req_id] = build_id
-
-            # Report summary
-            print("\nBuild Summary:")
-            for status, requests in sorted(statuses.items()):
-                print(f"  {status}: {len(requests)} builds")
-
-            # Show canceled builds with names
-            if "CANCELLED" in statuses:
-                print(f"\nCanceled builds ({len(statuses['CANCELLED'])} total):")
-                for req_id in sorted(statuses["CANCELLED"]):
-                    name = name_map.get(req_id, f"Request {req_id}")
-                    print(f"  - {name}")
-
-            # Show failed builds with names and log URLs
-            if "FAILURE" in statuses:
-                print(f"\nFailed builds ({len(statuses['FAILURE'])} total):")
-                for req_id in sorted(statuses["FAILURE"]):
-                    name = name_map.get(req_id, f"Request {req_id}")
-                    print(f"  - {name}")
-
-                    # Get log URLs for this failed build
-                    build_id = build_info.get(req_id)
-                    if build_id:
-                        log_urls = get_build_log_urls(base_url, build_id)
-                        if log_urls:
-                            print("    Log URLs:")
-                            for log_info in log_urls:
-                                print(
-                                    f"      • {log_info['step_name']} ({log_info['log_name']}): {log_info['url']}"
-                                )
-
-        # Final summary
-        print("\n" + "=" * 80)
-        print("OVERALL SUMMARY")
-        print("=" * 80)
-
-        total_canceled = 0
-        total_failed = 0
-        total_success = 0
-
-        for url in buildbot_urls:
-            base_url, builder_id, build_num = extract_build_info(url)
-            if base_url:
-                build_requests = get_triggered_builds(base_url, builder_id, build_num)
-                if build_requests:
-                    for req_id in build_requests:
-                        _, status, _ = check_build_request_status(base_url, req_id)
-                        if status == "CANCELLED":
-                            total_canceled += 1
-                        elif status == "FAILURE":
-                            total_failed += 1
-                        elif status == "SUCCESS":
-                            total_success += 1
-
-        if total_canceled > 0 or total_failed > 0:
-            print("❌ Issues found:")
-            if total_canceled > 0:
-                print(f"   - {total_canceled} builds were canceled")
-            if total_failed > 0:
-                print(f"   - {total_failed} builds failed")
-            return 1
-        else:
-            print(f"✅ All {total_success} builds passed successfully!")
-            return 0
-
-    except (
-        ValueError,
-        urllib.error.URLError,
-        urllib.error.HTTPError,
-        json.JSONDecodeError,
-        KeyError,
-        AttributeError,
-    ) as e:
+    except BuildbotCheckError as e:
         print(f"Error: {e}")
-        traceback.print_exc()
         return 1
 
 
 def main() -> None:
     """Main entry point for command-line usage."""
     if len(sys.argv) != 2:
-        print("Usage: python buildbot_pr_check.py <pr-url>")
-        print("Examples:")
+        print("Usage: buildbot-pr-check <pr-url>")
+        print("\nExamples:")
         print(
-            "  GitHub: python buildbot_pr_check.py https://github.com/TUM-DSE/doctor-cluster-config/pull/459"
+            "  GitHub: buildbot-pr-check https://github.com/TUM-DSE/doctor-cluster-config/pull/459"
         )
         print(
-            "  Gitea:  python buildbot_pr_check.py https://git.clan.lol/clan/clan-core/pulls/4210"
+            "  Gitea:  buildbot-pr-check https://git.clan.lol/clan/clan-core/pulls/4210"
         )
         print("\nOptional: Set GITHUB_TOKEN environment variable for API rate limits")
         sys.exit(1)
