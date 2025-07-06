@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "buildbot-pr-check"
+version = "0.1.0"
+description = "Check Buildbot CI status for GitHub and Gitea pull requests"
+readme = "README.md"
+requires-python = ">=3.13"
+license = {text = "MIT"}
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+    "vcrpy>=5.0",
+    "pytest-vcr>=1.0",
+]
+
+[project.scripts]
+buildbot-pr-check = "buildbot_pr_check:main"
+
+[tool.setuptools]
+py-modules = ["buildbot_pr_check"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.ruff]
+target-version = "py313"
