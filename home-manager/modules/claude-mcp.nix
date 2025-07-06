@@ -37,5 +37,7 @@ let
   };
 in
 {
-  home.packages = claude-code-pkg.packages;
+  home.packages = claude-code-pkg.packages ++ [
+    self.packages.${pkgs.system}.claude-md
+  ];
 }

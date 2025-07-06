@@ -1,0 +1,11 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "claude-md"
+version = "0.1.0"
+description = "CLI tool to manage CLAUDE.local.md files across repositories"
+
+[project.scripts]
+claude-md = "claude_md:main"
