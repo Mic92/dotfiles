@@ -91,6 +91,7 @@
           "sops/*"
           "vars/*"
           "zsh/*"
+          "pkgs/buildbot-pr-check/tests/cassettes/*"
           "home/.zsh-*"
           "home/.fast-syntax-highlighting"
           "home/.config/nixpkgs"
