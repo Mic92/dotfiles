@@ -121,6 +121,11 @@
     nether.inputs.flake-parts.follows = "flake-parts";
     nether.inputs.data-mesher.follows = "data-mesher";
 
+    ghostty.url = "github:ghostty-org/ghostty";
+    ghostty.inputs.nixpkgs.follows = "nixpkgs";
+    ghostty.inputs.flake-compat.follows = "";
+    ghostty.inputs.flake-utils.follows = "flake-utils";
+
     #microvm.url = "github:astro/microvm.nix";
     #microvm.inputs.nixpkgs.follows = "nixpkgs";
     #microvm.inputs.flake-utils.follows = "flake-utils";
