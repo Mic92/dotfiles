@@ -58,11 +58,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1751913095,
-        "narHash": "sha256-C0IhKgSnu8hnVW+EKrWeCvcjdkQzxhMu/O9tAXa4SdA=",
-        "rev": "5d924e0c98fe71a896dfeca1637c02ca7ea2c3e0",
+        "lastModified": 1751914138,
+        "narHash": "sha256-jxUay6SkSGfUStuITr3fs2lwLxDAq3Mziko3ptf6HLw=",
+        "rev": "a9ec94b0df92a894ed3659e2d4cc4a7d75667bbf",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/5d924e0c98fe71a896dfeca1637c02ca7ea2c3e0.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/a9ec94b0df92a894ed3659e2d4cc4a7d75667bbf.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -273,11 +273,11 @@
         "zon2nix": "zon2nix"
       },
       "locked": {
-        "lastModified": 1751905553,
-        "narHash": "sha256-onPW5koV4invnRtnznYSKCshUrZSPoGM3MPPynfaqss=",
+        "lastModified": 1751912500,
+        "narHash": "sha256-7hCbGzNRAXWSBWXZrTMZ7DIB6LDlCQKzPXGRxwOoOKA=",
         "owner": "ghostty-org",
         "repo": "ghostty",
-        "rev": "5bc41dc6946146dd7a2e7c17961259cee79a6c7a",
+        "rev": "26522ab8c20dd9d2c690d04af94844f5e8719637",
         "type": "github"
       },
       "original": {
