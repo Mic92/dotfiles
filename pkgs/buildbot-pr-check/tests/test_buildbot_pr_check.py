@@ -24,42 +24,47 @@ vcr_config = vcr.VCR(
 class TestIntegration:
     """Integration tests for the two pull requests."""
 
-    @vcr_config.use_cassette("github_pr_459.yaml")
-    def test_github_pr_459(self, capsys):
-        """Test GitHub PR #459 which has canceled builds."""
+    @vcr_config.use_cassette("github_pr_parent_build_failure.yaml")
+    def test_github_pr_parent_build_failure(self, capsys):
+        """Test GitHub PR which has parent build failure."""
         exit_code = buildbot_pr_check.check_pr(
-            "https://github.com/TUM-DSE/doctor-cluster-config/pull/459"
+            "https://github.com/Mic92/dotfiles/pull/3016"
         )
 
-        # Should return 1 because there are canceled builds
+        # Should return 1 because parent build failed
         assert exit_code == 1
 
         captured = capsys.readouterr()
         output = captured.out
 
         # Verify key output elements
-        assert "Checking PR #459 in TUM-DSE/doctor-cluster-config (github)" in output
+        assert "Checking PR" in output
+        assert "in Mic92/dotfiles (github)" in output
         assert "buildbot build(s)" in output
 
-        # Check that we're still finding builds with triggered sub-builds
-        assert "build(s) with triggered sub-builds" in output
+        # Check that parent build failure is shown
+        assert "Parent build failed" in output
+        assert "Parent build logs:" in output
 
-        # Check for failed builds with flake attributes
-        if "Failed builds" in output:
-            # Should display flake attributes like "checks.x86_64-linux.nixos-martha"
-            assert "checks." in output or "nixos-" in output
-            # Should NOT display "Request " anymore
-            assert "- Request " not in output
+        # Should have log URLs from the failed step
+        assert "https://buildbot" in output and "/api/v2/logs/" in output
 
-            # Check for log URLs
-            if "Log URLs:" in output:
-                assert "https://buildbot.dse.in.tum.de/api/v2/logs/" in output
+        # Verify we show the step name that failed
+        assert "•" in output  # Bullet point for log entries
 
-    @vcr_config.use_cassette("gitea_pr_4210.yaml")
-    def test_gitea_pr_4210(self, capsys):
-        """Test Gitea PR #4210 which has all successful builds."""
+        # Check that the log URL is properly formatted
+        import re
+
+        log_url_pattern = r"https://buildbot\.[^/]+/api/v2/logs/\d+/raw_inline"
+        assert re.search(log_url_pattern, output), (
+            "Should have properly formatted log URLs"
+        )
+
+    @vcr_config.use_cassette("gitea_pr_success.yaml")
+    def test_gitea_pr_success(self, capsys):
+        """Test Gitea PR which has all successful builds."""
         exit_code = buildbot_pr_check.check_pr(
-            "https://git.clan.lol/clan/clan-core/pulls/4210"
+            "https://git.clan.lol/clan/clan-core/pulls/4235"
         )
 
         # Should return 0 because all builds passed
@@ -69,8 +74,9 @@ class TestIntegration:
         output = captured.out
 
         # Verify key output elements
-        assert "Checking PR #4210 in clan/clan-core (gitea)" in output
-        assert "Found 1 buildbot build(s)" in output
+        assert "Checking PR" in output
+        assert "in clan/clan-core (gitea)" in output
+        assert "buildbot build(s)" in output
         assert "SUCCESS:" in output
 
         # Check that we're finding builds with triggered sub-builds
