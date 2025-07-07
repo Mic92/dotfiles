@@ -811,6 +811,7 @@ def main() -> None:
         sys.exit(1)
 
     # Get PR URL from argument or try to detect it
+    pr_url: str | None
     if len(sys.argv) == 2:
         pr_url = sys.argv[1]
     else:
@@ -826,7 +827,6 @@ def main() -> None:
             print("  buildbot-pr-check <pr-url>")
             sys.exit(1)
         print(f"Auto-detected PR: {pr_url}")
-
     exit_code = check_pr(pr_url)
     sys.exit(exit_code)
 
