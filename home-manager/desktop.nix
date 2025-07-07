@@ -67,6 +67,6 @@
       self.packages.${pkgs.stdenv.hostPlatform.system}.kagi-search
     ]
     ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
-      pkgs.ghostty
+      self.inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default
     ];
 }
