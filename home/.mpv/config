@@ -3,5 +3,7 @@ af-add=scaletempo
 save-position-on-quit
 keep-open
 hwdec=auto-safe
-vo=gpu
-gpu-context=wayland
+vo=gpu-next
+ao=pipewire
+gpu-api=vulkan
+gpu-context=waylandvk
