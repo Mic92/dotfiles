@@ -7,6 +7,7 @@ import sys
 import urllib.error
 import urllib.parse
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 
 
@@ -433,17 +434,38 @@ def get_build_log_urls(base_url: str, build_id: int) -> list[LogUrl]:
         steps_url = f"https://{base_url}/api/v2/builds/{build_id}/steps"
         with urllib.request.urlopen(steps_url) as response:  # noqa: S310
             data = json.loads(response.read())
+            steps = data.get("steps", [])
 
-            for step in data.get("steps", []):
-                # Get logs for each step
-                step_id = step.get("stepid")
-                if step_id:
-                    step_logs = get_step_log_urls(
-                        base_url, step_id, step.get("name", "Unknown step")
-                    )
-                    log_urls.extend(step_logs)
+            if not steps:
+                return []
+
+            # Use ThreadPoolExecutor for parallel log fetching
+            max_workers = min(10, len(steps))  # Limit concurrent connections
+            with ThreadPoolExecutor(max_workers=max_workers) as executor:
+                # Submit all step log requests to the thread pool
+                future_to_step = {}
+                for step in steps:
+                    step_id = step.get("stepid")
+                    if step_id:
+                        step_name = step.get("name", "Unknown step")
+                        future = executor.submit(
+                            get_step_log_urls, base_url, step_id, step_name
+                        )
+                        future_to_step[future] = (step_id, step_name)
+
+                # Collect results as they complete
+                for future in as_completed(future_to_step):
+                    try:
+                        step_logs = future.result()
+                        log_urls.extend(step_logs)
+                    except Exception as e:
+                        step_id, step_name = future_to_step[future]
+                        print(
+                            f"Error getting logs for step {step_name} (ID: {step_id}): {e}"
+                        )
+
     except (urllib.error.URLError, urllib.error.HTTPError, json.JSONDecodeError):
-        pass
+        return []
 
     return log_urls
 
@@ -593,18 +615,38 @@ def check_build_status(build: BuildWithTriggers) -> BuildStatusReport:
     # Get build names mapping
     name_map = get_build_names(build.base_url, build.builder_id, build.build_num)
 
-    # Check status of each build request
+    # Check status of each build request in parallel
     statuses: dict[str, list[int]] = {}
     build_id_map = {}
     virtual_builder_map = {}
 
-    for req_id in build.build_requests:
-        req_status = check_build_request_status(build.base_url, req_id)
-        if req_status.status not in statuses:
-            statuses[req_status.status] = []
-        statuses[req_status.status].append(req_id)
-        build_id_map[req_id] = req_status.build_id
-        virtual_builder_map[req_id] = req_status.virtual_builder_name
+    # Use ThreadPoolExecutor for parallel requests
+    max_workers = min(20, len(build.build_requests))  # Limit concurrent connections
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        # Submit all requests to the thread pool
+        future_to_req_id = {
+            executor.submit(check_build_request_status, build.base_url, req_id): req_id
+            for req_id in build.build_requests
+        }
+
+        # Process results as they complete
+        for future in as_completed(future_to_req_id):
+            req_id = future_to_req_id[future]
+            try:
+                req_status = future.result()
+                if req_status.status not in statuses:
+                    statuses[req_status.status] = []
+                statuses[req_status.status].append(req_id)
+                build_id_map[req_id] = req_status.build_id
+                virtual_builder_map[req_id] = req_status.virtual_builder_name
+            except Exception as e:
+                # Handle any errors from the thread
+                print(f"Error checking request {req_id}: {e}")
+                if "ERROR" not in statuses:
+                    statuses["ERROR"] = []
+                statuses["ERROR"].append(req_id)
+                build_id_map[req_id] = None
+                virtual_builder_map[req_id] = None
 
     return BuildStatusReport(
         statuses=statuses,
