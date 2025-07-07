@@ -681,10 +681,47 @@ def check_pr(pr_url: str) -> int:
         return 1
 
 
+def get_current_branch_pr_url() -> str | None:
+    """Try to get the PR URL for the current branch using gh CLI."""
+    try:
+        # Get current branch name
+        result = subprocess.run(
+            ["git", "branch", "--show-current"],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        branch = result.stdout.strip()
+
+        if not branch:
+            return None
+
+        # Try to get PR info for current branch
+        result = subprocess.run(
+            ["gh", "pr", "view", branch, "--json", "url"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        if result.returncode == 0:
+            try:
+                data = json.loads(result.stdout)
+                return data.get("url")
+            except json.JSONDecodeError:
+                pass
+
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        pass
+
+    return None
+
+
 def main() -> None:
     """Main entry point for command-line usage."""
-    if len(sys.argv) != 2:
-        print("Usage: buildbot-pr-check <pr-url>")
+    if len(sys.argv) > 2:
+        print("Usage: buildbot-pr-check [<pr-url>]")
+        print("\nIf no PR URL is provided, will try to detect PR for current branch")
         print("\nExamples:")
         print(
             "  GitHub: buildbot-pr-check https://github.com/TUM-DSE/doctor-cluster-config/pull/459"
@@ -692,10 +729,27 @@ def main() -> None:
         print(
             "  Gitea:  buildbot-pr-check https://git.clan.lol/clan/clan-core/pulls/4210"
         )
+        print("  Auto:   buildbot-pr-check  # Uses current branch")
         print("\nOptional: Set GITHUB_TOKEN environment variable for API rate limits")
         sys.exit(1)
 
-    pr_url = sys.argv[1]
+    # Get PR URL from argument or try to detect it
+    if len(sys.argv) == 2:
+        pr_url = sys.argv[1]
+    else:
+        pr_url = get_current_branch_pr_url()
+        if not pr_url:
+            print(
+                "Error: No PR URL provided and could not detect PR for current branch"
+            )
+            print("\nMake sure you have:")
+            print("  1. An open PR for the current branch")
+            print("  2. The 'gh' CLI tool installed and authenticated")
+            print("\nOr provide the PR URL explicitly:")
+            print("  buildbot-pr-check <pr-url>")
+            sys.exit(1)
+        print(f"Auto-detected PR: {pr_url}")
+
     exit_code = check_pr(pr_url)
     sys.exit(exit_code)
 
