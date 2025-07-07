@@ -7,7 +7,7 @@ from tmux_mcp.commands import (
 )
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_ripgrep_command_output_basic(tmux_server: str) -> None:
     """Test basic ripgrep functionality on command output."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -25,7 +25,7 @@ async def test_tmux_ripgrep_command_output_basic(tmux_server: str) -> None:
     assert "Goodbye Moon" not in rg_result.output
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_ripgrep_command_output_with_flags(
     tmux_server: str,
 ) -> None:
@@ -48,7 +48,7 @@ async def test_tmux_ripgrep_command_output_with_flags(
     assert "HeLLo WoRLd" in rg_result.output
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_ripgrep_command_output_no_matches(
     tmux_server: str,
 ) -> None:
@@ -62,7 +62,7 @@ async def test_tmux_ripgrep_command_output_no_matches(
     assert "No matches found for pattern: NonExistent" in rg_result.output
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_ripgrep_command_output_invalid_pane(
     tmux_server: str,
 ) -> None:
@@ -77,7 +77,7 @@ async def test_tmux_ripgrep_command_output_invalid_pane(
     )
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_ripgrep_pagination_basic(tmux_server: str) -> None:
     """Test ripgrep with pagination."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -98,7 +98,7 @@ async def test_tmux_ripgrep_pagination_basic(tmux_server: str) -> None:
     assert "Line 150 contains TEST" not in rg_result.output  # Beyond first page
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_ripgrep_pagination_next_page(tmux_server: str) -> None:
     """Test ripgrep pagination - getting next page."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -124,7 +124,7 @@ async def test_tmux_ripgrep_pagination_next_page(tmux_server: str) -> None:
     assert "Line 100 has MATCH" in rg_result2.output
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_ripgrep_no_pagination(tmux_server: str) -> None:
     """Test ripgrep with small output (no pagination needed)."""
     _ = tmux_server  # Use the fixture to set up test environment

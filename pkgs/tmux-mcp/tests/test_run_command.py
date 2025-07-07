@@ -7,7 +7,7 @@ import pytest
 from tmux_mcp.commands import tmux_run_command
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_run_simple_command(tmux_server: str) -> None:
     """Test running a simple command in tmux."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -18,7 +18,7 @@ async def test_tmux_run_simple_command(tmux_server: str) -> None:
     assert result.pane_id.startswith("%")
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_run_command_with_working_dir(tmux_server: str) -> None:
     """Test running command with working directory."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -36,7 +36,7 @@ async def test_tmux_run_command_with_working_dir(tmux_server: str) -> None:
         assert result.working_dir == temp_dir
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_run_command_failure(tmux_server: str) -> None:
     """Test running a command that fails."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -46,7 +46,7 @@ async def test_tmux_run_command_failure(tmux_server: str) -> None:
     assert result.pane_id.startswith("%")
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_run_command_timeout(tmux_server: str) -> None:
     """Test command timeout handling."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -57,7 +57,7 @@ async def test_tmux_run_command_timeout(tmux_server: str) -> None:
     assert "timed out" in result.output
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_multiple_commands_sequential(tmux_server: str) -> None:
     """Test running multiple commands sequentially."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -71,7 +71,7 @@ async def test_tmux_multiple_commands_sequential(tmux_server: str) -> None:
         assert f"Command {i}" in result.output
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_error_handling(tmux_server: str) -> None:
     """Test various error conditions."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -85,7 +85,7 @@ async def test_tmux_error_handling(tmux_server: str) -> None:
     assert result.pane_id  # Should still have a pane ID
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_delayed_window_cleanup(tmux_server: str) -> None:
     """Test that window cleanup happens after delay."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -102,7 +102,7 @@ async def test_tmux_delayed_window_cleanup(tmux_server: str) -> None:
     # We can't easily test the actual cleanup without waiting or mocking
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_keep_pane_option(tmux_server: str) -> None:
     """Test keep_pane option prevents cleanup."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -122,7 +122,7 @@ async def test_tmux_keep_pane_option(tmux_server: str) -> None:
     # but we've verified the command completed successfully
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_custom_window_name(tmux_server: str) -> None:
     """Test creating windows with custom names."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -140,7 +140,7 @@ async def test_tmux_custom_window_name(tmux_server: str) -> None:
     assert result2.exit_code == 0
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_auto_generated_window_name(tmux_server: str) -> None:
     """Test auto-generated window names."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -154,7 +154,7 @@ async def test_tmux_auto_generated_window_name(tmux_server: str) -> None:
     assert result1.pane_id != result2.pane_id
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_run_command_with_expect_pattern(tmux_server: str) -> None:
     """Test running a command with expect pattern."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -171,7 +171,7 @@ async def test_run_command_with_expect_pattern(tmux_server: str) -> None:
     assert result.error is None
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_expect_pattern_timeout(tmux_server: str) -> None:
     """Test expect pattern timeout."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -189,7 +189,7 @@ async def test_expect_pattern_timeout(tmux_server: str) -> None:
     assert "Hello World" in result.output  # Should still return current output
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_invalid_regex_pattern(tmux_server: str) -> None:
     """Test invalid regex pattern handling."""
     _ = tmux_server  # Use the fixture to set up test environment

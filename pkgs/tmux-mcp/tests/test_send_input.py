@@ -4,7 +4,7 @@ import pytest
 from tmux_mcp.commands import tmux_capture_pane, tmux_run_command, tmux_send_input
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_send_input_and_capture(tmux_server: str) -> None:
     """Test sending input to a pane and capturing output."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -29,7 +29,7 @@ async def test_tmux_send_input_and_capture(tmux_server: str) -> None:
     assert "Hello from input" in capture_result.output
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_send_input_with_expect_patterns(tmux_server: str) -> None:
     """Test send_input with expect_before and expect_after patterns."""
     _ = tmux_server  # Use the fixture to set up test environment
