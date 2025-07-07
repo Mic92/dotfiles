@@ -1,5 +1,4 @@
 {
-  description = "A free and open source 3D creation suite (upstream binaries)";
   inputs.nixpkgs.url = "nixpkgs/nixos-unstable";
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
