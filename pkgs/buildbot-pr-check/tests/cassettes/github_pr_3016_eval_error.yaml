@@ -1,0 +1,606 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      Connection:
+      - close
+      Host:
+      - api.github.com
+      User-Agent:
+      - Python-urllib/3.13
+    method: GET
+    uri: https://api.github.com/repos/Mic92/dotfiles/pulls/3016
+  response:
+    body:
+      string: '{"url":"https://api.github.com/repos/Mic92/dotfiles/pulls/3016","id":2646302395,"node_id":"PR_kwDOEQQjd86du167","html_url":"https://github.com/Mic92/dotfiles/pull/3016","diff_url":"https://github.com/Mic92/dotfiles/pull/3016.diff","patch_url":"https://github.com/Mic92/dotfiles/pull/3016.patch","issue_url":"https://api.github.com/repos/Mic92/dotfiles/issues/3016","number":3016,"state":"open","locked":false,"title":"turingmachine:
+        switch to amd-ai-300-series","user":{"login":"Mic92","id":96200,"node_id":"MDQ6VXNlcjk2MjAw","avatar_url":"https://avatars.githubusercontent.com/u/96200?v=4","gravatar_id":"","url":"https://api.github.com/users/Mic92","html_url":"https://github.com/Mic92","followers_url":"https://api.github.com/users/Mic92/followers","following_url":"https://api.github.com/users/Mic92/following{/other_user}","gists_url":"https://api.github.com/users/Mic92/gists{/gist_id}","starred_url":"https://api.github.com/users/Mic92/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/Mic92/subscriptions","organizations_url":"https://api.github.com/users/Mic92/orgs","repos_url":"https://api.github.com/users/Mic92/repos","events_url":"https://api.github.com/users/Mic92/events{/privacy}","received_events_url":"https://api.github.com/users/Mic92/received_events","type":"User","user_view_type":"public","site_admin":false},"body":null,"created_at":"2025-07-07T10:43:56Z","updated_at":"2025-07-07T10:43:57Z","closed_at":null,"merged_at":null,"merge_commit_sha":"2f2530bd5496af661622f6488563f561ab61ef68","assignee":null,"assignees":[],"requested_reviewers":[],"requested_teams":[],"labels":[{"id":5607280546,"node_id":"LA_kwDOEQQjd88AAAABTjhPog","url":"https://api.github.com/repos/Mic92/dotfiles/labels/merge-queue","name":"merge-queue","color":"E1178D","default":false,"description":""}],"milestone":null,"draft":false,"commits_url":"https://api.github.com/repos/Mic92/dotfiles/pulls/3016/commits","review_comments_url":"https://api.github.com/repos/Mic92/dotfiles/pulls/3016/comments","review_comment_url":"https://api.github.com/repos/Mic92/dotfiles/pulls/comments{/number}","comments_url":"https://api.github.com/repos/Mic92/dotfiles/issues/3016/comments","statuses_url":"https://api.github.com/repos/Mic92/dotfiles/statuses/261420ea39bf5e65b34a42b701bc723bf481ffdc","head":{"label":"Mic92:merge-when-green-joerg","ref":"merge-when-green-joerg","sha":"261420ea39bf5e65b34a42b701bc723bf481ffdc","user":{"login":"Mic92","id":96200,"node_id":"MDQ6VXNlcjk2MjAw","avatar_url":"https://avatars.githubusercontent.com/u/96200?v=4","gravatar_id":"","url":"https://api.github.com/users/Mic92","html_url":"https://github.com/Mic92","followers_url":"https://api.github.com/users/Mic92/followers","following_url":"https://api.github.com/users/Mic92/following{/other_user}","gists_url":"https://api.github.com/users/Mic92/gists{/gist_id}","starred_url":"https://api.github.com/users/Mic92/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/Mic92/subscriptions","organizations_url":"https://api.github.com/users/Mic92/orgs","repos_url":"https://api.github.com/users/Mic92/repos","events_url":"https://api.github.com/users/Mic92/events{/privacy}","received_events_url":"https://api.github.com/users/Mic92/received_events","type":"User","user_view_type":"public","site_admin":false},"repo":{"id":285483895,"node_id":"MDEwOlJlcG9zaXRvcnkyODU0ODM4OTU=","name":"dotfiles","full_name":"Mic92/dotfiles","private":false,"owner":{"login":"Mic92","id":96200,"node_id":"MDQ6VXNlcjk2MjAw","avatar_url":"https://avatars.githubusercontent.com/u/96200?v=4","gravatar_id":"","url":"https://api.github.com/users/Mic92","html_url":"https://github.com/Mic92","followers_url":"https://api.github.com/users/Mic92/followers","following_url":"https://api.github.com/users/Mic92/following{/other_user}","gists_url":"https://api.github.com/users/Mic92/gists{/gist_id}","starred_url":"https://api.github.com/users/Mic92/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/Mic92/subscriptions","organizations_url":"https://api.github.com/users/Mic92/orgs","repos_url":"https://api.github.com/users/Mic92/repos","events_url":"https://api.github.com/users/Mic92/events{/privacy}","received_events_url":"https://api.github.com/users/Mic92/received_events","type":"User","user_view_type":"public","site_admin":false},"html_url":"https://github.com/Mic92/dotfiles","description":"My
+        NixOS dotfiles","fork":false,"url":"https://api.github.com/repos/Mic92/dotfiles","forks_url":"https://api.github.com/repos/Mic92/dotfiles/forks","keys_url":"https://api.github.com/repos/Mic92/dotfiles/keys{/key_id}","collaborators_url":"https://api.github.com/repos/Mic92/dotfiles/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/Mic92/dotfiles/teams","hooks_url":"https://api.github.com/repos/Mic92/dotfiles/hooks","issue_events_url":"https://api.github.com/repos/Mic92/dotfiles/issues/events{/number}","events_url":"https://api.github.com/repos/Mic92/dotfiles/events","assignees_url":"https://api.github.com/repos/Mic92/dotfiles/assignees{/user}","branches_url":"https://api.github.com/repos/Mic92/dotfiles/branches{/branch}","tags_url":"https://api.github.com/repos/Mic92/dotfiles/tags","blobs_url":"https://api.github.com/repos/Mic92/dotfiles/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/Mic92/dotfiles/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/Mic92/dotfiles/git/refs{/sha}","trees_url":"https://api.github.com/repos/Mic92/dotfiles/git/trees{/sha}","statuses_url":"https://api.github.com/repos/Mic92/dotfiles/statuses/{sha}","languages_url":"https://api.github.com/repos/Mic92/dotfiles/languages","stargazers_url":"https://api.github.com/repos/Mic92/dotfiles/stargazers","contributors_url":"https://api.github.com/repos/Mic92/dotfiles/contributors","subscribers_url":"https://api.github.com/repos/Mic92/dotfiles/subscribers","subscription_url":"https://api.github.com/repos/Mic92/dotfiles/subscription","commits_url":"https://api.github.com/repos/Mic92/dotfiles/commits{/sha}","git_commits_url":"https://api.github.com/repos/Mic92/dotfiles/git/commits{/sha}","comments_url":"https://api.github.com/repos/Mic92/dotfiles/comments{/number}","issue_comment_url":"https://api.github.com/repos/Mic92/dotfiles/issues/comments{/number}","contents_url":"https://api.github.com/repos/Mic92/dotfiles/contents/{+path}","compare_url":"https://api.github.com/repos/Mic92/dotfiles/compare/{base}...{head}","merges_url":"https://api.github.com/repos/Mic92/dotfiles/merges","archive_url":"https://api.github.com/repos/Mic92/dotfiles/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/Mic92/dotfiles/downloads","issues_url":"https://api.github.com/repos/Mic92/dotfiles/issues{/number}","pulls_url":"https://api.github.com/repos/Mic92/dotfiles/pulls{/number}","milestones_url":"https://api.github.com/repos/Mic92/dotfiles/milestones{/number}","notifications_url":"https://api.github.com/repos/Mic92/dotfiles/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/Mic92/dotfiles/labels{/name}","releases_url":"https://api.github.com/repos/Mic92/dotfiles/releases{/id}","deployments_url":"https://api.github.com/repos/Mic92/dotfiles/deployments","created_at":"2020-08-06T05:40:40Z","updated_at":"2025-07-07T10:36:16Z","pushed_at":"2025-07-07T10:43:50Z","git_url":"git://github.com/Mic92/dotfiles.git","ssh_url":"git@github.com:Mic92/dotfiles.git","clone_url":"https://github.com/Mic92/dotfiles.git","svn_url":"https://github.com/Mic92/dotfiles","homepage":"","size":12521,"stargazers_count":656,"watchers_count":656,"language":"Python","has_issues":true,"has_projects":false,"has_downloads":false,"has_wiki":true,"has_pages":false,"has_discussions":false,"forks_count":37,"mirror_url":null,"archived":false,"disabled":false,"open_issues_count":4,"license":{"key":"mit","name":"MIT
+        License","spdx_id":"MIT","url":"https://api.github.com/licenses/mit","node_id":"MDc6TGljZW5zZTEz"},"allow_forking":true,"is_template":false,"web_commit_signoff_required":false,"topics":["build-with-buildbot","hacktoberfest","managed-by-renovate","nix-flake","nixos-configuration","nixos-dotfiles"],"visibility":"public","forks":37,"open_issues":4,"watchers":656,"default_branch":"main"}},"base":{"label":"Mic92:main","ref":"main","sha":"4d9a98fcb9777b613dd1c2bdb0beff6ae94503a2","user":{"login":"Mic92","id":96200,"node_id":"MDQ6VXNlcjk2MjAw","avatar_url":"https://avatars.githubusercontent.com/u/96200?v=4","gravatar_id":"","url":"https://api.github.com/users/Mic92","html_url":"https://github.com/Mic92","followers_url":"https://api.github.com/users/Mic92/followers","following_url":"https://api.github.com/users/Mic92/following{/other_user}","gists_url":"https://api.github.com/users/Mic92/gists{/gist_id}","starred_url":"https://api.github.com/users/Mic92/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/Mic92/subscriptions","organizations_url":"https://api.github.com/users/Mic92/orgs","repos_url":"https://api.github.com/users/Mic92/repos","events_url":"https://api.github.com/users/Mic92/events{/privacy}","received_events_url":"https://api.github.com/users/Mic92/received_events","type":"User","user_view_type":"public","site_admin":false},"repo":{"id":285483895,"node_id":"MDEwOlJlcG9zaXRvcnkyODU0ODM4OTU=","name":"dotfiles","full_name":"Mic92/dotfiles","private":false,"owner":{"login":"Mic92","id":96200,"node_id":"MDQ6VXNlcjk2MjAw","avatar_url":"https://avatars.githubusercontent.com/u/96200?v=4","gravatar_id":"","url":"https://api.github.com/users/Mic92","html_url":"https://github.com/Mic92","followers_url":"https://api.github.com/users/Mic92/followers","following_url":"https://api.github.com/users/Mic92/following{/other_user}","gists_url":"https://api.github.com/users/Mic92/gists{/gist_id}","starred_url":"https://api.github.com/users/Mic92/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/Mic92/subscriptions","organizations_url":"https://api.github.com/users/Mic92/orgs","repos_url":"https://api.github.com/users/Mic92/repos","events_url":"https://api.github.com/users/Mic92/events{/privacy}","received_events_url":"https://api.github.com/users/Mic92/received_events","type":"User","user_view_type":"public","site_admin":false},"html_url":"https://github.com/Mic92/dotfiles","description":"My
+        NixOS dotfiles","fork":false,"url":"https://api.github.com/repos/Mic92/dotfiles","forks_url":"https://api.github.com/repos/Mic92/dotfiles/forks","keys_url":"https://api.github.com/repos/Mic92/dotfiles/keys{/key_id}","collaborators_url":"https://api.github.com/repos/Mic92/dotfiles/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/Mic92/dotfiles/teams","hooks_url":"https://api.github.com/repos/Mic92/dotfiles/hooks","issue_events_url":"https://api.github.com/repos/Mic92/dotfiles/issues/events{/number}","events_url":"https://api.github.com/repos/Mic92/dotfiles/events","assignees_url":"https://api.github.com/repos/Mic92/dotfiles/assignees{/user}","branches_url":"https://api.github.com/repos/Mic92/dotfiles/branches{/branch}","tags_url":"https://api.github.com/repos/Mic92/dotfiles/tags","blobs_url":"https://api.github.com/repos/Mic92/dotfiles/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/Mic92/dotfiles/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/Mic92/dotfiles/git/refs{/sha}","trees_url":"https://api.github.com/repos/Mic92/dotfiles/git/trees{/sha}","statuses_url":"https://api.github.com/repos/Mic92/dotfiles/statuses/{sha}","languages_url":"https://api.github.com/repos/Mic92/dotfiles/languages","stargazers_url":"https://api.github.com/repos/Mic92/dotfiles/stargazers","contributors_url":"https://api.github.com/repos/Mic92/dotfiles/contributors","subscribers_url":"https://api.github.com/repos/Mic92/dotfiles/subscribers","subscription_url":"https://api.github.com/repos/Mic92/dotfiles/subscription","commits_url":"https://api.github.com/repos/Mic92/dotfiles/commits{/sha}","git_commits_url":"https://api.github.com/repos/Mic92/dotfiles/git/commits{/sha}","comments_url":"https://api.github.com/repos/Mic92/dotfiles/comments{/number}","issue_comment_url":"https://api.github.com/repos/Mic92/dotfiles/issues/comments{/number}","contents_url":"https://api.github.com/repos/Mic92/dotfiles/contents/{+path}","compare_url":"https://api.github.com/repos/Mic92/dotfiles/compare/{base}...{head}","merges_url":"https://api.github.com/repos/Mic92/dotfiles/merges","archive_url":"https://api.github.com/repos/Mic92/dotfiles/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/Mic92/dotfiles/downloads","issues_url":"https://api.github.com/repos/Mic92/dotfiles/issues{/number}","pulls_url":"https://api.github.com/repos/Mic92/dotfiles/pulls{/number}","milestones_url":"https://api.github.com/repos/Mic92/dotfiles/milestones{/number}","notifications_url":"https://api.github.com/repos/Mic92/dotfiles/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/Mic92/dotfiles/labels{/name}","releases_url":"https://api.github.com/repos/Mic92/dotfiles/releases{/id}","deployments_url":"https://api.github.com/repos/Mic92/dotfiles/deployments","created_at":"2020-08-06T05:40:40Z","updated_at":"2025-07-07T10:36:16Z","pushed_at":"2025-07-07T10:43:50Z","git_url":"git://github.com/Mic92/dotfiles.git","ssh_url":"git@github.com:Mic92/dotfiles.git","clone_url":"https://github.com/Mic92/dotfiles.git","svn_url":"https://github.com/Mic92/dotfiles","homepage":"","size":12521,"stargazers_count":656,"watchers_count":656,"language":"Python","has_issues":true,"has_projects":false,"has_downloads":false,"has_wiki":true,"has_pages":false,"has_discussions":false,"forks_count":37,"mirror_url":null,"archived":false,"disabled":false,"open_issues_count":4,"license":{"key":"mit","name":"MIT
+        License","spdx_id":"MIT","url":"https://api.github.com/licenses/mit","node_id":"MDc6TGljZW5zZTEz"},"allow_forking":true,"is_template":false,"web_commit_signoff_required":false,"topics":["build-with-buildbot","hacktoberfest","managed-by-renovate","nix-flake","nixos-configuration","nixos-dotfiles"],"visibility":"public","forks":37,"open_issues":4,"watchers":656,"default_branch":"main"}},"_links":{"self":{"href":"https://api.github.com/repos/Mic92/dotfiles/pulls/3016"},"html":{"href":"https://github.com/Mic92/dotfiles/pull/3016"},"issue":{"href":"https://api.github.com/repos/Mic92/dotfiles/issues/3016"},"comments":{"href":"https://api.github.com/repos/Mic92/dotfiles/issues/3016/comments"},"review_comments":{"href":"https://api.github.com/repos/Mic92/dotfiles/pulls/3016/comments"},"review_comment":{"href":"https://api.github.com/repos/Mic92/dotfiles/pulls/comments{/number}"},"commits":{"href":"https://api.github.com/repos/Mic92/dotfiles/pulls/3016/commits"},"statuses":{"href":"https://api.github.com/repos/Mic92/dotfiles/statuses/261420ea39bf5e65b34a42b701bc723bf481ffdc"}},"author_association":"OWNER","auto_merge":{"enabled_by":{"login":"Mic92","id":96200,"node_id":"MDQ6VXNlcjk2MjAw","avatar_url":"https://avatars.githubusercontent.com/u/96200?v=4","gravatar_id":"","url":"https://api.github.com/users/Mic92","html_url":"https://github.com/Mic92","followers_url":"https://api.github.com/users/Mic92/followers","following_url":"https://api.github.com/users/Mic92/following{/other_user}","gists_url":"https://api.github.com/users/Mic92/gists{/gist_id}","starred_url":"https://api.github.com/users/Mic92/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/Mic92/subscriptions","organizations_url":"https://api.github.com/users/Mic92/orgs","repos_url":"https://api.github.com/users/Mic92/repos","events_url":"https://api.github.com/users/Mic92/events{/privacy}","received_events_url":"https://api.github.com/users/Mic92/received_events","type":"User","user_view_type":"public","site_admin":false},"merge_method":"rebase","commit_title":null,"commit_message":null},"active_lock_reason":null,"merged":false,"mergeable":true,"rebaseable":true,"mergeable_state":"blocked","merged_by":null,"comments":0,"review_comments":0,"maintainer_can_modify":false,"commits":10,"additions":189,"deletions":146,"changed_files":11}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Content-Length:
+      - '16173'
+      Content-Security-Policy:
+      - default-src 'none'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 07 Jul 2025 10:55:32 GMT
+      ETag:
+      - '"59567c8b2f684716c7aae6c05a17be575a0616cbf3fd26bfe0b163a03e089b6d"'
+      Last-Modified:
+      - Mon, 07 Jul 2025 10:43:57 GMT
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Server:
+      - github.com
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With
+      X-Accepted-OAuth-Scopes:
+      - ''
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-GitHub-Media-Type:
+      - github.v3; format=json
+      X-GitHub-Request-Id:
+      - B70C:131DD0:C12D3:C5F8B:686BA7A3
+      X-OAuth-Scopes:
+      - admin:public_key, gist, notifications, read:org, repo, workflow
+      X-RateLimit-Limit:
+      - '5000'
+      X-RateLimit-Remaining:
+      - '4833'
+      X-RateLimit-Reset:
+      - '1751888511'
+      X-RateLimit-Resource:
+      - core
+      X-RateLimit-Used:
+      - '167'
+      X-XSS-Protection:
+      - '0'
+      connection:
+      - close
+      x-github-api-version-selected:
+      - '2022-11-28'
+      x-oauth-client-id:
+      - 178c6fc778ccc68e1d6a
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      Connection:
+      - close
+      Host:
+      - api.github.com
+      User-Agent:
+      - Python-urllib/3.13
+    method: GET
+    uri: https://api.github.com/repos/Mic92/dotfiles/commits/261420ea39bf5e65b34a42b701bc723bf481ffdc/check-runs
+  response:
+    body:
+      string: '{"total_count":1,"check_runs":[{"id":45466132132,"name":"auto-merge-dependency-updates","node_id":"CR_kwDOEQQjd88AAAAKlf4epA","head_sha":"261420ea39bf5e65b34a42b701bc723bf481ffdc","external_id":"b04c5d59-37ff-57f3-87c5-515ea009f245","url":"https://api.github.com/repos/Mic92/dotfiles/check-runs/45466132132","html_url":"https://github.com/Mic92/dotfiles/actions/runs/16114789610/job/45466132132","details_url":"https://github.com/Mic92/dotfiles/actions/runs/16114789610/job/45466132132","status":"completed","conclusion":"success","started_at":"2025-07-07T10:44:01Z","completed_at":"2025-07-07T10:44:03Z","output":{"title":null,"summary":null,"text":null,"annotations_count":1,"annotations_url":"https://api.github.com/repos/Mic92/dotfiles/check-runs/45466132132/annotations"},"check_suite":{"id":41282318810},"app":{"id":15368,"client_id":"Iv1.05c79e9ad1f6bdfa","slug":"github-actions","node_id":"MDM6QXBwMTUzNjg=","owner":{"login":"github","id":9919,"node_id":"MDEyOk9yZ2FuaXphdGlvbjk5MTk=","avatar_url":"https://avatars.githubusercontent.com/u/9919?v=4","gravatar_id":"","url":"https://api.github.com/users/github","html_url":"https://github.com/github","followers_url":"https://api.github.com/users/github/followers","following_url":"https://api.github.com/users/github/following{/other_user}","gists_url":"https://api.github.com/users/github/gists{/gist_id}","starred_url":"https://api.github.com/users/github/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/github/subscriptions","organizations_url":"https://api.github.com/users/github/orgs","repos_url":"https://api.github.com/users/github/repos","events_url":"https://api.github.com/users/github/events{/privacy}","received_events_url":"https://api.github.com/users/github/received_events","type":"Organization","user_view_type":"public","site_admin":false},"name":"GitHub
+        Actions","description":"Automate your workflow from idea to production","external_url":"https://help.github.com/en/actions","html_url":"https://github.com/apps/github-actions","created_at":"2018-07-30T09:30:17Z","updated_at":"2025-03-07T16:35:00Z","permissions":{"actions":"write","administration":"read","attestations":"write","checks":"write","contents":"write","deployments":"write","discussions":"write","issues":"write","merge_queues":"write","metadata":"read","models":"read","packages":"write","pages":"write","pull_requests":"write","repository_hooks":"write","repository_projects":"write","security_events":"write","statuses":"write","vulnerability_alerts":"read"},"events":["branch_protection_rule","check_run","check_suite","create","delete","deployment","deployment_status","discussion","discussion_comment","fork","gollum","issues","issue_comment","label","merge_group","milestone","page_build","project","project_card","project_column","public","pull_request","pull_request_review","pull_request_review_comment","push","registry_package","release","repository","repository_dispatch","status","watch","workflow_dispatch","workflow_run"]},"pull_requests":[{"url":"https://api.github.com/repos/Mic92/dotfiles/pulls/3016","id":2646302395,"number":3016,"head":{"ref":"merge-when-green-joerg","sha":"261420ea39bf5e65b34a42b701bc723bf481ffdc","repo":{"id":285483895,"url":"https://api.github.com/repos/Mic92/dotfiles","name":"dotfiles"}},"base":{"ref":"main","sha":"4d9a98fcb9777b613dd1c2bdb0beff6ae94503a2","repo":{"id":285483895,"url":"https://api.github.com/repos/Mic92/dotfiles","name":"dotfiles"}}}]}]}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Content-Length:
+      - '3471'
+      Content-Security-Policy:
+      - default-src 'none'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 07 Jul 2025 10:55:32 GMT
+      ETag:
+      - '"185272cbf470b483ecd5e42374b041276592666816e02d6a3ba76e8a26da2250"'
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Server:
+      - github.com
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With
+      X-Accepted-OAuth-Scopes:
+      - ''
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-GitHub-Media-Type:
+      - github.v3; format=json
+      X-GitHub-Request-Id:
+      - B710:131DD0:C14DE:C61A0:686BA7A4
+      X-OAuth-Scopes:
+      - admin:public_key, gist, notifications, read:org, repo, workflow
+      X-RateLimit-Limit:
+      - '5000'
+      X-RateLimit-Remaining:
+      - '4832'
+      X-RateLimit-Reset:
+      - '1751888511'
+      X-RateLimit-Resource:
+      - core
+      X-RateLimit-Used:
+      - '168'
+      X-XSS-Protection:
+      - '0'
+      connection:
+      - close
+      x-github-api-version-selected:
+      - '2022-11-28'
+      x-oauth-client-id:
+      - 178c6fc778ccc68e1d6a
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Accept:
+      - application/vnd.github.v3+json
+      Connection:
+      - close
+      Host:
+      - api.github.com
+      User-Agent:
+      - Python-urllib/3.13
+    method: GET
+    uri: https://api.github.com/repos/Mic92/dotfiles/commits/261420ea39bf5e65b34a42b701bc723bf481ffdc/status
+  response:
+    body:
+      string: '{"state":"failure","statuses":[{"url":"https://api.github.com/repos/Mic92/dotfiles/statuses/261420ea39bf5e65b34a42b701bc723bf481ffdc","avatar_url":"https://avatars.githubusercontent.com/u/96200?v=4","id":37489477760,"node_id":"SC_kwDOEQQjd88AAAAIuowIgA","state":"failure","description":"Build
+        done.","target_url":"https://buildbot.thalheim.io/#/builders/53/builds/2266","context":"buildbot/nix-eval","created_at":"2025-07-07T10:44:03Z","updated_at":"2025-07-07T10:44:03Z"}],"sha":"261420ea39bf5e65b34a42b701bc723bf481ffdc","total_count":1,"repository":{"id":285483895,"node_id":"MDEwOlJlcG9zaXRvcnkyODU0ODM4OTU=","name":"dotfiles","full_name":"Mic92/dotfiles","private":false,"owner":{"login":"Mic92","id":96200,"node_id":"MDQ6VXNlcjk2MjAw","avatar_url":"https://avatars.githubusercontent.com/u/96200?v=4","gravatar_id":"","url":"https://api.github.com/users/Mic92","html_url":"https://github.com/Mic92","followers_url":"https://api.github.com/users/Mic92/followers","following_url":"https://api.github.com/users/Mic92/following{/other_user}","gists_url":"https://api.github.com/users/Mic92/gists{/gist_id}","starred_url":"https://api.github.com/users/Mic92/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/Mic92/subscriptions","organizations_url":"https://api.github.com/users/Mic92/orgs","repos_url":"https://api.github.com/users/Mic92/repos","events_url":"https://api.github.com/users/Mic92/events{/privacy}","received_events_url":"https://api.github.com/users/Mic92/received_events","type":"User","user_view_type":"public","site_admin":false},"html_url":"https://github.com/Mic92/dotfiles","description":"My
+        NixOS dotfiles","fork":false,"url":"https://api.github.com/repos/Mic92/dotfiles","forks_url":"https://api.github.com/repos/Mic92/dotfiles/forks","keys_url":"https://api.github.com/repos/Mic92/dotfiles/keys{/key_id}","collaborators_url":"https://api.github.com/repos/Mic92/dotfiles/collaborators{/collaborator}","teams_url":"https://api.github.com/repos/Mic92/dotfiles/teams","hooks_url":"https://api.github.com/repos/Mic92/dotfiles/hooks","issue_events_url":"https://api.github.com/repos/Mic92/dotfiles/issues/events{/number}","events_url":"https://api.github.com/repos/Mic92/dotfiles/events","assignees_url":"https://api.github.com/repos/Mic92/dotfiles/assignees{/user}","branches_url":"https://api.github.com/repos/Mic92/dotfiles/branches{/branch}","tags_url":"https://api.github.com/repos/Mic92/dotfiles/tags","blobs_url":"https://api.github.com/repos/Mic92/dotfiles/git/blobs{/sha}","git_tags_url":"https://api.github.com/repos/Mic92/dotfiles/git/tags{/sha}","git_refs_url":"https://api.github.com/repos/Mic92/dotfiles/git/refs{/sha}","trees_url":"https://api.github.com/repos/Mic92/dotfiles/git/trees{/sha}","statuses_url":"https://api.github.com/repos/Mic92/dotfiles/statuses/{sha}","languages_url":"https://api.github.com/repos/Mic92/dotfiles/languages","stargazers_url":"https://api.github.com/repos/Mic92/dotfiles/stargazers","contributors_url":"https://api.github.com/repos/Mic92/dotfiles/contributors","subscribers_url":"https://api.github.com/repos/Mic92/dotfiles/subscribers","subscription_url":"https://api.github.com/repos/Mic92/dotfiles/subscription","commits_url":"https://api.github.com/repos/Mic92/dotfiles/commits{/sha}","git_commits_url":"https://api.github.com/repos/Mic92/dotfiles/git/commits{/sha}","comments_url":"https://api.github.com/repos/Mic92/dotfiles/comments{/number}","issue_comment_url":"https://api.github.com/repos/Mic92/dotfiles/issues/comments{/number}","contents_url":"https://api.github.com/repos/Mic92/dotfiles/contents/{+path}","compare_url":"https://api.github.com/repos/Mic92/dotfiles/compare/{base}...{head}","merges_url":"https://api.github.com/repos/Mic92/dotfiles/merges","archive_url":"https://api.github.com/repos/Mic92/dotfiles/{archive_format}{/ref}","downloads_url":"https://api.github.com/repos/Mic92/dotfiles/downloads","issues_url":"https://api.github.com/repos/Mic92/dotfiles/issues{/number}","pulls_url":"https://api.github.com/repos/Mic92/dotfiles/pulls{/number}","milestones_url":"https://api.github.com/repos/Mic92/dotfiles/milestones{/number}","notifications_url":"https://api.github.com/repos/Mic92/dotfiles/notifications{?since,all,participating}","labels_url":"https://api.github.com/repos/Mic92/dotfiles/labels{/name}","releases_url":"https://api.github.com/repos/Mic92/dotfiles/releases{/id}","deployments_url":"https://api.github.com/repos/Mic92/dotfiles/deployments"},"commit_url":"https://api.github.com/repos/Mic92/dotfiles/commits/261420ea39bf5e65b34a42b701bc723bf481ffdc","url":"https://api.github.com/repos/Mic92/dotfiles/commits/261420ea39bf5e65b34a42b701bc723bf481ffdc/status"}'
+    headers:
+      Access-Control-Allow-Origin:
+      - '*'
+      Access-Control-Expose-Headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes,
+        X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO,
+        X-GitHub-Request-Id, Deprecation, Sunset
+      Cache-Control:
+      - private, max-age=60, s-maxage=60
+      Content-Length:
+      - '4691'
+      Content-Security-Policy:
+      - default-src 'none'
+      Content-Type:
+      - application/json; charset=utf-8
+      Date:
+      - Mon, 07 Jul 2025 10:55:32 GMT
+      ETag:
+      - '"b82626b492eeddfedc99628add4bde5fe39f85292a43c61c4c22219740cfd7e0"'
+      Referrer-Policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      Server:
+      - github.com
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubdomains; preload
+      Vary:
+      - Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With
+      X-Accepted-OAuth-Scopes:
+      - repo, repo:status
+      X-Content-Type-Options:
+      - nosniff
+      X-Frame-Options:
+      - deny
+      X-GitHub-Media-Type:
+      - github.v3; format=json
+      X-GitHub-Request-Id:
+      - B720:307DA8:2753183:288B5BF:686BA7A4
+      X-OAuth-Scopes:
+      - admin:public_key, gist, notifications, read:org, repo, workflow
+      X-RateLimit-Limit:
+      - '5000'
+      X-RateLimit-Remaining:
+      - '4831'
+      X-RateLimit-Reset:
+      - '1751888511'
+      X-RateLimit-Resource:
+      - core
+      X-RateLimit-Used:
+      - '169'
+      X-XSS-Protection:
+      - '0'
+      connection:
+      - close
+      x-github-api-version-selected:
+      - '2022-11-28'
+      x-oauth-client-id:
+      - 178c6fc778ccc68e1d6a
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - buildbot.thalheim.io
+      User-Agent:
+      - Python-urllib/3.13
+    method: GET
+    uri: https://buildbot.thalheim.io/api/v2/builders/53/builds/2266/steps
+  response:
+    body:
+      string: "{\n  \"meta\": {\n    \"total\": 3\n  }, \n  \"steps\": [\n    {\n
+        \     \"buildid\": 231541, \n      \"complete\": true, \n      \"complete_at\":
+        1751885039, \n      \"hidden\": false, \n      \"locks_acquired_at\": 1751885039,
+        \n      \"name\": \"worker_preparation\", \n      \"number\": 0, \n      \"results\":
+        0, \n      \"started_at\": 1751885039, \n      \"state_string\": \"worker
+        eve-005 ready\", \n      \"stepid\": 950723, \n      \"urls\": []\n    },
+        \n    {\n      \"buildid\": 231541, \n      \"complete\": true, \n      \"complete_at\":
+        1751885040, \n      \"hidden\": false, \n      \"locks_acquired_at\": 1751885039,
+        \n      \"name\": \"git\", \n      \"number\": 1, \n      \"results\": 0,
+        \n      \"started_at\": 1751885039, \n      \"state_string\": \"update\",
+        \n      \"stepid\": 950724, \n      \"urls\": []\n    }, \n    {\n      \"buildid\":
+        231541, \n      \"complete\": true, \n      \"complete_at\": 1751885041, \n
+        \     \"hidden\": false, \n      \"locks_acquired_at\": 1751885040, \n      \"name\":
+        \"Evaluate flake\", \n      \"number\": 2, \n      \"results\": 2, \n      \"started_at\":
+        1751885040, \n      \"state_string\": \"'nix-eval-jobs --workers ...' (failure)\",
+        \n      \"stepid\": 950725, \n      \"urls\": []\n    }\n  ]\n}"
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '1126'
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Mon, 07 Jul 2025 10:55:32 GMT
+      Server:
+      - nginx
+      Set-Cookie:
+      - TWISTED_SESSION=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2luZm8iOnsiYW5vbnltb3VzIjp0cnVlfSwiZXhwIjoxNzUyNDkwNTMyfQ.xs3h_Rj1bV2Unl4j6rcXZOhYWf0zQwivIOEyEBT4zKs;
+        Path=/
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - buildbot.thalheim.io
+      User-Agent:
+      - Python-urllib/3.13
+    method: GET
+    uri: https://buildbot.thalheim.io/api/v2/builders/53/builds/2266
+  response:
+    body:
+      string: "{\n  \"builds\": [\n    {\n      \"builderid\": 53, \n      \"buildid\":
+        231541, \n      \"buildrequestid\": 232120, \n      \"complete\": true, \n
+        \     \"complete_at\": 1751885041, \n      \"locks_duration_s\": 0, \n      \"masterid\":
+        1, \n      \"number\": 2266, \n      \"properties\": {}, \n      \"results\":
+        2, \n      \"started_at\": 1751885039, \n      \"state_string\": \"failed
+        'nix-eval-jobs --workers ...' (failure)\", \n      \"workerid\": 11\n    }\n
+        \ ], \n  \"meta\": {}\n}"
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '438'
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Mon, 07 Jul 2025 10:55:33 GMT
+      Server:
+      - nginx
+      Set-Cookie:
+      - TWISTED_SESSION=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2luZm8iOnsiYW5vbnltb3VzIjp0cnVlfSwiZXhwIjoxNzUyNDkwNTMzfQ.ia8Lg4mqGlqGBppp_cU6U9S0aCLzWEY8ObCf4vjPAdU;
+        Path=/
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - buildbot.thalheim.io
+      User-Agent:
+      - Python-urllib/3.13
+    method: GET
+    uri: https://buildbot.thalheim.io/api/v2/builders/53/builds/2266/steps
+  response:
+    body:
+      string: "{\n  \"meta\": {\n    \"total\": 3\n  }, \n  \"steps\": [\n    {\n
+        \     \"buildid\": 231541, \n      \"complete\": true, \n      \"complete_at\":
+        1751885039, \n      \"hidden\": false, \n      \"locks_acquired_at\": 1751885039,
+        \n      \"name\": \"worker_preparation\", \n      \"number\": 0, \n      \"results\":
+        0, \n      \"started_at\": 1751885039, \n      \"state_string\": \"worker
+        eve-005 ready\", \n      \"stepid\": 950723, \n      \"urls\": []\n    },
+        \n    {\n      \"buildid\": 231541, \n      \"complete\": true, \n      \"complete_at\":
+        1751885040, \n      \"hidden\": false, \n      \"locks_acquired_at\": 1751885039,
+        \n      \"name\": \"git\", \n      \"number\": 1, \n      \"results\": 0,
+        \n      \"started_at\": 1751885039, \n      \"state_string\": \"update\",
+        \n      \"stepid\": 950724, \n      \"urls\": []\n    }, \n    {\n      \"buildid\":
+        231541, \n      \"complete\": true, \n      \"complete_at\": 1751885041, \n
+        \     \"hidden\": false, \n      \"locks_acquired_at\": 1751885040, \n      \"name\":
+        \"Evaluate flake\", \n      \"number\": 2, \n      \"results\": 2, \n      \"started_at\":
+        1751885040, \n      \"state_string\": \"'nix-eval-jobs --workers ...' (failure)\",
+        \n      \"stepid\": 950725, \n      \"urls\": []\n    }\n  ]\n}"
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '1126'
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Mon, 07 Jul 2025 10:55:33 GMT
+      Server:
+      - nginx
+      Set-Cookie:
+      - TWISTED_SESSION=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2luZm8iOnsiYW5vbnltb3VzIjp0cnVlfSwiZXhwIjoxNzUyNDkwNTMzfQ.ia8Lg4mqGlqGBppp_cU6U9S0aCLzWEY8ObCf4vjPAdU;
+        Path=/
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - buildbot.thalheim.io
+      User-Agent:
+      - Python-urllib/3.13
+    method: GET
+    uri: https://buildbot.thalheim.io/api/v2/steps/950725/logs
+  response:
+    body:
+      string: "{\n  \"logs\": [\n    {\n      \"complete\": true, \n      \"logid\":
+        157187, \n      \"name\": \"stdio\", \n      \"num_lines\": 70, \n      \"slug\":
+        \"stdio\", \n      \"stepid\": 950725, \n      \"type\": \"s\"\n    }\n  ],
+        \n  \"meta\": {\n    \"total\": 1\n  }\n}"
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '228'
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Mon, 07 Jul 2025 10:55:33 GMT
+      Server:
+      - nginx
+      Set-Cookie:
+      - TWISTED_SESSION=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2luZm8iOnsiYW5vbnltb3VzIjp0cnVlfSwiZXhwIjoxNzUyNDkwNTMzfQ.ia8Lg4mqGlqGBppp_cU6U9S0aCLzWEY8ObCf4vjPAdU;
+        Path=/
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - buildbot.thalheim.io
+      User-Agent:
+      - Python-urllib/3.13
+    method: GET
+    uri: https://buildbot.thalheim.io/api/v2/builders/53/builds/2266/properties
+  response:
+    body:
+      string: "{\n  \"meta\": {}, \n  \"properties\": [\n    {\n      \"basedir\":
+        [\n        \"/var/lib/buildbot-worker/worker-005\", \n        \"Worker\"\n
+        \     ], \n      \"basename\": [\n        \"main\", \n        \"Change\"\n
+        \     ], \n      \"branch\": [\n        \"refs/pull/3016/merge\", \n        \"Build\"\n
+        \     ], \n      \"builddir\": [\n        \"/var/lib/buildbot-worker/worker-005/Mic92_dotfiles_nix-eval\",
+        \n        \"Worker\"\n      ], \n      \"builderid\": [\n        53, \n        \"Builder\"\n
+        \     ], \n      \"buildername\": [\n        \"Mic92/dotfiles/nix-eval\",
+        \n        \"Builder\"\n      ], \n      \"buildnumber\": [\n        2266,
+        \n        \"Build\"\n      ], \n      \"codebase\": [\n        \"\", \n        \"Build\"\n
+        \     ], \n      \"event\": [\n        \"pull_request\", \n        \"Change\"\n
+        \     ], \n      \"github.base.sha\": [\n        \"4d9a98fcb9777b613dd1c2bdb0beff6ae94503a2\",
+        \n        \"Change\"\n      ], \n      \"github.head.sha\": [\n        \"261420ea39bf5e65b34a42b701bc723bf481ffdc\",
+        \n        \"Change\"\n      ], \n      \"got_revision\": [\n        \"261420ea39bf5e65b34a42b701bc723bf481ffdc\",
+        \n        \"GitLocalPrMerge\"\n      ], \n      \"owners\": [\n        [\n
+        \         \"Mic92\"\n        ], \n        \"Build\"\n      ], \n      \"project\":
+        [\n        \"Mic92/dotfiles\", \n        \"Build\"\n      ], \n      \"projectid\":
+        [\n        2, \n        \"Builder\"\n      ], \n      \"projectname\": [\n
+        \       \"Mic92/dotfiles\", \n        \"Builder\"\n      ], \n      \"pullrequesturl\":
+        [\n        \"https://github.com/Mic92/dotfiles/pull/3016\", \n        \"Change\"\n
+        \     ], \n      \"repository\": [\n        \"https://github.com/Mic92/dotfiles\",
+        \n        \"Build\"\n      ], \n      \"revision\": [\n        \"261420ea39bf5e65b34a42b701bc723bf481ffdc\",
+        \n        \"Build\"\n      ], \n      \"scheduler\": [\n        \"Mic92-dotfiles-prs\",
+        \n        \"Scheduler\"\n      ], \n      \"status_name\": [\n        \"nix-eval\",
+        \n        \"Builder\"\n      ], \n      \"workername\": [\n        \"eve-005\",
+        \n        \"Worker\"\n      ]\n    }\n  ]\n}"
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '1892'
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Mon, 07 Jul 2025 10:55:33 GMT
+      Server:
+      - nginx
+      Set-Cookie:
+      - TWISTED_SESSION=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2luZm8iOnsiYW5vbnltb3VzIjp0cnVlfSwiZXhwIjoxNzUyNDkwNTMzfQ.ia8Lg4mqGlqGBppp_cU6U9S0aCLzWEY8ObCf4vjPAdU;
+        Path=/
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - buildbot.thalheim.io
+      User-Agent:
+      - Python-urllib/3.13
+    method: GET
+    uri: https://buildbot.thalheim.io/api/v2/builders/53/builds/2266
+  response:
+    body:
+      string: "{\n  \"builds\": [\n    {\n      \"builderid\": 53, \n      \"buildid\":
+        231541, \n      \"buildrequestid\": 232120, \n      \"complete\": true, \n
+        \     \"complete_at\": 1751885041, \n      \"locks_duration_s\": 0, \n      \"masterid\":
+        1, \n      \"number\": 2266, \n      \"properties\": {}, \n      \"results\":
+        2, \n      \"started_at\": 1751885039, \n      \"state_string\": \"failed
+        'nix-eval-jobs --workers ...' (failure)\", \n      \"workerid\": 11\n    }\n
+        \ ], \n  \"meta\": {}\n}"
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '438'
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Mon, 07 Jul 2025 10:55:33 GMT
+      Server:
+      - nginx
+      Set-Cookie:
+      - TWISTED_SESSION=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2luZm8iOnsiYW5vbnltb3VzIjp0cnVlfSwiZXhwIjoxNzUyNDkwNTMzfQ.ia8Lg4mqGlqGBppp_cU6U9S0aCLzWEY8ObCf4vjPAdU;
+        Path=/
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - buildbot.thalheim.io
+      User-Agent:
+      - Python-urllib/3.13
+    method: GET
+    uri: https://buildbot.thalheim.io/api/v2/builders/53/builds/2266/steps
+  response:
+    body:
+      string: "{\n  \"meta\": {\n    \"total\": 3\n  }, \n  \"steps\": [\n    {\n
+        \     \"buildid\": 231541, \n      \"complete\": true, \n      \"complete_at\":
+        1751885039, \n      \"hidden\": false, \n      \"locks_acquired_at\": 1751885039,
+        \n      \"name\": \"worker_preparation\", \n      \"number\": 0, \n      \"results\":
+        0, \n      \"started_at\": 1751885039, \n      \"state_string\": \"worker
+        eve-005 ready\", \n      \"stepid\": 950723, \n      \"urls\": []\n    },
+        \n    {\n      \"buildid\": 231541, \n      \"complete\": true, \n      \"complete_at\":
+        1751885040, \n      \"hidden\": false, \n      \"locks_acquired_at\": 1751885039,
+        \n      \"name\": \"git\", \n      \"number\": 1, \n      \"results\": 0,
+        \n      \"started_at\": 1751885039, \n      \"state_string\": \"update\",
+        \n      \"stepid\": 950724, \n      \"urls\": []\n    }, \n    {\n      \"buildid\":
+        231541, \n      \"complete\": true, \n      \"complete_at\": 1751885041, \n
+        \     \"hidden\": false, \n      \"locks_acquired_at\": 1751885040, \n      \"name\":
+        \"Evaluate flake\", \n      \"number\": 2, \n      \"results\": 2, \n      \"started_at\":
+        1751885040, \n      \"state_string\": \"'nix-eval-jobs --workers ...' (failure)\",
+        \n      \"stepid\": 950725, \n      \"urls\": []\n    }\n  ]\n}"
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '1126'
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Mon, 07 Jul 2025 10:55:33 GMT
+      Server:
+      - nginx
+      Set-Cookie:
+      - TWISTED_SESSION=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2luZm8iOnsiYW5vbnltb3VzIjp0cnVlfSwiZXhwIjoxNzUyNDkwNTMzfQ.ia8Lg4mqGlqGBppp_cU6U9S0aCLzWEY8ObCf4vjPAdU;
+        Path=/
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+      Vary:
+      - Accept-Encoding
+    status:
+      code: 200
+      message: OK
+- request:
+    body: null
+    headers:
+      Connection:
+      - close
+      Host:
+      - buildbot.thalheim.io
+      User-Agent:
+      - Python-urllib/3.13
+    method: GET
+    uri: https://buildbot.thalheim.io/api/v2/steps/950725/logs
+  response:
+    body:
+      string: "{\n  \"logs\": [\n    {\n      \"complete\": true, \n      \"logid\":
+        157187, \n      \"name\": \"stdio\", \n      \"num_lines\": 70, \n      \"slug\":
+        \"stdio\", \n      \"stepid\": 950725, \n      \"type\": \"s\"\n    }\n  ],
+        \n  \"meta\": {\n    \"total\": 1\n  }\n}"
+    headers:
+      Connection:
+      - close
+      Content-Length:
+      - '228'
+      Content-Type:
+      - text/plain; charset=utf-8
+      Date:
+      - Mon, 07 Jul 2025 10:55:33 GMT
+      Server:
+      - nginx
+      Set-Cookie:
+      - TWISTED_SESSION=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2luZm8iOnsiYW5vbnltb3VzIjp0cnVlfSwiZXhwIjoxNzUyNDkwNTMzfQ.ia8Lg4mqGlqGBppp_cU6U9S0aCLzWEY8ObCf4vjPAdU;
+        Path=/
+      Strict-Transport-Security:
+      - max-age=31536000; includeSubDomains; preload
+    status:
+      code: 200
+      message: OK
+version: 1

@@ -334,26 +334,27 @@ def get_triggered_builds(base_url: str, builder_id: str, build_num: str) -> list
     return sorted(build_requests)
 
 
+RESULT_MEANINGS = {
+    0: "SUCCESS",
+    1: "WARNINGS",
+    2: "FAILURE",
+    3: "SKIPPED",
+    4: "EXCEPTION",
+    5: "RETRY",
+    6: "CANCELLED",
+}
+
+
 def check_build_request_status(base_url: str, request_id: int) -> BuildRequestStatus:
     """Check the status of a build request and return build ID"""
     api_url = f"https://{base_url}/api/v2/buildrequests/{request_id}?property=*"
-
-    result_meanings = {
-        0: "SUCCESS",
-        1: "WARNINGS",
-        2: "FAILURE",
-        3: "SKIPPED",
-        4: "EXCEPTION",
-        5: "RETRY",
-        6: "CANCELLED",
-    }
 
     try:
         with urllib.request.urlopen(api_url) as response:  # noqa: S310
             data = json.loads(response.read())
             request = data["buildrequests"][0]
             result = request.get("results")
-            status = result_meanings.get(result, f"UNKNOWN({result})")
+            status = RESULT_MEANINGS.get(result, f"UNKNOWN({result})")
 
             # Get virtual_builder_name from properties
             virtual_builder_name = None
@@ -394,6 +395,32 @@ def check_build_request_status(base_url: str, request_id: int) -> BuildRequestSt
         return BuildRequestStatus(request_id=request_id, status="ERROR", build_id=None)
 
 
+def get_step_log_urls(base_url: str, step_id: int, step_name: str) -> list[LogUrl]:
+    """Get log URLs for a specific step."""
+    log_urls = []
+    logs_url = f"https://{base_url}/api/v2/steps/{step_id}/logs"
+
+    try:
+        with urllib.request.urlopen(logs_url) as log_response:  # noqa: S310
+            log_data = json.loads(log_response.read())
+
+            for log in log_data.get("logs", []):
+                log_id = log.get("logid")
+                if log_id:
+                    raw_log_url = f"https://{base_url}/api/v2/logs/{log_id}/raw_inline"
+                    log_urls.append(
+                        LogUrl(
+                            step_name=step_name,
+                            log_name=log.get("name", "stdio"),
+                            url=raw_log_url,
+                        )
+                    )
+    except (urllib.error.URLError, urllib.error.HTTPError, json.JSONDecodeError):
+        pass
+
+    return log_urls
+
+
 def get_build_log_urls(base_url: str, build_id: int) -> list[LogUrl]:
     """Get log URLs for a build"""
     if build_id is None:
@@ -411,32 +438,59 @@ def get_build_log_urls(base_url: str, build_id: int) -> list[LogUrl]:
                 # Get logs for each step
                 step_id = step.get("stepid")
                 if step_id:
-                    logs_url = f"https://{base_url}/api/v2/steps/{step_id}/logs"
-                    try:
-                        with urllib.request.urlopen(logs_url) as log_response:  # noqa: S310
-                            log_data = json.loads(log_response.read())
-
-                            for log in log_data.get("logs", []):
-                                log_id = log.get("logid")
-                                if log_id:
-                                    raw_log_url = f"https://{base_url}/api/v2/logs/{log_id}/raw_inline"
-                                    log_urls.append(
-                                        LogUrl(
-                                            step_name=step.get("name", "Unknown step"),
-                                            log_name=log.get("name", "stdio"),
-                                            url=raw_log_url,
-                                        )
-                                    )
-                    except (
-                        urllib.error.URLError,
-                        urllib.error.HTTPError,
-                        json.JSONDecodeError,
-                    ):
-                        pass
+                    step_logs = get_step_log_urls(
+                        base_url, step_id, step.get("name", "Unknown step")
+                    )
+                    log_urls.extend(step_logs)
     except (urllib.error.URLError, urllib.error.HTTPError, json.JSONDecodeError):
         pass
 
     return log_urls
+
+
+def get_parent_build_status(
+    base_url: str, builder_id: str, build_num: str
+) -> tuple[str | None, list[LogUrl]]:
+    """Get parent build status and logs from failed steps."""
+    try:
+        # Get build data
+        build_url = (
+            f"https://{base_url}/api/v2/builders/{builder_id}/builds/{build_num}"
+        )
+        with urllib.request.urlopen(build_url) as response:  # noqa: S310
+            data = json.loads(response.read())
+            build = data["builds"][0]
+
+            # Check if build failed
+            results = build.get("results")
+            if results is None:
+                return None, []  # Build still in progress
+
+            status = RESULT_MEANINGS.get(results, f"UNKNOWN({results})")
+
+            # If failed, get logs from failed steps
+            log_urls = []
+            if status in ["FAILURE", "EXCEPTION", "CANCELLED"]:
+                steps_url = f"https://{base_url}/api/v2/builders/{builder_id}/builds/{build_num}/steps"
+                with urllib.request.urlopen(steps_url) as steps_response:  # noqa: S310
+                    steps_data = json.loads(steps_response.read())
+
+                    for step in steps_data.get("steps", []):
+                        # Check if step failed
+                        step_results = step.get("results")
+                        if step_results and step_results >= 2:  # FAILURE or worse
+                            step_id = step.get("stepid")
+                            if step_id:
+                                step_logs = get_step_log_urls(
+                                    base_url, step_id, step.get("name", "Unknown step")
+                                )
+                                log_urls.extend(step_logs)
+
+            return status, log_urls
+
+    except (urllib.error.URLError, urllib.error.HTTPError, json.JSONDecodeError) as e:
+        print(f"Warning: Could not fetch parent build status: {e}")
+        return None, []
 
 
 def get_build_names(base_url: str, builder_id: str, build_num: str) -> dict[int, str]:
@@ -485,16 +539,16 @@ def filter_builds_with_triggers(buildbot_urls: list[str]) -> list[BuildWithTrigg
                 build_requests = get_triggered_builds(
                     build_info.base_url, build_info.builder_id, build_info.build_num
                 )
-                if build_requests:
-                    builds_with_triggers.append(
-                        BuildWithTriggers(
-                            url=url,
-                            base_url=build_info.base_url,
-                            builder_id=build_info.builder_id,
-                            build_num=build_info.build_num,
-                            build_requests=build_requests,
-                        )
+                # Include builds even without triggered builds so we can check parent build status
+                builds_with_triggers.append(
+                    BuildWithTriggers(
+                        url=url,
+                        base_url=build_info.base_url,
+                        builder_id=build_info.builder_id,
+                        build_num=build_info.build_num,
+                        build_requests=build_requests,
                     )
+                )
             except BuildbotAPIError as e:
                 print(f"Warning: Could not fetch triggered builds for {url}: {e}")
                 continue
@@ -516,6 +570,22 @@ def check_build_status(build: BuildWithTriggers) -> BuildStatusReport:
     """Check status of all build requests for a build."""
     print(f"\n{colorize('🔍 Checking:', Colors.CYAN)} {build.url}")
     print("─" * 80)
+
+    # First check parent build status
+    parent_status, parent_logs = get_parent_build_status(
+        build.base_url, build.builder_id, build.build_num
+    )
+
+    if parent_status and parent_status in ["FAILURE", "EXCEPTION", "CANCELLED"]:
+        print(f"{colorize('⚠️  Parent build failed:', Colors.RED)} {parent_status}")
+        if parent_logs:
+            print(f"\n{colorize('📋 Parent build logs:', Colors.CYAN)}")
+            for log in parent_logs:
+                print(
+                    f"  • {log.step_name} ({log.log_name}): {colorize(log.url, Colors.BLUE)}"
+                )
+        print()
+
     print(
         f"Found {colorize(str(len(build.build_requests)), Colors.BOLD)} triggered builds"
     )
@@ -669,6 +739,13 @@ def check_pr(pr_url: str) -> int:
         for build in builds_with_triggers:
             report = check_build_status(build)
             print_build_report(build, report)
+
+            # Check parent build status for exit code
+            parent_status, _ = get_parent_build_status(
+                build.base_url, build.builder_id, build.build_num
+            )
+            if parent_status in ["FAILURE", "EXCEPTION", "CANCELLED"]:
+                exit_code = 1
 
             # Set exit code to 1 if there are any failures or cancellations
             if "FAILURE" in report.statuses or "CANCELLED" in report.statuses:

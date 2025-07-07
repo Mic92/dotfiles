@@ -75,3 +75,43 @@ class TestIntegration:
 
         # Check that we're finding builds with triggered sub-builds
         assert "build(s) with triggered sub-builds" in output
+
+        # Should NOT show parent build failure for successful builds
+        assert "Parent build failed" not in output
+        assert "Parent build logs:" not in output
+
+    @vcr_config.use_cassette("github_pr_3016_eval_error.yaml")
+    def test_github_pr_3016_eval_error(self, capsys):
+        """Test GitHub PR #3016 which has eval errors in parent build."""
+        exit_code = buildbot_pr_check.check_pr(
+            "https://github.com/Mic92/dotfiles/pull/3016"
+        )
+
+        # Should return 1 because parent build failed
+        assert exit_code == 1
+
+        captured = capsys.readouterr()
+        output = captured.out
+
+        # Verify key output elements
+        assert "Checking PR #3016 in Mic92/dotfiles (github)" in output
+        assert "Found 1 buildbot build(s)" in output
+
+        # Check that parent build failure is shown
+        assert "Parent build failed: FAILURE" in output
+        assert "Parent build logs:" in output
+        assert "Evaluate flake" in output
+
+        # Should have log URLs from the failed step
+        assert "https://buildbot.thalheim.io/api/v2/logs/" in output
+
+        # Verify the log entry format
+        assert "• Evaluate flake (stdio):" in output
+
+        # Check that the log URL is properly formatted
+        import re
+
+        log_url_pattern = r"https://buildbot\.thalheim\.io/api/v2/logs/\d+/raw_inline"
+        assert re.search(log_url_pattern, output), (
+            "Should have properly formatted log URLs for eval error"
+        )
