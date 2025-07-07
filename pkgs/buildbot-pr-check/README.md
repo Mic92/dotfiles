@@ -91,16 +91,6 @@ The script provides:
 - `0`: All builds passed successfully
 - `1`: One or more builds were canceled or failed
 
-## CI Integration
-
-The script is designed for CI pipelines:
-
-```yaml
-- name: Check PR builds
-  run: |
-    buildbot-pr-check ${{ github.event.pull_request.html_url }}
-```
-
 ## Testing
 
 The project includes integration tests using VCR.py to record and replay HTTP
