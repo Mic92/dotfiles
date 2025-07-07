@@ -84,20 +84,23 @@ def run_command(
     check: bool = True,
     capture_stdout: bool = False,
     silent: bool = False,
+    cwd: str | None = None,
 ) -> subprocess.CompletedProcess[str]:
     """Run a command and return the result."""
     if not silent:
         log_command(cmd)
 
     if capture_stdout:
-        result = subprocess.run(cmd, check=False, stdout=subprocess.PIPE, text=True)
+        result = subprocess.run(
+            cmd, check=False, stdout=subprocess.PIPE, text=True, cwd=cwd
+        )
         if result.returncode != 0 and check:
             print_error(f"Command failed with exit code {result.returncode}")
             raise subprocess.CalledProcessError(
                 result.returncode, cmd, result.stdout, result.stderr
             )
         return result
-    return subprocess.run(cmd, check=check, text=True)
+    return subprocess.run(cmd, check=check, text=True, cwd=cwd)
 
 
 def get_git_remote() -> str:
@@ -132,54 +135,20 @@ def has_changes(remote: str, target_branch: str) -> bool:
     return result.returncode != 0
 
 
-def run_treefmt(target_branch: str) -> bool:
-    """Run treefmt if available. Returns True if successful or not needed."""
+def run_flake_fmt(target_branch: str) -> bool:
+    """Run flake-fmt to check and fix formatting. Returns True if successful or not needed."""
     print_header("Checking code formatting...")
 
-    # Try to run treefmt directly
-    if shutil.which("treefmt"):
-        result = run_command(["treefmt", "--fail-on-change"], check=False)
-        if result.returncode == 0:
-            print_success("✓ Code formatting check passed")
-            return True
-        print_warning("Code formatting issues detected")
-
-    # Check if treefmt is in the flake
-    current_system = run_command(
-        ["nix", "config", "show", "system"], silent=True, capture_stdout=True
-    ).stdout.strip()
-
-    has_treefmt_check = f'(val: val ? {current_system} && (val.{current_system}.name == "treefmt" || val.{current_system}.name == "treefmt-nix"))'
-    check_result = run_command(
-        ["nix", "eval", ".#formatter", "--apply", has_treefmt_check],
-        check=False,
-        capture_stdout=True,
+    # Get git root directory
+    git_root_result = run_command(
+        ["git", "rev-parse", "--show-toplevel"], capture_stdout=True, silent=True
     )
+    git_root = git_root_result.stdout.strip()
 
-    if check_result.stdout.strip() != "true":
-        print_subtle("No treefmt configuration found")
-        return True  # No treefmt, that's fine
-
-    # Build and run treefmt
-    print_warning("Building treefmt from flake...")
-    build_result = run_command(
-        [
-            "nix",
-            "build",
-            "-o",
-            ".git/treefmt",
-            f".#formatter.{current_system}",
-            "--print-out-paths",
-        ],
-        capture_stdout=True,
-    )
-    formatter_path = build_result.stdout.strip()
-
-    result = run_command(
-        [f"{formatter_path}/bin/treefmt", "--fail-on-change"], check=False
-    )
+    # Run flake-fmt from git root - it handles all the logic internally
+    result = run_command(["flake-fmt"], check=False, cwd=git_root)
     if result.returncode == 0:
-        print_success("✅ Code formatting check passed")
+        print_success("✓ Code formatting check passed")
         return True
 
     # If formatting failed, try to absorb changes
@@ -199,7 +168,7 @@ def run_treefmt(target_branch: str) -> bool:
     if sys.stdin.isatty() and sys.stdout.isatty():
         run_command(["lazygit"], check=False)
     else:
-        print_error("Formatting issues detected. Please run 'nix fmt' manually.")
+        print_error("Formatting issues detected. Please run 'flake-fmt' manually.")
     return False
 
 
@@ -412,9 +381,9 @@ def main() -> int:
     target_branch = get_default_branch()
     print_info(f"Target branch: {Colors.BLUE}{target_branch}{Colors.RESET}")
 
-    # Run treefmt
-    if not run_treefmt(target_branch):
-        # treefmt made changes and opened lazygit
+    # Run flake-fmt
+    if not run_flake_fmt(target_branch):
+        # flake-fmt made changes and opened lazygit
         return 1
 
     # Pull latest changes
