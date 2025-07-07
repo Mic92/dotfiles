@@ -19,7 +19,7 @@ def pytest_configure(config: Any) -> None:
     )
 
 
-@pytest.fixture(autouse=True)  # type: ignore[misc]
+@pytest.fixture(autouse=True)
 def async_test_timeout(request: Any) -> None:
     """Apply global timeout to all async tests."""
     if request.node.get_closest_marker("asyncio"):
@@ -34,7 +34,7 @@ def async_test_timeout(request: Any) -> None:
         request.node.add_marker(pytest.mark.timeout(timeout))
 
 
-@pytest.fixture  # type: ignore[misc]
+@pytest.fixture
 def tmux_server(monkeypatch: pytest.MonkeyPatch) -> Generator[str, None, None]:
     """Start a dedicated tmux server for testing."""
     # Clear tmux environment to ensure clean state

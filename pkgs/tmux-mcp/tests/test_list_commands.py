@@ -4,7 +4,7 @@ import pytest
 from tmux_mcp.commands import tmux_list_panes, tmux_list_sessions, tmux_run_command
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_list_sessions(tmux_server: str) -> None:
     """Test listing tmux sessions."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -15,7 +15,7 @@ async def test_tmux_list_sessions(tmux_server: str) -> None:
     assert "test-session" in result or "mcp" in result or "windows" in result
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_list_panes(tmux_server: str) -> None:
     """Test listing panes in a session."""
     _ = tmux_server  # Use the fixture to set up test environment

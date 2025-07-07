@@ -4,7 +4,7 @@ import pytest
 from tmux_mcp.commands import tmux_kill_pane, tmux_run_command
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_kill_pane(tmux_server: str) -> None:
     """Test killing a tmux pane."""
     _ = tmux_server  # Use the fixture to set up test environment

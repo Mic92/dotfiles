@@ -4,7 +4,7 @@ import pytest
 from tmux_mcp.commands import tmux_get_command_output, tmux_run_command
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_pagination_basic(tmux_server: str) -> None:
     """Test basic pagination functionality."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -34,7 +34,7 @@ async def test_tmux_pagination_basic(tmux_server: str) -> None:
     assert "150" in next_page_result.output
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_pagination_custom_cursor(tmux_server: str) -> None:
     """Test pagination with custom cursor."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -52,7 +52,7 @@ async def test_tmux_pagination_custom_cursor(tmux_server: str) -> None:
     assert "30" in custom_result.output
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_pagination_invalid_pane(tmux_server: str) -> None:
     """Test pagination with invalid pane ID."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -65,7 +65,7 @@ async def test_tmux_pagination_invalid_pane(tmux_server: str) -> None:
     )
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_pagination_no_cursor(tmux_server: str) -> None:
     """Test pagination without cursor (default behavior)."""
     _ = tmux_server  # Use the fixture to set up test environment

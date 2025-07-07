@@ -4,7 +4,7 @@ import pytest
 from tmux_mcp.commands import tmux_capture_pane, tmux_run_command
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_tmux_capture_pane_with_start_line(tmux_server: str) -> None:
     """Test capturing pane output with start line."""
     _ = tmux_server  # Use the fixture to set up test environment
@@ -30,7 +30,7 @@ async def test_tmux_capture_pane_with_start_line(tmux_server: str) -> None:
     assert "Line 6" in capture_partial.output  # Should start from line 6
 
 
-@pytest.mark.asyncio  # type: ignore[misc]
+@pytest.mark.asyncio
 async def test_capture_pane_with_expect_pattern(tmux_server: str) -> None:
     """Test capture_pane with expect pattern."""
     _ = tmux_server  # Use the fixture to set up test environment

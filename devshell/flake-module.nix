@@ -38,6 +38,8 @@
               mcp
               pydantic
               types-setuptools
+              pytest
+              pytest-asyncio
             ];
           };
         };
