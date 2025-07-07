@@ -108,7 +108,7 @@
       "locked": {
         "lastModified": 1751413887,
         "narHash": "sha256-+ut7DrSwamExIvaCFdiTYD88NTSYJFG2CEOvCha59vI=",
-        "rev": "246f0d66547d073af6249e4f7852466197e871ed",
+        "rev": "a2166c13b0cb3febdaf36391cd2019aa2ccf4366",
         "type": "tarball",
         "url": "https://git.clan.lol/api/v1/repos/clan/data-mesher/archive/246f0d66547d073af6249e4f7852466197e871ed.tar.gz"
       },
@@ -131,10 +131,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1751413887,
-        "narHash": "sha256-+ut7DrSwamExIvaCFdiTYD88NTSYJFG2CEOvCha59vI=",
+        "lastModified": 1751846468,
+        "narHash": "sha256-h0mpWZIOIAKj4fmLNyI2HDG+c0YOkbYmyJXSj/bQ9s0=",
         "ref": "refs/heads/main",
-        "rev": "246f0d66547d073af6249e4f7852466197e871ed",
+        "rev": "a2166c13b0cb3febdaf36391cd2019aa2ccf4366",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
