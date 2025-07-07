@@ -315,6 +315,9 @@ def wait_for_pr_completion(branch: str, interval: int = 10) -> tuple[bool, str]:
     """Wait for PR to be merged or reach a final state."""
     print_header(f"Waiting for PR completion on '{branch}'...")
 
+    # Flag to track if we've already run buildbot-pr-check
+    buildbot_check_done = False
+
     while True:
         # Get comprehensive PR status
         result = run_command(
@@ -324,7 +327,7 @@ def wait_for_pr_completion(branch: str, interval: int = 10) -> tuple[bool, str]:
                 "view",
                 branch,
                 "--json",
-                "state,mergeable,autoMergeRequest,statusCheckRollup",
+                "state,mergeable,autoMergeRequest,statusCheckRollup,url",
             ],
             check=False,
             silent=True,
@@ -369,6 +372,18 @@ def wait_for_pr_completion(branch: str, interval: int = 10) -> tuple[bool, str]:
             f"{Colors.RED}Failed: {failed}{Colors.RESET}, "
             f"{Colors.YELLOW}Pending: {pending}{Colors.RESET}"
         )
+
+        # Run buildbot-pr-check if we have failing checks and haven't done so already
+        if failed > 0 and pending == 0 and not buildbot_check_done:
+            pr_url = pr_data.get("url", "")
+            if pr_url and shutil.which("buildbot-pr-check"):
+                print_warning(
+                    "\n🔍 Running buildbot-pr-check to get detailed failure information..."
+                )
+                # Run buildbot-pr-check but ignore exit code (it returns 1 for failures)
+                run_command(["buildbot-pr-check", pr_url], check=False)
+                print()  # Add blank line after buildbot-pr-check output
+            buildbot_check_done = True
 
         # Check for completion
         result = check_pr_completion(pr_data, pending, failed)
