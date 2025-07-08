@@ -787,15 +787,22 @@ def print_build_report(
             print(f"  → {colorize(display_name, status.color)}")
 
             # Get log URLs for failed builds
-            if status not in [BuildStatus.FAILURE, BuildStatus.EXCEPTION]:
+            if status not in [
+                BuildStatus.FAILURE,
+                BuildStatus.EXCEPTION,
+                BuildStatus.CANCELLED,
+            ]:
                 continue
 
             build_id = report.build_id_map.get(req_id)
             if not build_id:
+                logger.debug(f"No build_id found for request {req_id}")
                 continue
 
+            logger.debug(f"Fetching log URLs for build_id {build_id}")
             log_urls = get_build_log_urls(build.base_url, build_id)
             if not log_urls:
+                logger.debug(f"No log URLs found for build_id {build_id}")
                 continue
 
             print(f"    {colorize('Log URLs:', Colors.CYAN)}")
