@@ -47,8 +47,8 @@ def extract_calendar_from_email(email_content: str) -> tuple[Calendar | None, st
                 cal_data = part.get_payload(decode=True)
                 if isinstance(cal_data, bytes):
                     cal = Calendar.from_ical(cal_data.decode("utf-8"))
-                    assert isinstance(cal, Calendar)
-                    return cal, to_email
+                    if isinstance(cal, Calendar):
+                        return cal, to_email
             except (ValueError, TypeError):
                 continue
 
@@ -56,10 +56,11 @@ def extract_calendar_from_email(email_content: str) -> tuple[Calendar | None, st
     if "BEGIN:VCALENDAR" in email_content:
         try:
             cal = Calendar.from_ical(email_content)
-            assert isinstance(cal, Calendar)
-            return cal, to_email
         except (ValueError, TypeError):
             pass
+        else:
+            if isinstance(cal, Calendar):
+                return cal, to_email
 
     return None, to_email
 
@@ -110,7 +111,7 @@ def create_reply(  # noqa: C901
                     reply_attendee.params["rsvp"] = vText("FALSE")
                     if "role" in attendee.params:
                         reply_attendee.params["role"] = attendee.params["role"]
-                    reply_event.add("attendee", reply_attendee, encode=False)
+                    reply_event.add("attendee", reply_attendee)
                     found_self = True
                     break
 
@@ -121,7 +122,7 @@ def create_reply(  # noqa: C901
                 reply_attendee.params["partstat"] = vText(status)
                 reply_attendee.params["rsvp"] = vText("FALSE")
                 reply_attendee.params["role"] = vText("REQ-PARTICIPANT")
-                reply_event.add("attendee", reply_attendee, encode=False)
+                reply_event.add("attendee", reply_attendee)
 
             # Add comment if provided
             if comment:
