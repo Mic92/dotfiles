@@ -37,14 +37,6 @@ lint.ignore = [
   # Boolean default positional argument in function definition
   "FBT002",
 
-  # Too many statements
-  "PLR0915",
-  # Too many arguments in function definition
-  "PLR0913",
-  "PLR0912", # Too many branches
-  # $X is too complex
-  "C901",
-
   "E501",    # line too long
   "T201",    # `print` found
   "PLR2004", # Magic value used in comparison
