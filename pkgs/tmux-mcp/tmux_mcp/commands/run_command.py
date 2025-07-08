@@ -7,6 +7,7 @@ import os
 import random
 import shlex
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 import anyio
@@ -28,6 +29,18 @@ from .base import (
 )
 
 logger = logging.getLogger("tmux-mcp")
+
+
+@dataclass
+class CommandContext:
+    """Context for command execution."""
+
+    pane_id: str
+    command: str
+    working_dir: str | None
+    output_file: Path
+    keep_pane: bool
+    timeout_seconds: int
 
 
 def _build_shell_command(
@@ -371,128 +384,120 @@ async def _setup_tmux_environment(
 
 
 async def _handle_expect_pattern(
-    pane_id: str,
+    ctx: CommandContext,
     expect_pattern: str,
-    timeout_seconds: int,
-    keep_pane: bool,
-    command: str,
-    working_dir: str | None,
-    output_file: Path,
 ) -> CommandResult | None:
     """Handle expect pattern logic for tmux_run_command.
 
     Returns CommandResult if pattern handling is complete, None to continue normal flow.
     """
     logger.debug(
-        f"Starting to wait for pattern {expect_pattern!r} with timeout: {timeout_seconds}s"
+        f"Starting to wait for pattern {expect_pattern!r} with timeout: {ctx.timeout_seconds}s"
     )
     pattern_found, matched_text, current_output = await wait_for_pattern(
-        pane_id, expect_pattern, timeout_seconds, output_file
+        ctx.pane_id, expect_pattern, ctx.timeout_seconds, ctx.output_file
     )
 
     if not pattern_found:
         # Pattern not found - treat as error
-        if not keep_pane:
-            _schedule_window_cleanup(pane_id, delay_seconds=60)
+        if not ctx.keep_pane:
+            _schedule_window_cleanup(ctx.pane_id, delay_seconds=60)
             logger.debug(
-                f"Scheduled window cleanup for pane {pane_id} in 60s after pattern timeout"
+                f"Scheduled window cleanup for pane {ctx.pane_id} in 60s after pattern timeout"
             )
 
         return CommandResult(
-            pane_id=pane_id,
+            pane_id=ctx.pane_id,
             exit_code=-1,
             output=current_output,
-            command=command,
-            working_dir=working_dir,
+            command=ctx.command,
+            working_dir=ctx.working_dir,
             error=f"Pattern not found: {matched_text}",
         )
 
     # Pattern found - command continues running if keep_pane is True
     logger.debug(f"Pattern found: {matched_text!r}")
     return CommandResult(
-        pane_id=pane_id,
+        pane_id=ctx.pane_id,
         exit_code=0,
         output=current_output,
-        command=command,
-        working_dir=working_dir,
+        command=ctx.command,
+        working_dir=ctx.working_dir,
     )
 
 
 async def _handle_command_completion(
-    pane_id: str,
+    ctx: CommandContext,
     completion_fifo: Path,
-    output_file: Path,
-    timeout_seconds: int,
-    keep_pane: bool,
-    command: str,
-    working_dir: str | None,
 ) -> CommandResult:
     """Handle normal command completion (non-expect pattern mode)."""
-    logger.debug(f"Starting to wait for completion with timeout: {timeout_seconds}s")
+    logger.debug(
+        f"Starting to wait for completion with timeout: {ctx.timeout_seconds}s"
+    )
     completion_task = asyncio.create_task(_wait_for_completion(completion_fifo))
 
     try:
         success, exit_code = await asyncio.wait_for(
-            completion_task, timeout=timeout_seconds
+            completion_task, timeout=ctx.timeout_seconds
         )
         logger.debug(
             f"Completion wait finished: success={success}, exit_code={exit_code}"
         )
     except TimeoutError:
-        logger.debug(f"Command timed out after {timeout_seconds} seconds")
+        logger.debug(f"Command timed out after {ctx.timeout_seconds} seconds")
         # Cancel the completion task to clean up subprocess
         completion_task.cancel()
         with contextlib.suppress(asyncio.CancelledError):
             await completion_task
 
         # Schedule window cleanup with 60s delay since it timed out
-        if not keep_pane:
-            _schedule_window_cleanup(pane_id, delay_seconds=60)
+        if not ctx.keep_pane:
+            _schedule_window_cleanup(ctx.pane_id, delay_seconds=60)
             logger.debug(
-                f"Scheduled window cleanup for pane {pane_id} in 60s after timeout"
+                f"Scheduled window cleanup for pane {ctx.pane_id} in 60s after timeout"
             )
 
         return CommandResult(
-            pane_id=pane_id,
+            pane_id=ctx.pane_id,
             exit_code=-1,
-            output=f"Command timed out after {timeout_seconds} seconds",
-            command=command,
-            working_dir=working_dir,
+            output=f"Command timed out after {ctx.timeout_seconds} seconds",
+            command=ctx.command,
+            working_dir=ctx.working_dir,
             error="timeout",
         )
 
     if not success:
         return CommandResult(
-            pane_id=pane_id,
+            pane_id=ctx.pane_id,
             exit_code=-1,
             output="Failed to receive completion signal",
-            command=command,
-            working_dir=working_dir,
+            command=ctx.command,
+            working_dir=ctx.working_dir,
             error="completion_signal_failed",
         )
 
     # Read the output for initial response (first 100 lines by default)
-    output, pagination_info = await _read_command_output(output_file, "0:100")
+    output, pagination_info = await _read_command_output(ctx.output_file, "0:100")
 
     # Cache the output file for pagination
-    _cache_output_file(pane_id, output_file)
+    _cache_output_file(ctx.pane_id, ctx.output_file)
 
     # Schedule window cleanup with 60s delay (unless keep_pane is True)
-    if not keep_pane:
-        _schedule_window_cleanup(pane_id, delay_seconds=60)
-        logger.debug(f"Scheduled window cleanup for pane {pane_id} in 60s")
+    if not ctx.keep_pane:
+        _schedule_window_cleanup(ctx.pane_id, delay_seconds=60)
+        logger.debug(f"Scheduled window cleanup for pane {ctx.pane_id} in 60s")
 
     return CommandResult(
-        pane_id=pane_id,
+        pane_id=ctx.pane_id,
         exit_code=exit_code,
         output=output,
-        command=command,
-        working_dir=working_dir,
+        command=ctx.command,
+        working_dir=ctx.working_dir,
         pagination=pagination_info,
     )
 
 
-async def tmux_run_command(
+async def tmux_run_command(  # noqa: PLR0913
     command: str,
     working_dir: str | None = None,
     session_name: str | None = None,
@@ -519,30 +524,24 @@ async def tmux_run_command(
             command, working_dir, session_name, window_name, keep_pane
         )
 
+        # Create context object
+        ctx = CommandContext(
+            pane_id=env.pane_id,
+            command=command,
+            working_dir=working_dir,
+            output_file=env.output_file,
+            keep_pane=keep_pane,
+            timeout_seconds=timeout_seconds,
+        )
+
         # Handle expect pattern if provided
         if expect_pattern:
-            result = await _handle_expect_pattern(
-                env.pane_id,
-                expect_pattern,
-                timeout_seconds,
-                keep_pane,
-                command,
-                working_dir,
-                env.output_file,
-            )
+            result = await _handle_expect_pattern(ctx, expect_pattern)
             if result:
                 return result
 
         # Handle normal command completion
-        return await _handle_command_completion(
-            env.pane_id,
-            env.completion_fifo,
-            env.output_file,
-            timeout_seconds,
-            keep_pane,
-            command,
-            working_dir,
-        )
+        return await _handle_command_completion(ctx, env.completion_fifo)
 
     except TmuxCommandError as e:
         return CommandResult(

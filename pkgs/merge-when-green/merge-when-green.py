@@ -12,6 +12,7 @@ import sys
 import tempfile
 import time
 from pathlib import Path
+from typing import Any
 
 
 class Colors:
@@ -325,9 +326,10 @@ def get_pr_status(branch: str) -> tuple[dict[str, Any] | None, str]:
 
     try:
         pr_data = json.loads(result.stdout)
-        return pr_data, ""
     except json.JSONDecodeError:
         return None, "Failed to parse PR status"
+    else:
+        return pr_data, ""
 
 
 def run_buildbot_check_if_needed(
@@ -381,6 +383,80 @@ def wait_for_pr_completion(branch: str, interval: int = 10) -> tuple[bool, str]:
         time.sleep(interval)
 
 
+def setup_and_prepare(target_branch: str) -> int:
+    """Run flake-fmt and pull latest changes."""
+    # Run flake-fmt
+    if not run_flake_fmt(target_branch):
+        # flake-fmt made changes and opened lazygit
+        return 1
+
+    # Pull latest changes
+    print_header("Pulling latest changes...")
+    run_command(["git", "pull", "--rebase", "origin", target_branch])
+    return 0
+
+
+def push_changes_to_branch(branch: str) -> tuple[bool, str]:
+    """Push changes to branch and get the pushed commit."""
+    print_header("Pushing changes...")
+    push_result = run_command(
+        ["git", "push", "--force", "origin", f"HEAD:{branch}"],
+        check=False,
+        capture_stdout=True,
+    )
+
+    if push_result.returncode != 0:
+        return False, push_result.stdout
+
+    # Get the commit we just pushed
+    pushed_commit = run_command(
+        ["git", "rev-parse", "HEAD"], silent=True, capture_stdout=True
+    ).stdout.strip()
+    return True, pushed_commit
+
+
+def wait_for_pr_update(branch: str, pushed_commit: str) -> bool:
+    """Wait for PR to be updated with pushed commit."""
+    print_info("\nWaiting for PR to be updated with pushed changes...")
+    wait_start = time.time()
+    while True:
+        result = run_command(
+            ["gh", "pr", "view", branch, "--json", "headRefOid"],
+            check=False,
+            silent=True,
+            capture_stdout=True,
+        )
+        if result.returncode == 0:
+            try:
+                pr_data = json.loads(result.stdout)
+                pr_commit = pr_data.get("headRefOid", "")
+                if pr_commit == pushed_commit:
+                    print_success("✓ PR updated with latest commit")
+                    return True
+            except json.JSONDecodeError:
+                pass
+
+        if time.time() - wait_start > 30:
+            print_error("✗ Timeout waiting for PR to update")
+            return False
+
+        time.sleep(2)
+
+
+def handle_pr_creation(
+    branch: str, target_branch: str, pr_state: str, message: str | None
+) -> None:
+    """Handle PR creation or update existing PR."""
+    if pr_state != "OPEN":
+        create_pr(branch, target_branch, message)
+    else:
+        print_success("\n✓ Using existing PR")
+        # Enable auto-merge for existing PR
+        print_warning("Enabling auto-merge for existing PR...")
+        run_command(["gh", "pr", "merge", branch, "--auto", "--rebase"])
+        print_success("✓ Auto-merge enabled")
+
+
 def main() -> int:
     """Main entry point."""
     parser = argparse.ArgumentParser(description="Create PR and merge when CI passes")
@@ -399,14 +475,9 @@ def main() -> int:
     target_branch = get_default_branch()
     print_info(f"Target branch: {Colors.BLUE}{target_branch}{Colors.RESET}")
 
-    # Run flake-fmt
-    if not run_flake_fmt(target_branch):
-        # flake-fmt made changes and opened lazygit
+    # Setup and prepare
+    if setup_and_prepare(target_branch) != 0:
         return 1
-
-    # Pull latest changes
-    print_header("Pulling latest changes...")
-    run_command(["git", "pull", "--rebase", "origin", target_branch])
 
     # Check if we have changes
     if not has_changes("origin", target_branch):
@@ -424,59 +495,19 @@ def main() -> int:
         run_command(["gh", "pr", "checks", target_branch], check=False)
 
     # Push changes
-    print_header("Pushing changes...")
-    push_result = run_command(
-        ["git", "push", "--force", "origin", f"HEAD:{branch}"],
-        check=False,
-        capture_stdout=True,
-    )
-
-    if push_result.returncode != 0:
-        print_error(f"Failed to push changes: {push_result.stdout}")
+    success, result = push_changes_to_branch(branch)
+    if not success:
+        print_error(f"Failed to push changes: {result}")
         return 1
+    pushed_commit = result
 
-    # Get the commit we just pushed
-    pushed_commit = run_command(
-        ["git", "rev-parse", "HEAD"], silent=True, capture_stdout=True
-    ).stdout.strip()
-
-    # Create PR if needed
-    if pr_state != "OPEN":
-        create_pr(branch, target_branch, args.message)
-    else:
-        print_success("\n✓ Using existing PR")
-        # Enable auto-merge for existing PR
-        print_warning("Enabling auto-merge for existing PR...")
-        run_command(["gh", "pr", "merge", branch, "--auto", "--rebase"])
-        print_success("✓ Auto-merge enabled")
+    # Create or update PR
+    handle_pr_creation(branch, target_branch, pr_state, args.message)
 
     # Wait for checks unless --no-wait is specified
     if not args.no_wait:
-        # Wait for PR to be updated with our pushed commit
-        print_info("\nWaiting for PR to be updated with pushed changes...")
-        wait_start = time.time()
-        while True:
-            result = run_command(
-                ["gh", "pr", "view", branch, "--json", "headRefOid"],
-                check=False,
-                silent=True,
-                capture_stdout=True,
-            )
-            if result.returncode == 0:
-                try:
-                    pr_data = json.loads(result.stdout)
-                    pr_commit = pr_data.get("headRefOid", "")
-                    if pr_commit == pushed_commit:
-                        print_success("✓ PR updated with latest commit")
-                        break
-                except json.JSONDecodeError:
-                    pass
-
-            if time.time() - wait_start > 30:
-                print_error("✗ Timeout waiting for PR to update")
-                return 1
-
-            time.sleep(2)
+        if not wait_for_pr_update(branch, pushed_commit):
+            return 1
 
         # Now wait for completion
         success, message = wait_for_pr_completion(branch)

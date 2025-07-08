@@ -260,8 +260,8 @@ def ensure_merge_label(client: GithubClient, args: argparse.Namespace) -> None:
     )
 
 
-def main(_args: list[str] = sys.argv[1:]) -> None:
-    args = parse_args(_args)
+def resolve_repo_and_owner(args: argparse.Namespace) -> None:
+    """Resolve repo and owner from git info if not provided."""
     if args.repo is None or args.owner is None:
         info = get_github_info()
 
@@ -275,11 +275,15 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
                 die("Please provide an owner with `--owner`")
             args.owner = args.owner or info[0]
 
-    client = GithubClient(read_github_token())
-    suites = client.fetch_check_suites(args.owner, args.repo, args.branch)
+
+def collect_check_runs(
+    client: GithubClient, owner: str, repo: str, branch: str
+) -> list[str]:
+    """Collect all relevant check runs from GitHub."""
+    suites = client.fetch_check_suites(owner, repo, branch)
     check_run_set = set()
     for suite in suites["check_suites"]:
-        runs = client.fetch_check_runs(args.owner, args.repo, suite["id"])
+        runs = client.fetch_check_runs(owner, repo, suite["id"])
         for r in runs["check_runs"]:
             if r["app"]["slug"] == "mergify":
                 continue
@@ -287,14 +291,25 @@ def main(_args: list[str] = sys.argv[1:]) -> None:
             if r["name"] == "lockfile":
                 continue
             check_run_set.add(r["name"])
-    check_runs = sorted(check_run_set)
+    return sorted(check_run_set)
+
+
+def main(_args: list[str] = sys.argv[1:]) -> None:
+    args = parse_args(_args)
+    resolve_repo_and_owner(args)
+
+    client = GithubClient(read_github_token())
+    check_runs = collect_check_runs(client, args.owner, args.repo, args.branch)
+
     mergify_config = Path(".mergify.yml")
     if mergify_config.exists():
         rules = update_mergify_config(mergify_config, check_runs)
     else:
         rules = new_mergify_config(client, args, check_runs)
+
     with mergify_config.open("w") as f:
         yaml.dump(rules, f)
+
     ensure_merge_label(client, args)
 
 
