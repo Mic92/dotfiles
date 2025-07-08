@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ical-cli"
+name = "vcal"
 version = "0.1.0"
-description = "Command-line tools for working with iCalendar files and email invitations"
+description = "vCalendar/iCalendar management tool for creating, importing, and replying to calendar invitations"
 readme = "README.md"
 requires-python = ">=3.9"
 license = {text = "MIT"}
@@ -33,9 +33,7 @@ dependencies = [
 ]
 
 [project.scripts]
-create-calendar-invite = "ical_cli.create:main"
-import-calendar-invite = "ical_cli.import_invite:main"
-reply-calendar-invite = "ical_cli.reply:main"
+vcal = "ical_cli.main:main"
 
 [tool.setuptools]
 packages = ["ical_cli"]

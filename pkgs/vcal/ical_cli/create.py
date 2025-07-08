@@ -46,6 +46,18 @@ class MeetingConfig:
     recurrence: dict | None = None
 
 
+@dataclass
+class CreateConfig:
+    """Configuration for create command."""
+
+    meeting: MeetingConfig
+    output: str | None = None
+    no_send: bool = False
+    dry_run: bool = False
+    calendar_dir: str = "~/.local/share/calendars/Personal"
+    no_local_save: bool = False
+
+
 def parse_attendees(attendees_str: str) -> list[tuple[str, str]]:
     """Parse attendee string format: 'Name <email>' or just 'email'."""
     attendees = []
@@ -257,139 +269,6 @@ def get_local_timezone() -> str:
     return "UTC"
 
 
-def create_argument_parser() -> argparse.ArgumentParser:
-    """Create and configure argument parser."""
-    local_tz = get_local_timezone()
-
-    parser = argparse.ArgumentParser(
-        description="Generate and send ICS calendar invites via msmtp",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Simple meeting
-  %(prog)s -s "Team Meeting" -d 60 -a "john@example.com,Jane Doe <jane@example.com>"
-
-  # Meeting with Zoom link
-  %(prog)s -s "Project Review" -d 90 -a "team@example.com" \\
-    -l "https://zoom.us/j/123456789" --meeting-link "https://zoom.us/j/123456789"
-
-  # Specific time and timezone
-  %(prog)s -s "Client Call" --start "2024-01-15 14:00" -d 30 \\
-    -a "Client Name <client@company.com>" --timezone "America/New_York"
-
-  # Weekly recurring meeting for 10 weeks
-  %(prog)s -s "Weekly Standup" -d 30 -a "team@example.com" \\
-    --repeat weekly --count 10
-
-  # Biweekly meeting on specific days until end of year
-  %(prog)s -s "Sprint Review" -d 60 -a "team@example.com" \\
-    --repeat biweekly --weekdays "MO,FR" --until "2025-12-31"
-
-  # Daily meeting for 5 days
-  %(prog)s -s "Daily Sync" -d 15 -a "team@example.com" \\
-    --repeat daily --count 5
-
-  # Custom recurrence rule (every 3 days, 7 times)
-  %(prog)s -s "Check-in" -d 30 -a "manager@example.com" \\
-    --rrule "FREQ=DAILY;INTERVAL=3;COUNT=7"
-
-  # Save ICS file without sending
-  %(prog)s -s "Meeting" -a "test@example.com" --no-send -o meeting.ics
-        """,
-    )
-
-    parser.add_argument("-s", "--summary", required=True, help="Meeting title/summary")
-    parser.add_argument(
-        "--start",
-        help="Start time (YYYY-MM-DD HH:MM), defaults to next hour",
-    )
-    parser.add_argument(
-        "-d",
-        "--duration",
-        type=int,
-        default=60,
-        help="Duration in minutes (default: 60)",
-    )
-    parser.add_argument(
-        "-a",
-        "--attendees",
-        required=True,
-        help='Comma-separated attendees: "Name <email>" or just "email"',
-    )
-    parser.add_argument("--organizer-name", help="Your name (defaults to system user)")
-    parser.add_argument(
-        "--organizer-email",
-        help="Your email (defaults to $EMAIL or user@hostname)",
-    )
-    parser.add_argument("-l", "--location", help="Meeting location")
-    parser.add_argument("--meeting-link", help="Meeting URL (Zoom, Teams, etc.)")
-    parser.add_argument("--description", help="Additional meeting description")
-    parser.add_argument(
-        "--reminder",
-        type=int,
-        default=15,
-        help="Reminder minutes before (default: 15)",
-    )
-    parser.add_argument(
-        "--timezone",
-        default=local_tz,
-        help=f"Timezone (default: {local_tz})",
-    )
-    parser.add_argument(
-        "-o",
-        "--output",
-        help="Save ICS to file (in addition to sending)",
-    )
-    parser.add_argument(
-        "--no-send",
-        action="store_true",
-        help="Only create ICS file, do not send",
-    )
-    parser.add_argument(
-        "--dry-run",
-        action="store_true",
-        help="Show what would be sent without sending",
-    )
-    parser.add_argument(
-        "--calendar-dir",
-        default="~/.local/share/calendars/Personal",
-        help=(
-            "Local calendar directory for saving events "
-            "(default: ~/.local/share/calendars/Personal)"
-        ),
-    )
-    parser.add_argument(
-        "--no-local-save",
-        action="store_true",
-        help="Do not save to local calendar",
-    )
-
-    # Recurrence options
-    recurrence_group = parser.add_argument_group("recurrence options")
-    recurrence_group.add_argument(
-        "--repeat",
-        choices=["daily", "weekly", "biweekly", "monthly", "yearly"],
-        help="Simple recurrence pattern",
-    )
-    recurrence_group.add_argument(
-        "--count",
-        type=int,
-        help="Number of occurrences (e.g., --repeat weekly --count 10)",
-    )
-    recurrence_group.add_argument(
-        "--until",
-        help="End date for recurrence (YYYY-MM-DD)",
-    )
-    recurrence_group.add_argument(
-        "--weekdays",
-        help="Comma-separated weekdays for weekly recurrence (e.g., MO,WE,FR)",
-    )
-    recurrence_group.add_argument(
-        "--rrule",
-        help="Custom iCalendar RRULE string (e.g., 'FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=10')",
-    )
-
-    return parser
 
 
 def get_organizer_info(args: argparse.Namespace) -> tuple[str, str]:
@@ -511,13 +390,15 @@ def parse_recurrence_options(
     return rrule
 
 
-def save_ics_file(cal: Calendar, args: argparse.Namespace, start: datetime) -> None:
+def save_ics_file(cal: Calendar, output: str | None, start: datetime) -> None:
     """Save ICS file if requested."""
-    if args.output:
-        output_file = args.output
+    if output:
+        output_file = output
     else:
         # Generate filename from summary and date
-        safe_summary = re.sub(r"[^\w\s-]", "", args.summary).strip().replace(" ", "-")
+        event = cal.walk("vevent")[0]
+        summary = str(event.get("summary", "meeting"))
+        safe_summary = re.sub(r"[^\w\s-]", "", summary).strip().replace(" ", "-")
         date_str = start.strftime("%Y%m%d")
         output_file = f"{safe_summary}-{date_str}.ics"
 
@@ -526,13 +407,13 @@ def save_ics_file(cal: Calendar, args: argparse.Namespace, start: datetime) -> N
         f.write(cal.to_ical())
 
 
-def save_to_local_calendar(cal: Calendar, args: argparse.Namespace) -> None:
+def save_to_local_calendar(cal: Calendar, calendar_dir: str, meeting: MeetingConfig) -> None:
     """Save event to local calendar directory."""
-    calendar_dir = Path(args.calendar_dir).expanduser()
-    if calendar_dir.is_dir():
+    cal_dir = Path(calendar_dir).expanduser()
+    if cal_dir.is_dir():
         # Generate unique filename using UID
         event_uid = cal.walk("vevent")[0]["UID"]
-        calendar_file = calendar_dir / f"{event_uid}.ics"
+        calendar_file = cal_dir / f"{event_uid}.ics"
         try:
             with calendar_file.open("wb") as f:
                 f.write(cal.to_ical())
@@ -596,30 +477,55 @@ def print_meeting_details(config: MeetingConfig) -> None:
         print(f"\nMeeting link: {config.meeting_link}")
 
 
-def main(argv: list[str] | None = None) -> int:
-    """Run the main program."""
-    # Allow passing arguments for testing
-    if argv is None:
-        argv = sys.argv[1:]
+def run(config: CreateConfig) -> int:
+    """Run the create command with the given configuration."""
+    # Create calendar invite
+    cal = create_calendar_invite(config.meeting)
 
-    # Parse arguments with the provided argv
-    parser = create_argument_parser()
-    args = parser.parse_args(argv)
+    # Save ICS file if requested
+    if config.output or config.no_send:
+        save_ics_file(cal, config.output, config.meeting.start)
 
+    # Print meeting details
+    print_meeting_details(config.meeting)
+
+    # Save to local calendar if not disabled
+    if not config.no_local_save:
+        save_to_local_calendar(cal, config.calendar_dir, config.meeting)
+
+    # Send email if not disabled
+    if not config.no_send:
+        email_config = EmailConfig(
+            cal=cal,
+            config=config.meeting,
+            dry_run=config.dry_run,
+        )
+        success = send_invite_email(email_config)
+
+        if not success and not config.dry_run:
+            return 1
+
+    return 0
+
+
+def _handle_args(args: argparse.Namespace) -> int:
     # Parse timezone
     try:
         tz = timezone(args.timezone)
     except pytz.exceptions.UnknownTimeZoneError:
+        print(f"Error: Unknown timezone: {args.timezone}", file=sys.stderr)
         return 1
 
     # Parse time and attendees
     try:
         start, end = parse_meeting_time(args, tz)
-    except ValueError:
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
         return 1
 
     attendees = parse_attendees(args.attendees)
     if not attendees:
+        print("Error: No valid attendees specified", file=sys.stderr)
         return 1
 
     # Get organizer info
@@ -628,11 +534,12 @@ def main(argv: list[str] | None = None) -> int:
     # Parse recurrence options
     try:
         recurrence = parse_recurrence_options(args, tz)
-    except ValueError:
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
         return 1
 
     # Create meeting config
-    config = MeetingConfig(
+    meeting = MeetingConfig(
         summary=args.summary,
         start=start,
         end=end,
@@ -647,30 +554,166 @@ def main(argv: list[str] | None = None) -> int:
         recurrence=recurrence,
     )
 
-    # Create calendar invite
-    cal = create_calendar_invite(config)
+    # Create full config
+    config = CreateConfig(
+        meeting=meeting,
+        output=args.output,
+        no_send=args.no_send,
+        dry_run=args.dry_run,
+        calendar_dir=args.calendar_dir,
+        no_local_save=args.no_local_save,
+    )
 
-    # Save ICS file if requested
-    if args.output or args.no_send:
-        save_ics_file(cal, args, start)
-
-    # Print meeting details
-    print_meeting_details(config)
-
-    # Save to local calendar if not disabled
-    if not args.no_local_save:
-        save_to_local_calendar(cal, args)
-
-    # Send email if not disabled
-    if not args.no_send:
-        email_config = EmailConfig(cal=cal, config=config, dry_run=args.dry_run)
-        success = send_invite_email(email_config)
-
-        if not success and not args.dry_run:
-            return 1
-
-    return 0
+    return run(config)
 
 
-if __name__ == "__main__":
-    sys.exit(main())
+def register_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register the create subcommand."""
+    parser = subparsers.add_parser(
+        "create",
+        help="Create and send calendar invitations",
+        description="Generate and send ICS calendar invites via email",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Simple meeting
+  vcal create -s "Team Meeting" -d 60 -a "john@example.com,Jane Doe <jane@example.com>"
+
+  # Meeting with Zoom link
+  vcal create -s "Project Review" -d 90 -a "team@example.com" \\
+    -l "https://zoom.us/j/123456789" --meeting-link "https://zoom.us/j/123456789"
+
+  # Specific time and timezone
+  vcal create -s "Client Call" --start "2024-01-15 14:00" -d 30 \\
+    -a "Client Name <client@company.com>" --timezone "America/New_York"
+
+  # Weekly recurring meeting for 10 weeks
+  vcal create -s "Weekly Standup" -d 30 -a "team@example.com" \\
+    --repeat weekly --count 10
+
+  # Biweekly meeting on specific days until end of year
+  vcal create -s "Sprint Review" -d 60 -a "team@example.com" \\
+    --repeat biweekly --weekdays "MO,FR" --until "2025-12-31"
+
+  # Daily meeting for 5 days
+  vcal create -s "Daily Sync" -d 15 -a "team@example.com" \\
+    --repeat daily --count 5
+
+  # Custom recurrence rule (every 3 days, 7 times)
+  vcal create -s "Check-in" -d 30 -a "manager@example.com" \\
+    --rrule "FREQ=DAILY;INTERVAL=3;COUNT=7"
+
+  # Save ICS file without sending
+  vcal create -s "Meeting" -a "test@example.com" --no-send -o meeting.ics
+        """,
+    )
+
+    # Add all arguments from create_argument_parser
+    local_tz = get_local_timezone()
+
+    parser.add_argument("-s", "--summary", required=True, help="Meeting title/summary")
+    parser.add_argument(
+        "--start",
+        help="Start time (YYYY-MM-DD HH:MM), defaults to next hour",
+    )
+    parser.add_argument(
+        "-d",
+        "--duration",
+        type=int,
+        default=60,
+        help="Duration in minutes (default: 60)",
+    )
+    parser.add_argument(
+        "-a",
+        "--attendees",
+        required=True,
+        help='Comma-separated attendees: "Name <email>" or just "email"',
+    )
+    parser.add_argument("--organizer-name", help="Your name (defaults to system user)")
+    parser.add_argument(
+        "--organizer-email",
+        help="Your email (defaults to $EMAIL or user@hostname)",
+    )
+    parser.add_argument("-l", "--location", help="Meeting location")
+    parser.add_argument("--meeting-link", help="Meeting URL (Zoom, Teams, etc.)")
+    parser.add_argument("--description", help="Additional meeting description")
+    parser.add_argument(
+        "--reminder",
+        type=int,
+        default=15,
+        help="Reminder minutes before (default: 15)",
+    )
+    parser.add_argument(
+        "--timezone",
+        default=local_tz,
+        help=f"Timezone (default: {local_tz})",
+    )
+    parser.add_argument(
+        "-o",
+        "--output",
+        help="Save ICS to file (in addition to sending)",
+    )
+    parser.add_argument(
+        "--no-send",
+        action="store_true",
+        help="Only create ICS file, do not send",
+    )
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Show what would be sent without sending",
+    )
+    parser.add_argument(
+        "--calendar-dir",
+        default="~/.local/share/calendars/Personal",
+        help=(
+            "Local calendar directory for saving events "
+            "(default: ~/.local/share/calendars/Personal)"
+        ),
+    )
+    parser.add_argument(
+        "--no-local-save",
+        action="store_true",
+        help="Do not save to local calendar",
+    )
+
+    # Recurrence options
+    recurrence_group = parser.add_argument_group("recurrence options")
+    recurrence_group.add_argument(
+        "--repeat",
+        choices=["daily", "weekly", "biweekly", "monthly", "yearly"],
+        help="Simple recurrence pattern",
+    )
+    recurrence_group.add_argument(
+        "--count",
+        type=int,
+        help="Number of occurrences (e.g., --repeat weekly --count 10)",
+    )
+    recurrence_group.add_argument(
+        "--until",
+        help="End date for recurrence (YYYY-MM-DD)",
+    )
+    recurrence_group.add_argument(
+        "--weekdays",
+        help="Comma-separated weekdays for weekly recurrence (e.g., MO,WE,FR)",
+    )
+    recurrence_group.add_argument(
+        "--rrule",
+        help="Custom iCalendar RRULE string (e.g., 'FREQ=WEEKLY;BYDAY=MO,WE,FR;COUNT=10')",
+    )
+
+    parser.set_defaults(func=_handle_args)
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Compatibility wrapper for tests."""
+    import argparse
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers()
+    register_parser(subparsers)
+    
+    # Parse with 'create' as the subcommand
+    if argv is None:
+        argv = []
+    args = parser.parse_args(['create'] + argv)
+    return args.func(args)
