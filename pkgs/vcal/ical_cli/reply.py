@@ -188,8 +188,6 @@ def send_reply(reply_cal: Calendar, organizer_email: str, event_summary: str, st
         return True
 
 
-
-
 def read_email_content(file_path: str | None) -> str:
     """Read email content from file or stdin."""
     if file_path:
@@ -302,18 +300,3 @@ def register_parser(subparsers: argparse._SubParsersAction) -> None:
     )
 
     parser.set_defaults(func=_handle_args)
-
-
-def main(argv: list[str] | None = None) -> int:
-    """Compatibility wrapper for tests."""
-    parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers()
-    register_parser(subparsers)
-
-    # Parse with 'reply' as the subcommand
-    if argv is None:
-        argv = []
-    args = parser.parse_args(["reply", *argv])
-    return args.func(args)
-
-

@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 from icalendar import Calendar
 
-from ical_cli import create
 from ical_cli.create import get_local_timezone
+from ical_cli.main import main
 
 
 @pytest.fixture
@@ -44,7 +44,7 @@ class TestBasicInvites:
             "--no-local-save",
         ]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 0
         assert output_file.exists()
 
@@ -94,7 +94,7 @@ class TestBasicInvites:
             "--no-local-save",
         ]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 0
         assert output_file.exists()
 
@@ -142,7 +142,7 @@ class TestBasicInvites:
             "--no-local-save",
         ]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 0
 
         with output_file.open("rb") as f:
@@ -185,7 +185,7 @@ class TestRecurringEvents:
             "--no-local-save",
         ]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 0
 
         with output_file.open("rb") as f:
@@ -225,7 +225,7 @@ class TestRecurringEvents:
             "--no-local-save",
         ]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 0
 
         with output_file.open("rb") as f:
@@ -266,7 +266,7 @@ class TestRecurringEvents:
             "--no-local-save",
         ]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 0
 
         with output_file.open("rb") as f:
@@ -306,7 +306,7 @@ class TestRecurringEvents:
             "--no-local-save",
         ]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 0
 
         with output_file.open("rb") as f:
@@ -345,7 +345,7 @@ class TestTimezones:
             "--no-local-save",
         ]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 0
 
         # The local timezone should be used (not UTC)
@@ -376,7 +376,7 @@ class TestTimezones:
             "--no-local-save",
         ]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 0
 
         with output_file.open("rb") as f:
@@ -409,7 +409,7 @@ class TestErrorHandling:
             "--no-send",
         ]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 1
 
     def test_invalid_start_time_format(self) -> None:
@@ -424,14 +424,14 @@ class TestErrorHandling:
             "--no-send",
         ]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 1
 
     def test_no_attendees(self) -> None:
         """Test that no attendees results in error."""
         args = ["-s", "No Attendees Meeting", "-a", "", "--no-send"]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 1
 
     def test_invalid_until_date(self) -> None:
@@ -448,7 +448,7 @@ class TestErrorHandling:
             "--no-send",
         ]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 1
 
 
@@ -474,7 +474,7 @@ class TestCalendarFeatures:
             "--no-local-save",
         ]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 0
 
         with output_file.open("rb") as f:
@@ -509,7 +509,7 @@ class TestCalendarFeatures:
             "--no-local-save",
         ]
 
-        result = create.main(args)
+        result = main(["create", *args])
         assert result == 0
 
         with output_file.open("rb") as f:
