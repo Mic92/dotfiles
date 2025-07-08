@@ -9,9 +9,17 @@
 let
   claude-wrapper = writeShellApplication {
     name = "claude";
-    runtimeInputs = [ claude-code ];
+    runtimeInputs = [ claude-code pkgs.pueue ];
     text = ''
       set -euo pipefail
+
+      # Start pueued daemon if not already running
+      if ! pueue status &>/dev/null; then
+        echo "Starting pueue daemon..."
+        pueued -d
+        # Give it a moment to start
+        sleep 0.5
+      fi
 
       # Define MCP plugins as associative array (name -> command)
       # Use nix-profile paths instead of direct package paths

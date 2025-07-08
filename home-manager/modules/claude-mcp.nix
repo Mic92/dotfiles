@@ -20,15 +20,10 @@ let
       } ${lib.concatStringsSep " " args} "$@"
     '';
 
-  tmux-mcp-wrapped = wrapMcpServer {
-    package = self.packages.${pkgs.system}.tmux-mcp;
-    envVars = { };
-  };
-
   # Create the claude-code package with the server packages
   claude-code-pkg = self.packages.${pkgs.system}.claude-code.override {
     servers = {
-      tmux = tmux-mcp-wrapped;
+      # No MCP servers configured by default
     };
     # added manually in some projects
     keepServers = {
@@ -39,5 +34,6 @@ in
 {
   home.packages = claude-code-pkg.packages ++ [
     self.packages.${pkgs.system}.claude-md
+    pkgs.pueue
   ];
 }
