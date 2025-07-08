@@ -60,12 +60,12 @@
             targets = [ "[2a01:4f9:c012:8178::1]:9273" ];
             labels.org = "nixos-wiki";
           }
-          {
-            targets = [
-              "[fc9f:379f:7191:058f:82a1:0000:0000:0001]:9273" # nas
-            ];
-            labels.org = "dave";
-          }
+          #{
+          #  targets = [
+          #    "[fc9f:379f:7191:058f:82a1:0000:0000:0001]:9273" # nas
+          #  ];
+          #  labels.org = "dave";
+          #}
           {
             targets = [
               "bld1.numtide.com:9273"
