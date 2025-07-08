@@ -100,6 +100,38 @@ def get_target_session(session_name: str | None) -> str:
         return "mcp"
 
 
+def _get_output_from_file_or_pane(pane_id: str, output_file: Path | None) -> str:
+    """Get output from file or pane."""
+    if output_file and output_file.exists():
+        try:
+            return output_file.read_text()
+        except Exception:
+            logger.exception("Failed to read output file")
+
+    # Fall back to tmux capture
+    try:
+        return run_tmux_command(["capture-pane", "-t", pane_id, "-p"])
+    except Exception:
+        logger.exception("Failed to capture pane")
+        return ""
+
+
+async def _check_pattern_match(
+    regex: re.Pattern[str], pane_id: str, output_file: Path | None
+) -> tuple[bool, str, str]:
+    """Check if pattern matches current output."""
+    try:
+        current_output = _get_output_from_file_or_pane(pane_id, output_file)
+    except (TmuxError, OSError) as e:
+        logger.debug(f"Failed to get output: {e}")
+        return False, "", ""
+
+    match = regex.search(current_output)
+    if match:
+        return True, match.group(0), current_output
+    return False, "", current_output
+
+
 async def wait_for_pattern(
     pane_id: str, pattern: str, timeout_seconds: float, output_file: Path | None = None
 ) -> tuple[bool, str, str]:
@@ -124,55 +156,24 @@ async def wait_for_pattern(
             # Check if timeout exceeded
             elapsed = asyncio.get_event_loop().time() - start_time
             if elapsed >= timeout_seconds:
-                # Get final output state
-                current_output = ""
-                if output_file and output_file.exists():
-                    try:
-                        current_output = output_file.read_text()
-                    except Exception:
-                        logger.exception("Failed to read output file on timeout")
-
-                if not current_output:
-                    # Fall back to tmux capture
-                    try:
-                        current_output = run_tmux_command(
-                            ["capture-pane", "-t", pane_id, "-p"]
-                        )
-                    except Exception:
-                        logger.exception("Failed to capture pane on timeout")
-
+                current_output = _get_output_from_file_or_pane(pane_id, output_file)
                 return (
                     False,
                     f"Pattern '{pattern}' not found within {timeout_seconds}s timeout",
                     current_output,
                 )
 
-            # Get current output
-            try:
-                if output_file and output_file.exists():
-                    # Prefer reading from output file for clean output
-                    current_output = output_file.read_text()
-                else:
-                    # Fall back to tmux capture (e.g., for send_input, capture_pane)
-                    current_output = run_tmux_command(
-                        ["capture-pane", "-t", pane_id, "-p"]
-                    )
-            except (TmuxError, OSError) as e:
-                logger.debug(f"Failed to get output: {e}")
-                await asyncio.sleep(poll_interval)
-                # Exponential backoff with max of 1 second
-                poll_interval = min(poll_interval * 1.5, 1.0)
-                continue
+            # Check for pattern match
+            found, matched_text, current_output = await _check_pattern_match(
+                regex, pane_id, output_file
+            )
+            if found:
+                return True, matched_text, current_output
 
-            # Check for pattern
-            match = regex.search(current_output)
-            if match:
-                return True, match.group(0), current_output
-
-            # Wait before next check
+            # Wait before next check with exponential backoff
             await asyncio.sleep(poll_interval)
-            # Exponential backoff with max of 1 second
             poll_interval = min(poll_interval * 1.5, 1.0)
+
     except asyncio.CancelledError:
         logger.debug("Pattern wait cancelled")
         raise

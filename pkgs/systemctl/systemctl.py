@@ -153,6 +153,60 @@ class SystemctlMacOS:
         # Return last N lines
         return all_log_lines[-lines:] if len(all_log_lines) > lines else all_log_lines
 
+    def find_service_in_list(
+        self, service: LaunchctlService, lines_output: list[str]
+    ) -> tuple[bool, str, str, str]:
+        """Find service in launchctl list output."""
+        for line in lines_output[1:]:  # Skip header
+            if not line.strip():
+                continue
+            parts = line.split("\t")
+            if len(parts) >= 3 and service.name in parts[2]:
+                pid = parts[0] if parts[0] != "-" else "inactive"
+                exit_code = parts[1] if parts[1] != "-" else "0"
+                label = parts[2]
+                return True, pid, exit_code, label
+        return False, "", "", ""
+
+    def print_service_status(
+        self, service_name: str, found: bool, pid: str, exit_code: str, label: str
+    ) -> None:
+        """Print service status information."""
+        if found:
+            status_text = "active (running)" if pid != "inactive" else "inactive (dead)"
+            print(f"● {service_name} - {label}")
+            print("   Loaded: loaded")
+            print(f"   Active: {status_text}")
+            if pid != "inactive":
+                print(f"   Main PID: {pid}")
+            if exit_code != "0":
+                print(f"   Exit Code: {exit_code}")
+        else:
+            print(f"● {service_name}")
+            print(f"   Loaded: not-found (Reason: Unit {service_name} not found.)")
+            print("   Active: inactive (dead)")
+
+    def print_service_logs(
+        self, service: LaunchctlService | None, found: bool, log_lines: int
+    ) -> None:
+        """Print service logs."""
+        print()
+        if found and service:
+            log_entries = self.get_service_logs(service, log_lines)
+            if log_entries:
+                print("Recent Logs:")
+                for entry in log_entries:
+                    if entry.strip():
+                        print(f"   {entry}")
+            else:
+                print("Recent Logs:")
+                print(
+                    "   No log files found (service needs StandardOutPath/StandardErrorPath in plist)"
+                )
+        else:
+            print("Recent Logs:")
+            print("   No logs found (service not found)")
+
     def status(self, service_name: str, log_lines: int = 10) -> None:
         """Show service status"""
         service = self.find_service(service_name)
@@ -164,52 +218,13 @@ class SystemctlMacOS:
         lines_output = result.stdout.split("\n")
 
         # Look for the service in the output
-        found = False
-        for line in lines_output[1:]:  # Skip header
-            if not line.strip():
-                continue
-            parts = line.split("\t")
-            if len(parts) >= 3 and service.name in parts[2]:
-                pid = parts[0] if parts[0] != "-" else "inactive"
-                exit_code = parts[1] if parts[1] != "-" else "0"
-                label = parts[2]
+        found, pid, exit_code, label = self.find_service_in_list(service, lines_output)
 
-                status_text = (
-                    "active (running)" if pid != "inactive" else "inactive (dead)"
-                )
-                print(f"● {service_name} - {label}")
-                print("   Loaded: loaded")
-                print(f"   Active: {status_text}")
-                if pid != "inactive":
-                    print(f"   Main PID: {pid}")
-                if exit_code != "0":
-                    print(f"   Exit Code: {exit_code}")
-                found = True
-                break
+        # Print status
+        self.print_service_status(service_name, found, pid, exit_code, label)
 
-        if not found:
-            print(f"● {service_name}")
-            print(f"   Loaded: not-found (Reason: Unit {service_name} not found.)")
-            print("   Active: inactive (dead)")
-
-        # Add recent logs section
-        print()
-        if found and service:
-            log_entries = self.get_service_logs(service, log_lines)
-            if log_entries:
-                print("Recent Logs:")
-                for entry in log_entries:
-                    # Format log entry to be more readable
-                    if entry.strip():
-                        print(f"   {entry}")
-            else:
-                print("Recent Logs:")
-                print(
-                    "   No log files found (service needs StandardOutPath/StandardErrorPath in plist)"
-                )
-        else:
-            print("Recent Logs:")
-            print("   No logs found (service not found)")
+        # Print logs
+        self.print_service_logs(service, found, log_lines)
 
     def enable(self, service_name: str) -> None:
         """Enable a service"""
@@ -326,7 +341,7 @@ class Args:
     lines: int = 10
 
 
-def parse_args() -> Args:
+def parse_args() -> Args:  # noqa: PLR0915
     """Parse command line arguments"""
     parser = argparse.ArgumentParser(description="systemctl compatibility for macOS")
     subparsers = parser.add_subparsers(dest="command", required=True)
