@@ -219,6 +219,24 @@ in
         tags.org = "private";
         response_string_match = "Nextcloud";
       }
+      {
+        urls = [ "https://matrix.thalheim.io/_matrix/federation/v1/version" ];
+        tags.host = "eve";
+        tags.org = "private";
+        tags.service = "matrix-federation";
+        response_status_code = 200;
+        response_string_match = "\"name\":\"Dendrite\"";
+        timeout = "10s";
+      }
+      {
+        urls = [ "https://matrix.thalheim.io/.well-known/matrix/server" ];
+        tags.host = "eve";
+        tags.org = "private";
+        tags.service = "matrix-wellknown";
+        response_status_code = 200;
+        response_string_match = "\"m.server\":\"matrix.thalheim.io:443\"";
+        timeout = "10s";
+      }
     ];
 
     dns_query = {
