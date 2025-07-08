@@ -27,6 +27,97 @@ RRuleType: TypeAlias = "rrulestr | None"
 logger = logging.getLogger(__name__)
 
 
+class EventOccurrenceProcessor:
+    """Handles event occurrence calculations to reduce function arguments."""
+
+    def __init__(self, event: Event, ics_path: Path) -> None:
+        self.event = event
+        self.ics_path = ics_path
+        self.dtstart = event.get("DTSTART")
+        self.dtstart_dt: DateOrDateTime | None = None
+        self.duration: timedelta | None = None
+
+    def get_occurrences(
+        self, start_date: datetime, end_date: datetime
+    ) -> list[tuple[datetime, timedelta]]:
+        """Get all occurrences of an event within a date range."""
+        if not self.dtstart:
+            return []
+
+        self.dtstart_dt = (
+            self.dtstart.dt if hasattr(self.dtstart, "dt") else self.dtstart
+        )
+        self.duration = self._calculate_duration()
+
+        # Check for recurrence rules
+        rrule = self.event.get("RRULE")
+        if rrule:
+            return self._process_recurrence(rrule, start_date, end_date)
+
+        # Single occurrence
+        occurrences: list[tuple[datetime, timedelta]] = []
+        self._add_if_in_range(occurrences, self.dtstart_dt, start_date, end_date)
+        return occurrences
+
+    def _calculate_duration(self) -> timedelta:
+        """Calculate event duration from DTEND or DURATION properties."""
+        dtend = self.event.get("DTEND")
+        duration = self.event.get("DURATION")
+
+        if dtend:
+            dtend_dt: DateOrDateTime = dtend.dt if hasattr(dtend, "dt") else dtend
+            if isinstance(self.dtstart_dt, datetime) and isinstance(dtend_dt, datetime):
+                return dtend_dt - self.dtstart_dt
+            return timedelta(days=1)
+        if duration:
+            return parse_duration(duration)
+        return timedelta(hours=1)
+
+    def _add_if_in_range(
+        self,
+        occurrences: list[tuple[datetime, timedelta]],
+        dt: DateOrDateTime,
+        start_date: datetime,
+        end_date: datetime,
+    ) -> None:
+        """Add occurrence to list if it's within the date range."""
+        if isinstance(dt, datetime):
+            if start_date <= dt <= end_date:
+                occurrences.append((dt, self.duration))
+        else:
+            # Convert date to datetime for comparison
+            dt_as_datetime = normalize_datetime(dt)
+            if start_date <= dt_as_datetime <= end_date:
+                occurrences.append((dt_as_datetime, self.duration))
+
+    def _process_recurrence(
+        self, rrule: Any, start_date: datetime, end_date: datetime
+    ) -> list[tuple[datetime, timedelta]]:
+        """Process RRULE and return occurrences."""
+        occurrences: list[tuple[datetime, timedelta]] = []
+        try:
+            # rrule might be a vRecur object, convert it properly
+            if hasattr(rrule, "to_ical"):
+                rrule_str = rrule.to_ical().decode("utf-8")
+            else:
+                rrule_str = str(rrule)
+            rule = parse_recurrence_rule(rrule_str, self.dtstart_dt)
+            if rule:
+                occurrences.extend(
+                    (occurrence, self.duration)
+                    for occurrence in rule.between(start_date, end_date, inc=True)
+                )
+        except (ValueError, TypeError) as e:
+            # Log the specific event that failed
+            summary = str(self.event.get("SUMMARY", "Unknown"))
+            logger.warning(
+                f"Error parsing RRULE for '{summary}' in {self.ics_path.name}: {e}. RRULE: {rrule}"
+            )
+            # Fall back to single occurrence
+            self._add_if_in_range(occurrences, self.dtstart_dt, start_date, end_date)
+        return occurrences
+
+
 def parse_duration(duration: DurationLike) -> timedelta:
     """Parse duration from icalendar vDuration to timedelta."""
     if hasattr(duration, "td"):
@@ -114,84 +205,6 @@ def normalize_datetime(dt: DateOrDateTime) -> datetime:
     event_start = datetime.combine(dt, datetime.min.time())
     localized_date: datetime = pytz.UTC.localize(event_start)
     return localized_date
-
-
-def get_event_occurrences(
-    event: Event, start_date: datetime, end_date: datetime, ics_path: Path
-) -> list[tuple[datetime, timedelta]]:
-    """Get all occurrences of an event within a date range."""
-    occurrences: list[tuple[datetime, timedelta]] = []
-
-    # Get event start time
-    dtstart = event.get("DTSTART")
-    if not dtstart:
-        return []
-
-    dtstart_dt: DateOrDateTime = dtstart.dt if hasattr(dtstart, "dt") else dtstart
-
-    # Get event end time or duration
-    dtend = event.get("DTEND")
-    duration = event.get("DURATION")
-
-    if dtend:
-        dtend_dt: DateOrDateTime = dtend.dt if hasattr(dtend, "dt") else dtend
-        if isinstance(dtstart_dt, datetime) and isinstance(dtend_dt, datetime):
-            duration = dtend_dt - dtstart_dt
-        else:
-            duration = timedelta(days=1)
-    elif duration:
-        duration = parse_duration(duration)
-    else:
-        duration = timedelta(hours=1)
-
-    # Check for recurrence rules
-    rrule = event.get("RRULE")
-    if rrule:
-        try:
-            # rrule might be a vRecur object, convert it properly
-            if hasattr(rrule, "to_ical"):
-                rrule_str = rrule.to_ical().decode("utf-8")
-            else:
-                rrule_str = str(rrule)
-            rule = parse_recurrence_rule(rrule_str, dtstart_dt)
-            if rule:
-                occurrences.extend(
-                    (occurrence, duration)
-                    for occurrence in rule.between(start_date, end_date, inc=True)
-                )
-        except (ValueError, TypeError) as e:
-            # Log the specific event that failed
-            summary = str(event.get("SUMMARY", "Unknown"))
-            logger.warning(
-                f"Error parsing RRULE for '{summary}' in {ics_path.name}: {e}. RRULE: {rrule}"
-            )
-            # Fall back to single occurrence
-            if (
-                isinstance(dtstart_dt, datetime)
-                and start_date <= dtstart_dt <= end_date
-            ):
-                occurrences.append((dtstart_dt, duration))
-            elif isinstance(dtstart_dt, date):
-                # Convert date to datetime for comparison
-                dt_as_datetime = normalize_datetime(dtstart_dt)
-                if start_date <= dt_as_datetime <= end_date:
-                    occurrences.append((dt_as_datetime, duration))
-    # Single occurrence
-    elif isinstance(dtstart_dt, datetime):
-        if start_date <= dtstart_dt <= end_date:
-            occurrences.append((dtstart_dt, duration))
-    else:
-        # For date objects, create datetime at midnight
-        dt_as_datetime = datetime.combine(dtstart_dt, datetime.min.time())
-        dt_as_datetime = (
-            pytz.UTC.localize(dt_as_datetime)
-            if dt_as_datetime.tzinfo is None
-            else dt_as_datetime
-        )
-        if start_date <= dt_as_datetime <= end_date:
-            occurrences.append((dt_as_datetime, duration))
-
-    return occurrences
 
 
 def should_notify(alarm_time: datetime) -> bool:
@@ -335,9 +348,8 @@ def process_calendar_file(db: Any, ics_path: Path) -> None:
         for component in cal.walk():
             if component.name == "VEVENT":
                 # Get all occurrences of this event
-                occurrences = get_event_occurrences(
-                    component, start_date, end_date, ics_path
-                )
+                processor = EventOccurrenceProcessor(component, ics_path)
+                occurrences = processor.get_occurrences(start_date, end_date)
 
                 for occurrence_start, duration in occurrences:
                     process_event_alarms(db, component, occurrence_start, duration)
