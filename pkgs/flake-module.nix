@@ -18,7 +18,7 @@
           direnv-instant = pkgs.callPackage ./direnv-instant { };
           kagi-search = pkgs.python3.pkgs.callPackage ./kagi-search { };
           email-sync = pkgs.callPackage ./email-sync { };
-          create-calendar-invite = pkgs.callPackage ./create-calendar-invite { };
+          ical-cli = pkgs.callPackage ./ical-cli { };
           buildbot-pr-check = pkgs.python3.pkgs.callPackage ./buildbot-pr-check { };
           claude-md = pkgs.python3.pkgs.callPackage ./claude-md { };
         }
