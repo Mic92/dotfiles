@@ -14,34 +14,38 @@ CONFIG_DIR = Path.home() / ".config" / "gmaps-cli"
 CONFIG_FILE = CONFIG_DIR / "config.json"
 
 
-def generate_maps_url(
-    url_type: str,
-    query: str | None = None,
-    place_id: str | None = None,
-    lat: float | None = None,
-    lng: float | None = None,
-    origin: str | None = None,
-    destination: str | None = None,
-    mode: str | None = None,
-) -> str:
+class MapsUrlParams:
+    """Parameters for generating maps URLs."""
+
+    def __init__(self) -> None:
+        self.query: str | None = None
+        self.place_id: str | None = None
+        self.lat: float | None = None
+        self.lng: float | None = None
+        self.origin: str | None = None
+        self.destination: str | None = None
+        self.mode: str | None = None
+
+
+def generate_maps_url(url_type: str, params: MapsUrlParams) -> str:
     """Generate a Google Maps URL for various purposes"""
     base_url = "https://www.google.com/maps"
 
     if url_type == "search":
-        if place_id and query:
+        if params.place_id and params.query:
             # Prefer place_id when available
-            return f"{base_url}/search/?api=1&query={urllib.parse.quote(query)}&query_place_id={place_id}"
-        if lat is not None and lng is not None:
+            return f"{base_url}/search/?api=1&query={urllib.parse.quote(params.query)}&query_place_id={params.place_id}"
+        if params.lat is not None and params.lng is not None:
             # Fallback to coordinates
-            return f"{base_url}/search/?api=1&query={lat},{lng}"
-        if query:
+            return f"{base_url}/search/?api=1&query={params.lat},{params.lng}"
+        if params.query:
             # Just query
-            return f"{base_url}/search/?api=1&query={urllib.parse.quote(query)}"
+            return f"{base_url}/search/?api=1&query={urllib.parse.quote(params.query)}"
 
-    elif url_type == "directions" and origin and destination:
-        url = f"{base_url}/dir/?api=1&origin={urllib.parse.quote(origin)}&destination={urllib.parse.quote(destination)}"
-        if mode and mode != "driving":
-            url += f"&travelmode={mode}"
+    elif url_type == "directions" and params.origin and params.destination:
+        url = f"{base_url}/dir/?api=1&origin={urllib.parse.quote(params.origin)}&destination={urllib.parse.quote(params.destination)}"
+        if params.mode and params.mode != "driving":
+            url += f"&travelmode={params.mode}"
         return url
 
     return ""
@@ -180,6 +184,180 @@ def search_places_nearby(
     ]
 
 
+class DirectionsProcessor:
+    """Handles directions API requests and response processing."""
+
+    def __init__(self, api_key: str) -> None:
+        self.api_key = api_key
+        self.travel_modes = {
+            "driving": "DRIVE",
+            "walking": "WALK",
+            "bicycling": "BICYCLE",
+            "transit": "TRANSIT",
+        }
+
+    def _build_request_body(
+        self,
+        origin: str,
+        destination: str,
+        mode: str,
+        departure_time: str | None,
+        arrival_time: str | None,
+    ) -> dict[str, Any]:
+        """Build the request body for the API."""
+        body = {
+            "origin": {"address": origin},
+            "destination": {"address": destination},
+            "travelMode": self.travel_modes.get(mode, "DRIVE"),
+            "computeAlternativeRoutes": False,
+            "languageCode": "en-US",
+            "units": "METRIC",
+        }
+
+        if departure_time:
+            body["departureTime"] = departure_time
+        elif arrival_time:
+            body["arrivalTime"] = arrival_time
+
+        return body
+
+    def _format_distance(self, distance_m: int) -> str:
+        """Format distance in human-readable format."""
+        if distance_m >= 1000:
+            return f"{distance_m / 1000:.1f} km"
+        return f"{distance_m} m"
+
+    def _format_duration(self, duration_s: int) -> str:
+        """Format duration in human-readable format."""
+        hours = duration_s // 3600
+        minutes = (duration_s % 3600) // 60
+        if hours > 0:
+            return f"{hours} hour{'s' if hours > 1 else ''} {minutes} min{'s' if minutes != 1 else ''}"
+        return f"{minutes} min{'s' if minutes != 1 else ''}"
+
+    def _process_route_steps(self, leg: dict[str, Any]) -> list[dict[str, Any]]:
+        """Process route steps from leg data."""
+        steps = []
+        for step in leg.get("steps", []):
+            if not step.get("navigationInstruction"):
+                continue
+
+            step_info = {
+                "instruction": step.get("navigationInstruction", {}).get(
+                    "instructions", "Continue"
+                ),
+                "distance": step.get("localizedValues", {})
+                .get("distance", {})
+                .get("text", ""),
+                "duration": step.get("localizedValues", {})
+                .get("staticDuration", {})
+                .get("text", ""),
+            }
+
+            # Add transit details if available
+            transit_details = step.get("transitDetails")
+            if transit_details:
+                step_info["transit"] = self._extract_transit_details(transit_details)
+
+            steps.append(step_info)
+        return steps
+
+    def _extract_transit_details(
+        self, transit_details: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Extract transit details from step."""
+        transit_info: dict[str, Any] = {}
+
+        if "transitLine" in transit_details:
+            line = transit_details["transitLine"]
+            transit_info["line"] = line.get("nameShort", line.get("name", ""))
+            transit_info["vehicle"] = line.get("vehicle", {}).get("type", "")
+
+        stop_details = transit_details.get("stopDetails", {})
+        if "departureStop" in stop_details:
+            transit_info["departure_stop"] = stop_details["departureStop"].get(
+                "name", ""
+            )
+        if "departureTime" in stop_details:
+            transit_info["departure_time"] = stop_details["departureTime"]
+
+        if "arrivalStop" in stop_details:
+            transit_info["arrival_stop"] = stop_details["arrivalStop"].get("name", "")
+        if "arrivalTime" in stop_details:
+            transit_info["arrival_time"] = stop_details["arrivalTime"]
+
+        return transit_info
+
+    def get_directions(
+        self,
+        origin: str,
+        destination: str,
+        mode: str = "driving",
+        departure_time: str | None = None,
+        arrival_time: str | None = None,
+    ) -> dict[str, Any] | None:
+        """Get directions between two places using Routes API."""
+        endpoint = "https://routes.googleapis.com/directions/v2:computeRoutes"
+
+        headers = {
+            "Content-Type": "application/json",
+            "X-Goog-Api-Key": self.api_key,
+            "X-Goog-FieldMask": "routes.legs.steps.navigationInstruction,routes.legs.steps.localizedValues,routes.legs.localizedValues,routes.legs.polyline,routes.distanceMeters,routes.duration,routes.legs.steps.transitDetails",
+        }
+
+        body = self._build_request_body(
+            origin, destination, mode, departure_time, arrival_time
+        )
+
+        try:
+            request = urllib.request.Request(  # noqa: S310
+                endpoint,
+                data=json.dumps(body).encode("utf-8"),
+                headers=headers,
+                method="POST",
+            )
+            with urllib.request.urlopen(request, timeout=10) as response:  # noqa: S310
+                data = json.loads(response.read())
+        except urllib.error.HTTPError as e:
+            error_data = e.read().decode("utf-8")
+            print(f"Error: HTTP Error {e.code}: {e.reason}")
+            try:
+                error_json = json.loads(error_data)
+                if "error" in error_json:
+                    print(f"API Error: {error_json['error']}")
+            except json.JSONDecodeError:
+                print(f"Response: {error_data}")
+            return None
+        except (urllib.error.URLError, json.JSONDecodeError) as e:
+            print(f"Error: {e}")
+            return None
+
+        if data.get("routes") and data["routes"]:
+            route = data["routes"][0]
+            if route.get("legs"):
+                leg = route["legs"][0]
+
+                # Format distance and duration
+                distance_m = route.get("distanceMeters", 0)
+                distance_text = self._format_distance(distance_m)
+
+                duration_s = int(route.get("duration", "0s").rstrip("s"))
+                duration_text = self._format_duration(duration_s)
+
+                # Process steps
+                steps = self._process_route_steps(leg)
+
+                return {
+                    "start_address": leg.get("startLocation", {}).get("address", ""),
+                    "end_address": leg.get("endLocation", {}).get("address", ""),
+                    "distance": distance_text,
+                    "duration": duration_text,
+                    "steps": steps,
+                }
+
+        return None
+
+
 def get_directions(
     api_key: str,
     origin: str,
@@ -188,151 +366,11 @@ def get_directions(
     departure_time: str | None = None,
     arrival_time: str | None = None,
 ) -> dict[str, Any] | None:
-    """Get directions between two places using Routes API"""
-    endpoint = "https://routes.googleapis.com/directions/v2:computeRoutes"
-
-    headers = {
-        "Content-Type": "application/json",
-        "X-Goog-Api-Key": api_key,
-        "X-Goog-FieldMask": "routes.legs.steps.navigationInstruction,routes.legs.steps.localizedValues,routes.legs.localizedValues,routes.legs.polyline,routes.distanceMeters,routes.duration,routes.legs.steps.transitDetails",
-    }
-
-    # Map mode to travel mode
-    travel_modes = {
-        "driving": "DRIVE",
-        "walking": "WALK",
-        "bicycling": "BICYCLE",
-        "transit": "TRANSIT",
-    }
-
-    body = {
-        "origin": {"address": origin},
-        "destination": {"address": destination},
-        "travelMode": travel_modes.get(mode, "DRIVE"),
-        "computeAlternativeRoutes": False,
-        "languageCode": "en-US",
-        "units": "METRIC",
-    }
-
-    # Add departure or arrival time if specified
-    if departure_time:
-        body["departureTime"] = departure_time
-    elif arrival_time:
-        body["arrivalTime"] = arrival_time
-
-    try:
-        request = urllib.request.Request(  # noqa: S310
-            endpoint,
-            data=json.dumps(body).encode("utf-8"),
-            headers=headers,
-            method="POST",
-        )
-        with urllib.request.urlopen(request, timeout=10) as response:  # noqa: S310
-            data = json.loads(response.read())
-    except urllib.error.HTTPError as e:
-        error_data = e.read().decode("utf-8")
-        print(f"Error: HTTP Error {e.code}: {e.reason}")
-        try:
-            error_json = json.loads(error_data)
-            if "error" in error_json:
-                print(f"API Error: {error_json['error']}")
-        except json.JSONDecodeError:
-            print(f"Response: {error_data}")
-        return None
-    except (urllib.error.URLError, json.JSONDecodeError) as e:
-        print(f"Error: {e}")
-        return None
-
-    if data.get("routes") and data["routes"]:
-        route = data["routes"][0]
-        if route.get("legs"):
-            leg = route["legs"][0]
-            # Convert meters to human-readable format
-            distance_m = route.get("distanceMeters", 0)
-            if distance_m >= 1000:
-                distance_text = f"{distance_m / 1000:.1f} km"
-            else:
-                distance_text = f"{distance_m} m"
-
-            # Convert duration to human-readable format
-            duration_s = int(route.get("duration", "0s").rstrip("s"))
-            hours = duration_s // 3600
-            minutes = (duration_s % 3600) // 60
-            if hours > 0:
-                duration_text = f"{hours} hour{'s' if hours > 1 else ''} {minutes} min{'s' if minutes != 1 else ''}"
-            else:
-                duration_text = f"{minutes} min{'s' if minutes != 1 else ''}"
-
-            steps = []
-            for step in leg.get("steps", []):
-                if not step.get("navigationInstruction"):
-                    continue
-
-                step_info = {
-                    "instruction": step.get("navigationInstruction", {}).get(
-                        "instructions", "Continue"
-                    ),
-                    "distance": step.get("localizedValues", {})
-                    .get("distance", {})
-                    .get("text", ""),
-                    "duration": step.get("localizedValues", {})
-                    .get("staticDuration", {})
-                    .get("text", ""),
-                }
-
-                # Add transit details if available
-                if "transitDetails" in step:
-                    transit = step["transitDetails"]
-                    step_info["transit"] = {}
-
-                    # Transit line info
-                    if "transitLine" in transit:
-                        line = transit["transitLine"]
-                        step_info["transit"]["line_name"] = line.get(
-                            "nameShort"
-                        ) or line.get("name", "")
-                        step_info["transit"]["vehicle"] = line.get("vehicle", {}).get(
-                            "type", ""
-                        )
-
-                    # Stop details
-                    if "stopDetails" in transit:
-                        stops = transit["stopDetails"]
-                        if "departureStop" in stops:
-                            step_info["transit"]["departure_stop"] = stops[
-                                "departureStop"
-                            ].get("name", "")
-                        if "arrivalStop" in stops:
-                            step_info["transit"]["arrival_stop"] = stops[
-                                "arrivalStop"
-                            ].get("name", "")
-                        if "stopCount" in stops:
-                            step_info["transit"]["stop_count"] = stops["stopCount"]
-
-                    # Time details
-                    if "localizedValues" in transit:
-                        loc_vals = transit["localizedValues"]
-                        if "departureTime" in loc_vals:
-                            step_info["transit"]["departure_time"] = (
-                                loc_vals["departureTime"]
-                                .get("time", {})
-                                .get("text", "")
-                            )
-                        if "arrivalTime" in loc_vals:
-                            step_info["transit"]["arrival_time"] = (
-                                loc_vals["arrivalTime"].get("time", {}).get("text", "")
-                            )
-
-                steps.append(step_info)
-
-            return {
-                "distance": distance_text,
-                "duration": duration_text,
-                "start_address": origin,
-                "end_address": destination,
-                "steps": steps,
-            }
-    return None
+    """Get directions between two places using Routes API."""
+    processor = DirectionsProcessor(api_key)
+    return processor.get_directions(
+        origin, destination, mode, departure_time, arrival_time
+    )
 
 
 def get_api_key(config: dict[str, Any]) -> str | None:
@@ -418,13 +456,12 @@ def search(query: str) -> None:
         print(f"Rating: {place_data['rating']} ({place_data['ratings_total']} reviews)")
 
     # Add Google Maps link
-    maps_url = generate_maps_url(
-        "search",
-        query=place_data["name"],
-        place_id=place_data.get("place_id"),
-        lat=place_data.get("lat"),
-        lng=place_data.get("lng"),
-    )
+    url_params = MapsUrlParams()
+    url_params.query = place_data["name"]
+    url_params.place_id = place_data.get("place_id")
+    url_params.lat = place_data.get("lat")
+    url_params.lng = place_data.get("lng")
+    maps_url = generate_maps_url("search", url_params)
     print(f"\nView on Google Maps: {maps_url}")
 
 
@@ -490,6 +527,111 @@ def nearby(query: str, location: str | None = None, limit: int = 5) -> None:
         print(f"   Maps: {maps_url}")
 
 
+class RouteProcessor:
+    """Handles route display and formatting."""
+
+    def __init__(self) -> None:
+        pass
+
+    def _parse_duration_string(self, duration_str: str) -> int:
+        """Parse duration string to total minutes."""
+        total_minutes = 0
+        if "hour" in duration_str:
+            parts = duration_str.split()
+            for i, part in enumerate(parts):
+                if "hour" in part:
+                    total_minutes += int(parts[i - 1]) * 60
+                elif "min" in part and i > 0 and "hour" not in parts[i - 1]:
+                    total_minutes += int(parts[i - 1])
+        else:
+            # Just minutes
+            total_minutes = int(duration_str.split()[0])
+        return total_minutes
+
+    def _print_departure_time_for_arrival(
+        self, arrival_time: str | None, duration_str: str
+    ) -> None:
+        """Calculate and print departure time for desired arrival."""
+        if not arrival_time:
+            return
+
+        try:
+            arrival_dt = datetime.fromisoformat(arrival_time)
+            total_minutes = self._parse_duration_string(duration_str)
+            departure_dt = arrival_dt - timedelta(minutes=total_minutes)
+            print(
+                f"\nTo arrive by {arrival_dt.strftime('%Y-%m-%d %H:%M')}, "
+                f"depart at: {departure_dt.strftime('%Y-%m-%d %H:%M')}"
+            )
+        except (ValueError, KeyError, AttributeError):
+            pass
+
+    def _print_transit_details(self, step: dict[str, Any]) -> None:
+        """Print transit-specific details for a step."""
+        transit = step["transit"]
+
+        if "line" in transit or "line_name" in transit:
+            line_name = transit.get("line", transit.get("line_name", ""))
+            vehicle = transit.get("vehicle", "").replace("_", " ").title()
+            print(f"   Take {vehicle}: {line_name}")
+
+        # Departure info
+        if "departure_stop" in transit:
+            print(f"   From: {transit['departure_stop']}")
+            if "departure_time" in transit:
+                print(f"   Departs: {transit['departure_time']}")
+
+        # Arrival info
+        if "arrival_stop" in transit:
+            print(f"   To: {transit['arrival_stop']}")
+            if "arrival_time" in transit:
+                print(f"   Arrives: {transit['arrival_time']}")
+
+        print()  # Visual separation
+
+    def print_route(
+        self,
+        directions: dict[str, Any],
+        origin: str,
+        destination: str,
+        mode: str,
+        arrival_time: str | None,
+    ) -> None:
+        """Print formatted route information."""
+        print(
+            f"Route from {directions['start_address']} to {directions['end_address']}"
+        )
+        print(f"Distance: {directions['distance']}")
+        print(f"Duration: {directions['duration']}")
+
+        # Add Google Maps link
+        url_params = MapsUrlParams()
+        url_params.origin = origin
+        url_params.destination = destination
+        url_params.mode = mode
+        maps_url = generate_maps_url("directions", url_params)
+        print(f"\nView on Google Maps: {maps_url}")
+
+        # Transit note
+        if mode == "transit":
+            print(
+                "\nNote: Transit times shown are scheduled times, not real-time arrivals."
+            )
+
+        # Calculate departure time if arrival specified
+        self._print_departure_time_for_arrival(arrival_time, directions["duration"])
+
+        # Print steps
+        print("\nDirections:")
+        for i, step in enumerate(directions["steps"], 1):
+            print(f"\n{i}. {step['instruction']}")
+
+            if "transit" in step:
+                self._print_transit_details(step)
+            else:
+                print(f"   {step['distance']} - {step['duration']}")
+
+
 def route(
     origin: str,
     destination: str,
@@ -522,96 +664,8 @@ def route(
         print(f"No route found from '{origin}' to '{destination}'")
         return
 
-    print(f"Route from {directions['start_address']} to {directions['end_address']}")
-    print(f"Distance: {directions['distance']}")
-    print(f"Duration: {directions['duration']}")
-
-    # Add Google Maps link
-    maps_url = generate_maps_url(
-        "directions",
-        origin=origin,
-        destination=destination,
-        mode=mode,
-    )
-    print(f"\nView on Google Maps: {maps_url}")
-
-    # Add note about transit times if using transit mode
-    if mode == "transit":
-        print(
-            "\nNote: Transit times shown are scheduled times, not real-time arrivals."
-        )
-
-    # If arrival time was specified, calculate and show departure time
-    if arrival_time:
-        try:
-            # Parse the arrival time and duration to calculate departure
-            arrival_dt = datetime.fromisoformat(arrival_time)
-            duration_str = directions["duration"]
-
-            # Parse duration (e.g., "51 mins" or "1 hour 45 mins")
-            total_minutes = 0
-            if "hour" in duration_str:
-                parts = duration_str.split()
-                for i, part in enumerate(parts):
-                    if "hour" in part:
-                        total_minutes += int(parts[i - 1]) * 60
-                    elif "min" in part and i > 0 and "hour" not in parts[i - 1]:
-                        total_minutes += int(parts[i - 1])
-            else:
-                # Just minutes
-                total_minutes = int(duration_str.split()[0])
-
-            # Calculate departure time
-            departure_dt = arrival_dt - timedelta(minutes=total_minutes)
-            print(
-                f"\nTo arrive by {arrival_dt.strftime('%Y-%m-%d %H:%M')}, depart at: {departure_dt.strftime('%Y-%m-%d %H:%M')}"
-            )
-        except (ValueError, KeyError, AttributeError):
-            # Skip if parsing fails
-            pass
-
-    print("\nDirections:")
-
-    for i, step in enumerate(directions["steps"], 1):
-        print(f"\n{i}. {step['instruction']}")
-
-        # Show transit details if available
-        if "transit" in step:
-            transit = step["transit"]
-            if "line_name" in transit:
-                vehicle = transit.get("vehicle", "").replace("_", " ").title()
-                print(f"   Take {vehicle}: {transit['line_name']}")
-
-            # Display departure and arrival with better formatting
-            if "departure_stop" in transit and "departure_time" in transit:
-                print(f"   From: {transit['departure_stop']}")
-                print(f"   Departs: {transit['departure_time']}")
-            elif "departure_stop" in transit:
-                print(f"   From: {transit['departure_stop']}")
-
-            if "arrival_stop" in transit and "arrival_time" in transit:
-                print(f"   To: {transit['arrival_stop']}")
-                print(f"   Arrives: {transit['arrival_time']}")
-            elif "arrival_stop" in transit:
-                print(f"   To: {transit['arrival_stop']}")
-
-            # Show duration info with the transit line
-            if step.get("duration"):
-                duration_info = (
-                    f" ({step['duration']} on {transit.get('line_name', 'transit')})"
-                )
-            else:
-                duration_info = ""
-
-            if "stop_count" in transit:
-                stops_text = "stop" if transit["stop_count"] == 1 else "stops"
-                print(
-                    f"   {transit['stop_count']} intermediate {stops_text}{duration_info}"
-                )
-
-            print()  # Add visual separation
-        else:
-            print(f"   {step['distance']} - {step['duration']}")
+    processor = RouteProcessor()
+    processor.print_route(directions, origin, destination, mode, arrival_time)
 
 
 def main() -> None:
