@@ -280,59 +280,84 @@ def check_pr_completion(
     return None  # Still waiting
 
 
+def count_check_states(checks: list[dict[str, Any]]) -> tuple[int, int, int]:
+    """Count check states from PR status checks."""
+    pending = failed = passed = 0
+    for check in checks:
+        if check.get("__typename") == "CheckRun":
+            status = check.get("status")
+            conclusion = check.get("conclusion")
+            if status != "COMPLETED":
+                pending += 1
+            elif conclusion in ["SUCCESS", "NEUTRAL", "SKIPPED"]:
+                passed += 1
+            else:
+                failed += 1
+        elif check.get("__typename") == "StatusContext":
+            check_state = check.get("state")
+            if check_state == "PENDING":
+                pending += 1
+            elif check_state in ["SUCCESS", "NEUTRAL"]:
+                passed += 1
+            else:
+                failed += 1
+    return pending, failed, passed
+
+
+def get_pr_status(branch: str) -> tuple[dict[str, Any] | None, str]:
+    """Get PR status from GitHub."""
+    result = run_command(
+        [
+            "gh",
+            "pr",
+            "view",
+            branch,
+            "--json",
+            "state,mergeable,autoMergeRequest,statusCheckRollup,url",
+        ],
+        check=False,
+        silent=True,
+        capture_stdout=True,
+    )
+
+    if result.returncode != 0:
+        return None, "Failed to get PR status"
+
+    try:
+        pr_data = json.loads(result.stdout)
+        return pr_data, ""
+    except json.JSONDecodeError:
+        return None, "Failed to parse PR status"
+
+
+def run_buildbot_check_if_needed(
+    pr_data: dict[str, Any], failed: int, pending: int, buildbot_check_done: bool
+) -> bool:
+    """Run buildbot-pr-check if needed."""
+    if failed > 0 and pending == 0 and not buildbot_check_done:
+        pr_url = pr_data.get("url", "")
+        if pr_url and shutil.which("buildbot-pr-check"):
+            print_warning(
+                "\n🔍 Running buildbot-pr-check to get detailed failure information..."
+            )
+            run_command(["buildbot-pr-check", pr_url], check=False)
+            print()  # Add blank line after buildbot-pr-check output
+        return True
+    return buildbot_check_done
+
+
 def wait_for_pr_completion(branch: str, interval: int = 10) -> tuple[bool, str]:
     """Wait for PR to be merged or reach a final state."""
     print_header(f"Waiting for PR completion on '{branch}'...")
-
-    # Flag to track if we've already run buildbot-pr-check
     buildbot_check_done = False
 
     while True:
-        # Get comprehensive PR status
-        result = run_command(
-            [
-                "gh",
-                "pr",
-                "view",
-                branch,
-                "--json",
-                "state,mergeable,autoMergeRequest,statusCheckRollup,url",
-            ],
-            check=False,
-            silent=True,
-            capture_stdout=True,
-        )
-
-        if result.returncode != 0:
-            return False, "Failed to get PR status"
-
-        try:
-            pr_data = json.loads(result.stdout)
-        except json.JSONDecodeError:
-            return False, "Failed to parse PR status"
+        pr_data, error = get_pr_status(branch)
+        if pr_data is None:
+            return False, error
 
         checks = pr_data.get("statusCheckRollup", [])
-
-        # Count check states
-        pending = failed = passed = 0
-        for check in checks:
-            if check.get("__typename") == "CheckRun":
-                status = check.get("status")
-                conclusion = check.get("conclusion")
-                if status != "COMPLETED":
-                    pending += 1
-                elif conclusion in ["SUCCESS", "NEUTRAL", "SKIPPED"]:
-                    passed += 1
-                else:
-                    failed += 1
-            elif check.get("__typename") == "StatusContext":
-                check_state = check.get("state")
-                if check_state == "PENDING":
-                    pending += 1
-                elif check_state in ["SUCCESS", "NEUTRAL"]:
-                    passed += 1
-                else:
-                    failed += 1
+        pending, failed, passed = count_check_states(checks)
 
         # Print status - only show checks
         print(
@@ -342,17 +367,10 @@ def wait_for_pr_completion(branch: str, interval: int = 10) -> tuple[bool, str]:
             f"{Colors.YELLOW}Pending: {pending}{Colors.RESET}"
         )
 
-        # Run buildbot-pr-check if we have failing checks and haven't done so already
-        if failed > 0 and pending == 0 and not buildbot_check_done:
-            pr_url = pr_data.get("url", "")
-            if pr_url and shutil.which("buildbot-pr-check"):
-                print_warning(
-                    "\n🔍 Running buildbot-pr-check to get detailed failure information..."
-                )
-                # Run buildbot-pr-check but ignore exit code (it returns 1 for failures)
-                run_command(["buildbot-pr-check", pr_url], check=False)
-                print()  # Add blank line after buildbot-pr-check output
-            buildbot_check_done = True
+        # Run buildbot-pr-check if we have failing checks
+        buildbot_check_done = run_buildbot_check_if_needed(
+            pr_data, failed, pending, buildbot_check_done
+        )
 
         # Check for completion
         result = check_pr_completion(pr_data, pending, failed)
