@@ -151,7 +151,7 @@ def create_calendar_invite(config: MeetingConfig) -> Calendar:
     org_attendee.params["cn"] = vText(config.organizer_name)
     org_attendee.params["partstat"] = vText("ACCEPTED")
     org_attendee.params["role"] = vText("REQ-PARTICIPANT")
-    event.add("attendee", org_attendee, encode=False)
+    event.add("attendee", org_attendee)
 
     # Attendees
     for name, email_addr in config.attendees:
@@ -161,7 +161,7 @@ def create_calendar_invite(config: MeetingConfig) -> Calendar:
         attendee.params["partstat"] = vText("NEEDS-ACTION")
         attendee.params["rsvp"] = vText("TRUE")
         attendee.params["role"] = vText("REQ-PARTICIPANT")
-        event.add("attendee", attendee, encode=False)
+        event.add("attendee", attendee)
 
     # Add reminder/alarm
     alarm = Alarm()
