@@ -42,6 +42,10 @@ pip install -e .
 # Simple meeting
 vcal create -s "Team Meeting" -d 60 -a "john@example.com,jane@example.com"
 
+# Meeting at specific time
+vcal create -s "Client Call" --start "2025-01-15 14:00" -d 45 \
+  -a "client@company.com" --timezone "Europe/Berlin"
+
 # With Zoom link
 vcal create -s "Project Review" -d 90 -a "team@example.com" \
   -l "https://zoom.us/j/123456789" --meeting-link "https://zoom.us/j/123456789"
