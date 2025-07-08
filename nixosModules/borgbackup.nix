@@ -5,6 +5,7 @@
   ...
 }:
 {
+  imports = [ ./borgbackup-zfs-snapshots.nix ];
 
   clan.core.state = {
     networkmanager = lib.mkIf (config.networking.networkmanager.enable) {
