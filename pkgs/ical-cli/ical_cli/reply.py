@@ -1,0 +1,276 @@
+"""Reply to calendar invites with RSVP responses."""
+
+from __future__ import annotations
+
+import argparse
+import email
+import email.utils
+import subprocess
+import sys
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from pathlib import Path
+
+from icalendar import Calendar, Event, vCalAddress, vText
+
+
+def extract_calendar_from_email(email_content: str) -> Calendar | None:
+    """Extract calendar from email message."""
+    msg = email.message_from_string(email_content)
+
+    for part in msg.walk():
+        if part.get_content_type() in ["text/calendar", "application/ics"]:
+            try:
+                cal_data = part.get_payload(decode=True)
+                return Calendar.from_ical(cal_data)
+            except (ValueError, TypeError):
+                continue
+
+    # Try to parse direct calendar data
+    if "BEGIN:VCALENDAR" in email_content:
+        try:
+            return Calendar.from_ical(email_content.encode())
+        except (ValueError, TypeError):
+            pass
+
+    return None
+
+
+def get_user_info() -> tuple[str, str]:
+    """Get user's name and email from git config."""
+    try:
+        name = subprocess.check_output(
+            ["git", "config", "--global", "user.name"],  # noqa: S607
+            text=True,
+        ).strip()
+    except subprocess.CalledProcessError:
+        name = "Joerg Thalheim"
+
+    try:
+        email = subprocess.check_output(
+            ["git", "config", "--global", "user.email"],  # noqa: S607
+            text=True,
+        ).strip()
+    except subprocess.CalledProcessError:
+        email = "joerg@thalheim.io"
+
+    return name, email
+
+
+def create_reply(original_cal: Calendar, status: str, comment: str | None = None) -> Calendar:  # noqa: C901
+    """Create REPLY calendar for RSVP response."""
+    reply_cal = Calendar()
+    reply_cal.add("prodid", "-//reply-calendar-invite//")
+    reply_cal.add("version", "2.0")
+    reply_cal.add("method", "REPLY")
+
+    user_name, user_email = get_user_info()
+
+    # Find the original event
+    for component in original_cal.walk():
+        if component.name == "VEVENT":
+            # Create reply event with minimal required fields
+            reply_event = Event()
+
+            # Copy required fields
+            for field in ["uid", "sequence", "dtstamp", "dtstart", "dtend", "summary"]:
+                if field in component:
+                    reply_event.add(field, component[field])
+
+            # Set organizer from original
+            if "organizer" in component:
+                reply_event.add("organizer", component["organizer"])
+
+            # Find our attendee entry and update status
+            attendees = component.get("attendee", [])
+            if not isinstance(attendees, list):
+                attendees = [attendees]
+
+            found_self = False
+            for attendee in attendees:
+                attendee_email = str(attendee).replace("mailto:", "").lower()
+                if attendee_email == user_email.lower():
+                    # Update our attendance status
+                    reply_attendee = vCalAddress(f"mailto:{user_email}")
+                    reply_attendee.params["cn"] = vText(user_name)
+                    reply_attendee.params["partstat"] = vText(status)
+                    reply_attendee.params["rsvp"] = vText("FALSE")
+                    if "role" in attendee.params:
+                        reply_attendee.params["role"] = attendee.params["role"]
+                    reply_event.add("attendee", reply_attendee, encode=0)
+                    found_self = True
+                    break
+
+            # If we weren't in the attendee list, add ourselves
+            if not found_self:
+                reply_attendee = vCalAddress(f"mailto:{user_email}")
+                reply_attendee.params["cn"] = vText(user_name)
+                reply_attendee.params["partstat"] = vText(status)
+                reply_attendee.params["rsvp"] = vText("FALSE")
+                reply_attendee.params["role"] = vText("REQ-PARTICIPANT")
+                reply_event.add("attendee", reply_attendee, encode=0)
+
+            # Add comment if provided
+            if comment:
+                reply_event.add("comment", comment)
+
+            reply_cal.add_component(reply_event)
+            break
+
+    return reply_cal
+
+
+def send_reply(reply_cal: Calendar, organizer_email: str, event_summary: str, status: str) -> bool:
+    """Send REPLY via msmtp."""
+    user_name, user_email = get_user_info()
+
+    # Create email message
+    msg = MIMEMultipart("mixed")
+
+    # Map status to human-readable response
+    status_map = {
+        "ACCEPTED": "Accepted",
+        "DECLINED": "Declined",
+        "TENTATIVE": "Tentative",
+    }
+    human_status = status_map.get(status, status)
+
+    msg["Subject"] = f"Re: {event_summary} - {human_status}"
+    msg["From"] = f"{user_name} <{user_email}>"
+    msg["To"] = organizer_email
+    msg["Date"] = email.utils.formatdate(localtime=True)
+
+    # Body
+    body = MIMEText(
+        f"This is an automatic reply to your meeting invitation.\n\nStatus: {human_status}\n",
+    )
+    msg.attach(body)
+
+    # Calendar attachment
+    cal_part = MIMEText(reply_cal.to_ical().decode(), "calendar")
+    cal_part.add_header("Content-Disposition", 'attachment; filename="reply.ics"')
+    cal_part.set_param("method", "REPLY")
+    msg.attach(cal_part)
+
+    # Send via msmtp
+    try:
+        proc = subprocess.Popen(
+            ["msmtp", "-t", "-a", "default"],  # noqa: S607
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        stdout, stderr = proc.communicate(msg.as_string())
+
+        stdout, stderr = proc.communicate(msg.as_string())
+    except (OSError, subprocess.SubprocessError) as e:
+        print(f"Error sending reply: {e}", file=sys.stderr)
+        return False
+    else:
+        if proc.returncode != 0:
+            print(f"Error sending reply: {stderr}", file=sys.stderr)
+            return False
+        return True
+
+
+def parse_args() -> argparse.Namespace:
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(description="Reply to calendar invites with RSVP response")
+    parser.add_argument(
+        "status",
+        choices=["accept", "decline", "tentative"],
+        help="RSVP response status",
+    )
+    parser.add_argument(
+        "-c",
+        "--comment",
+        help="Optional comment to include with response",
+    )
+    parser.add_argument(
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="Print the reply instead of sending",
+    )
+    parser.add_argument(
+        "file",
+        nargs="?",
+        help="Email file containing invite (reads from stdin if not provided)",
+    )
+
+    return parser.parse_args()
+
+
+def read_email_content(file_path: str | None) -> str:
+    """Read email content from file or stdin."""
+    if file_path:
+        if not Path(file_path).exists():
+            print(f"Error: File '{file_path}' not found", file=sys.stderr)
+            sys.exit(1)
+        with Path(file_path).open() as f:
+            return f.read()
+    else:
+        return sys.stdin.read()
+
+
+def extract_event_info(original_cal: Calendar) -> tuple[str | None, str]:
+    """Extract organizer email and event summary from calendar."""
+    organizer_email = None
+    event_summary = "Meeting"
+
+    for component in original_cal.walk():
+        if component.name == "VEVENT":
+            if "organizer" in component:
+                organizer_email = str(component["organizer"]).replace("mailto:", "")
+            if "summary" in component:
+                event_summary = str(component["summary"])
+            break
+
+    return organizer_email, event_summary
+
+
+def main() -> None:
+    """Run the main program."""
+    args = parse_args()
+
+    # Map user-friendly status to iCalendar format
+    status_map = {
+        "accept": "ACCEPTED",
+        "decline": "DECLINED",
+        "tentative": "TENTATIVE",
+    }
+    ical_status = status_map[args.status]
+
+    # Read input
+    email_content = read_email_content(args.file)
+
+    # Extract calendar from email
+    original_cal = extract_calendar_from_email(email_content)
+    if not original_cal:
+        print("Error: No calendar invite found in input", file=sys.stderr)
+        sys.exit(1)
+
+    # Find organizer email and event summary
+    organizer_email, event_summary = extract_event_info(original_cal)
+
+    if not organizer_email:
+        print("Error: No organizer found in calendar invite", file=sys.stderr)
+        sys.exit(1)
+
+    # Create reply
+    reply_cal = create_reply(original_cal, ical_status, args.comment)
+
+    if args.dry_run:
+        print(f"Would send reply to: {organizer_email}")
+        print(f"Status: {ical_status}")
+        print("\nReply calendar:")
+        print(reply_cal.to_ical().decode())
+    elif send_reply(reply_cal, organizer_email, event_summary, ical_status):
+        print(f"Successfully sent {args.status} reply to {organizer_email}")
+    else:
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
