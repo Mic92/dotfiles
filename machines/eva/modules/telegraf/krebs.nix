@@ -14,7 +14,7 @@
         [
           "hotdog"
           "yellow"
-          "prism"
+          "neoprism"
           #"puyak"
           "ni"
         ];
@@ -34,7 +34,7 @@
           "https://social.krebsco.de"
           "https://ca.r"
         ];
-        tags.host = "prism";
+        tags.host = "neoprism";
         tags.org = "krebs";
       }
     ];
@@ -139,28 +139,28 @@
       {
         urls = [ "http://jelly.r/web/index.html" ];
         response_string_match = "Jellyfin";
-        tags.host = "prism";
+        tags.host = "neoprism";
         tags.org = "krebs";
         response_status_code = 200;
       }
       {
         urls = [ "https://jitsi.lassul.us" ];
         response_string_match = "Jitsi Meet";
-        tags.host = "prism";
+        tags.host = "neoprism";
         tags.org = "krebs";
         response_status_code = 200;
       }
       {
         urls = [ "https://pad.lassul.us" ];
         response_string_match = "HedgeDoc";
-        tags.host = "prism";
+        tags.host = "neoprism";
         tags.org = "krebs";
         response_status_code = 200;
       }
       {
         urls = [ "https://social.krebsco.de" ];
         response_string_match = "Mastodon";
-        tags.host = "prism";
+        tags.host = "neoprism";
         tags.org = "krebs";
         response_status_code = 200;
       }
