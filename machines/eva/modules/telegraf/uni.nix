@@ -6,7 +6,6 @@ let
     "adelaide.r"
     "amy.r"
     "astrid.r"
-    "bill.r"
     "christina.r"
     "clara.r"
     "dan.r"
