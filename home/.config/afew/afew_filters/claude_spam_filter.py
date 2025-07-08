@@ -58,10 +58,24 @@ class ClaudeSpamFilter(Filter):  # type: ignore[misc]
 
             if self.skip_claude:
                 logger.warning(
-                    "Found %d unanalyzed messages (limit: %d). Skipping Claude analysis to save tokens.",
+                    "Found %d unanalyzed messages (limit: %d). Marking all as analyzed to start fresh.",
                     self.message_count,
                     self.max_initial_messages,
                 )
+                # Use notmuch to bulk tag all unanalyzed messages
+                result = subprocess.run(
+                    ["notmuch", "tag", "+claude-analyzed", "--", self.query],
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                )
+                if result.returncode == 0:
+                    logger.info(
+                        "Successfully marked %d messages as analyzed",
+                        self.message_count,
+                    )
+                else:
+                    logger.error("Failed to bulk tag messages: %s", result.stderr)
         except Exception:
             logger.exception("Error counting messages")
             self.skip_claude = False
@@ -330,7 +344,7 @@ indicators, suspicious attachments, etc."""
         """Process each message."""
         # Check if we should skip Claude analysis due to too many messages
         if self.skip_claude:
-            self.add_tags(message, "claude-analyzed", "claude-skipped-bulk")
+            # Already bulk tagged in __init__, skip processing
             return
 
         from_addr = message.get_header("From") or ""
