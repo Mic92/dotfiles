@@ -33,13 +33,13 @@ dependencies = [
 ]
 
 [project.scripts]
-vcal = "ical_cli.main:main"
+vcal = "vcal_cli.main:main"
 
 [tool.setuptools]
-packages = ["ical_cli"]
+packages = ["vcal_cli"]
 
 [tool.setuptools.package-data]
-ical_cli = ["py.typed"]
+vcal_cli = ["py.typed"]
 
 [tool.mypy]
 python_version = "3.13"

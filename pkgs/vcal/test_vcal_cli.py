@@ -7,8 +7,8 @@ from pathlib import Path
 import pytest
 from icalendar import Calendar
 
-from ical_cli.create import get_local_timezone
-from ical_cli.main import main
+from vcal_cli.create import get_local_timezone
+from vcal_cli.main import main
 
 
 @pytest.fixture
