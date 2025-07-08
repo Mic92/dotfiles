@@ -35,7 +35,7 @@ def async_test_timeout(request: Any) -> None:
 
 
 @pytest.fixture
-def tmux_server(monkeypatch: pytest.MonkeyPatch) -> Generator[str, None, None]:
+def tmux_server(monkeypatch: pytest.MonkeyPatch) -> Generator[str]:
     """Start a dedicated tmux server for testing."""
     # Clear tmux environment to ensure clean state
     monkeypatch.delenv("TMUX", raising=False)
