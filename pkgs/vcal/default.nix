@@ -7,7 +7,7 @@
 }:
 
 python3.pkgs.buildPythonApplication {
-  pname = "ical-cli";
+  pname = "vcal";
   version = "0.1.0";
 
   src = ./.;
@@ -39,9 +39,9 @@ python3.pkgs.buildPythonApplication {
   ];
 
   meta = {
-    description = "Command-line tools for working with iCalendar files";
+    description = "vCalendar/iCalendar management tool for creating, importing, and replying to calendar invitations";
     homepage = "https://github.com/Mic92/dotfiles";
     license = lib.licenses.mit;
-    mainProgram = "import-calendar-invite";
+    mainProgram = "vcal";
   };
 }

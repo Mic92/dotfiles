@@ -7,7 +7,16 @@ import email
 import subprocess
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
+
+
+@dataclass
+class ImportConfig:
+    """Configuration for import command."""
+    
+    file_path: str | None = None
+    calendar: str = "Personal"
 
 
 def extract_calendar_from_email(email_content: bytes) -> list[bytes]:
@@ -163,9 +172,53 @@ def import_calendars(calendars: list[bytes], calendar_name: str) -> tuple[int, b
     return imported, has_rsvp
 
 
-def main() -> int:
-    """Run the main program."""
-    parser = argparse.ArgumentParser(description="Import calendar invites from email or .ics files")
+def run(config: ImportConfig) -> int:
+    """Run the import command with the given configuration."""
+    # Process input
+    calendars, is_email, email_content = process_input(config.file_path)
+    
+    if not calendars:
+        print("No .ics files found in the input", file=sys.stderr)
+        return 1
+    
+    # Import calendars
+    imported, has_rsvp = import_calendars(calendars, config.calendar)
+    
+    if imported == 0:
+        return 1
+    
+    # Sync with server
+    sync_calendar()
+    
+    print(f"Successfully imported {imported} calendar invite(s) to {config.calendar}")
+    
+    # Offer RSVP if this was an email with RSVP request
+    if is_email and has_rsvp:
+        if config.file_path:
+            offer_rsvp(config.file_path, None)
+        else:
+            offer_rsvp(None, email_content)
+    
+    return 0
+
+
+def _handle_args(args: argparse.Namespace) -> int:
+    """Handle parsed arguments and run the command."""
+    config = ImportConfig(
+        file_path=args.file,
+        calendar=args.calendar,
+    )
+    return run(config)
+
+
+def register_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register the import subcommand."""
+    parser = subparsers.add_parser(
+        "import",
+        help="Import calendar invites from email or .ics files",
+        description="Import calendar invitations into your local calendar",
+    )
+    
     parser.add_argument(
         "-c",
         "--calendar",
@@ -177,36 +230,21 @@ def main() -> int:
         nargs="?",
         help="File to import (reads from stdin if not provided)",
     )
-
-    args = parser.parse_args()
-
-    # Process input
-    calendars, is_email, email_content = process_input(args.file)
-
-    if not calendars:
-        print("No .ics files found in the input", file=sys.stderr)
-        return 1
-
-    # Import calendars
-    imported, has_rsvp = import_calendars(calendars, args.calendar)
-
-    if imported == 0:
-        return 1
-
-    # Sync with server
-    sync_calendar()
-
-    print(f"Successfully imported {imported} calendar invite(s) to {args.calendar}")
-
-    # Offer RSVP if this was an email with RSVP request
-    if is_email and has_rsvp:
-        if args.file:
-            offer_rsvp(args.file, None)
-        else:
-            offer_rsvp(None, email_content)
-
-    return 0
+    
+    parser.set_defaults(func=_handle_args)
 
 
-if __name__ == "__main__":
-    sys.exit(main())
+def main(argv: list[str] | None = None) -> int:
+    """Compatibility wrapper for tests."""
+    import argparse
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers()
+    register_parser(subparsers)
+    
+    # Parse with 'import' as the subcommand
+    if argv is None:
+        argv = []
+    args = parser.parse_args(['import'] + argv)
+    return args.func(args)
+
+

@@ -7,11 +7,22 @@ import email
 import email.utils
 import subprocess
 import sys
+from dataclasses import dataclass
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
 
 from icalendar import Calendar, Event, vCalAddress, vText
+
+
+@dataclass
+class ReplyConfig:
+    """Configuration for reply command."""
+    
+    status: str  # accept, decline, tentative
+    file_path: str | None = None
+    comment: str | None = None
+    dry_run: bool = False
 
 
 def extract_calendar_from_email(email_content: str) -> Calendar | None:
@@ -174,32 +185,6 @@ def send_reply(reply_cal: Calendar, organizer_email: str, event_summary: str, st
         return True
 
 
-def parse_args() -> argparse.Namespace:
-    """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="Reply to calendar invites with RSVP response")
-    parser.add_argument(
-        "status",
-        choices=["accept", "decline", "tentative"],
-        help="RSVP response status",
-    )
-    parser.add_argument(
-        "-c",
-        "--comment",
-        help="Optional comment to include with response",
-    )
-    parser.add_argument(
-        "-n",
-        "--dry-run",
-        action="store_true",
-        help="Print the reply instead of sending",
-    )
-    parser.add_argument(
-        "file",
-        nargs="?",
-        help="Email file containing invite (reads from stdin if not provided)",
-    )
-
-    return parser.parse_args()
 
 
 def read_email_content(file_path: str | None) -> str:
@@ -230,47 +215,103 @@ def extract_event_info(original_cal: Calendar) -> tuple[str | None, str]:
     return organizer_email, event_summary
 
 
-def main() -> None:
-    """Run the main program."""
-    args = parse_args()
-
+def run(config: ReplyConfig) -> int:
+    """Run the reply command with the given configuration."""
     # Map user-friendly status to iCalendar format
     status_map = {
         "accept": "ACCEPTED",
         "decline": "DECLINED",
         "tentative": "TENTATIVE",
     }
-    ical_status = status_map[args.status]
-
+    ical_status = status_map[config.status]
+    
     # Read input
-    email_content = read_email_content(args.file)
-
+    email_content = read_email_content(config.file_path)
+    
     # Extract calendar from email
     original_cal = extract_calendar_from_email(email_content)
     if not original_cal:
         print("Error: No calendar invite found in input", file=sys.stderr)
-        sys.exit(1)
-
+        return 1
+    
     # Find organizer email and event summary
     organizer_email, event_summary = extract_event_info(original_cal)
-
+    
     if not organizer_email:
         print("Error: No organizer found in calendar invite", file=sys.stderr)
-        sys.exit(1)
-
+        return 1
+    
     # Create reply
-    reply_cal = create_reply(original_cal, ical_status, args.comment)
-
-    if args.dry_run:
+    reply_cal = create_reply(original_cal, ical_status, config.comment)
+    
+    if config.dry_run:
         print(f"Would send reply to: {organizer_email}")
         print(f"Status: {ical_status}")
         print("\nReply calendar:")
         print(reply_cal.to_ical().decode())
     elif send_reply(reply_cal, organizer_email, event_summary, ical_status):
-        print(f"Successfully sent {args.status} reply to {organizer_email}")
+        print(f"Successfully sent {config.status} reply to {organizer_email}")
     else:
-        sys.exit(1)
+        return 1
+    
+    return 0
 
 
-if __name__ == "__main__":
-    main()
+def _handle_args(args: argparse.Namespace) -> int:
+    """Handle parsed arguments and run the command."""
+    config = ReplyConfig(
+        status=args.status,
+        file_path=args.file,
+        comment=args.comment,
+        dry_run=args.dry_run,
+    )
+    return run(config)
+
+
+def register_parser(subparsers: argparse._SubParsersAction) -> None:
+    """Register the reply subcommand."""
+    parser = subparsers.add_parser(
+        "reply",
+        help="Reply to calendar invites with RSVP responses",
+        description="Send RSVP responses (accept/decline/tentative) to calendar invitations",
+    )
+    
+    parser.add_argument(
+        "status",
+        choices=["accept", "decline", "tentative"],
+        help="RSVP response status",
+    )
+    parser.add_argument(
+        "-c",
+        "--comment",
+        help="Optional comment to include with response",
+    )
+    parser.add_argument(
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="Print the reply instead of sending",
+    )
+    parser.add_argument(
+        "file",
+        nargs="?",
+        help="Email file containing invite (reads from stdin if not provided)",
+    )
+    
+    parser.set_defaults(func=_handle_args)
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Compatibility wrapper for tests."""
+    import argparse
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers()
+    register_parser(subparsers)
+    
+    # Parse with 'reply' as the subcommand
+    if argv is None:
+        argv = []
+    args = parser.parse_args(['reply'] + argv)
+    return args.func(args)
+
+
