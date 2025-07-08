@@ -363,11 +363,19 @@ def get_directions(
     origin: str,
     destination: str,
     mode: str = "driving",
-    departure_time: str | None = None,
-    arrival_time: str | None = None,
+    times: tuple[str | None, str | None] | None = None,
 ) -> dict[str, Any] | None:
-    """Get directions between two places using Routes API."""
+    """Get directions between two places using Routes API.
+
+    Args:
+        api_key: Google Maps API key
+        origin: Starting location
+        destination: Ending location
+        mode: Travel mode (driving, transit, etc.)
+        times: Optional tuple of (departure_time, arrival_time)
+    """
     processor = DirectionsProcessor(api_key)
+    departure_time, arrival_time = times if times else (None, None)
     return processor.get_directions(
         origin, destination, mode, departure_time, arrival_time
     )
@@ -517,13 +525,12 @@ def nearby(query: str, location: str | None = None, limit: int = 5) -> None:
             print(f"   Rating: {place['rating']} {price}")
 
         # Add Google Maps link for each place
-        maps_url = generate_maps_url(
-            "search",
-            query=place["name"],
-            place_id=place.get("place_id"),
-            lat=place.get("lat"),
-            lng=place.get("lng"),
-        )
+        url_params = MapsUrlParams()
+        url_params.query = place["name"]
+        url_params.place_id = place.get("place_id")
+        url_params.lat = place.get("lat")
+        url_params.lng = place.get("lng")
+        maps_url = generate_maps_url("search", url_params)
         print(f"   Maps: {maps_url}")
 
 
@@ -657,7 +664,7 @@ def route(
         arrival_time = parse_datetime(arrival_time)
 
     directions = get_directions(
-        api_key, origin, destination, mode, departure_time, arrival_time
+        api_key, origin, destination, mode, (departure_time, arrival_time)
     )
 
     if not directions:
@@ -668,7 +675,7 @@ def route(
     processor.print_route(directions, origin, destination, mode, arrival_time)
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(
         description="Search for places and get directions using Google Maps API"
     )
@@ -718,7 +725,7 @@ def main() -> None:
         help="Desired arrival time (e.g., '2025-06-23 05:40' or '2025-06-23T05:40:00Z')",
     )
 
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.command == "setup":
         setup(args.api_key_command)
