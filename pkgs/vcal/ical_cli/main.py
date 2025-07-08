@@ -10,10 +10,11 @@ from . import create, import_invite, reply
 
 def main(argv: list[str] | None = None) -> int:
     """Run the main vcal CLI.
-    
+
     Args:
         argv: Optional list of command line arguments (for testing).
               If None, uses sys.argv[1:].
+
     """
     parser = argparse.ArgumentParser(
         prog="vcal",

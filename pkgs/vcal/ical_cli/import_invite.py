@@ -235,5 +235,3 @@ def register_parser(subparsers: argparse._SubParsersAction) -> None:
     )
 
     parser.set_defaults(func=_handle_args)
-
-

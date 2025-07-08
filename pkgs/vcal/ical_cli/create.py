@@ -269,8 +269,6 @@ def get_local_timezone() -> str:
     return "UTC"
 
 
-
-
 def get_organizer_info(args: argparse.Namespace) -> tuple[str, str]:
     """Get organizer name and email from args or system."""
     organizer_name = args.organizer_name
