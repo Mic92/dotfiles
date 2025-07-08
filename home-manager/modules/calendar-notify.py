@@ -6,7 +6,7 @@ import subprocess
 import sys
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
-from typing import Any, TypeAlias
+from typing import Any
 
 import pytz  # type: ignore[import-untyped]
 from dateutil.rrule import rrulestr  # type: ignore[import-untyped]
@@ -18,10 +18,10 @@ STATE_FILE = STATE_DIR / "notified-events.db"
 CALENDAR_DIR = Path.home() / ".local/share/calendars"
 
 # Type aliases for clarity
-DateOrDateTime: TypeAlias = date | datetime
-DurationLike: TypeAlias = timedelta | vDuration
-TriggerType: TypeAlias = datetime | timedelta | vDDDTypes
-RRuleType: TypeAlias = "rrulestr | None"
+type DateOrDateTime = date | datetime
+type DurationLike = timedelta | vDuration
+type TriggerType = datetime | timedelta | vDDDTypes
+type RRuleType = rrulestr | None
 
 # Create logger
 logger = logging.getLogger(__name__)
