@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import base64
-import cgi
 import io
 import json
 import os
@@ -34,11 +33,10 @@ def _create_socket(tls: bool) -> socket.socket:
     """Create and configure socket."""
     sock = socket.socket(family=socket.AF_INET6)
     if tls:
-        sock = ssl.wrap_socket(
-            sock,
-            cert_reqs=ssl.CERT_NONE,
-            ssl_version=ssl.PROTOCOL_TLSv1_2,
-        )
+        context = ssl.create_default_context()
+        context.check_hostname = False
+        context.verify_mode = ssl.CERT_NONE
+        sock = context.wrap_socket(sock)
     return sock
 
 
@@ -183,7 +181,8 @@ class PrometheusWebHook(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:  # noqa: N802
         content_type = self.headers.get("content-type", "")
-        content_type, _ = cgi.parse_header(content_type)
+        # Parse content type header, splitting on semicolon to ignore parameters
+        content_type = content_type.split(";")[0].strip()
 
         # refuse to receive non-json content
         if content_type != "application/json":
