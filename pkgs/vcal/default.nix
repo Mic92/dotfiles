@@ -25,7 +25,7 @@ python3.pkgs.buildPythonApplication {
   ];
 
   makeWrapperArgs = [
-    "--prefix PATH : ${
+    "--suffix PATH : ${
       lib.makeBinPath [
         msmtp
         khal
