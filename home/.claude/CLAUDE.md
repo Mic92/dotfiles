@@ -10,8 +10,20 @@
 - Always test/lint/format your code before committing.
 - Add debug output or unit tests when troubleshooting.
 - Avoid mocking in tests.
-- IMPORTANT!!! Use pueue for commands longer than 10 seconds to avoid
-  timeouts. To run and wait: `task_id=$(pueue add -- command | grep -oE '[0-9]+'); pueue wait "$task_id"`
+- CRITICAL: ALWAYS use pueue for ANY command that might take longer than 10
+  seconds to avoid timeouts. This includes but is not limited to:
+  - `clan machines update` (deployment commands)
+  - `nix build` commands
+  - `merge-when-green`
+  - Any test runs that might be slow
+  - Any deployment or build operations
+
+  To run and wait:
+  ```bash
+  id=$(pueue add -- command | grep -oE '[0-9]+'); pueue wait "$id"; pueue log "$id"
+  ```
+
+  NEVER run these commands directly without pueue!
 - Use strace/sysdig/bcc on Linux and dtrace on macOS for debugging
 - Use tmux when trying to interact with interactive cli/tuis
 - Use the gh tool to interact with GitHub.
