@@ -80,7 +80,7 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    srvos.url = "github:numtide/srvos";
+    srvos.url = "github:nix-community/srvos/dotfiles";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
     clan-core.url = "https://git.clan.lol/clan/clan-core/archive/fix-sudo.tar.gz";
