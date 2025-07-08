@@ -82,7 +82,6 @@
               "adelaide"
               "amy"
               "astrid"
-              "bill"
               "christina"
               "clara"
               "dan"
