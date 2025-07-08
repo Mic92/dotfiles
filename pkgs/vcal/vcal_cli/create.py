@@ -11,7 +11,6 @@ import email.utils
 import os
 import pwd
 import re
-import socket
 import subprocess
 import sys
 import tempfile
@@ -23,10 +22,13 @@ from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
+from typing import Any
 
 import pytz
 from icalendar import Alarm, Calendar, Event, vCalAddress, vText
 from pytz import timezone
+
+from .config import load_config_or_exit
 
 
 @dataclass
@@ -80,7 +82,7 @@ def validate_email(email: str) -> None:
 
 def parse_attendees(attendees_str: str) -> list[tuple[str, str]]:
     """Parse attendee string format: 'Name <email>' or just 'email'."""
-    attendees = []
+    attendees: list[tuple[str, str]] = []
     # Handle empty string
     if not attendees_str.strip():
         return attendees
@@ -149,7 +151,7 @@ def create_calendar_invite(config: MeetingConfig) -> Calendar:
     org_attendee.params["cn"] = vText(config.organizer_name)
     org_attendee.params["partstat"] = vText("ACCEPTED")
     org_attendee.params["role"] = vText("REQ-PARTICIPANT")
-    event.add("attendee", org_attendee, encode=0)
+    event.add("attendee", org_attendee, encode=False)
 
     # Attendees
     for name, email_addr in config.attendees:
@@ -159,7 +161,7 @@ def create_calendar_invite(config: MeetingConfig) -> Calendar:
         attendee.params["partstat"] = vText("NEEDS-ACTION")
         attendee.params["rsvp"] = vText("TRUE")
         attendee.params["role"] = vText("REQ-PARTICIPANT")
-        event.add("attendee", attendee, encode=0)
+        event.add("attendee", attendee, encode=False)
 
     # Add reminder/alarm
     alarm = Alarm()
@@ -295,7 +297,14 @@ def get_local_timezone() -> str:
 
 def get_organizer_info(args: argparse.Namespace) -> tuple[str, str]:
     """Get organizer name and email from args or system."""
+    # Load config once (will exit on error)
+    config = load_config_or_exit()
+
+    # Try to get name from args, then config, then system
     organizer_name = args.organizer_name
+    if not organizer_name and config.user:
+        organizer_name = config.user.name
+
     if not organizer_name:
         try:
             # Try to get the real name from passwd entry
@@ -308,17 +317,10 @@ def get_organizer_info(args: argparse.Namespace) -> tuple[str, str]:
             # Last resort fallback
             organizer_name = "Meeting Organizer"
 
+    # Try to get email from args, then config
     organizer_email = args.organizer_email
-    if not organizer_email:
-        organizer_email = os.environ.get("EMAIL")
-        if not organizer_email:
-            try:
-                # Get username without using os.getlogin()
-                username = pwd.getpwuid(os.getuid()).pw_name
-            except (KeyError, OSError):
-                username = os.environ.get("USER", "user")
-            hostname = socket.gethostname()
-            organizer_email = f"{username}@{hostname}"
+    if not organizer_email and config.user:
+        organizer_email = config.user.email
 
     return organizer_name, organizer_email
 
@@ -344,9 +346,9 @@ def parse_meeting_time(
     return start, end
 
 
-def parse_custom_rrule(rrule_str: str) -> dict:
+def parse_custom_rrule(rrule_str: str) -> dict[str, Any]:
     """Parse custom RRULE string."""
-    rrule_parts = {}
+    rrule_parts: dict[str, Any] = {}
     for part in rrule_str.split(";"):
         if "=" in part:
             key, value = part.split("=", 1)
@@ -366,7 +368,7 @@ def parse_custom_rrule(rrule_str: str) -> dict:
 def parse_recurrence_options(
     args: argparse.Namespace,
     tz: pytz.tzinfo.BaseTzInfo,
-) -> dict | None:
+) -> dict[str, Any] | None:
     """Parse recurrence options from command line arguments."""
     if args.rrule:
         return parse_custom_rrule(args.rrule)
@@ -375,7 +377,7 @@ def parse_recurrence_options(
         return None
 
     # Build recurrence rule from simple options
-    rrule = {}
+    rrule: dict[str, Any] = {}
 
     # Set frequency
     freq_map = {
@@ -559,6 +561,16 @@ def _handle_args(args: argparse.Namespace) -> int:  # noqa: PLR0911
     organizer_name, organizer_email = get_organizer_info(args)
 
     # Validate organizer email
+    if not organizer_email:
+        print(
+            "Error: Organizer email is required. "
+            "Use --organizer-email or create ~/.config/vcal/config.toml with:\n"
+            "[user]\n"
+            'email = "your@email.com"',
+            file=sys.stderr,
+        )
+        return 1
+
     try:
         validate_email(organizer_email)
     except ValueError as e:
@@ -666,7 +678,7 @@ Examples:
     parser.add_argument("--organizer-name", help="Your name (defaults to system user)")
     parser.add_argument(
         "--organizer-email",
-        help="Your email (defaults to $EMAIL or user@hostname)",
+        help="Your email (can also be set in ~/.config/vcal/config.toml)",
     )
     parser.add_argument("-l", "--location", help="Meeting location")
     parser.add_argument("--meeting-link", help="Meeting URL (Zoom, Teams, etc.)")

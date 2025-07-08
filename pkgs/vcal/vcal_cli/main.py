@@ -53,7 +53,8 @@ Examples:
     args = parser.parse_args(argv)
 
     # Execute the selected command
-    return args.func(args)
+    result = args.func(args)
+    return int(result) if result is not None else 0
 
 
 if __name__ == "__main__":
