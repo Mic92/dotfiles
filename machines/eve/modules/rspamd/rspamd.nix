@@ -117,7 +117,7 @@ in
 
   systemd.services.rspamd.serviceConfig.SupplementaryGroups = [ "redis-rspamd" ];
 
-  systemd.services.dovecot2.preStart = ''
+  systemd.services.dovecot.preStart = ''
     mkdir -p /var/lib/dovecot/sieve/
     for i in ${sieve-spam-filter}/share/sieve-rspamd-filter/*.sieve; do
       dest="/var/lib/dovecot/sieve/$(basename $i)"
