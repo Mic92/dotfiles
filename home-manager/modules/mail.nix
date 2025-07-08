@@ -2,6 +2,7 @@
   config,
   pkgs,
   lib,
+  self,
   ...
 }:
 
@@ -77,6 +78,8 @@ lib.mkMerge [
       # Optional tools
       msmtp-with-sent # msmtp wrapper that saves to Sent folder
       w3m # for HTML email viewing
+
+      self.packages.${pkgs.stdenv.hostPlatform.system}.vcal
     ];
 
     # All config files are managed by homeshick:
