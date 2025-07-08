@@ -77,12 +77,6 @@
         tags.org = "krebs";
         response_status_code = 200;
       }
-      {
-        urls = [ "http://calendar.r/.web/" ];
-        tags.host = "hotdog";
-        tags.org = "krebs";
-        response_status_code = 200;
-      }
       # currently broken
       #{
       #  urls = [
@@ -130,7 +124,6 @@
       {
         urls = [
           "http://cgit.ni.r"
-          "http://cgit.gum.r"
           "http://cgit.orange.r"
         ];
         response_string_match = "cgit";
