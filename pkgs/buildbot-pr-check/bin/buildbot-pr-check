@@ -1,0 +1,8 @@
+#!/usr/bin/env python3
+"""Convenience script to run buildbot-pr-check"""
+
+import sys
+from buildbot_pr_check.cli import main
+
+if __name__ == "__main__":
+    sys.exit(main())
