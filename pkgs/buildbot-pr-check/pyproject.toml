@@ -29,3 +29,10 @@ python_files = ["test_*.py"]
 
 [tool.ruff]
 target-version = "py313"
+
+[tool.mypy]
+python_version = "3.13"
+
+[[tool.mypy.overrides]]
+module = "vcr"
+ignore_missing_imports = true

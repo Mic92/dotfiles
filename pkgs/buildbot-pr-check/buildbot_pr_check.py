@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
+import argparse
 import json
+import logging
 import os
 import re
 import subprocess
@@ -9,6 +11,70 @@ import urllib.parse
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
+from enum import IntEnum
+
+# Set up logging
+logger = logging.getLogger(__name__)
+
+
+# Build status enum
+class BuildStatus(IntEnum):
+    """Build status codes used by Buildbot"""
+
+    SUCCESS = 0
+    WARNINGS = 1
+    FAILURE = 2
+    SKIPPED = 3
+    EXCEPTION = 4
+    RETRY = 5
+    CANCELLED = 6
+
+    @property
+    def display_name(self) -> str:
+        """Get display name for the status"""
+        return self.name
+
+    @property
+    def icon(self) -> str:
+        """Get icon for the status"""
+        icons = {
+            BuildStatus.SUCCESS: "✅",
+            BuildStatus.WARNINGS: "⚠️",
+            BuildStatus.FAILURE: "❌",
+            BuildStatus.SKIPPED: "⏭️",
+            BuildStatus.EXCEPTION: "💥",
+            BuildStatus.RETRY: "🔄",
+            BuildStatus.CANCELLED: "⚠️",
+        }
+        return icons.get(self, "•")
+
+    @property
+    def color(self) -> str:
+        """Get color for the status"""
+        colors = {
+            BuildStatus.SUCCESS: Colors.GREEN,
+            BuildStatus.WARNINGS: Colors.YELLOW,
+            BuildStatus.FAILURE: Colors.RED,
+            BuildStatus.SKIPPED: Colors.CYAN,
+            BuildStatus.EXCEPTION: Colors.RED,
+            BuildStatus.RETRY: Colors.YELLOW,
+            BuildStatus.CANCELLED: Colors.YELLOW,
+        }
+        return colors.get(self, Colors.RESET)
+
+    @property
+    def title(self) -> str:
+        """Get title for the status"""
+        titles = {
+            BuildStatus.SUCCESS: "Successful builds",
+            BuildStatus.WARNINGS: "Builds with warnings",
+            BuildStatus.FAILURE: "Failed builds",
+            BuildStatus.SKIPPED: "Skipped builds",
+            BuildStatus.EXCEPTION: "Builds with exceptions",
+            BuildStatus.RETRY: "Retried builds",
+            BuildStatus.CANCELLED: "Canceled builds",
+        }
+        return titles.get(self, f"{self.display_name} builds")
 
 
 # Color codes for terminal output
@@ -54,7 +120,7 @@ class BuildRequestStatus:
     """Status information for a build request"""
 
     request_id: int
-    status: str
+    status: BuildStatus | None
     build_id: int | None
     virtual_builder_name: str | None = None
 
@@ -154,9 +220,12 @@ def get_github_token() -> str | None:
         token = result.stdout.strip()
         if token:
             return token
-    except (subprocess.CalledProcessError, FileNotFoundError):
-        # gh CLI not available or not authenticated
-        pass
+    except subprocess.CalledProcessError as e:
+        logger.debug(f"gh CLI not authenticated: {e}")
+    except FileNotFoundError:
+        logger.debug(
+            "gh CLI not found, falling back to GITHUB_TOKEN environment variable"
+        )
 
     return None
 
@@ -335,15 +404,15 @@ def get_triggered_builds(base_url: str, builder_id: str, build_num: str) -> list
     return sorted(build_requests)
 
 
-RESULT_MEANINGS = {
-    0: "SUCCESS",
-    1: "WARNINGS",
-    2: "FAILURE",
-    3: "SKIPPED",
-    4: "EXCEPTION",
-    5: "RETRY",
-    6: "CANCELLED",
-}
+def get_build_status(result_code: int | None) -> BuildStatus | None:
+    """Convert Buildbot result code to BuildStatus enum."""
+    if result_code is None:
+        return None
+    try:
+        return BuildStatus(result_code)
+    except ValueError:
+        # Unknown status code
+        return None
 
 
 def check_build_request_status(base_url: str, request_id: int) -> BuildRequestStatus:
@@ -355,7 +424,7 @@ def check_build_request_status(base_url: str, request_id: int) -> BuildRequestSt
             data = json.loads(response.read())
             request = data["buildrequests"][0]
             result = request.get("results")
-            status = RESULT_MEANINGS.get(result, f"UNKNOWN({result})")
+            status = get_build_status(result)
 
             # Get virtual_builder_name from properties
             virtual_builder_name = None
@@ -393,7 +462,7 @@ def check_build_request_status(base_url: str, request_id: int) -> BuildRequestSt
         json.JSONDecodeError,
         KeyError,
     ):
-        return BuildRequestStatus(request_id=request_id, status="ERROR", build_id=None)
+        return BuildRequestStatus(request_id=request_id, status=None, build_id=None)
 
 
 def get_step_log_urls(base_url: str, step_id: int, step_name: str) -> list[LogUrl]:
@@ -472,7 +541,7 @@ def get_build_log_urls(base_url: str, build_id: int) -> list[LogUrl]:
 
 def get_parent_build_status(
     base_url: str, builder_id: str, build_num: str
-) -> tuple[str | None, list[LogUrl]]:
+) -> tuple[BuildStatus | None, list[LogUrl]]:
     """Get parent build status and logs from failed steps."""
     try:
         # Get build data
@@ -488,11 +557,15 @@ def get_parent_build_status(
             if results is None:
                 return None, []  # Build still in progress
 
-            status = RESULT_MEANINGS.get(results, f"UNKNOWN({results})")
+            status = get_build_status(results)
 
             # If failed, get logs from failed steps
             log_urls = []
-            if status in ["FAILURE", "EXCEPTION", "CANCELLED"]:
+            if status in [
+                BuildStatus.FAILURE,
+                BuildStatus.EXCEPTION,
+                BuildStatus.CANCELLED,
+            ]:
                 steps_url = f"https://{base_url}/api/v2/builders/{builder_id}/builds/{build_num}/steps"
                 with urllib.request.urlopen(steps_url) as steps_response:  # noqa: S310
                     steps_data = json.loads(steps_response.read())
@@ -582,7 +655,7 @@ def filter_builds_with_triggers(buildbot_urls: list[str]) -> list[BuildWithTrigg
 class BuildStatusReport:
     """Status report for a build"""
 
-    statuses: dict[str, list[int]]
+    statuses: dict[BuildStatus | None, list[int]]
     build_id_map: dict[int, int | None]
     name_map: dict[int, str]
     virtual_builder_map: dict[int, str | None]
@@ -598,8 +671,14 @@ def check_build_status(build: BuildWithTriggers) -> BuildStatusReport:
         build.base_url, build.builder_id, build.build_num
     )
 
-    if parent_status and parent_status in ["FAILURE", "EXCEPTION", "CANCELLED"]:
-        print(f"{colorize('⚠️  Parent build failed:', Colors.RED)} {parent_status}")
+    if parent_status and parent_status in [
+        BuildStatus.FAILURE,
+        BuildStatus.EXCEPTION,
+        BuildStatus.CANCELLED,
+    ]:
+        print(
+            f"{colorize('⚠️  Parent build failed:', Colors.RED)} {parent_status.display_name}"
+        )
         if parent_logs:
             print(f"\n{colorize('📋 Parent build logs:', Colors.CYAN)}")
             for log in parent_logs:
@@ -616,7 +695,7 @@ def check_build_status(build: BuildWithTriggers) -> BuildStatusReport:
     name_map = get_build_names(build.base_url, build.builder_id, build.build_num)
 
     # Check status of each build request in parallel
-    statuses: dict[str, list[int]] = {}
+    statuses: dict[BuildStatus | None, list[int]] = {}
     build_id_map = {}
     virtual_builder_map = {}
 
@@ -642,9 +721,9 @@ def check_build_status(build: BuildWithTriggers) -> BuildStatusReport:
             except Exception as e:
                 # Handle any errors from the thread
                 print(f"Error checking request {req_id}: {e}")
-                if "ERROR" not in statuses:
-                    statuses["ERROR"] = []
-                statuses["ERROR"].append(req_id)
+                if None not in statuses:
+                    statuses[None] = []
+                statuses[None].append(req_id)
                 build_id_map[req_id] = None
                 virtual_builder_map[req_id] = None
 
@@ -656,31 +735,44 @@ def check_build_status(build: BuildWithTriggers) -> BuildStatusReport:
     )
 
 
-def print_build_report(build: BuildWithTriggers, report: BuildStatusReport) -> None:
-    """Print detailed report for a build."""
+def print_build_report(
+    build: BuildWithTriggers,
+    report: BuildStatusReport,
+    included_statuses: set[BuildStatus] | None = None,
+) -> None:
+    """Print detailed report for a build.
+
+    Args:
+        build: The build with triggers
+        report: The build status report
+        included_statuses: Set of statuses to include in detailed output. If None, defaults to FAILURE and CANCELLED.
+    """
+    # Default to showing FAILURE and CANCELLED if not specified
+    if included_statuses is None:
+        included_statuses = {BuildStatus.FAILURE, BuildStatus.CANCELLED}
+
     # Report summary
     print(f"\n{colorize('📊 Build Summary:', Colors.BOLD)}")
-    for status, requests in sorted(report.statuses.items()):
-        if status == "SUCCESS":
-            icon = "✅"
-            status_colored = colorize(status, Colors.GREEN)
-        elif status == "FAILURE":
-            icon = "❌"
-            status_colored = colorize(status, Colors.RED)
-        elif status == "CANCELLED":
-            icon = "⚠️"
-            status_colored = colorize(status, Colors.YELLOW)
-        else:
+    for status, requests in sorted(
+        report.statuses.items(), key=lambda x: (x[0] is None, x[0].value if x[0] else 0)
+    ):
+        if status is None:
             icon = "•"
-            status_colored = status
+            status_colored = "ERROR"
+        else:
+            icon = status.icon
+            status_colored = colorize(status.display_name, status.color)
         print(f"  {icon} {status_colored}: {len(requests)} builds")
 
-    # Show canceled builds with names
-    if "CANCELLED" in report.statuses:
+    # Show detailed output for included statuses
+    for status in included_statuses:
+        if status not in report.statuses:
+            continue
+
         print(
-            f"\n{colorize('⚠️  Canceled builds', Colors.YELLOW)} ({len(report.statuses['CANCELLED'])} total):"
+            f"\n{colorize(f'{status.icon} {status.title}', status.color)} ({len(report.statuses[status])} total):"
         )
-        for req_id in sorted(report.statuses["CANCELLED"]):
+        for req_id in sorted(report.statuses[status]):
             # Use virtual_builder_name if available, otherwise fall back to name_map
             virtual_name = report.virtual_builder_map.get(req_id)
             if virtual_name:
@@ -692,44 +784,44 @@ def print_build_report(build: BuildWithTriggers, report: BuildStatusReport) -> N
             else:
                 display_name = report.name_map.get(req_id, f"Request {req_id}")
 
-            print(f"  → {colorize(display_name, Colors.YELLOW)}")
+            print(f"  → {colorize(display_name, status.color)}")
 
-    # Show failed builds with names and log URLs
-    if "FAILURE" in report.statuses:
-        print(
-            f"\n{colorize('❌ Failed builds', Colors.RED)} ({len(report.statuses['FAILURE'])} total):"
-        )
-        for req_id in sorted(report.statuses["FAILURE"]):
-            # Use virtual_builder_name if available, otherwise fall back to name_map
-            virtual_name = report.virtual_builder_map.get(req_id)
-            if virtual_name:
-                # Extract just the flake attribute part
-                if "#" in virtual_name:
-                    display_name = virtual_name.split("#", 1)[1]
-                else:
-                    display_name = virtual_name
-            else:
-                display_name = report.name_map.get(req_id, f"Request {req_id}")
+            # Get log URLs for failed builds
+            if status not in [BuildStatus.FAILURE, BuildStatus.EXCEPTION]:
+                continue
 
-            print(f"  → {colorize(display_name, Colors.RED)}")
-
-            # Get log URLs for this failed build
             build_id = report.build_id_map.get(req_id)
-            if build_id:
-                log_urls = get_build_log_urls(build.base_url, build_id)
-                if log_urls:
-                    print(f"    {colorize('Log URLs:', Colors.CYAN)}")
-                    for log in log_urls:
-                        print(
-                            f"      • {log.step_name} ({log.log_name}): {colorize(log.url, Colors.BLUE)}"
-                        )
+            if not build_id:
+                continue
+
+            log_urls = get_build_log_urls(build.base_url, build_id)
+            if not log_urls:
+                continue
+
+            print(f"    {colorize('Log URLs:', Colors.CYAN)}")
+            for log in log_urls:
+                print(
+                    f"      • {log.step_name} ({log.log_name}): {colorize(log.url, Colors.BLUE)}"
+                )
+
+    # Handle None status (errors) if present
+    if None not in report.statuses or None not in included_statuses:
+        return
+
+    print(
+        f"\n{colorize('• ERROR builds', Colors.RED)} ({len(report.statuses[None])} total):"
+    )
+    for req_id in sorted(report.statuses[None]):
+        display_name = report.name_map.get(req_id, f"Request {req_id}")
+        print(f"  → {colorize(display_name, Colors.RED)}")
 
 
-def check_pr(pr_url: str) -> int:
+def check_pr(pr_url: str, included_statuses: set[BuildStatus] | None = None) -> int:
     """Check buildbot status for a pull request.
 
     Args:
         pr_url: The GitHub or Gitea pull request URL
+        included_statuses: Set of statuses to include in detailed output
 
     Returns:
         Exit code: 0 for success, 1 for failure/canceled builds
@@ -780,17 +872,24 @@ def check_pr(pr_url: str) -> int:
         exit_code = 0
         for build in builds_with_triggers:
             report = check_build_status(build)
-            print_build_report(build, report)
+            print_build_report(build, report, included_statuses)
 
             # Check parent build status for exit code
             parent_status, _ = get_parent_build_status(
                 build.base_url, build.builder_id, build.build_num
             )
-            if parent_status in ["FAILURE", "EXCEPTION", "CANCELLED"]:
+            if parent_status in [
+                BuildStatus.FAILURE,
+                BuildStatus.EXCEPTION,
+                BuildStatus.CANCELLED,
+            ]:
                 exit_code = 1
 
             # Set exit code to 1 if there are any failures or cancellations
-            if "FAILURE" in report.statuses or "CANCELLED" in report.statuses:
+            if (
+                BuildStatus.FAILURE in report.statuses
+                or BuildStatus.CANCELLED in report.statuses
+            ):
                 exit_code = 1
 
         return exit_code
@@ -836,27 +935,67 @@ def get_current_branch_pr_url() -> str | None:
     return None
 
 
+def parse_included_statuses(value: str) -> set[BuildStatus]:
+    """Parse comma-separated list of status names."""
+    # Split by comma and convert to uppercase
+    status_names = {s.strip().upper() for s in value.split(",") if s.strip()}
+
+    # Convert to BuildStatus enum
+    statuses = set()
+    valid_names = {status.name for status in BuildStatus}
+
+    for name in status_names:
+        if name in valid_names:
+            statuses.add(BuildStatus[name])
+        else:
+            raise argparse.ArgumentTypeError(
+                f"Invalid status name: {name}. Valid statuses: {', '.join(sorted(valid_names))}"
+            )
+
+    return statuses
+
+
 def main() -> None:
     """Main entry point for command-line usage."""
-    if len(sys.argv) > 2:
-        print("Usage: buildbot-pr-check [<pr-url>]")
-        print("\nIf no PR URL is provided, will try to detect PR for current branch")
-        print("\nExamples:")
-        print(
-            "  GitHub: buildbot-pr-check https://github.com/TUM-DSE/doctor-cluster-config/pull/459"
-        )
-        print(
-            "  Gitea:  buildbot-pr-check https://git.clan.lol/clan/clan-core/pulls/4210"
-        )
-        print("  Auto:   buildbot-pr-check  # Uses current branch")
-        print("\nOptional: Set GITHUB_TOKEN environment variable for API rate limits")
-        sys.exit(1)
+    parser = argparse.ArgumentParser(
+        description="Check buildbot status for GitHub/Gitea pull requests",
+        epilog="""
+Examples:
+  GitHub: buildbot-pr-check https://github.com/TUM-DSE/doctor-cluster-config/pull/459
+  Gitea:  buildbot-pr-check https://git.clan.lol/clan/clan-core/pulls/4210
+  Auto:   buildbot-pr-check  # Uses current branch
+  Show skipped: buildbot-pr-check --include SKIPPED,SUCCESS
 
-    # Get PR URL from argument or try to detect it
-    pr_url: str | None
-    if len(sys.argv) == 2:
-        pr_url = sys.argv[1]
+Optional: Set GITHUB_TOKEN environment variable for API rate limits
+        """,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+
+    parser.add_argument(
+        "pr_url",
+        nargs="?",
+        help="Pull request URL (GitHub or Gitea). If not provided, will try to detect PR for current branch",
+    )
+
+    parser.add_argument(
+        "--include",
+        type=parse_included_statuses,
+        help=f"Comma-separated list of statuses to show details for. Default: FAILURE,CANCELLED. Valid values: {', '.join(status.name for status in BuildStatus)}",
+    )
+
+    parser.add_argument("--debug", action="store_true", help="Enable debug logging")
+
+    args = parser.parse_args()
+
+    # Configure logging
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG, format="%(levelname)s: %(message)s")
     else:
+        logging.basicConfig(level=logging.WARNING, format="%(levelname)s: %(message)s")
+
+    # Get PR URL
+    pr_url = args.pr_url
+    if pr_url is None:
         pr_url = get_current_branch_pr_url()
         if not pr_url:
             print(
@@ -869,7 +1008,8 @@ def main() -> None:
             print("  buildbot-pr-check <pr-url>")
             sys.exit(1)
         print(f"Auto-detected PR: {pr_url}")
-    exit_code = check_pr(pr_url)
+
+    exit_code = check_pr(pr_url, args.include)
     sys.exit(exit_code)
 
 
