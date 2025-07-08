@@ -18,10 +18,10 @@ test = [
 ]
 
 [project.scripts]
-buildbot-pr-check = "buildbot_pr_check:main"
+buildbot-pr-check = "buildbot_pr_check.cli:main"
 
 [tool.setuptools]
-py-modules = ["buildbot_pr_check"]
+packages = ["buildbot_pr_check"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
