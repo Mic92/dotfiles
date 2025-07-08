@@ -2,7 +2,6 @@
 
 import email
 import email.policy
-import json
 import logging
 import subprocess
 from pathlib import Path
@@ -108,78 +107,81 @@ class ClaudeSpamFilter(Filter):  # type: ignore[misc]
 
     def _extract_email_content(self, filename: str) -> tuple[str, list[str]]:
         """Extract body text and attachment list from email file."""
-        body = ""
-        attachments = []
-
         try:
             with Path(filename).open("rb") as f:
                 # Cast the policy to satisfy mypy - this is a known typing issue
                 msg = email.message_from_binary_file(
                     f, policy=cast("Any", email.policy.default)
                 )
-
-                # Extract body and attachments
-                for part in msg.walk():
-                    content_type = part.get_content_type()
-                    content_disposition = str(part.get("Content-Disposition", ""))
-
-                    # Check if it's an attachment
-                    if "attachment" in content_disposition:
-                        attachment_name = part.get_filename()
-                        if attachment_name:
-                            attachments.append(f"{attachment_name} ({content_type})")
-
-                    # Extract body text
-                    elif part.is_multipart():
-                        continue
-                    elif content_type == "text/plain":
-                        try:
-                            payload = part.get_payload(decode=True)
-                            if isinstance(payload, bytes):
-                                body = payload.decode("utf-8", errors="ignore")[
-                                    :1000
-                                ]  # First 1000 chars
-                                break
-                        except (AttributeError, TypeError, UnicodeDecodeError):
-                            # Ignore errors in content extraction
-                            pass
-                    elif content_type == "text/html" and not body:
-                        try:
-                            html_payload = part.get_payload(decode=True)
-                            if isinstance(html_payload, bytes):
-                                html_content = html_payload.decode(
-                                    "utf-8", errors="ignore"
-                                )
-                                # Use w3m to convert HTML to text
-                                result = subprocess.run(
-                                    ["w3m", "-dump", "-T", "text/html"],
-                                    check=False,
-                                    input=html_content,
-                                    capture_output=True,
-                                    text=True,
-                                    timeout=5,
-                                )
-                                if result.returncode == 0:
-                                    body = result.stdout[:1000]
-                        except (
-                            subprocess.SubprocessError,
-                            AttributeError,
-                            TypeError,
-                            UnicodeDecodeError,
-                        ):
-                            # Ignore HTML conversion errors
-                            pass
-
-                # If no body found, indicate content type
-                if not body and attachments:
-                    body = "[No text content, see attachments]"
-                elif not body:
-                    body = "[No readable text content]"
-
+                return self._process_email_parts(msg)
         except OSError:
-            body = "[Error reading body]"
+            return "[Error reading body]", []
+
+    def _process_email_parts(self, msg: Any) -> tuple[str, list[str]]:
+        """Process email parts to extract body and attachments."""
+        body = ""
+        attachments = []
+
+        for part in msg.walk():
+            content_type = part.get_content_type()
+            content_disposition = str(part.get("Content-Disposition", ""))
+
+            if "attachment" in content_disposition:
+                attachment_name = part.get_filename()
+                if attachment_name:
+                    attachments.append(f"{attachment_name} ({content_type})")
+            elif part.is_multipart():
+                continue
+            elif content_type == "text/plain" and not body:
+                body = self._extract_text_content(part)
+            elif content_type == "text/html" and not body:
+                body = self._extract_html_content(part)
+
+        # Provide default body if none found
+        if not body:
+            body = (
+                "[No text content, see attachments]"
+                if attachments
+                else "[No readable text content]"
+            )
 
         return body, attachments
+
+    def _extract_text_content(self, part: Any) -> str:
+        """Extract plain text content from email part."""
+        try:
+            payload = part.get_payload(decode=True)
+            if isinstance(payload, bytes):
+                return payload.decode("utf-8", errors="ignore")[:1000]
+        except (AttributeError, TypeError, UnicodeDecodeError):
+            pass
+        return ""
+
+    def _extract_html_content(self, part: Any) -> str:
+        """Extract and convert HTML content to text."""
+        try:
+            html_payload = part.get_payload(decode=True)
+            if isinstance(html_payload, bytes):
+                html_content = html_payload.decode("utf-8", errors="ignore")
+                # Use w3m to convert HTML to text
+                result = subprocess.run(
+                    ["w3m", "-dump", "-T", "text/html"],
+                    check=False,
+                    input=html_content,
+                    capture_output=True,
+                    text=True,
+                    timeout=5,
+                )
+                if result.returncode == 0:
+                    return result.stdout[:1000]
+        except (
+            subprocess.SubprocessError,
+            AttributeError,
+            TypeError,
+            UnicodeDecodeError,
+        ):
+            pass
+        return ""
 
     def _extract_headers(self, message: Message) -> dict[str, str]:
         """Extract all relevant headers from the message."""
@@ -249,15 +251,8 @@ indicators, suspicious attachments, etc."""
         filename = message.get_filename()
         body, attachments = self._extract_email_content(filename)
 
-        # Clean up attachment names to avoid exposing test paths
-        cleaned_attachments = []
-        for attachment in attachments:
-            # Remove any path components from attachment names
-            if "/" in attachment:
-                cleaned_attachment = attachment.split("/")[-1]
-            else:
-                cleaned_attachment = attachment
-            cleaned_attachments.append(cleaned_attachment)
+        # Clean up attachment names
+        cleaned_attachments = self._clean_attachment_names(attachments)
 
         # Create prompt for Claude
         prompt = self._create_claude_prompt(headers, body, cleaned_attachments)
@@ -265,6 +260,21 @@ indicators, suspicious attachments, etc."""
         # Log prompt for debugging (first 500 chars)
         logger.debug("Claude prompt preview: %s...", prompt[:500])
 
+        return self._call_claude_api(prompt)
+
+    def _clean_attachment_names(self, attachments: list[str]) -> list[str]:
+        """Remove path components from attachment names."""
+        cleaned = []
+        for attachment in attachments:
+            # Remove any path components from attachment names
+            cleaned_name = (
+                attachment.split("/")[-1] if "/" in attachment else attachment
+            )
+            cleaned.append(cleaned_name)
+        return cleaned
+
+    def _call_claude_api(self, prompt: str) -> dict[str, Any] | None:
+        """Call Claude API and parse response."""
         try:
             # Call Claude Code with prompt via stdin
             result = subprocess.run(
@@ -276,111 +286,118 @@ indicators, suspicious attachments, etc."""
             )
 
             if result.returncode == 0:
-                # Parse Claude's response
-                response = result.stdout.strip()
-                logger.info(
-                    "Claude response: %s", response[:200]
-                )  # Log first 200 chars
-
-                # Parse string format: SPAM: true/false, CONFIDENCE: number, REASON: text
-                lines = response.split("\n")
-                result_dict: dict[str, Any] = {}
-
-                for line in lines:
-                    stripped_line = line.strip()
-                    if stripped_line.startswith("SPAM:"):
-                        spam_value = stripped_line.split(":", 1)[1].strip().lower()
-                        result_dict["is_spam"] = spam_value == "true"
-                    elif stripped_line.startswith("CONFIDENCE:"):
-                        try:
-                            result_dict["confidence"] = int(
-                                stripped_line.split(":", 1)[1].strip()
-                            )
-                        except ValueError:
-                            result_dict["confidence"] = 50
-                    elif stripped_line.startswith("REASON:"):
-                        result_dict["reason"] = stripped_line.split(":", 1)[1].strip()
-
-                if "is_spam" in result_dict and "confidence" in result_dict:
-                    return result_dict
-                logger.error("Could not parse Claude response format: %s", response)
-            else:
-                logger.error("Claude Code error: %s", result.stderr)
-                logger.error("Claude Code stdout: %s", result.stdout)
-                logger.error("Claude Code returncode: %s", result.returncode)
+                return self._parse_claude_response(result.stdout.strip())
+            logger.error("Claude Code error: %s", result.stderr)
+            logger.error("Claude Code stdout: %s", result.stdout)
+            logger.error("Claude Code returncode: %s", result.returncode)
 
         except subprocess.TimeoutExpired:
             logger.warning("Claude Code timed out")
-        except json.JSONDecodeError:
-            logger.exception("Failed to parse Claude response")
         except OSError:
             logger.exception("Error calling Claude Code")
 
+        return None
+
+    def _parse_claude_response(self, response: str) -> dict[str, Any] | None:
+        """Parse Claude's response into structured data."""
+        logger.info("Claude response: %s", response[:200])  # Log first 200 chars
+
+        lines = response.split("\n")
+        result_dict: dict[str, Any] = {}
+
+        for line in lines:
+            stripped_line = line.strip()
+            if stripped_line.startswith("SPAM:"):
+                spam_value = stripped_line.split(":", 1)[1].strip().lower()
+                result_dict["is_spam"] = spam_value == "true"
+            elif stripped_line.startswith("CONFIDENCE:"):
+                try:
+                    result_dict["confidence"] = int(
+                        stripped_line.split(":", 1)[1].strip()
+                    )
+                except ValueError:
+                    result_dict["confidence"] = 50
+            elif stripped_line.startswith("REASON:"):
+                result_dict["reason"] = stripped_line.split(":", 1)[1].strip()
+
+        if "is_spam" in result_dict and "confidence" in result_dict:
+            return result_dict
+
+        logger.error("Could not parse Claude response format: %s", response)
         return None
 
     def handle_message(self, message: Message) -> None:
         """Process each message."""
         # Check if we should skip Claude analysis due to too many messages
         if self.skip_claude:
-            # Just tag as analyzed and move on
             self.add_tags(message, "claude-analyzed", "claude-skipped-bulk")
             return
 
         from_addr = message.get_header("From") or ""
-        email = self.spam_db.extract_email_address(from_addr)
 
         # Skip if sender is in khard contacts
         if self._is_known_sender(from_addr):
             logger.debug("Skipping known sender from khard: %s", from_addr)
             return
 
-        # Check spam score in database
+        # Check if we can auto-classify based on history
+        if self._auto_classify_by_history(message, from_addr):
+            return
+
+        # For new or uncertain senders, use Claude
+        self._analyze_and_tag_message(message, from_addr)
+
+    def _auto_classify_by_history(self, message: Message, from_addr: str) -> bool:
+        """Try to auto-classify based on spam score history. Returns True if classified."""
         spam_score = self.spam_db.get_spam_score(from_addr)
+        if spam_score is None:
+            return False
 
         # Thresholds for automatic classification
         spam_threshold = 2.0  # Cumulative score above this = spam
         ham_threshold = -2.0  # Cumulative score below this = ham
 
-        if spam_score is not None:
-            if spam_score >= spam_threshold:
-                # Automatically mark as spam based on history
-                logger.info(
-                    "Auto-marking as spam based on score %.2f: %s",
-                    spam_score,
-                    from_addr,
-                )
-                self.add_tags(message, "spam", "spam-score-high")
-                return
-            if spam_score <= ham_threshold:
-                # Automatically mark as ham based on history
-                logger.info(
-                    "Auto-marking as ham based on score %.2f: %s", spam_score, from_addr
-                )
-                self.add_tags(message, "ham", "ham-score-high")
-                return
+        if spam_score >= spam_threshold:
+            logger.info(
+                "Auto-marking as spam based on score %.2f: %s", spam_score, from_addr
+            )
+            self.add_tags(message, "spam", "spam-score-high")
+            return True
+        if spam_score <= ham_threshold:
+            logger.info(
+                "Auto-marking as ham based on score %.2f: %s", spam_score, from_addr
+            )
+            self.add_tags(message, "ham", "ham-score-high")
+            return True
 
-        # For new or uncertain senders, use Claude
+        return False
+
+    def _analyze_and_tag_message(self, message: Message, from_addr: str) -> None:
+        """Analyze message with Claude and apply appropriate tags."""
         message_id = message.get_message_id()
-
-        # Analyze with Claude
         analysis = self._analyze_with_claude(message)
 
-        if analysis:
-            # Log the analysis results
-            logger.info(
-                "Analysis for %s: is_spam=%s, confidence=%s, reason=%s",
-                email,
-                analysis.get("is_spam"),
-                analysis.get("confidence"),
-                analysis.get("reason"),
-            )
-
-        # Apply tags based on analysis
         if not analysis:
             logger.warning("No analysis available for message %s", message_id)
             return
 
-        logger.info("Applying tags based on analysis for %s", from_addr)
+        # Log the analysis results
+        email = self.spam_db.extract_email_address(from_addr)
+        logger.info(
+            "Analysis for %s: is_spam=%s, confidence=%s, reason=%s",
+            email,
+            analysis.get("is_spam"),
+            analysis.get("confidence"),
+            analysis.get("reason"),
+        )
+
+        # Apply tags
+        self._apply_analysis_tags(message, from_addr, analysis)
+
+    def _apply_analysis_tags(
+        self, message: Message, from_addr: str, analysis: dict[str, Any]
+    ) -> None:
+        """Apply tags based on Claude's analysis."""
         self.add_tags(message, "claude-analyzed")
 
         is_spam = analysis.get("is_spam", False)
@@ -394,15 +411,19 @@ indicators, suspicious attachments, etc."""
         if is_spam:
             logger.info("Adding spam tags for message from %s", from_addr)
             self.add_tags(message, "spam", "claude-spam")
-            # Add confidence level tag
-            high_confidence = 90
-            medium_confidence = 70
-            if confidence >= high_confidence:
-                self.add_tags(message, "spam-high-confidence")
-            elif confidence >= medium_confidence:
-                self.add_tags(message, "spam-medium-confidence")
-            else:
-                self.add_tags(message, "spam-low-confidence")
+            self._add_confidence_tags(message, confidence)
         else:
             logger.info("Adding ham tags for message from %s", from_addr)
             self.add_tags(message, "ham", "claude-ham")
+
+    def _add_confidence_tags(self, message: Message, confidence: int) -> None:
+        """Add confidence level tags for spam."""
+        high_confidence = 90
+        medium_confidence = 70
+
+        if confidence >= high_confidence:
+            self.add_tags(message, "spam-high-confidence")
+        elif confidence >= medium_confidence:
+            self.add_tags(message, "spam-medium-confidence")
+        else:
+            self.add_tags(message, "spam-low-confidence")

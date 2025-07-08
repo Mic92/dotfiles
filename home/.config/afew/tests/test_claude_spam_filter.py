@@ -7,9 +7,12 @@ import subprocess
 # Import the filter
 import sys
 from pathlib import Path
+from typing import Any
 
 import pytest
 from afew.Database import Database  # type: ignore[import-untyped]
+from notmuch import Database as NotmuchDatabase  # type: ignore[import-untyped]
+from notmuch.message import Message  # type: ignore[import-untyped]
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 from afew_filters.claude_spam_filter import ClaudeSpamFilter
@@ -190,134 +193,116 @@ def test_emails() -> list[tuple[str, str, str]]:
     ]
 
 
+def setup_test_emails_in_maildir(
+    tmp_path: Path, maildir: Path
+) -> list[tuple[str, Path]]:
+    """Create and copy test emails to maildir."""
+    test_email_dir = tmp_path / "test_emails"
+    create_test_emails(test_email_dir)
+
+    cur_dir = maildir / "cur"
+    test_files = []
+    for i, eml_file in enumerate(test_email_dir.glob("*.eml")):
+        maildir_name = f"1234567890.{i}.test:2,S"
+        dest = cur_dir / maildir_name
+        shutil.copy(eml_file, dest)
+        test_files.append((eml_file.name, dest))
+
+    subprocess.run(["notmuch", "new", "--quiet"], check=True)
+    return test_files
+
+
+def find_message_by_filename(db: NotmuchDatabase, mail_file: Path) -> Message | None:
+    """Find notmuch message by filename."""
+    query = db.create_query("*")
+    messages = list(query.search_messages())
+
+    for msg in messages:
+        if msg.get_filename().endswith(mail_file.name):
+            return msg
+    return None
+
+
+def process_single_message(
+    filter_instance: ClaudeSpamFilter,
+    db: NotmuchDatabase,
+    orig_name: str,
+    mail_file: Path,
+) -> dict[str, Any]:
+    """Process a single test message and return results."""
+    message = find_message_by_filename(db, mail_file)
+    assert message, f"Message {orig_name} not found in notmuch database"
+
+    from_addr = message.get_header("From")
+    initial_tags = set(message.get_tags())
+
+    print(f"  Initial tags: {sorted(initial_tags)}")
+
+    # Process the message
+    filter_instance.handle_message(message)
+    message.tags_to_maildir_flags()
+
+    final_tags = set(message.get_tags())
+    new_tags = final_tags - initial_tags
+
+    print(f"\n{orig_name}: {from_addr}")
+    print(f"  Added tags: {sorted(new_tags)}")
+
+    return {"file": orig_name, "from": from_addr, "new_tags": new_tags}
+
+
+def verify_results_after_commit(
+    afew_db: Database, test_files: list[tuple[str, Path]], results: list[dict[str, Any]]
+) -> None:
+    """Verify tags after commit and update results."""
+    afew_db.close()
+    db = afew_db.open()
+
+    for i, (orig_name, mail_file) in enumerate(test_files):
+        message = find_message_by_filename(db, mail_file)
+        final_tags = set(message.get_tags())
+        initial_tags = {"inbox", "unread"}  # from notmuch config
+        new_tags = final_tags - initial_tags
+
+        results[i]["new_tags"] = new_tags
+        print(f"\n{orig_name}: After commit, tags = {sorted(new_tags)}")
+
+
 def test_claude_spam_filter(
     test_maildir: tuple[Path, Path], test_emails: list[tuple[str, str, str]]
 ) -> None:
     """Test ClaudeSpamFilter with example emails."""
     tmp_path, maildir = test_maildir
 
-    # Create test emails in maildir format
-    test_email_dir = tmp_path / "test_emails"
-    create_test_emails(test_email_dir)
-
-    # Copy test emails to maildir
-    cur_dir = maildir / "cur"
-    test_files = []
-    for i, eml_file in enumerate(test_email_dir.glob("*.eml")):
-        # Create maildir filename
-        maildir_name = f"1234567890.{i}.test:2,S"
-        dest = cur_dir / maildir_name
-        shutil.copy(eml_file, dest)
-        test_files.append((eml_file.name, dest))
-
-    # Update notmuch database with tags from config
-    subprocess.run(["notmuch", "new", "--quiet"], check=True)
-
-    # Tag all messages as new (notmuch config tags them as inbox and unread)
-    # The filter only processes messages without spam/ham/claude-analyzed tags
-
-    # Create afew Database wrapper
+    # Setup
+    test_files = setup_test_emails_in_maildir(tmp_path, maildir)
     afew_db = Database()
-
-    # Create filter instance
     filter_instance = ClaudeSpamFilter(afew_db)
-
-    # Get notmuch database handle for queries
     db = afew_db.open()
 
-    # Debug: Check filter query
     print(f"Filter query: {filter_instance.query}")
 
-    # Track results
+    # Process messages
     results = []
-
-    # Process each test email
     for orig_name, mail_file in test_files:
-        # Get message from notmuch
-        query = db.create_query("*")
-        messages = list(query.search_messages())
+        result = process_single_message(filter_instance, db, orig_name, mail_file)
+        results.append(result)
 
-        # Find message by filename
-        message = None
-        for msg in messages:
-            if msg.get_filename().endswith(mail_file.name):
-                message = msg
-                break
-
-        assert message, f"Message {orig_name} not found in notmuch database"
-
-        from_addr = message.get_header("From")
-
-        # Get initial tags
-        initial_tags = set(message.get_tags())
-        print(f"  Initial tags: {sorted(initial_tags)}")
-
-        # Check if message matches filter query
-        query_obj = db.create_query(filter_instance.query)
-        query_messages = list(query_obj.search_messages())
-        matches_query = any(
-            msg.get_message_id() == message.get_message_id() for msg in query_messages
-        )
-        print(f"  Matches filter query: {matches_query}")
-
-        # Process the message
-        filter_instance.handle_message(message)
-
-        # Sync message changes
-        message.tags_to_maildir_flags()
-
-        # Get final tags
-        final_tags = set(message.get_tags())
-        new_tags = final_tags - initial_tags
-
-        results.append({"file": orig_name, "from": from_addr, "new_tags": new_tags})
-
-        print(f"\n{orig_name}: {from_addr}")
-        print(f"  Added tags: {sorted(new_tags)}")
-
-    # IMPORTANT: Commit the filter changes to actually apply tags
+    # Commit and verify
     filter_instance.commit(dry_run=False)
-
-    # Verify khard contacts were loaded (may be empty if khard not configured)
-    # After processing messages, contacts should have been lazily loaded
     assert isinstance(filter_instance.khard_contacts, set)
 
-    # Close and reopen database to see committed changes
-    afew_db.close()
-    db = afew_db.open()
+    verify_results_after_commit(afew_db, test_files, results)
 
-    # Now reload messages to see the applied tags
-    for i, (orig_name, mail_file) in enumerate(test_files):
-        # Get message from notmuch
-        query = db.create_query("*")
-        messages = list(query.search_messages())
-
-        # Find message by filename
-        message = None
-        for msg in messages:
-            if msg.get_filename().endswith(mail_file.name):
-                message = msg
-                break
-
-        # Get updated tags after commit
-        final_tags = set(message.get_tags())
-        initial_tags = {"inbox", "unread"}  # from notmuch config
-        new_tags = final_tags - initial_tags
-
-        # Update results with actual tags
-        results[i]["new_tags"] = new_tags
-        print(f"\n{orig_name}: After commit, tags = {sorted(new_tags)}")
-
-    # Verify spam detection
+    # Assertions
     assert any("spam" in r["new_tags"] for r in results if "spam" in r["file"])
     assert any("ham" in r["new_tags"] for r in results if "ham" in r["file"])
 
-    # Check database contents
+    # Check database
     db_path = tmp_path / "afew" / "spam_scores.sqlite"
     assert db_path.exists()
 
     with sqlite3.connect(db_path) as conn:
-        # Check spam scores were recorded
         cursor = conn.execute("SELECT COUNT(*) FROM spam_scores")
         count = cursor.fetchone()[0]
         assert count > 0
