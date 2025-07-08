@@ -17,10 +17,6 @@
       "aarch64-linux"
       "aarch64-darwin"
     ];
-    pullBased.repositories.clan = {
-      url = "https://git.clan.lol/clan/clan-core.git";
-      defaultBranch = "main";
-    };
     branches.releaseBranches.matchGlob = "test-*";
     evalWorkerCount = 6;
     github = {
