@@ -28,29 +28,44 @@ class ReplyConfig:
     dry_run: bool = False
 
 
-def extract_calendar_from_email(email_content: str) -> tuple[Calendar | None, str | None]:
-    """Extract calendar and recipient email from email message."""
-    msg = email.message_from_string(email_content)
-
-    # Extract recipient email from To field
-    to_email = None
+def _extract_recipient_email(msg: email.message.Message) -> str | None:
+    """Extract recipient email from message headers."""
     if "To" in msg:
         to_header = msg["To"]
         # Parse the email address from the To field
         name, addr = email.utils.parseaddr(to_header)
         if addr:
-            to_email = addr
+            return addr
+    return None
 
+
+def _extract_calendar_from_part(part: email.message.Message) -> Calendar | None:
+    """Extract calendar from a message part if it's a calendar type."""
+    if part.get_content_type() not in ["text/calendar", "application/ics"]:
+        return None
+
+    try:
+        cal_data = part.get_payload(decode=True)
+        if isinstance(cal_data, bytes):
+            cal = Calendar.from_ical(cal_data.decode("utf-8"))
+            if isinstance(cal, Calendar):
+                return cal
+    except (ValueError, TypeError):
+        pass
+
+    return None
+
+
+def extract_calendar_from_email(email_content: str) -> tuple[Calendar | None, str | None]:
+    """Extract calendar and recipient email from email message."""
+    msg = email.message_from_string(email_content)
+    to_email = _extract_recipient_email(msg)
+
+    # Try to extract from message parts
     for part in msg.walk():
-        if part.get_content_type() in ["text/calendar", "application/ics"]:
-            try:
-                cal_data = part.get_payload(decode=True)
-                if isinstance(cal_data, bytes):
-                    cal = Calendar.from_ical(cal_data.decode("utf-8"))
-                    if isinstance(cal, Calendar):
-                        return cal, to_email
-            except (ValueError, TypeError):
-                continue
+        cal = _extract_calendar_from_part(part)
+        if cal:
+            return cal, to_email
 
     # Try to parse direct calendar data
     if "BEGIN:VCALENDAR" in email_content:
