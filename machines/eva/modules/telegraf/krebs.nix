@@ -190,12 +190,6 @@
         tags.org = "krebs";
         response_status_code = 200;
       }
-      {
-        urls = [ "http://calendar.r/.web/" ];
-        response_string_match = "Sign In";
-        tags.org = "krebs";
-        response_status_code = 200;
-      }
     ];
   };
 }
