@@ -509,7 +509,7 @@ def get_build_log_urls(base_url: str, build_id: int) -> list[LogUrl]:
                 return []
 
             # Use ThreadPoolExecutor for parallel log fetching
-            max_workers = min(10, len(steps))  # Limit concurrent connections
+            max_workers = min(10, max(1, len(steps)))  # Limit concurrent connections
             with ThreadPoolExecutor(max_workers=max_workers) as executor:
                 # Submit all step log requests to the thread pool
                 future_to_step = {}
@@ -700,7 +700,9 @@ def check_build_status(build: BuildWithTriggers) -> BuildStatusReport:
     virtual_builder_map = {}
 
     # Use ThreadPoolExecutor for parallel requests
-    max_workers = min(20, len(build.build_requests))  # Limit concurrent connections
+    max_workers = min(
+        20, max(1, len(build.build_requests))
+    )  # Limit concurrent connections
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         # Submit all requests to the thread pool
         future_to_req_id = {
