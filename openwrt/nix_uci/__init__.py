@@ -153,7 +153,7 @@ def serialize_uci(configs: dict[str, Any], secrets: dict[str, str]) -> str:
 T = TypeVar("T")
 
 
-def ensure_type(parent: dict[str, Any], key: str, t: type[T]) -> T:
+def ensure_type[T](parent: dict[str, Any], key: str, t: type[T]) -> T:
     val = parent.get(key, {})
     if not isinstance(val, t):
         msg = f"{key} is not of type: {t}"

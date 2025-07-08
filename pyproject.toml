@@ -1,6 +1,6 @@
 [tool.ruff]
 line-length = 88
-target-version = "py311"
+target-version = "py313"
 
 lint.select = ["ALL"]
 lint.ignore = [
@@ -44,7 +44,7 @@ lint.ignore = [
 exclude = ["zsh/*", "gdb/*"]
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.13"
 warn_redundant_casts = true
 strict = true
 disallow_untyped_calls = true
