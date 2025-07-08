@@ -28,57 +28,51 @@ class ReplyConfig:
     dry_run: bool = False
 
 
-def extract_calendar_from_email(email_content: str) -> Calendar | None:
-    """Extract calendar from email message."""
+def extract_calendar_from_email(email_content: str) -> tuple[Calendar | None, str | None]:
+    """Extract calendar and recipient email from email message."""
     msg = email.message_from_string(email_content)
+
+    # Extract recipient email from To field
+    to_email = None
+    if "To" in msg:
+        to_header = msg["To"]
+        # Parse the email address from the To field
+        name, addr = email.utils.parseaddr(to_header)
+        if addr:
+            to_email = addr
 
     for part in msg.walk():
         if part.get_content_type() in ["text/calendar", "application/ics"]:
             try:
                 cal_data = part.get_payload(decode=True)
-                return Calendar.from_ical(cal_data)
+                return Calendar.from_ical(cal_data), to_email
             except (ValueError, TypeError):
                 continue
 
     # Try to parse direct calendar data
     if "BEGIN:VCALENDAR" in email_content:
         try:
-            return Calendar.from_ical(email_content.encode())
+            return Calendar.from_ical(email_content.encode()), to_email
         except (ValueError, TypeError):
             pass
 
-    return None
+    return None, to_email
 
 
-def get_user_info() -> tuple[str, str]:
-    """Get user's name and email from git config."""
-    try:
-        name = subprocess.check_output(
-            ["git", "config", "--global", "user.name"],  # noqa: S607
-            text=True,
-        ).strip()
-    except subprocess.CalledProcessError:
-        name = "Joerg Thalheim"
-
-    try:
-        email = subprocess.check_output(
-            ["git", "config", "--global", "user.email"],  # noqa: S607
-            text=True,
-        ).strip()
-    except subprocess.CalledProcessError:
-        email = "joerg@thalheim.io"
-
-    return name, email
-
-
-def create_reply(original_cal: Calendar, status: str, comment: str | None = None) -> Calendar:  # noqa: C901
+def create_reply(  # noqa: C901
+    original_cal: Calendar,
+    status: str,
+    user_email: str,
+    comment: str | None = None,
+) -> Calendar:
     """Create REPLY calendar for RSVP response."""
     reply_cal = Calendar()
     reply_cal.add("prodid", "-//reply-calendar-invite//")
     reply_cal.add("version", "2.0")
     reply_cal.add("method", "REPLY")
 
-    user_name, user_email = get_user_info()
+    # Extract name from email or use a default
+    user_name = user_email.split("@")[0].replace(".", " ").title()
 
     # Find the original event
     for component in original_cal.walk():
@@ -134,9 +128,15 @@ def create_reply(original_cal: Calendar, status: str, comment: str | None = None
     return reply_cal
 
 
-def send_reply(reply_cal: Calendar, organizer_email: str, event_summary: str, status: str) -> bool:
+def send_reply(
+    reply_cal: Calendar,
+    organizer_email: str,
+    event_summary: str,
+    status: str,
+    user_email: str,
+) -> bool:
     """Send REPLY via msmtp."""
-    user_name, user_email = get_user_info()
+    user_name = user_email.split("@")[0].replace(".", " ").title()
 
     # Create email message
     msg = MIMEMultipart("mixed")
@@ -228,9 +228,13 @@ def run(config: ReplyConfig) -> int:
     email_content = read_email_content(config.file_path)
 
     # Extract calendar from email
-    original_cal = extract_calendar_from_email(email_content)
+    original_cal, user_email = extract_calendar_from_email(email_content)
     if not original_cal:
         print("Error: No calendar invite found in input", file=sys.stderr)
+        return 1
+
+    if not user_email:
+        print("Error: No recipient email found in input", file=sys.stderr)
         return 1
 
     # Find organizer email and event summary
@@ -241,14 +245,14 @@ def run(config: ReplyConfig) -> int:
         return 1
 
     # Create reply
-    reply_cal = create_reply(original_cal, ical_status, config.comment)
+    reply_cal = create_reply(original_cal, ical_status, user_email, config.comment)
 
     if config.dry_run:
         print(f"Would send reply to: {organizer_email}")
         print(f"Status: {ical_status}")
         print("\nReply calendar:")
         print(reply_cal.to_ical().decode())
-    elif send_reply(reply_cal, organizer_email, event_summary, ical_status):
+    elif send_reply(reply_cal, organizer_email, event_summary, ical_status, user_email):
         print(f"Successfully sent {config.status} reply to {organizer_email}")
     else:
         return 1
