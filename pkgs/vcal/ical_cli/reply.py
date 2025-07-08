@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import argparse
 import email
 import email.utils
 import subprocess
@@ -11,14 +10,18 @@ from dataclasses import dataclass
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 from icalendar import Calendar, Event, vCalAddress, vText
+
+if TYPE_CHECKING:
+    import argparse
 
 
 @dataclass
 class ReplyConfig:
     """Configuration for reply command."""
-    
+
     status: str  # accept, decline, tentative
     file_path: str | None = None
     comment: str | None = None
@@ -224,26 +227,26 @@ def run(config: ReplyConfig) -> int:
         "tentative": "TENTATIVE",
     }
     ical_status = status_map[config.status]
-    
+
     # Read input
     email_content = read_email_content(config.file_path)
-    
+
     # Extract calendar from email
     original_cal = extract_calendar_from_email(email_content)
     if not original_cal:
         print("Error: No calendar invite found in input", file=sys.stderr)
         return 1
-    
+
     # Find organizer email and event summary
     organizer_email, event_summary = extract_event_info(original_cal)
-    
+
     if not organizer_email:
         print("Error: No organizer found in calendar invite", file=sys.stderr)
         return 1
-    
+
     # Create reply
     reply_cal = create_reply(original_cal, ical_status, config.comment)
-    
+
     if config.dry_run:
         print(f"Would send reply to: {organizer_email}")
         print(f"Status: {ical_status}")
@@ -253,7 +256,7 @@ def run(config: ReplyConfig) -> int:
         print(f"Successfully sent {config.status} reply to {organizer_email}")
     else:
         return 1
-    
+
     return 0
 
 
@@ -275,7 +278,7 @@ def register_parser(subparsers: argparse._SubParsersAction) -> None:
         help="Reply to calendar invites with RSVP responses",
         description="Send RSVP responses (accept/decline/tentative) to calendar invitations",
     )
-    
+
     parser.add_argument(
         "status",
         choices=["accept", "decline", "tentative"],
@@ -297,21 +300,20 @@ def register_parser(subparsers: argparse._SubParsersAction) -> None:
         nargs="?",
         help="Email file containing invite (reads from stdin if not provided)",
     )
-    
+
     parser.set_defaults(func=_handle_args)
 
 
 def main(argv: list[str] | None = None) -> int:
     """Compatibility wrapper for tests."""
-    import argparse
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers()
     register_parser(subparsers)
-    
+
     # Parse with 'reply' as the subcommand
     if argv is None:
         argv = []
-    args = parser.parse_args(['reply'] + argv)
+    args = parser.parse_args(["reply", *argv])
     return args.func(args)
 
 
