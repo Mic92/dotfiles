@@ -226,7 +226,7 @@ in
         tags.service = "matrix-federation";
         response_status_code = 200;
         response_string_match = "\"name\":\"Dendrite\"";
-        timeout = "10s";
+        response_timeout = "10s";
       }
       {
         urls = [ "https://matrix.thalheim.io/.well-known/matrix/server" ];
@@ -235,7 +235,7 @@ in
         tags.service = "matrix-wellknown";
         response_status_code = 200;
         response_string_match = "\"m.server\":\"matrix.thalheim.io:443\"";
-        timeout = "10s";
+        response_timeout = "10s";
       }
     ];
 
