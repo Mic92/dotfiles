@@ -16,6 +16,7 @@ extend-ignore-identifiers-re = [
   "browseable",
   "LESS_TERMCAP_ue",
   "typ",
+  "facter",
 ]
 
 [files]
