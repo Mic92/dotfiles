@@ -7,6 +7,7 @@ Supports attendees with names/emails and meeting links.
 from __future__ import annotations
 
 import argparse
+import email.utils
 import os
 import pwd
 import re
@@ -58,6 +59,25 @@ class CreateConfig:
     no_local_save: bool = False
 
 
+def validate_email(email: str) -> None:
+    """Validate email has proper format with username@domain.tld."""
+    if "@" not in email:
+        msg = f"Invalid email address (missing @): {email}"
+        raise ValueError(msg)
+
+    # Split and validate parts
+    parts = email.split("@")
+    expected_parts = 2
+    if len(parts) != expected_parts or not parts[0] or not parts[1]:
+        msg = f"Invalid email address format: {email}"
+        raise ValueError(msg)
+
+    # Basic domain validation - must have at least one dot
+    if "." not in parts[1]:
+        msg = f"Invalid email domain (missing dot): {email}"
+        raise ValueError(msg)
+
+
 def parse_attendees(attendees_str: str) -> list[tuple[str, str]]:
     """Parse attendee string format: 'Name <email>' or just 'email'."""
     attendees = []
@@ -69,16 +89,20 @@ def parse_attendees(attendees_str: str) -> list[tuple[str, str]]:
         attendee = attendee_str.strip()
         if not attendee:  # Skip empty items from split
             continue
-        match = re.match(r"^(.+?)\s*<(.+?)>$", attendee)
-        if match:
-            name, email = match.groups()
-            attendees.append((name.strip(), email.strip()))
-        elif "@" in attendee:
-            # Just an email address
-            attendees.append(("", attendee))
-        else:
-            msg = f"Invalid attendee format: {attendee}"
+
+        # Use email.utils.parseaddr to parse the email
+        parsed_name, parsed_email = email.utils.parseaddr(attendee)
+
+        # parseaddr returns ('', '') for completely invalid input
+        if not parsed_email:
+            msg = f"Invalid email address: {attendee}"
             raise ValueError(msg)
+
+        # Validate email format
+        validate_email(parsed_email)
+
+        attendees.append((parsed_name, parsed_email))
+
     return attendees
 
 
@@ -128,8 +152,8 @@ def create_calendar_invite(config: MeetingConfig) -> Calendar:
     event.add("attendee", org_attendee, encode=0)
 
     # Attendees
-    for name, email in config.attendees:
-        attendee = vCalAddress(f"mailto:{email}")
+    for name, email_addr in config.attendees:
+        attendee = vCalAddress(f"mailto:{email_addr}")
         if name:
             attendee.params["cn"] = vText(name)
         attendee.params["partstat"] = vText("NEEDS-ACTION")
@@ -171,12 +195,12 @@ def send_invite_email(email_config: EmailConfig) -> bool:
     # Build recipient list
     recipients = []
     to_list = []
-    for name, email in email_config.config.attendees:
-        recipients.append(email)
+    for name, email_addr in email_config.config.attendees:
+        recipients.append(email_addr)
         if name:
-            to_list.append(f"{name} <{email}>")
+            to_list.append(f"{name} <{email_addr}>")
         else:
-            to_list.append(email)
+            to_list.append(email_addr)
 
     msg["To"] = ", ".join(to_list)
 
@@ -465,11 +489,11 @@ def print_meeting_details(config: MeetingConfig) -> None:
             print(f"Recurrence: {recur_desc}")
 
     print("\nAttendees:")
-    for name, email in config.attendees:
+    for name, email_addr in config.attendees:
         if name:
-            print(f"  - {name} <{email}>")
+            print(f"  - {name} <{email_addr}>")
         else:
-            print(f"  - {email}")
+            print(f"  - {email_addr}")
 
     if config.meeting_link:
         print(f"\nMeeting link: {config.meeting_link}")
@@ -506,7 +530,7 @@ def run(config: CreateConfig) -> int:
     return 0
 
 
-def _handle_args(args: argparse.Namespace) -> int:
+def _handle_args(args: argparse.Namespace) -> int:  # noqa: PLR0911
     # Parse timezone
     try:
         tz = timezone(args.timezone)
@@ -521,13 +545,25 @@ def _handle_args(args: argparse.Namespace) -> int:
         print(f"Error: {e}", file=sys.stderr)
         return 1
 
-    attendees = parse_attendees(args.attendees)
+    try:
+        attendees = parse_attendees(args.attendees)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
     if not attendees:
         print("Error: No valid attendees specified", file=sys.stderr)
         return 1
 
     # Get organizer info
     organizer_name, organizer_email = get_organizer_info(args)
+
+    # Validate organizer email
+    try:
+        validate_email(organizer_email)
+    except ValueError as e:
+        print(f"Error: Invalid organizer email: {e}", file=sys.stderr)
+        return 1
 
     # Parse recurrence options
     try:

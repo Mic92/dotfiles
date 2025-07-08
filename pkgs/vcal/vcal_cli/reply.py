@@ -176,8 +176,6 @@ def send_reply(reply_cal: Calendar, organizer_email: str, event_summary: str, st
             text=True,
         )
         stdout, stderr = proc.communicate(msg.as_string())
-
-        stdout, stderr = proc.communicate(msg.as_string())
     except (OSError, subprocess.SubprocessError) as e:
         print(f"Error sending reply: {e}", file=sys.stderr)
         return False

@@ -10,6 +10,9 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+from .reply import ReplyConfig
+from .reply import run as run_reply
+
 if TYPE_CHECKING:
     import argparse
 
@@ -92,32 +95,33 @@ def offer_rsvp(email_path: str | None, email_content: bytes | None) -> None:
         status = status_map[choice]
         print("Sending RSVP response...")
 
-        # Use the appropriate input source
-        if email_path:
-            with Path(email_path).open("rb") as f:
-                result = subprocess.run(
-                    ["reply-calendar-invite", status],  # noqa: S607
-                    check=False,
-                    stdin=f,
-                    capture_output=True,
-                    text=True,
-                )
-        elif email_content:
-            result = subprocess.run(
-                ["reply-calendar-invite", status],  # noqa: S607
-                check=False,
-                input=email_content,
-                capture_output=True,
-                text=True,
-            )
-        else:
-            print("Error: Cannot send RSVP - original email not available", file=sys.stderr)
-            return
+        # Create reply config
+        reply_config = ReplyConfig(
+            status=status,
+            file_path=email_path,
+            dry_run=False,
+        )
 
-        if result.returncode == 0:
-            print("RSVP response sent successfully.")
-        else:
-            print(f"Failed to send RSVP response: {result.stderr}", file=sys.stderr)
+        # If we have email content but no path, we need to save it temporarily
+        temp_file = None
+        try:
+            if not email_path and email_content:
+                with tempfile.NamedTemporaryFile(mode="wb", suffix=".eml", delete=False) as f:
+                    f.write(email_content)
+                    temp_file = f.name
+                reply_config.file_path = temp_file
+
+            # Call the reply function directly
+            result = run_reply(reply_config)
+
+            if result == 0:
+                print("RSVP response sent successfully.")
+            else:
+                print("Failed to send RSVP response", file=sys.stderr)
+        finally:
+            # Clean up temp file if created
+            if temp_file:
+                Path(temp_file).unlink(missing_ok=True)
 
 
 def process_input(file_path: str | None) -> tuple[list[bytes], bool, bytes | None]:
