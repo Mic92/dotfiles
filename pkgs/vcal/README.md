@@ -73,7 +73,7 @@ it = :pipe -m vcal reply tentative<Enter>
 
 ## Requirements
 
-- Python 3.9+
+- Python 3.13+
 - khal (for calendar import)
 - vdirsyncer (for calendar sync)
 - msmtp (for sending emails)

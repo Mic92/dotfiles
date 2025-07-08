@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Unified vcal CLI for calendar operations."""
 
 from __future__ import annotations
@@ -9,8 +8,13 @@ import sys
 from . import create, import_invite, reply
 
 
-def main() -> int:
-    """Run the main vcal CLI."""
+def main(argv: list[str] | None = None) -> int:
+    """Run the main vcal CLI.
+    
+    Args:
+        argv: Optional list of command line arguments (for testing).
+              If None, uses sys.argv[1:].
+    """
     parser = argparse.ArgumentParser(
         prog="vcal",
         description="vCalendar/iCalendar management tool",
@@ -45,7 +49,7 @@ Examples:
     reply.register_parser(subparsers)
 
     # Parse arguments
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     # Execute the selected command
     return args.func(args)

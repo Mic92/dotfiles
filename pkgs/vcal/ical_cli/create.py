@@ -407,7 +407,7 @@ def save_ics_file(cal: Calendar, output: str | None, start: datetime) -> None:
         f.write(cal.to_ical())
 
 
-def save_to_local_calendar(cal: Calendar, calendar_dir: str, meeting: MeetingConfig) -> None:
+def save_to_local_calendar(cal: Calendar, calendar_dir: str) -> None:
     """Save event to local calendar directory."""
     cal_dir = Path(calendar_dir).expanduser()
     if cal_dir.is_dir():
@@ -491,7 +491,7 @@ def run(config: CreateConfig) -> int:
 
     # Save to local calendar if not disabled
     if not config.no_local_save:
-        save_to_local_calendar(cal, config.calendar_dir, config.meeting)
+        save_to_local_calendar(cal, config.calendar_dir)
 
     # Send email if not disabled
     if not config.no_send:
@@ -703,17 +703,3 @@ Examples:
     )
 
     parser.set_defaults(func=_handle_args)
-
-
-def main(argv: list[str] | None = None) -> int:
-    """Compatibility wrapper for tests."""
-    import argparse
-    parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers()
-    register_parser(subparsers)
-    
-    # Parse with 'create' as the subcommand
-    if argv is None:
-        argv = []
-    args = parser.parse_args(['create'] + argv)
-    return args.func(args)

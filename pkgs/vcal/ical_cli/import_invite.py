@@ -2,19 +2,22 @@
 
 from __future__ import annotations
 
-import argparse
 import email
 import subprocess
 import sys
 import tempfile
 from dataclasses import dataclass
 from pathlib import Path
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import argparse
 
 
 @dataclass
 class ImportConfig:
     """Configuration for import command."""
-    
+
     file_path: str | None = None
     calendar: str = "Personal"
 
@@ -176,29 +179,29 @@ def run(config: ImportConfig) -> int:
     """Run the import command with the given configuration."""
     # Process input
     calendars, is_email, email_content = process_input(config.file_path)
-    
+
     if not calendars:
         print("No .ics files found in the input", file=sys.stderr)
         return 1
-    
+
     # Import calendars
     imported, has_rsvp = import_calendars(calendars, config.calendar)
-    
+
     if imported == 0:
         return 1
-    
+
     # Sync with server
     sync_calendar()
-    
+
     print(f"Successfully imported {imported} calendar invite(s) to {config.calendar}")
-    
+
     # Offer RSVP if this was an email with RSVP request
     if is_email and has_rsvp:
         if config.file_path:
             offer_rsvp(config.file_path, None)
         else:
             offer_rsvp(None, email_content)
-    
+
     return 0
 
 
@@ -218,7 +221,7 @@ def register_parser(subparsers: argparse._SubParsersAction) -> None:
         help="Import calendar invites from email or .ics files",
         description="Import calendar invitations into your local calendar",
     )
-    
+
     parser.add_argument(
         "-c",
         "--calendar",
@@ -230,21 +233,7 @@ def register_parser(subparsers: argparse._SubParsersAction) -> None:
         nargs="?",
         help="File to import (reads from stdin if not provided)",
     )
-    
+
     parser.set_defaults(func=_handle_args)
-
-
-def main(argv: list[str] | None = None) -> int:
-    """Compatibility wrapper for tests."""
-    import argparse
-    parser = argparse.ArgumentParser()
-    subparsers = parser.add_subparsers()
-    register_parser(subparsers)
-    
-    # Parse with 'import' as the subcommand
-    if argv is None:
-        argv = []
-    args = parser.parse_args(['import'] + argv)
-    return args.func(args)
 
 

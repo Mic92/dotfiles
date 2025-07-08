@@ -12,7 +12,7 @@ from ical_cli.create import get_local_timezone
 
 
 @pytest.fixture
-def temp_dir() -> Generator[str, None, None]:
+def temp_dir() -> Generator[str]:
     """Create a temporary directory for test output."""
     with tempfile.TemporaryDirectory() as tmpdir:
         yield tmpdir
