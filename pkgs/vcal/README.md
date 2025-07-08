@@ -3,6 +3,23 @@
 vCalendar/iCalendar management tool for creating, importing, and replying to
 calendar invitations.
 
+## Standards Compliance
+
+vcal implements the following RFC standards:
+
+- **RFC 5545** (iCalendar): Core calendar data format specification
+  - Content line folding (Section 3.1)
+  - VEVENT components and properties
+  - VALARM components for reminders
+  - Recurrence rules (RRULE)
+
+- **RFC 5546** (iTIP - iCalendar Transport-Independent Interoperability
+  Protocol):
+  - METHOD:REQUEST for sending invitations
+  - METHOD:REPLY for RSVP responses
+  - Proper ATTENDEE participation status handling
+  - Required and optional properties compliance
+
 ## Features
 
 - **vcal create**: Create and send calendar invitations via email
