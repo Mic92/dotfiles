@@ -32,6 +32,13 @@ dependencies = [
     "pytz",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "types-pytz",
+    "types-icalendar",
+    "types-python-dateutil",
+]
+
 [project.scripts]
 vcal = "vcal_cli.main:main"
 

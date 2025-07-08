@@ -28,18 +28,18 @@ class ImportConfig:
 def extract_calendar_from_email(email_content: bytes) -> list[bytes]:
     """Extract calendar parts from email message."""
     msg = email.message_from_bytes(email_content)
-    calendars = []
+    calendars: list[bytes] = []
 
     for part in msg.walk():
         if part.get_content_type() in ["text/calendar", "application/ics"]:
             cal_data = part.get_payload(decode=True)
-            if cal_data and b"BEGIN:VCALENDAR" in cal_data:
+            if isinstance(cal_data, bytes) and b"BEGIN:VCALENDAR" in cal_data:
                 calendars.append(cal_data)
         # Also check for .ics attachments
         filename = part.get_filename()
         if filename and filename.lower().endswith(".ics"):
             cal_data = part.get_payload(decode=True)
-            if cal_data and b"BEGIN:VCALENDAR" in cal_data:
+            if isinstance(cal_data, bytes) and b"BEGIN:VCALENDAR" in cal_data:
                 calendars.append(cal_data)
 
     return calendars

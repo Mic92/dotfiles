@@ -36,6 +36,10 @@ python3.pkgs.buildPythonApplication {
 
   nativeCheckInputs = with python3.pkgs; [
     pytestCheckHook
+    mypy
+    types-pytz
+    types-python-dateutil
+    (callPackage ./types-icalendar.nix { })
   ];
 
   meta = {
