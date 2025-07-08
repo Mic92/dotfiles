@@ -1,7 +1,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 let
@@ -15,9 +14,9 @@ let
   pathToDataset =
     path:
     let
-      matching = lib.filter (fs: lib.hasPrefix fs.mountpoint path) zfsFileSystems;
+      matching = lib.filter (fs: lib.hasPrefix fs.mountPoint path) zfsFileSystems;
       # Sort by length descending to get the most specific match first
-      sorted = lib.sort (a: b: lib.stringLength a.mountpoint > lib.stringLength b.mountpoint) matching;
+      sorted = lib.sort (a: b: lib.stringLength a.mountPoint > lib.stringLength b.mountPoint) matching;
     in
     if sorted != [ ] then lib.head sorted else null;
 
@@ -29,137 +28,122 @@ let
   # Get all unique ZFS datasets used for backups
   allBackupDatasets = lib.unique (lib.filter (d: d != null) (map pathToDataset allBackupPaths));
 
-  # Create mount commands for snapshots (mount parents before children)
-  mountSnapshotCommands =
-    datasets:
-    let
-      # Sort by mountpoint length ascending (shortest first)
-      sortedDatasets = lib.sort (
-        a: b: lib.stringLength a.mountpoint < lib.stringLength b.mountpoint
-      ) datasets;
-    in
-    lib.concatMapStringsSep "\n" (fs: ''
-      # Mount ${fs.device} snapshot
-      if ${zfs}/bin/zfs list -H -o name "${fs.device}@borg" >/dev/null 2>&1; then
-        mkdir -p "${cfg.mountRoot}${fs.mountpoint}"
-        mount -t zfs "${fs.device}@borg" "${cfg.mountRoot}${fs.mountpoint}"
-        echo "Mounted ${fs.device}@borg at ${cfg.mountRoot}${fs.mountpoint}"
-      fi
-    '') sortedDatasets;
+  # Find root datasets (datasets that are not children of other datasets in our list)
+  rootDatasets = lib.filter (
+    ds: !lib.any (other: ds != other && lib.hasPrefix "${other.device}/" ds.device) allBackupDatasets
+  ) allBackupDatasets;
 
-  # Unmount all snapshots recursively
-  umountSnapshotCommands = ''
-    # Recursively unmount all snapshots under the backup root
-    if mountpoint -q "${cfg.mountRoot}"; then
-      umount -R "${cfg.mountRoot}" || echo "Warning: Failed to recursively unmount ${cfg.mountRoot}"
-    fi
-  '';
+  # Check if we have any ZFS datasets to backup
+  hasZfsBackups = allBackupDatasets != [ ];
+
+  # Transform a backup path to use the snapshot directory
+  transformPathToSnapshot =
+    name: path:
+    let
+      dataset = pathToDataset path;
+    in
+    if dataset != null then
+      # Replace the mount point with the .zfs/snapshot path
+      let
+        relativePath = lib.removePrefix dataset.mountPoint path;
+        # Ensure we have a leading slash for non-empty relative paths
+        relativePathWithSlash =
+          if relativePath == "" then
+            ""
+          else if lib.hasPrefix "/" relativePath then
+            relativePath
+          else
+            "/${relativePath}";
+      in
+      "${dataset.mountPoint}/.zfs/snapshot/borg-${name}${relativePathWithSlash}"
+    else
+      path;
 in
 {
   options.services.borgbackup-zfs-snapshots = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = config.services.borgbackup.jobs != { } && allBackupDatasets != [ ];
-      description = "Enable ZFS snapshot support for borgbackup";
-    };
-
-    mountRoot = lib.mkOption {
-      type = lib.types.path;
-      default = "/var/lib/backup-root";
-      description = "Root directory where ZFS snapshots will be mounted for backup";
+      default = hasZfsBackups;
+      description = "Enable ZFS snapshot support for borgbackup jobs";
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    # Ensure the backup root directory exists
-    systemd.tmpfiles.rules = [
-      "d ${cfg.mountRoot} 0755 root root -"
-    ];
+  # Extend the borgbackup jobs submodule type
+  options.services.borgbackup.jobs = lib.mkOption {
+    type = lib.types.attrsOf (
+      lib.types.submodule (
+        { config, name, ... }:
+        {
+          options = {
+            useZfsSnapshots = lib.mkOption {
+              type = lib.types.bool;
+              default = cfg.enable && hasZfsBackups;
+              description = "Use ZFS snapshots for this backup job";
+            };
 
-    # Override borgbackup job paths to use the snapshot mount root
-    services.borgbackup.jobs = lib.mapAttrs (
-      name: job:
-      let
-        # Check if any of the clan.core.state paths are on ZFS
-        hasZfs = allBackupDatasets != [ ];
-      in
-      if hasZfs then
-        job
-        // {
-          paths = lib.mkForce (map (path: "${cfg.mountRoot}${path}") allBackupPaths);
+            # Override the paths option to add apply function
+            paths = lib.mkOption {
+              apply = paths: if config.useZfsSnapshots then map (transformPathToSnapshot name) paths else paths;
+            };
+          };
 
-          preHook = ''
-            ${job.preHook or ""}
+          # Add hooks for snapshot management
+          config = lib.mkIf config.useZfsSnapshots {
+            # Add pre-hook to create recursive snapshots
+            preHook = lib.mkBefore ''
+              echo "Creating ZFS snapshots for borgbackup job ${name}"
+              set -e
 
-            # Create and mount ZFS snapshots
-            set -e
-            echo "Creating ZFS snapshots for borgbackup job ${name}"
+              # Create recursive snapshots for root datasets only
+              ${lib.concatMapStringsSep "\n" (fs: ''
+                if ${zfs}/bin/zfs list -H -o name "${fs.device}" >/dev/null 2>&1; then
+                  ${zfs}/bin/zfs snapshot -r "${fs.device}@borg-${name}" || {
+                    echo "Failed to create recursive snapshot for ${fs.device}"
+                    exit 1
+                  }
+                  echo "Created recursive snapshot: ${fs.device}@borg-${name}"
+                fi
+              '') rootDatasets}
 
-            # Create snapshots
-            ${lib.concatMapStringsSep "\n" (fs: ''
-              if ${zfs}/bin/zfs list -H -o name "${fs.device}" >/dev/null 2>&1; then
-                ${zfs}/bin/zfs snapshot "${fs.device}@borg" || {
-                  echo "Failed to create snapshot for ${fs.device}"
-                  exit 1
+              # Ensure snapshot directories are accessible (trigger automount)
+              echo "Ensuring snapshot directories are accessible..."
+              ${lib.concatMapStringsSep "\n" (fs: ''
+                ls "${fs.mountPoint}/.zfs/snapshot/borg-${name}/" > /dev/null || {
+                  echo "Warning: Could not access snapshot directory ${fs.mountPoint}/.zfs/snapshot/borg-${name}/"
                 }
-                echo "Created snapshot: ${fs.device}@borg"
-              fi
-            '') allBackupDatasets}
+              '') allBackupDatasets}
 
-            # Mount snapshots under backup root
-            ${mountSnapshotCommands allBackupDatasets}
+              set +e
+            '';
 
-            # Verify all paths are accessible
-            ${lib.concatMapStringsSep "\n" (path: ''
-              if ! ls "${cfg.mountRoot}${path}" >/dev/null 2>&1; then
-                echo "Error: Backup path ${cfg.mountRoot}${path} is not accessible"
-                exit 1
-              fi
-            '') allBackupPaths}
+            # Add post-hook to destroy recursive snapshots
+            postHook = lib.mkAfter ''
+              echo "Cleaning up ZFS snapshots for borgbackup job ${name}"
 
-            set +e
-          '';
-
-          postHook = ''
-            exitStatus=$?
-
-            # Unmount and destroy snapshots
-            echo "Cleaning up ZFS snapshots for borgbackup job ${name}"
-
-            # Unmount snapshots
-            ${umountSnapshotCommands}
-
-            # Destroy snapshots
-            ${lib.concatMapStringsSep "\n" (fs: ''
-              if ${zfs}/bin/zfs list -H -o name "${fs.device}@borg" >/dev/null 2>&1; then
-                ${zfs}/bin/zfs destroy "${fs.device}@borg" || echo "Warning: Failed to destroy snapshot ${fs.device}@borg"
-              fi
-            '') allBackupDatasets}
-
-            ${job.postHook or ""}
-          '';
+              # Destroy recursive snapshots (only need to destroy root datasets)
+              ${lib.concatMapStringsSep "\n" (fs: ''
+                if ${zfs}/bin/zfs list -H -o name "${fs.device}@borg-${name}" >/dev/null 2>&1; then
+                  ${zfs}/bin/zfs destroy -r "${fs.device}@borg-${name}" || echo "Warning: Failed to destroy recursive snapshot ${fs.device}@borg-${name}"
+                fi
+              '') rootDatasets}
+            '';
+          };
         }
-      else
-        job
-    ) config.services.borgbackup.jobs;
+      )
+    );
+  };
 
-    # Ensure borgbackup services have required permissions
+  config = lib.mkIf cfg.enable {
+    # Extend systemd services for borgbackup jobs that use ZFS snapshots
     systemd.services = lib.mapAttrs' (
-      name: _job:
+      name: job:
       lib.nameValuePair "borgbackup-job-${name}" (
-        lib.mkIf (allBackupDatasets != [ ]) {
-          path = [
-            zfs
-            pkgs.util-linux
-          ];
+        lib.mkIf (job.useZfsSnapshots or false) {
           serviceConfig = {
             PrivateDevices = lib.mkForce false; # ZFS needs access to /dev/zfs
-            # Need CAP_SYS_ADMIN for mounting
-            AmbientCapabilities = [ "CAP_SYS_ADMIN" ];
-            CapabilityBoundingSet = [ "CAP_SYS_ADMIN" ];
-            # Ensure we can write to mount root
-            ReadWritePaths = [ cfg.mountRoot ];
           };
+
+          path = [ zfs ];
         }
       )
     ) config.services.borgbackup.jobs;
