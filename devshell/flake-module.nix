@@ -62,11 +62,6 @@
             ];
           };
           "pkgs/merge-when-green" = { };
-          "pkgs/mergify-gen-config" = {
-            extraPythonPackages = with pkgs.python3.pkgs; [
-              ruamel-yaml
-            ];
-          };
           "pkgs/paperless-cli" = { };
           "pkgs/systemctl" = { };
           "pkgs/vcal" = {
