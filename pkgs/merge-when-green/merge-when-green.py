@@ -444,7 +444,7 @@ def wait_for_pr_update(branch: str, pushed_commit: str) -> bool:
 
 
 def handle_pr_creation(
-    branch: str, target_branch: str, pr_state: str, message: str | None
+    branch: str, target_branch: str, pr_state: str | None, message: str | None
 ) -> None:
     """Handle PR creation or update existing PR."""
     if pr_state != "OPEN":

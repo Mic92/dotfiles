@@ -42,6 +42,44 @@
               pytest-asyncio
             ];
           };
+          "pkgs/buildbot-pr-check" = {
+            extraPythonPackages = with pkgs.python3.pkgs; [
+              pytest
+              vcrpy
+              pytest-vcr
+            ];
+          };
+          "pkgs/claude-md" = { };
+          "pkgs/gmaps-cli" = {
+            extraPythonPackages = with pkgs.python3.pkgs; [
+              pytest
+            ];
+          };
+          "pkgs/kagi-search" = {
+            extraPythonPackages = with pkgs.python3.pkgs; [
+              beautifulsoup4
+              types-beautifulsoup4
+            ];
+          };
+          "pkgs/merge-when-green" = { };
+          "pkgs/mergify-gen-config" = {
+            extraPythonPackages = with pkgs.python3.pkgs; [
+              ruamel-yaml
+            ];
+          };
+          "pkgs/paperless-cli" = { };
+          "pkgs/systemctl" = { };
+          "pkgs/vcal" = {
+            extraPythonPackages = with pkgs.python3.pkgs; [
+              icalendar
+              python-dateutil
+              pytz
+              types-pytz
+              types-python-dateutil
+              (pkgs.callPackage ../pkgs/vcal/types-icalendar.nix { inherit python; })
+              pytest
+            ];
+          };
         };
         programs.deadnix.enable = true;
         programs.stylua.enable = true;
