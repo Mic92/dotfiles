@@ -256,7 +256,7 @@ def get_pr_state(branch: str) -> str | None:
 
 
 def check_pr_completion(
-    pr_data: dict, pending: int, failed: int
+    pr_data: dict[str, Any], pending: int, failed: int
 ) -> tuple[bool, str] | None:
     """Check if PR has reached a completion state. Returns None if still waiting."""
     state = pr_data.get("state", "UNKNOWN")
