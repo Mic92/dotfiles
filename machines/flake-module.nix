@@ -15,6 +15,16 @@
 
       machines.evo.machineClass = "darwin";
 
+      instances = {
+        emergency-access = {
+          module = {
+            name = "emergency-access";
+            input = "clan-core";
+          };
+          roles.default.tags.nixos = { };
+        };
+      };
+
       services = {
         borgbackup.blob64 = {
           roles.server.machines = [ "blob64" ];

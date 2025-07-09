@@ -15,6 +15,7 @@
     self.inputs.srvos.nixosModules.mixins-nginx
     self.inputs.srvos.nixosModules.mixins-systemd-boot
     self.inputs.srvos.nixosModules.roles-prometheus
+    self.inputs.srvos.nixosModules.hardware-hetzner-cloud
     self.inputs.disko.nixosModules.disko
 
     ./modules/disko.nix
@@ -33,33 +34,18 @@
     ../../nixosModules/unbound.nix
     ../../nixosModules/hyprspace-public.nix
   ];
-  nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
+  nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.aarch64-linux;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  boot.initrd.systemd.enable = false;
+  boot.initrd.systemd.enable = true;
   clan.core.networking.targetHost = lib.mkForce "root@eva.i";
   clan.core.networking.buildHost = "root@eve.i";
 
-  systemd.network = {
-    enable = true;
-    networks."40-eth0".extraConfig = ''
-      [Match]
-      Name = eth0
+  # Disable envfs to fix systemd refusing to run with unpopulated /usr/
+  services.envfs.enable = lib.mkForce false;
 
-      [Network]
-      Address = 89.58.27.144/22
-      Gateway = 89.58.24.1
-      Address = 2a03:4000:62:fdb::/64
-      Gateway = fe80::1
-      IPv6AcceptRA = no
-      IPForward = yes
-
-      [DHCP]
-      UseDNS = no
-    '';
-  };
-
-  services.resolved.enable = false;
+  # Use stable kernel
+  boot.kernelPackages = lib.mkForce pkgs.linuxPackages;
 
   # breaks loki
   networking.usePredictableInterfaceNames = false;
