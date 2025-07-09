@@ -457,6 +457,37 @@ def handle_pr_creation(
         print_success("✓ Auto-merge enabled")
 
 
+def handle_wait_and_merge(branch: str, pushed_commit: str, target_branch: str) -> int:
+    """Handle waiting for PR and merging process."""
+    # Wait for PR update
+    if not wait_for_pr_update(branch, pushed_commit):
+        return 1
+
+    # Now wait for completion
+    success, message = wait_for_pr_completion(branch)
+    if success:
+        print_success(f"\n✓ {message}")
+
+        # Fetch and rebase after successful merge
+        print_header("Fetching and rebasing after merge...")
+        try:
+            # Fetch the latest changes from origin
+            run_command(["git", "fetch", "origin", target_branch])
+
+            # Rebase onto the updated target branch
+            run_command(["git", "rebase", f"origin/{target_branch}"])
+        except subprocess.CalledProcessError as e:
+            print_error(f"Failed to fetch and rebase: {e}")
+            print_warning("You may need to manually fetch and rebase")
+            return 1
+        else:
+            print_success("✓ Successfully fetched and rebased onto latest changes")
+            return 0
+    else:
+        print_error(f"\n✗ {message}")
+        return 1
+
+
 def main() -> int:
     """Main entry point."""
     parser = argparse.ArgumentParser(description="Create PR and merge when CI passes")
@@ -505,20 +536,12 @@ def main() -> int:
     handle_pr_creation(branch, target_branch, pr_state, args.message)
 
     # Wait for checks unless --no-wait is specified
-    if not args.no_wait:
-        if not wait_for_pr_update(branch, pushed_commit):
-            return 1
+    if args.no_wait:
+        print_success("\n✓ Done!")
+        return 0
 
-        # Now wait for completion
-        success, message = wait_for_pr_completion(branch)
-        if success:
-            print_success(f"\n✓ {message}")
-        else:
-            print_error(f"\n✗ {message}")
-        return 0 if success else 1
-
-    print_success("\n✓ Done!")
-    return 0
+    # Handle waiting and merging
+    return handle_wait_and_merge(branch, pushed_commit, target_branch)
 
 
 if __name__ == "__main__":
