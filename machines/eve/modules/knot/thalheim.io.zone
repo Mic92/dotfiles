@@ -21,10 +21,10 @@ eve IN A 95.217.199.121
 eve IN AAAA 2a01:4f9:4a:42e8::1
 6.eve IN AAAA 2a01:4f9:4a:42e8::1
 
-eva IN A 89.58.27.144
-4.eva IN A 89.58.27.144
-eva IN AAAA 2a03:4000:62:fdb::
-6.eva IN AAAA 2a03:4000:62:fdb::
+eva IN A 116.203.179.132
+4.eva IN A 116.203.179.132
+eva IN AAAA 2a01:4f8:1c1a:37b2::1
+6.eva IN AAAA 2a01:4f8:1c1a:37b2::1
 
 git IN A 95.217.199.121
 git IN AAAA 2a01:4f9:4a:42e8::1
