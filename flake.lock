@@ -60,7 +60,7 @@
       "locked": {
         "lastModified": 1751977544,
         "narHash": "sha256-FYPFmHccVH1JJCMD9zI01UGS2KdYL2UY8NL8yx1V2kk=",
-        "rev": "75501a914be4659496451e77d786082f7f9cede4",
+        "rev": "f9740909e9adb18ebb64896acd87714071a2f32c",
         "type": "tarball",
         "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/f9740909e9adb18ebb64896acd87714071a2f32c.tar.gz"
       },
@@ -476,10 +476,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1750775441,
-        "narHash": "sha256-beothLPvvuZ7XPlptT9NB+OJ+JH2xvS1+Cje+DcZKY8=",
+        "lastModified": 1752042402,
+        "narHash": "sha256-qu83b1qfUv4WsDyFfCUpqpZAxF0fjyU63X8v9sl7c1A=",
         "ref": "refs/heads/main",
-        "rev": "f1c1385d6d72962497fbaf8aa6cade7dc623c3d8",
+        "rev": "32dbccd8bf815642e48776c5882b50e51cb8299a",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"

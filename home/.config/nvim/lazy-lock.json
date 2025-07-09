@@ -23,7 +23,7 @@
   "crates.nvim": { "branch": "main", "commit": "5d8b1bef686db0fabe5f1bb593744b617e8f1405" },
   "friendly-snippets": { "branch": "main", "commit": "572f5660cf05f8cd8834e096d7b4c921ba18e175" },
   "gitsigns.nvim": { "branch": "main", "commit": "7010000889bfb6c26065e0b0f7f1e6aa9163edd9" },
-  "go.nvim": { "branch": "master", "commit": "a3455f48cff718a86275115523dcc735535a13aa" },
+  "go.nvim": { "branch": "master", "commit": "4a4c5c407083ee635fc044331daf3d09c36b3ff9" },
   "gopher.nvim": { "branch": "main", "commit": "de585144ebde9f0516fb9b542dd42e90c7835b59" },
   "guess-indent.nvim": { "branch": "main", "commit": "84a4987ff36798c2fc1169cbaff67960aed9776f" },
   "heirline.nvim": { "branch": "master", "commit": "fae936abb5e0345b85c3a03ecf38525b0828b992" },
