@@ -70,12 +70,11 @@ def extract_calendar_from_email(email_content: str) -> tuple[Calendar | None, st
     # Try to parse direct calendar data
     if "BEGIN:VCALENDAR" in email_content:
         try:
-            cal = Calendar.from_ical(email_content)
+            result = Calendar.from_ical(email_content)
+            if isinstance(result, Calendar):
+                return result, to_email
         except (ValueError, TypeError):
             pass
-        else:
-            if isinstance(cal, Calendar):
-                return cal, to_email
 
     return None, to_email
 
