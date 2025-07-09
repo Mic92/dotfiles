@@ -60,6 +60,7 @@
           "http://flix.r/"
         ];
         response_string_match = "Index of /";
+        tags.host = "yellow";
         tags.org = "krebs";
         response_status_code = 200;
       }
@@ -122,17 +123,23 @@
         response_status_code = 200;
       }
       {
-        urls = [
-          "http://cgit.ni.r"
-          "http://cgit.orange.r"
-        ];
+        urls = [ "http://cgit.ni.r" ];
         response_string_match = "cgit";
+        tags.host = "ni";
+        tags.org = "krebs";
+        response_status_code = 200;
+      }
+      {
+        urls = [ "http://cgit.orange.r" ];
+        response_string_match = "cgit";
+        tags.host = "orange";
         tags.org = "krebs";
         response_status_code = 200;
       }
       {
         urls = [ "https://cgit.lassul.us" ];
         response_string_match = "cgit";
+        tags.host = "prism";
         tags.org = "krebs";
         response_status_code = 200;
       }
@@ -174,6 +181,7 @@
       {
         urls = [ "http://c.r/ok" ];
         response_string_match = "ok";
+        tags.host = "prism";
         tags.org = "krebs";
         response_status_code = 200;
       }
@@ -181,12 +189,14 @@
         urls = [ "http://p.r" ];
         body = "ok";
         method = "POST";
+        tags.host = "prism";
         tags.org = "krebs";
         response_status_code = 200;
       }
       {
         urls = [ "http://agenda.r" ];
         response_string_match = "Agenda";
+        tags.host = "hotdog";
         tags.org = "krebs";
         response_status_code = 200;
       }
