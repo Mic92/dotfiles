@@ -248,13 +248,13 @@
         }
         {
           name = "all";
-          pushover_configs = [
-            {
-              user_key = "$PUSHOVER_USER_KEY";
-              token = "$PUSHOVER_TOKEN";
-              priority = "0";
-            }
-          ];
+          # pushover_configs = [
+          #   {
+          #     user_key = "$PUSHOVER_USER_KEY";
+          #     token = "$PUSHOVER_TOKEN";
+          #     priority = "0";
+          #   }
+          # ];
         }
         { name = "default"; }
       ];
