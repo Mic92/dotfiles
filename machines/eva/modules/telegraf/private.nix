@@ -12,15 +12,15 @@ in
       (map
         (url: {
           method = "native";
-          urls = [ url ];
+          urls = [ "${url}.r" ];
           tags.type = "mobile";
           tags.host = url;
           tags.org = "private";
           count = 5;
         })
         [
-          "turingmachine.r"
-          "bernie.r"
+          "turingmachine"
+          "bernie"
         ]
       )
       ++ (map (url: {
