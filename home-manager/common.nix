@@ -77,7 +77,6 @@
       radare2
       mypy
 
-      self.packages.${pkgs.stdenv.hostPlatform.system}.mergify-gen-config
       self.packages.${pkgs.stdenv.hostPlatform.system}.merge-when-green
       self.packages.${pkgs.stdenv.hostPlatform.system}.buildbot-pr-check
       self.inputs.flake-fmt.packages.${pkgs.stdenv.hostPlatform.system}.default

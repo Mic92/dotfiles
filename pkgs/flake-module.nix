@@ -7,7 +7,6 @@
     {
       packages =
         {
-          mergify-gen-config = pkgs.python3.pkgs.callPackage ./mergify-gen-config { };
           merge-when-green = pkgs.callPackage ./merge-when-green { };
           claude-code = pkgs.callPackage ./claude-code { };
           gmaps-cli = pkgs.python3.pkgs.callPackage ./gmaps-cli { };
