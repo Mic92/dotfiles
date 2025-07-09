@@ -58,15 +58,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1751977544,
-        "narHash": "sha256-FYPFmHccVH1JJCMD9zI01UGS2KdYL2UY8NL8yx1V2kk=",
-        "rev": "28d5294292781934006d79c17e8a063af8bf0d9b",
+        "lastModified": 1752055428,
+        "narHash": "sha256-xLAPZpTAGghhtNLbr/GZdj+1hZ0NcDBEemvWfrQTeDs=",
+        "rev": "cac6b6481688e3baa359c1e2b847b9ec4d76eefd",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/f9740909e9adb18ebb64896acd87714071a2f32c.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/cac6b6481688e3baa359c1e2b847b9ec4d76eefd.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.clan.lol/clan/clan-core/archive/fix-sudo.tar.gz"
+        "url": "https://git.clan.lol/clan/clan-core/archive/darwin-sandbox.tar.gz"
       }
     },
     "crane": {
