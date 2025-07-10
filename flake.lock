@@ -674,10 +674,10 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1752151193,
-        "narHash": "sha256-Acl4cll+Gc9CnqpNwcotMzDWwZsA/8NM9kYoNepALNo=",
+        "lastModified": 1752153011,
+        "narHash": "sha256-H36gygvT12JpmwnPn2xl2WfaIVBjaJQunJgb0nIHxVA=",
         "ref": "refs/heads/master",
-        "rev": "5d409a5ac1d22077807a52fca984e61b84092fe5",
+        "rev": "db9cca792f9d3e8892ed31afa3038602cb6b5bf7",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/retiolum"
