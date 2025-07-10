@@ -124,3 +124,5 @@
 	helper = !gh auth git-credential
 [http]
   cookiefile = ~/.gitcookies
+[url "git@github.com:"]
+  insteadOf = https://github.com/
