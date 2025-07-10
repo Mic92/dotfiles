@@ -677,7 +677,7 @@
         "lastModified": 1752151193,
         "narHash": "sha256-Acl4cll+Gc9CnqpNwcotMzDWwZsA/8NM9kYoNepALNo=",
         "ref": "refs/heads/master",
-        "rev": "6f17f4ec27e921f1ecee0610198e5914383c60db",
+        "rev": "5d409a5ac1d22077807a52fca984e61b84092fe5",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/retiolum"
