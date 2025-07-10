@@ -27,6 +27,8 @@
     ../../darwinModules/secretiv.nix
     ../../darwinModules/sudo.nix
     ../../darwinModules/ghostty.nix
+    self.inputs.retiolum.darwinModules.tinc
+    self.inputs.retiolum.darwinModules.retiolum
   ];
 
   system.activationScripts.postActivation.text = ''
