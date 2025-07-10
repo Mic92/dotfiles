@@ -46,6 +46,8 @@
     #retiolum.url = "git+https://git.thalheim.io/Mic92/retiolum";
     #retiolum.url = "github:Mic92/retiolum";
     retiolum.url = "git+https://github.com/Mic92/retiolum?shallow=1";
+    retiolum.inputs.nixpkgs.follows = "nixpkgs";
+    retiolum.inputs.nix-darwin.follows = "nix-darwin";
 
     #spora.url = "github:krebs/spora";
     #spora.inputs.nixpkgs.follows = "nixpkgs";
