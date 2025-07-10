@@ -29,6 +29,7 @@
     ../../darwinModules/ghostty.nix
     self.inputs.retiolum.darwinModules.tinc
     self.inputs.retiolum.darwinModules.retiolum
+    self.inputs.retiolum.darwinModules.ca
   ];
 
   system.activationScripts.postActivation.text = ''
