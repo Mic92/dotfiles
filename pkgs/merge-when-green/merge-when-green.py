@@ -231,8 +231,6 @@ def create_pr(branch: str, target_branch: str, message: str | None = None) -> No
             target_branch,
             "--head",
             branch,
-            "--label",
-            "merge-queue",
         ]
     )
 
