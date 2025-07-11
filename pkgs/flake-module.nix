@@ -10,7 +10,6 @@
           merge-when-green = pkgs.callPackage ./merge-when-green { };
           claude-code = pkgs.callPackage ./claude-code { };
           gmaps-cli = pkgs.python3.pkgs.callPackage ./gmaps-cli { };
-          paperless-cli = pkgs.callPackage ./paperless-cli { };
           db-cli = pkgs.callPackage ./db-cli { };
           direnv-instant = pkgs.callPackage ./direnv-instant { };
           kagi-search = pkgs.python3.pkgs.callPackage ./kagi-search { };

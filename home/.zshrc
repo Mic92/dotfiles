@@ -791,6 +791,8 @@ open() {
     kde-open5 "$@"
   elif [[ -n "${commands[gnome-open]}" ]]; then
     gnome-open "$@"
+  elif [[ -n "${commands[open]}" ]]; then
+    open "$@"
   else
     echo "no suitable command found" >&2
     return 1
