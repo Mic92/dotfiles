@@ -62,7 +62,6 @@
             ];
           };
           "pkgs/merge-when-green" = { };
-          "pkgs/paperless-cli" = { };
           "pkgs/systemctl" = { };
           "pkgs/vcal" = {
             extraPythonPackages = with pkgs.python3.pkgs; [
