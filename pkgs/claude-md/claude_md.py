@@ -59,6 +59,61 @@ def show_diff(file1: Path, file2: Path) -> None:
         pass
 
 
+def handle_claude_dir(repo_root: Path, claude_md_repo: Path, repo_name: str) -> None:
+    """Handle the .claude directory."""
+    local_claude_dir = repo_root / ".claude"
+    claude_md_claude_dir = claude_md_repo / repo_name / ".claude"
+
+    # If both exist, check if they're linked
+    if local_claude_dir.exists() and claude_md_claude_dir.exists():
+        if (
+            local_claude_dir.is_symlink()
+            and local_claude_dir.resolve() == claude_md_claude_dir.resolve()
+        ):
+            print(f"✓ {local_claude_dir} is already linked to {claude_md_claude_dir}")
+            return
+
+        print(
+            f"Error: Conflict - both {local_claude_dir} and {claude_md_claude_dir} exist",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    # If directory exists in claude.md repo but not locally
+    if claude_md_claude_dir.exists() and not local_claude_dir.exists():
+        local_claude_dir.symlink_to(claude_md_claude_dir)
+        print(f"✓ Created symlink: {local_claude_dir} -> {claude_md_claude_dir}")
+        return
+
+    # If directory exists locally but not in claude.md repo
+    if local_claude_dir.exists() and not claude_md_claude_dir.exists():
+        # Create parent directory if needed
+        claude_md_claude_dir.parent.mkdir(parents=True, exist_ok=True)
+
+        # Copy entire directory
+        shutil.copytree(local_claude_dir, claude_md_claude_dir)
+        print(f"✓ Copied {local_claude_dir} to {claude_md_claude_dir}")
+
+        # Remove original and create symlink
+        shutil.rmtree(local_claude_dir)
+        local_claude_dir.symlink_to(claude_md_claude_dir)
+        print(f"✓ Created symlink: {local_claude_dir} -> {claude_md_claude_dir}")
+
+        # Stage the directory in claude.md repo (use -f to force add)
+        try:
+            subprocess.run(
+                ["git", "add", "-f", str(claude_md_claude_dir.relative_to(claude_md_repo))],
+                cwd=claude_md_repo,
+                check=True,
+            )
+            print(f"✓ Staged {claude_md_claude_dir} in claude.md repository")
+        except subprocess.CalledProcessError:
+            print(
+                f"Warning: Could not stage {claude_md_claude_dir} in git",
+                file=sys.stderr,
+            )
+
+
 def add_command() -> None:
     """Handle the 'add' command."""
     # Get paths
@@ -70,6 +125,9 @@ def add_command() -> None:
     local_file = repo_root / "CLAUDE.local.md"
     claude_md_dir = claude_md_repo / repo_name
     claude_md_file = claude_md_dir / "CLAUDE.local.md"
+
+    # Handle .claude directory first
+    handle_claude_dir(repo_root, claude_md_repo, repo_name)
 
     # Check if both files exist (conflict)
     if local_file.exists() and claude_md_file.exists():
@@ -107,10 +165,10 @@ def add_command() -> None:
         local_file.symlink_to(claude_md_file)
         print(f"✓ Created symlink: {local_file} -> {claude_md_file}")
 
-        # Stage the new file in claude.md repo
+        # Stage the new file in claude.md repo (use -f to force add)
         try:
             subprocess.run(
-                ["git", "add", str(claude_md_file.relative_to(claude_md_repo))],
+                ["git", "add", "-f", str(claude_md_file.relative_to(claude_md_repo))],
                 cwd=claude_md_repo,
                 check=True,
             )
@@ -151,10 +209,10 @@ def add_command() -> None:
         local_file.symlink_to(claude_md_file)
         print(f"✓ Created symlink: {local_file} -> {claude_md_file}")
 
-        # Stage the new file in claude.md repo
+        # Stage the new file in claude.md repo (use -f to force add)
         try:
             subprocess.run(
-                ["git", "add", str(claude_md_file.relative_to(claude_md_repo))],
+                ["git", "add", "-f", str(claude_md_file.relative_to(claude_md_repo))],
                 cwd=claude_md_repo,
                 check=True,
             )
