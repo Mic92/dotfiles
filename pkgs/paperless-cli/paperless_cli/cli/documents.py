@@ -2,6 +2,7 @@
 
 from dataclasses import dataclass
 from pathlib import Path
+import time
 
 from paperless_cli.api import PaperlessAPIError, PaperlessClient
 from paperless_cli.cli.formatter import print_table
@@ -175,8 +176,61 @@ def upload_document(client: PaperlessClient, cmd: DocumentsUploadCommand) -> Non
         tag_ids = [int(tag_id.strip()) for tag_id in cmd.tags.split(",")]
 
     try:
-        client.upload_document(cmd.file_path, cmd.title, tag_ids)
-        print("Document uploaded successfully")
+        print(f"Uploading '{Path(cmd.file_path).name}'...")
+        result = client.upload_document(cmd.file_path, cmd.title, tag_ids)
+
+        # Get task_id from response
+        task_id = result.get("task_id")
+        if not task_id:
+            print("Document uploaded but no task ID returned")
+            return
+
+        print("Upload successful. Waiting for processing...")
+
+        # Poll for task completion
+        start_time = time.time()
+        dots = 0
+
+        while True:
+            task = client.get_task_status(task_id)
+            if not task:
+                print("\nError: Could not find task status")
+                return
+
+            status = task.get("status", "UNKNOWN")
+
+            if status not in ["PENDING", "STARTED"]:
+                # Task completed (success or failure)
+                processing_time = time.time() - start_time
+                print()  # New line after dots
+
+                if status == "SUCCESS":
+                    print("✓ Document processed successfully!")
+
+                    # Extract document ID from result message
+                    result_msg = task.get("result", "")
+                    print(f"  Result: {result_msg}")
+                    print(f"  Processing time: {processing_time:.1f} seconds")
+
+                    # Try to extract document ID from result
+                    doc_id = task.get("related_document")
+                    if doc_id:
+                        # Construct URL based on the known pattern
+                        base_url = client.url.replace("-api", "")  # Remove -api from URL
+                        print(f"  View at: {base_url}/documents/{doc_id}")
+                else:
+                    print("✗ Document processing failed!")
+                    result_msg = task.get("result", "Unknown error")
+                    print(f"  Result: {result_msg}")
+                    print(f"  Processing time: {processing_time:.1f} seconds")
+
+                return
+
+            # Still processing, show progress
+            print(".", end="", flush=True)
+            dots += 1
+            time.sleep(2)
+
     except PaperlessAPIError as e:
         print(f"Error uploading document: {e}")
 

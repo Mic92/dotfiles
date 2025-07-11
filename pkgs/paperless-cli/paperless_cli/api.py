@@ -220,11 +220,9 @@ class PaperlessClient:
             with urllib.request.urlopen(request) as response:  # noqa: S310
                 response_text = response.read().decode("utf-8")
                 if response_text:
-                    try:
-                        return cast("dict[str, Any]", json.loads(response_text))
-                    except json.JSONDecodeError:
-                        message = f"Failed to decode JSON response: {response_text}"
-                        raise PaperlessAPIError(message)
+                    # The API returns just the task_id as a string
+                    task_id = response_text.strip().strip('"')
+                    return {"task_id": task_id}
                 return {"status": "success"}
         except urllib.error.HTTPError as e:
             error_body = e.read().decode("utf-8")
@@ -236,3 +234,10 @@ class PaperlessClient:
     def delete_document(self, document_id: int) -> None:
         """Delete a document."""
         self._request("DELETE", f"/api/documents/{document_id}/")
+
+    def get_task_status(self, task_id: str) -> dict[str, Any] | None:
+        """Get task status by task_id."""
+        response = self._request("GET", "/api/tasks/", params={"task_id": task_id})
+        # The tasks endpoint returns an array, not a paginated response
+        tasks = cast("list[dict[str, Any]]", response)
+        return tasks[0] if tasks else None
