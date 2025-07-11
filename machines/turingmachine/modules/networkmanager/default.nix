@@ -40,13 +40,8 @@ in
     plugins =
       with pkgs;
       lib.mkForce [
-        #networkmanager-fortisslvpn
-        #networkmanager-iodine
-        #networkmanager-l2tp
-        #networkmanager-openconnect
         networkmanager-openvpn
         networkmanager-vpnc
-        #networkmanager-sstp
       ];
   };
 
