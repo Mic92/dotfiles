@@ -1,0 +1,7 @@
+{
+  "name": "io.thalheim.browser_cli.bridge",
+  "description": "Browser CLI Bridge Server",
+  "path": "browser-cli-bridge",
+  "type": "stdio",
+  "allowed_extensions": ["browser-cli-controller@thalheim.io"]
+}
