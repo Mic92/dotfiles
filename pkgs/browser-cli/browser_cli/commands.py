@@ -69,14 +69,6 @@ class SelectCommand:
 
 
 @dataclass
-class WaitCommand:
-    """Wait for specified seconds."""
-
-    seconds: float
-    server: str = "ws://localhost:9223"
-
-
-@dataclass
 class KeyCommand:
     """Press a keyboard key."""
 
@@ -123,7 +115,6 @@ Command = (
     | HoverCommand
     | DragCommand
     | SelectCommand
-    | WaitCommand
     | KeyCommand
     | ScreenshotCommand
     | ConsoleCommand

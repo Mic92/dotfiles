@@ -105,11 +105,6 @@ class BrowserCLI:
         result = await self.send_command("select", {"element": selector, "option": option})
         print(result.get("message", f"Selected {option} in {selector}"))
 
-    async def wait(self, seconds: float) -> None:
-        """Wait for specified seconds."""
-        result = await self.send_command("wait", {"seconds": seconds})
-        print(result.get("message", f"Waited {seconds} seconds"))
-
     async def key(self, key: str) -> None:
         """Press a keyboard key."""
         result = await self.send_command("key", {"key": key})

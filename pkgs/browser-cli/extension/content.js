@@ -41,7 +41,7 @@ function initializeVirtualCursor() {
     pointer-events: none;
     z-index: 999999;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    opacity: 0;
+    opacity: 1;
   `;
 
   // Create cursor inner circle
@@ -135,13 +135,6 @@ function moveCursorToElement(element, showClick = false) {
         }, 300);
       }
     }
-
-    // Hide cursor after 2 seconds
-    setTimeout(() => {
-      if (virtualCursor) {
-        virtualCursor.style.opacity = "0";
-      }
-    }, 2000);
   }
 }
 
@@ -482,21 +475,6 @@ function handleKey(params) {
 }
 
 /**
- * Handle cursor visibility command
- * @param {object} params - Command parameters
- * @param {boolean} params.visible - Whether cursor should be visible
- * @returns {object} Result message
- */
-function handleCursorVisibility(params) {
-  if (params.visible === false && virtualCursor) {
-    virtualCursor.style.display = "none";
-  } else if (params.visible === true && virtualCursor) {
-    virtualCursor.style.display = "block";
-  }
-  return { message: `Cursor visibility set to ${params.visible}` };
-}
-
-/**
  * Message handler
  * @param {any} message - Message from background script
  * @param {any} sender - Message sender
@@ -557,11 +535,6 @@ browser.runtime.onMessage.addListener((message, _sender, _sendResponse) => {
 
         case "getSnapshot": {
           result = { snapshot: getAriaSnapshot() };
-          break;
-        }
-
-        case "setCursorVisibility": {
-          result = handleCursorVisibility(params);
           break;
         }
 

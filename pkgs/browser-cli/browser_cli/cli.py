@@ -23,7 +23,6 @@ from browser_cli.commands import (
     SelectCommand,
     SnapshotCommand,
     TypeCommand,
-    WaitCommand,
 )
 from browser_cli.errors import BrowserCLIError, InvalidCommandError
 
@@ -116,10 +115,6 @@ Examples:
     select_parser.add_argument("selector", help="Select element selector")
     select_parser.add_argument("option", help="Option value to select")
 
-    # Wait command
-    wait_parser = subparsers.add_parser("wait", help="Wait for specified seconds")
-    wait_parser.add_argument("seconds", type=float, help="Seconds to wait")
-
     # Key command
     key_parser = subparsers.add_parser("key", help="Press a keyboard key")
     key_parser.add_argument("key", help="Key to press (e.g., Enter, Tab, Escape)")
@@ -171,8 +166,6 @@ def parse_args(argv: list[str] | None = None) -> Command:  # noqa: C901, PLR0911
             return DragCommand(server=args.server, start=args.start, end=args.end)
         case "select":
             return SelectCommand(server=args.server, selector=args.selector, option=args.option)
-        case "wait":
-            return WaitCommand(server=args.server, seconds=args.seconds)
         case "key":
             return KeyCommand(server=args.server, key=args.key)
         case "screenshot":
@@ -214,8 +207,6 @@ async def execute_command(cmd: Command) -> None:  # noqa: C901, PLR0912
             await client.drag(start, end)
         case SelectCommand(selector=selector, option=option):
             await client.select(selector, option)
-        case WaitCommand(seconds=seconds):
-            await client.wait(seconds)
         case KeyCommand(key=key):
             await client.key(key)
         case ScreenshotCommand(output=output):
