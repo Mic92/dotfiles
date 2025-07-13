@@ -2,7 +2,10 @@
 
 import argparse
 import asyncio
+import json
+import shutil
 import sys
+from pathlib import Path
 
 from browser_cli.client import BrowserCLI
 from browser_cli.commands import (
@@ -13,6 +16,7 @@ from browser_cli.commands import (
     DragCommand,
     ForwardCommand,
     HoverCommand,
+    InstallHostCommand,
     KeyCommand,
     NavigateCommand,
     ScreenshotCommand,
@@ -22,6 +26,39 @@ from browser_cli.commands import (
     WaitCommand,
 )
 from browser_cli.errors import BrowserCLIError, InvalidCommandError
+
+
+def install_native_host() -> None:
+    """Install native messaging host for Firefox."""
+    # Get the path to browser-cli-server executable
+    server_path = shutil.which("browser-cli-server")
+    if not server_path:
+        print("Error: browser-cli-server not found in PATH", file=sys.stderr)
+        sys.exit(1)
+
+    # Define paths
+    home = Path.home()
+    host_dir = home / ".mozilla" / "native-messaging-hosts"
+    host_file = host_dir / "io.thalheim.browser_cli.bridge.json"
+
+    # Create directory if it doesn't exist
+    host_dir.mkdir(parents=True, exist_ok=True)
+
+    # Create the native messaging host manifest
+    manifest = {
+        "name": "io.thalheim.browser_cli.bridge",
+        "description": "Browser CLI Bridge Server",
+        "path": server_path,
+        "type": "stdio",
+        "allowed_extensions": ["browser-cli-controller@thalheim.io"],
+    }
+
+    # Write the manifest file
+    with host_file.open("w") as f:
+        json.dump(manifest, f, indent=2)
+
+    print(f"Native messaging host installed successfully at {host_file}")
+    print(f"Server path: {server_path}")
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -101,6 +138,9 @@ Examples:
     # Snapshot command
     subparsers.add_parser("snapshot", help="Get ARIA snapshot of the page")
 
+    # Install host command
+    subparsers.add_parser("install-host", help="Install native messaging host for Firefox")
+
     return parser
 
 
@@ -141,6 +181,8 @@ def parse_args(argv: list[str] | None = None) -> Command:  # noqa: C901, PLR0911
             return ConsoleCommand(server=args.server)
         case "snapshot":
             return SnapshotCommand(server=args.server)
+        case "install-host":
+            return InstallHostCommand()
         case _:
             msg = f"Unknown command: {args.command}"
             raise InvalidCommandError(msg)
@@ -148,6 +190,11 @@ def parse_args(argv: list[str] | None = None) -> Command:  # noqa: C901, PLR0911
 
 async def execute_command(cmd: Command) -> None:  # noqa: C901, PLR0912
     """Execute the given command using the browser client."""
+    # Handle InstallHostCommand separately as it doesn't need a server
+    if isinstance(cmd, InstallHostCommand):
+        install_native_host()
+        return
+
     client = BrowserCLI(cmd.server)
 
     match cmd:

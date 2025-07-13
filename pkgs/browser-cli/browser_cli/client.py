@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Any
 
 import websockets
-from websockets.exceptions import ConnectionRefusedError as WSConnectionRefusedError
 
 from browser_cli.errors import BrowserConnectionError, CommandError
 
@@ -50,13 +49,13 @@ class BrowserCLI:
                         error_msg = response.get("error", "Unknown error")
                         raise CommandError(error_msg) from None
 
-        except WSConnectionRefusedError as e:
+        except ConnectionRefusedError as e:
             msg = (
                 "Cannot connect to browser extension. Make sure:\n"
                 "1. Firefox is running\n"
                 "2. The Browser CLI extension is installed\n"
                 "3. The extension is enabled on the current tab\n"
-                "4. The WebSocket server is running (browser-cli-server.py)"
+                "4. The WebSocket server is running (browser-cli-server)"
             )
             raise BrowserConnectionError(msg) from e
 
