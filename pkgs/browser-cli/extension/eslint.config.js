@@ -4,7 +4,7 @@ import unicorn from "eslint-plugin-unicorn";
 
 export default [
   js.configs.recommended,
-  unicorn.configs["flat/recommended"],
+  unicorn.configs.recommended,
   {
     files: ["*.js"],
     languageOptions: {
