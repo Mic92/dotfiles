@@ -144,6 +144,14 @@ class NewTabCommand:
     common: CommonOptions = field(default_factory=CommonOptions)
 
 
+@dataclass
+class EvalCommand:
+    """Evaluate JavaScript expression and return result as JSON."""
+
+    expression: str
+    common: CommonOptions
+
+
 # Type alias for all command types
 Command = (
     NavigateCommand
@@ -161,4 +169,5 @@ Command = (
     | InstallHostCommand
     | ListTabsCommand
     | NewTabCommand
+    | EvalCommand
 )

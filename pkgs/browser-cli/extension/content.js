@@ -576,6 +576,30 @@ function handleKey(params) {
 }
 
 /**
+ * Handle eval command - evaluate JavaScript expression
+ * @param {object} params - Command parameters
+ * @param {string} params.expression - JavaScript expression to evaluate
+ * @returns {Promise<{result: any}>} Evaluation result
+ */
+async function handleEval(params) {
+  try {
+    // Use Function constructor to evaluate the expression in a cleaner scope
+    const func = new Function('return (' + params.expression + ')');
+    const result = func();
+    
+    // Try to convert result to JSON-serializable format
+    try {
+      return { result: JSON.parse(JSON.stringify(result)) };
+    } catch (serializationError) {
+      // If serialization fails, return a string representation
+      return { result: String(result) };
+    }
+  } catch (error) {
+    throw new Error(`Evaluation error: ${error instanceof Error ? error.message : String(error)}`);
+  }
+}
+
+/**
  * Message handler
  * @param {any} message - Message from background script
  * @param {any} sender - Message sender
@@ -636,6 +660,11 @@ browser.runtime.onMessage.addListener((message, _sender, _sendResponse) => {
 
         case "getSnapshot": {
           result = { snapshot: getAriaSnapshot() };
+          break;
+        }
+
+        case "eval": {
+          result = await handleEval(params);
           break;
         }
 

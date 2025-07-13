@@ -16,6 +16,7 @@ from browser_cli.commands import (
     CommonOptions,
     ConsoleCommand,
     DragCommand,
+    EvalCommand,
     ForwardCommand,
     HoverCommand,
     InstallHostCommand,
@@ -121,6 +122,7 @@ Examples:
   browser-cli screenshot output.png
   browser-cli console
   browser-cli snapshot
+  browser-cli eval "document.title"
         """,
     )
 
@@ -163,6 +165,9 @@ Examples:
 
     console_parser = subparsers.add_parser("console", help="Get console logs from the page")
     snapshot_parser = subparsers.add_parser("snapshot", help="Get ARIA snapshot of the page")
+    
+    eval_parser = subparsers.add_parser("eval", help="Evaluate JavaScript expression and return as JSON")
+    eval_parser.add_argument("expression", help="JavaScript expression to evaluate")
 
     # Tab management commands
     list_tabs_parser = subparsers.add_parser("list-tabs", help="List managed tabs")
@@ -188,6 +193,7 @@ Examples:
         screenshot_parser,
         console_parser,
         snapshot_parser,
+        eval_parser,
         list_tabs_parser,
         new_tab_parser,
     ]
@@ -206,6 +212,7 @@ Examples:
         screenshot_parser,
         console_parser,
         snapshot_parser,
+        eval_parser,
     ]
 
     # Add common arguments to all relevant subparsers
@@ -310,6 +317,8 @@ def parse_args(argv: list[str] | None = None) -> Command:  # noqa: C901, PLR0911
             return ListTabsCommand(common=common)
         case "new-tab":
             return NewTabCommand(url=args.url, common=common)
+        case "eval":
+            return EvalCommand(expression=args.expression, common=common)
         case _:
             msg = f"Unknown command: {args.command}"
             raise InvalidCommandError(msg)
@@ -362,6 +371,8 @@ async def execute_command(cmd: Command) -> None:  # noqa: C901, PLR0912
             await client.list_tabs()
         case NewTabCommand(url=url):
             await client.new_tab(url)
+        case EvalCommand(expression=expression):
+            await client.eval(expression)
         case _:
             msg = f"Unknown command type: {type(cmd)}"
             raise InvalidCommandError(msg)

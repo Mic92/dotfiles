@@ -124,7 +124,7 @@ function sendResponse(response) {
 async function handleCommand(message) {
   const { command, params, id, tabId } = message;
 
-  /** @type {{url?: string, element?: string, text?: string, startElement?: string, endElement?: string, option?: string, seconds?: number, key?: string, selectorType?: string}} */
+  /** @type {{url?: string, element?: string, text?: string, startElement?: string, endElement?: string, option?: string, seconds?: number, key?: string, selectorType?: string, expression?: string}} */
   const typedParams = params;
 
   try {
@@ -221,6 +221,11 @@ async function handleCommand(message) {
 
       case "new-tab": {
         result = await createNewTab(typedParams.url);
+        break;
+      }
+
+      case "eval": {
+        result = await evalExpression(typedParams.expression || "", tabId);
         break;
       }
 
@@ -528,6 +533,16 @@ async function createNewTab(url) {
   await enableOnTab(tab.id, shortId);
 
   return { tabId: shortId, url: tabUrl };
+}
+
+/**
+ * Evaluate JavaScript expression in the page context
+ * @param {string} expression - JavaScript expression to evaluate
+ * @param {string} [tabId] - Target tab ID
+ * @returns {Promise<{result: any}>}
+ */
+async function evalExpression(expression, tabId) {
+  return sendToContentScript("eval", { expression }, tabId);
 }
 
 // Listen for messages from content scripts
