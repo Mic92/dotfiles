@@ -20,9 +20,12 @@ from browser_cli.commands import (
     HoverCommand,
     InstallHostCommand,
     KeyCommand,
+    ListTabsCommand,
     NavigateCommand,
+    NewTabCommand,
     ScreenshotCommand,
     SelectCommand,
+    SelectorType,
     SnapshotCommand,
     TypeCommand,
 )
@@ -45,11 +48,23 @@ def install_native_host() -> None:
     # Create directory if it doesn't exist
     host_dir.mkdir(parents=True, exist_ok=True)
 
+    # Create a wrapper script that doesn't hardcode nix store paths
+    wrapper_dir = home / ".local" / "bin"
+    wrapper_dir.mkdir(parents=True, exist_ok=True)
+    wrapper_path = wrapper_dir / "browser-cli-server-wrapper"
+
+    # Write wrapper script
+    wrapper_content = """#!/usr/bin/env bash
+exec "$(which browser-cli-server)" "$@"
+"""
+    wrapper_path.write_text(wrapper_content)
+    wrapper_path.chmod(0o755)
+
     # Create the native messaging host manifest
     manifest = {
         "name": "io.thalheim.browser_cli.bridge",
         "description": "Browser CLI Bridge Server",
-        "path": server_path,
+        "path": str(wrapper_path),
         "type": "stdio",
         "allowed_extensions": ["browser-cli-controller@thalheim.io"],
     }
@@ -59,7 +74,38 @@ def install_native_host() -> None:
         json.dump(manifest, f, indent=2)
 
     print(f"Native messaging host installed successfully at {host_file}")
-    print(f"Server path: {server_path}")
+    print(f"Using wrapper script at: {wrapper_path}")
+
+
+def add_common_arguments(parser: argparse.ArgumentParser) -> None:
+    """Add common arguments to a subparser."""
+    parser.add_argument(
+        "--socket",
+        help="Unix socket path (default: $XDG_RUNTIME_DIR/browser-cli.sock)",
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Enable debug logging",
+    )
+
+
+def add_tab_argument(parser: argparse.ArgumentParser) -> None:
+    """Add tab argument to commands that interact with browser tabs."""
+    parser.add_argument(
+        "--tab",
+        help="Target a specific tab by ID (from list-tabs command)",
+    )
+
+
+def add_selector_type_argument(parser: argparse.ArgumentParser) -> None:
+    """Add selector type argument to commands that find elements."""
+    parser.add_argument(
+        "--selector-type",
+        choices=[t.value for t in SelectorType],
+        default=SelectorType.CSS.value,
+        help="Type of selector (default: css)",
+    )
 
 
 def create_parser() -> argparse.ArgumentParser:
@@ -88,14 +134,14 @@ Examples:
     forward_parser = subparsers.add_parser("forward", help="Go forward in browser history")
 
     click_parser = subparsers.add_parser("click", help="Click an element")
-    click_parser.add_argument("selector", help="CSS selector or text to find element")
+    click_parser.add_argument("selector", help="Element selector")
 
     type_parser = subparsers.add_parser("type", help="Type text into an element")
-    type_parser.add_argument("selector", help="CSS selector or text to find element")
+    type_parser.add_argument("selector", help="Element selector")
     type_parser.add_argument("text", help="Text to type")
 
     hover_parser = subparsers.add_parser("hover", help="Hover over an element")
-    hover_parser.add_argument("selector", help="CSS selector or text to find element")
+    hover_parser.add_argument("selector", help="Element selector")
 
     drag_parser = subparsers.add_parser("drag", help="Drag from one element to another")
     drag_parser.add_argument("start", help="Start element selector")
@@ -117,6 +163,12 @@ Examples:
 
     console_parser = subparsers.add_parser("console", help="Get console logs from the page")
     snapshot_parser = subparsers.add_parser("snapshot", help="Get ARIA snapshot of the page")
+
+    # Tab management commands
+    list_tabs_parser = subparsers.add_parser("list-tabs", help="List managed tabs")
+    new_tab_parser = subparsers.add_parser("new-tab", help="Create a new managed tab")
+    new_tab_parser.add_argument("url", nargs="?", help="URL to open in the new tab (optional)")
+
     subparsers.add_parser(
         "install-host",
         help="Install native messaging host for Firefox",
@@ -136,21 +188,55 @@ Examples:
         screenshot_parser,
         console_parser,
         snapshot_parser,
+        list_tabs_parser,
+        new_tab_parser,
+    ]
+
+    # List of subparsers that can target specific tabs
+    subparsers_with_tab_arg = [
+        navigate_parser,
+        back_parser,
+        forward_parser,
+        click_parser,
+        type_parser,
+        hover_parser,
+        drag_parser,
+        select_parser,
+        key_parser,
+        screenshot_parser,
+        console_parser,
+        snapshot_parser,
     ]
 
     # Add common arguments to all relevant subparsers
     for subparser in subparsers_with_common_args:
-        subparser.add_argument(
-            "--socket",
-            help="Unix socket path (default: $XDG_RUNTIME_DIR/browser-cli.sock)",
-        )
-        subparser.add_argument(
-            "--debug",
-            action="store_true",
-            help="Enable debug logging",
-        )
+        add_common_arguments(subparser)
+
+    # Add tab argument to commands that interact with tabs
+    for subparser in subparsers_with_tab_arg:
+        add_tab_argument(subparser)
+
+    # List of subparsers that need selector type argument
+    subparsers_with_selector_type = [
+        click_parser,
+        type_parser,
+        hover_parser,
+        drag_parser,
+        select_parser,
+    ]
+
+    # Add selector type argument to element-finding commands
+    for subparser in subparsers_with_selector_type:
+        add_selector_type_argument(subparser)
 
     return parser
+
+
+def get_selector_type(args: argparse.Namespace) -> SelectorType:
+    """Get selector type from parsed arguments."""
+    if hasattr(args, "selector_type") and args.selector_type:
+        return SelectorType(args.selector_type)
+    return SelectorType.CSS
 
 
 def parse_args(argv: list[str] | None = None) -> Command:  # noqa: C901, PLR0911, PLR0912
@@ -166,6 +252,7 @@ def parse_args(argv: list[str] | None = None) -> Command:  # noqa: C901, PLR0911
     common = CommonOptions(
         socket=getattr(args, "socket", None),
         debug=getattr(args, "debug", False),
+        tab=getattr(args, "tab", None),
     )
 
     # Map parsed arguments to command dataclasses
@@ -177,15 +264,38 @@ def parse_args(argv: list[str] | None = None) -> Command:  # noqa: C901, PLR0911
         case "forward":
             return ForwardCommand(common=common)
         case "click":
-            return ClickCommand(selector=args.selector, common=common)
+            return ClickCommand(
+                selector=args.selector,
+                common=common,
+                selector_type=get_selector_type(args),
+            )
         case "type":
-            return TypeCommand(selector=args.selector, text=args.text, common=common)
+            return TypeCommand(
+                selector=args.selector,
+                text=args.text,
+                common=common,
+                selector_type=get_selector_type(args),
+            )
         case "hover":
-            return HoverCommand(selector=args.selector, common=common)
+            return HoverCommand(
+                selector=args.selector,
+                common=common,
+                selector_type=get_selector_type(args),
+            )
         case "drag":
-            return DragCommand(start=args.start, end=args.end, common=common)
+            return DragCommand(
+                start=args.start,
+                end=args.end,
+                common=common,
+                selector_type=get_selector_type(args),
+            )
         case "select":
-            return SelectCommand(selector=args.selector, option=args.option, common=common)
+            return SelectCommand(
+                selector=args.selector,
+                option=args.option,
+                common=common,
+                selector_type=get_selector_type(args),
+            )
         case "key":
             return KeyCommand(key=args.key, common=common)
         case "screenshot":
@@ -196,6 +306,10 @@ def parse_args(argv: list[str] | None = None) -> Command:  # noqa: C901, PLR0911
             return SnapshotCommand(common=common)
         case "install-host":
             return InstallHostCommand(common=common)
+        case "list-tabs":
+            return ListTabsCommand(common=common)
+        case "new-tab":
+            return NewTabCommand(url=args.url, common=common)
         case _:
             msg = f"Unknown command: {args.command}"
             raise InvalidCommandError(msg)
@@ -215,6 +329,10 @@ async def execute_command(cmd: Command) -> None:  # noqa: C901, PLR0912
     if cmd.common.debug:
         logging.basicConfig(level=logging.DEBUG)
 
+    # Set the target tab if specified
+    if hasattr(cmd.common, "tab") and cmd.common.tab:
+        client.set_tab(cmd.common.tab)
+
     match cmd:
         case NavigateCommand(url=url):
             await client.navigate(url)
@@ -222,16 +340,16 @@ async def execute_command(cmd: Command) -> None:  # noqa: C901, PLR0912
             await client.back()
         case ForwardCommand():
             await client.forward()
-        case ClickCommand(selector=selector):
-            await client.click(selector)
-        case TypeCommand(selector=selector, text=text):
-            await client.type_text(selector, text)
-        case HoverCommand(selector=selector):
-            await client.hover(selector)
-        case DragCommand(start=start, end=end):
-            await client.drag(start, end)
-        case SelectCommand(selector=selector, option=option):
-            await client.select(selector, option)
+        case ClickCommand(selector=selector, selector_type=selector_type):
+            await client.click(selector, selector_type.value)
+        case TypeCommand(selector=selector, text=text, selector_type=selector_type):
+            await client.type_text(selector, text, selector_type.value)
+        case HoverCommand(selector=selector, selector_type=selector_type):
+            await client.hover(selector, selector_type.value)
+        case DragCommand(start=start, end=end, selector_type=selector_type):
+            await client.drag(start, end, selector_type.value)
+        case SelectCommand(selector=selector, option=option, selector_type=selector_type):
+            await client.select(selector, option, selector_type.value)
         case KeyCommand(key=key):
             await client.key(key)
         case ScreenshotCommand(output=output):
@@ -240,6 +358,10 @@ async def execute_command(cmd: Command) -> None:  # noqa: C901, PLR0912
             await client.console()
         case SnapshotCommand():
             await client.snapshot()
+        case ListTabsCommand():
+            await client.list_tabs()
+        case NewTabCommand(url=url):
+            await client.new_tab(url)
         case _:
             msg = f"Unknown command type: {type(cmd)}"
             raise InvalidCommandError(msg)

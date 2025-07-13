@@ -39,6 +39,7 @@ export default [
         JSON: "readonly",
         Error: "readonly",
         String: "readonly",
+        CSS: "readonly",
       },
     },
     plugins: {

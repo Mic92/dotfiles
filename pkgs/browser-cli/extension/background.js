@@ -7,6 +7,7 @@
  * @property {string} command - The command to execute
  * @property {object} params - Command parameters
  * @property {string} id - Unique message ID
+ * @property {string} [tabId] - Target tab ID for the command
  *
  * @typedef {object} CommandResponse
  * @property {string} id - Message ID
@@ -28,8 +29,25 @@ let nativePort;
 /** @type {Record<string, {resolve: Function, reject: Function}>} Message handlers from content scripts */
 const messageHandlers = {};
 
-/** @type {Set<number>} Set of tab IDs where extension is enabled */
-const enabledTabs = new Set();
+/** @type {Map<string, {tabId: number, url: string, title: string}>} Map of managed tabs with short IDs */
+const managedTabs = new Map();
+
+/** @type {string|undefined} Currently active managed tab ID */
+let activeTabId;
+
+/**
+ * Generate a short random ID for tabs
+ * @returns {string} A short random ID (6 characters)
+ */
+function generateTabId() {
+  const chars =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
 
 /**
  * Connect to native messaging host
@@ -104,7 +122,7 @@ function sendResponse(response) {
  * @returns {Promise<void>}
  */
 async function handleCommand(message) {
-  const { command, params, id } = message;
+  const { command, params, id, tabId } = message;
 
   /** @type {{url?: string, element?: string, text?: string, startElement?: string, endElement?: string, option?: string, seconds?: number, key?: string}} */
   const typedParams = params;
@@ -114,22 +132,22 @@ async function handleCommand(message) {
 
     switch (command) {
       case "navigate": {
-        result = await navigate(typedParams.url || "");
+        result = await navigate(typedParams.url || "", tabId);
         break;
       }
 
       case "back": {
-        result = await goBack();
+        result = await goBack(tabId);
         break;
       }
 
       case "forward": {
-        result = await goForward();
+        result = await goForward(tabId);
         break;
       }
 
       case "click": {
-        result = await clickElement(typedParams.element || "");
+        result = await clickElement(typedParams.element || "", tabId);
         break;
       }
 
@@ -137,12 +155,13 @@ async function handleCommand(message) {
         result = await typeText(
           typedParams.element || "",
           typedParams.text || "",
+          tabId,
         );
         break;
       }
 
       case "hover": {
-        result = await hoverElement(typedParams.element || "");
+        result = await hoverElement(typedParams.element || "", tabId);
         break;
       }
 
@@ -150,6 +169,7 @@ async function handleCommand(message) {
         result = await dragElement(
           typedParams.startElement || "",
           typedParams.endElement || "",
+          tabId,
         );
         break;
       }
@@ -158,27 +178,38 @@ async function handleCommand(message) {
         result = await selectOption(
           typedParams.element || "",
           typedParams.option || "",
+          tabId,
         );
         break;
       }
 
       case "key": {
-        result = await pressKey(typedParams.key || "");
+        result = await pressKey(typedParams.key || "", tabId);
         break;
       }
 
       case "screenshot": {
-        result = await takeScreenshot();
+        result = await takeScreenshot(tabId);
         break;
       }
 
       case "console": {
-        result = await getConsoleLogs();
+        result = await getConsoleLogs(tabId);
         break;
       }
 
       case "snapshot": {
-        result = await getSnapshot();
+        result = await getSnapshot(tabId);
+        break;
+      }
+
+      case "list-tabs": {
+        result = await listTabs();
+        break;
+      }
+
+      case "new-tab": {
+        result = await createNewTab(typedParams.url);
         break;
       }
 
@@ -204,44 +235,71 @@ async function handleCommand(message) {
 }
 
 /**
+ * Get the browser tab ID to use for a command
+ * @param {string} [targetTabId] - Specific tab ID requested
+ * @returns {Promise<number>} Browser tab ID
+ */
+async function getTargetTab(targetTabId) {
+  if (targetTabId) {
+    const managedTab = managedTabs.get(targetTabId);
+    if (!managedTab) {
+      throw new Error(`Tab ${targetTabId} not found`);
+    }
+    return managedTab.tabId;
+  } else if (activeTabId) {
+    const managedTab = managedTabs.get(activeTabId);
+    if (!managedTab) {
+      throw new Error(`Active tab ${activeTabId} no longer exists`);
+    }
+    return managedTab.tabId;
+  } else {
+    throw new Error(
+      "No active tab. Create a tab first with 'browser-cli new-tab'",
+    );
+  }
+}
+
+/**
  * Browser command implementations
  * @param {string} url - URL to navigate to
+ * @param {string} [tabId] - Target tab ID
  * @returns {Promise<{message: string}>}
  */
-async function navigate(url) {
-  const [activeTab] = await browser.tabs.query({
-    active: true,
-    currentWindow: true,
-  });
-  if (activeTab.id !== undefined) {
-    await browser.tabs.update(activeTab.id, { url });
+async function navigate(url, tabId) {
+  const browserTabId = await getTargetTab(tabId);
+  await browser.tabs.update(browserTabId, { url });
+
+  // Update stored URL
+  const managedTabId = tabId || activeTabId;
+  if (managedTabId && managedTabs.has(managedTabId)) {
+    const managedTab = managedTabs.get(managedTabId);
+    if (managedTab) {
+      managedTab.url = url;
+    }
   }
+
   return { message: `Navigated to ${url}` };
 }
 
 /**
  * Navigate back in browser history
+ * @param {string} [tabId] - Target tab ID
  * @returns {Promise<{message: string}>}
  */
-async function goBack() {
-  const [activeTab] = await browser.tabs.query({
-    active: true,
-    currentWindow: true,
-  });
-  await browser.tabs.goBack(activeTab.id);
+async function goBack(tabId) {
+  const browserTabId = await getTargetTab(tabId);
+  await browser.tabs.goBack(browserTabId);
   return { message: "Navigated back" };
 }
 
 /**
  * Navigate forward in browser history
+ * @param {string} [tabId] - Target tab ID
  * @returns {Promise<{message: string}>}
  */
-async function goForward() {
-  const [activeTab] = await browser.tabs.query({
-    active: true,
-    currentWindow: true,
-  });
-  await browser.tabs.goForward(activeTab.id);
+async function goForward(tabId) {
+  const browserTabId = await getTargetTab(tabId);
+  await browser.tabs.goForward(browserTabId);
   return { message: "Navigated forward" };
 }
 
@@ -249,29 +307,18 @@ async function goForward() {
  * Send command to content script
  * @param {string} command - Command name
  * @param {object} [params={}] - Command parameters
+ * @param {string} [targetTabId] - Specific tab ID to target
  * @returns {Promise<object>} Response from content script
  */
-async function sendToContentScript(command, params = {}) {
-  const [activeTab] = await browser.tabs.query({
-    active: true,
-    currentWindow: true,
-  });
-
-  if (activeTab.id === undefined || !enabledTabs.has(activeTab.id)) {
-    throw new Error("Browser CLI is not enabled on this tab");
-  }
+async function sendToContentScript(command, params = {}, targetTabId) {
+  const tabId = await getTargetTab(targetTabId);
 
   return new Promise((resolve, reject) => {
     const messageId = Date.now().toString();
 
     messageHandlers[messageId] = { resolve, reject };
 
-    if (activeTab.id === undefined) {
-      reject(new Error("No active tab ID"));
-      return;
-    }
-
-    browser.tabs.sendMessage(activeTab.id, {
+    browser.tabs.sendMessage(tabId, {
       command,
       params,
       messageId,
@@ -290,84 +337,161 @@ async function sendToContentScript(command, params = {}) {
 /**
  * Click an element
  * @param {string} selector - Element selector
+ * @param {string} [tabId] - Target tab ID
  * @returns {Promise<object>}
  */
-async function clickElement(selector) {
-  return sendToContentScript("click", { selector });
+async function clickElement(selector, tabId) {
+  return sendToContentScript("click", { selector }, tabId);
 }
 
 /**
  * Type text into an element
  * @param {string} selector - Element selector
  * @param {string} text - Text to type
+ * @param {string} [tabId] - Target tab ID
  * @returns {Promise<object>}
  */
-async function typeText(selector, text) {
-  return sendToContentScript("type", { selector, text });
+async function typeText(selector, text, tabId) {
+  return sendToContentScript("type", { selector, text }, tabId);
 }
 
 /**
  * Hover over an element
  * @param {string} selector - Element selector
+ * @param {string} [tabId] - Target tab ID
  * @returns {Promise<object>}
  */
-async function hoverElement(selector) {
-  return sendToContentScript("hover", { selector });
+async function hoverElement(selector, tabId) {
+  return sendToContentScript("hover", { selector }, tabId);
 }
 
 /**
  * Drag from one element to another
  * @param {string} startSelector - Start element selector
  * @param {string} endSelector - End element selector
+ * @param {string} [tabId] - Target tab ID
  * @returns {Promise<object>}
  */
-async function dragElement(startSelector, endSelector) {
-  return sendToContentScript("drag", { startSelector, endSelector });
+async function dragElement(startSelector, endSelector, tabId) {
+  return sendToContentScript("drag", { startSelector, endSelector }, tabId);
 }
 
 /**
  * Select an option in a dropdown
  * @param {string} selector - Select element selector
  * @param {string} option - Option to select
+ * @param {string} [tabId] - Target tab ID
  * @returns {Promise<object>}
  */
-async function selectOption(selector, option) {
-  return sendToContentScript("select", { selector, option });
+async function selectOption(selector, option, tabId) {
+  return sendToContentScript("select", { selector, option }, tabId);
 }
 
 /**
  * Press a keyboard key
  * @param {string} key - Key to press
+ * @param {string} [tabId] - Target tab ID
  * @returns {Promise<object>}
  */
-async function pressKey(key) {
-  return sendToContentScript("key", { key });
+async function pressKey(key, tabId) {
+  return sendToContentScript("key", { key }, tabId);
 }
 
 /**
  * Take a screenshot of the current tab
+ * @param {string} [tabId] - Target tab ID
  * @returns {Promise<{screenshot: string}>} Data URL of screenshot
  */
-async function takeScreenshot() {
-  await browser.tabs.query({ active: true, currentWindow: true });
+async function takeScreenshot(tabId) {
+  const browserTabId = await getTargetTab(tabId);
+  // Make the tab active temporarily to capture it
+  await browser.tabs.update(browserTabId, { active: true });
   const dataUrl = await browser.tabs.captureVisibleTab();
   return { screenshot: dataUrl };
 }
 
 /**
  * Get console logs from the page
+ * @param {string} [tabId] - Target tab ID
  * @returns {Promise<object>}
  */
-async function getConsoleLogs() {
-  return sendToContentScript("getConsole");
+async function getConsoleLogs(tabId) {
+  return sendToContentScript("getConsole", {}, tabId);
 }
 
 /**
  * Get ARIA snapshot of the page
+ * @param {string} [tabId] - Target tab ID
  * @returns {Promise<object>}
  */
-async function getSnapshot() {
-  return sendToContentScript("getSnapshot");
+async function getSnapshot(tabId) {
+  return sendToContentScript("getSnapshot", {}, tabId);
+}
+
+/**
+ * List all managed tabs
+ * @returns {Promise<{tabs: Array<{id: string, url: string, title: string, active: boolean}>}>}
+ */
+async function listTabs() {
+  const tabs = [];
+  const activeBrowserTab = await browser.tabs.query({
+    active: true,
+    currentWindow: true,
+  });
+  const activeBrowserTabId = activeBrowserTab[0]?.id;
+
+  for (const [shortId, tab] of managedTabs) {
+    try {
+      // Get updated tab info
+      const browserTab = await browser.tabs.get(tab.tabId);
+      tabs.push({
+        id: shortId,
+        url: browserTab.url || "",
+        title: browserTab.title || "Untitled",
+        active: browserTab.id === activeBrowserTabId,
+      });
+    } catch {
+      // Tab no longer exists, remove it
+      managedTabs.delete(shortId);
+      if (activeTabId === shortId) {
+        activeTabId = undefined;
+      }
+    }
+  }
+
+  return { tabs };
+}
+
+/**
+ * Create a new managed tab
+ * @param {string} [url] - URL to open in the new tab
+ * @returns {Promise<{tabId: string, url: string}>}
+ */
+async function createNewTab(url) {
+  const shortId = generateTabId();
+  const tabUrl = url || "https://example.com";
+
+  // Create the tab
+  const tab = await browser.tabs.create({ url: tabUrl, active: true });
+
+  if (tab.id === undefined) {
+    throw new Error("Failed to create tab");
+  }
+
+  // Store the tab
+  managedTabs.set(shortId, {
+    tabId: tab.id,
+    url: tabUrl,
+    title: tab.title || "New Tab",
+  });
+
+  // Set as active tab
+  activeTabId = shortId;
+
+  // Enable extension on the new tab
+  await enableOnTab(tab.id, shortId);
+
+  return { tabId: shortId, url: tabUrl };
 }
 
 // Listen for messages from content scripts
@@ -380,7 +504,13 @@ browser.runtime.onMessage.addListener(
    */
   (message, sender, _sendResponse) => {
     if (message.command === "disableCLI" && sender.tab?.id !== undefined) {
-      disableOnTab(sender.tab.id);
+      // Find the managed tab and remove it
+      for (const [shortId, tab] of managedTabs) {
+        if (tab.tabId === sender.tab.id) {
+          disableOnTab(sender.tab.id, shortId);
+          break;
+        }
+      }
     } else if (message.messageId && messageHandlers[message.messageId]) {
       const handler = messageHandlers[message.messageId];
       delete messageHandlers[message.messageId];
@@ -398,58 +528,65 @@ browser.runtime.onMessage.addListener(
 // Initialize on startup
 connectNativeHost();
 
-// Create context menu
-browser.contextMenus.create({
-  id: "toggle-browser-cli",
-  title: "Enable Browser CLI on this tab",
-  contexts: ["page"],
-});
+// No context menu needed - tabs are created programmatically
 
-// Handle context menu clicks
-browser.contextMenus.onClicked.addListener(async (info, tab) => {
-  if (info.menuItemId === "toggle-browser-cli" && tab?.id !== undefined) {
-    await (enabledTabs.has(tab.id)
-      ? disableOnTab(tab.id)
-      : enableOnTab(tab.id));
-  }
-});
-
-// Update context menu when tab changes
+// Update active tab when user switches tabs
 browser.tabs.onActivated.addListener(async (activeInfo) => {
-  const enabled = enabledTabs.has(activeInfo.tabId);
-  browser.contextMenus.update("toggle-browser-cli", {
-    title: enabled
-      ? "Disable Browser CLI on this tab"
-      : "Enable Browser CLI on this tab",
-  });
+  // Check if this is a managed tab
+  for (const [shortId, tab] of managedTabs) {
+    if (tab.tabId === activeInfo.tabId) {
+      activeTabId = shortId;
+      return;
+    }
+  }
+  // Not a managed tab, clear active tab
+  activeTabId = undefined;
 });
 
 // Clean up when tab is closed
 browser.tabs.onRemoved.addListener((tabId) => {
-  enabledTabs.delete(tabId);
+  // Find and remove managed tab
+  for (const [shortId, tab] of managedTabs) {
+    if (tab.tabId === tabId) {
+      managedTabs.delete(shortId);
+      if (activeTabId === shortId) {
+        activeTabId = undefined;
+      }
+      break;
+    }
+  }
 });
 
-// Reconnect on browser action click
+// Browser action creates a new tab
 browser.browserAction.onClicked.addListener(async () => {
-  const [activeTab] = await browser.tabs.query({
-    active: true,
-    currentWindow: true,
-  });
-  if (activeTab.id !== undefined) {
-    await (enabledTabs.has(activeTab.id)
-      ? disableOnTab(activeTab.id)
-      : enableOnTab(activeTab.id));
+  await createNewTab();
+});
+
+// Re-inject content script when managed tabs navigate
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  if (changeInfo.status === "complete") {
+    // Check if this is a managed tab
+    for (const [shortId, managedTab] of managedTabs) {
+      if (managedTab.tabId === tabId) {
+        // Update stored info
+        managedTab.url = tab.url || managedTab.url;
+        managedTab.title = tab.title || managedTab.title;
+
+        // Re-inject content script and banner
+        await enableOnTab(tabId, shortId);
+        break;
+      }
+    }
   }
 });
 
 /**
  * Enable extension on a specific tab
  * @param {number} tabId - Tab ID
+ * @param {string} shortId - Short ID for the tab
  * @returns {Promise<void>}
  */
-async function enableOnTab(tabId) {
-  enabledTabs.add(tabId);
-
+async function enableOnTab(tabId, shortId) {
   // Inject content script
   await browser.tabs.executeScript(tabId, {
     file: "content.js",
@@ -457,65 +594,71 @@ async function enableOnTab(tabId) {
 
   // Inject banner
   await browser.tabs.executeScript(tabId, {
-    code: `
-      if (!document.getElementById('browser-cli-banner')) {
-        const banner = document.createElement('div');
-        banner.id = 'browser-cli-banner';
-        banner.style.cssText = '
-          position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          height: 40px;
-          background: #2563eb;
-          color: white;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          padding: 0 20px;
-          font-family: system-ui, sans-serif;
-          font-size: 14px;
-          z-index: 999999;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        ';
-        
-        const text = document.createElement('span');
-        text.textContent = '🤖 Browser CLI enabled on this tab';
-        banner.appendChild(text);
-        
-        const closeBtn = document.createElement('button');
-        closeBtn.textContent = '✕';
-        closeBtn.style.cssText = '
-          background: none;
-          border: none;
-          color: white;
-          font-size: 20px;
-          cursor: pointer;
-          padding: 0;
-          width: 30px;
-          height: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: 4px;
-          transition: background 0.2s;
-        ';
-        closeBtn.onmouseover = () => closeBtn.style.background = 'rgba(255,255,255,0.2)';
-        closeBtn.onmouseout = () => closeBtn.style.background = 'none';
-        closeBtn.onclick = () => {
-          browser.runtime.sendMessage({ command: 'disableCLI' });
-        };
-        banner.appendChild(closeBtn);
-        
-        document.body.appendChild(banner);
-        document.body.style.paddingTop = '40px';
-      }
-    `,
-  });
+    code: `(${function (/** @type {string} */ tabId) {
+      if (!document.querySelector("#browser-cli-banner")) {
+        const banner = document.createElement("div");
+        banner.id = "browser-cli-banner";
 
-  // Update context menu
-  browser.contextMenus.update("toggle-browser-cli", {
-    title: "Disable Browser CLI on this tab",
+        // Set banner styles
+        Object.assign(banner.style, {
+          position: "fixed",
+          top: "0",
+          left: "0",
+          right: "0",
+          height: "40px",
+          background: "#2563eb",
+          color: "white",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "0 20px",
+          fontFamily: "system-ui, sans-serif",
+          fontSize: "14px",
+          zIndex: "999999",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+        });
+
+        const text = document.createElement("span");
+        text.textContent = "🤖 Browser CLI Tab: " + tabId;
+        banner.append(text);
+
+        const closeBtn = document.createElement("button");
+        closeBtn.textContent = "✕";
+
+        // Set button styles
+        Object.assign(closeBtn.style, {
+          background: "none",
+          border: "none",
+          color: "white",
+          fontSize: "20px",
+          cursor: "pointer",
+          padding: "0",
+          width: "30px",
+          height: "30px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: "4px",
+          transition: "background 0.2s",
+        });
+
+        closeBtn.addEventListener(
+          "mouseover",
+          () => closeBtn.style.background = "rgba(255,255,255,0.2)",
+        );
+        closeBtn.addEventListener(
+          "mouseout",
+          () => closeBtn.style.background = "none",
+        );
+        closeBtn.addEventListener("click", () => {
+          browser.runtime.sendMessage({ command: "disableCLI" });
+        });
+        banner.append(closeBtn);
+
+        document.body.append(banner);
+        document.body.style.paddingTop = "40px";
+      }
+    }})('${shortId}')`,
   });
 
   // Ensure native host is connected
@@ -525,24 +668,24 @@ async function enableOnTab(tabId) {
 /**
  * Disable extension on a specific tab
  * @param {number} tabId - Tab ID
+ * @param {string} shortId - Short ID for the tab
  * @returns {Promise<void>}
  */
-async function disableOnTab(tabId) {
-  enabledTabs.delete(tabId);
+async function disableOnTab(tabId, shortId) {
+  // Remove from managed tabs
+  managedTabs.delete(shortId);
+  if (activeTabId === shortId) {
+    activeTabId = undefined;
+  }
 
   // Remove banner
   await browser.tabs.executeScript(tabId, {
-    code: `
-      const banner = document.getElementById('browser-cli-banner');
+    code: `(${function () {
+      const banner = document.querySelector("#browser-cli-banner");
       if (banner) {
         banner.remove();
-        document.body.style.paddingTop = '';
+        document.body.style.paddingTop = "";
       }
-    `,
-  });
-
-  // Update context menu
-  browser.contextMenus.update("toggle-browser-cli", {
-    title: "Enable Browser CLI on this tab",
+    }})()`,
   });
 }
