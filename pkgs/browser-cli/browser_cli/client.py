@@ -278,3 +278,13 @@ class BrowserCLI:
                 print(f"Opened: {result['url']}")
         else:
             print(result.get("message", "Tab created"))
+
+    async def eval(self, expression: str) -> None:
+        """Evaluate JavaScript expression and return result as JSON."""
+        result = await self.send_command("eval", {"expression": expression})
+
+        if "result" in result:
+            # Pretty print the JSON result
+            print(json.dumps(result["result"], indent=2))
+        else:
+            print(result.get("message", "No result returned"))
