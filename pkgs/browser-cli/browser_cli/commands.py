@@ -4,25 +4,33 @@ from dataclasses import dataclass
 
 
 @dataclass
+class CommonOptions:
+    """Common options shared by all commands that need socket connection."""
+
+    socket: str | None = None
+    debug: bool = False
+
+
+@dataclass
 class NavigateCommand:
     """Navigate to a URL."""
 
     url: str
-    server: str = "ws://localhost:9223"
+    common: CommonOptions
 
 
 @dataclass
 class BackCommand:
     """Go back in browser history."""
 
-    server: str = "ws://localhost:9223"
+    common: CommonOptions
 
 
 @dataclass
 class ForwardCommand:
     """Go forward in browser history."""
 
-    server: str = "ws://localhost:9223"
+    common: CommonOptions
 
 
 @dataclass
@@ -30,7 +38,7 @@ class ClickCommand:
     """Click an element."""
 
     selector: str
-    server: str = "ws://localhost:9223"
+    common: CommonOptions
 
 
 @dataclass
@@ -39,7 +47,7 @@ class TypeCommand:
 
     selector: str
     text: str
-    server: str = "ws://localhost:9223"
+    common: CommonOptions
 
 
 @dataclass
@@ -47,7 +55,7 @@ class HoverCommand:
     """Hover over an element."""
 
     selector: str
-    server: str = "ws://localhost:9223"
+    common: CommonOptions
 
 
 @dataclass
@@ -56,7 +64,7 @@ class DragCommand:
 
     start: str
     end: str
-    server: str = "ws://localhost:9223"
+    common: CommonOptions
 
 
 @dataclass
@@ -65,7 +73,7 @@ class SelectCommand:
 
     selector: str
     option: str
-    server: str = "ws://localhost:9223"
+    common: CommonOptions
 
 
 @dataclass
@@ -73,36 +81,36 @@ class KeyCommand:
     """Press a keyboard key."""
 
     key: str
-    server: str = "ws://localhost:9223"
+    common: CommonOptions
 
 
 @dataclass
 class ScreenshotCommand:
     """Take a screenshot."""
 
+    common: CommonOptions
     output: str | None = None
-    server: str = "ws://localhost:9223"
 
 
 @dataclass
 class ConsoleCommand:
     """Get console logs from the page."""
 
-    server: str = "ws://localhost:9223"
+    common: CommonOptions
 
 
 @dataclass
 class SnapshotCommand:
     """Get ARIA snapshot of the page."""
 
-    server: str = "ws://localhost:9223"
+    common: CommonOptions
 
 
 @dataclass
 class InstallHostCommand:
     """Install native messaging host for Firefox."""
 
-    # No server parameter needed for this command
+    common: CommonOptions
 
 
 # Type alias for all command types

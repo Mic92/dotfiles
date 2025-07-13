@@ -2,7 +2,7 @@
 
 /**
  * Background script for Browser CLI Controller
- * Manages WebSocket connection and message routing
+ * Manages native messaging connection and message routing
  * @typedef {object} Message
  * @property {string} command - The command to execute
  * @property {object} params - Command parameters
@@ -13,12 +13,17 @@
  * @property {boolean} success - Whether command succeeded
  * @property {object} [result] - Command result
  * @property {string} [error] - Error message if failed
+ *
+ * @typedef {object} NativeMessage
+ * @property {boolean} [ready] - Whether the native host is ready
+ * @property {string} [socket_path] - The socket path for CLI communication
+ * @property {string} [command] - The command to execute
+ * @property {object} [params] - Command parameters
+ * @property {string} [id] - Unique message ID
  */
 
-/** @type {WebSocket|undefined} */
-let ws;
-/** @type {string} */
-const SERVER_URL = "ws://localhost:9222";
+/** @type {browser.runtime.Port|undefined} Native messaging port */
+let nativePort;
 
 /** @type {Record<string, {resolve: Function, reject: Function}>} Message handlers from content scripts */
 const messageHandlers = {};
@@ -27,44 +32,70 @@ const messageHandlers = {};
 const enabledTabs = new Set();
 
 /**
- * Connect to WebSocket server
+ * Connect to native messaging host
  * @returns {void}
  */
-function connectWebSocket() {
-  if (ws && ws.readyState === WebSocket.OPEN) {
+function connectNativeHost() {
+  if (nativePort) {
     return;
   }
 
-  console.log("Connecting to WebSocket server...");
-  ws = new WebSocket(SERVER_URL);
+  console.log("Connecting to native messaging host...");
 
-  ws.addEventListener("open", () => {
-    console.log("Connected to WebSocket server");
-  });
+  try {
+    nativePort = browser.runtime.connectNative(
+      "io.thalheim.browser_cli.bridge",
+    );
 
-  ws.addEventListener("message", async (event) => {
-    try {
-      const message = JSON.parse(event.data);
-      console.log("Received message:", message);
+    nativePort.onMessage.addListener(
+      async (/** @type {NativeMessage} */ message) => {
+        console.log("Received from native host:", message);
 
-      if (message.command) {
-        await handleCommand(message);
+        // Check if this is the initial ready message
+        if (message.ready && message.socket_path) {
+          console.log(
+            "Native messaging bridge ready, socket at:",
+            message.socket_path,
+          );
+          return;
+        }
+
+        // Handle commands from CLI
+        if (message.command) {
+          await handleCommand(/** @type {Message} */ (message));
+        }
+      },
+    );
+
+    nativePort.onDisconnect.addListener(() => {
+      console.log("Native messaging disconnected");
+      if (browser.runtime.lastError) {
+        console.error("Native messaging error:", browser.runtime.lastError);
       }
+      nativePort = undefined;
+
+      // Try to reconnect after 5 seconds
+      setTimeout(connectNativeHost, 5000);
+    });
+  } catch (error) {
+    console.error("Failed to connect to native messaging host:", error);
+    nativePort = undefined;
+  }
+}
+
+/**
+ * Send response back to native host
+ * @param {CommandResponse} response - Response to send
+ * @returns {void}
+ */
+function sendResponse(response) {
+  if (nativePort) {
+    try {
+      nativePort.postMessage(response);
     } catch (error) {
-      console.error("Error processing message:", error);
+      console.error("Failed to send response:", error);
     }
-  });
-
-  ws.addEventListener("error", (error) => {
-    console.error("WebSocket error:", error);
-  });
-
-  ws.addEventListener("close", () => {
-    console.log("WebSocket connection closed");
-    ws = undefined;
-    // Try to reconnect after 5 seconds
-    setTimeout(connectWebSocket, 5000);
-  });
+  }
 }
 
 /**
@@ -157,22 +188,18 @@ async function handleCommand(message) {
     }
 
     // Send response
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({
-        id,
-        result,
-        success: true,
-      }));
-    }
+    sendResponse({
+      id,
+      result,
+      success: true,
+    });
   } catch (error) {
     // Send error response
-    if (ws && ws.readyState === WebSocket.OPEN) {
-      ws.send(JSON.stringify({
-        id,
-        error: error instanceof Error ? error.message : String(error),
-        success: false,
-      }));
-    }
+    sendResponse({
+      id,
+      error: error instanceof Error ? error.message : String(error),
+      success: false,
+    });
   }
 }
 
@@ -368,43 +395,8 @@ browser.runtime.onMessage.addListener(
   },
 );
 
-/**
- * Start server and connect
- * @returns {Promise<void>}
- */
-async function startServer() {
-  // Try to start the bridge server via native messaging
-  try {
-    const port = browser.runtime.connectNative(
-      "io.thalheim.browser_cli.bridge",
-    );
-
-    port.onMessage.addListener(
-      /** @param {any} message */
-      (message) => {
-        console.log("Native messaging response:", message);
-      },
-    );
-
-    port.onDisconnect.addListener(() => {
-      console.log("Native messaging disconnected");
-      if (browser.runtime.lastError) {
-        console.error("Native messaging error:", browser.runtime.lastError);
-      }
-    });
-
-    // Send a startup message
-    port.postMessage({ command: "start" });
-  } catch (error) {
-    console.error("Failed to connect to native messaging host:", error);
-  }
-
-  // Try to connect to WebSocket after a delay
-  setTimeout(connectWebSocket, 1000);
-}
-
 // Initialize on startup
-startServer();
+connectNativeHost();
 
 // Create context menu
 browser.contextMenus.create({
@@ -526,7 +518,8 @@ async function enableOnTab(tabId) {
     title: "Disable Browser CLI on this tab",
   });
 
-  connectWebSocket();
+  // Ensure native host is connected
+  connectNativeHost();
 }
 
 /**

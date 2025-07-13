@@ -11,9 +11,7 @@ license = {text = "MIT"}
 authors = [
     {name = "Jörg Thalheim", email = "joerg@thalheim.io"},
 ]
-dependencies = [
-    "websockets>=12.0",
-]
+dependencies = []
 
 [project.scripts]
 browser-cli = "browser_cli:main"

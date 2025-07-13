@@ -1,22 +1,31 @@
-"""Browser CLI client - WebSocket client for browser automation."""
+"""Browser CLI client - Unix socket client for browser automation."""
 
+import asyncio
 import base64
 import json
+import os
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
-
-import websockets
 
 from browser_cli.errors import BrowserConnectionError, CommandError
 
 
 class BrowserCLI:
-    """WebSocket client for browser automation."""
+    """Unix socket client for browser automation."""
 
-    def __init__(self, server_url: str = "ws://localhost:9223") -> None:
+    def __init__(self, socket_path: str | None = None) -> None:
         """Initialize the browser CLI client."""
-        self.server_url = server_url
+        if socket_path:
+            self.socket_path = socket_path
+        else:
+            # Use default socket path
+            runtime_dir = os.environ.get("XDG_RUNTIME_DIR")
+            if not runtime_dir:
+                runtime_dir = tempfile.gettempdir()
+            self.socket_path = str(Path(runtime_dir) / "browser-cli.sock")
+
         self.message_counter = 0
 
     async def send_command(
@@ -35,27 +44,42 @@ class BrowserCLI:
         }
 
         try:
-            async with websockets.connect(self.server_url) as websocket:
-                await websocket.send(json.dumps(message))
+            # Connect to Unix socket
+            reader, writer = await asyncio.open_unix_connection(self.socket_path)
 
-                # Wait for response with matching ID
-                while True:
-                    response_str = await websocket.recv()
-                    response = json.loads(response_str)
+            # Send command as JSON line
+            writer.write((json.dumps(message) + "\n").encode("utf-8"))
+            await writer.drain()
 
-                    if response.get("id") == message_id:
-                        if response.get("success"):
-                            return response.get("result", {})
-                        error_msg = response.get("error", "Unknown error")
-                        raise CommandError(error_msg) from None
+            # Read response line
+            response_line = await reader.readline()
+            if not response_line:
+                msg = "No response from server"
+                raise CommandError(msg)
 
-        except ConnectionRefusedError as e:
+            response = json.loads(response_line.decode("utf-8").strip())
+
+            # Close connection
+            writer.close()
+            await writer.wait_closed()
+
+            # Check response
+            if response.get("id") == message_id:
+                if response.get("success"):
+                    return response.get("result", {})
+                error_msg = response.get("error", "Unknown error")
+                raise CommandError(error_msg) from None
+            msg = "Invalid response ID"
+            raise CommandError(msg)
+
+        except (ConnectionRefusedError, FileNotFoundError) as e:
             msg = (
                 "Cannot connect to browser extension. Make sure:\n"
                 "1. Firefox is running\n"
                 "2. The Browser CLI extension is installed\n"
                 "3. The extension is enabled on the current tab\n"
-                "4. The WebSocket server is running (browser-cli-server)"
+                "4. The native messaging bridge is running (browser-cli-server)\n"
+                f"\nSocket path: {self.socket_path}"
             )
             raise BrowserConnectionError(msg) from e
 

@@ -3,6 +3,7 @@
 import argparse
 import asyncio
 import json
+import logging
 import shutil
 import sys
 from pathlib import Path
@@ -12,6 +13,7 @@ from browser_cli.commands import (
     BackCommand,
     ClickCommand,
     Command,
+    CommonOptions,
     ConsoleCommand,
     DragCommand,
     ForwardCommand,
@@ -76,50 +78,36 @@ Examples:
         """,
     )
 
-    parser.add_argument(
-        "--server",
-        default="ws://localhost:9223",
-        help="WebSocket server URL (default: ws://localhost:9223)",
-    )
-
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
 
-    # Navigate command
+    # Create all subparsers
     navigate_parser = subparsers.add_parser("navigate", help="Navigate to URL")
     navigate_parser.add_argument("url", help="URL to navigate to")
 
-    # Navigation commands
-    subparsers.add_parser("back", help="Go back in browser history")
-    subparsers.add_parser("forward", help="Go forward in browser history")
+    back_parser = subparsers.add_parser("back", help="Go back in browser history")
+    forward_parser = subparsers.add_parser("forward", help="Go forward in browser history")
 
-    # Click command
     click_parser = subparsers.add_parser("click", help="Click an element")
     click_parser.add_argument("selector", help="CSS selector or text to find element")
 
-    # Type command
     type_parser = subparsers.add_parser("type", help="Type text into an element")
     type_parser.add_argument("selector", help="CSS selector or text to find element")
     type_parser.add_argument("text", help="Text to type")
 
-    # Hover command
     hover_parser = subparsers.add_parser("hover", help="Hover over an element")
     hover_parser.add_argument("selector", help="CSS selector or text to find element")
 
-    # Drag command
     drag_parser = subparsers.add_parser("drag", help="Drag from one element to another")
     drag_parser.add_argument("start", help="Start element selector")
     drag_parser.add_argument("end", help="End element selector")
 
-    # Select command
     select_parser = subparsers.add_parser("select", help="Select an option in a dropdown")
     select_parser.add_argument("selector", help="Select element selector")
     select_parser.add_argument("option", help="Option value to select")
 
-    # Key command
     key_parser = subparsers.add_parser("key", help="Press a keyboard key")
     key_parser.add_argument("key", help="Key to press (e.g., Enter, Tab, Escape)")
 
-    # Screenshot command
     screenshot_parser = subparsers.add_parser("screenshot", help="Take a screenshot")
     screenshot_parser.add_argument(
         "output",
@@ -127,14 +115,40 @@ Examples:
         help="Output file (default: screenshot.png)",
     )
 
-    # Console command
-    subparsers.add_parser("console", help="Get console logs from the page")
+    console_parser = subparsers.add_parser("console", help="Get console logs from the page")
+    snapshot_parser = subparsers.add_parser("snapshot", help="Get ARIA snapshot of the page")
+    subparsers.add_parser(
+        "install-host",
+        help="Install native messaging host for Firefox",
+    )
 
-    # Snapshot command
-    subparsers.add_parser("snapshot", help="Get ARIA snapshot of the page")
+    # List of all subparsers that need common arguments (all except install-host)
+    subparsers_with_common_args = [
+        navigate_parser,
+        back_parser,
+        forward_parser,
+        click_parser,
+        type_parser,
+        hover_parser,
+        drag_parser,
+        select_parser,
+        key_parser,
+        screenshot_parser,
+        console_parser,
+        snapshot_parser,
+    ]
 
-    # Install host command
-    subparsers.add_parser("install-host", help="Install native messaging host for Firefox")
+    # Add common arguments to all relevant subparsers
+    for subparser in subparsers_with_common_args:
+        subparser.add_argument(
+            "--socket",
+            help="Unix socket path (default: $XDG_RUNTIME_DIR/browser-cli.sock)",
+        )
+        subparser.add_argument(
+            "--debug",
+            action="store_true",
+            help="Enable debug logging",
+        )
 
     return parser
 
@@ -148,34 +162,40 @@ def parse_args(argv: list[str] | None = None) -> Command:  # noqa: C901, PLR0911
         parser.print_help()
         sys.exit(1)
 
+    # Create common options for all commands
+    common = CommonOptions(
+        socket=getattr(args, "socket", None),
+        debug=getattr(args, "debug", False),
+    )
+
     # Map parsed arguments to command dataclasses
     match args.command:
         case "navigate":
-            return NavigateCommand(server=args.server, url=args.url)
+            return NavigateCommand(url=args.url, common=common)
         case "back":
-            return BackCommand(server=args.server)
+            return BackCommand(common=common)
         case "forward":
-            return ForwardCommand(server=args.server)
+            return ForwardCommand(common=common)
         case "click":
-            return ClickCommand(server=args.server, selector=args.selector)
+            return ClickCommand(selector=args.selector, common=common)
         case "type":
-            return TypeCommand(server=args.server, selector=args.selector, text=args.text)
+            return TypeCommand(selector=args.selector, text=args.text, common=common)
         case "hover":
-            return HoverCommand(server=args.server, selector=args.selector)
+            return HoverCommand(selector=args.selector, common=common)
         case "drag":
-            return DragCommand(server=args.server, start=args.start, end=args.end)
+            return DragCommand(start=args.start, end=args.end, common=common)
         case "select":
-            return SelectCommand(server=args.server, selector=args.selector, option=args.option)
+            return SelectCommand(selector=args.selector, option=args.option, common=common)
         case "key":
-            return KeyCommand(server=args.server, key=args.key)
+            return KeyCommand(key=args.key, common=common)
         case "screenshot":
-            return ScreenshotCommand(server=args.server, output=args.output)
+            return ScreenshotCommand(output=args.output, common=common)
         case "console":
-            return ConsoleCommand(server=args.server)
+            return ConsoleCommand(common=common)
         case "snapshot":
-            return SnapshotCommand(server=args.server)
+            return SnapshotCommand(common=common)
         case "install-host":
-            return InstallHostCommand()
+            return InstallHostCommand(common=common)
         case _:
             msg = f"Unknown command: {args.command}"
             raise InvalidCommandError(msg)
@@ -188,7 +208,12 @@ async def execute_command(cmd: Command) -> None:  # noqa: C901, PLR0912
         install_native_host()
         return
 
-    client = BrowserCLI(cmd.server)
+    # All other commands have common options
+    client = BrowserCLI(cmd.common.socket)
+
+    # Enable debug logging if requested
+    if cmd.common.debug:
+        logging.basicConfig(level=logging.DEBUG)
 
     match cmd:
         case NavigateCommand(url=url):
