@@ -10,7 +10,8 @@
 - Always test/lint/format your code before committing.
 - Add debug output or unit tests when troubleshooting.
 - Avoid mocking in tests.
-- When ask to fix linting errors do only under extreme circumstances and very good justifications disable them. Misconduct will be punished
+- When ask to fix linting errors do only under extreme circumstances and very
+  good justifications disable them. Misconduct will be punished
 - CRITICAL: ALWAYS use pueue for ANY command that might take longer than 10
   seconds to avoid timeouts. This includes but is not limited to:
   - `clan machines update` (deployment commands)
