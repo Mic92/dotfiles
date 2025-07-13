@@ -102,7 +102,12 @@ def handle_claude_dir(repo_root: Path, claude_md_repo: Path, repo_name: str) -> 
         # Stage the directory in claude.md repo (use -f to force add)
         try:
             subprocess.run(
-                ["git", "add", "-f", str(claude_md_claude_dir.relative_to(claude_md_repo))],
+                [
+                    "git",
+                    "add",
+                    "-f",
+                    str(claude_md_claude_dir.relative_to(claude_md_repo)),
+                ],
                 cwd=claude_md_repo,
                 check=True,
             )
