@@ -131,11 +131,6 @@ async function handleCommand(message) {
         break;
       }
 
-      case "wait": {
-        result = await wait(typedParams.seconds || 0);
-        break;
-      }
-
       case "key": {
         result = await pressKey(typedParams.key || "");
         break;
@@ -311,16 +306,6 @@ async function dragElement(startSelector, endSelector) {
  */
 async function selectOption(selector, option) {
   return sendToContentScript("select", { selector, option });
-}
-
-/**
- * Wait for specified time
- * @param {number} seconds - Seconds to wait
- * @returns {Promise<{message: string}>}
- */
-async function wait(seconds) {
-  await new Promise((resolve) => setTimeout(resolve, seconds * 1000));
-  return { message: `Waited ${seconds} seconds` };
 }
 
 /**
