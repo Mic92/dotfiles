@@ -29,7 +29,7 @@
     ./modules/packages.nix
     ./modules/postgresql.nix
     ./modules/spotifyd.nix
-    ./modules/tum-vpn.nix
+    ../../nixosModules/tum-vpn
     ./modules/toggle-keyboard
     ./modules/localbackup.nix
     ./modules/sunshine.nix
