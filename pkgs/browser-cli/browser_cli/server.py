@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""WebSocket server that acts as a bridge between the browser extension and CLI.
+"""Native messaging host that bridges browser extension and CLI.
 
-The browser extension spawns this server and connects to it.
+The browser extension communicates via native messaging (stdin/stdout).
+The CLI connects via Unix socket using JSON lines protocol.
 """
 
 import asyncio
+import contextlib
 import json
 import logging
 import logging.handlers
 import os
 import signal
+import struct
 import sys
 import tempfile
 from pathlib import Path
@@ -47,33 +50,46 @@ def setup_logging() -> None:
     logger.info("Logging initialized. Log file: %s", log_file)
 
 
-class BrowserBridge:
-    """Bridge between browser extension and CLI clients."""
+class NativeMessagingBridge:
+    """Bridge between browser extension (native messaging) and CLI (Unix socket)."""
 
     def __init__(self) -> None:
-        """Initialize the browser bridge."""
-        self.extension_client: WebSocketServerProtocol | None = None
-        self.cli_clients: set[WebSocketServerProtocol] = set()
+        """Initialize the bridge."""
+        self.cli_clients: set[tuple[asyncio.StreamReader, asyncio.StreamWriter]] = set()
         self.pending_responses: dict[str, asyncio.Future] = {}
         self.message_counter = 0
+        self.stdin_reader: asyncio.StreamReader | None = None
+        self.stdout_writer: asyncio.StreamWriter | None = None
 
-    async def handle_extension(
-        self,
-        websocket: WebSocketServerProtocol,
-    ) -> None:
-        """Handle connection from browser extension."""
-        logger.info("Browser extension connected")
-        self.extension_client = websocket
+    async def setup_native_messaging(self) -> None:
+        """Set up stdin/stdout for native messaging."""
+        loop = asyncio.get_event_loop()
+
+        # Create stream reader for stdin
+        self.stdin_reader = asyncio.StreamReader()
+        stdin_protocol = asyncio.StreamReaderProtocol(self.stdin_reader)
+        await loop.connect_read_pipe(lambda: stdin_protocol, sys.stdin)
+
+        # Create stream writer for stdout
+        stdout_transport, stdout_protocol = await loop.connect_write_pipe(
+            asyncio.streams.FlowControlMixin,
+            sys.stdout,
+        )
+        self.stdout_writer = asyncio.StreamWriter(stdout_transport, stdout_protocol, None, loop)
+
+    async def read_native_message(self) -> dict[str, Any] | None:
+        """Read a message from native messaging stdin."""
+        if not self.stdin_reader:
+            return None
+
         try:
             # Read message length (4 bytes, little-endian)
             length_bytes = await self.stdin_reader.readexactly(4)
             length = struct.unpack("<I", length_bytes)[0]
-            
+
             # Read message body
             message_bytes = await self.stdin_reader.readexactly(length)
-            message = json.loads(message_bytes.decode("utf-8"))
-            
-            return message
+            return json.loads(message_bytes.decode("utf-8"))
         except asyncio.IncompleteReadError:
             logger.info("Native messaging input closed")
             return None
@@ -85,17 +101,17 @@ class BrowserBridge:
         """Write a message to native messaging stdout."""
         if not self.stdout_writer:
             return
-            
+
         try:
             # Encode message
             message_bytes = json.dumps(message).encode("utf-8")
-            
+
             # Write message length (4 bytes, little-endian)
             self.stdout_writer.write(struct.pack("<I", len(message_bytes)))
-            
+
             # Write message body
             self.stdout_writer.write(message_bytes)
-            
+
             await self.stdout_writer.drain()
         except Exception:
             logger.exception("Error writing native message")
@@ -103,7 +119,7 @@ class BrowserBridge:
     async def handle_extension_message(self, message: dict[str, Any]) -> None:
         """Process messages from browser extension."""
         msg_id = message.get("id")
-        
+
         if msg_id and msg_id in self.pending_responses:
             # This is a response to a CLI request
             future = self.pending_responses.pop(msg_id)
@@ -113,51 +129,40 @@ class BrowserBridge:
             logger.warning("Unexpected command from extension: %s", message)
 
     async def handle_cli_client(
-        self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
+        self,
+        reader: asyncio.StreamReader,
+        writer: asyncio.StreamWriter,
     ) -> None:
         """Handle connection from CLI client."""
         logger.info("CLI client connected")
-        self.cli_clients.add(websocket)
+        client = (reader, writer)
+        self.cli_clients.add(client)
+
         try:
-            async for message in websocket:
-                await self.handle_cli_message(websocket, message)
-        except websockets.exceptions.ConnectionClosed:
-            logger.info("CLI client disconnected")
+            while True:
+                # Read JSON line
+                line = await reader.readline()
+                if not line:
+                    break
+
+                await self.handle_cli_message(writer, line.decode("utf-8").strip())
+
+        except Exception:
+            logger.exception("Error handling CLI client")
         finally:
-            self.cli_clients.discard(websocket)
-
-    async def handle_extension_message(self, message: str) -> None:
-        """Process messages from browser extension."""
-        try:
-            data = json.loads(message)
-            msg_id = data.get("id")
-
-            if msg_id and msg_id in self.pending_responses:
-                # This is a response to a CLI request
-                future = self.pending_responses.pop(msg_id)
-                future.set_result(data)
-            else:
-                # This is an event from the extension
-                await self.broadcast_to_cli(data)
-        except json.JSONDecodeError:
-            logger.exception("Invalid JSON from extension: %s", message)
+            logger.info("CLI client disconnected")
+            self.cli_clients.discard(client)
+            writer.close()
+            await writer.wait_closed()
 
     async def handle_cli_message(
         self,
-        websocket: WebSocketServerProtocol,
+        writer: asyncio.StreamWriter,
         message: str,
     ) -> None:
         """Process messages from CLI client."""
         try:
             data = json.loads(message)
-
-            if not self.extension_client:
-                error_response = {
-                    "error": "Browser extension not connected",
-                    "id": data.get("id"),
-                }
-                await websocket.send(json.dumps(error_response))
-                return
 
             # Add unique ID for tracking responses
             msg_id = f"cli_{self.message_counter}"
@@ -168,58 +173,86 @@ class BrowserBridge:
             future = asyncio.Future()
             self.pending_responses[msg_id] = future
 
-            # Forward to extension
-            await self.extension_client.send(json.dumps(data))
+            # Forward to extension via native messaging
+            await self.write_native_message(data)
 
             # Wait for response with timeout
             try:
                 response = await asyncio.wait_for(future, timeout=30.0)
-                await websocket.send(json.dumps(response))
+                # Send response as JSON line
+                writer.write((json.dumps(response) + "\n").encode("utf-8"))
+                await writer.drain()
             except TimeoutError:
                 self.pending_responses.pop(msg_id, None)
                 timeout_response = {
                     "error": "Request timeout",
                     "id": msg_id,
                 }
-                await websocket.send(json.dumps(timeout_response))
+                writer.write((json.dumps(timeout_response) + "\n").encode("utf-8"))
+                await writer.drain()
 
         except json.JSONDecodeError:
             logger.exception("Invalid JSON from CLI: %s", message)
             error_response = {"error": "Invalid JSON"}
-            await websocket.send(json.dumps(error_response))
+            writer.write((json.dumps(error_response) + "\n").encode("utf-8"))
+            await writer.drain()
 
-    async def broadcast_to_cli(self, data: dict[str, Any]) -> None:
-        """Broadcast events to all connected CLI clients."""
-        if self.cli_clients:
-            message = json.dumps(data)
-            disconnected = set()
-            for client in self.cli_clients:
-                try:
-                    await client.send(message)
-                except websockets.exceptions.ConnectionClosed:
-                    disconnected.add(client)
-            self.cli_clients -= disconnected
+    async def native_messaging_loop(self) -> None:
+        """Handle native messaging in a loop."""
+        await self.setup_native_messaging()
+
+        while True:
+            message = await self.read_native_message()
+            if message is None:
+                break
+
+            await self.handle_extension_message(message)
+
+    async def start(self) -> None:
+        """Start the bridge server."""
+        # Get runtime directory for Unix socket
+        runtime_dir = os.environ.get("XDG_RUNTIME_DIR")
+        if not runtime_dir:
+            runtime_dir = tempfile.gettempdir()
+
+        socket_path = Path(runtime_dir) / "browser-cli.sock"
+
+        # Remove old socket if exists
+        socket_path.unlink(missing_ok=True)
+
+        # Start Unix socket server for CLI
+        server = await asyncio.start_unix_server(
+            self.handle_cli_client,
+            socket_path,
+        )
+
+        # Set socket permissions
+        socket_path.chmod(0o600)
+
+        # Send socket path to extension via native messaging
+        await self.write_native_message(
+            {
+                "socket_path": str(socket_path),
+                "ready": True,
+            },
+        )
+
+        logger.info("Native messaging bridge started")
+        logger.info("CLI socket: %s", socket_path)
+
+        # Run native messaging loop
+        try:
+            await self.native_messaging_loop()
+        finally:
+            # Clean shutdown
+            server.close()
+            await server.wait_closed()
+            socket_path.unlink(missing_ok=True)
 
 
 async def async_main() -> None:
-    """Start the WebSocket bridge server."""
-    bridge = BrowserBridge()
-
-    # Start two servers on different ports
-    extension_server = await websockets.serve(
-        bridge.handle_extension,
-        "localhost",
-        9222,
-    )
-    cli_server = await websockets.serve(
-        bridge.handle_cli,
-        "localhost",
-        9223,
-    )
-
-    logger.info("WebSocket bridge started")
-    logger.info("Extension port: 9222")
-    logger.info("CLI port: 9223")
+    """Run the native messaging bridge."""
+    bridge = NativeMessagingBridge()
 
     # Handle shutdown gracefully
     stop = asyncio.Future()
@@ -231,13 +264,16 @@ async def async_main() -> None:
     for sig in (signal.SIGTERM, signal.SIGINT):
         loop.add_signal_handler(sig, signal_handler)
 
-    await stop
+    # Run bridge until stopped
+    bridge_task = asyncio.create_task(bridge.start())
 
-    # Clean shutdown
-    extension_server.close()
-    cli_server.close()
-    await extension_server.wait_closed()
-    await cli_server.wait_closed()
+    await asyncio.wait([bridge_task, stop], return_when=asyncio.FIRST_COMPLETED)
+
+    # Cancel bridge task if still running
+    if not bridge_task.done():
+        bridge_task.cancel()
+        with contextlib.suppress(asyncio.CancelledError):
+            await bridge_task
 
 
 def main() -> None:
