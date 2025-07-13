@@ -124,7 +124,7 @@ function sendResponse(response) {
 async function handleCommand(message) {
   const { command, params, id, tabId } = message;
 
-  /** @type {{url?: string, element?: string, text?: string, startElement?: string, endElement?: string, option?: string, seconds?: number, key?: string}} */
+  /** @type {{url?: string, element?: string, text?: string, startElement?: string, endElement?: string, option?: string, seconds?: number, key?: string, selectorType?: string}} */
   const typedParams = params;
 
   try {
@@ -147,7 +147,11 @@ async function handleCommand(message) {
       }
 
       case "click": {
-        result = await clickElement(typedParams.element || "", tabId);
+        result = await clickElement(
+          typedParams.element || "",
+          typedParams.selectorType,
+          tabId,
+        );
         break;
       }
 
@@ -155,13 +159,18 @@ async function handleCommand(message) {
         result = await typeText(
           typedParams.element || "",
           typedParams.text || "",
+          typedParams.selectorType,
           tabId,
         );
         break;
       }
 
       case "hover": {
-        result = await hoverElement(typedParams.element || "", tabId);
+        result = await hoverElement(
+          typedParams.element || "",
+          typedParams.selectorType,
+          tabId,
+        );
         break;
       }
 
@@ -169,6 +178,7 @@ async function handleCommand(message) {
         result = await dragElement(
           typedParams.startElement || "",
           typedParams.endElement || "",
+          typedParams.selectorType,
           tabId,
         );
         break;
@@ -178,6 +188,7 @@ async function handleCommand(message) {
         result = await selectOption(
           typedParams.element || "",
           typedParams.option || "",
+          typedParams.selectorType,
           tabId,
         );
         break;
@@ -337,54 +348,79 @@ async function sendToContentScript(command, params = {}, targetTabId) {
 /**
  * Click an element
  * @param {string} selector - Element selector
+ * @param {string} [selectorType] - Type of selector (css, text, aria-label, placeholder)
  * @param {string} [tabId] - Target tab ID
  * @returns {Promise<object>}
  */
-async function clickElement(selector, tabId) {
-  return sendToContentScript("click", { selector }, tabId);
+async function clickElement(selector, selectorType, tabId) {
+  return sendToContentScript(
+    "click",
+    { element: selector, selectorType },
+    tabId,
+  );
 }
 
 /**
  * Type text into an element
  * @param {string} selector - Element selector
  * @param {string} text - Text to type
+ * @param {string} [selectorType] - Type of selector (css, text, aria-label, placeholder)
  * @param {string} [tabId] - Target tab ID
  * @returns {Promise<object>}
  */
-async function typeText(selector, text, tabId) {
-  return sendToContentScript("type", { selector, text }, tabId);
+async function typeText(selector, text, selectorType, tabId) {
+  return sendToContentScript(
+    "type",
+    { element: selector, text, selectorType },
+    tabId,
+  );
 }
 
 /**
  * Hover over an element
  * @param {string} selector - Element selector
+ * @param {string} [selectorType] - Type of selector (css, text, aria-label, placeholder)
  * @param {string} [tabId] - Target tab ID
  * @returns {Promise<object>}
  */
-async function hoverElement(selector, tabId) {
-  return sendToContentScript("hover", { selector }, tabId);
+async function hoverElement(selector, selectorType, tabId) {
+  return sendToContentScript(
+    "hover",
+    { element: selector, selectorType },
+    tabId,
+  );
 }
 
 /**
  * Drag from one element to another
  * @param {string} startSelector - Start element selector
  * @param {string} endSelector - End element selector
+ * @param {string} [selectorType] - Type of selector (css, text, aria-label, placeholder)
  * @param {string} [tabId] - Target tab ID
  * @returns {Promise<object>}
  */
-async function dragElement(startSelector, endSelector, tabId) {
-  return sendToContentScript("drag", { startSelector, endSelector }, tabId);
+async function dragElement(startSelector, endSelector, selectorType, tabId) {
+  return sendToContentScript("drag", {
+    startElement: startSelector,
+    endElement: endSelector,
+    selectorType,
+  }, tabId);
 }
 
 /**
  * Select an option in a dropdown
  * @param {string} selector - Select element selector
  * @param {string} option - Option to select
+ * @param {string} [selectorType] - Type of selector (css, text, aria-label, placeholder)
  * @param {string} [tabId] - Target tab ID
  * @returns {Promise<object>}
  */
-async function selectOption(selector, option, tabId) {
-  return sendToContentScript("select", { selector, option }, tabId);
+async function selectOption(selector, option, selectorType, tabId) {
+  return sendToContentScript("select", {
+    element: selector,
+    option,
+    selectorType,
+  }, tabId);
 }
 
 /**
