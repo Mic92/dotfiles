@@ -1,6 +1,6 @@
 {
   buildPythonApplication,
-  setuptools,
+  hatchling,
 }:
 
 buildPythonApplication {
@@ -9,7 +9,7 @@ buildPythonApplication {
   src = ./.;
   pyproject = true;
 
-  build-system = [ setuptools ];
+  build-system = [ hatchling ];
 
   meta = {
     description = "CLI tool to manage CLAUDE.local.md files across repositories";

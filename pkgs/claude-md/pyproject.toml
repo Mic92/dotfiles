@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "claude-md"
@@ -9,3 +9,6 @@ description = "CLI tool to manage CLAUDE.local.md files across repositories"
 
 [project.scripts]
 claude-md = "claude_md:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["claude_md.py"]
