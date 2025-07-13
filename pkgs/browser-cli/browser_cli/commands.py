@@ -1,6 +1,16 @@
 """Command dataclasses for browser-cli."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from enum import Enum
+
+
+class SelectorType(Enum):
+    """Types of selectors supported for finding elements."""
+
+    CSS = "css"
+    TEXT = "text"
+    ARIA_LABEL = "aria-label"
+    PLACEHOLDER = "placeholder"
 
 
 @dataclass
@@ -9,6 +19,7 @@ class CommonOptions:
 
     socket: str | None = None
     debug: bool = False
+    tab: str | None = None  # Tab ID for targeting specific tabs
 
 
 @dataclass
@@ -39,6 +50,7 @@ class ClickCommand:
 
     selector: str
     common: CommonOptions
+    selector_type: SelectorType = SelectorType.CSS
 
 
 @dataclass
@@ -48,6 +60,7 @@ class TypeCommand:
     selector: str
     text: str
     common: CommonOptions
+    selector_type: SelectorType = SelectorType.CSS
 
 
 @dataclass
@@ -56,6 +69,7 @@ class HoverCommand:
 
     selector: str
     common: CommonOptions
+    selector_type: SelectorType = SelectorType.CSS
 
 
 @dataclass
@@ -65,6 +79,7 @@ class DragCommand:
     start: str
     end: str
     common: CommonOptions
+    selector_type: SelectorType = SelectorType.CSS
 
 
 @dataclass
@@ -74,6 +89,7 @@ class SelectCommand:
     selector: str
     option: str
     common: CommonOptions
+    selector_type: SelectorType = SelectorType.CSS
 
 
 @dataclass
@@ -113,6 +129,21 @@ class InstallHostCommand:
     common: CommonOptions
 
 
+@dataclass
+class ListTabsCommand:
+    """List all tabs managed by the extension."""
+
+    common: CommonOptions
+
+
+@dataclass
+class NewTabCommand:
+    """Create a new tab managed by the extension."""
+
+    url: str | None = None
+    common: CommonOptions = field(default_factory=CommonOptions)
+
+
 # Type alias for all command types
 Command = (
     NavigateCommand
@@ -128,4 +159,6 @@ Command = (
     | ConsoleCommand
     | SnapshotCommand
     | InstallHostCommand
+    | ListTabsCommand
+    | NewTabCommand
 )

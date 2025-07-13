@@ -1,7 +1,6 @@
 """Browser CLI client - Unix socket client for browser automation."""
 
 import asyncio
-import base64
 import json
 import os
 import sys
@@ -27,11 +26,13 @@ class BrowserCLI:
             self.socket_path = str(Path(runtime_dir) / "browser-cli.sock")
 
         self.message_counter = 0
+        self.current_tab: str | None = None
 
     async def send_command(
         self,
         command: str,
         params: dict[str, Any] | None = None,
+        tab_id: str | None = None,
     ) -> dict[str, Any]:
         """Send command to browser and wait for response."""
         self.message_counter += 1
@@ -42,6 +43,10 @@ class BrowserCLI:
             "params": params or {},
             "id": message_id,
         }
+
+        # Add tab ID if specified
+        if tab_id or self.current_tab:
+            message["tabId"] = tab_id or self.current_tab or ""
 
         try:
             # Connect to Unix socket
@@ -66,10 +71,15 @@ class BrowserCLI:
             # Check response
             if response.get("id") == message_id:
                 if response.get("success"):
-                    return response.get("result", {})
+                    result: dict[str, Any] = response.get("result", {})
+                    return result
                 error_msg = response.get("error", "Unknown error")
                 raise CommandError(error_msg) from None
-            msg = "Invalid response ID"
+            msg = (
+                f"Invalid response ID. Expected: {message_id}, "
+                f"Got: {response.get('id', 'None')}. "
+                f"Full response: {response}"
+            )
             raise CommandError(msg)
 
         except (ConnectionRefusedError, FileNotFoundError) as e:
@@ -82,6 +92,10 @@ class BrowserCLI:
                 f"\nSocket path: {self.socket_path}"
             )
             raise BrowserConnectionError(msg) from e
+
+    def set_tab(self, tab_id: str | None) -> None:
+        """Set the current tab for subsequent commands."""
+        self.current_tab = tab_id
 
     async def navigate(self, url: str) -> None:
         """Navigate to URL."""
@@ -98,35 +112,53 @@ class BrowserCLI:
         result = await self.send_command("forward")
         print(result.get("message", "Went forward"))
 
-    async def click(self, selector: str) -> None:
+    async def click(self, selector: str, selector_type: str = "css") -> None:
         """Click an element."""
-        result = await self.send_command("click", {"element": selector})
+        result = await self.send_command(
+            "click",
+            {"element": selector, "selectorType": selector_type},
+        )
         print(result.get("message", f"Clicked {selector}"))
 
-    async def type_text(self, selector: str, text: str) -> None:
+    async def type_text(self, selector: str, text: str, selector_type: str = "css") -> None:
         """Type text into an element."""
-        result = await self.send_command("type", {"element": selector, "text": text})
+        result = await self.send_command(
+            "type",
+            {"element": selector, "text": text, "selectorType": selector_type},
+        )
         print(result.get("message", f"Typed into {selector}"))
 
-    async def hover(self, selector: str) -> None:
+    async def hover(self, selector: str, selector_type: str = "css") -> None:
         """Hover over an element."""
-        result = await self.send_command("hover", {"element": selector})
+        result = await self.send_command(
+            "hover",
+            {"element": selector, "selectorType": selector_type},
+        )
         print(result.get("message", f"Hovered over {selector}"))
 
-    async def drag(self, start_selector: str, end_selector: str) -> None:
+    async def drag(
+        self,
+        start_selector: str,
+        end_selector: str,
+        selector_type: str = "css",
+    ) -> None:
         """Drag from one element to another."""
         result = await self.send_command(
             "drag",
             {
                 "startElement": start_selector,
                 "endElement": end_selector,
+                "selectorType": selector_type,
             },
         )
         print(result.get("message", f"Dragged from {start_selector} to {end_selector}"))
 
-    async def select(self, selector: str, option: str) -> None:
+    async def select(self, selector: str, option: str, selector_type: str = "css") -> None:
         """Select an option in a dropdown."""
-        result = await self.send_command("select", {"element": selector, "option": option})
+        result = await self.send_command(
+            "select",
+            {"element": selector, "option": option, "selectorType": selector_type},
+        )
         print(result.get("message", f"Selected {option} in {selector}"))
 
     async def key(self, key: str) -> None:
@@ -136,22 +168,17 @@ class BrowserCLI:
 
     async def screenshot(self, output_file: str | None = None) -> None:
         """Take a screenshot."""
-        result = await self.send_command("screenshot")
+        # Determine output path
+        output_path = Path(output_file).absolute() if output_file else Path.cwd() / "screenshot.png"
 
-        if "screenshot" in result:
-            # Extract base64 data from data URL
-            data_url = result["screenshot"]
-            if data_url.startswith("data:image/png;base64,"):
-                base64_data = data_url.split(",")[1]
-                image_data = base64.b64decode(base64_data)
+        # Send command with desired output path
+        result = await self.send_command("screenshot", {"output_path": str(output_path)})
 
-                # Save to file
-                output_path = Path(output_file) if output_file else Path("screenshot.png")
-
-                output_path.write_bytes(image_data)
-                print(f"Screenshot saved to {output_path}")
-            else:
-                print("Error: Invalid screenshot data", file=sys.stderr)
+        if "screenshot_path" in result:
+            # Server saved the screenshot to the requested path
+            print(f"Screenshot saved to {result['screenshot_path']}")
+        elif "message" in result:
+            print(result["message"])
         else:
             print("Error: No screenshot data received", file=sys.stderr)
 
@@ -185,7 +212,7 @@ class BrowserCLI:
         else:
             print("No snapshot available")
 
-    def _print_snapshot(self, nodes: list, indent: int = 0) -> None:
+    def _print_snapshot(self, nodes: list[dict[str, Any]], indent: int = 0) -> None:
         """Print ARIA snapshot in a readable format."""
         for node in nodes:
             prefix = "  " * node.get("level", indent)
@@ -215,3 +242,39 @@ class BrowserCLI:
                     parts.append("[clickable]")
 
                 print(f"{prefix}<{' '.join(parts)}>")
+
+    async def list_tabs(self) -> None:
+        """List all tabs managed by the extension."""
+        result = await self.send_command("list-tabs")
+
+        if "tabs" in result:
+            tabs = result["tabs"]
+            if not tabs:
+                print("No managed tabs")
+            else:
+                print("Managed tabs:")
+                for tab in tabs:
+                    tab_id = tab.get("id", "unknown")
+                    url = tab.get("url", "about:blank")
+                    title = tab.get("title", "Untitled")
+                    active = " (active)" if tab.get("active") else ""
+                    print(f"  {tab_id}: {title}{active}")
+                    print(f"       {url}")
+        else:
+            print("No tabs information available")
+
+    async def new_tab(self, url: str | None = None) -> None:
+        """Create a new tab managed by the extension."""
+        params = {}
+        if url:
+            params["url"] = url
+
+        result = await self.send_command("new-tab", params)
+
+        if "tabId" in result:
+            tab_id = result["tabId"]
+            print(f"Created new tab: {tab_id}")
+            if "url" in result:
+                print(f"Opened: {result['url']}")
+        else:
+            print(result.get("message", "Tab created"))

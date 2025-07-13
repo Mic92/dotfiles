@@ -4,6 +4,8 @@
  * Content script for Browser CLI Controller
  * Executes commands in the page context
  *
+ * @typedef {'css' | 'text' | 'aria-label' | 'placeholder'} SelectorType
+ *
  * @typedef {object} ConsoleLog
  * @property {string} type - Log type (log, error, warn, info, debug)
  * @property {string} message - Log message
@@ -17,6 +19,22 @@
  * @property {number} level - Nesting level
  * @property {Record<string, any>} [attributes] - Additional attributes
  */
+
+/**
+ * Enum for selector types
+ * @readonly
+ * @enum {SelectorType}
+ */
+const SELECTOR_TYPE = {
+  /** @type {SelectorType} */
+  CSS: "css",
+  /** @type {SelectorType} */
+  TEXT: "text",
+  /** @type {SelectorType} */
+  ARIA_LABEL: "aria-label",
+  /** @type {SelectorType} */
+  PLACEHOLDER: "placeholder",
+};
 
 /** @type {ConsoleLog[]} Store console logs */
 const consoleLogs = [];
@@ -172,22 +190,36 @@ for (const method of consoleMethods) {
 }
 
 /**
- * Find element by selector or text
- * @param {string} selector - CSS selector, text, aria-label, or placeholder
+ * Find element by CSS selector
+ * @param {string} selector - CSS selector
  * @returns {Element} Found element
- * @throws {Error} If element not found
+ * @throws {Error} If element not found or selector is invalid
  */
-function findElement(selector) {
-  // Try as CSS selector first
+function findBySelector(selector) {
   try {
     const element = document.querySelector(selector);
     if (element) return element;
-  } catch {
-    // Not a valid CSS selector, continue
+    throw new Error(`No element matches CSS selector: ${selector}`);
+  } catch (error) {
+    if (error instanceof Error && error.name === "SyntaxError") {
+      throw new Error(`Invalid CSS selector: ${selector}`);
+    }
+    throw error;
   }
+}
 
-  // Try to find by text content
-  const xpath = `//*[contains(text(), '${selector}')]`;
+/**
+ * Find element by text content
+ * @param {string} text - Text to search for
+ * @returns {Element} Found element
+ * @throws {Error} If element not found
+ */
+function findByText(text) {
+  // XPath with proper escaping for quotes
+  const xpath = text.includes('"')
+    ? `//*[contains(text(), '${text}')]`
+    : `//*[contains(text(), "${text}")]`;
+
   const result = document.evaluate(
     xpath,
     document,
@@ -197,18 +229,63 @@ function findElement(selector) {
   if (result.singleNodeValue && result.singleNodeValue instanceof Element) {
     return result.singleNodeValue;
   }
+  throw new Error(`No element found with text: ${text}`);
+}
 
-  // Try to find by aria-label
-  const ariaElement = document.querySelector(`[aria-label="${selector}"]`);
-  if (ariaElement) return ariaElement;
+/**
+ * Find element by aria-label
+ * @param {string} label - ARIA label to search for
+ * @returns {Element} Found element
+ * @throws {Error} If element not found
+ */
+function findByAriaLabel(label) {
+  const element = document.querySelector(`[aria-label="${CSS.escape(label)}"]`);
+  if (element) return element;
+  throw new Error(`No element found with aria-label: ${label}`);
+}
 
-  // Try to find by placeholder
-  const placeholderElement = document.querySelector(
-    `[placeholder="${selector}"]`,
+/**
+ * Find element by placeholder
+ * @param {string} placeholder - Placeholder text to search for
+ * @returns {Element} Found element
+ * @throws {Error} If element not found
+ */
+function findByPlaceholder(placeholder) {
+  const element = document.querySelector(
+    `[placeholder="${CSS.escape(placeholder)}"]`,
   );
-  if (placeholderElement) return placeholderElement;
+  if (element) return element;
+  throw new Error(`No element found with placeholder: ${placeholder}`);
+}
 
-  throw new Error(`Element not found: ${selector}`);
+/**
+ * Find element based on selector type
+ * @param {object} params - Parameters with selector and type
+ * @param {string} params.selector - The selector value
+ * @param {SelectorType} [params.selectorType='css'] - Type of selector
+ * @returns {Element} Found element
+ * @throws {Error} If element not found
+ */
+function findElement(params) {
+  const { selector, selectorType = SELECTOR_TYPE.CSS } = params;
+
+  switch (selectorType) {
+    case SELECTOR_TYPE.CSS: {
+      return findBySelector(selector);
+    }
+    case SELECTOR_TYPE.TEXT: {
+      return findByText(selector);
+    }
+    case SELECTOR_TYPE.ARIA_LABEL: {
+      return findByAriaLabel(selector);
+    }
+    case SELECTOR_TYPE.PLACEHOLDER: {
+      return findByPlaceholder(selector);
+    }
+    default: {
+      throw new Error(`Unknown selector type: ${selectorType}`);
+    }
+  }
 }
 
 /**
@@ -290,32 +367,38 @@ function getAriaSnapshot() {
 /**
  * Handle click command
  * @param {object} params - Command parameters
- * @param {string} params.selector - Element selector
+ * @param {string} params.element - Element selector
+ * @param {SelectorType} [params.selectorType] - Type of selector
  * @returns {Promise<object>} Result message
  */
 async function handleClick(params) {
   /** @type {HTMLElement} */
-  const element = /** @type {HTMLElement} */ (findElement(params.selector));
+  const element = /** @type {HTMLElement} */ (findElement({
+    selector: params.element,
+    selectorType: params.selectorType,
+  }));
   moveCursorToElement(element, true);
   // Delay click to show animation
   await new Promise((resolve) => setTimeout(resolve, 300));
   element.click();
-  return { message: `Clicked element: ${params.selector}` };
+  return { message: `Clicked element: ${params.element}` };
 }
 
 /**
  * Handle type command
  * @param {object} params - Command parameters
- * @param {string} params.selector - Element selector
+ * @param {string} params.element - Element selector
  * @param {string} params.text - Text to type
+ * @param {SelectorType} [params.selectorType] - Type of selector
  * @returns {Promise<object>} Result message
  */
 async function handleType(params) {
   /** @type {HTMLInputElement|HTMLTextAreaElement} */
   const element =
-    /** @type {HTMLInputElement|HTMLTextAreaElement} */ (findElement(
-      params.selector,
-    ));
+    /** @type {HTMLInputElement|HTMLTextAreaElement} */ (findElement({
+      selector: params.element,
+      selectorType: params.selectorType,
+    }));
   if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
     moveCursorToElement(element);
     await new Promise((resolve) => setTimeout(resolve, 300));
@@ -324,20 +407,26 @@ async function handleType(params) {
     element.dispatchEvent(new Event("input", { bubbles: true }));
     element.dispatchEvent(new Event("change", { bubbles: true }));
   } else {
-    throw new Error("Element is not an input field");
+    throw new Error(
+      `Element is not an input field. Found: <${element.tagName.toLowerCase()}>`,
+    );
   }
-  return { message: `Typed text into: ${params.selector}` };
+  return { message: `Typed text into: ${params.element}` };
 }
 
 /**
  * Handle hover command
  * @param {object} params - Command parameters
- * @param {string} params.selector - Element selector
+ * @param {string} params.element - Element selector
+ * @param {SelectorType} [params.selectorType] - Type of selector
  * @returns {Promise<object>} Result message
  */
 async function handleHover(params) {
   /** @type {Element} */
-  const element = findElement(params.selector);
+  const element = findElement({
+    selector: params.element,
+    selectorType: params.selectorType,
+  });
   moveCursorToElement(element);
   await new Promise((resolve) => setTimeout(resolve, 300));
   const event = new MouseEvent("mouseover", {
@@ -346,21 +435,28 @@ async function handleHover(params) {
     cancelable: true,
   });
   element.dispatchEvent(event);
-  return { message: `Hovered over: ${params.selector}` };
+  return { message: `Hovered over: ${params.element}` };
 }
 
 /**
  * Handle drag command
  * @param {object} params - Command parameters
- * @param {string} params.startSelector - Start element selector
- * @param {string} params.endSelector - End element selector
+ * @param {string} params.startElement - Start element selector
+ * @param {string} params.endElement - End element selector
+ * @param {SelectorType} [params.selectorType] - Type of selector for both elements
  * @returns {Promise<object>} Result message
  */
 async function handleDrag(params) {
   /** @type {Element} */
-  const startElement = findElement(params.startSelector);
+  const startElement = findElement({
+    selector: params.startElement,
+    selectorType: params.selectorType,
+  });
   /** @type {Element} */
-  const endElement = findElement(params.endSelector);
+  const endElement = findElement({
+    selector: params.endElement,
+    selectorType: params.selectorType,
+  });
 
   // Simulate drag and drop
   const startRect = startElement.getBoundingClientRect();
@@ -416,31 +512,36 @@ async function handleDrag(params) {
   }
 
   return {
-    message: `Dragged from ${params.startSelector} to ${params.endSelector}`,
+    message: `Dragged from ${params.startElement} to ${params.endElement}`,
   };
 }
 
 /**
  * Handle select command
  * @param {object} params - Command parameters
- * @param {string} params.selector - Select element selector
+ * @param {string} params.element - Select element selector
  * @param {string} params.option - Option to select
+ * @param {SelectorType} [params.selectorType] - Type of selector
  * @returns {Promise<object>} Result message
  */
 async function handleSelect(params) {
   /** @type {HTMLSelectElement} */
-  const element =
-    /** @type {HTMLSelectElement} */ (findElement(params.selector));
+  const element = /** @type {HTMLSelectElement} */ (findElement({
+    selector: params.element,
+    selectorType: params.selectorType,
+  }));
   if (element.tagName === "SELECT") {
     moveCursorToElement(element, true);
     await new Promise((resolve) => setTimeout(resolve, 300));
     element.value = params.option;
     element.dispatchEvent(new Event("change", { bubbles: true }));
   } else {
-    throw new Error("Element is not a select field");
+    throw new Error(
+      `Element is not a select field. Found: <${element.tagName.toLowerCase()}>`,
+    );
   }
   return {
-    message: `Selected option ${params.option} in ${params.selector}`,
+    message: `Selected option ${params.option} in ${params.element}`,
   };
 }
 
