@@ -7,15 +7,44 @@ The browser extension spawns this server and connects to it.
 import asyncio
 import json
 import logging
+import logging.handlers
+import os
 import signal
 import sys
+import tempfile
+from pathlib import Path
 from typing import Any
 
-import websockets
-from websockets.server import WebSocketServerProtocol
-
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+def setup_logging() -> None:
+    """Set up logging to both terminal and file."""
+    # Get XDG data home
+    xdg_data_home = os.environ.get("XDG_DATA_HOME", str(Path.home() / ".local" / "share"))
+    log_dir = Path(xdg_data_home) / "browser-cli"
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_file = log_dir / "server.log"
+
+    # Set up root logger
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.INFO)
+
+    # File handler only - stdout is used for native messaging
+    file_handler = logging.handlers.RotatingFileHandler(
+        log_file,
+        maxBytes=10 * 1024 * 1024,  # 10MB
+        backupCount=5,
+        encoding="utf-8",
+    )
+    file_handler.setLevel(logging.INFO)
+    file_formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+    file_handler.setFormatter(file_formatter)
+
+    # Add handler to root logger
+    root_logger.addHandler(file_handler)
+
+    logger.info("Logging initialized. Log file: %s", log_file)
 
 
 class BrowserBridge:
@@ -31,20 +60,61 @@ class BrowserBridge:
     async def handle_extension(
         self,
         websocket: WebSocketServerProtocol,
-        path: str,  # noqa: ARG002
     ) -> None:
         """Handle connection from browser extension."""
         logger.info("Browser extension connected")
         self.extension_client = websocket
         try:
-            async for message in websocket:
-                await self.handle_extension_message(message)
-        except websockets.exceptions.ConnectionClosed:
-            logger.info("Browser extension disconnected")
-        finally:
-            self.extension_client = None
+            # Read message length (4 bytes, little-endian)
+            length_bytes = await self.stdin_reader.readexactly(4)
+            length = struct.unpack("<I", length_bytes)[0]
+            
+            # Read message body
+            message_bytes = await self.stdin_reader.readexactly(length)
+            message = json.loads(message_bytes.decode("utf-8"))
+            
+            return message
+        except asyncio.IncompleteReadError:
+            logger.info("Native messaging input closed")
+            return None
+        except Exception:
+            logger.exception("Error reading native message")
+            return None
 
-    async def handle_cli(self, websocket: WebSocketServerProtocol, path: str) -> None:  # noqa: ARG002
+    async def write_native_message(self, message: dict[str, Any]) -> None:
+        """Write a message to native messaging stdout."""
+        if not self.stdout_writer:
+            return
+            
+        try:
+            # Encode message
+            message_bytes = json.dumps(message).encode("utf-8")
+            
+            # Write message length (4 bytes, little-endian)
+            self.stdout_writer.write(struct.pack("<I", len(message_bytes)))
+            
+            # Write message body
+            self.stdout_writer.write(message_bytes)
+            
+            await self.stdout_writer.drain()
+        except Exception:
+            logger.exception("Error writing native message")
+
+    async def handle_extension_message(self, message: dict[str, Any]) -> None:
+        """Process messages from browser extension."""
+        msg_id = message.get("id")
+        
+        if msg_id and msg_id in self.pending_responses:
+            # This is a response to a CLI request
+            future = self.pending_responses.pop(msg_id)
+            future.set_result(message)
+        else:
+            # This is a command from the extension - shouldn't happen in our architecture
+            logger.warning("Unexpected command from extension: %s", message)
+
+    async def handle_cli_client(
+        self, reader: asyncio.StreamReader, writer: asyncio.StreamWriter
+    ) -> None:
         """Handle connection from CLI client."""
         logger.info("CLI client connected")
         self.cli_clients.add(websocket)
@@ -171,7 +241,8 @@ async def async_main() -> None:
 
 
 def main() -> None:
-    """Run the WebSocket bridge server."""
+    """Run the native messaging bridge server."""
+    setup_logging()
     try:
         asyncio.run(async_main())
     except KeyboardInterrupt:
