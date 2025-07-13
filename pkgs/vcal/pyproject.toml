@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "vcal"
@@ -42,11 +42,8 @@ dev = [
 [project.scripts]
 vcal = "vcal_cli.main:main"
 
-[tool.setuptools]
+[tool.hatch.build.targets.wheel]
 packages = ["vcal_cli"]
-
-[tool.setuptools.package-data]
-vcal_cli = ["py.typed"]
 
 [tool.mypy]
 python_version = "3.13"

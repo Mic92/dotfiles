@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "buildbot-pr-check"
@@ -19,9 +19,6 @@ test = [
 
 [project.scripts]
 buildbot-pr-check = "buildbot_pr_check.cli:main"
-
-[tool.setuptools]
-packages = ["buildbot_pr_check"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

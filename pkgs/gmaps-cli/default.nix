@@ -1,7 +1,7 @@
 {
   lib,
   buildPythonApplication,
-  setuptools,
+  hatchling,
 }:
 
 buildPythonApplication {
@@ -12,7 +12,7 @@ buildPythonApplication {
 
   pyproject = true;
 
-  build-system = [ setuptools ];
+  build-system = [ hatchling ];
 
   dependencies = [ ];
 

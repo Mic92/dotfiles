@@ -1,7 +1,7 @@
 {
   lib,
   buildPythonApplication,
-  setuptools,
+  hatchling,
   pytest,
   vcrpy,
   pytest-vcr,
@@ -15,7 +15,7 @@ buildPythonApplication {
 
   pyproject = true;
 
-  build-system = [ setuptools ];
+  build-system = [ hatchling ];
 
   # No runtime dependencies, only stdlib
 

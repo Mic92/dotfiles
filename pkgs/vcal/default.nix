@@ -15,7 +15,7 @@ python3.pkgs.buildPythonApplication {
   pyproject = true;
 
   build-system = with python3.pkgs; [
-    setuptools
+    hatchling
   ];
 
   dependencies = with python3.pkgs; [
