@@ -54,6 +54,12 @@ nix run github:Mic92/dotfiles#browser-cli -- --help
    browser-cli-server
    ```
 
+   Or with nix:
+
+   ```
+   nix shell github:Mic92/dotfiles#browser-cli --command browser-cli-server
+   ```
+
 ## Usage
 
 ### Enable Extension on a Tab
