@@ -31,7 +31,7 @@ class BrowserBridge:
     async def handle_extension(
         self,
         websocket: WebSocketServerProtocol,
-        _path: str,
+        path: str,  # noqa: ARG002
     ) -> None:
         """Handle connection from browser extension."""
         logger.info("Browser extension connected")
@@ -44,7 +44,7 @@ class BrowserBridge:
         finally:
             self.extension_client = None
 
-    async def handle_cli(self, websocket: WebSocketServerProtocol, _path: str) -> None:
+    async def handle_cli(self, websocket: WebSocketServerProtocol, path: str) -> None:  # noqa: ARG002
         """Handle connection from CLI client."""
         logger.info("CLI client connected")
         self.cli_clients.add(websocket)
