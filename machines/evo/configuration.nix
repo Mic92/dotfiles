@@ -30,6 +30,7 @@
     self.inputs.retiolum.darwinModules.tinc
     self.inputs.retiolum.darwinModules.retiolum
     self.inputs.retiolum.darwinModules.ca
+    ../../nixosModules/tum-vpn
   ];
 
   system.activationScripts.postActivation.text = ''
