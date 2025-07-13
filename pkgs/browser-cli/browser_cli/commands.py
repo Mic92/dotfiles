@@ -4,96 +4,113 @@ from dataclasses import dataclass
 
 
 @dataclass
-class BaseCommand:
-    """Base command with common server parameter."""
+class NavigateCommand:
+    """Navigate to a URL."""
+
+    url: str
+    server: str = "ws://localhost:9223"
+
+
+@dataclass
+class BackCommand:
+    """Go back in browser history."""
 
     server: str = "ws://localhost:9223"
 
 
 @dataclass
-class NavigateCommand(BaseCommand):
-    """Navigate to a URL."""
-
-    url: str
-
-
-@dataclass
-class BackCommand(BaseCommand):
-    """Go back in browser history."""
-
-
-@dataclass
-class ForwardCommand(BaseCommand):
+class ForwardCommand:
     """Go forward in browser history."""
 
+    server: str = "ws://localhost:9223"
+
 
 @dataclass
-class ClickCommand(BaseCommand):
+class ClickCommand:
     """Click an element."""
 
     selector: str
+    server: str = "ws://localhost:9223"
 
 
 @dataclass
-class TypeCommand(BaseCommand):
+class TypeCommand:
     """Type text into an element."""
 
     selector: str
     text: str
+    server: str = "ws://localhost:9223"
 
 
 @dataclass
-class HoverCommand(BaseCommand):
+class HoverCommand:
     """Hover over an element."""
 
     selector: str
+    server: str = "ws://localhost:9223"
 
 
 @dataclass
-class DragCommand(BaseCommand):
+class DragCommand:
     """Drag from one element to another."""
 
     start: str
     end: str
+    server: str = "ws://localhost:9223"
 
 
 @dataclass
-class SelectCommand(BaseCommand):
+class SelectCommand:
     """Select an option in a dropdown."""
 
     selector: str
     option: str
+    server: str = "ws://localhost:9223"
 
 
 @dataclass
-class WaitCommand(BaseCommand):
+class WaitCommand:
     """Wait for specified seconds."""
 
     seconds: float
+    server: str = "ws://localhost:9223"
 
 
 @dataclass
-class KeyCommand(BaseCommand):
+class KeyCommand:
     """Press a keyboard key."""
 
     key: str
+    server: str = "ws://localhost:9223"
 
 
 @dataclass
-class ScreenshotCommand(BaseCommand):
+class ScreenshotCommand:
     """Take a screenshot."""
 
     output: str | None = None
+    server: str = "ws://localhost:9223"
 
 
 @dataclass
-class ConsoleCommand(BaseCommand):
+class ConsoleCommand:
     """Get console logs from the page."""
 
+    server: str = "ws://localhost:9223"
+
 
 @dataclass
-class SnapshotCommand(BaseCommand):
+class SnapshotCommand:
     """Get ARIA snapshot of the page."""
+
+    server: str = "ws://localhost:9223"
+
+
+@dataclass
+class InstallHostCommand:
+    """Install native messaging host for Firefox."""
+
+    # No server parameter needed for this command
 
 
 # Type alias for all command types
@@ -111,4 +128,5 @@ Command = (
     | ScreenshotCommand
     | ConsoleCommand
     | SnapshotCommand
+    | InstallHostCommand
 )

@@ -17,6 +17,7 @@
           vcal = pkgs.callPackage ./vcal { };
           buildbot-pr-check = pkgs.python3.pkgs.callPackage ./buildbot-pr-check { };
           claude-md = pkgs.python3.pkgs.callPackage ./claude-md { };
+          browser-cli = pkgs.python3.pkgs.callPackage ./browser-cli { };
         }
         // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
           blueutil = pkgs.callPackage ./blueutil { };

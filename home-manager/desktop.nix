@@ -65,6 +65,7 @@
       inxi
       self.packages.${pkgs.stdenv.hostPlatform.system}.gmaps-cli
       self.packages.${pkgs.stdenv.hostPlatform.system}.kagi-search
+      self.packages.${pkgs.stdenv.hostPlatform.system}.browser-cli
     ]
     ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
       (self.inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (_oldAttrs: {
