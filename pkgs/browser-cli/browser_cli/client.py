@@ -199,16 +199,49 @@ class BrowserCLI:
         else:
             print("No console logs available")
 
-    async def snapshot(self) -> None:
+    async def snapshot(self, offset: int | None = None, limit: int | None = None) -> None:
         """Get ARIA snapshot of the page."""
-        result = await self.send_command("snapshot")
+        params = {}
+        if offset is not None:
+            params["offset"] = offset
+        if limit is not None:
+            params["limit"] = limit
+
+        result = await self.send_command("snapshot", params)
 
         if "snapshot" in result:
             snapshot = result["snapshot"]
+            total_nodes = result.get("totalNodes", 0)
+
             if not snapshot:
                 print("Empty snapshot")
             else:
+                # Show pagination info if applicable
+                if offset is not None or limit is not None:
+                    current_offset = offset or 0
+                    shown = len(snapshot)
+                    print(
+                        f"=== Showing nodes {current_offset + 1}-{current_offset + shown} "
+                        f"of {total_nodes} ===",
+                    )
+                    if current_offset + shown < total_nodes:
+                        print(f"=== Use --offset {current_offset + shown} to see more ===")
+                    print()
+
                 self._print_snapshot(snapshot)
+
+                # Show navigation hint at the bottom too for large outputs
+                if (
+                    limit is not None
+                    and len(snapshot) == limit
+                    and current_offset + shown < total_nodes
+                ):
+                    print()
+                    print(
+                        f"=== Showing nodes {current_offset + 1}-{current_offset + shown} "
+                        f"of {total_nodes} ===",
+                    )
+                    print(f"=== Use --offset {current_offset + shown} to see more ===")
         else:
             print("No snapshot available")
 

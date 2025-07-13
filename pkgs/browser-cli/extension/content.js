@@ -290,22 +290,24 @@ function findElement(params) {
 
 /**
  * Get ARIA snapshot of the page
- * @returns {AriaNode[]} Array of ARIA nodes
+ * @param {number} [offset=0] - Start offset for pagination
+ * @param {number} [limit] - Maximum number of nodes to return
+ * @returns {{nodes: AriaNode[], totalNodes: number}} Array of ARIA nodes and total count
  */
-function getAriaSnapshot() {
+function getAriaSnapshot(offset = 0, limit) {
   /** @type {AriaNode[]} */
-  const snapshot = [];
+  const allNodes = [];
 
   /**
-   * Process a DOM node recursively
+   * Process a DOM node recursively to collect all nodes
    * @param {Node} node - DOM node to process
    * @param {number} [level=0] - Nesting level
    */
-  function processNode(node, level = 0) {
+  function collectNode(node, level = 0) {
     if (node.nodeType === Node.TEXT_NODE) {
       const text = (node.textContent || "").trim();
       if (text) {
-        snapshot.push({
+        allNodes.push({
           type: "text",
           content: text,
           level,
@@ -351,17 +353,28 @@ function getAriaSnapshot() {
         item.attributes["clickable"] = true;
       }
 
-      snapshot.push(item);
+      allNodes.push(item);
 
       // Process children
       for (const child of element.childNodes) {
-        processNode(child, level + 1);
+        collectNode(child, level + 1);
       }
     }
   }
 
-  processNode(document.body);
-  return snapshot;
+  // Collect all nodes first
+  collectNode(document.body);
+
+  // Apply pagination
+  const totalNodes = allNodes.length;
+  const paginatedNodes = limit
+    ? allNodes.slice(offset, offset + limit)
+    : allNodes.slice(offset);
+
+  return {
+    nodes: paginatedNodes,
+    totalNodes: totalNodes,
+  };
 }
 
 /**
@@ -584,18 +597,22 @@ function handleKey(params) {
 async function handleEval(params) {
   try {
     // Use Function constructor to evaluate the expression in a cleaner scope
-    const func = new Function('return (' + params.expression + ')');
+    const func = new Function("return (" + params.expression + ")");
     const result = func();
-    
+
     // Try to convert result to JSON-serializable format
     try {
-      return { result: JSON.parse(JSON.stringify(result)) };
-    } catch (serializationError) {
+      return { result: structuredClone(result) };
+    } catch {
       // If serialization fails, return a string representation
       return { result: String(result) };
     }
   } catch (error) {
-    throw new Error(`Evaluation error: ${error instanceof Error ? error.message : String(error)}`);
+    throw new Error(
+      `Evaluation error: ${
+        error instanceof Error ? error.message : String(error)
+      }`,
+    );
   }
 }
 
@@ -659,7 +676,11 @@ browser.runtime.onMessage.addListener((message, _sender, _sendResponse) => {
         }
 
         case "getSnapshot": {
-          result = { snapshot: getAriaSnapshot() };
+          const snapshotResult = getAriaSnapshot(params.offset, params.limit);
+          result = {
+            snapshot: snapshotResult.nodes,
+            totalNodes: snapshotResult.totalNodes,
+          };
           break;
         }
 
