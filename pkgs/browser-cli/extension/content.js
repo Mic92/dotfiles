@@ -44,6 +44,9 @@ const MAX_CONSOLE_LOGS = 1000;
 /** @type {HTMLDivElement|undefined} Virtual cursor element */
 let virtualCursor;
 
+/** @type {HTMLInputElement|HTMLTextAreaElement|undefined} Last focused input element */
+let lastFocusedInput;
+
 /**
  * Create and initialize the virtual cursor
  */
@@ -394,6 +397,13 @@ async function handleClick(params) {
   // Delay click to show animation
   await new Promise((resolve) => setTimeout(resolve, 300));
   element.click();
+
+  // Store reference if it's an input or textarea
+  if (element.tagName === "INPUT" || element.tagName === "TEXTAREA") {
+    lastFocusedInput =
+      /** @type {HTMLInputElement|HTMLTextAreaElement} */ (element);
+  }
+
   return { message: `Clicked element: ${params.element}` };
 }
 
@@ -416,6 +426,7 @@ async function handleType(params) {
     moveCursorToElement(element);
     await new Promise((resolve) => setTimeout(resolve, 300));
     element.focus();
+    lastFocusedInput = element; // Store reference
     element.value = params.text;
     element.dispatchEvent(new Event("input", { bubbles: true }));
     element.dispatchEvent(new Event("change", { bubbles: true }));
@@ -566,26 +577,104 @@ async function handleSelect(params) {
  */
 function handleKey(params) {
   /** @type {Element} */
-  const activeElement = document.activeElement || document.body;
-  const event = new KeyboardEvent("keydown", {
-    key: params.key,
-    code: params.key,
+  let activeElement = document.activeElement || document.body;
+  const key = params.key;
+
+  // If the active element is the body but we have a stored input, use that
+  if (activeElement === document.body && lastFocusedInput) {
+    activeElement = lastFocusedInput;
+    // Focus it again
+    lastFocusedInput.focus();
+  }
+
+  // Map single characters to their key codes
+  let code = key;
+  if (key.length === 1) {
+    // For single characters, create proper KeyX code
+    if (key >= "a" && key <= "z") {
+      code = `Key${key.toUpperCase()}`;
+    } else if (key >= "A" && key <= "Z") {
+      code = `Key${key}`;
+    } else if (key >= "0" && key <= "9") {
+      code = `Digit${key}`;
+    }
+  } else {
+    // For special keys, capitalize first letter
+    code = key.charAt(0).toUpperCase() + key.slice(1);
+  }
+
+  // Dispatch keydown event
+  const keydownEvent = new KeyboardEvent("keydown", {
+    key: key,
+    code: code,
     bubbles: true,
     cancelable: true,
   });
-  activeElement.dispatchEvent(event);
+  activeElement.dispatchEvent(keydownEvent);
+
+  // For input/textarea elements, actually insert the character
+  if (
+    key.length === 1 &&
+    (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA")
+  ) {
+    // Check if it's a text-accepting input
+    /** @type {HTMLInputElement|HTMLTextAreaElement} */
+    const inputElement =
+      /** @type {HTMLInputElement|HTMLTextAreaElement} */ (activeElement);
+    if (
+      inputElement.tagName === "TEXTAREA" ||
+      !inputElement.type ||
+      ["text", "password", "email", "search", "tel", "url", "number"].includes(
+        inputElement.type,
+      )
+    ) {
+      const start = inputElement.selectionStart || 0;
+      const end = inputElement.selectionEnd || 0;
+      const value = inputElement.value;
+
+      // Insert character at cursor position
+      inputElement.value = value.slice(0, start) + key + value.slice(end);
+
+      // Move cursor after inserted character
+      inputElement.selectionStart = inputElement.selectionEnd = start + 1;
+
+      // Dispatch input event
+      inputElement.dispatchEvent(
+        new Event("input", { bubbles: true, cancelable: true }),
+      );
+
+      // Dispatch change event (though typically fired on blur)
+      inputElement.dispatchEvent(
+        new Event("change", { bubbles: true, cancelable: true }),
+      );
+    }
+  }
 
   // Also dispatch keyup
   activeElement.dispatchEvent(
     new KeyboardEvent("keyup", {
-      key: params.key,
-      code: params.key,
+      key: key,
+      code: code,
       bubbles: true,
       cancelable: true,
     }),
   );
 
-  return { message: `Pressed key: ${params.key}` };
+  // After Tab, update the last focused input if we've moved to a new input/textarea
+  if (key === "Tab") {
+    setTimeout(() => {
+      const newActive = document.activeElement;
+      if (
+        newActive &&
+        (newActive.tagName === "INPUT" || newActive.tagName === "TEXTAREA")
+      ) {
+        lastFocusedInput =
+          /** @type {HTMLInputElement|HTMLTextAreaElement} */ (newActive);
+      }
+    }, 50);
+  }
+
+  return { message: `Pressed key: ${key}` };
 }
 
 /**
