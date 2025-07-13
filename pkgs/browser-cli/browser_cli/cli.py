@@ -165,8 +165,21 @@ Examples:
 
     console_parser = subparsers.add_parser("console", help="Get console logs from the page")
     snapshot_parser = subparsers.add_parser("snapshot", help="Get ARIA snapshot of the page")
-    
-    eval_parser = subparsers.add_parser("eval", help="Evaluate JavaScript expression and return as JSON")
+    snapshot_parser.add_argument(
+        "--offset",
+        type=int,
+        help="Start offset for pagination (default: 0)",
+    )
+    snapshot_parser.add_argument(
+        "--limit",
+        type=int,
+        help="Maximum number of nodes to return",
+    )
+
+    eval_parser = subparsers.add_parser(
+        "eval",
+        help="Evaluate JavaScript expression and return as JSON",
+    )
     eval_parser.add_argument("expression", help="JavaScript expression to evaluate")
 
     # Tab management commands
@@ -310,7 +323,11 @@ def parse_args(argv: list[str] | None = None) -> Command:  # noqa: C901, PLR0911
         case "console":
             return ConsoleCommand(common=common)
         case "snapshot":
-            return SnapshotCommand(common=common)
+            return SnapshotCommand(
+                common=common,
+                offset=getattr(args, "offset", None),
+                limit=getattr(args, "limit", None),
+            )
         case "install-host":
             return InstallHostCommand(common=common)
         case "list-tabs":
@@ -365,8 +382,8 @@ async def execute_command(cmd: Command) -> None:  # noqa: C901, PLR0912
             await client.screenshot(output)
         case ConsoleCommand():
             await client.console()
-        case SnapshotCommand():
-            await client.snapshot()
+        case SnapshotCommand(offset=offset, limit=limit):
+            await client.snapshot(offset, limit)
         case ListTabsCommand():
             await client.list_tabs()
         case NewTabCommand(url=url):

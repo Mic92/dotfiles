@@ -40,6 +40,7 @@ export default [
         Error: "readonly",
         String: "readonly",
         CSS: "readonly",
+        structuredClone: "readonly",
       },
     },
     plugins: {

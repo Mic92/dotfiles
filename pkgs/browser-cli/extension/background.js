@@ -210,7 +210,7 @@ async function handleCommand(message) {
       }
 
       case "snapshot": {
-        result = await getSnapshot(tabId);
+        result = await getSnapshot(tabId, typedParams);
         break;
       }
 
@@ -463,10 +463,11 @@ async function getConsoleLogs(tabId) {
 /**
  * Get ARIA snapshot of the page
  * @param {string} [tabId] - Target tab ID
+ * @param {object} [params] - Parameters including offset and limit
  * @returns {Promise<object>}
  */
-async function getSnapshot(tabId) {
-  return sendToContentScript("getSnapshot", {}, tabId);
+async function getSnapshot(tabId, params = {}) {
+  return sendToContentScript("getSnapshot", params, tabId);
 }
 
 /**
@@ -539,7 +540,7 @@ async function createNewTab(url) {
  * Evaluate JavaScript expression in the page context
  * @param {string} expression - JavaScript expression to evaluate
  * @param {string} [tabId] - Target tab ID
- * @returns {Promise<{result: any}>}
+ * @returns {Promise<object>}
  */
 async function evalExpression(expression, tabId) {
   return sendToContentScript("eval", { expression }, tabId);

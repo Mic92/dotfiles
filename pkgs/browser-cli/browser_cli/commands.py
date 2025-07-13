@@ -120,6 +120,8 @@ class SnapshotCommand:
     """Get ARIA snapshot of the page."""
 
     common: CommonOptions
+    offset: int | None = None
+    limit: int | None = None
 
 
 @dataclass

@@ -3,4 +3,4 @@
 from browser_cli.bridge import NativeMessagingBridge
 from browser_cli.cli import main
 
-__all__ = ["main", "NativeMessagingBridge"]
+__all__ = ["NativeMessagingBridge", "main"]
