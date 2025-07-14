@@ -58,15 +58,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1752061878,
-        "narHash": "sha256-FxEd1MEQRu+o2cpF9ysIUWW7dS+Tzhy77BkjoRF+ajM=",
+        "lastModified": 1752481947,
+        "narHash": "sha256-WsyGA+ogXrq3IfowW0s98nUs54bv2ISL0lYQEXWZcOU=",
         "rev": "6ccee60e392d25413a53f5a1d22812c50eb1c00b",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/624a41d10b542b37ea6a15007b0df7520c43c05a.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/6ccee60e392d25413a53f5a1d22812c50eb1c00b.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.clan.lol/clan/clan-core/archive/darwin-sandbox.tar.gz"
+        "url": "https://git.clan.lol/clan/clan-core/archive/main.tar.gz"
       }
     },
     "crane": {
@@ -735,16 +735,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1752010431,
-        "narHash": "sha256-NAV7/ryqG3P9WcknYzNIIgyBk5V5p5gBTXfLXFdP0uc=",
+        "lastModified": 1752305350,
+        "narHash": "sha256-5sUt2hme7ReKCTUgcspIMnkZg80//zy8S6Yd27fKZJQ=",
         "owner": "nix-community",
         "repo": "srvos",
-        "rev": "0b3026958df11dbd14d09b3d8923ecb9ea3f43c2",
+        "rev": "c1229575cfc15ae7ad5d9f9bfa90c8a996a23d72",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
-        "ref": "dotfiles",
         "repo": "srvos",
         "type": "github"
       }
