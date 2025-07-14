@@ -82,10 +82,10 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
-    srvos.url = "github:nix-community/srvos/dotfiles";
+    srvos.url = "github:nix-community/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
-    clan-core.url = "https://git.clan.lol/clan/clan-core/archive/darwin-sandbox.tar.gz";
+    clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
     #clan-core.url = "path:///Users/joerg/git/clan-core";
     #clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=nixos-rebuild";
     #clan-core.url = "git+file:///home/joerg/work/clan/clan-core";
