@@ -335,7 +335,18 @@ alias rm='rm -rv'
 function cp() {
   if [[ "$#" -ne 1 ]] || [[ ! -f "$1" ]]; then
     if [[ -n ${commands[xcp]} ]]; then
-      command xcp -r "$@"
+      # Check if -r or --recursive is already in the arguments
+      local has_recursive=0
+      for arg in "$@"; do
+        if [[ "$arg" == "-r" ]] || [[ "$arg" == "--recursive" ]] || [[ "$arg" =~ ^-[^-]*r ]]; then
+          has_recursive=1
+          break
+        fi
+      done
+      if [[ $has_recursive -eq 0 ]]; then
+        set -- -r "$@"
+      fi
+      command xcp "$@"
     else
       command cp --reflink=auto -arv "$@"
     fi
