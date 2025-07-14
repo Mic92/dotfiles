@@ -14,10 +14,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1752362477,
-        "narHash": "sha256-+8MLBdYkXJPM73pLVRaee147wW/EwUZogMcG49CZgWY=",
+        "lastModified": 1752508254,
+        "narHash": "sha256-9JXJvCK2CuTPKhCHomxHPCC2Af6dyGZZZ9BDnuWbYfw=",
         "ref": "refs/heads/main",
-        "rev": "e2ee963b1e9aba369db08b34456b6d79c3de37db",
+        "rev": "c5b6bf0322f38bc6e6efcadfc5c929985a7dd417",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
@@ -58,11 +58,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1752492004,
-        "narHash": "sha256-89jsAGVF5WZXBA7I9Uaf0kCIcMXcKOXFqOasSe1VG8E=",
-        "rev": "6fe2b195a9ae70d4dd99aeede13d6a8b346dfd1a",
+        "lastModified": 1752517920,
+        "narHash": "sha256-3ytFNXIsFnEczKUxn3ZIIldPg1eTJsM1nUm+ur1lt/c=",
+        "rev": "3537e8ed9b333211082de1e3fc529d817cbc25ea",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/6fe2b195a9ae70d4dd99aeede13d6a8b346dfd1a.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/3537e8ed9b333211082de1e3fc529d817cbc25ea.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -273,11 +273,11 @@
         "zon2nix": "zon2nix"
       },
       "locked": {
-        "lastModified": 1752468632,
-        "narHash": "sha256-3Hmq3XMTPg12zWmNsDgxTCsXDthBi+Umfv/XeNsa9Es=",
+        "lastModified": 1752517912,
+        "narHash": "sha256-yEF9gRWR1rGaiiqZ45r+cx68/HpIdzAsCzuj6RCul+s=",
         "owner": "ghostty-org",
         "repo": "ghostty",
-        "rev": "37c2c3a4ba696e90f0be2b7c2c0cd6f613dbf70a",
+        "rev": "ca5e36197784cc60b194baae02e0ba4ad7a5f310",
         "type": "github"
       },
       "original": {
