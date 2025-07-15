@@ -36,7 +36,7 @@
       cheat
       xdg-utils
       tio
-      code-cursor
+      vscode
 
       (mpv.override { scripts = [ mpvScripts.mpris ]; })
       playerctl
