@@ -26,6 +26,6 @@ jobs:
         uses: mic92/update-flake-inputs@main
         with:
           github-token: ${{ steps.app-token.outputs.token }}
-          automerge: true
+          auto-merge: true
           # Optional: exclude specific files or inputs
           # exclude-patterns: 'tests/**/flake.nix,examples/**/flake.nix#home-manager'
