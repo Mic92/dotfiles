@@ -8,7 +8,7 @@ git -C "$HOME/git/nix" push --force origin main
 
 pushd "$HOME/.homesick/repos/dotfiles"
 nix flake update --commit-lock-file nix
-merge-when-green --wait
+merge-when-green
 nix run ".#hm" -- switch
 if command -v nixos-version; then
   sudo nixos-rebuild switch --flake .#
