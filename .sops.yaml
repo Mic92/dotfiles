@@ -5,5 +5,5 @@ creation_rules:
   - path_regex: darwin/evo/test-secrets.yml
     key_groups:
       - age:
-          - *mic92-darwin 
-          - *evo 
+          - *mic92-darwin
+          - *evo
