@@ -121,18 +121,15 @@
         "nixpkgs": [
           "nixpkgs"
         ],
-        "systems": [
-          "systems"
-        ],
         "treefmt-nix": [
           "treefmt-nix"
         ]
       },
       "locked": {
-        "lastModified": 1752451292,
-        "narHash": "sha256-jvLbfYFvcS5f0AEpUlFS2xZRnK770r9TRM2smpUFFaU=",
+        "lastModified": 1752585673,
+        "narHash": "sha256-AQCAMTrm5A6U1tfJGuBH+/J2Nc8zyqCCzqwhPXqyDUA=",
         "ref": "refs/heads/main",
-        "rev": "309e06fbc9a6d133ab6dd1c7d8e4876526e058bb",
+        "rev": "2ef93d4773f234c633250ce04868098a32bb6ef7",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
@@ -273,11 +270,11 @@
         "zon2nix": "zon2nix"
       },
       "locked": {
-        "lastModified": 1752549967,
-        "narHash": "sha256-VN5xvtRDEEWiQttAQ9ityZ1hkD/Yx7BWFYW4RecPYQQ=",
+        "lastModified": 1752584906,
+        "narHash": "sha256-AR/K3T1vH82M/2A0YQrkVsmJAX63jfrNJgpxMVD9i6o=",
         "owner": "ghostty-org",
         "repo": "ghostty",
-        "rev": "0c01c4c4ec90d90d59276b6044f8d08ec3a58192",
+        "rev": "55a2e73b00e01ad5128bad58744c907acaf24e8d",
         "type": "github"
       },
       "original": {
