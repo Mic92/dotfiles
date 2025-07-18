@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+# Open HTML email content in Firefox
+
+import email
+import subprocess
+import sys
+import tempfile
+import time
+from email import policy
+from email.message import EmailMessage
+
+
+def find_html_part(msg: EmailMessage) -> str | None:
+    """Recursively find HTML part in email message"""
+    if msg.is_multipart():
+        for part in msg.walk():
+            if part.get_content_type() == "text/html":
+                content: str = part.get_content()
+                return content
+    if msg.get_content_type() == "text/html":
+        html_content: str = msg.get_content()
+        return html_content
+    return None
+
+
+def main() -> None:
+    # Read email from stdin
+    msg_bytes = sys.stdin.buffer.read()
+    msg = email.message_from_bytes(msg_bytes, policy=policy.default)  # type: ignore[arg-type]
+    assert isinstance(msg, EmailMessage)
+
+    # Extract HTML content
+    html_content = find_html_part(msg)
+
+    if html_content:
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".html") as f:
+            f.write(html_content)
+            f.flush()
+            subprocess.run(["firefox", f.name], check=True)
+            time.sleep(5)
+    else:
+        print("No HTML content found in this email", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    main()
