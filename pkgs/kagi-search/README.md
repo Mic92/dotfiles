@@ -43,3 +43,7 @@ kagi-search -d "search query"
 2. Go to [Settings → Session Link](https://kagi.com/settings?p=api)
 3. Generate and copy session link
 4. Store in password manager
+
+# Filter list for kagi:
+
+https://codeberg.org/bbbhltz/16CompaniesFilters/raw/branch/main/16companies.txt
