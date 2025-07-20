@@ -7,6 +7,7 @@
 - Write Python code for 3.13 that conforms to `ruff format`, `ruff check` and
   `mypy`
 - Use `$HOME/.claude/outputs` as a scratch directory.
+- Use `gm` / graphicsmagic when converting images
 - Always test/lint/format your code before committing.
 - Add debug output or unit tests when troubleshooting.
 - Avoid mocking in tests.
