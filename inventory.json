@@ -21,31 +21,5 @@
     "installer": {
       "name": "installer"
     }
-  },
-  "services": {
-    "borgbackup": {
-      "blob64": {
-        "enabled": true,
-        "meta": {
-          "name": "blob64"
-        }
-      }
-    },
-    "sshd": {
-      "mic92": {
-        "enabled": true,
-        "meta": {
-          "name": "mic92"
-        }
-      }
-    },
-    "zerotier": {
-      "mic92": {
-        "enabled": true,
-        "meta": {
-          "name": "mic92"
-        }
-      }
-    }
   }
 }
