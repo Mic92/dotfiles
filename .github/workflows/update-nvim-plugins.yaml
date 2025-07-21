@@ -12,14 +12,6 @@ jobs:
         with:
           submodules: true
       - uses: cachix/install-nix-action@v31
-      - name: Check if nixpkgs was updated
-        id: check-nixpkgs
-        run: |
-          if git diff origin/${{ github.base_ref }}..HEAD -- flake.lock | grep -q '"nixpkgs"'; then
-            echo "nixpkgs_updated=true" >> $GITHUB_OUTPUT
-          else
-            echo "nixpkgs_updated=false" >> $GITHUB_OUTPUT
-          fi
       - name: Update vim plugins
         if: steps.check-nixpkgs.outputs.nixpkgs_updated == 'true'
         run: |
