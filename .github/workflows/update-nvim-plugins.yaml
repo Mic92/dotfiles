@@ -1,0 +1,43 @@
+name: "Update nvim plugins on nixpkgs update"
+on:
+  pull_request:
+    paths:
+      - "flake.lock"
+jobs:
+  update-vim-plugins:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.user.login == 'dotfiles-flake-updater[bot]' && (contains(github.event.pull_request.body, 'nixpkgs') || contains(github.event.pull_request.title, 'nixpkgs'))
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - uses: cachix/install-nix-action@v31
+      - name: Check if nixpkgs was updated
+        id: check-nixpkgs
+        run: |
+          if git diff origin/${{ github.base_ref }}..HEAD -- flake.lock | grep -q '"nixpkgs"'; then
+            echo "nixpkgs_updated=true" >> $GITHUB_OUTPUT
+          else
+            echo "nixpkgs_updated=false" >> $GITHUB_OUTPUT
+          fi
+      - name: Update vim plugins
+        if: steps.check-nixpkgs.outputs.nixpkgs_updated == 'true'
+        run: |
+          nix run .#nvim -- --headless "+Lazy! update" +qa
+          cp $HOME/.config/nvim-mic92/lazy-lock.json home/.config/nvim/lazy-lock.json
+      - name: Check for changes
+        id: check-changes
+        run: |
+          if git diff --quiet home/.config/nvim/lazy-lock.json; then
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+          else
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+          fi
+      - name: Commit vim plugin updates
+        if: steps.check-nixpkgs.outputs.nixpkgs_updated == 'true' && steps.check-changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "dotfiles-flake-updater[bot]"
+          git config user.email "dotfiles-flake-updater[bot]@users.noreply.github.com"
+          git add home/.config/nvim/lazy-lock.json
+          git commit -m "Update vim plugins"
+          git push origin HEAD
