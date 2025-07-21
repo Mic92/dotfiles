@@ -425,38 +425,6 @@
         "type": "github"
       }
     },
-    "nether": {
-      "inputs": {
-        "clan-core": [
-          "clan-core"
-        ],
-        "data-mesher": [
-          "data-mesher"
-        ],
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1732368528,
-        "narHash": "sha256-WO0NAN1OLXGY9+OnFS673pEoPVOhSbOSB1Pwd0vcb4s=",
-        "owner": "Lassulus",
-        "repo": "nether",
-        "rev": "c242b4f6d61185edfadaccd9df4bb4e086627d32",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Lassulus",
-        "repo": "nether",
-        "type": "github"
-      }
-    },
     "nix": {
       "inputs": {
         "flake-compat": [],
@@ -664,7 +632,6 @@
         "home-manager": "home-manager",
         "hyprspace": "hyprspace",
         "lanzaboote": "lanzaboote",
-        "nether": "nether",
         "nix": "nix",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",

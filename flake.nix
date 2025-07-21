@@ -115,13 +115,6 @@
     flake-utils.url = "github:numtide/flake-utils";
     flake-utils.inputs.systems.follows = "systems";
 
-    nether.url = "github:Lassulus/nether";
-    nether.inputs.clan-core.follows = "clan-core";
-    nether.inputs.nixpkgs.follows = "nixpkgs";
-    nether.inputs.treefmt-nix.follows = "treefmt-nix";
-    nether.inputs.flake-parts.follows = "flake-parts";
-    nether.inputs.data-mesher.follows = "data-mesher";
-
     ghostty.url = "github:ghostty-org/ghostty";
     ghostty.inputs.nixpkgs.follows = "nixpkgs";
     ghostty.inputs.flake-compat.follows = "";
