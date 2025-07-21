@@ -13,7 +13,6 @@ jobs:
           submodules: true
       - uses: cachix/install-nix-action@v31
       - name: Update vim plugins
-        if: steps.check-nixpkgs.outputs.nixpkgs_updated == 'true'
         run: |
           nix run .#nvim -- --headless "+Lazy! update" +qa
           cp $HOME/.config/nvim-mic92/lazy-lock.json home/.config/nvim/lazy-lock.json
@@ -26,7 +25,7 @@ jobs:
             echo "has_changes=true" >> $GITHUB_OUTPUT
           fi
       - name: Commit vim plugin updates
-        if: steps.check-nixpkgs.outputs.nixpkgs_updated == 'true' && steps.check-changes.outputs.has_changes == 'true'
+        if: steps.check-changes.outputs.has_changes == 'true'
         run: |
           git config user.name "dotfiles-flake-updater[bot]"
           git config user.email "dotfiles-flake-updater[bot]@users.noreply.github.com"
