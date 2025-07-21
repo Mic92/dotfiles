@@ -100,23 +100,22 @@
       apps.default = config.apps.bootstrap-dotfiles;
 
       legacyPackages = {
-        homeConfigurations =
-          {
-            # this one should work for aarch64-linux/x86_64-linux and macos
-            common = homeManagerConfiguration { };
-          }
-          // lib.optionalAttrs (pkgs.hostPlatform.system == "aarch64-darwin") {
-            macos = homeManagerConfiguration { extraModules = [ ./macos.nix ]; };
-          }
-          // lib.optionalAttrs (pkgs.hostPlatform.system == "x86_64-linux") {
-            desktop = homeManagerConfiguration { extraModules = [ ./desktop.nix ]; };
+        homeConfigurations = {
+          # this one should work for aarch64-linux/x86_64-linux and macos
+          common = homeManagerConfiguration { };
+        }
+        // lib.optionalAttrs (pkgs.hostPlatform.system == "aarch64-darwin") {
+          macos = homeManagerConfiguration { extraModules = [ ./macos.nix ]; };
+        }
+        // lib.optionalAttrs (pkgs.hostPlatform.system == "x86_64-linux") {
+          desktop = homeManagerConfiguration { extraModules = [ ./desktop.nix ]; };
 
-            # different username
-            mic92 = homeManagerConfiguration { extraModules = [ { home.username = "mic92"; } ]; };
+          # different username
+          mic92 = homeManagerConfiguration { extraModules = [ { home.username = "mic92"; } ]; };
 
-            eve = homeManagerConfiguration { extraModules = [ ./eve.nix ]; };
-            bernie = homeManagerConfiguration { extraModules = [ ./bernie.nix ]; };
-          };
+          eve = homeManagerConfiguration { extraModules = [ ./eve.nix ]; };
+          bernie = homeManagerConfiguration { extraModules = [ ./bernie.nix ]; };
+        };
       };
     };
 }

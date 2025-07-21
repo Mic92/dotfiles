@@ -177,65 +177,65 @@ in
           journal-content = "all";
         }
       ];
-      zone =
-        [
-          {
-            domain = "thalheim.io";
-            file = zoneWithAcme "thalheim.io";
-            template = "master";
-          }
-          {
-            domain = "lekwati.com";
-            file = zoneWithAcme "lekwati.com";
-            template = "master";
-          }
-          {
-            domain = "tierheilpraxis-jessican.de";
-            file = ./tierheilpraxis-jessican.de.zone;
-            template = "master";
-          }
-          {
-            domain = "r";
-            file = "${self.inputs.retiolum}/zones/r.zone";
-            template = "retiolum";
-          }
-          {
-            domain = "w";
-            file = "${self.inputs.retiolum}/zones/w.zone";
-            template = "retiolum";
-          }
-          {
-            domain = "matchbox.thalheim.io";
-            file = dyndns "matchbox.thalheim.io";
-            template = "dyndns";
-            acl = [ "matchbox_acl" ];
-          }
-          {
-            domain = "bernie.thalheim.io";
-            file = dyndns "bernie.thalheim.io";
-            template = "dyndns";
-            acl = [ "bernie_acl" ];
-          }
-          {
-            domain = "turingmachine.thalheim.io";
-            file = dyndns "turingmachine.thalheim.io";
-            template = "dyndns";
-            acl = [ "turingmachine_acl" ];
-          }
-          {
-            domain = "blob64.thalheim.io";
-            file = dyndns "blob64.thalheim.io";
-            template = "dyndns";
-            acl = [ "blob64_acl" ];
-          }
-          {
-            domain = "rauter.thalheim.io";
-            file = dyndns "rauter.thalheim.io";
-            template = "dyndns";
-            acl = [ "rauter_acl" ];
-          }
-        ]
-        ++ builtins.map
+      zone = [
+        {
+          domain = "thalheim.io";
+          file = zoneWithAcme "thalheim.io";
+          template = "master";
+        }
+        {
+          domain = "lekwati.com";
+          file = zoneWithAcme "lekwati.com";
+          template = "master";
+        }
+        {
+          domain = "tierheilpraxis-jessican.de";
+          file = ./tierheilpraxis-jessican.de.zone;
+          template = "master";
+        }
+        {
+          domain = "r";
+          file = "${self.inputs.retiolum}/zones/r.zone";
+          template = "retiolum";
+        }
+        {
+          domain = "w";
+          file = "${self.inputs.retiolum}/zones/w.zone";
+          template = "retiolum";
+        }
+        {
+          domain = "matchbox.thalheim.io";
+          file = dyndns "matchbox.thalheim.io";
+          template = "dyndns";
+          acl = [ "matchbox_acl" ];
+        }
+        {
+          domain = "bernie.thalheim.io";
+          file = dyndns "bernie.thalheim.io";
+          template = "dyndns";
+          acl = [ "bernie_acl" ];
+        }
+        {
+          domain = "turingmachine.thalheim.io";
+          file = dyndns "turingmachine.thalheim.io";
+          template = "dyndns";
+          acl = [ "turingmachine_acl" ];
+        }
+        {
+          domain = "blob64.thalheim.io";
+          file = dyndns "blob64.thalheim.io";
+          template = "dyndns";
+          acl = [ "blob64_acl" ];
+        }
+        {
+          domain = "rauter.thalheim.io";
+          file = dyndns "rauter.thalheim.io";
+          template = "dyndns";
+          acl = [ "rauter_acl" ];
+        }
+      ]
+      ++
+        builtins.map
           (name: {
             domain = "_acme-challenge.${name}";
 

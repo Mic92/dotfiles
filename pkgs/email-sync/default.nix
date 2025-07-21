@@ -19,25 +19,24 @@
 writeShellApplication {
   name = "email-sync";
 
-  runtimeInputs =
-    [
-      isync
-      notmuch
-      afew
-      coreutils
-      gnugrep
-      jq
-      khard
-      w3m
-      rbw
-      claude-code
-    ]
-    ++ lib.optionals stdenv.isLinux [
-      libnotify
-    ]
-    ++ lib.optionals stdenv.isDarwin [
-      terminal-notifier
-    ];
+  runtimeInputs = [
+    isync
+    notmuch
+    afew
+    coreutils
+    gnugrep
+    jq
+    khard
+    w3m
+    rbw
+    claude-code
+  ]
+  ++ lib.optionals stdenv.isLinux [
+    libnotify
+  ]
+  ++ lib.optionals stdenv.isDarwin [
+    terminal-notifier
+  ];
 
   text = ''
     # email-sync - Sync emails from IMAP and tag with afew
