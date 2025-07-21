@@ -35,6 +35,5 @@
     self.inputs.retiolum.nixosModules.ca
 
     ./zerotier.nix
-    self.inputs.nether.nixosModules.hosts
   ];
 }
