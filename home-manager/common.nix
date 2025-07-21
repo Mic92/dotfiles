@@ -51,7 +51,7 @@
       direnv
       nix-direnv
       fzf
-      lsd
+      eza
       zoxide
       pinentry-curses
       fd
