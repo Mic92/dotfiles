@@ -42,9 +42,6 @@ in
       forceSSL = true;
       locations."/".extraConfig = ''
         index index.php;
-        autoindex on;
-        autoindex_exact_size off;
-        autoindex_localtime on;
       '';
       locations."^~ /data".extraConfig = ''
         deny all;
