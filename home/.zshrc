@@ -202,7 +202,7 @@ bindkey "^[[3~" delete-char # bind delete key
 ## Completion
 autoload colors; colors;
 autoload -Uz compinit
-compinit
+compinit -C
 
 if [[ -n ${commands[fzf]} ]]; then
   source ~/.zsh-fzf-tab/fzf-tab.zsh
