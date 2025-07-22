@@ -78,6 +78,7 @@
     ../../nixosModules/openldap
     ../../nixosModules/promtail.nix
     ../../nixosModules/rtorrent.nix
+    ../../nixosModules/flood.nix
     ../../nixosModules/samba-dl.nix
     ../../nixosModules/tracing.nix
     ../../nixosModules/uptermd.nix

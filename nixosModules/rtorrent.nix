@@ -1,12 +1,4 @@
-{ config, pkgs, ... }:
-let
-  conf = pkgs.writeText "ldap.conf" ''
-    base dc=eve
-    host localhost:389
-    pam_login_attribute mail
-    pam_filter objectClass=flood
-  '';
-in
+{ pkgs, ... }:
 {
   services.rtorrent.enable = true;
   services.rtorrent.user = "joerg";
@@ -19,46 +11,13 @@ in
   '';
   services.rtorrent.openFirewall = true;
 
-  security.pam.services.flood.text = ''
-    auth required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${conf}
-    account required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${conf}
-  '';
-
-  systemd.services.flood = {
-    wantedBy = [ "multi-user.target" ];
-    wants = [ "rtorrent.service" ];
-    after = [ "rtorrent.service" ];
-    serviceConfig = {
-      User = "joerg";
-      ExecStart = "${pkgs.nodePackages.flood}/bin/flood --auth none --port 3003 --rtsocket /run/rtorrent/rpc.sock";
-    };
-  };
-
-  security.acme.certs."flood.r".server = config.retiolum.ca.acmeURL;
-
+  # Warez nginx configuration
   services.nginx = {
     package = pkgs.nginxQuic.override {
       modules = [
         pkgs.nginxModules.pam
         pkgs.nginxModules.fancyindex
-        pkgs.nginxModules.zstd
       ];
-    };
-    virtualHosts."flood.r" = {
-      # TODO
-      enableACME = true;
-      addSSL = true;
-      root = "${pkgs.nodePackages.flood}/lib/node_modules/flood/dist/assets";
-      locations."/api".extraConfig = ''
-        auth_pam "Ldap password";
-        auth_pam_service_name "flood";
-        proxy_pass       http://localhost:3003;
-      '';
-      locations."/".extraConfig = ''
-        auth_pam "Ldap password";
-        auth_pam_service_name "flood";
-        try_files $uri /index.html;
-      '';
     };
     virtualHosts."warez.r" = {
       # TODO
