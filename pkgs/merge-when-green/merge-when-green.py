@@ -515,7 +515,8 @@ def main() -> int:
 
     # Determine branch name
     username = os.environ.get("USER", "unknown")
-    branch = f"merge-when-green-{username}"
+    hostname = os.uname().nodename
+    branch = f"merge-when-green-{username}-{hostname}"
 
     # Check if PR already exists
     pr_state = get_pr_state(branch)
