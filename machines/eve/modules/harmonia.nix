@@ -1,8 +1,9 @@
 { config, self, ... }:
 {
   imports = [ self.inputs.harmonia.nixosModules.harmonia ];
-  services.harmonia-dev.enable = true;
-  services.harmonia-dev.signKeyPaths = [ config.sops.secrets.harmonia-key.path ];
+  services.harmonia-dev.cache.enable = true;
+  services.harmonia-dev.cache.signKeyPaths = [ config.sops.secrets.harmonia-key.path ];
+  services.harmonia-dev.daemon.enable = true;
 
   nix.settings.allowed-users = [ "harmonia" ];
 

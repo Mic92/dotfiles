@@ -71,11 +71,11 @@
     },
     "crane": {
       "locked": {
-        "lastModified": 1751562746,
-        "narHash": "sha256-smpugNIkmDeicNz301Ll1bD7nFOty97T79m4GUMUczA=",
+        "lastModified": 1753316655,
+        "narHash": "sha256-tzWa2kmTEN69OEMhxFy+J2oWSvZP5QhEgXp3TROOzl0=",
         "owner": "ipetkov",
         "repo": "crane",
-        "rev": "aed2020fd3dc26e1e857d4107a5a67a33ab6c1fd",
+        "rev": "f35a3372d070c9e9ccb63ba7ce347f0634ddf3d2",
         "type": "github"
       },
       "original": {
@@ -281,6 +281,9 @@
     },
     "harmonia": {
       "inputs": {
+        "crane": [
+          "crane"
+        ],
         "flake-parts": [
           "flake-parts"
         ],
@@ -292,15 +295,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1752524639,
-        "narHash": "sha256-Va47dLMm1DpVEUGGs58Qh/z+/kpmXRE0pN6nvtYKk20=",
+        "lastModified": 1753517173,
+        "narHash": "sha256-VkcZLyRpH3tqzH3GDGXhch2BsGhrk/0J1pOjOseSjIU=",
         "owner": "nix-community",
         "repo": "harmonia",
-        "rev": "47d447dd3392dc97ea24d3368dfd84b14d2c5f09",
+        "rev": "72e6095e3f66406ba1f4dafbee4537c021ea017f",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
+        "ref": "harmonia-next",
         "repo": "harmonia",
         "type": "github"
       }
@@ -400,7 +404,9 @@
     },
     "lanzaboote": {
       "inputs": {
-        "crane": "crane",
+        "crane": [
+          "crane"
+        ],
         "flake-compat": [],
         "flake-parts": [
           "flake-parts"
@@ -620,6 +626,7 @@
       "inputs": {
         "buildbot-nix": "buildbot-nix",
         "clan-core": "clan-core",
+        "crane": "crane",
         "data-mesher": "data-mesher_2",
         "disko": "disko",
         "flake-fmt": "flake-fmt",

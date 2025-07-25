@@ -15,10 +15,11 @@
     hercules-ci-effects.inputs.nixpkgs.follows = "nixpkgs";
     hercules-ci-effects.inputs.flake-parts.follows = "flake-parts";
 
-    harmonia.url = "github:nix-community/harmonia";
+    harmonia.url = "github:nix-community/harmonia/harmonia-next";
     harmonia.inputs.nixpkgs.follows = "nixpkgs";
     harmonia.inputs.flake-parts.follows = "flake-parts";
     harmonia.inputs.treefmt-nix.follows = "treefmt-nix";
+    harmonia.inputs.crane.follows = "crane";
 
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
@@ -111,6 +112,7 @@
     lanzaboote.inputs.flake-parts.follows = "flake-parts";
     lanzaboote.inputs.flake-compat.follows = "";
     lanzaboote.inputs.pre-commit-hooks-nix.follows = "";
+    lanzaboote.inputs.crane.follows = "crane";
 
     flake-utils.url = "github:numtide/flake-utils";
     flake-utils.inputs.systems.follows = "systems";
@@ -119,6 +121,8 @@
     ghostty.inputs.nixpkgs.follows = "nixpkgs";
     ghostty.inputs.flake-compat.follows = "";
     ghostty.inputs.flake-utils.follows = "flake-utils";
+
+    crane.url = "github:ipetkov/crane";
 
     #microvm.url = "github:astro/microvm.nix";
     #microvm.inputs.nixpkgs.follows = "nixpkgs";
