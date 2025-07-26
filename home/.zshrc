@@ -440,6 +440,21 @@ nixos-build() {
 
     command nixos-rebuild build --flake ".#$name" "$@"
 }
+nixos-eval() {
+    if [ $# -lt 1 ]; then
+        if [ $OSTYPE = linux* ]; then
+          name=$(</proc/sys/kernel/hostname)
+        else
+          echo "USAGE: $0 name" >&2
+          return 1
+        fi
+    else
+        name=$1
+        shift
+    fi
+
+    command nixos-rebuild dry-build --flake ".#$name" "$@"
+}
 
 darwin-build() {
     if [ $# -lt 1 ]; then
