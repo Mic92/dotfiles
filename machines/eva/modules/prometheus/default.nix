@@ -1,7 +1,5 @@
 { config, ... }:
 {
-  sops.secrets.prometheus-hass-token.owner = "prometheus";
-
   imports = [
     ./matrix-alertmanager.nix
     ./irc-alertmanager.nix
@@ -107,16 +105,6 @@
             labels.org = "uni";
           }
         ];
-      }
-      {
-        job_name = "homeassistant";
-        scrape_interval = "60s";
-        metrics_path = "/api/prometheus";
-
-        authorization.credentials_file = config.sops.secrets.prometheus-hass-token.path;
-
-        scheme = "https";
-        static_configs = [ { targets = [ "hass.thalheim.io:443" ]; } ];
       }
       #{
       #  metrics_path = "/prometheus";
