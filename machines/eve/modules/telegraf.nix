@@ -27,6 +27,14 @@
           ipv6 = true;
         }
       ];
+
+    prometheus = [
+      {
+        # harmonia
+        urls = [ "http://127.0.0.1:5000/metrics" ];
+        metric_version = 2;
+      }
+    ];
   };
 
   systemd.services.telegraf.path = [ "/run/wrappers" ];
