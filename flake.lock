@@ -295,11 +295,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1753517173,
-        "narHash": "sha256-VkcZLyRpH3tqzH3GDGXhch2BsGhrk/0J1pOjOseSjIU=",
+        "lastModified": 1753534442,
+        "narHash": "sha256-G9i0fhVLoST8Ea1BS6VPB6DF6+Gji+Mhyt6g521vuUc=",
         "owner": "nix-community",
         "repo": "harmonia",
-        "rev": "72e6095e3f66406ba1f4dafbee4537c021ea017f",
+        "rev": "d500a8790a13f6e5fe17cbccc999712f20db56be",
         "type": "github"
       },
       "original": {
@@ -443,10 +443,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1752518245,
-        "narHash": "sha256-uF1gmX6O+aPfm4bevQluMmXEyy+iQgAwsqUtle5F9W8=",
+        "lastModified": 1753773194,
+        "narHash": "sha256-Ay0px7GO1kLI16hpIMt+7NsF1dN7Fc1Vh970R2b721I=",
         "ref": "refs/heads/main",
-        "rev": "5eab5871f303b09c1ae2c73558154e45e7f05334",
+        "rev": "e7b74d3a68ca406633dd4abaeae45a92180f42f7",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
