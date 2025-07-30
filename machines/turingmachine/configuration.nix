@@ -95,8 +95,6 @@
 
   services.ollama.enable = true;
 
-  services.udev.packages = with pkgs; [ platformio-core.udev ];
-
   services.pcscd.enable = true;
 
   users.mutableUsers = false;
@@ -108,8 +106,6 @@
   #services.tlp.settings."PCIE_ASPM_ON_BAT" = "powersupersave";
 
   hardware.keyboard.qmk.enable = true;
-
-  #services.udev.packages = [ pkgs.platformio ];
 
   services.gvfs.enable = true;
 
