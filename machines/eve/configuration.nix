@@ -64,6 +64,7 @@
     ./modules/step-ca/default.nix
     ./modules/syncthing.nix
     ./modules/teamspeak.nix
+    ./modules/telegraf.nix
     ./modules/tt-rss.nix
     ./modules/unbound.nix
     ./modules/users.nix
