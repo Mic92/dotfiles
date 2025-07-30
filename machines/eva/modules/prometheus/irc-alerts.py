@@ -173,13 +173,13 @@ class PrometheusWebHook(BaseHTTPRequestHandler):
         self.handle()
 
     # for testing
-    def do_GET(self) -> None:  # noqa: N802
+    def do_GET(self) -> None:
         self.send_response(200)
         self.send_header("Content-type", "text/plain")
         self.end_headers()
         self.wfile.write(b"ok")
 
-    def do_POST(self) -> None:  # noqa: N802
+    def do_POST(self) -> None:
         content_type = self.headers.get("content-type", "")
         # Parse content type header, splitting on semicolon to ignore parameters
         content_type = content_type.split(";")[0].strip()
