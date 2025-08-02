@@ -23,7 +23,6 @@
     ./modules/caddy.nix
     ./modules/data-mesher.nix
     ./modules/disko.nix
-    ./modules/hass-agent.nix
     ./modules/networkmanager
     ./modules/nfs.nix
     ./modules/packages.nix
