@@ -792,7 +792,7 @@ nix-update() {
 }
 nix-fast-build() {
   if [[ -f $HOME/git/nix-fast-build/flake.nix ]]; then
-    nix run $HOME/git/nix-fast-build#nix-ci-build -- "$@"
+    nix run $HOME/git/nix-fast-build#nix-fast-build -- "$@"
   else
     nix run github:mic92/nix-fast-build -- "$@"
   fi
