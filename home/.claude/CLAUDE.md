@@ -8,6 +8,7 @@
   `mypy`
 - Use `$HOME/.claude/outputs` as a scratch directory.
 - Use `gm` / graphicsmagic when converting images
+- Avoid using `cd`, prefer absolute paths
 - Always test/lint/format your code before committing.
 - Add debug output or unit tests when troubleshooting.
 - Avoid mocking in tests.
