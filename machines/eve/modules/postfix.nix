@@ -90,8 +90,8 @@ in
       virtual_transport = "lmtp:unix:private/dovecot-lmtp";
 
       # bigger attachment size
-      mailbox_size_limit = "202400000";
-      message_size_limit = "51200000";
+      mailbox_size_limit = 202400000;
+      message_size_limit = 51200000;
       smtpd_helo_required = "yes";
       smtpd_delay_reject = "yes";
       strict_rfc821_envelopes = "yes";
