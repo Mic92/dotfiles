@@ -733,41 +733,104 @@ function handleKey(params) {
   });
   activeElement.dispatchEvent(keydownEvent);
 
-  // For input/textarea elements, actually insert the character
-  if (
-    key.length === 1 &&
-    (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA")
-  ) {
-    // Check if it's a text-accepting input
-    /** @type {HTMLInputElement|HTMLTextAreaElement} */
-    const inputElement =
-      /** @type {HTMLInputElement|HTMLTextAreaElement} */ (activeElement);
-    if (
-      inputElement.tagName === "TEXTAREA" ||
-      !inputElement.type ||
-      ["text", "password", "email", "search", "tel", "url", "number"].includes(
-        inputElement.type,
-      )
-    ) {
+  // Handle special keys
+  if (key === "Tab") {
+    // For Tab, simulate the default tab behavior
+    const focusableElements = Array.from(
+      document.querySelectorAll(
+        'a[href], button, input, textarea, select, [tabindex]:not([tabindex="-1"])',
+      ),
+    ).filter((el) => !el.disabled && el.offsetParent !== null);
+
+    const currentIndex = focusableElements.indexOf(activeElement);
+    if (currentIndex !== -1 && currentIndex < focusableElements.length - 1) {
+      focusableElements[currentIndex + 1].focus();
+    }
+  } else if (key === "Enter") {
+    // For Enter key on form inputs, trigger form submission if in a form
+    if (activeElement.tagName === "INPUT" && activeElement.form) {
+      const submitButton = activeElement.form.querySelector(
+        'button[type="submit"], input[type="submit"]',
+      );
+      if (submitButton) {
+        submitButton.click();
+      } else {
+        // Dispatch submit event on the form
+        activeElement.form.dispatchEvent(
+          new Event("submit", { bubbles: true, cancelable: true }),
+        );
+      }
+    } else if (activeElement.tagName === "TEXTAREA") {
+      // For textarea, insert a newline
+      const inputElement = /** @type {HTMLTextAreaElement} */ (activeElement);
       const start = inputElement.selectionStart || 0;
       const end = inputElement.selectionEnd || 0;
       const value = inputElement.value;
 
-      // Insert character at cursor position
-      inputElement.value = value.slice(0, start) + key + value.slice(end);
-
-      // Move cursor after inserted character
+      inputElement.value = value.slice(0, start) + "\n" + value.slice(end);
       inputElement.selectionStart = inputElement.selectionEnd = start + 1;
 
-      // Dispatch input event
       inputElement.dispatchEvent(
         new Event("input", { bubbles: true, cancelable: true }),
       );
+    }
+  } else if (key.length === 1) {
+    // For single character keys, insert the text
+    if (
+      activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA"
+    ) {
+      // Check if it's a text-accepting input
+      /** @type {HTMLInputElement|HTMLTextAreaElement} */
+      const inputElement =
+        /** @type {HTMLInputElement|HTMLTextAreaElement} */ (activeElement);
+      if (
+        inputElement.tagName === "TEXTAREA" ||
+        !inputElement.type ||
+        ["text", "password", "email", "search", "tel", "url", "number"]
+          .includes(
+            inputElement.type,
+          )
+      ) {
+        const start = inputElement.selectionStart || 0;
+        const end = inputElement.selectionEnd || 0;
+        const value = inputElement.value;
 
-      // Dispatch change event (though typically fired on blur)
-      inputElement.dispatchEvent(
-        new Event("change", { bubbles: true, cancelable: true }),
-      );
+        // Insert character at cursor position
+        inputElement.value = value.slice(0, start) + key + value.slice(end);
+
+        // Move cursor after inserted character
+        inputElement.selectionStart = inputElement.selectionEnd = start + 1;
+
+        // Dispatch input event
+        inputElement.dispatchEvent(
+          new Event("input", { bubbles: true, cancelable: true }),
+        );
+
+        // Dispatch change event (though typically fired on blur)
+        inputElement.dispatchEvent(
+          new Event("change", { bubbles: true, cancelable: true }),
+        );
+      }
+    } else if (activeElement.contentEditable === "true") {
+      // Handle contenteditable elements
+      const selection = window.getSelection();
+      if (selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        const textNode = document.createTextNode(key);
+        range.insertNode(textNode);
+
+        // Move cursor after the inserted text
+        range.setStartAfter(textNode);
+        range.setEndAfter(textNode);
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        // Dispatch input event
+        activeElement.dispatchEvent(
+          new Event("input", { bubbles: true, cancelable: true }),
+        );
+      }
     }
   }
 
