@@ -512,12 +512,26 @@ async function handleHover(params) {
   });
   moveCursorToElement(element);
   await new Promise((resolve) => setTimeout(resolve, 300));
-  const event = new MouseEvent("mouseover", {
-    view: window,
-    bubbles: true,
-    cancelable: true,
-  });
-  element.dispatchEvent(event);
+
+  // Dispatch both mouseenter and mouseover events for better compatibility
+  // mouseenter is what most modern hover handlers listen to
+  element.dispatchEvent(
+    new MouseEvent("mouseenter", {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    }),
+  );
+
+  // Also dispatch mouseover for legacy compatibility
+  element.dispatchEvent(
+    new MouseEvent("mouseover", {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+    }),
+  );
+
   return { message: `Hovered over: ${params.element}` };
 }
 
