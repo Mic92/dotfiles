@@ -4,7 +4,7 @@
     ./common.nix
     ./modules/atuin-autosync.nix
     ./modules/calendar.nix
-    ./modules/claude.nix
+    ./modules/ai.nix
     ./modules/mail.nix
   ];
 

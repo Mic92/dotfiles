@@ -3,11 +3,18 @@
 }:
 {
   perSystem =
-    { pkgs, system, ... }:
+    {
+      pkgs,
+      system,
+      inputs',
+      ...
+    }:
     {
       packages = {
         merge-when-green = pkgs.callPackage ./merge-when-green { };
-        claude-code = pkgs.callPackage ./claude-code { };
+        claude-code = pkgs.callPackage ./claude-code {
+          claude-code = inputs'.nix-ai-tools.packages.claude-code;
+        };
         gmaps-cli = pkgs.python3.pkgs.callPackage ./gmaps-cli { };
         db-cli = pkgs.callPackage ./db-cli { };
         direnv-instant = pkgs.callPackage ./direnv-instant { };

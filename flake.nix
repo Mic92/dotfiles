@@ -85,7 +85,7 @@
     srvos.url = "github:nix-community/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
-    clan-core.url = "https://git.clan.lol/clan/clan-core/archive/local-build.tar.gz";
+    clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
 
     #clan-core.url = "path:///Users/joerg/git/clan-core";
     #clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=nixos-rebuild";
@@ -124,6 +124,19 @@
     ghostty.inputs.flake-utils.follows = "flake-utils";
 
     crane.url = "github:ipetkov/crane";
+
+    blueprint = {
+      url = "github:numtide/blueprint";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.systems.follows = "systems";
+    };
+
+    nix-ai-tools = {
+      url = "github:numtide/nix-ai-tools/claude-code";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.blueprint.follows = "blueprint";
+    };
 
     #microvm.url = "github:astro/microvm.nix";
     #microvm.inputs.nixpkgs.follows = "nixpkgs";
