@@ -2,7 +2,7 @@
 {
   imports = [
     ./modules/calendar.nix
-    ./modules/claude.nix
+    ./modules/ai.nix
     ./modules/mail.nix
   ];
   home.packages = [

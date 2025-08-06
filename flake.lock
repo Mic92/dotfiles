@@ -1,5 +1,28 @@
 {
   "nodes": {
+    "blueprint": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "systems": [
+          "systems"
+        ]
+      },
+      "locked": {
+        "lastModified": 1753215027,
+        "narHash": "sha256-JvMF7CODUM3C475oApJ8oQ0ym3tvBWkL7C5M2SDAW2g=",
+        "owner": "numtide",
+        "repo": "blueprint",
+        "rev": "9f47c131a6bcc8796df7c76450e7883247339dc6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "blueprint",
+        "type": "github"
+      }
+    },
     "buildbot-nix": {
       "inputs": {
         "flake-parts": [
@@ -58,15 +81,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1754393588,
-        "narHash": "sha256-223g8BhZYx7gb3Nge9rYu/oIArzaYVL9HAcXsLCkPe8=",
-        "rev": "0bbce7cf578bdcaf7ecc0e31761a3627c69f95c9",
+        "lastModified": 1754449232,
+        "narHash": "sha256-pZYBZFjYMhaWrMn1BFqZ21AZvlUmafqB7hLJDUwC/pU=",
+        "rev": "0f499fc65154e24ae81b040994ca64a143e3db33",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/0bbce7cf578bdcaf7ecc0e31761a3627c69f95c9.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/0f499fc65154e24ae81b040994ca64a143e3db33.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.clan.lol/clan/clan-core/archive/local-build.tar.gz"
+        "url": "https://git.clan.lol/clan/clan-core/archive/main.tar.gz"
       }
     },
     "crane": {
@@ -457,6 +480,33 @@
         "url": "https://github.com/Mic92/nix-1"
       }
     },
+    "nix-ai-tools": {
+      "inputs": {
+        "blueprint": [
+          "blueprint"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1754418686,
+        "narHash": "sha256-0HqxqRG+4iM224FbfPZJhghY9xx8SgYhdSpCYh3tnhQ=",
+        "owner": "numtide",
+        "repo": "nix-ai-tools",
+        "rev": "21b858254e0d587be5cc511a1a096a2e1ca88091",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "ref": "claude-code",
+        "repo": "nix-ai-tools",
+        "type": "github"
+      }
+    },
     "nix-darwin": {
       "inputs": {
         "nixpkgs": [
@@ -624,6 +674,7 @@
     },
     "root": {
       "inputs": {
+        "blueprint": "blueprint",
         "buildbot-nix": "buildbot-nix",
         "clan-core": "clan-core",
         "crane": "crane",
@@ -640,6 +691,7 @@
         "hyprspace": "hyprspace",
         "lanzaboote": "lanzaboote",
         "nix": "nix",
+        "nix-ai-tools": "nix-ai-tools",
         "nix-darwin": "nix-darwin",
         "nix-index-database": "nix-index-database",
         "nixos-facter-modules": "nixos-facter-modules",
