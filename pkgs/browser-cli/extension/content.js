@@ -106,7 +106,7 @@ function initializeVirtualCursor() {
         opacity: 0;
       }
     }
-    
+
     @keyframes browser-cli-click {
       0% {
         transform: translate(-50%, -50%) scale(1);
@@ -160,7 +160,66 @@ function moveCursorToElement(element, showClick = false) {
 }
 
 /**
- * Override console methods to capture logs
+ * Inject console override into page context to capture all logs
+ */
+function injectConsoleOverride() {
+  const script = document.createElement("script");
+  script.textContent = `
+    (function() {
+      // Override console methods in page context
+      const consoleMethods = ['log', 'error', 'warn', 'info', 'debug'];
+
+      consoleMethods.forEach(method => {
+        const original = console[method];
+        console[method] = function(...args) {
+          // Send to content script via postMessage
+          window.postMessage({
+            type: 'browser-cli-console',
+            method: method,
+            args: args.map(arg => {
+              try {
+                return typeof arg === 'object' ? JSON.stringify(arg) : String(arg);
+              } catch {
+                return '[Circular reference]';
+              }
+            }),
+            timestamp: new Date().toISOString()
+          }, '*');
+
+          // Call original method
+          original.apply(console, args);
+        };
+      });
+    })();
+  `;
+  (document.head || document.documentElement).appendChild(script);
+  script.remove();
+}
+
+// Listen for console messages from the page context
+window.addEventListener("message", (event) => {
+  // Only process messages from the same origin
+  if (event.source !== window) return;
+
+  if (event.data && event.data.type === "browser-cli-console") {
+    consoleLogs.push({
+      type: event.data.method,
+      message: event.data.args.join(" "),
+      timestamp: event.data.timestamp,
+    });
+
+    // Keep only last MAX_CONSOLE_LOGS entries
+    if (consoleLogs.length > MAX_CONSOLE_LOGS) {
+      consoleLogs.shift();
+    }
+  }
+});
+
+// Inject the console override as soon as possible
+injectConsoleOverride();
+
+/**
+ * Override console methods in content script context to capture logs from eval
  */
 /** @type {Array<keyof Console>} */
 const consoleMethods =
@@ -482,24 +541,44 @@ async function handleDrag(params) {
     selectorType: params.selectorType,
   });
 
-  // Simulate drag and drop
+  // Get positions
   const startRect = startElement.getBoundingClientRect();
   const endRect = endElement.getBoundingClientRect();
+  const startX = startRect.left + startRect.width / 2;
+  const startY = startRect.top + startRect.height / 2;
+  const endX = endRect.left + endRect.width / 2;
+  const endY = endRect.top + endRect.height / 2;
 
   // Move cursor to start position
   moveCursorToElement(startElement, true);
   await new Promise((resolve) => setTimeout(resolve, 300));
 
-  // Drag start
+  // Create a DataTransfer object
+  const dataTransfer = new DataTransfer();
+  dataTransfer.effectAllowed = "all";
+  dataTransfer.dropEffect = "move";
+
+  // 1. Dispatch mousedown (to potentially focus the element)
   startElement.dispatchEvent(
     new MouseEvent("mousedown", {
       view: window,
       bubbles: true,
       cancelable: true,
-      clientX: startRect.left + startRect.width / 2,
-      clientY: startRect.top + startRect.height / 2,
+      clientX: startX,
+      clientY: startY,
     }),
   );
+
+  // 2. Dispatch dragstart on the source element
+  const dragStartEvent = new DragEvent("dragstart", {
+    view: window,
+    bubbles: true,
+    cancelable: true,
+    clientX: startX,
+    clientY: startY,
+    dataTransfer: dataTransfer,
+  });
+  startElement.dispatchEvent(dragStartEvent);
 
   // Animate cursor to end position
   if (virtualCursor) {
@@ -508,25 +587,53 @@ async function handleDrag(params) {
     await new Promise((resolve) => setTimeout(resolve, 800));
   }
 
-  // Drag over
+  // 3. Dispatch dragenter on the target element
   endElement.dispatchEvent(
-    new MouseEvent("mousemove", {
+    new DragEvent("dragenter", {
       view: window,
       bubbles: true,
       cancelable: true,
-      clientX: endRect.left + endRect.width / 2,
-      clientY: endRect.top + endRect.height / 2,
+      clientX: endX,
+      clientY: endY,
+      dataTransfer: dataTransfer,
     }),
   );
 
-  // Drop
+  // 4. Dispatch dragover on the target element (required for drop to work)
+  const dragOverEvent = new DragEvent("dragover", {
+    view: window,
+    bubbles: true,
+    cancelable: true,
+    clientX: endX,
+    clientY: endY,
+    dataTransfer: dataTransfer,
+  });
+  endElement.dispatchEvent(dragOverEvent);
+
+  // Small delay to simulate real drag behavior
+  await new Promise((resolve) => setTimeout(resolve, 50));
+
+  // 5. Dispatch drop on the target element
   endElement.dispatchEvent(
-    new MouseEvent("mouseup", {
+    new DragEvent("drop", {
       view: window,
       bubbles: true,
       cancelable: true,
-      clientX: endRect.left + endRect.width / 2,
-      clientY: endRect.top + endRect.height / 2,
+      clientX: endX,
+      clientY: endY,
+      dataTransfer: dataTransfer,
+    }),
+  );
+
+  // 6. Dispatch dragend on the source element
+  startElement.dispatchEvent(
+    new DragEvent("dragend", {
+      view: window,
+      bubbles: true,
+      cancelable: true,
+      clientX: endX,
+      clientY: endY,
+      dataTransfer: dataTransfer,
     }),
   );
 
@@ -760,7 +867,8 @@ browser.runtime.onMessage.addListener((message, _sender, _sendResponse) => {
         }
 
         case "getConsole": {
-          result = { logs: consoleLogs };
+          // Return a copy of the logs array to ensure it's properly serialized
+          result = { logs: [...consoleLogs] };
           break;
         }
 
