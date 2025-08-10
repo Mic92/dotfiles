@@ -392,15 +392,16 @@ def wait_for_pr_completion(branch: str, interval: int = 10) -> tuple[bool, str]:
 
 
 def setup_and_prepare(target_branch: str) -> int:
-    """Run flake-fmt and pull latest changes."""
-    # Run flake-fmt
+    """Pull latest changes, then run flake-fmt."""
+    # Pull latest changes first
+    print_header("Pulling latest changes...")
+    run_command(["git", "pull", "--rebase", "origin", target_branch])
+
+    # Run flake-fmt after rebase
     if not run_flake_fmt(target_branch):
         # flake-fmt made changes and opened lazygit
         return 1
 
-    # Pull latest changes
-    print_header("Pulling latest changes...")
-    run_command(["git", "pull", "--rebase", "origin", target_branch])
     return 0
 
 
