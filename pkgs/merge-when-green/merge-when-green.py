@@ -128,6 +128,16 @@ def get_default_branch() -> str:
     return result.stdout.strip()
 
 
+def get_current_branch() -> str:
+    """Get the current git branch name."""
+    result = run_command(
+        ["git", "branch", "--show-current"],
+        capture_stdout=True,
+        silent=True,
+    )
+    return result.stdout.strip()
+
+
 def has_changes(remote: str, target_branch: str) -> bool:
     """Check if there are any changes to merge."""
     result = run_command(
@@ -501,28 +511,35 @@ def main() -> int:
 
     # Get target branch
     print_header("Getting repository information...")
-    target_branch = get_default_branch()
-    print_info(f"Target branch: {Colors.BLUE}{target_branch}{Colors.RESET}")
+    default_branch = get_default_branch()
+    current_branch = get_current_branch()
+
+    print_info(f"Target branch: {Colors.BLUE}{default_branch}{Colors.RESET}")
 
     # Setup and prepare
-    if setup_and_prepare(target_branch) != 0:
+    if setup_and_prepare(default_branch) != 0:
         return 1
 
     # Check if we have changes
-    if not has_changes("origin", target_branch):
+    if not has_changes("origin", default_branch):
         print_success("\n✓ No changes to merge")
         return 0
 
     # Determine branch name
-    username = os.environ.get("USER", "unknown")
-    hostname = os.uname().nodename
-    branch = f"merge-when-green-{username}-{hostname}"
+    if current_branch != default_branch:
+        # Use current branch if we're not on the default branch
+        branch = current_branch
+    else:
+        # Create a unique branch name if we're on the default branch
+        username = os.environ.get("USER", "unknown")
+        hostname = os.uname().nodename
+        branch = f"merge-when-green-{username}-{hostname}"
 
     # Check if PR already exists
     pr_state = get_pr_state(branch)
     if pr_state == "OPEN":
         print_warning("\nExisting PR found, checking status...")
-        run_command(["gh", "pr", "checks", target_branch], check=False)
+        run_command(["gh", "pr", "checks", branch], check=False)
 
     # Push changes
     success, result = push_changes_to_branch(branch)
@@ -532,7 +549,7 @@ def main() -> int:
     pushed_commit = result
 
     # Create or update PR
-    handle_pr_creation(branch, target_branch, pr_state, args.message)
+    handle_pr_creation(branch, default_branch, pr_state, args.message)
 
     # Wait for checks unless --no-wait is specified
     if args.no_wait:
@@ -540,7 +557,7 @@ def main() -> int:
         return 0
 
     # Handle waiting and merging
-    return handle_wait_and_merge(branch, pushed_commit, target_branch)
+    return handle_wait_and_merge(branch, pushed_commit, default_branch)
 
 
 if __name__ == "__main__":
