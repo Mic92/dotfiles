@@ -25,3 +25,4 @@ nixos/eve/modules/hydra/.terraform.lock.hcl
 
 # nix results
 result
+pkgs/browser-cli/extension/web-ext-artifacts
