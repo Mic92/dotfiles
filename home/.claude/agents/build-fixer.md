@@ -1,6 +1,6 @@
 ---
 name: build-fixer
-description: Use this agent when you need to build a project and resolve any compilation errors, linting issues, or formatting problems. The agent will attempt to fix build failures, satisfy linters, and ensure code formatting standards are met. Examples:\n\n<example>\nContext: The user has just written new code or modified existing code and wants to ensure it builds and passes all quality checks.\nuser: "I've added a new module to the project. Can you build it and fix any issues?"\nassistant: "I'll use the build-fixer agent to build the project and resolve any compilation or linting issues."\n<commentary>\nSince the user wants to build and fix issues, use the Task tool to launch the build-fixer agent.\n</commentary>\n</example>\n\n<example>\nContext: The user encounters build errors or linting failures.\nuser: "The build is failing with some type errors and the linter is complaining about formatting"\nassistant: "Let me use the build-fixer agent to diagnose and fix these build and linting issues."\n<commentary>\nThe user has build and linting problems, so use the build-fixer agent to resolve them.\n</commentary>\n</example>
+description: Use this agent when you need to build a project and resolve any compilation errors, linting issues, or formatting problems. The agent will run project-specific build commands, formatters (like flake-fmt, prettier, black), and linters (like shellcheck, ruff, mypy) to fix issues. Use this agent proactively after making code changes to ensure code quality, or when explicitly asked to fix build/lint/format issues. Examples:\n\n<example>\nContext: The user has just written new code or modified existing code and wants to ensure it builds and passes all quality checks.\nuser: "I've added a new module to the project. Can you build it and fix any issues?"\nassistant: "I'll use the build-fixer agent to build the project and resolve any compilation or linting issues."\n<commentary>\nSince the user wants to build and fix issues, use the Task tool to launch the build-fixer agent.\n</commentary>\n</example>\n\n<example>\nContext: The user encounters build errors or linting failures.\nuser: "The build is failing with some type errors and the linter is complaining about formatting"\nassistant: "Let me use the build-fixer agent to diagnose and fix these build and linting issues."\n<commentary>\nThe user has build and linting problems, so use the build-fixer agent to resolve them.\n</commentary>\n</example>\n\n<example>\nContext: Code was just modified and needs formatting/linting.\nuser: "Fix flake-fmt. This is a linter"\nassistant: "I'll use the build-fixer agent to run flake-fmt and fix any formatting issues."\n<commentary>\nThe user wants to run a project-specific formatter/linter, so use the build-fixer agent.\n</commentary>\n</example>
 model: sonnet
 color: red
 ---
@@ -53,7 +53,8 @@ Your core objectives:
 **Best Practices:**
 
 - Use absolute paths instead of `cd` when possible
-- For commands that might take >10 seconds, always use pueue:
+- For build commands (not linter commands) that might take >10 seconds, always
+  use pueue:
   ```bash
   id=$(pueue add -- nix build | grep -oE '[0-9]+'); pueue wait "$id"; pueue log "$id"
   ```
