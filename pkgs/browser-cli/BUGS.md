@@ -1,24 +1,33 @@
 # Browser CLI Bugs
 
-## 1. Console logs from page load may not be captured
+## Bugs found during Amazon testing
 
-- **Issue**: Console logs that happen during initial page load might not be
-  captured
+### 1. Hidden autofill fields can interfere with form filling
+
+- **Issue**: When typing a password on Amazon's email entry page, the text went
+  into a hidden autofill field instead of waiting for the actual password page
 - **Details**:
-  - The console override in content.js needs to be active before any console
-    calls
-  - Logs generated after content script injection work fine
-  - Console logs triggered via `browser-cli eval` are captured correctly
-- **Workaround**: Reload the page after extension is active or use eval to
-  trigger console logs
+  - Amazon's login has a two-step process: first email, then password on
+    separate pages
+  - The email page contains a hidden password field
+    (id="ap-credential-autofill-hint") for browser autofill
+  - Using `input[type="password"]` selector matched this hidden field instead of
+    the visible one
+  - The password was typed into the hidden field before clicking Continue
+  - After navigating to the actual password page, the field was empty
+- **Impact**: Multi-step authentication flows may fail if hidden autofill fields
+  are present
+- **Workaround**: Be more specific with selectors or check element visibility
+  before typing
 
-## 2. Drag command may not trigger drop events properly
+### 2. File downloads are not captured or tracked
 
-- **Issue**: The `drag` command doesn't seem to trigger the drop event or
-  complete the drag action
+- **Issue**: Clicking on invoice/bill links that trigger downloads doesn't
+  provide feedback
 - **Details**:
-  - Drag command executes without error but items don't actually move
-  - Status messages don't update (e.g., "List reordered!" never appears)
-  - The drag might only be dispatching dragstart/dragend without proper drop
-    handling
-- **Impact**: Cannot use drag command for actual drag-and-drop functionality
+  - Clicking "Rechnung" (invoice) links on Amazon likely triggers PDF downloads
+  - browser-cli doesn't indicate whether a download was initiated
+  - No way to verify if download succeeded or access downloaded files
+  - The page doesn't change after clicking download links
+- **Impact**: Cannot verify or test file download functionality
+- **Feature gap**: browser-cli needs download handling capabilities
