@@ -537,9 +537,6 @@ def main() -> int:
 
     # Check if PR already exists
     pr_state = get_pr_state(branch)
-    if pr_state == "OPEN":
-        print_warning("\nExisting PR found, checking status...")
-        run_command(["gh", "pr", "checks", branch], check=False)
 
     # Push changes
     success, result = push_changes_to_branch(branch)
