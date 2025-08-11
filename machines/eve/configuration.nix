@@ -55,7 +55,6 @@
     ./modules/postgresql.nix
     ./modules/redis.nix
     ./modules/remote-builder.nix
-    ./modules/renovate
     ./modules/rspamd/rspamd.nix
     ./modules/shadowsocks.nix
     ./modules/shiori
