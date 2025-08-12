@@ -11,6 +11,7 @@
         { config, ... }:
         {
           backup = builtins.filter (name: name != "blob64") config.nixos;
+          wireguard-peers = builtins.filter (name: name != "eve" && name != "eva") config.nixos;
         };
 
       machines.evo.machineClass = "darwin";
@@ -69,6 +70,30 @@
               "thalheim.io"
             ];
           };
+        };
+
+        wireguard = {
+          module.name = "wireguard";
+          module.input = "clan-core";
+
+          roles.controller.settings.domain = "x";
+          roles.peer.settings.domain = "x";
+
+          roles.controller.machines.eva = {
+            settings = {
+              endpoint = "eva.i";
+              port = 51820;
+            };
+          };
+          roles.controller.machines.eve = {
+            settings = {
+              endpoint = "eve.i";
+              port = 51820;
+            };
+          };
+
+          roles.peer.settings.controller = "eva";
+          roles.peer.tags.wireguard-peers = { };
         };
       };
     };
