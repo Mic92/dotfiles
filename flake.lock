@@ -81,15 +81,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1754658847,
-        "narHash": "sha256-jz7pdC0DbBBvF81NBkFePLh2BfzKOxzHEBCO8ONJvyQ=",
-        "rev": "df096fe53bb8578790680f4e52e9e4e24af85a1e",
+        "lastModified": 1755013240,
+        "narHash": "sha256-4r2Mg+m7fFi60T7If3nztDBYEi4Rd58q531ge8bFSSA=",
+        "rev": "7b227c7aa51ed70641f3cf3bc70e08a5ff9e542a",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/df096fe53bb8578790680f4e52e9e4e24af85a1e.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/7b227c7aa51ed70641f3cf3bc70e08a5ff9e542a.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.clan.lol/clan/clan-core/archive/main.tar.gz"
+        "url": "https://git.clan.lol/clan/clan-core/archive/init-wireguard-service.tar.gz"
       }
     },
     "crane": {
@@ -768,11 +768,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1753006367,
-        "narHash": "sha256-tzbhc4XttkyEhswByk5R38l+ztN9UDbnj0cTcP6Hp9A=",
+        "lastModified": 1754847726,
+        "narHash": "sha256-2vX8QjO5lRsDbNYvN9hVHXLU6oMl+V/PsmIiJREG4rE=",
         "owner": "numtide",
         "repo": "treefmt-nix",
-        "rev": "421b56313c65a0815a52b424777f55acf0b56ddf",
+        "rev": "7d81f6fb2e19bf84f1c65135d1060d829fae2408",
         "type": "github"
       },
       "original": {
