@@ -88,7 +88,7 @@
           roles.controller.machines.eve = {
             settings = {
               endpoint = "eve.i";
-              port = 51820;
+              port = 51821;
             };
           };
 
