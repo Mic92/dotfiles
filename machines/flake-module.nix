@@ -1,4 +1,4 @@
-{ self, ... }:
+{ self, lib, ... }:
 {
   flake.nixosModules.default = ../nixosModules/default.nix;
   clan = {
@@ -94,6 +94,8 @@
 
           roles.peer.settings.controller = "eva";
           roles.peer.tags.wireguard-peers = { };
+
+          roles.peer.machines.turingmachine.settings.controller = lib.mkForce "eve";
         };
       };
     };
