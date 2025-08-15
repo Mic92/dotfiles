@@ -80,6 +80,8 @@
       self.packages.${pkgs.stdenv.hostPlatform.system}.merge-when-green
       self.packages.${pkgs.stdenv.hostPlatform.system}.buildbot-pr-check
       self.inputs.flake-fmt.packages.${pkgs.stdenv.hostPlatform.system}.default
+      self.inputs.nix-diff-rs.packages.${pkgs.stdenv.hostPlatform.system}.default
+      self.inputs.nix-tree-rs.packages.${pkgs.stdenv.hostPlatform.system}.default
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       strace
