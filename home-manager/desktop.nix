@@ -50,7 +50,6 @@
       rbw
       # to fix xdg-open
       glib
-      zoom-us
       (pkgs.writeScriptBin "jellyfinmediaplayer" ''
         # bluetooth speaker
         bluetoothctl connect E6:4D:D6:0A:CC:9B &
