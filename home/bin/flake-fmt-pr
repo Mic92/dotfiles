@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <PR_URL>"
+    echo "Example: $0 https://github.com/NixOS/nixos-hardware/pull/1578"
+    echo "Example: $0 https://gitea.example.com/owner/repo/pulls/123"
+    exit 1
+fi
+
+PR_URL="$1"
+
+# Extract host, owner, repo, and PR number from URL
+if [[ "$PR_URL" =~ ^https://([^/]+)/([^/]+)/([^/]+)/(pull|pulls)/([0-9]+)$ ]]; then
+    PR_NUMBER="${BASH_REMATCH[5]}"
+else
+    echo "Error: Invalid PR URL format"
+    echo "Expected: https://HOST/OWNER/REPO/pull/NUMBER or https://HOST/OWNER/REPO/pulls/NUMBER"
+    exit 1
+fi
+
+# Create worktree directory name
+WORKTREE_DIR="pr-${PR_NUMBER}-format"
+BRANCH_NAME="format-pr-${PR_NUMBER}"
+
+# Remove existing worktree if it exists
+if [ -d "$WORKTREE_DIR" ]; then
+    echo "Removing existing worktree $WORKTREE_DIR..."
+    git worktree remove -f "$WORKTREE_DIR" || true
+fi
+
+# Fetch the PR ref
+echo "Fetching PR #${PR_NUMBER}..."
+git fetch origin "pull/${PR_NUMBER}/head:${BRANCH_NAME}" --force || \
+{ echo "Error: Could not fetch PR ref"; exit 1; }
+
+# Create worktree
+echo "Creating worktree in $WORKTREE_DIR..."
+git worktree add "$WORKTREE_DIR" "$BRANCH_NAME"
+
+# Change to worktree directory
+cd "$WORKTREE_DIR"
+
+# Run flake-fmt
+echo "Running flake-fmt..."
+if ! flake-fmt; then
+    echo "Warning: flake-fmt exited with non-zero status, but continuing..."
+fi
+
+# Check if there are changes
+if git diff --quiet; then
+    echo "No formatting changes needed"
+    cd ..
+    git worktree remove "$WORKTREE_DIR"
+    git branch -D "$BRANCH_NAME"
+    exit 0
+fi
+
+# Stage all changes
+echo "Staging formatting changes..."
+git add -A
+
+# Commit changes
+echo "Committing formatting changes..."
+git commit -m "format: run flake-fmt"
+
+# Push to the PR ref
+echo "Force pushing to PR #${PR_NUMBER}..."
+git push origin "HEAD:refs/pull/${PR_NUMBER}/head" --force || \
+{ echo "Error: Could not push to PR ref. You may need to push to the fork's branch directly."; exit 1; }
+
+echo "Successfully formatted and pushed PR #${PR_NUMBER}"
+
+# Clean up
+cd ..
+git worktree remove "$WORKTREE_DIR"
+git branch -D "$BRANCH_NAME"
+
+echo "Cleanup complete"
