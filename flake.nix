@@ -129,7 +129,7 @@
     };
 
     nix-ai-tools = {
-      url = "github:numtide/nix-ai-tools/claude-code";
+      url = "github:numtide/nix-ai-tools";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
       inputs.blueprint.follows = "blueprint";
