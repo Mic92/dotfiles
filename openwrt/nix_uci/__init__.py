@@ -1,3 +1,5 @@
+"""Module for converting JSON configuration to UCI (Unified Configuration Interface) format."""
+
 import json
 import re
 import subprocess
@@ -9,10 +11,12 @@ ROOT = Path(__file__).parent.parent.resolve()
 
 
 class ConfigError(Exception):
-    pass
+    """Exception raised for configuration errors."""
 
 
 def interpolate_secrets(option_val: str, secrets: dict[str, str]) -> str:
+    """Replace secret placeholders in option values with actual secret values."""
+
     def substitute_secrets(matchobj: re.Match) -> str:
         name = matchobj.group(1)
         val = secrets.get(name)
@@ -31,6 +35,7 @@ def serialize_option_val(
     val: list | str,
     secrets: dict[str, str],
 ) -> list[str]:
+    """Serialize an option value to UCI format."""
     if isinstance(val, float | int | str):
         val = interpolate_secrets(str(val), secrets)
         return [f"set {key}='{val}'"]
@@ -49,10 +54,11 @@ def serialize_list_section(
     list_obj: dict[str, str],
     secrets: dict[str, str],
 ) -> list[str]:
+    """Serialize a list section to UCI format."""
     lines = []
     _type = None
 
-    # FIXME, how to delete all list sections?
+    # TODO(@joerg): Investigate how to delete all list sections
     # truncate list so we can start from fresh
 
     _type = list_obj.get("_type")
@@ -79,6 +85,7 @@ def serialize_named_section(
     section: dict[str, str],
     secrets: dict[str, str],
 ) -> list[str]:
+    """Serialize a named section to UCI format."""
     lines = []
     _type = None
     # truncate section so we can start from fresh
@@ -92,7 +99,7 @@ def serialize_named_section(
     lines.append(f"set {config_name}.{section_name}={_type}")
 
     for option_name, option in section.items():
-        # FIXME: how does escaping work?
+        # TODO(@joerg): Investigate how escaping works in UCI
         lines.extend(
             serialize_option_val(
                 f"{config_name}.{section_name}.{option_name}",
@@ -104,6 +111,7 @@ def serialize_named_section(
 
 
 def serialize_uci(configs: dict[str, Any], secrets: dict[str, str]) -> str:
+    """Serialize configuration dictionary to UCI format."""
     lines: list[str] = []
     config_names = []
     for config_name, sections in configs.items():
@@ -116,7 +124,7 @@ def serialize_uci(configs: dict[str, Any], secrets: dict[str, str]) -> str:
 
         for section_name, section in sections.items():
             if isinstance(section, list):
-                # HACK: there seem no better way to clear out a list
+                # NOTE: Clear out existing list sections (no better method available)
                 lines.extend(
                     f"delete {config_name}.@{section_name}[0]" for _i in range(10)
                 )
@@ -138,7 +146,10 @@ def serialize_uci(configs: dict[str, Any], secrets: dict[str, str]) -> str:
             elif isinstance(section, dict):
                 lines.extend(
                     serialize_named_section(
-                        config_name, section_name, section, secrets
+                        config_name,
+                        section_name,
+                        section,
+                        secrets,
                     ),
                 )
             else:
@@ -154,6 +165,7 @@ T = TypeVar("T")
 
 
 def ensure_type[T](parent: dict[str, Any], key: str, t: type[T]) -> T:
+    """Ensure a dictionary value has the expected type."""
     val = parent.get(key, {})
     if not isinstance(val, t):
         msg = f"{key} is not of type: {t}"
@@ -162,10 +174,12 @@ def ensure_type[T](parent: dict[str, Any], key: str, t: type[T]) -> T:
 
 
 def ensure_dict(parent: dict[str, Any], key: str) -> dict:
+    """Ensure a dictionary value is a dict."""
     return ensure_type(parent, key, dict)
 
 
 def load_sops_file(file: str) -> dict[str, str]:
+    """Load and decrypt a SOPS-encrypted file."""
     res = subprocess.run(
         ["sops", "-d", "--output-type", "json", file],
         capture_output=True,
@@ -179,6 +193,7 @@ def load_sops_file(file: str) -> dict[str, str]:
 
 
 def convert_file(path: Path) -> str:
+    """Convert a JSON configuration file to UCI format."""
     uci_json = json.load(path.open())
     if not isinstance(uci_json, dict):
         msg = "json file has no settings attribute set"
@@ -203,8 +218,10 @@ def convert_file(path: Path) -> str:
 
 
 def main() -> None:
+    """Execute main entry point for the CLI."""
     try:
-        if len(sys.argv) < 2:
+        min_args = 2
+        if len(sys.argv) < min_args:
             print(f"USAGE: {sys.argv[0]} JSON_FILE")
             sys.exit(1)
         print(convert_file(Path(sys.argv[1])))
