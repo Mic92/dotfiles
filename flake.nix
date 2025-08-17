@@ -195,11 +195,6 @@
           );
         };
 
-        clan.templates.clan."hetzner" = {
-          description = "hetzner";
-          path = ./templates/hetzner;
-        };
-
         perSystem =
           {
             inputs',
