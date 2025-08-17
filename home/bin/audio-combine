@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+COMBINE_MODULE_NAME="module-combine-sink"
+COMBINE_SINK_NAME="combination-sink"
+
+unload_combine_module() {
+    local module_id
+    module_id=$(pactl list modules short | grep "$COMBINE_MODULE_NAME" | awk '{print $1}' || true)
+    if [[ -n "$module_id" ]]; then
+        echo "Unloading existing combine module (ID: $module_id)"
+        pactl unload-module "$module_id"
+    fi
+}
+
+get_audio_sinks() {
+    pactl list sinks short | grep -v "$COMBINE_SINK_NAME" | while read -r line; do
+        local sink_id sink_name driver format status
+        read -r sink_id sink_name driver format status <<< "$line"
+
+        # Get human-readable description
+        local description
+        description=$(pactl list sinks | grep -A 20 "Name: $sink_name" | grep "Description:" | sed 's/.*Description: //' || echo "$sink_name")
+
+        echo "$sink_name|$description"
+    done
+}
+
+main() {
+    # Always unload existing combine module first
+    unload_combine_module
+    
+    # Get available sinks
+    local sinks
+    sinks=$(get_audio_sinks)
+    
+    if [[ -z "$sinks" ]]; then
+        echo "No audio sinks available"
+        exit 1
+    fi
+    
+    # Use fzf for multi-selection
+    local selected_sinks
+    selected_sinks=$(echo "$sinks" | fzf --multi --delimiter='|' --with-nth=2 --prompt="Select audio devices to combine (use TAB for multi-select): " --header="Press TAB to select multiple devices, ENTER to confirm" | cut -d'|' -f1 || true)
+    
+    if [[ -z "$selected_sinks" ]]; then
+        echo "No devices selected. Combine module remains unloaded."
+        exit 0
+    fi
+    
+    # Count selected devices
+    local device_count
+    device_count=$(echo "$selected_sinks" | wc -l)
+    
+    if [[ "$device_count" -eq 1 ]]; then
+        echo "Only one device selected. No need to combine."
+        exit 0
+    fi
+    
+    # Create comma-separated list of slaves
+    local slaves
+    slaves=$(echo "$selected_sinks" | tr '\n' ',' | sed 's/,$//')
+    
+    echo "Creating combine sink with devices: $slaves"
+    
+    # Load the combine module
+    pactl load-module "$COMBINE_MODULE_NAME" \
+        sink_name="$COMBINE_SINK_NAME" \
+        sink_properties="device.description=\"Combined Audio Devices ($device_count devices)\"" \
+        slaves="$slaves" \
+        channels=2
+    
+    echo "Combine sink '$COMBINE_SINK_NAME' created successfully!"
+    echo "You can now select it as your audio output device."
+}
+
+main "$@"
