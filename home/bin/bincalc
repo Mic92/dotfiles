@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import pdb
 import os
 from tempfile import TemporaryDirectory
 
@@ -14,7 +13,7 @@ except ImportError:
 
 def format_unit(size) -> str:
     # 2**10 = 1024
-    power = 2 ** 10
+    power = 2**10
     n = 0
     unit = {0: "", 1: "KB", 2: "MB", 3: "GB", 4: "TB", 5: "PB", 6: "EB"}
     while size > power:
