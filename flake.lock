@@ -667,11 +667,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1753066220,
-        "narHash": "sha256-bXofQB+NnanpNbhL5x7StomkI0o6oEopZN/aCSGwvEc=",
+        "lastModified": 1754266220,
+        "narHash": "sha256-9eJCNenkN0fyQhkaHZ49rvKldOoagOrd1pIfgCBYh2o=",
         "owner": "Mic92",
         "repo": "nur-packages",
-        "rev": "1b7daecb3fd724284784943fea55c8024ead88fe",
+        "rev": "05b69b9e2f010c203242c1025455db0d4248d808",
         "type": "github"
       },
       "original": {
