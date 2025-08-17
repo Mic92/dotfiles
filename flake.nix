@@ -172,6 +172,7 @@
           ./devshell/flake-module.nix
           ./pkgs/images/flake-module.nix
           ./pkgs/flake-module.nix
+          ./openwrt/flake-module.nix
           inputs.hercules-ci-effects.flakeModule
           inputs.clan-core.flakeModules.default
         ];
