@@ -9,6 +9,7 @@
   imports = [
     ./modules/neovim
     ./modules/tmux-thumbs.nix
+    ./modules/homeshick.nix
   ];
 
   nix.package = self.inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
