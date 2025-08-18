@@ -56,6 +56,7 @@
 
     data-mesher.url = "git+https://git.clan.lol/clan/data-mesher?shallow=1";
     data-mesher.inputs.nixpkgs.follows = "nixpkgs";
+    data-mesher.inputs.flake-parts.follows = "flake-parts";
     data-mesher.inputs.treefmt-nix.follows = "treefmt-nix";
 
     buildbot-nix.url = "git+https://github.com/nix-community/buildbot-nix?shallow=1";
