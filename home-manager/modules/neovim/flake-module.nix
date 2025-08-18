@@ -65,7 +65,6 @@
           pkgs.neovimUtils.makeNeovimConfig {
             wrapRc = false;
             withRuby = false;
-            extraLuaPackages = ps: [ ps.tiktoken_core ];
           }
         );
         nvim-open = pkgs.python3.pkgs.callPackage ./nvim-open.nix { };
