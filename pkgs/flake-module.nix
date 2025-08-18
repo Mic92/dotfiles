@@ -17,7 +17,6 @@
         };
         gmaps-cli = pkgs.python3.pkgs.callPackage ./gmaps-cli { };
         db-cli = pkgs.callPackage ./db-cli { };
-        direnv-instant = pkgs.callPackage ./direnv-instant { };
         kagi-search = pkgs.python3.pkgs.callPackage ./kagi-search { };
         email-sync = pkgs.callPackage ./email-sync { };
         vcal = pkgs.callPackage ./vcal { };
