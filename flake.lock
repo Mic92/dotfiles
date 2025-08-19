@@ -447,10 +447,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1755239481,
-        "narHash": "sha256-mRqbuVpu1UiTbuNLRUCShG8CGfxbBCDYkQF3FCs7meA=",
+        "lastModified": 1755626483,
+        "narHash": "sha256-qAN9kZAxV8yXMUmXUVyXbjau6GLF+ctn/po1IOhRKrM=",
         "ref": "refs/heads/main",
-        "rev": "1544dfda37cb3f72138edb00de928ad71221776e",
+        "rev": "d4fb0e5fb981f4c7e3da28c66408254299311094",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
@@ -474,11 +474,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1755312338,
-        "narHash": "sha256-XysTCw3UDXrj5EpThnkwWDrdO8YbhXPDPR68T+Wtug8=",
+        "lastModified": 1755571876,
+        "narHash": "sha256-H36KkwvNwftwcPKCQm8EuKu+lRE9Qy/H3rHiIEREIs8=",
         "owner": "numtide",
         "repo": "nix-ai-tools",
-        "rev": "a3c9d39b06c74786c29a38c965d60b03c2f9ba64",
+        "rev": "d453aaa8fac37c47a93c2aebcc84784f8aa74cdb",
         "type": "github"
       },
       "original": {
