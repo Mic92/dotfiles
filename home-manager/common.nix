@@ -60,6 +60,7 @@
       moar
       vivid
       ripgrep
+      ast-grep
       zsh
       less
       bashInteractive

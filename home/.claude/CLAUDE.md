@@ -1,6 +1,8 @@
 - Use `--log-format bar-with-logs` with Nix for improved build log output.
 - Add new untracked files in Nix flakes with `git add`.
 - Tools that can be used: fd, rg, dnsutils, lsof
+- Use `ast-grep` for precise AST-based code searching when you need to find
+  specific code patterns or structures
 - Format code with `flake-fmt` if the current project has a flake with a
   formatter defined.
 - Write shell scripts that pass `shellcheck`.

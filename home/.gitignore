@@ -10,6 +10,7 @@
 /.claude
 tags
 CLAUDE.local.md
+AGENTS.md
 .mypy_cache/
 .pytest_cache/
 .ruff_cache/
