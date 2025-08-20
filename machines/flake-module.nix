@@ -108,6 +108,8 @@
             settings.address = "eva.i";
           };
         };
+
+        tor.roles.server.tags.nixos = { };
       };
     };
   };
