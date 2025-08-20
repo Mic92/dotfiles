@@ -97,6 +97,17 @@
 
           roles.peer.machines.turingmachine.settings.controller = lib.mkForce "eve";
         };
+
+        internet = {
+          module.name = "internet";
+          module.input = "clan-core";
+          roles.default.machines.eve = {
+            settings.address = "eve.i";
+          };
+          roles.default.machines.eva = {
+            settings.address = "eva.i";
+          };
+        };
       };
     };
   };
