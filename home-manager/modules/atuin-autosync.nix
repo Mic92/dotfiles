@@ -1,5 +1,8 @@
 { pkgs, ... }:
 {
+  home.packages = [
+    (pkgs.callPackage ./pkgs/atuin { })
+  ];
   systemd.user.timers.atuin-sync = {
     Unit.Description = "Atuin auto sync";
     Timer.OnUnitActiveSec = "1h";

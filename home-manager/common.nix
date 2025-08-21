@@ -21,7 +21,6 @@
       config.nix.package
       nixpkgs-review
       nix-prefetch
-      (pkgs.callPackage ./pkgs/atuin { })
       mergiraf
       jujutsu
 
