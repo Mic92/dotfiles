@@ -67,6 +67,7 @@
   environment.systemPackages = [
     pkgs.python3
     pkgs.nixos-rebuild
+    pkgs.pinentry_mac
     self.packages.${pkgs.system}.blueutil
     self.packages.${pkgs.system}.systemctl-macos
   ];
