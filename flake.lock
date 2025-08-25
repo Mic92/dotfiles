@@ -81,15 +81,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1755078185,
-        "narHash": "sha256-Czvc0aQT4MSwfXmRiRTcuFf9gZxMkVAEW7FtMknD8mM=",
-        "rev": "bcc03890f73e3f784a21517252df0ead2c7b8c8b",
+        "lastModified": 1756118509,
+        "narHash": "sha256-DfxloUkJAqLMqQJy0B0FdaEE9HYPRb4CUKDQqOh9QeA=",
+        "rev": "5be9b8383b25fd2bf58a405b9fc56cfae034379c",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/bcc03890f73e3f784a21517252df0ead2c7b8c8b.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/5be9b8383b25fd2bf58a405b9fc56cfae034379c.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.clan.lol/clan/clan-core/archive/init-wireguard-service.tar.gz"
+        "url": "https://git.clan.lol/clan/clan-core/archive/main.tar.gz"
       }
     },
     "crane": {
@@ -123,11 +123,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1753067306,
-        "narHash": "sha256-jyoEbaXa8/MwVQ+PajUdT63y3gYhgD9o7snO/SLaikw=",
-        "rev": "18dfd42bdb2cfff510b8c74206005f733e38d8b9",
+        "lastModified": 1756091210,
+        "narHash": "sha256-oEUEAZnLbNHi8ti4jY8x10yWcIkYoFc5XD+2hjmOS04=",
+        "rev": "eb831bca21476fa8f6df26cb39e076842634700d",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/data-mesher/archive/18dfd42bdb2cfff510b8c74206005f733e38d8b9.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/data-mesher/archive/eb831bca21476fa8f6df26cb39e076842634700d.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -555,11 +555,11 @@
     },
     "nix-select": {
       "locked": {
-        "lastModified": 1745005516,
-        "narHash": "sha256-IVaoOGDIvAa/8I0sdiiZuKptDldrkDWUNf/+ezIRhyc=",
-        "rev": "69d8bf596194c5c35a4e90dd02c52aa530caddf8",
+        "lastModified": 1755887746,
+        "narHash": "sha256-lzWbpHKX0WAn/jJDoCijIDss3rqYIPawe46GDaE6U3g=",
+        "rev": "92c2574c5e113281591be01e89bb9ddb31d19156",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/nix-select/archive/69d8bf596194c5c35a4e90dd02c52aa530caddf8.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/nix-select/archive/92c2574c5e113281591be01e89bb9ddb31d19156.tar.gz"
       },
       "original": {
         "type": "tarball",
