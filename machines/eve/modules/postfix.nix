@@ -56,10 +56,8 @@ in
   services.postfix = {
     enable = true;
     enableSubmission = true;
-    hostname = "mail.thalheim.io";
-    domain = "thalheim.io";
 
-    masterConfig."465" = {
+    settings.master."465" = {
       type = "inet";
       private = false;
       command = "smtpd";
@@ -80,7 +78,9 @@ in
     mapFiles."helo_access" = helo_access;
     mapFiles."rbl_override" = rbl_override;
 
-    config = {
+    settings.main = {
+      myhostname = "mail.thalheim.io";
+      mydomain = "thalheim.io";
       smtp_bind_address = config.networking.eve.ipv4.address;
       smtp_bind_address6 = "2a01:4f9:2b:1605::1";
       mailbox_transport = "lmtp:unix:private/dovecot-lmtp";
