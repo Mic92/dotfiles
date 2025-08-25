@@ -110,6 +110,17 @@
         };
 
         tor.roles.server.tags.nixos = { };
+
+        users-root = {
+          module.name = "users";
+          module.input = "clan-core";
+          roles.default.tags.nixos = { };
+          roles.default.settings = {
+            user = "root";
+            prompt = false;
+            groups = [ ];
+          };
+        };
       };
     };
   };
