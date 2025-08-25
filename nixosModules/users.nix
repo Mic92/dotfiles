@@ -42,6 +42,5 @@ in
 
   imports = [
     ./zsh.nix
-    self.inputs.clan-core.clanModules.root-password
   ];
 }
