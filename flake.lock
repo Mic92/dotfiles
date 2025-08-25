@@ -594,11 +594,11 @@
     },
     "nixos-facter-modules": {
       "locked": {
-        "lastModified": 1755092700,
-        "narHash": "sha256-knQiR+/3d9RQR6rIDUORO6ZBITleDKDqS4r/pl327WU=",
+        "lastModified": 1756109073,
+        "narHash": "sha256-5pjFEziluVwJ0Z50h9laKfWbDluXuA5ada05xb/QiV4=",
         "owner": "numtide",
         "repo": "nixos-facter-modules",
-        "rev": "7641b72e58c59ebb3c753fc36ff8ee3506ae8e05",
+        "rev": "a1042c81126d9c9314c1eb1a7b89ab4d81b5dea7",
         "type": "github"
       },
       "original": {
