@@ -12,7 +12,6 @@
     self.inputs.nix-index-database.nixosModules.nix-index
     { programs.nix-index-database.comma.enable = true; }
     self.inputs.disko.nixosModules.disko
-    self.inputs.clan-core.clanModules.localbackup
 
     #self.inputs.spora.nixosModules.spora
 
@@ -30,7 +29,6 @@
     ./modules/spotifyd.nix
     ../../nixosModules/tum-vpn
     ./modules/toggle-keyboard
-    ./modules/localbackup.nix
     ./modules/sunshine.nix
     ./modules/ghaf-hardware.nix
     ./modules/ghaf-facter.nix
