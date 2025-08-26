@@ -121,6 +121,19 @@
             groups = [ ];
           };
         };
+
+        localbackup-turingmachine = {
+          module.name = "localbackup";
+          module.input = "clan-core";
+          roles.default.machines.turingmachine.settings = {
+            targets.hdd = {
+              directory = "/backup-2tb/turingmachine";
+              mountpoint = "/backup-2tb";
+              preMountHook = "localbackup-unlock-hdd";
+            };
+          };
+          roles.default.extraModules = [ ../machines/turingmachine/modules/localbackup.nix ];
+        };
       };
     };
   };
