@@ -13,9 +13,10 @@
 - Avoid using `cd`, prefer absolute paths
 - Always test/lint/format your code before committing.
 - Add debug output or unit tests when troubleshooting.
-- Avoid mocking in tests.
-- When ask to fix linting errors do only under extreme circumstances and very
-  good justifications disable them. Misconduct will be punished
+- When writing test use realistic inputs/outputs that test the actual code as
+  opposed to mocked out versions
+- IMPORTANT: When ask to fix linting errors do only under extreme circumstances
+  and very good justifications disable them.
 - CRITICAL: ALWAYS use pueue for ANY command that might take longer than 10
   seconds to avoid timeouts. This includes but is not limited to:
   - `clan machines update` (deployment commands)
@@ -28,10 +29,7 @@
   ```bash
   id=$(pueue add -- command | grep -oE '[0-9]+'); pueue wait "$id"; pueue log "$id"
   ```
-
-  NEVER run these commands directly without pueue!
 - Use strace/sysdig/bcc on Linux and dtrace on macOS for debugging
-- Use tmux when trying to interact with interactive cli/tuis
 - Use the gh tool to interact with GitHub.
 - Use the tea CLI tool to interact with Gitea.
 - Use nix-locate to find packages by file path.
@@ -51,6 +49,4 @@
   results are better.
   - `kagi-search "nixpkgs buildPythonPackage examples"`
   - `kagi-search -j "nix flake inputs follows" | jq -r '.[0].url'`
-- avoid using cd, instead use absolute paths when possible to avoid: Error: cd
-  to '/foo' was blocked. For security, Claude Code may only change directories
-  to child directories of the allowed working directories.
+- Use absolute paths instead of `cd`
