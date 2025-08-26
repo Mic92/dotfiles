@@ -15,6 +15,9 @@ writeShellApplication {
   text = ''
     set -euo pipefail
 
+    # Set shell to bash for Claude Code
+    export SHELL=bash
+
     # Start pueued daemon if not already running
     if ! pueue status &>/dev/null; then
       echo "Starting pueue daemon..."
