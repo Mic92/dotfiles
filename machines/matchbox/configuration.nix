@@ -8,7 +8,6 @@
   imports = [
     self.nixosModules.default
     self.inputs.srvos.nixosModules.server
-    self.inputs.clan-core.clanModules.state-version
 
     ./modules/samba.nix
     ./modules/rsyncd.nix

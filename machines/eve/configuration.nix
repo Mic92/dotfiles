@@ -88,6 +88,4 @@
   nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
   # The NixOS release to be compatible with for stateful data such as databases.
-  # Now managed by clan-core's state-version module
-  clan.core.settings.state-version.enable = true;
 }
