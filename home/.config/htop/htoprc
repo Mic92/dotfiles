@@ -1,6 +1,6 @@
 # Beware! This file is rewritten by htop when settings are changed in the interface.
 # The parser is also very primitive, and not human-friendly.
-htop_version=3.2.2
+htop_version=3.4.1
 config_reader_min_version=3
 fields=0 48 17 18 38 39 40 2 46 47 49 128 1
 hide_kernel_threads=1
@@ -27,6 +27,7 @@ show_cpu_usage=1
 show_cpu_frequency=1
 show_cpu_temperature=1
 degree_fahrenheit=0
+show_cached_memory=1
 update_process_names=0
 account_guest_in_cpu_meter=0
 color_scheme=0
@@ -48,16 +49,16 @@ all_branches_collapsed=0
 screen:Main=PID USER PRIORITY NICE M_VIRT M_RESIDENT M_SHARE STATE PERCENT_CPU PERCENT_MEM TIME CCGROUP Command
 .sort_key=PERCENT_CPU
 .tree_sort_key=PID
-.tree_view=0
 .tree_view_always_by_pid=0
+.tree_view=0
 .sort_direction=-1
 .tree_sort_direction=1
 .all_branches_collapsed=0
 screen:I/O=PID USER CCGROUP IO_PRIORITY IO_RATE IO_READ_RATE IO_WRITE_RATE
 .sort_key=IO_RATE
 .tree_sort_key=PID
-.tree_view=0
 .tree_view_always_by_pid=0
+.tree_view=0
 .sort_direction=-1
 .tree_sort_direction=1
 .all_branches_collapsed=0
