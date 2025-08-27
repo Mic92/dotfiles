@@ -22,7 +22,6 @@
     ./modules/loki.nix
     ./modules/nginx.nix
     ./modules/prometheus
-    ./modules/ssh3.nix
     ./modules/telegraf
     ./modules/zerotier.nix
 

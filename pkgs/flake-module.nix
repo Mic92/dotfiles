@@ -25,7 +25,7 @@
         claude-md = pkgs.python3.pkgs.callPackage ./claude-md { };
         browser-cli = pkgs.python3.pkgs.callPackage ./browser-cli { };
         pexpect-mcp = pkgs.python3.pkgs.callPackage ./pexpect-mcp { };
-        ssh3 = pkgs.callPackage ./ssh3 { };
+        iroh-ssh = pkgs.callPackage ./iroh-ssh { };
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
         blueutil = pkgs.callPackage ./blueutil { };
