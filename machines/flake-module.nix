@@ -102,10 +102,10 @@
           module.name = "internet";
           module.input = "clan-core";
           roles.default.machines.eve = {
-            settings.address = "eve.i";
+            settings.host = "eve.i";
           };
           roles.default.machines.eva = {
-            settings.address = "eva.i";
+            settings.host = "eva.i";
           };
         };
 
