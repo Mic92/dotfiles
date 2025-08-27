@@ -140,10 +140,6 @@
       drivers = [ pkgs.gutenprint ]; # pkgs.hplip
     };
 
-    logind.extraConfig = ''
-      LidSwitchIgnoreInhibited=no
-      HandlePowerKey=ignore
-    '';
     journald.extraConfig = "SystemMaxUse=1G";
   };
 
