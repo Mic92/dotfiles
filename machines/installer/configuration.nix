@@ -9,8 +9,6 @@
     ./disko.nix
     ../../nixosModules/users.nix
     clan-core.nixosModules.installer
-    clan-core.clanModules.trusted-nix-caches
-    clan-core.clanModules.disk-id
   ];
 
   clan.core.deployment.requireExplicitUpdate = true;
