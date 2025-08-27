@@ -1,15 +1,11 @@
-{ config, lib, ... }:
-
-let
-  suffix = config.clan.core.vars.generators.disk-id.files.diskId.value;
-in
+{ lib, ... }:
 {
   boot.loader.grub.efiSupport = lib.mkDefault true;
   boot.loader.grub.efiInstallAsRemovable = lib.mkDefault true;
   disko.devices = {
     disk = {
       "main" = {
-        name = "main-" + suffix;
+        name = "main";
         type = "disk";
         device = lib.mkDefault "/dev/null";
         content = {
