@@ -37,15 +37,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1755845491,
-        "narHash": "sha256-oR4VX/qvVDrvKPazVmUTwuRhLV1YDxOSux7wMy5X/Yk=",
-        "ref": "refs/heads/main",
-        "rev": "d3e738f26746faf1e9efdd233e6096b3e26c86a1",
+        "lastModified": 1756286220,
+        "narHash": "sha256-6DHVjoPNYsn9MAbUBBSWB6pb0qqnPiywhH0ZTeis+zU=",
+        "ref": "eval-cache",
+        "rev": "27eaa597bd5315819dbb2de56532520f2058f33f",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
       },
       "original": {
+        "ref": "eval-cache",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
@@ -638,10 +639,10 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1755626826,
-        "narHash": "sha256-UOJS2I8fHqgfXSL/DT5qJSARaKIZVpjLtmnWj+2zyD8=",
+        "lastModified": 1756286304,
+        "narHash": "sha256-myiFvaX95KILJTtfNX0G8zGw0a4KqxW/ErN5lN2VgGA=",
         "ref": "main",
-        "rev": "73f4017724b981e5015edd2d4dc2e79cfcaf1f4f",
+        "rev": "4340efb580a1f4e82ee0b91c650b7848b426f2a3",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
