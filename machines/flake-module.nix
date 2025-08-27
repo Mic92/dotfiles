@@ -10,7 +10,7 @@
       tags =
         { config, ... }:
         {
-          backup = builtins.filter (name: name != "blob64") config.nixos;
+          backup = builtins.filter (name: name != "blob64" && name != "installer") config.nixos;
           wireguard-peers = builtins.filter (name: name != "eve" && name != "eva") config.nixos;
         };
 
