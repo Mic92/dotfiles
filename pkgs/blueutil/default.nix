@@ -2,8 +2,6 @@
   lib,
   stdenv,
   fetchFromGitHub,
-  darwin,
-
 }:
 
 stdenv.mkDerivation rec {
@@ -15,10 +13,6 @@ stdenv.mkDerivation rec {
     rev = "v${version}";
     sha256 = "sha256-x2khx8Y0PolpMiyrBatT2aHHyacrQVU/02Z4Dz9fBtI=";
   };
-  buildInputs = lib.optionals stdenv.isDarwin [
-    darwin.apple_sdk.frameworks.Foundation
-    darwin.apple_sdk.frameworks.IOBluetooth
-  ];
   makeFlags = [
     "PREFIX=$(out)"
   ];
