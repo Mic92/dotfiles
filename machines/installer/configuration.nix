@@ -1,7 +1,7 @@
 {
   config,
   clan-core,
-  inputs,
+  self,
   ...
 }:
 {
@@ -12,6 +12,6 @@
 
   clan.core.deployment.requireExplicitUpdate = true;
 
-  nixpkgs.pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+  nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
   system.stateVersion = config.system.nixos.release;
 }
