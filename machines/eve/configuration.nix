@@ -59,6 +59,7 @@
     ./modules/shadowsocks.nix
     ./modules/shiori
     ./modules/snappymail.nix
+    ./modules/ssh3.nix
     ./modules/sshd.nix
     ./modules/step-ca/default.nix
     ./modules/syncthing.nix
