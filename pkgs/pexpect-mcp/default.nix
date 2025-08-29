@@ -4,6 +4,7 @@
   wheel,
   pexpect,
   mcp,
+  pygments,
 }:
 
 buildPythonPackage {
@@ -22,6 +23,7 @@ buildPythonPackage {
   propagatedBuildInputs = [
     pexpect
     mcp
+    pygments
   ];
 
   pythonImportsCheck = [ "pexpect_mcp" ];

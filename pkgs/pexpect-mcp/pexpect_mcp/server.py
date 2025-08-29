@@ -11,8 +11,17 @@ from contextlib import redirect_stdout, suppress
 from pathlib import Path
 from typing import Any
 
+try:
+    from pygments import highlight  # type: ignore[import-untyped]
+    from pygments.formatters import Terminal256Formatter  # type: ignore[import-untyped]
+    from pygments.lexers import PythonLexer  # type: ignore[import-untyped]
+
+    PYGMENTS_AVAILABLE = True
+except ImportError:
+    PYGMENTS_AVAILABLE = False
+
 import mcp.server.stdio
-import pexpect
+import pexpect  # type: ignore[import-untyped]
 from mcp import types
 from mcp.server import Server
 
@@ -47,8 +56,8 @@ def _create_custom_print(output: io.StringIO, log_file: Any) -> Any:
 
         # Write to capture buffer for MCP response
         output.write(text)
-        # Also write to log file
-        log_file.write(f"[PRINT] {text}")
+        # Write to log file without [PRINT] prefix, just the text
+        log_file.write(text)
         log_file.flush()
 
     return custom_print
@@ -66,23 +75,21 @@ def _cleanup_old_child(
 async def _execute_code(
     code: str,
     namespace: dict[str, Any],
-    timeout: float,
-    log_file: Any,  # noqa: ASYNC109
+    timeout_seconds: float,
+    log_file: Any,
 ) -> None:
     """Execute Python code with timeout and stdout redirected to log."""
     with redirect_stdout(log_file):
-        actual_timeout = max(timeout, 30.0)
-        await asyncio.wait_for(
-            asyncio.get_event_loop().run_in_executor(None, exec, code, namespace),
-            timeout=actual_timeout,
-        )
+        actual_timeout = max(timeout_seconds, 30.0)
+        async with asyncio.timeout(actual_timeout):
+            await asyncio.get_event_loop().run_in_executor(None, exec, code, namespace)
 
 
 def _build_response(
     result: str, error: Exception | None, traceback_str: str | None, log_path: Path
-) -> list[types.TextContent]:
+) -> list[types.TextContent | types.ImageContent | types.EmbeddedResource]:
     """Build the MCP response."""
-    response = []
+    response: list[types.TextContent | types.ImageContent | types.EmbeddedResource] = []
 
     if error:
         response.append(types.TextContent(type="text", text=f"Error: {error!s}"))
@@ -114,7 +121,7 @@ def _build_response(
 server = Server("pexpect-mcp")
 
 
-@server.list_tools()
+@server.list_tools()  # type: ignore[no-untyped-call,misc]
 async def handle_list_tools() -> list[types.Tool]:
     """List available tools."""
     log_path = _get_log_path()
@@ -141,7 +148,7 @@ async def handle_list_tools() -> list[types.Tool]:
     ]
 
 
-@server.call_tool()
+@server.call_tool()  # type: ignore[misc]
 async def handle_call_tool(
     name: str, arguments: dict[str, Any]
 ) -> list[types.TextContent | types.ImageContent | types.EmbeddedResource]:
@@ -156,11 +163,34 @@ async def handle_call_tool(
     timeout = arguments.get("timeout", 30.0)
     log_path = _get_log_path()
 
-    # Open log file in write mode (truncate on each call)
-    with log_path.open("w", encoding="utf-8", buffering=1) as log_file:
-        log_file.write(f"=== Pexpect MCP execution at {Path.cwd()} ===\n\n")
-        log_file.write(f"[EXEC] Code:\n{code}\n\n")
+    # Write to a temp file first, then atomically replace (new inode)
+    temp_path = log_path.with_suffix(".tmp")
+    with temp_path.open("w", encoding="utf-8", buffering=1) as log_file:
+        # Write header with bold color
+        header = f"=== Pexpect MCP execution at {Path.cwd()} ==="
+        log_file.write(f"\033[1m\033[94m{header}\033[0m\n\n")
+
+        # Write code section with bold color
+        log_file.write(f"\033[1m\033[96m[EXEC]\033[0m Code:\n")
+        if PYGMENTS_AVAILABLE:
+            try:
+                # Use Terminal256Formatter with custom dark background
+                # Wrap the highlighted code in a dark background
+                highlighted = highlight(code, PythonLexer(), Terminal256Formatter(style="monokai"))
+                # Add dark background to the entire code block
+                log_file.write("\033[40m")  # Set black background
+                log_file.write(highlighted)
+                log_file.write("\033[0m")    # Reset
+            except (ImportError, ValueError, TypeError):
+                log_file.write(code)
+        else:
+            log_file.write(code)
+        log_file.write("\n\n")
         log_file.flush()
+
+        # Atomically replace the log file NOW (creates new inode)
+        # This allows --follow to detect the new file and start streaming
+        temp_path.replace(log_path)
 
         output = io.StringIO()
         custom_print = _create_custom_print(output, log_file)
@@ -177,13 +207,15 @@ async def handle_call_tool(
         traceback_str = None
 
         try:
-            await _execute_code(code, namespace, timeout, log_file)
+            await _execute_code(
+                code, namespace, timeout_seconds=timeout, log_file=log_file
+            )
 
             # Update the module-level child variable
             _child_process = namespace.get("child", _child_process)
 
-            # Log success
-            log_file.write("\n[SUCCESS] Code executed successfully\n")
+            # Log success with bold color
+            log_file.write(f"\n\033[1m\033[92m[SUCCESS] Code executed successfully\033[0m\n")
             log_file.flush()
 
         except Exception as e:  # noqa: BLE001
@@ -193,9 +225,9 @@ async def handle_call_tool(
             # Update the module-level child variable even on error
             _child_process = namespace.get("child", _child_process)
 
-            # Log error
-            log_file.write(f"\n[ERROR] {e!s}\n")
-            log_file.write(f"[TRACEBACK]\n{traceback_str}\n")
+            # Log error with bold color
+            log_file.write(f"\n\033[1m\033[91m[ERROR] {e!s}\033[0m\n")
+            log_file.write(f"\033[91m[TRACEBACK]\n{traceback_str}\033[0m\n")
             log_file.flush()
 
         finally:
@@ -217,35 +249,67 @@ async def main() -> None:
         )
 
 
-def follow_logs() -> None:
-    """Follow the log file for the current project."""
-    log_path = _get_log_path()
-    
+def _wait_for_log_file(log_path: Path) -> None:
+    """Wait for log file to be created."""
     if not log_path.exists():
         print(f"Log file does not exist yet: {log_path}", file=sys.stderr)
         print("Waiting for log file to be created...", file=sys.stderr)
         while not log_path.exists():
             time.sleep(0.1)
-    
-    print(f"Following log file: {log_path}", file=sys.stderr)
-    print("Press Ctrl+C to stop\n", file=sys.stderr)
-    
-    # Open file and seek to end initially
-    with open(log_path, "r", encoding="utf-8") as f:
-        # Start from beginning to show existing content
-        f.seek(0)
-        
-        try:
-            while True:
-                line = f.readline()
-                if line:
-                    print(line, end="", flush=True)
-                else:
-                    # No new data, wait a bit
+
+
+def _handle_file_rotation(
+    log_path: Path, f: io.TextIOWrapper | None, last_inode: int | None
+) -> tuple[io.TextIOWrapper, int]:
+    """Handle file rotation when inode changes."""
+    current_inode = log_path.stat().st_ino
+    if f is None or current_inode != last_inode:
+        if f:
+            f.close()
+        f = log_path.open("r", encoding="utf-8")
+        f.seek(0)  # Start from beginning for new files
+        return f, current_inode
+    return f, last_inode
+
+
+def _process_log_line(f: io.TextIOWrapper) -> bool:
+    """Read and print a log line. Returns True if data was read."""
+    line = f.readline()
+    if line:
+        print(line, end="", flush=True)
+        return True
+    return False
+
+
+def follow_logs() -> None:
+    """Follow the log file for the current project."""
+    log_path = _get_log_path()
+    _wait_for_log_file(log_path)
+
+    print(f"\033[1m\033[94mFollowing log file:\033[0m {log_path}", file=sys.stderr)
+    print("\033[90mPress Ctrl+C to stop\033[0m\n", file=sys.stderr)
+
+    try:
+        last_inode = log_path.stat().st_ino if log_path.exists() else None
+        f = None
+
+        while True:
+            if log_path.exists():
+                f, last_inode = _handle_file_rotation(log_path, f, last_inode)
+                if not _process_log_line(f):
                     time.sleep(0.1)
-        except KeyboardInterrupt:
-            print("\nStopped following log file.", file=sys.stderr)
-            sys.exit(0)
+            else:
+                # File was deleted, close handle and wait for recreation
+                if f:
+                    f.close()
+                    f = None
+                time.sleep(0.1)
+
+    except KeyboardInterrupt:
+        print("\nStopped following log file.", file=sys.stderr)
+        if f:
+            f.close()
+        sys.exit(0)
 
 
 def run() -> None:
@@ -258,9 +322,9 @@ def run() -> None:
         action="store_true",
         help="Follow the log file for the current project directory",
     )
-    
+
     args = parser.parse_args()
-    
+
     if args.follow:
         # Run in follow mode
         follow_logs()

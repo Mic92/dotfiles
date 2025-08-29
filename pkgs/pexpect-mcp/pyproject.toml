@@ -5,6 +5,7 @@ requires-python = ">=3.13"
 dependencies = [
     "pexpect>=4.9.0",
     "mcp",
+    "pygments>=2.0.0",
 ]
 
 [project.scripts]

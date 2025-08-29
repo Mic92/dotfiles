@@ -9,6 +9,10 @@ library for managing interactive processes.
 - Automatic process cleanup when `child` is reassigned
 - Python code execution with pexpect library in scope
 - Optional execution timeout (minimum 30 seconds)
+- Comprehensive logging with live monitoring capability
+
+## Requirements
+
 - Python 3.13+ support
 
 ## Installation
@@ -22,6 +26,39 @@ nix run .#pexpect-mcp
 ## Usage
 
 The server provides one tool: `run_pexpect`
+
+### Monitoring Execution Logs
+
+All pexpect executions are logged to `~/.cache/pexpect-mcp/<project-path>.log`.
+You can monitor these logs in real-time using:
+
+```bash
+pexpect-mcp --follow
+```
+
+This will tail the log file for the current working directory, showing all
+output from `print()` statements and stdout redirections. The log file is
+replaced atomically on each execution, and `--follow` will automatically detect
+and handle these replacements.
+
+#### Color Themes
+
+The log output includes syntax highlighting and colored status messages. You can
+configure the color scheme using the `PEXPECT_MCP_COLORS` environment variable:
+
+```bash
+# Dark terminal theme (default) - bright colors
+export PEXPECT_MCP_COLORS=dark
+
+# Light terminal theme (e.g., Solarized Light) - darker colors
+export PEXPECT_MCP_COLORS=light
+
+# Disable colors entirely
+export PEXPECT_MCP_COLORS=none
+```
+
+The light theme uses darker colors that are more readable on light backgrounds,
+while the dark theme uses bright colors optimized for dark terminals.
 
 ### Tool: run_pexpect
 
