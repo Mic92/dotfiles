@@ -35,35 +35,6 @@ claude mcp add pexpect-mcp nix run github:Mic92/dotfiles#pexpect-mcp
 
 This will automatically configure the MCP server in your Claude Code settings.
 
-### Using in Claude Code
-
-Once configured, you can use the `mcp__pexpect__run_pexpect` tool to run
-interactive processes:
-
-```python
-# Example: Automating SSH interactions
-import pexpect
-
-child = pexpect.spawn('ssh user@example.com')
-child.expect('password:')
-child.sendline('mypassword')
-child.expect('$')
-child.sendline('ls -la')
-child.expect('$')
-print(child.before.decode())
-```
-
-```python
-# Example: Interactive Python REPL automation
-child = pexpect.spawn('python3')
-child.expect('>>>')
-child.sendline('import math')
-child.expect('>>>')
-child.sendline('math.pi')
-child.expect('>>>')
-print(f"Pi value: {child.before.decode().strip()}")
-```
-
 ## Usage
 
 The server provides one tool: `run_pexpect`
