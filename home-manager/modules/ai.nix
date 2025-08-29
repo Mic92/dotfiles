@@ -7,7 +7,7 @@
 {
   home.packages = [
     self.packages.${pkgs.system}.claude-code
-    self.packages.${pkgs.system}.claude-md
+    self.packages.${pkgs.system}.pexpect-mcp
     inputs.nix-ai-tools.packages.${pkgs.system}.opencode
     pkgs.pueue
   ];

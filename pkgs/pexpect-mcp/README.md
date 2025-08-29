@@ -41,25 +41,6 @@ output from `print()` statements and stdout redirections. The log file is
 replaced atomically on each execution, and `--follow` will automatically detect
 and handle these replacements.
 
-#### Color Themes
-
-The log output includes syntax highlighting and colored status messages. You can
-configure the color scheme using the `PEXPECT_MCP_COLORS` environment variable:
-
-```bash
-# Dark terminal theme (default) - bright colors
-export PEXPECT_MCP_COLORS=dark
-
-# Light terminal theme (e.g., Solarized Light) - darker colors
-export PEXPECT_MCP_COLORS=light
-
-# Disable colors entirely
-export PEXPECT_MCP_COLORS=none
-```
-
-The light theme uses darker colors that are more readable on light backgrounds,
-while the dark theme uses bright colors optimized for dark terminals.
-
 ### Tool: run_pexpect
 
 Executes Python code with the pexpect library available.
@@ -102,10 +83,3 @@ The tool returns a dictionary with:
 - `child_active` (bool): Whether a child process is currently alive
 - `error` (string, on failure): Error message
 - `traceback` (string, on failure): Full traceback
-
-## Development
-
-```bash
-# Run tests
-nix develop .#pexpect-mcp -c python3 test_server.py
-```
