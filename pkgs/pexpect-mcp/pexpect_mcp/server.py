@@ -171,16 +171,18 @@ async def handle_call_tool(
         log_file.write(f"\033[1m\033[94m{header}\033[0m\n\n")
 
         # Write code section with bold color
-        log_file.write(f"\033[1m\033[96m[EXEC]\033[0m Code:\n")
+        log_file.write("\033[1m\033[96m[EXEC]\033[0m Code:\n")
         if PYGMENTS_AVAILABLE:
             try:
                 # Use Terminal256Formatter with custom dark background
                 # Wrap the highlighted code in a dark background
-                highlighted = highlight(code, PythonLexer(), Terminal256Formatter(style="monokai"))
+                highlighted = highlight(
+                    code, PythonLexer(), Terminal256Formatter(style="monokai")
+                )
                 # Add dark background to the entire code block
                 log_file.write("\033[40m")  # Set black background
                 log_file.write(highlighted)
-                log_file.write("\033[0m")    # Reset
+                log_file.write("\033[0m")  # Reset
             except (ImportError, ValueError, TypeError):
                 log_file.write(code)
         else:
@@ -215,7 +217,9 @@ async def handle_call_tool(
             _child_process = namespace.get("child", _child_process)
 
             # Log success with bold color
-            log_file.write(f"\n\033[1m\033[92m[SUCCESS] Code executed successfully\033[0m\n")
+            log_file.write(
+                "\n\033[1m\033[92m[SUCCESS] Code executed successfully\033[0m\n"
+            )
             log_file.flush()
 
         except Exception as e:  # noqa: BLE001
