@@ -23,6 +23,47 @@ The package is available as a Nix flake:
 nix run .#pexpect-mcp
 ```
 
+## Usage with Claude Code
+
+### Adding to Claude Code
+
+To use pexpect-mcp with Claude Code, simply run:
+
+```bash
+claude mcp add pexpect-mcp nix run github:Mic92/dotfiles#pexpect-mcp
+```
+
+This will automatically configure the MCP server in your Claude Code settings.
+
+### Using in Claude Code
+
+Once configured, you can use the `mcp__pexpect__run_pexpect` tool to run
+interactive processes:
+
+```python
+# Example: Automating SSH interactions
+import pexpect
+
+child = pexpect.spawn('ssh user@example.com')
+child.expect('password:')
+child.sendline('mypassword')
+child.expect('$')
+child.sendline('ls -la')
+child.expect('$')
+print(child.before.decode())
+```
+
+```python
+# Example: Interactive Python REPL automation
+child = pexpect.spawn('python3')
+child.expect('>>>')
+child.sendline('import math')
+child.expect('>>>')
+child.sendline('math.pi')
+child.expect('>>>')
+print(f"Pi value: {child.before.decode().strip()}")
+```
+
 ## Usage
 
 The server provides one tool: `run_pexpect`
@@ -55,31 +96,90 @@ Executes Python code with the pexpect library available.
 - `pexpect`: The pexpect module
 - `child`: Persistent child process variable (initially None)
 
-### Example Usage
+### Response Format
+
+The tool returns:
+
+- **On success**: Output from `print()` statements, child process status, and
+  log file location
+- **On failure**: Error message, any partial output, full traceback, and log
+  file location
+
+The logs include colored output with:
+
+- Bold blue headers showing execution context
+- Syntax-highlighted Python code (with dark background for readability)
+- Bold green success or bold red error messages
+- All `print()` output and stdout captured during execution
+
+## Advanced Usage
+
+### Persistent Child Process
+
+The `child` variable persists across multiple tool calls, allowing you to
+maintain long-running interactive sessions:
 
 ```python
-# Create a child process
+# First call - start a session
 child = pexpect.spawn('bash')
-child.sendline('echo Hello World')
-child.expect('Hello World')
-print(child.before.decode())
+child.sendline('cd /tmp')
+child.expect('\\$')
+print("Changed to /tmp directory")
+```
 
-# In the next call, child is still available
+```python
+# Second call - child is still in /tmp
+if child and child.isalive():
+    child.sendline('pwd')
+    child.expect('\\$')
+    print(f"Current dir: {child.before.decode()}")
+```
+
+```python
+# Third call - clean up
 if child and child.isalive():
     child.sendline('exit')
     child.expect(pexpect.EOF)
-
-# Creating a new child automatically kills the old one
-child = pexpect.spawn('python3')  # Old bash process is terminated
+    child = None  # Explicitly clear the child
+    print("Session closed")
 ```
 
-### Response Format
+### Practical Examples
 
-The tool returns a dictionary with:
+#### Automating SSH Sessions
 
-- `success` (bool): Whether execution succeeded
-- `output` (string): Captured stdout
-- `last_value` (string|null): String representation of the last expression value
-- `child_active` (bool): Whether a child process is currently alive
-- `error` (string, on failure): Error message
-- `traceback` (string, on failure): Full traceback
+```python
+child = pexpect.spawn('ssh user@example.com')
+index = child.expect(['password:', 'continue connecting', pexpect.TIMEOUT])
+if index == 1:  # First time connecting
+    child.sendline('yes')
+    child.expect('password:')
+child.sendline('mypassword')
+child.expect('\\$')
+print("Connected via SSH")
+```
+
+#### Interactive Database Operations
+
+```python
+child = pexpect.spawn('sqlite3 mydb.db')
+child.expect('sqlite>')
+child.sendline('.tables')
+child.expect('sqlite>')
+tables = child.before.decode()
+print(f"Database tables: {tables}")
+```
+
+#### Automating Terminal Applications
+
+```python
+# Automate vim to create and edit a file
+child = pexpect.spawn('vim test.txt')
+child.expect('.')  # Wait for vim to load
+child.send('i')  # Enter insert mode
+child.send('Hello from pexpect!')
+child.send('\x1b')  # ESC key
+child.send(':wq\r')  # Save and quit
+child.expect(pexpect.EOF)
+print("File created with vim")
+```
