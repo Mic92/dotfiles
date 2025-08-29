@@ -49,7 +49,7 @@ in
   # station and screen, since we will not need more than two 1 Gigabyte uplinks
   systemd.network.links."00-docking-station".extraConfig = ''
     [Match]
-    MACAddress = 00:e0:4c:a3:e1:8c 08:3a:88:59:80:71 f4:6b:8c:4a:81:c0 6c:1f:f7:02:91:64 f4:a8:0d:05:55:fd
+    MACAddress = 00:e0:4c:a3:e1:8c 08:3a:88:59:80:71 f4:6b:8c:4a:81:c0 6c:1f:f7:02:91:64 f4:a8:0d:05:55:fd 8c:8c:aa:da:9d:35
 
 
     [Link]
