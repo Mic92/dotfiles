@@ -16,6 +16,15 @@
         proxy_buffering off;
         tcp_nodelay on;
       '';
+      locations."=/.well-known/matrix/server".extraConfig = ''
+        add_header Content-Type application/json;
+        return 200 '{"m.server": "matrix.thalheim.io:443"}';
+      '';
+      locations."=/.well-known/matrix/client".extraConfig = ''
+        add_header Content-Type application/json;
+        add_header Access-Control-Allow-Origin *;
+        return 200 '{"m.homeserver": {"base_url": "https://matrix.thalheim.io"}}';
+      '';
       extraConfig = ''
         charset utf-8;
         source_charset utf-8;
