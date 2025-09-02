@@ -169,15 +169,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1756115622,
-        "narHash": "sha256-iv8xVtmLMNLWFcDM/HcAPLRGONyTRpzL9NS09RnryRM=",
+        "lastModified": 1756732616,
+        "narHash": "sha256-WvdahNbHOGsXmNz1u467hl6bJcQgwfWyNNwtHZjPDWE=",
         "owner": "nix-community",
         "repo": "disko",
-        "rev": "bafad29f89e83b2d861b493aa23034ea16595560",
+        "rev": "ffbde039889991419adbaefebb82c824ef40ee74",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
+        "ref": "make-disk-image-fix",
         "repo": "disko",
         "type": "github"
       }
@@ -640,10 +641,10 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1756480198,
-        "narHash": "sha256-b6BMlZFVe7EQNMXbG9nCXK+9GVMeB12VP8wq/I9QYOs=",
+        "lastModified": 1756801902,
+        "narHash": "sha256-k0ebcOSEx3iD/k0XnIxFN/UoLgFf43dmBECgc3EfF8g=",
         "ref": "main",
-        "rev": "df192bdc8d24c17742648e06f86b5436624cc748",
+        "rev": "8305380dc4fe1e49a76286db6730b01bb2484fb1",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
