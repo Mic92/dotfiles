@@ -24,11 +24,11 @@ in
     consumptionDir = "/var/lib/paperless/consume";
     consumptionDirIsPublic = true;
     passwordFile = config.clan.core.vars.generators.paperless.files.paperless-admin-password.path;
+    domain = hostname;
     settings = {
       PAPERLESS_DBHOST = "/run/postgresql";
       PAPERLESS_DBNAME = "paperless";
       PAPERLESS_DBUSER = "paperless";
-      PAPERLESS_URL = "https://${hostname}";
       PAPERLESS_SECRET_KEY = config.clan.core.vars.generators.paperless.files.paperless-secret-key.path;
       PAPERLESS_ADMIN_USER = "admin";
       PAPERLESS_ADMIN_MAIL = "joerg@thalheim.io";
