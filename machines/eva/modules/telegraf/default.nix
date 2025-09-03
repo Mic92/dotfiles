@@ -6,7 +6,6 @@
     ./uni.nix
     ./krebs.nix
     ./nixos-wiki-infra.nix
-    ./numtide.nix
   ];
 
   sops.secrets.eva-telegraf.owner = config.systemd.services.telegraf.serviceConfig.User;

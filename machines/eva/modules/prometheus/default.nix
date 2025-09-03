@@ -65,16 +65,6 @@
           #  labels.org = "dave";
           #}
           {
-            targets = [
-              "bld1.numtide.com:9273"
-              "bld3.numtide.com:9273"
-              # "mac01.numtide.com:9273"
-              "git.numtide.com:9273"
-              "matrix.numtide.com:9273"
-            ];
-            labels.org = "numtide";
-          }
-          {
             targets = map (host: "${host}.r:9273") [
               "ace"
               "adelaide"
@@ -152,14 +142,6 @@
             group_interval = "5m";
             repeat_interval = "4h";
             receiver = "nixos-wiki";
-          }
-          {
-            group_by = [ "host" ];
-            match_re.org = "numtide";
-            group_wait = "5m";
-            group_interval = "5m";
-            repeat_interval = "4h";
-            receiver = "numtide";
           }
           {
             group_by = [ "host" ];
