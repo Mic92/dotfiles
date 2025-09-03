@@ -7,11 +7,6 @@
 }:
 
 let
-  # aerc with compose pipe support
-  aerc-patched = pkgs.callPackage ../../pkgs/aerc-patched.nix {
-    inherit (pkgs) aerc;
-  };
-
   # email-sync script
   email-sync = pkgs.callPackage ../../pkgs/email-sync { };
 
@@ -61,7 +56,6 @@ lib.mkMerge [
       email-sync # our email sync script
 
       # CLI email clients
-      aerc-patched
       neomutt # alternative to aerc
 
       # Email organization tools
