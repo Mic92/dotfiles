@@ -300,9 +300,15 @@ indicators, suspicious attachments, etc."""
         try:
             # Create a temporary directory to run claude in (no file context)
             with tempfile.TemporaryDirectory() as tmpdir:
-                # Call Claude Code with prompt via stdin
+                # Call Claude Code with prompt via stdin in print mode with tools disabled
                 result = subprocess.run(
-                    ["claude", "-c", prompt],
+                    [
+                        "claude",
+                        "-p",
+                        "--disallowed-tools",
+                        "Bash,Edit,Write,Read,Grep,Glob,Task,WebSearch,WebFetch,TodoWrite,MultiEdit,NotebookEdit,ExitPlanMode,BashOutput,KillBash",
+                        prompt,
+                    ],
                     check=False,
                     capture_output=True,
                     text=True,
