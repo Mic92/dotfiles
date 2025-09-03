@@ -4,6 +4,7 @@ import email
 import email.policy
 import logging
 import subprocess
+import os
 from pathlib import Path
 from typing import Any, cast
 
@@ -84,12 +85,17 @@ class ClaudeSpamFilter(Filter):  # type: ignore[misc]
     def _get_khard_contacts(self) -> set[str]:
         """Get all email addresses from khard."""
         try:
+            # Set LC_ALL=C to avoid locale issues with khard's sorting
+            env = os.environ.copy()
+            env["LC_ALL"] = "C"
+
             result = subprocess.run(
                 ["khard", "email", "--parsable", "--remove-first-line"],
                 check=False,
                 capture_output=True,
                 text=True,
                 timeout=5,
+                env=env,
             )
             if result.returncode == 0:
                 contacts = set()
