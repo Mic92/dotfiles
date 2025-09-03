@@ -3,8 +3,9 @@
 import email
 import email.policy
 import logging
-import subprocess
 import os
+import subprocess
+import tempfile
 from pathlib import Path
 from typing import Any, cast
 
@@ -295,21 +296,25 @@ indicators, suspicious attachments, etc."""
 
     def _call_claude_api(self, prompt: str) -> dict[str, Any] | None:
         """Call Claude API and parse response."""
-        try:
-            # Call Claude Code with prompt via stdin
-            result = subprocess.run(
-                ["claude", "-c", prompt],
-                check=False,
-                capture_output=True,
-                text=True,
-                timeout=100,
-            )
 
-            if result.returncode == 0:
-                return self._parse_claude_response(result.stdout.strip())
-            logger.error("Claude Code error: %s", result.stderr)
-            logger.error("Claude Code stdout: %s", result.stdout)
-            logger.error("Claude Code returncode: %s", result.returncode)
+        try:
+            # Create a temporary directory to run claude in (no file context)
+            with tempfile.TemporaryDirectory() as tmpdir:
+                # Call Claude Code with prompt via stdin
+                result = subprocess.run(
+                    ["claude", "-c", prompt],
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                    timeout=100,
+                    cwd=tmpdir,  # Run in temp directory to avoid file context
+                )
+
+                if result.returncode == 0:
+                    return self._parse_claude_response(result.stdout.strip())
+                logger.error("Claude Code error: %s", result.stderr)
+                logger.error("Claude Code stdout: %s", result.stdout)
+                logger.error("Claude Code returncode: %s", result.returncode)
 
         except subprocess.TimeoutExpired:
             logger.warning("Claude Code timed out")
