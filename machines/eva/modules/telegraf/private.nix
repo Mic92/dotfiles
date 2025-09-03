@@ -220,7 +220,7 @@ in
         response_string_match = "Nextcloud";
       }
       {
-        urls = [ "https://matrix.thalheim.io/_matrix/federation/v1/version" ];
+        urls = [ "https://thalheim.io/_matrix/federation/v1/version" ];
         tags.host = "eve";
         tags.org = "private";
         tags.service = "matrix-federation";
@@ -229,7 +229,7 @@ in
         response_timeout = "10s";
       }
       {
-        urls = [ "https://matrix.thalheim.io/.well-known/matrix/server" ];
+        urls = [ "https://thalheim.io/.well-known/matrix/server" ];
         tags.host = "eve";
         tags.org = "private";
         tags.service = "matrix-wellknown";
