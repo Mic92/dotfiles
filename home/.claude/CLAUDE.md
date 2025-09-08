@@ -1,22 +1,24 @@
 - Use `--log-format bar-with-logs` with Nix for improved build log output.
 - Add new untracked files in Nix flakes with `git add`.
-- Tools that can be used: fd, rg, dnsutils, lsof
-- Use `ast-grep` for precise AST-based code searching when you need to find
-  specific code patterns or structures
+- Follow XDG desktop standards
+- Regularly reason about security implications of the code
+- Available tools:
+  - fd, rg, dnsutils, lsof, gdb, binutils, ast-grep, graphicsmagic (gm)
+  - On Linux: strace/sysdig/bcc
+  - macOS: dtrace
 - Format code with `flake-fmt` if the current project has a flake with a
   formatter defined.
 - Write shell scripts that pass `shellcheck`.
 - Write Python code for 3.13 that conforms to `ruff format`, `ruff check` and
   `mypy`
 - Use `$HOME/.claude/outputs` as a scratch directory.
-- Use `gm` / graphicsmagic when converting images
-- Avoid using `cd`, prefer absolute paths
+- In the Bash tool use absolute paths over `cd`
 - Always test/lint/format your code before committing.
 - Add debug output or unit tests when troubleshooting.
 - When writing test use realistic inputs/outputs that test the actual code as
   opposed to mocked out versions
-- IMPORTANT: When ask to fix linting errors do only under extreme circumstances
-  and very good justifications disable them.
+- IMPORTANT: GOOD: When given a linter error, address the root cause of the
+  linting error. BAD: silencing lint errors. Exhaustivly fix all linter errors.
 - CRITICAL: ALWAYS use pueue for ANY command that might take longer than 10
   seconds to avoid timeouts. This includes but is not limited to:
   - `clan machines update` (deployment commands)
@@ -29,11 +31,10 @@
   ```bash
   id=$(pueue add -- command | grep -oE '[0-9]+'); pueue wait "$id"; pueue log "$id"
   ```
-- Use strace/sysdig/bcc on Linux and dtrace on macOS for debugging
 - Use the gh tool to interact with GitHub.
 - Use the tea CLI tool to interact with Gitea.
 - Use nix-locate to find packages by file path.
-- Use nix run to execute applications that are not installed.
+- Use `nix run` to execute applications that are not installed.
 - Recommended: Use GitHub code search to find examples for the latest APIs:
   `gh search code "foo lang:nix"`.
 - Use `nix eval` instead of `nix flake show` to look up attributes in a flake.
@@ -49,4 +50,3 @@
   results are better.
   - `kagi-search "nixpkgs buildPythonPackage examples"`
   - `kagi-search -j "nix flake inputs follows" | jq -r '.[0].url'`
-- Use absolute paths instead of `cd`
