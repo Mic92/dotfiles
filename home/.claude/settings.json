@@ -1,6 +1,6 @@
 {
-  "model": "opus",
   "includeCoAuthoredBy": false,
+  "model": "opus",
   "hooks": {
     "Notification": [
       {
