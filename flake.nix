@@ -190,6 +190,7 @@
               hci-effects.mkEffect {
                 effectScript = ''
                   echo "${builtins.toJSON { inherit (herculesCI.config.repo) branch tag rev; }}"
+                  exit 1 # make it fail on purpose for testing
                   ${pkgs.hello}/bin/hello
                 '';
               }
