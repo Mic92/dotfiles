@@ -220,7 +220,7 @@ in
         response_string_match = "Nextcloud";
       }
       {
-        urls = [ "https://thalheim.io/_matrix/federation/v1/version" ];
+        urls = [ "https://matrix.thalheim.io/_matrix/federation/v1/version" ];
         tags.host = "eve";
         tags.org = "private";
         tags.service = "matrix-federation";
