@@ -11,6 +11,7 @@
 - Write shell scripts that pass `shellcheck`.
 - Write Python code for 3.13 that conforms to `ruff format`, `ruff check` and
   `mypy`
+- Prefer nix to fetch python dependencies
 - Use `$HOME/.claude/outputs` as a scratch directory.
 - In the Bash tool use absolute paths over `cd`
 - Always test/lint/format your code before committing.
