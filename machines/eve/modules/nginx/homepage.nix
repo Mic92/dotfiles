@@ -18,7 +18,7 @@
       '';
       locations."=/.well-known/matrix/server".extraConfig = ''
         add_header Content-Type application/json;
-        return 200 '{"m.server": "matrix.thalheim.io:443"}';
+        return 200 '{"m.server":"matrix.thalheim.io:443"}';
       '';
       locations."=/.well-known/matrix/client".extraConfig = ''
         add_header Content-Type application/json;
