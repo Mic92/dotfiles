@@ -55,8 +55,7 @@ lib.mkMerge [
       notmuch
       email-sync # our email sync script
 
-      # CLI email clients
-      neomutt # alternative to aerc
+      aerc
 
       # Email organization tools
       afew # notmuch tagging tool
