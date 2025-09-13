@@ -1,7 +1,5 @@
-{ pkgs, ... }:
 {
   services.kanidm.enableServer = true;
-  services.kanidm.package = pkgs.kanidm_1_6;
   services.kanidm.serverSettings = {
     tls_chain = "/var/lib/acme/kanidm.thalheim.io/fullchain.pem";
     tls_key = "/var/lib/acme/kanidm.thalheim.io/key.pem";
