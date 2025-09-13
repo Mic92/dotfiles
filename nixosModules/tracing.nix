@@ -1,4 +1,4 @@
-{ pkgs, config, ... }:
+{ pkgs, ... }:
 {
   programs.bcc.enable = true;
   programs.sysdig.enable = true;
@@ -7,6 +7,6 @@
     pkgs.strace
 
     # we want to use trace from bcc
-    (pkgs.lowPrio config.boot.kernelPackages.perf)
+    (pkgs.lowPrio pkgs.perf)
   ];
 }
