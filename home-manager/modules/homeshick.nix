@@ -12,8 +12,19 @@ in
 
     Service = {
       Type = "oneshot";
-      ExecStart = "${pkgs.bash}/bin/bash -c '${homeshickPath} symlink dotfiles --force'";
+      ExecStart = "${pkgs.bash}/bin/bash -c '${homeshickPath} symlink dotfiles --batch'";
       RemainAfterExit = true;
+      Environment = [
+        "HOME=%h"
+        "PATH=${
+          lib.makeBinPath [
+            pkgs.coreutils
+            pkgs.gitMinimal
+            pkgs.bash
+          ]
+        }"
+      ];
+      WorkingDirectory = "%h";
     };
 
     Install = {
@@ -27,10 +38,19 @@ in
       ProgramArguments = [
         "${pkgs.bash}/bin/bash"
         "-c"
-        "${homeshickPath} symlink dotfiles --force"
+        "${homeshickPath} symlink dotfiles --batch"
       ];
       RunAtLoad = true;
       Label = "org.homeshick.symlink";
+      EnvironmentVariables = {
+        HOME = "/Users/%u";
+        PATH = "${lib.makeBinPath [
+          pkgs.coreutils
+          pkgs.gitMinimal
+          pkgs.bash
+        ]}";
+      };
+      WorkingDirectory = "/Users/%u";
     };
   };
 }
