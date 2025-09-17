@@ -68,8 +68,6 @@
       self.packages.${pkgs.stdenv.hostPlatform.system}.browser-cli
     ]
     ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
-      (self.inputs.ghostty.packages.${pkgs.stdenv.hostPlatform.system}.default.overrideAttrs (_oldAttrs: {
-        preferLocalBuild = true;
-      }))
+      ghostty
     ];
 }

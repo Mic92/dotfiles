@@ -116,11 +116,6 @@
     flake-utils.url = "github:numtide/flake-utils";
     flake-utils.inputs.systems.follows = "systems";
 
-    ghostty.url = "github:ghostty-org/ghostty";
-    ghostty.inputs.nixpkgs.follows = "nixpkgs";
-    ghostty.inputs.flake-compat.follows = "";
-    ghostty.inputs.flake-utils.follows = "flake-utils";
-
     crane.url = "github:ipetkov/crane";
 
     blueprint = {
