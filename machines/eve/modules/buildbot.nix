@@ -8,8 +8,6 @@
     enable = true;
     domain = "buildbot.thalheim.io";
 
-    jobReportLimit = 1;
-
     workersFile = config.sops.secrets.buildbot-nix-workers.path;
     buildSystems = [
       "i686-linux"
