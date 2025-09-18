@@ -37,16 +37,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1758191766,
-        "narHash": "sha256-Z31TQ7BZt8VtjfOWwvFWZ8FR8Ahh0GzXetgDJZApSSM=",
-        "ref": "gcroot-fixes",
-        "rev": "26980831befdc73a7ac21e94f1d0eb0f29229e48",
+        "lastModified": 1758196835,
+        "narHash": "sha256-Vcb3hQhwmwyURd69KMYmK8diRChqzh94w74kkoXf9iw=",
+        "ref": "cancel-evals",
+        "rev": "1e6bafcf23f0359e1b165db00f54d7a6d580a419",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
       },
       "original": {
-        "ref": "gcroot-fixes",
+        "ref": "cancel-evals",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
@@ -623,11 +623,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1754266220,
-        "narHash": "sha256-9eJCNenkN0fyQhkaHZ49rvKldOoagOrd1pIfgCBYh2o=",
+        "lastModified": 1758195872,
+        "narHash": "sha256-s2sbyzLJfzoimAgZezMaWmnIl8MwDrU7XGDt5OffCCo=",
         "owner": "Mic92",
         "repo": "nur-packages",
-        "rev": "05b69b9e2f010c203242c1025455db0d4248d808",
+        "rev": "4313ae7f104762d8a476def56db267b2f5273930",
         "type": "github"
       },
       "original": {
