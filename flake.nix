@@ -24,7 +24,7 @@
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
-    nix.url = "git+https://github.com/Mic92/nix-1?shallow=1";
+    nix.url = "git+https://github.com/Mic92/nix-1?shallow=1&rev=82315c3807f90be8f4728b32c343e6a2f31969e3";
     nix.inputs.nixpkgs.follows = "nixpkgs";
     nix.inputs.flake-parts.follows = "";
     nix.inputs.flake-compat.follows = "";
@@ -59,7 +59,7 @@
     data-mesher.inputs.flake-parts.follows = "flake-parts";
     data-mesher.inputs.treefmt-nix.follows = "treefmt-nix";
 
-    buildbot-nix.url = "git+https://github.com/nix-community/buildbot-nix?shallow=1&ref=gcroot-fixes";
+    buildbot-nix.url = "git+https://github.com/nix-community/buildbot-nix?shallow=1&ref=cancel-evals";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
