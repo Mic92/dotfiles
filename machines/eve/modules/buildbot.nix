@@ -34,6 +34,14 @@
       "Lassulus"
     ];
     outputsPath = "/var/www/buildbot/nix-outputs/";
+    pullBased = {
+      repositories = {
+        sizelint = {
+          url = "https://github.com/a-kenji/sizelint";
+          defaultBranch = "main";
+        };
+      };
+    };
   };
   services.buildbot-master = {
     extraConfig = ''
