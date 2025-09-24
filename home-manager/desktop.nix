@@ -36,7 +36,6 @@
       cheat
       xdg-utils
       tio
-      vscode
 
       (mpv.override { scripts = [ mpvScripts.mpris ]; })
       playerctl
@@ -63,6 +62,7 @@
       nixos-shell
       nerd-fonts.fira-code
       inxi
+      zed-editor
       self.packages.${pkgs.stdenv.hostPlatform.system}.gmaps-cli
       self.packages.${pkgs.stdenv.hostPlatform.system}.kagi-search
       self.packages.${pkgs.stdenv.hostPlatform.system}.browser-cli
