@@ -69,7 +69,7 @@
     hyprspace.inputs.flake-parts.follows = "flake-parts";
     hyprspace.inputs.nixpkgs.follows = "nixpkgs";
 
-    nixos-facter-modules.url = "github:numtide/nixos-facter-modules/networkd-default";
+    nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
