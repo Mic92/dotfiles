@@ -37,16 +37,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1758801978,
-        "narHash": "sha256-hE8wlw75WrGmxFTJNC2t2ed1JiigISdZhNO2W5kN0fY=",
-        "ref": "failed-statuses",
-        "rev": "90d2740843cd08c6850f77fb48838eb178c72eda",
+        "lastModified": 1758807549,
+        "narHash": "sha256-qWK1tUa8tZYpreO7mpd0Q1tUux6y1zvFnRROmJ9qRYA=",
+        "ref": "main",
+        "rev": "02551e87e962e8804e7211a067e51ec578625adf",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
       },
       "original": {
-        "ref": "failed-statuses",
+        "ref": "main",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
@@ -82,11 +82,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1758708366,
-        "narHash": "sha256-yeoi8w8N+BPxVJ2D1NdmdBBrTCdlFZ1MJJEQSPshMZQ=",
-        "rev": "d783ae7c7cead693b198dd9e9db2ba9f7a942905",
+        "lastModified": 1758813172,
+        "narHash": "sha256-i6wJSJclY07WvZk/HEWTguITv+9rfEfsFn4cZ4OrB1w=",
+        "rev": "3169df37693268c5858cecf4c9886b5f37735130",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/d783ae7c7cead693b198dd9e9db2ba9f7a942905.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/3169df37693268c5858cecf4c9886b5f37735130.tar.gz"
       },
       "original": {
         "type": "tarball",
