@@ -37,16 +37,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1758716207,
-        "narHash": "sha256-Y6YQE/9AUneRQrAuczf3O7Il05I5Opjp0xRReSx3E8w=",
-        "ref": "cancel-evals",
-        "rev": "1a873a8b10dbb542fd29ef6e87eb3511981ddd20",
+        "lastModified": 1758766473,
+        "narHash": "sha256-JMeKiupLHmXoCowlZCFJU+UCbMNpuHTnLXTqv/RmDIc=",
+        "ref": "refs/heads/main",
+        "rev": "ef6a499bba0f06ebb59bd680e1247cb3ece19a38",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
       },
       "original": {
-        "ref": "cancel-evals",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
@@ -449,11 +448,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1758682321,
-        "narHash": "sha256-DO3I8PLjb8O4te1+IylkZxXPZUTMRzV/I8FYsEoenrQ=",
+        "lastModified": 1758741464,
+        "narHash": "sha256-SlFojoshhNe0esbKsfuaoOEYi5xizZVtbWvKtFBqJBE=",
         "owner": "numtide",
         "repo": "nix-ai-tools",
-        "rev": "2fa4782ffe0fd447e9e1cb5c168ddd46f911e58a",
+        "rev": "864af4963879ad40ce8a74b6e568c85d59d0ada3",
         "type": "github"
       },
       "original": {
