@@ -11,7 +11,7 @@
     self.packages.${pkgs.system}.claude-md
     inputs.nix-ai-tools.packages.${pkgs.system}.opencode
     inputs.nix-ai-tools.packages.${pkgs.system}.coderabbit-cli
-    inputs.nix-ai-tools.packages.${pkgs.system}.code
+    inputs.nix-ai-tools.packages.${pkgs.system}.codex
     pkgs.pueue
   ];
 }
