@@ -198,6 +198,7 @@
             self',
             lib,
             system,
+            pkgs,
             ...
           }:
           {
@@ -239,7 +240,16 @@
                   name: config: lib.nameValuePair "home-manager-${name}" config.activation-script
                 ) (self'.legacyPackages.homeConfigurations or { });
               in
-              nixosMachines // packages // devShells // homeConfigurations;
+              nixosMachines
+              // packages
+              // devShells
+              // homeConfigurations
+              // {
+                failed = pkgs.runCommand "failed" { } ''
+                  echo "This is a failed check"
+                  exit 1
+                '';
+              };
           };
         # CI
       }
