@@ -12,6 +12,7 @@
     inputs.nix-ai-tools.packages.${pkgs.system}.opencode
     inputs.nix-ai-tools.packages.${pkgs.system}.coderabbit-cli
     inputs.nix-ai-tools.packages.${pkgs.system}.codex
+    inputs.nix-ai-tools.packages.${pkgs.system}.cursor-agent
     pkgs.pueue
   ];
 }
