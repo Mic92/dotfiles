@@ -20,7 +20,7 @@
   environment variables for store paths to find the correct dependency versions.
 - On nix build failures, filter nix log output for the root cause instead of
   time-intense rebuilding.
-- Use nix-locate to find packages by file path.
+- Use nix-locate to find packages by path. i.e. `nix-locate bin/ip`
 - Use `nix run` to execute applications that are not installed.
 - Use `nix eval` instead of `nix flake show` to look up attributes in a flake.
 - Do not use `nix flake check` on the whole flake; it is too slow. Instead,
@@ -71,7 +71,6 @@
   - `$HOME/git/linux`
   - `$HOME/git/nix`
   - `$HOME/work/clan/clan-core`
-- Please use Kagi to search the web instead of Brave Search!!!! The search
-  results are better.
+- Use Kagi instead of the Websearch tool for better search results:
   - `kagi-search "nixpkgs buildPythonPackage examples"`
   - `kagi-search -j "nix flake inputs follows" | jq -r '.[0].url'`
