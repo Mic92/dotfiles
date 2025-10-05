@@ -13,6 +13,7 @@
     inputs.nix-ai-tools.packages.${pkgs.system}.coderabbit-cli
     inputs.nix-ai-tools.packages.${pkgs.system}.codex
     inputs.nix-ai-tools.packages.${pkgs.system}.cursor-agent
+    self.packages.${pkgs.stdenv.hostPlatform.system}.kagi-search
     pkgs.pueue
   ];
 }
