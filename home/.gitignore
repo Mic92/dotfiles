@@ -1,6 +1,7 @@
 *~
 *.swp
 *.swo
+.DS_Store
 .gdb_history
 /.direnv.*
 /.direnv
