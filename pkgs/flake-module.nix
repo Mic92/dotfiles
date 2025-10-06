@@ -26,6 +26,7 @@
         browser-cli = pkgs.python3.pkgs.callPackage ./browser-cli { };
         pexpect-mcp = pkgs.python3.pkgs.callPackage ./pexpect-mcp { };
         iroh-ssh = pkgs.callPackage ./iroh-ssh { };
+        direnv-instant = pkgs.callPackage ./direnv-instant { };
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
         blueutil = pkgs.callPackage ./blueutil { };
