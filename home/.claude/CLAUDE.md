@@ -33,7 +33,7 @@
 - Write shell scripts that pass `shellcheck`.
 - Write Python code for 3.13 that conforms to `ruff format`, `ruff check` and
   `mypy`
-- Add debug output or unit tests when troubleshooting.
+- Add debug output or unit tests when troubleshooting i.e. dbg!() in Rust
 - When writing test use realistic inputs/outputs that test the actual code as
   opposed to mocked out versions
 - IMPORTANT: GOOD: When given a linter error, address the root cause of the
