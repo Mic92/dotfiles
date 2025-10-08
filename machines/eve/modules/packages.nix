@@ -1,4 +1,4 @@
-{ pkgs, self, ... }:
+{ pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
     # must have
@@ -32,7 +32,5 @@
     mosh
     socat
     whois
-
-    self.packages.${pkgs.stdenv.hostPlatform.system}.direnv-instant
   ];
 }

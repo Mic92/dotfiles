@@ -162,6 +162,32 @@
         "url": "https://git.clan.lol/clan/data-mesher"
       }
     },
+    "direnv-instant": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1759934205,
+        "narHash": "sha256-Wh3HBPuyB7tdC5LdBmH2r0VClk5dRNP1WuaI99oaY20=",
+        "owner": "Mic92",
+        "repo": "direnv-instant",
+        "rev": "6476df0bfe137175a608092e461d16766817e2ec",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "direnv-instant",
+        "type": "github"
+      }
+    },
     "disko": {
       "inputs": {
         "nixpkgs": [
@@ -667,6 +693,7 @@
         "clan-core": "clan-core",
         "crane": "crane",
         "data-mesher": "data-mesher_2",
+        "direnv-instant": "direnv-instant",
         "disko": "disko",
         "flake-fmt": "flake-fmt",
         "flake-parts": "flake-parts",
