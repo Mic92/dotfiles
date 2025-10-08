@@ -250,8 +250,8 @@ autoload -U promptinit; promptinit
 prompt pure
 
 # Load direnv-instant integration for non-blocking prompt
-if [ -n "${commands[direnv]}" ]; then
-  source "$HOME/.homesick/repos/dotfiles/zsh/direnv-instant.zsh"
+if [ -n "${commands[direnv-instant]}" ] && [ -n "${commands[direnv-instant]}" ]; then
+  eval "$(direnv-instant hook zsh)"
 fi
 
 

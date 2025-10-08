@@ -100,6 +100,11 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
+    direnv-instant.url = "github:Mic92/direnv-instant";
+    direnv-instant.inputs.nixpkgs.follows = "nixpkgs";
+    direnv-instant.inputs.flake-parts.follows = "flake-parts";
+    direnv-instant.inputs.treefmt-nix.follows = "treefmt-nix";
+
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
 
