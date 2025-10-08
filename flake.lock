@@ -368,15 +368,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1751407610,
-        "narHash": "sha256-Lv/Mb7vj1bUj5TajIdM6bu8299y+B3sZfE6xlA6sXcM=",
-        "owner": "hyprspace",
+        "lastModified": 1759918242,
+        "narHash": "sha256-PJBx9BnLanqdQHgxIZjGK09g+4unkJHk07VUyns7S0w=",
+        "owner": "Mic92",
         "repo": "hyprspace",
-        "rev": "8f5778dffe153c0e9fda807dc488c4182359e512",
+        "rev": "e94ae6d6c5700744c65bb6d654dd441a16dd2ab9",
         "type": "github"
       },
       "original": {
-        "owner": "hyprspace",
+        "owner": "Mic92",
+        "ref": "fix-darwin",
         "repo": "hyprspace",
         "type": "github"
       }
