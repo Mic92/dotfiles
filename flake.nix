@@ -65,7 +65,7 @@
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
     buildbot-nix.inputs.hercules-ci-effects.follows = "";
 
-    hyprspace.url = "github:hyprspace/hyprspace";
+    hyprspace.url = "github:Mic92/hyprspace/fix-darwin";
     hyprspace.inputs.flake-parts.follows = "flake-parts";
     hyprspace.inputs.nixpkgs.follows = "nixpkgs";
 
