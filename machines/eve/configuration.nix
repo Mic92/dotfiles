@@ -34,7 +34,6 @@
     ./modules/disko.nix
     ./modules/docker.nix
     ./modules/dovecot.nix
-    ./modules/ergo.nix
     ./modules/et.nix
     ./modules/gitea
     ./modules/goatcounter.nix
