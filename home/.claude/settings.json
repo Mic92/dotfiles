@@ -1,6 +1,5 @@
 {
   "includeCoAuthoredBy": false,
-  "model": "sonnet[1m]",
   "hooks": {
     "Notification": [
       {
@@ -14,5 +13,6 @@
       }
     ]
   },
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": true,
+  "model": "sonnet[1m]"
 }
