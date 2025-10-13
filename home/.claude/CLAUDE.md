@@ -15,6 +15,7 @@
 
 - Use `--log-format bar-with-logs` with Nix for improved build log output.
 - Add new untracked files in Nix flakes with `git add`.
+- `--rebuild` only works if there was a previous successful build
 - Prefer nix to fetch python dependencies
 - When looking for build dependencies in a nix-shell/nix develop, check
   environment variables for store paths to find the correct dependency versions.
