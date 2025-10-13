@@ -175,11 +175,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1760012778,
-        "narHash": "sha256-Auw3BvGMOljy4RT8Z0PsF7F8/p+ismt6qyQyzLE4n2U=",
+        "lastModified": 1760366638,
+        "narHash": "sha256-DF6gLF72oM1HQ7KdWup1493FQWaWLVLXxSP8Ez6zFbM=",
         "owner": "Mic92",
         "repo": "direnv-instant",
-        "rev": "685ecc39c21ecc88fe0db7c0760afedea1de73e1",
+        "rev": "c5a197769e077b5a88df60a1f627842afdb251b2",
         "type": "github"
       },
       "original": {
