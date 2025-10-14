@@ -4,6 +4,7 @@
   gitMinimal,
   nixVersions,
   gh,
+  tea,
   coreutils,
   lib,
   makeWrapper,
@@ -13,12 +14,13 @@ let
     gitMinimal # for git flakes
     nixVersions.latest
     coreutils
-    gh
+    gh # for GitHub
+    tea # for Gitea
   ];
 in
 python3.pkgs.buildPythonApplication {
   pname = "merge-when-green";
-  version = "0.2.0";
+  version = "0.3.0";
   src = ./.;
   format = "other";
 
@@ -34,7 +36,7 @@ python3.pkgs.buildPythonApplication {
   '';
 
   meta = with lib; {
-    description = "Merge a PR when the CI is green";
+    description = "Merge a PR when the CI is green (supports GitHub and Gitea)";
     license = licenses.mit;
     platforms = platforms.all;
     mainProgram = "merge-when-green";
