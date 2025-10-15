@@ -21,7 +21,8 @@
   environment variables for store paths to find the correct dependency versions.
 - On nix build failures, filter nix log output for the root cause instead of
   time-intense rebuilding.
-- My nix.conf has remote builders for aarch64-linux/aarch64-darwin/x86_64-linux by default
+- My nix.conf has remote builders for aarch64-linux/aarch64-darwin/x86_64-linux
+  by default
 - Use nix-locate to find packages by path. i.e. `nix-locate bin/ip`
 - Use `nix run` to execute applications that are not installed.
 - Use `nix eval` instead of `nix flake show` to look up attributes in a flake.
@@ -61,8 +62,9 @@
   To run and wait:
   ```bash
   pueue add -- command arg1 arg2
- ⎿  New task added (id 134).
+  ⎿  New task added (id 134).
   pueue wait 134 && pueue log 134
+  ⎿  New task added (id 134). pueue wait 134 && pueue log 134
   ```
 
 ## Search
@@ -71,10 +73,13 @@
   `gh search code "foo lang:nix"`.
 - Prefer cloning source code over web searches for more accurate results.
   Various projects are available in `$HOME/git`, including:
-  - `$HOME/git/nixpkgs`
-  - `$HOME/git/linux`
-  - `$HOME/git/nix`
-  - `$HOME/work/clan/clan-core`
+- `$HOME/git/nixpkgs`
+- `$HOME/git/linux`
+- `$HOME/git/nix`
+- `$HOME/work/clan/clan-core`
 - Use Kagi instead of the Websearch tool for better search results:
-  - `kagi-search "nixpkgs buildPythonPackage examples"`
-  - `kagi-search -j "nix flake inputs follows" | jq -r '.[0].url'`
+- `kagi-search "nixpkgs buildPythonPackage examples"`
+- `kagi-search -j "nix flake inputs follows" | jq -r '.[0].url'`
+
+```
+```
