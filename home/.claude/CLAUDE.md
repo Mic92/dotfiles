@@ -21,6 +21,7 @@
   environment variables for store paths to find the correct dependency versions.
 - On nix build failures, filter nix log output for the root cause instead of
   time-intense rebuilding.
+- My nix.conf has remote builders for aarch64-linux/aarch64-darwin/x86_64-linux by default
 - Use nix-locate to find packages by path. i.e. `nix-locate bin/ip`
 - Use `nix run` to execute applications that are not installed.
 - Use `nix eval` instead of `nix flake show` to look up attributes in a flake.
@@ -59,7 +60,9 @@
 
   To run and wait:
   ```bash
-  id=$(pueue add -- command | grep -oE '[0-9]+'); pueue wait "$id"; pueue log "$id"
+  pueue add -- command arg1 arg2
+ ⎿  New task added (id 134).
+  pueue wait 134 && pueue log 134
   ```
 
 ## Search
