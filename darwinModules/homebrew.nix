@@ -20,18 +20,17 @@
   homebrew.onActivation.cleanup = "uninstall";
 
   homebrew.taps = [
-    "deskflow/homebrew-tap"
+    "imshuhao/kdeconnect"
   ];
   homebrew.casks = [
+    "kdeconnect"
     "alt-tab"
     "ferdium"
-    "deskflow"
     "firefox"
     "chromium"
     "signal"
     "ghostty"
     "via"
-    "gather"
     "claude"
   ];
 }
