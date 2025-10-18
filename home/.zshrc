@@ -260,10 +260,10 @@ fi
 alias zcat='zcat -f'
 alias dd='dd status=progress'
 rg() {
-  local pager=$PAGER
+  local pager=($PAGER)
 
   if [[ -n ${commands[delta]} ]]; then
-    pager=delta
+    pager=(delta --hyperlinks)
   fi
 
   if [[ -n ${commands[rg]} ]]; then
@@ -272,8 +272,6 @@ rg() {
       if [[ -t 0 ]]; then
         command rg --files | command rg --no-line-number --json -C 2 "$@"
       fi) | $pager
-  elif [[ -n ${commands[ag]} ]]; then
-    command ag -C2 --smart-case --literal --pager="$pager" "$@"
   else
     grep -r -C 2 "$@"
   fi
