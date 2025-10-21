@@ -32,3 +32,19 @@ type = "caldav"
 url = "https://cloud.thalheim.io/remote.php/dav/calendars/joerg@higgsboson.tk/"
 username = "joerg@higgsboson.tk"
 password.fetch = ["command", "rbw", "get", "Eve"]
+
+[pair clan_calendar]
+a = "clan_nextcloud"
+b = "local3"
+collections = [["personal", "personal", "Personal (Clan)"]]
+
+[storage local3]
+type = "filesystem"
+path = "~/.local/share/calendars/clan/"
+fileext = ".ics"
+
+[storage clan_nextcloud]
+type = "caldav"
+url = "https://nextcloud.clan.lol/remote.php/dav/calendars/Mic92/"
+username = "Mic92"
+password.fetch = ["command", "rbw", "get", "nextcloud.clan.lol", "Mic92"]
