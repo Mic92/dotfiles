@@ -217,18 +217,6 @@
           ''
         ];
       };
-      "cn={1}homeAssistant,cn=schema".attrs = {
-        cn = "{1}homeAssistant";
-        objectClass = "olcSchemaConfig";
-        olcObjectClasses = [
-          ''
-            (1.3.6.1.4.1.28297.1.2.4 NAME 'homeAssistant'
-                         SUP uidObject AUXILIARY
-                         DESC 'Added to an account to allow home-assistant access'
-                         MUST (mail) )
-          ''
-        ];
-      };
       "cn={1}ttrss,cn=schema".attrs = {
         cn = "{1}ttrss";
         objectClass = "olcSchemaConfig";
