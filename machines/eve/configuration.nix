@@ -39,12 +39,14 @@
     ./modules/goatcounter.nix
     ./modules/grafana.nix
     ./modules/harmonia.nix
-    ./modules/kanidm.nix
+    ./modules/kanidm
     ./modules/knot
     ./modules/mastodon-hnbot.nix
+    ./modules/n8n
     ./modules/network.nix
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
+    ./modules/oauth2-proxy.nix
     #./modules/nixos-wiki
     ./modules/openttd
     ./modules/owncast.nix

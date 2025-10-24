@@ -1,5 +1,7 @@
 { pkgs, ... }:
 {
+  environment.systemPackages = [ pkgs.kanidm_1_7 ];
+
   services.kanidm.enableServer = true;
   services.kanidm.package = pkgs.kanidm_1_7;
   services.kanidm.serverSettings = {
