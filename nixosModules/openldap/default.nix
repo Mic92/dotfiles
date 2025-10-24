@@ -41,16 +41,26 @@
                            by dn.base="cn=paperless,ou=system,ou=users,dc=eve" read
                            by dn.subtree="ou=system,ou=users,dc=eve" read
                            by * none''
-          ''{3}to dn.subtree="ou=jabber,ou=users,dc=eve"  by dn.base="cn=prosody,ou=system,ou=users,dc=eve" write  by * read''
-          ''{4}to * by * read''
+          ''{3}to * by * read''
         ];
       };
-      "olcOverlay=syncprov,olcDatabase={1}mdb".attrs = {
+      "olcOverlay={0}memberof,olcDatabase={1}mdb".attrs = {
+        objectClass = [
+          "olcOverlayConfig"
+          "olcMemberOf"
+        ];
+        olcOverlay = "{0}memberof";
+        olcMemberOfRefInt = "TRUE";
+        olcMemberOfGroupOC = "groupOfNames";
+        olcMemberOfMemberAD = "member";
+        olcMemberOfMemberOfAD = "memberOf";
+      };
+      "olcOverlay={1}syncprov,olcDatabase={1}mdb".attrs = {
         objectClass = [
           "olcOverlayConfig"
           "olcSyncProvConfig"
         ];
-        olcOverlay = "syncprov";
+        olcOverlay = "{1}syncprov";
         olcSpSessionLog = "100";
       };
       "olcDatabase={2}monitor".attrs = {
@@ -76,18 +86,6 @@
             DESC 'Added to an account to allow bitwarden access'
             MUST (mail $ userPassword))";
         };
-      };
-      "cn={1}squid,cn=schema".attrs = {
-        cn = "{1}squid";
-        objectClass = "olcSchemaConfig";
-        olcObjectClasses = [
-          ''
-            (1.3.6.1.4.1.16548.1.2.4 NAME 'proxyUser'
-                        SUP top AUXILIARY
-                        DESC 'Account to allow a user to use the Squid proxy'
-                        MUST ( mail $ userPassword ))
-          ''
-        ];
       };
       "cn={1}grafana,cn=schema".attrs = {
         cn = "{1}grafana";
