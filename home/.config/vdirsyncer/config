@@ -36,7 +36,7 @@ password.fetch = ["command", "rbw", "get", "Eve"]
 [pair clan_calendar]
 a = "clan_nextcloud"
 b = "local3"
-collections = [["personal", "personal", "Personal (Clan)"]]
+collections = ["personal"]
 
 [storage local3]
 type = "filesystem"
