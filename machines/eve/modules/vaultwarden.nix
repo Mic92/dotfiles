@@ -9,10 +9,10 @@ let
     vaultwarden_url = "https://bitwarden.thalheim.io";
     vaultwarden_admin_token = "@ADMIN_TOKEN@";
     ldap_host = "localhost";
-    ldap_bind_dn = "cn=bitwarden,ou=system,ou=users,dc=eve";
+    ldap_bind_dn = "cn=vaultwarden,ou=system,ou=users,dc=eve";
     ldap_bind_password = "@LDAP_PASSWORD@";
     ldap_search_base_dn = "ou=users,dc=eve";
-    ldap_search_filter = "(&(objectClass=bitwarden))";
+    ldap_search_filter = "(&(memberOf=cn=vaultwarden,ou=users,dc=eve))";
     ldap_sync_interval_seconds = 3600;
   };
 
@@ -29,6 +29,51 @@ let
       '';
 in
 {
+  # Vars generator for vaultwarden secrets
+  clan.core.vars.generators.vaultwarden = {
+    files.admin-token-plaintext = {
+      secret = true;
+      owner = "vaultwarden_ldap";
+    };
+    files.admin-token-hash = {
+      secret = true;
+      owner = "vaultwarden_ldap";
+    };
+    files.ldap-password = {
+      secret = true;
+      owner = "vaultwarden_ldap";
+    };
+    files.smtp-password = {
+      secret = true;
+      owner = "vaultwarden";
+    };
+
+    runtimeInputs = with pkgs; [
+      coreutils
+      openssl
+      libargon2
+    ];
+
+    script = ''
+      # Generate admin token plaintext (64 random bytes, URL-safe base64)
+      openssl rand 64 | openssl base64 -A | tr '+/' '-_' | tr -d '=' > "$out/admin-token-plaintext"
+
+      # Generate random salt for argon2 (16 bytes = 128 bits)
+      SALT=$(openssl rand -base64 16 | tr -d '\n')
+
+      # Generate argon2id hash using bitwarden preset: m=64MiB (2^16), t=3, p=4
+      # Output format: ADMIN_TOKEN='$argon2id$...'
+      HASH=$(echo -n "$(cat "$out/admin-token-plaintext")" | argon2 "$SALT" -id -t 3 -m 16 -p 4 -l 32 -e)
+      echo "ADMIN_TOKEN='$HASH'" > "$out/admin-token-hash"
+
+      # Generate LDAP bind password (simple password)
+      openssl rand -base64 12 | tr -d '\n' > "$out/ldap-password"
+
+      # Generate SMTP password in environment file format
+      echo "SMTP_PASSWORD=$(openssl rand -base64 48 | tr -d '\n')" > "$out/smtp-password"
+    '';
+  };
+
   services.vaultwarden = {
     enable = true;
     dbBackend = "postgresql";
@@ -46,7 +91,10 @@ in
   };
 
   systemd.services.vaultwarden.serviceConfig = {
-    EnvironmentFile = [ config.sops.secrets.bitwarden-smtp-password.path ];
+    EnvironmentFile = [
+      config.clan.core.vars.generators.vaultwarden.files.smtp-password.path
+      config.clan.core.vars.generators.vaultwarden.files.admin-token-hash.path
+    ];
   };
 
   systemd.services.vaultwarden_ldap = {
@@ -54,8 +102,8 @@ in
 
     preStart = ''
       sed \
-        -e "s=@LDAP_PASSWORD@=$(<${config.sops.secrets.bitwarden-ldap-password.path})=" \
-        -e "s=@ADMIN_TOKEN@=$(<${config.sops.secrets.bitwarden-admin-token.path})=" \
+        -e "s=@LDAP_PASSWORD@=$(<${config.clan.core.vars.generators.vaultwarden.files.ldap-password.path})=" \
+        -e "s=@ADMIN_TOKEN@=$(<${config.clan.core.vars.generators.vaultwarden.files.admin-token-plaintext.path})=" \
         ${ldapConfigFile} \
         > /run/vaultwarden_ldap/config.toml
     '';
@@ -93,12 +141,6 @@ in
         proxyWebsockets = true;
       };
     };
-  };
-
-  sops.secrets = {
-    bitwarden-ldap-password.owner = "vaultwarden_ldap";
-    bitwarden-admin-token.owner = "vaultwarden_ldap";
-    bitwarden-smtp-password.owner = "vaultwarden";
   };
 
   users.users.vaultwarden_ldap = {

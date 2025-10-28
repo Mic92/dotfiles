@@ -39,9 +39,6 @@ www IN A 95.217.199.121
 www IN AAAA 2a01:4f9:4a:42e8::1
 * IN CNAME www
 
-;; why do I need this explicitly?
-kanidm IN CNAME www
-
 ip2 IN CNAME eva
 prometheus IN CNAME eva
 alertmanager IN CNAME eva

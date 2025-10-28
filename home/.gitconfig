@@ -86,7 +86,7 @@
 [imap]
   folder = "Drafts"
 	host = imaps://imap.thalheim.io
-  user = joerg@higgsboson.tk
+  user = joerg@thalheim.io
 [sendemail]
   from = Joerg Thalheim <joerg@thalheim.io>
   chainreplyto = false
@@ -124,5 +124,7 @@
 	helper = !gh auth git-credential
 [http]
   cookiefile = ~/.gitcookies
-[url "git@github.com:"]
-  insteadOf = https://github.com/
+#[url "git@github.com:"]
+#  insteadOf = https://github.com/
+[coderabbit]
+	machineId = cli/d131129f12ac4836b18afc418ee2cb53
