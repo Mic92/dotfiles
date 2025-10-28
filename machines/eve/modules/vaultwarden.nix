@@ -9,7 +9,7 @@ let
     vaultwarden_url = "https://bitwarden.thalheim.io";
     vaultwarden_admin_token = "@ADMIN_TOKEN@";
     ldap_host = "localhost";
-    ldap_bind_dn = "cn=vaultwarden,ou=system,ou=users,dc=eve";
+    ldap_bind_dn = "cn=vaultwarden-ldap,ou=system,ou=users,dc=eve";
     ldap_bind_password = "@LDAP_PASSWORD@";
     ldap_search_base_dn = "ou=users,dc=eve";
     ldap_search_filter = "(&(memberOf=cn=vaultwarden,ou=users,dc=eve))";

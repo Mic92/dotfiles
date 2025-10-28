@@ -65,9 +65,10 @@
                            by dn.base="cn=postfix,ou=system,ou=users,dc=eve" read
                            by * none''
           ''
-            {4}to dn.subtree="ou=users,dc=eve" attrs=mail,mailbox,maildrop,quota,cn,objectClass
+            {4}to dn.subtree="ou=users,dc=eve" attrs=mail,mailbox,maildrop,quota,cn,objectClass,memberOf
                            by dn.base="cn=postfix,ou=system,ou=users,dc=eve" read
                            by dn.base="cn=dovecot,dc=mail,dc=eve" read
+                           by dn.base="cn=vaultwarden-ldap,ou=system,ou=users,dc=eve" read
                            by users read
                            by * none''
           ''
