@@ -6,7 +6,7 @@
       dn = "cn=dovecot,dc=mail,dc=eve"
       dnpass = "${config.sops.placeholder.dovecot-ldap-password}"
       tls = no
-      auth_bind = no
+      auth_bind = yes
       ldap_version = 3
       base = ou=users,dc=eve
       user_filter = (&(objectClass=mailAccount)(mail=%u))
@@ -19,7 +19,6 @@
       iterate_attrs = =user=%{ldap:mail}
       iterate_filter = (objectClass=mailAccount)
       scope = subtree
-      default_pass_scheme = SSHA
     '';
     owner = "dovecot2";
   };
