@@ -172,18 +172,6 @@
           ''
         ];
       };
-      "cn={1}nginx,cn=schema".attrs = {
-        cn = "{1}nginx";
-        objectClass = "olcSchemaConfig";
-        olcObjectClasses = [
-          ''
-            (1.3.6.1.4.1.28295.1.2.4 NAME 'nginx'
-                         SUP top AUXILIARY
-                         DESC 'Added to an account to allow nginx access'
-                         MUST ( mail $ userPassword ))
-          ''
-        ];
-      };
 
       "cn={1}nextcloud,cn=schema".attrs = {
         cn = "{1}nextcloud";
