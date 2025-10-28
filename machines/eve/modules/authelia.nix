@@ -64,7 +64,15 @@
     };
 
     settings = {
-      default_2fa_method = "webauthn";
+      default_2fa_method = "totp";
+
+      webauthn = {
+        disable = false;
+        enable_passkey_login = true;
+        display_name = "Authelia";
+        attestation_conveyance_preference = "indirect";
+        timeout = "60s";
+      };
 
       session = {
         cookies = [
@@ -109,6 +117,14 @@
         rules = [
           {
             domain = "*.thalheim.io";
+            policy = "one_factor";
+          }
+          {
+            domain = "*.devkid.net";
+            policy = "one_factor";
+          }
+          {
+            domain = "*.lekwati.com";
             policy = "one_factor";
           }
         ];
