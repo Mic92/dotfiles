@@ -14,30 +14,10 @@ let
     /^dave\.[^@.]+@davhau\.com$/ info@davhau.com
   '';
 
-  domains = pkgs.writeText "domains.cf" ''
-    server_host = ldap://127.0.0.1
-    search_base = dc=domains,dc=mail,dc=eve
-    query_filter = (&(dc=%s)(objectClass=mailDomain))
-    result_attribute = postfixTransport
-    bind = no
-    scope = one
-  '';
-
-  accountsmap = pkgs.writeText "accountsmap.cf" ''
-    server_host = ldap://127.0.0.1
-    search_base = ou=users,dc=eve
-    query_filter = (&(objectClass=mailAccount)(mail=%s))
-    result_attribute = mail
-    bind = no
-  '';
-
-  aliases = pkgs.writeText "aliases.cf" ''
-    server_host = ldap://127.0.0.1
-    search_base = dc=aliases,dc=mail,dc=eve
-    query_filter = (&(objectClass=mailAlias)(mail=%s))
-    result_attribute = maildrop
-    bind = no
-  '';
+  # LDAP config files with authenticated bind
+  domains = "${config.sops.templates."postfix-ldap-domains.cf".path}";
+  accountsmap = "${config.sops.templates."postfix-ldap-accounts.cf".path}";
+  aliases = "${config.sops.templates."postfix-ldap-aliases.cf".path}";
 
   helo_access = pkgs.writeText "helo_access" ''
     ${config.networking.eve.ipv4.address}   REJECT Get lost - you're lying about who you are
@@ -190,4 +170,57 @@ in
     465 # stmps
     587 # submission
   ];
+
+  # Sops templates for LDAP config files
+  sops.templates."postfix-ldap-domains.cf" = {
+    content = ''
+      server_host = ldap://127.0.0.1
+      search_base = dc=domains,dc=mail,dc=eve
+      query_filter = (&(dc=%s)(objectClass=mailDomain))
+      result_attribute = postfixTransport
+      bind = yes
+      bind_dn = cn=postfix,ou=system,ou=users,dc=eve
+      bind_pw = ${config.sops.placeholder."vars/postfix-ldap/postfix-ldap-password"}
+      scope = one
+      version = 3
+    '';
+    owner = "postfix";
+  };
+
+  sops.templates."postfix-ldap-accounts.cf" = {
+    content = ''
+      server_host = ldap://127.0.0.1
+      search_base = ou=users,dc=eve
+      query_filter = (&(objectClass=mailAccount)(mail=%s))
+      result_attribute = mail
+      bind = yes
+      bind_dn = cn=postfix,ou=system,ou=users,dc=eve
+      bind_pw = ${config.sops.placeholder."vars/postfix-ldap/postfix-ldap-password"}
+      version = 3
+    '';
+    owner = "postfix";
+  };
+
+  sops.templates."postfix-ldap-aliases.cf" = {
+    content = ''
+      server_host = ldap://127.0.0.1
+      search_base = dc=aliases,dc=mail,dc=eve
+      query_filter = (&(objectClass=mailAlias)(mail=%s))
+      result_attribute = maildrop
+      bind = yes
+      bind_dn = cn=postfix,ou=system,ou=users,dc=eve
+      bind_pw = ${config.sops.placeholder."vars/postfix-ldap/postfix-ldap-password"}
+      version = 3
+    '';
+    owner = "postfix";
+  };
+
+  # Generate postfix LDAP password with clan vars
+  clan.core.vars.generators.postfix-ldap = {
+    files.postfix-ldap-password = { };
+    runtimeInputs = [ pkgs.openssl ];
+    script = ''
+      openssl rand -base64 32 | tr -d '\n' > $out/postfix-ldap-password
+    '';
+  };
 }
