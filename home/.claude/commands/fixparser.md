@@ -4,7 +4,8 @@ description: Debug parser mismatches and formatting issues
 
 # Debug Parser Mismatch
 
-When there's a parser mismatch between nixfmt-rs and the reference nixfmt implementation, follow this workflow:
+When there's a parser mismatch between nixfmt-rs and the reference nixfmt
+implementation, follow this workflow:
 
 1. **Find a minimal reproducer** for the mismatch
    - Start with the failing input
