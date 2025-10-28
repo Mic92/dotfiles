@@ -5,15 +5,20 @@
   ...
 }:
 {
-  home.packages = [
-    self.packages.${pkgs.system}.claude-code
-    self.packages.${pkgs.system}.pexpect-mcp
-    self.packages.${pkgs.system}.claude-md
-    inputs.nix-ai-tools.packages.${pkgs.system}.opencode
-    inputs.nix-ai-tools.packages.${pkgs.system}.coderabbit-cli
-    inputs.nix-ai-tools.packages.${pkgs.system}.codex
-    inputs.nix-ai-tools.packages.${pkgs.system}.cursor-agent
-    self.packages.${pkgs.stdenv.hostPlatform.system}.kagi-search
-    pkgs.pueue
-  ];
+  home.packages =
+    let
+      aiTools = inputs.nix-ai-tools.packages.${pkgs.system};
+    in
+    [
+      self.packages.${pkgs.system}.claude-code
+      self.packages.${pkgs.system}.pexpect-mcp
+      self.packages.${pkgs.system}.claude-md
+      self.packages.${pkgs.stdenv.hostPlatform.system}.kagi-search
+      aiTools.opencode
+      aiTools.coderabbit-cli
+      aiTools.codex
+      aiTools.cursor-agent
+      aiTools.spec-kit
+      pkgs.pueue
+    ];
 }
