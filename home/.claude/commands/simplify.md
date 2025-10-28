@@ -2,7 +2,8 @@
 description: Systematically refactor a file to make it more idiomatic, readable, and maintainable
 ---
 
-You are going to systematically refactor and simplify a source file. Follow this methodology:
+You are going to systematically refactor and simplify a source file. Follow this
+methodology:
 
 ## Phase 1: Analysis & Planning
 
@@ -23,6 +24,7 @@ You are going to systematically refactor and simplify a source file. Follow this
 Look for these common refactoring opportunities:
 
 ### A. Idiomatic Patterns (language-specific)
+
 - Replace verbose constructs with language idioms
 - Use built-in functions/methods instead of manual loops
 - Apply standard library patterns where appropriate
@@ -31,6 +33,7 @@ Look for these common refactoring opportunities:
 - Inline temporary variables when clear
 
 ### B. Code Duplication
+
 - **Repeated code blocks**: Extract into helper functions
   - Look for identical or near-identical code in 2+ places
   - Examples: parsing loops, validation logic, data transformation
@@ -39,6 +42,7 @@ Look for these common refactoring opportunities:
 - **Repeated constant values**: Extract to named constants
 
 ### C. Simplification Opportunities
+
 - **Early returns/guard clauses**: Reduce nesting depth
 - **Simplify boolean logic**: Remove redundant conditions
 - **Reduce temporary variables**: Inline when it doesn't hurt clarity
@@ -77,7 +81,8 @@ When you find the same code pattern 2+ times:
 
 1. **Evaluate if extraction is worth it**:
    - ✅ DO extract if: Identical logic, clear purpose, used 2+ times
-   - ❌ DON'T extract if: Each usage has different edge cases or context-specific logic
+   - ❌ DON'T extract if: Each usage has different edge cases or
+     context-specific logic
    - ❌ DON'T extract if: Abstraction would make code harder to understand
 
 2. **Create helper function**:
@@ -108,14 +113,17 @@ When you find the same code pattern 2+ times:
 ## Guidelines
 
 ### DO:
+
 - **Test frequently**: After every few changes
 - **One change at a time**: Keep changes focused and logical
 - **Preserve behavior**: Never change semantics, only structure
 - **Improve clarity**: Only refactor if it makes code clearer
-- **Document decisions**: Note in REFACTOR-TODO.md why some patterns weren't refactored
+- **Document decisions**: Note in REFACTOR-TODO.md why some patterns weren't
+  refactored
 - **Consider maintainability**: Think about future developers reading this code
 
 ### DON'T:
+
 - **Don't batch unrelated changes**: Keep refactorings focused
 - **Don't over-abstract**: Avoid creating unnecessary indirection
 - **Don't sacrifice clarity for brevity**: Shorter isn't always better
@@ -125,6 +133,7 @@ When you find the same code pattern 2+ times:
 ## Refactoring Patterns to Look For
 
 ### Pattern 1: Repeated Code Blocks
+
 - Same logic appearing in multiple places
 - Similar loops with slight variations
 - Copy-pasted code with minor changes
@@ -132,6 +141,7 @@ When you find the same code pattern 2+ times:
 **Action**: Extract to helper function, parameterize differences
 
 ### Pattern 2: Deep Nesting
+
 - Multiple levels of if/else
 - Nested loops
 - Complex conditionals
@@ -139,18 +149,21 @@ When you find the same code pattern 2+ times:
 **Action**: Use early returns, extract functions, simplify logic
 
 ### Pattern 3: Long Functions
+
 - Functions doing multiple distinct things
 - Functions harder to understand due to length
 
 **Action**: Extract logical sections into named helper functions
 
 ### Pattern 4: Magic Numbers/Strings
+
 - Unexplained constants scattered throughout code
 - Same value repeated in multiple places
 
 **Action**: Extract to named constants with clear meaning
 
 ### Pattern 5: Inconsistent Patterns
+
 - Same operation done different ways in different places
 - Mixed paradigms or styles
 
