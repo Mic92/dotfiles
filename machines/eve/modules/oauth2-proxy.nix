@@ -29,8 +29,8 @@
 
     script = ''
             CLIENT_SECRET=$(cat "$prompts/client-secret" | tr -d '\n')
-            # Generate exactly 32 bytes for cookie secret (hex encoded = 64 chars, but we want raw bytes)
-            COOKIE_SECRET=$(openssl rand -hex 16 | tr -d '\n')
+            # Generate 32 bytes for cookie secret, encoded as URL-safe base64 (no padding)
+            COOKIE_SECRET=$(openssl rand 32 | openssl base64 -A | tr '+/' '-_' | tr -d '=')
 
             cat > "$out/env-file" <<EOF
       OAUTH2_PROXY_CLIENT_SECRET=$CLIENT_SECRET
