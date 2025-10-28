@@ -90,15 +90,6 @@
             domain = "thalheim.io";
             postRun = ''
               systemctl --no-block reload nginx.service
-              # Copy certificate for kanidm
-              mkdir -p /var/lib/acme/kanidm.thalheim.io
-              cp -L /var/lib/acme/thalheim.io/fullchain.pem /var/lib/acme/kanidm.thalheim.io/fullchain.pem
-              cp -L /var/lib/acme/thalheim.io/key.pem /var/lib/acme/kanidm.thalheim.io/key.pem
-              cp -L /var/lib/acme/thalheim.io/chain.pem /var/lib/acme/kanidm.thalheim.io/chain.pem
-              chown -R acme:kanidm /var/lib/acme/kanidm.thalheim.io
-              chmod 750 /var/lib/acme/kanidm.thalheim.io
-              chmod 640 /var/lib/acme/kanidm.thalheim.io/*
-              systemctl --no-block restart kanidm.service
             '';
             group = "nginx";
             keyType = if rsa then "rsa2048" else "ec384";

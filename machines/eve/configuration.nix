@@ -28,7 +28,8 @@
     { programs.nix-index-database.comma.enable = true; }
 
     ./modules/atuin.nix
-    ./modules/bitwarden.nix
+    ./modules/authelia.nix
+    ./modules/vaultwarden.nix
     ./modules/buildbot.nix
     ./modules/dendrite.nix
     ./modules/disko.nix
@@ -39,14 +40,12 @@
     ./modules/goatcounter.nix
     ./modules/grafana.nix
     ./modules/harmonia.nix
-    ./modules/kanidm
     ./modules/knot
     ./modules/mastodon-hnbot.nix
     ./modules/n8n
     ./modules/network.nix
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
-    ./modules/oauth2-proxy.nix
     #./modules/nixos-wiki
     ./modules/openttd
     ./modules/owncast.nix

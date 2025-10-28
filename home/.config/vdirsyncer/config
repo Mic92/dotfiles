@@ -13,8 +13,8 @@ fileext = ".vcf"
 
 [storage owncloud]
 type = "carddav"
-url = "https://cloud.thalheim.io/remote.php/dav/addressbooks/users/joerg@higgsboson.tk/"
-username = "joerg@higgsboson.tk"
+url = "https://cloud.thalheim.io/remote.php/dav"
+username = "joerg@thalheim.io"
 password.fetch = ["command", "rbw", "get", "Eve"]
 
 [pair calendar]
@@ -29,8 +29,8 @@ fileext = ".ics"
 
 [storage owncloud2]
 type = "caldav"
-url = "https://cloud.thalheim.io/remote.php/dav/calendars/joerg@higgsboson.tk/"
-username = "joerg@higgsboson.tk"
+url = "https://cloud.thalheim.io/remote.php/dav"
+username = "joerg@thalheim.io"
 password.fetch = ["command", "rbw", "get", "Eve"]
 
 [pair clan_calendar]
