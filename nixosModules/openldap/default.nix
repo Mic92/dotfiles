@@ -50,7 +50,6 @@
                            by self write  by anonymous auth
                            by dn.base="cn=dovecot,dc=mail,dc=eve" read
                            by dn.base="cn=postfix,ou=system,ou=users,dc=eve" read
-                           by dn.base="cn=gitlab,ou=system,ou=users,dc=eve" read
                            by dn.base="cn=nextcloud,ou=system,ou=users,dc=eve" read
                            by dn.base="cn=paperless,ou=system,ou=users,dc=eve" read
                            by dn.base="cn=ldapsync,ou=system,ou=users,dc=eve"
@@ -218,18 +217,6 @@
                          AUXILIARY
                          MUST ( mail $ userPassword )
                          MAY ( ownCloudQuota ))''
-        ];
-      };
-      "cn={1}gitlab,cn=schema".attrs = {
-        cn = "{1}gitlab";
-        objectClass = "olcSchemaConfig";
-        olcObjectClasses = [
-          ''
-            (1.3.6.1.4.1.28293.1.2.4 NAME 'gitlab'
-                         SUP uidObject AUXILIARY
-                         DESC 'Added to an account to allow gitlab access'
-                         MUST (mail))
-          ''
         ];
       };
       "cn={1}ttrss,cn=schema".attrs = {
