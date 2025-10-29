@@ -31,15 +31,18 @@
   };
 
   # Generate Laravel app key using clan vars generator
-  # Format: base64:44-character-base64-string
+  # Format: base64:44-character-string (32 bytes)
   clan.core.vars.generators.phpldapadmin = {
     files.app-key = { };
     migrateFact = "phpldapadmin";
-    runtimeInputs = [ pkgs.openssl ];
+    runtimeInputs = [
+      pkgs.openssl
+      pkgs.coreutils
+    ];
     script = ''
       # Generate Laravel app key in the correct format (base64:32-bytes)
-      echo -n "base64:" > "$out"/app-key
-      openssl rand -base64 32 >> "$out"/app-key
+      # Note: tr strips the trailing newline from openssl output
+      printf "base64:%s" "$(openssl rand -base64 32 | tr -d '\n')" > "$out"/app-key
     '';
   };
 }
