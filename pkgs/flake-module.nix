@@ -26,6 +26,7 @@
         browser-cli = pkgs.python3.pkgs.callPackage ./browser-cli { };
         pexpect-mcp = pkgs.python3.pkgs.callPackage ./pexpect-mcp { };
         iroh-ssh = pkgs.callPackage ./iroh-ssh { };
+        phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
         blueutil = pkgs.callPackage ./blueutil { };
