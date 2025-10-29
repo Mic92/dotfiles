@@ -12,7 +12,9 @@ implementation, follow this workflow:
    - Remove unnecessary code while preserving the issue
    - Identify the smallest test case that shows the problem
 
-2. **Add regression test** to `tests/regression_tests.rs`
+2. **Add regression test**
+   - For parser/AST issues: add to `src/regression_tests/parser.rs`
+   - For IR/formatting issues: add to `src/regression_tests/ir.rs`
    - Add the minimal reproducer as a test case
    - The test should fail initially, demonstrating the bug
    - Prevents the issue from reoccurring once fixed
