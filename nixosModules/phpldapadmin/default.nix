@@ -174,7 +174,7 @@ in
     services.nginx = lib.mkIf cfg.nginx.enable {
       enable = true;
       virtualHosts.${cfg.domain} = {
-        root = "${phpldapadmin}/share/php/phpldapadmin/public";
+        root = "${stateDir}/app/public";
 
         locations = {
           "/" = {
@@ -221,29 +221,21 @@ in
         User = "phpldapadmin";
         Group = "phpldapadmin";
         StateDirectory = "phpldapadmin";
-        WorkingDirectory = "${phpldapadmin}/share/php/phpldapadmin";
+        WorkingDirectory = stateDir;
         ReadWritePaths = [ stateDir ];
       };
 
-      path = lib.optional cfg.database.createLocally config.services.postgresql.package;
+      path = [ pkgs.rsync ] ++ lib.optional cfg.database.createLocally config.services.postgresql.package;
 
       script = ''
         set -e
-
-        # Link application files
-        ln -sfn ${phpldapadmin}/share/php/phpldapadmin ${stateDir}/app
 
         # Create storage directories if they don't exist
         mkdir -p ${stateDir}/storage/{app,framework/{cache,sessions,views},logs}
         mkdir -p ${stateDir}/bootstrap/cache
 
-        # Create symlink from app to state storage
-        ln -sfn ${stateDir}/storage ${stateDir}/app/storage
-        ln -sfn ${stateDir}/bootstrap/cache ${stateDir}/app/bootstrap/cache
-
-        # Build .env file from template
-        cd ${stateDir}/app
-        cat > .env <<EOF
+        # Build .env file in state directory
+        cat > ${stateDir}/.env <<EOF
         APP_NAME="phpLDAPadmin"
         APP_ENV=production
         APP_KEY=$(< ${cfg.appKey})
@@ -257,6 +249,28 @@ in
 
         ${cfg.extraEnvVars}
         EOF
+
+        # Create .env symlink in app directory by temporarily making it writable
+        # Laravel expects .env in the application root
+        if [ ! -e ${stateDir}/app ]; then
+          mkdir -p ${stateDir}/app
+        fi
+        ln -sfn ${stateDir}/.env ${stateDir}/app/.env
+
+        # Symlink storage and bootstrap directories
+        ln -sfn ${stateDir}/storage ${stateDir}/app/storage
+        ln -sfn ${stateDir}/bootstrap ${stateDir}/app/bootstrap
+
+        # Copy application files to writable location, preserving structure
+        # Use rsync to efficiently sync only changed files
+        ${pkgs.rsync}/bin/rsync -a --delete \
+          --exclude=storage \
+          --exclude=bootstrap/cache \
+          --exclude=.env \
+          ${phpldapadmin}/share/php/phpldapadmin/ ${stateDir}/app/
+
+        # Run artisan commands from the writable app directory
+        cd ${stateDir}/app
 
         # Run database migrations
         ${phpldapadmin.php}/bin/php artisan migrate --force
