@@ -126,23 +126,26 @@
         };
 
         groups_filter = "(&(objectClass=groupOfNames)(member={dn}))";
-        additional_groups_dn = "ou=users";
+        additional_groups_dn = "ou=groups";
       };
 
       access_control = {
         default_policy = "deny";
         rules = [
+          # FreshRSS - restrict to freshrss group members only
           {
-            domain = "*.thalheim.io";
+            domain = [
+              "rss.thalheim.io"
+              "rss.devkid.net"
+            ];
             policy = "one_factor";
+            subject = [ "group:freshrss" ];
           }
+          # n8n - restrict to n8n group members only
           {
-            domain = "*.devkid.net";
+            domain = "n8n.thalheim.io";
             policy = "one_factor";
-          }
-          {
-            domain = "*.lekwati.com";
-            policy = "one_factor";
+            subject = [ "group:n8n" ];
           }
         ];
       };

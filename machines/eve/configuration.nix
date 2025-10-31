@@ -57,7 +57,6 @@
     ./modules/redis.nix
     ./modules/remote-builder.nix
     ./modules/rspamd/rspamd.nix
-    ./modules/shadowsocks.nix
     ./modules/shiori
     ./modules/snappymail.nix
     ./modules/sshd.nix
@@ -65,7 +64,7 @@
     ./modules/syncthing.nix
     ./modules/teamspeak.nix
     ./modules/telegraf.nix
-    ./modules/tt-rss.nix
+    ./modules/freshrss.nix
     ./modules/unbound.nix
     ./modules/users.nix
     ./modules/wireguard.nix

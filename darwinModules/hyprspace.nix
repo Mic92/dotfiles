@@ -38,7 +38,7 @@ in
     package = mkOption {
       type = types.package;
       description = "Hyprspace package to use.";
-      default = self.inputs.hyprspace.packages.${pkgs.hostPlatform.system}.hyprspace;
+      default = self.inputs.hyprspace.packages.${pkgs.stdenv.hostPlatform.system}.hyprspace;
     };
 
     interface = mkOption {
