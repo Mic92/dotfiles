@@ -18,7 +18,7 @@
     [
       league-of-moveable-type
       dejavu_fonts
-      ubuntu_font_family
+      ubuntu-classic
       unifont
       twitter-color-emoji
       upterm
