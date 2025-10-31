@@ -50,7 +50,7 @@
     #spora.url = "github:krebs/spora";
     #spora.inputs.nixpkgs.follows = "nixpkgs";
 
-    nixos-hardware.url = "github:Mic92/nixos-hardware/amd-npu";
+    nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     systems.url = "github:nix-systems/default";
 
