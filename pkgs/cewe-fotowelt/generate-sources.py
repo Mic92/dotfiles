@@ -39,7 +39,7 @@ def parse_packages(index_content: str, version: str) -> list[dict[str, str]]:
 
         parts = line.split(";")
         if len(parts) >= 4:
-            path, required, desc, platform = parts[0:4]
+            path, _required, desc, platform = parts[0:4]
             platform = platform.strip()  # Remove any trailing whitespace
 
             # Only include Linux x64 and all-platform packages
