@@ -29,9 +29,11 @@ phpWithExtensions.buildComposerProject2 (finalAttrs: {
     hash = "sha256-GwrYzqZ9fA0XY2D/pQvgisI92XQPkYv60A2BzrvDaW0=";
   };
 
-  php = phpWithExtensions;
+    patchFlags = [ "-p1" ];
 
-  vendorHash = "sha256-kmWwXD5coWzu3bF105e6QTNiN6p9i1OGz849jsPeN4Y=";
+    postInstall = ''
+      # Remove development files
+      rm -rf $out/share/php/phpldapadmin/{tests,node_modules,.git*,.env.example}
 
   # Skip npm build for now - Laravel Mix assets can be built at runtime if needed
   # or we can add a separate buildNpmPackage derivation later
@@ -48,11 +50,12 @@ phpWithExtensions.buildComposerProject2 (finalAttrs: {
 
   passthru.updateScript = nix-update-script { };
 
-  meta = with lib; {
-    description = "Web-based LDAP administration interface built on Laravel";
-    homepage = "https://github.com/leenooks/phpLDAPadmin";
-    license = licenses.gpl2Only;
-    maintainers = with maintainers; [ ];
-    platforms = platforms.unix;
-  };
-})
+    meta = with lib; {
+      description = "Web-based LDAP administration interface built on Laravel";
+      homepage = "https://github.com/leenooks/phpLDAPadmin";
+      license = licenses.gpl2Only;
+      maintainers = with maintainers; [ ];
+      platforms = platforms.unix;
+    };
+  }
+)

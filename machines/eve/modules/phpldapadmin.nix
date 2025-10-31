@@ -12,6 +12,17 @@
     # Use local PostgreSQL database
     database.createLocally = true;
 
+    # LDAP connection to local Kanidm
+    ldap = {
+      host = "::1";  # IPv6 localhost
+      port = 3636;   # Kanidm LDAP port
+      baseDn = "dc=kanidm,dc=thalheim,dc=io";
+      useSsl = false;
+      useTls = false;
+      loginAttr = "uid";
+      allowGuest = false;
+    };
+
     nginx.enable = true;
 
     poolSettings = {
@@ -33,7 +44,9 @@
   # Generate Laravel app key using clan vars generator
   # Format: base64:44-character-string (32 bytes)
   clan.core.vars.generators.phpldapadmin = {
-    files.app-key = { };
+    files.app-key = {
+      owner = "phpldapadmin";
+    };
     migrateFact = "phpldapadmin";
     runtimeInputs = [
       pkgs.openssl
