@@ -33,7 +33,7 @@ def _extract_recipient_email(msg: email.message.Message) -> str | None:
     if "To" in msg:
         to_header = msg["To"]
         # Parse the email address from the To field
-        name, addr = email.utils.parseaddr(to_header)
+        _name, addr = email.utils.parseaddr(to_header)
         if addr:
             return addr
     return None
@@ -195,7 +195,7 @@ def send_reply(
             stderr=subprocess.PIPE,
             text=True,
         )
-        stdout, stderr = proc.communicate(msg.as_string())
+        _stdout, stderr = proc.communicate(msg.as_string())
     except (OSError, subprocess.SubprocessError) as e:
         print(f"Error sending reply: {e}", file=sys.stderr)
         return False
