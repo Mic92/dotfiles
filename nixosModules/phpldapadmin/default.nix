@@ -128,6 +128,52 @@ in
       };
     };
 
+    ldap = {
+      host = lib.mkOption {
+        type = lib.types.str;
+        default = "127.0.0.1";
+        example = "ldap.example.com";
+        description = "LDAP server hostname or IP address";
+      };
+
+      port = lib.mkOption {
+        type = lib.types.port;
+        default = 389;
+        description = "LDAP server port";
+      };
+
+      baseDn = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        example = "dc=example,dc=com";
+        description = "LDAP base DN. If null, will be auto-detected from server";
+      };
+
+      useSsl = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Use SSL for LDAP connection (LDAPS)";
+      };
+
+      useTls = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Use STARTTLS for LDAP connection";
+      };
+
+      loginAttr = lib.mkOption {
+        type = lib.types.str;
+        default = "uid";
+        description = "LDAP attribute used for user login";
+      };
+
+      allowGuest = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Allow anonymous/guest browsing before login";
+      };
+    };
+
     extraEnvVars = lib.mkOption {
       type = lib.types.lines;
       default = "";
@@ -247,19 +293,17 @@ in
 
         ${lib.concatStringsSep "\n" (lib.mapAttrsToList (n: v: "${n}=${v}") dbConfig)}
 
+        # LDAP Configuration
+        LDAP_HOST=${cfg.ldap.host}
+        LDAP_PORT=${toString cfg.ldap.port}
+        ${lib.optionalString (cfg.ldap.baseDn != null) "LDAP_BASE_DN=${cfg.ldap.baseDn}"}
+        LDAP_SSL=${lib.boolToString cfg.ldap.useSsl}
+        LDAP_TLS=${lib.boolToString cfg.ldap.useTls}
+        LDAP_LOGIN_ATTR=${cfg.ldap.loginAttr}
+        LDAP_ALLOW_GUEST=${lib.boolToString cfg.ldap.allowGuest}
+
         ${cfg.extraEnvVars}
         EOF
-
-        # Create .env symlink in app directory by temporarily making it writable
-        # Laravel expects .env in the application root
-        if [ ! -e ${stateDir}/app ]; then
-          mkdir -p ${stateDir}/app
-        fi
-        ln -sfn ${stateDir}/.env ${stateDir}/app/.env
-
-        # Symlink storage and bootstrap directories
-        ln -sfn ${stateDir}/storage ${stateDir}/app/storage
-        ln -sfn ${stateDir}/bootstrap ${stateDir}/app/bootstrap
 
         # Copy application files to writable location, preserving structure
         # Use rsync to efficiently sync only changed files
@@ -269,8 +313,25 @@ in
           --exclude=.env \
           ${phpldapadmin}/share/php/phpldapadmin/ ${stateDir}/app/
 
+        # Make the app directory writable (rsync preserves read-only Nix store permissions)
+        chmod -R u+w ${stateDir}/app
+
+        # After rsync, create/recreate the symlinks
+        # Remove any directories that might have been copied
+        rm -rf ${stateDir}/app/storage ${stateDir}/app/bootstrap/cache
+
+        # Create symlinks to writable state directories
+        ln -sfn ${stateDir}/.env ${stateDir}/app/.env
+        ln -sfn ${stateDir}/storage ${stateDir}/app/storage
+        ln -sfn ${stateDir}/bootstrap/cache ${stateDir}/app/bootstrap/cache
+
         # Run artisan commands from the writable app directory
         cd ${stateDir}/app
+
+        # Create sessions table migration if migrations directory doesn't have any sessions table migration
+        if ! ls ${stateDir}/app/database/migrations/*_create_sessions_table.php 2>/dev/null; then
+          ${phpldapadmin.php}/bin/php artisan session:table
+        fi
 
         # Run database migrations
         ${phpldapadmin.php}/bin/php artisan migrate --force
