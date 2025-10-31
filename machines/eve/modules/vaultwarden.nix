@@ -112,7 +112,7 @@ in
       Restart = "on-failure";
       RestartSec = "2s";
       ExecStart = "${
-        self.inputs.nur-packages.packages.${pkgs.hostPlatform.system}.vaultwarden_ldap
+        self.inputs.nur-packages.packages.${pkgs.stdenv.hostPlatform.system}.vaultwarden_ldap
       }/bin/vaultwarden_ldap";
       Environment = "CONFIG_PATH=/run/vaultwarden_ldap/config.toml";
 

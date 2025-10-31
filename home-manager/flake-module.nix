@@ -68,7 +68,7 @@
             exit 0
           fi
           ${
-            inputs.home-manager.packages.${pkgs.system}.home-manager
+            inputs.home-manager.packages.${pkgs.stdenv.hostPlatform.system}.home-manager
           }/bin/home-manager --option keep-going true --flake "${self}#$profile" "$@"
         ''}/bin/hm";
       };
@@ -104,10 +104,10 @@
           # this one should work for aarch64-linux/x86_64-linux and macos
           common = homeManagerConfiguration { };
         }
-        // lib.optionalAttrs (pkgs.hostPlatform.system == "aarch64-darwin") {
+        // lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") {
           macos = homeManagerConfiguration { extraModules = [ ./macos.nix ]; };
         }
-        // lib.optionalAttrs (pkgs.hostPlatform.system == "x86_64-linux") {
+        // lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
           desktop = homeManagerConfiguration { extraModules = [ ./desktop.nix ]; };
 
           # different username

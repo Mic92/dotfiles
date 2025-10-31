@@ -6,7 +6,7 @@
 }:
 {
   systemd.services.mastodon-hnbot = {
-    path = [ self.inputs.nur-packages.packages.${pkgs.hostPlatform.system}.mastodon-hnbot ];
+    path = [ self.inputs.nur-packages.packages.${pkgs.stdenv.hostPlatform.system}.mastodon-hnbot ];
     script = ''
       exec hnbot \
         --points 50 \

@@ -82,7 +82,7 @@
                     coreutils
                     gnugrep
                     gnused
-                    self.inputs.nur-packages.packages.${pkgs.hostPlatform.system}.ircsink
+                    self.inputs.nur-packages.packages.${pkgs.stdenv.hostPlatform.system}.ircsink
                     bash
                   ]
                 )
