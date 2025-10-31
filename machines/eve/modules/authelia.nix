@@ -80,6 +80,10 @@
             domain = "thalheim.io";
             authelia_url = "https://auth.thalheim.io";
           }
+          {
+            domain = "devkid.net";
+            authelia_url = "https://auth.devkid.net";
+          }
         ];
       };
 
@@ -143,6 +147,21 @@
 
   # Nginx configuration for Authelia portal
   services.nginx.virtualHosts."auth.thalheim.io" = {
+    useACMEHost = "thalheim.io";
+    forceSSL = true;
+    locations."/" = {
+      proxyPass = "http://127.0.0.1:9091";
+      extraConfig = ''
+        # Required headers for Authelia
+        proxy_set_header X-Original-URL $scheme://$http_host$request_uri;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header X-Forwarded-For $remote_addr;
+      '';
+    };
+  };
+
+  services.nginx.virtualHosts."auth.devkid.net" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
     locations."/" = {
