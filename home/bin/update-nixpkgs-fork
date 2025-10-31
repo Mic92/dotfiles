@@ -14,7 +14,7 @@ git push --force tum "${RELEASE_BRANCH}-backports"
 git push --force origin main
 
 (
-  cd /home/joerg/.homesick/repos/dotfiles
+  cd $HOME/.homesick/repos/dotfiles
   nix flake update --commit-lock-file nixpkgs
   merge-when-green
 )
