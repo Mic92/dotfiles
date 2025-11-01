@@ -31,17 +31,21 @@
     ];
 
     script = ''
+      gensecret() {
+        openssl rand 64 | openssl base64 -A | tr '+/' '-_' | tr -d '='
+      }
       # Generate JWT secret (64 random bytes, URL-safe base64)
-      openssl rand 64 | openssl base64 -A | tr '+/' '-_' | tr -d '=' > "$out/jwt-secret"
+      # This is also used for password reset identity validation
+      gensecret > "$out/jwt-secret"
 
       # Generate storage encryption key (64 random bytes, URL-safe base64)
-      openssl rand 64 | openssl base64 -A | tr '+/' '-_' | tr -d '=' > "$out/storage-encryption-key"
+      gensecret > "$out/storage-encryption-key"
 
       # Generate session secret (64 random bytes, URL-safe base64)
-      openssl rand 64 | openssl base64 -A | tr '+/' '-_' | tr -d '=' > "$out/session-secret"
+      gensecret > "$out/session-secret"
 
-      # Generate LDAP bind password (32 random bytes, URL-safe base64)
-      openssl rand 32 | openssl base64 -A | tr '+/' '-_' | tr -d '=' > "$out/ldap-password"
+      # Generate LDAP bind password (64 random bytes, URL-safe base64)
+      gensecret > "$out/ldap-password"
     '';
   };
 
@@ -57,14 +61,22 @@
       sessionSecretFile = config.clan.core.vars.generators.authelia.files.session-secret.path;
     };
 
-    # Pass LDAP password via environment variable
+    # Pass LDAP and SMTP passwords via environment variables
     environmentVariables = {
       AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE =
+        config.clan.core.vars.generators.authelia.files.ldap-password.path;
+      AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE =
         config.clan.core.vars.generators.authelia.files.ldap-password.path;
     };
 
     settings = {
       default_2fa_method = "totp";
+
+      # Enable password changes and resets
+      authentication_backend = {
+        password_change.disable = false;
+        password_reset.disable = false;
+      };
 
       webauthn = {
         disable = false;
@@ -95,6 +107,7 @@
 
       notifier.smtp = {
         address = "smtp://mail.thalheim.io:587";
+        username = "authelia@thalheim.io";
         sender = "authelia@thalheim.io";
       };
 
