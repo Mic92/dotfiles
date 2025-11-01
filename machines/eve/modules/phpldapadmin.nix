@@ -27,6 +27,59 @@
 
     nginx.enable = true;
 
+    templates = {
+      custom.user_with_mail = {
+        title = "User Account with Email";
+        description = "New User Account with Email Access and Password";
+        enabled = true;
+        icon = "fa-user-circle";
+        rdn = "cn";
+        regexp = "/^ou=.+,?/";
+        objectclasses = [
+          "inetOrgPerson"
+          "simpleSecurityObject"
+          "mailAccount"
+          "top"
+        ];
+        attributes = {
+          givenName = {
+            display = "First Name";
+            onchange = [
+              "=autoFill(cn;%givenName% %sn/U%)"
+              "=autoFill(uid;%givenName|0-1/l%%sn/l%)"
+            ];
+            order = 1;
+          };
+          sn = {
+            display = "Last Name";
+            onchange = [
+              "=autoFill(cn;%givenName% %sn/U%)"
+              "=autoFill(uid;%givenName|0-1/l%%sn/l%)"
+            ];
+            order = 2;
+          };
+          cn = {
+            display = "Common Name";
+            readonly = true;
+            order = 3;
+          };
+          uid = {
+            display = "User ID";
+            order = 4;
+          };
+          mail = {
+            display = "Email Address";
+            order = 5;
+          };
+          userPassword = {
+            display = "Password";
+            helper = "ARGON2ID";
+            order = 6;
+          };
+        };
+      };
+    };
+
     poolSettings = {
       "pm" = "dynamic";
       "pm.max_children" = 16;

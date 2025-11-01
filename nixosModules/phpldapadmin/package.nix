@@ -56,18 +56,14 @@ phpWithExtensions.buildComposerProject2 (finalAttrs: {
       # Remove development files
       rm -rf $out/share/php/phpldapadmin/{tests,node_modules,.git*,.env.example}
 
-  postInstall = ''
-    # Remove development files
-    rm -rf $out/share/php/phpldapadmin/{tests,node_modules,.git*,.env.example}
+      # Copy all built frontend assets
+      cp -r ${frontend}/* $out/share/php/phpldapadmin/public/
 
-    # Copy all built frontend assets
-    cp -r ${frontend}/* $out/share/php/phpldapadmin/public/
-
-    # Create writable directories structure
-    mkdir -p $out/share/php/phpldapadmin/storage/framework/{cache,sessions,views}
-    mkdir -p $out/share/php/phpldapadmin/storage/logs
-    mkdir -p $out/share/php/phpldapadmin/bootstrap/cache
-  '';
+      # Create writable directories structure
+      mkdir -p $out/share/php/phpldapadmin/storage/framework/{cache,sessions,views}
+      mkdir -p $out/share/php/phpldapadmin/storage/logs
+      mkdir -p $out/share/php/phpldapadmin/bootstrap/cache
+    '';
 
     passthru.updateScript = nix-update-script { };
     passthru.frontend = frontend;

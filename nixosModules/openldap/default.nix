@@ -53,6 +53,7 @@
           ''
             {1}to attrs=userPassword
                            by self write  by anonymous auth
+                           by dn.base="cn=authelia,ou=system,ou=users,dc=eve" write
                            by dn.base="cn=dovecot,dc=mail,dc=eve" read
                            by dn.base="cn=postfix,ou=system,ou=users,dc=eve" read
                            by dn.base="cn=nextcloud,ou=system,ou=users,dc=eve" read
