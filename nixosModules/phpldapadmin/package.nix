@@ -65,6 +65,12 @@ phpWithExtensions.buildComposerProject2 (finalAttrs: {
 
   vendorHash = "sha256-kmWwXD5coWzu3bF105e6QTNiN6p9i1OGz849jsPeN4Y=";
 
+  patches = [
+    ./phpldapadmin-password-helper.patch
+  ];
+
+  patchFlags = [ "-p1" ];
+
   postInstall = ''
     # Remove development files
     rm -rf $out/share/php/phpldapadmin/{tests,node_modules,.git*,.env.example}

@@ -10,6 +10,16 @@ let
 
   phpldapadmin = pkgs.callPackage ./package.nix { };
 
+  # Package containing custom templates
+  customTemplatesPackage = pkgs.runCommand "phpldapadmin-custom-templates" {} ''
+    mkdir -p $out
+    ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: template: ''
+      cat > $out/${name}.json <<'TEMPLATE_EOF'
+      ${builtins.toJSON template}
+      TEMPLATE_EOF
+    '') cfg.templates.custom)}
+  '';
+
   # State directory for runtime data
   stateDir = "/var/lib/phpldapadmin";
 
@@ -197,6 +207,35 @@ in
       description = "Extra environment variables to add to .env file";
     };
 
+    templates = {
+      custom = lib.mkOption {
+        type = lib.types.attrsOf lib.types.attrs;
+        default = {};
+        example = lib.literalExpression ''
+          {
+            user_with_mail = {
+              title = "User Account with Email";
+              enabled = true;
+              icon = "fa-user-circle";
+              rdn = "cn";
+              regexp = "/^ou=.+,?/";
+              objectclasses = [ "inetOrgPerson" "mailAccount" ];
+              attributes = {
+                mail = {
+                  display = "Email Address";
+                  order = 1;
+                };
+              };
+            };
+          }
+        '';
+        description = ''
+          Custom templates for phpLDAPadmin. Each attribute name becomes the template filename.
+          Templates are defined as JSON-compatible attribute sets.
+        '';
+      };
+    };
+
     nginx = {
       enable = lib.mkEnableOption "nginx virtual host for phpLDAPadmin" // {
         default = true;
@@ -341,6 +380,13 @@ in
         ln -sfn ${stateDir}/.env ${stateDir}/app/.env
         ln -sfn ${stateDir}/storage ${stateDir}/app/storage
         ln -sfn ${stateDir}/bootstrap/cache ${stateDir}/app/bootstrap/cache
+
+        # Copy custom template files from package (Flysystem doesn't support symlinks)
+        rm -rf ${stateDir}/app/templates/custom
+        ${lib.optionalString (cfg.templates.custom != {}) ''
+          mkdir -p ${stateDir}/app/templates/custom
+          cp -f ${customTemplatesPackage}/*.json ${stateDir}/app/templates/custom/
+        ''}
 
         # Run artisan commands from the writable app directory
         cd ${stateDir}/app
