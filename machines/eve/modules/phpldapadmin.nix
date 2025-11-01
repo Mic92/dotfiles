@@ -12,15 +12,17 @@
     # Use local PostgreSQL database
     database.createLocally = true;
 
-    # LDAP connection to local Kanidm
+    # LDAP connection to local OpenLDAP
     ldap = {
-      host = "::1";  # IPv6 localhost
-      port = 3636;   # Kanidm LDAP port
-      baseDn = "dc=kanidm,dc=thalheim,dc=io";
+      host = "localhost";
+      port = 389;
+      baseDn = "dc=eve";
       useSsl = false;
       useTls = false;
-      loginAttr = "uid";
+      loginAttr = "mail"; # Allow login with email address
       allowGuest = false;
+      bindDn = "cn=phpldapadmin,ou=system,ou=users,dc=eve";
+      bindPasswordFile = config.clan.core.vars.generators.phpldapadmin.files.bind-password.path;
     };
 
     nginx.enable = true;
@@ -41,13 +43,16 @@
     enableACME = true;
   };
 
-  # Generate Laravel app key using clan vars generator
-  # Format: base64:44-character-string (32 bytes)
+  # Generate Laravel app key and LDAP bind password using clan vars generator
   clan.core.vars.generators.phpldapadmin = {
-    files.app-key = {
-      owner = "phpldapadmin";
+    files = {
+      app-key = {
+        owner = "phpldapadmin";
+      };
+      bind-password = {
+        owner = "phpldapadmin";
+      };
     };
-    migrateFact = "phpldapadmin";
     runtimeInputs = [
       pkgs.openssl
       pkgs.coreutils
@@ -56,6 +61,9 @@
       # Generate Laravel app key in the correct format (base64:32-bytes)
       # Note: tr strips the trailing newline from openssl output
       printf "base64:%s" "$(openssl rand -base64 32 | tr -d '\n')" > "$out"/app-key
+
+      # Generate bind password (32 random bytes)
+      openssl rand -base64 32 | tr -d '\n' > "$out"/bind-password
     '';
   };
 }
