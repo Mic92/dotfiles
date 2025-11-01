@@ -2,6 +2,7 @@
   lib,
   fetchFromGitHub,
   php84,
+  buildNpmPackage,
   nix-update-script,
 }:
 
@@ -16,6 +17,26 @@ let
         fileinfo
       ])
     );
+  };
+
+  # Build frontend assets separately
+  frontend = buildNpmPackage rec {
+    pname = "phpldapadmin-frontend";
+    version = "2.3.4";
+
+    src = fetchFromGitHub {
+      owner = "leenooks";
+      repo = "phpLDAPadmin";
+      rev = version;
+      hash = "sha256-GwrYzqZ9fA0XY2D/pQvgisI92XQPkYv60A2BzrvDaW0=";
+    };
+
+    php = phpWithExtensions;
+
+    vendorHash = "sha256-kmWwXD5coWzu3bF105e6QTNiN6p9i1OGz849jsPeN4Y=";
+
+      runHook postInstall
+    '';
   };
 in
 phpWithExtensions.buildComposerProject2 (finalAttrs: {
@@ -35,12 +56,12 @@ phpWithExtensions.buildComposerProject2 (finalAttrs: {
       # Remove development files
       rm -rf $out/share/php/phpldapadmin/{tests,node_modules,.git*,.env.example}
 
-  # Skip npm build for now - Laravel Mix assets can be built at runtime if needed
-  # or we can add a separate buildNpmPackage derivation later
-
   postInstall = ''
     # Remove development files
     rm -rf $out/share/php/phpldapadmin/{tests,node_modules,.git*,.env.example}
+
+    # Copy all built frontend assets
+    cp -r ${frontend}/* $out/share/php/phpldapadmin/public/
 
     # Create writable directories structure
     mkdir -p $out/share/php/phpldapadmin/storage/framework/{cache,sessions,views}
@@ -48,7 +69,8 @@ phpWithExtensions.buildComposerProject2 (finalAttrs: {
     mkdir -p $out/share/php/phpldapadmin/bootstrap/cache
   '';
 
-  passthru.updateScript = nix-update-script { };
+    passthru.updateScript = nix-update-script { };
+    passthru.frontend = frontend;
 
     meta = with lib; {
       description = "Web-based LDAP administration interface built on Laravel";
