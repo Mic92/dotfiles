@@ -172,6 +172,19 @@ in
         default = false;
         description = "Allow anonymous/guest browsing before login";
       };
+
+      bindDn = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        example = "cn=phpldapadmin,ou=system,ou=users,dc=eve";
+        description = "DN to use for binding to LDAP server (for user search). If null, uses anonymous bind.";
+      };
+
+      bindPasswordFile = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "Path to file containing password for bind DN";
+      };
     };
 
     extraEnvVars = lib.mkOption {
@@ -301,6 +314,10 @@ in
         LDAP_TLS=${lib.boolToString cfg.ldap.useTls}
         LDAP_LOGIN_ATTR=${cfg.ldap.loginAttr}
         LDAP_ALLOW_GUEST=${lib.boolToString cfg.ldap.allowGuest}
+        ${lib.optionalString (cfg.ldap.bindDn != null) "LDAP_USERNAME=${cfg.ldap.bindDn}"}
+        ${lib.optionalString (
+          cfg.ldap.bindPasswordFile != null
+        ) "LDAP_PASSWORD=$(< ${cfg.ldap.bindPasswordFile})"}
 
         ${cfg.extraEnvVars}
         EOF
@@ -328,13 +345,36 @@ in
         # Run artisan commands from the writable app directory
         cd ${stateDir}/app
 
-        # Create sessions table migration if migrations directory doesn't have any sessions table migration
-        if ! ls ${stateDir}/app/database/migrations/*_create_sessions_table.php 2>/dev/null; then
-          ${phpldapadmin.php}/bin/php artisan session:table
+        # Create sessions table migration if it doesn't exist in the database
+        # Check by querying the database directly
+        if ! ${lib.optionalString cfg.database.createLocally "${config.services.postgresql.package}/bin/"}psql \
+          ${lib.optionalString cfg.database.createLocally "-h /run/postgresql"} \
+          ${
+            lib.optionalString (
+              !cfg.database.createLocally
+            ) "-h ${cfg.database.host} -p ${toString cfg.database.port}"
+          } \
+          -U ${cfg.database.user} \
+          -d ${cfg.database.name} \
+          -tAc "SELECT to_regclass('public.sessions');" 2>/dev/null | grep -q sessions; then
+          # Table doesn't exist, create migration if not already present
+          if ! ls ${stateDir}/app/database/migrations/*_create_sessions_table.php 2>/dev/null; then
+            ${phpldapadmin.php}/bin/php artisan session:table
+          fi
         fi
 
         # Run database migrations
         ${phpldapadmin.php}/bin/php artisan migrate --force
+
+        # Fix sessions table user_id column for LDAP UUIDs
+        # Laravel's default session migration uses bigint, but LDAP uses UUIDs (strings)
+        ${lib.optionalString cfg.database.createLocally ''
+          ${config.services.postgresql.package}/bin/psql \
+            -h /run/postgresql \
+            -U ${cfg.database.user} \
+            -d ${cfg.database.name} \
+            -c "ALTER TABLE sessions ALTER COLUMN user_id TYPE varchar(255);" 2>/dev/null || true
+        ''}
 
         # Clear and cache config
         ${phpldapadmin.php}/bin/php artisan config:clear

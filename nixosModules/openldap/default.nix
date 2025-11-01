@@ -45,39 +45,49 @@
         olcRootDN = "cn=admin,dc=eve";
         olcSuffix = "dc=eve";
         olcAccess = [
+          # Allow admins full write access to everything
           ''
-            {0}to attrs=userPassword
+            {0}to *
+                           by group.exact="cn=admins,ou=groups,dc=eve" write
+                           by * break''
+          ''
+            {1}to attrs=userPassword
                            by self write  by anonymous auth
                            by dn.base="cn=dovecot,dc=mail,dc=eve" read
                            by dn.base="cn=postfix,ou=system,ou=users,dc=eve" read
                            by dn.base="cn=nextcloud,ou=system,ou=users,dc=eve" read
                            by dn.base="cn=paperless,ou=system,ou=users,dc=eve" read
-                           by dn.base="cn=ldapsync,ou=system,ou=users,dc=eve"
-                           read by * none''
-          ''{1}to attrs=loginShell  by self write  by users read''
+                           by dn.base="cn=ldapsync,ou=system,ou=users,dc=eve" read
+                           by dn.base="cn=phpldapadmin,ou=system,ou=users,dc=eve" read
+                           by * none''
+          ''{2}to attrs=loginShell  by self write  by users read''
           ''
-            {2}to dn.subtree="dc=domains,dc=mail,dc=eve"
+            {3}to dn.subtree="dc=domains,dc=mail,dc=eve"
                            by dn.base="cn=postfix,ou=system,ou=users,dc=eve" read
                            by * none''
           ''
-            {3}to dn.subtree="dc=aliases,dc=mail,dc=eve"
+            {4}to dn.subtree="dc=aliases,dc=mail,dc=eve"
                            by dn.base="cn=postfix,ou=system,ou=users,dc=eve" read
                            by * none''
           ''
-            {4}to dn.subtree="ou=users,dc=eve" attrs=mail,mailbox,maildrop,quota,cn,objectClass,memberOf
+            {5}to dn.subtree="ou=users,dc=eve" attrs=mail,mailbox,maildrop,quota,cn,objectClass,memberOf
                            by dn.base="cn=postfix,ou=system,ou=users,dc=eve" read
                            by dn.base="cn=dovecot,dc=mail,dc=eve" read
                            by dn.base="cn=vaultwarden-ldap,ou=system,ou=users,dc=eve" read
+                           by dn.base="cn=phpldapadmin,ou=system,ou=users,dc=eve" read
                            by users read
                            by * none''
           ''
-            {5}to dn.subtree="ou=system,ou=users,dc=eve"
+            {6}to dn.subtree="ou=system,ou=users,dc=eve"
                            by dn.base="cn=dovecot,dc=mail,dc=eve" read
                            by dn.base="cn=nextcloud,ou=system,ou=users,dc=eve" read
                            by dn.base="cn=paperless,ou=system,ou=users,dc=eve" read
                            by dn.subtree="ou=system,ou=users,dc=eve" read
                            by * none''
-          ''{6}to * by users read by * none''
+          ''
+            {7}to *
+                           by users read
+                           by * none''
         ];
       };
       "olcOverlay={0}memberof,olcDatabase={1}mdb".attrs = {
