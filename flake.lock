@@ -82,11 +82,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1761933458,
-        "narHash": "sha256-brrT6rPI/CSpk+xt2wSwfti7xWdeWeWeTqhogRsbVus=",
-        "rev": "6ffe8ea5f65de28ca05455384cf8bddce4cbfe16",
+        "lastModified": 1761997059,
+        "narHash": "sha256-/3ZX5Ki5d57W8flrFoF9Zg4+nOhR1DfcGHN0Dcg9zqo=",
+        "rev": "83406c61f3e46f31f5836a3a014709372a6668f4",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/6ffe8ea5f65de28ca05455384cf8bddce4cbfe16.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/83406c61f3e46f31f5836a3a014709372a6668f4.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -611,26 +611,25 @@
     },
     "nixos-hardware": {
       "locked": {
-        "lastModified": 1751432711,
-        "narHash": "sha256-136MeWtckSHTN9Z2WRNRdZ8oRP3vyx3L8UxeBYE+J9w=",
-        "owner": "Mic92",
+        "lastModified": 1761933221,
+        "narHash": "sha256-rNHeoG3ZrA94jczyLSjxCtu67YYPYIlXXr0uhG3wNxM=",
+        "owner": "NixOS",
         "repo": "nixos-hardware",
-        "rev": "497ae1357f1ac97f1aea31a4cb74ad0d534ef41f",
+        "rev": "7467f155fcba189eb088a7601f44fbef7688669b",
         "type": "github"
       },
       "original": {
-        "owner": "Mic92",
-        "ref": "amd-npu",
+        "owner": "NixOS",
         "repo": "nixos-hardware",
         "type": "github"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1759699461,
-        "narHash": "sha256-wp/U47puqogjApTNXe2wNJBXMIjXQ6XMvse2yjkwqnI=",
+        "lastModified": 1761930132,
+        "narHash": "sha256-Oxz8A0NvfaNg3sTmZvDeXARnotjgR+tm8EiuW464e58=",
         "ref": "main",
-        "rev": "00f377a6b442e00513079ceba1160a814a0e8173",
+        "rev": "803e43c91accdf64fcf8702506cd915ec92378b4",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"

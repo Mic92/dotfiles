@@ -12,7 +12,7 @@
     ./modules/homeshick.nix
   ];
 
-  nix.package = self.inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
+  nix.package = self.inputs.nix.packages.${pkgs.stdenv.hostPlatform.system}.nix;
   #nix.package = pkgs.nixVersions.latest;
 
   home.packages =
@@ -28,7 +28,7 @@
       binutils
       ouch
 
-      du-dust
+      dust
 
       procs
       xcp
@@ -92,7 +92,7 @@
       gdb
     ]
     ++ lib.optionals pkgs.stdenv.isDarwin [ iproute2mac ]
-    ++ lib.optional (pkgs.hostPlatform.system != "riscv64-linux") nix-output-monitor;
+    ++ lib.optional (pkgs.stdenv.hostPlatform.system != "riscv64-linux") nix-output-monitor;
 
   home.enableNixpkgsReleaseCheck = false;
 

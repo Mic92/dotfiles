@@ -67,7 +67,7 @@
         secret = false;
       };
       runtimeInputs = [
-        self.inputs.hyprspace.packages.${pkgs.hostPlatform.system}.hyprspace
+        self.inputs.hyprspace.packages.${pkgs.stdenv.hostPlatform.system}.hyprspace
         pkgs.jq
       ];
       script = ''

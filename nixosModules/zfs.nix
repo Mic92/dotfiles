@@ -12,6 +12,6 @@
     environment.systemPackages = lib.mkIf (config.boot.zfs.enabled) [
       pkgs.zfs-prune-snapshots
     ];
-    boot.zfs.package = pkgs.zfsUnstable;
+    boot.zfs.package = pkgs.zfs_unstable;
   };
 }

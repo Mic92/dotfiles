@@ -8,7 +8,7 @@
 {
   # this extends srvos's common settings
   nix = {
-    package = self.inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
+    package = self.inputs.nix.packages.${pkgs.stdenv.hostPlatform.system}.nix;
     gc.automatic = true;
     gc.dates = "03:15";
     gc.options = "--delete-older-than 10d";

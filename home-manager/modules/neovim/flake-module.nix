@@ -53,7 +53,7 @@
 
           zls
           terraform-ls
-          taplo-lsp
+          taplo
           typos
           typos-lsp
 

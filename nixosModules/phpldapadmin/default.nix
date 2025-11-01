@@ -10,6 +10,16 @@ let
 
   phpldapadmin = pkgs.callPackage ./package.nix { };
 
+  # Package containing custom templates
+  customTemplatesPackage = pkgs.runCommand "phpldapadmin-custom-templates" {} ''
+    mkdir -p $out
+    ${lib.concatStringsSep "\n" (lib.mapAttrsToList (name: template: ''
+      cat > $out/${name}.json <<'TEMPLATE_EOF'
+      ${builtins.toJSON template}
+      TEMPLATE_EOF
+    '') cfg.templates.custom)}
+  '';
+
   # State directory for runtime data
   stateDir = "/var/lib/phpldapadmin";
 
@@ -128,6 +138,65 @@ in
       };
     };
 
+    ldap = {
+      host = lib.mkOption {
+        type = lib.types.str;
+        default = "127.0.0.1";
+        example = "ldap.example.com";
+        description = "LDAP server hostname or IP address";
+      };
+
+      port = lib.mkOption {
+        type = lib.types.port;
+        default = 389;
+        description = "LDAP server port";
+      };
+
+      baseDn = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        example = "dc=example,dc=com";
+        description = "LDAP base DN. If null, will be auto-detected from server";
+      };
+
+      useSsl = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Use SSL for LDAP connection (LDAPS)";
+      };
+
+      useTls = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Use STARTTLS for LDAP connection";
+      };
+
+      loginAttr = lib.mkOption {
+        type = lib.types.str;
+        default = "uid";
+        description = "LDAP attribute used for user login";
+      };
+
+      allowGuest = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Allow anonymous/guest browsing before login";
+      };
+
+      bindDn = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        example = "cn=phpldapadmin,ou=system,ou=users,dc=eve";
+        description = "DN to use for binding to LDAP server (for user search). If null, uses anonymous bind.";
+      };
+
+      bindPasswordFile = lib.mkOption {
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "Path to file containing password for bind DN";
+      };
+    };
+
     extraEnvVars = lib.mkOption {
       type = lib.types.lines;
       default = "";
@@ -136,6 +205,35 @@ in
         MAIL_HOST=smtp.example.com
       '';
       description = "Extra environment variables to add to .env file";
+    };
+
+    templates = {
+      custom = lib.mkOption {
+        type = lib.types.attrsOf lib.types.attrs;
+        default = {};
+        example = lib.literalExpression ''
+          {
+            user_with_mail = {
+              title = "User Account with Email";
+              enabled = true;
+              icon = "fa-user-circle";
+              rdn = "cn";
+              regexp = "/^ou=.+,?/";
+              objectclasses = [ "inetOrgPerson" "mailAccount" ];
+              attributes = {
+                mail = {
+                  display = "Email Address";
+                  order = 1;
+                };
+              };
+            };
+          }
+        '';
+        description = ''
+          Custom templates for phpLDAPadmin. Each attribute name becomes the template filename.
+          Templates are defined as JSON-compatible attribute sets.
+        '';
+      };
     };
 
     nginx = {
@@ -174,7 +272,7 @@ in
     services.nginx = lib.mkIf cfg.nginx.enable {
       enable = true;
       virtualHosts.${cfg.domain} = {
-        root = "${phpldapadmin}/share/php/phpldapadmin/public";
+        root = "${stateDir}/app/public";
 
         locations = {
           "/" = {
@@ -221,29 +319,21 @@ in
         User = "phpldapadmin";
         Group = "phpldapadmin";
         StateDirectory = "phpldapadmin";
-        WorkingDirectory = "${phpldapadmin}/share/php/phpldapadmin";
+        WorkingDirectory = stateDir;
         ReadWritePaths = [ stateDir ];
       };
 
-      path = lib.optional cfg.database.createLocally config.services.postgresql.package;
+      path = [ pkgs.rsync ] ++ lib.optional cfg.database.createLocally config.services.postgresql.package;
 
       script = ''
         set -e
-
-        # Link application files
-        ln -sfn ${phpldapadmin}/share/php/phpldapadmin ${stateDir}/app
 
         # Create storage directories if they don't exist
         mkdir -p ${stateDir}/storage/{app,framework/{cache,sessions,views},logs}
         mkdir -p ${stateDir}/bootstrap/cache
 
-        # Create symlink from app to state storage
-        ln -sfn ${stateDir}/storage ${stateDir}/app/storage
-        ln -sfn ${stateDir}/bootstrap/cache ${stateDir}/app/bootstrap/cache
-
-        # Build .env file from template
-        cd ${stateDir}/app
-        cat > .env <<EOF
+        # Build .env file in state directory
+        cat > ${stateDir}/.env <<EOF
         APP_NAME="phpLDAPadmin"
         APP_ENV=production
         APP_KEY=$(< ${cfg.appKey})
@@ -255,11 +345,82 @@ in
 
         ${lib.concatStringsSep "\n" (lib.mapAttrsToList (n: v: "${n}=${v}") dbConfig)}
 
+        # LDAP Configuration
+        LDAP_HOST=${cfg.ldap.host}
+        LDAP_PORT=${toString cfg.ldap.port}
+        ${lib.optionalString (cfg.ldap.baseDn != null) "LDAP_BASE_DN=${cfg.ldap.baseDn}"}
+        LDAP_SSL=${lib.boolToString cfg.ldap.useSsl}
+        LDAP_TLS=${lib.boolToString cfg.ldap.useTls}
+        LDAP_LOGIN_ATTR=${cfg.ldap.loginAttr}
+        LDAP_ALLOW_GUEST=${lib.boolToString cfg.ldap.allowGuest}
+        ${lib.optionalString (cfg.ldap.bindDn != null) "LDAP_USERNAME=${cfg.ldap.bindDn}"}
+        ${lib.optionalString (
+          cfg.ldap.bindPasswordFile != null
+        ) "LDAP_PASSWORD=$(< ${cfg.ldap.bindPasswordFile})"}
+
         ${cfg.extraEnvVars}
         EOF
 
+        # Copy application files to writable location, preserving structure
+        # Use rsync to efficiently sync only changed files
+        ${pkgs.rsync}/bin/rsync -a --delete \
+          --exclude=storage \
+          --exclude=bootstrap/cache \
+          --exclude=.env \
+          ${phpldapadmin}/share/php/phpldapadmin/ ${stateDir}/app/
+
+        # Make the app directory writable (rsync preserves read-only Nix store permissions)
+        chmod -R u+w ${stateDir}/app
+
+        # After rsync, create/recreate the symlinks
+        # Remove any directories that might have been copied
+        rm -rf ${stateDir}/app/storage ${stateDir}/app/bootstrap/cache
+
+        # Create symlinks to writable state directories
+        ln -sfn ${stateDir}/.env ${stateDir}/app/.env
+        ln -sfn ${stateDir}/storage ${stateDir}/app/storage
+        ln -sfn ${stateDir}/bootstrap/cache ${stateDir}/app/bootstrap/cache
+
+        # Copy custom template files from package (Flysystem doesn't support symlinks)
+        rm -rf ${stateDir}/app/templates/custom
+        ${lib.optionalString (cfg.templates.custom != {}) ''
+          mkdir -p ${stateDir}/app/templates/custom
+          cp -f ${customTemplatesPackage}/*.json ${stateDir}/app/templates/custom/
+        ''}
+
+        # Run artisan commands from the writable app directory
+        cd ${stateDir}/app
+
+        # Create sessions table migration if it doesn't exist in the database
+        # Check by querying the database directly
+        if ! ${lib.optionalString cfg.database.createLocally "${config.services.postgresql.package}/bin/"}psql \
+          ${lib.optionalString cfg.database.createLocally "-h /run/postgresql"} \
+          ${
+            lib.optionalString (
+              !cfg.database.createLocally
+            ) "-h ${cfg.database.host} -p ${toString cfg.database.port}"
+          } \
+          -U ${cfg.database.user} \
+          -d ${cfg.database.name} \
+          -tAc "SELECT to_regclass('public.sessions');" 2>/dev/null | grep -q sessions; then
+          # Table doesn't exist, create migration if not already present
+          if ! ls ${stateDir}/app/database/migrations/*_create_sessions_table.php 2>/dev/null; then
+            ${phpldapadmin.php}/bin/php artisan session:table
+          fi
+        fi
+
         # Run database migrations
         ${phpldapadmin.php}/bin/php artisan migrate --force
+
+        # Fix sessions table user_id column for LDAP UUIDs
+        # Laravel's default session migration uses bigint, but LDAP uses UUIDs (strings)
+        ${lib.optionalString cfg.database.createLocally ''
+          ${config.services.postgresql.package}/bin/psql \
+            -h /run/postgresql \
+            -U ${cfg.database.user} \
+            -d ${cfg.database.name} \
+            -c "ALTER TABLE sessions ALTER COLUMN user_id TYPE varchar(255);" 2>/dev/null || true
+        ''}
 
         # Clear and cache config
         ${phpldapadmin.php}/bin/php artisan config:clear

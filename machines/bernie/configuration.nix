@@ -25,7 +25,7 @@
     ./filesystems.nix
 
     self.nixosModules.default
-    self.inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x13
+    self.inputs.nixos-hardware.nixosModules.lenovo-thinkpad-x13s
     self.inputs.home-manager.nixosModules.home-manager
     self.inputs.srvos.nixosModules.desktop
   ];
@@ -109,7 +109,7 @@
     inkscape
     yt-dlp
     calibre
-    ubuntu_font_family
+    ubuntu-classic
     aspell
     aspellDicts.de
     aspellDicts.fr
@@ -120,7 +120,7 @@
     signal-desktop
     gimp
     wl-clipboard
-    poppler_utils
+    poppler-utils
     focuswriter
     spicy
     virt-viewer

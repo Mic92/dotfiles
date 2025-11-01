@@ -8,7 +8,7 @@
       Minute = 15;
     };
     gc.options = "--delete-older-than 10d";
-    package = self.inputs.nix.packages.${pkgs.hostPlatform.system}.nix;
+    package = self.inputs.nix.packages.${pkgs.stdenv.hostPlatform.system}.nix;
     #package = pkgs.nixVersions.latest;
 
     settings = {

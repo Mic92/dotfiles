@@ -57,25 +57,24 @@ in
 {
   services.n8n = {
     enable = true;
-    webhookUrl = "https://n8n.thalheim.io/";
-    settings = {
-      database = {
-        type = "postgresdb";
-        postgresdb = {
-          host = "/run/postgresql";
-          database = "n8n";
-          user = "n8n";
-        };
-      };
-      executions.pruneData = true;
-      executions.pruneDataMaxAge = 336; # 2 weeks
-    };
-  };
+    environment = {
+      WEBHOOK_URL = "https://n8n.thalheim.io/";
 
-  systemd.services.n8n.environment = {
-    EXTERNAL_HOOK_FILES = "${hooksFile}";
-    N8N_FORWARD_AUTH_HEADER = "X-Email";
-    N8N_SSO_HOSTNAME = "n8n.thalheim.io";
+      # Database configuration
+      DB_TYPE = "postgresdb";
+      DB_POSTGRESDB_HOST = "/run/postgresql";
+      DB_POSTGRESDB_DATABASE = "n8n";
+      DB_POSTGRESDB_USER = "n8n";
+
+      # Executions pruning
+      EXECUTIONS_DATA_PRUNE = "true";
+      EXECUTIONS_DATA_MAX_AGE = "336"; # 2 weeks
+
+      # Custom hooks and SSO configuration
+      EXTERNAL_HOOK_FILES = "${hooksFile}";
+      N8N_FORWARD_AUTH_HEADER = "X-Email";
+      N8N_SSO_HOSTNAME = "n8n.thalheim.io";
+    };
   };
 
   services.postgresql.ensureDatabases = [ "n8n" ];

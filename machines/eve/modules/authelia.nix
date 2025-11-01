@@ -31,17 +31,21 @@
     ];
 
     script = ''
+      gensecret() {
+        openssl rand 64 | openssl base64 -A | tr '+/' '-_' | tr -d '='
+      }
       # Generate JWT secret (64 random bytes, URL-safe base64)
-      openssl rand 64 | openssl base64 -A | tr '+/' '-_' | tr -d '=' > "$out/jwt-secret"
+      # This is also used for password reset identity validation
+      gensecret > "$out/jwt-secret"
 
       # Generate storage encryption key (64 random bytes, URL-safe base64)
-      openssl rand 64 | openssl base64 -A | tr '+/' '-_' | tr -d '=' > "$out/storage-encryption-key"
+      gensecret > "$out/storage-encryption-key"
 
       # Generate session secret (64 random bytes, URL-safe base64)
-      openssl rand 64 | openssl base64 -A | tr '+/' '-_' | tr -d '=' > "$out/session-secret"
+      gensecret > "$out/session-secret"
 
-      # Generate LDAP bind password (32 random bytes, URL-safe base64)
-      openssl rand 32 | openssl base64 -A | tr '+/' '-_' | tr -d '=' > "$out/ldap-password"
+      # Generate LDAP bind password (64 random bytes, URL-safe base64)
+      gensecret > "$out/ldap-password"
     '';
   };
 
@@ -57,14 +61,22 @@
       sessionSecretFile = config.clan.core.vars.generators.authelia.files.session-secret.path;
     };
 
-    # Pass LDAP password via environment variable
+    # Pass LDAP and SMTP passwords via environment variables
     environmentVariables = {
       AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE =
+        config.clan.core.vars.generators.authelia.files.ldap-password.path;
+      AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE =
         config.clan.core.vars.generators.authelia.files.ldap-password.path;
     };
 
     settings = {
       default_2fa_method = "totp";
+
+      # Enable password changes and resets
+      authentication_backend = {
+        password_change.disable = false;
+        password_reset.disable = false;
+      };
 
       webauthn = {
         disable = false;
@@ -80,6 +92,10 @@
             domain = "thalheim.io";
             authelia_url = "https://auth.thalheim.io";
           }
+          {
+            domain = "devkid.net";
+            authelia_url = "https://auth.devkid.net";
+          }
         ];
       };
 
@@ -91,6 +107,7 @@
 
       notifier.smtp = {
         address = "smtp://mail.thalheim.io:587";
+        username = "authelia@thalheim.io";
         sender = "authelia@thalheim.io";
       };
 
@@ -109,23 +126,26 @@
         };
 
         groups_filter = "(&(objectClass=groupOfNames)(member={dn}))";
-        additional_groups_dn = "ou=users";
+        additional_groups_dn = "ou=groups";
       };
 
       access_control = {
         default_policy = "deny";
         rules = [
+          # FreshRSS - restrict to freshrss group members only
           {
-            domain = "*.thalheim.io";
+            domain = [
+              "rss.thalheim.io"
+              "rss.devkid.net"
+            ];
             policy = "one_factor";
+            subject = [ "group:freshrss" ];
           }
+          # n8n - restrict to n8n group members only
           {
-            domain = "*.devkid.net";
+            domain = "n8n.thalheim.io";
             policy = "one_factor";
-          }
-          {
-            domain = "*.lekwati.com";
-            policy = "one_factor";
+            subject = [ "group:n8n" ];
           }
         ];
       };
@@ -143,6 +163,21 @@
 
   # Nginx configuration for Authelia portal
   services.nginx.virtualHosts."auth.thalheim.io" = {
+    useACMEHost = "thalheim.io";
+    forceSSL = true;
+    locations."/" = {
+      proxyPass = "http://127.0.0.1:9091";
+      extraConfig = ''
+        # Required headers for Authelia
+        proxy_set_header X-Original-URL $scheme://$http_host$request_uri;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header X-Forwarded-For $remote_addr;
+      '';
+    };
+  };
+
+  services.nginx.virtualHosts."auth.devkid.net" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
     locations."/" = {

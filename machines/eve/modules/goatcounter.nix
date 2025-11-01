@@ -14,7 +14,9 @@
       RestartSec = "2s";
       EnvironmentFile = [ config.sops.secrets.goatcounter-smtp-password.path ];
       ExecStart = ''
-        ${self.inputs.nur-packages.packages.${pkgs.hostPlatform.system}.goatcounter}/bin/goatcounter \
+        ${
+          self.inputs.nur-packages.packages.${pkgs.stdenv.hostPlatform.system}.goatcounter
+        }/bin/goatcounter \
           serve \
           -automigrate \
           -listen localhost:3004 \
@@ -39,7 +41,7 @@
   };
 
   environment.systemPackages = [
-    self.inputs.nur-packages.packages.${pkgs.hostPlatform.system}.goatcounter
+    self.inputs.nur-packages.packages.${pkgs.stdenv.hostPlatform.system}.goatcounter
   ];
 
   services.postgresql.ensureDatabases = [ "goatcounter" ];

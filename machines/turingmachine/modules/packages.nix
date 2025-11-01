@@ -6,6 +6,6 @@
     cntr
     ntfs3g
     sunshine
-    self.packages.${pkgs.hostPlatform.system}.sengi
+    self.packages.${pkgs.stdenv.hostPlatform.system}.sengi
   ];
 }

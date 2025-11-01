@@ -7,12 +7,12 @@
 {
   home.packages =
     let
-      aiTools = inputs.nix-ai-tools.packages.${pkgs.system};
+      aiTools = inputs.nix-ai-tools.packages.${pkgs.stdenv.hostPlatform.system};
     in
     [
-      self.packages.${pkgs.system}.claude-code
-      self.packages.${pkgs.system}.pexpect-mcp
-      self.packages.${pkgs.system}.claude-md
+      self.packages.${pkgs.stdenv.hostPlatform.system}.claude-code
+      self.packages.${pkgs.stdenv.hostPlatform.system}.pexpect-mcp
+      self.packages.${pkgs.stdenv.hostPlatform.system}.claude-md
       self.packages.${pkgs.stdenv.hostPlatform.system}.kagi-search
       aiTools.opencode
       aiTools.coderabbit-cli

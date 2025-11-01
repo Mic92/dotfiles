@@ -75,7 +75,7 @@
     celluloid
     mpv
     inkscape
-    ubuntu_font_family
+    ubuntu-classic
     aspell
     aspellDicts.de
     aspellDicts.fr
@@ -84,9 +84,9 @@
     hunspellDicts.en-gb-ise
     gimp
     wl-clipboard
-    poppler_utils
+    poppler-utils
     libreoffice
-    self.packages.${pkgs.system}.cewe-fotowelt
+    self.packages.${pkgs.stdenv.hostPlatform.system}.cewe-fotowelt
   ];
   fonts.enableDefaultPackages = true;
 
