@@ -65,6 +65,9 @@
           };
           uid = {
             display = "User ID";
+            onchange = [
+              "=autoFill(mail;%uid%@)"
+            ];
             order = 4;
           };
           mail = {
