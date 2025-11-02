@@ -321,7 +321,6 @@ in
         User = "phpldapadmin";
         Group = "phpldapadmin";
         StateDirectory = "phpldapadmin";
-        StateDirectoryMode = "0700";
         WorkingDirectory = stateDir;
         ReadWritePaths = [ stateDir ];
       };
@@ -336,33 +335,36 @@ in
         mkdir -p ${stateDir}/bootstrap/cache
 
         # Build .env file in state directory
-        cat > ${stateDir}/.env <<EOF
-        APP_NAME="phpLDAPadmin"
-        APP_ENV=production
-        APP_KEY=$(< ${cfg.appKey})
-        APP_DEBUG=false
-        APP_URL=${cfg.url}
+        (
+          umask 0077
+          cat > ${stateDir}/.env <<EOF
+          APP_NAME="phpLDAPadmin"
+          APP_ENV=production
+          APP_KEY=$(< ${cfg.appKey})
+          APP_DEBUG=false
+          APP_URL=${cfg.url}
 
-        LOG_CHANNEL=syslog
-        LOG_LEVEL=info
+          LOG_CHANNEL=syslog
+          LOG_LEVEL=info
 
-        ${lib.concatStringsSep "\n" (lib.mapAttrsToList (n: v: "${n}=${v}") dbConfig)}
+          ${lib.concatStringsSep "\n" (lib.mapAttrsToList (n: v: "${n}=${v}") dbConfig)}
 
-        # LDAP Configuration
-        LDAP_HOST=${cfg.ldap.host}
-        LDAP_PORT=${toString cfg.ldap.port}
-        ${lib.optionalString (cfg.ldap.baseDn != null) "LDAP_BASE_DN=${cfg.ldap.baseDn}"}
-        LDAP_SSL=${lib.boolToString cfg.ldap.useSsl}
-        LDAP_TLS=${lib.boolToString cfg.ldap.useTls}
-        LDAP_LOGIN_ATTR=${cfg.ldap.loginAttr}
-        LDAP_ALLOW_GUEST=${lib.boolToString cfg.ldap.allowGuest}
-        ${lib.optionalString (cfg.ldap.bindDn != null) "LDAP_USERNAME=${cfg.ldap.bindDn}"}
-        ${lib.optionalString (
-          cfg.ldap.bindPasswordFile != null
-        ) "LDAP_PASSWORD=$(< ${cfg.ldap.bindPasswordFile})"}
+          # LDAP Configuration
+          LDAP_HOST=${cfg.ldap.host}
+          LDAP_PORT=${toString cfg.ldap.port}
+          ${lib.optionalString (cfg.ldap.baseDn != null) "LDAP_BASE_DN=${cfg.ldap.baseDn}"}
+          LDAP_SSL=${lib.boolToString cfg.ldap.useSsl}
+          LDAP_TLS=${lib.boolToString cfg.ldap.useTls}
+          LDAP_LOGIN_ATTR=${cfg.ldap.loginAttr}
+          LDAP_ALLOW_GUEST=${lib.boolToString cfg.ldap.allowGuest}
+          ${lib.optionalString (cfg.ldap.bindDn != null) "LDAP_USERNAME=${cfg.ldap.bindDn}"}
+          ${lib.optionalString (
+            cfg.ldap.bindPasswordFile != null
+          ) "LDAP_PASSWORD=$(< ${cfg.ldap.bindPasswordFile})"}
 
-        ${cfg.extraEnvVars}
+          ${cfg.extraEnvVars}
         EOF
+        )
 
         # Copy application files to writable location, preserving structure
         # Use rsync to efficiently sync only changed files
