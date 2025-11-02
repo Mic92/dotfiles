@@ -1,10 +1,54 @@
 #!/usr/bin/env python3
 
+import gzip
 import re
 import subprocess
 import sys
+import urllib.error
 import urllib.request
 from pathlib import Path
+
+
+def get_latest_version() -> str:
+    """Fetch the latest version from the CEWE download API."""
+    key_account = "24441"
+    affiliate_id = "x_x_x_x_6822_x_06822-BsEZQQWOPUVGg"
+    api_url = f"https://dls.photoprintit.com/api/getClient/{key_account}-de_DE/hps/{affiliate_id}/linux"
+
+    print("Fetching latest version from API...")
+    try:
+        with urllib.request.urlopen(api_url) as response:  # noqa: S310
+            # The response is gzipped
+            compressed_data = response.read()
+            data = gzip.decompress(compressed_data)
+
+            # Try different encodings
+            for encoding in ["iso-8859-1", "windows-1252", "utf-8"]:
+                try:
+                    content = data.decode(encoding)
+                    # Search for HPS_VER = 'X.Y.Z' pattern
+                    match = re.search(r"HPS_VER\s*=\s*'([^']+)'", content)
+                    if match:
+                        version = match.group(1)
+                        print(f"Found latest version: {version}")
+                        return version
+                except UnicodeDecodeError:
+                    continue
+
+            # If all encodings fail, try latin-1
+            content = data.decode("latin-1")
+            match = re.search(r"HPS_VER\s*=\s*'([^']+)'", content)
+            if match:
+                version = match.group(1)
+                print(f"Found latest version: {version}")
+                return version
+
+        # If we get here, we couldn't find the version
+        msg = "Could not find version in API response"
+        raise ValueError(msg)
+    except (urllib.error.URLError, urllib.error.HTTPError, OSError) as e:
+        print(f"Error fetching latest version: {e}", file=sys.stderr)
+        raise
 
 
 def fetch_index(version: str = "8.0.4") -> str:
@@ -110,11 +154,15 @@ def generate_sources_nix(version: str, packages: list[dict[str, str]]) -> str:
 
     output.extend(["  ];", "}"])
 
-    return "\n".join(output)
+    return "\n".join(output) + "\n"
 
 
 def main() -> None:
-    version = sys.argv[1] if len(sys.argv) > 1 else "8.0.4"
+    if len(sys.argv) > 1:
+        version = sys.argv[1]
+    else:
+        print("No version specified, fetching latest version...")
+        version = get_latest_version()
 
     print(f"Generating sources.nix for CEWE Fotowelt version {version}...")
 
