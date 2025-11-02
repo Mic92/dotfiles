@@ -73,7 +73,7 @@
     pkgs.pinentry_mac
     self.packages.${pkgs.system}.blueutil
     self.packages.${pkgs.system}.systemctl-macos
-    self.packages.${pkgs.system}.rbw-pinentry-keychain
+    self.packages.${pkgs.system}.rbw-pinentry
   ];
 
   programs.zsh.enable = true;
