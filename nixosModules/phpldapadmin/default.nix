@@ -321,6 +321,7 @@ in
         User = "phpldapadmin";
         Group = "phpldapadmin";
         StateDirectory = "phpldapadmin";
+        StateDirectoryMode = "0700";
         WorkingDirectory = stateDir;
         ReadWritePaths = [ stateDir ];
       };
