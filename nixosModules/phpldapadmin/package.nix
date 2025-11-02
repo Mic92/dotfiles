@@ -18,16 +18,49 @@ let
       ])
     );
   };
+in
+phpWithExtensions.buildComposerProject2 (
+  finalAttrs:
+  let
+    # Build frontend assets separately
+    frontend = buildNpmPackage {
+      pname = "phpldapadmin-frontend";
+      version = finalAttrs.version;
 
-  # Build frontend assets separately
-  frontend = buildNpmPackage rec {
-    pname = "phpldapadmin-frontend";
+      src = fetchFromGitHub {
+        owner = "leenooks";
+        repo = "phpLDAPadmin";
+        rev = finalAttrs.version;
+        hash = "sha256-GwrYzqZ9fA0XY2D/pQvgisI92XQPkYv60A2BzrvDaW0=";
+      };
+
+      npmDepsHash = "sha256-is0DVCOFC98WJtbT/zy5d/LJovsTY8j1Ux6dtE1omJA=";
+
+      buildPhase = ''
+        runHook preBuild
+        npm run production
+        runHook postBuild
+      '';
+
+      installPhase = ''
+        runHook preInstall
+        mkdir -p $out
+
+        # Copy entire public directory (includes all generated and static assets)
+        cp -r public/* $out/
+
+        runHook postInstall
+      '';
+    };
+  in
+  {
+    pname = "phpldapadmin";
     version = "2.3.4";
 
     src = fetchFromGitHub {
       owner = "leenooks";
       repo = "phpLDAPadmin";
-      rev = version;
+      rev = finalAttrs.version; # No 'v' prefix
       hash = "sha256-GwrYzqZ9fA0XY2D/pQvgisI92XQPkYv60A2BzrvDaW0=";
     };
 
@@ -35,20 +68,9 @@ let
 
     vendorHash = "sha256-kmWwXD5coWzu3bF105e6QTNiN6p9i1OGz849jsPeN4Y=";
 
-      runHook postInstall
-    '';
-  };
-in
-phpWithExtensions.buildComposerProject2 (finalAttrs: {
-  pname = "phpldapadmin";
-  version = "2.3.4";
-
-  src = fetchFromGitHub {
-    owner = "leenooks";
-    repo = "phpLDAPadmin";
-    rev = finalAttrs.version; # No 'v' prefix
-    hash = "sha256-GwrYzqZ9fA0XY2D/pQvgisI92XQPkYv60A2BzrvDaW0=";
-  };
+    patches = [
+      ./phpldapadmin-password-helper.patch
+    ];
 
     patchFlags = [ "-p1" ];
 
