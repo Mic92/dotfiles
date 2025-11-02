@@ -9,18 +9,22 @@ Detects password validation failures through SETERROR messages.
 import logging
 import os
 import platform
-import shutil
 import subprocess
 import sys
 import time
 from abc import ABC, abstractmethod
 from pathlib import Path
 
-# Set up logging to stderr so it doesn't interfere with pinentry protocol
+# Set up logging to file so it doesn't interfere with pinentry protocol
+# Use XDG_CACHE_HOME or fallback to ~/.cache
+cache_dir = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache")) / "rbw-pinentry"
+cache_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
+log_file = cache_dir / "pinentry.log"
+
 logging.basicConfig(
     level=logging.WARNING,
-    format="%(message)s",
-    stream=sys.stderr,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+    filename=str(log_file),
 )
 logger = logging.getLogger(__name__)
 
@@ -180,6 +184,9 @@ class LinuxSecretServiceBackend(SecretBackend):
         except (OSError, RuntimeError) as e:
             logger.warning("Failed to read from Secret Service: %s", e)
             return None
+        except self._secretstorage.exceptions.LockedException as e:
+            logger.warning("Secret Service is locked: %s", e)
+            return None
 
     def store_password(self, service_name: str, account: str, password: str) -> bool:
         """Store password in Secret Service."""
@@ -202,6 +209,9 @@ class LinuxSecretServiceBackend(SecretBackend):
         except (OSError, RuntimeError) as e:
             logger.warning("Failed to store in Secret Service: %s", e)
             return False
+        except self._secretstorage.exceptions.LockedException as e:
+            logger.warning("Secret Service is locked: %s", e)
+            return False
         else:
             return True
 
@@ -217,6 +227,9 @@ class LinuxSecretServiceBackend(SecretBackend):
                     item.delete()
         except (OSError, RuntimeError) as e:
             logger.warning("Failed to delete from Secret Service: %s", e)
+            return False
+        except self._secretstorage.exceptions.LockedException as e:
+            logger.warning("Secret Service is locked: %s", e)
             return False
         else:
             return True
@@ -239,34 +252,9 @@ class PinentryKeychain:
         self.rbw_profile = os.environ.get("RBW_PROFILE", "rbw")
         self.service_name = "rbw-master-password"
         self.backend = get_backend()
-        self.pinentry_cmd = self._find_pinentry()
         # Use XDG_CACHE_HOME or fallback to ~/.cache
-        cache_dir = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache"))
-        cache_dir = cache_dir / "rbw-pinentry"
         cache_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
         self.cache_state_file = cache_dir / f"{self.rbw_profile}-cache-state"
-
-    def _find_pinentry(self) -> str:
-        """Find the actual pinentry command to use."""
-        system = platform.system()
-        if system == "Darwin":
-            # macOS: prefer pinentry-mac
-            candidates = ["pinentry-mac", "pinentry"]
-        else:
-            # Linux and others: prefer graphical pinentry programs
-            candidates = [
-                "pinentry-qt",
-                "pinentry-curses",
-                "pinentry",
-            ]
-
-        for candidate in candidates:
-            pinentry = shutil.which(candidate)
-            if pinentry:
-                return pinentry
-
-        msg = "Could not find any pinentry program in PATH"
-        raise RuntimeError(msg)
 
     def mark_cache_used(self) -> None:
         """Mark that we just returned a cached password."""
@@ -297,28 +285,54 @@ class PinentryKeychain:
         except OSError as e:
             logger.warning("Failed to clear cache state: %s", e)
 
-    def call_real_pinentry(self, commands: list[str]) -> str | None:
-        """Call the real pinentry program and get the password."""
+    def _show_zenity_password_dialog(
+        self,
+        title: str = "",
+        prompt: str = "",
+        desc: str = "",
+        error: str = "",
+    ) -> str | None:
+        """Show a password dialog using zenity and return the password."""
         try:
-            # Prepare the command string
-            cmd_str = "\n".join(commands) + "\n"
+            # Build zenity command
+            zenity_cmd = ["zenity", "--password"]
 
-            # Call the real pinentry
+            # Set title if provided
+            if title:
+                zenity_cmd.extend(["--title", title])
+            elif prompt:
+                zenity_cmd.extend(["--title", prompt])
+
+            # Build the window text from description and error
+            window_text_parts = []
+            if error:
+                window_text_parts.append(f"Error: {error}")
+            if desc:
+                window_text_parts.append(desc)
+            if prompt and prompt != title:
+                window_text_parts.append(prompt)
+
+            window_text = "\n\n".join(window_text_parts) if window_text_parts else prompt or "Enter password:"
+
+            if window_text:
+                zenity_cmd.extend(["--text", window_text])
+
+            # Run zenity and capture password
             result = subprocess.run(
-                [self.pinentry_cmd, *sys.argv[1:]],
-                input=cmd_str,
+                zenity_cmd,
                 capture_output=True,
                 text=True,
                 check=False,
             )
 
-            # Parse the output to find the password
-            for line in result.stdout.splitlines():
-                if line.startswith("D "):
-                    return line[2:]  # Return everything after "D "
+            # Zenity returns 0 on success, non-zero on cancel/error
+            if result.returncode == 0 and result.stdout:
+                password = result.stdout.strip()
+                # Remove trailing newline that zenity might add
+                return password.rstrip("\n") if password else None
 
         except OSError as e:
-            logger.warning("Failed to call real pinentry: %s", e)
+            logger.warning("Failed to call zenity: %s", e)
         return None
 
     def _handle_master_password(
@@ -328,6 +342,7 @@ class PinentryKeychain:
         """Handle master password request with caching logic."""
         # Check if we have an error
         if error:
+            logger.warning("Authentication error: %s", error)
             # Check if this error is from a cached password
             if self.was_cache_used_recently():
                 # The cached password was wrong, clear it
@@ -353,21 +368,20 @@ class PinentryKeychain:
         # Need to prompt for password
         self.clear_cache_state()  # Not using cache
 
-        commands = ["SETTITLE rbw", "SETPROMPT Master Password"]
-
+        # Build dialog parameters
+        title = "rbw"
+        prompt = "Master Password"
         if error:
-            commands.append(f"SETERROR {error}")
-            commands.append(
-                f"SETDESC Authentication failed. Please enter the master password for '{self.rbw_profile}'"
-            )
+            desc = f"Authentication failed. Please enter the master password for '{self.rbw_profile}'"
         else:
-            commands.append(
-                f"SETDESC Please enter the master password for '{self.rbw_profile}' (will be cached in secure storage)"
-            )
+            desc = f"Please enter the master password for '{self.rbw_profile}' (will be cached in secure storage)"
 
-        commands.append("GETPIN")
-
-        secret_value = self.call_real_pinentry(commands)
+        secret_value = self._show_zenity_password_dialog(
+            title=title,
+            prompt=prompt,
+            desc=desc,
+            error=error,
+        )
 
         # Store in secure storage if we got a password and there was no error
         # We can't validate it here (would cause recursion), but if it's wrong,
@@ -387,18 +401,12 @@ class PinentryKeychain:
         error: str,
     ) -> str | None:
         """Handle non-master password prompts."""
-        commands = []
-        if title:
-            commands.append(f"SETTITLE {title}")
-        if prompt:
-            commands.append(f"SETPROMPT {prompt}")
-        if desc:
-            commands.append(f"SETDESC {desc}")
-        if error:
-            commands.append(f"SETERROR {error}")
-        commands.append("GETPIN")
-
-        return self.call_real_pinentry(commands)
+        return self._show_zenity_password_dialog(
+            title=title,
+            prompt=prompt,
+            desc=desc,
+            error=error,
+        )
 
     def _process_command(
         self,
