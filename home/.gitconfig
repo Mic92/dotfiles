@@ -127,4 +127,6 @@
 #[url "git@github.com:"]
 #  insteadOf = https://github.com/
 [coderabbit]
-	machineId = cli/d131129f12ac4836b18afc418ee2cb53
+  machineId = cli/4118f364aed840308d40c0ff648951b4
+[url "git@github.com:"]
+  insteadOf = https://github.com/

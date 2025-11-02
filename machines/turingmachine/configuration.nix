@@ -17,8 +17,6 @@
 
     self.inputs.srvos.nixosModules.desktop
 
-    self.inputs.lanzaboote.nixosModules.lanzaboote
-
     ./modules/caddy.nix
     ./modules/data-mesher.nix
     ./modules/disko.nix
@@ -39,7 +37,8 @@
     #../../nixosModules/qtile.nix
     #../../nixosModules/keyd.nix
     ../../nixosModules/ksmbd.nix
-    ../../nixosModules/lanzaboote.nix
+    #../../nixosModules/lanzaboote.nix
+    ../../nixosModules/limine.nix
     ../../nixosModules/make-linux-fast.nix
     ../../nixosModules/mosh.nix
     ../../nixosModules/networkd.nix
@@ -64,8 +63,6 @@
   services.dbus.implementation = "broker";
 
   networking.nftables.enable = true;
-
-  boot.loader.systemd-boot.enable = true;
 
   # Disabled: using custom async direnv integration in zshrc
   # programs.direnv.enable = true;
