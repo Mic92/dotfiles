@@ -3,26 +3,17 @@
   stdenv,
   lib,
   makeWrapper,
-  pinentry-curses,
-  pinentry_mac,
-  pinentry-qt,
+  zenity,
 }:
 
 let
   # Create a Python environment with required dependencies
   pythonEnv = python3.withPackages (
     ps:
-    with ps;
-    [
-      # secretstorage is needed for non-Darwin platforms (Linux, BSD, etc.)
-    ]
-    ++ lib.optionals (!stdenv.isDarwin) [
+    lib.optionals (!stdenv.isDarwin) [
       ps.secretstorage
     ]
   );
-
-  # Select the appropriate pinentry program based on platform
-  pinentryProgram = if stdenv.isDarwin then pinentry_mac else pinentry-qt;
 
   pinentryScript = ./pinentry_keychain.py;
 in
@@ -42,12 +33,11 @@ stdenv.mkDerivation {
     EOF
     chmod +x $out/bin/rbw-pinentry
 
-    # Wrap the script to ensure pinentry is in PATH
+    # Wrap the script to ensure zenity is in PATH
     wrapProgram $out/bin/rbw-pinentry \
       --prefix PATH : ${
         lib.makeBinPath [
-          pinentryProgram
-          pinentry-curses
+          zenity
         ]
       }
   '';
