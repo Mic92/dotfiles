@@ -1,16 +1,19 @@
 """
-rbw pinentry wrapper for macOS Keychain.
+rbw pinentry wrapper with secure storage backend.
 
-Stores and retrieves master passwords from macOS Keychain.
+Stores and retrieves master passwords from system secure storage.
+Supports macOS Keychain and Linux Secret Service (KDE Wallet, GNOME Keyring).
 Detects password validation failures through SETERROR messages.
 """
 
 import logging
 import os
+import platform
 import shutil
 import subprocess
 import sys
 import time
+from abc import ABC, abstractmethod
 from pathlib import Path
 
 # Set up logging to stderr so it doesn't interfere with pinentry protocol
@@ -22,34 +25,55 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-class KeychainError(Exception):
-    """Exception for keychain operations."""
+class SecretBackendError(Exception):
+    """Exception for secret backend operations."""
 
 
-class PinentryKeychain:
-    """Pinentry wrapper that caches passwords in macOS Keychain."""
+class SecretBackend(ABC):
+    """Abstract base class for secure password storage backends."""
 
-    def __init__(self) -> None:
-        """Initialize the pinentry keychain wrapper."""
-        self.rbw_profile = os.environ.get("RBW_PROFILE", "rbw")
-        self.service_name = "rbw-master-password"
-        self.pinentry_cmd = self._find_pinentry()
-        # Use XDG_CACHE_HOME or fallback to ~/.cache
-        cache_dir = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache"))
-        cache_dir = cache_dir / "rbw-pinentry-keychain"
-        cache_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
-        self.cache_state_file = cache_dir / f"{self.rbw_profile}-cache-state"
+    @abstractmethod
+    def get_password(self, service_name: str, account: str) -> str | None:
+        """Retrieve password from secure storage.
 
-    def _find_pinentry(self) -> str:
-        """Find the actual pinentry command to use."""
-        # Just use whatever pinentry-mac or pinentry is in PATH
-        pinentry = shutil.which("pinentry-mac") or shutil.which("pinentry")
-        if not pinentry:
-            msg = "Could not find pinentry-mac or pinentry in PATH"
-            raise RuntimeError(msg)
-        return pinentry
+        Args:
+            service_name: Service identifier
+            account: Account/username identifier
 
-    def get_password_from_keychain(self) -> str | None:
+        Returns:
+            Password string if found, None otherwise
+        """
+
+    @abstractmethod
+    def store_password(self, service_name: str, account: str, password: str) -> bool:
+        """Store password in secure storage.
+
+        Args:
+            service_name: Service identifier
+            account: Account/username identifier
+            password: Password to store
+
+        Returns:
+            True if successful, False otherwise
+        """
+
+    @abstractmethod
+    def delete_password(self, service_name: str, account: str) -> bool:
+        """Delete password from secure storage.
+
+        Args:
+            service_name: Service identifier
+            account: Account/username identifier
+
+        Returns:
+            True if successful, False otherwise
+        """
+
+
+class MacOSKeychainBackend(SecretBackend):
+    """macOS Keychain backend using the security command."""
+
+    def get_password(self, service_name: str, account: str) -> str | None:
         """Retrieve password from macOS Keychain."""
         try:
             result = subprocess.run(
@@ -57,9 +81,9 @@ class PinentryKeychain:
                     "security",
                     "find-generic-password",
                     "-a",
-                    self.rbw_profile,
+                    account,
                     "-s",
-                    self.service_name,
+                    service_name,
                     "-w",
                 ],
                 capture_output=True,
@@ -72,7 +96,7 @@ class PinentryKeychain:
             logger.warning("Failed to read from keychain: %s", e)
         return None
 
-    def store_password_in_keychain(self, password: str) -> bool:
+    def store_password(self, service_name: str, account: str, password: str) -> bool:
         """Store password in macOS Keychain."""
         try:
             # Use -U to update if exists
@@ -81,9 +105,9 @@ class PinentryKeychain:
                     "security",
                     "add-generic-password",
                     "-a",
-                    self.rbw_profile,
+                    account,
                     "-s",
-                    self.service_name,
+                    service_name,
                     "-w",
                     password,
                     "-D",
@@ -101,7 +125,7 @@ class PinentryKeychain:
         else:
             return True
 
-    def delete_password_from_keychain(self) -> bool:
+    def delete_password(self, service_name: str, account: str) -> bool:
         """Delete password from macOS Keychain."""
         try:
             subprocess.run(
@@ -109,9 +133,9 @@ class PinentryKeychain:
                     "security",
                     "delete-generic-password",
                     "-a",
-                    self.rbw_profile,
+                    account,
                     "-s",
-                    self.service_name,
+                    service_name,
                     "-D",
                     "application password",
                 ],
@@ -123,6 +147,126 @@ class PinentryKeychain:
             return False
         else:
             return True
+
+
+class LinuxSecretServiceBackend(SecretBackend):
+    """Linux Secret Service backend (KDE Wallet, GNOME Keyring)."""
+
+    def __init__(self) -> None:
+        """Initialize the Secret Service backend."""
+        try:
+            import secretstorage  # noqa: PLC0415
+
+            self._secretstorage = secretstorage
+        except ImportError as e:
+            msg = "secretstorage module not available. Install python3-secretstorage."
+            raise SecretBackendError(msg) from e
+
+    def get_password(self, service_name: str, account: str) -> str | None:
+        """Retrieve password from Secret Service."""
+        try:
+            with self._secretstorage.dbus_init() as connection:
+                collection = self._secretstorage.get_default_collection(connection)
+                items = collection.search_items(
+                    {"service": service_name, "account": account}
+                )
+                for item in items:
+                    # Return the first matching item
+                    secret = item.get_secret()
+                    if isinstance(secret, bytes):
+                        return secret.decode("utf-8")
+                    return str(secret)
+                return None
+        except (OSError, RuntimeError) as e:
+            logger.warning("Failed to read from Secret Service: %s", e)
+            return None
+
+    def store_password(self, service_name: str, account: str, password: str) -> bool:
+        """Store password in Secret Service."""
+        try:
+            with self._secretstorage.dbus_init() as connection:
+                collection = self._secretstorage.get_default_collection(connection)
+                # Delete existing items first
+                items = collection.search_items(
+                    {"service": service_name, "account": account}
+                )
+                for item in items:
+                    item.delete()
+                # Create new item
+                collection.create_item(
+                    f"rbw master password for {account}",
+                    {"service": service_name, "account": account},
+                    password.encode("utf-8"),
+                    replace=True,
+                )
+        except (OSError, RuntimeError) as e:
+            logger.warning("Failed to store in Secret Service: %s", e)
+            return False
+        else:
+            return True
+
+    def delete_password(self, service_name: str, account: str) -> bool:
+        """Delete password from Secret Service."""
+        try:
+            with self._secretstorage.dbus_init() as connection:
+                collection = self._secretstorage.get_default_collection(connection)
+                items = collection.search_items(
+                    {"service": service_name, "account": account}
+                )
+                for item in items:
+                    item.delete()
+        except (OSError, RuntimeError) as e:
+            logger.warning("Failed to delete from Secret Service: %s", e)
+            return False
+        else:
+            return True
+
+
+def get_backend() -> SecretBackend:
+    """Get the appropriate backend for the current platform."""
+    system = platform.system()
+    if system == "Darwin":
+        return MacOSKeychainBackend()
+    # Assume Secret Service works on all non-Darwin platforms
+    return LinuxSecretServiceBackend()
+
+
+class PinentryKeychain:
+    """Pinentry wrapper that caches passwords in system secure storage."""
+
+    def __init__(self) -> None:
+        """Initialize the pinentry keychain wrapper."""
+        self.rbw_profile = os.environ.get("RBW_PROFILE", "rbw")
+        self.service_name = "rbw-master-password"
+        self.backend = get_backend()
+        self.pinentry_cmd = self._find_pinentry()
+        # Use XDG_CACHE_HOME or fallback to ~/.cache
+        cache_dir = Path(os.environ.get("XDG_CACHE_HOME", Path.home() / ".cache"))
+        cache_dir = cache_dir / "rbw-pinentry"
+        cache_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
+        self.cache_state_file = cache_dir / f"{self.rbw_profile}-cache-state"
+
+    def _find_pinentry(self) -> str:
+        """Find the actual pinentry command to use."""
+        system = platform.system()
+        if system == "Darwin":
+            # macOS: prefer pinentry-mac
+            candidates = ["pinentry-mac", "pinentry"]
+        else:
+            # Linux and others: prefer graphical pinentry programs
+            candidates = [
+                "pinentry-qt",
+                "pinentry-curses",
+                "pinentry",
+            ]
+
+        for candidate in candidates:
+            pinentry = shutil.which(candidate)
+            if pinentry:
+                return pinentry
+
+        msg = "Could not find any pinentry program in PATH"
+        raise RuntimeError(msg)
 
     def mark_cache_used(self) -> None:
         """Mark that we just returned a cached password."""
@@ -187,7 +331,7 @@ class PinentryKeychain:
             # Check if this error is from a cached password
             if self.was_cache_used_recently():
                 # The cached password was wrong, clear it
-                self.delete_password_from_keychain()
+                self.backend.delete_password(self.service_name, self.rbw_profile)
                 self.clear_cache_state()
                 # Force re-prompt
                 cached_password = None
@@ -197,7 +341,9 @@ class PinentryKeychain:
                 cached_password = None
         else:
             # No error, try to get from keychain
-            cached_password = self.get_password_from_keychain()
+            cached_password = self.backend.get_password(
+                self.service_name, self.rbw_profile
+            )
 
         if cached_password:
             # Mark that we're using cached password
@@ -216,18 +362,20 @@ class PinentryKeychain:
             )
         else:
             commands.append(
-                f"SETDESC Please enter the master password for '{self.rbw_profile}' (will be cached in keychain)"
+                f"SETDESC Please enter the master password for '{self.rbw_profile}' (will be cached in secure storage)"
             )
 
         commands.append("GETPIN")
 
         secret_value = self.call_real_pinentry(commands)
 
-        # Store in keychain if we got a password and there was no error
+        # Store in secure storage if we got a password and there was no error
         # We can't validate it here (would cause recursion), but if it's wrong,
         # the next call will have SETERROR set and we'll clear it
         if secret_value and not error:
-            self.store_password_in_keychain(secret_value)
+            self.backend.store_password(
+                self.service_name, self.rbw_profile, secret_value
+            )
 
         return secret_value
 
@@ -323,27 +471,36 @@ class PinentryKeychain:
 
 def show_help() -> None:
     """Display help message."""
-    print(
-        """Usage: rbw-pinentry-keychain [options]
+    backend_info = {
+        "Darwin": "macOS Keychain",
+        "Linux": "Secret Service (KDE Wallet, GNOME Keyring)",
+    }
+    current_backend = backend_info.get(platform.system(), "system secure storage")
 
-Use this script as pinentry to store rbw master password in macOS Keychain.
+    print(
+        f"""Usage: rbw-pinentry [options]
+
+Use this script as pinentry to store rbw master password in secure storage.
+Current platform: {platform.system()} using {current_backend}
 
 Options:
   -h, --help, help     Display this help message
-  -c, --clear, clear   Clear the stored master password from the keychain
+  -c, --clear, clear   Clear the stored master password from secure storage
 
 Setup:
-  Configure rbw: rbw config set pinentry rbw-pinentry-keychain
+  Configure rbw: rbw config set pinentry rbw-pinentry
 
-The password is stored securely in your macOS login keychain.
+The password is stored securely in your system's secure storage:
+- macOS: Login Keychain
+- Linux: Secret Service API (KDE Wallet, GNOME Keyring, etc.)
 
 How it works:
-- First time: Prompts for password and caches it in keychain
-- Subsequent uses: Returns cached password from keychain
+- First time: Prompts for password and caches it in secure storage
+- Subsequent uses: Returns cached password from secure storage
 - If cached password fails: Automatically clears it and re-prompts
 - If manually entered password fails: Re-prompts without clearing cache
 
-Cache state is stored in XDG_CACHE_HOME/rbw-pinentry-keychain/ with secure permissions."""
+Cache state is stored in XDG_CACHE_HOME/rbw-pinentry/ with secure permissions."""
     )
 
 
@@ -356,7 +513,9 @@ def main() -> None:
             sys.exit(0)
         if arg in ["-c", "--clear", "clear"]:
             pinentry = PinentryKeychain()
-            if pinentry.delete_password_from_keychain():
+            if pinentry.backend.delete_password(
+                pinentry.service_name, pinentry.rbw_profile
+            ):
                 print(f"Cleared password for profile: {pinentry.rbw_profile}")
             else:
                 print(f"No password found for profile: {pinentry.rbw_profile}")

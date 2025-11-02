@@ -47,6 +47,7 @@
 
       q
       rbw
+      self.packages.${pkgs.stdenv.hostPlatform.system}.rbw-pinentry
       # to fix xdg-open
       glib
       (pkgs.writeScriptBin "jellyfinmediaplayer" ''

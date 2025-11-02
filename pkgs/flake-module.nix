@@ -27,10 +27,11 @@
         pexpect-mcp = pkgs.python3.pkgs.callPackage ./pexpect-mcp { };
         iroh-ssh = pkgs.callPackage ./iroh-ssh { };
         phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
+        # Cross-platform secure pinentry (works on macOS and Linux)
+        rbw-pinentry = pkgs.callPackage ./rbw_pinentry { };
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
         blueutil = pkgs.callPackage ./blueutil { };
-        rbw-pinentry-keychain = pkgs.callPackage ./rbw_pinentry_keychain { };
         systemctl-macos = pkgs.callPackage ./systemctl { };
       }
       // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {

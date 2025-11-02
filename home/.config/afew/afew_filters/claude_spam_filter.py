@@ -305,7 +305,8 @@ indicators, suspicious attachments, etc."""
                     [
                         "claude",
                         "-p",
-                        "--model", "sonnet",
+                        "--model",
+                        "sonnet",
                         "--disallowed-tools",
                         "Bash,Edit,Write,Read,Grep,Glob,Task,WebSearch,WebFetch,TodoWrite,MultiEdit,NotebookEdit,ExitPlanMode,BashOutput,KillBash",
                         prompt,
