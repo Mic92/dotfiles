@@ -80,6 +80,11 @@
               pytest
             ];
           };
+          "pkgs/rbw_pinentry" = {
+            extraPythonPackages = with pkgs.python3.pkgs; [
+              secretstorage
+            ];
+          };
         };
         programs.deadnix.enable = true;
         programs.stylua.enable = true;
