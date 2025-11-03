@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 {
   programs.bcc.enable = true;
   programs.sysdig.enable = true;
@@ -7,6 +7,6 @@
     pkgs.strace
 
     # we want to use trace from bcc
-    (pkgs.lowPrio pkgs.perf)
+    (lib.lowPrio pkgs.perf)
   ];
 }
