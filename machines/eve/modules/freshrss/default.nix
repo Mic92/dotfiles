@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 {
   services.freshrss = {
     enable = true;
@@ -6,6 +6,9 @@
 
     # Use http_auth for Authelia integration via Remote-User header
     authType = "http_auth";
+
+    # Enable API for mobile apps
+    api.enable = true;
 
     # Domain configuration
     virtualHost = "rss.devkid.net";
@@ -56,6 +59,49 @@
       useACMEHost = "thalheim.io";
       forceSSL = true;
       globalRedirect = "rss.devkid.net";
+    };
+
+    # Separate API-only virtualhost without Authelia
+    virtualHosts."rss-api.devkid.net" = {
+      useACMEHost = "thalheim.io";
+      forceSSL = true;
+      root = "${pkgs.freshrss}/p";
+
+      # Rewrite Google Reader API paths to greader.php
+      # Handle both /api/accounts and /accounts (some apps omit /api)
+      locations."~ ^/(api/)?(accounts|reader)" = {
+        extraConfig = ''
+          rewrite ^/api/(.*)$ /api/greader.php/$1 last;
+          rewrite ^/(.*)$ /api/greader.php/$1 last;
+        '';
+      };
+
+      # API PHP scripts with path info
+      locations."~ ^/api/.+\\.php(/.*)?$" = {
+        extraConfig = ''
+          # No Authelia - FreshRSS handles API authentication
+
+          # FastCGI configuration for PHP
+          fastcgi_pass unix:${config.services.phpfpm.pools.freshrss.socket};
+          fastcgi_split_path_info ^(.+\.php)(/.*)$;
+          set $path_info $fastcgi_path_info;
+          fastcgi_param PATH_INFO $path_info;
+          fastcgi_param SCRIPT_FILENAME ${pkgs.freshrss}/p$fastcgi_script_name;
+
+          # Security: explicitly clear REMOTE_USER to prevent auth bypass
+          fastcgi_param REMOTE_USER "";
+
+          include ${pkgs.nginx}/conf/fastcgi_params;
+          include ${pkgs.nginx}/conf/fastcgi.conf;
+        '';
+      };
+
+      # Block everything else
+      locations."/" = {
+        extraConfig = ''
+          return 404;
+        '';
+      };
     };
 
     # Main virtualhost with Authelia forward-auth

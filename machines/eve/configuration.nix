@@ -64,7 +64,7 @@
     ./modules/syncthing.nix
     ./modules/teamspeak.nix
     ./modules/telegraf.nix
-    ./modules/freshrss.nix
+    ./modules/freshrss
     ./modules/unbound.nix
     ./modules/users.nix
     ./modules/wireguard.nix
