@@ -1,6 +1,7 @@
 import argparse
 import platform
 import sys
+
 from .pinentry import Pinentry
 
 
@@ -28,7 +29,9 @@ def build_parser() -> argparse.ArgumentParser:
         "Cache state is stored in XDG_CACHE_HOME/rbw-pinentry/ with secure permissions."
     )
     parser = argparse.ArgumentParser(
-        prog="rbw-pinentry", description=description, epilog=epilog,
+        prog="rbw-pinentry",
+        description=description,
+        epilog=epilog,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
@@ -37,6 +40,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Clear the stored master password from secure storage and exit",
     )
+    # Arguments passed by rbw-agent (ignored for compatibility)
+    parser.add_argument("--timeout", type=str, help=argparse.SUPPRESS)
+    parser.add_argument("--ttyname", type=str, help=argparse.SUPPRESS)
+    parser.add_argument("--display", type=str, help=argparse.SUPPRESS)
+    parser.add_argument("--no-global-grab", action="store_true", help=argparse.SUPPRESS)
     return parser
 
 
@@ -46,7 +54,9 @@ def main() -> None:
 
     if args.clear:
         pinentry = Pinentry()
-        if pinentry.backend.delete_password(pinentry.service_name, pinentry.rbw_profile):
+        if pinentry.backend.delete_password(
+            pinentry.service_name, pinentry.rbw_profile
+        ):
             print(f"Cleared password for profile: {pinentry.rbw_profile}")
         else:
             print(f"No password found for profile: {pinentry.rbw_profile}")
