@@ -130,7 +130,7 @@ in
                     lib.makeBinPath [
                       pkgs.libnotify
                       pkgs.dbus
-                      pkgs.utillinux
+                      pkgs.util-linux
                     ]
                   }"
                   subprocess.run(["runuser", "-u", "joerg", "notify-send", f"nixos-rebuild from {sender}"], env=env)

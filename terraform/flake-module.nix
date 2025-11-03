@@ -7,12 +7,12 @@
           pkgs.sops
           pkgs.terragrunt
           (pkgs.opentofu.withPlugins (p: [
-            p.gitlab
-            p.github
-            p.sops
-            p.null
-            p.dns
-            p.digitalocean
+            p.gitlabhq_gitlab
+            p.integrations_github
+            p.carlpett_sops
+            p.hashicorp_null
+            p.hashicorp_dns
+            p.digitalocean_digitalocean
           ]))
         ];
       };
