@@ -83,6 +83,7 @@
 
           # FastCGI configuration for PHP
           fastcgi_pass unix:${config.services.phpfpm.pools.freshrss.socket};
+          fastcgi_index index.php;
           fastcgi_split_path_info ^(.+\.php)(/.*)$;
           set $path_info $fastcgi_path_info;
           fastcgi_param PATH_INFO $path_info;
@@ -91,7 +92,6 @@
           # Security: explicitly clear REMOTE_USER to prevent auth bypass
           fastcgi_param REMOTE_USER "";
 
-          include ${pkgs.nginx}/conf/fastcgi_params;
           include ${pkgs.nginx}/conf/fastcgi.conf;
         '';
       };
