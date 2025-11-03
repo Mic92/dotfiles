@@ -394,11 +394,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1759918242,
-        "narHash": "sha256-PJBx9BnLanqdQHgxIZjGK09g+4unkJHk07VUyns7S0w=",
+        "lastModified": 1762163920,
+        "narHash": "sha256-PlMWBAbdM5pQqFhXhoK6ap6ken7cP9e+GRfED/xk7fg=",
         "owner": "Mic92",
         "repo": "hyprspace",
-        "rev": "e94ae6d6c5700744c65bb6d654dd441a16dd2ab9",
+        "rev": "6b61cf3bbcc44773a2756b26a60d06db0817adc8",
         "type": "github"
       },
       "original": {
