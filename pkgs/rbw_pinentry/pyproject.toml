@@ -1,0 +1,24 @@
+[build-system]
+requires = ["hatchling>=1.21.1"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rbw-pinentry"
+version = "0.1.0"
+description = "rbw pinentry wrapper with secure storage backend (macOS Keychain, Linux Secret Service)."
+authors = [{ name = "J?rg Thalheim" }]
+requires-python = ">=3.11"
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/Mic92/dotfiles"
+
+[project.scripts]
+rbw-pinentry = "rbw_pinentry.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rbw_pinentry"]

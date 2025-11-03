@@ -7,38 +7,26 @@
 }:
 
 let
-  # Create a Python environment with required dependencies
-  pythonEnv = python3.withPackages (
-    ps:
-    lib.optionals (!stdenv.isDarwin) [
-      ps.secretstorage
-    ]
-  );
-
-  pinentryScript = ./pinentry_keychain.py;
+  py = python3.pkgs;
 in
-stdenv.mkDerivation {
+py.buildPythonApplication {
   pname = "rbw-pinentry";
   version = "0.1.0";
+  format = "pyproject";
 
-  dontUnpack = true;
+  src = ./.;
 
-  nativeBuildInputs = [ makeWrapper ];
+  nativeBuildInputs = [
+    py.hatchling
+    makeWrapper
+  ];
 
-  installPhase = ''
-    mkdir -p $out/bin
-    cat > $out/bin/rbw-pinentry << 'EOF'
-    #!${pythonEnv}/bin/python3
-    ${builtins.readFile pinentryScript}
-    EOF
-    chmod +x $out/bin/rbw-pinentry
+  propagatedBuildInputs = lib.optionals (!stdenv.isDarwin) [
+    py.secretstorage
+  ];
 
-    # Wrap the script to ensure zenity is in PATH
+  postInstall = ''
     wrapProgram $out/bin/rbw-pinentry \
-      --prefix PATH : ${
-        lib.makeBinPath [
-          zenity
-        ]
-      }
+      --prefix PATH : ${lib.makeBinPath [ zenity ]}
   '';
 }
