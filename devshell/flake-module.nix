@@ -28,6 +28,7 @@
         programs.terraform.enable = true;
         programs.hclfmt.enable = true;
         programs.yamlfmt.enable = true;
+        programs.actionlint.enable = true;
         programs.mypy.enable = true;
         programs.mypy.directories = {
           "machines/eva/modules/prometheus" = { };

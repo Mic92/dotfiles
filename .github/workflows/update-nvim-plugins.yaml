@@ -15,14 +15,14 @@ jobs:
       - name: Update vim plugins
         run: |
           nix run .#nvim -- --headless "+Lazy! update" +qa
-          cp $HOME/.config/nvim-mic92/lazy-lock.json home/.config/nvim/lazy-lock.json
+          cp "$HOME/.config/nvim-mic92/lazy-lock.json" home/.config/nvim/lazy-lock.json
       - name: Check for changes
         id: check-changes
         run: |
           if git diff --quiet home/.config/nvim/lazy-lock.json; then
-            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
           else
-            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
           fi
       - name: Commit vim plugin updates
         if: steps.check-changes.outputs.has_changes == 'true'
