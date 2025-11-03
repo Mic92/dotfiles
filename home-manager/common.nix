@@ -56,7 +56,7 @@
       pinentry-curses
       fd
       bat
-      moar
+      moor
       vivid
       ripgrep
       ast-grep
