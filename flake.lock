@@ -82,15 +82,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1762254206,
-        "narHash": "sha256-ZyQUrUSuIUZRmMPzeCXI4vDFhHOLNtGUMBaHXCD6nEQ=",
-        "rev": "43a7652624e76d60a93325c711d01620801d4382",
+        "lastModified": 1762269771,
+        "narHash": "sha256-rcbyDr2vbyjlbgBhp+FxCcEIoNpIeYYvlsNlzq7RtFI=",
+        "rev": "8cea5e3c7d0c4a8e201534ba113acd0f10e1d092",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/43a7652624e76d60a93325c711d01620801d4382.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/8cea5e3c7d0c4a8e201534ba113acd0f10e1d092.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.clan.lol/clan/clan-core/archive/main.tar.gz"
+        "url": "https://git.clan.lol/clan/clan-core/archive/disko-fix.tar.gz"
       }
     },
     "crane": {
