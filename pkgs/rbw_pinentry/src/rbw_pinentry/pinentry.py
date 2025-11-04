@@ -45,20 +45,17 @@ class Pinentry:
             elif prompt:
                 zenity_cmd.extend(["--title", prompt])
 
-            window_text_parts: list[str] = []
+            # Build the text to display in the dialog
+            text_parts: list[str] = []
             if error:
-                window_text_parts.append(f"Error: {error}")
+                text_parts.append(f"Error: {error}")
             if desc:
-                window_text_parts.append(desc)
+                text_parts.append(desc)
             if prompt and prompt != title:
-                window_text_parts.append(prompt)
-            window_text = (
-                "\n\n".join(window_text_parts)
-                if window_text_parts
-                else prompt or "Enter password:"
-            )
-            if window_text:
-                zenity_cmd.extend(["--text", window_text])
+                text_parts.append(prompt)
+
+            if text_parts:
+                zenity_cmd.extend(["--text", "\n\n".join(text_parts)])
 
             result = subprocess.run(
                 zenity_cmd, capture_output=True, text=True, check=False
