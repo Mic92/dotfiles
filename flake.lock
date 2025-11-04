@@ -82,15 +82,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1762254206,
-        "narHash": "sha256-ZyQUrUSuIUZRmMPzeCXI4vDFhHOLNtGUMBaHXCD6nEQ=",
-        "rev": "43a7652624e76d60a93325c711d01620801d4382",
+        "lastModified": 1762269771,
+        "narHash": "sha256-rcbyDr2vbyjlbgBhp+FxCcEIoNpIeYYvlsNlzq7RtFI=",
+        "rev": "8cea5e3c7d0c4a8e201534ba113acd0f10e1d092",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/43a7652624e76d60a93325c711d01620801d4382.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/8cea5e3c7d0c4a8e201534ba113acd0f10e1d092.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.clan.lol/clan/clan-core/archive/main.tar.gz"
+        "url": "https://git.clan.lol/clan/clan-core/archive/disko-fix.tar.gz"
       }
     },
     "crane": {
@@ -195,11 +195,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1761899396,
-        "narHash": "sha256-XOpKBp6HLzzMCbzW50TEuXN35zN5WGQREC7n34DcNMM=",
+        "lastModified": 1762276996,
+        "narHash": "sha256-TtcPgPmp2f0FAnc+DMEw4ardEgv1SGNR3/WFGH0N19M=",
         "owner": "nix-community",
         "repo": "disko",
-        "rev": "6f4cf5abbe318e4cd1e879506f6eeafd83f7b998",
+        "rev": "af087d076d3860760b3323f6b583f4d828c1ac17",
         "type": "github"
       },
       "original": {
