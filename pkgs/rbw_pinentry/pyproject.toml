@@ -8,6 +8,9 @@ version = "0.1.0"
 description = "rbw pinentry wrapper with secure storage backend (macOS Keychain, Linux Secret Service)."
 authors = [{ name = "J?rg Thalheim" }]
 requires-python = ">=3.11"
+dependencies = [
+  "keyring>=25.0.0",
+]
 classifiers = [
   "Programming Language :: Python :: 3",
   "License :: OSI Approved :: MIT License",

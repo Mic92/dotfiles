@@ -1,6 +1,5 @@
 {
   python3,
-  stdenv,
   lib,
   makeWrapper,
   zenity,
@@ -21,8 +20,8 @@ py.buildPythonApplication {
     makeWrapper
   ];
 
-  propagatedBuildInputs = lib.optionals (!stdenv.isDarwin) [
-    py.secretstorage
+  propagatedBuildInputs = [
+    py.keyring
   ];
 
   postInstall = ''
