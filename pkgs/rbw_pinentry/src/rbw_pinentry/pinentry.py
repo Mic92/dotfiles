@@ -4,7 +4,7 @@ import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from .backends import SecretBackend, get_backend
+import keyring
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -30,7 +30,6 @@ class Pinentry:
     def __init__(self) -> None:
         self.rbw_profile = os.environ.get("RBW_PROFILE", "rbw")
         self.service_name = "rbw-master-password"
-        self.backend: SecretBackend = get_backend()
 
     def _show_zenity_password_dialog(
         self,
@@ -74,12 +73,21 @@ class Pinentry:
     def _handle_master_password(self, error: str) -> str | None:
         if error:
             logger.warning("Authentication error: %s", error)
-            self.backend.delete_password(self.service_name, self.rbw_profile)
+            try:
+                keyring.delete_password(self.service_name, self.rbw_profile)
+            except keyring.errors.PasswordDeleteError:
+                pass  # Password doesn't exist, which is fine
+            except keyring.errors.KeyringError as e:
+                logger.warning("Failed to delete password: %s", e)
             cached_password = None
         else:
-            cached_password = self.backend.get_password(
-                self.service_name, self.rbw_profile
-            )
+            try:
+                cached_password = keyring.get_password(
+                    self.service_name, self.rbw_profile
+                )
+            except keyring.errors.KeyringError as e:
+                logger.warning("Failed to get password: %s", e)
+                cached_password = None
 
         if cached_password:
             return cached_password
@@ -95,9 +103,10 @@ class Pinentry:
             title=title, prompt=prompt, desc=desc, error=error
         )
         if secret_value and not error:
-            self.backend.store_password(
-                self.service_name, self.rbw_profile, secret_value
-            )
+            try:
+                keyring.set_password(self.service_name, self.rbw_profile, secret_value)
+            except keyring.errors.KeyringError as e:
+                logger.warning("Failed to store password: %s", e)
         return secret_value
 
     def _handle_other_password(
@@ -139,17 +148,16 @@ class Pinentry:
     def handle_pinentry_session(self) -> None:
         print("OK", flush=True)
         state: dict[str, str] = {"title": "", "prompt": "", "desc": "", "error": ""}
-        with self.backend:
-            while True:
-                try:
-                    line = input()
-                except EOFError:
-                    break
-                parts = line.split(" ", 1)
-                command = parts[0]
-                args = parts[1] if len(parts) > 1 else ""
-                response = self._process_command(command, args, state)
-                if response == "BYE":
-                    break
-                if response:
-                    print(response, flush=True)
+        while True:
+            try:
+                line = input()
+            except EOFError:
+                break
+            parts = line.split(" ", 1)
+            command = parts[0]
+            args = parts[1] if len(parts) > 1 else ""
+            response = self._process_command(command, args, state)
+            if response == "BYE":
+                break
+            if response:
+                print(response, flush=True)
