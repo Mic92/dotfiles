@@ -18,7 +18,6 @@ export pacman_program=pacman-color
 # {{{ X11, Sound, Graphic
 export XDG_CACHE_HOME=~/.cache
 export XDG_CONFIG_HOME=~/.config
-export XDG_DATA_HOME=~/.data
 export ERRFILE=~/.xsession-errors
 # Antialiasing
 export QT_XFT=1
