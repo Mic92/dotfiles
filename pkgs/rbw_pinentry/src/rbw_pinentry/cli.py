@@ -24,9 +24,7 @@ def build_parser() -> argparse.ArgumentParser:
         "How it works:\n"
         "- First time: Prompts for password and caches it in secure storage\n"
         "- Subsequent uses: Returns cached password from secure storage\n"
-        "- If cached password fails: Automatically clears it and re-prompts\n"
-        "- If manually entered password fails: Re-prompts without clearing cache\n\n"
-        "Cache state is stored in XDG_CACHE_HOME/rbw-pinentry/ with secure permissions."
+        "- If cached password fails: Automatically clears it and re-prompts"
     )
     parser = argparse.ArgumentParser(
         prog="rbw-pinentry",
@@ -60,7 +58,6 @@ def main() -> None:
             print(f"Cleared password for profile: {pinentry.rbw_profile}")
         else:
             print(f"No password found for profile: {pinentry.rbw_profile}")
-        pinentry.clear_cache_state()
         sys.exit(0)
 
     pinentry = Pinentry()

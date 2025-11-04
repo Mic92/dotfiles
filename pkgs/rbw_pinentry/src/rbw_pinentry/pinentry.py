@@ -1,7 +1,6 @@
 import logging
 import os
 import subprocess
-import time
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -32,31 +31,6 @@ class Pinentry:
         self.rbw_profile = os.environ.get("RBW_PROFILE", "rbw")
         self.service_name = "rbw-master-password"
         self.backend: SecretBackend = get_backend()
-        cache_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
-        self.cache_state_file = cache_dir / f"{self.rbw_profile}-cache-state"
-
-    def mark_cache_used(self) -> None:
-        try:
-            self.cache_state_file.write_text(str(time.time()))
-            self.cache_state_file.chmod(0o600)
-        except OSError as e:
-            logger.warning("Failed to mark cache state: %s", e)
-
-    def was_cache_used_recently(self) -> bool:
-        try:
-            if self.cache_state_file.exists():
-                timestamp = float(self.cache_state_file.read_text())
-                return time.time() - timestamp < 2
-        except (OSError, ValueError) as e:
-            logger.warning("Failed to read cache state: %s", e)
-        return False
-
-    def clear_cache_state(self) -> None:
-        try:
-            if self.cache_state_file.exists():
-                self.cache_state_file.unlink()
-        except OSError as e:
-            logger.warning("Failed to clear cache state: %s", e)
 
     def _show_zenity_password_dialog(
         self,
@@ -100,22 +74,16 @@ class Pinentry:
     def _handle_master_password(self, error: str) -> str | None:
         if error:
             logger.warning("Authentication error: %s", error)
-            if self.was_cache_used_recently():
-                self.backend.delete_password(self.service_name, self.rbw_profile)
-                self.clear_cache_state()
-                cached_password = None
-            else:
-                cached_password = None
+            self.backend.delete_password(self.service_name, self.rbw_profile)
+            cached_password = None
         else:
             cached_password = self.backend.get_password(
                 self.service_name, self.rbw_profile
             )
 
         if cached_password:
-            self.mark_cache_used()
             return cached_password
 
-        self.clear_cache_state()
         title = "rbw"
         prompt = "Master Password"
         if error:
