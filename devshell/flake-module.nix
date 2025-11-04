@@ -83,7 +83,7 @@
           };
           "pkgs/rbw_pinentry" = {
             extraPythonPackages = with pkgs.python3.pkgs; [
-              secretstorage
+              keyring
             ];
           };
         };

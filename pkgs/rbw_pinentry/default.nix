@@ -7,6 +7,12 @@
 
 let
   py = python3.pkgs;
+  # Patch zenity to support --text in password dialog
+  zenity-patched = zenity.overrideAttrs (old: {
+    patches = (old.patches or [ ]) ++ [
+      ./zenity-password-text-support.patch
+    ];
+  });
 in
 py.buildPythonApplication {
   pname = "rbw-pinentry";
@@ -26,6 +32,6 @@ py.buildPythonApplication {
 
   postInstall = ''
     wrapProgram $out/bin/rbw-pinentry \
-      --prefix PATH : ${lib.makeBinPath [ zenity ]}
+      --prefix PATH : ${lib.makeBinPath [ zenity-patched ]}
   '';
 }
