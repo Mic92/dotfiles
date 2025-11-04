@@ -82,11 +82,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1762269771,
-        "narHash": "sha256-rcbyDr2vbyjlbgBhp+FxCcEIoNpIeYYvlsNlzq7RtFI=",
-        "rev": "8cea5e3c7d0c4a8e201534ba113acd0f10e1d092",
+        "lastModified": 1762282403,
+        "narHash": "sha256-l4RKvHR0r9arlRg0DL0P4HpvSqM7YjRyqBnAeoXCbOM=",
+        "rev": "72192d3743e4e6960da39c6195284d4055b4fb96",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/8cea5e3c7d0c4a8e201534ba113acd0f10e1d092.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/72192d3743e4e6960da39c6195284d4055b4fb96.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -408,35 +408,6 @@
         "type": "github"
       }
     },
-    "lanzaboote": {
-      "inputs": {
-        "crane": [
-          "crane"
-        ],
-        "flake-compat": [],
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "pre-commit-hooks-nix": [],
-        "rust-overlay": "rust-overlay"
-      },
-      "locked": {
-        "lastModified": 1756744479,
-        "narHash": "sha256-EyZXusK/wRD3V9vDh00W2Re3Eg8UQ+LjVBQrrH9dq1U=",
-        "owner": "nix-community",
-        "repo": "lanzaboote",
-        "rev": "747b7912f49e2885090c83364d88cf853a020ac1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "lanzaboote",
-        "type": "github"
-      }
-    },
     "nix": {
       "inputs": {
         "flake-compat": [],
@@ -702,7 +673,6 @@
         "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
         "hyprspace": "hyprspace",
-        "lanzaboote": "lanzaboote",
         "nix": "nix",
         "nix-ai-tools": "nix-ai-tools",
         "nix-darwin": "nix-darwin",
@@ -718,27 +688,6 @@
         "srvos": "srvos",
         "systems": "systems",
         "treefmt-nix": "treefmt-nix"
-      }
-    },
-    "rust-overlay": {
-      "inputs": {
-        "nixpkgs": [
-          "lanzaboote",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1754189623,
-        "narHash": "sha256-fstu5eb30UYwsxow0aQqkzxNxGn80UZjyehQVNVHuBk=",
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "rev": "c582ff7f0d8a7ea689ae836dfb1773f1814f472a",
-        "type": "github"
-      },
-      "original": {
-        "owner": "oxalica",
-        "repo": "rust-overlay",
-        "type": "github"
       }
     },
     "sops-nix": {
