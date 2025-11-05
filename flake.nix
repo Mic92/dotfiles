@@ -88,6 +88,11 @@
     #clan-core.url = "path:///Users/joerg/git/clan-core";
     #clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=nixos-rebuild";
     #clan-core.url = "git+file:///home/joerg/work/clan/clan-core";
+
+    n8n-nodes-caldav.url = "github:Mic92/n8n-nodes-caldav";
+    n8n-nodes-caldav.inputs.nixpkgs.follows = "nixpkgs";
+    n8n-nodes-caldav.inputs.flake-parts.follows = "flake-parts";
+
     clan-core.inputs.nixpkgs.follows = "nixpkgs";
     clan-core.inputs.sops-nix.follows = "sops-nix";
     clan-core.inputs.treefmt-nix.follows = "treefmt-nix";
