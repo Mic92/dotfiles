@@ -1,5 +1,6 @@
 ## General Guidelines
 
+- Make no mistakes!
 - Follow XDG desktop standards
 - Regularly reason about security implications of the code
 - Use `$HOME/.claude/outputs` as a scratch directory.
