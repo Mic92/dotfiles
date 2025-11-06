@@ -13,6 +13,9 @@
   security.sudo.execWheelOnly = lib.mkForce false;
   programs.nano.enable = false;
 
+  # Use memory more efficiently at the cost of some compute
+  zramSwap.enable = true;
+
   imports = [
     ./nix-path.nix
     ./acme.nix
