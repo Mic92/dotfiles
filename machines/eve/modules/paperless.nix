@@ -44,7 +44,6 @@ in
       PAPERLESS_ENABLE_HTTP_REMOTE_USER = true;
       PAPERLESS_HTTP_REMOTE_USER_HEADER_NAME = "HTTP_REMOTE_USER";
       PAPERLESS_LOGOUT_REDIRECT_URL = "/"; # Redirect to root after logout
-      PAPERLESS_ACCOUNT_DEFAULT_GROUPS = "editors"; # Default group for new users</
     };
   };
 
@@ -70,9 +69,9 @@ in
     }
   ];
 
-  # One-time setup to create editors group with proper permissions
-  systemd.services.paperless-init-groups = {
-    description = "Initialize paperless editors group and permissions";
+  # Setup script to handle remote user group assignment
+  systemd.services.paperless-user-setup = {
+    description = "Setup paperless users and groups for remote authentication";
     after = [ "paperless-web.service" ];
     wantedBy = [ "multi-user.target" ];
     serviceConfig = {
@@ -80,11 +79,13 @@ in
       RemainAfterExit = true;
     };
     script = ''
-      # Create editors group with permissions
+      # Create editors group with permissions and ensure remote users are in it
       cd /var/lib/paperless
       ${pkgs.util-linux}/bin/runuser -u paperless -- /run/current-system/sw/bin/paperless-manage shell <<EOF
-      from django.contrib.auth.models import Group, Permission
+      from django.contrib.auth.models import Group, Permission, User
       from django.contrib.contenttypes.models import ContentType
+      from django.db.models.signals import post_save
+      from django.dispatch import receiver
 
       # Create or get the editors group
       editors_group, created = Group.objects.get_or_create(name="editors")
@@ -104,6 +105,23 @@ in
 
       editors_group.permissions.set(permissions_to_add)
       print(f"Added {len(permissions_to_add)} permissions to editors group")
+
+      # Add all existing remote users to editors group
+      remote_users = User.objects.filter(username__contains="@")
+      for user in remote_users:
+          if not user.groups.filter(name="editors").exists():
+              user.groups.add(editors_group)
+              print(f"Added existing remote user {user.username} to editors group")
+
+      # Set up signal handler for future remote user creations
+      @receiver(post_save, sender=User)
+      def add_remote_user_to_editors_group(sender, instance, created, **kwargs):
+          if created and instance.username.count('@') > 0:  # Only for remote users
+              if not instance.groups.filter(name="editors").exists():
+                  instance.groups.add(editors_group)
+                  print(f"Auto-added new remote user {instance.username} to editors group")
+
+      print("Remote user group assignment setup completed")
       EOF
     '';
   };
