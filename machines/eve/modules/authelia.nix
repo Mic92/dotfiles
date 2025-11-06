@@ -147,6 +147,12 @@
             policy = "one_factor";
             subject = [ "group:n8n" ];
           }
+          # Paperless - restrict to paperless group members only
+          {
+            domain = "paperless.thalheim.io";
+            policy = "one_factor";
+            subject = [ "group:paperless" ];
+          }
         ];
       };
     };
