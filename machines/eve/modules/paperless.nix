@@ -1,18 +1,11 @@
 {
   config,
   pkgs,
-  lib,
   ...
 }:
 let
   hostname = "paperless.thalheim.io";
   apiHostname = "paperless-api.thalheim.io";
-  ldapConf = pkgs.writeText "paperless-ldap.conf" ''
-    base dc=eve
-    host localhost:389
-    pam_login_attribute mail
-    pam_filter objectClass=paperlessUser
-  '';
 in
 {
   services.paperless = {
@@ -124,20 +117,29 @@ in
     };
   };
 
-  # PAM configuration for paperless LDAP authentication
-  security.pam.services.paperless.text = ''
-    auth required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${ldapConf}
-    account required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${ldapConf}
-  '';
-
-  # Ensure nginx has PAM module
-  services.nginx.package = lib.mkDefault (
-    pkgs.nginxQuic.override { modules = [ pkgs.nginxModules.pam ]; }
-  );
-
   services.nginx.virtualHosts.${hostname} = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
+
+    # Redirect to Authelia login on 401
+    extraConfig = ''
+      error_page 401 =302 https://auth.thalheim.io/?rd=$scheme://$http_host$request_uri;
+    '';
+
+    # Authelia forward-auth verification endpoint
+    locations."/authelia" = {
+      proxyPass = "http://127.0.0.1:9091/api/verify";
+      extraConfig = ''
+        internal;
+        proxy_set_header X-Original-URL $scheme://$http_host$request_uri;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header Content-Length "";
+        proxy_pass_request_body off;
+      '';
+    };
+
     locations."/" = {
       proxyPass = "http://127.0.0.1:${toString config.services.paperless.port}";
       proxyWebsockets = true;
@@ -148,13 +150,13 @@ in
         proxy_connect_timeout 300s;
         proxy_send_timeout 300s;
 
-        # PAM authentication
-        auth_pam "Paperless LDAP Login";
-        auth_pam_service_name "paperless";
+        # Forward auth request to Authelia
+        auth_request /authelia;
+        auth_request_set $user $upstream_http_remote_user;
 
         # Pass authenticated username to paperless
         # Django automatically prefixes headers with HTTP_
-        proxy_set_header Remote-User $remote_user;
+        proxy_set_header Remote-User $user;
 
         # Remove the Authorization header to prevent conflicts
         proxy_set_header Authorization "";
