@@ -70,20 +70,21 @@ in
     }
   ];
 
-  # Setup script to create default group and add signal handler
-  systemd.services.paperless-group-setup = {
-    description = "Setup paperless editors group";
+  # One-time setup to create editors group with proper permissions
+  systemd.services.paperless-init-groups = {
+    description = "Initialize paperless editors group and permissions";
     after = [ "paperless-web.service" ];
     wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
     script = ''
       # Create editors group with permissions
       cd /var/lib/paperless
       ${pkgs.util-linux}/bin/runuser -u paperless -- /run/current-system/sw/bin/paperless-manage shell <<EOF
-      from django.contrib.auth.models import Group, Permission, User
+      from django.contrib.auth.models import Group, Permission
       from django.contrib.contenttypes.models import ContentType
-      from django.contrib.auth.signals import user_logged_in
-      from django.db.models.signals import post_save
-      from django.dispatch import receiver
 
       # Create or get the editors group
       editors_group, created = Group.objects.get_or_create(name="editors")
@@ -103,18 +104,8 @@ in
 
       editors_group.permissions.set(permissions_to_add)
       print(f"Added {len(permissions_to_add)} permissions to editors group")
-
-      # Add all existing remote users to editors group
-      for user in User.objects.filter(username__contains="@"):
-          if not user.groups.filter(name="editors").exists():
-              user.groups.add(editors_group)
-              print(f"Added existing user {user.username} to editors group")
       EOF
     '';
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
   };
 
   services.nginx.virtualHosts.${hostname} = {
