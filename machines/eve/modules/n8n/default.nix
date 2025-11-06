@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, self, ... }:
 let
   # Hook file for header-based authentication
   hooksFile = pkgs.writeText "n8n-hooks.js" ''
@@ -76,6 +76,16 @@ in
       N8N_SSO_HOSTNAME = "n8n.thalheim.io";
     };
   };
+
+  # Install CalDAV community node into custom directory
+  # n8n automatically loads *.node.js and *.credentials.js from ~/.n8n/custom
+  systemd.services.n8n.preStart = ''
+    mkdir -p /var/lib/n8n/.n8n/custom
+    ln -sfn ${
+      self.inputs.n8n-nodes-caldav.packages.${pkgs.system}.default
+    }/lib/node_modules/n8n-nodes-caldav/dist \
+      /var/lib/n8n/.n8n/custom/n8n-nodes-caldav
+  '';
 
   services.postgresql.ensureDatabases = [ "n8n" ];
   services.postgresql.ensureUsers = [

@@ -408,6 +408,29 @@
         "type": "github"
       }
     },
+    "n8n-nodes-caldav": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1762158676,
+        "narHash": "sha256-C/962b7m6G+VkGhTu7HOkyEB5dgHAqMBs8n1GmDO3yA=",
+        "owner": "Mic92",
+        "repo": "n8n-nodes-caldav",
+        "rev": "dc05176cd95d934fcf4fad8e08695ad12010a82b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "n8n-nodes-caldav",
+        "type": "github"
+      }
+    },
     "nix": {
       "inputs": {
         "flake-compat": [],
@@ -673,6 +696,7 @@
         "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
         "hyprspace": "hyprspace",
+        "n8n-nodes-caldav": "n8n-nodes-caldav",
         "nix": "nix",
         "nix-ai-tools": "nix-ai-tools",
         "nix-darwin": "nix-darwin",
