@@ -153,6 +153,12 @@
             policy = "one_factor";
             subject = [ "group:paperless" ];
           }
+          # Flood - restrict to flood group members only
+          {
+            domain = "flood.thalheim.io";
+            policy = "one_factor";
+            subject = [ "group:flood" ];
+          }
         ];
       };
     };
