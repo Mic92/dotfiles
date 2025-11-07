@@ -234,19 +234,6 @@
         ];
       };
 
-      "cn={1}flood,cn=schema".attrs = {
-        cn = "{1}flood";
-        objectClass = "olcSchemaConfig";
-        olcObjectClasses = [
-          ''
-            (1.3.6.1.4.1.28300.1.2.4 NAME 'flood'
-                         SUP uidObject AUXILIARY
-                         DESC 'Added to an account to allow flood access'
-                         MUST (mail))
-          ''
-        ];
-      };
-
     };
   };
 

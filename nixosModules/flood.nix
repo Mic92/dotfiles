@@ -1,17 +1,8 @@
 {
-  config,
   pkgs,
   lib,
   ...
 }:
-let
-  conf = pkgs.writeText "ldap.conf" ''
-    base dc=eve
-    host localhost:389
-    pam_login_attribute mail
-    pam_filter objectClass=flood
-  '';
-in
 {
   # Enable the NixOS flood service
   services.flood = {
@@ -37,28 +28,43 @@ in
     };
   };
 
-  # PAM configuration for flood authentication
-  security.pam.services.flood.text = ''
-    auth required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${conf}
-    account required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${conf}
-  '';
-
-  # ACME certificate
-  security.acme.certs."flood.r".server = config.retiolum.ca.acmeURL;
-
   # Nginx configuration
-  services.nginx.virtualHosts."flood.r" = {
-    enableACME = true;
-    addSSL = true;
+  services.nginx.virtualHosts."flood.thalheim.io" = {
+    useACMEHost = "thalheim.io";
+    forceSSL = true;
     root = "${pkgs.flood}/lib/node_modules/flood/dist/assets";
+
+    # Authelia endpoint configuration
+    locations."/authelia" = {
+      proxyPass = "http://127.0.0.1:9091/api/verify";
+      extraConfig = ''
+        internal;
+        proxy_set_header X-Original-URL $scheme://$http_host$request_uri;
+        proxy_set_header X-Forwarded-Method $request_method;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header X-Forwarded-Uri $request_uri;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_pass_request_body off;
+        proxy_set_header Content-Length "";
+      '';
+    };
+
     locations."/api".extraConfig = ''
-      auth_pam "Ldap password";
-      auth_pam_service_name "flood";
-      proxy_pass       http://localhost:3003;
+      # Authelia forward-auth
+      auth_request /authelia;
+      auth_request_set $user $upstream_http_remote_user;
+      error_page 401 =302 https://auth.thalheim.io/?rd=$scheme://$http_host$request_uri;
+
+      proxy_pass http://localhost:3003;
     '';
+
     locations."/".extraConfig = ''
-      auth_pam "Ldap password";
-      auth_pam_service_name "flood";
+      # Authelia forward-auth
+      auth_request /authelia;
+      auth_request_set $user $upstream_http_remote_user;
+      error_page 401 =302 https://auth.thalheim.io/?rd=$scheme://$http_host$request_uri;
+
       try_files $uri /index.html;
     '';
   };
