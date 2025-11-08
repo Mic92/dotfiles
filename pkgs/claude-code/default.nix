@@ -16,7 +16,7 @@ writeShellApplication {
     set -euo pipefail
 
     # Set shell to bash for Claude Code
-    export SHELL=bash
+    export SHELL=${pkgs.bashInteractive}/bin/bash
 
     # Start pueued daemon if not already running
     if ! pueue status &>/dev/null; then
