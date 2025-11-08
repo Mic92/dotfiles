@@ -3,72 +3,72 @@
 { fetchurl }:
 
 {
-  version = "8.0.5";
+  version = "8.1.1";
   keyAccId = "24441";
   clientId = "148";
 
   sources = [
     {
-      name = "linuxexe64";
-      src = fetchurl {
-        url = "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.0.5/148-linuxexe64-8.0.5_a0452e2e9aac9745a8804a2288cc0e3a.7z";
-        hash = "sha256-npBNUJ6WnDjKLzMl6vY/5OcpOr4d95UskBNOgm83Cek=";
-      };
-    }
-    {
       name = "linuxlib64";
       src = fetchurl {
-        url = "https://dls.photoprintit.com/download/Data/generic-data/hps/8.0.5/148-linuxlib64-8.0.5_5cc6b85367d5e0a242064e2962b6e21b.7z";
-        hash = "sha256-ZYHt8EJ2kcf/9o3HxRaEL4HTw0bhkY/RRmrVravm03E=";
-      };
-    }
-    {
-      name = "backgrounds";
-      src = fetchurl {
-        url = "https://dls.photoprintit.com/download/Data/generic-data/hps/8.0.5/148-backgrounds-8.0.5_53e90fc211c41b128904adf505b1a52a.7z";
-        hash = "sha256-UAPuTuFrGVleLUdYHiJq43dOxVqCOwhuhZn8+WFbpaI=";
-      };
-    }
-    {
-      name = "decorations";
-      src = fetchurl {
-        url = "https://dls.photoprintit.com/download/Data/generic-data/hps/8.0.5/148-decorations-8.0.5_1aaa80f6e9b7e4cae4b2c509ddf40490.7z";
-        hash = "sha256-JPXpgVDDnsFLNjhgGSgjiCOC/njB7R3HdLKffhowL54=";
-      };
-    }
-    {
-      name = "photofun";
-      src = fetchurl {
-        url = "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.0.5/148-photofun-8.0.5_72753f5cdb4d6fd08f1399b5cdd0f79f.7z";
-        hash = "sha256-DCV55H4EFJSwydasJFzVQVH5IY7rssTB6GNCkxG/1Ro=";
+        url = "https://dls.photoprintit.com/download/Data/generic-data/hps/8.1.1/148-linuxlib64-8.1.1_3e78e4064936dfee62eefbd202014d8a.7z";
+        hash = "sha256-/mVFne7rGDMYj0F4UWfsYvrVAfu9LfbFsIUY4iQvZLo=";
       };
     }
     {
       name = "resources";
       src = fetchurl {
-        url = "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.0.5/148-resources-8.0.5_1e7b6ba26d5929b3d6bd3b887f344ecf.7z";
-        hash = "sha256-+Nn2YL7zayQCiHKok7R9Ohs96+fp/jfcZcGlGHhUiFU=";
+        url = "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.1.1/148-resources-8.1.1_9b0d7cadcba6e00d36f4760b3618cbbb.7z";
+        hash = "sha256-J1wy51xHdt3gvR4JQGuBJjuquLYaxT8hFSK4AlDPltk=";
       };
     }
     {
       name = "startscreen";
       src = fetchurl {
-        url = "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.0.5/148-startscreen-8.0.5_44bdee78a962b48baea7148913886784.7z";
-        hash = "sha256-jAZCMC6n0fyMy4Hi/3UCtnkxEo+8/ZXZcwHWbheqKzc=";
-      };
-    }
-    {
-      name = "svgcalendars";
-      src = fetchurl {
-        url = "https://dls.photoprintit.com/download/Data/generic-data/hps/8.0.5/148-svgcalendars-8.0.5_3900d84c0f9376d029a73ef73305bd1f.7z";
-        hash = "sha256-RACYYmTKpu7Fczu9oHwyFKOYkTxXEDA0vE1f2XwsRtg=";
+        url = "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.1.1/148-startscreen-8.1.1_ce234f3c0ace1cbc674da1c9df325bc7.7z";
+        hash = "sha256-Qp6X86rE22b2i6laV3OywIHMt+gNimBM7rteIH89l3M=";
       };
     }
     {
       name = "svgtemplates";
       src = fetchurl {
-        url = "https://dls.photoprintit.com/download/Data/generic-data/hps/8.0.5/148-svgtemplates-8.0.5_1375b44a4dcfa7a7dea5eb23f61c0581.7z";
-        hash = "sha256-t2wo8CtUe6a8/LIqb7fDvtMnLzkFt8NzqYAsym25dB4=";
+        url = "https://dls.photoprintit.com/download/Data/generic-data/hps/8.1.1/148-svgtemplates-8.1.1_62c7ba051cce953f5c95410a493cc5f2.7z";
+        hash = "sha256-ecwz5uFNc6cM+Khf5cdBUYptZBZaZPlio9YkF8/DHkE=";
+      };
+    }
+    {
+      name = "backgrounds";
+      src = fetchurl {
+        url = "https://dls.photoprintit.com/download/Data/generic-data/hps/8.1.1/148-backgrounds-8.1.1_efc71c6915ae3badca4083123fbea0c2.7z";
+        hash = "sha256-gDR/Ln9dN4h651Hg9G9xCEepqyG7ve0sLsoccypRp+U=";
+      };
+    }
+    {
+      name = "photofun";
+      src = fetchurl {
+        url = "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.1.1/148-photofun-8.1.1_e981ecbeddc1e17e370ff459f15de010.7z";
+        hash = "sha256-jmfat+OecEZ7JqIDFdK4o/nnGdBaBW47SGtDMhj6laE=";
+      };
+    }
+    {
+      name = "svgcalendars";
+      src = fetchurl {
+        url = "https://dls.photoprintit.com/download/Data/generic-data/hps/8.1.1/148-svgcalendars-8.1.1_8d724d59055337bb178afdb8d8194f4f.7z";
+        hash = "sha256-/5isL6slx2o9iusA9slTjr4hKbolvz95uWuhOWPWRrg=";
+      };
+    }
+    {
+      name = "decorations";
+      src = fetchurl {
+        url = "https://dls.photoprintit.com/download/Data/generic-data/hps/8.1.1/148-decorations-8.1.1_b5ca9b63b85ce56029eacc9ff39b8859.7z";
+        hash = "sha256-sclL+wepYhH2SXAd4wBklTfSVcnRgAYsWQDzVDdNaWg=";
+      };
+    }
+    {
+      name = "linuxexe64";
+      src = fetchurl {
+        url = "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.1.1/148-linuxexe64-8.1.1_442d1c2ec57a055a763fdde6fd789267.7z";
+        hash = "sha256-iM2mVbKN5SARIPL0kjt0mNi6m2AC8NX2p8KM55Zl8mc=";
       };
     }
   ];
