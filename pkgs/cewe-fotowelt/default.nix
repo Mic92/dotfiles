@@ -1,6 +1,7 @@
 {
   lib,
   stdenv,
+  bash,
   libarchive,
   makeWrapper,
   autoPatchelfHook,
@@ -44,6 +45,9 @@ stdenv.mkDerivation rec {
   ];
 
   buildInputs = [
+    # Shell
+    bash
+
     # X11 libraries
     xorg.libX11
     xorg.libXext
@@ -104,6 +108,10 @@ stdenv.mkDerivation rec {
     # Copy all extracted files
     cp -r * $out/opt/cewe-fotowelt/
 
+    # Fix shebang in startAutoBookService script
+    substituteInPlace $out/opt/cewe-fotowelt/Resources/autobookservice/startAutoBookService \
+      --replace-fail '#!/bin/bash' '#!${bash}/bin/bash'
+
     # Make executables actually executable
     chmod +x "$out/opt/cewe-fotowelt/CEWE Fotowelt" \
              "$out/opt/cewe-fotowelt/CEWE Fotoschau" \
@@ -116,7 +124,8 @@ stdenv.mkDerivation rec {
              "$out/opt/cewe-fotowelt/IconExtractor" \
              "$out/opt/cewe-fotowelt/QtWebEngineProcess" \
              "$out/opt/cewe-fotowelt/regedit" \
-             "$out/opt/cewe-fotowelt/updater.pl" 2>/dev/null || true
+             "$out/opt/cewe-fotowelt/updater.pl" \
+             "$out/opt/cewe-fotowelt/Resources/autobookservice/startAutoBookService" 2>/dev/null || true
 
     # Create bin directory
     mkdir -p $out/bin

@@ -5,7 +5,6 @@
   config,
   pkgs,
   self,
-  lib,
   ...
 }:
 {
@@ -18,6 +17,7 @@
     ../../nixosModules/tracing.nix
     ../../nixosModules/pipewire.nix
     ../../nixosModules/hyprspace.nix
+    ../../nixosModules/fhs-compat.nix
     ./disko.nix
 
     self.nixosModules.default
@@ -25,9 +25,6 @@
     self.inputs.home-manager.nixosModules.home-manager
     self.inputs.srvos.nixosModules.desktop
   ];
-
-  # Disable envfs to fix systemd refusing to run with unpopulated /usr/
-  services.envfs.enable = lib.mkForce false;
 
   nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
