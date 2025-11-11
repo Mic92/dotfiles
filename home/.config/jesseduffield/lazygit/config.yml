@@ -10,9 +10,9 @@ os:
   editAtLineAndWait: "nvim --remote-wait +{{line}} {{filename}}"
   editInTerminal: true
 git:
-  paging:
-    colorArg: always
-    pager: delta --paging=never
+  pagers:
+    - colorArg: always
+      pager: delta --paging=never
   autoFetch: False
   autoStageResolvedConflicts: False
 customCommands:
