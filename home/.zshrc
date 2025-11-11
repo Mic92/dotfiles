@@ -387,7 +387,14 @@ xalias objdump='objdump -M intel'
 alias curl='noglob curl --compressed --proto-default https'
 alias nix='noglob nix'
 alias nom='noglob nom'
-alias nixos-rebuild='noglob sudo nixos-rebuild'
+nixos-rebuild() {
+  # do not use sudo if --target-host is passed
+  if [[ " $* " == *" --target-host "* ]]; then
+    noglob command nixos-rebuild "$@"
+    return
+  fi
+  noglob sudo nixos-rebuild
+}
 alias wget='noglob wget --continue --show-progress --progress=bar:force:noscroll'
 if [[ -n ${commands[hub]} ]]; then
   alias git='noglob hub'
