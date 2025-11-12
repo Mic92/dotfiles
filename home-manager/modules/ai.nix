@@ -19,6 +19,7 @@
       aiTools.codex
       aiTools.cursor-agent
       aiTools.spec-kit
+      aiTools.gemini-cli
       pkgs.pueue
     ];
 }
