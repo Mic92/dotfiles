@@ -94,5 +94,7 @@
 - Use Kagi instead of the Websearch tool for better search results:
 - `kagi-search "nixpkgs buildPythonPackage examples"`
 - `kagi-search -j "nix flake inputs follows" | jq -r '.[0].url'`
-- when a linter complains about unused code, try to remove the code after making
+
+- When a linter complains about unused code, try to remove the code after making
   sure it's unused
+- No #[allow(dead_code)], instead actually use the code
