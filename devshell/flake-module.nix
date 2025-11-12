@@ -4,7 +4,12 @@
   imports = [ inputs.treefmt-nix.flakeModule ];
 
   perSystem =
-    { inputs', pkgs, ... }:
+    {
+      inputs',
+      pkgs,
+      config,
+      ...
+    }:
     {
       # Definitions like this are entirely equivalent to the ones
       # you may have directly in flake.nix.
@@ -82,6 +87,12 @@
           "pkgs/rbw_pinentry" = {
             extraPythonPackages = with pkgs.python3.pkgs; [
               keyring
+            ];
+          };
+          "pkgs/calendar-bot" = {
+            extraPythonPackages = [
+              pkgs.python3.pkgs.aiohttp
+              config.packages.simplematrixbotlib
             ];
           };
         };

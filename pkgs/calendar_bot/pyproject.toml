@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "calendar-bot"
+version = "0.1.0"
+description = "Matrix calendar bot bridge for n8n"
+requires-python = ">=3.10"
+dependencies = [
+    "simplematrixbotlib",
+    "aiohttp",
+]
+
+[project.scripts]
+calendar-bot = "calendar_bot:main"

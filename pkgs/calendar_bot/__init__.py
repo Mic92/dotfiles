@@ -1,0 +1,1 @@
+"""Matrix Calendar Bot package."""
