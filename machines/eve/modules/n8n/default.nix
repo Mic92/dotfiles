@@ -161,6 +161,33 @@ in
     forceSSL = true;
     useACMEHost = "thalheim.io";
 
+    # MCP Server Trigger endpoints with SSE support
+    locations."~ ^/mcp/" = {
+      proxyPass = "http://127.0.0.1:5678";
+      extraConfig = ''
+        # Prevent header injection - explicitly clear auth headers
+        proxy_set_header X-Email "";
+        proxy_set_header X-User "";
+        proxy_set_header X-Auth-Request-User "";
+        proxy_set_header X-Auth-Request-Email "";
+        proxy_set_header X-Access-Token "";
+
+        # n8n MCP requires this Accept header for both GET and POST requests
+        proxy_set_header Accept "application/json, text/event-stream";
+
+        # SSE (Server-Sent Events) configuration for MCP endpoints
+        proxy_http_version 1.1;
+        proxy_buffering off;
+        proxy_set_header Connection "";
+        chunked_transfer_encoding off;
+
+        # Increase timeouts for long-lived SSE connections
+        proxy_read_timeout 86400s;
+        proxy_send_timeout 86400s;
+      '';
+    };
+
+    # All other endpoints
     locations."/" = {
       proxyPass = "http://127.0.0.1:5678";
       proxyWebsockets = true;
