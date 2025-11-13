@@ -11,6 +11,12 @@
 - fd, rg, dnsutils, lsof, gdb, binutils, ast-grep, graphicsmagic (gm)
 - On Linux: strace/sysdig/bcc
 - macOS: dtrace
+- pexpect-cli: Persistent pexpect sessions for automating interactive terminal
+  applications. Start a session with `pexpect-cli --start`, then send Python
+  pexpect code via stdin to control programs. Example:
+  `session=$(pexpect-cli
+  --start); echo 'child = pexpect.spawn("bash"); child.sendline("pwd");
+  child.expect("$"); print(child.before.decode())' | pexpect-cli $session`
 
 ## Nix-specific
 

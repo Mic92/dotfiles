@@ -1,15 +1,14 @@
 [project]
-name = "pexpect-mcp"
+name = "pexpect-cli"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
     "pexpect>=4.9.0",
-    "mcp",
-    "pygments>=2.0.0",
 ]
 
 [project.scripts]
-pexpect-mcp = "pexpect_mcp.server:run"
+pexpect-server = "pexpect_cli.server:main"
+pexpect-cli = "pexpect_cli.client:main"
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

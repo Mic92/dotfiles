@@ -42,11 +42,9 @@
               pytest-asyncio
             ];
           };
-          "pkgs/pexpect-mcp" = {
+          "pkgs/pexpect-cli" = {
             extraPythonPackages = with pkgs.python3.pkgs; [
-              mcp
               pexpect
-              pygments
             ];
           };
           "pkgs/buildbot-pr-check" = {
