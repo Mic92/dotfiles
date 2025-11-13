@@ -6,7 +6,6 @@
     {
       inputs',
       pkgs,
-      config,
       ...
     }:
     {
@@ -14,7 +13,6 @@
         merge-when-green = pkgs.callPackage ./merge-when-green { };
         claude-code = pkgs.callPackage ./claude-code {
           claude-code = inputs'.nix-ai-tools.packages.claude-code;
-          inherit (config.packages) pexpect-mcp;
         };
         gmaps-cli = pkgs.python3.pkgs.callPackage ./gmaps-cli { };
         db-cli = pkgs.callPackage ./db-cli { };
@@ -24,7 +22,7 @@
         buildbot-pr-check = pkgs.python3.pkgs.callPackage ./buildbot-pr-check { };
         claude-md = pkgs.python3.pkgs.callPackage ./claude-md { };
         browser-cli = pkgs.python3.pkgs.callPackage ./browser-cli { };
-        pexpect-mcp = pkgs.python3.pkgs.callPackage ./pexpect-mcp { };
+        pexpect-cli = pkgs.callPackage ./pexpect-cli { };
         iroh-ssh = pkgs.callPackage ./iroh-ssh { };
         phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
         # Cross-platform secure pinentry (works on macOS and Linux)

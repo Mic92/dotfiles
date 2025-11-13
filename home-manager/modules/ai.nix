@@ -11,7 +11,7 @@
     in
     [
       self.packages.${pkgs.stdenv.hostPlatform.system}.claude-code
-      self.packages.${pkgs.stdenv.hostPlatform.system}.pexpect-mcp
+      self.packages.${pkgs.stdenv.hostPlatform.system}.pexpect-cli
       self.packages.${pkgs.stdenv.hostPlatform.system}.claude-md
       self.packages.${pkgs.stdenv.hostPlatform.system}.kagi-search
       aiTools.opencode

@@ -1,0 +1,14 @@
+#!/usr/bin/env python3
+"""Wrapper script for development/testing."""
+
+import sys
+from pathlib import Path
+
+# Add project directory to Python path
+project_dir = Path(__file__).parent.parent
+sys.path.insert(0, str(project_dir))
+
+from pexpect_cli.client import main
+
+if __name__ == "__main__":
+    main()
