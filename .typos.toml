@@ -17,6 +17,7 @@ extend-ignore-identifiers-re = [
   "LESS_TERMCAP_ue",
   "typ",
   "facter",
+  "soid",
 ]
 
 [files]
