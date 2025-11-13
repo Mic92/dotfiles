@@ -1,6 +1,7 @@
 name: Claude Code
 on:
   repository_dispatch:
+    types: [claude-trigger]
   issue_comment:
     types: [created]
   pull_request_review_comment:
