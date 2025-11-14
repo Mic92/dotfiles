@@ -22,22 +22,24 @@
 
 - Use `--log-format bar-with-logs` with Nix for improved build log output.
 - Add new untracked files in Nix flakes with `git add`.
-- The version of nix doesn't support the `--rebuild` flag.
+- To get a rebuild of a nix package change the nix expression instead of
+  `--rebuild`
 - Prefer nix to fetch python dependencies
 - When looking for build dependencies in a nix-shell/nix develop, check
   environment variables for store paths to find the correct dependency versions.
-- On nix build failures, filter nix log output for the root cause instead of
-  time-intense rebuilding.
+- On nix build failures:
+  - use `nix log /nix/store/xxxx | grep <key-word`, figure out the root cause of
+    a bug.
 - My nix.conf has remote builders for aarch64-linux/aarch64-darwin/x86_64-linux
-  by default, for NixOS tests therefore use x86_64-linux on macOS machines
+  by default, for NixOS tests. Therefore, use x86_64-linux on macOS machines
 - Use nix-locate to find packages by path. i.e. `nix-locate bin/ip`
 - Use `nix run` to execute applications that are not installed.
 - Use `nix eval` instead of `nix flake show` to look up attributes in a flake.
 - Generate/Update patch files for packages:
   1. git clone
   2. Optional: apply existing patch
-  2. Use the Edit tool to do the chagne
-  3. Use git format-patch to generate the new patch
+  3. Use the Edit tool to do the change
+  4. Use git format-patch to generate the new patch
 - Do not use `nix flake check` on the whole flake; it is too slow. Instead,
   build individual tests.
 
@@ -92,8 +94,5 @@
 - Use Kagi instead of the Websearch tool for better search results:
 - `kagi-search "nixpkgs buildPythonPackage examples"`
 - `kagi-search -j "nix flake inputs follows" | jq -r '.[0].url'`
-
-```
-```
-
-- no #[allow(dead_code)], instead actually use the code
+- when a linter complains about unused code, try to remove the code after making
+  sure it's unused
