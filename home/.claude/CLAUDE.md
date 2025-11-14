@@ -33,8 +33,11 @@
 - Use nix-locate to find packages by path. i.e. `nix-locate bin/ip`
 - Use `nix run` to execute applications that are not installed.
 - Use `nix eval` instead of `nix flake show` to look up attributes in a flake.
-- Generate patch files either via git or by copying the original file as opposed
-  to writing the patchfile format directly
+- Generate/Update patch files for packages:
+  1. git clone
+  2. Optional: apply existing patch
+  2. Use the Edit tool to do the chagne
+  3. Use git format-patch to generate the new patch
 - Do not use `nix flake check` on the whole flake; it is too slow. Instead,
   build individual tests.
 
