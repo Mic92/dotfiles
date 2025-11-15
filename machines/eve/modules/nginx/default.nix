@@ -8,7 +8,6 @@
     ./ip.nix
     ./retiolum.nix
     ./mta-sts.nix
-    ./phd-website.nix
     ./photoprism.nix
   ];
 
