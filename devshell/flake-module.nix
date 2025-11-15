@@ -217,7 +217,6 @@
           "home/.fish-pure"
           "fish/*"
           "home/bin/*"
-          "machines/eve/modules/nginx/screenshare/index.html"
           "machines/eve/pkgs/logo.png"
           "machines/turingmachine/modules/vpn-il1-standard.ovpn"
           "machines/turingmachine/thermal-conf.xml.auto"
