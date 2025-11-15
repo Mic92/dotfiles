@@ -7,7 +7,6 @@
     ./homepage.nix
     ./ip.nix
     ./retiolum.nix
-    ./screenshare
     ./mta-sts.nix
     ./phd-website.nix
     ./photoprism.nix
