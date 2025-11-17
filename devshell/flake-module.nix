@@ -89,9 +89,10 @@
               keyring
             ];
           };
-          "pkgs/calendar-bot" = {
+          "pkgs/calendar_bot" = {
             extraPythonPackages = [
               pkgs.python3.pkgs.aiohttp
+              pkgs.python3.pkgs.matrix-nio
               config.packages.simplematrixbotlib
             ];
           };

@@ -32,7 +32,7 @@ buildPythonPackage rec {
   pythonRelaxDeps = [ "pillow" ];
 
   dependencies = [
-    matrix-nio
+    (matrix-nio.override { withOlm = true; })
     cryptography
     pillow
     markdown
