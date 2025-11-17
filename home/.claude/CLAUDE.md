@@ -62,6 +62,8 @@
 - Always test/lint/format your code before committing.
 - Use the gh tool to interact with GitHub i.e.: `gh run view 18256703410 --log`
 - Use the tea CLI tool to interact with Gitea i.e.: `tea pr 5519 --comments`
+- To get buildbot ci logs, use buildbot-pr-check on the pull request:
+  i.e. `buildbot-pr-check https://github.com/numtide/nix-ai-tools/pull/993`
 
 ## Performance
 
