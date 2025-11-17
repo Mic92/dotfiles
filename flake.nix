@@ -80,6 +80,11 @@
     nix-darwin.url = "github:nix-darwin/nix-darwin";
     nix-darwin.inputs.nixpkgs.follows = "nixpkgs";
 
+    strace-macos.url = "github:Mic92/strace-macos";
+    strace-macos.inputs.nixpkgs.follows = "nixpkgs";
+    strace-macos.inputs.treefmt-nix.follows = "treefmt-nix";
+    strace-macos.inputs.flake-parts.follows = "flake-parts";
+
     srvos.url = "github:nix-community/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 

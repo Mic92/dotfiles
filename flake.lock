@@ -711,6 +711,7 @@
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
+        "strace-macos": "strace-macos",
         "systems": "systems",
         "treefmt-nix": "treefmt-nix_2"
       }
@@ -752,6 +753,32 @@
       "original": {
         "owner": "nix-community",
         "repo": "srvos",
+        "type": "github"
+      }
+    },
+    "strace-macos": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1763382461,
+        "narHash": "sha256-SlgiiZgsJg6WtMjUjm+4j6I06gsu6xa0yn4pCXU9Y20=",
+        "owner": "Mic92",
+        "repo": "strace-macos",
+        "rev": "98a3eabee732cc8502727232ead3322aa2026a90",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "strace-macos",
         "type": "github"
       }
     },

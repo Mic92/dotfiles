@@ -1,4 +1,8 @@
-{ pkgs, ... }:
+{
+  pkgs,
+  inputs,
+  ...
+}:
 {
   imports = [
     ./modules/calendar.nix
@@ -9,5 +13,6 @@
   home.packages = [
     pkgs.eternal-terminal
     pkgs.rbw
+    inputs.strace-macos.packages.${pkgs.stdenv.hostPlatform.system}.default
   ];
 }
