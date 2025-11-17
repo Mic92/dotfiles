@@ -31,6 +31,7 @@
     ./modules/authelia.nix
     ./modules/vaultwarden.nix
     ./modules/buildbot.nix
+    ./modules/calendar-bot/configuration.nix
     ./modules/dendrite.nix
     ./modules/disko.nix
     ./modules/docker.nix

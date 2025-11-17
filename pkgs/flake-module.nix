@@ -6,6 +6,7 @@
     {
       inputs',
       pkgs,
+      config,
       ...
     }:
     {

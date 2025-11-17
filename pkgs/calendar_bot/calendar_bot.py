@@ -60,19 +60,46 @@ class CalendarBotBridge:
                     "body": {"message": text},
                 }
 
-                async with session.post(self.webhook_url, json=payload) as resp:
+                print(
+                    f"Forwarding command to webhook: {text} from {sender} in {room_id}"
+                )
+
+                headers = {}
+                if self.auth_token:
+                    headers["Authorization"] = f"Bearer {self.auth_token}"
+
+                async with session.post(
+                    self.webhook_url,
+                    json=payload,
+                    headers=headers,
+                    timeout=aiohttp.ClientTimeout(total=30),
+                ) as resp:
                     if resp.status == 200:
-                        result = await resp.json()
-                        response_text = result.get("message", "Command processed")
-                        await self.bot.api.send_text_message(room_id, response_text)  # type: ignore[no-untyped-call]
+                        try:
+                            result = await resp.json()
+                            response_text = (
+                                result.get("message", "Command processed")
+                                if result
+                                else "Command processed"
+                            )
+                        except (aiohttp.ContentTypeError, ValueError):
+                            response_text = "Command processed"
+                        print(f"Webhook response: {response_text}")
+                        await self.bot.api.send_text_message(room_id, response_text)
                     else:
                         error_text = await resp.text()
-                        print(f"Webhook error: {resp.status} - {error_text}")
+                        error_msg = f"Webhook error {resp.status}: {error_text}"
+                        print(error_msg)
+                        await self.bot.api.send_text_message(
+                            room_id, f"❌ Error processing command: HTTP {resp.status}"
+                        )
 
         except (aiohttp.ClientError, TimeoutError) as e:
-            print(f"Error forwarding to webhook: {e}")
-            # Optionally send error message back
-            # await self.bot.api.send_text_message(room_id, f"❌ Error: {e}")
+            error_msg = f"Error forwarding to webhook: {e}"
+            print(error_msg)
+            await self.bot.api.send_text_message(
+                room_id, f"❌ Failed to connect to webhook: {e}"
+            )
 
     def run(self) -> None:
         """Start the bot."""
@@ -97,8 +124,11 @@ def main() -> None:
     parser.add_argument(
         "--password",
         default=os.getenv("MATRIX_PASSWORD"),
-        required=not os.getenv("MATRIX_PASSWORD"),
         help="Matrix password (or set MATRIX_PASSWORD)",
+    )
+    parser.add_argument(
+        "--password-file",
+        help="Path to file containing Matrix password",
     )
     parser.add_argument(
         "--webhook-url",
@@ -113,9 +143,24 @@ def main() -> None:
 
     args = parser.parse_args()
 
+    # Get password from file or argument
+    password = args.password
+    if args.password_file:
+        with Path(args.password_file).open() as f:
+            password = f.read().strip()
+
+    if not password:
+        parser.error("Either --password or --password-file must be provided")
+
+    # Get auth token from file if provided
+    auth_token = None
+    if args.auth_token_file:
+        with Path(args.auth_token_file).open() as f:
+            auth_token = f.read().strip()
+
     # Create and run bot
     bot = CalendarBotBridge(
-        args.homeserver, args.username, args.password, args.webhook_url
+        args.homeserver, args.username, password, args.webhook_url, auth_token
     )
     bot.run()
 
