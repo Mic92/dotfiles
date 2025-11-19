@@ -769,11 +769,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1763382461,
-        "narHash": "sha256-SlgiiZgsJg6WtMjUjm+4j6I06gsu6xa0yn4pCXU9Y20=",
+        "lastModified": 1763502401,
+        "narHash": "sha256-xJ7agnMJZVR/DLH0fkHN82W/6Y/n9kAppUgysJG+3iU=",
         "owner": "Mic92",
         "repo": "strace-macos",
-        "rev": "98a3eabee732cc8502727232ead3322aa2026a90",
+        "rev": "faee3e1ec93967b61b00526ed39b23c8335cc952",
         "type": "github"
       },
       "original": {
