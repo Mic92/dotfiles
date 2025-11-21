@@ -29,12 +29,40 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v5
         with:
-          fetch-depth: 1
+          fetch-depth: 0
+      - name: Checkout PR branch
+        if: github.event_name == 'repository_dispatch' && github.event.client_payload.pr_number
+        run: gh pr checkout ${{ github.event.client_payload.pr_number }}
+        env:
+          GH_TOKEN: ${{ github.token }}
       - uses: cachix/install-nix-action@v31
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: "--allowed-tools Bash(nix:*)"
+          claude_args: "--allowed-tools Bash(nix:*),WebFetch(*.github.com,*.thalheim.io),Edit"
           prompt: ${{ github.event.client_payload.prompt }}
+      - name: Create Pull Request
+        if: github.event_name == 'repository_dispatch' && github.event.client_payload.pr_number
+        uses: peter-evans/create-pull-request@v7
+        id: cpr
+        with:
+          commit-message: "Fix buildbot CI failures on PR #${{ github.event.client_payload.pr_number }}"
+          branch: "claude-fix-pr-${{ github.event.client_payload.pr_number }}"
+          title: "Fix buildbot failures from PR #${{ github.event.client_payload.pr_number }}"
+          body: |
+            Automated fixes for buildbot CI failures detected on PR #${{ github.event.client_payload.pr_number }}.
+
+            Original PR: ${{ github.event.client_payload.pr_url }}
+            Claude Analysis Report: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Changes made by Claude Code to address build/test failures.
+      - name: Comment on original PR
+        if: github.event_name == 'repository_dispatch' && github.event.client_payload.pr_number && steps.cpr.outputs.pull-request-number
+        run: |
+          gh pr comment ${{ github.event.client_payload.pr_number }} --body "🤖 Claude analyzed the buildbot failures and created a fix PR: #${{ steps.cpr.outputs.pull-request-number }}
+
+          Claude Analysis Report: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
