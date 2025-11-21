@@ -43,6 +43,9 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           claude_args: "--allowed-tools Bash(nix:*),WebFetch(*.github.com,*.thalheim.io),Edit"
           prompt: ${{ github.event.client_payload.prompt }}
+      - name: Clean up temporary files
+        if: github.event_name == 'repository_dispatch' && github.event.client_payload.pr_number
+        run: rm -f -- output.txt *.log *.tmp
       - name: Create Pull Request
         if: github.event_name == 'repository_dispatch' && github.event.client_payload.pr_number
         uses: peter-evans/create-pull-request@v7
