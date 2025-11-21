@@ -37,4 +37,4 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           claude_args: "--allowed-tools Bash(nix:*)"
-          context_prompt: ${{ github.event.client_payload.prompt }}
+          prompt: ${{ github.event.client_payload.prompt }}
