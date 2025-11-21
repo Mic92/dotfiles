@@ -2,6 +2,7 @@
 {
   imports = [
     ./common.nix
+    ./modules/ai.nix
     ./modules/atuin-autosync.nix
   ];
   home.packages =
@@ -24,7 +25,5 @@
             ];
           };
       })
-
-      pkgs.claude-code
     ];
 }
