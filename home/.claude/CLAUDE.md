@@ -10,7 +10,7 @@
 
 - fd, rg, dnsutils, lsof, gdb, binutils, ast-grep, graphicsmagic (gm)
 - On Linux: strace/sysdig/bcc
-- macOS: dtrace
+- macOS: strace (this was ported)
 - pexpect-cli: Persistent pexpect sessions for automating interactive terminal
   applications. Start a session with `pexpect-cli --start`, then send Python
   pexpect code via stdin to control programs. Example:
