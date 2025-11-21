@@ -18,9 +18,7 @@
           pkgs.python3.pkgs.invoke
           pkgs.python3.pkgs.deploykit
           inputs'.clan-core.packages.default
-          # FIXME: temporarily disabled due to webview-nightly build failure
-          # with new nixpkgs (missing C++ standard library headers for clang)
-          # inputs'.clan-core.packages.clan-app
+          inputs'.clan-core.packages.clan-app
         ]
         ++ lib.optionals (!pkgs.stdenv.isDarwin) [
           pkgs.bubblewrap

@@ -88,7 +88,7 @@
     srvos.url = "github:nix-community/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
-    clan-core.url = "https://git.clan.lol/clan/clan-core/archive/disko-fix.tar.gz";
+    clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=main&shallow=1";
 
     #clan-core.url = "path:///Users/joerg/git/clan-core";
     #clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=nixos-rebuild";
