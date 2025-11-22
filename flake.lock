@@ -471,11 +471,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1763567400,
-        "narHash": "sha256-+6fiGHQUls+94ung6JWwFXiqTl8S+KKRY38n6/sD6LY=",
+        "lastModified": 1763780350,
+        "narHash": "sha256-AAuvGRY50DMijUjDGBsvhOZPo3HIGbqZKgL23D91oRg=",
         "owner": "numtide",
         "repo": "nix-ai-tools",
-        "rev": "5d3d35122ebd26e204e9dc537066e6bde8c15a57",
+        "rev": "76c9e416fa2b9819348e808442d72196c793d10d",
         "type": "github"
       },
       "original": {
