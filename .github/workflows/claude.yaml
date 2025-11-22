@@ -30,6 +30,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
+          persist-credentials: false
       - uses: cachix/install-nix-action@v31
       - name: Checkout PR branch and gather build info (repository_dispatch)
         if: github.event_name == 'repository_dispatch' && github.event.client_payload.pr_number
@@ -96,9 +97,18 @@ jobs:
           gh pr comment "$PR_NUMBER" --body "🤖 Claude Code is analyzing this PR: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         env:
           GH_TOKEN: ${{ github.token }}
+      - name: Configure git for Claude
+        if: env.BASE_BRANCH != ''
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
+        env:
+          # Explicitly DO NOT pass GITHUB_TOKEN or GH_TOKEN to Claude
+          GITHUB_TOKEN: ""
+          GH_TOKEN: ""
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           claude_args: "--allowed-tools Bash,WebFetch(*.github.com,*.thalheim.io),Edit"
@@ -108,5 +118,24 @@ jobs:
             Buildbot CI check results:
             ${{ env.BUILDBOT_OUTPUT }}
 
-            If you successfully make fixes, create a new pull request targeting the base branch: ${{ env.BASE_BRANCH }}
-            Only create the PR if you have actual fixes to propose. If you cannot determine how to fix the issue, just explain what you found in your response.
+            Make the necessary fixes to resolve the build failures. You can commit your changes locally, but do not try to push or create pull requests - that will be handled automatically after you finish.
+      - name: Create Pull Request with fixes
+        if: env.BASE_BRANCH != ''
+        uses: peter-evans/create-pull-request@v7
+        id: cpr
+        with:
+          commit-message: "Fix CI failures"
+          branch: claude-fix-${{ github.run_id }}
+          delete-branch: true
+          title: "Fix CI failures in ${{ env.BASE_BRANCH }}"
+          body: |
+            Automated fixes by Claude Code for CI failures.
+
+            Base branch: ${{ env.BASE_BRANCH }}
+            Workflow run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            ## Buildbot Results
+            ```
+            ${{ env.BUILDBOT_OUTPUT }}
+            ```
+          base: ${{ env.BASE_BRANCH }}
