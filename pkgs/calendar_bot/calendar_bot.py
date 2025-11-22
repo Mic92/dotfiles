@@ -99,7 +99,9 @@ class CalendarBotBridge:
         Args:
             db_url: PostgreSQL database URL for crypto store
         """
-        assert self.client is not None
+        if self.client is None:
+            msg = "Matrix client must be initialized before setting up encryption"
+            raise RuntimeError(msg)
 
         # Create single database connection shared by both stores
         # Use crypto store's upgrade table which includes all crypto schemas
@@ -138,7 +140,9 @@ class CalendarBotBridge:
         self.client.crypto = crypto
 
         # Check if device keys are actually on the server
-        assert crypto.account is not None
+        if crypto.account is None:
+            msg = "OlmMachine account not initialized"
+            raise RuntimeError(msg)
         if crypto.account.shared:
             logger.info("Checking if device keys exist on server...")
             resp = await self.client.query_keys(
@@ -175,7 +179,9 @@ class CalendarBotBridge:
         # Initialize client first (requires event loop)
         await self.init_client()
 
-        assert self.client is not None
+        if self.client is None:
+            msg = "Matrix client initialization failed"
+            raise RuntimeError(msg)
 
         # Only login if we don't have a valid session
         if not self.client.api.token:
@@ -208,7 +214,9 @@ class CalendarBotBridge:
 
     async def handle_message(self, evt: MessageEvent) -> None:
         """Handle incoming Matrix messages and forward commands to n8n."""
-        assert self.client is not None
+        if self.client is None:
+            msg = "Matrix client not initialized"
+            raise RuntimeError(msg)
 
         # Ignore our own messages
         if evt.sender == self.client.mxid:
@@ -274,14 +282,18 @@ class CalendarBotBridge:
 
     async def send_message(self, room_id: RoomID, text: str) -> None:
         """Send a text message to a room."""
-        assert self.client is not None
+        if self.client is None:
+            msg = "Matrix client not initialized"
+            raise RuntimeError(msg)
         content = TextMessageEventContent(msgtype=MessageType.TEXT, body=text)
         await self.client.send_message_event(room_id, EventType.ROOM_MESSAGE, content)
 
     async def run_async(self) -> None:
         """Start the bot asynchronously."""
         await self.login()
-        assert self.client is not None
+        if self.client is None:
+            msg = "Matrix client not initialized after login"
+            raise RuntimeError(msg)
 
         # Verify with recovery key after first sync (when device is fully registered)
         if self.config.recovery_key:
