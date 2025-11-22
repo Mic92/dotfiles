@@ -30,42 +30,66 @@ jobs:
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
-      - name: Checkout PR branch
+      - uses: cachix/install-nix-action@v31
+      - name: Checkout PR branch and gather build info (repository_dispatch)
         if: github.event_name == 'repository_dispatch' && github.event.client_payload.pr_number
-        run: gh pr checkout ${{ github.event.client_payload.pr_number }}
+        run: |
+          gh pr checkout "${{ github.event.client_payload.pr_number }}"
+          BASE_BRANCH="$(git branch --show-current)"
+
+          # Get buildbot check results
+          PR_URL="${{ github.event.client_payload.pr_url }}"
+          BUILDBOT_OUTPUT=$(nix run .#buildbot-pr-check -- "$PR_URL" 2>&1 || true)
+
+          {
+            echo "BASE_BRANCH=$BASE_BRANCH"
+            echo "BUILDBOT_OUTPUT<<EOF"
+            echo "$BUILDBOT_OUTPUT"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
         env:
           GH_TOKEN: ${{ github.token }}
-      - uses: cachix/install-nix-action@v31
+      - name: Checkout PR branch and gather build info (comment-based)
+        if: |
+          (github.event_name == 'issue_comment' && github.event.issue.pull_request) ||
+          github.event_name == 'pull_request_review_comment' ||
+          github.event_name == 'pull_request_review'
+        run: |
+          # Determine PR number based on event type
+          if [ "${{ github.event_name }}" = "issue_comment" ]; then
+            PR_NUMBER="${{ github.event.issue.number }}"
+          elif [ "${{ github.event_name }}" = "pull_request_review_comment" ]; then
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+          else
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+          fi
+
+          gh pr checkout "$PR_NUMBER"
+          BASE_BRANCH="$(git branch --show-current)"
+
+          # Get buildbot check results
+          PR_URL="https://github.com/${{ github.repository }}/pull/$PR_NUMBER"
+          BUILDBOT_OUTPUT=$(nix run .#buildbot-pr-check -- "$PR_URL" 2>&1 || true)
+
+          {
+            echo "BASE_BRANCH=$BASE_BRANCH"
+            echo "BUILDBOT_OUTPUT<<EOF"
+            echo "$BUILDBOT_OUTPUT"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: "--allowed-tools Bash(nix:*),WebFetch(*.github.com,*.thalheim.io),Edit"
-          prompt: ${{ github.event.client_payload.prompt }}
-      - name: Clean up temporary files
-        if: github.event_name == 'repository_dispatch' && github.event.client_payload.pr_number
-        run: rm -f -- output.txt *.log *.tmp
-      - name: Create Pull Request
-        if: github.event_name == 'repository_dispatch' && github.event.client_payload.pr_number
-        uses: peter-evans/create-pull-request@v7
-        id: cpr
-        with:
-          commit-message: "Fix buildbot CI failures on PR #${{ github.event.client_payload.pr_number }}"
-          branch: "claude-fix-pr-${{ github.event.client_payload.pr_number }}"
-          title: "Fix buildbot failures from PR #${{ github.event.client_payload.pr_number }}"
-          body: |
-            Automated fixes for buildbot CI failures detected on PR #${{ github.event.client_payload.pr_number }}.
+          claude_args: "--allowed-tools Bash,WebFetch(*.github.com,*.thalheim.io),Edit"
+          prompt: |
+            ${{ github.event.client_payload.prompt }}
 
-            Original PR: ${{ github.event.client_payload.pr_url }}
-            Claude Analysis Report: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            Buildbot CI check results:
+            ${{ env.BUILDBOT_OUTPUT }}
 
-            Changes made by Claude Code to address build/test failures.
-      - name: Comment on original PR
-        if: github.event_name == 'repository_dispatch' && github.event.client_payload.pr_number && steps.cpr.outputs.pull-request-number
-        run: |
-          gh pr comment ${{ github.event.client_payload.pr_number }} --body "🤖 Claude analyzed the buildbot failures and created a fix PR: #${{ steps.cpr.outputs.pull-request-number }}
-
-          Claude Analysis Report: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        env:
-          GH_TOKEN: ${{ github.token }}
+            If you successfully make fixes, create a new pull request targeting the base branch: ${{ env.BASE_BRANCH }}
+            Only create the PR if you have actual fixes to propose. If you cannot determine how to fix the issue, just explain what you found in your response.
