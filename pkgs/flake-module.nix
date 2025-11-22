@@ -6,7 +6,6 @@
     {
       inputs',
       pkgs,
-      config,
       ...
     }:
     {
@@ -28,16 +27,8 @@
         phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
         # Cross-platform secure pinentry (works on macOS and Linux)
         rbw-pinentry = pkgs.callPackage ./rbw_pinentry { };
-        # Matrix calendar bot and dependencies
-        python-cryptography-fernet-wrapper =
-          pkgs.python3.pkgs.callPackage ./python-cryptography-fernet-wrapper
-            { };
-        simplematrixbotlib = pkgs.python3.pkgs.callPackage ./simplematrixbotlib {
-          inherit (config.packages) python-cryptography-fernet-wrapper;
-        };
-        calendar-bot = pkgs.python3.pkgs.callPackage ./calendar_bot {
-          inherit (config.packages) simplematrixbotlib;
-        };
+        # Matrix calendar bot
+        calendar-bot = pkgs.python3.pkgs.callPackage ./calendar_bot { };
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
         blueutil = pkgs.callPackage ./blueutil { };

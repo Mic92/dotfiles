@@ -2,13 +2,18 @@
   lib,
   buildPythonApplication,
   hatchling,
-  simplematrixbotlib,
+  mautrix,
   aiohttp,
+  asyncpg,
+  python-olm,
+  unpaddedbase64,
+  pycryptodome,
+  base58,
 }:
 
 buildPythonApplication {
   pname = "calendar-bot";
-  version = "0.1.0";
+  version = "0.3.0";
 
   src = ./.;
 
@@ -17,12 +22,17 @@ buildPythonApplication {
   build-system = [ hatchling ];
 
   dependencies = [
-    simplematrixbotlib
+    mautrix
     aiohttp
+    asyncpg
+    python-olm
+    unpaddedbase64
+    pycryptodome
+    base58
   ];
 
   meta = {
-    description = "Matrix calendar bot bridge for n8n";
+    description = "Matrix calendar bot bridge for n8n using mautrix-python";
     mainProgram = "calendar-bot";
     license = lib.licenses.mit;
     maintainers = [ ];
