@@ -7,7 +7,6 @@
     {
       inputs',
       pkgs,
-      config,
       ...
     }:
     {
@@ -90,10 +89,14 @@
             ];
           };
           "pkgs/calendar_bot" = {
-            extraPythonPackages = [
-              pkgs.python3.pkgs.aiohttp
-              pkgs.python3.pkgs.matrix-nio
-              config.packages.simplematrixbotlib
+            extraPythonPackages = with pkgs.python3.pkgs; [
+              aiohttp
+              mautrix
+              asyncpg
+              python-olm
+              unpaddedbase64
+              pycryptodome
+              base58
             ];
           };
         };

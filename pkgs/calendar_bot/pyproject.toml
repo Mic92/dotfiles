@@ -4,12 +4,17 @@ build-backend = "hatchling.build"
 
 [project]
 name = "calendar-bot"
-version = "0.1.0"
-description = "Matrix calendar bot bridge for n8n"
+version = "0.3.0"
+description = "Matrix calendar bot bridge for n8n using mautrix-python"
 requires-python = ">=3.10"
 dependencies = [
-    "simplematrixbotlib",
+    "mautrix>=0.21.0",
     "aiohttp",
+    "asyncpg",
+    "python-olm",
+    "unpaddedbase64",
+    "pycryptodome",
+    "base58",
 ]
 
 [project.scripts]

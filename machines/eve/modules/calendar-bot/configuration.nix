@@ -9,6 +9,9 @@
     files.webhook-auth-token = {
       secret = true;
     };
+    files.recovery-key = {
+      secret = true;
+    };
 
     prompts.password = {
       description = "Matrix bot password for clan-calendar-bot";
@@ -29,6 +32,15 @@
       };
     };
 
+    prompts.recovery-key = {
+      description = "Element recovery key for device verification (optional)";
+      type = "hidden";
+      display = {
+        group = "clan.lol";
+        label = "Recovery Key (Optional)";
+      };
+    };
+
     runtimeInputs = with pkgs; [
       coreutils
       openssl
@@ -45,7 +57,30 @@
         # Generate random token if not provided
         openssl rand -base64 32 | tr -d '\n' > "$out/webhook-auth-token"
       fi
+
+      # Copy recovery key if provided (optional)
+      if [ -s "$prompts/recovery-key" ]; then
+        cat "$prompts/recovery-key" | tr -d '\n' > "$out/recovery-key"
+      else
+        # Create empty file if not provided
+        touch "$out/recovery-key"
+      fi
     '';
+  };
+
+  # Enable PostgreSQL with clan-core module
+  clan.core.postgresql = {
+    enable = true;
+    databases.calendar_bot = {
+      restore.stopOnRestore = [ "calendar-bot.service" ];
+      create.options = {
+        TEMPLATE = "template0";
+        ENCODING = "UTF8";
+        LC_COLLATE = "C";
+        LC_CTYPE = "C";
+      };
+    };
+    users.calendar-bot = { };
   };
 
   services.calendar-bot = {
@@ -55,5 +90,6 @@
     webhookUrl = "https://n8n.thalheim.io/webhook/calendar-bot";
     passwordFile = config.clan.core.vars.generators.calendar.files.bot-password.path;
     authTokenFile = config.clan.core.vars.generators.calendar.files.webhook-auth-token.path;
+    recoveryKeyFile = config.clan.core.vars.generators.calendar.files.recovery-key.path;
   };
 }

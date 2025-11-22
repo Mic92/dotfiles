@@ -37,6 +37,12 @@
       default = null;
       description = "Path to file containing n8n webhook authentication token";
     };
+
+    recoveryKeyFile = lib.mkOption {
+      type = lib.types.nullOr lib.types.path;
+      default = null;
+      description = "Path to file containing Element recovery key for device verification";
+    };
   };
 
   config = lib.mkIf config.services.calendar-bot.enable {
@@ -59,7 +65,10 @@
         ]
         ++ lib.optional (
           config.services.calendar-bot.authTokenFile != null
-        ) "auth-token:${config.services.calendar-bot.authTokenFile}";
+        ) "auth-token:${config.services.calendar-bot.authTokenFile}"
+        ++ lib.optional (
+          config.services.calendar-bot.recoveryKeyFile != null
+        ) "recovery-key:${config.services.calendar-bot.recoveryKeyFile}";
 
         ExecStart =
           let
@@ -73,10 +82,16 @@
               "\${CREDENTIALS_DIRECTORY}/password"
               "--webhook-url"
               config.services.calendar-bot.webhookUrl
+              "--store-path"
+              "/var/lib/calendar-bot/store"
             ]
             ++ lib.optionals (config.services.calendar-bot.authTokenFile != null) [
               "--auth-token-file"
               "\${CREDENTIALS_DIRECTORY}/auth-token"
+            ]
+            ++ lib.optionals (config.services.calendar-bot.recoveryKeyFile != null) [
+              "--recovery-key-file"
+              "\${CREDENTIALS_DIRECTORY}/recovery-key"
             ];
           in
           lib.escapeShellArgs args;
