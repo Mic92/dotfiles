@@ -32,45 +32,37 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - uses: cachix/install-nix-action@v31
-      - name: Checkout PR branch and gather build info (repository_dispatch)
-        if: github.event_name == 'repository_dispatch' && github.event.client_payload.pr_number
-        run: |
-          gh pr checkout "${{ github.event.client_payload.pr_number }}"
-          BASE_BRANCH="$(git branch --show-current)"
-
-          # Get buildbot check results
-          PR_URL="${{ github.event.client_payload.pr_url }}"
-          BUILDBOT_OUTPUT=$(nix run .#buildbot-pr-check -- "$PR_URL" 2>&1 || true)
-
-          {
-            echo "BASE_BRANCH=$BASE_BRANCH"
-            echo "BUILDBOT_OUTPUT<<EOF"
-            echo "$BUILDBOT_OUTPUT"
-            echo "EOF"
-          } >> "$GITHUB_ENV"
-        env:
-          GH_TOKEN: ${{ github.token }}
-      - name: Checkout PR branch and gather build info (comment-based)
+      - name: Determine PR number
         if: |
-          (github.event_name == 'issue_comment' && github.event.issue.pull_request) ||
+          github.event_name == 'repository_dispatch' ||
+          github.event_name == 'issue_comment' ||
           github.event_name == 'pull_request_review_comment' ||
           github.event_name == 'pull_request_review'
         run: |
           # Determine PR number based on event type
-          if [ "${{ github.event_name }}" = "issue_comment" ]; then
-            PR_NUMBER="${{ github.event.issue.number }}"
-          elif [ "${{ github.event_name }}" = "pull_request_review_comment" ]; then
-            PR_NUMBER="${{ github.event.pull_request.number }}"
-          else
-            PR_NUMBER="${{ github.event.pull_request.number }}"
-          fi
+          case "${{ github.event_name }}" in
+            repository_dispatch)
+              PR_NUMBER="${{ github.event.client_payload.pr_number }}"
+              ;;
+            issue_comment)
+              PR_NUMBER="${{ github.event.issue.number }}"
+              ;;
+            pull_request_review_comment|pull_request_review)
+              PR_NUMBER="${{ github.event.pull_request.number }}"
+              ;;
+          esac
 
-          gh pr checkout "$PR_NUMBER"
+          echo "PR_NUMBER=$PR_NUMBER" >> "$GITHUB_ENV"
+      - name: Checkout PR branch and gather build info
+        if: env.PR_NUMBER != ''
+        run: |
+          gh pr checkout "${{ env.PR_NUMBER }}"
           BASE_BRANCH="$(git branch --show-current)"
 
           # Get buildbot check results
-          PR_URL="https://github.com/${{ github.repository }}/pull/$PR_NUMBER"
-          BUILDBOT_OUTPUT=$(nix run .#buildbot-pr-check -- "$PR_URL" 2>&1 || true)
+          PR_URL="https://github.com/${{ github.repository }}/pull/${{ env.PR_NUMBER }}"
+          nix build .#buildbot-pr-check --log-format bar-with-logs
+          BUILDBOT_OUTPUT=$(./result/bin/buildbot-pr-check "$PR_URL" 2>&1 || true)
 
           {
             echo "BASE_BRANCH=$BASE_BRANCH"
@@ -78,23 +70,6 @@ jobs:
             echo "$BUILDBOT_OUTPUT"
             echo "EOF"
           } >> "$GITHUB_ENV"
-        env:
-          GH_TOKEN: ${{ github.token }}
-      - name: Comment on PR with workflow link
-        if: env.BASE_BRANCH != ''
-        run: |
-          # Determine PR number based on event type
-          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
-            PR_NUMBER="${{ github.event.client_payload.pr_number }}"
-          elif [ "${{ github.event_name }}" = "issue_comment" ]; then
-            PR_NUMBER="${{ github.event.issue.number }}"
-          elif [ "${{ github.event_name }}" = "pull_request_review_comment" ]; then
-            PR_NUMBER="${{ github.event.pull_request.number }}"
-          else
-            PR_NUMBER="${{ github.event.pull_request.number }}"
-          fi
-
-          gh pr comment "$PR_NUMBER" --body "🤖 Claude Code is analyzing this PR: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
         env:
           GH_TOKEN: ${{ github.token }}
       - name: Configure git for Claude
@@ -139,3 +114,16 @@ jobs:
             ${{ env.BUILDBOT_OUTPUT }}
             ```
           base: ${{ env.BASE_BRANCH }}
+      - name: Comment on original PR with results
+        if: env.BASE_BRANCH != ''
+        run: |
+          # Build comment with conditional PR link
+          FIX_PR="${{ steps.cpr.outputs.pull-request-number }}"
+
+          gh pr comment "${{ env.PR_NUMBER }}" --body-file - <<EOF
+          🤖 Claude Code analysis complete: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          ${FIX_PR:+
+          Created fix PR: #${FIX_PR}}
+          EOF
+        env:
+          GH_TOKEN: ${{ github.token }}
