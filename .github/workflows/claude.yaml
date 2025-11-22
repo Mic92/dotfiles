@@ -79,6 +79,23 @@ jobs:
           } >> "$GITHUB_ENV"
         env:
           GH_TOKEN: ${{ github.token }}
+      - name: Comment on PR with workflow link
+        if: env.BASE_BRANCH != ''
+        run: |
+          # Determine PR number based on event type
+          if [ "${{ github.event_name }}" = "repository_dispatch" ]; then
+            PR_NUMBER="${{ github.event.client_payload.pr_number }}"
+          elif [ "${{ github.event_name }}" = "issue_comment" ]; then
+            PR_NUMBER="${{ github.event.issue.number }}"
+          elif [ "${{ github.event_name }}" = "pull_request_review_comment" ]; then
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+          else
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+          fi
+
+          gh pr comment "$PR_NUMBER" --body "🤖 Claude Code is analyzing this PR: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        env:
+          GH_TOKEN: ${{ github.token }}
       - name: Run Claude Code
         id: claude
         uses: anthropics/claude-code-action@v1
