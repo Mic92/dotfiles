@@ -3,7 +3,7 @@ on:
   - pull_request_target
 jobs:
   auto-merge-dependency-updates:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     permissions:
       contents: write
       pull-requests: write

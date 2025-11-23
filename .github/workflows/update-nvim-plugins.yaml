@@ -5,7 +5,7 @@ on:
       - "flake.lock"
 jobs:
   update-vim-plugins:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     if: github.event.pull_request.user.login == 'dotfiles-flake-updater[bot]' && (contains(github.event.pull_request.body, 'nixpkgs') || contains(github.event.pull_request.title, 'nixpkgs'))
     steps:
       - uses: actions/checkout@v5
