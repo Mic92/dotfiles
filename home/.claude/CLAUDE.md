@@ -1,6 +1,6 @@
 ## Available Tools
 
-- fd, rg, dnsutils, lsof, gdb, binutils, ast-grep, graphicsmagic (gm)
+- fd, rg, dnsutils, lsof, gdb, binutils, graphicsmagic (gm)
 - On Linux: strace/sysdig/bcc
 - macOS: strace (this was ported)
 - pexpect-cli: Persistent pexpect sessions for automating interactive terminal
@@ -65,7 +65,7 @@
 - To get buildbot ci logs, use buildbot-pr-check on the pull request: i.e.
   `buildbot-pr-check https://github.com/numtide/nix-ai-tools/pull/993`
 
-## Performance
+## Running programs
 
 - CRITICAL: ALWAYS use pueue for ANY command that might take longer than 10
   seconds to avoid timeouts. This includes but is not limited to:

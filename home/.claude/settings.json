@@ -14,5 +14,8 @@
       }
     ]
   },
-  "alwaysThinkingEnabled": false
+  "alwaysThinkingEnabled": true,
+  "enabledPlugins": {
+    "ast-grep@ast-grep-marketplace": true
+  }
 }
