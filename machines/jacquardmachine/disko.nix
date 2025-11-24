@@ -17,10 +17,6 @@
                 mountOptions = [ "nofail" ];
               };
             };
-            windows = {
-              size = "250G";
-              type = "0700";
-            };
             zfs = {
               size = "100%";
               content = {
@@ -50,7 +46,6 @@
               mountpoint = "none";
               encryption = "aes-256-gcm";
               keyformat = "passphrase";
-              #keylocation = "file:///tmp/secret.key";
               keylocation = "prompt";
             };
           };

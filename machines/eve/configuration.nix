@@ -34,7 +34,6 @@
     ./modules/calendar-bot/configuration.nix
     ./modules/dendrite.nix
     ./modules/disko.nix
-    ./modules/docker.nix
     ./modules/dovecot.nix
     ./modules/et.nix
     ./modules/gitea
@@ -73,8 +72,8 @@
 
     ../../nixosModules/borgbackup.nix
     ../../nixosModules/builder.nix
+    ../../nixosModules/docker-zfs.nix
     ../../nixosModules/iperf.nix
-    ../../nixosModules/mosh.nix
     ../../nixosModules/nncp.nix
     ../../nixosModules/openldap
     ../../nixosModules/promtail.nix
