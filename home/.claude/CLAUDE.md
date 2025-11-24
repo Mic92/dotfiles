@@ -1,11 +1,3 @@
-## General Guidelines
-
-- Make no mistakes!
-- Follow XDG desktop standards
-- Regularly reason about security implications of the code
-- Use `$HOME/.claude/outputs` as a scratch directory.
-- In the Bash tool use absolute paths over `cd`
-
 ## Available Tools
 
 - fd, rg, dnsutils, lsof, gdb, binutils, ast-grep, graphicsmagic (gm)
@@ -14,22 +6,28 @@
 - pexpect-cli: Persistent pexpect sessions for automating interactive terminal
   applications. Start a session with `pexpect-cli --start`, then send Python
   pexpect code via stdin to control programs. Example:
-  `session=$(pexpect-cli
-  --start); echo 'child = pexpect.spawn("bash"); child.sendline("pwd");
-  child.expect("$"); print(child.before.decode())' | pexpect-cli $session`
+
+  ```
+  > pexpect-cli --start
+  888d9bf4
+  > echo 'child = pexpect.spawn("bash"); child.sendline("pwd"); child.expect("$"); print(child.before.decode())' | pexpect-cli 888d9bf4
+  ```
+
+## General Guidelines
+
+- Follow XDG desktop standards when writing code
+- Use `$HOME/.claude/outputs` as a scratch directory.
+- In the Bash tool use absolute paths over `cd`
 
 ## Nix-specific
 
-- Use `--log-format bar-with-logs` with Nix for improved build log output.
+- Use `nix log /nix/store/xxxx | grep <key-word>` to inspect failed nix builds
 - Add new untracked files in Nix flakes with `git add`.
 - To get a rebuild of a nix package change the nix expression instead of
   `--rebuild`
 - Prefer nix to fetch python dependencies
 - When looking for build dependencies in a nix-shell/nix develop, check
   environment variables for store paths to find the correct dependency versions.
-- On nix build failures:
-  - use `nix log /nix/store/xxxx | grep <key-word`, figure out the root cause of
-    a bug.
 - My nix.conf has remote builders for aarch64-linux/aarch64-darwin/x86_64-linux
   by default, for NixOS tests. Therefore, use x86_64-linux on macOS machines
 - Use nix-locate to find packages by path. i.e. `nix-locate bin/ip`
@@ -53,6 +51,8 @@
 - Add debug output or unit tests when troubleshooting i.e. dbg!() in Rust
 - When writing test use realistic inputs/outputs that test the actual code as
   opposed to mocked out versions
+- Start fixing bugs by implementing a failing regression test first.
+- When a linter is detecting dead code, remove the dead code.
 - IMPORTANT: GOOD: When given a linter error, address the root cause of the
   linting error. BAD: silencing lint errors. Exhaustivly fix all linter errors.
 
@@ -88,15 +88,11 @@
 - Recommended: Use GitHub code search to find examples for libraries and APIs:
   `gh search code "foo lang:nix"`.
 - Prefer cloning source code over web searches for more accurate results.
-  Various projects are available in `$HOME/git`, including:
-- `$HOME/git/nixpkgs`
-- `$HOME/git/linux`
-- `$HOME/git/nix`
-- `$HOME/work/clan/clan-core`
-- Use Kagi instead of the Websearch tool for better search results:
+  Various projects are available in `~/git`, including:
+- `~/git/nixpkgs`
+- `~/git/linux`
+- `~/git/nix`
+- `~/work/clan/clan-core`
+- Use Kagi for searching the web:
 - `kagi-search "nixpkgs buildPythonPackage examples"`
-- `kagi-search -j "nix flake inputs follows" | jq -r '.[0].url'`
-
-- When a linter complains about unused code, try to remove the code after making
-  sure it's unused
-- No #[allow(dead_code)], instead actually use the code
+- `kagi-search -j "nix flake inputs follows" | jq -r '.results[].url'`
