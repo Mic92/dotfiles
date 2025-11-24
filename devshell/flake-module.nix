@@ -9,6 +9,15 @@
       pkgs,
       ...
     }:
+    let
+      # Override webview-lib to fix C++ header issue with clang 21
+      webview-lib-fixed = pkgs.callPackage ../pkgs/webview-nightly { };
+
+      # Override clan-app to use the fixed webview-lib
+      clan-app-fixed = inputs'.clan-core.packages.clan-app.override {
+        webview-lib = webview-lib-fixed;
+      };
+    in
     {
       # Definitions like this are entirely equivalent to the ones
       # you may have directly in flake.nix.
@@ -17,7 +26,7 @@
           pkgs.python3.pkgs.invoke
           pkgs.python3.pkgs.deploykit
           inputs'.clan-core.packages.default
-          inputs'.clan-core.packages.clan-app
+          clan-app-fixed
         ]
         ++ lib.optionals (!pkgs.stdenv.isDarwin) [
           pkgs.bubblewrap
