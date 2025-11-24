@@ -15,7 +15,6 @@
     ./modules/photoprism.nix
 
     ../../nixosModules/users.nix
-    ../../nixosModules/mosh.nix
     ../../nixosModules/sshd/tor.nix
     ../../nixosModules/promtail.nix
     ../../nixosModules/hyprspace.nix

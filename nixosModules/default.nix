@@ -24,6 +24,7 @@
     ./nftables.nix
     ./i18n.nix
     ./zfs.nix
+    ./zswap.nix
     ./thermald.nix
     ./fhs-compat.nix
     ./update-prefetch.nix

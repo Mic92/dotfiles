@@ -56,4 +56,26 @@ in
     MACAddress = 8c:8c:aa:da:9d:35
     Name = dock0
   '';
+
+  # Configure USB-C ethernet adapter with DHCP server
+  systemd.network.networks."10-usbc-ethernet" = {
+    matchConfig.Name = "enp195s0f4u1c2";
+    address = [ "192.168.42.1/24" ];
+    networkConfig = {
+      DHCPServer = true;
+      IPv6PrivacyExtensions = "yes";
+    };
+    dhcpServerConfig = {
+      PoolOffset = 100;
+      PoolSize = 100;
+      EmitDNS = true;
+      DNS = [ "192.168.42.1" ];
+    };
+  };
+
+  # Make interface unmanaged by NetworkManager
+  networking.networkmanager.unmanaged = [ "enp195s0f4u1c2" ];
+
+  # Allow DHCP server traffic
+  networking.firewall.allowedUDPPorts = [ 67 ];
 }

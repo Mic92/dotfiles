@@ -25,7 +25,6 @@
     ./modules/telegraf
     ./modules/zerotier.nix
 
-    ../../nixosModules/mosh.nix
     ../../nixosModules/nncp.nix
     ../../nixosModules/iperf.nix
     ../../nixosModules/openldap/replica.nix

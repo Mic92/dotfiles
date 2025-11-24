@@ -10,6 +10,24 @@
 
     Host *.dos.cit.tum.de !login.dos.cit.tum.de !sarah.dos.cit.tum.de !donna.dos.cit.tum.de
       ProxyJump tunnel@login.dse.in.tum.de
+
+    # Ghaf T14 Gen 5
+    Host ghaf-netvm
+      HostName 192.168.188.25
+      User root
+      StrictHostKeyChecking no
+
+    Host ghaf-host
+      HostName ghaf-host
+      User root
+      ProxyJump ghaf-netvm
+      StrictHostKeyChecking no
+
+    Host ghaf-gui
+      HostName gui-vm
+      User root
+      ProxyJump ghaf-netvm
+      StrictHostKeyChecking no
   '';
   programs.ssh.knownHosts."login.dse.in.tum.de" = {
     hostNames = [ "login.dse.in.tum.de" ];

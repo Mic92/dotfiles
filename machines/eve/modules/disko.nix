@@ -88,6 +88,10 @@ in
               sync = "disabled";
             };
           };
+          "root/docker" = {
+            type = "zfs_fs";
+            options.mountpoint = "none";
+          };
         };
       };
     };
