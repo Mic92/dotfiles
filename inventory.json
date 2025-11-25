@@ -17,6 +17,9 @@
     },
     "turingmachine": {
       "name": "turingmachine"
+    },
+    "jacquardmachine": {
+      "installedAt": 1764031083
     }
   }
 }
