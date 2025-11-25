@@ -19,6 +19,7 @@
     ./powertop.nix
     ./promtail.nix
     ./remote-builder.nix
+    ./ssh-tpm-agent.nix
     ./tracing.nix
     ./users.nix
     ./hyprspace.nix
