@@ -224,6 +224,7 @@
                     "eva"
                     "turingmachine"
                     "bernie"
+                    "jacquardmachine"
                     "dorits-laptop"
                   ];
                 };
