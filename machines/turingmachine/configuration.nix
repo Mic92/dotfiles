@@ -40,7 +40,6 @@
     ../../nixosModules/no-hz.nix
     ../../nixosModules/sshd/tor.nix
     ../../nixosModules/suspend-on-low-power.nix
-    ../../nixosModules/ssh-tpm-agent.nix
   ];
 
   services.openssh.settings.PasswordAuthentication = lib.mkForce true;
