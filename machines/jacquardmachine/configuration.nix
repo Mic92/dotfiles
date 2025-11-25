@@ -7,9 +7,8 @@
 {
   imports = [
     self.nixosModules.default
-    # Framework 16 common module (not exposed as flake output, imported by path)
-    "${self.inputs.nixos-hardware}/framework/16-inch/common"
-    ./hardware.nix
+    # Framework 16 AMD AI 300 series with NVIDIA dGPU module
+    self.inputs.nixos-hardware.nixosModules.framework-16-amd-ai-300-series-nvidia
     self.inputs.nix-index-database.nixosModules.nix-index
     { programs.nix-index-database.comma.enable = true; }
     self.inputs.disko.nixosModules.disko

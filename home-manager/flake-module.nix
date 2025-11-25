@@ -49,6 +49,7 @@
           }
           declare -A profiles=(
             ["turingmachine"]="desktop"
+            ["jacquardmachine"]="desktop"
             ["bernie"]="bernie"
             ["web01"]="mic92"
             ["bld2"]="mic92"
