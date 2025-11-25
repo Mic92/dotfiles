@@ -1,6 +1,14 @@
-{ pkgs, config, ... }:
 {
-  systemd.timers.ip-update = {
+  pkgs,
+  config,
+  lib,
+  ...
+}:
+let
+  hasIPUpdateKey = config.sops.secrets ? "${config.clan.core.settings.machine.name}-ip-update-key";
+in
+{
+  systemd.timers.ip-update = lib.mkIf hasIPUpdateKey {
     description = "Update ip address";
     wantedBy = [ "timers.target" ];
     timerConfig = {
@@ -8,7 +16,7 @@
       OnBootSec = "5min";
     };
   };
-  systemd.services.ip-update = {
+  systemd.services.ip-update = lib.mkIf hasIPUpdateKey {
     path = [
       pkgs.bind.dnsutils
       pkgs.curl

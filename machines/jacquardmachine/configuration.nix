@@ -1,11 +1,14 @@
 {
   self,
+  lib,
   ...
 }:
 {
   imports = [
     self.nixosModules.default
-    self.inputs.nixos-hardware.nixosModules.framework-16-inch-common
+    # Framework 16 common module (not exposed as flake output, imported by path)
+    "${self.inputs.nixos-hardware}/framework/16-inch/common"
+    ./hardware.nix
     self.inputs.nix-index-database.nixosModules.nix-index
     { programs.nix-index-database.comma.enable = true; }
     self.inputs.disko.nixosModules.disko
@@ -13,6 +16,9 @@
 
     ../../nixosModules/workstation.nix
   ];
+
+  # Disable envfs to fix systemd refusing to run with unpopulated /usr/
+  services.envfs.enable = lib.mkForce false;
 
   nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
