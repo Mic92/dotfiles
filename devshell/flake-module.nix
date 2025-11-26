@@ -17,7 +17,9 @@
           pkgs.python3.pkgs.invoke
           pkgs.python3.pkgs.deploykit
           inputs'.clan-core.packages.default
-          inputs'.clan-core.packages.clan-app
+          # FIXME: clan-app currently fails to build due to webview-nightly compilation issues
+          # with the latest nixpkgs. Re-enable once the upstream issue is resolved.
+          # inputs'.clan-core.packages.clan-app
         ]
         ++ lib.optionals (!pkgs.stdenv.isDarwin) [
           pkgs.bubblewrap
