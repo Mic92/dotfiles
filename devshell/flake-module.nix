@@ -7,8 +7,21 @@
     {
       inputs',
       pkgs,
+      lib,
       ...
     }:
+    let
+      # Fix webview-lib C++ standard library issue with clang
+      # Use gcc stdenv instead of clangStdenv to avoid C++ stdlib path issues
+      webview-lib-fixed = inputs'.clan-core.packages.webview-lib.override {
+        clangStdenv = pkgs.stdenv;
+      };
+
+      # Rebuild clan-app with the fixed webview-lib
+      clan-app-fixed = inputs'.clan-core.packages.clan-app.override {
+        webview-lib = webview-lib-fixed;
+      };
+    in
     {
       # Definitions like this are entirely equivalent to the ones
       # you may have directly in flake.nix.
@@ -17,7 +30,7 @@
           pkgs.python3.pkgs.invoke
           pkgs.python3.pkgs.deploykit
           inputs'.clan-core.packages.default
-          inputs'.clan-core.packages.clan-app
+          clan-app-fixed
         ]
         ++ lib.optionals (!pkgs.stdenv.isDarwin) [
           pkgs.bubblewrap
