@@ -94,6 +94,9 @@ jobs:
             ${{ env.BUILDBOT_OUTPUT }}
 
             Make the necessary fixes to resolve the build failures. You can commit your changes locally, but do not try to push or create pull requests - that will be handled automatically after you finish.
+      - name: Clean up temporary files
+        if: env.BASE_BRANCH != ''
+        run: rm -f output.txt
       - name: Create Pull Request with fixes
         if: env.BASE_BRANCH != ''
         uses: peter-evans/create-pull-request@v7
