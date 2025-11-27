@@ -99,7 +99,7 @@ class Pinentry:
         secret_value = self._show_zenity_password_dialog(
             title=title, prompt=prompt, desc=desc, error=error
         )
-        if secret_value and not error:
+        if secret_value:
             try:
                 keyring.set_password(self.service_name, self.rbw_profile, secret_value)
             except keyring.errors.KeyringError as e:
