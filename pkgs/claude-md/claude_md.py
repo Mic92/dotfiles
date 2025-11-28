@@ -22,23 +22,28 @@ def get_repo_root() -> Path:
 
 
 def get_claude_md_repo() -> Path:
-    """Get the claude.md repository path, creating it if it doesn't exist."""
+    """Get the claude.md repository path, cloning it if it doesn't exist."""
     claude_md_path = Path.home() / "git" / "claude.md"
     if not claude_md_path.exists():
-        print(f"Creating claude.md repository at {claude_md_path}")
-        claude_md_path.mkdir(parents=True, exist_ok=True)
+        print(f"Cloning claude.md repository to {claude_md_path}")
+        parent_dir = claude_md_path.parent
+        parent_dir.mkdir(parents=True, exist_ok=True)
 
-        # Initialize git repository
+        # Clone the repository
         try:
             subprocess.run(
-                ["git", "init"],
-                cwd=claude_md_path,
+                [
+                    "git",
+                    "clone",
+                    "gitea@git.thalheim.io:Mic92/claude.md.git",
+                    str(claude_md_path),
+                ],
                 check=True,
                 capture_output=True,
             )
-            print(f"✓ Initialized git repository at {claude_md_path}")
+            print(f"✓ Cloned repository to {claude_md_path}")
         except subprocess.CalledProcessError as e:
-            print(f"Error: Failed to initialize git repository: {e}", file=sys.stderr)
+            print(f"Error: Failed to clone repository: {e}", file=sys.stderr)
             sys.exit(1)
     return claude_md_path
 
