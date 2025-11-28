@@ -36,7 +36,7 @@
       hostName = "mac02.numtide.com";
       sshUser = "customer";
       protocol = "ssh-ng";
-      sshKey = "/root/.ssh/id_ed25519";
+      sshKey = config.sops.secrets.ssh-remote-builder.path;
       systems = [
         "aarch64-darwin"
         "x86_64-darwin"
@@ -47,6 +47,9 @@
   ];
 
   programs.ssh.extraConfig = ''
+    Host mac02.numtide.com
+      User customer
+      IdentityFile ${config.sops.secrets.ssh-remote-builder.path}
     Host irene
       User nix
       ProxyJump login-tum
