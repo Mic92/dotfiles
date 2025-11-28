@@ -1,6 +1,7 @@
 {
   self,
   lib,
+  pkgs,
   ...
 }:
 {
@@ -17,6 +18,8 @@
     ../../nixosModules/workstation.nix
     ../../nixosModules/shannan.nix
   ];
+
+  environment.systemPackages = with pkgs; [ bottles ];
 
   # Disable envfs to fix systemd refusing to run with unpopulated /usr/
   services.envfs.enable = lib.mkForce false;
