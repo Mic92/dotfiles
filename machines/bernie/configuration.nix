@@ -2,7 +2,6 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
-  config,
   pkgs,
   self,
   ...
@@ -21,6 +20,7 @@
     ../../nixosModules/pipewire.nix
     ../../nixosModules/hyprspace.nix
     ../../nixosModules/samba-movieshare.nix
+    ../../nixosModules/shannan.nix
 
     ./filesystems.nix
 
@@ -42,9 +42,6 @@
   services.fwupd.enable = true;
   hardware.keyboard.qmk.enable = true;
 
-  sops.secrets.shannan-password.neededForUsers = true;
-  users.users.shannan.hashedPasswordFile = config.sops.secrets.shannan-password.path;
-
   clan.core.deployment.requireExplicitUpdate = true;
 
   boot.initrd.systemd.enable = true;
@@ -52,21 +49,6 @@
   # when installing toggle this
   boot.loader.efi.canTouchEfiVariables = false;
 
-  users.users.shannan = {
-    isNormalUser = true;
-    home = "/home/shannan";
-    extraGroups = [
-      "wheel"
-      "plugdev"
-      "adbusers"
-      "input"
-      "kvm"
-      "networkmanager"
-    ];
-    shell = "/run/current-system/sw/bin/zsh";
-    uid = 1001;
-    inherit (config.users.users.joerg) openssh;
-  };
   networking.hostName = "bernie";
   networking.hostId = "ac174b52";
 
