@@ -1,6 +1,6 @@
 {
   "includeCoAuthoredBy": false,
-  "model": "sonnet[1m]",
+  "model": "opus",
   "hooks": {
     "Notification": [
       {
@@ -14,8 +14,13 @@
       }
     ]
   },
-  "alwaysThinkingEnabled": true,
+  "statusLine": {
+    "type": "command",
+    "command": "ccstatusline",
+    "padding": 0
+  },
   "enabledPlugins": {
     "ast-grep@ast-grep-marketplace": true
-  }
+  },
+  "alwaysThinkingEnabled": true
 }

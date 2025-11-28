@@ -20,6 +20,8 @@
       aiTools.cursor-agent
       aiTools.spec-kit
       aiTools.gemini-cli
+      aiTools.ccusage
+      aiTools.ccstatusline
       pkgs.pueue
     ];
 }
