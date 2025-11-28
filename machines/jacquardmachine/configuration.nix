@@ -15,6 +15,7 @@
     self.inputs.srvos.nixosModules.desktop
 
     ../../nixosModules/workstation.nix
+    ../../nixosModules/shannan.nix
   ];
 
   # Disable envfs to fix systemd refusing to run with unpopulated /usr/
