@@ -19,7 +19,7 @@
       hostName = "mac02";
       sshUser = "customer";
       protocol = "ssh-ng";
-      sshKey = config.sops.secrets.ssh-aarch64-builder.path;
+      sshKey = config.sops.secrets.ssh-tum-builder.path;
       systems = [
         "aarch64-darwin"
         "x86_64-darwin"
@@ -60,9 +60,9 @@
   ];
   programs.ssh.extraConfig = ''
     Host mac02
-      User hetzner
+      User customer
       HostName mac02.numtide.com
-      IdentityFile ${config.sops.secrets.ssh-aarch64-builder.path}
+      IdentityFile ${config.sops.secrets.ssh-tum-builder.path}
     Host jamie
       User nix
       ProxyJump login-tum
