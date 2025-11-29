@@ -15,11 +15,12 @@
     hercules-ci-effects.inputs.nixpkgs.follows = "nixpkgs";
     hercules-ci-effects.inputs.flake-parts.follows = "flake-parts";
 
-    harmonia.url = "github:nix-community/harmonia/harmonia-next";
+    harmonia.url = "github:nix-community/harmonia";
     harmonia.inputs.nixpkgs.follows = "nixpkgs";
     harmonia.inputs.flake-parts.follows = "flake-parts";
     harmonia.inputs.treefmt-nix.follows = "treefmt-nix";
     harmonia.inputs.crane.follows = "crane";
+    harmonia.inputs.nix.follows = "nix";
 
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
