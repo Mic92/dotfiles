@@ -15,7 +15,7 @@
     hercules-ci-effects.inputs.nixpkgs.follows = "nixpkgs";
     hercules-ci-effects.inputs.flake-parts.follows = "flake-parts";
 
-    harmonia.url = "github:nix-community/harmonia";
+    harmonia.url = "github:nix-community/harmonia/flake-updates";
     harmonia.inputs.nixpkgs.follows = "nixpkgs";
     harmonia.inputs.flake-parts.follows = "flake-parts";
     harmonia.inputs.treefmt-nix.follows = "treefmt-nix";
