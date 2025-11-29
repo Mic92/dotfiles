@@ -292,6 +292,9 @@
         "flake-parts": [
           "flake-parts"
         ],
+        "nix": [
+          "nix"
+        ],
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -300,16 +303,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1753601276,
-        "narHash": "sha256-jjgai7NzTUJAHnK9aUHSfGjW5Swz0UBah20YGwKP8wA=",
+        "lastModified": 1764403900,
+        "narHash": "sha256-E8FVaLV2TSnA64fVkZ1rwcwBUGwZFma7rLJC25YCMME=",
         "owner": "nix-community",
         "repo": "harmonia",
-        "rev": "60592b2e0d0d62f00d05a7511389d2520621e415",
+        "rev": "f8ee380c143d7af80a71a8f8b10690d72c386cfc",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
-        "ref": "harmonia-next",
         "repo": "harmonia",
         "type": "github"
       }
