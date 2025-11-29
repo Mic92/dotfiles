@@ -4,8 +4,6 @@
   clan = {
     meta.name = "mic92";
 
-    pkgsForSystem = system: self.inputs.nixpkgs.legacyPackages.${system};
-
     inventory = {
       tags =
         { config, ... }:
