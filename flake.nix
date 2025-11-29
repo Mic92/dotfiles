@@ -212,8 +212,8 @@
             # make pkgs available to all `perSystem` functions
             _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
 
-            # Explicitly set clan.pkgs to null since we use pkgsForSystem in machines/flake-module.nix
-            clan.pkgs = null;
+            # Set clan.pkgs for all machines
+            clan.pkgs = inputs'.nixpkgs.legacyPackages;
 
             checks =
               let
