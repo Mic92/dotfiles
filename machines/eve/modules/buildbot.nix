@@ -1,9 +1,32 @@
 {
   config,
   pkgs,
+  self,
   ...
 }:
+let
+  inherit (self.inputs.buildbot-nix.lib) interpolate;
+
+  codecov-upload = pkgs.writeShellScript "codecov-upload" ''
+    # Only upload for test builds from harmonia (which include coverage)
+    if [[ "$PROJECT" == *"harmonia"* ]] && [[ "$ATTR_NAME" == *"tests"* ]]; then
+      ${pkgs.codecov-cli}/bin/codecovcli upload-process \
+        --token "$CODECOV_TOKEN" \
+        --file "$OUT_PATH" \
+        --branch "$BRANCH" \
+        --sha "$REVISION"
+    else
+      echo "Skipping codecov: project=$PROJECT attr=$ATTR_NAME"
+    fi
+  '';
+in
 {
+  # Codecov token for harmonia coverage uploads
+  clan.core.vars.generators.codecov-token = {
+    files.token = { };
+    prompts.token.description = "Codecov upload token for harmonia";
+    script = "cp $prompts/token $out/token";
+  };
   services.buildbot-nix.master = {
     enable = true;
     domain = "buildbot.thalheim.io";
@@ -32,6 +55,24 @@
       "Lassulus"
     ];
     outputsPath = "/var/www/buildbot/nix-outputs/";
+
+    # Upload coverage reports to codecov for harmonia
+    postBuildSteps = [
+      {
+        name = "Upload coverage to codecov";
+        environment = {
+          CODECOV_TOKEN = "%(secret:codecov-token)s";
+          ATTR_NAME = interpolate "%(prop:attr)s";
+          OUT_PATH = interpolate "%(prop:out_path)s";
+          BRANCH = interpolate "%(prop:branch)s";
+          REVISION = interpolate "%(prop:revision)s";
+          PROJECT = interpolate "%(prop:project)s";
+        };
+        command = [ "${codecov-upload}" ];
+        warnOnly = true;
+      }
+    ];
+
     pullBased = {
       repositories = {
         sizelint = {
@@ -52,6 +93,9 @@
     ];
   };
   systemd.services.buildbot-master.path = [ pkgs.openssh ];
+  systemd.services.buildbot-master.serviceConfig.LoadCredential = [
+    "codecov-token:${config.clan.core.vars.generators.codecov-token.files.token.path}"
+  ];
   systemd.services.buildbot-master.preStart = ''
     mkdir -p /var/lib/buildbot/master/ssh
     if [ ! -f /var/lib/buildbot/master/ssh/ssh_host_ed25519_key ]; then
