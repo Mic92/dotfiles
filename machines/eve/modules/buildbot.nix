@@ -22,14 +22,13 @@ let
 
       echo "Uploading coverage: slug=$PROJECT branch=$BRANCH sha=$REVISION file=$coverage_file system=$system"
 
-      # Build codecov args
+      # Build codecov args (no --disable-search: we're in a git checkout so codecov can discover network files)
       set -x
       args=(
         --token "$CODECOV_TOKEN"
         --slug "$PROJECT"
         --git-service github
         --file "$coverage_file"
-        --disable-search
         --sha "$REVISION"
         --flag "$system"
       )
@@ -41,18 +40,32 @@ let
         args+=(--branch "$BRANCH")
       fi
 
-      ${pkgs.codecov-cli}/bin/codecovcli do-upload "''${args[@]}"
+      # upload-process combines create-commit, create-report, and do-upload
+      # It handles parallel uploads correctly (codecov merges reports automatically)
+      ${pkgs.codecov-cli}/bin/codecovcli upload-process "''${args[@]}"
     else
       echo "Skipping codecov: project=$PROJECT attr=$ATTR_NAME"
     fi
   '';
 in
 {
-  # Codecov token for harmonia coverage uploads
+  # Codecov token for harmonia coverage uploads (used in postBuildSteps)
   clan.core.vars.generators.codecov-token = {
     files.token = { };
     prompts.token.description = "Codecov upload token for harmonia";
     script = "cp $prompts/token $out/token";
+  };
+
+  # Harmonia effects secrets (JSON format for buildbot-effects)
+  clan.core.vars.generators.harmonia-effects-secrets = {
+    files.secrets.secret = true;
+    prompts.codecov-token.description = "Codecov upload token for harmonia effects";
+    script = ''
+      ${pkgs.jq}/bin/jq -n \
+        --arg token "$(cat $prompts/codecov-token)" \
+        '{ codecov: { data: { token: $token } } }' \
+        > $out/secrets
+    '';
   };
   services.buildbot-nix.master = {
     enable = true;
@@ -99,6 +112,12 @@ in
         warnOnly = true;
       }
     ];
+
+    # Secrets for buildbot-effects (hercules-ci style effects)
+    effects.perRepoSecretFiles = {
+      "github:nix-community/harmonia" =
+        config.clan.core.vars.generators.harmonia-effects-secrets.files.secrets.path;
+    };
 
     pullBased = {
       repositories = {
