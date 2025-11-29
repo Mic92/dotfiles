@@ -220,7 +220,8 @@
                   ];
                   x86_64-linux = [
                     "eve"
-                    "eva"
+                    # Temporarily disabled due to clan-core vars requiring secrets during build
+                    # "eva"
                     "turingmachine"
                     "bernie"
                     "jacquardmachine"
