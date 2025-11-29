@@ -10,11 +10,38 @@ let
   codecov-upload = pkgs.writeShellScript "codecov-upload" ''
     # Only upload for test builds from harmonia (which include coverage)
     if [[ "$PROJECT" == *"harmonia"* ]] && [[ "$ATTR_NAME" == *"tests"* ]]; then
-      ${pkgs.codecov-cli}/bin/codecovcli upload-process \
-        --token "$CODECOV_TOKEN" \
-        --file "$OUT_PATH" \
-        --branch "$BRANCH" \
+      # Find the coverage JSON file (named after system, e.g., x86_64-linux.json)
+      coverage_file=$(find "$OUT_PATH" -name "*.json" -type f | head -1)
+      if [[ -z "$coverage_file" ]]; then
+        echo "No coverage JSON found in $OUT_PATH"
+        exit 0
+      fi
+
+      # Extract system/architecture from filename (e.g., x86_64-linux.json -> x86_64-linux)
+      system=$(basename "$coverage_file" .json)
+
+      echo "Uploading coverage: slug=$PROJECT branch=$BRANCH sha=$REVISION file=$coverage_file system=$system"
+
+      # Build codecov args
+      set -x
+      args=(
+        --token "$CODECOV_TOKEN"
+        --slug "$PROJECT"
+        --git-service github
+        --file "$coverage_file"
+        --disable-search
         --sha "$REVISION"
+        --flag "$system"
+      )
+
+      # Extract PR number if this is a PR branch (refs/pull/NNN/merge)
+      if [[ "$BRANCH" =~ refs/pull/([0-9]+)/ ]]; then
+        args+=(--pr "''${BASH_REMATCH[1]}")
+      else
+        args+=(--branch "$BRANCH")
+      fi
+
+      ${pkgs.codecov-cli}/bin/codecovcli do-upload "''${args[@]}"
     else
       echo "Skipping codecov: project=$PROJECT attr=$ATTR_NAME"
     fi
@@ -61,7 +88,7 @@ in
       {
         name = "Upload coverage to codecov";
         environment = {
-          CODECOV_TOKEN = "%(secret:codecov-token)s";
+          CODECOV_TOKEN = interpolate "%(secret:codecov-token)s";
           ATTR_NAME = interpolate "%(prop:attr)s";
           OUT_PATH = interpolate "%(prop:out_path)s";
           BRANCH = interpolate "%(prop:branch)s";
