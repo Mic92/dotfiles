@@ -20,8 +20,10 @@ pueue wait <task-id> && pueue log <task-id>
 ## On CI Failure
 
 If CI reports errors:
+
 1. Read the pueue log output to identify failures
-2. Use `gh run view <run-id> --log-failed` or `buildbot-pr-check <pr-url>` for details
+2. Use `gh run view <run-id> --log-failed` or `buildbot-pr-check <pr-url>` for
+   details
 3. Fix the issues in the code
 4. Amend the commit: `git add -u && git commit --amend --no-edit`
 5. Run merge-when-green again
