@@ -14,6 +14,7 @@
     ../../nixosModules/packages.nix
     ../../nixosModules/hyprspace.nix
     ./modules/photoprism.nix
+    ./modules/phantun.nix
   ];
 
   nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.aarch64-linux;
