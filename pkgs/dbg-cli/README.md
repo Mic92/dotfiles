@@ -6,6 +6,8 @@ LLM-optimized debugger interface for LLDB and RR.
 
 `dbg-cli` provides a Python-based interface for debuggers optimized for LLM agents. LLMs write Python code to stdin, which is executed in a namespace with the `dbg` debugger object available.
 
+**Incremental discoverability**: Use `dbg.help()` to explore available methods.
+
 Key features:
 - **Python code input** - LLMs write natural Python code, not debugger commands
 - **JSON responses** - All output is structured JSON with full state
@@ -124,6 +126,47 @@ dbg.select_target(index)      # Switch active target
 dbg.follow_fork("child")      # Follow child on fork
 dbg.follow_fork("parent")     # Stay with parent (default)
 dbg.async_mode(True)          # Enable async for multi-process
+```
+
+### Advanced Debug Utilities (LLDB)
+```python
+# Library injection
+dbg.inject_library("/path/to/libhooks.dylib")
+
+# Symbol lookup
+dbg.find_symbol("malloc")           # Substring match
+dbg.find_symbol("malloc", exact=True)
+
+# Memory search
+dbg.memory_search("deadbeef")       # Hex pattern
+dbg.memory_search("SECRET", start="0x1000", size=0x10000)
+
+# Signal handling
+dbg.signal_handler("SIGPIPE", "ignore")
+dbg.signal_handler("SIGSEGV", "stop")
+dbg.signal_handler("SIGINT", "info")
+
+# Environment variables
+dbg.environment()                   # List all
+dbg.environment("set", "DEBUG", "1")
+dbg.environment("get", "PATH")
+```
+
+## API Discoverability
+
+The API is designed for incremental discovery by LLM agents:
+
+```python
+# Explore available methods
+dbg.help()                    # List all categories and methods
+dbg.help("execution")         # Methods in a category
+dbg.help("breakpoint")        # Details on specific method
+dbg.methods()                 # Simple list of all methods
+dbg.backend_info()            # Backend capabilities
+
+# RR utilities
+rr.help()                     # List trace management methods
+rr.help("record")             # Details on specific method
 ```
 
 ## RR Trace Management

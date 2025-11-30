@@ -317,11 +317,128 @@ class DebuggerWrapper:
 
     This provides a clean Python interface that LLMs can use.
     All methods return dicts suitable for JSON serialization.
+
+    Use dbg.help() to discover available methods.
     """
+
+    # Method categories for discoverability
+    _CATEGORIES = {
+        "discovery": ["help", "methods", "backend_info"],
+        "session": ["launch", "attach", "detach", "quit"],
+        "execution": ["continue_", "step", "next", "finish"],
+        "reverse": ["reverse_continue", "reverse_step", "reverse_next"],
+        "breakpoints": ["breakpoint", "delete", "breakpoints", "enable", "disable", "watch"],
+        "inspection": ["backtrace", "frame", "thread", "threads", "locals", "args", "print", "memory", "registers"],
+        "source": ["source", "disassemble", "status"],
+        "rr": ["checkpoint", "restart", "when", "run_to_event", "checkpoints", "delete_checkpoint"],
+        "multiprocess": ["targets", "select_target", "add_target", "follow_fork", "async_mode"],
+        "advanced": ["inject_library", "find_symbol", "memory_search", "signal_handler", "environment"],
+    }
 
     def __init__(self, backend: Any, state: Any) -> None:
         self._backend = backend
         self._state = state
+
+    # ===== API Discoverability =====
+
+    def help(self, method: str | None = None) -> dict[str, Any]:
+        """Get help on available methods.
+
+        Args:
+            method: Specific method name, or None for overview
+
+        Examples:
+            dbg.help()              # List all categories and methods
+            dbg.help("breakpoint")  # Get help on breakpoint method
+            dbg.help("execution")   # List methods in execution category
+        """
+        import inspect
+
+        if method is None:
+            # Return overview of all categories
+            result = {
+                "backend": self._backend.name,
+                "categories": {},
+                "hint": "Use dbg.help('method_name') for details on a specific method",
+            }
+            for cat, methods in self._CATEGORIES.items():
+                available = []
+                for m in methods:
+                    if hasattr(self, m):
+                        func = getattr(self, m)
+                        if callable(func):
+                            doc = func.__doc__
+                            summary = doc.split("\n")[0] if doc else ""
+                            available.append({"name": m, "summary": summary})
+                if available:
+                    result["categories"][cat] = available
+            return result
+
+        # Check if it's a category name
+        if method in self._CATEGORIES:
+            methods_info = []
+            for m in self._CATEGORIES[method]:
+                if hasattr(self, m):
+                    func = getattr(self, m)
+                    if callable(func):
+                        sig = str(inspect.signature(func))
+                        doc = func.__doc__ or ""
+                        methods_info.append({
+                            "name": m,
+                            "signature": f"{m}{sig}",
+                            "doc": doc.strip(),
+                        })
+            return {"category": method, "methods": methods_info}
+
+        # Get help on specific method
+        if hasattr(self, method):
+            func = getattr(self, method)
+            if callable(func):
+                sig = str(inspect.signature(func))
+                doc = func.__doc__ or "No documentation available"
+                return {
+                    "method": method,
+                    "signature": f"{method}{sig}",
+                    "doc": doc.strip(),
+                }
+
+        return {"error": f"Unknown method or category: {method}"}
+
+    def methods(self) -> list[str]:
+        """List all available method names.
+
+        Returns simple list for quick reference. Use help() for details.
+        """
+        all_methods = []
+        for methods in self._CATEGORIES.values():
+            for m in methods:
+                if hasattr(self, m) and callable(getattr(self, m)):
+                    all_methods.append(m)
+        return sorted(set(all_methods))
+
+    def backend_info(self) -> dict[str, Any]:
+        """Get information about the current backend.
+
+        Returns backend name, capabilities, and backend-specific features.
+        """
+        info = {
+            "name": self._backend.name,
+            "supports_reverse": self._backend.supports_reverse,
+        }
+
+        if self._backend.name == "rr":
+            info["rr_features"] = [
+                "checkpoint", "restart", "when", "run_to_event",
+                "reverse_continue", "reverse_step", "reverse_next"
+            ]
+            info["note"] = "Use rr.traces() to list available traces"
+        elif self._backend.name == "lldb":
+            info["lldb_features"] = [
+                "inject_library", "targets", "add_target", "select_target",
+                "follow_fork", "async_mode"
+            ]
+
+        return info
 
     def get_state_dict(self) -> dict[str, Any]:
         """Get current state as dict."""
@@ -331,7 +448,7 @@ class DebuggerWrapper:
         """Convert response to dict."""
         return response.to_dict()
 
-    # Session management
+    # ===== Session management =====
 
     def launch(self, binary: str, args: list[str] | None = None) -> dict[str, Any]:
         """Launch a program for debugging.
@@ -579,12 +696,123 @@ class DebuggerWrapper:
         """
         return self._response_to_dict(self._backend.set_async_mode(enabled))
 
+    # ===== Advanced Debug Utilities =====
+
+    def inject_library(self, library_path: str) -> dict[str, Any]:
+        """Inject a shared library into the debugged process (LLDB only).
+
+        The library will be loaded into the process address space.
+        Useful for instrumentation, hooking, or adding debugging aids.
+
+        Args:
+            library_path: Path to .so (Linux) or .dylib (macOS)
+
+        Example:
+            dbg.inject_library("/path/to/libhooks.dylib")
+        """
+        return self._response_to_dict(self._backend.inject_library(library_path))
+
+    def find_symbol(self, name: str, exact: bool = False) -> dict[str, Any]:
+        """Find symbols matching a name pattern.
+
+        Args:
+            name: Symbol name or pattern to search for
+            exact: If True, match exactly; if False, substring match
+
+        Returns:
+            List of matching symbols with addresses and modules
+        """
+        return self._response_to_dict(self._backend.find_symbol(name, exact))
+
+    def memory_search(
+        self,
+        pattern: str | bytes,
+        start: str | None = None,
+        size: int | None = None,
+    ) -> dict[str, Any]:
+        """Search memory for a byte pattern.
+
+        Args:
+            pattern: Hex string ("deadbeef") or bytes to search for
+            start: Start address (default: heap start or 0)
+            size: Number of bytes to search (default: reasonable limit)
+
+        Returns:
+            List of addresses where pattern was found
+        """
+        return self._response_to_dict(self._backend.memory_search(pattern, start, size))
+
+    def signal_handler(self, signal: str, action: str = "stop") -> dict[str, Any]:
+        """Configure how a signal is handled.
+
+        Args:
+            signal: Signal name (e.g., "SIGSEGV", "SIGINT") or number
+            action: "stop" (break into debugger), "pass" (pass to process),
+                   "ignore" (suppress), or "info" (get current setting)
+
+        Example:
+            dbg.signal_handler("SIGPIPE", "ignore")
+        """
+        return self._response_to_dict(self._backend.signal_handler(signal, action))
+
+    def environment(self, action: str = "list", name: str | None = None, value: str | None = None) -> dict[str, Any]:
+        """Manage process environment variables.
+
+        Args:
+            action: "list", "get", "set", or "unset"
+            name: Variable name (required for get/set/unset)
+            value: Variable value (required for set)
+
+        Examples:
+            dbg.environment()                          # List all
+            dbg.environment("get", "PATH")             # Get specific
+            dbg.environment("set", "DEBUG", "1")       # Set variable
+            dbg.environment("unset", "DEBUG")          # Remove variable
+        """
+        return self._response_to_dict(self._backend.environment(action, name, value))
+
 
 class RRUtilities:
     """RR trace management utilities.
 
     Available as `rr` in the namespace for managing traces outside debugging sessions.
+    Use rr.help() to discover available methods.
     """
+
+    def help(self, method: str | None = None) -> dict[str, Any]:
+        """Get help on RR trace management methods.
+
+        Args:
+            method: Specific method name, or None for overview
+
+        Examples:
+            rr.help()           # List all methods
+            rr.help("record")   # Get help on record method
+        """
+        import inspect
+
+        methods = ["traces", "trace_info", "record", "delete", "events"]
+
+        if method is None:
+            result = []
+            for m in methods:
+                func = getattr(self, m)
+                doc = func.__doc__
+                summary = doc.split("\n")[0] if doc else ""
+                result.append({"name": m, "summary": summary})
+            return {"methods": result, "hint": "Use rr.help('method_name') for details"}
+
+        if hasattr(self, method) and method in methods:
+            func = getattr(self, method)
+            sig = str(inspect.signature(func))
+            doc = func.__doc__ or "No documentation"
+            return {
+                "method": method,
+                "signature": f"rr.{method}{sig}",
+                "doc": doc.strip(),
+            }
+
+        return {"error": f"Unknown method: {method}"}
 
     def traces(self) -> list[dict[str, Any]]:
         """List all available RR traces.

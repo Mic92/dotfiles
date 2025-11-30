@@ -1087,3 +1087,270 @@ class LLDBBackend(DebuggerBackend):
             self.state.get_state(),
             {"async_mode": enabled},
         )
+
+    # Advanced debug utilities
+
+    def inject_library(self, library_path: str) -> Response:
+        """Inject a shared library into the process.
+
+        Uses LLDB's expression evaluation to call dlopen().
+        """
+        if err := self._check_process():
+            return err
+
+        thread = self._process.GetSelectedThread()
+        frame = thread.GetSelectedFrame() if thread.IsValid() else None
+
+        if not frame or not frame.IsValid():
+            return error_response(
+                ErrorType.DEBUGGER_ERROR,
+                "No valid frame for library injection",
+                self.state.get_state(),
+            )
+
+        # Use dlopen to load the library
+        # RTLD_NOW = 2, RTLD_GLOBAL = 0x100 (platform-dependent)
+        expr = f'(void*)dlopen("{library_path}", 2)'
+        result = frame.EvaluateExpression(expr)
+
+        if result.GetError().Fail():
+            return error_response(
+                ErrorType.DEBUGGER_ERROR,
+                f"Failed to inject library: {result.GetError().GetCString()}",
+                self.state.get_state(),
+            )
+
+        handle = result.GetValueAsUnsigned()
+        if handle == 0:
+            # Try to get dlerror
+            err_result = frame.EvaluateExpression("(char*)dlerror()")
+            err_msg = err_result.GetSummary() or "Unknown error"
+            return error_response(
+                ErrorType.DEBUGGER_ERROR,
+                f"dlopen failed: {err_msg}",
+                self.state.get_state(),
+            )
+
+        return ok_response(
+            self.state.get_state(),
+            {"library": library_path, "handle": f"0x{handle:x}"},
+        )
+
+    def find_symbol(self, name: str, exact: bool = False) -> Response:
+        """Find symbols matching a name pattern."""
+        if err := self._check_target():
+            return err
+
+        symbols = []
+        for module in self._target.module_iter():
+            if exact:
+                sym = module.FindSymbol(name)
+                if sym.IsValid():
+                    symbols.append({
+                        "name": sym.GetName(),
+                        "address": f"0x{sym.GetStartAddress().GetLoadAddress(self._target):x}",
+                        "module": module.GetFileSpec().GetFilename(),
+                        "type": str(sym.GetType()),
+                    })
+            else:
+                # Iterate through all symbols for substring match
+                for sym in module:
+                    if name.lower() in (sym.GetName() or "").lower():
+                        symbols.append({
+                            "name": sym.GetName(),
+                            "address": f"0x{sym.GetStartAddress().GetLoadAddress(self._target):x}",
+                            "module": module.GetFileSpec().GetFilename(),
+                            "type": str(sym.GetType()),
+                        })
+                        if len(symbols) >= 100:  # Limit results
+                            break
+            if len(symbols) >= 100:
+                break
+
+        return ok_response(
+            self.state.get_state(),
+            {"symbols": symbols, "count": len(symbols)},
+        )
+
+    def memory_search(self, pattern: str | bytes, start: str | None = None, size: int | None = None) -> Response:
+        """Search memory for a byte pattern."""
+        if err := self._check_process():
+            return err
+
+        # Convert pattern to bytes
+        if isinstance(pattern, str):
+            try:
+                pattern_bytes = bytes.fromhex(pattern.replace(" ", ""))
+            except ValueError:
+                # Try as ASCII
+                pattern_bytes = pattern.encode()
+        else:
+            pattern_bytes = pattern
+
+        # Determine search range
+        if start:
+            try:
+                start_addr = int(start, 16) if start.startswith("0x") else int(start)
+            except ValueError:
+                return error_response(
+                    ErrorType.DEBUGGER_ERROR,
+                    f"Invalid start address: {start}",
+                    self.state.get_state(),
+                )
+        else:
+            start_addr = 0
+
+        search_size = size or 0x1000000  # Default 16MB
+
+        # Search using LLDB's memory find
+        error = self._lldb.SBError()
+        matches = []
+
+        # Read in chunks and search
+        chunk_size = 0x10000  # 64KB chunks
+        current = start_addr
+
+        while current < start_addr + search_size and len(matches) < 100:
+            data = self._process.ReadMemory(current, min(chunk_size, start_addr + search_size - current), error)
+            if error.Fail() or not data:
+                current += chunk_size
+                continue
+
+            # Search for pattern in chunk
+            offset = 0
+            while True:
+                idx = data.find(pattern_bytes, offset)
+                if idx == -1:
+                    break
+                matches.append(f"0x{current + idx:x}")
+                offset = idx + 1
+                if len(matches) >= 100:
+                    break
+
+            current += chunk_size
+
+        return ok_response(
+            self.state.get_state(),
+            {"matches": matches, "pattern": pattern_bytes.hex(), "count": len(matches)},
+        )
+
+    def signal_handler(self, signal: str, action: str = "stop") -> Response:
+        """Configure signal handling."""
+        valid_actions = {"stop", "pass", "ignore", "info"}
+        if action not in valid_actions:
+            return error_response(
+                ErrorType.DEBUGGER_ERROR,
+                f"Invalid action: {action}. Use one of: {valid_actions}",
+                self.state.get_state(),
+            )
+
+        # Use LLDB command for signal handling
+        if action == "info":
+            result = self._lldb.SBCommandReturnObject()
+            self._debugger.GetCommandInterpreter().HandleCommand(
+                f"process handle {signal}",
+                result,
+            )
+            return ok_response(
+                self.state.get_state(),
+                {"signal": signal, "info": result.GetOutput()},
+            )
+
+        # Map action to LLDB flags
+        flags = {
+            "stop": "--stop true --notify true --pass false",
+            "pass": "--stop false --notify false --pass true",
+            "ignore": "--stop false --notify false --pass false",
+        }
+
+        result = self._lldb.SBCommandReturnObject()
+        self._debugger.GetCommandInterpreter().HandleCommand(
+            f"process handle {signal} {flags[action]}",
+            result,
+        )
+
+        if not result.Succeeded():
+            return error_response(
+                ErrorType.DEBUGGER_ERROR,
+                result.GetError() or f"Failed to configure signal {signal}",
+                self.state.get_state(),
+            )
+
+        return ok_response(
+            self.state.get_state(),
+            {"signal": signal, "action": action},
+        )
+
+    def environment(self, action: str = "list", name: str | None = None, value: str | None = None) -> Response:
+        """Manage process environment variables."""
+        if action == "list":
+            if not self._target:
+                return ok_response(self.state.get_state(), {"environment": {}})
+
+            env = {}
+            launch_info = self._target.GetLaunchInfo()
+            env_entries = launch_info.GetEnvironmentEntries()
+            for i in range(env_entries.GetSize()):
+                entry = env_entries.GetStringAtIndex(i)
+                if "=" in entry:
+                    k, v = entry.split("=", 1)
+                    env[k] = v
+
+            return ok_response(self.state.get_state(), {"environment": env})
+
+        if not name:
+            return error_response(
+                ErrorType.DEBUGGER_ERROR,
+                f"Variable name required for action: {action}",
+                self.state.get_state(),
+            )
+
+        if action == "get":
+            if not self._target:
+                return ok_response(self.state.get_state(), {"name": name, "value": None})
+
+            launch_info = self._target.GetLaunchInfo()
+            env_entries = launch_info.GetEnvironmentEntries()
+            for i in range(env_entries.GetSize()):
+                entry = env_entries.GetStringAtIndex(i)
+                if entry.startswith(f"{name}="):
+                    return ok_response(
+                        self.state.get_state(),
+                        {"name": name, "value": entry.split("=", 1)[1]},
+                    )
+            return ok_response(self.state.get_state(), {"name": name, "value": None})
+
+        if action == "set":
+            if value is None:
+                return error_response(
+                    ErrorType.DEBUGGER_ERROR,
+                    "Value required for set action",
+                    self.state.get_state(),
+                )
+
+            result = self._lldb.SBCommandReturnObject()
+            self._debugger.GetCommandInterpreter().HandleCommand(
+                f'settings set target.env-vars {name}="{value}"',
+                result,
+            )
+            return ok_response(
+                self.state.get_state(),
+                {"action": "set", "name": name, "value": value},
+            )
+
+        if action == "unset":
+            result = self._lldb.SBCommandReturnObject()
+            self._debugger.GetCommandInterpreter().HandleCommand(
+                f"settings remove target.env-vars {name}",
+                result,
+            )
+            return ok_response(
+                self.state.get_state(),
+                {"action": "unset", "name": name},
+            )
+
+        return error_response(
+            ErrorType.DEBUGGER_ERROR,
+            f"Unknown action: {action}. Use list, get, set, or unset",
+            self.state.get_state(),
+        )
