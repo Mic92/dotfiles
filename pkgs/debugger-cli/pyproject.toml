@@ -1,0 +1,27 @@
+[project]
+name = "debugger-cli"
+version = "0.1.0"
+description = "LLM-optimized debugger interface for LLDB and RR"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+debugger-server = "debugger_cli.server:main"
+debugger-cli = "debugger_cli.client:main"
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
