@@ -939,3 +939,151 @@ class LLDBBackend(DebuggerBackend):
         """Get current debugger status."""
         self._refresh_state()
         return ok_response(self.state.get_state())
+
+    # Multi-process support
+
+    def set_follow_fork_mode(self, mode: str) -> Response:
+        """Set fork following mode.
+
+        Args:
+            mode: "parent" to stay with parent, "child" to follow child process
+
+        Note: LLDB's fork following is limited. On macOS, consider using
+        DYLD interposition for better multi-process debugging.
+        """
+        if mode not in ("parent", "child"):
+            return error_response(
+                ErrorType.DEBUGGER_ERROR,
+                f"Invalid mode: {mode}. Use 'parent' or 'child'",
+                self.state.get_state(),
+            )
+
+        # LLDB uses settings for fork following
+        # Note: This is best-effort as LLDB's fork support is limited
+        self._debugger.HandleCommand(f"settings set target.process.follow-fork-mode {mode}")
+
+        return ok_response(
+            self.state.get_state(),
+            {"follow_fork_mode": mode},
+        )
+
+    def list_targets(self) -> Response:
+        """List all debugger targets.
+
+        Multiple targets can be loaded for multi-process debugging scenarios.
+        """
+        targets = []
+        for i in range(self._debugger.GetNumTargets()):
+            target = self._debugger.GetTargetAtIndex(i)
+            if target.IsValid():
+                exe = target.GetExecutable()
+                process = target.GetProcess()
+                targets.append({
+                    "index": i,
+                    "executable": exe.GetFilename() if exe.IsValid() else None,
+                    "path": str(exe.fullpath) if exe.IsValid() and exe.fullpath else None,
+                    "pid": process.GetProcessID() if process and process.IsValid() else None,
+                    "state": self._process_state_name(process) if process else "no process",
+                    "is_selected": target == self._target,
+                })
+
+        return ok_response(self.state.get_state(), {"targets": targets})
+
+    def _process_state_name(self, process: Any) -> str:
+        """Get human-readable process state name."""
+        if not process or not process.IsValid():
+            return "invalid"
+
+        lldb = self._lldb
+        state = process.GetState()
+
+        state_names = {
+            lldb.eStateInvalid: "invalid",
+            lldb.eStateUnloaded: "unloaded",
+            lldb.eStateConnected: "connected",
+            lldb.eStateAttaching: "attaching",
+            lldb.eStateLaunching: "launching",
+            lldb.eStateStopped: "stopped",
+            lldb.eStateRunning: "running",
+            lldb.eStateStepping: "stepping",
+            lldb.eStateCrashed: "crashed",
+            lldb.eStateDetached: "detached",
+            lldb.eStateExited: "exited",
+            lldb.eStateSuspended: "suspended",
+        }
+
+        return state_names.get(state, f"unknown({state})")
+
+    def select_target(self, index: int) -> Response:
+        """Select a target by index.
+
+        Args:
+            index: Target index from list_targets()
+        """
+        if index < 0 or index >= self._debugger.GetNumTargets():
+            return error_response(
+                ErrorType.DEBUGGER_ERROR,
+                f"Invalid target index: {index}",
+                self.state.get_state(),
+            )
+
+        target = self._debugger.GetTargetAtIndex(index)
+        if not target.IsValid():
+            return error_response(
+                ErrorType.DEBUGGER_ERROR,
+                f"Target at index {index} is not valid",
+                self.state.get_state(),
+            )
+
+        self._debugger.SetSelectedTarget(target)
+        self._target = target
+        self._process = target.GetProcess() if target.GetProcess().IsValid() else None
+
+        self._refresh_state()
+
+        return ok_response(
+            self.state.get_state(),
+            {"selected_target": index},
+        )
+
+    def add_target(self, binary: str) -> Response:
+        """Add a new target without launching it.
+
+        Useful for multi-process debugging where you want to set breakpoints
+        in multiple executables before launching.
+
+        Args:
+            binary: Path to executable
+        """
+        error = self._lldb.SBError()
+        target = self._debugger.CreateTarget(binary, None, None, True, error)
+
+        if not target.IsValid():
+            return error_response(
+                ErrorType.TARGET_ERROR,
+                f"Failed to create target: {error.GetCString()}",
+                self.state.get_state(),
+            )
+
+        index = self._debugger.GetNumTargets() - 1
+
+        return ok_response(
+            self.state.get_state(),
+            {"target_index": index, "executable": binary},
+        )
+
+    def set_async_mode(self, enabled: bool) -> Response:
+        """Enable or disable async mode.
+
+        In async mode, execution commands return immediately and you need
+        to poll for state changes. Required for complex multi-process scenarios.
+
+        Args:
+            enabled: True for async mode, False for sync mode
+        """
+        self._debugger.SetAsync(enabled)
+
+        return ok_response(
+            self.state.get_state(),
+            {"async_mode": enabled},
+        )

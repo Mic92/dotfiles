@@ -104,10 +104,15 @@ class DebuggerServer:
         # Create the high-level wrapper
         dbg = DebuggerWrapper(backend, state)
 
+        # Create RR utilities (available for trace management)
+        rr_utils = RRUtilities()
+
         # Populate namespace
         self._namespace = {
             # Main debugger interface
             "dbg": dbg,
+            # RR trace management (always available)
+            "rr": rr_utils,
             # Protocol types for inspection
             "StopReason": StopReason,
             "ErrorType": ErrorType,
@@ -504,6 +509,139 @@ class DebuggerWrapper:
     def status(self) -> dict[str, Any]:
         """Get current debugger status."""
         return self._response_to_dict(self._backend.status())
+
+    # RR-specific methods (only work with RR backend)
+
+    def checkpoint(self) -> dict[str, Any]:
+        """Create a checkpoint at current execution point (RR only).
+
+        Returns checkpoint ID that can be used with restart().
+        """
+        return self._response_to_dict(self._backend.checkpoint())
+
+    def restart(self, checkpoint_id: int) -> dict[str, Any]:
+        """Restart from a checkpoint (RR only)."""
+        return self._response_to_dict(self._backend.restart(checkpoint_id))
+
+    def when(self) -> dict[str, Any]:
+        """Get current RR event number (RR only).
+
+        Events are the fundamental unit of time in RR traces.
+        """
+        return self._response_to_dict(self._backend.when())
+
+    def run_to_event(self, event: int) -> dict[str, Any]:
+        """Run to a specific RR event (RR only)."""
+        return self._response_to_dict(self._backend.run_to_event(event))
+
+    def checkpoints(self) -> dict[str, Any]:
+        """List all checkpoints (RR only)."""
+        return self._response_to_dict(self._backend.list_checkpoints())
+
+    def delete_checkpoint(self, checkpoint_id: int) -> dict[str, Any]:
+        """Delete a checkpoint (RR only)."""
+        return self._response_to_dict(self._backend.delete_checkpoint(checkpoint_id))
+
+    # Multi-process support (LLDB)
+
+    def targets(self) -> dict[str, Any]:
+        """List all debugger targets (LLDB only).
+
+        Returns list of targets with: index, executable, pid, state, is_selected
+        """
+        return self._response_to_dict(self._backend.list_targets())
+
+    def select_target(self, index: int) -> dict[str, Any]:
+        """Select a target by index (LLDB only)."""
+        return self._response_to_dict(self._backend.select_target(index))
+
+    def add_target(self, binary: str) -> dict[str, Any]:
+        """Add a new target without launching it (LLDB only).
+
+        Useful for setting breakpoints in multiple executables.
+        """
+        return self._response_to_dict(self._backend.add_target(binary))
+
+    def follow_fork(self, mode: str) -> dict[str, Any]:
+        """Set fork following mode (LLDB only).
+
+        Args:
+            mode: "parent" or "child"
+
+        Note: LLDB fork following is limited on macOS.
+        """
+        return self._response_to_dict(self._backend.set_follow_fork_mode(mode))
+
+    def async_mode(self, enabled: bool) -> dict[str, Any]:
+        """Enable/disable async mode (LLDB only).
+
+        Async mode is needed for complex multi-process scenarios.
+        """
+        return self._response_to_dict(self._backend.set_async_mode(enabled))
+
+
+class RRUtilities:
+    """RR trace management utilities.
+
+    Available as `rr` in the namespace for managing traces outside debugging sessions.
+    """
+
+    def traces(self) -> list[dict[str, Any]]:
+        """List all available RR traces.
+
+        Returns list of trace info dicts with: name, path, executable, recorded_at, size_bytes
+        """
+        from dbg_cli.rr import list_traces
+        return [t.to_dict() for t in list_traces()]
+
+    def trace_info(self, trace_path: str) -> dict[str, Any] | None:
+        """Get information about a specific trace.
+
+        Args:
+            trace_path: Path or name of trace directory
+        """
+        from dbg_cli.rr import get_trace_info
+        info = get_trace_info(trace_path)
+        return info.to_dict() if info else None
+
+    def record(
+        self,
+        binary: str,
+        args: list[str] | None = None,
+        output_name: str | None = None,
+        env: dict[str, str] | None = None,
+    ) -> dict[str, Any]:
+        """Record a new RR trace.
+
+        Args:
+            binary: Path to executable to record
+            args: Command line arguments
+            output_name: Custom name for trace directory
+            env: Additional environment variables
+
+        Returns:
+            Dict with trace info or error
+        """
+        from dbg_cli.rr import record_trace
+        return record_trace(binary, args, output_name, env)
+
+    def delete(self, trace_path: str) -> dict[str, Any]:
+        """Delete an RR trace.
+
+        Args:
+            trace_path: Path or name of trace to delete
+        """
+        from dbg_cli.rr import delete_trace
+        return delete_trace(trace_path)
+
+    def events(self, trace_path: str) -> dict[str, Any]:
+        """Get list of processes/events in a trace.
+
+        Args:
+            trace_path: Path or name of trace
+        """
+        from dbg_cli.rr import get_trace_events
+        return get_trace_events(trace_path)
 
 
 def main() -> None:

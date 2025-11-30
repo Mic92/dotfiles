@@ -100,6 +100,54 @@ dbg.status()                   # Get current status
 ### Short Aliases
 All methods have short aliases: `c`, `s`, `n`, `b`, `bt`, `f`, `p`, `x`, `l`, `dis`, etc.
 
+### RR-Specific Methods
+```python
+# Checkpoints (for instant time-travel)
+dbg.checkpoint()              # Create checkpoint, returns checkpoint_id
+dbg.restart(checkpoint_id)    # Jump back to checkpoint
+dbg.checkpoints()             # List all checkpoints
+dbg.delete_checkpoint(id)     # Remove checkpoint
+
+# Event navigation
+dbg.when()                    # Get current event number
+dbg.run_to_event(event)       # Run to specific event
+```
+
+### Multi-Process Support (LLDB)
+```python
+# Target management
+dbg.targets()                 # List all targets
+dbg.add_target("/path/to/bin")  # Add without launching
+dbg.select_target(index)      # Switch active target
+
+# Fork handling
+dbg.follow_fork("child")      # Follow child on fork
+dbg.follow_fork("parent")     # Stay with parent (default)
+dbg.async_mode(True)          # Enable async for multi-process
+```
+
+## RR Trace Management
+
+The `rr` object is available for managing traces outside debugging sessions:
+
+```python
+# List available traces
+rr.traces()
+# Returns: [{"name": "binary-0", "path": "...", "executable": "...", ...}]
+
+# Get trace info
+rr.trace_info("binary-0")
+
+# Record a new trace
+rr.record("/path/to/binary", args=["arg1"], output_name="my-trace")
+
+# Delete a trace
+rr.delete("binary-0")
+
+# Get processes/events in a trace
+rr.events("binary-0")
+```
+
 ## Response Format
 
 All responses are JSON:

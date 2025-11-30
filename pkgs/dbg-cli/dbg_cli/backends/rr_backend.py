@@ -939,3 +939,164 @@ class RRBackend(DebuggerBackend):
         """Get current debugger status."""
         self._refresh_state()
         return ok_response(self.state.get_state())
+
+    # RR-specific features
+
+    def checkpoint(self) -> Response:
+        """Create a checkpoint at the current execution point.
+
+        Checkpoints allow instant restarts to a specific point in the trace.
+        Returns checkpoint ID that can be used with restart().
+        """
+        if err := self._check_running():
+            return err
+
+        try:
+            # RR uses GDB's checkpoint command
+            resp = self._send_command("interpreter-exec console \"checkpoint\"")
+
+            # Parse checkpoint ID from output
+            checkpoint_id = None
+            for record in resp.get("records", []):
+                if record.get("type") == "stream":
+                    text = record.get("text", "")
+                    # Output looks like: "checkpoint 1: ..."
+                    import re
+                    match = re.search(r"checkpoint\s+(\d+):", text)
+                    if match:
+                        checkpoint_id = int(match.group(1))
+                        break
+
+            return ok_response(
+                self.state.get_state(),
+                {"checkpoint_id": checkpoint_id},
+            )
+
+        except GDBMIError as e:
+            return error_response(ErrorType.DEBUGGER_ERROR, str(e), self.state.get_state())
+
+    def restart(self, checkpoint_id: int) -> Response:
+        """Restart execution from a checkpoint.
+
+        Args:
+            checkpoint_id: ID from a previous checkpoint() call
+        """
+        if err := self._check_running():
+            return err
+
+        try:
+            resp = self._send_command(f"interpreter-exec console \"restart {checkpoint_id}\"")
+
+            if resp.get("class") == "error":
+                return error_response(
+                    ErrorType.DEBUGGER_ERROR,
+                    resp.get("data", {}).get("msg", f"Failed to restart from checkpoint {checkpoint_id}"),
+                    self.state.get_state(),
+                )
+
+            self._refresh_state()
+            return ok_response(self.state.get_state(), {"restarted_from": checkpoint_id})
+
+        except GDBMIError as e:
+            return error_response(ErrorType.DEBUGGER_ERROR, str(e), self.state.get_state())
+
+    def when(self) -> Response:
+        """Get the current RR event number.
+
+        Events are the fundamental unit of time in RR. Each event corresponds
+        to a specific point in the recorded execution.
+        """
+        if err := self._check_running():
+            return err
+
+        try:
+            resp = self._send_command("interpreter-exec console \"when\"")
+
+            # Parse event number from output
+            event = None
+            for record in resp.get("records", []):
+                if record.get("type") == "stream":
+                    text = record.get("text", "")
+                    # Output looks like: "Current event: 1234"
+                    import re
+                    match = re.search(r"Current event:\s*(\d+)", text)
+                    if match:
+                        event = int(match.group(1))
+                        break
+
+            return ok_response(self.state.get_state(), {"event": event})
+
+        except GDBMIError as e:
+            return error_response(ErrorType.DEBUGGER_ERROR, str(e), self.state.get_state())
+
+    def run_to_event(self, event: int) -> Response:
+        """Run to a specific RR event number.
+
+        Args:
+            event: Event number to run to
+        """
+        if err := self._check_running():
+            return err
+
+        try:
+            resp = self._send_command(f"interpreter-exec console \"run {event}\"")
+
+            if resp.get("class") == "error":
+                return error_response(
+                    ErrorType.DEBUGGER_ERROR,
+                    resp.get("data", {}).get("msg", f"Failed to run to event {event}"),
+                    self.state.get_state(),
+                )
+
+            self._refresh_state()
+            return ok_response(self.state.get_state(), {"reached_event": event})
+
+        except GDBMIError as e:
+            return error_response(ErrorType.DEBUGGER_ERROR, str(e), self.state.get_state())
+
+    def list_checkpoints(self) -> Response:
+        """List all checkpoints in the current session."""
+        if err := self._check_running():
+            return err
+
+        try:
+            resp = self._send_command("interpreter-exec console \"info checkpoints\"")
+
+            checkpoints = []
+            for record in resp.get("records", []):
+                if record.get("type") == "stream":
+                    text = record.get("text", "")
+                    # Parse checkpoint lines
+                    import re
+                    match = re.match(r"\s*(\d+)\s+.*", text)
+                    if match:
+                        checkpoints.append({"id": int(match.group(1)), "info": text.strip()})
+
+            return ok_response(self.state.get_state(), {"checkpoints": checkpoints})
+
+        except GDBMIError as e:
+            return error_response(ErrorType.DEBUGGER_ERROR, str(e), self.state.get_state())
+
+    def delete_checkpoint(self, checkpoint_id: int) -> Response:
+        """Delete a checkpoint.
+
+        Args:
+            checkpoint_id: ID of checkpoint to delete
+        """
+        if err := self._check_running():
+            return err
+
+        try:
+            resp = self._send_command(f"interpreter-exec console \"delete checkpoint {checkpoint_id}\"")
+
+            if resp.get("class") == "error":
+                return error_response(
+                    ErrorType.DEBUGGER_ERROR,
+                    resp.get("data", {}).get("msg", f"Failed to delete checkpoint {checkpoint_id}"),
+                    self.state.get_state(),
+                )
+
+            return ok_response(self.state.get_state(), {"deleted_checkpoint": checkpoint_id})
+
+        except GDBMIError as e:
+            return error_response(ErrorType.DEBUGGER_ERROR, str(e), self.state.get_state())
