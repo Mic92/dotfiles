@@ -71,6 +71,7 @@
     ./modules/users.nix
     ./modules/wireguard.nix
     ./modules/zerotier.nix
+    ./modules/phantun.nix
 
     ../../nixosModules/borgbackup.nix
     ../../nixosModules/builder.nix
