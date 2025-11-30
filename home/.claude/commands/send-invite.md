@@ -1,4 +1,5 @@
-Send an email or calendar invite using msmtp (automatically saves to Sent folder).
+Send an email or calendar invite using msmtp (automatically saves to Sent
+folder).
 
 ## Email Sending
 
@@ -27,8 +28,9 @@ process.communicate(msg.as_bytes())
 
 ## Calendar Invites
 
-**IMPORTANT:** Always use UTC when creating events to avoid timezone interpretation issues.
-Convert the desired local time to UTC first, then create the event with `TZ=UTC`.
+**IMPORTANT:** Always use UTC when creating events to avoid timezone
+interpretation issues. Convert the desired local time to UTC first, then create
+the event with `TZ=UTC`.
 
 1. Create the event with khal using UTC:
    ```bash
@@ -55,9 +57,10 @@ Convert the desired local time to UTC first, then create the event with `TZ=UTC`
 
 ## Workflow
 
-1. Ask for: recipient, subject, body, and if calendar invite: date/time/timezone/location
-2. For calendar invites, create the khal event first
+1. Ask for: recipient, subject, body, and if calendar invite:
+   date/time/timezone/location
+2. For calendar invites, create the khal event first (using UTC)
 3. Construct the email with Python
-4. Send via msmtp and save to ~/mail/thalheim.io/.Sent/cur/
+4. Send via msmtp
 
 User request: $ARGUMENTS
