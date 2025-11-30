@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
-"""Debugger CLI client - sends commands to debugger server.
+"""Debugger CLI client - sends Python code to debugger server.
 
 This is the main entry point for LLM agents and users.
-Commands are read from stdin, responses are JSON on stdout.
+Python code is read from stdin and executed in a namespace with `dbg` available.
+Responses are JSON on stdout.
+
+Example:
+    echo 'dbg.launch("/bin/ls")' | dbg-cli SESSION_ID
+    echo 'dbg.breakpoint("main")' | dbg-cli SESSION_ID
+    echo 'dbg.continue_()' | dbg-cli SESSION_ID
 """
 
 from __future__ import annotations
@@ -17,14 +23,15 @@ import time
 import uuid
 from contextlib import suppress
 from pathlib import Path
+from typing import Any
 
-from debugger_cli.server import get_socket_dir, get_socket_path
+from dbg_cli.server import get_socket_dir, get_socket_path
 
 # Buffer size for socket communication
 BUFFER_SIZE = 65536
 
 # Pueue group for debugger sessions
-PUEUE_GROUP = "debugger"
+PUEUE_GROUP = "dbg"
 
 
 def generate_session_id() -> str:
@@ -96,7 +103,7 @@ def start_session(backend: str = "lldb", name: str | None = None) -> str | None:
         label,
         "--print-task-id",
         "--",
-        "debugger-server",
+        "dbg-server",
         session_id,
         "--backend",
         backend,
@@ -127,7 +134,7 @@ def stop_session(session_id: str) -> bool:
     """Stop a debugger session."""
     # Send quit command first
     try:
-        send_command(session_id, "quit")
+        send_code(session_id, "dbg.quit()")
     except Exception:
         pass
 
@@ -169,9 +176,9 @@ def stop_session(session_id: str) -> bool:
     return True
 
 
-def list_sessions() -> list[dict]:
+def list_sessions() -> list[dict[str, Any]]:
     """List active debugger sessions."""
-    sessions = []
+    sessions: list[dict[str, Any]] = []
 
     try:
         result = subprocess.run(
@@ -192,7 +199,7 @@ def list_sessions() -> list[dict]:
                 parts = command.split()
                 session_id = None
                 for i, part in enumerate(parts):
-                    if part == "debugger-server" and i + 1 < len(parts):
+                    if part == "dbg-server" and i + 1 < len(parts):
                         session_id = parts[i + 1]
                         break
 
@@ -222,20 +229,20 @@ def list_sessions() -> list[dict]:
     return sessions
 
 
-def send_command(session_id: str, command: str) -> dict:
-    """Send a command to a session and return the response."""
+def send_code(session_id: str, code: str) -> dict[str, Any]:
+    """Send Python code to a session and return the response."""
     socket_path = get_socket_path(session_id)
 
     if not socket_path.exists():
-        return {"error": f"Session {session_id} not found"}
+        return {"status": "error", "error": f"Session {session_id} not found"}
 
     try:
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         sock.settimeout(30.0)  # 30 second timeout for long operations
         sock.connect(str(socket_path))
 
-        # Send command
-        request = {"command": command}
+        # Send code
+        request = {"code": code}
         sock.sendall(json.dumps(request).encode())
         sock.shutdown(socket.SHUT_WR)
 
@@ -252,45 +259,65 @@ def send_command(session_id: str, command: str) -> dict:
         if data:
             return json.loads(data.decode())
         else:
-            return {"error": "Empty response from server"}
+            return {"status": "error", "error": "Empty response from server"}
 
     except socket.timeout:
-        return {"error": "Command timeout"}
+        return {"status": "error", "error": "Code execution timeout"}
     except ConnectionRefusedError:
-        return {"error": f"Cannot connect to session {session_id}"}
+        return {"status": "error", "error": f"Cannot connect to session {session_id}"}
     except json.JSONDecodeError as e:
-        return {"error": f"Invalid response: {e}"}
+        return {"status": "error", "error": f"Invalid response: {e}"}
     except Exception as e:
-        return {"error": str(e)}
+        return {"status": "error", "error": str(e)}
 
 
 def main() -> None:
-    """Main entry point for debugger-cli."""
+    """Main entry point for dbg-cli."""
     parser = argparse.ArgumentParser(
-        description="Debugger CLI - LLM-optimized debugger interface",
+        description="dbg-cli - LLM-optimized debugger interface (Python code via stdin)",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
   # Start a new session
-  debugger-cli --start --backend lldb
+  dbg-cli --start --backend lldb
 
-  # Send commands to a session
-  echo "launch /path/to/binary" | debugger-cli SESSION_ID
-  echo "break main" | debugger-cli SESSION_ID
-  echo "continue" | debugger-cli SESSION_ID
+  # Send Python code to a session
+  echo 'dbg.launch("/path/to/binary")' | dbg-cli SESSION_ID
+  echo 'dbg.breakpoint("main")' | dbg-cli SESSION_ID
+  echo 'dbg.continue_()' | dbg-cli SESSION_ID
+  echo 'dbg.locals()' | dbg-cli SESSION_ID
+
+  # Multi-line code
+  dbg-cli SESSION_ID << 'EOF'
+  result = dbg.backtrace()
+  for frame in result["result"]["frames"]:
+      print(f"{frame['index']}: {frame['function']}")
+  EOF
 
   # List sessions
-  debugger-cli --list
+  dbg-cli --list
 
   # Stop a session
-  debugger-cli --stop SESSION_ID
+  dbg-cli --stop SESSION_ID
+
+Available in namespace:
+  dbg           - Debugger interface with methods:
+                  launch, attach, detach, quit
+                  continue_, step, next, finish
+                  reverse_continue, reverse_step (RR only)
+                  breakpoint, delete, breakpoints, watch
+                  backtrace, frame, thread, threads
+                  locals, args, print, memory, registers
+                  source, disassemble, status
+  json          - json module
+  print         - print function
 """,
     )
 
     parser.add_argument(
         "session_id",
         nargs="?",
-        help="Session ID to send commands to",
+        help="Session ID to send code to",
     )
     parser.add_argument(
         "--start",
@@ -323,9 +350,9 @@ Examples:
         help="Session name/label (for --start)",
     )
     parser.add_argument(
-        "--command",
+        "--code",
         "-c",
-        help="Command to execute (alternative to stdin)",
+        help="Python code to execute (alternative to stdin)",
     )
 
     args = parser.parse_args()
@@ -351,27 +378,27 @@ Examples:
         print(json.dumps({"sessions": sessions}))
         sys.exit(0)
 
-    # Handle command execution
+    # Handle code execution
     if args.session_id:
-        # Get command from --command or stdin
-        if args.command:
-            command = args.command
+        # Get code from --code or stdin
+        if args.code:
+            code = args.code
         elif not sys.stdin.isatty():
-            command = sys.stdin.read().strip()
+            code = sys.stdin.read()
         else:
-            parser.error("No command provided. Use --command or pipe via stdin.")
+            parser.error("No code provided. Use --code or pipe via stdin.")
             sys.exit(1)
 
-        if not command:
-            parser.error("Empty command")
+        if not code.strip():
+            parser.error("Empty code")
             sys.exit(1)
 
-        # Send command and print response
-        response = send_command(args.session_id, command)
+        # Send code and print response
+        response = send_code(args.session_id, code)
         print(json.dumps(response, indent=2))
 
         # Exit with error code if response indicates error
-        if response.get("status") == "error" or "error" in response:
+        if response.get("status") == "error":
             sys.exit(1)
         sys.exit(0)
 

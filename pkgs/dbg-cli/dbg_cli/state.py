@@ -5,7 +5,7 @@ Maintains and updates the debugger state representation.
 
 from pathlib import Path
 
-from debugger_cli.protocol import (
+from dbg_cli.protocol import (
     Breakpoint,
     DebuggerState,
     Frame,

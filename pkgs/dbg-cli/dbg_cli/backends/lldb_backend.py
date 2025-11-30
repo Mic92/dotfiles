@@ -7,8 +7,8 @@ import sys
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
-from debugger_cli.backends.base import DebuggerBackend
-from debugger_cli.protocol import (
+from dbg_cli.backends.base import DebuggerBackend
+from dbg_cli.protocol import (
     Breakpoint,
     DisassemblyLine,
     ErrorType,
@@ -24,7 +24,7 @@ from debugger_cli.protocol import (
     ok_response,
     stopped_response,
 )
-from debugger_cli.state import StateManager
+from dbg_cli.state import StateManager
 
 if TYPE_CHECKING:
     import lldb

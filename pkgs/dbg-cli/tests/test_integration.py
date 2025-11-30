@@ -10,8 +10,8 @@ from pathlib import Path
 
 import pytest
 
-from debugger_cli.commands import CommandParseError, CommandType, parse_command
-from debugger_cli.protocol import (
+from dbg_cli.commands import CommandParseError, CommandType, parse_command
+from dbg_cli.protocol import (
     DebuggerState,
     ErrorType,
     Frame,
@@ -21,7 +21,7 @@ from debugger_cli.protocol import (
     error_response,
     ok_response,
 )
-from debugger_cli.state import StateManager
+from dbg_cli.state import StateManager
 
 
 class TestCommandParser:
@@ -167,7 +167,7 @@ class TestStateManager:
         assert state.running is False
 
     def test_breakpoint_management(self) -> None:
-        from debugger_cli.protocol import Breakpoint
+        from dbg_cli.protocol import Breakpoint
 
         mgr = StateManager()
         bp = Breakpoint(
@@ -246,7 +246,7 @@ class TestClientServer:
     )
     def test_session_lifecycle(self, temp_env: str) -> None:
         """Test starting, listing, and stopping sessions."""
-        from debugger_cli.client import list_sessions, start_session, stop_session
+        from dbg_cli.client import list_sessions, start_session, stop_session
 
         # Start a session
         session_id = start_session("lldb", "test-session")
@@ -302,7 +302,7 @@ class TestJSONOutput:
         assert parsed["error"]["details"]["code"] == 42
 
     def test_complex_state_serialization(self) -> None:
-        from debugger_cli.protocol import Breakpoint, SourceLine, Thread
+        from dbg_cli.protocol import Breakpoint, SourceLine, Thread
 
         state = DebuggerState(
             running=False,

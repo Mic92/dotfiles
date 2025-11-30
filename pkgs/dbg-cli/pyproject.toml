@@ -1,13 +1,13 @@
 [project]
-name = "debugger-cli"
+name = "dbg-cli"
 version = "0.1.0"
-description = "LLM-optimized debugger interface for LLDB and RR"
+description = "LLM-optimized debugger interface - execute Python code to control LLDB/RR"
 requires-python = ">=3.11"
 dependencies = []
 
 [project.scripts]
-debugger-server = "debugger_cli.server:main"
-debugger-cli = "debugger_cli.client:main"
+dbg-server = "dbg_cli.server:main"
+dbg-cli = "dbg_cli.client:main"
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]

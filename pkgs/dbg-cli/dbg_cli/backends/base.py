@@ -2,7 +2,7 @@
 
 from abc import ABC, abstractmethod
 
-from debugger_cli.protocol import (
+from dbg_cli.protocol import (
     Breakpoint,
     DisassemblyLine,
     Frame,
@@ -13,7 +13,7 @@ from debugger_cli.protocol import (
     Thread,
     Variable,
 )
-from debugger_cli.state import StateManager
+from dbg_cli.state import StateManager
 
 
 class DebuggerBackend(ABC):
@@ -129,7 +129,7 @@ class DebuggerBackend(ABC):
 
         Default implementation returns error for backends that don't support it.
         """
-        from debugger_cli.protocol import ErrorType, error_response
+        from dbg_cli.protocol import ErrorType, error_response
 
         return error_response(
             ErrorType.DEBUGGER_ERROR,
@@ -142,7 +142,7 @@ class DebuggerBackend(ABC):
 
         Default implementation returns error for backends that don't support it.
         """
-        from debugger_cli.protocol import ErrorType, error_response
+        from dbg_cli.protocol import ErrorType, error_response
 
         return error_response(
             ErrorType.DEBUGGER_ERROR,
@@ -155,7 +155,7 @@ class DebuggerBackend(ABC):
 
         Default implementation returns error for backends that don't support it.
         """
-        from debugger_cli.protocol import ErrorType, error_response
+        from dbg_cli.protocol import ErrorType, error_response
 
         return error_response(
             ErrorType.DEBUGGER_ERROR,

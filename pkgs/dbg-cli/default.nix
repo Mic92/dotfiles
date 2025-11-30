@@ -4,10 +4,9 @@
   lldb,
   rr,
   lib,
-  stdenv,
 }:
 python3.pkgs.buildPythonApplication {
-  pname = "debugger-cli";
+  pname = "dbg-cli";
   version = "0.1.0";
   pyproject = true;
 
@@ -45,11 +44,11 @@ python3.pkgs.buildPythonApplication {
   '';
 
   # Basic smoke test
-  pythonImportsCheck = [ "debugger_cli" ];
+  pythonImportsCheck = [ "dbg_cli" ];
 
   meta = {
-    description = "LLM-optimized debugger interface for LLDB and RR";
-    mainProgram = "debugger-cli";
+    description = "LLM-optimized debugger interface - execute Python code to control LLDB/RR";
+    mainProgram = "dbg-cli";
     platforms = lib.platforms.unix;
   };
 }
