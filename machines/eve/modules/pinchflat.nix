@@ -20,6 +20,8 @@ in
       TZ = "Europe/Berlin";
       # Expose feed endpoints without Pinchflat's auth (we use Authelia instead)
       EXPOSE_FEED_ENDPOINTS = "true";
+      # Use IPv6 for YouTube downloads (may help with rate limiting)
+      ENABLE_IPV6 = "true";
     };
   };
 
@@ -79,7 +81,22 @@ in
     };
 
     # Feed endpoints with Authelia HTTP basic auth (for podcast apps)
-    locations."/sources/" = {
+    # Match: /sources/opml, /sources/:uuid/feed, /sources/:uuid/feed_image
+    locations."~ ^/sources/(opml|[^/]+/feed|[^/]+/feed_image)" = {
+      proxyPass = "http://127.0.0.1:${toString config.services.pinchflat.port}";
+      proxyWebsockets = true;
+      recommendedProxySettings = true;
+      extraConfig = ''
+        # Use Authelia basic auth - triggers HTTP Basic Auth dialog
+        auth_request /authelia-basic;
+        auth_request_set $user $upstream_http_remote_user;
+        proxy_set_header Remote-User $user;
+      '';
+    };
+
+    # Media streaming endpoints with Authelia HTTP basic auth (for podcast apps)
+    # Match: /media/:uuid/stream, /media/:uuid/episode_image
+    locations."~ ^/media/[^/]+/(stream|episode_image)" = {
       proxyPass = "http://127.0.0.1:${toString config.services.pinchflat.port}";
       proxyWebsockets = true;
       recommendedProxySettings = true;
