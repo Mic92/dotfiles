@@ -51,6 +51,7 @@
     ./modules/owncast.nix
     ./modules/packages.nix
     ./modules/paperless.nix
+    ./modules/pinchflat.nix
     ./modules/radicle.nix
     ./modules/phpldapadmin.nix
     ./modules/postfix.nix

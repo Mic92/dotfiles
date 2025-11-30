@@ -159,6 +159,12 @@
             policy = "one_factor";
             subject = [ "group:flood" ];
           }
+          # Pinchflat - restrict to pinchflat group members only
+          {
+            domain = "pinchflat.thalheim.io";
+            policy = "one_factor";
+            subject = [ "group:pinchflat" ];
+          }
         ];
       };
     };
