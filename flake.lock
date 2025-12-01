@@ -339,32 +339,6 @@
         "type": "github"
       }
     },
-    "hercules-ci-effects_2": {
-      "inputs": {
-        "flake-parts": [
-          "hyprspace",
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "hyprspace",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1751406060,
-        "narHash": "sha256-xlxgYZ0eCnr9ikQuM5VuD8rUjLdbGzSKgF2EoRKDn/8=",
-        "owner": "max-privatevoid",
-        "repo": "hercules-ci-effects",
-        "rev": "b8127446a483cfd91495037e343b592662033188",
-        "type": "github"
-      },
-      "original": {
-        "owner": "max-privatevoid",
-        "ref": "pr/skip-if-exists",
-        "repo": "hercules-ci-effects",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -382,31 +356,6 @@
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
-        "type": "github"
-      }
-    },
-    "hyprspace": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "hercules-ci-effects": "hercules-ci-effects_2",
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1762163920,
-        "narHash": "sha256-PlMWBAbdM5pQqFhXhoK6ap6ken7cP9e+GRfED/xk7fg=",
-        "owner": "Mic92",
-        "repo": "hyprspace",
-        "rev": "6b61cf3bbcc44773a2756b26a60d06db0817adc8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "ref": "fix-darwin",
-        "repo": "hyprspace",
         "type": "github"
       }
     },
@@ -698,7 +647,6 @@
         "harmonia": "harmonia",
         "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
-        "hyprspace": "hyprspace",
         "n8n-nodes-caldav": "n8n-nodes-caldav",
         "nix": "nix",
         "nix-ai-tools": "nix-ai-tools",

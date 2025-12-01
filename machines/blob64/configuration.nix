@@ -12,7 +12,6 @@
     ../../nixosModules/networkd.nix
     ../../nixosModules/ip-update.nix
     ../../nixosModules/packages.nix
-    ../../nixosModules/hyprspace.nix
     ./modules/photoprism.nix
     ./modules/phantun.nix
   ];

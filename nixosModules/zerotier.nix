@@ -6,7 +6,7 @@
         type = lib.types.bool;
         default = false;
         description = ''
-          If true, blocks RFC1918 addresses using the firewall to stop hyprspace from connecting to it.
+          If true, blocks RFC1918 addresses using the firewall to stop zerotier from connecting to it.
           Some providers such as Hetzner will sent out abuse reports if you connect to these addresses.
         '';
       };
@@ -29,7 +29,6 @@
       interfacePrefixBlacklist = [
         "tinc"
         "wiregrill"
-        "hyprspace"
         "tailscale"
       ];
     };
