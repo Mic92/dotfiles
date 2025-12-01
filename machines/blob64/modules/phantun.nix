@@ -1,12 +1,13 @@
-# Phantun client for eve WireGuard tunnel
-# Connects to eve's phantun server and exposes local UDP endpoint
+# Phantun clients for WireGuard tunnels
+# Connects to eve/eva's phantun servers and exposes local UDP endpoints
 { lib, ... }:
 {
   imports = [ ../../../nixosModules/phantun ];
 
+  # Phantun client for eve
   services.phantun.client.eve-wg = {
     enable = true;
-    localUdp = "127.0.0.1:51821"; # Local UDP endpoint matching WireGuard port
+    localUdp = "127.0.0.1:51821"; # Local UDP endpoint for eve
     remoteAddress = "95.217.199.121:4567"; # Eve's public IP (phantun uses TCP)
     interface = "end0"; # blob64's network interface
     tun = "phantun0";
@@ -14,13 +15,24 @@
     tunPeerAddress = "192.168.200.2";
   };
 
-  # Override wireguard endpoint for eve to use phantun tunnel
+  # Phantun client for eva
+  services.phantun.client.eva-wg = {
+    enable = true;
+    localUdp = "127.0.0.1:51822"; # Local UDP endpoint for eva
+    remoteAddress = "116.203.179.132:4568"; # Eva's public IP (phantun uses TCP)
+    interface = "end0"; # blob64's network interface
+    tun = "phantun1";
+    tunLocalAddress = "192.168.202.1";
+    tunPeerAddress = "192.168.202.2";
+  };
+
+  # Override wireguard endpoints to use phantun tunnels
   networking.wireguard.interfaces.wireguard.peers = lib.mkForce [
     {
-      # eva - unchanged
+      # eva - via phantun tunnel
       publicKey = "n3jAKetBA7w0usNDIuN2+KvldFRZwrz7rJCS/AcKXFQ=";
       allowedIPs = [ "fd28:387a:2:b100::/56" ];
-      endpoint = "eva.i:51820";
+      endpoint = "127.0.0.1:51822"; # Via phantun
       persistentKeepalive = 25;
     }
     {
