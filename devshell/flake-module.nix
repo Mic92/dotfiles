@@ -35,7 +35,8 @@
         programs.hclfmt.enable = true;
         programs.yamlfmt.enable = true;
         programs.actionlint.enable = true;
-        programs.mypy.enable = true;
+        # Disable mypy on Darwin due to performance issues causing timeouts
+        programs.mypy.enable = !pkgs.stdenv.isDarwin;
         programs.mypy.directories = {
           "machines/eva/modules/prometheus" = { };
           "openwrt" = { };
