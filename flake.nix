@@ -66,10 +66,6 @@
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
     buildbot-nix.inputs.hercules-ci-effects.follows = "";
 
-    hyprspace.url = "github:Mic92/hyprspace/fix-darwin";
-    hyprspace.inputs.flake-parts.follows = "flake-parts";
-    hyprspace.inputs.nixpkgs.follows = "nixpkgs";
-
     nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
 
     home-manager.url = "github:nix-community/home-manager";

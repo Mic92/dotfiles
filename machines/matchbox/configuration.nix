@@ -1,7 +1,6 @@
 {
   pkgs,
   self,
-  lib,
   ...
 }:
 {
@@ -17,15 +16,12 @@
     ../../nixosModules/users.nix
     ../../nixosModules/sshd/tor.nix
     ../../nixosModules/promtail.nix
-    ../../nixosModules/hyprspace.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
-
-  clan.core.networking.targetHost = lib.mkForce "root@matchbox.hyprspace";
   #clan.core.networking.buildHost = "root@eve.i";
   clan.core.deployment.requireExplicitUpdate = true;
 

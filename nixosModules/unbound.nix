@@ -3,21 +3,6 @@
   services.unbound = {
     enable = true;
     settings = {
-      forward-zone = [
-        {
-          name = "\"hyprspace.\"";
-          forward-addr = "127.43.104.80@11355";
-        }
-        # not implemented in hyprspace yet
-        #{
-        #  name = "\"0.0.0.0.0.0.0.0.0.0.5.6.3.6.1.6.0.7.3.7.2.7.0.7.9.7.8.6.0.0.d.f.ip6.arpa.\"";
-        #  forward-addr = "127.43.104.80@11355";
-        #}
-        #{
-        #  name = "\"64.100.in-addr.arpa.\"";
-        #  forward-addr = "127.43.104.80@11355";
-        #}
-      ];
       server = {
         #verbosity = 3;
         prefetch = "yes";

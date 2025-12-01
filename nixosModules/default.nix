@@ -1,13 +1,11 @@
 {
   self,
-  config,
   lib,
   ...
 }:
 {
   srvos.flake = self;
   documentation.info.enable = false;
-  clan.core.networking.targetHost = "root@${config.networking.hostName}.hyprspace";
   clan.core.settings.state-version.enable = true;
 
   security.sudo.execWheelOnly = lib.mkForce false;

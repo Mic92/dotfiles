@@ -27,14 +27,11 @@
     ../../darwinModules/secretiv.nix
     ../../darwinModules/sudo.nix
     ../../darwinModules/ghostty.nix
-    ../../darwinModules/hyprspace.nix
     self.inputs.retiolum.darwinModules.tinc
     self.inputs.retiolum.darwinModules.retiolum
     self.inputs.retiolum.darwinModules.ca
     ../../nixosModules/tum-vpn
   ];
-
-  services.hyprspace.enable = true;
 
   system.activationScripts.postActivation.text = ''
     # disable spotlight

@@ -16,7 +16,6 @@
     ../../nixosModules/users.nix
     ../../nixosModules/tracing.nix
     ../../nixosModules/pipewire.nix
-    ../../nixosModules/hyprspace.nix
     ../../nixosModules/fhs-compat.nix
     ./disko.nix
 

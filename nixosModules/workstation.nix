@@ -22,7 +22,6 @@
     ./ssh-tpm-agent.nix
     ./tracing.nix
     ./users.nix
-    ./hyprspace.nix
   ];
 
   # System configuration
