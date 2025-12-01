@@ -155,27 +155,26 @@ in
             Type = "simple";
             ExecStart =
               let
-                args =
-                  [
-                    "--local"
-                    (toString serverCfg.listenPort)
-                    "--remote"
-                    serverCfg.remoteUdp
-                    "--tun"
-                    serverCfg.tun
-                    "--tun-local"
-                    serverCfg.tunLocalAddress
-                    "--tun-peer"
-                    serverCfg.tunPeerAddress
-                  ]
-                  ++ lib.optionals (serverCfg.tunLocalAddress6 != null) [
-                    "--tun-local6"
-                    serverCfg.tunLocalAddress6
-                  ]
-                  ++ lib.optionals (serverCfg.tunPeerAddress6 != null) [
-                    "--tun-peer6"
-                    serverCfg.tunPeerAddress6
-                  ];
+                args = [
+                  "--local"
+                  (toString serverCfg.listenPort)
+                  "--remote"
+                  serverCfg.remoteUdp
+                  "--tun"
+                  serverCfg.tun
+                  "--tun-local"
+                  serverCfg.tunLocalAddress
+                  "--tun-peer"
+                  serverCfg.tunPeerAddress
+                ]
+                ++ lib.optionals (serverCfg.tunLocalAddress6 != null) [
+                  "--tun-local6"
+                  serverCfg.tunLocalAddress6
+                ]
+                ++ lib.optionals (serverCfg.tunPeerAddress6 != null) [
+                  "--tun-peer6"
+                  serverCfg.tunPeerAddress6
+                ];
               in
               "${phantun}/bin/server ${lib.escapeShellArgs args}";
             Restart = "on-failure";
@@ -236,27 +235,26 @@ in
             Type = "simple";
             ExecStart =
               let
-                args =
-                  [
-                    "--local"
-                    clientCfg.localUdp
-                    "--remote"
-                    clientCfg.remoteAddress
-                    "--tun"
-                    clientCfg.tun
-                    "--tun-local"
-                    clientCfg.tunLocalAddress
-                    "--tun-peer"
-                    clientCfg.tunPeerAddress
-                  ]
-                  ++ lib.optionals (clientCfg.tunLocalAddress6 != null) [
-                    "--tun-local6"
-                    clientCfg.tunLocalAddress6
-                  ]
-                  ++ lib.optionals (clientCfg.tunPeerAddress6 != null) [
-                    "--tun-peer6"
-                    clientCfg.tunPeerAddress6
-                  ];
+                args = [
+                  "--local"
+                  clientCfg.localUdp
+                  "--remote"
+                  clientCfg.remoteAddress
+                  "--tun"
+                  clientCfg.tun
+                  "--tun-local"
+                  clientCfg.tunLocalAddress
+                  "--tun-peer"
+                  clientCfg.tunPeerAddress
+                ]
+                ++ lib.optionals (clientCfg.tunLocalAddress6 != null) [
+                  "--tun-local6"
+                  clientCfg.tunLocalAddress6
+                ]
+                ++ lib.optionals (clientCfg.tunPeerAddress6 != null) [
+                  "--tun-peer6"
+                  clientCfg.tunPeerAddress6
+                ];
               in
               "${phantun}/bin/client ${lib.escapeShellArgs args}";
             Restart = "on-failure";

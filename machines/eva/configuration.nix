@@ -21,6 +21,7 @@
     ./modules/disko.nix
     ./modules/loki.nix
     ./modules/nginx.nix
+    ./modules/phantun.nix
     ./modules/prometheus
     ./modules/telegraf
     ./modules/zerotier.nix
