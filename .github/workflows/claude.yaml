@@ -94,6 +94,9 @@ jobs:
             ${{ env.BUILDBOT_OUTPUT }}
 
             Make the necessary fixes to resolve the build failures. You can commit your changes locally, but do not try to push or create pull requests - that will be handled automatically after you finish.
+
+            IMPORTANT: Do NOT act on CI infrastructure issues such as remote builders being unreachable or unavailable.
+            If the build failure is caused by infrastructure issues rather than code problems, simply explain this in your output (visible in the action log) and do not attempt any fixes.
       - name: Clean up temporary files
         if: env.BASE_BRANCH != ''
         run: rm -f output.txt
