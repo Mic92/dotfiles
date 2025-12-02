@@ -59,6 +59,7 @@
 ## Git
 
 - When writing commit messages/comments focus on the WHY rather than the WHAT.
+- Use kernel-mailing style commit messages
 - Always test/lint/format your code before committing.
 - Use the gh tool to interact with GitHub i.e.: `gh run view 18256703410 --log`
 - Use the tea CLI tool to interact with Gitea i.e.: `tea pr 5519 --comments`
