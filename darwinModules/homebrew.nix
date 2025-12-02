@@ -32,5 +32,6 @@
     "ghostty"
     "via"
     "claude"
+    "chatgpt-atlas"
   ];
 }
