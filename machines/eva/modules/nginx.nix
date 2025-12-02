@@ -42,7 +42,7 @@ in
     security.acme.certs."alertmanager.r".server = config.retiolum.ca.acmeURL;
 
     services.nginx = {
-      package = pkgs.nginxQuic.override { modules = [ pkgs.nginxModules.pam ]; };
+      package = pkgs.nginx.override { modules = [ pkgs.nginxModules.pam ]; };
 
       commonHttpConfig = ''
         add_header Strict-Transport-Security 'max-age=31536000; includeSubDomains; preload' always;
