@@ -17,7 +17,7 @@
 
   # Warez nginx configuration
   services.nginx = {
-    package = pkgs.nginxQuic.override {
+    package = pkgs.nginx.override {
       modules = [
         pkgs.nginxModules.pam
         pkgs.nginxModules.fancyindex
