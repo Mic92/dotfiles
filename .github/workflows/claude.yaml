@@ -97,6 +97,9 @@ jobs:
 
             IMPORTANT: Do NOT act on CI infrastructure issues such as remote builders being unreachable or unavailable.
             If the build failure is caused by infrastructure issues rather than code problems, simply explain this in your output (visible in the action log) and do not attempt any fixes.
+
+            IMPORTANT: Do NOT downgrade flake inputs (e.g., reverting flake.lock changes) as a fix for build failures.
+            If the only way to fix the build would be to downgrade a flake input, do nothing and explain the situation in your output instead.
       - name: Clean up temporary files
         if: env.BASE_BRANCH != ''
         run: rm -f output.txt
