@@ -1,7 +1,13 @@
 keys:
+  - &mic92-turingmachine age17n64ahe3wesh8l8lj0zylf4nljdmqn28hvqns2g7hgm9mdkhlsvsjuvkxz
   - &mic92-darwin age1nnm255ah9wa4gpsaq0v023a75lnmlcxszt9lc6az3mtwzxgrucfq45rp7h
   - &evo age165555xde02v7u74m04qw9m92kqc9quwdy6nq0cg3na89pdg7he0sfff9zy
 creation_rules:
+  - path_regex: terraform/secrets\.enc\.json
+    key_groups:
+      - age:
+          - *mic92-turingmachine
+          - *mic92-darwin
   - path_regex: darwin/evo/test-secrets.yml
     key_groups:
       - age:
