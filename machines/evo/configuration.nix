@@ -45,18 +45,6 @@
 
   sops.age.keyFile = "/Library/Application Support/sops-nix/age-key.txt";
 
-  sops.secrets.test-secret = {
-    owner = "joerg";
-    path = "${config.users.users.joerg.home}/.foo";
-    sopsFile = ./test-secrets.yml;
-  };
-  sops.templates."test-template.toml" = {
-    content = ''
-      password = "${config.sops.placeholder.test-secret}";
-    '';
-    uid = 501;
-  };
-
   # fix vim repeat key
   system.defaults.NSGlobalDomain.ApplePressAndHoldEnabled = false;
 
