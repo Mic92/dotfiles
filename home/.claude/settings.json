@@ -1,6 +1,5 @@
 {
   "includeCoAuthoredBy": false,
-  "model": "opus",
   "hooks": {
     "Notification": [
       {
@@ -20,7 +19,9 @@
     "padding": 0
   },
   "enabledPlugins": {
-    "ast-grep@ast-grep-marketplace": true
+    "ast-grep@ast-grep-marketplace": true,
+    "frontend-design@claude-code-plugins": true,
+    "code-review@claude-code-plugins": true
   },
   "alwaysThinkingEnabled": true
 }

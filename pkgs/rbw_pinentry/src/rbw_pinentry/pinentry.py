@@ -67,63 +67,72 @@ class Pinentry:
             logger.warning("Failed to call zenity: %s", e)
         return None
 
-    def _handle_master_password(self, error: str) -> str | None:
+    def _get_cached_password(self) -> str | None:
+        """Get cached password from keyring."""
+        try:
+            return keyring.get_password(self.service_name, self.rbw_profile)
+        except keyring.errors.KeyringError as e:
+            logger.warning("Failed to get password: %s", e)
+            return None
+
+    def _clear_cached_password(self) -> None:
+        """Clear cached password from keyring."""
+        try:
+            keyring.delete_password(self.service_name, self.rbw_profile)
+        except keyring.errors.PasswordDeleteError:
+            pass  # Password doesn't exist, which is fine
+        except keyring.errors.KeyringError as e:
+            logger.warning("Failed to delete password: %s", e)
+
+    def _cache_password(self, password: str) -> None:
+        """Cache password in keyring."""
+        try:
+            keyring.set_password(self.service_name, self.rbw_profile, password)
+        except keyring.errors.KeyringError as e:
+            logger.warning("Failed to store password: %s", e)
+
+    def _handle_password(
+        self, title: str, prompt: str, desc: str, error: str
+    ) -> str | None:
+        # If there was an auth error, clear the cached password
         if error:
             logger.warning("Authentication error: %s", error)
-            try:
-                keyring.delete_password(self.service_name, self.rbw_profile)
-            except keyring.errors.PasswordDeleteError:
-                pass  # Password doesn't exist, which is fine
-            except keyring.errors.KeyringError as e:
-                logger.warning("Failed to delete password: %s", e)
-            cached_password = None
+            self._clear_cached_password()
         else:
-            try:
-                cached_password = keyring.get_password(
-                    self.service_name, self.rbw_profile
-                )
-            except keyring.errors.KeyringError as e:
-                logger.warning("Failed to get password: %s", e)
-                cached_password = None
+            # Try to return cached password
+            cached_password = self._get_cached_password()
+            if cached_password:
+                return cached_password
 
-        if cached_password:
-            return cached_password
+        # Set defaults for dialog
+        if not title:
+            title = "rbw"
+        if not desc:
+            desc = (
+                f"Authentication failed. Please enter the password for '{self.rbw_profile}'"
+                if error
+                else f"Please enter the password for '{self.rbw_profile}' (will be cached in secure storage)"
+            )
 
-        title = "rbw"
-        prompt = "Master Password"
-        if error:
-            desc = f"Authentication failed. Please enter the master password for '{self.rbw_profile}'"
-        else:
-            desc = f"Please enter the master password for '{self.rbw_profile}' (will be cached in secure storage)"
-
+        # Show prompt
         secret_value = self._show_zenity_password_dialog(
             title=title, prompt=prompt, desc=desc, error=error
         )
-        if secret_value:
-            try:
-                keyring.set_password(self.service_name, self.rbw_profile, secret_value)
-            except keyring.errors.KeyringError as e:
-                logger.warning("Failed to store password: %s", e)
-        return secret_value
 
-    def _handle_other_password(
-        self, title: str, prompt: str, desc: str, error: str
-    ) -> str | None:
-        return self._show_zenity_password_dialog(
-            title=title, prompt=prompt, desc=desc, error=error
-        )
+        # Cache password if successfully entered
+        if secret_value:
+            self._cache_password(secret_value)
+
+        return secret_value
 
     def _set_state(self, state: dict[str, str], key: str, value: str) -> str:
         state[key] = value
         return "OK"
 
     def _handle_getpin(self, state: dict[str, str]) -> str:
-        if state["prompt"] == "Master Password":
-            secret_value = self._handle_master_password(state["error"])
-        else:
-            secret_value = self._handle_other_password(
-                state["title"], state["prompt"], state["desc"], state["error"]
-            )
+        secret_value = self._handle_password(
+            state["title"], state["prompt"], state["desc"], state["error"]
+        )
         if secret_value:
             print(f"D {secret_value}", flush=True)
         return "OK"

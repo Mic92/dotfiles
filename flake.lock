@@ -247,6 +247,24 @@
         "type": "github"
       }
     },
+    "flake-parts_2": {
+      "inputs": {
+        "nixpkgs-lib": "nixpkgs-lib"
+      },
+      "locked": {
+        "lastModified": 1762440070,
+        "narHash": "sha256-xxdepIcb39UJ94+YydGP221rjnpkDZUlykKuF54PsqI=",
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "rev": "26d05891e14c88eb4a5d5bee659c0db5afb609d8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hercules-ci",
+        "repo": "flake-parts",
+        "type": "github"
+      }
+    },
     "flake-registry": {
       "flake": false,
       "locked": {
@@ -395,10 +413,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1764015079,
-        "narHash": "sha256-FKO6bKQJACn9C4/O2w/SgsezoRaP/uCmnpvdRCTWc3k=",
+        "lastModified": 1765004492,
+        "narHash": "sha256-1LtDCQfHiqw/KOlqjJEvxRInM6gS5GlO2oNIhFofK8I=",
         "ref": "refs/heads/main",
-        "rev": "bdd332de2b66faa9e8db4aba92671952abd7d23c",
+        "rev": "dff0d29d19ec8a3907a4f88616e5444ff63553be",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
@@ -432,6 +450,29 @@
       "original": {
         "owner": "numtide",
         "repo": "nix-ai-tools",
+        "type": "github"
+      }
+    },
+    "nix-casks": {
+      "inputs": {
+        "flake-parts": "flake-parts_2",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": "treefmt-nix_2"
+      },
+      "locked": {
+        "lastModified": 1764979270,
+        "narHash": "sha256-jiE6ma99C+LFBdwRghxi3Ix3TP75rmLWByRaij564Gs=",
+        "owner": "atahanyorganci",
+        "repo": "nix-casks",
+        "rev": "c36561054d7f89d8641151d1f8acd202452fd0a0",
+        "type": "github"
+      },
+      "original": {
+        "owner": "atahanyorganci",
+        "ref": "archive",
+        "repo": "nix-casks",
         "type": "github"
       }
     },
@@ -572,10 +613,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1763870151,
-        "narHash": "sha256-g7fchZpq9/Yxjci3SkvfyWmNVgSjmFpOW1J6m2whDxU=",
+        "lastModified": 1764663672,
+        "narHash": "sha256-NrkMiuKyPxOgobfPXI5eZXWUazb/QdMLo6lDvC7Oubg=",
         "ref": "main",
-        "rev": "6b51b5c2e56a27ce0e4e6b0c7e61ff3ecc10e494",
+        "rev": "a502e0b59371c0f203d6df2164dbf530710fe06a",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -585,6 +626,21 @@
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
+      }
+    },
+    "nixpkgs-lib": {
+      "locked": {
+        "lastModified": 1761765539,
+        "narHash": "sha256-b0yj6kfvO8ApcSE+QmA6mUfu8IYG6/uU28OFn4PaC8M=",
+        "owner": "nix-community",
+        "repo": "nixpkgs.lib",
+        "rev": "719359f4562934ae99f5443f20aa06c2ffff91fc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nix-community",
+        "repo": "nixpkgs.lib",
+        "type": "github"
       }
     },
     "nur-packages": {
@@ -650,6 +706,7 @@
         "n8n-nodes-caldav": "n8n-nodes-caldav",
         "nix": "nix",
         "nix-ai-tools": "nix-ai-tools",
+        "nix-casks": "nix-casks",
         "nix-darwin": "nix-darwin",
         "nix-diff-rs": "nix-diff-rs",
         "nix-index-database": "nix-index-database",
@@ -663,7 +720,7 @@
         "srvos": "srvos",
         "strace-macos": "strace-macos",
         "systems": "systems",
-        "treefmt-nix": "treefmt-nix_2"
+        "treefmt-nix": "treefmt-nix_3"
       }
     },
     "sops-nix": {
@@ -769,6 +826,27 @@
       }
     },
     "treefmt-nix_2": {
+      "inputs": {
+        "nixpkgs": [
+          "nix-casks",
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1762410071,
+        "narHash": "sha256-aF5fvoZeoXNPxT0bejFUBXeUjXfHLSL7g+mjR/p5TEg=",
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "rev": "97a30861b13c3731a84e09405414398fbf3e109f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "treefmt-nix_3": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"

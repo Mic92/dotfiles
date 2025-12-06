@@ -34,6 +34,9 @@
         blueutil = pkgs.callPackage ./blueutil { };
         systemctl-macos = pkgs.callPackage ./systemctl { };
       }
+      // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") {
+        kdeconnect = pkgs.callPackage ./kdeconnect { };
+      }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
         phantun = pkgs.callPackage ./phantun { };
       }

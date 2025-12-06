@@ -19,14 +19,12 @@
     self.inputs.srvos.darwinModules.mixins-nix-experimental
     self.inputs.sops-nix.darwinModules.sops
     ../../darwinModules/app-store
-    ../../darwinModules/homebrew.nix
+    ../../darwinModules/nix-casks.nix
     ../../darwinModules/nix-daemon.nix
     ../../darwinModules/nix-index.nix
     ../../darwinModules/openssh.nix
     ../../darwinModules/remote-builder.nix
-    ../../darwinModules/secretiv.nix
     ../../darwinModules/sudo.nix
-    ../../darwinModules/ghostty.nix
     self.inputs.retiolum.darwinModules.tinc
     self.inputs.retiolum.darwinModules.retiolum
     self.inputs.retiolum.darwinModules.ca
