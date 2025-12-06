@@ -5,7 +5,7 @@ terraform {
       version = "~> 6.0"
     }
     gitlab = {
-      source  = "gitlabhq/gitlab"
+      source = "gitlabhq/gitlab"
     }
     sops = {
       source  = "carlpett/sops"
