@@ -418,9 +418,12 @@ if [[ -n ${commands[sgpt]} ]]; then
   }
 fi
 
-n() {
-  NIX_RUN_ARGS="$@${NIX_RUN_ARGS+ }${NIX_RUN_ARGS}" nix shell "$@" -f '<nixpkgs>' -c zsh
-}
+if [[ -n ${commands[claude]} ]]; then
+  alias sonnet='claude --model sonnet'
+  alias opus='claude --model opus'
+  alias haiku='claude --model haiku'
+fi
+
 nix-call-package() {
     if [ $# -lt 1 ]; then
         echo "USAGE: $0" >&2
@@ -640,13 +643,6 @@ fi
 unlock_root(){
   pw=$(rbw get 'zfs encryption')
   ssh root@eve.i -p 2222 "echo ${pw} | systemd-tty-ask-password-agent"
-}
-# Autoinstall Bundle
-bundle() {
-  if [[ -z "${commands[bundle]}" ]] && [[ -n "${commands[gem]}" ]]; then
-   gem install --user-install bundler
-  fi
-  command bundle "$@"
 }
 fd() {
   if [[ -n "${commands[fd]}" ]]; then
