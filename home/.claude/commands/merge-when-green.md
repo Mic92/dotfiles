@@ -8,7 +8,7 @@ Push changes and monitor CI until completion using merge-when-green:
 ## Steps
 
 ```bash
-pueue add -- merge-when-green --message 'feat: your PR title here'
+pueue add -- 'merge-when-green --message "feat: your PR title here"'
 ```
 
 Capture the task ID from output, then wait and check logs:
