@@ -76,12 +76,10 @@
   - Any test runs that might be slow
   - Any deployment or build operations (make, ninja, cargo)
 
-  To run and wait:
+  To run and wait (note: quote the entire command to preserve argument quoting):
   ```bash
-  pueue add -- command arg1 arg2
-  ⎿  New task added (id 134).
-  pueue wait 134 && pueue log 134
-  ⎿  New task added (id 134). pueue wait 134 && pueue log 134
+  pueue add -- 'command arg1 "arg with spaces"'
+  pueue wait <task-id> && pueue log <task-id>
   ```
 
 ## Search
