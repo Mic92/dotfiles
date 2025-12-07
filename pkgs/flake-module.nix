@@ -24,7 +24,6 @@
         browser-cli = pkgs.python3.pkgs.callPackage ./browser-cli { };
         pexpect-cli = pkgs.callPackage ./pexpect-cli { };
         iroh-ssh = pkgs.callPackage ./iroh-ssh { };
-        phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
         # Cross-platform secure pinentry (works on macOS and Linux)
         rbw-pinentry = pkgs.callPackage ./rbw_pinentry { };
         # Matrix calendar bot
@@ -39,6 +38,7 @@
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
         phantun = pkgs.callPackage ./phantun { };
+        phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
       }
       // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
         cewe-fotowelt = pkgs.callPackage ./cewe-fotowelt { };
