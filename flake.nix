@@ -11,7 +11,7 @@
   inputs = {
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
-    hercules-ci-effects.url = "github:hercules-ci/hercules-ci-effects";
+    hercules-ci-effects.url = "git+https://github.com/hercules-ci/hercules-ci-effects?shallow=1";
     hercules-ci-effects.inputs.nixpkgs.follows = "nixpkgs";
     hercules-ci-effects.inputs.flake-parts.follows = "flake-parts";
 
@@ -89,19 +89,20 @@
     #clan-core.url = "path:///Users/joerg/git/clan-core";
     #clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=nixos-rebuild";
     #clan-core.url = "git+file:///home/joerg/work/clan/clan-core";
-
-    n8n-nodes-caldav.url = "github:Mic92/n8n-nodes-caldav";
-    n8n-nodes-caldav.inputs.nixpkgs.follows = "nixpkgs";
-    n8n-nodes-caldav.inputs.flake-parts.follows = "flake-parts";
-
     clan-core.inputs.nixpkgs.follows = "nixpkgs";
     clan-core.inputs.sops-nix.follows = "sops-nix";
     clan-core.inputs.treefmt-nix.follows = "treefmt-nix";
+    clan-core.inputs.data-mesher.follows = "data-mesher";
     clan-core.inputs.disko.follows = "disko";
     clan-core.inputs.flake-parts.follows = "flake-parts";
     clan-core.inputs.nixos-facter-modules.follows = "nixos-facter-modules";
     clan-core.inputs.systems.follows = "systems";
     clan-core.inputs.nix-darwin.follows = "nix-darwin";
+
+    n8n-nodes-caldav.url = "github:Mic92/n8n-nodes-caldav";
+    n8n-nodes-caldav.inputs.nixpkgs.follows = "nixpkgs";
+    n8n-nodes-caldav.inputs.flake-parts.follows = "flake-parts";
+    n8n-nodes-caldav.inputs.treefmt-nix.follows = "treefmt-nix";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
@@ -152,6 +153,8 @@
     nix-casks = {
       url = "github:atahanyorganci/nix-casks/archive";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
     #microvm.url = "github:astro/microvm.nix";
