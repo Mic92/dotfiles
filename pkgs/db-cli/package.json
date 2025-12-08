@@ -20,7 +20,7 @@
   "license": "ISC",
   "description": "CLI tool for searching Deutsche Bahn train connections",
   "dependencies": {
-    "db-vendo-client": "^6.8.2"
+    "db-vendo-client": "^6.10.6"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
