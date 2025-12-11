@@ -89,10 +89,10 @@ in
         "Library/Application Support/Mozilla/NativeMessagingHosts/io.thalheim.browser_cli.bridge.json".text =
           builtins.toJSON nativeMessagingHostManifest;
 
-        # Symlink the extension XPI for easy manual installation
-        # Users can install from: about:debugging > This Firefox > Load Temporary Add-on
-        # Or drag the file to Firefox
-        ".local/share/browser-cli/browser-cli.xpi".source = "${browserCliExtension}/browser-cli.xpi";
+        # Auto-install extension via Firefox's user extensions directory
+        # {ec8030f7-c20a-464f-9b0e-13a3a9e97384} is Firefox's application GUID
+        "Library/Application Support/Mozilla/Extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/browser-cli-controller@thalheim.io.xpi".source =
+          "${browserCliExtension}/browser-cli.xpi";
       };
     })
   ];
