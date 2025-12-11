@@ -13,6 +13,7 @@
       claude
       chatgpt-atlas
       secretive
+      gather
     ])
     ++ [
       self.packages.${pkgs.system}.kdeconnect
