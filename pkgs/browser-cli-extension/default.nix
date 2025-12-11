@@ -16,8 +16,6 @@ stdenv.mkDerivation {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}
-
     # Create XPI (which is just a ZIP file)
     zip -r $out/browser-cli.xpi \
       manifest.json \
@@ -26,9 +24,11 @@ stdenv.mkDerivation {
       icon.png \
       icon.svg
 
-    # Also install to Mozilla extensions directory with the extension ID
-    cp $out/browser-cli.xpi \
-      "$out/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/browser-cli-controller@thalheim.io.xpi"
+    # Create extracted extension directory for auto-install
+    # Firefox looks for a folder named with the extension ID
+    mkdir -p "$out/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/browser-cli-controller@thalheim.io"
+    cp manifest.json background.js content.js icon.png icon.svg \
+      "$out/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/browser-cli-controller@thalheim.io/"
 
     runHook postInstall
   '';

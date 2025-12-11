@@ -11,6 +11,9 @@ let
   browserCliExtension = self.packages.${system}.browser-cli-extension;
   browserCli = self.packages.${system}.browser-cli;
 
+  # Firefox application GUID
+  firefoxGuid = "{ec8030f7-c20a-464f-9b0e-13a3a9e97384}";
+
   # Native messaging host manifest for browser-cli
   nativeMessagingHostManifest = {
     name = "io.thalheim.browser_cli.bridge";
@@ -51,6 +54,9 @@ in
             # Enable Wayland support
             "widget.use-xdg-desktop-portal.file-picker" = 1;
 
+            # Prevent auto-disabling of sideloaded extensions
+            "extensions.autoDisableScopes" = 0;
+
             # Privacy settings
             "browser.send_pings" = false;
             "browser.urlbar.speculativeConnect.enabled" = false;
@@ -82,7 +88,7 @@ in
       };
     })
 
-    # macOS: Firefox is installed via nix-casks, only configure native messaging
+    # macOS: Firefox is installed via nix-casks, configure native messaging and extensions
     (lib.mkIf pkgs.stdenv.isDarwin {
       home.file = {
         # Native messaging host manifest
@@ -90,9 +96,9 @@ in
           builtins.toJSON nativeMessagingHostManifest;
 
         # Auto-install extension via Firefox's user extensions directory
-        # {ec8030f7-c20a-464f-9b0e-13a3a9e97384} is Firefox's application GUID
-        "Library/Application Support/Mozilla/Extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/browser-cli-controller@thalheim.io.xpi".source =
-          "${browserCliExtension}/browser-cli.xpi";
+        # Using extracted folder approach (more reliable than XPI according to Mozilla docs)
+        "Library/Application Support/Mozilla/Extensions/${firefoxGuid}/browser-cli-controller@thalheim.io".source =
+          "${browserCliExtension}/share/mozilla/extensions/${firefoxGuid}/browser-cli-controller@thalheim.io";
       };
     })
   ];
