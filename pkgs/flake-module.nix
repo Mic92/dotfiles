@@ -23,6 +23,7 @@
         claude-md = pkgs.python3.pkgs.callPackage ./claude-md { };
         browser-cli = pkgs.python3.pkgs.callPackage ./browser-cli { };
         browser-cli-extension = pkgs.callPackage ./browser-cli-extension { };
+        chrome-tab-gc-extension = pkgs.callPackage ./chrome-tab-gc-extension { };
         pexpect-cli = pkgs.callPackage ./pexpect-cli { };
         iroh-ssh = pkgs.callPackage ./iroh-ssh { };
         # Cross-platform secure pinentry (works on macOS and Linux)

@@ -1,11 +1,13 @@
 { self, pkgs, ... }:
 {
+  imports = [ ./firefox.nix ];
+
   # Install GUI apps via nix-casks and custom packages
   environment.systemPackages =
     (with self.inputs.nix-casks.packages.${pkgs.system}; [
       alt-tab
       ferdium
-      firefox
+      # Firefox is installed via ./firefox.nix with policies/extensions
       ungoogled-chromium
       signal
       ghostty
