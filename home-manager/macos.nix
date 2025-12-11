@@ -9,6 +9,7 @@
     ./modules/ai.nix
     ./modules/mail.nix
     ./modules/atuin-autosync.nix
+    ./modules/librewolf.nix
   ];
   home.packages = [
     pkgs.eternal-terminal

@@ -22,6 +22,10 @@
         buildbot-pr-check = pkgs.python3.pkgs.callPackage ./buildbot-pr-check { };
         claude-md = pkgs.python3.pkgs.callPackage ./claude-md { };
         browser-cli = pkgs.python3.pkgs.callPackage ./browser-cli { };
+        inherit (pkgs.callPackages ./firefox-extensions { })
+          browser-cli-extension
+          chrome-tab-gc-extension
+          ;
         pexpect-cli = pkgs.callPackage ./pexpect-cli { };
         iroh-ssh = pkgs.callPackage ./iroh-ssh { };
         # Cross-platform secure pinentry (works on macOS and Linux)
@@ -35,6 +39,7 @@
       }
       // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") {
         kdeconnect = pkgs.callPackage ./kdeconnect { };
+        librewolf-macos = pkgs.callPackage ./librewolf-macos { };
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
         phantun = pkgs.callPackage ./phantun { };
