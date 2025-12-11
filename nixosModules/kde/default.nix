@@ -13,7 +13,6 @@
 
   environment.systemPackages = with pkgs; [
     ferdium
-    firefox
     chromium
     pavucontrol
     bottles

@@ -6,6 +6,7 @@
     ./modules/calendar.nix
     ./modules/ai.nix
     ./modules/mail.nix
+    ./modules/librewolf.nix
   ];
 
   fonts.fontconfig.enable = true;

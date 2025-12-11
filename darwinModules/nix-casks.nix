@@ -5,7 +5,6 @@
     (with self.inputs.nix-casks.packages.${pkgs.system}; [
       alt-tab
       ferdium
-      firefox
       ungoogled-chromium
       signal
       ghostty
