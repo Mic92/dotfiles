@@ -22,6 +22,7 @@
         buildbot-pr-check = pkgs.python3.pkgs.callPackage ./buildbot-pr-check { };
         claude-md = pkgs.python3.pkgs.callPackage ./claude-md { };
         browser-cli = pkgs.python3.pkgs.callPackage ./browser-cli { };
+        browser-cli-extension = pkgs.callPackage ./browser-cli-extension { };
         pexpect-cli = pkgs.callPackage ./pexpect-cli { };
         iroh-ssh = pkgs.callPackage ./iroh-ssh { };
         # Cross-platform secure pinentry (works on macOS and Linux)
