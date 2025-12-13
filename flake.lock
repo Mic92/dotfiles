@@ -83,11 +83,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1765584415,
-        "narHash": "sha256-eGlXqyMv7kpnY6kskbOJ0PLcUBBSQ27ACP6HgCG8WHI=",
-        "rev": "98d2c52a924a643a260016cc0c58b679542bc3e7",
+        "lastModified": 1765615664,
+        "narHash": "sha256-DuGhcIDQmCvFivSfKTd0BNia8NoJu626kCGcsgqy2C4=",
+        "rev": "d2be5c4b03ab86abd5c50d2a3f9a4350f2299d69",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/98d2c52a924a643a260016cc0c58b679542bc3e7.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/d2be5c4b03ab86abd5c50d2a3f9a4350f2299d69.tar.gz"
       },
       "original": {
         "type": "tarball",
@@ -334,6 +334,32 @@
         "type": "github"
       }
     },
+    "llm-agents": {
+      "inputs": {
+        "blueprint": [
+          "blueprint"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1765594737,
+        "narHash": "sha256-9r+CxptJlqTdREkSHA1pxc3oZYnpgYNkAymkQLB0R8w=",
+        "owner": "numtide",
+        "repo": "llm-agents.nix",
+        "rev": "fb30f7dd63c0c7227c4b80a4dbfb6765f4b9a900",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "llm-agents.nix",
+        "type": "github"
+      }
+    },
     "n8n-nodes-caldav": {
       "inputs": {
         "flake-parts": [
@@ -384,32 +410,6 @@
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
-      }
-    },
-    "nix-ai-tools": {
-      "inputs": {
-        "blueprint": [
-          "blueprint"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1765594737,
-        "narHash": "sha256-9r+CxptJlqTdREkSHA1pxc3oZYnpgYNkAymkQLB0R8w=",
-        "owner": "numtide",
-        "repo": "nix-ai-tools",
-        "rev": "fb30f7dd63c0c7227c4b80a4dbfb6765f4b9a900",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "nix-ai-tools",
-        "type": "github"
       }
     },
     "nix-casks": {
@@ -651,9 +651,9 @@
         "harmonia": "harmonia",
         "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
+        "llm-agents": "llm-agents",
         "n8n-nodes-caldav": "n8n-nodes-caldav",
         "nix": "nix",
-        "nix-ai-tools": "nix-ai-tools",
         "nix-casks": "nix-casks",
         "nix-darwin": "nix-darwin",
         "nix-diff-rs": "nix-diff-rs",
