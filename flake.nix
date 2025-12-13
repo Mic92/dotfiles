@@ -129,8 +129,8 @@
       inputs.systems.follows = "systems";
     };
 
-    nix-ai-tools = {
-      url = "github:numtide/nix-ai-tools";
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
       inputs.blueprint.follows = "blueprint";
@@ -178,7 +178,6 @@
           ./home-manager/flake-module.nix
           ./terraform/flake-module.nix
           ./devshell/flake-module.nix
-          ./pkgs/images/flake-module.nix
           ./pkgs/flake-module.nix
           ./openwrt/flake-module.nix
           inputs.hercules-ci-effects.flakeModule

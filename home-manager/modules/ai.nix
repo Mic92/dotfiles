@@ -7,7 +7,7 @@
 {
   home.packages =
     let
-      aiTools = inputs.nix-ai-tools.packages.${pkgs.stdenv.hostPlatform.system};
+      aiTools = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
     in
     [
       self.packages.${pkgs.stdenv.hostPlatform.system}.claude-code
