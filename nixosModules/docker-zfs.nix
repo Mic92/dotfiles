@@ -15,7 +15,7 @@ in
     enableOnBoot = true;
     storageDriver = if useOverlayStorageDriver then "overlay2" else "zfs";
     extraOptions = "--userland-proxy=false --ip-masq=true ${
-      lib.optionalString (!useOverlayStorageDriver) "--storage-opt=zfs.fsname=zroot/docker"
+      lib.optionalString (!useOverlayStorageDriver) "--storage-opt=zfs.fsname=zroot/root/docker"
     }";
 
     # not compatible with docker swarm
