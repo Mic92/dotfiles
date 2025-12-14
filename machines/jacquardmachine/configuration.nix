@@ -25,6 +25,12 @@
 
   nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
+  # Pin to kernel 6.12 due to NVIDIA driver incompatibility with 6.18
+  # The nvidia-open driver 580.105.08 fails to build on 6.18 with:
+  # nvidia-uvm/uvm_va_range_device_p2p.c:363:13: error: too many arguments to function 'get_dev_pagemap'
+  # See: https://github.com/NVIDIA/open-gpu-kernel-modules/issues/692
+  boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_12;
+
   networking.hostName = "jacquardmachine";
 
   system.stateVersion = "24.11";
