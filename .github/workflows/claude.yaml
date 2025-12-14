@@ -86,7 +86,7 @@ jobs:
           GH_TOKEN: ""
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          claude_args: "--allowed-tools Bash,WebFetch(*.github.com,*.thalheim.io),Edit"
+          claude_args: "--allowed-tools Bash,Read,Write,Edit,Glob,Grep,WebFetch(*.github.com,*.thalheim.io,*.nixos.org)"
           prompt: |
             ${{ github.event.client_payload.prompt }}
 
