@@ -1,6 +1,4 @@
-{
-  ...
-}:
+{ inputs, ... }:
 {
   perSystem =
     {
@@ -32,6 +30,8 @@
         rbw-pinentry = pkgs.callPackage ./rbw_pinentry { };
         # Matrix calendar bot
         calendar-bot = pkgs.python3.pkgs.callPackage ./calendar_bot { };
+        # Reference all flake inputs to ensure they get cached
+        flake-inputs = pkgs.callPackage ./flake-inputs { inherit inputs; };
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
         blueutil = pkgs.callPackage ./blueutil { };
