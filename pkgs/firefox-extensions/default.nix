@@ -49,13 +49,8 @@ let
 
         mkdir -p "$out"
 
-        # Create XPI
+        # Create XPI (Firefox 62+ requires packed extensions for sideloading)
         zip -r "$out/${pname}.xpi" .
-
-        # Create extracted extension directory for sideloading
-        # Firefox GUID: {ec8030f7-c20a-464f-9b0e-13a3a9e97384}
-        mkdir -p "$out/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/${extensionId}"
-        cp -r . "$out/share/mozilla/extensions/{ec8030f7-c20a-464f-9b0e-13a3a9e97384}/${extensionId}/"
 
         runHook postInstall
       '';
