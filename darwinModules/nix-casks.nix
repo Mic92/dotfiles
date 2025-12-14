@@ -1,23 +1,24 @@
 { self, pkgs, ... }:
+let
+  cask = self.inputs.nix-casks.packages.${pkgs.system};
+in
 {
   # Install GUI apps via nix-casks and custom packages
-  environment.systemPackages =
-    (with self.inputs.nix-casks.packages.${pkgs.system}; [
-      alt-tab
-      ferdium
-      ungoogled-chromium
-      signal
-      ghostty
-      via
-      claude
-      chatgpt-atlas
-      secretive
-      gather
-    ])
-    ++ [
-      self.packages.${pkgs.system}.kdeconnect
-      self.packages.${pkgs.system}.librewolf-macos
-    ];
+  environment.systemPackages = [
+    cask.alt-tab
+    cask.ferdium
+    cask.ungoogled-chromium
+    cask.signal
+    cask.ghostty
+    cask.via
+    cask.claude
+    cask.chatgpt-atlas
+    cask.secretive
+    cask.gather
+    cask.inkscape
+    self.packages.${pkgs.system}.kdeconnect
+    self.packages.${pkgs.system}.librewolf-macos
+  ];
 
   # Configure SSH to use Secretive for key management
   environment.etc."ssh/ssh_config.d/secretive.conf".text = ''
