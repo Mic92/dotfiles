@@ -82,7 +82,7 @@ in
   systemd.services.n8n.preStart = ''
     mkdir -p /var/lib/n8n/.n8n/custom
     ln -sfn ${
-      self.inputs.n8n-nodes-caldav.packages.${pkgs.system}.default
+      self.inputs.n8n-nodes-caldav.packages.${pkgs.stdenv.hostPlatform.system}.default
     }/lib/node_modules/n8n-nodes-caldav/dist \
       /var/lib/n8n/.n8n/custom/n8n-nodes-caldav
   '';
