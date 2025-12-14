@@ -16,6 +16,7 @@
     ])
     ++ [
       self.packages.${pkgs.system}.kdeconnect
+      self.packages.${pkgs.system}.librewolf-macos
     ];
 
   # Configure SSH to use Secretive for key management
