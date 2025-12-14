@@ -20,6 +20,10 @@
 
   environment.systemPackages = with pkgs; [ bottles ];
 
+  # Pin Linux 6.12 for NVIDIA driver compatibility
+  # TODO: Remove this when NVIDIA drivers support 6.18+
+  boot.kernelPackages = lib.mkForce pkgs.linuxPackages_6_12;
+
   # Disable envfs to fix systemd refusing to run with unpopulated /usr/
   services.envfs.enable = lib.mkForce false;
 
