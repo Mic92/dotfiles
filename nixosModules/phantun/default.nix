@@ -10,7 +10,7 @@
 }:
 let
   cfg = config.services.phantun;
-  phantun = self.packages.${pkgs.system}.phantun;
+  phantun = self.packages.${pkgs.stdenv.hostPlatform.system}.phantun;
 in
 {
   options.services.phantun = {

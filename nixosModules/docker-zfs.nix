@@ -1,6 +1,6 @@
 { lib, pkgs, ... }:
 let
-  useOverlayStorageDriver = pkgs.hostPlatform.isRiscV;
+  useOverlayStorageDriver = pkgs.stdenv.hostPlatform.isRiscV;
 in
 {
   # Docker with ZFS storage driver
