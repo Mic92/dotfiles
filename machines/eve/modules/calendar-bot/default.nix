@@ -73,7 +73,7 @@
         ExecStart =
           let
             args = [
-              "${self.packages.${pkgs.system}.calendar-bot}/bin/calendar-bot"
+              "${self.packages.${pkgs.stdenv.hostPlatform.system}.calendar-bot}/bin/calendar-bot"
               "--homeserver"
               config.services.calendar-bot.homeserver
               "--username"
