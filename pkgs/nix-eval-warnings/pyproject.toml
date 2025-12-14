@@ -1,0 +1,16 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "nix-eval-warnings"
+version = "0.1.0"
+description = "Tool to extract nix evaluation warnings with stack traces"
+readme = "README.md"
+requires-python = ">=3.13"
+
+[project.scripts]
+nix-eval-warnings = "nix_eval_warnings:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nix_eval_warnings"]

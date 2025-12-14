@@ -30,6 +30,8 @@
         rbw-pinentry = pkgs.callPackage ./rbw_pinentry { };
         # Matrix calendar bot
         calendar-bot = pkgs.python3.pkgs.callPackage ./calendar_bot { };
+        # Nix evaluation warnings extractor
+        nix-eval-warnings = pkgs.callPackage ./nix-eval-warnings { };
         # Reference all flake inputs to ensure they get cached
         flake-inputs = pkgs.callPackage ./flake-inputs { inherit inputs; };
       }
