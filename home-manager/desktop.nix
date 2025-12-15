@@ -1,4 +1,9 @@
-{ self, pkgs, ... }:
+{
+  self,
+  pkgs,
+  inputs,
+  ...
+}:
 {
   imports = [
     ./common.nix
@@ -67,6 +72,7 @@
       zed-editor
       self.packages.${pkgs.stdenv.hostPlatform.system}.gmaps-cli
       self.packages.${pkgs.stdenv.hostPlatform.system}.browser-cli
+      inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system}.niks3
     ]
     ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
       ghostty
