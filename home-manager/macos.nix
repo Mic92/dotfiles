@@ -15,5 +15,6 @@
     pkgs.eternal-terminal
     pkgs.rbw
     inputs.strace-macos.packages.${pkgs.stdenv.hostPlatform.system}.default
+    inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system}.niks3
   ];
 }
