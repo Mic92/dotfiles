@@ -105,7 +105,7 @@ jobs:
         run: rm -f output.txt
       - name: Create Pull Request with fixes
         if: env.BASE_BRANCH != ''
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         id: cpr
         with:
           commit-message: "Fix CI failures"
