@@ -20,7 +20,7 @@
   libxkbcommon,
   wayland,
   xdg-utils,
-  callPackage,
+  fetchurl,
   libheif,
   nss,
   nspr,
@@ -28,13 +28,13 @@
 }:
 
 let
-  sources = callPackage ./sources.nix { };
+  srcsJson = lib.importJSON ./srcs.json;
 in
 stdenv.mkDerivation rec {
   pname = "cewe-fotowelt";
-  version = sources.version;
+  inherit (srcsJson) version;
 
-  srcs = map (src: src.src) sources.sources;
+  srcs = map (src: fetchurl { inherit (src) url hash; }) srcsJson.sources;
 
   sourceRoot = ".";
 
