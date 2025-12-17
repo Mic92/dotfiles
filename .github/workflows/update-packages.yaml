@@ -1,7 +1,7 @@
 name: Update Packages
 on:
   schedule:
-    - cron: "0 3 * * *"  # Daily at 3am UTC
+    - cron: "0 3 * * *" # Daily at 3am UTC
   workflow_dispatch:
     inputs:
       package:
@@ -21,19 +21,15 @@ jobs:
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
-
       - name: Checkout repository
         uses: actions/checkout@v6
         with:
           token: ${{ steps.app-token.outputs.token }}
-
       - name: Setup Nix
         uses: cachix/install-nix-action@v31
-
       - name: Setup GitHub CLI
         run: |
           echo "${{ steps.app-token.outputs.token }}" | gh auth login --with-token
-
       - name: Update packages
         working-directory: pkgs
         run: |

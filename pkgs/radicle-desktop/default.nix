@@ -9,7 +9,7 @@ let
   srcs = lib.importJSON ./srcs.json;
 in
 stdenv.mkDerivation {
-  pname = "librewolf";
+  pname = "radicle-desktop";
   inherit (srcs) version;
 
   src = fetchurl {
@@ -23,15 +23,15 @@ stdenv.mkDerivation {
   installPhase = ''
     runHook preInstall
     mkdir -p "$out/Applications"
-    cp -r LibreWolf.app "$out/Applications/"
+    cp -r Radicle.app "$out/Applications/"
     runHook postInstall
   '';
 
   meta = {
-    description = "A privacy-focused fork of Firefox";
-    homepage = "https://librewolf.net/";
-    license = lib.licenses.mpl20;
+    description = "Desktop app for Radicle, a peer-to-peer code collaboration stack";
+    homepage = "https://radicle.xyz/";
+    license = lib.licenses.gpl3Plus;
     platforms = [ "aarch64-darwin" ];
-    mainProgram = "librewolf";
+    mainProgram = "radicle";
   };
 }

@@ -14,7 +14,6 @@
     files.ssh-public-key = {
       secret = false;
     };
-    migrateFact = "radicle";
     runtimeInputs = with pkgs; [ openssh ];
     script = ''
       ssh-keygen -t ed25519 -N "" -f $out/ssh-private-key -C "radicle@eve"
