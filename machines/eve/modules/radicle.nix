@@ -112,7 +112,15 @@
     ];
 
     # Set root at virtualHost level for static file serving
-    root = lib.mkForce "${pkgs.radicle-explorer}";
+    root = lib.mkForce "${pkgs.radicle-explorer.withConfig {
+      preferredSeeds = [
+        {
+          hostname = "radicle.thalheim.io";
+          port = 443;
+          scheme = "https";
+        }
+      ];
+    }}";
 
     # Override "/" to serve static files instead of proxying
     locations."/" = {
