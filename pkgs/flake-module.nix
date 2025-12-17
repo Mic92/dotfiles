@@ -34,6 +34,8 @@
         nix-eval-warnings = pkgs.callPackage ./nix-eval-warnings { };
         # Reference all flake inputs to ensure they get cached
         flake-inputs = pkgs.callPackage ./flake-inputs { inherit inputs; };
+        # Package updater CLI
+        updater = pkgs.callPackage ./updater { };
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
         blueutil = pkgs.callPackage ./blueutil { };

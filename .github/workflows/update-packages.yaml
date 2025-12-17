@@ -31,10 +31,9 @@ jobs:
         run: |
           echo "${{ steps.app-token.outputs.token }}" | gh auth login --with-token
       - name: Update packages
-        working-directory: pkgs
         run: |
           if [ -n "${{ inputs.package }}" ]; then
-            python3 -m updater --pr -p "${{ inputs.package }}"
+            nix run .#updater -- --pr -p "${{ inputs.package }}"
           else
-            python3 -m updater --pr
+            nix run .#updater -- --pr
           fi

@@ -5,13 +5,19 @@ Automatically update third-party packages in `pkgs/`.
 ## Usage
 
 ```bash
+# Using the nix package (recommended, includes all dependencies)
+nix run .#updater -- --list
+nix run .#updater -- --dry-run
+nix run .#updater -- --pr
+nix run .#updater -- --pr -p <name>
+
+# Or directly with Python (requires nix-update, gh in PATH)
 cd pkgs
 python3 -m updater --list       # List all updatable packages
 python3 -m updater --dry-run    # Preview what would be updated
 python3 -m updater              # Update all packages in place
 python3 -m updater -p <name>    # Update a single package
 python3 -m updater --pr         # Create a PR for each updated package
-python3 -m updater --pr -p <name>  # Create PR for a single package
 ```
 
 The `--pr` flag uses git worktrees to create PRs without affecting your current
