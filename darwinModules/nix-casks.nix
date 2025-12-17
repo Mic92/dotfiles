@@ -18,6 +18,7 @@ in
     cask.inkscape
     self.packages.${pkgs.stdenv.hostPlatform.system}.kdeconnect
     self.packages.${pkgs.stdenv.hostPlatform.system}.librewolf-macos
+    self.packages.${pkgs.stdenv.hostPlatform.system}.radicle-desktop
   ];
 
   # Configure SSH to use Secretive for key management

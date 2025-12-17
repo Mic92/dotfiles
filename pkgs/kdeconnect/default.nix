@@ -1,17 +1,19 @@
 {
+  lib,
   stdenv,
   fetchurl,
   undmg,
 }:
 
-stdenv.mkDerivation rec {
+let
+  srcs = lib.importJSON ./srcs.json;
+in
+stdenv.mkDerivation {
   pname = "kdeconnect";
-  version = "5560";
+  inherit (srcs) version;
 
   src = fetchurl {
-    url = "https://cdn.kde.org/ci-builds/network/kdeconnect-kde/master/macos-arm64/kdeconnect-kde-master-${version}-macos-clang-arm64.dmg";
-    # No hash verification for nightly builds
-    sha256 = "sha256-Prf47KD5XKwI3G1p6mPJ+BNUym9g+rIgCvBvvGMhcqg=";
+    inherit (srcs) url hash;
   };
 
   nativeBuildInputs = [ undmg ];
