@@ -183,7 +183,6 @@
           ./machines/flake-module.nix
           ./nixosModules/openldap/flake-module.nix
           ./home-manager/flake-module.nix
-          ./terraform/flake-module.nix
           ./devshell/flake-module.nix
           ./pkgs/flake-module.nix
           ./openwrt/flake-module.nix
