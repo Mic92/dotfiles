@@ -22,7 +22,7 @@
   # This module only defines the state folders to be backed up
   services.borgbackup.jobs = {
     blob64 = {
-      repo = lib.mkForce "borg@blob64.r:/zdata/borg/${config.networking.hostName}";
+      repo = lib.mkForce "borg@blob64.x:/zdata/borg/${config.networking.hostName}";
       preHook = lib.optionalString config.networking.networkmanager.enable ''
         # wait until network is available and not metered
         while ! ${pkgs.networkmanager}/bin/nm-online --quiet || ${pkgs.networkmanager}/bin/nmcli --terse --fields GENERAL.METERED dev show 2>/dev/null | grep --quiet "yes"; do
