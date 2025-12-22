@@ -131,7 +131,7 @@
 
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Don't follow nixpkgs - llm-agents needs nixpkgs-unstable for fetchPnpmDeps
       inputs.treefmt-nix.follows = "treefmt-nix";
       inputs.blueprint.follows = "blueprint";
     };
