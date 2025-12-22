@@ -131,7 +131,8 @@
 
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Don't follow our nixpkgs - use llm-agents' own nixpkgs-unstable which has fetchPnpmDeps
+      # inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
       inputs.blueprint.follows = "blueprint";
     };
@@ -217,12 +218,18 @@
             system,
             ...
           }:
+          let
+            pkgs = import inputs.nixpkgs {
+              inherit system;
+              overlays = [ (import ./overlays/fetchPnpmDeps.nix) ];
+            };
+          in
           {
             # make pkgs available to all `perSystem` functions
-            _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
+            _module.args.pkgs = pkgs;
 
-            # Set clan.pkgs for all machines
-            clan.pkgs = inputs'.nixpkgs.legacyPackages;
+            # Set clan.pkgs for all machines - also use our pkgs with overlay
+            clan.pkgs = pkgs;
 
             checks =
               let
