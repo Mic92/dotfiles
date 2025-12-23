@@ -131,7 +131,10 @@
 
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # Temporarily not following nixpkgs to allow llm-agents to use its own
+      # nixpkgs which has fetchPnpmDeps (added upstream on 2025-12-18).
+      # Once Mic92/nixpkgs is updated to include fetchPnpmDeps, we can re-enable this.
+      # inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
       inputs.blueprint.follows = "blueprint";
     };
