@@ -339,9 +339,7 @@
         "blueprint": [
           "blueprint"
         ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
+        "nixpkgs": "nixpkgs",
         "treefmt-nix": [
           "treefmt-nix"
         ]
@@ -603,6 +601,22 @@
     },
     "nixpkgs": {
       "locked": {
+        "lastModified": 1766314097,
+        "narHash": "sha256-laJftWbghBehazn/zxVJ8NdENVgjccsWAdAqKXhErrM=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "306ea70f9eb0fb4e040f8540e2deab32ed7e2055",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixpkgs-unstable",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "nixpkgs_2": {
+      "locked": {
         "lastModified": 1765723736,
         "narHash": "sha256-pA0grNR39V1ZaNhTTt5gNypH/Szxp4dwdq0t7rR7QnE=",
         "ref": "main",
@@ -704,7 +718,7 @@
         "nix-tree-rs": "nix-tree-rs",
         "nixos-facter-modules": "nixos-facter-modules",
         "nixos-hardware": "nixos-hardware",
-        "nixpkgs": "nixpkgs",
+        "nixpkgs": "nixpkgs_2",
         "nur-packages": "nur-packages",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
