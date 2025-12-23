@@ -33,7 +33,9 @@
     nix.inputs.git-hooks-nix.follows = "";
     nix.inputs.nixpkgs-23-11.follows = "";
 
-    nixpkgs.url = "git+https://github.com/Mic92/nixpkgs?shallow=1&ref=main";
+    # Temporarily using upstream nixpkgs until Mic92/nixpkgs syncs fetchPnpmDeps
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    # nixpkgs.url = "git+https://github.com/Mic92/nixpkgs?shallow=1&ref=main";
     # for development
     #nixpkgs.url = "/home/joerg/git/nixpkgs";
     nur-packages.url = "github:Mic92/nur-packages";
