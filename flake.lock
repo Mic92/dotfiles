@@ -603,13 +603,12 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1765723736,
-        "narHash": "sha256-pA0grNR39V1ZaNhTTt5gNypH/Szxp4dwdq0t7rR7QnE=",
-        "ref": "main",
-        "rev": "97741cb0f15aca409a4d85e13d42d7e8ccbc34ab",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/Mic92/nixpkgs"
+        "lastModified": 1766314097,
+        "narHash": "sha256-laJftWbghBehazn/zxVJ8NdENVgjccsWAdAqKXhErrM=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "306ea70f9eb0fb4e040f8540e2deab32ed7e2055",
+        "type": "github"
       },
       "original": {
         "ref": "main",
