@@ -66,8 +66,6 @@
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
     buildbot-nix.inputs.hercules-ci-effects.follows = "";
 
-    nixos-facter-modules.url = "github:numtide/nixos-facter-modules";
-
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -85,7 +83,7 @@
     srvos.url = "github:nix-community/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 
-    clan-core.url = "https://git.clan.lol/clan/clan-core/archive/main.tar.gz";
+    clan-core.url = "https://git.clan.lol/clan/clan-core/archive/nixos-facter.tar.gz";
     #clan-core.url = "path:///Users/joerg/git/clan-core";
     #clan-core.url = "git+https://git.clan.lol/clan/clan-core?ref=nixos-rebuild";
     #clan-core.url = "git+file:///home/joerg/work/clan/clan-core";
@@ -95,7 +93,6 @@
     clan-core.inputs.data-mesher.follows = "data-mesher";
     clan-core.inputs.disko.follows = "disko";
     clan-core.inputs.flake-parts.follows = "flake-parts";
-    clan-core.inputs.nixos-facter-modules.follows = "nixos-facter-modules";
     clan-core.inputs.systems.follows = "systems";
     clan-core.inputs.nix-darwin.follows = "nix-darwin";
 
@@ -130,7 +127,7 @@
     };
 
     llm-agents = {
-      url = "github:numtide/llm-agents.nix";
+      url = "github:numtide/llm-agents.nix/claude-code";
       # Don't follow nixpkgs - llm-agents needs newer nixpkgs with fetchPnpmDeps
       # inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";

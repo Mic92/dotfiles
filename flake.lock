@@ -66,9 +66,6 @@
           "nix-darwin"
         ],
         "nix-select": "nix-select",
-        "nixos-facter-modules": [
-          "nixos-facter-modules"
-        ],
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -83,15 +80,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1766448347,
-        "narHash": "sha256-pmcTyVnQ9geGJarW2XNkmPOXcJhHC//t0IONkfyzBj8=",
-        "rev": "d54d99aa6d29487173503fb1f1998bd69dd9de7c",
+        "lastModified": 1766491409,
+        "narHash": "sha256-GytxQzg7Kmqik09r5r3Za0sxkHAvUSmk97lg4x2c0vY=",
+        "rev": "643ea46c37aa5ee1ce6e64014aeab3b98bc566b7",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/d54d99aa6d29487173503fb1f1998bd69dd9de7c.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/643ea46c37aa5ee1ce6e64014aeab3b98bc566b7.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.clan.lol/clan/clan-core/archive/main.tar.gz"
+        "url": "https://git.clan.lol/clan/clan-core/archive/nixos-facter.tar.gz"
       }
     },
     "crane": {
@@ -345,15 +342,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1766459388,
-        "narHash": "sha256-b3j6g6FBOWPVXdFb8L9KY/k/1lCVhFOBTAj0S9iwcYY=",
+        "lastModified": 1766484286,
+        "narHash": "sha256-oeFyAOGL8QU8aZQi2iOPg2euqykjIfOXL52OGIXB764=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "bba8cf78f4dfe576b32478d3dff4524ea8c979c2",
+        "rev": "605b4dbe083a2307e915347fae1d241bbee59ba9",
         "type": "github"
       },
       "original": {
         "owner": "numtide",
+        "ref": "claude-code",
         "repo": "llm-agents.nix",
         "type": "github"
       }
@@ -569,21 +567,6 @@
         "type": "github"
       }
     },
-    "nixos-facter-modules": {
-      "locked": {
-        "lastModified": 1765442039,
-        "narHash": "sha256-k3lYQ+A1F7aTz8HnlU++bd9t/x/NP2A4v9+x6opcVg0=",
-        "owner": "numtide",
-        "repo": "nixos-facter-modules",
-        "rev": "9dd775ee92de63f14edd021d59416e18ac2c00f1",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "nixos-facter-modules",
-        "type": "github"
-      }
-    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1764440730,
@@ -617,10 +600,10 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1765723736,
-        "narHash": "sha256-pA0grNR39V1ZaNhTTt5gNypH/Szxp4dwdq0t7rR7QnE=",
+        "lastModified": 1766492721,
+        "narHash": "sha256-OlsXjn6s5d4yOSmL3Mp/uRdvxdkl2kWo/Ku6T+FPwKA=",
         "ref": "main",
-        "rev": "97741cb0f15aca409a4d85e13d42d7e8ccbc34ab",
+        "rev": "344cb32ac06fe753a489f35dd7ba0e18b36ff707",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -716,7 +699,6 @@
         "nix-diff-rs": "nix-diff-rs",
         "nix-index-database": "nix-index-database",
         "nix-tree-rs": "nix-tree-rs",
-        "nixos-facter-modules": "nixos-facter-modules",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
         "nur-packages": "nur-packages",
