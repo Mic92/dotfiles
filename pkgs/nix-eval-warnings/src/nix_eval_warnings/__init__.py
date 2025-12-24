@@ -82,6 +82,27 @@ def resolve_store_path(filepath: str, input_mapping: dict[str, str]) -> str:
     return filepath
 
 
+def extract_error_message(error_text: str) -> str:
+    """Extract error/warning message from error text.
+
+    Handles evaluation errors where there's no 'evaluation warning:' prefix.
+    Looks for the main error message after the stack trace.
+    """
+    # Look for "error: <message>" pattern - get the last one (most specific)
+    matches = re.findall(r"error:\s*(.+?)(?:\n|$)", error_text)
+    for match in reversed(matches):
+        msg = match.strip()
+        # Skip generic messages like "aborting" or stack trace fragments
+        if (
+            msg
+            and msg not in ("aborting", "evaluation aborted")
+            and not msg.startswith("…")
+        ):
+            return msg
+
+    return "unknown"
+
+
 def extract_option_path(error_text: str) -> str:
     """Extract the option path being evaluated from error stack trace.
 
@@ -149,9 +170,10 @@ def parse_nix_eval_output(
                 data = json.loads(line)
                 if "error" in data:
                     error_text = strip_ansi(data["error"])
+                    warning_type = last_warning or extract_error_message(error_text)
                     yield EvalWarning(
                         attr=data.get("attr", "unknown"),
-                        warning_type=last_warning or "unknown",
+                        warning_type=warning_type,
                         source=extract_source(error_text, input_mapping),
                         option_path=extract_option_path(error_text),
                     )

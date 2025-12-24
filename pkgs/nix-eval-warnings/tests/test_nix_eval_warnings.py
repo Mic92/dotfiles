@@ -95,7 +95,8 @@ class TestNixEvalWarningsIntegration(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.tmpdir = tempfile.TemporaryDirectory()
-        base_dir = Path(cls.tmpdir.name)
+        # Resolve symlinks (macOS /tmp -> /private/tmp) as Nix rejects symlinked store paths
+        base_dir = Path(cls.tmpdir.name).resolve()
         cls.flake_dir = base_dir / "flake"
         cls.subflake_dir = base_dir / "subflake"
         cls.nix_root = base_dir / "nix"
@@ -271,6 +272,31 @@ class TestParseNixEvalOutput(unittest.TestCase):
         results = list(parse_nix_eval_output(lines, {}))
         assert len(results) == 1
         assert results[0] is None
+
+    def test_eval_error_without_warning_prefix_extracts_message(self) -> None:
+        """Test that eval errors without 'evaluation warning:' prefix extract message from error.
+
+        Regression test for nixos-tegan boot.kernelPackages conflict.
+        """
+        # Actual error format from nix-eval-jobs for conflicting option definitions
+        error = (
+            "error:\\n"
+            "       … while evaluating the option `system.build.toplevel':\\n"
+            "       … while evaluating the option `boot.kernelPackages':\\n"
+            "       error: The option `boot.kernelPackages' is defined multiple times "
+            "while it's expected to be unique."
+        )
+        lines = [
+            # No "evaluation warning:" line - just the JSON error
+            f'{{"attr":"x86_64-linux.nixos-tegan","error":"{error}"}}',
+        ]
+
+        results = [w for w in parse_nix_eval_output(lines, {}) if w]
+        assert len(results) == 1
+        w = results[0]
+        assert w.attr == "x86_64-linux.nixos-tegan"
+        assert "defined multiple times" in w.warning_type
+        assert w.option_path == "boot.kernelPackages"
 
 
 if __name__ == "__main__":

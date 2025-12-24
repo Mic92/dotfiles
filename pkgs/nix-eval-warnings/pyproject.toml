@@ -14,3 +14,6 @@ nix-eval-warnings = "nix_eval_warnings:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/nix_eval_warnings"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
