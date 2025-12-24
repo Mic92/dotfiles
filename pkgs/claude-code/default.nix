@@ -16,6 +16,9 @@ writeShellApplication {
     # Set shell to bash for Claude Code
     export SHELL=${pkgs.bashInteractive}/bin/bash
 
+    # Add ~/.local/bin to PATH for user scripts to shut-up claude warnings
+    export PATH="$HOME/.local/bin:$PATH"
+
     # Start pueued daemon if not already running
     if ! pueue status &>/dev/null; then
       echo "Starting pueue daemon..."
