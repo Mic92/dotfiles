@@ -50,8 +50,6 @@
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
     #./modules/nixos-wiki
-    ./modules/openttd
-    ./modules/owncast.nix
     ./modules/packages.nix
     ./modules/paperless.nix
     ./modules/pinchflat.nix
