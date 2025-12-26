@@ -30,6 +30,8 @@
   environment variables for store paths to find the correct dependency versions.
 - My nix.conf has remote builders for aarch64-linux/aarch64-darwin/x86_64-linux
   by default, for NixOS tests. Therefore, use x86_64-linux on macOS machines
+- Cross-arch builds: `nix-build --eval-system x86_64-linux`. Flakes: use system
+  attr directly (e.g., `.#packages.x86_64-linux.hello`).
 - Use nix-locate to find packages by path. i.e. `nix-locate bin/ip`
 - Use `nix run` to execute applications that are not installed.
 - Use `nix eval` instead of `nix flake show` to look up attributes in a flake.
