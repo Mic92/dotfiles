@@ -8,7 +8,7 @@
   services.phantun.client.eve-wg = {
     enable = true;
     localUdp = "127.0.0.1:51821"; # Local UDP endpoint for eve
-    remoteAddress = "95.217.199.121:4567"; # Eve's public IP (phantun uses TCP)
+    remoteAddress = "135.181.61.171:4567"; # Eve's public IP (phantun uses TCP)
     interface = "end0"; # blob64's network interface
     tun = "phantun0";
     tunLocalAddress = "192.168.200.1";

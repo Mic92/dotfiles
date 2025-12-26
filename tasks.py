@@ -16,7 +16,7 @@ os.chdir(ROOT)
 @task
 def decrypt_eve(_c: Any) -> None:
     """Decrypt secrets"""
-    eve_initrd = DeployHost("95.217.199.121", user="root", port=2222)
+    eve_initrd = DeployHost("135.181.61.171", user="root", port=2222)
     pw = subprocess.run(
         ["rbw", "get", "zfs encryption"],
         text=True,
@@ -34,7 +34,7 @@ def decrypt_eve(_c: Any) -> None:
 @task
 def reboot_and_decrypt_eve(c: Any) -> None:
     """Reboot hosts and decrypt secrets"""
-    eve = DeployHost("95.217.199.121", user="root")
+    eve = DeployHost("135.181.61.171", user="root")
     eve.run("reboot &")
     wait_for_reboot(eve)
     decrypt_eve(c)
@@ -120,7 +120,7 @@ def reboot(c: Any, hosts: str) -> None:
 
 @task
 def kexec_installer(c: Any, hosts: str) -> None:
-    """Kexec into nixos installer, i.e. inv kexec-installer --hosts root@95.217.199.121"""
+    """Kexec into nixos installer, i.e. inv kexec-installer --hosts root@135.181.61.171"""
 
     def do_kexec(h: DeployHost) -> None:
         h.run(
@@ -145,7 +145,7 @@ def disko_mount_from_recovery(c: Any, host: str, flake: str) -> None:
 @task
 def boot_eve_into_recovery(c: Any) -> None:
     """Mount the system disk from a recovery system, i.e. inv disko-mount-from-recovery --host root@eve.i --flake github:mic92/dotfiles#eve"""
-    eve_hostname = "root@95.217.199.121"
+    eve_hostname = "root@135.181.61.171"
     host = parse_hosts(eve_hostname).hosts[0]
     kexec_installer(c, hosts=eve_hostname)
     pw = subprocess.run(

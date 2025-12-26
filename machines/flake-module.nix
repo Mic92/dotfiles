@@ -44,8 +44,8 @@
           };
           roles.moon.machines.eve.settings = {
             stableEndpoints = [
-              "95.217.199.121"
-              "2a01:4f9:4a:42e8::1"
+              "135.181.61.171"
+              "2a01:4f9:4b:4084::1"
             ];
           };
           roles.peer.tags.nixos = { };

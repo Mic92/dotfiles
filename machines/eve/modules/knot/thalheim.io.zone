@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2024112202 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2025122601 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -14,29 +14,29 @@ he IN NS ns3.he.net.
 he IN NS ns4.he.net.
 he IN NS ns5.he.net.
 
-@ IN A 95.217.199.121
-@ IN AAAA 2a01:4f9:4a:42e8::1
-eve IN A 95.217.199.121
-4.eve IN A 95.217.199.121
-eve IN AAAA 2a01:4f9:4a:42e8::1
-6.eve IN AAAA 2a01:4f9:4a:42e8::1
+@ IN A 135.181.61.171
+@ IN AAAA 2a01:4f9:4b:4084::1
+eve IN A 135.181.61.171
+4.eve IN A 135.181.61.171
+eve IN AAAA 2a01:4f9:4b:4084::1
+6.eve IN AAAA 2a01:4f9:4b:4084::1
 
 eva IN A 116.203.179.132
 4.eva IN A 116.203.179.132
 eva IN AAAA 2a01:4f8:1c1a:37b2::1
 6.eva IN AAAA 2a01:4f8:1c1a:37b2::1
 
-git IN A 95.217.199.121
-git IN AAAA 2a01:4f9:4a:42e8::1
-ns1 IN A 95.217.199.121
-ns1 IN AAAA 2a01:4f9:4a:42e8::1
-ns2 IN A 95.217.199.121
-ns2 IN AAAA 2a01:4f9:4a:42e8::1
+git IN A 135.181.61.171
+git IN AAAA 2a01:4f9:4b:4084::1
+ns1 IN A 135.181.61.171
+ns1 IN AAAA 2a01:4f9:4b:4084::1
+ns2 IN A 135.181.61.171
+ns2 IN AAAA 2a01:4f9:4b:4084::1
 
 buildbot2 IN A 135.181.24.254
 
-www IN A 95.217.199.121
-www IN AAAA 2a01:4f9:4a:42e8::1
+www IN A 135.181.61.171
+www IN AAAA 2a01:4f9:4b:4084::1
 * IN CNAME www
 
 ip2 IN CNAME eva
@@ -62,25 +62,25 @@ turingmachine IN NS ns1.thalheim.io.
 
 ;; Mail
 @ IN MX 3 mail
-mail IN A 95.217.199.121
-mail IN AAAA 2a01:4f9:4a:42e8::1
-imap IN A 95.217.199.121
-imap IN AAAA 2a01:4f9:4a:42e8::1
+mail IN A 135.181.61.171
+mail IN AAAA 2a01:4f9:4b:4084::1
+imap IN A 135.181.61.171
+imap IN AAAA 2a01:4f9:4b:4084::1
 _mta-sts IN TXT "v=STSv1; id=20181027085700Z;"
 smtp._tls IN TXT "v=TLSRPTv1;rua=mailto:joerg.tls-report@thalheim.io"
 ;
 _adsp._domainkey IN TXT "dkim=all;"
 default._domainkey IN TXT "v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCgVpKyJL+JXhYefL05+wal58+PK1s5y1nf1uI7aguTbQFaM3wo3cs/7CaxBK1a+JNCd7f1sgmbdR17CzsiUUQO5GLsyl6bS4VGZv1XMMSuTdCpOT08iY0s9JikME6kPg9rxbo35ET9DtDDEqmgwbUcIfl/eD8G4jwTvyPYJPfFKQIDAQAB"
 _dmarc IN TXT "v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:joerc.dmarc@thalheim.io; ruf=mailto:joerg.dmarc@thalheim.io; pct=100"
-@ IN TXT "v=spf1 ip4:95.217.199.121 ip6:2a01:4f9:4a:42e8::/64 -all"
+@ IN TXT "v=spf1 ip4:135.181.61.171 ip6:2a01:4f9:4b:4084::/64 -all"
 
 _token._dnswl IN TXT "v6e9a15zje7o03w1oos9ashj258elvdh"
 @ IN TXT "google-site-verification=TGvlDYzS1IB0wcHO32Bnzfb5IVFbYm6Roeg27TU6XjY"
 _smtp._tls IN TXT "v=TLSRPTv1;rua=mailto:joerg.smtp-tls@thalheim.io"
 
 ;; Matrix
-matrix IN A 95.217.199.121
-matrix IN AAAA 2a01:4f9:4a:42e8::1
+matrix IN A 135.181.61.171
+matrix IN AAAA 2a01:4f9:4b:4084::1
 _matrix._tcp IN SRV 0 5 443 matrix
 
 ;; Keybase & GPG

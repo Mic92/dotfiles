@@ -11,6 +11,9 @@
   clan.core.networking.targetHost = lib.mkForce "root@eve.i";
   networking.hostId = "8425e349";
 
+  # Disable envfs to fix systemd refusing to run with unpopulated /usr/
+  services.envfs.enable = lib.mkForce false;
+
   time.timeZone = "UTC";
 
   srvos.boot.consoles = lib.mkDefault [ ];
