@@ -1,4 +1,4 @@
-@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2025122601 7200 3600 86400 3600
+@ 3600 IN SOA thalheim.io. ns1.thalheim.io. 2025122701 7200 3600 86400 3600
 
 @ 3600 IN NS ns1
 @ 3600 IN NS ns2.he.net.
@@ -42,6 +42,7 @@ www IN AAAA 2a01:4f9:4b:4084::1
 ip2 IN CNAME eva
 prometheus IN CNAME eva
 alertmanager IN CNAME eva
+auth-eva IN CNAME eva
 telegraf IN CNAME eva
 go-neb IN CNAME eva
 

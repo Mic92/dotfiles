@@ -1,28 +1,33 @@
 {
-  pkgs,
   config,
   lib,
   ...
 }:
 let
-  conf = pkgs.writeText "ldap.conf" ''
-    base dc=eve
-    host localhost:389
-    pam_login_attribute mail
-    pam_filter objectClass=prometheus
+  autheliaAuth = ''
+    auth_request /authelia;
+    auth_request_set $user $upstream_http_remote_user;
   '';
-  proxy = upstream: ''
-    auth_pam "Ldap password";
-    auth_pam_service_name "prometheus";
 
-    proxy_pass       http://@${upstream}/;
-    proxy_set_header Host              $host;
-    proxy_set_header X-Real-IP         $remote_addr;
-    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Host   $host:443;
-    proxy_set_header X-Forwarded-Server $host;
-    proxy_set_header X-Forwarded-Port 443;
+  autheliaLocation = ''
+    internal;
+    proxy_pass http://127.0.0.1:9091/api/verify;
+
+    proxy_set_header X-Original-URL $scheme://$http_host$request_uri;
+    proxy_set_header X-Original-Method $request_method;
+    proxy_set_header X-Forwarded-Method $request_method;
     proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host $http_host;
+    proxy_set_header X-Forwarded-Uri $request_uri;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header Content-Length "";
+    proxy_set_header Connection "";
+
+    proxy_pass_request_body off;
+
+    proxy_connect_timeout 5s;
+    proxy_send_timeout 5s;
+    proxy_read_timeout 5s;
   '';
 in
 {
@@ -33,17 +38,10 @@ in
   config = {
     networking.firewall.allowedUDPPorts = [ 443 ]; # quic
 
-    security.pam.services.prometheus.text = ''
-      auth required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${conf}
-      account required ${pkgs.pam_ldap}/lib/security/pam_ldap.so config=${conf}
-    '';
-
     security.acme.certs."prometheus.r".server = config.retiolum.ca.acmeURL;
     security.acme.certs."alertmanager.r".server = config.retiolum.ca.acmeURL;
 
     services.nginx = {
-      package = pkgs.nginx.override { modules = [ pkgs.nginxModules.pam ]; };
-
       commonHttpConfig = ''
         add_header Strict-Transport-Security 'max-age=31536000; includeSubDomains; preload' always;
       '';
@@ -52,43 +50,43 @@ in
         "@prometheus".extraConfig = "server localhost:9090;";
         "@alertmanager".extraConfig = "server localhost:9093;";
       };
+
       virtualHosts."prometheus.thalheim.io" = {
         forceSSL = true;
         enableACME = true;
-        locations."/".extraConfig = proxy "prometheus";
+        extraConfig = ''
+          error_page 401 =302 https://auth-eva.thalheim.io/?rd=$scheme://$http_host$request_uri;
+        '';
+        locations."/" = {
+          proxyPass = "http://@prometheus/";
+          extraConfig = autheliaAuth;
+        };
+        locations."/authelia".extraConfig = autheliaLocation;
       };
+
       virtualHosts."prometheus.r" = {
         enableACME = true;
         addSSL = true;
-        locations."/".extraConfig = ''
-          proxy_pass       http://@prometheus/;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Host $host:80;
-          proxy_set_header X-Forwarded-Server $host;
-          proxy_set_header X-Forwarded-Port 80;
-          proxy_set_header X-Forwarded-Proto $scheme;
-        '';
+        locations."/".proxyPass = "http://@prometheus/";
       };
+
       virtualHosts."alertmanager.thalheim.io" = {
         forceSSL = true;
         enableACME = true;
-        locations."/".extraConfig = proxy "alertmanager";
+        extraConfig = ''
+          error_page 401 =302 https://auth-eva.thalheim.io/?rd=$scheme://$http_host$request_uri;
+        '';
+        locations."/" = {
+          proxyPass = "http://@alertmanager/";
+          extraConfig = autheliaAuth;
+        };
+        locations."/authelia".extraConfig = autheliaLocation;
       };
+
       virtualHosts."alertmanager.r" = {
         enableACME = true;
         addSSL = true;
-        locations."/".extraConfig = ''
-          proxy_pass       http://@alertmanager/;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Host $host:80;
-          proxy_set_header X-Forwarded-Server $host;
-          proxy_set_header X-Forwarded-Port 80;
-          proxy_set_header X-Forwarded-Proto $scheme;
-        '';
+        locations."/".proxyPass = "http://@alertmanager/";
       };
 
       virtualHosts."ip2.thalheim.io" = {

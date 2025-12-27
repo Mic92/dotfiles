@@ -1,6 +1,7 @@
 { lib, ... }:
 {
   flake.nixosModules.default = ../nixosModules/default.nix;
+  flake.nixosModules.authelia = ../nixosModules/authelia;
   clan = {
     meta.name = "mic92";
 
