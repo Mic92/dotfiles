@@ -18,6 +18,7 @@
     self.inputs.srvos.nixosModules.hardware-hetzner-cloud
     self.inputs.disko.nixosModules.disko
 
+    ./modules/authelia.nix
     ./modules/disko.nix
     ./modules/loki.nix
     ./modules/nginx.nix
