@@ -8,9 +8,12 @@ jobs:
   mirror:
     runs-on: ubuntu-latest
     environment: radicle
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - id: mirror
-        uses: Mic92/mirror-to-radicle@main
+        uses: Mic92/mirror-to-radicle@debug-crash
         with:
           radicle-identity-alias: "${{ secrets.RADICLE_IDENTITY_ALIAS }}"
           radicle-identity-passphrase: "${{ secrets.RADICLE_IDENTITY_PASSPHRASE }}"
