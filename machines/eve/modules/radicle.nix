@@ -21,7 +21,7 @@
   # Web-specific settings (node settings come from shared module)
   services.radicle.settings.web.pinned.repositories = [
     "rad:z3gpeDzWxqV8iBEN8RcJNZEPVWmJf"
-    "rad:z3oWHBpUaHgN9pPapQ1dswRmQpErJ"
+    "rad:z2dqRKkK5yu89w3CMX2dVsYrRwvFk"
   ];
 
   # Serve radicle-explorer as static files (override upstream's proxy)
