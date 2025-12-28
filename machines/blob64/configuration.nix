@@ -13,6 +13,7 @@
     ../../nixosModules/networkd.nix
     ../../nixosModules/ip-update.nix
     ../../nixosModules/packages.nix
+    ../../nixosModules/radicle-node.nix
     ./modules/photoprism.nix
     ./modules/phantun.nix
     ./modules/pinchflat.nix
