@@ -23,7 +23,7 @@ in
   systemd.tmpfiles.rules = [
     "d /var/lib/loki 0700 loki loki - -"
     "d /var/lib/loki/rules 0700 loki loki - -"
-    "L /var/lib/loki/ruler/ruler.yml - - - - ${rulerFile}"
+    "L+ /var/lib/loki/ruler/ruler.yml - - - - ${rulerFile}"
   ];
   services.loki = {
     enable = true;
