@@ -5,73 +5,24 @@
   ...
 }:
 {
-  # SSH key generation via clan vars (follows eve's pattern)
-  clan.core.vars.generators.radicle = {
-    files.ssh-private-key = {
-      secret = true;
-      owner = "radicle";
-    };
-    files.ssh-public-key = {
-      secret = false;
-    };
-    runtimeInputs = with pkgs; [ openssh ];
-    script = ''
-      ssh-keygen -t ed25519 -N "" -f $out/ssh-private-key -C "radicle@eve"
-      ssh-keygen -y -f $out/ssh-private-key > $out/ssh-public-key
-    '';
-  };
+  imports = [ ../../../nixosModules/radicle-node.nix ];
 
-  # Radicle services (upstream module)
-  services.radicle = {
+  # HTTP gateway configuration
+  services.radicle.httpd = {
     enable = true;
-    privateKeyFile = config.clan.core.vars.generators.radicle.files.ssh-private-key.path;
-    # Use the actual public key content from the vars file
-    publicKey = builtins.readFile config.clan.core.vars.generators.radicle.files.ssh-public-key.path;
-
-    # Node configuration
-    node = {
-      openFirewall = true; # Opens port 8776
-      listenAddress = "[::]"; # IPv4 and IPv6
-      listenPort = 8776;
-    };
-
-    # HTTP gateway configuration
-    httpd = {
-      enable = true;
-      nginx = {
-        serverName = "radicle.thalheim.io";
-        useACMEHost = "thalheim.io"; # Uses existing wildcard cert
-        forceSSL = true;
-        quic = true; # Override upstream module's false default
-      };
-    };
-
-    # Node settings
-    settings = {
-      preferredSeeds = [
-        "z6MkrLMMsiPWUcNPHcRajuMi9mDfYckSoJyPwwnknocNYPm7@seed.radicle.xyz:8776"
-        "z6Mkmqogy2qEM2ummccUthFEaaHvyYmYBYh3dbe9W4ebScxo@seed.radicle.garden:8776"
-      ];
-      node = {
-        seedingPolicy = {
-          default = "allow";
-          scope = "followed";
-        };
-        # Auto-follow your DID to accept all your repos
-        follow = [
-          "did:key:z6MkjE3BSJn4Y129rhqi5rViSUru8KSBcCQdQcDZq1cnjumw"
-        ];
-      };
-      web = {
-        pinned = {
-          repositories = [
-            "rad:z3gpeDzWxqV8iBEN8RcJNZEPVWmJf"
-            "rad:z3oWHBpUaHgN9pPapQ1dswRmQpErJ"
-          ];
-        };
-      };
+    nginx = {
+      serverName = "radicle.thalheim.io";
+      useACMEHost = "thalheim.io";
+      forceSSL = true;
+      quic = true;
     };
   };
+
+  # Web-specific settings (node settings come from shared module)
+  services.radicle.settings.web.pinned.repositories = [
+    "rad:z3gpeDzWxqV8iBEN8RcJNZEPVWmJf"
+    "rad:z3oWHBpUaHgN9pPapQ1dswRmQpErJ"
+  ];
 
   # Serve radicle-explorer as static files (override upstream's proxy)
   services.nginx.virtualHosts."radicle.thalheim.io" = {
