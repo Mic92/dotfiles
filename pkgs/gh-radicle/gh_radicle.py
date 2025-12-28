@@ -227,10 +227,29 @@ def setup_github_secrets(
     set_github_secret(repo, "RADICLE_REPOSITORY_ID", rid)
 
 
-# Latest version as of 2025-12-28
-MIRROR_TO_RADICLE_VERSION = "v0.1.0"
+def get_preferred_seeds() -> list[str]:
+    """Get preferred seeds from the main radicle config."""
+    main_config = Path.home() / ".radicle" / "config.json"
+    if main_config.exists():
+        try:
+            cfg = json.loads(main_config.read_text())
+            return cfg.get("preferredSeeds", [])
+        except json.JSONDecodeError:
+            pass
+    return []
 
-WORKFLOW_TEMPLATE = f"""\
+
+def create_workflow_content(preferred_seeds: list[str] | None = None) -> str:
+    """Generate the workflow file content."""
+    if preferred_seeds is None:
+        preferred_seeds = get_preferred_seeds()
+
+    seeds_line = ""
+    if preferred_seeds:
+        seeds_str = ",".join(preferred_seeds)
+        seeds_line = f'\n          preferred-seeds: "{seeds_str}"'
+
+    return f"""\
 name: Mirror to Radicle
 
 on:
@@ -241,18 +260,18 @@ on:
 
 jobs:
   mirror:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     environment: radicle
     steps:
       - id: mirror
-        uses: gsaslis/mirror-to-radicle@{MIRROR_TO_RADICLE_VERSION}
+        uses: Mic92/mirror-to-radicle@main
         with:
-          radicle-identity-alias: "${{{{ secrets.RADICLE_IDENTITY_ALIAS }}}}"
-          radicle-identity-passphrase: "${{{{ secrets.RADICLE_IDENTITY_PASSPHRASE }}}}"
-          radicle-identity-private-key: "${{{{ secrets.RADICLE_IDENTITY_PRIVATE_KEY }}}}"
-          radicle-identity-public-key: "${{{{ secrets.RADICLE_IDENTITY_PUBLIC_KEY }}}}"
-          radicle-project-name: "${{{{ secrets.RADICLE_PROJECT_NAME }}}}"
-          radicle-repository-id: "${{{{ secrets.RADICLE_REPOSITORY_ID }}}}"
+          radicle-identity-alias: "${{{{{{ secrets.RADICLE_IDENTITY_ALIAS }}}}}}"
+          radicle-identity-passphrase: "${{{{{{ secrets.RADICLE_IDENTITY_PASSPHRASE }}}}}}"
+          radicle-identity-private-key: "${{{{{{ secrets.RADICLE_IDENTITY_PRIVATE_KEY }}}}}}"
+          radicle-identity-public-key: "${{{{{{ secrets.RADICLE_IDENTITY_PUBLIC_KEY }}}}}}"
+          radicle-project-name: "${{{{{{ secrets.RADICLE_PROJECT_NAME }}}}}}"
+          radicle-repository-id: "${{{{{{ secrets.RADICLE_REPOSITORY_ID }}}}}}"{seeds_line}
 """
 
 
@@ -263,7 +282,7 @@ def create_workflow_file(workflow_dir: Path | None = None) -> Path:
 
     workflow_dir.mkdir(parents=True, exist_ok=True)
     workflow_file = workflow_dir / "radicle.yaml"
-    workflow_file.write_text(WORKFLOW_TEMPLATE)
+    workflow_file.write_text(create_workflow_content())
     return workflow_file
 
 
