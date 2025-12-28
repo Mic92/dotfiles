@@ -25,6 +25,7 @@
           chrome-tab-gc-extension
           ;
         pexpect-cli = pkgs.callPackage ./pexpect-cli { };
+        gh-radicle = pkgs.callPackage ./gh-radicle { };
         iroh-ssh = pkgs.callPackage ./iroh-ssh { };
         # Cross-platform secure pinentry (works on macOS and Linux)
         rbw-pinentry = pkgs.callPackage ./rbw_pinentry { };
