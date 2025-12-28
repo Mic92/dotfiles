@@ -295,12 +295,12 @@ jobs:
       - id: mirror
         uses: Mic92/mirror-to-radicle@main
         with:
-          radicle-identity-alias: "${{{{{{ secrets.RADICLE_IDENTITY_ALIAS }}}}}}"
-          radicle-identity-passphrase: "${{{{{{ secrets.RADICLE_IDENTITY_PASSPHRASE }}}}}}"
-          radicle-identity-private-key: "${{{{{{ secrets.RADICLE_IDENTITY_PRIVATE_KEY }}}}}}"
-          radicle-identity-public-key: "${{{{{{ secrets.RADICLE_IDENTITY_PUBLIC_KEY }}}}}}"
-          radicle-project-name: "${{{{{{ secrets.RADICLE_PROJECT_NAME }}}}}}"
-          radicle-repository-id: "${{{{{{ secrets.RADICLE_REPOSITORY_ID }}}}}}"{seeds_line}
+          radicle-identity-alias: "${{{{ secrets.RADICLE_IDENTITY_ALIAS }}}}"
+          radicle-identity-passphrase: "${{{{ secrets.RADICLE_IDENTITY_PASSPHRASE }}}}"
+          radicle-identity-private-key: "${{{{ secrets.RADICLE_IDENTITY_PRIVATE_KEY }}}}"
+          radicle-identity-public-key: "${{{{ secrets.RADICLE_IDENTITY_PUBLIC_KEY }}}}"
+          radicle-project-name: "${{{{ secrets.RADICLE_PROJECT_NAME }}}}"
+          radicle-repository-id: "${{{{ secrets.RADICLE_REPOSITORY_ID }}}}"{seeds_line}
 """
 
 
