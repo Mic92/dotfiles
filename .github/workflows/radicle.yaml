@@ -1,0 +1,20 @@
+name: Mirror to Radicle
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-slim
+    environment: radicle
+    steps:
+      - id: mirror
+        uses: gsaslis/mirror-to-radicle@v0.1.0
+        with:
+          radicle-identity-alias: "${{ secrets.RADICLE_IDENTITY_ALIAS }}"
+          radicle-identity-passphrase: "${{ secrets.RADICLE_IDENTITY_PASSPHRASE }}"
+          radicle-identity-private-key: "${{ secrets.RADICLE_IDENTITY_PRIVATE_KEY }}"
+          radicle-identity-public-key: "${{ secrets.RADICLE_IDENTITY_PUBLIC_KEY }}"
+          radicle-project-name: "${{ secrets.RADICLE_PROJECT_NAME }}"
+          radicle-repository-id: "${{ secrets.RADICLE_REPOSITORY_ID }}"
