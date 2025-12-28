@@ -127,9 +127,8 @@
     };
 
     llm-agents = {
-      url = "github:numtide/llm-agents.nix/claude-code";
-      # Don't follow nixpkgs - llm-agents needs newer nixpkgs with fetchPnpmDeps
-      # inputs.nixpkgs.follows = "nixpkgs";
+      url = "github:numtide/llm-agents.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
       inputs.blueprint.follows = "blueprint";
     };
