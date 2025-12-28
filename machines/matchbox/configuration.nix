@@ -12,6 +12,7 @@
     ./modules/rsyncd.nix
     ./modules/rsnapshot.nix
     ./modules/photoprism.nix
+    ./modules/borgbackup.nix
 
     ../../nixosModules/users.nix
     ../../nixosModules/sshd/tor.nix
