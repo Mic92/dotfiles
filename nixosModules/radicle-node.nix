@@ -35,9 +35,10 @@
     settings = {
       preferredSeeds = [
         "z6MkrLMMsiPWUcNPHcRajuMi9mDfYckSoJyPwwnknocNYPm7@seed.radicle.xyz:8776"
-        "z6Mkmqogy2qEM2ummccUthFEaaHvyYmYBYh3dbe9W4ebScxo@seed.radicle.garden:8776"
+        "z6Mkmqogy2qEM2ummccUthFEaaHvyYmYBYh3dbe9W4ebScxo@iris.radicle.xyz:8776"
       ];
       node = {
+        alias = config.networking.hostName;
         seedingPolicy = {
           default = "allow";
           scope = "followed";
@@ -45,6 +46,15 @@
         # Auto-follow your DID to accept all your repos
         follow = [
           "did:key:z6MkjE3BSJn4Y129rhqi5rViSUru8KSBcCQdQcDZq1cnjumw"
+        ];
+        # Peer with other personal nodes
+        connect = [
+          # eve
+          "z6MktZckvzz29eJtUQ4u9bkNu8jihg1sRvknUZMm1xq2stn9@radicle.thalheim.io:8776"
+          # eva
+          "z6MkwQTGzGVFjmT54Ustr82rc3bMGkjSjeCXQWgSvNNvVnwa@eva.thalheim.io:8776"
+          # blob64
+          "z6Mkkmnifhqr7bJ48tKjE3KRXKwH9SSwMavNPfsphCpeT94W@blob64.x:8776"
         ];
       };
     };
