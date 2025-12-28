@@ -10,7 +10,7 @@ jobs:
     environment: radicle
     steps:
       - id: mirror
-        uses: Mic92/mirror-to-radicle@debug-crash
+        uses: Mic92/mirror-to-radicle@main
         with:
           radicle-identity-alias: "${{ secrets.RADICLE_IDENTITY_ALIAS }}"
           radicle-identity-passphrase: "${{ secrets.RADICLE_IDENTITY_PASSPHRASE }}"
