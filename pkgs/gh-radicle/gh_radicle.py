@@ -10,13 +10,16 @@ import argparse
 import base64
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
 
 
-def run(cmd: list[str], capture: bool = True, check: bool = True) -> subprocess.CompletedProcess[str]:
+def run(
+    cmd: list[str], capture: bool = True, check: bool = True
+) -> subprocess.CompletedProcess[str]:
     """Run a command and return the result."""
     return subprocess.run(cmd, capture_output=capture, text=True, check=check)
 
@@ -38,8 +41,7 @@ def get_github_repo() -> str | None:
 
     # Handle SSH URLs: git@github.com:owner/repo.git
     if url.startswith("git@github.com:"):
-        repo = url.removeprefix("git@github.com:").removesuffix(".git")
-        return repo
+        return url.removeprefix("git@github.com:").removesuffix(".git")
 
     # Handle HTTPS URLs: https://github.com/owner/repo.git
     if "github.com" in url:
@@ -48,6 +50,17 @@ def get_github_repo() -> str | None:
             return parts[1].removesuffix(".git")
 
     return None
+
+
+def get_github_description(repo: str) -> str:
+    """Get the description of a GitHub repository."""
+    try:
+        result = run(
+            ["gh", "repo", "view", repo, "--json", "description", "--jq", ".description"]
+        )
+        return result.stdout.strip()
+    except subprocess.CalledProcessError:
+        return ""
 
 
 def has_rad_remote() -> bool:
@@ -68,35 +81,55 @@ def get_rad_project_name() -> str | None:
     """Get the Radicle project name."""
     try:
         result = run(["rad", "inspect", "--payload"])
-        payload = json.loads(result.stdout)
-        return payload.get("xyz.radicle.project", {}).get("name")
+        payload: dict[str, dict[str, str]] = json.loads(result.stdout)
+        name = payload.get("xyz.radicle.project", {}).get("name")
+        return str(name) if name else None
     except (subprocess.CalledProcessError, json.JSONDecodeError):
         return None
 
 
 def rad_init(name: str, description: str, default_branch: str = "main") -> str:
     """Initialize a new Radicle project."""
-    result = run([
-        "rad", "init",
-        "--name", name,
-        "--description", description,
-        "--default-branch", default_branch,
-        "--public",
-    ])
-    # Extract RID from output
+    run(
+        [
+            "rad",
+            "init",
+            "--name",
+            name,
+            "--description",
+            description,
+            "--default-branch",
+            default_branch,
+            "--public",
+        ]
+    )
     rid = get_rad_rid()
     if not rid:
-        raise RuntimeError("Failed to get RID after rad init")
+        msg = "Failed to get RID after rad init"
+        raise RuntimeError(msg)
     return rid
 
 
 def create_machine_identity(rad_home: Path, alias: str) -> dict[str, str]:
     """Create a new Radicle identity for GitHub Actions."""
-    env = os.environ.copy()
-    env["RAD_HOME"] = str(rad_home)
-
     # Create identity with empty passphrase
-    run(["rad", "auth", "--alias", alias, "--stdin"], check=True)
+    subprocess.run(
+        ["rad", "auth", "--alias", alias, "--stdin"],
+        input="",
+        text=True,
+        check=True,
+    )
+
+    # Copy preferred seeds from main config
+    main_rad_home = Path.home() / ".radicle"
+    main_config = main_rad_home / "config.json"
+    temp_config = rad_home / "config.json"
+    if main_config.exists() and temp_config.exists():
+        main_cfg = json.loads(main_config.read_text())
+        temp_cfg = json.loads(temp_config.read_text())
+        if "preferredSeeds" in main_cfg:
+            temp_cfg["preferredSeeds"] = main_cfg["preferredSeeds"]
+            temp_config.write_text(json.dumps(temp_cfg, indent=2))
 
     # Get DID
     result = run(["rad", "self", "--did"])
@@ -117,13 +150,21 @@ def create_machine_identity(rad_home: Path, alias: str) -> dict[str, str]:
 
 def add_delegate(did: str, title: str = "Add GitHub Actions mirror account") -> None:
     """Add a DID as a delegate to the current project."""
-    run([
-        "rad", "id", "update",
-        "--title", title,
-        "--description", "Machine account for GitHub Actions mirroring",
-        "--delegate", did,
-        "--threshold", "1",
-    ])
+    run(
+        [
+            "rad",
+            "id",
+            "update",
+            "--title",
+            title,
+            "--description",
+            "Machine account for GitHub Actions mirroring",
+            "--delegate",
+            did,
+            "--threshold",
+            "1",
+        ]
+    )
 
 
 def sync_to_seeds() -> None:
@@ -158,9 +199,15 @@ def setup_github_secrets(
 
     # Environment secrets
     set_github_secret(repo, "RADICLE_IDENTITY_ALIAS", identity["alias"], env=env_name)
-    set_github_secret(repo, "RADICLE_IDENTITY_PASSPHRASE", identity["passphrase_b64"], env=env_name)
-    set_github_secret(repo, "RADICLE_IDENTITY_PRIVATE_KEY", identity["private_key_b64"], env=env_name)
-    set_github_secret(repo, "RADICLE_IDENTITY_PUBLIC_KEY", identity["public_key_b64"], env=env_name)
+    set_github_secret(
+        repo, "RADICLE_IDENTITY_PASSPHRASE", identity["passphrase_b64"], env=env_name
+    )
+    set_github_secret(
+        repo, "RADICLE_IDENTITY_PRIVATE_KEY", identity["private_key_b64"], env=env_name
+    )
+    set_github_secret(
+        repo, "RADICLE_IDENTITY_PUBLIC_KEY", identity["public_key_b64"], env=env_name
+    )
 
     # Repository secrets
     set_github_secret(repo, "RADICLE_PROJECT_NAME", project_name)
@@ -185,12 +232,12 @@ jobs:
       - id: mirror
         uses: gsaslis/mirror-to-radicle@{MIRROR_TO_RADICLE_VERSION}
         with:
-          radicle-identity-alias: "${{ secrets.RADICLE_IDENTITY_ALIAS }}"
-          radicle-identity-passphrase: "${{ secrets.RADICLE_IDENTITY_PASSPHRASE }}"
-          radicle-identity-private-key: "${{ secrets.RADICLE_IDENTITY_PRIVATE_KEY }}"
-          radicle-identity-public-key: "${{ secrets.RADICLE_IDENTITY_PUBLIC_KEY }}"
-          radicle-project-name: "${{ secrets.RADICLE_PROJECT_NAME }}"
-          radicle-repository-id: "${{ secrets.RADICLE_REPOSITORY_ID }}"
+          radicle-identity-alias: "${{{{ secrets.RADICLE_IDENTITY_ALIAS }}}}"
+          radicle-identity-passphrase: "${{{{ secrets.RADICLE_IDENTITY_PASSPHRASE }}}}"
+          radicle-identity-private-key: "${{{{ secrets.RADICLE_IDENTITY_PRIVATE_KEY }}}}"
+          radicle-identity-public-key: "${{{{ secrets.RADICLE_IDENTITY_PUBLIC_KEY }}}}"
+          radicle-project-name: "${{{{ secrets.RADICLE_PROJECT_NAME }}}}"
+          radicle-repository-id: "${{{{ secrets.RADICLE_REPOSITORY_ID }}}}"
 """
 
 
@@ -215,8 +262,7 @@ def main() -> int:
     )
     parser.add_argument(
         "--description",
-        default="",
-        help="Project description",
+        help="Project description (default: from GitHub)",
     )
     parser.add_argument(
         "--alias",
@@ -242,6 +288,9 @@ def main() -> int:
 
     repo_name = github_repo.split("/")[-1]
     project_name = args.name or repo_name
+    description = args.description
+    if description is None:
+        description = get_github_description(github_repo)
     alias = args.alias or f"{repo_name}_actions"
 
     print(f"Setting up Radicle mirror for {github_repo}")
@@ -253,7 +302,7 @@ def main() -> int:
         print(f"Radicle project already exists: {rid}")
     else:
         print(f"Initializing new Radicle project: {project_name}")
-        rid = rad_init(project_name, args.description)
+        rid = rad_init(project_name, description)
         print(f"Created Radicle project: {rid}")
 
     if not rid:
@@ -292,7 +341,7 @@ def main() -> int:
     print(f"  RID: {rid}")
     print(f"  GitHub repo: {github_repo}")
     if not args.skip_workflow:
-        print(f"  Workflow: .github/workflows/radicle.yaml")
+        print("  Workflow: .github/workflows/radicle.yaml")
     print("\nNext steps:")
     print("  1. Commit and push the workflow file")
     print("  2. The mirror will sync on every push")
