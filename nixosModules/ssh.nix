@@ -5,10 +5,10 @@
     "*.dos.cit.tum.de"
   ];
   programs.ssh.extraConfig = ''
-    Host *.dse.in.tum.de !login.dse.in.tum.de !sarah.dse.in.tum.de !donna.dse.in.tum.de
+    Host *.dse.in.tum.de !login.dse.in.tum.de
       ProxyJump tunnel@login.dse.in.tum.de
 
-    Host *.dos.cit.tum.de !login.dos.cit.tum.de !sarah.dos.cit.tum.de !donna.dos.cit.tum.de
+    Host *.dos.cit.tum.de !login.dos.cit.tum.de
       ProxyJump tunnel@login.dse.in.tum.de
 
     # Ghaf T14 Gen 5
