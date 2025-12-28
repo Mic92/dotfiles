@@ -14,6 +14,12 @@
         job_name = "telegraf";
         scrape_interval = "60s";
         metrics_path = "/metrics";
+        http_sd_configs = [
+          {
+            url = "https://tum-dse.github.io/doctor-cluster-config/telegraf.json";
+            refresh_interval = "5m";
+          }
+        ];
         static_configs = [
           {
             targets = [
@@ -59,36 +65,6 @@
           #  ];
           #  labels.org = "dave";
           #}
-          {
-            targets = map (host: "${host}.r:9273") [
-              "ace"
-              "adelaide"
-              "amy"
-              "astrid"
-              "christina"
-              "clara"
-              "dan"
-              "doctor"
-              "donna"
-              "ian"
-              "graham"
-              "irene"
-              "jack"
-              "jackson"
-              "mickey"
-              "river"
-              "rose"
-              "ruby"
-              "ryan"
-              "tegan"
-              "vislor"
-              "wilfred"
-              "xavier"
-              "yasmin"
-            ];
-
-            labels.org = "uni";
-          }
         ];
       }
       #{
