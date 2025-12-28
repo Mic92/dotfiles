@@ -52,24 +52,34 @@ def get_github_repo() -> str | None:
     return None
 
 
-def get_github_description(repo: str) -> str:
-    """Get the description of a GitHub repository."""
-    try:
-        result = run(
-            [
-                "gh",
-                "repo",
-                "view",
-                repo,
-                "--json",
-                "description",
-                "--jq",
-                ".description",
-            ]
-        )
-        return result.stdout.strip()
-    except subprocess.CalledProcessError:
-        return ""
+@dataclass
+class GitHubRepoInfo:
+    """Information about a GitHub repository."""
+
+    description: str = ""
+    is_private: bool = False
+
+    @classmethod
+    def fetch(cls, repo: str) -> "GitHubRepoInfo":
+        """Fetch repository info from GitHub API."""
+        try:
+            result = run(
+                [
+                    "gh",
+                    "repo",
+                    "view",
+                    repo,
+                    "--json",
+                    "description,isPrivate",
+                ]
+            )
+            data = json.loads(result.stdout)
+            return cls(
+                description=data.get("description") or "",
+                is_private=bool(data.get("isPrivate", False)),
+            )
+        except (subprocess.CalledProcessError, json.JSONDecodeError):
+            return cls()
 
 
 def has_rad_remote() -> bool:
@@ -101,25 +111,42 @@ class RadInitError(Exception):
     """Failed to get RID after rad init."""
 
 
-def rad_init(name: str, description: str, default_branch: str = "main") -> str:
+# Personal seed nodes that should have access to private repos
+PRIVATE_SEED_NODES = [
+    "did:key:z6MktZckvzz29eJtUQ4u9bkNu8jihg1sRvknUZMm1xq2stn9",  # eve
+    "did:key:z6MkwQTGzGVFjmT54Ustr82rc3bMGkjSjeCXQWgSvNNvVnwa",  # eva
+    "did:key:z6Mkkmnifhqr7bJ48tKjE3KRXKwH9SSwMavNPfsphCpeT94W",  # blob64
+]
+
+
+def allow_private_seeds() -> None:
+    """Allow personal seed nodes to access the private repository."""
+    for did in PRIVATE_SEED_NODES:
+        run(["rad", "repo", "allow", did], check=False)
+
+
+def rad_init(
+    name: str, description: str, default_branch: str = "main", *, private: bool = False
+) -> str:
     """Initialize a new Radicle project."""
-    run(
-        [
-            "rad",
-            "init",
-            "--name",
-            name,
-            "--description",
-            description,
-            "--default-branch",
-            default_branch,
-            "--public",
-        ]
-    )
+    cmd = [
+        "rad",
+        "init",
+        "--name",
+        name,
+        "--description",
+        description,
+        "--default-branch",
+        default_branch,
+        "--private" if private else "--public",
+    ]
+    run(cmd)
     rid = get_rad_rid()
     if not rid:
         msg = "Failed to get RID after rad init"
         raise RadInitError(msg)
+    if private:
+        allow_private_seeds()
     return rid
 
 
@@ -233,9 +260,11 @@ def get_preferred_seeds() -> list[str]:
     if main_config.exists():
         try:
             cfg = json.loads(main_config.read_text())
-            return cfg.get("preferredSeeds", [])
         except json.JSONDecodeError:
-            pass
+            return []
+        else:
+            seeds: list[str] = cfg.get("preferredSeeds", [])
+            return seeds
     return []
 
 
@@ -313,6 +342,11 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Skip setting up GitHub secrets",
     )
+    parser.add_argument(
+        "--private",
+        action="store_true",
+        help="Mirror as private (auto-detected from GitHub if not specified)",
+    )
     return parser.parse_args()
 
 
@@ -326,6 +360,7 @@ class MirrorConfig:
     alias: str
     skip_secrets: bool = False
     skip_workflow: bool = False
+    private: bool = False
 
 
 def setup_mirror(config: MirrorConfig) -> int:
@@ -340,8 +375,9 @@ def setup_mirror(config: MirrorConfig) -> int:
         project_name = get_rad_project_name() or project_name
         print(f"Radicle project already exists: {rid}")
     else:
-        print(f"Initializing new Radicle project: {project_name}")
-        rid = rad_init(project_name, config.description)
+        visibility = "private" if config.private else "public"
+        print(f"Initializing new Radicle project: {project_name} ({visibility})")
+        rid = rad_init(project_name, config.description, private=config.private)
         print(f"Created Radicle project: {rid}")
 
     if not rid:
@@ -396,14 +432,18 @@ def main() -> int:
         print("Error: Not in a GitHub repository", file=sys.stderr)
         return 1
 
+    # Fetch repo info once from GitHub API
+    repo_info = GitHubRepoInfo.fetch(github_repo)
+
     repo_name = github_repo.split("/")[-1]
     config = MirrorConfig(
         github_repo=github_repo,
         project_name=args.name or repo_name,
-        description=args.description or get_github_description(github_repo),
+        description=args.description or repo_info.description,
         alias=args.alias or f"{repo_name}_actions",
         skip_secrets=args.skip_secrets,
         skip_workflow=args.skip_workflow,
+        private=args.private or repo_info.is_private,
     )
 
     return setup_mirror(config)
