@@ -35,11 +35,6 @@
             ];
           }
           {
-            targets = [ "rauter.r:9273" ];
-            # to make it compatible with the node-exporter dashboard
-            labels.host = "rauter.r:9273";
-          }
-          {
             targets = [
               "prism.r:9273"
               "neoprism.r:9273"
