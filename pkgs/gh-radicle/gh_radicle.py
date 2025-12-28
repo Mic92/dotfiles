@@ -10,10 +10,10 @@ import argparse
 import base64
 import json
 import os
-import shutil
 import subprocess
 import sys
 import tempfile
+from dataclasses import dataclass
 from pathlib import Path
 
 
@@ -56,7 +56,16 @@ def get_github_description(repo: str) -> str:
     """Get the description of a GitHub repository."""
     try:
         result = run(
-            ["gh", "repo", "view", repo, "--json", "description", "--jq", ".description"]
+            [
+                "gh",
+                "repo",
+                "view",
+                repo,
+                "--json",
+                "description",
+                "--jq",
+                ".description",
+            ]
         )
         return result.stdout.strip()
     except subprocess.CalledProcessError:
@@ -88,6 +97,10 @@ def get_rad_project_name() -> str | None:
         return None
 
 
+class RadInitError(Exception):
+    """Failed to get RID after rad init."""
+
+
 def rad_init(name: str, description: str, default_branch: str = "main") -> str:
     """Initialize a new Radicle project."""
     run(
@@ -106,7 +119,7 @@ def rad_init(name: str, description: str, default_branch: str = "main") -> str:
     rid = get_rad_rid()
     if not rid:
         msg = "Failed to get RID after rad init"
-        raise RuntimeError(msg)
+        raise RadInitError(msg)
     return rid
 
 
@@ -222,6 +235,8 @@ name: Mirror to Radicle
 
 on:
   push:
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
@@ -252,7 +267,8 @@ def create_workflow_file(workflow_dir: Path | None = None) -> Path:
     return workflow_file
 
 
-def main() -> int:
+def parse_args() -> argparse.Namespace:
+    """Parse command line arguments."""
     parser = argparse.ArgumentParser(
         description="Set up automatic GitHub to Radicle mirroring"
     )
@@ -278,22 +294,26 @@ def main() -> int:
         action="store_true",
         help="Skip setting up GitHub secrets",
     )
-    args = parser.parse_args()
+    return parser.parse_args()
 
-    # Check we're in a git repo
-    github_repo = get_github_repo()
-    if not github_repo:
-        print("Error: Not in a GitHub repository", file=sys.stderr)
-        return 1
 
-    repo_name = github_repo.split("/")[-1]
-    project_name = args.name or repo_name
-    description = args.description
-    if description is None:
-        description = get_github_description(github_repo)
-    alias = args.alias or f"{repo_name}_actions"
+@dataclass
+class MirrorConfig:
+    """Configuration for setting up a Radicle mirror."""
 
-    print(f"Setting up Radicle mirror for {github_repo}")
+    github_repo: str
+    project_name: str
+    description: str
+    alias: str
+    skip_secrets: bool = False
+    skip_workflow: bool = False
+
+
+def setup_mirror(config: MirrorConfig) -> int:
+    """Set up the Radicle mirror for a GitHub repository."""
+    print(f"Setting up Radicle mirror for {config.github_repo}")
+
+    project_name = config.project_name
 
     # Check if rad remote already exists
     if has_rad_remote():
@@ -302,7 +322,7 @@ def main() -> int:
         print(f"Radicle project already exists: {rid}")
     else:
         print(f"Initializing new Radicle project: {project_name}")
-        rid = rad_init(project_name, description)
+        rid = rad_init(project_name, config.description)
         print(f"Created Radicle project: {rid}")
 
     if not rid:
@@ -314,8 +334,8 @@ def main() -> int:
         rad_home = Path(tmpdir)
         os.environ["RAD_HOME"] = str(rad_home)
 
-        print(f"Creating machine identity: {alias}")
-        identity = create_machine_identity(rad_home, alias)
+        print(f"Creating machine identity: {config.alias}")
+        identity = create_machine_identity(rad_home, config.alias)
         print(f"Machine DID: {identity['did']}")
 
         # Add as delegate (using main identity)
@@ -328,25 +348,46 @@ def main() -> int:
         sync_to_seeds()
 
         # Set up GitHub secrets
-        if not args.skip_secrets:
+        if not config.skip_secrets:
             print("Setting up GitHub secrets...")
-            setup_github_secrets(github_repo, identity, project_name, rid)
+            setup_github_secrets(config.github_repo, identity, project_name, rid)
 
     # Create workflow file
-    if not args.skip_workflow:
+    if not config.skip_workflow:
         workflow_file = create_workflow_file()
         print(f"Created workflow: {workflow_file}")
 
     print("\nSetup complete!")
     print(f"  RID: {rid}")
-    print(f"  GitHub repo: {github_repo}")
-    if not args.skip_workflow:
+    print(f"  GitHub repo: {config.github_repo}")
+    if not config.skip_workflow:
         print("  Workflow: .github/workflows/radicle.yaml")
     print("\nNext steps:")
     print("  1. Commit and push the workflow file")
     print("  2. The mirror will sync on every push")
 
     return 0
+
+
+def main() -> int:
+    args = parse_args()
+
+    github_repo = get_github_repo()
+    if not github_repo:
+        print("Error: Not in a GitHub repository", file=sys.stderr)
+        return 1
+
+    repo_name = github_repo.split("/")[-1]
+    config = MirrorConfig(
+        github_repo=github_repo,
+        project_name=args.name or repo_name,
+        description=args.description or get_github_description(github_repo),
+        alias=args.alias or f"{repo_name}_actions",
+        skip_secrets=args.skip_secrets,
+        skip_workflow=args.skip_workflow,
+    )
+
+    return setup_mirror(config)
 
 
 if __name__ == "__main__":

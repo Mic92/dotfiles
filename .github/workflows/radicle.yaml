@@ -1,12 +1,12 @@
 name: Mirror to Radicle
-
 on:
   push:
+    branches:
+      - main
   workflow_dispatch:
-
 jobs:
   mirror:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     environment: radicle
     steps:
       - id: mirror
