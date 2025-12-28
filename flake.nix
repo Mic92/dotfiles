@@ -227,12 +227,12 @@
                 machinesPerSystem = {
                   aarch64-linux = [
                     "blob64"
-                    "matchbox"
                   ];
                   x86_64-linux = [
                     "eve"
                     "eva"
                     "turingmachine"
+                    "matchbox"
                     "bernie"
                     "jacquardmachine"
                     "dorits-laptop"
