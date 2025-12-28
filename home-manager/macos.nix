@@ -14,6 +14,7 @@
   home.packages = [
     pkgs.eternal-terminal
     pkgs.rbw
+    pkgs.radicle-node
     inputs.strace-macos.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system}.niks3
   ];
