@@ -1,5 +1,7 @@
 # My personal bootstrap process
 
+**Radicle**: https://radicle.thalheim.io/nodes/radicle.thalheim.io/rad:z2dqRKkK5yu89w3CMX2dVsYrRwvFk
+
 For bootstrapping on
 [legacy operating systems](https://github.com/Mic92/dotfiles/wiki#bootstrap-for-legacy-operating-systems)
 
