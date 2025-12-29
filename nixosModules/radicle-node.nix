@@ -17,10 +17,7 @@ in
         These will also be pinned in the web interface.
         Leave empty to automatically discover and seed all repos from followed users.
       '';
-      example = [
-        "rad:z2dqRKkK5yu89w3CMX2dVsYrRwvFk"
-        "rad:z3gpeDzWxqV8iBEN8RcJNZEPVWmJf"
-      ];
+      example = [ "rad:z2dqRKkK5yu89w3CMX2dVsYrRwvFk" ];
     };
 
     services.radicle.autoSeedFollowed = lib.mkOption {
