@@ -3,6 +3,9 @@ on:
   push:
     branches:
       - main
+  schedule:
+    # Run daily at 3 AM UTC to sync any Radicle contributions
+    - cron: "0 3 * * *"
   workflow_dispatch:
 jobs:
   mirror:
@@ -19,7 +22,7 @@ jobs:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - id: mirror
-        uses: Mic92/radicle-sync@debug-crash
+        uses: Mic92/radicle-sync@main
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           radicle-identity-alias: "${{ secrets.RADICLE_IDENTITY_ALIAS }}"
