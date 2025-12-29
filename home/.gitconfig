@@ -60,7 +60,7 @@
   # recover failed commit messages: https://stackoverflow.com/questions/9133526/git-recover-failed-commits-message
   recommit = !git commit -eF $(git rev-parse --git-dir)/COMMIT_EDITMSG
 [push]
-  default = simple
+  default = current
   autoSetupRemote = true
 [rerere]
   autoUpdate = true
