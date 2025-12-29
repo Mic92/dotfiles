@@ -55,7 +55,7 @@ in
     services.radicle = {
       enable = true;
       privateKeyFile = config.clan.core.vars.generators.radicle.files.ssh-private-key.path;
-      publicKey = builtins.readFile config.clan.core.vars.generators.radicle.files.ssh-public-key.path;
+      publicKey = config.clan.core.vars.generators.radicle.files.ssh-public-key.path;
 
       node = {
         openFirewall = true;
