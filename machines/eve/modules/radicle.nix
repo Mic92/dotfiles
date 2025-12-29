@@ -5,7 +5,7 @@
   ...
 }:
 {
-  imports = [ ../../../nixosModules/radicle-node.nix ];
+  imports = [ ../../../nixosModules/radicle-mic92.nix ];
 
   # HTTP gateway configuration
   services.radicle.httpd = {
@@ -17,12 +17,6 @@
       quic = true;
     };
   };
-
-  # Web-specific settings (node settings come from shared module)
-  services.radicle.settings.web.pinned.repositories = [
-    "rad:z3gpeDzWxqV8iBEN8RcJNZEPVWmJf"
-    "rad:z2dqRKkK5yu89w3CMX2dVsYrRwvFk"
-  ];
 
   # Serve radicle-explorer as static files (override upstream's proxy)
   services.nginx.virtualHosts."radicle.thalheim.io" = {

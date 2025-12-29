@@ -29,7 +29,7 @@
 
     ../../nixosModules/nncp.nix
     ../../nixosModules/iperf.nix
-    ../../nixosModules/radicle-node.nix
+    ../../nixosModules/radicle-mic92.nix
     ../../nixosModules/openldap/replica.nix
     ../../nixosModules/promtail.nix
     ../../nixosModules/users.nix
