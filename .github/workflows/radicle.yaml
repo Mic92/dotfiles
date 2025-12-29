@@ -1,4 +1,4 @@
-name: Mirror to Radicle
+name: Radicle Sync
 on:
   push:
     branches:
@@ -12,9 +12,16 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - id: mirror
-        uses: Mic92/mirror-to-radicle@debug-crash
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v2
         with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+      - id: mirror
+        uses: Mic92/radicle-sync@debug-crash
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
           radicle-identity-alias: "${{ secrets.RADICLE_IDENTITY_ALIAS }}"
           radicle-identity-passphrase: "${{ secrets.RADICLE_IDENTITY_PASSPHRASE }}"
           radicle-identity-private-key: "${{ secrets.RADICLE_IDENTITY_PRIVATE_KEY }}"
