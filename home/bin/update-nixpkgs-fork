@@ -2,7 +2,7 @@
 
 set -eux -o pipefail
 
-RELEASE_BRANCH=nixos-25.05
+RELEASE_BRANCH=nixos-25.11
 
 cd "$HOME/git/nixpkgs"
 git fetch upstream nixpkgs-unstable "$RELEASE_BRANCH"
