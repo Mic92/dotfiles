@@ -3,6 +3,7 @@
   radicle-node,
   gh,
   git,
+  rbw,
   lib,
 }:
 
@@ -27,6 +28,7 @@ python3.pkgs.buildPythonApplication {
       radicle-node
       gh
       git
+      rbw
     ])
   ];
 

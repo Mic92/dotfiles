@@ -225,6 +225,40 @@ def set_github_secret(repo: str, name: str, value: str, env: str | None = None) 
     subprocess.run(cmd, input=value, text=True, check=True)
 
 
+def save_identity_to_rbw(
+    github_repo: str,
+    identity: dict[str, str],
+    project_name: str,
+    rid: str,
+) -> None:
+    """Save Radicle identity to rbw (Bitwarden) for backup."""
+    entry_name = f"radicle/{github_repo}"
+
+    # Store all identity data as compact single-line JSON
+    # (rbw treats first line as password, rest as notes)
+    identity_data = {
+        **identity,
+        "project_name": project_name,
+        "rid": rid,
+        "github_repo": github_repo,
+    }
+    json_data = json.dumps(identity_data, separators=(",", ":"))
+
+    # Add to rbw using stdin for password
+    try:
+        subprocess.run(
+            ["rbw", "add", entry_name, identity["alias"]],
+            input=json_data,
+            text=True,
+            check=True,
+        )
+        print(f"Saved identity to rbw: {entry_name}")
+    except subprocess.CalledProcessError as e:
+        print(f"Warning: Failed to save to rbw: {e}", file=sys.stderr)
+    except FileNotFoundError:
+        print("Warning: rbw not found, skipping backup to Bitwarden", file=sys.stderr)
+
+
 def setup_github_secrets(
     repo: str,
     identity: dict[str, str],
@@ -279,28 +313,40 @@ def create_workflow_content(preferred_seeds: list[str] | None = None) -> str:
         seeds_line = f'\n          preferred-seeds: "{seeds_str}"'
 
     return f"""\
-name: Mirror to Radicle
-
+name: Radicle Sync
 on:
   push:
     branches:
       - main
+  schedule:
+    # Run daily at 3 AM UTC to sync any Radicle contributions
+    - cron: '0 3 * * *'
   workflow_dispatch:
-
 jobs:
   mirror:
     runs-on: ubuntu-latest
     environment: radicle
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
-      - id: mirror
-        uses: Mic92/mirror-to-radicle@main
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v2
         with:
+          app-id: ${{{{ secrets.APP_ID }}}}
+          private-key: ${{{{ secrets.APP_PRIVATE_KEY }}}}
+      - id: mirror
+        uses: Mic92/radicle-sync@main
+        with:
+          github-token: ${{{{ steps.app-token.outputs.token }}}}
           radicle-identity-alias: "${{{{ secrets.RADICLE_IDENTITY_ALIAS }}}}"
           radicle-identity-passphrase: "${{{{ secrets.RADICLE_IDENTITY_PASSPHRASE }}}}"
           radicle-identity-private-key: "${{{{ secrets.RADICLE_IDENTITY_PRIVATE_KEY }}}}"
           radicle-identity-public-key: "${{{{ secrets.RADICLE_IDENTITY_PUBLIC_KEY }}}}"
           radicle-project-name: "${{{{ secrets.RADICLE_PROJECT_NAME }}}}"
           radicle-repository-id: "${{{{ secrets.RADICLE_REPOSITORY_ID }}}}"{seeds_line}
+          pr-labels: "auto-merge"
 """
 
 
@@ -406,6 +452,9 @@ def setup_mirror(config: MirrorConfig) -> int:
         if not config.skip_secrets:
             print("Setting up GitHub secrets...")
             setup_github_secrets(config.github_repo, identity, project_name, rid)
+
+        # Save identity to rbw for backup
+        save_identity_to_rbw(config.github_repo, identity, project_name, rid)
 
     # Create workflow file
     if not config.skip_workflow:
