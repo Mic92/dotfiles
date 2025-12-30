@@ -1,10 +1,12 @@
 { self, pkgs, ... }:
 let
   cask = self.inputs.nix-casks.packages.${pkgs.stdenv.hostPlatform.system};
+  myPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
-  # Install GUI apps via nix-casks and custom packages
-  environment.systemPackages = [
+  imports = [ ./casks.nix ];
+
+  environment.casks = [
     cask.alt-tab
     cask.ferdium
     cask.ungoogled-chromium
@@ -16,9 +18,10 @@ in
     cask.secretive
     cask.gather
     cask.inkscape
-    self.packages.${pkgs.stdenv.hostPlatform.system}.kdeconnect
-    self.packages.${pkgs.stdenv.hostPlatform.system}.librewolf-macos
-    self.packages.${pkgs.stdenv.hostPlatform.system}.radicle-desktop
+    cask.calibre
+    myPkgs.kdeconnect
+    myPkgs.librewolf-macos
+    myPkgs.radicle-desktop
   ];
 
   # Configure SSH to use Secretive for key management
