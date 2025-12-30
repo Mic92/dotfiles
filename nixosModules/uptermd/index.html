@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upterm: Secure Terminal Sharing</title>
+    <style>
+      :root {
+        --bg: #fafafa;
+        --surface: #ffffff;
+        --text: #333333;
+        --text-muted: #666666;
+        --accent: #222222;
+        --code-bg: #f0f0f0;
+        --border: #dddddd;
+        --warning-bg: #fff8e6;
+        --warning-border: #e6a700;
+        --warning-text: #b38600;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1a1a1a;
+          --surface: #252525;
+          --text: #e8e8e8;
+          --text-muted: #a0a0a0;
+          --accent: #e8e8e8;
+          --code-bg: #0f0f0f;
+          --border: #333333;
+          --warning-bg: #3d2c00;
+          --warning-border: #f5a623;
+          --warning-text: #f5a623;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        margin: 0;
+        padding: 2rem;
+      }
+      main {
+        max-width: 720px;
+        margin: 0 auto;
+      }
+      h1, h2 {
+        color: var(--accent);
+      }
+      h1 {
+        border-bottom: 2px solid var(--border);
+        padding-bottom: 0.5rem;
+      }
+      a {
+        color: var(--accent);
+      }
+      code {
+        font-family: "JetBrains Mono", "Fira Code", Consolas, monospace;
+        font-size: 0.9em;
+      }
+      pre {
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 1rem;
+        overflow-x: auto;
+        position: relative;
+      }
+      pre code {
+        color: var(--text);
+      }
+      .warning {
+        background: var(--warning-bg);
+        border-left: 4px solid var(--warning-border);
+        padding: 0.75rem 1rem;
+        margin: 1rem 0;
+        border-radius: 0 6px 6px 0;
+      }
+      .warning strong {
+        color: var(--warning-text);
+      }
+      p {
+        margin: 1rem 0;
+      }
+      footer {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        color: var(--text-muted);
+        font-size: 0.9em;
+      }
+      .js-only {
+        display: none;
+      }
+      .copy-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background: var(--border);
+        border: none;
+        border-radius: 4px;
+        color: var(--text-muted);
+        padding: 0.25rem 0.5rem;
+        cursor: pointer;
+        font-size: 0.8rem;
+        display: none;
+      }
+      .copy-btn:hover {
+        background: var(--accent);
+        color: var(--bg);
+      }
+      .form-group {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+        margin: 1rem 0;
+      }
+      input[type="text"] {
+        background: var(--code-bg);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        color: var(--text);
+        padding: 0.5rem 0.75rem;
+        font-size: 1rem;
+        font-family: inherit;
+      }
+      input[type="text"]:focus {
+        outline: none;
+        border-color: var(--accent);
+      }
+      label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+      }
+      input[type="checkbox"],
+      input[type="radio"] {
+        accent-color: var(--accent);
+        width: 1.1rem;
+        height: 1.1rem;
+      }
+      .radio-group {
+        display: flex;
+        gap: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Upterm: Secure Terminal Sharing</h1>
+
+      <p>
+        Share a terminal session with <a
+          href="https://github.com/owenthereal/upterm"
+        >upterm</a>.
+      </p>
+
+      <div class="form-group js-only">
+        <input type="text" id="username" placeholder="GitHub username">
+        <label>
+          <input type="checkbox" id="use-nix">
+          Use <code>nix run</code>
+        </label>
+        <span class="radio-group">
+          <label><input type="radio" name="mux" value="tmux" checked>
+            tmux</label>
+          <label><input type="radio" name="mux" value="zellij"> zellij</label>
+        </span>
+      </div>
+
+      <h2>Host a Session</h2>
+
+      <pre
+        id="host-cmd"
+      >
+<button class="copy-btn">Copy</button><code>upterm host --github-user 'USERNAME' --server ssh://upterm.thalheim.io:2323 \
+  --force-command 'tmux attach -t pair-programming' \
+  -- tmux new -t pair-programming</code></pre>
+
+      <p class="js-hide">
+        Replace <code>USERNAME</code> with the GitHub user you want to share the
+        session with.
+      </p>
+      <p class="js-hide">
+        For zellij, use <code>zellij attach pair-programming</code> and <code
+        >zellij -s pair-programming</code> instead.
+      </p>
+
+      <div class="warning">
+        <strong>Important:</strong> Run this command from a terminal <strong
+        >outside of tmux/zellij</strong>. Running upterm from within an existing
+        session will not work.
+      </div>
+
+      <h2>Get Connection URL</h2>
+
+      <p>Once the session is running:</p>
+
+      <pre><button class="copy-btn">Copy</button><code>upterm session current</code></pre>
+
+      <p>Output:</p>
+
+      <pre>
+<code>=== YXBRHY1BXARIWTSGXJ8L
+Command:                tmux new -t pair-programming
+Force Command:          tmux attach -t pair-programming
+Host:                   ssh://upterm.thalheim.io:2323
+SSH Session:            ssh yXbrhy1bXaRIwTsgxJ8l:Wzo6XToyMjIy@upterm.thalheim.io -p 2323</code></pre>
+
+      <p>Share the <code>SSH Session</code> URL with your peer.</p>
+
+      <h2>Shell Function</h2>
+
+      <p>Add to <code>~/.bashrc</code> or <code>~/.zshrc</code>:</p>
+
+      <pre
+        id="shell-fn"
+      >
+<button class="copy-btn">Copy</button><code>upterm-share() {
+  if [ -z "$1" ]; then
+    echo "Usage: upterm-share &lt;github-username&gt;"
+    return 1
+  fi
+  upterm host --github-user "$1" --server ssh://upterm.thalheim.io:2323 \
+    --force-command 'tmux attach -t pair-programming' \
+    -- tmux new -t pair-programming
+}</code></pre>
+
+      <footer>
+        Source: <a
+          href="https://github.com/Mic92/dotfiles/blob/main/nixosModules/uptermd.nix"
+        >nixosModules/uptermd.nix</a>
+      </footer>
+    </main>
+
+    <script>
+      // Show JS-only elements, hide no-JS hints
+      document.querySelectorAll(".js-only").forEach((el) =>
+        el.style.display = "flex"
+      );
+      document.querySelectorAll(".js-hide").forEach((el) =>
+        el.style.display = "none"
+      );
+      document.querySelectorAll(".copy-btn").forEach((el) =>
+        el.style.display = "block"
+      );
+
+      const usernameInput = document.getElementById("username");
+      const useNixCheckbox = document.getElementById("use-nix");
+      const muxRadios = document.querySelectorAll('input[name="mux"]');
+      const hostCmdEl = document.querySelector("#host-cmd code");
+      const shellFnEl = document.querySelector("#shell-fn code");
+
+      function getMux() {
+        return document.querySelector('input[name="mux"]:checked')
+          .value;
+      }
+
+      function getHostCmd(user, useNix, mux) {
+        const u = user || "USERNAME";
+        const prefix = useNix
+          ? "nix run nixpkgs#upterm -- host"
+          : "upterm host";
+        const attach = mux === "tmux"
+          ? "tmux attach -t pair-programming"
+          : "zellij attach pair-programming";
+        const newSession = mux === "tmux"
+          ? "tmux new -t pair-programming"
+          : "zellij -s pair-programming";
+        return `${prefix} --github-user '${u}' --server ssh://upterm.thalheim.io:2323 \\
+  --force-command '${attach}' \\
+  -- ${newSession}`;
+      }
+
+      function getShellFn(useNix, mux) {
+        const prefix = useNix
+          ? "nix run nixpkgs#upterm -- host"
+          : "upterm host";
+        const attach = mux === "tmux"
+          ? "tmux attach -t pair-programming"
+          : "zellij attach pair-programming";
+        const newSession = mux === "tmux"
+          ? "tmux new -t pair-programming"
+          : "zellij -s pair-programming";
+        return `upterm-share() {
+  if [ -z "$1" ]; then
+    echo "Usage: upterm-share <github-username>"
+    return 1
+  fi
+  ${prefix} --github-user "$1" --server ssh://upterm.thalheim.io:2323 \\
+    --force-command '${attach}' \\
+    -- ${newSession}
+}`;
+      }
+
+      function updateCommands() {
+        const user = usernameInput.value;
+        const useNix = useNixCheckbox.checked;
+        const mux = getMux();
+        hostCmdEl.textContent = getHostCmd(user, useNix, mux);
+        shellFnEl.textContent = getShellFn(useNix, mux);
+      }
+
+      usernameInput.addEventListener("input", updateCommands);
+      useNixCheckbox.addEventListener("change", updateCommands);
+      muxRadios.forEach((r) =>
+        r.addEventListener("change", updateCommands)
+      );
+
+      document.querySelectorAll(".copy-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const code = btn.parentElement.querySelector("code");
+          navigator.clipboard.writeText(code.textContent);
+          btn.textContent = "Copied!";
+          setTimeout(() => btn.textContent = "Copy", 1500);
+        });
+      });
+    </script>
+  </body>
+</html>
