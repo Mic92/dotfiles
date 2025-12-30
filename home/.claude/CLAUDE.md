@@ -45,6 +45,7 @@
 
 ## Code Quality & Testing
 
+- practice TDD
 - Format code with `flake-fmt` if the current project has a flake with a
   formatter defined.
 - Write shell scripts that pass `shellcheck`.
