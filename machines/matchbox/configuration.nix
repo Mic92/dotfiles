@@ -13,6 +13,7 @@
     ./modules/rsnapshot.nix
     ./modules/photoprism.nix
     ./modules/borgbackup.nix
+    ./modules/tinyproxy.nix
 
     ../../nixosModules/users.nix
     ../../nixosModules/sshd/tor.nix

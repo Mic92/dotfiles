@@ -15,6 +15,9 @@ in
       TZ = "Europe/Berlin";
       EXPOSE_FEED_ENDPOINTS = "true";
       ENABLE_IPV6 = "true";
+      # Use matchbox as HTTP proxy for yt-dlp
+      HTTP_PROXY = "http://matchbox.x:8888";
+      HTTPS_PROXY = "http://matchbox.x:8888";
     };
   };
 
