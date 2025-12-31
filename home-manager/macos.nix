@@ -1,6 +1,8 @@
 {
   pkgs,
   inputs,
+  self,
+  lib,
   ...
 }:
 {
@@ -17,5 +19,10 @@
     pkgs.radicle-node
     inputs.strace-macos.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system}.niks3
+    self.packages.${pkgs.stdenv.hostPlatform.system}.browser-cli
   ];
+
+  home.activation.installBrowserCliHost = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    ${self.packages.${pkgs.stdenv.hostPlatform.system}.browser-cli}/bin/browser-cli install-host
+  '';
 }

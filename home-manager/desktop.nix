@@ -2,6 +2,7 @@
   self,
   pkgs,
   inputs,
+  lib,
   ...
 }:
 {
@@ -18,6 +19,10 @@
 
   services.mpris-proxy.enable = true;
   services.syncthing.enable = true;
+
+  home.activation.installBrowserCliHost = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    ${self.packages.${pkgs.stdenv.hostPlatform.system}.browser-cli}/bin/browser-cli install-host
+  '';
 
   home.packages =
     with pkgs;

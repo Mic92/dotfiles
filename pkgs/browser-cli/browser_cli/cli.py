@@ -43,11 +43,6 @@ def install_native_host() -> None:
 
     # Define paths
     home = Path.home()
-    host_dir = home / ".mozilla" / "native-messaging-hosts"
-    host_file = host_dir / "io.thalheim.browser_cli.bridge.json"
-
-    # Create directory if it doesn't exist
-    host_dir.mkdir(parents=True, exist_ok=True)
 
     # Create a wrapper script that doesn't hardcode nix store paths
     wrapper_dir = home / ".local" / "bin"
@@ -55,26 +50,39 @@ def install_native_host() -> None:
     wrapper_path = wrapper_dir / "browser-cli-server-wrapper"
 
     # Write wrapper script
-    wrapper_content = """#!/usr/bin/env bash
-exec "$(which browser-cli-server)" "$@"
+    wrapper_content = f"""#!/usr/bin/env bash
+exec "{server_path}" "$@"
 """
     wrapper_path.write_text(wrapper_content)
     wrapper_path.chmod(0o755)
 
-    # Create the native messaging host manifest
-    manifest = {
-        "name": "io.thalheim.browser_cli.bridge",
-        "description": "Browser CLI Bridge Server",
-        "path": str(wrapper_path),
-        "type": "stdio",
-        "allowed_extensions": ["browser-cli-controller@thalheim.io"],
-    }
+    host_dirs = []
+    if sys.platform == "darwin":
+        app_support = home / "Library" / "Application Support"
+        host_dirs.append(app_support / "Mozilla" / "NativeMessagingHosts")
+        host_dirs.append(app_support / "LibreWolf" / "NativeMessagingHosts")
+    else:
+        host_dirs.append(home / ".mozilla" / "native-messaging-hosts")
 
-    # Write the manifest file
-    with host_file.open("w") as f:
-        json.dump(manifest, f, indent=2)
+    # Create directories and install manifest
+    for host_dir in host_dirs:
+        host_dir.mkdir(parents=True, exist_ok=True)
+        host_file = host_dir / "io.thalheim.browser_cli.bridge.json"
 
-    print(f"Native messaging host installed successfully at {host_file}")
+        # Create the native messaging host manifest
+        manifest = {
+            "name": "io.thalheim.browser_cli.bridge",
+            "description": "Browser CLI Bridge Server",
+            "path": str(wrapper_path),
+            "type": "stdio",
+            "allowed_extensions": ["browser-cli-controller@thalheim.io"],
+        }
+
+        # Write the manifest file
+        with host_file.open("w") as f:
+            json.dump(manifest, f, indent=2)
+
+        print(f"Native messaging host installed successfully at {host_file}")
     print(f"Using wrapper script at: {wrapper_path}")
 
 
