@@ -22,6 +22,7 @@
       aiTools.gemini-cli
       aiTools.ccusage
       aiTools.ccstatusline
+      aiTools.coding-agent-search
       pkgs.pueue
     ];
 }
