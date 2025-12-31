@@ -2,6 +2,7 @@
 let
   cask = self.inputs.nix-casks.packages.${pkgs.stdenv.hostPlatform.system};
   myPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
+  firefoxExtensions = pkgs.callPackages ../pkgs/firefox-extensions { };
 in
 {
   imports = [ ./casks.nix ];
@@ -20,7 +21,9 @@ in
     cask.inkscape
     cask.calibre
     myPkgs.kdeconnect
-    myPkgs.librewolf-macos
+    (myPkgs.librewolf-macos.override {
+      policies = import ../pkgs/librewolf-policies.nix { inherit firefoxExtensions; };
+    })
     myPkgs.radicle-desktop
   ];
 
