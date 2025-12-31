@@ -3,6 +3,7 @@
   stdenv,
   fetchurl,
   undmg,
+  policies ? { },
 }:
 
 let
@@ -24,6 +25,12 @@ stdenv.mkDerivation {
     runHook preInstall
     mkdir -p "$out/Applications"
     cp -r LibreWolf.app "$out/Applications/"
+
+    mkdir -p "$out/Applications/LibreWolf.app/Contents/Resources/distribution"
+    echo '${
+      builtins.toJSON { inherit policies; }
+    }' > "$out/Applications/LibreWolf.app/Contents/Resources/distribution/policies.json"
+
     runHook postInstall
   '';
 
