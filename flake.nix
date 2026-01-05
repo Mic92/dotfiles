@@ -214,12 +214,46 @@
             system,
             ...
           }:
+          let
+            # Overlay to fix MCP package for macOS
+            # The upstream nixpkgs patch tries to modify files that no longer exist in MCP 1.25.0
+            mcpOverlay = final: prev: {
+              python3 = prev.python3.override {
+                packageOverrides = pyfinal: pyprev: {
+                  mcp = pyprev.mcp.overrideAttrs (old: {
+                    # Fix: Only patch test_stdio.py as the other files no longer contain time.sleep(0.1)
+                    postPatch = lib.optionalString prev.stdenv.buildPlatform.isDarwin ''
+                      # time.sleep(0.1) feels a bit optimistic and it has been flaky whilst
+                      # testing this on macOS under load.
+                      substituteInPlace \
+                        "tests/client/test_stdio.py" \
+                        --replace-fail "time.sleep(0.1)" "time.sleep(1)"
+                    '';
+                  });
+                };
+              };
+              python313 = prev.python313.override {
+                packageOverrides = pyfinal: pyprev: {
+                  mcp = pyprev.mcp.overrideAttrs (old: {
+                    # Fix: Only patch test_stdio.py as the other files no longer contain time.sleep(0.1)
+                    postPatch = lib.optionalString prev.stdenv.buildPlatform.isDarwin ''
+                      # time.sleep(0.1) feels a bit optimistic and it has been flaky whilst
+                      # testing this on macOS under load.
+                      substituteInPlace \
+                        "tests/client/test_stdio.py" \
+                        --replace-fail "time.sleep(0.1)" "time.sleep(1)"
+                    '';
+                  });
+                };
+              };
+            };
+          in
           {
             # make pkgs available to all `perSystem` functions
-            _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
+            _module.args.pkgs = inputs'.nixpkgs.legacyPackages.extend mcpOverlay;
 
-            # Set clan.pkgs for all machines
-            clan.pkgs = inputs'.nixpkgs.legacyPackages;
+            # Set clan.pkgs for all machines (with same overlay)
+            clan.pkgs = inputs'.nixpkgs.legacyPackages.extend mcpOverlay;
 
             checks =
               let
