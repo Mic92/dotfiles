@@ -12,6 +12,12 @@
         claude-code = pkgs.callPackage ./claude-code {
           claude-code = inputs'.llm-agents.packages.claude-code;
         };
+        # Override gemini-cli to fix npm dependencies hash mismatch
+        gemini-cli = inputs'.llm-agents.packages.gemini-cli.overrideAttrs (old: {
+          npmDeps = old.npmDeps.overrideAttrs (oldDeps: {
+            outputHash = "sha256-j7RHvDhaFraHTOCFjmrqdJHpKlWxGCijYL1qlmpx4zo=";
+          });
+        });
         gmaps-cli = pkgs.python3.pkgs.callPackage ./gmaps-cli { };
         db-cli = pkgs.callPackage ./db-cli { };
         kagi-search = pkgs.python3.pkgs.callPackage ./kagi-search { };

@@ -19,7 +19,7 @@
       aiTools.codex
       aiTools.cursor-agent
       aiTools.spec-kit
-      aiTools.gemini-cli
+      self.packages.${pkgs.stdenv.hostPlatform.system}.gemini-cli
       aiTools.ccusage
       aiTools.ccstatusline
       aiTools.coding-agent-search
