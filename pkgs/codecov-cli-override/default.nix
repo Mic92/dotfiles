@@ -1,27 +1,22 @@
 { codecov-cli, fetchFromGitHub }:
 
-# The upstream package tries to fix SSH URL issues with GIT_CONFIG_* variables,
-# but those don't work properly during fetchSubmodules. Instead, we fetch
-# without submodules and then manually fix the .gitmodules file before
-# initializing submodules.
+# The upstream package uses SSH URLs in .gitmodules which don't work in Nix builds.
+# We need to rewrite them to HTTPS URLs before fetching submodules.
 codecov-cli.overrideAttrs (old: {
-  src = (fetchFromGitHub {
+  src = fetchFromGitHub {
     owner = "codecov";
     repo = "codecov-cli";
     tag = "v${old.version}";
     hash = "sha256-R1GFQ81N/e2OX01oSs8Xs+PM0JKVZofiUPADVdxCzWk=";
-    fetchSubmodules = true;
-  }).overrideAttrs (oldSrc: {
-    # Fix .gitmodules to use HTTPS instead of SSH URLs before fetching submodules
-    postFetch = (oldSrc.postFetch or "") + ''
-      # Replace SSH URLs with HTTPS URLs in .gitmodules
-      if [ -f "$out/.gitmodules" ]; then
-        sed -i 's|git@github\.com:|https://github.com/|g' "$out/.gitmodules"
-      fi
+    leaveDotGit = true;
+    postFetch = ''
+      cd "$out"
+      # Rewrite SSH URLs to HTTPS in .gitmodules
+      sed -i 's|git@github\.com:|https://github.com/|g' .gitmodules
+      # Initialize and update submodules with HTTPS URLs
+      git submodule update --init --recursive
+      # Clean up .git to make the output deterministic
+      find "$out" -name .git -print0 | xargs -0 rm -rf
     '';
-    # Set git config to use HTTPS for github during submodule init
-    GIT_CONFIG_COUNT = "1";
-    GIT_CONFIG_KEY_0 = "url.https://github.com/.insteadOf";
-    GIT_CONFIG_VALUE_0 = "git@github.com:";
-  });
+  };
 })
