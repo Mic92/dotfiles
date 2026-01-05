@@ -38,15 +38,6 @@
         programs.mypy.directories = {
           "machines/eva/modules/prometheus" = { };
           "openwrt" = { };
-          "pkgs/tmux-mcp" = {
-            extraPythonPackages = with pkgs.python3.pkgs; [
-              mcp
-              pydantic
-              types-setuptools
-              pytest
-              pytest-asyncio
-            ];
-          };
           "pkgs/pexpect-cli" = {
             extraPythonPackages = with pkgs.python3.pkgs; [
               pexpect
