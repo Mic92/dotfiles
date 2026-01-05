@@ -219,12 +219,12 @@
             _module.args.pkgs = inputs'.nixpkgs.legacyPackages.extend (
               final: prev: {
                 python3 = prev.python3.override {
-                  packageOverrides = pyfinal: pyprev: {
+                  packageOverrides = _pyfinal: pyprev: {
                     mcp = final.callPackage ./pkgs/python-mcp-override { mcp = pyprev.mcp; };
                   };
                 };
                 python313 = prev.python313.override {
-                  packageOverrides = pyfinal: pyprev: {
+                  packageOverrides = _pyfinal: pyprev: {
                     mcp = final.callPackage ./pkgs/python-mcp-override { mcp = pyprev.mcp; };
                   };
                 };
@@ -236,12 +236,12 @@
             clan.pkgs = inputs'.nixpkgs.legacyPackages.extend (
               final: prev: {
                 python3 = prev.python3.override {
-                  packageOverrides = pyfinal: pyprev: {
+                  packageOverrides = _pyfinal: pyprev: {
                     mcp = final.callPackage ./pkgs/python-mcp-override { mcp = pyprev.mcp; };
                   };
                 };
                 python313 = prev.python313.override {
-                  packageOverrides = pyfinal: pyprev: {
+                  packageOverrides = _pyfinal: pyprev: {
                     mcp = final.callPackage ./pkgs/python-mcp-override { mcp = pyprev.mcp; };
                   };
                 };

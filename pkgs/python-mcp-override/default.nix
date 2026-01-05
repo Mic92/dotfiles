@@ -1,6 +1,10 @@
-{ mcp, lib, stdenv }:
+{
+  mcp,
+  lib,
+  stdenv,
+}:
 
-mcp.overridePythonAttrs (old: {
+mcp.overridePythonAttrs (_old: {
   postPatch = lib.optionalString stdenv.buildPlatform.isDarwin ''
     # time.sleep(0.1) feels a bit optimistic and it has been flaky whilst
     # testing this on macOS under load.
