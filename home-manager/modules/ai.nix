@@ -19,7 +19,9 @@
       aiTools.codex
       aiTools.cursor-agent
       aiTools.spec-kit
-      aiTools.gemini-cli
+      # Temporarily disabled due to npm hash mismatch in llm-agents.nix
+      # See: https://github.com/numtide/llm-agents.nix/issues/1707
+      # aiTools.gemini-cli
       aiTools.ccusage
       aiTools.ccstatusline
       aiTools.coding-agent-search
