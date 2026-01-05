@@ -216,10 +216,38 @@
           }:
           {
             # make pkgs available to all `perSystem` functions
-            _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
+            _module.args.pkgs = inputs'.nixpkgs.legacyPackages.extend (
+              final: prev: {
+                python3 = prev.python3.override {
+                  packageOverrides = pyfinal: pyprev: {
+                    mcp = final.callPackage ./pkgs/python-mcp-override { mcp = pyprev.mcp; };
+                  };
+                };
+                python313 = prev.python313.override {
+                  packageOverrides = pyfinal: pyprev: {
+                    mcp = final.callPackage ./pkgs/python-mcp-override { mcp = pyprev.mcp; };
+                  };
+                };
+                codecov-cli = final.callPackage ./pkgs/codecov-cli-override { codecov-cli = prev.codecov-cli; };
+              }
+            );
 
             # Set clan.pkgs for all machines
-            clan.pkgs = inputs'.nixpkgs.legacyPackages;
+            clan.pkgs = inputs'.nixpkgs.legacyPackages.extend (
+              final: prev: {
+                python3 = prev.python3.override {
+                  packageOverrides = pyfinal: pyprev: {
+                    mcp = final.callPackage ./pkgs/python-mcp-override { mcp = pyprev.mcp; };
+                  };
+                };
+                python313 = prev.python313.override {
+                  packageOverrides = pyfinal: pyprev: {
+                    mcp = final.callPackage ./pkgs/python-mcp-override { mcp = pyprev.mcp; };
+                  };
+                };
+                codecov-cli = final.callPackage ./pkgs/codecov-cli-override { codecov-cli = prev.codecov-cli; };
+              }
+            );
 
             checks =
               let
