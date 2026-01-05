@@ -216,10 +216,26 @@
           }:
           {
             # make pkgs available to all `perSystem` functions
-            _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
+            _module.args.pkgs = inputs'.nixpkgs.legacyPackages.extend (
+              final: prev: {
+                python313Packages = prev.python313Packages.overrideScope (
+                  pyFinal: pyPrev: {
+                    mcp = final.callPackage ./pkgs/python-packages/mcp.nix { mcp = pyPrev.mcp; };
+                  }
+                );
+              }
+            );
 
             # Set clan.pkgs for all machines
-            clan.pkgs = inputs'.nixpkgs.legacyPackages;
+            clan.pkgs = inputs'.nixpkgs.legacyPackages.extend (
+              final: prev: {
+                python313Packages = prev.python313Packages.overrideScope (
+                  pyFinal: pyPrev: {
+                    mcp = final.callPackage ./pkgs/python-packages/mcp.nix { mcp = pyPrev.mcp; };
+                  }
+                );
+              }
+            );
 
             checks =
               let
