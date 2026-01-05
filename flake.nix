@@ -214,12 +214,33 @@
             system,
             ...
           }:
+          let
+            pkgs = inputs'.nixpkgs.legacyPackages.extend (
+              final: prev: {
+                python313 = prev.python313.override {
+                  packageOverrides = pyFinal: pyPrev: {
+                    mcp = pyPrev.mcp.overridePythonAttrs (old: {
+                      postPatch = lib.optionalString prev.stdenv.buildPlatform.isDarwin ''
+                        # time.sleep(0.1) feels a bit optimistic and it has been flaky whilst
+                        # testing this on macOS under load.
+                        # Note: tests/server/fastmcp/test_integration.py no longer contains this pattern
+                        substituteInPlace \
+                          "tests/client/test_stdio.py" \
+                          --replace-fail "time.sleep(0.1)" "time.sleep(1)"
+                      '';
+                    });
+                  };
+                };
+                python3 = final.python313;
+              }
+            );
+          in
           {
             # make pkgs available to all `perSystem` functions
-            _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
+            _module.args.pkgs = pkgs;
 
             # Set clan.pkgs for all machines
-            clan.pkgs = inputs'.nixpkgs.legacyPackages;
+            clan.pkgs = pkgs;
 
             checks =
               let
