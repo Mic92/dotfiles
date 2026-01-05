@@ -212,14 +212,21 @@
             self',
             lib,
             system,
+            config,
             ...
           }:
+          let
+            pkgs = import inputs.nixpkgs {
+              inherit system;
+              overlays = [ (import ./overlays/mcp-fix.nix) ];
+            };
+          in
           {
             # make pkgs available to all `perSystem` functions
-            _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
+            _module.args.pkgs = pkgs;
 
             # Set clan.pkgs for all machines
-            clan.pkgs = inputs'.nixpkgs.legacyPackages;
+            clan.pkgs = pkgs;
 
             checks =
               let
