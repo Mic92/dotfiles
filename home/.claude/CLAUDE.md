@@ -3,21 +3,11 @@
 - fd, rg, dnsutils, lsof, gdb, binutils, graphicsmagic (gm)
 - On Linux: strace/sysdig/bcc
 - macOS: strace (this was ported)
-- pexpect-cli: Persistent pexpect sessions for automating interactive terminal
-  applications. Start a session with `pexpect-cli --start`, then send Python
-  pexpect code via stdin to control programs. Example:
-
-  ```
-  > pexpect-cli --start
-  888d9bf4
-  > echo 'child = pexpect.spawn("bash"); child.sendline("pwd"); child.expect("$"); print(child.before.decode())' | pexpect-cli 888d9bf4
-  ```
 
 ## General Guidelines
 
 - Follow XDG desktop standards when writing code
 - Use `$HOME/.claude/outputs` as a scratch directory.
-- In the Bash tool use absolute paths over `cd`
 
 ## Nix-specific
 
@@ -38,16 +28,14 @@
 - Generate/Update patch files for packages:
   1. git clone
   2. Optional: apply existing patch
-  3. Use the Edit tool to do the change
-  4. Use git format-patch to generate the new patch
-- Do not use `nix flake check` on the whole flake; it is too slow. Instead,
-  build individual tests.
+  3. Apply edits
+  4. Use `git format-patch` for a new patch
+- `nix flake check` runs too slow. Instead, build individual tests.
 
 ## Code Quality & Testing
 
 - practice TDD
-- Format code with `flake-fmt` if the current project has a flake with a
-  formatter defined.
+- In flakes: format code with `flake-fmt`
 - Write shell scripts that pass `shellcheck`.
 - Write Python code for 3.13 that conforms to `ruff format`, `ruff check` and
   `mypy`
@@ -90,11 +78,8 @@
 - Recommended: Use GitHub code search to find examples for libraries and APIs:
   `gh search code "foo lang:nix"`.
 - Prefer cloning source code over web searches for more accurate results.
-  Various projects are available in `~/git`, including:
-- `~/git/nixpkgs`
-- `~/git/linux`
-- `~/git/nix`
-- `~/work/clan/clan-core`
+  Various projects are available in `~/git`, including: `nixpkgs`, `linux`,
+  `nix`, also see `~/work/clan/clan-core`
 - Use Kagi for searching the web:
 - `kagi-search "nixpkgs buildPythonPackage examples"`
 - `kagi-search -j "nix flake inputs follows" | jq -r '.results[].url'`
