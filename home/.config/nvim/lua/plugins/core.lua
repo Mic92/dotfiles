@@ -1,10 +1,10 @@
 return {
-	"AstroNvim/astrocore",
-	lazy = false, -- disable lazy loading
-	priority = 10000, -- load AstroCore first
-	opts = {
-		options = {
-			opt = {},
-		},
+	{
+		"AstroNvim/astrocore",
+		branch = "v3",
+		lazy = false,
+		priority = 10000,
 	},
+	{ "AstroNvim/astrolsp", branch = "v4" },
+	{ "AstroNvim/astroui", branch = "v4" },
 }

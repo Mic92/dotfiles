@@ -45,7 +45,7 @@ end, {})
 require("lazy").setup({
 	{
 		"AstroNvim/AstroNvim",
-		version = "^5",
+		branch = "v6",
 		import = "astronvim.plugins",
 	},
 
