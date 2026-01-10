@@ -1,7 +1,6 @@
 {
   writeShellScriptBin,
   nvim-lsp-packages,
-  nvim-install-treesitter,
   neovim,
   nvim-appname,
   lua-config ? ../../../home/.config/nvim,
@@ -37,15 +36,8 @@ writeShellScriptBin "nvim" ''
   cp -arfT '${lua-config}'/ "$XDG_CONFIG_HOME/$NVIM_APPNAME"
   chmod -R u+w "$XDG_CONFIG_HOME/$NVIM_APPNAME"
 
-  # Check if treesitter needs updating
-  if ! grep -q "${nvim-install-treesitter.rev}" "$XDG_CONFIG_HOME/$NVIM_APPNAME/lazy-lock.json"; then
-    echo "${nvim-install-treesitter.rev}" > "$XDG_CONFIG_HOME/$NVIM_APPNAME/treesitter-rev"
-    # Update plugins with Lazy package manager
-    nvim --headless "+Lazy! update" +qa
-  else
-    # Just check and install plugins if needed
-    nvim --headless -c 'quitall'
-  fi
+  # Just check and install plugins if needed
+  nvim --headless -c 'quitall'
 
   # Launch Neovim with all arguments passed to this script
   exec nvim "$@"
