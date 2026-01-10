@@ -14,10 +14,9 @@
       self.packages.${pkgs.stdenv.hostPlatform.system}.pexpect-cli
       self.packages.${pkgs.stdenv.hostPlatform.system}.claude-md
       self.packages.${pkgs.stdenv.hostPlatform.system}.kagi-search
-      aiTools.opencode
+      aiTools.pi
+      aiTools.tuicr
       aiTools.coderabbit-cli
-      aiTools.codex
-      aiTools.cursor-agent
       aiTools.spec-kit
       aiTools.gemini-cli
       aiTools.ccusage
