@@ -11,6 +11,7 @@
       legacyPackages = {
         nvim-lsp-packages = with pkgs; [
           nodejs # copilot
+          tree-sitter # needed by astrocore treesitter module
 
           # based on ./suggested-pkgs.json
           basedpyright
