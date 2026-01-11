@@ -1,8 +1,8 @@
 # Browser CLI
 
 A command-line interface for controlling Firefox through WebExtensions API.
-Features visual cursor animations and comprehensive browser automation
-capabilities.
+Exposes a JavaScript API for browser automation, similar to how pexpect-cli
+works for terminal automation.
 
 ## Overview
 
@@ -10,22 +10,9 @@ Browser CLI consists of three components:
 
 1. **Firefox Extension** - Executes commands in the browser and provides visual
    feedback
-2. **WebSocket Bridge Server** - Facilitates communication between the CLI and
+2. **Native Messaging Bridge** - Facilitates communication between the CLI and
    extension
-3. **CLI Client** - Command-line tool for sending automation commands
-
-## Features
-
-- **Visual Cursor** - Animated red cursor shows where actions are performed
-- **Element Selection** - Find elements by CSS selector, text content,
-  aria-label, or placeholder
-- **Browser Automation** - Navigate, click, type, hover, drag & drop, select
-  options, press keys
-- **Screenshot Capture** - Take screenshots of the current page
-- **Console Logs** - Retrieve JavaScript console output
-- **ARIA Snapshots** - Get accessibility tree representation of the page
-- **On-Demand Activation** - Extension only runs on tabs where explicitly
-  enabled
+3. **CLI Client** - Minimal command-line tool that executes JavaScript via stdin
 
 ## Installation
 
@@ -46,69 +33,128 @@ nix run github:Mic92/dotfiles#browser-cli -- --help
 
 2. **Install Native Messaging Host**
    ```bash
-   browser-cli install-host
-   ```
-
-3. **Start the WebSocket Bridge Server**
-   ```bash
-   browser-cli-server
-   ```
-
-   Or with nix:
-
-   ```
-   nix shell github:Mic92/dotfiles#browser-cli --command browser-cli-server
+   browser-cli --install-host
    ```
 
 ## Usage
 
-### Enable Extension on a Tab
-
-1. Navigate to the desired webpage
-2. Right-click and select "Enable Browser CLI on this tab"
-3. A blue banner will appear at the top indicating the extension is active
-4. Click the X button on the banner to disable
-
-### CLI Commands
+### Basic Usage
 
 ```bash
-# Navigation
-browser-cli navigate https://example.com
-browser-cli back
-browser-cli forward
+# Execute JavaScript (reads from stdin)
+echo 'document.title' | browser-cli
 
-# Interaction
-browser-cli click "Sign In"
-browser-cli type "input[name='email']" "user@example.com"
-browser-cli hover "button.submit"
-browser-cli select "select#country" "United States"
-browser-cli key "Enter"
+# Execute in a specific tab
+echo 'navigate("https://example.com")' | browser-cli abc123
 
-# Drag and Drop
-browser-cli drag ".draggable-item" ".drop-zone"
-
-# Information
-browser-cli screenshot output.png
-browser-cli console
-browser-cli snapshot
+# List managed tabs
+browser-cli --list
 ```
 
-### Element Selection
+### JavaScript API
 
-Elements can be found using:
+The CLI executes JavaScript with the following API functions available:
 
-- **CSS Selectors**: `browser-cli click "#submit-button"`
-- **Text Content**: `browser-cli click "Sign In"`
-- **ARIA Labels**: `browser-cli click "Close dialog"`
-- **Placeholders**: `browser-cli type "Enter your email" "user@example.com"`
+#### Navigation
+```javascript
+await navigate("https://example.com")  // Navigate to URL
+await back()                            // Go back in history
+await forward()                         // Go forward in history
+```
+
+#### Element Interaction
+```javascript
+// Click element (selector types: css, text, aria-label, placeholder)
+await click("#submit-button")
+await click("Sign In", "text")
+await click("Close dialog", "aria-label")
+
+// Type into input
+await type("input[name='email']", "user@example.com")
+await type("Enter your email", "hello", "placeholder")
+
+// Hover over element
+await hover(".dropdown-trigger")
+
+// Drag and drop
+await drag(".draggable", ".dropzone")
+
+// Select dropdown option
+await select("#country", "United States")
+
+// Press keyboard key
+key("Enter")
+key("Tab")
+key("Escape")
+```
+
+#### Page Information
+```javascript
+// Get accessibility tree snapshot
+snapshot()
+snapshot(0, 100)  // With pagination: offset, limit
+
+// Get console logs
+getConsole()
+
+// Find element (returns DOM element)
+findElement("#my-id")
+findElement("Click me", "text")
+```
+
+#### Screenshots
+```javascript
+await screenshot()                  // Save to screenshot.png
+await screenshot("/tmp/page.png")   // Save to specific path
+```
+
+#### Tab Management
+```javascript
+const tabId = await newTab()                    // Create new tab
+const tabId = await newTab("https://example.com")  // Create with URL
+await closeTab()                                // Close current tab
+await closeTab("abc123")                        // Close specific tab
+const tabs = await listTabs()                   // List all tabs
+```
+
+### Examples
+
+```bash
+# Complex automation with heredoc
+browser-cli <<'EOF'
+await navigate("https://google.com");
+await type("textarea[name='q']", "hello world");
+key("Enter");
+EOF
+
+# Create a new tab and automate it
+browser-cli <<'EOF'
+const tabId = await newTab("https://example.com");
+console.log("Created tab:", tabId);
+await click("a");
+EOF
+
+# Get page title
+echo 'document.title' | browser-cli
+
+# Get all links on the page
+browser-cli <<'EOF'
+Array.from(document.querySelectorAll('a'))
+  .map(a => ({ href: a.href, text: a.textContent.trim() }))
+  .filter(a => a.href && a.text)
+EOF
+
+# Take a screenshot
+echo 'await screenshot("/tmp/page.png")' | browser-cli
+```
 
 ## Architecture
 
 ```
-┌─────────────┐     WebSocket      ┌──────────────┐     Native      ┌────────────┐
-│   CLI       │ ◄─────────────────► │    Bridge    │ ◄─────────────► │ Extension  │
-│ (Port 9223) │                     │   Server     │    Messaging    │(Port 9222) │
-└─────────────┘                     └──────────────┘                  └────────────┘
+┌─────────────┐     Unix Socket     ┌──────────────┐     Native      ┌────────────┐
+│    CLI      │ ◄─────────────────► │    Bridge    │ ◄─────────────► │ Extension  │
+│  (stdin)    │                     │   Server     │    Messaging    │            │
+└─────────────┘                     └──────────────┘                 └────────────┘
 ```
 
 ## Development
@@ -120,64 +166,13 @@ browser-cli/
 ├── extension/          # Firefox WebExtension
 │   ├── manifest.json
 │   ├── background.js   # Extension service worker
-│   └── content.js      # Page automation and cursor
+│   └── content.js      # Page automation and JS API
 ├── browser_cli/        # Python CLI package
-│   ├── __init__.py
 │   ├── cli.py          # CLI entry point
-│   ├── client.py       # WebSocket client
-│   ├── server.py       # Bridge server
-│   ├── commands.py     # Command definitions
-│   └── errors.py       # Custom exceptions
-└── pyproject.toml      # Python package configuration
-```
-
-### Setup Development Environment
-
-```bash
-# Install JavaScript dependencies
-cd extension
-npm install
-
-# Install Python dependencies (if not using Nix)
-cd ..
-pip install -e ".[dev]"
-```
-
-### Available NPM Scripts
-
-```bash
-cd extension
-
-# Type checking with TypeScript
-npm run typecheck
-
-# Lint JavaScript code
-npm run lint
-
-# Fix linting issues automatically
-npm run lint:fix
-
-# Run extension in Firefox (development mode)
-npm start
-
-# Build extension package
-npm run build
-```
-
-### Python Development
-
-```bash
-# Lint Python code
-ruff check .
-
-# Fix Python linting issues
-ruff check --fix .
-
-# Format Python code
-ruff format .
-
-# Type check Python code
-mypy .
+│   ├── client.py       # Unix socket client
+│   ├── bridge.py       # Native messaging bridge
+│   └── server.py       # Bridge server
+└── pyproject.toml
 ```
 
 ### Building
@@ -192,26 +187,16 @@ nix build .#browser-cli
 
 ### Extension Not Connecting
 
-1. Ensure the WebSocket bridge server is running: `browser-cli-server`
-2. Check that the extension is enabled on the current tab
-3. Verify native messaging host is installed: `browser-cli install-host`
+1. Ensure Firefox is running
+2. The Browser CLI extension is installed
+3. Native messaging host is installed: `browser-cli --install-host`
 4. Check Firefox console for errors: `Ctrl+Shift+J`
 
 ### Commands Timing Out
 
 - Some pages may have slow-loading elements
-- Try increasing wait time between commands
-- Ensure elements exist before interacting: `browser-cli snapshot`
-
-### Permission Errors
-
-The extension requires permissions for:
-
-- `activeTab` - Interact with the current tab
-- `tabs` - Navigate and manage tabs
-- `contextMenus` - Add right-click menu options
-- `nativeMessaging` - Communicate with CLI
-- `storage` - Save extension state
+- Try adding delays: `await new Promise(r => setTimeout(r, 1000))`
+- Ensure elements exist: `snapshot()` to see the page structure
 
 ## License
 
