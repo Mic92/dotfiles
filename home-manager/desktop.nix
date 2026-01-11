@@ -21,7 +21,7 @@
   services.syncthing.enable = true;
 
   home.activation.installBrowserCliHost = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    ${self.packages.${pkgs.stdenv.hostPlatform.system}.browser-cli}/bin/browser-cli install-host
+    ${self.packages.${pkgs.stdenv.hostPlatform.system}.browser-cli}/bin/browser-cli --install-host
   '';
 
   home.packages =
