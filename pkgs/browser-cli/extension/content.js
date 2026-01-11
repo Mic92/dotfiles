@@ -1823,7 +1823,7 @@ async function tabs() {
  * @returns {Promise<{downloaded: string, path: string}>}
  */
 async function download(url, filename) {
-  return sendToBackground('download', { url, filename });
+  return sendToBackground("download", { url, filename });
 }
 
 // ============================================================================
@@ -1908,11 +1908,11 @@ async function handleExec(code) {
     "find",
     "wait",
     // Background script functions
-    'shot',
-    'tab',
-    'tabs',
-    'download',
-    wrappedCode
+    "shot",
+    "tab",
+    "tabs",
+    "download",
+    wrappedCode,
   );
 
   const result = await fn(
@@ -1932,7 +1932,7 @@ async function handleExec(code) {
     shot,
     tab,
     tabs,
-    download
+    download,
   );
 
   return { result: serializeResult(result) };

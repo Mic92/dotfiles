@@ -27,6 +27,7 @@ All functions are available in the execution context. Actions return simple
 confirmations; use `snap()` to get page state.
 
 ## Element Interaction (use refs from snap())
+
 ```bash
 browser-cli <<'EOF'
 await click(1)                    // Click element [1]
@@ -48,6 +49,7 @@ EOF
 ```
 
 ## Page Inspection
+
 ```bash
 browser-cli <<'EOF'
 snap()                    // Get page snapshot with refs
@@ -61,6 +63,7 @@ EOF
 ```
 
 ## Waiting
+
 ```bash
 browser-cli <<'EOF'
 await wait(1000)              // Wait 1 second
@@ -70,7 +73,17 @@ await wait("gone", "Loading") // Wait for text to disappear
 EOF
 ```
 
+## Downloads
+
+```bash
+browser-cli TABID <<'EOF'
+const url = document.querySelector('a[href*="pdf"]').href
+await download(url, "invoice.pdf")  // Downloads to ~/Downloads/invoice.pdf
+EOF
+```
+
 ## Screenshots & Tabs
+
 ```bash
 browser-cli <<'EOF'
 await shot()                      // Screenshot, returns data URL
