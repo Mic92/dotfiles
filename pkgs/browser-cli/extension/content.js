@@ -1708,7 +1708,7 @@ function waitForIdle(stableMs = 300, timeout = 10_000) {
 async function wait(condition, value, timeout = 10_000) {
   if (typeof condition === "number") {
     // Simple delay
-    await new Promise(resolve => setTimeout(resolve, condition));
+    await new Promise((resolve) => setTimeout(resolve, condition));
     return { waited: condition };
   }
 
