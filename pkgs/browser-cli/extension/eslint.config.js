@@ -43,7 +43,9 @@ export default [
         Error: 'readonly',
         String: 'readonly',
         CSS: 'readonly',
-        structuredClone: 'readonly'
+        structuredClone: 'readonly',
+        NodeFilter: 'readonly',
+        SubmitEvent: 'readonly'
       }
     },
     plugins: {
