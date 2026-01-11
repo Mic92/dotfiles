@@ -13,6 +13,7 @@ import logging
 import shutil
 import sys
 from pathlib import Path
+from typing import Any
 
 from browser_cli.client import BrowserClient
 from browser_cli.errors import BrowserCLIError
@@ -65,15 +66,75 @@ exec "{server_path}" "$@"
     print(f"Using wrapper script at: {wrapper_path}")
 
 
+def _format_element(el: dict[str, Any]) -> str:
+    """Format a single element for display."""
+    line = f"[{el['ref']}] {el['role']}"
+    if el.get("name"):
+        line += f' "{el["name"]}"'
+    if el.get("attrs"):
+        line += f" [{', '.join(el['attrs'])}]"
+    if el.get("value") is not None:
+        line += f' value="{el["value"]}"'
+    return line
+
+
+def _format_snapshot_dict(result: dict[str, Any]) -> str | None:
+    """Format a snapshot dict for display. Returns None if not a snapshot."""
+    # Check if it's a Snapshot object
+    if "url" in result and "title" in result and "elements" in result:
+        lines = [f"Page: {result['title']}", f"URL: {result['url']}", ""]
+        lines.extend(_format_element(el) for el in result["elements"])
+        return "\n".join(lines)
+
+    # Check if it's a single element
+    if "ref" in result and "role" in result:
+        return _format_element(result)
+
+    return None
+
+
+def _format_element_list(result: list[Any]) -> str | None:
+    """Format a list of elements for display. Returns None if not element list."""
+    if not result or not isinstance(result[0], dict):
+        return None
+
+    if "ref" not in result[0] or "role" not in result[0]:
+        return None
+
+    return "\n".join(_format_element(el) for el in result)
+
+
+def format_snapshot(
+    result: dict[str, object] | list[object] | str | float | None,
+) -> str:
+    """Format a snapshot result for display."""
+    if result is None:
+        return ""
+
+    if isinstance(result, str):
+        return result
+
+    if isinstance(result, dict):
+        formatted = _format_snapshot_dict(result)
+        if formatted is not None:
+            return formatted
+
+    # For arrays of elements
+    if isinstance(result, list):
+        formatted = _format_element_list(result)
+        if formatted is not None:
+            return formatted
+
+    # Default: JSON format
+    return json.dumps(result, indent=2)
+
+
 async def exec_js(tab_id: str | None, code: str, socket: str | None) -> None:
     """Execute JavaScript code in a browser tab."""
     client = BrowserClient(socket)
     result = await client.exec_js(code, tab_id)
     if result is not None:
-        if isinstance(result, str):
-            print(result)
-        else:
-            print(json.dumps(result, indent=2))
+        print(format_snapshot(result))
 
 
 async def list_tabs(socket: str | None) -> None:
@@ -99,53 +160,69 @@ def create_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Execute JavaScript in the active tab (reads from stdin)
-  echo 'document.title' | browser-cli
+  # Execute JavaScript (reads from stdin)
+  echo 'snap()' | browser-cli
 
-  # Execute in a specific tab
-  echo 'navigate("https://example.com")' | browser-cli abc123
+  # Navigate and interact using refs
+  browser-cli <<'EOF'
+  await go("https://example.com/login")
+  await type(1, "user@test.com")
+  await type(2, "secret123")
+  await click(3)
+  EOF
+
+  # Get filtered snapshot
+  echo 'snap({forms: true})' | browser-cli
+
+  # Wait for dynamic content
+  browser-cli <<'EOF'
+  await click(5)
+  await wait("text", "Success")
+  EOF
 
   # List all managed tabs
   browser-cli --list
-
-  # Complex automation with heredoc
-  browser-cli <<'EOF'
-  await navigate("https://example.com");
-  await click("input[name='q']");
-  await type("input[name='q']", "hello world");
-  await key("Enter");
-  EOF
-
-  # Get page snapshot
-  echo 'snapshot()' | browser-cli
-
-  # Take a screenshot
-  echo 'screenshot("output.png")' | browser-cli
-
-  # Tab management via JS API
-  echo 'newTab("https://example.com")' | browser-cli
-  echo 'closeTab()' | browser-cli abc123
 
   # Install native messaging host (one-time setup)
   browser-cli --install-host
 
 Available JS API:
-  navigate(url)              - Navigate to URL
-  back()                     - Go back in history
-  forward()                  - Go forward in history
-  click(selector, type?)     - Click element (type: css|text|aria-label|placeholder)
-  type(selector, text, type?) - Type into element
-  hover(selector, type?)     - Hover over element
-  drag(start, end, type?)    - Drag from start to end element
-  select(selector, option, type?) - Select dropdown option
-  key(key)                   - Press keyboard key
-  screenshot(path?)          - Take screenshot
-  snapshot(offset?, limit?)  - Get ARIA accessibility tree
-  console()                  - Get console logs
-  newTab(url?)               - Create new tab, returns tab ID
-  closeTab(tabId?)           - Close tab (current if no ID)
-  listTabs()                 - List managed tabs
-  eval(expr)                 - Evaluate JS expression
+  Navigation:
+    go(url)              - Navigate to URL
+    back()               - Go back in history
+    fwd()                - Go forward in history
+
+  Interaction (use refs from snap()):
+    click(ref)           - Click element
+    click(ref, {double}) - Double click
+    type(ref, text)      - Type into input
+    type(ref, text, {clear}) - Clear first
+    hover(ref)           - Hover element
+    drag(from, to)       - Drag and drop
+    select(ref, value)   - Select option
+    key(name)            - Press key
+
+  Inspection:
+    snap()               - Get page snapshot
+    snap({forms: true})  - Filter: form elements only
+    snap({links: true})  - Filter: links only
+    snap({text: "..."})  - Filter: by text
+    logs()               - Get console logs
+
+  Waiting:
+    wait(ms)             - Wait milliseconds
+    wait("text", str)    - Wait for text to appear
+    wait("gone", str)    - Wait for text to disappear
+
+  Media:
+    shot()               - Screenshot (returns data URL)
+    shot(path)           - Screenshot to file
+
+  Tabs:
+    tab()                - New tab
+    tab(url)             - New tab with URL
+    close()              - Close current tab
+    tabs()               - List tabs
         """,
     )
 
