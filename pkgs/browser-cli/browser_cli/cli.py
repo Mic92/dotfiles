@@ -160,31 +160,28 @@ def create_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  # Execute JavaScript (reads from stdin)
-  echo 'snap()' | browser-cli
+  # List managed tabs
+  browser-cli --list
 
-  # Open page and interact using refs
+  # Open page and get snapshot
   browser-cli <<'EOF'
-  await tab("https://example.com/login")
+  await tab("https://example.com")
+  snap()
+  EOF
+
+  # Form filling with refs
+  browser-cli <<'EOF'
   await type(1, "user@test.com")
   await type(2, "secret123")
   await click(3)
   EOF
 
-  # Get filtered snapshot
-  echo 'snap({forms: true})' | browser-cli
-
   # Wait for dynamic content
   browser-cli <<'EOF'
   await click(5)
   await wait("text", "Success")
+  snap()
   EOF
-
-  # List all managed tabs
-  browser-cli --list
-
-  # Install native messaging host (one-time setup)
-  browser-cli --install-host
 
 Available JS API:
   Interaction (use refs from snap()):
