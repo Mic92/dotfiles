@@ -23,6 +23,7 @@
  * @property {string} [tabId] - Tab ID for close-tab
  * @property {string} [code] - JavaScript code to execute
  * @property {string} [output_path] - Output path for screenshot
+ * @property {string} [filename] - Filename for download
  */
 
 /** @type {browser.runtime.Port|undefined} Native messaging port */
@@ -300,6 +301,55 @@ async function closeTab(tabId) {
   return { message: `Closed tab ${targetId}` };
 }
 
+/**
+ * Download a file
+ * @param {string} url - URL to download
+ * @param {string} [filename] - Filename (relative to downloads folder)
+ * @returns {Promise<{downloaded: string, path: string}>}
+ */
+async function downloadFile(url, filename) {
+  /** @type {browser.downloads._DownloadOptions} */
+  const downloadOptions = {
+    url,
+    saveAs: false,
+    filename: filename || undefined,
+  };
+
+  const downloadId = await browser.downloads.download(downloadOptions);
+
+  // Wait for download to complete
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      browser.downloads.onChanged.removeListener(listener);
+      reject(new Error("Download timeout"));
+    }, 60_000);
+
+    /**
+     * @param {browser.downloads._OnChangedDownloadDelta} delta
+     */
+    function listener(delta) {
+      if (delta.id !== downloadId) {
+        return;
+      }
+
+      if (delta.state?.current === "complete") {
+        clearTimeout(timeout);
+        browser.downloads.onChanged.removeListener(listener);
+        browser.downloads.search({ id: downloadId }).then((downloads) => {
+          const path = downloads[0]?.filename || filename || "unknown";
+          resolve({ downloaded: url, path });
+        });
+      } else if (delta.error) {
+        clearTimeout(timeout);
+        browser.downloads.onChanged.removeListener(listener);
+        reject(new Error(delta.error.current));
+      }
+    }
+
+    browser.downloads.onChanged.addListener(listener);
+  });
+}
+
 // ============================================================================
 // Command handling
 // ============================================================================
@@ -342,6 +392,11 @@ async function handleCommand(message) {
       }
       case "close-tab": {
         result = await closeTab(params.tabId || tabId);
+        break;
+      }
+
+      case "download": {
+        result = await downloadFile(params.url || "", params.filename);
         break;
       }
 
@@ -545,6 +600,10 @@ browser.runtime.onMessage.addListener((message, sender, _sendResponse) => {
           }
           case "list-tabs": {
             result = await listTabs();
+            break;
+          }
+          case "download": {
+            result = await downloadFile(params.url, params.filename);
             break;
           }
           default: {

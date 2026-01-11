@@ -259,6 +259,8 @@ Available JS API:
   Media:
     shot()               - Screenshot (returns data URL)
     shot(path)           - Screenshot to file
+    download(url)        - Download file to ~/Downloads
+    download(url, name)  - Download with custom filename
 
   Tabs:
     tab()                - New tab
