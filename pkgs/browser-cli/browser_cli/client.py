@@ -45,7 +45,9 @@ class BrowserClient:
             message["tabId"] = tab_id
 
         try:
-            reader, writer = await asyncio.open_unix_connection(self.socket_path)
+            reader, writer = await asyncio.open_unix_connection(
+                self.socket_path, limit=10 * 1024 * 1024  # 10MB for screenshots
+            )
 
             writer.write((json.dumps(message) + "\n").encode("utf-8"))
             await writer.drain()

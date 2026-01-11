@@ -163,9 +163,9 @@ Examples:
   # Execute JavaScript (reads from stdin)
   echo 'snap()' | browser-cli
 
-  # Navigate and interact using refs
+  # Open page and interact using refs
   browser-cli <<'EOF'
-  await go("https://example.com/login")
+  await tab("https://example.com/login")
   await type(1, "user@test.com")
   await type(2, "secret123")
   await click(3)
@@ -187,11 +187,6 @@ Examples:
   browser-cli --install-host
 
 Available JS API:
-  Navigation:
-    go(url)              - Navigate to URL
-    back()               - Go back in history
-    fwd()                - Go forward in history
-
   Interaction (use refs from snap()):
     click(ref)           - Click element
     click(ref, {double}) - Double click
@@ -221,7 +216,6 @@ Available JS API:
   Tabs:
     tab()                - New tab
     tab(url)             - New tab with URL
-    close()              - Close current tab
     tabs()               - List tabs
         """,
     )
