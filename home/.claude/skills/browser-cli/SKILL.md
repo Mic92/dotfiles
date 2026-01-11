@@ -55,6 +55,7 @@ snap({forms: true})       // Only form elements
 snap({links: true})       // Only links
 snap({buttons: true})     // Only buttons
 snap({text: "login"})     // Elements containing "login"
+diff()                    // Show changes since last snap
 logs()                    // Get console logs
 EOF
 ```
@@ -63,6 +64,7 @@ EOF
 ```bash
 browser-cli <<'EOF'
 await wait(1000)              // Wait 1 second
+await wait("idle")            // Wait for DOM to stabilize
 await wait("text", "Success") // Wait for text to appear
 await wait("gone", "Loading") // Wait for text to disappear
 EOF
@@ -109,10 +111,9 @@ EOF
 
 browser-cli <<'EOF'
 await type(12, "hello world")
-key("Enter")
-key("Enter")
-snap()
+diff()
 EOF
+# Shows: Added (autocomplete options), Changed (input value)
 
 # Form filling
 browser-cli <<'EOF'
@@ -125,6 +126,7 @@ browser-cli <<'EOF'
 await type(1, "user@test.com")
 await type(2, "secret123")
 await click(3)
+diff()
 EOF
 
 # Wait for dynamic content

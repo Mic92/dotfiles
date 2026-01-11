@@ -45,7 +45,8 @@ export default [
         CSS: 'readonly',
         structuredClone: 'readonly',
         NodeFilter: 'readonly',
-        SubmitEvent: 'readonly'
+        SubmitEvent: 'readonly',
+        MutationObserver: 'readonly'
       }
     },
     plugins: {

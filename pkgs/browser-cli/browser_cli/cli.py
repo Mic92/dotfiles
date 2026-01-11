@@ -78,8 +78,56 @@ def _format_element(el: dict[str, Any]) -> str:
     return line
 
 
+def _format_diff_section(
+    lines: list[str],
+    label: str,
+    items: list[dict[str, Any]],
+    prefix: str,
+) -> None:
+    """Format a diff section (added/removed)."""
+    if not items:
+        return
+    lines.extend(["", f"{label} ({len(items)}):"])
+    lines.extend(f"  {prefix} {_format_element(el)}" for el in items)
+
+
+def _format_diff(result: dict[str, Any]) -> str | None:
+    """Format a SnapshotDiff for display. Returns None if not a diff."""
+    if "added" not in result or "removed" not in result or "changed" not in result:
+        return None
+
+    added, removed, changed = result["added"], result["removed"], result["changed"]
+    url_changed, title_changed = result.get("urlChanged"), result.get("titleChanged")
+
+    if not (url_changed or title_changed or added or removed or changed):
+        return "No changes"
+
+    lines: list[str] = []
+
+    if url_changed:
+        lines.append(f"URL: {result['oldUrl']} → {result['newUrl']}")
+    if title_changed:
+        lines.append(f'Title: "{result["oldTitle"]}" → "{result["newTitle"]}"')
+
+    _format_diff_section(lines, "Added", added, "+")
+    _format_diff_section(lines, "Removed", removed, "-")
+
+    if changed:
+        lines.extend(["", f"Changed ({len(changed)}):"])
+        for item in changed:
+            lines.append(f"  ~ {_format_element(item['element'])}")
+            lines.extend(f"      {c}" for c in item["changes"])
+
+    return "\n".join(lines)
+
+
 def _format_snapshot_dict(result: dict[str, Any]) -> str | None:
     """Format a snapshot dict for display. Returns None if not a snapshot."""
+    # Check if it's a SnapshotDiff object
+    diff_result = _format_diff(result)
+    if diff_result is not None:
+        return diff_result
+
     # Check if it's a Snapshot object
     if "url" in result and "title" in result and "elements" in result:
         lines = [f"Page: {result['title']}", f"URL: {result['url']}", ""]
@@ -199,10 +247,12 @@ Available JS API:
     snap({forms: true})  - Filter: form elements only
     snap({links: true})  - Filter: links only
     snap({text: "..."})  - Filter: by text
+    diff()               - Diff since last snap
     logs()               - Get console logs
 
   Waiting:
     wait(ms)             - Wait milliseconds
+    wait("idle")         - Wait for DOM to stabilize
     wait("text", str)    - Wait for text to appear
     wait("gone", str)    - Wait for text to disappear
 
