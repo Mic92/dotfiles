@@ -1712,13 +1712,13 @@ async function wait(condition, value, timeout = 10_000) {
     return { waited: condition };
   }
 
-  if (condition === 'idle') {
+  if (condition === "idle") {
     // Wait for DOM to stabilize
-    const stableMs = typeof value === 'number' ? value : 300;
+    const stableMs = typeof value === "number" ? value : 300;
     return waitForIdle(stableMs, timeout);
   }
 
-  if (condition === 'text' && typeof value === 'string') {
+  if (condition === "text" && typeof value === "string") {
     // Wait for text to appear
     const startTime = Date.now();
     while (Date.now() - startTime < timeout) {
@@ -1730,7 +1730,7 @@ async function wait(condition, value, timeout = 10_000) {
     throw new Error(`Timeout waiting for text: "${value}"`);
   }
 
-  if (condition === 'gone' && typeof value === 'string') {
+  if (condition === "gone" && typeof value === "string") {
     // Wait for text to disappear
     const startTime = Date.now();
     while (Date.now() - startTime < timeout) {
@@ -1803,7 +1803,7 @@ async function shot(path) {
  * @returns {Promise<{tabId: string, url: string}>} Tab info
  */
 async function tab(url) {
-  const result = await sendToBackground('new-tab', { url });
+  const result = await sendToBackground("new-tab", { url });
   return { tabId: result.tabId, url: result.url };
 }
 
@@ -1874,18 +1874,21 @@ async function handleExec(code) {
 
   // Wrap code to auto-return the last expression if no explicit return
   let wrappedCode = code.trim();
-  if (!wrappedCode.includes('return ') && !wrappedCode.includes('return;')) {
+  if (!wrappedCode.includes("return ") && !wrappedCode.includes("return;")) {
     // Find the last statement and return it
-    const lines = wrappedCode.split('\n');
-    const lastLine = lines.pop()?.trim() || '';
-    if (lastLine && !lastLine.endsWith(';')) {
+    const lines = wrappedCode.split("\n");
+    const lastLine = lines.pop()?.trim() || "";
+    if (lastLine && !lastLine.endsWith(";")) {
       // Last line is an expression - return it
-      wrappedCode = [...lines, `return (${lastLine})`].join('\n');
+      wrappedCode = [...lines, `return (${lastLine})`].join("\n");
     } else if (lastLine) {
       // Last line ends with semicolon - try to return it anyway
       const expr = lastLine.slice(0, -1).trim();
-      if (expr && !expr.startsWith('const ') && !expr.startsWith('let ') && !expr.startsWith('var ')) {
-        wrappedCode = [...lines, `return (${expr})`].join('\n');
+      if (
+        expr && !expr.startsWith("const ") && !expr.startsWith("let ") &&
+        !expr.startsWith("var ")
+      ) {
+        wrappedCode = [...lines, `return (${expr})`].join("\n");
       }
     }
   }
@@ -1893,17 +1896,17 @@ async function handleExec(code) {
   // Make API functions available in the execution context
   const fn = new AsyncFunction(
     // Content script functions
-    'click',
-    'type',
-    'hover',
-    'drag',
-    'select',
-    'key',
-    'snap',
-    'diff',
-    'logs',
-    'find',
-    'wait',
+    "click",
+    "type",
+    "hover",
+    "drag",
+    "select",
+    "key",
+    "snap",
+    "diff",
+    "logs",
+    "find",
+    "wait",
     // Background script functions
     'shot',
     'tab',
