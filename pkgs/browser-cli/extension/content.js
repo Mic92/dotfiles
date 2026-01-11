@@ -1782,7 +1782,7 @@ function sendToBackground(command, params = {}) {
     // Timeout after 30 seconds
     setTimeout(() => {
       browser.runtime.onMessage.removeListener(handleResponse);
-      reject(new Error('Background script timeout'));
+      reject(new Error("Background script timeout"));
     }, 30_000);
   });
 }
@@ -1847,11 +1847,11 @@ function serializeResult(value) {
 
   // Handle arrays
   if (Array.isArray(value)) {
-    return value.map(v => serializeResult(v));
+    return value.map((v) => serializeResult(v));
   }
 
   // Handle objects with toJSON
-  if (typeof value === 'object' && typeof value.toJSON === 'function') {
+  if (typeof value === "object" && typeof value.toJSON === "function") {
     return value.toJSON();
   }
 
