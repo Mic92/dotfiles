@@ -74,7 +74,6 @@
       nixos-shell
       nerd-fonts.fira-code
       inxi
-      zed-editor
       radicle-node
       self.packages.${pkgs.stdenv.hostPlatform.system}.gmaps-cli
       self.packages.${pkgs.stdenv.hostPlatform.system}.browser-cli
