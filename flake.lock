@@ -357,6 +357,32 @@
         "type": "github"
       }
     },
+    "mics-skills": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1768212256,
+        "narHash": "sha256-GB7lAbytG5mI6K2vN7dngoR7xk/4CvGA20yXmkCsQ4s=",
+        "owner": "Mic92",
+        "repo": "mics-skills",
+        "rev": "8cbcebbac198c3f70850b04c19c5489ef9bfd0ac",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "mics-skills",
+        "type": "github"
+      }
+    },
     "n8n-nodes-caldav": {
       "inputs": {
         "flake-parts": [
@@ -676,6 +702,7 @@
         "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
         "llm-agents": "llm-agents",
+        "mics-skills": "mics-skills",
         "n8n-nodes-caldav": "n8n-nodes-caldav",
         "niks3": "niks3",
         "nix": "nix",

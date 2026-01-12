@@ -161,6 +161,13 @@
       inputs.treefmt-nix.follows = "treefmt-nix";
     };
 
+    mics-skills = {
+      url = "github:Mic92/mics-skills";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.treefmt-nix.follows = "treefmt-nix";
+    };
+
     #microvm.url = "github:astro/microvm.nix";
     #microvm.inputs.nixpkgs.follows = "nixpkgs";
     #microvm.inputs.flake-utils.follows = "flake-utils";

@@ -12,19 +12,14 @@
         claude-code = pkgs.callPackage ./claude-code {
           claude-code = inputs'.llm-agents.packages.claude-code;
         };
-        gmaps-cli = pkgs.python3.pkgs.callPackage ./gmaps-cli { };
-        db-cli = pkgs.callPackage ./db-cli { };
-        kagi-search = pkgs.python3.pkgs.callPackage ./kagi-search { };
+
         email-sync = pkgs.callPackage ./email-sync { };
         vcal = pkgs.callPackage ./vcal { };
         buildbot-pr-check = pkgs.python3.pkgs.callPackage ./buildbot-pr-check { };
         claude-md = pkgs.python3.pkgs.callPackage ./claude-md { };
-        browser-cli = pkgs.python3.pkgs.callPackage ./browser-cli { };
         inherit (pkgs.callPackages ./firefox-extensions { })
-          browser-cli-extension
           chrome-tab-gc-extension
           ;
-        pexpect-cli = pkgs.callPackage ./pexpect-cli { };
         gh-radicle = pkgs.callPackage ./gh-radicle { };
         iroh-ssh = pkgs.callPackage ./iroh-ssh { };
         # Cross-platform secure pinentry (works on macOS and Linux)

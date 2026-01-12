@@ -21,7 +21,9 @@
   services.syncthing.enable = true;
 
   home.activation.installBrowserCliHost = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    ${self.packages.${pkgs.stdenv.hostPlatform.system}.browser-cli}/bin/browser-cli --install-host
+    ${
+      inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system}.browser-cli
+    }/bin/browser-cli --install-host
   '';
 
   home.packages =
@@ -75,8 +77,8 @@
       nerd-fonts.fira-code
       inxi
       radicle-node
-      self.packages.${pkgs.stdenv.hostPlatform.system}.gmaps-cli
-      self.packages.${pkgs.stdenv.hostPlatform.system}.browser-cli
+      inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system}.gmaps-cli
+      inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system}.browser-cli
       inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system}.niks3
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [

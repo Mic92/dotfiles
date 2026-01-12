@@ -38,11 +38,6 @@
         programs.mypy.directories = {
           "machines/eva/modules/prometheus" = { };
           "openwrt" = { };
-          "pkgs/pexpect-cli" = {
-            extraPythonPackages = with pkgs.python3.pkgs; [
-              pexpect
-            ];
-          };
           "pkgs/buildbot-pr-check" = {
             extraPythonPackages = with pkgs.python3.pkgs; [
               pytest
@@ -51,17 +46,6 @@
             ];
           };
           "pkgs/claude-md" = { };
-          "pkgs/gmaps-cli" = {
-            extraPythonPackages = with pkgs.python3.pkgs; [
-              pytest
-            ];
-          };
-          "pkgs/kagi-search" = {
-            extraPythonPackages = with pkgs.python3.pkgs; [
-              beautifulsoup4
-              types-beautifulsoup4
-            ];
-          };
           "pkgs/merge-when-green" = { };
           "pkgs/systemctl" = { };
           "pkgs/vcal" = {

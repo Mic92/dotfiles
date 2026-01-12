@@ -2,6 +2,7 @@
 let
   cask = self.inputs.nix-casks.packages.${pkgs.stdenv.hostPlatform.system};
   myPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
+  micsSkills = self.inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
   firefoxExtensions = pkgs.callPackages ../pkgs/firefox-extensions { };
 in
 {
@@ -22,7 +23,10 @@ in
     cask.calibre
     myPkgs.kdeconnect
     (myPkgs.librewolf-macos.override {
-      policies = import ../pkgs/librewolf-policies.nix { inherit firefoxExtensions; };
+      policies = import ../pkgs/librewolf-policies.nix {
+        inherit (micsSkills) browser-cli-extension;
+        inherit (firefoxExtensions) chrome-tab-gc-extension;
+      };
     })
     myPkgs.radicle-desktop
   ];

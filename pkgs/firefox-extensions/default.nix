@@ -64,17 +64,6 @@ in
 {
   inherit buildFirefoxExtension;
 
-  browser-cli-extension = buildFirefoxExtension {
-    pname = "browser-cli-extension";
-    version = "1.0.0";
-    src = ../browser-cli/extension;
-    extensionId = "browser-cli-controller@thalheim.io";
-    meta = {
-      description = "Browser CLI Controller Firefox extension";
-      license = lib.licenses.mit;
-    };
-  };
-
   chrome-tab-gc-extension = buildFirefoxExtension {
     pname = "chrome-tab-gc-extension";
     version = "1.2";
