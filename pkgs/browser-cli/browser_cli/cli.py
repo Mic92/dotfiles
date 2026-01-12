@@ -243,11 +243,11 @@ Available JS API:
     key(name)            - Press key
 
   Inspection:
-    snap()               - Get page snapshot
+    snap()               - Get page snapshot (diff after first call)
+    snap({full: true})   - Force full snapshot
     snap({forms: true})  - Filter: form elements only
     snap({links: true})  - Filter: links only
     snap({text: "..."})  - Filter: by text
-    diff()               - Diff since last snap
     logs()               - Get console logs
 
   Waiting:

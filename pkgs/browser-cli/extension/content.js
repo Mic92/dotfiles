@@ -1610,32 +1610,32 @@ function key(keyName) {
 
 /**
  * Get snapshot of the page
- * @param {SnapOptions} [options] - Filter options
- * @returns {Snapshot}
+ * Returns full snapshot on first call, diff on subsequent calls (to save tokens)
+ * @param {SnapOptions & {full?: boolean}} [options] - Filter options, use {full: true} for full snapshot
+ * @returns {Snapshot|SnapshotDiff}
  */
 function snap(options) {
   const snapshot = generateSnapshot(options);
-  // Only store unfiltered snapshots for diffing
-  if (!options) {
-    lastSnapshot = snapshot;
-  }
-  return snapshot;
-}
 
-/**
- * Get diff between current page state and last snapshot
- * @returns {SnapshotDiff}
- */
-function diff() {
-  const current = generateSnapshot();
-  if (!lastSnapshot) {
-    // No previous snapshot, return diff against empty
-    const empty = new Snapshot([], current.url, current.title);
-    lastSnapshot = current;
-    return current.diff(empty);
+  // If full snapshot explicitly requested or options are set (filtering), return full
+  if (
+    options?.full || (options && Object.keys(options).some((k) => k !== "full"))
+  ) {
+    if (!options || !Object.keys(options).some((k) => k !== "full")) {
+      lastSnapshot = snapshot;
+    }
+    return snapshot;
   }
-  const result = current.diff(lastSnapshot);
-  lastSnapshot = current;
+
+  // First call or no previous snapshot - return full snapshot
+  if (!lastSnapshot) {
+    lastSnapshot = snapshot;
+    return snapshot;
+  }
+
+  // Return diff to save tokens
+  const result = snapshot.diff(lastSnapshot);
+  lastSnapshot = snapshot;
   return result;
 }
 
@@ -1903,7 +1903,6 @@ async function handleExec(code) {
     "select",
     "key",
     "snap",
-    "diff",
     "logs",
     "find",
     "wait",
@@ -1924,7 +1923,6 @@ async function handleExec(code) {
     select,
     key,
     snap,
-    diff,
     logs,
     find,
     wait,

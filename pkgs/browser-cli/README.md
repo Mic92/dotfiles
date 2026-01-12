@@ -183,9 +183,9 @@ EOF
 
 browser-cli <<'EOF'
 await type(12, "hello world")
-diff()
+snap()
 EOF
-# Shows: Added (autocomplete options), Changed (input value)
+# Shows diff: Added (autocomplete options), Changed (input value)
 
 # Form filling with refs
 browser-cli <<'EOF'
@@ -198,7 +198,7 @@ browser-cli <<'EOF'
 await type(1, "user@test.com")
 await type(2, "secret123")
 await click(3)
-diff()
+snap()
 EOF
 
 # Wait for dynamic content
@@ -240,13 +240,13 @@ EOF
 
 ### Inspection
 
-| Function      | Description          |
-| ------------- | -------------------- |
-| `snap()`      | Get page snapshot    |
-| `snap({...})` | Filtered snapshot    |
-| `diff()`      | Diff since last snap |
-| `logs()`      | Get console logs     |
-| `find(ref)`   | Find DOM element     |
+| Function             | Description                             |
+| -------------------- | --------------------------------------- |
+| `snap()`             | Get page snapshot (diff after 1st call) |
+| `snap({full: true})` | Force full snapshot                     |
+| `snap({...})`        | Filtered snapshot                       |
+| `logs()`             | Get console logs                        |
+| `find(ref)`          | Find DOM element                        |
 
 ### Waiting
 
