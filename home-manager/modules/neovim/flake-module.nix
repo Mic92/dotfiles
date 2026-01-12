@@ -31,7 +31,7 @@
           marksman
           nil
           nixd
-          nixfmt-rfc-style
+          nixfmt
           prettierd
           ruff
           selene
