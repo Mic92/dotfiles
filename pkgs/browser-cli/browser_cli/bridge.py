@@ -130,6 +130,12 @@ class NativeMessagingBridge:
     async def handle_extension_message(self, message: dict[str, Any]) -> None:
         """Process messages from browser extension."""
         msg_id = message.get("id")
+        command = message.get("command")
+
+        # Handle commands from extension (e.g., save-screenshot from content script)
+        if command == "save-screenshot":
+            await self._handle_save_screenshot(message)
+            return
 
         if msg_id and msg_id in self.pending_responses:
             # This is a response to a CLI request
@@ -143,6 +149,60 @@ class NativeMessagingBridge:
         else:
             # This is a command from the extension - shouldn't happen in our architecture
             logger.warning("Unexpected command from extension: %s", message)
+
+    async def _handle_save_screenshot(self, message: dict[str, Any]) -> None:
+        """Handle save-screenshot command from extension."""
+        msg_id = message.get("id")
+        params = message.get("params", {})
+        data_url = params.get("screenshot", "")
+        output_path = params.get("output_path")
+
+        if not data_url.startswith("data:image/png;base64,"):
+            await self.write_native_message(
+                {
+                    "id": msg_id,
+                    "success": False,
+                    "error": "Invalid screenshot data URL",
+                },
+            )
+            return
+
+        try:
+            # Extract and decode base64 data
+            base64_data = data_url.split(",")[1]
+            image_data = base64.b64decode(base64_data)
+
+            # Use provided output path or generate default
+            if output_path:
+                screenshot_path = Path(output_path)
+                screenshot_path.parent.mkdir(parents=True, exist_ok=True)
+            else:
+                screenshot_path = Path.cwd() / "screenshot.png"
+
+            # Save screenshot
+            screenshot_path.write_bytes(image_data)
+            logger.info("Saved screenshot to: %s", screenshot_path)
+
+            # Send success response back to extension
+            await self.write_native_message(
+                {
+                    "id": msg_id,
+                    "success": True,
+                    "result": {
+                        "screenshot_path": str(screenshot_path),
+                        "message": f"Screenshot saved to {screenshot_path}",
+                    },
+                },
+            )
+        except Exception as e:
+            logger.exception("Error saving screenshot")
+            await self.write_native_message(
+                {
+                    "id": msg_id,
+                    "success": False,
+                    "error": f"Failed to save screenshot: {e!s}",
+                },
+            )
 
     async def handle_cli_client(
         self,

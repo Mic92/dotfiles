@@ -77,6 +77,14 @@ function connectNativeHost() {
         return;
       }
 
+      // Handle responses to our requests (e.g., save-screenshot)
+      if (message.id && messageHandlers[message.id]) {
+        const handler = messageHandlers[message.id];
+        delete messageHandlers[message.id];
+        handler.resolve(message);
+        return;
+      }
+
       if (message.command) {
         await handleCommand(/** @type {Message} */ (message));
       }
@@ -215,6 +223,54 @@ async function takeScreenshot(tabId) {
   await browser.tabs.update(browserTabId, { active: true });
   const dataUrl = await browser.tabs.captureVisibleTab();
   return { screenshot: dataUrl };
+}
+
+/**
+ * Save screenshot by sending it through native messaging to the Python bridge
+ * @param {string} dataUrl - The base64 data URL of the screenshot
+ * @param {string} outputPath - The file path to save to
+ * @returns {Promise<{screenshot_path: string, message: string}>}
+ */
+async function saveScreenshotToFile(dataUrl, outputPath) {
+  if (!nativePort) {
+    throw new Error(
+      "Native messaging not connected - cannot save screenshot to file",
+    );
+  }
+
+  // Send screenshot save request through native messaging
+  const messageId = `screenshot_save_${Date.now()}`;
+
+  return new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      delete messageHandlers[messageId];
+      reject(new Error("Screenshot save timeout"));
+    }, 30_000);
+
+    messageHandlers[messageId] = {
+      resolve: (response) => {
+        clearTimeout(timeout);
+        if (response.success && response.result) {
+          resolve(response.result);
+        } else {
+          reject(new Error(response.error || "Failed to save screenshot"));
+        }
+      },
+      reject: (error) => {
+        clearTimeout(timeout);
+        reject(error);
+      },
+    };
+
+    nativePort.postMessage({
+      command: "save-screenshot",
+      params: {
+        screenshot: dataUrl,
+        output_path: outputPath,
+      },
+      id: messageId,
+    });
+  });
 }
 
 /**
@@ -585,8 +641,21 @@ browser.runtime.onMessage.addListener((message, sender, _sendResponse) => {
             result = await takeScreenshot(senderTabShortId);
             // Save screenshot to file if path provided
             if (params.output_path && result.screenshot) {
-              // Send back to CLI via native messaging for file save
-              // For now, just return the data URL
+              const dataUrl = result.screenshot;
+              try {
+                const saved = await saveScreenshotToFile(
+                  dataUrl,
+                  params.output_path,
+                );
+                result = saved;
+              } catch (saveError) {
+                result = {
+                  error: saveError instanceof Error
+                    ? saveError.message
+                    : String(saveError),
+                  screenshot: dataUrl,
+                };
+              }
             }
             break;
           }
