@@ -22,7 +22,7 @@
         after = [ "network.target" ];
         wantedBy = [ "multi-user.target" ];
         serviceConfig = {
-          ExecStart = ''${pkgs.caddy.bin}/bin/caddy -conf=${cfg} -agree'';
+          ExecStart = "${pkgs.caddy.bin}/bin/caddy -conf=${cfg} -agree";
           User = "caddy";
           AmbientCapabilities = "cap_net_bind_service";
         };

@@ -10,7 +10,7 @@ let
             # filter out failed build gitlab CI runner, users or nix build sandboxes
             expr = ''sum by (host) (count_over_time({unit=~"systemd-coredump.*"} !~ "(/runner/_work|/home|/build|/scratch)" |~ "core dumped"[10m])) > 0'';
             for = "10s";
-            annotations.description = ''{{ $labels.instance }} {{ $labels.coredump_unit }} core dumped in last 10min.'';
+            annotations.description = "{{ $labels.instance }} {{ $labels.coredump_unit }} core dumped in last 10min.";
           }
         ];
       }

@@ -60,7 +60,7 @@ in
       client_api = {
         registration_disabled = true;
         rate_limiting.enabled = false;
-        registration_shared_secret = ''''${REGISTRATION_SHARED_SECRET}'';
+        registration_shared_secret = "\${REGISTRATION_SHARED_SECRET}";
       };
       media_api = {
         inherit database;

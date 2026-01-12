@@ -60,7 +60,7 @@
                            by dn.base="cn=ldapsync,ou=system,ou=users,dc=eve" read
                            by dn.base="cn=phpldapadmin,ou=system,ou=users,dc=eve" read
                            by * none''
-          ''{2}to attrs=loginShell  by self write  by users read''
+          "{2}to attrs=loginShell  by self write  by users read"
           ''
             {3}to dn.subtree="dc=domains,dc=mail,dc=eve"
                            by dn.base="cn=postfix,ou=system,ou=users,dc=eve" read
