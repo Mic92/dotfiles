@@ -54,7 +54,8 @@
 
   # Development tools
   programs.wireshark.enable = true;
-  programs.adb.enable = true;
+
+  environment.systemPackages = [ pkgs.android-tools ];
 
   # Services
   services = {
