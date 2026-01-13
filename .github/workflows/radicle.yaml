@@ -22,7 +22,7 @@ jobs:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
       - id: mirror
-        uses: Mic92/radicle-sync@main
+        uses: Mic92/radicle-sync@flag
         with:
           github-token: ${{ steps.app-token.outputs.token }}
           radicle-identity-alias: "${{ secrets.RADICLE_IDENTITY_ALIAS }}"
