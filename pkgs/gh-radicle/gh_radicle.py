@@ -288,18 +288,28 @@ def setup_github_secrets(
     set_github_secret(repo, "RADICLE_REPOSITORY_ID", rid)
 
 
+# Official Radicle seed nodes (community infrastructure)
+OFFICIAL_SEED_NODES = [
+    "z6MkrLMMsiPWUcNPHcRajuMi9mDfYckSoJyPwwnknocNYPm7@iris.radicle.xyz:8776",
+    "z6Mkmqogy2qEM2ummccUthFEaaHvyYmYBYh3dbe9W4ebScxo@rosa.radicle.xyz:8776",
+]
+
+
 def get_preferred_seeds() -> list[str]:
-    """Get preferred seeds from the main radicle config."""
+    """Get preferred seeds from the main radicle config, appending official seeds."""
+    seeds: list[str] = []
     main_config = Path.home() / ".radicle" / "config.json"
     if main_config.exists():
         try:
             cfg = json.loads(main_config.read_text())
+            seeds = cfg.get("preferredSeeds", [])
         except json.JSONDecodeError:
-            return []
-        else:
-            seeds: list[str] = cfg.get("preferredSeeds", [])
-            return seeds
-    return []
+            pass
+    # Append official seeds if not already present
+    for official in OFFICIAL_SEED_NODES:
+        if official not in seeds:
+            seeds.append(official)
+    return seeds
 
 
 def create_workflow_content(preferred_seeds: list[str] | None = None) -> str:
