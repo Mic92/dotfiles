@@ -74,6 +74,11 @@ in
           # Auto-follow your DID to accept all your repos
           follow = [
             "did:key:z6MkjE3BSJn4Y129rhqi5rViSUru8KSBcCQdQcDZq1cnjumw"
+            # GitHub Actions identities (for radicle-sync)
+            "did:key:z6MkeeV8LXfkXWn78ZwqAY1gvqtKhHhpXkVXbBJH5sg7zx95" # bills_actions
+            "did:key:z6Mki5ncXioPKfvAre5XiPguhkqUSrnL99tk8znvsdxxkmfy" # dotfiles_actions
+            "did:key:z6MkvjhTZCCmYNWxyZuzXpP6Aoibxd3xamPqzryc3Cm2MeqL" # flake-fmt_actions
+            "did:key:z6Mkrs8U7en5KpfG6DHXhuPLhH5wmGbrhBRFy6v5XMFMBh97" # nix-fast-build_actions
           ];
           # Peer with other personal nodes
           connect = [
