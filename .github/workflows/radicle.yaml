@@ -33,3 +33,4 @@ jobs:
           radicle-repository-id: "${{ secrets.RADICLE_REPOSITORY_ID }}"
           preferred-seeds: "z6MktZckvzz29eJtUQ4u9bkNu8jihg1sRvknUZMm1xq2stn9@radicle.thalheim.io:8776,z6MkwQTGzGVFjmT54Ustr82rc3bMGkjSjeCXQWgSvNNvVnwa@eva.thalheim.io:8776"
           pr-labels: "auto-merge"
+          debug: true
