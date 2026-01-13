@@ -80,15 +80,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1766491409,
-        "narHash": "sha256-GytxQzg7Kmqik09r5r3Za0sxkHAvUSmk97lg4x2c0vY=",
-        "rev": "643ea46c37aa5ee1ce6e64014aeab3b98bc566b7",
+        "lastModified": 1768301994,
+        "narHash": "sha256-GFK42Ks6gNqE33Jyh2MgTyiqt72SYz6/tKLrBC39UIs=",
+        "rev": "83a497a16786d198866a26338014682f1994f196",
         "type": "tarball",
-        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/643ea46c37aa5ee1ce6e64014aeab3b98bc566b7.tar.gz"
+        "url": "https://git.clan.lol/api/v1/repos/clan/clan-core/archive/83a497a16786d198866a26338014682f1994f196.tar.gz"
       },
       "original": {
         "type": "tarball",
-        "url": "https://git.clan.lol/clan/clan-core/archive/nixos-facter.tar.gz"
+        "url": "https://git.clan.lol/clan/clan-core/archive/main.tar.gz"
       }
     },
     "crane": {
