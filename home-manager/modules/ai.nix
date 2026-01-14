@@ -5,6 +5,8 @@
   ...
 }:
 {
+  home.file.".claude/skills".source = "${inputs.mics-skills}/skills";
+
   home.packages =
     let
       aiTools = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};

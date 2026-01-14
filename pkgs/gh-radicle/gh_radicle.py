@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
-gh-radicle: Set up automatic GitHub to Radicle mirroring.
+gh-radicle: Set up GitHub to Radicle mirroring via SSH.
 
-Creates per-repo Radicle identities for GitHub Actions mirroring,
-manages GitHub secrets, and creates the workflow file.
+Reads the SSH key from clan vars and sets up GitHub (deploy key, secret, workflow).
+The key must already be generated via `clan vars generate`.
 """
 
 import argparse
-import base64
 import json
-import os
 import subprocess
 import sys
-import tempfile
 from dataclasses import dataclass
 from pathlib import Path
+
+# Default paths for clan vars - can be overridden via CLI
+DEFAULT_DOTFILES = Path.home() / ".homesick/repos/dotfiles"
 
 
 def run(
@@ -52,12 +52,18 @@ def get_github_repo() -> str | None:
     return None
 
 
+def get_github_url(repo: str) -> str:
+    """Get the HTTPS URL for a GitHub repo."""
+    return f"https://github.com/{repo}"
+
+
 @dataclass
 class GitHubRepoInfo:
     """Information about a GitHub repository."""
 
     description: str = ""
     is_private: bool = False
+    default_branch: str = "main"
 
     @classmethod
     def fetch(cls, repo: str) -> "GitHubRepoInfo":
@@ -70,13 +76,17 @@ class GitHubRepoInfo:
                     "view",
                     repo,
                     "--json",
-                    "description,isPrivate",
+                    "description,isPrivate,defaultBranchRef",
                 ]
             )
             data = json.loads(result.stdout)
+            default_branch = "main"
+            if branch_ref := data.get("defaultBranchRef"):
+                default_branch = branch_ref.get("name", "main")
             return cls(
                 description=data.get("description") or "",
                 is_private=bool(data.get("isPrivate", False)),
+                default_branch=default_branch,
             )
         except (subprocess.CalledProcessError, json.JSONDecodeError):
             return cls()
@@ -88,10 +98,12 @@ def has_rad_remote() -> bool:
 
 
 def get_rad_rid() -> str | None:
-    """Get the Radicle Repository ID."""
+    """Get the Radicle Repository ID (without rad: prefix)."""
     try:
         result = run(["rad", "inspect"])
-        return result.stdout.strip()
+        rid = result.stdout.strip()
+        # Remove rad: prefix if present
+        return rid.removeprefix("rad:")
     except subprocess.CalledProcessError:
         return None
 
@@ -150,231 +162,101 @@ def rad_init(
     return rid
 
 
-def create_machine_identity(rad_home: Path, alias: str) -> dict[str, str]:
-    """Create a new Radicle identity for GitHub Actions."""
-    # Create identity with empty passphrase
-    subprocess.run(
-        ["rad", "auth", "--alias", alias, "--stdin"],
-        input="",
-        text=True,
-        check=True,
-    )
-
-    # Copy preferred seeds from main config
-    main_rad_home = Path.home() / ".radicle"
-    main_config = main_rad_home / "config.json"
-    temp_config = rad_home / "config.json"
-    if main_config.exists() and temp_config.exists():
-        main_cfg = json.loads(main_config.read_text())
-        temp_cfg = json.loads(temp_config.read_text())
-        if "preferredSeeds" in main_cfg:
-            temp_cfg["preferredSeeds"] = main_cfg["preferredSeeds"]
-            temp_config.write_text(json.dumps(temp_cfg, indent=2))
-
-    # Get DID
-    result = run(["rad", "self", "--did"])
-    did = result.stdout.strip()
-
-    # Read keys
-    private_key = (rad_home / "keys" / "radicle").read_text()
-    public_key = (rad_home / "keys" / "radicle.pub").read_text()
-
-    return {
-        "did": did,
-        "alias": alias,
-        "private_key_b64": base64.b64encode(private_key.encode()).decode(),
-        "public_key_b64": base64.b64encode(public_key.encode()).decode(),
-        "passphrase_b64": base64.b64encode(b"").decode(),
-    }
-
-
-def add_delegate(did: str, title: str = "Add GitHub Actions mirror account") -> None:
-    """Add a DID as a delegate to the current project."""
-    run(
-        [
-            "rad",
-            "id",
-            "update",
-            "--title",
-            title,
-            "--description",
-            "Machine account for GitHub Actions mirroring",
-            "--delegate",
-            did,
-            "--threshold",
-            "1",
-        ]
-    )
-
-
 def sync_to_seeds() -> None:
     """Sync the project to seeds."""
     run(["rad", "sync", "--announce"], check=False)
 
 
-def create_github_environment(repo: str, env_name: str = "radicle") -> None:
-    """Create a GitHub environment."""
-    run(["gh", "api", f"repos/{repo}/environments/{env_name}", "-X", "PUT"])
+def sanitize_name(name: str) -> str:
+    """Sanitize repo name for use as identifier."""
+    return name.replace("/", "-").replace(".", "-")
 
 
-def set_github_secret(repo: str, name: str, value: str, env: str | None = None) -> None:
-    """Set a GitHub secret."""
-    cmd = ["gh", "secret", "set", name, "--repo", repo]
-    if env:
-        cmd.extend(["--env", env])
-    subprocess.run(cmd, input=value, text=True, check=True)
-
-
-def save_identity_to_rbw(
-    github_repo: str,
-    identity: dict[str, str],
-    project_name: str,
-    rid: str,
-) -> None:
-    """Save Radicle identity to rbw (Bitwarden) for backup."""
-    entry_name = f"radicle/{github_repo}"
-
-    # Store all identity data as compact single-line JSON
-    # (rbw treats first line as password, rest as notes)
-    identity_data = {
-        **identity,
-        "project_name": project_name,
-        "rid": rid,
-        "github_repo": github_repo,
-    }
-    json_data = json.dumps(identity_data, separators=(",", ":"))
-
-    # Add to rbw using stdin for password
-    try:
-        subprocess.run(
-            ["rbw", "add", entry_name, identity["alias"]],
-            input=json_data,
-            text=True,
-            check=True,
-        )
-        print(f"Saved identity to rbw: {entry_name}")
-    except subprocess.CalledProcessError as e:
-        print(f"Warning: Failed to save to rbw: {e}", file=sys.stderr)
-    except FileNotFoundError:
-        print("Warning: rbw not found, skipping backup to Bitwarden", file=sys.stderr)
-
-
-def setup_github_secrets(
-    repo: str,
-    identity: dict[str, str],
-    project_name: str,
-    rid: str,
-) -> None:
-    """Set up all GitHub secrets for Radicle mirroring."""
-    env_name = "radicle"
-
-    # Create environment
-    create_github_environment(repo, env_name)
-
-    # Environment secrets
-    set_github_secret(repo, "RADICLE_IDENTITY_ALIAS", identity["alias"], env=env_name)
-    set_github_secret(
-        repo, "RADICLE_IDENTITY_PASSPHRASE", identity["passphrase_b64"], env=env_name
-    )
-    set_github_secret(
-        repo, "RADICLE_IDENTITY_PRIVATE_KEY", identity["private_key_b64"], env=env_name
-    )
-    set_github_secret(
-        repo, "RADICLE_IDENTITY_PUBLIC_KEY", identity["public_key_b64"], env=env_name
+def get_clan_var_paths(
+    dotfiles_path: Path, machine: str, repo_name: str
+) -> tuple[Path, Path]:
+    """Get paths to clan vars SSH key files."""
+    var_name = f"radicle-sync-{sanitize_name(repo_name)}"
+    vars_dir = dotfiles_path / "machines" / machine / "vars" / var_name
+    return (
+        vars_dir / "ssh-private-key",
+        vars_dir / "ssh-public-key",
     )
 
-    # Repository secrets
-    set_github_secret(repo, "RADICLE_PROJECT_NAME", project_name)
-    set_github_secret(repo, "RADICLE_REPOSITORY_ID", rid)
+
+def add_github_deploy_key(repo: str, title: str, public_key: str) -> None:
+    """Add a deploy key to a GitHub repository."""
+    subprocess.run(
+        [
+            "gh",
+            "repo",
+            "deploy-key",
+            "add",
+            "-",
+            "--repo",
+            repo,
+            "--title",
+            title,
+        ],
+        input=public_key,
+        text=True,
+        check=True,
+    )
 
 
-# Official Radicle seed nodes (community infrastructure)
-OFFICIAL_SEED_NODES = [
-    "z6MkrLMMsiPWUcNPHcRajuMi9mDfYckSoJyPwwnknocNYPm7@iris.radicle.xyz:8776",
-    "z6Mkmqogy2qEM2ummccUthFEaaHvyYmYBYh3dbe9W4ebScxo@rosa.radicle.xyz:8776",
-]
-
-
-def get_preferred_seeds() -> list[str]:
-    """Get preferred seeds from the main radicle config, appending official seeds."""
-    seeds: list[str] = []
-    main_config = Path.home() / ".radicle" / "config.json"
-    if main_config.exists():
-        try:
-            cfg = json.loads(main_config.read_text())
-            seeds = cfg.get("preferredSeeds", [])
-        except json.JSONDecodeError:
-            pass
-    # Append official seeds if not already present
-    for official in OFFICIAL_SEED_NODES:
-        if official not in seeds:
-            seeds.append(official)
-    return seeds
-
-
-def create_workflow_content(preferred_seeds: list[str] | None = None) -> str:
-    """Generate the workflow file content."""
-    if preferred_seeds is None:
-        preferred_seeds = get_preferred_seeds()
-
-    seeds_line = ""
-    if preferred_seeds:
-        seeds_str = ",".join(preferred_seeds)
-        seeds_line = f'\n          preferred-seeds: "{seeds_str}"'
-
+def create_workflow_content(sync_host: str, default_branch: str) -> str:
+    """Generate the GitHub Actions workflow file content."""
     return f"""\
 name: Radicle Sync
 on:
   push:
     branches:
-      - main
-  schedule:
-    # Run daily at 3 AM UTC to sync any Radicle contributions
-    - cron: '0 3 * * *'
+      - {default_branch}
   workflow_dispatch:
+
 jobs:
-  mirror:
+  sync:
     runs-on: ubuntu-latest
-    environment: radicle
-    permissions:
-      contents: write
-      pull-requests: write
     steps:
-      - name: Generate GitHub App Token
-        id: app-token
-        uses: actions/create-github-app-token@v2
-        with:
-          app-id: ${{{{ secrets.APP_ID }}}}
-          private-key: ${{{{ secrets.APP_PRIVATE_KEY }}}}
-      - id: mirror
-        uses: Mic92/radicle-sync@main
-        with:
-          github-token: ${{{{ steps.app-token.outputs.token }}}}
-          radicle-identity-alias: "${{{{ secrets.RADICLE_IDENTITY_ALIAS }}}}"
-          radicle-identity-passphrase: "${{{{ secrets.RADICLE_IDENTITY_PASSPHRASE }}}}"
-          radicle-identity-private-key: "${{{{ secrets.RADICLE_IDENTITY_PRIVATE_KEY }}}}"
-          radicle-identity-public-key: "${{{{ secrets.RADICLE_IDENTITY_PUBLIC_KEY }}}}"
-          radicle-project-name: "${{{{ secrets.RADICLE_PROJECT_NAME }}}}"
-          radicle-repository-id: "${{{{ secrets.RADICLE_REPOSITORY_ID }}}}"{seeds_line}
-          pr-labels: "auto-merge"
+      - name: Sync to Radicle
+        env:
+          SSH_PRIVATE_KEY: ${{{{ secrets.RADICLE_SYNC_SSH_KEY }}}}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan {sync_host} >> ~/.ssh/known_hosts
+          ssh radicle-sync@{sync_host}
 """
 
 
-def create_workflow_file(workflow_dir: Path | None = None) -> Path:
+def create_workflow_file(
+    sync_host: str, default_branch: str, workflow_dir: Path | None = None
+) -> Path:
     """Create the GitHub Actions workflow file."""
     if workflow_dir is None:
         workflow_dir = Path(".github/workflows")
 
     workflow_dir.mkdir(parents=True, exist_ok=True)
     workflow_file = workflow_dir / "radicle.yaml"
-    workflow_file.write_text(create_workflow_content())
+    workflow_file.write_text(create_workflow_content(sync_host, default_branch))
     return workflow_file
+
+
+def set_github_secret(repo: str, name: str, value: str) -> None:
+    """Set a GitHub repository secret."""
+    subprocess.run(
+        ["gh", "secret", "set", name, "--repo", repo],
+        input=value,
+        text=True,
+        check=True,
+    )
 
 
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(
-        description="Set up automatic GitHub to Radicle mirroring"
+        description="Set up GitHub to Radicle mirroring via SSH"
     )
     parser.add_argument(
         "--name",
@@ -385,100 +267,157 @@ def parse_args() -> argparse.Namespace:
         help="Project description (default: from GitHub)",
     )
     parser.add_argument(
-        "--alias",
-        help="Alias for the machine identity (default: <repo>_actions)",
-    )
-    parser.add_argument(
         "--skip-workflow",
         action="store_true",
         help="Skip creating the workflow file",
     )
     parser.add_argument(
-        "--skip-secrets",
+        "--skip-github-secret",
         action="store_true",
-        help="Skip setting up GitHub secrets",
+        help="Skip setting up GitHub secret",
+    )
+    parser.add_argument(
+        "--skip-deploy-key",
+        action="store_true",
+        help="Skip adding deploy key to GitHub",
     )
     parser.add_argument(
         "--private",
         action="store_true",
-        help="Mirror as private (auto-detected from GitHub if not specified)",
+        help="Create as private Radicle repo (auto-detected from GitHub if not specified)",
+    )
+    parser.add_argument(
+        "--sync-host",
+        default="radicle.thalheim.io",
+        help="SSH host for radicle-sync (default: radicle.thalheim.io)",
+    )
+    parser.add_argument(
+        "--dotfiles",
+        type=Path,
+        default=DEFAULT_DOTFILES,
+        help=f"Path to dotfiles repo (default: {DEFAULT_DOTFILES})",
+    )
+    parser.add_argument(
+        "--machine",
+        default="eve",
+        help="Machine name for clan vars (default: eve)",
     )
     return parser.parse_args()
 
 
 @dataclass
-class MirrorConfig:
-    """Configuration for setting up a Radicle mirror."""
+class SetupConfig:
+    """Configuration for setting up Radicle sync."""
 
     github_repo: str
+    github_url: str
     project_name: str
     description: str
-    alias: str
-    skip_secrets: bool = False
-    skip_workflow: bool = False
-    private: bool = False
+    default_branch: str
+    private: bool
+    skip_workflow: bool
+    skip_github_secret: bool
+    skip_deploy_key: bool
+    sync_host: str
+    dotfiles_path: Path
+    machine: str
 
 
-def setup_mirror(config: MirrorConfig) -> int:
-    """Set up the Radicle mirror for a GitHub repository."""
-    print(f"Setting up Radicle mirror for {config.github_repo}")
+def setup_sync(config: SetupConfig) -> int:
+    """Set up Radicle sync for a GitHub repository."""
+    print(f"Setting up Radicle sync for {config.github_repo}")
 
     project_name = config.project_name
+    repo_name = sanitize_name(config.github_repo)
 
     # Check if rad remote already exists
     if has_rad_remote():
-        rid = get_rad_rid()
+        repo_id = get_rad_rid()
         project_name = get_rad_project_name() or project_name
-        print(f"Radicle project already exists: {rid}")
+        print(f"Radicle project already exists: {repo_id}")
     else:
         visibility = "private" if config.private else "public"
         print(f"Initializing new Radicle project: {project_name} ({visibility})")
-        rid = rad_init(project_name, config.description, private=config.private)
-        print(f"Created Radicle project: {rid}")
+        repo_id = rad_init(
+            project_name,
+            config.description,
+            default_branch=config.default_branch,
+            private=config.private,
+        )
+        print(f"Created Radicle project: {repo_id}")
 
-    if not rid:
-        print("Error: Could not determine RID", file=sys.stderr)
+    if not repo_id:
+        print("Error: Could not determine Radicle repo ID", file=sys.stderr)
         return 1
 
-    # Create machine identity in a temporary directory
-    with tempfile.TemporaryDirectory(prefix="rad-actions-") as tmpdir:
-        rad_home = Path(tmpdir)
-        os.environ["RAD_HOME"] = str(rad_home)
+    # Get SSH key from clan vars
+    private_key_path, public_key_path = get_clan_var_paths(
+        config.dotfiles_path, config.machine, config.github_repo
+    )
 
-        print(f"Creating machine identity: {config.alias}")
-        identity = create_machine_identity(rad_home, config.alias)
-        print(f"Machine DID: {identity['did']}")
+    if not private_key_path.exists() or not public_key_path.exists():
+        print(
+            f"\nError: SSH key not found at {private_key_path.parent}", file=sys.stderr
+        )
+        print(
+            "\nFirst, add this to your NixOS config and run 'clan vars generate':",
+            file=sys.stderr,
+        )
+        print(
+            f"""
+(mkRepo {{
+  name = "{repo_name}";
+  repoId = "{repo_id}";
+  githubUrl = "{config.github_url}";
+  branch = "{config.default_branch}";
+}})
+""",
+            file=sys.stderr,
+        )
+        return 1
 
-        # Add as delegate (using main identity)
-        del os.environ["RAD_HOME"]
-        print("Adding machine identity as delegate...")
-        add_delegate(identity["did"])
+    private_key = private_key_path.read_text()
+    public_key = public_key_path.read_text().strip()
 
-        # Sync
-        print("Syncing to network...")
-        sync_to_seeds()
+    print(f"Using SSH key from clan vars: {private_key_path.parent}")
 
-        # Set up GitHub secrets
-        if not config.skip_secrets:
-            print("Setting up GitHub secrets...")
-            setup_github_secrets(config.github_repo, identity, project_name, rid)
+    # Add deploy key to GitHub (read-only is fine, we only fetch)
+    if not config.skip_deploy_key:
+        print("Adding deploy key to GitHub...")
+        try:
+            add_github_deploy_key(
+                config.github_repo, f"Radicle Sync ({config.machine})", public_key
+            )
+        except subprocess.CalledProcessError:
+            print(
+                "Warning: Failed to add deploy key (may already exist)", file=sys.stderr
+            )
 
-        # Save identity to rbw for backup
-        save_identity_to_rbw(config.github_repo, identity, project_name, rid)
+    # Set GitHub secret for the workflow
+    if not config.skip_github_secret:
+        print("Setting GitHub secret RADICLE_SYNC_SSH_KEY...")
+        set_github_secret(config.github_repo, "RADICLE_SYNC_SSH_KEY", private_key)
+
+    # Sync to seeds
+    print("Syncing to network...")
+    sync_to_seeds()
 
     # Create workflow file
     if not config.skip_workflow:
-        workflow_file = create_workflow_file()
+        workflow_file = create_workflow_file(config.sync_host, config.default_branch)
         print(f"Created workflow: {workflow_file}")
 
-    print("\nSetup complete!")
-    print(f"  RID: {rid}")
-    print(f"  GitHub repo: {config.github_repo}")
+    print("\n" + "=" * 60)
+    print("Setup complete!")
+    print("=" * 60)
+    print(f"  Radicle repo: {repo_id}")
+    print(f"  GitHub repo:  {config.github_repo}")
+    print(f"  SSH key:      {private_key_path.parent}")
     if not config.skip_workflow:
-        print("  Workflow: .github/workflows/radicle.yaml")
+        print("  Workflow:     .github/workflows/radicle.yaml")
     print("\nNext steps:")
     print("  1. Commit and push the workflow file")
-    print("  2. The mirror will sync on every push")
+    print("  2. Deploy your NixOS configuration")
 
     return 0
 
@@ -491,21 +430,26 @@ def main() -> int:
         print("Error: Not in a GitHub repository", file=sys.stderr)
         return 1
 
-    # Fetch repo info once from GitHub API
+    # Fetch repo info from GitHub API
     repo_info = GitHubRepoInfo.fetch(github_repo)
 
     repo_name = github_repo.split("/")[-1]
-    config = MirrorConfig(
+    config = SetupConfig(
         github_repo=github_repo,
+        github_url=get_github_url(github_repo),
         project_name=args.name or repo_name,
         description=args.description or repo_info.description,
-        alias=args.alias or f"{repo_name}_actions",
-        skip_secrets=args.skip_secrets,
-        skip_workflow=args.skip_workflow,
+        default_branch=repo_info.default_branch,
         private=args.private or repo_info.is_private,
+        skip_workflow=args.skip_workflow,
+        skip_github_secret=args.skip_github_secret,
+        skip_deploy_key=args.skip_deploy_key,
+        sync_host=args.sync_host,
+        dotfiles_path=args.dotfiles,
+        machine=args.machine,
     )
 
-    return setup_mirror(config)
+    return setup_sync(config)
 
 
 if __name__ == "__main__":

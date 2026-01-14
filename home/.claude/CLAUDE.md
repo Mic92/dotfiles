@@ -80,6 +80,3 @@
 - Prefer cloning source code over web searches for more accurate results.
   Various projects are available in `~/git`, including: `nixpkgs`, `linux`,
   `nix`, also see `~/work/clan/clan-core`
-- Use Kagi for searching the web:
-- `kagi-search "nixpkgs buildPythonPackage examples"`
-- `kagi-search -j "nix flake inputs follows" | jq -r '.results[].url'`
