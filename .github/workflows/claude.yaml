@@ -31,7 +31,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: cachix/install-nix-action@v31
+      - uses: NixOS/nix-installer@main
       - name: Determine PR number
         if: |
           github.event_name == 'repository_dispatch' ||
