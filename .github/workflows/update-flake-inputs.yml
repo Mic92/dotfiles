@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   update-flake-inputs:
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
