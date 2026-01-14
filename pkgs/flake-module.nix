@@ -45,6 +45,7 @@
       // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
         phantun = pkgs.callPackage ./phantun { };
         phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
+        radicle-github-sync = pkgs.callPackage ./radicle-github-sync { };
       }
       // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
         cewe-fotowelt = pkgs.callPackage ./cewe-fotowelt { };
