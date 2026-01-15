@@ -244,9 +244,19 @@
                     "dorits-laptop"
                   ];
                 };
+                darwinMachinesPerSystem = {
+                  aarch64-darwin = [
+                    "evo"
+                  ];
+                };
                 nixosMachines = lib.mapAttrs' (n: lib.nameValuePair "nixos-${n}") (
                   lib.genAttrs (machinesPerSystem.${system} or [ ]) (
                     name: self.nixosConfigurations.${name}.config.system.build.toplevel
+                  )
+                );
+                darwinMachines = lib.mapAttrs' (n: lib.nameValuePair "darwin-${n}") (
+                  lib.genAttrs (darwinMachinesPerSystem.${system} or [ ]) (
+                    name: self.darwinConfigurations.${name}.system
                   )
                 );
 
@@ -264,7 +274,7 @@
                   name: config: lib.nameValuePair "home-manager-${name}" config.activation-script
                 ) (self'.legacyPackages.homeConfigurations or { });
               in
-              nixosMachines // packages // devShells // homeConfigurations;
+              nixosMachines // darwinMachines // packages // devShells // homeConfigurations;
           };
         # CI
       }
