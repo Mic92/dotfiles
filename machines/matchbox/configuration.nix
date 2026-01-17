@@ -41,6 +41,7 @@
     usbutils
     bandwhich
     vim
+    python3
   ];
 
   systemd.network.networks.ethernet = {
