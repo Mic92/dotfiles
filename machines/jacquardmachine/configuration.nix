@@ -20,6 +20,8 @@
 
   environment.systemPackages = with pkgs; [ bottles ];
 
+  programs.steam.enable = true;
+
   # Disable envfs to fix systemd refusing to run with unpopulated /usr/
   services.envfs.enable = lib.mkForce false;
 
