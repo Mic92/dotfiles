@@ -39,8 +39,6 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.systemd.enable = true;
-  clan.core.networking.targetHost = lib.mkForce "root@eva.i";
-  clan.core.networking.buildHost = "root@eve.i";
 
   # Disable envfs to fix systemd refusing to run with unpopulated /usr/
   services.envfs.enable = lib.mkForce false;

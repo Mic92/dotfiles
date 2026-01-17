@@ -8,7 +8,6 @@
 }:
 {
   networking.hostName = "eve";
-  clan.core.networking.targetHost = lib.mkForce "root@eve.i";
   networking.hostId = "8425e349";
 
   # Disable envfs to fix systemd refusing to run with unpopulated /usr/

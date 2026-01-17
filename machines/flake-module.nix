@@ -13,7 +13,22 @@
           wireguard-peers = builtins.filter (name: name != "eve" && name != "eva") config.nixos;
         };
 
-      machines.evo.machineClass = "darwin";
+      machines = {
+        eve.deploy.targetHost = "root@eve.i";
+        eva.deploy = {
+          targetHost = "root@eva.i";
+          buildHost = "root@eve.i";
+        };
+        evo = {
+          machineClass = "darwin";
+          deploy.targetHost = "root@evo.x";
+        };
+        turingmachine.deploy.targetHost = "root@turingmachine.x";
+        bernie.deploy.targetHost = "root@bernie.x";
+        blob64.deploy.targetHost = "root@blob64.x";
+        matchbox.deploy.targetHost = "root@matchbox.x";
+        jacquardmachine.deploy.targetHost = "root@jacquardmachine.x";
+      };
 
       instances = {
         emergency-access = {
