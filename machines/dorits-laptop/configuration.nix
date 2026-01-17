@@ -68,6 +68,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    firefox
     celluloid
     mpv
     inkscape
