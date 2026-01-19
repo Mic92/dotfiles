@@ -78,15 +78,24 @@ let
     - Search: kagi-search
     - Scheduling: crabfit-cli (create/manage crab.fit events)
 
+
     Key directories:
     - Calendars: ~/.local/share/calendars/
     - Mail: ~/mail/thalheim.io/
     - Contacts: ~/.contacts/
 
+    IMPORTANT Calendar File Handling
+    - NEVER directly edit ICS files in ~/.local/share/calendars/, it breaks etag integrity checking.
+
     Common tasks:
-    - List calendar events: khal list
-    - List with UIDs: khal list --format "{start-time}-{end-time} {title} [{uid}]"
-    - Delete calendar entry: printf "D\ny\n" | khal edit <uid>
+    - List events: khal list
+    - List with details: khal list --format "{start-date} {start-time} {end-time} | {title} | {location} | {description} | {calendar} | {repeat-symbol} | [{uid}]"
+    - Delete event: printf "D\ny\ny\ny\ny\n" | khal edit <uid>  (multiple y's for recurring)
+    - Create event: khal new <date> <start-time> <end-time> "<title>" -a <calendar> -l "<location>" [-r weekly|daily|monthly] [:: "<description>"]
+    - Edit event (delete-and-recreate workflow):
+      1. Read current: khal list --format "{start-date} {start-time} {end-time} | {title} | {location} | {description} | {calendar} | {repeat-symbol} | [{uid}]" | grep <uid>
+      2. Create new with changes: khal new ...
+      3. Delete old: printf "D\ny\ny\ny\ny\n" | khal edit <old-uid>
     - List todos: todo list
     - Search email: notmuch search <query>
     - Show email: notmuch show --format=text <thread-id>
