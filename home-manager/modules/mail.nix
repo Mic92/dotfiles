@@ -73,6 +73,7 @@ lib.mkMerge [
       w3m # for HTML email viewing
 
       self.packages.${pkgs.stdenv.hostPlatform.system}.vcal
+      self.packages.${pkgs.stdenv.hostPlatform.system}.crabfit-cli
     ];
 
     # All config files are managed by homeshick:

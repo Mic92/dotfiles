@@ -22,6 +22,7 @@
         vcal = pkgs.callPackage ./vcal { };
         buildbot-pr-check = pkgs.python3.pkgs.callPackage ./buildbot-pr-check { };
         claude-md = pkgs.python3.pkgs.callPackage ./claude-md { };
+        crabfit-cli = pkgs.python3.pkgs.callPackage ./crabfit-cli { };
         inherit (pkgs.callPackages ./firefox-extensions { })
           chrome-tab-gc-extension
           ;
@@ -39,7 +40,7 @@
         updater = pkgs.callPackage ./updater { };
         # Sandboxed pi for calendar/email tasks
         pim = pkgs.callPackage ./pim {
-          inherit (self'.packages) email-sync;
+          inherit (self'.packages) email-sync crabfit-cli;
           pi = aiTools.pi;
           db-cli = micsSkills.db-cli;
           kagi-search = micsSkills.kagi-search;
