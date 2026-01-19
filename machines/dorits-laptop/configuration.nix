@@ -56,6 +56,7 @@
   };
 
   networking.hostName = "dorits-laptop";
+  networking.retiolum.nodename = "doritslaptop";
 
   networking.networkmanager.enable = true;
   time.timeZone = null;
