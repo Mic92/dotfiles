@@ -1,13 +1,13 @@
 {
   systemd.network.enable = true;
 
-  services.resolved.settings = {
+  services.resolved.settings.Resolve = {
     #DNSOverTLS = "yes";
     # docker
     DNSStubListenerExtra = "172.17.0.1";
+    # dns.thalheim.io performs dnssec already
+    DNSSEC = "false";
   };
-  # dns.thalheim.io performs dnssec already
-  services.resolved.dnssec = "false";
 
   # don't take down the network for too long
   systemd.services.systemd-networkd.stopIfChanged = false;
