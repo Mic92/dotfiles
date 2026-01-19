@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "crabfit-cli"
+version = "0.1.0"
+description = "CLI for creating and managing Crab.fit scheduling events"
+
+[project.scripts]
+crabfit-cli = "crabfit_cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["crabfit_cli.py"]
+
+[tool.ruff]
+target-version = "py313"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "T201",   # allow print()
+    "D203",   # incompatible with D211 (no-blank-line-before-class)
+    "D213",   # incompatible with D212 (multi-line-summary-first-line)
+    "COM812", # conflicts with formatter
+]
+
+[tool.mypy]
+python_version = "3.13"
+strict = true

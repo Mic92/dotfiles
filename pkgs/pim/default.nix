@@ -29,6 +29,7 @@
   pi,
   db-cli,
   kagi-search,
+  crabfit-cli,
   # Sandboxing (Linux only)
   bubblewrap,
 }:
@@ -63,6 +64,7 @@ let
     # Skills dependencies
     db-cli
     kagi-search
+    crabfit-cli
   ];
 
   systemPrompt = ''
@@ -74,6 +76,7 @@ let
     - Contacts: khard
     - Travel: db-cli (German trains)
     - Search: kagi-search
+    - Scheduling: crabfit-cli (create/manage crab.fit events)
 
     Key directories:
     - Calendars: ~/.local/share/calendars/
@@ -91,6 +94,8 @@ let
     - Sync email: email-sync
     - Search contacts: khard list <name>
     - Train connections: db-cli "From" "To"
+    - Create scheduling poll: crabfit-cli create --name "Meeting" --dates +0:+6
+    - Show poll results: crabfit-cli show <event-id>
   '';
 
   # Directories that need read-write access (relative to $HOME)
