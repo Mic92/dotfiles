@@ -3,9 +3,14 @@
   perSystem =
     {
       inputs',
+      self',
       pkgs,
       ...
     }:
+    let
+      micsSkills = inputs'.mics-skills.packages;
+      aiTools = inputs'.llm-agents.packages;
+    in
     {
       packages = {
         merge-when-green = pkgs.callPackage ./merge-when-green { };
@@ -32,6 +37,13 @@
         flake-inputs = pkgs.callPackage ./flake-inputs { inherit inputs; };
         # Package updater CLI
         updater = pkgs.callPackage ./updater { };
+        # Sandboxed pi for calendar/email tasks
+        pim = pkgs.callPackage ./pim {
+          inherit (self'.packages) email-sync;
+          pi = aiTools.pi;
+          db-cli = micsSkills.db-cli;
+          kagi-search = micsSkills.kagi-search;
+        };
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
         blueutil = pkgs.callPackage ./blueutil { };
