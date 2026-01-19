@@ -11,11 +11,13 @@
     let
       aiTools = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
       micsSkills = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
+      selfPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
     in
     [
-      self.packages.${pkgs.stdenv.hostPlatform.system}.claude-code
+      selfPkgs.claude-code
+      selfPkgs.claude-md
+      selfPkgs.pim
       micsSkills.pexpect-cli
-      self.packages.${pkgs.stdenv.hostPlatform.system}.claude-md
       micsSkills.kagi-search
       aiTools.pi
       aiTools.tuicr

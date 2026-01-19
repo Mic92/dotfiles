@@ -7,8 +7,8 @@
 }:
 
 let
-  # email-sync script
-  email-sync = pkgs.callPackage ../../pkgs/email-sync { };
+  # email-sync script from flake packages
+  email-sync = self.packages.${pkgs.stdenv.hostPlatform.system}.email-sync;
 
   # msmtp wrapper that saves sent mail to maildir
   msmtp-with-sent = pkgs.writeShellScriptBin "msmtp" ''
