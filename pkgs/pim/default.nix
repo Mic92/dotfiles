@@ -91,7 +91,8 @@ let
     - List events: khal list
     - List with details: khal list --format "{start-date} {start-time} {end-time} | {title} | {location} | {description} | {calendar} | {repeat-symbol} | [{uid}]"
     - Delete event: printf "D\ny\ny\ny\ny\n" | khal edit <uid>  (multiple y's for recurring)
-    - Create event: khal new <date> <start-time> <end-time> "<title>" -a <calendar> -l "<location>" [-r weekly|daily|monthly] [:: "<description>"]
+    - Create event: khal new <date> <start-time> <end-time> "<title>" -a <calendar> -l "<location>" [-r weekly|daily|monthly] [-m <alarms>] [:: "<description>"]
+    - Alarms: -m takes comma-separated DELTAs (e.g., -m "15m" for 15min before, -m "1h,15m" for 1h and 15min before)
     - Edit event (delete-and-recreate workflow):
       1. Read current: khal list --format "{start-date} {start-time} {end-time} | {title} | {location} | {description} | {calendar} | {repeat-symbol} | [{uid}]" | grep <uid>
       2. Create new with changes: khal new ...
