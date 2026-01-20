@@ -1,7 +1,8 @@
 {
   lib,
   stdenv,
-  writeShellApplication,
+  python3,
+  makeWrapper,
   # Calendar tools
   khal,
   vdirsyncer,
@@ -20,9 +21,11 @@
   gnugrep,
   gnused,
   gawk,
+  jq,
   findutils,
   bash,
   util-linux,
+  ncurses,
   # Email sync
   email-sync,
   # AI tools
@@ -56,9 +59,11 @@ let
     gnugrep
     gnused
     gawk
+    jq
     findutils
     bash
     util-linux
+    ncurses
     # Email sync
     email-sync
     # Skills dependencies
@@ -67,175 +72,29 @@ let
     crabfit-cli
   ];
 
-  systemPrompt = ''
-    You are a calendar, email, and travel planning assistant.
-
-    Available tools:
-    - Calendar: khal, vdirsyncer, todo (todoman)
-    - Email: notmuch, afew, mrefile (from mblaze), msmtp, mbsync
-    - Contacts: khard
-    - Travel: db-cli (German trains)
-    - Search: kagi-search
-    - Scheduling: crabfit-cli (create/manage crab.fit events)
-
-
-    Key directories:
-    - Calendars: ~/.local/share/calendars/
-    - Mail: ~/mail/thalheim.io/
-    - Contacts: ~/.contacts/
-
-    IMPORTANT Calendar File Handling
-    - NEVER directly edit ICS files in ~/.local/share/calendars/, it breaks etag integrity checking.
-
-    Common tasks:
-    - List events: khal list
-    - List with details: khal list --format "{start-date} {start-time} {end-time} | {title} | {location} | {description} | {calendar} | {repeat-symbol} | [{uid}]"
-    - Delete event: printf "D\ny\ny\ny\ny\n" | khal edit <uid>  (multiple y's for recurring)
-    - Create event: khal new <date> <start-time> <end-time> "<title>" -a <calendar> -l "<location>" [-r weekly|daily|monthly] [-m <alarms>] [:: "<description>"]
-    - Alarms: -m takes comma-separated DELTAs (e.g., -m "15m" for 15min before, -m "1h,15m" for 1h and 15min before)
-    - Edit event (delete-and-recreate workflow):
-      1. Read current: khal list --format "{start-date} {start-time} {end-time} | {title} | {location} | {description} | {calendar} | {repeat-symbol} | [{uid}]" | grep <uid>
-      2. Create new with changes: khal new ...
-      3. Delete old: printf "D\ny\ny\ny\ny\n" | khal edit <old-uid>
-    - List todos: todo list
-    - Search email: notmuch search <query>
-    - Show email: notmuch show --format=text <thread-id>
-    - Sync calendars: vdirsyncer sync
-    - Sync email: email-sync
-    - Search contacts: khard list <name>
-    - Train connections: db-cli "From" "To"
-    - Create scheduling poll: crabfit-cli create --name "Meeting" --dates +0:+6
-    - Show poll results: crabfit-cli show <event-id>
-  '';
-
-  # Directories that need read-write access (relative to $HOME)
-  rwDirs = [
-    ".local/share/calendars"
-    ".local/share/vdirsyncer"
-    ".local/share/notmuch"
-    ".local/share/khal"
-    ".cache/vdirsyncer"
-    ".cache/khal"
-    ".cache/notmuch"
-    ".cache/rbw"
-    ".contacts"
-    "mail"
-    ".pi"
-    ".claude/outputs"
-  ];
-
-  # Directories/files that need read-only access (relative to $HOME)
-  roDirs = [
-    ".config/khal"
-    ".config/vdirsyncer"
-    ".config/todoman"
-    ".config/notmuch"
-    ".config/afew"
-    ".config/msmtp"
-    ".config/khard"
-    ".config/rbw"
-    ".mbsyncrc"
-    ".notmuch-config"
-    ".claude/skills"
-    # Configs and extensions are symlinks to dotfiles
-    ".homesick/repos/dotfiles/home"
-  ];
-
+  runtimeDeps = lib.optionals stdenv.isLinux [ bubblewrap ];
 in
-writeShellApplication {
-  name = "pim";
+python3.pkgs.buildPythonApplication {
+  pname = "pim";
+  version = "0.2.0";
+  src = ./.;
+  format = "other";
 
-  runtimeInputs = [ pi ] ++ lib.optionals stdenv.isLinux [ bubblewrap ];
+  nativeBuildInputs = [ makeWrapper ];
 
-  text = ''
-        TOOLS_PATH=${lib.escapeShellArg toolsPath}
+  installPhase = ''
+    install -D -m 0755 pim.py $out/bin/pim
 
-        # Build system prompt with current calendar
-        SYSTEM_PROMPT=${lib.escapeShellArg systemPrompt}
-        SYSTEM_PROMPT+="
-    Current calendar:
-    $(cal -3)"
-
-        # Ensure session directory exists
-        mkdir -p "$HOME/.pi/pim"
-        mkdir -p "$HOME/.claude/outputs"
-
-        run_pi() {
-            PATH="$TOOLS_PATH:$PATH" \
-            pi \
-                --provider anthropic \
-                --model claude-haiku-4-5 \
-                --session-dir "$HOME/.pi/pim" \
-                --append-system-prompt "$SYSTEM_PROMPT" \
-                --skills "db-cli,kagi-search" \
-                "$@"
-        }
-
-        # Linux sandboxing with bwrap
-        if [[ "$(uname)" == "Linux" ]] && command -v bwrap &>/dev/null; then
-            # Build bwrap arguments
-            BWRAP_ARGS=(
-                # Basic system access
-                --ro-bind /nix/store /nix/store
-                --ro-bind /etc /etc
-                --ro-bind /run /run
-                --dev /dev
-                --proc /proc
-                --tmpfs /tmp
-
-                # XDG runtime (for rbw agent socket, etc.)
-                --bind "''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}" "''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-            )
-
-            # Add read-write binds for data directories
-            for dir in ${lib.escapeShellArgs rwDirs}; do
-                target="$HOME/$dir"
-                if [[ -e "$target" ]]; then
-                    BWRAP_ARGS+=(--bind "$target" "$target")
-                fi
-            done
-
-            # Add read-only binds for config
-            for dir in ${lib.escapeShellArgs roDirs}; do
-                target="$HOME/$dir"
-                if [[ -e "$target" ]]; then
-                    BWRAP_ARGS+=(--ro-bind "$target" "$target")
-                fi
-            done
-
-            # Environment variables
-            BWRAP_ARGS+=(
-                --setenv HOME "$HOME"
-                --setenv PATH "$TOOLS_PATH"
-                --setenv TERM "''${TERM:-xterm-256color}"
-                --setenv LANG "''${LANG:-en_US.UTF-8}"
-                --setenv XDG_RUNTIME_DIR "''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
-            )
-
-            # Pass through API keys if set
-            [[ -n "''${ANTHROPIC_API_KEY:-}" ]] && BWRAP_ARGS+=(--setenv ANTHROPIC_API_KEY "$ANTHROPIC_API_KEY")
-            [[ -n "''${OPENAI_API_KEY:-}" ]] && BWRAP_ARGS+=(--setenv OPENAI_API_KEY "$OPENAI_API_KEY")
-            [[ -n "''${GEMINI_API_KEY:-}" ]] && BWRAP_ARGS+=(--setenv GEMINI_API_KEY "$GEMINI_API_KEY")
-            [[ -n "''${KAGI_API_KEY:-}" ]] && BWRAP_ARGS+=(--setenv KAGI_API_KEY "$KAGI_API_KEY")
-
-            # Network and namespace options
-            BWRAP_ARGS+=(
-                --share-net
-                --unshare-pid
-                --die-with-parent
-            )
-
-            exec bwrap "''${BWRAP_ARGS[@]}" \
-                ${pi}/bin/pi \
-                    --provider anthropic \
-                    --model claude-haiku-4-5 \
-                    --session-dir "$HOME/.pi/pim" \
-                    --append-system-prompt "$SYSTEM_PROMPT" \
-                    --skills "db-cli,kagi-search" \
-                    "$@"
-        else
-            # macOS or no bwrap - just restrict PATH
-            run_pi "$@"
-        fi
+    wrapProgram $out/bin/pim \
+      --set PIM_TOOLS_PATH ${lib.escapeShellArg toolsPath} \
+      --set PIM_PI_BIN ${pi}/bin/pi \
+      --prefix PATH : ${lib.makeBinPath runtimeDeps}
   '';
+
+  meta = with lib; {
+    description = "Sandboxed AI assistant for calendar, email, contacts, and travel planning";
+    license = licenses.mit;
+    platforms = platforms.all;
+    mainProgram = "pim";
+  };
 }
