@@ -268,13 +268,22 @@ jt() {
   lazyworktree -output-selection "$tmpdir/out" "$@"
   dir=$(<"$tmpdir/out")
   echo "$dir"
-  if [[ -d  "$dir" ]]; then
-    cd "$dir"
-    if [ -f .envrc ]; then
-      direnv allow
-    fi
+  if [[ -d "$dir" ]]; then
+    cd "$dir" && [[ -f .envrc ]] && direnv allow
   fi
   unset dir
+}
+
+ct() {
+  local target
+  target=$(git rev-parse --abbrev-ref --symbolic-full-name 'upstream' 2>/dev/null) || \
+    target=$(git rev-parse --abbrev-ref --symbolic-full-name 'origin' 2>/dev/null) || \
+    target='main'
+  local dir
+  dir=$(lazyworktree wt-create --from-branch "$target" --name "$@")
+  if [[ -d "$dir" ]]; then
+    cd "$dir" && [[ -f .envrc ]] && direnv allow
+  fi
 }
 
 rg() {
