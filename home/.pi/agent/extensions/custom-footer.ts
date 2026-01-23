@@ -1,5 +1,5 @@
 /**
- * Custom Footer Extension - shows working directory, git branch, model, and context usage
+ * Custom Footer Extension - shows working directory, git branch, model, context usage, and extension statuses
  */
 
 import type { AssistantMessage } from "@mariozechner/pi-ai";
@@ -49,6 +49,18 @@ export default function (pi: ExtensionAPI) {
               theme.fg("accent", branch)
             : "";
 
+          // Get extension statuses (e.g., direnv)
+          const statuses = footerData.getExtensionStatuses();
+          let statusStr = "";
+          if (statuses.size > 0) {
+            const statusParts: string[] = [];
+            for (const [, value] of statuses) {
+              statusParts.push(value);
+            }
+            statusStr = theme.fg("dim", " │ ") +
+              statusParts.join(theme.fg("dim", " │ "));
+          }
+
           // Get working directory (shortened)
           const cwd = ctx.cwd;
           const home = process.env.HOME || "";
@@ -56,8 +68,8 @@ export default function (pi: ExtensionAPI) {
             ? "~" + cwd.slice(home.length)
             : cwd;
 
-          // Build left side: cwd + branch
-          const left = theme.fg("muted", shortCwd) + branchStr;
+          // Build left side: cwd + branch + statuses
+          const left = theme.fg("muted", shortCwd) + branchStr + statusStr;
 
           // Build right side: context usage + model
           const modelId = ctx.model?.id || "no-model";
