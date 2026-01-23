@@ -259,6 +259,19 @@ fi
 # Basic commands
 alias zcat='zcat -f'
 alias dd='dd status=progress'
+
+
+jt() {
+  local tmpdir
+  tmpdir=$(mktemp -d)
+  trap 'rm -rf "$tmpdir"' EXIT
+  lazyworktree -output-selection "$tmpdir/out" "$@"
+  dir=$(<"$tmpdir/out")
+  echo "$dir"
+  [[ -d  "$dir" ]] && cd "$dir"
+  unset dir
+}
+
 rg() {
   local pager=($PAGER)
 
