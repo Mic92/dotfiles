@@ -268,7 +268,12 @@ jt() {
   lazyworktree -output-selection "$tmpdir/out" "$@"
   dir=$(<"$tmpdir/out")
   echo "$dir"
-  [[ -d  "$dir" ]] && cd "$dir"
+  if [[ -d  "$dir" ]]; then
+    cd "$dir"
+    if [ -f .envrc ]; then
+      direnv allow
+    fi
+  fi
   unset dir
 }
 
