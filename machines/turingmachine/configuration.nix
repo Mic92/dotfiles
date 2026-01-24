@@ -40,6 +40,7 @@
     ../../nixosModules/no-hz.nix
     ../../nixosModules/sshd/tor.nix
     ../../nixosModules/suspend-on-low-power.nix
+    ../../nixosModules/rustdesk-client.nix
   ];
 
   services.openssh.settings.PasswordAuthentication = lib.mkForce true;
@@ -58,9 +59,10 @@
   nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
   environment.systemPackages = with pkgs; [
-    rustdesk
     sunshine
   ];
+
+  services.rustdesk-client.users = [ "joerg" ];
 
   hardware.saleae-logic.enable = true;
 

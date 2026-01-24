@@ -17,6 +17,7 @@
     ../../nixosModules/tracing.nix
     ../../nixosModules/pipewire.nix
     ../../nixosModules/fhs-compat.nix
+    ../../nixosModules/rustdesk-client.nix
     ./disko.nix
 
     self.nixosModules.default
@@ -84,9 +85,10 @@
     wl-clipboard
     poppler-utils
     libreoffice
-    rustdesk
     self.packages.${pkgs.stdenv.hostPlatform.system}.cewe-fotowelt
   ];
+
+  services.rustdesk-client.users = [ "dorit" ];
   fonts.enableDefaultPackages = true;
 
   documentation.doc.enable = false;
