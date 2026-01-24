@@ -84,6 +84,7 @@
     wl-clipboard
     poppler-utils
     libreoffice
+    rustdesk
     self.packages.${pkgs.stdenv.hostPlatform.system}.cewe-fotowelt
   ];
   fonts.enableDefaultPackages = true;
