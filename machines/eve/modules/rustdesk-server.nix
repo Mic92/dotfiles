@@ -3,7 +3,7 @@
   services.rustdesk-server = {
     enable = true;
     openFirewall = true;
-    signal.relayHosts = [ "eve.thalheim.io" ];
+    signal.relayHosts = [ "rustdesk.thalheim.io" ];
   };
 
   clan.core.vars.generators.rustdesk-server = {

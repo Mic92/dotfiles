@@ -29,6 +29,7 @@ in
       };
     })
     myPkgs.radicle-desktop
+    cask.rustdesk
   ];
 
   # Configure SSH to use Secretive for key management
