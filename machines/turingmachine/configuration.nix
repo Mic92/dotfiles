@@ -58,6 +58,7 @@
   nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
   environment.systemPackages = with pkgs; [
+    rustdesk
     sunshine
   ];
 
