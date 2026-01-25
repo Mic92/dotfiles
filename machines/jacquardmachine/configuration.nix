@@ -18,7 +18,10 @@
     ../../nixosModules/shannan.nix
   ];
 
-  environment.systemPackages = with pkgs; [ bottles ];
+  environment.systemPackages = with pkgs; [
+    bottles
+    firefox
+  ];
 
   programs.steam.enable = true;
 
