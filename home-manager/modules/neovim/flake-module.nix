@@ -28,7 +28,8 @@
           golangci-lint
           gopls
           lua-language-server
-          marksman
+          # dotnet is quiet heavy and we don't need an lsp for md files
+          #marksman
           nil
           nixd
           nixfmt
