@@ -17,6 +17,7 @@
       selfPkgs.claude-code
       selfPkgs.claude-md
       selfPkgs.pim
+      micsSkills.context7-cli
       micsSkills.pexpect-cli
       micsSkills.kagi-search
       aiTools.pi
