@@ -42,6 +42,7 @@
     ./modules/goatcounter.nix
     ./modules/grafana.nix
     ./modules/harmonia.nix
+    ./modules/mtls-cache.nix
     ./modules/knot
     ./modules/mastodon-hnbot.nix
     ./modules/n8n
