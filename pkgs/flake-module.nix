@@ -13,7 +13,9 @@
     in
     {
       packages = {
-        merge-when-green = pkgs.callPackage ./merge-when-green { };
+        merge-when-green = pkgs.callPackage ./merge-when-green {
+          flake-fmt = inputs'.flake-fmt.packages.default;
+        };
         claude-code = pkgs.callPackage ./claude-code {
           claude-code = inputs'.llm-agents.packages.claude-code;
         };
