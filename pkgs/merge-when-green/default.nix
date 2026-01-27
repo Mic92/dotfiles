@@ -8,6 +8,7 @@
   coreutils,
   lib,
   makeWrapper,
+  flake-fmt,
 }:
 let
   runtimeDeps = [
@@ -16,6 +17,7 @@ let
     coreutils
     gh # for GitHub
     tea # for Gitea
+    flake-fmt # for formatting checks
   ];
 in
 python3.pkgs.buildPythonApplication {
