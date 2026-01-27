@@ -674,10 +674,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1768678131,
-        "narHash": "sha256-FyIMJL7SNCsX+27GAC4GgoMM/fCE1elyeXkGwUCH3VQ=",
+        "lastModified": 1769549123,
+        "narHash": "sha256-OmDtNE5DipAeqlP/3jXg6WMWhmvx3I3WX8lGof4tiIc=",
         "ref": "refs/heads/master",
-        "rev": "343ae7dc432072f59f1e1d7c999973336fe2905b",
+        "rev": "7c42b807beecb3542508a46c179cedc9d18bcec0",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/retiolum"
