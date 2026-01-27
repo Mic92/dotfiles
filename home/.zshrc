@@ -267,22 +267,21 @@ jt() {
   trap 'rm -rf "$tmpdir"' EXIT
   lazyworktree -output-selection "$tmpdir/out" "$@"
   dir=$(<"$tmpdir/out")
-  echo "$dir"
   if [[ -d "$dir" ]]; then
-    cd "$dir" && [[ -f .envrc ]] && direnv allow
+    echo "$dir"
+    direnv allow "$dir"
+    cd "$dir" && [[ -f .envrc ]]
   fi
   unset dir
 }
 
 ct() {
-  local target
-  target=$(git rev-parse --abbrev-ref --symbolic-full-name 'upstream' 2>/dev/null) || \
-    target=$(git rev-parse --abbrev-ref --symbolic-full-name 'origin' 2>/dev/null) || \
-    target='main'
   local dir
-  dir=$(lazyworktree wt-create --from-branch "$target" --name "$@")
+  dir=$(lazyworktree create "$@")
   if [[ -d "$dir" ]]; then
-    cd "$dir" && [[ -f .envrc ]] && direnv allow
+    echo "$dir"
+    direnv allow "$dir"
+    cd "$dir" && [[ -f .envrc ]]
   fi
 }
 
