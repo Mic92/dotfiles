@@ -109,6 +109,7 @@
           roles.peer.tags.wireguard-peers = { };
 
           roles.peer.machines.turingmachine.settings.controller = lib.mkForce "eve";
+          roles.peer.machines.jacquardmachine.settings.controller = "eva";
           roles.peer.machines.evo.settings.controller = "eva";
         };
 
