@@ -85,6 +85,7 @@
       radicle-desktop
     ]
     ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
-      ghostty
+      # terminfo conflict with ncurses
+      (lib.hiPrio ghostty)
     ];
 }
