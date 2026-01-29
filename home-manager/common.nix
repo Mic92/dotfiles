@@ -23,7 +23,6 @@
       nix-prefetch
       mergiraf
       jujutsu
-      lazyworktree
 
       hexyl
       binutils
