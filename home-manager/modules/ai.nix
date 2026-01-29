@@ -27,6 +27,7 @@
       aiTools.gemini-cli
       aiTools.ccusage
       aiTools.ccstatusline
+      aiTools.workmux
       pkgs.pueue
     ];
 }
