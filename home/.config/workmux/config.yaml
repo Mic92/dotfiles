@@ -1,0 +1,7 @@
+nerdfont: true
+agent: pi
+post_create:
+  - "[ -f .envrc ] && direnv allow"
+panes:
+  - command: <agent> # Start the configured agent (e.g., claude)
+    focus: true
