@@ -18,10 +18,6 @@
     "command": "ccstatusline",
     "padding": 0
   },
-  "enabledPlugins": {
-    "ast-grep@ast-grep-marketplace": true,
-    "frontend-design@claude-code-plugins": true,
-    "code-review@claude-code-plugins": true
-  },
+  "enabledPlugins": {},
   "alwaysThinkingEnabled": true
 }
