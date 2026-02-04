@@ -204,6 +204,14 @@
 
       <pre><button class="copy-btn">Copy</button><code>upterm session current</code></pre>
 
+      <div class="warning">
+        <strong>Tmux Tip:</strong> If <code>upterm session current</code> does
+        not display the session information when run from within tmux, add the
+        following line to your <code>~/.tmux.conf</code> to ensure the required
+        environment variable is preserved:
+        <pre><button class="copy-btn">Copy</button><code>set-option -ga update-environment " UPTERM_ADMIN_SOCKET"</code></pre>
+      </div>
+
       <p>Output:</p>
 
       <pre>
