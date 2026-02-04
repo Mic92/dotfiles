@@ -437,19 +437,6 @@ alias readelf='readelf -W'
 xalias xclip="xclip -selection clipboard"
 xalias cloc=scc
 
-if [[ -n ${commands[sgpt]} ]]; then
-  sgpt() {
-    export OPENAI_API_KEY=$(rbw get openai-api-key)
-    command sgpt "$@"
-  }
-fi
-
-if [[ -n ${commands[claude]} ]]; then
-  alias sonnet='claude --model sonnet'
-  alias opus='claude --model opus'
-  alias haiku='claude --model haiku'
-fi
-
 nix-call-package() {
     if [ $# -lt 1 ]; then
         echo "USAGE: $0" >&2
