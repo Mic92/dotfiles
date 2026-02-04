@@ -23,7 +23,7 @@
       aiTools.pi
       aiTools.tuicr
       aiTools.coderabbit-cli
-      aiTools.spec-kit
+      aiTools.openspec
       aiTools.gemini-cli
       aiTools.ccusage
       aiTools.ccstatusline
