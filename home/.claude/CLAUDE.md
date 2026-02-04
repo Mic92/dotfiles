@@ -66,7 +66,7 @@
   - `nix build` commands
   - `merge-when-green`
   - Any test runs that might be slow
-  - Any deployment or build operations (make, ninja, cargo)
+  - Any build operations (make, ninja, cargo)
 
   To run and wait (note: quote the entire command to preserve argument quoting):
   ```bash
