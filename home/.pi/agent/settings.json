@@ -4,5 +4,5 @@
   "theme": "light",
   "defaultProvider": "anthropic",
   "defaultModel": "claude-opus-4-5",
-  "defaultThinkingLevel": "minimal"
+  "defaultThinkingLevel": "off"
 }

@@ -22,6 +22,7 @@ in
     cask.inkscape
     cask.calibre
     myPkgs.kdeconnect
+    self.inputs.nix-casks.packages.${pkgs.stdenv.hostPlatform.system}.handy
     (myPkgs.librewolf-macos.override {
       policies = import ../pkgs/librewolf-policies.nix {
         inherit (micsSkills) browser-cli-extension;
