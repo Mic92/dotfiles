@@ -3,11 +3,11 @@
  *
  * Updates tmux window status indicator via workmux CLI based on agent state:
  * - working: agent is processing (turn in progress)
+ * - waiting: permission-gate is prompting user for confirmation
  * - done: agent is idle
  *
- * Note: The OpenCode "waiting" state (permission requested) doesn't have a
- * direct equivalent in pi's event model. Permission dialogs happen within
- * tool_call handlers, so tracking them would require wrapping specific tools.
+ * Listens for permission-gate events via pi.events bus to track the
+ * "waiting" state when dangerous commands need user approval.
  */
 
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
@@ -42,4 +42,12 @@ export default function (pi: ExtensionAPI) {
   pi.on("session_shutdown", async () => {
     await setStatus("done");
   });
+
+  // Permission gate / slow mode prompting user — show waiting state
+  pi.events.on("permission-gate:waiting", () => setStatus("waiting"));
+  pi.events.on("slow-mode:waiting", () => setStatus("waiting"));
+
+  // Prompt resolved — back to working (agent continues)
+  pi.events.on("permission-gate:resolved", () => setStatus("working"));
+  pi.events.on("slow-mode:resolved", () => setStatus("working"));
 }
