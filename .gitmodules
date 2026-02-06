@@ -33,4 +33,4 @@
 	url = https://github.com/jorgebucaran/autopair.fish
 [submodule "pi-agent-extensions"]
 	path = pi-agent-extensions
-	url = https://github.com/rytswd/pi-agent-extensions
+	url = https://github.com/Mic92/pi-agent-extensions
