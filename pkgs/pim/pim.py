@@ -249,8 +249,6 @@ def run_sandboxed(tools_path: str, pi_bin: str, args: list[str]) -> int:
             str(home / ".pi/pim"),
             "--append-system-prompt",
             system_prompt,
-            "--skills",
-            "db-cli,kagi-search",
             *args,
         ]
     )
@@ -278,8 +276,6 @@ def run_unsandboxed(tools_path: str, pi_bin: str, args: list[str]) -> int:
             str(home / ".pi/pim"),
             "--append-system-prompt",
             system_prompt,
-            "--skills",
-            "db-cli,kagi-search",
             *args,
         ],
         env=env,
