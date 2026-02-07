@@ -20,6 +20,7 @@
       micsSkills.context7-cli
       micsSkills.pexpect-cli
       micsSkills.kagi-search
+      micsSkills.screenshot-cli
       aiTools.pi
       aiTools.tuicr
       aiTools.coderabbit-cli
