@@ -363,7 +363,17 @@ def _run_update_and_create_pr(
     # Create PR
     pr_body = f"Automated update of {pkg.name} from {old_ver} to {new_ver}."
     pr_result = run_cmd(
-        ["gh", "pr", "create", "--title", commit_msg, "--body", pr_body],
+        [
+            "gh",
+            "pr",
+            "create",
+            "--title",
+            commit_msg,
+            "--body",
+            pr_body,
+            "--label",
+            "auto-merge",
+        ],
         cwd=worktree_path,
         check=False,
     )
