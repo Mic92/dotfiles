@@ -3,12 +3,12 @@
 
 import argparse
 from dataclasses import dataclass
-from enum import Enum
+from enum import StrEnum
 
 from afew_filters.spam_database import SpamDatabase
 
 
-class OrderBy(str, Enum):
+class OrderBy(StrEnum):
     """Enum for ordering options."""
 
     SCORE = "score"
