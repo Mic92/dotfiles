@@ -4,5 +4,8 @@
   "theme": "light",
   "defaultProvider": "anthropic",
   "defaultModel": "claude-opus-4-6",
-  "defaultThinkingLevel": "off"
+  "defaultThinkingLevel": "off",
+  "skills": [
+    "~/.claude/skills"
+  ]
 }
