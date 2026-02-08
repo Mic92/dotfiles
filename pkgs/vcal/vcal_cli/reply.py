@@ -92,7 +92,7 @@ def create_reply(  # noqa: C901
     reply_cal.add("method", "REPLY")
 
     # Extract name from email or use a default
-    user_name = user_email.split("@")[0].replace(".", " ").title()
+    user_name = user_email.split("@", maxsplit=1)[0].replace(".", " ").title()
 
     # Find the original event
     for component in original_cal.walk():
@@ -156,7 +156,7 @@ def send_reply(
     user_email: str,
 ) -> bool:
     """Send REPLY via msmtp."""
-    user_name = user_email.split("@")[0].replace(".", " ").title()
+    user_name = user_email.split("@", maxsplit=1)[0].replace(".", " ").title()
 
     # Create email message
     msg = MIMEMultipart("mixed")
