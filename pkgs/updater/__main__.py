@@ -117,12 +117,51 @@ def discover_packages(pkgs_dir: Path) -> list[Package]:
     return sorted(packages, key=lambda p: p.name)
 
 
+def get_nix_system() -> str:
+    """Get the current Nix system identifier."""
+    result = run_cmd(
+        ["nix", "eval", "--raw", "--impure", "--expr", "builtins.currentSystem"],
+        check=False,
+    )
+    if result.returncode == 0:
+        return result.stdout.strip()
+    return "x86_64-linux"
+
+
+_cached_system: str | None = None
+
+
+def current_system() -> str:
+    """Get and cache the current Nix system."""
+    global _cached_system  # noqa: PLW0603
+    if _cached_system is None:
+        _cached_system = get_nix_system()
+    return _cached_system
+
+
+def package_available(pkg_name: str, flake_root: Path) -> bool:
+    """Check if a package is available for the current system."""
+    system = current_system()
+    result = run_cmd(
+        ["nix", "eval", f".#packages.{system}.{pkg_name}.name", "--raw"],
+        cwd=flake_root,
+        check=False,
+    )
+    return result.returncode == 0
+
+
 def run_nix_update(pkg: Package, flake_root: Path, dry_run: bool = False) -> bool:
     """Run nix-update for a package."""
+    system = current_system()
+
+    if not package_available(pkg.name, flake_root):
+        print(f"  Skipping: not available for {system}")
+        return True  # Not a failure, just not applicable
+
     cmd = [
         "nix-update",
         "--flake",
-        f"packages.x86_64-linux.{pkg.name}",
+        f"packages.{system}.{pkg.name}",
     ]
 
     if pkg.extra_args:
