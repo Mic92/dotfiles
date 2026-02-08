@@ -37,9 +37,17 @@ class UpdateResult:
     new_version: str | None = None
 
 
-def get_pkgs_dir() -> Path:
-    """Get the pkgs directory (parent of updater)."""
-    return Path(__file__).parent.parent.resolve()
+def get_flake_root() -> Path:
+    """Discover the flake root via git rev-parse.
+
+    When installed via Nix, __file__ is in /nix/store, so we cannot
+    derive the repo layout from the script location. Instead we find
+    the git toplevel, which is the flake root.
+    """
+    result = run_cmd(["git", "rev-parse", "--show-toplevel"], check=False)
+    if result.returncode != 0:
+        sys.exit("Error: not inside a git repository")
+    return Path(result.stdout.strip())
 
 
 def run_cmd(
@@ -66,7 +74,7 @@ def get_current_version(pkg: Package) -> str | None:
     srcs_file = pkg.path / "srcs.json"
     if srcs_file.exists():
         try:
-            data = json.loads(srcs_file.read_text())
+            data: dict[str, str] = json.loads(srcs_file.read_text())
             return data.get("version")
         except json.JSONDecodeError:
             pass
@@ -355,8 +363,8 @@ def main() -> int:
 
     args = parser.parse_args()
 
-    pkgs_dir = get_pkgs_dir()
-    flake_root = pkgs_dir.parent
+    flake_root = get_flake_root()
+    pkgs_dir = flake_root / "pkgs"
 
     packages = discover_packages(pkgs_dir)
 
