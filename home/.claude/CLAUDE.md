@@ -2,7 +2,7 @@
 
 - fd, rg, dnsutils, lsof, gdb, binutils, graphicsmagic (gm)
 - On Linux: strace/sysdig/bcc
-- macOS: strace (this was ported)
+- macOS: strace (this was ported), sed (GNU sed, not BSD)
 
 ## General Guidelines
 
