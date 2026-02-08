@@ -530,7 +530,7 @@ def _get_system_timezone() -> str:
         target = str(localtime.resolve())
         # Extract timezone from path like /usr/share/zoneinfo/Europe/Berlin
         if "zoneinfo/" in target:
-            return target.split("zoneinfo/")[-1]
+            return target.rsplit("zoneinfo/", maxsplit=1)[-1]
 
     return "UTC"
 

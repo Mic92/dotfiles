@@ -32,7 +32,7 @@ def strip_ansi(text: str) -> str:
 
 def get_flake_input_paths(flake_ref: str) -> dict[str, str]:
     """Get mapping from store paths to flake input names."""
-    flake_path = flake_ref.split("#")[0]
+    flake_path = flake_ref.split("#", maxsplit=1)[0]
 
     try:
         result = subprocess.run(
