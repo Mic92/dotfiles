@@ -26,15 +26,16 @@ def get_nix_hash(url: str) -> str:
     return sri_result.stdout.strip()
 
 
-def read_srcs(pkg_dir: Path) -> dict:
+def read_srcs(pkg_dir: Path) -> dict[str, str]:
     """Read current srcs.json, returning empty dict if not found."""
     srcs_file = pkg_dir / "srcs.json"
     if srcs_file.exists():
-        return json.loads(srcs_file.read_text())
+        result: dict[str, str] = json.loads(srcs_file.read_text())
+        return result
     return {}
 
 
-def write_srcs(pkg_dir: Path, data: dict) -> None:
+def write_srcs(pkg_dir: Path, data: dict[str, str]) -> None:
     """Write srcs.json with consistent formatting."""
     srcs_file = pkg_dir / "srcs.json"
     srcs_file.write_text(json.dumps(data, indent=2) + "\n")
