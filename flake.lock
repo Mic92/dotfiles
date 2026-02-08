@@ -321,11 +321,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1769397130,
-        "narHash": "sha256-TTM4KV9IHwa181X7afBRbhLJIrgynpDjAXJFMUOWfyU=",
+        "lastModified": 1770491427,
+        "narHash": "sha256-8b+0vixdqGnIIcgsPhjdX7EGPdzcVQqYxF+ujjex654=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "c37679d37bdbecf11bbe3c5eb238d89ca4f60641",
+        "rev": "cbd8a72e5fe6af19d40e2741dc440d9227836860",
         "type": "github"
       },
       "original": {
@@ -478,15 +478,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1769385654,
-        "narHash": "sha256-qMTdzGeMD6QxVZ2f2b/D/xiZuMjSUtsjessEx2WN/UI=",
-        "owner": "atahanyorganci",
+        "lastModified": 1770576888,
+        "narHash": "sha256-eLGu0eYZDg6VyT+QAR1mLY7Bku4TWduqLBK83uvOYZI=",
+        "owner": "Mic92",
         "repo": "nix-casks",
-        "rev": "e9b3378c5ced7196c5148939ea6df5a89fdc7af5",
+        "rev": "cb590857d865b1ba7b19dccbf45276d7bfc61e73",
         "type": "github"
       },
       "original": {
-        "owner": "atahanyorganci",
+        "owner": "Mic92",
         "ref": "archive",
         "repo": "nix-casks",
         "type": "github"

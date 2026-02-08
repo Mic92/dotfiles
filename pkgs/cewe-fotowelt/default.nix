@@ -5,8 +5,14 @@
   libarchive,
   makeWrapper,
   autoPatchelfHook,
-  xorg,
-  xcb-util-cursor,
+  libx11,
+  libxext,
+  libxrender,
+  libxcomposite,
+  libxi,
+  libxcb,
+  libxcb-cursor,
+  libxkbfile,
   snappy,
   gst_all_1,
   libGL,
@@ -49,15 +55,15 @@ stdenv.mkDerivation rec {
     bash
 
     # X11 libraries
-    xorg.libX11
-    xorg.libXext
-    xorg.libXrender
-    xorg.libXcomposite
-    xorg.libXi
-    xorg.libxcb
-    xcb-util-cursor
+    libx11
+    libxext
+    libxrender
+    libxcomposite
+    libxi
+    libxcb
+    libxcb-cursor
     libxkbcommon
-    xorg.libxkbfile
+    libxkbfile
 
     # Graphics
     libGL
