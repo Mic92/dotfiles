@@ -6,18 +6,18 @@
   openssl,
 }:
 
-rustPlatform.buildRustPackage {
+rustPlatform.buildRustPackage rec {
   pname = "iroh-ssh";
-  version = "unstable-2025-01-27";
+  version = "0.2.8";
 
   src = fetchFromGitHub {
     owner = "rustonbsd";
     repo = "iroh-ssh";
-    rev = "318f16864e123b2062ba34b0fd4f5145d3ae7bde";
-    hash = "sha256-5om1FER8nMFrCm50Tfk/vGlHn8pR5129E5ekrPQtCmM=";
+    rev = version;
+    hash = "sha256-jKJ0dathwsFif2N/X4CnMAG74h0h/5hnuWWwbJrbU18=";
   };
 
-  cargoHash = "sha256-BlTeCuFAWiKV4i2CQNbZQqw8p3w8ce9b8Q/fG0bQ7XI=";
+  cargoHash = "sha256-KZu4HA5E9R4sdBW5cdhyA5E2bo2YN2TPSKDlJuzDGnU=";
 
   nativeBuildInputs = [ pkg-config ];
 

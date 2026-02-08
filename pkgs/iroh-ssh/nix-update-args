@@ -1,1 +1,1 @@
---version=branch --version-regex .*
+--version-regex ([\d.]+)
