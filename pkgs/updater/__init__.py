@@ -4,13 +4,38 @@ import json
 import subprocess
 from pathlib import Path
 
-__all__ = ["get_nix_hash", "read_srcs", "update_srcs", "write_srcs"]
+__all__ = [
+    "get_nix_hash",
+    "get_nix_hash_unpack",
+    "read_srcs",
+    "update_srcs",
+    "write_srcs",
+]
 
 
 def get_nix_hash(url: str) -> str:
     """Get SRI hash for a URL using nix-prefetch-url."""
     result = subprocess.run(
         ["nix-prefetch-url", url],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    hash_value = result.stdout.strip()
+
+    sri_result = subprocess.run(
+        ["nix", "hash", "to-sri", "--type", "sha256", hash_value],
+        capture_output=True,
+        text=True,
+        check=True,
+    )
+    return sri_result.stdout.strip()
+
+
+def get_nix_hash_unpack(url: str) -> str:
+    """Get SRI hash for an unpacked archive URL using nix-prefetch-url --unpack."""
+    result = subprocess.run(
+        ["nix-prefetch-url", "--unpack", url],
         capture_output=True,
         text=True,
         check=True,

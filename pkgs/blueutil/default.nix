@@ -4,14 +4,17 @@
   fetchFromGitHub,
 }:
 
-stdenv.mkDerivation rec {
+let
+  srcs = lib.importJSON ./srcs.json;
+in
+stdenv.mkDerivation {
   pname = "blueutil";
-  version = "2.10.0";
+  inherit (srcs) version;
   src = fetchFromGitHub {
     owner = "toy";
-    repo = pname;
-    rev = "v${version}";
-    sha256 = "sha256-x2khx8Y0PolpMiyrBatT2aHHyacrQVU/02Z4Dz9fBtI=";
+    repo = "blueutil";
+    rev = "v${srcs.version}";
+    hash = srcs.hash;
   };
   makeFlags = [
     "PREFIX=$(out)"
