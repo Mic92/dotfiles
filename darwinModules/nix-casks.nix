@@ -16,7 +16,6 @@ in
     cask.ghostty
     cask.via
     cask.claude
-    cask.chatgpt-atlas
     cask.secretive
     cask.gather
     cask.inkscape
