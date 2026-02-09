@@ -21,6 +21,8 @@
       micsSkills.pexpect-cli
       micsSkills.kagi-search
       micsSkills.screenshot-cli
+      micsSkills.db-cli
+      micsSkills.gmaps-cli
       aiTools.pi
       aiTools.tuicr
       aiTools.coderabbit-cli
