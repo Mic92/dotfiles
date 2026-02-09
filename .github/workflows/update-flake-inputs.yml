@@ -22,6 +22,10 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
       - name: Setup Nix
         uses: NixOS/nix-installer@main
+        with:
+          extra-conf: |
+            extra-substituters = https://cache.thalheim.io
+            extra-trusted-public-keys = cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc=
       - name: Update flake inputs
         uses: mic92/update-flake-inputs@main
         with:

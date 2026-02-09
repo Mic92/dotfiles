@@ -32,6 +32,10 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - uses: NixOS/nix-installer@main
+        with:
+          extra-conf: |
+            extra-substituters = https://cache.thalheim.io
+            extra-trusted-public-keys = cache.thalheim.io-1:R7msbosLEZKrxk/lKxf9BTjOOH7Ax3H0Qj0/6wiHOgc=
       - name: Determine PR number
         if: |
           github.event_name == 'repository_dispatch' ||
