@@ -575,7 +575,9 @@ path=($^path(N))
 export PATH
 cdpath=( ~/git )
 # Prefered programs
-if [ -z "$WAYLAND_DISPLAY" ] || [ -z "$DISPLAY" ]; then
+if [[ "$OSTYPE" == darwin* ]]; then
+  export BROWSER=open
+elif [ -z "$WAYLAND_DISPLAY" ] && [ -z "$DISPLAY" ]; then
   export BROWSER=echo
 elif [ -n "${commands[firefox]}" ]; then
   export BROWSER=firefox
@@ -830,7 +832,7 @@ open() {
   elif [[ -n "${commands[gnome-open]}" ]]; then
     gnome-open "$@"
   elif [[ -n "${commands[open]}" ]]; then
-    open "$@"
+    command open "$@"
   else
     echo "no suitable command found" >&2
     return 1
