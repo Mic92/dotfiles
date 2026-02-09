@@ -6,7 +6,7 @@ Analyzes GitHub notifications using discussion-based criteria to safely dismiss
 resolved/inactive notifications while preserving active ones.
 
 Usage:
-    gh-dismiss-notifications [--batch-size N] [--dry-run] [--help]
+    gh-cleanup [--batch-size N] [--dry-run] [--help]
 
 Options:
     --batch-size N    Number of notifications to analyze per batch (default: 50)
@@ -28,30 +28,110 @@ def fetch_all_notifications() -> list[dict[str, Any]]:
     try:
         cmd = ["gh", "api", "/notifications", "--paginate"]
         result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-        return json.loads(result.stdout)
     except subprocess.CalledProcessError as e:
         print(f"Error fetching notifications: {e.stderr}", file=sys.stderr)
         return []
+    try:
+        notifications: list[dict[str, Any]] = json.loads(result.stdout)
     except json.JSONDecodeError as e:
         print(f"Error parsing JSON: {e}", file=sys.stderr)
         return []
+    return notifications
 
 
 def get_issue_or_pr_details(url: str) -> dict[str, Any] | None:
     """Get issue/PR details including state"""
     try:
-        # Extract repo and number from URL
         parts = url.replace("https://api.github.com/repos/", "").split("/")
         if len(parts) >= 4:
             owner, repo, item_type, number = parts[0], parts[1], parts[2], parts[3]
-
-            # Get issue/PR details
             cmd = ["gh", "api", f"/repos/{owner}/{repo}/{item_type}/{number}"]
             result = subprocess.run(cmd, capture_output=True, text=True, check=True)
-            return json.loads(result.stdout)
+            details: dict[str, Any] = json.loads(result.stdout)
+            return details
     except (subprocess.CalledProcessError, json.JSONDecodeError, IndexError) as e:
         print(f"Warning: Could not fetch details for {url}: {e}", file=sys.stderr)
+    return None
+
+
+def _days_since(iso_timestamp: str) -> int:
+    """Return the number of days since the given ISO 8601 timestamp."""
+    dt = datetime.fromisoformat(iso_timestamp)
+    return (datetime.now(UTC) - dt).days
+
+
+def _is_bot_pr(item_data: dict[str, Any]) -> bool:
+    """Check if a PR was created by a bot account."""
+    user = item_data.get("user", {})
+    return bool(
+        user.get("type") == "Bot" or str(user.get("login", "")).endswith("[bot]")
+    )
+
+
+def _check_bot_pr(item_data: dict[str, Any]) -> tuple[bool, str] | None:
+    """Dismiss merged or closed bot PRs immediately — no human follow-up needed."""
+    if not _is_bot_pr(item_data):
         return None
+    login = item_data.get("user", {}).get("login", "unknown")
+    if item_data.get("merged_at"):
+        return True, f"Merged bot PR by {login}"
+    if item_data.get("state") == "closed":
+        return True, f"Closed (unmerged) bot PR by {login}"
+    return None
+
+
+def _check_closed_item(item_data: dict[str, Any]) -> tuple[bool, str] | None:
+    """Dismiss items closed/merged more than 3 days ago."""
+    state = item_data.get("state", "")
+    closed_at = item_data.get("closed_at")
+    if state in ("closed", "merged") and closed_at:
+        days = _days_since(closed_at)
+        if days > 3:
+            return True, f"Closed/merged {days} days ago"
+    return None
+
+
+def _check_stale_draft(item_data: dict[str, Any]) -> tuple[bool, str] | None:
+    """Dismiss draft PRs with no activity for 30+ days."""
+    if item_data.get("draft") and item_data.get("updated_at"):
+        days = _days_since(item_data["updated_at"])
+        if days > 30:
+            return True, f"Draft PR inactive for {days} days"
+    return None
+
+
+def _check_old_automation(
+    reason: str, item_data: dict[str, Any]
+) -> tuple[bool, str] | None:
+    """Dismiss old CI/subscription/state_change notifications (14+ days)."""
+    if reason in ("ci_activity", "subscribed", "state_change") and item_data.get(
+        "updated_at"
+    ):
+        days = _days_since(item_data["updated_at"])
+        if days > 14:
+            return True, f"Automation notification, inactive for {days} days"
+    return None
+
+
+def _check_old_interaction(
+    reason: str, item_data: dict[str, Any]
+) -> tuple[bool, str] | None:
+    """Dismiss old mention/comment notifications (21+ days)."""
+    if reason in ("mention", "team_mention", "comment") and item_data.get("updated_at"):
+        days = _days_since(item_data["updated_at"])
+        if days > 21:
+            return True, f"Old {reason}, inactive for {days} days"
+    return None
+
+
+def _check_author_closed(
+    reason: str, item_data: dict[str, Any]
+) -> tuple[bool, str] | None:
+    """Dismiss author notifications for closed/merged items."""
+    state = item_data.get("state", "")
+    if reason == "author" and state in ("closed", "merged"):
+        return True, f"Author notification for {state} item"
+    return None
 
 
 def analyze_dismissal_safety(
@@ -60,70 +140,24 @@ def analyze_dismissal_safety(
     """
     Analyze if notification can be safely dismissed based on discussion state.
 
-    Returns (is_safe, reason) tuple where:
-    - is_safe: boolean indicating if safe to dismiss
-    - reason: string explaining the decision
+    Returns (is_safe, reason) tuple.
     """
     if not item_data:
         return False, "No item data available"
 
-    state = item_data.get("state", "unknown")
     reason = notification.get("reason", "unknown")
-    now = datetime.now(UTC)
 
-    # Already closed/merged items (give a few days buffer for follow-up)
-    if state in ["closed", "merged"] and item_data.get("closed_at"):
-        closed_at = datetime.fromisoformat(
-            item_data["closed_at"].replace("Z", "+00:00")
-        )
-        days_since_closed = (now - closed_at).days
-        if days_since_closed > 3:
-            return True, f"Closed/merged {days_since_closed} days ago"
-
-    # Draft PRs with no recent activity
-    if item_data.get("draft") and item_data.get("updated_at"):
-        updated_at = datetime.fromisoformat(
-            item_data["updated_at"].replace("Z", "+00:00")
-        )
-        days_since_update = (now - updated_at).days
-        if days_since_update > 30:
-            return True, f"Draft PR inactive for {days_since_update} days"
-
-    # Old automation notifications (CI, subscriptions, state changes)
-    if reason in ["ci_activity", "subscribed", "state_change"] and item_data.get(
-        "updated_at"
-    ):
-        updated_at = datetime.fromisoformat(
-            item_data["updated_at"].replace("Z", "+00:00")
-        )
-        days_since_update = (now - updated_at).days
-        if days_since_update > 14:
-            return (
-                True,
-                f"Automation notification, inactive for {days_since_update} days",
-            )
-
-    # Old mentions/team_mentions with no recent activity
-    if reason in ["mention", "team_mention"] and item_data.get("updated_at"):
-        updated_at = datetime.fromisoformat(
-            item_data["updated_at"].replace("Z", "+00:00")
-        )
-        days_since_update = (now - updated_at).days
-        if days_since_update > 21:
-            return True, f"Old {reason}, inactive for {days_since_update} days"
-
-    # Old comment notifications
-    if reason == "comment" and item_data.get("updated_at"):
-        updated_at = datetime.fromisoformat(
-            item_data["updated_at"].replace("Z", "+00:00")
-        )
-        days_since_update = (now - updated_at).days
-        if days_since_update > 21:
-            return True, f"Old comment, inactive for {days_since_update} days"
-
-    # Author notifications for closed items
-    if reason == "author" and state in ["closed", "merged"]:
-        return True, f"Author notification for {state} item"
+    checks = [
+        _check_bot_pr(item_data),
+        _check_closed_item(item_data),
+        _check_stale_draft(item_data),
+        _check_old_automation(reason, item_data),
+        _check_old_interaction(reason, item_data),
+        _check_author_closed(reason, item_data),
+    ]
+    for result in checks:
+        if result is not None:
+            return result
 
     return False, "Needs manual review"
 
@@ -149,6 +183,74 @@ def dismiss_notification(thread_id: str, dry_run: bool = False) -> bool:
         return False
     else:
         return True
+
+
+def analyze_batch(
+    batch: list[dict[str, Any]],
+) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+    """Analyze a batch of notifications, returning (safe_to_dismiss, needs_review)."""
+    safe_to_dismiss: list[dict[str, Any]] = []
+    needs_review: list[dict[str, Any]] = []
+
+    print(f"\nAnalyzing {len(batch)} oldest notifications...")
+    print("=" * 100)
+
+    for i, notification in enumerate(batch, 1):
+        updated_at = datetime.fromisoformat(notification["updated_at"])
+        age_days = (datetime.now(UTC) - updated_at).days
+
+        repo = notification.get("repository", {}).get("full_name", "unknown")
+        subject_title = notification.get("subject", {}).get("title", "unknown")
+        subject_type = notification.get("subject", {}).get("type", "unknown")
+        reason = notification.get("reason", "unknown")
+        subject_url = notification.get("subject", {}).get("url", "")
+
+        print(f"\n{i:2d}. {age_days:3d}d | {reason:15s} | {subject_type:12s}")
+        print(f"    📍 {repo}")
+        print(f"    📝 {subject_title[:70]}...")
+
+        item_data = None
+        if subject_type in ("PullRequest", "Issue"):
+            item_data = get_issue_or_pr_details(subject_url)
+
+        is_safe, analysis_reason = analyze_dismissal_safety(notification, item_data)
+
+        if is_safe:
+            safe_to_dismiss.append(notification)
+            print(f"    ✅ SAFE TO DISMISS: {analysis_reason}")
+        else:
+            needs_review.append(notification)
+            print(f"    ⚠️  NEEDS REVIEW: {analysis_reason}")
+
+        time.sleep(0.1)
+
+    return safe_to_dismiss, needs_review
+
+
+def dismiss_batch(
+    notifications: list[dict[str, Any]], dry_run: bool
+) -> tuple[int, int]:
+    """Dismiss a list of notifications. Returns (dismissed_count, failed_count)."""
+    dismissed = 0
+    failed = 0
+    action = "Would dismiss" if dry_run else "Dismissing"
+
+    for notification in notifications:
+        thread_id = notification["id"]
+        repo = notification.get("repository", {}).get("full_name", "unknown")
+        subject = notification.get("subject", {}).get("title", "unknown")
+        reason = notification.get("reason", "unknown")
+
+        print(f"{action} ({reason}): {repo} - {subject[:30]}...")
+
+        if dismiss_notification(thread_id, dry_run):
+            dismissed += 1
+        else:
+            failed += 1
+
+        time.sleep(0.1)
+
+    return dismissed, failed
 
 
 def main() -> int:
@@ -180,101 +282,40 @@ def main() -> int:
 
     print(f"Found {len(all_notifications)} notifications")
 
-    # Sort by age (oldest first) for systematic processing
-    now = datetime.now(UTC)
-    all_notifications.sort(
-        key=lambda x: datetime.fromisoformat(x["updated_at"].replace("Z", "+00:00"))
-    )
+    all_notifications.sort(key=lambda x: datetime.fromisoformat(x["updated_at"]))
 
-    # Process in batches
-    batch_to_analyze = all_notifications[: args.batch_size]
-
-    if not batch_to_analyze:
+    batch = all_notifications[: args.batch_size]
+    if not batch:
         print("No notifications to analyze")
         return 0
 
-    safe_to_dismiss = []
-    needs_review = []
-
-    print(f"\nAnalyzing {len(batch_to_analyze)} oldest notifications...")
-    print("=" * 100)
-
-    for i, notification in enumerate(batch_to_analyze, 1):
-        updated_at = datetime.fromisoformat(
-            notification["updated_at"].replace("Z", "+00:00")
-        )
-        age_days = (now - updated_at).days
-
-        repo = notification.get("repository", {}).get("full_name", "unknown")
-        subject_title = notification.get("subject", {}).get("title", "unknown")
-        subject_type = notification.get("subject", {}).get("type", "unknown")
-        reason = notification.get("reason", "unknown")
-        subject_url = notification.get("subject", {}).get("url", "")
-
-        print(f"\n{i:2d}. {age_days:3d}d | {reason:15s} | {subject_type:12s}")
-        print(f"    📍 {repo}")
-        print(f"    📝 {subject_title[:70]}...")
-
-        # Get detailed information for PRs and Issues only
-        item_data = None
-        if subject_type in ["PullRequest", "Issue"]:
-            item_data = get_issue_or_pr_details(subject_url)
-
-        # Analyze if safe to dismiss
-        is_safe, analysis_reason = analyze_dismissal_safety(notification, item_data)
-
-        if is_safe:
-            safe_to_dismiss.append(notification)
-            print(f"    ✅ SAFE TO DISMISS: {analysis_reason}")
-        else:
-            needs_review.append(notification)
-            print(f"    ⚠️  NEEDS REVIEW: {analysis_reason}")
-
-        # Rate limiting to be nice to GitHub API
-        time.sleep(0.1)
+    safe_to_dismiss, needs_review = analyze_batch(batch)
 
     print("\n" + "=" * 100)
     print("ANALYSIS SUMMARY")
     print("=" * 100)
     print(f"Safe to dismiss: {len(safe_to_dismiss)}")
     print(f"Needs manual review: {len(needs_review)}")
-    print(f"Total analyzed: {len(batch_to_analyze)}")
-    print(f"Remaining notifications: {len(all_notifications) - len(batch_to_analyze)}")
+    print(f"Total analyzed: {len(batch)}")
+    print(f"Remaining notifications: {len(all_notifications) - len(batch)}")
 
-    # Dismiss safe notifications
-    if safe_to_dismiss:
-        if args.dry_run:
-            print(f"\n🔍 DRY RUN: Would dismiss {len(safe_to_dismiss)} notifications")
-        else:
-            print(f"\nDismissing {len(safe_to_dismiss)} notifications...")
-
-        dismissed_count = 0
-        failed_count = 0
-
-        for notification in safe_to_dismiss:
-            thread_id = notification["id"]
-            repo = notification.get("repository", {}).get("full_name", "unknown")
-            subject = notification.get("subject", {}).get("title", "unknown")
-            reason = notification.get("reason", "unknown")
-
-            action = "Would dismiss" if args.dry_run else "Dismissing"
-            print(f"{action} ({reason}): {repo} - {subject[:30]}...")
-
-            if dismiss_notification(thread_id, args.dry_run):
-                dismissed_count += 1
-            else:
-                failed_count += 1
-
-            time.sleep(0.1)
-
-        if args.dry_run:
-            print(f"\n🔍 DRY RUN: Would have dismissed {dismissed_count} notifications")
-        else:
-            print(f"\n✅ Done! Dismissed {dismissed_count} notifications")
-            if failed_count > 0:
-                print(f"⚠️  Failed to dismiss {failed_count} notifications")
-    else:
+    if not safe_to_dismiss:
         print("\nNo notifications were deemed safe to dismiss.")
+        return 0
+
+    if args.dry_run:
+        print(f"\n🔍 DRY RUN: Would dismiss {len(safe_to_dismiss)} notifications")
+    else:
+        print(f"\nDismissing {len(safe_to_dismiss)} notifications...")
+
+    dismissed, failed = dismiss_batch(safe_to_dismiss, args.dry_run)
+
+    if args.dry_run:
+        print(f"\n🔍 DRY RUN: Would have dismissed {dismissed} notifications")
+    else:
+        print(f"\n✅ Done! Dismissed {dismissed} notifications")
+        if failed > 0:
+            print(f"⚠️  Failed to dismiss {failed} notifications")
 
     return 0
 
