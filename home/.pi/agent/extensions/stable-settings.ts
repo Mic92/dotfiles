@@ -11,7 +11,11 @@ export default function (pi: ExtensionAPI) {
     try {
       const settings = JSON.parse(readFileSync(settingsPath, "utf-8"));
       settings.lastChangelogVersion = "99.99.99";
-      writeFileSync(settingsPath, JSON.stringify(settings, null, 2), "utf-8");
+      writeFileSync(
+        settingsPath,
+        JSON.stringify(settings, null, 2) + "\n",
+        "utf-8",
+      );
     } catch {
       // ignore errors
     }
