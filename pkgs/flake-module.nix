@@ -49,6 +49,7 @@
         };
       }
       // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
+        alertmanager-bar = pkgs.callPackage ./alertmanager-bar { };
         blueutil = pkgs.callPackage ./blueutil { };
         systemctl-macos = pkgs.callPackage ./systemctl { };
       }
