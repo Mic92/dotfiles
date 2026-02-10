@@ -42,8 +42,6 @@
           }
           {
             targets = [
-              "prism.r:9273"
-              "neoprism.r:9273"
               "gum.r:9273"
               # Down forever
               # "kelle.r:9273"
