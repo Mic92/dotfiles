@@ -71,7 +71,7 @@
   To run and wait (note: quote the entire command to preserve argument quoting):
   ```bash
   pueue add -- 'command arg1 "arg with spaces"'
-  pueue wait <task-id> && pueue log <task-id>
+  pueue follow <task-id>
   ```
 
 ## Search
