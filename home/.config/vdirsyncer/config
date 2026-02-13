@@ -10,6 +10,8 @@ collections = ["default", "joergshannan"]
 type = "filesystem"
 path = "~/.contacts/"
 fileext = ".vcf"
+post_hook = ["~/bin/vdirsyncer-post-hook"]
+pre_deletion_hook = ["~/bin/vdirsyncer-pre-deletion-hook"]
 
 [storage owncloud]
 type = "carddav"
@@ -26,6 +28,8 @@ collections = [["personal", "personal", "Personal"], ["joergshannan", "joergshan
 type = "filesystem"
 path = "~/.local/share/calendars/"
 fileext = ".ics"
+post_hook = ["~/bin/vdirsyncer-post-hook"]
+pre_deletion_hook = ["~/bin/vdirsyncer-pre-deletion-hook"]
 
 [storage owncloud2]
 type = "caldav"
@@ -42,6 +46,8 @@ collections = ["personal"]
 type = "filesystem"
 path = "~/.local/share/calendars/clan/"
 fileext = ".ics"
+post_hook = ["~/bin/vdirsyncer-post-hook"]
+pre_deletion_hook = ["~/bin/vdirsyncer-pre-deletion-hook"]
 
 [storage clan_nextcloud]
 type = "caldav"

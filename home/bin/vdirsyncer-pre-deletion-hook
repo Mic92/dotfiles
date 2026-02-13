@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# vdirsyncer pre_deletion_hook: commit deletion of items
+# Called with the path of the file to be deleted as $1
+set -euo pipefail
+
+file="$1"
+dir="$(dirname "$file")"
+
+# Initialize git repo in parent of collection dir if needed
+cd "$dir"
+if ! git rev-parse --show-toplevel &>/dev/null; then
+    # File is in a collection subdir (e.g. calendars/Personal/foo.ics),
+    # init the repo one level up at the storage root.
+    git init --quiet ..
+    git -C .. add -A
+    git -C .. commit -m "Initial commit" --quiet || true
+fi
+
+git rm --quiet "$file"
+git commit -m "Delete $(basename "$file")" --quiet || true
