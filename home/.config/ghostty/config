@@ -7,8 +7,8 @@ clipboard-write = allow
 shell-integration = none
 macos-option-as-alt = true
 
-#theme = light:"Builtin Solarized Light",dark:"Builtin Solarized Dark"
-theme = Builtin Solarized Light
+#theme = light:"iTerm2 Solarized Light",dark:"iTerm2 Solarized Dark"
+theme = iTerm2 Solarized Light
 
 keybind = performable:copy=copy_to_clipboard
 keybind = performable:paste=paste_from_clipboard
