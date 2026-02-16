@@ -153,17 +153,6 @@ kpaste() {
 hm(){
   nix run "$HOME/.homesick/repos/dotfiles#hm" -- "$@"
 }
-if [[ -n ${commands[workmux]} ]]; then
-  workmux-pr() {
-    if [[ $# -lt 1 ]]; then
-      echo "Usage: workmux-pr <PR_NUMBER> [workmux add options...]"
-      return 1
-    fi
-    local pr=$1; shift
-    workmux add --pr "$pr" --open-if-exists "$@"
-  }
-  eval "$(workmux completions zsh)"
-fi
 # merge after CI is green with mergify
 merge-after-ci() {
   echo "use merge-when-green instead" 2>&1
@@ -214,6 +203,18 @@ bindkey "^[[3~" delete-char # bind delete key
 autoload colors; colors;
 autoload -Uz compinit
 compinit -C
+
+if [[ -n ${commands[workmux]} ]]; then
+  eval "$(workmux completions zsh)"
+  workmux-pr() {
+    if [[ $# -lt 1 ]]; then
+      echo "Usage: workmux-pr <PR_NUMBER> [workmux add options...]"
+      return 1
+    fi
+    local pr=$1; shift
+    workmux add --pr "$pr" --open-if-exists "$@"
+  }
+fi
 
 if [[ -n ${commands[fzf]} ]]; then
   source ~/.zsh-fzf-tab/fzf-tab.zsh
