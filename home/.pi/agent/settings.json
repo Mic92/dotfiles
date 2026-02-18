@@ -7,5 +7,8 @@
   "defaultThinkingLevel": "off",
   "skills": [
     "~/.claude/skills"
-  ]
+  ],
+  "compaction": {
+    "enabled": true
+  }
 }
