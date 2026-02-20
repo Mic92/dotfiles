@@ -13,6 +13,7 @@
     in
     {
       packages = {
+        forge-triage = inputs'.forge-triage.packages.default;
         merge-when-green = pkgs.callPackage ./merge-when-green {
           flake-fmt = inputs'.flake-fmt.packages.default;
         };

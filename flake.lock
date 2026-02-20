@@ -258,6 +258,26 @@
         "type": "github"
       }
     },
+    "forge-triage": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771629556,
+        "narHash": "sha256-UpFi4STc14TAKi/iSTlFalZvY5jydJEzqbSM9eRT4aE=",
+        "owner": "Mic92",
+        "repo": "forge-triage",
+        "rev": "3a7ac9fd4d0b1e918cad54003f4f1042a6e67b7c",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "forge-triage",
+        "type": "github"
+      }
+    },
     "harmonia": {
       "inputs": {
         "crane": [
@@ -347,11 +367,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771558154,
-        "narHash": "sha256-jO73YC4EGKOahHANIBI5vqb5azUO0OpI59V6UXPIq6M=",
+        "lastModified": 1771578950,
+        "narHash": "sha256-qDu1iz3iqVv/h9NSA7D81WmGIjodHPKIvdeZQRltqoM=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "4f6cbfe27672dd08be35c549c068d4b721c7eb9f",
+        "rev": "0bf4be37de0df449ca9896844cb53663d0e16a4d",
         "type": "github"
       },
       "original": {
@@ -701,6 +721,7 @@
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
+        "forge-triage": "forge-triage",
         "harmonia": "harmonia",
         "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
