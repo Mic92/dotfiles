@@ -80,6 +80,9 @@
     strace-macos.inputs.treefmt-nix.follows = "treefmt-nix";
     strace-macos.inputs.flake-parts.follows = "flake-parts";
 
+    forge-triage.url = "github:Mic92/forge-triage";
+    forge-triage.inputs.nixpkgs.follows = "nixpkgs";
+
     srvos.url = "github:nix-community/srvos";
     srvos.inputs.nixpkgs.follows = "nixpkgs";
 

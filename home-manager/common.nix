@@ -78,6 +78,7 @@
       radare2
       mypy
 
+      self.packages.${pkgs.stdenv.hostPlatform.system}.forge-triage
       self.packages.${pkgs.stdenv.hostPlatform.system}.merge-when-green
       self.packages.${pkgs.stdenv.hostPlatform.system}.buildbot-pr-check
       self.packages.${pkgs.stdenv.hostPlatform.system}.nix-eval-warnings
