@@ -1,0 +1,17 @@
+[[commands]]
+name = "Checkout PR (workmux)"
+args = ["workmux", "add", "--pr", "{pr_number}", "--open-if-exists"]
+cwd = "$HOME/git/{repo_name}"
+mode = "foreground"
+
+[commands.env]
+GH_REPO = "{repo}"
+
+[[commands]]
+name = "nixpkgs-review PR"
+args = ["tmux", "new-window", "nixpkgs-review pr {pr_number}; $SHELL"]
+cwd = "$HOME/git/{repo_name}"
+mode = "background"
+
+[commands.env]
+GH_REPO = "{repo}"
