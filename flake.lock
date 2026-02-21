@@ -265,11 +265,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1771629556,
-        "narHash": "sha256-UpFi4STc14TAKi/iSTlFalZvY5jydJEzqbSM9eRT4aE=",
+        "lastModified": 1771630465,
+        "narHash": "sha256-D7rr5Aw4G6KmSodbK9o6KVvrPlWzHnK2b5sUmp9Mnk8=",
         "owner": "Mic92",
         "repo": "forge-triage",
-        "rev": "3a7ac9fd4d0b1e918cad54003f4f1042a6e67b7c",
+        "rev": "ed0253b170f9797068f626cf321d671321b8d817",
         "type": "github"
       },
       "original": {
