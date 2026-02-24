@@ -55,8 +55,24 @@ in
         user = "grafana";
       };
 
-      security.admin_password = "$__file{${config.sops.secrets.grafana-admin-password.path}}";
+      security = {
+        admin_password = "$__file{${config.sops.secrets.grafana-admin-password.path}}";
+        secret_key = "$__file{${config.clan.core.vars.generators.grafana.files.secret-key.path}}";
+      };
     };
+  };
+
+  clan.core.vars.generators.grafana = {
+    files.secret-key = {
+      owner = "grafana";
+    };
+    runtimeInputs = [
+      pkgs.openssl
+      pkgs.coreutils
+    ];
+    script = ''
+      openssl rand -hex 32 > "$out"/secret-key
+    '';
   };
 
   services.nginx.virtualHosts."grafana.thalheim.io" = {
