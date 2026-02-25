@@ -498,15 +498,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1770576888,
-        "narHash": "sha256-eLGu0eYZDg6VyT+QAR1mLY7Bku4TWduqLBK83uvOYZI=",
-        "owner": "Mic92",
+        "lastModified": 1771977677,
+        "narHash": "sha256-k7Rv9izJXVJv7a5C4UluVmAyZZFXLB7jrJeAt4OmJzc=",
+        "owner": "atahanyorganci",
         "repo": "nix-casks",
-        "rev": "cb590857d865b1ba7b19dccbf45276d7bfc61e73",
+        "rev": "7df8734d8e478086f554fb08b968c55ee63fac37",
         "type": "github"
       },
       "original": {
-        "owner": "Mic92",
+        "owner": "atahanyorganci",
         "ref": "archive",
         "repo": "nix-casks",
         "type": "github"
