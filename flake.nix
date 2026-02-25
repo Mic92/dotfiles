@@ -151,7 +151,7 @@
     };
 
     nix-casks = {
-      url = "github:Mic92/nix-casks/archive";
+      url = "github:atahanyorganci/nix-casks/archive";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-parts.follows = "flake-parts";
       inputs.treefmt-nix.follows = "treefmt-nix";
