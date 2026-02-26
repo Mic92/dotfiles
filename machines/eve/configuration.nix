@@ -49,6 +49,7 @@
     ./modules/network.nix
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
+    ./modules/opencrow.nix
     #./modules/nixos-wiki
     ./modules/packages.nix
     ./modules/paperless.nix

@@ -669,6 +669,29 @@
         "type": "github"
       }
     },
+    "opencrow": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1771622489,
+        "narHash": "sha256-CGAS5ISs+h6GNQwaOLycfbcFRkN0legi/hdDov4Obfk=",
+        "owner": "pinpox",
+        "repo": "opencrow",
+        "rev": "9ec2d17e6c9d45b22b9cca3174b6b1a75758d8f6",
+        "type": "github"
+      },
+      "original": {
+        "owner": "pinpox",
+        "repo": "opencrow",
+        "type": "github"
+      }
+    },
     "process-compose": {
       "locked": {
         "lastModified": 1767863885,
@@ -738,6 +761,7 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "nur-packages": "nur-packages",
+        "opencrow": "opencrow",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
         "srvos": "srvos",

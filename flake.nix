@@ -129,6 +129,10 @@
       inputs.systems.follows = "systems";
     };
 
+    opencrow.url = "github:pinpox/opencrow";
+    opencrow.inputs.nixpkgs.follows = "nixpkgs";
+    opencrow.inputs.treefmt-nix.follows = "treefmt-nix";
+
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
