@@ -42,12 +42,14 @@
 
   services.opencrow = {
     enable = true;
+    piPackage = self.inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
     environment = {
       OPENCROW_BACKEND = "nostr";
       OPENCROW_NOSTR_PRIVATE_KEY_FILE = "/var/lib/opencrow/nostr-private-key";
-      OPENCROW_NOSTR_RELAYS = "wss://nostr.0cx.de,wss://relay.damus.io,wss://relay.nostr.band,wss://nos.lol";
+      OPENCROW_NOSTR_RELAYS = "wss://nostr.0cx.de,wss://relay.damus.io,wss://nos.lol";
       OPENCROW_NOSTR_BLOSSOM_SERVERS = "https://blossom.nostr.build";
       OPENCROW_NOSTR_ALLOWED_USERS = "npub10yt4rh4g5t5kd47x7w8dpwqq7s228c53xacjqxvxjwu0kes3kzvsynqfu8";
+      OPENCROW_LOG_LEVEL = "debug";
       OPENCROW_PI_PROVIDER = "anthropic";
       OPENCROW_PI_MODEL = "claude-sonnet-4-5";
     };

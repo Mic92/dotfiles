@@ -367,11 +367,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772077464,
-        "narHash": "sha256-xGQaZUP6vvciclFO5bU3THtIQxJ+We3yrqV2yQgSjTw=",
+        "lastModified": 1772205307,
+        "narHash": "sha256-caw06BvY/I5QmDtuDH47sITK4l52eupj/Abrs4naWlc=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "95e5d7c7d58be51c76bb4a20ed10613a605508b9",
+        "rev": "75c53b1158f4674bcaf610cc897fdf17053125a1",
         "type": "github"
       },
       "original": {
@@ -679,15 +679,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1771622489,
-        "narHash": "sha256-CGAS5ISs+h6GNQwaOLycfbcFRkN0legi/hdDov4Obfk=",
+        "lastModified": 1772225387,
+        "narHash": "sha256-2FeaJ4QY7xhklO8QoehVBthc4N7yup9w1R8W2mpOuX4=",
         "owner": "pinpox",
         "repo": "opencrow",
-        "rev": "9ec2d17e6c9d45b22b9cca3174b6b1a75758d8f6",
+        "rev": "de9edb92a782f4f475d6f1015f45cff1c05d80d9",
         "type": "github"
       },
       "original": {
         "owner": "pinpox",
+        "ref": "nostr",
         "repo": "opencrow",
         "type": "github"
       }
