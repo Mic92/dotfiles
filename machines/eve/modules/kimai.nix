@@ -86,7 +86,7 @@ in
           user = {
             baseDn = "ou=users,dc=eve";
             usernameAttribute = "uid";
-            filter = "(&(objectClass=inetOrgPerson))";
+            filter = "(&(objectClass=inetOrgPerson)(memberOf=cn=kimai,ou=groups,dc=eve))";
             attributes = [
               {
                 ldap_attr = "uid";
