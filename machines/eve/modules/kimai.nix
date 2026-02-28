@@ -95,7 +95,7 @@ in
           };
           user = {
             baseDn = "ou=users,dc=eve";
-            usernameAttribute = "uid";
+            usernameAttribute = "mail";
             filter = "(&(objectClass=inetOrgPerson)(memberOf=cn=kimai,ou=groups,dc=eve))";
             attributes = [
               {
