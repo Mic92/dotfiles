@@ -1,8 +1,12 @@
-# Clan configuration — consumed by flake.nix via inputs.clan-core.lib.clan
-# This is NOT an adios-flake module; it's a plain function returning the
-# clan option attrset (meta, inventory) so flake.nix can pass it through.
-{ lib, ... }:
-{
+# Clan configuration.
+self:
+let
+  inherit (self.inputs) clan-core nixpkgs;
+  lib = nixpkgs.lib;
+in
+clan-core.lib.clan {
+  inherit self;
+  pkgsForSystem = system: nixpkgs.legacyPackages.${system};
   meta.name = "mic92";
 
   inventory = {

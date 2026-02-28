@@ -185,19 +185,6 @@
 
   outputs =
     inputs@{ adios-flake, self, ... }:
-    let
-      lib = inputs.nixpkgs.lib;
-
-      # Evaluate clan outside mkFlake since it produces system-agnostic outputs
-      clanConfig = import ./machines/flake-module.nix { inherit lib; };
-      clan = inputs.clan-core.lib.clan (
-        {
-          inherit self;
-          pkgsForSystem = system: import inputs.nixpkgs { inherit system; };
-        }
-        // clanConfig
-      );
-    in
     adios-flake.lib.mkFlake {
       inherit inputs self;
       systems = [
@@ -215,6 +202,7 @@
       ];
       perSystem =
         {
+          lib,
           self',
           system,
           ...
@@ -267,18 +255,23 @@
         {
           checks = nixosMachines // darwinMachines // packages // devShells // homeConfigurations;
         };
-      flake = {
-        inherit (clan.config)
-          nixosConfigurations
-          darwinConfigurations
-          darwinModules
-          clanInternals
-          ;
+      flake =
+        let
+          # Evaluate clan outside mkFlake since it produces system-agnostic outputs
+          clan = import ./machines/inventory.nix self;
+        in
+        {
+          inherit (clan.config)
+            nixosConfigurations
+            darwinConfigurations
+            darwinModules
+            clanInternals
+            ;
 
-        clan = clan.config;
+          clan = clan.config;
 
-        nixosModules.default = ./nixosModules/default.nix;
-        nixosModules.authelia = ./nixosModules/authelia;
-      };
+          nixosModules.default = ./nixosModules/default.nix;
+          nixosModules.authelia = ./nixosModules/authelia;
+        };
     };
 }
