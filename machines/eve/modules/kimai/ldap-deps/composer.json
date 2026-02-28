@@ -1,0 +1,7 @@
+{
+  "name": "kimai/ldap-deps",
+  "description": "LDAP dependencies for Kimai",
+  "require": {
+    "laminas/laminas-ldap": "^2.0"
+  }
+}
