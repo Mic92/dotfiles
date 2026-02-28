@@ -20,11 +20,11 @@
         "adios": "adios"
       },
       "locked": {
-        "lastModified": 1772282380,
-        "narHash": "sha256-ZCm0Z/eUAhyCh82L1jY8s1CzkFApft0lXMEdr2Mk5jc=",
+        "lastModified": 1772282809,
+        "narHash": "sha256-4d/UJy0ymiIQEQW2iPaTv22gPVv6Lt1yK6AxAqV2K4k=",
         "owner": "Mic92",
         "repo": "adios-flake",
-        "rev": "f86acb8f11944295b197297dda37faefd0fe0f4a",
+        "rev": "3157391aae42bc0ef1bb06881aa063b8d21324ed",
         "type": "github"
       },
       "original": {

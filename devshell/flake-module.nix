@@ -1,11 +1,11 @@
 {
   pkgs,
+  lib,
   inputs',
   self,
   ...
 }:
 let
-  lib = pkgs.lib;
   inputs = self.inputs;
 
   treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs {

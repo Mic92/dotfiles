@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   inputs',
   self',
   self,
@@ -48,22 +49,22 @@ in
       kagi-search = micsSkills.kagi-search;
     };
   }
-  // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
+  // lib.optionalAttrs pkgs.stdenv.isDarwin {
     alertmanager-bar = pkgs.callPackage ./alertmanager-bar { };
     blueutil = pkgs.callPackage ./blueutil { };
     systemctl-macos = pkgs.callPackage ./systemctl { };
   }
-  // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") {
+  // lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") {
     kdeconnect = pkgs.callPackage ./kdeconnect { };
     librewolf-macos = pkgs.callPackage ./librewolf-macos { };
     radicle-desktop = pkgs.callPackage ./radicle-desktop { };
   }
-  // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
+  // lib.optionalAttrs pkgs.stdenv.isLinux {
     phantun = pkgs.callPackage ./phantun { };
     phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
     radicle-github-sync = pkgs.callPackage ./radicle-github-sync { };
   }
-  // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
+  // lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
     cewe-fotowelt = pkgs.callPackage ./cewe-fotowelt { };
   };
 }

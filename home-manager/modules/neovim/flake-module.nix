@@ -1,6 +1,5 @@
-{ pkgs, ... }:
+{ pkgs, lib, ... }:
 let
-  lib = pkgs.lib;
   nvim-lsp-packages = with pkgs; [
     nodejs # copilot
     # tree-sitter-cli needs a C compiler to build parsers from source
