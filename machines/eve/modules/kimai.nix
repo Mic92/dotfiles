@@ -23,14 +23,22 @@ in
 
   sops.secrets.kimai-ldap-password.owner = user;
 
-  # The upstream init service writes .env with DATABASE_URL etc.
-  # Append KIMAI_LDAP_PASSWORD afterwards so Symfony's DotEnv loader
-  # picks it up for both console commands and PHP-FPM workers.
-  # (PHP-FPM doesn't inherit systemd EnvironmentFile vars — only
-  # .env in the project root is read.)
+  # Render the LDAP bind password into an env file that both the init
+  # service (via systemd EnvironmentFile) and PHP-FPM workers (via
+  # Symfony's DotEnv) can read.
+  sops.templates."kimai-ldap.env" = {
+    owner = user;
+    content = ''
+      KIMAI_LDAP_PASSWORD=${config.sops.placeholder.kimai-ldap-password}
+    '';
+  };
+
+  # After the upstream init service writes .env, append the LDAP
+  # password so PHP-FPM workers (which read .env via Symfony's DotEnv
+  # rather than inheriting systemd env vars) can resolve it.
   systemd.services."kimai-init-${hostName}".serviceConfig.ExecStartPost = [
     (pkgs.writeShellScript "kimai-append-ldap-env" ''
-      echo "KIMAI_LDAP_PASSWORD=$(cat ${config.sops.secrets.kimai-ldap-password.path})" >> ${stateDir}/.env
+      cat ${config.sops.templates."kimai-ldap.env".path} >> ${stateDir}/.env
     '')
   ];
 
@@ -43,6 +51,7 @@ in
       Type = "oneshot";
       User = user;
       Group = config.services.nginx.group;
+      EnvironmentFile = [ config.sops.templates."kimai-ldap.env".path ];
     };
     script =
       let
@@ -73,6 +82,7 @@ in
 
   services.kimai = {
     sites.${hostName} = {
+      environmentFile = config.sops.templates."kimai-ldap.env".path;
       settings = {
         kimai.ldap = {
           activate = true;
