@@ -9,7 +9,7 @@
   # To update all inputs:
   # $ nix flake update
   inputs = {
-    adios-flake.url = "github:Mic92/adios-flake";
+    adios-flake.url = "github:Mic92/adios-flake/fix-self-prime-recursion";
 
     # Kept as a top-level input so upstream dependencies that use
     # flake-parts all share a single copy via follows.
@@ -193,13 +193,13 @@
         "aarch64-darwin"
       ];
       modules = [
-        (import ./nixosModules/openldap/flake-module.nix)
-        (import ./home-manager/flake-module.nix)
-        (import ./home-manager/modules/neovim/flake-module.nix)
-        (import ./devshell/flake-module.nix)
-        (import ./pkgs/flake-module.nix)
-        (import ./openwrt/flake-module.nix)
-        (import ./checks/flake-module.nix)
+        ./nixosModules/openldap/flake-module.nix
+        ./home-manager/flake-module.nix
+        ./home-manager/modules/neovim/flake-module.nix
+        ./devshell/flake-module.nix
+        ./pkgs/flake-module.nix
+        ./openwrt/flake-module.nix
+        ./checks/flake-module.nix
       ];
       flake =
         let
@@ -215,6 +215,8 @@
             ;
 
           clan = clan.config;
+
+          checks.x86_64-linux.nixos-eve = 1;
 
           nixosModules.default = ./nixosModules/default.nix;
           nixosModules.authelia = ./nixosModules/authelia;
