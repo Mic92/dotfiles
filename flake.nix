@@ -9,16 +9,21 @@
   # To update all inputs:
   # $ nix flake update
   inputs = {
+    adios-flake.url = "github:Mic92/adios-flake";
+
+    # Kept as a top-level input so upstream dependencies that use
+    # flake-parts all share a single copy via follows.
     flake-parts.url = "github:hercules-ci/flake-parts";
     flake-parts.inputs.nixpkgs-lib.follows = "nixpkgs";
+
     hercules-ci-effects.url = "git+https://github.com/hercules-ci/hercules-ci-effects?shallow=1";
     hercules-ci-effects.inputs.nixpkgs.follows = "nixpkgs";
     hercules-ci-effects.inputs.flake-parts.follows = "flake-parts";
 
     harmonia.url = "github:nix-community/harmonia";
     harmonia.inputs.nixpkgs.follows = "nixpkgs";
-    harmonia.inputs.flake-parts.follows = "flake-parts";
     harmonia.inputs.treefmt-nix.follows = "treefmt-nix";
+    harmonia.inputs.flake-parts.follows = "flake-parts";
     harmonia.inputs.crane.follows = "crane";
     harmonia.inputs.nix.follows = "nix";
 
@@ -27,7 +32,6 @@
 
     nix.url = "git+https://github.com/Mic92/nix-1?shallow=1";
     nix.inputs.nixpkgs.follows = "nixpkgs";
-    nix.inputs.flake-parts.follows = "";
     nix.inputs.flake-compat.follows = "";
     nix.inputs.nixpkgs-regression.follows = "";
     nix.inputs.git-hooks-nix.follows = "";
@@ -57,14 +61,13 @@
 
     data-mesher.url = "git+https://git.clan.lol/clan/data-mesher?shallow=1";
     data-mesher.inputs.nixpkgs.follows = "nixpkgs";
-    data-mesher.inputs.flake-parts.follows = "flake-parts";
     data-mesher.inputs.treefmt-nix.follows = "treefmt-nix";
+    data-mesher.inputs.flake-parts.follows = "flake-parts";
 
     buildbot-nix.url = "git+https://github.com/nix-community/buildbot-nix?shallow=1";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
-    buildbot-nix.inputs.flake-parts.follows = "flake-parts";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
-    buildbot-nix.inputs.hercules-ci-effects.follows = "";
+    buildbot-nix.inputs.flake-parts.follows = "flake-parts";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -101,16 +104,16 @@
 
     n8n-nodes-caldav.url = "github:Mic92/n8n-nodes-caldav";
     n8n-nodes-caldav.inputs.nixpkgs.follows = "nixpkgs";
-    n8n-nodes-caldav.inputs.flake-parts.follows = "flake-parts";
     n8n-nodes-caldav.inputs.treefmt-nix.follows = "treefmt-nix";
+    n8n-nodes-caldav.inputs.flake-parts.follows = "flake-parts";
 
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
     direnv-instant.url = "github:Mic92/direnv-instant";
     direnv-instant.inputs.nixpkgs.follows = "nixpkgs";
-    direnv-instant.inputs.flake-parts.follows = "flake-parts";
     direnv-instant.inputs.treefmt-nix.follows = "treefmt-nix";
+    direnv-instant.inputs.flake-parts.follows = "flake-parts";
 
     treefmt-nix.url = "github:numtide/treefmt-nix";
     treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
@@ -143,36 +146,36 @@
     nix-diff-rs = {
       url = "github:Mic92/nix-diff-rs";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
       inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.flake-parts.follows = "flake-parts";
     };
 
     nix-tree-rs = {
       url = "github:Mic92/nix-tree-rs";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
       inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.flake-parts.follows = "flake-parts";
     };
 
     nix-casks = {
       url = "github:atahanyorganci/nix-casks/archive";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
       inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.flake-parts.follows = "flake-parts";
     };
 
     niks3 = {
       url = "github:Mic92/niks3";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
       inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.flake-parts.follows = "flake-parts";
     };
 
     mics-skills = {
       url = "github:Mic92/mics-skills";
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-parts.follows = "flake-parts";
       inputs.treefmt-nix.follows = "treefmt-nix";
+      inputs.flake-parts.follows = "flake-parts";
     };
 
     #microvm.url = "github:astro/microvm.nix";
@@ -181,109 +184,101 @@
   };
 
   outputs =
-    inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } (
-      {
-        withSystem,
-        self,
-        config,
-        ...
-      }:
-      {
-        imports = [
-          ./machines/flake-module.nix
-          ./nixosModules/openldap/flake-module.nix
-          ./home-manager/flake-module.nix
-          ./devshell/flake-module.nix
-          ./pkgs/flake-module.nix
-          ./openwrt/flake-module.nix
-          inputs.hercules-ci-effects.flakeModule
-          inputs.clan-core.flakeModules.default
-        ];
-        systems = [
-          "x86_64-linux"
-          "aarch64-linux"
-          "aarch64-darwin"
-        ];
+    inputs@{ adios-flake, self, ... }:
+    let
+      lib = inputs.nixpkgs.lib;
 
-        herculesCI = herculesCI: {
-          onPush.default.outputs.effects.deploy = withSystem config.defaultEffectSystem (
-            { pkgs, hci-effects, ... }:
-            hci-effects.runIf (herculesCI.config.repo.branch == "main") (
-              hci-effects.mkEffect {
-                effectScript = ''
-                  echo "${builtins.toJSON { inherit (herculesCI.config.repo) branch tag rev; }}"
-                  ${pkgs.hello}/bin/hello
-                '';
-              }
+      # Evaluate clan outside mkFlake since it produces system-agnostic outputs
+      clanConfig = import ./machines/flake-module.nix { inherit lib; };
+      clan = inputs.clan-core.lib.clan (
+        {
+          inherit self;
+          pkgsForSystem = system: import inputs.nixpkgs { inherit system; };
+        }
+        // clanConfig
+      );
+    in
+    adios-flake.lib.mkFlake {
+      inherit inputs self;
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "aarch64-darwin"
+      ];
+      modules = [
+        (import ./nixosModules/openldap/flake-module.nix)
+        (import ./home-manager/flake-module.nix)
+        (import ./home-manager/modules/neovim/flake-module.nix)
+        (import ./devshell/flake-module.nix)
+        (import ./pkgs/flake-module.nix)
+        (import ./openwrt/flake-module.nix)
+      ];
+      perSystem =
+        {
+          self',
+          system,
+          ...
+        }:
+        let
+          machinesPerSystem = {
+            aarch64-linux = [
+              "blob64"
+            ];
+            x86_64-linux = [
+              "eve"
+              "eva"
+              "turingmachine"
+              "matchbox"
+              "bernie"
+              "jacquardmachine"
+              "dorits-laptop"
+            ];
+          };
+          darwinMachinesPerSystem = {
+            aarch64-darwin = [
+              "evo"
+            ];
+          };
+          nixosMachines = lib.mapAttrs' (n: lib.nameValuePair "nixos-${n}") (
+            lib.genAttrs (machinesPerSystem.${system} or [ ]) (
+              name: self.nixosConfigurations.${name}.config.system.build.toplevel
             )
           );
+          darwinMachines = lib.mapAttrs' (n: lib.nameValuePair "darwin-${n}") (
+            lib.genAttrs (darwinMachinesPerSystem.${system} or [ ]) (
+              name: self.darwinConfigurations.${name}.system
+            )
+          );
+
+          blacklistPackages = [
+            "install-iso"
+            "nspawn-template"
+            "netboot-pixie-core"
+            "netboot"
+          ];
+          packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") (
+            lib.filterAttrs (n: _v: !(builtins.elem n blacklistPackages)) self'.packages
+          );
+          devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
+          homeConfigurations = lib.mapAttrs' (
+            name: config: lib.nameValuePair "home-manager-${name}" config.activation-script
+          ) (self'.legacyPackages.homeConfigurations or { });
+        in
+        {
+          checks = nixosMachines // darwinMachines // packages // devShells // homeConfigurations;
         };
+      flake = {
+        inherit (clan.config)
+          nixosConfigurations
+          darwinConfigurations
+          darwinModules
+          clanInternals
+          ;
 
-        perSystem =
-          {
-            inputs',
-            self',
-            lib,
-            system,
-            ...
-          }:
-          {
-            # make pkgs available to all `perSystem` functions
-            _module.args.pkgs = inputs'.nixpkgs.legacyPackages;
+        clan = clan.config;
 
-            # Set clan.pkgs for all machines
-            clan.pkgs = inputs'.nixpkgs.legacyPackages;
-
-            checks =
-              let
-                machinesPerSystem = {
-                  aarch64-linux = [
-                    "blob64"
-                  ];
-                  x86_64-linux = [
-                    "eve"
-                    "eva"
-                    "turingmachine"
-                    "matchbox"
-                    "bernie"
-                    "jacquardmachine"
-                    "dorits-laptop"
-                  ];
-                };
-                darwinMachinesPerSystem = {
-                  aarch64-darwin = [
-                    "evo"
-                  ];
-                };
-                nixosMachines = lib.mapAttrs' (n: lib.nameValuePair "nixos-${n}") (
-                  lib.genAttrs (machinesPerSystem.${system} or [ ]) (
-                    name: self.nixosConfigurations.${name}.config.system.build.toplevel
-                  )
-                );
-                darwinMachines = lib.mapAttrs' (n: lib.nameValuePair "darwin-${n}") (
-                  lib.genAttrs (darwinMachinesPerSystem.${system} or [ ]) (
-                    name: self.darwinConfigurations.${name}.system
-                  )
-                );
-
-                blacklistPackages = [
-                  "install-iso"
-                  "nspawn-template"
-                  "netboot-pixie-core"
-                  "netboot"
-                ];
-                packages = lib.mapAttrs' (n: lib.nameValuePair "package-${n}") (
-                  lib.filterAttrs (n: _v: !(builtins.elem n blacklistPackages)) self'.packages
-                );
-                devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
-                homeConfigurations = lib.mapAttrs' (
-                  name: config: lib.nameValuePair "home-manager-${name}" config.activation-script
-                ) (self'.legacyPackages.homeConfigurations or { });
-              in
-              nixosMachines // darwinMachines // packages // devShells // homeConfigurations;
-          };
-        # CI
-      }
-    );
+        nixosModules.default = ./nixosModules/default.nix;
+        nixosModules.authelia = ./nixosModules/authelia;
+      };
+    };
 }

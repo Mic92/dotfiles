@@ -1,71 +1,69 @@
-{ inputs, ... }:
 {
-  perSystem =
-    {
-      inputs',
-      self',
-      pkgs,
-      ...
-    }:
-    let
-      micsSkills = inputs'.mics-skills.packages;
-      aiTools = inputs'.llm-agents.packages;
-    in
-    {
-      packages = {
-        forge-triage = inputs'.forge-triage.packages.default;
-        merge-when-green = pkgs.callPackage ./merge-when-green {
-          flake-fmt = inputs'.flake-fmt.packages.default;
-        };
-        claude-code = pkgs.callPackage ./claude-code {
-          claude-code = inputs'.llm-agents.packages.claude-code;
-        };
-
-        email-sync = pkgs.callPackage ./email-sync { };
-        vcal = pkgs.callPackage ./vcal { };
-        buildbot-pr-check = pkgs.python3.pkgs.callPackage ./buildbot-pr-check { };
-        claude-md = pkgs.python3.pkgs.callPackage ./claude-md { };
-        crabfit-cli = pkgs.python3.pkgs.callPackage ./crabfit-cli { };
-        inherit (pkgs.callPackages ./firefox-extensions { })
-          chrome-tab-gc-extension
-          ;
-        gh-radicle = pkgs.callPackage ./gh-radicle { };
-        iroh-ssh = pkgs.callPackage ./iroh-ssh { };
-        # Cross-platform secure pinentry (works on macOS and Linux)
-        rbw-pinentry = pkgs.callPackage ./rbw_pinentry { };
-        # Matrix calendar bot
-        calendar-bot = pkgs.python3.pkgs.callPackage ./calendar_bot { };
-        # Nix evaluation warnings extractor
-        nix-eval-warnings = pkgs.callPackage ./nix-eval-warnings { };
-        # Reference all flake inputs to ensure they get cached
-        flake-inputs = pkgs.callPackage ./flake-inputs { inherit inputs; };
-        # Package updater CLI
-        updater = pkgs.callPackage ./updater { };
-        # Sandboxed pi for calendar/email tasks
-        pim = pkgs.callPackage ./pim {
-          inherit (self'.packages) email-sync crabfit-cli;
-          pi = aiTools.pi;
-          db-cli = micsSkills.db-cli;
-          kagi-search = micsSkills.kagi-search;
-        };
-      }
-      // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
-        alertmanager-bar = pkgs.callPackage ./alertmanager-bar { };
-        blueutil = pkgs.callPackage ./blueutil { };
-        systemctl-macos = pkgs.callPackage ./systemctl { };
-      }
-      // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") {
-        kdeconnect = pkgs.callPackage ./kdeconnect { };
-        librewolf-macos = pkgs.callPackage ./librewolf-macos { };
-        radicle-desktop = pkgs.callPackage ./radicle-desktop { };
-      }
-      // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
-        phantun = pkgs.callPackage ./phantun { };
-        phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
-        radicle-github-sync = pkgs.callPackage ./radicle-github-sync { };
-      }
-      // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
-        cewe-fotowelt = pkgs.callPackage ./cewe-fotowelt { };
-      };
+  pkgs,
+  inputs',
+  self',
+  self,
+  ...
+}:
+let
+  inputs = self.inputs;
+  micsSkills = inputs'.mics-skills;
+  aiTools = inputs'.llm-agents;
+in
+{
+  packages = {
+    forge-triage = inputs'.forge-triage.default;
+    merge-when-green = pkgs.callPackage ./merge-when-green {
+      flake-fmt = inputs'.flake-fmt.default;
     };
+    claude-code = pkgs.callPackage ./claude-code {
+      claude-code = inputs'.llm-agents.claude-code;
+    };
+
+    email-sync = pkgs.callPackage ./email-sync { };
+    vcal = pkgs.callPackage ./vcal { };
+    buildbot-pr-check = pkgs.python3.pkgs.callPackage ./buildbot-pr-check { };
+    claude-md = pkgs.python3.pkgs.callPackage ./claude-md { };
+    crabfit-cli = pkgs.python3.pkgs.callPackage ./crabfit-cli { };
+    inherit (pkgs.callPackages ./firefox-extensions { })
+      chrome-tab-gc-extension
+      ;
+    gh-radicle = pkgs.callPackage ./gh-radicle { };
+    iroh-ssh = pkgs.callPackage ./iroh-ssh { };
+    # Cross-platform secure pinentry (works on macOS and Linux)
+    rbw-pinentry = pkgs.callPackage ./rbw_pinentry { };
+    # Matrix calendar bot
+    calendar-bot = pkgs.python3.pkgs.callPackage ./calendar_bot { };
+    # Nix evaluation warnings extractor
+    nix-eval-warnings = pkgs.callPackage ./nix-eval-warnings { };
+    # Reference all flake inputs to ensure they get cached
+    flake-inputs = pkgs.callPackage ./flake-inputs { inherit inputs; };
+    # Package updater CLI
+    updater = pkgs.callPackage ./updater { };
+    # Sandboxed pi for calendar/email tasks
+    pim = pkgs.callPackage ./pim {
+      inherit (self'.packages) email-sync crabfit-cli;
+      pi = aiTools.pi;
+      db-cli = micsSkills.db-cli;
+      kagi-search = micsSkills.kagi-search;
+    };
+  }
+  // pkgs.lib.optionalAttrs pkgs.stdenv.isDarwin {
+    alertmanager-bar = pkgs.callPackage ./alertmanager-bar { };
+    blueutil = pkgs.callPackage ./blueutil { };
+    systemctl-macos = pkgs.callPackage ./systemctl { };
+  }
+  // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") {
+    kdeconnect = pkgs.callPackage ./kdeconnect { };
+    librewolf-macos = pkgs.callPackage ./librewolf-macos { };
+    radicle-desktop = pkgs.callPackage ./radicle-desktop { };
+  }
+  // pkgs.lib.optionalAttrs pkgs.stdenv.isLinux {
+    phantun = pkgs.callPackage ./phantun { };
+    phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
+    radicle-github-sync = pkgs.callPackage ./radicle-github-sync { };
+  }
+  // pkgs.lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
+    cewe-fotowelt = pkgs.callPackage ./cewe-fotowelt { };
+  };
 }
