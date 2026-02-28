@@ -1,12 +1,12 @@
 {
   pkgs,
+  lib,
   self,
   self',
   system,
   ...
 }:
 let
-  lib = pkgs.lib;
   inputs = self.inputs;
 
   homeManagerConfiguration =
