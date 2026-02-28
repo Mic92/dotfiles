@@ -216,8 +216,6 @@
 
           clan = clan.config;
 
-          checks.x86_64-linux.nixos-eve = 1;
-
           nixosModules.default = ./nixosModules/default.nix;
           nixosModules.authelia = ./nixosModules/authelia;
         };
