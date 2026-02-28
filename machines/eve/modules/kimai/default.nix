@@ -148,7 +148,7 @@ in
             filter = "(&(objectClass=inetOrgPerson)(memberOf=cn=kimai,ou=groups,dc=eve))";
             attributes = [
               {
-                ldap_attr = "uid";
+                ldap_attr = "mail";
                 user_method = "setUserIdentifier";
               }
               {
