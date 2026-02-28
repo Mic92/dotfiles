@@ -11,6 +11,11 @@ let
   stateDir = "/var/lib/kimai/${hostName}";
   user = "kimai";
   vars = config.clan.core.vars.generators.kimai.files;
+
+  # Kimai's LDAP support requires laminas/laminas-ldap which isn't in
+  # the default composer.json.  Build it as a separate composer package
+  # and merge its vendor directory into the kimai derivation.
+  ldapDeps = pkgs.callPackage ./ldap-deps { inherit (pkgs) php; };
 in
 {
   clan.core.vars.generators.kimai = {
@@ -82,6 +87,16 @@ in
 
   services.kimai = {
     sites.${hostName} = {
+      package = pkgs.kimai.overrideAttrs (old: {
+        postInstall = old.postInstall + ''
+          # Merge laminas-ldap vendor files for LDAP authentication support.
+          cp -r ${ldapDeps}/share/php/kimai-ldap-deps/vendor/laminas \
+            "$out"/share/php/kimai/vendor/
+          # Rebuild autoloader to pick up laminas classes.
+          (cd "$out"/share/php/kimai && php -d memory_limit=384M \
+            ${pkgs.phpPackages.composer}/bin/composer dump-autoload --no-dev --classmap-authoritative)
+        '';
+      });
       environmentFile = config.sops.templates."kimai-ldap.env".path;
       settings = {
         kimai.ldap = {

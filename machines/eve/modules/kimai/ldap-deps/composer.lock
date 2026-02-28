@@ -1,0 +1,49 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "1c7c6e94d1c9e50fde60b7542f668a86",
+    "packages": [
+        {
+            "name": "laminas/laminas-ldap",
+            "version": "2.19.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laminas/laminas-ldap.git",
+                "reference": "309f4af659cb254e16fed2ba8f5e26afb479d419"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laminas/laminas-ldap/zipball/309f4af659cb254e16fed2ba8f5e26afb479d419",
+                "reference": "309f4af659cb254e16fed2ba8f5e26afb479d419",
+                "shasum": ""
+            },
+            "require": {
+                "ext-ldap": "*",
+                "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Laminas\\Ldap\\": "src/"
+                }
+            },
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Provides support for LDAP operations",
+            "time": "2025-01-28T21:40:41+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {},
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.9.0"
+}
