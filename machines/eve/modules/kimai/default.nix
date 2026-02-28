@@ -16,6 +16,36 @@ let
   # the default composer.json.  Build it as a separate composer package
   # and merge its vendor directory into the kimai derivation.
   ldapDeps = pkgs.callPackage ./ldap-deps { inherit (pkgs) php; };
+
+  # PHP auto-prepend file that:
+  #  1. Registers the laminas-ldap PSR-4 namespace (not in composer's
+  #     autoloader since we side-loaded it)
+  #  2. Injects KIMAI_LDAP_PASSWORD from the sops-rendered file into
+  #     the process environment so Symfony's %env()% resolves it
+  kimaiPrepend = pkgs.writeText "kimai-prepend.php" ''
+    <?php
+    // Register laminas-ldap autoloader
+    spl_autoload_register(function ($class) {
+        $prefix = 'Laminas\\Ldap\\';
+        if (strncmp($prefix, $class, strlen($prefix)) !== 0) return;
+        $file = __DIR__ . '/vendor/laminas/laminas-ldap/src/'
+              . str_replace('\\', '/', substr($class, strlen($prefix))) . '.php';
+        if (file_exists($file)) require $file;
+    });
+
+    // Load LDAP password from sops-rendered env file
+    $envFile = '${config.sops.templates."kimai-ldap.env".path}';
+    if (file_exists($envFile) && !getenv('KIMAI_LDAP_PASSWORD')) {
+        foreach (file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+            if (strpos($line, '=') !== false) {
+                putenv($line);
+                [$k, $v] = explode('=', $line, 2);
+                $_ENV[$k] = $v;
+                $_SERVER[$k] = $v;
+            }
+        }
+    }
+  '';
 in
 {
   clan.core.vars.generators.kimai = {
@@ -28,9 +58,7 @@ in
 
   sops.secrets.kimai-ldap-password.owner = user;
 
-  # Render the LDAP bind password into an env file that both the init
-  # service (via systemd EnvironmentFile) and PHP-FPM workers (via
-  # Symfony's DotEnv) can read.
+  # Render the LDAP bind password into an env file.
   sops.templates."kimai-ldap.env" = {
     owner = user;
     content = ''
@@ -38,14 +66,9 @@ in
     '';
   };
 
-  # After the upstream init service writes .env, append the LDAP
-  # password so PHP-FPM workers (which read .env via Symfony's DotEnv
-  # rather than inheriting systemd env vars) can resolve it.
-  systemd.services."kimai-init-${hostName}".serviceConfig.ExecStartPost = [
-    (pkgs.writeShellScript "kimai-append-ldap-env" ''
-      cat ${config.sops.templates."kimai-ldap.env".path} >> ${stateDir}/.env
-    '')
-  ];
+  # The upstream init service needs the env var for cache:warmup.
+  systemd.services."kimai-init-${hostName}".serviceConfig.EnvironmentFile =
+    config.sops.templates."kimai-ldap.env".path;
 
   # Create the admin user on first boot.
   systemd.services."kimai-admin-${hostName}" = {
@@ -92,12 +115,23 @@ in
           # Merge laminas-ldap vendor files for LDAP authentication support.
           cp -r ${ldapDeps}/share/php/kimai-ldap-deps/vendor/laminas \
             "$out"/share/php/kimai/vendor/
-          # Rebuild autoloader to pick up laminas classes.
-          (cd "$out"/share/php/kimai && php -d memory_limit=384M \
-            ${pkgs.phpPackages.composer}/bin/composer dump-autoload --no-dev --classmap-authoritative)
+          # Install the auto-prepend file next to the kimai root so the
+          # relative vendor/ path resolves correctly.
+          cp ${kimaiPrepend} "$out"/share/php/kimai/kimai-prepend.php
         '';
       });
       environmentFile = config.sops.templates."kimai-ldap.env".path;
+      poolConfig = {
+        "pm" = "dynamic";
+        "pm.max_children" = 32;
+        "pm.start_servers" = 2;
+        "pm.min_spare_servers" = 2;
+        "pm.max_spare_servers" = 4;
+        "pm.max_requests" = 500;
+        "php_admin_value[auto_prepend_file]" = "${
+          config.services.kimai.sites.${hostName}.package
+        }/share/php/kimai/kimai-prepend.php";
+      };
       settings = {
         kimai.ldap = {
           activate = true;
