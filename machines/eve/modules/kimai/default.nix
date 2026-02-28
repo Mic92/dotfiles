@@ -141,6 +141,11 @@ in
             username = "cn=kimai,ou=system,ou=users,dc=eve";
             password = "%env(KIMAI_LDAP_PASSWORD)%";
             bindRequiresDn = true;
+            # Users log in with their email (joerg@thalheim.io).
+            # Without these, laminas-ldap splits on '@' and searches
+            # for just 'joerg' with a uid= filter that doesn't match.
+            tryUsernameSplit = false;
+            accountFilterFormat = "(&(objectClass=inetOrgPerson)(mail=%s))";
           };
           user = {
             baseDn = "ou=users,dc=eve";
