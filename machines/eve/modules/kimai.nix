@@ -23,24 +23,16 @@ in
 
   sops.secrets.kimai-ldap-password.owner = user;
 
-  # Write an environment file that exposes the LDAP bind password so
-  # Symfony's %env(KIMAI_LDAP_PASSWORD)% can resolve it at runtime.
-  systemd.services."kimai-env-${hostName}" = {
-    wantedBy = [ "multi-user.target" ];
-    before = [ "kimai-init-${hostName}.service" ];
-    after = [ "sops-install-secrets.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      User = user;
-      Group = config.services.nginx.group;
-      UMask = "0177";
-    };
-    script = ''
-      cat > ${stateDir}/kimai.env <<EOF
-      KIMAI_LDAP_PASSWORD=$(cat ${config.sops.secrets.kimai-ldap-password.path})
-      EOF
-    '';
-  };
+  # The upstream init service writes .env with DATABASE_URL etc.
+  # Append KIMAI_LDAP_PASSWORD afterwards so Symfony's DotEnv loader
+  # picks it up for both console commands and PHP-FPM workers.
+  # (PHP-FPM doesn't inherit systemd EnvironmentFile vars — only
+  # .env in the project root is read.)
+  systemd.services."kimai-init-${hostName}".serviceConfig.ExecStartPost = [
+    (pkgs.writeShellScript "kimai-append-ldap-env" ''
+      echo "KIMAI_LDAP_PASSWORD=$(cat ${config.sops.secrets.kimai-ldap-password.path})" >> ${stateDir}/.env
+    '')
+  ];
 
   # Create the admin user on first boot.
   systemd.services."kimai-admin-${hostName}" = {
@@ -81,7 +73,6 @@ in
 
   services.kimai = {
     sites.${hostName} = {
-      environmentFile = "${stateDir}/kimai.env";
       settings = {
         kimai.ldap = {
           activate = true;
