@@ -41,6 +41,19 @@ let
   kimaiConfig = pkgs.writeTextFile {
     name = "kimai-local.yaml";
     text = lib.generators.toYAML { } {
+      # Override Doctrine to use PostgreSQL over a unix socket instead of the
+      # DATABASE_URL which Doctrine doesn't handle well for PG sockets.
+      doctrine.dbal.connections.default = {
+        url = null;
+        driver = "pdo_pgsql";
+        host = "/run/postgresql";
+        port = 5432;
+        dbname = dbName;
+        user = dbUser;
+        password = "";
+        charset = "utf8";
+        server_version = config.services.postgresql.package.version;
+      };
       kimai = {
         ldap = {
           activate = true;
@@ -110,9 +123,6 @@ let
   dbUser = user;
 
   vars = config.clan.core.vars.generators.kimai.files;
-
-  # Doctrine-style DSN for PostgreSQL over unix socket.
-  dbUri = "pgsql://${dbUser}@localhost:5432/${dbName}?charset=utf8&serverVersion=${config.services.postgresql.package.version}";
 in
 {
   clan.core.vars.generators.kimai = {
@@ -163,7 +173,7 @@ in
       fi
 
       cat >"$envFile" <<EOF
-      DATABASE_URL=${dbUri}
+      DATABASE_URL=
       MAILER_FROM=kimai@thalheim.io
       MAILER_URL=null://null
       APP_ENV=prod
