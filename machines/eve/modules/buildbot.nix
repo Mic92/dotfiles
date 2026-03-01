@@ -150,6 +150,9 @@ in
   '';
   services.buildbot-nix.worker = {
     enable = true;
+    # Must match "cores" in the workersFile JSON (16) to avoid spawning
+    # more workers than the master expects (eve has 24 CPUs).
+    workers = 16;
     workerPasswordFile = config.sops.secrets.buildbot-nix-worker-password.path;
     # Broken atm
     #nixEvalJobs.package =
