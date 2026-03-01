@@ -40,6 +40,7 @@ in
     # Reference all flake inputs to ensure they get cached
     flake-inputs = pkgs.callPackage ./flake-inputs { inherit inputs; };
     # Package updater CLI
+    kimai-cli = pkgs.callPackage ./kimai-cli { };
     updater = pkgs.callPackage ./updater { };
     # Sandboxed pi for calendar/email tasks
     pim = pkgs.callPackage ./pim {
