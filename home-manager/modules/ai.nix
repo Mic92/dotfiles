@@ -31,6 +31,7 @@
       aiTools.ccusage
       aiTools.ccstatusline
       aiTools.workmux
+      aiTools.rtk
       pkgs.pueue
     ];
 }
