@@ -71,10 +71,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1772338905,
-        "narHash": "sha256-AitRLfd8eHJp5JpdK7IigAun+u7k+MO87RXFvjQaWvs=",
+        "lastModified": 1772339159,
+        "narHash": "sha256-gjdV/sGaZB4vknH9i0/V54LHA1nWGfb1ljkNz6JPMbw=",
         "ref": "refs/heads/main",
-        "rev": "97555d08c9127e1b1c7dd7b72921ffe0aa1d05cb",
+        "rev": "2603aaa026b06c19634dfa5b36d718318af3a3c5",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
