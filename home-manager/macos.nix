@@ -9,6 +9,7 @@
     ./modules/alertmanager-bar.nix
     ./modules/calendar.nix
     ./modules/ai.nix
+    ./modules/kimai.nix
     ./modules/mail.nix
     ./modules/atuin-autosync.nix
     ./modules/librewolf.nix
