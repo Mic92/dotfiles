@@ -71,7 +71,7 @@
   To run and wait (note: quote the entire command to preserve argument quoting):
   ```bash
   pueue add -- 'command arg1 "arg with spaces"'
-  pueue follow <task-id> | tail -n 100
+  pueue follow <task-id> | tail -n 10 # waits for the command to finish
   ```
 
 ## Search
