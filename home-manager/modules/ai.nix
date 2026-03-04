@@ -23,7 +23,10 @@
       micsSkills.screenshot-cli
       micsSkills.db-cli
       micsSkills.gmaps-cli
-      aiTools.pi
+      (pkgs.writeShellScriptBin "pi" ''
+        ${pkgs.pueue}/bin/pueued -d 2>/dev/null || true
+        exec ${aiTools.pi}/bin/pi "$@"
+      '')
       aiTools.tuicr
       aiTools.coderabbit-cli
       aiTools.openspec
