@@ -1,8 +1,19 @@
+# In Coder's web terminal, Screen uses Ctrl-S as prefix key.
+# Disable XON/XOFF flow control so Ctrl-S isn't swallowed as XOFF.
+# Unset TERMCAP so programs use terminfo (which correctly reports 256 colors)
+# instead of Screen's TERMCAP which only declares 8.
+# Enable truecolor passthrough since Screen blocks it by default.
+if [[ -n "$CODER" ]] && [[ -n "$STY" ]]; then
+  stty -ixon 2>/dev/null
+  unset TERMCAP
+  screen -X truecolor on 2>/dev/null
+fi
+
 # early, fast invocation of tmux
 # - only if tmux is installed
 # - not in linux ttys
 # - no nested tmux sessions
-if [[ -n ${commands[tmux]} ]] && [[ "$TERM" != "linux" ]] && [[ "$TERM_PROGRAM" != WezTerm ]] && [[ -z "$TMUX" ]] && [[ "$INSIDE_EMACS" != "vterm" ]]; then
+if [[ -n ${commands[tmux]} ]] && [[ "$TERM" != "linux" ]] && [[ "$TERM_PROGRAM" != WezTerm ]] && [[ -z "$TMUX" ]] && [[ "$INSIDE_EMACS" != "vterm" ]] && [[ -z "$STY" ]]; then
   if [[ -n "$SSH_AUTH_SOCK" ]]; then
     tmux set-environment -g SSH_AUTH_SOCK "$SSH_AUTH_SOCK" 2>/dev/null
   fi
