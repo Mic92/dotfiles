@@ -62,6 +62,8 @@ in
         profile=''${profiles["$host-$user"]};
       elif [[ -n ''${profiles[$host]:-} ]]; then
         profile=''${profiles[$host]}
+      elif [[ "$host" == coder-* ]]; then
+        profile="coder"
       fi
       if [[ "''${1:-}" == profile ]]; then
         echo $profile
@@ -115,6 +117,7 @@ in
 
       eve = homeManagerConfiguration { extraModules = [ ./eve.nix ]; };
       bernie = homeManagerConfiguration { extraModules = [ ./bernie.nix ]; };
+      coder = homeManagerConfiguration { extraModules = [ ./coder.nix ]; };
     };
   };
 }
