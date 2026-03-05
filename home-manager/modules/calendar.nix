@@ -27,6 +27,50 @@ let
     ${pkgs.vdirsyncer}/bin/vdirsyncer sync
   '';
 
+  vdirsyncerPostHook = pkgs.writeShellScriptBin "vdirsyncer-post-hook" ''
+    # vdirsyncer post_hook: commit after item creation/modification
+    # Called with the path of the new/updated file as $1
+    set -euo pipefail
+
+    file="$1"
+    dir="$(dirname "$file")"
+
+    # Initialize git repo in parent of collection dir if needed
+    cd "$dir"
+    if ! ${pkgs.git}/bin/git rev-parse --show-toplevel &>/dev/null; then
+        # File is in a collection subdir (e.g. calendars/Personal/foo.ics),
+        # init the repo one level up at the storage root.
+        ${pkgs.git}/bin/git init --quiet ..
+        ${pkgs.git}/bin/git -C .. add -A
+        ${pkgs.git}/bin/git -C .. commit -m "Initial commit" --quiet || true
+    fi
+
+    ${pkgs.git}/bin/git add "$file"
+    ${pkgs.git}/bin/git commit -m "Update $(basename "$file")" --quiet || true
+  '';
+
+  vdirsyncerPreDeletionHook = pkgs.writeShellScriptBin "vdirsyncer-pre-deletion-hook" ''
+    # vdirsyncer pre_deletion_hook: commit deletion of items
+    # Called with the path of the file to be deleted as $1
+    set -euo pipefail
+
+    file="$1"
+    dir="$(dirname "$file")"
+
+    # Initialize git repo in parent of collection dir if needed
+    cd "$dir"
+    if ! ${pkgs.git}/bin/git rev-parse --show-toplevel &>/dev/null; then
+        # File is in a collection subdir (e.g. calendars/Personal/foo.ics),
+        # init the repo one level up at the storage root.
+        ${pkgs.git}/bin/git init --quiet ..
+        ${pkgs.git}/bin/git -C .. add -A
+        ${pkgs.git}/bin/git -C .. commit -m "Initial commit" --quiet || true
+    fi
+
+    ${pkgs.git}/bin/git rm --quiet "$file"
+    ${pkgs.git}/bin/git commit -m "Delete $(basename "$file")" --quiet || true
+  '';
+
 in
 {
   config = {
@@ -36,6 +80,8 @@ in
       todoman
       calendarNotifyScript
       calendarSyncScript
+      vdirsyncerPostHook
+      vdirsyncerPreDeletionHook
     ];
 
     # Platform-specific service configuration
