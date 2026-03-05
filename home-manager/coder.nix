@@ -52,9 +52,6 @@
       persist_link "$HOME/src/home/.claude/.credentials.json" "$HOME/.claude/.credentials.json"
 
       # iroh-ssh identity keys (stable endpoint ID across restarts)
-      persist_link "$HOME/src/home/.ssh/irohssh_ed25519" "$HOME/.ssh/irohssh_ed25519"
-      persist_link "$HOME/src/home/.ssh/irohssh_ed25519.pub" "$HOME/.ssh/irohssh_ed25519.pub"
-
       # Start iroh-ssh server daemon (idempotent — skips if already running)
       PIDFILE="$HOME/.iroh-ssh.pid"
       if [ -f "$PIDFILE" ] && kill -0 "$(cat "$PIDFILE")" 2>/dev/null; then
@@ -65,5 +62,22 @@
         echo $! > "$PIDFILE"
         echo "iroh-ssh server started (pid $!)"
       fi
+
+      # On first boot, iroh-ssh generates keys — persist them for next restart
+      if [ ! -s "$HOME/src/home/.ssh/irohssh_ed25519" ]; then
+        for _ in $(seq 1 30); do
+          if [ -s "$HOME/.ssh/irohssh_ed25519" ]; then
+            break
+          fi
+          sleep 0.2
+        done
+        mkdir -p "$HOME/src/home/.ssh"
+        cp "$HOME/.ssh/irohssh_ed25519" "$HOME/src/home/.ssh/irohssh_ed25519"
+        cp "$HOME/.ssh/irohssh_ed25519.pub" "$HOME/src/home/.ssh/irohssh_ed25519.pub"
+        chmod 600 "$HOME/src/home/.ssh/irohssh_ed25519"
+      fi
+
+      persist_link "$HOME/src/home/.ssh/irohssh_ed25519" "$HOME/.ssh/irohssh_ed25519"
+      persist_link "$HOME/src/home/.ssh/irohssh_ed25519.pub" "$HOME/.ssh/irohssh_ed25519.pub"
     '';
 }
