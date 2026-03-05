@@ -31,7 +31,7 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - uses: NixOS/nix-installer@main
+      - uses: NixOS/nix-installer-action@main
         with:
           extra-conf: |
             extra-substituters = https://cache.thalheim.io
