@@ -44,7 +44,7 @@ class SpamDatabase:
     def extract_email_address(self, from_header: str) -> str:
         """Extract email address from From header."""
         if "<" in from_header and ">" in from_header:
-            return from_header.split("<")[1].split(">")[0].lower()
+            return from_header.split("<")[1].split(">", maxsplit=1)[0].lower()
         return from_header.lower().strip()
 
     def get_spam_score(self, email_address: str) -> float | None:
