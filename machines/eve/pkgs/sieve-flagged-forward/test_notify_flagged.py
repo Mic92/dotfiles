@@ -148,7 +148,11 @@ def test_process_delivers_to_maildir() -> None:
         pipe_path = str(Path(tmp) / "no_such_pipe")
 
         trigger = notify_flagged.process_flagged_email(
-            PLAIN_EMAIL, "INBOX", maildir_path, pipe_path, container_maildir="/var/mail/flagged"
+            PLAIN_EMAIL,
+            "INBOX",
+            maildir_path,
+            pipe_path,
+            container_maildir="/var/mail/flagged",
         )
 
         assert trigger is not None
@@ -208,7 +212,9 @@ if __name__ == "__main__":
 
     # Auto-discover test_ functions in this module and run them.
     test_funcs = [
-        obj for name, obj in list(globals().items()) if name.startswith("test_") and callable(obj)
+        obj
+        for name, obj in list(globals().items())
+        if name.startswith("test_") and callable(obj)
     ]
     suite = unittest.TestSuite()
     for func in test_funcs:
