@@ -37,6 +37,11 @@
       "fts_lucene"
     ];
     extraConfig = ''
+      # Let imap processes (and sieve pipe scripts) access opencrow's
+      # trigger pipe.  Dovecot drops supplementary groups when switching
+      # to mail_uid, so we must list extra groups here explicitly.
+      mail_access_groups = opencrow
+
       ssl = yes
       ssl_cert = </var/lib/acme/imap.thalheim.io/fullchain.pem
       ssl_key = </var/lib/acme/imap.thalheim.io/key.pem
