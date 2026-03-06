@@ -135,11 +135,13 @@ in
   # Ensure the Maildir exists before the container starts.
   # Group-readable by opencrow so Janet can read inside the container.
   systemd.tmpfiles.rules = [
-    "d /var/vmail/thalheim.io/janet 0770 vmail opencrow -"
-    "d /var/vmail/thalheim.io/janet/Maildir 0770 vmail opencrow -"
-    "d /var/vmail/thalheim.io/janet/Maildir/new 0770 vmail opencrow -"
-    "d /var/vmail/thalheim.io/janet/Maildir/cur 0770 vmail opencrow -"
-    "d /var/vmail/thalheim.io/janet/Maildir/tmp 0770 vmail opencrow -"
+    # setgid (2) so new files inherit the opencrow group, allowing
+    # Janet to read emails delivered by the vmail user.
+    "d /var/vmail/thalheim.io/janet 2770 vmail opencrow -"
+    "d /var/vmail/thalheim.io/janet/Maildir 2770 vmail opencrow -"
+    "d /var/vmail/thalheim.io/janet/Maildir/new 2770 vmail opencrow -"
+    "d /var/vmail/thalheim.io/janet/Maildir/cur 2770 vmail opencrow -"
+    "d /var/vmail/thalheim.io/janet/Maildir/tmp 2770 vmail opencrow -"
   ];
 
 
