@@ -143,6 +143,9 @@
     isSystemUser = true;
     uid = 1000;
     shell = "/run/current-system/sw/bin/nologin";
+    # Allow sieve pipe scripts (running as vmail) to write to opencrow's
+    # trigger pipe, used for forwarding starred emails to Janet.
+    extraGroups = [ "opencrow" ];
   };
 
   security.dhparams = {

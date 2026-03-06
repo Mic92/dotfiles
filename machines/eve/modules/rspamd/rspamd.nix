@@ -1,5 +1,7 @@
 { pkgs, config, ... }:
 let
+  sieve-flagged-forward = pkgs.callPackage ../../pkgs/sieve-flagged-forward { };
+
   localConfig = pkgs.writeText "local.conf" ''
     logging {
       level = "notice";
@@ -96,10 +98,23 @@ in
         imapsieve_mailbox2_causes = COPY
         imapsieve_mailbox2_before = file:/var/lib/dovecot/sieve/report-ham.sieve
 
+        # Notify Janet (opencrow) when a message is flagged/starred
+        imapsieve_mailbox3_name = *
+        imapsieve_mailbox3_causes = FLAG
+        imapsieve_mailbox3_before = file:/var/lib/dovecot/sieve/report-flagged.sieve
+
         # Move Spam emails to Spam folder
         sieve_before = /var/lib/dovecot/sieve/move-to-spam.sieve
 
-        sieve_pipe_bin_dir = ${sieve-spam-filter}/bin
+        sieve_pipe_bin_dir = ${
+          pkgs.symlinkJoin {
+            name = "sieve-pipe-bin";
+            paths = [
+              "${sieve-spam-filter}/bin"
+              "${sieve-flagged-forward}/bin"
+            ];
+          }
+        }
         sieve_global_extensions = +vnd.dovecot.pipe +vnd.dovecot.environment
       }
     '';
@@ -119,7 +134,8 @@ in
 
   systemd.services.dovecot.preStart = ''
     mkdir -p /var/lib/dovecot/sieve/
-    for i in ${sieve-spam-filter}/share/sieve-rspamd-filter/*.sieve; do
+    for i in ${sieve-spam-filter}/share/sieve-rspamd-filter/*.sieve \
+             ${sieve-flagged-forward}/share/sieve-flagged-forward/*.sieve; do
       dest="/var/lib/dovecot/sieve/$(basename $i)"
       cp "$i" "$dest"
       ${pkgs.dovecot_pigeonhole}/bin/sievec "$dest"
