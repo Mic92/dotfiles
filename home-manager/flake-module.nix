@@ -14,16 +14,11 @@ let
       extraModules ? [ ],
     }:
     (inputs.home-manager.lib.homeManagerConfiguration {
-      modules = [
-        {
-          _module.args.self = self;
-          _module.args.inputs = inputs;
-          imports = extraModules ++ [
-            ./common.nix
-            inputs.nix-index-database.homeModules.nix-index
-            { programs.nix-index-database.comma.enable = true; }
-          ];
-        }
+      extraSpecialArgs = { inherit self inputs; };
+      modules = extraModules ++ [
+        ./common.nix
+        inputs.nix-index-database.homeModules.nix-index
+        { programs.nix-index-database.comma.enable = true; }
       ];
       inherit pkgs;
     });
