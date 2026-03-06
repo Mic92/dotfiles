@@ -130,15 +130,43 @@ def build_trigger_line(
     return trigger.replace("\n", " ").replace("\r", "")
 
 
-def deliver_to_maildir(msg: email.message.Message, maildir_path: str) -> str:
-    """Deliver a copy of the email into a local Maildir. Returns the key."""
+def _sanitize_message_id(message_id: str) -> str:
+    """Turn a Message-ID into a safe filename (strip angle brackets, replace /)."""
+    return message_id.strip().strip("<>").replace("/", "_")
+
+
+def deliver_to_maildir(msg: email.message.Message, maildir_path: str) -> str | None:
+    """Deliver a copy of the email into a Maildir's new/ directory.
+
+    Uses the Message-ID as the filename so re-flagging the same email
+    is a no-op.  Returns the key (filename) on first delivery, or None
+    if the message was already present.
+    """
+    message_id = msg.get("Message-ID", "")
+    if not message_id:
+        # No Message-ID — fall back to Maildir's own key generation.
+        old_umask = os.umask(0o007)
+        try:
+            mdir = mailbox.Maildir(maildir_path, create=True)
+            try:
+                key = mdir.add(mailbox.MaildirMessage(msg))
+            finally:
+                mdir.close()
+        finally:
+            os.umask(old_umask)
+        return key
+
+    key = _sanitize_message_id(message_id)
+    new_dir = pathlib.Path(maildir_path) / "new"
+    new_dir.mkdir(parents=True, exist_ok=True)
+    dest = new_dir / key
+
+    if dest.exists():
+        return None
+
     old_umask = os.umask(0o007)
     try:
-        mdir = mailbox.Maildir(maildir_path, create=True)
-        try:
-            key = mdir.add(mailbox.MaildirMessage(msg))
-        finally:
-            mdir.close()
+        dest.write_bytes(msg.as_bytes())
     finally:
         os.umask(old_umask)
     return key
@@ -165,14 +193,17 @@ def process_flagged_email(
     maildir_path: str,
     pipe_path: str,
     container_maildir: str = CONTAINER_MAILDIR,
-) -> str:
+) -> str | None:
     """Process a flagged email: deliver to Maildir and return trigger line.
 
-    Returns the trigger line (also written to the pipe if available).
+    Returns the trigger line (also written to the pipe if available),
+    or None if the message was already delivered (duplicate).
     """
     msg = email.message_from_bytes(raw, policy=email.policy.compat32)
 
     key = deliver_to_maildir(msg, maildir_path)
+    if key is None:
+        return None
 
     trigger = build_trigger_line(msg, folder, key, container_maildir)
     write_trigger_pipe(trigger, pipe_path)
