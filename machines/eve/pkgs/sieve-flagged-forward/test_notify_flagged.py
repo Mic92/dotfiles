@@ -7,6 +7,7 @@ import os
 import sys
 import tempfile
 from pathlib import Path
+from typing import Any
 
 # Load the script as a module despite the hyphenated filename.
 _spec = importlib.util.spec_from_file_location(
@@ -95,7 +96,32 @@ Alice
 """
 
 
-# ── Tests ────────────────────────────────────────────────────────────────
+def _make_config(tmp: str, *, user_maildir: str | None = None) -> Any:
+    """Build a Config pointing at temp directories."""
+    return notify_flagged.Config(
+        pipe=str(Path(tmp) / "no_such_pipe"),
+        janet_maildir=str(Path(tmp) / "JanetMaildir"),
+        container_maildir="/var/mail/flagged",
+        user_maildir=user_maildir or str(Path(tmp) / "UserMaildir"),
+    )
+
+
+def _place_in_user_maildir(
+    base: str, mailbox: str, email_bytes: bytes, flags: str = "FS"
+) -> Path:
+    """Create a fake user Maildir with a single email file."""
+    if mailbox.upper() == "INBOX":
+        maildir = Path(base)
+    else:
+        maildir = Path(base) / ("." + mailbox.replace("/", "."))
+    cur_dir = maildir / "cur"
+    cur_dir.mkdir(parents=True, exist_ok=True)
+    dest = cur_dir / f"1234567890.M12345.hostname:2,{flags}"
+    dest.write_bytes(email_bytes)
+    return dest
+
+
+# ── Header / body tests ─────────────────────────────────────────────────
 
 
 def test_rfc2047_adjacent_encoded_words() -> None:
@@ -141,19 +167,67 @@ def test_html_style_stripped() -> None:
     assert "color" not in snippet
 
 
-def test_process_delivers_to_maildir() -> None:
-    """End-to-end: email lands in Maildir and trigger line includes file path."""
-    with tempfile.TemporaryDirectory() as tmp:
-        maildir_path = str(Path(tmp) / "Maildir")
-        pipe_path = str(Path(tmp) / "no_such_pipe")
+# ── Maildir flag helpers ────────────────────────────────────────────────
 
-        trigger = notify_flagged.process_flagged_email(
-            PLAIN_EMAIL,
-            "INBOX",
-            maildir_path,
-            pipe_path,
-            container_maildir="/var/mail/flagged",
-        )
+
+def test_maildir_subdir_inbox() -> None:
+    result = notify_flagged.maildir_subdir("INBOX", "/var/vmail/example/Maildir")
+    assert result == Path("/var/vmail/example/Maildir")
+
+
+def test_maildir_subdir_folder() -> None:
+    result = notify_flagged.maildir_subdir("Spam", "/var/vmail/example/Maildir")
+    assert result == Path("/var/vmail/example/Maildir/.Spam")
+
+
+def test_maildir_subdir_nested() -> None:
+    result = notify_flagged.maildir_subdir(
+        "Work/Projects", "/var/vmail/example/Maildir"
+    )
+    assert result == Path("/var/vmail/example/Maildir/.Work.Projects")
+
+
+def test_is_flagged() -> None:
+    assert notify_flagged.is_flagged("1234:2,FS")
+    assert notify_flagged.is_flagged("1234:2,F")
+    assert not notify_flagged.is_flagged("1234:2,S")
+    assert not notify_flagged.is_flagged("1234:2,")
+    assert not notify_flagged.is_flagged("1234")
+
+
+def test_remove_flagged_flag() -> None:
+    """Strips F flag, preserves other flags."""
+    with tempfile.TemporaryDirectory() as tmp:
+        p = Path(tmp) / "1234:2,FRS"
+        p.write_bytes(b"test")
+        result = notify_flagged.remove_flagged_flag(p)
+        assert result is not None
+        assert result.name == "1234:2,RS"
+        assert result.exists()
+        assert not p.exists()
+
+
+def test_remove_flagged_flag_only_f() -> None:
+    """When F is the only flag, result has empty flags string."""
+    with tempfile.TemporaryDirectory() as tmp:
+        p = Path(tmp) / "1234:2,F"
+        p.write_bytes(b"test")
+        result = notify_flagged.remove_flagged_flag(p)
+        assert result is not None
+        assert result.name == "1234:2,"
+        assert result.exists()
+
+
+# ── End-to-end pipeline tests ───────────────────────────────────────────
+
+
+def test_process_delivers_and_unflags() -> None:
+    """Flagged email is forwarded to Janet and the source flag is removed."""
+    with tempfile.TemporaryDirectory() as tmp:
+        cfg = _make_config(tmp)
+        source = _place_in_user_maildir(cfg.user_maildir, "INBOX", PLAIN_EMAIL, "FS")
+
+        trigger = notify_flagged.process_flagged_email(PLAIN_EMAIL, "INBOX", cfg)
 
         assert trigger is not None
         assert "Joerg starred an email" in trigger
@@ -162,43 +236,58 @@ def test_process_delivers_to_maildir() -> None:
         assert "File: /var/mail/flagged/new/" in trigger
         assert "\n" not in trigger
 
-        # Email file exists on disk
-        files = list((Path(tmp) / "Maildir" / "new").iterdir())
+        # Delivered to Janet's maildir
+        files = list((Path(cfg.janet_maildir) / "new").iterdir())
         assert len(files) == 1
+
+        # Source flag removed
+        assert not source.exists()
+        cur_files = list(source.parent.iterdir())
+        assert len(cur_files) == 1
+        assert "F" not in cur_files[0].name.rsplit(":2,", 1)[1]
+        assert "S" in cur_files[0].name.rsplit(":2,", 1)[1]
+
+
+def test_process_skips_unflagged_email() -> None:
+    """An email without the Flagged flag must not be forwarded."""
+    with tempfile.TemporaryDirectory() as tmp:
+        cfg = _make_config(tmp)
+        _place_in_user_maildir(cfg.user_maildir, "INBOX", PLAIN_EMAIL, "S")
+
+        trigger = notify_flagged.process_flagged_email(PLAIN_EMAIL, "INBOX", cfg)
+
+        assert trigger is None
+        assert not Path(cfg.janet_maildir).exists()
 
 
 def test_process_deduplicates_by_message_id() -> None:
     """Re-flagging the same email must not create a duplicate."""
     with tempfile.TemporaryDirectory() as tmp:
-        maildir_path = str(Path(tmp) / "Maildir")
-        pipe_path = str(Path(tmp) / "no_such_pipe")
+        cfg = _make_config(tmp)
+        _place_in_user_maildir(cfg.user_maildir, "INBOX", PLAIN_EMAIL, "FS")
 
-        first = notify_flagged.process_flagged_email(
-            PLAIN_EMAIL, "INBOX", maildir_path, pipe_path
-        )
-        second = notify_flagged.process_flagged_email(
-            PLAIN_EMAIL, "INBOX", maildir_path, pipe_path
-        )
+        first = notify_flagged.process_flagged_email(PLAIN_EMAIL, "INBOX", cfg)
+        # Re-flag (first call removed F, put it back)
+        _place_in_user_maildir(cfg.user_maildir, "INBOX", PLAIN_EMAIL, "FS")
+        second = notify_flagged.process_flagged_email(PLAIN_EMAIL, "INBOX", cfg)
 
         assert first is not None
         assert second is None
-
-        files = list((Path(tmp) / "Maildir" / "new").iterdir())
+        files = list((Path(cfg.janet_maildir) / "new").iterdir())
         assert len(files) == 1
 
 
 def test_process_writes_to_fifo() -> None:
     """Trigger line is written to the FIFO when a reader is present."""
     with tempfile.TemporaryDirectory() as tmp:
-        maildir_path = str(Path(tmp) / "Maildir")
-        pipe_path = str(Path(tmp) / "trigger.pipe")
-        os.mkfifo(pipe_path)
+        cfg = _make_config(tmp)
+        cfg.pipe = str(Path(tmp) / "trigger.pipe")
+        os.mkfifo(cfg.pipe)
+        _place_in_user_maildir(cfg.user_maildir, "INBOX", PLAIN_EMAIL, "FS")
 
-        read_fd = os.open(pipe_path, os.O_RDONLY | os.O_NONBLOCK)
+        read_fd = os.open(cfg.pipe, os.O_RDONLY | os.O_NONBLOCK)
         try:
-            notify_flagged.process_flagged_email(
-                PLAIN_EMAIL, "INBOX", maildir_path, pipe_path
-            )
+            notify_flagged.process_flagged_email(PLAIN_EMAIL, "INBOX", cfg)
             data = os.read(read_fd, 8192).decode()
         finally:
             os.close(read_fd)
@@ -207,10 +296,25 @@ def test_process_writes_to_fifo() -> None:
         assert data.endswith("\n")
 
 
+def test_process_handles_subfolder() -> None:
+    """Flagged email in a subfolder is found and unflagged correctly."""
+    with tempfile.TemporaryDirectory() as tmp:
+        cfg = _make_config(tmp)
+        source = _place_in_user_maildir(cfg.user_maildir, "Work", PLAIN_EMAIL, "FS")
+
+        trigger = notify_flagged.process_flagged_email(PLAIN_EMAIL, "Work", cfg)
+
+        assert trigger is not None
+        assert "Folder: Work" in trigger
+        assert not source.exists()
+        cur_files = list(source.parent.iterdir())
+        assert len(cur_files) == 1
+        assert "F" not in cur_files[0].name.rsplit(":2,", 1)[1]
+
+
 if __name__ == "__main__":
     import unittest
 
-    # Auto-discover test_ functions in this module and run them.
     test_funcs = [
         obj
         for name, obj in list(globals().items())
