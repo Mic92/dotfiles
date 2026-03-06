@@ -93,5 +93,10 @@
   ];
   nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
+  # Work around broken pam_lastlog2.so missing libpam linkage in systemd 259
+  # https://github.com/NixOS/nixpkgs/issues/493934
+  # TODO: remove once https://github.com/NixOS/nixpkgs/pull/495347 is merged
+  containers.opencrow.config.security.pam.services.login.updateWtmp = lib.mkForce false;
+
   # The NixOS release to be compatible with for stateful data such as databases.
 }
