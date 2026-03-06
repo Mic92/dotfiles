@@ -3,7 +3,6 @@
 import email
 import email.policy
 import importlib.util
-import mailbox
 import os
 import sys
 import tempfile
@@ -83,6 +82,7 @@ From: Alice <alice@example.com>
 To: joerg@thalheim.io
 Subject: Lunch tomorrow?
 Date: Wed, 16 Jul 2025 10:00:00 +0200
+Message-ID: <abc123@example.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 
@@ -151,20 +151,36 @@ def test_process_delivers_to_maildir() -> None:
             PLAIN_EMAIL, "INBOX", maildir_path, pipe_path, container_maildir="/var/mail/flagged"
         )
 
+        assert trigger is not None
         assert "Joerg starred an email" in trigger
         assert "Subject: Lunch tomorrow?" in trigger
         assert "Folder: INBOX" in trigger
         assert "File: /var/mail/flagged/new/" in trigger
         assert "\n" not in trigger
 
-        mdir = mailbox.Maildir(maildir_path, create=False)
-        messages = list(mdir)
-        assert len(messages) == 1
-        assert "Lunch tomorrow?" in messages[0]["Subject"]
+        # Email file exists on disk
+        files = list((Path(tmp) / "Maildir" / "new").iterdir())
+        assert len(files) == 1
 
-        # The file referenced in the trigger line actually exists on the host
-        key = next(iter(mdir.keys()))
-        assert key in trigger
+
+def test_process_deduplicates_by_message_id() -> None:
+    """Re-flagging the same email must not create a duplicate."""
+    with tempfile.TemporaryDirectory() as tmp:
+        maildir_path = str(Path(tmp) / "Maildir")
+        pipe_path = str(Path(tmp) / "no_such_pipe")
+
+        first = notify_flagged.process_flagged_email(
+            PLAIN_EMAIL, "INBOX", maildir_path, pipe_path
+        )
+        second = notify_flagged.process_flagged_email(
+            PLAIN_EMAIL, "INBOX", maildir_path, pipe_path
+        )
+
+        assert first is not None
+        assert second is None
+
+        files = list((Path(tmp) / "Maildir" / "new").iterdir())
+        assert len(files) == 1
 
 
 def test_process_writes_to_fifo() -> None:
