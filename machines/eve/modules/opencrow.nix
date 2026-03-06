@@ -144,8 +144,6 @@ in
     "d /var/vmail/thalheim.io/janet/Maildir/tmp 2770 vmail opencrow -"
   ];
 
-
-
   # /etc/localtime is bind-mounted from the host (UTC) in nspawn containers,
   # so we rely on /etc/timezone and TZ env var instead.
   containers.opencrow.config.environment.etc."timezone".text = "Europe/Berlin\n";
