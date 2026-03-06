@@ -125,6 +125,23 @@ in
   containers.opencrow.config.users.groups.opencrow.gid = 2000;
   users.groups.opencrow.gid = 2000;
 
+  # Expose starred/flagged emails (delivered by sieve-flagged-forward)
+  # to Janet read-only so she can read full message bodies.
+  containers.opencrow.bindMounts."/var/mail/flagged" = {
+    hostPath = "/var/vmail/thalheim.io/janet/Maildir";
+    isReadOnly = true;
+  };
+
+  # Ensure the Maildir exists before the container starts.
+  # Group-readable by opencrow so Janet can read inside the container.
+  systemd.tmpfiles.rules = [
+    "d /var/vmail/thalheim.io/janet 0770 vmail opencrow -"
+    "d /var/vmail/thalheim.io/janet/Maildir 0770 vmail opencrow -"
+    "d /var/vmail/thalheim.io/janet/Maildir/new 0770 vmail opencrow -"
+    "d /var/vmail/thalheim.io/janet/Maildir/cur 0770 vmail opencrow -"
+    "d /var/vmail/thalheim.io/janet/Maildir/tmp 0770 vmail opencrow -"
+  ];
+
 
 
   # /etc/localtime is bind-mounted from the host (UTC) in nspawn containers,
