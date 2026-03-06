@@ -29,6 +29,10 @@ let
         name = "calendar";
         path = ./opencrow-skills/calendar;
       }
+      {
+        name = "n8n-workflows";
+        path = ./opencrow-skills/n8n-workflows;
+      }
     ]
   );
 
@@ -47,6 +51,7 @@ let
     "nextcloud.clan.lol Mic92" = "nextcloud-clan-password";
     "kagi-session-link" = "kagi-session-token";
     "google-maps-api-key" = "gmaps-api-key";
+    "n8n-api-jwt" = "n8n-api-jwt";
   };
   mockRbw = pkgs.writeShellScriptBin "rbw" (
     ''
@@ -93,16 +98,41 @@ in
     '';
   };
 
+  clan.core.vars.generators.opencrow-ssh = {
+    files.ssh-private-key.secret = true;
+    files.ssh-public-key.secret = false;
+
+    runtimeInputs = with pkgs; [ openssh ];
+
+    script = ''
+      ssh-keygen -t ed25519 -N "" -f "$out/ssh-private-key" -C "opencrow@eve"
+      ssh-keygen -y -f "$out/ssh-private-key" > "$out/ssh-public-key"
+    '';
+  };
+
+  clan.core.vars.generators.opencrow-gitea = {
+    files.gitea-password.secret = true;
+
+    runtimeInputs = with pkgs; [ openssl ];
+
+    script = ''
+      openssl rand -base64 32 | tr -d '\n' > "$out/gitea-password"
+    '';
+  };
+
   clan.core.vars.generators.opencrow-skills = {
     files.kagi-session-token.secret = true;
     files.gmaps-api-key.secret = true;
+    files.n8n-api-jwt.secret = true;
 
     prompts.kagi-session-token.description = "Kagi session token for web search";
     prompts.gmaps-api-key.description = "Google Maps API key for gmaps-cli";
+    prompts.n8n-api-jwt.description = "n8n API JWT token for workflow management";
 
     script = ''
       cp "$prompts/kagi-session-token" "$out/kagi-session-token"
       cp "$prompts/gmaps-api-key" "$out/gmaps-api-key"
+      cp "$prompts/n8n-api-jwt" "$out/n8n-api-jwt"
     '';
   };
 
@@ -127,6 +157,15 @@ in
 
   # Expose starred/flagged emails (delivered by sieve-flagged-forward)
   # to Janet read-only so she can read full message bodies.
+  containers.opencrow.bindMounts."/run/opencrow-ssh/id_ed25519" = {
+    hostPath = config.clan.core.vars.generators.opencrow-ssh.files.ssh-private-key.path;
+    isReadOnly = true;
+  };
+  containers.opencrow.bindMounts."/run/opencrow-ssh/id_ed25519.pub" = {
+    hostPath = config.clan.core.vars.generators.opencrow-ssh.files.ssh-public-key.path;
+    isReadOnly = true;
+  };
+
   containers.opencrow.bindMounts."/var/mail/flagged" = {
     hostPath = "/var/vmail/thalheim.io/janet/Maildir";
     isReadOnly = true;
@@ -135,6 +174,12 @@ in
   # Ensure the Maildir exists before the container starts.
   # Group-readable by opencrow so Janet can read inside the container.
   systemd.tmpfiles.rules = [
+    # SSH key staging for container bind mounts (copied into ~/.ssh by
+    # a container service so opencrow owns the files).
+    "d /run/opencrow-ssh 0700 root root -"
+    "f /run/opencrow-ssh/id_ed25519 0600 root root -"
+    "f /run/opencrow-ssh/id_ed25519.pub 0644 root root -"
+
     # setgid (2) so new files inherit the opencrow group, allowing
     # Janet to read emails delivered by the vmail user.
     "d /var/vmail/thalheim.io/janet 2770 vmail opencrow -"
@@ -147,6 +192,47 @@ in
   # /etc/localtime is bind-mounted from the host (UTC) in nspawn containers,
   # so we rely on /etc/timezone and TZ env var instead.
   containers.opencrow.config.environment.etc."timezone".text = "Europe/Berlin\n";
+
+  # Copy bind-mounted SSH keys (root-owned) into ~/.ssh with opencrow
+  # ownership so all SSH-based tools (git, ssh) work without wrapper hacks.
+  containers.opencrow.config.systemd.services.opencrow-ssh-keys = {
+    description = "Install opencrow SSH keys";
+    wantedBy = [ "multi-user.target" ];
+    before = [
+      "opencrow.service"
+      "opencrow-clone-repos.service"
+    ];
+    serviceConfig.Type = "oneshot";
+    script = ''
+      install -d -m 0700 -o opencrow -g opencrow /var/lib/opencrow/.ssh
+      install -m 0600 -o opencrow -g opencrow /run/opencrow-ssh/id_ed25519 /var/lib/opencrow/.ssh/id_ed25519
+      install -m 0644 -o opencrow -g opencrow /run/opencrow-ssh/id_ed25519.pub /var/lib/opencrow/.ssh/id_ed25519.pub
+    '';
+  };
+
+  containers.opencrow.config.systemd.services.opencrow-clone-repos = {
+    description = "Clone git repos into opencrow workspace";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "opencrow-ssh-keys.service" ];
+    requires = [ "opencrow-ssh-keys.service" ];
+    before = [ "opencrow.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "opencrow";
+      Group = "opencrow";
+      WorkingDirectory = "/var/lib/opencrow";
+    };
+    path = [
+      pkgs.git
+      pkgs.openssh
+    ];
+    script = ''
+      export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=accept-new"
+      if [ ! -d /var/lib/opencrow/n8n-workflows/.git ]; then
+        git clone gitea@git.thalheim.io:Mic92/n8n-workflows.git /var/lib/opencrow/n8n-workflows
+      fi
+    '';
+  };
 
   containers.opencrow.config.systemd.tmpfiles.rules = [
     "d /var/lib/opencrow/.config 0750 opencrow opencrow -"
@@ -176,6 +262,7 @@ in
       "kagi-session-token" =
         config.clan.core.vars.generators.opencrow-skills.files.kagi-session-token.path;
       "gmaps-api-key" = config.clan.core.vars.generators.opencrow-skills.files.gmaps-api-key.path;
+      "n8n-api-jwt" = config.clan.core.vars.generators.opencrow-skills.files.n8n-api-jwt.path;
     };
     environment = {
       OPENCROW_BACKEND = "nostr";
