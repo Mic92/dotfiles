@@ -285,6 +285,7 @@ in
     extraPackages = [
       mockRbw
       vdirsyncerHooks
+      self.packages.${pkgs.stdenv.hostPlatform.system}.n8n-cli
       micsSkillsPkgs.context7-cli
       micsSkillsPkgs.db-cli
       micsSkillsPkgs.gmaps-cli

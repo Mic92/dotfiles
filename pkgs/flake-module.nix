@@ -4,12 +4,14 @@
   inputs',
   self',
   self,
+  system,
   ...
 }:
 let
   inputs = self.inputs;
   micsSkills = inputs'.mics-skills;
   aiTools = inputs'.llm-agents;
+  bun2nix = inputs.llm-agents.inputs.bun2nix.packages.${system}.default;
 in
 {
   packages = {
@@ -20,6 +22,7 @@ in
     claude-code = pkgs.callPackage ./claude-code {
       claude-code = inputs'.llm-agents.claude-code;
     };
+    n8n-cli = pkgs.callPackage ./n8n-cli { inherit bun2nix; };
 
     email-sync = pkgs.callPackage ./email-sync { };
     vcal = pkgs.callPackage ./vcal { };
