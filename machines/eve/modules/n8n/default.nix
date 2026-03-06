@@ -56,7 +56,7 @@ let
 in
 {
   # Allow n8n to write to OpenCrow's trigger pipe.
-  users.users.n8n.extraGroups = [ "opencrow" ];
+  systemd.services.n8n.serviceConfig.SupplementaryGroups = [ "opencrow" ];
 
   services.n8n = {
     enable = true;
@@ -88,6 +88,10 @@ in
       self.inputs.n8n-nodes-caldav.packages.${pkgs.stdenv.hostPlatform.system}.default
     }/lib/node_modules/n8n-nodes-caldav/dist \
       /var/lib/n8n/.n8n/custom/n8n-nodes-caldav
+    ln -sfn ${
+      self.inputs.n8n-nodes-opencrow.packages.${pkgs.stdenv.hostPlatform.system}.default
+    }/lib/node_modules/n8n-nodes-opencrow/dist \
+      /var/lib/n8n/.n8n/custom/n8n-nodes-opencrow
   '';
 
   services.postgresql.ensureDatabases = [ "n8n" ];

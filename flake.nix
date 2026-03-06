@@ -107,6 +107,11 @@
     n8n-nodes-caldav.inputs.treefmt-nix.follows = "treefmt-nix";
     n8n-nodes-caldav.inputs.flake-parts.follows = "flake-parts";
 
+    n8n-nodes-opencrow.url = "github:Mic92/n8n-nodes-opencrow";
+    n8n-nodes-opencrow.inputs.nixpkgs.follows = "nixpkgs";
+    n8n-nodes-opencrow.inputs.treefmt-nix.follows = "treefmt-nix";
+    n8n-nodes-opencrow.inputs.flake-parts.follows = "flake-parts";
+
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 

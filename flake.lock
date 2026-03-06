@@ -585,6 +585,32 @@
         "type": "github"
       }
     },
+    "n8n-nodes-opencrow": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1772805267,
+        "narHash": "sha256-R924eq9ZpVk0DqGve/eV8GuU+3FdBbN6AbUU7MiyoHk=",
+        "owner": "Mic92",
+        "repo": "n8n-nodes-opencrow",
+        "rev": "5d754e0cb9c692e338e08f7f58412f0106d527fd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "n8n-nodes-opencrow",
+        "type": "github"
+      }
+    },
     "niks3": {
       "inputs": {
         "flake-parts": [
@@ -905,6 +931,7 @@
         "llm-agents": "llm-agents",
         "mics-skills": "mics-skills",
         "n8n-nodes-caldav": "n8n-nodes-caldav",
+        "n8n-nodes-opencrow": "n8n-nodes-opencrow",
         "niks3": "niks3",
         "nix": "nix",
         "nix-casks": "nix-casks",
