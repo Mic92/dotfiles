@@ -55,6 +55,9 @@ let
   '';
 in
 {
+  # Allow n8n to write to OpenCrow's trigger pipe.
+  users.users.n8n.extraGroups = [ "opencrow" ];
+
   services.n8n = {
     enable = true;
     environment = {

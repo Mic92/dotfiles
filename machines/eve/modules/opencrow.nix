@@ -119,6 +119,12 @@ in
     '';
   };
 
+  # Pin opencrow uid/gid so host services (n8n) can share the group
+  # for trigger pipe access.
+  containers.opencrow.config.users.users.opencrow.uid = 2000;
+  containers.opencrow.config.users.groups.opencrow.gid = 2000;
+  users.groups.opencrow.gid = 2000;
+
   # /etc/localtime is bind-mounted from the host (UTC) in nspawn containers,
   # so we rely on /etc/timezone and TZ env var instead.
   containers.opencrow.config.environment.etc."timezone".text = "Europe/Berlin\n";
