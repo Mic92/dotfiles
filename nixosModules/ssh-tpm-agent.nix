@@ -1,5 +1,9 @@
 { pkgs, config, ... }:
 let
+  # keyring tests require Linux kernel keyring which isn't available in the Nix sandbox
+  ssh-tpm-agent = pkgs.ssh-tpm-agent.overrideAttrs {
+    doCheck = false;
+  };
   askPasswordWrapper = pkgs.writeScript "ssh-askpass-wrapper" ''
     #! ${pkgs.runtimeShell} -e
     export DISPLAY="$(systemctl --user show-environment | sed 's/^DISPLAY=\(.*\)/\1/; t; d')"
@@ -22,7 +26,7 @@ in
   users.users.joerg.extraGroups = [ "tss" ]; # tss group has access to TPM devices
 
   environment.systemPackages = [
-    pkgs.ssh-tpm-agent
+    ssh-tpm-agent
     pkgs.keyutils
   ];
 
@@ -41,7 +45,7 @@ in
       SSH_ASKPASS = askPasswordWrapper;
     };
     serviceConfig = {
-      ExecStart = "${pkgs.ssh-tpm-agent}/bin/ssh-tpm-agent";
+      ExecStart = "${ssh-tpm-agent}/bin/ssh-tpm-agent";
       PassEnvironment = "SSH_AGENT_PID";
       SuccessExitStatus = 2;
       Type = "simple";
