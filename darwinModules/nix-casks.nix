@@ -14,10 +14,7 @@ in
     cask.ungoogled-chromium
     cask.signal
     cask.ghostty
-    cask.via
-    cask.claude
     cask.secretive
-    cask.gather
     cask.inkscape
     cask.calibre
     myPkgs.kdeconnect
