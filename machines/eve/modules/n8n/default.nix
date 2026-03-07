@@ -1,4 +1,9 @@
-{ pkgs, self, ... }:
+{
+  config,
+  pkgs,
+  self,
+  ...
+}:
 let
   # Hook file for header-based authentication
   hooksFile = pkgs.writeText "n8n-hooks.js" ''
@@ -58,9 +63,20 @@ in
   # Allow n8n to write to OpenCrow's trigger pipe.
   systemd.services.n8n.serviceConfig.SupplementaryGroups = [ "opencrow" ];
 
+  clan.core.vars.generators.n8n-task-runner = {
+    files.auth-token.secret = true;
+    script = ''
+      dd if=/dev/urandom bs=32 count=1 2>/dev/null | base64 | tr -d '\n' > "$out/auth-token"
+    '';
+  };
+
+  services.n8n.taskRunners.enable = true;
+
   services.n8n = {
     enable = true;
     environment = {
+      N8N_RUNNERS_AUTH_TOKEN_FILE =
+        config.clan.core.vars.generators.n8n-task-runner.files.auth-token.path;
       WEBHOOK_URL = "https://n8n.thalheim.io/";
 
       # Database configuration
