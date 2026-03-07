@@ -30,6 +30,10 @@ let
         path = ./opencrow-skills/calendar;
       }
       {
+        name = "email";
+        path = ./opencrow-skills/email;
+      }
+      {
         name = "n8n-workflows";
         path = ./opencrow-skills/n8n-workflows;
       }
@@ -295,12 +299,20 @@ in
     ]
     ++ (with pkgs; [
       curl
+      file
       git
       jq
       khal
+      less
+      mblaze
+      procps
+      python3
       todoman
+      tree
+      util-linux
       vdirsyncer
       w3m
+      which
     ]);
   };
 }
