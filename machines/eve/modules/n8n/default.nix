@@ -133,9 +133,11 @@ in
       '';
     };
 
-    # Exclude webhooks from authentication
+    # Exclude webhooks and OAuth callback from Authelia authentication
     # Webhooks need to be publicly accessible for external services
-    locations."~ ^/(webhook|webhook-test|rest/webhook)" = {
+    # OAuth credential endpoints need direct access for Google OAuth flow,
+    # as the auth_request to Authelia fails with 431 due to oversized headers
+    locations."~ ^/(webhook|webhook-test|rest/webhook|rest/oauth2-credential)" = {
       proxyPass = "http://127.0.0.1:5678";
       proxyWebsockets = true;
     };
