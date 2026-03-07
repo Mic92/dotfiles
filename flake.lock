@@ -533,6 +533,32 @@
         "type": "github"
       }
     },
+    "mics-n8n-nodes": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1772872474,
+        "narHash": "sha256-5GGUqRgl7UL9kuspecHIN3cNskH1QoHjVP+xcy0KBcE=",
+        "owner": "Mic92",
+        "repo": "mics-n8n-nodes",
+        "rev": "069169a3374b596a2b22052e495fbfc6c9680779",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "mics-n8n-nodes",
+        "type": "github"
+      }
+    },
     "mics-skills": {
       "inputs": {
         "flake-parts": [
@@ -582,32 +608,6 @@
       "original": {
         "owner": "Mic92",
         "repo": "n8n-nodes-caldav",
-        "type": "github"
-      }
-    },
-    "n8n-nodes-opencrow": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1772805267,
-        "narHash": "sha256-R924eq9ZpVk0DqGve/eV8GuU+3FdBbN6AbUU7MiyoHk=",
-        "owner": "Mic92",
-        "repo": "n8n-nodes-opencrow",
-        "rev": "5d754e0cb9c692e338e08f7f58412f0106d527fd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "n8n-nodes-opencrow",
         "type": "github"
       }
     },
@@ -929,9 +929,9 @@
         "hercules-ci-effects": "hercules-ci-effects_2",
         "home-manager": "home-manager",
         "llm-agents": "llm-agents",
+        "mics-n8n-nodes": "mics-n8n-nodes",
         "mics-skills": "mics-skills",
         "n8n-nodes-caldav": "n8n-nodes-caldav",
-        "n8n-nodes-opencrow": "n8n-nodes-opencrow",
         "niks3": "niks3",
         "nix": "nix",
         "nix-casks": "nix-casks",
