@@ -80,19 +80,26 @@ in
     };
   };
 
-  # Install CalDAV community node into custom directory
+  # Install community nodes into custom directory
   # n8n automatically loads *.node.js and *.credentials.js from ~/.n8n/custom
-  systemd.services.n8n.preStart = ''
-    mkdir -p /var/lib/n8n/.n8n/custom
-    ln -sfn ${
-      self.inputs.n8n-nodes-caldav.packages.${pkgs.stdenv.hostPlatform.system}.default
-    }/lib/node_modules/n8n-nodes-caldav/dist \
-      /var/lib/n8n/.n8n/custom/n8n-nodes-caldav
-    ln -sfn ${
-      self.inputs.n8n-nodes-opencrow.packages.${pkgs.stdenv.hostPlatform.system}.default
-    }/lib/node_modules/n8n-nodes-opencrow/dist \
-      /var/lib/n8n/.n8n/custom/n8n-nodes-opencrow
-  '';
+  systemd.services.n8n.preStart =
+    let
+      micsNodes = self.inputs.mics-n8n-nodes.packages.${pkgs.stdenv.hostPlatform.system};
+      linkCommands = pkgs.lib.concatStringsSep "\n" (
+        pkgs.lib.mapAttrsToList (
+          name: pkg:
+          "ln -sfn ${pkg}/lib/node_modules/${name}/dist /var/lib/n8n/.n8n/custom/${name}"
+        ) micsNodes
+      );
+    in
+    ''
+      mkdir -p /var/lib/n8n/.n8n/custom
+      ln -sfn ${
+        self.inputs.n8n-nodes-caldav.packages.${pkgs.stdenv.hostPlatform.system}.default
+      }/lib/node_modules/n8n-nodes-caldav/dist \
+        /var/lib/n8n/.n8n/custom/n8n-nodes-caldav
+      ${linkCommands}
+    '';
 
   services.postgresql.ensureDatabases = [ "n8n" ];
   services.postgresql.ensureUsers = [
