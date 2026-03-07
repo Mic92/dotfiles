@@ -87,8 +87,7 @@ in
       micsNodes = self.inputs.mics-n8n-nodes.packages.${pkgs.stdenv.hostPlatform.system};
       linkCommands = pkgs.lib.concatStringsSep "\n" (
         pkgs.lib.mapAttrsToList (
-          name: pkg:
-          "ln -sfn ${pkg}/lib/node_modules/${name}/dist /var/lib/n8n/.n8n/custom/${name}"
+          name: pkg: "ln -sfn ${pkg}/lib/node_modules/${name}/dist /var/lib/n8n/.n8n/custom/${name}"
         ) micsNodes
       );
     in
