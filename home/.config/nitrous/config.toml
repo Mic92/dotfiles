@@ -1,0 +1,26 @@
+relays = [
+  "wss://nostr.0cx.de",
+  "wss://nostr.thalheim.io",
+  "wss://relay.damus.io",
+  "wss://nos.lol",
+]
+
+group_relay = "wss://nostr-groups.thalheim.io"
+
+theme = "light"
+
+# Blossom servers for file uploads (uploaded to all servers).
+blossom_servers = ["https://blossom.nostr.build"]
+
+# Path to a file containing your private key (nsec or hex).
+# Falls back to NOSTR_PRIVATE_KEY env var if not set.
+private_key_file = "~/.config/nitrous/nsec"
+
+max_messages = 500
+
+# Your Nostr profile (NIP-01 kind 0), published to relays on startup.
+[profile]
+name = "Mic92"
+display_name = "Joerg Thalheim"
+about = "I am the supply-chain."
+picture = "https://avatars.githubusercontent.com/u/96200?v=4"
