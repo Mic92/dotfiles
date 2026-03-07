@@ -30,10 +30,10 @@
 
   # Pass SSH keys as credentials — the opencrow service installs them
   # into ~/.ssh on startup (SSH requires user-owned key files).
-  services.opencrow.credentialFiles = {
-    "ssh-private-key" = config.clan.core.vars.generators.opencrow-ssh.files.ssh-private-key.path;
-    "ssh-public-key" = config.clan.core.vars.generators.opencrow-ssh.files.ssh-public-key.path;
-  };
+  services.opencrow.credentialFiles."ssh-private-key" =
+    config.clan.core.vars.generators.opencrow-ssh.files.ssh-private-key.path;
+  services.opencrow.credentialFiles."ssh-public-key" =
+    config.clan.core.vars.generators.opencrow-ssh.files.ssh-public-key.path;
 
   containers.opencrow.config.systemd.services.opencrow.serviceConfig.ExecStartPre = [
     "+${pkgs.writeShellScript "install-ssh-keys" ''

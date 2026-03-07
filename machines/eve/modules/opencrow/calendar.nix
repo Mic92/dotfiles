@@ -6,16 +6,10 @@
 }:
 let
   dotfiles = "${self}/home";
-
-  vdirsyncerHooks = pkgs.runCommand "vdirsyncer-hooks" { } ''
-    mkdir -p $out/bin
-    cp ${dotfiles}/bin/vdirsyncer-post-hook $out/bin/
-    cp ${dotfiles}/bin/vdirsyncer-pre-deletion-hook $out/bin/
-    chmod +x $out/bin/*
-  '';
 in
 {
   services.opencrow.skills.calendar = ./skills/calendar;
+
   clan.core.vars.generators.opencrow-nextcloud = {
     files.nextcloud-thalheim-password.secret = true;
     files.nextcloud-clan-password.secret = true;
@@ -38,13 +32,16 @@ in
     config.clan.core.vars.generators.opencrow-nextcloud.files.nextcloud-clan-password.path;
 
   services.opencrow.extraPackages = [
-    vdirsyncerHooks
-  ]
-  ++ (with pkgs; [
-    khal
-    todoman
-    vdirsyncer
-  ]);
+    (pkgs.runCommand "vdirsyncer-hooks" { } ''
+      mkdir -p $out/bin
+      cp ${dotfiles}/bin/vdirsyncer-post-hook $out/bin/
+      cp ${dotfiles}/bin/vdirsyncer-pre-deletion-hook $out/bin/
+      chmod +x $out/bin/*
+    '')
+    pkgs.khal
+    pkgs.todoman
+    pkgs.vdirsyncer
+  ];
 
   containers.opencrow.config.systemd.tmpfiles.rules = [
     "d /var/lib/opencrow/.config/vdirsyncer 0750 opencrow opencrow -"

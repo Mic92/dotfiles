@@ -8,9 +8,6 @@
   ...
 }:
 let
-  cfg = config.services.opencrow;
-  credDir = "/run/credentials/opencrow.service";
-
   mockRbw = pkgs.writeShellScriptBin "rbw" (
     ''
       if [ "$1" != "get" ]; then
@@ -24,9 +21,9 @@ let
     + lib.concatStrings (
       lib.mapAttrsToList (args: credFile: ''
         ${lib.escapeShellArg args})
-          cat "${credDir}/${credFile}"
+          cat "/run/credentials/opencrow.service/${credFile}"
           ;;
-      '') cfg.rbwEntries
+      '') config.services.opencrow.rbwEntries
     )
     + ''
         *)
@@ -45,9 +42,6 @@ in
       Map from rbw key name (the argument to "rbw get") to the
       corresponding systemd credential file name.
     '';
-    example = {
-      "Eve" = "nextcloud-thalheim-password";
-    };
   };
 
   config.services.opencrow.extraPackages = [ mockRbw ];
