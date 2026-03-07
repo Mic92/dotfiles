@@ -38,12 +38,16 @@ in
       "d /var/lib/opencrow/.config 0750 opencrow opencrow -"
     ];
 
-    services.opencrow.skills = lib.genAttrs [
-      "context7-cli"
-      "db-cli"
-      "pexpect-cli"
-      "weather-cli"
-    ] (name: "${micsSkills}/skills/${name}");
+    services.opencrow.skills =
+      lib.genAttrs [
+        "context7-cli"
+        "db-cli"
+        "pexpect-cli"
+        "weather-cli"
+      ] (name: "${micsSkills}/skills/${name}")
+      // {
+        http = ./skills/http;
+      };
 
     services.opencrow = {
       enable = true;
@@ -67,6 +71,7 @@ in
       ++ (with pkgs; [
         curl
         file
+        hurl
         git
         jq
         less
