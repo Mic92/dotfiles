@@ -1,0 +1,29 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "n8n-hooks"
+version = "0.1.0"
+description = "CLI to invoke n8n webhooks — currently: store email drafts in IMAP"
+readme = "README.md"
+requires-python = ">=3.13"
+license = {text = "MIT"}
+
+[project.scripts]
+n8n-hooks = "n8n_hooks.cli:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.ruff]
+target-version = "py313"
+
+[tool.mypy]
+python_version = "3.13"
+strict = true
+
+[[tool.mypy.overrides]]
+module = "pytest"
+ignore_missing_imports = true
