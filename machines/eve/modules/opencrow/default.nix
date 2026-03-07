@@ -16,6 +16,8 @@ in
   imports = [
     self.inputs.opencrow.nixosModules.default
     ./rbw.nix
+    ./kagi.nix
+    ./gmaps.nix
     ./mail.nix
     ./calendar.nix
     ./n8n.nix
@@ -80,19 +82,6 @@ in
       '';
     };
 
-    clan.core.vars.generators.opencrow-skills = {
-      files.kagi-session-token.secret = true;
-      files.gmaps-api-key.secret = true;
-
-      prompts.kagi-session-token.description = "Kagi session token for web search";
-      prompts.gmaps-api-key.description = "Google Maps API key for gmaps-cli";
-
-      script = ''
-        cp "$prompts/kagi-session-token" "$out/kagi-session-token"
-        cp "$prompts/gmaps-api-key" "$out/gmaps-api-key"
-      '';
-    };
-
     # --- Pin opencrow uid/gid so host services (n8n) can share the group ---
 
     containers.opencrow.config.users.users.opencrow.uid = 2000;
@@ -139,19 +128,8 @@ in
 
     containers.opencrow.config.systemd.tmpfiles.rules = [
       "d /var/lib/opencrow/.config 0750 opencrow opencrow -"
-      "d /var/lib/opencrow/.config/kagi 0750 opencrow opencrow -"
-      ''f /var/lib/opencrow/.config/kagi/config.json 0640 opencrow opencrow - {"password_command":"rbw get kagi-session-link"}''
-      "d /var/lib/opencrow/.config/gmaps-cli 0750 opencrow opencrow -"
-      ''f /var/lib/opencrow/.config/gmaps-cli/config.json 0640 opencrow opencrow - {"api_key_command":"rbw get google-maps-api-key"}''
       ''f /var/lib/opencrow/.gitconfig 0644 opencrow opencrow - [user]\n\tname = Janet\n\temail = janet@thalheim.io''
     ];
-
-    # --- rbw entries for kagi and gmaps ---
-
-    services.opencrow.rbwEntries = {
-      "kagi-session-link" = "kagi-session-token";
-      "google-maps-api-key" = "gmaps-api-key";
-    };
 
     # --- Skills ---
 
@@ -164,8 +142,6 @@ in
         [
           "context7-cli"
           "db-cli"
-          "gmaps-cli"
-          "kagi-search"
           "pexpect-cli"
           "weather-cli"
         ];
@@ -177,9 +153,6 @@ in
       piPackage = self.inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
       credentialFiles = {
         "nostr-private-key" = config.clan.core.vars.generators.opencrow.files.nostr-private-key.path;
-        "kagi-session-token" =
-          config.clan.core.vars.generators.opencrow-skills.files.kagi-session-token.path;
-        "gmaps-api-key" = config.clan.core.vars.generators.opencrow-skills.files.gmaps-api-key.path;
       };
       environment = {
         OPENCROW_BACKEND = "nostr";
@@ -202,8 +175,6 @@ in
       extraPackages = [
         micsSkillsPkgs.context7-cli
         micsSkillsPkgs.db-cli
-        micsSkillsPkgs.gmaps-cli
-        micsSkillsPkgs.kagi-search
         micsSkillsPkgs.pexpect-cli
         micsSkillsPkgs.weather-cli
       ]
