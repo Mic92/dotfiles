@@ -3,12 +3,7 @@
   ...
 }:
 {
-  services.opencrow.skills = [
-    {
-      name = "email";
-      path = ./skills/email;
-    }
-  ];
+  services.opencrow.skills.email = ./skills/email;
   # Expose starred/flagged emails (delivered by sieve-flagged-forward)
   # to Janet read-only so she can read full message bodies.
   containers.opencrow.bindMounts."/var/mail/flagged" = {

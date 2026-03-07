@@ -15,12 +15,7 @@ let
   '';
 in
 {
-  services.opencrow.skills = [
-    {
-      name = "calendar";
-      path = ./skills/calendar;
-    }
-  ];
+  services.opencrow.skills.calendar = ./skills/calendar;
   clan.core.vars.generators.opencrow-nextcloud = {
     files.nextcloud-thalheim-password.secret = true;
     files.nextcloud-clan-password.secret = true;
@@ -34,17 +29,13 @@ in
     '';
   };
 
-  services.opencrow.rbwEntries = {
-    "Eve" = "nextcloud-thalheim-password";
-    "nextcloud.clan.lol Mic92" = "nextcloud-clan-password";
-  };
+  services.opencrow.rbwEntries."Eve" = "nextcloud-thalheim-password";
+  services.opencrow.rbwEntries."nextcloud.clan.lol Mic92" = "nextcloud-clan-password";
 
-  services.opencrow.credentialFiles = {
-    "nextcloud-thalheim-password" =
-      config.clan.core.vars.generators.opencrow-nextcloud.files.nextcloud-thalheim-password.path;
-    "nextcloud-clan-password" =
-      config.clan.core.vars.generators.opencrow-nextcloud.files.nextcloud-clan-password.path;
-  };
+  services.opencrow.credentialFiles."nextcloud-thalheim-password" =
+    config.clan.core.vars.generators.opencrow-nextcloud.files.nextcloud-thalheim-password.path;
+  services.opencrow.credentialFiles."nextcloud-clan-password" =
+    config.clan.core.vars.generators.opencrow-nextcloud.files.nextcloud-clan-password.path;
 
   services.opencrow.extraPackages = [
     vdirsyncerHooks

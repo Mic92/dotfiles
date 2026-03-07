@@ -5,12 +5,7 @@
   ...
 }:
 {
-  services.opencrow.skills = [
-    {
-      name = "n8n-workflows";
-      path = ./skills/n8n-workflows;
-    }
-  ];
+  services.opencrow.skills.n8n-workflows = ./skills/n8n-workflows;
 
   clan.core.vars.generators.opencrow-n8n = {
     files.n8n-api-jwt.secret = true;
@@ -22,13 +17,10 @@
     '';
   };
 
-  services.opencrow.rbwEntries = {
-    "n8n-api-jwt" = "n8n-api-jwt";
-  };
+  services.opencrow.rbwEntries."n8n-api-jwt" = "n8n-api-jwt";
 
-  services.opencrow.credentialFiles = {
-    "n8n-api-jwt" = config.clan.core.vars.generators.opencrow-n8n.files.n8n-api-jwt.path;
-  };
+  services.opencrow.credentialFiles."n8n-api-jwt" =
+    config.clan.core.vars.generators.opencrow-n8n.files.n8n-api-jwt.path;
 
   services.opencrow.extraPackages = [
     self.packages.${pkgs.stdenv.hostPlatform.system}.n8n-cli

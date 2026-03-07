@@ -10,7 +10,9 @@ let
 
   cfg = config.services.opencrow;
 
-  skillsDir = pkgs.linkFarm "opencrow-skills" cfg.skills;
+  skillsDir = pkgs.linkFarm "opencrow-skills" (
+    lib.mapAttrsToList (name: path: { inherit name path; }) cfg.skills
+  );
 in
 {
   imports = [
@@ -26,22 +28,9 @@ in
   ];
 
   options.services.opencrow.skills = lib.mkOption {
-    type = lib.types.listOf (
-      lib.types.submodule {
-        options = {
-          name = lib.mkOption {
-            type = lib.types.str;
-            description = "Skill directory name.";
-          };
-          path = lib.mkOption {
-            type = lib.types.path;
-            description = "Path to skill directory (must contain SKILL.md).";
-          };
-        };
-      }
-    );
-    default = [ ];
-    description = "Skill directories to expose to the agent via OPENCROW_PI_SKILLS_DIR.";
+    type = lib.types.attrsOf lib.types.path;
+    default = { };
+    description = "Skill directories (name → path) to expose to the agent via OPENCROW_PI_SKILLS_DIR.";
   };
 
   config = {
@@ -62,18 +51,12 @@ in
 
     # --- Skills ---
 
-    services.opencrow.skills =
-      map
-        (name: {
-          inherit name;
-          path = "${micsSkills}/skills/${name}";
-        })
-        [
-          "context7-cli"
-          "db-cli"
-          "pexpect-cli"
-          "weather-cli"
-        ];
+    services.opencrow.skills = lib.genAttrs [
+      "context7-cli"
+      "db-cli"
+      "pexpect-cli"
+      "weather-cli"
+    ] (name: "${micsSkills}/skills/${name}");
 
     # --- Service ---
 

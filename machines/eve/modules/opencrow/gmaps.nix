@@ -19,20 +19,12 @@ in
     '';
   };
 
-  services.opencrow.rbwEntries = {
-    "google-maps-api-key" = "gmaps-api-key";
-  };
+  services.opencrow.rbwEntries."google-maps-api-key" = "gmaps-api-key";
 
-  services.opencrow.credentialFiles = {
-    "gmaps-api-key" = config.clan.core.vars.generators.opencrow-gmaps.files.gmaps-api-key.path;
-  };
+  services.opencrow.credentialFiles."gmaps-api-key" =
+    config.clan.core.vars.generators.opencrow-gmaps.files.gmaps-api-key.path;
 
-  services.opencrow.skills = [
-    {
-      name = "gmaps-cli";
-      path = "${micsSkills}/skills/gmaps-cli";
-    }
-  ];
+  services.opencrow.skills.gmaps-cli = "${micsSkills}/skills/gmaps-cli";
 
   services.opencrow.extraPackages = [ micsSkillsPkgs.gmaps-cli ];
 
