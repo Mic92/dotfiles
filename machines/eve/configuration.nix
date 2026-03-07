@@ -48,6 +48,7 @@
     ./modules/mastodon-hnbot.nix
     ./modules/n8n
     ./modules/network.nix
+    ./modules/nostr-relay.nix
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
     ./modules/opencrow

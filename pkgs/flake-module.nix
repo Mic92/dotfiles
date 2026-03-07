@@ -64,6 +64,7 @@ in
     radicle-desktop = pkgs.callPackage ./radicle-desktop { };
   }
   // lib.optionalAttrs pkgs.stdenv.isLinux {
+    groups-relay = pkgs.callPackage ./groups-relay { };
     phantun = pkgs.callPackage ./phantun { };
     phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
     radicle-github-sync = pkgs.callPackage ./radicle-github-sync { };
