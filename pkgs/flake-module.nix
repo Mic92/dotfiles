@@ -23,6 +23,7 @@ in
       claude-code = inputs'.llm-agents.claude-code;
     };
     n8n-cli = pkgs.callPackage ./n8n-cli { inherit bun2nix; };
+    n8n-hooks = pkgs.callPackage ./n8n-hooks { };
 
     email-sync = pkgs.callPackage ./email-sync { };
     vcal = pkgs.callPackage ./vcal { };

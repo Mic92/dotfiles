@@ -1,4 +1,6 @@
 {
+  config,
+  self,
   pkgs,
   ...
 }:
@@ -22,5 +24,30 @@
     "d /var/vmail/thalheim.io/janet/Maildir/tmp 2770 vmail opencrow -"
   ];
 
-  services.opencrow.extraPackages = [ pkgs.mblaze ];
+  # --- n8n-hooks: store email drafts in IMAP ---
+
+  clan.core.vars.generators.opencrow-n8n-hooks = {
+    files.n8n-hooks-token.secret = true;
+
+    prompts.n8n-hooks-token.description = "Shared bearer token for n8n webhooks";
+
+    script = ''
+      cp "$prompts/n8n-hooks-token" "$out/n8n-hooks-token"
+    '';
+  };
+
+  services.opencrow.rbwEntries."n8n-hooks-token" = "n8n-hooks-token";
+
+  services.opencrow.credentialFiles."n8n-hooks-token" =
+    config.clan.core.vars.generators.opencrow-n8n-hooks.files.n8n-hooks-token.path;
+
+  services.opencrow.extraPackages = [
+    pkgs.mblaze
+    self.packages.${pkgs.stdenv.hostPlatform.system}.n8n-hooks
+  ];
+
+  containers.opencrow.config.systemd.tmpfiles.rules = [
+    "d /var/lib/opencrow/.config/n8n-hooks 0750 opencrow opencrow -"
+    ''f /var/lib/opencrow/.config/n8n-hooks/config.json 0640 opencrow opencrow - {"token_command":"rbw get n8n-hooks-token","hooks":{"store-draft":{"url":"https://n8n.thalheim.io/webhook/store-email-draft"}}}''
+  ];
 }
