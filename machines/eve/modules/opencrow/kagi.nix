@@ -19,20 +19,12 @@ in
     '';
   };
 
-  services.opencrow.rbwEntries = {
-    "kagi-session-link" = "kagi-session-token";
-  };
+  services.opencrow.rbwEntries."kagi-session-link" = "kagi-session-token";
 
-  services.opencrow.credentialFiles = {
-    "kagi-session-token" = config.clan.core.vars.generators.opencrow-kagi.files.kagi-session-token.path;
-  };
+  services.opencrow.credentialFiles."kagi-session-token" =
+    config.clan.core.vars.generators.opencrow-kagi.files.kagi-session-token.path;
 
-  services.opencrow.skills = [
-    {
-      name = "kagi-search";
-      path = "${micsSkills}/skills/kagi-search";
-    }
-  ];
+  services.opencrow.skills.kagi-search = "${micsSkills}/skills/kagi-search";
 
   services.opencrow.extraPackages = [ micsSkillsPkgs.kagi-search ];
 
