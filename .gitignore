@@ -29,3 +29,4 @@ result
 pkgs/browser-cli/extension/web-ext-artifacts
 pkgs/direnv-instant/target
 pkgs/direnv-instant/.claude/settings.local.json
+.sediment/

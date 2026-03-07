@@ -546,11 +546,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772875463,
-        "narHash": "sha256-gGSotFr2zpF/6+2JUypRGDSdrs8q1eeOCkdY5tHMtqk=",
+        "lastModified": 1772901811,
+        "narHash": "sha256-UEPkE1qXIg4mf8YUfTms4IWaLfu3Ckh53pktLd3PY94=",
         "owner": "Mic92",
         "repo": "mics-n8n-nodes",
-        "rev": "c6c6e5b1e6e2f3e2fb8465c67757c94c2e2864ad",
+        "rev": "00ffc395a198b1c62846d2a1572a59e6f14454a8",
         "type": "github"
       },
       "original": {
@@ -858,11 +858,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772876825,
-        "narHash": "sha256-vXdYlChmU+aOU/TUYiB/WP73SnDlhhSy9/JcGTiBo4c=",
+        "lastModified": 1772921465,
+        "narHash": "sha256-LTR0WsSJ9VssVSb5aMjKxs1lFa9kuLTDuIFZrqhP0DI=",
         "owner": "pinpox",
         "repo": "opencrow",
-        "rev": "3d0656fdea480c5f8a4ac536b17383a01d761548",
+        "rev": "26db5b71668c2f161ec9857d7c2d56ee4056108d",
         "type": "github"
       },
       "original": {
