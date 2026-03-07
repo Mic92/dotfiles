@@ -4,10 +4,6 @@
   pkgs,
   ...
 }:
-let
-  micsSkills = self.inputs.mics-skills;
-  micsSkillsPkgs = micsSkills.packages.${pkgs.stdenv.hostPlatform.system};
-in
 {
   clan.core.vars.generators.opencrow-gmaps = {
     files.gmaps-api-key.secret = true;
@@ -24,9 +20,11 @@ in
   services.opencrow.credentialFiles."gmaps-api-key" =
     config.clan.core.vars.generators.opencrow-gmaps.files.gmaps-api-key.path;
 
-  services.opencrow.skills.gmaps-cli = "${micsSkills}/skills/gmaps-cli";
+  services.opencrow.skills.gmaps-cli = "${self.inputs.mics-skills}/skills/gmaps-cli";
 
-  services.opencrow.extraPackages = [ micsSkillsPkgs.gmaps-cli ];
+  services.opencrow.extraPackages = [
+    self.inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system}.gmaps-cli
+  ];
 
   containers.opencrow.config.systemd.tmpfiles.rules = [
     "d /var/lib/opencrow/.config/gmaps-cli 0750 opencrow opencrow -"

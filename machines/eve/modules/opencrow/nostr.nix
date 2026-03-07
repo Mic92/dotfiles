@@ -18,9 +18,8 @@
     '';
   };
 
-  services.opencrow.credentialFiles = {
-    "nostr-private-key" = config.clan.core.vars.generators.opencrow.files.nostr-private-key.path;
-  };
+  services.opencrow.credentialFiles."nostr-private-key" =
+    config.clan.core.vars.generators.opencrow.files.nostr-private-key.path;
 
   services.opencrow.environment = {
     OPENCROW_BACKEND = "nostr";

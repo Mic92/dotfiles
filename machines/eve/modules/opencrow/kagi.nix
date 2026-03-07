@@ -4,10 +4,6 @@
   pkgs,
   ...
 }:
-let
-  micsSkills = self.inputs.mics-skills;
-  micsSkillsPkgs = micsSkills.packages.${pkgs.stdenv.hostPlatform.system};
-in
 {
   clan.core.vars.generators.opencrow-kagi = {
     files.kagi-session-token.secret = true;
@@ -24,9 +20,11 @@ in
   services.opencrow.credentialFiles."kagi-session-token" =
     config.clan.core.vars.generators.opencrow-kagi.files.kagi-session-token.path;
 
-  services.opencrow.skills.kagi-search = "${micsSkills}/skills/kagi-search";
+  services.opencrow.skills.kagi-search = "${self.inputs.mics-skills}/skills/kagi-search";
 
-  services.opencrow.extraPackages = [ micsSkillsPkgs.kagi-search ];
+  services.opencrow.extraPackages = [
+    self.inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system}.kagi-search
+  ];
 
   containers.opencrow.config.systemd.tmpfiles.rules = [
     "d /var/lib/opencrow/.config/kagi 0750 opencrow opencrow -"
