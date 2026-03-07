@@ -21,6 +21,10 @@
     '';
   };
 
+  services.opencrow.rbwEntries = {
+    "n8n-api-jwt" = "n8n-api-jwt";
+  };
+
   services.opencrow.credentialFiles = {
     "n8n-api-jwt" = config.clan.core.vars.generators.opencrow-n8n.files.n8n-api-jwt.path;
   };
