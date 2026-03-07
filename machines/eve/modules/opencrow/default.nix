@@ -11,46 +11,11 @@ let
   cfg = config.services.opencrow;
 
   skillsDir = pkgs.linkFarm "opencrow-skills" cfg.skills;
-
-  # Mock rbw that returns secrets from systemd credential files.
-  # Maps "rbw get <args>" to credential file names.
-  credDir = "/run/credentials/opencrow.service";
-  rbwEntries = {
-    "Eve" = "nextcloud-thalheim-password";
-    "nextcloud.clan.lol Mic92" = "nextcloud-clan-password";
-    "kagi-session-link" = "kagi-session-token";
-    "google-maps-api-key" = "gmaps-api-key";
-    "n8n-api-jwt" = "n8n-api-jwt";
-  };
-  mockRbw = pkgs.writeShellScriptBin "rbw" (
-    ''
-      if [ "$1" != "get" ]; then
-        echo "mock rbw: only 'get' is supported" >&2
-        exit 1
-      fi
-      shift
-      key="$*"
-      case "$key" in
-    ''
-    + pkgs.lib.concatStrings (
-      pkgs.lib.mapAttrsToList (args: credFile: ''
-        ${pkgs.lib.escapeShellArg args})
-          cat "${credDir}/${credFile}"
-          ;;
-      '') rbwEntries
-    )
-    + ''
-        *)
-          echo "mock rbw: unknown entry: $key" >&2
-          exit 1
-          ;;
-      esac
-    ''
-  );
 in
 {
   imports = [
     self.inputs.opencrow.nixosModules.default
+    ./rbw.nix
     ./mail.nix
     ./calendar.nix
     ./n8n.nix
@@ -181,6 +146,13 @@ in
       ''f /var/lib/opencrow/.gitconfig 0644 opencrow opencrow - [user]\n\tname = Janet\n\temail = janet@thalheim.io''
     ];
 
+    # --- rbw entries for kagi and gmaps ---
+
+    services.opencrow.rbwEntries = {
+      "kagi-session-link" = "kagi-session-token";
+      "google-maps-api-key" = "gmaps-api-key";
+    };
+
     # --- Skills ---
 
     services.opencrow.skills =
@@ -228,7 +200,6 @@ in
         OPENCROW_PI_MODEL = "claude-sonnet-4-6";
       };
       extraPackages = [
-        mockRbw
         micsSkillsPkgs.context7-cli
         micsSkillsPkgs.db-cli
         micsSkillsPkgs.gmaps-cli

@@ -34,6 +34,11 @@ in
     '';
   };
 
+  services.opencrow.rbwEntries = {
+    "Eve" = "nextcloud-thalheim-password";
+    "nextcloud.clan.lol Mic92" = "nextcloud-clan-password";
+  };
+
   services.opencrow.credentialFiles = {
     "nextcloud-thalheim-password" =
       config.clan.core.vars.generators.opencrow-nextcloud.files.nextcloud-thalheim-password.path;
