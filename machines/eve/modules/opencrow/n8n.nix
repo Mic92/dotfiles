@@ -5,6 +5,12 @@
   ...
 }:
 {
+  services.opencrow.skills = [
+    {
+      name = "n8n-workflows";
+      path = ./skills/n8n-workflows;
+    }
+  ];
   clan.core.vars.generators.opencrow-n8n = {
     files.n8n-api-jwt.secret = true;
 

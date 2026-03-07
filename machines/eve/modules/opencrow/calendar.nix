@@ -15,6 +15,12 @@ let
   '';
 in
 {
+  services.opencrow.skills = [
+    {
+      name = "calendar";
+      path = ./skills/calendar;
+    }
+  ];
   clan.core.vars.generators.opencrow-nextcloud = {
     files.nextcloud-thalheim-password.secret = true;
     files.nextcloud-clan-password.secret = true;
