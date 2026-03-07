@@ -16,6 +16,7 @@ in
   imports = [
     self.inputs.opencrow.nixosModules.default
     ./rbw.nix
+    ./gitea.nix
     ./kagi.nix
     ./gmaps.nix
     ./mail.nix
@@ -60,75 +61,18 @@ in
       '';
     };
 
-    clan.core.vars.generators.opencrow-ssh = {
-      files.ssh-private-key.secret = true;
-      files.ssh-public-key.secret = false;
-
-      runtimeInputs = with pkgs; [ openssh ];
-
-      script = ''
-        ssh-keygen -t ed25519 -N "" -f "$out/ssh-private-key" -C "opencrow@eve"
-        ssh-keygen -y -f "$out/ssh-private-key" > "$out/ssh-public-key"
-      '';
-    };
-
-    clan.core.vars.generators.opencrow-gitea = {
-      files.gitea-password.secret = true;
-
-      runtimeInputs = with pkgs; [ openssl ];
-
-      script = ''
-        openssl rand -base64 32 | tr -d '\n' > "$out/gitea-password"
-      '';
-    };
-
     # --- Pin opencrow uid/gid so host services (n8n) can share the group ---
 
     containers.opencrow.config.users.users.opencrow.uid = 2000;
     containers.opencrow.config.users.groups.opencrow.gid = 2000;
     users.groups.opencrow.gid = 2000;
 
-    # --- SSH keys ---
-
-    containers.opencrow.bindMounts."/run/opencrow-ssh/id_ed25519" = {
-      hostPath = config.clan.core.vars.generators.opencrow-ssh.files.ssh-private-key.path;
-      isReadOnly = true;
-    };
-    containers.opencrow.bindMounts."/run/opencrow-ssh/id_ed25519.pub" = {
-      hostPath = config.clan.core.vars.generators.opencrow-ssh.files.ssh-public-key.path;
-      isReadOnly = true;
-    };
-
-    systemd.tmpfiles.rules = [
-      "d /run/opencrow-ssh 0700 root root -"
-      "f /run/opencrow-ssh/id_ed25519 0600 root root -"
-      "f /run/opencrow-ssh/id_ed25519.pub 0644 root root -"
-    ];
-
     # /etc/localtime is bind-mounted from the host (UTC) in nspawn containers,
     # so we rely on /etc/timezone and TZ env var instead.
     containers.opencrow.config.environment.etc."timezone".text = "Europe/Berlin\n";
 
-    # Copy bind-mounted SSH keys (root-owned) into ~/.ssh with opencrow
-    # ownership so all SSH-based tools (git, ssh) work without wrapper hacks.
-    containers.opencrow.config.systemd.services.opencrow-ssh-keys = {
-      description = "Install opencrow SSH keys";
-      wantedBy = [ "multi-user.target" ];
-      before = [
-        "opencrow.service"
-        "opencrow-clone-repos.service"
-      ];
-      serviceConfig.Type = "oneshot";
-      script = ''
-        install -d -m 0700 -o opencrow -g opencrow /var/lib/opencrow/.ssh
-        install -m 0600 -o opencrow -g opencrow /run/opencrow-ssh/id_ed25519 /var/lib/opencrow/.ssh/id_ed25519
-        install -m 0644 -o opencrow -g opencrow /run/opencrow-ssh/id_ed25519.pub /var/lib/opencrow/.ssh/id_ed25519.pub
-      '';
-    };
-
     containers.opencrow.config.systemd.tmpfiles.rules = [
       "d /var/lib/opencrow/.config 0750 opencrow opencrow -"
-      ''f /var/lib/opencrow/.gitconfig 0644 opencrow opencrow - [user]\n\tname = Janet\n\temail = janet@thalheim.io''
     ];
 
     # --- Skills ---
