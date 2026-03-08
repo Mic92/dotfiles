@@ -1,11 +1,15 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }:
 let
   hostname = "paperless.thalheim.io";
   apiHostname = "paperless-api.thalheim.io";
+  opencrowPermsApp = ./paperless-perms;
+  cfg = config.services.paperless;
+  paperlessPythonPath = "${cfg.package.python.pkgs.makePythonPath cfg.package.propagatedBuildInputs}:${cfg.package}/lib/paperless-ngx/src:${opencrowPermsApp}";
 in
 {
   services.paperless = {
@@ -41,6 +45,7 @@ in
       PAPERLESS_ALLOWED_HOSTS = "${hostname},${apiHostname}";
       PAPERLESS_CORS_ALLOWED_HOSTS = "https://${hostname},https://${apiHostname}";
       PAPERLESS_CSRF_TRUSTED_ORIGINS = "https://${hostname},https://${apiHostname}";
+      PAPERLESS_APPS = "paperless_perms.apps.PaperlessPermsConfig";
       PAPERLESS_ENABLE_HTTP_REMOTE_USER = true;
       PAPERLESS_HTTP_REMOTE_USER_HEADER_NAME = "HTTP_REMOTE_USER";
       PAPERLESS_LOGOUT_REDIRECT_URL = "/"; # Redirect to root after logout
@@ -61,6 +66,13 @@ in
     '';
   };
 
+  # Add the opencrow_perms Django app to PYTHONPATH for all paperless
+  # services so post_save signals fire in every worker process.
+  systemd.services.paperless-web.environment.PYTHONPATH = lib.mkForce paperlessPythonPath;
+  systemd.services.paperless-task-queue.environment.PYTHONPATH = paperlessPythonPath;
+  systemd.services.paperless-consumer.environment.PYTHONPATH = paperlessPythonPath;
+  systemd.services.paperless-scheduler.environment.PYTHONPATH = paperlessPythonPath;
+
   services.postgresql.ensureDatabases = [ "paperless" ];
   services.postgresql.ensureUsers = [
     {
@@ -68,63 +80,6 @@ in
       ensureDBOwnership = true;
     }
   ];
-
-  # Setup script to handle remote user group assignment
-  systemd.services.paperless-user-setup = {
-    description = "Setup paperless users and groups for remote authentication";
-    after = [ "paperless-web.service" ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      # Create editors group with permissions and ensure remote users are in it
-      cd /var/lib/paperless
-      ${pkgs.util-linux}/bin/runuser -u paperless -- /run/current-system/sw/bin/paperless-manage shell <<EOF
-      from django.contrib.auth.models import Group, Permission, User
-      from django.contrib.contenttypes.models import ContentType
-      from django.db.models.signals import post_save
-      from django.dispatch import receiver
-
-      # Create or get the editors group
-      editors_group, created = Group.objects.get_or_create(name="editors")
-      if created:
-          print("Created editors group")
-      else:
-          print("Editors group already exists")
-
-      # Grant all view, change, add, and delete permissions (but not admin)
-      permissions_to_add = []
-      for ct in ContentType.objects.all():
-          permissions = Permission.objects.filter(
-              content_type=ct,
-              codename__regex=r"^(view|change|add|delete)_"
-          )
-          permissions_to_add.extend(permissions)
-
-      editors_group.permissions.set(permissions_to_add)
-      print(f"Added {len(permissions_to_add)} permissions to editors group")
-
-      # Add all existing remote users to editors group
-      remote_users = User.objects.filter(username__contains="@")
-      for user in remote_users:
-          if not user.groups.filter(name="editors").exists():
-              user.groups.add(editors_group)
-              print(f"Added existing remote user {user.username} to editors group")
-
-      # Set up signal handler for future remote user creations
-      @receiver(post_save, sender=User)
-      def add_remote_user_to_editors_group(sender, instance, created, **kwargs):
-          if created and instance.username.count('@') > 0:  # Only for remote users
-              if not instance.groups.filter(name="editors").exists():
-                  instance.groups.add(editors_group)
-                  print(f"Auto-added new remote user {instance.username} to editors group")
-
-      print("Remote user group assignment setup completed")
-      EOF
-    '';
-  };
 
   services.nginx.virtualHosts.${hostname} = {
     useACMEHost = "thalheim.io";
