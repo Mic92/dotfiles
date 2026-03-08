@@ -388,6 +388,32 @@
         "type": "github"
       }
     },
+    "freelancer-toolbox": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1772291955,
+        "narHash": "sha256-5QNUdtswk//RGFAl7B21bNZyc1OVm2vffLKRHYeCKX0=",
+        "owner": "numtide",
+        "repo": "freelancer-toolbox",
+        "rev": "e4271bbe267f1be099d7d45d41ec20f2263b47c4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "freelancer-toolbox",
+        "type": "github"
+      }
+    },
     "harmonia": {
       "inputs": {
         "crane": [
@@ -925,6 +951,7 @@
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
         "forge-triage": "forge-triage",
+        "freelancer-toolbox": "freelancer-toolbox",
         "harmonia": "harmonia",
         "hercules-ci-effects": "hercules-ci-effects_2",
         "home-manager": "home-manager",

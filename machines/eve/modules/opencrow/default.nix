@@ -19,6 +19,7 @@ in
     ./mail.nix
     ./calendar.nix
     ./n8n.nix
+    ./paperless.nix
   ];
 
   config = {

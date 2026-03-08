@@ -176,6 +176,11 @@
       inputs.flake-parts.follows = "flake-parts";
     };
 
+    freelancer-toolbox.url = "github:numtide/freelancer-toolbox";
+    freelancer-toolbox.inputs.nixpkgs.follows = "nixpkgs";
+    freelancer-toolbox.inputs.flake-parts.follows = "flake-parts";
+    freelancer-toolbox.inputs.treefmt-nix.follows = "treefmt-nix";
+
     mics-skills = {
       url = "github:Mic92/mics-skills";
       inputs.nixpkgs.follows = "nixpkgs";

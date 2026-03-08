@@ -43,6 +43,10 @@ lint.ignore = [
 ]
 exclude = ["zsh/*", "gdb/*"]
 
+[tool.ruff.lint.per-file-ignores]
+# Django app: model imports must be deferred until the app registry is ready
+"machines/eve/modules/paperless-perms/paperless_perms/apps.py" = ["PLC0415"]
+
 [tool.mypy]
 python_version = "3.13"
 warn_redundant_casts = true

@@ -19,6 +19,5 @@
     "padding": 0
   },
   "enabledPlugins": {},
-  "alwaysThinkingEnabled": true,
-  "effortLevel": "medium"
+  "alwaysThinkingEnabled": true
 }
