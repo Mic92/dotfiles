@@ -24,6 +24,7 @@ in
     };
     n8n-cli = pkgs.callPackage ./n8n-cli { inherit bun2nix; };
     n8n-hooks = pkgs.callPackage ./n8n-hooks { };
+    n8n-nodes-paperless = pkgs.callPackage ./n8n-nodes-paperless { };
 
     email-sync = pkgs.callPackage ./email-sync { };
     vcal = pkgs.callPackage ./vcal { };

@@ -106,6 +106,7 @@ in
           name: pkg: "ln -sfn ${pkg}/lib/node_modules/${name}/dist /var/lib/n8n/.n8n/custom/${name}"
         ) micsNodes
       );
+      n8n-nodes-paperless = self.packages.${pkgs.stdenv.hostPlatform.system}.n8n-nodes-paperless;
     in
     ''
       mkdir -p /var/lib/n8n/.n8n/custom
@@ -113,6 +114,8 @@ in
         self.inputs.n8n-nodes-caldav.packages.${pkgs.stdenv.hostPlatform.system}.default
       }/lib/node_modules/n8n-nodes-caldav/dist \
         /var/lib/n8n/.n8n/custom/n8n-nodes-caldav
+      ln -sfn ${n8n-nodes-paperless}/lib/node_modules/@n8n-chezmoi-sh/n8n-nodes-paperless/dist \
+        /var/lib/n8n/.n8n/custom/n8n-nodes-paperless
       ${linkCommands}
     '';
 
