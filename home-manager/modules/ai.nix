@@ -9,13 +9,17 @@ let
   selfPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
-  imports = [ inputs.mics-skills.homeManagerModules.default ];
+  imports = [
+    inputs.mics-skills.homeManagerModules.default
+    ./librewolf.nix
+  ];
 
   programs.mics-skills = {
     enable = true;
     package = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
     skillsSrc = inputs.mics-skills;
     skills = [
+      "browser-cli"
       "context7-cli"
       "db-cli"
       "gmaps-cli"
