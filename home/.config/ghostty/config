@@ -12,4 +12,4 @@ theme = iTerm2 Solarized Light
 
 keybind = performable:copy=copy_to_clipboard
 keybind = performable:paste=paste_from_clipboard
-keybind = shift+enter=text:\n
+keybind = alt+backspace=text:\x1b\x7f
