@@ -20,8 +20,9 @@ PlasmoidItem {
     property int activeIndex: -1
 
     // Available projects and activities for new entry creation.
-    property var projects: []
-    property var activities: []
+    // Using ListModel for reliable ComboBox binding in Plasma QML.
+    ListModel { id: projectModel }
+    ListModel { id: activityModel }
 
     // Replaced at install time by install.sh with the actual token.
     readonly property string tokenPlaceholder: "@KIMAI_API_TOKEN@"
@@ -191,12 +192,12 @@ PlasmoidItem {
             PlasmaComponents3.ComboBox {
                 id: projectCombo
                 Layout.fillWidth: true
-                model: root.projects
+                model: projectModel
                 textRole: "label"
-                valueRole: "id"
-                onCurrentIndexChanged: {
+                valueRole: "itemId"
+                onActivated: {
                     if (currentIndex >= 0) {
-                        fetchActivities(currentValue)
+                        fetchActivities(projectModel.get(currentIndex).itemId)
                     }
                 }
             }
@@ -204,16 +205,17 @@ PlasmoidItem {
             PlasmaComponents3.ComboBox {
                 id: activityCombo
                 Layout.fillWidth: true
-                model: root.activities
+                model: activityModel
                 textRole: "label"
-                valueRole: "id"
+                valueRole: "itemId"
             }
 
             PlasmaComponents3.ToolButton {
                 icon.name: "list-add"
                 enabled: projectCombo.currentIndex >= 0 && activityCombo.currentIndex >= 0
-                onClicked: startNewTimesheet(projectCombo.currentValue,
-                                             activityCombo.currentValue)
+                onClicked: startNewTimesheet(
+                    projectModel.get(projectCombo.currentIndex).itemId,
+                    activityModel.get(activityCombo.currentIndex).itemId)
                 PlasmaComponents3.ToolTip { text: "Start new timer" }
             }
         }
@@ -339,18 +341,18 @@ PlasmoidItem {
             if (xhr.status !== 200) return
             try {
                 var data = JSON.parse(xhr.responseText)
-                var items = []
+                projectModel.clear()
                 for (var i = 0; i < data.length; i++) {
-                    items.push({
-                        id: data[i].id,
+                    projectModel.append({
+                        itemId: data[i].id,
                         label: (data[i].parentTitle ? data[i].parentTitle + " › " : "")
                                + data[i].name
                     })
                 }
-                root.projects = items
                 // Fetch activities for the first project
-                if (items.length > 0 && projectCombo.currentIndex < 0) {
+                if (projectModel.count > 0) {
                     projectCombo.currentIndex = 0
+                    fetchActivities(projectModel.get(0).itemId)
                 }
             } catch (e) { /* ignore */ }
         })
@@ -362,11 +364,13 @@ PlasmoidItem {
                 if (xhr.status !== 200) return
                 try {
                     var data = JSON.parse(xhr.responseText)
-                    var items = []
+                    activityModel.clear()
                     for (var i = 0; i < data.length; i++) {
-                        items.push({ id: data[i].id, label: data[i].name })
+                        activityModel.append({ itemId: data[i].id, label: data[i].name })
                     }
-                    root.activities = items
+                    if (activityModel.count > 0) {
+                        activityCombo.currentIndex = 0
+                    }
                 } catch (e) { /* ignore */ }
             })
     }
