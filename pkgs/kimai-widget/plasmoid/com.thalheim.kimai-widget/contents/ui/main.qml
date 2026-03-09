@@ -1,26 +1,27 @@
 import QtQuick
 import QtQuick.Layouts
+import QtQuick.Controls as QQC2
 import org.kde.plasma.plasmoid
 import org.kde.plasma.components as PlasmaComponents3
+import org.kde.kirigami as Kirigami
 
 PlasmoidItem {
     id: root
 
     property bool hasError: false
     property bool isTracking: false
-    property string currentActivity: ""
-    property string currentProject: ""
-    property string currentCustomer: ""
-    property string currentDescription: ""
-    property string startTime: ""
     property int elapsedSeconds: 0
     property string kimaiUrl: "https://kimai.thalheim.io"
     property string apiToken: ""
 
-    // ID of the currently running timesheet (for stop).
-    property int activeTimesheetId: -1
-    // ID of the most recent timesheet (for restart when idle).
-    property int lastTimesheetId: -1
+    // Today's timesheet entries (full objects from the API).
+    property var todayEntries: []
+    // Index of the currently running entry in todayEntries (-1 if none).
+    property int activeIndex: -1
+
+    // Available projects and activities for new entry creation.
+    property var projects: []
+    property var activities: []
 
     // Replaced at install time by install.sh with the actual token.
     readonly property string tokenPlaceholder: "@KIMAI_API_TOKEN@"
@@ -30,41 +31,21 @@ PlasmoidItem {
     toolTipMainText: {
         if (hasError) return "Kimai: connection error"
         if (!isTracking) return "Kimai: not tracking"
-        return "Kimai: tracking"
+        return "Kimai: tracking " + formatDuration(elapsedSeconds)
     }
-
     toolTipSubText: {
         if (hasError) return "Could not connect to Kimai"
-        if (!isTracking) return "Click to restart last timesheet"
-        var lines = []
-        if (currentCustomer) lines.push("Customer: " + currentCustomer)
-        if (currentProject) lines.push("Project: " + currentProject)
-        if (currentActivity) lines.push("Activity: " + currentActivity)
-        if (currentDescription) lines.push("Description: " + currentDescription)
-        lines.push("Elapsed: " + formatDuration(elapsedSeconds))
-        lines.push("\nClick to stop")
-        return lines.join("\n")
+        return "Today: " + formatDuration(todayTotal()) + " total"
     }
 
     preferredRepresentation: compactRepresentation
 
+    // ── Compact (panel) ────────────────────────────────────────────
     compactRepresentation: MouseArea {
         implicitWidth: row.implicitWidth
         implicitHeight: row.implicitHeight
-        acceptedButtons: Qt.LeftButton | Qt.MiddleButton
 
-        onClicked: function(mouse) {
-            if (mouse.button === Qt.MiddleButton) {
-                Qt.openUrlExternally(root.kimaiUrl)
-                return
-            }
-            // Left click: toggle timer
-            if (root.isTracking) {
-                stopTimer()
-            } else {
-                startTimer()
-            }
-        }
+        onClicked: root.expanded = !root.expanded
 
         RowLayout {
             id: row
@@ -83,51 +64,167 @@ PlasmoidItem {
         }
     }
 
+    // ── Full (popup) ───────────────────────────────────────────────
     fullRepresentation: ColumnLayout {
-        spacing: 8
-        Layout.preferredWidth: 300
+        Layout.preferredWidth: Kirigami.Units.gridUnit * 22
+        Layout.preferredHeight: Kirigami.Units.gridUnit * 20
+        Layout.minimumWidth: Kirigami.Units.gridUnit * 18
+        spacing: 0
 
-        PlasmaComponents3.Label {
-            text: root.isTracking ? "Active Timesheet" : "No Active Timesheet"
-            font.bold: true
-        }
+        // Header
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.margins: Kirigami.Units.smallSpacing
 
-        PlasmaComponents3.Label {
-            visible: root.isTracking
-            text: {
-                var lines = []
-                if (root.currentCustomer) lines.push("Customer: " + root.currentCustomer)
-                if (root.currentProject) lines.push("Project: " + root.currentProject)
-                if (root.currentActivity) lines.push("Activity: " + root.currentActivity)
-                if (root.currentDescription) lines.push("Description: " + root.currentDescription)
-                lines.push("Elapsed: " + formatDuration(root.elapsedSeconds))
-                return lines.join("\n")
+            PlasmaComponents3.Label {
+                text: "Today"
+                font.bold: true
+                Layout.fillWidth: true
+            }
+
+            PlasmaComponents3.Label {
+                text: formatDuration(todayTotal())
+                font.bold: true
+            }
+
+            PlasmaComponents3.ToolButton {
+                icon.name: "globe"
+                onClicked: Qt.openUrlExternally(root.kimaiUrl)
+                PlasmaComponents3.ToolTip { text: "Open Kimai" }
             }
         }
 
-        PlasmaComponents3.Button {
-            text: root.isTracking ? "Stop" : "Start"
-            icon.name: root.isTracking ? "media-playback-stop" : "media-playback-start"
-            onClicked: {
-                if (root.isTracking) {
-                    stopTimer()
-                } else {
-                    startTimer()
+        Kirigami.Separator { Layout.fillWidth: true }
+
+        // Entry list
+        QQC2.ScrollView {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            ListView {
+                id: entryList
+                model: root.todayEntries
+                spacing: 1
+                clip: true
+
+                delegate: Rectangle {
+                    id: entryDelegate
+                    required property var modelData
+                    required property int index
+                    width: entryList.width
+                    height: entryRow.implicitHeight + Kirigami.Units.smallSpacing * 2
+                    color: modelData.end === null ? Kirigami.Theme.positiveBackgroundColor
+                                                  : "transparent"
+
+                    RowLayout {
+                        id: entryRow
+                        anchors.fill: parent
+                        anchors.margins: Kirigami.Units.smallSpacing
+                        spacing: Kirigami.Units.smallSpacing
+
+                        // Play / Stop button
+                        PlasmaComponents3.ToolButton {
+                            icon.name: entryDelegate.modelData.end === null
+                                       ? "media-playback-stop" : "media-playback-start"
+                            onClicked: {
+                                if (entryDelegate.modelData.end === null) {
+                                    stopTimesheet(entryDelegate.modelData.id)
+                                } else {
+                                    restartTimesheet(entryDelegate.modelData.id)
+                                }
+                            }
+                            PlasmaComponents3.ToolTip {
+                                text: entryDelegate.modelData.end === null ? "Stop" : "Start"
+                            }
+                        }
+
+                        // Project & Activity info
+                        ColumnLayout {
+                            Layout.fillWidth: true
+                            spacing: 0
+
+                            PlasmaComponents3.Label {
+                                text: entryProjectLabel(entryDelegate.modelData)
+                                font.bold: true
+                                elide: Text.ElideRight
+                                Layout.fillWidth: true
+                            }
+                            PlasmaComponents3.Label {
+                                text: entryDelegate.modelData.description || ""
+                                visible: text !== ""
+                                elide: Text.ElideRight
+                                Layout.fillWidth: true
+                                opacity: 0.7
+                                font.pixelSize: Kirigami.Theme.smallFont.pixelSize
+                            }
+                        }
+
+                        // Duration
+                        PlasmaComponents3.Label {
+                            text: {
+                                if (entryDelegate.modelData.end === null) {
+                                    return formatDuration(root.elapsedSeconds)
+                                }
+                                return formatDuration(entryDelegate.modelData.duration)
+                            }
+                            font.bold: entryDelegate.modelData.end === null
+                        }
+                    }
                 }
+            }
+        }
+
+        Kirigami.Separator { Layout.fillWidth: true }
+
+        // New entry controls
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.margins: Kirigami.Units.smallSpacing
+            spacing: Kirigami.Units.smallSpacing
+
+            PlasmaComponents3.ComboBox {
+                id: projectCombo
+                Layout.fillWidth: true
+                model: root.projects
+                textRole: "label"
+                valueRole: "id"
+                onCurrentIndexChanged: {
+                    if (currentIndex >= 0) {
+                        fetchActivities(currentValue)
+                    }
+                }
+            }
+
+            PlasmaComponents3.ComboBox {
+                id: activityCombo
+                Layout.fillWidth: true
+                model: root.activities
+                textRole: "label"
+                valueRole: "id"
+            }
+
+            PlasmaComponents3.ToolButton {
+                icon.name: "list-add"
+                enabled: projectCombo.currentIndex >= 0 && activityCombo.currentIndex >= 0
+                onClicked: startNewTimesheet(projectCombo.currentValue,
+                                             activityCombo.currentValue)
+                PlasmaComponents3.ToolTip { text: "Start new timer" }
             }
         }
     }
 
-    // Poll the Kimai API every 30s for active timesheets.
+    // ── Timers ─────────────────────────────────────────────────────
+
+    // Poll the API every 30s.
     Timer {
         interval: 30000
         repeat: true
         running: true
         triggeredOnStart: true
-        onTriggered: fetchActiveTimesheet()
+        onTriggered: refresh()
     }
 
-    // Tick every second to keep the elapsed-time display live.
+    // Tick the running timer every second.
     Timer {
         interval: 1000
         repeat: true
@@ -135,12 +232,16 @@ PlasmoidItem {
         onTriggered: root.elapsedSeconds += 1
     }
 
+    // ── Init ───────────────────────────────────────────────────────
+
     Component.onCompleted: {
-        // The install script substitutes the placeholder with the real token.
         if (tokenPlaceholder !== "@" + "KIMAI_API_TOKEN" + "@") {
             root.apiToken = tokenPlaceholder
         }
+        refresh()
     }
+
+    // ── Helpers ────────────────────────────────────────────────────
 
     function formatDuration(totalSeconds) {
         var h = Math.floor(totalSeconds / 3600)
@@ -149,121 +250,138 @@ PlasmoidItem {
         return h + ":" + pad(m)
     }
 
-    function fetchActiveTimesheet() {
-        if (!root.apiToken) {
-            loadApiToken()
-            if (!root.apiToken) {
-                root.hasError = true
-                return
+    function todayTotal() {
+        var total = 0
+        for (var i = 0; i < todayEntries.length; i++) {
+            var e = todayEntries[i]
+            if (e.end === null) {
+                total += root.elapsedSeconds
+            } else {
+                total += e.duration
             }
         }
+        return total
+    }
 
+    function entryProjectLabel(entry) {
+        // The full=true response nests objects; the non-full uses IDs.
+        var parts = []
+        if (entry.project && typeof entry.project === "object") {
+            if (entry.project.customer && entry.project.customer.name)
+                parts.push(entry.project.customer.name)
+            parts.push(entry.project.name)
+        }
+        if (entry.activity && typeof entry.activity === "object") {
+            parts.push(entry.activity.name)
+        }
+        return parts.join(" › ") || "Timesheet #" + entry.id
+    }
+
+    // ── API calls ──────────────────────────────────────────────────
+
+    function apiRequest(method, path, body, callback) {
+        if (!root.apiToken) { root.hasError = true; return }
         var xhr = new XMLHttpRequest()
-        xhr.open("GET", root.kimaiUrl + "/api/timesheets/active", true)
+        xhr.open(method, root.kimaiUrl + path, true)
         xhr.setRequestHeader("Authorization", "Bearer " + root.apiToken)
-
+        xhr.setRequestHeader("Content-Type", "application/json")
         xhr.onreadystatechange = function() {
             if (xhr.readyState !== XMLHttpRequest.DONE) return
+            callback(xhr)
+        }
+        xhr.send(body ? JSON.stringify(body) : null)
+    }
 
-            if (xhr.status !== 200) {
-                root.hasError = true
-                return
-            }
+    function refresh() {
+        fetchTodayEntries()
+        fetchProjects()
+    }
 
-            try {
-                var timesheets = JSON.parse(xhr.responseText)
-                root.hasError = false
-
-                if (!Array.isArray(timesheets) || timesheets.length === 0) {
+    function fetchTodayEntries() {
+        var today = new Date()
+        var begin = today.getFullYear() + "-"
+                  + pad2(today.getMonth() + 1) + "-"
+                  + pad2(today.getDate()) + "T00:00:00"
+        apiRequest("GET", "/api/timesheets?begin=" + begin
+                         + "&order=ASC&size=50&full=true", null,
+            function(xhr) {
+                if (xhr.status !== 200) { root.hasError = true; return }
+                try {
+                    var entries = JSON.parse(xhr.responseText)
+                    root.hasError = false
+                    root.todayEntries = entries
+                    root.activeIndex = -1
                     root.isTracking = false
-                    root.activeTimesheetId = -1
-                    root.currentActivity = ""
-                    root.currentProject = ""
-                    root.currentCustomer = ""
-                    root.currentDescription = ""
-                    root.startTime = ""
-                    root.elapsedSeconds = 0
-                    // Fetch the most recent timesheet so we can restart it.
-                    fetchRecentTimesheet()
-                    return
-                }
-
-                // Use the first active timesheet (most recent).
-                var ts = timesheets[0]
-                root.isTracking = true
-                root.activeTimesheetId = ts.id
-                root.lastTimesheetId = ts.id
-                root.currentActivity = ts.activity ? (ts.activity.name || "") : ""
-                root.currentProject = ts.project ? (ts.project.name || "") : ""
-                root.currentCustomer = (ts.project && ts.project.customer) ? (ts.project.customer.name || "") : ""
-                root.currentDescription = ts.description || ""
-                root.startTime = ts.begin || ""
-
-                // Compute elapsed seconds from the begin timestamp.
-                if (root.startTime) {
-                    var beginDate = new Date(root.startTime)
-                    var now = new Date()
-                    root.elapsedSeconds = Math.floor((now.getTime() - beginDate.getTime()) / 1000)
-                }
-            } catch (e) {
-                root.hasError = true
-            }
-        }
-        xhr.send()
+                    for (var i = 0; i < entries.length; i++) {
+                        if (entries[i].end === null) {
+                            root.activeIndex = i
+                            root.isTracking = true
+                            var beginDate = new Date(entries[i].begin)
+                            var now = new Date()
+                            root.elapsedSeconds = Math.floor(
+                                (now.getTime() - beginDate.getTime()) / 1000)
+                            break
+                        }
+                    }
+                    if (!root.isTracking) root.elapsedSeconds = 0
+                } catch (e) { root.hasError = true }
+            })
     }
 
-    function fetchRecentTimesheet() {
-        var xhr = new XMLHttpRequest()
-        xhr.open("GET", root.kimaiUrl + "/api/timesheets/recent?size=1", true)
-        xhr.setRequestHeader("Authorization", "Bearer " + root.apiToken)
-
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState !== XMLHttpRequest.DONE) return
+    function fetchProjects() {
+        apiRequest("GET", "/api/projects?visible=1", null, function(xhr) {
             if (xhr.status !== 200) return
-
             try {
-                var timesheets = JSON.parse(xhr.responseText)
-                if (Array.isArray(timesheets) && timesheets.length > 0) {
-                    root.lastTimesheetId = timesheets[0].id
+                var data = JSON.parse(xhr.responseText)
+                var items = []
+                for (var i = 0; i < data.length; i++) {
+                    items.push({
+                        id: data[i].id,
+                        label: (data[i].parentTitle ? data[i].parentTitle + " › " : "")
+                               + data[i].name
+                    })
                 }
-            } catch (e) {
-                // ignore — we just won't be able to restart
-            }
-        }
-        xhr.send()
+                root.projects = items
+                // Fetch activities for the first project
+                if (items.length > 0 && projectCombo.currentIndex < 0) {
+                    projectCombo.currentIndex = 0
+                }
+            } catch (e) { /* ignore */ }
+        })
     }
 
-    function stopTimer() {
-        if (root.activeTimesheetId < 0) return
-
-        var xhr = new XMLHttpRequest()
-        xhr.open("PATCH", root.kimaiUrl + "/api/timesheets/" + root.activeTimesheetId + "/stop", true)
-        xhr.setRequestHeader("Authorization", "Bearer " + root.apiToken)
-        xhr.setRequestHeader("Content-Type", "application/json")
-
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState !== XMLHttpRequest.DONE) return
-            // Refresh state regardless of outcome.
-            fetchActiveTimesheet()
-        }
-        xhr.send()
+    function fetchActivities(projectId) {
+        apiRequest("GET", "/api/activities?visible=1&project=" + projectId, null,
+            function(xhr) {
+                if (xhr.status !== 200) return
+                try {
+                    var data = JSON.parse(xhr.responseText)
+                    var items = []
+                    for (var i = 0; i < data.length; i++) {
+                        items.push({ id: data[i].id, label: data[i].name })
+                    }
+                    root.activities = items
+                } catch (e) { /* ignore */ }
+            })
     }
 
-    function startTimer() {
-        if (root.lastTimesheetId < 0) return
-
-        // Restart the most recent timesheet — the API creates a new
-        // timesheet entry with the same project/activity.
-        var xhr = new XMLHttpRequest()
-        xhr.open("PATCH", root.kimaiUrl + "/api/timesheets/" + root.lastTimesheetId + "/restart", true)
-        xhr.setRequestHeader("Authorization", "Bearer " + root.apiToken)
-        xhr.setRequestHeader("Content-Type", "application/json")
-
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState !== XMLHttpRequest.DONE) return
-            // Refresh state regardless of outcome.
-            fetchActiveTimesheet()
-        }
-        xhr.send()
+    function stopTimesheet(id) {
+        apiRequest("PATCH", "/api/timesheets/" + id + "/stop", null, function(xhr) {
+            fetchTodayEntries()
+        })
     }
+
+    function restartTimesheet(id) {
+        apiRequest("PATCH", "/api/timesheets/" + id + "/restart", null, function(xhr) {
+            fetchTodayEntries()
+        })
+    }
+
+    function startNewTimesheet(projectId, activityId) {
+        apiRequest("POST", "/api/timesheets",
+                   { project: projectId, activity: activityId },
+                   function(xhr) { fetchTodayEntries() })
+    }
+
+    function pad2(n) { return n < 10 ? "0" + n : "" + n }
 }
