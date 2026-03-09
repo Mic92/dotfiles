@@ -179,6 +179,33 @@ PlasmoidItem {
                             }
                             font.bold: entryDelegate.modelData.end === null
                         }
+
+                        // Delete button — first click arms, second confirms.
+                        PlasmaComponents3.ToolButton {
+                            id: deleteBtn
+                            property bool armed: false
+                            icon.name: armed ? "dialog-warning" : "edit-delete"
+                            icon.color: armed ? "red" : undefined
+                            onClicked: {
+                                if (armed) {
+                                    deleteTimesheet(entryDelegate.modelData.id)
+                                    armed = false
+                                } else {
+                                    armed = true
+                                    armTimer.restart()
+                                }
+                            }
+                            PlasmaComponents3.ToolTip {
+                                text: deleteBtn.armed ? "Click again to confirm delete"
+                                                      : "Delete"
+                            }
+                            // Reset after 3 seconds if not confirmed.
+                            Timer {
+                                id: armTimer
+                                interval: 3000
+                                onTriggered: deleteBtn.armed = false
+                            }
+                        }
                     }
                 }
             }
@@ -415,6 +442,12 @@ PlasmoidItem {
 
     function restartTimesheet(id) {
         apiRequest("GET", "/api/timesheets/" + id + "/restart", null, function(xhr) {
+            fetchTodayEntries()
+        })
+    }
+
+    function deleteTimesheet(id) {
+        apiRequest("DELETE", "/api/timesheets/" + id, null, function(xhr) {
             fetchTodayEntries()
         })
     }
