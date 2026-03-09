@@ -74,5 +74,6 @@ in
   }
   // lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
     cewe-fotowelt = pkgs.callPackage ./cewe-fotowelt { };
+    kimai-widget = pkgs.callPackage ./kimai-widget { };
   };
 }
