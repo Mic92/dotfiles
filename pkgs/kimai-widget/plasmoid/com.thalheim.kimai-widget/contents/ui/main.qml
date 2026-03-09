@@ -19,10 +19,9 @@ PlasmoidItem {
     // Index of the currently running entry in todayEntries (-1 if none).
     property int activeIndex: -1
 
-    // Available projects and activities for new entry creation.
-    // Using ListModel for reliable ComboBox binding in Plasma QML.
-    ListModel { id: projectModel }
-    ListModel { id: activityModel }
+    // Combined project+activity choices for new entry creation.
+    // Each entry has: projectId, activityId, label
+    ListModel { id: taskModel }
 
     // Last-used project/activity IDs (from the most recent timesheet).
     property int lastProjectId: -1
@@ -194,32 +193,19 @@ PlasmoidItem {
             spacing: Kirigami.Units.smallSpacing
 
             PlasmaComponents3.ComboBox {
-                id: projectCombo
+                id: taskCombo
                 Layout.fillWidth: true
-                model: projectModel
+                model: taskModel
                 textRole: "label"
-                valueRole: "itemId"
-                onActivated: {
-                    if (currentIndex >= 0) {
-                        fetchActivities(projectModel.get(currentIndex).itemId)
-                    }
-                }
-            }
-
-            PlasmaComponents3.ComboBox {
-                id: activityCombo
-                Layout.fillWidth: true
-                model: activityModel
-                textRole: "label"
-                valueRole: "itemId"
             }
 
             PlasmaComponents3.ToolButton {
                 icon.name: "list-add"
-                enabled: projectCombo.currentIndex >= 0 && activityCombo.currentIndex >= 0
-                onClicked: startNewTimesheet(
-                    projectModel.get(projectCombo.currentIndex).itemId,
-                    activityModel.get(activityCombo.currentIndex).itemId)
+                enabled: taskCombo.currentIndex >= 0
+                onClicked: {
+                    var task = taskModel.get(taskCombo.currentIndex)
+                    startNewTimesheet(task.projectId, task.activityId)
+                }
                 PlasmaComponents3.ToolTip { text: "Start new timer" }
             }
         }
@@ -306,7 +292,7 @@ PlasmoidItem {
 
     function refresh() {
         fetchTodayEntries()
-        fetchProjects()
+        fetchTasks()
     }
 
     function fetchTodayEntries() {
@@ -373,45 +359,50 @@ PlasmoidItem {
         })
     }
 
-    function fetchProjects() {
-        apiRequest("GET", "/api/projects?visible=1", null, function(xhr) {
-            if (xhr.status !== 200) return
+    function fetchTasks() {
+        // Fetch projects first, then activities, and build a combined list.
+        apiRequest("GET", "/api/projects?visible=1", null, function(pxhr) {
+            if (pxhr.status !== 200) return
             try {
-                var data = JSON.parse(xhr.responseText)
-                projectModel.clear()
-                for (var i = 0; i < data.length; i++) {
-                    projectModel.append({
-                        itemId: data[i].id,
-                        label: (data[i].parentTitle ? data[i].parentTitle + " › " : "")
-                               + data[i].name
-                    })
+                var projects = JSON.parse(pxhr.responseText)
+                // Map project ID → customer name
+                var customerOf = {}
+                for (var i = 0; i < projects.length; i++) {
+                    customerOf[projects[i].id] = projects[i].parentTitle || ""
                 }
-                // Pre-select the last-used project, or fall back to first.
-                if (projectModel.count > 0) {
-                    var idx = findModelIndex(projectModel, root.lastProjectId)
-                    projectCombo.currentIndex = idx
-                    fetchActivities(projectModel.get(idx).itemId)
-                }
+
+                apiRequest("GET", "/api/activities?visible=1", null, function(axhr) {
+                    if (axhr.status !== 200) return
+                    try {
+                        var activities = JSON.parse(axhr.responseText)
+                        taskModel.clear()
+                        var bestIdx = 0
+                        for (var j = 0; j < activities.length; j++) {
+                            var a = activities[j]
+                            var pid = a.project
+                            var parts = []
+                            if (customerOf[pid]) parts.push(customerOf[pid])
+                            if (a.parentTitle) parts.push(a.parentTitle)
+                            parts.push(a.name)
+
+                            taskModel.append({
+                                projectId: pid,
+                                activityId: a.id,
+                                label: parts.join(" › ")
+                            })
+                            // Pre-select the last-used combination.
+                            if (pid === root.lastProjectId &&
+                                a.id === root.lastActivityId) {
+                                bestIdx = j
+                            }
+                        }
+                        if (taskModel.count > 0) {
+                            taskCombo.currentIndex = bestIdx
+                        }
+                    } catch (e) { /* ignore */ }
+                })
             } catch (e) { /* ignore */ }
         })
-    }
-
-    function fetchActivities(projectId) {
-        apiRequest("GET", "/api/activities?visible=1&project=" + projectId, null,
-            function(xhr) {
-                if (xhr.status !== 200) return
-                try {
-                    var data = JSON.parse(xhr.responseText)
-                    activityModel.clear()
-                    for (var i = 0; i < data.length; i++) {
-                        activityModel.append({ itemId: data[i].id, label: data[i].name })
-                    }
-                    if (activityModel.count > 0) {
-                        activityCombo.currentIndex = findModelIndex(
-                            activityModel, root.lastActivityId)
-                    }
-                } catch (e) { /* ignore */ }
-            })
     }
 
     function stopTimesheet(id) {
@@ -430,13 +421,6 @@ PlasmoidItem {
         apiRequest("POST", "/api/timesheets",
                    { project: projectId, activity: activityId },
                    function(xhr) { fetchTodayEntries() })
-    }
-
-    function findModelIndex(model, itemId) {
-        for (var i = 0; i < model.count; i++) {
-            if (model.get(i).itemId === itemId) return i
-        }
-        return 0
     }
 
     function pad2(n) { return n < 10 ? "0" + n : "" + n }
