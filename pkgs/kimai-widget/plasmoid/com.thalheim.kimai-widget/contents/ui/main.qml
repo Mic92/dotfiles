@@ -88,6 +88,12 @@ PlasmoidItem {
             }
 
             PlasmaComponents3.ToolButton {
+                icon.name: "view-refresh"
+                onClicked: refresh()
+                PlasmaComponents3.ToolTip { text: "Refresh" }
+            }
+
+            PlasmaComponents3.ToolButton {
                 icon.name: "globe"
                 onClicked: Qt.openUrlExternally(root.kimaiUrl)
                 PlasmaComponents3.ToolTip { text: "Open Kimai" }
