@@ -24,6 +24,10 @@ PlasmoidItem {
     ListModel { id: projectModel }
     ListModel { id: activityModel }
 
+    // Last-used project/activity IDs (from the most recent timesheet).
+    property int lastProjectId: -1
+    property int lastActivityId: -1
+
     // Replaced at install time by install.sh with the actual token.
     readonly property string tokenPlaceholder: "@KIMAI_API_TOKEN@"
 
@@ -332,8 +336,41 @@ PlasmoidItem {
                         }
                     }
                     if (!root.isTracking) root.elapsedSeconds = 0
+
+                    // Remember the most recent project/activity for the
+                    // "new entry" combos.  Entries are ASC-sorted so the
+                    // last element is the newest.
+                    if (entries.length > 0) {
+                        var last = entries[entries.length - 1]
+                        updateLastUsed(last)
+                    } else {
+                        fetchLastUsed()
+                    }
                 } catch (e) { root.hasError = true }
             })
+    }
+
+    function updateLastUsed(entry) {
+        if (entry.project && typeof entry.project === "object")
+            root.lastProjectId = entry.project.id
+        else if (typeof entry.project === "number")
+            root.lastProjectId = entry.project
+
+        if (entry.activity && typeof entry.activity === "object")
+            root.lastActivityId = entry.activity.id
+        else if (typeof entry.activity === "number")
+            root.lastActivityId = entry.activity
+    }
+
+    // When there are no entries today, look at the global history.
+    function fetchLastUsed() {
+        apiRequest("GET", "/api/timesheets/recent?size=1", null, function(xhr) {
+            if (xhr.status !== 200) return
+            try {
+                var data = JSON.parse(xhr.responseText)
+                if (data.length > 0) updateLastUsed(data[0])
+            } catch (e) { /* ignore */ }
+        })
     }
 
     function fetchProjects() {
@@ -349,10 +386,11 @@ PlasmoidItem {
                                + data[i].name
                     })
                 }
-                // Fetch activities for the first project
+                // Pre-select the last-used project, or fall back to first.
                 if (projectModel.count > 0) {
-                    projectCombo.currentIndex = 0
-                    fetchActivities(projectModel.get(0).itemId)
+                    var idx = findModelIndex(projectModel, root.lastProjectId)
+                    projectCombo.currentIndex = idx
+                    fetchActivities(projectModel.get(idx).itemId)
                 }
             } catch (e) { /* ignore */ }
         })
@@ -369,7 +407,8 @@ PlasmoidItem {
                         activityModel.append({ itemId: data[i].id, label: data[i].name })
                     }
                     if (activityModel.count > 0) {
-                        activityCombo.currentIndex = 0
+                        activityCombo.currentIndex = findModelIndex(
+                            activityModel, root.lastActivityId)
                     }
                 } catch (e) { /* ignore */ }
             })
@@ -391,6 +430,13 @@ PlasmoidItem {
         apiRequest("POST", "/api/timesheets",
                    { project: projectId, activity: activityId },
                    function(xhr) { fetchTodayEntries() })
+    }
+
+    function findModelIndex(model, itemId) {
+        for (var i = 0; i < model.count; i++) {
+            if (model.get(i).itemId === itemId) return i
+        }
+        return 0
     }
 
     function pad2(n) { return n < 10 ? "0" + n : "" + n }
