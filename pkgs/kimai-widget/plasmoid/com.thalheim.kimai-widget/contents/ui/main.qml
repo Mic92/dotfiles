@@ -406,13 +406,15 @@ PlasmoidItem {
     }
 
     function stopTimesheet(id) {
-        apiRequest("PATCH", "/api/timesheets/" + id + "/stop", null, function(xhr) {
+        // QML XMLHttpRequest does not support PATCH; use GET which
+        // Kimai also accepts for the stop/restart endpoints.
+        apiRequest("GET", "/api/timesheets/" + id + "/stop", null, function(xhr) {
             fetchTodayEntries()
         })
     }
 
     function restartTimesheet(id) {
-        apiRequest("PATCH", "/api/timesheets/" + id + "/restart", null, function(xhr) {
+        apiRequest("GET", "/api/timesheets/" + id + "/restart", null, function(xhr) {
             fetchTodayEntries()
         })
     }
