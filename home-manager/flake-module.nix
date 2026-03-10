@@ -48,6 +48,7 @@ in
         ["web01"]="mic92"
         ["bld2"]="mic92"
         ["eve"]="eve"
+        ["utm-vm"]="utm-vm"
         ["evo"]="macos"
       )
       profile="common"
@@ -100,6 +101,7 @@ in
     homeConfigurations = {
       # this one should work for aarch64-linux/x86_64-linux and macos
       common = homeManagerConfiguration { };
+      utm-vm = homeManagerConfiguration { extraModules = [ ./utm-vm.nix ]; };
     }
     // lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") {
       macos = homeManagerConfiguration { extraModules = [ ./macos.nix ]; };
