@@ -14,6 +14,8 @@
   # Use memory more efficiently at the cost of some compute
   zramSwap.enable = true;
 
+  boot.kernelParams = [ "console=hvc0" ];
+
   imports = [
     ./nix-path.nix
     ./acme.nix

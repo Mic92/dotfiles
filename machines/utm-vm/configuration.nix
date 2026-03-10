@@ -13,6 +13,7 @@
     { programs.nix-index-database.comma.enable = true; }
 
     ./disko.nix
+    ./users.nix
     ../../nixosModules/users.nix
   ];
 
@@ -24,17 +25,10 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # UTM/QEMU virtio drivers
-  boot.initrd.availableKernelModules = [
-    "virtio_pci"
-    "virtio_blk"
-    "virtio_scsi"
-    "virtio_net"
-  ];
-
-  # Serial console for headless UTM access
-  boot.kernelParams = [ "console=ttyAMA0,115200" ];
   services.getty.autologinUser = "root";
+
+  # envfs (FUSE) causes "Freezing execution" on this VM
+  services.envfs.enable = false;
 
   # Networking via systemd-networkd (DHCP on virtio NIC)
   systemd.network.networks.ethernet = {
