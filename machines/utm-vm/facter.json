@@ -59,94 +59,6 @@
         "module_alias": "pci:v00001B36d00000008sv00001AF4sd00001100bc06sc00i00"
       }
     ],
-    "cdrom": [
-      {
-        "index": 32,
-        "attached_to": 15,
-        "class_list": [
-          "cdrom",
-          "usb",
-          "scsi",
-          "block_device"
-        ],
-        "bus_type": {
-          "hex": "0084",
-          "name": "SCSI",
-          "value": 132
-        },
-        "slot": {
-          "bus": 0,
-          "number": 0
-        },
-        "base_class": {
-          "hex": "0106",
-          "name": "Mass Storage Device",
-          "value": 262
-        },
-        "sub_class": {
-          "hex": "0002",
-          "name": "CD-ROM",
-          "value": 2
-        },
-        "pci_interface": {
-          "hex": "0003",
-          "name": "DVD",
-          "value": 3
-        },
-        "vendor": {
-          "hex": "46f4",
-          "name": "QEMU",
-          "value": 18164
-        },
-        "device": {
-          "hex": "0001",
-          "name": "QEMU CD-ROM",
-          "value": 1
-        },
-        "revision": {
-          "hex": "0000",
-          "name": "2.5+",
-          "value": 0
-        },
-        "serial": "1-0000:00:04.0-4.1",
-        "model": "QEMU CD-ROM",
-        "sysfs_id": "/class/block/sr0",
-        "sysfs_bus_id": "0:0:0:0",
-        "sysfs_device_link": "/devices/pci0000:00/0000:00:04.0/usb1/1-4/1-4.1/1-4.1:1.0/host0/target0:0:0/0:0:0:0",
-        "unix_device_names": [
-          "/dev/cdrom",
-          "/dev/disk/by-id/usb-QEMU_QEMU_CD-ROM_1-0000:00:04.0-4.1-0:0",
-          "/dev/disk/by-label/nixos-25.11-aarch64",
-          "/dev/disk/by-path/pci-0000:00:04.0-usb-0:4.1:1.0-scsi-0:0:0:0",
-          "/dev/disk/by-path/pci-0000:00:04.0-usbv2-0:4.1:1.0-scsi-0:0:0:0",
-          "/dev/disk/by-uuid/1980-01-01-00-00-00-00",
-          "/dev/root",
-          "/dev/sr0"
-        ],
-        "unix_device_name2": "/dev/sg0",
-        "resources": [
-          {
-            "type": "baud",
-            "speed": 12000000,
-            "bits": 0,
-            "stop_bits": 0,
-            "parity": 0,
-            "handshake": 0
-          }
-        ],
-        "driver": "usb-storage",
-        "driver_module": "usb_storage",
-        "drivers": [
-          "sr",
-          "usb-storage"
-        ],
-        "driver_modules": [
-          "sr_mod",
-          "usb_storage"
-        ],
-        "module_alias": "usb:v46F4p0001d0000dc00dsc00dp00ic08isc06ip50in00"
-      }
-    ],
     "cpu": [
       {
         "architecture": "aarch64",
@@ -203,6 +115,99 @@
       }
     ],
     "disk": [
+      {
+        "index": 32,
+        "attached_to": 15,
+        "class_list": [
+          "disk",
+          "usb",
+          "scsi",
+          "block_device"
+        ],
+        "bus_type": {
+          "hex": "0084",
+          "name": "SCSI",
+          "value": 132
+        },
+        "slot": {
+          "bus": 0,
+          "number": 0
+        },
+        "base_class": {
+          "hex": "0106",
+          "name": "Mass Storage Device",
+          "value": 262
+        },
+        "sub_class": {
+          "hex": "0000",
+          "name": "Disk",
+          "value": 0
+        },
+        "vendor": {
+          "hex": "46f4",
+          "name": "QEMU",
+          "value": 18164
+        },
+        "device": {
+          "hex": "0001",
+          "name": "QEMU HARDDISK",
+          "value": 1
+        },
+        "revision": {
+          "hex": "0000",
+          "name": "2.5+",
+          "value": 0
+        },
+        "serial": "1-0000:00:04.0-4.1",
+        "model": "QEMU HARDDISK",
+        "sysfs_id": "/class/block/sda",
+        "sysfs_bus_id": "0:0:0:0",
+        "sysfs_device_link": "/devices/pci0000:00/0000:00:04.0/usb1/1-4/1-4.1/1-4.1:1.0/host0/target0:0:0/0:0:0:0",
+        "unix_device_names": [
+          "/dev/disk/by-id/usb-QEMU_QEMU_HARDDISK_1-0000:00:04.0-4.1-0:0",
+          "/dev/disk/by-label/nixos-25.11-aarch64",
+          "/dev/disk/by-path/pci-0000:00:04.0-usb-0:4.1:1.0-scsi-0:0:0:0",
+          "/dev/disk/by-path/pci-0000:00:04.0-usbv2-0:4.1:1.0-scsi-0:0:0:0",
+          "/dev/disk/by-uuid/1980-01-01-00-00-00-00",
+          "/dev/root",
+          "/dev/sda"
+        ],
+        "unix_device_name2": "/dev/sg0",
+        "resources": [
+          {
+            "type": "baud",
+            "speed": 12000000,
+            "bits": 0,
+            "stop_bits": 0,
+            "parity": 0,
+            "handshake": 0
+          },
+          {
+            "type": "disk_geo",
+            "cylinders": 1022,
+            "heads": 44,
+            "sectors": 62,
+            "size": "0x0",
+            "geo_type": "logical"
+          },
+          {
+            "type": "size",
+            "unit": "sectors",
+            "value_1": 2790332,
+            "value_2": 512
+          }
+        ],
+        "driver": "usb-storage",
+        "driver_module": "usb_storage",
+        "drivers": [
+          "sd",
+          "usb-storage"
+        ],
+        "driver_modules": [
+          "usb_storage"
+        ],
+        "module_alias": "usb:v46F4p0001d0000dc00dsc00dp00ic08isc06ip50in00"
+      },
       {
         "index": 33,
         "attached_to": 27,
@@ -1279,28 +1284,6 @@
     "network_interface": [
       {
         "index": 43,
-        "attached_to": 0,
-        "class_list": [
-          "network_interface"
-        ],
-        "base_class": {
-          "hex": "0107",
-          "name": "Network Interface",
-          "value": 263
-        },
-        "sub_class": {
-          "hex": "0000",
-          "name": "Loopback",
-          "value": 0
-        },
-        "model": "Loopback network interface",
-        "sysfs_id": "/class/net/lo",
-        "unix_device_names": [
-          "lo"
-        ]
-      },
-      {
-        "index": 44,
         "attached_to": 28,
         "class_list": [
           "network_interface"
@@ -1334,6 +1317,28 @@
         "driver": "virtio_net",
         "drivers": [
           "virtio_net"
+        ]
+      },
+      {
+        "index": 44,
+        "attached_to": 0,
+        "class_list": [
+          "network_interface"
+        ],
+        "base_class": {
+          "hex": "0107",
+          "name": "Network Interface",
+          "value": 263
+        },
+        "sub_class": {
+          "hex": "0000",
+          "name": "Loopback",
+          "value": 0
+        },
+        "model": "Loopback network interface",
+        "sysfs_id": "/class/net/lo",
+        "unix_device_names": [
+          "lo"
         ]
       }
     ],
