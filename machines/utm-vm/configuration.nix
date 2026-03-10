@@ -40,6 +40,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    ghostty.terminfo
     tmux
     htop
     iotop
