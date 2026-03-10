@@ -13,6 +13,7 @@
   home.homeDirectory = lib.mkForce "/root";
 
   home.packages = [
+    self.packages.${pkgs.stdenv.hostPlatform.system}.bk-wait
     self.packages.${pkgs.stdenv.hostPlatform.system}.iroh-ssh
   ];
 
