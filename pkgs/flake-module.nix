@@ -47,6 +47,7 @@ in
     # Package updater CLI
     kimai-cli = pkgs.callPackage ./kimai-cli { };
     sediment = pkgs.callPackage ./sediment { };
+    bk-wait = pkgs.callPackage ./bk-wait { };
     updater = pkgs.callPackage ./updater { };
     # Sandboxed pi for calendar/email tasks
     pim = pkgs.callPackage ./pim {
