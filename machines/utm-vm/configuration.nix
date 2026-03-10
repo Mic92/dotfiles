@@ -15,6 +15,7 @@
     ./disko.nix
     ./users.nix
     ../../nixosModules/users.nix
+    ../../nixosModules/iroh-ssh.nix
   ];
 
   networking.hostName = "utm-vm";
@@ -38,6 +39,8 @@
       IPv6AcceptRA = true;
     };
   };
+
+  services.iroh-ssh.enable = true;
 
   environment.systemPackages = with pkgs; [
     ghostty.terminfo
