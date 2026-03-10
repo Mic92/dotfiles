@@ -809,11 +809,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772470510,
-        "narHash": "sha256-uZ4dU4D3R4n2oM97uESBFsR8pI9ZvMziq9g6lo8riKM=",
+        "lastModified": 1773074328,
+        "narHash": "sha256-dvRDKLs0akhdmubnY0+cj9qIQdCuQtTRruOU64Hr8AU=",
         "owner": "Mic92",
         "repo": "nix-tree-rs",
-        "rev": "def0a93f838f8bded369497bbdec7fb188be047a",
+        "rev": "eb8ec2935aa4c1adcd2a3d1ad7bb8d9f546071cf",
         "type": "github"
       },
       "original": {
