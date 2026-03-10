@@ -140,11 +140,11 @@ PlasmoidItem {
                                 if (entryDelegate.modelData.end === null) {
                                     stopTimesheet(entryDelegate.modelData.id)
                                 } else {
-                                    restartTimesheet(entryDelegate.modelData.id)
+                                    restartTimesheet(entryDelegate.modelData)
                                 }
                             }
                             PlasmaComponents3.ToolTip {
-                                text: entryDelegate.modelData.end === null ? "Stop" : "Start"
+                                text: entryDelegate.modelData.end === null ? "Stop" : "Restart"
                             }
                         }
 
@@ -440,9 +440,47 @@ PlasmoidItem {
         })
     }
 
-    function restartTimesheet(id) {
-        apiRequest("GET", "/api/timesheets/" + id + "/restart", null, function(xhr) {
-            fetchTodayEntries()
+    function restartTimesheet(entry) {
+        // Create a new running timesheet that preserves the old entry's
+        // accumulated duration.  We set begin = now - old_duration so
+        // the elapsed time stays correct without tracking the gap since
+        // the entry was stopped.  Then delete the old entry so rounding
+        // is only applied once when this new entry is eventually stopped.
+        var projectId = (typeof entry.project === "object") ? entry.project.id : entry.project
+        var activityId = (typeof entry.activity === "object") ? entry.activity.id : entry.activity
+
+        var now = new Date()
+        var begin = new Date(now.getTime() - entry.duration * 1000)
+        var beginStr = begin.getFullYear() + "-"
+                     + pad2(begin.getMonth() + 1) + "-"
+                     + pad2(begin.getDate()) + "T"
+                     + pad2(begin.getHours()) + ":"
+                     + pad2(begin.getMinutes()) + ":"
+                     + pad2(begin.getSeconds())
+
+        var body = {
+            project: projectId,
+            activity: activityId,
+            begin: beginStr
+        }
+        if (entry.description)
+            body.description = entry.description
+
+        // Stop any currently running entry first.
+        if (root.isTracking && root.activeIndex >= 0) {
+            var activeId = root.todayEntries[root.activeIndex].id
+            stopTimesheet(activeId)
+        }
+
+        apiRequest("POST", "/api/timesheets", body, function(xhr) {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                // Delete the old entry now that the new one is running.
+                apiRequest("DELETE", "/api/timesheets/" + entry.id, null, function() {
+                    fetchTodayEntries()
+                })
+            } else {
+                fetchTodayEntries()
+            }
         })
     }
 
