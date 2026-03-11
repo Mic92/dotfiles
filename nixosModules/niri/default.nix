@@ -60,6 +60,9 @@
     # Document viewer
     evince
 
+    # Printer configuration
+    system-config-printer
+
     # Choosers (audio, display, internet)
     (pkgs.callPackage ../kde/choosers.nix { })
   ];
