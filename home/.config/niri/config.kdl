@@ -134,6 +134,7 @@ binds {
     // Launch programs
     Mod+T hotkey-overlay-title="Terminal" { spawn "ghostty"; }
     Mod+D hotkey-overlay-title="App Launcher" { spawn "noctalia-shell" "msg" "launcher" "toggle"; }
+    Mod+Shift+P hotkey-overlay-title="Password Manager" { spawn "rofi-rbw" "--selector" "fuzzel" "--clipboarder" "wl-copy" "--typer" "wtype"; }
     Super+Alt+L hotkey-overlay-title="Lock Screen" { spawn "swaylock"; }
 
     // Audio
@@ -288,7 +289,7 @@ binds {
     // Session
     Mod+Shift+E { quit; }
     Ctrl+Alt+Delete { quit; }
-    Mod+Shift+P { power-off-monitors; }
+    Mod+Shift+O { power-off-monitors; }
 
     // Choosers
     Mod+A hotkey-overlay-title="Audio Chooser" { spawn "audio-chooser"; }

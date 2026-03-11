@@ -28,10 +28,13 @@
   # imported by the niri module
 
   environment.systemPackages = with pkgs; [
-    # Wayland clipboard
+    # Wayland clipboard & typing
     wl-clipboard
     cliphist
     wtype
+
+    # Password manager
+    rofi-rbw
 
     # App launcher, screen lock, idle, display config
     fuzzel
