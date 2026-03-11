@@ -23,6 +23,12 @@ input {
     focus-follows-mouse max-scroll-amount="0%"
 }
 
+// Named workspaces (matching sway layout: web, dev, im, doc)
+workspace "web"
+workspace "dev"
+workspace "im"
+workspace "doc"
+
 // Outputs are managed by kanshi, not here
 
 layout {
@@ -73,9 +79,45 @@ hotkey-overlay {
 animations {
 }
 
-// Firefox PiP floating
+// Web browsers -> "web" workspace
+window-rule {
+    match app-id=r#"^(firefox|librewolf|chromium-browser|google-chrome|org\.chromium\.Chromium)$"#
+    open-on-workspace "web"
+}
+
+// Terminals and editors -> "dev" workspace
+window-rule {
+    match app-id=r#"^(com\.mitchellh\.ghostty|Alacritty|foot|footclient|kitty|org\.wezfurlong\.wezterm|xterm|emacs|neovide)$"#
+    open-on-workspace "dev"
+}
+
+// IM / chat apps -> "im" workspace
+window-rule {
+    match app-id=r#"^(org\.telegram\.desktop|[Ss]ignal|Ferdium|Element|discord|Slack|thunderbird|evolution|org\.gnome\.Fractal|im\.nheko\.Nheko)$"#
+    open-on-workspace "im"
+}
+
+// Document viewers -> "doc" workspace
+window-rule {
+    match app-id=r#"^(org\.gnome\.Evince|evince|libreoffice.*|org\.keepassxc\.KeePassXC|org\.pwmt\.zathura)$"#
+    open-on-workspace "doc"
+}
+
+// Firefox/LibreWolf PiP floating
 window-rule {
     match app-id=r#"firefox$|librewolf$"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
+// Firefox sharing indicator floating
+window-rule {
+    match app-id=r#"firefox$|librewolf$"# title="^Firefox — Sharing Indicator$|^LibreWolf — Sharing Indicator$"
+    open-floating true
+}
+
+// OpenSSH passphrase dialog floating
+window-rule {
+    match title="^OpenSSH Authentication Passphrase request$"
     open-floating true
 }
 
@@ -188,20 +230,20 @@ binds {
     Mod+Ctrl+WheelScrollRight { move-column-right; }
     Mod+Ctrl+WheelScrollLeft  { move-column-left; }
 
-    // Numbered workspaces
-    Mod+1 { focus-workspace 1; }
-    Mod+2 { focus-workspace 2; }
-    Mod+3 { focus-workspace 3; }
-    Mod+4 { focus-workspace 4; }
+    // Named workspaces (1-4) and numbered (5-9)
+    Mod+1 { focus-workspace "web"; }
+    Mod+2 { focus-workspace "dev"; }
+    Mod+3 { focus-workspace "im"; }
+    Mod+4 { focus-workspace "doc"; }
     Mod+5 { focus-workspace 5; }
     Mod+6 { focus-workspace 6; }
     Mod+7 { focus-workspace 7; }
     Mod+8 { focus-workspace 8; }
     Mod+9 { focus-workspace 9; }
-    Mod+Ctrl+1 { move-column-to-workspace 1; }
-    Mod+Ctrl+2 { move-column-to-workspace 2; }
-    Mod+Ctrl+3 { move-column-to-workspace 3; }
-    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+1 { move-column-to-workspace "web"; }
+    Mod+Ctrl+2 { move-column-to-workspace "dev"; }
+    Mod+Ctrl+3 { move-column-to-workspace "im"; }
+    Mod+Ctrl+4 { move-column-to-workspace "doc"; }
     Mod+Ctrl+5 { move-column-to-workspace 5; }
     Mod+Ctrl+6 { move-column-to-workspace 6; }
     Mod+Ctrl+7 { move-column-to-workspace 7; }
