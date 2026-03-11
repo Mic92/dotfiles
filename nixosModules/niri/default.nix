@@ -30,6 +30,7 @@
   environment.systemPackages = with pkgs; [
     # Wayland clipboard
     wl-clipboard
+    cliphist
 
     # App launcher, screen lock, idle, display config
     fuzzel
