@@ -70,7 +70,9 @@ export default function (pi: ExtensionAPI) {
 
       const argsLine = args.trim() ? `\nArguments: ${args.trim()}` : "";
 
-      pi.sendUserMessage(`${REBASE_PROMPT}${argsLine}\n\n${gitContext}`);
+      pi.sendUserMessage(`${REBASE_PROMPT}${argsLine}\n\n${gitContext}`, {
+        deliverAs: "followUp",
+      });
     },
   });
 }
