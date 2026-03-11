@@ -31,6 +31,7 @@
     ./modules/ghaf-facter.nix
 
     ../../nixosModules/workstation.nix
+    ../../nixosModules/niri
     #../../nixosModules/qtile.nix
     #../../nixosModules/keyd.nix
     ../../nixosModules/ksmbd.nix
