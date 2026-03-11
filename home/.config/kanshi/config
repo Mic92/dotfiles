@@ -29,5 +29,5 @@ profile docked6 {
 }
 
 profile mobile {
-  output eDP-1 enable scale 1
+  output eDP-1 enable scale 1.5
 }

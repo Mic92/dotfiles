@@ -11,7 +11,7 @@
     ./docker-zfs.nix
     ./i18n.nix
     ./ip-update.nix
-    ./kde
+    #./kde
     ./limine.nix
     ./networkd.nix
     ./packages.nix
