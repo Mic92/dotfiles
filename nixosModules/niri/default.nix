@@ -49,6 +49,9 @@
     chromium
     ferdium
 
+    # File manager
+    nautilus
+
     # Choosers (audio, display, internet)
     (pkgs.callPackage ../kde/choosers.nix { })
   ];
