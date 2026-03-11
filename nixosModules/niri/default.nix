@@ -57,6 +57,9 @@
     # File manager
     nautilus
 
+    # Document viewer
+    evince
+
     # Choosers (audio, display, internet)
     (pkgs.callPackage ../kde/choosers.nix { })
   ];
