@@ -133,7 +133,7 @@ binds {
 
     // Launch programs
     Mod+T hotkey-overlay-title="Terminal" { spawn "ghostty"; }
-    Mod+D hotkey-overlay-title="App Launcher" { spawn "fuzzel"; }
+    Mod+D hotkey-overlay-title="App Launcher" { spawn "noctalia-shell" "msg" "launcher" "toggle"; }
     Super+Alt+L hotkey-overlay-title="Lock Screen" { spawn "swaylock"; }
 
     // Audio
