@@ -83,7 +83,9 @@ export default function (pi: ExtensionAPI) {
         "```",
       ].join("\n");
 
-      pi.sendUserMessage(`${MERGE_PROMPT}\n\n${gitContext}`);
+      pi.sendUserMessage(`${MERGE_PROMPT}\n\n${gitContext}`, {
+        deliverAs: "followUp",
+      });
     },
   });
 }

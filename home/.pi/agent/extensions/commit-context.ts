@@ -42,7 +42,9 @@ export default function (pi: ExtensionAPI) {
         "```",
       ].join("\n");
 
-      pi.sendUserMessage(`${COMMIT_PROMPT}\n\n${gitContext}`);
+      pi.sendUserMessage(`${COMMIT_PROMPT}\n\n${gitContext}`, {
+        deliverAs: "followUp",
+      });
     },
   });
 }
