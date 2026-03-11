@@ -31,6 +31,7 @@
     # Wayland clipboard
     wl-clipboard
     cliphist
+    wtype
 
     # App launcher, screen lock, idle, display config
     fuzzel
