@@ -69,7 +69,7 @@ spawn-at-startup "swayidle" "-w" "timeout" "300" "niri msg action power-off-moni
 
 prefer-no-csd
 
-screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+screenshot-path "~/Pictures/Screenshots/screenshot-%Y-%m-%d-%H-%M-%S.png"
 
 hotkey-overlay {
     skip-at-startup
