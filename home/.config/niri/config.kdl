@@ -23,11 +23,10 @@ input {
     focus-follows-mouse max-scroll-amount="0%"
 }
 
-// Named workspaces (matching sway layout: web, dev, im, doc)
+// Named workspaces (matching sway layout: web, dev, im)
 workspace "1:web"
 workspace "2:dev"
 workspace "3:im"
-workspace "4:doc"
 
 // Outputs are managed by kanshi, not here
 
@@ -95,12 +94,6 @@ window-rule {
 window-rule {
     match app-id=r#"^(org\.telegram\.desktop|[Ss]ignal|Ferdium|Element|discord|Slack|thunderbird|evolution|org\.gnome\.Fractal|im\.nheko\.Nheko)$"#
     open-on-workspace "3:im"
-}
-
-// Document viewers -> "doc" workspace
-window-rule {
-    match app-id=r#"^(org\.gnome\.Evince|evince|libreoffice.*|org\.keepassxc\.KeePassXC|org\.pwmt\.zathura)$"#
-    open-on-workspace "4:doc"
 }
 
 // Firefox/LibreWolf PiP floating
@@ -235,7 +228,7 @@ binds {
     Mod+1 { focus-workspace "1:web"; }
     Mod+2 { focus-workspace "2:dev"; }
     Mod+3 { focus-workspace "3:im"; }
-    Mod+4 { focus-workspace "4:doc"; }
+    Mod+4 { focus-workspace 4; }
     Mod+5 { focus-workspace 5; }
     Mod+6 { focus-workspace 6; }
     Mod+7 { focus-workspace 7; }
@@ -244,7 +237,7 @@ binds {
     Mod+Ctrl+1 { move-column-to-workspace "1:web"; }
     Mod+Ctrl+2 { move-column-to-workspace "2:dev"; }
     Mod+Ctrl+3 { move-column-to-workspace "3:im"; }
-    Mod+Ctrl+4 { move-column-to-workspace "4:doc"; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
     Mod+Ctrl+5 { move-column-to-workspace 5; }
     Mod+Ctrl+6 { move-column-to-workspace 6; }
     Mod+Ctrl+7 { move-column-to-workspace 7; }
