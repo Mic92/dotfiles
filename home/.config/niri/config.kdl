@@ -24,10 +24,10 @@ input {
 }
 
 // Named workspaces (matching sway layout: web, dev, im, doc)
-workspace "web"
-workspace "dev"
-workspace "im"
-workspace "doc"
+workspace "1:web"
+workspace "2:dev"
+workspace "3:im"
+workspace "4:doc"
 
 // Outputs are managed by kanshi, not here
 
@@ -82,25 +82,25 @@ animations {
 // Web browsers -> "web" workspace
 window-rule {
     match app-id=r#"^(firefox|librewolf|chromium-browser|google-chrome|org\.chromium\.Chromium)$"#
-    open-on-workspace "web"
+    open-on-workspace "1:web"
 }
 
 // Terminals and editors -> "dev" workspace
 window-rule {
     match app-id=r#"^(com\.mitchellh\.ghostty|Alacritty|foot|footclient|kitty|org\.wezfurlong\.wezterm|xterm|emacs|neovide)$"#
-    open-on-workspace "dev"
+    open-on-workspace "2:dev"
 }
 
 // IM / chat apps -> "im" workspace
 window-rule {
     match app-id=r#"^(org\.telegram\.desktop|[Ss]ignal|Ferdium|Element|discord|Slack|thunderbird|evolution|org\.gnome\.Fractal|im\.nheko\.Nheko)$"#
-    open-on-workspace "im"
+    open-on-workspace "3:im"
 }
 
 // Document viewers -> "doc" workspace
 window-rule {
     match app-id=r#"^(org\.gnome\.Evince|evince|libreoffice.*|org\.keepassxc\.KeePassXC|org\.pwmt\.zathura)$"#
-    open-on-workspace "doc"
+    open-on-workspace "4:doc"
 }
 
 // Firefox/LibreWolf PiP floating
@@ -231,19 +231,19 @@ binds {
     Mod+Ctrl+WheelScrollLeft  { move-column-left; }
 
     // Named workspaces (1-4) and numbered (5-9)
-    Mod+1 { focus-workspace "web"; }
-    Mod+2 { focus-workspace "dev"; }
-    Mod+3 { focus-workspace "im"; }
-    Mod+4 { focus-workspace "doc"; }
+    Mod+1 { focus-workspace "1:web"; }
+    Mod+2 { focus-workspace "2:dev"; }
+    Mod+3 { focus-workspace "3:im"; }
+    Mod+4 { focus-workspace "4:doc"; }
     Mod+5 { focus-workspace 5; }
     Mod+6 { focus-workspace 6; }
     Mod+7 { focus-workspace 7; }
     Mod+8 { focus-workspace 8; }
     Mod+9 { focus-workspace 9; }
-    Mod+Ctrl+1 { move-column-to-workspace "web"; }
-    Mod+Ctrl+2 { move-column-to-workspace "dev"; }
-    Mod+Ctrl+3 { move-column-to-workspace "im"; }
-    Mod+Ctrl+4 { move-column-to-workspace "doc"; }
+    Mod+Ctrl+1 { move-column-to-workspace "1:web"; }
+    Mod+Ctrl+2 { move-column-to-workspace "2:dev"; }
+    Mod+Ctrl+3 { move-column-to-workspace "3:im"; }
+    Mod+Ctrl+4 { move-column-to-workspace "4:doc"; }
     Mod+Ctrl+5 { move-column-to-workspace 5; }
     Mod+Ctrl+6 { move-column-to-workspace 6; }
     Mod+Ctrl+7 { move-column-to-workspace 7; }
