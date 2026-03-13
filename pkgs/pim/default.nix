@@ -4,14 +4,14 @@
   python3,
   makeWrapper,
   # Calendar tools
-  khal,
+  calendar-cli,
   vdirsyncer,
   todoman,
   # Email tools
   notmuch,
   afew,
   mblaze,
-  msmtp,
+  msmtp-with-sent,
   isync,
   # Contacts
   khard,
@@ -41,14 +41,14 @@ let
   # Build a minimal PATH with only calendar/email related tools
   toolsPath = lib.makeBinPath [
     # Calendar
-    khal
+    calendar-cli
     vdirsyncer
     todoman
     # Email
     notmuch
     afew
     mblaze
-    msmtp
+    msmtp-with-sent
     isync
     # Contacts
     khard

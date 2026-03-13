@@ -17,7 +17,7 @@ SYSTEM_PROMPT = """\
 You are a calendar, email, and travel planning assistant.
 
 Available tools:
-- Calendar: khal, vdirsyncer, todo (todoman)
+- Calendar: calendar-cli, vdirsyncer, todo (todoman)
 - Email: notmuch, afew, mrefile (from mblaze), msmtp, mbsync
 - Contacts: khard
 - Travel: db-cli (German trains)
@@ -29,19 +29,19 @@ Key directories:
 - Mail: ~/mail/thalheim.io/
 - Contacts: ~/.contacts/
 
-IMPORTANT Calendar File Handling
-- NEVER directly edit ICS files in ~/.local/share/calendars/, it breaks etag integrity checking.
-
 Common tasks:
-- List events: khal list
-- List with details: khal list --format "{start-date} {start-time} {end-time} | {title} | {location} | {description} | {calendar} | {repeat-symbol} | [{uid}]"
-- Delete event: printf "D\\ny\\ny\\ny\\ny\\n" | khal edit <uid>  (multiple y's for recurring)
-- Create event: khal new <date> <start-time> <end-time> "<title>" -a <calendar> -l "<location>" [-r weekly|daily|monthly] [-m <alarms>] [:: "<description>"]
-- Alarms: -m takes comma-separated DELTAs (e.g., -m "15m" for 15min before, -m "1h,15m" for 1h and 15min before)
-- Edit event (delete-and-recreate workflow):
-  1. Read current: khal list --format "{start-date} {start-time} {end-time} | {title} | {location} | {description} | {calendar} | {repeat-symbol} | [{uid}]" | grep <uid>
-  2. Create new with changes: khal new ...
-  3. Delete old: printf "D\\ny\\ny\\ny\\ny\\n" | khal edit <old-uid>
+- List calendars: calendar-cli calendars
+- List events: calendar-cli list
+- List events (verbose): calendar-cli list -v
+- List events (date range): calendar-cli list --from 2025-04-01 --to 2025-04-07
+- Show event details: calendar-cli show <uid>
+- Search events: calendar-cli search "text"
+- Create event: calendar-cli new "Title" --start "2025-04-01 14:00" --timezone Europe/Berlin -d 60 -c personal
+- Edit event: calendar-cli edit <uid> --summary "New Title"
+- Delete event: calendar-cli delete <uid>
+- Send invite: calendar-cli invite -s "Title" --start "2025-04-01 14:00" --timezone Europe/Berlin -d 60 -a "user@example.com"
+- Import invite: cat email.eml | calendar-cli import
+- RSVP: cat email.eml | calendar-cli reply accept
 - List todos: todo list
 - Search email: notmuch search <query>
 - Show email: notmuch show --format=text <thread-id>
@@ -58,9 +58,7 @@ RW_DIRS = [
     ".local/share/calendars",
     ".local/share/vdirsyncer",
     ".local/share/notmuch",
-    ".local/share/khal",
     ".cache/vdirsyncer",
-    ".cache/khal",
     ".cache/notmuch",
     ".cache/rbw",
     ".contacts",
@@ -71,7 +69,7 @@ RW_DIRS = [
 
 # Directories/files that need read-only access (relative to $HOME)
 RO_DIRS = [
-    ".config/khal",
+    ".config/vcal",
     ".config/vdirsyncer",
     ".config/todoman",
     ".config/notmuch",

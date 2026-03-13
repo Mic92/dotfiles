@@ -12,7 +12,7 @@ A sandboxed AI assistant for calendar, email, contacts, and travel planning.
 
 | Category | Tools                                                         |
 | -------- | ------------------------------------------------------------- |
-| Calendar | `khal`, `vdirsyncer`, `todo`                                  |
+| Calendar | `calendar-cli`, `vdirsyncer`, `todo`                          |
 | Email    | `notmuch`, `afew`, `mrefile`, `msmtp`, `mbsync`, `email-sync` |
 | Contacts | `khard`                                                       |
 | Travel   | `db-cli` (German trains)                                      |
@@ -31,7 +31,7 @@ pim -c                        # Continue previous session
 ```bash
 # Calendar
 pim "list my events for tomorrow"
-pim "delete the meeting at 3pm"
+pim "create a meeting tomorrow at 3pm for 1 hour"
 
 # Email  
 pim "search for emails from Jonas"
