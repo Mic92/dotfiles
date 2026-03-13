@@ -114,10 +114,15 @@ window-rule {
     open-floating true
 }
 
-// Rounded corners for all windows
+// Rounded corners for a modern look.
 window-rule {
-    geometry-corner-radius 8
+    geometry-corner-radius 20
     clip-to-geometry true
+}
+
+debug {
+    // Allows notification actions and window activation from Noctalia.
+    honor-xdg-activation-with-invalid-serial
 }
 
 binds {
@@ -275,6 +280,7 @@ binds {
     Print      { screenshot; }
     Ctrl+Print { screenshot-screen; }
     Alt+Print  { screenshot-window; }
+    Mod+Shift+T hotkey-overlay-title="Live Text (OCR)" { spawn "live-text"; }
 
     // Escape hatch for keyboard shortcut inhibitors
     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
