@@ -1,0 +1,37 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "live-text"
+version = "0.1.0"
+description = "Interactive OCR overlay for Wayland - select and copy text from your screen"
+readme = "README.md"
+requires-python = ">=3.13"
+license = {text = "MIT"}
+dependencies = [
+    "PyGObject",
+    "pycairo",
+]
+
+[project.scripts]
+live-text = "live_text.main:main"
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+
+[tool.ruff]
+target-version = "py313"
+
+[tool.mypy]
+python_version = "3.13"
+
+[[tool.mypy.overrides]]
+module = ["gi", "gi.repository", "cairo"]
+ignore_missing_imports = true
