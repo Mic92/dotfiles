@@ -30,17 +30,6 @@ let
       "pkgs/claude-md" = { };
       "pkgs/merge-when-green" = { };
       "pkgs/systemctl" = { };
-      "pkgs/vcal" = {
-        extraPythonPackages = with pkgs.python3.pkgs; [
-          icalendar
-          python-dateutil
-          pytz
-          types-pytz
-          types-python-dateutil
-          (pkgs.callPackage ../pkgs/vcal/types-icalendar.nix { inherit python; })
-          pytest
-        ];
-      };
       "pkgs/rbw_pinentry" = {
         extraPythonPackages = with pkgs.python3.pkgs; [
           keyring

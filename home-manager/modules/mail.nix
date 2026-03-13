@@ -7,45 +7,9 @@
 }:
 
 let
-  # email-sync script from flake packages
-  email-sync = self.packages.${pkgs.stdenv.hostPlatform.system}.email-sync;
-
-  # msmtp wrapper that saves sent mail to maildir
-  msmtp-with-sent = pkgs.writeShellScriptBin "msmtp" ''
-    # Wrapper for msmtp that saves sent mail to maildir
-
-    # Create temp file for the email
-    tmpfile=$(mktemp)
-    trap "rm -f $tmpfile" EXIT
-
-    # Read email from stdin and save to temp file
-    cat > "$tmpfile"
-
-    # Send the email with real msmtp
-    if ${pkgs.msmtp}/bin/msmtp "$@" < "$tmpfile"; then
-        # If send successful, save to Sent folder
-        # Generate unique filename for maildir
-        timestamp=$(date +%s)
-        hostname=$(hostname)
-        pid=$$
-        random=$RANDOM
-        filename="''${timestamp}.''${pid}_''${random}.''${hostname}:2,S"
-
-        # Ensure Sent directory exists
-        mkdir -p "$HOME/mail/thalheim.io/.Sent/cur"
-
-        # Save to Sent/cur directory with Seen flag
-        cp "$tmpfile" "$HOME/mail/thalheim.io/.Sent/cur/$filename"
-
-        # Update notmuch database
-        ${pkgs.notmuch}/bin/notmuch new >/dev/null 2>&1
-
-        exit 0
-    else
-        # If send failed, exit with msmtp's exit code
-        exit $?
-    fi
-  '';
+  selfPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
+  email-sync = selfPkgs.email-sync;
+  msmtp-with-sent = selfPkgs.msmtp-with-sent;
 in
 lib.mkMerge [
   {
@@ -72,7 +36,6 @@ lib.mkMerge [
       msmtp-with-sent # msmtp wrapper that saves to Sent folder
       w3m # for HTML email viewing
 
-      self.packages.${pkgs.stdenv.hostPlatform.system}.vcal
       self.packages.${pkgs.stdenv.hostPlatform.system}.crabfit-cli
     ];
 

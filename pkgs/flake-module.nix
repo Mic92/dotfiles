@@ -27,7 +27,7 @@ in
     n8n-nodes-paperless = pkgs.callPackage ./n8n-nodes-paperless { };
 
     email-sync = pkgs.callPackage ./email-sync { };
-    vcal = pkgs.callPackage ./vcal { };
+    msmtp-with-sent = pkgs.callPackage ./msmtp-with-sent { };
     buildbot-pr-check = pkgs.python3.pkgs.callPackage ./buildbot-pr-check { };
     claude-md = pkgs.python3.pkgs.callPackage ./claude-md { };
     crabfit-cli = pkgs.python3.pkgs.callPackage ./crabfit-cli { };
@@ -51,8 +51,11 @@ in
     updater = pkgs.callPackage ./updater { };
     # Sandboxed pi for calendar/email tasks
     pim = pkgs.callPackage ./pim {
-      inherit (self'.packages) email-sync crabfit-cli;
+      inherit (self'.packages) email-sync crabfit-cli msmtp-with-sent;
       pi = aiTools.pi;
+      calendar-cli = micsSkills.calendar-cli.override {
+        msmtp = self'.packages.msmtp-with-sent;
+      };
       db-cli = micsSkills.db-cli;
       kagi-search = micsSkills.kagi-search;
     };

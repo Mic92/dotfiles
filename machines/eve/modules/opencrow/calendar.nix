@@ -6,9 +6,12 @@
 }:
 let
   dotfiles = "${self}/home";
+  micsSkills = self.inputs.mics-skills;
+  micsSkillsPkgs = micsSkills.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
-  services.opencrow.skills.calendar = ./skills/calendar;
+  services.opencrow.skills.todo = ./skills/todo;
+  services.opencrow.skills.calendar-cli = "${micsSkills}/skills/calendar-cli";
 
   clan.core.vars.generators.opencrow-nextcloud = {
     files.nextcloud-thalheim-password.secret = true;
@@ -38,7 +41,7 @@ in
       cp ${dotfiles}/bin/vdirsyncer-pre-deletion-hook $out/bin/
       chmod +x $out/bin/*
     '')
-    pkgs.khal
+    micsSkillsPkgs.calendar-cli
     pkgs.todoman
     pkgs.vdirsyncer
   ];
@@ -46,8 +49,6 @@ in
   containers.opencrow.config.systemd.tmpfiles.rules = [
     "d /var/lib/opencrow/.config/vdirsyncer 0750 opencrow opencrow -"
     "L+ /var/lib/opencrow/.config/vdirsyncer/config - - - - ${dotfiles}/.config/vdirsyncer/config"
-    "d /var/lib/opencrow/.config/khal 0750 opencrow opencrow -"
-    "L+ /var/lib/opencrow/.config/khal/config - - - - ${dotfiles}/.config/khal/config"
     "d /var/lib/opencrow/.config/todoman 0750 opencrow opencrow -"
     "L+ /var/lib/opencrow/.config/todoman/config.py - - - - ${dotfiles}/.config/todoman/config.py"
     "L+ /var/lib/opencrow/.config/todoman/__init__.py - - - - ${dotfiles}/.config/todoman/__init__.py"

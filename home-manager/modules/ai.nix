@@ -7,6 +7,7 @@
 let
   aiTools = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   selfPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
+  micsSkillsPkgs = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
 in
 {
   imports = [
@@ -16,10 +17,16 @@ in
 
   programs.mics-skills = {
     enable = true;
-    package = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
+    package = micsSkillsPkgs // {
+      # Use our msmtp wrapper that saves to Sent folder
+      calendar-cli = micsSkillsPkgs.calendar-cli.override {
+        msmtp = selfPkgs.msmtp-with-sent;
+      };
+    };
     skillsSrc = inputs.mics-skills;
     skills = [
       "browser-cli"
+      "calendar-cli"
       "context7-cli"
       "db-cli"
       "gmaps-cli"
