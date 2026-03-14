@@ -624,11 +624,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1772884799,
-        "narHash": "sha256-3fM9e/bjTSo1+c57TOkxJDhp2X9SZHANwPSzdEftGGM=",
+        "lastModified": 1773408152,
+        "narHash": "sha256-BXTy1kd7J/+rqGZljo4YQ6BLq5uAPGLH4X/HiiK8W/o=",
         "owner": "Mic92",
         "repo": "n8n-nodes-caldav",
-        "rev": "92569e06b33dc738b76d0d7d10afb1601cf077df",
+        "rev": "7a8f975d7151f138a9ae45bd9b5722c81b3aaeaf",
         "type": "github"
       },
       "original": {
