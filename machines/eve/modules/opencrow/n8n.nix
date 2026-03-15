@@ -1,11 +1,33 @@
 {
   config,
-  self,
   pkgs,
+  self,
   ...
 }:
+let
+  micsSkills = self.inputs.mics-skills;
+
+  n8n-workflows-skill = pkgs.writeTextDir "SKILL.md" ''
+    ---
+    name: n8n-workflows
+    description: Manage n8n workflow definitions. Use when asked to create, edit, inspect n8n workflows, or set up recurring/scheduled tasks and automations.
+    ---
+
+    For n8n-cli API reference, see [SKILL.md](${micsSkills}/skills/n8n-cli/SKILL.md).
+
+    # n8n Workflows
+
+    Workflow definitions live in `~/n8n-workflows`. Read its `CLAUDE.md` for
+    detailed conventions, schema, and deployment instructions before making changes.
+
+    ```bash
+    cd ~/n8n-workflows
+    cat CLAUDE.md
+    ```
+  '';
+in
 {
-  services.opencrow.skills.n8n-workflows = ./skills/n8n-workflows;
+  services.opencrow.skills.n8n-workflows = n8n-workflows-skill;
 
   clan.core.vars.generators.opencrow-n8n = {
     files.n8n-api-jwt.secret = true;
@@ -21,10 +43,6 @@
 
   services.opencrow.credentialFiles."n8n-api-jwt" =
     config.clan.core.vars.generators.opencrow-n8n.files.n8n-api-jwt.path;
-
-  services.opencrow.extraPackages = [
-    self.packages.${pkgs.stdenv.hostPlatform.system}.n8n-cli
-  ];
 
   # Clone the n8n-workflows repo on first start (runs after SSH keys
   # are installed by gitea.nix's ExecStartPre).

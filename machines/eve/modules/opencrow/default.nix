@@ -37,6 +37,7 @@ in
       lib.genAttrs [
         "context7-cli"
         "db-cli"
+        "n8n-cli"
         "pexpect-cli"
         "weather-cli"
       ] (name: "${micsSkills}/skills/${name}")
@@ -61,6 +62,7 @@ in
       extraPackages = [
         micsSkillsPkgs.context7-cli
         micsSkillsPkgs.db-cli
+        micsSkillsPkgs.n8n-cli
         micsSkillsPkgs.pexpect-cli
         micsSkillsPkgs.weather-cli
       ]
