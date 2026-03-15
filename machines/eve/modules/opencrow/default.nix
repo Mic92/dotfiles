@@ -49,11 +49,10 @@ in
       piPackage = self.inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
 
       extensions = {
-        memory = ./extensions/memory.ts;
+        memory = true;
       };
       environment = {
         TZ = "Europe/Berlin";
-        SEDIMENT_DB = "/var/lib/opencrow/sediment";
         OPENCROW_SOUL_FILE = "${./soul.md}";
         OPENCROW_LOG_LEVEL = "debug";
         OPENCROW_PI_PROVIDER = "anthropic";
@@ -64,7 +63,6 @@ in
         micsSkillsPkgs.db-cli
         micsSkillsPkgs.pexpect-cli
         micsSkillsPkgs.weather-cli
-        self.packages.${pkgs.stdenv.hostPlatform.system}.sediment
       ]
       ++ (with pkgs; [
         curl

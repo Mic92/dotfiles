@@ -884,15 +884,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1773563251,
-        "narHash": "sha256-aeSiAtl4q0r1Hdd5xEx8M8q1KFS4ksWqtRYQN1EQKQw=",
+        "lastModified": 1773565691,
+        "narHash": "sha256-p5rPrNWDmKgcE0Fc9GYYv6CeXI8sELLKdQl/i1UVpz4=",
         "owner": "pinpox",
         "repo": "opencrow",
-        "rev": "9f6c825310f23d82fcfb6d473a2efc8eb333c13a",
+        "rev": "3e45abe89a3856ca0c53fb377e31e593a8002da4",
         "type": "github"
       },
       "original": {
         "owner": "pinpox",
+        "ref": "pi",
         "repo": "opencrow",
         "type": "github"
       }
