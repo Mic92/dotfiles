@@ -46,6 +46,7 @@
     ./modules/mtls-cache.nix
     ./modules/knot
     ./modules/mastodon-hnbot.nix
+    self.inputs.mics-n8n-nodes.nixosModules.default
     ./modules/n8n
     ./modules/network.nix
     ./modules/nostr-relay.nix
