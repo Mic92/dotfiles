@@ -858,16 +858,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1773565691,
+        "lastModified": 1773575153,
         "narHash": "sha256-p5rPrNWDmKgcE0Fc9GYYv6CeXI8sELLKdQl/i1UVpz4=",
         "owner": "pinpox",
         "repo": "opencrow",
-        "rev": "3e45abe89a3856ca0c53fb377e31e593a8002da4",
+        "rev": "a9f3091c78586227fc1db03d7dd07e32348310fe",
         "type": "github"
       },
       "original": {
         "owner": "pinpox",
-        "ref": "pi",
         "repo": "opencrow",
         "type": "github"
       }
