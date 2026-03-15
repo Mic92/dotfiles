@@ -66,7 +66,7 @@ in
   clan.core.vars.generators.n8n-task-runner = {
     files.auth-token.secret = true;
     script = ''
-      dd if=/dev/urandom bs=32 count=1 2>/dev/null | base64 | tr -d '\n' > "$out/auth-token"
+      printf '%s' "$(dd if=/dev/urandom bs=32 count=1 2>/dev/null | base64)" > "$out/auth-token"
     '';
   };
 
