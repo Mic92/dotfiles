@@ -44,6 +44,11 @@ in
   services.opencrow.credentialFiles."n8n-api-jwt" =
     config.clan.core.vars.generators.opencrow-n8n.files.n8n-api-jwt.path;
 
+  containers.opencrow.config.systemd.tmpfiles.rules = [
+    "d /var/lib/opencrow/.config/n8n-cli 0750 opencrow opencrow -"
+    ''f /var/lib/opencrow/.config/n8n-cli/config.json 0640 opencrow opencrow - {"api_url":"https://n8n-api.thalheim.io","api_key_command":"rbw get n8n-api-jwt"}''
+  ];
+
   # Clone the n8n-workflows repo on first start (runs after SSH keys
   # are installed by gitea.nix's ExecStartPre).
   containers.opencrow.config.systemd.services.opencrow.serviceConfig.ExecStartPre = [
