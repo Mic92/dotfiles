@@ -611,32 +611,6 @@
         "type": "github"
       }
     },
-    "n8n-nodes-caldav": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1773567584,
-        "narHash": "sha256-dgiBv5SQbU1b7qXeDXg2WR1SLe83c1Dv7g+IQOPfsvA=",
-        "owner": "Mic92",
-        "repo": "n8n-nodes-caldav",
-        "rev": "1c209b4b726e4bd82f14673777960c84cab5bcbd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "n8n-nodes-caldav",
-        "type": "github"
-      }
-    },
     "niks3": {
       "inputs": {
         "flake-parts": [
@@ -959,7 +933,6 @@
         "llm-agents": "llm-agents",
         "mics-n8n-nodes": "mics-n8n-nodes",
         "mics-skills": "mics-skills",
-        "n8n-nodes-caldav": "n8n-nodes-caldav",
         "niks3": "niks3",
         "nix": "nix",
         "nix-casks": "nix-casks",

@@ -110,10 +110,6 @@ in
     in
     ''
       mkdir -p /var/lib/n8n/.n8n/custom
-      ln -sfn ${
-        self.inputs.n8n-nodes-caldav.packages.${pkgs.stdenv.hostPlatform.system}.default
-      }/lib/node_modules/n8n-nodes-caldav/dist \
-        /var/lib/n8n/.n8n/custom/n8n-nodes-caldav
       ln -sfn ${n8n-nodes-paperless}/lib/node_modules/@n8n-chezmoi-sh/n8n-nodes-paperless/dist \
         /var/lib/n8n/.n8n/custom/n8n-nodes-paperless
       ${linkCommands}
