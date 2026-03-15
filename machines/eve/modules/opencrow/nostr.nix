@@ -24,8 +24,8 @@
   services.opencrow.environment = {
     OPENCROW_BACKEND = "nostr";
     OPENCROW_NOSTR_PRIVATE_KEY_FILE = "%d/nostr-private-key";
-    OPENCROW_NOSTR_RELAYS = "wss://nostr.0cx.de,wss://relay.damus.io,wss://nos.lol,wss://nostr.thalheim.io";
-    OPENCROW_NOSTR_DM_RELAYS = "wss://relay.damus.io,wss://nos.lol,wss://nostr.thalheim.io";
+    OPENCROW_NOSTR_RELAYS = "wss://nostr.0cx.de,wss://nos.lol,wss://nostr.thalheim.io";
+    OPENCROW_NOSTR_DM_RELAYS = "wss://nos.lol,wss://nostr.thalheim.io,wss://nostr.0cx.de";
     OPENCROW_NOSTR_BLOSSOM_SERVERS = "https://blossom.nostr.build";
     OPENCROW_NOSTR_ALLOWED_USERS = "npub10yt4rh4g5t5kd47x7w8dpwqq7s228c53xacjqxvxjwu0kes3kzvsynqfu8";
     OPENCROW_NOSTR_NAME = "janet";
