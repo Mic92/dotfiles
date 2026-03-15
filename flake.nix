@@ -102,11 +102,6 @@
     clan-core.inputs.systems.follows = "systems";
     clan-core.inputs.nix-darwin.follows = "nix-darwin";
 
-    n8n-nodes-caldav.url = "github:Mic92/n8n-nodes-caldav";
-    n8n-nodes-caldav.inputs.nixpkgs.follows = "nixpkgs";
-    n8n-nodes-caldav.inputs.treefmt-nix.follows = "treefmt-nix";
-    n8n-nodes-caldav.inputs.flake-parts.follows = "flake-parts";
-
     mics-n8n-nodes.url = "github:Mic92/mics-n8n-nodes";
     mics-n8n-nodes.inputs.nixpkgs.follows = "nixpkgs";
     mics-n8n-nodes.inputs.treefmt-nix.follows = "treefmt-nix";
