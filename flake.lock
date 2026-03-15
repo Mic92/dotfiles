@@ -572,11 +572,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773524969,
-        "narHash": "sha256-2Mt8Rd4PR0puT33Y4AI67eipiFF+oAqjWMK6MRg82uw=",
+        "lastModified": 1773567484,
+        "narHash": "sha256-YlcyJndMKAClUk+BzIXWdA+lekXqHre4WDKfY/vz0KY=",
         "owner": "Mic92",
         "repo": "mics-n8n-nodes",
-        "rev": "27eb9af4d14aabac20e87d780eb255d2e2e99335",
+        "rev": "e12c1fb97a82c64d06e517cb6d921fb022908832",
         "type": "github"
       },
       "original": {
@@ -624,11 +624,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773408152,
-        "narHash": "sha256-BXTy1kd7J/+rqGZljo4YQ6BLq5uAPGLH4X/HiiK8W/o=",
+        "lastModified": 1773567466,
+        "narHash": "sha256-0qT5zh0C5+GiEOPXjC3m/74O3dPwa4YXQik8xYX45To=",
         "owner": "Mic92",
         "repo": "n8n-nodes-caldav",
-        "rev": "7a8f975d7151f138a9ae45bd9b5722c81b3aaeaf",
+        "rev": "6435241e9f3cf326527380b355c37c938ab09eab",
         "type": "github"
       },
       "original": {
