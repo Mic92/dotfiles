@@ -67,18 +67,39 @@ in
         micsSkillsPkgs.weather-cli
       ]
       ++ (with pkgs; [
+        bc
+        cacert
+        coreutils
         curl
+        diffutils
+        fd
         file
+        findutils
+        gnugrep
+        gnused
+        gnutar
+        gzip
+        htmlq
         hurl
         git
         jq
         less
+        libarchive
+        openssh
+        patch
         procps
         python3
+        ripgrep
         tree
+        unzip
         util-linux
         w3m
+        wget
         which
+        xz
+        yq-go
+        zip
+        zstd
       ]);
     };
   };
