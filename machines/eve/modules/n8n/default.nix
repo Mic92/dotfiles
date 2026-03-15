@@ -96,24 +96,12 @@ in
     };
   };
 
-  # Install community nodes into custom directory
-  # n8n automatically loads *.node.js and *.credentials.js from ~/.n8n/custom
-  systemd.services.n8n.preStart =
-    let
-      micsNodes = self.inputs.mics-n8n-nodes.packages.${pkgs.stdenv.hostPlatform.system};
-      linkCommands = pkgs.lib.concatStringsSep "\n" (
-        pkgs.lib.mapAttrsToList (
-          name: pkg: "ln -sfn ${pkg}/lib/node_modules/${name}/dist /var/lib/n8n/.n8n/custom/${name}"
-        ) micsNodes
-      );
-      n8n-nodes-paperless = self.packages.${pkgs.stdenv.hostPlatform.system}.n8n-nodes-paperless;
-    in
-    ''
-      mkdir -p /var/lib/n8n/.n8n/custom
-      ln -sfn ${n8n-nodes-paperless}/lib/node_modules/@n8n-chezmoi-sh/n8n-nodes-paperless/dist \
-        /var/lib/n8n/.n8n/custom/n8n-nodes-paperless
-      ${linkCommands}
-    '';
+  mics-n8n-nodes.enableAll = true;
+  mics-n8n-nodes.extraNodes = {
+    n8n-nodes-paperless = "${
+      self.packages.${pkgs.stdenv.hostPlatform.system}.n8n-nodes-paperless
+    }/lib/node_modules/@n8n-chezmoi-sh/n8n-nodes-paperless/dist";
+  };
 
   services.postgresql.ensureDatabases = [ "n8n" ];
   services.postgresql.ensureUsers = [
