@@ -978,11 +978,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1773369348,
-        "narHash": "sha256-6UwMEAi6X3oMjKQm51i0+3i10DrsrSdXi/4YgmJxfhE=",
+        "lastModified": 1773627349,
+        "narHash": "sha256-p/3pOD2IrmJwTffWioL6JnFAdaS+9hctmQ+mEt29KrE=",
         "owner": "nix-community",
         "repo": "srvos",
-        "rev": "f3f0277b1dee1bfd058c5b8b98cb25558d95f03f",
+        "rev": "2ddaafd0f85df0d1acf0f1d79cc2b5a53381965c",
         "type": "github"
       },
       "original": {
