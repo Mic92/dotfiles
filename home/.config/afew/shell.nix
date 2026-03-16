@@ -7,15 +7,12 @@ let
     ps: with ps; [
       (ps.toPythonModule pkgs.afew)
       notmuch
-      pytest
     ]
   );
 in
 pkgs.mkShell {
   buildInputs = [
     pythonEnv
-    pkgs.mypy
-    pkgs.claude-code
   ];
 
   shellHook = ''
