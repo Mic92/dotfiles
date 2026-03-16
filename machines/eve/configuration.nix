@@ -50,6 +50,7 @@
     ./modules/n8n
     ./modules/network.nix
     ./modules/nostr-relay.nix
+    ./modules/route96.nix
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
     ./modules/opencrow
