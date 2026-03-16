@@ -1,12 +1,6 @@
 # afew configuration
 # This complements the server-side Sieve rules with additional client-side tagging
 
-[ClaudeSpamFilter]
-# Only analyze emails from unknown senders
-# Results are cached to avoid re-analyzing
-# Restrict to main maildir (no subfolders)
-maildir_path = thalheim.io
-
 # Tag emails based on which folder they're in (set by Sieve)
 [FolderNameFilter]
 # This filter adds tags based on folder names
