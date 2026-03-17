@@ -962,3 +962,20 @@ fi
 
 # prevent broken terminals by resetting to sane defaults after a command
 ttyctl -f
+
+# Extract Artifactory credentials from netrc for nix impure FOD builds
+if [[ -f "$HOME/.netrc" ]]; then
+  local _netrc_words=(${=$(</root/.netrc)})
+  for ((i=1; i<=${#_netrc_words}; i++)); do
+    if [[ ${_netrc_words[i]} == machine && ${_netrc_words[i+1]} == *artifactory* ]]; then
+      for ((j=i+2; j<=${#_netrc_words}; j++)); do
+        case ${_netrc_words[j]} in
+          login)    export ARTIFACTORY_USER=${_netrc_words[j+1]} ;;
+          password) export ARTIFACTORY_TOKEN=${_netrc_words[j+1]} ;;
+          machine)  break ;;
+        esac
+      done
+      break
+    fi
+  done
+fi
