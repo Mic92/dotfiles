@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import subprocess
 from pathlib import Path
 from unittest.mock import patch
 
@@ -15,26 +14,22 @@ TEST_IMAGE = TEST_DIR / "test_image.png"
 
 
 class TestMainErrorHandling:
-    def test_tesseract_failure_exits_cleanly(
+    def test_ocr_failure_exits_cleanly(
         self, capsys: pytest.CaptureFixture[str]
     ) -> None:
-        """main() should catch tesseract CalledProcessError and exit 1."""
+        """main() should catch OCR exceptions and exit 1."""
         with (
             patch("sys.argv", ["live-text", str(TEST_IMAGE)]),
             patch("live_text.main.run_ocr") as mock_ocr,
         ):
-            mock_ocr.side_effect = subprocess.CalledProcessError(
-                1,
-                "tesseract",
-                stderr="Error opening data file\n",
-            )
+            mock_ocr.side_effect = RuntimeError("model load failed")
             with pytest.raises(SystemExit) as exc_info:
                 main()
             assert exc_info.value.code == 1
             captured = capsys.readouterr()
             assert "ocr" in captured.err.lower()
 
-    def test_no_words_detected_exits_zero(
+    def test_no_text_detected_exits_zero(
         self, capsys: pytest.CaptureFixture[str]
     ) -> None:
         """When OCR finds no text, exit 0 with a message."""

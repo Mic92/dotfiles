@@ -69,6 +69,7 @@ in
   // lib.optionalAttrs pkgs.stdenv.isLinux {
     groups-relay = pkgs.callPackage ./groups-relay { };
     route96 = pkgs.callPackage ./route96 { };
+    live-text = pkgs.python3.pkgs.callPackage ./live-text { };
     phantun = pkgs.callPackage ./phantun { };
     phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
     radicle-github-sync = pkgs.callPackage ./radicle-github-sync { };

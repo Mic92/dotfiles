@@ -3,9 +3,9 @@
 Interactive OCR overlay for Wayland (niri, sway, etc.) — the Linux equivalent of
 macOS Live Text.
 
-Takes a full-screen screenshot, runs Tesseract OCR to detect text, then shows an
-interactive overlay where you can click or drag-select text regions. Selected
-text is copied to clipboard with Ctrl+C.
+Takes a full-screen screenshot, runs OCR using RapidOCR (PaddleOCR v4 models via
+ONNX Runtime), then shows an interactive overlay where you can click or
+drag-select text regions. Selected text is copied to clipboard with Ctrl+C.
 
 ## Usage
 
@@ -15,9 +15,6 @@ live-text
 
 # OCR an existing image file
 live-text screenshot.png
-
-# Use German language
-live-text --lang deu
 ```
 
 ## Keybindings (in overlay)
@@ -37,7 +34,7 @@ A brief white flash confirms successful copy.
 ## Dependencies
 
 - `grim` — Wayland screenshot
-- `tesseract` — OCR engine
+- `rapidocr` — OCR engine (PaddleOCR v4 via ONNX Runtime)
 - `wl-copy` — Wayland clipboard
 - `notify-send` — Desktop notifications (only for "no text detected")
 - GTK4 + gtk4-layer-shell — Overlay window

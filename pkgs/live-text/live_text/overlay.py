@@ -1,4 +1,10 @@
-"""GTK4 Layer Shell overlay for interactive text selection."""
+"""GTK4 Layer Shell overlay for interactive text selection.
+
+Renders the screenshot as-is.  Text is selectable at the word level:
+the cursor changes to an I-beam over detected words, and dragging
+paints a translucent blue highlight behind each selected word — like
+macOS Live Text or a PDF viewer.
+"""
 
 from __future__ import annotations
 
@@ -14,18 +20,11 @@ gi.require_version("Gtk4LayerShell", "1.0")
 
 from gi.repository import Gdk, GLib, Gtk, Gtk4LayerShell  # noqa: E402
 
-from .ocr import LineBox  # noqa: E402
+from .ocr import LineBox, WordBox  # noqa: E402
 
-# Colors (RGBA)
-HOVER_FILL = (0.2, 0.6, 1.0, 0.25)
-HOVER_BORDER = (0.2, 0.6, 1.0, 0.7)
-SELECTED_FILL = (0.2, 0.6, 1.0, 0.4)
-SELECTED_BORDER = (0.2, 0.6, 1.0, 0.8)
-FLASH_FILL = (1.0, 1.0, 1.0, 0.6)
-FLASH_BORDER = (1.0, 1.0, 1.0, 0.9)
-DRAG_FILL = (0.2, 0.6, 1.0, 0.12)
-DRAG_BORDER = (0.2, 0.6, 1.0, 0.5)
-TEXT_BG = (0.0, 0.0, 0.0, 0.03)
+# Selection highlight — macOS-style blue text selection
+SELECTION_FILL = (0.26, 0.52, 0.96, 0.35)
+FLASH_FILL = (0.26, 0.52, 0.96, 0.6)
 
 # Hint bar
 HINT_BG = (0.0, 0.0, 0.0, 0.55)
@@ -33,32 +32,36 @@ HINT_TEXT_COLOR = (1.0, 1.0, 1.0)
 HINT_FONT_SIZE = 13.0
 HINT_PADDING = 8.0
 
-LINE_PADDING = 2
 MIN_DRAG_DISTANCE = 5.0
 FLASH_DURATION_MS = 150
+WORD_PADDING = 1
 
 
-def _line_rect(line: LineBox) -> tuple[float, float, float, float]:
-    """Return (x, y, w, h) for a line box including padding."""
+def _word_rect(w: WordBox) -> tuple[float, float, float, float]:
+    """Return (x, y, width, height) for a word with padding."""
     return (
-        line.x - LINE_PADDING,
-        line.y - LINE_PADDING,
-        line.width + 2 * LINE_PADDING,
-        line.height + 2 * LINE_PADDING,
+        w.x - WORD_PADDING,
+        w.y - WORD_PADDING,
+        w.width + 2 * WORD_PADDING,
+        w.height + 2 * WORD_PADDING,
     )
 
 
-class LiveTextOverlay:
-    """Full-screen overlay showing screenshot with selectable OCR text regions.
+# A selected word is identified by (line_index, word_index).
+WordId = tuple[int, int]
 
-    Interaction model (familiar from text editors / macOS Live Text):
-      - Click a line → select it (replaces previous selection)
-      - Shift+click  → add/remove line from selection
-      - Drag          → select all lines in rectangle
-      - Ctrl+C / Enter → copy selection to clipboard
-      - Ctrl+A        → select all
-      - Click empty   → clear selection
-      - Escape        → quit
+
+class LiveTextOverlay:
+    """Full-screen overlay — screenshot with word-level text selection.
+
+    Interaction model (like macOS Live Text / PDF viewers):
+      - Cursor becomes I-beam over text, default arrow elsewhere
+      - Click a word to select it
+      - Drag to select words in the swept area
+      - Shift+click to extend/shrink selection
+      - Ctrl+C / Enter to copy
+      - Ctrl+A to select all
+      - Escape to quit
     """
 
     def __init__(
@@ -71,8 +74,9 @@ class LiveTextOverlay:
         self.lines = lines
         self.wl_copy_cmd = wl_copy_cmd
 
-        self.hovered_line: LineBox | None = None
-        self.selected_lines: set[int] = set()
+        # Selected words as (line_idx, word_idx) pairs
+        self.selected_words: set[WordId] = set()
+        self._over_text = False
 
         # Drag state
         self.dragging = False
@@ -81,13 +85,14 @@ class LiveTextOverlay:
         self.drag_current_x = 0.0
         self.drag_current_y = 0.0
         self._drag_exceeded_threshold = False
-        # Whether Shift was held when the drag/click started
         self._drag_shift = False
 
         # Copy-flash animation
         self._flashing = False
 
         self._image_surface: cairo.ImageSurface | None = None
+        self._cursor_text = Gdk.Cursor.new_from_name("text")
+        self._cursor_default = Gdk.Cursor.new_from_name("default")
 
         self.app = Gtk.Application(application_id="org.mic92.live-text")
         self.app.connect("activate", self._on_activate)
@@ -116,31 +121,31 @@ class LiveTextOverlay:
             str(self.screenshot_path)
         )
 
-        drawing_area = Gtk.DrawingArea()
-        drawing_area.set_draw_func(self._draw)
-        drawing_area.set_hexpand(True)
-        drawing_area.set_vexpand(True)
-        self._drawing_area = drawing_area
+        da = Gtk.DrawingArea()
+        da.set_draw_func(self._draw)
+        da.set_hexpand(True)
+        da.set_vexpand(True)
+        self._drawing_area = da
 
         motion = Gtk.EventControllerMotion()
         motion.connect("motion", self._on_motion)
-        drawing_area.add_controller(motion)
+        da.add_controller(motion)
 
         drag = Gtk.GestureDrag()
         drag.connect("drag-begin", self._on_drag_begin)
         drag.connect("drag-update", self._on_drag_update)
         drag.connect("drag-end", self._on_drag_end)
-        drawing_area.add_controller(drag)
+        da.add_controller(drag)
 
         keys = Gtk.EventControllerKey()
         keys.connect("key-pressed", self._on_key_pressed)
         window.add_controller(keys)
 
-        drawing_area.set_cursor(Gdk.Cursor.new_from_name("crosshair"))
-        window.set_child(drawing_area)
+        da.set_cursor(self._cursor_default)
+        window.set_child(da)
         window.present()
 
-    # -- coordinate mapping ---------------------------------------------------
+    # -- coordinate helpers ---------------------------------------------------
 
     def _get_scale(
         self,
@@ -167,6 +172,14 @@ class LiveTextOverlay:
         scale, ox, oy = self._get_scale()
         return (wx - ox) / scale, (wy - oy) / scale
 
+    def _hit_word(self, ix: float, iy: float) -> WordId | None:
+        """Return (line_idx, word_idx) of the word at image coords, or None."""
+        for li, line in enumerate(self.lines):
+            for wi, word in enumerate(line.words):
+                if word.contains_point(ix, iy):
+                    return (li, wi)
+        return None
+
     # -- drawing --------------------------------------------------------------
 
     def _draw(
@@ -179,82 +192,34 @@ class LiveTextOverlay:
         if self._image_surface is None:
             return
 
-        img_w = self._image_surface.get_width()
-        img_h = self._image_surface.get_height()
         scale, ox, oy = self._get_scale(width, height)
 
-        # Screenshot + dim
         cr.save()
         cr.translate(ox, oy)
         cr.scale(scale, scale)
         cr.set_source_surface(self._image_surface, 0, 0)
         cr.paint()
-        cr.set_source_rgba(0, 0, 0, 0.15)
-        cr.rectangle(0, 0, img_w, img_h)
-        cr.fill()
 
-        # Subtle text region backgrounds
-        for line in self.lines:
-            cr.set_source_rgba(*TEXT_BG)
-            cr.rectangle(*_line_rect(line))
-            cr.fill()
-
-        # Selected lines (flash white briefly after copy)
-        fill = FLASH_FILL if self._flashing else SELECTED_FILL
-        border = FLASH_BORDER if self._flashing else SELECTED_BORDER
-        for idx in self.selected_lines:
-            rect = _line_rect(self.lines[idx])
+        # Draw selection highlight per word (blue fill, no borders)
+        if self.selected_words:
+            fill = FLASH_FILL if self._flashing else SELECTION_FILL
             cr.set_source_rgba(*fill)
-            cr.rectangle(*rect)
+            for li, wi in self.selected_words:
+                cr.rectangle(*_word_rect(self.lines[li].words[wi]))
             cr.fill()
-            cr.set_source_rgba(*border)
-            cr.set_line_width(2.0 / scale)
-            cr.rectangle(*rect)
-            cr.stroke()
-
-        # Hovered line (only if not already selected — avoid double-highlight)
-        if self.hovered_line is not None:
-            hi = next(
-                (i for i, ln in enumerate(self.lines) if ln is self.hovered_line),
-                None,
-            )
-            if hi is not None and hi not in self.selected_lines:
-                rect = _line_rect(self.hovered_line)
-                cr.set_source_rgba(*HOVER_FILL)
-                cr.rectangle(*rect)
-                cr.fill()
-                cr.set_source_rgba(*HOVER_BORDER)
-                cr.set_line_width(2.0 / scale)
-                cr.rectangle(*rect)
-                cr.stroke()
 
         cr.restore()
 
-        # Drag rectangle (widget coords)
-        if self.dragging and self._drag_exceeded_threshold:
-            rx = min(self.drag_start_x, self.drag_current_x)
-            ry = min(self.drag_start_y, self.drag_current_y)
-            rw = abs(self.drag_current_x - self.drag_start_x)
-            rh = abs(self.drag_current_y - self.drag_start_y)
-            cr.set_source_rgba(*DRAG_FILL)
-            cr.rectangle(rx, ry, rw, rh)
-            cr.fill()
-            cr.set_source_rgba(*DRAG_BORDER)
-            cr.set_line_width(1.5)
-            cr.rectangle(rx, ry, rw, rh)
-            cr.stroke()
-
-        # Bottom hint bar
         self._draw_hint_bar(cr, width, height)
 
     def _draw_hint_bar(self, cr: cairo.Context, width: int, height: int) -> None:
-        n = len(self.selected_lines)
+        n = len(self.selected_words)
         if n > 0:
             hint = (
-                f"{n} line{'s' if n != 1 else ''} selected  ·  Ctrl+C copy  ·  Esc quit"
+                f"{n} word{'s' if n != 1 else ''} selected  ·  Ctrl+C copy  ·  Esc quit"
             )
         else:
-            hint = "Click or drag to select text  ·  Ctrl+A select all  ·  Esc quit"
+            hint = "Select text  ·  Ctrl+A select all  ·  Esc quit"
 
         cr.set_font_size(HINT_FONT_SIZE)
         extents = cr.text_extents(hint)
@@ -280,12 +245,13 @@ class LiveTextOverlay:
         y: float,
     ) -> None:
         ix, iy = self._widget_to_image(x, y)
-        old = self.hovered_line
-        self.hovered_line = next(
-            (ln for ln in self.lines if ln.contains_point(ix, iy)), None
-        )
-        if old != self.hovered_line:
-            self._drawing_area.queue_draw()
+        over = self._hit_word(ix, iy) is not None
+
+        if over != self._over_text:
+            self._over_text = over
+            self._drawing_area.set_cursor(
+                self._cursor_text if over else self._cursor_default
+            )
 
     def _on_drag_begin(
         self,
@@ -300,7 +266,6 @@ class LiveTextOverlay:
         self.drag_current_x = x
         self.drag_current_y = y
 
-        # Check if Shift is held at press time
         device = gesture.get_device()
         seat = device.get_seat() if device else None
         if seat is not None:
@@ -324,7 +289,7 @@ class LiveTextOverlay:
         if not self._drag_exceeded_threshold:
             return
 
-        # Select lines intersecting the drag rectangle
+        # Select all words intersecting the swept rectangle
         ix1, iy1 = self._widget_to_image(
             min(self.drag_start_x, self.drag_current_x),
             min(self.drag_start_y, self.drag_current_y),
@@ -333,11 +298,16 @@ class LiveTextOverlay:
             max(self.drag_start_x, self.drag_current_x),
             max(self.drag_start_y, self.drag_current_y),
         )
+        rw = int(ix2 - ix1)
+        rh = int(iy2 - iy1)
+        rx = int(ix1)
+        ry = int(iy1)
 
-        self.selected_lines.clear()
-        for i, line in enumerate(self.lines):
-            if line.intersects_rect(int(ix1), int(iy1), int(ix2 - ix1), int(iy2 - iy1)):
-                self.selected_lines.add(i)
+        self.selected_words.clear()
+        for li, line in enumerate(self.lines):
+            for wi, word in enumerate(line.words):
+                if word.intersects_rect(rx, ry, rw, rh):
+                    self.selected_words.add((li, wi))
 
         self._drawing_area.queue_draw()
 
@@ -355,26 +325,19 @@ class LiveTextOverlay:
             self._drawing_area.queue_draw()
             return
 
-        # Click (not a real drag)
+        # Click
         rx = self.drag_start_x + offset_x
         ry = self.drag_start_y + offset_y
         ix, iy = self._widget_to_image(rx, ry)
-
-        clicked = next(
-            (i for i, ln in enumerate(self.lines) if ln.contains_point(ix, iy)),
-            None,
-        )
+        clicked = self._hit_word(ix, iy)
 
         if clicked is not None:
             if self._drag_shift:
-                # Shift+click: toggle this line in the selection
-                self.selected_lines.symmetric_difference_update({clicked})
+                self.selected_words.symmetric_difference_update({clicked})
             else:
-                # Plain click: select only this line
-                self.selected_lines = {clicked}
+                self.selected_words = {clicked}
         else:
-            # Clicked empty area: clear selection
-            self.selected_lines.clear()
+            self.selected_words.clear()
 
         self._drawing_area.queue_draw()
 
@@ -402,7 +365,11 @@ class LiveTextOverlay:
             return True
 
         if ctrl and keyval == Gdk.KEY_a:
-            self.selected_lines = set(range(len(self.lines)))
+            self.selected_words = {
+                (li, wi)
+                for li, line in enumerate(self.lines)
+                for wi in range(len(line.words))
+            }
             self._drawing_area.queue_draw()
             return True
 
@@ -416,15 +383,16 @@ class LiveTextOverlay:
         return False
 
     def _copy_selection(self) -> None:
-        """Copy selected text to clipboard with visual flash feedback."""
-        if not self.selected_lines:
+        """Copy selected words to clipboard, grouped by line."""
+        if not self.selected_words:
             return
 
-        selected = sorted(
-            self.selected_lines,
-            key=lambda i: (self.lines[i].y, self.lines[i].x),
-        )
-        text = "\n".join(self.lines[i].text for i in selected)
+        # Group selected words by line, preserving word order
+        line_texts: dict[int, list[str]] = {}
+        for li, wi in sorted(self.selected_words):
+            line_texts.setdefault(li, []).append(self.lines[li].words[wi].text)
+
+        text = "\n".join(" ".join(words) for words in line_texts.values())
 
         try:
             subprocess.run(
