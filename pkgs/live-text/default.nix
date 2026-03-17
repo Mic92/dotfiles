@@ -4,10 +4,10 @@
   hatchling,
   pygobject3,
   pycairo,
+  rapidocr,
   grim,
   wl-clipboard,
   libnotify,
-  tesseract,
   gtk4-layer-shell,
   gobject-introspection,
   wrapGAppsHook4,
@@ -27,6 +27,7 @@ buildPythonApplication {
   dependencies = [
     pygobject3
     pycairo
+    rapidocr
   ];
 
   nativeBuildInputs = [
@@ -51,13 +52,11 @@ buildPythonApplication {
           grim
           wl-clipboard
           libnotify
-          tesseract
         ]
-      }" \
-      --set TESSDATA_PREFIX "${tesseract}/share/tessdata"
+      }"
   '';
 
-  # Tests require a Wayland session and tesseract; run manually with pytest
+  # Tests require a Wayland session; run manually with pytest
   doCheck = false;
 
   meta = {

@@ -1,10 +1,7 @@
-"""OCR processing using Tesseract with word-level bounding boxes."""
+"""OCR processing using RapidOCR (PaddleOCR models via ONNX Runtime)."""
 
 from __future__ import annotations
 
-import csv
-import io
-import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -19,10 +16,6 @@ class WordBox:
     width: int
     height: int
     confidence: float
-    block_num: int
-    par_num: int
-    line_num: int
-    word_num: int
 
     @property
     def x2(self) -> int:
@@ -32,15 +25,20 @@ class WordBox:
     def y2(self) -> int:
         return self.y + self.height
 
+    def contains_point(self, px: float, py: float) -> bool:
+        return self.x <= px <= self.x2 and self.y <= py <= self.y2
+
+    def intersects_rect(self, rx: int, ry: int, rw: int, rh: int) -> bool:
+        return not (
+            self.x2 < rx or self.x > rx + rw or self.y2 < ry or self.y > ry + rh
+        )
+
 
 @dataclass(frozen=True)
 class LineBox:
     """A line of text composed of word boxes."""
 
     words: tuple[WordBox, ...]
-    block_num: int
-    par_num: int
-    line_num: int
 
     @property
     def text(self) -> str:
@@ -80,74 +78,72 @@ class LineBox:
         )
 
 
-def run_ocr(
-    image_path: Path,
-    tesseract_cmd: str = "tesseract",
-    lang: str = "eng",
+def _split_line_into_words(
+    text: str, box: list[list[float]], confidence: float
 ) -> list[WordBox]:
-    """Run Tesseract OCR on an image and return word-level bounding boxes.
+    """Split a line's text into word boxes by dividing the bounding box.
 
-    Uses TSV output mode for structured data with coordinates.
+    RapidOCR gives us one bounding box per line.  We split the text on
+    whitespace and proportionally assign horizontal spans to each word
+    based on character count.  This gives reasonable word-level boxes for
+    click/drag selection.
     """
-    result = subprocess.run(
-        [tesseract_cmd, str(image_path), "stdout", "-l", lang, "--psm", "3", "tsv"],
-        capture_output=True,
-        text=True,
-        check=True,
-    )
+    words = text.split()
+    if not words:
+        return []
 
-    words: list[WordBox] = []
-    reader = csv.DictReader(io.StringIO(result.stdout), delimiter="\t")
+    # Convert 4-point polygon to axis-aligned rect
+    xs = [p[0] for p in box]
+    ys = [p[1] for p in box]
+    lx = int(min(xs))
+    ly = int(min(ys))
+    lw = int(max(xs)) - lx
+    lh = int(max(ys)) - ly
 
-    for row in reader:
-        # level 5 = word level in Tesseract TSV output
-        if row.get("level") != "5":
-            continue
+    if len(words) == 1:
+        return [WordBox(words[0], lx, ly, lw, lh, confidence)]
 
-        text = row.get("text", "").strip()
-        if not text:
-            continue
+    # Proportional split: each word gets width proportional to its char count.
+    # Add 1 char per inter-word gap to account for spaces in the original.
+    total_chars = sum(len(w) for w in words) + len(words) - 1
+    if total_chars == 0:
+        return []
 
-        conf = float(row.get("conf", "0"))
-        if conf < 10:
-            continue
+    result: list[WordBox] = []
+    cx = float(lx)  # current x position
+    for i, word in enumerate(words):
+        # Characters this word "occupies" including the trailing space
+        # (except for the last word)
+        chars = len(word) + (1 if i < len(words) - 1 else 0)
+        w = lw * chars / total_chars
+        result.append(WordBox(word, int(cx), ly, max(1, int(w)), lh, confidence))
+        cx += w
 
-        words.append(
-            WordBox(
-                text=text,
-                x=int(row["left"]),
-                y=int(row["top"]),
-                width=int(row["width"]),
-                height=int(row["height"]),
-                confidence=conf,
-                block_num=int(row["block_num"]),
-                par_num=int(row["par_num"]),
-                line_num=int(row["line_num"]),
-                word_num=int(row["word_num"]),
-            )
-        )
-
-    return words
+    return result
 
 
-def group_into_lines(words: list[WordBox]) -> list[LineBox]:
-    """Group words into lines based on Tesseract's block/par/line structure."""
-    lines_dict: dict[tuple[int, int, int], list[WordBox]] = {}
+def run_ocr(image_path: Path) -> list[LineBox]:
+    """Run RapidOCR on an image and return lines with word-level boxes.
 
-    for word in words:
-        key = (word.block_num, word.par_num, word.line_num)
-        lines_dict.setdefault(key, []).append(word)
+    Uses line-level detection (not return_word_box) to avoid the CJK-style
+    per-character splitting, then splits each line into words proportionally.
+    """
+    from rapidocr import RapidOCR  # lazy import to avoid slow startup cost
+
+    engine = RapidOCR()
+    result = engine(str(image_path))
+
+    if not result.txts:
+        return []
 
     lines: list[LineBox] = []
-    for (block_num, par_num, line_num), line_words in sorted(lines_dict.items()):
-        sorted_words = sorted(line_words, key=lambda w: w.x)
-        lines.append(
-            LineBox(
-                words=tuple(sorted_words),
-                block_num=block_num,
-                par_num=par_num,
-                line_num=line_num,
-            )
-        )
+    for text, score, box in zip(result.txts, result.scores, result.boxes):
+        text = text.strip()
+        if not text:
+            continue
+        words = _split_line_into_words(text, box.tolist(), score)
+        if words:
+            lines.append(LineBox(words=tuple(words)))
 
+    lines.sort(key=lambda ln: (ln.y, ln.x))
     return lines

@@ -63,6 +63,13 @@
     # Printer configuration
     system-config-printer
 
+    # Screenshot tools (grim used by live-text, slurp for niri's screenshot binds)
+    grim
+    slurp
+
+    # Interactive OCR overlay (capture screen → click text → clipboard)
+    (pkgs.python3.pkgs.callPackage ../../pkgs/live-text { })
+
     # Choosers (audio, display, internet)
     (pkgs.callPackage ../kde/choosers.nix { })
   ];

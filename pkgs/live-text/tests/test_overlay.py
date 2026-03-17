@@ -5,60 +5,66 @@ from __future__ import annotations
 from live_text.ocr import LineBox, WordBox
 
 
-def _w(
-    text: str, x: int, y: int, w: int, h: int, *, block: int = 1, word_num: int = 1
-) -> WordBox:
-    return WordBox(text, x, y, w, h, 90.0, block, 1, 1, word_num)
+def _w(text: str, x: int, y: int, w: int, h: int) -> WordBox:
+    return WordBox(text, x, y, w, h, 90.0)
 
 
 def _make_lines() -> list[LineBox]:
     return [
         LineBox(
             words=(
-                _w("Hello", 10, 50, 50, 15, word_num=1),
-                _w("World", 70, 50, 55, 15, word_num=2),
+                _w("Hello", 10, 50, 50, 15),
+                _w("World", 70, 50, 55, 15),
             ),
-            block_num=1,
-            par_num=1,
-            line_num=1,
         ),
         LineBox(
             words=(
-                _w("This", 10, 100, 40, 15, block=2, word_num=1),
-                _w("is", 60, 100, 15, 15, block=2, word_num=2),
-                _w("a", 85, 105, 12, 10, block=2, word_num=3),
-                _w("test", 107, 100, 40, 15, block=2, word_num=4),
+                _w("This", 10, 100, 40, 15),
+                _w("is", 60, 100, 15, 15),
+                _w("a", 85, 105, 12, 10),
+                _w("test", 107, 100, 40, 15),
             ),
-            block_num=2,
-            par_num=1,
-            line_num=1,
         ),
         LineBox(
             words=(
-                _w("Live", 10, 175, 46, 18, block=3, word_num=1),
-                _w("Text", 65, 175, 48, 18, block=3, word_num=2),
+                _w("Live", 10, 175, 46, 18),
+                _w("Text", 65, 175, 48, 18),
             ),
-            block_num=3,
-            par_num=1,
-            line_num=1,
         ),
     ]
 
 
+def _assemble_text(lines: list[LineBox], selected: set[tuple[int, int]]) -> str:
+    """Reproduce the overlay's _copy_selection text assembly."""
+    line_texts: dict[int, list[str]] = {}
+    for li, wi in sorted(selected):
+        line_texts.setdefault(li, []).append(lines[li].words[wi].text)
+    return "\n".join(" ".join(words) for words in line_texts.values())
+
+
 class TestSelectedTextAssembly:
-    """Test the text assembly logic mirroring _copy_and_quit."""
+    """Test the word-level text assembly logic mirroring _copy_selection."""
 
-    def test_selected_lines_sorted_by_position(self) -> None:
+    def test_single_word(self) -> None:
         lines = _make_lines()
-        # Select out of order — should be sorted top-to-bottom
-        selected = {2, 0}
-        sorted_indices = sorted(selected, key=lambda i: (lines[i].y, lines[i].x))
-        text = "\n".join(lines[i].text for i in sorted_indices)
-        assert text == "Hello World\nLive Text"
+        assert _assemble_text(lines, {(0, 0)}) == "Hello"
 
-    def test_all_lines_joined(self) -> None:
+    def test_partial_line_selection(self) -> None:
         lines = _make_lines()
-        selected = {0, 1, 2}
-        sorted_indices = sorted(selected, key=lambda i: (lines[i].y, lines[i].x))
-        text = "\n".join(lines[i].text for i in sorted_indices)
+        # Select "is a" from the second line
+        assert _assemble_text(lines, {(1, 1), (1, 2)}) == "is a"
+
+    def test_words_across_lines(self) -> None:
+        lines = _make_lines()
+        # Select "World" from line 0 and "Live" from line 2
+        selected = {(0, 1), (2, 0)}
+        assert _assemble_text(lines, selected) == "World\nLive"
+
+    def test_full_selection_sorted(self) -> None:
+        lines = _make_lines()
+        # Select all words
+        selected = {
+            (li, wi) for li, line in enumerate(lines) for wi in range(len(line.words))
+        }
+        text = _assemble_text(lines, selected)
         assert text == "Hello World\nThis is a test\nLive Text"
