@@ -10,9 +10,10 @@ let
     dirOf (dirOf config.clan.core.vars.generators.secureboot.files."keys/PK/PK.key".path)
   );
 
-  # Create sbctl configuration file pointing to clan vars activation directory
+  # Create sbctl configuration file pointing to the copied keys in /var/lib/sbctl
+  # (not the sops activation directory, which has restrictive 0700 permissions)
   sbctlConfig = pkgs.writeText "sbctl.conf" ''
-    keydir: ${securebootDir}/keys
+    keydir: /var/lib/sbctl/keys
   '';
 in
 {
@@ -51,9 +52,15 @@ in
     '';
   };
 
-  # Also create symlinks in /var/lib/sbctl for runtime sbctl operations
+  # Copy keys to /var/lib/sbctl so sbctl can access them without traversing
+  # the restrictive 0700 sops activation directories (sbctl uses landlock
+  # sandboxing and fails with "permission denied" through symlinks).
   systemd.tmpfiles.rules = [
-    "d /var/lib/sbctl 0755 root root -"
-    "L+ /var/lib/sbctl/keys - - - - ${securebootDir}/keys"
+    "d /var/lib/sbctl 0700 root root -"
   ];
+  system.activationScripts.sbctl-keys.text = ''
+    rm -rf /var/lib/sbctl/keys
+    cp -a ${securebootDir}/keys /var/lib/sbctl/keys
+    chmod -R u+rw /var/lib/sbctl/keys
+  '';
 }
