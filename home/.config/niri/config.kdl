@@ -65,7 +65,7 @@ layout {
 // Startup processes
 spawn-at-startup "noctalia-shell"
 spawn-at-startup "kanshi"
-spawn-at-startup "swayidle" "-w" "timeout" "300" "niri msg action power-off-monitors" "timeout" "600" "swaylock -f" "before-sleep" "swaylock -f"
+spawn-at-startup "swayidle" "-w" "timeout" "300" "niri msg action power-off-monitors" "timeout" "600" "noctalia-shell msg lockScreen lock" "before-sleep" "noctalia-shell msg lockScreen lock"
 
 prefer-no-csd
 
@@ -133,7 +133,7 @@ binds {
     Mod+T hotkey-overlay-title="Terminal" { spawn "ghostty"; }
     Mod+D hotkey-overlay-title="App Launcher" { spawn "noctalia-shell" "msg" "launcher" "toggle"; }
     Mod+Shift+P hotkey-overlay-title="Password Manager" { spawn "rofi-rbw" "--selector" "fuzzel" "--clipboarder" "wl-copy" "--typer" "wtype"; }
-    Super+Alt+L hotkey-overlay-title="Lock Screen" { spawn "swaylock"; }
+    Super+Alt+L hotkey-overlay-title="Lock Screen" { spawn "noctalia-shell" "msg" "lockScreen" "lock"; }
 
     // Audio
     XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.05+ -l 1.0"; }

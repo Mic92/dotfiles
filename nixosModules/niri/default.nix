@@ -39,8 +39,8 @@
     };
   };
 
-  # PAM integration for swaylock is handled by wayland-session.nix
-  # imported by the niri module
+  # PAM integration: noctalia-shell's lock screen uses the "login" PAM service
+  # by default (auto-detected), so no extra PAM config is needed
 
   environment.systemPackages = with pkgs; [
     # Wayland clipboard & typing
@@ -51,10 +51,9 @@
     # Password manager
     rofi-rbw
 
-    # App launcher, screen lock, idle, display config
+    # App launcher, idle, display config
     fuzzel
     libnotify
-    swaylock
     swayidle
     kanshi
     brightnessctl
