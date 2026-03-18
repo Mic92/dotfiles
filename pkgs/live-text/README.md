@@ -4,9 +4,10 @@ Interactive OCR overlay for Wayland (niri, sway, etc.) — the Linux equivalent 
 macOS Live Text.
 
 Takes a screenshot (or reads an image from stdin/file), runs OCR using RapidOCR
-(PaddleOCR v4 via ONNX Runtime), then shows an interactive overlay where you can
-select text, annotate with arrows/rectangles/text, and copy or save the result.
-OCR runs asynchronously so the overlay appears instantly.
+(PaddleOCR v4 via ONNX Runtime) and scans for QR codes/barcodes using pyzbar
+(zbar), then shows an interactive overlay where you can select text or codes,
+annotate with arrows/rectangles/text, and copy or save the result. OCR and
+barcode scanning run in parallel so the overlay appears instantly.
 
 ## Usage
 
@@ -34,7 +35,7 @@ grim - | live-text -
 
 The toolbar at the bottom lets you switch between four tools:
 
-- **Select** — Click or drag to select OCR-detected words
+- **Select** — Click or drag to select OCR-detected words or QR/barcodes
 - **Arrow** — Draw arrows on the screenshot
 - **Rect** — Draw rectangles on the screenshot
 - **Text** — Click to place text annotations
@@ -67,9 +68,9 @@ for picking the drawing color.
 
 | Key    | Action                                               |
 | ------ | ---------------------------------------------------- |
-| Ctrl+C | Copy selected text, or annotated image if none       |
-| Enter  | Copy selected text, or annotated image if none       |
-| Ctrl+A | Select all detected words                            |
+| Ctrl+C | Copy selected text/codes, or annotated image if none |
+| Enter  | Copy selected text/codes, or annotated image if none |
+| Ctrl+A | Select all detected words and codes                  |
 | Ctrl+S | Save annotated screenshot to ~/Pictures/Screenshots/ |
 | Ctrl+Z | Undo last annotation                                 |
 | Escape | Quit                                                 |
@@ -91,19 +92,22 @@ for picking the drawing color.
 
 ```
 live_text/
+├── barcode.py     # pyzbar (zbar) QR code and barcode scanner
 ├── main.py        # CLI entry point, argument parsing, screenshot dispatch
 ├── ocr.py         # RapidOCR wrapper, word-level bounding box splitting
 ├── overlay.py     # GTK4 Layer Shell overlay (selection + annotation + toolbar)
 └── screenshot.py  # grim/slurp integration, niri/sway output detection
 ```
 
-OCR runs in a background thread — the overlay shows a spinner until text
-detection completes, then word boxes become clickable.
+OCR and barcode scanning run in parallel background threads — the overlay shows
+a spinner until text detection completes, then word boxes and detected codes
+become clickable.
 
 ## Dependencies
 
 - `grim` — Wayland screenshot
 - `rapidocr` — OCR engine (PaddleOCR v4 via ONNX Runtime)
+- `pyzbar` — QR code and barcode detection (via zbar)
 - `wl-copy` — Wayland clipboard
 - `notify-send` — Desktop notifications (save confirmation, no text detected)
 - GTK4 + gtk4-layer-shell — Overlay window
