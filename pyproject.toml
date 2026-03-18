@@ -46,6 +46,8 @@ exclude = ["zsh/*", "gdb/*"]
 [tool.ruff.lint.per-file-ignores]
 # Django app: model imports must be deferred until the app registry is ready
 "machines/eve/modules/paperless-perms/paperless_perms/apps.py" = ["PLC0415"]
+# Standalone script, not a package
+"nixosModules/niri/kwallet-tpm/kwallet-tpm-unlock.py" = ["INP001"]
 
 [tool.mypy]
 python_version = "3.13"
@@ -63,3 +65,5 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = "pytest.*"
 ignore_missing_imports = true
+
+

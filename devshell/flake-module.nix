@@ -35,6 +35,11 @@ let
           keyring
         ];
       };
+      "nixosModules/niri/kwallet-tpm" = {
+        extraPythonPackages = with pkgs.python3.pkgs; [
+          dbus-python
+        ];
+      };
       "pkgs/calendar_bot" = {
         extraPythonPackages = with pkgs.python3.pkgs; [
           aiohttp
