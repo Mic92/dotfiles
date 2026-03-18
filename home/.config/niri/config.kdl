@@ -92,7 +92,7 @@ window-rule {
 
 // IM / chat apps -> "im" workspace
 window-rule {
-    match app-id=r#"^(org\.telegram\.desktop|[Ss]ignal|Ferdium|Element|discord|Slack|thunderbird|evolution|org\.gnome\.Fractal|im\.nheko\.Nheko)$"#
+    match app-id=r#"^(org\.telegram\.desktop|[Ss]ignal|[Ff]erdium|Element|discord|Slack|thunderbird|evolution|org\.gnome\.Fractal|im\.nheko\.Nheko)$"#
     open-on-workspace "3:im"
 }
 
