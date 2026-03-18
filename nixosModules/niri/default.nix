@@ -31,13 +31,13 @@
     forceRun = true;
   };
 
-  # greetd + tuigreet as display manager (lightweight, no X dependency)
+  # greetd auto-starts niri, noctalia-shell's lock screen handles login
   services.greetd = {
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --remember-session --sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
-        user = "greeter";
+        command = "${config.programs.niri.package}/bin/niri-session";
+        user = "joerg";
       };
     };
   };
