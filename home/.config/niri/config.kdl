@@ -276,14 +276,10 @@ binds {
     Mod+Shift+V { switch-focus-between-floating-and-tiling; }
     Mod+W       { toggle-column-tabbed-display; }
 
-    // Screenshots (niri built-in, saves to ~/Pictures/Screenshots/)
-    Print      { screenshot; }
-    Ctrl+Print { screenshot-screen; }
-    Alt+Print  { screenshot-window; }
-
-    // Live Text: OCR + annotation overlay / region capture
-    Mod+Shift+T    hotkey-overlay-title="Live Text" { spawn "live-text"; }
-    Mod+Ctrl+Print hotkey-overlay-title="Screenshot: Region → Clipboard" { spawn "live-text" "--region"; }
+    // Screenshots via live-text (OCR + annotation overlay)
+    Print      hotkey-overlay-title="Screenshot" { spawn "live-text"; }
+    Ctrl+Print hotkey-overlay-title="Screenshot: Region" { spawn "live-text" "--region"; }
+    Alt+Print  hotkey-overlay-title="Screenshot: Window" { spawn "live-text" "--window"; }
 
     // Escape hatch for keyboard shortcut inhibitors
     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
