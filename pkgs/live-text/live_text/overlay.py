@@ -622,17 +622,17 @@ class LiveTextOverlay:
             return True
 
         if ctrl and keyval == Gdk.KEY_c:
-            if self.annotations:
-                self._copy_annotated_image()
-            else:
+            if self.selected_words:
                 self._copy_selected_text()
+            else:
+                self._copy_annotated_image()
             return True
 
         if keyval in (Gdk.KEY_Return, Gdk.KEY_KP_Enter):
-            if self.annotations:
-                self._copy_annotated_image()
-            else:
+            if self.selected_words:
                 self._copy_selected_text()
+            else:
+                self._copy_annotated_image()
             return True
 
         if ctrl and keyval == Gdk.KEY_s:

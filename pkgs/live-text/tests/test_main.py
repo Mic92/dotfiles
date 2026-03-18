@@ -20,7 +20,7 @@ class TestMainOCR:
         mock_overlay_cls = MagicMock()
         with (
             patch("sys.argv", ["live-text", str(TEST_IMAGE)]),
-            patch("live_text.overlay.LiveTextOverlay", mock_overlay_cls),
+            patch("live_text.main.LiveTextOverlay", mock_overlay_cls),
             patch("live_text.ocr.run_ocr", return_value=[]),
         ):
             main()
@@ -39,7 +39,7 @@ class TestStdinMode:
         with (
             patch("sys.argv", ["live-text", "-"]),
             patch("sys.stdin") as mock_stdin,
-            patch("live_text.overlay.LiveTextOverlay", mock_overlay_cls),
+            patch("live_text.main.LiveTextOverlay", mock_overlay_cls),
             patch("live_text.ocr.run_ocr", return_value=[]),
         ):
             mock_stdin.buffer.read.return_value = fake_png
@@ -100,7 +100,7 @@ class TestRegionMode:
         with (
             patch("sys.argv", ["live-text", "--region"]),
             patch("live_text.main.subprocess.run", side_effect=mock_run_side_effect),
-            patch("live_text.overlay.LiveTextOverlay", mock_overlay_cls),
+            patch("live_text.main.LiveTextOverlay", mock_overlay_cls),
             patch("live_text.ocr.run_ocr", return_value=[]),
         ):
             main()
@@ -136,7 +136,7 @@ class TestWindowMode:
                 "live_text.main.get_window_geometries",
                 return_value=["0,0 1920x1080 Firefox", "100,100 800x600 Terminal"],
             ),
-            patch("live_text.overlay.LiveTextOverlay", mock_overlay_cls),
+            patch("live_text.main.LiveTextOverlay", mock_overlay_cls),
             patch("live_text.ocr.run_ocr", return_value=[]),
         ):
             main()
@@ -196,7 +196,7 @@ class TestWindowMode:
                 "live_text.main.get_window_geometries",
                 return_value=["0,0 800x600 vim", "900,0 800x600 firefox"],
             ),
-            patch("live_text.overlay.LiveTextOverlay", mock_overlay_cls),
+            patch("live_text.main.LiveTextOverlay", mock_overlay_cls),
             patch("live_text.ocr.run_ocr", return_value=[]),
         ):
             main()
@@ -231,7 +231,7 @@ class TestWindowMode:
                 "live_text.main.get_window_geometries",
                 return_value=["100,200 800x600 My Window Title"],
             ),
-            patch("live_text.overlay.LiveTextOverlay", mock_overlay_cls),
+            patch("live_text.main.LiveTextOverlay", mock_overlay_cls),
             patch("live_text.ocr.run_ocr", return_value=[]),
         ):
             main()
@@ -250,7 +250,7 @@ class TestScreenshotCleanup:
             patch("sys.argv", ["live-text"]),
             patch("live_text.main.get_focused_output", return_value=None),
             patch("live_text.main.capture_full_screen", return_value=fake_screenshot),
-            patch("live_text.overlay.LiveTextOverlay", mock_overlay_cls),
+            patch("live_text.main.LiveTextOverlay", mock_overlay_cls),
             patch("live_text.ocr.run_ocr", return_value=[]),
         ):
             main()

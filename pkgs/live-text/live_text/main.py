@@ -11,256 +11,149 @@ Modes:
 from __future__ import annotations
 
 import argparse
+import contextlib
 import subprocess
 import sys
 import tempfile
+import threading
 from pathlib import Path
 
+from .overlay import LiveTextOverlay
 from .screenshot import capture_full_screen, get_focused_output, get_window_geometries
 
 
-def _notify(notify_send_cmd: str, message: str) -> None:
-    """Send a desktop notification, ignoring errors."""
-    try:
-        subprocess.run(
-            [notify_send_cmd, "-t", "3000", "Live Text", message],
-            check=False,
-        )
-    except FileNotFoundError:
-        pass
+def _tmp_png(stack: contextlib.ExitStack) -> Path:
+    """Create a temporary PNG file that is deleted when the stack exits."""
+    tmp = tempfile.NamedTemporaryFile(suffix=".png", prefix="live-text-", delete=False)
+    tmp.close()
+    path = Path(tmp.name)
+    stack.callback(path.unlink, missing_ok=True)
+    return path
 
 
-def _read_stdin_to_tempfile() -> Path:
-    """Read binary data from stdin and write to a temp PNG file."""
+def _read_stdin(stack: contextlib.ExitStack) -> Path:
+    """Read binary data from stdin into a temporary PNG file."""
     data = sys.stdin.buffer.read()
     if not data:
         print("Error: no data received on stdin", file=sys.stderr)
         sys.exit(1)
-    tmp = tempfile.NamedTemporaryFile(suffix=".png", prefix="live-text-", delete=False)
-    tmp.write(data)
-    tmp.close()
-    return Path(tmp.name)
+    path = _tmp_png(stack)
+    path.write_bytes(data)
+    return path
 
 
-def _capture_screenshot(args: argparse.Namespace) -> tuple[Path, bool]:
-    """Resolve screenshot from image arg, stdin, or grim.
-
-    Returns (path, should_cleanup).
-    """
-    if args.image == "-":
-        return _read_stdin_to_tempfile(), True
-
-    if args.image is not None:
-        path = Path(args.image)
-        if not path.exists():
-            print(f"Error: file not found: {path}", file=sys.stderr)
-            sys.exit(1)
-        return path, False
-
+def _capture_geometry(
+    stack: contextlib.ExitStack, grim_cmd: str, geometry: str
+) -> Path:
+    """Capture a screen region with grim into a temporary file."""
+    path = _tmp_png(stack)
     try:
-        output = args.output or get_focused_output()
-        return capture_full_screen(grim_cmd=args.grim, output=output), True
+        subprocess.run(
+            [grim_cmd, "-g", geometry, str(path)],
+            check=True,
+            capture_output=True,
+        )
     except FileNotFoundError as e:
         print(f"Error: required tool not found: {e}", file=sys.stderr)
         sys.exit(1)
     except subprocess.CalledProcessError as e:
         print(f"Error capturing screenshot: {e}", file=sys.stderr)
         sys.exit(1)
+    return path
 
 
-def _mode_default(args: argparse.Namespace) -> None:
-    """Default mode: OCR + annotation overlay.
+def _slurp_geometry(slurp_cmd: str, stdin: str | None = None) -> str:
+    """Run slurp and return the selected geometry string.
 
-    Shows the overlay immediately so the user can start annotating,
-    then runs OCR in a background thread and adds text selection
-    once detection completes.
-    """
-    import threading
-
-    from .overlay import LiveTextOverlay
-
-    screenshot_path, cleanup = _capture_screenshot(args)
-    try:
-        overlay = LiveTextOverlay(
-            screenshot_path=screenshot_path,
-            lines=[],
-            wl_copy_cmd=args.wl_copy,
-        )
-
-        def _ocr_worker() -> None:
-            from .ocr import run_ocr
-
-            try:
-                lines = run_ocr(screenshot_path)
-            except Exception as e:
-                print(f"OCR error: {e}", file=sys.stderr)
-                return
-            if lines:
-                overlay.set_lines(lines)
-
-        thread = threading.Thread(target=_ocr_worker, daemon=True)
-        thread.start()
-        overlay.run()
-    finally:
-        if cleanup and screenshot_path.exists():
-            screenshot_path.unlink()
-
-
-def _capture_region(grim_cmd: str, slurp_cmd: str) -> Path:
-    """Select a region with slurp and capture it with grim.
-
-    Returns the path to a temporary PNG file. The caller must clean it up.
+    Args:
+        slurp_cmd: Path to the slurp binary.
+        stdin: Optional predefined rectangles to feed to slurp.
     """
     try:
-        geometry = subprocess.run(
+        result = subprocess.run(
             [slurp_cmd],
             capture_output=True,
             text=True,
+            input=stdin,
             check=True,
-        ).stdout.strip()
+        )
+        return result.stdout.strip()
     except FileNotFoundError:
         print("Error: slurp not found", file=sys.stderr)
         sys.exit(1)
     except subprocess.CalledProcessError:
         sys.exit(0)  # user cancelled
 
-    tmp = tempfile.NamedTemporaryFile(suffix=".png", prefix="live-text-", delete=False)
-    tmp.close()
-    path = Path(tmp.name)
+
+def _capture_screenshot(stack: contextlib.ExitStack, args: argparse.Namespace) -> Path:
+    """Resolve screenshot from image arg, stdin, or grim."""
+    if args.image == "-":
+        return _read_stdin(stack)
+
+    if args.image is not None:
+        path = Path(args.image)
+        if not path.exists():
+            print(f"Error: file not found: {path}", file=sys.stderr)
+            sys.exit(1)
+        return path
+
     try:
-        subprocess.run(
-            [grim_cmd, "-g", geometry, str(path)],
-            check=True,
-            capture_output=True,
-        )
+        output = args.output or get_focused_output()
+        path = capture_full_screen(grim_cmd=args.grim, output=output)
     except FileNotFoundError as e:
-        path.unlink(missing_ok=True)
         print(f"Error: required tool not found: {e}", file=sys.stderr)
         sys.exit(1)
     except subprocess.CalledProcessError as e:
-        path.unlink(missing_ok=True)
-        print(f"Error capturing region: {e}", file=sys.stderr)
+        print(f"Error capturing screenshot: {e}", file=sys.stderr)
         sys.exit(1)
+    stack.callback(path.unlink, missing_ok=True)
     return path
 
 
-def _capture_window(grim_cmd: str, slurp_cmd: str) -> Path:
-    """Let the user pick a window via slurp and capture it with grim.
+def _capture_region(stack: contextlib.ExitStack, args: argparse.Namespace) -> Path:
+    """Select a region with slurp and capture it."""
+    geometry = _slurp_geometry(args.slurp)
+    return _capture_geometry(stack, args.grim, geometry)
 
-    Window geometries are fetched from the compositor (niri or sway) and
-    fed into slurp as predefined rectangles so the user can click to select.
 
-    Returns the path to a temporary PNG file. The caller must clean it up.
-    """
+def _capture_window(stack: contextlib.ExitStack, args: argparse.Namespace) -> Path:
+    """Pick a window via slurp and capture it."""
     windows = get_window_geometries()
     if not windows:
         print("Error: could not get window list from compositor", file=sys.stderr)
         sys.exit(1)
 
     slurp_input = "\n".join(windows) + "\n"
-    try:
-        geometry = subprocess.run(
-            [slurp_cmd],
-            capture_output=True,
-            text=True,
-            input=slurp_input,
-            check=True,
-        ).stdout.strip()
-    except FileNotFoundError:
-        print("Error: slurp not found", file=sys.stderr)
-        sys.exit(1)
-    except subprocess.CalledProcessError:
-        sys.exit(0)  # user cancelled
+    geometry = _slurp_geometry(args.slurp, stdin=slurp_input)
 
     # Strip the label from slurp output (format: "x,y wxh label")
-    # We only need the geometry part for grim.
     parts = geometry.split(" ", 2)
     geometry = f"{parts[0]} {parts[1]}" if len(parts) >= 2 else geometry
 
-    tmp = tempfile.NamedTemporaryFile(suffix=".png", prefix="live-text-", delete=False)
-    tmp.close()
-    path = Path(tmp.name)
-    try:
-        subprocess.run(
-            [grim_cmd, "-g", geometry, str(path)],
-            check=True,
-            capture_output=True,
-        )
-    except FileNotFoundError as e:
-        path.unlink(missing_ok=True)
-        print(f"Error: required tool not found: {e}", file=sys.stderr)
-        sys.exit(1)
-    except subprocess.CalledProcessError as e:
-        path.unlink(missing_ok=True)
-        print(f"Error capturing window: {e}", file=sys.stderr)
-        sys.exit(1)
-    return path
+    return _capture_geometry(stack, args.grim, geometry)
 
 
-def _mode_window(args: argparse.Namespace) -> None:
-    """Window mode: pick a window, capture it, then open the overlay UI."""
-    import threading
+def _run_overlay(screenshot_path: Path, wl_copy_cmd: str) -> None:
+    """Open the overlay UI with background OCR."""
+    overlay = LiveTextOverlay(
+        screenshot_path=screenshot_path,
+        lines=[],
+        wl_copy_cmd=wl_copy_cmd,
+    )
 
-    from .overlay import LiveTextOverlay
+    def _ocr_worker() -> None:
+        from .ocr import run_ocr
 
-    screenshot_path = _capture_window(grim_cmd=args.grim, slurp_cmd=args.slurp)
-    try:
-        overlay = LiveTextOverlay(
-            screenshot_path=screenshot_path,
-            lines=[],
-            wl_copy_cmd=args.wl_copy,
-        )
+        try:
+            lines = run_ocr(screenshot_path)
+        except Exception as e:
+            print(f"OCR error: {e}", file=sys.stderr)
+            lines = []
+        overlay.set_lines(lines)
 
-        def _ocr_worker() -> None:
-            from .ocr import run_ocr
-
-            try:
-                lines = run_ocr(screenshot_path)
-            except Exception as e:
-                print(f"OCR error: {e}", file=sys.stderr)
-                return
-            if lines:
-                overlay.set_lines(lines)
-
-        thread = threading.Thread(target=_ocr_worker, daemon=True)
-        thread.start()
-        overlay.run()
-    finally:
-        if screenshot_path.exists():
-            screenshot_path.unlink()
-
-
-def _mode_region(args: argparse.Namespace) -> None:
-    """Region mode: select region, capture it, then open the overlay UI."""
-    import threading
-
-    from .overlay import LiveTextOverlay
-
-    screenshot_path = _capture_region(grim_cmd=args.grim, slurp_cmd=args.slurp)
-    try:
-        overlay = LiveTextOverlay(
-            screenshot_path=screenshot_path,
-            lines=[],
-            wl_copy_cmd=args.wl_copy,
-        )
-
-        def _ocr_worker() -> None:
-            from .ocr import run_ocr
-
-            try:
-                lines = run_ocr(screenshot_path)
-            except Exception as e:
-                print(f"OCR error: {e}", file=sys.stderr)
-                return
-            if lines:
-                overlay.set_lines(lines)
-
-        thread = threading.Thread(target=_ocr_worker, daemon=True)
-        thread.start()
-        overlay.run()
-    finally:
-        if screenshot_path.exists():
-            screenshot_path.unlink()
+    thread = threading.Thread(target=_ocr_worker, daemon=True)
+    thread.start()
+    overlay.run()
 
 
 def main() -> None:
@@ -291,12 +184,15 @@ def main() -> None:
 
     args = parser.parse_args()
 
-    if args.region:
-        _mode_region(args)
-    elif args.window:
-        _mode_window(args)
-    else:
-        _mode_default(args)
+    with contextlib.ExitStack() as stack:
+        if args.region:
+            screenshot_path = _capture_region(stack, args)
+        elif args.window:
+            screenshot_path = _capture_window(stack, args)
+        else:
+            screenshot_path = _capture_screenshot(stack, args)
+
+        _run_overlay(screenshot_path, args.wl_copy)
 
 
 if __name__ == "__main__":
