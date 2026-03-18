@@ -63,11 +63,11 @@
     # Printer configuration
     system-config-printer
 
-    # Screenshot tools (grim used by live-text, slurp for niri's screenshot binds)
+    # Screenshot tools
     grim
     slurp
 
-    # Interactive OCR overlay (capture screen → click text → clipboard)
+    # live-text: OCR overlay, screenshot annotation, region capture
     (pkgs.python3.pkgs.callPackage ../../pkgs/live-text { })
 
     # Choosers (audio, display, internet)

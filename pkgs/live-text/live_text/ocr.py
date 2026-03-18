@@ -125,12 +125,20 @@ def _split_line_into_words(
 def run_ocr(image_path: Path) -> list[LineBox]:
     """Run RapidOCR on an image and return lines with word-level boxes.
 
-    Uses line-level detection (not return_word_box) to avoid the CJK-style
-    per-character splitting, then splits each line into words proportionally.
+    Uses the English recognition model (set via LIVE_TEXT_REC_MODEL env var)
+    which preserves spaces in Latin text.  Falls back to the bundled Chinese
+    model if the env var is not set.
     """
+    import os
+
     from rapidocr import RapidOCR  # lazy import to avoid slow startup cost
 
-    engine = RapidOCR()
+    params: dict[str, str] = {}
+    rec_model = os.environ.get("LIVE_TEXT_REC_MODEL")
+    if rec_model:
+        params["Rec.model_path"] = rec_model
+
+    engine = RapidOCR(params=params if params else None)
     result = engine(str(image_path))
 
     if not result.txts:
