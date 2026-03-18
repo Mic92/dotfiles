@@ -4,6 +4,7 @@
   ...
 }:
 {
+  imports = [ ./kwallet-tpm ];
   # Lock secrets before suspend (carried over from KDE module)
   systemd.user.services.lock-secrets-on-suspend = {
     description = "Lock secrets before suspend";
@@ -24,12 +25,8 @@
   programs.niri.enable = true;
 
   # Use KDE Wallet instead of gnome-keyring for secret storage
+  # KWallet is unlocked via TPM (see ./kwallet-tpm), not PAM
   services.gnome.gnome-keyring.enable = false;
-  security.pam.services.greetd.kwallet = {
-    enable = true;
-    package = pkgs.kdePackages.kwallet-pam;
-    forceRun = true;
-  };
 
   # greetd auto-starts niri, noctalia-shell's lock screen handles login
   services.greetd = {
