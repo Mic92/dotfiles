@@ -1,6 +1,6 @@
 /**
- * Cocaine — Anthropic fast mode (~2.5x faster output on claude-opus-4-6).
- * Toggle with /cocaine. Disabled by default; toggle is per-session only.
+ * Cokain — Anthropic fast mode (~2.5x faster output on claude-opus-4-6).
+ * Toggle with /cokain. Disabled by default; toggle is per-session only.
  * Patches fetch to inject speed:"fast" + beta header into Messages API requests.
  */
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
@@ -8,7 +8,7 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { homedir } from "node:os";
 
-const STATE_FILE = join(homedir(), ".pi", "state", "cocaine.json");
+const STATE_FILE = join(homedir(), ".pi", "state", "cokain.json");
 
 function load(): boolean {
   try {
@@ -22,7 +22,7 @@ function save(v: boolean) {
   writeFileSync(STATE_FILE, JSON.stringify({ enabled: v }), "utf-8");
 }
 
-export default function cocaine(pi: ExtensionAPI) {
+export default function cokain(pi: ExtensionAPI) {
   let enabled = load();
 
   const setStatus = (ctx: {
@@ -32,13 +32,13 @@ export default function cocaine(pi: ExtensionAPI) {
     };
   }) =>
     ctx.ui.setStatus(
-      "cocaine",
+      "cokain",
       enabled ? ctx.ui.theme.fg("warning", "fast ⚡") : undefined,
     );
 
   pi.on("session_start", async (_ev, ctx) => setStatus(ctx));
 
-  pi.registerCommand("cocaine", {
+  pi.registerCommand("cokain", {
     description: "Toggle Anthropic fast mode for claude-opus-4-6",
     handler: async (_args, ctx) => {
       if (!ctx.hasUI) return;
