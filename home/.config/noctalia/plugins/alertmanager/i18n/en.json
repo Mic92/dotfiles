@@ -1,0 +1,10 @@
+{
+  "widget": {
+    "tooltip": "Alertmanager"
+  },
+  "menu": {
+    "settings": "Settings",
+    "refresh": "Refresh",
+    "open-alertmanager": "Open Alertmanager"
+  }
+}
