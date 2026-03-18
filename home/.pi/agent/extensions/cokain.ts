@@ -1,6 +1,6 @@
 /**
  * Cokain — Anthropic fast mode (~2.5x faster output on claude-opus-4-6).
- * Toggle with /cokain. State persisted across sessions. Default: enabled.
+ * Toggle with /cokain. Disabled by default; toggle is per-session only.
  * Patches fetch to inject speed:"fast" + beta header into Messages API requests.
  */
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
@@ -12,9 +12,9 @@ const STATE_FILE = join(homedir(), ".pi", "state", "cokain.json");
 
 function load(): boolean {
   try {
-    return JSON.parse(readFileSync(STATE_FILE, "utf-8")).enabled ?? true;
+    return JSON.parse(readFileSync(STATE_FILE, "utf-8")).enabled ?? false;
   } catch {}
-  return true;
+  return false;
 }
 
 function save(v: boolean) {
