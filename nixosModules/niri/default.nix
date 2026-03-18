@@ -12,6 +12,10 @@
     serviceConfig = {
       Type = "oneshot";
       ExecStart = pkgs.writeShellScript "lock-secrets" ''
+        # Lock KWallet/ksecretd
+        ${pkgs.libsecret}/bin/secret-tool lock --collection=kdewallet 2>/dev/null || true
+
+        # Lock rbw
         ${pkgs.rbw}/bin/rbw lock 2>/dev/null || true
       '';
     };
@@ -19,10 +23,24 @@
 
   programs.niri.enable = true;
 
-  # SDDM as display manager
-  services.xserver.enable = true;
-  services.displayManager.sddm.enable = true;
-  services.displayManager.sddm.wayland.enable = true;
+  # Use KDE Wallet instead of gnome-keyring for secret storage
+  services.gnome.gnome-keyring.enable = false;
+  security.pam.services.greetd.kwallet = {
+    enable = true;
+    package = pkgs.kdePackages.kwallet-pam;
+    forceRun = true;
+  };
+
+  # greetd + tuigreet as display manager (lightweight, no X dependency)
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --remember-session --sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
+        user = "greeter";
+      };
+    };
+  };
 
   # PAM integration for swaylock is handled by wayland-session.nix
   # imported by the niri module
@@ -62,6 +80,10 @@
 
     # Printer configuration
     system-config-printer
+
+    # KDE Wallet (secret service provider + management UI)
+    kdePackages.kwallet
+    kdePackages.kwalletmanager
 
     # Screenshot tools
     grim
