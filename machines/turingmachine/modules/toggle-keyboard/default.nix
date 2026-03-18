@@ -16,6 +16,23 @@
     #'')
   ];
   powerManagement.enable = true;
-  # re-enable after suspend so we can login
-  powerManagement.powerUpCommands = "${pkgs.kmod}/bin/modprobe i8042";
+
+  # Re-enable i8042 keyboard after resume so we can login
+  systemd.services.i8042-resume = {
+    description = "Reload i8042 keyboard module after resume";
+    after = [
+      "suspend.target"
+      "hibernate.target"
+      "hybrid-sleep.target"
+    ];
+    wantedBy = [
+      "suspend.target"
+      "hibernate.target"
+      "hybrid-sleep.target"
+    ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.kmod}/bin/modprobe i8042";
+    };
+  };
 }

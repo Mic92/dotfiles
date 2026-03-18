@@ -46,7 +46,7 @@
 
   services.openssh.settings.PasswordAuthentication = lib.mkForce true;
 
-  documentation.man.generateCaches = true;
+  documentation.man.cache.enable = true;
 
   services.dbus.implementation = "broker";
 
