@@ -38,13 +38,15 @@ in
 
   systemd.user.services.kwallet-tpm-unlock = {
     description = "Unlock KWallet using TPM-sealed credentials";
-    after = [ "dbus.socket" ];
-    before = [ "graphical-session-pre.target" ];
-    wantedBy = [ "graphical-session-pre.target" ];
+    after = [
+      "dbus.socket"
+      "graphical-session.target"
+    ];
+    wantedBy = [ "graphical-session.target" ];
     serviceConfig = {
       Type = "oneshot";
       ExecStart = "${kwallet-tpm-unlock}/bin/kwallet-tpm-unlock %h/.config/kwallet-tpm/password.cred";
-      # Retry once on failure (e.g. kwalletd6 not ready yet)
+      # Retry on failure (e.g. kwalletd6 not ready yet)
       Restart = "on-failure";
       RestartSec = 2;
       RestartMode = "direct";
