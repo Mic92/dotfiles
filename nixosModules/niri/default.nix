@@ -99,5 +99,7 @@
     NIX_PROFILES = "${pkgs.lib.concatStringsSep " " (
       pkgs.lib.reverseList config.environment.profiles
     )}";
+    # Enable native Wayland support for Electron apps (Ferdium, etc.) and Chromium
+    NIXOS_OZONE_WL = "1";
   };
 }
