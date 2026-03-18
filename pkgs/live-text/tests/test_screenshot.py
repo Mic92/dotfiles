@@ -8,7 +8,12 @@ from unittest.mock import patch
 
 import pytest
 
-from live_text.screenshot import capture_full_screen, get_focused_output
+from live_text.screenshot import (
+    _collect_sway_windows,
+    capture_full_screen,
+    get_focused_output,
+    get_window_geometries,
+)
 
 
 def _fake_grim(cmd: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
@@ -80,6 +85,155 @@ class TestGetFocusedOutput:
 
         with patch("live_text.screenshot.subprocess.run", side_effect=fake_run):
             assert get_focused_output() is None
+
+
+class TestGetWindowGeometries:
+    def test_niri_success(self) -> None:
+        niri_json = (
+            '[{"title":"Firefox","x":0,"y":0,"width":1920,"height":1080},'
+            '{"title":"Terminal","x":100,"y":100,"width":800,"height":600}]'
+        )
+        with patch("live_text.screenshot.subprocess.run") as mock_run:
+            mock_run.return_value = subprocess.CompletedProcess([], 0, stdout=niri_json)
+            result = get_window_geometries()
+        assert len(result) == 2
+        assert result[0] == "0,0 1920x1080 Firefox"
+        assert result[1] == "100,100 800x600 Terminal"
+
+    def test_niri_not_found_falls_back_to_sway(self) -> None:
+        sway_tree = {
+            "type": "root",
+            "nodes": [
+                {
+                    "type": "output",
+                    "nodes": [
+                        {
+                            "type": "con",
+                            "name": "vim",
+                            "rect": {"x": 0, "y": 0, "width": 800, "height": 600},
+                            "nodes": [],
+                            "floating_nodes": [],
+                        }
+                    ],
+                    "floating_nodes": [],
+                }
+            ],
+            "floating_nodes": [],
+        }
+
+        def fake_run(
+            cmd: list[str], **kwargs: object
+        ) -> subprocess.CompletedProcess[str]:
+            if cmd[0] == "niri":
+                raise FileNotFoundError("niri")
+            import json
+
+            return subprocess.CompletedProcess(cmd, 0, stdout=json.dumps(sway_tree))
+
+        with patch("live_text.screenshot.subprocess.run", side_effect=fake_run):
+            result = get_window_geometries()
+        assert result == ["0,0 800x600 vim"]
+
+    def test_both_fail_returns_empty(self) -> None:
+        with patch(
+            "live_text.screenshot.subprocess.run",
+            side_effect=FileNotFoundError("not found"),
+        ):
+            assert get_window_geometries() == []
+
+    def test_niri_skips_windows_without_geometry(self) -> None:
+        """Windows missing x/y/width/height should be skipped."""
+        niri_json = '[{"title":"Broken","x":null,"y":0,"width":100,"height":50}]'
+        with patch("live_text.screenshot.subprocess.run") as mock_run:
+            mock_run.return_value = subprocess.CompletedProcess([], 0, stdout=niri_json)
+            result = get_window_geometries()
+        assert result == []
+
+
+class TestCollectSwayWindows:
+    def test_nested_containers(self) -> None:
+        """Windows nested in workspace containers should be found."""
+        tree: dict[str, object] = {
+            "type": "root",
+            "name": "root",
+            "nodes": [
+                {
+                    "type": "output",
+                    "name": "eDP-1",
+                    "nodes": [
+                        {
+                            "type": "workspace",
+                            "name": "1",
+                            "nodes": [
+                                {
+                                    "type": "con",
+                                    "name": "Terminal",
+                                    "rect": {
+                                        "x": 0,
+                                        "y": 0,
+                                        "width": 960,
+                                        "height": 1080,
+                                    },
+                                    "nodes": [],
+                                    "floating_nodes": [],
+                                },
+                                {
+                                    "type": "con",
+                                    "name": "Browser",
+                                    "rect": {
+                                        "x": 960,
+                                        "y": 0,
+                                        "width": 960,
+                                        "height": 1080,
+                                    },
+                                    "nodes": [],
+                                    "floating_nodes": [],
+                                },
+                            ],
+                            "floating_nodes": [],
+                        }
+                    ],
+                    "floating_nodes": [],
+                }
+            ],
+            "floating_nodes": [],
+        }
+        out: list[str] = []
+        _collect_sway_windows(tree, out)
+        assert len(out) == 2
+        assert "0,0 960x1080 Terminal" in out
+        assert "960,0 960x1080 Browser" in out
+
+    def test_floating_windows(self) -> None:
+        tree: dict[str, object] = {
+            "type": "workspace",
+            "name": "1",
+            "nodes": [],
+            "floating_nodes": [
+                {
+                    "type": "floating_con",
+                    "name": "Calculator",
+                    "rect": {"x": 200, "y": 200, "width": 400, "height": 300},
+                    "nodes": [],
+                    "floating_nodes": [],
+                }
+            ],
+        }
+        out: list[str] = []
+        _collect_sway_windows(tree, out)
+        assert out == ["200,200 400x300 Calculator"]
+
+    def test_zero_size_skipped(self) -> None:
+        tree: dict[str, object] = {
+            "type": "con",
+            "name": "hidden",
+            "rect": {"x": 0, "y": 0, "width": 0, "height": 0},
+            "nodes": [],
+            "floating_nodes": [],
+        }
+        out: list[str] = []
+        _collect_sway_windows(tree, out)
+        assert out == []
 
 
 class TestCaptureFullScreen:
