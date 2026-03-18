@@ -3,19 +3,6 @@
   pkgs,
   ...
 }:
-let
-  # Get the parent directory of the generated keys (e.g., /var/lib/sops-nix/activation/secureboot)
-  # by taking the directory of one of the key files and going up one level to get to secureboot/
-  securebootDir = dirOf (
-    dirOf (dirOf config.clan.core.vars.generators.secureboot.files."keys/PK/PK.key".path)
-  );
-
-  # Create sbctl configuration file pointing to the copied keys in /var/lib/sbctl
-  # (not the sops activation directory, which has restrictive 0700 permissions)
-  sbctlConfig = pkgs.writeText "sbctl.conf" ''
-    keydir: /var/lib/sbctl/keys
-  '';
-in
 {
   boot.loader.limine = {
     enable = true;
@@ -23,7 +10,11 @@ in
     maxGenerations = 20;
     # efiInstallAsRemovable = true;
     secureBoot.enable = true;
-    secureBoot.configFile = sbctlConfig;
+    # Create sbctl configuration file pointing to the copied keys in /var/lib/sbctl
+    # (not the sops activation directory, which has restrictive 0700 permissions)
+    secureBoot.configFile = pkgs.writeText "sbctl.conf" ''
+      keydir: /var/lib/sbctl/keys
+    '';
   };
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -58,9 +49,17 @@ in
   systemd.tmpfiles.rules = [
     "d /var/lib/sbctl 0700 root root -"
   ];
-  system.activationScripts.sbctl-keys.text = ''
-    rm -rf /var/lib/sbctl/keys
-    cp -a ${securebootDir}/keys /var/lib/sbctl/keys
-    chmod -R u+rw /var/lib/sbctl/keys
-  '';
+  system.activationScripts.sbctl-keys.text =
+    let
+      # Get the parent directory of the generated keys (e.g., /var/lib/sops-nix/activation/secureboot)
+      # by taking the directory of one of the key files and going up one level to get to secureboot/
+      securebootDir = dirOf (
+        dirOf (dirOf config.clan.core.vars.generators.secureboot.files."keys/PK/PK.key".path)
+      );
+    in
+    ''
+      rm -rf /var/lib/sbctl/keys
+      cp -a ${securebootDir}/keys /var/lib/sbctl/keys
+      chmod -R u+rw /var/lib/sbctl/keys
+    '';
 }
