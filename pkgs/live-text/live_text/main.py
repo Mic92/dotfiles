@@ -134,7 +134,7 @@ def _capture_window(stack: contextlib.ExitStack, args: argparse.Namespace) -> Pa
 
 
 def _run_overlay(screenshot_path: Path, wl_copy_cmd: str) -> None:
-    """Open the overlay UI with background OCR."""
+    """Open the overlay UI with background OCR and barcode scanning."""
     overlay = LiveTextOverlay(
         screenshot_path=screenshot_path,
         lines=[],
@@ -151,8 +151,20 @@ def _run_overlay(screenshot_path: Path, wl_copy_cmd: str) -> None:
             lines = []
         overlay.set_lines(lines)
 
-    thread = threading.Thread(target=_ocr_worker, daemon=True)
-    thread.start()
+    def _barcode_worker() -> None:
+        from .barcode import scan_codes
+
+        try:
+            codes = scan_codes(screenshot_path)
+        except Exception as e:
+            print(f"Barcode scan error: {e}", file=sys.stderr)
+            codes = []
+        overlay.set_codes(codes)
+
+    ocr_thread = threading.Thread(target=_ocr_worker, daemon=True)
+    barcode_thread = threading.Thread(target=_barcode_worker, daemon=True)
+    ocr_thread.start()
+    barcode_thread.start()
     overlay.run()
 
 

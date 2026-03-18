@@ -12,6 +12,7 @@ license = {text = "MIT"}
 dependencies = [
     "PyGObject",
     "pycairo",
+    "pyzbar",
     "rapidocr",
 ]
 
@@ -21,6 +22,8 @@ live-text = "live_text.main:main"
 [project.optional-dependencies]
 test = [
     "pytest>=7.0",
+    "qrcode",
+    "python-barcode[images]",
 ]
 
 [tool.pytest.ini_options]
@@ -34,5 +37,5 @@ target-version = "py313"
 python_version = "3.13"
 
 [[tool.mypy.overrides]]
-module = ["gi", "gi.repository", "cairo", "rapidocr"]
+module = ["gi", "gi.*", "cairo", "pyzbar", "pyzbar.*", "rapidocr", "PIL", "PIL.*", "pytest"]
 ignore_missing_imports = true

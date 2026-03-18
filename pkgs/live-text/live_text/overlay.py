@@ -23,6 +23,7 @@ gi.require_version("Gtk4LayerShell", "1.0")
 
 from gi.repository import Gdk, GLib, Gtk, Gtk4LayerShell  # noqa: E402
 
+from .barcode import CodeBox  # noqa: E402
 from .ocr import LineBox, WordBox  # noqa: E402
 
 # -- constants ----------------------------------------------------------------
@@ -58,6 +59,14 @@ TOOLBAR_ACTIVE_BG = (0.3, 0.5, 0.9, 0.9)
 TOOL_BTN_W = 70.0
 COLOR_BTN_SIZE = 22.0
 HINT_FONT_SIZE = 12.0
+
+# QR / barcode highlights
+CODE_BORDER_COLOR = (0.0, 0.8, 0.4, 0.9)
+CODE_FILL_COLOR = (0.0, 0.8, 0.4, 0.15)
+CODE_SELECTED_FILL = (0.0, 0.8, 0.4, 0.4)
+CODE_LABEL_FONT_SIZE = 11.0
+CODE_LABEL_BG = (0.0, 0.0, 0.0, 0.7)
+CODE_BORDER_WIDTH = 2.0
 
 
 # -- data types ---------------------------------------------------------------
@@ -104,16 +113,19 @@ class LiveTextOverlay:
         screenshot_path: Path,
         lines: list[LineBox],
         wl_copy_cmd: str = "wl-copy",
+        codes: list[CodeBox] | None = None,
     ) -> None:
         self.screenshot_path = screenshot_path
         self.lines = lines
         self.wl_copy_cmd = wl_copy_cmd
+        self.codes: list[CodeBox] = codes or []
 
         # Current tool
         self.tool = Tool.SELECT
 
         # Text selection state
         self.selected_words: set[WordId] = set()
+        self.selected_codes: set[int] = set()  # indices into self.codes
         self._over_text = False
         self._flashing = False
 
@@ -157,11 +169,23 @@ class LiveTextOverlay:
     def _apply_lines(self, lines: list[LineBox]) -> bool:
         """GLib.idle callback: apply OCR results on the main thread."""
         self.lines = lines
+        self.selected_words.clear()  # indices are invalidated by new list
         if self._spinner_timer is not None:
             GLib.source_remove(self._spinner_timer)
             self._spinner_timer = None
         self._drawing_area.queue_draw()
         return False  # don't repeat
+
+    def set_codes(self, codes: list[CodeBox]) -> None:
+        """Update detected codes from a background thread. Thread-safe."""
+        GLib.idle_add(self._apply_codes, codes)
+
+    def _apply_codes(self, codes: list[CodeBox]) -> bool:
+        """GLib.idle callback: apply barcode results on the main thread."""
+        self.codes = codes
+        self.selected_codes.clear()  # indices are invalidated by new list
+        self._drawing_area.queue_draw()
+        return False
 
     def run(self) -> None:
         self.app.run([])
@@ -256,6 +280,13 @@ class LiveTextOverlay:
                     return (li, wi)
         return None
 
+    def _hit_code(self, ix: float, iy: float) -> int | None:
+        """Return the index of the code at image coords, or None."""
+        for ci, code in enumerate(self.codes):
+            if code.contains_point(ix, iy):
+                return ci
+        return None
+
     # -- drawing --------------------------------------------------------------
 
     def _draw(
@@ -283,6 +314,39 @@ class LiveTextOverlay:
             for li, wi in self.selected_words:
                 cr.rectangle(*_word_rect(self.lines[li].words[wi]))
             cr.fill()
+
+        # QR / barcode overlays
+        for ci, code in enumerate(self.codes):
+            is_selected = ci in self.selected_codes
+            # Fill
+            if is_selected and self._flashing:
+                cr.set_source_rgba(0.0, 0.8, 0.4, 0.6)
+            elif is_selected:
+                cr.set_source_rgba(*CODE_SELECTED_FILL)
+            else:
+                cr.set_source_rgba(*CODE_FILL_COLOR)
+            cr.rectangle(code.x, code.y, code.width, code.height)
+            cr.fill()
+            # Border
+            cr.set_source_rgba(*CODE_BORDER_COLOR)
+            cr.set_line_width(CODE_BORDER_WIDTH / scale)
+            cr.rectangle(code.x, code.y, code.width, code.height)
+            cr.stroke()
+            # Label (type + truncated data)
+            label = code.code_type
+            preview = code.data[:40] + ("…" if len(code.data) > 40 else "")
+            label_text = f"{label}: {preview}"
+            cr.set_font_size(CODE_LABEL_FONT_SIZE)
+            ext = cr.text_extents(label_text)
+            lx = code.x
+            ly = code.y - 4  # above the box
+            # Background pill for readability
+            cr.set_source_rgba(*CODE_LABEL_BG)
+            cr.rectangle(lx - 2, ly - ext.height - 2, ext.width + 6, ext.height + 4)
+            cr.fill()
+            cr.set_source_rgba(0.0, 1.0, 0.5, 1.0)
+            cr.move_to(lx, ly)
+            cr.show_text(label_text)
 
         # Committed annotations
         for ann in self.annotations:
@@ -386,10 +450,14 @@ class LiveTextOverlay:
             if not self.lines and self._spinner_timer is not None:
                 frame = SPINNER_FRAMES[self._spinner_idx]
                 hint = f"{frame} Detecting text…  · Ctrl+S save · Esc quit"
-            elif not self.lines:
+            elif not self.lines and not self.codes:
                 hint = "No text detected  · Ctrl+S save · Esc quit"
             else:
-                hint = "Ctrl+C copy text · Ctrl+S save · Ctrl+A select all · Esc quit"
+                n_codes = len(self.codes)
+                code_hint = (
+                    f" · {n_codes} code{'s' if n_codes != 1 else ''}" if n_codes else ""
+                )
+                hint = f"Ctrl+C copy · Ctrl+S save · Ctrl+A select all{code_hint} · Esc quit"
         else:
             hint = "Ctrl+C copy image · Ctrl+S save · Ctrl+Z undo · Esc quit"
         cr.set_source_rgba(1, 1, 1, 0.6)
@@ -406,7 +474,7 @@ class LiveTextOverlay:
         if self.tool != Tool.SELECT:
             return
         ix, iy = self._widget_to_image(x, y)
-        over = self._hit_word(ix, iy) is not None
+        over = self._hit_word(ix, iy) is not None or self._hit_code(ix, iy) is not None
         if over != self._over_text:
             self._over_text = over
             self._drawing_area.set_cursor(
@@ -508,12 +576,15 @@ class LiveTextOverlay:
         )
 
         self.selected_words.clear()
+        self.selected_codes.clear()
+        rect = (int(ix1), int(iy1), int(ix2 - ix1), int(iy2 - iy1))
         for li, line in enumerate(self.lines):
             for wi, word in enumerate(line.words):
-                if word.intersects_rect(
-                    int(ix1), int(iy1), int(ix2 - ix1), int(iy2 - iy1)
-                ):
+                if word.intersects_rect(*rect):
                     self.selected_words.add((li, wi))
+        for ci, code in enumerate(self.codes):
+            if code.intersects_rect(*rect):
+                self.selected_codes.add(ci)
         self._drawing_area.queue_draw()
 
     def _end_select(self, offset_x: float, offset_y: float) -> None:
@@ -528,15 +599,24 @@ class LiveTextOverlay:
         rx = self.drag_start_x + offset_x
         ry = self.drag_start_y + offset_y
         ix, iy = self._widget_to_image(rx, ry)
-        clicked = self._hit_word(ix, iy)
+        clicked_word = self._hit_word(ix, iy)
+        clicked_code = self._hit_code(ix, iy)
 
-        if clicked is not None:
+        if clicked_word is not None:
             if self._drag_shift:
-                self.selected_words.symmetric_difference_update({clicked})
+                self.selected_words.symmetric_difference_update({clicked_word})
             else:
-                self.selected_words = {clicked}
+                self.selected_words = {clicked_word}
+                self.selected_codes.clear()
+        elif clicked_code is not None:
+            if self._drag_shift:
+                self.selected_codes.symmetric_difference_update({clicked_code})
+            else:
+                self.selected_codes = {clicked_code}
+                self.selected_words.clear()
         else:
             self.selected_words.clear()
+            self.selected_codes.clear()
         self._drawing_area.queue_draw()
 
     # -- toolbar --------------------------------------------------------------
@@ -622,14 +702,14 @@ class LiveTextOverlay:
             return True
 
         if ctrl and keyval == Gdk.KEY_c:
-            if self.selected_words:
+            if self._has_selection():
                 self._copy_selected_text()
             else:
                 self._copy_annotated_image()
             return True
 
         if keyval in (Gdk.KEY_Return, Gdk.KEY_KP_Enter):
-            if self.selected_words:
+            if self._has_selection():
                 self._copy_selected_text()
             else:
                 self._copy_annotated_image()
@@ -652,6 +732,7 @@ class LiveTextOverlay:
                 for li, line in enumerate(self.lines)
                 for wi in range(len(line.words))
             }
+            self.selected_codes = set(range(len(self.codes)))
             self._drawing_area.queue_draw()
             return True
 
@@ -664,13 +745,21 @@ class LiveTextOverlay:
         self._drawing_area.queue_draw()
         return False
 
+    def _has_selection(self) -> bool:
+        return bool(self.selected_words) or bool(self.selected_codes)
+
     def _copy_selected_text(self) -> None:
-        if not self.selected_words:
+        if not self._has_selection():
             return
-        line_texts: dict[int, list[str]] = {}
-        for li, wi in sorted(self.selected_words):
-            line_texts.setdefault(li, []).append(self.lines[li].words[wi].text)
-        text = "\n".join(" ".join(words) for words in line_texts.values())
+        parts: list[str] = []
+        if self.selected_words:
+            line_texts: dict[int, list[str]] = {}
+            for li, wi in sorted(self.selected_words):
+                line_texts.setdefault(li, []).append(self.lines[li].words[wi].text)
+            parts.append("\n".join(" ".join(words) for words in line_texts.values()))
+        for ci in sorted(self.selected_codes):
+            parts.append(self.codes[ci].data)
+        text = "\n".join(parts)
         try:
             subprocess.run([self.wl_copy_cmd], input=text.encode(), check=True)
         except (subprocess.CalledProcessError, FileNotFoundError) as e:

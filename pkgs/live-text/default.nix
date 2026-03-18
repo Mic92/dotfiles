@@ -4,6 +4,7 @@
   hatchling,
   pygobject3,
   pycairo,
+  pyzbar,
   rapidocr,
   grim,
   slurp,
@@ -14,6 +15,9 @@
   wrapGAppsHook4,
   makeWrapper,
   fetchurl,
+  pytestCheckHook,
+  qrcode,
+  python-barcode,
 }:
 
 let
@@ -37,6 +41,7 @@ buildPythonApplication {
   dependencies = [
     pygobject3
     pycairo
+    pyzbar
     rapidocr
   ];
 
@@ -67,6 +72,12 @@ buildPythonApplication {
       }" \
       --set LIVE_TEXT_REC_MODEL "${en-rec-model}"
   '';
+
+  nativeCheckInputs = [
+    pytestCheckHook
+    qrcode
+    python-barcode
+  ];
 
   # Tests require a Wayland session; run manually with pytest
   doCheck = false;
