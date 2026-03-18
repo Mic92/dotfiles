@@ -1,14 +1,20 @@
-"""Main entry point for live-text: interactive OCR overlay for Wayland."""
+"""Main entry point for live-text.
+
+Modes:
+  live-text                  # Screenshot → OCR + annotation overlay
+  live-text --region         # Select region → copy to clipboard
+  live-text image.png        # OCR an existing image
+  grim - | live-text -       # Read PNG from stdin
+"""
 
 from __future__ import annotations
 
 import argparse
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
-from .ocr import run_ocr
-from .overlay import LiveTextOverlay
 from .screenshot import capture_full_screen, get_focused_output
 
 
@@ -23,83 +29,144 @@ def _notify(notify_send_cmd: str, message: str) -> None:
         pass
 
 
+def _read_stdin_to_tempfile() -> Path:
+    """Read binary data from stdin and write to a temp PNG file."""
+    data = sys.stdin.buffer.read()
+    if not data:
+        print("Error: no data received on stdin", file=sys.stderr)
+        sys.exit(1)
+    tmp = tempfile.NamedTemporaryFile(suffix=".png", prefix="live-text-", delete=False)
+    tmp.write(data)
+    tmp.close()
+    return Path(tmp.name)
+
+
+def _capture_screenshot(args: argparse.Namespace) -> tuple[Path, bool]:
+    """Resolve screenshot from image arg, stdin, or grim.
+
+    Returns (path, should_cleanup).
+    """
+    if args.image == "-":
+        return _read_stdin_to_tempfile(), True
+
+    if args.image is not None:
+        path = Path(args.image)
+        if not path.exists():
+            print(f"Error: file not found: {path}", file=sys.stderr)
+            sys.exit(1)
+        return path, False
+
+    try:
+        output = args.output or get_focused_output()
+        return capture_full_screen(grim_cmd=args.grim, output=output), True
+    except FileNotFoundError as e:
+        print(f"Error: required tool not found: {e}", file=sys.stderr)
+        sys.exit(1)
+    except subprocess.CalledProcessError as e:
+        print(f"Error capturing screenshot: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
+def _mode_default(args: argparse.Namespace) -> None:
+    """Default mode: OCR + annotation overlay.
+
+    Shows the overlay immediately so the user can start annotating,
+    then runs OCR in a background thread and adds text selection
+    once detection completes.
+    """
+    import threading
+
+    from .overlay import LiveTextOverlay
+
+    screenshot_path, cleanup = _capture_screenshot(args)
+    try:
+        overlay = LiveTextOverlay(
+            screenshot_path=screenshot_path,
+            lines=[],
+            wl_copy_cmd=args.wl_copy,
+        )
+
+        def _ocr_worker() -> None:
+            from .ocr import run_ocr
+
+            try:
+                lines = run_ocr(screenshot_path)
+            except Exception as e:
+                print(f"OCR error: {e}", file=sys.stderr)
+                return
+            if lines:
+                overlay.set_lines(lines)
+
+        thread = threading.Thread(target=_ocr_worker, daemon=True)
+        thread.start()
+        overlay.run()
+    finally:
+        if cleanup and screenshot_path.exists():
+            screenshot_path.unlink()
+
+
+def _mode_region(args: argparse.Namespace) -> None:
+    """Region mode: select region with slurp, copy to clipboard."""
+    try:
+        geometry = subprocess.run(
+            [args.slurp],
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+    except FileNotFoundError:
+        print("Error: slurp not found", file=sys.stderr)
+        sys.exit(1)
+    except subprocess.CalledProcessError:
+        sys.exit(0)  # user cancelled
+
+    try:
+        grim = subprocess.Popen(
+            [args.grim, "-g", geometry, "-"],
+            stdout=subprocess.PIPE,
+        )
+        subprocess.run(
+            [args.wl_copy, "-t", "image/png"],
+            stdin=grim.stdout,
+            check=True,
+        )
+        grim.wait()
+        _notify(args.notify_send, "Region copied to clipboard")
+    except FileNotFoundError as e:
+        print(f"Error: required tool not found: {e}", file=sys.stderr)
+        sys.exit(1)
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(1)
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Interactive OCR overlay - capture screen, detect text, click to copy",
+        description="Screenshot toolkit: OCR text selection + annotation + region capture",
     )
     parser.add_argument(
         "image",
         nargs="?",
-        type=Path,
-        help="Image file to OCR (default: capture full screen)",
-    )
-    parser.add_argument(
-        "--grim", default="grim", help="Path to grim binary (default: grim)"
-    )
-    parser.add_argument(
-        "--wl-copy",
-        default="wl-copy",
-        help="Path to wl-copy binary (default: wl-copy)",
-    )
-    parser.add_argument(
-        "--notify-send",
-        default="notify-send",
-        help="Path to notify-send binary (default: notify-send)",
-    )
-    parser.add_argument(
-        "--output",
         default=None,
-        help="Wayland output name to capture (default: auto-detect focused)",
+        help="Image file, or '-' for stdin (default: capture full screen)",
     )
+    parser.add_argument(
+        "--region",
+        action="store_true",
+        help="Select region with slurp, copy to clipboard",
+    )
+    parser.add_argument("--grim", default="grim")
+    parser.add_argument("--slurp", default="slurp")
+    parser.add_argument("--wl-copy", default="wl-copy")
+    parser.add_argument("--notify-send", default="notify-send")
+    parser.add_argument("--output", default=None)
 
     args = parser.parse_args()
 
-    # Capture or use provided image
-    cleanup_screenshot = False
-    if args.image is not None:
-        screenshot_path = args.image
-        if not screenshot_path.exists():
-            print(f"Error: file not found: {screenshot_path}", file=sys.stderr)
-            sys.exit(1)
+    if args.region:
+        _mode_region(args)
     else:
-        try:
-            output = args.output or get_focused_output()
-            screenshot_path = capture_full_screen(
-                grim_cmd=args.grim,
-                output=output,
-            )
-            cleanup_screenshot = True
-        except FileNotFoundError as e:
-            print(f"Error: required tool not found: {e}", file=sys.stderr)
-            sys.exit(1)
-        except subprocess.CalledProcessError as e:
-            print(f"Error capturing screenshot: {e}", file=sys.stderr)
-            sys.exit(1)
-
-    try:
-        # Run OCR
-        try:
-            lines = run_ocr(screenshot_path)
-        except Exception as e:
-            print(f"Error running OCR: {e}", file=sys.stderr)
-            sys.exit(1)
-
-        if not lines:
-            print("No text detected in screenshot.", file=sys.stderr)
-            _notify(args.notify_send, "No text detected in screenshot.")
-            sys.exit(0)
-
-        # Show overlay
-        overlay = LiveTextOverlay(
-            screenshot_path=screenshot_path,
-            lines=lines,
-            wl_copy_cmd=args.wl_copy,
-        )
-        overlay.run()
-
-    finally:
-        if cleanup_screenshot and screenshot_path.exists():
-            screenshot_path.unlink()
+        _mode_default(args)
 
 
 if __name__ == "__main__":
