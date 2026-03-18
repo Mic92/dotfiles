@@ -5,7 +5,8 @@ macOS Live Text.
 
 Takes a screenshot (or reads an image from stdin/file), runs OCR using RapidOCR
 (PaddleOCR v4 via ONNX Runtime), then shows an interactive overlay where you can
-select text at the word level. Selected text is copied to clipboard with Ctrl+C.
+select text, annotate with arrows/rectangles/text, and copy or save the result.
+OCR runs asynchronously so the overlay appears instantly.
 
 ## Usage
 
@@ -13,27 +14,65 @@ select text at the word level. Selected text is copied to clipboard with Ctrl+C.
 # Capture full screen and show overlay
 live-text
 
+# Capture a specific output
+live-text --output eDP-1
+
+# Select a region first, then OCR just that region
+live-text --region
+
+# Pick a window, then OCR just that window
+live-text --window
+
 # OCR an existing image file
 live-text screenshot.png
 
 # Pipeline mode: read from stdin
 grim - | live-text -
-
-# Region OCR: select area first, then OCR just that region
-slurp | grim -g - - | live-text -
 ```
 
+## Overlay Modes
+
+The toolbar at the bottom lets you switch between four tools:
+
+- **Select** — Click or drag to select OCR-detected words
+- **Arrow** — Draw arrows on the screenshot
+- **Rect** — Draw rectangles on the screenshot
+- **Text** — Click to place text annotations
+
+In annotation modes (Arrow, Rect, Text), a color palette is shown in the toolbar
+for picking the drawing color.
+
 ## Keybindings (in overlay)
+
+### Text Selection (Select mode)
 
 | Key              | Action                                  |
 | ---------------- | --------------------------------------- |
 | Click word       | Select it (replaces previous selection) |
-| Shift+click      | Add/remove word from selection          |
+| Shift+click      | Toggle word in selection                |
 | Drag             | Select all words in swept area          |
-| Ctrl+C / Enter   | Copy selection to clipboard             |
-| Ctrl+A           | Select all words                        |
 | Click empty area | Clear selection                         |
-| Escape           | Quit                                    |
+
+### Annotation (Arrow / Rect / Text modes)
+
+| Key       | Action                             |
+| --------- | ---------------------------------- |
+| Drag      | Draw arrow or rectangle            |
+| Click     | Place text cursor (Text mode)      |
+| Enter     | Commit typed text                  |
+| Backspace | Delete last character while typing |
+| Escape    | Cancel current text input          |
+
+### Global
+
+| Key    | Action                                               |
+| ------ | ---------------------------------------------------- |
+| Ctrl+C | Copy selected text, or annotated image if none       |
+| Enter  | Copy selected text, or annotated image if none       |
+| Ctrl+A | Select all detected words                            |
+| Ctrl+S | Save annotated screenshot to ~/Pictures/Screenshots/ |
+| Ctrl+Z | Undo last annotation                                 |
+| Escape | Quit                                                 |
 
 ## Niri keybindings
 
@@ -48,12 +87,25 @@ slurp | grim -g - - | live-text -
 | Mod+Shift+Print | Screenshot: annotate screen (Satty)     |
 | Mod+Ctrl+Print  | Screenshot: region → clipboard          |
 
+## Architecture
+
+```
+live_text/
+├── main.py        # CLI entry point, argument parsing, screenshot dispatch
+├── ocr.py         # RapidOCR wrapper, word-level bounding box splitting
+├── overlay.py     # GTK4 Layer Shell overlay (selection + annotation + toolbar)
+└── screenshot.py  # grim/slurp integration, niri/sway output detection
+```
+
+OCR runs in a background thread — the overlay shows a spinner until text
+detection completes, then word boxes become clickable.
+
 ## Dependencies
 
 - `grim` — Wayland screenshot
 - `rapidocr` — OCR engine (PaddleOCR v4 via ONNX Runtime)
 - `wl-copy` — Wayland clipboard
-- `notify-send` — Desktop notifications (only for "no text detected")
+- `notify-send` — Desktop notifications (save confirmation, no text detected)
 - GTK4 + gtk4-layer-shell — Overlay window
-- `slurp` — Region selection (optional, for pipeline mode)
-- `satty` — Annotation tool (optional, for screenshot-annotate)
+- `slurp` — Region/window selection (for `--region` and `--window` modes)
+- `niri` or `swaymsg` — Focused output and window detection (auto-detected)
