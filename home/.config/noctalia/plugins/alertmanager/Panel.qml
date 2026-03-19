@@ -13,6 +13,26 @@ Item {
   readonly property int alertCount: alertService?.alertCount ?? 0
   readonly property string fetchState: alertService?.fetchState ?? "idle"
 
+  // Group alerts by alertname for sectioned display
+  readonly property var groupedAlerts: {
+    var alerts = root.activeAlerts;
+    var groups = {};
+    var order = [];
+    for (var i = 0; i < alerts.length; i++) {
+      var name = alerts[i].labels.alertname || "Unknown";
+      if (!groups[name]) {
+        groups[name] = [];
+        order.push(name);
+      }
+      groups[name].push(alerts[i]);
+    }
+    var result = [];
+    for (var j = 0; j < order.length; j++) {
+      result.push({ name: order[j], alerts: groups[order[j]] });
+    }
+    return result;
+  }
+
   implicitWidth: 420
   implicitHeight: contentColumn.implicitHeight + Style.marginL * 2
 
@@ -101,82 +121,95 @@ Item {
           font.pixelSize: Style.fontSizeL
         }
 
-        // Alert items
+        // Grouped alert sections
         Repeater {
-          model: root.activeAlerts
+          model: root.groupedAlerts
 
-          delegate: Rectangle {
+          delegate: ColumnLayout {
             Layout.fillWidth: true
-            Layout.preferredHeight: alertItemColumn.implicitHeight + Style.marginM * 2
-            radius: Style.radiusM
-            color: Color.mSurfaceVariant
+            spacing: Style.marginXS
 
-            ColumnLayout {
-              id: alertItemColumn
-              anchors.fill: parent
-              anchors.margins: Style.marginM
-              spacing: Style.marginXS
-
-              RowLayout {
-                Layout.fillWidth: true
-                spacing: Style.marginS
-
-                NIcon {
-                  icon: {
-                    var severity = modelData.labels.severity || "warning";
-                    if (severity === "critical") return "alert-octagon";
-                    if (severity === "warning") return "alert-triangle";
-                    return "info";
-                  }
-                  pointSize: Style.fontSizeM
-                  color: {
-                    var severity = modelData.labels.severity || "warning";
-                    if (severity === "critical") return Color.mError;
-                    if (severity === "warning") return Color.mTertiary;
-                    return Color.mPrimary;
-                  }
-                }
-
-                NText {
-                  text: modelData.labels.alertname || "Unknown"
-                  font.bold: true
-                  font.pixelSize: Style.fontSizeM
-                  color: Color.mOnSurface
-                  Layout.fillWidth: true
-                }
-
-                NText {
-                  text: modelData.labels.host || modelData.labels.instance || ""
-                  font.pixelSize: Style.fontSizeS
-                  color: Color.mOnSurfaceVariant
-                }
-              }
-
-              NText {
-                visible: text !== ""
-                text: {
-                  if (modelData.annotations) {
-                    return modelData.annotations.description
-                      || modelData.annotations.summary
-                      || "";
-                  }
-                  return "";
-                }
-                font.pixelSize: Style.fontSizeS
-                color: Color.mOnSurfaceVariant
-                Layout.fillWidth: true
-                wrapMode: Text.WordWrap
-                maximumLineCount: 3
-                elide: Text.ElideRight
-              }
+            // Section header
+            NText {
+              text: modelData.name + " (" + modelData.alerts.length + ")"
+              font.bold: true
+              font.pixelSize: Style.fontSizeM
+              color: Color.mOnSurface
+              Layout.fillWidth: true
+              Layout.topMargin: index > 0 ? Style.marginS : 0
             }
 
-            MouseArea {
-              anchors.fill: parent
-              cursorShape: Qt.PointingHandCursor
-              onClicked: {
-                if (modelData.generatorURL) {
-                  Qt.openUrlExternally(modelData.generatorURL);
+            // Alerts in this section
+            Repeater {
+              model: modelData.alerts
+
+              delegate: Rectangle {
+                Layout.fillWidth: true
+                Layout.preferredHeight: alertItemColumn.implicitHeight + Style.marginM * 2
+                radius: Style.radiusM
+                color: Color.mSurfaceVariant
+
+                ColumnLayout {
+                  id: alertItemColumn
+                  anchors.fill: parent
+                  anchors.margins: Style.marginM
+                  spacing: Style.marginXS
+
+                  RowLayout {
+                    Layout.fillWidth: true
+                    spacing: Style.marginS
+
+                    NIcon {
+                      icon: {
+                        var severity = modelData.labels.severity || "warning";
+                        if (severity === "critical") return "alert-octagon";
+                        if (severity === "warning") return "alert-triangle";
+                        return "info";
+                      }
+                      pointSize: Style.fontSizeM
+                      color: {
+                        var severity = modelData.labels.severity || "warning";
+                        if (severity === "critical") return Color.mError;
+                        if (severity === "warning") return Color.mTertiary;
+                        return Color.mPrimary;
+                      }
+                    }
+
+                    NText {
+                      text: modelData.labels.host || modelData.labels.instance || ""
+                      font.pixelSize: Style.fontSizeS
+                      color: Color.mOnSurface
+                      Layout.fillWidth: true
+                    }
+                  }
+
+                  NText {
+                    visible: text !== ""
+                    text: {
+                      if (modelData.annotations) {
+                        return modelData.annotations.description
+                          || modelData.annotations.summary
+                          || "";
+                      }
+                      return "";
+                    }
+                    font.pixelSize: Style.fontSizeS
+                    color: Color.mOnSurfaceVariant
+                    Layout.fillWidth: true
+                    wrapMode: Text.WordWrap
+                    maximumLineCount: 3
+                    elide: Text.ElideRight
+                  }
+                }
+
+                MouseArea {
+                  anchors.fill: parent
+                  cursorShape: Qt.PointingHandCursor
+                  onClicked: {
+                    if (modelData.generatorURL) {
+                      Qt.openUrlExternally(modelData.generatorURL);
+                    }
+                  }
                 }
               }
             }
