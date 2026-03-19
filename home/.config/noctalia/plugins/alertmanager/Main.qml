@@ -61,6 +61,15 @@ Item {
                 && alert.status.inhibitedBy.length === 0
                 && (!alert.status.mutedBy || alert.status.mutedBy.length === 0);
           });
+          active.sort(function(a, b) {
+            var nameA = (a.labels.alertname || "").toLowerCase();
+            var nameB = (b.labels.alertname || "").toLowerCase();
+            if (nameA !== nameB) return nameA < nameB ? -1 : 1;
+            var hostA = (a.labels.host || "").toLowerCase();
+            var hostB = (b.labels.host || "").toLowerCase();
+            if (hostA !== hostB) return hostA < hostB ? -1 : 1;
+            return 0;
+          });
           alertService.activeAlerts = active;
           alertService.alertCount = active.length;
           alertService.fetchState = "success";
