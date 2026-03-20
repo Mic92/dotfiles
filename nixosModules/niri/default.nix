@@ -56,7 +56,6 @@
     libnotify
     swayidle
     kanshi
-    brightnessctl
 
     # Audio
     pavucontrol
