@@ -12,10 +12,11 @@ from __future__ import annotations
 
 import argparse
 import contextlib
+import locale
 import subprocess
 import sys
 import tempfile
-import threading
+from concurrent.futures import Future, ThreadPoolExecutor
 from pathlib import Path
 
 from .overlay import LiveTextOverlay
@@ -135,40 +136,62 @@ def _capture_window(stack: contextlib.ExitStack, args: argparse.Namespace) -> Pa
 
 def _run_overlay(screenshot_path: Path, wl_copy_cmd: str) -> None:
     """Open the overlay UI with background OCR and barcode scanning."""
+    from .barcode import CodeBox, scan_codes
+    from .ocr import LineBox, run_ocr
+
     overlay = LiveTextOverlay(
         screenshot_path=screenshot_path,
         lines=[],
         wl_copy_cmd=wl_copy_cmd,
     )
 
-    def _ocr_worker() -> None:
-        from .ocr import run_ocr
+    pool = ThreadPoolExecutor(max_workers=2)
 
-        try:
-            lines = run_ocr(screenshot_path)
-        except Exception as e:
-            print(f"OCR error: {e}", file=sys.stderr)
-            lines = []
-        overlay.set_lines(lines)
+    def _on_ocr_done(future: Future[list[LineBox]]) -> None:
+        exc = future.exception()
+        if exc is not None:
+            print(f"OCR error: {exc}", file=sys.stderr)
+            overlay.set_error(str(exc))
+            overlay.set_lines([])
+            return
+        overlay.set_lines(future.result())
 
-    def _barcode_worker() -> None:
-        from .barcode import scan_codes
+    pool.submit(run_ocr, screenshot_path).add_done_callback(_on_ocr_done)
 
-        try:
-            codes = scan_codes(screenshot_path)
-        except Exception as e:
-            print(f"Barcode scan error: {e}", file=sys.stderr)
-            codes = []
-        overlay.set_codes(codes)
+    def _on_barcode_done(future: Future[list[CodeBox]]) -> None:
+        exc = future.exception()
+        if exc is not None:
+            print(f"Barcode scan error: {exc}", file=sys.stderr)
+            overlay.set_error(str(exc))
+            overlay.set_codes([])
+            return
+        overlay.set_codes(future.result())
 
-    ocr_thread = threading.Thread(target=_ocr_worker, daemon=True)
-    barcode_thread = threading.Thread(target=_barcode_worker, daemon=True)
-    ocr_thread.start()
-    barcode_thread.start()
+    pool.submit(scan_codes, screenshot_path).add_done_callback(_on_barcode_done)
+
     overlay.run()
+    pool.shutdown(wait=False)
+
+
+def _setup_log_file(log_file: str) -> None:
+    """Redirect stdout and stderr to a log file for debugging.
+
+    Uses Python-level redirection instead of dup2 to avoid interfering
+    with subprocess pipes.
+    """
+    log_path = Path(log_file)
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    fh = open(log_path, "a")  # noqa: SIM115
+    sys.stdout = fh
+    sys.stderr = fh
 
 
 def main() -> None:
+    # ONNX runtime / OpenCV use locale-aware float parsing internally.
+    # Locales like en_DK that use comma as decimal separator cause the
+    # detection model to silently produce empty results.
+    locale.setlocale(locale.LC_NUMERIC, "C")
+
     parser = argparse.ArgumentParser(
         description="Screenshot toolkit: OCR text selection + annotation + region capture",
     )
@@ -188,6 +211,11 @@ def main() -> None:
         action="store_true",
         help="Pick a window with slurp, then open overlay UI",
     )
+    parser.add_argument(
+        "--log-file",
+        default=None,
+        help="Append stdout/stderr to this file (useful when spawned by a compositor)",
+    )
     parser.add_argument("--grim", default="grim")
     parser.add_argument("--slurp", default="slurp")
     parser.add_argument("--wl-copy", default="wl-copy")
@@ -195,6 +223,9 @@ def main() -> None:
     parser.add_argument("--output", default=None)
 
     args = parser.parse_args()
+
+    if args.log_file:
+        _setup_log_file(args.log_file)
 
     with contextlib.ExitStack() as stack:
         if args.region:
