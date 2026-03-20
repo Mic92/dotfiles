@@ -141,6 +141,9 @@ class LiveTextOverlay:
         self._spinner_idx = 0
         self._spinner_timer: int | None = None
 
+        # Error messages from background workers
+        self._errors: list[str] = []
+
         # Drag state (used by both select and annotation)
         self.dragging = False
         self.drag_start_x = 0.0
@@ -184,6 +187,16 @@ class LiveTextOverlay:
         """GLib.idle callback: apply barcode results on the main thread."""
         self.codes = codes
         self.selected_codes.clear()  # indices are invalidated by new list
+        self._drawing_area.queue_draw()
+        return False
+
+    def set_error(self, message: str) -> None:
+        """Report an error from a background thread. Thread-safe."""
+        GLib.idle_add(self._apply_error, message)
+
+    def _apply_error(self, message: str) -> bool:
+        """GLib.idle callback: store error and redraw."""
+        self._errors.append(message)
         self._drawing_area.queue_draw()
         return False
 
@@ -446,7 +459,11 @@ class LiveTextOverlay:
                     cr.stroke()
 
         # Hint text
-        if self.tool == Tool.SELECT:
+        if self._errors:
+            # Show first error line (truncated) so the user knows something went wrong
+            first_line = self._errors[0].split("\n")[0]
+            hint = f"⚠ {first_line[:80]}  · Ctrl+S save · Esc quit"
+        elif self.tool == Tool.SELECT:
             if not self.lines and self._spinner_timer is not None:
                 frame = SPINNER_FRAMES[self._spinner_idx]
                 hint = f"{frame} Detecting text…  · Ctrl+S save · Esc quit"
