@@ -15,8 +15,10 @@ return {
 			local data_dir = vim.fn.stdpath("data")
 			core.list_insert_unique(suggested_packages, opts.ensure_installed)
 			local f = io.open(data_dir .. "/suggested-pkgs.json", "w")
-			f:write(vim.json.encode(suggested_packages))
-			f:close()
+			if f then
+				f:write(vim.json.encode(suggested_packages))
+				f:close()
+			end
 			opts.run_on_start = false
 			opts.integrations["mason-nvim-dap"] = false
 		end,

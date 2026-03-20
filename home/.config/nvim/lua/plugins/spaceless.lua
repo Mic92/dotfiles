@@ -1,7 +1,7 @@
 return {
 	{
 		"lewis6991/spaceless.nvim",
-		init = function()
+		config = function()
 			require("spaceless").setup()
 		end,
 	},

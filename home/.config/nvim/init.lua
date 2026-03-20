@@ -1,5 +1,5 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath .. "/lua/lazy/init.lua") then
+if not vim.uv.fs_stat(lazypath .. "/lua/lazy/init.lua") then
 	vim.fn.delete(lazypath, "rf")
 	for _, stale in ipairs(vim.fn.glob(lazypath .. ".tmp.*", false, true)) do
 		vim.fn.delete(stale, "rf")

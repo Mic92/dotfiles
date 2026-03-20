@@ -16,7 +16,7 @@ let
 in
 writeShellScriptBin "nvim" ''
   #!/usr/bin/env bash
-  set -efux
+  set -efu
 
   # Ensure clean environment for Neovim
   unset VIMINIT
@@ -30,14 +30,21 @@ writeShellScriptBin "nvim" ''
   XDG_DATA_HOME=''${XDG_DATA_HOME:-$HOME/.local/share}
 
   # Prepare Neovim configuration directory
-  mkdir -p "$XDG_CONFIG_HOME/$NVIM_APPNAME" "$XDG_DATA_HOME"
-  chmod -R u+w "$XDG_CONFIG_HOME/$NVIM_APPNAME"
-  rm -rf "$XDG_CONFIG_HOME/$NVIM_APPNAME"
-  cp -arfT '${lua-config}'/ "$XDG_CONFIG_HOME/$NVIM_APPNAME"
-  chmod -R u+w "$XDG_CONFIG_HOME/$NVIM_APPNAME"
+  config_dir="$XDG_CONFIG_HOME/$NVIM_APPNAME"
+  mkdir -p "$config_dir" "$XDG_DATA_HOME"
 
-  # Just check and install plugins if needed
-  nvim --headless -c 'quitall'
+  # Only re-copy config if the source is newer
+  if [ ! -f "$config_dir/.source-hash" ] || \
+     [ "$(cat "$config_dir/.source-hash" 2>/dev/null)" != '${lua-config}' ]; then
+    chmod -R u+w "$config_dir" 2>/dev/null || true
+    rm -rf "$config_dir"
+    cp -arfT '${lua-config}'/ "$config_dir"
+    chmod -R u+w "$config_dir"
+    echo '${lua-config}' > "$config_dir/.source-hash"
+
+    # Install plugins on first setup
+    nvim --headless -c 'quitall'
+  fi
 
   # Launch Neovim with all arguments passed to this script
   exec nvim "$@"

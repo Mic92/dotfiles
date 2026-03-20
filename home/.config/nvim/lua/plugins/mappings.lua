@@ -1,12 +1,12 @@
-function open_or_create_file(tfilename)
+local function open_or_create_file(tfilename)
 	-- complete filepath from the file where this is called
 	local parent = vim.fn.expand("%:p:h")
 	local newfilepath = parent .. "/" .. vim.fn.expand(tfilename)
 
 	if vim.fn.filereadable(newfilepath) ~= 1 then
 		-- create parent directory
-		vim.fn.system("mkdir -p " .. vim.fn.shellescape(parent))
-		vim.fn.system("touch " .. vim.fn.shellescape(newfilepath))
+		vim.fn.mkdir(parent, "p")
+		vim.fn.writefile({}, newfilepath)
 	end
 	vim.cmd(":e " .. newfilepath)
 end
@@ -55,7 +55,7 @@ return {
 				["<leader><leader>"] = {
 					function()
 						require("snacks").picker.files({
-							hidden = vim.tbl_get((vim.uv or vim.loop).fs_stat(".git") or {}, "type") == "directory",
+							hidden = vim.tbl_get(vim.uv.fs_stat(".git") or {}, "type") == "directory",
 						})
 					end,
 					desc = "Find files",

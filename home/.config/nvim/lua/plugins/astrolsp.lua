@@ -9,10 +9,8 @@ return {
 		vim.list_extend(opts.servers, {
 			"bashls",
 			"clangd",
-			"denols",
 			"gopls",
 			"lua_ls",
-			"marksman",
 			"nil_ls",
 			"basedpyright",
 			"ruff",
