@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  self,
   ...
 }:
 {
@@ -85,7 +86,7 @@
     slurp
 
     # live-text: OCR overlay, screenshot annotation, region capture
-    (pkgs.python3.pkgs.callPackage ../../pkgs/live-text { })
+    self.packages.${pkgs.hostPlatform.system}.live-text
 
     # Choosers (audio, display, internet)
     (pkgs.callPackage ../kde/choosers.nix { })
