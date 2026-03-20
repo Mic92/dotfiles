@@ -52,6 +52,7 @@ for picking the drawing color.
 | Click word       | Select it (replaces previous selection) |
 | Shift+click      | Toggle word in selection                |
 | Drag             | Select all words in swept area          |
+| Double-click     | Select entire line                      |
 | Click empty area | Clear selection                         |
 
 ### Annotation (Arrow / Rect / Text modes)
@@ -64,16 +65,37 @@ for picking the drawing color.
 | Backspace | Delete last character while typing |
 | Escape    | Cancel current text input          |
 
+### Zoom & Pan
+
+| Key                 | Action                          |
+| ------------------- | ------------------------------- |
+| Scroll wheel        | Zoom in/out (centered on image) |
+| Middle-click + drag | Pan the image                   |
+| Ctrl+0              | Reset zoom to fit               |
+
+### Context Menu
+
+Right-click anywhere on the image to open a context menu with:
+
+- Copy text / Copy text & close (when text is selected)
+- Copy image / Save image
+- Select all / Select line
+- Open URL (when selected text or QR code contains a link)
+- Undo / Redo (when annotations exist)
+- Reset zoom (when zoomed in)
+
 ### Global
 
-| Key    | Action                                               |
-| ------ | ---------------------------------------------------- |
-| Ctrl+C | Copy selected text/codes, or annotated image if none |
-| Enter  | Copy selected text/codes, or annotated image if none |
-| Ctrl+A | Select all detected words and codes                  |
-| Ctrl+S | Save annotated screenshot to ~/Pictures/Screenshots/ |
-| Ctrl+Z | Undo last annotation                                 |
-| Escape | Quit                                                 |
+| Key          | Action                                               |
+| ------------ | ---------------------------------------------------- |
+| Ctrl+C       | Copy selected text/codes, or annotated image if none |
+| Enter        | Copy selected text/codes, or annotated image if none |
+| Ctrl+A       | Select all detected words and codes                  |
+| Ctrl+S       | Save annotated screenshot to ~/Pictures/Screenshots/ |
+| Ctrl+Z       | Undo last annotation                                 |
+| Ctrl+Shift+Z | Redo last undone annotation                          |
+| Ctrl+Y       | Redo last undone annotation                          |
+| Escape       | Quit (confirms first if unsaved annotations exist)   |
 
 ## Niri keybindings
 
