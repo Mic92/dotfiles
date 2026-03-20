@@ -293,3 +293,6 @@ binds {
     Mod+A hotkey-overlay-title="Audio Chooser" { spawn "audio-chooser"; }
     Mod+N hotkey-overlay-title="Internet Chooser" { spawn "internet-chooser"; }
 }
+
+include "./noctalia.kdl"
+
