@@ -1183,12 +1183,9 @@ class LiveTextOverlay:
     def _detect_url(self, x: float, y: float) -> str | None:
         """Check if selection or right-clicked item contains a URL."""
         # Check selected text first
-        if self.selected_words:
-            line_texts: dict[int, list[str]] = {}
-            for li, wi in sorted(self.selected_words):
-                line_texts.setdefault(li, []).append(self.lines[li].words[wi].text)
-            text = " ".join(" ".join(words) for words in line_texts.values())
-            match = _URL_RE.search(text)
+        word_text = self._selected_text()
+        if word_text:
+            match = _URL_RE.search(word_text)
             if match:
                 return match.group(0)
 
@@ -1220,14 +1217,7 @@ class LiveTextOverlay:
         elif action == "save_image":
             self._save_image()
         elif action == "select_all":
-            self._switch_tool(Tool.SELECT)
-            self.selected_words = {
-                (li, wi)
-                for li, line in enumerate(self.lines)
-                for wi in range(len(line.words))
-            }
-            self.selected_codes = set(range(len(self.codes)))
-            self._drawing_area.queue_draw()
+            self._select_all()
         elif action.startswith("select_line:"):
             li = int(action.split(":")[1])
             self._switch_tool(Tool.SELECT)
@@ -1416,14 +1406,7 @@ class LiveTextOverlay:
             return True
 
         if ctrl and keyval == Gdk.KEY_a:
-            self._switch_tool(Tool.SELECT)
-            self.selected_words = {
-                (li, wi)
-                for li, line in enumerate(self.lines)
-                for wi in range(len(line.words))
-            }
-            self.selected_codes = set(range(len(self.codes)))
-            self._drawing_area.queue_draw()
+            self._select_all()
             return True
 
         # Tool shortcuts: 1-4 (only without ctrl)
@@ -1467,15 +1450,33 @@ class LiveTextOverlay:
     def _has_selection(self) -> bool:
         return bool(self.selected_words) or bool(self.selected_codes)
 
+    def _select_all(self) -> None:
+        """Select all detected words and codes."""
+        self._switch_tool(Tool.SELECT)
+        self.selected_words = {
+            (li, wi)
+            for li, line in enumerate(self.lines)
+            for wi in range(len(line.words))
+        }
+        self.selected_codes = set(range(len(self.codes)))
+        self._drawing_area.queue_draw()
+
+    def _selected_text(self) -> str:
+        """Assemble the selected words into a string with line breaks."""
+        if not self.selected_words:
+            return ""
+        line_texts: dict[int, list[str]] = {}
+        for li, wi in sorted(self.selected_words):
+            line_texts.setdefault(li, []).append(self.lines[li].words[wi].text)
+        return "\n".join(" ".join(words) for words in line_texts.values())
+
     def _copy_selected_text(self) -> None:
         if not self._has_selection():
             return
         parts: list[str] = []
-        if self.selected_words:
-            line_texts: dict[int, list[str]] = {}
-            for li, wi in sorted(self.selected_words):
-                line_texts.setdefault(li, []).append(self.lines[li].words[wi].text)
-            parts.append("\n".join(" ".join(words) for words in line_texts.values()))
+        word_text = self._selected_text()
+        if word_text:
+            parts.append(word_text)
         for ci in sorted(self.selected_codes):
             parts.append(self.codes[ci].data)
         text = "\n".join(parts)
