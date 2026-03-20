@@ -13,7 +13,11 @@ from unittest.mock import MagicMock, patch
 
 from live_text.barcode import CodeBox
 from live_text.ocr import LineBox, WordBox
-from live_text.overlay import LiveTextOverlay
+from live_text.overlay import (
+    Annotation,
+    LiveTextOverlay,
+    Tool,
+)
 
 
 def _w(text: str, x: int, y: int, w: int, h: int) -> WordBox:
@@ -248,3 +252,116 @@ class TestSaveImage:
         assert clipboard_text.startswith("/")
         assert clipboard_text.endswith(".png")
         assert "Screenshots" in clipboard_text
+
+
+class TestContextMenu:
+    """Test context menu action execution."""
+
+    def test_execute_select_all(self) -> None:
+        overlay = _make_overlay(lines=_make_lines(), codes=_make_codes())
+        overlay._drawing_area = MagicMock()
+        overlay._execute_menu_action("select_all")
+
+        expected_words = {
+            (li, wi)
+            for li, line in enumerate(overlay.lines)
+            for wi in range(len(line.words))
+        }
+        assert overlay.selected_words == expected_words
+        assert overlay.selected_codes == {0, 1}
+
+    def test_execute_select_line(self) -> None:
+        overlay = _make_overlay(lines=_make_lines())
+        overlay._drawing_area = MagicMock()
+        overlay._execute_menu_action("select_line:1")
+
+        assert overlay.selected_words == {(1, 0), (1, 1), (1, 2), (1, 3)}
+
+    def test_execute_undo(self) -> None:
+        overlay = _make_overlay()
+        overlay._drawing_area = MagicMock()
+        ann = Annotation(tool=Tool.ARROW, color=(1, 0, 0))
+        overlay.annotations = [ann]
+        overlay._redo_stack = []
+
+        overlay._execute_menu_action("undo")
+        assert overlay.annotations == []
+        assert overlay._redo_stack == [ann]
+
+    def test_execute_redo(self) -> None:
+        overlay = _make_overlay()
+        overlay._drawing_area = MagicMock()
+        ann = Annotation(tool=Tool.ARROW, color=(1, 0, 0))
+        overlay.annotations = []
+        overlay._redo_stack = [ann]
+
+        overlay._execute_menu_action("redo")
+        assert overlay.annotations == [ann]
+        assert overlay._redo_stack == []
+
+    def test_execute_reset_zoom(self) -> None:
+        overlay = _make_overlay()
+        overlay._drawing_area = MagicMock()
+        overlay._zoom = 3.0
+        overlay._pan_x = 100.0
+        overlay._pan_y = -50.0
+
+        overlay._execute_menu_action("reset_zoom")
+        assert overlay._zoom == 1.0
+        assert overlay._pan_x == 0.0
+        assert overlay._pan_y == 0.0
+
+
+class TestDetectUrl:
+    """Test URL detection from selection and codes."""
+
+    def test_detects_url_in_selected_words(self) -> None:
+        lines = [
+            LineBox(
+                words=(
+                    _w("Visit", 10, 10, 40, 15),
+                    _w("https://example.com", 60, 10, 150, 15),
+                )
+            )
+        ]
+        overlay = _make_overlay(lines=lines)
+        overlay.selected_words = {(0, 0), (0, 1)}
+
+        url = overlay._detect_url(0, 0)
+        assert url == "https://example.com"
+
+    def test_detects_url_in_selected_code(self) -> None:
+        codes = [CodeBox("https://example.org/page", "QRCODE", 10, 10, 100, 100)]
+        overlay = _make_overlay(codes=codes)
+        overlay.selected_codes = {0}
+
+        url = overlay._detect_url(0, 0)
+        assert url == "https://example.org/page"
+
+    def test_detects_email(self) -> None:
+        lines = [LineBox(words=(_w("user@example.com", 10, 10, 140, 15),))]
+        overlay = _make_overlay(lines=lines)
+        overlay.selected_words = {(0, 0)}
+
+        url = overlay._detect_url(0, 0)
+        assert url == "user@example.com"
+
+    def test_no_url_in_plain_text(self) -> None:
+        lines = [LineBox(words=(_w("Hello", 10, 10, 40, 15),))]
+        overlay = _make_overlay(lines=lines)
+        overlay._drawing_area = MagicMock()
+        overlay.selected_words = {(0, 0)}
+
+        url = overlay._detect_url(0, 0)
+        assert url is None
+
+    def test_detects_url_in_code_under_cursor(self) -> None:
+        codes = [CodeBox("https://qr.example.com", "QRCODE", 10, 10, 100, 100)]
+        overlay = _make_overlay(codes=codes)
+        overlay._drawing_area = MagicMock()
+        # No selection, but cursor is over the code
+        url = overlay._detect_url(50, 50)
+        # _detect_url converts widget coords to image coords via
+        # _widget_to_image. Without a real image surface, the transform
+        # is identity (scale=1, offset=0) so (50,50) hits the code.
+        assert url is not None
