@@ -808,7 +808,11 @@ class LiveTextOverlay:
         GLib.timeout_add(FLASH_DURATION_MS, self._end_flash)
 
     def _save_image(self) -> None:
-        """Save the (annotated) screenshot to ~/Pictures/Screenshots/."""
+        """Save the (annotated) screenshot to ~/Pictures/Screenshots/.
+
+        Copies the saved path to the clipboard so it can be pasted into
+        file managers, chat apps, etc.
+        """
         from datetime import datetime
 
         out = self._render_image()
@@ -822,6 +826,17 @@ class LiveTextOverlay:
         out.write_to_png(str(save_path))
 
         print(f"Saved to {save_path}")
+
+        # Copy the file path to clipboard for easy pasting
+        try:
+            subprocess.run(
+                [self.wl_copy_cmd],
+                input=str(save_path).encode(),
+                check=True,
+            )
+        except (subprocess.CalledProcessError, FileNotFoundError) as e:
+            print(f"live-text: clipboard error: {e}")
+
         try:
             subprocess.run(
                 ["notify-send", "-t", "2000", "Live Text", f"Saved to {save_path}"],

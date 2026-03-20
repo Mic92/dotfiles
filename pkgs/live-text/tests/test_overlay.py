@@ -206,3 +206,45 @@ class TestSetLines:
 
         assert overlay.lines == new_lines
         assert overlay.selected_words == set()
+
+
+class TestSaveImage:
+    """Test that _save_image copies the saved path to the clipboard."""
+
+    def test_copies_path_to_clipboard(self, tmp_path: Path) -> None:
+        overlay = _make_overlay()
+        overlay._drawing_area = MagicMock()
+
+        all_calls: list[tuple[list[str], dict[str, object]]] = []
+
+        def fake_run(
+            cmd: list[str], **kwargs: object
+        ) -> subprocess.CompletedProcess[bytes]:
+            all_calls.append((cmd, kwargs))
+            return subprocess.CompletedProcess(cmd, 0)
+
+        with (
+            patch("live_text.overlay.subprocess.run", side_effect=fake_run),
+            patch("live_text.overlay.GLib.timeout_add"),
+            patch.object(overlay, "_render_image") as mock_render,
+        ):
+            # Create a real 1x1 PNG surface so write_to_png works
+            import cairo
+
+            surf = cairo.ImageSurface(cairo.FORMAT_ARGB32, 1, 1)
+            mock_render.return_value = surf
+
+            overlay._save_image()
+
+        # Find the wl-copy call (filter out notify-send)
+        wl_copy_calls = [(c, k) for c, k in all_calls if c[0] == "wl-copy"]
+        assert len(wl_copy_calls) == 1
+        cmd, kwargs = wl_copy_calls[0]
+        assert cmd == ["wl-copy"]
+        # The clipboard should contain the path string
+        raw = kwargs["input"]
+        assert isinstance(raw, bytes)
+        clipboard_text = raw.decode()
+        assert clipboard_text.startswith("/")
+        assert clipboard_text.endswith(".png")
+        assert "Screenshots" in clipboard_text
