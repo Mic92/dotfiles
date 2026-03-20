@@ -126,22 +126,57 @@ Item {
           model: root.groupedAlerts
 
           delegate: ColumnLayout {
+            id: groupDelegate
+
+            property bool expanded: false
+
             Layout.fillWidth: true
             spacing: Style.marginXS
 
-            // Section header
-            NText {
-              text: modelData.name + " (" + modelData.alerts.length + ")"
-              font.bold: true
-              font.pixelSize: Style.fontSizeM
-              color: Color.mOnSurface
+            // Section header (clickable to fold/unfold)
+            Rectangle {
               Layout.fillWidth: true
+              Layout.preferredHeight: sectionHeaderRow.implicitHeight + Style.marginS * 2
               Layout.topMargin: index > 0 ? Style.marginS : 0
+              radius: Style.radiusS
+              color: sectionHeaderMouse.containsMouse ? Color.mSurfaceVariant : "transparent"
+
+              RowLayout {
+                id: sectionHeaderRow
+                anchors.fill: parent
+                anchors.leftMargin: Style.marginS
+                anchors.rightMargin: Style.marginS
+                anchors.topMargin: Style.marginS
+                anchors.bottomMargin: Style.marginS
+                spacing: Style.marginS
+
+                NIcon {
+                  icon: groupDelegate.expanded ? "chevron-down" : "chevron-right"
+                  pointSize: Style.fontSizeS
+                  color: Color.mOnSurfaceVariant
+                }
+
+                NText {
+                  text: modelData.name + " (" + modelData.alerts.length + ")"
+                  font.bold: true
+                  font.pixelSize: Style.fontSizeM
+                  color: Color.mOnSurface
+                  Layout.fillWidth: true
+                }
+              }
+
+              MouseArea {
+                id: sectionHeaderMouse
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                hoverEnabled: true
+                onClicked: groupDelegate.expanded = !groupDelegate.expanded
+              }
             }
 
-            // Alerts in this section
+            // Alerts in this section (only visible when expanded)
             Repeater {
-              model: modelData.alerts
+              model: groupDelegate.expanded ? modelData.alerts : []
 
               delegate: Rectangle {
                 Layout.fillWidth: true
