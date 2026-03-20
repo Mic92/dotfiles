@@ -31,7 +31,7 @@
       upterm
       eternal-terminal
       gimp
-      signal-desktop
+      (signal-desktop.override { commandLineArgs = "--password-store=kwallet6"; })
       adwaita-icon-theme
       hicolor-icon-theme
       graphicsmagick
