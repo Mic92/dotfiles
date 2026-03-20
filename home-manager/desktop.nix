@@ -45,7 +45,6 @@
       tio
 
       (mpv.override { scripts = [ mpvScripts.mpris ]; })
-      playerctl
       yt-dlp
       mumble
       ferdium
