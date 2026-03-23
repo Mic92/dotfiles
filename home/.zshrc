@@ -974,12 +974,9 @@ if [[ -n "${commands[atuin]}" ]]; then
   bindkey '^[OA' _atuin_search_widget
 fi
 
-# prevent broken terminals by resetting to sane defaults after a command
-ttyctl -f
-
 # Extract Artifactory credentials from netrc for nix impure FOD builds
 if [[ -f "$HOME/.netrc" ]]; then
-  local _netrc_words=(${=$(</root/.netrc)})
+  local _netrc_words=(${=$(<"$HOME/.netrc")})
   for ((i=1; i<=${#_netrc_words}; i++)); do
     if [[ ${_netrc_words[i]} == machine && ${_netrc_words[i+1]} == *artifactory* ]]; then
       for ((j=i+2; j<=${#_netrc_words}; j++)); do
@@ -993,3 +990,6 @@ if [[ -f "$HOME/.netrc" ]]; then
     fi
   done
 fi
+
+# prevent broken terminals by resetting to sane defaults after a command
+ttyctl -f
