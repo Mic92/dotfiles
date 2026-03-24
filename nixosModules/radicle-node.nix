@@ -51,7 +51,7 @@ in
     # Radicle node (no httpd/webui)
     services.radicle = {
       enable = true;
-      privateKeyFile = config.clan.core.vars.generators.radicle.files.ssh-private-key.path;
+      privateKey = config.clan.core.vars.generators.radicle.files.ssh-private-key.path;
       publicKey = config.clan.core.vars.generators.radicle.files.ssh-public-key.path;
 
       node = {

@@ -149,11 +149,11 @@ in
         Type = "simple";
         User = "radicle";
         Group = "radicle";
-        LoadCredential = "radicle:${radCfg.privateKeyFile}";
+        LoadCredential = "radicle:${radCfg.privateKey}";
         BindReadOnlyPaths = [
           "${radCfg.configFile}:/var/lib/radicle/config.json"
           "/run/credentials/radicle-github-sync.service/radicle:/var/lib/radicle/keys/radicle"
-          "${radCfg.publicKeyFile}:/var/lib/radicle/keys/radicle.pub"
+          "${radCfg.publicKey}:/var/lib/radicle/keys/radicle.pub"
         ];
         StateDirectory = "radicle";
         ReadWritePaths = [ "/var/lib/radicle-sync" ];
