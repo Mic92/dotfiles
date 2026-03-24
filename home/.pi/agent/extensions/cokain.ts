@@ -1,7 +1,15 @@
 /**
- * Cokain — Anthropic fast mode (~2.5x faster output on claude-opus-4-6).
- * Toggle with /cokain. Disabled by default; toggle is per-session only.
- * Patches fetch to inject speed:"fast" + beta header into Messages API requests.
+ * Cokain — Anthropic fast mode, default model, + beta header fix.
+ *
+ * Patches fetch on all Anthropic Messages API requests to:
+ * - Always append context-1m-2025-08-07 beta (works around pi's
+ *   mergeHeaders() Object.assign bug that clobbers provider betas).
+ * - When /cokain is toggled on: inject speed:"fast" + fast-mode beta
+ *   for opus models (~2.5x faster output).
+ *
+ * If cokain.json has a modelId, the fetch interceptor rewrites the
+ * model field in outgoing API requests. Pi sees the standard model
+ * name; only the wire request uses the private/beta model ID.
  */
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -10,20 +18,34 @@ import { homedir } from "node:os";
 
 const STATE_FILE = join(homedir(), ".pi", "state", "cokain.json");
 
-function load(): boolean {
-  try {
-    return JSON.parse(readFileSync(STATE_FILE, "utf-8")).enabled ?? false;
-  } catch {}
-  return false;
+interface State {
+  enabled?: boolean;
+  modelId?: string;
 }
 
-function save(v: boolean) {
-  mkdirSync(dirname(STATE_FILE), { recursive: true });
-  writeFileSync(STATE_FILE, JSON.stringify({ enabled: v }), "utf-8");
+function loadState(): State {
+  try {
+    return JSON.parse(readFileSync(STATE_FILE, "utf-8"));
+  } catch {}
+  return {};
 }
+
+function saveState(s: State) {
+  mkdirSync(dirname(STATE_FILE), { recursive: true });
+  writeFileSync(STATE_FILE, JSON.stringify(s), "utf-8");
+}
+
+function ensureBeta(headers: Headers, flag: string) {
+  const cur = headers.get("anthropic-beta") || "";
+  if (!cur.includes(flag)) {
+    headers.set("anthropic-beta", cur ? `${cur},${flag}` : flag);
+  }
+}
+
+const initialState = loadState();
 
 export default function cokain(pi: ExtensionAPI) {
-  let enabled = load();
+  let state = initialState;
 
   const setStatus = (ctx: {
     ui: {
@@ -33,7 +55,7 @@ export default function cokain(pi: ExtensionAPI) {
   }) =>
     ctx.ui.setStatus(
       "cokain",
-      enabled ? ctx.ui.theme.fg("warning", "fast ⚡") : undefined,
+      state.enabled ? ctx.ui.theme.fg("warning", "fast ⚡") : undefined,
     );
 
   pi.on("session_start", async (_ev, ctx) => setStatus(ctx));
@@ -42,11 +64,11 @@ export default function cokain(pi: ExtensionAPI) {
     description: "Toggle Anthropic fast mode for claude-opus-4-6",
     handler: async (_args, ctx) => {
       if (!ctx.hasUI) return;
-      enabled = !enabled;
-      save(enabled);
+      state.enabled = !state.enabled;
+      saveState(state);
       setStatus(ctx);
       ctx.ui.notify(
-        enabled ? "Fast mode enabled" : "Fast mode disabled",
+        state.enabled ? "Fast mode enabled" : "Fast mode disabled",
         "info",
       );
     },
@@ -57,8 +79,7 @@ export default function cokain(pi: ExtensionAPI) {
     input: RequestInfo | URL,
     init?: RequestInit,
   ): Promise<Response> => {
-    if (!enabled || !init?.body) return originalFetch(input, init);
-
+    if (!init?.body) return originalFetch(input, init);
     const url = typeof input === "string"
       ? input
       : input instanceof URL
@@ -67,26 +88,27 @@ export default function cokain(pi: ExtensionAPI) {
     if (!url.includes("/v1/messages") || !url.includes("anthropic")) {
       return originalFetch(input, init);
     }
-
     const bodyStr = typeof init.body === "string" ? init.body : undefined;
-    if (!bodyStr) {
-      return originalFetch(input, init);
-    }
+    if (!bodyStr) return originalFetch(input, init);
 
     try {
       const body = JSON.parse(bodyStr);
-      if (!body.model?.startsWith("claude-opus-4-6")) {
-        return originalFetch(input, init);
+      const headers = new Headers(init.headers);
+
+      // Rewrite model ID if configured (pi sees the standard name,
+      // wire request uses the private/beta model ID).
+      if (state.modelId && body.model) {
+        body.model = state.modelId;
       }
 
-      body.speed = "fast";
-      const headers = new Headers(init.headers);
-      const beta = headers.get("anthropic-beta") || "";
-      if (!beta.includes("fast-mode-2026-02-01")) {
-        headers.set(
-          "anthropic-beta",
-          beta ? `${beta},fast-mode-2026-02-01` : "fast-mode-2026-02-01",
-        );
+      ensureBeta(headers, "context-1m-2025-08-07");
+
+      if (
+        state.enabled &&
+        body.model?.startsWith("claude-opus-4-6")
+      ) {
+        body.speed = "fast";
+        ensureBeta(headers, "fast-mode-2026-02-01");
       }
 
       return originalFetch(input, {
