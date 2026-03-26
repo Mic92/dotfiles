@@ -10,6 +10,39 @@ import pytest
 
 from live_text.main import main
 
+# _run_overlay imports LiveTextOverlay lazily from live_text.overlay, so
+# tests must patch the source module rather than live_text.main.
+OVERLAY_CLS = "live_text.overlay.LiveTextOverlay"
+
+
+@pytest.fixture(autouse=True)
+def _no_worker_pool() -> object:
+    """Replace the ProcessPoolExecutor with a no-op stub.
+
+    Background OCR/barcode work runs in subprocesses which cannot see
+    the in-process mock.patch()es applied here, and on spawn-based
+    platforms the child would re-import GTK.  Tests only care that the
+    overlay is constructed correctly, so swap the pool out entirely.
+    """
+
+    class _DummyFuture:
+        def add_done_callback(self, _cb: object) -> None:
+            pass
+
+    class _DummyPool:
+        def __init__(self, *_a: object, **_kw: object) -> None:
+            pass
+
+        def submit(self, *_a: object, **_kw: object) -> _DummyFuture:
+            return _DummyFuture()
+
+        def shutdown(self, *_a: object, **_kw: object) -> None:
+            pass
+
+    with patch("live_text.main.ProcessPoolExecutor", _DummyPool):
+        yield
+
+
 TEST_DIR = Path(__file__).parent
 TEST_IMAGE = TEST_DIR / "test_image.png"
 
@@ -20,8 +53,7 @@ class TestMainOCR:
         mock_overlay_cls = MagicMock()
         with (
             patch("sys.argv", ["live-text", str(TEST_IMAGE)]),
-            patch("live_text.main.LiveTextOverlay", mock_overlay_cls),
-            patch("live_text.ocr.run_ocr", return_value=[]),
+            patch(OVERLAY_CLS, mock_overlay_cls),
         ):
             main()
         # Overlay is created with empty lines (OCR hasn't finished yet)
@@ -39,8 +71,7 @@ class TestStdinMode:
         with (
             patch("sys.argv", ["live-text", "-"]),
             patch("sys.stdin") as mock_stdin,
-            patch("live_text.main.LiveTextOverlay", mock_overlay_cls),
-            patch("live_text.ocr.run_ocr", return_value=[]),
+            patch(OVERLAY_CLS, mock_overlay_cls),
         ):
             mock_stdin.buffer.read.return_value = fake_png
             main()
@@ -100,8 +131,7 @@ class TestRegionMode:
         with (
             patch("sys.argv", ["live-text", "--region"]),
             patch("live_text.main.subprocess.run", side_effect=mock_run_side_effect),
-            patch("live_text.main.LiveTextOverlay", mock_overlay_cls),
-            patch("live_text.ocr.run_ocr", return_value=[]),
+            patch(OVERLAY_CLS, mock_overlay_cls),
         ):
             main()
 
@@ -136,8 +166,7 @@ class TestWindowMode:
                 "live_text.main.get_window_geometries",
                 return_value=["0,0 1920x1080 Firefox", "100,100 800x600 Terminal"],
             ),
-            patch("live_text.main.LiveTextOverlay", mock_overlay_cls),
-            patch("live_text.ocr.run_ocr", return_value=[]),
+            patch(OVERLAY_CLS, mock_overlay_cls),
         ):
             main()
 
@@ -196,8 +225,7 @@ class TestWindowMode:
                 "live_text.main.get_window_geometries",
                 return_value=["0,0 800x600 vim", "900,0 800x600 firefox"],
             ),
-            patch("live_text.main.LiveTextOverlay", mock_overlay_cls),
-            patch("live_text.ocr.run_ocr", return_value=[]),
+            patch(OVERLAY_CLS, mock_overlay_cls),
         ):
             main()
 
@@ -231,8 +259,7 @@ class TestWindowMode:
                 "live_text.main.get_window_geometries",
                 return_value=["100,200 800x600 My Window Title"],
             ),
-            patch("live_text.main.LiveTextOverlay", mock_overlay_cls),
-            patch("live_text.ocr.run_ocr", return_value=[]),
+            patch(OVERLAY_CLS, mock_overlay_cls),
         ):
             main()
 
@@ -250,8 +277,7 @@ class TestScreenshotCleanup:
             patch("sys.argv", ["live-text"]),
             patch("live_text.main.get_focused_output", return_value=None),
             patch("live_text.main.capture_full_screen", return_value=fake_screenshot),
-            patch("live_text.main.LiveTextOverlay", mock_overlay_cls),
-            patch("live_text.ocr.run_ocr", return_value=[]),
+            patch(OVERLAY_CLS, mock_overlay_cls),
         ):
             main()
 

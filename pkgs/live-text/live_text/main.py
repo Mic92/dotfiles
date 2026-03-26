@@ -13,13 +13,15 @@ from __future__ import annotations
 import argparse
 import contextlib
 import locale
+import multiprocessing
+import signal
 import subprocess
 import sys
 import tempfile
-from concurrent.futures import Future, ThreadPoolExecutor
+from concurrent.futures import Future, ProcessPoolExecutor
 from pathlib import Path
+from types import FrameType
 
-from .overlay import LiveTextOverlay
 from .screenshot import capture_full_screen, get_focused_output, get_window_geometries
 
 
@@ -135,17 +137,37 @@ def _capture_window(stack: contextlib.ExitStack, args: argparse.Namespace) -> Pa
 
 
 def _run_overlay(screenshot_path: Path, wl_copy_cmd: str) -> None:
-    """Open the overlay UI with background OCR and barcode scanning."""
+    """Open the overlay UI with background OCR and barcode scanning.
+
+    OCR runs in a separate *process* rather than a thread.  RapidOCR's
+    pre/post-processing (numpy, opencv, pyclipper) runs a lot of Python
+    bytecode that holds the GIL — on a 2880×1920 screenshot this adds
+    ~3.5 s on top of the 7.8 s inference time and visibly stalls the
+    GTK main loop so the overlay window never appears.  A subprocess
+    has its own GIL so the UI is responsive from the first frame and
+    OCR finishes ~45 % faster.
+    """
     from .barcode import CodeBox, scan_codes
     from .ocr import LineBox, run_ocr
+
+    # Fork before touching GTK so the children don't inherit a Wayland
+    # socket or any GTK-internal threads.  Using an explicit "fork"
+    # context keeps startup fast (~10 ms vs ~300 ms for "spawn") and
+    # silences the 3.14+ default-method deprecation warning.
+    ctx = multiprocessing.get_context("fork")
+    pool = ProcessPoolExecutor(max_workers=2, mp_context=ctx)
+    ocr_future = pool.submit(run_ocr, screenshot_path)
+    barcode_future = pool.submit(scan_codes, screenshot_path)
+
+    # Importing overlay pulls in GTK/cairo; defer until after the fork
+    # so the child processes don't carry GTK state.
+    from .overlay import LiveTextOverlay
 
     overlay = LiveTextOverlay(
         screenshot_path=screenshot_path,
         lines=[],
         wl_copy_cmd=wl_copy_cmd,
     )
-
-    pool = ThreadPoolExecutor(max_workers=2)
 
     def _on_ocr_done(future: Future[list[LineBox]]) -> None:
         exc = future.exception()
@@ -156,8 +178,6 @@ def _run_overlay(screenshot_path: Path, wl_copy_cmd: str) -> None:
             return
         overlay.set_lines(future.result())
 
-    pool.submit(run_ocr, screenshot_path).add_done_callback(_on_ocr_done)
-
     def _on_barcode_done(future: Future[list[CodeBox]]) -> None:
         exc = future.exception()
         if exc is not None:
@@ -167,10 +187,27 @@ def _run_overlay(screenshot_path: Path, wl_copy_cmd: str) -> None:
             return
         overlay.set_codes(future.result())
 
-    pool.submit(scan_codes, screenshot_path).add_done_callback(_on_barcode_done)
+    ocr_future.add_done_callback(_on_ocr_done)
+    barcode_future.add_done_callback(_on_barcode_done)
 
-    overlay.run()
-    pool.shutdown(wait=False)
+    # ProcessPoolExecutor workers ignore SIGINT so Ctrl-C only reaches
+    # the parent; kill the whole process group and reap the children so
+    # the user isn't stuck waiting for a 10 s OCR run to finish.
+    def _on_sigint(_signum: int, _frame: FrameType | None) -> None:
+        for p in pool._processes.values():  # noqa: SLF001
+            p.terminate()
+        pool.shutdown(wait=False, cancel_futures=True)
+        sys.exit(130)
+
+    signal.signal(signal.SIGINT, _on_sigint)
+
+    try:
+        overlay.run()
+    finally:
+        for p in pool._processes.values():  # noqa: SLF001
+            if p.is_alive():
+                p.terminate()
+        pool.shutdown(wait=False, cancel_futures=True)
 
 
 def _setup_log_file(log_file: str) -> None:
