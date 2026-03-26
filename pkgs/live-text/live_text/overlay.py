@@ -93,8 +93,13 @@ ZOOM_MIN = 0.5
 ZOOM_MAX = 10.0
 ZOOM_STEP = 1.15  # multiplier per scroll tick
 
-# URL / email detection
-_URL_RE = re.compile(r"https?://[^\s<>\"']+|www\.[^\s<>\"']+|[^\s@]+@[^\s@]+\.[^\s@]+")
+# URL / email detection.  Email local-part deliberately excludes common
+# surrounding punctuation so "(foo@bar.com)" extracts the address only.
+_URL_RE = re.compile(
+    r"https?://[^\s<>\"']+"
+    r"|www\.[^\s<>\"']+"
+    r"|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
+)
 
 # -- data types ---------------------------------------------------------------
 
