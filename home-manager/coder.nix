@@ -24,11 +24,18 @@ in
   # --- supervisor-managed services ---
   services.supervisor.enable = true;
 
-  services.supervisor.programs.sshd.settings = {
-    # Use the global /sbin/sshd, not the one from nixpkgs, so it matches
-    # the host PAM/NSS setup and the existing /etc/ssh/sshd_config.
-    command = "/sbin/sshd -D -e";
-    user = "root";
+  services.supervisor.programs.sshd = {
+    settings = {
+      # Use the global /sbin/sshd, not the one from nixpkgs, so it matches
+      # the host PAM/NSS setup and the existing /etc/ssh/sshd_config.
+      command = "/sbin/sshd -D -e";
+      user = "root";
+    };
+    # sshd refuses to start without its privilege-separation directory,
+    # and /run is tmpfs so it's gone after every workspace restart.
+    preStart = ''
+      mkdir -p /run/sshd
+    '';
   };
 
   services.supervisor.programs.iroh-ssh = {
