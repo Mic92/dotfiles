@@ -22,7 +22,7 @@ gi.require_version("Gdk", "4.0")
 gi.require_version("Gtk", "4.0")
 gi.require_version("Gtk4LayerShell", "1.0")
 
-from gi.repository import Gdk, GLib, Gtk, Gtk4LayerShell  # noqa: E402
+from gi.repository import Gdk, Gio, GLib, Gtk, Gtk4LayerShell  # noqa: E402
 
 from .barcode import CodeBox  # noqa: E402
 from .ocr import LineBox, WordBox  # noqa: E402
@@ -248,12 +248,24 @@ class LiveTextOverlay:
         self._cursor_y = 0.0
 
         self._image_surface: cairo.ImageSurface | None = None
+        # Set once _on_activate has created the drawing area, so
+        # background-worker callbacks that race ahead of GTK startup
+        # don't touch a widget that doesn't exist yet.
+        self._activated = False
         self._cursor_ibeam = Gdk.Cursor.new_from_name("text")
         self._cursor_cross = Gdk.Cursor.new_from_name("crosshair")
         self._cursor_default = Gdk.Cursor.new_from_name("default")
         self._cursor_grabbing = Gdk.Cursor.new_from_name("grabbing")
 
-        self.app = Gtk.Application(application_id="org.mic92.live-text")
+        # NON_UNIQUE skips D-Bus name ownership.  With OCR running in a
+        # forked subprocess the synchronous GDBus registration can dead-
+        # lock against the ProcessPoolExecutor manager thread and time
+        # out after 25 s.  A layer-shell overlay has no use for single-
+        # instance semantics anyway.
+        self.app = Gtk.Application(
+            application_id="org.mic92.live-text",
+            flags=Gio.ApplicationFlags.NON_UNIQUE,
+        )
         self.app.connect("activate", self._on_activate)
 
     @property
@@ -272,7 +284,8 @@ class LiveTextOverlay:
         if self._spinner_timer is not None:
             GLib.source_remove(self._spinner_timer)
             self._spinner_timer = None
-        self._drawing_area.queue_draw()
+        if self._activated:
+            self._drawing_area.queue_draw()
         return False  # don't repeat
 
     def set_codes(self, codes: list[CodeBox]) -> None:
@@ -285,7 +298,8 @@ class LiveTextOverlay:
         self.selected_codes.clear()  # indices are invalidated by new list
         self._hover_code = None  # stale index would cause IndexError
         self._tooltip_text = None
-        self._drawing_area.queue_draw()
+        if self._activated:
+            self._drawing_area.queue_draw()
         return False
 
     def set_error(self, message: str) -> None:
@@ -295,7 +309,8 @@ class LiveTextOverlay:
     def _apply_error(self, message: str) -> bool:
         """GLib.idle callback: store error and redraw."""
         self._errors.append(message)
-        self._drawing_area.queue_draw()
+        if self._activated:
+            self._drawing_area.queue_draw()
         return False
 
     def run(self) -> None:
@@ -364,6 +379,7 @@ class LiveTextOverlay:
         da.set_cursor(self._cursor_default)
         window.set_child(da)
         window.present()
+        self._activated = True
 
         # Start spinner if OCR hasn't finished yet
         if not self.lines:
