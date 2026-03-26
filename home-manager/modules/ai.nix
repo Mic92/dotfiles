@@ -46,6 +46,7 @@ in
       exec ${aiTools.pi}/bin/pi "$@"
     '')
     aiTools.tuicr
+    aiTools.rtk
     aiTools.coderabbit-cli
     aiTools.openspec
     aiTools.gemini-cli
