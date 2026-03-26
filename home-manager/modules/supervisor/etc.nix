@@ -128,8 +128,14 @@ in
   };
 
   config = lib.mkIf (enabledFiles != { }) {
+    # Writing to /etc requires root.  On coder workspaces home-manager runs
+    # as a non-root user (argocd), so escalate via sudo when necessary.
     home.activation.deploy-etc = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-      run ${deployScript}
+      if [ "$(id -u)" = 0 ]; then
+        run ${deployScript}
+      else
+        run /usr/bin/sudo ${deployScript}
+      fi
     '';
   };
 }
