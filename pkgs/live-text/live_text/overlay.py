@@ -1552,12 +1552,13 @@ class LiveTextOverlay:
         if out is None:
             return
 
-        with tempfile.NamedTemporaryFile(
+        tmp = tempfile.NamedTemporaryFile(
             suffix=".png", prefix="annotated-", delete=False
-        ) as tmp:
-            out.write_to_png(tmp.name)
-            tmp_path = Path(tmp.name)
+        )
+        tmp.close()
+        tmp_path = Path(tmp.name)
         try:
+            out.write_to_png(str(tmp_path))
             with open(tmp_path, "rb") as f:
                 subprocess.run(
                     [self.wl_copy_cmd, "-t", "image/png"], stdin=f, check=True
