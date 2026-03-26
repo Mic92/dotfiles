@@ -218,6 +218,8 @@ class LiveTextOverlay:
         self.drag_current_y = 0.0
         self._drag_exceeded_threshold = False
         self._drag_shift = False
+        self._drag_base_words: set[WordId] = set()
+        self._drag_base_codes: set[int] = set()
 
         # Zoom & pan state
         self._zoom = 1.0  # additional zoom on top of fit-to-window scale
@@ -967,13 +969,16 @@ class LiveTextOverlay:
         self.drag_current_x = x
         self.drag_current_y = y
 
-        device = gesture.get_device()
-        seat = device.get_seat() if device else None
-        if seat is not None:
-            mask = seat.get_keyboard().get_modifier_state()
-            self._drag_shift = bool(mask & Gdk.ModifierType.SHIFT_MASK)
-        else:
-            self._drag_shift = False
+        # Read Shift state from the gesture's modifier mask.  Previously
+        # this queried seat.get_keyboard() which returns None on some
+        # seats (e.g. tablet-only) and crashed with AttributeError.
+        state = gesture.get_current_event_state()
+        self._drag_shift = bool(state & Gdk.ModifierType.SHIFT_MASK)
+
+        # Snapshot the selection so Shift+drag can extend it instead of
+        # replacing it on every mouse-move.
+        self._drag_base_words = set(self.selected_words)
+        self._drag_base_codes = set(self.selected_codes)
 
     def _update_select(self, offset_x: float, offset_y: float) -> None:
         if not self.dragging:
@@ -996,16 +1001,24 @@ class LiveTextOverlay:
             max(self.drag_start_y, self.drag_current_y),
         )
 
-        self.selected_words.clear()
-        self.selected_codes.clear()
         rect = (int(ix1), int(iy1), int(ix2 - ix1), int(iy2 - iy1))
+        hit_words: set[WordId] = set()
+        hit_codes: set[int] = set()
         for li, line in enumerate(self.lines):
             for wi, word in enumerate(line.words):
                 if word.intersects_rect(*rect):
-                    self.selected_words.add((li, wi))
+                    hit_words.add((li, wi))
         for ci, code in enumerate(self.codes):
             if code.intersects_rect(*rect):
-                self.selected_codes.add(ci)
+                hit_codes.add(ci)
+
+        if self._drag_shift:
+            # Extend the selection that existed when the drag started
+            self.selected_words = self._drag_base_words | hit_words
+            self.selected_codes = self._drag_base_codes | hit_codes
+        else:
+            self.selected_words = hit_words
+            self.selected_codes = hit_codes
         self._drawing_area.queue_draw()
 
     def _end_select(self, offset_x: float, offset_y: float) -> None:
