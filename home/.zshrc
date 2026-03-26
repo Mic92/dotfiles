@@ -9,6 +9,16 @@ if [[ -n "$CODER" ]] && [[ -n "$STY" ]]; then
   screen -X truecolor on 2>/dev/null
 fi
 
+# Coder workspace integration — the base image's install.sh normally appends
+# a `source .../zshrc` line to ~/.zshrc, but homesick replaces that file
+# with this symlink. Source it ourselves so workspace env vars, aliases,
+# and tooling integration still load. The pristine-shell flag skips the
+# base image's bindkey/TRAPALRM/prompt setup that would fight with our
+# own zle config below.
+if [[ -r /root/code/config/remote/zshrc ]]; then
+  ANT_PRISTINE_SHELL=1 source /root/code/config/remote/zshrc
+fi
+
 # early, fast invocation of tmux
 # - only if tmux is installed
 # - not in linux ttys
@@ -22,6 +32,10 @@ fi
 if [[ -f ~/.nix-profile/etc/profile.d/hm-session-vars.sh ]]; then
   source ~/.nix-profile/etc/profile.d/hm-session-vars.sh
 fi
+
+bld0() { iroh-ssh argocd@b2e93c351b63d3023542f4c2fb1a4b48a4c5323ed6590be0ad3c92eb70cec3d0 "$@"; }
+bld1() { iroh-ssh argocd@7d06e45b087c17e5ccc0483868a4a3d76ba59ec98ebcc989e57e946ac451850c "$@"; }
+bld2() { iroh-ssh argocd@167e7b362ad333b19f548ce3f1de99ad220d1038900a26657e3ac069a46e0c6b "$@"; }
 
 if [[ -e /etc/profile.d/nix.sh ]]; then
   # shellcheck disable=SC1091

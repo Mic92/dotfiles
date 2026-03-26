@@ -100,6 +100,20 @@ in
     persist_link "$HOME/src/home/.pi/agent/auth.json" "$HOME/.pi/agent/auth.json"
     persist_link "$HOME/src/home/.claude/.credentials.json" "$HOME/.claude/.credentials.json"
 
+    # Coder generates ~/.gitconfig.$COO_CREATOR with work identity and
+    # signing key. Homesick's .gitconfig includes ~/.gitconfig.local as the
+    # per-machine override — point it at the coder-generated file so the
+    # work identity wins over the personal one baked into .gitconfig.
+    if [ ! -e "$HOME/.gitconfig.local" ] || [ -L "$HOME/.gitconfig.local" ]; then
+      for f in "$HOME"/.gitconfig.*; do
+        [ -e "$f" ] || continue
+        case "$f" in
+          *.local) ;;
+          *) ln -sf "$f" "$HOME/.gitconfig.local"; break ;;
+        esac
+      done
+    fi
+
     # iroh-ssh remote builder config (only on fun-with-nix workspace)
     if [ "$(${pkgs.hostname}/bin/hostname)" = "coder-jorg-fun-with-nix-0" ]; then
       # Builder SSH key persisted across workspace restarts

@@ -3,8 +3,6 @@
   attributesfile = ~/.gitattributes
   pager = delta
   editor = nvim
-[include]
-  path = ~/.gitconfig.local
 [interactive]
   singlekey = true
   diffFilter = delta --color-only
@@ -128,5 +126,5 @@
 #  insteadOf = https://github.com/
 [coderabbit]
   machineId = cli/4118f364aed840308d40c0ff648951b4
-[url "git@github.com:"]
-  insteadOf = https://github.com/
+[include]
+  path = ~/.gitconfig.local
