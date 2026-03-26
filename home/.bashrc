@@ -70,6 +70,12 @@ if [[ -r ~/.bashrc."$HOSTNAME" ]]; then
   . ~/.bashrc."$HOSTNAME"
 fi
 
+# Coder workspace integration — install.sh normally appends this source line
+# to ~/.bashrc, but homesick replaces that file with this symlink.
+if [[ -r /root/code/config/remote/bashrc.sh ]]; then
+  . /root/code/config/remote/bashrc.sh
+fi
+
 if command -v direnv &>/dev/null; then
   eval "$(direnv hook bash)"
 fi
