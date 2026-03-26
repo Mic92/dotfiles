@@ -514,17 +514,24 @@ class LiveTextOverlay:
             cr.set_line_width(CODE_BORDER_WIDTH / scale)
             cr.rectangle(code.x, code.y, code.width, code.height)
             cr.stroke()
-            # Label (type + truncated data)
+            # Label (type + truncated data).  Counter-scale the font so
+            # it stays readable at any zoom level instead of becoming
+            # microscopic at <1× or screen-filling at 10×.
             label = code.code_type
             preview = code.data[:40] + ("…" if len(code.data) > 40 else "")
             label_text = f"{label}: {preview}"
-            cr.set_font_size(CODE_LABEL_FONT_SIZE)
+            cr.set_font_size(CODE_LABEL_FONT_SIZE / scale)
             ext = cr.text_extents(label_text)
             lx = code.x
-            ly = code.y - 4  # above the box
-            # Background pill for readability
+            ly = code.y - 4 / scale  # above the box
+            pad = 2 / scale
             cr.set_source_rgba(*CODE_LABEL_BG)
-            cr.rectangle(lx - 2, ly - ext.height - 2, ext.width + 6, ext.height + 4)
+            cr.rectangle(
+                lx - pad,
+                ly - ext.height - pad,
+                ext.width + 3 * pad,
+                ext.height + 2 * pad,
+            )
             cr.fill()
             cr.set_source_rgba(0.0, 1.0, 0.5, 1.0)
             cr.move_to(lx, ly)
