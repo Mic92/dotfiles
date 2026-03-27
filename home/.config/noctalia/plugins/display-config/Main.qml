@@ -1,6 +1,7 @@
 import QtQuick
 import Quickshell.Io
 import qs.Commons
+import qs.Services.UI
 
 Item {
   id: root
@@ -190,12 +191,73 @@ Item {
         return;
       }
 
+      armRevert();
       applyQueue = cmds;
       runNextApply();
     }
 
+    // Snapshot of all outputs before a change, used to revert if the user
+    // doesn't confirm the new layout within the countdown.
+    property var revertSnapshot: null
+    property bool revertConfirmed: false
+
+    function takeSnapshot() {
+      var snap = [];
+      for (var i = 0; i < outputs.length; i++) {
+        var o = outputs[i];
+        snap.push({
+                    "name": o.name,
+                    "enabled": o.enabled,
+                    "mode": o.currentMode,
+                    "scale": o.scale,
+                    "x": o.position.x,
+                    "y": o.position.y,
+                    "transform": o.transform
+                  });
+      }
+      return snap;
+    }
+
+    function armRevert(seconds) {
+      revertSnapshot = takeSnapshot();
+      revertConfirmed = false;
+      revertTimer.interval = (seconds || 12) * 1000;
+      revertTimer.restart();
+      ToastService.showNotice("Display changed", "Reverting in " + (seconds || 12) + "s unless confirmed", "device-desktop", revertTimer.interval, "Keep", function () {
+        displayService.confirmRevert();
+      });
+    }
+
+    function confirmRevert() {
+      revertConfirmed = true;
+      revertTimer.stop();
+      revertSnapshot = null;
+      Logger.d("DisplayConfig", "Change confirmed, revert cancelled");
+    }
+
+    function doRevert() {
+      if (revertConfirmed || !revertSnapshot) {
+        return;
+      }
+      Logger.i("DisplayConfig", "Reverting unconfirmed display change");
+      var snap = revertSnapshot;
+      revertSnapshot = null;
+      // Reuse applyPreset since the snapshot has the same shape.
+      applyPreset({
+                    "name": "__revert__",
+                    "outputs": snap
+                  });
+      ToastService.showNotice("Display reverted", "Change was not confirmed", "restore");
+    }
+
     // opts: { mode, scale, x, y, transform, enabled }
-    function applyOutput(name, opts) {
+    // If revert === true, snapshot current state first and start the confirm
+    // countdown; a bad mode can black-screen a monitor so changes must be
+    // acknowledged or they roll back automatically.
+    function applyOutput(name, opts, revert) {
+      if (revert) {
+        armRevert();
+      }
       var cmds = [];
       var b = backend();
 
@@ -436,6 +498,12 @@ Item {
   }
 
   Timer {
+    id: revertTimer
+    repeat: false
+    onTriggered: displayService.doRevert()
+  }
+
+  Timer {
     id: pollTimer
     repeat: true
     running: pluginApi !== null
@@ -474,6 +542,9 @@ Item {
     }
     function arrange(kind: string) {
       displayService.applyArrangement(kind);
+    }
+    function keep() {
+      displayService.confirmRevert();
     }
   }
 }
