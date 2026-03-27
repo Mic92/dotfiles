@@ -15,14 +15,14 @@ ColumnLayout {
   spacing: Style.marginM
 
   NHeader {
-    text: "Display Config Settings"
+    label: "Display Config Settings"
     Layout.fillWidth: true
   }
 
   NDivider {}
 
   NLabel {
-    text: "Backend"
+    label: "Backend"
   }
 
   NComboBox {
@@ -42,7 +42,7 @@ ColumnLayout {
   }
 
   NLabel {
-    text: "Poll interval (seconds)"
+    label: "Poll interval (seconds)"
   }
 
   NSpinBox {
@@ -56,13 +56,13 @@ ColumnLayout {
   }
 
   NLabel {
-    text: "Icon color"
+    label: "Icon color"
   }
 
   NColorChoice {
-    selectedColor: cfg.iconColor ?? defaults.iconColor
-    onColorSelected: function (color) {
-      cfg.iconColor = color;
+    currentKey: cfg.iconColor ?? defaults.iconColor
+    onSelected: function (key) {
+      cfg.iconColor = key;
       pluginApi?.saveSettings();
     }
   }
@@ -70,7 +70,7 @@ ColumnLayout {
   NDivider {}
 
   NLabel {
-    text: "Presets (" + ((cfg.presets || []).length) + ")"
+    label: "Presets (" + ((cfg.presets || []).length) + ")"
   }
 
   RowLayout {
