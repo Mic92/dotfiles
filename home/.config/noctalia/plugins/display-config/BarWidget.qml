@@ -136,7 +136,7 @@ Item {
       if (action === "refresh") {
         displayService?.fetchOutputs();
       } else if (action === "wdisplays") {
-        wdisplaysLauncher.running = true;
+        wdisplaysLauncher.startDetached();
       } else if (action.indexOf("arrange:") === 0) {
         displayService?.applyArrangement(action.substring(8));
       } else if (action.indexOf("preset:") === 0) {

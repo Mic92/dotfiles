@@ -61,7 +61,7 @@ Item {
         baseSize: 32
         tooltipText: "Open wdisplays"
         onClicked: {
-          wdisplaysLauncher.running = true;
+          wdisplaysLauncher.startDetached();
           pluginApi?.closePanel();
         }
       }
@@ -69,6 +69,9 @@ Item {
 
     // Launch wdisplays for drag-and-drop arrangement — the proper tool for
     // 3+ monitor layouts that the quick-arrange buttons can't handle.
+    // startDetached() is required: running=true ties the child to this
+    // Process object, which is destroyed the moment closePanel() tears down
+    // the panel delegate, killing wdisplays before its window appears.
     Process {
       id: wdisplaysLauncher
       command: ["sh", "-c", "command -v wdisplays >/dev/null && exec wdisplays || notify-send 'wdisplays not installed'"]
@@ -291,7 +294,7 @@ Item {
             icon: "external-link"
             text: "Open wdisplays"
             onClicked: {
-              wdisplaysLauncher.running = true;
+              wdisplaysLauncher.startDetached();
               pluginApi?.closePanel();
             }
           }
