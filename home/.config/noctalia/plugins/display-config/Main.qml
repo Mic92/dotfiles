@@ -193,6 +193,9 @@ Item {
     // doesn't confirm the new layout within the countdown.
     property var revertSnapshot: null
     property bool revertConfirmed: false
+    // Exposed for the in-panel confirm bar.
+    property bool revertPending: false
+    property int revertSecondsLeft: 0
 
     function takeSnapshot() {
       var snap = [];
@@ -216,25 +219,29 @@ Item {
       // Keep the earliest snapshot across a burst of changes so revert
       // restores the state before the user started editing, not the state
       // after the previous click in the same burst.
-      if (!revertTimer.running || revertSnapshot === null) {
+      if (!revertPending || revertSnapshot === null) {
         revertSnapshot = takeSnapshot();
       }
       revertConfirmed = false;
-      revertTimer.interval = s * 1000;
+      revertPending = true;
+      revertSecondsLeft = s;
       revertTimer.restart();
-      ToastService.showNotice("Display changed", "Reverting in " + s + "s unless confirmed", "device-desktop", revertTimer.interval, "Keep", function () {
+      ToastService.showNotice("Display changed", "Reverting in " + s + "s unless confirmed", "device-desktop", s * 1000, "Keep", function () {
         displayService.confirmRevert();
       });
     }
 
     function confirmRevert() {
       revertConfirmed = true;
+      revertPending = false;
       revertTimer.stop();
       revertSnapshot = null;
       Logger.d("DisplayConfig", "Change confirmed, revert cancelled");
     }
 
     function doRevert() {
+      revertPending = false;
+      revertTimer.stop();
       if (revertConfirmed || !revertSnapshot) {
         return;
       }
@@ -457,10 +464,23 @@ Item {
         for (var i = 0; i < outs.length; i++)
           if (outs[i].enabled)
             en++;
-        displayService.countChanged = (displayService.lastEnabledCount !== -1 && displayService.lastEnabledCount !== en);
+        var hotplug = (displayService.lastEnabledCount !== -1 && displayService.lastEnabledCount !== en);
+        displayService.countChanged = hotplug;
         displayService.lastEnabledCount = en;
         displayService.enabledCount = en;
         displayService.fetchState = "success";
+        // Auto-open the panel on hotplug so picking an arrangement is one
+        // click away instead of a hunt for the bar icon. Skip if a revert is
+        // pending — that means the user caused the change themselves.
+        if (hotplug && !displayService.revertPending && pluginApi) {
+          var cfg = pluginApi.pluginSettings || {};
+          var defaults = pluginApi.manifest?.metadata?.defaultSettings || {};
+          if (cfg.openOnHotplug ?? defaults.openOnHotplug) {
+            pluginApi.withCurrentScreen(function (screen) {
+              pluginApi.openPanel(screen);
+            });
+          }
+        }
         Logger.d("DisplayConfig", "Fetched", outs.length, "outputs,", en, "enabled");
       } catch (e) {
         displayService.fetchState = "error";
@@ -483,10 +503,20 @@ Item {
     }
   }
 
+  // Ticks once per second so the in-panel confirm bar can show a live
+  // countdown; the revert itself fires when secondsLeft hits zero.
   Timer {
     id: revertTimer
-    repeat: false
-    onTriggered: displayService.doRevert()
+    repeat: true
+    interval: 1000
+    onTriggered: {
+      if (displayService.revertSecondsLeft > 1) {
+        displayService.revertSecondsLeft--;
+      } else {
+        displayService.revertSecondsLeft = 0;
+        displayService.doRevert();
+      }
+    }
   }
 
   Timer {
