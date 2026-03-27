@@ -5,7 +5,11 @@
   ...
 }:
 {
-  imports = [ ./kwallet-tpm ];
+  imports = [
+    ./kwallet-tpm
+    ./janet.nix
+  ];
+
   # Lock secrets before suspend (carried over from KDE module)
   systemd.user.services.lock-secrets-on-suspend = {
     description = "Lock secrets before suspend";
