@@ -236,11 +236,19 @@ Item {
                 }
               }
 
-              // Apply / Reset
+              // Apply / Reset — always shown so users know edits need confirming;
+              // hidden-until-dirty was correct but undiscoverable.
               RowLayout {
                 Layout.fillWidth: true
-                visible: modelData.enabled && outputCard.dirty
+                visible: modelData.enabled
                 spacing: Style.marginS
+
+                NText {
+                  visible: outputCard.dirty
+                  text: "Unsaved changes"
+                  font.pixelSize: Style.fontSizeXS
+                  color: Color.mTertiary
+                }
 
                 Item {
                   Layout.fillWidth: true
@@ -249,6 +257,7 @@ Item {
                 NIconButton {
                   icon: "restore"
                   baseSize: 28
+                  enabled: outputCard.dirty
                   tooltipText: "Reset"
                   onClicked: {
                     outputCard.pendingMode = modelData.currentMode || "";
@@ -256,10 +265,10 @@ Item {
                   }
                 }
 
-                NIconButton {
+                NButton {
+                  text: "Apply"
                   icon: "check"
-                  baseSize: 28
-                  tooltipText: "Apply"
+                  enabled: outputCard.dirty
                   onClicked: {
                     displayService?.applyOutput(modelData.name, {
                                                   "mode": outputCard.pendingMode,
