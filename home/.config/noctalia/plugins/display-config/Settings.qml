@@ -48,7 +48,7 @@ ColumnLayout {
   NSpinBox {
     from: 1
     to: 60
-    value: cfg.pollInterval ?? defaults.pollInterval
+    Component.onCompleted: value = cfg.pollInterval ?? defaults.pollInterval
     onValueChanged: {
       cfg.pollInterval = value;
       pluginApi?.saveSettings();

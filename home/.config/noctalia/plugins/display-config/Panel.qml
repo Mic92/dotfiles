@@ -90,16 +90,9 @@ Item {
             // Pending edits (applied on "Apply" button)
             property string pendingMode: modelData.currentMode || ""
             property real pendingScale: modelData.scale
-            property int pendingX: modelData.position.x
-            property int pendingY: modelData.position.y
-            property string pendingTransform: modelData.transform
-            property bool showAdvanced: false
 
             readonly property bool dirty: pendingMode !== (modelData.currentMode || "")
                                           || Math.abs(pendingScale - modelData.scale) > 0.001
-                                          || pendingX !== modelData.position.x
-                                          || pendingY !== modelData.position.y
-                                          || pendingTransform !== modelData.transform
 
             Layout.fillWidth: true
             Layout.preferredHeight: cardColumn.implicitHeight + Style.marginM * 2
@@ -201,10 +194,13 @@ Item {
                 }
 
                 NSpinBox {
+                  id: scaleSpin
                   from: 50
                   to: 300
                   stepSize: 25
-                  value: Math.round(outputCard.pendingScale * 100)
+                  // Initialize once; two-way binding would loop since NSpinBox
+                  // has no user-intent signal, only valueChanged.
+                  Component.onCompleted: value = Math.round(outputCard.pendingScale * 100)
                   onValueChanged: outputCard.pendingScale = value / 100.0
                 }
 
@@ -216,93 +212,6 @@ Item {
 
                 Item {
                   Layout.fillWidth: true
-                }
-
-                NIconButton {
-                  icon: outputCard.showAdvanced ? "chevron-up" : "chevron-down"
-                  baseSize: 24
-                  tooltipText: "Position & transform"
-                  onClicked: outputCard.showAdvanced = !outputCard.showAdvanced
-                }
-              }
-
-              // Advanced: position + transform
-              ColumnLayout {
-                Layout.fillWidth: true
-                visible: modelData.enabled && outputCard.showAdvanced
-                spacing: Style.marginS
-
-                RowLayout {
-                  Layout.fillWidth: true
-                  spacing: Style.marginS
-
-                  NText {
-                    text: "Position"
-                    font.pixelSize: Style.fontSizeS
-                    color: Color.mOnSurfaceVariant
-                    Layout.preferredWidth: 60
-                  }
-
-                  NSpinBox {
-                    from: -32768
-                    to: 32768
-                    stepSize: 10
-                    value: outputCard.pendingX
-                    onValueChanged: outputCard.pendingX = value
-                  }
-
-                  NSpinBox {
-                    from: -32768
-                    to: 32768
-                    stepSize: 10
-                    value: outputCard.pendingY
-                    onValueChanged: outputCard.pendingY = value
-                  }
-                }
-
-                RowLayout {
-                  Layout.fillWidth: true
-                  spacing: Style.marginS
-
-                  NText {
-                    text: "Rotate"
-                    font.pixelSize: Style.fontSizeS
-                    color: Color.mOnSurfaceVariant
-                    Layout.preferredWidth: 60
-                  }
-
-                  NComboBox {
-                    Layout.fillWidth: true
-                    model: [{
-                        "key": "normal",
-                        "name": "Normal"
-                      }, {
-                        "key": "90",
-                        "name": "90°"
-                      }, {
-                        "key": "180",
-                        "name": "180°"
-                      }, {
-                        "key": "270",
-                        "name": "270°"
-                      }, {
-                        "key": "flipped",
-                        "name": "Flipped"
-                      }, {
-                        "key": "flipped-90",
-                        "name": "Flipped 90°"
-                      }, {
-                        "key": "flipped-180",
-                        "name": "Flipped 180°"
-                      }, {
-                        "key": "flipped-270",
-                        "name": "Flipped 270°"
-                      }]
-                    currentKey: outputCard.pendingTransform
-                    onSelected: function (key) {
-                      outputCard.pendingTransform = key;
-                    }
-                  }
                 }
               }
 
@@ -322,10 +231,7 @@ Item {
                   tooltipText: "Reset"
                   onClicked: {
                     outputCard.pendingMode = modelData.currentMode || "";
-                    outputCard.pendingScale = modelData.scale;
-                    outputCard.pendingX = modelData.position.x;
-                    outputCard.pendingY = modelData.position.y;
-                    outputCard.pendingTransform = modelData.transform;
+                    scaleSpin.value = Math.round(modelData.scale * 100);
                   }
                 }
 
@@ -336,14 +242,72 @@ Item {
                   onClicked: {
                     displayService?.applyOutput(modelData.name, {
                                                   "mode": outputCard.pendingMode,
-                                                  "scale": outputCard.pendingScale,
-                                                  "x": outputCard.pendingX,
-                                                  "y": outputCard.pendingY,
-                                                  "transform": outputCard.pendingTransform
+                                                  "scale": outputCard.pendingScale
                                                 });
                   }
                 }
               }
+            }
+          }
+        }
+
+        // Arrange — one-click layouts computed from logical sizes so nobody
+        // has to reason about x/y coordinates.
+        ColumnLayout {
+          Layout.fillWidth: true
+          visible: root.outputCount >= 2
+          spacing: Style.marginS
+
+          NDivider {}
+
+          NText {
+            text: "Arrange"
+            font.bold: true
+            font.pixelSize: Style.fontSizeM
+            color: Color.mOnSurface
+          }
+
+          GridLayout {
+            Layout.fillWidth: true
+            columns: 2
+            rowSpacing: Style.marginS
+            columnSpacing: Style.marginS
+
+            NButton {
+              Layout.fillWidth: true
+              icon: "arrow-bar-right"
+              text: "Extend right"
+              onClicked: displayService?.applyArrangement("extend-right")
+            }
+            NButton {
+              Layout.fillWidth: true
+              icon: "arrow-bar-left"
+              text: "Extend left"
+              onClicked: displayService?.applyArrangement("extend-left")
+            }
+            NButton {
+              Layout.fillWidth: true
+              icon: "arrow-bar-to-up"
+              text: "External above"
+              onClicked: displayService?.applyArrangement("stack-above")
+            }
+            NButton {
+              Layout.fillWidth: true
+              icon: "arrow-bar-to-down"
+              text: "External below"
+              onClicked: displayService?.applyArrangement("stack-below")
+            }
+            NButton {
+              Layout.fillWidth: true
+              icon: "device-desktop"
+              text: "External only"
+              onClicked: displayService?.applyArrangement("external-only")
+            }
+            NButton {
+              Layout.fillWidth: true
+              icon: "device-laptop"
+              text: "Laptop only"
+              onClicked: displayService?.applyArrangement("internal-only")
             }
           }
         }
