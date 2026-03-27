@@ -75,11 +75,29 @@ Item {
     id: contextMenu
 
     model: {
-      var m = [{
-                 "label": "Refresh",
-                 "action": "refresh",
-                 "icon": "refresh"
-               }];
+      var m = [];
+      if (root.outputCount >= 2) {
+        m.push({
+                 "label": "Extend right",
+                 "action": "arrange:extend-right",
+                 "icon": "arrow-bar-right"
+               });
+        m.push({
+                 "label": "Extend left",
+                 "action": "arrange:extend-left",
+                 "icon": "arrow-bar-left"
+               });
+        m.push({
+                 "label": "External only",
+                 "action": "arrange:external-only",
+                 "icon": "device-desktop"
+               });
+        m.push({
+                 "label": "Laptop only",
+                 "action": "arrange:internal-only",
+                 "icon": "device-laptop"
+               });
+      }
       var presets = cfg.presets || [];
       for (var i = 0; i < presets.length; i++) {
         m.push({
@@ -88,6 +106,11 @@ Item {
                  "icon": "layout"
                });
       }
+      m.push({
+               "label": "Refresh",
+               "action": "refresh",
+               "icon": "refresh"
+             });
       m.push({
                "label": "Settings",
                "action": "settings",
@@ -101,6 +124,8 @@ Item {
       PanelService.closeContextMenu(screen);
       if (action === "refresh") {
         displayService?.fetchOutputs();
+      } else if (action.indexOf("arrange:") === 0) {
+        displayService?.applyArrangement(action.substring(8));
       } else if (action.indexOf("preset:") === 0) {
         var name = action.substring(7);
         var presets = cfg.presets || [];

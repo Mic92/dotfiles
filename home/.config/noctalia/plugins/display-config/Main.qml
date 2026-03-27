@@ -50,6 +50,147 @@ Item {
       fetchProcess.running = true;
     }
 
+    // Logical (post-scale) width/height for an output given its current/preferred mode.
+    // Used by arrangement helpers so we place in logical pixels like niri expects.
+    function logicalSize(o) {
+      var m = null;
+      if (o.currentMode) {
+        for (var i = 0; i < o.modes.length; i++)
+          if (o.modes[i].key === o.currentMode) {
+            m = o.modes[i];
+            break;
+          }
+      }
+      if (!m)
+        for (var j = 0; j < o.modes.length; j++)
+          if (o.modes[j].preferred) {
+            m = o.modes[j];
+            break;
+          }
+      if (!m && o.modes.length > 0)
+        m = o.modes[0];
+      if (!m)
+        return {
+          "w": 1920,
+          "h": 1080
+        };
+      var s = o.scale || 1.0;
+      // Transforms that rotate 90/270 swap width and height.
+      var rot = o.transform === "90" || o.transform === "270" || o.transform === "flipped-90" || o.transform === "flipped-270";
+      var w = Math.round((rot ? m.height : m.width) / s);
+      var h = Math.round((rot ? m.width : m.height) / s);
+      return {
+        "w": w,
+        "h": h
+      };
+    }
+
+    // Pick primary/secondary for two-output arrangements: prefer the internal
+    // panel (eDP/LVDS) as "laptop" and everything else as "external".
+    function splitPrimarySecondary() {
+      if (outputs.length < 2)
+        return null;
+      var laptop = null, external = null;
+      for (var i = 0; i < outputs.length; i++) {
+        var n = outputs[i].name.toLowerCase();
+        if (n.indexOf("edp") === 0 || n.indexOf("lvds") === 0 || n.indexOf("dsi") === 0)
+          laptop = outputs[i];
+        else
+          external = outputs[i];
+      }
+      // Fallback: first two in sort order.
+      if (!laptop || !external) {
+        laptop = outputs[0];
+        external = outputs[1];
+      }
+      return {
+        "primary": laptop,
+        "secondary": external
+      };
+    }
+
+    // kind: "extend-right" | "extend-left" | "stack-above" | "stack-below"
+    //       | "external-only" | "internal-only" | "mirror"
+    // Computes positions from logical sizes so edges actually touch and the
+    // mouse crosses cleanly. All outputs are anchored in the +x/+y quadrant.
+    function applyArrangement(kind) {
+      var pair = splitPrimarySecondary();
+      if (!pair) {
+        Logger.w("DisplayConfig", "applyArrangement needs at least 2 outputs");
+        return;
+      }
+      var a = pair.primary, b = pair.secondary;
+      var as = logicalSize(a), bs = logicalSize(b);
+      var cmds = [];
+
+      function on(name) {
+        cmds.push(["niri", "msg", "output", name, "on"]);
+      }
+      function off(name) {
+        cmds.push(["niri", "msg", "output", name, "off"]);
+      }
+      function pos(name, x, y) {
+        cmds.push(["niri", "msg", "output", name, "position", "set", String(x), String(y)]);
+      }
+
+      if (backend() !== "niri") {
+        Logger.w("DisplayConfig", "applyArrangement not implemented for backend:", backend());
+        return;
+      }
+
+      switch (kind) {
+      case "extend-right":
+        // Laptop at origin, external to its right, tops aligned.
+        on(a.name);
+        on(b.name);
+        pos(a.name, 0, 0);
+        pos(b.name, as.w, 0);
+        break;
+      case "extend-left":
+        on(a.name);
+        on(b.name);
+        pos(b.name, 0, 0);
+        pos(a.name, bs.w, 0);
+        break;
+      case "stack-above":
+        // External on top, laptop below, horizontally centred under it.
+        on(a.name);
+        on(b.name);
+        pos(b.name, 0, 0);
+        pos(a.name, Math.max(0, Math.round((bs.w - as.w) / 2)), bs.h);
+        break;
+      case "stack-below":
+        on(a.name);
+        on(b.name);
+        pos(a.name, 0, 0);
+        pos(b.name, Math.max(0, Math.round((as.w - bs.w) / 2)), as.h);
+        break;
+      case "external-only":
+        off(a.name);
+        on(b.name);
+        pos(b.name, 0, 0);
+        break;
+      case "internal-only":
+        on(a.name);
+        off(b.name);
+        pos(a.name, 0, 0);
+        break;
+      case "mirror":
+        // niri has no native mirror; best effort is same-origin overlap.
+        on(a.name);
+        on(b.name);
+        pos(a.name, 0, 0);
+        pos(b.name, 0, 0);
+        break;
+      default:
+        Logger.w("DisplayConfig", "Unknown arrangement:", kind);
+        return;
+      }
+
+      applyQueue = cmds;
+      runNextApply();
+    }
+
     // opts: { mode, scale, x, y, transform, enabled }
     function applyOutput(name, opts) {
       var cmds = [];
@@ -66,7 +207,7 @@ Item {
           if (opts.scale !== undefined)
             cmds.push(["niri", "msg", "output", name, "scale", String(opts.scale)]);
           if (opts.x !== undefined && opts.y !== undefined)
-            cmds.push(["niri", "msg", "output", name, "position", opts.x + "," + opts.y]);
+            cmds.push(["niri", "msg", "output", name, "position", "set", String(opts.x), String(opts.y)]);
           if (opts.transform)
             cmds.push(["niri", "msg", "output", name, "transform", opts.transform]);
         }
@@ -113,7 +254,7 @@ Item {
         if (o.scale !== undefined)
           all.push(["niri", "msg", "output", o.name, "scale", String(o.scale)]);
         if (o.x !== undefined && o.y !== undefined)
-          all.push(["niri", "msg", "output", o.name, "position", o.x + "," + o.y]);
+          all.push(["niri", "msg", "output", o.name, "position", "set", String(o.x), String(o.y)]);
         if (o.transform)
           all.push(["niri", "msg", "output", o.name, "transform", o.transform]);
       }
@@ -185,10 +326,22 @@ Item {
         }
       }
 
-      // niri uses capitalized transform names; normalize to lowercase for CLI
+      // niri JSON uses serde variant names (Normal, 90, Flipped, Flipped90, ...)
+      // but the CLI wants lowercase kebab-case (normal, 90, flipped, flipped-90, ...)
       var xform = "normal";
       if (o.logical && o.logical.transform) {
-        xform = String(o.logical.transform).toLowerCase().replace(/^flipped(\d)/, "flipped-$1");
+        var t = String(o.logical.transform);
+        var map = {
+          "Normal": "normal",
+          "90": "90",
+          "180": "180",
+          "270": "270",
+          "Flipped": "flipped",
+          "Flipped90": "flipped-90",
+          "Flipped180": "flipped-180",
+          "Flipped270": "flipped-270"
+        };
+        xform = map[t] || t.toLowerCase();
       }
 
       list.push({
@@ -315,6 +468,9 @@ Item {
         }
       }
       Logger.w("DisplayConfig", "Preset not found:", name);
+    }
+    function arrange(kind: string) {
+      displayService.applyArrangement(kind);
     }
   }
 }
