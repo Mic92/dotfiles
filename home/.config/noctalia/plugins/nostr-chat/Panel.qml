@@ -60,7 +60,7 @@ Item {
 
       NIcon {
         icon: "message-chatbot"
-        pointSize: Style.fontSizeXL
+        pointSize: Style.fontSizeXL * 1.4
         color: Color.mPrimary
       }
       ColumnLayout {
@@ -199,17 +199,19 @@ Item {
               spacing: Style.marginXS
               NText {
                 text: ago(modelData.ts)
-                font.pixelSize: Style.fontSizeXXS
+                font.pixelSize: Style.fontSizeM
                 color: row.mine
                   ? Qt.alpha(Color.mOnPrimary, 0.6)
                   : Color.mOnSurfaceVariant
               }
               // Peer acks with a kind-7 reaction once it's received
               // the DM — render whatever emoji it sent, or a check mark.
+              // Same size as body text so the emoji glyph is actually
+              // recognisable on a HiDPI screen.
               NText {
                 visible: (modelData.ack ?? "") !== ""
                 text: modelData.ack === "+" ? "✓" : (modelData.ack ?? "")
-                font.pixelSize: Style.fontSizeXXS
+                font.pixelSize: Style.fontSizeL
                 color: row.mine
                   ? Qt.alpha(Color.mOnPrimary, 0.8)
                   : Color.mTertiary
@@ -271,10 +273,14 @@ Item {
       NIconButton {
         icon: "paperclip"
         tooltipText: "Attach image"
+        // Match the input field height so the compose row doesn't look
+        // like two different UI scales glued together.
+        baseSize: input.height
         onClicked: filePicker.openFilePicker()
       }
       NIconButton {
         icon: "send"
+        baseSize: input.height
         enabled: input.text.trim().length > 0
         onClicked: input.accepted()
       }
