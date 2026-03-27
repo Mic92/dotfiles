@@ -49,7 +49,7 @@ type Rumor struct {
 	PubKey  string
 	Content string
 	TS      int64
-	ETag    string     // first "e" tag value — reaction target
+	ETag    string     // first "e" tag: reaction target (kind-7) or reply parent (kind-14)
 	Tags    nostr.Tags // kind-15 needs file-type / decryption-* tags
 }
 
@@ -78,11 +78,19 @@ func NewListener(keys Keys, relays []string) *Listener {
 // Run blocks until ctx is done, emitting unwrapped rumors on ch.
 // Pool.SubscribeMany handles per-relay reconnect internally; we only
 // loop here to recover from the channel closing entirely (all relays
-// dead at once).
-func (l *Listener) Run(ctx context.Context, since int64, ch chan<- Rumor) {
+// dead at once). `since` is re-read from the store on each reconnect
+// so a drop after an hour doesn't re-fetch the whole hour.
+func (l *Listener) Run(ctx context.Context, since func() int64, ch chan<- Rumor) {
 	backoff := time.Second
 	for ctx.Err() == nil {
-		l.subscribeOnce(ctx, since, ch)
+		start := time.Now()
+		l.subscribeOnce(ctx, since(), ch)
+		// A subscription that ran for a while was healthy — reset
+		// backoff so a brief blip doesn't leave us at 1-minute delays
+		// forever.
+		if time.Since(start) > 30*time.Second {
+			backoff = time.Second
+		}
 		slog.Warn("subscription closed, reconnecting", "backoff", backoff)
 		select {
 		case <-ctx.Done():
@@ -149,15 +157,21 @@ type Outgoing struct {
 // Prepare builds the kind-14 rumor and both gift wraps. Pure crypto,
 // no network — microseconds. The returned Rumor has the final id, so
 // the self-copy arriving later via the listen loop dedups cleanly.
-func (l *Listener) Prepare(ctx context.Context, to, content string) (Outgoing, error) {
+// replyTo, if non-empty, is added as an e-tag so the peer can thread
+// the response against a prior message.
+func (l *Listener) Prepare(ctx context.Context, to, content, replyTo string) (Outgoing, error) {
 	recipient, err := nostr.PubKeyFromHex(to)
 	if err != nil {
 		return Outgoing{}, fmt.Errorf("recipient pubkey: %w", err)
 	}
+	tags := nostr.Tags{{"p", to}}
+	if replyTo != "" {
+		tags = append(tags, nostr.Tag{"e", replyTo})
+	}
 	rumor := nostr.Event{
 		Kind:      14,
 		Content:   content,
-		Tags:      nostr.Tags{{"p", to}},
+		Tags:      tags,
 		CreatedAt: nostr.Now(),
 		PubKey:    l.keys.PK,
 	}

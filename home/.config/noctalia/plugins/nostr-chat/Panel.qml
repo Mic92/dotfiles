@@ -13,6 +13,19 @@ Item {
   // the hm-module's displayName option, not a separate plugin setting.
   readonly property string peerName: chat?.peerName || "Chat"
 
+  // Look up a message by id to render the quoted snippet above a
+  // threaded reply. Linear scan is fine — maxHistory caps it at ~200.
+  function findMsg(id) {
+    const arr = chat?.messages || [];
+    for (let i = arr.length - 1; i >= 0; i--)
+      if (arr[i].id === id) return arr[i];
+    return null;
+  }
+  function snippet(text, n) {
+    const t = (text || "").replace(/\s+/g, " ").trim();
+    return t.length > n ? t.slice(0, n - 1) + "…" : t;
+  }
+
   // SmartPanel.qml sizes by contentPreferred{Width,Height} — without
   // these it falls back to its 900px default, ignoring implicitHeight.
   property real contentPreferredWidth: 500
@@ -102,9 +115,9 @@ Item {
           id: bubble
           anchors.left:  row.mine ? undefined : parent.left
           anchors.right: row.mine ? parent.right : undefined
-          // Image bubbles snap to the 85% cap; text bubbles shrink to
-          // fit so short replies don't stretch edge-to-edge.
-          width: (modelData.image ?? "") !== ""
+          // Image/quote bubbles snap to the 85% cap; plain text shrinks
+          // to fit so short replies don't stretch edge-to-edge.
+          width: ((modelData.image ?? "") !== "" || (modelData.replyTo ?? "") !== "")
             ? row.width * 0.85
             : Math.min(msgText.implicitWidth + Style.marginM * 2,
                        row.width * 0.85)
@@ -116,11 +129,48 @@ Item {
           border.width: row.mine ? 0 : 1
           border.color: Color.mOutline
 
+          // Click to reply. TapHandler rather than MouseArea so it
+          // coexists with text selection inside NText.
+          TapHandler {
+            acceptedButtons: Qt.LeftButton
+            onTapped: {
+              chat.replyTarget = { id: modelData.id, text: modelData.text };
+              input.forceActiveFocus();
+            }
+          }
+
           ColumnLayout {
             id: col
             anchors.fill: parent
             anchors.margins: Style.marginM
             spacing: Style.marginXXS
+
+            // Quoted snippet when this message is a threaded reply.
+            // Resolved from the in-memory mirror; if the target has
+            // scrolled out of maxHistory we just show the bar empty.
+            Rectangle {
+              visible: (modelData.replyTo ?? "") !== ""
+              Layout.fillWidth: true
+              implicitHeight: quote.implicitHeight + Style.marginXS * 2
+              radius: Style.radiusXS
+              color: row.mine
+                ? Qt.alpha(Color.mOnPrimary, 0.15)
+                : Qt.alpha(Color.mOnSurface, 0.08)
+              NText {
+                id: quote
+                anchors.fill: parent
+                anchors.margins: Style.marginXS
+                text: {
+                  const m = root.findMsg(modelData.replyTo);
+                  return m ? "↳ " + root.snippet(m.text, 60) : "↳ (earlier message)";
+                }
+                font.pixelSize: Style.fontSizeXS
+                elide: Text.ElideRight
+                color: row.mine
+                  ? Qt.alpha(Color.mOnPrimary, 0.7)
+                  : Color.mOnSurfaceVariant
+              }
+            }
 
             // kind-15 attachments: daemon downloads + decrypts, then
             // pushes the local path. QML Image won't load a bare path
@@ -173,6 +223,35 @@ Item {
     }
 
     // ── Compose ───────────────────────────────────────────────────────
+    // Reply context bar — shown when a bubble was tapped. Cleared on
+    // send (Main.qml) or by the × here.
+    Rectangle {
+      visible: (chat?.replyTarget ?? null) !== null
+      Layout.fillWidth: true
+      implicitHeight: replyRow.implicitHeight + Style.marginS * 2
+      radius: Style.radiusS
+      color: Color.mSurfaceVariant
+      RowLayout {
+        id: replyRow
+        anchors.fill: parent
+        anchors.margins: Style.marginS
+        spacing: Style.marginS
+        NIcon { icon: "corner-down-right"; color: Color.mPrimary }
+        NText {
+          Layout.fillWidth: true
+          text: root.snippet(chat?.replyTarget?.text ?? "", 80)
+          elide: Text.ElideRight
+          font.pixelSize: Style.fontSizeS
+          color: Color.mOnSurfaceVariant
+        }
+        NIconButton {
+          icon: "x"
+          baseSize: Style.baseWidgetSize * 0.7
+          onClicked: chat.replyTarget = null
+        }
+      }
+    }
+
     RowLayout {
       Layout.fillWidth: true
       spacing: Style.marginS
