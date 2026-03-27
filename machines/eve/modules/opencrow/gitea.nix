@@ -46,4 +46,8 @@
   containers.opencrow.config.systemd.tmpfiles.rules = [
     ''f /var/lib/opencrow/.gitconfig 0644 opencrow opencrow - [user]\n\tname = Janet\n\temail = janet@thalheim.io''
   ];
+
+  # Gitea REST API access via n8n-hooks — lets Janet create repos,
+  # issues, etc. without holding the token herself.
+  services.opencrow.skills.gitea = ./skills/gitea;
 }

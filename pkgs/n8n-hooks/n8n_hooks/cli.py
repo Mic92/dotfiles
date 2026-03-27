@@ -11,7 +11,7 @@ import argparse
 import sys
 
 from n8n_hooks.config import load_config
-from n8n_hooks.hooks import store_draft
+from n8n_hooks.hooks import gitea, store_draft
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -29,6 +29,7 @@ def build_parser() -> argparse.ArgumentParser:
     #   1. Create n8n_hooks/hooks/<name>.py with register() + run()
     #   2. Import and call register() below.
     store_draft.register(sub)
+    gitea.register(sub)
     return parser
 
 
