@@ -6,13 +6,15 @@ CREATE TABLE IF NOT EXISTS messages (
   dir     TEXT NOT NULL CHECK(dir IN ('in','out')),
   ack     TEXT NOT NULL DEFAULT '',
   read    INTEGER NOT NULL DEFAULT 0,
-  image   TEXT NOT NULL DEFAULT ''
+  image   TEXT NOT NULL DEFAULT '',
+  reply_to TEXT NOT NULL DEFAULT ''
 );
 CREATE INDEX IF NOT EXISTS messages_ts ON messages(ts);
 
 CREATE TABLE IF NOT EXISTS outbox (
   id      INTEGER PRIMARY KEY AUTOINCREMENT,
   content TEXT NOT NULL,
+  reply_to TEXT NOT NULL DEFAULT '',
   tries   INTEGER NOT NULL DEFAULT 0,
   next_at INTEGER NOT NULL
 );

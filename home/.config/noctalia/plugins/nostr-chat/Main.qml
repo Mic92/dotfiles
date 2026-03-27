@@ -32,11 +32,17 @@ Item {
     property bool streaming: false
     property string lastError: ""
     property int unread: 0
-    property var messages: []   // [{id, from, text, ts, ack}] — shell-local mirror
+    property var messages: []   // [{id, from, text, ts, ack, image, replyTo}]
+    property var replyTarget: null  // {id, text} — set by Panel when user clicks a bubble
 
     function send(text) {
       if (!text.trim()) return;
-      root.sockSend({ cmd: "send", text: text });
+      lastError = "";  // clear stale error on new attempt
+      root.sockSend({
+        cmd: "send", text: text,
+        replyTo: replyTarget ? replyTarget.id : undefined,
+      });
+      replyTarget = null;
     }
     function sendFile(path) {
       if (!path) return;
@@ -78,6 +84,12 @@ Item {
     }
     onError: (e) => {
       chat.lastError = "daemon unreachable";
+      chat.streaming = false;
+      // Drop queued commands — they were one-shot anyway, and a stale
+      // `send` firing minutes later when the daemon returns would be
+      // surprising. The daemon's sqlite outbox handles real retries.
+      queue = [];
+      draining = false;
       Logger.w("NostrChat", "socket", e, "path", path);
     }
   }
@@ -114,7 +126,7 @@ Item {
       // ListView. Insert-sort by ts since replay + live can interleave.
       const entry = {
         id: m.id, text: m.content, ts: m.ts * 1000, ack: m.ack,
-        image: m.image || "",
+        image: m.image || "", replyTo: m.replyTo || "",
         from: m.dir === "out" ? "me" : "bot",
       };
       let arr = chat.messages.slice();

@@ -58,6 +58,32 @@ func TestAckBeforeMessage(t *testing.T) {
 	}
 }
 
+func TestReplyToPersists(t *testing.T) {
+	s, err := OpenStore(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer s.Close()
+	ctx := context.Background()
+
+	// Message + its threaded reply — both round-trip through Recent().
+	s.InsertMessage(ctx, Message{ID: "parent", Content: "q", TS: 100, Dir: "in"})
+	s.InsertMessage(ctx, Message{ID: "child", Content: "a", TS: 200, Dir: "out", ReplyTo: "parent"})
+
+	msgs, _ := s.Recent(ctx, 10)
+	if len(msgs) != 2 || msgs[1].ReplyTo != "parent" {
+		t.Fatalf("replyTo lost: %+v", msgs)
+	}
+
+	// Outbox preserves the e-tag across the enqueue/drain cycle so
+	// publishLoop's re-Prepare threads correctly on retry.
+	s.Enqueue(ctx, "answer", "parent")
+	items, _ := s.PendingOutbox(ctx, 1)
+	if len(items) != 1 || items[0].ReplyTo != "parent" {
+		t.Fatalf("outbox replyTo lost: %+v", items)
+	}
+}
+
 func TestOutboxRoundTrip(t *testing.T) {
 	s, err := OpenStore(t.TempDir())
 	if err != nil {
@@ -66,7 +92,7 @@ func TestOutboxRoundTrip(t *testing.T) {
 	defer s.Close()
 	ctx := context.Background()
 
-	id, err := s.Enqueue(ctx, "hello")
+	id, err := s.Enqueue(ctx, "hello", "")
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -147,12 +147,16 @@ func main() {
 	rumors := make(chan Rumor, 64)
 	cmds := make(chan Command, 16)
 
-	since, _ := store.GetInt(ctx, "last_seen_ts")
 	// Anything timestamped before we started is backfill, not a live
 	// reply — mark it read so the shell doesn't auto-open the panel for
 	// three days of history on first run.
 	startedAt := time.Now().Unix()
-	go lst.Run(ctx, since, rumors)
+	// Closure so reconnects pick up the watermark handleRumor has been
+	// advancing, instead of replaying from the boot-time value.
+	go lst.Run(ctx, func() int64 {
+		ts, _ := store.GetInt(ctx, "last_seen_ts")
+		return ts
+	}, rumors)
 
 	go func() {
 		if err := serveSocket(ctx, cfg.Socket, func(c Command) { cmds <- c }); err != nil {
@@ -224,8 +228,9 @@ func handleRumor(ctx context.Context, store *Store, cfg Config, keys Keys, r Rum
 		}
 		m := Message{
 			ID: r.ID, PubKey: r.PubKey, Content: content, TS: r.TS,
-			Dir:  map[bool]string{true: "out", false: "in"}[mine],
-			Read: mine || r.TS < startedAt,
+			Dir:     map[bool]string{true: "out", false: "in"}[mine],
+			Read:    mine || r.TS < startedAt,
+			ReplyTo: r.ETag, // kind-14 e-tag = threaded reply target
 		}
 		inserted, err := store.InsertMessage(ctx, m)
 		if err != nil {
@@ -270,7 +275,7 @@ func handleCommand(ctx context.Context, store *Store, lst *Listener, cfg Config,
 		// the outbox for the slow publish. The user sees their message
 		// the instant they hit enter; the ack mark follows when the
 		// bot's reaction lands.
-		out, err := lst.Prepare(ctx, cfg.PeerPubKey, c.Text)
+		out, err := lst.Prepare(ctx, cfg.PeerPubKey, c.Text, c.ReplyTo)
 		if err != nil {
 			slog.Error("prepare", "err", err)
 			pushIPC(Event{Kind: "error", Text: "prepare: " + err.Error()})
@@ -278,12 +283,12 @@ func handleCommand(ctx context.Context, store *Store, lst *Listener, cfg Config,
 		}
 		m := Message{
 			ID: out.Rumor.ID, PubKey: out.Rumor.PubKey, Content: out.Rumor.Content,
-			TS: out.Rumor.TS, Dir: "out", Read: true,
+			TS: out.Rumor.TS, Dir: "out", Read: true, ReplyTo: c.ReplyTo,
 		}
 		if ok, _ := store.InsertMessage(ctx, m); ok {
 			pushIPC(Event{Kind: "msg", Msg: &m})
 		}
-		if _, err := store.Enqueue(ctx, c.Text); err != nil {
+		if _, err := store.Enqueue(ctx, c.Text, c.ReplyTo); err != nil {
 			slog.Error("enqueue", "err", err)
 			return
 		}
@@ -381,7 +386,7 @@ func publishLoop(ctx context.Context, store *Store, lst *Listener, cfg Config, k
 			continue
 		}
 		for _, it := range items {
-			out, err := lst.Prepare(ctx, cfg.PeerPubKey, it.Content)
+			out, err := lst.Prepare(ctx, cfg.PeerPubKey, it.Content, it.ReplyTo)
 			if err == nil {
 				err = lst.Publish(ctx, out)
 			}

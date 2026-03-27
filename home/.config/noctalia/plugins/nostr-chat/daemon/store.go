@@ -33,7 +33,8 @@ type Message struct {
 	Dir     string `json:"dir"` // "in" | "out"
 	Ack     string `json:"ack"`
 	Read    bool   `json:"read"`
-	Image   string `json:"image,omitempty"` // local path if kind-15 and downloaded
+	Image   string `json:"image,omitempty"`   // local path if kind-15 and downloaded
+	ReplyTo string `json:"replyTo,omitempty"` // e-tag: rumor id this message responds to
 }
 
 func OpenStore(dir string) (*Store, error) {
@@ -51,10 +52,14 @@ func OpenStore(dir string) (*Store, error) {
 	// Migration: image column. CREATE TABLE IF NOT EXISTS won't add
 	// columns to an existing table, so patch it here and swallow the
 	// "duplicate column" error on second run.
-	if _, err := db.Exec(`ALTER TABLE messages ADD COLUMN image TEXT NOT NULL DEFAULT ''`); err != nil &&
-		!strings.Contains(err.Error(), "duplicate column") {
-		db.Close()
-		return nil, fmt.Errorf("migrate image column: %w", err)
+	for _, m := range []struct{ table, col string }{
+		{"messages", "image"}, {"messages", "reply_to"}, {"outbox", "reply_to"},
+	} {
+		if _, err := db.Exec(fmt.Sprintf(`ALTER TABLE %s ADD COLUMN %s TEXT NOT NULL DEFAULT ''`, m.table, m.col)); err != nil &&
+			!strings.Contains(err.Error(), "duplicate column") {
+			db.Close()
+			return nil, fmt.Errorf("migrate %s.%s: %w", m.table, m.col, err)
+		}
 	}
 	return &Store{db: db}, nil
 }
@@ -71,14 +76,14 @@ func (s *Store) Close() error { return s.db.Close() }
 // still reports inserted=false.
 func (s *Store) InsertMessage(ctx context.Context, m Message) (bool, error) {
 	res, err := s.db.ExecContext(ctx,
-		`INSERT INTO messages (id, pubkey, content, ts, dir, ack, read, image)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+		`INSERT INTO messages (id, pubkey, content, ts, dir, ack, read, image, reply_to)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 		 ON CONFLICT(id) DO UPDATE SET
 		   pubkey=excluded.pubkey, content=excluded.content,
 		   ts=excluded.ts, dir=excluded.dir, read=excluded.read,
-		   image=excluded.image
+		   image=excluded.image, reply_to=excluded.reply_to
 		 WHERE messages.ts = 0`,
-		m.ID, m.PubKey, m.Content, m.TS, m.Dir, m.Ack, boolInt(m.Read), m.Image)
+		m.ID, m.PubKey, m.Content, m.TS, m.Dir, m.Ack, boolInt(m.Read), m.Image, m.ReplyTo)
 	if err != nil {
 		return false, err
 	}
@@ -113,7 +118,7 @@ func (s *Store) SetImage(ctx context.Context, id, path string) error {
 // arrived).
 func (s *Store) Recent(ctx context.Context, n int) ([]Message, error) {
 	rows, err := s.db.QueryContext(ctx,
-		`SELECT id, pubkey, content, ts, dir, ack, read, image
+		`SELECT id, pubkey, content, ts, dir, ack, read, image, reply_to
 		 FROM messages WHERE ts > 0 ORDER BY ts DESC LIMIT ?`, n)
 	if err != nil {
 		return nil, err
@@ -123,7 +128,7 @@ func (s *Store) Recent(ctx context.Context, n int) ([]Message, error) {
 	for rows.Next() {
 		var m Message
 		var read int
-		if err := rows.Scan(&m.ID, &m.PubKey, &m.Content, &m.TS, &m.Dir, &m.Ack, &read, &m.Image); err != nil {
+		if err := rows.Scan(&m.ID, &m.PubKey, &m.Content, &m.TS, &m.Dir, &m.Ack, &read, &m.Image, &m.ReplyTo); err != nil {
 			return nil, err
 		}
 		m.Read = read != 0
@@ -173,12 +178,13 @@ func (s *Store) SetInt(ctx context.Context, k string, v int64) error {
 type OutboxItem struct {
 	ID      int64
 	Content string
+	ReplyTo string
 	Tries   int
 }
 
-func (s *Store) Enqueue(ctx context.Context, content string) (int64, error) {
+func (s *Store) Enqueue(ctx context.Context, content, replyTo string) (int64, error) {
 	res, err := s.db.ExecContext(ctx,
-		`INSERT INTO outbox (content, tries, next_at) VALUES (?, 0, 0)`, content)
+		`INSERT INTO outbox (content, reply_to, tries, next_at) VALUES (?, ?, 0, 0)`, content, replyTo)
 	if err != nil {
 		return 0, err
 	}
@@ -187,7 +193,7 @@ func (s *Store) Enqueue(ctx context.Context, content string) (int64, error) {
 
 func (s *Store) PendingOutbox(ctx context.Context, now int64) ([]OutboxItem, error) {
 	rows, err := s.db.QueryContext(ctx,
-		`SELECT id, content, tries FROM outbox WHERE next_at <= ? ORDER BY id`, now)
+		`SELECT id, content, reply_to, tries FROM outbox WHERE next_at <= ? ORDER BY id`, now)
 	if err != nil {
 		return nil, err
 	}
@@ -195,7 +201,7 @@ func (s *Store) PendingOutbox(ctx context.Context, now int64) ([]OutboxItem, err
 	var out []OutboxItem
 	for rows.Next() {
 		var it OutboxItem
-		if err := rows.Scan(&it.ID, &it.Content, &it.Tries); err != nil {
+		if err := rows.Scan(&it.ID, &it.Content, &it.ReplyTo, &it.Tries); err != nil {
 			return nil, err
 		}
 		out = append(out, it)

@@ -11,6 +11,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"crypto/aes"
 	"crypto/cipher"
@@ -241,7 +242,9 @@ func blossomUpload(ctx context.Context, servers []string, enc *encryptedFile, ke
 	var errs []string
 	for _, srv := range servers {
 		u := strings.TrimRight(srv, "/") + "/upload"
-		req, err := http.NewRequestWithContext(ctx, http.MethodPut, u, strings.NewReader(string(enc.Ciphertext)))
+		// bytes.NewReader — strings.NewReader(string(…)) would copy the
+		// whole buffer, doubling memory for a 50 MB upload.
+		req, err := http.NewRequestWithContext(ctx, http.MethodPut, u, bytes.NewReader(enc.Ciphertext))
 		if err != nil {
 			errs = append(errs, fmt.Sprintf("%s: %v", srv, err))
 			continue

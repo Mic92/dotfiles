@@ -52,8 +52,9 @@ func pushIPC(ev Event) {
 // Command from the shell over the unix socket.
 type Command struct {
 	Cmd  string `json:"cmd"`
-	Text string `json:"text,omitempty"` // send
-	Path string `json:"path,omitempty"` // send-file: local file to upload
+	Text    string `json:"text,omitempty"`    // send
+	ReplyTo string `json:"replyTo,omitempty"` // send: e-tag target (rumor id)
+	Path    string `json:"path,omitempty"`    // send-file: local file to upload
 	N    int    `json:"n,omitempty"`    // replay: how many recent messages
 }
 
