@@ -1,0 +1,118 @@
+import QtQuick
+import QtQuick.Layouts
+import Quickshell
+import qs.Commons
+import qs.Modules.Bar.Extras
+import qs.Services.UI
+import qs.Widgets
+
+Item {
+  id: root
+
+  property var pluginApi: null
+  property var displayService: pluginApi?.mainInstance?.displayService || null
+
+  property ShellScreen screen
+  property string widgetId: ""
+  property string section: ""
+
+  property var cfg: pluginApi?.pluginSettings || ({})
+  property var defaults: pluginApi?.manifest?.metadata?.defaultSettings || ({})
+
+  readonly property string iconColorKey: cfg.iconColor ?? defaults.iconColor
+  readonly property int enabledCount: displayService?.enabledCount ?? 0
+  readonly property int outputCount: displayService?.outputCount ?? 0
+  readonly property string fetchState: displayService?.fetchState ?? "idle"
+  readonly property bool countChanged: displayService?.countChanged ?? false
+
+  readonly property string screenName: screen ? screen.name : ""
+  readonly property string barPosition: Settings.getBarPositionForScreen(screenName)
+  readonly property bool isVerticalBar: barPosition === "left" || barPosition === "right"
+
+  readonly property string currentIcon: {
+    if (fetchState === "loading")
+      return "loader";
+    if (fetchState === "error")
+      return "alert-triangle";
+    if (enabledCount < outputCount)
+      return "device-desktop-off";
+    return "device-desktop";
+  }
+
+  readonly property color iconColor: {
+    if (fetchState === "error")
+      return Color.mError;
+    if (countChanged)
+      return Color.mTertiary;
+    return Color.resolveColorKey(iconColorKey);
+  }
+
+  implicitWidth: pill.width
+  implicitHeight: pill.height
+
+  BarPill {
+    id: pill
+    screen: root.screen
+    oppositeDirection: BarService.getPillDirection(root)
+    icon: root.currentIcon
+    text: root.enabledCount.toString()
+    forceOpen: root.countChanged
+    autoHide: true
+    customTextIconColor: root.iconColor
+
+    onClicked: {
+      if (pluginApi) {
+        pluginApi.openPanel(root.screen, root);
+      }
+    }
+
+    onRightClicked: {
+      PanelService.showContextMenu(contextMenu, root, screen);
+    }
+  }
+
+  NPopupContextMenu {
+    id: contextMenu
+
+    model: {
+      var m = [{
+                 "label": "Refresh",
+                 "action": "refresh",
+                 "icon": "refresh"
+               }];
+      var presets = cfg.presets || [];
+      for (var i = 0; i < presets.length; i++) {
+        m.push({
+                 "label": "Preset: " + presets[i].name,
+                 "action": "preset:" + presets[i].name,
+                 "icon": "layout"
+               });
+      }
+      m.push({
+               "label": "Settings",
+               "action": "settings",
+               "icon": "settings"
+             });
+      return m;
+    }
+
+    onTriggered: function (action) {
+      contextMenu.close();
+      PanelService.closeContextMenu(screen);
+      if (action === "refresh") {
+        displayService?.fetchOutputs();
+      } else if (action.indexOf("preset:") === 0) {
+        var name = action.substring(7);
+        var presets = cfg.presets || [];
+        for (var i = 0; i < presets.length; i++) {
+          if (presets[i].name === name) {
+            displayService?.applyPreset(presets[i]);
+            break;
+          }
+        }
+      } else if (action === "settings") {
+        BarService.openPluginSettings(root.screen, pluginApi.manifest);
+      }
+    }
+  }
+}
