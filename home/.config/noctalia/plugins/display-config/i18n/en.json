@@ -1,0 +1,10 @@
+{
+  "widget": {
+    "tooltip": "Display Configuration"
+  },
+  "menu": {
+    "settings": "Settings",
+    "refresh": "Refresh",
+    "identify": "Identify outputs"
+  }
+}
