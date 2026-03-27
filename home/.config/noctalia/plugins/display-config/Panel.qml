@@ -62,7 +62,7 @@ Item {
         tooltipText: "Open wdisplays"
         onClicked: {
           wdisplaysLauncher.startDetached();
-          pluginApi?.closePanel();
+          pluginApi?.closePanel(pluginApi.panelOpenScreen);
         }
       }
     }
@@ -295,7 +295,7 @@ Item {
             text: "Open wdisplays"
             onClicked: {
               wdisplaysLauncher.startDetached();
-              pluginApi?.closePanel();
+              pluginApi?.closePanel(pluginApi.panelOpenScreen);
             }
           }
         }

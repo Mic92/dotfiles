@@ -14,14 +14,14 @@ ColumnLayout {
   spacing: Style.marginM
 
   NHeader {
-    text: "Alertmanager Settings"
+    label: "Alertmanager Settings"
     Layout.fillWidth: true
   }
 
   NDivider {}
 
   NLabel {
-    text: "Alertmanager URL"
+    label: "Alertmanager URL"
   }
 
   NTextInput {
@@ -35,7 +35,7 @@ ColumnLayout {
   }
 
   NLabel {
-    text: "Poll interval (seconds)"
+    label: "Poll interval (seconds)"
   }
 
   NSpinBox {
@@ -49,7 +49,7 @@ ColumnLayout {
   }
 
   NLabel {
-    text: "Icon color"
+    label: "Icon color"
   }
 
   NColorChoice {
