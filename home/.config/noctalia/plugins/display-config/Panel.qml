@@ -17,8 +17,14 @@ Item {
 
   property var cfg: pluginApi?.pluginSettings || ({})
 
-  implicitWidth: 460
+  implicitWidth: 560
   implicitHeight: contentColumn.implicitHeight + Style.marginL * 2
+
+  // Revert-countdown state mirrored from the service so the confirm bar
+  // lives inside the panel instead of only in a toast (which might land on
+  // a monitor that just went dark).
+  readonly property bool revertPending: displayService?.revertPending ?? false
+  readonly property int revertSeconds: displayService?.revertSecondsLeft ?? 0
 
   ColumnLayout {
     id: contentColumn
@@ -75,6 +81,49 @@ Item {
     Process {
       id: wdisplaysLauncher
       command: ["sh", "-c", "command -v wdisplays >/dev/null && exec wdisplays || notify-send 'wdisplays not installed'"]
+    }
+
+    // Sticky confirm bar — shows whenever a change is pending revert.
+    Rectangle {
+      Layout.fillWidth: true
+      Layout.preferredHeight: confirmRow.implicitHeight + Style.marginM * 2
+      visible: root.revertPending
+      radius: Style.radiusM
+      color: Color.mTertiary
+
+      RowLayout {
+        id: confirmRow
+        anchors.fill: parent
+        anchors.margins: Style.marginM
+        spacing: Style.marginM
+
+        NIcon {
+          icon: "alert-triangle"
+          pointSize: Style.fontSizeL
+          color: Color.mOnTertiary
+        }
+
+        NText {
+          text: "Reverting in " + root.revertSeconds + "s"
+          font.pixelSize: Style.fontSizeM
+          font.bold: true
+          color: Color.mOnTertiary
+          Layout.fillWidth: true
+        }
+
+        NButton {
+          text: "Revert"
+          icon: "restore"
+          outlined: true
+          onClicked: displayService?.doRevert()
+        }
+
+        NButton {
+          text: "Keep"
+          icon: "check"
+          onClicked: displayService?.confirmRevert()
+        }
+      }
     }
 
     NDivider {}
@@ -177,13 +226,27 @@ Item {
 
                 NComboBox {
                   Layout.fillWidth: true
+                  // Group modes by resolution so the dropdown isn't a wall of
+                  // near-duplicate 59.94/59.95/60.00 Hz entries. The first
+                  // (highest-refresh) variant per resolution shows as
+                  // "3840×1600", later ones as indented "  @59.94".
                   model: {
                     var lm = [];
+                    var seenRes = {};
                     for (var i = 0; i < modelData.modes.length; i++) {
                       var m = modelData.modes[i];
+                      var res = m.width + "×" + m.height;
+                      var hz = m.refresh.toFixed(2).replace(/\.?0+$/, "");
+                      var label;
+                      if (!seenRes[res]) {
+                        seenRes[res] = true;
+                        label = res + "  " + hz + "Hz" + (m.preferred ? " ★" : "");
+                      } else {
+                        label = "    " + hz + "Hz" + (m.preferred ? " ★" : "");
+                      }
                       lm.push({
                                 "key": m.key,
-                                "name": m.key + (m.preferred ? " ★" : "")
+                                "name": label
                               });
                     }
                     return lm;

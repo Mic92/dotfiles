@@ -55,6 +55,16 @@ ColumnLayout {
     }
   }
 
+  NToggle {
+    label: "Open panel on hotplug"
+    description: "Automatically show the panel when a monitor is connected or disconnected"
+    checked: cfg.openOnHotplug ?? defaults.openOnHotplug
+    onToggled: function (checked) {
+      cfg.openOnHotplug = checked;
+      pluginApi?.saveSettings();
+    }
+  }
+
   NLabel {
     label: "Icon color"
   }
