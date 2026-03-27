@@ -111,7 +111,7 @@ Item {
     }
 
     // kind: "extend-right" | "extend-left" | "stack-above" | "stack-below"
-    //       | "external-only" | "internal-only" | "mirror"
+    //       | "external-only" | "internal-only"
     // Computes positions from logical sizes so edges actually touch and the
     // mouse crosses cleanly. All outputs are anchored in the +x/+y quadrant.
     function applyArrangement(kind) {
@@ -179,13 +179,6 @@ Item {
         off(b.name);
         pos(a.name, 0, 0);
         break;
-      case "mirror":
-        // niri has no native mirror; best effort is same-origin overlap.
-        on(a.name);
-        on(b.name);
-        pos(a.name, 0, 0);
-        pos(b.name, 0, 0);
-        break;
       default:
         Logger.w("DisplayConfig", "Unknown arrangement:", kind);
         return;
@@ -219,11 +212,17 @@ Item {
     }
 
     function armRevert(seconds) {
-      revertSnapshot = takeSnapshot();
+      var s = seconds || 12;
+      // Keep the earliest snapshot across a burst of changes so revert
+      // restores the state before the user started editing, not the state
+      // after the previous click in the same burst.
+      if (!revertTimer.running || revertSnapshot === null) {
+        revertSnapshot = takeSnapshot();
+      }
       revertConfirmed = false;
-      revertTimer.interval = (seconds || 12) * 1000;
+      revertTimer.interval = s * 1000;
       revertTimer.restart();
-      ToastService.showNotice("Display changed", "Reverting in " + (seconds || 12) + "s unless confirmed", "device-desktop", revertTimer.interval, "Keep", function () {
+      ToastService.showNotice("Display changed", "Reverting in " + s + "s unless confirmed", "device-desktop", revertTimer.interval, "Keep", function () {
         displayService.confirmRevert();
       });
     }
@@ -331,22 +330,9 @@ Item {
       var cfg = pluginApi?.pluginSettings || {};
       if (!cfg.presets)
         cfg.presets = [];
-      var snap = [];
-      for (var i = 0; i < outputs.length; i++) {
-        var o = outputs[i];
-        snap.push({
-                    "name": o.name,
-                    "enabled": o.enabled,
-                    "mode": o.currentMode,
-                    "scale": o.scale,
-                    "x": o.position.x,
-                    "y": o.position.y,
-                    "transform": o.transform
-                  });
-      }
       cfg.presets.push({
                          "name": name,
-                         "outputs": snap
+                         "outputs": takeSnapshot()
                        });
       pluginApi?.saveSettings();
     }
