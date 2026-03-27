@@ -135,7 +135,7 @@ binds {
     Mod+S hotkey-overlay-title="Control Center" { spawn "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
     Mod+Shift+D hotkey-overlay-title="Clipboard" { spawn "noctalia-shell" "ipc" "call" "launcher" "clipboard"; }
     Mod+Shift+Period hotkey-overlay-title="Emoji Picker" { spawn "noctalia-shell" "ipc" "call" "launcher" "emoji"; }
-    Mod+Shift+P hotkey-overlay-title="Password Manager" { spawn "rofi-rbw" "--selector" "fuzzel" "--clipboarder" "wl-copy" "--typer" "wtype"; }
+    Mod+Shift+P hotkey-overlay-title="Password Manager" { spawn "noctalia-shell" "ipc" "call" "plugin:rbw-provider" "toggle"; }
     Mod+P hotkey-overlay-title="Display Config" { spawn "noctalia-shell" "ipc" "call" "plugin:display-config" "toggle"; }
     Super+Alt+L hotkey-overlay-title="Lock Screen" { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
 

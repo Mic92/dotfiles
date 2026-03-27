@@ -49,9 +49,6 @@
     cliphist
     wtype
 
-    # Password manager
-    rofi-rbw
-
     # App launcher, idle, display config
     fuzzel
     libnotify
@@ -64,6 +61,9 @@
 
     # Desktop shell (bar, notifications, control center, OSD)
     noctalia-shell
+
+    # Needed by noctalia kde-connect plugin's "Browse files" (SFTP mount)
+    sshfs
 
     # Browsers / apps
     chromium
