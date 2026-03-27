@@ -467,26 +467,13 @@ Item {
         for (var i = 0; i < outs.length; i++)
           if (outs[i].enabled)
             en++;
-        var hotplug = (displayService.lastOutputCount !== -1
-                       && (displayService.lastOutputCount !== outs.length
-                           || displayService.lastEnabledCount !== en));
-        displayService.countChanged = hotplug;
+        displayService.countChanged = (displayService.lastOutputCount !== -1
+                                       && (displayService.lastOutputCount !== outs.length
+                                           || displayService.lastEnabledCount !== en));
         displayService.lastEnabledCount = en;
         displayService.lastOutputCount = outs.length;
         displayService.enabledCount = en;
         displayService.fetchState = "success";
-        // Auto-open the panel on hotplug so picking an arrangement is one
-        // click away instead of a hunt for the bar icon. Skip if a revert is
-        // pending — that means the user caused the change themselves.
-        if (hotplug && !displayService.revertPending && pluginApi) {
-          var cfg = pluginApi.pluginSettings || {};
-          var defaults = pluginApi.manifest?.metadata?.defaultSettings || {};
-          if (cfg.openOnHotplug ?? defaults.openOnHotplug) {
-            pluginApi.withCurrentScreen(function (screen) {
-              pluginApi.openPanel(screen);
-            });
-          }
-        }
         Logger.d("DisplayConfig", "Fetched", outs.length, "outputs,", en, "enabled");
       } catch (e) {
         displayService.fetchState = "error";
