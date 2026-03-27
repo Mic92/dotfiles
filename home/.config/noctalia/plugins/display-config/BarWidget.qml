@@ -1,5 +1,4 @@
 import QtQuick
-import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import qs.Commons
@@ -25,10 +24,6 @@ Item {
   readonly property int outputCount: displayService?.outputCount ?? 0
   readonly property string fetchState: displayService?.fetchState ?? "idle"
   readonly property bool countChanged: displayService?.countChanged ?? false
-
-  readonly property string screenName: screen ? screen.name : ""
-  readonly property string barPosition: Settings.getBarPositionForScreen(screenName)
-  readonly property bool isVerticalBar: barPosition === "left" || barPosition === "right"
 
   readonly property string currentIcon: {
     if (fetchState === "loading")
