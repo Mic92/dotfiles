@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS messages (
+  id      TEXT PRIMARY KEY,
+  pubkey  TEXT NOT NULL,
+  content TEXT NOT NULL,
+  ts      INTEGER NOT NULL,
+  dir     TEXT NOT NULL CHECK(dir IN ('in','out')),
+  ack     TEXT NOT NULL DEFAULT '',
+  read    INTEGER NOT NULL DEFAULT 0,
+  image   TEXT NOT NULL DEFAULT ''
+);
+CREATE INDEX IF NOT EXISTS messages_ts ON messages(ts);
+
+CREATE TABLE IF NOT EXISTS outbox (
+  id      INTEGER PRIMARY KEY AUTOINCREMENT,
+  content TEXT NOT NULL,
+  tries   INTEGER NOT NULL DEFAULT 0,
+  next_at INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS kv (
+  k TEXT PRIMARY KEY,
+  v TEXT NOT NULL
+);
