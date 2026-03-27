@@ -22,8 +22,11 @@ Item {
     property string fetchState: "idle" // "idle", "loading", "success", "error"
     property string errorMessage: ""
 
-    // Track last count to surface hotplug events in the bar pill
+    // Track last counts to surface hotplug events. A freshly-plugged monitor
+    // often appears disabled (no mode yet), so watching enabledCount alone
+    // misses plug-in events while still catching unplug. Track both.
     property int lastEnabledCount: -1
+    property int lastOutputCount: -1
     property bool countChanged: false
 
     function backend() {
@@ -464,9 +467,12 @@ Item {
         for (var i = 0; i < outs.length; i++)
           if (outs[i].enabled)
             en++;
-        var hotplug = (displayService.lastEnabledCount !== -1 && displayService.lastEnabledCount !== en);
+        var hotplug = (displayService.lastOutputCount !== -1
+                       && (displayService.lastOutputCount !== outs.length
+                           || displayService.lastEnabledCount !== en));
         displayService.countChanged = hotplug;
         displayService.lastEnabledCount = en;
+        displayService.lastOutputCount = outs.length;
         displayService.enabledCount = en;
         displayService.fetchState = "success";
         // Auto-open the panel on hotplug so picking an arrangement is one
