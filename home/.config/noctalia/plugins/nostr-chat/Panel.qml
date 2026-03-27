@@ -28,8 +28,8 @@ Item {
 
   // SmartPanel.qml sizes by contentPreferred{Width,Height} — without
   // these it falls back to its 900px default, ignoring implicitHeight.
-  property real contentPreferredWidth: 500
-  property real contentPreferredHeight: 460
+  property real contentPreferredWidth: 520
+  property real contentPreferredHeight: 600
   implicitWidth: contentPreferredWidth
   implicitHeight: contentPreferredHeight
 
@@ -40,8 +40,13 @@ Item {
 
   // Relative-time formatter for the tiny timestamp under each bubble.
   // Absolute times would be noise for a chat that's mostly "just now".
+  // `_now` ticks every 30s so `ago()` bindings re-evaluate — otherwise
+  // "now" freezes at send time and never becomes "1m".
+  property real _now: Date.now()
+  Timer { interval: 30000; running: root.visible; repeat: true; onTriggered: root._now = Date.now() }
+
   function ago(ts) {
-    const s = Math.max(0, (Date.now() - ts) / 1000);
+    const s = Math.max(0, (_now - ts) / 1000);
     if (s < 60)   return "now";
     if (s < 3600) return Math.floor(s/60) + "m";
     if (s < 86400) return Math.floor(s/3600) + "h";
@@ -128,12 +133,27 @@ Item {
           // into the panel background.
           border.width: row.mine ? 0 : 1
           border.color: Color.mOutline
+          // Dim until the peer's reaction lands so there's visual
+          // feedback the send is in flight (local echo is instant).
+          opacity: (row.mine && (modelData.ack ?? "") === "") ? 0.7 : 1.0
+          Behavior on opacity { NumberAnimation { duration: 150 } }
 
-          // Click to reply. TapHandler rather than MouseArea so it
-          // coexists with text selection inside NText.
+          // Hover hint + cursor so tap-to-reply is discoverable.
+          // HoverHandler/TapHandler rather than MouseArea so they
+          // coexist with text selection inside NText.
+          HoverHandler { id: hov; cursorShape: Qt.PointingHandCursor }
+          Rectangle {
+            anchors.fill: parent
+            radius: parent.radius
+            color: Color.mOnSurface
+            opacity: hov.hovered ? 0.06 : 0
+            Behavior on opacity { NumberAnimation { duration: 100 } }
+          }
           TapHandler {
             acceptedButtons: Qt.LeftButton
-            onTapped: {
+            // Double-tap to reply — single-tap would fight text
+            // selection. The hover cursor hints something's clickable.
+            onDoubleTapped: {
               chat.replyTarget = { id: modelData.id, text: modelData.text };
               input.forceActiveFocus();
             }
@@ -156,6 +176,15 @@ Item {
               color: row.mine
                 ? Qt.alpha(Color.mOnPrimary, 0.15)
                 : Qt.alpha(Color.mOnSurface, 0.08)
+              // Click the quote to jump to the original. Linear scan
+              // for the index is fine at maxHistory scale.
+              TapHandler {
+                onTapped: {
+                  const arr = chat?.messages || [];
+                  const idx = arr.findIndex(m => m.id === modelData.replyTo);
+                  if (idx >= 0) history.positionViewAtIndex(idx, ListView.Center);
+                }
+              }
               NText {
                 id: quote
                 anchors.fill: parent
@@ -186,13 +215,23 @@ Item {
               asynchronous: true
               cache: true
             }
-            NText {
+            // TextEdit so code snippets and URLs are selectable.
+            // readOnly keeps it display-only; selectByMouse enables
+            // drag-select without stealing the double-tap-to-reply.
+            TextEdit {
               id: msgText
               Layout.fillWidth: true
               text: modelData.text
               wrapMode: Text.Wrap
               textFormat: Text.MarkdownText
+              readOnly: true
+              selectByMouse: true
+              selectionColor: Color.mPrimary
+              selectedTextColor: Color.mOnPrimary
               color: row.mine ? Color.mOnPrimary : Color.mOnSurface
+              font.family: Settings.data.ui.fontDefault
+              font.pointSize: Style.fontSizeM * Settings.data.ui.fontDefaultScale
+              font.weight: Style.fontWeightMedium
             }
             RowLayout {
               Layout.alignment: row.mine ? Qt.AlignRight : Qt.AlignLeft
@@ -262,6 +301,8 @@ Item {
         id: input
         Layout.fillWidth: true
         placeholderText: chat?.streaming ? "Message " + root.peerName + "…" : "Waiting for daemon…"
+        // Esc clears the reply target without reaching for the ×.
+        Keys.onEscapePressed: if (chat?.replyTarget) chat.replyTarget = null
         onAccepted: {
           if (!chat) return;
           // Send regardless of streaming state — the daemon's outbox
