@@ -114,9 +114,12 @@ Item {
     // Computes positions from logical sizes so edges actually touch and the
     // mouse crosses cleanly. All outputs are anchored in the +x/+y quadrant.
     function applyArrangement(kind) {
+      if (outputs.length !== 2) {
+        Logger.w("DisplayConfig", "applyArrangement only supports exactly 2 outputs, have", outputs.length, "- use a saved preset instead");
+        return;
+      }
       var pair = splitPrimarySecondary();
       if (!pair) {
-        Logger.w("DisplayConfig", "applyArrangement needs at least 2 outputs");
         return;
       }
       var a = pair.primary, b = pair.secondary;

@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Io
 import qs.Commons
 import qs.Modules.Bar.Extras
 import qs.Services.UI
@@ -71,12 +72,17 @@ Item {
     }
   }
 
+  Process {
+    id: wdisplaysLauncher
+    command: ["sh", "-c", "command -v wdisplays >/dev/null && exec wdisplays || notify-send 'wdisplays not installed'"]
+  }
+
   NPopupContextMenu {
     id: contextMenu
 
     model: {
       var m = [];
-      if (root.outputCount >= 2) {
+      if (root.outputCount === 2) {
         m.push({
                  "label": "Extend right",
                  "action": "arrange:extend-right",
@@ -107,6 +113,11 @@ Item {
                });
       }
       m.push({
+               "label": "Open wdisplays",
+               "action": "wdisplays",
+               "icon": "external-link"
+             });
+      m.push({
                "label": "Refresh",
                "action": "refresh",
                "icon": "refresh"
@@ -124,6 +135,8 @@ Item {
       PanelService.closeContextMenu(screen);
       if (action === "refresh") {
         displayService?.fetchOutputs();
+      } else if (action === "wdisplays") {
+        wdisplaysLauncher.running = true;
       } else if (action.indexOf("arrange:") === 0) {
         displayService?.applyArrangement(action.substring(8));
       } else if (action.indexOf("preset:") === 0) {
