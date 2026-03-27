@@ -108,13 +108,6 @@ Item {
           delegate: Rectangle {
             id: outputCard
 
-            // Pending edits (applied on "Apply" button)
-            property string pendingMode: modelData.currentMode || ""
-            property real pendingScale: modelData.scale
-
-            readonly property bool dirty: pendingMode !== (modelData.currentMode || "")
-                                          || Math.abs(pendingScale - modelData.scale) > 0.001
-
             Layout.fillWidth: true
             Layout.preferredHeight: cardColumn.implicitHeight + Style.marginM * 2
             radius: Style.radiusM
@@ -163,12 +156,13 @@ Item {
                   onToggled: function (checked) {
                     displayService?.applyOutput(modelData.name, {
                                                   "enabled": checked
-                                                });
+                                                }, true);
                   }
                 }
               }
 
-              // Mode selector
+              // Mode selector — applies immediately; a revert-countdown toast
+              // rolls the change back unless confirmed.
               RowLayout {
                 Layout.fillWidth: true
                 visible: modelData.enabled
@@ -194,14 +188,19 @@ Item {
                     }
                     return lm;
                   }
-                  currentKey: outputCard.pendingMode
+                  currentKey: modelData.currentMode || ""
                   onSelected: function (key) {
-                    outputCard.pendingMode = key;
+                    if (key !== modelData.currentMode) {
+                      displayService?.applyOutput(modelData.name, {
+                                                    "mode": key
+                                                  }, true);
+                    }
                   }
                 }
               }
 
-              // Scale
+              // Scale — applies on edit, debounced so clicking the spin arrows
+              // several times results in one niri call instead of a cascade.
               RowLayout {
                 Layout.fillWidth: true
                 visible: modelData.enabled
@@ -219,62 +218,34 @@ Item {
                   from: 50
                   to: 300
                   stepSize: 25
-                  // Initialize once; two-way binding would loop since NSpinBox
-                  // has no user-intent signal, only valueChanged.
-                  Component.onCompleted: value = Math.round(outputCard.pendingScale * 100)
-                  onValueChanged: outputCard.pendingScale = value / 100.0
+                  suffix: "%"
+                  property bool ready: false
+                  Component.onCompleted: {
+                    value = Math.round(modelData.scale * 100);
+                    ready = true;
+                  }
+                  onValueChanged: {
+                    if (ready) {
+                      scaleDebounce.restart();
+                    }
+                  }
                 }
 
-                NText {
-                  text: outputCard.pendingScale.toFixed(2) + "×"
-                  font.pixelSize: Style.fontSizeS
-                  color: Color.mOnSurfaceVariant
+                Timer {
+                  id: scaleDebounce
+                  interval: 400
+                  onTriggered: {
+                    var newScale = scaleSpin.value / 100.0;
+                    if (Math.abs(newScale - modelData.scale) > 0.001) {
+                      displayService?.applyOutput(modelData.name, {
+                                                    "scale": newScale
+                                                  }, true);
+                    }
+                  }
                 }
 
                 Item {
                   Layout.fillWidth: true
-                }
-              }
-
-              // Apply / Reset — always shown so users know edits need confirming;
-              // hidden-until-dirty was correct but undiscoverable.
-              RowLayout {
-                Layout.fillWidth: true
-                visible: modelData.enabled
-                spacing: Style.marginS
-
-                NText {
-                  visible: outputCard.dirty
-                  text: "Unsaved changes"
-                  font.pixelSize: Style.fontSizeXS
-                  color: Color.mTertiary
-                }
-
-                Item {
-                  Layout.fillWidth: true
-                }
-
-                NIconButton {
-                  icon: "restore"
-                  baseSize: 28
-                  enabled: outputCard.dirty
-                  tooltipText: "Reset"
-                  onClicked: {
-                    outputCard.pendingMode = modelData.currentMode || "";
-                    scaleSpin.value = Math.round(modelData.scale * 100);
-                  }
-                }
-
-                NButton {
-                  text: "Apply"
-                  icon: "check"
-                  enabled: outputCard.dirty
-                  onClicked: {
-                    displayService?.applyOutput(modelData.name, {
-                                                  "mode": outputCard.pendingMode,
-                                                  "scale": outputCard.pendingScale
-                                                });
-                  }
                 }
               }
             }
