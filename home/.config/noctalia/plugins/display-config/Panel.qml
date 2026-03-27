@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Layouts
+import Quickshell.Io
 import qs.Commons
 import qs.Widgets
 
@@ -54,6 +55,23 @@ Item {
         tooltipText: "Refresh"
         onClicked: displayService?.fetchOutputs()
       }
+
+      NIconButton {
+        icon: "external-link"
+        baseSize: 32
+        tooltipText: "Open wdisplays"
+        onClicked: {
+          wdisplaysLauncher.running = true;
+          pluginApi?.closePanel();
+        }
+      }
+    }
+
+    // Launch wdisplays for drag-and-drop arrangement — the proper tool for
+    // 3+ monitor layouts that the quick-arrange buttons can't handle.
+    Process {
+      id: wdisplaysLauncher
+      command: ["sh", "-c", "command -v wdisplays >/dev/null && exec wdisplays || notify-send 'wdisplays not installed'"]
     }
 
     NDivider {}
@@ -251,11 +269,42 @@ Item {
           }
         }
 
-        // Arrange — one-click layouts computed from logical sizes so nobody
-        // has to reason about x/y coordinates.
+        // With 3+ outputs the pairwise arrange math would leave the extras
+        // overlapping — point at the tools that actually handle N monitors.
         ColumnLayout {
           Layout.fillWidth: true
-          visible: root.outputCount >= 2
+          visible: root.outputCount > 2
+          spacing: Style.marginS
+
+          NDivider {}
+
+          NText {
+            text: root.outputCount + " monitors — use wdisplays to arrange, then save as a preset"
+            font.pixelSize: Style.fontSizeS
+            color: Color.mOnSurfaceVariant
+            Layout.fillWidth: true
+            wrapMode: Text.WordWrap
+          }
+
+          NButton {
+            Layout.fillWidth: true
+            icon: "external-link"
+            text: "Open wdisplays"
+            onClicked: {
+              wdisplaysLauncher.running = true;
+              pluginApi?.closePanel();
+            }
+          }
+        }
+
+        // Arrange — one-click layouts computed from logical sizes so nobody
+        // has to reason about x/y coordinates. Gated to exactly two outputs
+        // like KDE's Super+P OSD: the preset math only positions a pair, and
+        // silently leaving a third monitor overlapping is worse than hiding
+        // the buttons. For 3+ monitors, use saved presets instead.
+        ColumnLayout {
+          Layout.fillWidth: true
+          visible: root.outputCount === 2
           spacing: Style.marginS
 
           NDivider {}

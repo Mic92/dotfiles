@@ -57,6 +57,7 @@
     libnotify
     swayidle
     kanshi
+    wdisplays # drag-and-drop output arrangement; launched from noctalia display-config plugin for 3+ monitor setups
 
     # Audio
     pavucontrol
