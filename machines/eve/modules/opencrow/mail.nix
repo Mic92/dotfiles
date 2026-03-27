@@ -48,6 +48,6 @@
 
   containers.opencrow.config.systemd.tmpfiles.rules = [
     "d /var/lib/opencrow/.config/n8n-hooks 0750 opencrow opencrow -"
-    ''f /var/lib/opencrow/.config/n8n-hooks/config.json 0640 opencrow opencrow - {"token_command":"rbw get n8n-hooks-token","hooks":{"store-draft":{"url":"https://n8n.thalheim.io/webhook/store-email-draft"}}}''
+    ''f /var/lib/opencrow/.config/n8n-hooks/config.json 0640 opencrow opencrow - {"token_command":"rbw get n8n-hooks-token","hooks":{"store-draft":{"url":"https://n8n.thalheim.io/webhook/store-email-draft"},"gitea":{"url":"https://n8n.thalheim.io/webhook/gitea-api"}}}''
   ];
 }
