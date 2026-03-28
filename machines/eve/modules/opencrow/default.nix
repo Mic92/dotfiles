@@ -20,6 +20,7 @@ in
     ./calendar.nix
     ./n8n.nix
     ./paperless.nix
+    ./forge.nix
   ];
 
   config = {
