@@ -114,8 +114,14 @@ Item {
       flush();
       queue = [];
       // Let the daemon read before we hang up; Qt batches the close
-      // otherwise and the writes never hit the wire.
-      Qt.callLater(() => { connected = false; draining = false; });
+      // otherwise and the writes never hit the wire. If a sockSend
+      // raced in during this tick-gap its command is stranded (the
+      // draining guard bounced it), so re-drain instead of closing.
+      Qt.callLater(() => {
+        draining = false;
+        if (queue.length > 0) { connectionStateChanged(); return; }
+        connected = false;
+      });
     }
     onError: (e) => {
       chat.lastError = "daemon unreachable";
