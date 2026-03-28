@@ -1,4 +1,5 @@
 import QtQuick
+import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
 import qs.Commons
@@ -27,17 +28,27 @@ Item {
     return t.length > n ? t.slice(0, n - 1) + "…" : t;
   }
 
+  // Qt's MarkdownText renderer pulls link colour from the *global*
+  // QPalette::Link role (hardcoded web-blue). TextEdit isn't a Control,
+  // so a local palette override doesn't reach it. Instead, rewrite
+  // [label](url) → <a href=url><font color=…>label</font></a> — Qt's
+  // CommonMark parser passes inline HTML through, and <font> is the one
+  // tag its RichText subset reliably honours for colour.
+  function colorizeLinks(md, c) {
+    // QML color → "#aarrggbb"; Qt's <font> parser only takes #rrggbb.
+    const hex = String(c).replace(/^#(..)(......)$/, "#$2");
+    return (md || "").replace(
+      /\[([^\]]+)\]\(([^)\s]+)\)/g,
+      (_, label, url) =>
+        `<a href="${url}"><font color="${hex}">${label}</font></a>`);
+  }
+
   // SmartPanel.qml sizes by contentPreferred{Width,Height} — without
   // these it falls back to its 900px default, ignoring implicitHeight.
   property real contentPreferredWidth: 720
   property real contentPreferredHeight: 600
   implicitWidth: contentPreferredWidth
   implicitHeight: contentPreferredHeight
-
-  // Qt's MarkdownText renderer hardcodes link colour to the palette's
-  // `link` role (classic web blue), which is unreadable on our dark
-  // surface. Override it panel-wide.
-  palette.link: Color.mSecondary
 
   // Relative-time formatter for the tiny timestamp under each bubble.
   // Absolute times would be noise for a chat that's mostly "just now".
@@ -92,12 +103,26 @@ Item {
     NDivider { Layout.fillWidth: true }
 
     // ── History ───────────────────────────────────────────────────────
-    NListView {
-      id: history
+    // Wrapped so the "new messages" pill can float over the list
+    // without joining the ColumnLayout flow.
+    Item {
       Layout.fillWidth: true
       Layout.fillHeight: true
+
+    NListView {
+      id: history
+      anchors.fill: parent
       model: chat?.messages ?? []
       clip: true
+      // "Near bottom" = within two bubble-heights. Used to decide
+      // whether an incoming message should auto-scroll or just bump
+      // the unread pill — yanking the view while you're reading
+      // scrollback is the #1 chat-UI sin.
+      readonly property bool atBottom:
+        contentHeight <= height ||
+        (contentY + height) >= (contentHeight + originY - Style.baseWidgetSize * 2)
+      property int unseen: 0
+      onAtBottomChanged: if (atBottom) unseen = 0
       spacing: Style.marginM
       // NListView's custom WheelHandler clamps contentY assuming
       // originY==0, which breaks once our reassigned-array model shifts
@@ -217,6 +242,16 @@ Item {
               fillMode: Image.PreserveAspectFit
               asynchronous: true
               cache: true
+              // Tap to open full-size in the system viewer — the
+              // 240px cap is fine for a glance but useless for
+              // reading a screenshot. grabPermissions keeps this
+              // from losing to the bubble's double-tap-reply handler.
+              TapHandler {
+                grabPermissions: PointerHandler.TakeOverForbidden
+                onTapped: Quickshell.execDetached(
+                  ["xdg-open", modelData.image])
+              }
+              HoverHandler { cursorShape: Qt.PointingHandCursor }
             }
             // TextEdit so code snippets and URLs are selectable.
             // readOnly keeps it display-only; selectByMouse enables
@@ -224,7 +259,11 @@ Item {
             TextEdit {
               id: msgText
               Layout.fillWidth: true
-              text: modelData.text
+              // Bot bubbles get the theme secondary; "me" bubbles sit
+              // on mPrimary so links need onPrimary to stay readable.
+              readonly property color linkColor:
+                row.mine ? Color.mOnPrimary : Color.mSecondary
+              text: root.colorizeLinks(modelData.text, linkColor)
               wrapMode: Text.Wrap
               textFormat: Text.MarkdownText
               readOnly: true
@@ -235,6 +274,16 @@ Item {
               font.family: Settings.data.ui.fontDefault
               font.pointSize: Style.fontSizeM * Settings.data.ui.fontDefaultScale
               font.weight: Style.fontWeightMedium
+              // TextEdit renders <a> tags from Markdown but won't act
+              // on them itself — it just emits linkActivated and lets
+              // you decide. xdg-open covers http(s), mailto, file://.
+              onLinkActivated: url => Quickshell.execDetached(["xdg-open", url])
+              // Pointer cursor only over the link span, I-beam for the
+              // rest so selectByMouse still reads as "selectable text".
+              HoverHandler {
+                cursorShape: msgText.hoveredLink !== ""
+                  ? Qt.PointingHandCursor : Qt.IBeamCursor
+              }
             }
             RowLayout {
               Layout.alignment: row.mine ? Qt.AlignRight : Qt.AlignLeft
@@ -274,8 +323,53 @@ Item {
         }
       }
 
-      onCountChanged: Qt.callLater(() => positionViewAtEnd())
+      // Only snap to new messages if the user was already parked at
+      // the bottom. Otherwise count them for the pill.
+      property bool _wasAtBottom: true
+      onCountChanged: {
+        if (_wasAtBottom) Qt.callLater(() => positionViewAtEnd());
+        else unseen++;
+      }
+      // Sample *before* the model grows — contentHeight changes in
+      // the same tick as count, so reading atBottom inside
+      // onCountChanged would already see the post-append geometry.
+      // Exception: if the newest entry is ours, always snap — sending
+      // a message and *not* seeing it appear is worse than losing
+      // your scrollback position.
+      onModelChanged: {
+        const last = model[model.length - 1];
+        _wasAtBottom = atBottom || (last && last.from === "me");
+      }
     }
+
+    // Floating "N new ↓" pill. Appears only when scrolled up and
+    // messages arrived; tapping it jumps to the end and clears itself
+    // via the atBottom watcher.
+    Rectangle {
+      visible: history.unseen > 0
+      anchors.bottom: parent.bottom
+      anchors.horizontalCenter: parent.horizontalCenter
+      anchors.bottomMargin: Style.marginM
+      radius: height / 2
+      color: Color.mPrimary
+      implicitWidth: pillRow.implicitWidth + Style.marginL * 2
+      implicitHeight: pillRow.implicitHeight + Style.marginS * 2
+      RowLayout {
+        id: pillRow
+        anchors.centerIn: parent
+        spacing: Style.marginXS
+        NText {
+          text: history.unseen + " new"
+          color: Color.mOnPrimary
+          font.pixelSize: Style.fontSizeS
+          font.bold: true
+        }
+        NIcon { icon: "chevron-down"; color: Color.mOnPrimary }
+      }
+      TapHandler { onTapped: history.positionViewAtEnd() }
+      HoverHandler { cursorShape: Qt.PointingHandCursor }
+    }
+    } // history wrapper
 
     // ── Compose ───────────────────────────────────────────────────────
     // Reply context bar — shown when a bubble was tapped. Cleared on
@@ -311,31 +405,96 @@ Item {
       Layout.fillWidth: true
       spacing: Style.marginS
 
-      NTextInput {
+      // Custom multiline compose box — NTextInput wraps a single-line
+      // TextField, but Nostr DMs routinely carry code snippets and
+      // pasted logs. TextArea gives us newlines; we intercept Return
+      // so plain Enter still sends (chat-app convention) while
+      // Shift+Enter inserts a break.
+      Control {
         id: input
         Layout.fillWidth: true
-        placeholderText: chat?.streaming ? "Message " + root.peerName + "…" : "Waiting for daemon…"
-        // Esc clears the reply target without reaching for the ×.
-        Keys.onEscapePressed: if (chat?.replyTarget) chat.replyTarget = null
+        // Grow with content up to ~5 lines, then scroll. Min matches
+        // the icon buttons so the row stays aligned when empty.
+        // TextArea.implicitHeight already includes its own padding.
+        Layout.preferredHeight: Math.min(
+          Math.max(inputArea.implicitHeight,
+                   Style.baseWidgetSize * 1.1 * Style.uiScaleRatio),
+          Style.baseWidgetSize * 4 * Style.uiScaleRatio)
+
+        property alias text: inputArea.text
+        signal accepted
+
+        function forceActiveFocus() { inputArea.forceActiveFocus(); }
+
         onAccepted: {
           if (!chat) return;
           // Send regardless of streaming state — the daemon's outbox
           // queues it and retries when relays come back.
-          chat.send(text);
-          text = "";
+          chat.send(inputArea.text);
+          inputArea.clear();
+        }
+
+        background: Rectangle {
+          radius: Style.iRadiusM
+          color: Color.mSurface
+          border.color: inputArea.activeFocus ? Color.mSecondary : Color.mOutline
+          border.width: Style.borderS
+          Behavior on border.color { ColorAnimation { duration: Style.animationFast } }
+        }
+
+        contentItem: ScrollView {
+          clip: true
+          ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+          TextArea {
+            id: inputArea
+            placeholderText: chat?.streaming ? "Message " + root.peerName + "…" : "Waiting for daemon…"
+            placeholderTextColor: Qt.alpha(Color.mOnSurfaceVariant, 0.6)
+            color: Color.mOnSurface
+            wrapMode: TextEdit.Wrap
+            selectByMouse: true
+            background: null
+            topPadding: Style.marginS
+            bottomPadding: Style.marginS
+            leftPadding: Style.marginM
+            rightPadding: Style.marginM
+            font.family: Settings.data.ui.fontDefault
+            font.pointSize: Style.fontSizeS * Style.uiScaleRatio
+
+            // Esc clears the reply target without reaching for the ×.
+            Keys.onEscapePressed: if (chat?.replyTarget) chat.replyTarget = null
+
+            // Enter sends, Shift+Enter newlines. Handle in onPressed so
+            // the default TextArea handler never inserts the \n on send.
+            Keys.onPressed: event => {
+              if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
+                if ((event.modifiers & Qt.ShiftModifier)
+                    && !(event.modifiers & Qt.ControlModifier)) {
+                  // Shift+Enter: let TextArea insert the newline.
+                  event.accepted = false;
+                } else {
+                  // Enter or Ctrl+Enter: send. Ctrl+Enter is muscle
+                  // memory from Slack/Discord's multiline mode.
+                  event.accepted = true;
+                  if (text.trim().length > 0) input.accepted();
+                }
+              }
+            }
+          }
         }
       }
       NIconButton {
         icon: "paperclip"
         tooltipText: "Attach image"
-        // Match the input field height so the compose row doesn't look
-        // like two different UI scales glued together.
-        baseSize: input.height
+        // Fixed size + bottom-align — the input now grows with
+        // multiline content and we don't want 4×-tall buttons.
+        baseSize: Style.baseWidgetSize * 1.1 * Style.uiScaleRatio
+        Layout.alignment: Qt.AlignBottom
         onClicked: filePicker.openFilePicker()
       }
       NIconButton {
         icon: "send"
-        baseSize: input.height
+        baseSize: Style.baseWidgetSize * 1.1 * Style.uiScaleRatio
+        Layout.alignment: Qt.AlignBottom
         enabled: input.text.trim().length > 0
         onClicked: input.accepted()
       }

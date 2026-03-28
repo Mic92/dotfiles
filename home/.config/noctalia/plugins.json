@@ -11,7 +11,15 @@
       "enabled": true,
       "sourceUrl": ""
     },
+    "audio-provider": {
+      "enabled": true,
+      "sourceUrl": ""
+    },
     "display-config": {
+      "enabled": true,
+      "sourceUrl": ""
+    },
+    "internet-provider": {
       "enabled": true,
       "sourceUrl": ""
     },
@@ -19,21 +27,17 @@
       "enabled": true,
       "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
     },
-    "rbw-provider": {
-      "enabled": true,
-      "sourceUrl": ""
-    },
     "nostr-chat": {
       "enabled": true,
       "sourceUrl": ""
     },
-    "audio-provider": {
+    "rbw-provider": {
       "enabled": true,
       "sourceUrl": ""
     },
-    "internet-provider": {
+    "timer": {
       "enabled": true,
-      "sourceUrl": ""
+      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
     }
   },
   "version": 2
