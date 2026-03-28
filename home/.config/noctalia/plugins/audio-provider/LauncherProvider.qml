@@ -19,7 +19,7 @@ Item {
     // The plugin disables every other card so only the selected one routes
     // audio; that avoids pulseaudio's "helpful" automatic port switching.
     readonly property var devices: ({
-        "headphones": {
+        "audeze": {
             card: "alsa_card.usb-Audeze_LLC_Audeze_Maxwell_PS_Dongle_0000000000000000-01",
             profile: "output:analog-stereo+input:mono-fallback",
             icon: "headphones"
@@ -29,7 +29,7 @@ Item {
             profile: "output:analog-stereo+input:analog-stereo",
             icon: "volume"
         },
-        "headphones (output-only)": {
+        "audeze (output-only)": {
             card: "alsa_card.usb-Audeze_LLC_Audeze_Maxwell_PS_Dongle_0000000000000000-01",
             profile: "output:analog-stereo",
             icon: "headphones"
@@ -40,16 +40,17 @@ Item {
             bluetoothAddr: "50:C2:75:67:67:8C",
             icon: "bluetooth"
         },
-        "headphones (bt)": {
+        "audeze (bt)": {
             card: "bluez_card.E0_49_ED_04_B7_B4",
             profile: "a2dp-sink",
             bluetoothAddr: "E0:49:ED:04:B7:B4",
             icon: "bluetooth"
         },
-        "soundbar": {
-            card: "alsa_card.usb-DELL_DELL_Slim_Soundbar_SB522A_0-02",
-            profile: "output:analog-stereo",
-            icon: "device-speaker"
+        "beats": {
+            card: "bluez_card.0C_53_B7_B5_B2_49",
+            profile: "a2dp-sink",
+            bluetoothAddr: "0C:53:B7:B5:B2:49",
+            icon: "bluetooth"
         }
     })
 
