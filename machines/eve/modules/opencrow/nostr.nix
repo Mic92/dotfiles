@@ -21,13 +21,9 @@
   services.opencrow.credentialFiles."nostr-private-key" =
     config.clan.core.vars.generators.opencrow.files.nostr-private-key.path;
 
+  # Relay/backend config comes from instanceDefaults in default.nix.
+  # Only Janet's identity lives here.
   services.opencrow.environment = {
-    OPENCROW_BACKEND = "nostr";
-    OPENCROW_NOSTR_PRIVATE_KEY_FILE = "%d/nostr-private-key";
-    OPENCROW_NOSTR_RELAYS = "wss://nostr.0cx.de,wss://nos.lol,wss://nostr.thalheim.io";
-    OPENCROW_NOSTR_DM_RELAYS = "wss://nos.lol,wss://nostr.thalheim.io,wss://nostr.0cx.de";
-    OPENCROW_NOSTR_BLOSSOM_SERVERS = "https://nostr-files.thalheim.io";
-    OPENCROW_NOSTR_ALLOWED_USERS = "npub10yt4rh4g5t5kd47x7w8dpwqq7s228c53xacjqxvxjwu0kes3kzvsynqfu8";
     OPENCROW_NOSTR_NAME = "janet";
     OPENCROW_NOSTR_DISPLAY_NAME = "Janet";
     OPENCROW_NOSTR_ABOUT = "Not a robot. Not a girl. I'm Janet! 👋 An anthropomorphized vessel of knowledge, here to help.";
