@@ -125,6 +125,14 @@ func main() {
 		os.Exit(1)
 	}
 	slog.Info("identity", "pubkey", keys.PK.Hex())
+	slog.Info("config",
+		"peer", cfg.PeerPubKey,
+		"relays", cfg.Relays,
+		"blossom", cfg.Blossom,
+		"socket", cfg.Socket,
+		"state", cfg.StateDir,
+		"cache", cfg.CacheDir,
+	)
 
 	store, err := OpenStore(cfg.StateDir)
 	if err != nil {
@@ -136,7 +144,41 @@ func main() {
 	ctx, cancel := signal.NotifyContext(context.Background(), syscall.SIGTERM, syscall.SIGINT)
 	defer cancel()
 
-	lst := NewListener(keys, cfg.Relays)
+	d := NewDaemon(cfg, keys, store, shellPush)
+	if err := d.Run(ctx); err != nil {
+		slog.Error("daemon", "err", err)
+		os.Exit(1)
+	}
+}
+
+// Daemon wires the listener, store, socket and publish loop together.
+// Extracted from main so tests can drive the real event loop with an
+// in-memory relay and a channel-backed push instead of forking
+// noctalia-shell.
+type Daemon struct {
+	cfg   Config
+	keys  Keys
+	store *Store
+	lst   *Listener
+	push  PushFunc
+}
+
+func NewDaemon(cfg Config, keys Keys, store *Store, push PushFunc) *Daemon {
+	return &Daemon{
+		cfg:   cfg,
+		keys:  keys,
+		store: store,
+		lst:   NewListener(keys, cfg.Relays),
+		push:  push,
+	}
+}
+
+// Run blocks until ctx is done. It starts the relay subscription,
+// socket server and publish loop, then dispatches rumors and commands
+// on the calling goroutine.
+func (d *Daemon) Run(ctx context.Context) error {
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
 
 	// Rumors and commands funnel through this goroutine so the common
 	// path (text in/out) never contends on the store. File upload and
@@ -153,13 +195,13 @@ func main() {
 	startedAt := time.Now().Unix()
 	// Closure so reconnects pick up the watermark handleRumor has been
 	// advancing, instead of replaying from the boot-time value.
-	go lst.Run(ctx, func() int64 {
-		ts, _ := store.GetInt(ctx, "last_seen_ts")
+	go d.lst.Run(ctx, func() int64 {
+		ts, _ := d.store.GetInt(ctx, "last_seen_ts")
 		return ts
 	}, rumors)
 
 	go func() {
-		if err := serveSocket(ctx, cfg.Socket, func(c Command) { cmds <- c }); err != nil {
+		if err := serveSocket(ctx, d.cfg.Socket, func(c Command) { cmds <- c }); err != nil {
 			slog.Error("socket", "err", err)
 			cancel()
 		}
@@ -172,27 +214,30 @@ func main() {
 	// crypto + exec.
 	drainNow := make(chan struct{}, 1)
 	drainNow <- struct{}{} // flush anything a prior crash left behind
-	go publishLoop(ctx, store, lst, cfg, drainNow)
+	go d.publishLoop(ctx, drainNow)
 
 	// Booted:true tells the shell this is a fresh daemon, not a replay
 	// response — it should request backfill. Without the flag the shell
 	// can't distinguish a restart from its own replay echo and either
 	// misses history or loops forever.
-	pushIPC(Event{Kind: "status", Streaming: true, Booted: true, PubKey: keys.PK.Hex(), Name: cfg.Name})
+	d.push(Event{Kind: EvStatus, Streaming: true, Booted: true, PubKey: d.keys.PK.Hex(), Name: d.cfg.Name})
 
 	for {
 		select {
 		case <-ctx.Done():
-			return
+			return nil
 		case r := <-rumors:
-			handleRumor(ctx, store, cfg, keys, r, startedAt)
+			slog.Debug("rumor", "kind", r.Kind, "from", r.PubKey[:8], "id", r.ID[:8], "ts", r.TS)
+			d.handleRumor(ctx, r, startedAt)
 		case c := <-cmds:
-			handleCommand(ctx, store, lst, cfg, keys, c, drainNow)
+			slog.Debug("command", "cmd", c.Cmd, "n", c.N, "reply_to", c.ReplyTo, "path", c.Path)
+			d.handleCommand(ctx, c, drainNow)
 		}
 	}
 }
 
-func handleRumor(ctx context.Context, store *Store, cfg Config, keys Keys, r Rumor, startedAt int64) {
+func (d *Daemon) handleRumor(ctx context.Context, r Rumor, startedAt int64) {
+	store, cfg, keys := d.store, d.cfg, d.keys
 	switch r.Kind {
 	case nostr.KindReaction:
 		// Gift-wrapped kind-7 reaction — read receipt. Only trust the
@@ -208,7 +253,7 @@ func handleRumor(ctx context.Context, store *Store, cfg Config, keys Keys, r Rum
 			slog.Warn("set ack", "err", err)
 			return
 		}
-		pushIPC(Event{Kind: "ack", Target: r.ETag, Mark: mark})
+		d.push(Event{Kind: EvAck, Target: r.ETag, Mark: mark})
 
 	default:
 		// kind 14 chat, kind 15 file, or anything else the peer wraps —
@@ -228,7 +273,7 @@ func handleRumor(ctx context.Context, store *Store, cfg Config, keys Keys, r Rum
 		}
 		m := Message{
 			ID: r.ID, PubKey: r.PubKey, Content: content, TS: r.TS,
-			Dir:     map[bool]string{true: "out", false: "in"}[mine],
+			Dir:     map[bool]Dir{true: DirOut, false: DirIn}[mine],
 			Read:    mine || r.TS < startedAt,
 			ReplyTo: r.ETag, // kind-14 e-tag = threaded reply target
 		}
@@ -243,7 +288,7 @@ func handleRumor(ctx context.Context, store *Store, cfg Config, keys Keys, r Rum
 		if r.TS > 0 {
 			_ = store.SetInt(ctx, "last_seen_ts", r.TS)
 		}
-		pushIPC(Event{Kind: "msg", Msg: &m})
+		d.push(Event{Kind: EvMsg, Msg: &m})
 
 		// kind-15: download runs off the main loop so a slow Blossom
 		// server can't stall incoming text. When done, patch the row
@@ -251,23 +296,26 @@ func handleRumor(ctx context.Context, store *Store, cfg Config, keys Keys, r Rum
 		// place, same pattern as acks.
 		if r.Kind == KindFileMessage {
 			go func(r Rumor) {
+				slog.Info("downloading attachment", "url", r.Content, "id", r.ID[:8])
 				p, err := downloadFile(ctx, r.Content, cfg.CacheDir, r.Tags)
 				if err != nil {
 					slog.Warn("download", "url", r.Content, "err", err)
 					return
 				}
+				slog.Info("attachment saved", "id", r.ID[:8], "path", p)
 				if err := store.SetImage(ctx, r.ID, p); err != nil {
 					slog.Warn("set image", "err", err)
 				}
-				pushIPC(Event{Kind: "img", Target: r.ID, Image: p})
+				d.push(Event{Kind: EvImg, Target: r.ID, Image: p})
 			}(r)
 		}
 	}
 }
 
-func handleCommand(ctx context.Context, store *Store, lst *Listener, cfg Config, keys Keys, c Command, drainNow chan<- struct{}) {
+func (d *Daemon) handleCommand(ctx context.Context, c Command, drainNow chan<- struct{}) {
+	store, lst, cfg, keys := d.store, d.lst, d.cfg, d.keys
 	switch c.Cmd {
-	case "send":
+	case CmdSend:
 		if strings.TrimSpace(c.Text) == "" {
 			return
 		}
@@ -278,17 +326,19 @@ func handleCommand(ctx context.Context, store *Store, lst *Listener, cfg Config,
 		out, err := lst.Prepare(ctx, cfg.PeerPubKey, c.Text, c.ReplyTo)
 		if err != nil {
 			slog.Error("prepare", "err", err)
-			pushIPC(Event{Kind: "error", Text: "prepare: " + err.Error()})
+			d.push(Event{Kind: EvError, Text: "prepare: " + err.Error()})
 			return
 		}
 		m := Message{
 			ID: out.Rumor.ID, PubKey: out.Rumor.PubKey, Content: out.Rumor.Content,
-			TS: out.Rumor.TS, Dir: "out", Read: true, ReplyTo: c.ReplyTo,
+			TS: out.Rumor.TS, Dir: DirOut, Read: true, ReplyTo: c.ReplyTo,
+			State: StatePending,
 		}
 		if ok, _ := store.InsertMessage(ctx, m); ok {
-			pushIPC(Event{Kind: "msg", Msg: &m})
+			d.push(Event{Kind: EvMsg, Msg: &m})
 		}
-		if _, err := store.Enqueue(ctx, c.Text, c.ReplyTo); err != nil {
+		them, us := out.Wraps()
+		if _, err := store.Enqueue(ctx, out.Rumor.ID, them, us); err != nil {
 			slog.Error("enqueue", "err", err)
 			return
 		}
@@ -297,7 +347,7 @@ func handleCommand(ctx context.Context, store *Store, lst *Listener, cfg Config,
 		default:
 		}
 
-	case "send-file":
+	case CmdSendFile:
 		if c.Path == "" {
 			return
 		}
@@ -307,21 +357,24 @@ func handleCommand(ctx context.Context, store *Store, lst *Listener, cfg Config,
 		// self-copy round-trip gives us the row anyway. If the daemon
 		// dies mid-upload the user just re-attaches.
 		go func(path string) {
+			slog.Info("uploading file", "path", path)
 			enc, err := encryptFile(path)
 			if err != nil {
-				pushIPC(Event{Kind: "error", Text: "encrypt: " + err.Error()})
+				d.push(Event{Kind: EvError, Text: "encrypt: " + err.Error()})
 				return
 			}
 			uctx, cancel := context.WithTimeout(ctx, 60*time.Second)
 			defer cancel()
 			url, err := blossomUpload(uctx, cfg.Blossom, enc, keys)
 			if err != nil {
-				pushIPC(Event{Kind: "error", Text: "upload: " + err.Error()})
+				slog.Error("blossom upload", "path", path, "err", err)
+				d.push(Event{Kind: EvError, Text: "upload: " + err.Error()})
 				return
 			}
+			slog.Info("blossom upload ok", "url", url, "mime", enc.Mime)
 			out, err := lst.PrepareFile(uctx, cfg.PeerPubKey, url, enc)
 			if err != nil {
-				pushIPC(Event{Kind: "error", Text: "prepare file: " + err.Error()})
+				d.push(Event{Kind: EvError, Text: "prepare file: " + err.Error()})
 				return
 			}
 			// Echo locally with the source path as the image — no need
@@ -329,17 +382,17 @@ func handleCommand(ctx context.Context, store *Store, lst *Listener, cfg Config,
 			m := Message{
 				ID: out.Rumor.ID, PubKey: out.Rumor.PubKey,
 				Content: "📎 " + enc.Mime, TS: out.Rumor.TS,
-				Dir: "out", Read: true, Image: path,
+				Dir: DirOut, Read: true, Image: path,
 			}
 			if ok, _ := store.InsertMessage(uctx, m); ok {
-				pushIPC(Event{Kind: "msg", Msg: &m})
+				d.push(Event{Kind: EvMsg, Msg: &m})
 			}
 			if err := lst.Publish(uctx, out); err != nil {
-				pushIPC(Event{Kind: "error", Text: "publish file: " + err.Error()})
+				d.push(Event{Kind: EvError, Text: "publish file: " + err.Error()})
 			}
 		}(c.Path)
 
-	case "replay":
+	case CmdReplay:
 		n := c.N
 		if n <= 0 {
 			n = 50
@@ -350,27 +403,53 @@ func handleCommand(ctx context.Context, store *Store, lst *Listener, cfg Config,
 			return
 		}
 		unread, _ := store.UnreadCount(ctx)
-		pushIPC(Event{Kind: "status", Streaming: true, PubKey: keys.PK.Hex(), Name: cfg.Name, Unread: unread})
+		d.push(Event{Kind: EvStatus, Streaming: true, PubKey: keys.PK.Hex(), Name: cfg.Name, Unread: unread})
 		for _, m := range msgs {
 			m := m
-			pushIPC(Event{Kind: "msg", Msg: &m})
+			d.push(Event{Kind: EvMsg, Msg: &m})
 		}
 
-	case "mark-read":
+	case CmdMarkRead:
 		if err := store.MarkAllRead(ctx); err != nil {
 			slog.Warn("mark-read", "err", err)
 		}
+
+	case CmdRetry:
+		if c.ID == "" {
+			return
+		}
+		if err := store.OutboxRetryNow(ctx, c.ID); err != nil {
+			slog.Warn("retry-now", "err", err)
+			return
+		}
+		select {
+		case drainNow <- struct{}{}:
+		default:
+		}
+
+	case CmdCancel:
+		if c.ID == "" {
+			return
+		}
+		if err := store.OutboxCancel(ctx, c.ID); err != nil {
+			slog.Warn("cancel", "err", err)
+			return
+		}
+		// Tell the shell to drop the bubble — reuse EvSent with a
+		// sentinel state so we don't need another event kind.
+		d.push(Event{Kind: EvSent, Target: c.ID, State: StateCancelled})
 
 	default:
 		slog.Warn("unknown cmd", "cmd", c.Cmd)
 	}
 }
 
-// publishLoop drains the outbox on its own goroutine. Re-Preparing on
-// retry means a fresh rumor id each attempt — the same text can appear
-// twice if a publish half-succeeded. Acceptable: persisting gift-wraps
-// would drag ephemeral crypto state into sqlite.
-func publishLoop(ctx context.Context, store *Store, lst *Listener, cfg Config, kick <-chan struct{}) {
+// publishLoop drains the outbox on its own goroutine. Gift-wraps are
+// persisted alongside the outbox row so retries publish the same rumor
+// id the local echo used — the peer's ack then lands on the bubble the
+// user actually sees.
+func (d *Daemon) publishLoop(ctx context.Context, kick <-chan struct{}) {
+	store, lst := d.store, d.lst
 	tick := time.NewTicker(30 * time.Second)
 	defer tick.Stop()
 	for {
@@ -385,19 +464,24 @@ func publishLoop(ctx context.Context, store *Store, lst *Listener, cfg Config, k
 			slog.Warn("outbox scan", "err", err)
 			continue
 		}
+		if len(items) > 0 {
+			slog.Debug("draining outbox", "pending", len(items))
+		}
 		for _, it := range items {
-			out, err := lst.Prepare(ctx, cfg.PeerPubKey, it.Content, it.ReplyTo)
-			if err == nil {
-				err = lst.Publish(ctx, out)
-			}
-			if err != nil {
+			if err := lst.PublishRaw(ctx, it.RumorID, it.WrapThem, it.WrapUs); err != nil {
 				delay := time.Duration(1<<min(it.Tries, 8)) * time.Second
 				_ = store.OutboxRetry(ctx, it.ID, time.Now().Add(delay).Unix())
-				slog.Warn("publish failed, will retry", "tries", it.Tries+1, "delay", delay, "err", err)
-				pushIPC(Event{Kind: "error", Text: fmt.Sprintf("send: %v (retrying)", err)})
+				slog.Warn("publish failed, will retry",
+					"rumor", it.RumorID, "tries", it.Tries+1, "delay", delay, "err", err)
+				// Per-bubble ⚠ instead of a generic toast — the user can
+				// tap to retry or cancel.
+				d.push(Event{Kind: EvRetry, Target: it.RumorID, Tries: it.Tries + 1, Text: err.Error()})
 				continue
 			}
+			slog.Debug("published", "outbox_id", it.ID, "rumor", it.RumorID)
 			_ = store.OutboxDone(ctx, it.ID)
+			_ = store.SetState(ctx, it.RumorID, StateSent)
+			d.push(Event{Kind: EvSent, Target: it.RumorID, State: StateSent})
 		}
 	}
 }

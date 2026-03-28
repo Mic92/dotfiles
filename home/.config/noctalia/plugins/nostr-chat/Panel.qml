@@ -9,6 +9,7 @@ Item {
 
   property var pluginApi: null
   property var chat: pluginApi?.mainInstance?.chat || null
+  readonly property var state: pluginApi?.mainInstance?.state || ({})
   // Daemon pushes this in the status event — single source of truth is
   // the hm-module's displayName option, not a separate plugin setting.
   readonly property string peerName: chat?.peerName || "Chat"
@@ -133,9 +134,11 @@ Item {
           // into the panel background.
           border.width: row.mine ? 0 : 1
           border.color: Color.mOutline
-          // Dim until the peer's reaction lands so there's visual
-          // feedback the send is in flight (local echo is instant).
-          opacity: (row.mine && (modelData.ack ?? "") === "") ? 0.7 : 1.0
+          // Dim only while the outbox still owns it. Once a relay has
+          // the wrap it's out of our hands — the single check mark
+          // covers the rest, and a peer that never acks won't leave
+          // the bubble looking half-finished forever.
+          opacity: (row.mine && modelData.state === root.state.pending) ? 0.7 : 1.0
           Behavior on opacity { NumberAnimation { duration: 150 } }
 
           // Hover hint + cursor so tap-to-reply is discoverable.
@@ -243,17 +246,28 @@ Item {
                   ? Qt.alpha(Color.mOnPrimary, 0.6)
                   : Color.mOnSurfaceVariant
               }
-              // Peer acks with a kind-7 reaction once it's received
-              // the DM — render whatever emoji it sent, or a check mark.
-              // Same size as body text so the emoji glyph is actually
-              // recognisable on a HiDPI screen.
+              // Delivery ladder: 🕓 pending → ✓ sent → ✓✓/emoji read.
+              // ⚠ replaces the clock when retries pile up — tap for
+              // retry-now, long-press to cancel. Peers that don't
+              // send read receipts stop at ✓ and that's fine.
               NText {
-                visible: (modelData.ack ?? "") !== ""
-                text: modelData.ack === "+" ? "✓" : (modelData.ack ?? "")
+                visible: row.mine
+                text: {
+                  if ((modelData.tries ?? 0) > 0) return "⚠";
+                  if (modelData.state === root.state.pending) return "🕓";
+                  const a = modelData.ack ?? "";
+                  if (a === "") return "✓";
+                  return (a === "+" || a === "✓") ? "✓✓" : a;
+                }
                 font.pixelSize: Style.fontSizeL
-                color: row.mine
-                  ? Qt.alpha(Color.mOnPrimary, 0.8)
-                  : Color.mTertiary
+                color: (modelData.tries ?? 0) > 0
+                  ? Color.mError
+                  : Qt.alpha(Color.mOnPrimary, 0.8)
+                TapHandler {
+                  enabled: (modelData.tries ?? 0) > 0
+                  onTapped: chat.retry(modelData.id)
+                  onLongPressed: chat.cancel(modelData.id)
+                }
               }
             }
           }
