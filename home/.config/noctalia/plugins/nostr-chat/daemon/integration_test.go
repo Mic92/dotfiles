@@ -177,6 +177,51 @@ func TestSendRoundTrip(t *testing.T) {
 	}
 }
 
+// TestSendWhileOffline: send with no relay reachable. Must echo
+// locally, surface one EvRetry, and not inflate tries — so the item
+// fires immediately once a relay appears instead of sitting in backoff.
+func TestSendWhileOffline(t *testing.T) {
+	t.Parallel()
+
+	peerSK := nostr.Generate()
+	peerPK := nostr.GetPublicKey(peerSK)
+
+	// Dead port — subscription never connects, publishConnected skips.
+	h := newHarness(t, "ws://127.0.0.1:1", peerPK.Hex())
+
+	h.send(t, Command{Cmd: CmdSend, Text: "queued"})
+
+	echo := h.expect(t, EvMsg, 5*time.Second)
+	if echo.Msg == nil || echo.Msg.State != StatePending {
+		t.Fatalf("echo = %+v, want pending", echo)
+	}
+
+	retry := h.expect(t, EvRetry, 5*time.Second)
+	if retry.Tries != 1 {
+		t.Errorf("tries = %d, want 1 (defer surfaces once)", retry.Tries)
+	}
+
+	// No second EvRetry — defer is silent after the first.
+	select {
+	case ev := <-h.events:
+		if ev.Kind == EvRetry {
+			t.Fatalf("unexpected second EvRetry: %+v", ev)
+		}
+	case <-time.After(300 * time.Millisecond):
+	}
+
+	// Outbox row should sit at tries=1, next_at=0 — ready to fire the
+	// instant a relay comes back rather than stuck in exponential
+	// backoff after N ticks offline.
+	items, err := h.d.store.PendingOutbox(context.Background(), time.Now().Unix())
+	if err != nil {
+		t.Fatalf("outbox: %v", err)
+	}
+	if len(items) != 1 || items[0].Tries != 1 {
+		t.Errorf("outbox = %+v, want 1 item at tries=1", items)
+	}
+}
+
 // TestIncomingMessage: peer publishes a DM, daemon surfaces it as an
 // EvMsg with dir=in and stores it for replay.
 func TestIncomingMessage(t *testing.T) {

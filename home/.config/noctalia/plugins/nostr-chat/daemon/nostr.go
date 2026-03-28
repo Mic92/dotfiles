@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log/slog"
 	"strings"
@@ -258,16 +259,38 @@ func (l *Listener) PrepareFile(ctx context.Context, to, url string, enc *encrypt
 	}, nil
 }
 
-// Publish sends both wraps to our relays. We skip nip17.GetDMRelays —
-// the peer advertises the same relays we use, and the extra lookup adds
-// latency to every send. Revisit if the peer uses different relays.
+// Publish sends both wraps, dialling relays if necessary. We skip
+// nip17.GetDMRelays — the peer advertises the same relays we use, and
+// the extra lookup adds latency to every send. Revisit if that changes.
+//
+// Used by file-send (own goroutine, not serialised) and tests (no
+// subscription running). The outbox drain uses PublishRaw instead.
 func (l *Listener) Publish(ctx context.Context, out Outgoing) error {
-	return l.publish(ctx, out.Rumor.ID, out.toThem, out.toUs)
+	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
+	defer cancel()
+	var ok int
+	for _, ev := range []nostr.Event{out.toThem, out.toUs} {
+		for res := range l.pool.PublishMany(ctx, l.relays, ev) {
+			if res.Error == nil {
+				ok++
+			}
+		}
+	}
+	if ok == 0 {
+		return fmt.Errorf("publish: no relay accepted")
+	}
+	return nil
 }
 
 // PublishRaw re-sends wraps that were serialised into the outbox.
 // Same rumor id across retries means the peer's ack lands on the
 // bubble the user is staring at, not a phantom row.
+//
+// Unlike Publish this only writes to relays the subscription loop has
+// already opened — no EnsureRelay, no 7s dial under the per-URL mutex
+// shared with subscribe. A dead relay costs ~nothing, so the sequential
+// outbox drain doesn't head-of-line block on timeouts. Reconnection is
+// the listen loop's job; we just retry once it's back.
 func (l *Listener) PublishRaw(ctx context.Context, rumorID, themJSON, usJSON string) error {
 	var them, us nostr.Event
 	if err := json.Unmarshal([]byte(themJSON), &them); err != nil {
@@ -276,27 +299,40 @@ func (l *Listener) PublishRaw(ctx context.Context, rumorID, themJSON, usJSON str
 	if err := json.Unmarshal([]byte(usJSON), &us); err != nil {
 		return fmt.Errorf("decode wrap-us: %w", err)
 	}
-	return l.publish(ctx, rumorID, them, us)
+	return l.publishConnected(ctx, rumorID, them, us)
 }
 
-func (l *Listener) publish(ctx context.Context, rumorID string, evs ...nostr.Event) error {
-	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
+func (l *Listener) publishConnected(ctx context.Context, rumorID string, evs ...nostr.Event) error {
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
-	var ok, fail int
-	for _, ev := range evs {
-		for res := range l.pool.PublishMany(ctx, l.relays, ev) {
-			if res.Error == nil {
-				ok++
-				slog.Debug("relay accepted", "relay", res.RelayURL)
-			} else {
+	var ok, fail, skip int
+	for _, url := range l.relays {
+		r, loaded := l.pool.Relays.Load(nostr.NormalizeURL(url))
+		if !loaded || r == nil || !r.IsConnected() {
+			skip++
+			continue
+		}
+		for _, ev := range evs {
+			if err := r.Publish(ctx, ev); err != nil {
 				fail++
-				slog.Debug("relay rejected", "relay", res.RelayURL, "err", res.Error)
+				slog.Debug("relay rejected", "relay", url, "err", err)
+			} else {
+				ok++
+				slog.Debug("relay accepted", "relay", url)
 			}
 		}
 	}
-	slog.Debug("publish done", "rumor", rumorID[:8], "ok", ok, "fail", fail)
+	slog.Debug("publish done", "rumor", rumorID[:8], "ok", ok, "fail", fail, "skip", skip)
 	if ok == 0 {
+		if skip == len(l.relays) {
+			return ErrNoRelayConnected
+		}
 		return fmt.Errorf("publish: no relay accepted")
 	}
 	return nil
 }
+
+// ErrNoRelayConnected means we never reached a relay — the subscription
+// hasn't (re)connected yet. Distinct from a rejection so publishLoop
+// can defer without inflating the retry counter.
+var ErrNoRelayConnected = errors.New("publish: no relay connected")

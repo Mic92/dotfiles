@@ -468,7 +468,21 @@ func (d *Daemon) publishLoop(ctx context.Context, kick <-chan struct{}) {
 			slog.Debug("draining outbox", "pending", len(items))
 		}
 		for _, it := range items {
-			if err := lst.PublishRaw(ctx, it.RumorID, it.WrapThem, it.WrapUs); err != nil {
+			err := lst.PublishRaw(ctx, it.RumorID, it.WrapThem, it.WrapUs)
+			if errors.Is(err, ErrNoRelayConnected) {
+				// Not a real try — we never reached anyone. Defer to the
+				// next tick without bumping tries, so backoff stays low
+				// and the item fires the moment a relay returns. Surface
+				// the ⚠ once (tries 0→1) so the user sees something's
+				// wrong, but don't re-toast every 30s during an outage.
+				if it.Tries == 0 {
+					_ = store.OutboxRetry(ctx, it.ID, 0)
+					d.push(Event{Kind: EvRetry, Target: it.RumorID, Tries: 1, Text: err.Error()})
+				}
+				slog.Debug("publish deferred, no relay", "rumor", it.RumorID)
+				continue
+			}
+			if err != nil {
 				delay := time.Duration(1<<min(it.Tries, 8)) * time.Second
 				_ = store.OutboxRetry(ctx, it.ID, time.Now().Add(delay).Unix())
 				slog.Warn("publish failed, will retry",
