@@ -285,7 +285,10 @@ func (d *Daemon) handleRumor(ctx context.Context, r Rumor, startedAt int64) {
 		if !inserted {
 			return // dedup hit — replay after restart
 		}
-		if r.TS > 0 {
+		// Only advance the watermark. Rumors interleave across relays;
+		// a late-delivered older message would roll it back and the
+		// next restart over-fetches the gap.
+		if cur, _ := store.GetInt(ctx, "last_seen_ts"); r.TS > cur {
 			_ = store.SetInt(ctx, "last_seen_ts", r.TS)
 		}
 		d.push(Event{Kind: EvMsg, Msg: &m})
