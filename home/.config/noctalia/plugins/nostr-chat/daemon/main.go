@@ -354,11 +354,12 @@ func (d *Daemon) handleCommand(ctx context.Context, c Command, drainNow chan<- s
 		if c.Path == "" {
 			return
 		}
-		// Upload + publish in a goroutine — encrypt is fast but the
-		// PUT to Blossom can take seconds. No outbox persistence for
-		// files: re-uploading on retry would waste bandwidth, and the
-		// self-copy round-trip gives us the row anyway. If the daemon
-		// dies mid-upload the user just re-attaches.
+		// Upload runs in a goroutine — encrypt is fast but the PUT to
+		// Blossom can take seconds. Once uploaded we have serialisable
+		// wraps and enqueue them like text, so file sends get the same
+		// retry/cancel and connected-only publish path. If the daemon
+		// dies mid-upload the user re-attaches; post-upload the outbox
+		// survives the restart.
 		go func(path string, unlink bool) {
 			slog.Info("uploading file", "path", path, "unlink", unlink)
 			// Copy into CacheDir first — the local echo points Image
@@ -403,11 +404,18 @@ func (d *Daemon) handleCommand(ctx context.Context, c Command, drainNow chan<- s
 				Content: "📎 " + enc.Mime, TS: out.Rumor.TS,
 				Dir: DirOut, Read: true, Image: cached,
 			}
+			m.State = StatePending
 			if ok, _ := store.InsertMessage(uctx, m); ok {
 				d.push(Event{Kind: EvMsg, Msg: &m})
 			}
-			if err := lst.Publish(uctx, out); err != nil {
-				d.push(Event{Kind: EvError, Text: "publish file: " + err.Error()})
+			them, us := out.Wraps()
+			if _, err := store.Enqueue(uctx, out.Rumor.ID, them, us); err != nil {
+				slog.Error("enqueue file", "err", err)
+				return
+			}
+			select {
+			case drainNow <- struct{}{}:
+			default:
 			}
 		}(c.Path, c.Unlink)
 

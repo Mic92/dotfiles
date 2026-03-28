@@ -259,38 +259,17 @@ func (l *Listener) PrepareFile(ctx context.Context, to, url string, enc *encrypt
 	}, nil
 }
 
-// Publish sends both wraps, dialling relays if necessary. We skip
-// nip17.GetDMRelays — the peer advertises the same relays we use, and
-// the extra lookup adds latency to every send. Revisit if that changes.
+// PublishRaw sends serialised gift-wraps from the outbox to relays the
+// subscription loop has already opened — no EnsureRelay, no 7s dial
+// under the per-URL mutex shared with subscribe. A dead relay costs
+// ~nothing, so the sequential outbox drain doesn't head-of-line block
+// on timeouts. Reconnection is the listen loop's job; we just retry
+// once it's back.
 //
-// Used by file-send (own goroutine, not serialised) and tests (no
-// subscription running). The outbox drain uses PublishRaw instead.
-func (l *Listener) Publish(ctx context.Context, out Outgoing) error {
-	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
-	defer cancel()
-	var ok int
-	for _, ev := range []nostr.Event{out.toThem, out.toUs} {
-		for res := range l.pool.PublishMany(ctx, l.relays, ev) {
-			if res.Error == nil {
-				ok++
-			}
-		}
-	}
-	if ok == 0 {
-		return fmt.Errorf("publish: no relay accepted")
-	}
-	return nil
-}
-
-// PublishRaw re-sends wraps that were serialised into the outbox.
-// Same rumor id across retries means the peer's ack lands on the
-// bubble the user is staring at, not a phantom row.
-//
-// Unlike Publish this only writes to relays the subscription loop has
-// already opened — no EnsureRelay, no 7s dial under the per-URL mutex
-// shared with subscribe. A dead relay costs ~nothing, so the sequential
-// outbox drain doesn't head-of-line block on timeouts. Reconnection is
-// the listen loop's job; we just retry once it's back.
+// This is the only publish path. Text and file sends alike enqueue
+// their wraps and let publishLoop drain them, so both get retry/cancel
+// and the same rumor id survives across attempts — the peer's ack lands
+// on the bubble the user is staring at, not a phantom row.
 func (l *Listener) PublishRaw(ctx context.Context, rumorID, themJSON, usJSON string) error {
 	var them, us nostr.Event
 	if err := json.Unmarshal([]byte(themJSON), &them); err != nil {

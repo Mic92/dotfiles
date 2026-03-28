@@ -43,9 +43,12 @@ type harness struct {
 }
 
 func newHarness(t *testing.T, relay, peer string) *harness {
+	return newHarnessWithKey(t, relay, peer, nostr.Generate())
+}
+
+func newHarnessWithKey(t *testing.T, relay, peer string, sk nostr.SecretKey) *harness {
 	t.Helper()
 	dir := t.TempDir()
-	sk := nostr.Generate()
 	keys := Keys{SK: sk, PK: nostr.GetPublicKey(sk)}
 	cfg := Config{
 		PeerPubKey: peer,
@@ -223,27 +226,23 @@ func TestSendWhileOffline(t *testing.T) {
 }
 
 // TestIncomingMessage: peer publishes a DM, daemon surfaces it as an
-// EvMsg with dir=in and stores it for replay.
+// EvMsg with dir=in and stores it for replay. Both sides run as full
+// harnesses so the peer publishes via its own outbox/subscription —
+// same connected-only path as production, no test-only dial shortcut.
 func TestIncomingMessage(t *testing.T) {
 	t.Parallel()
 	relay := startTestRelay(t)
 
-	peerSK := nostr.Generate()
-	peerKeys := Keys{SK: peerSK, PK: nostr.GetPublicKey(peerSK)}
-	peer := NewListener(peerKeys, []string{relay})
+	// Bootstrap: each harness needs the other's pubkey at construction,
+	// so generate h's key first, build peer, then rebuild h with the
+	// real key via newHarnessWithKey.
+	hSK := nostr.Generate()
+	hPK := nostr.GetPublicKey(hSK)
+	peer := newHarness(t, relay, hPK.Hex())
+	h := newHarnessWithKey(t, relay, peer.keys.PK.Hex(), hSK)
 
-	h := newHarness(t, relay, peerKeys.PK.Hex())
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	out, err := peer.Prepare(ctx, h.keys.PK.Hex(), "ping from peer", "")
-	if err != nil {
-		t.Fatalf("peer prepare: %v", err)
-	}
-	if err := peer.Publish(ctx, out); err != nil {
-		t.Fatalf("peer publish: %v", err)
-	}
+	peer.send(t, Command{Cmd: CmdSend, Text: "ping from peer"})
+	peer.expect(t, EvSent, 5*time.Second) // wait until relay accepted
 
 	ev := h.expect(t, EvMsg, 5*time.Second)
 	if ev.Msg == nil || ev.Msg.Content != "ping from peer" {
@@ -252,8 +251,8 @@ func TestIncomingMessage(t *testing.T) {
 	if ev.Msg.Dir != DirIn {
 		t.Errorf("dir = %s, want in", ev.Msg.Dir)
 	}
-	if ev.Msg.PubKey != peerKeys.PK.Hex() {
-		t.Errorf("pubkey = %s, want %s", ev.Msg.PubKey, peerKeys.PK.Hex())
+	if ev.Msg.PubKey != peer.keys.PK.Hex() {
+		t.Errorf("pubkey = %s, want %s", ev.Msg.PubKey, peer.keys.PK.Hex())
 	}
 
 	// Replay should return the stored message.
@@ -272,25 +271,15 @@ func TestStrangerIgnored(t *testing.T) {
 	t.Parallel()
 	relay := startTestRelay(t)
 
+	hSK := nostr.Generate()
+	hPK := nostr.GetPublicKey(hSK)
+	// Stranger targets h; h is configured for a third, unrelated peer.
+	stranger := newHarness(t, relay, hPK.Hex())
 	peerSK := nostr.Generate()
-	peerKeys := Keys{SK: peerSK, PK: nostr.GetPublicKey(peerSK)}
+	h := newHarnessWithKey(t, relay, nostr.GetPublicKey(peerSK).Hex(), hSK)
 
-	h := newHarness(t, relay, peerKeys.PK.Hex())
-
-	strangerSK := nostr.Generate()
-	strangerKeys := Keys{SK: strangerSK, PK: nostr.GetPublicKey(strangerSK)}
-	stranger := NewListener(strangerKeys, []string{relay})
-
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
-	out, err := stranger.Prepare(ctx, h.keys.PK.Hex(), "spam", "")
-	if err != nil {
-		t.Fatalf("stranger prepare: %v", err)
-	}
-	if err := stranger.Publish(ctx, out); err != nil {
-		t.Fatalf("stranger publish: %v", err)
-	}
+	stranger.send(t, Command{Cmd: CmdSend, Text: "spam"})
+	stranger.expect(t, EvSent, 5*time.Second)
 
 	select {
 	case ev := <-h.events:
