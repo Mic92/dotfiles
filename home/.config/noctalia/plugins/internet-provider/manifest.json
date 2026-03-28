@@ -1,0 +1,21 @@
+{
+  "id": "internet-provider",
+  "name": "Internet Switcher",
+  "version": "1.0.0",
+  "author": "Jörg Thalheim",
+  "official": false,
+  "license": "MIT",
+  "description": "Switch between tethered / fallback internet connections via nmcli",
+  "tags": ["Launcher", "Network"],
+  "minNoctaliaVersion": "4.5.0",
+  "entryPoints": {
+    "main": "Main.qml",
+    "launcherProvider": "LauncherProvider.qml"
+  },
+  "dependencies": {
+    "plugins": []
+  },
+  "metadata": {
+    "commandPrefix": "net"
+  }
+}
