@@ -30,12 +30,33 @@ type Message struct {
 	PubKey  string `json:"pubkey"`
 	Content string `json:"content"`
 	TS      int64  `json:"ts"`
-	Dir     string `json:"dir"` // "in" | "out"
+	Dir     Dir    `json:"dir"`
 	Ack     string `json:"ack"`
 	Read    bool   `json:"read"`
 	Image   string `json:"image,omitempty"`   // local path if kind-15 and downloaded
 	ReplyTo string `json:"replyTo,omitempty"` // e-tag: rumor id this message responds to
+	State   State  `json:"state"`
 }
+
+// Dir marks which end of the conversation authored a message. Derived
+// once at insert time so QML never compares pubkeys.
+type Dir string
+
+const (
+	DirIn  Dir = "in"
+	DirOut Dir = "out"
+)
+
+// State is the outgoing delivery ladder. Incoming messages and
+// pre-migration rows default to Sent so the UI never clocks them.
+// Cancelled is IPC-only — the row is deleted, not updated.
+type State string
+
+const (
+	StatePending   State = "pending"
+	StateSent      State = "sent"
+	StateCancelled State = "cancelled"
+)
 
 func OpenStore(dir string) (*Store, error) {
 	if err := os.MkdirAll(dir, 0o700); err != nil {
@@ -52,14 +73,22 @@ func OpenStore(dir string) (*Store, error) {
 	// Migration: image column. CREATE TABLE IF NOT EXISTS won't add
 	// columns to an existing table, so patch it here and swallow the
 	// "duplicate column" error on second run.
-	for _, m := range []struct{ table, col string }{
-		{"messages", "image"}, {"messages", "reply_to"}, {"outbox", "reply_to"},
+	for _, m := range []struct{ table, col, def string }{
+		{"messages", "image", "''"}, {"messages", "reply_to", "''"},
+		{"messages", "state", "'sent'"},
 	} {
-		if _, err := db.Exec(fmt.Sprintf(`ALTER TABLE %s ADD COLUMN %s TEXT NOT NULL DEFAULT ''`, m.table, m.col)); err != nil &&
+		if _, err := db.Exec(fmt.Sprintf(`ALTER TABLE %s ADD COLUMN %s TEXT NOT NULL DEFAULT %s`, m.table, m.col, m.def)); err != nil &&
 			!strings.Contains(err.Error(), "duplicate column") {
 			db.Close()
 			return nil, fmt.Errorf("migrate %s.%s: %w", m.table, m.col, err)
 		}
+	}
+	// Outbox schema changed shape (content/reply_to → rumor_id/wraps).
+	// It's a transient queue — if the new column is missing, drop and
+	// recreate rather than migrate half-sent rows we can't publish.
+	if _, err := db.Exec(`SELECT rumor_id FROM outbox LIMIT 0`); err != nil {
+		db.Exec(`DROP TABLE outbox`)
+		db.Exec(schema)
 	}
 	return &Store{db: db}, nil
 }
@@ -75,15 +104,18 @@ func (s *Store) Close() error { return s.db.Close() }
 // guard on the UPSERT ensures a genuine duplicate (same rumor, ts>0)
 // still reports inserted=false.
 func (s *Store) InsertMessage(ctx context.Context, m Message) (bool, error) {
+	if m.State == "" {
+		m.State = StateSent
+	}
 	res, err := s.db.ExecContext(ctx,
-		`INSERT INTO messages (id, pubkey, content, ts, dir, ack, read, image, reply_to)
-		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+		`INSERT INTO messages (id, pubkey, content, ts, dir, ack, read, image, reply_to, state)
+		 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		 ON CONFLICT(id) DO UPDATE SET
 		   pubkey=excluded.pubkey, content=excluded.content,
 		   ts=excluded.ts, dir=excluded.dir, read=excluded.read,
 		   image=excluded.image, reply_to=excluded.reply_to
 		 WHERE messages.ts = 0`,
-		m.ID, m.PubKey, m.Content, m.TS, m.Dir, m.Ack, boolInt(m.Read), m.Image, m.ReplyTo)
+		m.ID, m.PubKey, m.Content, m.TS, m.Dir, m.Ack, boolInt(m.Read), m.Image, m.ReplyTo, m.State)
 	if err != nil {
 		return false, err
 	}
@@ -113,12 +145,20 @@ func (s *Store) SetImage(ctx context.Context, id, path string) error {
 	return err
 }
 
+// SetState flips a message's delivery state. Called from publishLoop
+// when a relay accepts, so the UI can swap the clock for a check.
+func (s *Store) SetState(ctx context.Context, id string, state State) error {
+	_, err := s.db.ExecContext(ctx,
+		`UPDATE messages SET state = ? WHERE id = ?`, state, id)
+	return err
+}
+
 // Recent returns the last n messages in chronological order, skipping
 // ack-only stubs (ts=0 rows written by SetAck before the real message
 // arrived).
 func (s *Store) Recent(ctx context.Context, n int) ([]Message, error) {
 	rows, err := s.db.QueryContext(ctx,
-		`SELECT id, pubkey, content, ts, dir, ack, read, image, reply_to
+		`SELECT id, pubkey, content, ts, dir, ack, read, image, reply_to, state
 		 FROM messages WHERE ts > 0 ORDER BY ts DESC LIMIT ?`, n)
 	if err != nil {
 		return nil, err
@@ -128,7 +168,7 @@ func (s *Store) Recent(ctx context.Context, n int) ([]Message, error) {
 	for rows.Next() {
 		var m Message
 		var read int
-		if err := rows.Scan(&m.ID, &m.PubKey, &m.Content, &m.TS, &m.Dir, &m.Ack, &read, &m.Image, &m.ReplyTo); err != nil {
+		if err := rows.Scan(&m.ID, &m.PubKey, &m.Content, &m.TS, &m.Dir, &m.Ack, &read, &m.Image, &m.ReplyTo, &m.State); err != nil {
 			return nil, err
 		}
 		m.Read = read != 0
@@ -176,15 +216,18 @@ func (s *Store) SetInt(ctx context.Context, k string, v int64) error {
 // NIP-17 has no idempotency anyway and a duplicate DM beats a lost one.
 
 type OutboxItem struct {
-	ID      int64
-	Content string
-	ReplyTo string
-	Tries   int
+	ID       int64
+	RumorID  string
+	WrapThem string // serialised nostr.Event JSON
+	WrapUs   string
+	Tries    int
 }
 
-func (s *Store) Enqueue(ctx context.Context, content, replyTo string) (int64, error) {
+func (s *Store) Enqueue(ctx context.Context, rumorID, wrapThem, wrapUs string) (int64, error) {
 	res, err := s.db.ExecContext(ctx,
-		`INSERT INTO outbox (content, reply_to, tries, next_at) VALUES (?, ?, 0, 0)`, content, replyTo)
+		`INSERT INTO outbox (rumor_id, wrap_them, wrap_us, tries, next_at)
+		 VALUES (?, ?, ?, 0, 0)`,
+		rumorID, wrapThem, wrapUs)
 	if err != nil {
 		return 0, err
 	}
@@ -193,7 +236,8 @@ func (s *Store) Enqueue(ctx context.Context, content, replyTo string) (int64, er
 
 func (s *Store) PendingOutbox(ctx context.Context, now int64) ([]OutboxItem, error) {
 	rows, err := s.db.QueryContext(ctx,
-		`SELECT id, content, reply_to, tries FROM outbox WHERE next_at <= ? ORDER BY id`, now)
+		`SELECT id, rumor_id, wrap_them, wrap_us, tries
+		 FROM outbox WHERE next_at <= ? ORDER BY id`, now)
 	if err != nil {
 		return nil, err
 	}
@@ -201,7 +245,7 @@ func (s *Store) PendingOutbox(ctx context.Context, now int64) ([]OutboxItem, err
 	var out []OutboxItem
 	for rows.Next() {
 		var it OutboxItem
-		if err := rows.Scan(&it.ID, &it.Content, &it.ReplyTo, &it.Tries); err != nil {
+		if err := rows.Scan(&it.ID, &it.RumorID, &it.WrapThem, &it.WrapUs, &it.Tries); err != nil {
 			return nil, err
 		}
 		out = append(out, it)
@@ -217,6 +261,24 @@ func (s *Store) OutboxDone(ctx context.Context, id int64) error {
 func (s *Store) OutboxRetry(ctx context.Context, id int64, nextAt int64) error {
 	_, err := s.db.ExecContext(ctx,
 		`UPDATE outbox SET tries = tries + 1, next_at = ? WHERE id = ?`, nextAt, id)
+	return err
+}
+
+// OutboxRetryNow resets backoff for a specific rumor — user tapped the
+// ⚠ on a stuck bubble.
+func (s *Store) OutboxRetryNow(ctx context.Context, rumorID string) error {
+	_, err := s.db.ExecContext(ctx,
+		`UPDATE outbox SET next_at = 0 WHERE rumor_id = ?`, rumorID)
+	return err
+}
+
+// OutboxCancel drops a pending send and its echo. Used when the user
+// gives up on a message that keeps failing.
+func (s *Store) OutboxCancel(ctx context.Context, rumorID string) error {
+	if _, err := s.db.ExecContext(ctx, `DELETE FROM outbox WHERE rumor_id = ?`, rumorID); err != nil {
+		return err
+	}
+	_, err := s.db.ExecContext(ctx, `DELETE FROM messages WHERE id = ? AND state = ?`, rumorID, StatePending)
 	return err
 }
 

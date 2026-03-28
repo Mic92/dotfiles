@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"log/slog"
 	"strings"
@@ -108,6 +109,7 @@ func (l *Listener) subscribeOnce(ctx context.Context, since int64, ch chan<- Rum
 	if adj < 0 {
 		adj = 0
 	}
+	slog.Info("subscribing", "relays", l.relays, "since", since, "adjusted", int64(adj))
 	filter := nostr.Filter{
 		Kinds: []nostr.Kind{nostr.KindGiftWrap},
 		Tags:  nostr.TagMap{"p": {l.keys.PK.Hex()}},
@@ -152,6 +154,15 @@ type Outgoing struct {
 	Rumor  Rumor
 	toThem nostr.Event
 	toUs   nostr.Event
+}
+
+// Wraps serialises both gift-wrap events so they can sit in the outbox
+// and survive a daemon restart. They're just signed JSON — no secret
+// material beyond what the relay will see anyway.
+func (o Outgoing) Wraps() (them, us string) {
+	t, _ := json.Marshal(o.toThem)
+	u, _ := json.Marshal(o.toUs)
+	return string(t), string(u)
 }
 
 // Prepare builds the kind-14 rumor and both gift wraps. Pure crypto,
@@ -248,21 +259,42 @@ func (l *Listener) PrepareFile(ctx context.Context, to, url string, enc *encrypt
 }
 
 // Publish sends both wraps to our relays. We skip nip17.GetDMRelays —
-// the bot advertises the same relays we use, and the extra lookup adds
+// the peer advertises the same relays we use, and the extra lookup adds
 // latency to every send. Revisit if the peer uses different relays.
 func (l *Listener) Publish(ctx context.Context, out Outgoing) error {
+	return l.publish(ctx, out.Rumor.ID, out.toThem, out.toUs)
+}
+
+// PublishRaw re-sends wraps that were serialised into the outbox.
+// Same rumor id across retries means the peer's ack lands on the
+// bubble the user is staring at, not a phantom row.
+func (l *Listener) PublishRaw(ctx context.Context, rumorID, themJSON, usJSON string) error {
+	var them, us nostr.Event
+	if err := json.Unmarshal([]byte(themJSON), &them); err != nil {
+		return fmt.Errorf("decode wrap-them: %w", err)
+	}
+	if err := json.Unmarshal([]byte(usJSON), &us); err != nil {
+		return fmt.Errorf("decode wrap-us: %w", err)
+	}
+	return l.publish(ctx, rumorID, them, us)
+}
+
+func (l *Listener) publish(ctx context.Context, rumorID string, evs ...nostr.Event) error {
 	ctx, cancel := context.WithTimeout(ctx, 15*time.Second)
 	defer cancel()
-	var ok int
-	for _, ev := range []nostr.Event{out.toThem, out.toUs} {
+	var ok, fail int
+	for _, ev := range evs {
 		for res := range l.pool.PublishMany(ctx, l.relays, ev) {
 			if res.Error == nil {
 				ok++
+				slog.Debug("relay accepted", "relay", res.RelayURL)
 			} else {
-				slog.Debug("publish", "relay", res.RelayURL, "err", res.Error)
+				fail++
+				slog.Debug("relay rejected", "relay", res.RelayURL, "err", res.Error)
 			}
 		}
 	}
+	slog.Debug("publish done", "rumor", rumorID[:8], "ok", ok, "fail", fail)
 	if ok == 0 {
 		return fmt.Errorf("publish: no relay accepted")
 	}
