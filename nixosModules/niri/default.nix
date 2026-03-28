@@ -79,6 +79,10 @@
     # Document viewer
     evince
 
+    # Image viewer — xdg-open target for the noctalia nostr-chat
+    # plugin's tap-to-zoom on decrypted attachments.
+    eog
+
     # Printer configuration
     system-config-printer
 
