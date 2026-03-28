@@ -50,4 +50,8 @@
   # Gitea REST API access via n8n-hooks — lets Janet create repos,
   # issues, etc. without holding the token herself.
   services.opencrow.skills.gitea = ./skills/gitea;
+
+  # GitHub read-only API access via n8n-hooks — inspect PRs, issues,
+  # CI runs etc. as Mic92 without holding the token.
+  services.opencrow.skills.github = ./skills/github;
 }
