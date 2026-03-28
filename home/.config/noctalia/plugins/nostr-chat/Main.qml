@@ -42,11 +42,9 @@ Item {
 
   QtObject {
     id: chat
-    property string myPubkey: ""
     property string peerName: ""   // from daemon's NOSTR_CHAT_DISPLAY_NAME
     property bool streaming: false
     property string lastError: ""
-    property int unread: 0
     property var messages: []   // [{id, from, text, ts, ack, image, replyTo, state, tries}]
     property var replyTarget: null  // {id, text} — set by Panel when user clicks a bubble
 
@@ -149,9 +147,7 @@ Item {
     switch (ev.kind) {
     case root.ev.status: {
       chat.streaming = ev.streaming;
-      chat.myPubkey = ev.pubkey || chat.myPubkey;
       chat.peerName = ev.name || chat.peerName;
-      chat.unread = ev.unread || 0;
       // booted is set only on the daemon's very first status push —
       // distinguishes a fresh process (needs backfill) from the replay
       // handler's own status echo (would loop). Edge-detection on
