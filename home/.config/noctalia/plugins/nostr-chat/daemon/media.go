@@ -142,6 +142,41 @@ func decryptFileInPlace(filePath string, tags nostr.Tags) error {
 	return os.WriteFile(filePath, pt, 0o600)
 }
 
+// cacheLocalFile copies srcPath into cacheDir under a content-hash
+// name. Used for outgoing sends so the local-echo Image path outlives
+// the caller's tempfile and survives replay across restarts.
+func cacheLocalFile(srcPath, cacheDir string) (string, error) {
+	src, err := os.Open(srcPath)
+	if err != nil {
+		return "", err
+	}
+	defer src.Close()
+	if err := os.MkdirAll(cacheDir, 0o700); err != nil {
+		return "", err
+	}
+	// Stream through a tempfile while hashing; rename into place so a
+	// crash mid-copy can't leave a truncated cache entry.
+	tmp, err := os.CreateTemp(cacheDir, ".upload-*")
+	if err != nil {
+		return "", err
+	}
+	defer os.Remove(tmp.Name())
+	h := sha256.New()
+	if _, err := io.Copy(io.MultiWriter(tmp, h), src); err != nil {
+		tmp.Close()
+		return "", err
+	}
+	if err := tmp.Close(); err != nil {
+		return "", err
+	}
+	dst := filepath.Join(cacheDir,
+		hex.EncodeToString(h.Sum(nil)[:8])+filepath.Ext(srcPath))
+	if err := os.Rename(tmp.Name(), dst); err != nil {
+		return "", err
+	}
+	return dst, nil
+}
+
 // ── download ────────────────────────────────────────────────────────
 
 var unsafeFilenameChars = regexp.MustCompile(`[<>:"/\\|?*\x00-\x1f]`)

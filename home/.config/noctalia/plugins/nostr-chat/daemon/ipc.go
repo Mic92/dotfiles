@@ -84,6 +84,7 @@ type Command struct {
 	Text    string `json:"text,omitempty"`    // send
 	ReplyTo string `json:"replyTo,omitempty"` // send: e-tag target (rumor id)
 	Path    string `json:"path,omitempty"`    // send-file: local file to upload
+	Unlink  bool   `json:"unlink,omitempty"`  // send-file: remove Path after caching (for mktemp sources)
 	N       int    `json:"n,omitempty"`       // replay: how many recent messages
 	ID      string `json:"id,omitempty"`      // retry/cancel: rumor id
 }

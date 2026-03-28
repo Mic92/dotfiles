@@ -285,6 +285,13 @@ binds {
     Print      hotkey-overlay-title="Screenshot" { spawn "live-text"; }
     Ctrl+Print hotkey-overlay-title="Screenshot: Region" { spawn "live-text" "--region"; }
     Alt+Print  hotkey-overlay-title="Screenshot: Window" { spawn "live-text" "--window"; }
+    // Hide the chat panel first (slurp can't draw over layer-shell
+    // surfaces spawned by noctalia), then grim+slurp from here where
+    // the compositor gives the overlay correct stacking. The daemon
+    // copies the PNG into its CacheDir and unlinks the source for us
+    // (sendFile IPC sets unlink=true), so no trap needed — we only
+    // clean up the empty mktemp if slurp is cancelled.
+    Shift+Print hotkey-overlay-title="Screenshot → Janet" { spawn "sh" "-c" "noctalia-shell ipc call plugin:nostr-chat hide; out=$(mktemp -p \"$XDG_RUNTIME_DIR\" nostr-shot-XXXX.png); g=$(slurp) || { rm -f \"$out\"; exit 0; }; grim -g \"$g\" \"$out\" && noctalia-shell ipc call plugin:nostr-chat sendFile \"$out\""; }
 
     // Escape hatch for keyboard shortcut inhibitors
     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }

@@ -359,9 +359,25 @@ func (d *Daemon) handleCommand(ctx context.Context, c Command, drainNow chan<- s
 		// files: re-uploading on retry would waste bandwidth, and the
 		// self-copy round-trip gives us the row anyway. If the daemon
 		// dies mid-upload the user just re-attaches.
-		go func(path string) {
-			slog.Info("uploading file", "path", path)
-			enc, err := encryptFile(path)
+		go func(path string, unlink bool) {
+			slog.Info("uploading file", "path", path, "unlink", unlink)
+			// Copy into CacheDir first — the local echo points Image
+			// at this path and it's persisted to sqlite, so the source
+			// needs to outlive the keybind script's mktemp and survive
+			// replay after logout. Hash-named like downloads so repeat
+			// sends of the same file dedupe.
+			cached, err := cacheLocalFile(path, cfg.CacheDir)
+			if unlink {
+				// Best-effort: the source was a mktemp the caller wants
+				// gone. Do it even if caching failed so a broken upload
+				// doesn't leak tmpfs.
+				_ = os.Remove(path)
+			}
+			if err != nil {
+				d.push(Event{Kind: EvError, Text: "cache: " + err.Error()})
+				return
+			}
+			enc, err := encryptFile(cached)
 			if err != nil {
 				d.push(Event{Kind: EvError, Text: "encrypt: " + err.Error()})
 				return
@@ -380,12 +396,12 @@ func (d *Daemon) handleCommand(ctx context.Context, c Command, drainNow chan<- s
 				d.push(Event{Kind: EvError, Text: "prepare file: " + err.Error()})
 				return
 			}
-			// Echo locally with the source path as the image — no need
+			// Echo locally with the cached copy as the image — no need
 			// to round-trip through Blossom to see what we just sent.
 			m := Message{
 				ID: out.Rumor.ID, PubKey: out.Rumor.PubKey,
 				Content: "📎 " + enc.Mime, TS: out.Rumor.TS,
-				Dir: DirOut, Read: true, Image: path,
+				Dir: DirOut, Read: true, Image: cached,
 			}
 			if ok, _ := store.InsertMessage(uctx, m); ok {
 				d.push(Event{Kind: EvMsg, Msg: &m})
@@ -393,7 +409,7 @@ func (d *Daemon) handleCommand(ctx context.Context, c Command, drainNow chan<- s
 			if err := lst.Publish(uctx, out); err != nil {
 				d.push(Event{Kind: EvError, Text: "publish file: " + err.Error()})
 			}
-		}(c.Path)
+		}(c.Path, c.Unlink)
 
 	case CmdReplay:
 		n := c.N
