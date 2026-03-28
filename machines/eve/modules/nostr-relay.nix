@@ -66,6 +66,11 @@ in
       DynamicUser = true;
       StateDirectory = "strfry";
 
+      # WebSocket connections are long-lived; each client holds an fd.
+      # strfry.conf sets nofiles=0 so it inherits this limit instead of
+      # trying to raise it itself (which DynamicUser can't do anyway).
+      LimitNOFILE = 65536;
+
       NoNewPrivileges = true;
       ProtectSystem = "strict";
       ProtectHome = true;
@@ -89,6 +94,12 @@ in
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection $connection_upgrade;
+
+      # Nostr clients hold WebSocket connections open indefinitely.
+      # nginx defaults to 60s read/send timeout which would drop any
+      # connection that goes quiet between strfry's 55s pings under load.
+      proxy_read_timeout 3600s;
+      proxy_send_timeout 3600s;
     '';
   };
 
@@ -121,6 +132,9 @@ in
       DynamicUser = true;
       StateDirectory = "nostr-groups-relay";
 
+      # One fd per connected WebSocket client plus DB handles.
+      LimitNOFILE = 65536;
+
       NoNewPrivileges = true;
       ProtectSystem = "strict";
       ProtectHome = true;
@@ -142,6 +156,11 @@ in
       proxy_http_version 1.1;
       proxy_set_header Upgrade $http_upgrade;
       proxy_set_header Connection $connection_upgrade;
+
+      # Group chat clients keep the socket open; don't let nginx's
+      # default 60s idle timeout kick them off between messages.
+      proxy_read_timeout 3600s;
+      proxy_send_timeout 3600s;
     '';
   };
 
