@@ -85,9 +85,11 @@ Item {
     onTriggered: chat.lastError = ""
   }
 
-  // Open the panel idempotently — openPanel() is a no-op if already
-  // showing, unlike togglePanel() which would slam it shut mid-read.
+  // Open the panel idempotently. Upstream openPluginPanel() has a bug:
+  // when the slot already holds our plugin it calls panel.toggle(),
+  // slamming it shut mid-read. Guard on panelOpenScreen ourselves.
   function showPanel() {
+    if (pluginApi?.panelOpenScreen) { sockSend({ cmd: cmd.markRead }); return; }
     pluginApi?.withCurrentScreen(s => pluginApi.openPanel(s));
     sockSend({ cmd: cmd.markRead });
   }
