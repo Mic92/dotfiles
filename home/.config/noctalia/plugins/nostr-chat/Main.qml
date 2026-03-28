@@ -56,11 +56,11 @@ Item {
       });
       replyTarget = null;
     }
-    function sendFile(path) {
+    function sendFile(path, unlink) {
       if (!path) return;
       // NFilePicker returns bare paths; strip file:// just in case.
       if (path.startsWith("file://")) path = decodeURIComponent(path.slice(7));
-      root.sockSend({ cmd: root.cmd.sendFile, path: path });
+      root.sockSend({ cmd: root.cmd.sendFile, path: path, unlink: !!unlink });
     }
     function retry(id)  { root.sockSend({ cmd: root.cmd.retry,  id: id }); }
     function cancel(id) { root.sockSend({ cmd: root.cmd.cancel, id: id }); }
@@ -233,6 +233,22 @@ Item {
       pluginApi?.withCurrentScreen(s => pluginApi.togglePanel(s));
     }
     function send(text: string) { chat.send(text); }
+
+    // Close the panel before a screenshot bind fires. Slurp can't
+    // select through a layer-shell overlay, and you don't want the
+    // chat in the capture anyway. The actual grim/slurp runs from
+    // the niri keybind — spawning it *from* noctalia stacks slurp's
+    // surface below the shell's own layers, making the crosshair
+    // invisible. Compositor-spawned processes get correct ordering.
+    function hide() {
+      pluginApi?.withCurrentScreen(s => pluginApi.closePanel(s));
+    }
+
+    // Receives the captured path from the keybind script. Asks the
+    // daemon to unlink after caching — the source is a mktemp in
+    // $XDG_RUNTIME_DIR we don't want to accumulate. The paperclip
+    // button calls chat.sendFile directly without this flag.
+    function sendFile(path: string) { chat.sendFile(path, true); }
   }
 
   // Ask the daemon to backfill on load. If it's not running yet the
