@@ -50,6 +50,13 @@ in
         OPENCROW_PI_MODEL = "claude-sonnet-4-6";
       };
 
+      # Pi's model table lists sonnet-4-6 at 1M context, but that's a
+      # separate Anthropic billing tier we don't have — past 200k the
+      # API returns "Extra usage is required for long context requests"
+      # and pi just retries into the wall because it thinks there's
+      # 800k of headroom. Cap it so auto-compaction actually fires.
+      piModels.providers.anthropic.modelOverrides."claude-sonnet-4-6".contextWindow = 200000;
+
       extraPackages = [
         micsSkillsPkgs.db-cli
         micsSkillsPkgs.n8n-cli
