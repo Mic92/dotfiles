@@ -7,101 +7,93 @@
 let
   micsSkills = self.inputs.mics-skills;
   micsSkillsPkgs = micsSkills.packages.${pkgs.stdenv.hostPlatform.system};
+
+  # Defaults injected into every opencrow instance via submodule merging.
+  # Keeps infrastructure (relays, base tooling) in one place while each
+  # agent file only declares what makes it distinct.
+  instanceDefaults = {
+    piPackage = lib.mkDefault self.inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
+
+    extensions.memory = lib.mkDefault true;
+
+    skills = {
+      context7-cli = lib.mkDefault "${micsSkills}/skills/context7-cli";
+      pexpect-cli = lib.mkDefault "${micsSkills}/skills/pexpect-cli";
+      http = lib.mkDefault ./skills/http;
+    };
+
+    environment = {
+      TZ = lib.mkDefault "Europe/Berlin";
+      OPENCROW_PI_PROVIDER = lib.mkDefault "anthropic";
+
+      # Nostr infrastructure — shared across all bots, identity set per-agent.
+      OPENCROW_BACKEND = lib.mkDefault "nostr";
+      OPENCROW_NOSTR_PRIVATE_KEY_FILE = lib.mkDefault "%d/nostr-private-key";
+      OPENCROW_NOSTR_RELAYS = lib.mkDefault "wss://nostr.0cx.de,wss://nos.lol,wss://nostr.thalheim.io";
+      OPENCROW_NOSTR_DM_RELAYS = lib.mkDefault "wss://nos.lol,wss://nostr.thalheim.io,wss://nostr.0cx.de";
+      OPENCROW_NOSTR_BLOSSOM_SERVERS = lib.mkDefault "https://nostr-files.thalheim.io";
+      OPENCROW_NOSTR_ALLOWED_USERS = lib.mkDefault "npub10yt4rh4g5t5kd47x7w8dpwqq7s228c53xacjqxvxjwu0kes3kzvsynqfu8";
+    };
+
+    # Baseline tool set every bot container needs for pi to do useful work.
+    extraPackages = [
+      micsSkillsPkgs.context7-cli
+      micsSkillsPkgs.pexpect-cli
+    ]
+    ++ (with pkgs; [
+      bc
+      cacert
+      coreutils
+      curl
+      diffutils
+      fd
+      file
+      findutils
+      git
+      gnugrep
+      gnused
+      gnutar
+      gzip
+      htmlq
+      hurl
+      jq
+      less
+      libarchive
+      openssh
+      patch
+      procps
+      python3
+      ripgrep
+      tree
+      unzip
+      util-linux
+      w3m
+      wget
+      which
+      xz
+      yq-go
+      zip
+      zstd
+    ]);
+  };
 in
 {
   imports = [
     self.inputs.opencrow.nixosModules.default
-    ./rbw.nix
-    ./nostr.nix
-    ./gitea.nix
-    ./kagi.nix
-    ./gmaps.nix
-    ./mail.nix
-    ./calendar.nix
-    ./n8n.nix
-    ./paperless.nix
+    ./janet.nix
     ./forge.nix
   ];
 
-  config = {
-    containers.opencrow.config.users.users.opencrow.uid = 2000;
-    containers.opencrow.config.users.groups.opencrow.gid = 2000;
-    users.groups.opencrow.gid = 2000;
-
-    containers.opencrow.config.environment.etc."timezone".text = "Europe/Berlin\n";
-
-    containers.opencrow.config.systemd.tmpfiles.rules = [
-      "d /var/lib/opencrow/.config 0750 opencrow opencrow -"
-    ];
-
-    services.opencrow.skills =
-      lib.genAttrs [
-        "context7-cli"
-        "db-cli"
-        "n8n-cli"
-        "pexpect-cli"
-        "weather-cli"
-      ] (name: "${micsSkills}/skills/${name}")
-      // {
-        http = ./skills/http;
+  # Extend the upstream submodule type so every named instance picks up
+  # the defaults above through normal module merging.
+  options.services.opencrow = lib.mkOption {
+    type = lib.types.submodule {
+      options.instances = lib.mkOption {
+        type = lib.types.attrsOf (lib.types.submodule { config = instanceDefaults; });
       };
-
-    services.opencrow = {
-      enable = true;
-      piPackage = self.inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
-
-      extensions = {
-        memory = true;
-      };
-      environment = {
-        TZ = "Europe/Berlin";
-        OPENCROW_SOUL_FILE = "${./soul.md}";
-        OPENCROW_LOG_LEVEL = "debug";
-        OPENCROW_PI_PROVIDER = "anthropic";
-        OPENCROW_PI_MODEL = "claude-sonnet-4-6";
-      };
-      extraPackages = [
-        micsSkillsPkgs.context7-cli
-        micsSkillsPkgs.db-cli
-        micsSkillsPkgs.n8n-cli
-        micsSkillsPkgs.pexpect-cli
-        micsSkillsPkgs.weather-cli
-      ]
-      ++ (with pkgs; [
-        bc
-        cacert
-        coreutils
-        curl
-        diffutils
-        fd
-        file
-        findutils
-        gnugrep
-        gnused
-        gnutar
-        gzip
-        htmlq
-        hurl
-        git
-        jq
-        less
-        libarchive
-        openssh
-        patch
-        procps
-        python3
-        ripgrep
-        tree
-        unzip
-        util-linux
-        w3m
-        wget
-        which
-        xz
-        yq-go
-        zip
-        zstd
-      ]);
+      # The top-level (Janet's "default" instance) is a sibling submodule,
+      # so apply the same defaults there too.
+      config = instanceDefaults;
     };
   };
 }
