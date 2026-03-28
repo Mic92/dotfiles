@@ -4,6 +4,16 @@
   pkgs,
   ...
 }:
+let
+  n8nHooksConfig = builtins.toJSON {
+    token_command = "rbw get n8n-hooks-token";
+    hooks = {
+      store-draft.url = "https://n8n.thalheim.io/webhook/store-email-draft";
+      github.url = "https://n8n.thalheim.io/webhook/github-context";
+      gitea.url = "https://n8n.thalheim.io/webhook/gitea-api";
+    };
+  };
+in
 {
   services.opencrow.skills.email = ./skills/email;
   # Expose starred/flagged emails (delivered by sieve-flagged-forward)
@@ -48,6 +58,6 @@
 
   containers.opencrow.config.systemd.tmpfiles.rules = [
     "d /var/lib/opencrow/.config/n8n-hooks 0750 opencrow opencrow -"
-    ''f /var/lib/opencrow/.config/n8n-hooks/config.json 0640 opencrow opencrow - {"token_command":"rbw get n8n-hooks-token","hooks":{"store-draft":{"url":"https://n8n.thalheim.io/webhook/store-email-draft"},"gitea":{"url":"https://n8n.thalheim.io/webhook/gitea-api"}}}''
+    "f+ /var/lib/opencrow/.config/n8n-hooks/config.json 0640 opencrow opencrow - ${n8nHooksConfig}"
   ];
 }
