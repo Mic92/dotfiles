@@ -14,7 +14,10 @@ let
   instanceDefaults = {
     piPackage = lib.mkDefault self.inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
 
-    extensions.memory = lib.mkDefault true;
+    extensions = {
+      memory = lib.mkDefault true;
+      reminders = lib.mkDefault true;
+    };
 
     skills = {
       context7-cli = lib.mkDefault "${micsSkills}/skills/context7-cli";
@@ -25,6 +28,10 @@ let
     environment = {
       TZ = lib.mkDefault "Europe/Berlin";
       OPENCROW_PI_PROVIDER = lib.mkDefault "anthropic";
+
+      # Periodic awareness check. Agent reads HEARTBEAT.md in its session
+      # dir for the checklist. The reminder dispatcher runs regardless.
+      OPENCROW_HEARTBEAT_INTERVAL = lib.mkDefault "30m";
 
       # Nostr infrastructure — shared across all bots, identity set per-agent.
       OPENCROW_BACKEND = lib.mkDefault "nostr";
