@@ -1,0 +1,40 @@
+{
+  "sources": [
+    {
+      "enabled": true,
+      "name": "Noctalia Plugins",
+      "url": "https://github.com/noctalia-dev/noctalia-plugins"
+    }
+  ],
+  "states": {
+    "alertmanager": {
+      "enabled": true,
+      "sourceUrl": ""
+    },
+    "display-config": {
+      "enabled": true,
+      "sourceUrl": ""
+    },
+    "kde-connect": {
+      "enabled": true,
+      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+    },
+    "rbw-provider": {
+      "enabled": true,
+      "sourceUrl": ""
+    },
+    "nostr-chat": {
+      "enabled": true,
+      "sourceUrl": ""
+    },
+    "audio-provider": {
+      "enabled": true,
+      "sourceUrl": ""
+    },
+    "internet-provider": {
+      "enabled": true,
+      "sourceUrl": ""
+    }
+  },
+  "version": 2
+}
