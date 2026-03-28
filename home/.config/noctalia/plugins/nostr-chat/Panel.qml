@@ -118,9 +118,13 @@ Item {
       // whether an incoming message should auto-scroll or just bump
       // the unread pill — yanking the view while you're reading
       // scrollback is the #1 chat-UI sin.
+      // NListView doesn't forward originY/atYEnd, so compute from the
+      // three properties it does alias. contentY and contentHeight
+      // share the same origin so the subtraction is valid regardless
+      // of where the underlying ListView pins zero.
       readonly property bool atBottom:
         contentHeight <= height ||
-        (contentY + height) >= (contentHeight + originY - Style.baseWidgetSize * 2)
+        (contentHeight - contentY - height) < Style.baseWidgetSize * 2
       property int unseen: 0
       onAtBottomChanged: if (atBottom) unseen = 0
       spacing: Style.marginM
