@@ -44,6 +44,30 @@ Item {
         `<a href="${url}"><font color="${hex}">${label}</font></a>`);
   }
 
+  // Wrap case-insensitive matches of q in a <span> with a highlight
+  // background. Qt's MarkdownText passes inline HTML through and its
+  // RichText subset honours span/background-color.
+  //
+  // Not a markdown parser — just carves out the two regions where an
+  // injected <span> would do damage: code spans (HTML renders as
+  // literal text there) and the (url) half of links (breaks the href).
+  // Everything else is fair game; a mangled **bold** marker while
+  // search is open is cosmetic and heals on close.
+  function highlight(md, q) {
+    if (!q) return md;
+    const esc = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const re = new RegExp(esc, "gi");
+    const bg = String(Color.mTertiary).replace(/^#(..)(......)$/, "#$2");
+    const fg = String(Color.mOnTertiary).replace(/^#(..)(......)$/, "#$2");
+    const wrap = m => `<span style="background-color:${bg};color:${fg}">${m}</span>`;
+    // split() with a capturing group keeps the delimiters: odd indices
+    // are protected runs, even are plain text to highlight.
+    return (md || "")
+      .split(/(```[\s\S]*?```|`[^`\n]*`|\]\([^)\s]*\))/g)
+      .map((seg, i) => i & 1 ? seg : seg.replace(re, wrap))
+      .join("");
+  }
+
   // SmartPanel.qml sizes by contentPreferred{Width,Height} — without
   // these it falls back to its 900px default, ignoring implicitHeight.
   property real contentPreferredWidth: 720
@@ -334,7 +358,11 @@ Item {
               // on mPrimary so links need onPrimary to stay readable.
               readonly property color linkColor:
                 row.mine ? Color.mOnPrimary : Color.mSecondary
-              text: root.colorizeLinks(modelData.text, linkColor)
+              text: root.colorizeLinks(
+                row.searchHit
+                  ? root.highlight(modelData.text, searchField.text)
+                  : modelData.text,
+                linkColor)
               wrapMode: Text.Wrap
               textFormat: Text.MarkdownText
               readOnly: true
@@ -627,4 +655,12 @@ Item {
   }
 
   onVisibleChanged: if (visible) Qt.callLater(() => input.forceActiveFocus())
+
+  // Ctrl+F from anywhere in the panel. Shortcut rather than Keys so it
+  // fires regardless of which TextArea currently has focus.
+  Shortcut {
+    sequence: StandardKey.Find
+    enabled: root.visible
+    onActivated: { searchBar.visible = true; searchField.forceActiveFocus(); }
+  }
 }
