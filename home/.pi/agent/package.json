@@ -1,0 +1,9 @@
+{
+  "name": "pi-agent-personal",
+  "private": true,
+  "type": "module",
+  "description": "npm deps for personal pi extensions in ./extensions/",
+  "dependencies": {
+    "nostr-tools": "^2.23.3"
+  }
+}
