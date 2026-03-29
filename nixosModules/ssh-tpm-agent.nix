@@ -6,17 +6,17 @@
   ...
 }:
 let
-  # Fork until https://github.com/Foxboron/ssh-tpm-agent/pull/114 lands:
-  # adds ssh-tpm-add -c (confirm before use) and fixes SSH_ASKPASS_PROMPT
-  # leaking into subsequent passphrase prompts.
+  # Track upstream master until the next tagged release ships
+  # https://github.com/Foxboron/ssh-tpm-agent/pull/114 (ssh-tpm-add -c
+  # confirm-before-use + SSH_ASKPASS_PROMPT leak fix).
   # keyring tests require Linux kernel keyring which isn't available in the Nix sandbox
   ssh-tpm-agent = pkgs.ssh-tpm-agent.overrideAttrs (_old: {
     version = "0.8.0-unstable-2026-03-29";
     src = pkgs.fetchFromGitHub {
-      owner = "Mic92";
+      owner = "Foxboron";
       repo = "ssh-tpm-agent";
-      rev = "24bc1aa16db225d8fdab160b923c6bcd2933e001";
-      hash = "sha256-Gy/+SfMNC7tyQTvrqaYv55AqFAoUwm7w9TdWg58Sgrk=";
+      rev = "a3cde87934ea75ebe721d20c4d6d4da9cec0a7e4";
+      hash = "sha256-Fx77S7RRXwp65xaQ1huFaAD4/bnpwXki74KuOJ+9BE0=";
     };
     # nixpkgs carries a backport patch that is already in this tree
     patches = [ ];
