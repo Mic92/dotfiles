@@ -310,9 +310,10 @@ binds {
     Ctrl+Alt+Delete { quit; }
     Mod+Shift+O { power-off-monitors; }
 
-    // Choosers
-    Mod+A hotkey-overlay-title="Audio Chooser" { spawn "audio-chooser"; }
-    Mod+N hotkey-overlay-title="Internet Chooser" { spawn "internet-chooser"; }
+    // Choosers — noctalia launcher providers (replaces the old fuzzel-based
+    // audio-chooser / internet-chooser scripts from the KDE era)
+    Mod+A hotkey-overlay-title="Audio Chooser" { spawn "noctalia-shell" "ipc" "call" "plugin:audio-provider" "toggle"; }
+    Mod+N hotkey-overlay-title="Internet Chooser" { spawn "noctalia-shell" "ipc" "call" "plugin:internet-provider" "toggle"; }
 }
 
 include "./noctalia.kdl"

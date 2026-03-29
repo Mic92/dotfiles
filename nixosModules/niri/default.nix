@@ -97,9 +97,6 @@
 
     # live-text: OCR overlay, screenshot annotation, region capture
     self.packages.${pkgs.hostPlatform.system}.live-text
-
-    # Choosers (audio, display, internet)
-    (pkgs.callPackage ../kde/choosers.nix { })
   ];
 
   programs.kdeconnect.enable = true;

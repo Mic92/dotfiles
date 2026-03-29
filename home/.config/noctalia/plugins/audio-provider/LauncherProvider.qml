@@ -14,8 +14,7 @@ Item {
     property string supportedLayouts: "list"
     property bool supportsAutoPaste: false
 
-    // Device table. Mirrors nixosModules/kde/audio_chooser.py — keep in sync.
-    // Each entry: { card, profile, bluetoothAddr? }
+    // Device table. Each entry: { card, profile, bluetoothAddr? }
     // The plugin disables every other card so only the selected one routes
     // audio; that avoids pulseaudio's "helpful" automatic port switching.
     readonly property var devices: ({
