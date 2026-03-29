@@ -31,6 +31,10 @@
       "enabled": true,
       "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
     },
+    "network-indicator": {
+      "enabled": true,
+      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+    },
     "nostr-chat": {
       "enabled": true,
       "sourceUrl": ""
