@@ -54,6 +54,10 @@
     "timer": {
       "enabled": true,
       "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+    },
+    "ssh-askpass": {
+      "enabled": true,
+      "sourceUrl": ""
     }
   },
   "version": 2
