@@ -27,6 +27,10 @@
       "enabled": true,
       "sourceUrl": ""
     },
+    "khal-next": {
+      "enabled": true,
+      "sourceUrl": ""
+    },
     "kagi-quick-search": {
       "enabled": true,
       "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
