@@ -31,6 +31,10 @@
       "enabled": true,
       "sourceUrl": ""
     },
+    "polkit-agent": {
+      "enabled": true,
+      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+    },
     "rbw-provider": {
       "enabled": true,
       "sourceUrl": ""
