@@ -56,6 +56,11 @@ let
     programs.stylua.enable = true;
     programs.clang-format.enable = true;
     programs.deno.enable = true;
+    # QML's `.pragma library` directive is not valid JS — deno can't
+    # parse it. No QML-aware JS formatter exists, so just skip these.
+    settings.formatter.deno.excludes = [
+      "home/.config/noctalia/plugins/*/*.js"
+    ];
     programs.nixfmt.enable = true;
     programs.shellcheck.enable = true;
 
