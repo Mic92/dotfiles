@@ -119,6 +119,9 @@
           "useCustomFont": false
         },
         {
+          "id": "plugin:khal-next"
+        },
+        {
           "defaultSettings": {
             "compactMode": false,
             "defaultDuration": 0,
