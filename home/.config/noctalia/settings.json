@@ -150,6 +150,17 @@
           "usePadding": false
         },
         {
+          "defaultSettings": {
+            "arrowType": "caret",
+            "byteThresholdActive": 1024,
+            "fontSizeModifier": 1,
+            "forceMegabytes": false,
+            "iconSizeModifier": 1,
+            "minWidth": 0,
+            "showNumbers": true,
+            "spacingInbetween": 0,
+            "useCustomColors": false
+          },
           "id": "plugin:network-indicator"
         },
         {
@@ -250,7 +261,8 @@
           "textColor": "none"
         },
         {
-          "defaultSettings": {},
+          "defaultSettings": {
+          },
           "id": "plugin:kde-connect"
         },
         {
@@ -516,7 +528,7 @@
   "nightLight": {
     "autoSchedule": true,
     "dayTemp": "6500",
-    "enabled": true,
+    "enabled": false,
     "forced": false,
     "manualSunrise": "06:30",
     "manualSunset": "18:30",
@@ -670,6 +682,10 @@
       {
         "enabled": true,
         "id": "niri"
+      },
+      {
+        "enabled": true,
+        "id": "yazi"
       }
     ],
     "enableUserTheming": false
