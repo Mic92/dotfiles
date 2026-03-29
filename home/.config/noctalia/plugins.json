@@ -31,6 +31,10 @@
       "enabled": true,
       "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
     },
+    "mail-count": {
+      "enabled": true,
+      "sourceUrl": ""
+    },
     "kde-connect": {
       "enabled": true,
       "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
