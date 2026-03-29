@@ -34,3 +34,6 @@
 [submodule "pi-agent-extensions"]
 	path = pi-agent-extensions
 	url = https://github.com/rytswd/pi-agent-extensions
+[submodule "home/.config/noctalia/shared-plugins"]
+	path = home/.config/noctalia/shared-plugins
+	url = https://github.com/Mic92/noctalia-plugins

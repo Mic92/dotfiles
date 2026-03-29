@@ -1,0 +1,1 @@
+../../shared-plugins/alertmanager/README.md
