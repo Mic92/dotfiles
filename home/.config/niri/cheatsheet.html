@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Niri Cheat Sheet</title>
+    <style>
+      :root {
+        --accent: #5bd5fa;
+        --bg: #111415;
+        --fg: #e8eef0;
+        --muted: #8aa0a8;
+        --urgent: #ffb4ab;
+        --card: #1a1f21;
+      }
+      @media print {
+        :root {
+          --bg: #fff;
+          --fg: #111;
+          --card: #f4f4f4;
+          --muted: #555;
+        }
+        body {
+          font-size: 9pt;
+        }
+        .col {
+          break-inside: avoid;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font: 14px/1.45 ui-sans-serif, system-ui, sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+        padding: 1.5rem;
+      }
+      h1 {
+        margin: 0 0 0.2rem;
+        color: var(--accent);
+        font-size: 1.8rem;
+        letter-spacing: 0.5px;
+      }
+      .sub {
+        color: var(--muted);
+        margin-bottom: 1.2rem;
+        font-size: 0.9rem;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1rem;
+      }
+      .col {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 0.9rem 1rem;
+        border-left: 3px solid var(--accent);
+      }
+      .col h2 {
+        margin: 0 0 0.5rem;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--accent);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      td {
+        padding: 0.18rem 0;
+        vertical-align: top;
+      }
+      td:first-child {
+        white-space: nowrap;
+        padding-right: 1rem;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        color: var(--fg);
+        font-size: 0.92em;
+      }
+      td:last-child {
+        color: var(--muted);
+      }
+      kbd {
+        background: #0006;
+        border: 1px solid #fff2;
+        border-bottom-width: 2px;
+        border-radius: 4px;
+        padding: 1px 5px;
+        font: inherit;
+        font-size: 0.9em;
+      }
+      .hint {
+        color: var(--urgent);
+        font-weight: 600;
+      }
+      .note {
+        grid-column: 1 / -1;
+        background: var(--card);
+        border-radius: 12px;
+        padding: 0.9rem 1rem;
+        border-left: 3px solid var(--urgent);
+        font-size: 0.9rem;
+        color: var(--muted);
+      }
+      .note b {
+        color: var(--fg);
+      }
+      .note code {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <h1>niri — cheat sheet</h1>
+    <div class="sub">
+      Scrollable tiling · <kbd>Mod</kbd> = Super · press <kbd>Mod ⇧ /</kbd>
+      anytime for the live overlay
+    </div>
+
+    <div class="grid">
+      <div class="col">
+        <h2>Launch</h2>
+        <table>
+          <tr>
+            <td>Mod T</td>
+            <td>Terminal (ghostty)</td>
+          </tr>
+          <tr>
+            <td>Mod D</td>
+            <td>App launcher</td>
+          </tr>
+          <tr>
+            <td>Mod S</td>
+            <td>Control center</td>
+          </tr>
+          <tr>
+            <td>Mod ⇧ D</td>
+            <td>Clipboard history</td>
+          </tr>
+          <tr>
+            <td>Mod ⇧ .</td>
+            <td>Emoji picker</td>
+          </tr>
+          <tr>
+            <td>Mod ⇧ P</td>
+            <td>Passwords (rbw)</td>
+          </tr>
+          <tr>
+            <td>Mod G</td>
+            <td>Janet chat</td>
+          </tr>
+          <tr>
+            <td>Mod P</td>
+            <td>Display config</td>
+          </tr>
+          <tr>
+            <td>Mod A</td>
+            <td>Audio chooser</td>
+          </tr>
+          <tr>
+            <td>Mod N</td>
+            <td>Internet chooser</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="col">
+        <h2>Focus</h2>
+        <table>
+          <tr>
+            <td>Mod H / L</td>
+            <td>Column left / right</td>
+          </tr>
+          <tr>
+            <td>Mod J / K</td>
+            <td>Window down / up</td>
+          </tr>
+          <tr>
+            <td>Mod ⇧ HJKL</td>
+            <td>Focus monitor</td>
+          </tr>
+          <tr>
+            <td>Mod Home / End</td>
+            <td>First / last column</td>
+          </tr>
+          <tr>
+            <td>Mod O</td>
+            <td class="hint">Overview</td>
+          </tr>
+          <tr>
+            <td>Mod ⇧ V</td>
+            <td>Float ↔ tiling focus</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="col">
+        <h2>Move</h2>
+        <table>
+          <tr>
+            <td>Mod Ctrl HJKL</td>
+            <td>Move window / column</td>
+          </tr>
+          <tr>
+            <td>Mod ⇧ Ctrl HJKL</td>
+            <td>Move column → monitor</td>
+          </tr>
+          <tr>
+            <td>Mod Ctrl Home/End</td>
+            <td>To first / last</td>
+          </tr>
+          <tr>
+            <td>Mod Ctrl 1‑9</td>
+            <td>Move → workspace N</td>
+          </tr>
+          <tr>
+            <td>Mod Ctrl U / I</td>
+            <td>Move → ws down / up</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="col">
+        <h2>Workspaces</h2>
+        <table>
+          <tr>
+            <td>Mod 1</td>
+            <td>web</td>
+          </tr>
+          <tr>
+            <td>Mod 2</td>
+            <td>dev</td>
+          </tr>
+          <tr>
+            <td>Mod 3</td>
+            <td>im</td>
+          </tr>
+          <tr>
+            <td>Mod 4‑9</td>
+            <td>numbered</td>
+          </tr>
+          <tr>
+            <td>Mod U / I</td>
+            <td>Down / up</td>
+          </tr>
+          <tr>
+            <td>Mod ⇧ U / I</td>
+            <td>Reorder ws down / up</td>
+          </tr>
+          <tr>
+            <td>Mod Wheel↕</td>
+            <td>Switch ws</td>
+          </tr>
+          <tr>
+            <td>Mod Wheel↔</td>
+            <td>Scroll columns</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="col">
+        <h2>Columns & Layout</h2>
+        <table>
+          <tr>
+            <td>Mod R</td>
+            <td>Cycle width 33/50/66%</td>
+          </tr>
+          <tr>
+            <td>Mod F</td>
+            <td>Maximize column</td>
+          </tr>
+          <tr>
+            <td>Mod ⇧ F</td>
+            <td>Fullscreen</td>
+          </tr>
+          <tr>
+            <td>Mod M</td>
+            <td>Maximize to edges</td>
+          </tr>
+          <tr>
+            <td>Mod Ctrl F</td>
+            <td>Expand to available</td>
+          </tr>
+          <tr>
+            <td>Mod C</td>
+            <td>Center column</td>
+          </tr>
+          <tr>
+            <td>Mod − / =</td>
+            <td>Width −/+ 10%</td>
+          </tr>
+          <tr>
+            <td>Mod ⇧ − / =</td>
+            <td>Height −/+ 10%</td>
+          </tr>
+          <tr>
+            <td>Mod ⇧ R</td>
+            <td>Cycle preset height</td>
+          </tr>
+          <tr>
+            <td>Mod Ctrl R</td>
+            <td>Reset height</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="col">
+        <h2>Stack / Tab / Float</h2>
+        <table>
+          <tr>
+            <td>Mod ,</td>
+            <td>Consume into column</td>
+          </tr>
+          <tr>
+            <td>Mod .</td>
+            <td>Expel from column</td>
+          </tr>
+          <tr>
+            <td>Mod [ / ]</td>
+            <td>Consume-or-expel ← / →</td>
+          </tr>
+          <tr>
+            <td>Mod W</td>
+            <td>Toggle tabbed column</td>
+          </tr>
+          <tr>
+            <td>Mod V</td>
+            <td>Toggle floating</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="col">
+        <h2>Screenshots</h2>
+        <table>
+          <tr>
+            <td>Print</td>
+            <td>Full (live-text OCR)</td>
+          </tr>
+          <tr>
+            <td>Ctrl Print</td>
+            <td>Region</td>
+          </tr>
+          <tr>
+            <td>Alt Print</td>
+            <td>Window</td>
+          </tr>
+          <tr>
+            <td>⇧ Print</td>
+            <td>Region → Janet</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="col">
+        <h2>Session</h2>
+        <table>
+          <tr>
+            <td>Super Alt L</td>
+            <td>Lock screen</td>
+          </tr>
+          <tr>
+            <td>Mod ⇧ O</td>
+            <td>Monitors off</td>
+          </tr>
+          <tr>
+            <td>Mod ⇧ E</td>
+            <td>Quit niri</td>
+          </tr>
+          <tr>
+            <td>Mod Q</td>
+            <td>Close window</td>
+          </tr>
+          <tr>
+            <td>Mod Esc</td>
+            <td>Escape kb inhibitor</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="note">
+        <b>Mental model:</b> workspaces are infinite horizontal strips — columns
+        scroll sideways, no fixed grid. New windows open at <code>100%</code>
+        width; hit <kbd>Mod R</kbd> to shrink and reveal neighbours.
+        &nbsp;·&nbsp; <b>Auto-routing:</b> browsers→web, terminals→dev, chat→im.
+        &nbsp;·&nbsp; <b>Outputs</b> via kanshi (<kbd>Mod P</kbd> or <code
+        >wdisplays</code> for ad-hoc). &nbsp;·&nbsp; <b>Secrets:</b> KWallet
+        (TPM-unlocked), auto-locks on suspend. &nbsp;·&nbsp; Lost? <kbd>Mod
+          O</kbd> overview.
+      </div>
+    </div>
+  </body>
+</html>
