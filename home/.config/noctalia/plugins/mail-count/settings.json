@@ -1,0 +1,4 @@
+{
+  "countCommand": "notmuch count '(folder:thalheim.io OR folder:thalheim.io/.Netzwerke OR folder:thalheim.io/.Benachrichtigung OR folder:thalheim.io/.Geld OR folder:thalheim.io/.Privat OR folder:thalheim.io/.Arbeit OR folder:thalheim.io/.Uni) AND date:7d.. AND tag:unread AND NOT tag:trash'",
+  "clickCommand": "ghostty -e aerc"
+}

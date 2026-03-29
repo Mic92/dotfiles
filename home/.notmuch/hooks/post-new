@@ -6,3 +6,6 @@ afew --tag --new
 
 # Remove the 'new' tag from all messages
 notmuch tag -new -- tag:new
+
+# Refresh noctalia mail-count widget (no-op if shell not running)
+qs -c noctalia-shell ipc call plugin:mail-count refresh 2>/dev/null || true
