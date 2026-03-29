@@ -5,6 +5,7 @@ import Quickshell
 import Quickshell.Io
 import qs.Commons
 import qs.Widgets
+import "MsgText.js" as Txt
 
 Item {
   id: root
@@ -24,49 +25,7 @@ Item {
       if (arr[i].id === id) return arr[i];
     return null;
   }
-  function snippet(text, n) {
-    const t = (text || "").replace(/\s+/g, " ").trim();
-    return t.length > n ? t.slice(0, n - 1) + "…" : t;
-  }
 
-  // Qt's MarkdownText renderer pulls link colour from the *global*
-  // QPalette::Link role (hardcoded web-blue). TextEdit isn't a Control,
-  // so a local palette override doesn't reach it. Instead, rewrite
-  // [label](url) → <a href=url><font color=…>label</font></a> — Qt's
-  // CommonMark parser passes inline HTML through, and <font> is the one
-  // tag its RichText subset reliably honours for colour.
-  function colorizeLinks(md, c) {
-    // QML color → "#aarrggbb"; Qt's <font> parser only takes #rrggbb.
-    const hex = String(c).replace(/^#(..)(......)$/, "#$2");
-    return (md || "").replace(
-      /\[([^\]]+)\]\(([^)\s]+)\)/g,
-      (_, label, url) =>
-        `<a href="${url}"><font color="${hex}">${label}</font></a>`);
-  }
-
-  // Wrap case-insensitive matches of q in a <span> with a highlight
-  // background. Qt's MarkdownText passes inline HTML through and its
-  // RichText subset honours span/background-color.
-  //
-  // Not a markdown parser — just carves out the two regions where an
-  // injected <span> would do damage: code spans (HTML renders as
-  // literal text there) and the (url) half of links (breaks the href).
-  // Everything else is fair game; a mangled **bold** marker while
-  // search is open is cosmetic and heals on close.
-  function highlight(md, q) {
-    if (!q) return md;
-    const esc = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const re = new RegExp(esc, "gi");
-    const bg = String(Color.mTertiary).replace(/^#(..)(......)$/, "#$2");
-    const fg = String(Color.mOnTertiary).replace(/^#(..)(......)$/, "#$2");
-    const wrap = m => `<span style="background-color:${bg};color:${fg}">${m}</span>`;
-    // split() with a capturing group keeps the delimiters: odd indices
-    // are protected runs, even are plain text to highlight.
-    return (md || "")
-      .split(/(```[\s\S]*?```|`[^`\n]*`|\]\([^)\s]*\))/g)
-      .map((seg, i) => i & 1 ? seg : seg.replace(re, wrap))
-      .join("");
-  }
 
   // SmartPanel.qml sizes by contentPreferred{Width,Height} — without
   // these it falls back to its 900px default, ignoring implicitHeight.
@@ -232,211 +191,26 @@ Item {
       // flat lists. Bubbles already provide their own visual boundary.
       showGradientMasks: false
 
-      delegate: Item {
-        id: row
-        required property var modelData
-        readonly property bool mine: modelData.from === "me"
-        // Match locally rather than scanning hits[] — O(1) per
-        // delegate and immune to index drift when the model grows.
-        readonly property bool searchHit:
-          searchBar.visible && searchBar.query !== "" &&
-          (modelData.text || "").toLowerCase().includes(searchBar.query)
-
+      // ListView injects modelData into the delegate root; Bubble
+      // declares that as required and aliases it to msg internally.
+      delegate: Bubble {
         width: history.availableWidth
-        implicitHeight: bubble.implicitHeight
+        pendingState: root.state.pending
+        searchQuery: searchBar.visible ? searchBar.query : ""
+        searchCurrent: searchBar.current === modelData.id
+        quotedText: root.findMsg(modelData.replyTo)?.text ?? ""
+        ago: root.ago
 
-        // Hover-reveal reply button in the 15% gutter beside the
-        // bubble. Lives on the row (not the bubble) so it never
-        // covers text and doesn't fight selectByMouse.
-        NIconButton {
-          icon: "corner-down-right"
-          tooltipText: "Reply"
-          baseSize: Style.baseWidgetSize * 0.7
-          anchors.verticalCenter: bubble.verticalCenter
-          anchors.left:  row.mine ? undefined : bubble.right
-          anchors.right: row.mine ? bubble.left : undefined
-          anchors.margins: Style.marginXS
-          opacity: (hov.hovered || hovering) ? 1 : 0
-          visible: opacity > 0
-          Behavior on opacity { NumberAnimation { duration: 100 } }
-          onClicked: {
-            chat.replyTarget = { id: modelData.id, text: modelData.text };
-            input.forceActiveFocus();
-          }
+        onReplyRequested: {
+          chat.replyTarget = { id: modelData.id, text: modelData.text };
+          input.forceActiveFocus();
         }
-
-        // Bubble floats left (bot) or right (me) at ~85% width so the
-        // alignment itself reads as "who said this" without an avatar.
-        Rectangle {
-          id: bubble
-          anchors.left:  row.mine ? undefined : parent.left
-          anchors.right: row.mine ? parent.right : undefined
-          // Image/quote bubbles snap to the 85% cap; plain text shrinks
-          // to fit so short replies don't stretch edge-to-edge.
-          width: ((modelData.image ?? "") !== "" || (modelData.replyTo ?? "") !== "")
-            ? row.width * 0.85
-            : Math.min(msgText.implicitWidth + Style.marginM * 2,
-                       row.width * 0.85)
-          implicitHeight: col.implicitHeight + Style.marginM * 2
-          radius: Style.radiusS
-          color: row.mine ? Color.mPrimary : Color.mSurfaceVariant
-          // Subtle outline on bot bubbles so consecutive ones don't melt
-          // into the panel background.
-          border.width: row.searchHit ? 2 : (row.mine ? 0 : 1)
-          border.color: row.searchHit
-            ? (searchBar.current === modelData.id
-               ? Color.mTertiary : Color.mSecondary)
-            : Color.mOutline
-          // Dim only while the outbox still owns it. Once a relay has
-          // the wrap it's out of our hands — the single check mark
-          // covers the rest, and a peer that never acks won't leave
-          // the bubble looking half-finished forever.
-          opacity: (row.mine && modelData.state === root.state.pending) ? 0.7 : 1.0
-          Behavior on opacity { NumberAnimation { duration: 150 } }
-
-          // Track hover on the whole bubble so the reply button can
-          // reveal itself without stealing events from text selection.
-          HoverHandler { id: hov }
-
-          ColumnLayout {
-            id: col
-            anchors.fill: parent
-            anchors.margins: Style.marginM
-            spacing: Style.marginXXS
-
-            // Quoted snippet when this message is a threaded reply.
-            // Resolved from the in-memory mirror; if the target has
-            // scrolled out of maxHistory we just show the bar empty.
-            Rectangle {
-              visible: (modelData.replyTo ?? "") !== ""
-              Layout.fillWidth: true
-              implicitHeight: quote.implicitHeight + Style.marginXS * 2
-              radius: Style.radiusXS
-              color: row.mine
-                ? Qt.alpha(Color.mOnPrimary, 0.15)
-                : Qt.alpha(Color.mOnSurface, 0.08)
-              // Click the quote to jump to the original. Linear scan
-              // for the index is fine at maxHistory scale.
-              TapHandler {
-                onTapped: {
-                  const idx = history.model.findIndex(m => m.id === modelData.replyTo);
-                  if (idx >= 0) history.positionViewAtIndex(idx, ListView.Center);
-                }
-              }
-              NText {
-                id: quote
-                anchors.fill: parent
-                anchors.margins: Style.marginXS
-                text: {
-                  const m = root.findMsg(modelData.replyTo);
-                  return m ? "↳ " + root.snippet(m.text, 60) : "↳ (earlier message)";
-                }
-                font.pixelSize: Style.fontSizeXS
-                elide: Text.ElideRight
-                color: row.mine
-                  ? Qt.alpha(Color.mOnPrimary, 0.7)
-                  : Color.mOnSurfaceVariant
-              }
-            }
-
-            // kind-15 attachments: daemon downloads + decrypts, then
-            // pushes the local path. QML Image won't load a bare path
-            // — needs the file:// scheme.
-            Image {
-              visible: (modelData.image ?? "") !== ""
-              Layout.fillWidth: true
-              Layout.preferredHeight: visible
-                ? Math.min(implicitHeight * (width / Math.max(implicitWidth, 1)), 240)
-                : 0
-              source: modelData.image ? "file://" + modelData.image : ""
-              fillMode: Image.PreserveAspectFit
-              asynchronous: true
-              cache: true
-              // Tap to open full-size in the system viewer — the
-              // 240px cap is fine for a glance but useless for
-              // reading a screenshot. grabPermissions keeps this
-              // from losing to the bubble's double-tap-reply handler.
-              TapHandler {
-                grabPermissions: PointerHandler.TakeOverForbidden
-                onTapped: Quickshell.execDetached(
-                  ["xdg-open", modelData.image])
-              }
-              HoverHandler { cursorShape: Qt.PointingHandCursor }
-            }
-            // TextEdit so code snippets and URLs are selectable.
-            // readOnly keeps it display-only; selectByMouse enables
-            // drag-select without stealing the double-tap-to-reply.
-            TextEdit {
-              id: msgText
-              Layout.fillWidth: true
-              // Bot bubbles get the theme secondary; "me" bubbles sit
-              // on mPrimary so links need onPrimary to stay readable.
-              readonly property color linkColor:
-                row.mine ? Color.mOnPrimary : Color.mSecondary
-              text: root.colorizeLinks(
-                row.searchHit
-                  ? root.highlight(modelData.text, searchField.text)
-                  : modelData.text,
-                linkColor)
-              wrapMode: Text.Wrap
-              textFormat: Text.MarkdownText
-              readOnly: true
-              selectByMouse: true
-              // Own bubbles already sit on mPrimary, so invert the
-              // selection palette there or the highlight vanishes.
-              selectionColor: row.mine ? Color.mOnPrimary : Color.mPrimary
-              selectedTextColor: row.mine ? Color.mPrimary : Color.mOnPrimary
-              color: row.mine ? Color.mOnPrimary : Color.mOnSurface
-              font.family: Settings.data.ui.fontDefault
-              font.pointSize: Style.fontSizeM * Settings.data.ui.fontDefaultScale
-              font.weight: Style.fontWeightMedium
-              // TextEdit renders <a> tags from Markdown but won't act
-              // on them itself — it just emits linkActivated and lets
-              // you decide. xdg-open covers http(s), mailto, file://.
-              onLinkActivated: url => Quickshell.execDetached(["xdg-open", url])
-              // Pointer cursor only over the link span, I-beam for the
-              // rest so selectByMouse still reads as "selectable text".
-              HoverHandler {
-                cursorShape: msgText.hoveredLink !== ""
-                  ? Qt.PointingHandCursor : Qt.IBeamCursor
-              }
-            }
-            RowLayout {
-              Layout.alignment: row.mine ? Qt.AlignRight : Qt.AlignLeft
-              spacing: Style.marginXS
-              NText {
-                text: ago(modelData.ts)
-                font.pixelSize: Style.fontSizeM
-                color: row.mine
-                  ? Qt.alpha(Color.mOnPrimary, 0.6)
-                  : Color.mOnSurfaceVariant
-              }
-              // Delivery ladder: 🕓 pending → ✓ sent → ✓✓/emoji read.
-              // ⚠ replaces the clock when retries pile up — tap for
-              // retry-now, long-press to cancel. Peers that don't
-              // send read receipts stop at ✓ and that's fine.
-              NText {
-                visible: row.mine
-                text: {
-                  if ((modelData.tries ?? 0) > 0) return "⚠";
-                  if (modelData.state === root.state.pending) return "🕓";
-                  const a = modelData.ack ?? "";
-                  if (a === "") return "✓";
-                  return (a === "+" || a === "✓") ? "✓✓" : a;
-                }
-                font.pixelSize: Style.fontSizeL
-                color: (modelData.tries ?? 0) > 0
-                  ? Color.mError
-                  : Qt.alpha(Color.mOnPrimary, 0.8)
-                TapHandler {
-                  enabled: (modelData.tries ?? 0) > 0
-                  onTapped: chat.retry(modelData.id)
-                  onLongPressed: chat.cancel(modelData.id)
-                }
-              }
-            }
-          }
+        onJumpToQuote: {
+          const i = history.model.findIndex(m => m.id === modelData.replyTo);
+          if (i >= 0) history.positionViewAtIndex(i, ListView.Center);
         }
+        onRetryRequested:  chat.retry(modelData.id)
+        onCancelRequested: chat.cancel(modelData.id)
       }
 
       // BottomToTop keeps contentY stable on append, so the only
@@ -498,7 +272,7 @@ Item {
         NIcon { icon: "corner-down-right"; color: Color.mPrimary }
         NText {
           Layout.fillWidth: true
-          text: root.snippet(chat?.replyTarget?.text ?? "", 80)
+          text: Txt.snippet(chat?.replyTarget?.text ?? "", 80)
           elide: Text.ElideRight
           font.pixelSize: Style.fontSizeS
           color: Color.mOnSurfaceVariant
