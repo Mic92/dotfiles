@@ -112,19 +112,16 @@ Item {
     NListView {
       id: history
       anchors.fill: parent
-      model: chat?.messages ?? []
+      // BottomToTop + reversed model: index 0 = newest = visual bottom.
+      // This makes "stay at bottom" equivalent to contentY≈0, which
+      // ListView preserves across our array-reassignment updates
+      // without any positionViewAtEnd() gymnastics. Scrolling up
+      // increases contentY into history as usual.
+      verticalLayoutDirection: ListView.BottomToTop
+      model: (chat?.messages ?? []).slice().reverse()
       clip: true
-      // "Near bottom" = within two bubble-heights. Used to decide
-      // whether an incoming message should auto-scroll or just bump
-      // the unread pill — yanking the view while you're reading
-      // scrollback is the #1 chat-UI sin.
-      // NListView doesn't forward originY/atYEnd, so compute from the
-      // three properties it does alias. contentY and contentHeight
-      // share the same origin so the subtraction is valid regardless
-      // of where the underlying ListView pins zero.
-      readonly property bool atBottom:
-        contentHeight <= height ||
-        (contentHeight - contentY - height) < Style.baseWidgetSize * 2
+      // "Near bottom" = within two bubble-heights of contentY 0.
+      readonly property bool atBottom: contentY < Style.baseWidgetSize * 2
       property int unseen: 0
       onAtBottomChanged: if (atBottom) unseen = 0
       spacing: Style.marginM
@@ -212,8 +209,7 @@ Item {
               // for the index is fine at maxHistory scale.
               TapHandler {
                 onTapped: {
-                  const arr = chat?.messages || [];
-                  const idx = arr.findIndex(m => m.id === modelData.replyTo);
+                  const idx = history.model.findIndex(m => m.id === modelData.replyTo);
                   if (idx >= 0) history.positionViewAtIndex(idx, ListView.Center);
                 }
               }
@@ -327,22 +323,16 @@ Item {
         }
       }
 
-      // Only snap to new messages if the user was already parked at
-      // the bottom. Otherwise count them for the pill.
-      property bool _wasAtBottom: true
-      onCountChanged: {
-        if (_wasAtBottom) Qt.callLater(() => positionViewAtEnd());
-        else unseen++;
-      }
-      // Sample *before* the model grows — contentHeight changes in
-      // the same tick as count, so reading atBottom inside
-      // onCountChanged would already see the post-append geometry.
-      // Exception: if the newest entry is ours, always snap — sending
-      // a message and *not* seeing it appear is worse than losing
-      // your scrollback position.
+      // BottomToTop keeps contentY stable on append, so the only
+      // bookkeeping left is the unread pill. Our own sends always
+      // snap — not seeing your message appear is worse than losing
+      // scrollback.
+      property int _lastCount: 0
       onModelChanged: {
-        const last = model[model.length - 1];
-        _wasAtBottom = atBottom || (last && last.from === "me");
+        if (count <= _lastCount) { _lastCount = count; return; }
+        _lastCount = count;
+        if (model[0]?.from === "me") contentY = 0;
+        else if (!atBottom) unseen++;
       }
     }
 
@@ -370,7 +360,7 @@ Item {
         }
         NIcon { icon: "chevron-down"; color: Color.mOnPrimary }
       }
-      TapHandler { onTapped: history.positionViewAtEnd() }
+      TapHandler { onTapped: history.contentY = 0 }
       HoverHandler { cursorShape: Qt.PointingHandCursor }
     }
     } // history wrapper
