@@ -37,6 +37,21 @@ in
     ];
   };
 
+  home.file.".claude/skills/zat/SKILL.md".text = ''
+    ---
+    name: zat
+    description: Code outline viewer showing exported symbol signatures with line numbers. Use when you need signatures, not full implementation.
+    ---
+
+    Prefer `zat` over `cat`/`Read` when you need signatures, not full implementation. Use the line numbers in the output to `Read(offset, limit)` into specific sections.
+
+    Supported languages: C, C++, C#, Go, Haskell, Java, JavaScript, Kotlin, Markdown, Python, Ruby, Rust, Swift, TypeScript/TSX
+
+    ```
+    zat <FILE>
+    ```
+  '';
+
   home.packages = [
     selfPkgs.claude-code
     selfPkgs.claude-md
@@ -52,6 +67,7 @@ in
     aiTools.ccusage
     aiTools.ccstatusline
     aiTools.workmux
+    aiTools.zat
     pkgs.pueue
   ];
 }
