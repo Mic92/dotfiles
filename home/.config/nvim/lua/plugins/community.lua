@@ -15,7 +15,6 @@ return {
 			},
 		},
 	},
-	{ import = "astrocommunity.project.project-nvim" },
 	{ import = "astrocommunity.pack.go" },
 	{
 		"ray-x/go.nvim",
