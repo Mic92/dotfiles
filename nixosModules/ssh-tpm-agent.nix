@@ -1,11 +1,41 @@
-{ pkgs, config, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  self,
+  ...
+}:
 let
+  # Fork until https://github.com/Foxboron/ssh-tpm-agent/pull/114 lands:
+  # adds ssh-tpm-add -c (confirm before use) and fixes SSH_ASKPASS_PROMPT
+  # leaking into subsequent passphrase prompts.
   # keyring tests require Linux kernel keyring which isn't available in the Nix sandbox
-  ssh-tpm-agent = pkgs.ssh-tpm-agent.overrideAttrs {
+  ssh-tpm-agent = pkgs.ssh-tpm-agent.overrideAttrs (_old: {
+    version = "0.8.0-unstable-2026-03-29";
+    src = pkgs.fetchFromGitHub {
+      owner = "Mic92";
+      repo = "ssh-tpm-agent";
+      rev = "24bc1aa16db225d8fdab160b923c6bcd2933e001";
+      hash = "sha256-Gy/+SfMNC7tyQTvrqaYv55AqFAoUwm7w9TdWg58Sgrk=";
+    };
+    # nixpkgs carries a backport patch that is already in this tree
+    patches = [ ];
+    vendorHash = "sha256-s899KmXdeUt/SSCL3Vu1T/JTJT8mZP99MDb+Thcfyw4=";
     doCheck = false;
-  };
+  });
+  # Prefer the noctalia ssh-askpass plugin when the shell is running: it
+  # actually honours SSH_ASKPASS_PROMPT=confirm (lxqt-openssh-askpass does
+  # not) so ssh-tpm-add -c confirmations get real Allow/Deny buttons instead
+  # of an ambiguous password box. Falls back to the configured askPassword
+  # when the plugin socket is absent (shell not running, headless TTY, etc).
+  noctaliaAskpass =
+    lib.getExe
+      self.inputs.noctalia-plugins.packages.${pkgs.system}.noctalia-ssh-askpass;
   askPasswordWrapper = pkgs.writeScript "ssh-askpass-wrapper" ''
     #! ${pkgs.runtimeShell} -e
+    if [ -S "''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/noctalia-ssh-askpass.sock" ]; then
+      exec ${noctaliaAskpass} "$@"
+    fi
     export DISPLAY="$(systemctl --user show-environment | sed 's/^DISPLAY=\(.*\)/\1/; t; d')"
     export XAUTHORITY="$(systemctl --user show-environment | sed 's/^XAUTHORITY=\(.*\)/\1/; t; d')"
     export WAYLAND_DISPLAY="$(systemctl --user show-environment | sed 's/^WAYLAND_DISPLAY=\(.*\)/\1/; t; d')"
