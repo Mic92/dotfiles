@@ -37,9 +37,20 @@ export default function (pi: ExtensionAPI) {
   });
 
   // Strip btw messages from subsequent turns so they don't accumulate.
-  pi.on("context", async (event) => ({
-    messages: event.messages.filter(
-      (m) => (m as { customType?: string }).customType !== "btw",
-    ),
-  }));
+  // Also strip the assistant reply that immediately follows — otherwise we'd
+  // drop the Q but keep the A, leaving a dangling answer in context forever.
+  pi.on("context", async (event) => {
+    const drop = new Set<number>();
+    const msgs = event.messages as Array<{
+      customType?: string;
+      role?: string;
+    }>;
+    for (let i = 0; i < msgs.length; i++) {
+      if (msgs[i].customType === "btw") {
+        drop.add(i);
+        if (msgs[i + 1]?.role === "assistant") drop.add(i + 1);
+      }
+    }
+    return { messages: event.messages.filter((_, i) => !drop.has(i)) };
+  });
 }
