@@ -54,4 +54,7 @@
   # GitHub read-only API access via n8n-hooks — inspect PRs, issues,
   # CI runs etc. as Mic92 without holding the token.
   services.opencrow.skills.github = ./skills/github;
+
+  # Slack read-only context via n8n-hooks — search, history, threads.
+  services.opencrow.skills.slack = ./skills/slack;
 }

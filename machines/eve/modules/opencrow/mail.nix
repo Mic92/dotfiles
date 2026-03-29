@@ -11,6 +11,7 @@ let
       store-draft.url = "https://n8n.thalheim.io/webhook/store-email-draft";
       github.url = "https://n8n.thalheim.io/webhook/github-api";
       gitea.url = "https://n8n.thalheim.io/webhook/gitea-api";
+      slack.url = "https://n8n.thalheim.io/webhook/slack-context";
     };
   };
 in
