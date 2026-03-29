@@ -11,7 +11,7 @@ import argparse
 import sys
 
 from n8n_hooks.config import load_config
-from n8n_hooks.hooks import gitea, github, store_draft
+from n8n_hooks.hooks import gitea, github, slack, store_draft
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -31,6 +31,7 @@ def build_parser() -> argparse.ArgumentParser:
     store_draft.register(sub)
     gitea.register(sub)
     github.register(sub)
+    slack.register(sub)
     return parser
 
 
