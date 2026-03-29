@@ -65,7 +65,6 @@ layout {
 // Startup processes
 spawn-at-startup "noctalia-shell"
 spawn-at-startup "kanshi"
-spawn-at-startup "swayidle" "-w" "timeout" "300" "niri msg action power-off-monitors" "timeout" "600" "noctalia-shell ipc call lockScreen lock" "before-sleep" "noctalia-shell ipc call lockScreen lock"
 
 prefer-no-csd
 

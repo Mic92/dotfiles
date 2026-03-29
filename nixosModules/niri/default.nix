@@ -53,10 +53,9 @@
     cliphist
     wtype
 
-    # App launcher, idle, display config
+    # App launcher, display config
     fuzzel
     libnotify
-    swayidle
     kanshi
     wdisplays # drag-and-drop output arrangement; launched from noctalia display-config plugin for 3+ monitor setups
 
