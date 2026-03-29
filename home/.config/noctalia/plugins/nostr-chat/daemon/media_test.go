@@ -14,7 +14,10 @@ import (
 func TestEncryptDecryptRoundTrip(t *testing.T) {
 	dir := t.TempDir()
 	src := filepath.Join(dir, "img.png")
-	data := bytes.Repeat([]byte("pixel"), 1000)
+	// Real PNG magic bytes so http.DetectContentType sniffs image/png
+	// instead of text/plain — detectContentType only falls back to the
+	// extension on application/octet-stream.
+	data := append([]byte("\x89PNG\r\n\x1a\n"), bytes.Repeat([]byte{0}, 5000)...)
 	if err := os.WriteFile(src, data, 0o600); err != nil {
 		t.Fatal(err)
 	}
