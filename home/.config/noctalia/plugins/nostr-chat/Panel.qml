@@ -2,6 +2,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Io
 import qs.Commons
 import qs.Widgets
 
@@ -94,10 +95,71 @@ Item {
           color: Color.mOnSurfaceVariant
         }
       }
+      NIconButton {
+        icon: "search"
+        tooltipText: "Search"
+        baseSize: Style.baseWidgetSize * 0.9
+        onClicked: { searchBar.visible = !searchBar.visible; if (searchBar.visible) searchField.forceActiveFocus(); }
+      }
       Rectangle {
         implicitWidth: 8; implicitHeight: 8; radius: 4
         color: chat?.streaming ? Color.mTertiary : Color.mError
       }
+    }
+
+    // ── Search ────────────────────────────────────────────────────────────
+    // Case-insensitive substring match over the in-memory mirror.
+    // hits[] indexes history.model (already newest-first), cursor walks
+    // them. Closing clears the query so bubbles drop the outline.
+    RowLayout {
+      id: searchBar
+      visible: false
+      Layout.fillWidth: true
+      spacing: Style.marginS
+
+      property var hits: []
+      property int cursor: -1
+      onVisibleChanged: if (!visible) { searchField.text = ""; history.contentY = 0; }
+
+      function refresh() {
+        const q = searchField.text.toLowerCase();
+        if (!q) { hits = []; cursor = -1; return; }
+        const out = [];
+        const arr = history.model;
+        for (let i = 0; i < arr.length; i++)
+          if ((arr[i].text || "").toLowerCase().includes(q)) out.push(i);
+        hits = out;
+        cursor = out.length ? 0 : -1;
+        jump();
+      }
+      function step(d) {
+        if (!hits.length) return;
+        cursor = (cursor + d + hits.length) % hits.length;
+        jump();
+      }
+      function jump() {
+        if (cursor >= 0) history.positionViewAtIndex(hits[cursor], ListView.Center);
+      }
+
+      NTextInput {
+        id: searchField
+        Layout.fillWidth: true
+        placeholderText: "Search messages…"
+        inputItem.onTextChanged: searchBar.refresh()
+        inputItem.Keys.onReturnPressed: e => searchBar.step(e.modifiers & Qt.ShiftModifier ? -1 : 1)
+        inputItem.Keys.onEscapePressed: searchBar.visible = false
+        function forceActiveFocus() { inputItem.forceActiveFocus(); }
+      }
+      NText {
+        text: searchBar.hits.length
+          ? (searchBar.cursor + 1) + "/" + searchBar.hits.length
+          : (searchField.text ? "0" : "")
+        color: Color.mOnSurfaceVariant
+        font.pixelSize: Style.fontSizeS
+      }
+      NIconButton { icon: "chevron-up";   baseSize: Style.baseWidgetSize * 0.8; onClicked: searchBar.step(1) }
+      NIconButton { icon: "chevron-down"; baseSize: Style.baseWidgetSize * 0.8; onClicked: searchBar.step(-1) }
+      NIconButton { icon: "x";            baseSize: Style.baseWidgetSize * 0.8; onClicked: searchBar.visible = false }
     }
 
     NDivider { Layout.fillWidth: true }
@@ -136,7 +198,10 @@ Item {
       delegate: Item {
         id: row
         required property var modelData
+        required property int index
         readonly property bool mine: modelData.from === "me"
+        readonly property bool searchHit:
+          searchBar.visible && searchBar.hits.indexOf(index) >= 0
 
         width: history.availableWidth
         implicitHeight: bubble.implicitHeight
@@ -178,8 +243,11 @@ Item {
           color: row.mine ? Color.mPrimary : Color.mSurfaceVariant
           // Subtle outline on bot bubbles so consecutive ones don't melt
           // into the panel background.
-          border.width: row.mine ? 0 : 1
-          border.color: Color.mOutline
+          border.width: row.searchHit ? 2 : (row.mine ? 0 : 1)
+          border.color: row.searchHit
+            ? (searchBar.hits[searchBar.cursor] === row.index
+               ? Color.mTertiary : Color.mSecondary)
+            : Color.mOutline
           // Dim only while the outbox still owns it. Once a relay has
           // the wrap it's out of our hands — the single check mark
           // covers the rest, and a peer that never acks won't leave
@@ -462,20 +530,31 @@ Item {
             // Esc clears the reply target without reaching for the ×.
             Keys.onEscapePressed: if (chat?.replyTarget) chat.replyTarget = null
 
-            // Enter sends, Shift+Enter newlines. Handle in onPressed so
-            // the default TextArea handler never inserts the \n on send.
-            Keys.onPressed: event => {
-              if (event.key === Qt.Key_Return || event.key === Qt.Key_Enter) {
-                if ((event.modifiers & Qt.ShiftModifier)
-                    && !(event.modifiers & Qt.ControlModifier)) {
-                  // Shift+Enter: let TextArea insert the newline.
-                  event.accepted = false;
-                } else {
-                  // Enter or Ctrl+Enter: send. Ctrl+Enter is muscle
-                  // memory from Slack/Discord's multiline mode.
-                  event.accepted = true;
-                  if (text.trim().length > 0) input.accepted();
-                }
+            // Ctrl+V: if the clipboard holds an image, dump it to
+            // $XDG_RUNTIME_DIR and hand the path to the daemon with
+            // unlink=true (same path as the screenshot keybind). Text
+            // falls through to TextArea's own paste. canPaste reflects
+            // text/plain availability, so it doubles as the "is this
+            // an image?" probe without a second wl-paste roundtrip.
+            Keys.onPressed: e => {
+              if (e.matches(StandardKey.Paste) && !canPaste) {
+                e.accepted = true;
+                pasteImage.running = true;
+                return;
+              }
+              handleReturn(e);
+            }
+
+            // Enter sends, Shift+Enter newlines. Split out so the
+            // paste interceptor above can share Keys.onPressed.
+            function handleReturn(event) {
+              if (event.key !== Qt.Key_Return && event.key !== Qt.Key_Enter) return;
+              if ((event.modifiers & Qt.ShiftModifier)
+                  && !(event.modifiers & Qt.ControlModifier)) {
+                event.accepted = false;  // Shift+Enter → newline
+              } else {
+                event.accepted = true;
+                if (text.trim().length > 0) input.accepted();
               }
             }
           }
@@ -509,6 +588,32 @@ Item {
       nameFilters: ["*.png", "*.jpg", "*.jpeg", "*.gif", "*.webp"]
       initialPath: Quickshell.env("HOME") + "/Pictures"
       onAccepted: paths => { if (paths.length > 0) chat?.sendFile(paths[0]); }
+    }
+
+    // wl-paste → tmpfile → daemon. --type image forces the image
+    // offer even if a text/uri-list is also present (file managers
+    // copy both). Non-zero exit means no image on the clipboard;
+    // the Ctrl+V guard should prevent that but fail quiet anyway.
+    Process {
+      id: pasteImage
+      property string tmp: ""
+      command: ["sh", "-c",
+        `f="$XDG_RUNTIME_DIR/nostr-chat-paste-$$"; ` +
+        `wl-paste --type image > "$f" && printf %s "$f"`]
+      stdout: StdioCollector { onStreamFinished: pasteImage.tmp = text }
+      onExited: (code) => { if (code === 0 && tmp) chat?.sendFile(tmp, true); tmp = ""; }
+    }
+
+    // Drag-and-drop from file managers. Most offer text/uri-list; take
+    // the first local file and let the daemon reject non-images.
+    DropArea {
+      parent: root  // cover the whole panel, not just this layout slot
+      anchors.fill: parent
+      onDropped: d => {
+        if (!d.hasUrls) return;
+        const u = d.urls[0].toString();
+        if (u.startsWith("file://")) chat?.sendFile(decodeURIComponent(u.slice(7)));
+      }
     }
 
     NText {
