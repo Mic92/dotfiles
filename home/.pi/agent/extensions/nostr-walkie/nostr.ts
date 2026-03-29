@@ -271,15 +271,18 @@ export class NostrBridge {
       },
       this.keys.sk,
     );
-    const seal = createSeal(rumor, this.keys.sk, this.keys.recipientPk);
     // Recipient copy is what matters; self-copy is best-effort convenience.
+    // Each needs its own seal — NIP-44 encrypts seal→recipient, so reusing
+    // the recipient's seal for the self-copy would make it undecryptable.
+    const sealThem = createSeal(rumor, this.keys.sk, this.keys.recipientPk);
     this.queue.enqueue(
-      createWrap(seal, this.keys.recipientPk),
+      createWrap(sealThem, this.keys.recipientPk),
       this.relays,
       `${label} toThem`,
     );
+    const sealUs = createSeal(rumor, this.keys.sk, this.keys.pk);
     this.queue.enqueue(
-      createWrap(seal, this.keys.pk),
+      createWrap(sealUs, this.keys.pk),
       this.relays,
       `${label} toUs`,
     );

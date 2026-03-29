@@ -57,11 +57,13 @@ export default function (pi: ExtensionAPI) {
           ? `exit code ${r.code}`
           : undefined;
         expansions.push({ command, output, error });
-        result = result.replace(full, output);
+        // Use replacer fn so $&, $1, $` etc. in command output don't get
+        // interpreted as replacement patterns by String.replace.
+        result = result.replace(full, () => output);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         expansions.push({ command, output: "", error: msg });
-        result = result.replace(full, `[error: ${msg}]`);
+        result = result.replace(full, () => `[error: ${msg}]`);
       }
     }
 
