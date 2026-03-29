@@ -479,7 +479,23 @@ def get_pr_message_from_editor(default_branch: str) -> tuple[str, str]:
 def prepare_repository(default_branch: str) -> int:
     """Prepare repository: pull, format check. Returns 0 if ready, 1 on error."""
     print_header("Preparing changes...")
-    run(["git", "pull", "--rebase", "origin", default_branch])
+    # submodule.recurse=true makes `pull --rebase` return 128 when the current
+    # branch introduces a new submodule that the base branch doesn't have yet —
+    # the recursive submodule checkout sees the initialized submodule as a
+    # "local modification" and refuses. The rebase itself is fine; only the
+    # recursive bit trips. Disable it for this call and sync submodules after.
+    run(
+        [
+            "git",
+            "-c",
+            "submodule.recurse=false",
+            "pull",
+            "--rebase",
+            "origin",
+            default_branch,
+        ]
+    )
+    run(["git", "submodule", "update", "--init", "--recursive"], check=False)
 
     print_header("Checking code formatting...")
     result = run(["flake-fmt"], check=False)
