@@ -141,6 +141,26 @@ Item {
         width: history.availableWidth
         implicitHeight: bubble.implicitHeight
 
+        // Hover-reveal reply button in the 15% gutter beside the
+        // bubble. Lives on the row (not the bubble) so it never
+        // covers text and doesn't fight selectByMouse.
+        NIconButton {
+          icon: "corner-down-right"
+          tooltipText: "Reply"
+          baseSize: Style.baseWidgetSize * 0.7
+          anchors.verticalCenter: bubble.verticalCenter
+          anchors.left:  row.mine ? undefined : bubble.right
+          anchors.right: row.mine ? bubble.left : undefined
+          anchors.margins: Style.marginXS
+          opacity: (hov.hovered || hovering) ? 1 : 0
+          visible: opacity > 0
+          Behavior on opacity { NumberAnimation { duration: 100 } }
+          onClicked: {
+            chat.replyTarget = { id: modelData.id, text: modelData.text };
+            input.forceActiveFocus();
+          }
+        }
+
         // Bubble floats left (bot) or right (me) at ~85% width so the
         // alignment itself reads as "who said this" without an avatar.
         Rectangle {
@@ -167,26 +187,9 @@ Item {
           opacity: (row.mine && modelData.state === root.state.pending) ? 0.7 : 1.0
           Behavior on opacity { NumberAnimation { duration: 150 } }
 
-          // Hover hint + cursor so tap-to-reply is discoverable.
-          // HoverHandler/TapHandler rather than MouseArea so they
-          // coexist with text selection inside NText.
-          HoverHandler { id: hov; cursorShape: Qt.PointingHandCursor }
-          Rectangle {
-            anchors.fill: parent
-            radius: parent.radius
-            color: Color.mOnSurface
-            opacity: hov.hovered ? 0.06 : 0
-            Behavior on opacity { NumberAnimation { duration: 100 } }
-          }
-          TapHandler {
-            acceptedButtons: Qt.LeftButton
-            // Double-tap to reply — single-tap would fight text
-            // selection. The hover cursor hints something's clickable.
-            onDoubleTapped: {
-              chat.replyTarget = { id: modelData.id, text: modelData.text };
-              input.forceActiveFocus();
-            }
-          }
+          // Track hover on the whole bubble so the reply button can
+          // reveal itself without stealing events from text selection.
+          HoverHandler { id: hov }
 
           ColumnLayout {
             id: col
@@ -268,8 +271,10 @@ Item {
               textFormat: Text.MarkdownText
               readOnly: true
               selectByMouse: true
-              selectionColor: Color.mPrimary
-              selectedTextColor: Color.mOnPrimary
+              // Own bubbles already sit on mPrimary, so invert the
+              // selection palette there or the highlight vanishes.
+              selectionColor: row.mine ? Color.mOnPrimary : Color.mPrimary
+              selectedTextColor: row.mine ? Color.mPrimary : Color.mOnPrimary
               color: row.mine ? Color.mOnPrimary : Color.mOnSurface
               font.family: Settings.data.ui.fontDefault
               font.pointSize: Style.fontSizeM * Settings.data.ui.fontDefaultScale
