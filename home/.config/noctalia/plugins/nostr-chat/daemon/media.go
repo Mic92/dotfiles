@@ -320,16 +320,24 @@ func blossomUpload(ctx context.Context, servers []string, enc *encryptedFile, ke
 // ── helpers ─────────────────────────────────────────────────────────
 
 func detectContentType(filePath string, data []byte) string {
+	// Sniff first — we have the bytes in hand and magic numbers don't
+	// lie. Extension is the fallback for formats DetectContentType
+	// punts on (it returns application/octet-stream for anything it
+	// can't identify, notably plain .webp without the RIFF header
+	// variants it knows).
+	sniff := data
+	if len(sniff) > 512 {
+		sniff = sniff[:512]
+	}
+	if ct := http.DetectContentType(sniff); ct != "application/octet-stream" {
+		return ct
+	}
 	if ext := filepath.Ext(filePath); ext != "" {
 		if ct := mime.TypeByExtension(ext); ct != "" {
 			return ct
 		}
 	}
-	sniff := data
-	if len(sniff) > 512 {
-		sniff = sniff[:512]
-	}
-	return http.DetectContentType(sniff)
+	return "application/octet-stream"
 }
 
 func tagValue(tags nostr.Tags, key string) string {
