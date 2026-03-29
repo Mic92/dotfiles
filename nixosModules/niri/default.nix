@@ -72,8 +72,10 @@
     chromium
     ferdium
 
-    # File manager
-    nautilus
+    # File manager — terminal-based, themed via noctalia's yazi template
+    # (wallpaper-derived colors). GUI file manager dropped; xdg-open on
+    # directories falls back to yazi via its .desktop file.
+    yazi
 
     # Document viewer
     evince
