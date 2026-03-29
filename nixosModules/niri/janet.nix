@@ -1,12 +1,12 @@
 # Janet — the local OpenCrow instance fronted by the noctalia chat panel.
-# Plugin + daemon live in the noctalia-plugins submodule (symlinked into
-# plugins/); this file just wires your peer/relays/secret into that module.
-{ pkgs, ... }:
+# Plugin QML is symlinked from the noctalia-plugins submodule into
+# ~/.config/noctalia/plugins/ by homeshick. The daemon + systemd unit
+# come from the same repo via flake input so nix builds don't need
+# ?submodules=1.
+{ pkgs, self, ... }:
 {
   imports = [
-    # Point at the submodule directly — the plugins/nostr-chat symlink would
-    # dangle once the flake is copied into the store without the submodule.
-    ../../home/.config/noctalia/shared-plugins/nostr-chat/module.nix
+    self.inputs.noctalia-plugins.nixosModules.nostr-chat
   ];
 
   services.nostr-chat = {

@@ -828,6 +828,26 @@
         "url": "https://github.com/Mic92/nixpkgs"
       }
     },
+    "noctalia-plugins": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1774777647,
+        "narHash": "sha256-jZU+eDELPAhe2f2ZznbZPRij3TxzF1IcTzEj6L25z1s=",
+        "owner": "Mic92",
+        "repo": "noctalia-plugins",
+        "rev": "2f85a2c4ee5a803547c1eb0d27a65e0fb020a1d5",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "noctalia-plugins",
+        "type": "github"
+      }
+    },
     "nur-packages": {
       "inputs": {
         "nixpkgs": [
@@ -941,6 +961,7 @@
         "nix-tree-rs": "nix-tree-rs",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
+        "noctalia-plugins": "noctalia-plugins",
         "nur-packages": "nur-packages",
         "opencrow": "opencrow",
         "retiolum": "retiolum",
