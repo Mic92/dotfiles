@@ -141,28 +141,41 @@ Item {
       Layout.fillWidth: true
       spacing: Style.marginS
 
-      property var hits: []
-      property int cursor: -1
+      // Store message IDs, not model indices — the reversed model
+      // shifts by one every time a message arrives, which would point
+      // every cached index at the wrong bubble.
+      property var hits: []      // [id, id, …] newest-first
+      property string current: ""
+      readonly property string query: searchField.text.toLowerCase()
       onVisibleChanged: if (!visible) { searchField.text = ""; history.contentY = 0; }
 
       function refresh() {
-        const q = searchField.text.toLowerCase();
-        if (!q) { hits = []; cursor = -1; return; }
+        if (!query) { hits = []; current = ""; return; }
         const out = [];
-        const arr = history.model;
-        for (let i = 0; i < arr.length; i++)
-          if ((arr[i].text || "").toLowerCase().includes(q)) out.push(i);
+        for (const m of history.model)
+          if ((m.text || "").toLowerCase().includes(query)) out.push(m.id);
         hits = out;
-        cursor = out.length ? 0 : -1;
+        current = out[0] || "";
         jump();
       }
       function step(d) {
         if (!hits.length) return;
-        cursor = (cursor + d + hits.length) % hits.length;
+        const i = Math.max(0, hits.indexOf(current));
+        current = hits[(i + d + hits.length) % hits.length];
         jump();
       }
       function jump() {
-        if (cursor >= 0) history.positionViewAtIndex(hits[cursor], ListView.Center);
+        if (!current) return;
+        const i = history.model.findIndex(m => m.id === current);
+        if (i >= 0) history.positionViewAtIndex(i, ListView.Center);
+      }
+      // Re-scan when messages arrive mid-search so the counter stays
+      // honest. current is an ID so the cursor survives the refresh.
+      readonly property int _watch: history.count
+      on_WatchChanged: if (visible && query) {
+        const keep = current;
+        refresh();
+        if (hits.includes(keep)) { current = keep; jump(); }
       }
 
       NTextInput {
@@ -176,7 +189,7 @@ Item {
       }
       NText {
         text: searchBar.hits.length
-          ? (searchBar.cursor + 1) + "/" + searchBar.hits.length
+          ? (searchBar.hits.indexOf(searchBar.current) + 1) + "/" + searchBar.hits.length
           : (searchField.text ? "0" : "")
         color: Color.mOnSurfaceVariant
         font.pixelSize: Style.fontSizeS
@@ -222,10 +235,12 @@ Item {
       delegate: Item {
         id: row
         required property var modelData
-        required property int index
         readonly property bool mine: modelData.from === "me"
+        // Match locally rather than scanning hits[] — O(1) per
+        // delegate and immune to index drift when the model grows.
         readonly property bool searchHit:
-          searchBar.visible && searchBar.hits.indexOf(index) >= 0
+          searchBar.visible && searchBar.query !== "" &&
+          (modelData.text || "").toLowerCase().includes(searchBar.query)
 
         width: history.availableWidth
         implicitHeight: bubble.implicitHeight
@@ -269,7 +284,7 @@ Item {
           // into the panel background.
           border.width: row.searchHit ? 2 : (row.mine ? 0 : 1)
           border.color: row.searchHit
-            ? (searchBar.hits[searchBar.cursor] === row.index
+            ? (searchBar.current === modelData.id
                ? Color.mTertiary : Color.mSecondary)
             : Color.mOutline
           // Dim only while the outbox still owns it. Once a relay has
@@ -563,7 +578,7 @@ Item {
             // unlink=true (same path as the screenshot keybind). Text
             // falls through to TextArea's own paste. canPaste reflects
             // text/plain availability, so it doubles as the "is this
-            // an image?" probe without a second wl-paste roundtrip.
+            // an image?" probe without a wl-paste roundtrip.
             Keys.onPressed: e => {
               if (e.matches(StandardKey.Paste) && !canPaste) {
                 e.accepted = true;
@@ -618,10 +633,6 @@ Item {
       onAccepted: paths => { if (paths.length > 0) chat?.sendFile(paths[0]); }
     }
 
-    // wl-paste → tmpfile → daemon. --type image forces the image
-    // offer even if a text/uri-list is also present (file managers
-    // copy both). Non-zero exit means no image on the clipboard;
-    // the Ctrl+V guard should prevent that but fail quiet anyway.
     Process {
       id: pasteImage
       property string tmp: ""
