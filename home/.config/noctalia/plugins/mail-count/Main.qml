@@ -1,0 +1,1 @@
+../../shared-plugins/mail-count/Main.qml
