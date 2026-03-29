@@ -19,6 +19,10 @@
       "enabled": true,
       "sourceUrl": ""
     },
+    "fprint-notify": {
+      "enabled": true,
+      "sourceUrl": ""
+    },
     "internet-provider": {
       "enabled": true,
       "sourceUrl": ""
