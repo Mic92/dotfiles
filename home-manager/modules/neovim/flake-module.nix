@@ -25,6 +25,8 @@ let
     nil
     nixd
     nixfmt
+    deadnix
+    statix
     prettierd
     ruff
     selene
