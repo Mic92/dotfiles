@@ -1,10 +1,12 @@
 # Janet — the local OpenCrow instance fronted by the noctalia chat panel.
-# Plugin + daemon live co-located under home/.config/noctalia/plugins/;
-# this file just wires your peer/relays/secret into that module.
+# Plugin + daemon live in the noctalia-plugins submodule (symlinked into
+# plugins/); this file just wires your peer/relays/secret into that module.
 { pkgs, ... }:
 {
   imports = [
-    ../../home/.config/noctalia/plugins/nostr-chat/module.nix
+    # Point at the submodule directly — the plugins/nostr-chat symlink would
+    # dangle once the flake is copied into the store without the submodule.
+    ../../home/.config/noctalia/shared-plugins/nostr-chat/module.nix
   ];
 
   services.nostr-chat = {
