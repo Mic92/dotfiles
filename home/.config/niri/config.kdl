@@ -113,6 +113,14 @@ window-rule {
     open-floating true
 }
 
+// Cheat-sheet overlay floating + centred
+window-rule {
+    match app-id="^eog$" title="cheatsheet\\.png"
+    open-floating true
+    default-column-width { fixed 1400; }
+    default-window-height { fixed 980; }
+}
+
 // Rounded corners for a modern look.
 window-rule {
     geometry-corner-radius 20
@@ -125,8 +133,10 @@ debug {
 }
 
 binds {
-    // Important hotkeys overlay
-    Mod+Shift+Slash { show-hotkey-overlay; }
+    // Custom cheat sheet (rendered HTML → PNG, shown via imv).
+    // Closes on q/Escape. Native overlay kept on Mod+F1 as fallback.
+    Mod+Shift+Slash hotkey-overlay-title="Cheat Sheet" { spawn "eog" ".config/niri/cheatsheet.png"; }
+    Mod+F1 { show-hotkey-overlay; }
 
     // Launch programs
     Mod+T hotkey-overlay-title="Terminal" { spawn "ghostty"; }

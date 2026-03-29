@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Regenerate cheatsheet.png from cheatsheet.html after editing it.
+set -euo pipefail
+cd "$(dirname "$(readlink -f "$0")")"
+chromium --headless --disable-gpu --hide-scrollbars \
+	--window-size=1400,980 \
+	--screenshot="$PWD/cheatsheet.png" \
+	"file://$PWD/cheatsheet.html" 2>/dev/null
+echo "wrote $PWD/cheatsheet.png"
