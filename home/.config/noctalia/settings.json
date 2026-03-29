@@ -218,6 +218,9 @@
           "pinned": []
         },
         {
+          "id": "plugin:mail-count"
+        },
+        {
           "hideWhenZero": false,
           "hideWhenZeroUnread": false,
           "iconColor": "none",
