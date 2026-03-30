@@ -598,11 +598,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1774695583,
-        "narHash": "sha256-LaNs1KpJC1YCgv9zVayktHAGlc6Tkztk1CRKkXfvvJU=",
+        "lastModified": 1774816037,
+        "narHash": "sha256-CXB/+vZL6wonUMEOI7+pDPZ3h0kDEn7H+jibZ87Q7V0=",
         "owner": "Mic92",
         "repo": "mics-skills",
-        "rev": "07224e1c67ef5dace2211fd70bd7c134c5d615b5",
+        "rev": "c818c96d0415facfa56a3ee4a093e9355449f1dd",
         "type": "github"
       },
       "original": {
