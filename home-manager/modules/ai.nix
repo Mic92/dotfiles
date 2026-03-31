@@ -8,6 +8,7 @@ let
   aiTools = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   selfPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
   micsSkillsPkgs = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
+  piAgentDeps = pkgs.callPackage ../../home/.pi/agent/default.nix { };
 in
 {
   imports = [
@@ -36,6 +37,8 @@ in
       "screenshot-cli"
     ];
   };
+
+  home.file.".pi/agent/node_modules".source = "${piAgentDeps}/node_modules";
 
   home.file.".claude/skills/zat/SKILL.md".text = ''
     ---
