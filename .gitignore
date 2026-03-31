@@ -31,3 +31,4 @@ pkgs/direnv-instant/target
 pkgs/direnv-instant/.claude/settings.local.json
 .sediment/
 nostr-chatd
+home/.pi/agent/node_modules
