@@ -99,6 +99,9 @@ export default function cokain(pi: ExtensionAPI) {
       // wire request uses the private/beta model ID).
       if (state.modelId && body.model) {
         body.model = state.modelId;
+        if (body.thinking?.type === "disabled") {
+          delete body.thinking;
+        }
       }
 
       ensureBeta(headers, "context-1m-2025-08-07");
