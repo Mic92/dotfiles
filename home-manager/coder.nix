@@ -95,9 +95,13 @@
       for f in "$HOME"/.gitconfig.*; do
         [ -e "$f" ] || continue
         case "$f" in
-          *.local) ;;
-          *) ln -sf "$f" "$HOME/.gitconfig.local"; break ;;
+          *.local) continue ;;
         esac
+        # The coder-generated file is a short [user] stub; a full
+        # gitconfig with [include] would loop back through .local.
+        grep -q '^\[include\]' "$f" && continue
+        ln -sf "$f" "$HOME/.gitconfig.local"
+        break
       done
     fi
 
