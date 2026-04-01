@@ -104,7 +104,7 @@ in
           fi
           ;;
       esac
-      nix run ${self}#hm -- switch
+      nix --extra-experimental-features 'nix-command flakes' run ${self}#hm -- switch
     ''}/bin/bootstrap-dotfiles";
   };
   apps.default = self'.apps.bootstrap-dotfiles;
