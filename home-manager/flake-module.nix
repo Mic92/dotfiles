@@ -89,9 +89,9 @@ in
         git clone --depth=1 https://github.com/Mic92/homeshick.git "$HOME/.homesick/repos/homeshick"
       fi
       if [ ! -d "$HOME/.homesick/repos/dotfiles" ]; then
-        "$HOME/.homesick/repos/homeshick/bin/homeshick" clone https://github.com/Mic92/dotfiles.git
+        "$HOME/.homesick/repos/homeshick/bin/homeshick" --batch clone https://github.com/Mic92/dotfiles.git
       fi
-      "$HOME/.homesick/repos/homeshick/bin/homeshick" symlink
+      "$HOME/.homesick/repos/homeshick/bin/homeshick" --batch --force symlink
       nix run ${self}#hm -- switch
     ''}/bin/bootstrap-dotfiles";
   };
