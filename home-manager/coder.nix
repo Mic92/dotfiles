@@ -79,8 +79,12 @@
       fi
     }
 
-    # Auth credentials
-    persist_dir "$HOME/src/home/.pi" "$HOME/.pi"
+    # Auth credentials. ~/.pi as a whole can't be a symlink because
+    # homeshick puts relative symlinks under it (settings.json) that
+    # break when the directory is relocated.
+    persist_link "$HOME/src/home/.pi/agent/auth.json" "$HOME/.pi/agent/auth.json"
+    persist_dir "$HOME/src/home/.pi/agent/sessions" "$HOME/.pi/agent/sessions"
+    persist_dir "$HOME/src/home/.pi/state" "$HOME/.pi/state"
     persist_link "$HOME/src/home/.claude/.credentials.json" "$HOME/.claude/.credentials.json"
 
     # Coder generates ~/.gitconfig.$COO_CREATOR with work identity and
