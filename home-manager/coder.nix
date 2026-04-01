@@ -61,8 +61,26 @@
       fi
     }
 
+    # Same idea but for directories: seed the persistent copy from any
+    # existing real directory, then replace it with a symlink.
+    persist_dir() {
+      local target="$1" link="$2"
+      mkdir -p "$(dirname "$link")"
+      if [ -d "$link" ] && [ ! -L "$link" ]; then
+        if [ ! -d "$target" ]; then
+          mkdir -p "$(dirname "$target")"
+          cp -a "$link" "$target"
+        fi
+        rm -rf "$link"
+      fi
+      mkdir -p "$target"
+      if [ ! -e "$link" ]; then
+        ln -sfn "$target" "$link"
+      fi
+    }
+
     # Auth credentials
-    persist_link "$HOME/src/home/.pi/agent/auth.json" "$HOME/.pi/agent/auth.json"
+    persist_dir "$HOME/src/home/.pi" "$HOME/.pi"
     persist_link "$HOME/src/home/.claude/.credentials.json" "$HOME/.claude/.credentials.json"
 
     # Coder generates ~/.gitconfig.$COO_CREATOR with work identity and
