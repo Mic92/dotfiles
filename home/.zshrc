@@ -990,6 +990,8 @@ if [[ -f "$HOME/.netrc" ]]; then
     fi
   done
 fi
+# some weird script leaks this into my shell
+unset OMP_NUM_THREADS
 
 # prevent broken terminals by resetting to sane defaults after a command
 ttyctl -f
