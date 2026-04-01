@@ -80,6 +80,7 @@ in
           pkgs.gitMinimal
           pkgs.coreutils
           pkgs.findutils
+          pkgs.gnused
           pkgs.nix
           pkgs.jq
           pkgs.bash

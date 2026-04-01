@@ -9,7 +9,7 @@ For bootstrapping on
 # Bootstrap dotfiles when having nix
 
 ```console
-$ nix --extra-experimental-features 'nix-command flakes' run github:Mic92/dotfiles
+nix --extra-experimental-features 'nix-command flakes' run github:Mic92/dotfiles
 ```
 
 # Bootstrap homeshick without nix
