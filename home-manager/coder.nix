@@ -100,11 +100,15 @@
         Port 2222
         User argocd
         StrictHostKeyChecking accept-new
+        ServerAliveInterval 30
+        ServerAliveCountMax 6
     SSHEOF
       fi
 
+      # max-connections>1 enables nix's SSH ControlMaster (ssh-store.cc),
+      # so 8 worker channels share one TCP connection.
       /usr/bin/sudo tee /etc/nix/machines > /dev/null <<'NIXEOF'
-    ssh-ng://nix2-builder x86_64-linux - 192 1 big-parallel,kvm,nixos-test - -
+    ssh-ng://nix2-builder?max-connections=8 x86_64-linux - 192 1 big-parallel,kvm,nixos-test - -
     NIXEOF
     fi
   '';
