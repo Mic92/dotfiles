@@ -58,7 +58,7 @@ in
         profile=''${profiles["$host-$user"]};
       elif [[ -n ''${profiles[$host]:-} ]]; then
         profile=''${profiles[$host]}
-      elif [[ "$host" == coder-* ]]; then
+      elif [[ "$host" == coder-* || "$host" == *-devspace-* ]]; then
         profile="coder"
       fi
       if [[ "''${1:-}" == profile ]]; then
