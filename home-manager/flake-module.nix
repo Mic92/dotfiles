@@ -81,6 +81,7 @@ in
           pkgs.coreutils
           pkgs.findutils
           pkgs.gnused
+          pkgs.unixtools.hostname
           pkgs.nix
           pkgs.jq
           pkgs.bash
@@ -105,7 +106,7 @@ in
           fi
           ;;
       esac
-      nix --extra-experimental-features 'nix-command flakes' run ${self}#hm -- switch
+      nix --extra-experimental-features 'nix-command flakes' --accept-flake-config run ${self}#hm -- switch
     ''}/bin/bootstrap-dotfiles";
   };
   apps.default = self'.apps.bootstrap-dotfiles;
