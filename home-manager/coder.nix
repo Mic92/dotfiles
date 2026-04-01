@@ -4,9 +4,6 @@
   self,
   ...
 }:
-let
-  iroh-ssh = self.packages.${pkgs.stdenv.hostPlatform.system}.iroh-ssh;
-in
 {
   imports = [
     ./common.nix
@@ -18,7 +15,6 @@ in
 
   home.packages = [
     self.packages.${pkgs.stdenv.hostPlatform.system}.bk-wait
-    iroh-ssh
   ];
 
   # --- supervisor-managed services ---
@@ -35,44 +31,6 @@ in
     # and /run is tmpfs so it's gone after every workspace restart.
     preStart = ''
       mkdir -p /run/sshd
-    '';
-  };
-
-  services.supervisor.programs.iroh-ssh = {
-    settings = {
-      command = "${iroh-ssh}/bin/iroh-ssh server --persist --ssh-port 2222";
-      user = 999;
-      environment = "HOME=/root";
-    };
-
-    # Symlink persistent identity keys so the iroh endpoint ID survives
-    # workspace restarts ($HOME is ephemeral, ~/src persists).
-    preStart = ''
-      PERSIST="$HOME/src/home/.ssh"
-      mkdir -p "$HOME/.ssh" "$PERSIST"
-
-      for key in irohssh_ed25519 irohssh_ed25519.pub; do
-        # Seed persistent copy from any existing real file
-        if [ -f "$HOME/.ssh/$key" ] && [ ! -L "$HOME/.ssh/$key" ]; then
-          if [ ! -f "$PERSIST/$key" ]; then
-            cp "$HOME/.ssh/$key" "$PERSIST/$key"
-          fi
-          rm "$HOME/.ssh/$key"
-        fi
-        # Create symlink if missing
-        if [ ! -e "$HOME/.ssh/$key" ]; then
-          ln -sf "$PERSIST/$key" "$HOME/.ssh/$key"
-        fi
-      done
-
-      # Ensure persistent files exist (iroh-ssh will generate on first run
-      # and write through the symlink)
-      for key in irohssh_ed25519 irohssh_ed25519.pub; do
-        if [ ! -f "$PERSIST/$key" ]; then
-          touch "$PERSIST/$key"
-          chmod 600 "$PERSIST/$key"
-        fi
-      done
     '';
   };
 
@@ -121,36 +79,33 @@ in
       done
     fi
 
-    # iroh-ssh remote builder config (only on fun-with-nix workspace)
-    if [ "$(${pkgs.hostname}/bin/hostname)" = "coder-jorg-fun-with-nix-0" ]; then
-      # Builder SSH key persisted across workspace restarts
-      persist_link "$HOME/src/home/.ssh/iroh-builders" "$HOME/.ssh/iroh-builders"
-      persist_link "$HOME/src/home/.ssh/iroh-builders.pub" "$HOME/.ssh/iroh-builders.pub"
+    # On any devspace pod, authorize my GitHub-published keys so
+    # agent-forwarded SSH between pods works without per-pod key setup.
+    case "$(${pkgs.hostname}/bin/hostname)" in
+      *-devspace-*)
+        ${pkgs.curl}/bin/curl -fsSL https://github.com/Mic92.keys >> "$HOME/.ssh/authorized_keys" 2>/dev/null || true
+        ${pkgs.coreutils}/bin/sort -u "$HOME/.ssh/authorized_keys" -o "$HOME/.ssh/authorized_keys"
+        ;;
+    esac
 
-      # SSH config for iroh-ssh remote builders (append if not already present)
-      if ! grep -q 'Host bld1' "$HOME/.ssh/config" 2>/dev/null; then
+    # nix1 uses nix2 as a remote builder over the cluster network.
+    # Auth relies on the SSH agent forwarded from the laptop, so this only
+    # works for builds run from an interactive coo ssh session.
+    if [ "$(${pkgs.hostname}/bin/hostname)" = "nix1-devspace-0" ]; then
+      if ! grep -q '^Host nix2-builder$' "$HOME/.ssh/config" 2>/dev/null; then
         cat >> "$HOME/.ssh/config" <<'SSHEOF'
 
-    Host bld1
+    Host nix2-builder
+        HostName nix2-devspace-0.nix2-devspace.default.svc.cluster.local
+        Port 2222
         User argocd
-        IdentityFile ~/.ssh/iroh-builders
-        ProxyCommand iroh-ssh proxy 167e7b362ad333b19f548ce3f1de99ad220d1038900a26657e3ac069a46e0c6b
-
-    Host bld2
-        User argocd
-        IdentityFile ~/.ssh/iroh-builders
-        ProxyCommand iroh-ssh proxy 7d06e45b087c17e5ccc0483868a4a3d76ba59ec98ebcc989e57e946ac451850c
+        StrictHostKeyChecking accept-new
     SSHEOF
-            fi
+      fi
 
-         # Nix remote builder machines file
-         /usr/bin/sudo tee /etc/nix/machines > /dev/null <<'NIXEOF'
-    ssh://bld1 x86_64-linux,i686-linux /root/.ssh/iroh-builders 64 1 big-parallel - -
-    ssh://bld2 x86_64-linux,i686-linux /root/.ssh/iroh-builders 64 1 big-parallel - -
+      /usr/bin/sudo tee /etc/nix/machines > /dev/null <<'NIXEOF'
+    ssh-ng://nix2-builder x86_64-linux - 192 1 big-parallel,kvm,nixos-test - -
     NIXEOF
     fi
-
-    # iroh-ssh identity keys are managed by the supervisor iroh-ssh service's
-    # preStart — see services.supervisor.programs.iroh-ssh above.
   '';
 }

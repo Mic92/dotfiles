@@ -33,10 +33,6 @@ if [[ -f ~/.nix-profile/etc/profile.d/hm-session-vars.sh ]]; then
   source ~/.nix-profile/etc/profile.d/hm-session-vars.sh
 fi
 
-bld0() { iroh-ssh argocd@b2e93c351b63d3023542f4c2fb1a4b48a4c5323ed6590be0ad3c92eb70cec3d0 "$@"; }
-bld1() { iroh-ssh argocd@7d06e45b087c17e5ccc0483868a4a3d76ba59ec98ebcc989e57e946ac451850c "$@"; }
-bld2() { iroh-ssh argocd@167e7b362ad333b19f548ce3f1de99ad220d1038900a26657e3ac069a46e0c6b "$@"; }
-
 if [[ -e /etc/profile.d/nix.sh ]]; then
   # shellcheck disable=SC1091
   . /etc/profile.d/nix.sh
