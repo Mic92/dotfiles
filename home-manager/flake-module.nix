@@ -67,7 +67,11 @@ in
       fi
       ${
         inputs.home-manager.packages.${system}.home-manager
-      }/bin/home-manager --option keep-going true --flake "${self}#$profile" "$@"
+      }/bin/home-manager \
+        --option keep-going true \
+        --option accept-flake-config true \
+        --option extra-experimental-features 'nix-command flakes' \
+        --flake "${self}#$profile" "$@"
     ''}/bin/hm";
   };
 
@@ -88,11 +92,9 @@ in
         ]
       }
       if [ ! -d "$HOME/.homesick/repos/homeshick/.git" ]; then
-        rm -rf "$HOME/.homesick/repos/homeshick"
         git clone --depth=1 https://github.com/Mic92/homeshick.git "$HOME/.homesick/repos/homeshick"
       fi
       if [ ! -d "$HOME/.homesick/repos/dotfiles/.git" ]; then
-        rm -rf "$HOME/.homesick/repos/dotfiles"
         "$HOME/.homesick/repos/homeshick/bin/homeshick" --batch clone https://github.com/Mic92/dotfiles.git
       fi
       "$HOME/.homesick/repos/homeshick/bin/homeshick" --batch --force symlink
