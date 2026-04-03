@@ -3,5 +3,5 @@ agent: pi
 post_create:
   - "if [[ -f .envrc ]]; then direnv allow; fi"
 panes:
-  - command: <agent> # Start the configured agent (e.g., claude)
+  - command: pi
     focus: true
