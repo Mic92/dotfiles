@@ -1,0 +1,171 @@
+#!/usr/bin/env python3
+"""Open a file:// URI (or plain path) in nvim inside the active tmux pane.
+
+Ghostty hands clicked OSC-8 hyperlinks to the system opener (xdg-open on
+Linux, `open -t` on macOS), which routes here via the mime/UTI registration
+in home-manager/modules/tmux-open-file.nix.
+
+Design notes:
+  - Runs *outside* tmux (spawned by the desktop session / LaunchServices),
+    so we can't rely on $TMUX. We probe `tmux list-clients` instead and pick
+    the most recently active one — almost always the one you just clicked in.
+  - Nested tmux (local or over SSH) is handled by detecting that the active
+    pane's foreground command is tmux/ssh and *typing* the split command into
+    it via send-keys. Crude, but it's the only mechanism that crosses an SSH
+    boundary without an out-of-band channel.
+  - file:line:col suffixes (compiler/ripgrep output) are parsed and passed
+    through to nvim's cursor() so you land on the right spot.
+"""
+
+# ruff: noqa: S606
+# ^ execvp-without-shell is intentional: we are a trampoline that *becomes*
+#   tmux/ghostty. No shell = no injection surface. The lint targets code that
+#   expects shell expansion; we explicitly don't want any.
+
+from __future__ import annotations
+
+import os
+import re
+import shlex
+import subprocess
+import sys
+import urllib.parse
+from pathlib import Path
+
+
+def parse_target(arg: str) -> tuple[str, int | None, int | None]:
+    """Decode file:// URI and peel off optional :line[:col] suffix.
+
+    The suffix is only stripped if the remaining path actually exists on
+    disk — otherwise `foo:123` might be a literal filename (rare, but
+    git-annex and friends do this).
+    """
+    if arg.startswith("file://"):
+        # urllib handles percent-encoding and the optional //hostname part.
+        # We deliberately ignore the hostname: ghostty's OSC-7 emits
+        # file://$HOSTNAME/... but we always want the local path.
+        u = urllib.parse.urlparse(arg)
+        path = urllib.parse.unquote(u.path)
+    else:
+        path = arg
+
+    # Greedy on the path part so /foo/bar:10:5 doesn't eat 'bar' as line.
+    m = re.fullmatch(r"(?P<p>.*?):(?P<l>\d+)(?::(?P<c>\d+))?:?", path)
+    if m and Path(m["p"]).exists():
+        return m["p"], int(m["l"]), int(m["c"]) if m["c"] else None
+    return path, None, None
+
+
+def tmux(*args: str) -> str:
+    """Thin wrapper: returns stdout stripped, raises on non-zero."""
+    return subprocess.run(
+        ["tmux", *args], check=True, capture_output=True, text=True
+    ).stdout.strip()
+
+
+def find_active_pane() -> str | None:
+    """Pane id of the most recently active *attached* client.
+
+    list-clients only reports attached clients, so a detached background
+    session won't steal focus. Multiple ghostty windows each attached to
+    their own session: we pick whichever was touched last, which matches
+    "the one you just clicked in" with high probability.
+    """
+    try:
+        out = tmux("list-clients", "-F", "#{client_activity} #{pane_id}")
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return None
+    clients = [line.split() for line in out.splitlines() if line]
+    if not clients:
+        return None
+    # client_activity is a unix timestamp; max() gives most recent.
+    _, pane = max(clients, key=lambda c: int(c[0]))
+    return pane
+
+
+def nvim_argv(path: str, line: int | None, col: int | None) -> list[str]:
+    argv = ["nvim"]
+    if line is not None:
+        # cursor() takes 1-indexed line/col; col defaults to 1 if absent.
+        argv.append(f"+call cursor({line},{col or 1})")
+    argv += ["--", path]
+    return argv
+
+
+def open_nested(pane: str, path: str, line: int | None, col: int | None) -> None:
+    """Type a split command into an inner tmux via the outer one's send-keys.
+
+    The inner session might be over SSH, so we can't talk to its socket.
+    Driving the keyboard is the lowest common denominator. The path is
+    quoted for the *inner* shell — shlex.join handles spaces and specials,
+    and the resulting string is passed verbatim by send-keys (which doesn't
+    re-interpret it).
+
+    Side effect: the command flashes briefly at the inner shell prompt.
+    Acceptable trade-off for working across SSH.
+    """
+    inner = "tmux split-window -h " + shlex.join(nvim_argv(path, line, col))
+    os.execvp("tmux", ["tmux", "send-keys", "-t", pane, inner, "Enter"])
+
+
+def open_direct(pane: str, path: str, line: int | None, col: int | None) -> None:
+    """Clean path: spawn nvim directly via tmux split-window.
+
+    No shell involved, so no quoting dance — argv goes straight through.
+    We inherit the target pane's cwd so :e relative/path inside nvim
+    resolves the same way it would in the shell you clicked from.
+    """
+    cwd = tmux("display", "-p", "-t", pane, "#{pane_current_path}")
+    os.execvp(
+        "tmux",
+        [
+            "tmux",
+            "split-window",
+            "-h",
+            "-t",
+            pane,
+            "-c",
+            cwd,
+            *nvim_argv(path, line, col),
+        ],
+    )
+
+
+def open_fallback(path: str, line: int | None, col: int | None) -> None:
+    """No tmux client attached: spawn a fresh ghostty with tmux+nvim.
+
+    We can't open "in the pane you clicked" because there is no pane,
+    but at least the editing experience stays consistent.
+    """
+    inner = ["tmux", "new-session", *nvim_argv(path, line, col)]
+    if sys.platform == "darwin":
+        # `open -na` wants the command as a single -e argument string.
+        # @Q-style quoting via shlex.join survives the extra shell layer.
+        os.execvp("open", ["open", "-na", "Ghostty", "--args", "-e", shlex.join(inner)])
+    os.execvp("ghostty", ["ghostty", "-e", *inner])
+
+
+def main() -> None:
+    if len(sys.argv) < 2:
+        sys.exit("usage: tmux-open-file <file-uri-or-path>")
+
+    path, line, col = parse_target(sys.argv[1])
+    pane = find_active_pane()
+
+    if pane is None:
+        open_fallback(path, line, col)
+        return  # unreachable, exec replaces us
+
+    # pane_current_command is the foreground process name as tmux sees it.
+    # 'tmux' = locally nested client; ssh/et/mosh = probably remote tmux
+    # (we assume so; worst case we type a harmless command at a bare prompt).
+    # et shows up as 'et' on the client side; mosh as 'mosh-client'.
+    fg = tmux("display", "-p", "-t", pane, "#{pane_current_command}")
+    if fg in {"tmux", "ssh", "et", "mosh-client"}:
+        open_nested(pane, path, line, col)
+    else:
+        open_direct(pane, path, line, col)
+
+
+if __name__ == "__main__":
+    main()

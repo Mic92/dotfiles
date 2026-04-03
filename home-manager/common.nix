@@ -9,6 +9,7 @@
   imports = [
     ./modules/neovim
     ./modules/tmux-thumbs.nix
+    ./modules/tmux-open-file.nix
     ./modules/homeshick.nix
   ];
 
