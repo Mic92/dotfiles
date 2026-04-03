@@ -46,7 +46,7 @@
       tig
       lazygit
       git-absorb
-      difftastic
+      delta
       scc
       direnv
       nix-direnv
