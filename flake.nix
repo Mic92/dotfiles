@@ -9,7 +9,7 @@
   # To update all inputs:
   # $ nix flake update
   inputs = {
-    adios-flake.url = "github:Mic92/adios-flake/fix-self-prime-recursion";
+    adios-flake.url = "github:Mic92/adios-flake";
 
     # Kept as a top-level input so upstream dependencies that use
     # flake-parts all share a single copy via follows.
