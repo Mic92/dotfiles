@@ -69,7 +69,11 @@ in
     aiTools.gemini-cli
     aiTools.ccusage
     aiTools.ccstatusline
-    aiTools.workmux
+    # https://github.com/Mic92/workmux/tree/fix-config-lock-race
+    # Drop once upstream merges or git ships config.lock retry.
+    (aiTools.workmux.overrideAttrs (old: {
+      patches = (old.patches or [ ]) ++ [ ./patches/workmux-config-lock-race.patch ];
+    }))
     aiTools.zat
     pkgs.pueue
   ];
