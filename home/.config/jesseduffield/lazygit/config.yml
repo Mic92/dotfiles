@@ -15,7 +15,7 @@ git:
     # https://github.com/jesseduffield/lazygit/issues/5163
     order: default
   pagers:
-    - pager: delta --paging=never
+    - pager: delta --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
   autoFetch: False
   autoStageResolvedConflicts: False
 customCommands:
