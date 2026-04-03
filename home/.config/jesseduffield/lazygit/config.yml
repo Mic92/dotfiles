@@ -15,7 +15,7 @@ git:
     # https://github.com/jesseduffield/lazygit/issues/5163
     order: default
   pagers:
-    - externalDiffCommand: difft --color=always
+    - pager: delta --paging=never
   autoFetch: False
   autoStageResolvedConflicts: False
 customCommands:
