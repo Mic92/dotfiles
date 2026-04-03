@@ -65,9 +65,7 @@ in
         echo $profile
         exit 0
       fi
-      ${
-        inputs.home-manager.packages.${system}.home-manager
-      }/bin/home-manager \
+      ${inputs.home-manager.packages.${system}.home-manager}/bin/home-manager \
         --option keep-going true \
         --option accept-flake-config true \
         --option extra-experimental-features 'nix-command flakes' \
