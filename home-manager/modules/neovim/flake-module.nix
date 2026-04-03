@@ -67,12 +67,10 @@ in
     inherit nvim-lsp-packages;
   };
   packages = {
-    neovim = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped (
-      pkgs.neovimUtils.makeNeovimConfig {
-        wrapRc = false;
-        withRuby = false;
-      }
-    );
+    neovim = pkgs.wrapNeovimUnstable pkgs.neovim-unwrapped {
+      wrapRc = false;
+      withRuby = false;
+    };
     nvim-open = pkgs.python3.pkgs.callPackage ./nvim-open.nix { };
 
     nvim = pkgs.callPackage ./nvim-standalone.nix {
