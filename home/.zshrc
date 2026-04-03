@@ -319,18 +319,12 @@ ct() {
 }
 
 rg() {
-  local pager=($PAGER)
-
-  if [[ -n ${commands[delta]} ]]; then
-    pager=(delta --hyperlinks)
-  fi
-
   if [[ -n ${commands[rg]} ]]; then
     (
-      command rg --sort path --smart-case --fixed-strings --json -C 2 "$@";
+      command rg --sort path --smart-case --fixed-strings --pretty --hyperlink-format=default -C 2 "$@";
       if [[ -t 0 ]]; then
-        command rg --files | command rg --no-line-number --json -C 2 "$@"
-      fi) | $pager
+        command rg --files | command rg --no-line-number --color=always --hyperlink-format=default -C 2 "$@"
+      fi) | $PAGER
   else
     grep -r -C 2 "$@"
   fi
@@ -758,16 +752,6 @@ function chpwd-osc7-pwd() {
     (( ZSH_SUBSHELL )) || osc7-pwd
 }
 add-zsh-hook -Uz chpwd chpwd-osc7-pwd
-
-function delta_sidebyside {
-  if [[ COLUMNS -ge 140 ]]; then
-    export DELTA_FEATURES='side-by-side'
-  else
-    export DELTA_FEATURES=''
-  fi
-}
-trap delta_sidebyside WINCH
-
 
 mkcd() { mkdir -p "$1" && cd "$1"; }
 # make cd accept files

@@ -1,11 +1,9 @@
 [core]
   excludesfile = ~/.gitignore
   attributesfile = ~/.gitattributes
-  pager = delta
   editor = nvim
 [interactive]
   singlekey = true
-  diffFilter = delta --color-only
 [format]
   signoff = true
 [color]
@@ -16,9 +14,6 @@
   recurseSubmodules = on-demand
 [submodule]
   fetchJobs = 0
-[delta]
-  navigate = true    # use n and N to move between diff sections
-  syntax-theme = Solarized (light)
 [am]
   threeWay = true
 [user]
@@ -32,6 +27,14 @@
   renames = true
   colorMoved = default
 	noprefix = true
+  external = difft
+  tool = difftastic
+[difftool]
+  prompt = false
+[difftool "difftastic"]
+  cmd = difft "$LOCAL" "$REMOTE"
+[pager]
+  difftool = true
 [merge]
 	tool = vimdiff
   keepBackup = false
