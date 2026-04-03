@@ -10,6 +10,10 @@ os:
   editAtLineAndWait: "nvim --remote-wait +{{line}} {{filename}}"
   editInTerminal: true
 git:
+  log:
+    # topo-order makes lazygit unusably slow on huge repos like nixpkgs
+    # https://github.com/jesseduffield/lazygit/issues/5163
+    order: default
   pagers:
     - colorArg: always
       pager: delta --paging=never
