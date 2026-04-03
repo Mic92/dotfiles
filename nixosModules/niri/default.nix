@@ -64,6 +64,10 @@
 
     # Desktop shell (bar, notifications, control center, OSD)
     noctalia-shell
+    # Qt's wayland QPA leaves QIcon::themeName empty so noctalia falls through
+    # to hicolor and can't find generic icons like user-desktop. The gtk3
+    # platform theme reads gtk-icon-theme-name; ship breeze so that resolves.
+    kdePackages.breeze-icons
 
     # Needed by noctalia kde-connect plugin's "Browse files" (SFTP mount)
     sshfs
@@ -96,7 +100,7 @@
     slurp
 
     # live-text: OCR overlay, screenshot annotation, region capture
-    self.packages.${pkgs.hostPlatform.system}.live-text
+    self.packages.${pkgs.stdenv.hostPlatform.system}.live-text
   ];
 
   programs.kdeconnect.enable = true;
@@ -108,5 +112,8 @@
     )}";
     # Enable native Wayland support for Electron apps (Ferdium, etc.) and Chromium
     NIXOS_OZONE_WL = "1";
+    # Make Qt resolve icon themes via GTK settings instead of defaulting to
+    # hicolor-only on the wayland QPA (see breeze-icons above).
+    QT_QPA_PLATFORMTHEME = "gtk3";
   };
 }
