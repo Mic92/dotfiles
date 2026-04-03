@@ -20,16 +20,15 @@
         "adios": "adios"
       },
       "locked": {
-        "lastModified": 1772296652,
-        "narHash": "sha256-A9MiPAdiqXuayobFWNxViCTtGLMWb9n+4ZYhIAINh/Q=",
+        "lastModified": 1774283004,
+        "narHash": "sha256-05W10Synp+J/WTty2PfedeXi119QhsCzOOGMnQB53G4=",
         "owner": "Mic92",
         "repo": "adios-flake",
-        "rev": "28dac28215ed1d03d77c0df851091cb0f913cd28",
+        "rev": "957ede25f5aaaeb3b2a502f1bf55e472c80eb7a5",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
-        "ref": "fix-self-prime-recursion",
         "repo": "adios-flake",
         "type": "github"
       }
