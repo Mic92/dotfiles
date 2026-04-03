@@ -30,7 +30,7 @@ let
   # when the plugin socket is absent (shell not running, headless TTY, etc).
   noctaliaAskpass =
     lib.getExe
-      self.inputs.noctalia-plugins.packages.${pkgs.system}.noctalia-ssh-askpass;
+      self.inputs.noctalia-plugins.packages.${pkgs.stdenv.hostPlatform.system}.noctalia-ssh-askpass;
   askPasswordWrapper = pkgs.writeScript "ssh-askpass-wrapper" ''
     #! ${pkgs.runtimeShell} -e
     if [ -S "''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/noctalia-ssh-askpass.sock" ]; then
