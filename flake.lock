@@ -189,10 +189,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1775160574,
-        "narHash": "sha256-DW1Ruk7d9bsgd+d1MRWxj2uUEx5rq9e1jTNctktqQP0=",
+        "lastModified": 1775228902,
+        "narHash": "sha256-OktSYH7RAlHue3kYMbpFdgggzwpO0fStx0D83pUJ1T0=",
         "ref": "refs/heads/main",
-        "rev": "4f2a847338d16bab14ab0f482133feb3f8556539",
+        "rev": "e93ffb5a5491917fcd6b3287f203be835805f91a",
         "shallow": true,
         "type": "git",
         "url": "https://git.clan.lol/clan/data-mesher"
