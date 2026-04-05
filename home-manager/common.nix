@@ -26,6 +26,7 @@
       jujutsu
 
       hexyl
+      bc
       binutils
       ouch
 
