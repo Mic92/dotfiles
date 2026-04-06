@@ -40,6 +40,11 @@ in
 
   home.file.".pi/agent/node_modules".source = "${piAgentDeps}/node_modules";
 
+  # Coordinator skill shipped by workmux upstream, installed via llm-agents.nix
+  # https://github.com/numtide/llm-agents.nix/pull/3766
+  home.file.".claude/skills/coordinator".source =
+    "${aiTools.workmux}/share/workmux/skills/coordinator";
+
   home.file.".claude/skills/zat/SKILL.md".text = ''
     ---
     name: zat
