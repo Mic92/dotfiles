@@ -40,8 +40,11 @@ Guidelines:
 
 1. Write a short PR title (max 72 characters)
 2. Ensure the branch is pushed: \`git push -u origin HEAD\`
-3. Open PR creation in browser (do NOT create directly):
-   \`gh pr create --web --title "<title>" --body "<body>"\`
+3. Open PR creation in browser (do NOT create directly). Detach so the
+   tool call returns immediately instead of blocking on the browser:
+   \`\`\`bash
+   nohup gh pr create --web --title "<title>" --body "<body>" >/dev/null 2>&1 &
+   \`\`\`
 `.trim();
 
 // Anything larger than this is probably noise (lockfiles, generated code).
