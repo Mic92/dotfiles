@@ -17,7 +17,6 @@
     ./packages.nix
     ./pipewire.nix
     ./powertop.nix
-    ./promtail.nix
     ./remote-builder.nix
     ./ssh-tpm-agent.nix
     ./tracing.nix
