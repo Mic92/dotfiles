@@ -85,7 +85,7 @@
           #! ${pkgs.bash}/bin/bash
 
           ${pkgs.rbw}/bin/rbw unlock
-          ${pkgs.openssh}/bin/ssh-add
+          ${pkgs.openssh}/bin/ssh-add -c
           export XDG_DATA_DIRS=${datadir}:$XDG_DATA_DIRS
           # first import environment variables from the login manager
           systemctl --user unset-environment DISPLAY WAYLAND_DISPLAY

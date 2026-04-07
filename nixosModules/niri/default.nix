@@ -2,6 +2,7 @@
   pkgs,
   config,
   self,
+  sshAskPasswordWrapper,
   ...
 }:
 {
@@ -9,6 +10,14 @@
     ./kwallet-tpm
     ./janet.nix
   ];
+
+  # programs.ssh.enableAskPassword defaults to services.xserver.enable, which
+  # is false under niri → NixOS exports SSH_ASKPASS="" instead of leaving it
+  # unset. Force-enable and point at the noctalia-aware wrapper so ssh-add
+  # invoked from a shell uses the same dialog as agent-side confirmations.
+  # KDE machines keep ksshaskpass (set by the plasma6 nixos module).
+  programs.ssh.enableAskPassword = true;
+  programs.ssh.askPassword = "${sshAskPasswordWrapper}";
 
   # Lock secrets before suspend (carried over from KDE module)
   systemd.user.services.lock-secrets-on-suspend = {

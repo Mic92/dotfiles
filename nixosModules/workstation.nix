@@ -93,7 +93,6 @@
   # Programs
   programs = {
     ssh = {
-      askPassword = "${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass";
       extraConfig = ''
         SendEnv LANG LC_*
       '';
