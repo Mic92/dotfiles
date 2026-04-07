@@ -12,7 +12,6 @@
     ../../nixosModules/kde
     ../../nixosModules/packages.nix
     ../../nixosModules/powertop.nix
-    ../../nixosModules/promtail.nix
     ../../nixosModules/users.nix
     ../../nixosModules/tracing.nix
     ../../nixosModules/pipewire.nix

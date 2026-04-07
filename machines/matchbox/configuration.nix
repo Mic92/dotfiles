@@ -17,7 +17,6 @@
 
     ../../nixosModules/users.nix
     ../../nixosModules/sshd/tor.nix
-    ../../nixosModules/promtail.nix
   ];
 
   boot.loader.systemd-boot.enable = true;

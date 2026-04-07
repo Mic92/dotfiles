@@ -31,7 +31,6 @@
     ../../nixosModules/iperf.nix
     ../../nixosModules/radicle-mic92.nix
     ../../nixosModules/openldap/replica.nix
-    ../../nixosModules/promtail.nix
     ../../nixosModules/users.nix
     ../../nixosModules/unbound.nix
   ];

@@ -317,9 +317,7 @@ SSH Session:            ssh yXbrhy1bXaRIwTsgxJ8l:Wzo6XToyMjIy@upterm.thalheim.io
 
       usernameInput.addEventListener("input", updateCommands);
       useNixCheckbox.addEventListener("change", updateCommands);
-      muxRadios.forEach((r) =>
-        r.addEventListener("change", updateCommands)
-      );
+      muxRadios.forEach((r) => r.addEventListener("change", updateCommands));
 
       document.querySelectorAll(".copy-btn").forEach((btn) => {
         btn.addEventListener("click", () => {
