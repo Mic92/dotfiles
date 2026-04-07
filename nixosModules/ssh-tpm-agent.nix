@@ -1,6 +1,5 @@
 {
   pkgs,
-  config,
   lib,
   self,
   ...
@@ -26,8 +25,8 @@ let
   # Prefer the noctalia ssh-askpass plugin when the shell is running: it
   # actually honours SSH_ASKPASS_PROMPT=confirm (lxqt-openssh-askpass does
   # not) so ssh-tpm-add -c confirmations get real Allow/Deny buttons instead
-  # of an ambiguous password box. Falls back to the configured askPassword
-  # when the plugin socket is absent (shell not running, headless TTY, etc).
+  # of an ambiguous password box. Falls back to lxqt-openssh-askpass when
+  # the plugin socket is absent (shell not running, headless TTY, etc).
   noctaliaAskpass =
     lib.getExe
       self.inputs.noctalia-plugins.packages.${pkgs.stdenv.hostPlatform.system}.noctalia-ssh-askpass;
@@ -39,7 +38,7 @@ let
     export DISPLAY="$(systemctl --user show-environment | sed 's/^DISPLAY=\(.*\)/\1/; t; d')"
     export XAUTHORITY="$(systemctl --user show-environment | sed 's/^XAUTHORITY=\(.*\)/\1/; t; d')"
     export WAYLAND_DISPLAY="$(systemctl --user show-environment | sed 's/^WAYLAND_DISPLAY=\(.*\)/\1/; t; d')"
-    exec ${config.programs.ssh.askPassword} "$@"
+    exec ${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass "$@"
   '';
   # Example SSH config for using the TPM2 agent + FIDO keys for selected hosts:
   #Host *.hosts-with-yubikeys.tld
@@ -59,6 +58,10 @@ in
     ssh-tpm-agent
     pkgs.keyutils
   ];
+
+  # Expose the wrapper so the niri module can point programs.ssh.askPassword
+  # at it. KDE machines keep ksshaskpass (set by the plasma6 module).
+  _module.args.sshAskPasswordWrapper = askPasswordWrapper;
 
   systemd.user.services.ssh-tpm-agent = {
     description = "ssh-tpm-agent service";
