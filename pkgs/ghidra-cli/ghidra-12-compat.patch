@@ -1,0 +1,48 @@
+diff --git a/src/ghidra/bridge.rs b/src/ghidra/bridge.rs
+index b7ab451..cbb3ffb 100644
+--- a/src/ghidra/bridge.rs
++++ b/src/ghidra/bridge.rs
+@@ -267,10 +267,14 @@ pub fn start_bridge(
+     info!("Starting Ghidra bridge...");
+ 
+     // Write the Java bridge script to disk
+-    let scripts_dir = dirs::config_dir()
+-        .ok_or_else(|| anyhow::anyhow!("Could not determine config directory"))?
++    //
++    // Ghidra 11.1+ uses Bnd to build OSGi bundles for -scriptPath and Bnd
++    // silently skips any path segment beginning with a dot.  Use a non-hidden
++    // leaf under the XDG data dir so the compiled bundle is actually emitted.
++    let scripts_dir = dirs::data_dir()
++        .ok_or_else(|| anyhow::anyhow!("Could not determine data directory"))?
+         .join("ghidra-cli")
+-        .join("scripts");
++        .join("ghidra_scripts");
+     std::fs::create_dir_all(&scripts_dir)?;
+     let java_script_path = scripts_dir.join("GhidraCliBridge.java");
+     std::fs::write(&java_script_path, JAVA_BRIDGE_SCRIPT)?;
+diff --git a/src/ghidra/scripts/GhidraCliBridge.java b/src/ghidra/scripts/GhidraCliBridge.java
+index 91f0b9a..0ae50b4 100644
+--- a/src/ghidra/scripts/GhidraCliBridge.java
++++ b/src/ghidra/scripts/GhidraCliBridge.java
+@@ -2538,16 +2538,15 @@ public class GhidraCliBridge extends GhidraScript {
+             if (func == null) return errorResult(buildFunctionTargetHint(target));
+ 
+             // Parse the signature using Ghidra's C parser
+-            ghidra.app.util.cparser.C.CParserUtils.CParseResults parseResults =
++            // (Ghidra 12 dropped CParseResults; parseSignature now returns the
++            //  FunctionDefinition directly.)
++            FunctionDefinition funcDef = (FunctionDefinition)
+                 ghidra.app.util.cparser.C.CParserUtils.parseSignature(
+-                    this, currentProgram, sigStr);
+-
+-            if (parseResults == null || parseResults.getDataType() == null) {
++                    (ghidra.framework.plugintool.ServiceProvider) null, currentProgram, sigStr);
++            if (funcDef == null) {
+                 return errorResult("Failed to parse signature: " + sigStr);
+             }
+ 
+-            FunctionDefinition funcDef = (FunctionDefinition) parseResults.getDataType();
+-
+             int txId = currentProgram.startTransaction("Set function signature");
+             try {
+                 ApplyFunctionSignatureCmd cmd = new ApplyFunctionSignatureCmd(
