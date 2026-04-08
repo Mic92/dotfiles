@@ -25,6 +25,7 @@
 
   fileSystems."/var/lib/syncthing/Sync/public" = {
     device = "/var/www/dl.lekwati.com";
+    fsType = "none";
     options = [
       "bind"
       "nofail"

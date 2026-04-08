@@ -19,6 +19,7 @@
 
   fileSystems."/var/lib/private/photoprism" = {
     device = "/mnt/hdd/photoprism";
+    fsType = "none";
     options = [
       "bind"
       "nofail"

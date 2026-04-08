@@ -28,6 +28,7 @@ in
 
   fileSystems."/var/lib/private/pinchflat" = {
     device = "/zdata/pinchflat-state";
+    fsType = "none";
     options = [
       "bind"
       "nofail"
