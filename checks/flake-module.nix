@@ -46,10 +46,15 @@ let
     lib.filterAttrs (n: _v: !(builtins.elem n blacklistPackages)) self'.packages
   );
   devShells = lib.mapAttrs' (n: lib.nameValuePair "devShell-${n}") self'.devShells;
+  packageTests = lib.concatMapAttrs (
+    pname: pkg:
+    lib.mapAttrs' (tname: lib.nameValuePair "package-${pname}-test-${tname}") (pkg.tests or { })
+  ) self'.packages;
   homeConfigurations = lib.mapAttrs' (
     name: config: lib.nameValuePair "home-manager-${name}" config.activation-script
   ) (self'.legacyPackages.homeConfigurations or { });
 in
 {
-  checks = nixosMachines // darwinMachines // packages // devShells // homeConfigurations;
+  checks =
+    nixosMachines // darwinMachines // packages // packageTests // devShells // homeConfigurations;
 }

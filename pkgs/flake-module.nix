@@ -33,6 +33,7 @@ in
       ;
     gh-radicle = pkgs.callPackage ./gh-radicle { };
     iroh-ssh = pkgs.callPackage ./iroh-ssh { };
+    ghidra-cli = pkgs.callPackage ./ghidra-cli { };
     # Cross-platform secure pinentry (works on macOS and Linux)
     rbw-pinentry = pkgs.callPackage ./rbw_pinentry { };
     # Matrix calendar bot
