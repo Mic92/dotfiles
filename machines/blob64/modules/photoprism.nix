@@ -20,6 +20,7 @@
 
   fileSystems."/var/lib/private/photoprism" = {
     device = "/zdata/photoprism";
+    fsType = "none";
     options = [
       "bind"
       "nofail"
