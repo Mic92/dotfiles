@@ -65,8 +65,6 @@
 
   hardware.saleae-logic.enable = true;
 
-  services.ollama.enable = true;
-
   services.pcscd.enable = true;
 
   # https://community.frame.work/t/guide-linux-battery-life-tuning/6665
