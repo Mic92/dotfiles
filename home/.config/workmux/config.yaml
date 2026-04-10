@@ -1,5 +1,10 @@
 nerdfont: true
 agent: pi
+# One tmux session per worktree instead of cramming windows into the
+# attached session. Scales better once many agents run in parallel:
+# the main session stays usable and worktrees are reached via the
+# session picker (C-Space s) or `workmux dashboard`.
+mode: session
 post_create:
   - "if [[ -f .envrc ]]; then direnv allow; fi"
 panes:
