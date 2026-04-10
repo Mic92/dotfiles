@@ -19,6 +19,10 @@
       "enabled": true,
       "sourceUrl": ""
     },
+    "file-search": {
+      "enabled": true,
+      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+    },
     "fprint-notify": {
       "enabled": true,
       "sourceUrl": ""
@@ -27,21 +31,17 @@
       "enabled": true,
       "sourceUrl": ""
     },
+    "kde-connect": {
+      "enabled": true,
+      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+    },
     "khal-next": {
       "enabled": true,
       "sourceUrl": ""
     },
-    "kagi-quick-search": {
-      "enabled": true,
-      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
-    },
     "mail-count": {
       "enabled": true,
       "sourceUrl": ""
-    },
-    "kde-connect": {
-      "enabled": true,
-      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
     },
     "network-indicator": {
       "enabled": true,
@@ -59,13 +59,17 @@
       "enabled": true,
       "sourceUrl": ""
     },
+    "ssh-askpass": {
+      "enabled": true,
+      "sourceUrl": ""
+    },
     "timer": {
       "enabled": true,
       "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
     },
-    "ssh-askpass": {
+    "usb-drive-manager": {
       "enabled": true,
-      "sourceUrl": ""
+      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
     }
   },
   "version": 2
