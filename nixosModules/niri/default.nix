@@ -36,6 +36,30 @@
     };
   };
 
+  # noctalia-shell rewrites plugins.json via atomic rename, which clobbers the
+  # homeshick symlink with a plain file. Watch for that and fold the new
+  # content back into the dotfiles repo, then restore the link — so plugin
+  # toggles made in the UI still end up under version control.
+  systemd.user.paths.noctalia-plugins-relink = {
+    wantedBy = [ "default.target" ];
+    pathConfig.PathChanged = "%h/.config/noctalia/plugins.json";
+  };
+  systemd.user.services.noctalia-plugins-relink = {
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = pkgs.writeShellScript "noctalia-plugins-relink" ''
+        set -eu
+        live="$HOME/.config/noctalia/plugins.json"
+        repo="$HOME/.homesick/repos/dotfiles/home/.config/noctalia/plugins.json"
+        # Nothing to do if it's still (or already) a symlink.
+        [ -L "$live" ] && exit 0
+        [ -f "$live" ] || exit 0
+        mv -f "$live" "$repo"
+        ln -sf ../../.homesick/repos/dotfiles/home/.config/noctalia/plugins.json "$live"
+      '';
+    };
+  };
+
   programs.niri.enable = true;
 
   # Use KDE Wallet instead of gnome-keyring for secret storage
