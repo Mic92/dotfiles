@@ -36,6 +36,27 @@
     };
   };
 
+  # noctalia-shell as a supervised service so quickshell crashes (segfaults in
+  # the QML engine, GPU resets, OOM kills) don't leave the session without a
+  # bar/launcher/lock-screen. spawn-at-startup + systemd-run --scope gave us
+  # cgroup isolation but no restart; a real unit gets both.
+  systemd.user.services.noctalia-shell = {
+    description = "Noctalia desktop shell (quickshell)";
+    partOf = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    requisite = [ "graphical-session.target" ];
+    wantedBy = [ "graphical-session.target" ];
+    # Back off if it crash-loops on a broken config instead of pegging a core.
+    startLimitIntervalSec = 30;
+    startLimitBurst = 5;
+    serviceConfig = {
+      ExecStart = "${pkgs.noctalia-shell}/bin/noctalia-shell";
+      Restart = "always";
+      RestartSec = 1;
+      Slice = "app-graphical.slice";
+    };
+  };
+
   # noctalia-shell rewrites plugins.json via atomic rename, which clobbers the
   # homeshick symlink with a plain file. Watch for that and fold the new
   # content back into the dotfiles repo, then restore the link — so plugin
