@@ -31,7 +31,14 @@
       upterm
       eternal-terminal
       gimp
-      (signal-desktop.override { commandLineArgs = "--password-store=kwallet6"; })
+      (symlinkJoin {
+        name = "signal-desktop";
+        paths = [ signal-desktop ];
+        nativeBuildInputs = [ makeWrapper ];
+        postBuild = ''
+          wrapProgram $out/bin/signal-desktop --add-flags --password-store=kwallet6
+        '';
+      })
       adwaita-icon-theme
       hicolor-icon-theme
       graphicsmagick
