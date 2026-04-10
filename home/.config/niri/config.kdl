@@ -63,7 +63,9 @@ layout {
 }
 
 // Startup processes
-spawn-at-startup "noctalia-shell"
+// Run noctalia-shell in its own systemd scope so OOM-killer/coredumps are
+// attributed to it rather than niri, and `systemctl --user` can manage it.
+spawn-at-startup "systemd-run" "--user" "--scope" "--unit=noctalia-shell" "--collect" "--" "noctalia-shell"
 spawn-at-startup "kanshi"
 
 prefer-no-csd
