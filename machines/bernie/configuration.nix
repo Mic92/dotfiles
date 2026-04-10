@@ -13,6 +13,7 @@
     ../../nixosModules/ip-update.nix
     ../../nixosModules/packages.nix
     ../../nixosModules/powertop.nix
+    ../../nixosModules/fluent-bit.nix
     ../../nixosModules/users.nix
     ../../nixosModules/remote-builder.nix
     ../../nixosModules/tracing.nix

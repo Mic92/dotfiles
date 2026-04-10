@@ -17,6 +17,7 @@
 
     ../../nixosModules/users.nix
     ../../nixosModules/sshd/tor.nix
+    ../../nixosModules/fluent-bit.nix
   ];
 
   boot.loader.systemd-boot.enable = true;

@@ -86,6 +86,7 @@
     ../../nixosModules/iperf.nix
     ../../nixosModules/nncp.nix
     ../../nixosModules/openldap
+    ../../nixosModules/fluent-bit.nix
     ../../nixosModules/rtorrent.nix
     ../../nixosModules/flood.nix
     ../../nixosModules/samba-dl.nix
