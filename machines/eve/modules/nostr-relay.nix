@@ -48,6 +48,15 @@ in
         writePolicy {
           plugin = ""
         }
+
+        logging {
+          # The default (invalidEvents = true) logs every rejected event,
+          # which on a public relay means ~95k "ephemeral event expired"
+          # lines per 10 minutes from clients replaying stale kind-2xxxx
+          # events. journald was already rate-limiting on top. Nothing
+          # actionable in there, so silence it.
+          invalidEvents = false
+        }
       }
     '';
   };
