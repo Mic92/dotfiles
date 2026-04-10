@@ -121,6 +121,9 @@ let
       "machines/*/facts/*"
       "darwin/*/*.yml"
       "*/facter.json"
+      # Written by noctalia-shell at runtime; keep its formatting so the
+      # relink path unit doesn't churn the diff on every UI toggle.
+      "home/.config/noctalia/plugins.json"
       "*.pub"
       "*.pem"
       "*.conf"
