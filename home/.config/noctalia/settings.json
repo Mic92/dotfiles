@@ -8,7 +8,9 @@
     "customLaunchPrefixEnabled": false,
     "density": "default",
     "enableClipPreview": true,
+    "enableClipboardChips": true,
     "enableClipboardHistory": true,
+    "enableClipboardSmartIcons": true,
     "enableSessionSearch": true,
     "enableSettingsSearch": true,
     "enableWindowsSearch": true,
@@ -26,13 +28,13 @@
     "showIconBackground": false,
     "sortByMostUsed": true,
     "terminalCommand": "ghostty -e",
-    "useApp2Unit": false,
     "viewMode": "grid"
   },
   "audio": {
     "mprisBlacklist": [],
     "preferredPlayer": "mpv",
     "spectrumFrameRate": 30,
+    "spectrumMirrored": true,
     "visualizerType": "linear",
     "volumeFeedback": false,
     "volumeFeedbackSoundFile": "",
@@ -50,7 +52,6 @@
     "density": "default",
     "displayMode": "always_visible",
     "enableExclusionZoneInset": true,
-    "floating": false,
     "fontScale": 1,
     "frameRadius": 12,
     "frameThickness": 8,
@@ -279,6 +280,9 @@
           "icon": "noctalia",
           "id": "ControlCenter",
           "useDistroLogo": false
+        },
+        {
+          "id": "plugin:usb-drive-manager"
         }
       ]
     }
@@ -313,6 +317,7 @@
     "monitorForColors": "",
     "predefinedScheme": "Nord",
     "schedulingMode": "location",
+    "syncGsettings": true,
     "useWallpaperColors": true
   },
   "controlCenter": {
@@ -399,8 +404,10 @@
     "indicatorColor": "primary",
     "indicatorOpacity": 0.6,
     "indicatorThickness": 3,
+    "launcherIcon": "",
     "launcherIconColor": "none",
     "launcherPosition": "end",
+    "launcherUseDistroLogo": false,
     "monitors": [],
     "onlySameOutput": true,
     "pinnedApps": [
@@ -478,9 +485,11 @@
     "showHibernateOnLockScreen": false,
     "showScreenCorners": false,
     "showSessionButtonsOnLockScreen": true,
+    "smoothScrollEnabled": true,
     "telemetryEnabled": false
   },
   "hooks": {
+    "colorGeneration": "",
     "darkModeChange": "",
     "enabled": false,
     "performanceModeDisabled": "",
@@ -507,6 +516,7 @@
   },
   "location": {
     "analogClockInCalendar": false,
+    "autoLocate": false,
     "firstDayOfWeek": -1,
     "hideWeatherCityName": false,
     "hideWeatherTimezone": false,
@@ -517,10 +527,10 @@
     "use12hourFormat": false,
     "useFahrenheit": false,
     "weatherEnabled": true,
-    "weatherShowEffects": true
+    "weatherShowEffects": true,
+    "weatherTaliaMascotAlways": false
   },
   "network": {
-    "airplaneModeEnabled": false,
     "bluetoothAutoConnect": false,
     "bluetoothDetailsViewMode": "grid",
     "bluetoothHideUnnamedDevices": false,
@@ -528,8 +538,7 @@
     "bluetoothRssiPollingEnabled": false,
     "disableDiscoverability": false,
     "networkPanelView": "wifi",
-    "wifiDetailsViewMode": "list",
-    "wifiEnabled": true
+    "wifiDetailsViewMode": "list"
   },
   "nightLight": {
     "autoSchedule": true,
@@ -589,7 +598,8 @@
     "overlayLayer": true
   },
   "plugins": {
-    "autoUpdate": true
+    "autoUpdate": true,
+    "notifyUpdates": true
   },
   "sessionMenu": {
     "countdownDuration": 10000,
@@ -719,6 +729,7 @@
     "fillColor": "#000000",
     "fillMode": "crop",
     "hideWallpaperFilenames": false,
+    "linkLightAndDarkWallpapers": true,
     "monitorDirectories": [],
     "overviewBlur": 0.4,
     "overviewEnabled": false,
@@ -732,7 +743,10 @@
     "sortOrder": "name",
     "transitionDuration": 1500,
     "transitionEdgeSmoothness": 0.05,
-    "transitionType": "random",
+    "transitionType": [
+      "random"
+    ],
+    "useOriginalImages": false,
     "useSolidColor": false,
     "useWallhaven": true,
     "viewMode": "single",

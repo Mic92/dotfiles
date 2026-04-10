@@ -124,6 +124,7 @@ let
       # Written by noctalia-shell at runtime; keep its formatting so the
       # relink path unit doesn't churn the diff on every UI toggle.
       "home/.config/noctalia/plugins.json"
+      "home/.config/noctalia/settings.json"
       "*.pub"
       "*.pem"
       "*.conf"
