@@ -32,7 +32,10 @@ runCommand "ghidra-cli-test"
 
     # ghidra-cli does not create the project root on first import; doctor only
     # reports it.  Pre-create it so the headless analyzer does not bail out.
+    # The `dirs` crate ignores XDG on Darwin and hardcodes ~/Library/Caches,
+    # so seed both locations.
     mkdir -p "$XDG_CACHE_HOME/ghidra-cli/projects"
+    mkdir -p "$HOME/Library/Caches/ghidra-cli/projects"
 
     cat > hello.c <<'EOF'
     #include <stdio.h>
@@ -44,7 +47,9 @@ runCommand "ghidra-cli-test"
     ghidra import ./hello --project regress
 
     echo ">>> decompile"
-    ghidra decompile main --project regress --program hello | tee decomp.json
+    # Mach-O prefixes C symbols with an underscore, ELF does not.
+    ghidra decompile ${if stdenv.hostPlatform.isDarwin then "_main" else "main"} \
+      --project regress --program hello | tee decomp.json
 
     # The decompiler must recover both the call and the string literal.
     grep -q 'puts' decomp.json
