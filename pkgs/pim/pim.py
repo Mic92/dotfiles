@@ -242,7 +242,7 @@ def run_sandboxed(tools_path: str, pi_bin: str, args: list[str]) -> int:
             "--provider",
             "anthropic",
             "--model",
-            "claude-haiku-4-5",
+            "google/gemma-4-31B-it",
             "--session-dir",
             str(home / ".pi/pim"),
             "--append-system-prompt",
