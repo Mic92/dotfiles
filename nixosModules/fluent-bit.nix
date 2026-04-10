@@ -9,6 +9,23 @@ let
   # loki basic-auth password keeps working without re-prompting on every host.
   passwordFile = config.clan.core.vars.generators.promtail.files."password".path;
 
+  # Stream labels (low cardinality, indexed by loki).
+  labelKeys = [
+    "host"
+    "unit"
+    "coredump_unit"
+  ];
+
+  # Per-line structured metadata (high cardinality, queryable but not indexed).
+  # Loki 3.x stores these alongside the log line so `{host="eve"} | priority <= "3"`
+  # works without blowing up the label index.
+  metadataKeys = [
+    "priority"
+    "syslog_identifier"
+    "pid"
+    "container_name"
+  ];
+
   # fluent-bit has no expression language comparable to promtail's
   # pipeline_stages, so the bits that the loki ruler relies on (the
   # `core dumped` rewrite, the `unit`/`coredump_unit` labels and the
@@ -37,31 +54,37 @@ let
       if unit ~= nil then
         unit = string.gsub(unit, "^session%-%d+%.scope$", "session.scope")
       end
-      record["unit"] = unit
-      record["host"] = record["_HOSTNAME"]
 
       -- coredump enrichment so the loki ruler alert (`|~ "core dumped"`) keeps firing
+      local coredump_unit
       local cgroup = record["COREDUMP_CGROUP"]
       if cgroup ~= nil then
-        record["coredump_unit"] = string.match(cgroup, "([^/]+)$")
+        coredump_unit = string.match(cgroup, "([^/]+)$")
         local exe = record["COREDUMP_EXE"] or "?"
         local uid = record["COREDUMP_UID"] or "?"
         local gid = record["COREDUMP_GID"] or "?"
         local cmd = record["COREDUMP_CMDLINE"] or "?"
-        record["MESSAGE"] = string.format(
+        msg = string.format(
           "%s core dumped (user: %s/%s, command: %s)",
           exe, uid, gid, cmd
         )
       end
 
-      -- emit only the fields we care about; loki will turn host/unit/coredump_unit
-      -- into stream labels and the remaining MESSAGE becomes the log line
-      -- (drop_single_key=on)
+      -- emit only the fields we care about: stream labels + structured metadata
+      -- + MESSAGE. After label_keys/remove_keys/structured_metadata are applied
+      -- only MESSAGE remains in the record so drop_single_key=on yields the
+      -- plain log line.
       local out = {
-        MESSAGE = record["MESSAGE"],
-        host = record["host"],
-        unit = record["unit"],
-        coredump_unit = record["coredump_unit"],
+        MESSAGE = msg,
+        -- stream labels
+        host = record["_HOSTNAME"],
+        unit = unit,
+        coredump_unit = coredump_unit,
+        -- structured metadata
+        priority = record["PRIORITY"],
+        syslog_identifier = record["SYSLOG_IDENTIFIER"],
+        pid = record["_PID"],
+        container_name = record["CONTAINER_NAME"],
       }
       return 2, timestamp, out
     end
@@ -85,6 +108,13 @@ in
         http_server = "on";
         http_listen = "127.0.0.1";
         http_port = 9080;
+        # filesystem-backed buffering so logs survive a loki outage / network
+        # blip on roaming hosts (matchbox, laptops) instead of being dropped
+        # once the in-memory buffer fills.
+        "storage.path" = "/var/lib/fluent-bit/storage";
+        "storage.sync" = "normal";
+        "storage.max_chunks_up" = 64;
+        "storage.backlog.mem_limit" = "16M";
       };
       pipeline = {
         inputs = [
@@ -95,14 +125,33 @@ in
             read_from_tail = "on";
             max_entries = 1000;
             strip_underscores = "off";
+            "storage.type" = "filesystem";
           }
         ];
         filters = [
+          {
+            # fold multi-line stacktraces (go/python/java) into a single loki
+            # entry so `|= "panic"` / `|= "Traceback"` returns the whole trace.
+            name = "multiline";
+            match = "journal";
+            "multiline.key_content" = "MESSAGE";
+            "multiline.parser" = "go,python,java";
+          }
           {
             name = "lua";
             match = "journal";
             script = "${luaFilter}";
             call = "process";
+          }
+          {
+            # eve's strfry alone produces ~10k lines/min; cap any single
+            # journal stream so it cannot eat the 120h retention budget.
+            name = "throttle";
+            match = "journal";
+            rate = 200;
+            window = 60;
+            interval = "1s";
+            print_status = false;
           }
         ];
         outputs = [
@@ -115,14 +164,14 @@ in
             http_user = "promtail@thalheim.io";
             http_passwd = "\${LOKI_PASSWORD}";
             labels = "job=systemd-journal";
-            label_keys = "$host,$unit,$coredump_unit";
-            remove_keys = lib.concatStringsSep "," [
-              "host"
-              "unit"
-              "coredump_unit"
-            ];
+            label_keys = lib.concatMapStringsSep "," (k: "$" + k) labelKeys;
+            structured_metadata = lib.concatMapStringsSep "," (k: "${k}=$" + k) metadataKeys;
+            remove_keys = lib.concatStringsSep "," (labelKeys ++ metadataKeys);
             line_format = "key_value";
             drop_single_key = "on";
+            # cap on-disk backlog for the loki output so a long outage on a
+            # small box (matchbox) cannot fill the disk.
+            "storage.total_limit_size" = "256M";
           }
         ];
       };
