@@ -17,6 +17,11 @@ let
     extensions = {
       memory = lib.mkDefault true;
       reminders = lib.mkDefault true;
+      # Local override of pi's compaction: the upstream cut-point heuristic
+      # produces empty "(none)" summaries for image-heavy chat sessions, and
+      # the coding-agent template doesn't fit a personal assistant. Kept here
+      # rather than upstreamed until it's had some mileage.
+      compaction = lib.mkDefault ./extensions/compaction;
     };
 
     skills = {

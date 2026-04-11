@@ -22,14 +22,22 @@
           "name": "Qwen 3.5 (35B)",
           "contextWindow": 65536,
           "input": ["text", "image"],
-          "reasoning": true
+          "reasoning": true,
+          "compat": {
+            "supportsDeveloperRole": false,
+            "reasoningEffortMap": { "minimal": "low", "xhigh": "high" }
+          }
         },
         {
           "id": "qwen-35-35b-coding",
           "name": "Qwen 3.5 (35B) Coding",
           "contextWindow": 65536,
           "input": ["text", "image"],
-          "reasoning": true
+          "reasoning": true,
+          "compat": {
+            "supportsDeveloperRole": false,
+            "reasoningEffortMap": { "minimal": "low", "xhigh": "high" }
+          }
         }
       ]
     }
