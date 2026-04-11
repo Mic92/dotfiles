@@ -17,6 +17,7 @@
     ./packages.nix
     ./pipewire.nix
     ./powertop.nix
+    ./fluent-bit.nix
     ./remote-builder.nix
     ./ssh-tpm-agent.nix
     ./tracing.nix

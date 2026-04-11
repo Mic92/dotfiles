@@ -25,7 +25,10 @@
         "x86_64-darwin"
       ];
       maxJobs = 8;
-      supportedFeatures = [ "big-parallel" ];
+      supportedFeatures = [
+        "big-parallel"
+        "recursive-nix"
+      ];
     }
     # direct connection sometimes break, too many connections?
     {
@@ -42,6 +45,7 @@
         "big-parallel"
         "kvm"
         "nixos-test"
+        "recursive-nix"
       ];
     }
     {
@@ -55,6 +59,7 @@
         "big-parallel"
         "kvm"
         "nixos-test"
+        "recursive-nix"
       ];
     }
   ];

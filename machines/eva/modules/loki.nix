@@ -12,6 +12,27 @@ let
             for = "10s";
             annotations.description = "{{ $labels.instance }} {{ $labels.coredump_unit }} core dumped in last 10min.";
           }
+          {
+            # dead-man switch: every host running fluent-bit should produce at
+            # least *some* journal lines within 15m. Catches broken shippers,
+            # dead retiolum links and wedged journald long before telegraf
+            # notices anything.
+            alert = "LogIngestStalled";
+            expr = ''sum by (host) (count_over_time({job="systemd-journal"}[15m])) unless sum by (host) (count_over_time({job="systemd-journal"}[5m]))'';
+            for = "5m";
+            annotations.description = "{{ $labels.host }} has not shipped any journal logs to loki in the last 5 minutes (but did in the last 15m).";
+          }
+        ];
+      }
+      {
+        # recording rules: turn log patterns into prometheus series so they
+        # can be graphed/alerted on alongside telegraf metrics.
+        name = "log-derived-metrics";
+        rules = [
+          {
+            record = "loki:sshd_invalid_user:rate5m";
+            expr = ''sum by (host) (rate({job="systemd-journal", unit="sshd.service"} |= "Invalid user" [5m]))'';
+          }
         ];
       }
     ];
@@ -23,7 +44,13 @@ in
   systemd.tmpfiles.rules = [
     "d /var/lib/loki 0700 loki loki - -"
     "d /var/lib/loki/rules 0700 loki loki - -"
-    "L+ /var/lib/loki/ruler/ruler.yml - - - - ${rulerFile}"
+    # ruler local storage layout is <dir>/<tenant>/*.yml; with
+    # auth_enabled=false the tenant is the literal string "fake". Ownership
+    # must match the parent dir or tmpfiles refuses the L+ with an
+    # "unsafe path transition" error.
+    "d /var/lib/loki/ruler 0755 loki loki - -"
+    "d /var/lib/loki/ruler/fake 0755 loki loki - -"
+    "L+ /var/lib/loki/ruler/fake/ruler.yml - - - - ${rulerFile}"
   ];
   services.loki = {
     enable = true;
