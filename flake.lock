@@ -834,11 +834,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1775913352,
-        "narHash": "sha256-CZLnLVgAdJ0cB/xXduQtZECPWjB8qQGk0EC/dHiMa9c=",
+        "lastModified": 1775929122,
+        "narHash": "sha256-f1Wxg5D6hy0NkEFNpaO0mksrMH16nwniW03x7RiwrNs=",
         "owner": "Mic92",
         "repo": "noctalia-plugins",
-        "rev": "d0959e9d19fd2592c0def4ce0f8a41f73fe289a5",
+        "rev": "e3866c7baf348e4c890f2403519358332d5e2ccb",
         "type": "github"
       },
       "original": {
@@ -877,16 +877,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1775908231,
-        "narHash": "sha256-QZ8Jo6n1zsYzp3qGaphdGZ7qVXTcEIENf/06Vk0kxvU=",
+        "lastModified": 1774962086,
+        "narHash": "sha256-ppZmENKI2a3I4BVxSjxgyo/yIGF8FL6jMGp9acJ/P+4=",
         "owner": "pinpox",
         "repo": "opencrow",
-        "rev": "167a2ce5330f06de702e0860f1f87af87ec55d64",
+        "rev": "7f8c712d41383e93f4d0e875f9cbe87e512dc781",
         "type": "github"
       },
       "original": {
         "owner": "pinpox",
-        "ref": "compact",
         "repo": "opencrow",
         "type": "github"
       }
