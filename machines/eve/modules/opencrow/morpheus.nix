@@ -61,6 +61,16 @@
           "text"
           "image"
         ];
+        # vLLM's chat-completions endpoint rejects role:"developer" and
+        # reasoning_effort:"minimal"; pi defaults both for unknown
+        # reasoning-capable openai-completions providers.
+        compat = {
+          supportsDeveloperRole = false;
+          reasoningEffortMap = {
+            minimal = "low";
+            xhigh = "high";
+          };
+        };
       }
       {
         id = "qwen-35-35b-coding";
@@ -71,6 +81,13 @@
           "text"
           "image"
         ];
+        compat = {
+          supportsDeveloperRole = false;
+          reasoningEffortMap = {
+            minimal = "low";
+            xhigh = "high";
+          };
+        };
       }
     ];
   };
