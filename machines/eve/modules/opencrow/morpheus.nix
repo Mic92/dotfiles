@@ -25,26 +25,52 @@
     baseUrl = "https://morpheus.cit.tum.de/api/v1";
     api = "openai-completions";
     apiKey = "!rbw get morpheus-api-key";
+    # contextWindow values are the vLLM server's max_model_len, not the
+    # architectural limits — morpheus caps Gemma/Qwen at 65K and
+    # Ministral at 32K regardless of what the model cards claim.
+    #
+    # All four backends are multimodal (verified against /v1/models
+    # capabilities + an actual image round-trip); without input=[…,image]
+    # pi's openai-completions adapter silently strips image parts before
+    # the request ever leaves the box.
     models = [
       {
         id = "mistralai/Ministral-3-14B-Instruct-2512";
         name = "Ministral 3 (14B)";
-        contextLength = 32768;
+        contextWindow = 32768;
+        input = [
+          "text"
+          "image"
+        ];
       }
       {
         id = "google/gemma-4-31B-it";
         name = "Gemma 4 (31B)";
-        contextLength = 65536;
+        contextWindow = 65536;
+        input = [
+          "text"
+          "image"
+        ];
       }
       {
         id = "Qwen/Qwen3.5-35B-A3B-FP8";
         name = "Qwen 3.5 (35B)";
-        contextLength = 65536;
+        contextWindow = 65536;
+        reasoning = true;
+        input = [
+          "text"
+          "image"
+        ];
       }
       {
         id = "qwen-35-35b-coding";
         name = "Qwen 3.5 (35B) Coding";
-        contextLength = 65536;
+        contextWindow = 65536;
+        reasoning = true;
+        input = [
+          "text"
+          "image"
+        ];
       }
     ];
   };
