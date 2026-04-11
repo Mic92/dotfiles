@@ -13,8 +13,9 @@
     peerPubkey = "96dc8a8cb0c28bdd113c1f6e350abd6014c69369cbd618c3b8cd4d1326bf7e37";
     relays = [
       "wss://nostr.thalheim.io"
+      "wss://nostr2.thalheim.io"
       "wss://nos.lol"
-      "wss://nostr.0cx.de"
+      # "wss://nostr.0cx.de"  # 2026-04: down/flaky
     ];
     blossom = [ "https://nostr-files.thalheim.io" ];
     displayName = "Janet";

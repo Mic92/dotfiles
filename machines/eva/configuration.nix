@@ -22,6 +22,7 @@
     ./modules/disko.nix
     ./modules/loki.nix
     ./modules/nginx.nix
+    ./modules/nostr-relay.nix
     ./modules/phantun.nix
     ./modules/prometheus
     ./modules/telegraf

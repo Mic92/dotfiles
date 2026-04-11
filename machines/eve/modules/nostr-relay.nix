@@ -3,6 +3,7 @@
 # General relay:
 #   wss://nostr.thalheim.io
 #   Add as relay in any Nostr client (Damus, Amethyst, Primal, etc.)
+#   Mirrored with eva at wss://nostr2.thalheim.io — add both.
 #
 # NIP-29 groups relay:
 #   wss://nostr-groups.thalheim.io
@@ -17,99 +18,20 @@
   ...
 }:
 let
-  strfryPort = 7777;
   groupsRelayPort = 2929;
-  strfryDomain = "nostr.thalheim.io";
   groupsDomain = "nostr-groups.thalheim.io";
   groups-relay = pkgs.callPackage ../../../pkgs/groups-relay { };
 in
 {
+  imports = [ ../../../nixosModules/strfry.nix ];
+
   # ── General relay (strfry) ──────────────────────────────────────────────
 
-  environment.etc."strfry.conf" = {
-    text = ''
-      db = "/var/lib/strfry/"
-
-      relay {
-        bind = "127.0.0.1"
-        port = ${toString strfryPort}
-
-        info {
-          name = "Nostr Relay on ${strfryDomain}"
-          description = "A general-purpose Nostr relay"
-          contact = ""
-        }
-
-        nofiles = 0
-        maxWebsocketPayloadSize = 131072
-        autoPingSeconds = 55
-        enableTCPKeepalive = false
-
-        writePolicy {
-          plugin = ""
-        }
-
-        logging {
-          # The default (invalidEvents = true) logs every rejected event,
-          # which on a public relay means ~95k "ephemeral event expired"
-          # lines per 10 minutes from clients replaying stale kind-2xxxx
-          # events. journald was already rate-limiting on top. Nothing
-          # actionable in there, so silence it.
-          invalidEvents = false
-        }
-      }
-    '';
-  };
-
-  systemd.services.strfry = {
-    description = "strfry Nostr relay";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "network.target" ];
-
-    serviceConfig = {
-      Type = "simple";
-      ExecStart = "${pkgs.strfry}/bin/strfry --config=/etc/strfry.conf relay";
-      Restart = "on-failure";
-      RestartSec = 5;
-
-      DynamicUser = true;
-      StateDirectory = "strfry";
-
-      # WebSocket connections are long-lived; each client holds an fd.
-      # strfry.conf sets nofiles=0 so it inherits this limit instead of
-      # trying to raise it itself (which DynamicUser can't do anyway).
-      LimitNOFILE = 65536;
-
-      NoNewPrivileges = true;
-      ProtectSystem = "strict";
-      ProtectHome = true;
-      PrivateTmp = true;
-      PrivateDevices = true;
-      ProtectKernelTunables = true;
-      ProtectControlGroups = true;
-      ReadWritePaths = [ "/var/lib/strfry" ];
-    };
-  };
-
-  services.nginx.virtualHosts.${strfryDomain} = {
-    useACMEHost = "thalheim.io";
-    forceSSL = true;
-    locations."/".extraConfig = ''
-      proxy_pass http://127.0.0.1:${toString strfryPort};
-      proxy_set_header Host $host;
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      proxy_set_header X-Forwarded-Proto $scheme;
-      proxy_http_version 1.1;
-      proxy_set_header Upgrade $http_upgrade;
-      proxy_set_header Connection $connection_upgrade;
-
-      # Nostr clients hold WebSocket connections open indefinitely.
-      # nginx defaults to 60s read/send timeout which would drop any
-      # connection that goes quiet between strfry's 55s pings under load.
-      proxy_read_timeout 3600s;
-      proxy_send_timeout 3600s;
-    '';
+  services.mic92-strfry = {
+    enable = true;
+    domain = "nostr.thalheim.io";
+    acme.useACMEHost = "thalheim.io";
+    syncPeers = [ "wss://nostr2.thalheim.io" ];
   };
 
   # ── NIP-29 groups relay (khatru29) ──────────────────────────────────────
