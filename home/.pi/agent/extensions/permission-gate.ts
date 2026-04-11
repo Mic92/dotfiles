@@ -8,61 +8,101 @@
  * Status bar shows "gate ■" when active.
  */
 
+import { existsSync, readFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import {
+  Editor,
+  type EditorTheme,
+  Key,
+  matchesKey,
+  truncateToWidth,
+} from "@mariozechner/pi-tui";
+
+type GateResult = { allow: true } | { allow: false; reason: string };
+
+interface PatternEntry {
+  pattern: RegExp;
+  label: string;
+}
+
+interface PatternJSON {
+  pattern: string;
+  label: string;
+  flags?: string;
+}
+
+/**
+ * Generic defaults shipped with the extension. Users can override by
+ * creating ~/.pi/agent/permission-gate.json or .pi/permission-gate.json
+ * (project-local). See loadPatterns() for resolution order.
+ */
+const DEFAULT_PATTERNS: PatternJSON[] = [
+  { pattern: "\\brm\\s+(-[^\\s]*r|--recursive)", label: "recursive delete" },
+  { pattern: "\\bsudo\\b", label: "sudo" },
+  { pattern: "\\bchmod\\b.*777", label: "world-writable permissions" },
+  { pattern: ">\\s*/dev/[sh]d[a-z]", label: "raw device redirect" },
+  { pattern: "\\bgit\\s+push\\s+.*(-f\\b|--force\\b)", label: "force push" },
+  { pattern: "\\bgit\\s+reset\\s+--hard\\b", label: "hard reset" },
+  { pattern: "\\bgit\\s+clean\\s+-[^\\s]*f", label: "git clean" },
+  { pattern: "\\bgit\\s+restore\\b", label: "git restore" },
+  { pattern: "\\b(curl|wget)\\b.*\\|\\s*(ba)?sh\\b", label: "pipe to shell" },
+];
+
+function compile(entries: PatternJSON[]): PatternEntry[] {
+  return entries.map((e) => ({
+    pattern: new RegExp(e.pattern, e.flags ?? "i"),
+    label: e.label,
+  }));
+}
+
+/**
+ * Resolution order (last wins / overrides):
+ *   1. built-in DEFAULT_PATTERNS
+ *   2. ~/.pi/agent/permission-gate.json
+ *   3. <cwd>/.pi/permission-gate.json
+ *
+ * File format: { "replace"?: bool, "patterns": [{pattern, label, flags?}, ...] }
+ * If "replace" is true the file replaces everything loaded so far,
+ * otherwise it appends.
+ */
+function loadPatterns(cwd: string, warn: (msg: string) => void): PatternEntry[] {
+  let raw: PatternJSON[] = [...DEFAULT_PATTERNS];
+
+  const candidates = [
+    join(homedir(), ".pi", "agent", "permission-gate.json"),
+    join(cwd, ".pi", "permission-gate.json"),
+  ];
+
+  for (const file of candidates) {
+    if (!existsSync(file)) continue;
+    try {
+      const parsed = JSON.parse(readFileSync(file, "utf8")) as {
+        replace?: boolean;
+        patterns?: PatternJSON[];
+      };
+      if (!Array.isArray(parsed.patterns)) {
+        warn(`permission-gate: ${file}: missing "patterns" array, ignoring`);
+        continue;
+      }
+      raw = parsed.replace ? parsed.patterns : [...raw, ...parsed.patterns];
+    } catch (err) {
+      warn(`permission-gate: failed to load ${file}: ${(err as Error).message}`);
+    }
+  }
+
+  try {
+    return compile(raw);
+  } catch (err) {
+    warn(`permission-gate: invalid regex, falling back to defaults: ${(err as Error).message}`);
+    return compile(DEFAULT_PATTERNS);
+  }
+}
 
 export default function (pi: ExtensionAPI) {
   let enabled = true;
-
-  const dangerousPatterns: { pattern: RegExp; label: string }[] = [
-    { pattern: /\brm\s+(-[^\s]*r|--recursive)/, label: "recursive delete" },
-    { pattern: /\bsudo\b/, label: "sudo" },
-    { pattern: /\bssh\b/, label: "ssh" },
-    { pattern: /\bchmod\b.*777/, label: "world-writable permissions" },
-    { pattern: />\s*\/dev\/[sh]d[a-z]/, label: "raw device redirect" },
-    { pattern: /\bgit\s+push\s+.*(-f\b|--force\b)/, label: "force push" },
-    { pattern: /\bgit\s+reset\s+--hard\b/, label: "hard reset" },
-    { pattern: /\bgit\s+clean\s+-[^\s]*f/, label: "git clean" },
-    {
-      pattern: /\bgit\s+checkout\s+(\S+\s+)?--\s/,
-      label: "git checkout (reset files)",
-    },
-    {
-      pattern: /\bgit\s+checkout\s+\.\s*($|[;&|])/,
-      label: "git checkout (reset all files)",
-    },
-    { pattern: /\bgit\s+restore\b/, label: "git restore" },
-    { pattern: /\bclan\s+machines\s+update\b/, label: "deploy to machine" },
-    { pattern: /\bcurl\b.*\|\s*(ba)?sh\b/, label: "pipe curl to shell" },
-    { pattern: /\bwget\b.*\|\s*(ba)?sh\b/, label: "pipe wget to shell" },
-    { pattern: /\bgh\s+issue\s+create\b/, label: "create GitHub issue" },
-    {
-      pattern: /\bgh\s+issue\s+(close|delete|edit|comment)\b/,
-      label: "modify GitHub issue",
-    },
-    { pattern: /\bgh\s+pr\s+create\b/, label: "create GitHub PR" },
-    {
-      pattern: /\bgh\s+pr\s+(close|merge|edit|comment|review)\b/,
-      label: "modify GitHub PR",
-    },
-    {
-      pattern: /\bgh\s+repo\s+(create|delete|rename|archive)\b/,
-      label: "modify GitHub repo",
-    },
-    {
-      pattern: /\bgh\s+release\s+(create|delete|edit)\b/,
-      label: "modify GitHub release",
-    },
-    {
-      pattern: /\btea\s+(issue|pr)\s+create\b/,
-      label: "create Gitea issue/PR",
-    },
-    {
-      pattern: /\btea\s+(issue|pr)\s+(close|edit)\b/,
-      label: "modify Gitea issue/PR",
-    },
-    { pattern: /\btea\s+comment\b/, label: "Gitea comment" },
-    { pattern: /\bmsmtp\b/, label: "send email" },
-  ];
+  let dangerousPatterns: PatternEntry[] = compile(DEFAULT_PATTERNS);
 
   pi.registerCommand("permission-gate", {
     description:
@@ -87,8 +127,11 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  // Show status on startup
+  // Show status on startup and (re)load patterns from disk.
   pi.on("session_start", async (_event, ctx) => {
+    dangerousPatterns = loadPatterns(ctx.cwd, (msg) =>
+      ctx.hasUI ? ctx.ui.notify(msg, "warning") : console.error(msg),
+    );
     if (enabled && ctx.hasUI) {
       ctx.ui.setStatus("permission-gate", ctx.ui.theme.fg("warning", "gate ■"));
     }
@@ -114,15 +157,125 @@ export default function (pi: ExtensionAPI) {
 
       pi.events.emit("permission-gate:waiting");
 
-      const choice = await ctx.ui.select(
-        `⚠️  Dangerous command detected (${labels}):\n\n  ${command}\n\nAllow?`,
-        ["Yes", "No"],
+      const result = await ctx.ui.custom<GateResult>(
+        (tui, theme, _kb, done) => {
+          let optionIndex = 0; // 0 = Yes, 1 = No
+          let inputMode = false;
+          let cachedLines: string[] | undefined;
+
+          const editorTheme: EditorTheme = {
+            borderColor: (s) => theme.fg("accent", s),
+            selectList: {
+              selectedPrefix: (t) => theme.fg("accent", t),
+              selectedText: (t) => theme.fg("accent", t),
+              description: (t) => theme.fg("muted", t),
+              scrollInfo: (t) => theme.fg("dim", t),
+              noMatch: (t) => theme.fg("warning", t),
+            },
+          };
+          const editor = new Editor(tui, editorTheme);
+
+          function refresh() {
+            cachedLines = undefined;
+            tui.requestRender();
+          }
+
+          editor.onSubmit = (value) => {
+            const reason = value.trim()
+              ? `Blocked by user (${labels}): ${value.trim()}`
+              : `Blocked by user (${labels})`;
+            done({ allow: false, reason });
+          };
+
+          function handleInput(data: string) {
+            if (inputMode) {
+              if (matchesKey(data, Key.escape)) {
+                inputMode = false;
+                editor.setText("");
+                refresh();
+                return;
+              }
+              editor.handleInput(data);
+              refresh();
+              return;
+            }
+
+            if (matchesKey(data, Key.up)) {
+              optionIndex = 0;
+              refresh();
+              return;
+            }
+            if (matchesKey(data, Key.down)) {
+              optionIndex = 1;
+              refresh();
+              return;
+            }
+            if (matchesKey(data, Key.enter)) {
+              if (optionIndex === 0) {
+                done({ allow: true });
+              } else {
+                inputMode = true;
+                editor.setText("");
+                refresh();
+              }
+              return;
+            }
+            if (matchesKey(data, Key.escape)) {
+              done({ allow: false, reason: `Blocked by user (${labels})` });
+            }
+          }
+
+          function render(width: number): string[] {
+            if (cachedLines) return cachedLines;
+            const lines: string[] = [];
+            const add = (s: string) => lines.push(truncateToWidth(s, width));
+
+            lines.push("");
+            add(
+              theme.fg("warning", " ⚠️  Dangerous command ") +
+                theme.fg("muted", `(${labels})`),
+            );
+            add(`    ${theme.fg("text", command)}`);
+            lines.push("");
+
+            const opts = ["Yes", inputMode ? "No ✎" : "No"];
+            for (let i = 0; i < opts.length; i++) {
+              const selected = i === optionIndex;
+              const prefix = selected ? theme.fg("accent", "> ") : "  ";
+              add(` ${prefix}${theme.fg(selected ? "accent" : "text", opts[i])}`);
+            }
+            lines.push("");
+
+            if (inputMode) {
+              add(theme.fg("muted", " Reason:"));
+              for (const line of editor.render(width - 2)) {
+                add(` ${line}`);
+              }
+              lines.push("");
+              add(theme.fg("dim", " Enter submit • Esc back"));
+            } else {
+              add(theme.fg("dim", " ↑↓ • Enter • Esc block"));
+            }
+            lines.push("");
+
+            cachedLines = lines;
+            return lines;
+          }
+
+          return {
+            render,
+            invalidate: () => {
+              cachedLines = undefined;
+            },
+            handleInput,
+          };
+        },
       );
 
       pi.events.emit("permission-gate:resolved");
 
-      if (choice !== "Yes") {
-        return { block: true, reason: `Blocked by user (${labels})` };
+      if (!result.allow) {
+        return { block: true, reason: result.reason };
       }
     }
 
