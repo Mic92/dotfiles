@@ -1,0 +1,49 @@
+{
+  "replace": false,
+  "patterns": [
+    { "pattern": "\\bssh\\b", "label": "ssh" },
+    {
+      "pattern": "\\bgit\\s+checkout\\s+(\\S+\\s+)?--\\s",
+      "label": "git checkout (reset files)"
+    },
+    {
+      "pattern": "\\bgit\\s+checkout\\s+\\.\\s*($|[;&|])",
+      "label": "git checkout (reset all files)"
+    },
+    {
+      "pattern": "\\bclan\\s+machines\\s+update\\b",
+      "label": "deploy to machine"
+    },
+    {
+      "pattern": "\\bgh\\s+issue\\s+create\\b",
+      "label": "create GitHub issue"
+    },
+    {
+      "pattern": "\\bgh\\s+issue\\s+(close|delete|edit|comment)\\b",
+      "label": "modify GitHub issue"
+    },
+    { "pattern": "\\bgh\\s+pr\\s+create\\b", "label": "create GitHub PR" },
+    {
+      "pattern": "\\bgh\\s+pr\\s+(close|merge|edit|comment|review)\\b",
+      "label": "modify GitHub PR"
+    },
+    {
+      "pattern": "\\bgh\\s+repo\\s+(create|delete|rename|archive)\\b",
+      "label": "modify GitHub repo"
+    },
+    {
+      "pattern": "\\bgh\\s+release\\s+(create|delete|edit)\\b",
+      "label": "modify GitHub release"
+    },
+    {
+      "pattern": "\\btea\\s+(issue|pr)\\s+create\\b",
+      "label": "create Gitea issue/PR"
+    },
+    {
+      "pattern": "\\btea\\s+(issue|pr)\\s+(close|edit)\\b",
+      "label": "modify Gitea issue/PR"
+    },
+    { "pattern": "\\btea\\s+comment\\b", "label": "Gitea comment" },
+    { "pattern": "\\bmsmtp\\b", "label": "send email" }
+  ]
+}
