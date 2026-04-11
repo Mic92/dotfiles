@@ -17,6 +17,7 @@
         "big-parallel"
         "kvm"
         "nixos-test"
+        "recursive-nix"
       ];
     }
     {
@@ -30,6 +31,7 @@
         "big-parallel"
         "kvm"
         "nixos-test"
+        "recursive-nix"
       ];
     }
     #{

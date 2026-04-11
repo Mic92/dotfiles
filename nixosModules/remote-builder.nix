@@ -17,6 +17,7 @@
         "big-parallel"
         "kvm"
         "nixos-test"
+        "recursive-nix"
       ];
     }
     {
@@ -30,6 +31,7 @@
         "big-parallel"
         "kvm"
         "nixos-test"
+        "recursive-nix"
       ];
     }
     {
@@ -42,7 +44,10 @@
         "x86_64-darwin"
       ];
       maxJobs = 8;
-      supportedFeatures = [ "big-parallel" ];
+      supportedFeatures = [
+        "big-parallel"
+        "recursive-nix"
+      ];
     }
   ];
 
