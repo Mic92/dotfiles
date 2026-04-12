@@ -1,5 +1,5 @@
 /**
- * Custom Instructions Extension - appends CLAUDE.md to system prompt
+ * claude-md - appends ~/.claude/CLAUDE.md to the system prompt
  */
 
 import { existsSync, readFileSync } from "node:fs";
