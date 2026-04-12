@@ -30,7 +30,7 @@
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
-    noctalia-plugins.url = "github:Mic92/noctalia-plugins";
+    noctalia-plugins.url = "github:Mic92/noctalia-plugins/nostr";
     noctalia-plugins.inputs.nixpkgs.follows = "nixpkgs";
 
     nix.url = "git+https://github.com/Mic92/nix-1?shallow=1";
