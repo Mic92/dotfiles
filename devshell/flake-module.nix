@@ -20,13 +20,6 @@ let
     programs.mypy.directories = {
       "machines/eva/modules/prometheus" = { };
       "openwrt" = { };
-      "pkgs/buildbot-pr-check" = {
-        extraPythonPackages = with pkgs.python3.pkgs; [
-          pytest
-          vcrpy
-          pytest-vcr
-        ];
-      };
       "pkgs/claude-md" = { };
       "pkgs/merge-when-green" = { };
       "pkgs/systemctl" = { };
@@ -107,7 +100,6 @@ let
       "sops/*"
       "vars/*"
       "zsh/*"
-      "pkgs/buildbot-pr-check/tests/cassettes/*"
       "home/.zsh-*"
       "home/.fast-syntax-highlighting"
       "home/.config/nixpkgs"
