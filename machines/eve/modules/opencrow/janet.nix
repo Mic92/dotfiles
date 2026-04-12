@@ -49,7 +49,7 @@ in
         OPENCROW_SOUL_FILE = "${./soul.md}";
         OPENCROW_LOG_LEVEL = "debug";
         OPENCROW_PI_PROVIDER = "morpheus";
-        OPENCROW_PI_MODEL = "google/gemma-4-31B-it";
+        OPENCROW_PI_MODEL = "Qwen/Qwen3.5-35B-A3B-FP8";
       };
 
       extraPackages = [
