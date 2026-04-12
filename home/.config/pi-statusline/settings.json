@@ -1,4 +1,5 @@
 {
   "showUsage": false,
-  "showBar": true
+  "showBar": true,
+  "contextFormat": "absolute"
 }
