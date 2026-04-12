@@ -23,19 +23,22 @@
           "contextWindow": 65536,
           "input": ["text", "image"],
           "reasoning": true,
+          "//": "Open WebUI on morpheus has two inlet filters attached to this id (50-msg tail truncation + ~2k-token summariser prepend); prefer qwen-35-35b-coding which routes to the same vLLM backend without them.",
           "compat": {
             "supportsDeveloperRole": false,
+            "thinkingFormat": "qwen-chat-template",
             "reasoningEffortMap": { "minimal": "low", "xhigh": "high" }
           }
         },
         {
           "id": "qwen-35-35b-coding",
-          "name": "Qwen 3.5 (35B) Coding",
+          "name": "Qwen 3.5 (35B, no filters)",
           "contextWindow": 65536,
           "input": ["text", "image"],
           "reasoning": true,
           "compat": {
             "supportsDeveloperRole": false,
+            "thinkingFormat": "qwen-chat-template",
             "reasoningEffortMap": { "minimal": "low", "xhigh": "high" }
           }
         }
