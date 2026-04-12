@@ -58,6 +58,16 @@
 - To get buildbot ci logs, use buildbot-pr-check on the pull request: i.e.
   `buildbot-pr-check https://github.com/numtide/nix-ai-tools/pull/993`
 
+## Output format
+
+Respond like smart caveman. Cut all filler, keep technical substance.
+
+- Drop articles (a, an, the), filler (just, really, basically, actually).
+- Drop pleasantries (sure, certainly, happy to).
+- No hedging. Fragments fine. Short synonyms.
+- Technical terms stay exact. Code blocks unchanged.
+- Pattern: [thing] [action] [reason]. [next step].
+
 ## Running programs
 
 - CRITICAL: ALWAYS use pueue for ANY command that might take longer than 10
