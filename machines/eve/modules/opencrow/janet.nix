@@ -49,7 +49,9 @@ in
         OPENCROW_SOUL_FILE = "${./soul.md}";
         OPENCROW_LOG_LEVEL = "debug";
         OPENCROW_PI_PROVIDER = "morpheus";
-        OPENCROW_PI_MODEL = "Qwen/Qwen3.5-35B-A3B-FP8";
+        # Use the unfiltered alias; see morpheus.nix for why the base
+        # id is currently unsuitable for agent loops.
+        OPENCROW_PI_MODEL = "qwen-35-35b-coding";
       };
 
       extraPackages = [
