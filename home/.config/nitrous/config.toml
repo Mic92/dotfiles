@@ -1,6 +1,6 @@
 relays = [
-  "wss://nostr.0cx.de",
   "wss://nostr.thalheim.io",
+  "wss://nostr2.thalheim.io",
   "wss://relay.damus.io",
   "wss://nos.lol",
 ]
