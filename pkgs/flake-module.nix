@@ -25,7 +25,6 @@ in
 
     email-sync = pkgs.callPackage ./email-sync { };
     msmtp-with-sent = pkgs.callPackage ./msmtp-with-sent { };
-    buildbot-pr-check = pkgs.python3.pkgs.callPackage ./buildbot-pr-check { };
     claude-md = pkgs.python3.pkgs.callPackage ./claude-md { };
     crabfit-cli = pkgs.python3.pkgs.callPackage ./crabfit-cli { };
     inherit (pkgs.callPackages ./firefox-extensions { })

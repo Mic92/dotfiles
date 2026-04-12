@@ -27,6 +27,7 @@ in
     skillsSrc = inputs.mics-skills;
     skills = [
       "browser-cli"
+      "buildbot-pr-check"
       "calendar-cli"
       "context7-cli"
       "db-cli"
