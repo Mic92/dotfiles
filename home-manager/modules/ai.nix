@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   self,
   inputs,
   ...
@@ -46,6 +47,12 @@ in
   home.file.".claude/skills/coordinator".source =
     "${aiTools.workmux}/share/workmux/skills/coordinator";
 
+  # macOS-only profiler wrapper; both the skill and the binary are gated so
+  # the Linux home profile doesn't pull in a darwin-only derivation.
+  home.file.".claude/skills/macprof/SKILL.md" = lib.mkIf pkgs.stdenv.isDarwin {
+    source = ../../pkgs/macprof/SKILL.md;
+  };
+
   home.file.".claude/skills/zat/SKILL.md".text = ''
     ---
     name: zat
@@ -80,5 +87,8 @@ in
     aiTools.workmux
     aiTools.zat
     pkgs.pueue
+  ]
+  ++ lib.optionals pkgs.stdenv.isDarwin [
+    selfPkgs.macprof
   ];
 }

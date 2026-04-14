@@ -59,6 +59,7 @@ in
   // lib.optionalAttrs pkgs.stdenv.isDarwin {
     alertmanager-bar = pkgs.callPackage ./alertmanager-bar { };
     blueutil = pkgs.callPackage ./blueutil { };
+    macprof = pkgs.callPackage ./macprof { };
     systemctl-macos = pkgs.callPackage ./systemctl { };
   }
   // lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") {
