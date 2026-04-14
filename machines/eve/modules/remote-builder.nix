@@ -46,6 +46,7 @@
         "kvm"
         "nixos-test"
         "recursive-nix"
+        "uid-range"
       ];
     }
     {
@@ -60,6 +61,7 @@
         "kvm"
         "nixos-test"
         "recursive-nix"
+        "uid-range"
       ];
     }
   ];
