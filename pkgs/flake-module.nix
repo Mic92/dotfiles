@@ -69,6 +69,7 @@ in
   }
   // lib.optionalAttrs pkgs.stdenv.isDarwin {
     alertmanager-bar = pkgs.callPackage ./alertmanager-bar { };
+    nostr-chat-bar = pkgs.callPackage ./nostr-chat-bar { };
     blueutil = pkgs.callPackage ./blueutil { };
     macprof = pkgs.callPackage ./macprof { };
     systemctl-macos = pkgs.callPackage ./systemctl { };
