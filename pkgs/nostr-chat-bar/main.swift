@@ -169,7 +169,7 @@ final class DropPanel: NSPanel {
 }
 
 final class ChatWindowController: NSWindowController, NSTableViewDataSource,
-    NSTableViewDelegate, NSTextViewDelegate
+    NSTableViewDelegate, NSTextViewDelegate, NSSearchFieldDelegate
 {
     private let daemon: Daemon
     private(set) var rows: [Row] = []
@@ -185,6 +185,12 @@ final class ChatWindowController: NSWindowController, NSTableViewDataSource,
     private var scrollHeight: NSLayoutConstraint!
     private let replyBar = NSTextField(labelWithString: "")
     private weak var replyRowRef: NSStackView?
+    private let search = NSSearchField()
+    private let searchCount = NSTextField(labelWithString: "")
+    private weak var searchRowRef: NSStackView?
+    // Hit list = row indices, newest-first so ↓ walks toward older.
+    private var hits: [Int] = []
+    private var hitCursor = 0
     private var replyTarget: Row? { didSet { updateReplyBar() } }
 
     private let panelWidth: CGFloat = 760
@@ -328,7 +334,31 @@ final class ChatWindowController: NSWindowController, NSTableViewDataSource,
             inScroll.bottomAnchor.constraint(equalTo: pill.bottomAnchor),
         ])
 
-        let headRow = NSStackView(views: [header, status, NSView(), dot])
+        // ── Search bar (⌘F) ───────────────────────────────────────────
+        // Substring match over the in-memory mirror; outlines via
+        // BubbleCell.searchHit, ↵/⇧↵ step, Esc closes. Cheap enough
+        // at maxHistory rows that we just reloadData on every change
+        // — no async, no diffing.
+        search.placeholderString = "Search"
+        search.sendsSearchStringImmediately = true
+        search.target = self
+        search.action = #selector(searchChanged)
+        search.delegate = self
+        searchCount.font = .monospacedDigitSystemFont(ofSize: 11, weight: .regular)
+        searchCount.textColor = .secondaryLabelColor
+        let prev = iconButton("chevron.up", #selector(searchPrev), size: 22, pill: false)
+        let next = iconButton("chevron.down", #selector(searchNext), size: 22, pill: false)
+        let close = iconButton("xmark", #selector(searchClose), size: 22, pill: false)
+        let searchRow = NSStackView(views: [search, searchCount, prev, next, close])
+        searchRow.orientation = .horizontal
+        searchRow.alignment = .centerY
+        searchRow.spacing = 4
+        searchRow.isHidden = true
+        searchRowRef = searchRow
+
+        let find = iconButton("magnifyingglass", #selector(searchToggle),
+                              size: 22, pill: false)
+        let headRow = NSStackView(views: [header, status, NSView(), find, dot])
         headRow.orientation = .horizontal
         headRow.alignment = .centerY
         dot.widthAnchor.constraint(equalToConstant: 8).isActive = true
@@ -379,7 +409,7 @@ final class ChatWindowController: NSWindowController, NSTableViewDataSource,
             self, selector: #selector(anchorBottom),
             name: NSView.frameDidChangeNotification, object: table)
 
-        let root = NSStackView(views: [headRow, hair, historyBox, replyRow, sendRow])
+        let root = NSStackView(views: [headRow, searchRow, hair, historyBox, replyRow, sendRow])
         root.orientation = .vertical
         root.spacing = 10
         root.edgeInsets = NSEdgeInsets(top: 14, left: 16, bottom: 16, right: 16)
@@ -395,19 +425,23 @@ final class ChatWindowController: NSWindowController, NSTableViewDataSource,
 
     // Round SF-Symbol button — matches the 📎/✈︎ pair in noctalia
     // without pulling in a whole button style.
-    private func iconButton(_ symbol: String, _ action: Selector) -> NSButton {
+    private func iconButton(_ symbol: String, _ action: Selector,
+                            size: CGFloat = 32, pill: Bool = true) -> NSButton {
         let b = NSButton(image: NSImage(systemSymbolName: symbol, accessibilityDescription: nil)
             ?? NSImage(), target: self, action: action)
         b.isBordered = false
         b.bezelStyle = .regularSquare
         b.imageScaling = .scaleProportionallyUpOrDown
-        b.symbolConfiguration = .init(pointSize: 16, weight: .regular)
+        b.symbolConfiguration = .init(pointSize: size * 0.5, weight: .regular)
         b.contentTintColor = .secondaryLabelColor
-        b.widthAnchor.constraint(equalToConstant: 32).isActive = true
-        b.heightAnchor.constraint(equalToConstant: 32).isActive = true
+        b.widthAnchor.constraint(equalToConstant: size).isActive = true
+        b.heightAnchor.constraint(equalToConstant: size).isActive = true
         b.wantsLayer = true
-        b.layer?.cornerRadius = 16
-        b.layer?.backgroundColor = NSColor.textBackgroundColor.withAlphaComponent(0.5).cgColor
+        b.layer?.cornerRadius = size / 2
+        if pill {
+            b.layer?.backgroundColor =
+                NSColor.textBackgroundColor.withAlphaComponent(0.5).cgColor
+        }
         return b
     }
 
@@ -620,6 +654,51 @@ final class ChatWindowController: NSWindowController, NSTableViewDataSource,
         replyTarget = nil
     }
     @objc private func clearReply() { replyTarget = nil }
+
+    // MARK: search
+
+    @objc func searchToggle() {
+        if searchRowRef?.isHidden == false { searchClose(); return }
+        searchRowRef?.isHidden = false
+        window?.makeFirstResponder(search)
+        searchChanged()
+    }
+    @objc private func searchClose() {
+        search.stringValue = ""
+        searchRowRef?.isHidden = true
+        hits = []; hitCursor = 0
+        table.reloadData()
+        window?.makeFirstResponder(input)
+    }
+    @objc private func searchChanged() {
+        let q = search.stringValue.lowercased()
+        if q.isEmpty {
+            hits = []; hitCursor = 0; searchCount.stringValue = ""
+            table.reloadData(); return
+        }
+        hits = rows.indices.reversed().filter {
+            rows[$0].text.lowercased().contains(q)
+        }
+        hitCursor = 0
+        table.reloadData()
+        jump()
+    }
+    @objc private func searchPrev() { step(-1) }
+    @objc private func searchNext() { step(1) }
+    private func step(_ d: Int) {
+        guard !hits.isEmpty else { return }
+        hitCursor = (hitCursor + d + hits.count) % hits.count
+        // Cell already configured; only the "current" outline moves.
+        table.reloadData()
+        jump()
+    }
+    private func jump() {
+        searchCount.stringValue = hits.isEmpty ? "0"
+            : "\(hitCursor + 1)/\(hits.count)"
+        if let i = hits[safe: hitCursor] {
+            table.scrollRowToVisible(i)
+        }
+    }
     private func updateReplyBar() {
         let on = replyTarget != nil
         replyRowRef?.isHidden = !on
@@ -655,6 +734,23 @@ final class ChatWindowController: NSWindowController, NSTableViewDataSource,
         return true
     }
 
+    // NSSearchField key handling — separate delegate hook from the
+    // NSTextView one above. ↵/⇧↵ step, Esc closes, ↓/↑ step too.
+    func control(_: NSControl, textView _: NSTextView,
+                 doCommandBy sel: Selector) -> Bool {
+        switch sel {
+        case #selector(NSResponder.insertNewline(_:)),
+             #selector(NSResponder.moveDown(_:)):
+            step(1); return true
+        case #selector(NSResponder.insertBacktab(_:)),
+             #selector(NSResponder.moveUp(_:)):
+            step(-1); return true
+        case #selector(NSResponder.cancelOperation(_:)):
+            searchClose(); return true
+        default: return false
+        }
+    }
+
     // MARK: table
 
     func numberOfRows(in _: NSTableView) -> Int { rows.count }
@@ -667,7 +763,11 @@ final class ChatWindowController: NSWindowController, NSTableViewDataSource,
         cell.onReply = { [weak self] in self?.replyTarget = r }
         let q = r.replyTo.isEmpty ? nil
             : rows.first(where: { $0.id == r.replyTo })?.text
-        cell.configure(r, ago: ago(r.ts), quoted: q)
+        let sq = (searchRowRef?.isHidden ?? true) ? "" : search.stringValue
+        cell.configure(r, ago: ago(r.ts), quoted: q,
+                       searchHit: !sq.isEmpty
+                           && r.text.lowercased().contains(sq.lowercased()),
+                       searchCurrent: hits[safe: hitCursor] == row)
         return cell
     }
 
@@ -813,7 +913,11 @@ final class BubbleCell: NSTableCellView {
     override func mouseEntered(with _: NSEvent) { reply.animator().alphaValue = 1 }
     override func mouseExited(with _: NSEvent) { reply.animator().alphaValue = 0 }
 
-    func configure(_ r: Row, ago: String, quoted: String?) {
+    func configure(_ r: Row, ago: String, quoted: String?,
+                   searchHit: Bool = false, searchCurrent: Bool = false) {
+        bubble.layer?.borderWidth = searchHit ? 2 : 0
+        bubble.layer?.borderColor = (searchCurrent
+            ? NSColor.systemYellow : NSColor.systemOrange).cgColor
         // Deactivate both first — flipping one before the other can
         // briefly leave lead+trail active on a reused cell, which
         // AppKit logs as an unsatisfiable-constraint storm.
@@ -907,6 +1011,7 @@ final class AppController: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_: Notification) {
         item.button?.title = "💬"
         registerHotkey()
+        registerFind()
         item.button?.action = #selector(statusClicked(_:))
         item.button?.target = self
         item.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
@@ -953,6 +1058,19 @@ final class AppController: NSObject, NSApplicationDelegate {
     // grabs a system-wide key without Accessibility permissions or an
     // app bundle — CGEventTap and NSEvent.addGlobalMonitor both need
     // the TCC prompt, which a bare nix binary can't satisfy.
+    // ⌘F while the panel is up. The compose NSTextView would otherwise
+    // beep on performFindPanelAction:. addLocalMonitor is enough — we
+    // only want it when our window is key, not system-wide.
+    private func registerFind() {
+        NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] e in
+            guard let self,
+                  e.modifierFlags.contains(.command),
+                  e.charactersIgnoringModifiers == "f"
+            else { return e }
+            self.chat.searchToggle(); return nil
+        }
+    }
+
     private func registerHotkey() {
         var spec = EventTypeSpec(
             eventClass: OSType(kEventClassKeyboard),
@@ -1010,6 +1128,10 @@ do {
             Data("nostr-chat-bar: already running (lock \(lock)): \(String(cString: strerror(errno)))\n".utf8))
         exit(0)
     }
+}
+
+extension Array {
+    subscript(safe i: Int) -> Element? { indices.contains(i) ? self[i] : nil }
 }
 
 let app = NSApplication.shared
