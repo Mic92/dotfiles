@@ -35,6 +35,10 @@
     # disable fseventsd on /nix volume
     mkdir -p /nix/.fseventsd
     test -e /nix/.fseventsd/no_log || touch /nix/.fseventsd/no_log
+    # hide /nix from Finder + Spotlight: Finder caches a TFSInfo/_FileCache node
+    # per /nix/store entry (~700k objects, ~1GB RSS) when it enumerates the dir
+    test -e /nix/.metadata_never_index || touch /nix/.metadata_never_index
+    chflags hidden /nix
   '';
 
   fonts.packages = [ pkgs.nerd-fonts.fira-code ];
@@ -43,6 +47,8 @@
 
   # fix vim repeat key
   system.defaults.NSGlobalDomain.ApplePressAndHoldEnabled = false;
+  # Show hidden files so Finder can browse / and /tmp like Linux
+  system.defaults.finder.AppleShowAllFiles = true;
 
   users.users.joerg.home = "/Users/joerg";
 
