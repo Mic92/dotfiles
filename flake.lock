@@ -432,11 +432,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776052036,
-        "narHash": "sha256-zJ6IysojCUkwEYbhwdv9zZ6k+Y7yjGmHrzigOTq6jh8=",
+        "lastModified": 1776101152,
+        "narHash": "sha256-EwOfW4esHMOaxoxgrguLJYLPQXoFjzOljR2+x+mmo3k=",
         "owner": "nix-community",
         "repo": "harmonia",
-        "rev": "7c463d40621e14c511c2e5a9ca71a1bdd88fbb5a",
+        "rev": "b9ec6540251dae513a509f119bca78e1562cd084",
         "type": "github"
       },
       "original": {
