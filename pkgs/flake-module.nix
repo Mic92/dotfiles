@@ -71,6 +71,7 @@ in
     route96 = pkgs.callPackage ./route96 { };
     live-text = pkgs.python3.pkgs.callPackage ./live-text { };
     phantun = pkgs.callPackage ./phantun { };
+    hide-nix-store = pkgs.callPackage ./hide-nix-store { };
     phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
     radicle-github-sync = pkgs.callPackage ./radicle-github-sync { };
   }

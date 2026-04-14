@@ -42,7 +42,15 @@
     ../../nixosModules/sshd/tor.nix
     ../../nixosModules/suspend-on-low-power.nix
     ../../nixosModules/rustdesk-client.nix
+    ../../nixosModules/hide-nix-store.nix
   ];
+
+  # Hide /nix/store from the agent user via eBPF LSM.
+  # Add the agent's uid here (or write to /sys/fs/bpf/hide-nix-store/target_uids at runtime).
+  services.hide-nix-store = {
+    enable = true;
+    uids = [ ];
+  };
 
   services.openssh.settings.PasswordAuthentication = lib.mkForce true;
 
