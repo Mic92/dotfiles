@@ -74,7 +74,7 @@ in
     selfPkgs.pim
     (pkgs.writeShellScriptBin "pi" ''
       ${pkgs.pueue}/bin/pueued -d 2>/dev/null || true
-      exec ${aiTools.pi}/bin/pi "$@"
+      exec ${selfPkgs.pi}/bin/pi "$@"
     '')
     aiTools.tuicr
     aiTools.coderabbit-cli

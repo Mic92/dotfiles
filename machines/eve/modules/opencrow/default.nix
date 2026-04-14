@@ -12,7 +12,7 @@ let
   # Keeps infrastructure (relays, base tooling) in one place while each
   # agent file only declares what makes it distinct.
   instanceDefaults = {
-    piPackage = lib.mkDefault self.inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
+    piPackage = lib.mkDefault self.packages.${pkgs.stdenv.hostPlatform.system}.pi;
 
     extensions = {
       memory = lib.mkDefault true;

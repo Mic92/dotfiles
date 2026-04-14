@@ -1,0 +1,129 @@
+Pause the status spinner while a tall extension dialog occupies the editor.
+
+When ui.select / ui.input / ui.editor / ui.custom mounts a component taller
+than the terminal, the "Working..." spinner above it scrolls into native
+scrollback but keeps ticking every 80ms. The differential renderer cannot
+touch lines that left the viewport, so every tick falls through to a full
+clear+redraw, which the user sees as constant flicker.
+
+Upstream discussion: https://github.com/badlogic/pi-mono/pull/3105
+Drop once a release contains the Loader.pause() fix.
+
+--- a/node_modules/@mariozechner/pi-tui/dist/components/loader.js
++++ b/node_modules/@mariozechner/pi-tui/dist/components/loader.js
+@@ -9,6 +9,7 @@ export class Loader extends Text {
+     frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+     currentFrame = 0;
+     intervalId = null;
++    paused = false;
+     ui = null;
+     constructor(ui, spinnerColorFn, messageColorFn, message = "Loading...") {
+         super("", 1, 0);
+@@ -24,10 +25,24 @@ export class Loader extends Text {
+     start() {
+         this.updateDisplay();
+         this.intervalId = setInterval(() => {
++            if (this.paused)
++                return;
+             this.currentFrame = (this.currentFrame + 1) % this.frames.length;
+             this.updateDisplay();
+         }, 80);
+     }
++    pause() {
++        this.paused = true;
++    }
++    resume() {
++        if (!this.paused)
++            return;
++        this.paused = false;
++        if (this.intervalId) {
++            this.currentFrame = (this.currentFrame + 1) % this.frames.length;
++            this.updateDisplay();
++        }
++    }
+     stop() {
+         if (this.intervalId) {
+             clearInterval(this.intervalId);
+--- a/dist/modes/interactive/interactive-mode.js
++++ b/dist/modes/interactive/interactive-mode.js
+@@ -1200,6 +1200,16 @@ export class InteractiveMode {
+         }
+         this.setHiddenThinkingLabel();
+     }
++    pauseStatusLoaders() {
++        this.loadingAnimation?.pause();
++        this.autoCompactionLoader?.pause();
++        this.retryLoader?.pause();
++    }
++    resumeStatusLoaders() {
++        this.loadingAnimation?.resume();
++        this.autoCompactionLoader?.resume();
++        this.retryLoader?.resume();
++    }
+     // Maximum total widget lines to prevent viewport overflow
+     static MAX_WIDGET_LINES = 10;
+     /**
+@@ -1386,6 +1396,7 @@ export class InteractiveMode {
+                 this.hideExtensionSelector();
+                 resolve(undefined);
+             }, { tui: this.ui, timeout: opts?.timeout });
++            this.pauseStatusLoaders();
+             this.editorContainer.clear();
+             this.editorContainer.addChild(this.extensionSelector);
+             this.ui.setFocus(this.extensionSelector);
+@@ -1397,6 +1408,7 @@ export class InteractiveMode {
+      */
+     hideExtensionSelector() {
+         this.extensionSelector?.dispose();
++        this.resumeStatusLoaders();
+         this.editorContainer.clear();
+         this.editorContainer.addChild(this.editor);
+         this.extensionSelector = undefined;
+@@ -1437,6 +1449,7 @@ export class InteractiveMode {
+                 this.hideExtensionInput();
+                 resolve(undefined);
+             }, { tui: this.ui, timeout: opts?.timeout });
++            this.pauseStatusLoaders();
+             this.editorContainer.clear();
+             this.editorContainer.addChild(this.extensionInput);
+             this.ui.setFocus(this.extensionInput);
+@@ -1448,6 +1461,7 @@ export class InteractiveMode {
+      */
+     hideExtensionInput() {
+         this.extensionInput?.dispose();
++        this.resumeStatusLoaders();
+         this.editorContainer.clear();
+         this.editorContainer.addChild(this.editor);
+         this.extensionInput = undefined;
+@@ -1466,6 +1480,7 @@ export class InteractiveMode {
+                 this.hideExtensionEditor();
+                 resolve(undefined);
+             });
++            this.pauseStatusLoaders();
+             this.editorContainer.clear();
+             this.editorContainer.addChild(this.extensionEditor);
+             this.ui.setFocus(this.extensionEditor);
+@@ -1476,6 +1491,7 @@ export class InteractiveMode {
+      * Hide the extension editor.
+      */
+     hideExtensionEditor() {
++        this.resumeStatusLoaders();
+         this.editorContainer.clear();
+         this.editorContainer.addChild(this.editor);
+         this.extensionEditor = undefined;
+@@ -1560,6 +1576,7 @@ export class InteractiveMode {
+         const savedText = this.editor.getText();
+         const isOverlay = options?.overlay ?? false;
+         const restoreEditor = () => {
++            this.resumeStatusLoaders();
+             this.editorContainer.clear();
+             this.editorContainer.addChild(this.editor);
+             this.editor.setText(savedText);
+@@ -1608,6 +1625,7 @@ export class InteractiveMode {
+                     options?.onHandle?.(handle);
+                 }
+                 else {
++                    this.pauseStatusLoaders();
+                     this.editorContainer.clear();
+                     this.editorContainer.addChild(component);
+                     this.ui.setFocus(component);
