@@ -10,5 +10,7 @@
   ],
   "compaction": {
     "enabled": true
-  }
+  },
+  "steeringMode": "one-at-a-time",
+  "doubleEscapeAction": "tree"
 }
