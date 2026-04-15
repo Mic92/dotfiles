@@ -55,6 +55,10 @@
     retiolum.inputs.nixpkgs.follows = "nixpkgs";
     retiolum.inputs.nix-darwin.follows = "nix-darwin";
 
+    tincr.url = "github:Mic92/tincr";
+    tincr.inputs.nixpkgs.follows = "nixpkgs";
+    tincr.inputs.treefmt-nix.follows = "treefmt-nix";
+
     #spora.url = "github:krebs/spora";
     #spora.inputs.nixpkgs.follows = "nixpkgs";
 
