@@ -302,18 +302,6 @@
                     "icon": "noctalia",
                     "id": "ControlCenter",
                     "useDistroLogo": false
-                },
-                {
-                    "defaultSettings": {
-                        "autoMount": false,
-                        "fileBrowser": "yazi",
-                        "hideWhenEmpty": false,
-                        "iconColor": "none",
-                        "showBadge": false,
-                        "showNotifications": true,
-                        "terminalCommand": "kitty"
-                    },
-                    "id": "plugin:usb-drive-manager"
                 }
             ]
         }
@@ -342,7 +330,7 @@
         ]
     },
     "colorSchemes": {
-        "darkMode": false,
+        "darkMode": true,
         "generationMethod": "tonal-spot",
         "manualSunrise": "06:30",
         "manualSunset": "18:30",
