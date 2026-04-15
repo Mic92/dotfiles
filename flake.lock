@@ -971,6 +971,7 @@
         "srvos": "srvos",
         "strace-macos": "strace-macos",
         "systems": "systems_2",
+        "tincr": "tincr",
         "treefmt-nix": "treefmt-nix"
       }
     },
@@ -1067,6 +1068,29 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "tincr": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1776290590,
+        "narHash": "sha256-v8he2gAOZfWm0AWB1WXE44vcaNDCmJURLD4P/Vy7X2k=",
+        "owner": "Mic92",
+        "repo": "tincr",
+        "rev": "a386f5fdee5d4cf84b78f3124e3bcefcf21c4ed1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "tincr",
         "type": "github"
       }
     },

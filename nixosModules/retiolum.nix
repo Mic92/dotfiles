@@ -1,6 +1,13 @@
-{ config, pkgs, ... }:
+{
+  config,
+  pkgs,
+  self,
+  ...
+}:
 {
   services.tinc.networks.retiolum = {
+    # Rust rewrite, drop-in for tinc_pre on the NixOS module's argv.
+    package = self.inputs.tincr.packages.${pkgs.stdenv.hostPlatform.system}.tincd;
     rsaPrivateKeyFile = config.clan.core.vars.generators.retiolum.files."retiolum.rsa_key.priv".path;
     ed25519PrivateKeyFile =
       config.clan.core.vars.generators.retiolum.files."retiolum.ed25519_key.priv".path;
