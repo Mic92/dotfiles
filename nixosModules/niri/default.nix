@@ -46,16 +46,21 @@
     after = [ "graphical-session.target" ];
     requisite = [ "graphical-session.target" ];
     wantedBy = [ "graphical-session.target" ];
-    # The QML side shells out constantly (Process { command: ["sh", "-c", ...] })
-    # for plugin discovery, fc-list, df, etc. The default unit PATH only has
-    # coreutils/findutils/grep/sed/systemd, so `sh` itself is missing and the
-    # plugin scanner silently no-ops -> empty bar. Give it a real shell + the
-    # tools it actually exec's.
+    # QML shells out via `sh -c` for plugin discovery and plugin commands
+    # (fc-list, df, notmuch, khal, rbw, ...). Setting `path` emits
+    # Environment=PATH=... which *replaces* the user manager's imported PATH,
+    # and __NIXOS_SET_ENVIRONMENT_DONE blocks `sh -lc` from recovering it via
+    # /etc/profile. So pin the hard deps *and* re-add the standard profile dirs
+    # (%h/%u are systemd specifiers, they pass through makeBinPath verbatim).
     path = with pkgs; [
       bash
       git
       fontconfig
       procps
+      "/run/wrappers"
+      "%h/.nix-profile"
+      "/etc/profiles/per-user/%u"
+      "/nix/var/nix/profiles/default"
       "/run/current-system/sw"
     ];
     # Back off if it crash-loops on a broken config instead of pegging a core.
