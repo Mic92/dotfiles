@@ -1,76 +1,76 @@
 {
-  "sources": [
-    {
-      "enabled": true,
-      "name": "Noctalia Plugins",
-      "url": "https://github.com/noctalia-dev/noctalia-plugins"
-    }
-  ],
-  "states": {
-    "alertmanager": {
-      "enabled": true,
-      "sourceUrl": ""
+    "sources": [
+        {
+            "enabled": true,
+            "name": "Noctalia Plugins",
+            "url": "https://github.com/noctalia-dev/noctalia-plugins"
+        }
+    ],
+    "states": {
+        "alertmanager": {
+            "enabled": true,
+            "sourceUrl": ""
+        },
+        "audio-provider": {
+            "enabled": true,
+            "sourceUrl": ""
+        },
+        "display-config": {
+            "enabled": true,
+            "sourceUrl": ""
+        },
+        "file-search": {
+            "enabled": true,
+            "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+        },
+        "fprint-notify": {
+            "enabled": true,
+            "sourceUrl": ""
+        },
+        "internet-provider": {
+            "enabled": true,
+            "sourceUrl": ""
+        },
+        "kde-connect": {
+            "enabled": true,
+            "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+        },
+        "khal-next": {
+            "enabled": true,
+            "sourceUrl": ""
+        },
+        "mail-count": {
+            "enabled": true,
+            "sourceUrl": ""
+        },
+        "network-indicator": {
+            "enabled": true,
+            "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+        },
+        "nostr-chat": {
+            "enabled": true,
+            "sourceUrl": ""
+        },
+        "polkit-agent": {
+            "enabled": true,
+            "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+        },
+        "rbw-provider": {
+            "enabled": true,
+            "sourceUrl": ""
+        },
+        "ssh-askpass": {
+            "enabled": true,
+            "sourceUrl": ""
+        },
+        "timer": {
+            "enabled": true,
+            "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+        },
+        "usb-drive-manager": {
+            "enabled": true,
+            "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
+        }
     },
-    "audio-provider": {
-      "enabled": true,
-      "sourceUrl": ""
-    },
-    "display-config": {
-      "enabled": true,
-      "sourceUrl": ""
-    },
-    "file-search": {
-      "enabled": true,
-      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
-    },
-    "fprint-notify": {
-      "enabled": true,
-      "sourceUrl": ""
-    },
-    "internet-provider": {
-      "enabled": true,
-      "sourceUrl": ""
-    },
-    "kde-connect": {
-      "enabled": true,
-      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
-    },
-    "khal-next": {
-      "enabled": true,
-      "sourceUrl": ""
-    },
-    "mail-count": {
-      "enabled": true,
-      "sourceUrl": ""
-    },
-    "network-indicator": {
-      "enabled": true,
-      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
-    },
-    "nostr-chat": {
-      "enabled": true,
-      "sourceUrl": ""
-    },
-    "polkit-agent": {
-      "enabled": true,
-      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
-    },
-    "rbw-provider": {
-      "enabled": true,
-      "sourceUrl": ""
-    },
-    "ssh-askpass": {
-      "enabled": true,
-      "sourceUrl": ""
-    },
-    "timer": {
-      "enabled": true,
-      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
-    },
-    "usb-drive-manager": {
-      "enabled": true,
-      "sourceUrl": "https://github.com/noctalia-dev/noctalia-plugins"
-    }
-  },
-  "version": 2
+    "version": 2
 }

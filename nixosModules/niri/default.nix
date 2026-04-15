@@ -46,6 +46,18 @@
     after = [ "graphical-session.target" ];
     requisite = [ "graphical-session.target" ];
     wantedBy = [ "graphical-session.target" ];
+    # The QML side shells out constantly (Process { command: ["sh", "-c", ...] })
+    # for plugin discovery, fc-list, df, etc. The default unit PATH only has
+    # coreutils/findutils/grep/sed/systemd, so `sh` itself is missing and the
+    # plugin scanner silently no-ops -> empty bar. Give it a real shell + the
+    # tools it actually exec's.
+    path = with pkgs; [
+      bash
+      git
+      fontconfig
+      procps
+      "/run/current-system/sw"
+    ];
     # Back off if it crash-loops on a broken config instead of pegging a core.
     startLimitIntervalSec = 30;
     startLimitBurst = 5;
