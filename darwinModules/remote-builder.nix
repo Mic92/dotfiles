@@ -36,19 +36,21 @@
         "uid-range"
       ];
     }
-    #{
-    #  hostName = "aarch64.nixos.community";
-    #  maxJobs = 96;
-    #  sshKey = "/root/.ssh/id_ed25519";
-    #  protocol = "ssh-ng";
-    #  sshUser = "mic92";
-    #  system = "aarch64-linux";
-    #  supportedFeatures = [
-    #    "big-parallel"
-    #    "kvm"
-    #    "nixos-test"
-    #  ];
-    #}
+    {
+      hostName = "mac02.numtide.com";
+      sshUser = "customer";
+      protocol = "ssh-ng";
+      sshKey = config.sops.secrets.ssh-remote-builder.path;
+      systems = [
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ];
+      maxJobs = 8;
+      supportedFeatures = [
+        "big-parallel"
+        "recursive-nix"
+      ];
+    }
   ];
 
   programs.ssh.extraConfig = ''
@@ -66,6 +68,9 @@
       User nix
       ProxyJump login-tum
       HostName eliza.dos.cit.tum.de
+      IdentityFile ${config.sops.secrets.ssh-remote-builder.path}
+    Host mac02.numtide.com
+      User customer
       IdentityFile ${config.sops.secrets.ssh-remote-builder.path}
     Host login-tum
       User tunnel
