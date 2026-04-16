@@ -22,6 +22,7 @@ clan-core.lib.clan {
       eva.deploy = {
         targetHost = "root@eva.i";
         buildHost = "root@eve.i";
+        forwardAgent = true;
       };
       evo = {
         machineClass = "darwin";
@@ -29,7 +30,10 @@ clan-core.lib.clan {
       };
       turingmachine.deploy.targetHost = "root@turingmachine.x";
       bernie.deploy.targetHost = "root@bernie.x";
-      blob64.deploy.targetHost = "root@blob64.x";
+      blob64.deploy = {
+        targetHost = "root@blob64.x";
+        forwardAgent = true;
+      };
       matchbox.deploy.targetHost = "root@matchbox.x";
       jacquardmachine.deploy.targetHost = "root@jacquardmachine.x";
       utm-vm.deploy.targetHost = "root@utm-vm.x";
