@@ -481,10 +481,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1773550609,
-        "narHash": "sha256-neu7ixXHjV3LobVjOndkL97u+6UF6Yoh+CUnzX7kUBQ=",
+        "lastModified": 1776380511,
+        "narHash": "sha256-3A2B8k6YCuzt5pT/CQEltUghtE6heSlk2tMYkg/fUWI=",
         "ref": "refs/heads/master",
-        "rev": "554f6ed448ca74c00aa2371cde901ae1e73005b9",
+        "rev": "4a80b7e95a298b7bb4418c0a2b55fe95a662c377",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/hercules-ci/hercules-ci-effects"
