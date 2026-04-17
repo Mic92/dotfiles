@@ -357,12 +357,13 @@ else
 fi
 if [[ -n ${commands[dust]} ]]; then
   du() {
-    args=()
-    for i in "$@"; do
-      case "$i" in
+    local -a args=()
+    local arg
+    for arg in "$@"; do
+      case "$arg" in
       -h|-s|-sh) continue;;
       esac
-      args+=("$i")
+      args+=("$arg")
     done
     dust "${args[@]}"
   }
@@ -972,7 +973,9 @@ fi
 
 # Extract Artifactory credentials from netrc for nix impure FOD builds
 if [[ -f "$HOME/.netrc" ]]; then
-  local _netrc_words=(${=$(<"$HOME/.netrc")})
+  () {
+  local -a _netrc_words=(${=$(<"$HOME/.netrc")})
+  local i j
   for ((i=1; i<=${#_netrc_words}; i++)); do
     if [[ ${_netrc_words[i]} == machine && ${_netrc_words[i+1]} == *artifactory* ]]; then
       for ((j=i+2; j<=${#_netrc_words}; j++)); do
@@ -985,6 +988,7 @@ if [[ -f "$HOME/.netrc" ]]; then
       break
     fi
   done
+  }
 fi
 # some weird script leaks this into my shell
 unset OMP_NUM_THREADS
