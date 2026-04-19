@@ -18,7 +18,25 @@
   fetchJobs = 0
 [delta]
   navigate = true    # use n and N to move between diff sections
-  syntax-theme = Solarized (light)
+  dark = true
+  syntax-theme = tokyonight_night
+  line-numbers = true
+  # Tokyo Night palette (from folke/tokyonight.nvim extras/delta)
+  minus-style = syntax "#4a272f"
+  minus-non-emph-style = syntax "#4a272f"
+  minus-emph-style = syntax "#713137"
+  minus-empty-line-marker-style = syntax "#4a272f"
+  line-numbers-minus-style = "#914c54"
+  plus-style = syntax "#243e4a"
+  plus-non-emph-style = syntax "#243e4a"
+  plus-emph-style = syntax "#2c5a66"
+  plus-empty-line-marker-style = syntax "#243e4a"
+  line-numbers-plus-style = "#449dab"
+  line-numbers-zero-style = "#3b4261"
+  hunk-header-style = file line-number syntax
+  hunk-header-decoration-style = "#3b4261" box ul
+  file-style = bold "#7aa2f7"
+  file-decoration-style = "#3b4261" ul
 [am]
   threeWay = true
 [user]

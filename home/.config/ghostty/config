@@ -1,4 +1,6 @@
-font-family = "FiraCode Nerd Font"
+font-family = "JetBrainsMono Nerd Font"
+font-feature = -calt
+adjust-cell-height = 6%
 window-height = 4000
 window-width = 4000
 clipboard-read = allow
@@ -7,8 +9,7 @@ clipboard-write = allow
 shell-integration = none
 macos-option-as-alt = true
 
-#theme = light:"iTerm2 Solarized Light",dark:"iTerm2 Solarized Dark"
-theme = iTerm2 Solarized Light
+theme = TokyoNight Night
 
 keybind = performable:copy=copy_to_clipboard
 keybind = performable:paste=paste_from_clipboard

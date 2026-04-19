@@ -74,7 +74,9 @@
       '')
 
       nixos-shell
+      inter
       nerd-fonts.fira-code
+      nerd-fonts.jetbrains-mono
       inxi
       radicle-node
       inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system}.niks3
