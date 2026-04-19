@@ -6,3 +6,107 @@ bind generic + !git commit --amend
 bind generic P !git push
 bind generic p !git pull
 set diff-highlight = true
+
+# --- view / behaviour ------------------------------------------------------
+set line-graphics       = utf-8
+set tab-size            = 4
+set refresh-mode        = auto
+set mouse               = true
+set wrap-lines          = no
+set ignore-case         = smart-case
+set main-view           = line-number:no,interval=5 id:yes date:relative-compact author:full,width=18 commit-title:yes,graph,refs,overflow=72
+set blame-view          = date:relative-compact author:abbreviated id:yes,color line-number:yes,interval=1 text
+set grep-view           = file-name:auto line-number:yes,interval=1 text
+set refs-view           = line-number:no id:yes date:relative-compact author:full,width=18 ref commit-title
+set stash-view          = line-number:no id:yes date:relative-compact author:full,width=18 commit-title
+
+# --- Tokyo Night (night) ---------------------------------------------------
+# tig has no truecolor; relies on terminal ANSI palette (ghostty = TokyoNight)
+# plus 256-color approximations for the extra grays.
+# palette: blue=#7aa2f7 magenta=#bb9af7 cyan=#7dcfff green=#9ece6a
+#          red=#f7768e yellow=#e0af68 comment≈60 gutter≈237 bg_hl≈236
+
+color default           default default
+color cursor            default 236     bold
+color title-focus       black   blue    bold
+color title-blur        60      237
+color status            blue    default
+color delimiter         237     default
+color search-result     black   yellow  bold
+
+color date              60      default
+color author            magenta default
+color id                yellow  default
+color line-number       237     default
+color overflow          237     default
+color header            blue    default bold
+color section           magenta default bold
+color mode              60      default
+color directory         blue    default bold
+color file              default default
+color file-size         60      default
+
+color main-head         blue    default bold
+color main-remote       green   default
+color main-tracked      cyan    default bold
+color main-tag          yellow  default bold
+color main-local-tag    yellow  default
+color main-ref          magenta default
+color graph-commit      blue    default
+
+color diff-header       magenta default bold
+color diff-index        60      default
+color diff-chunk        blue    default
+color "@@"              blue    default
+color diff-add          green   default
+color diff-del          red     default
+color diff-add-highlight black  green
+color diff-del-highlight black  red
+color diff-stat         cyan    default
+color diff-oldmode      60      default
+color diff-newmode      60      default
+color "--- "            60      default
+color "+++ "            60      default
+
+color "commit "         yellow  default bold
+color "Author: "        magenta default
+color "AuthorDate: "    60      default
+color "Commit: "        magenta default
+color "CommitDate: "    60      default
+color "Refs: "          cyan    default
+color "Date: "          60      default
+color "Merge: "         60      default
+color "    Signed-off-by" 60   default
+color "    Co-authored-by" 60  default
+color "    Reviewed-by" 60     default
+
+color tree.header       blue    default bold
+color help-group        magenta default bold
+color help-action       cyan    default
+
+color status.header     blue    default bold
+color status.section    magenta default
+color stat-staged       green   default
+color stat-unstaged     yellow  default
+color stat-untracked    60      default
+color stat-none         237     default
+
+color grep.file         blue    default bold
+color grep.line-number  237     default
+color grep.delimiter    237     default
+
+# graph palette: spread hues so adjacent merge lanes contrast
+color palette-0         magenta default
+color palette-1         cyan    default
+color palette-2         yellow  default
+color palette-3         green   default
+color palette-4         blue    default
+color palette-5         red     default
+color palette-6         146     default
+color palette-7         magenta default bold
+color palette-8         cyan    default bold
+color palette-9         yellow  default bold
+color palette-10        green   default bold
+color palette-11        blue    default bold
+color palette-12        red     default bold
+color palette-13        60      default
