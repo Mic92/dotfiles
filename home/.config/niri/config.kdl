@@ -75,6 +75,8 @@ prefer-no-csd
 cursor {
     xcursor-theme "Bibata-Modern-Ice"
     xcursor-size 24
+    hide-when-typing
+    hide-after-inactive-ms 3000
 }
 
 screenshot-path "~/Pictures/Screenshots/screenshot-%Y-%m-%d-%H-%M-%S.png"
