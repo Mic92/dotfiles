@@ -177,6 +177,21 @@
         "type": "github"
       }
     },
+    "crane_2": {
+      "locked": {
+        "lastModified": 1776479158,
+        "narHash": "sha256-P7TLDtRgAxmo0Bdw8fkJrrBpX/8/WhO6Bm/uCfl6jXY=",
+        "owner": "ipetkov",
+        "repo": "crane",
+        "rev": "3fbd73bdd9eb572209fdf094abad19d9b6d147b4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "ipetkov",
+        "repo": "crane",
+        "type": "github"
+      }
+    },
     "data-mesher": {
       "inputs": {
         "flake-parts": [
@@ -1070,6 +1085,7 @@
     },
     "tincr": {
       "inputs": {
+        "crane": "crane_2",
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -1078,11 +1094,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776424571,
-        "narHash": "sha256-75Pl19+XgUBmbv+kg+UvTzG/LP3UN21pCCFf9LCEuLU=",
+        "lastModified": 1776536577,
+        "narHash": "sha256-PLwyYO2GQUvLfKTCF/bY2b2dcvVo6H39KE94frw3SCs=",
         "owner": "Mic92",
         "repo": "tincr",
-        "rev": "9fe6bbae3af889fbe785ea66a01145267e49b452",
+        "rev": "0d8abd5f07318b2d97b8ee88feba5fdd9154e2fb",
         "type": "github"
       },
       "original": {
