@@ -114,8 +114,6 @@ in
     ];
 
     # Secrets for buildbot-effects (hercules-ci style effects)
-    # Test for nix-community/buildbot-nix#614
-    effects.extraSandboxPaths = [ "/etc/buildbot-test-sandbox" ];
     effects.perRepoSecretFiles = {
       "github:nix-community/harmonia" =
         config.clan.core.vars.generators.harmonia-effects-secrets.files.secrets.path;
