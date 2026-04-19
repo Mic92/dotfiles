@@ -37,6 +37,7 @@
 
       socat
       tmux
+      sesh
       nurl
       htop
       hub
