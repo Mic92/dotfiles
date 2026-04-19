@@ -42,8 +42,11 @@ source_bash_completion() {
 function ff() { find . -type f -iname '*'"$*"'*' -ls; }
 
 # External config
-if [[ -r ~/.dircolors ]] && type -p dircolors >/dev/null; then
-  eval $(dircolors -b "$HOME/.dircolors")
+# Tokyo Night LS_COLORS (raw string from `vivid generate tokyonight-night`,
+# not a dircolors(1) database — read directly).
+if [[ -r ~/.dircolors.tokyonight-night ]]; then
+  LS_COLORS="$(<~/.dircolors.tokyonight-night)"
+  export LS_COLORS
 fi
 
 source_bash_completion

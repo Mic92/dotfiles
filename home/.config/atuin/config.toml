@@ -35,3 +35,6 @@ common_prefix = [
   # comma and nix alias
   ",", "n",
 ]
+
+[theme]
+name = "tokyonight"
