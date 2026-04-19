@@ -124,6 +124,14 @@ window-rule {
     open-floating true
 }
 
+// Small utility apps that make no sense tiled full-width
+window-rule {
+    match app-id=r#"^(org\.pulseaudio\.pavucontrol|pavucontrol|com\.saivert\.pwvucontrol|nm-connection-editor|blueman-manager|wdisplays|qt6ct|qt5ct)$"#
+    open-floating true
+    default-column-width { fixed 900; }
+    default-window-height { fixed 700; }
+}
+
 // Cheat-sheet overlay floating + centred
 window-rule {
     match app-id="^eog$" title="cheatsheet\\.png"
