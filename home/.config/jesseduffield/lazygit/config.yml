@@ -5,8 +5,18 @@ gui:
   showFileTree: true
   nerdFontsVersion: 3
   showRandomTip: false
+  showCommandLog: false
+  showBottomLine: false
   filterMode: fuzzy
   showDivergenceFromBaseBranch: arrowAndNumber
+  sidePanelWidth: 0.28
+  expandFocusedSidePanel: true
+  # crank high so unfocused side panels collapse to ~1 line; lazygit cannot
+  # reorder/hide panels (hardcoded, see jesseduffield/lazygit#3621)
+  expandedSidePanelWeight: 20
+  enlargedSideViewLocation: top
+  scrollOffMargin: 5
+  commitHashLength: 7
   authorColors:
     "Jörg Thalheim": "#7aa2f7"
     "*[bot]": "#565f89"
