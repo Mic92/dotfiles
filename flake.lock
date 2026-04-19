@@ -419,9 +419,6 @@
         "crane": [
           "crane"
         ],
-        "flake-parts": [
-          "flake-parts"
-        ],
         "nix": [
           "nix"
         ],
@@ -433,11 +430,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776310772,
-        "narHash": "sha256-QYjSWuMiNlQb3DfDIfXSTG+GhBtrhs9TLDNOFql3M0s=",
+        "lastModified": 1776518364,
+        "narHash": "sha256-AKwA3E8H/y4LzJrOAn+I12zkzou4kOEPSlDMSp9eZww=",
         "owner": "nix-community",
         "repo": "harmonia",
-        "rev": "e4f46aa58a9c8c5faa9f017f4be99b332433ef14",
+        "rev": "fdf0e22a6577d714c1c7e67d68cbac9fd259be90",
         "type": "github"
       },
       "original": {
