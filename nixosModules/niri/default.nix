@@ -188,7 +188,7 @@
     )}";
     # Enable native Wayland support for Electron apps (Ferdium, etc.) and Chromium
     NIXOS_OZONE_WL = "1";
-    XCURSOR_THEME = "Bibata-Modern-Classic";
+    XCURSOR_THEME = "Bibata-Modern-Ice";
     XCURSOR_SIZE = "24";
   };
 
