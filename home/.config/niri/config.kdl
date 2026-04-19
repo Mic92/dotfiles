@@ -72,6 +72,11 @@ spawn-at-startup "kanshi"
 
 prefer-no-csd
 
+cursor {
+    xcursor-theme "Bibata-Modern-Classic"
+    xcursor-size 24
+}
+
 screenshot-path "~/Pictures/Screenshots/screenshot-%Y-%m-%d-%H-%M-%S.png"
 
 hotkey-overlay {

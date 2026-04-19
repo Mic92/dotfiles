@@ -506,7 +506,7 @@ plugins:
 # Choose the theme that is specified in the themes section.
 # For some examples, see: https://github.com/zellij-org/zellij/tree/main/example/themes
 # Default: default
-theme: dracula
+theme: tokyo-night
 # Choose the mode that zellij uses when starting up.
 # Default: normal
 default_mode: locked

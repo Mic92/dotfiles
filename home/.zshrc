@@ -274,11 +274,20 @@ PURE_GIT_UNTRACKED_DIRTY=0 PURE_GIT_PULL=0
 #
 PURE_PROMPT_SYMBOL="%(?.%F{green}.%F{red})%%%f"
 fpath+=($HOME/.zsh-pure)
-zstyle :prompt:pure:path color yellow
-zstyle :prompt:pure:git:branch color yellow
+# Tokyo Night accents for the pure prompt
+zstyle :prompt:pure:path color blue
+zstyle :prompt:pure:git:branch color magenta
 zstyle :prompt:pure:user color cyan
 zstyle :prompt:pure:host color yellow
 zstyle :prompt:pure:git:branch:cached color red
+
+# Tokyo Night fzf palette (folke/tokyonight.nvim extras/fzf)
+export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS\
+ --highlight-line --info=inline-right --ansi --layout=reverse --border=none\
+ --color=bg+:#283457,bg:#16161e,border:#27a1b9,fg:#c0caf5,gutter:#16161e\
+ --color=header:#ff9e64,hl+:#2ac3de,hl:#2ac3de,info:#545c7e,marker:#ff007c\
+ --color=pointer:#ff007c,prompt:#2ac3de,query:#c0caf5:regular\
+ --color=scrollbar:#27a1b9,separator:#ff9e64,spinner:#ff007c"
 ## non-zero exit code in right prompt
 RPS1='%(?.%F{magenta}.%F{red}(%?%) %F{magenta})'
 autoload -U promptinit; promptinit
@@ -900,7 +909,7 @@ setopt autopushd
 # Plugins
 if [[ -f ~/.zsh-autosuggestions/zsh-autosuggestions.zsh ]]; then
   source ~/.zsh-autosuggestions/zsh-autosuggestions.zsh
-  export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE=fg=60
+  export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=#565f89'
 fi
 if [[ -f ~/.homesick/repos/homeshick/homeshick.sh ]]; then
   source ~/.homesick/repos/homeshick/homeshick.sh
