@@ -70,13 +70,12 @@
         ]
       },
       "locked": {
-        "lastModified": 1776574112,
-        "narHash": "sha256-PbNO+I7lnaeKCf2zlnAgr4FgKB1rn4F/uJJsLN+WKjs=",
-        "ref": "refs/heads/main",
-        "rev": "33dd3a9ae38bcd92a092f96a2deabd687c10de7b",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/nix-community/buildbot-nix"
+        "lastModified": 1776438746,
+        "narHash": "sha256-LFO59j2yeK0OUoMmknOuExWep0d9VeuBVLvygZUJH38=",
+        "owner": "MagicRB",
+        "repo": "buildbot-nix",
+        "rev": "8904dc5c70c66bb17789b6348df2bb193b091916",
+        "type": "github"
       },
       "original": {
         "shallow": true,
@@ -470,11 +469,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776380511,
-        "narHash": "sha256-3A2B8k6YCuzt5pT/CQEltUghtE6heSlk2tMYkg/fUWI=",
+        "lastModified": 1773550609,
+        "narHash": "sha256-neu7ixXHjV3LobVjOndkL97u+6UF6Yoh+CUnzX7kUBQ=",
         "owner": "hercules-ci",
         "repo": "hercules-ci-effects",
-        "rev": "4a80b7e95a298b7bb4418c0a2b55fe95a662c377",
+        "rev": "554f6ed448ca74c00aa2371cde901ae1e73005b9",
         "type": "github"
       },
       "original": {
