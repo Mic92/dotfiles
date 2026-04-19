@@ -80,8 +80,10 @@ function string_hash() {
   echo $hashval
 }
 
-if [[ -n $HOST && "$__host__" != "$HOST" ]]; then
-  tmux set -g status-bg "colour$(string_hash "$HOST" 255)"
+# Per-host accent so ssh sessions are visually distinct without overriding the
+# Tokyo Night status-style. tmux.conf reads @host_color in status-right.
+if [[ -n $TMUX && -n $HOST && "$__host__" != "$HOST" ]]; then
+  tmux set -g @host_color "colour$(string_hash "$HOST" 255)" 2>/dev/null
   export __host__=$HOST
 fi
 
