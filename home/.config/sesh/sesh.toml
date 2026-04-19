@@ -1,0 +1,7 @@
+#:schema https://github.com/joshmedeski/sesh/raw/main/sesh.schema.json
+# sesh — tmux session manager
+# Sources: running tmux sessions + zoxide dirs. Keybind: prefix+s in tmux.
+
+[default_session]
+# Land in a shell; nvim/direnv take over per-project via direnv hook.
+startup_command = "zsh"
