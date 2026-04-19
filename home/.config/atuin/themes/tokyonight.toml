@@ -1,0 +1,14 @@
+[theme]
+name = "tokyonight"
+
+# Tokyo Night (night) — palette from folke/tokyonight.nvim
+[colors]
+Base       = "#c0caf5"
+Title      = "#7aa2f7"
+Important  = "#bb9af7"
+Guidance   = "#7dcfff"
+Annotation = "#565f89"
+Muted      = "#3b4261"
+AlertInfo  = "#9ece6a"
+AlertWarn  = "#e0af68"
+AlertError = "#f7768e"
