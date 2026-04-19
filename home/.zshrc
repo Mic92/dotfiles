@@ -253,9 +253,9 @@ if [[ -n ${commands[fzf]} ]]; then
   zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
   # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
   zstyle ':completion:*' menu no
-  # preview directory's content with lsd when completing cd
-  if [[ -n ${commands[lsd]} ]]; then
-    zstyle ':fzf-tab:complete:cd:*' fzf-preview 'lsd -1 --color=always $realpath'
+  # preview directory's content with eza when completing cd
+  if [[ -n ${commands[eza]} ]]; then
+    zstyle ':fzf-tab:complete:cd:*' fzf-preview 'eza -1 --icons --color=always $realpath'
   fi
   # switch group using `<` and `>`
   zstyle ':fzf-tab:*' switch-group '<' '>'
@@ -288,6 +288,10 @@ export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS\
  --color=header:#ff9e64,hl+:#2ac3de,hl:#2ac3de,info:#545c7e,marker:#ff007c\
  --color=pointer:#ff007c,prompt:#2ac3de,query:#c0caf5:regular\
  --color=scrollbar:#27a1b9,separator:#ff9e64,spinner:#ff007c"
+
+# Ctrl-T: bat preview for files, eza for dirs. Alt-C: eza tree preview.
+export FZF_CTRL_T_OPTS="--preview '([[ -d {} ]] && eza --tree --level=2 --icons --color=always {}) || bat --style=plain --color=always --line-range=:200 {}'"
+export FZF_ALT_C_OPTS="--preview 'eza --tree --level=2 --icons --color=always {}'"
 ## non-zero exit code in right prompt
 RPS1='%(?.%F{magenta}.%F{red}(%?%) %F{magenta})'
 autoload -U promptinit; promptinit
