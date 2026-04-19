@@ -119,3 +119,24 @@ customCommands:
     context: files
     description: tig file (history of commits affecting file)
     output: terminal
+  # tuicr - review diffs like a PR
+  - key: <c-t>
+    command: tuicr -r "{{.SelectedCommit.Sha}}^..HEAD"
+    context: commits
+    description: tuicr review (selected commit..HEAD)
+    output: terminal
+  - key: <c-t>
+    command: tuicr -r "{{.SelectedSubCommit.Sha}}^..{{.SelectedSubCommit.Sha}}"
+    context: subCommits
+    description: tuicr review selected commit
+    output: terminal
+  - key: <c-t>
+    command: tuicr -w
+    context: files
+    description: tuicr review working tree
+    output: terminal
+  - key: <c-t>
+    command: tuicr -r "{{.SelectedLocalBranch.UpstreamRemote}}/{{.SelectedLocalBranch.UpstreamBranch}}..{{.SelectedLocalBranch.Name}}"
+    context: localBranches
+    description: tuicr review branch vs upstream
+    output: terminal
