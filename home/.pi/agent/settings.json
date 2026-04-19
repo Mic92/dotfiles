@@ -1,7 +1,7 @@
 {
   "lastChangelogVersion": "99.99.99",
   "followUpMode": "all",
-  "theme": "dark",
+  "theme": "tokyonight",
   "defaultProvider": "anthropic",
   "defaultModel": "claude-opus-4-6",
   "defaultThinkingLevel": "minimal",
