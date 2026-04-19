@@ -23,7 +23,6 @@
     harmonia.url = "github:nix-community/harmonia";
     harmonia.inputs.nixpkgs.follows = "nixpkgs";
     harmonia.inputs.treefmt-nix.follows = "treefmt-nix";
-    harmonia.inputs.flake-parts.follows = "flake-parts";
     harmonia.inputs.crane.follows = "crane";
     harmonia.inputs.nix.follows = "nix";
 
