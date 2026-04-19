@@ -1,9 +1,16 @@
-reporting: "off"
 update:
   method: never
+disableStartupPopups: true
 gui:
   showFileTree: true
   nerdFontsVersion: 3
+  showRandomTip: false
+  filterMode: fuzzy
+  showDivergenceFromBaseBranch: arrowAndNumber
+  authorColors:
+    "Jörg Thalheim": "#7aa2f7"
+    "*[bot]": "#565f89"
+    "*": "#bb9af7"
   # Tokyo Night (folke/tokyonight.nvim extras/lazygit)
   theme:
     activeBorderColor: ["#ff9e64", "bold"]
@@ -17,11 +24,9 @@ gui:
     markedBaseCommitBgColor: ["#e0af68"]
     unstagedChangesColor: ["#db4b4b"]
     defaultFgColor: ["#c0caf5"]
+    inactiveViewSelectedLineBgColor: ["#1f2335"]
 os:
-  edit: "nvim {{filename}}"
-  editAtLine: "nvim +{{line}} {{filename}}"
-  editAtLineAndWait: "nvim --remote-wait +{{line}} {{filename}}"
-  editInTerminal: true
+  editPreset: nvim
 git:
   log:
     # topo-order makes lazygit unusably slow on huge repos like nixpkgs
@@ -29,8 +34,9 @@ git:
     order: default
   pagers:
     - pager: delta --paging=never --line-numbers --hyperlinks --hyperlinks-file-link-format="lazygit-edit://{path}:{line}"
-  autoFetch: False
-  autoStageResolvedConflicts: False
+  autoFetch: false
+  autoStageResolvedConflicts: false
+  parseEmoji: true
 customCommands:
   - key: "<c-r>"
     command: 'git rebase --interactive "{{.SelectedCommit.Sha}}"'
@@ -62,17 +68,17 @@ customCommands:
     output: terminal
   # Blame via tig
   - key: b
-    command: tig blame -- {{.SelectedFile.Name}}
+    command: tig blame -- "{{.SelectedFile.Name}}"
     context: files
     description: blame file at tree
     output: terminal
   - key: b
-    command: tig blame {{.SelectedSubCommit.Sha}} -- {{.SelectedCommitFile.Name}}
+    command: tig blame {{.SelectedSubCommit.Sha}} -- "{{.SelectedCommitFile.Name}}"
     context: commitFiles
     description: blame file at revision
     output: terminal
   - key: B
-    command: tig blame -- {{.SelectedCommitFile.Name}}
+    command: tig blame -- "{{.SelectedCommitFile.Name}}"
     context: commitFiles
     description: blame file at tree
     output: terminal
@@ -94,12 +100,12 @@ customCommands:
     output: terminal
   # File history
   - key: t
-    command: tig {{.SelectedSubCommit.Sha}} -- {{.SelectedCommitFile.Name}}
+    command: tig {{.SelectedSubCommit.Sha}} -- "{{.SelectedCommitFile.Name}}"
     context: commitFiles
     description: tig file (history of commits affecting file)
     output: terminal
   - key: t
-    command: tig -- {{.SelectedFile.Name}}
+    command: tig -- "{{.SelectedFile.Name}}"
     context: files
     description: tig file (history of commits affecting file)
     output: terminal
