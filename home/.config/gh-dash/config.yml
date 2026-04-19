@@ -53,21 +53,22 @@ repoPaths:
   NixOS/nixpkgs: ~/git/nixpkgs
 pager:
   diff: delta
+# Tokyo Night (night)
 theme:
   ui:
     table:
       showSeparator: true
   colors:
     text:
-      primary: "#657b83" # foreground
-      secondary: "#586e75" # bright6
-      inverted: "#fdf6e3" # background
-      faint: "#93a1a1" # bright2
-      warning: "#dc322f" # regular1
-      success: "#859900" # regular2
+      primary: "#c0caf5"
+      secondary: "#7aa2f7"
+      inverted: "#15161e"
+      faint: "#565f89"
+      warning: "#f7768e"
+      success: "#9ece6a"
     background:
-      selected: "#eee8d5" # regular0
+      selected: "#283457"
     border:
-      primary: "#073642" # regular7
-      secondary: "#002b36" # bright7
-      faint: "#839496" # bright3
+      primary: "#7aa2f7"
+      secondary: "#3b4261"
+      faint: "#3b4261"

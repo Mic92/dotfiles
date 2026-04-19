@@ -1,7 +1,8 @@
 local wezterm = require("wezterm")
 
 return {
-	color_scheme = "Dracula",
+	color_scheme = "tokyonight_night",
+	font = wezterm.font("JetBrainsMono Nerd Font"),
 	tls_clients = {
 		{
 			-- This name identifies the domain
