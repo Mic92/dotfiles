@@ -21,6 +21,7 @@ in
     self.inputs.nix-casks.packages.${pkgs.stdenv.hostPlatform.system}.handy
     (myPkgs.librewolf-macos.override {
       policies = import ../pkgs/librewolf-policies.nix {
+        inherit (pkgs) lib stdenv;
         inherit (micsSkills) browser-cli-extension;
         inherit (firefoxExtensions) chrome-tab-gc-extension;
       };
