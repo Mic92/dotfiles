@@ -445,11 +445,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776630256,
-        "narHash": "sha256-3BlBDmisBZI6zUWvW/b+HXYgEPy4E1OoRXMPcbIniaQ=",
+        "lastModified": 1776672209,
+        "narHash": "sha256-2j8S4gx86h+1JfgUNLcH1dRMLagYkjlwu2YPDnoDZCc=",
         "owner": "nix-community",
         "repo": "harmonia",
-        "rev": "af83a37085dbc0b7b64366287fccf7c27804c955",
+        "rev": "107056b6f084aa4d31225cc78a780881a7acbbab",
         "type": "github"
       },
       "original": {
@@ -1094,11 +1094,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776607826,
-        "narHash": "sha256-ZeOYMGsHA+xArg6BhtVq/Fbx2s/SUD3U70oNgtlCxHo=",
+        "lastModified": 1776673752,
+        "narHash": "sha256-X6Kiyeh/nw/yUr8EMA0kKKxiHtAXKPGYVT4hAYxBF18=",
         "owner": "Mic92",
         "repo": "tincr",
-        "rev": "861e333c465497020cd0921070948311d1d15261",
+        "rev": "3aaf61d09168a3265bf6de377685adc4b7a400e5",
         "type": "github"
       },
       "original": {
