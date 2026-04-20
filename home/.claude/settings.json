@@ -1,5 +1,6 @@
 {
   "includeCoAuthoredBy": false,
+  "model": "opus[1m]",
   "hooks": {
     "Notification": [
       {
@@ -18,6 +19,6 @@
     "command": "ccstatusline",
     "padding": 0
   },
-  "enabledPlugins": {},
-  "alwaysThinkingEnabled": true
+  "alwaysThinkingEnabled": true,
+  "autoUpdatesChannel": "latest"
 }
