@@ -11,6 +11,27 @@
     ./janet.nix
   ];
 
+  nixpkgs.overlays = [
+    (_final: prev: {
+      noctalia-shell = prev.noctalia-shell.overrideAttrs (old: {
+        patches = (old.patches or [ ]) ++ [
+          # quickshell's BluetoothAdapter refuses to power on while
+          # rfkill-blocked, so after the Framework airplane key (rfkill block
+          # all) + wifi-only recovery the bluetooth toggle goes dead and
+          # systemd-rfkill persists the block across reboots. Lift the soft
+          # block from the toggle itself.
+          # Upstream: https://github.com/noctalia-dev/noctalia-shell/pull/2520
+          ./patches/0001-BluetoothService-unblock-rfkill-when-enabling-a-bloc.patch
+          # Plugin git fetch inherits a dead cwd when the shell was launched
+          # from a since-removed dir; cd into mktemp first and stop eating
+          # stderr so failures are diagnosable.
+          # Upstream: https://github.com/noctalia-dev/noctalia-shell/pull/2343
+          ./patches/0002-PluginService-survive-dead-cwd-and-surface-git-error.patch
+        ];
+      });
+    })
+  ];
+
   # programs.ssh.enableAskPassword defaults to services.xserver.enable, which
   # is false under niri → NixOS exports SSH_ASKPASS="" instead of leaving it
   # unset. Force-enable and point at the noctalia-aware wrapper so ssh-add
