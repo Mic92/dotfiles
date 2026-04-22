@@ -5,6 +5,7 @@
  * so the agent has full awareness without wasting a tool-call turn.
  */
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
+import { currentBranch, localBase } from "./_git.ts";
 
 const MERGE_PROMPT = `
 Commit, rebase, and merge the current branch.
@@ -56,12 +57,9 @@ export default function (pi: ExtensionAPI) {
   pi.registerCommand("merge", {
     description: "Commit, rebase, and merge the current branch",
     handler: async (_args, ctx) => {
-      const [branch, baseBranch, status, log] = await Promise.all([
-        pi.exec("git", ["branch", "--show-current"], { timeout: 5000 }),
-        pi.exec("bash", [
-          "-c",
-          'git config --local --get "branch.$(git branch --show-current).workmux-base" 2>/dev/null || echo main',
-        ], { timeout: 5000 }),
+      const branch = await currentBranch(pi.exec);
+      const [baseBranch, status, log] = await Promise.all([
+        localBase(pi.exec, branch),
         pi.exec("git", ["status"], { timeout: 5000 }),
         pi.exec("git", ["log", "--oneline", "-5"], { timeout: 5000 }),
       ]);
@@ -69,8 +67,8 @@ export default function (pi: ExtensionAPI) {
       const gitContext = [
         "## Current git state",
         "",
-        `Current branch: \`${branch.stdout.trim()}\``,
-        `Base branch: \`${baseBranch.stdout.trim()}\``,
+        `Current branch: \`${branch}\``,
+        `Base branch: \`${baseBranch}\``,
         "",
         "### git status",
         "```",
