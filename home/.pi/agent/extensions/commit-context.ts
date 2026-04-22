@@ -17,6 +17,9 @@ Commit the changes using this style:
 
 If nothing is staged, stage all changes first (\`git add -A\`).
 If there are untracked files relevant to the change, include them.
+
+If the changes cover multiple unrelated concerns, split them into separate
+logical commits rather than one large commit.
 `.trim();
 
 export default function (pi: ExtensionAPI) {
