@@ -9,6 +9,7 @@
 import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { currentBranch, type Exec, git, workmuxBase } from "./_git.ts";
 
 const OPEN_PR_PROMPT = `
 Write a PR description using the conversation context and open PR creation in
@@ -87,13 +88,6 @@ function findPrTemplate(
   return undefined;
 }
 
-type Exec = ExtensionAPI["exec"];
-
-async function git(exec: Exec, args: string[]): Promise<string> {
-  const r = await exec("git", args, { timeout: 5000 });
-  return r.code === 0 ? r.stdout.trim() : "";
-}
-
 /**
  * Pick the diff base. Prefer remote-tracking refs over local branch names —
  * local main is often weeks behind on long-lived feature branches, which
@@ -105,12 +99,7 @@ async function git(exec: Exec, args: string[]): Promise<string> {
  *   4. main                   last resort
  */
 async function resolveBase(exec: Exec, cur: string): Promise<string> {
-  const wb = await git(exec, [
-    "config",
-    "--local",
-    "--get",
-    `branch.${cur}.workmux-base`,
-  ]);
+  const wb = await workmuxBase(exec, cur);
 
   if (wb) {
     const remote = await git(exec, [
@@ -137,7 +126,7 @@ export default function (pi: ExtensionAPI) {
     description: "Write a PR description and open PR creation in browser",
     handler: async (_args, _ctx) => {
       const [cur, repoRoot] = await Promise.all([
-        git(pi.exec, ["branch", "--show-current"]),
+        currentBranch(pi.exec),
         git(pi.exec, ["rev-parse", "--show-toplevel"]),
       ]);
       const baseBranch = await resolveBase(pi.exec, cur);
