@@ -45,6 +45,10 @@ in
   home.file.".claude/skills/coordinator".source =
     "${aiTools.workmux}/share/workmux/skills/coordinator";
 
+  # git-surgeon ships a skill teaching agents how to use its git primitives.
+  home.file.".claude/skills/git-surgeon".source =
+    "${aiTools.git-surgeon}/share/git-surgeon/skills/git-surgeon";
+
   # macOS-only profiler wrapper; both the skill and the binary are gated so
   # the Linux home profile doesn't pull in a darwin-only derivation.
   home.file.".claude/skills/macprof/SKILL.md" = lib.mkIf pkgs.stdenv.isDarwin {
@@ -86,6 +90,7 @@ in
     # https://github.com/Mic92/workmux/tree/fix-config-lock-race
     # Drop once upstream merges or git ships config.lock retry.
     aiTools.workmux
+    aiTools.git-surgeon
     aiTools.zat
     pkgs.pueue
   ]
