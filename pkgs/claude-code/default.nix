@@ -21,8 +21,7 @@ writeShellApplication {
 
     # Start pueued daemon if not already running
     if ! pueue status &>/dev/null; then
-      echo "Starting pueue daemon..."
-      pueued -d
+      pueued -d >/dev/null 2>&1 || true
     fi
 
     # Run the actual claude command
