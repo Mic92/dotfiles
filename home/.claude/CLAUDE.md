@@ -27,12 +27,12 @@ comments use normal English.
 - To get a rebuild of a nix package change the nix expression instead of
   `--rebuild`
 - Prefer nix-provided Python deps over pip/venv when packaging or scripting.
-- Inside nix-shell/nix develop: locate headers/libs/tools via env vars
-  (e.g. `env | rg /nix/store`, `$NIX_CFLAGS_COMPILE`, `$PKG_CONFIG_PATH`,
+- Inside nix-shell/nix develop: locate headers/libs/tools via env vars (e.g.
+  `env | rg /nix/store`, `$NIX_CFLAGS_COMPILE`, `$PKG_CONFIG_PATH`,
   `$buildInputs`) rather than guessing system paths.
 - My nix.conf has remote builders for aarch64-linux/aarch64-darwin/x86_64-linux
-  by default. For NixOS tests on macOS, target x86_64-linux (offloaded to
-  remote builder).
+  by default. For NixOS tests on macOS, target x86_64-linux (offloaded to remote
+  builder).
 - Cross-arch builds: `nix-build --eval-system x86_64-linux`. Flakes: use system
   attr directly (e.g., `.#packages.x86_64-linux.hello`).
 - Use nix-locate to find packages by path, e.g. `nix-locate bin/ip`
@@ -47,8 +47,8 @@ comments use normal English.
 
 ## Code Quality & Testing
 
-- Practice red-green TDD. For bugfixes this means: write failing regression
-  test first.
+- Practice red-green TDD. For bugfixes this means: write failing regression test
+  first.
 - In flakes: format code with `flake-fmt`
 - Write shell scripts that pass `shellcheck`.
 - Write Python code for 3.13 that conforms to `ruff format`, `ruff check` and
@@ -89,4 +89,5 @@ comments use normal English.
 - Recommended: Use GitHub code search to find examples for libraries and APIs:
   `gh search code "foo lang:nix"`.
 - Prefer cloning source code over web searches for more accurate results.
-  Various projects are available in `~/git`, including: `nixpkgs`, `linux`, `nix`
+  Various projects are available in `~/git`, including: `nixpkgs`, `linux`,
+  `nix`
