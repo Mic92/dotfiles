@@ -327,7 +327,7 @@ def count_check_states(checks: list[dict[str, Any]]) -> tuple[int, int, int]:
 
 
 def check_pr_completion(
-    pr_data: dict[str, Any], pending: int, failed: int
+    pr_data: dict[str, Any], pending: int, failed: int, *, in_merge_queue: bool
 ) -> tuple[bool, str] | None:
     """Check if PR has reached a completion state. Returns None if still waiting."""
     state = pr_data.get("state", "UNKNOWN")
@@ -340,7 +340,9 @@ def check_pr_completion(
     if state == "CLOSED":
         return False, "PR was closed"
 
-    if not auto_merge:
+    # Once a PR enters the merge queue GitHub clears autoMergeRequest, so only
+    # treat a missing autoMergeRequest as "disabled" when the PR is not queued.
+    if not auto_merge and not in_merge_queue:
         return False, "Auto-merge was disabled"
 
     if mergeable == "CONFLICTING":
@@ -361,7 +363,7 @@ def get_pr_status_github(pr_id: str) -> tuple[dict[str, Any] | None, str]:
             "view",
             pr_id,
             "--json",
-            "state,mergeable,autoMergeRequest,statusCheckRollup,url",
+            "number,state,mergeable,autoMergeRequest,statusCheckRollup,url",
         ],
         check=False,
         capture=True,
@@ -376,6 +378,68 @@ def get_pr_status_github(pr_id: str) -> tuple[dict[str, Any] | None, str]:
         return None, "Failed to parse PR status"
     else:
         return pr_data, ""
+
+
+def get_merge_queue_status_github(pr_number: int) -> tuple[bool, str | None]:
+    """Query merge-queue membership via GraphQL.
+
+    `gh pr view --json` does not expose isInMergeQueue, so we need a direct
+    GraphQL call. Returns (is_in_queue, human_readable_position_or_None).
+    """
+    repo = run(
+        ["gh", "repo", "view", "--json", "owner,name"], check=False, capture=True
+    )
+    if repo.returncode != 0:
+        return False, None
+    try:
+        repo_data = json.loads(repo.stdout)
+        owner = repo_data["owner"]["login"]
+        name = repo_data["name"]
+    except (json.JSONDecodeError, KeyError):
+        return False, None
+
+    query = """
+        query($owner: String!, $name: String!, $number: Int!) {
+          repository(owner: $owner, name: $name) {
+            pullRequest(number: $number) {
+              isInMergeQueue
+              mergeQueueEntry { state position }
+            }
+          }
+        }
+    """
+    result = run(
+        [
+            "gh",
+            "api",
+            "graphql",
+            "-f",
+            f"query={query}",
+            "-F",
+            f"owner={owner}",
+            "-F",
+            f"name={name}",
+            "-F",
+            f"number={pr_number}",
+        ],
+        check=False,
+        capture=True,
+    )
+    if result.returncode != 0:
+        return False, None
+    try:
+        data = json.loads(result.stdout)["data"]["repository"]["pullRequest"]
+    except (json.JSONDecodeError, KeyError, TypeError):
+        return False, None
+
+    in_queue = bool(data.get("isInMergeQueue"))
+    entry = data.get("mergeQueueEntry") or {}
+    desc = None
+    if in_queue and entry:
+        state = entry.get("state", "")
+        pos = entry.get("position")
+        desc = f"queue pos {pos}, {state}" if pos is not None else state
+    return in_queue, desc
 
 
 def run_buildbot_check_if_needed(
@@ -418,12 +482,22 @@ def wait_for_merge(platform: Platform, pr_id: str) -> bool:
         checks = pr_data.get("statusCheckRollup", [])
         pending, failed, passed = count_check_states(checks)
 
+        in_merge_queue, queue_desc = get_merge_queue_status_github(
+            int(pr_data.get("number", 0))
+        )
+
         # Print status
+        queue_suffix = (
+            f" {Colors.BLUE}[merge queue: {queue_desc}]{Colors.RESET}"
+            if in_merge_queue
+            else ""
+        )
         print(
             f"[{time.strftime('%H:%M:%S')}] "
             f"Checks - {Colors.GREEN}Passed: {passed}{Colors.RESET}, "
             f"{Colors.RED}Failed: {failed}{Colors.RESET}, "
             f"{Colors.YELLOW}Pending: {pending}{Colors.RESET}"
+            f"{queue_suffix}"
         )
 
         # Run buildbot-pr-check if we have failing checks
@@ -432,7 +506,9 @@ def wait_for_merge(platform: Platform, pr_id: str) -> bool:
         )
 
         # Check for completion
-        completion = check_pr_completion(pr_data, pending, failed)
+        completion = check_pr_completion(
+            pr_data, pending, failed, in_merge_queue=in_merge_queue
+        )
         if completion is not None:
             success, message = completion
             if not success:
