@@ -40,8 +40,6 @@ in
     ];
   };
 
-  home.file.".pi/agent/node_modules".source = "${piAgentDeps}/node_modules";
-
   # Coordinator skill shipped by workmux upstream, installed via llm-agents.nix
   # https://github.com/numtide/llm-agents.nix/pull/3766
   home.file.".claude/skills/coordinator".source =
@@ -74,6 +72,9 @@ in
     selfPkgs.pim
     (pkgs.writeShellScriptBin "pi" ''
       ${pkgs.pueue}/bin/pueued -d 2>/dev/null || true
+      # Extensions are symlinked from dotfiles, so node walk-up misses
+      # their npm deps. NODE_PATH points jiti at the prebuilt node_modules.
+      export NODE_PATH="${piAgentDeps}/node_modules''${NODE_PATH:+:$NODE_PATH}"
       exec ${selfPkgs.pi}/bin/pi "$@"
     '')
     aiTools.tuicr
