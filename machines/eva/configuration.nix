@@ -47,6 +47,16 @@
   # Use stable kernel
   boot.kernelPackages = lib.mkForce pkgs.linuxPackages;
 
+  # Small disk: nix-store churn fills the pool quickly when 40 auto-snapshots
+  # pin old store paths, so keep only a short history here.
+  services.zfs.autoSnapshot = {
+    frequent = 4;
+    hourly = 4;
+    daily = 2;
+    weekly = 0;
+    monthly = 0;
+  };
+
   # breaks loki
   networking.usePredictableInterfaceNames = false;
 
