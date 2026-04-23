@@ -71,7 +71,7 @@ in
     selfPkgs.claude-md
     selfPkgs.pim
     (pkgs.writeShellScriptBin "pi" ''
-      ${pkgs.pueue}/bin/pueued -d 2>/dev/null || true
+      ${pkgs.pueue}/bin/pueued -d >/dev/null 2>&1 || true
       # Extensions are symlinked from dotfiles, so node walk-up misses
       # their npm deps. NODE_PATH points jiti at the prebuilt node_modules.
       export NODE_PATH="${piAgentDeps}/node_modules''${NODE_PATH:+:$NODE_PATH}"
