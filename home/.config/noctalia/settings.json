@@ -336,7 +336,7 @@
         "manualSunset": "18:30",
         "monitorForColors": "",
         "predefinedScheme": "Tokyo Night",
-        "schedulingMode": "location",
+        "schedulingMode": "off",
         "syncGsettings": true,
         "useWallpaperColors": false
     },
@@ -415,7 +415,7 @@
         "deadOpacity": 0.6,
         "displayMode": "auto_hide",
         "dockType": "floating",
-        "enabled": true,
+        "enabled": false,
         "floatingRatio": 1,
         "groupApps": false,
         "groupClickAction": "cycle",
@@ -554,7 +554,7 @@
         "weatherTaliaMascotAlways": false
     },
     "network": {
-        "bluetoothAutoConnect": true,
+        "bluetoothAutoConnect": false,
         "bluetoothDetailsViewMode": "grid",
         "bluetoothHideUnnamedDevices": false,
         "bluetoothRssiPollIntervalMs": 60000,
