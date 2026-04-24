@@ -36,7 +36,6 @@
   services.tinc.networks.retiolum.extraConfig = ''
     StrictSubnets yes
     DhtDiscovery yes
-    DhtSecretFile = /var/lib/tinc/retiolum/dht_secret
     UPnP yes
   '';
 
@@ -52,13 +51,6 @@
     serviceConfig.StateDirectory = "tinc/retiolum";
     preStart = lib.mkAfter ''
       install -d -m 0750 -o tinc-retiolum -g tinc-retiolum /var/lib/tinc/retiolum/cache
-      # DhtSecretFile is required when DhtDiscovery=yes parses it; the
-      # file is provisioned out-of-band (clan vars / manual scp). Fail
-      # early with a clear message instead of tincd's generic config error.
-      test -s /var/lib/tinc/retiolum/dht_secret || {
-        echo "retiolum: /var/lib/tinc/retiolum/dht_secret missing (32B raw or b64)" >&2
-        exit 1
-      }
     '';
   };
 }
