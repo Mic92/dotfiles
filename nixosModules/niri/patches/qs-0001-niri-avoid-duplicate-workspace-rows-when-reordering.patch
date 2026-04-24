@@ -1,0 +1,150 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Lysec <itslysec@gmail.com>
+Date: Fri, 27 Mar 2026 12:52:04 +0100
+Subject: [PATCH] niri: avoid duplicate workspace rows when reordering model
+
+ObjectModel::diffUpdate() inserts an object at its target position
+without removing it from its old position. When workspaces migrate
+between outputs (e.g. dock hot-plug moves all workspaces from eDP-1
+to DP-12), the post-update sort produces a permutation of the model
+and diffUpdate() turns [36,1,2,3] into [1,2,3,36,1,2,3], doubling
+every reordered row. Subsequent updates compound this and the bar
+fills with hundreds of duplicate workspace pills.
+
+Replace diffUpdate() with a remove-then-insert reorder that keeps the
+model a permutation, and drop the 50ms refresh debounce that was
+papering over the resulting model staleness.
+
+Backport of upstream noctalia-qs c6c3c11 + 3afdc4b (in v0.0.12).
+---
+ src/wayland/niri/ipc/connection.cpp | 49 +++++++++++++++++++----------
+ src/wayland/niri/ipc/connection.hpp |  3 --
+ 2 files changed, 36 insertions(+), 16 deletions(-)
+
+diff --git a/src/wayland/niri/ipc/connection.cpp b/src/wayland/niri/ipc/connection.cpp
+index 7162c89..e7a1b6b 100644
+--- a/src/wayland/niri/ipc/connection.cpp
++++ b/src/wayland/niri/ipc/connection.cpp
+@@ -25,8 +25,34 @@
+ namespace qs::niri::ipc {
+ 
+ namespace {
++
+ QS_LOGGING_CATEGORY(logNiriIpc, "quickshell.niri.ipc", QtWarningMsg);
+ QS_LOGGING_CATEGORY(logNiriIpcEvents, "quickshell.niri.ipc.events", QtWarningMsg);
++
++// diffUpdate inserts without removing the prior row; reorder after sort avoids duplicate model rows.
++void reorderNiriWorkspaceModel(ObjectModel<NiriWorkspace>& model, const QList<NiriWorkspace*>& sorted) {
++	QList<NiriWorkspace*> order;
++	order.reserve(sorted.size());
++	for (auto* w: sorted) {
++		if (!order.contains(w)) order.append(w);
++	}
++
++	auto& list = model.valueList();
++	for (qsizetype i = 0; i < list.length();) {
++		auto* o = list.at(i);
++		if (!order.contains(o) || list.indexOf(o) != i) model.removeAt(i);
++		else i++;
++	}
++
++	for (qsizetype t = 0; t < order.length(); ++t) {
++		auto* w = order.at(t);
++		auto c = list.indexOf(w);
++		if (c < 0 || c == t) continue;
++		model.removeAt(c);
++		model.insertObject(w, t);
++	}
++}
++
+ } // namespace
+ 
+ void NiriIpcEvent::set(const QString& type, const QJsonObject& data) {
+@@ -46,12 +72,6 @@ NiriIpc::NiriIpc() {
+ 		return;
+ 	}
+ 
+-	this->workspaceRefreshTimer.setInterval(50);
+-	this->workspaceRefreshTimer.setSingleShot(true);
+-	QObject::connect(&this->workspaceRefreshTimer, &QTimer::timeout, this, [this]() {
+-		this->refreshWorkspaces();
+-	});
+-
+ 	// clang-format off
+ 	QObject::connect(&this->eventSocket, &QLocalSocket::errorOccurred, this, &NiriIpc::eventSocketError);
+ 	QObject::connect(&this->eventSocket, &QLocalSocket::stateChanged, this, &NiriIpc::eventSocketStateChanged);
+@@ -170,8 +190,8 @@ void NiriIpc::handleWorkspaceActivated(const QJsonObject& data) {
+ 
+ 	auto* activated = this->findWorkspaceById(workspaceId);
+ 	if (!activated) {
+-		// Unknown workspace, do a full refresh
+-		this->workspaceRefreshTimer.start();
++		// Unknown workspace — same idea as Hyprland falling back to j/workspaces
++		this->refreshWorkspaces();
+ 		return;
+ 	}
+ 
+@@ -195,8 +215,13 @@ void NiriIpc::handleWorkspaceActivated(const QJsonObject& data) {
+ 	Qt::endPropertyUpdateGroup();
+ 
+ 	emit this->workspacesUpdated();
+-	// Also refresh to catch any other state changes
+-	this->workspaceRefreshTimer.start();
++
++	// Event-stream ordering can leave is_focused stale on toplevels (e.g. empty workspace:
++	// no WindowFocusChanged before the shell reads state). Request::Windows is authoritative;
++	// see https://docs.rs/niri-ipc/latest/niri_ipc/
++	if (isFocused) {
++		this->refreshWindows();
++	}
+ }
+ 
+ void NiriIpc::handleWorkspaceActiveWindowChanged(const QJsonObject& data) {
+@@ -252,7 +277,6 @@ void NiriIpc::handleWindowOpenedOrChanged(const QJsonObject& data) {
+ 	}
+ 
+ 	emit this->windowsUpdated();
+-	this->workspaceRefreshTimer.start();
+ }
+ 
+ void NiriIpc::handleWindowClosed(const QJsonObject& data) {
+@@ -275,7 +299,6 @@ void NiriIpc::handleWindowClosed(const QJsonObject& data) {
+ 
+ 	qCDebug(logNiriIpc) << "Window closed with id" << windowId;
+ 	emit this->windowsUpdated();
+-	this->workspaceRefreshTimer.start();
+ }
+ 
+ void NiriIpc::handleWindowsChanged(const QJsonObject& data) {
+@@ -598,7 +621,7 @@ void NiriIpc::updateWorkspacesFromArray(const QJsonArray& workspacesArray) {
+ 		}
+ 		return a->bindableIdx().value() < b->bindableIdx().value();
+ 	});
+-	this->mWorkspaces.diffUpdate(sortedList);
++	reorderNiriWorkspaceModel(this->mWorkspaces, sortedList);
+ 
+ 	emit this->workspacesUpdated();
+ }
+diff --git a/src/wayland/niri/ipc/connection.hpp b/src/wayland/niri/ipc/connection.hpp
+index 8f80797..5d33454 100644
+--- a/src/wayland/niri/ipc/connection.hpp
++++ b/src/wayland/niri/ipc/connection.hpp
+@@ -8,7 +8,6 @@
+ #include <qobject.h>
+ #include <qproperty.h>
+ #include <qqmlintegration.h>
+-#include <qtimer.h>
+ #include <qtmetamacros.h>
+ #include <qtypes.h>
+ 
+@@ -145,8 +144,6 @@ private:
+ 	bool requestingWorkspaces = false;
+ 	bool requestingWindows = false;
+ 
+-	QTimer workspaceRefreshTimer;
+-
+ 	ObjectModel<NiriOutput> mOutputs {this};
+ 	ObjectModel<NiriWorkspace> mWorkspaces {this};
+ 	ObjectModel<NiriWindow> mWindows {this};
+-- 
+2.49.0

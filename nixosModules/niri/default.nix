@@ -5,32 +5,39 @@
   sshAskPasswordWrapper,
   ...
 }:
+let
+  noctalia-qs = pkgs.noctalia-qs.overrideAttrs (old: {
+    patches = (old.patches or [ ]) ++ [
+      ./patches/qs-0001-niri-avoid-duplicate-workspace-rows-when-reordering.patch
+    ];
+  });
+
+  noctalia-shell = (pkgs.noctalia-shell.override { inherit noctalia-qs; }).overrideAttrs (old: {
+    patches = (old.patches or [ ]) ++ [
+      # quickshell's BluetoothAdapter refuses to power on while
+      # rfkill-blocked, so after the Framework airplane key (rfkill block
+      # all) + wifi-only recovery the bluetooth toggle goes dead and
+      # systemd-rfkill persists the block across reboots. Lift the soft
+      # block from the toggle itself.
+      # Upstream: https://github.com/noctalia-dev/noctalia-shell/pull/2520
+      ./patches/0001-BluetoothService-unblock-rfkill-when-enabling-a-bloc.patch
+      # Plugin git fetch inherits a dead cwd when the shell was launched
+      # from a since-removed dir; cd into mktemp first and stop eating
+      # stderr so failures are diagnosable.
+      # Upstream: https://github.com/noctalia-dev/noctalia-shell/pull/2343
+      ./patches/0002-PluginService-survive-dead-cwd-and-surface-git-error.patch
+    ];
+  });
+in
 {
   imports = [
     ./kwallet-tpm
     ./janet.nix
   ];
 
-  nixpkgs.overlays = [
-    (_final: prev: {
-      noctalia-shell = prev.noctalia-shell.overrideAttrs (old: {
-        patches = (old.patches or [ ]) ++ [
-          # quickshell's BluetoothAdapter refuses to power on while
-          # rfkill-blocked, so after the Framework airplane key (rfkill block
-          # all) + wifi-only recovery the bluetooth toggle goes dead and
-          # systemd-rfkill persists the block across reboots. Lift the soft
-          # block from the toggle itself.
-          # Upstream: https://github.com/noctalia-dev/noctalia-shell/pull/2520
-          ./patches/0001-BluetoothService-unblock-rfkill-when-enabling-a-bloc.patch
-          # Plugin git fetch inherits a dead cwd when the shell was launched
-          # from a since-removed dir; cd into mktemp first and stop eating
-          # stderr so failures are diagnosable.
-          # Upstream: https://github.com/noctalia-dev/noctalia-shell/pull/2343
-          ./patches/0002-PluginService-survive-dead-cwd-and-surface-git-error.patch
-        ];
-      });
-    })
-  ];
+  # Expose the patched build to sibling modules (janet.nix needs the IPC
+  # client on PATH) without going through a nixpkgs overlay.
+  _module.args.noctalia-shell = noctalia-shell;
 
   # programs.ssh.enableAskPassword defaults to services.xserver.enable, which
   # is false under niri → NixOS exports SSH_ASKPASS="" instead of leaving it
@@ -88,7 +95,7 @@
     startLimitIntervalSec = 30;
     startLimitBurst = 5;
     serviceConfig = {
-      ExecStart = "${pkgs.noctalia-shell}/bin/noctalia-shell";
+      ExecStart = "${noctalia-shell}/bin/noctalia-shell";
       Restart = "always";
       RestartSec = 1;
       Slice = "app-graphical.slice";
