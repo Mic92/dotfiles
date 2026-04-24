@@ -26,6 +26,7 @@
     self.inputs.retiolum.darwinModules.tinc
     self.inputs.retiolum.darwinModules.retiolum
     self.inputs.retiolum.darwinModules.ca
+    ../../darwinModules/retiolum.nix
     ../../nixosModules/tum-vpn
   ];
 
