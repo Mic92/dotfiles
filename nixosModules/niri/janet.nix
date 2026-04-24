@@ -3,7 +3,12 @@
 # ~/.config/noctalia/plugins/ by homeshick. The daemon + systemd unit
 # come from the same repo via flake input so nix builds don't need
 # ?submodules=1.
-{ pkgs, self, ... }:
+{
+  pkgs,
+  self,
+  noctalia-shell,
+  ...
+}:
 {
   imports = [
     self.inputs.noctalia-plugins.nixosModules.nostr-chat
@@ -20,9 +25,9 @@
     blossom = [ "https://nostr-files.thalheim.io" ];
     displayName = "Janet";
     secretCommand = "rbw get 'nostr identity'";
-    extraPath = with pkgs; [
+    extraPath = [
       noctalia-shell
-      rbw
+      pkgs.rbw
     ];
   };
 
