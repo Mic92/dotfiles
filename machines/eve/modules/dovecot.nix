@@ -34,7 +34,7 @@
     mailPlugins.globally.enable = [
       "virtual"
       "fts"
-      "fts_lucene"
+      "fts_flatcurve"
     ];
     extraConfig = ''
       # Let imap processes (and sieve pipe scripts) access opencrow's
@@ -126,8 +126,15 @@
         sieve_extensions = +vacation-seconds
         sieve_vacation_min_period = 1min
 
-        fts = lucene
-        fts_lucene = whitespace_chars=@.
+        fts = flatcurve
+        fts_autoindex = yes
+        fts_enforced = yes
+        # flatcurve uses lib-fts which on 2.3 hard-requires fts_languages
+        # and fts_tokenizers to be set (no built-in defaults yet).
+        fts_languages = en de
+        fts_tokenizers = generic email-address
+        fts_filters = normalizer-icu snowball
+        fts_filters_en = lowercase snowball english-possessive
       }
 
       # If you have Dovecot v2.2.8+ you may get a significant performance improvement with fetch-headers:
@@ -140,6 +147,9 @@
 
   environment.systemPackages = [
     pkgs.dovecot_pigeonhole
+    # Xapian-backed FTS plugin; replaces deprecated CLucene backend and
+    # is the upstream-endorsed indexer (built-in starting with 2.4).
+    pkgs.dovecot-fts-flatcurve
   ];
 
   users.users.vmail = {
