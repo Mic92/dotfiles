@@ -8,13 +8,9 @@
 let
   noctalia-qs = pkgs.noctalia-qs.overrideAttrs (old: {
     patches = (old.patches or [ ]) ++ [
+      # https://github.com/noctalia-dev/noctalia-qs/pull/35
       ./patches/qs-0001-niri-avoid-duplicate-workspace-rows-when-reordering.patch
-      # BluetoothAdapter.setEnabled(true) early-returns while rfkill-blocked,
-      # so after the Framework airplane key (rfkill block all) + wifi-only
-      # recovery the bluetooth toggle goes dead and systemd-rfkill persists
-      # the block across reboots. Lift the soft block via /dev/rfkill and
-      # defer the Powered write until bluez observes the unblock.
-      # Upstream: https://github.com/noctalia-dev/noctalia-qs/pull/37
+      # https://github.com/noctalia-dev/noctalia-qs/pull/37
       ./patches/qs-0002-bluetooth-lift-rfkill-soft-block.patch
     ];
   });
