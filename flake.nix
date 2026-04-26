@@ -61,6 +61,13 @@
     #spora.url = "github:krebs/spora";
     #spora.inputs.nixpkgs.follows = "nixpkgs";
 
+    # Track niri main: nixpkgs 25.11 vendors a smithay-drm-extras that
+    # leaks MST connectors removed during suspend (fixed in smithay #1971,
+    # pulled in by niri main). Drop once nixpkgs niri ships a smithay past
+    # commit 5816a1b4.
+    niri.url = "github:YaLTeR/niri";
+    niri.inputs.nixpkgs.follows = "nixpkgs";
+
     nixos-hardware.url = "github:NixOS/nixos-hardware";
 
     systems.url = "github:nix-systems/default";
