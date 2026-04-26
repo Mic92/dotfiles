@@ -25,7 +25,7 @@ Create Both
 Expunge Both
 # Save the synchronization state files in the relevant directory
 SyncState *
-Patterns *
+Patterns * !Virtual*
 
 IMAPAccount bills
 Host imap.thalheim.io
@@ -47,4 +47,4 @@ Near :bills-local:
 Create Both
 Expunge Both
 SyncState *
-Patterns *
+Patterns * !Virtual*
