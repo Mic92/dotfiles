@@ -204,7 +204,7 @@
           postRun = "systemctl --no-block restart dovecot2.service";
           group = "dovecot2";
           dnsProvider = "rfc2136";
-          credentialsFile = config.sops.secrets.lego-knot-credentials.path;
+          environmentFile = config.sops.secrets.lego-knot-credentials.path;
           inherit domain extraDomainNames;
         };
     in

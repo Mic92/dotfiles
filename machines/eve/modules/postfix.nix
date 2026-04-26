@@ -162,7 +162,7 @@ in
     postRun = "systemctl --no-block restart postfix.service";
     group = "postfix";
     dnsProvider = "rfc2136";
-    credentialsFile = config.sops.secrets.lego-knot-credentials.path;
+    environmentFile = config.sops.secrets.lego-knot-credentials.path;
   };
 
   networking.firewall.allowedTCPPorts = [
