@@ -74,14 +74,15 @@ in
     };
   };
 
-  services.dovecot2 = {
-    mailboxes.Spam = {
-      auto = "subscribe";
-      specialUse = "Junk";
-    };
-    extraConfig = ''
-      protocol imap {
-        mail_plugins = $mail_plugins imap_sieve
+  services.dovecot2.mailPlugins.perProtocol.imap.enable = [ "imap_sieve" ];
+
+  services.dovecot2.includeFiles = [
+    (pkgs.writeText "dovecot-rspamd.conf" ''
+      namespace inbox {
+        mailbox Spam {
+          auto = subscribe
+          special_use = \Junk
+        }
       }
 
       plugin {
@@ -117,8 +118,8 @@ in
         }
         sieve_global_extensions = +vnd.dovecot.pipe +vnd.dovecot.environment
       }
-    '';
-  };
+    '')
+  ];
 
   services.nginx = {
     virtualHosts."rspamd.thalheim.io" = {
@@ -140,6 +141,6 @@ in
       cp "$i" "$dest"
       ${pkgs.dovecot_pigeonhole}/bin/sievec "$dest"
     done
-    chown -R "${config.services.dovecot2.mailUser}:${config.services.dovecot2.mailGroup}" /var/lib/dovecot/sieve
+    chown -R "${config.services.dovecot2.settings.mail_uid}:${config.services.dovecot2.settings.mail_gid}" /var/lib/dovecot/sieve
   '';
 }
