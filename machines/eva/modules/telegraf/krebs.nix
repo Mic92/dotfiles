@@ -14,7 +14,6 @@
         [
           "hotdog"
           #"puyak"
-          "ni"
         ];
 
     x509_cert = [
@@ -84,14 +83,6 @@
         tags.org = "krebs";
         response_status_code = 200;
       }
-      {
-        urls = [ "http://cgit.ni.r" ];
-        response_string_match = "cgit";
-        tags.host = "ni";
-        tags.org = "krebs";
-        response_status_code = 200;
-      }
-
       {
         urls = [ "http://build.hotdog.r" ];
         response_string_match = "Buildbot";
