@@ -1,5 +1,13 @@
 { pkgs, config, ... }:
 {
+  environment.etc."dovecot/virtual/All/dovecot-virtual".text = ''
+    *
+    -Trash
+    -Trash.*
+    -Spam
+      all
+  '';
+
   sops.templates."dovecot-ldap.conf" = {
     content = ''
       hosts = 127.0.0.1
@@ -61,6 +69,23 @@
       ssl_cipher_list = EECDH+AESGCM:EDH+AESGCM
       ssl_prefer_server_ciphers = yes
       ssl_dh=<${config.security.dhparams.params.dovecot2.path}
+
+      # Expose a virtual "All" mailbox so IMAP clients can run a single
+      # SEARCH across every real folder (IMAP itself has no cross-mailbox
+      # search, so we aggregate via the virtual plugin instead).
+      namespace virtual {
+        # Must match the inbox namespace separator (Maildir++ default ".")
+        # or Dovecot refuses to start with visible namespaces.
+        prefix = Virtual.
+        separator = .
+        # Listed so webmail (SnappyMail) can discover it; sync clients
+        # like mbsync must exclude it via "Patterns * !Virtual*" to
+        # avoid re-downloading every message.
+        hidden = no
+        list = yes
+        subscriptions = no
+        location = virtual:/etc/dovecot/virtual:INDEX=/var/vmail/%d/%n/virtual
+      }
 
       service lmtp {
         user = vmail
