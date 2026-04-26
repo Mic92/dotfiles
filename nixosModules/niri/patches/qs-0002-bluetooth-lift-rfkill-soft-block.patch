@@ -1,0 +1,144 @@
+From 52f53299687082d2509cd895aa4cbc36a973d5f2 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Sun, 26 Apr 2026 11:51:42 +0200
+Subject: [PATCH] bluetooth: lift rfkill soft block when enabling a blocked
+ adapter
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+bluez rejects Powered=true while PowerState is off-blocked, so the
+toggle was dead until the user ran `rfkill unblock bluetooth` by hand.
+Write an RFKILL_OP_CHANGE_ALL/RFKILL_TYPE_BLUETOOTH event to /dev/rfkill
+(writable via logind uaccess; same approach as bluez-qt, g-s-d, blueman)
+and defer the Powered write until bluez observes the unblock, since an
+immediate write still races bluez's own rfkill reader.
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ src/bluetooth/adapter.cpp | 50 ++++++++++++++++++++++++++++++++++++++-
+ src/bluetooth/adapter.hpp |  6 +++++
+ 2 files changed, 55 insertions(+), 1 deletion(-)
+
+diff --git a/src/bluetooth/adapter.cpp b/src/bluetooth/adapter.cpp
+index 7f70a27..c41fc08 100644
+--- a/src/bluetooth/adapter.cpp
++++ b/src/bluetooth/adapter.cpp
+@@ -1,5 +1,7 @@
+ #include "adapter.hpp"
+ 
++#include <fcntl.h>
++#include <linux/rfkill.h>
+ #include <qcontainerfwd.h>
+ #include <qdbusconnection.h>
+ #include <qdbusextratypes.h>
+@@ -8,8 +10,11 @@
+ #include <qdebug.h>
+ #include <qlogging.h>
+ #include <qloggingcategory.h>
++#include <qscopeguard.h>
+ #include <qstring.h>
+ #include <qtypes.h>
++#include <sys/types.h>
++#include <unistd.h>
+ 
+ #include "../core/logcat.hpp"
+ #include "../dbus/properties.hpp"
+@@ -43,6 +48,8 @@ BluetoothAdapter::BluetoothAdapter(const QString& path, QObject* parent): QObjec
+ 	}
+ 
+ 	this->properties.setInterface(this->mInterface);
++
++	QObject::connect(this, &BluetoothAdapter::stateChanged, this, &BluetoothAdapter::onStateChanged);
+ }
+ 
+ QString BluetoothAdapter::adapterId() const {
+@@ -51,10 +58,22 @@ QString BluetoothAdapter::adapterId() const {
+ }
+ 
+ void BluetoothAdapter::setEnabled(bool enabled) {
++	this->mPendingEnable = false;
+ 	if (enabled == this->bEnabled) return;
+ 
+ 	if (enabled && this->bState == BluetoothAdapterState::Blocked) {
+-		qCCritical(logAdapter) << "Cannot enable adapter because it is blocked by rfkill.";
++		// logind grants the seat user rw on /dev/rfkill, so the soft block can be lifted here.
++		if (!tryRfkillUnblock()) {
++			qCCritical(logAdapter) << "Cannot enable adapter" << this
++			                       << "because it is blocked by rfkill.";
++			return;
++		}
++
++		// bluez learns about the unblock asynchronously via its own /dev/rfkill
++		// reader and rejects a Powered write that races it. Retry once PowerState
++		// leaves "off-blocked".
++		this->mPendingEnable = true;
++		qCDebug(logAdapter) << "Adapter" << this << "was rfkill-blocked; unblocked, waiting for bluez.";
+ 		return;
+ 	}
+ 
+@@ -62,6 +81,35 @@ void BluetoothAdapter::setEnabled(bool enabled) {
+ 	this->pEnabled.write();
+ }
+ 
++void BluetoothAdapter::onStateChanged() {
++	if (this->mPendingEnable && this->bState != BluetoothAdapterState::Blocked) {
++		this->setEnabled(true);
++	}
++}
++
++bool BluetoothAdapter::tryRfkillUnblock() {
++	auto fd = open("/dev/rfkill", O_WRONLY | O_CLOEXEC);
++	if (fd == -1) {
++		qCWarning(logAdapter).nospace()
++		    << "Failed to open /dev/rfkill for writing: " << qt_error_string();
++		return false;
++	}
++	auto fdGuard = qScopeGuard([&] { close(fd); });
++
++	struct rfkill_event ev {};
++	ev.type = RFKILL_TYPE_BLUETOOTH;
++	ev.op = RFKILL_OP_CHANGE_ALL;
++	ev.soft = 0;
++
++	if (write(fd, &ev, sizeof(ev)) < static_cast<ssize_t>(RFKILL_EVENT_SIZE_V1)) {
++		qCWarning(logAdapter).nospace()
++		    << "Failed to write rfkill unblock event: " << qt_error_string();
++		return false;
++	}
++
++	return true;
++}
++
+ void BluetoothAdapter::setDiscoverable(bool discoverable) {
+ 	if (discoverable == this->bDiscoverable) return;
+ 	this->bDiscoverable = discoverable;
+diff --git a/src/bluetooth/adapter.hpp b/src/bluetooth/adapter.hpp
+index d7f21d7..aac29eb 100644
+--- a/src/bluetooth/adapter.hpp
++++ b/src/bluetooth/adapter.hpp
+@@ -132,6 +132,9 @@ public:
+ 	void startDiscovery();
+ 	void stopDiscovery();
+ 
++private slots:
++	void onStateChanged();
++
+ signals:
+ 	void nameChanged();
+ 	void enabledChanged();
+@@ -143,8 +146,11 @@ signals:
+ 	void pairableTimeoutChanged();
+ 
+ private:
++	static bool tryRfkillUnblock();
++
+ 	DBusBluezAdapterInterface* mInterface = nullptr;
+ 	ObjectModel<BluetoothDevice> mDevices {this};
++	bool mPendingEnable = false;
+ 
+ 	// clang-format off
+ 	Q_OBJECT_BINDABLE_PROPERTY(BluetoothAdapter, QString, bName, &BluetoothAdapter::nameChanged);
+-- 
+2.53.0
+

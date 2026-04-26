@@ -9,18 +9,18 @@ let
   noctalia-qs = pkgs.noctalia-qs.overrideAttrs (old: {
     patches = (old.patches or [ ]) ++ [
       ./patches/qs-0001-niri-avoid-duplicate-workspace-rows-when-reordering.patch
+      # BluetoothAdapter.setEnabled(true) early-returns while rfkill-blocked,
+      # so after the Framework airplane key (rfkill block all) + wifi-only
+      # recovery the bluetooth toggle goes dead and systemd-rfkill persists
+      # the block across reboots. Lift the soft block via /dev/rfkill and
+      # defer the Powered write until bluez observes the unblock.
+      # Upstream: https://github.com/noctalia-dev/noctalia-qs/pull/37
+      ./patches/qs-0002-bluetooth-lift-rfkill-soft-block.patch
     ];
   });
 
   noctalia-shell = (pkgs.noctalia-shell.override { inherit noctalia-qs; }).overrideAttrs (old: {
     patches = (old.patches or [ ]) ++ [
-      # quickshell's BluetoothAdapter refuses to power on while
-      # rfkill-blocked, so after the Framework airplane key (rfkill block
-      # all) + wifi-only recovery the bluetooth toggle goes dead and
-      # systemd-rfkill persists the block across reboots. Lift the soft
-      # block from the toggle itself.
-      # Upstream: https://github.com/noctalia-dev/noctalia-shell/pull/2520
-      ./patches/0001-BluetoothService-unblock-rfkill-when-enabling-a-bloc.patch
       # Plugin git fetch inherits a dead cwd when the shell was launched
       # from a since-removed dir; cd into mktemp first and stop eating
       # stderr so failures are diagnosable.
