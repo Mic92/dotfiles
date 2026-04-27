@@ -39,6 +39,7 @@
     ./modules/dovecot.nix
     ./modules/et.nix
     ./modules/gitea
+    ./modules/gitea-mq.nix
     ./modules/goatcounter.nix
     ./modules/grafana.nix
     ./modules/harmonia.nix

@@ -429,6 +429,30 @@
         "type": "github"
       }
     },
+    "gitea-mq": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1777284559,
+        "narHash": "sha256-dtmUwV7hFvjmgoIDNhl9BX/JcSqor/0eFZ7crMDCNOg=",
+        "owner": "Mic92",
+        "repo": "gitea-mq",
+        "rev": "e4de09e94dd9d6eeae2a3fba6eab5d1e9919b4bc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "ref": "github-mq",
+        "repo": "gitea-mq",
+        "type": "github"
+      }
+    },
     "harmonia": {
       "inputs": {
         "crane": [
@@ -981,6 +1005,7 @@
         "flake-utils": "flake-utils",
         "forge-triage": "forge-triage",
         "freelancer-toolbox": "freelancer-toolbox",
+        "gitea-mq": "gitea-mq",
         "harmonia": "harmonia",
         "hercules-ci-effects": "hercules-ci-effects_2",
         "home-manager": "home-manager",
