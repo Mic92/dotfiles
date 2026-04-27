@@ -429,6 +429,30 @@
         "type": "github"
       }
     },
+    "gitea-mq": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1777284559,
+        "narHash": "sha256-dtmUwV7hFvjmgoIDNhl9BX/JcSqor/0eFZ7crMDCNOg=",
+        "owner": "Mic92",
+        "repo": "gitea-mq",
+        "rev": "e4de09e94dd9d6eeae2a3fba6eab5d1e9919b4bc",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "ref": "github-mq",
+        "repo": "gitea-mq",
+        "type": "github"
+      }
+    },
     "harmonia": {
       "inputs": {
         "crane": [
@@ -445,11 +469,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1776672209,
-        "narHash": "sha256-2j8S4gx86h+1JfgUNLcH1dRMLagYkjlwu2YPDnoDZCc=",
+        "lastModified": 1777237239,
+        "narHash": "sha256-/qj6eRLpEZRjN42pDobhPls70MfeQ8nj71ef1HBY9RE=",
         "owner": "nix-community",
         "repo": "harmonia",
-        "rev": "107056b6f084aa4d31225cc78a780881a7acbbab",
+        "rev": "0327e9d607d42ccafaad2f1b24fabec8ab99fd9f",
         "type": "github"
       },
       "original": {
@@ -683,10 +707,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1775588119,
-        "narHash": "sha256-YbP6898TE3h0f3e2V1I6iSIO15wS2HiJ10yAQf//kfU=",
+        "lastModified": 1777227350,
+        "narHash": "sha256-z9grR6BBUow3KGS/y+IW14uTc7i5WBYtwTuTbW0xZ7w=",
         "ref": "refs/heads/main",
-        "rev": "e49bfbd084ce1886b1121563b51361d0ce8a0eaa",
+        "rev": "4f036c7451414811afb1c7f0fcb470ff80dc6650",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
@@ -846,10 +870,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1775971296,
-        "narHash": "sha256-twoXzbmrUBALJplIF4ZZq9alAwkTPmCZ4ZI4EJgsOeM=",
+        "lastModified": 1777284412,
+        "narHash": "sha256-+FbxqUNi6edY8wnDQgcWWf5mFKQk01q8g7ZAUzhFYzE=",
         "ref": "main",
-        "rev": "3e0ec0fb88860f49ae3c3948650405b9e244ccc5",
+        "rev": "db0586faf1733f3764a26173e8ae1aaf4d3ff2c6",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -981,6 +1005,7 @@
         "flake-utils": "flake-utils",
         "forge-triage": "forge-triage",
         "freelancer-toolbox": "freelancer-toolbox",
+        "gitea-mq": "gitea-mq",
         "harmonia": "harmonia",
         "hercules-ci-effects": "hercules-ci-effects_2",
         "home-manager": "home-manager",

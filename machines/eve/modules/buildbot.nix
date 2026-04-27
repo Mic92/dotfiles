@@ -79,6 +79,7 @@ in
       "aarch64-darwin"
     ];
     branches.releaseBranches.matchGlob = "test-*";
+    branches.mergeQueue.matchGlob = "gitea-mq/*";
     evalWorkerCount = 6;
     github = {
       webhookSecretFile = config.sops.secrets.buildbot-github-webhook-secret.path;

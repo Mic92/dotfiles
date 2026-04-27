@@ -98,7 +98,7 @@
               "lekwati.com"
               "*.lekwati.com"
             ];
-            credentialsFile = config.sops.secrets.lego-knot-credentials.path;
+            environmentFile = config.sops.secrets.lego-knot-credentials.path;
           };
       in
       {

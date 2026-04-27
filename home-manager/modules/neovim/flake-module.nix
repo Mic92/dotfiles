@@ -45,7 +45,8 @@ let
     gomodifytags
     gotests
     gotestsum
-    gotools
+    # gopls also ships bin/modernize; let gopls win the collision
+    (lib.lowPrio gotools)
     govulncheck
     iferr
     impl

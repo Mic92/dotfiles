@@ -71,7 +71,6 @@
     #    defaultPort = "80";
     #  })
     firefox
-    bottles
     geary
     teams-for-linux
     zoom-us

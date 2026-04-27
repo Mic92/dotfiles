@@ -1,6 +1,7 @@
 import logging
 import os
 import subprocess
+import sys
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -67,6 +68,59 @@ class Pinentry:
             logger.warning("Failed to call zenity: %s", e)
         return None
 
+    def _show_osascript_password_dialog(
+        self,
+        title: str = "",
+        prompt: str = "",
+        desc: str = "",
+        error: str = "",
+    ) -> str | None:
+        text_parts: list[str] = []
+        if error:
+            text_parts.append(f"Error: {error}")
+        if desc:
+            text_parts.append(desc)
+        if prompt and prompt != title:
+            text_parts.append(prompt)
+        message = "\n\n".join(text_parts) or prompt or "Password:"
+
+        def q(s: str) -> str:
+            return s.replace("\\", "\\\\").replace('"', '\\"')
+
+        script = (
+            f'display dialog "{q(message)}" '
+            f'with title "{q(title or prompt or "rbw")}" '
+            'default answer "" with hidden answer '
+            'buttons {"Cancel", "OK"} default button "OK"'
+        )
+        try:
+            result = subprocess.run(
+                ["/usr/bin/osascript", "-e", script, "-e", "text returned of result"],
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+            if result.returncode == 0:
+                return result.stdout.rstrip("\n") or None
+        except OSError as e:
+            logger.warning("Failed to call osascript: %s", e)
+        return None
+
+    def _show_password_dialog(
+        self,
+        title: str = "",
+        prompt: str = "",
+        desc: str = "",
+        error: str = "",
+    ) -> str | None:
+        if sys.platform == "darwin":
+            return self._show_osascript_password_dialog(
+                title=title, prompt=prompt, desc=desc, error=error
+            )
+        return self._show_zenity_password_dialog(
+            title=title, prompt=prompt, desc=desc, error=error
+        )
+
     def _get_cached_password(self) -> str | None:
         """Get cached password from keyring."""
         try:
@@ -115,7 +169,7 @@ class Pinentry:
             )
 
         # Show prompt
-        secret_value = self._show_zenity_password_dialog(
+        secret_value = self._show_password_dialog(
             title=title, prompt=prompt, desc=desc, error=error
         )
 
