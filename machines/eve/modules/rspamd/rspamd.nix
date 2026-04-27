@@ -74,49 +74,62 @@ in
     };
   };
 
-  services.dovecot2.mailPlugins.perProtocol.imap.enable = [ "imap_sieve" ];
-
   services.dovecot2.includeFiles = [
     (pkgs.writeText "dovecot-rspamd.conf" ''
-      namespace inbox {
-        mailbox Spam {
-          auto = subscribe
-          special_use = \Junk
+      sieve_plugins {
+        sieve_imapsieve  = yes
+        sieve_extprograms = yes
+      }
+      sieve_global_extensions {
+        vnd.dovecot.pipe        = yes
+        vnd.dovecot.environment = yes
+      }
+      sieve_pipe_bin_dir = ${
+        pkgs.symlinkJoin {
+          name = "sieve-pipe-bin";
+          paths = [
+            "${sieve-spam-filter}/bin"
+            "${sieve-flagged-forward}/bin"
+          ];
         }
       }
 
-      plugin {
-        sieve_plugins = sieve_imapsieve sieve_extprograms
+      namespace inbox {
+        inbox = yes
+        separator = .
+        mailbox Spam {
+          auto = subscribe
+          special_use = \Junk
 
-        # From elsewhere to Spam folder
-        imapsieve_mailbox1_name = Spam
-        imapsieve_mailbox1_causes = COPY
-        imapsieve_mailbox1_before = file:/var/lib/dovecot/sieve/report-spam.sieve
-
-        # From Spam folder to elsewhere
-        imapsieve_mailbox2_name = *
-        imapsieve_mailbox2_from = Spam
-        imapsieve_mailbox2_causes = COPY
-        imapsieve_mailbox2_before = file:/var/lib/dovecot/sieve/report-ham.sieve
-
-        # Notify Janet (opencrow) when a message is flagged/starred
-        imapsieve_mailbox3_name = *
-        imapsieve_mailbox3_causes = FLAG
-        imapsieve_mailbox3_before = file:/var/lib/dovecot/sieve/report-flagged.sieve
-
-        # Move Spam emails to Spam folder
-        sieve_before = /var/lib/dovecot/sieve/move-to-spam.sieve
-
-        sieve_pipe_bin_dir = ${
-          pkgs.symlinkJoin {
-            name = "sieve-pipe-bin";
-            paths = [
-              "${sieve-spam-filter}/bin"
-              "${sieve-flagged-forward}/bin"
-            ];
+          # From elsewhere to Spam folder
+          sieve_script report-spam {
+            type  = before
+            cause = copy
+            path  = /var/lib/dovecot/sieve/report-spam.sieve
           }
         }
-        sieve_global_extensions = +vnd.dovecot.pipe +vnd.dovecot.environment
+      }
+
+      # From Spam folder to elsewhere
+      imapsieve_from Spam {
+        sieve_script report-ham {
+          type  = before
+          cause = copy
+          path  = /var/lib/dovecot/sieve/report-ham.sieve
+        }
+      }
+
+      # Notify Janet (opencrow) when a message is flagged/starred
+      sieve_script report-flagged {
+        type  = before
+        cause = flag
+        path  = /var/lib/dovecot/sieve/report-flagged.sieve
+      }
+
+      # Move Spam emails to Spam folder during LMTP delivery
+      sieve_script move-to-spam {
+        type = before
+        path = /var/lib/dovecot/sieve/move-to-spam.sieve
       }
     '')
   ];
@@ -139,7 +152,7 @@ in
              ${sieve-flagged-forward}/share/sieve-flagged-forward/*.sieve; do
       dest="/var/lib/dovecot/sieve/$(basename $i)"
       cp "$i" "$dest"
-      ${pkgs.dovecot_pigeonhole}/bin/sievec "$dest"
+      ${config.services.dovecot2.package.passthru.dovecot_pigeonhole}/bin/sievec "$dest"
     done
     chown -R "${config.services.dovecot2.settings.mail_uid}:${config.services.dovecot2.settings.mail_gid}" /var/lib/dovecot/sieve
   '';
