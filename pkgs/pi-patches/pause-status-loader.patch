@@ -11,23 +11,17 @@ Drop once a release contains the Loader.pause() fix.
 
 --- a/node_modules/@mariozechner/pi-tui/dist/components/loader.js
 +++ b/node_modules/@mariozechner/pi-tui/dist/components/loader.js
-@@ -9,6 +9,7 @@ export class Loader extends Text {
-     frames = ["⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏"];
+@@ -12,6 +12,7 @@
+     intervalMs = DEFAULT_INTERVAL_MS;
      currentFrame = 0;
      intervalId = null;
 +    paused = false;
      ui = null;
-     constructor(ui, spinnerColorFn, messageColorFn, message = "Loading...") {
-         super("", 1, 0);
-@@ -24,10 +25,24 @@ export class Loader extends Text {
-     start() {
-         this.updateDisplay();
-         this.intervalId = setInterval(() => {
-+            if (this.paused)
-+                return;
-             this.currentFrame = (this.currentFrame + 1) % this.frames.length;
-             this.updateDisplay();
-         }, 80);
+     renderIndicatorVerbatim = false;
+     constructor(ui, spinnerColorFn, messageColorFn, message = "Loading...", indicator) {
+@@ -35,6 +36,18 @@
+             this.intervalId = null;
+         }
      }
 +    pause() {
 +        this.paused = true;
@@ -41,9 +35,18 @@ Drop once a release contains the Loader.pause() fix.
 +            this.updateDisplay();
 +        }
 +    }
-     stop() {
-         if (this.intervalId) {
-             clearInterval(this.intervalId);
+     setMessage(message) {
+         this.message = message;
+         this.updateDisplay();
+@@ -52,6 +65,8 @@
+             return;
+         }
+         this.intervalId = setInterval(() => {
++            if (this.paused)
++                return;
+             this.currentFrame = (this.currentFrame + 1) % this.frames.length;
+             this.updateDisplay();
+         }, this.intervalMs);
 --- a/dist/modes/interactive/interactive-mode.js
 +++ b/dist/modes/interactive/interactive-mode.js
 @@ -1200,6 +1200,16 @@ export class InteractiveMode {
