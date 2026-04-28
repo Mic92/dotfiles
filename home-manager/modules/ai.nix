@@ -13,7 +13,7 @@ let
 in
 {
   imports = [
-    inputs.mics-skills.homeManagerModules.default
+    inputs.mics-skills.homeModules.default
     ./librewolf.nix
   ];
 
@@ -25,7 +25,6 @@ in
         msmtp = selfPkgs.msmtp-with-sent;
       };
     };
-    skillsSrc = inputs.mics-skills;
     skills = [
       "browser-cli"
       "buildbot-pr-check"
