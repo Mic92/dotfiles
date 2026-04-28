@@ -20,6 +20,7 @@
  */
 
 import {
+  createGrepTool,
   createReadTool,
   DEFAULT_MAX_BYTES,
   DEFAULT_MAX_LINES,
@@ -406,6 +407,14 @@ function applyEdits(content: string, raw: RawEdit[]): {
 
     if (op === "replace") {
       if (!e.pos) throw new Error(`[E_BAD_OP] replace requires "pos".`);
+      // Missing `lines` is a model confusion (often mixed with oldText/newText),
+      // not a delete request — only explicit null/[] deletes.
+      if (e.lines === undefined) {
+        throw new Error(
+          `[E_BAD_OP] replace requires "lines" (use [] to delete).` +
+            (e.oldText !== undefined ? ` Do not use oldText/newText with op:"replace".` : ""),
+        );
+      }
       const pos = parseAnchor(e.pos);
       const end = e.end ? parseAnchor(e.end) : pos;
       const origPos = pos.line, origEnd = end.line;
@@ -653,43 +662,102 @@ Example:
  {"op":"append","pos":"20th","lines":["// new"]}
 ]}
 
-ops: replace(pos,end?,lines) | append(pos?,lines) | prepend(pos?,lines) | replace_text(oldText,newText)
-- pos/end: anchor from read (e.g. "12ab"). Omit pos on append/prepend = EOF/BOF.
+ops: replace(pos,end?,lines) | append(pos?,lines) | prepend(pos?,lines)
+- pos/end: anchor from read or grep (e.g. "12ab"). Omit pos on append/prepend = EOF/BOF.
 - lines: raw content array. No "12ab|" prefixes. [] deletes.
-- replace_text: oldText must match exactly once.
+- Prefer grep over read to get anchors when you know what to search for.
 
-On error retry:
-[E_STALE_ANCHOR] copy the >>> anchors shown
-[E_EDIT_CONFLICT] merge the two edits into one
-[E_MULTI_MATCH] use op:"replace" with pos instead`;
+On error:
+[E_STALE_ANCHOR] copy the >>> anchors shown and retry
+[E_EDIT_CONFLICT] merge the two edits into one`;
 
+// `replace_text` is accepted for compatibility but deliberately omitted from
+// the description and op enum: small models reach for it first, hit
+// [E_MULTI_MATCH] on repeated lines, and burn a turn. Anchored ops are primary.
+const editItemSchema = Type.Object(
+  {
+    op: Type.String({ description: "replace | append | prepend" }),
+    pos: Type.Optional(Type.String({ description: 'anchor e.g. "12ab"' })),
+    end: Type.Optional(
+      Type.String({ description: "range end anchor (replace only)" }),
+    ),
+    lines: Type.Optional(
+      Type.Union([Type.Array(Type.String()), Type.String(), Type.Null()], {
+        description: "new content lines; [] deletes",
+      }),
+    ),
+    oldText: Type.Optional(Type.String()),
+    newText: Type.Optional(Type.String()),
+  },
+  // Permit unadvertised `replace_text` for strong-model back-compat without
+  // failing validation; applyEdits() enforces the real op set.
+  { additionalProperties: true },
+);
+
+// `edits` also accepts a JSON string: small models (Qwen 35B observed)
+// double-encode nested arrays. Validation lets it through; coerceEdits()
+// normalizes inside execute() so the engine always sees RawEdit[].
 const editSchema = Type.Object({
   path: Type.String({ description: "file path" }),
-  edits: Type.Array(
-    Type.Object(
-      {
-        op: Type.Union([
-          Type.Literal("replace"),
-          Type.Literal("append"),
-          Type.Literal("prepend"),
-          Type.Literal("replace_text"),
-        ]),
-        pos: Type.Optional(Type.String({ description: 'anchor e.g. "12ab"' })),
-        end: Type.Optional(
-          Type.String({ description: "range end anchor (replace only)" }),
-        ),
-        lines: Type.Optional(
-          Type.Union([Type.Array(Type.String()), Type.String(), Type.Null()], {
-            description: "new content lines; [] deletes",
-          }),
-        ),
-        oldText: Type.Optional(Type.String()),
-        newText: Type.Optional(Type.String()),
-      },
-      { additionalProperties: false },
-    ),
-  ),
+  edits: Type.Union([
+    Type.Array(Type.Union([editItemSchema, Type.String()])),
+    Type.String(),
+  ]),
 });
+
+/**
+ * Best-effort JSON parse for model-emitted argument strings.
+ * Observed Qwen-35B failure mode: trailing `]`/`}` dropped on nested arrays.
+ * Try once as-is, then once with missing closers appended.
+ */
+function tryParseJson(s: string): unknown {
+  try {
+    return JSON.parse(s);
+  } catch { /* fallthrough */ }
+  let open = 0, close = 0, str = false, esc = false;
+  for (const c of s) {
+    if (esc) { esc = false; continue; }
+    if (c === "\\") { esc = true; continue; }
+    if (c === '"') { str = !str; continue; }
+    if (str) continue;
+    if (c === "[" || c === "{") open++;
+    else if (c === "]" || c === "}") close++;
+  }
+  if (open > close) {
+    // Heuristic: append closers matching the first opener type seen.
+    const fix = s + (s.trimStart().startsWith("[") ? "]" : "}").repeat(open - close);
+    try {
+      return JSON.parse(fix);
+    } catch { /* fallthrough */ }
+  }
+  throw new Error(
+    `[E_BAD_OP] "edits" is not valid JSON (check brackets): ${s.slice(0, 200)}`,
+  );
+}
+
+function coerceEdits(input: unknown): RawEdit[] {
+  let v: unknown = input;
+  if (typeof v === "string") v = tryParseJson(v);
+  if (!Array.isArray(v)) {
+    throw new Error(`[E_BAD_OP] "edits" must be an array.`);
+  }
+  return v.map((e, i): RawEdit => {
+    let item: unknown = e;
+    if (typeof item === "string") item = tryParseJson(item);
+    if (!item || typeof item !== "object") {
+      throw new Error(`[E_BAD_OP] edits[${i}] must be an object.`);
+    }
+    const o = item as Record<string, unknown>;
+    let lines = o.lines;
+    if (typeof lines === "string" && /^\s*\[/.test(lines)) {
+      try {
+        const p = JSON.parse(lines);
+        if (Array.isArray(p)) lines = p;
+      } catch { /* keep raw string; normLines splits on \n */ }
+    }
+    return { ...o, lines } as RawEdit;
+  });
+}
 
 const ANCHOR_ECHO_MAX = 14;
 
@@ -700,6 +768,9 @@ export default function (pi: ExtensionAPI): void {
     label: "Read",
     description: READ_DESC,
     promptSnippet: "read: Read file with line anchors for edit.",
+    promptGuidelines: [
+      "When editing a known symbol/function/string, use grep to get its anchor instead of reading the whole file.",
+    ],
     parameters: Type.Object({
       path: Type.String({ description: "Path to the file to read" }),
       offset: Type.Optional(
@@ -782,43 +853,11 @@ export default function (pi: ExtensionAPI): void {
     promptSnippet:
       "edit: Change file lines by anchor (replace/append/prepend).",
     parameters: editSchema,
-    // Small models (Qwen 35B) frequently double-encode nested arrays as JSON
-    // strings. Unwrap before schema validation so the engine sees real objects.
-    prepareArguments(raw: unknown) {
-      const a = raw as { path?: unknown; edits?: unknown };
-      let edits = a?.edits;
-      if (typeof edits === "string") {
-        try {
-          edits = JSON.parse(edits);
-        } catch { /* let schema reject */ }
-      }
-      if (Array.isArray(edits)) {
-        edits = edits.map((e) => {
-          if (typeof e === "string") {
-            try {
-              return JSON.parse(e);
-            } catch {
-              return e;
-            }
-          }
-          if (
-            e && typeof e === "object" &&
-            typeof (e as RawEdit).lines === "string"
-          ) {
-            try {
-              const p = JSON.parse((e as RawEdit).lines as string);
-              if (Array.isArray(p)) return { ...e, lines: p };
-            } catch { /* keep as plain string; normLines splits it */ }
-          }
-          return e;
-        });
-      }
-      return { path: a?.path, edits } as never;
-    },
 
     async execute(_id, params, _signal, _onUpdate, ctx) {
-      const abs = resolveToCwd(params.path, ctx.cwd);
-      if (!params.edits?.length) {
+      const abs = resolveToCwd(params.path as string, ctx.cwd);
+      const edits = coerceEdits((params as { edits: unknown }).edits);
+      if (!edits.length) {
         return {
           content: [{ type: "text", text: "[E_BAD_OP] No edits provided." }],
           isError: true,
@@ -832,7 +871,7 @@ export default function (pi: ExtensionAPI): void {
         raw = (await fsReadFile(abs)).toString("utf8");
       } catch {
         // Allow file creation via append/prepend without pos.
-        const creatable = params.edits.every((e: RawEdit) =>
+        const creatable = edits.every((e) =>
           (e.op === "append" || e.op === "prepend") && !e.pos
         );
         if (!creatable) {
@@ -845,10 +884,7 @@ export default function (pi: ExtensionAPI): void {
       const eol = detectEOL(text);
       const orig = toLF(text);
 
-      const { content: result, warnings } = applyEdits(
-        orig,
-        params.edits as RawEdit[],
-      );
+      const { content: result, warnings } = applyEdits(orig, edits);
 
       if (orig === result) {
         throw new Error(
@@ -876,8 +912,7 @@ export default function (pi: ExtensionAPI): void {
           ).join("\n");
           echo = `\n\nNew anchors:\n${region}`;
         } else {
-          echo =
-            `\n\nChanged ${range.first}-${range.last}. Re-read for anchors.`;
+          echo = `\n\n(changed lines ${range.first}-${range.last})`;
         }
       }
 
@@ -891,6 +926,95 @@ export default function (pi: ExtensionAPI): void {
           text: `Updated ${params.path}${echo}${warn}`,
         }],
         details: { diff, firstChangedLine: range?.first } as EditToolDetails,
+      };
+    },
+  });
+
+  // ── grep ───────────────────────────────────────────────────────────────────
+  // Wrap builtin grep so matches carry edit anchors and can feed `edit` directly,
+  // skipping a full-file read on large files.
+  const GREP_MATCH_RE = /^(.*?):(\d+): (.*)$/;
+  const GREP_CTX_RE = /^(.*?)-(\d+)- (.*)$/;
+
+  pi.registerTool({
+    name: "grep",
+    label: "Grep",
+    description:
+      "Search files for a pattern. Each hit is shown as path>>ANCHOR|line. " +
+      "Copy ANCHOR straight into the edit tool's pos/end. Use context for surrounding lines.",
+    promptSnippet: "grep: Search files; results include edit anchors.",
+    parameters: Type.Object({
+      pattern: Type.String({ description: "regex or literal" }),
+      path: Type.Optional(Type.String({ description: "file or dir (default .)" })),
+      glob: Type.Optional(Type.String()),
+      ignoreCase: Type.Optional(Type.Boolean()),
+      literal: Type.Optional(Type.Boolean()),
+      context: Type.Optional(
+        Type.Number({ description: "lines before/after each match (default 2)" }),
+      ),
+      limit: Type.Optional(Type.Number()),
+    }),
+
+    async execute(toolCallId, params, signal, onUpdate, ctx) {
+      // Default context=2: a lone match line is rarely enough to anchor a
+      // range edit, and the model has no other way to see neighbours without
+      // a follow-up read.
+      const p = { ...params, context: params.context ?? 2 };
+      const base = createGrepTool(ctx.cwd);
+      const res = await base.execute(toolCallId, p, signal, onUpdate);
+      const block = res.content?.find(
+        (c): c is { type: "text"; text: string } =>
+          c.type === "text" && typeof (c as { text?: unknown }).text === "string",
+      );
+      if (!block?.text) return res;
+
+      const searchRoot = resolveToCwd(params.path || ".", ctx.cwd);
+      let rootIsDir = false;
+      try {
+        rootIsDir = (await fsStat(searchRoot)).isDirectory();
+      } catch { /* treat as file */ }
+
+      const cache = new Map<string, string[] | null>();
+      const linesOf = async (rel: string): Promise<string[] | null> => {
+        const abs = rootIsDir ? resolvePath(searchRoot, rel) : searchRoot;
+        const hit = cache.get(abs);
+        if (hit !== undefined) return hit;
+        try {
+          const raw = (await fsReadFile(abs)).toString("utf8");
+          const ls = toLF(stripBom(raw).text).split("\n");
+          cache.set(abs, ls);
+          return ls;
+        } catch {
+          cache.set(abs, null);
+          return null;
+        }
+      };
+
+      const out: string[] = [];
+      for (const line of block.text.split("\n")) {
+        const m = GREP_MATCH_RE.exec(line) ?? GREP_CTX_RE.exec(line);
+        if (!m) {
+          out.push(line);
+          continue;
+        }
+        const [, rel, ns, shown] = m;
+        const n = Number.parseInt(ns, 10);
+        if (!Number.isFinite(n) || n < 1) {
+          out.push(line);
+          continue;
+        }
+        // Hash the real file line: builtin grep may have truncated `shown`.
+        const fl = await linesOf(rel);
+        const src = fl?.[n - 1] ?? shown;
+        const mark = GREP_MATCH_RE.test(line) ? ">>" : "  ";
+        out.push(`${rel}${mark}${n}${computeLineHash(n, src)}|${shown}`);
+      }
+
+      return {
+        ...res,
+        content: res.content.map((c) =>
+          c === block ? { ...block, text: out.join("\n") } : c
+        ),
       };
     },
   });
