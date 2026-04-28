@@ -46,10 +46,13 @@ export default function (pi: ExtensionAPI) {
       role?: string;
     }>;
     for (let i = 0; i < msgs.length; i++) {
-      if (msgs[i].customType === "btw") {
-        drop.add(i);
-        if (msgs[i + 1]?.role === "assistant") drop.add(i + 1);
-      }
+      if (msgs[i].customType !== "btw") continue;
+      // Don't strip the current turn's question — only past Q&As. If the btw
+      // message is last, it's the one we're about to answer; removing it would
+      // leave the convo ending on an assistant message (API rejects that).
+      if (i === msgs.length - 1) continue;
+      drop.add(i);
+      if (msgs[i + 1]?.role === "assistant") drop.add(i + 1);
     }
     return { messages: event.messages.filter((_, i) => !drop.has(i)) };
   });
