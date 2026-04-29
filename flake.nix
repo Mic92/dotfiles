@@ -29,6 +29,10 @@
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
+    nixfmt-rs.url = "github:Mic92/nixfmt-rs";
+    nixfmt-rs.inputs.nixpkgs.follows = "nixpkgs";
+    nixfmt-rs.inputs.treefmt-nix.follows = "treefmt-nix";
+
     noctalia-plugins.url = "github:Mic92/noctalia-plugins/nostr";
     noctalia-plugins.inputs.nixpkgs.follows = "nixpkgs";
 
