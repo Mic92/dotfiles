@@ -1,4 +1,9 @@
-{ pkgs, lib, ... }:
+{
+  pkgs,
+  lib,
+  inputs',
+  ...
+}:
 let
   nvim-lsp-packages = with pkgs; [
     nodejs # copilot
@@ -24,7 +29,7 @@ let
     #marksman
     nil
     nixd
-    nixfmt
+    inputs'.nixfmt-rs.default
     deadnix
     statix
     prettierd

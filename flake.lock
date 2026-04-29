@@ -850,6 +850,29 @@
         "type": "github"
       }
     },
+    "nixfmt-rs": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1777501565,
+        "narHash": "sha256-Slg4Uz8WANTLTYtJBwH7w9aYv7CMU/d59FA6SVARFQM=",
+        "owner": "Mic92",
+        "repo": "nixfmt-rs",
+        "rev": "003e41df70548fee3d647e3367968e2c32b8a057",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "nixfmt-rs",
+        "type": "github"
+      }
+    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1776830795,
@@ -1017,6 +1040,7 @@
         "nix-diff-rs": "nix-diff-rs",
         "nix-index-database": "nix-index-database",
         "nix-tree-rs": "nix-tree-rs",
+        "nixfmt-rs": "nixfmt-rs",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "noctalia-plugins": "noctalia-plugins",

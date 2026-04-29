@@ -55,6 +55,7 @@ let
       "home/.config/noctalia/plugins/*/*.js"
     ];
     programs.nixfmt.enable = true;
+    programs.nixfmt.package = inputs'.nixfmt-rs.default;
     programs.shellcheck.enable = true;
 
     settings.formatter.shellcheck.options = [
