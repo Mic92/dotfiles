@@ -44,14 +44,20 @@ interface LoopState {
   loopCount?: number;
 }
 
-const PRESETS = [
-  { value: "tests", label: "Until tests pass", description: "" },
-  { value: "custom", label: "Until custom condition", description: "" },
-  { value: "self", label: "Self driven (agent decides)", description: "" },
-] as const;
+const PRESETS: SelectItem[] = [
+  { value: "tests", label: "Until tests pass" },
+  { value: "custom", label: "Until custom condition" },
+  { value: "self", label: "Self driven (agent decides)" },
+];
 
 const STATE_ENTRY = "until-state";
-const HAIKU_ID = "claude-haiku-4-5";
+
+// Cheap models tried in order for the widget summary; first one with working
+// auth wins. Local Qwen on morpheus is free, Haiku is the paid fallback.
+const SUMMARY_MODELS: Array<[provider: string, id: string]> = [
+  ["morpheus", "qwen-35-35b-coding"],
+  ["anthropic", "claude-haiku-4-5"],
+];
 
 const SUMMARY_SYSTEM_PROMPT =
   `You summarize loop breakout conditions for a status widget.
@@ -61,36 +67,8 @@ Use plain text only, no quotes, no punctuation, no prefix.
 Form should be "breaks when ...", "loops until ...", "stops on ...", "runs until ...", or similar.
 Use the best form that makes sense for the loop condition.`;
 
-function buildPrompt(mode: LoopMode, condition?: string): string {
-  switch (mode) {
-    case "tests":
-      return (
-        "Run all tests. If they are passing, call the signal_loop_success tool. " +
-        "Otherwise continue until the tests pass."
-      );
-    case "custom": {
-      const c = condition?.trim() || "the custom condition is satisfied";
-      return (
-        `Continue until the following condition is satisfied: ${c}. ` +
-        "When it is satisfied, call the signal_loop_success tool."
-      );
-    }
-    case "self":
-      return "Continue until you are done. When finished, call the signal_loop_success tool.";
-  }
-}
-
-function fallbackSummary(mode: LoopMode, condition?: string): string {
-  switch (mode) {
-    case "tests":
-      return "tests pass";
-    case "custom": {
-      const s = condition?.trim() || "custom condition";
-      return s.length > 48 ? `${s.slice(0, 45)}...` : s;
-    }
-    case "self":
-      return "done";
-  }
+function truncate(s: string, n: number): string {
+  return s.length > n ? `${s.slice(0, n - 3)}...` : s;
 }
 
 function conditionText(mode: LoopMode, condition?: string): string {
@@ -104,18 +82,44 @@ function conditionText(mode: LoopMode, condition?: string): string {
   }
 }
 
+function buildPrompt(mode: LoopMode, condition?: string): string {
+  switch (mode) {
+    case "tests":
+      return (
+        "Run all tests. If they are passing, call the signal_loop_success tool. " +
+        "Otherwise continue until the tests pass."
+      );
+    case "custom":
+      return (
+        `Continue until the following condition is satisfied: ${
+          conditionText(mode, condition)
+        }. ` +
+        "When it is satisfied, call the signal_loop_success tool."
+      );
+    case "self":
+      return "Continue until you are done. When finished, call the signal_loop_success tool.";
+  }
+}
+
+function makeState(mode: LoopMode, condition?: string): LoopState {
+  return {
+    active: true,
+    mode,
+    condition,
+    prompt: buildPrompt(mode, condition),
+  };
+}
+
 async function pickSummaryModel(
   ctx: ExtensionContext,
 ): Promise<{ model: Model<Api>; apiKey: string } | null> {
-  if (!ctx.model) return null;
-  // Prefer cheap Haiku when the main provider is Anthropic.
-  if (ctx.model.provider === "anthropic") {
-    const haiku = ctx.modelRegistry.find("anthropic", HAIKU_ID);
-    if (haiku) {
-      const auth = await ctx.modelRegistry.getApiKeyAndHeaders(haiku);
-      if (auth.ok && auth.apiKey) return { model: haiku, apiKey: auth.apiKey };
-    }
+  for (const [provider, id] of SUMMARY_MODELS) {
+    const m = ctx.modelRegistry.find(provider, id);
+    if (!m) continue;
+    const auth = await ctx.modelRegistry.getApiKeyAndHeaders(m);
+    if (auth.ok && auth.apiKey) return { model: m, apiKey: auth.apiKey };
   }
+  if (!ctx.model) return null;
   const auth = await ctx.modelRegistry.getApiKeyAndHeaders(ctx.model);
   return auth.ok && auth.apiKey
     ? { model: ctx.model, apiKey: auth.apiKey }
@@ -127,7 +131,7 @@ async function summarize(
   mode: LoopMode,
   condition?: string,
 ): Promise<string> {
-  const fallback = fallbackSummary(mode, condition);
+  const fallback = truncate(conditionText(mode, condition), 48);
   const sel = await pickSummaryModel(ctx);
   if (!sel) return fallback;
 
@@ -149,8 +153,7 @@ async function summarize(
     .join(" ")
     .replace(/\s+/g, " ")
     .trim();
-  if (!s) return fallback;
-  return s.length > 60 ? `${s.slice(0, 57)}...` : s;
+  return s ? truncate(s, 60) : fallback;
 }
 
 function updateWidget(ctx: ExtensionContext, state: LoopState): void {
@@ -166,7 +169,7 @@ function updateWidget(ctx: ExtensionContext, state: LoopState): void {
   ctx.ui.setWidget("until", [ctx.ui.theme.fg("accent", txt)]);
 }
 
-async function loadState(ctx: ExtensionContext): Promise<LoopState> {
+function loadState(ctx: ExtensionContext): LoopState {
   const entries = ctx.sessionManager.getEntries();
   for (let i = entries.length - 1; i >= 0; i--) {
     const e = entries[i] as {
@@ -184,55 +187,47 @@ async function loadState(ctx: ExtensionContext): Promise<LoopState> {
 export default function (pi: ExtensionAPI): void {
   let state: LoopState = { active: false };
 
-  const persist = (s: LoopState) => pi.appendEntry(STATE_ENTRY, s);
-
   function set(s: LoopState, ctx: ExtensionContext) {
     state = s;
-    persist(s);
+    pi.appendEntry(STATE_ENTRY, s);
     updateWidget(ctx, s);
   }
 
-  function clear(ctx: ExtensionContext) {
-    set({ active: false }, ctx);
-  }
-
-  function lastAssistantAborted(
-    messages: Array<{ role?: string; stopReason?: string }>,
-  ): boolean {
-    for (let i = messages.length - 1; i >= 0; i--) {
-      if (messages[i]?.role === "assistant") {
-        return messages[i].stopReason === "aborted";
-      }
-    }
-    return false;
-  }
+  const clear = (ctx: ExtensionContext) => set({ active: false }, ctx);
 
   function fire(ctx: ExtensionContext) {
     if (!state.active || !state.prompt) return;
     if (ctx.hasPendingMessages()) return;
-    state = { ...state, loopCount: (state.loopCount ?? 0) + 1 };
-    persist(state);
-    updateWidget(ctx, state);
+    set({ ...state, loopCount: (state.loopCount ?? 0) + 1 }, ctx);
     pi.sendMessage(
       { customType: "until", content: state.prompt, display: true },
       { deliverAs: "followUp", triggerTurn: true },
     );
   }
 
-  async function picker(ctx: ExtensionContext): Promise<LoopState | null> {
-    const items: SelectItem[] = PRESETS.map((p) => ({
-      value: p.value,
-      label: p.label,
-      description: p.description,
-    }));
+  // Fetch a short widget label out-of-band; ignore the result if the loop
+  // it was requested for has been replaced or stopped meanwhile.
+  function refreshSummary(
+    ctx: ExtensionContext,
+    mode: LoopMode,
+    condition?: string,
+  ) {
+    void summarize(ctx, mode, condition).then((s) => {
+      if (
+        !state.active || state.mode !== mode || state.condition !== condition
+      ) return;
+      set({ ...state, summary: s }, ctx);
+    });
+  }
 
+  async function picker(ctx: ExtensionContext): Promise<LoopState | null> {
     const sel = await ctx.ui.custom<string | null>((tui, theme, _kb, done) => {
       const c = new Container();
       c.addChild(new DynamicBorder((s) => theme.fg("accent", s)));
       c.addChild(
         new Text(theme.fg("accent", theme.bold("Select loop preset"))),
       );
-      const list = new SelectList(items, Math.min(items.length, 10), {
+      const list = new SelectList(PRESETS, PRESETS.length, {
         selectedPrefix: (t) => theme.fg("accent", t),
         selectedText: (t) => theme.fg("accent", t),
         description: (t) => theme.fg("muted", t),
@@ -255,43 +250,25 @@ export default function (pi: ExtensionAPI): void {
     });
 
     if (!sel) return null;
-    if (sel === "tests") {
-      return { active: true, mode: "tests", prompt: buildPrompt("tests") };
-    }
-    if (sel === "self") {
-      return { active: true, mode: "self", prompt: buildPrompt("self") };
-    }
-    const cond = await ctx.ui.editor("Enter loop breakout condition:", "");
-    if (!cond?.trim()) return null;
-    return {
-      active: true,
-      mode: "custom",
-      condition: cond.trim(),
-      prompt: buildPrompt("custom", cond.trim()),
-    };
+    if (sel !== "custom") return makeState(sel as LoopMode);
+    const cond = (await ctx.ui.editor("Enter loop breakout condition:", ""))
+      ?.trim();
+    return cond ? makeState("custom", cond) : null;
   }
 
   function parse(args: string | undefined): LoopState | null {
-    if (!args?.trim()) return null;
-    const parts = args.trim().split(/\s+/);
-    const mode = parts[0]?.toLowerCase();
-    if (mode === "tests") {
-      return { active: true, mode: "tests", prompt: buildPrompt("tests") };
+    const [mode, ...rest] = (args ?? "").trim().split(/\s+/);
+    switch (mode?.toLowerCase()) {
+      case "tests":
+      case "self":
+        return makeState(mode as LoopMode);
+      case "custom": {
+        const c = rest.join(" ").trim();
+        return c ? makeState("custom", c) : null;
+      }
+      default:
+        return null;
     }
-    if (mode === "self") {
-      return { active: true, mode: "self", prompt: buildPrompt("self") };
-    }
-    if (mode === "custom") {
-      const c = parts.slice(1).join(" ").trim();
-      if (!c) return null;
-      return {
-        active: true,
-        mode: "custom",
-        condition: c,
-        prompt: buildPrompt("custom", c),
-      };
-    }
-    return null;
   }
 
   pi.registerTool({
@@ -302,17 +279,9 @@ export default function (pi: ExtensionAPI): void {
       "Only call this tool when explicitly instructed to do so.",
     parameters: Type.Object({}),
     async execute(_id, _p, _sig, _upd, ctx) {
-      if (!state.active) {
-        return {
-          content: [{ type: "text", text: "No active loop is running." }],
-          details: { active: false },
-        };
-      }
-      clear(ctx);
-      return {
-        content: [{ type: "text", text: "Loop ended." }],
-        details: { active: false },
-      };
+      const text = state.active ? "Loop ended." : "No active loop is running.";
+      if (state.active) clear(ctx);
+      return { content: [{ type: "text", text }] };
     },
   });
 
@@ -349,26 +318,16 @@ export default function (pi: ExtensionAPI): void {
       set({ ...next, summary: undefined, loopCount: 0 }, ctx);
       ctx.ui.notify("Loop active", "info");
       fire(ctx);
-
-      // Async: get a short summary for the status widget.
-      const { mode, condition } = next;
-      void (async () => {
-        const s = await summarize(ctx, mode!, condition);
-        if (
-          !state.active || state.mode !== mode || state.condition !== condition
-        ) {
-          return;
-        }
-        state = { ...state, summary: s };
-        persist(state);
-        updateWidget(ctx, state);
-      })();
+      refreshSummary(ctx, next.mode!, next.condition);
     },
   });
 
   pi.on("agent_end", async (ev, ctx) => {
     if (!state.active) return;
-    if (ctx.hasUI && lastAssistantAborted(ev.messages)) {
+    const aborted = ev.messages.findLast((m) =>
+      m.role === "assistant"
+    )?.stopReason === "aborted";
+    if (ctx.hasUI && aborted) {
       const brk = await ctx.ui.confirm(
         "Break loop?",
         "Operation aborted. Break out of the loop?",
@@ -379,10 +338,8 @@ export default function (pi: ExtensionAPI): void {
         return;
       }
     }
-    // Since pi-mono 9022a5b5, isStreaming stays true until every agent_end
-    // listener has settled, so sendMessage here would queue into the
-    // already-drained followUp queue instead of starting a new turn.
-    // Defer past finishRun() so triggerTurn actually re-prompts.
+    // isStreaming stays true while agent_end listeners run; defer past
+    // finishRun() so triggerTurn takes the prompt() path and re-prompts.
     setTimeout(() => fire(ctx), 0);
   });
 
@@ -396,20 +353,20 @@ export default function (pi: ExtensionAPI): void {
       ev.customInstructions,
       `Loop active. Breakout condition: ${
         conditionText(state.mode, state.condition)
-      }. Preserve this loop state and breakout condition in the summary.`,
-    ]
-      .filter(Boolean)
-      .join("\n\n");
+      }. ` +
+      "Preserve this loop state and breakout condition in the summary.",
+    ].filter(Boolean).join("\n\n");
     try {
-      const compaction = await compact(
-        ev.preparation,
-        ctx.model,
-        auth.apiKey,
-        auth.headers,
-        instr,
-        ev.signal,
-      );
-      return { compaction };
+      return {
+        compaction: await compact(
+          ev.preparation,
+          ctx.model,
+          auth.apiKey,
+          auth.headers,
+          instr,
+          ev.signal,
+        ),
+      };
     } catch (e) {
       if (ctx.hasUI) {
         ctx.ui.notify(
@@ -420,24 +377,11 @@ export default function (pi: ExtensionAPI): void {
     }
   });
 
-  async function restore(ctx: ExtensionContext) {
-    state = await loadState(ctx);
+  pi.on("session_start", (_ev, ctx) => {
+    state = loadState(ctx);
     updateWidget(ctx, state);
     if (state.active && state.mode && !state.summary) {
-      const { mode, condition } = state;
-      void (async () => {
-        const s = await summarize(ctx, mode, condition);
-        if (
-          !state.active || state.mode !== mode || state.condition !== condition
-        ) {
-          return;
-        }
-        state = { ...state, summary: s };
-        persist(state);
-        updateWidget(ctx, state);
-      })();
+      refreshSummary(ctx, state.mode, state.condition);
     }
-  }
-
-  pi.on("session_start", async (_ev, ctx) => restore(ctx));
+  });
 }
