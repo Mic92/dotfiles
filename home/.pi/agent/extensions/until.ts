@@ -23,7 +23,6 @@ import {
 import type {
   ExtensionAPI,
   ExtensionContext,
-  SessionSwitchEvent,
 } from "@mariozechner/pi-coding-agent";
 import { compact, DynamicBorder } from "@mariozechner/pi-coding-agent";
 import {
@@ -32,7 +31,7 @@ import {
   SelectList,
   Text,
 } from "@mariozechner/pi-tui";
-import { Type } from "@sinclair/typebox";
+import { Type } from "typebox";
 
 type LoopMode = "tests" | "custom" | "self";
 
@@ -437,5 +436,4 @@ export default function (pi: ExtensionAPI): void {
   }
 
   pi.on("session_start", async (_ev, ctx) => restore(ctx));
-  pi.on("session_switch", async (_ev: SessionSwitchEvent, ctx) => restore(ctx));
 }
