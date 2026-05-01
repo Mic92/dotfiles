@@ -14,6 +14,7 @@
  * Based on mariozechner's examples/extensions/handoff.ts,
  * via aldoborrero/agent-kit.
  */
+import type { AgentMessage } from "@mariozechner/pi-agent-core";
 import { complete, type Message } from "@mariozechner/pi-ai";
 import type { ExtensionAPI, SessionEntry } from "@mariozechner/pi-coding-agent";
 import {
@@ -45,6 +46,49 @@ Files involved:
 ## Task
 [Clear description of what to do next based on user's goal]`;
 
+function entryToMessage(entry: SessionEntry): AgentMessage | undefined {
+  if (entry.type === "message") {
+    return entry.message;
+  }
+  if (entry.type === "compaction") {
+    return {
+      role: "compactionSummary",
+      summary: entry.summary,
+      tokensBefore: entry.tokensBefore,
+      timestamp: new Date(entry.timestamp).getTime(),
+    };
+  }
+  return undefined;
+}
+
+// If the branch was compacted, include the compaction summary plus the
+// kept tail so the handoff model sees the same context the agent would.
+function getHandoffMessages(branch: SessionEntry[]): AgentMessage[] {
+  let compactionIndex = -1;
+  for (let i = branch.length - 1; i >= 0; i--) {
+    if (branch[i].type === "compaction") {
+      compactionIndex = i;
+      break;
+    }
+  }
+  if (compactionIndex < 0) {
+    return branch.map(entryToMessage).filter((m) => m !== undefined);
+  }
+
+  const compaction = branch[compactionIndex];
+  const firstKeptIndex = compaction.type === "compaction"
+    ? branch.findIndex((e) => e.id === compaction.firstKeptEntryId)
+    : -1;
+  const compactedBranch = [
+    compaction,
+    ...(firstKeptIndex >= 0
+      ? branch.slice(firstKeptIndex, compactionIndex)
+      : []),
+    ...branch.slice(compactionIndex + 1),
+  ];
+  return compactedBranch.map(entryToMessage).filter((m) => m !== undefined);
+}
+
 export default function (pi: ExtensionAPI) {
   pi.registerCommand("handoff", {
     description: "Transfer context to a new focused session",
@@ -64,12 +108,7 @@ export default function (pi: ExtensionAPI) {
         return;
       }
 
-      const branch = ctx.sessionManager.getBranch();
-      const messages = branch
-        .filter(
-          (e): e is SessionEntry & { type: "message" } => e.type === "message",
-        )
-        .map((e) => e.message);
+      const messages = getHandoffMessages(ctx.sessionManager.getBranch());
 
       if (messages.length === 0) {
         ctx.ui.notify("No conversation to hand off", "error");
@@ -95,7 +134,9 @@ export default function (pi: ExtensionAPI) {
               ctx.model!,
             );
             if (!auth.ok || !auth.apiKey) {
-              throw new Error("No API key available for model");
+              throw new Error(
+                auth.ok ? `No API key for ${ctx.model!.provider}` : auth.error,
+              );
             }
             const userMessage: Message = {
               role: "user",
@@ -152,16 +193,18 @@ export default function (pi: ExtensionAPI) {
         return;
       }
 
+      // After a successful session replacement the original ctx is stale;
+      // use the replacement ctx for post-switch UI work.
       const newSession = await ctx.newSession({
         parentSession: currentSessionFile,
+        withSession: async (replacementCtx) => {
+          replacementCtx.ui.setEditorText(edited);
+          replacementCtx.ui.notify("Handoff ready. Submit when ready.", "info");
+        },
       });
       if (newSession.cancelled) {
         ctx.ui.notify("New session cancelled", "info");
-        return;
       }
-
-      ctx.ui.setEditorText(edited);
-      ctx.ui.notify("Handoff ready. Submit when ready.", "info");
     },
   });
 }

@@ -55,7 +55,11 @@ let
       "home/.config/noctalia/plugins/*/*.js"
     ];
     programs.nixfmt.enable = true;
-    programs.nixfmt.package = inputs'.nixfmt-rs.default;
+    # Upstream package lacks meta.mainProgram, so treefmt's lib.getExe would
+    # guess the pname ("nixfmt-rs") instead of the actual binary ("nixfmt").
+    programs.nixfmt.package = inputs'.nixfmt-rs.default.overrideAttrs {
+      meta.mainProgram = "nixfmt";
+    };
     programs.shellcheck.enable = true;
 
     settings.formatter.shellcheck.options = [
