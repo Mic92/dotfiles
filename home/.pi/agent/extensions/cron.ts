@@ -210,9 +210,12 @@ export default function (pi: ExtensionAPI) {
     busy = true;
   });
   pi.on("agent_end", async (_ev, ctx) => {
+    // Do not fireDue() here: isStreaming stays true until every agent_end
+    // listener has settled, so sendMessage would land in the steer queue
+    // with nextFireAt already advanced. The 1s timer picks it up right
+    // after finishRun() instead.
     busy = false;
     ctxRef = ctx;
-    fireDue();
   });
   pi.on("session_start", async (_ev, ctx) => {
     ctxRef = ctx;
@@ -232,11 +235,16 @@ export default function (pi: ExtensionAPI) {
         // Second word after delete/rm/stop → offer live task IDs.
         return Array.from(tasks.values())
           .filter((t) => t.id.startsWith(del[2]))
-          .map((t) => ({
-            value: `${del[1]} ${t.id}`,
-            label: t.id,
-            description: `${t.humanLabel} — ${t.prompt}`,
-          }));
+          .map((t) => {
+            const p = t.prompt.replace(/\s+/g, " ");
+            return {
+              value: `${del[1]} ${t.id}`,
+              label: t.id,
+              description: `${t.humanLabel} — ${
+                p.length > 60 ? p.slice(0, 57) + "…" : p
+              }`,
+            };
+          });
       }
       if (/\s/.test(prefix)) return null; // past first word, free text
       return [
