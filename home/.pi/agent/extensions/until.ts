@@ -379,7 +379,11 @@ export default function (pi: ExtensionAPI): void {
         return;
       }
     }
-    fire(ctx);
+    // Since pi-mono 9022a5b5, isStreaming stays true until every agent_end
+    // listener has settled, so sendMessage here would queue into the
+    // already-drained followUp queue instead of starting a new turn.
+    // Defer past finishRun() so triggerTurn actually re-prompts.
+    setTimeout(() => fire(ctx), 0);
   });
 
   // Preserve loop state across compaction so the agent doesn't forget
