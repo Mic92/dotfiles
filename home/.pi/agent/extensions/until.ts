@@ -7,10 +7,11 @@
  * survives context squashing.
  *
  * Usage:
- *   /until               → interactive picker (tests / custom / self)
+ *   /until               → interactive picker
  *   /until tests         → re-run tests until green
- *   /until custom <cond> → until user-defined condition
  *   /until self          → agent decides when done
+ *   /until <condition>   → until user-defined condition
+ *   /until stop          → stop the active loop
  *
  * Ported from aldoborrero/agent-kit (extensions/until).
  */
@@ -45,9 +46,22 @@ interface LoopState {
 }
 
 const PRESETS: SelectItem[] = [
-  { value: "tests", label: "Until tests pass" },
-  { value: "custom", label: "Until custom condition" },
-  { value: "self", label: "Self driven (agent decides)" },
+  {
+    value: "tests",
+    label: "Until tests pass",
+    description: "Re-run the test suite each turn; stops when green",
+  },
+  {
+    value: "custom",
+    label: "Until custom condition…",
+    description: "You describe the goal; agent checks it each turn",
+  },
+  {
+    value: "self",
+    label: "Agent decides when done",
+    description:
+      "Open-ended task; agent stops when it considers itself finished",
+  },
 ];
 
 const STATE_ENTRY = "until-state";
@@ -220,14 +234,36 @@ export default function (pi: ExtensionAPI): void {
     });
   }
 
-  async function picker(ctx: ExtensionContext): Promise<LoopState | null> {
+  async function picker(
+    ctx: ExtensionContext,
+  ): Promise<LoopState | null | "stop"> {
+    const items: SelectItem[] = state.active
+      ? [{
+        value: "stop",
+        label: "Stop active loop",
+        description: state.summary ??
+          conditionText(state.mode!, state.condition),
+      }, ...PRESETS]
+      : PRESETS;
+
     const sel = await ctx.ui.custom<string | null>((tui, theme, _kb, done) => {
       const c = new Container();
       c.addChild(new DynamicBorder((s) => theme.fg("accent", s)));
-      c.addChild(
-        new Text(theme.fg("accent", theme.bold("Select loop preset"))),
-      );
-      const list = new SelectList(PRESETS, PRESETS.length, {
+      c.addChild(new Text(theme.fg("accent", theme.bold("/until"))));
+      if (state.active) {
+        c.addChild(
+          new Text(
+            theme.fg(
+              "warning",
+              `Loop active (turn ${state.loopCount ?? 0}): ${
+                state.summary ?? state.mode
+              }`,
+            ),
+          ),
+        );
+      }
+      c.addChild(new Text(""));
+      const list = new SelectList(items, items.length, {
         selectedPrefix: (t) => theme.fg("accent", t),
         selectedText: (t) => theme.fg("accent", t),
         description: (t) => theme.fg("muted", t),
@@ -250,24 +286,32 @@ export default function (pi: ExtensionAPI): void {
     });
 
     if (!sel) return null;
+    if (sel === "stop") return "stop";
     if (sel !== "custom") return makeState(sel as LoopMode);
-    const cond = (await ctx.ui.editor("Enter loop breakout condition:", ""))
-      ?.trim();
+    const cond = (await ctx.ui.editor(
+      'When should the loop stop? (e.g. "the build is green")',
+      "",
+    ))?.trim();
     return cond ? makeState("custom", cond) : null;
   }
 
-  function parse(args: string | undefined): LoopState | null {
-    const [mode, ...rest] = (args ?? "").trim().split(/\s+/);
-    switch (mode?.toLowerCase()) {
+  function parse(args: string | undefined): LoopState | null | "stop" {
+    const trimmed = (args ?? "").trim();
+    if (!trimmed) return null;
+    const [head, ...rest] = trimmed.split(/\s+/);
+    switch (head.toLowerCase()) {
       case "tests":
       case "self":
-        return makeState(mode as LoopMode);
-      case "custom": {
-        const c = rest.join(" ").trim();
-        return c ? makeState("custom", c) : null;
-      }
+        return makeState(head.toLowerCase() as LoopMode);
+      case "stop":
+      case "off":
+        return "stop";
+      case "custom":
+        // Back-compat: explicit `custom` keyword still accepted.
+        return rest.length ? makeState("custom", rest.join(" ")) : null;
       default:
-        return null;
+        // Any other free text is the breakout condition itself.
+        return makeState("custom", trimmed);
     }
   }
 
@@ -286,14 +330,32 @@ export default function (pi: ExtensionAPI): void {
   });
 
   pi.registerCommand("until", {
-    description:
-      "Repeat until a condition is met (/until tests | custom <cond> | self)",
+    description: "Loop the agent until a condition is met",
+    getArgumentCompletions: (prefix) =>
+      [
+        {
+          value: "tests",
+          label: "tests",
+          description: "loop until the test suite passes",
+        },
+        {
+          value: "self",
+          label: "self",
+          description: "agent decides when it is done",
+        },
+        { value: "stop", label: "stop", description: "stop the active loop" },
+        {
+          value: "",
+          label: "<condition>",
+          description: "free text: stop when this is true",
+        },
+      ].filter((o) => !prefix || o.value.startsWith(prefix)),
     handler: async (args, ctx) => {
       let next = parse(args);
       if (!next) {
         if (!ctx.hasUI) {
           ctx.ui.notify(
-            "Usage: /until tests | /until custom <condition> | /until self",
+            "Usage: /until tests | /until self | /until stop | /until <condition>",
             "warning",
           );
           return;
@@ -302,6 +364,15 @@ export default function (pi: ExtensionAPI): void {
       }
       if (!next) {
         ctx.ui.notify("Cancelled", "info");
+        return;
+      }
+      if (next === "stop") {
+        if (state.active) {
+          clear(ctx);
+          ctx.ui.notify("Loop ended", "info");
+        } else {
+          ctx.ui.notify("No active loop", "info");
+        }
         return;
       }
 
