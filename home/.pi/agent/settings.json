@@ -12,5 +12,12 @@
     "enabled": true
   },
   "steeringMode": "one-at-a-time",
-  "doubleEscapeAction": "tree"
+  "doubleEscapeAction": "tree",
+  "enableInstallTelemetry": false,
+  "terminal": {
+    "showTerminalProgress": true
+  },
+  "warnings": {
+    "anthropicExtraUsage": false
+  }
 }
