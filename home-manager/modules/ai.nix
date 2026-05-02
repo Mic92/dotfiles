@@ -10,6 +10,8 @@ let
   selfPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
   micsSkillsPkgs = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
   piAgentDeps = pkgs.callPackage ../../home/.pi/agent/default.nix { };
+  nostorePreload = selfPkgs.nostore-preload;
+  nostoreLib = "${nostorePreload}/lib/libnostore${pkgs.stdenv.hostPlatform.extensions.sharedLibrary}";
 in
 {
   imports = [
@@ -74,6 +76,9 @@ in
     selfPkgs.claude-md
     selfPkgs.pim
     (pkgs.writeShellScriptBin "pi" ''
+      # Block readdir(/nix/store) for the agent and its children; exported
+      # before pueued so queued tasks inherit it too.
+      export ${nostorePreload.passthru.envVar}="${nostoreLib}''${${nostorePreload.passthru.envVar}:+:$${nostorePreload.passthru.envVar}}"
       ${pkgs.pueue}/bin/pueued -d >/dev/null 2>&1 || true
       # Extensions are symlinked from dotfiles, so node walk-up misses
       # their npm deps. NODE_PATH points jiti at the prebuilt node_modules.

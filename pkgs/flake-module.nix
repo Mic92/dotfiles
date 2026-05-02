@@ -44,6 +44,7 @@ in
     # Package updater CLI
     kimai-cli = pkgs.callPackage ./kimai-cli { };
     bk-wait = pkgs.callPackage ./bk-wait { };
+    nostore-preload = pkgs.callPackage ./nostore-preload { };
     updater = pkgs.callPackage ./updater { };
     # pi with local fix for the offscreen-spinner full-redraw storm.
     # Upstream PR: https://github.com/badlogic/pi-mono/pull/3105
