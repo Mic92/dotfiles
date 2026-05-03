@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  inputs',
   ...
 }:
 let
@@ -29,7 +28,7 @@ let
     #marksman
     nil
     nixd
-    inputs'.nixfmt-rs.default
+    nixfmt-rs
     deadnix
     statix
     prettierd
