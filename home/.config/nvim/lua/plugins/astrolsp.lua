@@ -31,6 +31,16 @@ return {
 		opts.formatting.format_on_save = false
 
 		opts.config = opts.config or {}
+		-- notify-rs fsevent backend livelocks on macOS rebuilding the
+		-- FSEventStream for every watched dir (O(n^2)), pinning a core.
+		-- Let the editor handle file watching instead.
+		opts.config.rust_analyzer = vim.tbl_deep_extend("force", opts.config.rust_analyzer or {}, {
+			settings = {
+				["rust-analyzer"] = {
+					files = { watcher = "client" },
+				},
+			},
+		})
 		opts.config.clangd = opts.config.clangd or {}
 		opts.config.clangd.capabilities = {
 			offsetEncoding = "utf-8",
