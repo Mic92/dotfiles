@@ -42,6 +42,7 @@
     nix.inputs.nixpkgs-regression.follows = "";
     nix.inputs.git-hooks-nix.follows = "";
     nix.inputs.nixpkgs-23-11.follows = "";
+    nix.inputs.flake-parts.follows = "flake-parts";
 
     nixpkgs.url = "git+https://github.com/Mic92/nixpkgs?shallow=1&ref=main";
     # for development
@@ -61,6 +62,7 @@
     tincr.url = "github:Mic92/tincr";
     tincr.inputs.nixpkgs.follows = "nixpkgs";
     tincr.inputs.treefmt-nix.follows = "treefmt-nix";
+    tincr.inputs.crane.follows = "crane";
 
     #spora.url = "github:krebs/spora";
     #spora.inputs.nixpkgs.follows = "nixpkgs";
@@ -84,7 +86,6 @@
     buildbot-nix.url = "git+https://github.com/nix-community/buildbot-nix?shallow=1";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
-    buildbot-nix.inputs.flake-parts.follows = "flake-parts";
 
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -162,6 +163,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
       inputs.blueprint.follows = "blueprint";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.systems.follows = "systems";
     };
 
     nix-diff-rs = {

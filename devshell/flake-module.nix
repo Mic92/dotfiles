@@ -46,6 +46,20 @@ let
       };
     };
     programs.deadnix.enable = true;
+
+    # Keep transitive flake inputs deduplicated. `--no-lock` because the
+    # formatting check runs inside the nix sandbox where `nix flake lock`
+    # has no network; relock happens via the regular update workflow.
+    settings.formatter.flake-edit = {
+      command = pkgs.flake-edit;
+      options = [
+        "--non-interactive"
+        "--no-lock"
+        "follow"
+      ];
+      includes = [ "flake.nix" ];
+    };
+
     programs.stylua.enable = true;
     programs.clang-format.enable = true;
     programs.deno.enable = true;
