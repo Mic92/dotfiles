@@ -6,7 +6,7 @@
 {
   boot.loader.limine = {
     enable = true;
-    enableEditor = true;
+    enableEditor = false;
     maxGenerations = 20;
     # efiInstallAsRemovable = true;
     secureBoot.enable = true;

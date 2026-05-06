@@ -3,7 +3,7 @@
   "followUpMode": "all",
   "theme": "tokyonight",
   "defaultProvider": "anthropic",
-  "defaultModel": "claude-opus-4-7",
+  "defaultModel": "claude-opus-4-6",
   "defaultThinkingLevel": "minimal",
   "skills": [
     "~/.claude/skills"
