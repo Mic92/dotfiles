@@ -66,6 +66,12 @@
     }
   ];
   programs.ssh.extraConfig = ''
+    # Detect dead TCP connections to remote builders so build-remote does not
+    # hang forever holding all build slots when the network blips mid-transfer.
+    Host mac02 jamie eliza login-tum
+      ServerAliveInterval 30
+      ServerAliveCountMax 4
+
     Host mac02
       User customer
       HostName mac02.numtide.com
