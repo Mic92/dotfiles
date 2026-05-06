@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}run #{{ run['id'] }}{% endblock %}
+
+{% block topbar_extra %}
+{# Search box lives in the sticky topbar so it stays reachable when scrolling
+   through long sections. HTMX swaps the diff-area body in place. #}
+<input type="search" name="q" value="{{ q }}"
+       placeholder="filter attrs (e.g. python3, gnome.)"
+       autocomplete="off" autofocus
+       hx-get="/run/{{ run['id'] }}/search"
+       hx-target="#diff-area"
+       hx-swap="innerHTML"
+       hx-trigger="input changed delay:300ms, search, keyup[key=='Enter']"
+       hx-include="this"
+       hx-push-url="false">
+{% endblock %}
+
+{% block body %}
+<h1>
+  run #{{ run['id'] }}
+  <span class="pill {{ run['status'].split(':')[0] }}">{{ run['status'] }}</span>
+</h1>
+<div class="meta mono">
+  <div><b>{{ run['attr'] }}</b></div>
+  <div>base: {{ run['base_rev'] }} (<span title="{{ run['base_resolved'] }}">{{ run['base_resolved'][:12] }}</span>)</div>
+  <div>head: {{ run['head_rev'] }} (<span title="{{ run['head_resolved'] }}">{{ run['head_resolved'][:12] }}</span>)</div>
+  <div>flake: {{ run['flake_ref'] }} · created {{ run['created_at'] | datetime }}</div>
+</div>
+
+<h2>progress</h2>
+{# Stop polling once the run is no longer running, otherwise the page hammers
+   the server forever. #}
+<div hx-get="/run/{{ run['id'] }}/progress"
+     {% if run['status'] == 'running' %}hx-trigger="load, every 2s"
+     {% else %}hx-trigger="load"{% endif %}
+     hx-swap="innerHTML">
+  {% include "_progress.html" %}
+</div>
+
+<h2>diff</h2>
+<div id="diff-area">
+  {% include "_diff_area.html" %}
+</div>
+
+{# Page-level log popover. A single dialog is reused for every "log" button;
+   HTMX swaps in the lazy-loaded fragment on click. Using <dialog> avoids the
+   table-row-layout issues we'd hit if the log were rendered inline. #}
+<dialog id="log-dialog" class="log-dialog">
+  <form method="dialog" class="log-dialog-close">
+    <button type="submit" aria-label="close">✕</button>
+  </form>
+  <div id="log-dialog-body"></div>
+</dialog>
+{% endblock %}

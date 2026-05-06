@@ -1,0 +1,9 @@
+{# HTMX-loaded log fragment. Tail only the last N lines so a runaway build
+   doesn't dump megabytes into the diff page; full log is one click away. #}
+<pre>{{ body }}</pre>
+{% if truncated %}
+<div class="meta">
+  showing last {{ shown }} of {{ total }} lines.
+  <a href="/run/{{ run_id }}/log/{{ job_id }}" target="_blank">full log →</a>
+</div>
+{% endif %}

@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}minihydra{% endblock %}</title>
+<script src="https://unpkg.com/htmx.org@2.0.4"></script>
+<style>
+  :root {
+    color-scheme: light dark;
+    --fg: #1c1c1e;
+    --bg: #fafafa;
+    --bg-alt: #f0f0f2;
+    --border: #d8d8dc;
+    --muted: #6e6e72;
+    --accent: #2e7d5b;
+    --accent-soft: #2e7d5b22;
+    --bad: #b53a3a;
+    --bad-soft: #b53a3a22;
+    --warn: #b58308;
+    --warn-soft: #b5830822;
+    --neutral-soft: #8884;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fg: #e8e8ea;
+      --bg: #18181b;
+      --bg-alt: #232327;
+      --border: #2f2f34;
+      --muted: #98989d;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--fg); background: var(--bg);
+    margin: 0; padding: 0;
+  }
+  main { max-width: 1280px; margin: 0 auto; padding: 1rem 1.5rem 4rem; }
+
+  nav.topbar {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    padding: 0.6rem 1.5rem;
+    display: flex; gap: 1rem; align-items: center;
+  }
+  nav.topbar a { color: var(--accent); text-decoration: none; font-weight: 600; }
+  nav.topbar .grow { flex: 1; }
+  nav.topbar input[type=search] {
+    flex: 0 1 28rem;
+    font: inherit;
+    padding: 0.35rem 0.6rem;
+    border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg-alt); color: var(--fg);
+  }
+
+  h1, h2, h3 { margin-top: 1.2rem; }
+  h1 { display: flex; gap: 0.6rem; align-items: baseline; }
+
+  .meta { color: var(--muted); font-size: 0.9em; line-height: 1.5; }
+  code, .mono, td.drv, td.attr, td.err { font-family: ui-monospace, SFMono-Regular, "Menlo", monospace; }
+  .tabnum { font-variant-numeric: tabular-nums; }
+
+  table { border-collapse: collapse; width: 100%; font-size: 0.88rem; table-layout: fixed; }
+  th, td { text-align: left; padding: 0.35rem 0.55rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: var(--bg-alt); font-weight: 600; color: var(--muted); font-size: 0.8em; text-transform: uppercase; letter-spacing: 0.04em; }
+  tr:hover td { background: var(--bg-alt); }
+  td.attr { width: 24%; font-weight: 600; word-break: break-all; }
+  td.drv  { width: 30%; font-size: 0.82em; word-break: break-all; }
+  td.err  { font-size: 0.82em; white-space: pre-wrap; word-break: break-word; }
+  td.build { width: 8em; text-align: right; white-space: nowrap; }
+
+  .pill {
+    display: inline-block; padding: 0.05em 0.55em; border-radius: 999px;
+    background: var(--neutral-soft); font-size: 0.78em; font-weight: 600;
+    text-transform: lowercase; letter-spacing: 0.02em;
+  }
+  .pill.added, .pill.newly_fixed, .pill.ok, .pill.done { background: var(--accent-soft); color: var(--accent); }
+  .pill.removed, .pill.newly_broken, .pill.failed     { background: var(--bad-soft);    color: var(--bad); }
+  .pill.changed, .pill.queued, .pill.running          { background: var(--warn-soft);   color: var(--warn); }
+
+  .summary { display: flex; gap: 0.4rem; flex-wrap: wrap; margin: 0.5rem 0 1rem; }
+  .summary .pill { font-size: 0.85em; padding: 0.2em 0.7em; }
+
+  details.section {
+    border: 1px solid var(--border); border-radius: 8px;
+    margin: 0.6rem 0; background: var(--bg);
+    overflow: hidden;
+  }
+  details.section > summary {
+    cursor: pointer; padding: 0.7rem 0.9rem;
+    font-weight: 600; user-select: none;
+    display: flex; gap: 0.6rem; align-items: center;
+    list-style: none;
+  }
+  details.section > summary::-webkit-details-marker { display: none; }
+  details.section > summary::before {
+    content: "▸"; color: var(--muted); width: 1ch;
+    transition: transform 0.15s;
+  }
+  details.section[open] > summary::before { transform: rotate(90deg); }
+  details.section > summary:hover { background: var(--bg-alt); }
+  details.section > .section-body { padding: 0; }
+
+  .progress-row { margin: 0.5rem 0; }
+  .bar { background: var(--bg-alt); height: 0.55rem; border-radius: 999px; overflow: hidden; border: 1px solid var(--border); }
+  .bar > span { display: block; height: 100%; background: var(--accent); transition: width .3s; }
+
+  .diff-old { color: var(--bad); }
+  .diff-new { color: var(--accent); }
+
+  .load-more {
+    display: block; width: 100%; padding: 0.6rem;
+    border: none; border-top: 1px solid var(--border);
+    background: var(--bg-alt); color: var(--accent);
+    font: inherit; font-weight: 600; cursor: pointer;
+  }
+  .load-more:hover { background: var(--border); }
+  .section-foot { padding: 0.5rem 0.9rem; color: var(--muted); font-size: 0.85em; text-align: center; }
+
+  button.linkish {
+    background: none; border: none; padding: 0;
+    color: var(--accent); cursor: pointer; font: inherit;
+    font-size: 0.85em; text-decoration: underline;
+  }
+
+  dialog.log-dialog {
+    width: min(80rem, 90vw);
+    max-height: 80vh;
+    border: 1px solid var(--border); border-radius: 8px;
+    padding: 0; background: var(--bg); color: var(--fg);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  }
+  dialog.log-dialog::backdrop { background: rgba(0,0,0,0.4); }
+  dialog.log-dialog .log-dialog-close {
+    position: sticky; top: 0; padding: 0.4rem 0.6rem;
+    background: var(--bg-alt); border-bottom: 1px solid var(--border);
+    text-align: right;
+  }
+  dialog.log-dialog .log-dialog-close button {
+    background: none; border: none; cursor: pointer;
+    font-size: 1.1em; color: var(--muted);
+  }
+  dialog.log-dialog #log-dialog-body { padding: 0.6rem 0.9rem 1rem; }
+  dialog.log-dialog pre {
+    margin: 0; padding: 0.6rem 0.8rem;
+    background: var(--bg-alt); border-radius: 4px;
+    white-space: pre-wrap; word-break: break-word;
+    font-size: 0.82em; line-height: 1.45;
+    max-height: 60vh; overflow: auto;
+  }
+
+  .empty { color: var(--muted); font-style: italic; padding: 1rem 0.9rem; }
+</style>
+</head>
+<body>
+<nav class="topbar">
+  <a href="/">minihydra</a>
+  {% block topbar_extra %}{% endblock %}
+  <span class="grow"></span>
+</nav>
+<main>
+{% block body %}{% endblock %}
+</main>
+</body>
+</html>

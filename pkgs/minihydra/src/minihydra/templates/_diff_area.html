@@ -1,0 +1,30 @@
+{# Renders the headline summary plus every section, paginated.
+
+   Used for both the initial run page and the search endpoint, so the
+   filter input and "load more" buttons see a consistent layout. #}
+
+<div class="summary">
+  {% for k, v in summary.items() %}
+    <span class="pill {{ k }}">{{ k }}: {{ v }}</span>
+  {% endfor %}
+</div>
+
+{% set has_any = summary.values() | sum > 0 %}
+{% if not has_any %}
+  <p class="empty">{% if q %}no attributes match <b>{{ q }}</b>.{% else %}no diff yet.{% endif %}</p>
+{% endif %}
+
+{% for name in SECTIONS %}
+  {% set entries = diff | attr(name) %}
+  {% if entries %}
+    <details class="section" {% if name in SECTIONS_OPEN_BY_DEFAULT or q %}open{% endif %}>
+      <summary>
+        <span class="pill {{ name }}">{{ name }}</span>
+        <span class="tabnum">{{ entries | length }}</span>
+      </summary>
+      <div class="section-body" id="sect-{{ name }}-body">
+        {% include "_section.html" %}
+      </div>
+    </details>
+  {% endif %}
+{% endfor %}

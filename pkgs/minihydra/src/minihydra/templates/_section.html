@@ -1,0 +1,141 @@
+{# Per-bucket table. Renders the first `limit` entries plus a "load more"
+   button if there's more, so we never blow up the page on a 30k-row
+   `unchanged` section. The limit is cumulative: clicking "load more" hits
+   the same endpoint with a higher limit and replaces the whole section
+   body. #}
+
+{% set total = entries | length %}
+{% set shown = entries[:limit] %}
+
+{% macro drv_link(side) -%}
+  {% if side and side.drv_path -%}
+    <a href="/run/{{ run['id'] }}/job/{{ side.id }}"
+       title="{{ side.drv_path }}">{{ side.drv_path | drv_short }}</a>
+  {%- endif %}
+{%- endmacro %}
+
+{% macro build_pill(side) -%}
+  {% if side and side.build_status -%}
+    <span class="pill {{ side.build_status }}">{{ side.build_status }}</span>
+    {% if side.build_log_path -%}
+      {# Lazy-load the log on demand into the page-level dialog. Putting the
+         <pre> inside the table cell broke row layout once the log got
+         long, so we use a single shared modal popover instead. #}
+      <button type="button" class="linkish"
+              hx-get="/run/{{ run['id'] }}/log/{{ side.id }}/inline"
+              hx-target="#log-dialog-body"
+              hx-swap="innerHTML"
+              onclick="document.getElementById('log-dialog').showModal()">log</button>
+    {%- endif %}
+  {%- endif %}
+{%- endmacro %}
+
+{% if name in ("newly_broken", "still_broken") %}
+  <table>
+    <colgroup><col style="width: 24%"><col></colgroup>
+    <thead><tr><th>attr</th><th>error (head)</th></tr></thead>
+    <tbody>
+    {% for e in shown %}
+      <tr>
+        <td class="attr">{{ e.attr }}</td>
+        <td class="err">{{ ((e.head.error if e.head else "") or "") | first_lines(6) }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+{% elif name == "newly_fixed" %}
+  <table>
+    <colgroup><col style="width: 24%"><col><col style="width: 30%"><col style="width: 8em"></colgroup>
+    <thead><tr><th>attr</th><th>base error</th><th>head drv</th><th>build</th></tr></thead>
+    <tbody>
+    {% for e in shown %}
+      <tr>
+        <td class="attr">{{ e.attr }}</td>
+        <td class="err">{{ ((e.base.error if e.base else "") or "") | first_lines(2) }}</td>
+        <td class="drv">{{ drv_link(e.head) }}</td>
+        <td class="build">{{ build_pill(e.head) }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+{% elif name == "added" %}
+  <table>
+    <colgroup><col style="width: 28%"><col><col style="width: 8em"></colgroup>
+    <thead><tr><th>attr</th><th>head drv</th><th>build</th></tr></thead>
+    <tbody>
+    {% for e in shown %}
+      <tr>
+        <td class="attr">{{ e.attr }}</td>
+        <td class="drv">{{ drv_link(e.head) }}</td>
+        <td class="build">{{ build_pill(e.head) }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+{% elif name == "removed" %}
+  <table>
+    <colgroup><col style="width: 28%"><col></colgroup>
+    <thead><tr><th>attr</th><th>base drv</th></tr></thead>
+    <tbody>
+    {% for e in shown %}
+      <tr>
+        <td class="attr">{{ e.attr }}</td>
+        <td class="drv">{{ drv_link(e.base) }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+{% elif name == "changed" %}
+  <table>
+    <colgroup><col style="width: 24%"><col><col><col style="width: 8em"></colgroup>
+    <thead>
+      <tr>
+        <th>attr</th>
+        <th><span class="diff-old">was</span></th>
+        <th><span class="diff-new">now</span></th>
+        <th>build</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for e in shown %}
+      <tr>
+        <td class="attr">{{ e.attr }}</td>
+        <td class="drv diff-old">{{ drv_link(e.base) }}</td>
+        <td class="drv diff-new">{{ drv_link(e.head) }}</td>
+        <td class="build">{{ build_pill(e.head) }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+{% else %} {# unchanged #}
+  <table>
+    <colgroup><col style="width: 28%"><col></colgroup>
+    <thead><tr><th>attr</th><th>drv</th></tr></thead>
+    <tbody>
+    {% for e in shown %}
+      <tr>
+        <td class="attr">{{ e.attr }}</td>
+        <td class="drv">{{ drv_link(e.head) }}</td>
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endif %}
+
+{% if total > limit %}
+  {# Replace the whole section body with a fresh render at the larger limit.
+     Cumulative pagination keeps the URL state simple. #}
+  <button class="load-more"
+          hx-get="/run/{{ run['id'] }}/section/{{ name }}?limit={{ limit + DEFAULT_LIMIT }}{% if q %}&q={{ q | urlencode }}{% endif %}"
+          hx-target="#sect-{{ name }}-body"
+          hx-swap="innerHTML">
+    show {{ DEFAULT_LIMIT }} more · {{ limit }} of {{ total }}
+  </button>
+{% elif total > DEFAULT_LIMIT %}
+  <div class="section-foot">all {{ total }} shown</div>
+{% endif %}

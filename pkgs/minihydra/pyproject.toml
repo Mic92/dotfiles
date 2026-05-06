@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "minihydra"
+version = "0.1.0"
+description = "Per-commit nixpkgs eval/build differ with web UI"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+  "fastapi",
+  "uvicorn",
+  "jinja2",
+  "rich",
+  "httpx",
+]
+
+[project.scripts]
+minihydra = "minihydra.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/minihydra"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

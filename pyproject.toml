@@ -48,6 +48,9 @@ exclude = ["zsh/*", "gdb/*"]
 "machines/eve/modules/paperless-perms/paperless_perms/apps.py" = ["PLC0415"]
 # Standalone script, not a package
 "nixosModules/niri/kwallet-tpm/kwallet-tpm-unlock.py" = ["INP001"]
+# minihydra: keyword-arg-rich helpers + lazy uvicorn import
+"pkgs/minihydra/src/minihydra/*.py" = ["PLR0913", "PLR0915", "PLC0415", "TC003"]
+"pkgs/minihydra/tests/*.py" = ["PLC0415", "S101", "PLR0913", "TC003", "ANN"]
 
 [tool.mypy]
 python_version = "3.13"

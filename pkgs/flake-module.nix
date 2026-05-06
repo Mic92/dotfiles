@@ -39,6 +39,8 @@ in
     calendar-bot = pkgs.python3.pkgs.callPackage ./calendar_bot { };
     # Nix evaluation warnings extractor
     nix-eval-warnings = pkgs.callPackage ./nix-eval-warnings { };
+    # Per-commit nixpkgs eval/build differ ("minihydra")
+    minihydra = pkgs.callPackage ./minihydra { };
     # Reference all flake inputs to ensure they get cached
     flake-inputs = pkgs.callPackage ./flake-inputs { inherit inputs; };
     # Package updater CLI
