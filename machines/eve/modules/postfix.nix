@@ -92,14 +92,12 @@ in
       smtpd_tls_key_file = "/var/lib/acme/mail.thalheim.io/key.pem";
       smtpd_tls_CAfile = "/var/lib/acme/mail.thalheim.io/fullchain.pem";
 
-      smtpd_tls_dh512_param_file = config.security.dhparams.params.postfix512.path;
-      smtpd_tls_dh1024_param_file = config.security.dhparams.params.postfix2048.path;
-
       smtpd_tls_session_cache_database = "btree:\${data_directory}/smtpd_scache";
       smtpd_tls_mandatory_protocols = "!SSLv2,!SSLv3,!TLSv1,!TLSv1.1";
       smtpd_tls_protocols = "!SSLv2,!SSLv3,!TLSv1,!TLSv1.1";
-      smtpd_tls_mandatory_ciphers = "medium";
-      tls_medium_cipherlist = "AES128+EECDH:AES128+EDH";
+      smtpd_tls_mandatory_ciphers = "high";
+      tls_high_cipherlist = "EECDH+AESGCM:EECDH+CHACHA20";
+      smtpd_tls_exclude_ciphers = "aNULL:eNULL:EXPORT:DES:RC4:MD5:PSK:aECDH:EDH-DSS-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:KRB5-DES:CBC3-SHA";
 
       # authentication
       smtpd_sasl_auth_enable = "yes";
@@ -150,12 +148,6 @@ in
       smtpd_etrn_restrictions = "permit_mynetworks, reject";
       smtpd_data_restrictions = "reject_unauth_pipelining, reject_multi_recipient_bounce, permit";
     };
-  };
-
-  security.dhparams = {
-    enable = true;
-    params.postfix512.bits = 512;
-    params.postfix2048.bits = 1024;
   };
 
   security.acme.certs."mail.thalheim.io" = {

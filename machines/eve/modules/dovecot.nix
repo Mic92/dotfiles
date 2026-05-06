@@ -92,9 +92,8 @@ in
         ssl = yes
         ssl_server_cert_file = /var/lib/acme/imap.thalheim.io/fullchain.pem
         ssl_server_key_file  = /var/lib/acme/imap.thalheim.io/key.pem
-        ssl_server_dh_file   = ${config.security.dhparams.params.dovecot2.path}
         ssl_min_protocol = TLSv1.2
-        ssl_cipher_list  = EECDH+AESGCM:EDH+AESGCM
+        ssl_cipher_list  = EECDH+AESGCM:EECDH+CHACHA20
         ssl_server_prefer_ciphers = server
         local_name thalheim.io {
           ssl_server_cert_file = /var/lib/acme/thalheim.io/fullchain.pem
@@ -217,11 +216,6 @@ in
     # Allow sieve pipe scripts (running as vmail) to write to opencrow's
     # trigger pipe, used for forwarding starred emails to Janet.
     extraGroups = [ "opencrow" ];
-  };
-
-  security.dhparams = {
-    enable = true;
-    params.dovecot2 = { };
   };
 
   security.acme.certs =
