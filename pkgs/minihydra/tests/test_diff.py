@@ -122,14 +122,16 @@ def test_copy_side_jobs_preserves_build_columns() -> None:
     conn, rid = _setup()
     _ins(conn, rid, "head", "foo", drv="/nix/store/foo.drv")
     foo_id = conn.execute("SELECT id FROM jobs WHERE attr='foo'").fetchone()[0]
-    db.update_build_status(
-        conn, [foo_id], "failed", log_path="/var/log/foo.log"
-    )
+    db.update_build_status(conn, [foo_id], "failed", log_path="/var/log/foo.log")
 
     rid2 = db.create_run(
-        conn, flake_ref="x", attr="a",
-        base_rev="b", head_rev="h",
-        base_resolved="a" * 40, head_resolved="b" * 40,
+        conn,
+        flake_ref="x",
+        attr="a",
+        base_rev="b",
+        head_rev="h",
+        base_resolved="a" * 40,
+        head_resolved="b" * 40,
     )
     db.copy_side_jobs(conn, rid, rid2, "head")
     row = db.jobs_for(conn, rid2, side="head")[0]
