@@ -1,0 +1,19 @@
+{% extends "base.html" %} {% block title %}job {{ row['id'] }}{% endblock %} {%
+block body %}
+<h1>job {{ row['id'] }} <span class="pill">{{ row['side'] }}</span></h1>
+<p class="mono">
+  attr: <b>{{ row['attr'] }}</b><br>
+  system: {{ row['system'] }}<br>
+  drv: {{ row['drv_path'] }}<br>
+  build: {{ row['build_status'] or "—" }} {% if row['build_log_path'] %}
+  <a href="/run/{{ run_id }}/log/{{ row['id'] }}">log</a>
+  {% endif %}
+</p>
+{% if row['error'] %}
+<h2>eval error</h2>
+<pre>{{ row['error'] }}</pre>
+{% endif %}
+<h2>raw</h2>
+<pre class="mono">{{ raw }}</pre>
+<p><a href="/run/{{ run_id }}">← back to run</a></p>
+{% endblock %}

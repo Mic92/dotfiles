@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}minihydra runs{% endblock %}
+{% block body %}
+<h1>runs</h1>
+{% if not runs %}
+<p class="meta">no runs yet. run <code>minihydra run --attr ...</code></p>
+{% else %}
+<table>
+  <colgroup>
+    <col style="width: 4em"><col><col style="width: 8em"><col style="width: 8em">
+    <col style="width: 6em"><col style="width: 14em">
+  </colgroup>
+  <thead>
+    <tr><th>id</th><th>attr</th><th>base</th><th>head</th><th>status</th><th>created</th></tr>
+  </thead>
+  <tbody>
+  {% for r in runs %}
+    <tr>
+      <td><a href="/run/{{ r['id'] }}">#{{ r['id'] }}</a></td>
+      <td class="mono">{{ r['attr'] }}</td>
+      <td class="mono tabnum" title="{{ r['base_resolved'] }}">{{ r['base_resolved'][:12] }}</td>
+      <td class="mono tabnum" title="{{ r['head_resolved'] }}">{{ r['head_resolved'][:12] }}</td>
+      <td><span class="pill {{ r['status'].split(':')[0] }}">{{ r['status'] }}</span></td>
+      <td class="mono tabnum">{{ r['created_at'] | datetime }}</td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endblock %}

@@ -35,7 +35,7 @@ EOF
 
 cat >wiregrill.nix <<'EOF'
 with import <nixpkgs/nixos> {};
-with import <stockholm/lib>;
+with lib;
 let
   self = config.krebs.build.host.nets.wiregrill;
   isRouter = !isNull self.via;

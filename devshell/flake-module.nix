@@ -67,6 +67,8 @@ let
     # parse it. No QML-aware JS formatter exists, so just skip these.
     settings.formatter.deno.excludes = [
       "home/.config/noctalia/plugins/*/*.js"
+      # Jinja2 templates use {% ... %} / {{ ... }} which deno fmt rejects.
+      "pkgs/minihydra/src/minihydra/templates/*.html"
     ];
     programs.nixfmt.enable = true;
     programs.nixfmt.package = pkgs.nixfmt-rs;

@@ -1,0 +1,14 @@
+{% if not progress %}
+<p><i>no progress recorded yet</i></p>
+{% else %}
+{% for p in progress %}
+<div class="progress-row">
+  <div><b>{{ p['phase'] }}</b> — {{ p['message'] or "" }}
+    <span class="mono">({{ p['current'] }}/{{ p['total'] }})</span></div>
+  <div class="bar">
+    {% set pct = (100 * p['current'] // p['total']) if p['total'] else 0 %}
+    <span style="width: {{ pct }}%"></span>
+  </div>
+</div>
+{% endfor %}
+{% endif %}
