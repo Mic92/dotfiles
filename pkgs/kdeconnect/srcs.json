@@ -1,5 +1,5 @@
 {
-  "version": "6151",
-  "url": "https://cdn.kde.org/ci-builds/network/kdeconnect-kde/master/macos-arm64/kdeconnect-kde-master-6151-macos-clang-arm64.dmg",
-  "hash": "sha256-ojXP+g9cVfP8kjb3Ox07KzLrRIs3p1koiRW1Ckv4izs="
+  "version": "6183",
+  "url": "https://github.com/Mic92/dotfiles/releases/download/kdeconnect-mirror/kdeconnect-kde-master-6183-macos-clang-arm64.dmg",
+  "hash": "sha256-5M9Sc8QTxkf53VMUV4wAzy8YLTMNxmfHciaEULa6vE8="
 }
