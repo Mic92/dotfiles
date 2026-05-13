@@ -16,6 +16,15 @@ let
       surname = "sn"
       username = "uid"
       email =  "mail"
+
+      [[servers.group_mappings]]
+      group_dn = "cn=admins,ou=groups,dc=eve"
+      org_role = "Admin"
+      grafana_admin = true
+
+      [[servers.group_mappings]]
+      group_dn = "*"
+      org_role = "Viewer"
     '';
   };
 in
