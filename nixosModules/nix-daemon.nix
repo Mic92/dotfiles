@@ -6,12 +6,22 @@
   ...
 }:
 {
+  imports = [
+    ./builder.nix
+    self.inputs.fast-nix-gc.nixosModules.default
+  ];
+
+  services.fast-nix-gc = {
+    enable = true;
+    automatic = true;
+    dates = "03:15";
+    deleteOlderThan = "10d";
+    keepRecent = "1d";
+  };
+
   # this extends srvos's common settings
   nix = {
     package = self.inputs.nix.packages.${pkgs.stdenv.hostPlatform.system}.nix;
-    gc.automatic = true;
-    gc.dates = "03:15";
-    gc.options = "--delete-older-than 10d";
 
     # set legacy nixpkgs path to flake reference
     nixPath = [ "nixpkgs=flake:nixpkgs" ];
@@ -50,8 +60,6 @@
       auto-optimise-store = true;
     };
   };
-
-  imports = [ ./builder.nix ];
 
   systemd.timers.nix-cleanup-gcroots = {
     timerConfig = {
