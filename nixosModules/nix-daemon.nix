@@ -19,6 +19,13 @@
     keepRecent = "1d";
   };
 
+  services.fast-nix-optimise = {
+    enable = true;
+    automatic = true;
+    dates = "weekly";
+  };
+  nix.optimise.automatic = false;
+
   # this extends srvos's common settings
   nix = {
     package = self.inputs.nix.packages.${pkgs.stdenv.hostPlatform.system}.nix;
@@ -57,7 +64,6 @@
 
       fallback = true;
       warn-dirty = false;
-      auto-optimise-store = true;
     };
   };
 
