@@ -6,16 +6,7 @@
   ...
 }:
 let
-  noctalia-qs = pkgs.noctalia-qs.overrideAttrs (old: {
-    patches = (old.patches or [ ]) ++ [
-      # https://github.com/noctalia-dev/noctalia-qs/pull/35
-      ./patches/qs-0001-niri-avoid-duplicate-workspace-rows-when-reordering.patch
-      # https://github.com/noctalia-dev/noctalia-qs/pull/37
-      ./patches/qs-0002-bluetooth-lift-rfkill-soft-block.patch
-    ];
-  });
-
-  noctalia-shell = (pkgs.noctalia-shell.override { inherit noctalia-qs; }).overrideAttrs (old: {
+  noctalia-shell = pkgs.noctalia-shell.overrideAttrs (old: {
     patches = (old.patches or [ ]) ++ [
       # Plugin git fetch inherits a dead cwd when the shell was launched
       # from a since-removed dir; cd into mktemp first and stop eating
