@@ -26,69 +26,7 @@ let
     "container_name"
   ];
 
-  # fluent-bit has no expression language comparable to promtail's
-  # pipeline_stages, so the bits that the loki ruler relies on (the
-  # `core dumped` rewrite, the `unit`/`coredump_unit` labels and the
-  # noise drops) are reproduced in a small Lua filter instead.
-  luaFilter = pkgs.writeText "fluent-bit-journal.lua" ''
-    function process(tag, timestamp, record)
-      local msg = record["MESSAGE"]
-
-      -- noise that used to be handled by promtail `drop` stages
-      if msg ~= nil then
-        if string.find(msg, "ignored inotify event for", 1, true)
-          or string.find(msg, "hwmon hwmon1: Undervoltage detected!", 1, true)
-          or string.find(msg, "hwmon hwmon1: Voltage normalised", 1, true)
-          or string.find(msg, "refused connection: IN=", 1, true)
-        then
-          return -1, timestamp, record
-        end
-      end
-
-      -- unit label: fall back to transport (audit/kernel) like promtail did
-      local unit = record["_SYSTEMD_UNIT"]
-      if unit == nil or unit == "" then
-        unit = record["_TRANSPORT"]
-      end
-      -- collapse session-1234.scope -> session.scope to keep label cardinality low
-      if unit ~= nil then
-        unit = string.gsub(unit, "^session%-%d+%.scope$", "session.scope")
-      end
-
-      -- coredump enrichment so the loki ruler alert (`|~ "core dumped"`) keeps firing
-      local coredump_unit
-      local cgroup = record["COREDUMP_CGROUP"]
-      if cgroup ~= nil then
-        coredump_unit = string.match(cgroup, "([^/]+)$")
-        local exe = record["COREDUMP_EXE"] or "?"
-        local uid = record["COREDUMP_UID"] or "?"
-        local gid = record["COREDUMP_GID"] or "?"
-        local cmd = record["COREDUMP_CMDLINE"] or "?"
-        msg = string.format(
-          "%s core dumped (user: %s/%s, command: %s)",
-          exe, uid, gid, cmd
-        )
-      end
-
-      -- emit only the fields we care about: stream labels + structured metadata
-      -- + MESSAGE. After label_keys/remove_keys/structured_metadata are applied
-      -- only MESSAGE remains in the record so drop_single_key=on yields the
-      -- plain log line.
-      local out = {
-        MESSAGE = msg,
-        -- stream labels
-        host = record["_HOSTNAME"],
-        unit = unit,
-        coredump_unit = coredump_unit,
-        -- structured metadata
-        priority = record["PRIORITY"],
-        syslog_identifier = record["SYSLOG_IDENTIFIER"],
-        pid = record["_PID"],
-        container_name = record["CONTAINER_NAME"],
-      }
-      return 2, timestamp, out
-    end
-  '';
+  wasmFilter = pkgs.callPackage ./fluent-bit-filter-wasm/package.nix { };
 in
 {
   clan.core.vars.generators.promtail = {
@@ -138,10 +76,11 @@ in
             "multiline.parser" = "go,python,java";
           }
           {
-            name = "lua";
+            name = "wasm";
             match = "journal";
-            script = "${luaFilter}";
-            call = "process";
+            wasm_path = "${wasmFilter}/lib/fluent_bit_journal_filter.wasm";
+            function_name = "filter_journal";
+            accessible_paths = ".";
           }
           {
             # eve's strfry alone produces ~10k lines/min; cap any single
