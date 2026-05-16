@@ -80,6 +80,7 @@
     ./modules/wireguard.nix
     ./modules/zerotier.nix
     ./modules/phantun.nix
+    ./modules/valve-erp.nix
 
     ../../nixosModules/borgbackup.nix
     ../../nixosModules/builder.nix

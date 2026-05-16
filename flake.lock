@@ -972,7 +972,8 @@
         "strace-macos": "strace-macos",
         "systems": "systems",
         "tincr": "tincr",
-        "treefmt-nix": "treefmt-nix"
+        "treefmt-nix": "treefmt-nix",
+        "valve-erp": "valve-erp"
       }
     },
     "rust-overlay": {
@@ -1121,6 +1122,29 @@
         "owner": "numtide",
         "repo": "treefmt-nix",
         "type": "github"
+      }
+    },
+    "valve-erp": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1778944835,
+        "narHash": "sha256-5D6J2UPKpDsyWs7atY5Ec1F3Qh8rI57kXYf1oD81O9E=",
+        "ref": "refs/heads/main",
+        "rev": "5743bebe3708a01510b0da3470b24cbb8f202cdb",
+        "revCount": 51,
+        "type": "git",
+        "url": "https://git.thalheim.io/Mic92/valve-erp.git"
+      },
+      "original": {
+        "type": "git",
+        "url": "https://git.thalheim.io/Mic92/valve-erp.git"
       }
     }
   },
