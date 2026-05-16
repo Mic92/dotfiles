@@ -21,5 +21,10 @@
   },
   "alwaysThinkingEnabled": true,
   "autoUpdatesChannel": "latest",
-  "theme": "light-daltonized"
+  "theme": "light-daltonized",
+  "autoCompactEnabled": false,
+  "skipAutoPermissionPrompt": true,
+  "permissions": {
+    "defaultMode": "auto"
+  }
 }
