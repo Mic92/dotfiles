@@ -14,6 +14,7 @@
     domain = "valve.thalheim.io";
     secretKeyFile = config.clan.core.vars.generators.valve-erp.files.secret-key.path;
     adminPasswordFile = config.clan.core.vars.generators.valve-erp.files.admin-password.path;
+    seedDemoData = true;
     smtp = {
       host = "localhost";
       from = "valve@thalheim.io";

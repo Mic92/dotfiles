@@ -1134,11 +1134,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778946456,
-        "narHash": "sha256-LgyDB4kG88xUJ8C4Am0V9T7OuyzImXiM7VIL1TaFzvc=",
+        "lastModified": 1778946891,
+        "narHash": "sha256-eA/89jnKKrnaLKTtOynuNelymUi3Y4mwyH7L8RbAn5o=",
         "ref": "refs/heads/main",
-        "rev": "99303b62eb818ca063c5ee010e08f05cc295f387",
-        "revCount": 53,
+        "rev": "8aebfcf6686cbc60e407042ebd7bc97af9bea2ec",
+        "revCount": 55,
         "type": "git",
         "url": "https://git.thalheim.io/Mic92/valve-erp.git"
       },
