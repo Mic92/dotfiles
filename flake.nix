@@ -158,6 +158,10 @@
     opencrow.inputs.nixpkgs.follows = "nixpkgs";
     opencrow.inputs.treefmt-nix.follows = "treefmt-nix";
 
+    valve-erp.url = "git+https://git.thalheim.io/Mic92/valve-erp.git";
+    valve-erp.inputs.nixpkgs.follows = "nixpkgs";
+    valve-erp.inputs.treefmt-nix.follows = "treefmt-nix";
+
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs";
