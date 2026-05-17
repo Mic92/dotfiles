@@ -117,10 +117,6 @@ in
   };
 
   programs.niri.enable = true;
-  # Main branch carries the smithay-drm-extras fix for MST connectors that
-  # vanish while suspended (smithay #1971); nixpkgs 25.11 still leaks them
-  # into `niri msg outputs` as ghost "off" displays.
-  programs.niri.package = self.inputs.niri.packages.${pkgs.stdenv.hostPlatform.system}.niri;
 
   # Use KDE Wallet instead of gnome-keyring for secret storage
   # KWallet is unlocked via TPM (see ./kwallet-tpm), not PAM
