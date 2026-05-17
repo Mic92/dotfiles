@@ -13,6 +13,8 @@
     package = self.inputs.valve-erp.packages.${pkgs.stdenv.hostPlatform.system}.valve-erp;
     domain = "valve.thalheim.io";
     secretKeyFile = config.clan.core.vars.generators.valve-erp.files.secret-key.path;
+    adminPasswordFile = config.clan.core.vars.generators.valve-erp.files.admin-password.path;
+    seedDemoData = true;
     smtp = {
       host = "localhost";
       from = "valve@thalheim.io";
@@ -21,9 +23,14 @@
 
   clan.core.vars.generators.valve-erp = {
     files.secret-key = { };
-    runtimeInputs = [ pkgs.openssl ];
+    files.admin-password = { };
+    runtimeInputs = with pkgs; [
+      openssl
+      xkcdpass
+    ];
     script = ''
-      openssl rand -hex 50 | tr -d '\n' > $secrets/secret-key
+      openssl rand -hex 50 | tr -d '\n' > $out/secret-key
+      xkcdpass -n 4 -d - | tr -d '\n' > $out/admin-password
     '';
   };
 }
