@@ -48,17 +48,7 @@ in
     kimai-cli = pkgs.callPackage ./kimai-cli { };
     bk-wait = pkgs.callPackage ./bk-wait { };
     updater = pkgs.callPackage ./updater { };
-    # pi with local fix for the offscreen-spinner full-redraw storm.
-    # Upstream PR: https://github.com/badlogic/pi-mono/pull/3105
-    # Drop the override once a release ships Loader.pause()/resume().
-    pi = aiTools.pi.overrideAttrs (old: {
-      # The pi-tui loader.js lives in node_modules which only exists after
-      # npm install, so apply against the installed tree rather than src.
-      postInstall = (old.postInstall or "") + ''
-        patch -p1 -d $out/lib/node_modules/@mariozechner/pi-coding-agent \
-          < ${./pi-patches/pause-status-loader.patch}
-      '';
-    });
+    pi = aiTools.pi;
     # Sandboxed pi for calendar/email tasks
     pim = pkgs.callPackage ./pim {
       inherit (self'.packages) email-sync crabfit-cli msmtp-with-sent;
