@@ -65,6 +65,7 @@ declare const browser: {
       url?: string;
       active?: boolean;
       cookieStoreId?: string;
+      pinned?: boolean;
     }): Promise<BrowserTab>;
     update(id: number, opts: { active?: boolean }): Promise<BrowserTab>;
     move(
