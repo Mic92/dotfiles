@@ -105,8 +105,15 @@ async function addAppTabs(windowId, apps, skip) {
     if (skip.has(app.name)) continue;
     try {
       const cookieStoreId = await containerFor(app);
-      const tab = await browser.tabs.create({ windowId, url: app.url, cookieStoreId });
-      if (tab.id !== undefined) await browser.sessions.setTabValue(tab.id, TAB_KEY, app.name);
+      const tab = await browser.tabs.create({
+        windowId,
+        url: app.url,
+        cookieStoreId,
+        pinned: true,
+      });
+      if (tab.id !== undefined) {
+        await browser.sessions.setTabValue(tab.id, TAB_KEY, app.name);
+      }
     } catch (e) {
       console.error("app-windows: failed to open", app.name, e);
     }
