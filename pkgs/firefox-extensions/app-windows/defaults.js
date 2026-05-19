@@ -36,13 +36,6 @@ const DEFAULT_APPS = [
     icon: "briefcase",
   },
   {
-    name: "Slack Numtide Labs",
-    url: "https://numtide-labs.slack.com/",
-    scope: "slack.com",
-    color: "yellow",
-    icon: "briefcase",
-  },
-  {
     name: "Slack TUM",
     url: "https://ls1-tum.slack.com/",
     scope: "slack.com",
