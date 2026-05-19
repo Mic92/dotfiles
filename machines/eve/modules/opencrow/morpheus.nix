@@ -35,7 +35,7 @@
     # the request ever leaves the box.
     models = [
       {
-        id = "mistralai/Ministral-3-14B-Instruct-2512";
+        id = "mistralai/Ministral-3-14B-Reasoning-2512";
         name = "Ministral 3 (14B)";
         contextWindow = 32768;
         input = [
@@ -53,14 +53,15 @@
         ];
       }
       {
-        # Open WebUI on morpheus has two inlet filters attached to this
-        # id: a role-blind 50-message tail truncation (breaks Qwen's
-        # template after ~26 consecutive tool calls with "No user query
-        # found in messages") and an ~2k-token summariser prepend.
-        # Prefer qwen-35-35b-coding below — same vLLM backend, no
-        # filters — until the admin scopes them to web-UI only.
-        id = "Qwen/Qwen3.5-35B-A3B-FP8";
-        name = "Qwen 3.5 (35B)";
+        # NOTE 2026-05: morpheus re-attached `async_context_compression`
+        # and `context_length_filter_tokens_turns` to BOTH this id and the
+        # qwen-35-35b-coding alias. async_context_compression rewrites past
+        # tool outputs to "... [Tool outputs trimmed]" which the model then
+        # parrots back as its reply. No filter-free model is currently
+        # available; admin asked to restore the unfiltered alias or enable
+        # ENABLE_OPENAI_API_PASSTHROUGH.
+        id = "Qwen/Qwen3.6-35B-A3B";
+        name = "Qwen 3.6 (35B)";
         contextWindow = 65536;
         reasoning = true;
         input = [
@@ -85,7 +86,7 @@
       }
       {
         id = "qwen-35-35b-coding";
-        name = "Qwen 3.5 (35B, no filters)";
+        name = "Qwen 3.6 (35B, coding alias)";
         contextWindow = 65536;
         reasoning = true;
         input = [
