@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "App Windows",
-  "version": "1.14",
+  "version": "1.15",
   "description": "Run web apps (WhatsApp, Discord, Element) in dedicated windows. External links open in your normal window.",
   "permissions": [
     "tabs",
