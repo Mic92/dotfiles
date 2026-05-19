@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+  "name": "App Windows",
+  "version": "1.13",
+  "description": "Run web apps (WhatsApp, Discord, Element) in dedicated windows. External links open in your normal window.",
+  "permissions": [
+    "tabs",
+    "storage",
+    "sessions",
+    "contextualIdentities",
+    "cookies"
+  ],
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "app-windows@thalheim.io"
+    }
+  },
+  "background": {
+    "scripts": ["defaults.js", "background.js"]
+  },
+  "browser_action": {
+    "default_title": "Open Messengers"
+  },
+  "options_ui": {
+    "page": "options.html"
+  }
+}

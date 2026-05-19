@@ -23,7 +23,7 @@ in
       policies = import ../pkgs/librewolf-policies.nix {
         inherit (pkgs) lib stdenv;
         inherit (micsSkills) browser-cli-extension;
-        inherit (firefoxExtensions) chrome-tab-gc-extension;
+        inherit (firefoxExtensions) chrome-tab-gc-extension app-windows-extension;
       };
     })
     myPkgs.radicle-desktop

@@ -3,6 +3,7 @@
   stdenv,
   browser-cli-extension,
   chrome-tab-gc-extension,
+  app-windows-extension,
 }:
 {
   ExtensionSettings = {
@@ -13,6 +14,10 @@
     "tab-garbage-collector@thalheim.io" = {
       installation_mode = "force_installed";
       install_url = "file://${chrome-tab-gc-extension}/chrome-tab-gc-extension.xpi";
+    };
+    "app-windows@thalheim.io" = {
+      installation_mode = "force_installed";
+      install_url = "file://${app-windows-extension}/app-windows.xpi";
     };
   }
   // lib.optionalAttrs (!stdenv.hostPlatform.isDarwin) {

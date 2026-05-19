@@ -5,6 +5,7 @@
   unzip,
   zip,
   jq,
+  typescript,
 }:
 
 let
@@ -14,6 +15,7 @@ let
       version,
       src,
       extensionId,
+      typecheck ? false,
       meta ? { },
     }:
     stdenv.mkDerivation {
@@ -23,7 +25,15 @@ let
         unzip
         zip
         jq
-      ];
+      ]
+      ++ lib.optional typecheck typescript;
+
+      doCheck = typecheck;
+      checkPhase = ''
+        runHook preCheck
+        tsc --noEmit -p jsconfig.json
+        runHook postCheck
+      '';
 
       unpackPhase = ''
         mkdir -p source
@@ -50,6 +60,7 @@ let
         mkdir -p "$out"
 
         # Create XPI (Firefox 62+ requires packed extensions for sideloading)
+        rm -f jsconfig.json webext.d.ts
         zip -r "$out/${pname}.xpi" .
 
         runHook postInstall
@@ -63,6 +74,18 @@ let
 in
 {
   inherit buildFirefoxExtension;
+
+  app-windows-extension = buildFirefoxExtension {
+    pname = "app-windows";
+    version = (lib.importJSON ./app-windows/manifest.json).version;
+    src = ./app-windows;
+    extensionId = "app-windows@thalheim.io";
+    typecheck = true;
+    meta = {
+      description = "Run web apps in dedicated windows; external links open in main window";
+      license = lib.licenses.mit;
+    };
+  };
 
   chrome-tab-gc-extension = buildFirefoxExtension {
     pname = "chrome-tab-gc-extension";
