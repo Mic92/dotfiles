@@ -25,7 +25,7 @@ in
       extraPolicies = import ../../pkgs/librewolf-policies.nix {
         inherit (pkgs) lib stdenv;
         inherit (micsSkillsPkgs) browser-cli-extension;
-        inherit (firefoxExtensions) chrome-tab-gc-extension;
+        inherit (firefoxExtensions) chrome-tab-gc-extension app-windows-extension;
       };
     })
   ];

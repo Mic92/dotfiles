@@ -29,6 +29,7 @@ in
     crabfit-cli = pkgs.python3.pkgs.callPackage ./crabfit-cli { };
     inherit (pkgs.callPackages ./firefox-extensions { })
       chrome-tab-gc-extension
+      app-windows-extension
       ;
     gh-radicle = pkgs.callPackage ./gh-radicle { };
     iroh-ssh = pkgs.callPackage ./iroh-ssh { };
