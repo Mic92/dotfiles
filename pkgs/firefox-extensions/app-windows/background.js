@@ -85,18 +85,41 @@ async function ensureAppWindowImpl() {
     if (blank?.id !== undefined && blank.url === "about:blank") {
       await browser.tabs.remove(blank.id).catch(() => {});
     }
+    await sortAppTabs(win.id, apps);
     return;
   }
 
   // Window exists: add tabs for any apps that don't have one yet
   const tabs = await browser.tabs.query({ windowId: appWindowId });
-  const present = new Set();
+  /** @type {Map<string, number>} */
+  const tabByApp = new Map();
   for (const t of tabs) {
     if (t.id === undefined) continue;
     const name = await browser.sessions.getTabValue(t.id, TAB_KEY);
-    if (typeof name === "string") present.add(name);
+    if (typeof name === "string") tabByApp.set(name, t.id);
   }
-  await addAppTabs(appWindowId, apps, present);
+  await addAppTabs(appWindowId, apps, new Set(tabByApp.keys()));
+  await sortAppTabs(appWindowId, apps);
+}
+
+/** Reorder app tabs to match the configured order.
+ * @param {number} windowId @param {App[]} apps */
+async function sortAppTabs(windowId, apps) {
+  const tabs = await browser.tabs.query({ windowId });
+  /** @type {Map<string, number>} */
+  const tabByApp = new Map();
+  for (const t of tabs) {
+    if (t.id === undefined) continue;
+    const name = await browser.sessions.getTabValue(t.id, TAB_KEY);
+    if (typeof name === "string") tabByApp.set(name, t.id);
+  }
+  let index = 0;
+  for (const app of apps) {
+    const tabId = tabByApp.get(app.name);
+    if (tabId === undefined) continue;
+    await browser.tabs.move(tabId, { index }).catch(console.error);
+    index++;
+  }
 }
 
 /** @param {number} windowId @param {App[]} apps @param {Set<string>} skip */

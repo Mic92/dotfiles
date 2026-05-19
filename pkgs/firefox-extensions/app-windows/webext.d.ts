@@ -70,7 +70,7 @@ declare const browser: {
     update(id: number, opts: { active?: boolean }): Promise<BrowserTab>;
     move(
       id: number,
-      opts: { windowId: number; index: number },
+      opts: { windowId?: number; index: number },
     ): Promise<BrowserTab | BrowserTab[]>;
     remove(id: number): Promise<void>;
     onCreated: Listener<(tab: BrowserTab) => void>;
