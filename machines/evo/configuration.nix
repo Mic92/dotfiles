@@ -40,6 +40,10 @@
     # per /nix/store entry (~700k objects, ~1GB RSS) when it enumerates the dir
     test -e /nix/.metadata_never_index || touch /nix/.metadata_never_index
     chflags hidden /nix
+
+    # Disable AirPlay Receiver to prevent FUSkyBridge from holding locks
+    # in WindowServer, which can cause watchdog timeout crashes.
+    sudo -u joerg defaults -currentHost write com.apple.controlcenter AirplayReceiverEnabled -bool false
   '';
 
   fonts.packages = [ pkgs.nerd-fonts.fira-code ];
