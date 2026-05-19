@@ -10,7 +10,6 @@ in
 
   environment.casks = [
     cask.alt-tab
-    cask.ferdium
     cask.ungoogled-chromium
     cask.signal
     cask.ghostty
