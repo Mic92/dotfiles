@@ -11,6 +11,12 @@
     Host *.dos.cit.tum.de !login.dos.cit.tum.de
       ProxyJump tunnel@login.dse.in.tum.de
 
+    # The TUM jumphost presents an ITO-signed certificate on its ed25519 host
+    # key, but our cluster CA only signed its ecdsa/rsa host keys. Prefer those
+    # so host verification goes through our CA.
+    Host login.dse.in.tum.de login.dos.cit.tum.de
+      HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com
+
     # Ghaf T14 Gen 5
     Host ghaf-netvm
       HostName 192.168.188.25
@@ -29,8 +35,12 @@
       ProxyJump ghaf-netvm
       StrictHostKeyChecking no
   '';
-  programs.ssh.knownHosts."login.dse.in.tum.de" = {
-    hostNames = [ "login.dse.in.tum.de" ];
-    publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOdlUylM9WIFfIYZDK8rjVYQzX+RYwIlLgsEh4j0pNx6";
+  # CA generated on the new TUM jumphost VM (dosvm3); its host certificate
+  # only lists dosvm3.cit.tum.de as principal, so it cannot be used for the
+  # login.* aliases yet.
+  programs.ssh.knownHosts.tum-jumphost-ca = {
+    certAuthority = true;
+    hostNames = [ "dosvm3.cit.tum.de" ];
+    publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIH9d9mR3PHGWKa77BfvbqmX3Y6pI/i/X/tcpWCms26EY";
   };
 }
