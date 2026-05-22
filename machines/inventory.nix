@@ -83,6 +83,18 @@ clan-core.lib.clan {
         roles.client.tags.nixos = { };
         # tor-hidden-service
         roles.client.extraModules = [ ../nixosModules/ssh.nix ];
+        # searchDomains on the server role end up as principals in the host
+        # certificates; without them connections via e.g. eve.i warn about
+        # "name is not a listed principal".
+        roles.server.settings = {
+          certificate.searchDomains = [
+            "i"
+            "r"
+            "local"
+            "onion"
+            "thalheim.io"
+          ];
+        };
         roles.client.settings = {
           certificate.searchDomains = [
             "i"
