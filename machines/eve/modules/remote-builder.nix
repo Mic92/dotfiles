@@ -90,6 +90,10 @@
       User tunnel
       HostName login.dse.in.tum.de
       IdentityFile ${config.sops.secrets.ssh-tum-builder.path}
+      # The jumphost only has a cluster-CA signed certificate on its ecdsa/rsa
+      # host keys; the ed25519 key carries an ITO-signed certificate we do not
+      # trust. Host blocks match the alias, so repeat the algorithm preference.
+      HostKeyAlgorithms ecdsa-sha2-nistp256-cert-v01@openssh.com,rsa-sha2-512-cert-v01@openssh.com
   '';
   programs.ssh.knownHosts = {
     "aarch64.nixos.community" = {
