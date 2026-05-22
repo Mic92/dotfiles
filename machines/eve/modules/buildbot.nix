@@ -94,6 +94,7 @@ in
       "Mic92"
       "DavHau"
       "Lassulus"
+      "Enzime"
     ];
     outputsPath = "/var/www/buildbot/nix-outputs/";
 
