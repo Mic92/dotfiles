@@ -12,6 +12,13 @@ For bootstrapping on
 nix --extra-experimental-features 'nix-command flakes' --accept-flake-config run github:Mic92/dotfiles
 ```
 
+If the machine hits GitHub API rate limits (shared/corporate IPs), pass a token
+along (here taken from the `gh` CLI):
+
+```console
+nix --extra-experimental-features 'nix-command flakes' --accept-flake-config --access-tokens "github.com=$(gh auth token)" run github:Mic92/dotfiles
+```
+
 # Bootstrap homeshick without nix
 
 ```console
