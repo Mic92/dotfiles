@@ -26,7 +26,7 @@ let
     "container_name"
   ];
 
-  wasmFilter = pkgs.callPackage ./fluent-bit-filter-wasm/package.nix { };
+  wasmFilter = pkgs.callPackage ./fluent-bit-filter-go/package.nix { };
 in
 {
   clan.core.vars.generators.promtail = {
@@ -79,7 +79,7 @@ in
             name = "wasm";
             match = "journal";
             wasm_path = "${wasmFilter}/lib/fluent_bit_journal_filter.wasm";
-            function_name = "filter_journal";
+            function_name = "go_filter";
             accessible_paths = ".";
           }
           {
