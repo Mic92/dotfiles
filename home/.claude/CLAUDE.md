@@ -82,6 +82,7 @@ comments use normal English.
 
   To run and wait (quote the entire command to preserve argument quoting):
   ```bash
+  # use --lines in log command instead of tail in `pueue add` to retain full log
   id=$(pueue add --print-task-id -- 'command arg1 "arg with spaces"')
   pueue follow "$id" # stream output, blocks until task finishes
   pueue log --lines 50 "$id" # Get exit status and logs
