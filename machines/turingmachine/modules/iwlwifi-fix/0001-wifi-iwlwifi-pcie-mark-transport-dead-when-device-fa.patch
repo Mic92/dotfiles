@@ -1,0 +1,75 @@
+From 1fad0a28fb70a50ef42701f2556f8fd6b7050b43 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Thu, 4 Jun 2026 09:15:16 +0200
+Subject: [PATCH 1/2] wifi: iwlwifi: pcie: mark transport dead when device
+ falls off the bus
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+When the AX210 firmware crashes and the device drops off the PCIe bus
+(all CSR reads return 0xffffffff), every register access in
+_iwl_trans_pcie_grab_nic_access() busy-polls CSR_GP_CNTRL for 15ms
+before timing out. Code paths such as the firmware error dump
+(iwl_fw_dbg_collect_sync) and the stop-device flow perform thousands
+of such accesses, often under RTNL via mac80211 drv_start(). This
+stalls the system for minutes, blocks every netlink user
+(NetworkManager, wpa_supplicant, syncthing, ...) and triggers hung
+task warnings, leaving a hard reboot as the only way out.
+
+The driver already detects this condition (cntrl == ~0U) but only
+acts on it when the remove_when_gone module parameter is set. Set
+STATUS_TRANS_DEAD unconditionally in this case so that all subsequent
+register accesses fail fast instead of repeatedly polling dead
+hardware. remove_when_gone behavior is unchanged: it additionally
+schedules the PCIe remove/rescan.
+
+Observed on Framework Laptop (AMD) with AX210 [8086:2725, rev 1a],
+firmware 89.735b75a4.0, kernel 7.0.8; same signature reported in
+kernel bugzilla 221251, 221178 and 220988.
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ .../intel/iwlwifi/pcie/gen1_2/trans.c         | 24 +++++++++++++++----
+ 1 file changed, 20 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/gen1_2/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/gen1_2/trans.c
+index 4560d92d76fe0..37df3e940327f 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/gen1_2/trans.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/gen1_2/trans.c
+@@ -2390,12 +2390,28 @@ bool _iwl_trans_pcie_grab_nic_access(struct iwl_trans *trans, bool silent)
+ 
+ 		iwl_trans_pcie_dump_regs(trans, trans_pcie->pci_dev);
+ 
+-		if (iwlwifi_mod_params.remove_when_gone && cntrl == ~0U)
+-			iwl_trans_pcie_reset(trans,
+-					     IWL_RESET_MODE_REMOVE_ONLY);
+-		else
++		if (cntrl == ~0U) {
++			/*
++			 * The device fell off the PCIe bus: every register
++			 * access will time out after 15ms of busy-polling.
++			 * Code paths such as the firmware error dump perform
++			 * thousands of register accesses, possibly under RTNL
++			 * (e.g. mac80211 drv_start), stalling the whole
++			 * system for minutes and triggering hung task
++			 * warnings in unrelated tasks. Mark the transport
++			 * dead so that all subsequent accesses fail fast.
++			 */
++			IWL_ERR(trans,
++				"Device gone from bus, marking transport dead\n");
++			if (iwlwifi_mod_params.remove_when_gone)
++				iwl_trans_pcie_reset(trans,
++						     IWL_RESET_MODE_REMOVE_ONLY);
++			else
++				set_bit(STATUS_TRANS_DEAD, &trans->status);
++		} else {
+ 			iwl_write32(trans, CSR_RESET,
+ 				    CSR_RESET_REG_FLAG_FORCE_NMI);
++		}
+ 
+ 		spin_unlock(&trans_pcie->reg_lock);
+ 		return false;
+-- 
+2.53.0
+

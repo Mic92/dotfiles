@@ -1,0 +1,87 @@
+From 10eb5d9170e39f7495475168ba5ea2ac45c3fccf Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Thu, 4 Jun 2026 09:17:29 +0200
+Subject: [PATCH 2/2] wifi: iwlwifi: pcie: add debug logging for dead-device
+ fast-fail
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Debug-only instrumentation to validate the dead-transport fix:
+
+- Count NIC access timeouts (15ms busy-poll each) and log with
+  exponential backoff, including silent callers that previously hid
+  the stall, the CSR_GP_CNTRL value and the caller.
+- Count accesses skipped after STATUS_TRANS_DEAD is set and log how
+  much busy-poll time was avoided.
+
+If the theory is correct, after a firmware crash the log should show
+one or few access timeouts with CSR_GP_CNTRL 0xffffffff, followed by
+the dead-transport message and a rapidly growing skip counter instead
+of minutes-long hung task stalls under RTNL.
+
+Not intended for upstream.
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ .../intel/iwlwifi/pcie/gen1_2/trans.c         | 29 ++++++++++++++++++-
+ 1 file changed, 28 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/gen1_2/trans.c b/drivers/net/wireless/intel/iwlwifi/pcie/gen1_2/trans.c
+index 37df3e940327f..f57ced0b38dc5 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/gen1_2/trans.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/gen1_2/trans.c
+@@ -2327,6 +2327,9 @@ EXPORT_SYMBOL(iwl_trans_pcie_reset);
+  * This version doesn't disable BHs but rather assumes they're
+  * already disabled.
+  */
++/* debug instrumentation: count accesses avoided after dead-device detection */
++static atomic_t iwl_dead_access_cnt = ATOMIC_INIT(0);
++
+ bool _iwl_trans_pcie_grab_nic_access(struct iwl_trans *trans, bool silent)
+ {
+ 	int ret;
+@@ -2336,8 +2339,20 @@ bool _iwl_trans_pcie_grab_nic_access(struct iwl_trans *trans, bool silent)
+ 		   CSR_GP_CNTRL_REG_FLAG_GOING_TO_SLEEP;
+ 	u32 poll = CSR_GP_CNTRL_REG_VAL_MAC_ACCESS_EN;
+ 
+-	if (test_bit(STATUS_TRANS_DEAD, &trans->status))
++	if (test_bit(STATUS_TRANS_DEAD, &trans->status)) {
++		int n = atomic_inc_return(&iwl_dead_access_cnt);
++
++		/*
++		 * Each of these accesses would have busy-polled for 15ms
++		 * before the dead-device fast-fail. Log with exponential
++		 * backoff to show how much stall time was avoided.
++		 */
++		if (is_power_of_2(n))
++			IWL_ERR(trans,
++				"dead trans: skipped %d NIC accesses (~%dms poll time avoided), caller %pS\n",
++				n, n * 15, (void *)_RET_IP_);
+ 		return false;
++	}
+ 
+ 	spin_lock(&trans_pcie->reg_lock);
+ 
+@@ -2378,6 +2393,18 @@ bool _iwl_trans_pcie_grab_nic_access(struct iwl_trans *trans, bool silent)
+ 	ret = iwl_poll_bits_mask(trans, CSR_GP_CNTRL, poll, mask, 15000);
+ 	if (unlikely(ret)) {
+ 		u32 cntrl = iwl_read32(trans, CSR_GP_CNTRL);
++		static atomic_t timeout_cnt = ATOMIC_INIT(0);
++		int n = atomic_inc_return(&timeout_cnt);
++
++		/*
++		 * Debug instrumentation: each timeout burned 15ms of
++		 * busy-polling. Log with exponential backoff (also for
++		 * silent callers, which otherwise hide the stall entirely).
++		 */
++		if (is_power_of_2(n))
++			IWL_ERR(trans,
++				"NIC access timeout #%d (~%dms total busy-poll, CSR_GP_CNTRL 0x%08x, silent=%d), caller %pS\n",
++				n, n * 15, cntrl, silent, (void *)_RET_IP_);
+ 
+ 		if (silent) {
+ 			spin_unlock(&trans_pcie->reg_lock);
+-- 
+2.53.0
+
