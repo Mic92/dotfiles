@@ -190,7 +190,6 @@
       url = "github:Mic92/niks3";
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.treefmt-nix.follows = "treefmt-nix";
-      inputs.flake-parts.follows = "flake-parts";
     };
 
     freelancer-toolbox.url = "github:numtide/freelancer-toolbox";
