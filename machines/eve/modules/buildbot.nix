@@ -33,9 +33,8 @@ let
         --flag "$system"
       )
 
-      # Extract PR number if this is a PR branch (refs/pull/NNN/merge)
-      if [[ "$BRANCH" =~ refs/pull/([0-9]+)/ ]]; then
-        args+=(--pr "''${BASH_REMATCH[1]}")
+      if [[ -n "$PR_NUMBER" ]]; then
+        args+=(--pr "$PR_NUMBER")
       else
         args+=(--branch "$BRANCH")
       fi
@@ -67,11 +66,11 @@ in
         > $out/secrets
     '';
   };
-  services.buildbot-nix.master = {
+
+  services.buildbot-nix = {
     enable = true;
     domain = "buildbot.thalheim.io";
 
-    workersFile = config.sops.secrets.buildbot-nix-workers.path;
     buildSystems = [
       "i686-linux"
       "x86_64-linux"
@@ -82,6 +81,7 @@ in
     branches.mergeQueue.matchGlob = "gitea-mq/*";
     evalWorkerCount = 6;
     github = {
+      enable = true;
       webhookSecretFile = config.sops.secrets.buildbot-github-webhook-secret.path;
 
       oauthId = "Iv23ctDGhrm116Be1LhO";
@@ -91,10 +91,10 @@ in
       appSecretKeyFile = config.sops.secrets.buildbot-github-app-secret-key.path;
     };
     admins = [
-      "Mic92"
-      "DavHau"
-      "Lassulus"
-      "Enzime"
+      "github:Mic92"
+      "github:DavHau"
+      "github:Lassulus"
+      "github:Enzime"
     ];
     outputsPath = "/var/www/buildbot/nix-outputs/";
 
@@ -109,6 +109,7 @@ in
           BRANCH = interpolate "%(prop:branch)s";
           REVISION = interpolate "%(prop:revision)s";
           PROJECT = interpolate "%(prop:project)s";
+          PR_NUMBER = interpolate "%(prop:pr_number)s";
         };
         command = [ "${codecov-upload}" ];
         warnOnly = true;
@@ -130,48 +131,10 @@ in
       };
     };
   };
-  services.buildbot-master = {
-    extraConfig = ''
-      from buildbot.manhole import AuthorizedKeysManhole
-      c['manhole'] = AuthorizedKeysManhole("tcp:12456", "/etc/ssh/authorized_keys.d/joerg", "/var/lib/buildbot/master/ssh/")
-    '';
-    pythonPackages = ps: [
-      ps.bcrypt
-      ps.cryptography
-    ];
-  };
-  systemd.services.buildbot-master.path = [ pkgs.openssh ];
-  systemd.services.buildbot-master.serviceConfig.LoadCredential = [
+
+  systemd.services.buildbot-nix.serviceConfig.LoadCredential = [
     "codecov-token:${config.clan.core.vars.generators.codecov-token.files.token.path}"
   ];
-  systemd.services.buildbot-master.preStart = ''
-    mkdir -p /var/lib/buildbot/master/ssh
-    if [ ! -f /var/lib/buildbot/master/ssh/ssh_host_ed25519_key ]; then
-      ssh-keygen -t ed25519 -f /var/lib/buildbot/master/ssh/ssh_host_ed25519_key -N ""
-    fi
-  '';
-  services.buildbot-nix.worker = {
-    enable = true;
-    # Must match "cores" in the workersFile JSON (16) to avoid spawning
-    # more workers than the master expects (eve has 24 CPUs).
-    workers = 16;
-    workerPasswordFile = config.sops.secrets.buildbot-nix-worker-password.path;
-    # Broken atm
-    #nixEvalJobs.package =
-    #  (pkgs.nix-eval-jobs.override {
-    #    nix = config.nix.package;
-    #  }).overrideAttrs
-    #    (_oldAttrs: {
-    #      src = pkgs.fetchFromGitHub {
-    #        owner = "nix-community";
-    #        repo = "nix-eval-jobs";
-    #        # https://github.com/nix-community/nix-eval-jobs/pull/341
-    #        rev = "331aa136a3414f41e7524c9614d29a35122d6275";
-    #        sha256 = "sha256-+ga7K6xenkpyoJgsM7ZYjacTLIoaCVxt33SzfTQrZpE=";
-    #      };
-    #    });
-
-  };
 
   services.nginx.virtualHosts."buildbot.thalheim.io" = {
     forceSSL = true;

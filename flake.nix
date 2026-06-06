@@ -76,7 +76,7 @@
     data-mesher.inputs.treefmt-nix.follows = "treefmt-nix";
     data-mesher.inputs.flake-parts.follows = "flake-parts";
 
-    buildbot-nix.url = "git+https://github.com/nix-community/buildbot-nix?shallow=1";
+    buildbot-nix.url = "git+https://github.com/nix-community/buildbot-nix?shallow=1&ref=v2";
     buildbot-nix.inputs.nixpkgs.follows = "nixpkgs";
     buildbot-nix.inputs.treefmt-nix.follows = "treefmt-nix";
 
