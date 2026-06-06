@@ -68,6 +68,7 @@
     #spora.inputs.nixpkgs.follows = "nixpkgs";
 
     nixos-hardware.url = "github:NixOS/nixos-hardware";
+    nixos-hardware.inputs.nixpkgs.follows = "nixpkgs";
 
     systems.url = "github:nix-systems/default";
 
