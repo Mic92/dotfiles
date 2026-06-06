@@ -22,8 +22,7 @@
     self.inputs.srvos.nixosModules.server
     self.inputs.srvos.nixosModules.mixins-nginx
     self.inputs.srvos.nixosModules.hardware-hetzner-online-amd
-    self.inputs.buildbot-nix.nixosModules.buildbot-worker
-    self.inputs.buildbot-nix.nixosModules.buildbot-master
+    self.inputs.buildbot-nix.nixosModules.buildbot-nix
     self.inputs.disko.nixosModules.disko
 
     self.inputs.nix-index-database.nixosModules.nix-index
