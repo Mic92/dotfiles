@@ -10,6 +10,9 @@ _args: {
       pkgs.runCommand "effect-state-test"
         {
           nativeBuildInputs = [
+            # cacert's setup hook exports SSL_CERT_FILE (hercules mkEffect
+            # ships it as a default input for the same reason).
+            pkgs.cacert
             pkgs.curl
             pkgs.jq
           ];
