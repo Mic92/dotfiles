@@ -39,9 +39,8 @@ _args: {
             pkgs.jq
             pkgs.nix
           ];
-          secretsMap.git = {
-            type = "GitToken";
-          };
+          # mkEffect JSON-encodes secretsMap; raw derivations must too.
+          secretsMap = builtins.toJSON { git.type = "GitToken"; };
         }
         ''
           [ "$HOME" = /homeless-shelter ]
