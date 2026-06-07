@@ -66,6 +66,25 @@ in
     '';
   };
 
+  # OIDC client for Authelia: buildbot gets the plaintext secret,
+  # Authelia gets the pbkdf2 digest (see authelia.nix).
+  clan.core.vars.generators.buildbot-oidc = {
+    files.client-secret = { };
+    files.client-secret-hash.secret = false;
+    runtimeInputs = with pkgs; [
+      coreutils
+      openssl
+      authelia
+      gnused
+    ];
+    script = ''
+      openssl rand -hex 32 | tr -d '\n' > "$out/client-secret"
+      authelia crypto hash generate pbkdf2 --variant sha512 \
+        --password "$(cat "$out/client-secret")" |
+        sed 's/^Digest: //' > "$out/client-secret-hash"
+    '';
+  };
+
   # Codecov token for harmonia coverage uploads (used in postBuildSteps)
   clan.core.vars.generators.codecov-token = {
     files.token = { };
@@ -120,12 +139,26 @@ in
       tokenFile = config.clan.core.vars.generators.buildbot-gitlab.files.token.path;
       repoAllowlist = [ "Mic92/dotfiles" ];
     };
+    oidc = {
+      enable = true;
+      name = "Authelia";
+      discoveryUrl = "https://auth.thalheim.io/.well-known/openid-configuration";
+      clientId = "buildbot";
+      clientSecretFile = config.clan.core.vars.generators.buildbot-oidc.files.client-secret.path;
+      scope = [
+        "openid"
+        "email"
+        "profile"
+        "groups"
+      ];
+    };
     admins = [
       "github:Mic92"
       "gitea:Mic92"
       "github:DavHau"
       "github:Lassulus"
       "github:Enzime"
+      "oidc:auth.thalheim.io:joerg"
     ];
     outputsPath = "/var/www/buildbot/nix-outputs/";
 
