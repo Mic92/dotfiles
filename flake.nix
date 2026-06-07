@@ -243,6 +243,8 @@
 
           nixosModules.default = ./nixosModules/default.nix;
           nixosModules.authelia = ./nixosModules/authelia;
+
+          herculesCI = import ./checks/effects.nix { inherit inputs self; };
         };
     };
 }
