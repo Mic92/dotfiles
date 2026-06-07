@@ -1,13 +1,34 @@
 {
   config,
+  pkgs,
   self,
   ...
 }:
 {
   imports = [ self.nixosModules.authelia ];
 
+  # Separate generator from the shared `authelia` one so adding OIDC
+  # does not rotate its existing secrets.
+  clan.core.vars.generators.authelia-oidc = {
+    files.hmac-secret.owner = "authelia-main";
+    files.issuer-key.owner = "authelia-main";
+    runtimeInputs = with pkgs; [
+      coreutils
+      openssl
+    ];
+    script = ''
+      openssl rand 64 | openssl base64 -A | tr '+/' '-_' | tr -d '=' > "$out/hmac-secret"
+      openssl genrsa 4096 > "$out/issuer-key"
+    '';
+  };
+
   services.authelia.instances.main = {
     enable = true;
+
+    secrets = {
+      oidcHmacSecretFile = config.clan.core.vars.generators.authelia-oidc.files.hmac-secret.path;
+      oidcIssuerPrivateKeyFile = config.clan.core.vars.generators.authelia-oidc.files.issuer-key.path;
+    };
 
     environmentVariables = {
       AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE =
@@ -37,6 +58,22 @@
         username = "authelia@thalheim.io";
         sender = "authelia@thalheim.io";
       };
+
+      identity_providers.oidc.clients = [
+        {
+          client_id = "buildbot";
+          client_name = "Buildbot";
+          client_secret = config.clan.core.vars.generators.buildbot-oidc.files.client-secret-hash.value;
+          redirect_uris = [ "https://buildbot.thalheim.io/auth/oidc/callback" ];
+          scopes = [
+            "openid"
+            "email"
+            "profile"
+            "groups"
+          ];
+          authorization_policy = "one_factor";
+        }
+      ];
 
       access_control.rules = [
         {
