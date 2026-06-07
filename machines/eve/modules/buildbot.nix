@@ -48,6 +48,12 @@ let
   '';
 in
 {
+  clan.core.vars.generators.buildbot-gitlab = {
+    files.token = { };
+    prompts.token.description = "GitLab access token (api scope)";
+    script = "cp $prompts/token $out/token";
+  };
+
   # Credentials of the "buildbot" user on git.thalheim.io
   clan.core.vars.generators.buildbot-gitea = {
     files.token = { };
@@ -108,6 +114,11 @@ in
       tokenFile = config.clan.core.vars.generators.buildbot-gitea.files.token.path;
       oauthId = "18f7b270-a19e-4b2a-b69e-4e99f9fd7fba";
       oauthSecretFile = config.clan.core.vars.generators.buildbot-gitea.files.oauth-secret.path;
+    };
+    gitlab = {
+      enable = true;
+      tokenFile = config.clan.core.vars.generators.buildbot-gitlab.files.token.path;
+      repoAllowlist = [ "Mic92/dotfiles" ];
     };
     admins = [
       "github:Mic92"
