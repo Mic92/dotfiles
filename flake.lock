@@ -66,10 +66,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1780834905,
-        "narHash": "sha256-Mnnu9T69S8vl1Gq2t7bmem6ImqKhKHmpMTGoQcezsfc=",
+        "lastModified": 1780836603,
+        "narHash": "sha256-7skx5Ww72rlKaY8yT1IVgwRKMyvClTMXqhIEh6damq8=",
         "ref": "v2",
-        "rev": "205921b6e9eccbf4711a075bb47312fec1b72b0d",
+        "rev": "d97da9c04271e9df4f3eabd9a20f9309e2f31460",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/nix-community/buildbot-nix"
@@ -401,16 +401,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1777284559,
-        "narHash": "sha256-dtmUwV7hFvjmgoIDNhl9BX/JcSqor/0eFZ7crMDCNOg=",
+        "lastModified": 1780547831,
+        "narHash": "sha256-931e3bvwN/JsWyCkRFY3n7yYSL08vmtA8jHt0BbgkDA=",
         "owner": "Mic92",
         "repo": "gitea-mq",
-        "rev": "e4de09e94dd9d6eeae2a3fba6eab5d1e9919b4bc",
+        "rev": "39afb5123c54bd512e9bbfe8cdc4ae0284fa9314",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
-        "ref": "github-mq",
         "repo": "gitea-mq",
         "type": "github"
       }
