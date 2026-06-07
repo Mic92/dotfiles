@@ -151,6 +151,11 @@ in
         "profile"
         "groups"
       ];
+      mapping.groups = "groups";
+    };
+    # Anyone who can log in through Authelia may see private repos.
+    privateRepoViewers = {
+      "*" = [ "oidc:auth.thalheim.io:*" ];
     };
     admins = [
       "github:Mic92"
