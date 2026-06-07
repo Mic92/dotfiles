@@ -48,6 +48,18 @@ let
   '';
 in
 {
+  # Credentials of the "buildbot" user on git.thalheim.io
+  clan.core.vars.generators.buildbot-gitea = {
+    files.token = { };
+    files.oauth-secret = { };
+    prompts.token.description = "Gitea access token (write:repository, read:user)";
+    prompts.oauth-secret.description = "Gitea OAuth client secret";
+    script = ''
+      cp $prompts/token $out/token
+      cp $prompts/oauth-secret $out/oauth-secret
+    '';
+  };
+
   # Codecov token for harmonia coverage uploads (used in postBuildSteps)
   clan.core.vars.generators.codecov-token = {
     files.token = { };
@@ -90,8 +102,16 @@ in
       appId = 915265;
       appSecretKeyFile = config.sops.secrets.buildbot-github-app-secret-key.path;
     };
+    gitea = {
+      enable = true;
+      instanceUrl = "https://git.thalheim.io";
+      tokenFile = config.clan.core.vars.generators.buildbot-gitea.files.token.path;
+      oauthId = "18f7b270-a19e-4b2a-b69e-4e99f9fd7fba";
+      oauthSecretFile = config.clan.core.vars.generators.buildbot-gitea.files.oauth-secret.path;
+    };
     admins = [
       "github:Mic92"
+      "gitea:Mic92"
       "github:DavHau"
       "github:Lassulus"
       "github:Enzime"
