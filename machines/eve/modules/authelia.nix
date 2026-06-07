@@ -72,8 +72,6 @@
             "groups"
           ];
           authorization_policy = "one_factor";
-          # buildbot-nix sends credentials in the POST body
-          token_endpoint_auth_method = "client_secret_post";
         }
       ];
 
