@@ -27,7 +27,6 @@ _args: {
           got=$(curl -fsS -H "Authorization: Bearer $token" "$base")
           echo "state roundtrip: $got"
           [ "$got" = "state-test $rev" ]
-          touch $out
         '';
   };
 }
