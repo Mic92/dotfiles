@@ -256,11 +256,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1780403740,
-        "narHash": "sha256-7MNPrFiaX+4aA7aBDhItgmz4/YLlWXg8izN6llngDT4=",
+        "lastModified": 1780688659,
+        "narHash": "sha256-yKoFGu4jwWiBSVUXGiQCZFnZeTRXskfKmi+zu6gaIMw=",
         "owner": "Mic92",
         "repo": "fast-nix-gc",
-        "rev": "8769dd0f579a219f790c593cb692407d80627641",
+        "rev": "21fde03e4a19a957c17203bd47ecd099482c0a80",
         "type": "github"
       },
       "original": {
@@ -774,10 +774,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1780556647,
-        "narHash": "sha256-xyX9QC1t49sFJ7ITVp8libOeyKMMWc0xjwe2lSmsRYo=",
+        "lastModified": 1780839504,
+        "narHash": "sha256-vszhEoocEkJUsiZE8jjrdZBLeK6PAjjWHqm09nbNqYs=",
         "ref": "main",
-        "rev": "8c69eeeb3d38b4b53c5b990436fb9ec4574b05c6",
+        "rev": "abe259120e6cb7861cbf5cb666225f53e473ccb3",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
