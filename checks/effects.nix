@@ -55,4 +55,29 @@ _args: {
           echo sandbox checks passed
         '';
   };
+
+  # Hourly heartbeat (deterministic pseudo-random minute) exercising
+  # the scheduled-effects loop; stores its timestamp via the state API.
+  onSchedule.heartbeat = {
+    when = { };
+    outputs.effects.heartbeat =
+      let
+        pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+      in
+      pkgs.runCommand "effect-heartbeat"
+        {
+          nativeBuildInputs = [
+            pkgs.cacert
+            pkgs.curl
+            pkgs.jq
+          ];
+        }
+        ''
+          token=$(jq -r '.["hercules-ci"].data.token' "$HERCULES_CI_SECRETS_JSON")
+          date -u +%FT%TZ | curl -fsS -X PUT --data-binary @- \
+            -H "Authorization: Bearer $token" \
+            "$HERCULES_CI_API_BASE_URL/api/v1/current-task/state/heartbeat/data"
+          echo heartbeat stored
+        '';
+  };
 }
