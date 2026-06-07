@@ -158,7 +158,7 @@ in
       "github:DavHau"
       "github:Lassulus"
       "github:Enzime"
-      "oidc:auth.thalheim.io:joerg"
+      "oidc:auth.thalheim.io:joerg@thalheim.io"
     ];
     outputsPath = "/var/www/buildbot/nix-outputs/";
 
