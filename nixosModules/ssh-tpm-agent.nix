@@ -5,22 +5,6 @@
   ...
 }:
 let
-  # Track fork until upstream ships the confirm-prompt requestor info
-  # (SO_PEERCRED process chain in askpass) on top of #114.
-  # keyring tests require Linux kernel keyring which isn't available in the Nix sandbox
-  ssh-tpm-agent = pkgs.ssh-tpm-agent.overrideAttrs (_old: {
-    version = "0.8.0-unstable-2026-04-24";
-    src = pkgs.fetchFromGitHub {
-      owner = "Mic92";
-      repo = "ssh-tpm-agent";
-      rev = "c7a0ce9d733e299f2ecc45697ac25df9aacf65e0";
-      hash = "sha256-P7pHYhQJVXwC4QiMogW2nyt1GWz8JQI9NzNsmnlP8yI=";
-    };
-    # nixpkgs carries a backport patch that is already in this tree
-    patches = [ ];
-    vendorHash = "sha256-s899KmXdeUt/SSCL3Vu1T/JTJT8mZP99MDb+Thcfyw4=";
-    doCheck = false;
-  });
   # Prefer the noctalia ssh-askpass plugin when the shell is running: it
   # actually honours SSH_ASKPASS_PROMPT=confirm (lxqt-openssh-askpass does
   # not) so ssh-tpm-add -c confirmations get real Allow/Deny buttons instead
@@ -54,7 +38,7 @@ in
   users.users.joerg.extraGroups = [ "tss" ]; # tss group has access to TPM devices
 
   environment.systemPackages = [
-    ssh-tpm-agent
+    pkgs.ssh-tpm-agent
     pkgs.keyutils
   ];
 
@@ -77,7 +61,7 @@ in
       SSH_ASKPASS = askPasswordWrapper;
     };
     serviceConfig = {
-      ExecStart = "${ssh-tpm-agent}/bin/ssh-tpm-agent";
+      ExecStart = "${pkgs.ssh-tpm-agent}/bin/ssh-tpm-agent";
       PassEnvironment = "SSH_AGENT_PID";
       SuccessExitStatus = 2;
       Type = "simple";
