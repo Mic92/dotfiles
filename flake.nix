@@ -98,7 +98,7 @@
     forge-triage.url = "github:Mic92/forge-triage";
     forge-triage.inputs.nixpkgs.follows = "nixpkgs";
 
-    gitea-mq.url = "github:Mic92/gitea-mq/github-mq";
+    gitea-mq.url = "github:Mic92/gitea-mq";
     gitea-mq.inputs.nixpkgs.follows = "nixpkgs";
     gitea-mq.inputs.treefmt-nix.follows = "treefmt-nix";
 
