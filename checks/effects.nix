@@ -59,11 +59,7 @@ _args: {
   # Hourly heartbeat (deterministic pseudo-random minute) exercising
   # the scheduled-effects loop; stores its timestamp via the state API.
   onSchedule.heartbeat = {
-    when = {
-      # Explicit: buildbot-nix defaults an unset hour to one
-      # pseudo-random hour per day.
-      hour = inputs.nixpkgs.lib.range 0 23;
-    };
+    when = { };
     outputs.effects.heartbeat =
       let
         pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
