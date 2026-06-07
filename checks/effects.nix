@@ -28,5 +28,32 @@ _args: {
           echo "state roundtrip: $got"
           [ "$got" = "state-test $rev" ]
         '';
+
+    sandbox-test =
+      let
+        pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+      in
+      pkgs.runCommand "effect-sandbox-test"
+        {
+          nativeBuildInputs = [
+            pkgs.jq
+            pkgs.nix
+          ];
+          secretsMap.git = {
+            type = "GitToken";
+          };
+        }
+        ''
+          [ "$HOME" = /homeless-shelter ]
+          [ "$(id -u)" = 0 ]
+          [ "$NIX_REMOTE" = daemon ]
+          # Private per-run daemon proxy (untrusted nix-daemon).
+          nix --extra-experimental-features nix-command store info
+          # secretsMap selection: exactly the requested secrets, and
+          # the GitToken entry carries a usable token.
+          jq -e 'keys == ["git", "hercules-ci"]' "$HERCULES_CI_SECRETS_JSON"
+          jq -er '.git.data.token | length > 0' "$HERCULES_CI_SECRETS_JSON"
+          echo sandbox checks passed
+        '';
   };
 }
