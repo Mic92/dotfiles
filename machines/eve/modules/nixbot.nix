@@ -107,6 +107,9 @@ in
   services.nixbot = {
     enable = true;
     domain = "buildbot.thalheim.io";
+    # Keep buildbot-era status contexts; repos still require
+    # buildbot/nix-build in branch protection.
+    statusContextPrefix = "buildbot";
 
     buildSystems = [
       "i686-linux"
