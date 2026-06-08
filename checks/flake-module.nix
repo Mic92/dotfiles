@@ -55,6 +55,8 @@ let
   ) (self'.legacyPackages.homeConfigurations or { });
 in
 {
-  checks =
-    nixosMachines // darwinMachines // packages // packageTests // devShells // homeConfigurations;
+  # Warning for testing eval warning reporting in CI
+  checks = lib.warn "test eval warning from checks/flake-module.nix" (
+    nixosMachines // darwinMachines // packages // packageTests // devShells // homeConfigurations
+  );
 }
