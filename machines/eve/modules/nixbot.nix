@@ -5,7 +5,7 @@
   ...
 }:
 let
-  inherit (self.inputs.buildbot-nix.lib) interpolate;
+  inherit (self.inputs.nixbot.lib) interpolate;
 
   codecov-upload = pkgs.writeShellScript "codecov-upload" ''
     # Only upload for test builds from harmonia (which include coverage)
@@ -104,7 +104,7 @@ in
     '';
   };
 
-  services.buildbot-nix = {
+  services.nixbot = {
     enable = true;
     domain = "buildbot.thalheim.io";
 
@@ -201,7 +201,7 @@ in
     };
   };
 
-  systemd.services.buildbot-nix.serviceConfig.LoadCredential = [
+  systemd.services.nixbot.serviceConfig.LoadCredential = [
     "codecov-token:${config.clan.core.vars.generators.codecov-token.files.token.path}"
   ];
 
