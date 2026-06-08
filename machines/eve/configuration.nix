@@ -22,7 +22,7 @@
     self.inputs.srvos.nixosModules.server
     self.inputs.srvos.nixosModules.mixins-nginx
     self.inputs.srvos.nixosModules.hardware-hetzner-online-amd
-    self.inputs.buildbot-nix.nixosModules.buildbot-nix
+    self.inputs.nixbot.nixosModules.nixbot
     self.inputs.disko.nixosModules.disko
 
     self.inputs.nix-index-database.nixosModules.nix-index
@@ -31,7 +31,7 @@
     ./modules/atuin.nix
     ./modules/authelia.nix
     ./modules/vaultwarden.nix
-    ./modules/buildbot.nix
+    ./modules/nixbot.nix
     ./modules/calendar-bot/configuration.nix
     ./modules/dendrite.nix
     ./modules/disko.nix

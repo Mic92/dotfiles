@@ -1,4 +1,4 @@
-# Dogfood for buildbot-nix effects: exercises the hercules-style
+# Dogfood for nixbot effects: exercises the hercules-style
 # secrets file and the current-task state API.
 { inputs, self }:
 _args: {

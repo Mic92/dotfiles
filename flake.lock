@@ -56,31 +56,6 @@
         "type": "github"
       }
     },
-    "buildbot-nix": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1780909656,
-        "narHash": "sha256-9gEcfpLYzyABoi/AJka0MH2n6lyzi1nC9As4sJZ/M3w=",
-        "ref": "v2",
-        "rev": "fd532628eb6bd4fd8074488d388abffca8fe9894",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/nix-community/buildbot-nix"
-      },
-      "original": {
-        "ref": "v2",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/nix-community/buildbot-nix"
-      }
-    },
     "bun2nix": {
       "inputs": {
         "flake-parts": [
@@ -752,6 +727,30 @@
         "type": "github"
       }
     },
+    "nixbot": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1780915295,
+        "narHash": "sha256-8xNiQH311NYr2ZMxDi6t52HInzItoeeCNMCKSzbKOZA=",
+        "ref": "refs/heads/main",
+        "rev": "e2e5f61d0c958e49bbb174b518c7b23ba1baf470",
+        "shallow": true,
+        "type": "git",
+        "url": "https://github.com/Mic92/nixbot"
+      },
+      "original": {
+        "shallow": true,
+        "type": "git",
+        "url": "https://github.com/Mic92/nixbot"
+      }
+    },
     "nixos-hardware": {
       "inputs": {
         "nixpkgs": [
@@ -882,7 +881,6 @@
       "inputs": {
         "adios-flake": "adios-flake",
         "blueprint": "blueprint",
-        "buildbot-nix": "buildbot-nix",
         "clan-core": "clan-core",
         "crane": "crane",
         "data-mesher": "data-mesher",
@@ -909,6 +907,7 @@
         "nix-diff-rs": "nix-diff-rs",
         "nix-index-database": "nix-index-database",
         "nix-tree-rs": "nix-tree-rs",
+        "nixbot": "nixbot",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "noctalia-plugins": "noctalia-plugins",
