@@ -117,7 +117,6 @@ in
       "aarch64-linux"
       "aarch64-darwin"
     ];
-    branches.releaseBranches.matchGlob = "test-*";
     branches.mergeQueue.matchGlob = "gitea-mq/*";
     evalWorkerCount = 6;
     github = {
