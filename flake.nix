@@ -77,7 +77,7 @@
     data-mesher.inputs.treefmt-nix.follows = "treefmt-nix";
     data-mesher.inputs.flake-parts.follows = "flake-parts";
 
-    nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1&ref=eval-warnings";
+    nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1&ref=test-refactorings";
     nixbot.inputs.nixpkgs.follows = "nixpkgs";
     nixbot.inputs.treefmt-nix.follows = "treefmt-nix";
 
