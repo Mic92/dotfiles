@@ -83,7 +83,6 @@ in
     aiTools.tuicr
     aiTools.coderabbit-cli
     aiTools.openspec
-    aiTools.gemini-cli
     aiTools.ccusage
     aiTools.ccstatusline
     # https://github.com/Mic92/workmux/tree/fix-config-lock-race
