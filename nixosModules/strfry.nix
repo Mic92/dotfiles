@@ -39,6 +39,18 @@ in
       description = "nginx vhost ACME attrs (useACMEHost or enableACME).";
     };
 
+    retentionDays = lib.mkOption {
+      type = lib.types.nullOr lib.types.ints.positive;
+      default = 90;
+      description = ''
+        Delete events older than this many days via a weekly timer.
+        Without pruning the LMDB database grows unbounded (~7KB per
+        event including indexes). Set to null to keep events forever.
+        Note: LMDB never shrinks the file; deletion only frees pages
+        for reuse, capping further growth.
+      '';
+    };
+
     syncPeers = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
@@ -111,6 +123,39 @@ in
         ProtectKernelTunables = true;
         ProtectControlGroups = true;
         ReadWritePaths = [ "/var/lib/strfry" ];
+      };
+    };
+
+    # Old events are rarely queried but dominate storage; without this
+    # the LMDB file grows unbounded and eventually fills the root fs.
+    systemd.services.strfry-prune = lib.mkIf (cfg.retentionDays != null) {
+      description = "Prune old strfry events";
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${pkgs.strfry}/bin/strfry --config=/etc/strfry.conf delete --age=${
+          toString (cfg.retentionDays * 86400)
+        }";
+
+        DynamicUser = true;
+        StateDirectory = "strfry";
+
+        NoNewPrivileges = true;
+        ProtectSystem = "strict";
+        ProtectHome = true;
+        PrivateTmp = true;
+        PrivateDevices = true;
+        ProtectKernelTunables = true;
+        ProtectControlGroups = true;
+        ReadWritePaths = [ "/var/lib/strfry" ];
+      };
+    };
+
+    systemd.timers.strfry-prune = lib.mkIf (cfg.retentionDays != null) {
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnCalendar = "weekly";
+        Persistent = true;
+        RandomizedDelaySec = "1h";
       };
     };
 

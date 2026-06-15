@@ -18,6 +18,8 @@
     # eva has no wildcard cert for thalheim.io, so request a per-host
     # cert via HTTP-01 like the other eva vhosts.
     acme.enableACME = true;
+    # Mirror with smaller root fs; primary (eve) keeps the default 90 days.
+    retentionDays = 10;
     syncPeers = [ "wss://nostr.thalheim.io" ];
   };
 }
