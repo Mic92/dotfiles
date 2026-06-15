@@ -26,7 +26,7 @@ let
     "container_name"
   ];
 
-  wasmFilter = pkgs.callPackage ./fluent-bit-filter-go/package.nix { };
+  wasmFilter = pkgs.callPackage ./fluent-bit-filter-wasm/package.nix { };
 in
 {
   clan.core.vars.generators.promtail = {
@@ -79,7 +79,7 @@ in
             name = "wasm";
             match = "journal";
             wasm_path = "${wasmFilter}/lib/fluent_bit_journal_filter.wasm";
-            function_name = "go_filter";
+            function_name = "filter_journal";
             accessible_paths = ".";
           }
           {
@@ -119,6 +119,9 @@ in
 
   systemd.services.fluent-bit = {
     serviceConfig = {
+      # Safety net: the wasm filter instance is persistent and wasm linear
+      # memory never shrinks, so restart daily to bound memory growth.
+      RuntimeMaxSec = "1d";
       StateDirectory = "fluent-bit";
       RuntimeDirectory = "fluent-bit";
       LoadCredential = "loki-password:${passwordFile}";
