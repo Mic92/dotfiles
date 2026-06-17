@@ -384,6 +384,7 @@
       },
       "original": {
         "owner": "Mic92",
+        "ref": "mit-license",
         "repo": "gitea-mq",
         "type": "github"
       }
