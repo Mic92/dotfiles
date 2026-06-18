@@ -581,10 +581,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1781817608,
-        "narHash": "sha256-8BE16961QplemFEwx2ibKrIq/dsvNdyj2hl4wGgSRso=",
+        "lastModified": 1781817719,
+        "narHash": "sha256-kXX4UaTIqX9S9gCjK1UmFflV7wClt1tx4LZcewmTH1s=",
         "ref": "refs/heads/main",
-        "rev": "5a0c382874d41e1016a6fc5535436c903e21f1c6",
+        "rev": "1f7b8d053280621b9e0cbd4b5e4288b8c1a79d50",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
@@ -921,6 +921,7 @@
         "systems": "systems",
         "tincr": "tincr",
         "treefmt-nix": "treefmt-nix",
+        "tribuchet": "tribuchet",
         "valve-erp": "valve-erp"
       }
     },
@@ -1048,6 +1049,29 @@
       "original": {
         "owner": "numtide",
         "repo": "treefmt-nix",
+        "type": "github"
+      }
+    },
+    "tribuchet": {
+      "inputs": {
+        "nix-darwin": [
+          "nix-darwin"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1781702065,
+        "narHash": "sha256-Hfz/gD6D0tf/i+PhmDo1E3O+f8OXgR2e56xnnXWoE88=",
+        "owner": "Mic92",
+        "repo": "tribuchet",
+        "rev": "fa0cba3574bc47db04b55e3f819b166162e4836a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "tribuchet",
         "type": "github"
       }
     },
