@@ -36,6 +36,7 @@
     noctalia-plugins.url = "github:Mic92/noctalia-plugins/nostr";
     noctalia-plugins.inputs.nixpkgs.follows = "nixpkgs";
 
+    # nix-1 main carries the tribuchet external-builders uid-range patch
     nix.url = "git+https://github.com/Mic92/nix-1?shallow=1";
     nix.inputs.nixpkgs.follows = "nixpkgs";
     nix.inputs.flake-compat.follows = "";
@@ -63,6 +64,10 @@
     tincr.inputs.nixpkgs.follows = "nixpkgs";
     tincr.inputs.treefmt-nix.follows = "treefmt-nix";
     tincr.inputs.crane.follows = "crane";
+
+    tribuchet.url = "github:Mic92/tribuchet";
+    tribuchet.inputs.nixpkgs.follows = "nixpkgs";
+    tribuchet.inputs.nix-darwin.follows = "nix-darwin";
 
     #spora.url = "github:krebs/spora";
     #spora.inputs.nixpkgs.follows = "nixpkgs";
