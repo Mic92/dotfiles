@@ -49,21 +49,23 @@
         "uid-range"
       ];
     }
-    {
-      hostName = "eliza";
-      maxJobs = 128;
-      sshKey = config.sops.secrets.ssh-tum-builder.path;
-      protocol = "ssh-ng";
-      sshUser = "nix";
-      systems = [ "aarch64-linux" ];
-      supportedFeatures = [
-        "big-parallel"
-        "kvm"
-        "nixos-test"
-        "recursive-nix"
-        "uid-range"
-      ];
-    }
+    # aarch64-linux builds on eliza go through tribuchet now (see
+    # modules/tribuchet.nix), not the classic ssh build hook.
+    #{
+    #  hostName = "eliza";
+    #  maxJobs = 128;
+    #  sshKey = config.sops.secrets.ssh-tum-builder.path;
+    #  protocol = "ssh-ng";
+    #  sshUser = "nix";
+    #  systems = [ "aarch64-linux" ];
+    #  supportedFeatures = [
+    #    "big-parallel"
+    #    "kvm"
+    #    "nixos-test"
+    #    "recursive-nix"
+    #    "uid-range"
+    #  ];
+    #}
   ];
   programs.ssh.extraConfig = ''
     # Detect dead TCP connections to remote builders so build-remote does not
