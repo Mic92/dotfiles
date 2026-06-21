@@ -45,6 +45,8 @@ in
   services.tribuchet-hub = {
     enable = true;
     openFirewall = true;
+    # Prometheus metrics scraped locally by telegraf (see telegraf.nix).
+    settings.metrics-listen = "127.0.0.1:7438";
     externalBuilders = {
       enable = true;
       # aarch64-linux goes to the eliza worker, x86_64-linux to jamie;
