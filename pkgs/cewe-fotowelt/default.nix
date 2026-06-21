@@ -22,7 +22,9 @@
   libxi,
   libxkbcommon,
   libxkbfile,
+  libxrandr,
   libxrender,
+  libxtst,
   makeWrapper,
   nspr,
   nss,
@@ -56,16 +58,18 @@ stdenv.mkDerivation rec {
     bash
 
     # X11 libraries
+    libxrandr
     libx11
-    libxext
-    libxrender
-    libxcomposite
-    libxi
     libxcb
     libxcb-cursor
+    libxcomposite
+    libxdamage
+    libxext
+    libxi
     libxkbcommon
     libxkbfile
-    libxdamage
+    libxrender
+    libxtst
 
     # Graphics
     libGL
