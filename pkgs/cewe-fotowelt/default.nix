@@ -33,6 +33,10 @@
   stdenv,
   systemd,
   wayland,
+  xcbutilwm,
+  xcbutilkeysyms,
+  libsm,
+  libice,
   xdg-utils,
 }:
 
@@ -70,6 +74,11 @@ stdenv.mkDerivation rec {
     libxkbfile
     libxrender
     libxtst
+    # Required by the Qt xcb platform plugin (libqxcb.so / libQt6XcbQpa)
+    xcbutilwm # libxcb-icccm.so.4
+    xcbutilkeysyms # libxcb-keysyms.so.1
+    libsm # libSM.so.6
+    libice # libICE.so.6
 
     # Graphics
     libGL
