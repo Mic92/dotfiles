@@ -36,6 +36,11 @@
           urls = [ "http://127.0.0.1:5000/metrics" ];
           metric_version = 2;
         }
+        {
+          # tribuchet build hub
+          urls = [ "http://127.0.0.1:7438/metrics" ];
+          metric_version = 2;
+        }
       ];
     };
   };
