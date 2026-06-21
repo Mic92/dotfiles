@@ -124,19 +124,14 @@ stdenv.mkDerivation rec {
     substituteInPlace $out/opt/cewe-fotowelt/Resources/autobookservice/startAutoBookService \
       --replace-fail '#!/bin/bash' '#!${bash}/bin/bash'
 
-    # Make executables actually executable
-    chmod +x "$out/opt/cewe-fotowelt/CEWE Fotowelt" \
-             "$out/opt/cewe-fotowelt/CEWE Fotoschau" \
-             "$out/opt/cewe-fotowelt/autoBookEventClassifier" \
-             "$out/opt/cewe-fotowelt/AutoBookService" \
-             "$out/opt/cewe-fotowelt/faceRecognition" \
-             "$out/opt/cewe-fotowelt/ffmpeg" \
-             "$out/opt/cewe-fotowelt/ffprobe" \
-             "$out/opt/cewe-fotowelt/gpuprobe" \
-             "$out/opt/cewe-fotowelt/IconExtractor" \
-             "$out/opt/cewe-fotowelt/QtWebEngineProcess" \
-             "$out/opt/cewe-fotowelt/regedit" \
-             "$out/opt/cewe-fotowelt/updater.pl" \
+    # Make all ELF executables actually executable (some ship as 0444).
+    # Use a find-based approach so renamed/added binaries are covered too.
+    find "$out/opt/cewe-fotowelt" -type f | while read -r f; do
+      if head -c4 "$f" | grep -q $'\x7fELF' && file "$f" | grep -q "ELF.*executable"; then
+        chmod +x "$f"
+      fi
+    done
+    chmod +x "$out/opt/cewe-fotowelt/updater.pl" \
              "$out/opt/cewe-fotowelt/Resources/autobookservice/startAutoBookService" 2>/dev/null || true
 
     # Create bin directory
