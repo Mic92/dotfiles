@@ -686,9 +686,7 @@ def finalize_merge(platform: Platform, pr_id: str, default_branch: str) -> int:
 
 def chdir_repo_root() -> None:
     """Change to the git repository root so all commands run from there."""
-    result = run(
-        ["git", "rev-parse", "--show-toplevel"], check=False, capture=True
-    )
+    result = run(["git", "rev-parse", "--show-toplevel"], check=False, capture=True)
     if result.returncode != 0:
         print_error("Not inside a git repository")
         raise SystemExit(1)
