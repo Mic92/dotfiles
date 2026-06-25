@@ -1,36 +1,43 @@
 {
-  lib,
-  stdenv,
-  bash,
-  libarchive,
-  makeWrapper,
+  alsa-lib,
   autoPatchelfHook,
-  libx11,
-  libxext,
-  libxrender,
-  libxcomposite,
-  libxi,
-  libxcb,
-  libxcb-cursor,
-  libxkbfile,
-  snappy,
-  gst_all_1,
-  libGL,
+  bash,
+  cups,
+  dbus,
+  fetchurl,
   fontconfig,
   freetype,
-  dbus,
-  cups,
-  alsa-lib,
-  pulseaudio,
-  systemd,
-  libxkbcommon,
-  wayland,
-  xdg-utils,
-  fetchurl,
-  libheif,
-  nss,
-  nspr,
+  gst_all_1,
+  lib,
+  libGL,
+  libarchive,
   libgbm,
+  libheif,
+  libx11,
+  libxcb,
+  libxcb-cursor,
+  libxcomposite,
+  libxdamage,
+  libxext,
+  libxi,
+  libxkbcommon,
+  libxkbfile,
+  libxrandr,
+  libxrender,
+  libxtst,
+  makeWrapper,
+  nspr,
+  nss,
+  pulseaudio,
+  snappy,
+  stdenv,
+  systemd,
+  wayland,
+  xcbutilwm,
+  xcbutilkeysyms,
+  libsm,
+  libice,
+  xdg-utils,
 }:
 
 let
@@ -55,15 +62,23 @@ stdenv.mkDerivation rec {
     bash
 
     # X11 libraries
+    libxrandr
     libx11
-    libxext
-    libxrender
-    libxcomposite
-    libxi
     libxcb
     libxcb-cursor
+    libxcomposite
+    libxdamage
+    libxext
+    libxi
     libxkbcommon
     libxkbfile
+    libxrender
+    libxtst
+    # Required by the Qt xcb platform plugin (libqxcb.so / libQt6XcbQpa)
+    xcbutilwm # libxcb-icccm.so.4
+    xcbutilkeysyms # libxcb-keysyms.so.1
+    libsm # libSM.so.6
+    libice # libICE.so.6
 
     # Graphics
     libGL
@@ -118,19 +133,14 @@ stdenv.mkDerivation rec {
     substituteInPlace $out/opt/cewe-fotowelt/Resources/autobookservice/startAutoBookService \
       --replace-fail '#!/bin/bash' '#!${bash}/bin/bash'
 
-    # Make executables actually executable
-    chmod +x "$out/opt/cewe-fotowelt/CEWE Fotowelt" \
-             "$out/opt/cewe-fotowelt/CEWE Fotoschau" \
-             "$out/opt/cewe-fotowelt/autoBookEventClassifier" \
-             "$out/opt/cewe-fotowelt/AutoBookService" \
-             "$out/opt/cewe-fotowelt/faceRecognition" \
-             "$out/opt/cewe-fotowelt/ffmpeg" \
-             "$out/opt/cewe-fotowelt/ffprobe" \
-             "$out/opt/cewe-fotowelt/gpuprobe" \
-             "$out/opt/cewe-fotowelt/IconExtractor" \
-             "$out/opt/cewe-fotowelt/QtWebEngineProcess" \
-             "$out/opt/cewe-fotowelt/regedit" \
-             "$out/opt/cewe-fotowelt/updater.pl" \
+    # Make all ELF executables actually executable (some ship as 0444).
+    # Use a find-based approach so renamed/added binaries are covered too.
+    find "$out/opt/cewe-fotowelt" -type f | while read -r f; do
+      if head -c4 "$f" | grep -q $'\x7fELF' && file "$f" | grep -q "ELF.*executable"; then
+        chmod +x "$f"
+      fi
+    done
+    chmod +x "$out/opt/cewe-fotowelt/updater.pl" \
              "$out/opt/cewe-fotowelt/Resources/autobookservice/startAutoBookService" 2>/dev/null || true
 
     # Create bin directory
@@ -191,12 +201,12 @@ stdenv.mkDerivation rec {
         # Extract base name and version parts
         base=$(echo "$lib" | sed 's/\.so\..*//')
         version=$(echo "$lib" | sed 's/.*\.so\.//')
-        
+
         # Create .so.6 symlink (Qt6 libraries expect this)
         ln -sf "$lib" "$base.so.6"
         # Create .so symlink
         ln -sf "$lib" "$base.so"
-        
+
         echo "Created symlinks for $lib -> $base.so.6, $base.so"
       fi
     done
@@ -205,14 +215,14 @@ stdenv.mkDerivation rec {
     for lib in libopencv*.so.4.5.2; do
       if [ -f "$lib" ]; then
         base=$(echo "$lib" | sed 's/\.so\..*//')
-        
+
         # Create .so.4.5 symlink
         ln -sf "$lib" "$base.so.4.5"
         # Create .so.4 symlink if not exists
         [ ! -e "$base.so.4" ] && ln -sf "$lib" "$base.so.4"
         # Create .so symlink if not exists
         [ ! -e "$base.so" ] && ln -sf "$lib" "$base.so"
-        
+
         echo "Created symlinks for $lib -> $base.so.4.5"
       fi
     done
@@ -222,7 +232,7 @@ stdenv.mkDerivation rec {
       if [ -f "$lib" ] && [[ ! "$lib" =~ ^libQt6 ]] && [[ ! "$lib" =~ ^libopencv ]]; then
         base=$(echo "$lib" | sed 's/\.so\..*//')
         ln -sf "$lib" "$base.so" 2>/dev/null || true
-        
+
         # For versioned libraries like libCWAPM.so.0.1.0, also create .so.0
         if [[ "$lib" =~ \.so\.[0-9]+\.[0-9]+\.[0-9]+ ]]; then
           major=$(echo "$lib" | sed 's/.*\.so\.\([0-9]*\)\..*/\1/')

@@ -1,6 +1,6 @@
 # Beware! This file is rewritten by htop when settings are changed in the interface.
 # The parser is also very primitive, and not human-friendly.
-htop_version=3.5.0
+htop_version=3.5.1
 config_reader_min_version=3
 fields=0 48 17 18 38 39 2 46 47 49 1
 hide_kernel_threads=1
@@ -26,6 +26,8 @@ cpu_count_from_one=0
 show_cpu_smt_labels=0
 show_cpu_usage=1
 show_cpu_frequency=1
+show_cpu_temperature=0
+degree_fahrenheit=0
 show_cached_memory=1
 update_process_names=0
 account_guest_in_cpu_meter=0

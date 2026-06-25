@@ -45,10 +45,16 @@ in
   services.tribuchet-hub = {
     enable = true;
     openFirewall = true;
+    # Prometheus metrics scraped locally by telegraf (see telegraf.nix).
+    settings.metrics-listen = "127.0.0.1:7438";
     externalBuilders = {
       enable = true;
-      # eve is x86_64; hand aarch64-linux builds to the eliza worker.
-      systems = [ "aarch64-linux" ];
+      # aarch64-linux goes to the eliza worker, x86_64-linux to jamie;
+      # a declined build (no worker up) falls back to a local build.
+      systems = [
+        #"aarch64-linux"
+        #"x86_64-linux"
+      ];
       # nix-1 main already carries the uid-range patch (see flake input).
       patchNix = false;
       nixPackage = self.inputs.nix.packages.${pkgs.stdenv.hostPlatform.system}.nix;

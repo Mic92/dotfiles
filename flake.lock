@@ -482,11 +482,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781573957,
-        "narHash": "sha256-d4IidRcANvwBETwlwe1bNXjFVcczq/Q/8EJvsIYh6Z4=",
+        "lastModified": 1782068377,
+        "narHash": "sha256-pKjKMGfTGlL+qOfDnV6h1XNXiS3/NXLAM2dnnmLxjsQ=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "ce2ae35ca1db428948ed9dac4b935bc4d7923ca6",
+        "rev": "3bf60a513d1ebab0b46aee641b2323394905d543",
         "type": "github"
       },
       "original": {
@@ -581,10 +581,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1781817719,
-        "narHash": "sha256-kXX4UaTIqX9S9gCjK1UmFflV7wClt1tx4LZcewmTH1s=",
+        "lastModified": 1781821988,
+        "narHash": "sha256-iG5TOUcufVJFhovpRNkj/0AcK1Bk0GACw+Ls8jCJ7pU=",
         "ref": "refs/heads/main",
-        "rev": "1f7b8d053280621b9e0cbd4b5e4288b8c1a79d50",
+        "rev": "f67a3dcbe19e9ec221497a3a27e74a713c3818c9",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
@@ -1062,11 +1062,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781702065,
-        "narHash": "sha256-Hfz/gD6D0tf/i+PhmDo1E3O+f8OXgR2e56xnnXWoE88=",
+        "lastModified": 1782076996,
+        "narHash": "sha256-L0o+oRRedeRMXEzTmbYOWO1wM0UrNKivBA87daIWiR4=",
         "owner": "Mic92",
         "repo": "tribuchet",
-        "rev": "fa0cba3574bc47db04b55e3f819b166162e4836a",
+        "rev": "3652b8e62bf33c41271b7dcaad170385984d4801",
         "type": "github"
       },
       "original": {

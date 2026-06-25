@@ -684,6 +684,15 @@ def finalize_merge(platform: Platform, pr_id: str, default_branch: str) -> int:
     return 1
 
 
+def chdir_repo_root() -> None:
+    """Change to the git repository root so all commands run from there."""
+    result = run(["git", "rev-parse", "--show-toplevel"], check=False, capture=True)
+    if result.returncode != 0:
+        print_error("Not inside a git repository")
+        raise SystemExit(1)
+    os.chdir(result.stdout.strip())
+
+
 def main() -> int:
     """Main entry point."""
     parser = argparse.ArgumentParser(description="Create PR and merge when CI passes")
@@ -694,6 +703,8 @@ def main() -> int:
         "-m", "--message", help="PR title and body (separated by newline)"
     )
     args = parser.parse_args()
+
+    chdir_repo_root()
 
     platform = detect_platform()
 

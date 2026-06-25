@@ -1,5 +1,8 @@
 {
   "includeCoAuthoredBy": false,
+  "permissions": {
+    "defaultMode": "auto"
+  },
   "model": "opus[1m]",
   "hooks": {
     "Notification": [
@@ -24,7 +27,5 @@
   "theme": "light-daltonized",
   "autoCompactEnabled": false,
   "skipAutoPermissionPrompt": true,
-  "permissions": {
-    "defaultMode": "auto"
-  }
+  "effortLevel": "low"
 }
