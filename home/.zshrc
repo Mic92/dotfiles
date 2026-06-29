@@ -901,6 +901,9 @@ fixssh() {
     fi
   done
 }
+unlock-yubikey() {
+  export SSH_AUTH_SOCK=/run/user/1000/ssh-fido-agent.sock; ssh-add $HOME/.ssh/id_ed25519_sk
+}
 function faketty { script -qfc "$(printf "%q " "$@")"; }
 
 tmux-upterm() {
