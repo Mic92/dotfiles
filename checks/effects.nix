@@ -29,6 +29,17 @@ _args: {
           [ "$got" = "state-test $rev" ]
         '';
 
+    # Always fails: verifies nixbot posts a failed commit status for a
+    # failed effect instead of leaving it green (Mic92/nixbot#30).
+    fail-test =
+      let
+        pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+      in
+      pkgs.runCommand "effect-fail-test" { } ''
+        echo "this effect fails on purpose"
+        exit 1
+      '';
+
     sandbox-test =
       let
         pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
