@@ -26,6 +26,9 @@ let
       }
       ''
         set -euo pipefail
+        # The sandbox nix has no experimental features enabled; child
+        # nix invocations (updater, nix-update) inherit this.
+        export NIX_CONFIG="experimental-features = nix-command flakes"
         token=$(jq -r '.git.data.token' "$HERCULES_CI_SECRETS_JSON")
         export GH_TOKEN="$token"
         git config --global user.name "dotfiles-bot"
@@ -115,7 +118,7 @@ in
       minute = 0;
     };
     outputs.effects.update-packages = mkRepoEffect "update-packages" ''
-      nix run --extra-experimental-features nix-command .#updater -- --pr
+      nix run .#updater -- --pr
     '';
   };
 
