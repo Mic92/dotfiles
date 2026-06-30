@@ -154,4 +154,14 @@
       fi
     fi
   '';
+
+  # Refresh the GitHub token in nix.conf's secrets.conf each activation;
+  # $HOME (and the file) is wiped on workspace restart. No gh/token: no-op.
+  home.activation.nix-github-token = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if token="$(PATH="''${HM_HOST_PATH:-$PATH}" gh auth token 2>/dev/null)" && [ -n "$token" ]; then
+      umask 077
+      mkdir -p "$HOME/.config/nix"
+      printf 'access-tokens = github.com=%s\n' "$token" > "$HOME/.config/nix/secrets.conf"
+    fi
+  '';
 }
