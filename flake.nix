@@ -68,6 +68,7 @@
     tribuchet.url = "github:Mic92/tribuchet";
     tribuchet.inputs.nixpkgs.follows = "nixpkgs";
     tribuchet.inputs.nix-darwin.follows = "nix-darwin";
+    tribuchet.inputs.crane.follows = "crane";
 
     #spora.url = "github:krebs/spora";
     #spora.inputs.nixpkgs.follows = "nixpkgs";

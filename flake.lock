@@ -1054,6 +1054,9 @@
     },
     "tribuchet": {
       "inputs": {
+        "crane": [
+          "crane"
+        ],
         "nix-darwin": [
           "nix-darwin"
         ],
@@ -1062,11 +1065,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782076996,
-        "narHash": "sha256-L0o+oRRedeRMXEzTmbYOWO1wM0UrNKivBA87daIWiR4=",
+        "lastModified": 1782824879,
+        "narHash": "sha256-uZ8i0Bk5dYmzMq6ukzKARX1hHs2uKFl4Gcnfi0wGWNc=",
         "owner": "Mic92",
         "repo": "tribuchet",
-        "rev": "3652b8e62bf33c41271b7dcaad170385984d4801",
+        "rev": "cc4245edfbe91ffbb04b891bba4238293d8529e9",
         "type": "github"
       },
       "original": {
