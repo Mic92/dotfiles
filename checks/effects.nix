@@ -115,7 +115,7 @@ in
       minute = 0;
     };
     outputs.effects.update-packages = mkRepoEffect "update-packages" ''
-      nix run .#updater -- --pr
+      nix run --extra-experimental-features nix-command .#updater -- --pr
     '';
   };
 
