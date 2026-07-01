@@ -28,7 +28,6 @@
     ./modules/telegraf
     ./modules/zerotier.nix
 
-    ../../nixosModules/nncp.nix
     ../../nixosModules/iperf.nix
     ../../nixosModules/radicle-mic92.nix
     ../../nixosModules/openldap/replica.nix

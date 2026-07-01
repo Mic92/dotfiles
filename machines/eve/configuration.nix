@@ -86,7 +86,6 @@
     ../../nixosModules/builder.nix
     ../../nixosModules/docker-zfs.nix
     ../../nixosModules/iperf.nix
-    ../../nixosModules/nncp.nix
     ../../nixosModules/openldap
     ../../nixosModules/fluent-bit.nix
     ../../nixosModules/rtorrent.nix

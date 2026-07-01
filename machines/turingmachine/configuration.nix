@@ -38,7 +38,6 @@
     ../../nixosModules/ksmbd.nix
     #../../nixosModules/lanzaboote.nix
     ../../nixosModules/make-linux-fast.nix
-    ../../nixosModules/nncp.nix
     ../../nixosModules/no-hz.nix
     ../../nixosModules/sshd/tor.nix
     ../../nixosModules/suspend-on-low-power.nix
