@@ -737,16 +737,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1782808478,
-        "narHash": "sha256-aSeIbszt/9Dt2qPZ336JKcJFB6QFMRCUwJhUo9Puw3M=",
-        "ref": "run-history",
-        "rev": "de31124028fe72052c8be9c180b091c111d4d030",
+        "lastModified": 1782885506,
+        "narHash": "sha256-N7rhZNCfBwXXdNdXihSqYM2ra+6pH5q5H1Tm3y0iEb8=",
+        "ref": "restart-rights",
+        "rev": "8097eaa7a8d79da6dbd0ac77c94d1568e44cb1c6",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
       },
       "original": {
-        "ref": "run-history",
+        "ref": "restart-rights",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
@@ -1065,11 +1065,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1782856656,
-        "narHash": "sha256-dedl4w2MnZJxJV8LpdJeRPi2ueCMIqxTgTlGvgqn4Gc=",
+        "lastModified": 1782859168,
+        "narHash": "sha256-mOuVjCKdHssvl17s4CKCk9SBJQUsWJ15xFDWAgo3i0c=",
         "owner": "Mic92",
         "repo": "tribuchet",
-        "rev": "abcea59743596594ad9ac50a4708ca3c25240588",
+        "rev": "c2cbc22385f1e1d25e7092bedf3df0fdd92cad9b",
         "type": "github"
       },
       "original": {
