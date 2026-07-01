@@ -87,6 +87,10 @@
     persist_dir "$HOME/src/home/.pi/state" "$HOME/.pi/state"
     persist_link "$HOME/src/home/.claude/.credentials.json" "$HOME/.claude/.credentials.json"
 
+    # nix.conf host-specific fragment (private substituters, netrc paths).
+    # Lives in persistent nvme; the main nix.conf `include`s it.
+    persist_link "$HOME/src/home/.config/nix/local.conf" "$HOME/.config/nix/local.conf"
+
     # Coder generates ~/.gitconfig.$COO_CREATOR with work identity and
     # signing key. Homesick's .gitconfig includes ~/.gitconfig.local as the
     # per-machine override — point it at the coder-generated file so the
