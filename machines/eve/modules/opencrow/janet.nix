@@ -14,7 +14,7 @@ in
   # services.opencrow.* attach to her without further plumbing.
   imports = [
     ./rbw.nix
-    ./morpheus.nix
+    #./morpheus.nix
     ./openrouter.nix
     ./nostr.nix
     ./gitea.nix
