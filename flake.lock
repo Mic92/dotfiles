@@ -1065,15 +1065,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1783068253,
-        "narHash": "sha256-Rk577wNTsfyjpnziqhRIG7wLozOBiAyeb+HlVTWppVs=",
+        "lastModified": 1783078854,
+        "narHash": "sha256-V879jTX0unmrEqv5ddzbakjeQjMT6TmaHTd+0/GGcOs=",
         "owner": "Mic92",
         "repo": "tribuchet",
-        "rev": "1499ccd9db1547f3df323ae9c32b7f93aae1a4fa",
+        "rev": "494de79875ed129e93d2bc8602f40980e3db2f26",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
+        "ref": "build-fix",
         "repo": "tribuchet",
         "type": "github"
       }
