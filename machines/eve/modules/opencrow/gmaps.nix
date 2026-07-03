@@ -20,7 +20,7 @@
   services.opencrow.credentialFiles."gmaps-api-key" =
     config.clan.core.vars.generators.opencrow-gmaps.files.gmaps-api-key.path;
 
-  services.opencrow.skills.gmaps-cli = "${self.inputs.mics-skills}/skills/gmaps-cli";
+  services.opencrow.skills.gmaps-cli = "${self.inputs.mics-skills}/gmaps-cli/skill";
 
   services.opencrow.extraPackages = [
     self.inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system}.gmaps-cli

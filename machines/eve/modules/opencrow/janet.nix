@@ -44,7 +44,7 @@ in
         "db-cli"
         "n8n-cli"
         "weather-cli"
-      ] (name: "${micsSkills}/skills/${name}");
+      ] (name: "${micsSkills}/${name}/skill");
 
       environment = {
         OPENCROW_SOUL_FILE = "${./soul.md}";
