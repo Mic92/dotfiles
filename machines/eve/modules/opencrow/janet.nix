@@ -15,6 +15,7 @@ in
   imports = [
     ./rbw.nix
     ./morpheus.nix
+    ./openrouter.nix
     ./nostr.nix
     ./gitea.nix
     ./kagi.nix
@@ -48,11 +49,8 @@ in
       environment = {
         OPENCROW_SOUL_FILE = "${./soul.md}";
         OPENCROW_LOG_LEVEL = "debug";
-        OPENCROW_PI_PROVIDER = "morpheus";
-        # See morpheus.nix: both qwen ids currently carry the same
-        # filters; using the base id since the "coding" alias is no
-        # longer special.
-        OPENCROW_PI_MODEL = "Qwen/Qwen3.6-35B-A3B";
+        OPENCROW_PI_PROVIDER = "openrouter";
+        OPENCROW_PI_MODEL = "mistralai/mistral-small-3.2-24b-instruct";
       };
 
       extraPackages = [
