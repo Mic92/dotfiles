@@ -3,7 +3,6 @@
 # General relay:
 #   wss://nostr.thalheim.io
 #   Add as relay in any Nostr client (Damus, Amethyst, Primal, etc.)
-#   Mirrored with eva at wss://nostr2.thalheim.io — add both.
 #
 # NIP-29 groups relay:
 #   wss://nostr-groups.thalheim.io
@@ -31,7 +30,6 @@ in
     enable = true;
     domain = "nostr.thalheim.io";
     acme.useACMEHost = "thalheim.io";
-    syncPeers = [ "wss://nostr2.thalheim.io" ];
   };
 
   # ── NIP-29 groups relay (khatru29) ──────────────────────────────────────
