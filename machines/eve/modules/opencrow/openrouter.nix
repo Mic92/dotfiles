@@ -19,22 +19,31 @@
     config.clan.core.vars.generators.opencrow-openrouter.files.api-key.path;
 
   # OpenRouter brokers to third-party hosts; each has its own data policy.
-  # Janet handles personal data, so the routing below (set per-request by
-  # pi is not possible) can't pin providers — instead the account itself
-  # must have "data_collection: deny" / ZDR enabled in OpenRouter settings.
+  # Janet handles personal data, so routing is pinned per-request below:
+  # data_collection=deny drops any provider that retains inputs, and the
+  # order/allow_fallbacks lock traffic to Venice (privacy-first, no logging)
+  # instead of silently spilling to a logging provider.
   services.opencrow.piModels.providers.openrouter = {
     baseUrl = "https://openrouter.ai/api/v1";
     api = "openai-completions";
     apiKey = "!rbw get openrouter-api-key";
     models = [
       {
-        id = "mistralai/mistral-small-3.2-24b-instruct";
-        name = "Mistral Small 3.2 (24B)";
-        contextWindow = 128000;
+        id = "google/gemma-4-26b-a4b-it";
+        name = "Gemma 4 (26B A4B)";
+        # Cap well below the provider's 256K so pi's auto-compaction fires
+        # every turn instead of resending an ever-growing context (the
+        # March logs showed ~380M prompt tokens from an uncompacted history).
+        contextWindow = 65536;
         input = [
           "text"
           "image"
         ];
+        compat.openRouterRouting = {
+          data_collection = "deny";
+          order = [ "Venice" ];
+          allow_fallbacks = false;
+        };
       }
     ];
   };
