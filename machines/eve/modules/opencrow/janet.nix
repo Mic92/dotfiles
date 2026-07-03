@@ -50,7 +50,7 @@ in
         OPENCROW_SOUL_FILE = "${./soul.md}";
         OPENCROW_LOG_LEVEL = "debug";
         OPENCROW_PI_PROVIDER = "openrouter";
-        OPENCROW_PI_MODEL = "mistralai/mistral-small-3.2-24b-instruct";
+        OPENCROW_PI_MODEL = "google/gemma-4-26b-a4b-it";
       };
 
       extraPackages = [
