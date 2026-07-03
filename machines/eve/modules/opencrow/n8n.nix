@@ -13,7 +13,7 @@ let
     description: Manage n8n workflow definitions. Use when asked to create, edit, inspect n8n workflows, or set up recurring/scheduled tasks and automations.
     ---
 
-    For n8n-cli API reference, see [SKILL.md](${micsSkills}/skills/n8n-cli/SKILL.md).
+    For n8n-cli API reference, see [SKILL.md](${micsSkills}/n8n-cli/skill/SKILL.md).
 
     # n8n Workflows
 

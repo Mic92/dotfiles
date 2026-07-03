@@ -11,7 +11,7 @@ let
 in
 {
   services.opencrow.skills.todo = ./skills/todo;
-  services.opencrow.skills.calendar-cli = "${micsSkills}/skills/calendar-cli";
+  services.opencrow.skills.calendar-cli = "${micsSkills}/calendar-cli/skill";
 
   clan.core.vars.generators.opencrow-nextcloud = {
     files.nextcloud-thalheim-password.secret = true;

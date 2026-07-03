@@ -20,7 +20,7 @@
   services.opencrow.credentialFiles."kagi-session-token" =
     config.clan.core.vars.generators.opencrow-kagi.files.kagi-session-token.path;
 
-  services.opencrow.skills.kagi-search = "${self.inputs.mics-skills}/skills/kagi-search";
+  services.opencrow.skills.kagi-search = "${self.inputs.mics-skills}/kagi-search/skill";
 
   services.opencrow.extraPackages = [
     self.inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system}.kagi-search

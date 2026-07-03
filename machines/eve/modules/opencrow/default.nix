@@ -25,8 +25,8 @@ let
     };
 
     skills = {
-      context7-cli = lib.mkDefault "${micsSkills}/skills/context7-cli";
-      pexpect-cli = lib.mkDefault "${micsSkills}/skills/pexpect-cli";
+      context7-cli = lib.mkDefault "${micsSkills}/context7-cli/skill";
+      pexpect-cli = lib.mkDefault "${micsSkills}/pexpect-cli/skill";
       http = lib.mkDefault ./skills/http;
     };
 
@@ -41,8 +41,8 @@ let
       # Nostr infrastructure — shared across all bots, identity set per-agent.
       OPENCROW_BACKEND = lib.mkDefault "nostr";
       OPENCROW_NOSTR_PRIVATE_KEY_FILE = lib.mkDefault "%d/nostr-private-key";
-      OPENCROW_NOSTR_RELAYS = lib.mkDefault "wss://nostr.thalheim.io,wss://nostr2.thalheim.io,wss://nos.lol";
-      OPENCROW_NOSTR_DM_RELAYS = lib.mkDefault "wss://nostr.thalheim.io,wss://nostr2.thalheim.io,wss://nos.lol";
+      OPENCROW_NOSTR_RELAYS = lib.mkDefault "wss://nostr.thalheim.io,wss://nos.lol";
+      OPENCROW_NOSTR_DM_RELAYS = lib.mkDefault "wss://nostr.thalheim.io,wss://nos.lol";
       OPENCROW_NOSTR_BLOSSOM_SERVERS = lib.mkDefault "https://nostr-files.thalheim.io";
       OPENCROW_NOSTR_ALLOWED_USERS = lib.mkDefault "npub10yt4rh4g5t5kd47x7w8dpwqq7s228c53xacjqxvxjwu0kes3kzvsynqfu8";
     };
