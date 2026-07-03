@@ -31,7 +31,6 @@ let
     NOSTR_CHAT_PEER_PUBKEY = "96dc8a8cb0c28bdd113c1f6e350abd6014c69369cbd618c3b8cd4d1326bf7e37";
     NOSTR_CHAT_RELAYS = lib.concatStringsSep "," [
       "wss://nostr.thalheim.io"
-      "wss://nostr2.thalheim.io"
       "wss://nos.lol"
     ];
     NOSTR_CHAT_BLOSSOM = "https://nostr-files.thalheim.io";
