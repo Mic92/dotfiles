@@ -83,7 +83,7 @@
     data-mesher.inputs.treefmt-nix.follows = "treefmt-nix";
     data-mesher.inputs.flake-parts.follows = "flake-parts";
 
-    nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1&ref=restart-rights";
+    nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1&ref=drop-buildbot-migration-shims";
     nixbot.inputs.nixpkgs.follows = "nixpkgs";
     nixbot.inputs.treefmt-nix.follows = "treefmt-nix";
 
@@ -104,7 +104,7 @@
     forge-triage.url = "github:Mic92/forge-triage";
     forge-triage.inputs.nixpkgs.follows = "nixpkgs";
 
-    gitea-mq.url = "github:Mic92/gitea-mq/mit-license";
+    gitea-mq.url = "github:Mic92/gitea-mq";
     gitea-mq.inputs.nixpkgs.follows = "nixpkgs";
     gitea-mq.inputs.treefmt-nix.follows = "treefmt-nix";
 
