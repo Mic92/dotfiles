@@ -28,17 +28,17 @@ in
     # GitHub-only instance; the local Gitea is not wired up.
     hideRefFromClients = false;
 
+    # Bors-style batching: test up to 5 queued PRs together, land on green.
+    # The GitHub App is already a bypass actor on the gitea-mq ruleset, so no
+    # extra push setup is needed.
+    batchMax = 5;
+
     github = {
       appId = 3518559;
       privateKeyFile = gen.gitea-mq-github-key.files.private-key.path;
       webhookSecretFile = gen.gitea-mq-github.files.webhook-secret.path;
     };
   };
-
-  # Bors-style batching: test up to 5 queued PRs together, land on green.
-  # The GitHub App is already a bypass actor on the gitea-mq ruleset, so no
-  # extra push setup is needed. Upstream module has no option for this yet.
-  systemd.services.gitea-mq.environment.GITEA_MQ_BATCH_MAX = "5";
 
   # DynamicUser resolves to the unit name, so the peer-auth role must match.
   services.postgresql.ensureDatabases = [ "gitea-mq" ];
