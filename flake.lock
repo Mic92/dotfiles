@@ -736,10 +736,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1783165200,
-        "narHash": "sha256-qW6v9rDZC4zR+s7L2jLjUDW3SOcIo4A0s968bdHVi1s=",
+        "lastModified": 1783174455,
+        "narHash": "sha256-Hj/C58gFsy1tUjn8SGtHpJem3sFF6APnSbJhk8VTf0Y=",
         "ref": "drop-buildbot-migration-shims",
-        "rev": "704dad8bd51d0d93ff8642ea54a502ef721d6026",
+        "rev": "87e74ed1403f08efb54b5fb89835dcddc7597c14",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
