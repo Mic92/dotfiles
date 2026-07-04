@@ -65,7 +65,7 @@
     tincr.inputs.treefmt-nix.follows = "treefmt-nix";
     tincr.inputs.crane.follows = "crane";
 
-    tribuchet.url = "github:Mic92/tribuchet/build-fix";
+    tribuchet.url = "github:Mic92/tribuchet";
     tribuchet.inputs.nixpkgs.follows = "nixpkgs";
     tribuchet.inputs.nix-darwin.follows = "nix-darwin";
     tribuchet.inputs.crane.follows = "crane";
@@ -154,7 +154,7 @@
       inputs.systems.follows = "systems";
     };
 
-    opencrow.url = "github:pinpox/opencrow/nostr";
+    opencrow.url = "github:pinpox/opencrow";
     opencrow.inputs.nixpkgs.follows = "nixpkgs";
     opencrow.inputs.treefmt-nix.follows = "treefmt-nix";
 

@@ -840,16 +840,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1776008351,
-        "narHash": "sha256-PQ2OCmNA8U7leLZb39Eg6qMQERiG0krTKysF52Ztr+Y=",
+        "lastModified": 1782727145,
+        "narHash": "sha256-buooDQiylOxQBO6nvATodIpC/jp9Vic+JvWYYrTCv7M=",
         "owner": "pinpox",
         "repo": "opencrow",
-        "rev": "55f483923ebf69874ff98e2e443e9e97037e0dce",
+        "rev": "b6a2b714bbb8d10f848b9f859283bb5745f7dccf",
         "type": "github"
       },
       "original": {
         "owner": "pinpox",
-        "ref": "nostr",
         "repo": "opencrow",
         "type": "github"
       }
@@ -1065,16 +1064,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1783078854,
+        "lastModified": 1783079535,
         "narHash": "sha256-V879jTX0unmrEqv5ddzbakjeQjMT6TmaHTd+0/GGcOs=",
         "owner": "Mic92",
         "repo": "tribuchet",
-        "rev": "494de79875ed129e93d2bc8602f40980e3db2f26",
+        "rev": "f54eda710ac344c960c027ee1bf9e9883c02bfa8",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
-        "ref": "build-fix",
         "repo": "tribuchet",
         "type": "github"
       }
