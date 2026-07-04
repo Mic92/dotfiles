@@ -375,11 +375,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783159356,
-        "narHash": "sha256-XdtT9SGrfSJiqYnk+bZOrSca9rRISLEJ6FUlJYh2pWw=",
+        "lastModified": 1783182987,
+        "narHash": "sha256-s/vBUr6GPFz0468INnfSBDzB8Jt4Jo2I22U4rGj4Z+g=",
         "owner": "Mic92",
         "repo": "gitea-mq",
-        "rev": "a0e41e374d817d45e8ed00b354361cf35ce5e9a3",
+        "rev": "15584244986d948823faf5f9baea6828cc0161cc",
         "type": "github"
       },
       "original": {
@@ -736,16 +736,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1783174455,
-        "narHash": "sha256-Hj/C58gFsy1tUjn8SGtHpJem3sFF6APnSbJhk8VTf0Y=",
-        "ref": "drop-buildbot-migration-shims",
-        "rev": "87e74ed1403f08efb54b5fb89835dcddc7597c14",
+        "lastModified": 1783189191,
+        "narHash": "sha256-AY7oLl0pLUgmYsVdvjt6Qp9rwVa5NDLisFC4vOKCSnE=",
+        "ref": "fancy-logs",
+        "rev": "6558b6c1e10bf9e64dff663364215830d4871a1b",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
       },
       "original": {
-        "ref": "drop-buildbot-migration-shims",
+        "ref": "fancy-logs",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
