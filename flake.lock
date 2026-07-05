@@ -1060,18 +1060,22 @@
         ],
         "nixpkgs": [
           "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
         ]
       },
       "locked": {
-        "lastModified": 1783079535,
-        "narHash": "sha256-V879jTX0unmrEqv5ddzbakjeQjMT6TmaHTd+0/GGcOs=",
+        "lastModified": 1783264059,
+        "narHash": "sha256-Fy7nUoFvgxF9KYDr89hQo5JlIkoCcIOz4RfmQlaGECo=",
         "owner": "Mic92",
         "repo": "tribuchet",
-        "rev": "f54eda710ac344c960c027ee1bf9e9883c02bfa8",
+        "rev": "4f2082d6d8856e22e4334ccf6c0f35c148681cec",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
+        "ref": "build-fix",
         "repo": "tribuchet",
         "type": "github"
       }

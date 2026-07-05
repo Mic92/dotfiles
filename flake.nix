@@ -65,10 +65,11 @@
     tincr.inputs.treefmt-nix.follows = "treefmt-nix";
     tincr.inputs.crane.follows = "crane";
 
-    tribuchet.url = "github:Mic92/tribuchet";
+    tribuchet.url = "github:Mic92/tribuchet/build-fix";
     tribuchet.inputs.nixpkgs.follows = "nixpkgs";
     tribuchet.inputs.nix-darwin.follows = "nix-darwin";
     tribuchet.inputs.crane.follows = "crane";
+    tribuchet.inputs.treefmt-nix.follows = "treefmt-nix";
 
     #spora.url = "github:krebs/spora";
     #spora.inputs.nixpkgs.follows = "nixpkgs";
