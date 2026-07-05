@@ -30,12 +30,11 @@ runCommand "ghidra-cli-test"
     export XDG_CACHE_HOME=$HOME/.cache
     export XDG_DATA_HOME=$HOME/.local/share
 
-    # ghidra-cli does not create the project root on first import; doctor only
-    # reports it.  Pre-create it so the headless analyzer does not bail out.
-    # The `dirs` crate ignores XDG on Darwin and hardcodes ~/Library/Caches,
-    # so seed both locations.
-    mkdir -p "$XDG_CACHE_HOME/ghidra-cli/projects"
-    mkdir -p "$HOME/Library/Caches/ghidra-cli/projects"
+    # Ghidra 12 rejects project path elements starting with '.', so the default
+    # ~/.cache/ghidra-cli/projects aborts every import. Use a dot-free dir.
+    # GHIDRA_PROJECT_DIR wins over the cache dir; ghidra-cli won't create it.
+    export GHIDRA_PROJECT_DIR=$PWD/projects
+    mkdir -p "$GHIDRA_PROJECT_DIR"
 
     cat > hello.c <<'EOF'
     #include <stdio.h>
