@@ -77,6 +77,10 @@ in
     route96 = pkgs.callPackage ./route96 { };
     live-text = pkgs.python3.pkgs.callPackage ./live-text { };
     phantun = pkgs.callPackage ./phantun { };
+    # nginx stream module: preread SNI/ALPN from QUIC Initial packets.
+    ngx-stream-quic-preread = pkgs.callPackage ./nginx-quic-preread/package.nix {
+      nginx = pkgs.nginxQuic;
+    };
     phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
     radicle-github-sync = pkgs.callPackage ./radicle-github-sync { };
   }
