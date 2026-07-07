@@ -515,10 +515,155 @@ pub fn quic_preread(datagram: &[u8]) -> Result<PrereadInfo, PrereadError> {
 }
 
 // ===========================================================================
+// Test support: build QUIC Initial packets with a chosen SNI/ALPN.
+//
+// Public (but hidden) so the unit tests *and* the real-nginx integration test
+// (tests/nginx_sni_routing.rs) can share one encoder. This is the inverse of
+// the decrypt pipeline above and is validated end-to-end by the unit tests.
+// ===========================================================================
+#[doc(hidden)]
+pub mod testvec {
+    use super::*;
+
+    /// Sample Destination Connection ID (from RFC 9001 Appendix A).
+    const DCID: [u8; 8] = [0x83, 0x94, 0xc8, 0xf0, 0x3e, 0x51, 0x57, 0x08];
+
+    /// Encode a QUIC varint using the shortest form (sufficient for our sizes).
+    pub fn push_varint(buf: &mut Vec<u8>, v: u64) {
+        if v < 64 {
+            buf.push(v as u8);
+        } else if v < 16384 {
+            buf.extend_from_slice(&((v as u16) | 0x4000).to_be_bytes());
+        } else {
+            buf.extend_from_slice(&((v as u32) | 0x8000_0000).to_be_bytes());
+        }
+    }
+
+    /// Minimal but well-formed TLS 1.3 ClientHello carrying SNI + ALPN.
+    pub fn build_client_hello(sni: &str, alpn: &[&str]) -> Vec<u8> {
+        // --- server_name extension ---
+        let mut sni_ext = Vec::new();
+        let host = sni.as_bytes();
+        let mut list = vec![0x00]; // name_type host_name
+        list.extend_from_slice(&(host.len() as u16).to_be_bytes());
+        list.extend_from_slice(host);
+        sni_ext.extend_from_slice(&(list.len() as u16).to_be_bytes());
+        sni_ext.extend_from_slice(&list);
+
+        // --- ALPN extension ---
+        let mut alpn_list = Vec::new();
+        for p in alpn {
+            alpn_list.push(p.len() as u8);
+            alpn_list.extend_from_slice(p.as_bytes());
+        }
+        let mut alpn_ext = Vec::new();
+        alpn_ext.extend_from_slice(&(alpn_list.len() as u16).to_be_bytes());
+        alpn_ext.extend_from_slice(&alpn_list);
+
+        // --- extensions block ---
+        let mut exts = Vec::new();
+        exts.extend_from_slice(&0x0000u16.to_be_bytes());
+        exts.extend_from_slice(&(sni_ext.len() as u16).to_be_bytes());
+        exts.extend_from_slice(&sni_ext);
+        exts.extend_from_slice(&0x0010u16.to_be_bytes());
+        exts.extend_from_slice(&(alpn_ext.len() as u16).to_be_bytes());
+        exts.extend_from_slice(&alpn_ext);
+
+        // --- ClientHello body ---
+        let mut body = Vec::new();
+        body.extend_from_slice(&0x0303u16.to_be_bytes()); // legacy_version TLS1.2
+        body.extend_from_slice(&[0x42; 32]); // random
+        body.push(0x00); // session id len
+        body.extend_from_slice(&0x0002u16.to_be_bytes()); // cipher suites len
+        body.extend_from_slice(&0x1301u16.to_be_bytes()); // TLS_AES_128_GCM_SHA256
+        body.push(0x01); // compression methods len
+        body.push(0x00); // null compression
+        body.extend_from_slice(&(exts.len() as u16).to_be_bytes());
+        body.extend_from_slice(&exts);
+
+        // --- handshake framing ---
+        let mut hs = Vec::new();
+        hs.push(0x01); // ClientHello
+        let l = body.len();
+        hs.extend_from_slice(&[(l >> 16) as u8, (l >> 8) as u8, l as u8]);
+        hs.extend_from_slice(&body);
+        hs
+    }
+
+    /// Build a complete, wire-format QUIC Initial datagram for `version`
+    /// (`1` = QUIC v1, `0x6b3343cf` = v2) carrying a ClientHello with the given
+    /// SNI + ALPN. Mirrors RFC 9001 §5.3–5.4 on the sender side and pads to the
+    /// 1200-byte minimum.
+    pub fn encode_initial(version: u32, sni: &str, alpn: &[&str]) -> Vec<u8> {
+        let params = version_params(version).expect("known QUIC version");
+        let keys = derive_client_initial_keys(&DCID, &params);
+        let crypto = build_client_hello(sni, alpn);
+
+        // CRYPTO frame at offset 0 carrying the ClientHello.
+        let mut payload = vec![0x06];
+        push_varint(&mut payload, 0);
+        push_varint(&mut payload, crypto.len() as u64);
+        payload.extend_from_slice(&crypto);
+        if payload.len() < 1180 {
+            payload.resize(1180, 0x00); // trailing PADDING frames
+        }
+
+        let packet_number: u32 = 0;
+        let pn_len = 4usize;
+        let first_type = params.initial_type << 4;
+        let first = 0x80 | 0x40 | first_type | ((pn_len - 1) as u8);
+
+        let mut header = Vec::new();
+        header.push(first);
+        header.extend_from_slice(&version.to_be_bytes());
+        header.push(DCID.len() as u8);
+        header.extend_from_slice(&DCID);
+        header.push(0x00); // zero-length SCID
+        push_varint(&mut header, 0); // zero-length token
+        let length = pn_len + payload.len() + 16; // pn + payload + AEAD tag
+        push_varint(&mut header, length as u64);
+        let pn_offset = header.len();
+        header.extend_from_slice(&packet_number.to_be_bytes());
+
+        let mut nonce = keys.iv;
+        let pn_bytes = (packet_number as u64).to_be_bytes();
+        for i in 0..8 {
+            nonce[12 - 8 + i] ^= pn_bytes[i];
+        }
+        let cipher = Aes128Gcm::new(GenericArray::from_slice(&keys.key));
+        let ct = cipher
+            .encrypt(
+                Nonce::from_slice(&nonce),
+                aes_gcm::aead::Payload {
+                    msg: &payload,
+                    aad: &header,
+                },
+            )
+            .unwrap();
+
+        let mut packet = header.clone();
+        packet.extend_from_slice(&ct);
+
+        // Header protection.
+        let sample_offset = pn_offset + 4;
+        let sample: [u8; 16] = packet[sample_offset..sample_offset + 16]
+            .try_into()
+            .unwrap();
+        let mask = aes128_ecb_block(&keys.hp, &sample);
+        packet[0] ^= mask[0] & 0x0f;
+        for i in 0..pn_len {
+            packet[pn_offset + i] ^= mask[1 + i];
+        }
+        packet
+    }
+}
+
+// ===========================================================================
 // Tests
 // ===========================================================================
 #[cfg(test)]
 mod tests {
+    use super::testvec::{build_client_hello, encode_initial, push_varint};
     use super::*;
 
     fn unhex(s: &str) -> Vec<u8> {
@@ -624,8 +769,7 @@ mod tests {
     #[test]
     fn end_to_end_encrypt_then_preread() {
         for version in [VERSION_V1, VERSION_V2] {
-            let crypto = build_client_hello("roundtrip.thalheim.io", &["h3"]);
-            let datagram = build_initial_packet(version, &crypto);
+            let datagram = encode_initial(version, "roundtrip.thalheim.io", &["h3"]);
 
             let info = quic_preread(&datagram)
                 .unwrap_or_else(|e| panic!("preread failed for version {version:#x}: {e:?}"));
@@ -651,143 +795,10 @@ mod tests {
     fn rejects_unknown_version() {
         // Long-header Initial-looking first byte, bogus version.
         let mut d = vec![0xc3, 0xde, 0xad, 0xbe, 0xef, 0x00, 0x00];
-        d.extend(std::iter::repeat(0).take(1200));
+        d.resize(d.len() + 1200, 0);
         assert!(matches!(
             quic_preread(&d),
             Err(PrereadError::UnsupportedVersion(0xdeadbeef))
         ));
-    }
-
-    // --- test helpers ----------------------------------------------------
-
-    fn push_varint(buf: &mut Vec<u8>, v: u64) {
-        // Encode with the shortest form (sufficient for test sizes).
-        if v < 64 {
-            buf.push(v as u8);
-        } else if v < 16384 {
-            buf.extend_from_slice(&((v as u16) | 0x4000).to_be_bytes());
-        } else {
-            buf.extend_from_slice(&((v as u32) | 0x8000_0000).to_be_bytes());
-        }
-    }
-
-    /// Minimal but well-formed TLS 1.3 ClientHello carrying SNI + ALPN.
-    fn build_client_hello(sni: &str, alpn: &[&str]) -> Vec<u8> {
-        // --- server_name extension ---
-        let mut sni_ext = Vec::new();
-        let host = sni.as_bytes();
-        let mut list = vec![0x00]; // name_type host_name
-        list.extend_from_slice(&(host.len() as u16).to_be_bytes());
-        list.extend_from_slice(host);
-        sni_ext.extend_from_slice(&(list.len() as u16).to_be_bytes());
-        sni_ext.extend_from_slice(&list);
-
-        // --- ALPN extension ---
-        let mut alpn_list = Vec::new();
-        for p in alpn {
-            alpn_list.push(p.len() as u8);
-            alpn_list.extend_from_slice(p.as_bytes());
-        }
-        let mut alpn_ext = Vec::new();
-        alpn_ext.extend_from_slice(&(alpn_list.len() as u16).to_be_bytes());
-        alpn_ext.extend_from_slice(&alpn_list);
-
-        // --- extensions block ---
-        let mut exts = Vec::new();
-        exts.extend_from_slice(&0x0000u16.to_be_bytes());
-        exts.extend_from_slice(&(sni_ext.len() as u16).to_be_bytes());
-        exts.extend_from_slice(&sni_ext);
-        exts.extend_from_slice(&0x0010u16.to_be_bytes());
-        exts.extend_from_slice(&(alpn_ext.len() as u16).to_be_bytes());
-        exts.extend_from_slice(&alpn_ext);
-
-        // --- ClientHello body ---
-        let mut body = Vec::new();
-        body.extend_from_slice(&0x0303u16.to_be_bytes()); // legacy_version TLS1.2
-        body.extend_from_slice(&[0x42; 32]); // random
-        body.push(0x00); // session id len
-        body.extend_from_slice(&0x0002u16.to_be_bytes()); // cipher suites len
-        body.extend_from_slice(&0x1301u16.to_be_bytes()); // TLS_AES_128_GCM_SHA256
-        body.push(0x01); // compression methods len
-        body.push(0x00); // null compression
-        body.extend_from_slice(&(exts.len() as u16).to_be_bytes());
-        body.extend_from_slice(&exts);
-
-        // --- handshake framing ---
-        let mut hs = Vec::new();
-        hs.push(0x01); // ClientHello
-        let l = body.len();
-        hs.extend_from_slice(&[(l >> 16) as u8, (l >> 8) as u8, l as u8]);
-        hs.extend_from_slice(&body);
-        hs
-    }
-
-    /// Encrypt `crypto` (a TLS handshake) into a wire-format QUIC Initial packet
-    /// for the given version, mirroring RFC 9001 §5.3–5.4 on the sender side.
-    fn build_initial_packet(version: u32, crypto: &[u8]) -> Vec<u8> {
-        let params = version_params(version).unwrap();
-        let dcid = unhex("8394c8f03e515708");
-        let keys = derive_client_initial_keys(&dcid, &params);
-
-        // CRYPTO frame at offset 0 carrying the ClientHello.
-        let mut payload = vec![0x06];
-        push_varint(&mut payload, 0);
-        push_varint(&mut payload, crypto.len() as u64);
-        payload.extend_from_slice(crypto);
-        // Pad so the Initial is >= 1200 bytes (and long enough for HP sampling).
-        if payload.len() < 1180 {
-            payload.resize(1180, 0x00); // trailing PADDING frames
-        }
-
-        let packet_number: u32 = 0;
-        let pn_len = 4usize; // encode PN in 4 bytes to match sampling assumptions
-        let first_type = params.initial_type << 4;
-        // first byte: long(1) fixed(1) type(2) reserved(2)=0 pn_len(2)=pn_len-1
-        let first = 0x80 | 0x40 | first_type | ((pn_len - 1) as u8);
-
-        // Build the unprotected header.
-        let mut header = Vec::new();
-        header.push(first);
-        header.extend_from_slice(&version.to_be_bytes());
-        header.push(dcid.len() as u8);
-        header.extend_from_slice(&dcid);
-        header.push(0x00); // zero-length SCID
-        push_varint(&mut header, 0); // zero-length token
-        let length = pn_len + payload.len() + 16; // pn + payload + AEAD tag
-        push_varint(&mut header, length as u64);
-        let pn_offset = header.len();
-        header.extend_from_slice(&packet_number.to_be_bytes()); // 4-byte PN
-
-        // AEAD encrypt.
-        let mut nonce = keys.iv;
-        let pn_bytes = (packet_number as u64).to_be_bytes();
-        for i in 0..8 {
-            nonce[12 - 8 + i] ^= pn_bytes[i];
-        }
-        let cipher = Aes128Gcm::new(GenericArray::from_slice(&keys.key));
-        let ct = cipher
-            .encrypt(
-                Nonce::from_slice(&nonce),
-                aes_gcm::aead::Payload {
-                    msg: &payload,
-                    aad: &header,
-                },
-            )
-            .unwrap();
-
-        let mut packet = header.clone();
-        packet.extend_from_slice(&ct);
-
-        // Apply header protection.
-        let sample_offset = pn_offset + 4;
-        let sample: [u8; 16] = packet[sample_offset..sample_offset + 16]
-            .try_into()
-            .unwrap();
-        let mask = aes128_ecb_block(&keys.hp, &sample);
-        packet[0] ^= mask[0] & 0x0f;
-        for i in 0..pn_len {
-            packet[pn_offset + i] ^= mask[1 + i];
-        }
-        packet
     }
 }

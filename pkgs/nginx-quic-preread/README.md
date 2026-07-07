@@ -97,10 +97,19 @@ $ cargo test
 test result: ok. 7 passed; 0 failed
 ```
 
-There is also a NixOS VM **integration test** (`test.nix`) that builds nginx with
-the module, fires a real QUIC Initial packet (generated independently by
-`aioquic`) at a UDP stream server, and asserts it is proxied to the
-SNI-matched backend. It is wired into the flake checks as
+There is also a Rust **integration test** (`tests/nginx_sni_routing.rs`) that
+drives a **real nginx** built with the module: it spawns `$NGINX_BIN` with a
+stream config that routes `$quic_preread_server_name` to two UDP backends, fires
+a genuine QUIC Initial at it, and asserts the datagram is proxied to the
+SNI-matched backend and not the other. Run it directly against any nginx that
+has the module:
+
+```console
+$ NGINX_BIN=/path/to/nginx cargo test --test nginx_sni_routing
+```
+
+`test.nix` wraps this as a Nix check that builds nginx+module and runs the test
+in a plain build sandbox (no KVM needed), wired into the flake checks as
 `package-nginx-quic-preread-test-sni-routing`.
 
 ## Building

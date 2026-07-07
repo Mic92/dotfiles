@@ -81,7 +81,7 @@ in
     # SNI-routing integration test rides along in passthru.tests, so the checks
     # flake-module picks it up as package-nginx-quic-preread-test-sni-routing.
     nginx-quic-preread =
-      (pkgs.nginxQuic.override {
+      (pkgs.nginx.override {
         modules = [ (pkgs.callPackage ./nginx-quic-preread/package.nix { }) ];
       }).overrideAttrs
         (old: {
