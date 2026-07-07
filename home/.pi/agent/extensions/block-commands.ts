@@ -32,8 +32,7 @@ interface BlockRule {
 const BLOCK_RULES: BlockRule[] = [
   {
     matches: (argv) => scansRoot(argv, NIX_ROOTS),
-    reason:
-      "find/fd/rg/grep on /nix/store is blocked (millions of files). " +
+    reason: "find/fd/rg/grep on /nix/store is blocked (millions of files). " +
       "Use nix-locate to find store paths, or inspect env vars like " +
       "$buildInputs / $NIX_CFLAGS_COMPILE / $PKG_CONFIG_PATH inside a shell.",
   },
