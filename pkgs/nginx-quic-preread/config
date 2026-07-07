@@ -1,0 +1,24 @@
+# nginx addon config for the ngx_stream_quic_preread module.
+# shellcheck source=auto/rust
+. $ngx_addon_dir/auto/rust
+
+# ngx_addon_name determines the build directory and should be set before
+# any modules are defined.
+ngx_addon_name=ngx_stream_quic_preread_module
+
+if [ $STREAM = YES ]; then
+    ngx_module_type=STREAM
+    # Must match the ngx_module_t static exported from the Rust code.
+    ngx_module_name=ngx_stream_quic_preread_module
+    ngx_module_incs=
+    ngx_module_deps=
+    ngx_module_libs=
+
+    # ngx-rust target: the [lib] name from Cargo.toml, built as a staticlib.
+    ngx_rust_target_type=LIB
+    ngx_rust_target_name=ngx_quic_preread
+    # Enable the nginx glue (auto/rust builds with --no-default-features).
+    ngx_rust_target_features=nginx
+
+    ngx_rust_module
+fi

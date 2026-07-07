@@ -77,10 +77,21 @@ in
     route96 = pkgs.callPackage ./route96 { };
     live-text = pkgs.python3.pkgs.callPackage ./live-text { };
     phantun = pkgs.callPackage ./phantun { };
-    # nginx stream module: preread SNI/ALPN from QUIC Initial packets.
-    ngx-stream-quic-preread = pkgs.callPackage ./nginx-quic-preread/package.nix {
-      nginx = pkgs.nginxQuic;
-    };
+    # nginx built with the QUIC preread stream module statically linked. The
+    # SNI-routing integration test rides along in passthru.tests, so the checks
+    # flake-module picks it up as package-nginx-quic-preread-test-sni-routing.
+    nginx-quic-preread =
+      (pkgs.nginxQuic.override {
+        modules = [ (pkgs.callPackage ./nginx-quic-preread/package.nix { }) ];
+      }).overrideAttrs
+        (old: {
+          passthru = (old.passthru or { }) // {
+            # Only expose our test as a check (not nginx's own heavy suite).
+            tests = {
+              sni-routing = pkgs.callPackage ./nginx-quic-preread/test.nix { };
+            };
+          };
+        });
     phpldapadmin = pkgs.callPackage ../nixosModules/phpldapadmin/package.nix { };
     radicle-github-sync = pkgs.callPackage ./radicle-github-sync { };
   }

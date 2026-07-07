@@ -327,7 +327,9 @@ static NGX_STREAM_QUIC_PREREAD_COMMANDS: Commands = Commands([
     ngx_command_t::empty(),
 ]);
 
-/// The module definition exported to nginx.
+/// The module definition. Referenced `extern` from the `ngx_modules.c` that the
+/// nginx buildsystem generates for a statically linked (`--add-module`) module,
+/// so we export only this symbol — no `ngx_modules!` array.
 #[no_mangle]
 pub static mut ngx_stream_quic_preread_module: ngx_module_t = ngx_module_t {
     ctx: &NGX_STREAM_QUIC_PREREAD_MODULE_CTX.0 as *const ngx_stream_module_t as *mut c_void,
@@ -335,7 +337,3 @@ pub static mut ngx_stream_quic_preread_module: ngx_module_t = ngx_module_t {
     type_: NGX_STREAM_MODULE as ngx_uint_t,
     ..ngx_module_t::default()
 };
-
-// Emit the `ngx_modules` / `ngx_module_names` / `ngx_module_order` symbols that
-// nginx's dynamic loader looks up in the shared object.
-ngx::ngx_modules!(ngx_stream_quic_preread_module);

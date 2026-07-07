@@ -4,8 +4,9 @@
 //!
 //! * [`quic`] — pure-Rust QUIC Initial decryption + ClientHello parsing (unit
 //!   tested against the RFC 9001 / RFC 9369 vectors, no nginx dependency).
-//! * `stream_module` — the nginx dynamic stream module glue (compiled with the
-//!   default `nginx` feature; requires an nginx source tree to build).
+//! * `stream_module` — the nginx stream module glue, statically linked into
+//!   nginx via `--add-module` (compiled with the `nginx` feature, which requires
+//!   an nginx source tree to build).
 
 pub mod quic;
 

@@ -68,11 +68,15 @@ The Rust crate is split so that the risky, spec-heavy part is testable without
 nginx:
 
 - `src/quic.rs` — pure Rust, no nginx dependency. The QUIC/TLS logic and its
-  tests. Build/test it standalone with `cargo test --no-default-features`.
+  tests. Build/test it standalone with `cargo test`.
 - `src/stream_module.rs` — thin, unsafe FFI glue built on
   [`ngx`](https://crates.io/crates/ngx) / `nginx-sys`, modeled directly on
-  nginx's own `ngx_stream_ssl_preread_module.c`. Compiled only with the default
-  `nginx` feature, which needs an nginx source tree at build time.
+  nginx's own `ngx_stream_ssl_preread_module.c`. Compiled only with the `nginx`
+  feature (off by default), which needs an nginx source tree at build time.
+
+The module is linked **statically** into nginx via `--add-module`; the nginx
+buildsystem invokes cargo through `config` / `config.make` / `auto/rust`
+(vendored from ngx-rust). There is no dynamic `.so` and no `--with-compat`.
 
 ### Tests
 
@@ -89,32 +93,30 @@ nginx:
   packet framing.
 
 ```console
-$ cargo test --no-default-features
+$ cargo test
 test result: ok. 7 passed; 0 failed
 ```
 
+There is also a NixOS VM **integration test** (`test.nix`) that builds nginx with
+the module, fires a real QUIC Initial packet (generated independently by
+`aioquic`) at a UDP stream server, and asserts it is proxied to the
+SNI-matched backend. It is wired into the flake checks as
+`package-nginx-quic-preread-test-sni-routing`.
+
 ## Building
 
-The module is a standard nginx dynamic module and must be built against the same
-nginx version it will be loaded into, which must be built `--with-compat`.
-
-With Nix (from the repository root):
+The module is compiled statically into nginx. With Nix (from the repo root),
+`nginx-quic-preread` is nginx with the module linked in:
 
 ```console
-$ nix build .#ngx-stream-quic-preread
-# -> result/lib/nginx/modules/ngx_stream_quic_preread_module.so
-```
-
-Manually, against a configured nginx source tree:
-
-```console
-$ NGINX_SOURCE_DIR=/path/to/nginx-1.28.0 cargo build --release
-# nginx must have been ./configure'd with --with-compat --with-stream
+$ nix build .#nginx-quic-preread
+$ nix build .#checks.x86_64-linux.package-nginx-quic-preread-test-sni-routing
 ```
 
 ## NixOS
 
-`nixosModules/nginx-quic-preread.nix` wires it up:
+`nixosModules/nginx-quic-preread.nix` wires it up via
+`services.nginx.additionalModules` (which recompiles nginx with the module):
 
 ```nix
 {
@@ -126,9 +128,6 @@ $ NGINX_SOURCE_DIR=/path/to/nginx-1.28.0 cargo build --release
   '';
 }
 ```
-
-It rebuilds `services.nginx.package` with `--with-compat` and emits the
-`load_module` directive.
 
 ## Limitations
 
