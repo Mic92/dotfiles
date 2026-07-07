@@ -736,16 +736,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1783242517,
-        "narHash": "sha256-K2ZSpqFHFS2p89wN5lJNjYvtsVpHacCfYZg5HmALEOo=",
-        "ref": "fancy-logs",
-        "rev": "77745f1ce6b62ddba097d80d9316098dd9ed5308",
+        "lastModified": 1783261624,
+        "narHash": "sha256-aUq84JL8KL+BRZICg8mPGyepkz3oei6XWEwYqOpyMhM=",
+        "ref": "scheduler-perf",
+        "rev": "2f414ffc0e99c0d779224ef070ed60a5cc01df3a",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
       },
       "original": {
-        "ref": "fancy-logs",
+        "ref": "scheduler-perf",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
@@ -1060,14 +1060,17 @@
         ],
         "nixpkgs": [
           "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
         ]
       },
       "locked": {
-        "lastModified": 1783079535,
-        "narHash": "sha256-V879jTX0unmrEqv5ddzbakjeQjMT6TmaHTd+0/GGcOs=",
+        "lastModified": 1783265670,
+        "narHash": "sha256-Fy7nUoFvgxF9KYDr89hQo5JlIkoCcIOz4RfmQlaGECo=",
         "owner": "Mic92",
         "repo": "tribuchet",
-        "rev": "f54eda710ac344c960c027ee1bf9e9883c02bfa8",
+        "rev": "30f83152cc6e51c7a36d761b53f776954035b990",
         "type": "github"
       },
       "original": {

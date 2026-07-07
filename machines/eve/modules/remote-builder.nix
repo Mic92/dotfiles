@@ -30,39 +30,39 @@
         "recursive-nix"
       ];
     }
-    {
-      hostName = "jamie";
-      maxJobs = 128;
-      sshKey = config.sops.secrets.ssh-tum-builder.path;
-      protocol = "ssh-ng";
-      sshUser = "nix";
-      systems = [
-        "x86_64-linux"
-        "i686-linux"
-      ];
-      supportedFeatures = [
-        "big-parallel"
-        "kvm"
-        "nixos-test"
-        "recursive-nix"
-        "uid-range"
-      ];
-    }
-    {
-      hostName = "eliza";
-      maxJobs = 128;
-      sshKey = config.sops.secrets.ssh-tum-builder.path;
-      protocol = "ssh-ng";
-      sshUser = "nix";
-      systems = [ "aarch64-linux" ];
-      supportedFeatures = [
-        "big-parallel"
-        "kvm"
-        "nixos-test"
-        "recursive-nix"
-        "uid-range"
-      ];
-    }
+    #{
+    #  hostName = "jamie";
+    #  maxJobs = 128;
+    #  sshKey = config.sops.secrets.ssh-tum-builder.path;
+    #  protocol = "ssh-ng";
+    #  sshUser = "nix";
+    #  systems = [
+    #    "x86_64-linux"
+    #    "i686-linux"
+    #  ];
+    #  supportedFeatures = [
+    #    "big-parallel"
+    #    "kvm"
+    #    "nixos-test"
+    #    "recursive-nix"
+    #    "uid-range"
+    #  ];
+    #}
+    #{
+    #  hostName = "eliza";
+    #  maxJobs = 128;
+    #  sshKey = config.sops.secrets.ssh-tum-builder.path;
+    #  protocol = "ssh-ng";
+    #  sshUser = "nix";
+    #  systems = [ "aarch64-linux" ];
+    #  supportedFeatures = [
+    #    "big-parallel"
+    #    "kvm"
+    #    "nixos-test"
+    #    "recursive-nix"
+    #    "uid-range"
+    #  ];
+    #}
   ];
   programs.ssh.extraConfig = ''
     # Detect dead TCP connections to remote builders so build-remote does not

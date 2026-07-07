@@ -119,6 +119,10 @@ in
     ];
     branches.mergeQueue.matchGlob = "gitea-mq/*";
     evalWorkerCount = 6;
+    # Builds offload to tribuchet workers and use little local CPU, so
+    # the default core-count cap left the workers idle. Keep this <=
+    # id-count/65536 (256): each build holds one auto-allocated uid slot.
+    buildConcurrency = 128;
     github = {
       enable = true;
       webhookSecretFile = config.sops.secrets.buildbot-github-webhook-secret.path;

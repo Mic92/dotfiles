@@ -69,6 +69,7 @@
     tribuchet.inputs.nixpkgs.follows = "nixpkgs";
     tribuchet.inputs.nix-darwin.follows = "nix-darwin";
     tribuchet.inputs.crane.follows = "crane";
+    tribuchet.inputs.treefmt-nix.follows = "treefmt-nix";
 
     #spora.url = "github:krebs/spora";
     #spora.inputs.nixpkgs.follows = "nixpkgs";
@@ -83,7 +84,7 @@
     data-mesher.inputs.treefmt-nix.follows = "treefmt-nix";
     data-mesher.inputs.flake-parts.follows = "flake-parts";
 
-    nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1&ref=fancy-logs";
+    nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1&ref=scheduler-perf";
     nixbot.inputs.nixpkgs.follows = "nixpkgs";
     nixbot.inputs.treefmt-nix.follows = "treefmt-nix";
 
