@@ -4,6 +4,9 @@
   self,
   ...
 }:
+let
+  fast-nix-gc = self.inputs.fast-nix-gc.packages.${pkgs.stdenv.hostPlatform.system}.default;
+in
 {
   imports = [
     ./common.nix
@@ -32,6 +35,21 @@
     preStart = ''
       mkdir -p /run/sshd
     '';
+  };
+
+  services.supervisor.programs.fast-nix-gc = {
+    settings = {
+      command = toString (
+        pkgs.writeShellScript "fast-nix-gc-loop" ''
+          while true; do
+            sleep 3600
+            ${fast-nix-gc}/bin/fast-nix-gc --keep-recent 1d || true
+            ${fast-nix-gc}/bin/fast-nix-optimise || true
+          done
+        ''
+      );
+      user = "root";
+    };
   };
 
   # $HOME is wiped on coder workspace restart, but ~/src persists.
