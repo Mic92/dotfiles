@@ -1,13 +1,14 @@
 /**
  * block-commands - reject bash tool calls matching BLOCK_RULES before
- * execution. Tokenizes with shell-quote so quoting/pipelines/env prefixes
- * are handled and rules see argv, not raw strings.
+ * execution. Uses the shared _shell tokenizer so quoting/pipelines/env
+ * prefixes/command substitutions are handled and rules see argv, not raw
+ * strings.
  */
 import {
   type ExtensionAPI,
   isToolCallEventType,
 } from "@mariozechner/pi-coding-agent";
-import { parse } from "shell-quote";
+import { simpleCommands } from "./_shell.ts";
 
 const HOME = process.env.HOME;
 
@@ -42,27 +43,6 @@ const BLOCK_RULES: BlockRule[] = [
       "find/fd/rg/grep on / or $HOME is blocked (too slow). Scope to a subdir.",
   },
 ];
-
-// Split token stream into simple commands (argv arrays), breaking on
-// operators. Leading VAR=value prefixes are dropped so argv[0] is the program.
-function simpleCommands(command: string): string[][] {
-  const commands: string[][] = [];
-  let current: string[] = [];
-
-  // Keep `$HOME` literal instead of expanding to "".
-  for (const token of parse(command, (name) => `$${name}`)) {
-    if (typeof token === "object" && "op" in token) {
-      if (current.length) commands.push(current);
-      current = [];
-      continue;
-    }
-    const word = typeof token === "string" ? token : String(token);
-    if (current.length === 0 && /^[A-Za-z_][A-Za-z0-9_]*=/.test(word)) continue;
-    current.push(word);
-  }
-  if (current.length) commands.push(current);
-  return commands;
-}
 
 export default function (pi: ExtensionAPI) {
   pi.on("tool_call", async (event) => {
