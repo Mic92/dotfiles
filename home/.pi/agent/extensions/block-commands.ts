@@ -18,8 +18,10 @@ const WHOLE_TREE_ROOTS = new Set(
 );
 const NIX_ROOTS = new Set(["/nix", "/nix/store"]);
 
-// `~/`, `$HOME/`, `//` -> their bare root.
-const normalizeRoot = (arg: string) => arg.replace(/\/+$/, "") || "/";
+// `~/`, `$HOME/` -> their bare root. `/` stays `/`; other all-slash args
+// (e.g. a `//` grep pattern) normalize to "" and never match a root.
+const normalizeRoot = (arg: string) =>
+  arg === "/" ? "/" : arg.replace(/\/+$/, "");
 
 const scansRoot = (argv: string[], roots: Set<string>) =>
   SCAN_COMMANDS.has(argv[0]) &&
