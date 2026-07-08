@@ -356,3 +356,8 @@ export function simpleCommands(command: string): string[][] {
   flush();
   return commands;
 }
+
+// pi's loader treats every *.ts in extensions/ as an extension and errors on
+// modules without a default export. This file is a helper library, so export
+// a no-op factory to keep the loader quiet.
+export default function () {}
