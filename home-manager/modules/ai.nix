@@ -90,6 +90,7 @@ in
     aiTools.workmux
     aiTools.git-surgeon
     aiTools.zat
+    aiTools.jscpd
     pkgs.pueue
   ]
   ++ lib.optionals pkgs.stdenv.isDarwin [
