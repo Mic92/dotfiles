@@ -8,6 +8,15 @@
   "skills": [
     "~/.claude/skills"
   ],
+  "packages": [
+    {
+      "source": "~/.homesick/repos/dotfiles/pi-agent-extensions",
+      "extensions": [
+        "!*",
+        "+permission-gate/index.ts"
+      ]
+    }
+  ],
   "compaction": {
     "enabled": true
   },

@@ -33,7 +33,8 @@
 	url = https://github.com/jorgebucaran/autopair.fish
 [submodule "pi-agent-extensions"]
 	path = pi-agent-extensions
-	url = https://github.com/rytswd/pi-agent-extensions
+	url = git@github.com:Mic92/pi-agent-extensions.git
+	branch = block-commands
 [submodule "home/.config/noctalia/shared-plugins"]
 	path = home/.config/noctalia/shared-plugins
 	url = https://github.com/Mic92/noctalia-plugins
