@@ -1,14 +1,14 @@
 /**
  * block-commands - reject bash tool calls matching BLOCK_RULES before
- * execution. Uses the shared _shell tokenizer so quoting/pipelines/env
- * prefixes/command substitutions are handled and rules see argv, not raw
+ * execution. Uses the shared _shell parser so quoting/env prefixes/command
+ * substitutions are handled and rules see pipelines of argv arrays, not raw
  * strings.
  */
 import {
   type ExtensionAPI,
   isToolCallEventType,
 } from "@mariozechner/pi-coding-agent";
-import { simpleCommands } from "./_shell.ts";
+import { pipelines, simpleCommands } from "./_shell.ts";
 
 const HOME = process.env.HOME;
 
@@ -65,31 +65,55 @@ const scansRoot = (argv: string[], roots: Set<string>) =>
   searchPaths(argv).some((arg) => roots.has(normalizeRoot(arg)));
 
 interface BlockRule {
-  matches: (argv: string[]) => boolean;
+  // Checked once per pipeline; a pipeline is the list of argvs joined by
+  // pipes, so rules can reason about producer/consumer combinations.
+  matches: (pipeline: string[][]) => boolean;
   reason: string;
 }
 
 const BLOCK_RULES: BlockRule[] = [
   {
-    matches: (argv) => scansRoot(argv, NIX_ROOTS),
+    matches: (pipeline) => pipeline.some((argv) => scansRoot(argv, NIX_ROOTS)),
     reason: "find/fd/rg/grep on /nix/store is blocked (millions of files). " +
       "Use nix-locate to find store paths, or inspect env vars like " +
       "$buildInputs / $NIX_CFLAGS_COMPILE / $PKG_CONFIG_PATH inside a shell.",
   },
   {
-    matches: (argv) => scansRoot(argv, WHOLE_TREE_ROOTS),
+    matches: (pipeline) =>
+      pipeline.some((argv) => scansRoot(argv, WHOLE_TREE_ROOTS)),
     reason:
       "find/fd/rg/grep on / or $HOME is blocked (too slow). Scope to a subdir.",
+  },
+  {
+    // tail inside the quoted task of `pueue add -- '... | tail'`
+    // (re-parsed as shell). Piping pueue's own output to tail is fine.
+    matches: (pipeline) =>
+      pipeline.some((c) =>
+        c[0] === "pueue" && c[1] === "add" &&
+        c.slice(2).some((arg) =>
+          simpleCommands(arg).some((sub) => sub[0] === "tail")
+        )
+      ),
+    reason: "Do not tail inside a pueue task; it hides live output. Queue " +
+      "the command without tail, stream it with `pueue follow`, and use " +
+      "`pueue log --lines N` to view the end of the output.",
   },
 ];
 
 export default function (pi: ExtensionAPI) {
-  pi.on("tool_call", async (event) => {
+  pi.on("tool_call", (event) => {
     if (!isToolCallEventType("bash", event)) return;
 
-    for (const argv of simpleCommands(event.input.command)) {
+    // Pipelines as argv lists, recursing into command/process substitutions.
+    const collect = (script: string): string[][][] =>
+      pipelines(script).flatMap((p) => [
+        p.map((c) => c.argv).filter((argv) => argv.length),
+        ...p.flatMap((c) => c.subs.flatMap(collect)),
+      ]).filter((p) => p.length);
+
+    for (const pipeline of collect(event.input.command)) {
       for (const rule of BLOCK_RULES) {
-        if (rule.matches(argv)) {
+        if (rule.matches(pipeline)) {
           return { block: true, reason: rule.reason };
         }
       }

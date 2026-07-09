@@ -315,45 +315,87 @@ export function tokenize(input: string): Token[] {
   return tokens;
 }
 
+/** One command in a pipeline: its argv plus the inner scripts of any
+ * command/process substitutions appearing in its words. */
+export interface ShellCommand {
+  argv: string[];
+  subs: string[];
+}
+
+/** Commands connected by `|` / `|&`, in order. */
+export type Pipeline = ShellCommand[];
+
 /**
- * Split a command string into simple commands (argv arrays), breaking on
- * operators and recursing into command substitutions. Leading VAR=value
+ * Parse a command string into pipelines of simple commands. Pipelines are
+ * separated by `;`, `&&`, `||`, `&`, newlines and parentheses. Substitution
+ * scripts are attached to the command they appear in (not parsed further;
+ * callers recurse via `pipelines(sub)` if needed). Leading VAR=value
  * prefixes are dropped so argv[0] is the program.
  */
-export function simpleCommands(command: string): string[][] {
-  const commands: string[][] = [];
-  let current: string[] = [];
+export function pipelines(command: string): Pipeline[] {
+  const result: Pipeline[] = [];
+  let pipeline: Pipeline = [];
+  let argv: string[] = [];
+  let subs: string[] = [];
   let skipRedirectTarget = false;
 
-  const flush = () => {
-    if (current.length) commands.push(current);
-    current = [];
+  const flushCommand = () => {
+    if (argv.length || subs.length) pipeline.push({ argv, subs });
+    argv = [];
+    subs = [];
+  };
+  const flushPipeline = () => {
+    flushCommand();
+    if (pipeline.length) result.push(pipeline);
+    pipeline = [];
   };
 
   for (const token of tokenize(command)) {
     if (token.type === "op") {
       if (REDIRECT_OPS.has(token.value)) {
         skipRedirectTarget = true;
-      } else {
-        skipRedirectTarget = false;
-        flush();
+        continue;
       }
+      skipRedirectTarget = false;
+      // Heredoc delimiter/body are consumed by the tokenizer; << itself does
+      // not end the command.
+      if (token.value === "<<" || token.value === "<<-") continue;
+      if (token.value === "|" || token.value === "|&") flushCommand();
+      else flushPipeline();
       continue;
     }
     if (token.type === "sub") {
-      commands.push(...simpleCommands(token.value));
+      subs.push(token.value);
       continue;
     }
     if (skipRedirectTarget) {
       skipRedirectTarget = false;
       continue;
     }
-    if (current.length === 0 && /^[A-Za-z_][A-Za-z0-9_]*=/.test(token.value)) {
+    if (argv.length === 0 && /^[A-Za-z_][A-Za-z0-9_]*=/.test(token.value)) {
       continue;
     }
-    current.push(token.value);
+    argv.push(token.value);
   }
-  flush();
+  flushPipeline();
+  return result;
+}
+
+/**
+ * Flatten a command string into simple commands (argv arrays), recursing
+ * into command substitutions. Convenience wrapper over `pipelines`.
+ */
+export function simpleCommands(command: string): string[][] {
+  const commands: string[][] = [];
+  const walk = (script: string) => {
+    for (const pipeline of pipelines(script)) {
+      for (const cmd of pipeline) {
+        if (cmd.argv.length) commands.push(cmd.argv);
+        cmd.subs.forEach(walk);
+      }
+    }
+  };
+  walk(command);
   return commands;
 }
 
