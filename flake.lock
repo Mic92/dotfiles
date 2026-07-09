@@ -736,16 +736,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1783261624,
-        "narHash": "sha256-aUq84JL8KL+BRZICg8mPGyepkz3oei6XWEwYqOpyMhM=",
-        "ref": "scheduler-perf",
-        "rev": "2f414ffc0e99c0d779224ef070ed60a5cc01df3a",
+        "lastModified": 1783579502,
+        "narHash": "sha256-5f1y5zYxuWExrqyGWcivFZFeJUlE4p3AALV58XfFE9A=",
+        "ref": "better-live-logs",
+        "rev": "ccc08d4f08e0147e5f98e5f0c2bd000bd56323c0",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
       },
       "original": {
-        "ref": "scheduler-perf",
+        "ref": "better-live-logs",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
