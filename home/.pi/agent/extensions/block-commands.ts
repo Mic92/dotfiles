@@ -85,18 +85,20 @@ const BLOCK_RULES: BlockRule[] = [
       "find/fd/rg/grep on / or $HOME is blocked (too slow). Scope to a subdir.",
   },
   {
-    // tail inside the quoted task of `pueue add -- '... | tail'`
-    // (re-parsed as shell). Piping pueue's own output to tail is fine.
+    // head/tail inside the quoted task of `pueue add -- '... | tail'`
+    // (re-parsed as shell). Piping pueue's own output to head/tail is fine.
     matches: (pipeline) =>
       pipeline.some((c) =>
         c[0] === "pueue" && c[1] === "add" &&
         c.slice(2).some((arg) =>
-          simpleCommands(arg).some((sub) => sub[0] === "tail")
+          simpleCommands(arg).some((sub) =>
+            sub[0] === "tail" || sub[0] === "head"
+          )
         )
       ),
-    reason: "Do not tail inside a pueue task; it hides live output. Queue " +
-      "the command without tail, stream it with `pueue follow`, and use " +
-      "`pueue log --lines N` to view the end of the output.",
+    reason: "Do not head/tail inside a pueue task; it hides live output. " +
+      "Queue the command without head/tail, stream it with `pueue follow`, " +
+      "and use `pueue log --lines N` to view the end of the output.",
   },
 ];
 
