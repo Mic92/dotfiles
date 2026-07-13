@@ -4,113 +4,113 @@
     <meta charset="utf-8">
     <title>Niri Cheat Sheet</title>
     <style>
+    :root {
+      --accent: #5bd5fa;
+      --bg: #111415;
+      --fg: #e8eef0;
+      --muted: #8aa0a8;
+      --urgent: #ffb4ab;
+      --card: #1a1f21;
+    }
+    @media print {
       :root {
-        --accent: #5bd5fa;
-        --bg: #111415;
-        --fg: #e8eef0;
-        --muted: #8aa0a8;
-        --urgent: #ffb4ab;
-        --card: #1a1f21;
-      }
-      @media print {
-        :root {
-          --bg: #fff;
-          --fg: #111;
-          --card: #f4f4f4;
-          --muted: #555;
-        }
-        body {
-          font-size: 9pt;
-        }
-        .col {
-          break-inside: avoid;
-        }
-      }
-      * {
-        box-sizing: border-box;
+        --bg: #fff;
+        --fg: #111;
+        --card: #f4f4f4;
+        --muted: #555;
       }
       body {
-        margin: 0;
-        font: 14px/1.45 ui-sans-serif, system-ui, sans-serif;
-        background: var(--bg);
-        color: var(--fg);
-        padding: 1.5rem;
-      }
-      h1 {
-        margin: 0 0 0.2rem;
-        color: var(--accent);
-        font-size: 1.8rem;
-        letter-spacing: 0.5px;
-      }
-      .sub {
-        color: var(--muted);
-        margin-bottom: 1.2rem;
-        font-size: 0.9rem;
-      }
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 1rem;
+        font-size: 9pt;
       }
       .col {
-        background: var(--card);
-        border-radius: 12px;
-        padding: 0.9rem 1rem;
-        border-left: 3px solid var(--accent);
+        break-inside: avoid;
       }
-      .col h2 {
-        margin: 0 0 0.5rem;
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--accent);
-      }
-      table {
-        width: 100%;
-        border-collapse: collapse;
-      }
-      td {
-        padding: 0.18rem 0;
-        vertical-align: top;
-      }
-      td:first-child {
-        white-space: nowrap;
-        padding-right: 1rem;
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        color: var(--fg);
-        font-size: 0.92em;
-      }
-      td:last-child {
-        color: var(--muted);
-      }
-      kbd {
-        background: #0006;
-        border: 1px solid #fff2;
-        border-bottom-width: 2px;
-        border-radius: 4px;
-        padding: 1px 5px;
-        font: inherit;
-        font-size: 0.9em;
-      }
-      .hint {
-        color: var(--urgent);
-        font-weight: 600;
-      }
-      .note {
-        grid-column: 1 / -1;
-        background: var(--card);
-        border-radius: 12px;
-        padding: 0.9rem 1rem;
-        border-left: 3px solid var(--urgent);
-        font-size: 0.9rem;
-        color: var(--muted);
-      }
-      .note b {
-        color: var(--fg);
-      }
-      .note code {
-        color: var(--accent);
-      }
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      font: 14px/1.45 ui-sans-serif, system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      padding: 1.5rem;
+    }
+    h1 {
+      margin: 0 0 0.2rem;
+      color: var(--accent);
+      font-size: 1.8rem;
+      letter-spacing: 0.5px;
+    }
+    .sub {
+      color: var(--muted);
+      margin-bottom: 1.2rem;
+      font-size: 0.9rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1rem;
+    }
+    .col {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      border-left: 3px solid var(--accent);
+    }
+    .col h2 {
+      margin: 0 0 0.5rem;
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    td {
+      padding: 0.18rem 0;
+      vertical-align: top;
+    }
+    td:first-child {
+      white-space: nowrap;
+      padding-right: 1rem;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      color: var(--fg);
+      font-size: 0.92em;
+    }
+    td:last-child {
+      color: var(--muted);
+    }
+    kbd {
+      background: #0006;
+      border: 1px solid #fff2;
+      border-bottom-width: 2px;
+      border-radius: 4px;
+      padding: 1px 5px;
+      font: inherit;
+      font-size: 0.9em;
+    }
+    .hint {
+      color: var(--urgent);
+      font-weight: 600;
+    }
+    .note {
+      grid-column: 1 / -1;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 0.9rem 1rem;
+      border-left: 3px solid var(--urgent);
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+    .note b {
+      color: var(--fg);
+    }
+    .note code {
+      color: var(--accent);
+    }
     </style>
   </head>
   <body>

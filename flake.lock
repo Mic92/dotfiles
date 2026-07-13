@@ -33,29 +33,6 @@
         "type": "github"
       }
     },
-    "blueprint": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "systems": [
-          "systems"
-        ]
-      },
-      "locked": {
-        "lastModified": 1776249299,
-        "narHash": "sha256-Dt9t1TGRmJFc0xVYhttNBD6QsAgHOHCArqGa0AyjrJY=",
-        "owner": "numtide",
-        "repo": "blueprint",
-        "rev": "56131e8628f173d24a27f6d27c0215eff57e40dd",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "blueprint",
-        "type": "github"
-      }
-    },
     "bun2nix": {
       "inputs": {
         "flake-parts": [
@@ -187,11 +164,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1781161664,
-        "narHash": "sha256-pALZH5SItoXJChOILlncSDlevnrxwaQrCmNVGrcn8ME=",
+        "lastModified": 1783857890,
+        "narHash": "sha256-rD4KU1jXXUuUP7ZWuxp8xoroXEne+NCeGrb77ZGhGvM=",
         "owner": "Mic92",
         "repo": "direnv-instant",
-        "rev": "57f5385e4c3df324201079553a98dd8e36c83858",
+        "rev": "4d440be96bc6294c891f309d3c944bef64879c9a",
         "type": "github"
       },
       "original": {
@@ -463,9 +440,6 @@
     },
     "llm-agents": {
       "inputs": {
-        "blueprint": [
-          "blueprint"
-        ],
         "bun2nix": "bun2nix",
         "flake-parts": [
           "flake-parts"
@@ -481,11 +455,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783529501,
-        "narHash": "sha256-Iu2cWpJHGBlXIDZ5/cWMxahSKxmUqsBeW0xetawbAeI=",
+        "lastModified": 1783928733,
+        "narHash": "sha256-GyD/+HkC7/hpG40H5vR/qhAuBVUOxy8uTbW5mdYHKsA=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "2d7b9e94daf3bb4dcea74b653dc8d23d48fa3714",
+        "rev": "3860609253abda8ef63068b45064be31b50d1ab1",
         "type": "github"
       },
       "original": {
@@ -628,11 +602,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1779036909,
-        "narHash": "sha256-zXcwYQGCT6pzinK+1dBB2ekTVtfxGZAapb3Evdcu4fY=",
+        "lastModified": 1783395956,
+        "narHash": "sha256-AAbexQvDoK+6GFJdhY6kqjA+6ECKRkidgWxkn4gMwAA=",
         "owner": "nix-darwin",
         "repo": "nix-darwin",
-        "rev": "56c666e108467d87d13508936aade6d567f2a501",
+        "rev": "d5bd9cd77aea4c0a8f49e7fd85545671a208ed15",
         "type": "github"
       },
       "original": {
@@ -736,16 +710,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1783579502,
-        "narHash": "sha256-5f1y5zYxuWExrqyGWcivFZFeJUlE4p3AALV58XfFE9A=",
-        "ref": "better-live-logs",
-        "rev": "ccc08d4f08e0147e5f98e5f0c2bd000bd56323c0",
+        "lastModified": 1783862175,
+        "narHash": "sha256-j60+n59/H6SIVAOTBmCIvOEgZ4oas4Sp1zE5CHWEj1M=",
+        "ref": "refs/heads/main",
+        "rev": "ed84fdbb263071e7615b171c3cad64d8d6dc6c1f",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
       },
       "original": {
-        "ref": "better-live-logs",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
@@ -773,10 +746,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1783233303,
-        "narHash": "sha256-+Oyczr5cxhuJf9MQ0hUrdLUvPOV2MOuQZat4Pkl5v/Y=",
+        "lastModified": 1783937601,
+        "narHash": "sha256-w2Xk80hmZg7LKWizTRx7T7LyEHHXimT3f3yC5awo7jU=",
         "ref": "main",
-        "rev": "276c50674366817193e6a51c81e0a211547d2abb",
+        "rev": "164ce5be6315e3cdb381b8064d577efa83aa78aa",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -879,7 +852,6 @@
     "root": {
       "inputs": {
         "adios-flake": "adios-flake",
-        "blueprint": "blueprint",
         "clan-core": "clan-core",
         "crane": "crane",
         "data-mesher": "data-mesher",
@@ -1066,11 +1038,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783575617,
-        "narHash": "sha256-0wOCjdMjMlpiPneIrl1yd0ZPDgg7VOkE8/Lv/18BFfQ=",
+        "lastModified": 1783875908,
+        "narHash": "sha256-d6y1mLNg3c93rZtjy8jQDuGyjz4KSP//NL26BQGSj30=",
         "owner": "Mic92",
         "repo": "tribuchet",
-        "rev": "5e3990dea465274fe1af4d9daba14debe8e8f540",
+        "rev": "7e61ac3c54eac83144e28b869cb6fc20a2497d40",
         "type": "github"
       },
       "original": {

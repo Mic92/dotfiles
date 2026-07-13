@@ -1,7 +1,11 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   services.photoprism = {
     enable = true;
+    # tensorflow-bin has no wheels for python 3.14 yet
+    package = pkgs.photoprism.override {
+      callPackage = pkgs.newScope { python3 = pkgs.python313; };
+    };
     address = "[::]";
     settings.PHOTOPRISM_AUTH_MODE = "password";
     settings.PHOTOPRISM_UPLOAD_NSFW = "true";

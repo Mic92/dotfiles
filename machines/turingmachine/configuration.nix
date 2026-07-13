@@ -28,7 +28,6 @@
     ./modules/toggle-keyboard
     ./modules/sunshine.nix
     ./modules/ghaf-hardware.nix
-    ./modules/iwlwifi-fix
     ./modules/ghaf-facter.nix
 
     ../../nixosModules/workstation.nix
