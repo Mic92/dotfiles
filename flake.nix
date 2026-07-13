@@ -84,7 +84,7 @@
     data-mesher.inputs.treefmt-nix.follows = "treefmt-nix";
     data-mesher.inputs.flake-parts.follows = "flake-parts";
 
-    nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1&ref=better-live-logs";
+    nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1";
     nixbot.inputs.nixpkgs.follows = "nixpkgs";
     nixbot.inputs.treefmt-nix.follows = "treefmt-nix";
 
