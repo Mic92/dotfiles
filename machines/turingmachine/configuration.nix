@@ -23,7 +23,6 @@
     ./modules/nfs.nix
     ./modules/packages.nix
     ./modules/postgresql.nix
-    ./modules/spotifyd.nix
     ../../nixosModules/tum-vpn
     ./modules/toggle-keyboard
     ./modules/sunshine.nix
