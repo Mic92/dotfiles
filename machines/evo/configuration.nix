@@ -7,6 +7,10 @@
 {
   system.primaryUser = "joerg";
 
+  # Manual build breaks when nixpkgs is newer than nix-darwin (removed
+  # nixos-render-docs flags); we don't need docs on this machine anyway.
+  documentation.enable = false;
+
   networking.hostName = "evo";
   nixpkgs.hostPlatform = "aarch64-darwin";
 
