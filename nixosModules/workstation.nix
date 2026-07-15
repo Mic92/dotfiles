@@ -70,7 +70,6 @@
 
     journald.extraConfig = "SystemMaxUse=1G";
 
-    zerotierone.joinNetworks = [ "a9b4872919354736" ];
     tor.client.enable = true;
   };
 

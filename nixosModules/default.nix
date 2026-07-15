@@ -36,7 +36,5 @@
     ./retiolum.nix
     self.inputs.retiolum.nixosModules.retiolum
     self.inputs.retiolum.nixosModules.ca
-
-    ./zerotier.nix
   ];
 }

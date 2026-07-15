@@ -79,7 +79,6 @@
     ./modules/unbound.nix
     ./modules/users.nix
     ./modules/wireguard.nix
-    ./modules/zerotier.nix
     ./modules/phantun.nix
     ./modules/valve-erp.nix
 

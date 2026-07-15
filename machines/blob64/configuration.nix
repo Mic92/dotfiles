@@ -54,8 +54,6 @@
   boot.supportedFilesystems = [ "zfs" ];
   networking.hostId = "ac174b52";
 
-  services.zerotierone.localConf.settings.forceTcpRelay = true;
-
   # GitHub/Gitea repository backups
   services.ghorg.backups = {
     mic92 = {
