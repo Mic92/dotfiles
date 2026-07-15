@@ -57,25 +57,6 @@ clan-core.lib.clan {
         roles.client.extraModules = [ ../nixosModules/borgbackup.nix ];
       };
 
-      zerotier-mic92 = {
-        module.name = "zerotier";
-        module.input = "clan-core";
-        roles.controller.machines.eve = { };
-        roles.moon.machines.eva.settings = {
-          stableEndpoints = [
-            "116.203.179.132"
-            "2a01:4f8:1c1a:37b2::1"
-          ];
-        };
-        roles.moon.machines.eve.settings = {
-          stableEndpoints = [
-            "135.181.61.171"
-            "2a01:4f9:4b:4084::1"
-          ];
-        };
-        roles.peer.tags.nixos = { };
-      };
-
       sshd-mic92 = {
         module.name = "sshd";
         module.input = "clan-core";

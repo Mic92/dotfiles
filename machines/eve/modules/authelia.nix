@@ -73,6 +73,18 @@
           ];
           authorization_policy = "one_factor";
         }
+        {
+          client_id = "punchcard";
+          client_name = "Punchcard";
+          client_secret = config.clan.core.vars.generators.punchcard-oidc.files.client-secret-hash.value;
+          redirect_uris = [ "https://punchcard.thalheim.io/callback" ];
+          scopes = [
+            "openid"
+            "email"
+            "profile"
+          ];
+          authorization_policy = "one_factor";
+        }
       ];
 
       access_control.rules = [

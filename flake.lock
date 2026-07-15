@@ -825,6 +825,27 @@
         "type": "github"
       }
     },
+    "punchcard": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784109942,
+        "narHash": "sha256-CDiI8s61GY31We54VtgYZu/4fSBuaCaWGCtUJrXWElI=",
+        "owner": "Mic92",
+        "repo": "punchcard-1",
+        "rev": "4fd48e74845f5fb64cfd8cbec67c7589b3fc245e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "ref": "nixos-module",
+        "repo": "punchcard-1",
+        "type": "github"
+      }
+    },
     "retiolum": {
       "inputs": {
         "nix-darwin": [
@@ -884,6 +905,7 @@
         "noctalia-plugins": "noctalia-plugins",
         "nur-packages": "nur-packages",
         "opencrow": "opencrow",
+        "punchcard": "punchcard",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
@@ -1038,15 +1060,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1783875908,
-        "narHash": "sha256-d6y1mLNg3c93rZtjy8jQDuGyjz4KSP//NL26BQGSj30=",
+        "lastModified": 1784116416,
+        "narHash": "sha256-lKPvmiVJtTVj4QdzUQ3vtR4/KXYw12lN3a6nc0NTCeA=",
         "owner": "Mic92",
         "repo": "tribuchet",
-        "rev": "7e61ac3c54eac83144e28b869cb6fc20a2497d40",
+        "rev": "53ac155a3c2318f5d0b9961bf92e1ac884f89fda",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
+        "ref": "build-fix",
         "repo": "tribuchet",
         "type": "github"
       }

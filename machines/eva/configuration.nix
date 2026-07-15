@@ -25,7 +25,6 @@
     ./modules/phantun.nix
     ./modules/prometheus
     ./modules/telegraf
-    ./modules/zerotier.nix
 
     ../../nixosModules/iperf.nix
     ../../nixosModules/radicle-mic92.nix

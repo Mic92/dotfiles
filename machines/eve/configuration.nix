@@ -40,6 +40,7 @@
     ./modules/gitea
     ./modules/gitea-mq.nix
     ./modules/goatcounter.nix
+    ./modules/punchcard.nix
     ./modules/grafana.nix
     ./modules/harmonia.nix
     ./modules/kimai
@@ -78,7 +79,6 @@
     ./modules/unbound.nix
     ./modules/users.nix
     ./modules/wireguard.nix
-    ./modules/zerotier.nix
     ./modules/phantun.nix
     ./modules/valve-erp.nix
 

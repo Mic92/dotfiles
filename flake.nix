@@ -65,7 +65,7 @@
     tincr.inputs.treefmt-nix.follows = "treefmt-nix";
     tincr.inputs.crane.follows = "crane";
 
-    tribuchet.url = "github:Mic92/tribuchet";
+    tribuchet.url = "github:Mic92/tribuchet/build-fix";
     tribuchet.inputs.nixpkgs.follows = "nixpkgs";
     tribuchet.inputs.nix-darwin.follows = "nix-darwin";
     tribuchet.inputs.crane.follows = "crane";
@@ -104,6 +104,9 @@
 
     forge-triage.url = "github:Mic92/forge-triage";
     forge-triage.inputs.nixpkgs.follows = "nixpkgs";
+
+    punchcard.url = "github:Mic92/punchcard-1/nixos-module";
+    punchcard.inputs.nixpkgs.follows = "nixpkgs";
 
     gitea-mq.url = "github:Mic92/gitea-mq";
     gitea-mq.inputs.nixpkgs.follows = "nixpkgs";
