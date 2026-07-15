@@ -22,13 +22,6 @@ on how to use this project. Tipp: The justfile is read by this
   project, let me know and I might switch to your project and contribute to your
   project.
 
-## Known bugs
-
-- It is not possible to reliably delete all elements of a list section with uci
-  batch command. Currently, the code attempts to delete up to 10 list sections
-  and then create a new list:
-  https://github.com/Mic92/dotfiles/blob/00e178a0953461f676ecc9c0ab5b36a0742e12bd/openwrt/nix_uci/**init**.py#L108
-
 ## Related work
 
 - https://gitea.c3d2.de/zentralwerk/network/src/branch/master/nix/pkgs/ap.nix#L142
