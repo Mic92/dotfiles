@@ -55,7 +55,6 @@ in
   clan.core.vars.generators.paperless = {
     files.paperless-admin-password = { };
     files.paperless-secret-key = { };
-    migrateFact = "paperless";
     runtimeInputs = with pkgs; [
       openssl
       xkcdpass
