@@ -27,9 +27,8 @@
     ../../darwinModules/openssh.nix
     ../../darwinModules/remote-builder.nix
     ../../darwinModules/sudo.nix
-    self.inputs.retiolum.darwinModules.tinc
-    self.inputs.retiolum.darwinModules.retiolum
-    self.inputs.retiolum.darwinModules.ca
+    self.inputs.kartei.darwinModules.retiolum
+    self.inputs.kartei.darwinModules.ca
     ../../darwinModules/retiolum.nix
     ../../nixosModules/tum-vpn
   ];
