@@ -825,6 +825,27 @@
         "type": "github"
       }
     },
+    "punchcard": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784109942,
+        "narHash": "sha256-CDiI8s61GY31We54VtgYZu/4fSBuaCaWGCtUJrXWElI=",
+        "owner": "Mic92",
+        "repo": "punchcard-1",
+        "rev": "4fd48e74845f5fb64cfd8cbec67c7589b3fc245e",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "ref": "nixos-module",
+        "repo": "punchcard-1",
+        "type": "github"
+      }
+    },
     "retiolum": {
       "inputs": {
         "nix-darwin": [
@@ -884,6 +905,7 @@
         "noctalia-plugins": "noctalia-plugins",
         "nur-packages": "nur-packages",
         "opencrow": "opencrow",
+        "punchcard": "punchcard",
         "retiolum": "retiolum",
         "sops-nix": "sops-nix",
         "srvos": "srvos",

@@ -40,6 +40,7 @@
     ./modules/gitea
     ./modules/gitea-mq.nix
     ./modules/goatcounter.nix
+    ./modules/punchcard.nix
     ./modules/grafana.nix
     ./modules/harmonia.nix
     ./modules/kimai
