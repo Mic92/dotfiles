@@ -34,7 +34,7 @@
     self.inputs.srvos.nixosModules.mixins-trusted-nix-caches
 
     ./retiolum.nix
-    self.inputs.retiolum.nixosModules.retiolum
-    self.inputs.retiolum.nixosModules.ca
+    self.inputs.kartei.nixosModules.retiolum
+    self.inputs.kartei.nixosModules.ca
   ];
 }

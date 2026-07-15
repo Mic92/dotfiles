@@ -195,12 +195,12 @@ in
         }
         {
           domain = "r";
-          file = "${self.inputs.retiolum}/zones/r.zone";
+          file = "${self.inputs.kartei.packages.${pkgs.stdenv.hostPlatform.system}.r-zone}";
           template = "retiolum";
         }
         {
           domain = "w";
-          file = "${self.inputs.retiolum}/zones/w.zone";
+          file = "${self.inputs.kartei.packages.${pkgs.stdenv.hostPlatform.system}.w-zone}";
           template = "retiolum";
         }
         {

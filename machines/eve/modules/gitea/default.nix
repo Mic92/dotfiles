@@ -64,11 +64,8 @@
                     bzip2
                     coreutils
                     git
-                    gnugrep
                     gnutar
-                    jq
                     nix
-                    openssh
                   ]
                 )
               }
@@ -114,7 +111,7 @@
           '';
     in
     [
-      "L+ /var/lib/gitea/repositories/mic92/stockholm.git/hooks/post-receive.d/retiolum - - - - ${hooks}/bin/retiolum"
+      "L+ /var/lib/gitea/repositories/mic92/kartei.git/hooks/post-receive.d/retiolum - - - - ${hooks}/bin/retiolum"
       "L+ /var/lib/gitea/repositories/mic92/stockholm.git/hooks/post-receive.d/irc-stockholm - - - - ${hooks}/bin/irc-stockholm"
       "L+ /var/lib/gitea/repositories/mic92/homepage.git/hooks/post-receive.d/homepage - - - - ${hooks}/bin/homepage"
     ];

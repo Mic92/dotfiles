@@ -438,6 +438,32 @@
         "type": "github"
       }
     },
+    "kartei": {
+      "inputs": {
+        "nix-darwin": [
+          "nix-darwin"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "tincr": [
+          "tincr"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784142393,
+        "narHash": "sha256-OE693tpT6uTgm6Xhy4/pApyqkZEel5tiN5NzQgzGzGI=",
+        "owner": "krebs",
+        "repo": "kartei",
+        "rev": "9450974e476c3426d61e03a7a27bf088b746dfba",
+        "type": "github"
+      },
+      "original": {
+        "owner": "krebs",
+        "repo": "kartei",
+        "type": "github"
+      }
+    },
     "llm-agents": {
       "inputs": {
         "bun2nix": "bun2nix",
@@ -846,30 +872,6 @@
         "type": "github"
       }
     },
-    "retiolum": {
-      "inputs": {
-        "nix-darwin": [
-          "nix-darwin"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1781520557,
-        "narHash": "sha256-Y+YZ43PGRMCFFntIcm72Iqrb/mtaKmcMHGr91dFkE9k=",
-        "ref": "refs/heads/master",
-        "rev": "940e6ba573d3dc05e918b9f1d0ac489dfeb05f11",
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/Mic92/retiolum"
-      },
-      "original": {
-        "shallow": true,
-        "type": "git",
-        "url": "https://github.com/Mic92/retiolum"
-      }
-    },
     "root": {
       "inputs": {
         "adios-flake": "adios-flake",
@@ -889,6 +891,7 @@
         "harmonia": "harmonia",
         "hercules-ci-effects": "hercules-ci-effects",
         "home-manager": "home-manager",
+        "kartei": "kartei",
         "llm-agents": "llm-agents",
         "mics-n8n-nodes": "mics-n8n-nodes",
         "mics-skills": "mics-skills",
@@ -906,7 +909,6 @@
         "nur-packages": "nur-packages",
         "opencrow": "opencrow",
         "punchcard": "punchcard",
-        "retiolum": "retiolum",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
         "strace-macos": "strace-macos",
