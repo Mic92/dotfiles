@@ -451,11 +451,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784142393,
-        "narHash": "sha256-OE693tpT6uTgm6Xhy4/pApyqkZEel5tiN5NzQgzGzGI=",
+        "lastModified": 1784198904,
+        "narHash": "sha256-Qe1SJXfxhZowEr5ZitXwsSdbHPyTgA9StJHUIlEsMfk=",
         "owner": "krebs",
         "repo": "kartei",
-        "rev": "9450974e476c3426d61e03a7a27bf088b746dfba",
+        "rev": "05a3e6d8b3d04ee410f558638700037402e9cd5e",
         "type": "github"
       },
       "original": {
@@ -1013,11 +1013,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778860169,
-        "narHash": "sha256-Rjs4MXVEtER1C5XLARnnsdhSNcRawGuLDnMPBqz70Ls=",
+        "lastModified": 1784191534,
+        "narHash": "sha256-To6SwmfOvGlHCo0EeFiUfdFucQy+R2nDOyB72/SdoS0=",
         "owner": "Mic92",
         "repo": "tincr",
-        "rev": "e30e116a0307f91d0bec161515aa6efacd5b7bc0",
+        "rev": "bf4d978446fb4f264789ab8e867544ac8f5ab7eb",
         "type": "github"
       },
       "original": {
