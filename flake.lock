@@ -858,11 +858,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784109942,
+        "lastModified": 1784349716,
         "narHash": "sha256-CDiI8s61GY31We54VtgYZu/4fSBuaCaWGCtUJrXWElI=",
         "owner": "Mic92",
         "repo": "punchcard-1",
-        "rev": "4fd48e74845f5fb64cfd8cbec67c7589b3fc245e",
+        "rev": "c67f9bbac575f4eb68aef679913449385607eb14",
         "type": "github"
       },
       "original": {
