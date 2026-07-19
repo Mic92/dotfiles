@@ -104,7 +104,9 @@
     forge-triage.url = "github:Mic92/forge-triage";
     forge-triage.inputs.nixpkgs.follows = "nixpkgs";
 
-    punchcard.url = "github:pinpox/punchcard";
+    # Fork with API keys, JSON API, and punch CLI until the PRs land upstream:
+    # https://github.com/pinpox/punchcard/pull/6 /pull/7 /pull/8
+    punchcard.url = "github:Mic92/punchcard/punch-cli";
     punchcard.inputs.nixpkgs.follows = "nixpkgs";
 
     gitea-mq.url = "github:Mic92/gitea-mq";
