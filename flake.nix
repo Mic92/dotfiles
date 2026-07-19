@@ -104,7 +104,7 @@
     forge-triage.url = "github:Mic92/forge-triage";
     forge-triage.inputs.nixpkgs.follows = "nixpkgs";
 
-    punchcard.url = "github:Mic92/punchcard-1/nixos-module";
+    punchcard.url = "github:pinpox/punchcard";
     punchcard.inputs.nixpkgs.follows = "nixpkgs";
 
     gitea-mq.url = "github:Mic92/gitea-mq";

@@ -858,17 +858,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1784349716,
-        "narHash": "sha256-CDiI8s61GY31We54VtgYZu/4fSBuaCaWGCtUJrXWElI=",
-        "owner": "Mic92",
-        "repo": "punchcard-1",
-        "rev": "c67f9bbac575f4eb68aef679913449385607eb14",
+        "lastModified": 1784375220,
+        "narHash": "sha256-3g/v0Mw/U5B5p8kFbHozsYzLzhtX2QpulrLPmvicf6s=",
+        "owner": "pinpox",
+        "repo": "punchcard",
+        "rev": "3de209947691fb71ff378ea42c9b343bb73a10ac",
         "type": "github"
       },
       "original": {
-        "owner": "Mic92",
-        "ref": "nixos-module",
-        "repo": "punchcard-1",
+        "owner": "pinpox",
+        "repo": "punchcard",
         "type": "github"
       }
     },
