@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#0b0f1a">
+    <title>Warez</title>
+    <style>
+    :root {
+      --bg1: #0b0f1a;
+      --bg2: #131a2b;
+      --card: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-focus: rgba(79, 140, 255, 0.16);
+      --text: #eef2fa;
+      --muted: #93a0b8;
+      --accent: #4f8cff;
+      --accent-soft: rgba(79, 140, 255, 0.35);
+      --badge: rgba(255, 255, 255, 0.09);
+      --radius: 18px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, "SF Pro Text", Roboto, "Segoe UI", sans-serif;
+      background: radial-gradient(1200px 600px at 20% -10%, #1b2742 0%, transparent
+        60%),
+        radial-gradient(1000px 500px at 100% 0%, #14203a 0%, transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      background-attachment: fixed;
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 max(20px, env(safe-area-inset-right)) max(28px,
+        env(safe-area-inset-bottom))
+        max(20px, env(safe-area-inset-left));
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding: max(18px, env(safe-area-inset-top)) 4px 14px;
+      margin: 0 -4px 18px;
+      background: linear-gradient(180deg, rgba(11, 15, 26, 0.95) 65%, rgba(11, 15,
+        26, 0));
+      backdrop-filter: blur(8px);
+    }
+    h1 {
+      font-size: 1.5rem;
+      letter-spacing: 0.02em;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    h1 .logo {
+      font-size: 1.7rem;
+      filter: drop-shadow(0 2px 8px var(--accent-soft));
+    }
+
+    #crumbs {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.95rem;
+      color: var(--muted);
+    }
+    #crumbs a {
+      color: var(--text);
+      text-decoration: none;
+      background: var(--badge);
+      border: 2px solid transparent;
+      border-radius: 999px;
+      padding: 6px 14px;
+      outline: none;
+    }
+    #crumbs a:focus,
+    #crumbs a:hover {
+      border-color: var(--accent);
+    }
+    #crumbs .sep {
+      opacity: 0.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--card);
+      border: 2px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      min-height: 84px;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 1.05rem;
+      line-height: 1.35;
+      word-break: break-word;
+      cursor: pointer;
+      outline: none;
+      transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s
+        ease;
+    }
+    /* Big, obvious focus state for TV remote (D-pad) navigation */
+    .item:focus,
+    .item:hover {
+      background: var(--card-focus);
+      border-color: var(--accent);
+      transform: scale(1.02);
+      box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+    }
+    .icon {
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      width: 52px;
+      height: 52px;
+      font-size: 1.6rem;
+      border-radius: 14px;
+      background: var(--badge);
+    }
+    .item.video .icon {
+      background: linear-gradient(135deg, #2b3f6b, #1c2a49);
+    }
+    .title {
+      font-weight: 600;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .badge {
+      font-size: 0.75rem;
+      color: var(--muted);
+      background: var(--badge);
+      border-radius: 6px;
+      padding: 2px 8px;
+      letter-spacing: 0.03em;
+    }
+    .badge.quality {
+      color: #9cc0ff;
+    }
+    .badge.episode {
+      color: #ffd28a;
+    }
+
+    #player-wrap {
+      display: none;
+      margin-bottom: 22px;
+      background: var(--card);
+      border: 2px solid var(--card-border);
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    #player-wrap.active {
+      display: block;
+    }
+    video {
+      width: 100%;
+      max-height: 68vh;
+      background: #000;
+      border-radius: 12px;
+      outline: none;
+    }
+    #player-title {
+      margin: 12px 2px 10px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      word-break: break-all;
+    }
+    #player-file {
+      color: var(--muted);
+      font-size: 0.85rem;
+      margin: 0 2px 12px;
+      word-break: break-all;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--badge);
+      border: 2px solid transparent;
+      border-radius: 12px;
+      color: var(--text);
+      padding: 12px 18px;
+      margin: 4px 10px 4px 0;
+      font-size: 1rem;
+      font-family: inherit;
+      text-decoration: none;
+      cursor: pointer;
+      outline: none;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .btn:focus,
+    .btn:hover {
+      border-color: var(--accent);
+      background: var(--card-focus);
+    }
+    .btn.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn.primary:focus,
+    .btn.primary:hover {
+      border-color: #fff;
+    }
+
+    .empty {
+      grid-column: 1 / -1;
+      text-align: center;
+      color: var(--muted);
+      padding: 60px 0;
+      font-size: 1.1rem;
+    }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1><span class="logo">🎬</span>Warez</h1>
+      <nav id="crumbs"></nav>
+    </header>
+
+    <div id="player-wrap">
+      <video id="player" controls playsinline tabindex="0"></video>
+      <div id="player-title"></div>
+      <div id="player-file"></div>
+      <button class="btn primary" id="next-btn" style="display:none"
+        onclick="playNext()">⏭ Play next</button>
+      <a class="btn" id="vlc-link" href="#">▶ Open in VLC</a>
+      <a class="btn" id="download-link" href="#">⬇ Download</a>
+      <button class="btn" onclick="closePlayer()">✕ Close</button>
+    </div>
+
+    <div class="grid" id="list"></div>
+
+    <script>
+    const FILES = "/files";
+    const VIDEO_EXT = ["mp4", "m4v", "mov", "webm", "mkv", "avi", "ts"];
+
+    function cur() {
+      return decodeURIComponent(location.hash.replace(/^#/, "")) || "/";
+    }
+
+    function fmtSize(n) {
+      if (n == null) return "";
+      const u = ["B", "KB", "MB", "GB", "TB"];
+      let i = 0;
+      while (n >= 1024 && i < u.length - 1) {
+        n /= 1024;
+        i++;
+      }
+      return n.toFixed(n >= 10 || i === 0 ? 0 : 1) + " " + u[i];
+    }
+
+    function ext(name) {
+      return name.split(".").pop().toLowerCase();
+    }
+
+    function esc(s) {
+      return s.replace(
+        /[&<>"]/g,
+        (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]),
+      );
+    }
+
+    // Parse scene release names like
+    // Show.Name.S01E02.German.DL.1080p.WEBRiP.x264-GROUP.mkv
+    function parseScene(name) {
+      const base = name.replace(/\.[a-z0-9]{2,4}$/i, "");
+      const ep = base.match(/[. _-]S(\d{1,2})E(\d{2,3})/i);
+      const year = base.match(/[. _-]((?:19|20)\d{2})(?=[. _-]|$)/);
+      // Title = everything before the episode tag / year / first scene keyword
+      let cut = ep ? ep.index : base.length;
+      const tag = base.search(
+        /[. _-]((19|20)\d{2}|GERMAN|ENGLISH|MULTI|DL|DUBBED|EXTENDED|LANGFASSUNG|UNCUT|COMPLETE|2160p|1080p|720p|480p|WEB|WEBRiP|WebHD|BluRay|HDTV|DVDRip|DOKU|x264|x265|H264|HEVC|AC3|AC3D|AAC|DTS|DTSD)([. _-]|$)/i,
+      );
+      if (tag !== -1 && tag < cut) cut = tag;
+      const title = base.slice(0, cut).replace(/[._]/g, " ").trim() || base;
+      return {
+        title,
+        season: ep ? parseInt(ep[1], 10) : null,
+        episode: ep ? parseInt(ep[2], 10) : null,
+        year: year ? year[1] : null,
+        quality: (base.match(/2160p|1080p|720p|480p/i) || [null])[0],
+      };
+    }
+
+    function epTag(p) {
+      return "S" + String(p.season).padStart(2, "0") + "E" +
+        String(p.episode).padStart(2, "0");
+    }
+
+    function prettyName(name) {
+      const p = parseScene(name);
+      let s = p.title;
+      if (p.season == null && p.year) s += " (" + p.year + ")";
+      return s;
+    }
+
+    function badges(name, size) {
+      const p = parseScene(name);
+      const b = [];
+      if (p.season != null) {
+        b.push('<span class="badge episode">' + epTag(p) + "</span>");
+      }
+      if (p.quality) b.push('<span class="badge quality">' + p.quality + "</span>");
+      if (size != null) b.push('<span class="badge">' + fmtSize(size) + "</span>");
+      return b.length ? '<div class="meta">' + b.join("") + "</div>" : "";
+    }
+
+    function crumbs(path) {
+      const el = document.getElementById("crumbs");
+      const parts = path.split("/").filter(Boolean);
+      let html = '<a href="#/">Home</a>';
+      let acc = "";
+      for (const p of parts) {
+        acc += "/" + p;
+        html += '<span class="sep">›</span><a href="#' + encodeURI(acc) + '/">' +
+          esc(prettyName(p)) + "</a>";
+      }
+      el.innerHTML = html;
+    }
+
+    let playlist = [];
+    let playing = -1;
+
+    async function load() {
+      const path = cur();
+      crumbs(path);
+      closePlayer();
+      const list = document.getElementById("list");
+      list.innerHTML = '<div class="empty">Loading…</div>';
+      const res = await fetch(FILES + encodeURI(path), {
+        headers: { Accept: "application/json" },
+      });
+      if (!res.ok) {
+        list.innerHTML = '<div class="empty">Could not load folder (' + res.status +
+          ")</div>";
+        return;
+      }
+      const entries = await res.json();
+      entries.sort((a, b) => {
+        if (a.type !== b.type) return a.type === "directory" ? -1 : 1;
+        const pa = parseScene(a.name), pb = parseScene(b.name);
+        // Order episodes of the same show by season/episode so "play next" works
+        if (pa.title === pb.title && pa.season != null && pb.season != null) {
+          return pa.season - pb.season || pa.episode - pb.episode;
+        }
+        return a.name.localeCompare(b.name);
+      });
+      list.innerHTML = "";
+      playlist = [];
+      playing = -1;
+      if (!entries.length) list.innerHTML = '<div class="empty">Empty folder</div>';
+      for (const e of entries) {
+        const a = document.createElement("a");
+        a.className = "item";
+        a.tabIndex = 0;
+        const isDir = e.type === "directory";
+        const isVideo = !isDir && VIDEO_EXT.includes(ext(e.name));
+        const filePath = path + e.name;
+        if (isDir) {
+          a.href = "#" + encodeURI(filePath + "/");
+          a.innerHTML = '<span class="icon">📁</span><span><span class="title">' +
+            esc(prettyName(e.name)) +
+            "</span>" + badges(e.name, null) + "</span>";
+        } else {
+          a.href = FILES + encodeURI(filePath);
+          if (isVideo) a.classList.add("video");
+          a.innerHTML = '<span class="icon">' + (isVideo ? "🎬" : "📄") +
+            '</span><span><span class="title">' +
+            esc(isVideo ? prettyName(e.name) : e.name) + "</span>" +
+            badges(e.name, e.size) + "</span>";
+          if (isVideo) {
+            const idx = playlist.length;
+            playlist.push({ path: filePath, name: e.name });
+            a.addEventListener("click", (ev) => {
+              ev.preventDefault();
+              play(idx);
+            });
+          }
+        }
+        list.appendChild(a);
+      }
+    }
+
+    function play(idx) {
+      const item = playlist[idx];
+      if (!item) return;
+      playing = idx;
+      const p = parseScene(item.name);
+      const url = location.origin + FILES + encodeURI(item.path);
+      const wrap = document.getElementById("player-wrap");
+      const video = document.getElementById("player");
+      document.getElementById("player-title").textContent = p.season != null
+        ? p.title + " · " + epTag(p)
+        : prettyName(item.name);
+      document.getElementById("player-file").textContent = item.name;
+      document.getElementById("download-link").href = url;
+      // VLC handles mkv/x265, which Safari and many TVs cannot play natively.
+      document.getElementById("vlc-link").href = "vlc://" +
+        url.replace(/^https?:\/\//, "");
+      document.getElementById("next-btn").style.display = playlist[idx + 1]
+        ? ""
+        : "none";
+      video.src = url;
+      wrap.classList.add("active");
+      video.play().catch(() => {});
+      wrap.scrollIntoView({ behavior: "smooth" });
+      // Move focus into the player so TV remotes land on the controls
+      video.focus();
+    }
+
+    function playNext() {
+      if (playing >= 0 && playlist[playing + 1]) play(playing + 1);
+    }
+
+    function closePlayer() {
+      const wrap = document.getElementById("player-wrap");
+      const video = document.getElementById("player");
+      video.pause();
+      video.removeAttribute("src");
+      video.load();
+      wrap.classList.remove("active");
+    }
+
+    // Auto-play the next episode when the current one ends
+    document.getElementById("player").addEventListener("ended", playNext);
+
+    // Escape / TV back button closes the player and returns focus to the list
+    document.addEventListener("keydown", (ev) => {
+      if (
+        (ev.key === "Escape" || ev.key === "GoBack" || ev.key === "BrowserBack") &&
+        document.getElementById("player-wrap").classList.contains("active")
+      ) {
+        ev.preventDefault();
+        closePlayer();
+        const first = document.querySelector("#list .item");
+        if (first) first.focus();
+      }
+    });
+
+    window.addEventListener("hashchange", load);
+    load();
+    </script>
+  </body>
+</html>
