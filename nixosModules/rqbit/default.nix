@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, ... }:
 let
   autheliaLocation = {
     proxyPass = "http://127.0.0.1:9091/api/verify";
@@ -20,6 +20,16 @@ let
     auth_request_set $user $upstream_http_remote_user;
     error_page 401 =302 https://auth.thalheim.io/?rd=$scheme://$http_host$request_uri;
   '';
+  # Same check, but via HTTP Basic auth (401 instead of redirect) so external
+  # players like Infuse and VLC can authenticate with LDAP credentials.
+  autheliaBasicLocation = autheliaLocation // {
+    proxyPass = "http://127.0.0.1:9091/api/verify?auth=basic";
+  };
+  autheliaBasicAuth = ''
+    auth_request /authelia-basic;
+    auth_request_set $user $upstream_http_remote_user;
+    add_header WWW-Authenticate 'Basic realm="warez.thalheim.io"' always;
+  '';
 in
 {
   services.rqbit = {
@@ -36,6 +46,11 @@ in
 
   # Allow nginx (warez.thalheim.io) to read downloaded files
   users.users.nginx.extraGroups = [ "rqbit" ];
+
+  # WebDAV (PROPFIND) support for Infuse/VLC
+  services.nginx.package = pkgs.nginx.override {
+    modules = [ pkgs.nginxModules.dav ];
+  };
 
   # Media browser/player over downloads (Authelia protected).
   # Small static webapp optimized for iPad and Android TV.
@@ -57,6 +72,19 @@ in
         ${autheliaAuth}
         autoindex on;
         autoindex_format json;
+      '';
+    };
+
+    locations."/authelia-basic" = autheliaBasicLocation;
+
+    # Read-only WebDAV share for Infuse (iPad/Apple TV) and VLC (Android TV).
+    # Log in with the LDAP mail address + password.
+    locations."/dav/" = {
+      alias = "/var/lib/rqbit/downloads/";
+      extraConfig = ''
+        ${autheliaBasicAuth}
+        dav_ext_methods PROPFIND OPTIONS;
+        autoindex on;
       '';
     };
   };

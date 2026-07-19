@@ -246,7 +246,7 @@
       <div id="player-file"></div>
       <button class="btn primary" id="next-btn" style="display:none"
         onclick="playNext()">⏭ Play next</button>
-      <a class="btn" id="vlc-link" href="#">▶ Open in VLC</a>
+      <a class="btn" id="infuse-link" href="#">▶ Open in Infuse</a>
       <a class="btn" id="download-link" href="#">⬇ Download</a>
       <button class="btn" onclick="closePlayer()">✕ Close</button>
     </div>
@@ -417,9 +417,12 @@
         : prettyName(item.name);
       document.getElementById("player-file").textContent = item.name;
       document.getElementById("download-link").href = url;
-      // VLC handles mkv/x265, which Safari and many TVs cannot play natively.
-      document.getElementById("vlc-link").href = "vlc://" +
-        url.replace(/^https?:\/\//, "");
+      // Infuse (iPad / Apple TV) handles mkv/x265, which Safari cannot play
+      // natively. It fetches via the /dav/ share and asks for the LDAP
+      // credentials once. On Android TV use VLC with the same /dav/ share.
+      const davUrl = location.origin + "/dav" + encodeURI(item.path);
+      document.getElementById("infuse-link").href =
+        "infuse://x-callback-url/play?url=" + encodeURIComponent(davUrl);
       document.getElementById("next-btn").style.display = playlist[idx + 1]
         ? ""
         : "none";
