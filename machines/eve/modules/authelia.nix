@@ -107,7 +107,10 @@
           subject = [ "group:paperless" ];
         }
         {
-          domain = "torrent.thalheim.io";
+          domain = [
+            "torrent.thalheim.io"
+            "warez.thalheim.io"
+          ];
           policy = "one_factor";
           subject = [ "group:torrent" ];
         }
