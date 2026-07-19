@@ -88,6 +88,8 @@
       self.inputs.flake-fmt.packages.${pkgs.stdenv.hostPlatform.system}.default
       self.inputs.nix-diff-rs.packages.${pkgs.stdenv.hostPlatform.system}.default
       self.inputs.nix-tree-rs.packages.${pkgs.stdenv.hostPlatform.system}.default
+      # punch: CLI for punchcard.thalheim.io (start/stop timers, export timesheets)
+      self.inputs.punchcard.packages.${pkgs.stdenv.hostPlatform.system}.punch
     ]
     ++ lib.optionals pkgs.stdenv.isLinux [
       strace

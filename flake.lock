@@ -858,15 +858,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1784375220,
-        "narHash": "sha256-3g/v0Mw/U5B5p8kFbHozsYzLzhtX2QpulrLPmvicf6s=",
-        "owner": "pinpox",
+        "lastModified": 1784442768,
+        "narHash": "sha256-pLRbRLdMa0WJb1KvA2AFQW+rVOTv3ijh1NRn5Ap572k=",
+        "owner": "Mic92",
         "repo": "punchcard",
-        "rev": "3de209947691fb71ff378ea42c9b343bb73a10ac",
+        "rev": "0f3e51418d1c0298cd1044c081555d2806692e76",
         "type": "github"
       },
       "original": {
-        "owner": "pinpox",
+        "owner": "Mic92",
+        "ref": "punch-cli",
         "repo": "punchcard",
         "type": "github"
       }
