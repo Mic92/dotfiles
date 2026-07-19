@@ -19,13 +19,16 @@ export default {
     { label: "ssh", test: (p) => is(p, "ssh") },
     { label: "send email", test: (p) => is(p, "msmtp") },
 
-    // Rebuilding via --rebuild is usually wrong; edit the nix expression instead.
+    // Forced rebuilds are usually wrong; edit the nix expression instead.
+    // `nix build --rebuild` and `nix-build`/`nix-store --check` do the same.
     {
-      label: "nix --rebuild",
+      label: "nix forced rebuild",
       test: (p) =>
         p.some(
           (a) =>
-            (a[0] === "nix" || a[0] === "nix-build") && a.includes("--rebuild"),
+            (a[0] === "nix" && a.includes("--rebuild")) ||
+            ((a[0] === "nix-build" || a[0] === "nix-store") &&
+              a.includes("--check")),
         ),
     },
     {
