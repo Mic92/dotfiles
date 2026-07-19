@@ -107,9 +107,9 @@
           subject = [ "group:paperless" ];
         }
         {
-          domain = "flood.thalheim.io";
+          domain = "torrent.thalheim.io";
           policy = "one_factor";
-          subject = [ "group:flood" ];
+          subject = [ "group:torrent" ];
         }
         {
           domain = "pinchflat.thalheim.io";
