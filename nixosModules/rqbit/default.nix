@@ -54,6 +54,14 @@ in
 
   # Media browser/player over downloads (Authelia protected).
   # Small static webapp optimized for iPad and Android TV.
+  services.nginx.appendHttpConfig = ''
+    # Path below /files/ on warez.thalheim.io, used to redirect cookie-less
+    # clients to the WebDAV vhost.
+    map $request_uri $file_path {
+      ~^/files(?<rest>/.*)$ $rest;
+      default /;
+    }
+  '';
   services.nginx.virtualHosts."warez.thalheim.io" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
@@ -65,11 +73,17 @@ in
       ${autheliaAuth}
     '';
 
-    # Directory listings as JSON for the webapp + range requests for streaming
+    # Directory listings as JSON for the webapp + range requests for streaming.
+    # Clients without an Authelia session cookie (VLC, Infuse, download
+    # managers) are redirected to the WebDAV vhost, which offers HTTP Basic
+    # auth instead of the login page.
     locations."/files/" = {
       alias = "/var/lib/rqbit/downloads/";
       extraConfig = ''
-        ${autheliaAuth}
+        # Authelia forward-auth
+        auth_request /authelia;
+        auth_request_set $user $upstream_http_remote_user;
+        error_page 401 =302 https://warez-dav.thalheim.io$file_path;
         autoindex on;
         autoindex_format json;
       '';

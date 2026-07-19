@@ -6,22 +6,22 @@ Web address: **https://torrent.thalheim.io**
 
 1. Open https://torrent.thalheim.io in your browser.
 2. You are redirected to the login page (auth.thalheim.io).
-3. Sign in with your usual username and password (the same account you use for
-   the other services on thalheim.io).
+3. Sign in with your **e-mail address** (e.g. `name@example.com`) and your usual
+   password — the same account you use for the other services on thalheim.io.
+   The short username without `@…` will not work.
 4. After login you land in the torrent app.
 
-If the login pege says you are not allowed in, ask Jörg to add you to the
+If the login page says you are not allowed in, ask Jörg to add you to the
 "torrent" group.
 
 ## Adding a download
 
 You need either a `.torrent` file or a "magnet link" from a torrent website.
 
-1. Click the **plus (+)** button (top right, "Add Torrent").
-2. Either:
-   - paste the magnet link into the text box, or
-   - click **Upload .torrent file** and pick the file you downloaded.
-3. Confirm. The download appears in the list and starts automatically.
+1. Top right there are two buttons:
+   - **Add Torrent from Magnet / URL** — paste the magnet link there, or
+   - **Upload .torrent File** — pick the file you downloaded.
+2. Confirm. The download appears in the list and starts automatically.
 
 ## Watching progress
 
@@ -37,7 +37,9 @@ Two options:
 - **In the torrent app:** click on a torrent, open the file list, and click a
   file to stream or download it in your browser.
 - **File browser:** open https://warez.thalheim.io (same login as above) to
-  browse, watch and download all finished files.
+  browse, watch and download all finished files. TV series are shown with clean
+  names and episode numbers; when an episode ends, the next one starts
+  automatically (or press "⏭ Play next").
 
 ## Watching on iPad / Apple TV (Infuse)
 
