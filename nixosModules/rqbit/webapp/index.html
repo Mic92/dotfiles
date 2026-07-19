@@ -420,7 +420,7 @@
       // Infuse (iPad / Apple TV) handles mkv/x265, which Safari cannot play
       // natively. It fetches via the /dav/ share and asks for the LDAP
       // credentials once. On Android TV use VLC with the same /dav/ share.
-      const davUrl = location.origin + "/dav" + encodeURI(item.path);
+      const davUrl = "https://warez-dav.thalheim.io" + encodeURI(item.path);
       document.getElementById("infuse-link").href =
         "infuse://x-callback-url/play?url=" + encodeURIComponent(davUrl);
       document.getElementById("next-btn").style.display = playlist[idx + 1]

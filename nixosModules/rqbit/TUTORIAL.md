@@ -45,7 +45,7 @@ Many files (mkv) will not play in Safari. Use the free app **Infuse**:
 
 1. Install "Infuse" from the App Store.
 2. In Infuse: **Add Files → Add Share → WebDAV**.
-3. Address: `https://warez.thalheim.io/dav/` Username: your e-mail address (e.g.
+3. Address: `https://warez-dav.thalheim.io/` Username: your e-mail address (e.g.
    `name@example.com`) Password: your normal password.
 4. Infuse now shows all downloads with covers and remembers where you stopped
    watching.
@@ -56,7 +56,7 @@ Alternatively, in the web page press "▶ Open in Infuse" on a video.
 
 1. Install **VLC** from the Play Store.
 2. In VLC: **Browsing → New network favorite (+)**.
-3. Address: `https://warez.thalheim.io/dav/`, then enter your e-mail address and
+3. Address: `https://warez-dav.thalheim.io/`, then enter your e-mail address and
    password when asked.
 4. Browse the folders and press OK on a file to play it.
 

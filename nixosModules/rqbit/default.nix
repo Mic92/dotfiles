@@ -74,19 +74,22 @@ in
         autoindex_format json;
       '';
     };
+  };
+
+  # Read-only WebDAV share for Infuse (iPad/Apple TV) and VLC (Android TV).
+  # Log in with the LDAP mail address + password.
+  services.nginx.virtualHosts."warez-dav.thalheim.io" = {
+    useACMEHost = "thalheim.io";
+    forceSSL = true;
+    root = "/var/lib/rqbit/downloads";
 
     locations."/authelia-basic" = autheliaBasicLocation;
 
-    # Read-only WebDAV share for Infuse (iPad/Apple TV) and VLC (Android TV).
-    # Log in with the LDAP mail address + password.
-    locations."/dav/" = {
-      alias = "/var/lib/rqbit/downloads/";
-      extraConfig = ''
-        ${autheliaBasicAuth}
-        dav_ext_methods PROPFIND OPTIONS;
-        autoindex on;
-      '';
-    };
+    locations."/".extraConfig = ''
+      ${autheliaBasicAuth}
+      dav_ext_methods PROPFIND OPTIONS;
+      autoindex on;
+    '';
   };
 
   # Web UI (rqbit ships one on its HTTP API port)
