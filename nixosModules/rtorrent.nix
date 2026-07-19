@@ -7,8 +7,8 @@
   services.rtorrent.dataPermissions = "0755";
   services.rtorrent.port = 50000;
   services.rtorrent.configText = ''
-    schedule2 = watch_start, 10, 10, ((load.start, (cat, (cfg.watch), "start/*.torrent")))
-    schedule2 = watch_load, 11, 10, ((load.normal, (cat, (cfg.watch), "load/*.torrent")))
+    schedule = watch_start, 10, 10, ((load.start, (cat, (cfg.watch), "start/*.torrent")))
+    schedule = watch_load, 11, 10, ((load.normal, (cat, (cfg.watch), "load/*.torrent")))
 
     # Bind to specific address to prevent multiple connections per torrent
     network.bind_address.set = 0.0.0.0
