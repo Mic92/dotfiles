@@ -18,6 +18,16 @@ export default {
   extraRules: [
     { label: "ssh", test: (p) => is(p, "ssh") },
     { label: "send email", test: (p) => is(p, "msmtp") },
+
+    // Rebuilding via --rebuild is usually wrong; edit the nix expression instead.
+    {
+      label: "nix --rebuild",
+      test: (p) =>
+        p.some(
+          (a) =>
+            (a[0] === "nix" || a[0] === "nix-build") && a.includes("--rebuild"),
+        ),
+    },
     {
       label: "deploy to machine",
       test: (p) => is(p, "clan", "machines", "update"),
