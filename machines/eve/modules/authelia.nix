@@ -110,6 +110,7 @@
           domain = [
             "torrent.thalheim.io"
             "warez.thalheim.io"
+            "warez-dav.thalheim.io"
           ];
           policy = "one_factor";
           subject = [ "group:torrent" ];
