@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   self,
@@ -6,6 +7,19 @@
 }:
 let
   fast-nix-gc = self.inputs.fast-nix-gc.packages.${pkgs.stdenv.hostPlatform.system}.default;
+
+  # atuin's config file wins over env vars, so swap sync_address in a
+  # generated copy rather than via ATUIN_SYNC_ADDRESS.
+  atuinConfig =
+    builtins.replaceStrings [ "https://atuin.thalheim.io" ] [ "http://atuin-server:8080" ] (
+      builtins.readFile ../home/.config/atuin/config.toml
+    )
+    + ''
+
+      [daemon]
+      enabled = true
+    '';
+  atuinConfigDir = "${config.xdg.configHome}/atuin-coder";
 in
 {
   imports = [
@@ -16,8 +30,19 @@ in
   home.username = "argocd";
   home.homeDirectory = lib.mkForce "/root";
 
+  home.sessionVariables.ATUIN_CONFIG_DIR = atuinConfigDir;
+  xdg.configFile."atuin-coder/config.toml".text = atuinConfig;
+
+  # Background sync daemon; shell client reaches it via socket.
+  services.supervisor.programs.atuin-daemon.settings = {
+    command = "${pkgs.atuin}/bin/atuin daemon start";
+    user = "root";
+    environment = ''ATUIN_CONFIG_DIR="${atuinConfigDir}"'';
+  };
+
   home.packages = [
     self.packages.${pkgs.stdenv.hostPlatform.system}.bk-wait
+    pkgs.atuin
   ];
 
   # --- supervisor-managed services ---
@@ -104,6 +129,11 @@ in
     persist_dir "$HOME/src/home/.pi/agent/sessions" "$HOME/.pi/agent/sessions"
     persist_dir "$HOME/src/home/.pi/state" "$HOME/.pi/state"
     persist_link "$HOME/src/home/.claude/.credentials.json" "$HOME/.claude/.credentials.json"
+
+    # atuin history DB, sync key, and session token — .zshrc runs
+    # `atuin init zsh` when the binary is on PATH, so keep the store on the
+    # persistent nvme or every restart loses the shell history and login.
+    persist_dir "$HOME/src/home/.local/share/atuin" "$HOME/.local/share/atuin"
 
     # nix.conf host-specific fragment (private substituters, netrc paths).
     # Lives in persistent nvme; the main nix.conf `include`s it.
