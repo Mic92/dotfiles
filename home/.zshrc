@@ -29,9 +29,13 @@ if [[ -n ${commands[tmux]} ]] && [[ "$TERM" != "linux" ]] && [[ "$TERM_PROGRAM" 
   fi
   tmux new-session -s "${TTY:t}" -t main || tmux attach-session -t "${TTY:t}"
 fi
-if [[ -f ~/.nix-profile/etc/profile.d/hm-session-vars.sh ]]; then
-  source ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-fi
+for _hm_profile in ~/.nix-profile ~/.local/state/nix/profile; do
+  if [[ -f $_hm_profile/etc/profile.d/hm-session-vars.sh ]]; then
+    source $_hm_profile/etc/profile.d/hm-session-vars.sh
+    break
+  fi
+done
+unset _hm_profile
 
 if [[ -e /etc/profile.d/nix.sh ]]; then
   # shellcheck disable=SC1091
