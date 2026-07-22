@@ -55,6 +55,7 @@
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
     ./modules/opencrow
+    ./modules/hermes
     #./modules/nixos-wiki
     ./modules/packages.nix
     ./modules/paperless.nix
