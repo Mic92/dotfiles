@@ -1062,16 +1062,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1784116416,
-        "narHash": "sha256-lKPvmiVJtTVj4QdzUQ3vtR4/KXYw12lN3a6nc0NTCeA=",
+        "lastModified": 1784792143,
+        "narHash": "sha256-8PXIBYY7Q/o3lJwiQGT+wlL3Q4RLvn4zGFuUVXtM4pw=",
         "owner": "Mic92",
         "repo": "tribuchet",
-        "rev": "53ac155a3c2318f5d0b9961bf92e1ac884f89fda",
+        "rev": "a58102815de16496c43586c07ff40e71d7399123",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
-        "ref": "build-fix",
+        "ref": "macos-agents",
         "repo": "tribuchet",
         "type": "github"
       }
