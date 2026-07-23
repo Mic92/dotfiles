@@ -93,7 +93,6 @@ in
   imports = [
     self.inputs.opencrow.nixosModules.default
     ./janet.nix
-    ./forge.nix
   ];
 
   # Extend the upstream submodule type so every named instance picks up

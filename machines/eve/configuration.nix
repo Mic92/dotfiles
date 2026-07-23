@@ -55,6 +55,7 @@
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
     ./modules/opencrow
+    ./modules/hermes
     #./modules/nixos-wiki
     ./modules/packages.nix
     ./modules/paperless.nix
@@ -80,7 +81,6 @@
     ./modules/users.nix
     ./modules/wireguard.nix
     ./modules/phantun.nix
-    ./modules/valve-erp.nix
 
     ../../nixosModules/borgbackup.nix
     ../../nixosModules/builder.nix

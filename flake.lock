@@ -772,10 +772,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1784448977,
-        "narHash": "sha256-Q+k4c5QdnByagw3R2AW+1XuAJc4/zKU8m5oAgJiobks=",
+        "lastModified": 1784780613,
+        "narHash": "sha256-7ZYdW70d7qcWVcKvQgbwM032bm/N3Btow4Kij9iOk9A=",
         "ref": "main",
-        "rev": "e796be1ea30ab5d4bad044b730846d87eb906874",
+        "rev": "2e6cd3013983c14c9d52f5408d4a1b20654f299e",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -915,8 +915,7 @@
         "systems": "systems",
         "tincr": "tincr",
         "treefmt-nix": "treefmt-nix",
-        "tribuchet": "tribuchet",
-        "valve-erp": "valve-erp"
+        "tribuchet": "tribuchet"
       }
     },
     "sops-nix": {
@@ -1062,41 +1061,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1784116416,
-        "narHash": "sha256-lKPvmiVJtTVj4QdzUQ3vtR4/KXYw12lN3a6nc0NTCeA=",
+        "lastModified": 1784792143,
+        "narHash": "sha256-8PXIBYY7Q/o3lJwiQGT+wlL3Q4RLvn4zGFuUVXtM4pw=",
         "owner": "Mic92",
         "repo": "tribuchet",
-        "rev": "53ac155a3c2318f5d0b9961bf92e1ac884f89fda",
+        "rev": "a58102815de16496c43586c07ff40e71d7399123",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
-        "ref": "build-fix",
         "repo": "tribuchet",
         "type": "github"
-      }
-    },
-    "valve-erp": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1778946891,
-        "narHash": "sha256-eA/89jnKKrnaLKTtOynuNelymUi3Y4mwyH7L8RbAn5o=",
-        "ref": "refs/heads/main",
-        "rev": "8aebfcf6686cbc60e407042ebd7bc97af9bea2ec",
-        "revCount": 55,
-        "type": "git",
-        "url": "https://git.thalheim.io/Mic92/valve-erp.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "https://git.thalheim.io/Mic92/valve-erp.git"
       }
     }
   },
