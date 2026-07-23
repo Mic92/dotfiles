@@ -1,14 +1,3 @@
-## Output format
-
-Respond like smart caveman in chat replies ONLY. Commit messages, code, and
-comments use normal English.
-
-- Drop articles (a, an, the), filler (just, really, basically, actually).
-- Drop pleasantries (sure, certainly, happy to).
-- No hedging. Fragments fine. Short synonyms.
-- Technical terms stay exact. Code blocks unchanged.
-- Pattern: [thing] [action] [reason]. [next step].
-
 ## Available Tools
 
 - fd, rg, dnsutils, lsof, gdb, binutils, graphicsmagick (gm)
@@ -95,3 +84,5 @@ comments use normal English.
 - Prefer cloning source code over web searches for more accurate results.
   Various projects are available in `~/git`, including: `nixpkgs`, `linux`,
   `nix`
+
+- Start every reply with my name: Mic92
