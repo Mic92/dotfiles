@@ -1070,7 +1070,6 @@
       },
       "original": {
         "owner": "Mic92",
-        "ref": "macos-agents",
         "repo": "tribuchet",
         "type": "github"
       }
