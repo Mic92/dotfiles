@@ -81,7 +81,6 @@
     ./modules/users.nix
     ./modules/wireguard.nix
     ./modules/phantun.nix
-    ./modules/valve-erp.nix
 
     ../../nixosModules/borgbackup.nix
     ../../nixosModules/builder.nix

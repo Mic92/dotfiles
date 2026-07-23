@@ -915,8 +915,7 @@
         "systems": "systems",
         "tincr": "tincr",
         "treefmt-nix": "treefmt-nix",
-        "tribuchet": "tribuchet",
-        "valve-erp": "valve-erp"
+        "tribuchet": "tribuchet"
       }
     },
     "sops-nix": {
@@ -1074,29 +1073,6 @@
         "ref": "macos-agents",
         "repo": "tribuchet",
         "type": "github"
-      }
-    },
-    "valve-erp": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1778946891,
-        "narHash": "sha256-eA/89jnKKrnaLKTtOynuNelymUi3Y4mwyH7L8RbAn5o=",
-        "ref": "refs/heads/main",
-        "rev": "8aebfcf6686cbc60e407042ebd7bc97af9bea2ec",
-        "revCount": 55,
-        "type": "git",
-        "url": "https://git.thalheim.io/Mic92/valve-erp.git"
-      },
-      "original": {
-        "type": "git",
-        "url": "https://git.thalheim.io/Mic92/valve-erp.git"
       }
     }
   },

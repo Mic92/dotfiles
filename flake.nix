@@ -64,7 +64,7 @@
     tincr.inputs.treefmt-nix.follows = "treefmt-nix";
     tincr.inputs.crane.follows = "crane";
 
-    tribuchet.url = "github:Mic92/tribuchet/build-fix";
+    tribuchet.url = "github:Mic92/tribuchet/macos-agents";
     tribuchet.inputs.nixpkgs.follows = "nixpkgs";
     tribuchet.inputs.nix-darwin.follows = "nix-darwin";
     tribuchet.inputs.crane.follows = "crane";
@@ -157,9 +157,6 @@
     opencrow.inputs.nixpkgs.follows = "nixpkgs";
     opencrow.inputs.treefmt-nix.follows = "treefmt-nix";
 
-    valve-erp.url = "git+https://git.thalheim.io/Mic92/valve-erp.git";
-    valve-erp.inputs.nixpkgs.follows = "nixpkgs";
-    valve-erp.inputs.treefmt-nix.follows = "treefmt-nix";
 
     llm-agents = {
       url = "github:numtide/llm-agents.nix";
