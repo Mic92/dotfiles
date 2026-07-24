@@ -759,15 +759,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1783862175,
-        "narHash": "sha256-j60+n59/H6SIVAOTBmCIvOEgZ4oas4Sp1zE5CHWEj1M=",
-        "ref": "refs/heads/main",
-        "rev": "ed84fdbb263071e7615b171c3cad64d8d6dc6c1f",
+        "lastModified": 1784891327,
+        "narHash": "sha256-txckh3CSjc00GYWOGAK/y0gn/KAsrdZXz3gUHALM/HI=",
+        "ref": "nbo-cli",
+        "rev": "f837ea64a177c93ca4789541b3eea505a0345e6b",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
       },
       "original": {
+        "ref": "nbo-cli",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
@@ -1036,11 +1037,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784350474,
-        "narHash": "sha256-TdW1mj8MAimbke9v8V/4GV+UVL6yEWlWpyA2DEbNHAM=",
+        "lastModified": 1784891761,
+        "narHash": "sha256-RxOmu+01Hc6YFjcvyQ8DRpX48s+CZIp6VPxyWSIo7HU=",
         "owner": "Mic92",
         "repo": "tincr",
-        "rev": "7823131e112aa6c26780c799ca9d126b1f0ea0fd",
+        "rev": "bf6bcf30e0990fe0c0afc7dec1b3767a73cd9aa9",
         "type": "github"
       },
       "original": {
