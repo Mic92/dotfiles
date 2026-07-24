@@ -451,11 +451,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784890835,
-        "narHash": "sha256-xqbrC6ma2lw05m//HdZYwom1aOuCQgml83SAZ/y5kvc=",
+        "lastModified": 1784892562,
+        "narHash": "sha256-YJGld+i4TF6vTc56jnpv2bYFyJM1Bb3eDnpzHnwOY0I=",
         "owner": "krebs",
         "repo": "kartei",
-        "rev": "e1c81cb64da83b0a31798b846377de51771664a4",
+        "rev": "fe5680ed7420c4d0573d970baeabfa16b63bc5c0",
         "type": "github"
       },
       "original": {
@@ -759,10 +759,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1784891327,
-        "narHash": "sha256-txckh3CSjc00GYWOGAK/y0gn/KAsrdZXz3gUHALM/HI=",
+        "lastModified": 1784891968,
+        "narHash": "sha256-LN0ZN5Rm/ZJpK01LxoqIoygXasb0VpFyF4nCUpIghsI=",
         "ref": "nbo-cli",
-        "rev": "f837ea64a177c93ca4789541b3eea505a0345e6b",
+        "rev": "19b4904c168a8548d0ae343ec9a722e86b67474b",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
