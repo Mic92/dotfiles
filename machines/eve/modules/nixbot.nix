@@ -195,6 +195,8 @@ in
     effects.perRepoSecretFiles = {
       "github:nix-community/harmonia" =
         config.clan.core.vars.generators.harmonia-effects-secrets.files.secrets.path;
+      "github:Mic92/dotfiles" =
+        config.clan.core.vars.generators.step-ca-renew-effect-secrets.files.secrets.path;
     };
 
     pullBased = {

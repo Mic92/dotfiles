@@ -8,7 +8,12 @@ let
   # Scheduled effect operating on a fresh clone. The GitToken secret
   # authenticates git push (token in the origin URL) and gh (GH_TOKEN).
   mkRepoEffect =
-    name: script:
+    name:
+    {
+      extraInputs ? [ ],
+      extraSecrets ? { },
+    }:
+    script:
     pkgs.runCommand "effect-${name}"
       {
         nativeBuildInputs = [
@@ -18,9 +23,10 @@ let
           pkgs.jq
           pkgs.nix
           pkgs.openssh
-        ];
+        ]
+        ++ extraInputs;
         # mkEffect JSON-encodes secretsMap; raw derivations must too.
-        secretsMap = builtins.toJSON { git.type = "GitToken"; };
+        secretsMap = builtins.toJSON ({ git.type = "GitToken"; } // extraSecrets);
         # The sandbox does not inherit the host HOME.
         HOME = "/build";
       }
@@ -117,7 +123,7 @@ in
       hour = 3;
       minute = 0;
     };
-    outputs.effects.update-packages = mkRepoEffect "update-packages" ''
+    outputs.effects.update-packages = mkRepoEffect "update-packages" { } ''
       nix run .#updater -- --pr
     '';
   };
@@ -128,7 +134,7 @@ in
       hour = 2;
       minute = 51;
     };
-    outputs.effects.update-submodules = mkRepoEffect "update-submodules" ''
+    outputs.effects.update-submodules = mkRepoEffect "update-submodules" { } ''
       git submodule update --init --recursive
       git submodule update --recursive --remote
       if git diff --quiet; then
@@ -144,5 +150,56 @@ in
           --body "Automated zsh submodule update." --label auto-merge
       fi
     '';
+  };
+
+  # Monthly check of the step-ca intermediate certificate
+  onSchedule.renew-step-intermediate = {
+    when = {
+      dayOfMonth = [ 1 ];
+      hour = 4;
+      minute = 30;
+    };
+    outputs.effects.renew-step-intermediate =
+      mkRepoEffect "renew-step-intermediate"
+        {
+          extraInputs = [
+            pkgs.openssl
+            pkgs.step-cli
+          ];
+          extraSecrets.step-ca = "step-ca";
+        }
+        ''
+          cert=vars/per-machine/eve/step-intermediate-cert/intermediate.crt/value
+          if openssl x509 -checkend $((90 * 24 * 3600)) -noout -in "$cert"; then
+            echo "intermediate certificate valid for more than 90 days"
+            exit 0
+          fi
+
+          ca=$(mktemp -d)
+          jq -r '.["step-ca"].data["ca.crt"]' "$HERCULES_CI_SECRETS_JSON" > "$ca/ca.crt"
+          jq -r '.["step-ca"].data["ca.key"]' "$HERCULES_CI_SECRETS_JSON" > "$ca/ca.key"
+          jq -r '.["step-ca"].data["intermediate.key"]' "$HERCULES_CI_SECRETS_JSON" > "$ca/intermediate.key"
+
+          step certificate create \
+            --ca "$ca/ca.crt" \
+            --ca-key "$ca/ca.key" \
+            --ca-password-file /dev/null \
+            --key "$ca/intermediate.key" \
+            --template machines/eve/modules/step-ca/intermediate.tmpl \
+            --not-after 8760h \
+            --no-password --insecure --force \
+            "Krebs Intermediate CA" \
+            "$cert"
+          rm -rf "$ca"
+
+          branch=renew-step-intermediate
+          git checkout -b "$branch"
+          git commit -am "step-ca: renew intermediate certificate"
+          git push -f origin "$branch"
+          if ! gh pr view "$branch" >/dev/null 2>&1; then
+            gh pr create --head "$branch" --title "step-ca: renew intermediate certificate" \
+              --body "Automated intermediate certificate renewal." --label auto-merge
+          fi
+        '';
   };
 }
