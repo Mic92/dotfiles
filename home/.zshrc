@@ -23,12 +23,12 @@ fi
 # - only if tmux is installed
 # - not in linux ttys
 # - no nested tmux sessions
-if [[ -n ${commands[tmux]} ]] && [[ "$TERM" != "linux" ]] && [[ "$TERM_PROGRAM" != WezTerm ]] && [[ -z "$TMUX" ]] && [[ "$INSIDE_EMACS" != "vterm" ]] && [[ -z "$STY" ]]; then
-  if [[ -n "$SSH_AUTH_SOCK" ]]; then
-    tmux set-environment -g SSH_AUTH_SOCK "$SSH_AUTH_SOCK" 2>/dev/null
-  fi
-  tmux new-session -s "${TTY:t}" -t main || tmux attach-session -t "${TTY:t}"
-fi
+#if [[ -n ${commands[tmux]} ]] && [[ "$TERM" != "linux" ]] && [[ "$TERM_PROGRAM" != WezTerm ]] && [[ -z "$TMUX" ]] && [[ "$INSIDE_EMACS" != "vterm" ]] && [[ -z "$STY" ]]; then
+#  if [[ -n "$SSH_AUTH_SOCK" ]]; then
+#    tmux set-environment -g SSH_AUTH_SOCK "$SSH_AUTH_SOCK" 2>/dev/null
+#  fi
+#  tmux new-session -s "${TTY:t}" -t main || tmux attach-session -t "${TTY:t}"
+#fi
 for _hm_profile in ~/.nix-profile ~/.local/state/nix/profile; do
   if [[ -f $_hm_profile/etc/profile.d/hm-session-vars.sh ]]; then
     source $_hm_profile/etc/profile.d/hm-session-vars.sh
