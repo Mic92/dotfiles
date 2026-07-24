@@ -9,6 +9,28 @@ let
   aiTools = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   selfPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
   micsSkillsPkgs = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
+
+  # herdr 0.7.5 drops kitty-protocol printable keys (#1746); build fixed master commit on Linux until the next release.
+  herdrPackage =
+    if pkgs.stdenv.isDarwin then
+      aiTools.herdr
+    else
+      aiTools.herdr.overrideAttrs (_old: rec {
+        version = "0.7.5-unstable-2026-07-23";
+        src = pkgs.fetchFromGitHub {
+          owner = "ogulcancelik";
+          repo = "herdr";
+          rev = "e7fc85bfdb51f89488430adbfe5bbced3be79c2f";
+          hash = "sha256-m5jEDImymgu84HXgeeLjOz6KhWP5+is8RNA5Ww+z5BI=";
+        };
+        cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
+          inherit src;
+          name = "herdr-${version}-vendor";
+          hash = "sha256-lWnc0Ka0hp7bbm+dkKKj22Dbk+Cwrld86romXs3lzBs=";
+        };
+        # versionCheckHook compares against the pre-release Cargo version.
+        doInstallCheck = false;
+      });
 in
 {
   imports = [
@@ -19,7 +41,7 @@ in
 
   programs.herdr = {
     enable = true;
-    package = aiTools.herdr;
+    package = herdrPackage;
     plugins = [
       selfPkgs.herdr-pluck
       selfPkgs.herdr-sesh
@@ -60,11 +82,11 @@ in
 
   # herdr's Pi integration: reports agent state/session to herdr.
   home.file.".pi/agent/extensions/herdr-agent-state.ts".source =
-    "${aiTools.herdr.src}/src/integration/assets/pi/herdr-agent-state.ts";
+    "${herdrPackage.src}/src/integration/assets/pi/herdr-agent-state.ts";
 
   # herdr's official agent skill: spawn panes/worktrees/agents from inside a
   # herdr pane and wait for their results.
-  home.file.".claude/skills/herdr/SKILL.md".source = "${aiTools.herdr.src}/SKILL.md";
+  home.file.".claude/skills/herdr/SKILL.md".source = "${herdrPackage.src}/SKILL.md";
 
   # git-surgeon ships a skill teaching agents how to use its git primitives.
   home.file.".claude/skills/git-surgeon".source =
