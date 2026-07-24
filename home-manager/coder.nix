@@ -157,53 +157,20 @@ in
       done
     fi
 
-    # On any devspace pod, authorize my GitHub-published keys so
-    # agent-forwarded SSH between pods works without per-pod key setup.
-    case "$(${pkgs.hostname}/bin/hostname)" in
-      *-devspace-*)
-        ${pkgs.curl}/bin/curl -fsSL https://github.com/Mic92.keys >> "$HOME/.ssh/authorized_keys" 2>/dev/null || true
-        ${pkgs.coreutils}/bin/sort -u "$HOME/.ssh/authorized_keys" -o "$HOME/.ssh/authorized_keys"
-        ;;
-    esac
-
-    # nix1 uses nix2 as a remote builder over the cluster network.
-    # Auth relies on the SSH agent forwarded from the laptop, so this only
-    # works for builds run from an interactive coo ssh session.
-    if [ "$(${pkgs.hostname}/bin/hostname)" = "nix1-devspace-0" ]; then
-      if ! grep -q '^Host nix2-builder$' "$HOME/.ssh/config" 2>/dev/null; then
-        cat >> "$HOME/.ssh/config" <<'SSHEOF'
-
-    Host nix2-builder
-        HostName nix2-devspace-0.nix2-devspace.default.svc.cluster.local
-        Port 2222
-        User argocd
-        StrictHostKeyChecking accept-new
-        ServerAliveInterval 30
-        ServerAliveCountMax 6
-    SSHEOF
-      fi
-
-      # max-connections>1 enables nix's SSH ControlMaster (ssh-store.cc),
-      # so 8 worker channels share one TCP connection.
-      /usr/bin/sudo tee /etc/nix/machines > /dev/null <<'NIXEOF'
-    ssh-ng://nix2-builder?max-connections=8 x86_64-linux - 192 1 big-parallel,kvm,nixos-test - -
-    NIXEOF
-    else
-      # yensid: load-balanced x86/arm builder pools. Auth via the persistent
-      # key in ~/src/keys (must be in yensid's allow-list). ssh-ng ignores
-      # ssh_config Port, so the arm pool's :2222 lives in the URI.
-      /usr/bin/sudo tee /etc/nix/machines > /dev/null <<'NIXEOF'
+    # yensid: load-balanced x86/arm builder pools. Auth via the persistent
+    # key in ~/src/keys (must be in yensid's allow-list). ssh-ng ignores
+    # ssh_config Port, so the arm pool's :2222 lives in the URI.
+    /usr/bin/sudo tee /etc/nix/machines > /dev/null <<'NIXEOF'
     ssh-ng://builder-ssh@x86-64-linux.yensid.rio-build.com?max-connections=4 x86_64-linux /root/src/keys/id_ed25519 64 2 benchmark,big-parallel,kvm,nixos-test - -
     ssh-ng://builder-ssh@aarch64-linux.yensid.rio-build.com:2222?max-connections=4 aarch64-linux /root/src/keys/id_ed25519 64 2 benchmark,big-parallel,kvm,nixos-test - -
     NIXEOF
 
-      # yensid load-balances across builders with different host keys;
-      # trust the CA that signs them instead of pinning each one.
-      if ! /usr/bin/sudo grep -qs 'yensid.rio-build.com' /etc/ssh/ssh_known_hosts 2>/dev/null; then
-        /usr/bin/sudo tee -a /etc/ssh/ssh_known_hosts > /dev/null <<'KHEOF'
+    # yensid load-balances across builders with different host keys;
+    # trust the CA that signs them instead of pinning each one.
+    if ! /usr/bin/sudo grep -qs 'yensid.rio-build.com' /etc/ssh/ssh_known_hosts 2>/dev/null; then
+      /usr/bin/sudo tee -a /etc/ssh/ssh_known_hosts > /dev/null <<'KHEOF'
     @cert-authority yensid.rio-build.com,*.yensid.rio-build.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO3TEgIFuRf18rB9tWDfNCZfprjC0hjMgSj2MTGu5jQY
     KHEOF
-      fi
     fi
   '';
 
