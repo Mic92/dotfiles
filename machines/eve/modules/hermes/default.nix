@@ -11,20 +11,19 @@ let
   gen = config.clan.core.vars.generators.hermes;
 in
 {
-  # Slack + Anthropic credentials for the Hermes gateway.
+  # Slack credentials for the Hermes gateway.
   clan.core.vars.generators.hermes = {
     files.slack-bot-token.secret = true;
     files.slack-app-token.secret = true;
-    files.anthropic-token.secret = true;
+    # files.anthropic-token.secret = true;
 
     prompts.slack-bot-token.description = "Slack bot token (xoxb-…) for the Hermes app";
     prompts.slack-app-token.description = "Slack app-level token (xapp-…) with connections:write";
-    prompts.anthropic-token.description = "Anthropic OAuth setup token (sk-ant-oat…) from `claude setup-token`";
+    # prompts.anthropic-token.description = "Anthropic OAuth setup token (sk-ant-oat…) from `claude setup-token`";
 
     script = ''
       cp "$prompts/slack-bot-token" "$out/slack-bot-token"
       cp "$prompts/slack-app-token" "$out/slack-app-token"
-      cp "$prompts/anthropic-token" "$out/anthropic-token"
     '';
   };
 
@@ -46,7 +45,9 @@ in
     extraFlags = [
       "--load-credential=slack-bot-token:${gen.files.slack-bot-token.path}"
       "--load-credential=slack-app-token:${gen.files.slack-app-token.path}"
-      "--load-credential=anthropic-token:${gen.files.anthropic-token.path}"
+      # "--load-credential=anthropic-token:${gen.files.anthropic-token.path}"
+      # OpenRouter key is shared with opencrow.
+      "--load-credential=openrouter-api-key:${config.clan.core.vars.generators.opencrow-openrouter.files.api-key.path}"
     ];
 
     config = _: {
@@ -62,9 +63,22 @@ in
 
       environment.etc."timezone".text = "Europe/Berlin\n";
 
-      systemd.tmpfiles.rules = [
-        "d ${stateDir} 0750 hermes hermes -"
-      ];
+      systemd.tmpfiles.rules =
+        let
+          # Same routing policy as janet: deny data-collecting providers,
+          # Venice only. Hermes only reads $HERMES_HOME/config.yaml.
+          hermesConfig = pkgs.writers.writeYAML "hermes-config.yaml" {
+            provider_routing = {
+              data_collection = "deny";
+              only = [ "venice" ];
+            };
+          };
+        in
+        [
+          "d ${stateDir} 0750 hermes hermes -"
+          "d ${stateDir}/.hermes 0750 hermes hermes -"
+          "L+ ${stateDir}/.hermes/config.yaml - - - - ${hermesConfig}"
+        ];
 
       systemd.services.hermes = {
         description = "Hermes Agent Slack gateway";
@@ -101,10 +115,9 @@ in
           TZ = "Europe/Berlin";
           HOME = stateDir;
           HERMES_HOME = "${stateDir}/.hermes";
-          # Anthropic subscription (setup token) instead of API key; the token
-          # itself comes in via ANTHROPIC_TOKEN from systemd credentials.
-          HERMES_INFERENCE_PROVIDER = "anthropic";
-          HERMES_INFERENCE_MODEL = "claude-opus-4-6";
+          HERMES_INFERENCE_PROVIDER = "openrouter";
+          # Same model as janet.
+          HERMES_INFERENCE_MODEL = "google/gemma-4-26b-a4b-it";
           SLACK_ALLOWED_USERS = "U02TAKGUGF4";
         };
 
@@ -116,7 +129,8 @@ in
           ImportCredential = [
             "slack-bot-token"
             "slack-app-token"
-            "anthropic-token"
+            # "anthropic-token"
+            "openrouter-api-key"
           ];
           Restart = "on-failure";
           RestartSec = 30;
@@ -124,8 +138,9 @@ in
             set -euo pipefail
             SLACK_BOT_TOKEN=$(< "$CREDENTIALS_DIRECTORY/slack-bot-token")
             SLACK_APP_TOKEN=$(< "$CREDENTIALS_DIRECTORY/slack-app-token")
-            ANTHROPIC_TOKEN=$(< "$CREDENTIALS_DIRECTORY/anthropic-token")
-            export SLACK_BOT_TOKEN SLACK_APP_TOKEN ANTHROPIC_TOKEN
+            # ANTHROPIC_TOKEN=$(< "$CREDENTIALS_DIRECTORY/anthropic-token")
+            OPENROUTER_API_KEY=$(< "$CREDENTIALS_DIRECTORY/openrouter-api-key")
+            export SLACK_BOT_TOKEN SLACK_APP_TOKEN OPENROUTER_API_KEY
             exec ${lib.getExe hermesPkg} gateway run
           '';
         };
