@@ -15,7 +15,27 @@ in
   imports = [
     inputs.mics-skills.homeModules.default
     ./librewolf.nix
+    ./herdr
   ];
+
+  programs.herdr = {
+    enable = true;
+    package = aiTools.herdr;
+    plugins = [
+      selfPkgs.herdr-pluck
+      selfPkgs.herdr-sesh
+      selfPkgs.herdr-autoname
+    ];
+  };
+
+  xdg.configFile."herdr/autoname-hook.zsh".source = "${selfPkgs.herdr-autoname}/shell/hook.zsh";
+
+  # tmux-thumbs replacement: match sri and sha256 hashes for nix (@thumbs-regexp-1)
+  xdg.configFile."herdr/plugins/config/rmarganti.herdr-pluck/config.toml".text = ''
+    [[patterns]]
+    name = "nix-hash"
+    regex = '(sha256-[0-9a-zA-Z=/+]{44}|[0-9a-f]{7,40}|[0-9a-z]{52})'
+  '';
 
   programs.mics-skills = {
     enable = true;
