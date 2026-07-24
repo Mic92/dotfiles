@@ -667,6 +667,29 @@
         "type": "github"
       }
     },
+    "nix-grpc-store": {
+      "inputs": {
+        "nix": [
+          "nix"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784634158,
+        "narHash": "sha256-/cqZHZ5AnLiRwMPMkQa6u+9s9WF2xK0FZa/BjYuDmjY=",
+        "owner": "Mic92",
+        "repo": "nix-grpc-store",
+        "rev": "4ab5f6b8ed96f094830f7600545d62e74c47dc90",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "nix-grpc-store",
+        "type": "github"
+      }
+    },
     "nix-index-database": {
       "inputs": {
         "nixpkgs": [
@@ -900,6 +923,7 @@
         "nix-casks": "nix-casks",
         "nix-darwin": "nix-darwin",
         "nix-diff-rs": "nix-diff-rs",
+        "nix-grpc-store": "nix-grpc-store",
         "nix-index-database": "nix-index-database",
         "nix-tree-rs": "nix-tree-rs",
         "nixbot": "nixbot",
