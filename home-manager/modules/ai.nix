@@ -59,10 +59,9 @@ in
     ];
   };
 
-  # Coordinator skill shipped by workmux upstream, installed via llm-agents.nix
-  # https://github.com/numtide/llm-agents.nix/pull/3766
-  home.file.".claude/skills/coordinator".source =
-    "${aiTools.workmux}/share/workmux/skills/coordinator";
+  # herdr's official agent skill: spawn panes/worktrees/agents from inside a
+  # herdr pane and wait for their results.
+  home.file.".claude/skills/herdr/SKILL.md".source = "${aiTools.herdr.src}/SKILL.md";
 
   # git-surgeon ships a skill teaching agents how to use its git primitives.
   home.file.".claude/skills/git-surgeon".source =
@@ -105,9 +104,6 @@ in
     aiTools.openspec
     aiTools.ccusage
     aiTools.ccstatusline
-    # https://github.com/Mic92/workmux/tree/fix-config-lock-race
-    # Drop once upstream merges or git ships config.lock retry.
-    aiTools.workmux
     aiTools.git-surgeon
     aiTools.zat
     aiTools.jscpd
