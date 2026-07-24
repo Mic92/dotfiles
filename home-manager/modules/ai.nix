@@ -9,7 +9,6 @@ let
   aiTools = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   selfPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
   micsSkillsPkgs = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
-  piAgentDeps = pkgs.callPackage ../../home/.pi/agent/default.nix { };
 in
 {
   imports = [
@@ -94,11 +93,10 @@ in
     selfPkgs.pim
     (pkgs.writeShellScriptBin "pi" ''
       ${pkgs.pueue}/bin/pueued -d >/dev/null 2>&1 || true
-      # Extensions are symlinked from dotfiles, so node walk-up misses
-      # their npm deps. NODE_PATH points jiti at the prebuilt node_modules.
-      export NODE_PATH="${piAgentDeps}/node_modules''${NODE_PATH:+:$NODE_PATH}"
       exec ${selfPkgs.pi}/bin/pi "$@"
     '')
+    # deps for personal pi extensions (`bun install` in home/.pi/agent)
+    pkgs.bun
     aiTools.tuicr
     aiTools.coderabbit-cli
     aiTools.openspec
