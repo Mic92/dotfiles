@@ -1,0 +1,36 @@
+id = "herdr-autoname"
+name = "Herdr Autoname"
+version = "0.1.0"
+min_herdr_version = "0.7.1"
+description = "tmux-like automatic tab names from the foreground program"
+platforms = ["linux", "macos"]
+
+# Events reconcile all tabs; per-command updates come from shell/hook.zsh
+# because herdr has no "foreground command changed" event.
+[[events]]
+on = "tab.created"
+command = ["bin/herdr-autoname", "event"]
+
+[[events]]
+on = "tab.focused"
+command = ["bin/herdr-autoname", "event"]
+
+[[events]]
+on = "tab.closed"
+command = ["bin/herdr-autoname", "event"]
+
+[[events]]
+on = "pane.created"
+command = ["bin/herdr-autoname", "event"]
+
+[[events]]
+on = "pane.focused"
+command = ["bin/herdr-autoname", "event"]
+
+[[events]]
+on = "pane.moved"
+command = ["bin/herdr-autoname", "event"]
+
+[[events]]
+on = "pane.exited"
+command = ["bin/herdr-autoname", "event"]

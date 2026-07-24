@@ -1,0 +1,99 @@
+# herdr config replicating ~/.tmux.conf (dotfiles) as closely as possible.
+# tmux prefix C-Space, tmux-style splits, Tokyo Night theme, big scrollback.
+
+onboarding = false
+
+[terminal]
+# tmux: bind '"'/%/c with -c "#{pane_current_path}" -> keep cwd of current pane
+new_cwd = "follow"
+
+[keys]
+# tmux: set -g prefix C-Space
+prefix = "ctrl+space"
+
+# tmux: bind '"' split-window (stacked), bind % split-window -h (side by side)
+split_horizontal = ["prefix+double_quote", "prefix+minus"]
+split_vertical = ["prefix+percent", "prefix+v"]
+
+# tmux: bind c new-window
+new_tab = "prefix+c"
+next_tab = "prefix+n"
+previous_tab = "prefix+p"
+switch_tab = "prefix+1..9"
+
+close_tab = "prefix+shift+x"
+
+last_pane = "prefix+semicolon"
+cycle_pane_next = "prefix+o"
+zoom = "prefix+z"
+
+# tmux: bind x kill-pane, bind k confirm kill-pane (confirm_close covers both)
+close_pane = ["prefix+x", "prefix+k"]
+
+# tmux: copy-mode on prefix+[ (vi keys)
+copy_mode = "prefix+["
+
+# tmux: detach on prefix+d
+detach = "prefix+d"
+
+workspace_picker = "prefix+w"
+new_workspace = "prefix+shift+c"
+
+help = "prefix+?"
+reload_config = "prefix+r"
+
+# tmux: bind s -> sesh session picker; herdr-plugin-sesh picker
+[[keys.command]]
+key = "prefix+s"
+type = "plugin_action"
+command = "fullerzz.sesh.open-picker"
+description = "sesh picker"
+
+# tmux: sesh last on prefix+L
+[[keys.command]]
+key = "prefix+shift+l"
+type = "plugin_action"
+command = "fullerzz.sesh.last"
+description = "last workspace"
+
+# tmux: tmux-thumbs on prefix+f -> herdr-pluck hint copy
+[[keys.command]]
+key = "prefix+f"
+type = "plugin_action"
+command = "rmarganti.herdr-pluck.pluck"
+description = "pluck visible token"
+
+# scratch popup terminal (like a quick tmux popup shell)
+[[keys.command]]
+key = "prefix+t"
+type = "popup"
+command = "exec \"${SHELL:-sh}\""
+description = "scratch terminal"
+width = "80%"
+height = "70%"
+
+[theme]
+# tmux status bar uses folke tokyonight (night) palette
+name = "tokyo-night"
+auto_switch = true
+dark_name = "tokyo-night"
+light_name = "tokyo-night-day"
+
+[ui]
+# tmux: mouse on, set-clipboard on
+mouse_capture = true
+copy_on_select = true
+# tmux: bind-key k confirm kill-pane -> keep confirmation on close
+confirm_close = true
+# tabs are auto-named by the herdr-autoname plugin
+prompt_new_tab_name = false
+
+[ui.toast]
+delivery = "herdr"
+
+[advanced]
+# tmux: history-limit 50000 lines; roughly equivalent generous byte budget
+scrollback_limit_bytes = 20000000
+
+[worktrees]
+directory = "~/.herdr/worktrees"
