@@ -12,6 +12,7 @@
     ./modules/calendar.nix
     ./modules/ai.nix
     ./modules/kimai.nix
+    ./modules/nix-grpc-cert.nix
     ./modules/mail.nix
   ];
 
