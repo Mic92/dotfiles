@@ -58,6 +58,10 @@ in
     ];
   };
 
+  # herdr's Pi integration: reports agent state/session to herdr.
+  home.file.".pi/agent/extensions/herdr-agent-state.ts".source =
+    "${aiTools.herdr.src}/src/integration/assets/pi/herdr-agent-state.ts";
+
   # herdr's official agent skill: spawn panes/worktrees/agents from inside a
   # herdr pane and wait for their results.
   home.file.".claude/skills/herdr/SKILL.md".source = "${aiTools.herdr.src}/SKILL.md";
