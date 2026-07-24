@@ -45,6 +45,7 @@
     ./modules/harmonia.nix
     ./modules/kimai
     ./modules/mtls-cache.nix
+    ./modules/nix-grpc-store.nix
     ./modules/knot
     ./modules/mastodon-hnbot.nix
     self.inputs.mics-n8n-nodes.nixosModules.default
