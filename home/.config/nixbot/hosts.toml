@@ -1,0 +1,3 @@
+["https://buildbot.thalheim.io"]
+# API token from https://buildbot.thalheim.io/settings, stored in bitwarden
+token_command = "rbw get buildbot.thalheim.io/nbo"
