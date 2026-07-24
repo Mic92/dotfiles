@@ -42,24 +42,6 @@ new_workspace = "prefix+shift+c"
 help = "prefix+?"
 reload_config = "prefix+r"
 
-# tmux: bind C-s display-popup workmux dashboard
-[[keys.command]]
-key = "prefix+ctrl+s"
-type = "popup"
-command = "workmux dashboard"
-description = "workmux dashboard"
-width = "80%"
-height = "70%"
-
-# tmux: bind C-w display-popup workmux dashboard --tab worktrees
-[[keys.command]]
-key = "prefix+ctrl+w"
-type = "popup"
-command = "workmux dashboard --tab worktrees"
-description = "workmux worktrees"
-width = "80%"
-height = "70%"
-
 # tmux: bind s -> sesh session picker; herdr-plugin-sesh picker
 [[keys.command]]
 key = "prefix+s"
