@@ -84,26 +84,31 @@ in
           --ca-key $in/step-ca/ca.key \
           --ca-password-file /dev/null \
           --key $in/step-intermediate-key/intermediate.key \
-          --template ${pkgs.writeText "intermediate.tmpl" ''
-            {
-              "subject": {{ toJson .Subject }},
-              "keyUsage": ["certSign", "crlSign"],
-              "basicConstraints": {
-                "isCA": true,
-                "maxPathLen": 0
-              },
-              "nameConstraints": {
-                "critical": true,
-                "permittedDNSDomains": ["r", "w"]
-              }
-            }
-          ''} \
+          --template ${./intermediate.tmpl} \
           --not-after 8760h \
           --no-password --insecure \
           "Krebs Intermediate CA" \
           $out/intermediate.crt
       '';
     };
+  };
+
+  # Effects secrets for the intermediate-cert renewal effect (checks/effects.nix)
+  clan.core.vars.generators.step-ca-renew-effect-secrets = {
+    files.secrets.secret = true;
+    dependencies = [
+      "step-ca"
+      "step-intermediate-key"
+    ];
+    runtimeInputs = [ pkgs.jq ];
+    script = ''
+      jq -n \
+        --rawfile ca_crt $in/step-ca/ca.crt \
+        --rawfile ca_key $in/step-ca/ca.key \
+        --rawfile int_key $in/step-intermediate-key/intermediate.key \
+        '{ "step-ca": { data: { "ca.crt": $ca_crt, "ca.key": $ca_key, "intermediate.key": $int_key }, condition: "isDefaultBranch" } }' \
+        > $out/secrets
+    '';
   };
 
   services.step-ca = {
