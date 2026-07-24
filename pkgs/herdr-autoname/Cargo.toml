@@ -1,0 +1,9 @@
+[package]
+name = "herdr-autoname"
+version = "0.1.0"
+edition = "2021"
+description = "tmux-like automatic tab names for herdr"
+license = "MIT"
+
+[dependencies]
+tinyjson = "2"

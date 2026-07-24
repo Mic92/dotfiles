@@ -934,6 +934,9 @@ fi
 if [[ -f ~/.zsh-autopair/autopair.zsh ]]; then
   source ~/.zsh-autopair/autopair.zsh
 fi
+if [[ -f ~/.config/herdr/autoname-hook.zsh ]]; then
+  source ~/.config/herdr/autoname-hook.zsh
+fi
 
 if [[ "$TERM" == "linux" ]]; then # solarized-light
   echo -en "\e]PB839496" # S_base00

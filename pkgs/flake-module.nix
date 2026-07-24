@@ -33,6 +33,12 @@ in
       ;
     gh-radicle = pkgs.callPackage ./gh-radicle { };
     iroh-ssh = pkgs.callPackage ./iroh-ssh { };
+    # herdr plugin (fork with OSC 52 clipboard fallback)
+    herdr-pluck = pkgs.callPackage ./herdr-pluck { };
+    # herdr plugin: sesh-style workspace picker
+    herdr-sesh = pkgs.callPackage ./herdr-sesh { };
+    # herdr plugin: tmux-like automatic tab names
+    herdr-autoname = pkgs.callPackage ./herdr-autoname { };
     ghidra-cli = pkgs.callPackage ./ghidra-cli { };
     # Cross-platform secure pinentry (works on macOS and Linux)
     rbw-pinentry = pkgs.callPackage ./rbw_pinentry { };
