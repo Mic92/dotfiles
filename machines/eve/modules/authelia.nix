@@ -61,6 +61,24 @@
 
       identity_providers.oidc.clients = [
         {
+          # Public client used by `step ca certificate --provisioner authelia`
+          # to obtain mTLS client certificates (e.g. for grpcs:// nix store).
+          client_id = "step-ca";
+          client_name = "step-ca";
+          public = true;
+          token_endpoint_auth_method = "none";
+          redirect_uris = [
+            "http://127.0.0.1"
+            "http://localhost"
+          ];
+          scopes = [
+            "openid"
+            "email"
+            "profile"
+          ];
+          authorization_policy = "one_factor";
+        }
+        {
           client_id = "buildbot";
           client_name = "Buildbot";
           client_secret = config.clan.core.vars.generators.buildbot-oidc.files.client-secret-hash.value;
