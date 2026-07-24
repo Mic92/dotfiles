@@ -61,8 +61,7 @@
 
       identity_providers.oidc.clients = [
         {
-          # Public client used by `step ca certificate --provisioner authelia`
-          # to obtain mTLS client certificates (e.g. for grpcs:// nix store).
+          # Public client for `step ca certificate --provisioner authelia`
           client_id = "step-ca";
           client_name = "step-ca";
           public = true;

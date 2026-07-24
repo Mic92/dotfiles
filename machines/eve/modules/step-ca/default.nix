@@ -128,9 +128,7 @@ in
             name = "acme";
             forceCN = true;
           }
-          # OAuth-backed client certificates (e.g. mTLS certs for the
-          # gRPC nix-daemon on eve): `step ca certificate --provisioner authelia`
-          # opens a browser and authenticates against Authelia.
+          # OAuth-backed client certs, e.g. mTLS for the gRPC nix-daemon
           {
             type = "OIDC";
             name = "authelia";

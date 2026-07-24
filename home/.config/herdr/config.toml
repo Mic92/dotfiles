@@ -63,6 +63,15 @@ type = "plugin_action"
 command = "rmarganti.herdr-pluck.pluck"
 description = "pluck visible token"
 
+# code review of the current repo with tuicr
+[[keys.command]]
+key = "prefix+shift+r"
+type = "popup"
+command = "tuicr --no-update-check -w || tuicr --no-update-check"
+description = "tuicr code review"
+width = "90%"
+height = "85%"
+
 # scratch popup terminal (like a quick tmux popup shell)
 [[keys.command]]
 key = "prefix+t"
