@@ -2,6 +2,16 @@
 # sesh — tmux session manager
 # Sources: running tmux sessions + zoxide dirs. Keybind: prefix+s in tmux.
 
+cache = true
+
 [default_session]
-# Land in a shell; nvim/direnv take over per-project via direnv hook.
-startup_command = "zsh"
+preview_command = "git -C {} -c color.ui=always status -sb && git -C {} log --oneline -8 --color=always"
+
+# Start the pi coding agent in project directories.
+[[wildcard]]
+pattern = "~/git/**"
+startup_command = "pi"
+
+[[wildcard]]
+pattern = "~/src/**"
+startup_command = "pi"
