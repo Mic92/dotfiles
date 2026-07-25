@@ -17,13 +17,6 @@ let
 in
 {
   options.programs.herdr = {
-    enable = lib.mkEnableOption "herdr, terminal workspace manager for AI agents";
-
-    package = lib.mkOption {
-      type = lib.types.package;
-      description = "herdr package to install.";
-    };
-
     plugins = lib.mkOption {
       type = lib.types.listOf lib.types.package;
       default = [ ];
@@ -36,12 +29,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ cfg.package ];
-
-    # plugins.json must stay a real writable file: herdr rewrites it under a
-    # lock on enable/disable and would otherwise clobber a store symlink and
-    # break the next home-manager switch. Copying resets any imperative
-    # `herdr plugin install/link` back to the declared set on each activation.
     home.activation.herdrPluginRegistry = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       run install -Dm644 ${registry} "$HOME/.config/herdr/plugins.json"
     '';
