@@ -4,6 +4,7 @@
 _args:
 let
   pkgs = inputs.nixpkgs.legacyPackages.x86_64-linux;
+  nixbotEffects = inputs.nixbot.lib.effects { inherit pkgs; };
 
   # Scheduled effect operating on a fresh clone. The GitToken secret
   # authenticates git push (token in the origin URL) and gh (GH_TOKEN).
@@ -12,25 +13,25 @@ let
     {
       extraInputs ? [ ],
       extraSecrets ? { },
+      # Use nixbot's pushable checkout instead of cloning ourselves.
+      checkout ? false,
     }:
     script:
-    pkgs.runCommand "effect-${name}"
-      {
-        nativeBuildInputs = [
-          pkgs.cacert
-          pkgs.git
-          pkgs.gh
-          pkgs.jq
-          pkgs.nix
-          pkgs.openssh
-        ]
-        ++ extraInputs;
-        # mkEffect JSON-encodes secretsMap; raw derivations must too.
-        secretsMap = builtins.toJSON ({ git.type = "GitToken"; } // extraSecrets);
-        # The sandbox does not inherit the host HOME.
-        HOME = "/build";
+    nixbotEffects.mkEffect {
+      name = "effect-${name}";
+      inherit checkout;
+      inputs = [
+        pkgs.git
+        pkgs.gh
+        pkgs.nix
+        pkgs.openssh
+      ]
+      ++ extraInputs;
+      secretsMap = {
+        git.type = "GitToken";
       }
-      ''
+      // extraSecrets;
+      effectScript = ''
         set -euo pipefail
         # The sandbox nix has no experimental features enabled; child
         # nix invocations (updater, nix-update) inherit this.
@@ -40,11 +41,21 @@ let
         git config --global user.name "dotfiles-bot"
         git config --global user.email "dotfiles-bot@users.noreply.github.com"
         git config --global safe.directory '*'
-        git clone --recurse-submodules \
-          "https://x-access-token:$token@github.com/Mic92/dotfiles" repo
-        cd repo
+        ${
+          if checkout then
+            ''
+              cd "$NIXBOT_EFFECT_CHECKOUT"
+            ''
+          else
+            ''
+              git clone --recurse-submodules \
+                "https://x-access-token:$token@github.com/Mic92/dotfiles" repo
+              cd repo
+            ''
+        }
         ${script}
       '';
+    };
 in
 {
   onPush.default.outputs.effects = {
@@ -162,6 +173,7 @@ in
     outputs.effects.renew-step-intermediate =
       mkRepoEffect "renew-step-intermediate"
         {
+          checkout = true;
           extraInputs = [
             pkgs.openssl
             pkgs.step-cli
