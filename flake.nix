@@ -82,7 +82,7 @@
     nix-grpc-store.inputs.nixpkgs.follows = "nixpkgs";
     nix-grpc-store.inputs.nix.follows = "nix";
 
-    nixbot.url = "git+https://github.com/Mic92/nixbot?ref=effect-locks-and-deps&shallow=1";
+    nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1";
     nixbot.inputs.nixpkgs.follows = "nixpkgs";
     nixbot.inputs.treefmt-nix.follows = "treefmt-nix";
 
