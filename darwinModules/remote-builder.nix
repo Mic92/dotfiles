@@ -15,7 +15,7 @@ let
 in
 {
   launchd.daemons.nix-daemon.serviceConfig.EnvironmentVariables.NIX_CONFIG = ''
-    plugin-files = ${nix-grpc-store}/lib/nix/plugins/nix-grpc-store.so
+    plugin-files = ${nix-grpc-store}/lib/nix/plugins
   '';
 
   nix.distributedBuilds = true;
@@ -24,7 +24,7 @@ in
     {
       # gRPC nix-daemon on eve (client cert via `nix-grpc-cert`, see
       # nixosModules/nix-grpc-cert.nix); eve fans out to its own builders.
-      hostName = "grpcs://eve.thalheim.io:50051?tls-cert=/run/nix-grpc-store/client.crt&tls-key=/run/nix-grpc-store/client.key";
+      hostName = "grpc://eve.thalheim.io:50051?client-cert=/run/nix-grpc-store/client.crt&client-key=/run/nix-grpc-store/client.key&ca-cert=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
       protocol = null;
       systems = [
         "x86_64-linux"
