@@ -759,16 +759,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1784891968,
-        "narHash": "sha256-LN0ZN5Rm/ZJpK01LxoqIoygXasb0VpFyF4nCUpIghsI=",
-        "ref": "nbo-cli",
-        "rev": "19b4904c168a8548d0ae343ec9a722e86b67474b",
+        "lastModified": 1784970691,
+        "narHash": "sha256-BFDeI3ZO5JEch4kNJEiid/m33sEs5pBKspeQolnzhoQ=",
+        "ref": "refs/heads/main",
+        "rev": "144b801b67293587d0c450cc7e58c3037d4df97b",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
       },
       "original": {
-        "ref": "nbo-cli",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
