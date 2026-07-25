@@ -32,5 +32,9 @@ in
   # ACME certs are group-readable by nginx
   users.users.nix-grpc-daemon.extraGroups = [ "nginx" ];
 
+  # allowed-users is restricted on servers; the proxy also needs to be
+  # trusted so remote builds can import unsigned paths from clients.
+  nix.settings.trusted-users = [ "nix-grpc-daemon" ];
+
   networking.firewall.allowedTCPPorts = [ 50051 ];
 }
