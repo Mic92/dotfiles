@@ -53,6 +53,9 @@ in
 
   # tmux-thumbs replacement: match sri and sha256 hashes for nix (@thumbs-regexp-1)
   xdg.configFile."herdr/plugins/config/rmarganti.herdr-pluck/config.toml".text = ''
+    # OSC 52: wl-copy dies with the picker pane before the clipboard is read
+    clipboard = "osc52"
+
     [[patterns]]
     name = "nix-hash"
     regex = '(sha256-[0-9a-zA-Z=/+]{44}|[0-9a-f]{7,40}|[0-9a-z]{52})'
