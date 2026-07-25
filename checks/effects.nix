@@ -134,9 +134,15 @@ in
       hour = 3;
       minute = 0;
     };
-    outputs.effects.update-packages = mkRepoEffect "update-packages" { checkout = true; } ''
-      nix run .#updater -- --pr
-    '';
+    outputs.effects.update-packages =
+      mkRepoEffect "update-packages"
+        {
+          checkout = true;
+          extraInputs = [ self.packages.x86_64-linux.updater ];
+        }
+        ''
+          updater --pr
+        '';
   };
 
   # Daily zsh submodule bump on a single branch and PR.
