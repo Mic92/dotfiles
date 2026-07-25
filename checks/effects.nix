@@ -134,7 +134,7 @@ in
       hour = 3;
       minute = 0;
     };
-    outputs.effects.update-packages = mkRepoEffect "update-packages" { } ''
+    outputs.effects.update-packages = mkRepoEffect "update-packages" { checkout = true; } ''
       nix run .#updater -- --pr
     '';
   };
@@ -145,7 +145,7 @@ in
       hour = 2;
       minute = 51;
     };
-    outputs.effects.update-submodules = mkRepoEffect "update-submodules" { } ''
+    outputs.effects.update-submodules = mkRepoEffect "update-submodules" { checkout = true; } ''
       git submodule update --init --recursive
       git submodule update --recursive --remote
       if git diff --quiet; then
