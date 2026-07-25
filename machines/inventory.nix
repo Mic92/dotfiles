@@ -18,7 +18,11 @@ clan-core.lib.clan {
       };
 
     machines = {
-      eve.deploy.targetHost = "root@eve.i";
+      eve.deploy = {
+        targetHost = "root@eve.i";
+        buildHost = "root@eve.i";
+        forwardAgent = true;
+      };
       eva.deploy = {
         targetHost = "root@eva.i";
         buildHost = "root@eve.i";
