@@ -1,33 +1,23 @@
-{ config, ... }:
+{ config, self, ... }:
 {
+  # grpc:// store plugin so the daemon can talk to eve's gRPC nix-daemon.
+  imports = [ self.inputs.nix-grpc-store.nixosModules.client ];
+  programs.nix-grpc-store.enable = true;
+
   nix.distributedBuilds = true;
 
   nix.buildMachines = [
     {
-      hostName = "jamie";
-      sshUser = "nix";
-      protocol = "ssh-ng";
-      sshKey = config.sops.secrets.ssh-remote-builder.path;
+      # gRPC nix-daemon on eve (client cert via `nix-grpc-cert`, see
+      # nixosModules/nix-grpc-cert.nix); eve fans out to its own builders.
+      hostName = "grpcs://eve.thalheim.io:50051?tls-cert=/run/nix-grpc-store/client.crt&tls-key=/run/nix-grpc-store/client.key";
+      protocol = null;
       systems = [
         "x86_64-linux"
         "i686-linux"
+        "aarch64-linux"
       ];
       maxJobs = 64;
-      supportedFeatures = [
-        "big-parallel"
-        "kvm"
-        "nixos-test"
-        "recursive-nix"
-        "uid-range"
-      ];
-    }
-    {
-      hostName = "eliza";
-      sshUser = "nix";
-      protocol = "ssh-ng";
-      sshKey = config.sops.secrets.ssh-remote-builder.path;
-      system = "aarch64-linux";
-      maxJobs = 224;
       supportedFeatures = [
         "big-parallel"
         "kvm"
