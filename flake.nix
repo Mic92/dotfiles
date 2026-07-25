@@ -78,11 +78,6 @@
 
     systems.url = "github:nix-systems/default";
 
-    data-mesher.url = "git+https://git.clan.lol/clan/data-mesher?shallow=1";
-    data-mesher.inputs.nixpkgs.follows = "nixpkgs";
-    data-mesher.inputs.treefmt-nix.follows = "treefmt-nix";
-    data-mesher.inputs.flake-parts.follows = "flake-parts";
-
     nix-grpc-store.url = "github:Mic92/nix-grpc-store";
     nix-grpc-store.inputs.nixpkgs.follows = "nixpkgs";
     nix-grpc-store.inputs.nix.follows = "nix";
@@ -125,7 +120,6 @@
     clan-core.inputs.nixpkgs.follows = "nixpkgs";
     clan-core.inputs.sops-nix.follows = "sops-nix";
     clan-core.inputs.treefmt-nix.follows = "treefmt-nix";
-    clan-core.inputs.data-mesher.follows = "data-mesher";
     clan-core.inputs.disko.follows = "disko";
     clan-core.inputs.flake-parts.follows = "flake-parts";
     clan-core.inputs.systems.follows = "systems";

@@ -17,7 +17,6 @@
     #self.inputs.spora.nixosModules.spora
 
     ./modules/caddy.nix
-    ./modules/data-mesher.nix
     ./modules/disko.nix
     ./modules/networkmanager
     ./modules/nfs.nix
