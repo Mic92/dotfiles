@@ -24,6 +24,7 @@
     ../../darwinModules/nix-casks.nix
     ../../darwinModules/nix-daemon.nix
     ../../darwinModules/nix-index.nix
+    ../../nixosModules/nix-grpc-cert.nix
     ../../darwinModules/openssh.nix
     ../../darwinModules/remote-builder.nix
     ../../darwinModules/sudo.nix

@@ -1,6 +1,6 @@
 { pkgs, ... }:
 {
-  home.packages = [
+  environment.systemPackages = [
     # Provision an mTLS client cert for the gRPC nix-daemon on eve via
     # step-ca's Authelia OIDC provisioner (opens a browser to log in).
     (pkgs.writeShellApplication {
@@ -18,6 +18,19 @@
           --ca-url https://ca.r --root "$root" --provisioner authelia --force
         echo "Client certificate written to $dir"
         echo "Store URI: grpcs://eve.thalheim.io:50051?tls-cert=$dir/client.crt&tls-key=$dir/client.key"
+
+        # Also install to a fixed root-owned location so the nix daemon
+        # (remote builder config) can reference stable paths. Use /run so
+        # the short-lived cert (24h) doesn't outlive a reboot.
+        global=/run/nix-grpc-store
+        if sudo -n true 2>/dev/null || sudo -v; then
+          sudo install -d -m 0755 "$global"
+          sudo install -m 0644 "$dir/client.crt" "$global/client.crt"
+          sudo install -m 0600 "$dir/client.key" "$global/client.key"
+          echo "Global copy: grpcs://eve.thalheim.io:50051?tls-cert=$global/client.crt&tls-key=$global/client.key"
+        else
+          echo "sudo unavailable: skipped global copy to $global" >&2
+        fi
       '';
     })
   ];
