@@ -759,10 +759,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1784975075,
-        "narHash": "sha256-LW9dQ48lZX4lU+edbtPcSaoVWFjpAQgNKt2BWrU3V0M=",
+        "lastModified": 1784976815,
+        "narHash": "sha256-5iC1CmdF+nsl/KBl/Rrc4ERHEYxOUoSoQaFvbqydcPw=",
         "ref": "effect-locks-and-deps",
-        "rev": "f25f5e418b88f2d7f8fa250a9ff40653d3ea882c",
+        "rev": "49ff9156923404401dab964acad752434e9ca6df",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
