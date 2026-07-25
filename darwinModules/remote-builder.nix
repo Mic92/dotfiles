@@ -1,8 +1,22 @@
-{ config, self, ... }:
 {
-  # grpc:// store plugin so the daemon can talk to eve's gRPC nix-daemon.
-  imports = [ self.inputs.nix-grpc-store.nixosModules.client ];
-  programs.nix-grpc-store.enable = true;
+  config,
+  self,
+  pkgs,
+  ...
+}:
+let
+  # grpc:// store plugin for the nix-daemon so it can reach eve's gRPC
+  # nix-daemon. Loaded only in the daemon (not global nix.conf): other nix
+  # binaries on the system (e.g. home-manager's stable nix) have a different
+  # C++ ABI and crash when dlopen()ing the plugin.
+  nix-grpc-store = pkgs.callPackage "${self.inputs.nix-grpc-store}/package.nix" {
+    inherit (config.nix.package.libs) nix-store nix-util;
+  };
+in
+{
+  launchd.daemons.nix-daemon.serviceConfig.EnvironmentVariables.NIX_CONFIG = ''
+    plugin-files = ${nix-grpc-store}/lib/nix/plugins/nix-grpc-store.so
+  '';
 
   nix.distributedBuilds = true;
 
