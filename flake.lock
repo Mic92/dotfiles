@@ -818,16 +818,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1775997294,
-        "narHash": "sha256-he+pR9kdJd66cXEebw7Sprqy0bEX5WWKSGBVs6MEHhQ=",
+        "lastModified": 1777195425,
+        "narHash": "sha256-D6lRs2p0u5QeV2Sry+yUsH250qHT50WbWgvVd0Uzm/o=",
         "owner": "Mic92",
         "repo": "noctalia-plugins",
-        "rev": "657f29d39c1180afb31df484962e630411978c74",
+        "rev": "2833f8c094a0bb2663fb7cbace2564082d4c3812",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
-        "ref": "nostr",
         "repo": "noctalia-plugins",
         "type": "github"
       }
@@ -882,16 +881,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1784442768,
+        "lastModified": 1784461432,
         "narHash": "sha256-pLRbRLdMa0WJb1KvA2AFQW+rVOTv3ijh1NRn5Ap572k=",
-        "owner": "Mic92",
+        "owner": "pinpox",
         "repo": "punchcard",
-        "rev": "0f3e51418d1c0298cd1044c081555d2806692e76",
+        "rev": "e9c1ebe1429629615951e163166ffe60c22a0bd5",
         "type": "github"
       },
       "original": {
-        "owner": "Mic92",
-        "ref": "punch-cli",
+        "owner": "pinpox",
         "repo": "punchcard",
         "type": "github"
       }
@@ -1086,16 +1084,15 @@
         ]
       },
       "locked": {
-        "lastModified": 1784883552,
-        "narHash": "sha256-Cp+bLrXiaszi1eaJQojO1lQZ1MBqbMZR4t9dOSuQ7gs=",
+        "lastModified": 1784956665,
+        "narHash": "sha256-fitYfFYiVWCGkOCsEFCASTifDx5QXQlpRWgcowguTHM=",
         "owner": "Mic92",
         "repo": "tribuchet",
-        "rev": "96c5cfb6c43b4b28e8fc371eeb22cd43a2c6de83",
+        "rev": "65e2fd5136da4f81d4cb05ffe9a16efe843b6c14",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
-        "ref": "worker-side-input-dedup",
         "repo": "tribuchet",
         "type": "github"
       }

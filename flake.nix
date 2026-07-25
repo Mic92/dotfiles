@@ -33,7 +33,7 @@
     fast-nix-gc.inputs.nixpkgs.follows = "nixpkgs";
     fast-nix-gc.inputs.treefmt-nix.follows = "treefmt-nix";
 
-    noctalia-plugins.url = "github:Mic92/noctalia-plugins/nostr";
+    noctalia-plugins.url = "github:Mic92/noctalia-plugins";
     noctalia-plugins.inputs.nixpkgs.follows = "nixpkgs";
 
     # nix-1 main carries the tribuchet external-builders uid-range patch
@@ -64,7 +64,7 @@
     tincr.inputs.treefmt-nix.follows = "treefmt-nix";
     tincr.inputs.crane.follows = "crane";
 
-    tribuchet.url = "github:Mic92/tribuchet/worker-side-input-dedup";
+    tribuchet.url = "github:Mic92/tribuchet";
     tribuchet.inputs.nixpkgs.follows = "nixpkgs";
     tribuchet.inputs.nix-darwin.follows = "nix-darwin";
     tribuchet.inputs.crane.follows = "crane";
@@ -108,9 +108,7 @@
     forge-triage.url = "github:Mic92/forge-triage";
     forge-triage.inputs.nixpkgs.follows = "nixpkgs";
 
-    # Fork with API keys, JSON API, and punch CLI until the PRs land upstream:
-    # https://github.com/pinpox/punchcard/pull/6 /pull/7 /pull/8
-    punchcard.url = "github:Mic92/punchcard/punch-cli";
+    punchcard.url = "github:pinpox/punchcard";
     punchcard.inputs.nixpkgs.follows = "nixpkgs";
 
     gitea-mq.url = "github:Mic92/gitea-mq";
@@ -198,8 +196,8 @@
 
     freelancer-toolbox.url = "github:numtide/freelancer-toolbox";
     freelancer-toolbox.inputs.nixpkgs.follows = "nixpkgs";
-    freelancer-toolbox.inputs.flake-parts.follows = "flake-parts";
     freelancer-toolbox.inputs.treefmt-nix.follows = "treefmt-nix";
+    freelancer-toolbox.inputs.flake-parts.follows = "flake-parts";
 
     mics-skills = {
       url = "github:Mic92/mics-skills";
