@@ -16,7 +16,6 @@
           {
             scripts = with pkgs.weechatScripts; [
               wee-slack
-              weechat-matrix
             ];
             plugins = [
               availablePlugins.python
