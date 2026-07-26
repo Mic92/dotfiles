@@ -122,6 +122,15 @@ in
     selfPkgs.pim
     (pkgs.writeShellScriptBin "pi" ''
       ${pkgs.pueue}/bin/pueued -d >/dev/null 2>&1 || true
+      # node_modules is gitignored; install/refresh extension deps when the
+      # lockfile or manifest is newer than the last install (or missing).
+      dir="$HOME/.pi/agent"
+      if [ -f "$dir/package.json" ]; then
+        stamp="$dir/node_modules/.bun-install-stamp"
+        if [ ! -e "$stamp" ] || [ "$dir/bun.lock" -nt "$stamp" ] || [ "$dir/package.json" -nt "$stamp" ]; then
+          (cd "$dir" && ${pkgs.bun}/bin/bun install) && touch "$stamp"
+        fi
+      fi
       exec ${selfPkgs.pi}/bin/pi "$@"
     '')
     # deps for personal pi extensions (`bun install` in home/.pi/agent)
