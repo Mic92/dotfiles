@@ -14,7 +14,6 @@
     ./modules/atuin-autosync.nix
   ];
   home.packages = [
-    pkgs.eternal-terminal
     pkgs.rbw
     pkgs.radicle-node
     inputs.strace-macos.packages.${pkgs.stdenv.hostPlatform.system}.default

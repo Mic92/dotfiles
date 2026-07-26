@@ -41,7 +41,6 @@
       unifont
       twitter-color-emoji
       upterm
-      eternal-terminal
       gimp
       (symlinkJoin {
         name = "signal-desktop";

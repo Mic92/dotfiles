@@ -36,7 +36,6 @@
     ./modules/dendrite.nix
     ./modules/disko.nix
     ./modules/dovecot.nix
-    ./modules/et.nix
     ./modules/herdr-eternal.nix
     ./modules/gitea
     ./modules/gitea-mq.nix
