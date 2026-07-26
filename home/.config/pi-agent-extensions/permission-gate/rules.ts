@@ -30,7 +30,9 @@ export default (helpers: any) => ({
       action: "block",
       test: (p: string[][]) =>
         p.some((argv) =>
-          helpers.searchPaths(argv).some((a: string) => SLOW_ROOTS.has(stripSlash(a))),
+          helpers.searchPaths(argv).some((a: string) =>
+            SLOW_ROOTS.has(stripSlash(a))
+          )
         ),
       reason:
         "find/fd/rg/grep across all of ~/git or ~/src is blocked (too many repos). " +

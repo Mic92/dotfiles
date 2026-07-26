@@ -15,7 +15,7 @@ let
     if pkgs.stdenv.isDarwin then
       aiTools.herdr
     else
-      aiTools.herdr.overrideAttrs (_old: rec {
+      aiTools.herdr.overrideAttrs (old: rec {
         version = "0.7.5-unstable-2026-07-23";
         src = pkgs.fetchFromGitHub {
           owner = "ogulcancelik";
@@ -23,6 +23,10 @@ let
           rev = "e7fc85bfdb51f89488430adbfe5bbced3be79c2f";
           hash = "sha256-m5jEDImymgu84HXgeeLjOz6KhWP5+is8RNA5Ww+z5BI=";
         };
+        # remote.ssh_command config option; proposed upstream via discussion #1780.
+        patches = (old.patches or [ ]) ++ [
+          ./herdr/0001-remote-make-ssh-transport-program-configurable.patch
+        ];
         cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
           inherit src;
           name = "herdr-${version}-vendor";

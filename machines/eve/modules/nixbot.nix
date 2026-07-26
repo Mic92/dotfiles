@@ -106,7 +106,7 @@ in
 
   services.nixbot = {
     enable = true;
-    domain = "buildbot.thalheim.io";
+    domain = "nixbot.thalheim.io";
     # Keep buildbot-era status contexts; repos still require
     # buildbot/nix-build in branch protection.
     statusContextPrefix = "buildbot";
@@ -213,8 +213,16 @@ in
     "codecov-token:${config.clan.core.vars.generators.codecov-token.files.token.path}"
   ];
 
+  services.nginx.virtualHosts."nixbot.thalheim.io" = {
+    forceSSL = true;
+    useACMEHost = "thalheim.io";
+  };
+
+  # Legacy domain: permanently redirect to the new nixbot domain so old
+  # links (status contexts, nix-outputs URLs, bookmarks) keep working.
   services.nginx.virtualHosts."buildbot.thalheim.io" = {
     forceSSL = true;
     useACMEHost = "thalheim.io";
+    locations."/".return = "301 https://nixbot.thalheim.io$request_uri";
   };
 }

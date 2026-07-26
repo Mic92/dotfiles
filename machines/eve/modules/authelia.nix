@@ -81,7 +81,11 @@
           client_id = "buildbot";
           client_name = "Buildbot";
           client_secret = config.clan.core.vars.generators.buildbot-oidc.files.client-secret-hash.value;
-          redirect_uris = [ "https://buildbot.thalheim.io/auth/oidc/callback" ];
+          redirect_uris = [
+            "https://nixbot.thalheim.io/auth/oidc/callback"
+            # Legacy domain, kept until the buildbot.thalheim.io redirect is removed.
+            "https://buildbot.thalheim.io/auth/oidc/callback"
+          ];
           scopes = [
             "openid"
             "email"
