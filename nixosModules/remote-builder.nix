@@ -23,8 +23,10 @@ in
   nix.buildMachines = [
     {
       # gRPC nix-daemon on eve (client cert via `nix-grpc-cert`, see
-      # nixosModules/nix-grpc-cert.nix); eve fans out to its own builders.
-      hostName = "grpc://eve.thalheim.io:50051?client-cert=/run/nix-grpc-store/client.crt&client-key=/run/nix-grpc-store/client.key&ca-cert=${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt";
+      # nixosModules/nix-grpc-cert.nix; the plugin defaults to certs in
+      # /run/nix-grpc-store and the system CA bundle); eve fans out to its
+      # own builders.
+      hostName = "grpc://eve.thalheim.io:50051";
       protocol = null;
       systems = [
         "x86_64-linux"
