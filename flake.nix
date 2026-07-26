@@ -32,6 +32,7 @@
     fast-nix-gc.url = "github:Mic92/fast-nix-gc";
     fast-nix-gc.inputs.nixpkgs.follows = "nixpkgs";
     fast-nix-gc.inputs.treefmt-nix.follows = "treefmt-nix";
+    fast-nix-gc.inputs.nix-darwin.follows = "nix-darwin";
 
     noctalia-plugins.url = "github:Mic92/noctalia-plugins";
     noctalia-plugins.inputs.nixpkgs.follows = "nixpkgs";
@@ -82,7 +83,7 @@
     nix-grpc-store.inputs.nixpkgs.follows = "nixpkgs";
     nix-grpc-store.inputs.nix.follows = "nix";
 
-    nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1";
+    nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1&ref=main";
     nixbot.inputs.nixpkgs.follows = "nixpkgs";
     nixbot.inputs.treefmt-nix.follows = "treefmt-nix";
 
@@ -191,7 +192,6 @@
     freelancer-toolbox.url = "github:numtide/freelancer-toolbox";
     freelancer-toolbox.inputs.nixpkgs.follows = "nixpkgs";
     freelancer-toolbox.inputs.treefmt-nix.follows = "treefmt-nix";
-    freelancer-toolbox.inputs.flake-parts.follows = "flake-parts";
 
     mics-skills = {
       url = "github:Mic92/mics-skills";

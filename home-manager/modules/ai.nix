@@ -10,23 +10,27 @@ let
   selfPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
   micsSkillsPkgs = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
 
-  # herdr 0.7.5 drops kitty-protocol printable keys (#1746); build fixed master commit on Linux until the next release.
+  # herdr 0.7.5 drops kitty-protocol printable keys (#1746); build master commit on Linux until the next release.
   herdrPackage =
     if pkgs.stdenv.isDarwin then
       aiTools.herdr
     else
-      aiTools.herdr.overrideAttrs (_old: rec {
-        version = "0.7.5-unstable-2026-07-23";
+      aiTools.herdr.overrideAttrs (old: rec {
+        version = "0.7.5-unstable-2026-07-26";
         src = pkgs.fetchFromGitHub {
           owner = "ogulcancelik";
           repo = "herdr";
-          rev = "e7fc85bfdb51f89488430adbfe5bbced3be79c2f";
-          hash = "sha256-m5jEDImymgu84HXgeeLjOz6KhWP5+is8RNA5Ww+z5BI=";
+          rev = "e536bd8bd99de975cb2d15bb384e6e35f88ef88e";
+          hash = "sha256-MEgnHV4isFJKebiWudtLd6Vkt5eQsxDqNOaNrAa7X3U=";
         };
+        # remote.ssh_command config option; proposed upstream via discussion #1780.
+        patches = (old.patches or [ ]) ++ [
+          ./herdr/0001-remote-make-ssh-transport-program-configurable.patch
+        ];
         cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
           inherit src;
           name = "herdr-${version}-vendor";
-          hash = "sha256-lWnc0Ka0hp7bbm+dkKKj22Dbk+Cwrld86romXs3lzBs=";
+          hash = "sha256-Ja7fKsLWwCi6oy6zANltlFncbDVK+kgOhpr+bJtZyzg=";
         };
         # versionCheckHook compares against the pre-release Cargo version.
         doInstallCheck = false;

@@ -8,6 +8,11 @@
         proxyPass = "http://127.0.0.1:4242";
         proxyWebsockets = true;
       };
+      # WeeChat relay "api" protocol (for modern clients); relay listens on 4243
+      locations."^~ /api" = {
+        proxyPass = "http://127.0.0.1:4243";
+        proxyWebsockets = true;
+      };
       locations."/".root = pkgs.glowing-bear;
     };
 

@@ -16,6 +16,7 @@
 
   imports = [
     ./nix-path.nix
+    ./nix-grpc-cert.nix
     ./acme.nix
     ./nix-daemon.nix
     ./minimal-docs.nix

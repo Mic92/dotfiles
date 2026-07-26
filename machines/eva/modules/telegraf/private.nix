@@ -191,10 +191,10 @@ in
         response_string_match = ''"20'';
       }
       {
-        urls = [ "https://buildbot.thalheim.io" ];
+        urls = [ "https://nixbot.thalheim.io" ];
         tags.host = "eve";
         tags.org = "private";
-        response_string_match = "Buildbot";
+        response_string_match = "nixbot";
         response_status_code = 200;
       }
       {
