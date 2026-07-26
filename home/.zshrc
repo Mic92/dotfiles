@@ -19,16 +19,20 @@ if [[ -r /root/code/config/remote/zshrc ]]; then
   ANT_PRISTINE_SHELL=1 source /root/code/config/remote/zshrc
 fi
 
-# early, fast invocation of tmux
-# - only if tmux is installed
+# early, fast invocation of herdr/tmux
+# - only if herdr/tmux is installed
 # - not in linux ttys
 # - no nested tmux sessions
-#if [[ -n ${commands[tmux]} ]] && [[ "$TERM" != "linux" ]] && [[ "$TERM_PROGRAM" != WezTerm ]] && [[ -z "$TMUX" ]] && [[ "$INSIDE_EMACS" != "vterm" ]] && [[ -z "$STY" ]]; then
-#  if [[ -n "$SSH_AUTH_SOCK" ]]; then
-#    tmux set-environment -g SSH_AUTH_SOCK "$SSH_AUTH_SOCK" 2>/dev/null
-#  fi
-#  tmux new-session -s "${TTY:t}" -t main || tmux attach-session -t "${TTY:t}"
-#fi
+if [[ "$TERM" != "linux" ]] && [[ "$TERM_PROGRAM" != WezTerm ]] && [[ -z "$TMUX" ]] && [[ "$INSIDE_EMACS" != "vterm" ]] && [[ -z "$STY" ]]; then
+  if [[ -n ${commands[herdr]} ]]; then
+    herdr
+  elif [[ -n ${commands[tmux]} ]]; then
+    if [[ -n "$SSH_AUTH_SOCK" ]]; then
+      tmux set-environment -g SSH_AUTH_SOCK "$SSH_AUTH_SOCK" 2>/dev/null
+    fi
+    tmux new-session -s "${TTY:t}" -t main || tmux attach-session -t "${TTY:t}"
+  fi
+fi
 for _hm_profile in ~/.nix-profile ~/.local/state/nix/profile; do
   if [[ -f $_hm_profile/etc/profile.d/hm-session-vars.sh ]]; then
     source $_hm_profile/etc/profile.d/hm-session-vars.sh
