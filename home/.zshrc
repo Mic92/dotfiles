@@ -23,7 +23,7 @@ fi
 # - only if herdr/tmux is installed
 # - not in linux ttys
 # - no nested tmux sessions
-if [[ "$TERM" != "linux" ]] && [[ "$TERM_PROGRAM" != WezTerm ]] && [[ -z "$TMUX" ]] && [[ "$INSIDE_EMACS" != "vterm" ]] && [[ -z "$STY" ]]; then
+if [[ "$TERM" != "linux" ]] && [[ "$TERM_PROGRAM" != WezTerm ]] && [[ -z "$TMUX" ]] && [[ -z "$HERDR_ENV" ]] && [[ "$INSIDE_EMACS" != "vterm" ]] && [[ -z "$STY" ]]; then
   if [[ -n ${commands[herdr]} ]]; then
     herdr
   elif [[ -n ${commands[tmux]} ]]; then
