@@ -578,10 +578,10 @@
         "nixpkgs-regression": []
       },
       "locked": {
-        "lastModified": 1785060648,
-        "narHash": "sha256-iB+z32SuAgNe5yXowyCXFjRriycXOwbH/CUdE8JlXyY=",
+        "lastModified": 1785066688,
+        "narHash": "sha256-4QykV6vLkLg2SqnAgA9lvpCEFWNy76MlHFIuA3v0wHc=",
         "ref": "refs/heads/main",
-        "rev": "01e8d7b85e88ae954fe5356bca0ab4e967f0abf7",
+        "rev": "cd1729d98a3f247e5f2d28028779ab6c400b2d97",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nix-1"
@@ -757,16 +757,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1785065211,
+        "lastModified": 1785066241,
         "narHash": "sha256-IPWJe+bobQIRny0hoK1UwMx9kIG/pYM4CSOhiAGTIAI=",
-        "ref": "prefetch-inputs-fix",
-        "rev": "a762372cb08a9c17fd77a63d79cf891e15088d03",
+        "ref": "main",
+        "rev": "1c4e0008a8095958c91d5c83e7c2d2a04d13bcbc",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
       },
       "original": {
-        "ref": "prefetch-inputs-fix",
+        "ref": "main",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
