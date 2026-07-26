@@ -50,6 +50,8 @@ exclude = ["zsh/*", "gdb/*"]
 "nixosModules/niri/kwallet-tpm/kwallet-tpm-unlock.py" = ["INP001"]
 # Standalone script run at build time to generate herdr plugins.json
 "home-manager/modules/herdr/registry.py" = ["INP001"]
+# WeeChat script: standalone module, and callbacks have fixed API signatures
+"home/.weechat/python/herdr_notify.py" = ["INP001", "PLR0913"]
 # minihydra: keyword-arg-rich helpers + lazy uvicorn import
 "pkgs/minihydra/src/minihydra/*.py" = ["PLR0913", "PLR0915", "PLC0415", "TC003"]
 "pkgs/minihydra/tests/*.py" = ["PLC0415", "S101", "PLR0913", "TC003", "ANN"]
