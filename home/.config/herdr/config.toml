@@ -106,3 +106,8 @@ scrollback_limit_bytes = 20000000
 
 [worktrees]
 directory = "~/.herdr/worktrees"
+
+[remote]
+# Use herdr-eternal instead of OpenSSH for herdr --remote (survives netsplits).
+ssh_command = "herdr-eternal-ssh"
+manage_ssh_config = false
