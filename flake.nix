@@ -107,6 +107,14 @@
     punchcard.url = "github:pinpox/punchcard";
     punchcard.inputs.nixpkgs.follows = "nixpkgs";
 
+    herdr-eternal.url = "github:Mic92/herdr-eternal";
+    herdr-eternal.inputs.nixpkgs.follows = "nixpkgs";
+    herdr-eternal.inputs.flake-parts.follows = "flake-parts";
+    herdr-eternal.inputs.treefmt-nix.follows = "treefmt-nix";
+    herdr-eternal.inputs.crane.follows = "crane";
+    # Only needed for herdr-eternal's own integration tests.
+    herdr-eternal.inputs.herdr.follows = "";
+
     gitea-mq.url = "github:Mic92/gitea-mq";
     gitea-mq.inputs.nixpkgs.follows = "nixpkgs";
     gitea-mq.inputs.treefmt-nix.follows = "treefmt-nix";

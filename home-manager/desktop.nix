@@ -15,6 +15,16 @@
     ./modules/mail.nix
   ];
 
+  # herdr-eternal target for eve; authenticate with:
+  #   herdr-eternal-ssh login eve
+  xdg.configFile."herdr-eternal/config.toml".text = ''
+    [targets.eve]
+    url = "wss://herdr.thalheim.io/herdr-eternal"
+    issuer = "https://auth.thalheim.io"
+    client_id = "herdr-eternal"
+    forward_agent = true
+  '';
+
   fonts.fontconfig.enable = true;
 
   services.mpris-proxy.enable = true;
@@ -23,6 +33,8 @@
   home.packages =
     with pkgs;
     [
+      # Roaming transport for herdr --remote (used via remote.ssh_command).
+      inputs.herdr-eternal.packages.${pkgs.stdenv.hostPlatform.system}.default
       league-of-moveable-type
       dejavu_fonts
       ubuntu-classic

@@ -59,6 +59,17 @@
         sender = "authelia@thalheim.io";
       };
 
+      # Only Jörg may authorize the herdr-eternal client.
+      identity_providers.oidc.authorization_policies.herdr-eternal = {
+        default_policy = "deny";
+        rules = [
+          {
+            policy = "one_factor";
+            subject = [ "user:joerg@thalheim.io" ];
+          }
+        ];
+      };
+
       identity_providers.oidc.clients = [
         {
           # Public client for `step ca certificate --provisioner authelia`
@@ -93,6 +104,30 @@
             "groups"
           ];
           authorization_policy = "one_factor";
+        }
+        {
+          # Device-code flow for herdr-eternal-ssh (herdr --remote transport).
+          client_id = "herdr-eternal";
+          client_name = "herdr-eternal";
+          public = true;
+          token_endpoint_auth_method = "none";
+          grant_types = [
+            "urn:ietf:params:oauth:grant-type:device_code"
+            "refresh_token"
+          ];
+          scopes = [
+            "openid"
+            "offline_access"
+          ];
+          # Grant the client's own audience even though the device-code flow
+          # never requests one, so access tokens carry aud = ["herdr-eternal"]
+          # and the server can validate it strictly.
+          audience = [ "herdr-eternal" ];
+          requested_audience_mode = "implicit";
+          # JWT-profile access tokens so herdr-eternal-server can validate
+          # them offline against the JWKS.
+          access_token_signed_response_alg = "RS256";
+          authorization_policy = "herdr-eternal";
         }
         {
           client_id = "punchcard";

@@ -416,6 +416,36 @@
         "url": "https://github.com/hercules-ci/hercules-ci-effects"
       }
     },
+    "herdr-eternal": {
+      "inputs": {
+        "crane": [
+          "crane"
+        ],
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "herdr": [],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1785095244,
+        "narHash": "sha256-6J44rWum/AQQbrEFLhudjFqXQxUJAf5sfXYAhoYrmQk=",
+        "owner": "Mic92",
+        "repo": "herdr-eternal",
+        "rev": "d57bcf51cf2aa5cdbb191f359fd980da3b8c65b9",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "herdr-eternal",
+        "type": "github"
+      }
+    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -909,6 +939,7 @@
         "gitea-mq": "gitea-mq",
         "harmonia": "harmonia",
         "hercules-ci-effects": "hercules-ci-effects",
+        "herdr-eternal": "herdr-eternal",
         "home-manager": "home-manager",
         "kartei": "kartei",
         "llm-agents": "llm-agents",
