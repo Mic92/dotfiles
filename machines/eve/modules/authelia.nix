@@ -70,6 +70,16 @@
         ];
       };
 
+      # Authelia's default refresh-token lifetime (~90 minutes) logs
+      # herdr-eternal-ssh out as soon as a laptop sleeps for a while; keep the
+      # refresh token valid for months so long-running herdr sessions can keep
+      # re-minting access tokens.
+      identity_providers.oidc.lifespans.custom.herdr-eternal = {
+        access_token = "1 hour";
+        id_token = "1 hour";
+        refresh_token = "3 months";
+      };
+
       identity_providers.oidc.clients = [
         {
           # Public client for `step ca certificate --provisioner authelia`
@@ -128,6 +138,7 @@
           # them offline against the JWKS.
           access_token_signed_response_alg = "RS256";
           authorization_policy = "herdr-eternal";
+          lifespan = "herdr-eternal";
         }
         {
           client_id = "punchcard";

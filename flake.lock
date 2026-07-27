@@ -433,11 +433,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785136454,
-        "narHash": "sha256-6bOdXsaD0QJ5npc9Ggy6oZN1CYyj3dlkYskXcXfzt2k=",
+        "lastModified": 1785144443,
+        "narHash": "sha256-0FsEzaN3QWj8hKu40TOf7D4hRi/LRc+VvNVRPfKv2CA=",
         "owner": "Mic92",
         "repo": "herdr-eternal",
-        "rev": "8836062564cc78e1120ebefc815201920f826d03",
+        "rev": "a46eb6b8d16ebb8ffd3ef86d5642fafd5ac36627",
         "type": "github"
       },
       "original": {
