@@ -32,7 +32,6 @@ in
       app-windows-extension
       ;
     gh-radicle = pkgs.callPackage ./gh-radicle { };
-    iroh-ssh = pkgs.callPackage ./iroh-ssh { };
     # herdr plugin (fork with OSC 52 clipboard fallback)
     herdr-pluck = pkgs.callPackage ./herdr-pluck { };
     # herdr plugin: sesh-style workspace picker

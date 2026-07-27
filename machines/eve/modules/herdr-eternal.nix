@@ -19,6 +19,12 @@
       enable = true;
       hostName = "herdr.thalheim.io";
     };
+    # Direct QUIC path (UDP 7443) so roaming clients keep their connection
+    # across address changes; TLS from the wildcard ACME cert.
+    quic = {
+      enable = true;
+      useACMEHost = "thalheim.io";
+    };
   };
 
   services.nginx.virtualHosts."herdr.thalheim.io" = {

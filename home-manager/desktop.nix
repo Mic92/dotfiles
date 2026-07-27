@@ -20,6 +20,7 @@
   xdg.configFile."herdr-eternal/config.toml".text = ''
     [targets.eve]
     url = "wss://herdr.thalheim.io/herdr-eternal"
+    quic_addr = "herdr.thalheim.io:7443"
     issuer = "https://auth.thalheim.io"
     client_id = "herdr-eternal"
     forward_agent = true

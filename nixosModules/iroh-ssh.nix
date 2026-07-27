@@ -7,12 +7,10 @@
   config,
   lib,
   pkgs,
-  self,
   ...
 }:
 let
   cfg = config.services.iroh-ssh;
-  iroh-ssh = self.packages.${pkgs.stdenv.hostPlatform.system}.iroh-ssh;
 in
 {
   options.services.iroh-ssh = {
@@ -27,7 +25,7 @@ in
 
   config = lib.mkIf cfg.enable {
     # Make the CLI available system-wide (for `iroh-ssh proxy`, `iroh-ssh info`, etc.)
-    environment.systemPackages = [ iroh-ssh ];
+    environment.systemPackages = [ pkgs.iroh-ssh ];
 
     # --- key generation via clan vars ---
     clan.core.vars.generators.iroh-ssh = {
@@ -88,7 +86,7 @@ in
           install -m 0644 ${config.clan.core.vars.generators.iroh-ssh.files."irohssh_ed25519.pub".path} \
             "$STATE_DIRECTORY/.ssh/irohssh_ed25519.pub"
         '';
-        ExecStart = "${iroh-ssh}/bin/iroh-ssh server --persist --ssh-port ${toString cfg.sshPort}";
+        ExecStart = "${pkgs.iroh-ssh}/bin/iroh-ssh server --persist --ssh-port ${toString cfg.sshPort}";
         Environment = "HOME=/var/lib/iroh-ssh";
         Restart = "on-failure";
         RestartSec = 5;
