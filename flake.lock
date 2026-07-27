@@ -162,11 +162,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784874452,
-        "narHash": "sha256-tY44xXG2zeAXAEbxcLfspV0sr54aLQk334rHU+erlqw=",
+        "lastModified": 1785135633,
+        "narHash": "sha256-DaFlHHYwY8pL1cMWghHu/5smyRC7sn/O5oOLhBZwOAA=",
         "owner": "Mic92",
         "repo": "direnv-instant",
-        "rev": "2d6dab5941c8472e6a14b641bde9d64bea1be1f5",
+        "rev": "d5c7ab564ab694be1d9952a05b5538d483cc2d1d",
         "type": "github"
       },
       "original": {
@@ -433,11 +433,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785095244,
-        "narHash": "sha256-6J44rWum/AQQbrEFLhudjFqXQxUJAf5sfXYAhoYrmQk=",
+        "lastModified": 1785136454,
+        "narHash": "sha256-6bOdXsaD0QJ5npc9Ggy6oZN1CYyj3dlkYskXcXfzt2k=",
         "owner": "Mic92",
         "repo": "herdr-eternal",
-        "rev": "d57bcf51cf2aa5cdbb191f359fd980da3b8c65b9",
+        "rev": "8836062564cc78e1120ebefc815201920f826d03",
         "type": "github"
       },
       "original": {
