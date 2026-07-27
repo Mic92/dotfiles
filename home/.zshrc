@@ -9,12 +9,7 @@ if [[ -n "$CODER" ]] && [[ -n "$STY" ]]; then
   screen -X truecolor on 2>/dev/null
 fi
 
-# Coder workspace integration — the base image's install.sh normally appends
-# a `source .../zshrc` line to ~/.zshrc, but homesick replaces that file
-# with this symlink. Source it ourselves so workspace env vars, aliases,
-# and tooling integration still load. The pristine-shell flag skips the
-# base image's bindkey/TRAPALRM/prompt setup that would fight with our
-# own zle config below.
+# Coder workspace integration
 if [[ -r /root/code/config/remote/zshrc ]]; then
   ANT_PRISTINE_SHELL=1 source /root/code/config/remote/zshrc
 fi
