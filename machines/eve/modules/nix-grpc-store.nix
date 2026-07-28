@@ -21,7 +21,8 @@ in
   services.nix-grpc-daemon = {
     enable = true;
     package = self.inputs.nix-grpc-store.packages.${pkgs.stdenv.hostPlatform.system}.default;
-    listen = "0.0.0.0:50051";
+    # Remote builds import unsigned store paths from clients.
+    trustClients = true;
     tls = {
       certFile = "/var/lib/acme/thalheim.io/fullchain.pem";
       keyFile = "/var/lib/acme/thalheim.io/key.pem";
@@ -31,10 +32,6 @@ in
 
   # ACME certs are group-readable by nginx
   users.users.nix-grpc-daemon.extraGroups = [ "nginx" ];
-
-  # allowed-users is restricted on servers; the proxy also needs to be
-  # trusted so remote builds can import unsigned paths from clients.
-  nix.settings.trusted-users = [ "nix-grpc-daemon" ];
 
   networking.firewall.allowedTCPPorts = [ 50051 ];
 }
