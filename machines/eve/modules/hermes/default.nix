@@ -15,15 +15,16 @@ in
   clan.core.vars.generators.hermes = {
     files.slack-bot-token.secret = true;
     files.slack-app-token.secret = true;
-    # files.anthropic-token.secret = true;
+    files.anthropic-api-key.secret = true;
 
     prompts.slack-bot-token.description = "Slack bot token (xoxb-…) for the Hermes app";
     prompts.slack-app-token.description = "Slack app-level token (xapp-…) with connections:write";
-    # prompts.anthropic-token.description = "Anthropic OAuth setup token (sk-ant-oat…) from `claude setup-token`";
+    prompts.anthropic-api-key.description = "Anthropic token";
 
     script = ''
       cp "$prompts/slack-bot-token" "$out/slack-bot-token"
       cp "$prompts/slack-app-token" "$out/slack-app-token"
+      cp "$prompts/anthropic-api-key" "$out/anthropic-api-key"
     '';
   };
 
@@ -45,9 +46,7 @@ in
     extraFlags = [
       "--load-credential=slack-bot-token:${gen.files.slack-bot-token.path}"
       "--load-credential=slack-app-token:${gen.files.slack-app-token.path}"
-      # "--load-credential=anthropic-token:${gen.files.anthropic-token.path}"
-      # OpenRouter key is shared with opencrow.
-      "--load-credential=openrouter-api-key:${config.clan.core.vars.generators.opencrow-openrouter.files.api-key.path}"
+      "--load-credential=anthropic-api-key:${gen.files.anthropic-api-key.path}"
     ];
 
     config = _: {
@@ -115,9 +114,7 @@ in
           TZ = "Europe/Berlin";
           HOME = stateDir;
           HERMES_HOME = "${stateDir}/.hermes";
-          HERMES_INFERENCE_PROVIDER = "openrouter";
-          # Same model as janet.
-          HERMES_INFERENCE_MODEL = "google/gemma-4-26b-a4b-it";
+          HERMES_INFERENCE_PROVIDER = "anthropic";
           SLACK_ALLOWED_USERS = "U02TAKGUGF4";
         };
 
@@ -129,8 +126,7 @@ in
           ImportCredential = [
             "slack-bot-token"
             "slack-app-token"
-            # "anthropic-token"
-            "openrouter-api-key"
+            "anthropic-api-key"
           ];
           Restart = "on-failure";
           RestartSec = 30;
@@ -138,9 +134,9 @@ in
             set -euo pipefail
             SLACK_BOT_TOKEN=$(< "$CREDENTIALS_DIRECTORY/slack-bot-token")
             SLACK_APP_TOKEN=$(< "$CREDENTIALS_DIRECTORY/slack-app-token")
-            # ANTHROPIC_TOKEN=$(< "$CREDENTIALS_DIRECTORY/anthropic-token")
-            OPENROUTER_API_KEY=$(< "$CREDENTIALS_DIRECTORY/openrouter-api-key")
-            export SLACK_BOT_TOKEN SLACK_APP_TOKEN OPENROUTER_API_KEY
+            # hermes expects OAuth/setup tokens in ANTHROPIC_TOKEN (not ANTHROPIC_AUTH_TOKEN)
+            ANTHROPIC_TOKEN=$(< "$CREDENTIALS_DIRECTORY/anthropic-api-key")
+            export SLACK_BOT_TOKEN SLACK_APP_TOKEN ANTHROPIC_TOKEN
             exec ${lib.getExe hermesPkg} gateway run
           '';
         };
