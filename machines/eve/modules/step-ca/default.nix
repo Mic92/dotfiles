@@ -111,6 +111,21 @@ in
     '';
   };
 
+  # step-ca fetches the Authelia OIDC discovery document once at startup and
+  # permanently disables the provisioner if that fails, so wait until it is
+  # actually served before starting.
+  systemd.services.step-ca = {
+    after = [
+      "authelia-main.service"
+      "nginx.service"
+    ];
+    preStart = ''
+      ${pkgs.curl}/bin/curl -fsS --retry 60 --retry-all-errors --retry-delay 1 -o /dev/null \
+        https://auth.thalheim.io/.well-known/openid-configuration \
+        || echo "authelia OIDC discovery endpoint not ready" >&2
+    '';
+  };
+
   services.step-ca = {
     enable = true;
     intermediatePasswordFile = "/dev/null";
