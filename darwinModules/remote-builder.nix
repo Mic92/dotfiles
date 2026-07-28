@@ -1,22 +1,15 @@
 {
   config,
   self,
-  pkgs,
   ...
 }:
-let
-  # grpc:// store plugin for the nix-daemon so it can reach eve's gRPC
-  # nix-daemon. Loaded only in the daemon (not global nix.conf): other nix
-  # binaries on the system (e.g. home-manager's stable nix) have a different
-  # C++ ABI and crash when dlopen()ing the plugin.
-  nix-grpc-store = pkgs.callPackage "${self.inputs.nix-grpc-store}/package.nix" {
-    inherit (config.nix.package.libs) nix-store nix-util;
-  };
-in
 {
-  launchd.daemons.nix-daemon.serviceConfig.EnvironmentVariables.NIX_CONFIG = ''
-    plugin-files = ${nix-grpc-store}/lib/nix/plugins
-  '';
+  # grpc:// store plugin so nix can reach eve's gRPC nix-daemon. The
+  # dispatcher loads the plugin matching the running Nix version and is safe
+  # to load globally via nix.conf. The flake only ships a NixOS module, but
+  # client.nix only touches nix.settings, which nix-darwin provides too.
+  imports = [ "${self.inputs.nix-grpc-store}/nixos/client.nix" ];
+  programs.nix-grpc-store.enable = true;
 
   nix.distributedBuilds = true;
 
