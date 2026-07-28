@@ -135,6 +135,14 @@ in
     # persistent nvme or every restart loses the shell history and login.
     persist_dir "$HOME/src/home/.local/share/atuin" "$HOME/.local/share/atuin"
 
+    persist_dir "$HOME/src/home/.local/share/zoxide" "$HOME/.local/share/zoxide"
+
+    # ~/.config/herdr holds live sockets and the hm-managed plugins.json,
+    # so persist only session.json (empty file is invalid JSON, drop it).
+    persist_link "$HOME/src/home/.config/herdr/session.json" "$HOME/.config/herdr/session.json"
+    [ -s "$HOME/src/home/.config/herdr/session.json" ] || rm -f "$HOME/src/home/.config/herdr/session.json"
+    persist_dir "$HOME/src/home/.local/state/herdr" "$HOME/.local/state/herdr"
+
     # nix.conf host-specific fragment (private substituters, netrc paths).
     # Lives in persistent nvme; the main nix.conf `include`s it.
     persist_link "$HOME/src/home/.config/nix/local.conf" "$HOME/.config/nix/local.conf"
