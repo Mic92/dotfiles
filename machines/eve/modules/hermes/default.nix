@@ -114,7 +114,13 @@ in
           TZ = "Europe/Berlin";
           HOME = stateDir;
           HERMES_HOME = "${stateDir}/.hermes";
-          HERMES_INFERENCE_PROVIDER = "anthropic";
+          # "vllm" is an alias for hermes' "custom" OpenAI-compatible provider;
+          # points at the self-hosted Qwen3 on jack's A40 (retiolum).
+          HERMES_INFERENCE_PROVIDER = "vllm";
+          CUSTOM_BASE_URL = "http://jack.r:8000/v1";
+          HERMES_MODEL = "qwen3-30b-a3b-instruct";
+          # No auth on the endpoint, but the OpenAI client wants a key.
+          OPENAI_API_KEY = "unused";
           SLACK_ALLOWED_USERS = "U02TAKGUGF4";
         };
 
