@@ -10,18 +10,20 @@ let
   selfPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
   micsSkillsPkgs = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
 
-  # herdr 0.7.5 drops kitty-protocol printable keys (#1746); build master commit on Linux until the next release.
+  # herdr 0.7.5 drops kitty-protocol printable keys (#1746) and shifted prefix
+  # keybindings drop out of prefix mode (#1870); build master commit on Linux
+  # until the next release.
   herdrPackage =
     if pkgs.stdenv.isDarwin then
       aiTools.herdr
     else
       aiTools.herdr.overrideAttrs (old: rec {
-        version = "0.7.5-unstable-2026-07-26";
+        version = "0.7.5-unstable-2026-07-29";
         src = pkgs.fetchFromGitHub {
           owner = "ogulcancelik";
           repo = "herdr";
-          rev = "e536bd8bd99de975cb2d15bb384e6e35f88ef88e";
-          hash = "sha256-MEgnHV4isFJKebiWudtLd6Vkt5eQsxDqNOaNrAa7X3U=";
+          rev = "73d92004f50d3f5fafe64e0f9b7fddbcf4d99965";
+          hash = "sha256-SeBkJePTxcFhXzFgGiSXMlAY359bgf5aTgmywZJhuoM=";
         };
         # remote.ssh_command config option; proposed upstream via discussion #1780.
         patches = (old.patches or [ ]) ++ [
