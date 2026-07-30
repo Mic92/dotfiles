@@ -28,8 +28,14 @@ in
     '';
   };
 
-  # The hermes user only exists inside the container; create the bind-mount
-  # source as root here, ownership is fixed up from the inside.
+  users.users.hermes = {
+    isSystemUser = true;
+    group = "hermes";
+    uid = 2001;
+  };
+  users.groups.hermes.gid = 2001;
+  nix.settings.extra-allowed-users = [ "hermes" ];
+
   systemd.tmpfiles.rules = [
     "d ${stateDir} 0750 - - -"
   ];
@@ -50,6 +56,8 @@ in
     ];
 
     config = _: {
+      imports = [ ../agent-container.nix ];
+
       system.stateVersion = "25.05";
 
       # Copy the host's retiolum entries so jack.r resolves inside.
@@ -63,20 +71,11 @@ in
       };
       users.groups.hermes.gid = 2001;
 
-      environment.etc."timezone".text = "Europe/Berlin\n";
+      environment.systemPackages = [ hermesPkg ];
 
       systemd.tmpfiles.rules =
         let
-          # Same routing policy as janet: deny data-collecting providers,
-          # Venice only. Hermes only reads $HERMES_HOME/config.yaml.
           hermesConfig = pkgs.writers.writeYAML "hermes-config.yaml" {
-            # Cap output tokens: the self-hosted vLLM (jack.r, A40) serves
-            # qwen3-30b-a3b-instruct with --max-model-len 98304. Hermes'
-            # default of 65536 output tokens leaves only ~32k for input,
-            # causing HTTP 400 + "max compression attempts reached".
-            # Auxiliary tasks (title generation, compression) fall back to
-            # "gpt-4o-mini" when model.model is unset in config.yaml (env
-            # HERMES_MODEL is not consulted there), which 404s on vLLM.
             model = {
               model = "qwen3-30b-a3b-instruct";
               max_tokens = 16384;
@@ -99,41 +98,20 @@ in
         after = [ "network-online.target" ];
         wants = [ "network-online.target" ];
 
+        # Base tools come from the container profile (agent-container.nix).
         path = [
           hermesPkg
-        ]
-        ++ (with pkgs; [
-          bash
-          coreutils
-          curl
-          fd
-          file
-          findutils
-          git
-          gnugrep
-          gnused
-          gnutar
-          gzip
-          jq
-          openssh
-          procps
-          ripgrep
-          unzip
-          util-linux
-          which
-          xz
-        ]);
+          "/run/current-system/sw"
+        ];
 
         environment = {
           TZ = "Europe/Berlin";
+          NIX_REMOTE = "daemon";
           HOME = stateDir;
           HERMES_HOME = "${stateDir}/.hermes";
-          # "vllm" is an alias for hermes' "custom" OpenAI-compatible provider;
-          # points at the self-hosted Qwen3 on jack's A40 (retiolum).
           HERMES_INFERENCE_PROVIDER = "vllm";
           CUSTOM_BASE_URL = "http://jack.r:8000/v1";
           HERMES_MODEL = "qwen3-30b-a3b-instruct";
-          # No auth on the endpoint, but the OpenAI client wants a key.
           OPENAI_API_KEY = "unused";
           SLACK_ALLOWED_USERS = "U02TAKGUGF4";
         };
