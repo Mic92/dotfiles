@@ -127,9 +127,7 @@ in
     # deps for personal pi extensions (`bun install` in home/.pi/agent)
     pkgs.bun
     aiTools.tuicr
-    aiTools.coderabbit-cli
     aiTools.openspec
-    aiTools.ccusage
     aiTools.ccstatusline
     aiTools.git-surgeon
     aiTools.jscpd
