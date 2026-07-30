@@ -1,4 +1,9 @@
+{ config, ... }:
 {
+  # The container has its own /etc/hosts, so copy the host's retiolum
+  # entries to make jack.r resolvable.
+  containers.opencrow.config.networking.extraHosts = config.networking.extraHosts;
+
   # Self-hosted vLLM (Qwen3-30B-A3B-Instruct-2507-FP8) on jack's A40,
   # reachable over retiolum. No API key required; pi still wants a
   # non-empty value, so a placeholder is used.

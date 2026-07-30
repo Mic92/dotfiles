@@ -52,6 +52,9 @@ in
     config = _: {
       system.stateVersion = "25.05";
 
+      # Copy the host's retiolum entries so jack.r resolves inside.
+      networking.extraHosts = config.networking.extraHosts;
+
       users.users.hermes = {
         isSystemUser = true;
         group = "hermes";
@@ -67,6 +70,17 @@ in
           # Same routing policy as janet: deny data-collecting providers,
           # Venice only. Hermes only reads $HERMES_HOME/config.yaml.
           hermesConfig = pkgs.writers.writeYAML "hermes-config.yaml" {
+            # Cap output tokens: the self-hosted vLLM (jack.r, A40) serves
+            # qwen3-30b-a3b-instruct with --max-model-len 98304. Hermes'
+            # default of 65536 output tokens leaves only ~32k for input,
+            # causing HTTP 400 + "max compression attempts reached".
+            # Auxiliary tasks (title generation, compression) fall back to
+            # "gpt-4o-mini" when model.model is unset in config.yaml (env
+            # HERMES_MODEL is not consulted there), which 404s on vLLM.
+            model = {
+              model = "qwen3-30b-a3b-instruct";
+              max_tokens = 16384;
+            };
             provider_routing = {
               data_collection = "deny";
               only = [ "venice" ];
