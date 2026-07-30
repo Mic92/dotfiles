@@ -28,11 +28,20 @@ in
   ];
 
   config = {
+    containers.opencrow.config.imports = [ ../agent-container.nix ];
+    # Base tools come from the container profile (agent-container.nix).
+    containers.opencrow.config.systemd.services.opencrow.path = [ "/run/current-system/sw" ];
     containers.opencrow.config.users.users.opencrow.uid = 2000;
     containers.opencrow.config.users.groups.opencrow.gid = 2000;
     users.groups.opencrow.gid = 2000;
-
-    containers.opencrow.config.environment.etc."timezone".text = "Europe/Berlin\n";
+    # Host-side mirror of the container user so the nix daemon accepts
+    # connections through the bind-mounted daemon socket.
+    users.users.opencrow = {
+      isSystemUser = true;
+      group = "opencrow";
+      uid = 2000;
+    };
+    nix.settings.extra-allowed-users = [ "opencrow" ];
 
     containers.opencrow.config.systemd.tmpfiles.rules = [
       "d /var/lib/opencrow/.config 0750 opencrow opencrow -"

@@ -32,6 +32,7 @@ let
 
     environment = {
       TZ = lib.mkDefault "Europe/Berlin";
+      NIX_REMOTE = lib.mkDefault "daemon";
       OPENCROW_PI_PROVIDER = lib.mkDefault "anthropic";
 
       # Periodic awareness check. Agent reads HEARTBEAT.md in its session
@@ -47,46 +48,10 @@ let
       OPENCROW_NOSTR_ALLOWED_USERS = lib.mkDefault "npub10yt4rh4g5t5kd47x7w8dpwqq7s228c53xacjqxvxjwu0kes3kzvsynqfu8";
     };
 
-    # Baseline tool set every bot container needs for pi to do useful work.
     extraPackages = [
       micsSkillsPkgs.context7-cli
       micsSkillsPkgs.pexpect-cli
-    ]
-    ++ (with pkgs; [
-      bc
-      cacert
-      coreutils
-      curl
-      diffutils
-      fd
-      file
-      findutils
-      git
-      gnugrep
-      gnused
-      gnutar
-      gzip
-      htmlq
-      hurl
-      jq
-      less
-      libarchive
-      openssh
-      patch
-      procps
-      python3
-      ripgrep
-      tree
-      unzip
-      util-linux
-      w3m
-      wget
-      which
-      xz
-      yq-go
-      zip
-      zstd
-    ]);
+    ];
   };
 in
 {
