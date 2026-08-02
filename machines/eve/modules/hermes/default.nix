@@ -28,6 +28,14 @@ in
     '';
   };
 
+  clan.core.vars.generators.hermes-inference = {
+    files.api-key.secret = true;
+    prompts.api-key.description = "API key for the OpenAI-compatible inference endpoint";
+    script = ''
+      cp "$prompts/api-key" "$out/api-key"
+    '';
+  };
+
   users.users.hermes = {
     isSystemUser = true;
     group = "hermes";
@@ -53,6 +61,7 @@ in
       "--load-credential=slack-bot-token:${gen.files.slack-bot-token.path}"
       "--load-credential=slack-app-token:${gen.files.slack-app-token.path}"
       "--load-credential=anthropic-api-key:${gen.files.anthropic-api-key.path}"
+      "--load-credential=inference-api-key:${config.clan.core.vars.generators.hermes-inference.files.api-key.path}"
     ];
 
     config = _: {
@@ -76,10 +85,7 @@ in
       systemd.tmpfiles.rules =
         let
           hermesConfig = pkgs.writers.writeYAML "hermes-config.yaml" {
-            model = {
-              model = "qwen3-30b-a3b-instruct";
-              max_tokens = 16384;
-            };
+            model.model = "Qwen3.6-27B-FP8";
             provider_routing = {
               data_collection = "deny";
               only = [ "venice" ];
@@ -110,9 +116,8 @@ in
           HOME = stateDir;
           HERMES_HOME = "${stateDir}/.hermes";
           HERMES_INFERENCE_PROVIDER = "vllm";
-          CUSTOM_BASE_URL = "http://jack.r:8000/v1";
-          HERMES_MODEL = "qwen3-30b-a3b-instruct";
-          OPENAI_API_KEY = "unused";
+          CUSTOM_BASE_URL = "https://inference.p0.contact/v1";
+          HERMES_MODEL = "Qwen3.6-27B-FP8";
           SLACK_ALLOWED_USERS = "U02TAKGUGF4";
         };
 
@@ -125,6 +130,7 @@ in
             "slack-bot-token"
             "slack-app-token"
             "anthropic-api-key"
+            "inference-api-key"
           ];
           Restart = "on-failure";
           RestartSec = 30;
@@ -134,7 +140,8 @@ in
             SLACK_APP_TOKEN=$(< "$CREDENTIALS_DIRECTORY/slack-app-token")
             # hermes expects OAuth/setup tokens in ANTHROPIC_TOKEN (not ANTHROPIC_AUTH_TOKEN)
             ANTHROPIC_TOKEN=$(< "$CREDENTIALS_DIRECTORY/anthropic-api-key")
-            export SLACK_BOT_TOKEN SLACK_APP_TOKEN ANTHROPIC_TOKEN
+            OPENAI_API_KEY=$(< "$CREDENTIALS_DIRECTORY/inference-api-key")
+            export SLACK_BOT_TOKEN SLACK_APP_TOKEN ANTHROPIC_TOKEN OPENAI_API_KEY
             exec ${lib.getExe hermesPkg} gateway run
           '';
         };

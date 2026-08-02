@@ -15,7 +15,8 @@ in
   imports = [
     ./rbw.nix
     #./morpheus.nix
-    ./vllm-jack.nix
+    #./vllm-jack.nix
+    ./p0.nix
     ./openrouter.nix
     ./nostr.nix
     ./gitea.nix
@@ -59,8 +60,8 @@ in
       environment = {
         OPENCROW_SOUL_FILE = "${./soul.md}";
         OPENCROW_LOG_LEVEL = "debug";
-        OPENCROW_PI_PROVIDER = "jack";
-        OPENCROW_PI_MODEL = "qwen3-30b-a3b-instruct";
+        OPENCROW_PI_PROVIDER = "p0";
+        OPENCROW_PI_MODEL = "Qwen3.6-27B-FP8";
       };
 
       extraPackages = [
