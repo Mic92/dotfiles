@@ -16,6 +16,22 @@
         }
       ]
     },
+    "p0": {
+      "baseUrl": "https://inference.p0.contact/v1",
+      "api": "openai-completions",
+      "apiKey": "!rbw get p0-inference-api-key",
+      "models": [
+        {
+          "id": "Qwen3.6-27B-FP8",
+          "name": "Qwen 3.6 (27B, p0)",
+          "contextWindow": 262144,
+          "input": ["text"],
+          "compat": {
+            "supportsDeveloperRole": false
+          }
+        }
+      ]
+    },
     "morpheus": {
       "baseUrl": "https://morpheus.cit.tum.de/api/v1",
       "api": "openai-completions",
