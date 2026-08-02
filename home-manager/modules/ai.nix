@@ -9,6 +9,7 @@ let
   aiTools = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system};
   selfPkgs = self.packages.${pkgs.stdenv.hostPlatform.system};
   micsSkillsPkgs = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
+  nixbot-cli = inputs.nixbot.packages.${pkgs.stdenv.hostPlatform.system}.nixbot-cli;
 
   # herdr 0.7.5 drops kitty-protocol printable keys (#1746) and shifted prefix
   # keybindings drop out of prefix mode (#1870); build master commit on Linux
@@ -77,7 +78,6 @@ in
     };
     skills = [
       "browser-cli"
-      "buildbot-pr-check"
       "calendar-cli"
       "context7-cli"
       "db-cli"
@@ -97,6 +97,9 @@ in
   # herdr pane and wait for their results.
   home.file.".claude/skills/herdr/SKILL.md".source = "${herdrPackage.src}/SKILL.md";
 
+  # nixbot-cli (nbo) ships its agent skill alongside the binary
+  home.file.".claude/skills/nixbot-cli".source = "${nixbot-cli}/share/skills/nixbot-cli";
+
   # git-surgeon ships a skill teaching agents how to use its git primitives.
   home.file.".claude/skills/git-surgeon".source =
     "${aiTools.git-surgeon}/share/git-surgeon/skills/git-surgeon";
@@ -108,6 +111,7 @@ in
   };
 
   home.packages = [
+    nixbot-cli
     selfPkgs.claude-code
     selfPkgs.claude-md
     selfPkgs.pim
