@@ -194,7 +194,7 @@ def _run_overlay(screenshot_path: Path, wl_copy_cmd: str) -> None:
     # the parent; kill the whole process group and reap the children so
     # the user isn't stuck waiting for a 10 s OCR run to finish.
     def _on_sigint(_signum: int, _frame: FrameType | None) -> None:
-        for p in pool._processes.values():  # noqa: SLF001
+        for p in pool._processes.values():
             p.terminate()
         pool.shutdown(wait=False, cancel_futures=True)
         sys.exit(130)
@@ -204,7 +204,7 @@ def _run_overlay(screenshot_path: Path, wl_copy_cmd: str) -> None:
     try:
         overlay.run()
     finally:
-        for p in pool._processes.values():  # noqa: SLF001
+        for p in pool._processes.values():
             if p.is_alive():
                 p.terminate()
         pool.shutdown(wait=False, cancel_futures=True)

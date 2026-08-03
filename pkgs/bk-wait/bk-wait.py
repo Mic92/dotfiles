@@ -39,7 +39,7 @@ def main() -> None:
         if not api_url.startswith("https://"):
             print(f"Error: unexpected URL scheme: {api_url}", file=sys.stderr)
             sys.exit(1)
-        req = urllib.request.Request(  # noqa: S310
+        req = urllib.request.Request(
             api_url, headers={"Authorization": f"Bearer {token}"}
         )
         with urllib.request.urlopen(req) as resp:  # noqa: S310
