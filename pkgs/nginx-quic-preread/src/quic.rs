@@ -1,26 +1,10 @@
-//! Extract the TLS ClientHello SNI (RFC 6066) and ALPN (RFC 7301) from a QUIC
-//! Initial packet — the QUIC/UDP analogue of nginx's `ssl_preread` for TCP.
+//! Extract the TLS ClientHello SNI and ALPN from a QUIC Initial packet.
 //!
-//! A QUIC Initial packet carries the TLS ClientHello inside CRYPTO frames, but
-//! the packet is *protected* (encrypted + authenticated). Crucially, Initial
-//! packets are protected with keys derived deterministically from the
-//! **Destination Connection ID** using a per-version salt (RFC 9001 §5.2), so
-//! an on-path element can decrypt them *without* the server's private key. That
-//! is exactly what makes SNI-based routing of QUIC possible.
-//!
-//! Pipeline (all pure Rust, no nginx dependency — see the tests at the bottom):
-//!
-//! 1. Parse the QUIC long header, recover version + Destination Connection ID.
-//! 2. Derive the client Initial `key` / `iv` / `hp` (RFC 9001 §5.2).
-//! 3. Remove header protection to learn the packet-number length (RFC 9001 §5.4).
-//! 4. AEAD-decrypt the payload with AES-128-GCM (RFC 9001 §5.3).
-//! 5. Reassemble CRYPTO frames into the TLS handshake stream (RFC 9000 §19.6).
-//! 6. Parse the ClientHello and pull out `server_name` + `application_layer_
-//!    protocol_negotiation` (RFC 8446 §4).
-//!
-//! Only the pieces needed to reach the SNI/ALPN extensions are implemented;
-//! anything unrecognised makes the relevant step bail out cleanly rather than
-//! guess.
+//! Initial packets are protected with keys derived from the Destination
+//! Connection ID (RFC 9001 §5.2), so we can decrypt them without the server's
+//! key: derive the keys, strip header protection (§5.4), AEAD-decrypt the
+//! payload (§5.3), reassemble the CRYPTO frames (RFC 9000 §19.6) and parse the
+//! ClientHello (RFC 8446). Unknown or short input bails out cleanly.
 
 use aes::cipher::generic_array::GenericArray;
 use aes::cipher::{BlockEncrypt, KeyInit as _};
@@ -53,9 +37,7 @@ pub enum PrereadError {
     ParseError,
 }
 
-// ---------------------------------------------------------------------------
 // QUIC versions we understand (Initial salts differ per version).
-// ---------------------------------------------------------------------------
 
 /// RFC 9001 §5.2 — Initial salt for QUIC v1.
 const INITIAL_SALT_V1: [u8; 20] = [
@@ -103,9 +85,7 @@ fn version_params(version: u32) -> Option<VersionParams> {
     }
 }
 
-// ---------------------------------------------------------------------------
 // Key schedule (RFC 8446 §7.1 HKDF-Expand-Label, RFC 9001 §5.2).
-// ---------------------------------------------------------------------------
 
 /// TLS 1.3 HKDF-Expand-Label with an empty context, over SHA-256.
 fn hkdf_expand_label(secret: &[u8], label: &str, length: usize) -> Vec<u8> {
@@ -157,9 +137,7 @@ fn derive_client_initial_keys(dcid: &[u8], params: &VersionParams) -> InitialKey
     }
 }
 
-// ---------------------------------------------------------------------------
 // QUIC variable-length integers (RFC 9000 §16).
-// ---------------------------------------------------------------------------
 
 /// Read a QUIC varint at `*pos`, advancing `*pos` past it.
 fn read_varint(buf: &[u8], pos: &mut usize) -> Option<u64> {
@@ -176,9 +154,7 @@ fn read_varint(buf: &[u8], pos: &mut usize) -> Option<u64> {
     Some(val)
 }
 
-// ---------------------------------------------------------------------------
 // Long-header parse + de-protection (RFC 9000 §17.2, RFC 9001 §5.3–5.4).
-// ---------------------------------------------------------------------------
 
 /// AES-128 single-block "encrypt in place", used for the header-protection mask
 /// and (in tests) to build a sample. This is ECB over exactly one 16-byte block.
@@ -194,8 +170,7 @@ fn aes128_ecb_block(key: &[u8; 16], block: &[u8; 16]) -> [u8; 16] {
 /// `datagram` is a full UDP payload; the Initial packet is expected first (it
 /// may be followed by coalesced packets which we ignore).
 fn decrypt_initial_payload(datagram: &[u8]) -> Result<Vec<u8>, PrereadError> {
-    // --- Long header, fixed prefix ---------------------------------------
-    // First byte: 1 header-form | 1 fixed | 2 type | 4 version-specific(protected)
+    // first byte: header-form(1) fixed(1) type(2) version-specific(4, protected)
     let first = *datagram.first().ok_or(PrereadError::Truncated)?;
     if first & 0x80 == 0 {
         // Short header -> not an Initial.
@@ -302,9 +277,7 @@ fn decrypt_initial_payload(datagram: &[u8]) -> Result<Vec<u8>, PrereadError> {
     Ok(plaintext)
 }
 
-// ---------------------------------------------------------------------------
 // CRYPTO frame reassembly (RFC 9000 §19).
-// ---------------------------------------------------------------------------
 
 /// Walk the decrypted QUIC frames and reassemble the contiguous prefix of the
 /// CRYPTO stream (offset 0 onward). Returns whatever contiguous bytes we have —
@@ -370,9 +343,7 @@ fn reassemble_crypto(plaintext: &[u8]) -> Result<Vec<u8>, PrereadError> {
     Ok(out)
 }
 
-// ---------------------------------------------------------------------------
 // TLS ClientHello parsing (RFC 8446 §4, RFC 6066, RFC 7301).
-// ---------------------------------------------------------------------------
 
 /// Cursor helpers over the handshake bytes; every read is bounds-checked and
 /// short buffers simply yield `None`, which the caller turns into "no result"
@@ -495,9 +466,7 @@ fn parse_alpn(body: &[u8]) -> Vec<String> {
     out
 }
 
-// ---------------------------------------------------------------------------
 // Public entry point.
-// ---------------------------------------------------------------------------
 
 /// Decrypt a QUIC Initial datagram and extract the ClientHello SNI + ALPN.
 ///
@@ -514,13 +483,8 @@ pub fn quic_preread(datagram: &[u8]) -> Result<PrereadInfo, PrereadError> {
     parse_client_hello(&crypto)
 }
 
-// ===========================================================================
-// Test support: build QUIC Initial packets with a chosen SNI/ALPN.
-//
-// Public (but hidden) so the unit tests *and* the real-nginx integration test
-// (tests/nginx_sni_routing.rs) can share one encoder. This is the inverse of
-// the decrypt pipeline above and is validated end-to-end by the unit tests.
-// ===========================================================================
+/// Build QUIC Initial packets with a chosen SNI/ALPN: the inverse of the
+/// decrypt pipeline, shared by the unit tests and the integration test.
 #[doc(hidden)]
 pub mod testvec {
     use super::*;
@@ -658,9 +622,6 @@ pub mod testvec {
     }
 }
 
-// ===========================================================================
-// Tests
-// ===========================================================================
 #[cfg(test)]
 mod tests {
     use super::testvec::{build_client_hello, encode_initial, push_varint};

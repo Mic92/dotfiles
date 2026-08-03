@@ -108,18 +108,18 @@ has the module:
 $ NGINX_BIN=/path/to/nginx cargo test --test nginx_sni_routing
 ```
 
-`test.nix` wraps this as a Nix check that builds nginx+module and runs the test
-in a plain build sandbox (no KVM needed), wired into the flake checks as
-`package-nginx-quic-preread-test-sni-routing`.
+Both suites run in the normal crate build: `nix build .#ngx-quic-preread` builds
+an nginx with the module and runs the unit and integration tests in its
+`cargo test` checkPhase (no KVM needed). `nix build .#nginx-quic-preread` is the
+nginx binary with the module linked in.
 
 ## Building
 
-The module is compiled statically into nginx. With Nix (from the repo root),
-`nginx-quic-preread` is nginx with the module linked in:
+The module is compiled statically into nginx. From the repo root:
 
 ```console
-$ nix build .#nginx-quic-preread
-$ nix build .#checks.x86_64-linux.package-nginx-quic-preread-test-sni-routing
+$ nix build .#nginx-quic-preread   # nginx with the module linked in
+$ nix build .#ngx-quic-preread     # crate build; runs unit + integration tests
 ```
 
 ## NixOS

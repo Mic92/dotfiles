@@ -1,37 +1,10 @@
-//! nginx `stream {}` module exposing QUIC preread variables.
+//! nginx `stream {}` module: the QUIC counterpart to `ssl_preread`.
 //!
-//! This is the QUIC/UDP counterpart to nginx's built-in
-//! `ngx_stream_ssl_preread_module` (which only works for TLS-over-TCP). It
-//! registers a handler in the stream **preread** phase that inspects the first
-//! datagram of a connection; if it is a QUIC Initial packet, it decrypts it and
-//! extracts the ClientHello SNI + ALPN (see [`crate::quic`]) and publishes them
-//! as run-time variables:
-//!
-//! * `$quic_preread_server_name`      — the SNI host name
-//! * `$quic_preread_alpn_protocols`   — comma-separated ALPN list
-//!
-//! The directive `quic_preread on;` enables it inside a `server {}` block, e.g.
-//!
-//! ```nginx
-//! stream {
-//!     map $quic_preread_server_name $upstream {
-//!         hostnames;
-//!         a.example.org  10.0.0.1:8443;
-//!         default        10.0.0.2:8443;
-//!     }
-//!     server {
-//!         listen 443 udp reuseport;
-//!         quic_preread on;
-//!         proxy_pass $upstream;
-//!     }
-//! }
-//! ```
-//!
-//! The layer is thin, unsafe FFI glue modeled directly on the reference C
-//! module; all of the interesting logic lives in the fully-tested
-//! [`crate::quic`] module. It is only compiled with the `nginx` feature, which
-//! pulls in `ngx`/`nginx-sys` and therefore requires an NGINX source tree at
-//! build time (see `package.nix`).
+//! Runs in the preread phase, decrypts the first datagram if it is a QUIC
+//! Initial (see [`crate::quic`]) and publishes `$quic_preread_server_name` and
+//! `$quic_preread_alpn_protocols`. Enabled per-server with `quic_preread on;`.
+//! Unsafe FFI glue modeled on `ngx_stream_ssl_preread_module.c`; compiled only
+//! with the `nginx` feature.
 
 #![allow(non_upper_case_globals)]
 #![allow(non_camel_case_types)]
@@ -44,7 +17,6 @@ use ngx::ffi::*;
 
 use crate::quic::quic_preread;
 
-// nginx return codes we use (from ngx_core.h).
 const NGX_OK_: ngx_int_t = NGX_OK as ngx_int_t;
 const NGX_ERROR_: ngx_int_t = NGX_ERROR as ngx_int_t;
 const NGX_AGAIN_: ngx_int_t = NGX_AGAIN as ngx_int_t;
@@ -54,29 +26,22 @@ const NGX_DECLINED_: ngx_int_t = NGX_DECLINED as ngx_int_t;
 /// cast macro, so define the flag sentinel ourselves.
 const NGX_CONF_UNSET_FLAG: ngx_flag_t = -1;
 
-// ---------------------------------------------------------------------------
 // Per-server configuration: `quic_preread on|off;`
-// ---------------------------------------------------------------------------
 
 #[repr(C)]
 struct SrvConf {
     enabled: ngx_flag_t,
 }
 
-// ---------------------------------------------------------------------------
-// Per-connection state: the extracted SNI / ALPN, allocated from the
-// connection pool so the strings outlive the preread phase.
-// ---------------------------------------------------------------------------
-
+// Per-connection state, allocated from the connection pool so the strings
+// outlive the preread phase.
 #[repr(C)]
 struct PrereadCtx {
     server_name: ngx_str_t,
     alpn: ngx_str_t,
 }
 
-// ---------------------------------------------------------------------------
 // Small FFI helpers replicating nginx's C macros.
-// ---------------------------------------------------------------------------
 
 /// `ngx_stream_conf_ctx_t->main_conf[idx]`.
 unsafe fn stream_main_conf(cf: *mut ngx_conf_t, idx: ngx_uint_t) -> *mut c_void {
@@ -117,9 +82,7 @@ unsafe fn pool_str(pool: *mut ngx_pool_t, bytes: &[u8]) -> ngx_str_t {
     }
 }
 
-// ---------------------------------------------------------------------------
 // Preread-phase handler.
-// ---------------------------------------------------------------------------
 
 /// Runs in the stream preread phase. For UDP listeners nginx has already placed
 /// the first datagram in `c->buffer`, so on the QUIC path this fires once with
@@ -142,8 +105,7 @@ unsafe extern "C" fn quic_preread_handler(s: *mut ngx_stream_session_t) -> ngx_i
 
     let buf = (*c).buffer;
     if buf.is_null() {
-        // TCP would keep buffering; for UDP the datagram is expected to be here
-        // already. Ask for more and let the phase engine decide/timeout.
+        // First call runs before the datagram is buffered; ask for more.
         return NGX_AGAIN_;
     }
     let pos = (*buf).pos;
@@ -154,9 +116,8 @@ unsafe extern "C" fn quic_preread_handler(s: *mut ngx_stream_session_t) -> ngx_i
     let len = last.offset_from(pos) as usize;
     let data = core::slice::from_raw_parts(pos, len);
 
-    // Allocate (zeroed) per-connection state up front and mark the connection
-    // handled — even a non-QUIC / undecryptable datagram should fall through to
-    // default routing rather than being retried.
+    // Mark the connection handled up front: a non-QUIC or undecryptable
+    // datagram should fall through to default routing, not be retried.
     let ctx = ngx_pcalloc((*c).pool, size_of::<PrereadCtx>()) as *mut PrereadCtx;
     if ctx.is_null() {
         return NGX_ERROR_;
@@ -176,9 +137,7 @@ unsafe extern "C" fn quic_preread_handler(s: *mut ngx_stream_session_t) -> ngx_i
     NGX_OK_
 }
 
-// ---------------------------------------------------------------------------
 // Variable getters.
-// ---------------------------------------------------------------------------
 
 unsafe fn set_value(v: *mut ngx_stream_variable_value_t, s: &ngx_str_t) {
     if s.len == 0 || s.data.is_null() {
@@ -224,9 +183,7 @@ unsafe extern "C" fn variable_alpn(
     NGX_OK_
 }
 
-// ---------------------------------------------------------------------------
 // Configuration lifecycle.
-// ---------------------------------------------------------------------------
 
 unsafe extern "C" fn preconfiguration(cf: *mut ngx_conf_t) -> ngx_int_t {
     // `ngx_string!` yields an `ngx_str_t`; add_variable copies the name into the
@@ -292,9 +249,7 @@ unsafe extern "C" fn merge_srv_conf(
     ptr::null_mut()
 }
 
-// ---------------------------------------------------------------------------
 // Module wiring.
-// ---------------------------------------------------------------------------
 
 /// `ngx_stream_module_t` is not `Sync`, but nginx only reads it. Wrap so we can
 /// hold it in a plain `static`.

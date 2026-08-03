@@ -9,7 +9,7 @@
 //!
 //! `$NGINX_BIN` must point at an nginx that has the module linked in; when it is
 //! unset the test is skipped, so a plain `cargo test` without nginx still
-//! succeeds. The Nix check `package-nginx-quic-preread-test-sni-routing` sets it.
+//! succeeds. The `ngx-quic-preread` crate build (crate.nix) sets it.
 
 use std::fs;
 use std::io::ErrorKind;
