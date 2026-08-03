@@ -18,7 +18,7 @@ RELEASE_TAG = "radicle-desktop-mirror"
 def get_latest_version() -> dict:
     """Fetch latest version info from radicle."""
     url = "https://files.radicle.xyz/releases/radicle-desktop/latest/latest.json"
-    with urllib.request.urlopen(url) as response:  # noqa: S310
+    with urllib.request.urlopen(url) as response:
         return json.loads(response.read().decode())
 
 
@@ -31,7 +31,7 @@ def mirror_to_github(version: str, sha: str) -> str:
         local_path = Path(tmpdir) / filename
         print(f"Downloading {dmg_url}...")
 
-        urllib.request.urlretrieve(dmg_url, local_path)  # noqa: S310
+        urllib.request.urlretrieve(dmg_url, local_path)
 
         body = json.dumps({"version": version, "sha": sha})
         release_exists = (
