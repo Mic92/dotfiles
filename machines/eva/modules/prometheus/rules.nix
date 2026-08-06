@@ -27,6 +27,10 @@
         })
       )
       // {
+        BorgbackupJobFailed = {
+          expr = ''task_exit_status{name=~"borgbackup-job-.*"} != 0'';
+          annotations.description = "{{$labels.name}} on {{$labels.host}} failed with exit status {{$value}}";
+        };
 
         Homeassistant = {
           expr = ''homeassistant_entity_available{domain="persistent_notification", entity!~"persistent_notification.http_login|persistent_notification.recorder_database_migration"} >= 0'';
