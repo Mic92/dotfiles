@@ -3,6 +3,11 @@
   msmtp,
   notmuch,
 }:
+let
+  # Only the notmuch CLI is needed; avoid pulling in emacs (whose mailutils
+  # dependency currently fails to build on aarch64-darwin).
+  notmuch' = notmuch.override { withEmacs = false; };
+in
 
 # Wrapper for msmtp that saves sent mail to maildir
 writeShellScriptBin "msmtp" ''
@@ -30,7 +35,7 @@ writeShellScriptBin "msmtp" ''
       cp "$tmpfile" "$HOME/mail/thalheim.io/.Sent/cur/$filename"
 
       # Update notmuch database
-      ${notmuch}/bin/notmuch new >/dev/null 2>&1
+      ${notmuch'}/bin/notmuch new >/dev/null 2>&1
 
       exit 0
   else
