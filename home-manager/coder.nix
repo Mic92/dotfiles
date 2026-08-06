@@ -41,7 +41,6 @@ in
   };
 
   home.packages = [
-    self.packages.${pkgs.stdenv.hostPlatform.system}.bk-wait
     pkgs.atuin
   ];
 
