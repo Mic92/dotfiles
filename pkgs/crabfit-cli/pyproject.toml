@@ -20,6 +20,7 @@ line-length = 100
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
+    "CPY",    # no copyright notices required
     "T201",   # allow print()
     "D203",   # incompatible with D211 (no-blank-line-before-class)
     "D213",   # incompatible with D212 (multi-line-summary-first-line)

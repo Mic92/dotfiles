@@ -27,9 +27,10 @@ from .screenshot import capture_full_screen, get_focused_output, get_window_geom
 
 def _tmp_png(stack: contextlib.ExitStack) -> Path:
     """Create a temporary PNG file that is deleted when the stack exits."""
-    tmp = tempfile.NamedTemporaryFile(suffix=".png", prefix="live-text-", delete=False)
-    tmp.close()
-    path = Path(tmp.name)
+    with tempfile.NamedTemporaryFile(
+        suffix=".png", prefix="live-text-", delete=False
+    ) as tmp:
+        path = Path(tmp.name)
     stack.callback(path.unlink, missing_ok=True)
     return path
 

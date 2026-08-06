@@ -7,7 +7,7 @@ import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from threading import Thread
-from typing import Any
+from typing import Any, ClassVar
 
 import pytest
 
@@ -42,8 +42,8 @@ def test_payload_no_method_no_body() -> None:
 
 
 class _FakeWebhook(BaseHTTPRequestHandler):
-    last: dict[str, Any] = {}
-    reply: dict[str, Any] = {}
+    last: ClassVar[dict[str, Any]] = {}
+    reply: ClassVar[dict[str, Any]] = {}
 
     def do_POST(self) -> None:
         length = int(self.headers.get("Content-Length", 0))

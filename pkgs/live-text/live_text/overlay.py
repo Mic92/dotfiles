@@ -12,6 +12,7 @@ import math
 import re
 import subprocess
 import tempfile
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -1552,11 +1553,10 @@ class LiveTextOverlay:
         if out is None:
             return
 
-        tmp = tempfile.NamedTemporaryFile(
+        with tempfile.NamedTemporaryFile(
             suffix=".png", prefix="annotated-", delete=False
-        )
-        tmp.close()
-        tmp_path = Path(tmp.name)
+        ) as tmp:
+            tmp_path = Path(tmp.name)
         try:
             out.write_to_png(str(tmp_path))
             with open(tmp_path, "rb") as f:
@@ -1577,15 +1577,13 @@ class LiveTextOverlay:
         Copies the saved path to the clipboard so it can be pasted into
         file managers, chat apps, etc.
         """
-        from datetime import datetime
-
         out = self._render_image()
         if out is None:
             return
 
         save_dir = Path.home() / "Pictures" / "Screenshots"
         save_dir.mkdir(parents=True, exist_ok=True)
-        timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        timestamp = time.strftime("%Y-%m-%d-%H-%M-%S")
         save_path = save_dir / f"screenshot-{timestamp}.png"
         out.write_to_png(str(save_path))
 
