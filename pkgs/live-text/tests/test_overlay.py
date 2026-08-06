@@ -83,11 +83,13 @@ class TestCopySelectedText:
             captured = kwargs.get("input", b"")  # type: ignore[assignment]
             return subprocess.CompletedProcess(cmd, 0)
 
-        with patch("live_text.overlay.subprocess.run", side_effect=fake_run):
+        with (
+            patch("live_text.overlay.subprocess.run", side_effect=fake_run),
             # Suppress GLib.timeout_add (no GTK main loop in tests)
-            with patch("live_text.overlay.GLib.timeout_add"):
-                overlay._drawing_area = MagicMock()
-                overlay._copy_selected_text()
+            patch("live_text.overlay.GLib.timeout_add"),
+        ):
+            overlay._drawing_area = MagicMock()
+            overlay._copy_selected_text()
         return captured.decode()
 
     def test_copies_single_word(self) -> None:

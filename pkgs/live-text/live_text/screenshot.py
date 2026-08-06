@@ -142,9 +142,10 @@ def capture_full_screen(
     Returns the path to the temporary PNG file.
     The caller is responsible for cleaning up the file.
     """
-    tmp = tempfile.NamedTemporaryFile(suffix=".png", prefix="live-text-", delete=False)
-    tmp.close()
-    path = Path(tmp.name)
+    with tempfile.NamedTemporaryFile(
+        suffix=".png", prefix="live-text-", delete=False
+    ) as tmp:
+        path = Path(tmp.name)
 
     cmd = [grim_cmd]
     if output is not None:
