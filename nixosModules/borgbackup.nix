@@ -31,7 +31,7 @@
       '';
       postHook = ''
         cat > /var/log/telegraf/borgbackup-job-${config.networking.hostName}.service <<EOF
-        task,frequency=daily last_run=$(date +%s)i,state="$([[ $exitStatus == 0 ]] && echo ok || echo fail)"
+        task,frequency=daily last_run=$(date +%s)i,exit_status=''${exitStatus}i
         EOF
       '';
       exclude = [
