@@ -36,7 +36,7 @@ in
   # Background sync daemon; shell client reaches it via socket.
   services.supervisor.programs.atuin-daemon.settings = {
     command = "${pkgs.atuin}/bin/atuin daemon start";
-    user = "root";
+    user = "argocd";
     environment = ''ATUIN_CONFIG_DIR="${atuinConfigDir}"'';
   };
 
