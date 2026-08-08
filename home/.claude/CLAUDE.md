@@ -62,20 +62,9 @@
 
 ## Running programs
 
-- CRITICAL: ALWAYS use pueue for ANY command that might take longer than 10
-  seconds to avoid timeouts. This includes but is not limited to:
-  - `nix build` commands
-  - `merge-when-green`
-  - Any test runs that might be slow
-  - Any build operations (make, ninja, cargo)
-
-  To run and wait (quote the entire command to preserve argument quoting):
-  ```bash
-  # use --lines in log command instead of tail in `pueue add` to retain full log
-  id=$(pueue add --print-task-id -- 'command arg1 "arg with spaces"')
-  pueue follow "$id" # stream output, blocks until task finishes
-  pueue log --lines 50 "$id" # Get exit status and logs
-  ```
+- CRITICAL: ALWAYS use the `queue` skill for ANY command that might take
+  longer than 10 seconds (nix build, merge-when-green, test runs, make,
+  ninja, cargo) to avoid tool timeouts.
 
 ## Search
 
