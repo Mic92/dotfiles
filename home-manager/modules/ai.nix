@@ -125,6 +125,8 @@ in
     aiTools.git-surgeon
     aiTools.jscpd
     pkgs.pueue
+    # agent-friendly frontend for pueue
+    micsSkillsPkgs.queue
   ]
   ++ lib.optionals pkgs.stdenv.isDarwin [
     selfPkgs.macprof
