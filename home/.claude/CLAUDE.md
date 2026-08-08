@@ -62,33 +62,9 @@
 
 ## Running programs
 
-- CRITICAL: ALWAYS use `queue` for ANY command that might take longer than 10
-  seconds to avoid timeouts. This includes but is not limited to:
-  - `nix build` commands
-  - `merge-when-green`
-  - Any test runs that might be slow
-  - Any build operations (make, ninja, cargo)
-
-  The command is read from stdin (heredoc), so quoting inside it never needs
-  escaping. Output is streamed and the exit code is the command's exit code.
-  ```bash
-  queue run <<'EOF'
-  command arg1 "arg with spaces"
-  EOF
-  ```
-  Exit code 75 means still running; resume with `queue wait <id>` (id was
-  printed as `task=<id>`). Useful subcommands:
-  ```bash
-  queue status        # one line per task; --json for scripts
-  queue log <id>      # full output so far + status, works while running
-  queue ps <id>       # pid, RSS, CPU of the task's process tree
-  queue restart <id>  # rerun a failed task without retyping the command
-  queue kill <id>
-  queue run --after <id> ... # start only after <id> succeeded
-  queue run --tail-ok 20 ... # on success only show last 20 lines
-  queue wait          # barrier: wait for all my tasks
-  ```
-  Never pipe queued commands through head/tail; use `queue log` instead.
+- CRITICAL: ALWAYS use the `queue` skill for ANY command that might take
+  longer than 10 seconds (nix build, merge-when-green, test runs, make,
+  ninja, cargo) to avoid tool timeouts.
 
 ## Search
 

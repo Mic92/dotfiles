@@ -85,6 +85,7 @@ in
       "kagi-search"
       "n8n-cli"
       "pexpect-cli"
+      "queue"
       "screenshot-cli"
     ];
   };
@@ -125,8 +126,6 @@ in
     aiTools.git-surgeon
     aiTools.jscpd
     pkgs.pueue
-    # agent-friendly frontend for pueue
-    micsSkillsPkgs.queue
   ]
   ++ lib.optionals pkgs.stdenv.isDarwin [
     selfPkgs.macprof
