@@ -24,7 +24,7 @@ BASE_URL = "https://cdn.kde.org/ci-builds/network/kdeconnect-kde/master/macos-ar
 
 def get_latest_build() -> dict:
     """Fetch latest build number from KDE CI directory listing."""
-    with urllib.request.urlopen(BASE_URL) as response:  # noqa: S310
+    with urllib.request.urlopen(BASE_URL) as response:
         html = response.read().decode()
 
     pattern = r"kdeconnect-kde-master-(\d+)-macos-clang-arm64\.dmg"

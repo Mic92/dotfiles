@@ -14,7 +14,7 @@ def get_latest_release() -> dict:
     """Fetch latest release info from GitLab API."""
     api_url = "https://gitlab.com/api/v4/projects/44042130/releases"
 
-    with urllib.request.urlopen(api_url) as response:  # noqa: S310
+    with urllib.request.urlopen(api_url) as response:
         releases = json.loads(response.read().decode())
 
     for release in releases:

@@ -256,9 +256,11 @@ class TestCaptureFullScreen:
             created_paths.append(Path(cmd[-1]))
             raise subprocess.CalledProcessError(1, "grim")
 
-        with patch("live_text.screenshot.subprocess.run", side_effect=track_and_fail):
-            with pytest.raises(subprocess.CalledProcessError):
-                capture_full_screen()
+        with (
+            patch("live_text.screenshot.subprocess.run", side_effect=track_and_fail),
+            pytest.raises(subprocess.CalledProcessError),
+        ):
+            capture_full_screen()
 
         for p in created_paths:
             assert not p.exists(), f"Temp file leaked: {p}"

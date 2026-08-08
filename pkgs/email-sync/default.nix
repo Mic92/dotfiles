@@ -16,12 +16,17 @@
   terminal-notifier,
 }:
 
+let
+  # Only the notmuch CLI is needed; avoid pulling in emacs (whose mailutils
+  # dependency currently fails to build on aarch64-darwin).
+  notmuch' = notmuch.override { withEmacs = false; };
+in
 writeShellApplication {
   name = "email-sync";
 
   runtimeInputs = [
     isync
-    notmuch
+    notmuch'
     afew
     coreutils
     gnugrep
