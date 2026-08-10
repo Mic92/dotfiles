@@ -47,6 +47,16 @@ export default (helpers: any) => ({
         "nix --refresh is blocked: cache invalidation is not needed in nix — " +
         "to trigger a rebuild, alter the derivation instead.",
     },
+    {
+      // A regex, not an argv test: `sleep` and `queue wait` land in
+      // separate pipelines of an `&&`/`;` list, and rule tests only ever
+      // see one pipeline at a time.
+      label: "sleep before queue wait",
+      action: "block",
+      pattern: /\bsleep\s+\S+\s*(&&|;)\s*queue\s+wait\b/,
+      reason:
+        "Do not sleep before `queue wait` — use `queue wait --timeout SECS` instead.",
+    },
     { label: "ssh", test: (p) => is(p, "ssh") },
     { label: "send email", test: (p) => is(p, "msmtp") },
 
