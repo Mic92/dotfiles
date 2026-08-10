@@ -51,7 +51,6 @@ in
     flake-inputs = pkgs.callPackage ./flake-inputs { inherit inputs; };
     # Package updater CLI
     kimai-cli = pkgs.callPackage ./kimai-cli { };
-    bk-wait = pkgs.callPackage ./bk-wait { };
     updater = pkgs.callPackage ./updater { };
     pi = aiTools.pi;
     # Sandboxed pi for calendar/email tasks

@@ -20,7 +20,7 @@ def get_latest_version() -> str:
     affiliate_id = "x_x_x_x_6822_x_06822-BsEZQQWOPUVGg"
     api_url = f"https://dls.photoprintit.com/api/getClient/{KEY_ACCOUNT}-{LOCALE}/hps/{affiliate_id}/linux"
 
-    with urllib.request.urlopen(api_url) as response:  # noqa: S310
+    with urllib.request.urlopen(api_url) as response:
         compressed_data = response.read()
         data = gzip.decompress(compressed_data)
 
@@ -41,7 +41,7 @@ def fetch_index(version: str) -> str:
     """Fetch the index file from CEWE servers."""
     index_url = f"https://dls.photoprintit.com/download/Data/{KEY_ACCOUNT}-{LOCALE}/hps/{CLIENT_ID}-index-{version}.txt"
 
-    with urllib.request.urlopen(index_url) as response:  # noqa: S310
+    with urllib.request.urlopen(index_url) as response:
         content = response.read()
         for encoding in ["iso-8859-1", "windows-1252", "utf-8", "latin-1"]:
             try:

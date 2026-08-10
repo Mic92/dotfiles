@@ -8,7 +8,7 @@ import json
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from threading import Thread
-from typing import Any
+from typing import Any, ClassVar
 from unittest.mock import patch
 
 import pytest
@@ -68,7 +68,7 @@ def test_stdin_body() -> None:
 class _FakeWebhookHandler(BaseHTTPRequestHandler):
     """Captures the last POST body and replies 200."""
 
-    last_payload: dict[str, Any] = {}
+    last_payload: ClassVar[dict[str, Any]] = {}
 
     def do_POST(self) -> None:
         length = int(self.headers.get("Content-Length", 0))

@@ -52,6 +52,7 @@ ignore_missing_imports = true
 line-length = 88
 lint.select = ["ALL"]
 lint.ignore = [
+    "CPY",
     "T201",
     "S603",
     "TD003",
