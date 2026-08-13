@@ -1,4 +1,4 @@
-From 6d5109ec08467913a4e53fa3c1d8752705f0504d Mon Sep 17 00:00:00 2001
+From 7f65636f020511fe6f1781f58bb8feab11e7e63f Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
 Date: Sun, 26 Jul 2026 10:43:42 +0200
 Subject: [PATCH] remote: make ssh transport program configurable
@@ -28,10 +28,10 @@ Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
  3 files changed, 40 insertions(+), 8 deletions(-)
 
 diff --git a/src/config/model.rs b/src/config/model.rs
-index 9fbca3a..a9a6a26 100644
+index e56ac08..1d471f3 100644
 --- a/src/config/model.rs
 +++ b/src/config/model.rs
-@@ -866,12 +866,16 @@ pub struct RemoteConfig {
+@@ -878,12 +878,16 @@ pub struct RemoteConfig {
      /// Add keepalive fallbacks and private connection reuse for `herdr --remote`.
      /// Set false to run plain ssh unchanged. Default: true.
      pub manage_ssh_config: bool,
@@ -49,10 +49,10 @@ index 9fbca3a..a9a6a26 100644
      }
  }
 diff --git a/src/main.rs b/src/main.rs
-index a73423b..2e6f94c 100644
+index 27c1d92..0227cd2 100644
 --- a/src/main.rs
 +++ b/src/main.rs
-@@ -386,6 +386,9 @@ const DEFAULT_CONFIG: &str = r##"# herdr configuration
+@@ -395,6 +395,9 @@ const DEFAULT_CONFIG: &str = r##"# herdr configuration
  # Set false to run plain ssh against your ssh config unchanged — this does not
  # force keepalive or multiplexing off, it only stops herdr from adding its own.
  # manage_ssh_config = true
@@ -196,5 +196,5 @@ index 6fe927c..55a0764 100644
      fn remote_install_stream_command_avoids_shell_c_wrapper() {
          let command = remote_install_stream_command("/home/a b/.local/bin/herdr.tmp.123");
 -- 
-2.54.0
+2.55.0
 

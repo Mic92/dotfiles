@@ -11,32 +11,17 @@ let
   micsSkillsPkgs = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
   nixbot-cli = inputs.nixbot.packages.${pkgs.stdenv.hostPlatform.system}.nixbot-cli;
 
-  # herdr 0.7.5 drops kitty-protocol printable keys (#1746) and shifted prefix
-  # keybindings drop out of prefix mode (#1870); build master commit on Linux
-  # until the next release.
+  # On Darwin llm-agents ships the prebuilt release binary, so the source
+  # patch can only be applied on Linux.
   herdrPackage =
     if pkgs.stdenv.isDarwin then
       aiTools.herdr
     else
-      aiTools.herdr.overrideAttrs (old: rec {
-        version = "0.7.5-unstable-2026-07-29";
-        src = pkgs.fetchFromGitHub {
-          owner = "ogulcancelik";
-          repo = "herdr";
-          rev = "73d92004f50d3f5fafe64e0f9b7fddbcf4d99965";
-          hash = "sha256-SeBkJePTxcFhXzFgGiSXMlAY359bgf5aTgmywZJhuoM=";
-        };
+      aiTools.herdr.overrideAttrs (old: {
         # remote.ssh_command config option; proposed upstream via discussion #1780.
         patches = (old.patches or [ ]) ++ [
           ./herdr/0001-remote-make-ssh-transport-program-configurable.patch
         ];
-        cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
-          inherit src;
-          name = "herdr-${version}-vendor";
-          hash = "sha256-Ja7fKsLWwCi6oy6zANltlFncbDVK+kgOhpr+bJtZyzg=";
-        };
-        # versionCheckHook compares against the pre-release Cargo version.
-        doInstallCheck = false;
       });
 in
 {
