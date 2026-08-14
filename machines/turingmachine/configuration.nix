@@ -1,5 +1,4 @@
 {
-  pkgs,
   lib,
   config,
   self,
@@ -24,7 +23,6 @@
     ./modules/postgresql.nix
     ../../nixosModules/tum-vpn
     ./modules/toggle-keyboard
-    ./modules/sunshine.nix
     ./modules/ghaf-hardware.nix
     ./modules/ghaf-facter.nix
 
@@ -53,10 +51,6 @@
   hardware.graphics.enable32Bit = config.hardware.graphics.enable;
 
   nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
-
-  environment.systemPackages = with pkgs; [
-    sunshine
-  ];
 
   services.rustdesk-client.users = [ "joerg" ];
 

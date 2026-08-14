@@ -5,6 +5,5 @@
   environment.systemPackages = with pkgs; [
     cntr
     ntfs3g
-    sunshine
   ];
 }
