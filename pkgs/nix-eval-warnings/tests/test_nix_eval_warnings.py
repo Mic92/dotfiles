@@ -212,6 +212,21 @@ class TestParseNixEvalOutput(unittest.TestCase):
         assert w.source == "flake.nix:25"
         assert w.option_path == ""
 
+    def test_lazy_trees_source_with_flakeref(self) -> None:
+        """Nix >=2.34 lazy trees print sources as «flakeref»/rel/path.nix:l:c."""
+        lines = [
+            "evaluation warning: test warning message",
+            (
+                '{"attr":"x86_64-linux.foo","error":"error: evaluation aborted\\n'
+                "       at «git+file:///tmp/flake»/flake.nix:19:9:\\n"
+                '           19|         builtins.warn \\"m\\" x"}'
+            ),
+        ]
+
+        results = [w for w in parse_nix_eval_output(lines, {}) if w]
+        assert len(results) == 1
+        assert results[0].source == "flake.nix:19"
+
     def test_nixos_module_warning_extracts_option_path(self) -> None:
         """Test parsing NixOS module warning extracts option path."""
         error = (

@@ -130,6 +130,11 @@ def extract_source(error_text: str, input_mapping: dict[str, str]) -> str:
         filepath = resolve_store_path(match.group(1), input_mapping)
         return f"{filepath}:{match.group(2)}"
 
+    # Nix >=2.34 lazy trees print sources as «flakeref»/rel/path.nix:line:col
+    match = re.search(r"at «[^»]+»/([^:]+\.nix):(\d+):\d+:", error_text)
+    if match:
+        return f"{match.group(1)}:{match.group(2)}"
+
     # Fall back to "definitions from" patterns (for NixOS module warnings)
     matches = re.findall(r"definitions from `([^']+)'", error_text)
     for path in reversed(matches):
