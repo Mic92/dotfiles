@@ -104,7 +104,9 @@
     forge-triage.url = "github:Mic92/forge-triage";
     forge-triage.inputs.nixpkgs.follows = "nixpkgs";
 
-    punchcard.url = "github:pinpox/punchcard";
+    # TODO: switch back to pinpox/punchcard once
+    # https://github.com/pinpox/punchcard/pull/9 is merged
+    punchcard.url = "github:Mic92/punchcard/lazy-oidc";
     punchcard.inputs.nixpkgs.follows = "nixpkgs";
 
     herdr-eternal.url = "github:Mic92/herdr-eternal";

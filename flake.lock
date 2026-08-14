@@ -909,15 +909,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1784461432,
-        "narHash": "sha256-pLRbRLdMa0WJb1KvA2AFQW+rVOTv3ijh1NRn5Ap572k=",
-        "owner": "pinpox",
+        "lastModified": 1786692483,
+        "narHash": "sha256-CsPDMMHtXrOZ44a9rqm3QLkMLrGfLI1eWjEWOl489zM=",
+        "owner": "Mic92",
         "repo": "punchcard",
-        "rev": "e9c1ebe1429629615951e163166ffe60c22a0bd5",
+        "rev": "0bfcc08e7a61822e5f7c118994e716bc34009b56",
         "type": "github"
       },
       "original": {
-        "owner": "pinpox",
+        "owner": "Mic92",
+        "ref": "lazy-oidc",
         "repo": "punchcard",
         "type": "github"
       }
