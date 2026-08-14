@@ -62,9 +62,9 @@
 
 ## Running programs
 
-- CRITICAL: ALWAYS use the `queue` skill for ANY command that might take
-  longer than 10 seconds (nix build, merge-when-green, test runs, make,
-  ninja, cargo) to avoid tool timeouts.
+- CRITICAL: ALWAYS use the `queue` skill for ANY command that might take longer
+  than 10 seconds (nix build, merge-when-green, test runs, make, ninja, cargo)
+  to avoid tool timeouts.
 
 ## Search
 
