@@ -20,8 +20,6 @@ from typing import Any
 
 
 class Colors:
-    """ANSI color codes for terminal output."""
-
     BLUE = "\033[94m"
     GREEN = "\033[92m"
     YELLOW = "\033[93m"
@@ -32,46 +30,33 @@ class Colors:
 
 
 class Platform(Enum):
-    """Git hosting platform."""
-
     GITHUB = "github"
     GITEA = "gitea"
 
 
-def print_info(message: str) -> None:
-    """Print an informational message."""
-    print(message)
-
-
 def print_success(message: str) -> None:
-    """Print a success message in green."""
     print(f"{Colors.GREEN}{message}{Colors.RESET}")
 
 
 def print_error(message: str) -> None:
-    """Print an error message in red."""
     print(f"{Colors.RED}{message}{Colors.RESET}")
 
 
 def print_warning(message: str) -> None:
-    """Print a warning message in yellow."""
     print(f"{Colors.YELLOW}{message}{Colors.RESET}")
 
 
 def print_header(message: str) -> None:
-    """Print a header message in bold."""
     print(f"\n{Colors.BOLD}{message}{Colors.RESET}")
 
 
 def print_subtle(message: str) -> None:
-    """Print a subtle message in gray."""
     print(f"{Colors.GRAY}{message}{Colors.RESET}")
 
 
 def run(
     cmd: list[str], check: bool = True, capture: bool = False
 ) -> subprocess.CompletedProcess[str]:
-    """Run a command."""
     if capture:
         result = subprocess.run(cmd, check=False, capture_output=True, text=True)
         if result.returncode != 0 and check:
@@ -81,14 +66,11 @@ def run(
 
 
 def detect_platform() -> Platform:
-    """Detect platform: GitHub or Gitea."""
-    # Try GitHub first
     result = run(["gh", "repo", "view", "--json", "name"], check=False, capture=True)
     if result.returncode == 0:
         print_subtle("Detected GitHub")
         return Platform.GITHUB
 
-    # Try Gitea
     result = run(["tea", "repos", "list", "--limit", "1"], check=False, capture=True)
     if result.returncode == 0:
         print_subtle("Detected Gitea")
@@ -99,7 +81,6 @@ def detect_platform() -> Platform:
 
 
 def get_default_branch(platform: Platform) -> str:
-    """Get default branch."""
     if platform == Platform.GITHUB:
         result = run(
             [
@@ -115,7 +96,6 @@ def get_default_branch(platform: Platform) -> str:
         )
         return result.stdout.strip()
 
-    # Gitea: use git symbolic-ref
     result = run(
         ["git", "symbolic-ref", "refs/remotes/origin/HEAD"], check=False, capture=True
     )
@@ -143,7 +123,6 @@ def get_repo_info() -> tuple[str, str, str]:
 
 
 def check_pr_exists(branch: str, platform: Platform) -> bool:
-    """Check if a PR already exists for this branch."""
     if platform == Platform.GITHUB:
         result = run(
             ["gh", "pr", "view", branch, "--json", "state"],
@@ -158,7 +137,6 @@ def check_pr_exists(branch: str, platform: Platform) -> bool:
             except json.JSONDecodeError:
                 pass
     else:
-        # Gitea
         result = run(
             ["tea", "pulls", "list", "--output", "json", "--state", "open"],
             check=False,
@@ -202,9 +180,34 @@ def create_pr_github(branch: str, target: str, title: str, body: str) -> str:
     return branch
 
 
+def gitea_enable_automerge(pr_index: str) -> None:
+    """Gitea has no CLI support for auto-merge, so use its REST API."""
+    print_warning("Enabling auto-merge...")
+    api_url, owner, repo = get_repo_info()
+    token = os.environ.get("GITEA_TOKEN")
+
+    url = f"{api_url}/api/v1/repos/{owner}/{repo}/pulls/{pr_index}/merge"
+    headers = {"Content-Type": "application/json"}
+    if token:
+        headers["Authorization"] = f"token {token}"
+
+    data = json.dumps(
+        {
+            "Do": "merge",
+            "merge_when_checks_succeed": True,
+            "delete_branch_after_merge": True,
+        }
+    ).encode()
+
+    req = urllib.request.Request(url, data=data, headers=headers, method="POST")  # noqa: S310
+    try:
+        urllib.request.urlopen(req, timeout=10)  # noqa: S310
+        print_success("✓ Auto-merge enabled")
+    except (urllib.error.HTTPError, urllib.error.URLError) as e:
+        print_warning(f"Could not enable auto-merge: {e}")
+
+
 def create_pr_gitea(branch: str, target: str, title: str, body: str) -> str:
-    """Create Gitea PR and enable server-side auto-merge."""
-    # Create PR
     result = run(
         [
             "tea",
@@ -231,49 +234,8 @@ def create_pr_gitea(branch: str, target: str, title: str, body: str) -> str:
         print_warning("Could not parse PR number, using branch name")
         return branch
 
-    # Enable auto-merge via API
-    print_warning("Enabling auto-merge...")
-    api_url, owner, repo = get_repo_info()
-    token = os.environ.get("GITEA_TOKEN")
-
-    url = f"{api_url}/api/v1/repos/{owner}/{repo}/pulls/{pr_index}/merge"
-    headers = {"Content-Type": "application/json"}
-    if token:
-        headers["Authorization"] = f"token {token}"
-
-    data = json.dumps(
-        {
-            "Do": "merge",
-            "merge_when_checks_succeed": True,
-            "delete_branch_after_merge": True,
-        }
-    ).encode()
-
-    req = urllib.request.Request(url, data=data, headers=headers, method="POST")  # noqa: S310
-    try:
-        urllib.request.urlopen(req, timeout=10)  # noqa: S310
-        print_success("✓ Auto-merge enabled")
-    except (urllib.error.HTTPError, urllib.error.URLError) as e:
-        print_warning(f"Could not enable auto-merge: {e}")
-
+    gitea_enable_automerge(pr_index)
     return pr_index
-
-
-def check_github_pr_state(pr_id: str) -> bool | None:
-    """Check GitHub PR state. Returns True if merged, False if closed, None if open."""
-    result = run(
-        ["gh", "pr", "view", pr_id, "--json", "state"], check=False, capture=True
-    )
-    if result.returncode != 0:
-        return None
-    pr_data = json.loads(result.stdout)
-    state = pr_data.get("state", "")
-    if state == "MERGED":
-        return True
-    if state == "CLOSED":
-        print_error("PR was closed")
-        return False
-    return None
 
 
 def check_gitea_pr_state(pr_id: str) -> bool | None:
@@ -303,7 +265,6 @@ def check_gitea_pr_state(pr_id: str) -> bool | None:
 
 
 def count_check_states(checks: list[dict[str, Any]]) -> tuple[int, int, int]:
-    """Count check states from PR status checks."""
     pending = failed = passed = 0
     for check in checks:
         if check.get("__typename") == "CheckRun":
@@ -351,11 +312,10 @@ def check_pr_completion(
     if failed > 0 and pending == 0:
         return False, f"{failed} checks failed"
 
-    return None  # Still waiting
+    return None  # still waiting
 
 
 def get_pr_status_github(pr_id: str) -> tuple[dict[str, Any] | None, str]:
-    """Get PR status from GitHub."""
     result = run(
         [
             "gh",
@@ -442,28 +402,21 @@ def get_merge_queue_status_github(pr_number: int) -> tuple[bool, str | None]:
     return in_queue, desc
 
 
-def run_buildbot_check_if_needed(
-    pr_data: dict[str, Any], failed: int, pending: int, buildbot_check_done: bool
-) -> bool:
-    """Run buildbot-pr-check if needed."""
-    if failed > 0 and pending == 0 and not buildbot_check_done:
-        pr_url = pr_data.get("url", "")
-        if pr_url and shutil.which("buildbot-pr-check"):
-            print_warning(
-                "\n🔍 Running buildbot-pr-check to get detailed failure information..."
-            )
-            run(["buildbot-pr-check", pr_url], check=False)
-            print()  # Add blank line after buildbot-pr-check output
+def run_nixbot_log_if_needed(failed: int, pending: int, nixbot_log_done: bool) -> bool:
+    """Show CI failure logs via nbo (nixbot's CLI) once all checks finished."""
+    if failed > 0 and pending == 0 and not nixbot_log_done:
+        if shutil.which("nbo"):
+            print_warning("\nRunning nbo log to get failure details...")
+            run(["nbo", "log"], check=False)
+            print()
         return True
-    return buildbot_check_done
+    return nixbot_log_done
 
 
 def wait_for_merge(platform: Platform, pr_id: str) -> bool:
-    """Wait for PR to be merged."""
     print_header(f"Waiting for PR '{pr_id}' to merge...")
 
     if platform == Platform.GITEA:
-        # Gitea: simple polling
         while True:
             result = check_gitea_pr_state(pr_id)
             if result is not None:
@@ -471,8 +424,7 @@ def wait_for_merge(platform: Platform, pr_id: str) -> bool:
             print(f"[{time.strftime('%H:%M:%S')}] Waiting...")
             time.sleep(30)
 
-    # GitHub: detailed check monitoring
-    buildbot_check_done = False
+    nixbot_log_done = False
     while True:
         pr_data, error = get_pr_status_github(pr_id)
         if pr_data is None:
@@ -486,7 +438,6 @@ def wait_for_merge(platform: Platform, pr_id: str) -> bool:
             int(pr_data.get("number", 0))
         )
 
-        # Print status
         queue_suffix = (
             f" {Colors.BLUE}[merge queue: {queue_desc}]{Colors.RESET}"
             if in_merge_queue
@@ -500,12 +451,8 @@ def wait_for_merge(platform: Platform, pr_id: str) -> bool:
             f"{queue_suffix}"
         )
 
-        # Run buildbot-pr-check if we have failing checks
-        buildbot_check_done = run_buildbot_check_if_needed(
-            pr_data, failed, pending, buildbot_check_done
-        )
+        nixbot_log_done = run_nixbot_log_if_needed(failed, pending, nixbot_log_done)
 
-        # Check for completion
         completion = check_pr_completion(
             pr_data, pending, failed, in_merge_queue=in_merge_queue
         )
@@ -515,12 +462,10 @@ def wait_for_merge(platform: Platform, pr_id: str) -> bool:
                 print_error(f"\n✗ {message}")
             return success
 
-        # Still waiting
         time.sleep(10)
 
 
 def get_pr_message_from_editor(default_branch: str) -> tuple[str, str]:
-    """Get PR title/body by opening editor with commit messages."""
     remote = (
         "upstream"
         if "upstream" in run(["git", "remote"], capture=True).stdout
@@ -553,7 +498,7 @@ def get_pr_message_from_editor(default_branch: str) -> tuple[str, str]:
 
 
 def prepare_repository(default_branch: str) -> int:
-    """Prepare repository: pull, format check. Returns 0 if ready, 1 on error."""
+    """Pull and format-check. Returns 0 if there is something to merge."""
     print_header("Preparing changes...")
     # submodule.recurse=true makes `pull --rebase` return 128 when the current
     # branch introduces a new submodule that the base branch doesn't have yet —
@@ -602,17 +547,14 @@ def prepare_repository(default_branch: str) -> int:
 
 
 def get_pr_message(message_arg: str | None, default_branch: str) -> tuple[str, str]:
-    """Get PR title and body from args or editor."""
     if message_arg:
         lines = message_arg.split("\n", 1)
-        title = lines[0]
-        body = lines[1] if len(lines) > 1 else ""
-        return title, body
+        return lines[0], lines[1] if len(lines) > 1 else ""
     return get_pr_message_from_editor(default_branch)
 
 
-def push_branch(branch_name: str, default_branch: str) -> str:
-    """Push branch and return the branch name to use for PR."""
+def push_branch(default_branch: str) -> str:
+    """Push HEAD and return the branch name to use for the PR."""
     current_branch = run(
         ["git", "branch", "--show-current"], capture=True
     ).stdout.strip()
@@ -628,14 +570,14 @@ def push_branch(branch_name: str, default_branch: str) -> str:
 
 
 def enable_automerge_existing_pr(branch_name: str, platform: Platform) -> str:
-    """Enable auto-merge on existing PR. Returns PR ID."""
-    print_warning("Enabling auto-merge...")
+    """Enable auto-merge on an existing PR. Returns the PR ID."""
     if platform == Platform.GITHUB:
+        print_warning("Enabling auto-merge...")
         run(["gh", "pr", "merge", branch_name, "--auto", "--rebase"])
         print_success("✓ Auto-merge enabled")
         return branch_name
 
-    # Gitea: need to get the PR number first
+    # Gitea addresses PRs by number, so look it up from the branch name
     result = run(
         ["tea", "pulls", "list", "--output", "json", "--state", "open"],
         capture=True,
@@ -645,28 +587,7 @@ def enable_automerge_existing_pr(branch_name: str, platform: Platform) -> str:
         for pr in prs:
             if pr.get("head", {}).get("ref") == branch_name:
                 pr_id = str(pr["index"])
-                # Enable auto-merge via API
-                api_url, owner, repo = get_repo_info()
-                token = os.environ.get("GITEA_TOKEN")
-                url = f"{api_url}/api/v1/repos/{owner}/{repo}/pulls/{pr_id}/merge"
-                headers = {"Content-Type": "application/json"}
-                if token:
-                    headers["Authorization"] = f"token {token}"
-                data = json.dumps(
-                    {
-                        "Do": "merge",
-                        "merge_when_checks_succeed": True,
-                        "delete_branch_after_merge": True,
-                    }
-                ).encode()
-                req = urllib.request.Request(  # noqa: S310
-                    url, data=data, headers=headers, method="POST"
-                )
-                try:
-                    urllib.request.urlopen(req, timeout=10)  # noqa: S310
-                    print_success("✓ Auto-merge enabled")
-                except (urllib.error.HTTPError, urllib.error.URLError) as e:
-                    print_warning(f"Could not enable auto-merge: {e}")
+                gitea_enable_automerge(pr_id)
                 return pr_id
     except json.JSONDecodeError:
         print_warning("Could not parse PR list")
@@ -674,7 +595,6 @@ def enable_automerge_existing_pr(branch_name: str, platform: Platform) -> str:
 
 
 def finalize_merge(platform: Platform, pr_id: str, default_branch: str) -> int:
-    """Wait for merge and rebase. Returns exit code."""
     if wait_for_merge(platform, pr_id):
         print_success("\n✓ PR merged!")
         run(["git", "fetch", "origin", default_branch])
@@ -694,7 +614,6 @@ def chdir_repo_root() -> None:
 
 
 def main() -> int:
-    """Main entry point."""
     parser = argparse.ArgumentParser(description="Create PR and merge when CI passes")
     parser.add_argument(
         "--no-wait", action="store_true", help="Don't wait for CI checks to complete"
@@ -710,14 +629,13 @@ def main() -> int:
 
     print_header("Getting repository information...")
     default_branch = get_default_branch(platform)
-    print_info(f"Target branch: {Colors.BLUE}{default_branch}{Colors.RESET}")
+    print(f"Target branch: {Colors.BLUE}{default_branch}{Colors.RESET}")
 
     if prepare_repository(default_branch) != 0:
         return 1
 
-    branch_name = push_branch("", default_branch)
+    branch_name = push_branch(default_branch)
 
-    # Check if PR already exists
     if check_pr_exists(branch_name, platform):
         print_success("✓ Using existing pull request")
         pr_id = enable_automerge_existing_pr(branch_name, platform)
