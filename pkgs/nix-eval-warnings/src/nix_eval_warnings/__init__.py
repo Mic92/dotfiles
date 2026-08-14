@@ -89,7 +89,7 @@ def extract_error_message(error_text: str) -> str:
     Looks for the main error message after the stack trace.
     """
     # Look for "error: <message>" pattern - get the last one (most specific)
-    matches = re.findall(r"error:\s*(.+?)(?:\n|$)", error_text)
+    matches: list[str] = re.findall(r"error:\s*(.+?)(?:\n|$)", error_text)
     for match in reversed(matches):
         msg = match.strip()
         # Skip generic messages like "aborting" or stack trace fragments
