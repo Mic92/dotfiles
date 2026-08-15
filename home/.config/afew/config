@@ -65,6 +65,10 @@ message = Tag Harvest notifications
 query = from:notifications@harvestapp.com OR from:harvest
 tags = +harvest-notification
 
+[InboxFilter]
+# Runs last: adds +inbox and strips the 'new' tag so messages are only
+# processed once by afew -tn. 'unread' is handled by maildir flag sync.
+
 [MailMover]
 # Define folders to check for moving emails
 folders = thalheim.io
