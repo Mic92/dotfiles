@@ -48,7 +48,7 @@ other_email=jthalheim@gmail.com
 #		in the mail store.
 #
 [new]
-tags=unread;inbox;
+tags=new;
 ignore=.mbsyncstate;.uidvalidity;.cmeta;initial_terminal
 
 # Search configuration
