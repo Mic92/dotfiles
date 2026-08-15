@@ -33,7 +33,8 @@ in
     # for remote builds.
     accessRules = [
       {
-        cn = "joerg@thalheim.io";
+        # Authelia's OIDC subject for joerg@thalheim.io
+        cn = "1967320f-21d8-4f96-a7ef-21a08c0b24bb";
         role = "trusted";
       }
       {
