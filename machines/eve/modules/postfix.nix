@@ -172,7 +172,7 @@ in
       result_attribute = postfixTransport
       bind = yes
       bind_dn = cn=postfix,ou=system,ou=users,dc=eve
-      bind_pw = ${config.sops.placeholder."vars/postfix-ldap/postfix-ldap-password"}
+      bind_pw = ${config.sops.placeholder."vars/per-machine/eve/postfix-ldap/postfix-ldap-password"}
       scope = one
       version = 3
     '';
@@ -187,7 +187,7 @@ in
       result_attribute = mail
       bind = yes
       bind_dn = cn=postfix,ou=system,ou=users,dc=eve
-      bind_pw = ${config.sops.placeholder."vars/postfix-ldap/postfix-ldap-password"}
+      bind_pw = ${config.sops.placeholder."vars/per-machine/eve/postfix-ldap/postfix-ldap-password"}
       version = 3
     '';
     owner = "postfix";
@@ -201,7 +201,7 @@ in
       result_attribute = maildrop
       bind = yes
       bind_dn = cn=postfix,ou=system,ou=users,dc=eve
-      bind_pw = ${config.sops.placeholder."vars/postfix-ldap/postfix-ldap-password"}
+      bind_pw = ${config.sops.placeholder."vars/per-machine/eve/postfix-ldap/postfix-ldap-password"}
       version = 3
     '';
     owner = "postfix";
