@@ -28,6 +28,19 @@ in
       keyFile = "/var/lib/acme/thalheim.io/key.pem";
       clientCaFile = stepCaBundle;
     };
+    # First match wins; hosts with an ACME cert from ca.r (CN = FQDN,
+    # forceCN) only get substituter access, my OIDC user cert stays trusted
+    # for remote builds.
+    accessRules = [
+      {
+        cn = "joerg@thalheim.io";
+        role = "trusted";
+      }
+      {
+        cn = "*.thalheim.io";
+        role = "read-only";
+      }
+    ];
   };
 
   # ACME certs are group-readable by nginx
