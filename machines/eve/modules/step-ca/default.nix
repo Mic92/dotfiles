@@ -69,6 +69,22 @@ in
       '';
     };
 
+    # SSH user CA signing nixbot deploy certificates
+    "step-ssh-user-ca" = {
+      files."ca.key" = {
+        secret = true;
+        deploy = true;
+        owner = "step-ca";
+        group = "step-ca";
+      };
+      files."ca.pub".secret = false;
+      runtimeInputs = [ pkgs.openssh ];
+      script = ''
+        ssh-keygen -t ed25519 -N "" -C "step-ca ssh user ca" -f $out/ca.key
+        mv $out/ca.key.pub $out/ca.pub
+      '';
+    };
+
     # Intermediate certificate generator
     "step-intermediate-cert" = {
       files."intermediate.crt".secret = false;
@@ -136,6 +152,7 @@ in
       crt = config.clan.core.vars.generators.step-intermediate-cert.files."intermediate.crt".path;
       key = config.clan.core.vars.generators.step-intermediate-key.files."intermediate.key".path;
       dnsNames = [ domain ];
+      ssh.userKey = config.clan.core.vars.generators.step-ssh-user-ca.files."ca.key".path;
       logger.format = "text";
       db = {
         type = "badger";
@@ -147,6 +164,28 @@ in
             type = "ACME";
             name = "acme";
             forceCN = true;
+          }
+          # SSH deploy certs for nixbot effects, principal = token sub
+          {
+            type = "OIDC";
+            name = "nixbot";
+            clientID = "step-ca-ssh";
+            clientSecret = "";
+            configurationEndpoint = "https://nixbot.thalheim.io/.well-known/openid-configuration";
+            claims = {
+              enableSSHCA = true;
+              defaultUserSSHCertDuration = "10m";
+              maxUserSSHCertDuration = "10m";
+            };
+            options.ssh.template = ''
+              {
+                "type": {{ toJson .Type }},
+                "keyId": {{ toJson .KeyID }},
+                "principals": [{{ toJson .Token.sub }}],
+                "extensions": {{ toJson .Extensions }},
+                "criticalOptions": {{ toJson .CriticalOptions }}
+              }
+            '';
           }
           # OAuth-backed client certs, e.g. mTLS for the gRPC nix-daemon
           {

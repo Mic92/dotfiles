@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   self,
   ...
@@ -306,6 +307,47 @@ in
     };
   };
   services.flakelet-postgres.enable = true;
+
+  # Push deploys from nixbot CI via step-ca SSH certs. The forced command
+  # only enqueues a detached update so it survives nixbot restarting itself.
+  users.users.nixbot-deploy = {
+    isSystemUser = true;
+    group = "nixbot-deploy";
+    shell = pkgs.bash;
+  };
+  users.groups.nixbot-deploy = { };
+
+  environment.etc."ssh/nixbot-deploy-ca.pub".source =
+    config.clan.core.vars.generators.step-ssh-user-ca.files."ca.pub".path;
+  environment.etc."ssh/nixbot-deploy-principals".text = ''
+    repo:github:Mic92/nixbot:ref:refs/heads/main
+  '';
+
+  services.openssh.extraConfig = ''
+    Match User nixbot-deploy
+      TrustedUserCAKeys /etc/ssh/nixbot-deploy-ca.pub
+      AuthorizedPrincipalsFile /etc/ssh/nixbot-deploy-principals
+      ForceCommand /run/current-system/sw/bin/systemctl start --no-block flakelet-update-nixbot.service
+  '';
+
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+      if (action.id == "org.freedesktop.systemd1.manage-units" &&
+          action.lookup("unit") == "flakelet-update-nixbot.service" &&
+          action.lookup("verb") == "start" &&
+          subject.user == "nixbot-deploy") {
+        return polkit.Result.YES;
+      }
+    });
+  '';
+
+  systemd.services.flakelet-update-nixbot = {
+    description = "flakelet update of nixbot triggered by CI";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${lib.getExe config.services.flakelets.package} update nixbot";
+    };
+  };
 
   # Legacy domain: permanently redirect to the new nixbot domain so old
   # links (status contexts, nix-outputs URLs, bookmarks) keep working.
