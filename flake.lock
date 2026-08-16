@@ -308,16 +308,46 @@
         ]
       },
       "locked": {
-        "lastModified": 1786864645,
-        "narHash": "sha256-0K7F2xFPcCeGZInRcMZC9VCtnUzXk68icITwrologCE=",
+        "lastModified": 1786866527,
+        "narHash": "sha256-eDzHKjtLuyPhfUplZmgQ8NI7w9AyucXMh23xG/eFmAU=",
         "owner": "Mic92",
         "repo": "flakelet",
-        "rev": "eee8b7147fc880b9848e384929216dd842f80f91",
+        "rev": "a4778491db20617f72b0c2ff1ac5eb59cf7f4020",
         "type": "github"
       },
       "original": {
         "owner": "Mic92",
         "repo": "flakelet",
+        "type": "github"
+      }
+    },
+    "flakelet-nginx": {
+      "locked": {
+        "lastModified": 1786874081,
+        "narHash": "sha256-yQ3Ka0gYcGDTybhDNPko4FaSBfLtVQ4ul4kIBV5nmIM=",
+        "owner": "Mic92",
+        "repo": "flakelet-nginx",
+        "rev": "6b7ded1ed46eb55e17b30bf8834413469f8c6ab8",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "flakelet-nginx",
+        "type": "github"
+      }
+    },
+    "flakelet-postgres": {
+      "locked": {
+        "lastModified": 1786874083,
+        "narHash": "sha256-hJtKZ3Rr6oaE1YdshK49VzPesxcW/zVoO9CrnliL01s=",
+        "owner": "Mic92",
+        "repo": "flakelet-postgres",
+        "rev": "211394bf436913725defb3880a2d1cdaf6fc1ccb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "flakelet-postgres",
         "type": "github"
       }
     },
@@ -960,6 +990,8 @@
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
         "flakelet": "flakelet",
+        "flakelet-nginx": "flakelet-nginx",
+        "flakelet-postgres": "flakelet-postgres",
         "forge-triage": "forge-triage",
         "freelancer-toolbox": "freelancer-toolbox",
         "gitea-mq": "gitea-mq",

@@ -119,6 +119,7 @@ in
       settings = {
         user = "nixbot";
         listen = webUnixSocket;
+        domain = "nixbot.thalheim.io";
         credentials = {
           "github-app-secret-key" = config.sops.secrets.buildbot-github-app-secret-key.path;
           "github-webhook-secret" = config.sops.secrets.buildbot-github-webhook-secret.path;
@@ -293,46 +294,18 @@ in
 
   nix.settings.extra-allowed-users = [ "nixbot" ];
 
-  services.postgresql = {
-    enable = true;
-    ensureDatabases = [ "nixbot" ];
-    ensureUsers = [
-      {
-        name = "nixbot";
-        ensureDBOwnership = true;
-      }
-    ];
-  };
+  services.postgresql.enable = true;
 
-  services.nginx.virtualHosts."nixbot.thalheim.io" = {
-    forceSSL = true;
-    useACMEHost = "thalheim.io";
-    locations = {
-      "/" = {
-        proxyPass = "http://unix:${webUnixSocket}";
-        extraConfig = ''
-          # Webhook deliveries can exceed nginx's 1m default
-          # (GitHub caps payloads at 25 MB).
-          client_max_body_size 25m;
-          proxy_connect_timeout 120s;
-          proxy_send_timeout 120s;
-          # Long timeout keeps SSE log streams alive.
-          proxy_read_timeout 3600s;
-          # Buffering would stall SSE.
-          proxy_buffering off;
-        '';
-      };
-      "/nix-outputs/" = {
-        # alias on a "/"-terminated location must itself end in
-        # "/" or nginx mangles the mapped path.
-        alias = "/var/www/buildbot/nix-outputs/";
-        extraConfig = ''
-          charset utf-8;
-          autoindex on;
-        '';
-      };
+  # Routing and database provisioning come from the nixbot flakelet's
+  # http/v1 export and postgres/v1 claim via these bridges.
+  services.flakelet-nginx = {
+    enable = true;
+    tls = {
+      certificate = "/var/lib/acme/thalheim.io/fullchain.pem";
+      key = "/var/lib/acme/thalheim.io/key.pem";
     };
   };
+  services.flakelet-postgres.enable = true;
 
   # Legacy domain: permanently redirect to the new nixbot domain so old
   # links (status contexts, nix-outputs URLs, bookmarks) keep working.
