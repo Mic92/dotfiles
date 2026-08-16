@@ -28,5 +28,6 @@
   },
   "warnings": {
     "anthropicExtraUsage": false
-  }
+  },
+  "hideThinkingBlock": true
 }
