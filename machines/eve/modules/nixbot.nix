@@ -46,6 +46,8 @@ let
       echo "Skipping codecov: project=$PROJECT attr=$ATTR_NAME"
     fi
   '';
+
+  webUnixSocket = "/run/nixbot/web.sock";
 in
 {
   clan.core.vars.generators.buildbot-gitlab = {
@@ -104,118 +106,232 @@ in
     '';
   };
 
-  services.nixbot = {
+  # nixbot runs as a flakelet: its units are evaluated from the nixbot flake
+  # on this machine at runtime, so nixbot deploys are decoupled from the NixOS
+  # generation. The host keeps the user, PostgreSQL, nginx, secrets and
+  # tmpfiles below; secret paths map to systemd credential IDs referenced by
+  # the raw nixbot config.
+  services.flakelets = {
     enable = true;
-    domain = "nixbot.thalheim.io";
-    # Keep buildbot-era status contexts; repos still require
-    # buildbot/nix-build in branch protection.
-    statusContextPrefix = "buildbot";
-
-    buildSystems = [
-      "i686-linux"
-      "x86_64-linux"
-      "aarch64-linux"
-      "aarch64-darwin"
-    ];
-    branches.mergeQueue.matchGlob = "gitea-mq/*";
-    evalWorkerCount = 6;
-    # Builds offload to tribuchet workers and use little local CPU, so
-    # the default core-count cap left the workers idle. Keep this <=
-    # id-count/65536 (256): each build holds one auto-allocated uid slot.
-    buildConcurrency = 128;
-    github = {
-      enable = true;
-      webhookSecretFile = config.sops.secrets.buildbot-github-webhook-secret.path;
-
-      oauthId = "Iv23ctDGhrm116Be1LhO";
-      oauthSecretFile = config.sops.secrets.buildbot-github-oauth-secret.path;
-
-      appId = 915265;
-      appSecretKeyFile = config.sops.secrets.buildbot-github-app-secret-key.path;
-    };
-    gitea = {
-      enable = true;
-      instanceUrl = "https://git.thalheim.io";
-      tokenFile = config.clan.core.vars.generators.buildbot-gitea.files.token.path;
-      oauthId = "18f7b270-a19e-4b2a-b69e-4e99f9fd7fba";
-      oauthSecretFile = config.clan.core.vars.generators.buildbot-gitea.files.oauth-secret.path;
-    };
-    gitlab = {
-      enable = true;
-      tokenFile = config.clan.core.vars.generators.buildbot-gitlab.files.token.path;
-      repoAllowlist = [ "Mic92/dotfiles" ];
-    };
-    oidc = {
-      enable = true;
-      name = "Authelia";
-      discoveryUrl = "https://auth.thalheim.io/.well-known/openid-configuration";
-      clientId = "buildbot";
-      clientSecretFile = config.clan.core.vars.generators.buildbot-oidc.files.client-secret.path;
-      scope = [
-        "openid"
-        "email"
-        "profile"
-        "groups"
-      ];
-      mapping.groups = "groups";
-    };
-    # Anyone who can log in through Authelia may see private repos.
-    privateRepoViewers = {
-      "*" = [ "oidc:auth.thalheim.io:*" ];
-    };
-    admins = [
-      "github:Mic92"
-      "gitea:Mic92"
-      "github:DavHau"
-      "github:Lassulus"
-      "github:Enzime"
-      "oidc:auth.thalheim.io:joerg@thalheim.io"
-    ];
-    outputsPath = "/var/www/buildbot/nix-outputs/";
-
-    # Upload coverage reports to codecov for harmonia
-    postBuildSteps = [
-      {
-        name = "Upload coverage to codecov";
-        environment = {
-          CODECOV_TOKEN = interpolate "%(secret:codecov-token)s";
-          ATTR_NAME = interpolate "%(prop:attr)s";
-          OUT_PATH = interpolate "%(prop:out_path)s";
-          BRANCH = interpolate "%(prop:branch)s";
-          REVISION = interpolate "%(prop:revision)s";
-          PROJECT = interpolate "%(prop:project)s";
-          PR_NUMBER = interpolate "%(prop:pr_number)s";
+    services.nixbot = {
+      flake = "github:Mic92/nixbot/flakelet";
+      autoUpdate.enable = true;
+      settings = {
+        user = "nixbot";
+        listen = webUnixSocket;
+        credentials = {
+          "github-app-secret-key" = config.sops.secrets.buildbot-github-app-secret-key.path;
+          "github-webhook-secret" = config.sops.secrets.buildbot-github-webhook-secret.path;
+          "github-oauth-secret" = config.sops.secrets.buildbot-github-oauth-secret.path;
+          "gitea-token" = config.clan.core.vars.generators.buildbot-gitea.files.token.path;
+          "gitea-oauth-secret" = config.clan.core.vars.generators.buildbot-gitea.files.oauth-secret.path;
+          "gitlab-token" = config.clan.core.vars.generators.buildbot-gitlab.files.token.path;
+          "oidc-client-secret" = config.clan.core.vars.generators.buildbot-oidc.files.client-secret.path;
+          "codecov-token" = config.clan.core.vars.generators.codecov-token.files.token.path;
+          "effects-secret__github_colon_nix-community_slash_harmonia" =
+            config.clan.core.vars.generators.harmonia-effects-secrets.files.secrets.path;
+          "effects-secret__github_colon_Mic92_slash_dotfiles" =
+            config.clan.core.vars.generators.step-ca-renew-effect-secrets.files.secrets.path;
         };
-        command = [ "${codecov-upload}" ];
-        warnOnly = true;
-      }
-    ];
-
-    # Secrets for buildbot-effects (hercules-ci style effects)
-    effects.perRepoSecretFiles = {
-      "github:nix-community/harmonia" =
-        config.clan.core.vars.generators.harmonia-effects-secrets.files.secrets.path;
-      "github:Mic92/dotfiles" =
-        config.clan.core.vars.generators.step-ca-renew-effect-secrets.files.secrets.path;
-    };
-
-    pullBased = {
-      repositories = {
-        sizelint = {
-          url = "https://github.com/a-kenji/sizelint";
-          defaultBranch = "main";
+        # Raw nixbot-config.json; secret files are credential IDs from above.
+        config = {
+          build_systems = [
+            "i686-linux"
+            "x86_64-linux"
+            "aarch64-linux"
+            "aarch64-darwin"
+          ];
+          eval_systems = [ ];
+          url = "https://nixbot.thalheim.io/";
+          webhook_base_url = null;
+          state_dir = "/var/lib/nixbot";
+          admins = [
+            "github:Mic92"
+            "gitea:Mic92"
+            "github:DavHau"
+            "github:Lassulus"
+            "github:Enzime"
+            "oidc:auth.thalheim.io:joerg@thalheim.io"
+          ];
+          # Anyone who can log in through Authelia may see private repos.
+          private_repo_viewers."*" = [ "oidc:auth.thalheim.io:*" ];
+          eval_max_memory_size = 2048;
+          eval_worker_count = 6;
+          # Builds offload to tribuchet workers and use little local CPU, so
+          # the default core-count cap left the workers idle. Keep this <=
+          # id-count/65536 (256): each build holds one auto-allocated uid slot.
+          build_concurrency = 128;
+          github = {
+            id = 915265;
+            api_url = "https://api.github.com";
+            secret_key_file = "github-app-secret-key";
+            webhook_secret_file = "github-webhook-secret";
+            filters = {
+              user_allowlist = null;
+              repo_allowlist = null;
+              topic = "build-with-buildbot";
+            };
+            oauth_id = "Iv23ctDGhrm116Be1LhO";
+            oauth_secret_file = "github-oauth-secret";
+          };
+          gitea = {
+            instance_url = "https://git.thalheim.io";
+            filters = {
+              user_allowlist = null;
+              repo_allowlist = null;
+              topic = "build-with-buildbot";
+            };
+            token_file = "gitea-token";
+            oauth_id = "18f7b270-a19e-4b2a-b69e-4e99f9fd7fba";
+            oauth_secret_file = "gitea-oauth-secret";
+            ssh_private_key_file = null;
+            ssh_known_hosts_file = null;
+          };
+          gitlab = {
+            instance_url = "https://gitlab.com";
+            filters = {
+              user_allowlist = null;
+              repo_allowlist = [ "Mic92/dotfiles" ];
+              topic = "build-with-buildbot";
+            };
+            token_file = "gitlab-token";
+            oauth_id = null;
+            oauth_secret_file = null;
+            ssh_private_key_file = null;
+            ssh_known_hosts_file = null;
+          };
+          oidc = {
+            name = "Authelia";
+            discovery_url = "https://auth.thalheim.io/.well-known/openid-configuration";
+            client_id = "buildbot";
+            scope = [
+              "openid"
+              "email"
+              "profile"
+              "groups"
+            ];
+            mapping = {
+              username = "sub";
+              groups = "groups";
+            };
+            client_secret_file = "oidc-client-secret";
+          };
+          pull_based = {
+            repositories.sizelint = {
+              name = "sizelint";
+              default_branch = "main";
+              url = "https://github.com/a-kenji/sizelint";
+              poll_interval = 60;
+              ssh_private_key_file = null;
+              ssh_known_hosts_file = null;
+            };
+            poll_spread = null;
+          };
+          workload_identity = {
+            enable = true;
+            signing_key_file = null;
+            token_ttl = 300;
+            key_rotation_days = 30;
+          };
+          outputs_path = "/var/www/buildbot/nix-outputs/";
+          # Upload coverage reports to codecov for harmonia
+          post_build_steps = [
+            {
+              name = "Upload coverage to codecov";
+              environment = {
+                CODECOV_TOKEN = interpolate "%(secret:codecov-token)s";
+                ATTR_NAME = interpolate "%(prop:attr)s";
+                OUT_PATH = interpolate "%(prop:out_path)s";
+                BRANCH = interpolate "%(prop:branch)s";
+                REVISION = interpolate "%(prop:revision)s";
+                PROJECT = interpolate "%(prop:project)s";
+                PR_NUMBER = interpolate "%(prop:pr_number)s";
+              };
+              command = [ "${codecov-upload}" ];
+              warn_only = true;
+            }
+          ];
+          failed_build_report_limit = 47;
+          # Keep buildbot-era status contexts; repos still require
+          # buildbot/nix-build in branch protection.
+          status_context_prefix = "buildbot";
+          branches.mergeQueue = {
+            matchGlob = "gitea-mq/*";
+            registerGCRoots = true;
+            updateOutputs = false;
+          };
+          gcroots_dir = "/nix/var/nix/gcroots/per-user/nixbot";
+          effects_per_repo_secrets = {
+            "github:nix-community/harmonia" = "effects-secret__github_colon_nix-community_slash_harmonia";
+            "github:Mic92/dotfiles" = "effects-secret__github_colon_Mic92_slash_dotfiles";
+          };
+          effects_extra_sandbox_paths = [ ];
+          effects_mountables_file = null;
+          effects_extra_nix_options = { };
+          show_trace_on_failure = false;
+          cache_failed_builds = false;
+          allow_unauthenticated_control = false;
+          proxy_auth_header = null;
+          build_max_silent_time = 60 * 20;
+          build_timeout = 60 * 60 * 3;
+          http_port = 8010;
+          http_unix_socket = webUnixSocket;
+          db_url = "postgresql://nixbot@/nixbot?host=/run/postgresql";
         };
       };
     };
   };
 
-  systemd.services.nixbot.serviceConfig.LoadCredential = [
-    "codecov-token:${config.clan.core.vars.generators.codecov-token.files.token.path}"
-  ];
+  users.users.nixbot = {
+    isSystemUser = true;
+    group = "nixbot";
+    home = "/var/lib/nixbot";
+  };
+  users.groups.nixbot = { };
+  # The web socket is group-restricted (0660).
+  users.users.nginx.extraGroups = [ "nixbot" ];
+
+  nix.settings.extra-allowed-users = [ "nixbot" ];
+
+  services.postgresql = {
+    enable = true;
+    ensureDatabases = [ "nixbot" ];
+    ensureUsers = [
+      {
+        name = "nixbot";
+        ensureDBOwnership = true;
+      }
+    ];
+  };
 
   services.nginx.virtualHosts."nixbot.thalheim.io" = {
     forceSSL = true;
     useACMEHost = "thalheim.io";
+    locations = {
+      "/" = {
+        proxyPass = "http://unix:${webUnixSocket}";
+        extraConfig = ''
+          # Webhook deliveries can exceed nginx's 1m default
+          # (GitHub caps payloads at 25 MB).
+          client_max_body_size 25m;
+          proxy_connect_timeout 120s;
+          proxy_send_timeout 120s;
+          # Long timeout keeps SSE log streams alive.
+          proxy_read_timeout 3600s;
+          # Buffering would stall SSE.
+          proxy_buffering off;
+        '';
+      };
+      "/nix-outputs/" = {
+        # alias on a "/"-terminated location must itself end in
+        # "/" or nginx mangles the mapped path.
+        alias = "/var/www/buildbot/nix-outputs/";
+        extraConfig = ''
+          charset utf-8;
+          autoindex on;
+        '';
+      };
+    };
   };
 
   # Legacy domain: permanently redirect to the new nixbot domain so old

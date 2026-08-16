@@ -297,6 +297,30 @@
         "type": "github"
       }
     },
+    "flakelet": {
+      "inputs": {
+        "adios": [
+          "adios-flake",
+          "adios"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1786864645,
+        "narHash": "sha256-0K7F2xFPcCeGZInRcMZC9VCtnUzXk68icITwrologCE=",
+        "owner": "Mic92",
+        "repo": "flakelet",
+        "rev": "eee8b7147fc880b9848e384929216dd842f80f91",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "flakelet",
+        "type": "github"
+      }
+    },
     "forge-triage": {
       "inputs": {
         "nixpkgs": [
@@ -935,6 +959,7 @@
         "flake-parts": "flake-parts",
         "flake-registry": "flake-registry",
         "flake-utils": "flake-utils",
+        "flakelet": "flakelet",
         "forge-triage": "forge-triage",
         "freelancer-toolbox": "freelancer-toolbox",
         "gitea-mq": "gitea-mq",
