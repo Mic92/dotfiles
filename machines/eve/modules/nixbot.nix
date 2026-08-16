@@ -331,19 +331,20 @@ in
     Match User nixbot-deploy
       TrustedUserCAKeys /etc/ssh/nixbot-deploy-ca.pub
       AuthorizedPrincipalsFile /etc/ssh/nixbot-deploy-principals
-      ForceCommand /run/current-system/sw/bin/systemctl start --no-block flakelet-update-nixbot.service
+      ForceCommand /run/wrappers/bin/sudo /run/current-system/sw/bin/systemctl start --no-block flakelet-update-nixbot.service
   '';
 
-  security.polkit.extraConfig = ''
-    polkit.addRule(function(action, subject) {
-      if (action.id == "org.freedesktop.systemd1.manage-units" &&
-          action.lookup("unit") == "flakelet-update-nixbot.service" &&
-          action.lookup("verb") == "start" &&
-          subject.user == "nixbot-deploy") {
-        return polkit.Result.YES;
-      }
-    });
-  '';
+  security.sudo.extraRules = [
+    {
+      users = [ "nixbot-deploy" ];
+      commands = [
+        {
+          command = "/run/current-system/sw/bin/systemctl start --no-block flakelet-update-nixbot.service";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
 
   systemd.services.flakelet-update-nixbot = {
     description = "flakelet update of nixbot triggered by CI";
