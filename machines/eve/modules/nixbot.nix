@@ -115,7 +115,7 @@ in
   services.flakelets = {
     enable = true;
     services.nixbot = {
-      flake = "github:Mic92/nixbot/flakelet";
+      flake = "github:Mic92/nixbot";
       autoUpdate.enable = true;
       settings = {
         user = "nixbot";
