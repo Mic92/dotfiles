@@ -319,9 +319,13 @@ in
 
   environment.etc."ssh/nixbot-deploy-ca.pub".source =
     config.clan.core.vars.generators.step-ssh-user-ca.files."ca.pub".path;
-  environment.etc."ssh/nixbot-deploy-principals".text = ''
-    repo:github:Mic92/nixbot:ref:refs/heads/main
-  '';
+  # sshd StrictModes rejects symlinks into /nix/store
+  environment.etc."ssh/nixbot-deploy-principals" = {
+    text = ''
+      repo:github:Mic92/nixbot:ref:refs/heads/main
+    '';
+    mode = "0444";
+  };
 
   services.openssh.extraConfig = ''
     Match User nixbot-deploy
