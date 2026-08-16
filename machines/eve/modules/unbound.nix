@@ -8,4 +8,18 @@
   ];
   # no need for a systemd-resolved stub
   services.resolved.enable = false;
+
+  # retiolum names via tincr's stub resolver (DNSAddress in tinc.conf)
+  services.unbound.settings = {
+    server = {
+      private-domain = [ "r." ];
+      domain-insecure = [ "r." ];
+    };
+    forward-zone = [
+      {
+        name = "r.";
+        forward-addr = "42::53";
+      }
+    ];
+  };
 }

@@ -57,7 +57,6 @@
 
     kartei.url = "github:krebs/kartei";
     kartei.inputs.nixpkgs.follows = "nixpkgs";
-    kartei.inputs.nix-darwin.follows = "nix-darwin";
     kartei.inputs.tincr.follows = "tincr";
 
     tincr.url = "github:Mic92/tincr";
