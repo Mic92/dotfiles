@@ -60,6 +60,14 @@
   };
 
   config = {
+    # Same sockets as the per-vhost listen list above.
+    services.flakelet-nginx.listenAddresses = [
+      "[::1]"
+      "[42:0:3c46:70c7:8526:2adf:7451:8bbb]"
+      "[${config.networking.eve.ipv6.address}]"
+      "0.0.0.0"
+    ];
+
     networking.firewall.allowedTCPPorts = [
       80
       443

@@ -86,6 +86,8 @@
     flakelet.url = "github:Mic92/flakelet";
     flakelet.inputs.nixpkgs.follows = "nixpkgs";
     flakelet.inputs.adios.follows = "adios-flake/adios";
+    flakelet-nginx.url = "github:Mic92/flakelet-nginx";
+    flakelet-postgres.url = "github:Mic92/flakelet-postgres";
 
     nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1&ref=main";
     nixbot.inputs.nixpkgs.follows = "nixpkgs";
