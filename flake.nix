@@ -83,6 +83,10 @@
     nix-grpc-store.inputs.nixpkgs.follows = "nixpkgs";
     nix-grpc-store.inputs.nix.follows = "nix";
 
+    flakelet.url = "github:Mic92/flakelet";
+    flakelet.inputs.nixpkgs.follows = "nixpkgs";
+    flakelet.inputs.adios.follows = "adios-flake/adios";
+
     nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1&ref=main";
     nixbot.inputs.nixpkgs.follows = "nixpkgs";
     nixbot.inputs.treefmt-nix.follows = "treefmt-nix";
