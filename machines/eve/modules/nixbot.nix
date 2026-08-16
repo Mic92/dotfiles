@@ -323,6 +323,7 @@ in
   environment.etc."ssh/nixbot-deploy-principals" = {
     text = ''
       repo:github:Mic92/nixbot:ref:refs/heads/main
+      repo:github:Mic92/nixbot:ref:refs/heads/flakelet
     '';
     mode = "0444";
   };
