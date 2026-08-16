@@ -522,7 +522,6 @@
     },
     "kartei": {
       "inputs": {
-        "nix-darwin": "nix-darwin",
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -531,11 +530,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1784983346,
-        "narHash": "sha256-45WAlalFN30dMRw0Oqjoht0HzN5WGOFJzpcgcOJwIXw=",
+        "lastModified": 1786888845,
+        "narHash": "sha256-TbrP4WusqVwY1t5Dg8z4pT37FIrL6DxcCSoALA6hxgY=",
         "owner": "krebs",
         "repo": "kartei",
-        "rev": "dfd5401117d741d43256448b06061d29dc14bfe8",
+        "rev": "ec8e3b5a69404dea72cdf4391d39b5ad3594378f",
         "type": "github"
       },
       "original": {
@@ -702,27 +701,6 @@
       }
     },
     "nix-darwin": {
-      "inputs": {
-        "nixpkgs": [
-          "kartei",
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1786845137,
-        "narHash": "sha256-oQFip+v0luP8NIxJzmiW4Wu8bILsbFWom5l0zonl8hQ=",
-        "owner": "nix-darwin",
-        "repo": "nix-darwin",
-        "rev": "4cff07de74b50e64bdd68cd4e722ab5b6b35ee48",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-darwin",
-        "repo": "nix-darwin",
-        "type": "github"
-      }
-    },
-    "nix-darwin_2": {
       "inputs": {
         "nixpkgs": [
           "nixpkgs"
@@ -1025,7 +1003,7 @@
         "niks3": "niks3",
         "nix": "nix",
         "nix-casks": "nix-casks",
-        "nix-darwin": "nix-darwin_2",
+        "nix-darwin": "nix-darwin",
         "nix-diff-rs": "nix-diff-rs",
         "nix-grpc-store": "nix-grpc-store",
         "nix-index-database": "nix-index-database",
