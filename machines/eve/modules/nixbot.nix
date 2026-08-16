@@ -332,7 +332,7 @@ in
     Match User nixbot-deploy
       TrustedUserCAKeys /etc/ssh/nixbot-deploy-ca.pub
       AuthorizedPrincipalsFile /etc/ssh/nixbot-deploy-principals
-      ForceCommand /run/wrappers/bin/sudo /run/current-system/sw/bin/systemctl start --no-block flakelet-update-nixbot.service
+      ForceCommand /run/wrappers/bin/sudo /run/current-system/sw/bin/systemctl start --no-block flakelet-update-nixbot.service && echo "eve: flakelet update of nixbot enqueued"
   '';
 
   security.sudo.extraRules = [
