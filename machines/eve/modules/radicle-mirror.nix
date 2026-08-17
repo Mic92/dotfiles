@@ -27,6 +27,12 @@ in
     package = self.inputs.radicle-mirror.packages.${pkgs.system}.default;
     addr = "127.0.0.1:${toString port}";
     ghAppId = 4627581;
+    allowedOwners = [
+      "Mic92"
+      "nix-community"
+      "numtide"
+      "TUM-DSE"
+    ];
     p2pListen = [ "0.0.0.0:8776" ];
     p2pExternalAddresses = [ "radicle.thalheim.io:8776" ];
     mirroredForks = [
