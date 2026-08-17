@@ -45,6 +45,15 @@ let
     name: dataset:
     "/run/borgbackup/${name}" + (if dataset.mountPoint == "/" then "" else dataset.mountPoint);
 
+  # Snapshots are mounted in a flat staging dir and bind-mounted into the
+  # tree: mount.zfs refuses non-empty mountpoints, bind mounts don't.
+  stagingMountPoint =
+    name: dataset:
+    "/run/borgbackup/.staging-${name}/"
+    + (
+      if dataset.mountPoint == "/" then "root" else lib.replaceStrings [ "/" ] [ "-" ] dataset.mountPoint
+    );
+
   transformPathToSnapshot =
     name: path:
     let
@@ -100,6 +109,7 @@ in
               # clean up leftovers from a previous failed run
               ${lib.concatMapStringsSep "\n" (fs: ''
                 ${pkgs.util-linux}/bin/umount "${snapshotMountPoint name fs}" 2>/dev/null || true
+                ${pkgs.util-linux}/bin/umount "${stagingMountPoint name fs}" 2>/dev/null || true
               '') (lib.reverseList datasetsByDepth)}
               ${lib.concatMapStringsSep "\n" (fs: ''
                 ${zfs}/bin/zfs destroy -r "${fs.device}@borg-${name}" 2>/dev/null || true
@@ -112,8 +122,10 @@ in
               '') rootDatasets}
 
               ${lib.concatMapStringsSep "\n" (fs: ''
-                mkdir -p "${snapshotMountPoint name fs}"
-                ${pkgs.util-linux}/bin/mount -t zfs -o ro "${fs.device}@borg-${name}" "${snapshotMountPoint name fs}"
+                mkdir -p "${stagingMountPoint name fs}"
+                ${pkgs.util-linux}/bin/mount -t zfs -o ro "${fs.device}@borg-${name}" "${stagingMountPoint name fs}"
+                mkdir -p "${snapshotMountPoint name fs}" 2>/dev/null || true
+                ${pkgs.util-linux}/bin/mount --bind "${stagingMountPoint name fs}" "${snapshotMountPoint name fs}"
               '') datasetsByDepth}
 
               set +e
@@ -122,6 +134,7 @@ in
             postHook = lib.mkAfter ''
               ${lib.concatMapStringsSep "\n" (fs: ''
                 ${pkgs.util-linux}/bin/umount "${snapshotMountPoint name fs}" || true
+                ${pkgs.util-linux}/bin/umount "${stagingMountPoint name fs}" || true
               '') (lib.reverseList datasetsByDepth)}
 
               # only root datasets carry the recursive snapshot
@@ -143,7 +156,10 @@ in
           serviceConfig = {
             PrivateDevices = lib.mkForce false; # ZFS needs access to /dev/zfs
             # writable mountpoints for the ZFS snapshots (rest of /run is read-only)
-            RuntimeDirectory = "borgbackup/${name}";
+            RuntimeDirectory = [
+              "borgbackup/${name}"
+              "borgbackup/.staging-${name}"
+            ];
           };
 
           path = [ zfs ];
