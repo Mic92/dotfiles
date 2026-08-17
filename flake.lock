@@ -984,11 +984,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787002104,
-        "narHash": "sha256-dnKipL5kRpnKGy6UxuMxQZQ8wMtff2GAiIjrXrPFhbE=",
+        "lastModified": 1787002676,
+        "narHash": "sha256-zCFfQAL6/yE5agxAsUgVJXyald6zEsXtNn3QhI9RLP0=",
         "owner": "Mic92",
         "repo": "radicle-mirror",
-        "rev": "9f8e0601ee6f3e0d9947a7f6b69bf15b55fa7d50",
+        "rev": "4792e4a55a6dc88a72fbeb3981637e86e9cbde02",
         "type": "github"
       },
       "original": {
