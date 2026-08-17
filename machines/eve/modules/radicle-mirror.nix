@@ -27,6 +27,12 @@ in
     package = self.inputs.radicle-mirror.packages.${pkgs.system}.default;
     addr = "127.0.0.1:${toString port}";
     ghAppId = 4627581;
+    delegates = [
+      # evo
+      "did:key:z6MkjE3BSJn4Y129rhqi5rViSUru8KSBcCQdQcDZq1cnjumw"
+      # turing-machine
+      "did:key:z6MkhmR4dsLS768DdxDuwydxiwN4nbBxTVfXvu6kpDtS9KUk"
+    ];
     allowedOwners = [
       "Mic92"
       "nix-community"
