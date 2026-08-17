@@ -32,6 +32,7 @@ in
       "nix-community"
       "numtide"
       "TUM-DSE"
+      "krebs"
     ];
     p2pListen = [ "0.0.0.0:8776" ];
     p2pExternalAddresses = [ "radicle.thalheim.io:8776" ];
