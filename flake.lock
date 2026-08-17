@@ -974,6 +974,29 @@
         "type": "github"
       }
     },
+    "radicle-mirror": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1783666340,
+        "narHash": "sha256-ZWd6sNPPaFOeT2EMPg20OdfC0MBuOqf5C/cEZF+zoy0=",
+        "owner": "Mic92",
+        "repo": "radicle-mirror",
+        "rev": "ff9a713f65701e8e38df189276719b18a76917ed",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "radicle-mirror",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "adios-flake": "adios-flake",
@@ -1015,6 +1038,7 @@
         "nur-packages": "nur-packages",
         "opencrow": "opencrow",
         "punchcard": "punchcard",
+        "radicle-mirror": "radicle-mirror",
         "sops-nix": "sops-nix",
         "srvos": "srvos",
         "strace-macos": "strace-macos",
