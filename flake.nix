@@ -122,6 +122,10 @@
     # Only needed for herdr-eternal's own integration tests.
     herdr-eternal.inputs.herdr.follows = "";
 
+    radicle-mirror.url = "github:Mic92/radicle-mirror";
+    radicle-mirror.inputs.nixpkgs.follows = "nixpkgs";
+    radicle-mirror.inputs.treefmt-nix.follows = "treefmt-nix";
+
     gitea-mq.url = "github:Mic92/gitea-mq";
     gitea-mq.inputs.nixpkgs.follows = "nixpkgs";
     gitea-mq.inputs.treefmt-nix.follows = "treefmt-nix";

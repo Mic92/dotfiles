@@ -41,6 +41,7 @@
     ./modules/herdr-eternal.nix
     ./modules/gitea
     ./modules/gitea-mq.nix
+    ./modules/radicle-mirror.nix
     ./modules/goatcounter.nix
     ./modules/punchcard.nix
     ./modules/grafana.nix
