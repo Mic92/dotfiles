@@ -27,6 +27,12 @@ in
     package = self.inputs.radicle-mirror.packages.${pkgs.system}.default;
     addr = "127.0.0.1:${toString port}";
     ghAppId = 4627581;
+    mirroredForks = [
+      "Mic92/nixpkgs"
+      "Mic92/nix-vm-test"
+      "Mic92/punchcard"
+      "Mic92/nix-1"
+    ];
     ghAppKeyPath = "${credsDir}/gh-app-key";
     webhookSecretPath = "${credsDir}/webhook-secret";
     radicleKeyPath = "${credsDir}/radicle-key";
