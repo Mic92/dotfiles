@@ -93,7 +93,7 @@
       radicle-node
       inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system}.niks3
     ]
-    ++ lib.optionals pkgs.stdenv.isLinux [
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
       radicle-desktop
     ]
     ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [

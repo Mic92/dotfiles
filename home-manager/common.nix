@@ -91,13 +91,13 @@
       # punch: CLI for punchcard.thalheim.io (start/stop timers, export timesheets)
       self.inputs.punchcard.packages.${pkgs.stdenv.hostPlatform.system}.punch
     ]
-    ++ lib.optionals pkgs.stdenv.isLinux [
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
       strace
       psmisc
       glibcLocales
       gdb
     ]
-    ++ lib.optionals pkgs.stdenv.isDarwin [ iproute2mac ]
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [ iproute2mac ]
     ++ lib.optional (pkgs.stdenv.hostPlatform.system != "riscv64-linux") nix-output-monitor;
 
   home.enableNixpkgsReleaseCheck = false;
@@ -110,6 +110,6 @@
   home.stateVersion = "23.11";
   home.username = lib.mkDefault "joerg";
   home.homeDirectory =
-    if pkgs.stdenv.isDarwin then "/Users/${config.home.username}" else "/home/${config.home.username}";
+    if pkgs.stdenv.hostPlatform.isDarwin then "/Users/${config.home.username}" else "/home/${config.home.username}";
   programs.home-manager.enable = true;
 }

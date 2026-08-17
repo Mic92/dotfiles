@@ -13,7 +13,7 @@ lib.mkMerge [
   }
 
   # Systemd timer for atuin sync (Linux only)
-  (lib.mkIf pkgs.stdenv.isLinux {
+  (lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     systemd.user.timers.atuin-sync = {
       Unit.Description = "Atuin auto sync";
       Timer.OnUnitActiveSec = "1h";
@@ -32,7 +32,7 @@ lib.mkMerge [
   })
 
   # Launchd agent for atuin sync (macOS only)
-  (lib.mkIf pkgs.stdenv.isDarwin {
+  (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     launchd.enable = true;
     launchd.agents.atuin-sync = {
       enable = true;

@@ -72,7 +72,7 @@ let
     crabfit-cli
   ];
 
-  runtimeDeps = lib.optionals stdenv.isLinux [ bubblewrap ];
+  runtimeDeps = lib.optionals stdenv.hostPlatform.isLinux [ bubblewrap ];
 in
 python3.pkgs.buildPythonApplication {
   pname = "pim";

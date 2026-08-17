@@ -14,7 +14,7 @@ lib.mkMerge [
     home.packages = [ alertmanager-bar ];
   }
 
-  (lib.mkIf pkgs.stdenv.isDarwin {
+  (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     launchd.enable = true;
     launchd.agents.alertmanager-bar = {
       enable = true;

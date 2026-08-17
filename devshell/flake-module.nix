@@ -223,7 +223,7 @@ in
       # with the latest nixpkgs. Re-enable once the upstream issue is resolved.
       # inputs'.clan-core.clan-app
     ]
-    ++ lib.optionals (!pkgs.stdenv.isDarwin) [
+    ++ lib.optionals (!pkgs.stdenv.hostPlatform.isDarwin) [
       pkgs.bubblewrap
     ];
   };

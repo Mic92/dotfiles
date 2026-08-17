@@ -67,7 +67,7 @@ let
   ];
 in
 lib.mkMerge [
-  (lib.mkIf pkgs.stdenv.isLinux {
+  (lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     xdg.desktopEntries.tmux-nvim = {
       name = "nvim (in tmux)";
       # %u not %f: xdg-open passes the original file:// URI when the
@@ -85,7 +85,7 @@ lib.mkMerge [
     };
   })
 
-  (lib.mkIf pkgs.stdenv.isDarwin {
+  (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     # LaunchServices won't run a bare script; it needs a bundle. Minimal
     # AppleScript .app that forwards the dropped/opened file to our script.
     # Built lazily into ~/Applications because LS only indexes real paths,

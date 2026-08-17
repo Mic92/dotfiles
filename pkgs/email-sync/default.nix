@@ -36,10 +36,10 @@ writeShellApplication {
     rbw
     claude-code
   ]
-  ++ lib.optionals stdenv.isLinux [
+  ++ lib.optionals stdenv.hostPlatform.isLinux [
     libnotify
   ]
-  ++ lib.optionals stdenv.isDarwin [
+  ++ lib.optionals stdenv.hostPlatform.isDarwin [
     terminal-notifier
   ];
 
