@@ -50,7 +50,7 @@ lib.mkMerge [
     # notmuch post-new hook is managed by homeshick in home/.notmuch/hooks/
   }
   # Email sync automation - use systemd on Linux, launchd on macOS
-  (lib.mkIf pkgs.stdenv.isLinux {
+  (lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     # Systemd timer for email sync (Linux only)
     systemd.user.services.mbsync = {
       Unit = {
@@ -76,7 +76,7 @@ lib.mkMerge [
     };
   })
 
-  (lib.mkIf pkgs.stdenv.isDarwin {
+  (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     # Launchd agent for email sync (macOS only)
     launchd.enable = true;
     launchd.agents.mbsync = {

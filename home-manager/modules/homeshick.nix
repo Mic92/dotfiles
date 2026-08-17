@@ -3,7 +3,7 @@ let
   homeshickPath = "\${HOMESHICK_DIR:-$HOME/.homesick/repos/homeshick}/bin/homeshick";
 in
 {
-  systemd.user.services.homeshick-symlink = lib.mkIf pkgs.stdenv.isLinux {
+  systemd.user.services.homeshick-symlink = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     Unit = {
       Description = "Homeshick symlink dotfiles";
       After = [ "graphical-session-pre.target" ];
@@ -32,7 +32,7 @@ in
     };
   };
 
-  launchd.agents.homeshick-symlink = lib.mkIf pkgs.stdenv.isDarwin {
+  launchd.agents.homeshick-symlink = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     enable = true;
     config = {
       ProgramArguments = [

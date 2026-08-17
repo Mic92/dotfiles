@@ -14,7 +14,7 @@ let
   # On Darwin llm-agents ships the prebuilt release binary, so the source
   # patch can only be applied on Linux.
   herdrPackage =
-    if pkgs.stdenv.isDarwin then
+    if pkgs.stdenv.hostPlatform.isDarwin then
       aiTools.herdr
     else
       aiTools.herdr.overrideAttrs (old: {
@@ -92,7 +92,7 @@ in
 
   # macOS-only profiler wrapper; both the skill and the binary are gated so
   # the Linux home profile doesn't pull in a darwin-only derivation.
-  home.file.".claude/skills/macprof/SKILL.md" = lib.mkIf pkgs.stdenv.isDarwin {
+  home.file.".claude/skills/macprof/SKILL.md" = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     source = ../../pkgs/macprof/SKILL.md;
   };
 
@@ -112,7 +112,7 @@ in
     aiTools.jscpd
     pkgs.pueue
   ]
-  ++ lib.optionals pkgs.stdenv.isDarwin [
+  ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
     selfPkgs.macprof
   ];
 }

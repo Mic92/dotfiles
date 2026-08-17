@@ -64,7 +64,7 @@ in
       kagi-search = micsSkills.kagi-search;
     };
   }
-  // lib.optionalAttrs pkgs.stdenv.isDarwin {
+  // lib.optionalAttrs pkgs.stdenv.hostPlatform.isDarwin {
     alertmanager-bar = pkgs.callPackage ./alertmanager-bar { };
     nostr-chat-bar = pkgs.callPackage ./nostr-chat-bar { };
     macprof = pkgs.callPackage ./macprof { };
@@ -75,7 +75,7 @@ in
     librewolf-macos = pkgs.callPackage ./librewolf-macos { };
     radicle-desktop = pkgs.callPackage ./radicle-desktop { };
   }
-  // lib.optionalAttrs pkgs.stdenv.isLinux {
+  // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
     groups-relay = pkgs.callPackage ./groups-relay { };
     route96 = pkgs.callPackage ./route96 { };
     live-text = pkgs.python3.pkgs.callPackage ./live-text { };
