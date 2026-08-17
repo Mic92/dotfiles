@@ -27,6 +27,8 @@ in
     package = self.inputs.radicle-mirror.packages.${pkgs.system}.default;
     addr = "127.0.0.1:${toString port}";
     ghAppId = 4627581;
+    p2pListen = [ "0.0.0.0:8776" ];
+    p2pExternalAddresses = [ "radicle.thalheim.io:8776" ];
     mirroredForks = [
       "Mic92/nixpkgs"
       "Mic92/nix-vm-test"
@@ -43,6 +45,9 @@ in
     "webhook-secret:${gen.radicle-mirror-github.files.webhook-secret.path}"
     "radicle-key:${gen.radicle-mirror-key.files.radicle-key.path}"
   ];
+
+  # radicle P2P, so peers can fetch from radicle.thalheim.io directly
+  networking.firewall.allowedTCPPorts = [ 8776 ];
 
   services.nginx.virtualHosts.${domain} = {
     useACMEHost = "thalheim.io";

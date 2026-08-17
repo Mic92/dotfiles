@@ -65,7 +65,7 @@
     ./modules/paperless.nix
     ./modules/tribuchet.nix
     ./modules/pinchflat.nix
-    #./modules/radicle.nix
+    ./modules/radicle.nix
     ./modules/phpldapadmin.nix
     ./modules/postfix.nix
     ./modules/postgresql.nix
