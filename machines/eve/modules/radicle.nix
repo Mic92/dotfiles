@@ -120,5 +120,21 @@ in
       proxyPass = "http://127.0.0.1:${toString apiPort}";
       recommendedProxySettings = true;
     };
+    # Raw files and tarballs (/raw/<rid>/archive/<ref>)
+    locations."/raw/" = {
+      proxyPass = "http://127.0.0.1:${toString apiPort}";
+      recommendedProxySettings = true;
+    };
+    # Git smart-http clone. The rad: prefix and .git suffix are both
+    # optional, aliases like /heartwood.git work too.
+    locations."~ ^/((rad:)?z[a-zA-Z0-9]+|[^/]+\\.git)(/|$)" = {
+      proxyPass = "http://127.0.0.1:${toString apiPort}";
+      recommendedProxySettings = true;
+      extraConfig = ''
+        proxy_buffering off;
+        proxy_request_buffering off;
+        client_max_body_size 0;
+      '';
+    };
   };
 }
