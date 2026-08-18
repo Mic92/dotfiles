@@ -9,6 +9,7 @@
   imports = [
     ./builder.nix
     self.inputs.fast-nix-gc.nixosModules.default
+    self.inputs.nix-tarmac.nixosModules.default
   ];
 
   services.fast-nix-gc = {

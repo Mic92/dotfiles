@@ -802,6 +802,26 @@
         "url": "https://git.clan.lol/clan/nix-select/archive/main.tar.gz"
       }
     },
+    "nix-tarmac": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1787043500,
+        "narHash": "sha256-Ym8L74Cq3rM6o0ckxeimKmTJVuq/ecW7xTSm5DKQ7HQ=",
+        "owner": "Mic92",
+        "repo": "nix-tarmac",
+        "rev": "8beb29b82ba38d05c286b7ccf7949b0ef3a91c0f",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "nix-tarmac",
+        "type": "github"
+      }
+    },
     "nix-tree-rs": {
       "inputs": {
         "flake-parts": [
@@ -1030,6 +1050,7 @@
         "nix-diff-rs": "nix-diff-rs",
         "nix-grpc-store": "nix-grpc-store",
         "nix-index-database": "nix-index-database",
+        "nix-tarmac": "nix-tarmac",
         "nix-tree-rs": "nix-tree-rs",
         "nixbot": "nixbot",
         "nixos-hardware": "nixos-hardware",

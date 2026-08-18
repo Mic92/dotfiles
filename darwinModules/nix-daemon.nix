@@ -1,5 +1,7 @@
 { pkgs, self, ... }:
 {
+  imports = [ self.inputs.nix-tarmac.darwinModules.default ];
+
   # this extends srvos's common settings
   nix = {
     gc.automatic = true;
