@@ -29,6 +29,9 @@
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
 
+    nix-tarmac.url = "github:Mic92/nix-tarmac";
+    nix-tarmac.inputs.nixpkgs.follows = "nixpkgs";
+
     fast-nix-gc.url = "github:Mic92/fast-nix-gc";
     fast-nix-gc.inputs.nixpkgs.follows = "nixpkgs";
     fast-nix-gc.inputs.treefmt-nix.follows = "treefmt-nix";
