@@ -5,6 +5,10 @@ let
   domain = "radicle.thalheim.io";
   apiPort = 8080;
   meiliUrl = "http://127.0.0.1:${toString config.services.meilisearch.listenPort}";
+  # Debounce reindexing until the fix is in a radicle-httpd release.
+  radicle-httpd = pkgs.radicle-httpd.overrideAttrs (old: {
+    patches = (old.patches or [ ]) ++ [ ./radicle-search-debounce.patch ];
+  });
 in
 {
   # repo search index for the explorer
@@ -19,7 +23,7 @@ in
     ];
 
     serviceConfig = {
-      ExecStart = "${pkgs.radicle-httpd}/bin/radicle-search";
+      ExecStart = "${radicle-httpd}/bin/radicle-search";
       Environment = [
         "RAD_HOME=/var/lib/radicle-mirror/rad"
         "RADICLE_SEARCH_MEILI_URL=${meiliUrl}"
@@ -57,7 +61,7 @@ in
     after = [ "radicle-mirror.service" ];
 
     serviceConfig = {
-      ExecStart = "${pkgs.radicle-httpd}/bin/radicle-httpd --listen 127.0.0.1:${toString apiPort}";
+      ExecStart = "${radicle-httpd}/bin/radicle-httpd --listen 127.0.0.1:${toString apiPort}";
       Environment = [
         "RAD_HOME=/var/lib/radicle-mirror/rad"
         "RADICLE_SEARCH_URL=${meiliUrl}"

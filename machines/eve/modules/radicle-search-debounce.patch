@@ -1,0 +1,146 @@
+From d682f1b19d15734b78af91e6fd7d81599dcd401b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Tue, 18 Aug 2026 10:05:56 +0200
+Subject: [PATCH] radicle-search: Ignore seed events and debounce reindexing
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+A peer with a bad connection kept reconnecting and re-announcing all
+its seeded repos, ~27k SeedDiscovered/SeedDropped events per hour on
+my node. Every event triggered a meili upsert until meilisearch sat
+at 100% cpu and its task queue timed out.
+
+Seed events only affect the seedingCount ranking field and the
+periodic rescan updates that anyway, so drop them. Batch the
+remaining events with a 30s debounce (RADICLE_SEARCH_DEBOUNCE_SECS).
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ crates/radicle-search/src/config.rs        |  6 +++++
+ crates/radicle-search/src/indexer.rs       | 27 +++++++++++++++++++---
+ crates/radicle-search/src/indexer/event.rs | 18 ++++++++++++---
+ 3 files changed, 45 insertions(+), 6 deletions(-)
+
+diff --git a/crates/radicle-search/src/config.rs b/crates/radicle-search/src/config.rs
+index 5d895e6c..2af5ea57 100644
+--- a/crates/radicle-search/src/config.rs
++++ b/crates/radicle-search/src/config.rs
+@@ -7,6 +7,7 @@ const DEFAULT_MEILI_URL: &str = "http://localhost:7700";
+ const DEFAULT_INDEX_NAME: &str = "repos";
+ const DEFAULT_RESCAN_INTERVAL_SECS: u64 = 3600;
+ const DEFAULT_RECONNECT_BACKOFF_SECS: u64 = 5;
++const DEFAULT_DEBOUNCE_SECS: u64 = 30;
+ 
+ #[derive(Debug, Clone)]
+ pub struct Config {
+@@ -15,6 +16,8 @@ pub struct Config {
+     pub index_name: String,
+     pub rescan_interval: Duration,
+     pub reconnect_backoff: Duration,
++    /// How long to coalesce per-repo events before reindexing.
++    pub debounce_interval: Duration,
+ }
+ 
+ impl Config {
+@@ -32,6 +35,8 @@ impl Config {
+             "RADICLE_SEARCH_RECONNECT_BACKOFF_SECS",
+             DEFAULT_RECONNECT_BACKOFF_SECS,
+         )?;
++        let debounce_interval =
++            duration_from_env("RADICLE_SEARCH_DEBOUNCE_SECS", DEFAULT_DEBOUNCE_SECS)?;
+ 
+         Ok(Self {
+             meili_url,
+@@ -39,6 +44,7 @@ impl Config {
+             index_name,
+             rescan_interval,
+             reconnect_backoff,
++            debounce_interval,
+         })
+     }
+ }
+diff --git a/crates/radicle-search/src/indexer.rs b/crates/radicle-search/src/indexer.rs
+index 8f585d24..7970d90a 100644
+--- a/crates/radicle-search/src/indexer.rs
++++ b/crates/radicle-search/src/indexer.rs
+@@ -270,6 +270,14 @@ impl Indexer {
+         let mut rescan_timer = tokio::time::interval(self.config.rescan_interval);
+         rescan_timer.tick().await;
+ 
++        // Flapping peers re-announce their whole seed inventory on every
++        // reconnect. Coalesce events per repo so we don't do one meili
++        // upsert per event.
++        let mut pending = HashSet::new();
++        let mut debounce_timer = tokio::time::interval(self.config.debounce_interval);
++        debounce_timer.set_missed_tick_behavior(tokio::time::MissedTickBehavior::Delay);
++        debounce_timer.tick().await;
++
+         loop {
+             tokio::select! {
+                 _ = shutdown.changed() => break,
+@@ -295,9 +303,22 @@ impl Indexer {
+                             tracing::info!("discovered new local seed: {rid}");
+                         }
+                     }
+-                    tracing::info!("reindex {rid} (event: {})", event::event_kind(&event));
+-                    if let Err(e) = self.reindex(rid).await {
+-                        tracing::warn!("reindex {} failed: {e:#}", rid);
++                    if pending.insert(rid) {
++                        tracing::debug!(
++                            "queued reindex of {rid} (event: {})",
++                            event::event_kind(&event)
++                        );
++                    }
++                }
++                _ = debounce_timer.tick() => {
++                    if pending.is_empty() {
++                        continue;
++                    }
++                    tracing::info!("reindexing {} repositories (debounced)", pending.len());
++                    for rid in pending.drain().collect::<Vec<_>>() {
++                        if let Err(e) = self.reindex(rid).await {
++                            tracing::warn!("reindex {} failed: {e:#}", rid);
++                        }
+                     }
+                 }
+                 _ = rescan_timer.tick() => {
+diff --git a/crates/radicle-search/src/indexer/event.rs b/crates/radicle-search/src/indexer/event.rs
+index 9435323c..bf02d60b 100644
+--- a/crates/radicle-search/src/indexer/event.rs
++++ b/crates/radicle-search/src/indexer/event.rs
+@@ -14,9 +14,11 @@ pub(super) fn classify_event(event: &Event) -> Option<(RepoId, EventCategory)> {
+         | Event::CanonicalRefUpdated { rid, .. }
+         | Event::RefsFetched { rid, .. }
+         | Event::RefsSynced { rid, .. } => Some((*rid, EventCategory::Replication)),
+-        Event::SeedDiscovered { rid, .. }
+-        | Event::SeedDropped { rid, .. }
+-        | Event::RefsAnnounced { rid, .. } => Some((*rid, EventCategory::Gossip)),
++        Event::RefsAnnounced { rid, .. } => Some((*rid, EventCategory::Gossip)),
++        // Seed events only feed the seedingCount ranking field, which the
++        // periodic rescan refreshes anyway. Any peer can emit them at will
++        // by flapping its connection, so reindexing on them is a DoS vector.
++        Event::SeedDiscovered { .. } | Event::SeedDropped { .. } => None,
+         _ => None,
+     }
+ }
+@@ -62,6 +64,16 @@ pub(super) fn event_action(category: EventCategory, is_locally_seeded: bool) ->
+ mod test {
+     use super::*;
+ 
++    #[test]
++    fn seed_events_are_ignored() {
++        let rid = "rad:z4V1sjrXqjvFdnCUbxPFqd5p4DtH5".parse().unwrap();
++        let nid = "z6MknSLrJoTcukLrE435hVNQT4JUhbvWLX4kUzqkEStBU8Vi"
++            .parse()
++            .unwrap();
++        assert!(classify_event(&Event::SeedDiscovered { rid, nid }).is_none());
++        assert!(classify_event(&Event::SeedDropped { rid, nid }).is_none());
++    }
++
+     #[test]
+     fn gossip_not_seeded_is_skipped() {
+         assert_eq!(
+-- 
+2.55.0
+
