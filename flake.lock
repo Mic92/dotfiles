@@ -809,11 +809,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787043500,
-        "narHash": "sha256-Ym8L74Cq3rM6o0ckxeimKmTJVuq/ecW7xTSm5DKQ7HQ=",
+        "lastModified": 1787043644,
+        "narHash": "sha256-k88HtGGlO8/8EvGf6kHXGfpt/xF4vQrqPFVpWaerDqw=",
         "owner": "Mic92",
         "repo": "nix-tarmac",
-        "rev": "8beb29b82ba38d05c286b7ccf7949b0ef3a91c0f",
+        "rev": "6400c9ed18dff177beaaad33253e4b263d184853",
         "type": "github"
       },
       "original": {
