@@ -3,6 +3,9 @@
 token_command = "rbw get nixbot.thalheim.io/nbo"
 remotes = ["github.com/Mic92/*"]
 
+["https://buildbot.dse.in.tum.de"]
+remotes = ["github.com/TUM-DSE/*"]
+
 ["https://ci.geninf.io"]
 token_command = "rbw get ci.geninf.io/nbo"
 remotes = ["git.geninf.io/*"]
