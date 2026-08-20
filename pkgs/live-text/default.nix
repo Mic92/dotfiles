@@ -62,6 +62,7 @@ buildPythonApplication {
     wrapProgram $out/bin/live-text \
       "''${gappsWrapperArgs[@]}" \
       --prefix GI_TYPELIB_PATH : "${gtk4-layer-shell}/lib/girepository-1.0" \
+      --prefix LD_PRELOAD : "${gtk4-layer-shell}/lib/libgtk4-layer-shell.so" \
       --prefix PATH : "${
         lib.makeBinPath [
           grim
