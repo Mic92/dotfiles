@@ -102,6 +102,19 @@ _URL_RE = re.compile(
     r"|[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"
 )
 
+
+def _trim_url(url: str) -> str:
+    """Strip punctuation that OCR'd prose attaches to a URL, e.g.
+    "(https://foo.com)" or a sentence-ending period."""
+    url = url.rstrip(".,;:!?'\"")
+    # Only strip a closing bracket when it is unbalanced, so URLs like
+    # https://en.wikipedia.org/wiki/Foo_(bar) survive.
+    for open_c, close_c in (("(", ")"), ("[", "]"), ("{", "}")):
+        while url.endswith(close_c) and url.count(close_c) > url.count(open_c):
+            url = url[:-1].rstrip(".,;:!?'\"")
+    return url
+
+
 # -- data types ---------------------------------------------------------------
 
 
@@ -317,6 +330,10 @@ class LiveTextOverlay:
     def _apply_error(self, message: str) -> bool:
         """GLib.idle callback: store error and redraw."""
         self._errors.append(message)
+        # Stop the "Detecting text…" spinner — no results are coming.
+        if self._spinner_timer is not None:
+            GLib.source_remove(self._spinner_timer)
+            self._spinner_timer = None
         if self._activated:
             self._drawing_area.queue_draw()
         return False
@@ -1229,13 +1246,13 @@ class LiveTextOverlay:
         if word_text:
             match = _URL_RE.search(word_text)
             if match:
-                return match.group(0)
+                return _trim_url(match.group(0))
 
         # Check selected codes
         for ci in self.selected_codes:
             match = _URL_RE.search(self.codes[ci].data)
             if match:
-                return match.group(0)
+                return _trim_url(match.group(0))
 
         # Check code under cursor
         ix, iy = self._widget_to_image(x, y)
@@ -1243,7 +1260,7 @@ class LiveTextOverlay:
         if hit_code is not None:
             match = _URL_RE.search(self.codes[hit_code].data)
             if match:
-                return match.group(0)
+                return _trim_url(match.group(0))
 
         return None
 
@@ -1377,12 +1394,17 @@ class LiveTextOverlay:
                 self._text_input = self._text_input[:-1]
                 self._drawing_area.queue_draw()
                 return True
+            if ctrl:
+                return True  # swallow chords; don't insert literal chars
             char = Gdk.keyval_to_unicode(keyval)
             if char > 0:
                 self._text_input += chr(char)
                 self._drawing_area.queue_draw()
                 return True
             return False
+
+        # Normalize so shortcuts work with CapsLock (uppercase keyvals)
+        keyval = Gdk.keyval_to_lower(keyval)
 
         if keyval == Gdk.KEY_Escape:
             # If we have unsaved annotations, require double-Escape to quit
@@ -1423,7 +1445,7 @@ class LiveTextOverlay:
             return True
 
         # Redo: Ctrl+Shift+Z or Ctrl+Y
-        if ctrl and shift and keyval == Gdk.KEY_Z:
+        if ctrl and shift and keyval == Gdk.KEY_z:
             if self._redo_stack:
                 self.annotations.append(self._redo_stack.pop())
                 self._drawing_area.queue_draw()

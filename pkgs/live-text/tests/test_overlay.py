@@ -367,3 +367,66 @@ class TestDetectUrl:
         # _widget_to_image. Without a real image surface, the transform
         # is identity (scale=1, offset=0) so (50,50) hits the code.
         assert url is not None
+
+
+class TestKeyboard:
+    """Regression tests for keyboard handling edge cases."""
+
+    def test_ctrl_chord_not_inserted_into_text_annotation(self) -> None:
+        """Ctrl+C during text editing must not append a literal 'c'."""
+        from gi.repository import Gdk
+
+        overlay = _make_overlay()
+        overlay._drawing_area = MagicMock()
+        overlay._text_editing = True
+        overlay._text_input = "hi"
+
+        overlay._on_key_pressed(
+            MagicMock(), Gdk.KEY_c, 0, Gdk.ModifierType.CONTROL_MASK
+        )
+        assert overlay._text_input == "hi"
+
+    def test_undo_works_with_capslock(self) -> None:
+        """CapsLock produces uppercase keyvals; Ctrl+Z must still undo."""
+        from gi.repository import Gdk
+
+        overlay = _make_overlay()
+        overlay._drawing_area = MagicMock()
+        ann = Annotation(tool=Tool.RECT, color=(1, 0, 0), x1=0, y1=0, x2=10, y2=10)
+        overlay.annotations = [ann]
+
+        overlay._on_key_pressed(
+            MagicMock(), Gdk.KEY_Z, 0, Gdk.ModifierType.CONTROL_MASK
+        )
+        assert overlay.annotations == []
+        assert overlay._redo_stack == [ann]
+
+
+class TestUrlTrailingPunctuation:
+    def test_parenthesized_url_excludes_closing_paren(self) -> None:
+        lines = [LineBox(words=(_w("(https://example.com)", 10, 10, 150, 15),))]
+        overlay = _make_overlay(lines=lines)
+        overlay.selected_words = {(0, 0)}
+
+        assert overlay._detect_url(0, 0) == "https://example.com"
+
+    def test_trailing_dot_stripped(self) -> None:
+        lines = [LineBox(words=(_w("https://example.com.", 10, 10, 150, 15),))]
+        overlay = _make_overlay(lines=lines)
+        overlay.selected_words = {(0, 0)}
+
+        assert overlay._detect_url(0, 0) == "https://example.com"
+
+
+class TestSpinnerOnError:
+    def test_spinner_stops_when_worker_fails(self) -> None:
+        overlay = _make_overlay()
+        overlay._drawing_area = MagicMock()
+        overlay._activated = True
+        overlay._spinner_timer = 42
+
+        with patch("live_text.overlay.GLib.source_remove") as source_remove:
+            overlay._apply_error("OCR exploded")
+
+        source_remove.assert_called_once_with(42)
+        assert overlay._spinner_timer is None
