@@ -933,15 +933,17 @@ class LiveTextOverlay:
                 return
             # Click was outside menu — fall through so the click is not lost
 
+        # Commit pending text first so a toolbar click doesn't drop it
+        if self._text_editing:
+            self._commit_text()
+            alloc = self._drawing_area.get_allocation()
+            if y < alloc.height - TOOLBAR_H:
+                return
+
         # Toolbar click?
         alloc = self._drawing_area.get_allocation()
         if y >= alloc.height - TOOLBAR_H:
             self._handle_toolbar_click(x)
-            return
-
-        # Commit text if editing
-        if self._text_editing:
-            self._commit_text()
             return
 
         if self.tool == Tool.SELECT:
@@ -1279,6 +1281,8 @@ class LiveTextOverlay:
             self._select_all()
         elif action.startswith("select_line:"):
             li = int(action.split(":")[1])
+            if li >= len(self.lines):  # OCR results replaced while menu open
+                return
             self._switch_tool(Tool.SELECT)
             self.selected_words = {(li, wi) for wi in range(len(self.lines[li].words))}
             self._drawing_area.queue_draw()
@@ -1566,8 +1570,10 @@ class LiveTextOverlay:
         cr = cairo.Context(out)
         cr.set_source_surface(self._image_surface, 0, 0)
         cr.paint()
+        # On-screen fit scale keeps saved stroke widths WYSIWYG
+        scale = self._get_base_scale()[0] if self._activated else 1.0
         for ann in self.annotations:
-            self._draw_annotation(cr, ann, 1.0)
+            self._draw_annotation(cr, ann, scale)
         return out
 
     def _copy_annotated_image(self) -> None:

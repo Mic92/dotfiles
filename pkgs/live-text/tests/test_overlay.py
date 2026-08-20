@@ -430,3 +430,58 @@ class TestSpinnerOnError:
 
         source_remove.assert_called_once_with(42)
         assert overlay._spinner_timer is None
+
+
+class TestToolbarClickDuringTextEdit:
+    def test_toolbar_click_commits_pending_text(self) -> None:
+        """Switching tools via toolbar must not silently drop typed text."""
+        overlay = _make_overlay()
+        alloc = MagicMock()
+        alloc.width = 800
+        alloc.height = 600
+        overlay._drawing_area = MagicMock()
+        overlay._drawing_area.get_allocation.return_value = alloc
+        overlay._text_editing = True
+        overlay._text_input = "note"
+        overlay._text_pos = (10.0, 20.0)
+
+        # Click inside the toolbar strip at the bottom
+        overlay._on_drag_begin(MagicMock(), 10.0, 590.0)
+
+        assert not overlay._text_editing
+        assert [a.text for a in overlay.annotations] == ["note"]
+
+
+class TestStaleMenuAction:
+    def test_select_line_with_stale_index_does_not_crash(self) -> None:
+        """OCR results may be replaced while the menu is open."""
+        overlay = _make_overlay(lines=_make_lines())
+        overlay._drawing_area = MagicMock()
+
+        overlay.lines = []  # results replaced behind the menu's back
+        overlay._execute_menu_action("select_line:2")
+
+        assert overlay.selected_words == set()
+
+
+class TestRenderImageScale:
+    def test_annotations_render_at_displayed_width(self) -> None:
+        """Saved image strokes must match what the user saw on screen."""
+        import cairo
+
+        overlay = _make_overlay()
+        overlay._image_surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, 100, 100)
+        alloc = MagicMock()
+        alloc.width = 50
+        alloc.height = 90  # usable height 90 - 40 toolbar = 50 -> base scale 0.5
+        overlay._drawing_area = MagicMock()
+        overlay._drawing_area.get_allocation.return_value = alloc
+        overlay._activated = True
+        overlay.annotations = [
+            Annotation(tool=Tool.RECT, color=(1, 0, 0), x1=0, y1=0, x2=10, y2=10)
+        ]
+
+        with patch.object(overlay, "_draw_annotation") as draw_ann:
+            overlay._render_image()
+
+        assert draw_ann.call_args[0][2] == 0.5
