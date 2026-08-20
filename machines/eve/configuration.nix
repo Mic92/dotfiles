@@ -35,7 +35,7 @@
     ./modules/vaultwarden.nix
     ./modules/nixbot.nix
     ./modules/calendar-bot/configuration.nix
-    ./modules/dendrite.nix
+    ./modules/synapse.nix
     ./modules/disko.nix
     ./modules/dovecot.nix
     ./modules/herdr-eternal.nix
