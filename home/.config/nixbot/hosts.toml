@@ -1,3 +1,12 @@
 ["https://nixbot.thalheim.io"]
 # API token from https://nixbot.thalheim.io/settings, stored in bitwarden
 token_command = "rbw get nixbot.thalheim.io/nbo"
+remotes = ["github.com/Mic92/*"]
+
+["https://ci.geninf.io"]
+token_command = "rbw get ci.geninf.io/nbo"
+remotes = ["git.geninf.io/*"]
+
+["https://nixbot.numtide.com"]
+token_command = "rbw get nixbot.numtide.com/nbo"
+remotes = ["github.com/numtide/*"]
