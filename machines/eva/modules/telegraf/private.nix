@@ -176,10 +176,7 @@ in
         response_string_match = "Syncthing";
       }
       {
-        urls = [
-          "https://git.thalheim.io"
-          "https://git.thalheim.io/Mic92/stockholm"
-        ];
+        urls = [ "https://git.thalheim.io" ];
         tags.host = "eve";
         tags.org = "private";
         response_string_match = "Gitea";
