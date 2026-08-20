@@ -39,6 +39,9 @@ def _no_worker_pool() -> object:
         def shutdown(self, *_a: object, **_kw: object) -> None:
             pass
 
+        def terminate_workers(self) -> None:
+            pass
+
     with patch("live_text.main.ProcessPoolExecutor", _DummyPool):
         yield
 

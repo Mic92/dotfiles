@@ -7,7 +7,7 @@ name = "live-text"
 version = "0.1.0"
 description = "Interactive OCR overlay for Wayland - select and copy text from your screen"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 license = {text = "MIT"}
 dependencies = [
     "PyGObject",
@@ -34,7 +34,7 @@ python_files = ["test_*.py"]
 target-version = "py313"
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.14"
 
 [[tool.mypy.overrides]]
 module = ["gi", "gi.*", "cairo", "pyzbar", "pyzbar.*", "rapidocr", "PIL", "PIL.*", "pytest"]

@@ -57,22 +57,14 @@ def _capture_geometry(
             check=True,
             capture_output=True,
         )
-    except FileNotFoundError as e:
-        print(f"Error: required tool not found: {e}", file=sys.stderr)
-        sys.exit(1)
-    except subprocess.CalledProcessError as e:
+    except (FileNotFoundError, subprocess.CalledProcessError) as e:
         print(f"Error capturing screenshot: {e}", file=sys.stderr)
         sys.exit(1)
     return path
 
 
 def _slurp_geometry(slurp_cmd: str, stdin: str | None = None) -> str:
-    """Run slurp and return the selected geometry string.
-
-    Args:
-        slurp_cmd: Path to the slurp binary.
-        stdin: Optional predefined rectangles to feed to slurp.
-    """
+    """Run slurp and return the selected geometry string."""
     try:
         result = subprocess.run(
             [slurp_cmd],
@@ -104,10 +96,7 @@ def _capture_screenshot(stack: contextlib.ExitStack, args: argparse.Namespace) -
     try:
         output = args.output or get_focused_output()
         path = capture_full_screen(grim_cmd=args.grim, output=output)
-    except FileNotFoundError as e:
-        print(f"Error: required tool not found: {e}", file=sys.stderr)
-        sys.exit(1)
-    except subprocess.CalledProcessError as e:
+    except (FileNotFoundError, subprocess.CalledProcessError) as e:
         print(f"Error capturing screenshot: {e}", file=sys.stderr)
         sys.exit(1)
     stack.callback(path.unlink, missing_ok=True)
@@ -140,28 +129,19 @@ def _capture_window(stack: contextlib.ExitStack, args: argparse.Namespace) -> Pa
 def _run_overlay(screenshot_path: Path, wl_copy_cmd: str) -> None:
     """Open the overlay UI with background OCR and barcode scanning.
 
-    OCR runs in a separate *process* rather than a thread.  RapidOCR's
-    pre/post-processing (numpy, opencv, pyclipper) runs a lot of Python
-    bytecode that holds the GIL — on a 2880×1920 screenshot this adds
-    ~3.5 s on top of the 7.8 s inference time and visibly stalls the
-    GTK main loop so the overlay window never appears.  A subprocess
-    has its own GIL so the UI is responsive from the first frame and
-    OCR finishes ~45 % faster.
+    OCR runs in a separate process: RapidOCR holds the GIL for seconds,
+    which would stall the GTK main loop before the window appears.
     """
     from .barcode import CodeBox, scan_codes
     from .ocr import LineBox, run_ocr
 
-    # Fork before touching GTK so the children don't inherit a Wayland
-    # socket or any GTK-internal threads.  Using an explicit "fork"
-    # context keeps startup fast (~10 ms vs ~300 ms for "spawn") and
-    # silences the 3.14+ default-method deprecation warning.
+    # Fork before importing GTK so children don't inherit Wayland/GTK
+    # state; "fork" also starts ~30x faster than "spawn".
     ctx = multiprocessing.get_context("fork")
     pool = ProcessPoolExecutor(max_workers=2, mp_context=ctx)
     ocr_future = pool.submit(run_ocr, screenshot_path)
     barcode_future = pool.submit(scan_codes, screenshot_path)
 
-    # Importing overlay pulls in GTK/cairo; defer until after the fork
-    # so the child processes don't carry GTK state.
     from .overlay import LiveTextOverlay
 
     overlay = LiveTextOverlay(
@@ -191,12 +171,10 @@ def _run_overlay(screenshot_path: Path, wl_copy_cmd: str) -> None:
     ocr_future.add_done_callback(_on_ocr_done)
     barcode_future.add_done_callback(_on_barcode_done)
 
-    # ProcessPoolExecutor workers ignore SIGINT so Ctrl-C only reaches
-    # the parent; kill the whole process group and reap the children so
-    # the user isn't stuck waiting for a 10 s OCR run to finish.
+    # Workers ignore SIGINT; terminate them so Ctrl-C doesn't wait
+    # for a long OCR run to finish.
     def _on_sigint(_signum: int, _frame: FrameType | None) -> None:
-        for p in pool._processes.values():
-            p.terminate()
+        pool.terminate_workers()
         pool.shutdown(wait=False, cancel_futures=True)
         sys.exit(130)
 
@@ -205,18 +183,13 @@ def _run_overlay(screenshot_path: Path, wl_copy_cmd: str) -> None:
     try:
         overlay.run()
     finally:
-        for p in pool._processes.values():
-            if p.is_alive():
-                p.terminate()
+        pool.terminate_workers()
         pool.shutdown(wait=False, cancel_futures=True)
 
 
 def _setup_log_file(log_file: str) -> None:
-    """Redirect stdout and stderr to a log file for debugging.
-
-    Uses Python-level redirection instead of dup2 to avoid interfering
-    with subprocess pipes.
-    """
+    """Redirect stdout/stderr to a log file (Python-level, not dup2,
+    to avoid interfering with subprocess pipes)."""
     log_path = Path(log_file)
     log_path.parent.mkdir(parents=True, exist_ok=True)
     fh = open(log_path, "a")  # noqa: SIM115
@@ -257,7 +230,6 @@ def main() -> None:
     parser.add_argument("--grim", default="grim")
     parser.add_argument("--slurp", default="slurp")
     parser.add_argument("--wl-copy", default="wl-copy")
-    parser.add_argument("--notify-send", default="notify-send")
     parser.add_argument("--output", default=None)
 
     args = parser.parse_args()
