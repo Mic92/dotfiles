@@ -5,9 +5,18 @@ let
   domain = "radicle.thalheim.io";
   apiPort = 8080;
   meiliUrl = "http://127.0.0.1:${toString config.services.meilisearch.listenPort}";
-  # Debounce reindexing until the fix is in a radicle-httpd release.
+  # Patches submitted upstream but not yet in a release.
   radicle-httpd = pkgs.radicle-httpd.overrideAttrs (old: {
-    patches = (old.patches or [ ]) ++ [ ./radicle-search-debounce.patch ];
+    patches = (old.patches or [ ]) ++ [
+      ./radicle-search-debounce.patch
+      ./radicle-httpd-zstd-archive.patch
+    ];
+    # tar.zst archives shell out to zstd.
+    postFixup = (old.postFixup or "") + ''
+      for program in $out/bin/*; do
+        wrapProgram "$program" --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.zstd ]}
+      done
+    '';
   });
 in
 {
