@@ -1,4 +1,4 @@
-From 8d7811781f07c30aa5271760d66d8498aba2462e Mon Sep 17 00:00:00 2001
+From 034f9f34a03f8f23ab492826635fdeb83cdd9a3c Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
 Date: Wed, 19 Aug 2026 21:01:12 +0200
 Subject: [PATCH] httpd: Add tar.zst archive downloads
@@ -13,11 +13,11 @@ register one via tar.tar.zst.command. Needs the zstd binary in PATH.
 (cherry picked from commit 24e29cdbf8eee1a71fec5a997b0762d843cbedab)
 Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
 ---
- crates/radicle-httpd/src/raw.rs | 29 +++++++++++++++++++++++++++++
- 1 file changed, 29 insertions(+)
+ crates/radicle-httpd/src/raw.rs | 38 +++++++++++++++++++++++++++++++++
+ 1 file changed, 38 insertions(+)
 
 diff --git a/crates/radicle-httpd/src/raw.rs b/crates/radicle-httpd/src/raw.rs
-index 71d3b43d..1c896fab 100644
+index 71d3b43d..e66d0716 100644
 --- a/crates/radicle-httpd/src/raw.rs
 +++ b/crates/radicle-httpd/src/raw.rs
 @@ -31,6 +31,7 @@ const MAX_BLOB_SIZE: usize = 10_485_760;
@@ -73,12 +73,21 @@ index 71d3b43d..1c896fab 100644
      command
          .arg("archive")
          .arg(format!("--format={}", format.as_str()));
-@@ -392,6 +403,24 @@ mod routes {
+@@ -392,6 +403,33 @@ mod routes {
          assert_eq!(response.status(), StatusCode::NOT_FOUND);
      }
  
 +    #[tokio::test]
 +    async fn test_archive_tar_zst() {
++        // Git shells out to zstd for this format.
++        if std::process::Command::new("zstd")
++            .arg("--version")
++            .output()
++            .is_err()
++        {
++            eprintln!("skipping test: zstd not found in PATH");
++            return;
++        }
 +        let tmp = tempfile::tempdir().unwrap();
 +        let ctx = test::seed(tmp.path());
 +        let app = super::router(ctx.profile().to_owned(), Arc::new(HashMap::new()));
