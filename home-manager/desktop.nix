@@ -13,18 +13,8 @@
     ./modules/ai.nix
     ./modules/kimai.nix
     ./modules/mail.nix
+    ./modules/radicle.nix
   ];
-
-  # Keep the radicle node running so patches and follows stay in sync.
-  systemd.user.services.radicle-node = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
-    Unit.Description = "Radicle node";
-    Service = {
-      ExecStart = "${pkgs.radicle-node}/bin/radicle-node --force";
-      Restart = "on-failure";
-      RestartSec = 5;
-    };
-    Install.WantedBy = [ "default.target" ];
-  };
 
   # herdr-eternal target for eve; authenticate with:
   #   herdr-eternal-ssh login eve
@@ -82,7 +72,7 @@
       hyperfine
 
       q
-      rbw
+      (lib.hiPrio self.packages.${pkgs.stdenv.hostPlatform.system}.rbw)
       self.packages.${pkgs.stdenv.hostPlatform.system}.rbw-pinentry
       # to fix xdg-open
       glib
@@ -101,11 +91,7 @@
       nerd-fonts.fira-code
       nerd-fonts.jetbrains-mono
       inxi
-      radicle-node
       inputs.niks3.packages.${pkgs.stdenv.hostPlatform.system}.niks3
-    ]
-    ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
-      radicle-desktop
     ]
     ++ lib.optionals (pkgs.stdenv.hostPlatform.system == "x86_64-linux") [
       # terminfo conflict with ncurses
