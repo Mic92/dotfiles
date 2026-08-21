@@ -8,10 +8,13 @@ let
   # Patches submitted upstream but not yet in a release.
   radicle-httpd = pkgs.radicle-httpd.overrideAttrs (old: {
     patches = (old.patches or [ ]) ++ [
+      # https://radicle.network/nodes/iris.radicle.network/rad:z4V1sjrXqjvFdnCUbxPFqd5p4DtH5/patches/33f48a8635f7090e894ca66a64f53c277768fe77
       ./radicle-search-debounce.patch
+      # https://radicle.network/nodes/iris.radicle.network/rad:z4V1sjrXqjvFdnCUbxPFqd5p4DtH5/patches/33cde5aa6807e87ffe4e6880fe6b664895ee6230
       ./radicle-httpd-zstd-archive.patch
     ];
-    # tar.zst archives shell out to zstd.
+    # tar.zst archives shell out to zstd; also needed in checkPhase.
+    nativeCheckInputs = (old.nativeCheckInputs or [ ]) ++ [ pkgs.zstd ];
     postFixup = (old.postFixup or "") + ''
       for program in $out/bin/*; do
         wrapProgram "$program" --prefix PATH : ${pkgs.lib.makeBinPath [ pkgs.zstd ]}

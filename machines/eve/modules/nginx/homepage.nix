@@ -23,7 +23,7 @@
       locations."=/.well-known/matrix/client".extraConfig = ''
         add_header Content-Type application/json;
         add_header Access-Control-Allow-Origin *;
-        return 200 '{"m.homeserver": {"base_url": "https://matrix.thalheim.io"}}';
+        return 200 '{"m.homeserver": {"base_url": "https://matrix.thalheim.io"}, "org.matrix.msc4143.rtc_foci": [{"type": "livekit", "livekit_service_url": "https://matrix.thalheim.io/livekit/jwt"}]}';
       '';
       extraConfig = ''
         charset utf-8;

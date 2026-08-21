@@ -141,6 +141,18 @@
           lifespan = "herdr-eternal";
         }
         {
+          client_id = "synapse";
+          client_name = "Matrix (Synapse)";
+          client_secret = config.clan.core.vars.generators.synapse-oidc.files.client-secret-hash.value;
+          redirect_uris = [ "https://matrix.thalheim.io/_synapse/client/oidc/callback" ];
+          scopes = [
+            "openid"
+            "email"
+            "profile"
+          ];
+          authorization_policy = "one_factor";
+        }
+        {
           client_id = "punchcard";
           client_name = "Punchcard";
           client_secret = config.clan.core.vars.generators.punchcard-oidc.files.client-secret-hash.value;
