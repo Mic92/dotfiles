@@ -19,6 +19,7 @@ in
       server_name = "thalheim.io";
       public_baseurl = "https://${nginx-vhost}";
       enable_registration = false;
+      password_config.enabled = false;
       dynamic_thumbnails = true;
       user_directory.search_all_users = true;
       # MatrixRTC / Element Call
