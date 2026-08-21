@@ -15,6 +15,17 @@
     ./modules/mail.nix
   ];
 
+  # Keep the radicle node running so patches and follows stay in sync.
+  systemd.user.services.radicle-node = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+    Unit.Description = "Radicle node";
+    Service = {
+      ExecStart = "${pkgs.radicle-node}/bin/radicle-node --force";
+      Restart = "on-failure";
+      RestartSec = 5;
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
+
   # herdr-eternal target for eve; authenticate with:
   #   herdr-eternal-ssh login eve
   xdg.configFile."herdr-eternal/config.toml".text = ''
