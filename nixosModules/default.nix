@@ -21,6 +21,7 @@
     ./nix-daemon.nix
     ./minimal-docs.nix
     ./nftables.nix
+    ./nginx.nix
     ./i18n.nix
     ./zfs.nix
     ./zswap.nix
