@@ -3,9 +3,9 @@
 
 onboarding = false
 
-[terminal]
-# tmux: bind '"'/%/c with -c "#{pane_current_path}" -> keep cwd of current pane
-new_cwd = "follow"
+[update]
+# installed via Nix
+version_check = false
 
 [keys]
 # tmux: set -g prefix C-Space
@@ -15,32 +15,22 @@ prefix = "ctrl+space"
 split_horizontal = ["prefix+double_quote", "prefix+minus"]
 split_vertical = ["prefix+percent", "prefix+v"]
 
-# tmux: bind c new-window
-new_tab = "prefix+c"
-next_tab = "prefix+n"
-previous_tab = "prefix+p"
-switch_tab = "prefix+1..9"
-
-close_tab = "prefix+shift+x"
-
 last_pane = "prefix+semicolon"
 cycle_pane_next = "prefix+o"
-zoom = "prefix+z"
 
 # tmux: bind x kill-pane, bind k confirm kill-pane (confirm_close covers both)
 close_pane = ["prefix+x", "prefix+k"]
 
-# tmux: copy-mode on prefix+[ (vi keys)
-copy_mode = "prefix+["
-
 # tmux: detach on prefix+d
 detach = "prefix+d"
 
-workspace_picker = "prefix+w"
 new_workspace = "prefix+shift+c"
 
-help = "prefix+?"
 reload_config = "prefix+r"
+# moved off prefix+s/prefix+r/prefix+o (sesh picker, reload_config, cycle_pane_next)
+settings = "prefix+comma"
+resize_mode = "prefix+m"
+open_notification_target = "prefix+u"
 
 # tmux: bind s -> sesh session picker; herdr-plugin-sesh picker
 [[keys.command]]
@@ -89,11 +79,6 @@ dark_name = "tokyo-night"
 light_name = "tokyo-night-day"
 
 [ui]
-# tmux: mouse on, set-clipboard on
-mouse_capture = true
-copy_on_select = true
-# tmux: bind-key k confirm kill-pane -> keep confirmation on close
-confirm_close = true
 # tabs are auto-named by the herdr-autoname plugin
 prompt_new_tab_name = false
 
@@ -104,8 +89,9 @@ delivery = "herdr"
 # tmux: history-limit 50000 lines; roughly equivalent generous byte budget
 scrollback_limit_bytes = 20000000
 
-[worktrees]
-directory = "~/.herdr/worktrees"
+[experimental]
+kitty_graphics = true
+pane_history = true
 
 [remote]
 # Use herdr-eternal instead of OpenSSH for herdr --remote (survives netsplits).
