@@ -74,17 +74,17 @@ in
           address = "imap.thalheim.io:4190";
         }
         {
-          # openldap
+          # lldap
           protocol = "tcp";
           tags.host = "eve";
           tags.org = "private";
-          address = "eve.r:389";
+          address = "eve.r:3890";
         }
         {
-          # openldap
+          # lldap
           protocol = "tcp";
           tags.host = "eva";
-          address = "eva.r:389";
+          address = "eva.r:3890";
         }
         {
           # postfix: smtp
