@@ -61,6 +61,13 @@
       webauthn = {
         disable = lib.mkDefault false;
         enable_passkey_login = lib.mkDefault true;
+        # Passkey login with user verification counts as full 2FA, so no
+        # second factor prompt is needed after signing in with a passkey.
+        experimental_enable_passkey_uv_two_factors = lib.mkDefault true;
+        selection_criteria = {
+          discoverability = lib.mkDefault "required";
+          user_verification = lib.mkDefault "required";
+        };
         display_name = lib.mkDefault "Authelia";
         attestation_conveyance_preference = lib.mkDefault "indirect";
         timeout = lib.mkDefault "60s";
