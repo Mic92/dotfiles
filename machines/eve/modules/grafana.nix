@@ -17,10 +17,28 @@ let
       email = "mail"
       member_of = "memberOf"
 
+      # LDAP sync removes memberships of orgs without a mapping,
+      # so list every org for grafana-admins explicitly.
       [[servers.group_mappings]]
       group_dn = "cn=grafana-admins,ou=groups,dc=eve"
       org_role = "Admin"
+      org_id = 1 # Main Org.
       grafana_admin = true
+
+      [[servers.group_mappings]]
+      group_dn = "cn=grafana-admins,ou=groups,dc=eve"
+      org_role = "Admin"
+      org_id = 2 # devkid.net
+
+      [[servers.group_mappings]]
+      group_dn = "cn=grafana-admins,ou=groups,dc=eve"
+      org_role = "Admin"
+      org_id = 4 # eve
+
+      [[servers.group_mappings]]
+      group_dn = "cn=grafana-admins,ou=groups,dc=eve"
+      org_role = "Admin"
+      org_id = 6 # tincr
 
       [[servers.group_mappings]]
       group_dn = "*"
