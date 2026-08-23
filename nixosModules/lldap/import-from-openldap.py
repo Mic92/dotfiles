@@ -71,8 +71,11 @@ def ssha(password: bytes) -> bytes:
 
 
 def normalize_password(raw: bytes) -> bytes:
-    if raw.startswith(LEGACY_PREFIXES):
-        return raw
+    # OpenLDAP scheme prefixes are case-insensitive ({ssha} == {SSHA});
+    # uppercase them so the patched lldap recognizes the hash.
+    for prefix in LEGACY_PREFIXES:
+        if raw[: len(prefix)].upper() == prefix:
+            return prefix + raw[len(prefix) :]
     # No known scheme prefix: OpenLDAP stores these as plaintext.
     return ssha(raw)
 
