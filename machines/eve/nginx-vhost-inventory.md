@@ -8,7 +8,7 @@ easy to cross‑check the active nginx configuration on the server.
 ## Globals worth mirroring in Caddy
 
 - TLS: every server enables HTTP/2, HTTP/3 and reuses certificates from
-  `/var/lib/acme/**/` (mostly `thalheim.io`, but `ca.r`, `ldap.thalheim.io`, and
+  `/var/lib/acme/**/` (mostly `thalheim.io`, but `ca.r`, and
   `mergebot.thalheim.io` use their own issuers). HSTS
   (`Strict-Transport-Security`) is set globally and should either be replicated
   via `header` in the Caddyfile or moved behind a CDN/WAF.
@@ -83,9 +83,9 @@ easy to cross‑check the active nginx configuration on the server.
   }
   ```
 
-- `php_site` is a thin helper for Snappymail/phpLDAPadmin/FreshRSS. Swap
+- `php_site` is a thin helper for Snappymail/FreshRSS. Swap
   `{args.0}` and `{args.1}` per site (e.g.
-  `import php_site /var/lib/phpldapadmin/app/public /run/phpfpm/phpldapadmin.sock`).
+  `import php_site /var/lib/freshrss/p /run/phpfpm/freshrss.sock`).
 - For SSE endpoints (n8n `/mcp/`, Buildbot SSE) wrap `reverse_proxy` with a
   custom transport:
 
@@ -134,7 +134,6 @@ reimplement it in Caddy.
 | `goatcounter.thalheim.io`   | machines/eve/modules/goatcounter.nix:31        |
 | `grafana.thalheim.io`       | machines/eve/modules/grafana.nix:62            |
 | `ip.thalheim.io`            | machines/eve/modules/nginx/ip.nix:3            |
-| `ldap.thalheim.io`          | machines/eve/modules/phpldapadmin.nix:97       |
 | `lekwati.com`               | machines/eve/modules/nginx/glowing-bear.nix:14 |
 | `localhost`                 | —                                              |
 | `127.0.0.1`                 | —                                              |
@@ -203,7 +202,6 @@ reimplement it in Caddy.
 | Domain(s) (line)                            | Backend / behaviour                                                                                   | Notes                                                                                                                                                            |
 | ------------------------------------------- | ----------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `cloud.thalheim.io`, `pim.devkid.net` (391) | Nextcloud via `unix:/run/phpfpm/nextcloud.sock`.                                                      | Includes DAV rewrites, strict deny rules, MIME tweaks, `client_max_body_size 512M`, and gzip overrides. Port carefully or build a dedicated Caddy `handle` tree. |
-| `ldap.thalheim.io` (861)                    | phpLDAPadmin served from `/var/lib/phpldapadmin/app/public` via `unix:/run/phpfpm/phpldapadmin.sock`. | ACME challenge exception, dotfile deny, `client_max_body_size 100M`, custom headers (`X-Frame-Options`, `X-Content-Type-Options`).                               |
 | `mail.thalheim.io` (957)                    | Snappymail + PHP-FPM (`unix:/run/phpfpm/snappymail.sock`).                                            | Blocks `/data`, enforces 256 MB uploads.                                                                                                                         |
 | `rss-api.devkid.net` (1580)                 | FreshRSS API (`fastcgi_pass unix:/run/phpfpm/freshrss.sock`).                                         | Rewrites to `api/greader.php`, clears `REMOTE_USER`.                                                                                                             |
 | `rss.devkid.net` (1627)                     | FreshRSS UI + Authelia.                                                                               | Authelia guard on `/` and PHP paths, passes `REMOTE_USER` to FastCGI, redirects unauthenticated users to `https://auth.devkid.net`.                              |
