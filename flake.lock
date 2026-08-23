@@ -536,11 +536,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787495547,
-        "narHash": "sha256-boMiJIL4a21SjkbQ7aLhAXI/SNWCo/EjWrBrnPjjtDo=",
+        "lastModified": 1787495604,
+        "narHash": "sha256-qeas8dcuzKCbnhEm7KJM22TVi9HGbRup5hlNjGgSdWg=",
         "owner": "krebs",
         "repo": "kartei",
-        "rev": "440dd2e2072588a7ea8a46d6450dcc4e4aff8321",
+        "rev": "705580625a2e3eec52ac95d8f6fa81560390cc50",
         "type": "github"
       },
       "original": {
