@@ -5,15 +5,14 @@ let
     text = ''
       [[servers]]
       host = "127.0.0.1"
-      port = 389
-      bind_dn = "cn=grafana,ou=system,ou=users,dc=eve"
-      bind_password = "$__file{/run/secrets/grafana-ldap-password}"
-      search_filter = "(&(objectClass=grafana)(|(mail=%s)(uid=%s)))"
-      search_base_dns = ["ou=users,dc=eve"]
+      port = 3890
+      bind_dn = "uid=grafana,ou=people,dc=eve"
+      bind_password = "$__file{${config.clan.core.vars.generators.lldap-grafana.files.bind-password.path}}"
+      search_filter = "(&(memberOf=cn=grafana,ou=groups,dc=eve)(|(mail=%s)(uid=%s)))"
+      search_base_dns = ["ou=people,dc=eve"]
 
       [servers.attributes]
-      name = "givenName"
-      surname = "sn"
+      name = "cn"
       username = "uid"
       email =  "mail"
 
@@ -71,6 +70,17 @@ in
     };
   };
 
+  clan.core.vars.generators.lldap-grafana = {
+    files.bind-password.owner = "grafana";
+    runtimeInputs = [
+      pkgs.openssl
+      pkgs.coreutils
+    ];
+    script = ''
+      openssl rand -base64 24 | tr -d '\n' > "$out/bind-password"
+    '';
+  };
+
   clan.core.vars.generators.grafana = {
     files.secret-key = {
       owner = "grafana";
@@ -92,6 +102,7 @@ in
 
   sops.secrets = {
     grafana-admin-password.owner = "grafana";
+    # Only used for SMTP auth against the grafana mail account.
     grafana-ldap-password.owner = "grafana";
   };
 }
