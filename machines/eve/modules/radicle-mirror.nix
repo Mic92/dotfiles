@@ -42,6 +42,13 @@ in
     ];
     p2pListen = [ "0.0.0.0:8776" ];
     p2pExternalAddresses = [ "radicle.thalheim.io:8776" ];
+    # radicle.thalheim.io serves the mirror's own storage, so links are live
+    # immediately after a sync
+    explorerUrl = "https://radicle.thalheim.io/nodes/radicle.thalheim.io/{rid}/commits/{sha}";
+    p2pConnect = [
+      # eva
+      "z6MkwQTGzGVFjmT54Ustr82rc3bMGkjSjeCXQWgSvNNvVnwa@eva.thalheim.io:8776"
+    ];
     mirroredForks = [
       "Mic92/nixpkgs"
       "Mic92/nix-vm-test"
