@@ -46,7 +46,6 @@
     ./modules/punchcard.nix
     ./modules/grafana.nix
     ./modules/harmonia.nix
-    ./modules/kimai
     ./modules/lldap.nix
     ./modules/mtls-cache.nix
     ./modules/nix-grpc-store.nix

@@ -9,7 +9,6 @@
     ./modules/nostr-chat.nix
     ./modules/calendar.nix
     ./modules/ai.nix
-    ./modules/kimai.nix
     ./modules/mail.nix
     ./modules/atuin-autosync.nix
   ];

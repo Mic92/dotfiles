@@ -50,7 +50,6 @@ in
     # Reference all flake inputs to ensure they get cached
     flake-inputs = pkgs.callPackage ./flake-inputs { inherit inputs; };
     # Package updater CLI
-    kimai-cli = pkgs.callPackage ./kimai-cli { };
     updater = pkgs.callPackage ./updater { };
     pi = aiTools.pi;
     # Sandboxed pi for calendar/email tasks
@@ -85,6 +84,5 @@ in
   }
   // lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
     cewe-fotowelt = pkgs.callPackage ./cewe-fotowelt { };
-    kimai-widget = pkgs.callPackage ./kimai-widget { };
   };
 }
