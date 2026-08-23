@@ -18,7 +18,7 @@ let
       member_of = "memberOf"
 
       [[servers.group_mappings]]
-      group_dn = "cn=admins,ou=groups,dc=eve"
+      group_dn = "cn=grafana-admins,ou=groups,dc=eve"
       org_role = "Admin"
       grafana_admin = true
 
