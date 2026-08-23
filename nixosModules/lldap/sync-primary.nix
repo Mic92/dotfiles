@@ -19,19 +19,7 @@ let
   };
 in
 {
-  clan.core.vars.generators.lldap-sync = {
-    share = true;
-    files.ssh-private-key = {
-      secret = true;
-      deploy = false; # only needed on the replica
-    };
-    files.ssh-public-key.secret = false;
-    runtimeInputs = [ pkgs.openssh ];
-    script = ''
-      ssh-keygen -t ed25519 -N "" -f "$out/ssh-private-key" -C "lldap-sync"
-      mv "$out/ssh-private-key.pub" "$out/ssh-public-key"
-    '';
-  };
+  imports = [ ./sync-key.nix ];
 
   users.groups.lldap-sync = { };
   users.users.lldap-sync = {
