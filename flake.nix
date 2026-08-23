@@ -91,7 +91,7 @@
     flakelet-nginx.url = "github:Mic92/flakelet-nginx";
     flakelet-postgres.url = "github:Mic92/flakelet-postgres";
 
-    nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1&ref=nix-eval-jobs-cache-status-fix";
+    nixbot.url = "git+https://github.com/Mic92/nixbot?shallow=1&ref=main";
     nixbot.inputs.nixpkgs.follows = "nixpkgs";
     nixbot.inputs.treefmt-nix.follows = "treefmt-nix";
 
