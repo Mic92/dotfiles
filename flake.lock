@@ -522,19 +522,25 @@
     },
     "kartei": {
       "inputs": {
+        "crane": [
+          "crane"
+        ],
         "nixpkgs": [
           "nixpkgs"
         ],
         "tincr": [
           "tincr"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
         ]
       },
       "locked": {
-        "lastModified": 1786963921,
-        "narHash": "sha256-fZZ3G606jPKrQkCxVpnX8lJtao1HLydR6racnPX+2RU=",
+        "lastModified": 1787495547,
+        "narHash": "sha256-boMiJIL4a21SjkbQ7aLhAXI/SNWCo/EjWrBrnPjjtDo=",
         "owner": "krebs",
         "repo": "kartei",
-        "rev": "7f2b5c5d0ee94e306e9530392e3b3a67c028a248",
+        "rev": "440dd2e2072588a7ea8a46d6450dcc4e4aff8321",
         "type": "github"
       },
       "original": {
