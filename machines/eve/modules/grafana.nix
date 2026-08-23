@@ -14,7 +14,8 @@ let
       [servers.attributes]
       name = "cn"
       username = "uid"
-      email =  "mail"
+      email = "mail"
+      member_of = "memberOf"
 
       [[servers.group_mappings]]
       group_dn = "cn=admins,ou=groups,dc=eve"
