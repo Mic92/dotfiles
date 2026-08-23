@@ -23,8 +23,6 @@
     ./modules/postgresql.nix
     ../../nixosModules/tum-vpn
     ./modules/toggle-keyboard
-    ./modules/ghaf-hardware.nix
-    ./modules/ghaf-facter.nix
 
     ../../nixosModules/workstation.nix
     ../../nixosModules/niri
