@@ -858,16 +858,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1787468208,
-        "narHash": "sha256-f36tDlXg95EW+TwQSY9kaEmVXinstIZlLObUpqHCPKY=",
-        "ref": "nix-eval-jobs-cache-status-fix",
-        "rev": "c0fc323eaf571a0ebf6d5e5bceb65a2132276f44",
+        "lastModified": 1787471110,
+        "narHash": "sha256-aj9noh85uHYGanJ9xKNyvAI2tS9Qs58shroNJPxy9/Y=",
+        "ref": "main",
+        "rev": "1afdfaf1c9798ec9d0bc0ca167693129efbadfda",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
       },
       "original": {
-        "ref": "nix-eval-jobs-cache-status-fix",
+        "ref": "main",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
