@@ -39,7 +39,6 @@
       authentication_backend = {
         password_change.disable = false;
         password_reset.disable = false;
-        ldap.address = "ldap://eve.r:389";
       };
 
       session.cookies = [
