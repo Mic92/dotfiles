@@ -97,6 +97,16 @@
       };
 
       access_control.default_policy = lib.mkDefault "deny";
+
+      # Dummy rule: in Authelia 4.39 the WebAuthn/passkey registration UI
+      # is hidden unless at least one policy requires two_factor. This
+      # domain serves nothing; the rule only unlocks the settings panel.
+      access_control.rules = [
+        {
+          domain = "2fa-dummy.thalheim.io";
+          policy = "two_factor";
+        }
+      ];
     };
   };
 
