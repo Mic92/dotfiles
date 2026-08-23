@@ -42,6 +42,23 @@
     '';
   };
 
+  # Shared: eva's lldap is a replica of eve's, so both authelia
+  # instances must bind with the same credentials.
+  clan.core.vars.generators.lldap-authelia = {
+    share = true;
+    files.bind-password = {
+      secret = true;
+      owner = "authelia-main";
+    };
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.openssl
+    ];
+    script = ''
+      openssl rand -base64 24 | tr -d '\n' > "$out/bind-password"
+    '';
+  };
+
   services.authelia.instances.main = {
     secrets = {
       jwtSecretFile = config.clan.core.vars.generators.authelia.files.jwt-secret.path;
@@ -52,7 +69,7 @@
 
     environmentVariables = {
       AUTHELIA_AUTHENTICATION_BACKEND_LDAP_PASSWORD_FILE =
-        config.clan.core.vars.generators.authelia.files.ldap-password.path;
+        config.clan.core.vars.generators.lldap-authelia.files.bind-password.path;
     };
 
     settings = {
@@ -80,20 +97,22 @@
       };
 
       authentication_backend.ldap = {
+        implementation = lib.mkDefault "lldap";
+        address = lib.mkDefault "ldap://localhost:3890";
         base_dn = lib.mkDefault "dc=eve";
-        user = lib.mkDefault "cn=authelia,ou=system,ou=users,dc=eve";
+        user = lib.mkDefault "uid=authelia,ou=people,dc=eve";
         start_tls = lib.mkDefault false;
 
-        users_filter = lib.mkDefault "(&(objectClass=inetOrgPerson)({username_attribute}={input}))";
-        additional_users_dn = lib.mkDefault "ou=users";
+        users_filter = lib.mkDefault "(&(objectClass=person)({username_attribute}={input}))";
 
+        # mail as session username: ACL rules, OIDC subjects and
+        # Remote-User headers assume email addresses.
         attributes = {
           username = lib.mkDefault "mail";
           display_name = lib.mkDefault "cn";
         };
 
         groups_filter = lib.mkDefault "(&(objectClass=groupOfNames)(member={dn}))";
-        additional_groups_dn = lib.mkDefault "ou=groups";
       };
 
       access_control.default_policy = lib.mkDefault "deny";

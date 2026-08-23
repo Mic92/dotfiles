@@ -12,7 +12,6 @@
       authentication_backend = {
         password_change.disable = true;
         password_reset.disable = true;
-        ldap.address = "ldap://localhost:389";
       };
 
       session.cookies = [
