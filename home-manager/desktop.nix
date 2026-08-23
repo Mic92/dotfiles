@@ -11,7 +11,6 @@
     ./modules/atuin-autosync.nix
     ./modules/calendar.nix
     ./modules/ai.nix
-    ./modules/kimai.nix
     ./modules/mail.nix
     ./modules/radicle.nix
   ];
