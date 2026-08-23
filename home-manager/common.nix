@@ -97,8 +97,7 @@
       glibcLocales
       gdb
     ]
-    ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [ iproute2mac ]
-    ++ lib.optional (pkgs.stdenv.hostPlatform.system != "riscv64-linux") nix-output-monitor;
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [ iproute2mac ];
 
   home.enableNixpkgsReleaseCheck = false;
 
