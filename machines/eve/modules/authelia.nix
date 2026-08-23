@@ -168,6 +168,13 @@
 
       access_control.rules = [
         {
+          # Dummy rule: in Authelia 4.39 the WebAuthn/passkey registration UI
+          # is hidden unless at least one policy requires two_factor. This
+          # domain serves nothing; the rule only unlocks the settings panel.
+          domain = "2fa-dummy.thalheim.io";
+          policy = "two_factor";
+        }
+        {
           domain = [
             "rss.thalheim.io"
             "rss.devkid.net"
