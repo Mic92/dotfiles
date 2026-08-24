@@ -64,10 +64,15 @@
     kartei.inputs.crane.follows = "crane";
     kartei.inputs.treefmt-nix.follows = "treefmt-nix";
 
+    fenix.url = "github:nix-community/fenix";
+    fenix.inputs.nixpkgs.follows = "nixpkgs";
+    fenix.inputs.rust-analyzer-src.follows = "";
+
     tincr.url = "github:Mic92/tincr";
     tincr.inputs.nixpkgs.follows = "nixpkgs";
     tincr.inputs.treefmt-nix.follows = "treefmt-nix";
     tincr.inputs.crane.follows = "crane";
+    tincr.inputs.fenix.follows = "fenix";
 
     tribuchet.url = "github:Mic92/tribuchet";
     tribuchet.inputs.nixpkgs.follows = "nixpkgs";
