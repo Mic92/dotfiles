@@ -111,6 +111,8 @@ in
     aiTools.git-surgeon
     aiTools.jscpd
     pkgs.pueue
+    # interpreter for the pi-agent-extensions nushell tool
+    pkgs.nushell
   ]
   ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
     selfPkgs.macprof
