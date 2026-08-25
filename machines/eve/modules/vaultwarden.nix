@@ -9,10 +9,11 @@ let
     vaultwarden_url = "https://bitwarden.thalheim.io";
     vaultwarden_admin_token = "@ADMIN_TOKEN@";
     ldap_host = "localhost";
-    ldap_bind_dn = "cn=vaultwarden-ldap,ou=system,ou=users,dc=eve";
+    ldap_port = 3890;
+    ldap_bind_dn = "uid=vaultwarden,ou=people,dc=eve";
     ldap_bind_password = "@LDAP_PASSWORD@";
-    ldap_search_base_dn = "ou=users,dc=eve";
-    ldap_search_filter = "(&(memberOf=cn=vaultwarden,ou=users,dc=eve))";
+    ldap_search_base_dn = "ou=people,dc=eve";
+    ldap_search_filter = "(&(memberOf=cn=vaultwarden,ou=groups,dc=eve))";
     ldap_sync_interval_seconds = 3600;
   };
 
