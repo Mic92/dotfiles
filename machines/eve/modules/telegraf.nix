@@ -23,7 +23,7 @@
           {
             method = "native";
             urls = [
-              "6.eva.r"
+              "eva.r"
               "6.eva.thalheim.io"
             ];
             ipv6 = true;
