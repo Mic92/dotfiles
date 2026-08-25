@@ -243,7 +243,6 @@
         "aarch64-darwin"
       ];
       modules = [
-        ./nixosModules/openldap/flake-module.nix
         ./home-manager/flake-module.nix
         ./home-manager/modules/neovim/flake-module.nix
         ./devshell/flake-module.nix

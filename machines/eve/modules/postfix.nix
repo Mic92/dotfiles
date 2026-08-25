@@ -71,9 +71,7 @@ in
       mailbox_transport = "lmtp:unix:private/dovecot-lmtp";
       masquerade_domains = toString mailDomains;
       virtual_mailbox_domains = toString mailDomains;
-      virtual_alias_maps = "ldap:${accountsmap},texthash:${
-        config.clan.core.vars.generators.postfix-aliases.files.virtual-aliases.path
-      },regexp:/var/lib/postfix/conf/virtual-regex";
+      virtual_alias_maps = "ldap:${accountsmap},texthash:${config.clan.core.vars.generators.postfix-aliases.files.virtual-aliases.path},regexp:/var/lib/postfix/conf/virtual-regex";
       virtual_transport = "lmtp:unix:private/dovecot-lmtp";
 
       # bigger attachment size
