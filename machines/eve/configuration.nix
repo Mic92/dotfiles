@@ -89,7 +89,6 @@
     ../../nixosModules/builder.nix
     ../../nixosModules/docker-zfs.nix
     ../../nixosModules/iperf.nix
-    ../../nixosModules/openldap
     ../../nixosModules/fluent-bit.nix
     ../../nixosModules/rqbit
     ../../nixosModules/samba-dl.nix

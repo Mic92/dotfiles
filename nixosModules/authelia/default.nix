@@ -21,11 +21,6 @@
       secret = true;
       owner = "authelia-main";
     };
-    files.ldap-password = {
-      secret = true;
-      owner = "authelia-main";
-    };
-
     runtimeInputs = with pkgs; [
       coreutils
       openssl
@@ -38,7 +33,6 @@
       gensecret > "$out/jwt-secret"
       gensecret > "$out/storage-encryption-key"
       gensecret > "$out/session-secret"
-      gensecret > "$out/ldap-password"
     '';
   };
 
