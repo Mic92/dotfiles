@@ -14,10 +14,16 @@ let
     /^dave\.[^@.]+@davhau\.com$/ info@davhau.com
   '';
 
-  # LDAP config files with authenticated bind
-  domains = "${config.sops.templates."postfix-ldap-domains.cf".path}";
+  mailDomains = [
+    "davhau.com"
+    "devkid.net"
+    "lekwati.com"
+    "thalheim.io"
+    "thaigersprint.org"
+  ];
+
+  # Accounts are looked up in lldap; only existence matters for routing.
   accountsmap = "${config.sops.templates."postfix-ldap-accounts.cf".path}";
-  aliases = "${config.sops.templates."postfix-ldap-aliases.cf".path}";
 
   helo_access = pkgs.writeText "helo_access" ''
     ${config.networking.eve.ipv4.address}   REJECT Get lost - you're lying about who you are
@@ -63,9 +69,11 @@ in
       smtp_bind_address = config.networking.eve.ipv4.address;
       smtp_bind_address6 = "2a01:4f9:2b:1605::1";
       mailbox_transport = "lmtp:unix:private/dovecot-lmtp";
-      masquerade_domains = "ldap:${domains}";
-      virtual_mailbox_domains = "ldap:${domains}";
-      virtual_alias_maps = "ldap:${accountsmap},ldap:${aliases},regexp:/var/lib/postfix/conf/virtual-regex";
+      masquerade_domains = toString mailDomains;
+      virtual_mailbox_domains = toString mailDomains;
+      virtual_alias_maps = "ldap:${accountsmap},texthash:${
+        config.clan.core.vars.generators.postfix-aliases.files.virtual-aliases.path
+      },regexp:/var/lib/postfix/conf/virtual-regex";
       virtual_transport = "lmtp:unix:private/dovecot-lmtp";
 
       # bigger attachment size
@@ -163,44 +171,26 @@ in
     587 # submission
   ];
 
-  # Sops templates for LDAP config files
-  sops.templates."postfix-ldap-domains.cf" = {
-    content = ''
-      server_host = ldap://127.0.0.1
-      search_base = dc=domains,dc=mail,dc=eve
-      query_filter = (&(dc=%s)(objectClass=mailDomain))
-      result_attribute = postfixTransport
-      bind = yes
-      bind_dn = cn=postfix,ou=system,ou=users,dc=eve
-      bind_pw = ${config.sops.placeholder."vars/per-machine/eve/postfix-ldap/postfix-ldap-password"}
-      scope = one
-      version = 3
+  # Alias map lives in vars to keep private addresses out of the repo.
+  clan.core.vars.generators.postfix-aliases = {
+    files.virtual-aliases.owner = "postfix";
+    prompts.aliases = {
+      description = "postfix virtual alias map (one 'alias destination' per line)";
+      type = "multiline";
+    };
+    script = ''
+      cp "$prompts"/aliases "$out"/virtual-aliases
     '';
-    owner = "postfix";
   };
 
   sops.templates."postfix-ldap-accounts.cf" = {
     content = ''
-      server_host = ldap://127.0.0.1
-      search_base = ou=users,dc=eve
-      query_filter = (&(objectClass=mailAccount)(mail=%s))
+      server_host = ldap://127.0.0.1:3890
+      search_base = ou=people,dc=eve
+      query_filter = (&(memberOf=cn=mail,ou=groups,dc=eve)(mail=%s))
       result_attribute = mail
       bind = yes
-      bind_dn = cn=postfix,ou=system,ou=users,dc=eve
-      bind_pw = ${config.sops.placeholder."vars/per-machine/eve/postfix-ldap/postfix-ldap-password"}
-      version = 3
-    '';
-    owner = "postfix";
-  };
-
-  sops.templates."postfix-ldap-aliases.cf" = {
-    content = ''
-      server_host = ldap://127.0.0.1
-      search_base = dc=aliases,dc=mail,dc=eve
-      query_filter = (&(objectClass=mailAlias)(mail=%s))
-      result_attribute = maildrop
-      bind = yes
-      bind_dn = cn=postfix,ou=system,ou=users,dc=eve
+      bind_dn = uid=postfix,ou=people,dc=eve
       bind_pw = ${config.sops.placeholder."vars/per-machine/eve/postfix-ldap/postfix-ldap-password"}
       version = 3
     '';

@@ -14,27 +14,27 @@ in
   # Rendered via sops so the bind password stays out of the nix store.
   sops.templates."dovecot-ldap.conf" = {
     content = ''
-      ldap_uris = ldap://127.0.0.1
-      ldap_auth_dn = cn=dovecot,dc=mail,dc=eve
+      ldap_uris = ldap://127.0.0.1:3890
+      ldap_auth_dn = uid=dovecot,ou=people,dc=eve
       ldap_auth_dn_password = ${config.sops.placeholder.dovecot-ldap-password}
-      ldap_base = ou=users,dc=eve
+      ldap_base = ou=people,dc=eve
       ldap_scope = subtree
       ldap_version = 3
 
       passdb ldap {
         ldap_bind = yes
-        ldap_filter = (&(objectClass=mailAccount)(mail=%{user}))
+        ldap_filter = (&(memberOf=cn=mail,ou=groups,dc=eve)(mail=%{user}))
         fields {
           user = %{ldap:mail}
         }
       }
 
       userdb ldap {
-        ldap_filter = (&(objectClass=mailAccount)(mail=%{user}))
+        ldap_filter = (&(memberOf=cn=mail,ou=groups,dc=eve)(mail=%{user}))
         fields {
           home = /var/vmail/%{user | domain}/%{user | username}/
         }
-        ldap_iterate_filter = (objectClass=mailAccount)
+        ldap_iterate_filter = (memberOf=cn=mail,ou=groups,dc=eve)
         iterate_fields {
           user = %{ldap:mail}
         }
