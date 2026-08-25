@@ -12,6 +12,8 @@ let
       ./radicle-search-debounce.patch
       # https://radicle.network/nodes/iris.radicle.network/rad:z4V1sjrXqjvFdnCUbxPFqd5p4DtH5/patches/33cde5aa6807e87ffe4e6880fe6b664895ee6230
       ./radicle-httpd-zstd-archive.patch
+      # https://radicle.network/nodes/iris.radicle.network/rad:z4V1sjrXqjvFdnCUbxPFqd5p4DtH5/patches/5a2b74b8ea48c13e0a3cfcb6c488d3643481e046
+      ./radicle-httpd-archive-404.patch
     ];
     # tar.zst archives shell out to zstd; also needed in checkPhase.
     nativeCheckInputs = (old.nativeCheckInputs or [ ]) ++ [ pkgs.zstd ];
