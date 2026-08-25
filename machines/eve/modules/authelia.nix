@@ -32,7 +32,7 @@
 
     environmentVariables = {
       AUTHELIA_NOTIFIER_SMTP_PASSWORD_FILE =
-        config.clan.core.vars.generators.authelia.files.ldap-password.path;
+        config.clan.core.vars.generators.lldap-authelia.files.bind-password.path;
     };
 
     settings = {

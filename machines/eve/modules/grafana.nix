@@ -71,7 +71,7 @@ in
         enabled = true;
         host = "mail.thalheim.io:587";
         user = "grafana@thalheim.io";
-        password = "$__file{${config.sops.secrets.grafana-ldap-password.path}}";
+        password = "$__file{${config.clan.core.vars.generators.lldap-grafana.files.bind-password.path}}";
         fromAddress = "grafana@thalheim.io";
       };
 
@@ -122,6 +122,5 @@ in
   sops.secrets = {
     grafana-admin-password.owner = "grafana";
     # Only used for SMTP auth against the grafana mail account.
-    grafana-ldap-password.owner = "grafana";
   };
 }
