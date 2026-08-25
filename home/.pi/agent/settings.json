@@ -13,7 +13,7 @@
       "source": "~/.homesick/repos/dotfiles/pi-agent-extensions",
       "extensions": [
         "!*",
-        "+permission-gate/index.ts"
+        "+nushell/index.ts"
       ]
     }
   ],
