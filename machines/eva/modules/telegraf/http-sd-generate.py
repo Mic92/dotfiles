@@ -98,7 +98,7 @@ def main() -> None:
             [
                 "[[inputs.ping]]",
                 '  method = "native"',
-                f'  urls = ["6.{host}"]',
+                f'  urls = ["{host}"]',
                 "  ipv6 = true",
                 "  [inputs.ping.tags]",
                 f'    org = "{org}"',
