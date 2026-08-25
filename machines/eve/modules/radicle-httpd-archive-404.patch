@@ -1,0 +1,82 @@
+From 1b20c2f1b2f7bfcccdfd624e6305fe6222d4d39b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Tue, 25 Aug 2026 22:45:42 +0200
+Subject: [PATCH] httpd: Return 404 for unknown archive refs
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+/raw/<rid>/archive/<ref> passed the git2 error from
+resolve_reference_from_short_name straight through, so a typo in the
+branch name or a commit SHA in place of a ref yielded a 500. Map
+ErrorCode::NotFound to 404 like we already do for the object lookup.
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ crates/radicle-httpd/src/raw.rs | 34 +++++++++++++++++++++++++--------
+ 1 file changed, 26 insertions(+), 8 deletions(-)
+
+diff --git a/crates/radicle-httpd/src/raw.rs b/crates/radicle-httpd/src/raw.rs
+index 71d3b43d..92178f09 100644
+--- a/crates/radicle-httpd/src/raw.rs
++++ b/crates/radicle-httpd/src/raw.rs
+@@ -208,23 +208,28 @@ async fn archive_by_committish(
+     let project = doc.project()?;
+     let repo_name = project.name();
+ 
++    let not_found = |e: radicle::git::raw::Error| {
++        if e.code() == ErrorCode::NotFound {
++            Error::NotFound
++        } else {
++            Error::Git(e)
++        }
++    };
++
+     let oid = match committish {
+         Committish::Oid(oid) => oid,
+         Committish::Ref(refname) => repo
+             .backend
+             .resolve_reference_from_short_name(refname)
+-            .map(|reference| reference.target())?
++            .map_err(not_found)?
++            .target()
+             .ok_or(Error::NotFound)?
+             .into(),
+     };
+ 
+-    if let Err(e) = repo.backend.find_object(oid.into(), None) {
+-        return Err(if e.code() == ErrorCode::NotFound {
+-            Error::NotFound
+-        } else {
+-            Error::Git(e)
+-        });
+-    }
++    repo.backend
++        .find_object(oid.into(), None)
++        .map_err(not_found)?;
+ 
+     // Build a prefix for the archive, which includes the
+     // refname (if one was given):
+@@ -392,6 +397,19 @@ mod routes {
+         assert_eq!(response.status(), StatusCode::NOT_FOUND);
+     }
+ 
++    #[tokio::test]
++    async fn test_archive_unknown_ref() {
++        let tmp = tempfile::tempdir().unwrap();
++        let ctx = test::seed(tmp.path());
++        let app = super::router(ctx.profile().to_owned(), Arc::new(HashMap::new()));
++
++        let response = get(&app, format!("/{RID}/archive/master.tar.gz")).await;
++        assert_eq!(response.status(), StatusCode::OK);
++
++        let response = get(&app, format!("/{RID}/archive/does-not-exist.tar.gz")).await;
++        assert_eq!(response.status(), StatusCode::NOT_FOUND);
++    }
++
+     #[tokio::test]
+     async fn test_alias_resolution() {
+         let tmp = tempfile::tempdir().unwrap();
+-- 
+2.55.0
+
