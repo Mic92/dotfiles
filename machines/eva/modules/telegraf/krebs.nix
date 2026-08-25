@@ -4,7 +4,7 @@
       map
         (host: {
           protocol = "tcp";
-          address = "6.${host}.r:22";
+          address = "${host}.r:22";
           send = "SSH-2.0-Telegraf";
           expect = "SSH-2.0";
           tags.host = host;

@@ -24,7 +24,7 @@ in
       )
       ++ (map (url: {
         method = "native";
-        urls = [ "6.${url}.r" ];
+        urls = [ "${url}.r" ];
         ipv6 = true;
         tags.host = url;
         tags.org = "private";
