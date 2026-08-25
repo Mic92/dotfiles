@@ -221,7 +221,7 @@ in
         tags.org = "private";
         tags.service = "matrix-federation";
         response_status_code = 200;
-        response_string_match = "\"name\":\"Dendrite\"";
+        response_string_match = "\"name\":\"Synapse\"";
         response_timeout = "10s";
       }
       {
