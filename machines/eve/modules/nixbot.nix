@@ -153,6 +153,7 @@ in
             "github:DavHau"
             "github:Lassulus"
             "github:Enzime"
+            "github:Kranzes"
             "oidc:auth.thalheim.io:joerg@thalheim.io"
           ];
           # Anyone who can log in through Authelia may see private repos.
