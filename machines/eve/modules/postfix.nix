@@ -67,7 +67,7 @@ in
       myhostname = "mail.thalheim.io";
       mydomain = "thalheim.io";
       smtp_bind_address = config.networking.eve.ipv4.address;
-      smtp_bind_address6 = "2a01:4f9:2b:1605::1";
+      smtp_bind_address6 = config.networking.eve.ipv6.address;
       mailbox_transport = "lmtp:unix:private/dovecot-lmtp";
       masquerade_domains = toString mailDomains;
       virtual_mailbox_domains = toString mailDomains;
