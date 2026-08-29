@@ -8,6 +8,7 @@ let
   virtualRegex = pkgs.writeText "virtual-regex" ''
     /^joerg(\.|\+)[^@.]+@thalheim\.io$/ joerg@thalheim.io
     /^shannan(\.|\+)[^@.]+@lekwati\.com/ shannan@lekwati.com
+    /^hello@handi-work\.co\.uk$/ shannan@lekwati.com
     /^devkid-[^@.]+@devkid\.net$/ devkid@devkid.net
     /^ls1-logins-[^@.]+@thalheim.io$/ ls1-logins@lists.lrz.de
     /^info\.[^@.]+@davhau\.com$/ info@davhau.com
@@ -17,6 +18,7 @@ let
   mailDomains = [
     "davhau.com"
     "devkid.net"
+    "handi-work.co.uk"
     "lekwati.com"
     "thalheim.io"
     "thaigersprint.org"
