@@ -28,4 +28,5 @@ _acme-challenge IN NS ns1.thalheim.io.
 
 ;; TXT Records
 @ IN TXT "v=spf1 mx -all"
+@ IN TXT "google-site-verification=QjzIyf3Jk77Th4uza__w90e-cz1p7bgajv89DN7nLwc"
 _dmarc 1 IN TXT "\"v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:joerg.dmarc@thalheim.io; ruf=mailto:joerg.dmarc@thalheim.io; pct=100\""
