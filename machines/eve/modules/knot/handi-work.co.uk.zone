@@ -1,4 +1,4 @@
-@ 3600 IN SOA handi-work.co.uk. ns1.thalheim.io. 2025010101 7200 3600 86400 3600
+@ 3600 IN SOA handi-work.co.uk. ns1.thalheim.io. 2025010102 7200 3600 86400 3600
 
 $TTL 600
 
@@ -8,8 +8,16 @@ $TTL 600
 @ 3600 IN NS ns4.he.net.
 @ 3600 IN NS ns5.he.net.
 
-@ IN A 135.181.61.171
-@ IN AAAA 2a01:4f9:4b:4084::1
+; GitHub Pages (Mic92/Handi-work.co.uk)
+@ IN A 185.199.108.153
+@ IN A 185.199.109.153
+@ IN A 185.199.110.153
+@ IN A 185.199.111.153
+@ IN AAAA 2606:50c0:8000::153
+@ IN AAAA 2606:50c0:8001::153
+@ IN AAAA 2606:50c0:8002::153
+@ IN AAAA 2606:50c0:8003::153
+www IN CNAME mic92.github.io.
 @ IN MX 10 mail.thalheim.io.
 @ IN CAA 0 issue "letsencrypt.org"
 @ IN CAA 0 iodef "mailto:joerg.caa@thalheim.io"
