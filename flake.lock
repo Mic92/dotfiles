@@ -775,19 +775,16 @@
     },
     "nix-grpc-store": {
       "inputs": {
-        "nix": [
-          "nix"
-        ],
         "nixpkgs": [
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1786820799,
-        "narHash": "sha256-JyGcXGaOaLEziY/6V94qTVcfRLarsP0SplG/aSWieXA=",
+        "lastModified": 1787989048,
+        "narHash": "sha256-YHZUk/8BGseVb/q+6ZeVKcc3dQdNSzatRgisotriOPk=",
         "owner": "Mic92",
         "repo": "nix-grpc-store",
-        "rev": "70d8b42fff41fa66c0dca93a9e0103a2c6349a0a",
+        "rev": "e054ff6c714d92947f593111461c9110ca8018ab",
         "type": "github"
       },
       "original": {
@@ -836,11 +833,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787209677,
-        "narHash": "sha256-g9dfch82Nyhqt6xFegegS+xgYkMbmhXVSlLZz8az+ds=",
+        "lastModified": 1787988300,
+        "narHash": "sha256-DBdn4OzqMNlNtlNjavcqqfalaK251EbJItb16AX1TOc=",
         "owner": "Mic92",
         "repo": "nix-tarmac",
-        "rev": "19a55e61368ed9fdb3993f85ae315d4a7c8e3bee",
+        "rev": "ce917cff816b866e3be64faa2995a44b099fb5ab",
         "type": "github"
       },
       "original": {
