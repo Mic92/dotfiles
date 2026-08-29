@@ -1,0 +1,23 @@
+@ 3600 IN SOA handi-work.co.uk. ns1.thalheim.io. 2025010101 7200 3600 86400 3600
+
+$TTL 600
+
+@ 3600 IN NS ns1.thalheim.io.
+@ 3600 IN NS ns2.he.net.
+@ 3600 IN NS ns3.he.net.
+@ 3600 IN NS ns4.he.net.
+@ 3600 IN NS ns5.he.net.
+
+@ IN A 95.216.112.61
+@ IN AAAA 2a01:4f9:2b:1605::1
+@ IN MX 10 mail.thalheim.io.
+@ IN CAA 0 issue "letsencrypt.org"
+@ IN CAA 0 iodef "mailto:joerg.caa@thalheim.io"
+
+* IN CNAME www.thalheim.io.
+
+_acme-challenge IN NS ns1.thalheim.io.
+
+;; TXT Records
+@ IN TXT "v=spf1 mx -all"
+_dmarc 1 IN TXT "\"v=DMARC1; p=none; adkim=r; aspf=r; rua=mailto:joerg.dmarc@thalheim.io; ruf=mailto:joerg.dmarc@thalheim.io; pct=100\""
