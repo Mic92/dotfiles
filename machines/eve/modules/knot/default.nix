@@ -189,6 +189,11 @@ in
           template = "master";
         }
         {
+          domain = "handi-work.co.uk";
+          file = zoneWithAcme "handi-work.co.uk";
+          template = "master";
+        }
+        {
           domain = "tierheilpraxis-jessican.de";
           file = ./tierheilpraxis-jessican.de.zone;
           template = "master";
@@ -254,6 +259,7 @@ in
             ++ [
               "devkid.net"
               "lekwati.com"
+              "handi-work.co.uk"
             ]
           );
     };

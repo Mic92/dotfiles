@@ -105,6 +105,8 @@
               "*.devkid.net"
               "lekwati.com"
               "*.lekwati.com"
+              "handi-work.co.uk"
+              "*.handi-work.co.uk"
             ];
             environmentFile = config.sops.secrets.lego-knot-credentials.path;
           };

@@ -46,8 +46,8 @@
 - Tests use realistic inputs/outputs that exercise actual code, not mocks.
 - Linter reports dead code: remove it.
 - Linter errors: fix root cause, do not suppress warnings.
-- Code comments: Keep them minimal, Explain WHY, not WHAT. Describe current state, not what was
-  removed.
+- Code comments: Keep them minimal, Explain WHY, not WHAT. Describe current
+  state, not what was removed.
 
 ## Git
 
