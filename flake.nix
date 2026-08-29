@@ -90,7 +90,6 @@
 
     nix-grpc-store.url = "github:Mic92/nix-grpc-store";
     nix-grpc-store.inputs.nixpkgs.follows = "nixpkgs";
-    nix-grpc-store.inputs.nix.follows = "nix";
 
     flakelet.url = "github:Mic92/flakelet";
     flakelet.inputs.nixpkgs.follows = "nixpkgs";
