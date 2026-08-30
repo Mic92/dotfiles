@@ -34,7 +34,6 @@
     ./modules/authelia.nix
     ./modules/vaultwarden.nix
     ./modules/nixbot.nix
-    ./modules/calendar-bot/configuration.nix
     ./modules/synapse.nix
     ./modules/disko.nix
     ./modules/dovecot.nix

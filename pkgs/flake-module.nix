@@ -43,8 +43,6 @@ in
     ghidra-cli = pkgs.callPackage ./ghidra-cli { };
     # Cross-platform secure pinentry (works on macOS and Linux)
     rbw-pinentry = pkgs.callPackage ./rbw_pinentry { };
-    # Matrix calendar bot
-    calendar-bot = pkgs.python3.pkgs.callPackage ./calendar_bot { };
     # Nix evaluation warnings extractor
     nix-eval-warnings = pkgs.callPackage ./nix-eval-warnings { };
     # Per-commit nixpkgs eval/build differ ("minihydra")

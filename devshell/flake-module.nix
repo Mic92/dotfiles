@@ -33,17 +33,6 @@ let
           dbus-python
         ];
       };
-      "pkgs/calendar_bot" = {
-        extraPythonPackages = with pkgs.python3.pkgs; [
-          aiohttp
-          mautrix
-          asyncpg
-          python-olm
-          unpaddedbase64
-          pycryptodome
-          base58
-        ];
-      };
     };
     programs.deadnix.enable = true;
 
