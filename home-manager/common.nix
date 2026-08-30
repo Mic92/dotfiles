@@ -48,6 +48,7 @@
       yq-go
       tig
       lazygit
+      self.packages.${pkgs.stdenv.hostPlatform.system}.maiao
       git-absorb
       delta
       scc
