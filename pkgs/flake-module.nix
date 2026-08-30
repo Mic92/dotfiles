@@ -32,6 +32,8 @@ in
       app-windows-extension
       ;
     gh-radicle = pkgs.callPackage ./gh-radicle { };
+    # Stacked GitHub PRs from the command line
+    maiao = pkgs.callPackage ./maiao { };
     # herdr plugin (fork with OSC 52 clipboard fallback)
     herdr-pluck = pkgs.callPackage ./herdr-pluck { };
     # herdr plugin: sesh-style workspace picker
