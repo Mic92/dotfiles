@@ -1,6 +1,15 @@
 -- Runs last in the setup process. Pure lua for things that don't fit
 -- the normal plugin/config locations.
 
+-- AstroNvim sets clipboard=unnamedplus, and Neovim refuses to auto-select the
+-- OSC 52 provider while 'clipboard' is set. Without tmux or X/Wayland tools
+-- (e.g. inside herdr over ssh) that leaves no provider at all, so opt in.
+local has_gui_clip = (vim.env.WAYLAND_DISPLAY and vim.fn.executable("wl-copy") == 1)
+	or (vim.env.DISPLAY and (vim.fn.executable("xclip") == 1 or vim.fn.executable("xsel") == 1))
+if vim.env.TMUX == nil and not has_gui_clip then
+	vim.g.clipboard = "osc52"
+end
+
 vim.api.nvim_create_user_command("RaiseTmuxPane", function()
 	-- Get the current tmux pane ID
 	local current_pane = vim.fn.environ()["TMUX_PANE"]
