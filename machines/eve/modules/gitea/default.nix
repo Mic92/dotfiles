@@ -37,6 +37,28 @@
   systemd.services.gitea = {
     path = [ pkgs.bash ];
     serviceConfig.LimitNOFILE = 65536;
+    # Keep the LDAP auth source in sync with lldap. The bind user doubles as
+    # the SMTP account, so the mailer password is reused. uid=gitea must be a
+    # member of lldap_strict_readonly to search ou=people.
+    preStart = lib.mkAfter ''
+      gitea() { ${lib.getExe config.services.gitea.package} --config ${config.services.gitea.customDir}/conf/app.ini "$@"; }
+      ldap_args=(
+        --name ldap
+        --host 127.0.0.1 --port 3890 --security-protocol unencrypted
+        --bind-dn uid=gitea,ou=people,dc=eve
+        --bind-password "$(cat ${config.sops.secrets.gitea-mail.path})"
+        --user-search-base ou=people,dc=eve
+        --user-filter '(&(memberOf=cn=gitea,ou=groups,dc=eve)(|(uid=%[1]s)(mail=%[1]s)))'
+        --username-attribute uid --surname-attribute cn --email-attribute mail
+        --synchronize-users
+      )
+      id=$(gitea admin auth list | ${pkgs.gawk}/bin/awk '$2 == "ldap" { print $1 }')
+      if [[ -n "$id" ]]; then
+        gitea admin auth update-ldap --id "$id" "''${ldap_args[@]}"
+      else
+        gitea admin auth add-ldap "''${ldap_args[@]}"
+      fi
+    '';
   };
 
   systemd.tmpfiles.rules =
