@@ -38,8 +38,7 @@
     path = [ pkgs.bash ];
     serviceConfig.LimitNOFILE = 65536;
     # Keep the LDAP auth source in sync with lldap. The bind user doubles as
-    # the SMTP account, so the mailer password is reused. uid=gitea must be a
-    # member of lldap_strict_readonly to search ou=people.
+    # the SMTP account, so the mailer password is reused.
     preStart = lib.mkAfter ''
       gitea() { ${lib.getExe config.services.gitea.package} --config ${config.services.gitea.customDir}/conf/app.ini "$@"; }
       ldap_args=(
@@ -99,6 +98,16 @@
     ];
 
   sops.secrets.gitea-mail.owner = config.systemd.services.gitea.serviceConfig.User;
+
+  services.lldap.ensureGroups = [ "gitea" ];
+  services.lldap.ensureUsers.gitea = {
+    email = "gitea@thalheim.io";
+    passwordFile = config.sops.secrets.gitea-mail.path;
+    groups = [
+      "lldap_strict_readonly"
+      "mail"
+    ];
+  };
 
   nix.settings.allowed-users = [ "gitea" ];
 

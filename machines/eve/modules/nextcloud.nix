@@ -63,6 +63,16 @@
   sops.secrets.nextcloud-admin-password.owner = "nextcloud";
   sops.secrets.nextcloud-ldap-password.owner = "nextcloud";
 
+  services.lldap.ensureGroups = [ "nextcloud" ];
+  services.lldap.ensureUsers.nextcloud = {
+    email = "nextcloud@thalheim.io";
+    passwordFile = config.sops.secrets.nextcloud-ldap-password.path;
+    groups = [
+      "lldap_strict_readonly"
+      "mail"
+    ];
+  };
+
   services.nginx.virtualHosts."cloud.thalheim.io" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;

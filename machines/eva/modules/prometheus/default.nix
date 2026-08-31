@@ -1,6 +1,7 @@
 { config, ... }:
 {
   imports = [
+    ../../../../nixosModules/lldap/alertmanager-smtp.nix
     ./matrix-alertmanager.nix
     ./irc-alertmanager.nix
     ./rules.nix
@@ -80,9 +81,14 @@
     ];
     alertmanagers = [ { static_configs = [ { targets = [ "localhost:9093" ]; } ]; } ];
   };
+  # SMTP_PASSWORD comes from the shared alertmanager-smtp generator, the
+  # remaining tokens (pushover, telegram) from sops.
+  systemd.services.alertmanager.serviceConfig.EnvironmentFile = [
+    config.clan.core.vars.generators.alertmanager-smtp.files.env.path
+    config.sops.secrets.alertmanager.path
+  ];
   services.prometheus.alertmanager = {
     enable = true;
-    environmentFile = config.sops.secrets.alertmanager.path;
     webExternalUrl = "https://alertmanager.thalheim.io";
     listenAddress = "[::1]";
     configuration = {

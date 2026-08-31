@@ -11,6 +11,11 @@ in
       all
   '';
 
+  services.lldap.ensureUsers.dovecot = {
+    passwordFile = config.sops.secrets.dovecot-ldap-password.path;
+    groups = [ "lldap_strict_readonly" ];
+  };
+
   # Rendered via sops so the bind password stays out of the nix store.
   sops.templates."dovecot-ldap.conf" = {
     content = ''

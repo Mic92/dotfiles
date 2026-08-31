@@ -12,7 +12,7 @@
     serviceConfig = {
       Restart = "on-failure";
       RestartSec = "2s";
-      EnvironmentFile = [ config.sops.secrets.goatcounter-smtp-password.path ];
+      EnvironmentFile = [ config.clan.core.vars.generators.goatcounter-smtp.files.env.path ];
       ExecStart = ''
         ${
           self.inputs.nur-packages.packages.${pkgs.stdenv.hostPlatform.system}.goatcounter
@@ -26,6 +26,25 @@
       '';
       User = "goatcounter";
     };
+  };
+
+  clan.core.vars.generators.goatcounter-smtp = {
+    files.password = { };
+    files.env = { };
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.openssl
+    ];
+    script = ''
+      openssl rand -hex 24 > "$out/password"
+      printf 'SMTP_PASSWORD=%s' "$(cat "$out/password")" > "$out/env"
+    '';
+  };
+
+  services.lldap.ensureUsers.goatcounter = {
+    email = "goatcounter@thalheim.io";
+    passwordFile = config.clan.core.vars.generators.goatcounter-smtp.files.password.path;
+    groups = [ "mail" ];
   };
 
   services.nginx.virtualHosts."goatcounter.thalheim.io" = {

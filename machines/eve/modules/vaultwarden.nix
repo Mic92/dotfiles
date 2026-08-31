@@ -31,6 +31,32 @@ let
 in
 {
   # Vars generator for vaultwarden secrets
+  services.lldap.ensureGroups = [ "vaultwarden" ];
+  services.lldap.ensureUsers.vaultwarden = {
+    passwordFile = config.clan.core.vars.generators.vaultwarden.files.ldap-password.path;
+    groups = [ "lldap_strict_readonly" ];
+  };
+  services.lldap.ensureUsers.bitwarden = {
+    email = "bitwarden@thalheim.io";
+    passwordFile = config.clan.core.vars.generators.vaultwarden-smtp.files.password.path;
+    groups = [ "mail" ];
+  };
+
+  # Separate from the vaultwarden generator so adding it did not rotate the
+  # admin token.
+  clan.core.vars.generators.vaultwarden-smtp = {
+    files.password = { };
+    files.env = { };
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.openssl
+    ];
+    script = ''
+      openssl rand -hex 24 > "$out/password"
+      printf 'SMTP_PASSWORD=%s' "$(cat "$out/password")" > "$out/env"
+    '';
+  };
+
   clan.core.vars.generators.vaultwarden = {
     files.admin-token-plaintext = {
       secret = true;
@@ -43,10 +69,6 @@ in
     files.ldap-password = {
       secret = true;
       owner = "vaultwarden_ldap";
-    };
-    files.smtp-password = {
-      secret = true;
-      owner = "vaultwarden";
     };
 
     runtimeInputs = with pkgs; [
@@ -69,9 +91,6 @@ in
 
       # Generate LDAP bind password (simple password)
       openssl rand -base64 12 | tr -d '\n' > "$out/ldap-password"
-
-      # Generate SMTP password in environment file format
-      echo "SMTP_PASSWORD=$(openssl rand -base64 48 | tr -d '\n')" > "$out/smtp-password"
     '';
   };
 
@@ -93,7 +112,7 @@ in
 
   systemd.services.vaultwarden.serviceConfig = {
     EnvironmentFile = [
-      config.clan.core.vars.generators.vaultwarden.files.smtp-password.path
+      config.clan.core.vars.generators.vaultwarden-smtp.files.env.path
       config.clan.core.vars.generators.vaultwarden.files.admin-token-hash.path
     ];
   };

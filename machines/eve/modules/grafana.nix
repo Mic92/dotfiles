@@ -89,6 +89,19 @@ in
     };
   };
 
+  services.lldap.ensureGroups = [
+    "grafana"
+    "grafana-admins"
+  ];
+  services.lldap.ensureUsers.grafana = {
+    email = "grafana@thalheim.io";
+    passwordFile = config.clan.core.vars.generators.lldap-grafana.files.bind-password.path;
+    groups = [
+      "lldap_strict_readonly"
+      "mail"
+    ];
+  };
+
   clan.core.vars.generators.lldap-grafana = {
     files.bind-password.owner = "grafana";
     runtimeInputs = [

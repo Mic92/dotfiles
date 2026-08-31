@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   self,
   ...
@@ -201,6 +202,14 @@
       ];
     };
   };
+
+  services.lldap.ensureGroups =
+    lib.pipe config.services.authelia.instances.main.settings.access_control.rules
+      [
+        (lib.concatMap (r: lib.toList (r.subject or [ ])))
+        (lib.filter (lib.hasPrefix "group:"))
+        (map (lib.removePrefix "group:"))
+      ];
 
   services.nginx.virtualHosts."auth.thalheim.io" = {
     useACMEHost = "thalheim.io";
