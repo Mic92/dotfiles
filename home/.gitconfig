@@ -138,6 +138,9 @@
 	helper = !gh auth git-credential
 [credential "https://gist.github.com"]
 	helper = !gh auth git-credential
+# maiao (git review) looks up the API token via `git credential fill` for this host
+[credential "https://api.github.com"]
+	helper = "!f() { test \"$1\" = get && echo username=x-access-token && echo password=$(gh auth token); }; f"
 [http]
   cookiefile = ~/.gitcookies
 #[url "git@github.com:"]
