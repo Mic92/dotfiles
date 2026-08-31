@@ -197,7 +197,12 @@ in
     owner = "postfix";
   };
 
-  # Generate postfix LDAP password with clan vars
+  services.lldap.ensureGroups = [ "mail" ];
+  services.lldap.ensureUsers.postfix = {
+    passwordFile = config.clan.core.vars.generators.postfix-ldap.files.postfix-ldap-password.path;
+    groups = [ "lldap_strict_readonly" ];
+  };
+
   clan.core.vars.generators.postfix-ldap = {
     files.postfix-ldap-password = { };
     runtimeInputs = [ pkgs.openssl ];

@@ -3,7 +3,37 @@
   imports = [
     ../../../nixosModules/lldap
     ../../../nixosModules/lldap/sync-primary.nix
+    ../../../nixosModules/lldap/ensure.nix
+    ../../../nixosModules/lldap/alertmanager-smtp.nix
   ];
+
+  services.lldap.ensureUsers.alertmanager = {
+    email = "alertmanager@thalheim.io";
+    passwordFile = config.clan.core.vars.generators.alertmanager-smtp.files.password.path;
+    groups = [ "mail" ];
+  };
+
+  # Service-specific groups live next to their service. prometheus is
+  # consumed by authelia on eva, whose lldap is a read-only replica.
+  services.lldap.ensureGroups = [
+    "admins"
+    "prometheus"
+  ];
+
+  services.lldap.ensureUsers.lldap = {
+    email = "lldap@thalheim.io";
+    passwordFile = config.clan.core.vars.generators.lldap-smtp.files.password.path;
+    groups = [ "mail" ];
+  };
+
+  services.lldap.ensureUsers.authelia = {
+    email = "authelia@thalheim.io";
+    passwordFile = config.clan.core.vars.generators.lldap-authelia.files.bind-password.path;
+    groups = [
+      "lldap_password_manager"
+      "mail"
+    ];
+  };
 
   services.lldap.settings.http_url = "https://lldap.thalheim.io";
 
