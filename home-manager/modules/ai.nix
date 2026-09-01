@@ -11,6 +11,15 @@ let
   micsSkillsPkgs = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
   nixbot-cli = inputs.nixbot.packages.${pkgs.stdenv.hostPlatform.system}.nixbot-cli;
 
+  # Interpreter for the pi-agent-extensions python tool. Separate name so it
+  # never shadows a project's python3; override per project with $PI_PYTHON.
+  piPython = pkgs.python3.withPackages (ps: [
+    ps.matplotlib
+    ps.polars
+    ps.pyelftools
+    ps.requests
+  ]);
+
   # On Darwin llm-agents ships the prebuilt release binary, so the source
   # patch can only be applied on Linux.
   herdrPackage =
@@ -113,6 +122,7 @@ in
     pkgs.pueue
     # interpreter for the pi-agent-extensions nushell tool
     pkgs.nushell
+    (pkgs.writeShellScriptBin "pi-python" ''exec ${piPython}/bin/python3 "$@"'')
   ]
   ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
     selfPkgs.macprof
