@@ -56,7 +56,7 @@ let
 in
 {
   # Warning for testing eval warning reporting in CI
-  checks = lib.warn "test eval warning from checks/flake-module.nix" (
+  checks = (
     nixosMachines // darwinMachines // packages // packageTests // devShells // homeConfigurations
   );
 }
