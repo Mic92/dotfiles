@@ -51,12 +51,6 @@ let
   webUnixSocket = "/run/nixbot/web.sock";
 in
 {
-  clan.core.vars.generators.buildbot-gitlab = {
-    files.token = { };
-    prompts.token.description = "GitLab access token (api scope)";
-    script = "cp $prompts/token $out/token";
-  };
-
   # Credentials of the "buildbot" user on git.thalheim.io
   clan.core.vars.generators.buildbot-gitea = {
     files.token = { };
@@ -127,7 +121,6 @@ in
           "github-oauth-secret" = config.sops.secrets.buildbot-github-oauth-secret.path;
           "gitea-token" = config.clan.core.vars.generators.buildbot-gitea.files.token.path;
           "gitea-oauth-secret" = config.clan.core.vars.generators.buildbot-gitea.files.oauth-secret.path;
-          "gitlab-token" = config.clan.core.vars.generators.buildbot-gitlab.files.token.path;
           "oidc-client-secret" = config.clan.core.vars.generators.buildbot-oidc.files.client-secret.path;
           "codecov-token" = config.clan.core.vars.generators.codecov-token.files.token.path;
           "effects-secret__github_colon_nix-community_slash_harmonia" =
@@ -190,19 +183,7 @@ in
             ssh_private_key_file = null;
             ssh_known_hosts_file = null;
           };
-          gitlab = {
-            instance_url = "https://gitlab.com";
-            filters = {
-              user_allowlist = null;
-              repo_allowlist = [ "Mic92/dotfiles" ];
-              topic = "build-with-buildbot";
-            };
-            token_file = "gitlab-token";
-            oauth_id = null;
-            oauth_secret_file = null;
-            ssh_private_key_file = null;
-            ssh_known_hosts_file = null;
-          };
+          gitlab = null;
           oidc = {
             name = "Authelia";
             discovery_url = "https://auth.thalheim.io/.well-known/openid-configuration";
