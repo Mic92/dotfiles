@@ -2,7 +2,7 @@
  * `python` tool: a persistent interpreter (driver.py) per session, so the
  * model can keep parsed data, imports and figures between calls instead of
  * re-running scripts through bash. Uses `pi-python` (nix, with matplotlib/
- * polars/pyelftools/requests) unless $PI_PYTHON points elsewhere.
+ * pexpect/polars/pyelftools/requests) unless $PI_PYTHON points elsewhere.
  */
 
 import { execFileSync } from "node:child_process";
@@ -55,14 +55,15 @@ export default function (pi: ExtensionAPI) {
     description:
       "Execute Python code in a persistent interpreter: variables, imports and open files survive between calls for the whole session. " +
       "The value of a trailing expression is echoed like in a REPL; use print() for anything else. " +
-      "matplotlib figures are returned as images. Available: polars, matplotlib, requests, pyelftools + stdlib. " +
+      "matplotlib figures are returned as images. Available: polars, matplotlib, requests, pexpect, pyelftools + stdlib. " +
       `Output is truncated to the last ${DEFAULT_MAX_LINES} lines / ${
         formatSize(DEFAULT_MAX_BYTES)
       }.`,
     promptSnippet:
-      "Run Python in a persistent interpreter (state kept across calls; polars, matplotlib, requests, pyelftools)",
+      "Run Python in a persistent interpreter (state kept across calls; polars, matplotlib, requests, pexpect, pyelftools)",
     promptGuidelines: [
       "Use python instead of bash for multi-step data work (JSON/CSV/logs/ELF), calculations, and anything where re-parsing input on every call would be wasteful; state persists, so load once and iterate.",
+      "Drive interactive programs (ssh, REPLs, debuggers, installers) with pexpect inside the python tool: `child = pexpect.spawn(cmd, encoding='utf-8')` persists across calls; always pass `timeout=` to expect().",
     ],
     parameters: Type.Object({
       code: Type.String({ description: "Python source to execute" }),

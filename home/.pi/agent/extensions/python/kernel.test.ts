@@ -76,6 +76,17 @@ describe.skipIf(!hasPython)("python kernel", () => {
     k2.stop();
   });
 
+  test("stop kills spawned children too", async () => {
+    const k2 = new Kernel(python, tmpdir());
+    const r = await k2.exec(
+      "import subprocess; p = subprocess.Popen(['sleep', '30']); p.pid",
+    );
+    const pid = Number(r.result);
+    k2.stop();
+    await new Promise((r) => setTimeout(r, 100));
+    expect(() => process.kill(pid, 0)).toThrow();
+  });
+
   test("concurrent calls are serialised", async () => {
     const [a, b] = await Promise.all([
       k.exec("import time; time.sleep(0.1); y = 1"),

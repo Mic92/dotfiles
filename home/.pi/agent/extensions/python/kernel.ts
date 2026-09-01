@@ -28,14 +28,12 @@ export class Kernel {
     readonly killAfterMs = 3000,
   ) {}
 
-  get running(): boolean {
-    return this.proc !== undefined && this.proc.exitCode === null;
-  }
-
   private start(): ChildProcess {
+    // Own process group so kill() also reaches pexpect/subprocess children.
     const proc = spawn(this.python, ["-u", DRIVER], {
       cwd: this.cwd,
       stdio: ["pipe", "pipe", "pipe"],
+      detached: true,
     });
     proc.stderr!.on("data", (d) => {
       this.stderr += d.toString();
@@ -75,7 +73,7 @@ export class Kernel {
       let killTimer: ReturnType<typeof setTimeout> | undefined;
       const onAbort = () => {
         proc.kill("SIGINT");
-        killTimer = setTimeout(() => proc.kill("SIGKILL"), this.killAfterMs);
+        killTimer = setTimeout(() => killGroup(proc), this.killAfterMs);
       };
       signal?.addEventListener("abort", onAbort, { once: true });
       this.pending = (r) => {
@@ -89,7 +87,15 @@ export class Kernel {
   }
 
   stop(): void {
-    this.proc?.kill("SIGKILL");
+    if (this.proc) killGroup(this.proc);
     this.proc = undefined;
+  }
+}
+
+function killGroup(proc: ChildProcess): void {
+  try {
+    if (proc.pid) process.kill(-proc.pid, "SIGKILL");
+  } catch {
+    proc.kill("SIGKILL");
   }
 }

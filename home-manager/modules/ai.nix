@@ -15,6 +15,7 @@ let
   # never shadows a project's python3; override per project with $PI_PYTHON.
   piPython = pkgs.python3.withPackages (ps: [
     ps.matplotlib
+    ps.pexpect
     ps.polars
     ps.pyelftools
     ps.requests
@@ -78,7 +79,6 @@ in
       "gmaps-cli"
       "kagi-search"
       "n8n-cli"
-      "pexpect-cli"
       "queue"
       "screenshot-cli"
     ];
