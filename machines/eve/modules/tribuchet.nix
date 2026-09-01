@@ -52,6 +52,10 @@ in
     };
   };
 
+  services.flakeletDeploy.services.tribuchet-hub.principals = [
+    "repo:github:Mic92/tribuchet:ref:refs/heads/main"
+  ];
+
   services.tribuchet-hub = {
     openFirewall = true;
     externalBuilders = {
