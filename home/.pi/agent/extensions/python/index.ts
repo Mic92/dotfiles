@@ -11,8 +11,11 @@ import {
   DEFAULT_MAX_BYTES,
   DEFAULT_MAX_LINES,
   formatSize,
+  highlightCode,
+  keyHint,
   truncateTail,
 } from "@mariozechner/pi-coding-agent";
+import { Text } from "@mariozechner/pi-tui";
 import { Type } from "typebox";
 import { Kernel } from "./kernel.ts";
 
@@ -69,6 +72,46 @@ export default function (pi: ExtensionAPI) {
         }),
       ),
     }),
+
+    // Without this pi's fallback renders only the tool name, hiding the code.
+    renderCall(args, theme, context) {
+      const text = (context.lastComponent as Text | undefined) ??
+        new Text("", 0, 0);
+      let out = theme.fg("toolTitle", theme.bold("python"));
+      if (args.timeout) out += theme.fg("muted", ` (timeout ${args.timeout}s)`);
+      const code = (args.code ?? "").trimEnd();
+      if (code) out += "\n" + highlightCode(code, "python").join("\n");
+      text.setText(out);
+      return text;
+    },
+
+    renderResult(result, options, theme, context) {
+      const text = (context.lastComponent as Text | undefined) ??
+        new Text("", 0, 0);
+      const output = result.content
+        .filter((c) => c.type === "text")
+        .map((c) => (c as { text: string }).text)
+        .join("\n")
+        .trimEnd();
+      const images = result.content.filter((c) => c.type === "image").length;
+      const lines = output ? output.split("\n") : [];
+      // Tail, not head: tracebacks and REPL results come last.
+      const shown = options.expanded ? lines : lines.slice(-10);
+      const color = context.isError ? "error" : "toolOutput";
+      let out = theme.fg("muted", "─── output ───");
+      if (lines.length > shown.length) {
+        out += theme.fg(
+          "muted",
+          `\n... (${lines.length - shown.length} earlier lines, `,
+        ) + keyHint("app.tools.expand", "to expand") + theme.fg("muted", ")");
+      }
+      if (shown.length) {
+        out += "\n" + shown.map((l) => theme.fg(color, l)).join("\n");
+      }
+      if (images) out += theme.fg("muted", `\n[${images} image(s)]`);
+      text.setText(out);
+      return text;
+    },
 
     async execute(_id, params, signal, _onUpdate, ctx) {
       kernel ??= new Kernel(python, ctx.cwd);
