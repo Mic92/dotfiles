@@ -42,13 +42,22 @@ in
   environment.etc."tribuchet/ca/hub.crt".source = gen."hub.crt".path;
   environment.etc."tribuchet/ca/hub.key".source = gen."hub.key".path;
 
+  services.flakelets.services.tribuchet-hub = {
+    flake = "github:Mic92/tribuchet";
+    output = "flakelets.hub";
+    autoUpdate.enable = true;
+    settings = {
+      nixConfigPath = toString config.services.tribuchet-hub.externalBuilders.nixConfigPath;
+      hub.metrics-listen = "127.0.0.1:7438";
+    };
+  };
+
   services.tribuchet-hub = {
-    enable = true;
     openFirewall = true;
-    # Prometheus metrics scraped locally by telegraf (see telegraf.nix).
-    settings.metrics-listen = "127.0.0.1:7438";
     externalBuilders = {
       enable = true;
+      # the flakelet's RuntimeDirectory
+      nixConfigPath = "/run/tribuchet-hub/nix.conf";
       # The hub derives external-builders and max-jobs from the workers
       # actually connected (eliza aarch64-linux, jamie x86_64-linux, and
       # whatever else joins), so we do not hard-code a systems list. A

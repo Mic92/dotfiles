@@ -329,11 +329,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787895384,
-        "narHash": "sha256-gFIbHRznpvaQWnwtGZxA32HHdEYdXaAOJslSV+nflMk=",
+        "lastModified": 1788292392,
+        "narHash": "sha256-f/06YkoGOsJq9msglQKMJyzK3rQYmPVFhyN0y1FsHLU=",
         "owner": "Mic92",
         "repo": "flakelet",
-        "rev": "1959e041c6aa359bd90f421e9b09172953cf99d6",
+        "rev": "5ce75ca90e28cf84b66ea40eacc3b0d1c7f06b3f",
         "type": "github"
       },
       "original": {
@@ -1240,11 +1240,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1787858127,
-        "narHash": "sha256-UtSTRLO5zR+YMED4zx+XVbe2SHbsuWJ7CKup5AJCFuY=",
+        "lastModified": 1788290471,
+        "narHash": "sha256-7q/6rcgRfIy/WThpPqtz5KxMrmfiBDIoIGiFtluiiXI=",
         "owner": "Mic92",
         "repo": "tribuchet",
-        "rev": "261d795b8d18bfdb1f398d8faa90434da5970be6",
+        "rev": "3059796b28b2f9ef47deb68c02e24d16d72fdc8f",
         "type": "github"
       },
       "original": {
