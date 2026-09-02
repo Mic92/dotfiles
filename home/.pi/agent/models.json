@@ -6,12 +6,15 @@
       "apiKey": "dummy",
       "models": [
         {
-          "id": "qwen3-30b-a3b-instruct",
-          "name": "Qwen3 30B A3B Instruct (jack)",
-          "contextWindow": 32768,
+          "id": "qwen3.8-27b",
+          "name": "Qwen 3.8 (27B, jack)",
+          "contextWindow": 262144,
           "input": ["text"],
+          "reasoning": true,
           "compat": {
-            "supportsDeveloperRole": false
+            "supportsDeveloperRole": false,
+            "thinkingFormat": "qwen-chat-template",
+            "reasoningEffortMap": { "minimal": "low", "xhigh": "high" }
           }
         }
       ]

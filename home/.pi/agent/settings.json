@@ -29,5 +29,6 @@
   "warnings": {
     "anthropicExtraUsage": false
   },
-  "hideThinkingBlock": true
+  "hideThinkingBlock": false,
+  "quietStartup": true
 }
