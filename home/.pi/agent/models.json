@@ -25,12 +25,13 @@
       "apiKey": "!rbw get p0-inference-api-key",
       "models": [
         {
-          "id": "Qwen3.6-27B-FP8",
-          "name": "Qwen 3.6 (27B, p0)",
-          "contextWindow": 262144,
-          "input": ["text"],
+          "id": "Qwen3.8-27B-FP8",
+          "name": "Qwen 3.8 (27B, p0)",
+          "reasoning": true,
+          "input": ["text", "image"],
           "compat": {
-            "supportsDeveloperRole": false
+            "supportsDeveloperRole": false,
+            "thinkingFormat": "qwen-chat-template"
           }
         }
       ]
