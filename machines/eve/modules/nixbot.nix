@@ -289,12 +289,6 @@ in
   };
   services.flakelet-postgres.enable = true;
 
-  # Push deploys from nixbot CI, see nixosModules/flakelet-deploy.nix.
-  services.flakeletDeploy = {
-    caPublicKey = config.clan.core.vars.generators.step-ssh-user-ca.files."ca.pub".value;
-    services.nixbot.principals = [ "repo:github:Mic92/nixbot:ref:refs/heads/main" ];
-  };
-
   # Legacy domain: permanently redirect to the new nixbot domain so old
   # links (status contexts, nix-outputs URLs, bookmarks) keep working.
   services.nginx.virtualHosts."buildbot.thalheim.io" = {
