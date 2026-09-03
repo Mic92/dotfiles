@@ -14,6 +14,10 @@
   };
   services.nginx.virtualHosts."eve.r".enableACME = true;
 
+  systemd.services.flakelet-agent = rec {
+    wants = [ "acme-eve.r.service" ];
+    after = wants;
+  };
   services.flakelet-agent = {
     enable = true;
     relaySrv = "thalheim.io";
