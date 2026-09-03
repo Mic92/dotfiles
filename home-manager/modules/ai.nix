@@ -16,6 +16,7 @@ let
   piPython = pkgs.python3.withPackages (ps: [
     ps.matplotlib
     ps.pexpect
+    ps.plumbum
     ps.polars
     ps.pyelftools
     ps.requests

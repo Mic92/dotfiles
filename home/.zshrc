@@ -494,6 +494,7 @@ alias gdb='gdb --quiet --args'
 alias readelf='readelf -W'
 xalias xclip="xclip -selection clipboard"
 xalias cloc=scc
+xalias pi='pi --exclude-tools bash'
 
 nix-call-package() {
     if [ $# -lt 1 ]; then

@@ -1,6 +1,6 @@
-From 7f65636f020511fe6f1781f58bb8feab11e7e63f Mon Sep 17 00:00:00 2001
+From dba963b9a5b3e9179a57908083a98c68feb16ce2 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
-Date: Sun, 26 Jul 2026 10:43:42 +0200
+Date: Thu, 3 Sep 2026 22:47:27 +0200
 Subject: [PATCH] remote: make ssh transport program configurable
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -22,16 +22,16 @@ accept OpenSSH-compatible arguments (-T <target> <command>).
 
 Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
 ---
- src/config/model.rs |  4 ++++
- src/main.rs         |  3 +++
- src/remote/unix.rs  | 41 +++++++++++++++++++++++++++++++++--------
- 3 files changed, 40 insertions(+), 8 deletions(-)
+ src/config/model.rs  |  4 ++++
+ src/main.rs          |  3 +++
+ src/remote/attach.rs | 46 +++++++++++++++++++++++++++++++++++---------
+ 3 files changed, 44 insertions(+), 9 deletions(-)
 
 diff --git a/src/config/model.rs b/src/config/model.rs
-index e56ac08..1d471f3 100644
+index c10cd73..0756841 100644
 --- a/src/config/model.rs
 +++ b/src/config/model.rs
-@@ -878,12 +878,16 @@ pub struct RemoteConfig {
+@@ -966,12 +966,16 @@ pub struct RemoteConfig {
      /// Add keepalive fallbacks and private connection reuse for `herdr --remote`.
      /// Set false to run plain ssh unchanged. Default: true.
      pub manage_ssh_config: bool,
@@ -49,10 +49,10 @@ index e56ac08..1d471f3 100644
      }
  }
 diff --git a/src/main.rs b/src/main.rs
-index 27c1d92..0227cd2 100644
+index 56dbb8d..cc903f7 100644
 --- a/src/main.rs
 +++ b/src/main.rs
-@@ -395,6 +395,9 @@ const DEFAULT_CONFIG: &str = r##"# herdr configuration
+@@ -433,6 +433,9 @@ const DEFAULT_CONFIG: &str = r##"# herdr configuration
  # Set false to run plain ssh against your ssh config unchanged — this does not
  # force keepalive or multiplexing off, it only stops herdr from adding its own.
  # manage_ssh_config = true
@@ -62,11 +62,11 @@ index 27c1d92..0227cd2 100644
  
  [experimental]
  # Allow launching herdr from inside a herdr-managed pane.
-diff --git a/src/remote/unix.rs b/src/remote/unix.rs
-index 6fe927c..55a0764 100644
---- a/src/remote/unix.rs
-+++ b/src/remote/unix.rs
-@@ -166,11 +166,12 @@ pub(crate) fn run_remote(remote: RemoteLaunch) -> io::Result<()> {
+diff --git a/src/remote/attach.rs b/src/remote/attach.rs
+index 33e191f..c6a0929 100644
+--- a/src/remote/attach.rs
++++ b/src/remote/attach.rs
+@@ -173,11 +173,12 @@ pub(crate) fn run_remote(remote: RemoteLaunch) -> io::Result<()> {
          remote.keybindings,
          remote.live_handoff,
      );
@@ -84,7 +84,7 @@ index 6fe927c..55a0764 100644
      let prepared_remote = prepare_remote_herdr(&remote_ssh, remote.live_handoff)?;
      ensure_remote_server_ready(
          &remote_ssh,
-@@ -186,6 +187,7 @@ pub(crate) fn run_remote(remote: RemoteLaunch) -> io::Result<()> {
+@@ -193,6 +194,7 @@ pub(crate) fn run_remote(remote: RemoteLaunch) -> io::Result<()> {
          local_socket.clone(),
          session_name,
          remote_ssh.options(),
@@ -92,7 +92,7 @@ index 6fe927c..55a0764 100644
      )?;
  
      run_client_process(&local_socket, &reattach_command, remote.keybindings)
-@@ -453,10 +455,11 @@ impl Drop for ManagedSshConfig {
+@@ -420,10 +422,11 @@ impl Drop for ManagedSshConfig {
  struct RemoteSsh {
      target: String,
      managed_config: Option<ManagedSshConfig>,
@@ -105,7 +105,7 @@ index 6fe927c..55a0764 100644
          let managed_config = if manage_ssh_config {
              write_managed_ssh_config()
                  .inspect_err(|err| {
-@@ -470,6 +473,7 @@ impl RemoteSsh {
+@@ -437,6 +440,7 @@ impl RemoteSsh {
          Self {
              target,
              managed_config,
@@ -113,7 +113,7 @@ index 6fe927c..55a0764 100644
          }
      }
  
-@@ -488,7 +492,7 @@ impl RemoteSsh {
+@@ -455,7 +459,7 @@ impl RemoteSsh {
      }
  
      fn base_command(&self) -> Command {
@@ -122,26 +122,26 @@ index 6fe927c..55a0764 100644
          apply_managed_ssh_options(&mut command, self.options());
          command
      }
-@@ -1706,6 +1710,7 @@ impl SshStdioBridge {
+@@ -1672,6 +1676,7 @@ impl SshStdioBridge {
          local_socket: PathBuf,
          session_name: String,
          ssh_options: Option<&ManagedSshOptions>,
 +        ssh_program: String,
      ) -> io::Result<Self> {
-         let _ = std::fs::remove_file(&local_socket);
-         let listener = UnixListener::bind(&local_socket)?;
-@@ -1731,6 +1736,7 @@ impl SshStdioBridge {
-                             &remote_herdr,
+         crate::ipc::prepare_socket_path(&local_socket, |path| {
+             format!("remote bridge is already listening at {}", path.display())
+@@ -1713,6 +1718,7 @@ impl SshStdioBridge {
                              &session_name,
                              thread_ssh_options.as_ref(),
+                             &thread_stop,
 +                            &ssh_program,
                          ) {
                              eprintln!("herdr: remote bridge failed: {err}");
                          }
-@@ -1865,8 +1871,9 @@ fn bridge_connection(
-     remote_herdr: &RemoteHerdr,
+@@ -1821,8 +1827,9 @@ fn bridge_connection(
      session_name: &str,
      ssh_options: Option<&ManagedSshOptions>,
+     _bridge_stop: &Arc<AtomicBool>,
 +    ssh_program: &str,
  ) -> io::Result<()> {
 -    let mut command = Command::new("ssh");
@@ -149,7 +149,18 @@ index 6fe927c..55a0764 100644
      apply_managed_ssh_options(&mut command, ssh_options);
      command
          .arg("-T")
-@@ -2046,6 +2053,7 @@ mod tests {
+@@ -1876,8 +1883,9 @@ fn bridge_connection(
+     session_name: &str,
+     ssh_options: Option<&ManagedSshOptions>,
+     bridge_stop: &Arc<AtomicBool>,
++    ssh_program: &str,
+ ) -> io::Result<()> {
+-    let mut command = Command::new("ssh");
++    let mut command = Command::new(ssh_program);
+     apply_managed_ssh_options(&mut command, ssh_options);
+     command
+         .arg("-T")
+@@ -2208,6 +2216,7 @@ mod tests {
              socket.clone(),
              "default".to_string(),
              None,
@@ -157,7 +168,15 @@ index 6fe927c..55a0764 100644
          )
          .expect("start bridge listener");
  
-@@ -2132,6 +2140,7 @@ mod tests {
+@@ -2268,6 +2277,7 @@ mod tests {
+             socket.clone(),
+             "default".to_string(),
+             None,
++            "ssh".to_string(),
+         )
+         .expect("start bridge listener");
+         let started = Instant::now();
+@@ -2364,6 +2374,7 @@ mod tests {
          let ssh = RemoteSsh {
              target: "example".to_string(),
              managed_config: Some(managed_config),
@@ -165,7 +184,15 @@ index 6fe927c..55a0764 100644
          };
  
          let command = ssh.command();
-@@ -2162,6 +2171,7 @@ mod tests {
+@@ -2402,6 +2413,7 @@ mod tests {
+         let ssh = RemoteSsh {
+             target: "example".to_string(),
+             managed_config: Some(managed_config),
++            program: "ssh".to_string(),
+         };
+         let args = ssh
+             .command()
+@@ -2433,6 +2445,7 @@ mod tests {
          let ssh = RemoteSsh {
              target: "example".to_string(),
              managed_config: None,
@@ -173,7 +200,7 @@ index 6fe927c..55a0764 100644
          };
  
          let command = ssh.command();
-@@ -2173,6 +2183,21 @@ mod tests {
+@@ -2444,6 +2457,21 @@ mod tests {
          assert_eq!(args, vec!["-T".to_string(), "example".to_string()]);
      }
  
