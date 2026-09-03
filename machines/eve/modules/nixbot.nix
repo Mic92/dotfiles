@@ -54,7 +54,7 @@ in
   clan.core.vars.generators.buildbot-gitea = {
     files.token = { };
     files.oauth-secret = { };
-    prompts.token.description = "Gitea access token (write:repository, read:user)";
+    prompts.token.description = "Gitea access token (write:repository, write:issue, read:user)";
     prompts.oauth-secret.description = "Gitea OAuth client secret";
     script = ''
       cp $prompts/token $out/token
