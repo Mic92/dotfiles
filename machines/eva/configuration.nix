@@ -20,6 +20,7 @@
 
     ./modules/authelia.nix
     ./modules/disko.nix
+    ./modules/flakelet-relay.nix
     ./modules/lldap.nix
     ./modules/loki.nix
     ./modules/nginx.nix

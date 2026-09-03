@@ -33,6 +33,7 @@
 
     ./modules/atuin.nix
     ./modules/authelia.nix
+    ./modules/flakelet-relay.nix
     ./modules/vaultwarden.nix
     ./modules/nixbot.nix
     ./modules/synapse.nix

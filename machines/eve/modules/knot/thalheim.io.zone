@@ -83,6 +83,8 @@ _smtp._tls IN TXT "v=TLSRPTv1;rua=mailto:joerg.smtp-tls@thalheim.io"
 matrix IN A 135.181.61.171
 matrix IN AAAA 2a01:4f9:4b:4084::1
 _matrix._tcp IN SRV 0 5 443 matrix
+_flakelet-relay._tcp IN SRV 10 50 7443 eve
+_flakelet-relay._tcp IN SRV 10 50 7443 eva
 
 ;; Keybase & GPG
 joerg._pka IN TXT "v=pka1;fpr=4ABA07382AD57E6B9AA4E88DCA4106B8D7CC79FA;uri=https://thalheim.io/joerg/joerg.asc"

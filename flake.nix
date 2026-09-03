@@ -94,6 +94,11 @@
     flakelet.url = "github:Mic92/flakelet";
     flakelet.inputs.nixpkgs.follows = "nixpkgs";
     flakelet.inputs.adios.follows = "adios-flake/adios";
+    flakelet-relay.url = "github:Mic92/flakelet-relay";
+    flakelet-relay.inputs.nixpkgs.follows = "nixpkgs";
+    flakelet-relay.inputs.flakelet.follows = "flakelet";
+    flakelet-relay.inputs.crane.follows = "crane";
+    flakelet-relay.inputs.treefmt-nix.follows = "treefmt-nix";
     flakelet-nginx.url = "github:Mic92/flakelet-nginx";
     flakelet-postgres.url = "github:Mic92/flakelet-postgres";
 

@@ -372,6 +372,35 @@
         "type": "github"
       }
     },
+    "flakelet-relay": {
+      "inputs": {
+        "crane": [
+          "crane"
+        ],
+        "flakelet": [
+          "flakelet"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ],
+        "treefmt-nix": [
+          "treefmt-nix"
+        ]
+      },
+      "locked": {
+        "lastModified": 1788432651,
+        "narHash": "sha256-ayP7E5kbn3rrMTYsdk3K0TvYCH3hpHfUxL49fHjjKXA=",
+        "owner": "Mic92",
+        "repo": "flakelet-relay",
+        "rev": "bbf3dcd5018759e5e3420097de2aedf959aad69d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mic92",
+        "repo": "flakelet-relay",
+        "type": "github"
+      }
+    },
     "forge-triage": {
       "inputs": {
         "nixpkgs": [
@@ -1057,6 +1086,7 @@
         "flakelet": "flakelet",
         "flakelet-nginx": "flakelet-nginx",
         "flakelet-postgres": "flakelet-postgres",
+        "flakelet-relay": "flakelet-relay",
         "forge-triage": "forge-triage",
         "freelancer-toolbox": "freelancer-toolbox",
         "gitea-mq": "gitea-mq",
