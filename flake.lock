@@ -388,11 +388,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788432651,
-        "narHash": "sha256-ayP7E5kbn3rrMTYsdk3K0TvYCH3hpHfUxL49fHjjKXA=",
+        "lastModified": 1788434055,
+        "narHash": "sha256-+RkMP2t3CMqKTqrPYf2UoI6bHtSvxkJfXnKAJATMycM=",
         "owner": "Mic92",
         "repo": "flakelet-relay",
-        "rev": "bbf3dcd5018759e5e3420097de2aedf959aad69d",
+        "rev": "fd8e7602b89ed9135322f08dbba49d6a0d93bb38",
         "type": "github"
       },
       "original": {
