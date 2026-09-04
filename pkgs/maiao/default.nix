@@ -8,13 +8,13 @@
 
 buildGoModule (finalAttrs: {
   pname = "maiao";
-  version = "1.4.0";
+  version = "1.4.1";
 
   src = fetchFromGitHub {
     owner = "runetes";
     repo = "maiao";
     tag = "maiao-v${finalAttrs.version}";
-    hash = "sha256-sMxEtvDYluRBQGGrCbHZcBDTESdgdVd3+HuE7k3ELFM=";
+    hash = "sha256-3pZc/wORPjIQw2VbvqrF9GjNN/IsosA1q8mSASfKlqI=";
   };
 
   vendorHash = "sha256-1q88bEFo1RKOE9k1Ii3ThcahECQVF40yHUVVEk08RXw=";
