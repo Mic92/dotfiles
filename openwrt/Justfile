@@ -22,7 +22,7 @@ apply:
   EOF
 
   # Apply uci configuration
-  just eval-config | just ssh 'uci batch; uci commit'
+  just eval-config | just ssh 'sh'
 
   # Set up internet after a firmware reset
   if ! just ssh "ip link | grep -q pppoe-wan"; then
