@@ -29,9 +29,15 @@ in
     self.inputs.flakelet-relay.nixosModules.agent
   ];
 
-  options.services.flakelet-relay.acmeHost = lib.mkOption {
-    type = lib.types.str;
-    description = "security.acme.certs entry served on :7443. Must cover <host>.thalheim.io, the SRV target.";
+  options.services.flakelet-relay = {
+    acmeHost = lib.mkOption {
+      type = lib.types.str;
+      description = "security.acme.certs entry served on :7443. Must cover <host>.thalheim.io, the SRV target.";
+    };
+    domain = lib.mkOption {
+      type = lib.types.str;
+      description = "nginx vhost (TLS configured by the machine) for the dashboard and client API. Must be a redirect_uri of the flakelet-push Authelia client on eve.";
+    };
   };
 
   config = {
@@ -61,6 +67,8 @@ in
                   "email"
                   "groups"
                 ];
+                # Dashboard login; public client with PKCE.
+                login.clientId = "flakelet-push";
               };
             };
             agents = {
@@ -96,7 +104,7 @@ in
               admin = {
                 principals = [
                   "x509:email:joerg@thalheim.io"
-                  "oidc:authelia:email:joerg@thalheim.io"
+                  "oidc:authelia:groups:flakelet"
                 ];
                 targets = [ "*/*" ];
               };
@@ -129,8 +137,13 @@ in
               allow = false;
             }
             {
-              principals = [ "oidc:authelia:email:joerg@thalheim.io" ];
+              principals = [ "oidc:authelia:groups:flakelet" ];
               targets = [ "jamie/anything" ];
+            }
+            {
+              principals = [ "oidc:authelia:email:someone@thalheim.io" ];
+              targets = [ "eve/nixbot" ];
+              allow = false;
             }
           ];
         };
@@ -157,6 +170,18 @@ in
       certFile = "/var/lib/acme/${agentHost}/fullchain.pem";
       keyFile = "/var/lib/acme/${agentHost}/key.pem";
       flakelets = [ "flakelet-relay" ];
+    };
+
+    services.nginx.virtualHosts.${config.services.flakelet-relay.domain} = {
+      forceSSL = true;
+      locations."/" = {
+        proxyPass = "http://127.0.0.1:7400";
+        # SSE deploy/log streams.
+        extraConfig = ''
+          proxy_buffering off;
+          proxy_read_timeout 3600s;
+        '';
+      };
     };
 
     networking.firewall.allowedTCPPorts = [ 7443 ];
