@@ -72,8 +72,15 @@ in
           };
           "root/nixos" = {
             type = "zfs_fs";
-            options.mountpoint = "/";
             mountpoint = "/";
+            options = {
+              mountpoint = "/";
+              # nix-store/postgres churn is several 100G/day; long-lived
+              # snapshots filled the pool. Keep only frequent+hourly (24h).
+              "com.sun:auto-snapshot:daily" = "false";
+              "com.sun:auto-snapshot:weekly" = "false";
+              "com.sun:auto-snapshot:monthly" = "false";
+            };
           };
           "root/home" = {
             type = "zfs_fs";
@@ -86,6 +93,7 @@ in
             options = {
               mountpoint = "/tmp";
               sync = "disabled";
+              "com.sun:auto-snapshot" = "false";
             };
           };
           "root/docker" = {
