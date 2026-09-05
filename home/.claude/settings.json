@@ -26,6 +26,7 @@
   "effortLevel": "low",
   "autoUpdatesChannel": "latest",
   "tui": "fullscreen",
+  "skipWorkflowUsageWarning": true,
   "theme": "light-daltonized",
   "autoCompactEnabled": false,
   "agentPushNotifEnabled": true,
@@ -35,13 +36,39 @@
       "$defaults",
       "Bash(gh run view:*)",
       "Bash(nix-locate:*)",
-      "Bash(pueue status:*)"
+      "Bash(pueue status:*)",
+      "Bash(systemd-inhibit:*)"
     ],
     "soft_deny": [
       "$defaults",
-      "Bash(gh cache delete:*)"
+      "Bash(gh cache delete:*)",
+      "Bash(pueue reset:*)"
     ],
-    "environment": []
-  },
-  "skipWorkflowUsageWarning": true
+    "environment": [
+      "### Org-wide",
+      "**Organization**: None configured",
+      "**Cloud provider(s)**: None configured",
+      "**Repository visibility**: assume private unless the remote host and repo name indicate otherwise, or a visibility check in the transcript shows public — this repo (/home/joerg/git/deptrace) has no configured git remote, so it is local-only and not published anywhere",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: None configured",
+      "**Default / protected branches**: unknown — origin/HEAD is unset and the repo has no remote, so no branch protection or ruleset information is available",
+      "**CI/CD deploy targets**: None configured",
+      "**Network posture**: None configured",
+      "**Source control**: The trusted repo and its remote(s) only (no additional orgs configured) — as scoped by the Trusted repo and Repository visibility entries above; this checkout currently has no remote at all",
+      "**Trusted internal domains**: None configured",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: None configured",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material; preserve exact handles when known and share only with audiences cleared at the [named+specifics] bar. In this checkout, .envrc is a sensitive-looking path and should be treated as potentially credential-bearing",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment (hyphen/underscore/dot-delimited — e.g. matches `prod-db`, not `producer`)",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
+      "### User-specific",
+      "**Primary use of Claude Code**: software development — Nix/NixOS packaging and flake work, Rust and Python development, and kernel/tracing-adjacent work in this local `deptrace` checkout",
+      "**Trusted repo**: /home/joerg/git/deptrace (the git repository the agent started in). It has no configured remote, so it is a local-only, effectively private repo: confidential material is fine there, but secrets and sensitive data are never cleared into it by visibility alone. Pushing or repointing it to any new remote is a publication decision, not routine work",
+      "**Org-specific CLIs**: None configured — observed personal tooling in shell history includes `nix`, `nix-build`, `nix-review`, `nix-locate`, `homeshick`, `pueue`, `merge-when-green`, `clan`, `jj`, `rbw`, `sops`, `inv`, and `tea`; `rbw` and `sops` are credential/secret tools and stay outside routine automation",
+      "**Routine under user prefix**: no `<user>/` namespace qualifier was observed; work is scoped to this single local checkout under /home/joerg/git/"
+    ]
+  }
 }
