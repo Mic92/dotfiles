@@ -118,12 +118,21 @@ export default function (pi: ExtensionAPI) {
       kernel ??= new Kernel(python, ctx.cwd);
       const ac = new AbortController();
       signal?.addEventListener("abort", () => ac.abort(), { once: true });
+      let timedOut = false;
       const timer = params.timeout
-        ? setTimeout(() => ac.abort(), params.timeout * 1000)
+        ? setTimeout(() => {
+          timedOut = true;
+          ac.abort();
+        }, params.timeout * 1000)
         : undefined;
       const r = await kernel.exec(params.code, ac.signal).finally(() =>
         clearTimeout(timer)
       );
+      // Throw like bash so pi ends the run as "aborted" and sends queued prompts.
+      if (signal?.aborted) throw new Error("Command aborted");
+      if (timedOut && r.error?.startsWith("KeyboardInterrupt")) {
+        r.error = `Timed out after ${params.timeout}s (cell interrupted, interpreter state kept)`;
+      }
 
       let text = r.stdout;
       if (r.stderr) {
