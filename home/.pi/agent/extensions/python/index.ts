@@ -55,7 +55,7 @@ export default function (pi: ExtensionAPI) {
     description:
       "Execute Python code in a persistent interpreter: variables, imports and open files survive between calls for the whole session. " +
       "The value of a trailing expression is echoed like in a REPL; use print() for anything else. " +
-      "matplotlib figures are returned as images. Available: polars, matplotlib, requests, pexpect, pyelftools + stdlib. " +
+      "matplotlib figures are returned as images. Available: polars, matplotlib, requests, plumbum, pexpect, pyelftools + stdlib. " +
       `Output is truncated to the last ${DEFAULT_MAX_LINES} lines / ${
         formatSize(DEFAULT_MAX_BYTES)
       }.`,
