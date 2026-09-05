@@ -53,6 +53,13 @@ type = "plugin_action"
 command = "rmarganti.herdr-pluck.pluck"
 description = "pluck visible token"
 
+# sort tabs into per-project workspaces (herdr-autospace)
+[[keys.command]]
+key = "prefix+shift+s"
+type = "plugin_action"
+command = "herdr-autospace.sort"
+description = "sort tabs into workspaces"
+
 # code review of the current repo with tuicr
 [[keys.command]]
 key = "prefix+shift+r"
