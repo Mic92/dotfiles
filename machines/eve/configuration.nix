@@ -22,7 +22,6 @@
     self.inputs.srvos.nixosModules.server
     self.inputs.srvos.nixosModules.mixins-nginx
     self.inputs.srvos.nixosModules.hardware-hetzner-online-amd
-    self.inputs.flakelet.nixosModules.flakelet
     self.inputs.flakelet-nginx.nixosModules.provider
     self.inputs.flakelet-postgres.nixosModules.provider
     self.inputs.disko.nixosModules.disko

@@ -1,33 +1,13 @@
-{ config, self, ... }:
+{ ... }:
 {
-  imports = [
-    ../../../nixosModules/flakelet-relay
-    self.inputs.flakelet-relay.nixosModules.agent
-  ];
+  imports = [ ../../../nixosModules/flakelet-relay ];
 
   services.flakelet-relay.acmeHost = "thalheim.io";
 
-  # Agent identity: ACME cert for eve.r from step-ca (ca.r).
-  security.acme.certs."eve.r" = {
-    server = config.retiolum.ca.acmeURL;
-    reloadServices = [ "flakelet-agent.service" ];
-  };
-  services.nginx.virtualHosts."eve.r".enableACME = true;
-
-  systemd.services.flakelet-agent = rec {
-    wants = [ "acme-eve.r.service" ];
-    after = wants;
-  };
-  services.flakelet-agent = {
-    enable = true;
-    relaySrv = "thalheim.io";
-    certFile = "/var/lib/acme/eve.r/fullchain.pem";
-    keyFile = "/var/lib/acme/eve.r/key.pem";
-    flakelets = [
-      "tribuchet-hub"
-      "nixbot"
-    ];
-  };
+  services.flakelet-agent.flakelets = [
+    "tribuchet-hub"
+    "nixbot"
+  ];
 
   # `flakelet-push login --issuer https://auth.thalheim.io`
   services.authelia.instances.main.settings.identity_providers.oidc = {
