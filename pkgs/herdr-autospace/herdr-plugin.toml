@@ -1,0 +1,12 @@
+id = "herdr-autospace"
+name = "Herdr Autospace"
+version = "0.1.0"
+min_herdr_version = "0.8.0"
+description = "Sort tabs into workspaces named after their project directory"
+platforms = ["linux", "macos"]
+
+[[actions]]
+id = "sort"
+title = "Sort Tabs into Workspaces by Directory"
+contexts = ["workspace", "pane"]
+command = ["bin/herdr-autospace"]

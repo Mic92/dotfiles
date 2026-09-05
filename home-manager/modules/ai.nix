@@ -49,6 +49,7 @@ in
       selfPkgs.herdr-pluck
       selfPkgs.herdr-sesh
       selfPkgs.herdr-autoname
+      selfPkgs.herdr-autospace
     ];
   };
 

@@ -40,6 +40,8 @@ in
     herdr-sesh = pkgs.callPackage ./herdr-sesh { };
     # herdr plugin: tmux-like automatic tab names
     herdr-autoname = pkgs.callPackage ./herdr-autoname { };
+    # herdr plugin: sort tabs into per-project workspaces
+    herdr-autospace = pkgs.callPackage ./herdr-autospace { };
     ghidra-cli = pkgs.callPackage ./ghidra-cli { };
     # Cross-platform secure pinentry (works on macOS and Linux)
     rbw-pinentry = pkgs.callPackage ./rbw_pinentry { };
