@@ -52,6 +52,15 @@ describe.skipIf(!hasPython)("python kernel", () => {
     expect(r.stderr).toContain("raw");
   });
 
+  test("stdin readers get EOF instead of hanging on the request stream", async () => {
+    const r = await k.exec(
+      "import subprocess, sys\n(subprocess.run(['cat'], capture_output=True, timeout=5).stdout, sys.stdin.read())",
+    );
+    expect(r.error).toBeNull();
+    expect(r.result).toBe("(b'', '')");
+    expect((await k.exec("1")).result).toBe("1");
+  });
+
   test("abort interrupts running code but keeps state", async () => {
     const ac = new AbortController();
     const p = k.exec(
