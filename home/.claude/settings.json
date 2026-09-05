@@ -23,9 +23,25 @@
     "padding": 0
   },
   "alwaysThinkingEnabled": true,
+  "effortLevel": "low",
   "autoUpdatesChannel": "latest",
+  "tui": "fullscreen",
   "theme": "light-daltonized",
   "autoCompactEnabled": false,
+  "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
-  "effortLevel": "low"
+  "autoMode": {
+    "allow": [
+      "$defaults",
+      "Bash(gh run view:*)",
+      "Bash(nix-locate:*)",
+      "Bash(pueue status:*)"
+    ],
+    "soft_deny": [
+      "$defaults",
+      "Bash(gh cache delete:*)"
+    ],
+    "environment": []
+  },
+  "skipWorkflowUsageWarning": true
 }
