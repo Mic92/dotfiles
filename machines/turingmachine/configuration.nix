@@ -48,6 +48,8 @@
 
   hardware.graphics.enable32Bit = config.hardware.graphics.enable;
 
+  programs.steam.enable = true;
+
   nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.x86_64-linux;
 
   services.rustdesk-client.users = [ "joerg" ];
