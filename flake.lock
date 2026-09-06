@@ -576,6 +576,9 @@
         "crane": [
           "crane"
         ],
+        "fenix": [
+          "fenix"
+        ],
         "nixpkgs": [
           "nixpkgs"
         ],
@@ -587,11 +590,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788018019,
-        "narHash": "sha256-IwkuDeVBJmgPe4iZx5w3NM4x3QRIqxGALP/t6NCwG/g=",
+        "lastModified": 1788645523,
+        "narHash": "sha256-TT/RDLxtIZsd+3PhGnN2BpOrWkxsNQvEB+RMdsTxUHg=",
         "owner": "krebs",
         "repo": "kartei",
-        "rev": "5be56c99c7767c0fbf4697486452683798f8a48c",
+        "rev": "1c5ec725db9b75c6a3edf156736f505f45edef80",
         "type": "github"
       },
       "original": {

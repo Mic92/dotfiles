@@ -62,6 +62,7 @@
     kartei.inputs.nixpkgs.follows = "nixpkgs";
     kartei.inputs.tincr.follows = "tincr";
     kartei.inputs.crane.follows = "crane";
+    kartei.inputs.fenix.follows = "fenix";
     kartei.inputs.treefmt-nix.follows = "treefmt-nix";
 
     fenix.url = "github:nix-community/fenix";
