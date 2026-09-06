@@ -80,10 +80,10 @@ height = "70%"
 
 [theme]
 # tmux status bar uses folke tokyonight (night) palette
+# ghostty is pinned to "TokyoNight Night"
 name = "tokyo-night"
-auto_switch = true
-dark_name = "tokyo-night"
-light_name = "tokyo-night-day"
+# auto_switch misdetects it as light
+auto_switch = false
 
 [ui]
 # tabs are auto-named by the herdr-autoname plugin
