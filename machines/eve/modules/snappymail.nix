@@ -16,10 +16,8 @@ in
       upload_max_filesize = maxUploadSize;
       post_max_size = maxUploadSize;
       memory_limit = maxUploadSize;
-      # MailSo\Log\Logger installs a pcntl handler for SIGQUIT that
-      # persists in the FPM worker; the master's idle-reap SIGQUIT then
-      # hits zend_signal_handler in accept() and the worker dumps core
-      # (~1500 coredumps/day with pm=ondemand).
+      # MailSo\Log\Logger installs a pcntl handler for SIGQUIT that persists in the FPM worker.
+      # the master's idle-reap SIGQUIT then hits zend_signal_handler in accept() and the worker dumps core
       disable_functions = "pcntl_signal,pcntl_async_signals";
     };
 
