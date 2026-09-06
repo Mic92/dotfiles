@@ -142,6 +142,9 @@ in
     cliphist
     wtype
 
+    # x11 support for niri has no built-in Xwayland
+    xwayland-satellite
+
     # App launcher, display config
     fuzzel
     libnotify
