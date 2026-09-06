@@ -330,11 +330,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788312293,
-        "narHash": "sha256-khVhEomZZqhp0GL9RiPaOrp+shvbQvhMl2e0rklyreE=",
+        "lastModified": 1788699680,
+        "narHash": "sha256-MJERW3za9+Ws0ExsPhIYeo672cmRKIryRxE1w2UXUTg=",
         "owner": "Mic92",
         "repo": "flakelet",
-        "rev": "bb3df2b31287219c575cade0a10087d21fc2a285",
+        "rev": "23a54b34e40f1f81de9c9d76f1ff08d72dc80a01",
         "type": "github"
       },
       "original": {
