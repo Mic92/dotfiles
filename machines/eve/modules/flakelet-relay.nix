@@ -8,7 +8,7 @@
   };
   services.nginx.virtualHosts."flakelet.thalheim.io".useACMEHost = "thalheim.io";
 
-  services.flakelet-agent.flakelets = [
+  services.flakelets.services.flakelet-agent.settings.settings.flakelets = [
     "tribuchet-hub"
     "nixbot"
   ];

@@ -26,7 +26,6 @@ in
 {
   imports = [
     self.inputs.flakelet.nixosModules.flakelet
-    self.inputs.flakelet-relay.nixosModules.agent
   ];
 
   options.services.flakelet-relay = {
@@ -99,7 +98,10 @@ in
               };
               flakelet-relay = {
                 principals = [ "oidc:nixbot:repo:github:Mic92/flakelet-relay:ref:refs/heads/main" ];
-                targets = [ "@relays/flakelet-relay" ];
+                targets = [
+                  "@relays/flakelet-relay"
+                  "*/flakelet-agent"
+                ];
               };
               admin = {
                 principals = [
@@ -154,22 +156,26 @@ in
       "flakelet-relay.service"
     ];
 
-    # So the relay flakelet above can be pushed here.
+    # So the relay flakelet above (and the agent itself) can be pushed here.
     security.acme.certs.${agentHost} = {
       server = config.retiolum.ca.acmeURL;
       reloadServices = [ "flakelet-agent.service" ];
     };
     services.nginx.virtualHosts.${agentHost}.enableACME = true;
-    systemd.services.flakelet-agent = rec {
-      wants = [ "acme-${agentHost}.service" ];
-      after = wants;
-    };
-    services.flakelet-agent = {
-      enable = true;
-      relaySrv = "thalheim.io";
-      certFile = "/var/lib/acme/${agentHost}/fullchain.pem";
-      keyFile = "/var/lib/acme/${agentHost}/key.pem";
-      flakelets = [ "flakelet-relay" ];
+    services.flakelets.services.flakelet-agent = {
+      flake = "github:Mic92/flakelet-relay";
+      output = "flakelets.agent";
+      settings = {
+        certFile = "/var/lib/acme/${agentHost}/fullchain.pem";
+        keyFile = "/var/lib/acme/${agentHost}/key.pem";
+        settings = {
+          relaySrv = "thalheim.io";
+          flakelets = [
+            "flakelet-relay"
+            "flakelet-agent"
+          ];
+        };
+      };
     };
 
     services.nginx.virtualHosts.${config.services.flakelet-relay.domain} = {
