@@ -215,6 +215,10 @@ def accepted() -> None:
     if not new:
         body += f"\n\nReplaces key `{os.environ['REPLACE']}`."
 
+    # tincd waits for this script, the joiner waits for tincd. Do the
+    # GitHub round trips in the background.
+    if os.environ.get("KARTEI_FOREGROUND") is None and os.fork():
+        return
     repo = os.environ.get("KARTEI_REPO", "krebs/kartei")
     base = os.environ.get("KARTEI_BASE", "master")
     gh = GitHub.for_installation(repo)
