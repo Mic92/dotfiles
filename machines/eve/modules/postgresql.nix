@@ -20,9 +20,7 @@
       let
         # XXX specify the postgresql package you'd like to upgrade to.
         # Do not forget to list the extensions you need.
-        newPostgres = pkgs.postgresql_15.withPackages (_pp: [
-          # pp.plv8
-        ]);
+        newPostgres = pkgs.postgresql_18;
         cfg = config.services.postgresql;
       in
       pkgs.writeScriptBin "upgrade-pg-cluster" ''

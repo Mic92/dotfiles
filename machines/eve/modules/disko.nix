@@ -96,6 +96,22 @@ in
               "com.sun:auto-snapshot" = "false";
             };
           };
+          # Own dataset so a full root fs cannot take postgres down
+          # (reservation), and 16k records match its page-sized I/O.
+          "root/postgres" = {
+            type = "zfs_fs";
+            mountpoint = "/var/lib/postgresql/18";
+            options = {
+              mountpoint = "legacy";
+              reservation = "60G";
+              recordsize = "16k";
+              compression = "zstd";
+              logbias = "throughput";
+              "com.sun:auto-snapshot:daily" = "false";
+              "com.sun:auto-snapshot:weekly" = "false";
+              "com.sun:auto-snapshot:monthly" = "false";
+            };
+          };
           "root/docker" = {
             type = "zfs_fs";
             options.mountpoint = "none";
