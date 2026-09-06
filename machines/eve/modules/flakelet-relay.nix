@@ -7,12 +7,6 @@
     domain = "flakelet.thalheim.io";
   };
   services.nginx.virtualHosts."flakelet.thalheim.io".useACMEHost = "thalheim.io";
-
-  services.flakelets.services.flakelet-agent.settings.settings.flakelets = [
-    "tribuchet-hub"
-    "nixbot"
-  ];
-
   # One public client for both `flakelet-push login` (device flow) and the
   # dashboard on either relay (authorization code + PKCE); the relay checks
   # the id_token audience, so they must share the client_id.

@@ -171,10 +171,6 @@ in
         keyFile = "/var/lib/acme/${agentHost}/key.pem";
         settings = {
           relaySrv = "thalheim.io";
-          flakelets = [
-            "flakelet-relay"
-            "flakelet-agent"
-          ];
         };
       };
     };
