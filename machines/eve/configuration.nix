@@ -30,6 +30,7 @@
     { programs.nix-index-database.comma.enable = true; }
 
     ./modules/atuin.nix
+    ./modules/kartei-enroll
     ./modules/authelia.nix
     ./modules/flakelet-relay.nix
     ./modules/vaultwarden.nix
