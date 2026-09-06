@@ -107,9 +107,6 @@ in
               recordsize = "16k";
               compression = "zstd";
               logbias = "throughput";
-              "com.sun:auto-snapshot:daily" = "false";
-              "com.sun:auto-snapshot:weekly" = "false";
-              "com.sun:auto-snapshot:monthly" = "false";
             };
           };
           "root/docker" = {
