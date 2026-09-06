@@ -3,7 +3,7 @@
 # PRs as the kartei-enroll GitHub App.
 #
 #   sudo -u tincr tinc -n retiolum invite -e KARTEI_NS=<namespace> <node>
-#   sudo -u tincr tinc -n retiolum invite --replace <node>
+#   sudo -u tincr tinc -n retiolum invite --replace [-e KARTEI_NS=<ns>] <node>
 {
   config,
   lib,

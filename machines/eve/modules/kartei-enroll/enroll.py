@@ -6,6 +6,7 @@ confbase of the enrolment host. Usage on that host:
 
     tinc -n retiolum invite -e KARTEI_NS=<namespace> <node>
     tinc -n retiolum invite --replace <node>
+    tinc -n retiolum invite --replace -e KARTEI_NS=<namespace> <node>  # PR still open
 
 Configuration comes from the environment (set by the NixOS module):
 KARTEI_HOSTS_JSON, KARTEI_REPO, KARTEI_BASE, KARTEI_GITHUB_APP_ID,
@@ -65,8 +66,6 @@ def resolve(node: str) -> tuple[str, str, str | None, bool]:
             die(f"{node} is already in kartei ({known['ns']}), use --replace")
         assert known["ip6"] is not None
         return known["ns"] or "", known["ip6"], known["ip4"], False
-    if replace:
-        die(f"--replace for {node}, which is not in kartei")
     ns = os.environ.get("KARTEI_NS", "")
     if not NS_RE.match(ns):
         die("set the namespace with `-e KARTEI_NS=<name>`")
