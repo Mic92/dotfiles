@@ -57,6 +57,7 @@ in
               nixbot = {
                 url = "https://nixbot.thalheim.io";
                 audience = "flakelet-relay";
+                displayClaims = [ "repository" ];
               };
               # Authelia's sub is opaque, match on email and groups instead.
               authelia = {
