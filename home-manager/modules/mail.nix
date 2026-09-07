@@ -21,6 +21,14 @@ lib.mkMerge [
 
       aerc
 
+      # pimalaya stack (trial, runs next to mbsync/notmuch): JMAP/IMAP/DAV against Stalwart
+      himalaya
+      selfPkgs.himalaya-tui
+      selfPkgs.neverest
+      selfPkgs.calendula
+      selfPkgs.cardamum
+      selfPkgs.carillon
+
       # Email organization tools
       afew # notmuch tagging tool
       notmuch-addrlookup
@@ -46,6 +54,7 @@ lib.mkMerge [
     # - .config/aerc/aerc.conf
     # - .config/aerc/notmuch-querymap
     # - bin/email-sync
+    # - .config/{himalaya,neverest,calendula,cardamum}/config.toml
 
     # notmuch post-new hook is managed by homeshick in home/.notmuch/hooks/
   }

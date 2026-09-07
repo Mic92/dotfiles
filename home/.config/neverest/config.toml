@@ -1,0 +1,43 @@
+# Trial setup next to mbsync: IMAP + Stalwart CalDAV/CardDAV -> local pimdir.
+# Store: ~/.local/state/neverest/<account>/{pimdir.db,objects/}
+# JMAP is configured-but-unimplemented upstream; switch imap.* -> jmap.* once it lands.
+
+[accounts.thalheim]
+default = true
+imap.server = "imaps://mail.thalheim.io"
+imap.sasl.plain.username = "joerg@thalheim.io"
+imap.sasl.plain.password.command = ["rbw", "get", "Eve"]
+imap.collection.filter.exclude = ["Virtual"]
+# read-mostly while evaluating: never delete on the server
+imap.collection.create = true
+imap.collection.delete = false
+imap.item.create = true
+imap.item.delete = false
+
+caldav.server = "https://mail.thalheim.io/dav/cal"
+caldav.auth.basic.username = "joerg@thalheim.io"
+caldav.auth.basic.password.command = ["rbw", "get", "Eve"]
+caldav.item.create = true
+caldav.item.delete = false
+
+carddav.server = "https://mail.thalheim.io/dav/card"
+carddav.auth.basic.username = "joerg@thalheim.io"
+carddav.auth.basic.password.command = ["rbw", "get", "Eve"]
+carddav.item.create = true
+carddav.item.delete = false
+
+smtp.server = "smtp://mail.thalheim.io:587"
+smtp.starttls = true
+smtp.sasl.plain.username = "joerg@thalheim.io"
+smtp.sasl.plain.password.command = ["rbw", "get", "Eve"]
+
+store.purge-after = "90d"
+
+[accounts.bills]
+imap.server = "imaps://mail.thalheim.io"
+imap.sasl.plain.username = "bills@thalheim.io"
+imap.sasl.plain.password.command = ["rbw", "get", "Bills email account"]
+imap.collection.delete = false
+imap.item.create = true
+imap.item.delete = false
+store.purge-after = "90d"

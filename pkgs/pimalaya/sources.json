@@ -1,0 +1,32 @@
+{
+  "neverest": {
+    "rev": "0d0c445f1fc264ca316f66db84277d9981770dfb",
+    "hash": "sha256-oC8+BIduNC3P2Kt4s7pK3w/oiOsKSaipRsMle1Zy8Kg=",
+    "cargoHash": "sha256-5RXVMcotBypg9/v4tUJcuD9yoWQyxa9BdrbhjznelCo=",
+    "description": "CLI to synchronize PIM collections"
+  },
+  "himalaya-tui": {
+    "rev": "1303e56f17788f2a0b41ac3b384c9580a201338e",
+    "hash": "sha256-EDvovkphwuGnIKq/UiA7tIY4ovyvdexirfAoreFuyFg=",
+    "cargoHash": "sha256-do+OaRQ8yOBXzfLWmRZZm6ymbHvy/T3OCDgnyMAuQEM=",
+    "description": "TUI to manage emails"
+  },
+  "calendula": {
+    "rev": "e95bb65cd08324446b1d050491fd7dce1f802ccc",
+    "hash": "sha256-c458ezmX1KEYP2jqp0nTEsVmLFFIlGhy8a9xCyr9sfs=",
+    "cargoHash": "sha256-QdM/sYFAteL1twfDzYlq9sDreOrBck1/gjmok+cmBaM=",
+    "description": "CLI to manage calendars"
+  },
+  "cardamum": {
+    "rev": "b28b9059f50ece0337f8ad85fa1e38af028418f0",
+    "hash": "sha256-LeN9Ua57/YeVut/foGrSDyZygDiCa6MYb3ghJadhVTg=",
+    "cargoHash": "sha256-+Saql8JrnWMbpYsU+abqN0/zXf+3KabJ/LgXbidXiYY=",
+    "description": "CLI to manage contacts"
+  },
+  "carillon": {
+    "rev": "b431f9f793eecdb6e65cc5437318152a7def02c0",
+    "hash": "sha256-VSihN9ZUr5iOX1vUbkZYr6Rxdl8ReqFimiLwH4ly61M=",
+    "cargoHash": "sha256-OTS7WkX+yX3SLBznw+cV4QXkXg7a0w59botlyQdDVn4=",
+    "description": "CLI to watch PIM collection changes"
+  }
+}

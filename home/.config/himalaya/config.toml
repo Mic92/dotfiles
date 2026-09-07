@@ -1,0 +1,36 @@
+# Shared by himalaya CLI (v2) and himalaya-tui. Talks JMAP to Stalwart directly.
+display-name = "Jörg Thalheim"
+downloads-dir = "~/Downloads"
+envelope.list.datetime-local-tz = true
+
+[accounts.thalheim]
+default = true
+email = "joerg@thalheim.io"
+jmap.server = "https://mail.thalheim.io/jmap/session"
+jmap.auth.basic.username = "joerg@thalheim.io"
+jmap.auth.basic.password.command = ["rbw", "get", "Eve"]
+# JMAP mailbox ids (himalaya mailbox list --json)
+mailbox.alias.inbox = "a"
+mailbox.alias.trash = "b"
+mailbox.alias.spam = "c"
+mailbox.alias.drafts = "d"
+mailbox.alias.sent = "e"
+mailbox.alias.archive = "f"
+
+[accounts.bills]
+email = "bills@thalheim.io"
+jmap.server = "https://mail.thalheim.io/jmap/session"
+jmap.auth.basic.username = "bills@thalheim.io"
+jmap.auth.basic.password.command = ["rbw", "get", "Bills email account"]
+mailbox.alias.inbox = "a"
+mailbox.alias.trash = "b"
+mailbox.alias.spam = "c"
+mailbox.alias.drafts = "d"
+mailbox.alias.sent = "e"
+mailbox.alias.archive = "f"
+
+# Offline copy written by `neverest sync`; needs himalaya built with `pimdir`.
+#[accounts.thalheim-offline]
+#email = "joerg@thalheim.io"
+#pimdir.root = "~/.local/state/neverest/thalheim"
+#mailbox.alias.inbox = "imap/INBOX"

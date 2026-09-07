@@ -1,0 +1,13 @@
+[accounts.thalheim]
+default = true
+carddav.server = "https://mail.thalheim.io/dav/card"
+carddav.auth.basic.username = "joerg@thalheim.io"
+carddav.auth.basic.password.command = ["rbw", "get", "Eve"]
+
+[accounts.nextcloud]
+carddav.server = "https://cloud.thalheim.io/remote.php/dav"
+carddav.auth.basic.username = "joerg@thalheim.io"
+carddav.auth.basic.password.command = ["rbw", "get", "Eve"]
+
+[accounts.local]
+vdir.home-dir = "~/.contacts"

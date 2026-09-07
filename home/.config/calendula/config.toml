@@ -1,0 +1,20 @@
+# Stalwart CalDAV (migration target). Nextcloud calendars stay on vdirsyncer for now;
+# the vdir account below reads that local copy.
+[accounts.thalheim]
+default = true
+caldav.server = "https://mail.thalheim.io/dav/cal"
+caldav.auth.basic.username = "joerg@thalheim.io"
+caldav.auth.basic.password.command = ["rbw", "get", "Eve"]
+
+[accounts.nextcloud]
+caldav.server = "https://cloud.thalheim.io/remote.php/dav"
+caldav.auth.basic.username = "joerg@thalheim.io"
+caldav.auth.basic.password.command = ["rbw", "get", "Eve"]
+
+[accounts.clan]
+caldav.server = "https://nextcloud.clan.lol/remote.php/dav/calendars/Mic92/"
+caldav.auth.basic.username = "Mic92"
+caldav.auth.basic.password.command = ["rbw", "get", "nextcloud.clan.lol", "Mic92"]
+
+[accounts.local]
+vdir.home-dir = "~/.local/share/calendars"
