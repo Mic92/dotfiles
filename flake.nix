@@ -160,11 +160,6 @@
     clan-core.inputs.systems.follows = "systems";
     clan-core.inputs.nix-darwin.follows = "nix-darwin";
 
-    mics-n8n-nodes.url = "github:Mic92/mics-n8n-nodes";
-    mics-n8n-nodes.inputs.nixpkgs.follows = "nixpkgs";
-    mics-n8n-nodes.inputs.treefmt-nix.follows = "treefmt-nix";
-    mics-n8n-nodes.inputs.flake-parts.follows = "flake-parts";
-
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
 
@@ -183,10 +178,6 @@
     flake-utils.inputs.systems.follows = "systems";
 
     crane.url = "github:ipetkov/crane";
-
-    opencrow.url = "github:pinpox/opencrow";
-    opencrow.inputs.nixpkgs.follows = "nixpkgs";
-    opencrow.inputs.treefmt-nix.follows = "treefmt-nix";
 
     llm-agents = {
       url = "github:numtide/llm-agents.nix";

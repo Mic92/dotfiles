@@ -20,8 +20,6 @@ in
     claude-code = pkgs.callPackage ./claude-code {
       claude-code = inputs'.llm-agents.claude-code;
     };
-    n8n-hooks = pkgs.callPackage ./n8n-hooks { };
-    n8n-nodes-paperless = pkgs.callPackage ./n8n-nodes-paperless { };
 
     email-sync = pkgs.callPackage ./email-sync { };
     msmtp-with-sent = pkgs.callPackage ./msmtp-with-sent { };

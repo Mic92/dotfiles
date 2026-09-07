@@ -633,32 +633,6 @@
         "type": "github"
       }
     },
-    "mics-n8n-nodes": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1781387526,
-        "narHash": "sha256-kNiHvSQMokBVI9pb1uKcByUbDbJZ3HBnBxwU/qj9tUg=",
-        "owner": "Mic92",
-        "repo": "mics-n8n-nodes",
-        "rev": "e441eaff16a9378ffaad1b6302cd9ee9016fd820",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "mics-n8n-nodes",
-        "type": "github"
-      }
-    },
     "mics-skills": {
       "inputs": {
         "nixpkgs": [
@@ -1007,29 +981,6 @@
         "type": "github"
       }
     },
-    "opencrow": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1782727145,
-        "narHash": "sha256-buooDQiylOxQBO6nvATodIpC/jp9Vic+JvWYYrTCv7M=",
-        "owner": "pinpox",
-        "repo": "opencrow",
-        "rev": "b6a2b714bbb8d10f848b9f859283bb5745f7dccf",
-        "type": "github"
-      },
-      "original": {
-        "owner": "pinpox",
-        "repo": "opencrow",
-        "type": "github"
-      }
-    },
     "punchcard": {
       "inputs": {
         "nixpkgs": [
@@ -1100,7 +1051,6 @@
         "home-manager": "home-manager",
         "kartei": "kartei",
         "llm-agents": "llm-agents",
-        "mics-n8n-nodes": "mics-n8n-nodes",
         "mics-skills": "mics-skills",
         "niks3": "niks3",
         "nix": "nix",
@@ -1116,7 +1066,6 @@
         "nixpkgs": "nixpkgs",
         "noctalia-plugins": "noctalia-plugins",
         "nur-packages": "nur-packages",
-        "opencrow": "opencrow",
         "punchcard": "punchcard",
         "radicle-mirror": "radicle-mirror",
         "sops-nix": "sops-nix",

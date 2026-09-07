@@ -176,11 +176,6 @@
           subject = [ "group:freshrss" ];
         }
         {
-          domain = "n8n.thalheim.io";
-          policy = "one_factor";
-          subject = [ "group:n8n" ];
-        }
-        {
           domain = "paperless.thalheim.io";
           policy = "one_factor";
           subject = [ "group:paperless" ];
