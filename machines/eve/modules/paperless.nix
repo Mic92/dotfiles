@@ -7,9 +7,9 @@
 let
   hostname = "paperless.thalheim.io";
   apiHostname = "paperless-api.thalheim.io";
-  opencrowPermsApp = ./paperless-perms;
+  paperlessPermsApp = ./paperless-perms;
   cfg = config.services.paperless;
-  paperlessPythonPath = "${cfg.package.python.pkgs.makePythonPath cfg.package.propagatedBuildInputs}:${cfg.package}/lib/paperless-ngx/src:${opencrowPermsApp}";
+  paperlessPythonPath = "${cfg.package.python.pkgs.makePythonPath cfg.package.propagatedBuildInputs}:${cfg.package}/lib/paperless-ngx/src:${paperlessPermsApp}";
 in
 {
   services.paperless = {
@@ -65,7 +65,7 @@ in
     '';
   };
 
-  # Add the opencrow_perms Django app to PYTHONPATH for all paperless
+  # Add the paperless_perms Django app to PYTHONPATH for all paperless
   # services so post_save signals fire in every worker process.
   systemd.services.paperless-web.environment.PYTHONPATH = lib.mkForce paperlessPythonPath;
   systemd.services.paperless-task-queue.environment.PYTHONPATH = paperlessPythonPath;
