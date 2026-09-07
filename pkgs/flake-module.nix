@@ -22,13 +22,6 @@ in
     };
 
     email-sync = pkgs.callPackage ./email-sync { };
-    inherit (pkgs.callPackages ./pimalaya { })
-      neverest
-      himalaya-tui
-      calendula
-      cardamum
-      carillon
-      ;
     msmtp-with-sent = pkgs.callPackage ./msmtp-with-sent { };
     claude-md = pkgs.python3.pkgs.callPackage ./claude-md { };
     crabfit-cli = pkgs.python3.pkgs.callPackage ./crabfit-cli { };
