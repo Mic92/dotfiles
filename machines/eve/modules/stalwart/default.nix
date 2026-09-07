@@ -99,6 +99,10 @@ in
             bind = [ "[::]:587" ];
             protocol = "smtp";
           };
+          imap = {
+            bind = [ "[::]:143" ];
+            protocol = "imap";
+          };
           imaps = {
             bind = [ "[::]:993" ];
             protocol = "imap";
@@ -364,6 +368,7 @@ in
 
   networking.firewall.allowedTCPPorts = [
     25
+    143
     465
     587
     993
