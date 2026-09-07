@@ -171,18 +171,6 @@ in
     587 # submission
   ];
 
-  # Alias map lives in vars to keep private addresses out of the repo.
-  clan.core.vars.generators.postfix-aliases = {
-    files.virtual-aliases.owner = "postfix";
-    prompts.aliases = {
-      description = "postfix virtual alias map (one 'alias destination' per line)";
-      type = "multiline";
-    };
-    script = ''
-      cp "$prompts"/aliases "$out"/virtual-aliases
-    '';
-  };
-
   sops.templates."postfix-ldap-accounts.cf" = {
     content = ''
       server_host = ldap://127.0.0.1:3890
@@ -197,7 +185,6 @@ in
     owner = "postfix";
   };
 
-  services.lldap.ensureGroups = [ "mail" ];
   services.lldap.ensureUsers.postfix = {
     passwordFile = config.clan.core.vars.generators.postfix-ldap.files.postfix-ldap-password.path;
     groups = [ "lldap_strict_readonly" ];
