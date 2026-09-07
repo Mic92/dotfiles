@@ -132,6 +132,11 @@ in
         user = "admin";
         secret = "%{file:/run/credentials/stalwart.service/admin_password}%";
       };
+      # `user%admin` logs in as any user
+      authentication.master = {
+        user = "admin";
+        secret = "%{file:/run/credentials/stalwart.service/admin_password}%";
+      };
 
       storage.directory = "ldap";
       directory.ldap = {
