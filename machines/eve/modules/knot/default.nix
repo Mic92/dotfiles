@@ -18,10 +18,24 @@ let
       @ IN NS ns1.thalheim.io.
     '';
 
+  dkim = config.clan.core.vars.generators.stalwart-dkim.files;
+  txtChunks =
+    s:
+    lib.concatMapStringsSep " " (i: "\"${lib.substring (i * 250) 250 s}\"") (
+      lib.range 0 ((lib.stringLength s - 1) / 250)
+    );
+  dkimRecords =
+    domain:
+    lib.optionalString (dkim ? "${domain}.rsa.txt") ''
+      202609r._domainkey IN TXT ${txtChunks dkim."${domain}.rsa.txt".value}
+      202609e._domainkey IN TXT ${txtChunks dkim."${domain}.ed25519.txt".value}
+    '';
+
   zoneWithAcme =
     name:
     pkgs.writeText "${name}.zone" ''
       ${builtins.readFile (./. + "/${name}.zone")}
+      ${dkimRecords name}
       ${lib.concatMapStringsSep "\n" (name: "_acme-challenge.${name}. IN NS ns1.thalheim.io.") (
         builtins.filter (name: lib.strings.hasSuffix ".${name}" name) (
           builtins.attrNames config.security.acme.certs

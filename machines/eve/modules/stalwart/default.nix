@@ -19,6 +19,9 @@ let
     "devkid.net"
     "lekwati.com"
   ];
+  dkimSelector = "202609";
+  dkimKey =
+    domain: algo: config.clan.core.vars.generators.stalwart-dkim.files."${domain}.${algo}.key".path;
 
   ldapFilter = "(memberOf=cn=mail,ou=groups,dc=eve)";
   ldapPasswordFile = config.clan.core.vars.generators.stalwart.files.ldap-password.path;
@@ -40,7 +43,13 @@ in
     credentials = {
       ldap_password = ldapPasswordFile;
       admin_password = adminPasswordFile;
-    };
+    }
+    // lib.listToAttrs (
+      lib.concatMap (d: [
+        (lib.nameValuePair "dkim-${d}.rsa" (dkimKey d "rsa"))
+        (lib.nameValuePair "dkim-${d}.ed25519" (dkimKey d "ed25519"))
+      ]) dkimDomains
+    );
 
     settings = {
       # Keys read from this file instead of the DB-backed webadmin settings.
@@ -214,33 +223,41 @@ in
             + ")";
           "then" = false;
         }
-        { "else" = "['rsa-' + sender_domain]"; }
+        { "else" = "['rsa-' + sender_domain, 'ed25519-' + sender_domain]"; }
       ];
-      auth.arc.seal = "'rsa-thalheim.io'";
+      auth.arc.seal = "'ed25519-thalheim.io'";
       signature = lib.listToAttrs (
-        map (
+        lib.concatMap (
           domain:
-          lib.nameValuePair "rsa-${domain}" {
-            private-key = "%{file:${cfg.dataDir}/dkim/${domain}.default.key}%";
-            inherit domain;
-            selector = "default";
-            headers = [
-              "From"
-              "To"
-              "Cc"
-              "Date"
-              "Subject"
-              "Message-ID"
-              "MIME-Version"
-              "Content-Type"
-              "In-Reply-To"
-              "References"
-              "List-Id"
-            ];
-            algorithm = "rsa-sha256";
-            canonicalization = "relaxed/relaxed";
-            report = false;
-          }
+          map
+            (
+              algo:
+              lib.nameValuePair "${algo}-${domain}" {
+                private-key = "%{file:/run/credentials/stalwart.service/dkim-${domain}.${algo}}%";
+                inherit domain;
+                selector = "${dkimSelector}${lib.substring 0 1 algo}";
+                headers = [
+                  "From"
+                  "To"
+                  "Cc"
+                  "Date"
+                  "Subject"
+                  "Message-ID"
+                  "MIME-Version"
+                  "Content-Type"
+                  "In-Reply-To"
+                  "References"
+                  "List-Id"
+                ];
+                algorithm = "${algo}-sha256";
+                canonicalization = "relaxed/relaxed";
+                report = false;
+              }
+            )
+            [
+              "rsa"
+              "ed25519"
+            ]
         ) dkimDomains
       );
 
@@ -281,7 +298,6 @@ in
     wants = [ "acme-finished-thalheim.io.target" ];
     restartTriggers = [ staticConfig ];
     preStart = ''
-      install -d -m 0700 ${cfg.dataDir}/dkim
       {
         cat ${staticConfig}
         printf '\n[lookup.aliases]\n'
@@ -374,6 +390,30 @@ in
     };
     script = ''
       cp "$prompts"/aliases "$out"/virtual-aliases
+    '';
+  };
+
+  # DNS: <selector>r._domainkey / <selector>e._domainkey TXT from the .txt files
+  clan.core.vars.generators.stalwart-dkim = {
+    files = lib.listToAttrs (
+      lib.concatMap (d: [
+        (lib.nameValuePair "${d}.rsa.key" { })
+        (lib.nameValuePair "${d}.ed25519.key" { })
+        (lib.nameValuePair "${d}.rsa.txt" { secret = false; })
+        (lib.nameValuePair "${d}.ed25519.txt" { secret = false; })
+      ]) dkimDomains
+    );
+    runtimeInputs = [
+      pkgs.openssl
+      pkgs.coreutils
+    ];
+    script = ''
+      for d in ${toString dkimDomains}; do
+        openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out "$out/$d.rsa.key"
+        openssl genpkey -algorithm ed25519 -out "$out/$d.ed25519.key"
+        printf 'v=DKIM1; k=rsa; p=%s' "$(openssl pkey -in "$out/$d.rsa.key" -pubout -outform DER | base64 -w0)" > "$out/$d.rsa.txt"
+        printf 'v=DKIM1; k=ed25519; p=%s' "$(openssl pkey -in "$out/$d.ed25519.key" -pubout -outform DER | tail -c 32 | base64 -w0)" > "$out/$d.ed25519.txt"
+      done
     '';
   };
 
