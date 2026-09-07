@@ -37,7 +37,6 @@
     ./modules/nixbot.nix
     ./modules/synapse.nix
     ./modules/disko.nix
-    ./modules/dovecot.nix
     ./modules/herdr-eternal.nix
     ./modules/gitea
     ./modules/gitea-mq.nix
@@ -61,14 +60,10 @@
     ./modules/tribuchet.nix
     ./modules/pinchflat.nix
     ./modules/radicle.nix
-    ./modules/postfix.nix
     ./modules/postgresql.nix
-    ./modules/redis.nix
     ./modules/remote-builder.nix
-    ./modules/rspamd/rspamd.nix
     ./modules/rustdesk-server.nix
     ./modules/shiori
-    ./modules/snappymail.nix
     ./modules/stalwart
     ./modules/stalwart/bulwark.nix
     ./modules/sshd.nix

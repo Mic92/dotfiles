@@ -1,9 +1,4 @@
 { config, ... }:
-let
-  primary = false;
-  stalwartHost = if primary then "mail.thalheim.io" else "stalwart.thalheim.io";
-  vhost = if primary then "webmail.thalheim.io" else "bulwark.thalheim.io";
-in
 {
   services.bulwark = {
     enable = true;
@@ -12,7 +7,7 @@ in
     updateCheck.enabled = false;
     settings = {
       branding.appName = "thalheim.io mail";
-      jmapServerUrl = "https://${stalwartHost}";
+      jmapServerUrl = "https://mail.thalheim.io";
       sessionSecretFile = config.clan.core.vars.generators.bulwark.files.session-secret.path;
       settingsSyncEnabled = true;
     };
@@ -25,7 +20,7 @@ in
     '';
   };
 
-  services.nginx.virtualHosts.${vhost} = {
+  services.nginx.virtualHosts."webmail.thalheim.io" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
     locations."/" = {

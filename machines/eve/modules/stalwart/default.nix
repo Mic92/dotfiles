@@ -5,13 +5,6 @@
   ...
 }:
 let
-  # false: shadow instance next to postfix/dovecot (SMTP on loopback only,
-  # stalwart defaults key off local_port == 25). true: takes over the real ports.
-  primary = false;
-
-  smtpBind = p: [ (if primary then "[::]:${toString p}" else "127.0.0.2:${toString p}") ];
-  port = shadow: real: toString (if primary then real else shadow);
-
   mailDomains = [
     "thalheim.io"
     "devkid.net"
@@ -89,25 +82,25 @@ in
         };
         listener = {
           smtp = {
-            bind = smtpBind 25;
+            bind = [ "[::]:25" ];
             protocol = "smtp";
           };
           submissions = {
-            bind = smtpBind 465;
+            bind = [ "[::]:465" ];
             protocol = "smtp";
             tls.implicit = true;
           };
           submission = {
-            bind = smtpBind 587;
+            bind = [ "[::]:587" ];
             protocol = "smtp";
           };
           imaps = {
-            bind = [ "[::]:${port 2993 993}" ];
+            bind = [ "[::]:993" ];
             protocol = "imap";
             tls.implicit = true;
           };
           sieve = {
-            bind = [ "[::]:${port 4191 4190}" ];
+            bind = [ "[::]:4190" ];
             protocol = "managesieve";
           };
           http = {
@@ -124,11 +117,6 @@ in
       };
 
       authentication.fallback-admin = {
-        user = "admin";
-        secret = "%{file:/run/credentials/stalwart.service/admin_password}%";
-      };
-      # `user%admin` logs in as any user, used by import-maildir.py
-      authentication.master = {
         user = "admin";
         secret = "%{file:/run/credentials/stalwart.service/admin_password}%";
       };
@@ -268,7 +256,7 @@ in
         analysis.forward = true;
       };
 
-      # match imported dovecot folder names
+      # folder names as migrated from dovecot
       email.folders = {
         junk = {
           name = "Spam";
@@ -350,19 +338,16 @@ in
 
   security.acme.certs."thalheim.io".reloadServices = [ "stalwart.service" ];
 
-  networking.firewall.allowedTCPPorts =
-    lib.optionals primary [
-      25
-      465
-      587
-    ]
-    ++ map lib.toInt [
-      (port 2993 993)
-      (port 4191 4190)
-    ];
+  networking.firewall.allowedTCPPorts = [
+    25
+    465
+    587
+    993
+    4190
+  ];
 
   services.nginx.virtualHosts = {
-    ${if primary then "mail.thalheim.io" else "stalwart.thalheim.io"} = {
+    "mail.thalheim.io" = {
       useACMEHost = "thalheim.io";
       forceSSL = true;
       locations."/" = {
@@ -382,7 +367,7 @@ in
   });
 
   clan.core.vars.generators.postfix-aliases = {
-    files.virtual-aliases.owner = if primary then "root" else "postfix";
+    files.virtual-aliases = { };
     prompts.aliases = {
       description = "virtual alias map (one 'alias destination' per line)";
       type = "multiline";
@@ -407,15 +392,4 @@ in
     passwordFile = ldapPasswordFile;
     groups = [ "lldap_strict_readonly" ];
   };
-
-  environment.systemPackages = [
-    (pkgs.writers.writePython3Bin "stalwart-import-maildir" {
-      flakeIgnore = [ "E501" ];
-      makeWrapperArgs = [
-        "--set-default"
-        "STALWART_ADMIN_PASSWORD_FILE"
-        adminPasswordFile
-      ];
-    } (builtins.readFile ./import-maildir.py))
-  ];
 }

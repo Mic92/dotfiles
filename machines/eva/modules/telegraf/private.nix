@@ -87,7 +87,7 @@ in
           address = "eva.r:3890";
         }
         {
-          # postfix: smtp
+          # stalwart: smtp
           protocol = "tcp";
           # amazon does block port 25
           tags.host = "eve";
@@ -95,14 +95,14 @@ in
           address = "eve.r:25";
         }
         {
-          # postfix: submission
+          # stalwart: submission
           protocol = "tcp";
           tags.host = "eve";
           tags.org = "private";
           address = "mail.thalheim.io:587";
         }
         {
-          # postfix: smtps
+          # stalwart: smtps
           protocol = "tcp";
           tags.host = "eve";
           tags.org = "private";
@@ -145,10 +145,15 @@ in
         tags.host = "eve";
       }
       {
-        urls = [ "https://rspamd.thalheim.io" ];
+        urls = [ "https://mail.thalheim.io/healthz/ready" ];
         tags.host = "eve";
         tags.org = "private";
-        response_string_match = "Rspamd";
+      }
+      {
+        urls = [ "https://webmail.thalheim.io/api/health" ];
+        tags.host = "eve";
+        tags.org = "private";
+        response_string_match = "healthy";
       }
       {
         urls = [ "https://glowing-bear.thalheim.io" ];
@@ -266,10 +271,9 @@ in
           "https://loki.r:443"
           "https://prometheus.r:443"
           "https://alertmanager.r:443"
-          # dovecot
+          # stalwart
           "tcp://imap.thalheim.io:993"
           "tcp://imap.devkid.net:993"
-          #  postfix
           "tcp://mail.thalheim.io:465"
 
           # notify https://twitter.com/SexWithChris
