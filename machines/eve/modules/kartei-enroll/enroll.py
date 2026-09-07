@@ -29,6 +29,9 @@ from typing import Any
 
 NET4 = "10.243.0.0/16"
 NET6 = "42::/16"
+BUNDLE_URL = (
+    "https://github.com/krebs/kartei/releases/download/bundle/retiolum-hosts.tar.gz"
+)
 NS_RE = re.compile(r"^[a-z0-9_][a-z0-9_-]*$")
 
 
@@ -75,7 +78,7 @@ def resolve(node: str) -> tuple[str, str, str | None, bool]:
 def created() -> None:
     node = os.environ["NODE"]
     _ns, ip6, ip4, _new = resolve(node)
-    lines = [f"Ifconfig = {ip6}/16", f"Route = {NET6}"]
+    lines = [f"Ifconfig = {ip6}/16", f"Route = {NET6}", f"BundleUrl = {BUNDLE_URL}"]
     if ip4:
         lines += [f"Ifconfig = {ip4}/16", f"Route = {NET4}"]
     # Keys for the invitee go into the first chunk, before the separator.
