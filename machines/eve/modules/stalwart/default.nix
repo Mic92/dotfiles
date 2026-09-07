@@ -85,10 +85,6 @@ in
       server = {
         hostname = "mail.thalheim.io";
         tls.certificate = "wildcard";
-        http = {
-          url = "'https://jmap.thalheim.io'";
-          use-x-forwarded = true;
-        };
         listener = {
           smtp = {
             bind = [ "[::]:25" ];
@@ -117,6 +113,13 @@ in
             protocol = "http";
           };
         };
+      };
+
+      http = {
+        url = "'https://jmap.thalheim.io'";
+        use-x-forwarded = true;
+        # bulwark on mail.thalheim.io talks to jmap.thalheim.io from the browser
+        permissive-cors = true;
       };
 
       certificate.wildcard = {
