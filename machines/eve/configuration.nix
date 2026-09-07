@@ -77,6 +77,7 @@
     ./modules/stalwart
     ./modules/stalwart/bulwark.nix
     ./modules/sshd.nix
+    ./modules/storagebox.nix
     ./modules/step-ca/default.nix
     ./modules/syncthing.nix
     ./modules/teamspeak.nix
