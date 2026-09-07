@@ -51,6 +51,8 @@ class Lldap:
         if resp.status not in (HTTPStatus.OK, HTTPStatus.UNAUTHORIZED):
             msg = f"POST {path}: {resp.status} {data.decode(errors='replace')}"
             raise LldapError(msg)
+        if resp.status == HTTPStatus.UNAUTHORIZED:
+            return resp.status, None
         return resp.status, json.loads(data) if data else None
 
     def try_login(self, username: str, password: str) -> str | None:
