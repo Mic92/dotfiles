@@ -78,8 +78,12 @@ def created() -> None:
     lines = [f"Ifconfig = {ip6}/16", f"Route = {NET6}"]
     if ip4:
         lines += [f"Ifconfig = {ip4}/16", f"Route = {NET4}"]
-    with Path(os.environ["INVITATION_FILE"]).open("a") as f:
-        f.write("".join(line + "\n" for line in lines))
+    # Keys for the invitee go into the first chunk, before the separator.
+    inv = Path(os.environ["INVITATION_FILE"])
+    text = inv.read_text()
+    block = "".join(line + "\n" for line in lines)
+    sep = text.find("#---")
+    inv.write_text(text + block if sep < 0 else text[:sep] + block + text[sep:])
 
 
 def b64url(data: bytes) -> str:
