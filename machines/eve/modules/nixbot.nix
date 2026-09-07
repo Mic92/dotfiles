@@ -100,6 +100,31 @@ in
     '';
   };
 
+  # F-Droid publishing for Mic92/tincr: APK signing key and repo index key.
+  # Generated once. Losing the APK key means F-Droid clients must reinstall.
+  clan.core.vars.generators.tincr-fdroid = {
+    files.secrets.secret = true;
+    files.fingerprint.secret = false;
+    runtimeInputs = [
+      pkgs.jdk17_headless
+      pkgs.jq
+      pkgs.coreutils
+      pkgs.openssl
+    ];
+    script = ''
+      pw=$(openssl rand -hex 16)
+      for k in apk repo; do
+        keytool -genkeypair -keystore $k.p12 -storetype PKCS12 -alias $k \
+          -keyalg RSA -keysize 4096 -validity 10000 -dname CN=tincr \
+          -storepass "$pw" -keypass "$pw"
+      done
+      keytool -exportcert -keystore repo.p12 -alias repo -storepass "$pw" |
+        openssl dgst -sha256 -hex | cut -d" " -f2 | tr a-f A-F > $out/fingerprint
+      jq -n --arg a "$(base64 -w0 apk.p12)" --arg r "$(base64 -w0 repo.p12)" --arg p "$pw" \
+        '{ fdroid: { data: { apk_keystore: $a, repo_keystore: $r, password: $p } } }' > $out/secrets
+    '';
+  };
+
   # nixbot runs as a flakelet: its units are evaluated from the nixbot flake
   # on this machine at runtime, so nixbot deploys are decoupled from the NixOS
   # generation. The host keeps the user, PostgreSQL, nginx, secrets and
@@ -126,6 +151,8 @@ in
             config.clan.core.vars.generators.harmonia-effects-secrets.files.secrets.path;
           "effects-secret__github_colon_Mic92_slash_dotfiles" =
             config.clan.core.vars.generators.step-ca-renew-effect-secrets.files.secrets.path;
+          "effects-secret__github_colon_Mic92_slash_tincr" =
+            config.clan.core.vars.generators.tincr-fdroid.files.secrets.path;
         };
         # Raw nixbot-config.json; secret files are credential IDs from above.
         config = {
@@ -247,6 +274,7 @@ in
           effects_per_repo_secrets = {
             "github:nix-community/harmonia" = "effects-secret__github_colon_nix-community_slash_harmonia";
             "github:Mic92/dotfiles" = "effects-secret__github_colon_Mic92_slash_dotfiles";
+            "github:Mic92/tincr" = "effects-secret__github_colon_Mic92_slash_tincr";
           };
           effects_extra_sandbox_paths = [ ];
           effects_mountables_file = null;
