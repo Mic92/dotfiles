@@ -59,6 +59,9 @@ clan-core.lib.clan {
         };
         roles.client.tags.backup = { };
         roles.client.extraModules = [ ../nixosModules/borgbackup.nix ];
+        roles.client.machines.eve.settings.destinations.storagebox = {
+          repo = "ssh://u664466-sub2@u664466.your-storagebox.de:23/./eve";
+        };
       };
 
       sshd-mic92 = {

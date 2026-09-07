@@ -4,25 +4,10 @@
   pkgs,
   ...
 }:
-{
-  imports = [ ./borgbackup-zfs-snapshots.nix ];
-
-  clan.core.state = {
-    networkmanager = lib.mkIf (config.networking.networkmanager.enable) {
-      folders = [ "/etc/NetworkManager" ];
-    };
-    system.folders = [
-      "/home"
-      "/var"
-      "/root"
-    ];
-  };
-
-  # The borgbackup configuration is now handled by the clan inventory system
-  # This module only defines the state folders to be backed up
-  services.borgbackup.jobs = {
-    blob64 = {
-      repo = lib.mkForce "borg@blob64.x:/zdata/borg/${config.networking.hostName}";
+let
+  jobModule =
+    { name, ... }:
+    {
       preHook = lib.optionalString config.networking.networkmanager.enable ''
         # wait until network is available and not metered
         while ! ${pkgs.networkmanager}/bin/nm-online --quiet || ${pkgs.networkmanager}/bin/nmcli --terse --fields GENERAL.METERED dev show 2>/dev/null | grep --quiet "yes"; do
@@ -30,10 +15,13 @@
         done
       '';
       postHook = ''
-        cat > /var/log/telegraf/borgbackup-job-${config.networking.hostName}.service <<EOF
+        cat > /var/log/telegraf/borgbackup-job-${config.networking.hostName}${
+          lib.optionalString (name != "blob64") "-${name}"
+        }.service <<EOF
         task,frequency=daily last_run=$(date +%s)i,exit_status=''${exitStatus}i
         EOF
       '';
+      extraArgs = lib.mkIf (name == "storagebox") "--remote-path=borg-1.4";
       exclude = [
         "*.pyc"
         "*.o"
@@ -55,8 +43,7 @@
         "/var/lib/postgresql"
         "/var/lib/docker/"
         "/var/log/journal"
-        "/var/lib/containerd"
-        "/var/lib/systemd" # not so interesting state so far
+        "/var/lib/systemd"
         "/var/cache"
         "/var/tmp"
         "/var/log"
@@ -66,7 +53,32 @@
         "/home/joerg/mnt"
       ];
     };
+  jobs = builtins.attrNames config.services.borgbackup.jobs;
+in
+{
+  imports = [ ./borgbackup-zfs-snapshots.nix ];
+
+  options.services.borgbackup.jobs = lib.mkOption {
+    type = lib.types.attrsOf (lib.types.submodule jobModule);
   };
 
-  systemd.services."borgbackup-job-blob64".serviceConfig.ReadWritePaths = [ "/var/log/telegraf" ];
+  config = {
+    clan.core.state = {
+      networkmanager = lib.mkIf (config.networking.networkmanager.enable) {
+        folders = [ "/etc/NetworkManager" ];
+      };
+      system.folders = [
+        "/home"
+        "/var"
+        "/root"
+      ];
+    };
+
+    services.borgbackup.jobs.blob64.repo =
+      lib.mkForce "borg@blob64.x:/zdata/borg/${config.networking.hostName}";
+
+    systemd.services = lib.genAttrs (map (n: "borgbackup-job-${n}") jobs) (_: {
+      serviceConfig.ReadWritePaths = [ "/var/log/telegraf" ];
+    });
+  };
 }
