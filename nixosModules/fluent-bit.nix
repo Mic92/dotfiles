@@ -83,7 +83,7 @@ in
             accessible_paths = ".";
           }
           {
-            # eve's strfry alone produces ~10k lines/min; cap any single
+            # A single chatty unit can produce ~10k lines/min; cap any single
             # journal stream so it cannot eat the 120h retention budget.
             name = "throttle";
             match = "journal";

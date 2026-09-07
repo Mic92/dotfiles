@@ -19,12 +19,7 @@ in
 {
   imports = [
     ./kwallet-tpm
-    ./janet.nix
   ];
-
-  # Expose the patched build to sibling modules (janet.nix needs the IPC
-  # client on PATH) without going through a nixpkgs overlay.
-  _module.args.noctalia-shell = noctalia-shell;
 
   # programs.ssh.enableAskPassword defaults to services.xserver.enable, which
   # is false under niri → NixOS exports SSH_ASKPASS="" instead of leaving it
@@ -181,8 +176,7 @@ in
     # Document viewer
     evince
 
-    # Image viewer — xdg-open target for the noctalia nostr-chat
-    # plugin's tap-to-zoom on decrypted attachments.
+    # Image viewer
     eog
 
     # Printer configuration
