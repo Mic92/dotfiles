@@ -17,8 +17,9 @@
       ENABLED = true;
       FROM = "gitea@thalheim.io";
       USER = "gitea@thalheim.io";
-      HOST = "mail.thalheim.io:587";
-      SENDMAIL_PATH = "/run/wrappers/bin/sendmail";
+      PROTOCOL = "smtp+starttls";
+      SMTP_ADDR = "mail.thalheim.io";
+      SMTP_PORT = 587;
     };
     settings.log.LEVEL = "Error";
     settings.service.DISABLE_REGISTRATION = true;
