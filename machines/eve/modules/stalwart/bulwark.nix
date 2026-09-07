@@ -7,7 +7,7 @@
     updateCheck.enabled = false;
     settings = {
       branding.appName = "thalheim.io mail";
-      jmapServerUrl = "https://mail.thalheim.io";
+      jmapServerUrl = "https://jmap.thalheim.io";
       sessionSecretFile = config.clan.core.vars.generators.bulwark.files.session-secret.path;
       settingsSyncEnabled = true;
     };
@@ -20,7 +20,7 @@
     '';
   };
 
-  services.nginx.virtualHosts."webmail.thalheim.io" = {
+  services.nginx.virtualHosts."mail.thalheim.io" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
     locations."/" = {

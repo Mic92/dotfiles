@@ -145,12 +145,12 @@ in
         tags.host = "eve";
       }
       {
-        urls = [ "https://mail.thalheim.io/healthz/ready" ];
+        urls = [ "https://jmap.thalheim.io/healthz/ready" ];
         tags.host = "eve";
         tags.org = "private";
       }
       {
-        urls = [ "https://webmail.thalheim.io/api/health" ];
+        urls = [ "https://mail.thalheim.io/api/health" ];
         tags.host = "eve";
         tags.org = "private";
         response_string_match = "healthy";

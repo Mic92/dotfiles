@@ -86,7 +86,7 @@ in
         hostname = "mail.thalheim.io";
         tls.certificate = "wildcard";
         http = {
-          url = "protocol + '://' + config_get('server.hostname')";
+          url = "'https://jmap.thalheim.io'";
           use-x-forwarded = true;
         };
         listener = {
@@ -362,11 +362,9 @@ in
     4190
   ];
 
-  services.nginx.virtualHosts = {
-    "mail.thalheim.io" = {
-      useACMEHost = "thalheim.io";
-      forceSSL = true;
-      locations."/" = {
+  services.nginx.virtualHosts =
+    let
+      stalwart = {
         proxyPass = "http://127.0.0.1:8642";
         proxyWebsockets = true;
         extraConfig = ''
@@ -374,13 +372,27 @@ in
           proxy_read_timeout 1h;
         '';
       };
-    };
-  }
-  // lib.genAttrs (map (d: "autoconfig.${d}") dkimDomains) (_: {
-    useACMEHost = "thalheim.io";
-    forceSSL = true;
-    locations."/".proxyPass = "http://127.0.0.1:8642";
-  });
+    in
+    {
+      "jmap.thalheim.io" = {
+        useACMEHost = "thalheim.io";
+        forceSSL = true;
+        locations."/" = stalwart;
+      };
+      # bulwark owns / on mail.thalheim.io, stalwart the discovery/protocol paths
+      "mail.thalheim.io".locations = {
+        "/.well-known/" = stalwart;
+        "/jmap" = stalwart;
+        "/dav" = stalwart;
+        "= /mail/config-v1.1.xml" = stalwart;
+        "/autodiscover/" = stalwart;
+      };
+    }
+    // lib.genAttrs (map (d: "autoconfig.${d}") dkimDomains) (_: {
+      useACMEHost = "thalheim.io";
+      forceSSL = true;
+      locations."/".proxyPass = "http://127.0.0.1:8642";
+    });
 
   clan.core.vars.generators.postfix-aliases = {
     files.virtual-aliases = { };
