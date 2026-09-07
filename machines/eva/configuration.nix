@@ -25,6 +25,7 @@
     ./modules/loki.nix
     ./modules/nginx.nix
     ./modules/phantun.nix
+    ./modules/postgresql.nix
     ./modules/prometheus
     ./modules/telegraf
 
