@@ -24,6 +24,7 @@
       nix-prefetch
       mergiraf
       jujutsu
+      jjui
 
       hexyl
       bc

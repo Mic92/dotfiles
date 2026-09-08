@@ -1,0 +1,33 @@
+[preview]
+show_at_start = true
+position = "right"
+# jj util exec lets us pipe through delta; jjui only passes args to `jj`
+revision_command = ["util", "exec", "--", "sh", "-c", "jj show --git --color always -r \"$1\" | delta --paging never", "--", "$change_id"]
+file_command = ["util", "exec", "--", "sh", "-c", "jj diff --git --color always -r \"$1\" -- \"$2\" | delta --paging never", "--", "$change_id", "$file"]
+
+# S / E: hunk-level manipulation ("staging") via jj's interactive diff editor
+[[actions]]
+name = "split_interactive"
+lua = """
+local rev = jjui.context.change_id()
+if rev then jj_interactive("split", "-i", "-r", rev); jjui.revisions.refresh() end
+"""
+
+[[actions]]
+name = "squash_interactive"
+lua = """
+local rev = jjui.context.change_id()
+if rev then jj_interactive("squash", "-i", "-r", rev); jjui.revisions.refresh() end
+"""
+
+[[bindings]]
+key = "S"
+action = "split_interactive"
+scope = "revisions"
+desc = "split -i"
+
+[[bindings]]
+key = "E"
+action = "squash_interactive"
+scope = "revisions"
+desc = "squash -i"

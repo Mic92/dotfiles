@@ -1,0 +1,11 @@
+[ui]
+default-command = "log"
+# git-style diff piped through delta (picks up [delta] from ~/.gitconfig); also used by jjui's preview
+diff-formatter = ":git"
+pager = "delta"
+diff-editor = ["nvim", "-c", "DiffEditor $left $right $output"]
+merge-editor = ["nvim", "-c", "DiffEditor $local $base $remote $output"]
+
+[user]
+name = "Jörg Thalheim"
+email = "joerg@thalheim.io"
