@@ -60,7 +60,9 @@ def run(
     if capture:
         result = subprocess.run(cmd, check=False, capture_output=True, text=True)
         if result.returncode != 0 and check:
-            raise subprocess.CalledProcessError(result.returncode, cmd)
+            raise subprocess.CalledProcessError(
+                result.returncode, cmd, output=result.stdout, stderr=result.stderr
+            )
         return result
     return subprocess.run(cmd, check=check, text=True)
 
@@ -665,4 +667,8 @@ if __name__ == "__main__":
         print_warning("\nInterrupted")
         sys.exit(130)
     except subprocess.CalledProcessError as e:
+        # Captured commands would otherwise fail silently
+        print_error(f"\n✗ Command failed: {' '.join(map(str, e.cmd))}")
+        if e.stderr:
+            print_error(e.stderr.strip())
         sys.exit(e.returncode)
