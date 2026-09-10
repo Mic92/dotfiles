@@ -30,7 +30,6 @@ in
   apps.hm = {
     type = "app";
     program = "${pkgs.writeShellScriptBin "hm" ''
-      set -x
       # Activation runs with a hermetic PATH; expose the host PATH for hooks
       # needing host tools (e.g. gh for a nix.conf token).
       export HM_HOST_PATH="$PATH"
