@@ -526,9 +526,6 @@
         "crane": [
           "crane"
         ],
-        "flake-parts": [
-          "flake-parts"
-        ],
         "herdr": [],
         "nixpkgs": [
           "nixpkgs"
@@ -538,11 +535,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785144443,
-        "narHash": "sha256-0FsEzaN3QWj8hKu40TOf7D4hRi/LRc+VvNVRPfKv2CA=",
+        "lastModified": 1789021738,
+        "narHash": "sha256-vphD6lGvblz3CGZn6sxDLNsvqXP7nI+wI76qEyxL1wc=",
         "owner": "Mic92",
         "repo": "herdr-eternal",
-        "rev": "a46eb6b8d16ebb8ffd3ef86d5642fafd5ac36627",
+        "rev": "b36dda34e0b90c770adea3c171a9e898ffa68a73",
         "type": "github"
       },
       "original": {

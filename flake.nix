@@ -131,7 +131,6 @@
 
     herdr-eternal.url = "github:Mic92/herdr-eternal";
     herdr-eternal.inputs.nixpkgs.follows = "nixpkgs";
-    herdr-eternal.inputs.flake-parts.follows = "flake-parts";
     herdr-eternal.inputs.treefmt-nix.follows = "treefmt-nix";
     herdr-eternal.inputs.crane.follows = "crane";
     # Only needed for herdr-eternal's own integration tests.
