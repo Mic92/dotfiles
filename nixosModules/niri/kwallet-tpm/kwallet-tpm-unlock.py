@@ -8,7 +8,6 @@ vars from one connection on the listening socket before registering on D-Bus.
 
 from __future__ import annotations
 
-import fcntl
 import hashlib
 import os
 import socket
@@ -52,7 +51,8 @@ def derive_hash(password: bytes, salt: bytes) -> bytes:
 def exec_ksecretd(ksecretd: str, password_hash: bytes) -> None:
     # Hash and env connection are queued in the kernel before exec, so no
     # helper process is needed.
-    hash_r, hash_w = os.pipe2(0)
+    hash_r, hash_w = os.pipe()
+    os.set_inheritable(hash_r, True)  # noqa: FBT003
     os.write(hash_w, password_hash)
     os.close(hash_w)
 
@@ -67,7 +67,7 @@ def exec_ksecretd(ksecretd: str, password_hash: bytes) -> None:
                 client.sendall(f"{key}={val}\n".encode())
 
     sock_fd = listener.detach()
-    fcntl.fcntl(sock_fd, fcntl.F_SETFD, 0)  # clear FD_CLOEXEC
+    os.set_inheritable(sock_fd, True)  # noqa: FBT003
     os.environ["PAM_KWALLET5_LOGIN"] = "1"
     os.execv(  # noqa: S606
         ksecretd,
