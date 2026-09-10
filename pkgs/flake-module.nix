@@ -69,7 +69,6 @@ in
     systemctl-macos = pkgs.callPackage ./systemctl { };
   }
   // lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "aarch64-darwin") {
-    kdeconnect = pkgs.callPackage ./kdeconnect { };
     librewolf-macos = pkgs.callPackage ./librewolf-macos { };
     radicle-desktop = pkgs.callPackage ./radicle-desktop { };
   }
