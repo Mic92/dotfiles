@@ -1,5 +1,6 @@
 let
-  hosts = [ "wiki.nixos.org" ];
+  # wiki.nixos.org itself resolves to Fastly; SSH lives on the origin host
+  hosts = [ "he1.wiki.nixos.org" ];
 in
 {
   services.telegraf.extraConfig.inputs = {
