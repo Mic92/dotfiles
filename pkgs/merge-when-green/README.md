@@ -18,8 +18,10 @@ merge-when-green -m "title"   # PR title/body from argument instead of $EDITOR
 2. Pushes the branch (on the default branch, a `merge-when-green-$USER` branch
    is created) and creates a PR, or reuses an existing open one. The PR
    description is taken from your commit messages, editable via `$EDITOR`.
-3. Enables auto-merge and polls check status. On failing checks it runs
-   `nbo log` (nixbot CLI) to show failure logs, if installed.
+3. Enables auto-merge and shows a live check summary (incl. GitHub merge queue
+   position). On failing checks it lists them and runs `nbo log` (nixbot CLI) to
+   show failure logs, if installed. Ctrl-C only stops watching; auto-merge stays
+   enabled.
 4. After the merge, rebases your local branch onto the updated default branch.
 
 ## Requirements
@@ -28,4 +30,5 @@ merge-when-green -m "title"   # PR title/body from argument instead of $EDITOR
 - Gitea: `tea`, `GITEA_TOKEN` set (used to enable auto-merge via API)
 - Optional: `flake-fmt`, `git-absorb`, `lazygit`, `nbo`
 
-The platform is detected by trying `gh repo view` first, then `tea repos list`.
+The platform is detected from the `origin` remote host: `github.com` means
+GitHub, any host with a `tea` login means Gitea.
