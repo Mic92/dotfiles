@@ -11,7 +11,9 @@ from urllib.error import URLError
 
 
 def atomic_write(path: Path, content: str) -> None:
-    """Write content to file atomically via temp file + rename."""
+    """Atomic write; no-op if unchanged to avoid needless telegraf reloads."""
+    if path.exists() and path.read_text() == content:
+        return
     with tempfile.NamedTemporaryFile(
         mode="w", dir=path.parent, delete=False, suffix=".tmp"
     ) as tmp:

@@ -68,9 +68,8 @@ in
 
       serviceConfig = {
         Type = "oneshot";
+        # telegraf picks up changes via --watch-config
         ExecStart = generatorScript;
-        # Reload telegraf if running (+ prefix runs as root, --no-block avoids deadlock on boot)
-        ExecStartPost = "+${pkgs.systemd}/bin/systemctl try-reload-or-restart --no-block telegraf.service";
         User = "telegraf";
         Group = "telegraf";
         Restart = "on-failure";
@@ -89,11 +88,10 @@ in
       };
     };
 
-    # Tell Telegraf to load configs from the http-sd directory
     # Config path is /var/run/telegraf/config.toml when environmentFiles is used
     systemd.services.telegraf.serviceConfig.ExecStart = lib.mkForce [
       ""
-      "${pkgs.telegraf}/bin/telegraf -config /var/run/telegraf/config.toml -config-directory ${outputDir}"
+      "${pkgs.telegraf}/bin/telegraf -config /var/run/telegraf/config.toml -config-directory ${outputDir} --watch-config notify"
     ];
   };
 }
