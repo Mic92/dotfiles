@@ -177,8 +177,7 @@ def github_find_open_pr(branch: str) -> dict[str, Any] | None:
 
 
 def github_enable_automerge(branch: str) -> None:
-    print_subtle("Enabling auto-merge...")
-    run(["gh", "pr", "merge", branch, "--auto", "--rebase"])
+    run(["gh", "pr", "merge", branch, "--auto", "--rebase"], capture=True)
     print_success("✓ Auto-merge enabled")
 
 
@@ -207,7 +206,6 @@ def create_pr_github(branch: str, target: str, title: str, body: str) -> str:
 
 def gitea_enable_automerge(repo: Repo, pr_index: str) -> None:
     """Gitea has no CLI support for auto-merge, so use its REST API."""
-    print_subtle("Enabling auto-merge...")
     token = os.environ.get("GITEA_TOKEN")
     if not token:
         print_warning("GITEA_TOKEN not set; cannot enable auto-merge via API")
@@ -334,9 +332,27 @@ def summarize_checks(checks: list[dict[str, Any]]) -> CheckSummary:
     return s
 
 
+def commits_landed(default_branch: str) -> bool:
+    """True if every local commit has an equivalent on the target branch.
+
+    External merge bots rebase our commits (new SHAs) and then close the PR,
+    which GitHub reports as CLOSED rather than MERGED.
+    """
+    run(["git", "fetch", "--quiet", "origin", default_branch], check=False)
+    result = run(
+        ["git", "cherry", f"origin/{default_branch}", "HEAD"],
+        check=False,
+        capture=True,
+    )
+    return result.returncode == 0 and not any(
+        line.startswith("+") for line in result.stdout.splitlines()
+    )
+
+
 def check_pr_completion(
     pr_data: dict[str, Any],
     checks: CheckSummary,
+    default_branch: str,
     *,
     in_merge_queue: bool,
     automerge_seen: bool,
@@ -350,7 +366,8 @@ def check_pr_completion(
         return True, "PR merged"
 
     if state == "CLOSED":
-        return False, "PR was closed"
+        landed = commits_landed(default_branch)
+        return landed, "PR merged externally" if landed else "PR was closed"
 
     # GitHub clears autoMergeRequest once the PR enters the merge queue, and it
     # may take a poll or two after `gh pr merge --auto` until it shows up. Only
@@ -362,9 +379,12 @@ def check_pr_completion(
         return False, "PR has merge conflicts"
 
     if checks.failed > 0 and checks.pending == 0:
-        return False, f"{checks.failed} check(s) failed"
+        return False, CHECKS_FAILED
 
     return None
+
+
+CHECKS_FAILED = "Checks failed"
 
 
 def get_pr_status_github(pr_id: str) -> dict[str, Any] | None:
@@ -427,14 +447,14 @@ def get_merge_queue_status_github(
     return in_queue, desc
 
 
-def show_failure_logs(checks: CheckSummary) -> None:
-    print()
+def show_failure_logs(repo: Repo, checks: CheckSummary) -> None:
     print_error("Failed checks:")
     for name in checks.failed_names:
         print_error(f"  ✗ {name}")
     if shutil.which("nbo"):
         print_header("nbo log")
-        run(["nbo", "log"], check=False)
+        # nbo mis-guesses the forge for https remotes; we already know it.
+        run(["nbo", "log", "-R", f"github/{repo.owner}/{repo.name}"], check=False)
         print()
 
 
@@ -479,10 +499,9 @@ def wait_for_merge_gitea(pr_id: str) -> bool:
         status.finish()
 
 
-def wait_for_merge_github(repo: Repo, pr_id: str) -> bool:
+def wait_for_merge_github(repo: Repo, pr_id: str, default_branch: str) -> bool:
     status = StatusLine()
     start = time.monotonic()
-    logs_shown = False
     automerge_seen = False
     consecutive_errors = 0
     try:
@@ -511,17 +530,18 @@ def wait_for_merge_github(repo: Repo, pr_id: str) -> bool:
                 line += f"  {Colors.BLUE}[merge queue {queue_desc}]{Colors.RESET}"
             status.update((checks.render(), queue_desc), line)
 
-            if checks.failed and not checks.pending and not logs_shown:
-                status.finish()
-                show_failure_logs(checks)
-                logs_shown = True
-
             completion = check_pr_completion(
-                pr_data, checks, in_merge_queue=in_queue, automerge_seen=automerge_seen
+                pr_data,
+                checks,
+                default_branch,
+                in_merge_queue=in_queue,
+                automerge_seen=automerge_seen,
             )
             if completion is not None:
                 status.finish()
                 success, message = completion
+                if message == CHECKS_FAILED:
+                    show_failure_logs(repo, checks)
                 if not success:
                     print_error(f"✗ {message}: {pr_data.get('url', '')}")
                 return success
@@ -701,7 +721,7 @@ def finalize_merge(
 ) -> int:
     print_header("Waiting for merge (Ctrl-C to stop watching; auto-merge stays on)")
     if platform == Platform.GITHUB:
-        merged = wait_for_merge_github(repo, pr_id)
+        merged = wait_for_merge_github(repo, pr_id, default_branch)
     else:
         merged = wait_for_merge_gitea(pr_id)
     if not merged:
