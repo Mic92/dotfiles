@@ -40,9 +40,7 @@
       keep-derivations = true;
 
       # in zfs we trust
-      fsync-metadata = lib.boolToString (
-        !config.boot.isContainer or config.fileSystems."/".fsType != "zfs"
-      );
+      fsync-metadata = config.boot.isContainer || (config.fileSystems."/".fsType or "") != "zfs";
       substituters = [
         "https://hetzner-cache.numtide.com"
       ]
