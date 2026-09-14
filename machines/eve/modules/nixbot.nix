@@ -177,6 +177,7 @@ in
           ];
           # Anyone who can log in through Authelia may see private repos.
           private_repo_viewers."*" = [ "oidc:auth.thalheim.io:*" ];
+          pr_approval.enable = true;
           eval_max_memory_size = 2048;
           eval_worker_count = 6;
           # Builds offload to tribuchet workers and use little local CPU, so
