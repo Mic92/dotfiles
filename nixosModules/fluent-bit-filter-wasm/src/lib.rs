@@ -1,5 +1,5 @@
 use nanoserde::{DeJson, SerJson};
-use std::ffi::{CStr, CString};
+use std::ffi::CString;
 use std::os::raw::c_char;
 
 /// Noise patterns to drop (matching the old promtail/lua config).
@@ -62,75 +62,64 @@ struct OutputRecord {
 ///
 /// Returns a JSON string with the transformed record, or an empty string to
 /// drop the record.
+///
+/// # Safety
+/// `record` must point to `record_len` readable bytes (guaranteed by fluent-bit).
 #[no_mangle]
-pub extern "C" fn filter_journal(
+pub unsafe extern "C" fn filter_journal(
     _tag: *const c_char,
     _tag_len: u32,
     _time_sec: u32,
     _time_nsec: u32,
     record: *const c_char,
-    _record_len: u32,
+    record_len: u32,
 ) -> *const c_char {
-    let record_str = unsafe { CStr::from_ptr(record) }.to_str().unwrap_or("");
-    let result = match process_record(record_str) {
-        Some(s) => s,
-        None => String::new(), // empty = drop record
-    };
-    CString::new(result).unwrap().into_raw()
+    let bytes = unsafe { std::slice::from_raw_parts(record.cast::<u8>(), record_len as usize) };
+    let record_str = std::str::from_utf8(bytes).unwrap_or_default();
+    // empty string = drop record
+    let result = process_record(record_str).unwrap_or_default();
+    CString::new(result).unwrap_or_default().into_raw()
+}
+
+fn or_unknown(s: &str) -> &str {
+    if s.is_empty() { "?" } else { s }
 }
 
 fn process_record(record_str: &str) -> Option<String> {
     let r: JournalRecord = DeJson::deserialize_json(record_str).ok()?;
 
-    // Check MESSAGE for noise patterns.
-    for pattern in DROP_PATTERNS {
-        if r.message.contains(pattern) {
-            return None;
-        }
+    if DROP_PATTERNS.iter().any(|p| r.message.contains(p)) {
+        return None;
     }
 
     // Unit label: fall back to _TRANSPORT like promtail did.
-    let unit = if !r.systemd_unit.is_empty() {
-        collapse_unit_instance(&r.systemd_unit)
-    } else if !r.transport.is_empty() {
-        r.transport.clone()
+    let unit = if r.systemd_unit.is_empty() {
+        r.transport
     } else {
-        String::new()
+        collapse_unit_instance(&r.systemd_unit)
     };
 
-    // Coredump enrichment.
-    let (final_msg, coredump_unit) = if !r.coredump_cgroup.is_empty() {
-        let cu = r.coredump_cgroup.rsplit('/').next().unwrap_or("");
-        let exe = if r.coredump_exe.is_empty() {
-            "?"
-        } else {
-            &r.coredump_exe
-        };
-        let uid = if r.coredump_uid.is_empty() {
-            "?"
-        } else {
-            &r.coredump_uid
-        };
-        let gid = if r.coredump_gid.is_empty() {
-            "?"
-        } else {
-            &r.coredump_gid
-        };
-        let cmd = if r.coredump_cmdline.is_empty() {
-            "?"
-        } else {
-            &r.coredump_cmdline
-        };
-        (
-            format!("{exe} core dumped (user: {uid}/{gid}, command: {cmd})"),
-            cu.to_string(),
-        )
+    let (message, coredump_unit) = if r.coredump_cgroup.is_empty() {
+        (r.message, String::new())
     } else {
-        (r.message.clone(), String::new())
+        (
+            format!(
+                "{} core dumped (user: {}/{}, command: {})",
+                or_unknown(&r.coredump_exe),
+                or_unknown(&r.coredump_uid),
+                or_unknown(&r.coredump_gid),
+                or_unknown(&r.coredump_cmdline),
+            ),
+            r.coredump_cgroup
+                .rsplit('/')
+                .next()
+                .unwrap_or_default()
+                .to_string(),
+        )
     };
 
     let out = OutputRecord {
-        message: final_msg,
+        message,
         host: r.hostname,
         unit,
         coredump_unit,
@@ -151,20 +140,19 @@ fn process_record(record_str: &str) -> Option<String> {
 fn collapse_unit_instance(unit: &str) -> String {
     let generated = |s: &str| {
         !s.is_empty()
-            && s.chars()
-                .all(|c| c.is_ascii_digit() || c == '-' || c == '_')
+            && s.bytes()
+                .all(|c| c.is_ascii_digit() || c == b'-' || c == b'_')
     };
-    if let Some(middle) = unit
-        .strip_prefix("session-")
-        .and_then(|s| s.strip_suffix(".scope"))
-    {
-        if generated(middle) {
-            return "session.scope".to_string();
+    if let Some((stem, kind)) = unit.rsplit_once('.') {
+        if let Some(id) = stem.strip_prefix("session-") {
+            if generated(id) {
+                return format!("session.{kind}");
+            }
         }
-    }
-    if let (Some(at), Some(dot)) = (unit.find('@'), unit.rfind('.')) {
-        if at < dot && generated(&unit[at + 1..dot]) {
-            return format!("{}@{}", &unit[..at], &unit[dot..]);
+        if let Some((name, id)) = stem.split_once('@') {
+            if generated(id) {
+                return format!("{name}@.{kind}");
+            }
         }
     }
     unit.to_string()
