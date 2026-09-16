@@ -121,6 +121,9 @@ in
     };
   };
 
+  # htpasswd with one entry per shipper (own hosts, doctor cluster, makefu's
+  # hosts via retiolum). Plaintext for external parties lives in
+  # promtail-<name>-password so it can be handed over / rotated separately.
   sops.secrets.promtail-nginx-password.owner = "nginx";
   systemd.services.loki.restartTriggers = [ rulerFile ];
 
