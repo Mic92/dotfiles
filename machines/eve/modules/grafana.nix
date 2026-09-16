@@ -40,6 +40,12 @@ let
       org_role = "Admin"
       org_id = 6 # tincr
 
+      # external retiolum people (makefu, ...) who ship tinc logs to loki.r
+      [[servers.group_mappings]]
+      group_dn = "cn=grafana-tincr,ou=groups,dc=eve"
+      org_role = "Editor"
+      org_id = 6 # tincr
+
       [[servers.group_mappings]]
       group_dn = "*"
       org_role = "Viewer"
@@ -92,6 +98,7 @@ in
   services.lldap.ensureGroups = [
     "grafana"
     "grafana-admins"
+    "grafana-tincr"
   ];
   services.lldap.ensureUsers.grafana = {
     email = "grafana@thalheim.io";
