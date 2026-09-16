@@ -91,7 +91,7 @@ fn process_record(record_str: &str) -> Option<String> {
 
     // Unit label: fall back to _TRANSPORT like promtail did.
     let unit = if !r.systemd_unit.is_empty() {
-        collapse_session_scope(&r.systemd_unit)
+        collapse_unit_instance(&r.systemd_unit)
     } else if !r.transport.is_empty() {
         r.transport.clone()
     } else {
@@ -143,12 +143,28 @@ fn process_record(record_str: &str) -> Option<String> {
     Some(SerJson::serialize_json(&out))
 }
 
-/// Collapse session-1234.scope → session.scope to keep label cardinality low.
-fn collapse_session_scope(unit: &str) -> String {
-    if unit.starts_with("session-") && unit.ends_with(".scope") {
-        let middle = &unit[8..unit.len() - 6];
-        if middle.chars().all(|c| c.is_ascii_digit()) {
+/// Units with a generated numeric instance (session-1234.scope,
+/// systemd-coredump@7-88231-0.service, user@1000.service) would each become
+/// their own loki stream and exhaust max_global_streams_per_user within
+/// minutes on a crash-looping host. Named instances (getty@tty1,
+/// container@web) stay distinct because they are stable and useful.
+fn collapse_unit_instance(unit: &str) -> String {
+    let generated = |s: &str| {
+        !s.is_empty()
+            && s.chars()
+                .all(|c| c.is_ascii_digit() || c == '-' || c == '_')
+    };
+    if let Some(middle) = unit
+        .strip_prefix("session-")
+        .and_then(|s| s.strip_suffix(".scope"))
+    {
+        if generated(middle) {
             return "session.scope".to_string();
+        }
+    }
+    if let (Some(at), Some(dot)) = (unit.find('@'), unit.rfind('.')) {
+        if at < dot && generated(&unit[at + 1..dot]) {
+            return format!("{}@{}", &unit[..at], &unit[dot..]);
         }
     }
     unit.to_string()
@@ -192,13 +208,31 @@ mod tests {
     }
 
     #[test]
-    fn test_session_scope_collapse() {
-        assert_eq!(collapse_session_scope("session-42.scope"), "session.scope");
+    fn test_unit_instance_collapse() {
+        assert_eq!(collapse_unit_instance("session-42.scope"), "session.scope");
         assert_eq!(
-            collapse_session_scope("session-abc.scope"),
+            collapse_unit_instance("session-abc.scope"),
             "session-abc.scope"
         );
-        assert_eq!(collapse_session_scope("sshd.service"), "sshd.service");
+        assert_eq!(collapse_unit_instance("sshd.service"), "sshd.service");
+        // graham produced ~4.7k of these in 30min and filled loki's stream limit
+        assert_eq!(
+            collapse_unit_instance("systemd-coredump@7-882314-0.service"),
+            "systemd-coredump@.service"
+        );
+        assert_eq!(
+            collapse_unit_instance("systemd-coredump@12-98989_98311.service"),
+            "systemd-coredump@.service"
+        );
+        assert_eq!(collapse_unit_instance("user@1000.service"), "user@.service");
+        assert_eq!(
+            collapse_unit_instance("getty@tty1.service"),
+            "getty@tty1.service"
+        );
+        assert_eq!(
+            collapse_unit_instance("container@web.service"),
+            "container@web.service"
+        );
     }
 
     #[test]
