@@ -71,7 +71,12 @@ in
         replication_factor = 1;
         ring.kvstore.store = "inmemory";
         ring.instance_addr = "127.0.0.1";
+        # grpc only listens on loopback; without this the query-frontend
+        # advertises the first private interface address (e.g. phantun1)
+        # and the querier's dial is refused, hanging every query.
+        instance_addr = "127.0.0.1";
       };
+      frontend.address = "127.0.0.1";
 
       limits_config = {
         retention_period = "120h";
