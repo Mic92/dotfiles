@@ -39,60 +39,57 @@ let
   };
 
   rulerFile = pkgs.writeText "ruler.yml" (builtins.toJSON rulerConfig);
+  inherit (config.services.loki) dataDir;
 in
 {
   systemd.tmpfiles.rules = [
-    "d /var/lib/loki 0700 loki loki - -"
-    "d /var/lib/loki/rules 0700 loki loki - -"
+    "d ${dataDir}/rules 0700 loki loki - -"
     # ruler local storage layout is <dir>/<tenant>/*.yml; with
     # auth_enabled=false the tenant is the literal string "fake". Ownership
     # must match the parent dir or tmpfiles refuses the L+ with an
     # "unsafe path transition" error.
-    "d /var/lib/loki/ruler 0755 loki loki - -"
-    "d /var/lib/loki/ruler/fake 0755 loki loki - -"
-    "L+ /var/lib/loki/ruler/fake/ruler.yml - - - - ${rulerFile}"
+    "d ${dataDir}/ruler 0755 loki loki - -"
+    "d ${dataDir}/ruler/fake 0755 loki loki - -"
+    "L+ ${dataDir}/ruler/fake/ruler.yml - - - - ${rulerFile}"
   ];
   services.loki = {
     enable = true;
     configuration = {
-      # Basic stuff
       auth_enabled = false;
       server = {
+        http_listen_address = "127.0.0.1";
         http_listen_port = 3100;
+        grpc_listen_address = "127.0.0.1";
         log_level = "warn";
       };
       common = {
-        path_prefix = config.services.loki.dataDir;
+        path_prefix = dataDir;
         storage.filesystem = {
-          chunks_directory = "${config.services.loki.dataDir}/chunks";
-          rules_directory = "${config.services.loki.dataDir}/rules";
+          chunks_directory = "${dataDir}/chunks";
+          rules_directory = "${dataDir}/rules";
         };
         replication_factor = 1;
         ring.kvstore.store = "inmemory";
         ring.instance_addr = "127.0.0.1";
       };
 
-      ingester.chunk_encoding = "snappy";
-
       limits_config = {
         retention_period = "120h";
         ingestion_burst_size_mb = 16;
-        reject_old_samples = true;
         reject_old_samples_max_age = "12h";
+        # ~35 own hosts + doctor cluster + makefu. A single misbehaving
+        # shipper must not be able to 429 everyone else (see fluent-bit
+        # collapse_unit_instance), but the default 5000 leaves no headroom.
+        max_global_streams_per_user = 20000;
+        split_queries_by_interval = "24h";
       };
 
-      table_manager = {
-        retention_deletes_enabled = true;
-        retention_period = "120h";
-      };
-
+      # retention with tsdb is enforced by the compactor, not table_manager
       compactor = {
         retention_enabled = true;
         compaction_interval = "10m";
-        working_directory = "${config.services.loki.dataDir}/compactor";
-        delete_request_cancel_period = "10m"; # don't wait 24h before processing the delete_request
+        working_directory = "${dataDir}/compactor";
         retention_delete_delay = "2h";
-        retention_delete_worker_count = 150;
         delete_request_store = "filesystem";
       };
 
@@ -110,14 +107,13 @@ in
       ruler = {
         storage = {
           type = "local";
-          local.directory = "${config.services.loki.dataDir}/ruler";
+          local.directory = "${dataDir}/ruler";
         };
-        rule_path = "${config.services.loki.dataDir}/rules";
+        rule_path = "${dataDir}/rules";
         alertmanager_url = "http://alertmanager.r";
       };
 
       query_range.cache_results = true;
-      limits_config.split_queries_by_interval = "24h";
     };
   };
 
@@ -134,30 +130,24 @@ in
       serverName = "loki.r";
       enableACME = true;
       addSSL = true;
+      basicAuthFile = config.sops.secrets.promtail-nginx-password.path;
       locations."/" = {
+        proxyPass = "http://127.0.0.1:3100";
+        # grafana (on eve) live-tails over websocket; long range queries
         proxyWebsockets = true;
         extraConfig = ''
-          auth_basic "Loki password";
-          auth_basic_user_file ${config.sops.secrets.promtail-nginx-password.path};
-
           proxy_read_timeout 1800s;
-          proxy_redirect off;
-          proxy_connect_timeout 1600s;
-
           access_log off;
-          proxy_pass http://127.0.0.1:3100;
         '';
       };
+      # unauthenticated for telegraf's http_response check
       locations."/ready" = {
-        proxyWebsockets = true;
+        proxyPass = "http://127.0.0.1:3100";
         extraConfig = ''
           auth_basic off;
           access_log off;
-          proxy_pass http://127.0.0.1:3100;
         '';
       };
     };
   };
-
-  networking.firewall.interfaces."tinc.retiolum".allowedTCPPorts = [ 80 ];
 }
