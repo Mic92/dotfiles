@@ -1,6 +1,5 @@
-{ config, self, ... }:
+{ config, ... }:
 {
-  imports = [ self.inputs.harmonia.nixosModules.harmonia ];
   services.harmonia-dev.cache.enable = true;
   services.harmonia-dev.cache.signKeyPaths = [ config.sops.secrets.harmonia-key.path ];
   services.harmonia-dev.daemon.enable = true;

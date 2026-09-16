@@ -196,32 +196,6 @@
         "type": "github"
       }
     },
-    "fast-nix-gc": {
-      "inputs": {
-        "nix-darwin": [
-          "nix-darwin"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
-        ]
-      },
-      "locked": {
-        "lastModified": 1785415743,
-        "narHash": "sha256-gRV5McxnehAfu64D2qQ5iMoM39JkjDRlhMB+2xjTZjs=",
-        "owner": "Mic92",
-        "repo": "fast-nix-gc",
-        "rev": "aac5e3118db566939338569d3e13c75a9fd5eb84",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "fast-nix-gc",
-        "type": "github"
-      }
-    },
     "fenix": {
       "inputs": {
         "nixpkgs": [
@@ -476,23 +450,24 @@
         "nix": [
           "nix"
         ],
+        "nix-darwin": [
+          "nix-darwin"
+        ],
         "nixpkgs": [
           "nixpkgs"
-        ],
-        "treefmt-nix": [
-          "treefmt-nix"
         ]
       },
       "locked": {
-        "lastModified": 1787502072,
-        "narHash": "sha256-K5sKCAV3kPbUW0evsqpWrlQRsa2t0jfkduSZ+lRWAA8=",
+        "lastModified": 1789509086,
+        "narHash": "sha256-20iz1WDvtJ2PKZjMtq0Q0srrnTPEQUJwzAP+W42XO5Y=",
         "owner": "nix-community",
         "repo": "harmonia",
-        "rev": "7c1ef262e324bbf61201fe92a73849eb3d6fd9e2",
+        "rev": "21f2832173afe75222e3e6bc2076d5419b4539ef",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
+        "ref": "gc-modules",
         "repo": "harmonia",
         "type": "github"
       }
@@ -1029,7 +1004,6 @@
         "crane": "crane",
         "direnv-instant": "direnv-instant",
         "disko": "disko",
-        "fast-nix-gc": "fast-nix-gc",
         "fenix": "fenix",
         "flake-fmt": "flake-fmt",
         "flake-parts": "flake-parts",

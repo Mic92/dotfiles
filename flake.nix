@@ -20,10 +20,11 @@
     hercules-ci-effects.inputs.nixpkgs.follows = "nixpkgs";
     hercules-ci-effects.inputs.flake-parts.follows = "flake-parts";
 
-    harmonia.url = "github:nix-community/harmonia";
+    # gc-modules: NixOS/darwin modules for harmonia-gc (nix-community/harmonia#1201)
+    harmonia.url = "github:nix-community/harmonia/gc-modules";
     harmonia.inputs.nixpkgs.follows = "nixpkgs";
-    harmonia.inputs.treefmt-nix.follows = "treefmt-nix";
     harmonia.inputs.crane.follows = "crane";
+    harmonia.inputs.nix-darwin.follows = "nix-darwin";
     harmonia.inputs.nix.follows = "nix";
 
     nix-index-database.url = "github:nix-community/nix-index-database";
@@ -31,11 +32,6 @@
 
     nix-tarmac.url = "github:Mic92/nix-tarmac";
     nix-tarmac.inputs.nixpkgs.follows = "nixpkgs";
-
-    fast-nix-gc.url = "github:Mic92/fast-nix-gc";
-    fast-nix-gc.inputs.nixpkgs.follows = "nixpkgs";
-    fast-nix-gc.inputs.treefmt-nix.follows = "treefmt-nix";
-    fast-nix-gc.inputs.nix-darwin.follows = "nix-darwin";
 
     noctalia-plugins.url = "github:Mic92/noctalia-plugins";
     noctalia-plugins.inputs.nixpkgs.follows = "nixpkgs";

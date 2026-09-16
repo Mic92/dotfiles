@@ -6,7 +6,7 @@
   ...
 }:
 let
-  fast-nix-gc = self.inputs.fast-nix-gc.packages.${pkgs.stdenv.hostPlatform.system}.default;
+  harmonia = self.inputs.harmonia.packages.${pkgs.stdenv.hostPlatform.system}.harmonia;
 
   # atuin's config file wins over env vars, so swap sync_address in a
   # generated copy rather than via ATUIN_SYNC_ADDRESS.
@@ -61,14 +61,14 @@ in
     '';
   };
 
-  services.supervisor.programs.fast-nix-gc = {
+  services.supervisor.programs.harmonia-gc = {
     settings = {
       command = toString (
-        pkgs.writeShellScript "fast-nix-gc-loop" ''
+        pkgs.writeShellScript "harmonia-gc-loop" ''
           while true; do
             sleep 3600
-            ${fast-nix-gc}/bin/fast-nix-gc --keep-recent 1d || true
-            ${fast-nix-gc}/bin/fast-nix-optimise || true
+            ${harmonia}/bin/harmonia-gc --keep-recent 1d || true
+            ${config.nix.package}/bin/nix-store --optimise || true
           done
         ''
       );

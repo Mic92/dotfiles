@@ -1,15 +1,19 @@
 { pkgs, self, ... }:
 {
-  imports = [ self.inputs.nix-tarmac.darwinModules.default ];
+  imports = [
+    self.inputs.nix-tarmac.darwinModules.default
+    self.inputs.harmonia.darwinModules.harmonia
+  ];
+
+  services.harmonia-dev.gc = {
+    enable = true;
+    automatic = true;
+    deleteOlderThan = "10d";
+    keepRecent = "1d";
+  };
 
   # this extends srvos's common settings
   nix = {
-    gc.automatic = true;
-    gc.interval = {
-      Hour = 3;
-      Minute = 15;
-    };
-    gc.options = "--delete-older-than 10d";
     package = self.inputs.nix.packages.${pkgs.stdenv.hostPlatform.system}.nix;
     #package = pkgs.nixVersions.latest;
 

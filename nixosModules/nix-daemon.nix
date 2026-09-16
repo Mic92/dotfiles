@@ -8,24 +8,17 @@
 {
   imports = [
     ./builder.nix
-    self.inputs.fast-nix-gc.nixosModules.default
+    self.inputs.harmonia.nixosModules.harmonia
     self.inputs.nix-tarmac.nixosModules.default
   ];
 
-  services.fast-nix-gc = {
+  services.harmonia-dev.gc = {
     enable = true;
     automatic = true;
     dates = "03:15";
     deleteOlderThan = "10d";
     keepRecent = "1d";
   };
-
-  services.fast-nix-optimise = {
-    enable = true;
-    automatic = true;
-    dates = "weekly";
-  };
-  nix.optimise.automatic = false;
 
   # this extends srvos's common settings
   nix = {
