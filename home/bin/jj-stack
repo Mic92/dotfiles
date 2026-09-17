@@ -1,0 +1,564 @@
+#!/usr/bin/env python3
+"""GitHub stacked PRs from a jj stack, and cleanup after PRs are merged.
+
+  jj-stack submit [-r REVSET] [-n]
+      one bookmark pr/<change-id> per change of REVSET (default: trunk()..@, skipping empty
+      and undescribed changes), push them, `gh stack link` them bottom to top, set each PR's
+      title and body from the change description
+  jj-stack land [-n]
+      fetch; bottom-up, for each pr/* change whose PR is merged: rebase what is above it onto
+      trunk, abandon it once it is empty (squash or rebase merge), forget its bookmark; then
+      submit the rest so their bases and the GitHub stack are right again
+  jj-stack status
+      the stack with PR number, state and URL
+
+jj owns history: never run `gh stack sync` or `gh stack rebase`. GitHub itself rebases and
+force-pushes the rest of a stack when one PR merges; submit and land fetch first and take the
+branches back (same change ids, local commits win). Merge PRs bottom-up (web UI
+or `gh stack merge`). Prefer merge commits, or do not amend a change after the push that gets
+merged; otherwise `land` stops and names the change to reconcile by hand.
+"""
+
+import argparse
+import json
+import shutil
+import subprocess
+import sys
+from dataclasses import dataclass
+from typing import Any, NoReturn
+
+PREFIX = "pr/"
+TRUNK = "trunk()"
+DRY = False
+
+
+def die(msg: str, hint: str = "") -> NoReturn:
+    print(f"jj-stack: {msg}", file=sys.stderr)
+    if hint:
+        print(f"  {hint}", file=sys.stderr)
+    sys.exit(1)
+
+
+def run(cmd: list[str], check: bool = True, mutates: bool = False) -> str:
+    if mutates and DRY:
+        print("would run:", " ".join(cmd))
+        return ""
+    res = subprocess.run(cmd, text=True, capture_output=True, check=False)
+    if check and res.returncode != 0:
+        err = (res.stderr or res.stdout).strip().splitlines()
+        die(
+            f"`{' '.join(cmd)}` failed:",
+            "\n  ".join(err[-8:]) if err else f"exit status {res.returncode}",
+        )
+    return res.stdout
+
+
+def jj(*args: str, check: bool = True, mutates: bool = False) -> str:
+    return run(["jj", "--no-pager", "--color=never", *args], check, mutates)
+
+
+@dataclass
+class Change:
+    change_id: str
+    title: str
+    body: str
+    empty: bool
+    conflict: bool
+    divergent: bool
+    immutable: bool
+
+    @property
+    def bookmark(self) -> str:
+        return PREFIX + self.change_id
+
+    def __str__(self) -> str:
+        return f"{self.change_id} {self.title or '(no description)'}"
+
+
+SEP, END = "\x1f", "\x1e"
+
+
+def changes(revset: str) -> list[Change]:
+    """Bottom to top."""
+    flags = ["empty", "conflict", "divergent", "immutable"]
+    tmpl = f'change_id.short(12) ++ "{SEP}" ++ description'
+    for f in flags:
+        tmpl += f' ++ "{SEP}" ++ if({f}, "1", "")'
+    tmpl += f' ++ "{END}"'
+    out = jj("log", "-r", revset, "--reversed", "--no-graph", "-T", tmpl)
+    result = []
+    for rec in out.split(END):
+        if not rec.strip():
+            continue
+        cid, desc, *bits = rec.lstrip("\n").split(SEP)
+        title, _, body = desc.partition("\n")
+        result.append(
+            Change(cid, title.strip(), body.strip(), *(b == "1" for b in bits))
+        )
+    return result
+
+
+def count(revset: str) -> int:
+    return len(jj("log", "-r", revset, "--no-graph", "-T", '"x\\n"').split())
+
+
+def check_shape(revset: str) -> None:
+    """One linear run of commits sitting on trunk, or exit saying why not."""
+    if count(f"roots({revset})") != 1:
+        die(
+            f"`{revset}` has more than one root: not a single stack",
+            "pass -r with the stack you mean, e.g. -r 'trunk()..xyz'",
+        )
+    if count(f"heads({revset})") != 1:
+        die(
+            f"`{revset}` has more than one head: the stack branches",
+            "rebase the side branch away or pass -r '<bottom>::<top>'",
+        )
+    if count(f"({revset}) & merges()"):
+        die(f"`{revset}` contains a merge commit; GitHub stacks are linear")
+    if not count(f"roots({revset}) & children(::{TRUNK})"):
+        die(
+            f"the bottom of `{revset}` does not sit on {TRUNK}",
+            f"rebase first: jj rebase -s <bottom> -d '{TRUNK}'",
+        )
+
+
+def check_change(c: Change) -> None:
+    if c.immutable:
+        die(
+            f"{c}: immutable (already in trunk?)",
+            "run `jj-stack land` after a merge, not submit",
+        )
+    if c.conflict:
+        die(f"{c}: has unresolved conflicts")
+    if c.divergent:
+        die(
+            f"{c.change_id}: divergent change id, two commits claim it",
+            "see `jj log -r 'divergent()'` and abandon the stale one",
+        )
+
+
+def check_stack(revs: list[Change], revset: str) -> list[Change]:
+    """The submittable changes of a linear stack, or exit saying why not."""
+    if not revs:
+        return []
+    check_shape(revset)
+    for c in revs:
+        check_change(c)
+    keep = [c for c in revs if c.title and not c.empty]
+    for c in revs:
+        if c not in keep:
+            print(f"skip {c.change_id}: {'empty' if c.empty else 'no description'}")
+    # an undescribed change in the middle would silently fold into the PR above it
+    kept = [revs.index(c) for c in keep]
+    if kept and kept != list(range(kept[0], kept[-1] + 1)):
+        gap = next(revs[i] for i in range(kept[0], kept[-1]) if i not in kept)
+        die(
+            f"{gap}: an empty or undescribed change inside the stack",
+            "describe it, squash it into a neighbour, or abandon it",
+        )
+    return keep
+
+
+def gh_json(*args: str) -> Any:
+    out = run(["gh", *args])
+    return json.loads(out) if out.strip() else None
+
+
+def pr_for(bookmark: str) -> dict[str, Any] | None:
+    prs = (
+        gh_json(
+            "pr",
+            "list",
+            "--state",
+            "all",
+            "--head",
+            bookmark,
+            "--limit",
+            "20",
+            "--json",
+            "number,state,url,title,body,baseRefName",
+        )
+        or []
+    )
+    # an open PR wins; among closed/merged ones the newest
+    prs.sort(key=lambda p: (p["state"] != "OPEN", -p["number"]))
+    return prs[0] if prs else None
+
+
+def stack_of(pr_number: int) -> tuple[int, list[int]] | None:
+    """(stack number, its merged PR numbers bottom-up) for the GitHub stack a PR belongs to.
+    `gh stack link` never drops PRs from a stack, so restating one has to name the merged
+    ones too; listing them lets a new change go anywhere among the open ones."""
+    owner, name = str(
+        gh_json("repo", "view", "--json", "nameWithOwner")["nameWithOwner"]
+    ).split("/")
+    q = (
+        f'query{{repository(owner:"{owner}",name:"{name}"){{pullRequest(number:{pr_number})'
+        "{stack{number entries(first:100){nodes{pullRequest{number state}}}}}}}"
+    )
+    st = gh_json("api", "graphql", "-f", f"query={q}")["data"]["repository"][
+        "pullRequest"
+    ]["stack"]
+    if not st:
+        return None
+    merged = [
+        int(e["pullRequest"]["number"])
+        for e in st["entries"]["nodes"]
+        if e["pullRequest"]["state"] == "MERGED"
+    ]
+    return int(st["number"]), merged
+
+
+def default_branch() -> str:
+    return str(
+        gh_json("repo", "view", "--json", "defaultBranchRef")["defaultBranchRef"][
+            "name"
+        ]
+    )
+
+
+def preflight(needs_stack_ext: bool) -> None:
+    if not jj("root", check=False).strip():
+        die("not inside a jj repository")
+    if shutil.which("gh") is None:
+        die("gh not found on PATH")
+    if (
+        subprocess.run(
+            ["gh", "auth", "status"], capture_output=True, check=False
+        ).returncode
+        != 0
+    ):
+        die("gh is not logged in", "run `gh auth login`")
+    if needs_stack_ext and "stack" not in run(["gh", "extension", "list"], check=False):
+        die(
+            "the gh stack extension is missing",
+            "run `gh extension install github/gh-stack`",
+        )
+
+
+def sync_prs(revs: list[Change]) -> None:
+    """Title, body and base of each PR from jj. gh stack link invents titles for PRs it creates
+    and leaves existing ones alone; after a land the bottom PR's base is stale."""
+    below = default_branch()
+    for c in revs:
+        pr = pr_for(c.bookmark)
+        if pr is None:
+            die(
+                f"{c}: pushed {c.bookmark} but GitHub has no PR for it",
+                "the gh stack link output above should say why; re-run submit once fixed",
+            )
+        if pr["state"] != "OPEN":
+            die(
+                f"{c}: its PR #{pr['number']} is {pr['state'].lower()} and GitHub will not reopen "
+                "it for the same branch",
+                f"if it was merged run `jj-stack land`; if closed, reopen #{pr['number']} or "
+                f"`jj bookmark rename {c.bookmark} <new>` and submit again",
+            )
+        edits = []
+        if pr["title"] != c.title:
+            edits += ["--title", c.title]
+        if (c.body or c.title) != (pr["body"] or "").strip():
+            edits += ["--body", c.body or c.title]
+        if pr["baseRefName"] != below:
+            edits += ["--base", below]
+        if edits:
+            run(["gh", "pr", "edit", str(pr["number"]), *edits], mutates=True)
+        below = c.bookmark
+
+
+def same_diff(a: str, b: str) -> bool:
+    stat = (
+        jj("interdiff", "--from", a, "--to", b, "--stat", check=False)
+        .strip()
+        .splitlines()
+    )
+    return bool(stat) and stat[-1].startswith("0 files changed")
+
+
+def reclaim() -> None:
+    """After a merge GitHub rebases the rest of the stack and force-pushes every branch. A fetch
+    then brings a second commit per change id (ours, and GitHub's copy at pr/X@origin) and the
+    bookmarks conflict. Ours win: point each bookmark back at the commit in our history and
+    abandon GitHub's copies. Content is compared first so a real remote edit is not lost."""
+    rows = jj(
+        "log",
+        "-r",
+        f'divergent() & remote_bookmarks(glob:"{PREFIX}*", remote=origin) ~ ::@',
+        "--no-graph",
+        "-T",
+        'change_id.short(12) ++ " " ++ commit_id ++ "\n"',
+    ).split("\n")
+    pairs = [r.split() for r in rows if r.strip()]
+    if not pairs:
+        return
+    for cid, remote_commit in pairs:
+        ours = jj(
+            "log", "-r", f"change_id({cid}) & ::@", "--no-graph", "-T", "commit_id"
+        ).strip()
+        if not ours:
+            die(
+                f"{cid}: GitHub's branch {PREFIX}{cid} diverged and no local copy is in the "
+                "working-copy ancestry",
+                f"`jj log -r {cid}` and pick one with `jj bookmark set`",
+            )
+        # GitHub only rebased it if its copy has the same diff as ours, or as a predecessor of
+        # ours (we may have amended the change since the push that GitHub rebased)
+        lineage = jj(
+            "evolog", "-r", ours, "--no-graph", "-T", 'commit.commit_id() ++ "\n"'
+        ).split()
+        if not any(same_diff(remote_commit, c) for c in lineage[:30]):
+            die(
+                f"{cid}: {PREFIX}{cid} on GitHub has content that the local change never had",
+                f"compare `jj interdiff --from {remote_commit[:12]} --to {ours[:12]}`; to keep ours "
+                f"anyway `jj abandon {remote_commit[:12]}` and submit again",
+            )
+        print(f"reclaim {PREFIX}{cid}: GitHub rebased it, keeping ours")
+        jj(
+            "bookmark",
+            "set",
+            PREFIX + cid,
+            "-r",
+            ours,
+            "--allow-backwards",
+            mutates=True,
+        )
+        jj("abandon", remote_commit, mutates=True)
+
+
+def rebase_onto_trunk(revs: list[Change]) -> None:
+    """GitHub shows a PR's diff against its base branch, so once a PR below merged the stack has
+    to sit on the current trunk or every PR would include what was merged."""
+    if count(f"{TRUNK} & ::{revs[0].change_id}"):
+        return
+    print(f"rebasing onto {TRUNK}")
+    jj("rebase", "-s", revs[0].change_id, "-d", TRUNK, mutates=True)
+    bad = [
+        c for c in changes(f"{revs[0].change_id}::{revs[-1].change_id}") if c.conflict
+    ]
+    if bad:
+        die(
+            "rebasing onto trunk left conflicts in:\n  " + "\n  ".join(map(str, bad)),
+            "resolve them (or `jj undo`), then submit again",
+        )
+
+
+def open_prs(revs: list[Change]) -> None:
+    """A PR for every change that has none, each against the branch below it. GitHub stacks
+    only grow at the top, so a new change below one that already has a PR cannot be linked."""
+    have = [pr_for(c.bookmark) is not None for c in revs]
+    top_old = max((i for i, h in enumerate(have) if h), default=-1)
+    late = [c for i, c in enumerate(revs) if not have[i] and i < top_old]
+    if late:
+        die(
+            "new changes sit below ones that already have PRs, and GitHub stacks only grow at "
+            "the top:\n  " + "\n  ".join(map(str, late)),
+            f"move them up, e.g. `jj rebase -r {late[0].change_id} -A {revs[-1].change_id}`, "
+            "then submit again",
+        )
+    below = default_branch()
+    for c, h in zip(revs, have, strict=True):
+        if not h:
+            run(
+                [
+                    "gh",
+                    "pr",
+                    "create",
+                    "--head",
+                    c.bookmark,
+                    "--base",
+                    below,
+                    "--title",
+                    c.title,
+                    "--body",
+                    c.body or c.title,
+                ],
+                mutates=True,
+            )
+        below = c.bookmark
+
+
+def submit(revset: str) -> None:
+    jj("git", "fetch", mutates=True)
+    reclaim()
+    revs = check_stack(changes(revset), revset)
+    if not revs:
+        print(f"nothing to submit in `{revset}`")
+        return
+    rebase_onto_trunk(revs)
+    for c in revs:
+        jj(
+            "bookmark",
+            "set",
+            c.bookmark,
+            "-r",
+            c.change_id,
+            "--allow-backwards",
+            mutates=True,
+        )
+    jj("git", "push", *[a for c in revs for a in ("-b", c.bookmark)], mutates=True)
+    if DRY:
+        print(
+            "would open missing PRs and run: gh stack link <merged PRs> "
+            + " ".join(c.bookmark for c in revs)
+        )
+        return
+    open_prs(revs)
+    if len(revs) >= 2:
+        # restating a stack must name its merged PRs too, gh refuses to drop them
+        bottom = pr_for(revs[0].bookmark)
+        st = stack_of(int(bottom["number"])) if bottom else None
+        merged = [str(n) for n in st[1]] if st else []
+        run(["gh", "stack", "link", *merged, *[c.bookmark for c in revs]], mutates=True)
+    sync_prs(revs)
+    status()
+
+
+def stack_bookmarks() -> list[Change]:
+    """Mutable changes carrying a pr/ bookmark, bottom to top. After a merge-commit merge and a
+    fetch, a landed change is inside trunk and no longer in this set."""
+    revset = f'({TRUNK}..) & bookmarks(glob:"{PREFIX}*")'
+    revs = changes(revset)
+    if revs and (count(f"roots({revset})") != 1 or count(f"heads({revset})") != 1):
+        die(
+            "pr/* bookmarks sit on more than one stack",
+            "land/status work on one stack; `jj bookmark list 'glob:pr/*'` and forget the strays",
+        )
+    return revs
+
+
+def forget(bookmark: str) -> None:
+    # GitHub deletes the head branch on merge (or the user will). Drop local and remote-tracking
+    # state instead of pushing a deletion that could close a PR still naming the branch
+    jj("bookmark", "forget", "--include-remotes", bookmark, check=False, mutates=True)
+
+
+def land_bottom() -> bool:
+    """Land the bottom pr/* change if its PR is merged. False when there is nothing to land."""
+    rest = stack_bookmarks()
+    if not rest:
+        return False
+    c = rest[0]
+    pr = pr_for(c.bookmark)
+    if pr is None:
+        die(
+            f"{c}: carries {c.bookmark} but GitHub has no PR for it",
+            f"`jj bookmark forget {c.bookmark}` if it is stale, or `jj-stack submit`",
+        )
+    if pr["state"] == "CLOSED":
+        die(
+            f"{c}: PR #{pr['number']} was closed without merging; the changes above it cannot land",
+            f"reopen it, or `jj abandon {c.change_id}` / `jj bookmark forget {c.bookmark}` if that "
+            "was intended, then run land again",
+        )
+    if pr["state"] != "MERGED":
+        return False  # bottom-up: everything above an unmerged PR waits
+    print(f"landed: #{pr['number']} {c.title}")
+    # squash or rebase merge: trunk has this content under another hash. Rebasing the change
+    # onto it must leave it empty; if not, what was merged is not what is here
+    jj("rebase", "-s", c.change_id, "-d", TRUNK, mutates=True)
+    now = changes(c.change_id)[0]
+    if now.conflict or not now.empty:
+        die(
+            f"{c}: merged as #{pr['number']}, but rebased onto trunk it is not empty, so the local "
+            "change differs from what was merged (amended after the push?)",
+            f"inspect `jj diff -r {c.change_id}`; keep the difference as a new change or "
+            f"`jj abandon {c.change_id}`, then run land again (`jj undo` reverts the rebase)",
+        )
+    jj("abandon", c.change_id, mutates=True)
+    forget(c.bookmark)
+    return True
+
+
+def land() -> None:
+    jj("git", "fetch", mutates=True)
+    reclaim()
+    in_trunk = jj(
+        "log",
+        "-r",
+        f'(::{TRUNK}) & bookmarks(glob:"{PREFIX}*")',
+        "--no-graph",
+        "-T",
+        'local_bookmarks.map(|b| b.name()).join("\\n") ++ "\\n"',
+    )
+    landed = False
+    for b in sorted({b for b in in_trunk.split() if b.startswith(PREFIX)}):
+        print(f"landed by merge commit: {b}")
+        forget(b)
+        landed = True
+    while not DRY and land_bottom():
+        landed = True
+    rest = stack_bookmarks()
+    if not rest:
+        print("stack fully landed" if landed else "no pr/* bookmarks: nothing to land")
+        return
+    jj("rebase", "-s", rest[0].change_id, "-d", TRUNK, mutates=True)
+    bad = [c for c in changes(f"{rest[0].change_id}::") if c.conflict]
+    if bad:
+        die(
+            "rebasing the remaining stack onto trunk left conflicts in:\n  "
+            + "\n  ".join(map(str, bad)),
+            "resolve them (or `jj undo`), then `jj-stack submit`",
+        )
+    # jj git fetch already dropped bookmarks whose branch GitHub deleted on merge, so `landed`
+    # can miss a merge; what matters is whether the remaining stack moved relative to the remote
+    stale = count(
+        f'({rest[0].change_id}::{rest[-1].change_id}) ~ remote_bookmarks(glob:"{PREFIX}*")'
+    )
+    if landed or stale:
+        submit(f"{rest[0].change_id}::{rest[-1].change_id}")
+    else:
+        pr = pr_for(rest[0].bookmark)
+        print(
+            f"bottom PR #{pr['number'] if pr else '?'} is not merged yet; nothing to land"
+        )
+
+
+def status(revset: str | None = None) -> None:
+    revs = changes(revset) if revset else stack_bookmarks()
+    if not revs:
+        print(
+            "no pr/* bookmarks above trunk"
+            if revset is None
+            else f"no changes in `{revset}`"
+        )
+        return
+    for c in reversed(revs):
+        pr = pr_for(c.bookmark)
+        tag = f"#{pr['number']:<5} {pr['state']:<6}" if pr else "-             "
+        flags = " [conflict]" if c.conflict else ""
+        print(f"{tag} {c}{flags}" + (f"  {pr['url']}" if pr else ""))
+
+
+def main() -> None:
+    global DRY  # noqa: PLW0603
+    p = argparse.ArgumentParser(
+        description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    sub = p.add_subparsers(dest="cmd", required=True)
+    s = sub.add_parser("submit", help="push the stack and create/update its PRs")
+    s.add_argument("-r", "--revset", default=f"{TRUNK}..@")
+    s.add_argument(
+        "-n",
+        "--dry-run",
+        action="store_true",
+        help="print what would be pushed and linked",
+    )
+    ln = sub.add_parser("land", help="clean up after merged PRs and resubmit the rest")
+    ln.add_argument("-n", "--dry-run", action="store_true")
+    sub.add_parser("status", help="show the stack's PRs").add_argument(
+        "-r", "--revset", default=None
+    )
+    args = p.parse_args()
+    DRY = getattr(args, "dry_run", False)
+    preflight(needs_stack_ext=args.cmd != "status")
+    if args.cmd == "submit":
+        submit(args.revset)
+    elif args.cmd == "land":
+        land()
+    else:
+        status(args.revset)
+
+
+if __name__ == "__main__":
+    main()
