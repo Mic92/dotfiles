@@ -13,7 +13,6 @@
       "source": "~/.homesick/repos/dotfiles/pi-agent-extensions",
       "extensions": [
         "!*",
-        "+nushell/index.ts",
         "+inbox/index.ts",
         "+python/index.ts"
       ]
