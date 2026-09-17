@@ -158,7 +158,7 @@ in
             configurationEndpoint = "https://auth.thalheim.io/.well-known/openid-configuration";
             claims = {
               maxTLSCertDuration = "168h";
-              defaultTLSCertDuration = "24h";
+              defaultTLSCertDuration = "168h";
             };
           }
         ];

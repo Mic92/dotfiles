@@ -15,7 +15,7 @@
         root="$dir/ca.crt"
         curl -fsS https://ca.r/ca.crt -o "$root"
         step ca certificate "joerg@thalheim.io" "$dir/client.crt" "$dir/client.key" \
-          --ca-url https://ca.r --root "$root" --provisioner authelia --force
+          --ca-url https://ca.r --root "$root" --provisioner authelia --not-after 168h --force
         echo "Client certificate written to $dir"
         echo "Store URI: grpc://eve.thalheim.io:50051"
 
