@@ -32,7 +32,21 @@ os.close(devnull)
 os.dup2(2, 1)
 sys.stdin = os.fdopen(0, "r", closefd=False)
 
+
 ns: dict[str, Any] = {"__name__": "__main__"}
+
+if inbox := os.environ.get("PI_INBOX"):
+
+    def notify(text: object, source: str = "python") -> None:
+        """Post a message to the agent's inbox (inbox.ts), e.g. from a
+        background thread once something long-running finished."""
+        import socket  # noqa: PLC0415
+
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as s:
+            s.connect(inbox)
+            s.sendall(json.dumps({"source": source, "text": str(text)}).encode())
+
+    ns["notify"] = notify
 
 
 def collect_figures() -> list[str]:

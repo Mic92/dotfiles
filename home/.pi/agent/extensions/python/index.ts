@@ -49,7 +49,16 @@ export default function (pi: ExtensionAPI) {
     },
   });
 
-  pi.registerTool({
+  // Deferred to session_start so $PI_INBOX (inbox.ts, set at its load) is
+  // visible regardless of extension load order.
+  let registered = false;
+  pi.on("session_start", async () => {
+    if (registered) return;
+    registered = true;
+    registerTool();
+  });
+
+  const registerTool = () => pi.registerTool({
     name: "python",
     label: "python",
     description:
@@ -64,6 +73,11 @@ export default function (pi: ExtensionAPI) {
     promptGuidelines: [
       "Use python instead of bash for multi-step data work (JSON/CSV/logs/ELF), calculations, and anything where re-parsing input on every call would be wasteful; state persists, so load once and iterate.",
       "Drive interactive programs (ssh, REPLs, debuggers, installers) with pexpect inside the python tool: `child = pexpect.spawn(cmd, encoding='utf-8')` persists across calls; always pass `timeout=` to expect().",
+      ...(process.env.PI_INBOX
+        ? [
+          "Don't block on long waits in python: run them in a `threading.Thread` that calls the predefined `notify(text, source=\"python\")` when done. It arrives later as an `[inbox: <source>]` message.",
+        ]
+        : []),
     ],
     parameters: Type.Object({
       code: Type.String({ description: "Python source to execute" }),
