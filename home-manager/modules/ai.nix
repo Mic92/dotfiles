@@ -11,8 +11,8 @@ let
   micsSkillsPkgs = inputs.mics-skills.packages.${pkgs.stdenv.hostPlatform.system};
   nixbot-cli = inputs.nixbot.packages.${pkgs.stdenv.hostPlatform.system}.nixbot-cli;
 
-  # Interpreter for the pi-agent-extensions python tool. Separate name so it
-  # never shadows a project's python3; override per project with $PI_PYTHON.
+  # Interpreter for the pi-agent-extensions python tool, wired up via
+  # ~/.config/pi-agent-extensions/python/config.json below.
   piPython = pkgs.python3.withPackages (ps: [
     ps.matplotlib
     ps.pexpect
@@ -107,6 +107,12 @@ in
     source = ../../pkgs/macprof/SKILL.md;
   };
 
+  # interpreter + tool prompt for the pi-agent-extensions python tool
+  xdg.configFile."pi-agent-extensions/python/config.json".text = builtins.toJSON {
+    python = "${piPython}/bin/python3";
+    prompt = "Available besides stdlib: polars, matplotlib, requests, plumbum, pexpect, pyelftools. Drive interactive programs (ssh, REPLs, debuggers) with pexpect: child = pexpect.spawn(cmd, encoding='utf-8') persists across calls, always pass timeout= to expect().";
+  };
+
   home.packages = [
     nixbot-cli
     selfPkgs.claude-code
@@ -124,7 +130,6 @@ in
     pkgs.pueue
     # interpreter for the pi-agent-extensions nushell tool
     pkgs.nushell
-    (pkgs.writeShellScriptBin "pi-python" ''exec ${piPython}/bin/python3 "$@"'')
   ]
   ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
     selfPkgs.macprof
