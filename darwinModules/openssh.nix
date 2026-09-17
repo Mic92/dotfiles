@@ -15,6 +15,11 @@
     Host *.dos.cit.tum.de !login.dos.cit.tum.de
       ProxyJump tunnel@login.dse.in.tum.de
 
+    # Host keys are verified through our SSH CA; RBG's SSHFP records lag behind
+    # reinstalls and only produce "Update the SSHFP RR" warnings.
+    Host *.dse.in.tum.de *.dos.cit.tum.de *.cit.tum.de
+      VerifyHostKeyDNS no
+
     # The TUM jumphost presents an ITO-signed certificate on its ed25519 host
     # key, but our cluster CA only signed its ecdsa/rsa host keys. Prefer those
     # so host verification goes through our CA.
