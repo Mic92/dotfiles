@@ -29,7 +29,6 @@ in
       chrome-tab-gc-extension
       app-windows-extension
       ;
-    gh-radicle = pkgs.callPackage ./gh-radicle { };
     # Stacked GitHub PRs from the command line
     maiao = pkgs.callPackage ./maiao { };
     # herdr plugin (fork with OSC 52 clipboard fallback)
@@ -75,7 +74,6 @@ in
   // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
     live-text = pkgs.python3.pkgs.callPackage ./live-text { };
     phantun = pkgs.callPackage ./phantun { };
-    radicle-github-sync = pkgs.callPackage ./radicle-github-sync { };
   }
   // lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
     cewe-fotowelt = pkgs.callPackage ./cewe-fotowelt { };

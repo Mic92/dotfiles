@@ -74,11 +74,13 @@ in
           # Auto-follow your DID to accept all your repos
           follow = [
             "did:key:z6MkjE3BSJn4Y129rhqi5rViSUru8KSBcCQdQcDZq1cnjumw"
+            # radicle-mirror on eve (GitHub mirror)
+            "did:key:z6Mkm3QV7chqdCrksAYoJDWpwLg1yoXbU52NZFgWq13bv3gp"
           ];
           # Peer with other personal nodes
           connect = [
-            # eve
-            "z6MktZckvzz29eJtUQ4u9bkNu8jihg1sRvknUZMm1xq2stn9@radicle.thalheim.io:8776"
+            # radicle-mirror on eve
+            "z6Mkm3QV7chqdCrksAYoJDWpwLg1yoXbU52NZFgWq13bv3gp@radicle.thalheim.io:8776"
             # eva
             "z6MkwQTGzGVFjmT54Ustr82rc3bMGkjSjeCXQWgSvNNvVnwa@eva.thalheim.io:8776"
             # blob64
@@ -126,6 +128,7 @@ in
 
         # Ensure follow policy is set
         rad follow did:key:z6MkjE3BSJn4Y129rhqi5rViSUru8KSBcCQdQcDZq1cnjumw --alias mic92 || true
+        rad follow did:key:z6Mkm3QV7chqdCrksAYoJDWpwLg1yoXbU52NZFgWq13bv3gp --alias radicle-mirror || true
 
         # Seed explicitly configured repositories
         ${lib.concatMapStringsSep "\n" (rid: ''
