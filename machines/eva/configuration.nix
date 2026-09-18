@@ -22,11 +22,10 @@
     ./modules/disko.nix
     ./modules/flakelet-relay.nix
     ./modules/lldap.nix
-    ./modules/loki.nix
     ./modules/nginx.nix
     ./modules/phantun.nix
     ./modules/postgresql.nix
-    ./modules/prometheus
+    ./modules/monitoring
     ./modules/telegraf
 
     ../../nixosModules/iperf.nix
@@ -56,7 +55,6 @@
     monthly = 0;
   };
 
-  # breaks loki
   networking.usePredictableInterfaceNames = false;
 
   # lxc-container.nix sets this

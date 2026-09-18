@@ -47,7 +47,7 @@ in
       '';
 
       upstreams = {
-        "@prometheus".extraConfig = "server localhost:9090;";
+        "@prometheus".extraConfig = "server 127.0.0.1:8428;";
         "@alertmanager".extraConfig = "server localhost:9093;";
       };
 

@@ -5,12 +5,16 @@
     ./matrix-alertmanager.nix
     ./irc-alertmanager.nix
     ./rules.nix
+    ./victorialogs.nix
+    ./vmalert.nix
   ];
 
-  services.prometheus = {
-    webExternalUrl = "https://prometheus.thalheim.io";
-    extraFlags = [ "--storage.tsdb.retention.time=30d" ];
-    scrapeConfigs = [
+  services.victoriametrics = {
+    enable = true;
+    listenAddress = "127.0.0.1:8428";
+    retentionPeriod = "30d";
+    extraOptions = [ "-selfScrapeInterval=60s" ];
+    prometheusConfig.scrape_configs = [
       {
         job_name = "telegraf";
         scrape_interval = "60s";
@@ -79,7 +83,6 @@
         static_configs = [ { targets = [ "git.thalheim.io:443" ]; } ];
       }
     ];
-    alertmanagers = [ { static_configs = [ { targets = [ "localhost:9093" ]; } ]; } ];
   };
   # SMTP_PASSWORD comes from the shared alertmanager-smtp generator, the
   # remaining tokens (pushover, telegram) from sops.

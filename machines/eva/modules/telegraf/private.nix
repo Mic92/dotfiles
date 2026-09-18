@@ -200,10 +200,13 @@ in
         response_string_match = "Jörg Thalheim";
       }
       {
-        urls = [ "http://loki.r/ready" ];
+        urls = [
+          "http://loki.r/health"
+          "https://prometheus.r/health"
+        ];
         tags.host = "eva";
         tags.org = "private";
-        response_string_match = "ready";
+        response_string_match = "OK";
       }
       {
         urls = [
