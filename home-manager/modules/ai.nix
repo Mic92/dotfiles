@@ -101,6 +101,9 @@ in
   home.file.".claude/skills/git-surgeon".source =
     "${aiTools.git-surgeon}/share/git-surgeon/skills/git-surgeon";
 
+  # agent-slack keeps its skill (plus references/) only in the source tree.
+  home.file.".claude/skills/agent-slack".source = "${aiTools.agent-slack.src}/skills/agent-slack";
+
   # macOS-only profiler wrapper; both the skill and the binary are gated so
   # the Linux home profile doesn't pull in a darwin-only derivation.
   home.file.".claude/skills/macprof/SKILL.md" = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
@@ -126,6 +129,7 @@ in
     aiTools.openspec
     aiTools.ccstatusline
     aiTools.git-surgeon
+    aiTools.agent-slack
     aiTools.jscpd
     pkgs.pueue
     # interpreter for the pi-agent-extensions nushell tool
