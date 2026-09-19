@@ -83,6 +83,9 @@ lib.mkMerge [
       enable = true;
       defaultApplications = lib.genAttrs textMimes (_: "tmux-nvim.desktop");
     };
+    # GUI apps (firefox, file managers) rewrite mimeapps.list as a regular
+    # file, which then blocks the next home-manager switch.
+    xdg.configFile."mimeapps.list".force = true;
   })
 
   (lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
