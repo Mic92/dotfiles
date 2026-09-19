@@ -9,6 +9,9 @@ input {
             options "caps:escape,compose:menu"
         }
         numlock
+        // defaults (600ms / 25Hz) make held j/k in TUIs sluggish
+        repeat-delay 250
+        repeat-rate 45
     }
 
     touchpad {
