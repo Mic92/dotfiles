@@ -69,7 +69,7 @@ jobs:
         run: |
           set -eu
           nohup "$HOME/bin/iroh-ssh" server --persist > iroh.log 2>&1 &
-          for i in $(seq 60); do grep -qoE '@[0-9a-f]{64}' iroh.log && break; sleep 1; done
+          for _ in $(seq 60); do grep -qoE '@[0-9a-f]{64}' iroh.log && break; sleep 1; done
           id=$(grep -oE '[0-9a-f]{64}' iroh.log | head -1)
           user=$(whoami); user=${user##*\\}
           echo "connect:  iroh-ssh $user@$id"
