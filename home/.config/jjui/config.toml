@@ -1,9 +1,47 @@
+[revisions]
+# one line per commit like lazygit; author/timestamp are noise in a personal repo
+# shared with `jj log`, defined in jj/config.toml
+template = 'log_oneline_terse'
+
+[ui.colors]
+# tokyonight-night; default "bright black" selection is invisible on dark bg
+":selected" = { bg = "#283457" }
+"revisions details:selected" = { bg = "#283457", bold = true }
+"dimmed" = "#565f89"
+"title" = { fg = "#7aa2f7", bold = true }
+"shortcut" = "#bb9af7"
+"matched" = "#7dcfff"
+"revset title" = "#bb9af7"
+"revset text" = { fg = "#9ece6a", bold = true }
+"status title" = { fg = "#1a1b26", bg = "#7aa2f7", bold = true }
+"target_marker" = { fg = "#1a1b26", bg = "#f7768e", bold = true }
+"source_marker" = { fg = "#1a1b26", bg = "#7dcfff" }
+"success" = "#9ece6a"
+"error" = "#f7768e"
+
 [preview]
-show_at_start = true
-position = "right"
-# jj util exec lets us pipe through delta; jjui only passes args to `jj`
-revision_command = ["util", "exec", "--", "sh", "-c", "jj show --git --color always -r \"$1\" | delta --paging never", "--", "$change_id"]
-file_command = ["util", "exec", "--", "sh", "-c", "jj diff --git --color always -r \"$1\" -- \"$2\" | delta --paging never", "--", "$change_id", "$file"]
+show_at_start = false
+
+# enter: full-screen review of the revision in tuicr; :q returns to jjui
+[[actions]]
+name = "tuicr"
+lua = """
+local rev = jjui.context.change_id()
+if rev then exec_shell("tuicr --no-update-check -r " .. rev) end
+"""
+
+[[bindings]]
+key = "enter"
+action = "tuicr"
+scope = "revisions"
+desc = "tuicr"
+
+# enter is taken by tuicr; "m" as in message
+[[bindings]]
+key = "m"
+action = "revisions.open_inline_describe"
+scope = "revisions"
+desc = "inline describe"
 
 # S / E: hunk-level manipulation ("staging") via jj's interactive diff editor
 [[actions]]

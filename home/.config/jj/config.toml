@@ -9,3 +9,52 @@ merge-editor = ["nvim", "-c", "DiffEditor $local $base $remote $output"]
 [user]
 name = "Jörg Thalheim"
 email = "joerg@thalheim.io"
+
+[templates]
+log = 'log_oneline_terse'
+
+[template-aliases]
+# lazygit-style initials: "Jörg Thalheim" -> "JT", "dependabot[bot]" -> "de"
+'author_initials(sig)' = '''
+if(sig.name().contains(" "),
+  sig.name().first_line().substr(0, 1) ++ sig.name().replace(regex:"^\\S+\\s+", "").substr(0, 1),
+  if(sig.name(), sig.name().substr(0, 2), sig.email().local().substr(0, 2)))
+'''
+# one line per commit; author/timestamp are noise in personal repos
+log_oneline_terse = '''
+separate(" ",
+  format_short_change_id_with_change_offset(self),
+  if(bookmarks, label("bookmark", bookmarks.join(" "))),
+  if(tags, tags.join(" ")),
+  working_copies,
+  if(conflict, label("conflict", "conflict")),
+  label("author", author_initials(author)),
+  if(empty, label("empty", "(empty)")),
+  if(description, description.first_line(),
+     label(if(empty, "empty"), description_placeholder)),
+) ++ "\n"
+'''
+
+# tokyonight-night
+[colors]
+"change_id" = "#bb9af7"
+"commit_id" = "#7aa2f7"
+"rest" = "#565f89"
+"bookmark" = "#ff9e64"
+"bookmarks" = "#ff9e64"
+"tag" = "#e0af68"
+"working_copies" = "#9ece6a"
+"working_copy change_id" = { fg = "#bb9af7", bold = true }
+"empty" = "#565f89"
+"description placeholder" = "#565f89"
+"elided" = "#565f89"
+"conflict" = { fg = "#f7768e", bold = true }
+"immutable" = "#7dcfff"
+"author" = "#e0af68"
+"timestamp" = "#565f89"
+"error" = "#f7768e"
+"warning" = "#e0af68"
+"hint" = "#565f89"
+"diff removed" = "#f7768e"
+"diff added" = "#9ece6a"
+"diff modified" = "#7aa2f7"
