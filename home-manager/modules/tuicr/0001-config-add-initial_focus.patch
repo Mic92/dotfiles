@@ -1,0 +1,132 @@
+From af8fe4c8ef2728168b94b3014d9ce5a283e10a69 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Sat, 19 Sep 2026 10:37:19 +0200
+Subject: [PATCH] feat(config): add initial_focus to start in the file tree
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+When tuicr is launched from another TUI on a single revision (e.g. from
+jjui/lazygit as a diff viewer), the first thing to do is pick a file,
+so landing in the diff panel costs an extra Tab every time.
+
+initial_focus = "file_list" focuses the tree on startup; it is ignored
+when the file list is hidden or the commit selector needs input first.
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ docs/CONFIG.md    |  2 ++
+ src/config/mod.rs | 36 ++++++++++++++++++++++++++++++++++++
+ src/main.rs       |  8 ++++++++
+ 3 files changed, 46 insertions(+)
+
+diff --git a/docs/CONFIG.md b/docs/CONFIG.md
+index d8ad05e..11bf38a 100644
+--- a/docs/CONFIG.md
++++ b/docs/CONFIG.md
+@@ -28,6 +28,7 @@ diff_view = "side-by-side"
+ ignore_whitespace = false
+ commit_order = "descending"
+ initial_commit_selection = "all"
++initial_focus = "diff"
+ show_file_list = true
+ compact_folders = false
+ show_pr_checks = false
+@@ -86,6 +87,7 @@ session_header = true
+ | `diff_view`                | `unified`    | `unified` or `side-by-side`. Toggle in-app with `:diff`.                                                                                                   |
+ | `commit_order`             | `descending` | Inline commit selector order: `descending` (newest on top, the default) or `ascending` (oldest on top).                                                    |
+ | `initial_commit_selection` | `all`        | Which commits are selected when a multi-commit review first opens: `all`, or `oldest` to start on just the oldest commit and walk forward with `(` / `)`.  |
++| `initial_focus`            | `diff`       | Panel focused on startup: `diff`, or `file_list` to pick a file in the tree before reading.                                                                 |
+ | `ignore_whitespace`        | `false`      | Ignore all whitespace in local Git, jj, and hg diffs. PR diffs are unchanged.                                                                              |
+ | `show_file_list`           | `true`       | Whether the file list panel is visible on startup. Toggle with `<leader>e`.                                                                                |
+ | `compact_folders` | `false` | Join single-child directory chains into one file-tree row. Restart tuicr after changing this setting. |
+diff --git a/src/config/mod.rs b/src/config/mod.rs
+index 66023cf..69d0154 100644
+--- a/src/config/mod.rs
++++ b/src/config/mod.rs
+@@ -134,6 +134,8 @@ pub struct AppConfig {
+     /// `"all"` (the default) or `"oldest"` (only the oldest commit, for a
+     /// walk-forward per-commit review).
+     pub initial_commit_selection: Option<String>,
++    /// `"diff"` (the default) or `"file_list"`.
++    pub initial_focus: Option<String>,
+     pub ignore_whitespace: Option<bool>,
+     pub wrap: Option<bool>,
+     pub relative_line_numbers: Option<bool>,
+@@ -208,6 +210,7 @@ const KNOWN_KEYS: &[&str] = &[
+     "diff_view",
+     "commit_order",
+     "initial_commit_selection",
++    "initial_focus",
+     "ignore_whitespace",
+     "wrap",
+     "relative_line_numbers",
+@@ -453,6 +456,12 @@ fn load_config_from_path(path: &Path) -> Result<ConfigLoadOutcome> {
+             &["all", "oldest"],
+             &mut warnings,
+         ),
++        initial_focus: read_enum(
++            table,
++            "initial_focus",
++            &["diff", "file_list"],
++            &mut warnings,
++        ),
+         ignore_whitespace: read_bool(table, "ignore_whitespace", &mut warnings),
+         wrap: read_bool(table, "wrap", &mut warnings),
+         export_legend: read_bool(table, "export_legend", &mut warnings),
+@@ -1117,6 +1126,33 @@ mod tests {
+         assert!(outcome.warnings[0].contains("\"descending\" or \"ascending\""));
+     }
+ 
++    #[test]
++    fn should_parse_initial_focus_file_list() {
++        let outcome = parse_config("initial_focus = \"file_list\"\n");
++        assert_eq!(
++            outcome
++                .config
++                .as_ref()
++                .and_then(|cfg| cfg.initial_focus.as_deref()),
++            Some("file_list")
++        );
++        assert!(outcome.warnings.is_empty());
++    }
++
++    #[test]
++    fn should_warn_and_ignore_initial_focus_with_invalid_value() {
++        let outcome = parse_config("initial_focus = \"comments\"\n");
++        assert_eq!(
++            outcome
++                .config
++                .as_ref()
++                .and_then(|cfg| cfg.initial_focus.as_deref()),
++            None
++        );
++        assert_eq!(outcome.warnings.len(), 1);
++        assert!(outcome.warnings[0].contains("\"diff\" or \"file_list\""));
++    }
++
+     #[test]
+     fn should_parse_initial_commit_selection_oldest() {
+         let outcome = parse_config("initial_commit_selection = \"oldest\"\n");
+diff --git a/src/main.rs b/src/main.rs
+index af59a88..1e4a898 100644
+--- a/src/main.rs
++++ b/src/main.rs
+@@ -385,6 +385,14 @@ fn main() -> anyhow::Result<()> {
+         app.focused_panel = FocusedPanel::Diff;
+     }
+ 
++    if let Some(ref cfg) = config_outcome.config
++        && cfg.initial_focus.as_deref() == Some("file_list")
++        && app.show_file_list
++        && app.focused_panel == FocusedPanel::Diff
++    {
++        app.focused_panel = FocusedPanel::FileList;
++    }
++
+     if let Some(message) = startup_warnings.first() {
+         app.set_warning(message.clone());
+     }
+-- 
+2.55.0
+

@@ -129,7 +129,10 @@ in
       ${pkgs.pueue}/bin/pueued -d >/dev/null 2>&1 || true
       exec ${selfPkgs.pi}/bin/pi "$@"
     '')
-    aiTools.tuicr
+    (aiTools.tuicr.overrideAttrs (old: {
+      # initial_focus = "file_list"; TODO: upstream PR
+      patches = (old.patches or [ ]) ++ [ ./tuicr/0001-config-add-initial_focus.patch ];
+    }))
     aiTools.openspec
     aiTools.ccstatusline
     aiTools.git-surgeon
