@@ -26,7 +26,7 @@ done
 read -r _ target < "$tmp/$asset"
 echo "iroh-ssh $target" >&2
 if command -v iroh-ssh >/dev/null; then
-  exec iroh-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$target" "$@"
+  exec iroh-ssh -o VerifyHostKeyDNS=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR "$target" "$@"
 else
-  exec nix run nixpkgs#iroh-ssh -- -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$target" "$@"
+  exec nix run nixpkgs#iroh-ssh -- -o VerifyHostKeyDNS=no -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o LogLevel=ERROR "$target" "$@"
 fi
