@@ -13,17 +13,17 @@
     enable = true;
     listenAddress = "127.0.0.1:8428";
     retentionPeriod = "30d";
-    extraOptions = [ "-selfScrapeInterval=60s" ];
+    extraOptions = [
+      "-selfScrapeInterval=60s"
+      "-promscrape.httpSDCheckInterval=5m"
+    ];
     prometheusConfig.scrape_configs = [
       {
         job_name = "telegraf";
         scrape_interval = "60s";
         metrics_path = "/metrics";
         http_sd_configs = [
-          {
-            url = "https://tum-dse.github.io/doctor-cluster-config/telegraf.json";
-            refresh_interval = "5m";
-          }
+          { url = "https://tum-dse.github.io/doctor-cluster-config/telegraf.json"; }
         ];
         static_configs = [
           {
