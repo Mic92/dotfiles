@@ -15,6 +15,8 @@
     ./modules/radicle.nix
   ];
 
+  programs.herdr.machines = [ { target = "eve"; } ];
+
   # herdr-eternal target for eve; authenticate with:
   #   herdr-eternal-ssh login eve
   xdg.configFile."herdr-eternal/config.toml".text = ''
