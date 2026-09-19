@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Boot a GitHub-hosted runner (.github/workflows/os-ondemand.yaml) and ssh into it over iroh.
+#   os-ondemand macos-latest [minutes] [-- cmd...]     also: windows-latest windows-11-arm ubuntu-24.04-arm macos-13
+#   os-ondemand attach macos-latest [-- cmd...]        reuse a running one
+set -euo pipefail
+repo=Mic92/dotfiles
+mode=boot
+if [[ ${1:-} == attach ]]; then mode=attach; shift; fi
+os=${1:?os}; shift
+minutes=120
+if [[ ${1:-} =~ ^[0-9]+$ ]]; then minutes=$1; shift; fi
+[[ ${1:-} == -- ]] && shift
+asset="os-ondemand-$os.txt"
+
+if [[ $mode == boot ]]; then
+  gh release delete-asset os-ondemand "$asset" -R "$repo" -y 2>/dev/null || true
+  gh workflow run os-ondemand.yaml -R "$repo" -f os="$os" -f minutes="$minutes"
+  sleep 3
+  gh run list -R "$repo" -w os-ondemand.yaml -L 1 --json url -q '.[0].url'
+fi
+tmp=$(mktemp -d); trap 'rm -rf "$tmp"' EXIT
+for _ in $(seq 180); do
+  if gh release download os-ondemand -R "$repo" -p "$asset" -D "$tmp" --clobber 2>/dev/null; then break; fi
+  sleep 5
+done
+read -r _ target < "$tmp/$asset"
+echo "iroh-ssh $target" >&2
+if command -v iroh-ssh >/dev/null; then
+  exec iroh-ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$target" "$@"
+else
+  exec nix run nixpkgs#iroh-ssh -- -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null "$target" "$@"
+fi

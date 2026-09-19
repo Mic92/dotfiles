@@ -1,4 +1,7 @@
 name: "OS ondemand"
+# A hosted runner reachable over ssh via iroh (no IP needed): scp, port forwards and
+# non-interactive commands work, unlike tmate. Connect with what the log's `connect` step and the
+# `os-ondemand` release asset print:  iroh-ssh <user>@<node-id>   (keys: github.com/Mic92.keys)
 on:
   workflow_dispatch:
     inputs:
@@ -9,13 +12,74 @@ on:
         type: choice
         options:
           - ubuntu-latest
+          - ubuntu-24.04-arm
           - macos-latest
           - macos-13
           - windows-latest
-          - ubuntu-22.04-arm
+          - windows-11-arm
+      minutes:
+        description: "keep alive for"
+        default: "120"
 jobs:
-  test:
+  box:
     runs-on: ${{ inputs.os }}
+    timeout-minutes: 360
+    permissions:
+      contents: write
     steps:
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+      - name: sshd + keys
+        shell: bash
+        run: |
+          set -eux
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          curl -fsSL "https://github.com/${GITHUB_REPOSITORY_OWNER}.keys" >> ~/.ssh/authorized_keys
+          chmod 600 ~/.ssh/authorized_keys
+          case "$RUNNER_OS" in
+            Linux)   sudo systemctl start ssh ;;
+            macOS)   sudo systemsetup -setremotelogin on; sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist || true ;;
+            Windows) powershell -Command "Set-Service -Name sshd -StartupType Manual; Start-Service sshd"
+                     # admin users read this file instead of ~/.ssh/authorized_keys
+                     cp ~/.ssh/authorized_keys /c/ProgramData/ssh/administrators_authorized_keys
+                     icacls.exe 'C:\ProgramData\ssh\administrators_authorized_keys' //inheritance:r //grant 'Administrators:F' //grant 'SYSTEM:F' ;;
+          esac
+      - name: iroh-ssh
+        shell: bash
+        run: |
+          set -eux
+          v=0.2.12
+          exe=; f=
+          case "$RUNNER_OS-$RUNNER_ARCH" in
+            Linux-X64)   f=iroh-ssh.linux ;;
+            macOS-ARM64) f=iroh-ssh.macos ;;
+            Windows-X64) f=iroh-ssh.exe; exe=.exe ;;
+            Windows-*)   exe=.exe ;;
+          esac
+          mkdir -p "$HOME/bin"
+          if [ -n "$f" ]; then
+            curl -fsSL -o "$HOME/bin/iroh-ssh$exe" "https://github.com/rustonbsd/iroh-ssh/releases/download/$v/$f"
+            chmod +x "$HOME/bin/iroh-ssh$exe"
+          else
+            # no prebuilt for this arch
+            cargo install iroh-ssh --version "$v" --root "$HOME" --locked
+          fi
+      - name: connect
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -eu
+          nohup "$HOME/bin/iroh-ssh" server --persist > iroh.log 2>&1 &
+          for i in $(seq 60); do grep -qoE '@[0-9a-f]{64}' iroh.log && break; sleep 1; done
+          id=$(grep -oE '[0-9a-f]{64}' iroh.log | head -1)
+          user=$(whoami); user=${user##*\\}
+          echo "connect:  iroh-ssh $user@$id"
+          echo "iroh-ssh $user@$id" > "os-ondemand-${{ inputs.os }}.txt"
+          gh release view os-ondemand -R "$GITHUB_REPOSITORY" >/dev/null 2>&1 || gh release create os-ondemand -R "$GITHUB_REPOSITORY" --prerelease --title os-ondemand --notes "live iroh-ssh endpoints of os-ondemand runners"
+          gh release upload os-ondemand -R "$GITHUB_REPOSITORY" "os-ondemand-${{ inputs.os }}.txt" --clobber
+      - name: keep alive
+        shell: bash
+        run: |
+          # `touch ~/stop` in the session ends the job early
+          end=$(( $(date +%s) + ${{ inputs.minutes }} * 60 ))
+          while [ "$(date +%s)" -lt "$end" ] && [ ! -e ~/stop ]; do sleep 15; done
+          cat iroh.log
