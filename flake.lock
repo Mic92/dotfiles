@@ -406,11 +406,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1783725058,
-        "narHash": "sha256-NfG/D9oLZKq8W7QDYTomUjNkMK0MYGQbrzK5ewNs5cc=",
+        "lastModified": 1787549788,
+        "narHash": "sha256-WIu1noaxzxskqIqf59bUrrwJc1l/K6tFZPJ+KdxMEZI=",
         "owner": "numtide",
         "repo": "freelancer-toolbox",
-        "rev": "98d42c29b4056aab9ccfbf357efdb3a921a65e83",
+        "rev": "85b7f6e25579facc8bb068662e8582656d080c23",
         "type": "github"
       },
       "original": {
