@@ -864,10 +864,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1787917367,
-        "narHash": "sha256-FCFmTnV7UQog1JWm0TvySlBnHBnyt+g6BlhUUFdE8SE=",
+        "lastModified": 1789378831,
+        "narHash": "sha256-ieruQmYS0GnNeyXM4UhUU22Rt29dCKu4vq+nS2NSTbs=",
         "ref": "main",
-        "rev": "660d7182cbabd2ca751d59d242c816d14038b0d1",
+        "rev": "4a961da96485985dc30a4c31e6200f179465365f",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
