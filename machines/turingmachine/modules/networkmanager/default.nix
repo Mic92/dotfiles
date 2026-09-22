@@ -41,7 +41,6 @@ in
       with pkgs;
       lib.mkForce [
         networkmanager-openvpn
-        networkmanager-vpnc
       ];
   };
 
