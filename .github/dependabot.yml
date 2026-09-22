@@ -22,5 +22,6 @@ updates:
       interval: "weekly"
   - package-ecosystem: "nix"
     directory: "/"
+    open-pull-requests-limit: 50
     schedule:
       interval: "weekly"
