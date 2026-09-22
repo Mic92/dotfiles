@@ -82,9 +82,9 @@
         _type = "wifi-device";
         type = "mac80211";
         path = "1a143000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0";
-        channel = "auto";
+        channel = "36";
         band = "5g";
-        htmode = "HE160";
+        htmode = "HE80";
         country = "DE";
         cell_density = "0";
       };
