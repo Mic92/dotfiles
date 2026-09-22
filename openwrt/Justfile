@@ -1,4 +1,4 @@
-host := "192.168.188.2"
+host := "rauter"
 version := "$(curl --silent https://api.github.com/repos/openwrt/openwrt/releases/latest | jq -r '.. .name? // empty | gsub(\"^v\"; \"\")')"
 sysupgrade_url := "https://downloads.openwrt.org/releases/" + version + "/targets/mediatek/mt7622/openwrt-" + version + "-mediatek-mt7622-linksys_e8450-ubi-squashfs-sysupgrade.itb"
 
@@ -6,7 +6,7 @@ ssh +command:
   ssh "root@{{host}}" "{{command}}"
 
 eval-config:
-  nix run --builders '' "./#example"
+  "$(nix build --builders '' ../#openwrt-example --no-link --print-out-paths)"
 
 # apply configuration to router
 apply:
@@ -18,7 +18,7 @@ apply:
 
   # Set root ssh keys
   just ssh "mkdir -p /etc/dropbear/ && umask 177 && cat > /etc/dropbear/authorized_keys" <<EOF
-  ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKbBp2dH2X3dcU1zh+xW3ZsdYROKpJd3n13ssOP092qE joerg@turingmachine
+  ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHDV5xoYdIHYO7T2FtbIcV8LmiPmJc7JcxElSaGD9tzf joerg@turingmachine rauter
   EOF
 
   # Apply uci configuration
