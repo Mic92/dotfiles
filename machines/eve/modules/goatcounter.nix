@@ -14,9 +14,7 @@
       RestartSec = "2s";
       EnvironmentFile = [ config.clan.core.vars.generators.goatcounter-smtp.files.env.path ];
       ExecStart = ''
-        ${
-          self.inputs.nur-packages.packages.${pkgs.stdenv.hostPlatform.system}.goatcounter
-        }/bin/goatcounter \
+        ${self.packages.${pkgs.stdenv.hostPlatform.system}.goatcounter}/bin/goatcounter \
           serve \
           -automigrate \
           -listen localhost:3004 \
@@ -60,7 +58,7 @@
   };
 
   environment.systemPackages = [
-    self.inputs.nur-packages.packages.${pkgs.stdenv.hostPlatform.system}.goatcounter
+    self.packages.${pkgs.stdenv.hostPlatform.system}.goatcounter
   ];
 
   services.postgresql.ensureDatabases = [ "goatcounter" ];
