@@ -21,6 +21,7 @@
     ./modules/nfs.nix
     ./modules/packages.nix
     ./modules/postgresql.nix
+    ./modules/tailscale.nix
     ../../nixosModules/tum-vpn
     ./modules/toggle-keyboard
 
