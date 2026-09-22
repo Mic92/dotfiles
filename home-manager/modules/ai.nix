@@ -80,7 +80,6 @@ in
       "db-cli"
       "gmaps-cli"
       "kagi-search"
-      "n8n-cli"
       "queue"
       "screenshot-cli"
     ];
