@@ -936,26 +936,6 @@
         "type": "github"
       }
     },
-    "nur-packages": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1788870253,
-        "narHash": "sha256-bbCC31rNJNBFFMxoIAzTKG+1DXVorSFtrQo/OsuzdtE=",
-        "owner": "Mic92",
-        "repo": "nur-packages",
-        "rev": "b025f4df512903f2ca9c6cba27f5bef15461bddc",
-        "type": "github"
-      },
-      "original": {
-        "owner": "Mic92",
-        "repo": "nur-packages",
-        "type": "github"
-      }
-    },
     "punchcard": {
       "inputs": {
         "nixpkgs": [
@@ -1039,7 +1019,6 @@
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs",
         "noctalia-plugins": "noctalia-plugins",
-        "nur-packages": "nur-packages",
         "punchcard": "punchcard",
         "radicle-mirror": "radicle-mirror",
         "sops-nix": "sops-nix",

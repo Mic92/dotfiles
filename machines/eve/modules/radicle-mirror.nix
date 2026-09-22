@@ -24,7 +24,7 @@ in
 
   services.radicle-mirror = {
     enable = true;
-    package = self.inputs.radicle-mirror.packages.${pkgs.system}.default;
+    package = self.inputs.radicle-mirror.packages.${pkgs.stdenv.hostPlatform.system}.default;
     addr = "127.0.0.1:${toString port}";
     ghAppId = 4627581;
     delegates = [
