@@ -74,9 +74,10 @@
       # herdr-eternal-ssh out as soon as a laptop sleeps for a while; keep the
       # refresh token valid for months so long-running herdr sessions can keep
       # re-minting access tokens.
+      # Long access tokens avoid racing refreshes of rotated refresh tokens.
       identity_providers.oidc.lifespans.custom.herdr-eternal = {
-        access_token = "1 hour";
-        id_token = "1 hour";
+        access_token = "1 day";
+        id_token = "1 day";
         refresh_token = "3 months";
       };
 
