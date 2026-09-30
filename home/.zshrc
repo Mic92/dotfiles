@@ -717,9 +717,10 @@ unlock_root(){
   pw=$(rbw get 'zfs encryption')
   ssh root@eve.i -p 2222 "echo ${pw} | systemd-tty-ask-password-agent"
 }
+unalias fd 2>/dev/null
 fd() {
   if [[ -n "${commands[fd]}" ]]; then
-    command fd "$@"
+    command fd --no-require-git "$@"
   else
     command find . -iname "*${*}*" 2>/dev/null
   fi
