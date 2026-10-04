@@ -55,6 +55,36 @@ in
 {
   services.grafana = {
     enable = true;
+    declarativePlugins = [ pkgs.grafanaPlugins.victoriametrics-logs-datasource ];
+
+    # VictoriaLogs has no Loki query API, so the tincr org needs the native
+    # plugin. Same uid as the old Loki datasource keeps dashboard refs valid.
+    provision.datasources.settings = {
+      apiVersion = 1;
+      deleteDatasources = [
+        {
+          name = "Loki";
+          orgId = 6;
+        }
+      ];
+      datasources = [
+        {
+          name = "VictoriaLogs";
+          uid = "cflywqo5lui2oc";
+          orgId = 6;
+          type = "victoriametrics-logs-datasource";
+          access = "proxy";
+          url = "https://loki.r";
+          basicAuth = true;
+          basicAuthUser = "promtail@thalheim.io";
+          secureJsonData.basicAuthPassword = "$__file{${
+            config.clan.core.vars.generators.promtail.files."password".path
+          }}";
+          isDefault = true;
+        }
+      ];
+    };
+
     settings = {
       analytics.reporting_enabled = false;
       "auth.ldap".enabled = true;
@@ -108,6 +138,9 @@ in
       "mail"
     ];
   };
+
+  # shared with fluent-bit, which runs as root and can still read it
+  clan.core.vars.generators.promtail.files."password".owner = "grafana";
 
   clan.core.vars.generators.lldap-grafana = {
     files.bind-password.owner = "grafana";
