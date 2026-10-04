@@ -1,5 +1,6 @@
 host := "rauter"
 version := "$(curl --silent https://api.github.com/repos/openwrt/openwrt/releases/latest | jq -r '.. .name? // empty | gsub(\"^v\"; \"\")')"
+hosts_bundle := "https://github.com/krebs/kartei/releases/download/bundle/retiolum-hosts.tar.gz"
 sysupgrade_url := "https://downloads.openwrt.org/releases/" + version + "/targets/mediatek/mt7622/openwrt-" + version + "-mediatek-mt7622-linksys_e8450-ubi-squashfs-sysupgrade.itb"
 
 ssh +command:
@@ -35,7 +36,8 @@ apply:
   just ssh "opkg update && opkg install luci tcpdump tinc rsync ddns-scripts-nsupdate iperf3 luci-mod-rpc prometheus-node-exporter-lua prometheus-node-exporter-lua-openwrt"
 
   just ssh "if [ ! -f /etc/tinc/retiolum/rsa_key.priv ]; then mkdir -p /etc/tinc/retiolum; tinc -n retiolum generate-keys; /etc/init.d/tinc start; fi"
-  rsync -e ssh -ac /etc/tinc/retiolum/hosts "root@{{host}}:/etc/tinc/retiolum"
+  # Overlay instead of replace: the bundle lacks some ConnectTo peers (ni, prism)
+  just ssh "mkdir -p /etc/tinc/retiolum/hosts && wget -qO- {{hosts_bundle}} | tar xzf - -C /etc/tinc/retiolum/hosts && tinc -n retiolum reload"
 
 # perform router upgrade
 upgrade:
