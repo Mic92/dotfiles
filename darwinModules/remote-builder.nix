@@ -20,44 +20,26 @@ in
 
   nix.distributedBuilds = true;
 
-  nix.buildMachines =
-    lib.optionals grpcSupported [
-      {
-        # gRPC nix-daemon on eve. client cert via `nix-grpc-cert`.
-        hostName = "grpc://eve.thalheim.io:50051";
-        protocol = null;
-        systems = [
-          "x86_64-linux"
-          "i686-linux"
-          "aarch64-linux"
-        ];
-        maxJobs = 64;
-        supportedFeatures = [
-          "big-parallel"
-          "kvm"
-          "nixos-test"
-          "recursive-nix"
-          "uid-range"
-        ];
-      }
-    ]
-    ++ [
-      {
-        hostName = "mac02.numtide.com";
-        sshUser = "customer";
-        protocol = "ssh-ng";
-        sshKey = config.sops.secrets.ssh-remote-builder.path;
-        systems = [
-          "aarch64-darwin"
-          "x86_64-darwin"
-        ];
-        maxJobs = 8;
-        supportedFeatures = [
-          "big-parallel"
-          "recursive-nix"
-        ];
-      }
-    ];
+  nix.buildMachines = lib.optionals grpcSupported [
+    {
+      # gRPC nix-daemon on eve. client cert via `nix-grpc-cert`.
+      hostName = "grpc://eve.thalheim.io:50051";
+      protocol = null;
+      systems = [
+        "x86_64-linux"
+        "i686-linux"
+        "aarch64-linux"
+      ];
+      maxJobs = 64;
+      supportedFeatures = [
+        "big-parallel"
+        "kvm"
+        "nixos-test"
+        "recursive-nix"
+        "uid-range"
+      ];
+    }
+  ];
 
   programs.ssh.extraConfig = ''
     Host irene
@@ -74,9 +56,6 @@ in
       User nix
       ProxyJump login-tum
       HostName eliza.dos.cit.tum.de
-      IdentityFile ${config.sops.secrets.ssh-remote-builder.path}
-    Host mac02.numtide.com
-      User customer
       IdentityFile ${config.sops.secrets.ssh-remote-builder.path}
     Host login-tum
       User tunnel

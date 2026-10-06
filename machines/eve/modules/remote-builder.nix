@@ -15,21 +15,6 @@
     #    "nixos-test"
     #  ];
     #}
-    {
-      hostName = "mac02";
-      sshUser = "customer";
-      protocol = "ssh-ng";
-      sshKey = config.sops.secrets.ssh-tum-builder.path;
-      systems = [
-        "aarch64-darwin"
-        "x86_64-darwin"
-      ];
-      maxJobs = 8;
-      supportedFeatures = [
-        "big-parallel"
-        "recursive-nix"
-      ];
-    }
     #{
     #  hostName = "jamie";
     #  maxJobs = 128;
@@ -67,14 +52,10 @@
   programs.ssh.extraConfig = ''
     # Detect dead TCP connections to remote builders so build-remote does not
     # hang forever holding all build slots when the network blips mid-transfer.
-    Host mac02 jamie eliza login-tum
+    Host jamie eliza login-tum
       ServerAliveInterval 30
       ServerAliveCountMax 4
 
-    Host mac02
-      User customer
-      HostName mac02.numtide.com
-      IdentityFile ${config.sops.secrets.ssh-tum-builder.path}
     Host jamie
       User nix
       ProxyJump login-tum
@@ -98,10 +79,6 @@
     "aarch64.nixos.community" = {
       hostNames = [ "aarch64.nixos.community" ];
       publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMUTz5i9u5H2FHNAmZJyoJfIGyUm/HfGhfwnc142L3ds";
-    };
-    "mac02.numtide.com" = {
-      hostNames = [ "mac02.numtide.com" ];
-      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGX2wsoPj5j08Uuzt0AF5gA6lPiZS6fU3gKSf9XMcoXd";
     };
   };
 }
