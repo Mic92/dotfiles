@@ -319,11 +319,11 @@
     },
     "flakelet-nginx": {
       "locked": {
-        "lastModified": 1789758382,
-        "narHash": "sha256-gL5baY+l07s1vLXpQBTA+FFBP9rrgcf91eSP8BWpGDU=",
+        "lastModified": 1790363199,
+        "narHash": "sha256-5PATRhJaQZpc7w2XZpTZBprPz/VnGDlSxxwy8T4XuQs=",
         "owner": "Mic92",
         "repo": "flakelet-nginx",
-        "rev": "5a624b9158fb4e1efd702a84157d85943feeb977",
+        "rev": "0383a4642a80f2155a4b8233ac324e196a56af5a",
         "type": "github"
       },
       "original": {
