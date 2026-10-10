@@ -122,7 +122,6 @@ in
   home.packages = [
     nixbot-cli
     selfPkgs.claude-code
-    selfPkgs.claude-md
     selfPkgs.pim
     (pkgs.writeShellScriptBin "pi" ''
       ${pkgs.pueue}/bin/pueued -d >/dev/null 2>&1 || true

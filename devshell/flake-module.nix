@@ -20,7 +20,6 @@ let
     programs.mypy.directories = {
       "machines/eva/modules/prometheus" = { };
       "openwrt" = { };
-      "pkgs/claude-md" = { };
       "pkgs/merge-when-green" = { };
       "pkgs/systemctl" = { };
       "pkgs/rbw_pinentry" = {
