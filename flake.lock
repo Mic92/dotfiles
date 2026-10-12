@@ -692,11 +692,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791244864,
-        "narHash": "sha256-deaRupebMHXS9NycUQHwQcoluuWRHBdHfus+EEzbq/M=",
+        "lastModified": 1791504059,
+        "narHash": "sha256-zjX9NF6KVM0JFW/AjO1WsiPubbtJqx9VWwNcl4jQCfU=",
         "owner": "atahanyorganci",
         "repo": "nix-casks",
-        "rev": "5d409776eeb75e46f251c00fd0fdba203f08beab",
+        "rev": "bce6defcb8da92b5925f264064a595d9da64894b",
         "type": "github"
       },
       "original": {
