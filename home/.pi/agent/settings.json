@@ -14,6 +14,7 @@
       "extensions": [
         "!*",
         "+inbox/index.ts",
+        "+permission-gate/index.ts",
         "+python/index.ts",
         "+nushell/index.ts"
       ]
