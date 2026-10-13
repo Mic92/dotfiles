@@ -82,6 +82,13 @@ in
         "config.local-keys.*"
       ];
 
+      tracer.stdout = {
+        type = "stdout";
+        level = "debug";
+        ansi = false;
+        enable = true;
+      };
+
       server = {
         hostname = "mail.thalheim.io";
         tls.certificate = "wildcard";
