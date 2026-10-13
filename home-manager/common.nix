@@ -94,6 +94,7 @@
       self.inputs.punchcard.packages.${pkgs.stdenv.hostPlatform.system}.punch
     ]
     ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+      self.inputs.iets.packages.${pkgs.stdenv.hostPlatform.system}.default
       strace
       psmisc
       glibcLocales

@@ -543,6 +543,29 @@
         "type": "github"
       }
     },
+    "iets": {
+      "inputs": {
+        "crane": [
+          "crane"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1791913543,
+        "narHash": "sha256-CL1jKQmAj/B1VGps2FdENjOCN8uNB4clPgNHO0Im1I4=",
+        "owner": "numtide",
+        "repo": "iets",
+        "rev": "865d7d5016d6c0bb34c16a21e721b5e3a57c2eec",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "iets",
+        "type": "github"
+      }
+    },
     "kartei": {
       "inputs": {
         "crane": [
@@ -1003,6 +1026,7 @@
         "hercules-ci-effects": "hercules-ci-effects",
         "herdr-eternal": "herdr-eternal",
         "home-manager": "home-manager",
+        "iets": "iets",
         "kartei": "kartei",
         "llm-agents": "llm-agents",
         "mics-skills": "mics-skills",

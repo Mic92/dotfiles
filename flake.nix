@@ -116,6 +116,10 @@
     strace-macos.inputs.treefmt-nix.follows = "treefmt-nix";
     strace-macos.inputs.flake-parts.follows = "flake-parts";
 
+    iets.url = "github:numtide/iets";
+    iets.inputs.nixpkgs.follows = "nixpkgs";
+    iets.inputs.crane.follows = "crane";
+
     forge-triage.url = "github:Mic92/forge-triage";
     forge-triage.inputs.nixpkgs.follows = "nixpkgs";
 
