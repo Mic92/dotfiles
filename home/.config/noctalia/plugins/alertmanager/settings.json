@@ -1,3 +1,4 @@
 {
-  "alertmanagerUrl": "http://alertmanager.r"
+  "alertmanagerUrl": "http://alertmanager.r",
+  "prometheusUrl": "https://prometheus.r"
 }
