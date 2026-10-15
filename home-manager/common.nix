@@ -8,8 +8,6 @@
 {
   imports = [
     ./modules/neovim
-    ./modules/tmux-thumbs.nix
-    ./modules/tmux-open-file.nix
     ./modules/homeshick.nix
   ];
 
@@ -37,8 +35,6 @@
       xcp
 
       socat
-      tmux
-      nurl
       htop
       hub
       tea
