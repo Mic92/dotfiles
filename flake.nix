@@ -20,8 +20,7 @@
     hercules-ci-effects.inputs.nixpkgs.follows = "nixpkgs";
     hercules-ci-effects.inputs.flake-parts.follows = "flake-parts";
 
-    # gc-modules: NixOS/darwin modules for harmonia-gc (nix-community/harmonia#1201)
-    harmonia.url = "github:nix-community/harmonia/gc-modules";
+    harmonia.url = "github:nix-community/harmonia";
     harmonia.inputs.nixpkgs.follows = "nixpkgs";
     harmonia.inputs.crane.follows = "crane";
     harmonia.inputs.nix-darwin.follows = "nix-darwin";
