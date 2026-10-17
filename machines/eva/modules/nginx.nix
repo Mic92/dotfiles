@@ -68,6 +68,7 @@ in
         enableACME = true;
         addSSL = true;
         locations."/".proxyPass = "http://@prometheus/";
+        locations."= /".return = "302 /vmalert/";
       };
 
       virtualHosts."alertmanager.thalheim.io" = {

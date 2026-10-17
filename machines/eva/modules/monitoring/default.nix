@@ -16,6 +16,10 @@
     extraOptions = [
       "-selfScrapeInterval=60s"
       "-promscrape.httpSDCheckInterval=5m"
+      # retiolum (.r) targets and alertmanager are IPv6-only
+      "-enableTCP6"
+      # serves the vmalert UI (firing alerts, groups) at /vmalert/
+      "-vmalert.proxyURL=http://127.0.0.1:8880"
     ];
     prometheusConfig.scrape_configs = [
       {

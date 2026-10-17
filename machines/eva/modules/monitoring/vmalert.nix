@@ -35,6 +35,8 @@ in
         "remoteWrite.url" = vm;
         "remoteRead.url" = vm;
         "httpListenAddr" = "127.0.0.1:8880";
+        # alertmanager listens on [::1] only
+        "enableTCP6" = true;
         "external.url" = "https://prometheus.thalheim.io";
         "external.alert.source" = "vmui/#/?g0.expr={{.Expr|queryEscape}}";
         rule = config.services.prometheus.ruleFiles;
@@ -49,6 +51,7 @@ in
         "remoteWrite.url" = vm;
         "remoteRead.url" = vm;
         "httpListenAddr" = "127.0.0.1:8881";
+        "enableTCP6" = true;
         "rule.defaultRuleType" = "vlogs";
         "external.url" = "https://prometheus.thalheim.io";
       };

@@ -1,14 +1,27 @@
 local function open_or_create_file(tfilename)
 	-- complete filepath from the file where this is called
 	local parent = vim.fn.expand("%:p:h")
-	local newfilepath = parent .. "/" .. vim.fn.expand(tfilename)
+	local name = vim.fn.expand(tfilename)
+	if not name:match("^/") then
+		name = parent .. "/" .. name
+	end
+	local newfilepath = vim.fn.fnamemodify(name, ":p")
+
+	if vim.fn.isdirectory(newfilepath) == 1 then
+		require("neo-tree.command").execute({
+			action = "focus",
+			source = "filesystem",
+			reveal_file = newfilepath:gsub("/$", ""),
+			reveal_force_cwd = true,
+		})
+		return
+	end
 
 	if vim.fn.filereadable(newfilepath) ~= 1 then
-		-- create parent directory
-		vim.fn.mkdir(parent, "p")
+		vim.fn.mkdir(vim.fn.fnamemodify(newfilepath, ":h"), "p")
 		vim.fn.writefile({}, newfilepath)
 	end
-	vim.cmd(":e " .. newfilepath)
+	vim.cmd.edit(vim.fn.fnameescape(newfilepath))
 end
 
 return {

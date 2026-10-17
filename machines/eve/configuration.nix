@@ -53,7 +53,6 @@
     ./modules/network.nix
     ./modules/nextcloud.nix
     ./modules/nginx/default.nix
-    ./modules/hermes
     #./modules/nixos-wiki
     ./modules/packages.nix
     ./modules/paperless.nix

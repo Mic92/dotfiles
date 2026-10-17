@@ -28,7 +28,6 @@
       DISABLE_ROUTER_LOG = true;
       ROOT_URL = "https://git.thalheim.io";
       HTTP_PORT = 3002;
-      DOMAIN = "thalheim.io";
     };
     settings.security = {
       DISABLE_GIT_HOOKS = false;
