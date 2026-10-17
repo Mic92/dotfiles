@@ -1,6 +1,6 @@
-From af8fe4c8ef2728168b94b3014d9ce5a283e10a69 Mon Sep 17 00:00:00 2001
+From 765d7db924c13217df01e15ee949c691092d3b3c Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
-Date: Sat, 19 Sep 2026 10:37:19 +0200
+Date: Sat, 17 Oct 2026 15:29:06 +0200
 Subject: [PATCH] feat(config): add initial_focus to start in the file tree
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -21,47 +21,47 @@ Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
  3 files changed, 46 insertions(+)
 
 diff --git a/docs/CONFIG.md b/docs/CONFIG.md
-index d8ad05e..11bf38a 100644
+index 33355ad..b725e66 100644
 --- a/docs/CONFIG.md
 +++ b/docs/CONFIG.md
 @@ -28,6 +28,7 @@ diff_view = "side-by-side"
- ignore_whitespace = false
+ ignore_whitespace = "auto" # or true / false; omitted defaults to false
  commit_order = "descending"
  initial_commit_selection = "all"
 +initial_focus = "diff"
  show_file_list = true
  compact_folders = false
  show_pr_checks = false
-@@ -86,6 +87,7 @@ session_header = true
+@@ -91,6 +92,7 @@ session_header = true
  | `diff_view`                | `unified`    | `unified` or `side-by-side`. Toggle in-app with `:diff`.                                                                                                   |
  | `commit_order`             | `descending` | Inline commit selector order: `descending` (newest on top, the default) or `ascending` (oldest on top).                                                    |
  | `initial_commit_selection` | `all`        | Which commits are selected when a multi-commit review first opens: `all`, or `oldest` to start on just the oldest commit and walk forward with `(` / `)`.  |
 +| `initial_focus`            | `diff`       | Panel focused on startup: `diff`, or `file_list` to pick a file in the tree before reading.                                                                 |
- | `ignore_whitespace`        | `false`      | Ignore all whitespace in local Git, jj, and hg diffs. PR diffs are unchanged.                                                                              |
+ | `ignore_whitespace`        | `false`      | Whitespace comparison for local Git, jj, and hg diffs: `false` compares normally, `true` ignores all whitespace, and `"auto"` chooses by file extension. PR diffs are unchanged. See [Whitespace comparison](#whitespace-comparison). |
+ | `ignore_whitespace_overrides` | (none)    | Table of extension-to-boolean overrides, used only with `ignore_whitespace = "auto"`. `true` ignores whitespace; `false` compares normally. |
  | `show_file_list`           | `true`       | Whether the file list panel is visible on startup. Toggle with `<leader>e`.                                                                                |
- | `compact_folders` | `false` | Join single-child directory chains into one file-tree row. Restart tuicr after changing this setting. |
 diff --git a/src/config/mod.rs b/src/config/mod.rs
-index 66023cf..69d0154 100644
+index 01bb677..a26ee21 100644
 --- a/src/config/mod.rs
 +++ b/src/config/mod.rs
-@@ -134,6 +134,8 @@ pub struct AppConfig {
+@@ -185,6 +185,8 @@ pub struct AppConfig {
      /// `"all"` (the default) or `"oldest"` (only the oldest commit, for a
      /// walk-forward per-commit review).
      pub initial_commit_selection: Option<String>,
 +    /// `"diff"` (the default) or `"file_list"`.
 +    pub initial_focus: Option<String>,
-     pub ignore_whitespace: Option<bool>,
-     pub wrap: Option<bool>,
-     pub relative_line_numbers: Option<bool>,
-@@ -208,6 +210,7 @@ const KNOWN_KEYS: &[&str] = &[
+     pub ignore_whitespace: Option<IgnoreWhitespaceConfig>,
+     /// Extension → ignore-whitespace decisions used only when
+     /// `ignore_whitespace = "auto"`. Keys are stored already normalized
+@@ -264,6 +266,7 @@ const KNOWN_KEYS: &[&str] = &[
      "diff_view",
      "commit_order",
      "initial_commit_selection",
 +    "initial_focus",
      "ignore_whitespace",
+     "ignore_whitespace_overrides",
      "wrap",
-     "relative_line_numbers",
-@@ -453,6 +456,12 @@ fn load_config_from_path(path: &Path) -> Result<ConfigLoadOutcome> {
+@@ -614,6 +617,12 @@ fn load_config_from_path(path: &Path) -> Result<ConfigLoadOutcome> {
              &["all", "oldest"],
              &mut warnings,
          ),
@@ -71,10 +71,10 @@ index 66023cf..69d0154 100644
 +            &["diff", "file_list"],
 +            &mut warnings,
 +        ),
-         ignore_whitespace: read_bool(table, "ignore_whitespace", &mut warnings),
+         ignore_whitespace,
+         ignore_whitespace_overrides,
          wrap: read_bool(table, "wrap", &mut warnings),
-         export_legend: read_bool(table, "export_legend", &mut warnings),
-@@ -1117,6 +1126,33 @@ mod tests {
+@@ -1279,6 +1288,33 @@ mod tests {
          assert!(outcome.warnings[0].contains("\"descending\" or \"ascending\""));
      }
  
@@ -109,10 +109,10 @@ index 66023cf..69d0154 100644
      fn should_parse_initial_commit_selection_oldest() {
          let outcome = parse_config("initial_commit_selection = \"oldest\"\n");
 diff --git a/src/main.rs b/src/main.rs
-index af59a88..1e4a898 100644
+index a1e5552..0f5187f 100644
 --- a/src/main.rs
 +++ b/src/main.rs
-@@ -385,6 +385,14 @@ fn main() -> anyhow::Result<()> {
+@@ -400,6 +400,14 @@ fn main() -> anyhow::Result<()> {
          app.focused_panel = FocusedPanel::Diff;
      }
  
