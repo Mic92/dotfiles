@@ -17,10 +17,6 @@ gui:
   enlargedSideViewLocation: top
   scrollOffMargin: 5
   commitHashLength: 7
-  authorColors:
-    "Jörg Thalheim": "#7aa2f7"
-    "*[bot]": "#565f89"
-    "*": "#bb9af7"
   # Tokyo Night (folke/tokyonight.nvim extras/lazygit)
   theme:
     activeBorderColor: ["#ff9e64", "bold"]
@@ -35,6 +31,10 @@ gui:
     unstagedChangesColor: ["#db4b4b"]
     defaultFgColor: ["#c0caf5"]
     inactiveViewSelectedLineBgColor: ["#1f2335"]
+    authorColors:
+      "Jörg Thalheim": "#7aa2f7"
+      "*[bot]": "#565f89"
+      "*": "#bb9af7"
 os:
   editPreset: nvim
 git:
