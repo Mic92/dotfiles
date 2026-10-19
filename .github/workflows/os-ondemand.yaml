@@ -37,7 +37,9 @@ jobs:
           case "$RUNNER_OS" in
             Linux)   sudo systemctl start ssh ;;
             macOS)   sudo systemsetup -setremotelogin on; sudo launchctl load -w /System/Library/LaunchDaemons/ssh.plist || true ;;
-            Windows) powershell -Command "Set-Service -Name sshd -StartupType Manual; Start-Service sshd"
+            Windows) # the arm image ships without the OpenSSH server
+                     powershell -Command "if (-not (Get-Service sshd -ErrorAction SilentlyContinue)) { Add-WindowsCapability -Online -Name OpenSSH.Server~~~~0.0.1.0 }"
+                     powershell -Command "Set-Service -Name sshd -StartupType Manual; Start-Service sshd"
                      # admin users read this file instead of ~/.ssh/authorized_keys
                      cp ~/.ssh/authorized_keys /c/ProgramData/ssh/administrators_authorized_keys
                      icacls.exe 'C:\ProgramData\ssh\administrators_authorized_keys' //inheritance:r //grant 'Administrators:F' //grant 'SYSTEM:F' ;;
