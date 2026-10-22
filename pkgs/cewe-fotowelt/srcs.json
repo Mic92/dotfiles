@@ -1,52 +1,52 @@
 {
-  "version": "8.1.3",
+  "version": "8.2.1",
   "keyAccId": "24441",
   "clientId": "148",
   "sources": [
     {
       "name": "linuxlib64",
-      "url": "https://dls.photoprintit.com/download/Data/generic-data/hps/8.1.3/148-linuxlib64-8.1.3_0d027258c7b3ed7424b66d2187f3b6ea.7z",
-      "hash": "sha256-s0JroatiTUbYdabo1kQZXdTbuHp55mfoOjzowYrBm0A="
-    },
-    {
-      "name": "resources",
-      "url": "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.1.3/148-resources-8.1.3_461793472383a240e3c61b6ccc69594c.7z",
-      "hash": "sha256-55VL/fdOs4j+gSgA7JKHLYqEhrJ/c+3dwtJXan2qbww="
-    },
-    {
-      "name": "svgtemplates",
-      "url": "https://dls.photoprintit.com/download/Data/generic-data/hps/8.1.3/148-svgtemplates-8.1.3_63e614225b0e1abab84d35e39f019efd.7z",
-      "hash": "sha256-GbPvqyvgEnFHFXaNc+tUpVO7vhZM/oaKQeW1FRr1q9M="
+      "url": "https://dls.photoprintit.com/download/Data/generic-data/hps/8.2.1/148-linuxlib64-8.2.1_0339e0e1655c62d3b6c1fce8fb434e70.7z",
+      "hash": "sha256-WWiQG7rpqcOwNZ7z0CQ65RxlK5Dy+A1Fx75/ffDg5aQ="
     },
     {
       "name": "startscreen",
-      "url": "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.1.3/148-startscreen-8.1.3_51427dcbb8cda5b85c84f3e59e462ac0.7z",
-      "hash": "sha256-aFG366Qq/RIZGySLeDht5GuqdnoZ6rHlCgK3JAO20Tc="
+      "url": "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.2.1/148-startscreen-8.2.1_87262b6aac11c92fc50c1b254c3fcb7d.7z",
+      "hash": "sha256-pXQSR61EpqukjPaDTesu1VqxcxGys4FZSotupJKTv6U="
+    },
+    {
+      "name": "svgtemplates",
+      "url": "https://dls.photoprintit.com/download/Data/generic-data/hps/8.2.1/148-svgtemplates-8.2.1_ecb68d5c8e6ccecbe785cc675ba99995.7z",
+      "hash": "sha256-tEUkBXPIDYfJf2UGyJUvZFRiSgZb/PaurJvG485ogSk="
+    },
+    {
+      "name": "resources",
+      "url": "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.2.1/148-resources-8.2.1_6cacba04c8a3a21366f2ef060194fdf6.7z",
+      "hash": "sha256-iuESFIc/7H1EiNw4rH5cYG+qY9udCr/oW1JICBgmXmk="
     },
     {
       "name": "backgrounds",
-      "url": "https://dls.photoprintit.com/download/Data/generic-data/hps/8.1.3/148-backgrounds-8.1.3_8dcc6ee152e27568a399966d7798af59.7z",
-      "hash": "sha256-80xa2KjfNgV1MgGgfpP2o1YQoQsKmZjhaHkfH4EmqUk="
+      "url": "https://dls.photoprintit.com/download/Data/generic-data/hps/8.2.1/148-backgrounds-8.2.1_5ff2a7aaf45e5b8c20e11bd895f88f11.7z",
+      "hash": "sha256-9bihgAO+NuMAQ14okmmUDdpmV/+WPvBg6vQdFfvztcw="
     },
     {
       "name": "photofun",
-      "url": "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.1.3/148-photofun-8.1.3_9c817a2ae980df4da39e597831452d9e.7z",
-      "hash": "sha256-rWY5WXm8c8XBebXJtt++TvNS4qpCmU4MqdqV1Twcs8A="
+      "url": "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.2.1/148-photofun-8.2.1_64f6a5b21fcaabb259897bc2e295c572.7z",
+      "hash": "sha256-GjsGkNtjSrNy69eNn6tfUnwKYYZfA7P6UFeW+b0MTmE="
     },
     {
       "name": "decorations",
-      "url": "https://dls.photoprintit.com/download/Data/generic-data/hps/8.1.3/148-decorations-8.1.3_9074556d04c88495c44bfeb42998dc00.7z",
-      "hash": "sha256-p8s2kMUi+66UyeFisdEU4bsvWXKqnRqlD4LHlF1Jkwk="
+      "url": "https://dls.photoprintit.com/download/Data/generic-data/hps/8.2.1/148-decorations-8.2.1_408b93440a37e99f25e990ce24454a97.7z",
+      "hash": "sha256-ftLgam0CLuE+rUSJkxSBSvTMBxxKdgf07gFTX6/hGkY="
     },
     {
       "name": "svgcalendars",
-      "url": "https://dls.photoprintit.com/download/Data/generic-data/hps/8.1.3/148-svgcalendars-8.1.3_1890e679b7d83a34c8532d566499ebac.7z",
-      "hash": "sha256-SAFGS9zR0h6yIwMzx6MzeFmGYDCGq6uK6R1xbZkDino="
+      "url": "https://dls.photoprintit.com/download/Data/generic-data/hps/8.2.1/148-svgcalendars-8.2.1_b7507edb64e9d10c12c32a95334b14e7.7z",
+      "hash": "sha256-ibD2EBUUwxmjuUgQfIn6gHXk8GH+hL40AIfC9z7ZlXg="
     },
     {
       "name": "linuxexe64",
-      "url": "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.1.3/148-linuxexe64-8.1.3_7902e13942824c911d55079cc2e9458f.7z",
-      "hash": "sha256-3wXeZlAVv1TKGCOw6LOoMqoMBPnCbYf9OqGpiPE7Nm8="
+      "url": "https://dls.photoprintit.com/download/Data/24441-de_DE/hps/8.2.1/148-linuxexe64-8.2.1_7792db2b88fcea0c7d9233ca4cb873b0.7z",
+      "hash": "sha256-lyx31F9B0z5RTuJz0eXhSUkclHTn8NPQUjG+xMu313Q="
     }
   ]
 }
