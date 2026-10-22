@@ -8,6 +8,9 @@
   ];
   # no need for a systemd-resolved stub
   services.resolved.enable = false;
+  # srvos sets stopIfChanged on it unconditionally, leaving an ExecStart-less
+  # stub unit that makes systemd log errors on every reload
+  systemd.services.systemd-resolved.enable = false;
 
   # retiolum names via tincr's stub resolver (DNSAddress in tinc.conf)
   services.unbound.settings = {

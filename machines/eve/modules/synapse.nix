@@ -128,6 +128,8 @@ in
     keyFile = config.clan.core.vars.generators.matrix-livekit.files."livekit-keys".path;
     port = 8090;
   };
+  # required since lk-jwt-service 0.9; restricts room creation to our users
+  systemd.services.lk-jwt-service.environment.LIVEKIT_FULL_ACCESS_HOMESERVERS = server_name;
 
   systemd.services.matrix-synapse.after = [ "postgresql.service" ];
   services.postgresql.ensureUsers = [ { name = "matrix-synapse"; } ];

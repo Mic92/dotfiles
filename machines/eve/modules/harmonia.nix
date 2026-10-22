@@ -20,9 +20,4 @@
       proxy_set_header Connection $connection_upgrade;
     '';
   };
-
-  # use more cores for compression
-  services.nginx.appendConfig = ''
-    worker_processes auto;
-  '';
 }

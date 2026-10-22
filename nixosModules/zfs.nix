@@ -17,5 +17,18 @@
     # the pool with a different hostid, avoiding an emergency shell on next boot.
     boot.zfs.forceImportRoot = true;
     services.zfs.autoSnapshot.enable = true;
+
+    # nixpkgs overrides ExecStart in a drop-in without resetting the upstream
+    # one, so systemd refuses to start zed at all (no pool fault alerts).
+    systemd.services.zfs-zed.serviceConfig.ExecStart = lib.mkOverride 49 [
+      ""
+      (pkgs.writeShellScript "zfs-zed-wrapper" ''
+        if [[ -x /run/booted-system/sw/bin/zed ]]; then
+          exec /run/booted-system/sw/bin/zed -F
+        else
+          exec ${config.boot.zfs.package}/sbin/zed -F
+        fi
+      '')
+    ];
   };
 }
