@@ -49,6 +49,31 @@ let
     };
 
     programs.stylua.enable = true;
+    settings.formatter.stylua.includes = [ "*.luau" ];
+
+    # Typecheck noctalia plugins against the plugin API definitions. Strict
+    # mode comes from .luaurc; per-file opt-outs would defeat it.
+    settings.formatter.luau-check = {
+      command = pkgs.writeShellApplication {
+        name = "luau-check";
+        runtimeInputs = [
+          pkgs.gnugrep
+          pkgs.luau-lsp
+        ];
+        text =
+          let
+            inherit (pkgs.callPackage ../home-manager/modules/noctalia/plugin-sources.nix { }) apiDefinitions;
+          in
+          ''
+            if grep -n -E '^--!(nonstrict|nocheck)' "$@"; then
+              echo "luau-check: files must stay --!strict" >&2
+              exit 1
+            fi
+            luau-lsp analyze --definitions=${apiDefinitions} "$@"
+          '';
+      };
+      includes = [ "*.luau" ];
+    };
     programs.clang-format.enable = true;
     programs.deno.enable = true;
     settings.formatter.deno.excludes = [

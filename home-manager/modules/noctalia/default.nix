@@ -3,19 +3,8 @@ let
   toml = pkgs.formats.toml { };
 
   # Pinned instead of noctalia's own git sources so plugin updates go
-  # through flake bumps like everything else.
-  official = pkgs.fetchFromGitHub {
-    owner = "noctalia-dev";
-    repo = "official-plugins";
-    rev = "10dd0255e45297e5d8a41c78f08387a7bbd21b1c";
-    hash = "sha256-a4hRxpo88vn4G5I7IE4WW9JpSxD3Bw2daBI5C+DkT4c=";
-  };
-  community = pkgs.fetchFromGitHub {
-    owner = "noctalia-dev";
-    repo = "community-plugins";
-    rev = "f1f51da23a2867e6447650a9fca5d671fc30bec8";
-    hash = "sha256-z9ks63WDvH2a2lDmj2ey5y++e1E+HQnsv0dNVUOfPyk=";
-  };
+  # through dotfiles commits like everything else.
+  inherit (pkgs.callPackage ./plugin-sources.nix { }) official community;
 
   # Point at the repo, not homeshick's per-file symlinks, so inotify
   # hot-reload sees edits.
@@ -57,6 +46,11 @@ in
         "nightwatch75/file-search"
         "icefish/phone-connect"
         "aristides/udiskie"
+        "mic92/ssh-askpass"
+        "mic92/fprint-notify"
+        "mic92/alertmanager"
+        "mic92/mail-count"
+        "mic92/rbw-provider"
       ];
       source = [
         {

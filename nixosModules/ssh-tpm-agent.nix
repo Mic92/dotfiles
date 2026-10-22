@@ -9,18 +9,20 @@ let
   # actually honours SSH_ASKPASS_PROMPT=confirm (lxqt-openssh-askpass does
   # not) so ssh-tpm-add -c confirmations get real Allow/Deny buttons instead
   # of an ambiguous password box. Falls back to lxqt-openssh-askpass when
-  # the plugin socket is absent (shell not running, headless TTY, etc).
+  # the shell isn't running (headless TTY, etc).
   noctaliaAskpass =
     lib.getExe
       self.inputs.noctalia-plugins.packages.${pkgs.stdenv.hostPlatform.system}.noctalia-ssh-askpass;
   askPasswordWrapper = pkgs.writeScript "ssh-askpass-wrapper" ''
     #! ${pkgs.runtimeShell} -e
-    if [ -S "''${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/noctalia-ssh-askpass.sock" ]; then
-      exec ${noctaliaAskpass} "$@"
-    fi
     export DISPLAY="$(systemctl --user show-environment | sed 's/^DISPLAY=\(.*\)/\1/; t; d')"
     export XAUTHORITY="$(systemctl --user show-environment | sed 's/^XAUTHORITY=\(.*\)/\1/; t; d')"
     export WAYLAND_DISPLAY="$(systemctl --user show-environment | sed 's/^WAYLAND_DISPLAY=\(.*\)/\1/; t; d')"
+    # Only niri machines install noctalia; the stub needs it on PATH.
+    export PATH=/run/current-system/sw/bin:$PATH
+    if command -v noctalia >/dev/null && noctalia msg status >/dev/null 2>&1; then
+      exec ${noctaliaAskpass} "$@"
+    fi
     exec ${pkgs.lxqt.lxqt-openssh-askpass}/bin/lxqt-openssh-askpass "$@"
   '';
   # Example SSH config for using the TPM2 agent + FIDO keys for selected hosts:
