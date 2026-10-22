@@ -94,11 +94,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792609396,
-        "narHash": "sha256-Kb3+tEyuQezsE2t4RODSOHwKfNKyOG4sAnKDjOU8HpA=",
-        "ref": "fix-structured-wrapper-args",
-        "rev": "c7112ff37ef987199cccffd4f7b42514794bf50f",
-        "revCount": 15396,
+        "lastModified": 1792646627,
+        "narHash": "sha256-4rG1EWSeUmfYgWYVjq04zxL1f9AnAgF1iIF+oYH+xxs=",
+        "ref": "main",
+        "rev": "b94705194f766cd5b62f88c4d2100b782fc1a783",
+        "revCount": 15399,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
@@ -224,11 +224,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792610198,
-        "narHash": "sha256-hCU6Kx37e4Q5gt2qilMOnipFZq7zNIeXy/lI3hNdsio=",
+        "lastModified": 1792610293,
+        "narHash": "sha256-9nGkvJVT39Qz2vDy2g8ZtA2Zp4o2Fmo4+m1U4r/wc4s=",
         "owner": "Mic92",
         "repo": "flake-fmt",
-        "rev": "526a9558ce511c23ae5681d13025e17233decee8",
+        "rev": "a410c43d2a072a3d25f66f46fb72e572afed8217",
         "type": "github"
       },
       "original": {
@@ -637,11 +637,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792654364,
-        "narHash": "sha256-7dV7yZNZIToy5ro4gIk1ZXsBR8IboQzbfAavPVvPJd8=",
+        "lastModified": 1792655179,
+        "narHash": "sha256-4BwVZVGirkBz79r5RaQoqgn0NndmlP2+w/m2UlpaDro=",
         "owner": "Mic92",
         "repo": "mics-skills",
-        "rev": "27663dd623f65a992a58efc053de24e71542678d",
+        "rev": "2628f05791da98c9e8a014c277a0bc1d91065e68",
         "type": "github"
       },
       "original": {
@@ -925,7 +925,7 @@
       "locked": {
         "lastModified": 1792611914,
         "narHash": "sha256-1G+sxErt+dl8ILFtEbaXl4Uf6cHoFSjLjWDPaOfUyos=",
-        "ref": "afew-structured-attrs",
+        "ref": "main",
         "rev": "d1b6bd99056535a1d8e157981dbf03b99ee73f90",
         "shallow": true,
         "type": "git",
