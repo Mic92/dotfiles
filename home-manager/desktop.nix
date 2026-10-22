@@ -12,6 +12,7 @@
     ./modules/calendar.nix
     ./modules/ai.nix
     ./modules/mail.nix
+    ./modules/noctalia
     ./modules/radicle.nix
   ];
 

@@ -66,11 +66,11 @@ layout {
 }
 
 // Startup processes
-// noctalia-shell runs as systemd --user unit `noctalia-shell.service`
+// noctalia runs as systemd --user unit `noctalia.service`
 // (Restart=always) bound to graphical-session.target; see nixosModules/niri.
 // Kick it explicitly too so a `niri msg action reload-config` after a manual
 // stop brings the shell back without having to remember systemctl.
-spawn-at-startup "systemctl" "--user" "restart" "noctalia-shell.service"
+spawn-at-startup "systemctl" "--user" "restart" "noctalia.service"
 spawn-at-startup "kanshi"
 
 prefer-no-csd
@@ -162,30 +162,29 @@ binds {
 
     // Launch programs
     Mod+T hotkey-overlay-title="Terminal" { spawn "ghostty"; }
-    Mod+D hotkey-overlay-title="App Launcher" { spawn "noctalia-shell" "ipc" "call" "launcher" "toggle"; }
-    Mod+S hotkey-overlay-title="Control Center" { spawn "noctalia-shell" "ipc" "call" "controlCenter" "toggle"; }
-    Mod+Shift+D hotkey-overlay-title="Clipboard" { spawn "noctalia-shell" "ipc" "call" "launcher" "clipboard"; }
-    Mod+Shift+Period hotkey-overlay-title="Emoji Picker" { spawn "noctalia-shell" "ipc" "call" "launcher" "emoji"; }
-    Mod+Shift+P hotkey-overlay-title="Password Manager" { spawn "noctalia-shell" "ipc" "call" "plugin:rbw-provider" "toggle"; }
-    Mod+G hotkey-overlay-title="Janet" { spawn "noctalia-shell" "ipc" "call" "plugin:nostr-chat" "toggle"; }
-    Mod+P hotkey-overlay-title="Display Config" { spawn "noctalia-shell" "ipc" "call" "plugin:display-config" "toggle"; }
-    Super+Alt+L hotkey-overlay-title="Lock Screen" { spawn "noctalia-shell" "ipc" "call" "lockScreen" "lock"; }
+    Mod+D hotkey-overlay-title="App Launcher" { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
+    Mod+S hotkey-overlay-title="Control Center" { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
+    Mod+Shift+D hotkey-overlay-title="Clipboard" { spawn "noctalia" "msg" "panel-toggle" "clipboard"; }
+    Mod+Shift+Period hotkey-overlay-title="Emoji Picker" { spawn "noctalia" "msg" "panel-toggle" "launcher" "/emo "; }
+    Mod+Shift+P hotkey-overlay-title="Password Manager" { spawn "noctalia" "msg" "panel-toggle" "launcher" "/rbw "; }
+    Mod+P hotkey-overlay-title="Display Config" { spawn "noctalia" "msg" "panel-toggle" "raycursive/niri-displays:panel"; }
+    Super+Alt+L hotkey-overlay-title="Lock Screen" { spawn "noctalia" "msg" "session" "lock"; }
 
     // Audio (via Noctalia OSD)
-    XF86AudioRaiseVolume allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "increase"; }
-    XF86AudioLowerVolume allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "decrease"; }
-    XF86AudioMute        allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "muteOutput"; }
-    XF86AudioMicMute     allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "volume" "muteInput"; }
+    XF86AudioRaiseVolume allow-when-locked=true { spawn "noctalia" "msg" "volume-up"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn "noctalia" "msg" "volume-down"; }
+    XF86AudioMute        allow-when-locked=true { spawn "noctalia" "msg" "volume-mute"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn "noctalia" "msg" "mic-mute"; }
 
     // Media (via Noctalia OSD)
-    XF86AudioPlay allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "media" "playPause"; }
-    XF86AudioStop allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "media" "stop"; }
-    XF86AudioPrev allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "media" "previous"; }
-    XF86AudioNext allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "media" "next"; }
+    XF86AudioPlay allow-when-locked=true { spawn "noctalia" "msg" "media" "toggle"; }
+    XF86AudioStop allow-when-locked=true { spawn "noctalia" "msg" "media" "stop"; }
+    XF86AudioPrev allow-when-locked=true { spawn "noctalia" "msg" "media" "previous"; }
+    XF86AudioNext allow-when-locked=true { spawn "noctalia" "msg" "media" "next"; }
 
     // Brightness (via Noctalia OSD)
-    XF86MonBrightnessUp   allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "brightness" "increase"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "noctalia-shell" "ipc" "call" "brightness" "decrease"; }
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "noctalia" "msg" "brightness-up"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "noctalia" "msg" "brightness-down"; }
 
     // Overview
     Mod+O repeat=false { toggle-overview; }
@@ -316,13 +315,6 @@ binds {
     Print      hotkey-overlay-title="Screenshot" { spawn "live-text"; }
     Ctrl+Print hotkey-overlay-title="Screenshot: Region" { spawn "live-text" "--region"; }
     Alt+Print  hotkey-overlay-title="Screenshot: Window" { spawn "live-text" "--window"; }
-    // Hide the chat panel first (slurp can't draw over layer-shell
-    // surfaces spawned by noctalia), then grim+slurp from here where
-    // the compositor gives the overlay correct stacking. The daemon
-    // copies the PNG into its CacheDir and unlinks the source for us
-    // (sendFile IPC sets unlink=true), so no trap needed — we only
-    // clean up the empty mktemp if slurp is cancelled.
-    Shift+Print hotkey-overlay-title="Screenshot → Janet" { spawn "sh" "-c" "noctalia-shell ipc call plugin:nostr-chat hide; out=$(mktemp -p \"$XDG_RUNTIME_DIR\" nostr-shot-XXXX.png); g=$(slurp) || { rm -f \"$out\"; exit 0; }; grim -g \"$g\" \"$out\" && noctalia-shell ipc call plugin:nostr-chat sendFile \"$out\""; }
 
     // Escape hatch for keyboard shortcut inhibitors
     Mod+Escape allow-inhibiting=false { toggle-keyboard-shortcuts-inhibit; }
@@ -332,10 +324,9 @@ binds {
     Ctrl+Alt+Delete { quit; }
     Mod+Shift+O { power-off-monitors; }
 
-    // Choosers — noctalia launcher providers (replaces the old fuzzel-based
-    // audio-chooser / internet-chooser scripts from the KDE era)
-    Mod+A hotkey-overlay-title="Audio Chooser" { spawn "noctalia-shell" "ipc" "call" "plugin:audio-provider" "toggle"; }
-    Mod+N hotkey-overlay-title="Internet Chooser" { spawn "noctalia-shell" "ipc" "call" "plugin:internet-provider" "toggle"; }
+    // Choosers — noctalia launcher dmenu entries (home-manager/modules/noctalia)
+    Mod+A hotkey-overlay-title="Audio Chooser" { spawn "noctalia" "msg" "panel-toggle" "launcher" "/audio "; }
+    Mod+N hotkey-overlay-title="Internet Chooser" { spawn "noctalia" "msg" "panel-toggle" "launcher" "/net "; }
 }
 
 include "./noctalia.kdl"

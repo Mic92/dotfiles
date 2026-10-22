@@ -51,10 +51,7 @@ let
     programs.stylua.enable = true;
     programs.clang-format.enable = true;
     programs.deno.enable = true;
-    # QML's `.pragma library` directive is not valid JS — deno can't
-    # parse it. No QML-aware JS formatter exists, so just skip these.
     settings.formatter.deno.excludes = [
-      "home/.config/noctalia/plugins/*/*.js"
       # Jinja2 templates use {% ... %} / {{ ... }} which deno fmt rejects.
       "pkgs/minihydra/src/minihydra/templates/*.html"
     ];
@@ -118,10 +115,6 @@ let
       "machines/*/facts/*"
       "darwin/*/*.yml"
       "*/facter.json"
-      # Written by noctalia-shell at runtime; keep its formatting so the
-      # relink path unit doesn't churn the diff on every UI toggle.
-      "home/.config/noctalia/plugins.json"
-      "home/.config/noctalia/settings.json"
       "*.pub"
       "*.pem"
       "*.conf"

@@ -1,1 +1,0 @@
-../../shared-plugins/alertmanager/Main.qml

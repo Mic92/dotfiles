@@ -1,1 +1,0 @@
-../../shared-plugins/mail-count/BarWidget.qml
