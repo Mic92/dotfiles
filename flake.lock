@@ -94,11 +94,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792011985,
-        "narHash": "sha256-TEMPnqxXeNCuDaSUxlE5PgFjwcMetLP6dojJL0SJ4kM=",
+        "lastModified": 1792646627,
+        "narHash": "sha256-4rG1EWSeUmfYgWYVjq04zxL1f9AnAgF1iIF+oYH+xxs=",
         "ref": "main",
-        "rev": "ab789aa769fad70ecc1dfe0f68a9a8ff9e05b74e",
-        "revCount": 15376,
+        "rev": "b94705194f766cd5b62f88c4d2100b782fc1a783",
+        "revCount": 15399,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
@@ -224,11 +224,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1791921339,
-        "narHash": "sha256-f31l7kRYtPiu0JAXJ4gzmJ5rhXn53n9D0z3E2smLfKw=",
+        "lastModified": 1792610293,
+        "narHash": "sha256-9nGkvJVT39Qz2vDy2g8ZtA2Zp4o2Fmo4+m1U4r/wc4s=",
         "owner": "Mic92",
         "repo": "flake-fmt",
-        "rev": "5bbc0dff017c8d62ee6f09c8470b53701cb807bd",
+        "rev": "a410c43d2a072a3d25f66f46fb72e572afed8217",
         "type": "github"
       },
       "original": {
@@ -614,11 +614,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792053414,
-        "narHash": "sha256-nIWkh0QCkcrahD/EjMof039JDgsHnmsGikteabARrr8=",
+        "lastModified": 1792657904,
+        "narHash": "sha256-OQkPnbexoeTUxL0PU/julpTGCBMiWJD80WfWQTdBTBk=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "4ed83c77f882225ad3d16288821312b032a918bc",
+        "rev": "c668dbfbcc089bd4758aaeae3ad2b0bf289e8023",
         "type": "github"
       },
       "original": {
@@ -637,11 +637,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1789679466,
-        "narHash": "sha256-zt7NhFdpbG2JVGOJMWkUnLSJlcw5G63UlANyMO2SWFM=",
+        "lastModified": 1792655179,
+        "narHash": "sha256-4BwVZVGirkBz79r5RaQoqgn0NndmlP2+w/m2UlpaDro=",
         "owner": "Mic92",
         "repo": "mics-skills",
-        "rev": "1e6eef8e989bf5d88bfa9ca29b50a472df795927",
+        "rev": "2628f05791da98c9e8a014c277a0bc1d91065e68",
         "type": "github"
       },
       "original": {
@@ -886,10 +886,10 @@
         ]
       },
       "locked": {
-        "lastModified": 1792045067,
-        "narHash": "sha256-cibst+Jhe2dRnPWKLOUVt2Sjua17ayoLGB/wL3C8iCY=",
+        "lastModified": 1792282151,
+        "narHash": "sha256-tU4OsJZTWo+TYQwTFN+5oreAkkkoyN8gggWxNuI5yww=",
         "ref": "main",
-        "rev": "b1f699803858e42071cffe41f5c3499f02729f07",
+        "rev": "d020013fa0db4ec40ddd0593b9bfce65fedbff64",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixbot"
@@ -923,10 +923,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1792054261,
-        "narHash": "sha256-wAjy4dBv48mKSUWRtvqPZpsDf4IkP8TBHOLoo6viyr4=",
+        "lastModified": 1792698399,
+        "narHash": "sha256-oUKXmqcEcpLaojHTowjB939bnSeaa8Q7B6o6PleCwfQ=",
         "ref": "main",
-        "rev": "3a3da5632ba021a1ade4b78b21347023cdc9a5e1",
+        "rev": "1d634f520b971241b22815eab7451183e5f3abea",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
@@ -945,11 +945,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785369277,
-        "narHash": "sha256-BNBAan0/yqD30DS8nbi+TdO9PZuFJpqIQu/h2VA+JII=",
+        "lastModified": 1792704231,
+        "narHash": "sha256-w3Tcd3ZbWwmJFg5TrodUslmy1pfKvTRP+W/8RwX31J8=",
         "owner": "Mic92",
         "repo": "noctalia-plugins",
-        "rev": "228af6bdacba987d962c72d8b2fb35e4549bb09f",
+        "rev": "b3efa5f2297d7d7659f36e4786bef674d0564a46",
         "type": "github"
       },
       "original": {

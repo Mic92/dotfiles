@@ -49,12 +49,34 @@ let
     };
 
     programs.stylua.enable = true;
+    settings.formatter.stylua.includes = [ "*.luau" ];
+
+    # Typecheck noctalia plugins against the plugin API definitions. Strict
+    # mode comes from .luaurc; per-file opt-outs would defeat it.
+    settings.formatter.luau-check = {
+      command = pkgs.writeShellApplication {
+        name = "luau-check";
+        runtimeInputs = [
+          pkgs.gnugrep
+          pkgs.luau-lsp
+        ];
+        text =
+          let
+            inherit (pkgs.callPackage ../home-manager/modules/noctalia/plugin-sources.nix { }) apiDefinitions;
+          in
+          ''
+            if grep -n -E '^--!(nonstrict|nocheck)' "$@"; then
+              echo "luau-check: files must stay --!strict" >&2
+              exit 1
+            fi
+            luau-lsp analyze --definitions=${apiDefinitions} "$@"
+          '';
+      };
+      includes = [ "*.luau" ];
+    };
     programs.clang-format.enable = true;
     programs.deno.enable = true;
-    # QML's `.pragma library` directive is not valid JS — deno can't
-    # parse it. No QML-aware JS formatter exists, so just skip these.
     settings.formatter.deno.excludes = [
-      "home/.config/noctalia/plugins/*/*.js"
       # Jinja2 templates use {% ... %} / {{ ... }} which deno fmt rejects.
       "pkgs/minihydra/src/minihydra/templates/*.html"
     ];
@@ -118,10 +140,6 @@ let
       "machines/*/facts/*"
       "darwin/*/*.yml"
       "*/facter.json"
-      # Written by noctalia-shell at runtime; keep its formatting so the
-      # relink path unit doesn't churn the diff on every UI toggle.
-      "home/.config/noctalia/plugins.json"
-      "home/.config/noctalia/settings.json"
       "*.pub"
       "*.pem"
       "*.conf"

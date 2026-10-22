@@ -7,15 +7,13 @@
 
     caching.apcu = true;
 
-    package = pkgs.nextcloud34;
+    package = pkgs.nextcloud35;
 
     config = {
       dbtype = "pgsql";
       dbname = "nextcloud";
       dbuser = "nextcloud";
       dbhost = "/run/postgresql";
-      adminuser = "nextcloudadmin";
-      adminpassFile = config.sops.secrets.nextcloud-admin-password.path;
     };
 
     settings.trusted_domains = [ "pim.devkid.net" ];
@@ -60,7 +58,6 @@
     };
   };
 
-  sops.secrets.nextcloud-admin-password.owner = "nextcloud";
   sops.secrets.nextcloud-ldap-password.owner = "nextcloud";
 
   services.lldap.ensureGroups = [ "nextcloud" ];

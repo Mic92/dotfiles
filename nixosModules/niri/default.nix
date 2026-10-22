@@ -5,17 +5,6 @@
   sshAskPasswordWrapper,
   ...
 }:
-let
-  noctalia-shell = pkgs.noctalia-shell.overrideAttrs (old: {
-    patches = (old.patches or [ ]) ++ [
-      # Plugin git fetch inherits a dead cwd when the shell was launched
-      # from a since-removed dir; cd into mktemp first and stop eating
-      # stderr so failures are diagnosable.
-      # Upstream: https://github.com/noctalia-dev/noctalia-shell/pull/2343
-      ./patches/0002-PluginService-survive-dead-cwd-and-surface-git-error.patch
-    ];
-  });
-in
 {
   imports = [
     ./kwallet-tpm
@@ -46,18 +35,16 @@ in
     };
   };
 
-  # noctalia-shell as a supervised service so quickshell crashes (segfaults in
-  # the QML engine, GPU resets, OOM kills) don't leave the session without a
-  # bar/launcher/lock-screen. spawn-at-startup + systemd-run --scope gave us
-  # cgroup isolation but no restart; a real unit gets both.
-  systemd.user.services.noctalia-shell = {
-    description = "Noctalia desktop shell (quickshell)";
+  # Supervised so a shell crash (GPU reset, OOM kill) doesn't leave the
+  # session without bar/launcher/lock screen.
+  systemd.user.services.noctalia = {
+    description = "Noctalia desktop shell";
     partOf = [ "graphical-session.target" ];
     after = [ "graphical-session.target" ];
     requisite = [ "graphical-session.target" ];
     wantedBy = [ "graphical-session.target" ];
-    # QML shells out via `sh -c` for plugin discovery and plugin commands
-    # (fc-list, df, notmuch, khal, rbw, ...). Setting `path` emits
+    # Plugins and launcher entries shell out via `sh -lc` (notmuch, rbw,
+    # gdbus, ...). Setting `path` emits
     # Environment=PATH=... which *replaces* the user manager's imported PATH,
     # and __NIXOS_SET_ENVIRONMENT_DONE blocks `sh -lc` from recovering it via
     # /etc/profile. So pin the hard deps *and* re-add the standard profile dirs
@@ -76,38 +63,11 @@ in
     # Back off if it crash-loops on a broken config instead of pegging a core.
     startLimitIntervalSec = 30;
     startLimitBurst = 5;
-    # Unlocks the per-plugin hot-reload toggle (Settings → Plugins); without
-    # it, edits to plugin QML are ignored until restart.
-    environment.NOCTALIA_DEBUG = "1";
     serviceConfig = {
-      ExecStart = "${noctalia-shell}/bin/noctalia-shell";
+      ExecStart = "${pkgs.noctalia}/bin/noctalia";
       Restart = "always";
       RestartSec = 1;
       Slice = "app-graphical.slice";
-    };
-  };
-
-  # noctalia-shell rewrites plugins.json via atomic rename, which clobbers the
-  # homeshick symlink with a plain file. Watch for that and fold the new
-  # content back into the dotfiles repo, then restore the link — so plugin
-  # toggles made in the UI still end up under version control.
-  systemd.user.paths.noctalia-plugins-relink = {
-    wantedBy = [ "default.target" ];
-    pathConfig.PathChanged = "%h/.config/noctalia/plugins.json";
-  };
-  systemd.user.services.noctalia-plugins-relink = {
-    serviceConfig = {
-      Type = "oneshot";
-      ExecStart = pkgs.writeShellScript "noctalia-plugins-relink" ''
-        set -eu
-        live="$HOME/.config/noctalia/plugins.json"
-        repo="$HOME/.homesick/repos/dotfiles/home/.config/noctalia/plugins.json"
-        # Nothing to do if it's still (or already) a symlink.
-        [ -L "$live" ] && exit 0
-        [ -f "$live" ] || exit 0
-        mv -f "$live" "$repo"
-        ln -sf ../../.homesick/repos/dotfiles/home/.config/noctalia/plugins.json "$live"
-      '';
     };
   };
 
@@ -117,7 +77,7 @@ in
   # KWallet is unlocked via TPM (see ./kwallet-tpm), not PAM
   services.gnome.gnome-keyring.enable = false;
 
-  # greetd auto-starts niri, noctalia-shell's lock screen handles login
+  # greetd auto-starts niri, noctalia's lock screen handles login
   services.greetd = {
     enable = true;
     settings = {
@@ -128,7 +88,7 @@ in
     };
   };
 
-  # PAM integration: noctalia-shell's lock screen uses the "login" PAM service
+  # PAM integration: noctalia's lock screen uses the "login" PAM service
   # by default (auto-detected), so no extra PAM config is needed
 
   environment.systemPackages = with pkgs; [
@@ -140,20 +100,18 @@ in
     # x11 support for niri has no built-in Xwayland
     xwayland-satellite
 
-    # App launcher, display config
-    fuzzel
     libnotify
     kanshi
-    wdisplays # drag-and-drop output arrangement; launched from noctalia display-config plugin for 3+ monitor setups
+    wdisplays # drag-and-drop output arrangement for 3+ monitor setups
+    udiskie # noctalia udiskie plugin
+    fzf # noctalia file-search plugin
 
     # Audio
     pavucontrol
 
     # Desktop shell (bar, notifications, control center, OSD)
-    noctalia-shell
-    # Qt's wayland QPA leaves QIcon::themeName empty so noctalia falls through
-    # to hicolor and can't find generic icons like user-desktop. qt6ct reads
-    # icon_theme from its conf; ship breeze so that resolves.
+    noctalia
+    # Icon theme for Qt apps; qt6ct reads icon_theme from its conf.
     kdePackages.breeze-icons
 
     # GTK theme that respects ~/.config/gtk-{3,4}.0/gtk.css colour overrides
@@ -161,15 +119,14 @@ in
     adw-gtk3
     bibata-cursors
 
-    # Needed by noctalia kde-connect plugin's "Browse files" (SFTP mount)
+    # Needed by noctalia phone-connect plugin's file browsing (SFTP mount)
     sshfs
 
     # Browsers / apps
     chromium
     ferdium
 
-    # File manager — terminal-based, themed via noctalia's yazi template
-    # (wallpaper-derived colors). GUI file manager dropped; xdg-open on
+    # File manager — terminal-based, themed via noctalia's yazi template. GUI file manager dropped; xdg-open on
     # directories falls back to yazi via its .desktop file.
     yazi
 

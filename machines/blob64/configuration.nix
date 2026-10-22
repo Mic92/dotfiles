@@ -15,7 +15,8 @@
     ../../nixosModules/radicle-mic92.nix
     ./modules/photoprism.nix
     ./modules/phantun.nix
-    ./modules/pinchflat.nix
+    # pinchflat 2025.9.26 is marked insecure in nixpkgs; re-enable once fixed.
+    # ./modules/pinchflat.nix
   ];
 
   nixpkgs.pkgs = self.inputs.nixpkgs.legacyPackages.aarch64-linux;

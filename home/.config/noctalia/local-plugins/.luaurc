@@ -1,0 +1,5 @@
+{
+  "languageMode": "strict",
+  "lint": { "FunctionUnused": false },
+  "lintErrors": true
+}

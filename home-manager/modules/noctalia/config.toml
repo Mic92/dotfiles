@@ -1,0 +1,146 @@
+# Noctalia v5. Store paths (pinned plugins, scripts) live in the
+# Nix-generated nix.toml next to this file; GUI changes go to
+# ~/.local/state/noctalia/settings.toml and override both.
+
+[shell]
+font_family = "Inter"
+polkit_agent = true
+# Keeps launched apps alive across shell restarts.
+launch_apps_as_systemd_services = true
+telemetry_enabled = false
+avatar_path = "~/Bilder/joerg-2022-square.jpeg"
+
+[shell.panel]
+transparency_mode = "soft"
+
+[shell.launcher]
+pinned = ["ferdium", "librewolf", "chromium-browser"]
+
+[theme]
+mode = "dark"
+source = "builtin"
+builtin = "Tokyo-Night"
+
+[theme.templates]
+builtin_ids = ["gtk3", "gtk4", "qt", "niri"]
+community_ids = ["pywalfox", "yazi"]
+
+[wallpaper]
+directory = "~/Pictures/Wallpapers"
+fill_mode = "crop"
+
+[notification]
+background_opacity = 1.0
+
+[osd]
+position = "top_right"
+
+[location]
+address = "Munich"
+
+[weather]
+enabled = true
+
+[calendar]
+enabled = true
+
+[calendar.account.local_vdir]
+type = "vdir"
+name = "Local Calendars"
+path = "~/.local/share/calendars"
+
+[calendar.reminders]
+enabled = true
+
+[idle.behavior.screen-off]
+timeout = 300
+action = "screen_off"
+enabled = true
+
+[idle.behavior.lock]
+timeout = 600
+action = "lock"
+enabled = true
+
+[idle.behavior.suspend]
+timeout = 1800
+action = "suspend"
+enabled = true
+
+[bar]
+order = ["main"]
+
+[bar.main]
+position = "top"
+background_opacity = 0.93
+margin_edge = 4
+margin_ends = 4
+widget_spacing = 10
+start = ["launcher", "clock", "timer", "cpu", "net-rx", "net-tx", "active_window", "media"]
+center = ["workspaces"]
+end = [
+  "alerts",
+  "displays",
+  "tray",
+  "mail",
+  "notifications",
+  "battery",
+  "volume",
+  "brightness",
+  "network",
+  "bluetooth",
+  "phone",
+  "drives",
+  "control-center",
+]
+
+[widget.clock]
+format = "{:%H:%M %a, %b %d}"
+tooltip_format = "{:%A, %B %d, %Y}"
+
+[widget.clock.actions]
+left = "panel-toggle control-center calendar"
+
+[widget.cpu]
+type = "sysmon"
+stat = "cpu_usage"
+
+[widget.net-rx]
+type = "sysmon"
+stat = "net_rx"
+network_speed_compact = true
+
+[widget.net-tx]
+type = "sysmon"
+stat = "net_tx"
+network_speed_compact = true
+
+[widget.timer]
+type = "noctalia/timer:bar"
+
+[widget.displays]
+type = "raycursive/niri-displays:bar"
+
+[widget.phone]
+type = "icefish/phone-connect:bar"
+
+[widget.drives]
+type = "aristides/udiskie:status"
+
+[widget.alerts]
+type = "mic92/alertmanager:widget"
+
+[widget.mail]
+type = "mic92/mail-count:widget"
+
+[plugin_settings."mic92/alertmanager"]
+alertmanagerUrl = "http://alertmanager.r"
+prometheusUrl = "https://prometheus.r"
+
+[plugin_settings."mic92/mail-count"]
+countCommand = "notmuch count '(folder:thalheim.io OR folder:thalheim.io/.Netzwerke OR folder:thalheim.io/.Benachrichtigung OR folder:thalheim.io/.Geld OR folder:thalheim.io/.Privat OR folder:thalheim.io/.Arbeit OR folder:thalheim.io/.Uni) AND date:7d.. AND tag:unread AND NOT tag:trash'"
+clickCommand = "ghostty -e aerc"
+hideWhenZero = true
+
+[plugin_settings."mic92/ssh-askpass"]
+confirmMethod = "fingerprint"
