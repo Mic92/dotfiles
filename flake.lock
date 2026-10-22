@@ -614,11 +614,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792053414,
-        "narHash": "sha256-nIWkh0QCkcrahD/EjMof039JDgsHnmsGikteabARrr8=",
+        "lastModified": 1792657904,
+        "narHash": "sha256-OQkPnbexoeTUxL0PU/julpTGCBMiWJD80WfWQTdBTBk=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "4ed83c77f882225ad3d16288821312b032a918bc",
+        "rev": "c668dbfbcc089bd4758aaeae3ad2b0bf289e8023",
         "type": "github"
       },
       "original": {
@@ -923,10 +923,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1792611914,
-        "narHash": "sha256-1G+sxErt+dl8ILFtEbaXl4Uf6cHoFSjLjWDPaOfUyos=",
+        "lastModified": 1792661772,
+        "narHash": "sha256-SlsZr+0hSf8X5qAWHYc5YYYrf8eZ2NZjMQYZBkkqwx0=",
         "ref": "main",
-        "rev": "d1b6bd99056535a1d8e157981dbf03b99ee73f90",
+        "rev": "7b3c729d9511c5872dca884ee367a59c754b06d8",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"
