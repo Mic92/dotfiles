@@ -100,6 +100,14 @@ tooltip_format = "{:%A, %B %d, %Y}"
 [widget.clock.actions]
 left = "panel-toggle control-center calendar"
 
+# Keep the start section clear of the centered workspaces.
+[widget.active_window]
+max_length = 200
+
+[widget.media]
+hide_when_no_media = true
+max_length = 180
+
 [widget.cpu]
 type = "sysmon"
 stat = "cpu_usage"
