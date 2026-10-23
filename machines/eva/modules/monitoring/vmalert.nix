@@ -14,6 +14,17 @@ in
     PrometheusTemplateExpansionFailures.enable = false;
     PromtailRequestsErrors.enable = false;
     PromtailFileLagging.enable = false;
+    # Under Prometheus [1m] over 60s scrapes never had two samples, so these
+    # were silently dead; VictoriaMetrics evaluates them and single slow
+    # minutes (GC, scrubs, backups) fired. Only alert on sustained latency.
+    UnusualDiskReadLatency = {
+      expr = lib.mkForce "rate(diskio_read_time[5m]) / rate(diskio_reads[5m]) > 0.1 and rate(diskio_reads[5m]) > 0";
+      for = "15m";
+    };
+    UnusualDiskWriteLatency = {
+      expr = lib.mkForce "rate(diskio_write_time[5m]) / rate(diskio_writes[5m]) > 0.1 and rate(diskio_writes[5m]) > 0";
+      for = "15m";
+    };
     MonitoringTooManyRestarts.expr = lib.mkForce ''changes(process_start_time_seconds{job=~"victoria-metrics|vmalert.*|alertmanager|telegraf"}[15m]) > 2'';
 
     VmalertRuleErrors = {
