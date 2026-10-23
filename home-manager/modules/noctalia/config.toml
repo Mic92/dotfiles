@@ -80,7 +80,6 @@ start = ["launcher", "clock", "timer", "cpu", "net-rx", "net-tx", "active_window
 center = ["workspaces"]
 end = [
   "alerts",
-  "displays",
   "tray",
   "mail",
   "notifications",
@@ -117,9 +116,6 @@ network_speed_compact = true
 
 [widget.timer]
 type = "noctalia/timer:bar"
-
-[widget.displays]
-type = "raycursive/niri-displays:bar"
 
 [widget.phone]
 type = "icefish/phone-connect:bar"
