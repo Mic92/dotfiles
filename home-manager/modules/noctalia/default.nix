@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 let
   toml = pkgs.formats.toml { };
 
@@ -36,7 +36,9 @@ let
   };
 in
 {
-  xdg.configFile."noctalia/config.toml".source = ./config.toml;
+  # Out-of-store link so edits in the checkout hot-reload without hm switch.
+  xdg.configFile."noctalia/config.toml".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/.homesick/repos/dotfiles/home-manager/modules/noctalia/config.toml";
   xdg.configFile."noctalia/nix.toml".source = toml.generate "noctalia-nix.toml" {
     plugins = {
       auto_update = "none";
