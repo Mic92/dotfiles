@@ -136,6 +136,10 @@ type = "mic92/alertmanager:widget"
 [widget.mail]
 type = "mic92/mail-count:widget"
 
+# Beep until dismissed by clicking the (red) bar timer.
+[plugin_settings."noctalia/timer"]
+alarm = true
+
 [plugin_settings."mic92/alertmanager"]
 alertmanagerUrl = "http://alertmanager.r"
 prometheusUrl = "https://prometheus.r"
