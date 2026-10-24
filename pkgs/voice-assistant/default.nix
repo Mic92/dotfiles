@@ -46,8 +46,9 @@ let
     hash = "sha256-KZQNmNQrkfvQXOSJ8+z3xy8KQvAn5IdZGaKPtMBOos8=";
   };
   ttsModel = fetchzip {
-    url = "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kitten-nano-en-v0_8-int8.tar.bz2";
-    hash = "sha256-xooipBwGzlY1Yp6PX51+SN2b09IvBN2NxRlhXOsTpKo=";
+    # micro: clearer than nano-int8 and no slower on CPU
+    url = "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kitten-micro-en-v0_8.tar.bz2";
+    hash = "sha256-Pp7XyLa6BpH36tLOYvLtVHmuqDx3Prof9cSzxLbfEsw=";
   };
   # CC0 UI sound sets
   uisfx = fetchFromGitHub {

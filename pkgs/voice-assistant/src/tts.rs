@@ -184,7 +184,13 @@ impl Synth {
     fn engine(&mut self) -> Result<NonNull<sys::SherpaOnnxOfflineTts>, String> {
         if self.engine.is_none() {
             let d = &self.model_dir;
-            let model = cstr(&d.join("model.int8.onnx"))?;
+            // Kitten ships some sizes only quantized, others only in fp32.
+            let model = ["model.onnx", "model.int8.onnx"]
+                .iter()
+                .map(|f| d.join(f))
+                .find(|p| p.exists())
+                .ok_or_else(|| format!("no Kitten model in {}", d.display()))?;
+            let model = cstr(&model)?;
             let voices = cstr(&d.join("voices.bin"))?;
             let tokens = cstr(&d.join("tokens.txt"))?;
             let data = cstr(&d.join("espeak-ng-data"))?;
