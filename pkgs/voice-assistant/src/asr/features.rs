@@ -45,10 +45,43 @@ pub struct Features {
     /// `N_MELS` rows of `N_FFT / 2 + 1` weights.
     mel: Vec<Vec<f32>>,
     window: Vec<f32>,
-    /// cos/sin for the DFT, `[bin][sample]`. 257 x 512 is small enough
-    /// that a plain matrix beats pulling in an FFT crate for 2 s of audio.
-    cos: Vec<Vec<f32>>,
-    sin: Vec<Vec<f32>>,
+    /// `e^(-2πik/N_FFT)` for k < N_FFT / 2.
+    twiddle: Vec<(f32, f32)>,
+}
+
+/// In-place radix-2 FFT of `N_FFT` complex values.
+fn fft(re: &mut [f32], im: &mut [f32], twiddle: &[(f32, f32)]) {
+    let n = re.len();
+    let mut j = 0;
+    for i in 1..n {
+        let mut bit = n >> 1;
+        while j & bit != 0 {
+            j ^= bit;
+            bit >>= 1;
+        }
+        j |= bit;
+        if i < j {
+            re.swap(i, j);
+            im.swap(i, j);
+        }
+    }
+    let mut len = 2;
+    while len <= n {
+        let step = n / len;
+        for start in (0..n).step_by(len) {
+            for k in 0..len / 2 {
+                let (wr, wi) = twiddle[k * step];
+                let (a, b) = (start + k, start + k + len / 2);
+                let tr = re[b] * wr - im[b] * wi;
+                let ti = re[b] * wi + im[b] * wr;
+                re[b] = re[a] - tr;
+                im[b] = im[a] - ti;
+                re[a] += tr;
+                im[a] += ti;
+            }
+        }
+        len <<= 1;
+    }
 }
 
 impl Features {
@@ -77,20 +110,16 @@ impl Features {
             .map(|i| (0.5 - 0.5 * (2.0 * PI * to_f64(i) / to_f64(WIN - 1)).cos()) as f32)
             .collect();
         #[allow(clippy::cast_possible_truncation)]
-        let table = |f: fn(f64) -> f64| {
-            (0..bins)
-                .map(|k| {
-                    (0..N_FFT)
-                        .map(|n| f(2.0 * PI * to_f64(k * n % N_FFT) / to_f64(N_FFT)) as f32)
-                        .collect()
-                })
-                .collect()
-        };
+        let twiddle = (0..N_FFT / 2)
+            .map(|k| {
+                let a = -2.0 * PI * to_f64(k) / to_f64(N_FFT);
+                (a.cos() as f32, a.sin() as f32)
+            })
+            .collect();
         Features {
             mel,
             window,
-            cos: table(f64::cos),
-            sin: table(f64::sin),
+            twiddle,
         }
     }
 
@@ -105,17 +134,17 @@ impl Features {
         let frames = audio.len() / HOP;
         let off = (N_FFT - WIN) / 2;
         let mut out = vec![0f32; frames * N_MELS];
-        let mut buf = vec![0f32; N_FFT];
+        let (mut re, mut im) = (vec![0f32; N_FFT], vec![0f32; N_FFT]);
         let mut power = vec![0f32; N_FFT / 2 + 1];
         for t in 0..frames {
-            buf.fill(0.0);
+            re.fill(0.0);
+            im.fill(0.0);
             for (i, w) in self.window.iter().enumerate() {
-                buf[off + i] = x[t * HOP + off + i] * w;
+                re[off + i] = x[t * HOP + off + i] * w;
             }
+            fft(&mut re, &mut im, &self.twiddle);
             for (k, p) in power.iter_mut().enumerate() {
-                let re: f32 = self.cos[k].iter().zip(&buf).map(|(c, b)| c * b).sum();
-                let im: f32 = self.sin[k].iter().zip(&buf).map(|(s, b)| s * b).sum();
-                *p = re * re + im * im;
+                *p = re[k] * re[k] + im[k] * im[k];
             }
             for (m, weights) in self.mel.iter().enumerate() {
                 let e: f32 = weights.iter().zip(&power).map(|(w, p)| w * p).sum();
@@ -141,6 +170,34 @@ impl Features {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn fft_matches_dft() {
+        let f = Features::new();
+        let x: Vec<f32> = (0..N_FFT)
+            .map(|i| to_f32(i * 37 % 101) / 50.0 - 1.0)
+            .collect();
+        let (mut re, mut im) = (x.clone(), vec![0f32; N_FFT]);
+        fft(&mut re, &mut im, &f.twiddle);
+        for k in [0, 1, 7, 100, 256] {
+            let (mut dr, mut di) = (0f64, 0f64);
+            for (n, v) in x.iter().enumerate() {
+                let a = -2.0 * PI * to_f64(k * n % N_FFT) / to_f64(N_FFT);
+                dr += f64::from(*v) * a.cos();
+                di += f64::from(*v) * a.sin();
+            }
+            assert!(
+                (f64::from(re[k]) - dr).abs() < 1e-3,
+                "{k}: {} vs {dr}",
+                re[k]
+            );
+            assert!(
+                (f64::from(im[k]) - di).abs() < 1e-3,
+                "{k}: {} vs {di}",
+                im[k]
+            );
+        }
+    }
 
     #[test]
     fn one_frame_per_hop_and_normalised() {
