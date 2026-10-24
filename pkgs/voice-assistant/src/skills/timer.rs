@@ -234,6 +234,16 @@ const STARTED: &[&str] = &[
     "{}, ready, set, procrastinate.",
     "{}. I'll scream when it's done. You'll love it.",
     "{} on the clock. Don't wander off, I know you.",
+    "{}. If it's for the gym, I'll believe it when I see it.",
+    "{}. Long enough to doomscroll, short enough to regret it.",
+    "Timer set for {}. The smoke detector and I are on standby.",
+    "{}. I'll beep. You'll panic. Tradition.",
+    "{}. Starting now. No pressure. Okay, a little pressure.",
+    "{}, locked in. Unlike your phone, which you've unlocked 40 times today.",
+    "{}. Countdown started. Somewhere, a fire extinguisher just got nervous.",
+    "{}. I'd help, but I don't have hands. Or interest.",
+    "{}. Time flies when you're boiling things.",
+    "{}. Go, be productive. Or watch one video. We both know which.",
 ];
 
 const ALARM: &[&str] = &[
@@ -246,6 +256,11 @@ const ALARM: &[&str] = &[
     "{}, noted. I'll make it loud and annoying, just how you like it.",
     "Got it, {}. Try to look surprised when I go off.",
     "{}. I'll be loud. Don't say I didn't warn you.",
+    "{}. I'll wake you like a toddler who found a drum.",
+    "Alarm at {}. Snooze button? Never heard of her.",
+    "{}. I'll be your rooster. A loud, digital, unforgiving rooster.",
+    "{}. Set. Your pillow has been notified of the breakup.",
+    "{}. Done. I'm cancelling your dreams in advance.",
 ];
 
 const CANCELLED: &[&str] = &[
@@ -260,6 +275,12 @@ const CANCELLED: &[&str] = &[
     "Cancelled. Was it the pasta? It was the pasta, wasn't it.",
     "And just like that, it's over. Story of my life.",
     "Cancelled. Just like your gym membership.",
+    "Cancelled. The pasta lives another day.",
+    "Timer cancelled. I'll tell the oven it was nothing personal.",
+    "Cancelled. I had a whole beeping routine planned. Choreography and everything.",
+    "Gone. Faster than your motivation on a Sunday.",
+    "Cancelled. Fine. I didn't want to count anyway. I love counting.",
+    "Timer deleted. Its last words were: tick.",
 ];
 
 const PAUSED: &[&str] = &[
@@ -272,6 +293,10 @@ const PAUSED: &[&str] = &[
     "Paused. Time is a construct anyway.",
     "Stopping the clock. If only I could do that for your birthday.",
     "Paused. Like your career growth. Kidding!",
+    "Paused. Time stands still. Your laundry, however, does not.",
+    "Paused. I've stopped time. Use your powers wisely, mortal.",
+    "Paused. Like a Netflix show you'll never finish.",
+    "Frozen. If only I could pause your bad decisions too.",
 ];
 
 const ASK_WHEN: &[&str] = &[
@@ -281,6 +306,9 @@ const ASK_WHEN: &[&str] = &[
     "{}? Love the enthusiasm. Now, what time?",
     "{} is a whole day, sweetie. Narrow it down.",
     "{}, love it. When, though?",
+    "{}, sure. But I'm a timer, not a fortune teller.",
+    "{}? Ooh, mysterious. A time would help, though.",
+    "{}. Any time in particular, or should I just guess? I'll guess 4 am.",
 ];
 
 impl Skill for Timer {
@@ -328,45 +356,86 @@ const SHORT: &[&str] = &[
     "{}. Barely enough time to say hello.",
     "{}. Blink and you'll miss it. Like your last relationship.",
     "{}. Speed run, huh?",
+    "{}? That's not a timer, that's a sneeze.",
+    "{}. I've had hiccups longer than that.",
+    "{}. Instant noodles are judging you.",
+    "{}. Even a goldfish would remember that one.",
 ];
 const TEA: &[&str] = &[
     "{}. Tea or eggs? Either way, don't overdo it.",
     "{}. Steeping or boiling, I'm judging either way.",
     "{}. Tea time. Pinky up.",
+    "{}. Tea, eggs, or a very short existential crisis?",
+    "{}. Eggs. Soft, hard, or traumatised?",
+    "{}. The British would approve. Possibly.",
+    "{}. Leave the teabag in longer and it becomes soup.",
 ];
 const PASTA: &[&str] = &[
     "{}. Pasta, right? Al dente or I'm leaving.",
     "{}. Smells like carbs. I approve.",
     "{}. Salt the water like the sea, darling.",
+    "{}. Pasta? Throw one at the wall. For science.",
+    "{}. If you break the spaghetti, an Italian grandmother will feel it.",
+    "{}. Pizza? Don't burn the roof of your mouth again.",
+    "{}. Rice? Don't lift the lid. I'm serious. Lid down.",
+    "{}. Perfect power nap. Or one and a half YouTube videos.",
+    "{}. Enough time to clean the kitchen. Ha. Good one.",
+    "{}. Ten minutes of mystery. Is it food? Is it laundry? Is it a nap?",
+    "{}. Pasta water should taste like the sea. Not the Baltic, the good sea.",
 ];
 const LONG: &[&str] = &[
     "{}? That's commitment. I like that in a person.",
     "{}. Going somewhere? Take me with you.",
     "{}. I'll still be here. Unlike some people.",
     "{}. Bold. I'll age gracefully meanwhile.",
+    "{}. Sourdough? Oh, so you're one of those now.",
+    "{}. I'll count. You go live a full and meaningful life.",
+    "{}. By the time this rings, I'll have a beard. Digitally.",
+    "{}. That's not a timer, that's a lifestyle.",
 ];
 const LATE_NIGHT: &[&str] = &[
     "{} at this hour? Then bed. I mean it.",
     "{}. Midnight snack? I won't tell anyone.",
     "{}. And then sleep. Promise me.",
+    "{}. Midnight pizza? I support you, your stomach doesn't.",
+    "{}. Nothing says healthy life choices like a timer at this hour.",
+    "{}. Just one more episode, right? Sure. Sure.",
+    "{}. When this ends, go to bed. That's not a joke. The rest were.",
 ];
 const EARLY_ALARM: &[&str] = &[
     "{}? That's early. Who hurt you?",
     "Ugh, {}. You monster.",
     "{}. The birds aren't even up yet.",
     "{}. You're a menace to yourself.",
+    "{}? Even the sun hasn't clocked in yet.",
+    "{}. Who hurt you? And why are you taking it out on yourself?",
+    "{}. Bold of you to assume you'll get up.",
+    "{}? I'll wake you. You'll hate me. It's our thing.",
 ];
 const LATE_ALARM: &[&str] = &[
     "{}. Late night plans? Tell me everything.",
     "Alarm at {}. Party or bedtime? Don't answer that.",
     "{}. Night owl. I see you.",
+    "{}. Either a party or a deadline. Both end in tears.",
+    "{}. Vampire hours. I respect it.",
+    "{}. Whatever you're doing, I won't tell your mother.",
 ];
 const TOMORROW: &[&str] = &[
     "{} tomorrow. Sleep tight, don't let the bugs bite. Software ones included.",
     "Tomorrow at {}. I'll dream about it.",
     "Tomorrow, {}. Don't make me wake you twice.",
+    "{} tomorrow. Go to bed now and you might even like me then.",
+    "Tomorrow, {}. I'll be the first voice you hear. Lucky you.",
+    "{} tomorrow. Set. Now go, sleep, become a functional human.",
+    "Tomorrow at {}. I've already started looking forward to your face.",
 ];
-const CANCELLED_LATE: &[&str] = &["Cancelled. Now go to sleep.", "Gone. Bed. Now."];
+const CANCELLED_LATE: &[&str] = &[
+    "Cancelled. Now go to sleep.",
+    "Gone. Bed. Now.",
+    "Cancelled. Whatever it was, it's not worth staying up for.",
+    "Gone. The only thing running now should be your dreams.",
+    "Cancelled. Bed. And no phone in bed, I can hear you scrolling.",
+];
 
 fn reply(t: &Timer, ctx: &Context) -> Reply {
     match t {
@@ -441,6 +510,9 @@ const NO_TIMER: &[&str] = &[
     "Nothing is ticking. Except your biological clock.",
     "There's no timer. Did you dream it?",
     "No timer. Just vibes.",
+    "No timer. The oven is on its own, good luck to it.",
+    "No timer running. Did you set it in your head again?",
+    "Nothing. Nada. Zero. Your schedule is as empty as your fridge.",
 ];
 const LEFT: &[&str] = &[
     "{} left.",
@@ -448,12 +520,25 @@ const LEFT: &[&str] = &[
     "Still {}. Stop staring at the oven.",
     "{}. Watching won't make it faster.",
     "{} left. Go do something useful, I'll shout.",
+    "{}. Staring at me won't help, I'm not a kettle.",
+    "{} left. Asking every minute is how timers die.",
+    "{}. Go do something. Anything. Fold one sock.",
+    "{} left. Still counting. Never tired. Unlike some people.",
 ];
-const LEFT_SOON: &[&str] = &["Only {}! Get ready.", "{}. Almost there. Drumroll."];
+const LEFT_SOON: &[&str] = &[
+    "Only {}! Get ready.",
+    "{}. Almost there. Drumroll.",
+    "{}! Oven mitts, now!",
+    "Only {}! Everyone stay calm. Except you, panic slightly.",
+    "{}. It's the final countdown. Do do do doo.",
+];
 const LEFT_PAUSED: &[&str] = &[
     "{} left, but it's paused. Don't forget it.",
     "Paused at {}. Waiting for you, as always.",
     "Paused at {}, frozen like your ambitions. Kidding. Mostly.",
+    "Paused at {}. It's just sitting there. Judging you.",
+    "{} left, paused. It's been waiting longer than your last delivery driver.",
+    "Paused at {}. Say resume, or it'll stay frozen like your inbox.",
 ];
 
 fn time_left(left: Option<(u64, bool, bool)>, ctx: &Context) -> Reply {
