@@ -4,7 +4,7 @@ use std::path::Path;
 
 use ort::session::Session;
 
-use super::onnx;
+use crate::onnx;
 
 pub const FRAME: usize = 512;
 /// Silero v5 sees the tail of the previous frame in front of each one.

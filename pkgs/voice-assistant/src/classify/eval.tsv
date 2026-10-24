@@ -1,0 +1,120 @@
+Fun(Sing)	sing for me.
+Fun(Joke)	tell us a joke.
+Fun(Joke)	tell a joke.
+Chat(Agent	Who's the best chat agent?
+Chat(Agent	What do you think about chat shippity?
+Chat(Insult)	why are you so cheeky to me?
+Fun(Joke)	make me giggle
+Fun(DadJoke)	say something funny
+Fun(Joke)	I could use a laugh
+Fun(Sing)	got a song for me?
+Fun(Sing)	can you do a little song
+Info(Weather	how hot is it outside
+Info(Weather	is it going to rain
+Info(Weather	do I need an umbrella today
+Info(Weather	what's it like outside
+Info(Weather	how cold is it
+Info(Time)	what hour is it
+Info(Time)	got the time?
+Info(Time)	how late is it
+Info(Date)	what's today's date
+Info(Date)	which day is it today
+Timer(Start	wake me in ten minutes
+Timer(Start	remind me in five minutes
+Timer(Start	countdown five minutes
+Timer(Cancel)	kill the timer
+Timer(Cancel)	forget the timer
+Timer(Cancel)	stop the countdown
+Timer(Left)	how much longer on the timer
+Timer(Left)	is the timer almost done
+Volume(Up)	louder please
+Volume(Up)	I can't hear it
+Volume(Up)	crank it up
+Volume(Down)	too loud
+Volume(Down)	quieter
+Volume(Down)	tone it down
+Volume(Mute)	silence the speakers
+Media(Next)	skip this song
+Media(Next)	next track
+Media(Next)	I don't like this song
+Media(Previous)	go back a song
+Media(Pause)	hold the music
+Media(Play)	resume the music
+Media(NowPlaying)	what's this song called
+Media(NowPlaying)	who sings this
+Media(RadioOff)	turn off the radio
+Info(Battery)	how much battery is left
+Info(Battery)	am I running out of battery
+Info(Mail)	any new emails
+Info(Mail)	did I get mail
+News(World)	what's the news
+News(World)	what's happening in the world
+Desktop(Screenshot)	take a screenshot
+Desktop(Screenshot)	capture the screen
+Desktop(Brighter)	make the screen brighter
+Desktop(Brighter)	it's too dark
+Desktop(Darker)	dim the screen
+Desktop(CloseWindow)	close this window
+System(System	lock the screen
+Notes(Add	put milk on the shopping list
+Notes(Add	we need eggs
+Notes(Show	what's on my shopping list
+Meeting(Next)	when's my next meeting
+Meeting(Day	do I have meetings today
+Ops(Internet)	is the internet down
+Ops(Disk)	how full is the disk
+Ops(Cpu)	how busy is the cpu
+Chat(Hello)	hi there
+Chat(Hello)	good evening
+Chat(HowAreYou)	how's it going
+Chat(Thanks)	thank you so much
+Chat(Thanks)	cheers mate
+Chat(WhoAreYou)	what's your name
+Chat(Help)	what can you do
+Chat(Bored)	I'm bored
+Chat(Goodbye)	bye bye
+Chat(Love)	I love you
+Chat(Insult)	you're stupid
+Chat(Real)	are you a real person
+Chat(HowOld)	how old are you
+Fun(Coin)	flip a coin for me
+Fun(Dice	throw a dice
+Fun(Compliment)	say something nice about me
+Fun(Fact)	tell me something interesting
+Fun(Motivate)	I need a pep talk
+Listen(false)	stop listening to me
+Voice(false)	be quiet
+Repeat	what did you just say
+Dismiss	forget about it
+-	How many people live in Germany?
+-	what does 420 blaze it mean?
+-	who won the world cup in 2014
+-	what is the capital of australia
+-	how do I cook rice
+-	when was the eiffel tower built
+-	what's the population of tokyo
+-	who is the president of france
+-	how far is the moon
+-	what is quantum computing
+-	recommend a good book
+-	how do you say hello in japanese
+-	why is the sky blue
+-	what's the best pizza topping
+-	explain photosynthesis
+-	how tall is mount everest
+-	is coffee bad for you
+-	what does the fox say
+-	translate thank you to german
+-	who invented the telephone
+-	how many calories in a banana
+-	what year did world war two end
+-	Mama. That's too late.
+-	Now's the time.
+-	PingYiF.
+-	say TV.
+-	what's a good name for a cat
+-	my knee hurts
+-	the dog ate my homework
+-	did you just eat up too long ago?
+-	so what are the two parts?
+-	what's the number?

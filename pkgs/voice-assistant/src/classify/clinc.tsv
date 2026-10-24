@@ -1,0 +1,692 @@
+# CLINC150 training paraphrases (Larson et al., 2019, CC BY 3.0,
+# https://github.com/clinc/oos-eval), labelled with the action kinds they ask for.
+Timer(Start	set a 4 minute timer
+Timer(Start	set a 2 minute timer
+Timer(Start	set a 3 minute timer
+Timer(Start	set a 5 minute timer
+Timer(Start	set a 1 minute timer
+Timer(Start	who set up the numbers for it
+Timer(Start	start the timer
+Timer(Start	start a timer please
+Timer(Start	i need to start a timer
+Timer(Start	i need a timer to be set
+Timer(Start	could you set a timer
+Timer(Start	set a timer
+Timer(Start	i need to have a timer for 10 minutes
+Timer(Start	make a 10 minute timer
+Timer(Start	give me a 10 minute timer
+Timer(Start	will you create a timer for me
+Timer(Start	please begin a timer
+Timer(Start	is it possible to set a timer
+Timer(Start	i want a timer set for 10 minutes
+Timer(Start	set a timer for 10 minutes
+Timer(Start	can i get a timer set
+Timer(Start	i need to use a timer
+Timer(Start	set a timer to go off in 1 hour
+Timer(Start	i need a timer for 45 minutes
+Timer(Start	in 15 minutes the timer should go off
+Timer(Start	start the timer now
+Timer(Start	set a timer for 30 minutes
+Timer(Start	set a timer for 5 minutes from now
+Timer(Start	let me know when it's been 5 minutes
+Timer(Start	can you set the timer to 20 minutes
+Chat(MeaningOfLife)	would you let me know what the meaning is life is
+Chat(MeaningOfLife)	would you let me know what is the point of life
+Chat(MeaningOfLife)	right now, i need to know the meaning of life
+Chat(MeaningOfLife)	define the meaning of life for me
+Chat(MeaningOfLife)	i want to know the meaning of life
+Chat(MeaningOfLife)	would you explain the meaning of life
+Chat(MeaningOfLife)	i need you to tell me the meaning of life
+Chat(MeaningOfLife)	i need to know what the meaning of life is now
+Chat(MeaningOfLife)	tell me what the meaning of life is
+Chat(MeaningOfLife)	i need to know what the point of life is
+Chat(MeaningOfLife)	let me know what the point of life is
+Chat(MeaningOfLife)	would you provide me with what the point of life is
+Chat(MeaningOfLife)	tell me what the point of life is
+Chat(MeaningOfLife)	what is the reason humans even exist
+Chat(MeaningOfLife)	do you think our lives have purpose or meaning
+Chat(MeaningOfLife)	can you tell me about the meaning of life
+Chat(MeaningOfLife)	can you tell me what the meaning of life is
+Chat(MeaningOfLife)	what do you know about the meaning of life
+Chat(MeaningOfLife)	i would like information on the meaning of life
+Chat(MeaningOfLife)	what information can you give me on the meaning of life
+Chat(MeaningOfLife)	what is the core meaning of life
+Chat(MeaningOfLife)	what do you know about lifes meaning
+Chat(MeaningOfLife)	is there any consensun regarding lifes true meaning
+Chat(MeaningOfLife)	is there a reason beyond biology about why humans are alive
+Chat(MeaningOfLife)	do you think being alive has any meaning
+Chat(MeaningOfLife)	is there meaning to life
+Chat(MeaningOfLife)	is there meaning in life
+Chat(MeaningOfLife)	what is the answer to life
+Chat(MeaningOfLife)	what's the answer to it all
+Chat(MeaningOfLife)	what's life mean to you
+Ops(FindPhone)	can you help me find my phone, please
+Ops(FindPhone)	could you help me locate my phone
+Ops(FindPhone)	can you help me locate my phone
+Ops(FindPhone)	could you help me locate my phone, please
+Ops(FindPhone)	can you help me locate my phone, please
+Ops(FindPhone)	i cannot locate my phone, can you help me
+Ops(FindPhone)	i need help locating my phone
+Ops(FindPhone)	can you assist me with finding my phone
+Ops(FindPhone)	i lost my phone can you help me
+Ops(FindPhone)	where the bleep did i put my bleeping phone
+Ops(FindPhone)	is my phone somewhere around here
+Ops(FindPhone)	help, i've lost my cellphone!
+Ops(FindPhone)	i seem to have lost my phone
+Ops(FindPhone)	do you know my phone's location
+Ops(FindPhone)	can you find my phone
+Ops(FindPhone)	where's my phone at
+Ops(FindPhone)	what's my phone's location
+Ops(FindPhone)	can you help me hunt for my missing cellphone
+Ops(FindPhone)	locate my cellphone in this room
+Ops(FindPhone)	where did i last put my phone
+Ops(FindPhone)	find my cellphone for me!
+Ops(FindPhone)	where did i place my phone
+Ops(FindPhone)	where's my phone
+Ops(FindPhone)	my phone isn't where i left it
+Ops(FindPhone)	i think i've misplaced my phone
+Ops(FindPhone)	i've lost my phone somewhere
+Ops(FindPhone)	i think i lost my phone
+Ops(FindPhone)	would you know where to find my phone
+Ops(FindPhone)	please assist me in looking for my phone
+Ops(FindPhone)	look for my phone with me
+Fun(Fact)	name unusual facts about the circus
+Fun(Fact)	i need interesting baseball trivia from the nineteen eighties
+Fun(Fact)	tell me a fun fact about cars
+Fun(Fact)	give me a fun fact about kangaroo
+Fun(Fact)	give me a fun fact about koala
+Fun(Fact)	give me a fun fact about dolphin
+Fun(Fact)	what is some trivia about frog
+Fun(Fact)	tell me fun facts of today
+Fun(Fact)	give me something interesting about stars
+Fun(Fact)	what is some trivia question about coffee
+Fun(Fact)	tell me some trivia about sweat
+Fun(Fact)	tell me some trivia about dolphin
+Fun(Fact)	what is some trivia about the weather
+Fun(Fact)	give me a fun fact about komodo dragon
+Fun(Fact)	give me a amusing fact about wolf
+Fun(Fact)	what is the interesting trivia about human bodies
+Fun(Fact)	i want to learn something about apples
+Fun(Fact)	tell me today's fun fact
+Fun(Fact)	i want today's fun fact please
+Fun(Fact)	what is today's fun fact
+Fun(Fact)	today's fun fact
+Fun(Fact)	i want a fun fact about london
+Fun(Fact)	tell me something interesting about bees
+Fun(Fact)	i would you like to learn something interesting about bees
+Fun(Fact)	i want to hear cool bee facts
+Fun(Fact)	what's something interesting about bees
+Fun(Fact)	i wanna hear something cool about bees
+Fun(Fact)	tell me fun facts on science topics
+Fun(Fact)	tell me fun science facts
+Fun(Fact)	i want to know fun facts about koala bears
+Info(Time)	i need you to tell me what time it is in new york now
+Info(Time)	what time is it in adelaide, australia right now
+Info(Time)	is it after noon
+Info(Time)	is it six o clock yet
+Info(Time)	please give me the time in tanzania at this moment
+Info(Time)	can you tell me the current time in jamaica
+Info(Time)	tell me the time in san francisco, please
+Info(Time)	what time is it right now in adelaide, australia
+Info(Time)	what time is it in the eastern timezone
+Info(Time)	what time is it in the mountain timezone
+Info(Time)	what time is it in the greenwich timezone
+Info(Time)	what time is it in the central timezone
+Info(Time)	tell me what the time is in dallas
+Info(Time)	what is the current time in dallas
+Info(Time)	can you tell me what time it is in dallas
+Info(Time)	what time is it in dallas
+Info(Time)	tell time for another city: dallas
+Info(Time)	what time is it right now at home
+Info(Time)	what’s the time in new york
+Info(Time)	tell me the time in california
+Info(Time)	tell me the time in las vegas
+Info(Time)	what is the time is central time zone
+Info(Time)	what is the time in the usa
+Info(Time)	what is the time in est
+Info(Time)	whats the exact time
+Info(Time)	what is the current time
+Info(Time)	what's the current time
+Info(Time)	what time is it in california
+Info(Time)	please give me the time
+Info(Time)	the time is what
+Fun(Coin)	flip a coin for me and i call heads
+Fun(Coin)	can you flip a coin for me
+Fun(Coin)	give me the results of a coin flip
+Fun(Coin)	please flip a coin for me
+Fun(Coin)	please flip a coin for me ai
+Fun(Coin)	flip a coin and tell me if it's heads
+Fun(Coin)	ai, flip a coin for me
+Fun(Coin)	ai, please flip a simulated coin
+Fun(Coin)	let's flip a coin i choose heads
+Fun(Coin)	can you please do a simulated coin flip for me ai
+Fun(Coin)	flip a coin i choose heads
+Fun(Coin)	flip a coin i'm calling heads
+Fun(Coin)	can you do a coin flip for me ai
+Fun(Coin)	i want you to flip a coin i choose heads
+Fun(Coin)	just toss a coin
+Fun(Coin)	just flip a coin
+Fun(Coin)	throw a coin in the air
+Fun(Coin)	flip a coin into the air
+Fun(Coin)	heads, coin flip
+Fun(Coin)	flip coin, heads!
+Fun(Coin)	flip a coin, i call heads!
+Fun(Coin)	coin flip, choose heads
+Fun(Coin)	please flip a coin, i choose heads!
+Fun(Coin)	can you flip a coin i call heads
+Fun(Coin)	flip a coin, i'm heads
+Fun(Coin)	flip a coin, heads
+Fun(Coin)	flip us a coin, i call heads
+Fun(Coin)	flip a coin, you're tails and i'm heads
+Fun(Coin)	give me a coin toss result
+Fun(Coin)	flip the coin, i choose heads
+Chat(WhereAreYou)	where are you coming from
+Chat(WhereAreYou)	from where do you come
+Chat(WhereAreYou)	what place are you from
+Chat(WhereAreYou)	where are you from originally
+Chat(WhereAreYou)	so, where do you come from
+Chat(WhereAreYou)	so where do you come from originally
+Chat(WhereAreYou)	where do you call home
+Chat(WhereAreYou)	what's your home country
+Chat(WhereAreYou)	where did you live before you moved here
+Chat(WhereAreYou)	are you from here or somewhere else originally
+Chat(WhereAreYou)	tell me where you're from
+Chat(WhereAreYou)	what area did you come from
+Chat(WhereAreYou)	what is your origin
+Chat(WhereAreYou)	where was it you were born
+Chat(WhereAreYou)	the place you were born is
+Chat(WhereAreYou)	what location were you born
+Chat(WhereAreYou)	where were you put together
+Chat(WhereAreYou)	where is your home planet
+Chat(WhereAreYou)	where is your home town
+Chat(WhereAreYou)	where were you thought of
+Chat(WhereAreYou)	where do you originate from
+Chat(WhereAreYou)	where have you come from
+Chat(WhereAreYou)	where were you before
+Chat(WhereAreYou)	where were you processed
+Chat(WhereAreYou)	a hidden government facility
+Chat(WhereAreYou)	what region were you born
+Chat(WhereAreYou)	from where did you originate
+Chat(WhereAreYou)	are you from around here
+Chat(WhereAreYou)	in what place are you originally from
+Chat(WhereAreYou)	where did you grow up
+Chat(Help)	can you tell me what you can help with
+Chat(Help)	what things are you able to help me with
+Chat(Help)	i would like to know what you can help with
+Chat(Help)	what kind of things can you help with
+Chat(Help)	i want to know what type of things you can help me with
+Chat(Help)	please help me to know what type of things you can help me with
+Chat(Help)	can i know what type of things you can help me with
+Chat(Help)	i would like to know what type of things you can help me with
+Chat(Help)	i will be glad to know what type of things you can help me with
+Chat(Help)	what subjects do you like
+Chat(Help)	tell me what subjects you like
+Chat(Help)	please tell me what subjects you like
+Chat(Help)	so what subjects do you like
+Chat(Help)	what type of questions can i ask you
+Chat(Help)	what kinds of things are you familiar with
+Chat(Help)	what subjects are you experienced in
+Chat(Help)	what knowledge do you have on certain subjects
+Chat(Help)	what kid of subjects do you excel in
+Chat(Help)	what subjects or areas are you familiar with
+Chat(Help)	which subjects are you the most experienced with
+Chat(Help)	tell me what you can do for me
+Chat(Help)	what sorts of tasks can you do
+Chat(Help)	what can you do for me
+Chat(Help)	what can you do to make yourself useful
+Chat(Help)	what would you be able to do with me
+Chat(Help)	give me examples of what to ask you
+Chat(Help)	tell me what types of questions i can ask you
+Chat(Help)	what are you programmed to do for me
+Chat(Help)	what things do you know how to do
+Chat(Help)	how can you help me
+Media(Next)	i don't like this song, can skip it
+Media(Next)	can we move onto the next song
+Media(Next)	skip this song, please
+Media(Next)	can you swipe to the next song
+Media(Next)	next song, please!
+Media(Next)	start the next song
+Media(Next)	go to the next song and play it
+Media(Next)	move forward one song
+Media(Next)	play the next one
+Media(Next)	skip to next track
+Media(Next)	skip ahead one song
+Media(Next)	go to upcoming song
+Media(Next)	play the next song please
+Media(Next)	i dont want to listen to this song
+Media(Next)	could you hit next
+Media(Next)	can you go to the next song
+Media(Next)	let's go to the next song please
+Media(Next)	maybe we can go to the next song
+Media(Next)	may i suggest we go to the next song
+Media(Next)	please can we go to the next song
+Media(Next)	might we go to the next song
+Media(Next)	next track
+Media(Next)	skip to the next track
+Media(Next)	skip this track
+Media(Next)	play next song
+Media(Next)	next song
+Media(Next)	change this song please
+Media(Next)	i want you to play the next song
+Media(Next)	play the next song please if you would
+Media(Next)	please play the next track
+Repeat	may you say that again
+Repeat	can you please repeat that
+Repeat	can you please say that again
+Repeat	may you please say that again
+Repeat	would you say it again please
+Repeat	would you repeat what you said earlier
+Repeat	i would like you to repeat it
+Repeat	repeat please
+Repeat	pardon, i didn't hear you
+Repeat	i didn't hear you can you say that again
+Repeat	i didn't catch that
+Repeat	could you repeat that
+Repeat	say again please
+Repeat	would you mind repeating that
+Repeat	sorry, i didn't catch that could you say it again
+Repeat	i need you to repeat that please
+Repeat	repeat that for me please
+Repeat	what did you just say
+Repeat	please say it one more time
+Repeat	sorry i missed that
+Repeat	i didn't understand you
+Repeat	can you repeat the question again
+Repeat	can you phrase that question again
+Repeat	what'd you say
+Repeat	please repeat the last thing
+Repeat	repeat that
+Repeat	can you repeat that
+Repeat	what were you just saying
+Repeat	come again
+Repeat	can you say that again, please
+Info(Math	what is 300 divided by 42
+Info(Math	what is 400 times 2
+Info(Math	what is the average of 54, 23, 43, 12, and 442
+Info(Math	add 45 to 87 plus 54 plus 43 plus 22
+Info(Math	what is 48 multiplied by 4 divided by 2
+Info(Math	what is 25% of $54,788
+Info(Math	what is the square root of 95
+Info(Math	what is 1100 minus 2347
+Info(Math	tell me what 1875 plus 3459 equals
+Info(Math	tell me the answer to 1000 divided by 40
+Info(Math	what is 1000 plus 745
+Info(Math	i need to know the answer to 10000 multiplied by 44
+Info(Math	what is 100 multiplied by 55
+Info(Math	what's 15% of 68
+Info(Math	what's 47 times 83
+Info(Math	if something is 15% off $35, how much is it
+Info(Math	how many times can 3 be divided into 1253
+Info(Math	divide 100 by 12
+Info(Math	find square root of 453
+Info(Math	what is 1243 times 45
+Info(Math	find the square root of 1243435
+Info(Math	what is the square root of 36
+Info(Math	what is 592 minus 124
+Info(Math	i need to know what 25 times 38 is
+Info(Math	can you calculate the square root of 172
+Info(Math	i bought 6 shirts at $499 each what was my total expenditure for them
+Info(Math	i spent 34 dollars for 12 gallons of paint what is the average price for each gallon
+Info(Math	what is the sum of eleven and ten
+Info(Math	what is the solution to sixty times thirty
+Info(Math	how do i ask the ai to help me with math problem
+Info(Date)	date please
+Info(Date)	what is the current day
+Info(Date)	which day is it now
+Info(Date)	what's the name of the day today
+Info(Date)	what is the day now
+Info(Date)	what day are we in
+Info(Date)	tell me what tomorrow's date is
+Info(Date)	please tell me what the date is tomorrow
+Info(Date)	let me know what tomorrow's date is
+Info(Date)	let me know the date tomorrow
+Info(Date)	i need to know tomorrow's date
+Info(Date)	please tell me what today is
+Info(Date)	tell me the date, please
+Info(Date)	tell me the date 5 days from now
+Info(Date)	tell me what the date will be in 5 days
+Info(Date)	what is the date in 5 days
+Info(Date)	in 5 days from today, what will the date be
+Info(Date)	what would the date be 5 days from today
+Info(Date)	what day it today
+Info(Date)	what will tomorrow be on the calendar
+Info(Date)	what date will it be tomorrow
+Info(Date)	what date is it tomorrow
+Info(Date)	what is the date of tomorrow
+Info(Date)	what's tomorrow's date
+Info(Date)	what's the date today
+Info(Date)	give me today's date
+Info(Date)	tell me today's date
+Info(Date)	what's the date
+Info(Date)	today is which day of the week
+Info(Date)	today is what day of the week
+Chat(Thanks)	thank you ever so much for that!
+Chat(Thanks)	you’re the best thanks so much!
+Chat(Thanks)	thanks for helping
+Chat(Thanks)	i am grateful for the help
+Chat(Thanks)	thank you for the heip
+Chat(Thanks)	i apprecaite the help from you
+Chat(Thanks)	thanks that was really helpful
+Chat(Thanks)	thank you for your time and trying to help
+Chat(Thanks)	thank you for your assistance
+Chat(Thanks)	thanks for all your help
+Chat(Thanks)	thanks for trying
+Chat(Thanks)	many thank
+Chat(Thanks)	thanks a million
+Chat(Thanks)	thank a bunch
+Chat(Thanks)	i appeciate it
+Chat(Thanks)	i would like to thank you ai
+Chat(Thanks)	ai you have given me so much information, thank you
+Chat(Thanks)	thanks so much ai
+Chat(Thanks)	thank you ai for everything you do
+Chat(Thanks)	ai is a helpful item to have in my home, thank you
+Chat(Thanks)	thank you very much
+Chat(Thanks)	that answer was very helpful, thanks
+Chat(Thanks)	great, thanks!
+Chat(Thanks)	thanks for your help!
+Chat(Thanks)	thanks so much
+Chat(Thanks)	thanks for that answer
+Chat(Thanks)	thank you for that reply
+Chat(Thanks)	thanks for the reply
+Chat(Thanks)	thanks for that response
+Chat(Thanks)	thank you for that response
+Fun(Dice	how much do you get when you roll an eight sided die
+Fun(Dice	i need a dice roll for a six sided die
+Fun(Dice	roll a dice that has seven sides
+Fun(Dice	roll the five sided die
+Fun(Dice	what is the result when you roll a four sided die
+Fun(Dice	roll a fourteen sided dice exactly
+Fun(Dice	please roll twelve sided dice
+Fun(Dice	can i have a 2 sided dice
+Fun(Dice	roll a 9 sided dice
+Fun(Dice	roll five sided dice
+Fun(Dice	roll those dice once
+Fun(Dice	throw a roll of the dice
+Fun(Dice	make a roll of the dice
+Fun(Dice	ai pick up the dice, then drop it
+Fun(Dice	ai toss the dice
+Fun(Dice	ai roll the dice
+Fun(Dice	ai throw the dice on the table
+Fun(Dice	ai shake the dice in a cup, then throw dice on table
+Fun(Dice	can you roll a four sided die and tell me the result
+Fun(Dice	roll a six sided die for me and tell me the result
+Fun(Dice	roll a die please
+Fun(Dice	can you roll an eight sided die and tell me what it comes up as
+Fun(Dice	can you simulate a dice roll
+Fun(Dice	can you roll a ten sided die and tell me the number
+Fun(Dice	roll a four sided die for me
+Fun(Dice	simulate rolling a dice and tell me what it lands on
+Fun(Dice	can you roll a die for me
+Fun(Dice	can you fake roll a die for me
+Fun(Dice	what's the result of a 10-sided dice roll
+Fun(Dice	can you roll a 10-sided dice for me
+Chat(Goodbye)	good speaking to you
+Chat(Goodbye)	it was really awesome to talk to you
+Chat(Goodbye)	it was great to speak with you
+Chat(Goodbye)	it was great to talk to you
+Chat(Goodbye)	bye bye then
+Chat(Goodbye)	it was very good to talk to you
+Chat(Goodbye)	good bye then
+Chat(Goodbye)	bye
+Chat(Goodbye)	regards
+Chat(Goodbye)	catch you later
+Chat(Goodbye)	great talk, thanks
+Chat(Goodbye)	later
+Chat(Goodbye)	goodbye
+Chat(Goodbye)	see you later
+Chat(Goodbye)	enjoy your day, goodbye
+Chat(Goodbye)	thank you goodbye
+Chat(Goodbye)	have a good day, bye
+Chat(Goodbye)	that will be all have a nice day!
+Chat(Goodbye)	i enjoyed talking to you, bye
+Chat(Goodbye)	it was great talking to you
+Chat(Goodbye)	nice seeing you bye
+Chat(Goodbye)	it was nice to chat
+Chat(Goodbye)	it was a pleasure talking to you
+Chat(Goodbye)	ok good chatting goodbye
+Chat(Goodbye)	thanks bye bye!
+Chat(Goodbye)	that's all i need, i'm going now
+Chat(Goodbye)	talk to you soon, bye!
+Chat(Goodbye)	thanks for your help, goodbye!
+Chat(Goodbye)	good bye
+Chat(Goodbye)	signing off
+Media(NowPlaying)	i'd like to know what song this is
+Media(NowPlaying)	what is this song name
+Media(NowPlaying)	i need to know this song
+Media(NowPlaying)	what is the name of this song that's on right now
+Media(NowPlaying)	i need to know the title of this song
+Media(NowPlaying)	find out what song is currently on the speakers
+Media(NowPlaying)	look up the name of this song
+Media(NowPlaying)	can you identify this song for me
+Media(NowPlaying)	tell me what this song is called
+Media(NowPlaying)	please identify the song we're currently listening to
+Media(NowPlaying)	what is the title of the song we're listening to right now
+Media(NowPlaying)	look up the song that's on right now
+Media(NowPlaying)	can you identify this song that's playing
+Media(NowPlaying)	find out what song this is
+Media(NowPlaying)	i need to know what song this is that we're listening to
+Media(NowPlaying)	tell me the song that is currently playing
+Media(NowPlaying)	can you identify this song playing through the speaker right now
+Media(NowPlaying)	tell me what this song is called that's playing
+Media(NowPlaying)	what is the title of this song
+Media(NowPlaying)	what is this song called
+Media(NowPlaying)	what song is currently playing
+Media(NowPlaying)	what is the information on this song
+Media(NowPlaying)	what song is this one
+Media(NowPlaying)	on the speaker do you know what song is on
+Media(NowPlaying)	on the speaker what song is playing
+Media(NowPlaying)	do you know what song is playing on the speaker
+Media(NowPlaying)	at the moment what song is playing on the speaker
+Media(NowPlaying)	what is playing on the speaker at the moment
+Media(NowPlaying)	who is the singer on the speaker now
+Media(NowPlaying)	what kind of music on the speaker now
+Info(Weather	what is the weather
+Info(Weather	current weather
+Info(Weather	tell me the weather
+Info(Weather	what's the weather like today
+Info(Weather	what is the weather like
+Info(Weather	show me what the weather is like
+Info(Weather	let's take a look at the weather
+Info(Weather	how is the weather looking in seattle
+Info(Weather	how's the weather in seattle
+Info(Weather	what is the state of the weather in seattle
+Info(Weather	what is the weather forecast looking like for seattle
+Info(Weather	what are the weather conditions like in seattle
+Info(Weather	what is the weather doing now
+Info(Weather	what kind of weather can i expect now
+Info(Weather	tell me what the weather is looking like
+Info(Weather	how is the weather
+Info(Weather	can you tell me the weather forecast
+Info(Weather	could you tell me what the weather is in austin
+Info(Weather	what is the weather doing in austin
+Info(Weather	what about the weather in austin
+Info(Weather	how is the weather in austin
+Info(Weather	what is happening with the weather in austin
+Info(Weather	how is that weather
+Info(Weather	how does the weather feel
+Info(Weather	need to know the weather now
+Info(Weather	give weather update now
+Info(Weather	want to know the weather
+Info(Weather	tell me the weather for today
+Info(Weather	what is the current weather like
+Info(Weather	las vegas weather today
+Chat(Hello)	how are you doing
+Chat(Hello)	are you okay
+Chat(Hello)	what are you feeling today
+Chat(Hello)	is everything ok today
+Chat(Hello)	are you doing alright
+Chat(Hello)	hello, how's your day
+Chat(Hello)	hey there, how are you today
+Chat(Hello)	hello, how is it going
+Chat(Hello)	hi there, how are you doing
+Chat(Hello)	hey, how are you
+Chat(Hello)	hey, what's up
+Chat(Hello)	hello, how are you doing
+Chat(Hello)	hi, how are you
+Chat(Hello)	hi, how are you today
+Chat(Hello)	hello, how are things
+Chat(Hello)	hey there
+Chat(Hello)	hey, what's new
+Chat(Hello)	it is good to see you
+Chat(Hello)	i'd like to know how you are doing
+Chat(Hello)	hello there
+Chat(Hello)	tell me how you are doing
+Chat(Hello)	hello there, good morning
+Chat(Hello)	let me know how you are doing
+Chat(Hello)	well hi there
+Chat(Hello)	i want to know how you are doing
+Chat(Hello)	i need to know how you are doing today
+Chat(Hello)	hello there ai
+Chat(Hello)	will you tell me how the ai is doing
+Chat(Hello)	would you tell me how the ai is doing
+Chat(Hello)	hola!
+Chat(WhoAreYou)	tell me what your name is
+Chat(WhoAreYou)	what did they name you
+Chat(WhoAreYou)	hey, how do i call your attention
+Chat(WhoAreYou)	what's your name
+Chat(WhoAreYou)	give me your name so i can use you
+Chat(WhoAreYou)	how should i address you
+Chat(WhoAreYou)	what do i call you
+Chat(WhoAreYou)	what's your name anyway
+Chat(WhoAreYou)	tell me what to call you
+Chat(WhoAreYou)	can you tell me what you are called
+Chat(WhoAreYou)	what should you be called
+Chat(WhoAreYou)	what should i use when i refer to you
+Chat(WhoAreYou)	how do you say your name
+Chat(WhoAreYou)	what is your preferred name
+Chat(WhoAreYou)	what can i call you
+Chat(WhoAreYou)	what name do you go by
+Chat(WhoAreYou)	who do i have the pleasure of speaking with
+Chat(WhoAreYou)	may i have your name
+Chat(WhoAreYou)	who am i speaking with
+Chat(WhoAreYou)	and your name is
+Chat(WhoAreYou)	what do i call you, ai
+Chat(WhoAreYou)	what name do you go by, ai
+Chat(WhoAreYou)	ai, what is your name
+Chat(WhoAreYou)	what do they call you, ai
+Chat(WhoAreYou)	ai, what is your given name
+Chat(WhoAreYou)	what name do you want me to use
+Chat(WhoAreYou)	what do you like to be called
+Chat(WhoAreYou)	what should i call you
+Chat(WhoAreYou)	what would you like me to call you
+Chat(WhoAreYou)	what is your name
+Notes(Show	does my shopping list have pop tarts
+Notes(Show	can you check to see if my shopping list already has milk
+Notes(Show	did i remember to put oatmeal on my list
+Notes(Show	iterate over the items on my grocery list
+Notes(Show	tell me what i have on my shopping list
+Notes(Show	do i have twinkies on the grocery list
+Notes(Show	have i already got eggs down on the shopping list
+Notes(Show	recite the items i'm planning to purchase
+Notes(Show	what do i currently have on my shopping list
+Notes(Show	what's on my to-buy list
+Notes(Show	what's on my purchase list
+Notes(Show	do i have to buy milk
+Notes(Show	is milk on my shopping list
+Notes(Show	is milk one of my shopping list items
+Notes(Show	am i supposed to buy milk
+Notes(Show	is milk one of the things i need to buy
+Notes(Show	tell me what's is on my shopping list
+Notes(Show	please read my shopping list
+Notes(Show	did you put carrots on the shopping list
+Notes(Show	does the shopping list have apples on it
+Notes(Show	are carrots added to the grocery list
+Notes(Show	is garlic on my grocery list
+Notes(Show	did carrots get on my shopping list
+Notes(Show	what things are on my shopping list today
+Notes(Show	tell me the items in my shopping list
+Notes(Show	what does my shopping list contain
+Notes(Show	i need to know what's on my shopping list
+Notes(Show	what is on the shopping list
+Notes(Show	please let me know what is on my shopping list
+Notes(Show	let me know what's on my shopping list
+Chat(Real)	tell me if you are a human or are a computer
+Chat(Real)	would you tell me if you are a human or are a computer
+Chat(Real)	provide me with the knowledge of whether you are a human or are a computer
+Chat(Real)	let me know if you are a human or are a computer
+Chat(Real)	i need to know whether you are a human or are a computer
+Chat(Real)	are you real
+Chat(Real)	can you tell me if your a bot
+Chat(Real)	i want to know if your a bot
+Chat(Real)	is this a bot
+Chat(Real)	i think your a bot
+Chat(Real)	is it true your a real person
+Chat(Real)	are you a person that's real
+Chat(Real)	are you actually a person
+Chat(Real)	are you really real
+Chat(Real)	your a bot aren't you
+Chat(Real)	could you be human
+Chat(Real)	could you be a person
+Chat(Real)	are you human
+Chat(Real)	are you a human or ai computer based
+Chat(Real)	would you call yourself a human or a computer
+Chat(Real)	how do you describe yourself: as a computer or a human
+Chat(Real)	are you computer or human
+Chat(Real)	would most people say you are a computer or a human
+Chat(Real)	are you real or a computer
+Chat(Real)	are you a computer generated voice
+Chat(Real)	am i talking to a real live person
+Chat(Real)	is your voice from a human or is it synthesized
+Chat(Real)	are you a person or artificial intelligence
+Chat(Real)	could you tell me if you're a real person
+Chat(Real)	are you a person or robot
+Fun(Joke)	i would like to hear something funny
+Fun(Joke)	do you have any monkey jokes
+Fun(Joke)	know any dad jokes
+Fun(Joke)	tell me a dog joke
+Fun(Joke)	heard any good jokes
+Fun(Joke)	i want to hear a joke about elephants
+Fun(Joke)	i'd like to hear a lawyer joke
+Fun(Joke)	tell me a blonde joke
+Fun(Joke)	do you know any dad jokes
+Fun(Joke)	tell me a joke about elephants
+Fun(Joke)	tell me a joke about the subject of sailing
+Fun(Joke)	give me a joke about water
+Fun(Joke)	give me a joke about the topic of television
+Fun(Joke)	give me a joke about the subject of bugs
+Fun(Joke)	tell me a joke about the topic of mice
+Fun(Joke)	i would like to hear a joke
+Fun(Joke)	will you tell me a joke
+Fun(Joke)	let's hear a joke!
+Fun(Joke)	i could use a laugh, got any jokes
+Fun(Joke)	can you tell me something funny about science
+Fun(Joke)	can you share something funny about traveling
+Fun(Joke)	i want to hear your best joke
+Fun(Joke)	tell me a good joke
+Fun(Joke)	tell me something funny about horses
+Fun(Joke)	i want to hear something funny about history
+Fun(Joke)	can you share a humorous joke with me
+Fun(Joke)	i want to hear something funny about politicsi
+Fun(Joke)	let's hear a joke from you please
+Fun(Joke)	tell me something funny about the middle ages
+Fun(Joke)	do you know any jokes
+Chat(HowOld)	what your numerical digit to display as your age
+Chat(HowOld)	how old will you be
+Chat(HowOld)	how old will you be this year
+Chat(HowOld)	whats your age
+Chat(HowOld)	when is your birthday
+Chat(HowOld)	when were you made
+Chat(HowOld)	whats your age range
+Chat(HowOld)	could you tell me how old you are
+Chat(HowOld)	would you tell me how old you are
+Chat(HowOld)	your date of birth
+Chat(HowOld)	your birthday please
+Chat(HowOld)	can you tell me your birthday
+Chat(HowOld)	whens your birthday
+Chat(HowOld)	what's your bday
+Chat(HowOld)	how old were you on your last birthday
+Chat(HowOld)	how many years have you been alive
+Chat(HowOld)	can i ask your age
+Chat(HowOld)	do you mind if i ask how old you are
+Chat(HowOld)	may i ask your age
+Chat(HowOld)	i need to know your age
+Chat(HowOld)	please tell me your age
+Chat(HowOld)	can you tell me your age
+Chat(HowOld)	when's your birthday
+Chat(HowOld)	how young are you
+Chat(HowOld)	what's your age right now
+Chat(HowOld)	how old would you be
+Chat(HowOld)	do you know how old you are
+Chat(HowOld)	how old
+Chat(HowOld)	what's your date of birth
+Chat(HowOld)	how old are you turning

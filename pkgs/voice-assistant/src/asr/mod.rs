@@ -5,7 +5,6 @@
 
 mod bpe;
 mod features;
-mod onnx;
 mod rnnt;
 mod vad;
 
@@ -13,6 +12,8 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use ort::session::Session;
+
+use crate::onnx;
 
 use bpe::Bpe;
 use features::{Features, N_MELS};

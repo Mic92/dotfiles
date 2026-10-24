@@ -3,6 +3,7 @@
 //! changed.
 
 use crate::asr::Asr;
+use crate::classify::Classifier;
 use crate::rescore;
 use crate::skills::{self, Context};
 use std::fs;
@@ -55,7 +56,7 @@ fn compare(old: &str, new: Option<&str>) -> Outcome {
 }
 
 /// Returns the process exit code: 1 when something that used to work broke.
-pub fn run(log: &Path, mut asr: Option<&mut Asr>) -> i32 {
+pub fn run(log: &Path, mut asr: Option<&mut Asr>, mut classifier: Option<&mut Classifier>) -> i32 {
     let Ok(text) = fs::read_to_string(log) else {
         eprintln!("voice-assistant: nothing to replay in {}", log.display());
         return 1;
@@ -89,6 +90,14 @@ pub fn run(log: &Path, mut asr: Option<&mut Asr>) -> i32 {
         }
         let new = skills::parse_tier(&heard_now, &ctx, false)
             .or_else(|| rescored.filter(|r| r.accepted).map(|r| r.action))
+            .or_else(|| {
+                let hit = classifier
+                    .as_deref_mut()?
+                    .classify(&heard_now, &ctx)
+                    .ok()??;
+                println!("        {hit}");
+                hit.action.filter(|_| hit.accepted)
+            })
             .or_else(|| skills::parse_tier(&heard_now, &ctx, true))
             .map(|a| kind(&a));
         let outcome = compare(old, new.as_deref());

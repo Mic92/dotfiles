@@ -443,6 +443,111 @@ fn closed_values(slot: &str) -> Option<Vec<Vec<&'static str>>> {
     })
 }
 
+/// Questions and harmless requests. Opposites embed close together ("too
+/// loud", "louder"), so volume, players, power and toggles stay grammar-only.
+pub fn classifiable(a: &Action) -> bool {
+    match a {
+        Action::Chat(_) | Action::Fun(_) | Action::Info(_) | Action::News(_) | Action::Repeat => {
+            true
+        }
+        Action::Ops(o) => !matches!(o, ops::Ops::Bluetooth { .. }),
+        Action::Media(m) => *m == media::Media::NowPlaying,
+        Action::Timer(t) => matches!(t, timer::Timer::Left | timer::Timer::Start { .. }),
+        Action::Meeting(m) => !matches!(
+            m,
+            meetings::Meeting::Join | meetings::Meeting::Create { .. }
+        ),
+        Action::Notes(n) => matches!(n, notes::Notes::Show(_) | notes::Notes::Contains { .. }),
+        _ => false,
+    }
+}
+
+/// A few values per slot for example sentences.
+fn example_values(slot: &str) -> Option<Vec<String>> {
+    const POOL: &[&str] = &[
+        "five minutes",
+        "ten minutes",
+        "one hour",
+        "7 pm",
+        "half past six",
+        "noon",
+        "tomorrow",
+        "today",
+        "tomorrow morning",
+        "this evening",
+        "3",
+        "20",
+        "50",
+        "munich",
+        "berlin",
+        "milk",
+        "milk and eggs",
+        "shopping",
+        "firefox",
+        "terminal",
+        "two plus two",
+        "something",
+        "the dishes",
+        "wifi",
+    ];
+
+    if let Some(v) = closed_values(slot) {
+        return Some(v.iter().take(3).map(|w| w.join(" ")).collect());
+    }
+    let parse = slot_parser(slot)?;
+    let ok: Vec<String> = POOL
+        .iter()
+        .filter(|p| parse(&p.split(' ').collect::<Vec<_>>(), None).is_some())
+        .take(3)
+        .map(|p| (*p).to_owned())
+        .collect();
+    (!ok.is_empty()).then_some(ok)
+}
+
+/// Grammar sentences for the intent classifier, and whether their template
+/// has slots (then `fill` must find the values again).
+pub fn classifier_examples() -> Vec<(String, Action, bool)> {
+    let ctx = Context::local();
+    let mut out: Vec<(String, Action, bool)> = INTENTS
+        .iter()
+        .skip(followup::intents().len())
+        .filter(|i| !i.fallback)
+        .flat_map(|i| &i.templates)
+        .filter(|t| !t.has_open_slots())
+        .flat_map(|t| {
+            let slotted = t.has_slots();
+            t.expand(&example_values, 40)
+                .into_iter()
+                .map(move |s| (s, slotted))
+        })
+        .filter_map(|(s, slotted)| {
+            let a = parse_tier(&s, &ctx, false).filter(classifiable)?;
+            Some((s, a, slotted))
+        })
+        .collect();
+    out.sort_by(|a, b| a.0.cmp(&b.0));
+    out.dedup_by(|a, b| a.0 == b.0);
+    out
+}
+
+/// An action of `kind` with slot values found anywhere in `text`.
+pub fn fill(text: &str, kind: &str, ctx: &Context) -> Option<Action> {
+    let owned = normalize(text);
+    let words: Vec<&str> = owned.iter().map(String::as_str).collect();
+    INTENTS
+        .iter()
+        .filter(|i| !i.fallback)
+        .flat_map(|i| i.templates.iter().map(move |t| (i, t)))
+        .filter(|(_, t)| t.has_slots())
+        .filter_map(|(i, t)| {
+            let slots = t.slots_anywhere(&words, &slot_parser)?;
+            let a = (i.build)(&slots, ctx).filter(classifiable)?;
+            (crate::replay::kind(&a) == kind).then_some((slots.len(), a))
+        })
+        .max_by_key(|(n, _)| *n)
+        .map(|(_, a)| a)
+}
+
 /// Every plain sentence with a named thing in it ("ping eve", "play
 /// lassulus radio"), with its sound skeleton.
 static NAMED: LazyLock<Vec<(String, Vec<char>)>> = LazyLock::new(|| {
@@ -588,50 +693,11 @@ mod tests {
     #[test]
     #[ignore]
     fn dump_examples() {
-        const POOL: &[&str] = &[
-            "five minutes",
-            "ten minutes",
-            "one hour",
-            "7 pm",
-            "half past six",
-            "noon",
-            "tomorrow",
-            "today",
-            "tomorrow morning",
-            "this evening",
-            "3",
-            "20",
-            "50",
-            "munich",
-            "berlin",
-            "milk",
-            "milk and eggs",
-            "shopping",
-            "firefox",
-            "terminal",
-            "two plus two",
-            "something",
-            "the dishes",
-            "wifi",
-        ];
-        let values = |slot: &str| -> Option<Vec<String>> {
-            if let Some(v) = closed_values(slot) {
-                return Some(v.iter().take(3).map(|w| w.join(" ")).collect());
-            }
-            let parse = slot_parser(slot)?;
-            let ok: Vec<String> = POOL
-                .iter()
-                .filter(|p| parse(&p.split(' ').collect::<Vec<_>>(), None).is_some())
-                .take(3)
-                .map(|p| (*p).to_owned())
-                .collect();
-            (!ok.is_empty()).then_some(ok)
-        };
         let skip = followup::intents().len();
         let mut out = String::new();
         for i in INTENTS.iter().skip(skip).filter(|i| !i.fallback) {
             for t in &i.templates {
-                for s in t.expand(&values, 40) {
+                for s in t.expand(&example_values, 40) {
                     // The grammar labels its own sentences; unparsable
                     // samples (a slot value that needs context) are dropped.
                     if let Some(a) = parse_at(&s, &AT_14H) {

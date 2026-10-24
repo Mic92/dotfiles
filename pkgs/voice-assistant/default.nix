@@ -5,6 +5,7 @@
   fetchFromGitHub,
   fetchurl,
   fetchzip,
+  linkFarm,
   autoPatchelfHook,
   makeWrapper,
   pkg-config,
@@ -50,6 +51,21 @@ let
     url = "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming.tar.bz2";
     hash = "sha256-2cG9a95labt6PBn6utz/mtHUlfpp18nJ3Bv95g/lwP4=";
   };
+  intentModel =
+    let
+      hf =
+        f: "https://huggingface.co/Xenova/gte-small/resolve/5927d1727bb12db490052a1b33265ad78058de08/${f}";
+    in
+    linkFarm "gte-small" {
+      "model.onnx" = fetchurl {
+        url = hf "onnx/model_quantized.onnx";
+        hash = "sha256-GN7BBRCbYAQ2l5nKR2H7j7QTxkFywCFHvPrBhrXF9ss=";
+      };
+      "vocab.txt" = fetchurl {
+        url = hf "vocab.txt";
+        hash = "sha256-B+ztN1zsFE0nyQAkHz4zlHjeyVj5L928VR8pXJkgOKM=";
+      };
+    };
   ttsModel = fetchzip {
     # micro: clearer than nano-int8 and no slower on CPU
     url = "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/kitten-micro-en-v0_8.tar.bz2";
@@ -97,6 +113,7 @@ rustPlatform.buildRustPackage {
     VA_WAKE_MODEL = "${placeholder "out"}/share/voice-assistant/models/alexa.tflite";
     VA_VAD_MODEL = vadModel;
     VA_ASR_MODEL = asrModel;
+    VA_INTENT_MODEL = intentModel;
     # The same library sherpa-onnx links. ort loads it at runtime.
     VA_ONNXRUNTIME = "${lib.getLib onnxruntime}/lib/libonnxruntime.so";
     VA_TTS_MODEL = ttsModel;

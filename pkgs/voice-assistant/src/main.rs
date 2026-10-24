@@ -1,11 +1,13 @@
 //! Wake word -> VAD-bounded command recording -> parakeet -> noctalia timer.
 
 mod asr;
+mod classify;
 mod clock;
 mod duration;
 mod grammar;
 mod http;
 mod hush;
+mod onnx;
 mod replay;
 mod rescore;
 mod skills;
@@ -37,6 +39,7 @@ struct Config {
     threshold: f32,
     vad_model: PathBuf,
     asr_model: PathBuf,
+    intent_model: PathBuf,
     threads: usize,
     sounds: PathBuf,
     tts_model: PathBuf,
@@ -61,7 +64,7 @@ fn default_path(build_env: Option<&str>) -> PathBuf {
 fn usage() -> ! {
     eprintln!(
         "usage: voice-assistant [--wake-model F] [--threshold P] [--vad-model F] [--asr-model DIR]\n\
-         \x20                      [--threads N] [--sounds DIR] [--tts-model DIR]\n\
+         \x20                      [--intent-model DIR] [--threads N] [--sounds DIR] [--tts-model DIR]\n\
          \x20                      [--voice N] [--speed X] [--no-tts] [--verbose] [--stdin]\n\
          \x20                      [--debug-dir DIR] [--say TEXT] [--replay] [--parse TEXT|-]\n\
          --say speaks TEXT with the configured voice and exits.\n\
@@ -79,6 +82,7 @@ fn parse_args() -> Config {
         threshold: 0.4,
         vad_model: default_path(option_env!("VA_VAD_MODEL")),
         asr_model: default_path(option_env!("VA_ASR_MODEL")),
+        intent_model: default_path(option_env!("VA_INTENT_MODEL")),
         threads: 4,
         sounds: default_path(option_env!("VA_SOUNDS")),
         tts_model: default_path(option_env!("VA_TTS_MODEL")),
@@ -101,6 +105,7 @@ fn parse_args() -> Config {
             "--threshold" => c.threshold = val().parse().unwrap_or_else(|_| usage()),
             "--vad-model" => c.vad_model = val().into(),
             "--asr-model" => c.asr_model = val().into(),
+            "--intent-model" => c.intent_model = val().into(),
             "--threads" => c.threads = val().parse().unwrap_or_else(|_| usage()),
             "--sounds" => c.sounds = val().into(),
             "--tts-model" => c.tts_model = val().into(),
@@ -146,6 +151,7 @@ struct Assistant {
     wake: wakeword::WakeWord,
     vad: asr::Vad,
     asr: asr::Asr,
+    classifier: Option<classify::Classifier>,
     tts: tts::Tts,
     state: State,
     /// The mic hears our own replies; ignore it until playback has ended.
@@ -514,6 +520,7 @@ impl Assistant {
         }
         let action = strict
             .or_else(|| self.rescore(&said_before, &text, &ctx))
+            .or_else(|| self.classify(&text, &ctx))
             .or_else(|| skills::parse_tier(&text, &ctx, true));
         let Some(action) = action else {
             self.misses += 1;
@@ -559,6 +566,12 @@ impl Assistant {
         let r = rescore::run(&mut self.asr, said_before, text, ctx)?;
         self.log(&r.to_string());
         r.accepted.then_some(r.action)
+    }
+
+    fn classify(&mut self, text: &str, ctx: &skills::Context) -> Option<skills::Action> {
+        let hit = classify_text(self.classifier.as_mut()?, text, ctx)?;
+        self.log(&hit.to_string());
+        hit.action.filter(|_| hit.accepted)
     }
 
     fn finish(&mut self, action: skills::Action, mut reply: skills::Reply) {
@@ -746,7 +759,24 @@ fn run_pipewire(tx: mpsc::Sender<Vec<i16>>) -> Result<(), Box<dyn error::Error>>
 }
 
 /// Exit code 1 when any text matched nothing, so it can gate scripts.
-fn parse_texts(texts: &[String]) -> i32 {
+fn classifier(dir: &std::path::Path) -> Option<classify::Classifier> {
+    classify::Classifier::new(dir)
+        .inspect_err(|e| eprintln!("voice-assistant: intent classifier: {e}"))
+        .ok()
+}
+
+fn classify_text(
+    c: &mut classify::Classifier,
+    text: &str,
+    ctx: &skills::Context,
+) -> Option<classify::Hit> {
+    c.classify(text, ctx)
+        .inspect_err(|e| eprintln!("voice-assistant: classifying: {e}"))
+        .ok()
+        .flatten()
+}
+
+fn parse_texts(texts: &[String], mut classifier: Option<classify::Classifier>) -> i32 {
     let ctx = skills::Context::local();
     let mut texts: Vec<String> = texts.to_vec();
     if let Some(i) = texts.iter().position(|t| t == "-") {
@@ -755,9 +785,18 @@ fn parse_texts(texts: &[String]) -> i32 {
     }
     let mut missed = false;
     for t in &texts {
+        let mut hit = || classifier.as_mut().and_then(|c| classify_text(c, t, &ctx));
         let (tier, action) = match skills::parse_tier(t, &ctx, false) {
             Some(a) => ("intent  ", Some(a)),
-            None => ("fallback", skills::parse_tier(t, &ctx, true)),
+            None => match hit() {
+                Some(h) if h.accepted => ("classify", h.action),
+                h => {
+                    if let Some(h) = h {
+                        println!("          {h}");
+                    }
+                    ("fallback", skills::parse_tier(t, &ctx, true))
+                }
+            },
         };
         match action {
             Some(a) => println!("{tier}  {t}\n          {a:?}"),
@@ -781,7 +820,7 @@ fn main() {
         return;
     }
     if !cfg.parse.is_empty() {
-        process::exit(parse_texts(&cfg.parse));
+        process::exit(parse_texts(&cfg.parse, classifier(&cfg.intent_model)));
     }
     let mut asr = asr::Asr::new(cfg.asr_model.clone(), cfg.threads);
     if !cfg.transcribe.is_empty() {
@@ -798,11 +837,13 @@ fn main() {
         let log = store::state_dir()
             .unwrap_or_else(|| die("no state directory"))
             .join("heard.tsv");
-        process::exit(replay::run(&log, Some(&mut asr)));
+        let mut c = classifier(&cfg.intent_model);
+        process::exit(replay::run(&log, Some(&mut asr), c.as_mut()));
     }
     let wake =
         wakeword::WakeWord::new(&cfg.wake_model, cfg.threshold, 5).unwrap_or_else(|e| die(e));
     let vad = asr::Vad::new(&cfg.vad_model).unwrap_or_else(|e| die(e));
+    let classifier = classifier(&cfg.intent_model);
     let tts = tts::Tts::new(cfg.tts_model.clone(), cfg.voice, cfg.speed);
     let stdin = cfg.stdin;
     let threshold = cfg.threshold;
@@ -811,6 +852,7 @@ fn main() {
         wake,
         vad,
         asr,
+        classifier,
         tts,
         state: State::Idle,
         speaking: false,

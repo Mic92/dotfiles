@@ -40,6 +40,8 @@ pub type SlotParser = fn(&[&str], Option<&str>) -> Option<Value>;
 
 pub type Slots = HashMap<String, Value>;
 
+const OPEN_SLOTS: &[&str] = &["text", "any", "place"];
+
 const FILLERS: &[&str] = &[
     "alexa", "please", "hey", "ok", "okay", "um", "uh", "so", "now", "just", "could", "can",
     "would", "you", "thanks", COMMA,
@@ -181,8 +183,7 @@ impl Template {
     }
 
     /// Up to `cap` sentences spread over every combination of alternatives,
-    /// optional words and slot `values`; training data for classifiers.
-    #[cfg(test)]
+    /// optional words and slot `values`; examples for the intent classifier.
     pub fn expand(&self, values: &impl Fn(&str) -> Option<Vec<String>>, cap: usize) -> Vec<String> {
         let mut choices: Vec<Vec<String>> = Vec::new();
         for part in &self.parts {
@@ -255,6 +256,72 @@ impl Template {
             let matches = alt.len() <= rest.len() && alt.iter().zip(rest).all(|(a, w)| a == w);
             matches.then(|| self.match_at(pi + 1, words, wi + alt.len(), slots, out))?
         })
+    }
+
+    pub fn has_slots(&self) -> bool {
+        self.parts.iter().any(|p| matches!(p, Part::Slot(..)))
+    }
+
+    /// Whether a slot takes arbitrary words, which only a full match can
+    /// delimit.
+    pub fn has_open_slots(&self) -> bool {
+        self.parts
+            .iter()
+            .any(|p| matches!(p, Part::Slot(n, _) if OPEN_SLOTS.contains(&n.as_str())))
+    }
+
+    /// Slot values found anywhere in `words`, in template order, longest
+    /// span first. `None` when a required one is missing.
+    pub fn slots_anywhere(
+        &self,
+        words: &[&str],
+        slots: &impl Fn(&str) -> Option<SlotParser>,
+    ) -> Option<Slots> {
+        if self.has_open_slots() {
+            return None;
+        }
+        let wanted: Vec<(&str, bool)> = self
+            .parts
+            .iter()
+            .filter_map(|p| match p {
+                Part::Slot(n, optional) => Some((n.as_str(), *optional)),
+                _ => None,
+            })
+            .collect();
+        let mut out = Slots::new();
+        Self::find_slots(&wanted, words, 0, slots, &mut out).then_some(out)
+    }
+
+    fn find_slots(
+        wanted: &[(&str, bool)],
+        words: &[&str],
+        from: usize,
+        slots: &impl Fn(&str) -> Option<SlotParser>,
+        out: &mut Slots,
+    ) -> bool {
+        let Some(&(name, optional)) = wanted.first() else {
+            return true;
+        };
+        let Some(parser) = slots(name) else {
+            return false;
+        };
+        let n = words.len();
+        let spans = (1..=n.saturating_sub(from))
+            .rev()
+            .flat_map(|len| (from..=n - len).map(move |a| (a, a + len)));
+        for (a, b) in spans {
+            if words[a..b].contains(&COMMA) {
+                continue;
+            }
+            let Some(value) = parser(&words[a..b], words.get(b).copied()) else {
+                continue;
+            };
+            if Self::find_slots(&wanted[1..], words, b, slots, out) {
+                out.insert(name.to_owned(), value);
+                return true;
+            }
+        }
+        optional && Self::find_slots(&wanted[1..], words, from, slots, out)
     }
 
     /// Match parts[pi..] at words[wi..]; returns the end position.
@@ -377,6 +444,30 @@ pub fn normalize(text: &str) -> Vec<String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn slots_anywhere_ignores_the_templates_words() -> Result<(), String> {
+        let num: SlotParser = |w, _| match w {
+            ["five"] => Some(Value::Number(5)),
+            _ => None,
+        };
+        let parsers = |n: &str| (n == "n" || n == "m").then_some(num);
+        let words = ["start", "a", "countdown", "of", "five", "please"];
+        let t = Template::parse("set a timer for {n} [{m}]")?;
+        let slots = t.slots_anywhere(&words, &parsers);
+        assert_eq!(
+            slots.and_then(|s| s.get("n").cloned()),
+            Some(Value::Number(5))
+        );
+        let t = Template::parse("{n} and {m}")?;
+        assert!(t.slots_anywhere(&words, &parsers).is_none());
+        let two = ["five", "and", "five"];
+        let found = t.slots_anywhere(&two, &parsers).map(|s| s.len());
+        assert_eq!(found, Some(2));
+        let t = Template::parse("note {text}")?;
+        assert!(t.slots_anywhere(&words, &|_| Some(num)).is_none());
+        Ok(())
+    }
 
     #[test]
     fn sentences_for_closed_slots() {
