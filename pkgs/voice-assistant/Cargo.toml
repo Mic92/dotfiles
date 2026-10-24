@@ -1,0 +1,30 @@
+[package]
+name = "voice-assistant"
+version = "0.1.0"
+edition = "2024"
+license = "MIT"
+
+[dependencies]
+libc = "0.2"
+pipewire = "0.10"
+pulldown-cmark = { version = "0.13.5", default-features = false }
+tinyjson = "2"
+unicode-segmentation = "1.13.3"
+
+[build-dependencies]
+bindgen = "0.72"
+cc = "1"
+
+[profile.release]
+lto = true
+
+[lints.rust]
+unsafe_op_in_unsafe_fn = "deny"
+
+[lints.clippy]
+undocumented_unsafe_blocks = "deny"
+cast_possible_truncation = "deny"
+cast_possible_wrap = "deny"
+cast_sign_loss = "deny"
+unwrap_used = "deny"
+expect_used = "deny"

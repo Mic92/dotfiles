@@ -14,6 +14,7 @@
     ./modules/mail.nix
     ./modules/noctalia
     ./modules/radicle.nix
+    ./modules/voice-assistant.nix
   ];
 
   programs.herdr.machines = [ { target = "eve"; } ];

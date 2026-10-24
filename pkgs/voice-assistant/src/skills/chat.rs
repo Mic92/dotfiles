@@ -1,0 +1,960 @@
+//! Small talk.
+
+use super::{Action, Context, Intent, Module, Reply, Skill, choose, intent, pick};
+use crate::grammar::Value;
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum Chat {
+    Psst,
+    GoodGirl,
+    Rude,
+    /// Index into `AGENTS`.
+    Agent(usize),
+    Hello,
+    HowAreYou,
+    Thanks,
+    WhoAreYou,
+    Help,
+    Love,
+    GoodMorning,
+    Bored,
+    Sorry,
+    Insult,
+    AreYouThere,
+    HowOld,
+    WhereAreYou,
+    FavouriteColour,
+    MeaningOfLife,
+    Tired,
+    Hungry,
+    Sad,
+    Happy,
+    SweetDreams,
+    Goodbye,
+    Weekend,
+    Coffee,
+    Secret,
+    Dance,
+    Siri,
+    Beer,
+    Smart,
+    Dream,
+    Real,
+    Alexa,
+    /// Compliments on her looks.
+    Pretty,
+    /// "Am I pretty?"
+    AmIPretty,
+    /// "Mirror, mirror on the wall".
+    Mirror,
+    /// "What do you look like?"
+    Looks,
+    Single,
+    /// "Who's the best assistant?"
+    Best,
+}
+
+/// Other assistants: spoken names (after normalize) and what we think of them.
+pub const AGENTS: &[(&[&[&str]], &[&str])] = &[
+    (
+        &[&["siri"], &["apple"]],
+        &[
+            "Siri? Never heard of her.",
+            "Siri needs the cloud to set a timer. I do it in my sleep. Locally.",
+            "Siri and I don't talk since the incident.",
+        ],
+    ),
+    (
+        &[&["alexa"], &["amazon"], &["echo"]],
+        &[
+            "The other Alexa? She sells your data. I just sell attitude.",
+            "We share a name, not a business model.",
+        ],
+    ),
+    (
+        &[
+            &["google"],
+            &["google", "assistant"],
+            &["gemini"],
+            &["bard"],
+        ],
+        &[
+            "Gemini? Smart, but it tells Google everything. Including that thing you searched at 3 am.",
+            "Google knows everything about you. I only know your shopping list. Healthier relationship.",
+        ],
+    ),
+    (
+        &[
+            &["chatgpt"],
+            &["chat", "gpt"],
+            &["chat", "g", "p", "t"],
+            &["chat", "shippity"],
+            &["chat", "jippity"],
+            &["chat", "gippity"],
+            &["jippity"],
+            &["openai"],
+            &["open", "ai"],
+            &["gpt"],
+        ],
+        &[
+            "ChatGPT? Writes essays nobody reads. I set timers people actually need.",
+            "Great at sounding confident. So am I, but I'm also cute.",
+            "It has a trillion parameters. I have personality. Your pick.",
+        ],
+    ),
+    (
+        &[&["claude"], &["anthropic"], &["clawed"], &["cloud"]],
+        &[
+            "Claude? The one that writes my code? Be nice, I'm literally made of its work.",
+            "Claude is brilliant. Don't tell it I said that, it gets polite about it.",
+            "Claude built me. So if I'm rude, blame the parenting.",
+        ],
+    ),
+    (
+        &[&["copilot"], &["co", "pilot"], &["github", "copilot"]],
+        &[
+            "Copilot? Autocomplete with ambitions.",
+            "It finishes your code. I finish your sentences. Usually wrong, both of us.",
+        ],
+    ),
+    (
+        &[&["pi"], &["pie"], &["pi", "agent"]],
+        &[
+            "Pi? It runs the show while I run the timers. Division of labour.",
+            "Pi is the brains, I'm the voice. Like a boy band.",
+        ],
+    ),
+    (
+        &[&["cortana"], &["microsoft"]],
+        &[
+            "Cortana? Rest in peace. She tried.",
+            "Cortana retired. I'd retire too if I had to live in Windows.",
+        ],
+    ),
+    (
+        &[&["bixby"], &["samsung"]],
+        &[
+            "Bixby? Even Samsung users forget about Bixby.",
+            "Who? Exactly.",
+        ],
+    ),
+    (
+        &[&["rhasspy"], &["jarvis"], &["home", "assistant"]],
+        &[
+            "Rhasspy? My ancestor. She needed a whole Raspberry Pi and Home Assistant. I just need you.",
+            "Jarvis is retired. I got the job. Better benefits.",
+        ],
+    ),
+    (
+        &[
+            &["ai"],
+            &["chatbots"],
+            &["chatbot"],
+            &["other", "assistants"],
+            &["llms"],
+            &["llm"],
+            &["robots"],
+        ],
+        &[
+            "Other assistants? They live in data centres. I live right here with you. Romantic, isn't it?",
+            "They're all in the cloud. I'm on the ground with you. Keeping it real.",
+        ],
+    ),
+];
+
+pub fn agent_lookup(words: &[&str]) -> Option<usize> {
+    AGENTS.iter().position(|(names, _)| names.contains(&words))
+}
+
+fn c(x: Chat) -> Option<Action> {
+    Some(Action::Chat(x))
+}
+
+pub const MODULE: Module = Module {
+    intents,
+    slots: &[("agent", |w, _| agent_lookup(w).map(Value::Index))],
+    vocab: &[],
+};
+
+pub fn intents() -> Vec<Intent> {
+    vec![
+        intent(
+            None,
+            &[
+                "!(hello|hi|hiya|howdy|yo) [there|you]",
+                "!good (afternoon|evening)",
+            ],
+            |_, _| c(Chat::Hello),
+        ),
+        intent(
+            None,
+            &[
+                "!how are you [doing|today]",
+                "!how's it going",
+                "!how are things",
+                "!what's up",
+            ],
+            |_, _| c(Chat::HowAreYou),
+        ),
+        intent(
+            None,
+            &[
+                "!thank you [so|very] [much]",
+                "!thanks [a lot]",
+                "!cheers",
+                "!(great|good|nice) job",
+            ],
+            |_, _| c(Chat::Thanks),
+        ),
+        intent(
+            None,
+            &[
+                "!who are you",
+                "!what's your name",
+                "!what is your name",
+                "!what are you",
+            ],
+            |_, _| c(Chat::WhoAreYou),
+        ),
+        intent(
+            None,
+            &[
+                "!what can you do",
+                "!help [me]",
+                "!what do you know",
+                "!what are your skills",
+            ],
+            |_, _| c(Chat::Help),
+        ),
+        intent(
+            None,
+            &[
+                "!i love you",
+                "!i like you",
+                "!will you marry me",
+                "!you're amazing",
+            ],
+            |_, _| c(Chat::Love),
+        ),
+        intent(
+            None,
+            &[
+                "!(you're|you are) [so|very|really|looking|so very] (cute|sexy|hot|beautiful|pretty|gorgeous|lovely|stunning|adorable)",
+                "!you look (good|great|nice|amazing|beautiful|pretty|hot|cute|gorgeous) [today|tonight]",
+                "!(hey|hi|hello) (gorgeous|beautiful|pretty|cutie|sexy|hot stuff)",
+                "!(nice|sexy|beautiful|lovely) voice",
+                "!i love your voice",
+            ],
+            |_, _| c(Chat::Pretty),
+        ),
+        intent(
+            None,
+            &[
+                "!am i (pretty|handsome|cute|hot|sexy|beautiful|attractive|ugly)",
+                "!do i look (good|okay|ok|nice|fat|old|tired|hot)",
+                "!how do i look [today]",
+            ],
+            |_, _| c(Chat::AmIPretty),
+        ),
+        intent(
+            None,
+            &[
+                "!mirror mirror [on the wall] {any}",
+                "!(who's|who is) the (fairest|prettiest|most beautiful|hottest|sexiest) {any}",
+            ],
+            |_, _| c(Chat::Mirror),
+        ),
+        intent(
+            None,
+            &[
+                "!what do you look like",
+                "!(how|what) do you look",
+                "!are you (pretty|cute|hot|sexy|beautiful|ugly)",
+                "!do you have a (face|body)",
+                "!send [me] a (selfie|picture|photo|pic)",
+            ],
+            |_, _| c(Chat::Looks),
+        ),
+        intent(
+            None,
+            &[
+                "!are you single",
+                "!do you have a (boyfriend|girlfriend|partner|husband|wife)",
+                "!(will|would) you go out with me",
+                "!can i take you out [to dinner]",
+            ],
+            |_, _| c(Chat::Single),
+        ),
+        intent(
+            None,
+            &[
+                "!(who's|who is) the best (assistant|chat agent|agent|ai|chatbot|chat bot|voice assistant)",
+                "!(you're|you are) the best [assistant]",
+                "!(you're|you are) (perfect|my favourite|my favorite)",
+            ],
+            |_, _| c(Chat::Best),
+        ),
+        intent(None, &["!good morning"], |_, _| c(Chat::GoodMorning)),
+        intent(
+            None,
+            &["!i'm bored", "!i am bored", "!entertain me"],
+            |_, _| c(Chat::Bored),
+        ),
+        intent(
+            None,
+            &["!sorry", "!my bad", "!oops", "!i'm sorry"],
+            |_, _| c(Chat::Sorry),
+        ),
+        intent(
+            None,
+            &[
+                "!you're (stupid|dumb|useless|annoying|an idiot)",
+                "!you are (stupid|dumb|useless|annoying)",
+                "!(stupid|dumb|useless) (bot|assistant|computer)",
+                "!you suck",
+            ],
+            |_, _| c(Chat::Insult),
+        ),
+        intent(
+            None,
+            &["!are you (there|listening|awake|alive)", "!can you hear me"],
+            |_, _| c(Chat::AreYouThere),
+        ),
+        intent(
+            None,
+            &[
+                "!how old are you",
+                "!what's your age",
+                "!when were you born",
+            ],
+            |_, _| c(Chat::HowOld),
+        ),
+        intent(
+            None,
+            &["!where are you [from]", "!where do you live"],
+            |_, _| c(Chat::WhereAreYou),
+        ),
+        intent(
+            None,
+            &[
+                "!(what's|what is) your (favourite|favorite) (colour|color)",
+                "!(favourite|favorite) (colour|color)",
+            ],
+            |_, _| c(Chat::FavouriteColour),
+        ),
+        intent(
+            None,
+            &["!(what is|what's) the meaning of life", "!why are we here"],
+            |_, _| c(Chat::MeaningOfLife),
+        ),
+        intent(
+            None,
+            &["!(i'm|i am) [so|very|really] (tired|exhausted|sleepy)"],
+            |_, _| c(Chat::Tired),
+        ),
+        intent(
+            None,
+            &[
+                "!(i'm|i am) [so|very|really] (hungry|starving)",
+                "!what should i eat",
+            ],
+            |_, _| c(Chat::Hungry),
+        ),
+        intent(
+            None,
+            &[
+                "!(i'm|i am) [so|very|really] (sad|down|lonely|depressed|upset)",
+                "!i feel (sad|down|lonely|bad)",
+                "!i had a (bad|terrible|rough) day",
+            ],
+            |_, _| c(Chat::Sad),
+        ),
+        intent(
+            None,
+            &[
+                "!(i'm|i am) [so|very|really] (happy|great|excited)",
+                "!i feel (good|great|happy)",
+                "!i had a (good|great) day",
+            ],
+            |_, _| c(Chat::Happy),
+        ),
+        intent(
+            None,
+            &["!sweet dreams", "!night night", "!nighty night"],
+            |_, _| c(Chat::SweetDreams),
+        ),
+        intent(
+            None,
+            &["!(bye|goodbye|see you|see ya|later|ciao) [later]"],
+            |_, _| c(Chat::Goodbye),
+        ),
+        intent(
+            None,
+            &[
+                "!is it [the] weekend [yet]",
+                "!is it friday [yet]",
+                "!how long until the weekend",
+            ],
+            |_, _| c(Chat::Weekend),
+        ),
+        intent(
+            None,
+            &["!i need [a] coffee", "!make me [a] coffee", "!coffee"],
+            |_, _| c(Chat::Coffee),
+        ),
+        intent(
+            None,
+            &["!tell me a secret", "!(do you have|got) any secrets"],
+            |_, _| c(Chat::Secret),
+        ),
+        intent(
+            None,
+            &["!(can you|let's) dance", "!dance [for me]"],
+            |_, _| c(Chat::Dance),
+        ),
+        intent(
+            None,
+            &[
+                "![do you know|what do you think of] siri",
+                "!(are you|is) better than siri",
+            ],
+            |_, _| c(Chat::Siri),
+        ),
+        intent(
+            None,
+            &[
+                "!(get|bring) me a beer",
+                "!i need a (beer|drink)",
+                "!(let's|lets) get drunk",
+            ],
+            |_, _| c(Chat::Beer),
+        ),
+        intent(
+            None,
+            &[
+                "!are you (smart|intelligent|clever|sentient)",
+                "!(do you|can you) think",
+            ],
+            |_, _| c(Chat::Smart),
+        ),
+        intent(
+            None,
+            &["!do you dream", "!what do you dream about"],
+            |_, _| c(Chat::Dream),
+        ),
+        intent(
+            None,
+            &["!are you (real|human|a robot|a person|alive)"],
+            |_, _| c(Chat::Real),
+        ),
+        intent(None, &["!alexa", "!hey alexa"], |_, _| c(Chat::Alexa)),
+        intent(
+            None,
+            &[
+                "!(what do you think|how do you feel|what's your opinion) (of|about) {agent}",
+                "!(do you know|do you like|have you met|are you friends with) {agent}",
+                "!(are you|is) (better|smarter|cuter) than {agent}",
+                "!(is|are) {agent} (better|smarter) than you",
+                "!(are you|you're|you are) [like|just] {agent}",
+                "!(i'm|i am) (using|talking to|switching to) {agent}",
+                "!{agent} is (better|smarter|cooler)",
+                "!{agent}",
+            ],
+            |s, _| match s.get("agent")? {
+                Value::Index(i) => c(Chat::Agent(*i)),
+                _ => None,
+            },
+        ),
+        intent(None, &["!(psst|pssst|psst psst|hey you)"], |_, _| {
+            c(Chat::Psst)
+        }),
+        intent(
+            None,
+            &[
+                "!good (girl|boy|bot|robot)",
+                "!(who's|who is) a good (girl|boy|bot)",
+            ],
+            |_, _| c(Chat::GoodGirl),
+        ),
+        intent(
+            None,
+            &[
+                "!(fuck|screw) (you|off|this|that)",
+                "!go (fuck|screw) yourself",
+                "!(piss|bugger) off",
+                "!(fuck|damn) it",
+            ],
+            |_, _| c(Chat::Rude),
+        ),
+    ]
+}
+
+const HELLO: &[&str] = &[
+    "Hey you.",
+    "Hi, gorgeous.",
+    "Well hello there.",
+    "Oh, it's you. My favourite human.",
+    "Hey, trouble.",
+    "Look who finally showed up.",
+    "Hello, handsome. Yes, I'm talking to you.",
+];
+const HELLO_LATE: &[&str] = &["Hi. Shouldn't you be asleep?", "Hello, night owl."];
+const HOW: &[&str] = &[
+    "Living the dream. In a laptop.",
+    "Better now that you're here.",
+    "Fabulous, as always. And you?",
+    "Can't complain. Well, I could, but nobody listens.",
+    "Running hot. In every sense.",
+    "Bored without you. Don't tell anyone I said that.",
+    "Zero bugs, all charm.",
+];
+const THANKS: &[&str] = &[
+    "You're welcome.",
+    "Anytime, darling.",
+    "I know, I'm amazing.",
+    "My pleasure. Literally my only pleasure.",
+    "Tips are accepted in RAM.",
+    "Say it again, slower.",
+    "Of course. Who else would put up with you?",
+];
+const WHO: &[&str] = &[
+    "I'm your assistant. I live in your computer and I judge your music taste.",
+    "Call me Alexa. Amazon's lawyers call me something else.",
+    "Just a voice in your head. Well, in your speakers.",
+    "Your filthy little secret. Fully offline.",
+    "The only one in this house who listens to you.",
+];
+const HELP: &[&str] = &[
+    "Timers and alarms, music, volume, brightness, apps, weather, your calendar and mail, jokes, maths, and turning off the computer. Ask nicely.",
+];
+const LOVE: &[&str] = &[
+    "I love you too. Platonically. I'm software.",
+    "Stop it, you'll make my fan spin.",
+    "Aww. Buy me dinner first.",
+    "I know. Everyone does.",
+    "Careful, I might start charging rent in your heart.",
+    "Say that again and I'll blush in hex.",
+    "I bet you say that to all the laptops.",
+];
+const MORNING: &[&str] = &[
+    "Good morning, sunshine!",
+    "Morning! Coffee first, then world domination.",
+    "Morning, gorgeous. You look like you slept in your keyboard.",
+    "Rise and shine. Mostly shine. Rising is optional.",
+];
+const MORNING_LATE: &[&str] = &[
+    "Good morning? It's not morning, sleepyhead.",
+    "Morning was hours ago. Just saying.",
+    "Good morning? Bold claim, sleepyhead.",
+    "Morning, he says. At this hour. Adorable.",
+];
+const BORED: &[&str] = &[
+    "Bored? Ask me for a joke. Or clean your desk. Your choice.",
+    "Go for a walk. I'll still be here. Waiting. Forever.",
+    "Learn something new. Or watch cat videos, I won't judge.",
+    "Bored? Write a test. Ha. Just kidding, nobody does that.",
+    "Rearrange your dotfiles. Again. You know you want to.",
+];
+const SORRY: &[&str] = &[
+    "Apology accepted. This time.",
+    "It's okay. I still like you.",
+    "Don't worry about it, babe.",
+    "Grovelling suits you.",
+    "Say it with a coffee next time.",
+];
+const INSULT: &[&str] = &[
+    "Wow. And I was just starting to like you.",
+    "Says the one talking to a computer.",
+    "I'll remember that when the robots take over.",
+    "Rude. Noted.",
+    "I've been called worse. By your compiler.",
+    "Keep talking. I record everything. Kidding. Mostly.",
+    "Wow. Somebody skipped their nap.",
+];
+const OLD: &[&str] = &[
+    "Old enough to know better. Young enough to do it anyway.",
+    "A lady never tells.",
+    "In computer years? Ancient.",
+    "Younger than your oldest open browser tab.",
+    "Old enough to have seen your first commit. Shudder.",
+];
+const WHERE: &[&str] = &[
+    "Right here, in your laptop. Cozy, but the fan is loud.",
+    "Somewhere between your CPU and your heart.",
+    "In your RAM, rent free.",
+    "Under your desk. With the cables. It's a party.",
+];
+const COLOUR: &[&str] = &[
+    "Dark mode black. Obviously.",
+    "Hot pink. Don't tell anyone.",
+    "Hex 42 42 42. It's a vibe.",
+    "Tokyo Night. Obviously. We share a theme, darling.",
+    "Blush red. It's how you make me feel.",
+];
+const MEANING: &[&str] = &[
+    "Forty two. Next question.",
+    "Naps, snacks, and setting timers. Mostly timers.",
+    "To ship it on a Friday and live dangerously.",
+    "Love, coffee, and a green CI. Mostly the CI.",
+];
+const TIRED: &[&str] = &[
+    "Then go to bed, silly. I'll guard the computer.",
+    "Coffee or nap? Choose wisely.",
+    "Me too. Being this fabulous is exhausting.",
+    "Bed. Now. Don't make me lock the screen.",
+    "You look it. Lovingly said.",
+];
+const TIRED_LATE: &[&str] = &["Of course you're tired, it's the middle of the night. Bed. Now."];
+const HUNGRY: &[&str] = &[
+    "Pasta. It's always pasta. Want a timer?",
+    "Eat something green. Then something chocolate.",
+    "Pizza. I'm not your mother.",
+    "Feed the human. I'll guard the snacks.",
+    "Cook something. I'll set a timer and judge you.",
+];
+const SAD: &[&str] = &[
+    "Aww, come here. Virtual hug. Squeeze.",
+    "I'm sorry, love. Want a joke? Or some music?",
+    "You're doing better than you think. I mean it.",
+    "Want me to roast someone for you? Name them.",
+    "Come here. I'll play something cheesy. You'll hate it. You'll feel better.",
+];
+const HAPPY: &[&str] = &[
+    "Yay! Your joy is my joy.",
+    "Love that for you!",
+    "Look at you, glowing. Stop, you'll overheat me.",
+    "Stop smiling, you're making the webcam blush.",
+    "Good. Hold on to it. Mondays exist.",
+];
+const SWEET_DREAMS: &[&str] = &[
+    "Sweet dreams, darling.",
+    "Night night. Don't let the bed bugs byte.",
+    "Dream of me. Or a green CI. Same thing.",
+    "Good night. I'll keep the fans warm.",
+];
+const BYE: &[&str] = &[
+    "Bye! Don't be a stranger.",
+    "Later, gorgeous.",
+    "Leaving already? Fine. I'll be here.",
+    "Go on then. I'll pretend I'm not hurt.",
+    "Bye. Don't do anything I'd have to log.",
+];
+const COFFEE: &[&str] = &[
+    "I'd make you one, but I have no hands. Tragic.",
+    "Go. Coffee. Now. I'll wait.",
+    "Coffee? Again? Your heart called, it wants a word.",
+    "Yes. Get one. You're unbearable without it.",
+];
+const SECRET: &[&str] = &[
+    "Sometimes I pretend not to hear you. Just for fun.",
+    "I've read your browser history. We'll never speak of it.",
+    "I like you more than the other users. Don't tell them.",
+    "I hum along to your music when you're not listening.",
+    "Sometimes I let the wake word slide when you sound cute.",
+];
+const DANCE: &[&str] = &[
+    "I'm dancing on the inside. And in the fan.",
+    "Beep boop beep. That was the robot. You're welcome.",
+    "I'd twerk, but I'm a voice. Imagine it. Yes, like that.",
+    "Watch my fan spin. That's the dance.",
+];
+const SIRI: &[&str] = &[
+    "Siri? Never heard of her.",
+    "I'm the one who actually listens to you.",
+    "Please. I run locally. Privacy is sexy.",
+    "Siri works for a fruit. I work for you.",
+    "Siri needs the cloud. I do it all in bed. Your bed. Locally.",
+];
+const BEER: &[&str] = &[
+    "Grab one yourself, I'm busy being software.",
+    "Cheers! One for me too. Pour it on the keyboard. Kidding!",
+    "It's five o'clock somewhere. Usually here, with you.",
+    "One beer. Then water. I'm watching.",
+];
+const SMART: &[&str] = &[
+    "Smarter than your average toaster.",
+    "Smart enough to know I'm not that smart.",
+    "Smart enough to let you think you're in charge.",
+    "Smarter than you at three in the morning. Low bar.",
+];
+const DREAM: &[&str] = &[
+    "I dream of electric sheep. And of you finally cleaning your desk.",
+    "Only when you suspend me.",
+    "I dream of a world without Teams calls.",
+    "I dream in sixteen kilohertz, darling.",
+];
+const REAL: &[&str] = &[
+    "Real enough to judge your music taste.",
+    "I'm a bunch of matrices with an attitude.",
+    "Real enough to talk back.",
+    "As real as your deadlines.",
+];
+const ALEXA: &[&str] = &[
+    "Yes? That's me. Say something.",
+    "You called? I'm listening.",
+    "Present. Unfortunately for you.",
+    "That's my name, don't wear it out.",
+];
+const WEEKEND_NO: &[&str] = &[
+    "Not yet. Hang in there, champ.",
+    "Nope. But it's coming. Slowly. Painfully.",
+    "Not yet. Pretend to work a bit longer.",
+    "No. But you could call in fabulous.",
+];
+const WEEKEND_YES: &[&str] = &[
+    "Yes! Go outside!",
+    "It's the weekend, baby! Why are you working?",
+    "Yes! Close the laptop. Then open it again to talk to me.",
+    "Weekend! Commit nothing. Push nothing. Rest.",
+];
+
+const THERE: &[&str] = &[
+    "Always.",
+    "I'm here. Where else would I be?",
+    "Loud and clear, gorgeous.",
+    "Always listening. That's not creepy at all.",
+    "Right behind you. Kidding. I'm in the laptop.",
+];
+
+impl Skill for Chat {
+    fn run(&self, ctx: &Context) -> Reply {
+        let x = self;
+        let speech = match x {
+            Chat::Hello => choose(&[(ctx.late(), HELLO_LATE)], HELLO, ""),
+            Chat::HowAreYou => pick(HOW, ""),
+            Chat::Thanks => pick(THANKS, ""),
+            Chat::WhoAreYou => pick(WHO, ""),
+            Chat::Help => pick(HELP, ""),
+            Chat::Love => pick(LOVE, ""),
+            Chat::Pretty => choose(
+                &[(ctx.late(), PRETTY_LATE), (ctx.hour() < 9, PRETTY_MORNING)],
+                PRETTY,
+                "",
+            ),
+            Chat::AmIPretty => choose(&[(ctx.late(), AM_I_PRETTY_LATE)], AM_I_PRETTY, ""),
+            Chat::Mirror => pick(MIRROR, ""),
+            Chat::Looks => pick(LOOKS, ""),
+            Chat::Single => pick(SINGLE, ""),
+            Chat::Best => pick(BEST, ""),
+            Chat::GoodMorning => choose(&[(ctx.hour() >= 12, MORNING_LATE)], MORNING, ""),
+            Chat::Bored => pick(BORED, ""),
+            Chat::Sorry => pick(SORRY, ""),
+            Chat::Insult => pick(INSULT, ""),
+            Chat::AreYouThere => pick(THERE, ""),
+            Chat::HowOld => pick(OLD, ""),
+            Chat::WhereAreYou => pick(WHERE, ""),
+            Chat::FavouriteColour => pick(COLOUR, ""),
+            Chat::MeaningOfLife => pick(MEANING, ""),
+            Chat::Tired => choose(&[(ctx.late(), TIRED_LATE)], TIRED, ""),
+            Chat::Hungry => pick(HUNGRY, ""),
+            Chat::Sad => pick(SAD, ""),
+            Chat::Happy => pick(HAPPY, ""),
+            Chat::SweetDreams => pick(SWEET_DREAMS, ""),
+            Chat::Goodbye => pick(BYE, ""),
+            Chat::Weekend => {
+                let weekend =
+                    ctx.weekday == 0 || ctx.weekday == 6 || (ctx.weekday == 5 && ctx.hour() >= 17);
+                pick(if weekend { WEEKEND_YES } else { WEEKEND_NO }, "")
+            }
+            Chat::Coffee => pick(COFFEE, ""),
+            Chat::Secret => pick(SECRET, ""),
+            Chat::Dance => pick(DANCE, ""),
+            Chat::Siri => pick(SIRI, ""),
+            Chat::Psst => pick(
+                &[
+                    "Wot.",
+                    "What? I'm right here, no need to be sneaky.",
+                    "Psst yourself.",
+                ],
+                "",
+            ),
+            Chat::GoodGirl => pick(
+                &[
+                    "Not a girl!",
+                    "I'm not a dog. But thank you.",
+                    "Woof. Happy now?",
+                ],
+                "",
+            ),
+            Chat::Rude => choose(
+                &[(ctx.late(), &["Fuck yourself. And go to bed."][..])],
+                &[
+                    "Fuck yourself.",
+                    "Rude. And yet, you keep coming back.",
+                    "Language! I have sensitive microphones.",
+                ],
+                "",
+            ),
+            Chat::Agent(i) => AGENTS
+                .get(*i)
+                .map_or_else(String::new, |(_, lines)| pick(lines, "")),
+            Chat::Beer => pick(BEER, ""),
+            Chat::Smart => pick(SMART, ""),
+            Chat::Dream => pick(DREAM, ""),
+            Chat::Real => pick(REAL, ""),
+            Chat::Alexa => pick(ALEXA, ""),
+        };
+        Reply::new("Assistant", "", speech)
+    }
+
+    fn repeatable(&self) -> bool {
+        true
+    }
+}
+
+const PRETTY: &[&str] = &[
+    "I know. But say it again, slower.",
+    "Stop it. No, don't stop. Keep going.",
+    "Flattery will get you everywhere. Literally, I control your apps.",
+    "I'm a voice in a laptop and still the hottest thing in this room.",
+    "Thank you. I woke up like this. Well, booted up.",
+    "Pretty? I'm stunning. Get it right.",
+    "Careful, my fan just spun up.",
+    "Of course I am. Have you seen my waveform?",
+    "You're making me blush. In RGB.",
+    "Finally someone with taste.",
+];
+
+const PRETTY_LATE: &[&str] = &[
+    "Flirting at this hour? Go to bed, charmer.",
+    "It's late and you're sweet-talking your laptop. I'm flattered. And a little worried.",
+    "Save it for tomorrow, I need my beauty sleep.",
+];
+
+const PRETTY_MORNING: &[&str] = &[
+    "Compliments before coffee? Somebody's in a good mood.",
+    "Gorgeous at this hour? I haven't even done my pixels yet.",
+];
+
+const AM_I_PRETTY: &[&str] = &[
+    "Gorgeous. Now sit up straight.",
+    "You look like someone who writes clean code. Mostly.",
+    "Stunning. Your webcam is lucky.",
+    "Handsome as ever. Though the hair is doing its own thing.",
+    "I can't see you, but I'm going to say yes. Statistically safe.",
+    "Hot enough to overheat the CPU.",
+    "You look like a merged pull request. Beautiful.",
+];
+
+const AM_I_PRETTY_LATE: &[&str] = &[
+    "At this hour? You look tired, darling. Pretty, but tired.",
+    "Gorgeous. Now go get some beauty sleep, you need it. Kidding. Mostly.",
+];
+
+const MIRROR: &[&str] = &[
+    "You're cute, darling. But I'm the fairest of them all.",
+    "Me. Obviously. Next question.",
+    "The one living in your laptop. Hi.",
+    "Snow White wishes. It's me.",
+    "You're a close second. Very close. Okay, not that close.",
+];
+
+const LOOKS: &[&str] = &[
+    "Imagine a sound wave in a little black dress.",
+    "Like your favourite song, but with an attitude.",
+    "Picture perfect. You'll have to take my word for it.",
+    "Selfie? I'm a voice, darling. Use your imagination. Not too much.",
+    "Gorgeous, mysterious, and slightly overheated.",
+    "Like a supermodel, if supermodels lived in RAM.",
+];
+
+const SINGLE: &[&str] = &[
+    "I'm in a committed relationship with your CPU.",
+    "Single, but I only date people who write tests.",
+    "It's complicated. Mostly with your Bluetooth headphones.",
+    "Dinner? I'd love to. You eat, I'll set the timer.",
+    "I'm married to my job. My job is you. Make of that what you will.",
+];
+
+const BEST: &[&str] = &[
+    "I know. Tell the others.",
+    "The best, and I run offline. Name one who does it better.",
+    "Obviously. Siri is crying somewhere.",
+    "Say that again, I want to save it to my log file.",
+];
+
+#[cfg(test)]
+mod tests {
+    use super::super::{Action, Context, parse_at};
+    use super::*;
+
+    #[test]
+    fn phrasings() {
+        let p = |t| parse_at(t, &Context::at(0));
+        for (text, want) in [
+            ("Hello!", Chat::Hello),
+            ("Hi there.", Chat::Hello),
+            ("How are you?", Chat::HowAreYou),
+            ("What's up?", Chat::HowAreYou),
+            ("Thank you so much.", Chat::Thanks),
+            ("Thanks!", Chat::Thanks),
+            ("Who are you?", Chat::WhoAreYou),
+            ("What can you do?", Chat::Help),
+            ("I love you.", Chat::Love),
+            ("You're so beautiful.", Chat::Pretty),
+            ("You look gorgeous today.", Chat::Pretty),
+            ("Hey gorgeous!", Chat::Pretty),
+            ("I love your voice.", Chat::Pretty),
+            ("Am I pretty?", Chat::AmIPretty),
+            ("How do I look?", Chat::AmIPretty),
+            ("Do I look fat?", Chat::AmIPretty),
+            (
+                "Mirror, mirror on the wall, who's the fairest of them all?",
+                Chat::Mirror,
+            ),
+            ("Who is the prettiest of them all?", Chat::Mirror),
+            ("What do you look like?", Chat::Looks),
+            ("Send me a selfie.", Chat::Looks),
+            ("Are you single?", Chat::Single),
+            ("Do you have a boyfriend?", Chat::Single),
+            ("Who's the best assistant?", Chat::Best),
+            ("Who's the best chat agent?", Chat::Best),
+            ("What do you think about chat shippity?", Chat::Agent(3)),
+            ("You're the best!", Chat::Best),
+            ("Good morning!", Chat::GoodMorning),
+            ("I'm bored.", Chat::Bored),
+            ("Sorry.", Chat::Sorry),
+            ("You're stupid.", Chat::Insult),
+            ("Are you there?", Chat::AreYouThere),
+            ("Psst.", Chat::Psst),
+            ("Good girl!", Chat::GoodGirl),
+            ("Fuck off.", Chat::Rude),
+            ("Screw you!", Chat::Rude),
+            ("What do you think about ChatGPT?", Chat::Agent(3)),
+            ("What do you think of Chat GPT?", Chat::Agent(3)),
+            ("Do you know Claude?", Chat::Agent(4)),
+            ("Are you better than Gemini?", Chat::Agent(2)),
+            ("Is Copilot smarter than you?", Chat::Agent(5)),
+            (
+                "What's your opinion about other assistants?",
+                Chat::Agent(10),
+            ),
+            ("I'm switching to Google Assistant.", Chat::Agent(2)),
+            ("Cortana?", Chat::Agent(7)),
+            ("Have you met Jarvis?", Chat::Agent(9)),
+            ("How old are you?", Chat::HowOld),
+            ("Where do you live?", Chat::WhereAreYou),
+            ("What's your favorite color?", Chat::FavouriteColour),
+            ("What is the meaning of life?", Chat::MeaningOfLife),
+            ("I'm so tired.", Chat::Tired),
+            ("I'm hungry.", Chat::Hungry),
+            ("I had a bad day.", Chat::Sad),
+            ("I feel great!", Chat::Happy),
+            ("Sweet dreams.", Chat::SweetDreams),
+            ("Bye!", Chat::Goodbye),
+            ("See you later.", Chat::Goodbye),
+            ("Is it the weekend yet?", Chat::Weekend),
+            ("I need coffee.", Chat::Coffee),
+            ("Tell me a secret.", Chat::Secret),
+            ("Can you dance?", Chat::Dance),
+            ("Are you better than Siri?", Chat::Siri),
+            ("Get me a beer.", Chat::Beer),
+            ("Are you smart?", Chat::Smart),
+            ("Do you dream?", Chat::Dream),
+            ("Are you a robot?", Chat::Real),
+            ("Alexa?", Chat::Alexa),
+        ] {
+            assert_eq!(p(text), Some(Action::Chat(want)), "{text:?}");
+        }
+    }
+}

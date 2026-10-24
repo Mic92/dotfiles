@@ -73,6 +73,7 @@ in
   // lib.optionalAttrs pkgs.stdenv.hostPlatform.isLinux {
     live-text = pkgs.python3.pkgs.callPackage ./live-text { };
     phantun = pkgs.callPackage ./phantun { };
+    voice-assistant = pkgs.callPackage ./voice-assistant { };
     goatcounter = pkgs.callPackage ./goatcounter { };
     mastodon-hnbot = pkgs.python3.pkgs.callPackage ./mastodon-hnbot { };
     vaultwarden_ldap = pkgs.callPackage ./vaultwarden_ldap { };
