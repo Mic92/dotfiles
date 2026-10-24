@@ -51,6 +51,8 @@ struct Config {
     replay: bool,
     /// WAV files to transcribe without a prompt, then exit.
     transcribe: Vec<PathBuf>,
+    /// Texts to run through the grammar, then exit.
+    parse: Vec<String>,
 }
 
 fn default_path(build_env: Option<&str>) -> PathBuf {
@@ -62,8 +64,9 @@ fn usage() -> ! {
         "usage: voice-assistant [--wake-model F] [--threshold P] [--vad-model F] [--whisper-model F]\n\
          \x20                      [--language L] [--threads N] [--sounds DIR] [--tts-model DIR]\n\
          \x20                      [--voice N] [--speed X] [--no-tts] [--verbose] [--stdin]\n\
-         \x20                      [--debug-dir DIR] [--say TEXT] [--replay]\n\
+         \x20                      [--debug-dir DIR] [--say TEXT] [--replay] [--parse TEXT|-]\n\
          --say speaks TEXT with the configured voice and exits.\n\
+         --parse shows how TEXT (or each stdin line for -) is understood and exits.\n\
          --replay re-checks every logged utterance against the current build.\n\
          --debug-dir saves the audio around each wake word and command as WAV.\n\
          --stdin processes raw 16 kHz s16le mono from stdin instead of PipeWire."
@@ -90,6 +93,7 @@ fn parse_args() -> Config {
         say: None,
         replay: false,
         transcribe: Vec::new(),
+        parse: Vec::new(),
     };
     let mut args = env::args().skip(1);
     while let Some(a) = args.next() {
@@ -112,6 +116,7 @@ fn parse_args() -> Config {
             "--say" => c.say = Some(val()),
             "--replay" => c.replay = true,
             "--transcribe" => c.transcribe.push(val().into()),
+            "--parse" => c.parse.push(val()),
             _ => usage(),
         }
     }
@@ -741,6 +746,31 @@ fn run_pipewire(tx: mpsc::Sender<Vec<i16>>) -> Result<(), Box<dyn error::Error>>
     Ok(())
 }
 
+/// Exit code 1 when any text matched nothing, so it can gate scripts.
+fn parse_texts(texts: &[String]) -> i32 {
+    let ctx = skills::Context::local();
+    let mut texts: Vec<String> = texts.to_vec();
+    if let Some(i) = texts.iter().position(|t| t == "-") {
+        let lines = io::stdin().lines().map_while(Result::ok);
+        texts.splice(i..=i, lines.filter(|l| !l.trim().is_empty()));
+    }
+    let mut missed = false;
+    for t in &texts {
+        let (tier, action) = match skills::parse_tier(t, &ctx, false) {
+            Some(a) => ("intent  ", Some(a)),
+            None => ("fallback", skills::parse_tier(t, &ctx, true)),
+        };
+        match action {
+            Some(a) => println!("{tier}  {t}\n          {a:?}"),
+            None => {
+                missed = true;
+                println!("MISS      {t}");
+            }
+        }
+    }
+    i32::from(missed)
+}
+
 fn main() {
     let cfg = parse_args();
     if let Some(text) = &cfg.say {
@@ -750,6 +780,9 @@ fn main() {
             thread::sleep(Duration::from_millis(50));
         }
         return;
+    }
+    if !cfg.parse.is_empty() {
+        process::exit(parse_texts(&cfg.parse));
     }
     whisper::init();
     let wake =
