@@ -231,8 +231,9 @@ impl Assistant {
         }
     }
 
-    /// Log every utterance for `--replay`; misses keep their audio as
-    /// material for new skills and test cases.
+    /// Log every utterance with its audio for `--replay`: misses are
+    /// material for new skills, and commands are the test set for trying
+    /// other speech recognisers.
     fn log_heard(&self, text: &str, action: Option<&skills::Action>, audio: &[f32]) {
         if self.cfg.stdin {
             return;
@@ -241,9 +242,12 @@ impl Assistant {
             return;
         };
         let stamp = store::unix_ms() / 1000;
-        let wav = action
-            .is_none()
-            .then(|| dir.join("misses").join(format!("{stamp}.wav")));
+        let sub = if action.is_some() {
+            "commands"
+        } else {
+            "misses"
+        };
+        let wav = (!audio.is_empty()).then(|| dir.join(sub).join(format!("{stamp}.wav")));
         let line = store::tsv(&[
             &stamp.to_string(),
             text,
@@ -257,7 +261,7 @@ impl Assistant {
             .map_or(Ok(()), |w| store::write_wav(w, &store::to_pcm(audio)))
             .and_then(|()| store::append(&dir.join("heard.tsv"), &line));
         if let Err(e) = res {
-            eprintln!("voice-assistant: saving miss: {e}");
+            eprintln!("voice-assistant: saving utterance: {e}");
         }
     }
 
@@ -529,7 +533,7 @@ impl Assistant {
             return;
         };
         self.log(&format!("action {action:?}"));
-        self.log_heard(&text, Some(&action), &[]);
+        self.log_heard(&text, Some(&action), audio);
         self.wakelog.outcome("command", &text);
         if self.cfg.stdin {
             return;
