@@ -76,9 +76,10 @@ background_opacity = 0.93
 margin_edge = 4
 margin_ends = 4
 widget_spacing = 10
-start = ["launcher", "clock", "timer", "cpu", "net-rx", "net-tx", "active_window", "media"]
+start = ["launcher", "clock", "timer", "cpu", "net-rx", "net-tx", "active_window"]
 center = ["workspaces"]
 end = [
+  "media",
   "alerts",
   "tray",
   "mail",
@@ -103,6 +104,13 @@ left = "panel-toggle control-center calendar"
 [widget.active_window]
 max_length = 200
 
+[widget.workspaces]
+style = "focus_hint"
+focused_color = "primary"
+occupied_color = "on_surface_variant"
+empty_color = "surface_variant"
+hide_when_empty = false
+
 [widget.media]
 hide_when_no_media = true
 max_length = 180
@@ -123,6 +131,7 @@ network_speed_compact = true
 
 [widget.timer]
 type = "noctalia/timer:bar"
+show_idle_on_horizontal = false
 
 [widget.phone]
 type = "icefish/phone-connect:bar"
