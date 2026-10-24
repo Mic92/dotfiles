@@ -620,6 +620,79 @@ mod tests {
 
     pub const AT_14H: Context = Context::at(14 * 3600);
 
+    /// `DUMP_EXAMPLES=f.tsv cargo test dump_examples -- --ignored` writes
+    /// `kind \t sentence` for every intent, as training data for a classifier.
+    #[test]
+    #[ignore]
+    fn dump_examples() {
+        const POOL: &[&str] = &[
+            "five minutes",
+            "ten minutes",
+            "one hour",
+            "7 pm",
+            "half past six",
+            "noon",
+            "tomorrow",
+            "today",
+            "tomorrow morning",
+            "this evening",
+            "3",
+            "20",
+            "50",
+            "munich",
+            "berlin",
+            "milk",
+            "milk and eggs",
+            "shopping",
+            "firefox",
+            "terminal",
+            "two plus two",
+            "something",
+            "the dishes",
+            "wifi",
+        ];
+        let values = |slot: &str| -> Option<Vec<String>> {
+            if let Some(v) = closed_values(slot) {
+                return Some(v.iter().take(3).map(|w| w.join(" ")).collect());
+            }
+            let parse = slot_parser(slot)?;
+            let ok: Vec<String> = POOL
+                .iter()
+                .filter(|p| parse(&p.split(' ').collect::<Vec<_>>(), None).is_some())
+                .take(3)
+                .map(|p| (*p).to_owned())
+                .collect();
+            (!ok.is_empty()).then_some(ok)
+        };
+        let skip = followup::intents().len();
+        let mut out = String::new();
+        for i in INTENTS.iter().skip(skip).filter(|i| !i.fallback) {
+            for t in &i.templates {
+                for s in t.expand(&values, 40) {
+                    // The grammar labels its own sentences; unparsable
+                    // samples (a slot value that needs context) are dropped.
+                    if let Some(a) = parse_at(&s, &AT_14H) {
+                        out.push_str(&format!("{}\t{s}\n", crate::replay::kind(&a)));
+                    }
+                }
+            }
+        }
+        let path = std::env::var("DUMP_EXAMPLES").expect("DUMP_EXAMPLES");
+        std::fs::write(path, out).expect("write");
+    }
+
+    /// `SOUND_ALIKES=in.txt cargo test dump_sound_alikes -- --ignored`
+    /// prints the rescore candidates of every line, tab separated, so other
+    /// recognisers can be tried on the same choices.
+    #[test]
+    #[ignore]
+    fn dump_sound_alikes() {
+        let path = std::env::var("SOUND_ALIKES").expect("SOUND_ALIKES");
+        for heard in std::fs::read_to_string(path).expect("read").lines() {
+            println!("{heard}\t{}", sound_alikes(heard, 8).join("\t"));
+        }
+    }
+
     #[test]
     fn wake_word_is_stripped() {
         assert_eq!(strip_wake_word("Alexa, play music."), Some("play music."));

@@ -180,6 +180,48 @@ impl Template {
             .collect()
     }
 
+    /// Up to `cap` sentences spread over every combination of alternatives,
+    /// optional words and slot `values`; training data for classifiers.
+    #[cfg(test)]
+    pub fn expand(&self, values: &impl Fn(&str) -> Option<Vec<String>>, cap: usize) -> Vec<String> {
+        let mut choices: Vec<Vec<String>> = Vec::new();
+        for part in &self.parts {
+            let join = |a: &Alts| a.iter().map(|w| w.join(" ")).collect::<Vec<_>>();
+            choices.push(match part {
+                Part::Word(a) => join(a),
+                Part::Optional(a) => std::iter::once(String::new()).chain(join(a)).collect(),
+                Part::Slot(name, optional) => {
+                    let Some(v) = values(name) else {
+                        return Vec::new();
+                    };
+                    let none = optional.then(String::new);
+                    none.into_iter().chain(v).collect()
+                }
+            });
+        }
+        let total = choices
+            .iter()
+            .try_fold(1usize, |n, c| n.checked_mul(c.len()))
+            .unwrap_or(usize::MAX);
+        let n = total.min(cap);
+        (0..n)
+            .map(|k| {
+                // Evenly spaced indices, decoded as mixed-radix numbers.
+                let mut i = if n == total { k } else { k * (total / n) };
+                let words: Vec<&str> = choices
+                    .iter()
+                    .map(|c| {
+                        let w = &c[i % c.len()];
+                        i /= c.len();
+                        w.as_str()
+                    })
+                    .filter(|w| !w.is_empty())
+                    .collect();
+                words.join(" ")
+            })
+            .collect()
+    }
+
     /// Best match in `words`: the number of ignored non-filler words and the slots.
     pub fn find(
         &self,
