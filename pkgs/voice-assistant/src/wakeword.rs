@@ -1,7 +1,7 @@
 //! microWakeWord: TFLite micro frontend features -> streaming TFLite model.
 
 use std::collections::VecDeque;
-use std::ffi::{CString, c_void};
+use std::ffi::{CString, c_char, c_void};
 use std::mem;
 use std::path::Path;
 use std::ptr;
@@ -24,7 +24,7 @@ struct QuantParams {
 // Subset of the stable TFLite C API (the vendored library ships no headers)
 // and of csrc/frontend_shim.cc.
 unsafe extern "C" {
-    fn TfLiteModelCreateFromFile(path: *const i8) -> *mut c_void;
+    fn TfLiteModelCreateFromFile(path: *const c_char) -> *mut c_void;
     fn TfLiteModelDelete(model: *mut c_void);
     fn TfLiteInterpreterCreate(model: *const c_void, opts: *const c_void) -> *mut c_void;
     fn TfLiteInterpreterDelete(interp: *mut c_void);

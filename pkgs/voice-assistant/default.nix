@@ -125,10 +125,7 @@ rustPlatform.buildRustPackage {
   meta = {
     description = "Wake word voice assistant that drives the noctalia timer";
     license = lib.licenses.mit;
-    platforms = [
-      "x86_64-linux"
-      "aarch64-linux"
-    ];
+    platforms = [ "x86_64-linux" ];
     sourceProvenance = with lib.sourceTypes; [
       fromSource
       binaryNativeCode
