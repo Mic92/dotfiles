@@ -140,13 +140,11 @@ fn list(s: &Slots, default: usize) -> Option<usize> {
 pub const MODULE: Module = Module {
     intents,
     slots: &[("list", |w, _| list_lookup(w).map(Value::Index))],
-    vocab: &[],
 };
 
 pub fn intents() -> Vec<Intent> {
     vec![
         intent(
-            Some("Remind me to call mum in 10 minutes."),
             &[
                 "!remind me to {text} in {duration}",
                 "!remind me in {duration} to {text}",
@@ -160,7 +158,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            Some("Add milk to the shopping list."),
             &[
                 "!(add|put|write) {text} (to|on|onto) [the|my|our] {list} list",
                 "!(add|put|write) {text} (to|on|onto) [the|my|our] {list}",
@@ -174,7 +171,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "!(i|we) (need|should|have|must) [to] (buy|get) {text}",
                 "!we need {text}",
@@ -192,7 +188,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "!(remove|delete|take|cross|scratch) {text} (from|off) [the|my|our] {list} list",
                 "!(remove|delete|take|cross|scratch) {text} (from|off) [the|my|our] {list}",
@@ -207,7 +202,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "!(i|we) (bought|got|picked up) {text} [already]",
                 "!(i|we) already (bought|got) {text}",
@@ -220,7 +214,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "!(is|are) {text} (on|in) [the|my|our] {list} list",
                 "!(is|are) {text} (on|in) [the|my|our] {list}",
@@ -235,7 +228,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "!what (do|should) (i|we) (buy|get) [from|at] [the] [store|shop|supermarket]",
                 "!what (do|should) (i|we) need [to buy|to get] [from|at] [the] [store|shop|supermarket]",
@@ -243,7 +235,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| n(Notes::Show(SHOPPING)),
         ),
         intent(
-            None,
             &[
                 "!(what's|what is) on [the|my|our] {list} list",
                 "!(read|show|tell) [me] [the|my|our] {list} list",
@@ -252,7 +243,6 @@ pub fn intents() -> Vec<Intent> {
             |s, _| n(Notes::Show(list(s, TODO)?)),
         ),
         intent(
-            None,
             &[
                 "!(take|make) a note [that] {text}",
                 "!note [that|down] {text}",

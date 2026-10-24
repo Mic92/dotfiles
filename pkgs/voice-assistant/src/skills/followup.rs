@@ -23,7 +23,6 @@ const LOST: &[&str] = &[
 pub fn intents() -> Vec<Intent> {
     vec![
         intent(
-            None,
             &[
                 "![tell|give|say|do] [me|us] (again|once more|one more|one more time|another|another one|and another|do it again|same again|more|even more|more please|keep going|a bit more|bit more)",
             ],
@@ -39,7 +38,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "!(and|also|plus|what about|how about|and what about|and how about|same for|now|and now) {text}",
             ],

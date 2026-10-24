@@ -173,13 +173,11 @@ fn c(x: Chat) -> Option<Action> {
 pub const MODULE: Module = Module {
     intents,
     slots: &[("agent", |w, _| agent_lookup(w).map(Value::Index))],
-    vocab: &[],
 };
 
 pub fn intents() -> Vec<Intent> {
     vec![
         intent(
-            None,
             &[
                 "!(hello|hi|hiya|howdy|yo) [there|you]",
                 "!good (afternoon|evening)",
@@ -187,7 +185,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Hello),
         ),
         intent(
-            None,
             &[
                 "!how are you [doing|today]",
                 "!how's it going",
@@ -197,7 +194,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::HowAreYou),
         ),
         intent(
-            None,
             &[
                 "!thank you [so|very] [much]",
                 "!thanks [a lot]",
@@ -207,7 +203,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Thanks),
         ),
         intent(
-            None,
             &[
                 "!who are you",
                 "!what's your name",
@@ -217,7 +212,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::WhoAreYou),
         ),
         intent(
-            None,
             &[
                 "!what can you do",
                 "!help [me]",
@@ -227,7 +221,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Help),
         ),
         intent(
-            None,
             &[
                 "!i love you",
                 "!i like you",
@@ -237,7 +230,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Love),
         ),
         intent(
-            None,
             &[
                 "!(you're|you are) [so|very|really|looking|so very] (cute|sexy|hot|beautiful|pretty|gorgeous|lovely|stunning|adorable)",
                 "!you look (good|great|nice|amazing|beautiful|pretty|hot|cute|gorgeous) [today|tonight]",
@@ -248,7 +240,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Pretty),
         ),
         intent(
-            None,
             &[
                 "!am i (pretty|handsome|cute|hot|sexy|beautiful|attractive|ugly)",
                 "!do i look (good|okay|ok|nice|fat|old|tired|hot)",
@@ -257,7 +248,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::AmIPretty),
         ),
         intent(
-            None,
             &[
                 "!mirror mirror [on the wall] {any}",
                 "!(who's|who is) the (fairest|prettiest|most beautiful|hottest|sexiest) {any}",
@@ -265,7 +255,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Mirror),
         ),
         intent(
-            None,
             &[
                 "!what do you look like",
                 "!(how|what) do you look",
@@ -276,7 +265,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Looks),
         ),
         intent(
-            None,
             &[
                 "!are you single",
                 "!do you have a (boyfriend|girlfriend|partner|husband|wife)",
@@ -286,7 +274,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Single),
         ),
         intent(
-            None,
             &[
                 "!(who's|who is) the best (assistant|chat agent|agent|ai|chatbot|chat bot|voice assistant)",
                 "!(you're|you are) the best [assistant]",
@@ -294,19 +281,14 @@ pub fn intents() -> Vec<Intent> {
             ],
             |_, _| c(Chat::Best),
         ),
-        intent(None, &["!good morning"], |_, _| c(Chat::GoodMorning)),
+        intent(&["!good morning"], |_, _| c(Chat::GoodMorning)),
+        intent(&["!i'm bored", "!i am bored", "!entertain me"], |_, _| {
+            c(Chat::Bored)
+        }),
+        intent(&["!sorry", "!my bad", "!oops", "!i'm sorry"], |_, _| {
+            c(Chat::Sorry)
+        }),
         intent(
-            None,
-            &["!i'm bored", "!i am bored", "!entertain me"],
-            |_, _| c(Chat::Bored),
-        ),
-        intent(
-            None,
-            &["!sorry", "!my bad", "!oops", "!i'm sorry"],
-            |_, _| c(Chat::Sorry),
-        ),
-        intent(
-            None,
             &[
                 "!you're (stupid|dumb|useless|annoying|an idiot)",
                 "!you are (stupid|dumb|useless|annoying)",
@@ -316,12 +298,10 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Insult),
         ),
         intent(
-            None,
             &["!are you (there|listening|awake|alive)", "!can you hear me"],
             |_, _| c(Chat::AreYouThere),
         ),
         intent(
-            None,
             &[
                 "!how old are you",
                 "!what's your age",
@@ -329,13 +309,10 @@ pub fn intents() -> Vec<Intent> {
             ],
             |_, _| c(Chat::HowOld),
         ),
+        intent(&["!where are you [from]", "!where do you live"], |_, _| {
+            c(Chat::WhereAreYou)
+        }),
         intent(
-            None,
-            &["!where are you [from]", "!where do you live"],
-            |_, _| c(Chat::WhereAreYou),
-        ),
-        intent(
-            None,
             &[
                 "!(what's|what is) your (favourite|favorite) (colour|color)",
                 "!(favourite|favorite) (colour|color)",
@@ -343,17 +320,14 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::FavouriteColour),
         ),
         intent(
-            None,
             &["!(what is|what's) the meaning of life", "!why are we here"],
             |_, _| c(Chat::MeaningOfLife),
         ),
         intent(
-            None,
             &["!(i'm|i am) [so|very|really] (tired|exhausted|sleepy)"],
             |_, _| c(Chat::Tired),
         ),
         intent(
-            None,
             &[
                 "!(i'm|i am) [so|very|really] (hungry|starving)",
                 "!what should i eat",
@@ -361,7 +335,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Hungry),
         ),
         intent(
-            None,
             &[
                 "!(i'm|i am) [so|very|really] (sad|down|lonely|depressed|upset)",
                 "!i feel (sad|down|lonely|bad)",
@@ -370,7 +343,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Sad),
         ),
         intent(
-            None,
             &[
                 "!(i'm|i am) [so|very|really] (happy|great|excited)",
                 "!i feel (good|great|happy)",
@@ -379,17 +351,14 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Happy),
         ),
         intent(
-            None,
             &["!sweet dreams", "!night night", "!nighty night"],
             |_, _| c(Chat::SweetDreams),
         ),
         intent(
-            None,
             &["!(bye|goodbye|see you|see ya|later|ciao) [later]"],
             |_, _| c(Chat::Goodbye),
         ),
         intent(
-            None,
             &[
                 "!is it [the] weekend [yet]",
                 "!is it friday [yet]",
@@ -398,22 +367,17 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Weekend),
         ),
         intent(
-            None,
             &["!i need [a] coffee", "!make me [a] coffee", "!coffee"],
             |_, _| c(Chat::Coffee),
         ),
         intent(
-            None,
             &["!tell me a secret", "!(do you have|got) any secrets"],
             |_, _| c(Chat::Secret),
         ),
+        intent(&["!(can you|let's) dance", "!dance [for me]"], |_, _| {
+            c(Chat::Dance)
+        }),
         intent(
-            None,
-            &["!(can you|let's) dance", "!dance [for me]"],
-            |_, _| c(Chat::Dance),
-        ),
-        intent(
-            None,
             &[
                 "![do you know|what do you think of] siri",
                 "!(are you|is) better than siri",
@@ -421,7 +385,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Siri),
         ),
         intent(
-            None,
             &[
                 "!(get|bring) me a beer",
                 "!i need a (beer|drink)",
@@ -430,26 +393,20 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Beer),
         ),
         intent(
-            None,
             &[
                 "!are you (smart|intelligent|clever|sentient)",
                 "!(do you|can you) think",
             ],
             |_, _| c(Chat::Smart),
         ),
+        intent(&["!do you dream", "!what do you dream about"], |_, _| {
+            c(Chat::Dream)
+        }),
+        intent(&["!are you (real|human|a robot|a person|alive)"], |_, _| {
+            c(Chat::Real)
+        }),
+        intent(&["!alexa", "!hey alexa"], |_, _| c(Chat::Alexa)),
         intent(
-            None,
-            &["!do you dream", "!what do you dream about"],
-            |_, _| c(Chat::Dream),
-        ),
-        intent(
-            None,
-            &["!are you (real|human|a robot|a person|alive)"],
-            |_, _| c(Chat::Real),
-        ),
-        intent(None, &["!alexa", "!hey alexa"], |_, _| c(Chat::Alexa)),
-        intent(
-            None,
             &[
                 "!(what do you think|how do you feel|what's your opinion) (of|about) {agent}",
                 "!(do you know|do you like|have you met|are you friends with) {agent}",
@@ -465,11 +422,8 @@ pub fn intents() -> Vec<Intent> {
                 _ => None,
             },
         ),
-        intent(None, &["!(psst|pssst|psst psst|hey you)"], |_, _| {
-            c(Chat::Psst)
-        }),
+        intent(&["!(psst|pssst|psst psst|hey you)"], |_, _| c(Chat::Psst)),
         intent(
-            None,
             &[
                 "!good (girl|boy|bot|robot)",
                 "!(who's|who is) a good (girl|boy|bot)",
@@ -477,7 +431,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::GoodGirl),
         ),
         intent(
-            None,
             &[
                 "!(fuck|screw) (you|off|this|that)",
                 "!go (fuck|screw) yourself",

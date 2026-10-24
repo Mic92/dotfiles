@@ -9,8 +9,8 @@
   makeWrapper,
   pkg-config,
   pipewire,
-  whisper-cpp,
   sherpa-onnx,
+  onnxruntime,
   libnotify,
   playerctl,
   mpv,
@@ -42,8 +42,13 @@ let
     .${stdenv.hostPlatform.system}
   }";
   vadModel = fetchurl {
-    url = "https://huggingface.co/ggml-org/whisper-vad/resolve/main/ggml-silero-v5.1.2.bin";
-    hash = "sha256-KZQNmNQrkfvQXOSJ8+z3xy8KQvAn5IdZGaKPtMBOos8=";
+    url = "https://raw.githubusercontent.com/snakers4/silero-vad/v5.1.2/src/silero_vad/data/silero_vad.onnx";
+    hash = "sha256-JiOilT9v89LB5hdAxs23FoEzR5smff7xFKSjzFvdeI8=";
+  };
+  # NVIDIA parakeet-unified-en-0.6b (NVIDIA Open Model License), int8 RNNT
+  asrModel = fetchzip {
+    url = "https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-nemo-parakeet-unified-en-0.6b-int8-non-streaming.tar.bz2";
+    hash = "sha256-2cG9a95labt6PBn6utz/mtHUlfpp18nJ3Bv95g/lwP4=";
   };
   ttsModel = fetchzip {
     # micro: clearer than nano-int8 and no slower on CPU
@@ -56,10 +61,6 @@ let
     repo = "uisfx";
     rev = "9950fe66f993a6660dab9c2651dcbcd899ffd83b";
     hash = "sha256-8nAVfndZDcR2P+LHniH/IYw14eS2RHcObBdbmOWcFh8=";
-  };
-  whisperModel = fetchurl {
-    url = "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-small.bin";
-    hash = "sha256-G+OpsgY4Z7k35k4ux0gzZKeZF+FX+pjF2UtcH//qmHs=";
   };
 in
 rustPlatform.buildRustPackage {
@@ -86,7 +87,6 @@ rustPlatform.buildRustPackage {
   ];
   buildInputs = [
     pipewire
-    whisper-cpp
     sherpa-onnx
     stdenv.cc.cc.lib
   ];
@@ -96,16 +96,13 @@ rustPlatform.buildRustPackage {
     TFLITE_LIB_DIR = tfliteLibDir;
     VA_WAKE_MODEL = "${placeholder "out"}/share/voice-assistant/models/alexa.tflite";
     VA_VAD_MODEL = vadModel;
-    VA_WHISPER_MODEL = whisperModel;
+    VA_ASR_MODEL = asrModel;
+    # The same library sherpa-onnx links. ort loads it at runtime.
+    VA_ONNXRUNTIME = "${lib.getLib onnxruntime}/lib/libonnxruntime.so";
     VA_TTS_MODEL = ttsModel;
     VA_SOUNDS = "${uisfx}/packages/uisfx/sounds/${soundTheme}";
     SHERPA_CFLAGS = "-I${lib.getDev sherpa-onnx}/include";
   };
-
-  # bindgen needs whisper.h and the ggml headers it includes
-  preBuild = ''
-    export WHISPER_CFLAGS="$(pkg-config --cflags whisper)"
-  '';
 
   postInstall = ''
     install -Dm644 -t $out/lib ${tfliteLibDir}/libtensorflowlite_c.so

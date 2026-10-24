@@ -28,25 +28,22 @@ fn act(op: Power) -> Option<Action> {
 pub const MODULE: Module = Module {
     intents,
     slots: &[],
-    vocab: &[],
 };
 
 pub fn intents() -> Vec<Intent> {
     const DEVICE: &str = "[the|my|this] (computer|laptop|pc|machine|system)";
     vec![
         intent(
-            None,
             &[
                 &format!("(shut|power|turn|switch) (down|off) {DEVICE}"),
                 &format!("(shutdown|poweroff) {DEVICE}"),
             ],
             |_, _| act(Power::Poweroff),
         ),
-        intent(None, &[&format!("(reboot|restart) {DEVICE}")], |_, _| {
+        intent(&[&format!("(reboot|restart) {DEVICE}")], |_, _| {
             act(Power::Reboot)
         }),
         intent(
-            None,
             &[
                 &format!("(suspend|hibernate) {DEVICE}"),
                 &format!("put {DEVICE} to sleep"),
@@ -55,7 +52,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| act(Power::Suspend),
         ),
         intent(
-            None,
             &[
                 "lock [the|my|this] (screen|computer|laptop|session)",
                 "!lock",
@@ -64,7 +60,6 @@ pub fn intents() -> Vec<Intent> {
         ),
         // Could mean the assistant or the computer: ask.
         intent(
-            None,
             &[
                 "!(shutdown|poweroff)",
                 "!(shut|power|turn|switch) (down|off)",
@@ -72,10 +67,10 @@ pub fn intents() -> Vec<Intent> {
             ],
             |_, _| Some(Action::Which(Power::Poweroff)),
         ),
-        intent(None, &["!(reboot|restart)"], |_, _| {
+        intent(&["!(reboot|restart)"], |_, _| {
             Some(Action::Which(Power::Reboot))
         }),
-        intent(None, &["!go to sleep", "!sleep"], |_, _| {
+        intent(&["!go to sleep", "!sleep"], |_, _| {
             Some(Action::Which(Power::Suspend))
         }),
     ]
@@ -121,13 +116,9 @@ fn which(text: &str, op: Power) -> Option<Action> {
     }
 }
 
-/// Prompt for questions answered with yes or no.
-pub const YES_NO: &str = "Yes. No. Yeah, sure. Nope. Cancel. Do it.";
-
 /// Ask whether the assistant or the computer was meant.
 pub fn ask_which(op: Power) -> Reply {
     let mut r = Reply::new("Me or the computer?", "", pick(WHICH, ""));
-    r.expect = Some("Me. You. Yourself. The computer. The laptop. Neither.");
     r.follow_up = Some(Box::new(move |text, _| which(text, op)));
     r
 }
@@ -230,7 +221,6 @@ impl Skill for System {
                 _ => CONFIRM_SUSPEND,
             };
             let mut r = Reply::new("Are you sure?", "", pick(lines, ""));
-            r.expect = Some(YES_NO);
             r.follow_up = Some(Box::new(move |text, _| match yes(text)? {
                 true => Some(Action::System(System {
                     op,

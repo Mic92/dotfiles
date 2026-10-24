@@ -28,13 +28,11 @@ fn f(x: Fun) -> Option<Action> {
 pub const MODULE: Module = Module {
     intents,
     slots: &[],
-    vocab: &[],
 };
 
 pub fn intents() -> Vec<Intent> {
     vec![
         intent(
-            Some("Tell me a joke."),
             &[
                 "[please] (tell|give) [me|us] [a|another|one more] [funny|dirty|bad|good|short] joke [please]",
                 "(can|could|would) you (tell|give) (me|us) [a|another] [funny|dirty|bad|good|short] joke",
@@ -46,7 +44,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| f(Fun::Joke),
         ),
         intent(
-            None,
             &[
                 "(tell|give) me [a|another] dad joke",
                 "![another] dad joke",
@@ -55,12 +52,10 @@ pub fn intents() -> Vec<Intent> {
             |_, _| f(Fun::DadJoke),
         ),
         intent(
-            None,
             &["(flip|toss) a coin", "heads or tails", "!coin (flip|toss)"],
             |_, _| f(Fun::Coin),
         ),
         intent(
-            None,
             &[
                 "roll a (die|dice|d6)",
                 "roll [the] dice",
@@ -82,7 +77,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "(pick|give|choose) [me] a [random] number (between|from) {low} (and|to) {high}",
                 "random number (between|from) {low} (and|to) {high}",
@@ -98,7 +92,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "!should i {any}",
                 "!(will|can|could) i {any}",
@@ -107,7 +100,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| f(Fun::EightBall),
         ),
         intent(
-            None,
             &[
                 "compliment me",
                 "say something nice [to me]",
@@ -116,12 +108,10 @@ pub fn intents() -> Vec<Intent> {
             |_, _| f(Fun::Compliment),
         ),
         intent(
-            None,
             &["(roast|insult) me", "say something mean [to me]"],
             |_, _| f(Fun::Roast),
         ),
         intent(
-            None,
             &[
                 "motivate me",
                 "i need [some] motivation",
@@ -131,7 +121,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| f(Fun::Motivate),
         ),
         intent(
-            None,
             &[
                 "(tell|give) me a [fun|random|interesting] fact",
                 "tell me something interesting",
@@ -140,7 +129,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| f(Fun::Fact),
         ),
         intent(
-            None,
             &[
                 "[please] sing [me|us] a song [for me|for us] [please]",
                 "!sing [something] [for me|for us] [please]",

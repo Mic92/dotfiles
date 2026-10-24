@@ -174,21 +174,11 @@ pub const MODULE: Module = Module {
         ("bt", |w, _| bt_lookup(w).map(Value::Index)),
         ("host", |w, _| lookup(w).map(Value::Index)),
     ],
-    vocab: &[
-        "eva",
-        "blob64",
-        "evo",
-        "turingmachine",
-        "Audeze",
-        "MX Master",
-        "pueue",
-    ],
 };
 
 pub fn intents() -> Vec<Intent> {
     vec![
         intent(
-            Some("Is eve up?"),
             &[
                 "!(is|are) {host} (up|down|online|offline|alive|reachable|running)",
                 "!can you (reach|ping) {host}",
@@ -201,7 +191,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "(is|are) [the|my] (internet|network|wifi|connection) (down|up|working|broken|ok|slow)",
                 "(am|are) (i|we) (online|offline|connected)",
@@ -211,7 +200,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| o(Ops::Internet),
         ),
         intent(
-            None,
             &[
                 "what's my ip [address]",
                 "what is my ip [address]",
@@ -220,7 +208,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| o(Ops::Ip),
         ),
         intent(
-            None,
             &[
                 "(is|are) [my] (build|builds|job|jobs|task|tasks) (done|finished|ready|running|still running)",
                 "(how's|how is|how are) [my] (build|builds|job|jobs|task|tasks) [doing|going]",
@@ -231,7 +218,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| o(Ops::Jobs),
         ),
         intent(
-            None,
             &[
                 "how much (disk|disc|storage) [space] [is] [left|free|do i have]",
                 "(is|am) [the|my] (disk|disc) [running] (full|out of space)",
@@ -240,7 +226,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| o(Ops::Disk),
         ),
         intent(
-            None,
             &[
                 "how much (memory|ram) [is] [left|free|used|do i have]",
                 "!(memory|ram) [usage]",
@@ -248,7 +233,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| o(Ops::Memory),
         ),
         intent(
-            None,
             &[
                 "why is [the|my] (computer|laptop|fan) [so] (slow|loud|hot)",
                 "what's (using|eating|hogging) [all] [the|my] (cpu|processor|memory)",
@@ -258,7 +242,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| o(Ops::Cpu),
         ),
         intent(
-            Some("Find my phone."),
             &[
                 "!(find|ring|locate|where is|where's) my (phone|android|mobile|cell phone|handy)",
                 "!(i|i've) (lost|can't find|cannot find) my (phone|mobile|handy)",
@@ -267,7 +250,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| o(Ops::FindPhone),
         ),
         intent(
-            Some("Connect my headphones."),
             &[
                 "!(connect|pair|hook up) [my|the] {bt} [please]",
                 "!(connect|switch) [the] (audio|sound) to [my|the] {bt}",
@@ -282,7 +264,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &["!(disconnect|unpair|unhook) [my|the] {bt}"],
             |s, _| match s.get("bt")? {
                 Value::Index(i) => o(Ops::Bluetooth {

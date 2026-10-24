@@ -122,8 +122,6 @@ pub struct Module {
     pub intents: fn() -> Vec<Intent>,
     /// `{name}` slots only this module's templates use.
     pub slots: &'static [(&'static str, SlotParser)],
-    /// Names speech recognition would otherwise misspell.
-    pub vocab: &'static [&'static str],
 }
 
 /// Order matters: on equally good matches the earlier module wins, so the
@@ -154,8 +152,6 @@ pub struct Reply {
     pub body: String,
     pub speech: String,
     pub follow_up: Option<FollowUp>,
-    /// Likely answers to the question asked, to bias speech recognition.
-    pub expect: Option<&'static str>,
     /// Fixed lines are worth caching as audio; live data is not.
     pub cache: bool,
 }
@@ -167,7 +163,6 @@ impl Reply {
             body: body.into(),
             speech,
             follow_up: None,
-            expect: None,
             cache: true,
         }
     }
@@ -228,8 +223,6 @@ pub struct Intent {
     templates: Vec<Template>,
     #[cfg(test)]
     declared: usize,
-    /// Example sentence used to bias speech recognition.
-    example: Option<&'static str>,
     build: fn(&Slots, &Context) -> Option<Action>,
     /// Only tried when no other intent matches at all.
     fallback: bool,
@@ -243,11 +236,7 @@ impl Intent {
     }
 }
 
-pub fn intent(
-    example: Option<&'static str>,
-    templates: &[&str],
-    build: fn(&Slots, &Context) -> Option<Action>,
-) -> Intent {
+pub fn intent(templates: &[&str], build: fn(&Slots, &Context) -> Option<Action>) -> Intent {
     Intent {
         templates: templates
             .iter()
@@ -260,7 +249,6 @@ pub fn intent(
             .collect(),
         #[cfg(test)]
         declared: templates.len(),
-        example,
         build,
         fallback: false,
     }
@@ -269,7 +257,6 @@ pub fn intent(
 fn core_intents() -> Vec<Intent> {
     vec![
         intent(
-            None,
             &[
                 "!(repeat|say) (that|it) [again]",
                 "!what did you say",
@@ -279,12 +266,10 @@ fn core_intents() -> Vec<Intent> {
             |_, _| Some(Action::Repeat),
         ),
         intent(
-            None,
             &["!never mind", "!nevermind", "!forget it", "!nothing"],
             |_, _| Some(Action::Dismiss),
         ),
         intent(
-            None,
             &[
                 "!shut up",
                 "!(be|keep) quiet",
@@ -295,7 +280,6 @@ fn core_intents() -> Vec<Intent> {
             |_, _| Some(Action::Voice(false)),
         ),
         intent(
-            None,
             &[
                 "!(shut|power|turn|switch) yourself (down|off)",
                 "!(stop|quit) listening",
@@ -306,7 +290,6 @@ fn core_intents() -> Vec<Intent> {
             |_, _| Some(Action::Listen(false)),
         ),
         intent(
-            None,
             &[
                 "!(take a break|take a nap|nap|sleep|go to sleep|be quiet|shut up|stop listening|pause|pause yourself) (for|during) {duration}",
                 "!(leave me alone|don't listen|do not listen|don't disturb me|do not disturb me) (for|during) {duration}",
@@ -317,7 +300,6 @@ fn core_intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "!(did|have) you (had|have) a (nap|sleep|rest|break|siesta) [today]",
                 "!are you tired",
@@ -325,7 +307,6 @@ fn core_intents() -> Vec<Intent> {
             |_, _| Some(Action::NapQuestion),
         ),
         intent(
-            None,
             &[
                 "!wake up",
                 "!(start|resume) listening",
@@ -335,7 +316,6 @@ fn core_intents() -> Vec<Intent> {
             |_, _| Some(Action::Listen(true)),
         ),
         intent(
-            None,
             &[
                 "![you] can (talk|speak) again",
                 "!(talk|speak) to me [again]",
@@ -530,22 +510,6 @@ pub fn strip_wake_word(heard: &str) -> Option<&str> {
     None
 }
 
-/// Whisper prompt built from the intents' examples.
-pub fn prompt() -> String {
-    let examples = INTENTS
-        .iter()
-        .filter_map(|i| i.example)
-        .collect::<Vec<_>>()
-        .join(" ");
-    let names = MODULES
-        .iter()
-        .flat_map(|m| m.vocab)
-        .copied()
-        .collect::<Vec<_>>()
-        .join(", ");
-    format!("{examples} {names}.")
-}
-
 /// Something to say right away for actions that wait on the network, so
 /// the silence doesn't feel like a crash.
 pub fn filler(action: &Action) -> Option<String> {
@@ -593,7 +557,6 @@ pub fn run(action: &Action, ctx: &Context) -> Reply {
                     "",
                 ),
             );
-            r.expect = Some(system::YES_NO);
             r.follow_up = Some(Box::new(|text, _| match system::yes(text)? {
                 true => Some(Action::Nap(20 * 60)),
                 false => Some(Action::Say(
@@ -828,24 +791,6 @@ mod tests {
         for text in ["Never mind.", "Nevermind", "Alexa, forget it.", "Nothing."] {
             assert_eq!(parse_at(text, &AT_14H), Some(Action::Dismiss), "{text:?}");
         }
-    }
-
-    #[test]
-    fn prompt_lists_examples() {
-        let p = prompt();
-        for example in [
-            "Set a timer for 5 minutes.",
-            "Unmute.",
-            "Tell me a joke.",
-            "Open the browser.",
-        ] {
-            assert!(p.contains(example), "{p}");
-        }
-        assert!(p.contains("Deutschlandfunk"), "{p}");
-        // Whisper keeps at most 224 prompt tokens, so excess examples silently
-        // fall off the front. BPE averages about 4 characters per token for
-        // English, fewer for names; 3 keeps a margin.
-        assert!(p.len() / 3 < 224, "{} chars: {p}", p.len());
     }
 
     /// `cargo test --release -- --ignored --nocapture bench`

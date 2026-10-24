@@ -50,24 +50,7 @@ fn main() {
 
     println!("cargo:rustc-link-search=native={}", var("TFLITE_LIB_DIR"));
     println!("cargo:rustc-link-lib=dylib=tensorflowlite_c");
-    println!("cargo:rustc-link-lib=dylib=whisper");
-    println!("cargo:rustc-link-lib=dylib=ggml");
-
-    let include_args: Vec<String> = var("WHISPER_CFLAGS")
-        .split_whitespace()
-        .map(str::to_owned)
-        .collect();
-    let bindings = bindgen::Builder::default()
-        .header_contents("wrapper.h", "#include <whisper.h>")
-        .clang_args(include_args)
-        .allowlist_function("whisper_.*")
-        .allowlist_type("whisper_.*")
-        .generate()
-        .expect("bindgen whisper.h");
     let out = PathBuf::from(env::var("OUT_DIR").unwrap());
-    bindings
-        .write_to_file(out.join("whisper_sys.rs"))
-        .expect("write bindings");
 
     println!("cargo:rustc-link-lib=dylib=sherpa-onnx-c-api");
     bindgen::Builder::default()

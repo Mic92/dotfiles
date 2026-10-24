@@ -1,9 +1,10 @@
 //! `--replay`: re-run everything logged in heard.tsv through the current
-//! grammar (and whisper, where audio was kept) and report what changed.
+//! grammar (and speech recogniser, where audio was kept) and report what
+//! changed.
 
+use crate::asr::Asr;
 use crate::rescore;
 use crate::skills::{self, Context};
-use crate::whisper::Whisper;
 use std::fs;
 use std::path::Path;
 
@@ -54,7 +55,7 @@ fn compare(old: &str, new: Option<&str>) -> Outcome {
 }
 
 /// Returns the process exit code: 1 when something that used to work broke.
-pub fn run(log: &Path, mut whisper: Option<&mut Whisper>) -> i32 {
+pub fn run(log: &Path, mut asr: Option<&mut Asr>) -> i32 {
     let Ok(text) = fs::read_to_string(log) else {
         eprintln!("voice-assistant: nothing to replay in {}", log.display());
         return 1;
@@ -68,15 +69,15 @@ pub fn run(log: &Path, mut whisper: Option<&mut Whisper>) -> i32 {
         };
         let wav = f.next().filter(|w| !w.is_empty());
         let mut rescored = None;
-        let heard_now = match (wav, whisper.as_deref_mut()) {
-            (Some(w), Some(wh)) => {
-                match read_wav(Path::new(w)).and_then(|a| wh.transcribe(&a, None).ok()) {
+        let heard_now = match (wav, asr.as_deref_mut()) {
+            (Some(w), Some(asr)) => {
+                match read_wav(Path::new(w)).and_then(|a| asr.transcribe(&a).ok()) {
                     Some(t) => {
                         // Same order as live: real intents, the audio, catch-alls.
-                        if skills::parse_tier(&t.text, &ctx, false).is_none() {
-                            rescored = rescore::run(wh, "", &t.text, &ctx);
+                        if skills::parse_tier(&t, &ctx, false).is_none() {
+                            rescored = rescore::run(asr, "", &t, &ctx);
                         }
-                        t.text
+                        t
                     }
                     None => heard.to_owned(),
                 }

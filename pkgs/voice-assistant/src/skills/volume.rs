@@ -17,14 +17,12 @@ pub enum Volume {
 pub const MODULE: Module = Module {
     intents,
     slots: &[],
-    vocab: &[],
 };
 
 pub fn intents() -> Vec<Intent> {
     const WHAT: &str = "[the|my] (volume|sound|music|audio|it)";
     vec![
         intent(
-            None,
             &[
                 &format!("(turn|crank|pump) up {WHAT}"),
                 &format!("(turn|crank|pump) {WHAT} up"),
@@ -35,7 +33,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| Some(Action::Volume(Volume::Up)),
         ),
         intent(
-            None,
             &[
                 &format!("turn down {WHAT}"),
                 &format!("turn {WHAT} down"),
@@ -46,7 +43,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| Some(Action::Volume(Volume::Down)),
         ),
         intent(
-            None,
             &[
                 "[set|change|turn] [the] volume (to|at) {percent} [percent]",
                 "volume {percent} [percent]",
@@ -57,12 +53,10 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &["mute [the|my] (sound|audio|volume|speakers|music)", "!mute"],
             |_, _| Some(Action::Volume(Volume::Mute)),
         ),
         intent(
-            Some("Unmute."),
             &[
                 "unmute [the|my] (sound|audio|volume|speakers|music)",
                 "!unmute",

@@ -120,14 +120,12 @@ fn start_clock(c: Clock, day: Option<u32>, now: u32) -> Option<Action> {
 pub const MODULE: Module = Module {
     intents,
     slots: &[],
-    vocab: &[],
 };
 
 pub fn intents() -> Vec<Intent> {
     // Clock templates come first: "alarm for 10" means 10 o'clock.
     vec![
         intent(
-            Some("Set an alarm for 7:30 pm."),
             &[
                 "[set|start|make] [a|an|the|my] (timer|alarm) (until|till|at) {clock}",
                 "[set|start|make] [a|an|the|my] alarm (for|to) {clock}",
@@ -141,7 +139,6 @@ pub fn intents() -> Vec<Intent> {
             start_at,
         ),
         intent(
-            None,
             &[
                 "!(set|start|make) [a|an|the|my] (timer|alarm) [for|until|till] {day}",
                 "![a|an|the|my] (timer|alarm) [for|until|till] {day}",
@@ -150,7 +147,6 @@ pub fn intents() -> Vec<Intent> {
             |s, _| day(s).map(|day| Action::Timer(Timer::When { day })),
         ),
         intent(
-            Some("Set a timer for 5 minutes."),
             &[
                 "[set|start|make] [a|an|the|my] (timer|alarm) [for|to|in|of] {duration}",
                 "[set|start|make] [a|an|the|my] {duration} (timer|alarm)",
@@ -161,7 +157,6 @@ pub fn intents() -> Vec<Intent> {
             start_in,
         ),
         intent(
-            Some("Cancel the timer."),
             &[
                 "(cancel|stop|delete|reset|abort|end|kill|clear|silence|dismiss) [the|my|this|that] (timer|alarm)",
                 "(turn|switch) off [the|my|this|that] (timer|alarm)",
@@ -171,24 +166,21 @@ pub fn intents() -> Vec<Intent> {
             |_, _| Some(Action::Timer(Timer::Cancel)),
         ),
         intent(
-            Some("Pause the timer."),
             &["(pause|resume|continue|unpause) [the|my|this|that] timer"],
             |_, _| Some(Action::Timer(Timer::Pause)),
         ),
         // Bare words mean the timer only while there is one; else the music.
-        intent(None, &["!(pause|pause it|pause that)"], |_, _| {
+        intent(&["!(pause|pause it|pause that)"], |_, _| {
             Some(contextual(active(), Timer::Pause, Media::Pause))
         }),
         intent(
-            None,
             &["!(resume|unpause|continue|resume it|unpause it|continue it)"],
             |_, _| Some(contextual(active(), Timer::Pause, Media::Play)),
         ),
-        intent(None, &["!(stop|stop it|stop that)"], |_, _| {
+        intent(&["!(stop|stop it|stop that)"], |_, _| {
             Some(contextual(active(), Timer::Cancel, Media::Stop))
         }),
         intent(
-            None,
             &[
                 "!how (much|long) [time] [is] left [on] [the|my] [timer|alarm|clock]",
                 "!how much longer",
@@ -478,7 +470,6 @@ fn reply(t: &Timer, ctx: &Context) -> Reply {
             let day = *day;
             let name = if day == 0 { "Today" } else { "Tomorrow" };
             let mut r = Reply::new("When?", "", pick(ASK_WHEN, name));
-            r.expect = Some("At 7 am. At half past six. At 6:45. At noon.");
             r.follow_up = Some(Box::new(move |text, ctx| {
                 let owned = normalize(text);
                 let words: Vec<&str> = owned

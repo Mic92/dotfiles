@@ -1,5 +1,6 @@
-//! Wake word -> VAD-bounded command recording -> whisper -> noctalia timer.
+//! Wake word -> VAD-bounded command recording -> parakeet -> noctalia timer.
 
+mod asr;
 mod clock;
 mod duration;
 mod grammar;
@@ -12,7 +13,6 @@ mod store;
 mod tts;
 mod wakelog;
 mod wakeword;
-mod whisper;
 
 use std::collections::VecDeque;
 use std::env;
@@ -36,9 +36,8 @@ struct Config {
     wake_model: PathBuf,
     threshold: f32,
     vad_model: PathBuf,
-    whisper_model: PathBuf,
-    language: String,
-    threads: i32,
+    asr_model: PathBuf,
+    threads: usize,
     sounds: PathBuf,
     tts_model: PathBuf,
     voice: i32,
@@ -49,7 +48,7 @@ struct Config {
     debug_dir: Option<PathBuf>,
     say: Option<String>,
     replay: bool,
-    /// WAV files to transcribe without a prompt, then exit.
+    /// WAV files to transcribe, then exit.
     transcribe: Vec<PathBuf>,
     /// Texts to run through the grammar, then exit.
     parse: Vec<String>,
@@ -61,8 +60,8 @@ fn default_path(build_env: Option<&str>) -> PathBuf {
 
 fn usage() -> ! {
     eprintln!(
-        "usage: voice-assistant [--wake-model F] [--threshold P] [--vad-model F] [--whisper-model F]\n\
-         \x20                      [--language L] [--threads N] [--sounds DIR] [--tts-model DIR]\n\
+        "usage: voice-assistant [--wake-model F] [--threshold P] [--vad-model F] [--asr-model DIR]\n\
+         \x20                      [--threads N] [--sounds DIR] [--tts-model DIR]\n\
          \x20                      [--voice N] [--speed X] [--no-tts] [--verbose] [--stdin]\n\
          \x20                      [--debug-dir DIR] [--say TEXT] [--replay] [--parse TEXT|-]\n\
          --say speaks TEXT with the configured voice and exits.\n\
@@ -79,8 +78,7 @@ fn parse_args() -> Config {
         wake_model: default_path(option_env!("VA_WAKE_MODEL")),
         threshold: 0.4,
         vad_model: default_path(option_env!("VA_VAD_MODEL")),
-        whisper_model: default_path(option_env!("VA_WHISPER_MODEL")),
-        language: "en".into(),
+        asr_model: default_path(option_env!("VA_ASR_MODEL")),
         threads: 4,
         sounds: default_path(option_env!("VA_SOUNDS")),
         tts_model: default_path(option_env!("VA_TTS_MODEL")),
@@ -102,8 +100,7 @@ fn parse_args() -> Config {
             "--wake-model" => c.wake_model = val().into(),
             "--threshold" => c.threshold = val().parse().unwrap_or_else(|_| usage()),
             "--vad-model" => c.vad_model = val().into(),
-            "--whisper-model" => c.whisper_model = val().into(),
-            "--language" => c.language = val(),
+            "--asr-model" => c.asr_model = val().into(),
             "--threads" => c.threads = val().parse().unwrap_or_else(|_| usage()),
             "--sounds" => c.sounds = val().into(),
             "--tts-model" => c.tts_model = val().into(),
@@ -133,7 +130,7 @@ enum State {
     Listening {
         /// Samples still to discard: our own wake chime.
         skip: usize,
-        /// The wake word as heard, to be confirmed by whisper; empty when
+        /// The wake word as heard, to be confirmed by the recogniser. Empty when
         /// listening for an answer.
         wake: Vec<f32>,
         audio: Vec<f32>,
@@ -147,8 +144,8 @@ enum State {
 struct Assistant {
     cfg: Config,
     wake: wakeword::WakeWord,
-    vad: whisper::Vad,
-    whisper: whisper::Whisper,
+    vad: asr::Vad,
+    asr: asr::Asr,
     tts: tts::Tts,
     state: State,
     /// The mic hears our own replies; ignore it until playback has ended.
@@ -159,8 +156,6 @@ struct Assistant {
     hushed: Option<hush::Hushed>,
     /// Resume them once the reply has been spoken.
     resume_after_speech: bool,
-    /// Whisper prompt for the answer to that question.
-    follow_prompt: Option<&'static str>,
     /// Misunderstandings in a row.
     misses: u32,
     /// Ignoring everything but "wake up"; `None` inside means until then.
@@ -188,7 +183,8 @@ const GUESS_MAX_SECS: usize = 5;
 const MAX_LISTEN_SECS: usize = 8;
 const NO_SPEECH_SECS: usize = 4;
 const SPEECH_PROB: f32 = 0.5;
-/// Audio before the trigger handed to whisper to confirm the wake word.
+/// Audio before the trigger handed to the recogniser to confirm the wake
+/// word.
 const WAKE_CLIP: usize = 2 * RATE;
 /// pw-play startup plus room echo.
 const ECHO: Duration = Duration::from_millis(700);
@@ -400,10 +396,10 @@ impl Assistant {
         self.speaking = true;
     }
 
-    /// `wake` (empty for answers) is prepended so whisper can confirm it.
+    /// `wake` (empty for answers) is prepended so the recogniser can
+    /// confirm it.
     fn transcribe_command(&mut self, wake: &[f32], audio: &[f32]) -> Result<String, String> {
-        let prompt = self.follow_up.as_ref().and(self.follow_prompt);
-        // The gap keeps whisper from gluing the wake word to the command.
+        // The gap keeps the wake word from being glued to the command.
         let gap = if wake.is_empty() { 0 } else { RATE / 5 };
         let joined: Vec<f32> = wake
             .iter()
@@ -411,7 +407,7 @@ impl Assistant {
             .chain(iter::repeat_n(0.0, gap))
             .chain(audio.iter().copied())
             .collect();
-        self.whisper.transcribe(&joined, prompt).map(|t| t.text)
+        self.asr.transcribe(&joined)
     }
 
     /// `cut_off`: the recording hit the time limit without a pause, which is
@@ -457,8 +453,8 @@ impl Assistant {
                 (&raw[..raw.len() - rest.len()], rest)
             }
         } else {
-            // The detector fires on "Alexandra", "a lecture" and music;
-            // whisper hearing no "Alexa" in the same audio settles it.
+            // The detector fires on "Alexandra", "a lecture" and music.
+            // The recogniser hearing no "Alexa" in the same audio settles it.
             self.log(&format!("no wake word in {raw:?}, ignoring"));
             self.wakelog.outcome("false", &raw);
             self.end_conversation(false);
@@ -493,7 +489,7 @@ impl Assistant {
             .filter(|_| !cut_off)
             .and_then(|f| f(&text, &ctx));
         if text.is_empty() {
-            self.log("whisper heard no speech");
+            self.log("heard no speech");
             self.wakelog.outcome("no-speech", "");
             self.follow_up = None;
             self.sound("cancel");
@@ -504,8 +500,8 @@ impl Assistant {
         // questions, which would happily take any mangled command.
         let strict = answer.or_else(|| skills::parse_tier(&text, &ctx, false));
         if strict.is_none() && cut_off {
-            // Whisper makes up the same few phrases ("What's the number?")
-            // for endless noise; only an exact command gets through.
+            // Endless background talk transcribes into some sentence.
+            // Only an exact command gets through.
             self.log(&format!(
                 "no pause in {}s, treating {text:?} as noise",
                 MAX_LISTEN_SECS
@@ -560,7 +556,7 @@ impl Assistant {
         if self.cfg.stdin {
             return None;
         }
-        let r = rescore::run(&mut self.whisper, said_before, text, ctx)?;
+        let r = rescore::run(&mut self.asr, said_before, text, ctx)?;
         self.log(&r.to_string());
         r.accepted.then_some(r.action)
     }
@@ -618,7 +614,6 @@ impl Assistant {
             self.previous = Some((action, Instant::now()));
         }
         self.follow_up = reply.follow_up;
-        self.follow_prompt = reply.expect;
         if self.follow_up.is_none() {
             self.end_conversation(media_handled);
         }
@@ -788,22 +783,11 @@ fn main() {
     if !cfg.parse.is_empty() {
         process::exit(parse_texts(&cfg.parse));
     }
-    whisper::init();
-    let wake =
-        wakeword::WakeWord::new(&cfg.wake_model, cfg.threshold, 5).unwrap_or_else(|e| die(e));
-    let vad = whisper::Vad::new(&cfg.vad_model).unwrap_or_else(|e| die(e));
-    let whisper = whisper::Whisper::new(
-        cfg.whisper_model.clone(),
-        &cfg.language,
-        &skills::prompt(),
-        cfg.threads,
-    )
-    .unwrap_or_else(|e| die(e));
+    let mut asr = asr::Asr::new(cfg.asr_model.clone(), cfg.threads);
     if !cfg.transcribe.is_empty() {
-        let mut whisper = whisper;
         for f in &cfg.transcribe {
-            match replay::read_wav(f).map(|a| whisper.transcribe(&a, Some(""))) {
-                Some(Ok(t)) => println!("{}\t{}", f.display(), t.text),
+            match replay::read_wav(f).map(|a| asr.transcribe(&a)) {
+                Some(Ok(t)) => println!("{}\t{t}", f.display()),
                 Some(Err(e)) => eprintln!("voice-assistant: {}: {e}", f.display()),
                 None => eprintln!("voice-assistant: {}: unreadable", f.display()),
             }
@@ -811,12 +795,14 @@ fn main() {
         process::exit(0);
     }
     if cfg.replay {
-        let mut whisper = whisper;
         let log = store::state_dir()
             .unwrap_or_else(|| die("no state directory"))
             .join("heard.tsv");
-        process::exit(replay::run(&log, Some(&mut whisper)));
+        process::exit(replay::run(&log, Some(&mut asr)));
     }
+    let wake =
+        wakeword::WakeWord::new(&cfg.wake_model, cfg.threshold, 5).unwrap_or_else(|e| die(e));
+    let vad = asr::Vad::new(&cfg.vad_model).unwrap_or_else(|e| die(e));
     let tts = tts::Tts::new(cfg.tts_model.clone(), cfg.voice, cfg.speed);
     let stdin = cfg.stdin;
     let threshold = cfg.threshold;
@@ -824,12 +810,11 @@ fn main() {
         cfg,
         wake,
         vad,
-        whisper,
+        asr,
         tts,
         state: State::Idle,
         speaking: false,
         follow_up: None,
-        follow_prompt: None,
         hushed: None,
         resume_after_speech: false,
         misses: 0,

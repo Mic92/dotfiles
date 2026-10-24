@@ -31,13 +31,11 @@ fn m(x: Media) -> Option<Action> {
 pub const MODULE: Module = Module {
     intents,
     slots: &[("station", |w, _| station_lookup(w).map(Value::Index))],
-    vocab: &["Deutschlandfunk", "FM4", "egoFM", "SomaFM", "lassulus"],
 };
 
 pub fn intents() -> Vec<Intent> {
     vec![
         intent(
-            Some("Play the music."),
             &[
                 &format!("(play|resume|continue|start) {WHAT}"),
                 "!play",
@@ -45,10 +43,9 @@ pub fn intents() -> Vec<Intent> {
             ],
             |_, _| m(Media::Play),
         ),
-        intent(None, &[&format!("pause {WHAT}")], |_, _| m(Media::Pause)),
-        intent(None, &[&format!("stop {WHAT}")], |_, _| m(Media::Stop)),
+        intent(&[&format!("pause {WHAT}")], |_, _| m(Media::Pause)),
+        intent(&[&format!("stop {WHAT}")], |_, _| m(Media::Stop)),
         intent(
-            Some("Next song."),
             &[
                 "[play] [the] next (song|track|one|video|episode)",
                 "skip [this|the] [song|track|one]",
@@ -57,7 +54,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| m(Media::Next),
         ),
         intent(
-            None,
             &[
                 "[play] [the] (previous|last) (song|track|one|video|episode)",
                 "go back [a|one] (song|track)",
@@ -66,7 +62,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| m(Media::Previous),
         ),
         intent(
-            Some("Play BBC radio."),
             &[
                 "!(play|put on|turn on|start|listen to|switch to|tune in to|tune into) [the|some] {station} [radio] [please]",
                 "!(play|put on|turn on|start) [the|some] radio {station}",
@@ -78,7 +73,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "!(play|put on|turn on|start) [the|some] radio",
                 "!radio [please]",
@@ -87,7 +81,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| m(Media::Radio(3)),
         ),
         intent(
-            None,
             &[
                 "!(stop|turn off|switch off|kill|enough) [the|that] radio",
                 "!radio off",
@@ -95,7 +88,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| m(Media::RadioOff),
         ),
         intent(
-            None,
             &[
                 "!(what's|what is) (playing|this song|this track|the song|the track|on)",
                 "!what (song|track|music) is (this|playing|that)",

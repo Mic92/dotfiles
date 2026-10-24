@@ -41,13 +41,11 @@ pub const MODULE: Module = Module {
         ("expr", |w, _| calculate(w).map(Value::Real)),
         ("place", |w, _| place(w).map(Value::Text)),
     ],
-    vocab: &[],
 };
 
 pub fn intents() -> Vec<Intent> {
     vec![
         intent(
-            Some("What time is it?"),
             &[
                 "!what time is it",
                 "!what's the time",
@@ -67,7 +65,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| i(Info::Time),
         ),
         intent(
-            None,
             &[
                 "!what's [the] date [today]",
                 "!what is [the] date [today]",
@@ -78,7 +75,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| i(Info::Date),
         ),
         intent(
-            Some("What's the weather like?"),
             &[
                 "what's the weather [like] [today|outside|now]",
                 "what is the weather [like] [today|outside|now]",
@@ -127,7 +123,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "how much battery [do i have] [left]",
                 "[what's|what|how's|how] [is] [the|my] battery [level|status|charge] [at]",
@@ -136,7 +131,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| i(Info::Battery),
         ),
         intent(
-            None,
             &[
                 "how long [has] [the|my|this] (computer|laptop|system) been (on|up|running)",
                 "!uptime",
@@ -145,7 +139,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| i(Info::Uptime),
         ),
         intent(
-            None,
             &[
                 "(do|have) i (have|got) [any] [new|unread] (mail|email|emails|mails|messages)",
                 "(any|how many) [new|unread] (mail|email|emails|mails)",
@@ -154,7 +147,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| i(Info::Mail),
         ),
         intent(
-            None,
             &["!(what's|what|calculate|compute|how) [is|much|many] [is] [the] {expr}"],
             |s, _| match s.get("expr")? {
                 Value::Real(v) => i(Info::Math(*v)),
@@ -162,7 +154,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "(read|say) [me] [the|my|what's] [in] [the|my] clipboard",
                 "what's in [the|my] clipboard",

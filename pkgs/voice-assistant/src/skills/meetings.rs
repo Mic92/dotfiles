@@ -3,7 +3,6 @@
 
 use super::json::{key, text};
 use super::system;
-use super::system::YES_NO;
 use super::{
     Action, Context, Intent, Module, Reply, Skill, choose, followup, intent, output, pick, spawn,
 };
@@ -93,13 +92,11 @@ fn create(s: &Slots, prefix: &str) -> Option<Action> {
 pub const MODULE: Module = Module {
     intents,
     slots: &[],
-    vocab: &[],
 };
 
 pub fn intents() -> Vec<Intent> {
     vec![
         intent(
-            Some("When is my next meeting?"),
             &[
                 "!(what's|what is|when's|when is) my next (meeting|appointment|event|call)",
                 "!(what's|what is) next [on my calendar]",
@@ -110,7 +107,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| mt(Meeting::Next),
         ),
         intent(
-            None,
             &[
                 "!(join|open|start|enter) [my|the|this] [next|current] (meeting|call|video call)",
                 "!open [the] (meeting|meet|zoom|call) link",
@@ -119,7 +115,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| mt(Meeting::Join),
         ),
         intent(
-            Some("What's on my calendar today?"),
             &[
                 "(what's|what is) on my (calendar|agenda|schedule) [{day}]",
                 "what do i have [on] {day}",
@@ -137,7 +132,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "(what's|what is) on my (calendar|agenda|schedule) {when}",
                 "what do i have {when}",
@@ -153,7 +147,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "!am i (free|busy|available) [{day}] at {clock}",
                 "!am i (free|busy|available) at {clock} {day}",
@@ -169,7 +162,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "!(schedule|create|add|book|set up|make|put in) [a|an] (meeting|call) with {text} [{day}] at {clock}",
                 "!(schedule|create|add|book|set up|make|put in) [a|an] (meeting|call) with {text} at {clock} {day}",
@@ -177,7 +169,6 @@ pub fn intents() -> Vec<Intent> {
             |s, _| create(s, "Meeting with "),
         ),
         intent(
-            None,
             &[
                 "!(schedule|create|add|book|set up|make|put in) [a|an] (meeting|appointment|event|call) (about|for|called|named) {text} [{day}] at {clock}",
                 "!(schedule|create|add|book|set up|make|put in) [a|an] (meeting|appointment|event|call) (about|for|called|named) {text} at {clock} {day}",
@@ -618,7 +609,6 @@ fn create_event(title: &str, day: u32, secs: u32, confirmed: bool) -> Reply {
             format!("{summary}, {when}. Shall I add it?"),
         );
         let (title, title2) = (title.to_owned(), summary.clone());
-        r.expect = Some(YES_NO);
         r.follow_up = Some(Box::new(move |text, _| match system::yes(text)? {
             true => mt(Meeting::Create {
                 title,

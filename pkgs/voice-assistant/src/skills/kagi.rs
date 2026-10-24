@@ -43,13 +43,11 @@ fn question(words: &[&str]) -> Option<Value> {
 pub const MODULE: Module = Module {
     intents,
     slots: &[("question", |w, _| question(w))],
-    vocab: &["Kagi"],
 };
 
 pub fn intents() -> Vec<Intent> {
     vec![
         intent(
-            Some("Who was Ada Lovelace?"),
             &[
                 "!(search|google|kagi|look up) [the web|the internet|online] [for] {text}",
                 "!(ask|use) kagi [about] {text}",
@@ -59,7 +57,7 @@ pub fn intents() -> Vec<Intent> {
             |s, _| ask(s, ""),
         ),
         // Open questions, asked whole, when nothing else understood them.
-        intent(None, &["!{question}"], |s, _| ask_whole(s)).fallback(),
+        intent(&["!{question}"], |s, _| ask_whole(s)).fallback(),
     ]
 }
 

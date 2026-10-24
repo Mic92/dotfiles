@@ -6,6 +6,8 @@ license = "MIT"
 
 [dependencies]
 libc = "0.2"
+# load-dynamic: the onnxruntime sherpa-onnx links, found via VA_ONNXRUNTIME
+ort = { version = "=2.0.0-rc.15", default-features = false, features = ["load-dynamic", "std", "api-24"] }
 pipewire = "0.10"
 pulldown-cmark = { version = "0.13.5", default-features = false }
 tinyjson = "2"

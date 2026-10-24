@@ -1,19 +1,20 @@
 //! Second opinion for transcripts nothing understood: score similar
-//! sounding commands against the same audio and take one if whisper finds
-//! it about as likely as what it wrote.
+//! sounding commands against the same audio and take one if the
+//! recogniser finds it about as likely as what it wrote.
 
 use std::fmt;
 use std::time::Instant;
 
+use crate::asr::Asr;
 use crate::skills::{self, Action, Context};
-use crate::whisper::Whisper;
 
 /// Sound-alike commands to score against the audio.
 const CANDIDATES: usize = 8;
-/// How much less likely (log-probability) than whisper's own transcript a
-/// command may be and still be taken: whisper's best guess at an unknown
-/// name is barely likelier than the name it should have written.
-const MARGIN: f32 = 2.0;
+/// How much less likely (log-probability) than the recogniser's own
+/// transcript a command may be and still be taken. On recorded misses the
+/// intended command scored 0-9 below the transcript ("Same for me" ->
+/// "Sing for me" at -9), the best wrong one 18 or more.
+const MARGIN: f32 = 10.0;
 
 pub struct Rescored {
     pub heard: String,
@@ -46,28 +47,44 @@ impl fmt::Display for Rescored {
     }
 }
 
-/// `whisper` must still hold the audio `heard` was transcribed from, with
+/// Names spelled as the recogniser writes them ("Ping Eve", "Play Soma
+/// Fm"). Grammar candidates come lowercase ("Ping eve.").
+fn capitalised(text: &str) -> String {
+    text.split(' ')
+        .map(|w| {
+            let mut c = w.chars();
+            c.next()
+                .map(|f| f.to_uppercase().chain(c).collect())
+                .unwrap_or_default()
+        })
+        .collect::<Vec<String>>()
+        .join(" ")
+}
+
+/// `asr` must still hold the audio `heard` was transcribed from, with
 /// `said_before` (the wake word) in front of it.
-pub fn run(
-    whisper: &mut Whisper,
-    said_before: &str,
-    heard: &str,
-    ctx: &Context,
-) -> Option<Rescored> {
+pub fn run(asr: &mut Asr, said_before: &str, heard: &str, ctx: &Context) -> Option<Rescored> {
     let mut candidates = vec![heard.to_owned()];
     candidates.extend(skills::sound_alikes(heard, CANDIDATES));
     if candidates.len() < 2 {
         return None;
     }
     let start = Instant::now();
+    // Each candidate as written and capitalised. The likelier one counts.
     let spoken: Vec<String> = candidates
         .iter()
-        .map(|c| format!("{said_before}{c}"))
+        .flat_map(|c| {
+            let c = format!("{said_before}{c}");
+            [capitalised(&c), c]
+        })
         .collect();
-    let scores = whisper
+    let scores: Vec<f32> = asr
         .score(&spoken)
         .inspect_err(|e| eprintln!("voice-assistant: rescoring: {e}"))
-        .ok()?;
+        .ok()?
+        .chunks(2)
+        .map(|p| p.iter().copied().fold(f32::NEG_INFINITY, f32::max))
+        .collect();
     let heard_score = scores.first().copied()?;
     let (best, score, action) = candidates
         .iter()
@@ -85,4 +102,16 @@ pub fn run(
         candidates: candidates.len() - 1,
         secs: start.elapsed().as_secs_f32(),
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn capitalises_every_word() {
+        assert_eq!(capitalised("Ping eve."), "Ping Eve.");
+        assert_eq!(capitalised("play soma fm."), "Play Soma Fm.");
+        assert_eq!(capitalised(""), "");
+    }
 }

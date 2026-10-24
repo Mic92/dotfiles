@@ -31,13 +31,11 @@ fn d(x: Desktop) -> Option<Action> {
 pub const MODULE: Module = Module {
     intents,
     slots: &[],
-    vocab: &[],
 };
 
 pub fn intents() -> Vec<Intent> {
     vec![
         intent(
-            None,
             &[
                 "(make|turn) [the] (screen|display|brightness) (brighter|up)",
                 "(turn|crank) up the brightness",
@@ -47,7 +45,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::Brighter),
         ),
         intent(
-            None,
             &[
                 "(make|turn) [the] (screen|display|brightness) (darker|dimmer|down)",
                 "turn down the brightness",
@@ -58,7 +55,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::Darker),
         ),
         intent(
-            None,
             &[
                 "[set|change] [the] brightness (to|at) {number} [percent]",
                 "brightness {number} [percent]",
@@ -73,7 +69,6 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            None,
             &[
                 "(turn|switch) on [the] night (light|mode)",
                 "(enable|start) [the] night (light|mode)",
@@ -83,7 +78,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::NightLight(true)),
         ),
         intent(
-            None,
             &[
                 "(turn|switch) off [the] night (light|mode)",
                 "(disable|stop) [the] night (light|mode)",
@@ -92,7 +86,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::NightLight(false)),
         ),
         intent(
-            None,
             &[
                 "(turn|switch) on [the] (wifi|wi|wireless) [fi]",
                 "enable [the] (wifi|wi|wireless) [fi]",
@@ -101,7 +94,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::Wifi(true)),
         ),
         intent(
-            None,
             &[
                 "(turn|switch) off [the] (wifi|wi|wireless) [fi]",
                 "disable [the] (wifi|wi|wireless) [fi]",
@@ -110,7 +102,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::Wifi(false)),
         ),
         intent(
-            None,
             &[
                 "(turn|switch) on [the] bluetooth",
                 "enable [the] bluetooth",
@@ -119,7 +110,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::Bluetooth(true)),
         ),
         intent(
-            None,
             &[
                 "(turn|switch) off [the] bluetooth",
                 "disable [the] bluetooth",
@@ -128,7 +118,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::Bluetooth(false)),
         ),
         intent(
-            None,
             &[
                 "(turn|switch) on do not disturb",
                 "(enable|activate) do not disturb",
@@ -139,7 +128,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::DoNotDisturb(true)),
         ),
         intent(
-            None,
             &[
                 "(turn|switch) off do not disturb",
                 "(disable|deactivate) do not disturb",
@@ -148,7 +136,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::DoNotDisturb(false)),
         ),
         intent(
-            None,
             &[
                 "(take|make|grab) a screenshot",
                 "!screenshot",
@@ -157,7 +144,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::Screenshot),
         ),
         intent(
-            None,
             &[
                 "screenshot [of] [a|the] (region|area|part|selection)",
                 "(take|make) a (region|partial) screenshot",
@@ -165,7 +151,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::ScreenshotRegion),
         ),
         intent(
-            None,
             &[
                 "(change|switch|next|new|random) [the|my] wallpaper",
                 "(give|show) me a (new|different) wallpaper",
@@ -173,7 +158,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::Wallpaper),
         ),
         intent(
-            None,
             &[
                 "keep the (screen|display|computer) (on|awake)",
                 "(don't|do not) (sleep|lock|dim)",
@@ -183,7 +167,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::Caffeine(true)),
         ),
         intent(
-            None,
             &[
                 "(turn|switch) off caffeine",
                 "let the (screen|display|computer) sleep",
@@ -191,7 +174,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::Caffeine(false)),
         ),
         intent(
-            None,
             &[
                 "(power|battery|energy) (saving|saver) [mode]",
                 "save (power|battery|energy)",
@@ -199,15 +181,13 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::PowerProfile("power-saver")),
         ),
         intent(
-            None,
             &["performance mode", "(full|max|maximum) (power|performance)"],
             |_, _| d(Desktop::PowerProfile("performance")),
         ),
-        intent(None, &["balanced [power] mode"], |_, _| {
+        intent(&["balanced [power] mode"], |_, _| {
             d(Desktop::PowerProfile("balanced"))
         }),
         intent(
-            None,
             &[
                 "(open|show) [the] [app|application] launcher",
                 "show [me] [the|my] apps",
@@ -215,17 +195,13 @@ pub fn intents() -> Vec<Intent> {
             |_, _| d(Desktop::Launcher),
         ),
         intent(
-            None,
             &["(clear|dismiss|delete) [all] [the|my] notifications"],
             |_, _| d(Desktop::ClearNotifications),
         ),
+        intent(&["close [this|the] (window|app|application)"], |_, _| {
+            d(Desktop::CloseWindow)
+        }),
         intent(
-            None,
-            &["close [this|the] (window|app|application)"],
-            |_, _| d(Desktop::CloseWindow),
-        ),
-        intent(
-            None,
             &[
                 "(make|go|toggle) [it|this] fullscreen",
                 "make the window fullscreen",

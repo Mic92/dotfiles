@@ -32,13 +32,11 @@ fn n(f: Feed) -> Option<Action> {
 pub const MODULE: Module = Module {
     intents,
     slots: &[],
-    vocab: &[],
 };
 
 pub fn intents() -> Vec<Intent> {
     vec![
         intent(
-            Some("What's the news?"),
             &[
                 "!(what's|what is) (the|in the) news [today]",
                 "!(what's|what is) happening in the world",
@@ -50,7 +48,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| n(Feed::World),
         ),
         intent(
-            None,
             &[
                 "!(what's|what is) (on|new on) hacker news",
                 "![read|tell|give] [me] [the] (tech|nerd|computer) (news|headlines)",

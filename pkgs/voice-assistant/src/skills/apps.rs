@@ -100,12 +100,10 @@ pub struct Launch(pub usize);
 pub const MODULE: Module = Module {
     intents,
     slots: &[("app", |w, _| lookup(w).map(Value::Index))],
-    vocab: &[],
 };
 
 pub fn intents() -> Vec<Intent> {
     vec![intent(
-        Some("Open the browser."),
         &[
             "(open|launch|start|run|show) [the|my|a|an] {app} [app|application|window]",
             "(open|launch|start) [up] [the|my|a|an] {app}",
