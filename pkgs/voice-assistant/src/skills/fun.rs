@@ -36,10 +36,12 @@ pub fn intents() -> Vec<Intent> {
         intent(
             Some("Tell me a joke."),
             &[
-                "(tell|give) me [a|another] [funny|dirty|bad|good] joke",
-                "(make|cheer) me (laugh|up)",
-                "![another] joke",
-                "(know|got) any [good] jokes",
+                "[please] (tell|give) (me|us) [a|another|one more] [funny|dirty|bad|good|short] joke [please]",
+                "(can|could|would) you (tell|give) (me|us) [a|another] [funny|dirty|bad|good|short] joke",
+                "(make|cheer) (me|us) (laugh|up)",
+                "![another|one more] joke [please]",
+                "[do you] (know|got|have) any [good|funny] jokes",
+                "i (want|need) [to hear] a joke",
             ],
             |_, _| f(Fun::Joke),
         ),
@@ -139,7 +141,11 @@ pub fn intents() -> Vec<Intent> {
         ),
         intent(
             None,
-            &["sing [me] a song", "!sing [something]", "can you sing"],
+            &[
+                "[please] sing [me|us] a song [for me|for us] [please]",
+                "!sing [something] [for me|for us] [please]",
+                "(can|could|would|will) you sing [me|us] [a song|something] [for me|for us]",
+            ],
             |_, _| f(Fun::Sing),
         ),
     ]
@@ -333,6 +339,8 @@ mod tests {
             ("Tell me a joke.", Fun::Joke),
             ("Tell me another dirty joke", Fun::Joke),
             ("Joke!", Fun::Joke),
+            ("tell us a joke.", Fun::Joke),
+            ("sing for me.", Fun::Sing),
             ("Tell me a dad joke.", Fun::DadJoke),
             ("Flip a coin.", Fun::Coin),
             ("Heads or tails?", Fun::Coin),
