@@ -25,7 +25,7 @@ pub fn intents() -> Vec<Intent> {
         intent(
             None,
             &[
-                "!(again|once more|one more|one more time|another|another one|and another|do it again|same again|more|even more|more please|keep going|a bit more|bit more)",
+                "![tell|give|say|do] [me|us] (again|once more|one more|one more time|another|another one|and another|do it again|same again|more|even more|more please|keep going|a bit more|bit more)",
             ],
             |_, ctx| {
                 let line = match &ctx.previous {
@@ -143,7 +143,8 @@ mod tests {
 
         let joke = Action::Fun(Fun::Joke);
         assert_eq!(after(joke.clone(), "Another one!"), Some(joke.clone()));
-        assert_eq!(after(joke, "Again."), Some(Action::Fun(Fun::Joke)));
+        assert_eq!(after(joke.clone(), "Again."), Some(joke.clone()));
+        assert_eq!(after(joke.clone(), "tell another."), Some(joke));
         let up = Action::Volume(Volume::Up);
         assert_eq!(after(up.clone(), "More."), Some(up));
 

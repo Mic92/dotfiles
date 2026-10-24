@@ -36,7 +36,7 @@ pub fn intents() -> Vec<Intent> {
         intent(
             Some("Tell me a joke."),
             &[
-                "[please] (tell|give) (me|us) [a|another|one more] [funny|dirty|bad|good|short] joke [please]",
+                "[please] (tell|give) [me|us] [a|another|one more] [funny|dirty|bad|good|short] joke [please]",
                 "(can|could|would) you (tell|give) (me|us) [a|another] [funny|dirty|bad|good|short] joke",
                 "(make|cheer) (me|us) (laugh|up)",
                 "![another|one more] joke [please]",
@@ -340,6 +340,7 @@ mod tests {
             ("Tell me another dirty joke", Fun::Joke),
             ("Joke!", Fun::Joke),
             ("tell us a joke.", Fun::Joke),
+            ("tell a joke.", Fun::Joke),
             ("sing for me.", Fun::Sing),
             ("Tell me a dad joke.", Fun::DadJoke),
             ("Flip a coin.", Fun::Coin),
