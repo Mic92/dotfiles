@@ -391,16 +391,63 @@ pub fn slot(name: &str, words: &[&str]) -> Option<Value> {
 /// The intent whose template matches with the fewest ignored words; ties go
 /// to the earlier template.
 pub fn parse_at(text: &str, ctx: &Context) -> Option<Action> {
-    let owned = normalize(text);
-    let words: Vec<&str> = owned.iter().map(String::as_str).collect();
-    best_match(&words, ctx, false).or_else(|| best_match(&words, ctx, true))
+    parse_tier(text, ctx, false).or_else(|| parse_tier(text, ctx, true))
+}
+
+/// Ways of asking that wrap the actual question.
+const LEAD_INS: &[&[&str]] = &[
+    &["can", "you", "please", "tell", "me"],
+    &["can", "you", "tell", "me"],
+    &["could", "you", "tell", "me"],
+    &["would", "you", "tell", "me"],
+    &["would", "you", "let", "me", "know"],
+    &["please", "tell", "me"],
+    &["tell", "me"],
+    &["i", "need", "to", "know"],
+    &["i", "want", "to", "know"],
+    &["i", "wanna", "know"],
+    &["i'd", "like", "to", "know"],
+    &["i", "would", "like", "to", "know"],
+    &["i", "wonder"],
+    &["do", "you", "know"],
+    &["let", "me", "know"],
+    &["inform", "me"],
+    &["look", "up"],
+    &["please", "find"],
+    &["find", "out"],
+];
+const TAILS: &[&[&str]] = &[&["for", "me"], &["please"], &[","]];
+
+/// "Can you tell me what time it is, please" -> "what time it is".
+fn unwrap_request<'a>(mut words: &'a [&'a str]) -> &'a [&'a str] {
+    loop {
+        let before = words.len();
+        while let [",", rest @ ..] | ["please", rest @ ..] | ["alexa", rest @ ..] = words {
+            words = rest;
+        }
+        if let Some(rest) = LEAD_INS.iter().find_map(|l| words.strip_prefix(*l)) {
+            words = rest;
+        }
+        if let Some(rest) = TAILS.iter().find_map(|t| words.strip_suffix(*t)) {
+            words = rest;
+        }
+        if words.len() == before {
+            return words;
+        }
+    }
 }
 
 /// Like `parse_at`, but only the catch-alls (`fallback`) or only the rest.
 pub fn parse_tier(text: &str, ctx: &Context, fallback: bool) -> Option<Action> {
     let owned = normalize(text);
     let words: Vec<&str> = owned.iter().map(String::as_str).collect();
-    best_match(&words, ctx, fallback)
+    let core = unwrap_request(&words);
+    // The question inside a request beats a catch-all on the whole of it
+    // ("tell me what {text}" would send "what 30% off 279 is" to Kagi).
+    (!fallback && core != words.as_slice())
+        .then(|| best_match(core, ctx, false))
+        .flatten()
+        .or_else(|| best_match(&words, ctx, fallback))
 }
 
 fn best_match(words: &[&str], ctx: &Context, fallback: bool) -> Option<Action> {
@@ -798,6 +845,25 @@ mod tests {
         assert!(!vetoed("Notes(Show", "did i put oatmeal on my list"));
         assert!(!vetoed("Notes(Show", "what's on my shopping list"));
         assert!(!vetoed("Fun(Joke)", "take a joke"));
+    }
+
+    #[test]
+    fn requests_unwrap() {
+        let w = |t: &str| {
+            let owned = normalize(t);
+            let words: Vec<&str> = owned.iter().map(String::as_str).collect();
+            unwrap_request(&words).join(" ")
+        };
+        assert_eq!(
+            w("Can you tell me what time it is, please"),
+            "what time it is"
+        );
+        assert_eq!(
+            w("I need to know what is 85% of 1500"),
+            "what is 85 percent of 1500"
+        );
+        assert_eq!(w("please add 456 and 781 for me"), "add 456 and 781");
+        assert_eq!(w("what is 3/4 of 18"), "what is 3 over 4 of 18");
     }
 
     #[test]

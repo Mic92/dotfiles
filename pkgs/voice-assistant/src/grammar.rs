@@ -380,6 +380,7 @@ pub fn normalize(text: &str) -> Vec<String> {
         .replace('+', " plus ")
         .replace(['×', '*'], " times ")
         .replace('÷', " divided by ")
+        .replace('%', " percent ")
         .replace('=', " ");
     // A comma between words becomes its own token; "1,000" is a number.
     let chars: Vec<char> = lower.chars().collect();
@@ -391,7 +392,9 @@ pub fn normalize(text: &str) -> Vec<String> {
                 j.and_then(|j| chars.get(j))
                     .is_some_and(char::is_ascii_digit)
             };
-            if c != ',' {
+            if c == '/' && digit(i.checked_sub(1)) && digit(Some(i + 1)) {
+                " over ".to_owned()
+            } else if c != ',' {
                 c.to_string()
             } else if digit(i.checked_sub(1)) && digit(Some(i + 1)) {
                 String::new()
