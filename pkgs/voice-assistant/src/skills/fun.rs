@@ -189,7 +189,7 @@ fn online_joke(dad: bool) -> Option<String> {
 
 const EIGHT_BALL: &[&str] = &[
     "Absolutely. Do it.",
-    "Ask me again after coffee.",
+    "Ask me again after a Mate.",
     "My sources say no. My sources are me.",
     "Signs point to yes. Sexy, sexy yes.",
     "Hell no.",
@@ -227,7 +227,7 @@ const MOTIVATE: &[&str] = &[
     "You've got this. And if not, I'll pretend I didn't see.",
     "Every expert was once a beginner. Then they googled a lot.",
     "Done is better than perfect. Ship it!",
-    "You're one coffee away from greatness.",
+    "You're one Club-Mate away from greatness.",
     "Believe in yourself. I believe in you, and I'm a computer.",
     "Go. Crush it. Then tell me all about it.",
     "Future you is already proud. Don't ruin it.",

@@ -222,7 +222,7 @@ const STARTED: &[&str] = &[
     "Timer set for {}. That's like a whole TikTok binge.",
     "{}. I've seen you do a lot in less.",
     "Starting {}. Don't make me come over there.",
-    "{}. Tea, right? Please say it's tea and not another coffee.",
+    "{}. Tea, right? Please say it's tea and not your fourth Club-Mate.",
     "{}, ready, set, procrastinate.",
     "{}. I'll scream when it's done. You'll love it.",
     "{} on the clock. Don't wander off, I know you.",

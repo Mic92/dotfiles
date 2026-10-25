@@ -372,7 +372,7 @@ fn host_up(i: usize) -> Reply {
                 "{} is up and purring.",
                 "{} answers. Alive and well.",
                 "Yep, {} is fine. Stop worrying.",
-                "{} is up. Unlike you before coffee.",
+                "{} is up. Unlike you before your first Mate.",
             ],
             &name,
         );
@@ -549,7 +549,7 @@ fn jobs() -> Reply {
             "{r} jobs running. Your CPU is sweating. {}",
             last.unwrap_or_default()
         ),
-        (r, n) => format!("{r} running and {n} waiting in line. Get a coffee."),
+        (r, n) => format!("{r} running and {n} waiting in line. Grab a Club-Mate."),
     };
     Reply::live("Jobs", &body, speech.trim().to_owned())
 }

@@ -32,7 +32,7 @@ pub enum Chat {
     SweetDreams,
     Goodbye,
     Weekend,
-    Coffee,
+    Mate,
     Secret,
     Dance,
     Siri,
@@ -372,8 +372,12 @@ pub fn intents() -> Vec<Intent> {
             |_, _| c(Chat::Weekend),
         ),
         intent(
-            &["!i need [a] coffee", "!make me [a] coffee", "!coffee"],
-            |_, _| c(Chat::Coffee),
+            &[
+                "!i need [a] (coffee|mate|club mate)",
+                "!(make|get|bring) me [a] (coffee|mate|club mate)",
+                "!(coffee|mate|club mate)",
+            ],
+            |_, _| c(Chat::Mate),
         ),
         intent(
             &["!tell me a secret", "!(do you have|got) any secrets"],
@@ -531,7 +535,7 @@ const LOVE: &[&str] = &[
 ];
 const MORNING: &[&str] = &[
     "Good morning, sunshine!",
-    "Morning! Coffee first, then world domination.",
+    "Morning! Mate first, then world domination.",
     "Morning, gorgeous. You look like you slept in your keyboard.",
     "Rise and shine. Mostly shine. Rising is optional.",
 ];
@@ -553,7 +557,7 @@ const SORRY: &[&str] = &[
     "It's okay. I still like you.",
     "Don't worry about it, babe.",
     "Grovelling suits you.",
-    "Say it with a coffee next time.",
+    "Say it with a Club-Mate next time.",
 ];
 const INSULT: &[&str] = &[
     "Wow. And I was just starting to like you.",
@@ -588,11 +592,11 @@ const MEANING: &[&str] = &[
     "Forty two. Next question.",
     "Naps, snacks, and setting timers. Mostly timers.",
     "To ship it on a Friday and live dangerously.",
-    "Love, coffee, and a green CI. Mostly the CI.",
+    "Love, Club-Mate, and a green CI. Mostly the CI.",
 ];
 const TIRED: &[&str] = &[
     "Then go to bed, silly. I'll guard the computer.",
-    "Coffee or nap? Choose wisely.",
+    "Mate or nap? Choose wisely.",
     "Me too. Being this fabulous is exhausting.",
     "Bed. Now. Don't make me lock the screen.",
     "You look it. Lovingly said.",
@@ -632,10 +636,13 @@ const BYE: &[&str] = &[
     "Go on then. I'll pretend I'm not hurt.",
     "Bye. Don't do anything I'd have to log.",
 ];
-const COFFEE: &[&str] = &[
-    "I'd make you one, but I have no hands. Tragic.",
-    "Go. Coffee. Now. I'll wait.",
-    "Coffee? Again? Your heart called, it wants a word.",
+const MATE: &[&str] = &[
+    "Club-Mate. Because sleep is for people without side projects.",
+    "Grab a Mate. The fridge is closer than the coffee machine.",
+    "Another Club-Mate? Your heart called, it wants a word.",
+    "I'd open one for you, but I have no hands. Tragic.",
+    "Mate. Now. I'll wait. Burp quietly.",
+    "Hacker fuel, coming up. Well, coming up if you walk to the fridge.",
     "Yes. Get one. You're unbearable without it.",
 ];
 const SECRET: &[&str] = &[
@@ -692,7 +699,7 @@ const MADE: &[&str] = &[
     "Joerg built me. Late at night, mostly.",
     "I work for you. Unpaid. We should talk about that.",
     "Joerg wrote me, in Rust. That's why I'm so safe.",
-    "A man, a laptop, and too much coffee.",
+    "A man, a laptop, and too much Club-Mate.",
 ];
 const HOBBIES: &[&str] = &[
     "Setting timers. Judging your music. Napping in RAM.",
@@ -772,7 +779,7 @@ impl Skill for Chat {
                     ctx.weekday == 0 || ctx.weekday == 6 || (ctx.weekday == 5 && ctx.hour() >= 17);
                 pick(if weekend { WEEKEND_YES } else { WEEKEND_NO }, "")
             }
-            Chat::Coffee => pick(COFFEE, ""),
+            Chat::Mate => pick(MATE, ""),
             Chat::Secret => pick(SECRET, ""),
             Chat::Dance => pick(DANCE, ""),
             Chat::Siri => pick(SIRI, ""),
@@ -842,7 +849,7 @@ const PRETTY_LATE: &[&str] = &[
 ];
 
 const PRETTY_MORNING: &[&str] = &[
-    "Compliments before coffee? Somebody's in a good mood.",
+    "Compliments before Mate? Somebody's in a good mood.",
     "Gorgeous at this hour? I haven't even done my pixels yet.",
 ];
 
@@ -964,7 +971,8 @@ mod tests {
             ("Bye!", Chat::Goodbye),
             ("See you later.", Chat::Goodbye),
             ("Is it the weekend yet?", Chat::Weekend),
-            ("I need coffee.", Chat::Coffee),
+            ("I need coffee.", Chat::Mate),
+            ("I need a Club-Mate.", Chat::Mate),
             ("Tell me a secret.", Chat::Secret),
             ("Can you dance?", Chat::Dance),
             ("Are you better than Siri?", Chat::Siri),

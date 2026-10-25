@@ -155,7 +155,7 @@ const POWEROFF_WORK: &[&str] = &[
     "Shutting down in the middle of the day? Living the dream.",
 ];
 const LOCK_WORK: &[&str] = &[
-    "Locked. Coffee break? Bring me back a cookie.",
+    "Locked. Mate break? Bring me back a cookie.",
     "Locked. Go stretch, you look like a question mark.",
 ];
 const REBOOT: &[&str] = &[

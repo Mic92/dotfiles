@@ -405,7 +405,7 @@ fn next() -> Reply {
         ),
         1..=5 => format!("{} in {}! Hurry up, gorgeous.", e.title, spoken_mins(mins)),
         6..=60 => format!(
-            "{} in {}. Time for a coffee first.",
+            "{} in {}. Time to grab a Mate first.",
             e.title,
             spoken_mins(mins)
         ),

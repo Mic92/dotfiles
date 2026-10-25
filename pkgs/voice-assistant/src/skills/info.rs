@@ -244,9 +244,9 @@ const TIME_LATE: &[&str] = &[
     "{}. Nothing good happens on a laptop at this hour.",
 ];
 const TIME_EARLY: &[&str] = &[
-    "{}. Way too early. Coffee first.",
+    "{}. Way too early. Mate first.",
     "It's {}. Ugh, mornings.",
-    "{}. Even the coffee machine is asleep.",
+    "{}. Even the Club-Mate in the fridge is asleep.",
 ];
 const TIME_LUNCH: &[&str] = &[
     "It's {}. Lunch time! Feed yourself.",

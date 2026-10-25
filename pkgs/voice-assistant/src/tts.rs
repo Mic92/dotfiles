@@ -89,6 +89,13 @@ struct Synth {
     engine: Option<Engine>,
 }
 
+/// English voices read German loan words the English way ("mate" as in
+/// "buddy").
+fn respell(text: &str) -> String {
+    text.replace("Club-Mate", "Club Mahteh")
+        .replace("Mate", "Mahteh")
+}
+
 fn cstr(p: &Path) -> Result<CString, String> {
     CString::new(p.as_os_str().as_encoded_bytes()).map_err(|e| e.to_string())
 }
@@ -122,7 +129,7 @@ impl Tts {
     pub fn say(&self, text: &str, cache: bool) {
         lock(&self.playback).pending += 1;
         let job = Job {
-            text: text.to_owned(),
+            text: respell(text),
             cache,
         };
         if self.jobs.send(job).is_err() {
@@ -372,4 +379,16 @@ fn play(u: &Utterance) -> Result<(), String> {
     // pw-play exits once the audio has drained.
     let _ = child.wait();
     res
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn respells_club_mate() {
+        assert_eq!(respell("Grab a Club-Mate."), "Grab a Club Mahteh.");
+        assert_eq!(respell("Mate first."), "Mahteh first.");
+        assert_eq!(respell("checkmate, my mate"), "checkmate, my mate");
+    }
 }
