@@ -1,10 +1,12 @@
 //! Spoken reminders as transient systemd user timers, so they survive
 //! the assistant restarting.
 
-use super::dialogue::Question;
+use super::dialogue::{Act, Question};
 use super::json::{key, text as json_text};
 use super::notes::spoken_list;
-use super::{Action, Context, Intent, Module, Reply, Skill, intent, output, pick, slot, spawn};
+use super::{
+    Action, Context, Intent, Module, Reply, Skill, intent, output, pick, slot, spawn, succeeds,
+};
 use crate::clock;
 use crate::grammar::{Slots, Value, normalize};
 use std::env;
@@ -25,6 +27,11 @@ pub enum Reminder {
     },
     /// Pending reminders, soonest first.
     List,
+    /// Stop reminders: by name, the only one, or all.
+    Cancel {
+        what: Option<String>,
+        all: bool,
+    },
 }
 
 fn r(x: Reminder) -> Option<Action> {
@@ -98,6 +105,47 @@ pub const MODULE: Module = Module {
 
 pub fn intents() -> Vec<Intent> {
     vec![
+        intent(
+            &[
+                "![please] (cancel|delete|remove|clear|drop|stop) [the|my|that] reminder (about|for|to) {text}",
+                "![please] (cancel|delete|remove|clear|drop) [the|my] {text} reminder",
+                "!(don't|do not) remind me (to|about|of) {text} (anymore|any more)",
+                "!(don't|do not) remind me (to|about|of) {text}",
+                "!forget (the|my|that) reminder (about|for|to) {text}",
+            ],
+            // "cancel that reminder" names none.
+            |s, _| {
+                r(Reminder::Cancel {
+                    what: text(s, "text").filter(|t| {
+                        !content(t)
+                            .iter()
+                            .all(|w| matches!(w.as_str(), "this" | "last"))
+                    }),
+                    all: false,
+                })
+            },
+        ),
+        intent(
+            &[
+                "![please] (cancel|delete|remove|clear|drop|stop) [the|my|that|this] reminder",
+                "!forget (the|my|that) reminder",
+            ],
+            |_, _| {
+                r(Reminder::Cancel {
+                    what: None,
+                    all: false,
+                })
+            },
+        ),
+        intent(
+            &["![please] (cancel|delete|remove|clear|drop) (all|every) [of] [my|the] reminders"],
+            |_, _| {
+                r(Reminder::Cancel {
+                    what: None,
+                    all: true,
+                })
+            },
+        ),
         // A time first: open text would swallow "call mum in 10 minutes".
         intent(&strs(&timed("{duration}", "in")), set_in),
         intent(&strs(&timed("{day} at {clock}", "")), set_in),
@@ -176,6 +224,7 @@ impl Skill for Reminder {
                 r
             }
             Reminder::List => reminders(),
+            Reminder::Cancel { what, all } => cancel(what.as_deref(), *all),
         }
     }
 }
@@ -370,7 +419,14 @@ const REMINDERS: &[&str] = &[
     "Coming up: {}. Don't say I didn't warn you.",
 ];
 
-fn reminders() -> Reply {
+/// A pending reminder: its timer unit, text and seconds left.
+struct Pending {
+    unit: String,
+    what: String,
+    left: u32,
+}
+
+fn pending_now() -> Vec<Pending> {
     let now = SystemTime::now()
         .duration_since(UNIX_EPOCH)
         .map_or(0, |d| d.as_secs());
@@ -380,7 +436,7 @@ fn reminders() -> Reply {
         &["--user", "list-timers", &pattern, "--output=json", "--all"],
     )
     .unwrap_or_default();
-    let items: Vec<String> = pending(&json, now)
+    pending(&json, now)
         .into_iter()
         .map(|(unit, left)| {
             let what = output(
@@ -388,9 +444,20 @@ fn reminders() -> Reply {
                 &["--user", "show", &unit, "-p", "Description", "--value"],
             )
             .unwrap_or_default();
-            let what = what.strip_prefix("Reminder: ").unwrap_or(&what).to_owned();
-            format!("{what} in {}", spoken_delay(left))
+            let what = what
+                .strip_prefix("Reminder: ")
+                .unwrap_or(&what)
+                .trim()
+                .to_owned();
+            Pending { unit, what, left }
         })
+        .collect()
+}
+
+fn reminders() -> Reply {
+    let items: Vec<String> = pending_now()
+        .iter()
+        .map(|p| format!("{} in {}", p.what, spoken_delay(p.left)))
         .collect();
     if items.is_empty() {
         return Reply::live("Reminders", "", pick(NO_REMINDERS, ""));
@@ -399,11 +466,179 @@ fn reminders() -> Reply {
     Reply::live("Reminders", &what, pick(REMINDERS, &what))
 }
 
+/// Words that tell reminders apart.
+fn content(text: &str) -> Vec<String> {
+    const FILLER: &[&str] = &[
+        "the", "a", "an", "my", "to", "about", "for", "of", "that", "reminder", "me", "i",
+    ];
+    normalize(text)
+        .into_iter()
+        .filter(|w| !FILLER.contains(&w.as_str()))
+        .collect()
+}
+
+/// The reminders sharing the most words with `want`, or all of them
+/// without a name.
+fn matching<'a>(want: Option<&str>, whats: &[&'a str]) -> Vec<&'a str> {
+    let Some(want) = want else {
+        return whats.to_vec();
+    };
+    let want = content(want);
+    let score = |what: &str| {
+        let have = content(what);
+        // "dentist" also finds "go to the dentists".
+        want.iter()
+            .filter(|w| {
+                have.iter()
+                    .any(|h| h.starts_with(w.as_str()) || w.starts_with(h.as_str()))
+            })
+            .count()
+    };
+    let best = whats.iter().map(|w| score(w)).max().unwrap_or(0);
+    if best == 0 {
+        return Vec::new();
+    }
+    whats.iter().copied().filter(|w| score(w) == best).collect()
+}
+
+/// One unit per call: a missing notify timer must not keep the
+/// reminder alive.
+fn stop(unit: &str) {
+    let notify = unit.replacen(REMINDER, "va-notify-", 1);
+    for u in [unit, notify.as_str()] {
+        succeeds("systemctl", &["--user", "stop", u]);
+    }
+}
+
+const CANCELLED: &[&str] = &[
+    "Done, no more {}. I'll pretend you never asked.",
+    "Forgotten: {}. Like your gym membership.",
+    "Cancelled {}. Your future self owes me nothing.",
+    "{}? Gone. Poof.",
+    "Scrapped {}. Living dangerously, I see.",
+];
+const NOTHING_TO_CANCEL: &[&str] = &[
+    "There's nothing to cancel. You're free as a bird.",
+    "No reminders pending. Nothing to forget.",
+    "Cancel what? I'm not nagging you about anything.",
+];
+const NO_SUCH: &[&str] = &[
+    "I have no reminder about {}.",
+    "{}? Never heard of it. Maybe you forgot to ask.",
+    "Nothing about {}. Your memory is worse than mine.",
+];
+
+fn cancel(want: Option<&str>, all: bool) -> Reply {
+    let pending = pending_now();
+    if pending.is_empty() {
+        return Reply::live("Reminders", "", pick(NOTHING_TO_CANCEL, ""));
+    }
+    let whats: Vec<&str> = pending.iter().map(|p| p.what.as_str()).collect();
+    let hits = matching(want, &whats);
+    match (hits.as_slice(), all) {
+        ([], _) => {
+            let w = want.unwrap_or_default();
+            Reply::live("Reminders", w, pick(NO_SUCH, w))
+        }
+        ([_], _) | (_, true) => {
+            for p in pending.iter().filter(|p| hits.contains(&p.what.as_str())) {
+                stop(&p.unit);
+            }
+            let what = spoken_list(&hits.iter().map(|h| (*h).to_owned()).collect::<Vec<_>>());
+            Reply::live("Reminders", &what, pick(CANCELLED, &what))
+        }
+        (many, false) => {
+            let names: Vec<String> = many.iter().map(|h| (*h).to_owned()).collect();
+            let options = spoken_list(&names).replacen(" and ", " or ", 1);
+            let mut r = Reply::live("Reminders", &options, format!("Which one, {options}?"));
+            r.question = Some(Box::new(WhichReminder));
+            r
+        }
+    }
+}
+
+struct WhichReminder;
+
+impl Question for WhichReminder {
+    fn act(&self, act: &Act) -> Option<Action> {
+        matches!(act, Act::Yes).then(|| {
+            Action::Reminder(Reminder::Cancel {
+                what: None,
+                all: true,
+            })
+        })
+    }
+
+    fn answer(&self, text: &str, _: &Context) -> Option<Action> {
+        let all = normalize(text)
+            .iter()
+            .any(|w| matches!(w.as_str(), "all" | "both" | "every"));
+        Some(Action::Reminder(Reminder::Cancel {
+            what: (!all).then(|| text.to_owned()),
+            all,
+        }))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::super::dialogue::respond;
     use super::super::{Action, Context, parse_at};
     use super::*;
+
+    #[test]
+    fn cancel_finds_the_reminder() {
+        let whats = ["call mum", "go to the dentists", "take out the trash"];
+        assert_eq!(
+            matching(Some("the dentist"), &whats),
+            ["go to the dentists"]
+        );
+        assert_eq!(matching(Some("about calling mum"), &whats), ["call mum"]);
+        assert_eq!(matching(Some("pizza"), &whats), Vec::<&str>::new());
+        assert_eq!(matching(None, &whats).len(), 3);
+        let p = |t| parse_at(t, &Context::at(0));
+        let cancel = |what: Option<&str>, all| {
+            Some(Action::Reminder(Reminder::Cancel {
+                what: what.map(Into::into),
+                all,
+            }))
+        };
+        assert_eq!(
+            p("cancel the reminder about the dentist"),
+            cancel(Some("the dentist"), false)
+        );
+        assert_eq!(
+            p("delete my dentist reminder"),
+            cancel(Some("dentist"), false)
+        );
+        assert_eq!(
+            p("don't remind me to call mum anymore"),
+            cancel(Some("call mum"), false)
+        );
+        assert_eq!(p("cancel that reminder"), cancel(None, false));
+        assert_eq!(p("delete all my reminders"), cancel(None, true));
+        assert!(matches!(p("cancel the timer"), Some(Action::Timer(_))));
+    }
+
+    /// Starts and cancels a real (harmless) systemd timer.
+    #[test]
+    #[ignore]
+    fn live_cancel() {
+        let unit = format!("--unit={REMINDER}test-live");
+        std::process::Command::new("systemd-run")
+            .args(["--user", "--collect", "--quiet", &unit])
+            .args([
+                "--description=Reminder: see the dentist",
+                "--on-active=1h",
+                "true",
+            ])
+            .status()
+            .expect("systemd-run");
+        assert!(pending_now().iter().any(|p| p.what == "see the dentist"));
+        cancel(Some("dentist"), false);
+        std::thread::sleep(std::time::Duration::from_millis(500));
+        assert!(!pending_now().iter().any(|p| p.what == "see the dentist"));
+    }
 
     #[test]
     fn delays_in_hours() {
