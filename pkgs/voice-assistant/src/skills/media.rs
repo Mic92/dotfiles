@@ -20,6 +20,8 @@ pub enum Media {
     Radio(usize),
     RadioOff,
     NowPlaying,
+    /// "Play Hey Jude": the first YouTube hit.
+    Search(String),
 }
 
 const WHAT: &str = "[the|my|this|some] (music|song|track|video|podcast|media|playback)";
@@ -89,6 +91,31 @@ pub fn intents() -> Vec<Intent> {
                 "!radio off",
             ],
             |_, _| m(Media::RadioOff),
+        ),
+        intent(
+            &[
+                "!(play|put on|listen to) {text}",
+                "!put [on] {text} on",
+                "!(i|we) (want|would like|'d like|need) to (listen to|hear|play) {text}",
+                "!(can|could|may) (i|we) (hear|listen to|get) {text}",
+                "!(let's|let me) (hear|listen to) {text}",
+            ],
+            |s, _| match s.get("text")? {
+                Value::Text(t) => m(Media::Search(search_query(t)?)),
+                _ => None,
+            },
+        ),
+        // "turn on" alone is a light or a setting.
+        intent(
+            &[
+                "!turn on [the|my] {text} playlist",
+                "!turn [the|my] {text} playlist on",
+                "!(start|resume|pull up|use|do) [playing] [the|my] {text} playlist [please]",
+            ],
+            |s, _| match s.get("text")? {
+                Value::Text(t) => m(Media::Search(search_query(&format!("{t} playlist"))?)),
+                _ => None,
+            },
         ),
         intent(
             &[
@@ -286,6 +313,91 @@ pub fn station_lookup(words: &[&str]) -> Option<usize> {
     )
 }
 
+/// "some songs by daft punk" -> "daft punk". None for words that are
+/// no search ("it", "something").
+fn search_query(t: &str) -> Option<String> {
+    let mut w: Vec<&str> = t.split_whitespace().collect();
+    while let Some(first) = w.first()
+        && matches!(*first, "some" | "my" | "the" | "a" | "me")
+    {
+        w.remove(0);
+    }
+    if let Some(by) = w.iter().position(|x| *x == "by")
+        && by > 0
+        && w[..by].iter().all(|x| {
+            matches!(
+                *x,
+                "music" | "songs" | "song" | "something" | "stuff" | "tracks"
+            )
+        })
+    {
+        w.drain(..=by);
+    }
+    // "maroon 5 playlist, play it for me"
+    if let Some(again) = w.iter().skip(1).position(|x| *x == "play") {
+        w.truncate(again + 1);
+    }
+    while let [rest @ .., "please" | "in" | "here" | "now"] | [rest @ .., "for", "me" | "us"] =
+        w.as_slice()
+    {
+        w = rest.to_vec();
+    }
+    if let ["song" | "track" | "album", rest @ ..] = w.as_slice()
+        && !rest.is_empty()
+    {
+        w = rest.to_vec();
+    }
+    let vague = [
+        "it",
+        "that",
+        "this",
+        "something",
+        "music",
+        "anything",
+        "again",
+        "it again",
+        "radio",
+    ];
+    // "the last song again" is a skip, not a title.
+    if w.first()
+        .is_some_and(|f| matches!(*f, "next" | "previous" | "last" | "same"))
+    {
+        return None;
+    }
+    let q = w.join(" ").replace(',', "");
+    (!q.is_empty() && !vague.contains(&q.as_str())).then_some(q)
+}
+
+fn search(query: &str) -> Reply {
+    stop_radio();
+    let ipc = radio_socket().map(|p| format!("--input-ipc-server={}", p.display()));
+    let title = format!("--title={RADIO_TAG}");
+    let url = format!("ytdl://ytsearch1:{query}");
+    let mut args = vec![
+        "--no-video",
+        "--really-quiet",
+        "--ytdl-format=bestaudio/best",
+        &title,
+    ];
+    args.extend(ipc.as_deref());
+    args.push(&url);
+    spawn("mpv", &args);
+    Reply::new("Music", query, pick(SEARCH, query))
+}
+
+const SEARCH: &[&str] = &[
+    "{}, coming right up.",
+    "Looking for {}. Give me a second.",
+    "{}. Excellent choice. Mostly.",
+    "Finding {}. Warm up those vocal cords.",
+    "{}? Fine. No judgement. Some judgement.",
+    "Digging up {}. Dance like nobody's listening. I am.",
+    "{}. Turn it up, darling.",
+    "One {}, served hot.",
+    "{}. The neighbours will love it.",
+    "{}. Try not to sing along. Please.",
+];
+
 /// Marks our mpv in the process list so it can be stopped again.
 const RADIO_TAG: &str = "voice-assistant-radio";
 
@@ -453,6 +565,7 @@ impl Skill for Media {
                 );
             }
             Media::NowPlaying => return now_playing(),
+            Media::Search(q) => return search(q),
             Media::Play => {
                 radio_pause(false);
                 ("play", PLAY)
@@ -478,6 +591,53 @@ impl Skill for Media {
 mod tests {
     use super::super::{Action, Context, parse_at};
     use super::*;
+
+    #[test]
+    fn search() {
+        let p = |t| parse_at(t, &Context::at(0));
+        for (text, q) in [
+            ("Play Hey Jude", "hey jude"),
+            ("Play Hey Jude by the Beatles.", "hey jude by the beatles"),
+            ("play music by bob dylan", "bob dylan"),
+            ("Play some songs by Daft Punk", "daft punk"),
+            ("put my workout playlist on", "workout playlist"),
+            ("I want to listen to Bohemian Rhapsody", "bohemian rhapsody"),
+            ("can you play some jazz", "jazz"),
+            ("can i hear some music by fleet foxes", "fleet foxes"),
+            ("let's hear my workout playlist", "workout playlist"),
+            ("turn my drake playlist on", "drake playlist"),
+            ("turn on the rap playlist", "rap playlist"),
+            ("resume my death metal playlist", "death metal playlist"),
+            (
+                "let me hear the song sympathy for the devil",
+                "sympathy for the devil",
+            ),
+            ("play the song god's plan", "god's plan"),
+            (
+                "i want to listen to my maroon 5 playlist, play it for me",
+                "maroon 5 playlist",
+            ),
+        ] {
+            assert_eq!(
+                p(text),
+                Some(Action::Media(Media::Search(q.into()))),
+                "{text:?}"
+            );
+        }
+        // Fixed commands win over a search.
+        for t in [
+            "Play the next song",
+            "play the music",
+            "play the news",
+            "Play.",
+            "play it again",
+        ] {
+            assert!(
+                !matches!(p(t), Some(Action::Media(Media::Search(_)))),
+                "{t:?}"
+            );
+        }
+    }
 
     #[test]
     fn phrasings() {
