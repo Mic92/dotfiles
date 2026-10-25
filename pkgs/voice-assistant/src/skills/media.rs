@@ -358,6 +358,10 @@ fn search_query(t: &str) -> Option<String> {
         "it again",
         "radio",
     ];
+    // "my todo list", "the shopping list" belong to the notes.
+    if w.contains(&"list") {
+        return None;
+    }
     // "the last song again" is a skip, not a title.
     if w.first()
         .is_some_and(|f| matches!(*f, "next" | "previous" | "last" | "same"))
