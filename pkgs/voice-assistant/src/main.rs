@@ -5,6 +5,7 @@ mod classify;
 mod clock;
 mod duration;
 mod grammar;
+mod holiday;
 mod http;
 mod hush;
 mod onnx;

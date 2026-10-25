@@ -539,14 +539,23 @@ pub fn vetoed(kind: &str, text: &str) -> bool {
     const QUESTION: &[&str] = &[
         "did", "have", "is", "are", "do", "does", "what", "what's", "which", "has",
     ];
+    // Upcoming days off only, not pay or leave already taken.
+    const HOLIDAY: &[&str] = &["holiday", "holidays", "off", "free", "weekend"];
+    const NOT_HOLIDAY: &[&str] = &[
+        "paid", "pay", "payday", "taken", "took", "used", "left", "status", "request", "balance",
+    ];
+    let words = crate::grammar::normalize(text);
+    let has = |set: &[&str]| words.iter().any(|w| set.contains(&w.as_str()));
+    if kind.starts_with("Info(Holiday") {
+        return !has(HOLIDAY) || has(NOT_HOLIDAY);
+    }
     if !kind.starts_with("Notes(") {
         return false;
     }
-    let words = crate::grammar::normalize(text);
     let question = words
         .first()
         .is_some_and(|w| QUESTION.contains(&w.as_str()));
-    !question && words.iter().any(|w| CHANGE.contains(&w.as_str()))
+    !question && has(CHANGE)
 }
 
 /// A few values per slot for example sentences.
@@ -846,7 +855,7 @@ mod tests {
     }
 
     #[test]
-    fn list_changes_are_vetoed_for_notes() {
+    fn wrong_neighbours_are_vetoed() {
         assert!(vetoed(
             "Notes(Show",
             "add eggs to my list and remove cheese"
@@ -855,6 +864,15 @@ mod tests {
         assert!(!vetoed("Notes(Show", "did i put oatmeal on my list"));
         assert!(!vetoed("Notes(Show", "what's on my shopping list"));
         assert!(!vetoed("Fun(Joke)", "take a joke"));
+        // Pay and leave balances sit next to holidays, but are not.
+        assert!(vetoed("Info(Holiday)", "when's the next time i get paid"));
+        assert!(vetoed("Info(Holiday)", "how many days have i taken off"));
+        assert!(vetoed(
+            "Info(Holiday)",
+            "what's the status of my vacation days"
+        ));
+        assert!(!vetoed("Info(Holiday)", "is our next day off soon"));
+        assert!(!vetoed("Info(Holiday)", "what holiday is next and when"));
     }
 
     #[test]

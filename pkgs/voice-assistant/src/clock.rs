@@ -194,31 +194,50 @@ pub fn local_weekday() -> u32 {
     local_tm().map_or(0, |tm| field(tm.tm_wday))
 }
 
+/// Today as days since 1970-01-01.
+pub fn local_day() -> Option<i64> {
+    let tm = local_tm()?;
+    Some(crate::holiday::day_number(
+        tm.tm_year + 1900,
+        field(tm.tm_mon) + 1,
+        field(tm.tm_mday),
+    ))
+}
+
+/// "Thursday, November 1" for a day number.
+pub fn spoken_day(n: i64) -> String {
+    let (_, m, d) = crate::holiday::civil(n);
+    let day = DAYS.get(crate::holiday::weekday(n) as usize).unwrap_or(&"");
+    let month = MONTHS.get(m.saturating_sub(1) as usize).unwrap_or(&"");
+    format!("{day}, {month} {d}")
+}
+
+const DAYS: [&str; 7] = [
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+];
+const MONTHS: [&str; 12] = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+];
+
 /// "Thursday, October 23", for replies.
 pub fn local_date() -> Option<String> {
-    const DAYS: [&str; 7] = [
-        "Sunday",
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-    ];
-    const MONTHS: [&str; 12] = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-    ];
     let tm = local_tm()?;
     let day = DAYS.get(usize::try_from(tm.tm_wday).ok()?)?;
     let month = MONTHS.get(usize::try_from(tm.tm_mon).ok()?)?;

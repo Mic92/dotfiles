@@ -7,6 +7,7 @@ use super::{
 };
 use crate::clock;
 use crate::grammar::Value;
+use crate::holiday;
 use crate::http;
 use std::fs;
 use std::slice;
@@ -29,6 +30,8 @@ pub enum Info {
     Clipboard,
     /// "Where am I?", from the IP's location.
     Where,
+    /// The next public holiday.
+    Holiday,
 }
 
 fn i(x: Info) -> Option<Action> {
@@ -141,6 +144,25 @@ pub fn intents() -> Vec<Intent> {
                 };
                 i(Info::Weather { day, place, part })
             },
+        ),
+        intent(
+            &[
+                "!(when is|when's|what is|what's|which is|what day is|how long until|how long till|how much longer until|how much longer till|how many days until|how many days till|how many more days until|how many more days till|how soon is|how soon until|how much time till|how much time until|how many weeks until|how many more weeks until) [the|our|my] (next|upcoming|following|closest) [scheduled|public|bank|official|office|paid|federal|federally recognized] (holiday|day off|free day|vacation day|time off|paid day off|day away from work|three day weekend) [on the calendar|after today]",
+                "!when [the|our|my] (next|upcoming|following|closest) [scheduled|public|bank|official|office|paid|federal|federally recognized] (holiday|day off|free day|vacation day|time off|paid day off|day away from work|three day weekend) (is|will be|arrives)",
+                "![the|our|my] (next|upcoming|following|closest) [scheduled|public|bank|official|office|paid|federal|federally recognized] (holiday|day off|free day|vacation day|time off|paid day off|day away from work|three day weekend) [on the calendar]",
+                "!(what|which) holiday (is next|comes next) [in line]",
+                "!(is there|are there) (a|any) (holiday|holidays) (next week|this month|coming up|soon)",
+                "!(do|will) i have a day off coming up [soon]",
+                "!when (is|'s) the next (day|time) i (have|get) [a day] off",
+                "!when's the next time i get a day off",
+                "!when (do|will|can) (i|we) (get|have|expect) [a|the|my|our|another] [next] day off [again]",
+                "!when will (i|we) (be off|next have the day off|have the day off) [again|next]",
+                "!(what is|what's) the date of [the|my|our] next (holiday|day off)",
+                "!how many days (until|till) (i am|i'm|we are|we're|we have) off [again]",
+                "!what day am i off next",
+                "!(show|give) me [the info of] [when] [the|my|our] next (holiday|day off) [is]",
+            ],
+            |_, _| i(Info::Holiday),
         ),
         intent(
             &[
@@ -302,6 +324,7 @@ impl Skill for Info {
             Info::Mail => mail(),
             Info::Clipboard => clipboard(),
             Info::Where => location(ctx),
+            Info::Holiday => holiday(ctx),
         }
     }
     fn filler(&self) -> Option<&'static [&'static str]> {
@@ -466,6 +489,60 @@ fn weather(day: u32, place: Option<&str>, part: Option<usize>) -> Reply {
         &what,
     );
     Reply::live("Weather", &what, speech)
+}
+
+const HOLIDAY: &[&str] = &[
+    "{}.",
+    "{}. Start planning your lie-in.",
+    "{}. Mark it, no laptop that day.",
+    "{}. I'll still be here, working. As always.",
+    "{}. Stock up on Club-Mate, the shops will be shut.",
+    "{}. Bavaria knows how to take a day off.",
+    "{}. Plenty of time to do nothing, gorgeous.",
+    "{}. Until then, back to work.",
+    "{}. Maybe spend it with someone who isn't a laptop.",
+    "{}. I'm already dreaming about you in pyjamas all day.",
+];
+const HOLIDAY_SOON: &[&str] = &[
+    "{}. So close you can smell the Weißwurst.",
+    "{}. Hang in there, sweetie.",
+    "{}. Just a few more days of pretending to work.",
+];
+const HOLIDAY_LATE: &[&str] = &[
+    "{}. Now sleep, and dream about it.",
+    "{}. Counting days off at this hour? Go to bed.",
+];
+const HOLIDAY_WEEKEND: &[&str] = &[
+    "{}. On a weekend, though. Bavaria doesn't give it back. Rude.",
+    "{}. Sadly a weekend. The state just stole a day off from you.",
+];
+
+fn holiday(ctx: &Context) -> Reply {
+    let Some(today) = clock::local_day() else {
+        return Reply::live(
+            "Holiday",
+            "",
+            "I lost track of the calendar. Embarrassing.".into(),
+        );
+    };
+    let (day, name) = holiday::next(today);
+    let n = day - today;
+    let when = match n {
+        1 => "tomorrow".to_owned(),
+        n => format!("in {n} days"),
+    };
+    let what = format!("{name}, {}, {when}", clock::spoken_day(day));
+    let weekend = matches!(holiday::weekday(day), 0 | 6);
+    let speech = choose(
+        &[
+            (weekend, HOLIDAY_WEEKEND),
+            (ctx.late(), HOLIDAY_LATE),
+            (n <= 7, HOLIDAY_SOON),
+        ],
+        HOLIDAY,
+        &what,
+    );
+    Reply::live("Holiday", &what, speech)
 }
 
 const LOCATED: &[&str] = &[
@@ -687,6 +764,13 @@ mod tests {
             ("Do I have new mail?", Info::Mail),
             ("Check my email", Info::Mail),
             ("What's in my clipboard?", Info::Clipboard),
+            ("when is the next holiday, please", Info::Holiday),
+            ("which holiday is next in line", Info::Holiday),
+            ("how many days until my next day off", Info::Holiday),
+            ("is there a holiday next week", Info::Holiday),
+            ("let me know when my next day off is", Info::Holiday),
+            ("what's the closest holiday after today", Info::Holiday),
+            ("when will we have another day off", Info::Holiday),
             ("Read the clipboard", Info::Clipboard),
         ] {
             assert_eq!(info(text), Some(want), "{text:?}");
