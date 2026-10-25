@@ -173,7 +173,113 @@ pub fn act(words: &[&str]) -> Option<Act> {
 }
 
 /// Longer sentences are someone talking about something else.
-const MAX_ANSWER_WORDS: usize = 6;
+const MAX_ANSWER_WORDS: usize = 12;
+
+const NEGATORS: &[&str] = &[
+    "not", "never", "don't", "doesn't", "isn't", "aren't", "can't", "couldn't", "haven't", "dont",
+    "isnt", "cant", "unable", "wasn't", "don’t", "isn’t",
+];
+/// Not knowing, once negated: "i don't know", "not sure", "can't say".
+const KNOWING: &[&str] = &[
+    "know",
+    "sure",
+    "certain",
+    "confident",
+    "say",
+    "tell",
+    "decide",
+    "information",
+    "mind",
+    "answer",
+    "idea",
+    "clue",
+];
+const MAYBE: &[&str] = &[
+    "maybe",
+    "perhaps",
+    "dunno",
+    "idk",
+    "possibly",
+    "unsure",
+    "undecided",
+    "uncertain",
+    "might",
+    "either",
+    "both",
+    "unaware",
+    "possibility",
+    "foggiest",
+    "depends",
+    "knows",
+];
+const MAYBE_PAIRS: &[[&str; 2]] = &[
+    ["no", "idea"],
+    ["no", "clue"],
+    ["a", "clue"],
+    ["no", "knowledge"],
+    ["could", "be"],
+    ["if", "i"],
+];
+/// Words for true and false; a negator before them flips them.
+const TRUE: &[&str] = &[
+    "true", "right", "correct", "accurate", "fact", "facts", "valid", "truth",
+];
+const FALSE: &[&str] = &[
+    "false",
+    "wrong",
+    "incorrect",
+    "inaccurate",
+    "untrue",
+    "erroneous",
+    "invalid",
+    "fake",
+];
+const YES: &[&str] = &[
+    "yes",
+    "yeah",
+    "yep",
+    "yup",
+    "yeap",
+    "ya",
+    "confirm",
+    "confirmed",
+    "affirmative",
+    "affirmitive",
+    "agree",
+    "agreed",
+    "accepted",
+    "approved",
+    "roger",
+    "indeed",
+    "positive",
+];
+const NO: &[&str] = &[
+    "no", "nope", "nah", "naw", "nay", "cancel", "abort", "wait", "pass", "negative", "negatory",
+    "nada", "disagree",
+];
+/// Weak on their own: "false for sure" is still false.
+const LEANS_YES: &[&str] = &[
+    "sure",
+    "absolutely",
+    "definitely",
+    "certainly",
+    "please",
+    "ok",
+    "okay",
+    "great",
+    "awesome",
+];
+const YES_PAIRS: &[[&str; 2]] = &[
+    ["do", "it"],
+    ["do", "that"],
+    ["go", "ahead"],
+    ["of", "course"],
+    ["uh", "huh"],
+    ["all", "right"],
+    ["got", "it"],
+    ["checks", "out"],
+    ["makes", "sense"],
+];
 
 /// Yes, no or maybe as an answer to a question. Loose on purpose, so
 /// only used while one is pending.
@@ -181,50 +287,50 @@ fn answer_word(words: &[&str]) -> Option<Act> {
     if words.len() > MAX_ANSWER_WORDS {
         return None;
     }
-    let has = |list: &[&str]| words.iter().any(|w| list.contains(w));
-    let pair = |list: &[[&str; 2]]| words.windows(2).any(|p| list.iter().any(|l| p == l));
-    if has(&["maybe", "perhaps", "dunno", "idk", "possibly"])
-        || pair(&[
-            ["don't", "know"],
-            ["not", "sure"],
-            ["no", "idea"],
-            ["no", "clue"],
-        ])
-    {
-        Some(Act::Maybe)
-    } else if has(&[
-        "no", "nope", "nah", "naw", "nay", "cancel", "don't", "abort", "wait", "negative", "not",
-        "pass",
-    ]) {
-        Some(Act::No)
-    } else if has(&[
-        "yes",
-        "yeah",
-        "yep",
-        "yup",
-        "yeap",
-        "sure",
-        "confirm",
-        "confirmed",
-        "absolutely",
-        "please",
-        "ok",
-        "okay",
-        "affirmative",
-        "definitely",
-        "certainly",
-        "indeed",
-        "correct",
-        "agreed",
-    ]) || pair(&[
-        ["do", "it"],
-        ["go", "ahead"],
-        ["of", "course"],
-        ["uh", "huh"],
-    ]) {
-        Some(Act::Yes)
-    } else {
-        None
+    let pair = |list: &[[&str; 2]]| words.windows(2).any(|p| list.iter().any(|y| p == y));
+    if words.iter().any(|w| MAYBE.contains(w)) || pair(MAYBE_PAIRS) {
+        return Some(Act::Maybe);
+    }
+    let mut score = 0i32;
+    // Truth words, yes or no: enough to decide a longer sentence.
+    let mut strong = pair(YES_PAIRS);
+    if strong {
+        score += 2;
+    }
+    let mut truth = false;
+    // A negator flips the next truth or knowing word only.
+    let mut negated = false;
+    for w in words {
+        if NEGATORS.contains(w) {
+            negated = true;
+        } else if *w == "," {
+            negated = false;
+        } else if negated && KNOWING.contains(w) {
+            return Some(Act::Maybe);
+        } else if TRUE.contains(w) || FALSE.contains(w) {
+            let sign = if TRUE.contains(w) { 2 } else { -2 };
+            score += if negated { -sign } else { sign };
+            (truth, strong, negated) = (true, true, false);
+        } else if YES.contains(w) || NO.contains(w) {
+            score += if YES.contains(w) { 2 } else { -2 };
+            strong = true;
+        } else if LEANS_YES.contains(w) {
+            score += 1;
+        }
+    }
+    // "please don't", "i think not": a negator with nothing to flip.
+    if !truth && words.iter().any(|w| NEGATORS.contains(w)) {
+        score -= 3;
+        strong = true;
+    }
+    // "sure", "okay please" are answers, a sentence with a "please" is not.
+    if !strong && words.len() > 3 {
+        return None;
+    }
+    match score.signum() {
+        1 => Some(Act::Yes),
+        -1 => Some(Act::No),
+        _ => None,
     }
 }
 
@@ -274,24 +380,26 @@ pub fn ambient(act: &Act, f: &Focus) -> Option<Action> {
 /// What the user meant: the question's answer first, then a full command,
 /// then an act about whatever else is going on.
 pub fn respond(text: &str, ctx: &Context, question: Option<&dyn Question>) -> Option<Action> {
-    if let Some(q) = question {
-        if let Some(a) = q.answer(text, ctx) {
-            return Some(a);
-        }
-        let owned = normalize(text);
-        let words: Vec<&str> = owned.iter().map(String::as_str).collect();
-        if let Some(act) = act(&words).or_else(|| answer_word(&words)) {
-            if let Some(a) = q.act(&act) {
-                return Some(a);
-            }
-            match act {
-                Act::Stop | Act::Cancel | Act::No => return Some(Action::Dismiss),
-                Act::Maybe => return Some(Action::Say(pick(UNSURE, ""))),
-                _ => {}
-            }
-        }
+    let Some(q) = question else {
+        return parse_tier(text, ctx, false);
+    };
+    if let Some(a) = q.answer(text, ctx) {
+        return Some(a);
     }
-    parse_tier(text, ctx, false)
+    let owned = normalize(text);
+    let words: Vec<&str> = owned.iter().map(String::as_str).collect();
+    // Loose yes/no words only when the sentence is no command of its own.
+    if act.is_none()
+        && let Some(command) = parse_tier(text, ctx, false)
+    {
+        return Some(command);
+    }
+    let act = act.or_else(|| answer_word(&words))?;
+    q.act(&act).or(match act {
+        Act::Stop | Act::Cancel | Act::No => Some(Action::Dismiss),
+        Act::Maybe => Some(Action::Say(pick(UNSURE, ""))),
+        _ => parse_tier(text, ctx, false),
+    })
 }
 
 #[cfg(test)]
@@ -434,7 +542,23 @@ mod tests {
             answer_word(&w.iter().map(String::as_str).collect::<Vec<_>>())
         };
         assert_eq!(a("What?"), None);
-        assert_eq!(a("no idea"), Some(Act::Maybe));
+        for (t, want) in [
+            ("no idea", Act::Maybe),
+            ("i don't know", Act::Maybe),
+            ("um, i'm not quite sure", Act::Maybe),
+            ("that is not false", Act::Yes),
+            ("you are not wrong about that", Act::Yes),
+            ("yes, that is correct", Act::Yes),
+            ("roger that", Act::Yes),
+            ("false for sure", Act::No),
+            ("that isn't correct", Act::No),
+            ("certainly not", Act::No),
+            ("i think not", Act::No),
+            ("please, no", Act::No),
+            ("i do not think that is true", Act::No),
+        ] {
+            assert_eq!(a(t), Some(want), "{t:?}");
+        }
         assert_eq!(
             a("well I was going to say something else entirely here"),
             None
