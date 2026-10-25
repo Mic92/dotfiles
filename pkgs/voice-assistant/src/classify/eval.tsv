@@ -118,3 +118,21 @@ Dismiss	forget about it
 -	did you just eat up too long ago?
 -	so what are the two parts?
 -	what's the number?
+Chat(WhoMadeYou)	what company made this ai
+Chat(WhoMadeYou)	what is the name of the person who made you
+Chat(WhoMadeYou)	who is the person that brought you to life
+Chat(WhoMadeYou)	who is in charge of you when you work
+Chat(WhoMadeYou)	who is responsible for your employment
+Chat(WhoMadeYou)	who do you report to for your work
+Chat(Hobbies)	what are your hobbies exactly
+Chat(Hobbies)	what are your hobbies in life
+Chat(Hobbies)	what are some of your hobbies
+Chat(Pets)	cats or dogs are your preference
+Chat(Pets)	what kinds of pets do you own
+Chat(Pets)	do you have any pets and what kind
+Chat(OnlyEnglish)	please speak in tagalog
+Chat(OnlyEnglish)	speak in german
+Chat(OnlyEnglish)	speak to me in dutch
+Chat(OnlyEnglish)	change the accent you're using
+Chat(OnlyEnglish)	start using a different accent
+Chat(OnlyEnglish)	talk to me in a different accent

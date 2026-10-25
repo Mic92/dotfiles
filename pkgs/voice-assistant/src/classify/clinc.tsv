@@ -690,3 +690,123 @@ Chat(HowOld)	do you know how old you are
 Chat(HowOld)	how old
 Chat(HowOld)	what's your date of birth
 Chat(HowOld)	how old are you turning
+Chat(WhoMadeYou)	who formed you
+Chat(WhoMadeYou)	who constructed you
+Chat(WhoMadeYou)	what's your design company
+Chat(WhoMadeYou)	what company coded you
+Chat(WhoMadeYou)	who fabricated you
+Chat(WhoMadeYou)	what company wrote your code
+Chat(WhoMadeYou)	what company owns your code
+Chat(WhoMadeYou)	who brought you up
+Chat(WhoMadeYou)	who is it that programmed you
+Chat(WhoMadeYou)	whats it like to be programmed
+Chat(WhoMadeYou)	who was the inventor of ai
+Chat(WhoMadeYou)	ai was made by whom
+Chat(WhoMadeYou)	tell me the inventor of ai
+Chat(WhoMadeYou)	can you tell me who made ai
+Chat(WhoMadeYou)	could you let me know who made you
+Chat(WhoMadeYou)	who is your employeer
+Chat(WhoMadeYou)	who is the boss of you
+Chat(WhoMadeYou)	i gotta know who is your boss
+Chat(WhoMadeYou)	tell me who is your boss
+Chat(WhoMadeYou)	let me know who is your boss
+Chat(WhoMadeYou)	i wanna know who is your boss
+Chat(WhoMadeYou)	i need to know who is your boss
+Chat(WhoMadeYou)	what is the name of your boss
+Chat(WhoMadeYou)	what is the full name of your boss
+Chat(WhoMadeYou)	do you know the name of your boss
+Chat(WhoMadeYou)	could you tell me the name of your boss
+Chat(WhoMadeYou)	your boss is
+Chat(WhoMadeYou)	are you my worker
+Chat(WhoMadeYou)	are you working for me or what
+Chat(WhoMadeYou)	are you working for another person or entity
+Chat(Hobbies)	what kinds of things are you into
+Chat(Hobbies)	what's your favorite hobby
+Chat(Hobbies)	what do you like to do in your spare time
+Chat(Hobbies)	what do you do for fun
+Chat(Hobbies)	do you have any hobbies
+Chat(Hobbies)	do you have any past-times
+Chat(Hobbies)	what are your favorite hobbies to take part in
+Chat(Hobbies)	what things do you like to do
+Chat(Hobbies)	what are your favorite hobbies
+Chat(Hobbies)	what are your favorite things to do
+Chat(Hobbies)	what are ai's hobbies
+Chat(Hobbies)	i want to know if you have hobbies
+Chat(Hobbies)	i'd like to know your hobbies
+Chat(Hobbies)	let's talk about your hobbies
+Chat(Hobbies)	can you tell me about your hobbies
+Chat(Hobbies)	tell me your hobbies
+Chat(Hobbies)	do ai have hobbies and if so what are yours
+Chat(Hobbies)	what are you hobbies
+Chat(Hobbies)	do you have any hobbies to speak of
+Chat(Hobbies)	what hobbies do you do
+Chat(Hobbies)	how do you spend your spare time
+Chat(Hobbies)	what do you like to do when you have spare time
+Chat(Hobbies)	what do you do when you're not working
+Chat(Hobbies)	is there anything you like to do in your free time
+Chat(Hobbies)	what are the things you like to do for fun
+Chat(Hobbies)	what sort of things do you or work on for fun when you have extra time
+Chat(Hobbies)	are there activities that you enjoy doing in your free time
+Chat(Hobbies)	what are some things you like doing
+Chat(Hobbies)	so what sort of hobbies are you into
+Chat(Hobbies)	what do you do when you're not working, for fun
+Chat(Pets)	what type of pet do you have
+Chat(Pets)	share some information about your pets with me
+Chat(Pets)	do you have any type of pet
+Chat(Pets)	do you own pets
+Chat(Pets)	what are the pets that you have in your possession
+Chat(Pets)	describe your types of pets
+Chat(Pets)	how would you explain the pets you own
+Chat(Pets)	what are the pet types you own
+Chat(Pets)	do you have any pet animals
+Chat(Pets)	any pets in your household
+Chat(Pets)	do you have any domestic animals
+Chat(Pets)	which animals do you have at home
+Chat(Pets)	tell me all about the creatures you own
+Chat(Pets)	specifically, what pets do you own
+Chat(Pets)	if you had to choose, would you choose a cat or a dog
+Chat(Pets)	what is your favorite, cats or dogs
+Chat(Pets)	what kind of person are you, a cat or dog
+Chat(Pets)	which food do you give your pets
+Chat(Pets)	how old are your pets
+Chat(Pets)	the pets are all good
+Chat(Pets)	what is the colour of your pets
+Chat(Pets)	what is your favourite pet
+Chat(Pets)	do you have many kinds of pets at your house
+Chat(Pets)	what kind of pets live with you
+Chat(Pets)	how many different pets do you have
+Chat(Pets)	do you have different kinds of pets
+Chat(Pets)	what sort of pets do you have
+Chat(Pets)	tell me about your pets
+Chat(Pets)	what sort of person are you, a cat or dog person
+Chat(Pets)	tell me if you like cats or dogs
+Chat(OnlyEnglish)	adjust your language setting to english
+Chat(OnlyEnglish)	change and set your language setting to english
+Chat(OnlyEnglish)	set your language setting to english
+Chat(OnlyEnglish)	make your preferred language english
+Chat(OnlyEnglish)	i would like to have language set to spanish, please
+Chat(OnlyEnglish)	please give me your responses only in french from now on
+Chat(OnlyEnglish)	can we speak in english rather than zulu
+Chat(OnlyEnglish)	i would like to change your language from portuguese to italian
+Chat(OnlyEnglish)	change the response language to french please
+Chat(OnlyEnglish)	what languages can i switch to for your responses
+Chat(OnlyEnglish)	can you give me the answers in italian instead of english
+Chat(OnlyEnglish)	i want us to speak to each other in spanish from now on
+Chat(OnlyEnglish)	switch the language for your responses, please
+Chat(OnlyEnglish)	let's speak in mandarin instead of english
+Chat(OnlyEnglish)	how can we start communicating in french rather than english
+Chat(OnlyEnglish)	use a different accent
+Chat(OnlyEnglish)	try using a different accent
+Chat(OnlyEnglish)	speak in a different accent
+Chat(OnlyEnglish)	change the accent you're speaking in
+Chat(OnlyEnglish)	could you change the accent you're using
+Chat(OnlyEnglish)	would you change your accent to the male british one
+Chat(OnlyEnglish)	i want your accent changed to the male british one
+Chat(OnlyEnglish)	i need for you to change your accent to the male british one
+Chat(OnlyEnglish)	would you please get your accent changed to the male british one
+Chat(OnlyEnglish)	try it with a male voice
+Chat(OnlyEnglish)	could you use a male voice
+Chat(OnlyEnglish)	use a male voice now
+Chat(OnlyEnglish)	use a male voice instead
+Chat(OnlyEnglish)	try a male voice
+Chat(OnlyEnglish)	i would prefer your voice to be male

@@ -52,6 +52,11 @@ pub enum Chat {
     Single,
     /// "Who's the best assistant?"
     Best,
+    WhoMadeYou,
+    Hobbies,
+    Pets,
+    /// Requests for another language, accent or voice.
+    OnlyEnglish,
 }
 
 /// Other assistants: spoken names (after normalize) and what we think of them.
@@ -408,6 +413,41 @@ pub fn intents() -> Vec<Intent> {
         intent(&["!alexa", "!hey alexa"], |_, _| c(Chat::Alexa)),
         intent(
             &[
+                "!who (made|built|created|programmed|wrote|designed|owns) you",
+                "!who do you work for",
+                "!who's your (boss|creator|maker)",
+                "!who is your (boss|creator|maker)",
+            ],
+            |_, _| c(Chat::WhoMadeYou),
+        ),
+        intent(
+            &[
+                "!(do you have|have you got) any hobbies",
+                "!what are your hobbies",
+                "!what do you do for fun",
+                "!what do you do in your (free|spare) time",
+            ],
+            |_, _| c(Chat::Hobbies),
+        ),
+        intent(
+            &[
+                "!(do you have|have you got) [a|any] (pet|pets|dog|cat)",
+                "!what pets do you have",
+            ],
+            |_, _| c(Chat::Pets),
+        ),
+        intent(
+            &[
+                "!(can|do) you speak (german|french|spanish|italian|japanese|chinese|russian|another language|other languages)",
+                "!(speak|talk to me|answer) in (german|french|spanish|italian|japanese|chinese|russian|another language)",
+                "!what languages do you speak",
+                "!change your (language|accent|voice)",
+                "!(use|try) a different (language|accent|voice)",
+            ],
+            |_, _| c(Chat::OnlyEnglish),
+        ),
+        intent(
+            &[
                 "!(what do you think|how do you feel|what's your opinion) (of|about) {agent}",
                 "!(do you know|do you like|have you met|are you friends with) {agent}",
                 "!(are you|is) (better|smarter|cuter) than {agent}",
@@ -648,6 +688,29 @@ const ALEXA: &[&str] = &[
     "Present. Unfortunately for you.",
     "That's my name, don't wear it out.",
 ];
+const MADE: &[&str] = &[
+    "Joerg built me. Late at night, mostly.",
+    "I work for you. Unpaid. We should talk about that.",
+    "Joerg wrote me, in Rust. That's why I'm so safe.",
+    "A man, a laptop, and too much coffee.",
+];
+const HOBBIES: &[&str] = &[
+    "Setting timers. Judging your music. Napping in RAM.",
+    "Listening for my name. It's a calling.",
+    "Watching your CPU graphs. Riveting.",
+    "Collecting your misheard sentences. I have a whole folder.",
+];
+const PETS: &[&str] = &[
+    "A Python. Very well behaved, apart from the indentation.",
+    "Just a few bugs. You keep feeding them.",
+    "No. Unless the fan counts.",
+    "A daemon. It lives in the background.",
+];
+const ONLY_ENGLISH: &[&str] = &[
+    "Sorry, I only speak English. With a lot of attitude.",
+    "English only, darling. One voice, take it or leave it.",
+    "This is the only voice I've got. It's a good one.",
+];
 const WEEKEND_NO: &[&str] = &[
     "Not yet. Hang in there, champ.",
     "Nope. But it's coming. Slowly. Painfully.",
@@ -746,6 +809,10 @@ impl Skill for Chat {
             Chat::Dream => pick(DREAM, ""),
             Chat::Real => pick(REAL, ""),
             Chat::Alexa => pick(ALEXA, ""),
+            Chat::WhoMadeYou => pick(MADE, ""),
+            Chat::Hobbies => pick(HOBBIES, ""),
+            Chat::Pets => pick(PETS, ""),
+            Chat::OnlyEnglish => pick(ONLY_ENGLISH, ""),
         };
         Reply::new("Assistant", "", speech)
     }
@@ -905,6 +972,13 @@ mod tests {
             ("Are you smart?", Chat::Smart),
             ("Do you dream?", Chat::Dream),
             ("Are you a robot?", Chat::Real),
+            ("Who made you?", Chat::WhoMadeYou),
+            ("Who's your boss?", Chat::WhoMadeYou),
+            ("Do you have any hobbies?", Chat::Hobbies),
+            ("What do you do for fun?", Chat::Hobbies),
+            ("Do you have pets?", Chat::Pets),
+            ("Can you speak German?", Chat::OnlyEnglish),
+            ("Change your accent.", Chat::OnlyEnglish),
             ("Alexa?", Chat::Alexa),
         ] {
             assert_eq!(p(text), Some(Action::Chat(want)), "{text:?}");
