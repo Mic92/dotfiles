@@ -29,6 +29,8 @@ pub enum Info {
     Mail,
     Math(f64),
     Clipboard,
+    /// "Where am I?", from the IP's location.
+    Where,
 }
 
 fn i(x: Info) -> Option<Action> {
@@ -45,6 +47,14 @@ pub const MODULE: Module = Module {
 
 pub fn intents() -> Vec<Intent> {
     vec![
+        intent(
+            &[
+                "!where am i [right now]",
+                "!(what's|what is) my [current] location",
+                "!where are we",
+            ],
+            |_, _| i(Info::Where),
+        ),
         intent(
             &[
                 "!what time is it",
@@ -361,6 +371,7 @@ impl Skill for Info {
                 Reply::live("Maths", &what, speech)
             }
             Info::Clipboard => clipboard(),
+            Info::Where => location(),
         }
     }
     fn filler(&self) -> Option<&'static [&'static str]> {
@@ -527,6 +538,24 @@ fn weather(day: u32, place: Option<&str>, part: Option<usize>) -> Reply {
     Reply::live("Weather", &what, speech)
 }
 
+fn location() -> Reply {
+    match http::get("https://wttr.in/?format=%l").text() {
+        Some(place) if !place.trim().is_empty() && !place.contains('<') => {
+            let place = place.trim();
+            Reply::live(
+                "Location",
+                place,
+                format!("Somewhere near {place}, as far as the internet knows."),
+            )
+        }
+        _ => Reply::live(
+            "Location",
+            "",
+            "No idea. The internet won't tell me.".into(),
+        ),
+    }
+}
+
 fn battery() -> Reply {
     let read = |f: &str| fs::read_to_string(format!("/sys/class/power_supply/BAT0/{f}")).ok();
     let (Some(cap), status) = (read("capacity"), read("status")) else {
@@ -678,6 +707,8 @@ mod tests {
             ("What's the current time?", Info::Time),
             ("Time, please.", Info::Time),
             ("What's the date today?", Info::Date),
+            ("Where am I?", Info::Where),
+            ("What's my location?", Info::Where),
             ("What's the weather like today?", here(0)),
             ("Will it rain today?", here(0)),
             ("Do I need an umbrella?", here(0)),

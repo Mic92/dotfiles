@@ -136,3 +136,6 @@ Chat(OnlyEnglish)	speak to me in dutch
 Chat(OnlyEnglish)	change the accent you're using
 Chat(OnlyEnglish)	start using a different accent
 Chat(OnlyEnglish)	talk to me in a different accent
+Info(Where)	pull up the map and show my location
+Info(Where)	where am i currently
+Info(Where)	where is my current location
