@@ -1,12 +1,12 @@
 //! Spoken reminders as transient systemd user timers, so they survive
 //! the assistant restarting.
 
-use super::dialogue::{Act, Question};
+use super::dialogue::{Act, Question, answer_words};
 use super::json::{key, text as json_text};
 use super::notes::spoken_list;
 use super::{
-    Action, Context, Intent, Module, Reply, Skill, intent, output, pick, slot, spawn, succeeds,
-    text,
+    Action, Context, Intent, Module, Reply, Skill, days_from_today, intent, output, pick, slot,
+    spawn, succeeds, text,
 };
 use crate::clock;
 use crate::grammar::{Slots, Value, normalize};
@@ -260,21 +260,15 @@ struct AskWhen {
 
 impl Question for AskWhen {
     fn answer(&self, text: &str, ctx: &Context) -> Option<Action> {
-        let owned = normalize(text);
-        let mut words: Vec<&str> = owned
-            .iter()
-            .map(String::as_str)
-            .filter(|w| !matches!(*w, "um" | "uh" | "please" | "alexa"))
-            .collect();
+        let owned = answer_words(text);
+        let mut words: Vec<&str> = owned.iter().map(String::as_str).collect();
         let mut day = self.day;
-        for n in [3, 2, 1] {
-            if words.len() >= n
-                && let Some(Value::Day(d)) = slot("day", &words[..n])
-            {
-                day = Some(d);
-                words.drain(..n);
-                break;
-            }
+        // "tomorrow at 9", "on friday at 9"
+        if let Some(at) = words.iter().position(|w| *w == "at")
+            && at > 0
+        {
+            day = Some(days_from_today(&words[..at], ctx)?);
+            words.drain(..at);
         }
         if let ["in" | "at" | "for", rest @ ..] = words.as_slice() {
             words = rest.to_vec();
@@ -738,6 +732,7 @@ mod tests {
             ("20 minutes", 1200),
             ("at 5 pm", 3 * 3600),
             ("tomorrow at 9", 19 * 3600),
+            ("friday at 9", 2 * 86400 - 5 * 3600),
         ] {
             assert_eq!(
                 answer(call(), t),

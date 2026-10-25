@@ -377,6 +377,14 @@ pub fn ambient(act: &Act, f: &Focus) -> Option<Action> {
     })
 }
 
+/// An answer's words without hesitation and politeness.
+pub fn answer_words(text: &str) -> Vec<String> {
+    normalize(text)
+        .into_iter()
+        .filter(|w| !matches!(w.as_str(), "um" | "uh" | "please" | "alexa"))
+        .collect()
+}
+
 /// What the user meant: the question's answer first, then a full command,
 /// then an act about whatever else is going on.
 pub fn respond(text: &str, ctx: &Context, question: Option<&dyn Question>) -> Option<Action> {

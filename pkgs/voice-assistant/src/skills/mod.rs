@@ -402,6 +402,15 @@ fn slot_parser(name: &str) -> Option<SlotParser> {
     }
 }
 
+/// Days from today for spoken words like "tomorrow" or "on friday".
+pub fn days_from_today(words: &[&str], ctx: &Context) -> Option<u32> {
+    match slot("day", words)? {
+        Value::Day(d) => Some(d),
+        Value::Date(d) => date::days_ahead(d, ctx.today),
+        _ => None,
+    }
+}
+
 /// An open slot's words.
 pub fn text(s: &Slots, name: &str) -> Option<String> {
     match s.get(name)? {

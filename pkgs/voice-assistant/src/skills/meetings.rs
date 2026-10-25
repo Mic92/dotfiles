@@ -1,14 +1,14 @@
 //! Calendar and meetings: read via khal's JSON output, create via
 //! calendar-cli (which syncs right away).
 
-use super::dialogue::{Confirm, Question};
+use super::dialogue::{Confirm, Question, answer_words};
 use super::json::{key, text};
 use super::{
-    Action, Context, Intent, Module, Reply, Skill, choose, followup, intent, output, pick, slot,
-    spawn,
+    Action, Context, Intent, Module, Reply, Skill, choose, days_from_today, followup, intent,
+    output, pick, spawn,
 };
-use crate::grammar::{Slots, Value, normalize};
-use crate::{clock, date};
+use crate::clock;
+use crate::grammar::{Slots, Value};
 use tinyjson::JsonValue;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -71,7 +71,7 @@ fn split_day(title: &str, ctx: &Context) -> (String, Option<u32>) {
     let words: Vec<&str> = title.split_whitespace().collect();
     for n in (1..=4.min(words.len().saturating_sub(1))).rev() {
         let (head, tail) = words.split_at(words.len() - n);
-        let d = days(tail, ctx);
+        let d = days_from_today(tail, ctx);
         if d.is_some() {
             return (head.join(" "), d);
         }
@@ -153,9 +153,7 @@ pub fn intents() -> Vec<Intent> {
                 "!{text} (calendar|schedule|appointments|events|agenda|plans|planned|scheduled|happening|day) [like|look like|looking|open|free] [on|for] {day} [on my calendar|please]",
             ],
             |s, _| {
-                let Value::Text(t) = s.get("text")? else {
-                    return None;
-                };
+                let t = super::text(s, "text")?;
                 const CHANGE: &[&str] = &[
                     "add", "added", "put", "schedule", "delete", "remove", "clear", "cancel",
                     "erase", "take", "move", "change", "make", "create", "book", "leave", "rid",
@@ -406,7 +404,7 @@ impl Skill for Meeting {
             } => create_event(title, *day, *secs, *confirmed, ctx.today),
             Meeting::Ask { title, day } => {
                 let speech = match day {
-                    Some(d) => format!("{} at what time?", capitalise(&day_name(*d, ctx.today))),
+                    Some(d) => format!("What time {}?", day_name(*d, ctx.today)),
                     None => pick(ASK_WHEN, title),
                 };
                 let mut r = Reply::new("Calendar", title, speech);
@@ -418,13 +416,6 @@ impl Skill for Meeting {
             }
         }
     }
-}
-
-fn capitalise(s: &str) -> String {
-    let mut c = s.chars();
-    c.next()
-        .map(|f| f.to_uppercase().chain(c).collect())
-        .unwrap_or_default()
 }
 
 const ASK_WHEN: &[&str] = &[
@@ -441,14 +432,10 @@ struct AskWhen {
 
 impl Question for AskWhen {
     fn answer(&self, text: &str, ctx: &Context) -> Option<Action> {
-        let owned = normalize(text);
-        let words: Vec<&str> = owned
-            .iter()
-            .map(String::as_str)
-            .filter(|w| !matches!(*w, "um" | "uh" | "please" | "alexa"))
-            .collect();
+        let owned = answer_words(text);
+        let words: Vec<&str> = owned.iter().map(String::as_str).collect();
         let (day, rest) = match words.iter().position(|w| *w == "at") {
-            Some(at) if at > 0 => (days(&words[..at], ctx)?, &words[at + 1..]),
+            Some(at) if at > 0 => (days_from_today(&words[..at], ctx)?, &words[at + 1..]),
             Some(_) => (self.day.unwrap_or(0), &words[1..]),
             None => (self.day?, &words[..]),
         };
@@ -459,15 +446,6 @@ impl Question for AskWhen {
             secs: followup::meeting_hours(&c),
             confirmed: false,
         })
-    }
-}
-
-/// A spoken day, resolved against today.
-fn days(words: &[&str], ctx: &Context) -> Option<u32> {
-    match slot("day", words)? {
-        Value::Day(d) => Some(d),
-        Value::Date(d) => date::days_ahead(d, ctx.today),
-        _ => None,
     }
 }
 

@@ -3,11 +3,11 @@
 use std::sync::{Mutex, PoisonError};
 use std::time::{Duration, Instant};
 
-use super::dialogue::Question;
+use super::dialogue::{Question, answer_words};
 use super::succeeds;
 use super::{Action, Context, Intent, Module, Reply, Skill, choose, intent, pick, spawn};
 use crate::clock::{self, Clock};
-use crate::grammar::{Slots, Value, normalize};
+use crate::grammar::{Slots, Value};
 use std::sync::MutexGuard;
 
 const PLUGIN: &str = "noctalia/timer:timer";
@@ -413,16 +413,11 @@ struct AskTime(u32);
 
 impl Question for AskTime {
     fn answer(&self, text: &str, ctx: &Context) -> Option<Action> {
-        let owned = normalize(text);
+        let owned = answer_words(text);
         let words: Vec<&str> = owned
             .iter()
             .map(String::as_str)
-            .filter(|w| {
-                !matches!(
-                    *w,
-                    "at" | "for" | "until" | "um" | "uh" | "please" | "alexa"
-                )
-            })
+            .filter(|w| !matches!(*w, "at" | "for" | "until"))
             .collect();
         start_clock(clock::parse(&words)?, Some(self.0), ctx.now)
     }
