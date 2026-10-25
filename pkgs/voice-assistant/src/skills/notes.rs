@@ -1,5 +1,6 @@
 //! Reminders, todo and shopping lists (todoman) and quick notes.
 
+use super::dialogue::Confirm;
 use super::json::{key, text as json_text};
 use super::{Action, Context, Intent, Module, Reply, Skill, intent, output, pick};
 use crate::grammar::{Slots, Value};
@@ -25,6 +26,11 @@ pub enum Notes {
         list: usize,
     },
     Show(usize),
+    /// Check off everything, after a yes.
+    Clear {
+        list: usize,
+        confirmed: bool,
+    },
     Note(String),
 }
 
@@ -33,7 +39,20 @@ const SHOPPING: usize = 1;
 
 /// Spoken names and todoman list names.
 pub const LISTS: &[(&[&str], &str)] = &[
-    (&["todo", "to do", "task", "tasks", "personal"], "Personal"),
+    (
+        &[
+            "todo",
+            "to do",
+            "task",
+            "tasks",
+            "personal",
+            "things to do",
+            "pending tasks",
+            "chores",
+            "chore",
+        ],
+        "Personal",
+    ),
     (
         &["shopping", "grocery", "groceries", "shopping and grocery"],
         "Shopping List (Shannan Lekwati)",
@@ -69,9 +88,9 @@ const COMPOUNDS: &[&str] = &[
     "bread and butter",
 ];
 
-/// Leading words that are not part of the item.
+/// Leading words that are not part of the item ("the chore of vacuuming").
 const FILLER: &[&str] = &[
-    "some", "a", "an", "the", "more", "few", "any", "also", "of", "new",
+    "some", "a", "an", "the", "more", "few", "any", "also", "of", "new", "chore", "task",
 ];
 
 /// "some milk, eggs and a loaf of bread" -> ["milk", "eggs", "loaf of bread"].
@@ -154,9 +173,10 @@ pub fn intents() -> Vec<Intent> {
     vec![
         intent(
             &[
-                "!(add|put|write) {text} (to|on|onto) [the|my|our] {list} list",
-                "!(add|put|write) {text} (to|on|onto) [the|my|our] {list}",
-                "!(add|put|write) {text} (to|on|onto) [the|my|our] list",
+                "![i need to|i want to|i want you to|i'd like you to] (add|put|write|include) {text} (to|on|onto) [the|my|our] {list} list",
+                "![i need to|i want to|i want you to|i'd like you to] (add|put|write|include) {text} (to|on|onto) [the|my|our] list of {list}",
+                "!(add|put|write|include) {text} (to|on|onto) [the|my|our] {list}",
+                "!(add|put|write|include) {text} (to|on|onto) [the|my|our] list",
             ],
             |s, _| {
                 n(Notes::Add {
@@ -188,9 +208,23 @@ pub fn intents() -> Vec<Intent> {
         ),
         intent(
             &[
+                "!(clear|empty|wipe|erase|nuke|blank) [out] [all items on|all the items on|everything on|everything from|all of] [the|my|our] [whole] {list} list",
+                "!(delete|remove|erase|take off|clear) (everything|all items|all the items) (on|from|in|off) [the|my|our] [whole] {list} list",
+                "!make [the|my|our] {list} list (blank|empty)",
+            ],
+            |s, _| {
+                n(Notes::Clear {
+                    list: list(s, TODO)?,
+                    confirmed: false,
+                })
+            },
+        ),
+        intent(
+            &[
                 "!(take|cross|scratch|strike) (off|out|away) [the] {text} (from|off) [the|my|our] {list} list",
                 "!(take|cross|scratch|strike) (off|out|away) [the] {text} (from|off) [the|my|our] list",
                 "!(remove|delete|take|cross|scratch) {text} (from|off) [the|my|our] {list} list",
+                "!(remove|delete|take|cross|scratch) {text} (from|off) [the|my|our] list of {list}",
                 "!(remove|delete|take|cross|scratch) {text} (from|off) [the|my|our] {list}",
                 "!(remove|delete|take|cross|scratch) {text} (from|off) [the|my|our] list",
                 "!(tick|check|cross) off {text}",
@@ -246,7 +280,10 @@ pub fn intents() -> Vec<Intent> {
             &[
                 "!(what's|what is) on [the|my|our] {list} list",
                 "!(read|show|tell) [me] [the|my|our] {list} list",
-                "!what (do i have to do|are my todos|are my tasks)",
+                "!what (do i have to do|are my todos|are my tasks|is left to do|do i still have to do|do i need to do) [today|for today]",
+                "![tell me] (what's|what is) on [the|my|our] list of {list}",
+                "!(read|show|tell) [me] [the|my|our] list of {list}",
+                "!(i need|i want) to hear [the|my|our] {list} list",
             ],
             |s, _| n(Notes::Show(list(s, TODO)?)),
         ),
@@ -282,6 +319,7 @@ impl Skill for Notes {
             Notes::Done { items, list } => done(items, *list),
             Notes::Contains { item, list } => contains(item, *list),
             Notes::Show(list) => show(*list),
+            Notes::Clear { list, confirmed } => clear(*list, *confirmed),
             Notes::Note(what) => note(what),
         }
     }
@@ -448,6 +486,44 @@ fn done(items: &[String], list: usize) -> Reply {
             .join("\n"),
         speech,
     )
+}
+
+const CLEARED: &[&str] = &[
+    "Wiped. {} things, gone. Fresh start.",
+    "{} things crossed off in one go. Very decisive. Or lazy.",
+    "Done. {} things vanished. I won't tell anyone.",
+    "All {} gone. Declaring bankruptcy on your chores, I see.",
+];
+
+fn clear(list: usize, confirmed: bool) -> Reply {
+    let Some((kind, list_name)) = list_info(list) else {
+        return unknown_list();
+    };
+    let items = open_items(list_name);
+    if items.is_empty() {
+        return Reply::live(list_name, "", "It's already empty. Nothing to wipe.".into());
+    }
+    if !confirmed {
+        let n = items.len();
+        let mut r = Reply::live(
+            list_name,
+            &format!("{n} items"),
+            format!("Check off all {n} things on your {kind} list?"),
+        );
+        r.question = Some(Box::new(Confirm {
+            yes: Action::Notes(Notes::Clear {
+                list,
+                confirmed: true,
+            }),
+            no: Action::Say("Fine, they stay. All of them.".into()),
+        }));
+        return r;
+    }
+    let gone = items
+        .iter()
+        .filter(|(id, _)| output("todo", &["done", id]).is_some())
+        .count();
+    Reply::live(list_name, "", pick(CLEARED, &gone.to_string()))
 }
 
 fn contains(item: &str, list: usize) -> Reply {
@@ -661,6 +737,76 @@ mod tests {
             (
                 "Take a note that the wifi password is on the fridge",
                 Notes::Note("the wifi password is on the fridge".into()),
+            ),
+        ] {
+            assert_eq!(p(text), Some(Action::Notes(want)), "{text:?}");
+        }
+        for (text, want) in [
+            ("what do i have to do today", Notes::Show(TODO)),
+            ("what is left to do today", Notes::Show(TODO)),
+            (
+                "tell me what is on the list of things to do",
+                Notes::Show(TODO),
+            ),
+            ("i need to hear my todo list", Notes::Show(TODO)),
+            ("what are my tasks for today", Notes::Show(TODO)),
+            (
+                "i want you to add cleaning the toilet to my to do list",
+                add(&["cleaning the toilet"], TODO),
+            ),
+            (
+                "please include feeding the fish on my to do list",
+                add(&["feeding the fish"], TODO),
+            ),
+            (
+                "put wash the counters down on my list of pending tasks",
+                add(&["wash the counters down"], TODO),
+            ),
+            (
+                "i need to add the chore of vacuuming to my task list",
+                add(&["vacuuming"], TODO),
+            ),
+            (
+                "please remove laundry from my list of chores",
+                Notes::Done {
+                    items: vec!["laundry".into()],
+                    list: TODO,
+                },
+            ),
+            (
+                "please clear out my whole to do list",
+                Notes::Clear {
+                    list: TODO,
+                    confirmed: false,
+                },
+            ),
+            (
+                "erase all items on my todo list",
+                Notes::Clear {
+                    list: TODO,
+                    confirmed: false,
+                },
+            ),
+            (
+                "delete everything from the task list",
+                Notes::Clear {
+                    list: TODO,
+                    confirmed: false,
+                },
+            ),
+            (
+                "make my todo list blank",
+                Notes::Clear {
+                    list: TODO,
+                    confirmed: false,
+                },
+            ),
+            (
+                "empty the shopping list",
+                Notes::Clear {
+                    list: SHOPPING,
+                    confirmed: false,
+                },
             ),
         ] {
             assert_eq!(p(text), Some(Action::Notes(want)), "{text:?}");
