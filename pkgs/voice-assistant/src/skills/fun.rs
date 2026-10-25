@@ -2,7 +2,7 @@
 
 use super::say;
 use super::{Action, Context, Intent, Module, Reply, Skill, intent, pick};
-use crate::grammar::Value;
+use crate::grammar::{Slots, Value};
 use crate::http;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -91,18 +91,9 @@ pub fn intents() -> Vec<Intent> {
                 _ => None,
             },
         ),
-        intent(
-            &[
-                "!should i {text}",
-                "!(will|can|could) i {text}",
-                "magic eight ball",
-            ],
-            // "Can I hear the Beatles" asks for music, not fate.
-            |s, _| match s.get("text") {
-                Some(Value::Text(t)) if t.starts_with("hear") || t.starts_with("listen") => None,
-                _ => f(Fun::EightBall),
-            },
-        ),
+        intent(&["!should i {text}", "magic eight ball"], |s, _| fate(s, 4)),
+        // "Can I mix antifreeze with water" wants facts, not fate.
+        intent(&["!(will|can|could) i {text}"], |s, _| fate(s, 3)),
         intent(
             &[
                 "compliment me",
@@ -319,6 +310,21 @@ impl Skill for Fun {
     }
 }
 
+/// Only a short gamble goes to the eight ball, longer ones are real
+/// questions. "Can I hear the Beatles" asks for music.
+fn fate(s: &Slots, max_words: usize) -> Option<Action> {
+    match s.get("text") {
+        Some(Value::Text(t))
+            if t.starts_with("hear")
+                || t.starts_with("listen")
+                || t.split_whitespace().count() > max_words =>
+        {
+            None
+        }
+        _ => f(Fun::EightBall),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::super::{Action, Context, parse_at};
@@ -327,7 +333,15 @@ mod tests {
     #[test]
     fn listening_is_not_a_question_for_the_eight_ball() {
         let p = |t| parse_at(t, &Context::at(0));
-        for t in ["Can I hear the Beatles?", "Could I listen to some jazz"] {
+        for t in [
+            "Can I hear the Beatles?",
+            "Could I listen to some jazz",
+            // Real questions deserve more than fate.
+            "can i mix antifreeze with water",
+            "should i hit or stay at 17 in blackjack",
+            "will i be charged if i use my card in russia",
+            "can i travel to france as far as safety goes",
+        ] {
             assert_ne!(p(t), Some(Action::Fun(Fun::EightBall)), "{t}");
         }
     }
