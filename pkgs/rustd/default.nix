@@ -14,10 +14,10 @@ rustPlatform.buildRustPackage {
     rev = "ebcd234a02f769e380875b8b80e18164bba1b353";
     # vendor/rust-analyzer is a submodule of the same repository
     fetchSubmodules = true;
-    hash = "sha256-TbuxlNpAiB+rp2Rdu66/khFUuLiLc4UIRbejTqP1BIg=";
+    hash = lib.fakeHash;
   };
 
-  cargoHash = "sha256-n0w8mn9wrFny8NerXUFnTu9/O08j1T5NItT1HkTHolo=";
+  cargoHash = lib.fakeHash;
 
   cargoBuildFlags = [
     "-p"

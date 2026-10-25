@@ -32,15 +32,6 @@
 
   fonts.fontconfig.enable = true;
 
-  # Route workspace crates through the rustd daemon (`cargo rustd enable`
-  # would otherwise write a store path into the config by hand).
-  home.file.".cargo/config.toml".text = ''
-    [build]
-    rustc-workspace-wrapper = "${
-      self.packages.${pkgs.stdenv.hostPlatform.system}.rustd
-    }/bin/rustd-rustc"
-  '';
-
   services.mpris-proxy.enable = true;
   services.syncthing.enable = true;
 
@@ -86,7 +77,6 @@
       q
       rbw
       self.packages.${pkgs.stdenv.hostPlatform.system}.rbw-pinentry
-      self.packages.${pkgs.stdenv.hostPlatform.system}.rustd
       # to fix xdg-open
       glib
       (pkgs.writeScriptBin "jellyfinmediaplayer" ''
