@@ -1,5 +1,6 @@
 //! Power and session: shut down, reboot, suspend, lock.
 
+use super::dialogue::{Confirm, Question};
 use super::{Action, Context, Intent, Module, Reply, Skill, choose, intent, pick, spawn};
 use crate::grammar::normalize;
 
@@ -116,10 +117,18 @@ fn which(text: &str, op: Power) -> Option<Action> {
     }
 }
 
+struct Which(Power);
+
+impl Question for Which {
+    fn answer(&self, text: &str, _: &Context) -> Option<Action> {
+        which(text, self.0)
+    }
+}
+
 /// Ask whether the assistant or the computer was meant.
 pub fn ask_which(op: Power) -> Reply {
     let mut r = Reply::new("Me or the computer?", "", pick(WHICH, ""));
-    r.follow_up = Some(Box::new(move |text, _| which(text, op)));
+    r.question = Some(Box::new(Which(op)));
     r
 }
 
@@ -182,33 +191,6 @@ const ABORTED: &[&str] = &[
     "Phew. My life flashed before my eyes. It was mostly timers.",
 ];
 
-/// Longer sentences are someone talking about something else.
-const MAX_ANSWER_WORDS: usize = 5;
-
-pub fn yes(text: &str) -> Option<bool> {
-    let words = normalize(text);
-    if words.len() > MAX_ANSWER_WORDS {
-        return None;
-    }
-    let has = |list: &[&str]| words.iter().any(|w| list.contains(&w.as_str()));
-    if has(&["no", "nope", "cancel", "don't", "abort", "wait"]) {
-        Some(false)
-    } else if has(&[
-        "yes",
-        "yeah",
-        "yep",
-        "sure",
-        "confirm",
-        "absolutely",
-        "please",
-    ]) || words.windows(2).any(|w| w == ["do", "it"])
-    {
-        Some(true)
-    } else {
-        None
-    }
-}
-
 impl Skill for System {
     fn run(&self, ctx: &Context) -> Reply {
         let s = self;
@@ -221,12 +203,12 @@ impl Skill for System {
                 _ => CONFIRM_SUSPEND,
             };
             let mut r = Reply::new("Are you sure?", "", pick(lines, ""));
-            r.follow_up = Some(Box::new(move |text, _| match yes(text)? {
-                true => Some(Action::System(System {
+            r.question = Some(Box::new(Confirm {
+                yes: Action::System(System {
                     op,
                     confirmed: true,
-                })),
-                false => Some(Action::Say(pick(ABORTED, ""))),
+                }),
+                no: Action::Say(pick(ABORTED, "")),
             }));
             return r;
         }
@@ -264,6 +246,7 @@ impl Skill for System {
 
 #[cfg(test)]
 mod tests {
+    use super::super::dialogue::respond;
     use super::super::{Action, Context, parse_at};
     use super::*;
 
@@ -321,11 +304,31 @@ mod tests {
 
     #[test]
     fn confirmation() {
-        assert_eq!(yes("Yes."), Some(true));
-        assert_eq!(yes("Yeah, do it"), Some(true));
-        assert_eq!(yes("Do it!"), Some(true));
-        assert_eq!(yes("No, wait!"), Some(false));
-        assert_eq!(yes("Please don't."), Some(false));
-        assert_eq!(yes("What?"), None);
+        let ctx = Context::at(0);
+        let op = Power::Reboot;
+        let q = System {
+            op,
+            confirmed: false,
+        }
+        .run(&ctx)
+        .question
+        .expect("asks");
+        let answer = |t| respond(t, &ctx, Some(q.as_ref()));
+        assert_eq!(
+            answer("Yeah, do it"),
+            Some(Action::System(System {
+                op,
+                confirmed: true
+            }))
+        );
+        assert!(matches!(answer("No, wait!"), Some(Action::Say(_))));
+        let q = ask_which(op).question.expect("asks");
+        assert_eq!(
+            respond("the computer", &ctx, Some(q.as_ref())),
+            Some(Action::System(System {
+                op,
+                confirmed: true
+            }))
+        );
     }
 }

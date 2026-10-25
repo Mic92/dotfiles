@@ -3,6 +3,7 @@
 use std::sync::{Mutex, PoisonError};
 use std::time::{Duration, Instant};
 
+use super::dialogue::Question;
 use super::succeeds;
 use super::{Action, Context, Intent, Module, Reply, Skill, choose, intent, pick, spawn};
 use crate::clock::{self, Clock};
@@ -407,6 +408,26 @@ const CANCELLED_LATE: &[&str] = &[
     "Cancelled. Bed. And no phone in bed, I can hear you scrolling.",
 ];
 
+/// "Tomorrow at what time?"
+struct AskTime(u32);
+
+impl Question for AskTime {
+    fn answer(&self, text: &str, ctx: &Context) -> Option<Action> {
+        let owned = normalize(text);
+        let words: Vec<&str> = owned
+            .iter()
+            .map(String::as_str)
+            .filter(|w| {
+                !matches!(
+                    *w,
+                    "at" | "for" | "until" | "um" | "uh" | "please" | "alexa"
+                )
+            })
+            .collect();
+        start_clock(clock::parse(&words)?, Some(self.0), ctx.now)
+    }
+}
+
 fn reply(t: &Timer, ctx: &Context) -> Reply {
     match t {
         Timer::Start {
@@ -448,20 +469,7 @@ fn reply(t: &Timer, ctx: &Context) -> Reply {
             let day = *day;
             let name = if day == 0 { "Today" } else { "Tomorrow" };
             let mut r = Reply::new("When?", "", pick(ASK_WHEN, name));
-            r.follow_up = Some(Box::new(move |text, ctx| {
-                let owned = normalize(text);
-                let words: Vec<&str> = owned
-                    .iter()
-                    .map(String::as_str)
-                    .filter(|w| {
-                        !matches!(
-                            *w,
-                            "at" | "for" | "until" | "um" | "uh" | "please" | "alexa"
-                        )
-                    })
-                    .collect();
-                start_clock(clock::parse(&words)?, Some(day), ctx.now)
-            }));
+            r.question = Some(Box::new(AskTime(day)));
             r
         }
         Timer::Cancel => Reply::new(
@@ -540,6 +548,7 @@ pub fn spoken_duration(s: u32) -> String {
 
 #[cfg(test)]
 mod tests {
+    use super::super::dialogue::respond;
     use super::super::{Action, Context, parse_at};
     use super::*;
 
@@ -695,17 +704,18 @@ mod tests {
             ("half past eight", h(18, 30)),
         ] {
             let reply = reply(&Timer::When { day: 1 }, &ctx);
-            let follow_up = reply.follow_up.expect("asks for the time");
-            let got = follow_up(answer, &ctx);
+            let q = reply.question.expect("asks for the time");
+            let got = respond(answer, &ctx, Some(q.as_ref()));
             assert!(
                 matches!(got, Some(Action::Timer(Timer::Start { seconds, .. })) if seconds == secs),
                 "{answer:?} -> {got:?}"
             );
         }
-        let follow_up = reply(&Timer::When { day: 1 }, &ctx)
-            .follow_up
-            .expect("asks");
-        assert_eq!(follow_up("Never mind.", &ctx), None);
+        let q = reply(&Timer::When { day: 1 }, &ctx).question.expect("asks");
+        assert_eq!(
+            respond("Never mind.", &ctx, Some(q.as_ref())),
+            Some(Action::Dismiss)
+        );
     }
 
     #[test]

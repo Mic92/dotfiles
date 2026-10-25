@@ -7,6 +7,7 @@ pub mod apps;
 pub mod calc;
 pub mod chat;
 pub mod desktop;
+pub mod dialogue;
 mod exec;
 pub mod followup;
 pub mod fun;
@@ -20,7 +21,6 @@ pub mod news;
 pub mod notes;
 pub mod ops;
 mod say;
-pub mod situation;
 pub mod spell;
 pub mod system;
 pub mod timer;
@@ -141,7 +141,6 @@ const MODULES: &[Module] = &[
     desktop::MODULE,
     apps::MODULE,
     info::MODULE,
-    situation::MODULE,
     calc::MODULE,
     spell::MODULE,
     fun::MODULE,
@@ -154,14 +153,13 @@ const MODULES: &[Module] = &[
 ];
 
 /// Interprets the answer to a question we asked, without a wake word.
-pub type FollowUp = Box<dyn FnOnce(&str, &Context) -> Option<Action> + Send>;
-
 /// What to tell the user after running an action.
 pub struct Reply {
     pub title: String,
     pub body: String,
     pub speech: String,
-    pub follow_up: Option<FollowUp>,
+    /// A question for the next utterance to answer.
+    pub question: Option<Box<dyn dialogue::Question>>,
     /// Fixed lines are worth caching as audio; live data is not.
     pub cache: bool,
 }
@@ -172,7 +170,7 @@ impl Reply {
             title: title.into(),
             body: body.into(),
             speech,
-            follow_up: None,
+            question: None,
             cache: true,
         }
     }
@@ -192,9 +190,8 @@ pub struct Context {
     pub now: u32,
     /// 0 = Sunday.
     pub weekday: u32,
-    /// The last action, for "and tomorrow?" or "another one".
-    pub previous: Option<Action>,
-    pub situation: situation::Situation,
+    /// What bare words like "stop" or "again" may refer to.
+    pub focus: dialogue::Focus,
 }
 
 impl Context {
@@ -202,10 +199,9 @@ impl Context {
         Context {
             now: clock::local_now(),
             weekday: clock::local_weekday(),
-            previous: None,
-            situation: situation::Situation {
+            focus: dialogue::Focus {
                 timer: timer::active(),
-                ..situation::Situation::default()
+                ..dialogue::Focus::default()
             },
         }
     }
@@ -216,11 +212,10 @@ impl Context {
         Context {
             now,
             weekday: 3,
-            previous: None,
-            situation: situation::Situation {
-                asking: false,
-                music: false,
+            focus: dialogue::Focus {
+                previous: None,
                 timer: false,
+                music: false,
             },
         }
     }
@@ -344,7 +339,7 @@ fn core_intents() -> Vec<Intent> {
 }
 
 static INTENTS: LazyLock<Vec<Intent>> = LazyLock::new(|| {
-    let mut all = followup::intents();
+    let mut all = Vec::new();
     for m in MODULES {
         all.extend((m.intents)());
     }
@@ -466,6 +461,10 @@ pub fn parse_tier(text: &str, ctx: &Context, fallback: bool) -> Option<Action> {
         .then(|| best_match(core, ctx, false))
         .flatten()
         .or_else(|| best_match(&words, ctx, fallback))
+        .or_else(|| {
+            let act = dialogue::act(core).filter(|_| !fallback)?;
+            dialogue::ambient(&act, &ctx.focus)
+        })
 }
 
 fn best_match(words: &[&str], ctx: &Context, fallback: bool) -> Option<Action> {
@@ -614,7 +613,6 @@ pub fn classifier_examples() -> Vec<(String, Action, bool)> {
     let ctx = Context::local();
     let mut out: Vec<(String, Action, bool)> = INTENTS
         .iter()
-        .skip(followup::intents().len())
         .filter(|i| !i.fallback)
         .flat_map(|i| &i.templates)
         .filter(|t| !t.has_open_slots())
@@ -766,11 +764,9 @@ pub fn run(action: &Action, ctx: &Context) -> Reply {
                     "",
                 ),
             );
-            r.follow_up = Some(Box::new(|text, _| match system::yes(text)? {
-                true => Some(Action::Nap(20 * 60)),
-                false => Some(Action::Say(
-                    "Fine. I'll just suffer quietly. Loudly.".into(),
-                )),
+            r.question = Some(Box::new(dialogue::Confirm {
+                yes: Action::Nap(20 * 60),
+                no: Action::Say("Fine. I'll just suffer quietly. Loudly.".into()),
             }));
             r
         }
@@ -797,9 +793,8 @@ mod tests {
     #[test]
     #[ignore]
     fn dump_examples() {
-        let skip = followup::intents().len();
         let mut out = String::new();
-        for i in INTENTS.iter().skip(skip).filter(|i| !i.fallback) {
+        for i in INTENTS.iter().filter(|i| !i.fallback) {
             for t in &i.templates {
                 for s in t.expand(&example_values, 40) {
                     // The grammar labels its own sentences; unparsable
@@ -990,10 +985,11 @@ mod tests {
             parse_at("Did you have a nap today?", &AT_14H),
             Some(Action::NapQuestion)
         );
-        let follow = run(&Action::NapQuestion, &AT_14H).follow_up.expect("asks");
-        assert_eq!(follow("Yes.", &AT_14H), Some(Action::Nap(1200)));
+        let q = run(&Action::NapQuestion, &AT_14H).question.expect("asks");
+        let answer = |t| dialogue::respond(t, &AT_14H, Some(q.as_ref()));
+        assert_eq!(answer("Yes."), Some(Action::Nap(1200)));
         let chatter = "I'm saying something else. Please. I'll take one, please.";
-        assert_eq!(system::yes(chatter), None);
+        assert_eq!(answer(chatter), None);
     }
 
     #[test]

@@ -1,63 +1,10 @@
-//! Elliptic follow-ups resolved against the previous action:
-//! "what's the weather?" ... "and tomorrow?", "tell me a joke" ... "another one".
-//! Each skill decides what "again" and "and <x>" mean for its actions.
+//! Helpers for `Skill::refine`: "what's the weather?" ... "and tomorrow?".
+//! `dialogue` decides when a refinement is meant.
 
-use super::{Action, Intent, intent, pick, slot};
+use super::slot;
 use crate::clock::Clock;
 use crate::grammar::Value;
 
-const NOT_AGAIN: &[&str] = &[
-    "Again? Once was plenty, darling.",
-    "No encores for that one. I have standards.",
-    "Do it again? What am I, your intern?",
-    "Encore? Pay me first.",
-];
-
-const LOST: &[&str] = &[
-    "Another what? I've lost the thread, babe.",
-    "Again? We haven't even started.",
-    "More of what? Use your words.",
-    "Another one of what? Help me out here, I'm only software.",
-];
-
-pub fn intents() -> Vec<Intent> {
-    vec![
-        intent(
-            &[
-                "![tell|give|say|do] [me|us] (again|once more|one more|one more time|another|another one|and another|do it again|same again|more|even more|more please|keep going|a bit more|bit more)",
-            ],
-            |_, ctx| {
-                let line = match &ctx.previous {
-                    None => LOST,
-                    Some(prev) if prev.skill().is_some_and(|s| s.repeatable()) => {
-                        return Some(prev.clone());
-                    }
-                    Some(_) => NOT_AGAIN,
-                };
-                Some(Action::Say(pick(line, "")))
-            },
-        ),
-        intent(
-            &[
-                "!(and|also|plus|what about|how about|and what about|and how about|same for|now|and now) {text}",
-            ],
-            |s, ctx| {
-                let Value::Text(t) = s.get("text")? else {
-                    return None;
-                };
-                let all: Vec<&str> = t.split_whitespace().collect();
-                // "and in munich", "what about at 3"
-                let words = match all.as_slice() {
-                    ["in" | "at" | "for" | "on", rest @ ..] if !rest.is_empty() => rest,
-                    w => w,
-                };
-                ctx.previous.as_ref()?.skill()?.refine(words)
-            },
-        ),
-    ]
-}
-
-/// Helpers for `Skill::refine`.
 pub fn day(words: &[&str]) -> Option<u32> {
     match slot("day", words)? {
         Value::Day(d) if d <= 2 => Some(d),
@@ -100,10 +47,8 @@ mod tests {
     use crate::skills::timer::Timer;
 
     fn after(prev: Action, text: &str) -> Option<Action> {
-        let ctx = Context {
-            previous: Some(prev),
-            ..Context::at(10 * 3600)
-        };
+        let mut ctx = Context::at(10 * 3600);
+        ctx.focus.previous = Some(prev);
         parse_at(text, &ctx)
     }
 

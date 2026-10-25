@@ -1,8 +1,8 @@
 //! Calendar and meetings: read via khal's JSON output, create via
 //! calendar-cli (which syncs right away).
 
+use super::dialogue::Confirm;
 use super::json::{key, text};
-use super::system;
 use super::{
     Action, Context, Intent, Module, Reply, Skill, choose, followup, intent, output, pick, spawn,
 };
@@ -608,17 +608,14 @@ fn create_event(title: &str, day: u32, secs: u32, confirmed: bool) -> Reply {
             &format!("{summary}, {when}"),
             format!("{summary}, {when}. Shall I add it?"),
         );
-        let (title, title2) = (title.to_owned(), summary.clone());
-        r.follow_up = Some(Box::new(move |text, _| match system::yes(text)? {
-            true => mt(Meeting::Create {
-                title,
+        r.question = Some(Box::new(Confirm {
+            yes: Action::Meeting(Meeting::Create {
+                title: title.to_owned(),
                 day,
                 secs,
                 confirmed: true,
             }),
-            false => Some(Action::Say(format!(
-                "Okay, no {title2}. Your calendar thanks you."
-            ))),
+            no: Action::Say(format!("Okay, no {summary}. Your calendar thanks you.")),
         }));
         return r;
     }

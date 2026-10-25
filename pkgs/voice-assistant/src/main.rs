@@ -158,7 +158,7 @@ struct Assistant {
     /// The mic hears our own replies; ignore it until playback has ended.
     speaking: bool,
     /// Answer to a question we asked, heard without a wake word.
-    follow_up: Option<skills::FollowUp>,
+    question: Option<Box<dyn skills::dialogue::Question>>,
     /// Players paused for this conversation.
     hushed: Option<hush::Hushed>,
     /// Resume them once the reply has been spoken.
@@ -298,7 +298,7 @@ impl Assistant {
             }
             self.speaking = false;
             self.reset_wake();
-            if self.follow_up.is_some() {
+            if self.question.is_some() {
                 self.start_listening(Vec::new());
             } else if mem::take(&mut self.resume_after_speech) {
                 self.unhush();
@@ -385,7 +385,7 @@ impl Assistant {
                 } else {
                     self.log("no speech");
                     self.wakelog.outcome("no-speech", "");
-                    self.follow_up = None;
+                    self.question = None;
                     self.sound("cancel");
                     self.unhush();
                 }
@@ -469,13 +469,12 @@ impl Assistant {
         };
         let (said_before, text) = (said_before.to_owned(), text.to_owned());
         let mut ctx = skills::Context::local();
-        ctx.previous = self
+        ctx.focus.previous = self
             .previous
             .as_ref()
             .filter(|(_, at)| at.elapsed() < CARRY_OVER)
             .map(|(a, _)| a.clone());
-        ctx.situation.asking = self.follow_up.is_some();
-        ctx.situation.music = self.hushed.as_ref().is_some_and(hush::Hushed::any);
+        ctx.focus.music = self.hushed.as_ref().is_some_and(hush::Hushed::any);
         if let Some(Some(end)) = self.asleep
             && Instant::now() >= end
         {
@@ -492,22 +491,17 @@ impl Assistant {
             return;
         }
         // Chatter that ran into the time limit answers no question.
-        let answer = self
-            .follow_up
-            .take()
-            .filter(|_| !cut_off)
-            .and_then(|f| f(&text, &ctx));
+        let question = self.question.take().filter(|_| !cut_off);
         if text.is_empty() {
             self.log("heard no speech");
             self.wakelog.outcome("no-speech", "");
-            self.follow_up = None;
             self.sound("cancel");
             self.end_conversation(false);
             return;
         }
         // Rescoring against the audio comes before the catch-all web
         // questions, which would happily take any mangled command.
-        let strict = answer.or_else(|| skills::parse_tier(&text, &ctx, false));
+        let strict = skills::dialogue::respond(&text, &ctx, question.as_deref());
         if strict.is_none() && cut_off {
             // Endless background talk transcribes into some sentence.
             // Only an exact command gets through.
@@ -629,12 +623,12 @@ impl Assistant {
         ) {
             self.previous = Some((action, Instant::now()));
         }
-        self.follow_up = reply.follow_up;
-        if self.follow_up.is_none() {
+        self.question = reply.question;
+        if self.question.is_none() {
             self.end_conversation(media_handled);
         }
         // Without a spoken question there is no playback to wait for.
-        if self.follow_up.is_some() && !self.speaking {
+        if self.question.is_some() && !self.speaking {
             self.start_listening(Vec::new());
         }
     }
@@ -859,7 +853,7 @@ fn main() {
         tts,
         state: State::Idle,
         speaking: false,
-        follow_up: None,
+        question: None,
         hushed: None,
         resume_after_speech: false,
         misses: 0,
