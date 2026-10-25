@@ -462,6 +462,26 @@ pub fn classifiable(a: &Action) -> bool {
     }
 }
 
+/// Sentences the classifier must not answer with `kind`, though they embed
+/// close to it. "Add eggs and remove cheese" lands next to "is cheese on
+/// the list", but showing the list would ignore what was asked.
+pub fn vetoed(kind: &str, text: &str) -> bool {
+    const CHANGE: &[&str] = &[
+        "add", "put", "remove", "removed", "delete", "erase", "take", "forget", "cross",
+    ];
+    const QUESTION: &[&str] = &[
+        "did", "have", "is", "are", "do", "does", "what", "what's", "which", "has",
+    ];
+    if !kind.starts_with("Notes(") {
+        return false;
+    }
+    let words = crate::grammar::normalize(text);
+    let question = words
+        .first()
+        .is_some_and(|w| QUESTION.contains(&w.as_str()));
+    !question && words.iter().any(|w| CHANGE.contains(&w.as_str()))
+}
+
 /// A few values per slot for example sentences.
 fn example_values(slot: &str) -> Option<Vec<String>> {
     const POOL: &[&str] = &[
@@ -756,6 +776,18 @@ mod tests {
                 "a template failed to parse; see stderr"
             );
         }
+    }
+
+    #[test]
+    fn list_changes_are_vetoed_for_notes() {
+        assert!(vetoed(
+            "Notes(Show",
+            "add eggs to my list and remove cheese"
+        ));
+        assert!(vetoed("Notes(Show", "take carrots off my list"));
+        assert!(!vetoed("Notes(Show", "did i put oatmeal on my list"));
+        assert!(!vetoed("Notes(Show", "what's on my shopping list"));
+        assert!(!vetoed("Fun(Joke)", "take a joke"));
     }
 
     #[test]

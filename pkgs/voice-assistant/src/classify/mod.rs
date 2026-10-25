@@ -230,7 +230,10 @@ impl Classifier {
         let intent = self.kinds[top].clone();
         let action = skills::fill(text, &intent, ctx).or_else(|| self.plain.get(&intent).cloned());
         Ok(Some(Hit {
-            accepted: action.is_some() && score >= THRESHOLD && lead >= MARGIN,
+            accepted: action.is_some()
+                && score >= THRESHOLD
+                && lead >= MARGIN
+                && !skills::vetoed(&intent, text),
             intent,
             action,
             score,
@@ -267,6 +270,29 @@ mod tests {
             ),
             "{action:?}"
         );
+        Ok(())
+    }
+
+    #[test]
+    fn changing_a_list_is_not_showing_it() -> Result<(), String> {
+        let Some(mut c) = classifier() else {
+            return Ok(());
+        };
+        let ctx = skills::Context::local();
+        for text in [
+            "add eggs to my shopping list and remove cheese",
+            "please add milk on my shopping list, if it is not already on it",
+            "take carrots off my list for shopping",
+        ] {
+            let hit = c.classify(text, &ctx)?;
+            assert!(
+                !hit.as_ref().is_some_and(|h| h.accepted),
+                "{text}: {}",
+                hit.map(|h| h.to_string()).unwrap_or_default()
+            );
+        }
+        let hit = c.classify("did i remember to put oatmeal on my list", &ctx)?;
+        assert!(hit.is_some_and(|h| h.accepted && h.intent.starts_with("Notes(")));
         Ok(())
     }
 
