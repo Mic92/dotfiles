@@ -14,11 +14,6 @@ path = ~/.local/share/calendars/Joerg+Shannan/
 type = discover
 color = light green
 
-[[clan]]
-path = ~/.local/share/calendars/clan/
-type = discover
-color = light magenta
-
 [locale]
 timeformat = %H:%M
 dateformat = %Y-%m-%d
