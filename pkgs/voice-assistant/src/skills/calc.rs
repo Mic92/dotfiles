@@ -16,6 +16,8 @@ pub enum Calc {
         from: Option<usize>,
         to: Option<usize>,
     },
+    /// The date this many days from today.
+    DateIn(u32),
     /// "What timezone is London in?", an index into `ZONES`.
     Zone(usize),
     /// Indices into `UNITS` of the same dimension.
@@ -41,9 +43,61 @@ pub fn intents() -> Vec<Intent> {
     vec![
         intent(
             &[
+                "!(what|which) (day|date) (will|would|is) it (be|gonna be) (in|after) {number} days [from now|from today]",
+                "!(what|which) (day|date) is it (gonna|going to) be (in|after) {number} days [from now|from today]",
+                "!(what|which) (day|date) will it be {number} days from (now|today)",
+                "!(what's|what is|what will be|what would be) the date [be] {number} days from (now|today)",
+                "!what will the date be (in|after) {number} days [from now|from today]",
+                "!what will (the date be|be the date) {number} days from (now|today)",
+                "!(what's|what is|what will be) the date (in|after) {number} days [from now|from today]",
+                "![what's|what is] the date [it will be] (in|after) {number} days [from now|from today]",
+                "!the date it will be {number} days from (now|today)",
+                "!what date it will be (in|after) {number} days [from now|from today]",
+                "!(in|after) [another] {number} days [from now|from today] what (date|day) will it be",
+                "!(in|after) [another] {number} days [from now|from today] what will (it|the date) be",
+                "!(in|after) [another] {number} days [from now|from today] what will be the date",
+                "!{number} days from (now|today) what will the date be",
+                "!the date {number} days from (now|today)",
+                "!when will it be in {number} days",
+            ],
+            |s, _| match s.get("number")? {
+                Value::Real(n) if n.fract() == 0.0 && (1.0..=36_500.0).contains(n) =>
+                {
+                    #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+                    c(Calc::DateIn(*n as u32))
+                }
+                _ => None,
+            },
+        ),
+        intent(
+            &[
+                "!(what's|what is|what will be) [the] date tomorrow",
+                "!(what's|what is) tomorrow's date",
+                "!what will the date be tomorrow",
+                "!what the date (is|will be) [for] tomorrow",
+                "!what (day|date) is tomorrow",
+                "!what (day|date) will it be tomorrow",
+                "!what (day|date) is it tomorrow",
+                "!what (is|'s) the date for tomorrow",
+                "!what would tomorrow's date be",
+                "![what's|what is] the date tomorrow [is what]",
+                "!tomorrow's date",
+                "!tomorrow what will the date be",
+                "!what date it is tomorrow",
+            ],
+            |_, _| c(Calc::DateIn(1)),
+        ),
+        intent(
+            &[
                 "![tell me|give me|i need|i need to know|can you tell me|do you know|i would like to know|i'd like to know] [what's|what is] [the] (timezone|time zone) [now|currently] (of|for|in|where) {zone} [is]",
                 "!(what|which) (timezone|time zone) (is|does|do) {zone} [use|in|located in|located|reside in|be in]",
                 "!(in which|in what) (timezone|time zone) (is|does) {zone} [located|reside|lie]",
+                "!(what|which) (timezone|time zone) {zone} (is in|uses|use|is located in|lies in|has|falls in|is)",
+                "!{zone} is in (what|which) (timezone|time zone)",
+                "![what's|what is] the (timezone|time zone) [that] {zone} (is in|uses)",
+                "!(what|which) (timezone|time zone) (does|do) {zone} (have|use|fall in|belong to)",
+                "!in {zone} (what's|what is) the (timezone|time zone)",
+                "!{zone} (timezone|time zone)",
                 "![what's|what is|tell me|can you tell me|do you know|i need|i need to know] {zone} (timezone|time zone) [is what]",
             ],
             |s, _| match s.get("zone")? {
@@ -55,6 +109,9 @@ pub fn intents() -> Vec<Intent> {
             &[
                 "![tell me] (what time is it|what's the time|what is the time|what's the current time|what is the current time|the time) [now|right now] in {zone} [right now|now]",
                 "![tell me] (what time is it|what's the time|what is the time|what's the current time) [now|right now] in {zone} [right now|now]",
+                "![what's|what is] [the] [current|exact] time [right now|now] [over] (in|for) {zone} [right now|now]",
+                "!(what time is it|what time it is|what time would it be|what time is in|what time of day is it|how late is it) [now|right now|currently|exactly] [over] [there] in {zone} [right now|now]",
+                "!in {zone} (what's the time|what time is it|what is the time)",
                 "!(what's|what is|what time is) {time} [here|my time|local time] in {zone} [time]",
                 "!(what's|what is|what time is) {time} (in|at) {origin} [time] (in|to|for) {zone} [time]",
                 "!(what's|what is|what time is) {time} {origin} time (in|to|for) {zone} [time]",
@@ -118,11 +175,30 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         intent(
-            &["!(what's|what|calculate|compute|how) [is|much|many] [is] [the] {expr}"],
+            &[
+                "!(what's|what|calculate|compute|how) [is|much|many] [is] [the] [a|an] {expr} [is|equals|equal]",
+                "!(what's|what is) the (sum|total|result|answer) [of|to] {expr}",
+                "!what (does|do) {expr} (equal|equals|make|come to)",
+                "![the] {expr} [is|equals|equal]",
+            ],
             |s, _| match s.get("expr")? {
                 Value::Text(e) => c(Calc::Math(e.clone())),
                 _ => None,
             },
+        ),
+        intent(&["!add [up] {low} (and|to|plus) {high}"], |s, _| {
+            two(s, "+", false)
+        }),
+        intent(&["!subtract {low} from {high}"], |s, _| two(s, "-", true)),
+        intent(&["!multiply {low} (and|by|with|times) {high}"], |s, _| {
+            two(s, "*", false)
+        }),
+        intent(
+            &[
+                "![what do you get if you] divide {low} by {high}",
+                "!how many times (does|can|will|would) {high} go into {low}",
+            ],
+            |s, _| two(s, "/", false),
         ),
     ]
 }
@@ -132,6 +208,7 @@ pub const ZONES: &[(&[&str], &str, &str)] = &[
     (
         &[
             "new york",
+            "eastern",
             "nyc",
             "new york city",
             "east coast",
@@ -147,6 +224,8 @@ pub const ZONES: &[(&[&str], &str, &str)] = &[
     (
         &[
             "los angeles",
+            "pacific",
+            "southern california",
             "la",
             "san francisco",
             "california",
@@ -162,6 +241,8 @@ pub const ZONES: &[(&[&str], &str, &str)] = &[
     (
         &[
             "chicago",
+            "central",
+            "tx",
             "texas",
             "houston",
             "dallas",
@@ -172,9 +253,41 @@ pub const ZONES: &[(&[&str], &str, &str)] = &[
         "Chicago",
     ),
     (
-        &["denver", "mountain time", "colorado"],
+        &["denver", "mountain", "mountain time", "colorado"],
         "America/Denver",
         "Denver",
+    ),
+    (&["cuba", "havana"], "America/Havana", "Cuba"),
+    (&["detroit", "michigan"], "America/Detroit", "Detroit"),
+    (
+        &[
+            "vegas",
+            "reno",
+            "nevada",
+            "san diego",
+            "sacramento",
+            "portland",
+            "oregon",
+        ],
+        "America/Los_Angeles",
+        "the West Coast",
+    ),
+    (
+        &["philadelphia", "tampa", "bangor", "maine", "hartford"],
+        "America/New_York",
+        "the East Coast",
+    ),
+    (&["boise", "idaho"], "America/Boise", "Idaho"),
+    (&["alaska", "anchorage"], "America/Anchorage", "Alaska"),
+    (&["colombia", "bogota"], "America/Bogota", "Colombia"),
+    (&["peru", "lima", "peruvian"], "America/Lima", "Peru"),
+    (&["ecuador", "quito"], "America/Guayaquil", "Ecuador"),
+    (&["jamaica", "kingston"], "America/Jamaica", "Jamaica"),
+    (&["cambodia", "phnom penh"], "Asia/Phnom_Penh", "Cambodia"),
+    (
+        &["north korea", "pyongyang"],
+        "Asia/Pyongyang",
+        "North Korea",
     ),
     (&["phoenix", "arizona"], "America/Phoenix", "Arizona"),
     (&["utah", "salt lake city"], "America/Denver", "Utah"),
@@ -201,7 +314,11 @@ pub const ZONES: &[(&[&str], &str, &str)] = &[
         "Vietnam",
     ),
     (&["valencia"], "Europe/Madrid", "Valencia"),
-    (&["hawaii", "honolulu"], "Pacific/Honolulu", "Hawaii"),
+    (
+        &["hawaii", "hawaiian", "honolulu"],
+        "Pacific/Honolulu",
+        "Hawaii",
+    ),
     (
         &["toronto", "montreal", "canada"],
         "America/Toronto",
@@ -214,7 +331,14 @@ pub const ZONES: &[(&[&str], &str, &str)] = &[
         "Mexico City",
     ),
     (
-        &["brazil", "sao paulo", "rio", "rio de janeiro"],
+        &[
+            "brazil",
+            "brasilia",
+            "brasilia",
+            "sao paulo",
+            "rio",
+            "rio de janeiro",
+        ],
         "America/Sao_Paulo",
         "São Paulo",
     ),
@@ -226,6 +350,9 @@ pub const ZONES: &[(&[&str], &str, &str)] = &[
     (
         &[
             "london",
+            "british",
+            "greenwich",
+            "greenwhich",
             "uk",
             "england",
             "britain",
@@ -238,9 +365,21 @@ pub const ZONES: &[(&[&str], &str, &str)] = &[
     ),
     (&["dublin", "ireland"], "Europe/Dublin", "Dublin"),
     (&["lisbon", "portugal"], "Europe/Lisbon", "Lisbon"),
-    (&["paris", "france"], "Europe/Paris", "Paris"),
     (
-        &["berlin", "germany", "munich", "hamburg", "frankfurt"],
+        &["paris", "french", "france", "french"],
+        "Europe/Paris",
+        "Paris",
+    ),
+    (
+        &[
+            "berlin",
+            "german",
+            "germany",
+            "german",
+            "munich",
+            "hamburg",
+            "frankfurt",
+        ],
         "Europe/Berlin",
         "Germany",
     ),
@@ -249,8 +388,16 @@ pub const ZONES: &[(&[&str], &str, &str)] = &[
         "Europe/Amsterdam",
         "Amsterdam",
     ),
-    (&["madrid", "spain", "barcelona"], "Europe/Madrid", "Spain"),
-    (&["rome", "italy", "milan"], "Europe/Rome", "Italy"),
+    (
+        &["madrid", "spanish", "spain", "barcelona", "spanish"],
+        "Europe/Madrid",
+        "Spain",
+    ),
+    (
+        &["rome", "italian", "italy", "milan", "italian"],
+        "Europe/Rome",
+        "Italy",
+    ),
     (&["vienna", "austria"], "Europe/Vienna", "Vienna"),
     (&["zurich", "switzerland"], "Europe/Zurich", "Zurich"),
     (&["stockholm", "sweden"], "Europe/Stockholm", "Stockholm"),
@@ -275,16 +422,31 @@ pub const ZONES: &[(&[&str], &str, &str)] = &[
     (&["lagos", "nigeria"], "Africa/Lagos", "Lagos"),
     (&["dubai", "uae", "abu dhabi"], "Asia/Dubai", "Dubai"),
     (
-        &["india", "delhi", "new delhi", "mumbai", "bangalore"],
+        &[
+            "india",
+            "indian",
+            "delhi",
+            "new delhi",
+            "mumbai",
+            "bangalore",
+        ],
         "Asia/Kolkata",
         "India",
     ),
     (&["bangkok", "thailand"], "Asia/Bangkok", "Bangkok"),
     (&["singapore"], "Asia/Singapore", "Singapore"),
     (&["hong kong"], "Asia/Hong_Kong", "Hong Kong"),
-    (&["china", "beijing", "shanghai"], "Asia/Shanghai", "China"),
+    (
+        &["china", "chinese", "chinese", "beijing", "shanghai"],
+        "Asia/Shanghai",
+        "China",
+    ),
     (&["taiwan", "taipei"], "Asia/Taipei", "Taipei"),
-    (&["tokyo", "japan", "osaka"], "Asia/Tokyo", "Tokyo"),
+    (
+        &["tokyo", "japanese", "japan", "japanese", "osaka"],
+        "Asia/Tokyo",
+        "Tokyo",
+    ),
     (&["seoul", "korea", "south korea"], "Asia/Seoul", "Seoul"),
     (
         &["sydney", "australia", "melbourne"],
@@ -406,6 +568,19 @@ pub const ZONES: &[(&[&str], &str, &str)] = &[
 ];
 
 pub fn zone(words: &[&str]) -> Option<usize> {
+    // "sydney, australia", "houston, tx": the city decides.
+    let words = match words.iter().position(|w| *w == ",") {
+        Some(i) => &words[..i],
+        None => words,
+    };
+    let words = match words {
+        ["the", r @ ..] => r,
+        w => w,
+    };
+    let words = match words {
+        [r @ .., "time", "zone"] | [r @ .., "timezone"] | [r @ .., "time"] if !r.is_empty() => r,
+        w => w,
+    };
     let name = words.join(" ");
     let name = name.strip_suffix("'s").unwrap_or(&name);
     ZONES.iter().position(|(names, _, _)| names.contains(&name))
@@ -579,6 +754,43 @@ fn world_time(at: Option<u32>, from: Option<usize>, to: Option<usize>, ctx: &Con
     )
 }
 
+const DATE_IN: &[&str] = &[
+    "{}.",
+    "That'll be {}.",
+    "{}. Put it in your calendar, not in my memory.",
+    "{}. Assuming the world's still here.",
+    "{}. Plenty of time to procrastinate.",
+    "{}. Mark it with a Club-Mate.",
+    "{}. Planning ahead? Who are you and what did you do with my user?",
+    "{}. Countdown's on.",
+];
+
+fn date_in(days: u32) -> Reply {
+    let e = format!("format_datetime(\"%A, %B %-d, %Y\", now() + {days} days)");
+    let Some(date) = output("numbat", &["-e", &e]) else {
+        return Reply::live("Date", "", pick(&["My calendar fell off the wall."], ""));
+    };
+    let date = date.trim_matches('"').to_owned();
+    let what = if days == 1 {
+        format!("Tomorrow is {date}")
+    } else {
+        format!("In {days} days it's {date}")
+    };
+    Reply::live("Date", &what, pick(DATE_IN, &what))
+}
+
+/// "Add 2 and 3", "subtract 100 from 12": `swap` when the second number
+/// comes first in the sum.
+fn two(s: &crate::grammar::Slots, op: &str, swap: bool) -> Option<Action> {
+    let n = |k| match s.get(k) {
+        Some(Value::Real(v)) => Some(*v),
+        _ => None,
+    };
+    let (a, b) = (n("low")?, n("high")?);
+    let (a, b) = if swap { (b, a) } else { (a, b) };
+    c(Calc::Math(format!("{a} {op} {b}")))
+}
+
 /// One spoken operator and how numbat writes it.
 const OPERATORS: &[(&[&str], &str)] = &[
     (&["plus"], " + "),
@@ -595,7 +807,11 @@ const OPERATORS: &[(&[&str], &str)] = &[
     (&["/"], " / "),
     (&["to", "the", "power", "of"], "^"),
     (&["percent", "of"], " / 100 * "),
+    (&["of"], " * "),
 ];
+
+/// Words after a number that change nothing: "20 dollars".
+const NOISE: &[&str] = &["dollars", "dollar", "euros", "euro", "bucks"];
 
 /// The longest run of number words at the start: "twenty five times".
 fn leading_number(words: &[&str]) -> Option<(f64, usize)> {
@@ -608,6 +824,23 @@ fn leading_number(words: &[&str]) -> Option<(f64, usize)> {
 /// expressions. Only the shape is checked here, so the grammar can try
 /// every span cheaply, and numbat computes it once when answering.
 pub fn expression(words: &[&str]) -> Option<String> {
+    // "30 percent off 279", "an 18 percent tip on 20 dollars".
+    if let Some(p) = words.iter().position(|w| *w == "percent") {
+        let (a, rest) = (&words[..p], &words[p + 1..]);
+        let rest = match rest {
+            ["off", "of", r @ ..] | ["off", r @ ..] => Some(("off", r)),
+            ["tip", "on" | "for" | "of", r @ ..] => Some(("tip", r)),
+            _ => None,
+        };
+        if let Some((kind, b)) = rest {
+            let a = expression_term(a)?;
+            let b = expression_term(b)?;
+            return Some(match kind {
+                "off" => format!("{b} * (1 - {a} / 100)"),
+                _ => format!("{b} * {a} / 100"),
+            });
+        }
+    }
     let mut out = String::new();
     let mut rest = words;
     let mut ops = 0;
@@ -616,22 +849,41 @@ pub fn expression(words: &[&str]) -> Option<String> {
         if root {
             rest = &rest[3..];
         }
-        let (v, n) = leading_number(rest)?;
-        rest = &rest[n..];
-        let v = format!("{v}");
+        let term = match rest {
+            ["pi", r @ ..] => {
+                rest = r;
+                "pi".to_owned()
+            }
+            _ => {
+                let (v, n) = leading_number(rest)?;
+                rest = &rest[n..];
+                format!("{v}")
+            }
+        };
+        while let [w, r @ ..] = rest
+            && NOISE.contains(w)
+        {
+            rest = r;
+        }
         if root {
-            out.push_str(&format!("sqrt({v})"));
+            out.push_str(&format!("sqrt({term})"));
             ops += 1;
         } else {
-            out.push_str(&v);
+            out.push_str(&term);
         }
         loop {
-            match rest.first() {
-                Some(&"squared") => out.push_str("^2"),
-                Some(&"cubed") => out.push_str("^3"),
+            let (suffix, r) = match rest {
+                ["squared", r @ ..] => ("^2".to_owned(), r),
+                ["cubed", r @ ..] => ("^3".to_owned(), r),
+                ["factorial", r @ ..] => ("!".to_owned(), r),
+                ["to", "the", nth, "power", r @ ..] => (format!("^{}", ordinal(nth)?), r),
+                ["to", "the", n, "th" | "st" | "nd" | "rd", "power", r @ ..] => {
+                    (format!("^{}", ordinal(n)?), r)
+                }
                 _ => break,
-            }
-            rest = &rest[1..];
+            };
+            out.push_str(&suffix);
+            rest = r;
             ops += 1;
         }
         if rest == ["percent"] {
@@ -645,6 +897,33 @@ pub fn expression(words: &[&str]) -> Option<String> {
         rest = &rest[words.len()..];
         ops += 1;
     }
+}
+
+/// "12th", "sixth" -> 12, 6.
+fn ordinal(w: &str) -> Option<u32> {
+    let digits = w.trim_end_matches(|c: char| c.is_ascii_alphabetic());
+    if !digits.is_empty() {
+        return digits.parse().ok();
+    }
+    const WORDS: &[&str] = &[
+        "zeroth", "first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth",
+        "ninth", "tenth", "eleventh", "twelfth",
+    ];
+    WORDS
+        .iter()
+        .position(|o| *o == w)
+        .and_then(|i| u32::try_from(i).ok())
+}
+
+/// One number, "pi", or a number with noise after it.
+fn expression_term(words: &[&str]) -> Option<String> {
+    let words = match words {
+        ["a" | "an", r @ ..] => r,
+        w => w,
+    };
+    let end = words.iter().rposition(|w| !NOISE.contains(w))? + 1;
+    let (v, n) = leading_number(&words[..end])?;
+    (n == end).then(|| format!("{v}"))
 }
 
 /// numbat's leading number: "8.04672 km", "37.7778".
@@ -700,6 +979,7 @@ impl Skill for Calc {
             Calc::Convert { value, from, to } => conversion(*value, *from, *to, ctx),
             Calc::Time { at, from, to } => world_time(*at, *from, *to, ctx),
             Calc::Zone(z) => which_zone(*z),
+            Calc::DateIn(days) => date_in(*days),
         }
     }
 }
@@ -1043,6 +1323,25 @@ mod tests {
             ("How much is 10 minus 15?", "10 - 15"),
             ("What is 2 to the power of 10", "2^10"),
             ("what's 3 plus 4 times 2", "3 + 4 * 2"),
+            ("please add 456 and 781 for me", "456 + 781"),
+            ("add twelve and twelve please", "12 + 12"),
+            ("what is the sum of 3 plus 5", "3 + 5"),
+            ("subtract 100 from 12", "12 - 100"),
+            ("multiply 7 and 42", "7 * 42"),
+            ("what is 8 factorial", "8!"),
+            (
+                "can you tell me what 30% off 279 is",
+                "279 * (1 - 30 / 100)",
+            ),
+            ("what is an 18 percent tip on 20 dollars", "20 * 18 / 100"),
+            ("i need to know what is 85% of $1500", "85 / 100 * 1500"),
+            ("what is 3/4 of 18", "3 / 4 * 18"),
+            ("what is 10 to the 12th power", "10^12"),
+            ("how many times does 8 go into 2000", "2000 / 8"),
+            ("what do you get if you divide 3 by 2", "3 / 2"),
+            ("what does 6 x 1 equal", "6 * 1"),
+            ("560 divided by 3", "560 / 3"),
+            ("can you tell me the square root of pi", "sqrt(pi)"),
         ] {
             assert_eq!(calc(text), Some(Calc::Math(want.into())), "{text:?}");
         }
@@ -1108,6 +1407,19 @@ mod tests {
     }
 
     #[test]
+    fn dates_ahead() {
+        for (text, want) in [
+            ("what day will it be in fourteen days", 14),
+            ("in 2 days, what date will it be", 2),
+            ("what will the date be 100 days from now", 100),
+            ("what's the date 400 days from now", 400),
+            ("i need to know the date in 256 days", 256),
+        ] {
+            assert_eq!(calc(text), Some(Calc::DateIn(want)), "{text}");
+        }
+    }
+
+    #[test]
     fn which_zone_phrasings() {
         let z = |t| match calc(t) {
             Some(Calc::Zone(z)) => Some(ZONES[z].1),
@@ -1121,6 +1433,16 @@ mod tests {
             ("tell me the timezone for hong kong", "Asia/Hong_Kong"),
             ("what timezone is hanoi in", "Asia/Ho_Chi_Minh"),
             ("timezone in salt lake city", "America/Denver"),
+            ("do you know what timezone italy is in", "Europe/Rome"),
+            ("italy is in what timezone", "Europe/Rome"),
+            ("tell me the timezone that spain is in", "Europe/Madrid"),
+            ("what timezone does lisbon have", "Europe/Lisbon"),
+            ("timezone of cuba", "America/Havana"),
+            ("in paris, what's the timezone", "Europe/Paris"),
+            ("tell me what time zone portugal uses", "Europe/Lisbon"),
+            ("what timezone is detroit in", "America/Detroit"),
+            ("what timezone is vegas in", "America/Los_Angeles"),
+            ("french time zone", "Europe/Paris"),
         ] {
             assert_eq!(z(text), Some(want), "{text}");
         }
