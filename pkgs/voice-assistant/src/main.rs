@@ -3,6 +3,7 @@
 mod asr;
 mod classify;
 mod clock;
+mod date;
 mod duration;
 mod grammar;
 mod holiday;

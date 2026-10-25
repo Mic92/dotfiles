@@ -23,6 +23,8 @@ pub enum Value {
     Clock(Clock),
     /// Days from today.
     Day(u32),
+    /// A calendar date as said, until resolved against today.
+    Date(crate::date::Date),
     Number(u32),
     Real(f64),
     /// Index into a skill's own table (apps, ...).

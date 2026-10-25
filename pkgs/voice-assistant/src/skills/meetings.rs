@@ -4,10 +4,11 @@
 use super::dialogue::Confirm;
 use super::json::{key, text};
 use super::{
-    Action, Context, Intent, Module, Reply, Skill, choose, followup, intent, output, pick, spawn,
+    Action, Context, Intent, Module, Reply, Skill, choose, followup, intent, output, pick, slot,
+    spawn,
 };
-use crate::clock;
 use crate::grammar::{Slots, Value};
+use crate::{clock, date};
 use tinyjson::JsonValue;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -59,30 +60,33 @@ fn title(s: &Slots, prefix: &str) -> Option<String> {
     }
 }
 
-/// The greedy `{text}` slot may swallow an unmarked day ("with anna tomorrow").
-fn split_day(title: &str) -> (&str, Option<u32>) {
-    for (suffix, d) in [
-        (" the day after tomorrow", 2),
-        (" day after tomorrow", 2),
-        (" tomorrow", 1),
-        (" today", 0),
-    ] {
-        if let Some(t) = title.strip_suffix(suffix) {
-            return (t, Some(d));
+/// The greedy `{text}` slot may swallow an unmarked day ("with anna
+/// tomorrow", "with anna on friday").
+fn split_day(title: &str, ctx: &Context) -> (String, Option<u32>) {
+    let words: Vec<&str> = title.split_whitespace().collect();
+    for n in (1..=4.min(words.len().saturating_sub(1))).rev() {
+        let (head, tail) = words.split_at(words.len() - n);
+        let d = match slot("day", tail) {
+            Some(Value::Day(d)) => Some(d),
+            Some(Value::Date(d)) => date::days_ahead(d, ctx.today),
+            _ => None,
+        };
+        if d.is_some() {
+            return (head.join(" "), d);
         }
     }
-    (title, None)
+    (title.to_owned(), None)
 }
 
-fn create(s: &Slots, prefix: &str) -> Option<Action> {
+fn create(s: &Slots, ctx: &Context, prefix: &str) -> Option<Action> {
     let full = title(s, prefix)?;
-    let (t, d) = split_day(&full);
+    let (t, d) = split_day(&full, ctx);
     let day = match (s.get("day"), d) {
         (None, Some(d)) => d,
         _ => day(s)?,
     };
     mt(Meeting::Create {
-        title: t.to_owned(),
+        title: t,
         day,
         secs: clock_secs(s)?,
         confirmed: false,
@@ -166,7 +170,7 @@ pub fn intents() -> Vec<Intent> {
                 "!(schedule|create|add|book|set up|make|put in) [a|an] (meeting|call) with {text} [{day}] at {clock}",
                 "!(schedule|create|add|book|set up|make|put in) [a|an] (meeting|call) with {text} at {clock} {day}",
             ],
-            |s, _| create(s, "Meeting with "),
+            |s, c| create(s, c, "Meeting with "),
         ),
         intent(
             &[
@@ -175,7 +179,7 @@ pub fn intents() -> Vec<Intent> {
                 "!(schedule|create|add|book|put) {text} (in|on|into|to) [my] calendar [{day}] at {clock}",
                 "!(schedule|create|add|book|put) {text} (in|on|into|to) [my] calendar at {clock} {day}",
             ],
-            |s, _| create(s, ""),
+            |s, c| create(s, c, ""),
         ),
     ]
 }
@@ -732,6 +736,26 @@ mod tests {
                 Meeting::FreeAt {
                     day: 0,
                     secs: 16 * 3600,
+                },
+            ),
+            (
+                "What's on my calendar on friday?",
+                Meeting::Day { day: 2, part: None },
+            ),
+            (
+                "Am I free on march 1st at 10 am?",
+                Meeting::FreeAt {
+                    day: 130,
+                    secs: 10 * 3600,
+                },
+            ),
+            (
+                "Schedule a meeting with Anna on friday at 3 pm.",
+                Meeting::Create {
+                    title: "Meeting with anna".into(),
+                    day: 2,
+                    secs: 15 * 3600,
+                    confirmed: false,
                 },
             ),
             (

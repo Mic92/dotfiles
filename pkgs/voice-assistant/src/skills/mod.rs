@@ -29,6 +29,7 @@ pub mod volume;
 
 use std::sync::LazyLock;
 
+use crate::date;
 use crate::grammar::{SlotParser, Slots, Template, Value, normalize};
 use crate::{clock, duration};
 
@@ -194,6 +195,8 @@ pub struct Context {
     pub now: u32,
     /// 0 = Sunday.
     pub weekday: u32,
+    /// Days since 1970-01-01.
+    pub today: i64,
     /// What bare words like "stop" or "again" may refer to.
     pub focus: dialogue::Focus,
 }
@@ -203,6 +206,7 @@ impl Context {
         Context {
             now: clock::local_now(),
             weekday: clock::local_weekday(),
+            today: clock::local_day().unwrap_or_default(),
             focus: dialogue::Focus {
                 timer: timer::active(),
                 ..dialogue::Focus::default()
@@ -210,12 +214,13 @@ impl Context {
         }
     }
 
-    /// A Wednesday at `now`, for tests.
+    /// Wednesday, 2025-10-22 at `now`, for tests.
     #[cfg(test)]
     pub const fn at(now: u32) -> Self {
         Context {
             now,
             weekday: 3,
+            today: 20383,
             focus: dialogue::Focus {
                 previous: None,
                 timer: false,
@@ -384,7 +389,7 @@ fn slot_parser(name: &str) -> Option<SlotParser> {
             ["day", "after", "tomorrow"] | ["the", "day", "after", "tomorrow"] => {
                 Some(Value::Day(2))
             }
-            _ => None,
+            w => date::parse(w).map(Value::Date),
         }),
         _ => MODULES
             .iter()
@@ -477,11 +482,23 @@ fn best_match(words: &[&str], ctx: &Context, fallback: bool) -> Option<Action> {
         .filter(|i| i.fallback == fallback)
         .flat_map(|i| i.templates.iter().map(move |t| (i, t)))
         .filter_map(|(i, t)| {
-            let (skipped, slots) = t.find(words, &slot_parser)?;
+            let (skipped, mut slots) = t.find(words, &slot_parser)?;
+            resolve_dates(&mut slots, ctx)?;
             Some((skipped, (i.build)(&slots, ctx)?))
         })
         .min_by_key(|(skipped, _)| *skipped)
         .map(|(_, action)| action)
+}
+
+/// Calendar dates become days from today, the only form skills see.
+/// `None` for a date that doesn't exist.
+fn resolve_dates(slots: &mut Slots, ctx: &Context) -> Option<()> {
+    for v in slots.values_mut() {
+        if let Value::Date(d) = v {
+            *v = Value::Day(date::days_ahead(*d, ctx.today)?);
+        }
+    }
+    Some(())
 }
 
 /// Spoken names of the slots with a fixed set of values.
