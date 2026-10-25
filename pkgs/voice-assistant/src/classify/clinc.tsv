@@ -300,36 +300,36 @@ Repeat	can you repeat that
 Repeat	what were you just saying
 Repeat	come again
 Repeat	can you say that again, please
-Info(Math	what is 300 divided by 42
-Info(Math	what is 400 times 2
-Info(Math	what is the average of 54, 23, 43, 12, and 442
-Info(Math	add 45 to 87 plus 54 plus 43 plus 22
-Info(Math	what is 48 multiplied by 4 divided by 2
-Info(Math	what is 25% of $54,788
-Info(Math	what is the square root of 95
-Info(Math	what is 1100 minus 2347
-Info(Math	tell me what 1875 plus 3459 equals
-Info(Math	tell me the answer to 1000 divided by 40
-Info(Math	what is 1000 plus 745
-Info(Math	i need to know the answer to 10000 multiplied by 44
-Info(Math	what is 100 multiplied by 55
-Info(Math	what's 15% of 68
-Info(Math	what's 47 times 83
-Info(Math	if something is 15% off $35, how much is it
-Info(Math	how many times can 3 be divided into 1253
-Info(Math	divide 100 by 12
-Info(Math	find square root of 453
-Info(Math	what is 1243 times 45
-Info(Math	find the square root of 1243435
-Info(Math	what is the square root of 36
-Info(Math	what is 592 minus 124
-Info(Math	i need to know what 25 times 38 is
-Info(Math	can you calculate the square root of 172
-Info(Math	i bought 6 shirts at $499 each what was my total expenditure for them
-Info(Math	i spent 34 dollars for 12 gallons of paint what is the average price for each gallon
-Info(Math	what is the sum of eleven and ten
-Info(Math	what is the solution to sixty times thirty
-Info(Math	how do i ask the ai to help me with math problem
+Calc(Math	what is 300 divided by 42
+Calc(Math	what is 400 times 2
+Calc(Math	what is the average of 54, 23, 43, 12, and 442
+Calc(Math	add 45 to 87 plus 54 plus 43 plus 22
+Calc(Math	what is 48 multiplied by 4 divided by 2
+Calc(Math	what is 25% of $54,788
+Calc(Math	what is the square root of 95
+Calc(Math	what is 1100 minus 2347
+Calc(Math	tell me what 1875 plus 3459 equals
+Calc(Math	tell me the answer to 1000 divided by 40
+Calc(Math	what is 1000 plus 745
+Calc(Math	i need to know the answer to 10000 multiplied by 44
+Calc(Math	what is 100 multiplied by 55
+Calc(Math	what's 15% of 68
+Calc(Math	what's 47 times 83
+Calc(Math	if something is 15% off $35, how much is it
+Calc(Math	how many times can 3 be divided into 1253
+Calc(Math	divide 100 by 12
+Calc(Math	find square root of 453
+Calc(Math	what is 1243 times 45
+Calc(Math	find the square root of 1243435
+Calc(Math	what is the square root of 36
+Calc(Math	what is 592 minus 124
+Calc(Math	i need to know what 25 times 38 is
+Calc(Math	can you calculate the square root of 172
+Calc(Math	i bought 6 shirts at $499 each what was my total expenditure for them
+Calc(Math	i spent 34 dollars for 12 gallons of paint what is the average price for each gallon
+Calc(Math	what is the sum of eleven and ten
+Calc(Math	what is the solution to sixty times thirty
+Calc(Math	how do i ask the ai to help me with math problem
 Info(Date)	date please
 Info(Date)	what is the current day
 Info(Date)	which day is it now

@@ -4,6 +4,7 @@
 //! variant and list the module in `MODULES`.
 
 pub mod apps;
+pub mod calc;
 pub mod chat;
 pub mod desktop;
 mod exec;
@@ -21,7 +22,6 @@ pub mod ops;
 mod say;
 pub mod system;
 pub mod timer;
-pub mod units;
 pub mod volume;
 
 use std::sync::LazyLock;
@@ -47,6 +47,7 @@ pub enum Action {
     System(system::System),
     Volume(volume::Volume),
     Info(info::Info),
+    Calc(calc::Calc),
     /// Spoken replies on or off ("shut up" / "you can talk again").
     Voice(bool),
     /// The assistant sleeps (ignores everything but "wake up") or listens.
@@ -106,6 +107,7 @@ impl Action {
             Action::System(x) => x,
             Action::Volume(x) => x,
             Action::Info(x) => x,
+            Action::Calc(x) => x,
             Action::Repeat
             | Action::Voice(_)
             | Action::Listen(_)
@@ -135,6 +137,7 @@ const MODULES: &[Module] = &[
     desktop::MODULE,
     apps::MODULE,
     info::MODULE,
+    calc::MODULE,
     fun::MODULE,
     chat::MODULE,
     ops::MODULE,
@@ -448,9 +451,12 @@ fn closed_values(slot: &str) -> Option<Vec<Vec<&'static str>>> {
 /// loud", "louder"), so volume, players, power and toggles stay grammar-only.
 pub fn classifiable(a: &Action) -> bool {
     match a {
-        Action::Chat(_) | Action::Fun(_) | Action::Info(_) | Action::News(_) | Action::Repeat => {
-            true
-        }
+        Action::Chat(_)
+        | Action::Fun(_)
+        | Action::Info(_)
+        | Action::Calc(_)
+        | Action::News(_)
+        | Action::Repeat => true,
         Action::Ops(o) => !matches!(o, ops::Ops::Bluetooth { .. }),
         Action::Media(m) => *m == media::Media::NowPlaying,
         Action::Timer(t) => matches!(t, timer::Timer::Left | timer::Timer::Start { .. }),

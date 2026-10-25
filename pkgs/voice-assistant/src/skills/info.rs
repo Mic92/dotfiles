@@ -2,12 +2,10 @@
 //! clipboard.
 
 use super::json::{first_value, idx, key, num};
-use super::units;
 use super::{
     Action, Context, Intent, Module, Reply, Skill, choose, followup, intent, output, pick,
 };
 use crate::clock;
-use crate::duration::number_words;
 use crate::grammar::Value;
 use crate::http;
 use std::fs;
@@ -28,16 +26,9 @@ pub enum Info {
     Battery,
     Uptime,
     Mail,
-    Math(f64),
     Clipboard,
     /// "Where am I?", from the IP's location.
     Where,
-    /// Indices into `units::UNITS` of the same dimension.
-    Convert {
-        value: f64,
-        from: usize,
-        to: usize,
-    },
 }
 
 fn i(x: Info) -> Option<Action> {
@@ -46,12 +37,7 @@ fn i(x: Info) -> Option<Action> {
 
 pub const MODULE: Module = Module {
     intents,
-    slots: &[
-        ("expr", |w, _| calculate(w).map(Value::Real)),
-        ("place", |w, _| place(w).map(Value::Text)),
-        ("from", |w, _| units::lookup(w).map(Value::Index)),
-        ("to", |w, _| units::lookup(w).map(Value::Index)),
-    ],
+    slots: &[("place", |w, _| place(w).map(Value::Text))],
 };
 
 pub fn intents() -> Vec<Intent> {
@@ -167,50 +153,6 @@ pub fn intents() -> Vec<Intent> {
         ),
         intent(
             &[
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] (what's|whats|what is|what are|how much is|how many) {number} {from} (in|to|into|as) {to}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] what would {number} {from} be in {to}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] [can you] [assist me|help me] [i need|i want] [to] convert {number} {from} (to|into|in) {to}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] {number} {from} (in|to|into) {to}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] {number} {from} (is|are) (equal to|how many) [how many] {to}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] (how many|what amount of) {to} (are|is|will make|make|makes|make up|make up in) [there] [in] [a|an|one] {from}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] (how many|what amount of) {to} (are|is|will make|make|makes|make up|make up in) [there] [in] {number} {from}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] (how many|what amount of) {to} [are|is] [there] in [a|an|one] {from}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] (how many|what amount of) {to} [are|is] [there] in {number} {from}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] (how many|what amount of) {to} (are|is) equivalent to [a|an|one] {from}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] (how many|what amount of) {to} (are|is) equivalent to {number} {from}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] (what's|what is) the [total|correct] (number|amount) of {to} in [a|an|one] {from}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] (what's|what is) the [total|correct] (number|amount) of {to} in {number} {from}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] [how] (do|can|could|would) (i|we|you) (convert|change) [from] {from} (to|into) {to}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] [can you] [assist me|help me] [i need|i want] [to] convert [from] {from} (to|into) {to}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] (give me|i need) {from} (to|in) {to}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] [what is|what's|what would be|give me|i need] the conversion (between|from) [a|an] {from} (and|to) [a|an] {to}",
-                "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] if i have {number} {from} how many {to} is that",
-            ],
-            |s, _| {
-                let value = match s.get("number") {
-                    Some(Value::Real(v)) => *v,
-                    None => 1.0,
-                    Some(_) => return None,
-                };
-                let (Some(Value::Index(from)), Some(Value::Index(to))) =
-                    (s.get("from"), s.get("to"))
-                else {
-                    return None;
-                };
-                let (from, to) = units::fluid(*from, *to);
-                units::convertible(from, to).then_some(())?;
-                i(Info::Convert { value, from, to })
-            },
-        ),
-        intent(
-            &["!(what's|what|calculate|compute|how) [is|much|many] [is] [the] {expr}"],
-            |s, _| match s.get("expr")? {
-                Value::Real(v) => i(Info::Math(*v)),
-                _ => None,
-            },
-        ),
-        intent(
-            &[
                 "(read|say) [me] [the|my|what's] [in] [the|my] clipboard",
                 "what's in [the|my] clipboard",
                 "what is in [the|my] clipboard",
@@ -218,62 +160,6 @@ pub fn intents() -> Vec<Intent> {
             |_, _| i(Info::Clipboard),
         ),
     ]
-}
-
-/// "5 plus 3", "seven times six", "square root of 81", "20 percent of 50".
-pub fn calculate(words: &[&str]) -> Option<f64> {
-    if let ["square", "root", "of", rest @ ..] = words {
-        return number_words(rest).filter(|v| *v >= 0.0).map(f64::sqrt);
-    }
-    let op_at = words.iter().position(|w| {
-        matches!(
-            *w,
-            "plus"
-                | "minus"
-                | "times"
-                | "multiplied"
-                | "divided"
-                | "over"
-                | "percent"
-                | "x"
-                | "squared"
-                | "cubed"
-        )
-    })?;
-    let a = number_words(&words[..op_at])?;
-    let rest = &words[op_at + 1..];
-    let rest = rest
-        .strip_prefix(&["by"])
-        .or_else(|| rest.strip_prefix(&["of"]))
-        .unwrap_or(rest);
-    let v = match words[op_at] {
-        "squared" if rest.is_empty() => a * a,
-        "cubed" if rest.is_empty() => a * a * a,
-        op => {
-            let b = number_words(rest)?;
-            match op {
-                "plus" => a + b,
-                "minus" => a - b,
-                "times" | "multiplied" | "x" => a * b,
-                "percent" => a / 100.0 * b,
-                _ if b == 0.0 => f64::INFINITY,
-                _ => a / b,
-            }
-        }
-    };
-    Some(v)
-}
-
-fn spoken_number(v: f64) -> String {
-    if v.is_infinite() {
-        return "infinity".into();
-    }
-    let rounded = (v * 100.0).round() / 100.0;
-    if rounded.fract() == 0.0 {
-        format!("{rounded:.0}")
-    } else {
-        format!("{rounded}")
-    }
 }
 
 const TIME: &[&str] = &[
@@ -348,18 +234,6 @@ const NO_WEATHER: &[&str] = &[
     "The weather service ghosted me.",
     "The weather is a mystery today. Like your commit history.",
 ];
-const MATH: &[&str] = &[
-    "{}.",
-    "That's {}. I'm basically a genius.",
-    "{}. Easy. Next.",
-    "{}. Show your work? No.",
-];
-const BIG_MATH: &[&str] = &[
-    "{}. Don't make me do that again.",
-    "{}. My circuits are sweating.",
-    "{}. Next time, use a spreadsheet, darling.",
-];
-
 impl Skill for Info {
     fn refine(&self, words: &[&str]) -> Option<Action> {
         let Info::Weather { day, place, part } = self else {
@@ -411,14 +285,8 @@ impl Skill for Info {
             Info::Battery => battery(),
             Info::Uptime => uptime(),
             Info::Mail => mail(),
-            Info::Math(v) => {
-                let what = spoken_number(*v);
-                let speech = choose(&[(v.abs() >= 10_000.0, BIG_MATH)], MATH, &what);
-                Reply::live("Maths", &what, speech)
-            }
             Info::Clipboard => clipboard(),
             Info::Where => location(ctx),
-            Info::Convert { value, from, to } => conversion(*value, *from, *to, ctx),
         }
     }
     fn filler(&self) -> Option<&'static [&'static str]> {
@@ -428,46 +296,6 @@ impl Skill for Info {
             "Sticking my head out the window. Brr.",
         ])
     }
-}
-
-const CONVERTED: &[&str] = &[
-    "{}.",
-    "{}. Science.",
-    "{}. I did the maths so you don't have to.",
-    "{}. Metric would've been easier, just saying.",
-    "{}. You're welcome, Imperial victim.",
-    "That's {}. Write it down this time.",
-    "{}. No calculator was harmed.",
-    "{}. Precise enough for cooking, not for rocket science.",
-    "{}. Size isn't everything, but this one's exact.",
-    "Roughly {}. Don't sue me over the decimals.",
-];
-const CONVERTED_LATE: &[&str] = &[
-    "{}. Baking at this hour? Respect.",
-    "{}. Measuring things at midnight. I won't ask.",
-    "{}. Now go to bed.",
-];
-
-fn conversion(value: f64, from: usize, to: usize, ctx: &Context) -> Reply {
-    let Some(result) = units::convert(value, from, to) else {
-        return Reply::live(
-            "Convert",
-            "",
-            pick(&["Those don't convert. Apples and oranges."], ""),
-        );
-    };
-    let what = format!(
-        "{} {} is {} {}",
-        units::spoken(value),
-        units::name(from, value),
-        units::spoken(result),
-        units::name(to, result)
-    );
-    Reply::live(
-        "Convert",
-        &what,
-        choose(&[(ctx.late(), CONVERTED_LATE)], CONVERTED, &what),
-    )
 }
 
 /// Words that end a place name rather than start one.
@@ -770,60 +598,6 @@ mod tests {
         }
     }
 
-    fn conv(t: &str) -> Option<(f64, &'static str, &'static str)> {
-        match info(t)? {
-            Info::Convert { value, from, to } => {
-                Some((value, units::UNITS[from].plural, units::UNITS[to].plural))
-            }
-            _ => None,
-        }
-    }
-
-    #[test]
-    fn conversions() {
-        for (text, want) in [
-            ("How many cups are in a liter?", (1.0, "liters", "cups")),
-            (
-                "convert 5 miles to kilometers",
-                (5.0, "miles", "kilometers"),
-            ),
-            (
-                "What is 100 degrees fahrenheit in celsius",
-                (100.0, "degrees Fahrenheit", "degrees Celsius"),
-            ),
-            ("how many ounces in a pound", (1.0, "pounds", "ounces")),
-            ("what's 3 feet in centimeters", (3.0, "feet", "centimeters")),
-            (
-                "how many teaspoons are there in a tablespoon",
-                (1.0, "tablespoons", "teaspoons"),
-            ),
-            (
-                "how many ounces are in a cup",
-                (1.0, "cups", "fluid ounces"),
-            ),
-            (
-                "how do I convert pounds to kilograms",
-                (1.0, "pounds", "kilograms"),
-            ),
-            (
-                "12 feet is equal to how many inches",
-                (12.0, "feet", "inches"),
-            ),
-            (
-                "what's the conversion between tablespoons and cups",
-                (1.0, "tablespoons", "cups"),
-            ),
-            (
-                "twenty kilometers per hour in miles per hour",
-                (20.0, "kilometers per hour", "miles per hour"),
-            ),
-        ] {
-            let (v, from, to) = want;
-            assert_eq!(conv(text), Some((v, from, to)), "{text}");
-        }
-        assert_eq!(conv("how many miles in a kilogram"), None);
-    }
-
     fn here(day: u32) -> Info {
         Info::Weather {
             day,
@@ -889,25 +663,6 @@ mod tests {
         ] {
             assert_eq!(info(text), Some(want), "{text:?}");
         }
-    }
-
-    #[test]
-    fn maths() {
-        for (text, want) in [
-            ("What is 5 plus 3?", 8.0),
-            ("What's 7×6?", 42.0),
-            ("What is twenty five times four?", 100.0),
-            ("Calculate 100 divided by 8", 12.5),
-            ("What's the square root of 81?", 9.0),
-            ("What is 20 percent of 50?", 10.0),
-            ("What's 12 squared?", 144.0),
-            ("How much is 10 minus 15?", -5.0),
-        ] {
-            assert_eq!(info(text), Some(Info::Math(want)), "{text:?}");
-        }
-        assert_eq!(spoken_number(12.5), "12.5");
-        assert_eq!(spoken_number(42.0), "42");
-        assert_eq!(spoken_number(1.0 / 3.0), "0.33");
     }
 
     #[test]
