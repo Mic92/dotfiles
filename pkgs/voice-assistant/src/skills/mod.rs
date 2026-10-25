@@ -20,6 +20,7 @@ pub mod news;
 pub mod notes;
 pub mod ops;
 mod say;
+pub mod situation;
 pub mod spell;
 pub mod system;
 pub mod timer;
@@ -140,6 +141,7 @@ const MODULES: &[Module] = &[
     desktop::MODULE,
     apps::MODULE,
     info::MODULE,
+    situation::MODULE,
     calc::MODULE,
     spell::MODULE,
     fun::MODULE,
@@ -192,6 +194,7 @@ pub struct Context {
     pub weekday: u32,
     /// The last action, for "and tomorrow?" or "another one".
     pub previous: Option<Action>,
+    pub situation: situation::Situation,
 }
 
 impl Context {
@@ -200,6 +203,10 @@ impl Context {
             now: clock::local_now(),
             weekday: clock::local_weekday(),
             previous: None,
+            situation: situation::Situation {
+                timer: timer::active(),
+                ..situation::Situation::default()
+            },
         }
     }
 
@@ -210,6 +217,11 @@ impl Context {
             now,
             weekday: 3,
             previous: None,
+            situation: situation::Situation {
+                asking: false,
+                music: false,
+                timer: false,
+            },
         }
     }
 
@@ -272,10 +284,6 @@ fn core_intents() -> Vec<Intent> {
                 "!pardon",
             ],
             |_, _| Some(Action::Repeat),
-        ),
-        intent(
-            &["!never mind", "!nevermind", "!forget it", "!nothing"],
-            |_, _| Some(Action::Dismiss),
         ),
         intent(
             &[

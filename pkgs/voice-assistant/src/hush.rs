@@ -39,6 +39,11 @@ pub fn hush() -> Hushed {
 }
 
 impl Hushed {
+    /// Whether anything was playing before we paused it.
+    pub fn any(&self) -> bool {
+        self.radio || !self.players.is_empty()
+    }
+
     pub fn resume(self) {
         for p in &self.players {
             output("playerctl", &["-p", p, "play"]);

@@ -474,6 +474,8 @@ impl Assistant {
             .as_ref()
             .filter(|(_, at)| at.elapsed() < CARRY_OVER)
             .map(|(a, _)| a.clone());
+        ctx.situation.asking = self.follow_up.is_some();
+        ctx.situation.music = self.hushed.as_ref().is_some_and(hush::Hushed::any);
         if let Some(Some(end)) = self.asleep
             && Instant::now() >= end
         {

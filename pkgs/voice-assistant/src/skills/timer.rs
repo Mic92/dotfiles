@@ -3,7 +3,6 @@
 use std::sync::{Mutex, PoisonError};
 use std::time::{Duration, Instant};
 
-use super::media::Media;
 use super::succeeds;
 use super::{Action, Context, Intent, Module, Reply, Skill, choose, intent, pick, spawn};
 use crate::clock::{self, Clock};
@@ -51,20 +50,12 @@ fn state() -> MutexGuard<'static, State> {
 /// Seconds left and whether it is an alarm; `None` when nothing is pending.
 /// A timer the user may be talking about: running, paused, or rang
 /// within the last minutes.
-fn active() -> bool {
+pub fn active() -> bool {
     let now = Instant::now();
     match *state() {
         State::Running { deadline, .. } => deadline + Duration::from_secs(300) > now,
         State::Paused { .. } => true,
         State::Idle => false,
-    }
-}
-
-fn contextual(timer_active: bool, timer: Timer, media: Media) -> Action {
-    if timer_active {
-        Action::Timer(timer)
-    } else {
-        Action::Media(media)
     }
 }
 
@@ -160,8 +151,6 @@ pub fn intents() -> Vec<Intent> {
             &[
                 "(cancel|stop|delete|reset|abort|end|kill|clear|silence|dismiss) [the|my|this|that] (timer|alarm)",
                 "(turn|switch) off [the|my|this|that] (timer|alarm)",
-                "(cancel|abort) (it|that|this)",
-                "!(cancel|abort)",
             ],
             |_, _| Some(Action::Timer(Timer::Cancel)),
         ),
@@ -169,17 +158,6 @@ pub fn intents() -> Vec<Intent> {
             &["(pause|resume|continue|unpause) [the|my|this|that] timer"],
             |_, _| Some(Action::Timer(Timer::Pause)),
         ),
-        // Bare words mean the timer only while there is one; else the music.
-        intent(&["!(pause|pause it|pause that)"], |_, _| {
-            Some(contextual(active(), Timer::Pause, Media::Pause))
-        }),
-        intent(
-            &["!(resume|unpause|continue|resume it|unpause it|continue it)"],
-            |_, _| Some(contextual(active(), Timer::Pause, Media::Play)),
-        ),
-        intent(&["!(stop|stop it|stop that)"], |_, _| {
-            Some(contextual(active(), Timer::Cancel, Media::Stop))
-        }),
         intent(
             &[
                 "!how (much|long) [time] [is] left [on] [the|my] [timer|alarm|clock]",
@@ -655,23 +633,6 @@ mod tests {
     }
 
     #[test]
-    fn bare_words_follow_the_timer() {
-        assert_eq!(
-            contextual(true, Timer::Pause, Media::Pause),
-            Action::Timer(Timer::Pause)
-        );
-        assert_eq!(
-            contextual(false, Timer::Pause, Media::Pause),
-            Action::Media(Media::Pause)
-        );
-        // Tests share no running timer, so bare words go to the music.
-        let p = |t| parse_at(t, &Context::at(0));
-        assert_eq!(p("Pause."), Some(Action::Media(Media::Pause)));
-        assert_eq!(p("Resume"), Some(Action::Media(Media::Play)));
-        assert_eq!(p("Stop!"), Some(Action::Media(Media::Stop)));
-    }
-
-    #[test]
     fn controls() {
         let cancel = Some(Action::Timer(Timer::Cancel));
         let pause = Some(Action::Timer(Timer::Pause));
@@ -679,9 +640,6 @@ mod tests {
         for (text, want) in [
             ("Cancel the timer.", &cancel),
             ("Stop timer", &cancel),
-            ("Cancel.", &cancel),
-            ("Alexa, cancel.", &cancel),
-            ("Cancel it, please.", &cancel),
             ("Turn off the timer.", &cancel),
             ("Stop the alarm!", &cancel),
             ("Dismiss the alarm", &cancel),
