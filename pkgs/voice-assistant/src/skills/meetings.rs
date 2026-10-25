@@ -1,13 +1,13 @@
 //! Calendar and meetings: read via khal's JSON output, create via
 //! calendar-cli (which syncs right away).
 
-use super::dialogue::Confirm;
+use super::dialogue::{Confirm, Question};
 use super::json::{key, text};
 use super::{
     Action, Context, Intent, Module, Reply, Skill, choose, followup, intent, output, pick, slot,
     spawn,
 };
-use crate::grammar::{Slots, Value};
+use crate::grammar::{Slots, Value, normalize};
 use crate::{clock, date};
 use tinyjson::JsonValue;
 
@@ -30,6 +30,11 @@ pub enum Meeting {
         day: u32,
         secs: u32,
         confirmed: bool,
+    },
+    /// An event missing its time, or day and time: ask for them.
+    Ask {
+        title: String,
+        day: Option<u32>,
     },
 }
 
@@ -66,11 +71,7 @@ fn split_day(title: &str, ctx: &Context) -> (String, Option<u32>) {
     let words: Vec<&str> = title.split_whitespace().collect();
     for n in (1..=4.min(words.len().saturating_sub(1))).rev() {
         let (head, tail) = words.split_at(words.len() - n);
-        let d = match slot("day", tail) {
-            Some(Value::Day(d)) => Some(d),
-            Some(Value::Date(d)) => date::days_ahead(d, ctx.today),
-            _ => None,
-        };
+        let d = days(tail, ctx);
         if d.is_some() {
             return (head.join(" "), d);
         }
@@ -127,8 +128,42 @@ pub fn intents() -> Vec<Intent> {
                 "(how busy am i|how does my day look|what does my day look like) [{day}]",
                 "!(calendar|agenda|schedule) [{day}]",
                 "!what's my day like",
+                "!(what's|what is) (happening|planned|going on) {day}",
+                "!(what's|what is) (on|in) the (schedule|calendar|books) {day}",
+                "![tell me|let me know] (what's|what is) (on|showing on|currently on) my (calendar|schedule|agenda) {day}",
+                "!(what do i have|what have i got|what've i got) (scheduled|planned|going on|to do|set|on) {day} [on my calendar|that's on my calendar]",
+                "!(what do i have|what have i got) (scheduled|planned|going on|to do) [on my calendar] {day}",
+                "!(do i have|have i got|have i scheduled|is there) (anything|something|any events|any meetings|any appointments) [scheduled|planned|to do|on my calendar|on the schedule|on the calendar] {day}",
+                "!(anything|any events) on (the|my) (schedule|calendar) {day}",
+                "!(how is|how's) my (calendar|schedule|day) [looking] {day}",
+                "!is my (calendar|schedule|day) (free|clear|empty|busy) {day}",
+                "!what (events|meetings|appointments) (are|do i have) on my calendar {day}",
             ],
             |s, _| {
+                mt(Meeting::Day {
+                    day: day(s)?,
+                    part: None,
+                })
+            },
+        ),
+        // Questions vary endlessly, but a calendar word and a date at the
+        // end ask for that day. Changes start with a verb and are left out.
+        intent(
+            &[
+                "!{text} (calendar|schedule|appointments|events|agenda|plans|planned|scheduled|happening|day) [like|look like|looking|open|free] [on|for] {day} [on my calendar|please]",
+            ],
+            |s, _| {
+                let Value::Text(t) = s.get("text")? else {
+                    return None;
+                };
+                const CHANGE: &[&str] = &[
+                    "add", "added", "put", "schedule", "delete", "remove", "clear", "cancel",
+                    "erase", "take", "move", "change", "make", "create", "book", "leave", "rid",
+                    "need",
+                ];
+                if t.split_whitespace().any(|w| CHANGE.contains(&w)) {
+                    return None;
+                }
                 mt(Meeting::Day {
                     day: day(s)?,
                     part: None,
@@ -180,6 +215,21 @@ pub fn intents() -> Vec<Intent> {
                 "!(schedule|create|add|book|put) {text} (in|on|into|to) [my] calendar at {clock} {day}",
             ],
             |s, c| create(s, c, ""),
+        ),
+        intent(
+            &[
+                "![i need to|i want to|i must|i'd like to|please] (add|put|schedule) [a|an|my] {text} (to|on|in|into) [my|the] (calendar|schedule) {day}",
+                "![i need to|i want to|i must|i'd like to|please] (add|put|schedule) [a|an|my] {text} (to|on|in|into) [my|the] (calendar|schedule)",
+            ],
+            |s, c| {
+                let title = title(s, "")?;
+                let (t, d) = split_day(&title, c);
+                let day = match s.get("day") {
+                    Some(Value::Day(d)) => Some(*d),
+                    _ => d,
+                };
+                mt(Meeting::Ask { title: t, day })
+            },
         ),
     ]
 }
@@ -347,14 +397,77 @@ impl Skill for Meeting {
             Meeting::Next => next(),
             Meeting::Join => join(),
             Meeting::Day { day, part } => agenda(*day, *part, ctx),
-            Meeting::FreeAt { day, secs } => free_at(*day, *secs),
+            Meeting::FreeAt { day, secs } => free_at(*day, *secs, ctx.today),
             Meeting::Create {
                 title,
                 day,
                 secs,
                 confirmed,
-            } => create_event(title, *day, *secs, *confirmed),
+            } => create_event(title, *day, *secs, *confirmed, ctx.today),
+            Meeting::Ask { title, day } => {
+                let speech = match day {
+                    Some(d) => format!("{} at what time?", capitalise(&day_name(*d, ctx.today))),
+                    None => pick(ASK_WHEN, title),
+                };
+                let mut r = Reply::new("Calendar", title, speech);
+                r.question = Some(Box::new(AskWhen {
+                    title: title.clone(),
+                    day: *day,
+                }));
+                r
+            }
         }
+    }
+}
+
+fn capitalise(s: &str) -> String {
+    let mut c = s.chars();
+    c.next()
+        .map(|f| f.to_uppercase().chain(c).collect())
+        .unwrap_or_default()
+}
+
+const ASK_WHEN: &[&str] = &[
+    "When is {}?",
+    "{}. Which day and what time?",
+    "Sure. When? Day and time, please, I'm not psychic.",
+];
+
+/// "At what time?" or "When?" for a new event: "at 3", "friday at 9".
+struct AskWhen {
+    title: String,
+    day: Option<u32>,
+}
+
+impl Question for AskWhen {
+    fn answer(&self, text: &str, ctx: &Context) -> Option<Action> {
+        let owned = normalize(text);
+        let words: Vec<&str> = owned
+            .iter()
+            .map(String::as_str)
+            .filter(|w| !matches!(*w, "um" | "uh" | "please" | "alexa"))
+            .collect();
+        let (day, rest) = match words.iter().position(|w| *w == "at") {
+            Some(at) if at > 0 => (days(&words[..at], ctx)?, &words[at + 1..]),
+            Some(_) => (self.day.unwrap_or(0), &words[1..]),
+            None => (self.day?, &words[..]),
+        };
+        let c = clock::parse(rest)?;
+        mt(Meeting::Create {
+            title: self.title.clone(),
+            day,
+            secs: followup::meeting_hours(&c),
+            confirmed: false,
+        })
+    }
+}
+
+/// A spoken day, resolved against today.
+fn days(words: &[&str], ctx: &Context) -> Option<u32> {
+    match slot("day", words)? {
+        Value::Day(d) => Some(d),
+        Value::Date(d) => date::days_ahead(d, ctx.today),
+        _ => None,
     }
 }
 
@@ -479,11 +592,17 @@ fn join() -> Reply {
     }
 }
 
-fn day_name(day: u32) -> &'static str {
+/// "today", "on Friday", "on Sunday, March 1".
+fn day_name(day: u32, today: i64) -> String {
+    let n = today + i64::from(day);
     match day {
-        0 => "today",
-        1 => "tomorrow",
-        _ => "the day after tomorrow",
+        0 => "today".into(),
+        1 => "tomorrow".into(),
+        2..=6 => format!(
+            "on {}",
+            clock::spoken_day(n).split(',').next().unwrap_or_default()
+        ),
+        _ => format!("on {}", clock::spoken_day(n)),
     }
 }
 
@@ -503,7 +622,7 @@ fn agenda(day: u32, part: Option<usize>, ctx: &Context) -> Reply {
             m.is_some_and(|m| usize::try_from(m).is_ok_and(|m| (from..to).contains(&m)))
         });
     }
-    let when = day_name(day);
+    let when = day_name(day, ctx.today);
     let body = events
         .iter()
         .map(|e| {
@@ -535,7 +654,7 @@ fn agenda(day: u32, part: Option<usize>, ctx: &Context) -> Reply {
                 "Your calendar is empty {}. Netflix?",
                 "Nothing {}. Pretend to be busy anyway.",
             ],
-            when,
+            &when,
         ),
         [e] => format!("Just one thing {when}: {} at {}.", e.title, hm(&e.start)),
         [a, b] => format!(
@@ -563,7 +682,7 @@ fn agenda(day: u32, part: Option<usize>, ctx: &Context) -> Reply {
     Reply::live(&format!("Calendar {when}"), &body, speech)
 }
 
-fn free_at(day: u32, secs: u32) -> Reply {
+fn free_at(day: u32, secs: u32, today: i64) -> Reply {
     let Some(date) = date_in(day) else {
         return Reply::live("Calendar", "", pick(NO_CALENDAR, ""));
     };
@@ -577,7 +696,7 @@ fn free_at(day: u32, secs: u32) -> Reply {
             s.is_some_and(|s| s <= t) && end.is_some_and(|end| end > t)
         })
     });
-    let when = format!("{} {}", clock::format_hm(secs), day_name(day));
+    let when = format!("{} {}", clock::format_hm(secs), day_name(day, today));
     match clash {
         Some(e) => Reply::live(
             "Calendar",
@@ -603,8 +722,8 @@ fn timezone() -> String {
         .unwrap_or_else(|| "Europe/Berlin".into())
 }
 
-fn create_event(title: &str, day: u32, secs: u32, confirmed: bool) -> Reply {
-    let when = format!("{} {}", day_name(day), clock::format_hm(secs));
+fn create_event(title: &str, day: u32, secs: u32, confirmed: bool, today: i64) -> Reply {
+    let when = format!("{} {}", day_name(day, today), clock::format_hm(secs));
     let summary = capitalize(title);
     if !confirmed {
         let mut r = Reply::live(
@@ -673,8 +792,60 @@ fn capitalize(s: &str) -> String {
 
 #[cfg(test)]
 mod tests {
+    use super::super::dialogue::respond;
     use super::super::{Action, Context, parse_at};
     use super::*;
+
+    #[test]
+    fn missing_times_are_asked_for() {
+        let ctx = Context::at(10 * 3600);
+        let answer = |m: Meeting, t| {
+            let q = m.run(&ctx).question.expect("asks");
+            respond(t, &ctx, Some(q.as_ref()))
+        };
+        let dentist = |day| Meeting::Ask {
+            title: "dentist".into(),
+            day,
+        };
+        let create = |day, secs| {
+            Some(Action::Meeting(Meeting::Create {
+                title: "dentist".into(),
+                day,
+                secs,
+                confirmed: false,
+            }))
+        };
+        assert_eq!(answer(dentist(Some(2)), "at 3"), create(2, 15 * 3600));
+        assert_eq!(answer(dentist(None), "friday at 9 am"), create(2, 9 * 3600));
+        assert_eq!(
+            answer(dentist(None), "tomorrow at 10"),
+            create(1, 10 * 3600)
+        );
+        assert_eq!(answer(dentist(None), "never mind"), Some(Action::Dismiss));
+    }
+
+    #[test]
+    fn changes_are_not_read_out() {
+        let p = |t| parse_at(t, &Context::at(10 * 3600));
+        for t in [
+            "please take final exams off my calendar for may 3",
+            "you can remove the wedding from my calendar for march 12, 2019",
+            "get rid of everything on my calendar for march 2nd",
+            "i need a clear calendar for april 15",
+        ] {
+            assert!(
+                !matches!(p(t), Some(Action::Meeting(Meeting::Day { .. }))),
+                "{t:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn days_are_named() {
+        assert_eq!(day_name(0, 20383), "today");
+        assert_eq!(day_name(2, 20383), "on Friday");
+        assert_eq!(day_name(130, 20383), "on Sunday, March 1");
+    }
 
     #[test]
     fn phrasings() {
@@ -741,6 +912,88 @@ mod tests {
             (
                 "What's on my calendar on friday?",
                 Meeting::Day { day: 2, part: None },
+            ),
+            (
+                "what do i have going on may 4th",
+                Meeting::Day {
+                    day: 194,
+                    part: None,
+                },
+            ),
+            (
+                "anything on the schedule for october 24th",
+                Meeting::Day { day: 2, part: None },
+            ),
+            (
+                "do i have anything on my calendar next sunday",
+                Meeting::Day { day: 4, part: None },
+            ),
+            (
+                "is my calendar free next sunday",
+                Meeting::Day { day: 4, part: None },
+            ),
+            (
+                "what do i have scheduled on march 2nd on my calendar",
+                Meeting::Day {
+                    day: 131,
+                    part: None,
+                },
+            ),
+            (
+                "how is my calendar looking for may 6th",
+                Meeting::Day {
+                    day: 196,
+                    part: None,
+                },
+            ),
+            (
+                "what's happening on may 3rd",
+                Meeting::Day {
+                    day: 193,
+                    part: None,
+                },
+            ),
+            (
+                "tell me what is showing on my calendar for the 17th of march",
+                Meeting::Day {
+                    day: 146,
+                    part: None,
+                },
+            ),
+            (
+                "what do i have to do on january 1st",
+                Meeting::Day {
+                    day: 71,
+                    part: None,
+                },
+            ),
+            (
+                "add dentist appointment to my calendar for march 1",
+                Meeting::Ask {
+                    title: "dentist appointment".into(),
+                    day: Some(130),
+                },
+            ),
+            (
+                "i need to add farm trip to my calendar for friday",
+                Meeting::Ask {
+                    title: "farm trip".into(),
+                    day: Some(2),
+                },
+            ),
+            (
+                "add my dentist appointment to the calendar",
+                Meeting::Ask {
+                    title: "dentist appointment".into(),
+                    day: None,
+                },
+            ),
+            (
+                "please add final exams to my calendar for may 2",
+                Meeting::Ask {
+                    title: "final exams".into(),
+                    day: Some(192),
+                },
             ),
             (
                 "Am I free on march 1st at 10 am?",

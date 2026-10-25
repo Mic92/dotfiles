@@ -108,18 +108,27 @@ fn month(w: &str) -> Option<u32> {
 }
 
 pub fn parse(words: &[&str]) -> Option<Date> {
-    let words = match words {
+    let mut words = match words {
         ["on" | "this" | "for", rest @ ..] => rest,
         w => w,
     };
-    let weekday = |w: &str| {
-        WEEKDAYS
-            .iter()
-            .position(|d| *d == w)
-            .and_then(|i| u32::try_from(i).ok())
-    };
+    // "march 4th 2019": past years in CLINC, so the year only marks a date.
+    if let [rest @ .., y] = words
+        && rest.len() > 1
+        && y.len() == 4
+        && y.parse::<u32>().is_ok_and(|y| (1900..2200).contains(&y))
+    {
+        words = rest;
+    }
+    let weekday = |w: &str| index(&WEEKDAYS, w.strip_suffix("'s").unwrap_or(w), 0);
+    // "friday the 1st": the date decides, the weekday is decoration.
+    if let [w, "the", ..] = words
+        && weekday(w).is_some()
+    {
+        return parse(&words[1..]);
+    }
     match words {
-        [w] => weekday(w).map(|day| Date::Weekday { day, next: false }),
+        [w] | [w, "'s" | "s"] => weekday(w).map(|day| Date::Weekday { day, next: false }),
         ["next", w] => weekday(w).map(|day| Date::Weekday { day, next: true }),
         // "march 1st", "march the first"
         [m, "the", d @ ..] | [m, d @ ..] if month(m).is_some() => Some(Date::Month {
@@ -211,6 +220,17 @@ mod tests {
             ("sept 3", Date::Month { month: 9, day: 3 }),
             ("the 1st", Date::OfMonth(1)),
             ("the fifteenth", Date::OfMonth(15)),
+            ("friday the 1 st", Date::OfMonth(1)),
+            ("thursday the 14 th", Date::OfMonth(14)),
+            ("march 4 th 2019", Date::Month { month: 3, day: 4 }),
+            (
+                "tuesday's",
+                Date::Weekday {
+                    day: 2,
+                    next: false,
+                },
+            ),
+            ("monday the 1 st of march", march1),
         ] {
             assert_eq!(p(t), Some(want), "{t:?}");
         }
