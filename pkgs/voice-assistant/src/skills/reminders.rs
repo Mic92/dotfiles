@@ -59,6 +59,12 @@ fn timed(at: &str) -> Vec<String> {
     v
 }
 
+/// The reminder text. The open slot swallows the "on" of "on monday".
+fn what(s: &Slots) -> Option<String> {
+    let t = text(s, "text")?;
+    Some(t.strip_suffix(" on").unwrap_or(&t).to_owned())
+}
+
 fn day(s: &Slots) -> Option<u32> {
     match s.get("day")? {
         Value::Day(d) => Some(*d),
@@ -67,7 +73,7 @@ fn day(s: &Slots) -> Option<u32> {
 }
 
 fn set_in(s: &Slots, ctx: &Context) -> Option<Action> {
-    let what = text(s, "text")?;
+    let what = what(s)?;
     let seconds = match (s.get("duration"), s.get("clock")) {
         (Some(Value::Duration(d)), _) => *d,
         (_, Some(Value::Clock(c))) => match day(s) {
@@ -134,7 +140,7 @@ pub fn intents() -> Vec<Intent> {
         intent(&timed("at {clock}"), set_in),
         intent(&timed("{day}"), |s, _| {
             r(Reminder::Ask {
-                what: text(s, "text"),
+                what: what(s),
                 day: day(s),
             })
         }),
@@ -678,6 +684,19 @@ mod tests {
             (
                 "remind me tomorrow to call my mother",
                 ask(Some("call my mother"), Some(1)),
+            ),
+            // Context::at is a Wednesday.
+            (
+                "remind me friday to call my mother",
+                ask(Some("call my mother"), Some(2)),
+            ),
+            (
+                "remind me to pay taxes on monday",
+                ask(Some("pay taxes"), Some(5)),
+            ),
+            (
+                "remind me to call mum on friday at 9",
+                set("call mum", 2 * 86400 - 5 * 3600),
             ),
             ("set a reminder", ask(None, None)),
             ("can you set me a reminder", ask(None, None)),

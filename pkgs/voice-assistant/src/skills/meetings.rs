@@ -921,6 +921,38 @@ mod tests {
                 },
             ),
             (
+                "what do i have on my calendar for march 2",
+                Meeting::Day {
+                    day: 131,
+                    part: None,
+                },
+            ),
+            (
+                "check my calendar for saturday",
+                Meeting::Day { day: 3, part: None },
+            ),
+            (
+                "read my appointments for march 2",
+                Meeting::Day {
+                    day: 131,
+                    part: None,
+                },
+            ),
+            (
+                "what's my schedule like for thursday the 14th",
+                Meeting::Day {
+                    day: 23,
+                    part: None,
+                },
+            ),
+            (
+                "is anything happening on march 4th 2019",
+                Meeting::Day {
+                    day: 133,
+                    part: None,
+                },
+            ),
+            (
                 "anything on the schedule for october 24th",
                 Meeting::Day { day: 2, part: None },
             ),
