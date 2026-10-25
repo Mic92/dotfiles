@@ -383,11 +383,14 @@ pub fn respond(text: &str, ctx: &Context, question: Option<&dyn Question>) -> Op
     let Some(q) = question else {
         return parse_tier(text, ctx, false);
     };
-    if let Some(a) = q.answer(text, ctx) {
-        return Some(a);
-    }
     let owned = normalize(text);
     let words: Vec<&str> = owned.iter().map(String::as_str).collect();
+    let act = act(&words);
+    // "never mind" is no answer, even to "what shall I remind you of?".
+    let firm = matches!(act, Some(Act::Stop | Act::Cancel | Act::No));
+    if !firm && let Some(a) = q.answer(text, ctx) {
+        return Some(a);
+    }
     // Loose yes/no words only when the sentence is no command of its own.
     if act.is_none()
         && let Some(command) = parse_tier(text, ctx, false)

@@ -1,10 +1,12 @@
 //! Spoken reminders as transient systemd user timers, so they survive
 //! the assistant restarting.
 
+use super::dialogue::Question;
 use super::json::{key, text as json_text};
 use super::notes::spoken_list;
-use super::{Action, Context, Intent, Module, Reply, Skill, intent, output, pick, spawn};
-use crate::grammar::{Slots, Value};
+use super::{Action, Context, Intent, Module, Reply, Skill, intent, output, pick, slot, spawn};
+use crate::clock;
+use crate::grammar::{Slots, Value, normalize};
 use std::env;
 use std::time::{SystemTime, UNIX_EPOCH};
 use tinyjson::JsonValue;
@@ -14,6 +16,12 @@ pub enum Reminder {
     Set {
         what: String,
         seconds: u32,
+    },
+    /// A reminder missing its text or time: ask for it.
+    Ask {
+        what: Option<String>,
+        /// Days ahead, when only the day was said.
+        day: Option<u32>,
     },
     /// Pending reminders, soonest first.
     List,
@@ -30,6 +38,59 @@ fn text(s: &Slots, name: &str) -> Option<String> {
     }
 }
 
+/// "remind me to", "set a reminder for me to".
+const LEADS: &[&str] = &[
+    "![can you|could you|please] remind me (to|about|that)",
+    "![can you|could you|please] (set|make|create|add|set up) [me] [a] reminder [for me] (to|about|that|for)",
+    "!(i need|i want) [a] reminder (to|about|that|for)",
+    "!(i need|i want|i would like|i'd like) to (set|make|set up) [a] [new] reminder [for myself] (to|about|that|for)",
+    "!(i need|i want) to (be|get) reminded (to|about|of)",
+    "![can you] give me a reminder (to|about|for)",
+];
+
+/// Reminders with their time at the end ("in 10 minutes") or right after
+/// "remind me" ("remind me in 10 minutes to").
+fn timed(when: &str, word: &str) -> Vec<String> {
+    let at = if word.is_empty() {
+        when.to_owned()
+    } else {
+        format!("{word} {when}")
+    };
+    let mut v: Vec<String> = LEADS.iter().map(|l| format!("{l} {{text}} {at}")).collect();
+    v.push(format!(
+        "![can you|could you|please] remind me {at} (to|about|that) {{text}}"
+    ));
+    v
+}
+
+fn strs(v: &[String]) -> Vec<&str> {
+    v.iter().map(String::as_str).collect()
+}
+
+fn with_text() -> Vec<String> {
+    LEADS.iter().map(|l| format!("{l} {{text}}")).collect()
+}
+
+fn day(s: &Slots) -> Option<u32> {
+    match s.get("day")? {
+        Value::Day(d) => Some(*d),
+        _ => None,
+    }
+}
+
+fn set_in(s: &Slots, ctx: &Context) -> Option<Action> {
+    let what = text(s, "text")?;
+    let seconds = match (s.get("duration"), s.get("clock")) {
+        (Some(Value::Duration(d)), _) => *d,
+        (_, Some(Value::Clock(c))) => match day(s) {
+            Some(d) => c.seconds_on(ctx.now, d)?,
+            None => c.seconds_from(ctx.now),
+        },
+        _ => return None,
+    };
+    r(Reminder::Set { what, seconds })
+}
+
 pub const MODULE: Module = Module {
     intents,
     slots: &[],
@@ -37,17 +98,37 @@ pub const MODULE: Module = Module {
 
 pub fn intents() -> Vec<Intent> {
     vec![
+        // A time first: open text would swallow "call mum in 10 minutes".
+        intent(&strs(&timed("{duration}", "in")), set_in),
+        intent(&strs(&timed("{day} at {clock}", "")), set_in),
+        intent(&strs(&timed("at {clock} {day}", "")), set_in),
+        intent(&strs(&timed("{clock}", "at")), set_in),
+        intent(&strs(&timed("{day}", "")), |s, _| {
+            r(Reminder::Ask {
+                what: text(s, "text"),
+                day: day(s),
+            })
+        }),
+        intent(&strs(&with_text()), |s, _| {
+            r(Reminder::Ask {
+                what: text(s, "text"),
+                day: None,
+            })
+        }),
         intent(
             &[
-                "!remind me to {text} in {duration}",
-                "!remind me in {duration} to {text}",
+                "![can you|could you|will you|please] (set|make|create|add|give|set up) [me] [a] reminder [for me] [please]",
+                "!(i need|i want|i would like|i'd like) [to set|to make] [a] reminder [please]",
+                "![please] remind me [later] [please]",
+                "![please] set [a] new reminder",
+                "!(i need|i want) to (set|set up|make) [a] reminder [for myself]",
+                "!can i set a reminder",
             ],
-            |s, _| match s.get("duration")? {
-                Value::Duration(seconds) => r(Reminder::Set {
-                    what: text(s, "text")?,
-                    seconds: *seconds,
-                }),
-                _ => None,
+            |_, _| {
+                r(Reminder::Ask {
+                    what: None,
+                    day: None,
+                })
             },
         ),
         intent(
@@ -73,8 +154,109 @@ impl Skill for Reminder {
     fn run(&self, _ctx: &Context) -> Reply {
         match self {
             Reminder::Set { what, seconds } => remind(what, *seconds),
+            Reminder::Ask { what: None, day } => {
+                let mut r = Reply::new("Reminder", "", pick(ASK_WHAT, ""));
+                r.question = Some(Box::new(AskWhat(*day)));
+                r
+            }
+            Reminder::Ask {
+                what: Some(what),
+                day,
+            } => {
+                let lines = if *day == Some(1) {
+                    ASK_TOMORROW
+                } else {
+                    ASK_WHEN
+                };
+                let mut r = Reply::new("Reminder", what, pick(lines, what));
+                r.question = Some(Box::new(AskWhen {
+                    what: what.clone(),
+                    day: *day,
+                }));
+                r
+            }
             Reminder::List => reminders(),
         }
+    }
+}
+
+const ASK_WHAT: &[&str] = &[
+    "Remind you of what?",
+    "Sure. What shall I nag you about?",
+    "What do you want me to remember? Since you won't.",
+    "Go on, what is it?",
+];
+const ASK_WHEN: &[&str] = &[
+    "When should I remind you to {}?",
+    "{}. And when?",
+    "When? Give me a time or I'll pick a terrible one.",
+    "When do you want to be nagged?",
+];
+const ASK_TOMORROW: &[&str] = &[
+    "Tomorrow at what time?",
+    "Tomorrow when? Before or after your Club-Mate?",
+];
+
+/// "What shall I remind you of?"
+struct AskWhat(Option<u32>);
+
+impl Question for AskWhat {
+    fn answer(&self, text: &str, _: &Context) -> Option<Action> {
+        let owned = normalize(text);
+        let mut words: Vec<&str> = owned.iter().map(String::as_str).collect();
+        if let ["to" | "about" | "that" | "of", rest @ ..] = words.as_slice() {
+            words = rest.to_vec();
+        }
+        (!words.is_empty()).then(|| {
+            Action::Reminder(Reminder::Ask {
+                what: Some(words.join(" ")),
+                day: self.0,
+            })
+        })
+    }
+}
+
+/// "When should I remind you?": "in 20 minutes", "at 5", "tomorrow at 9".
+struct AskWhen {
+    what: String,
+    day: Option<u32>,
+}
+
+impl Question for AskWhen {
+    fn answer(&self, text: &str, ctx: &Context) -> Option<Action> {
+        let owned = normalize(text);
+        let mut words: Vec<&str> = owned
+            .iter()
+            .map(String::as_str)
+            .filter(|w| !matches!(*w, "um" | "uh" | "please" | "alexa"))
+            .collect();
+        let mut day = self.day;
+        for n in [3, 2, 1] {
+            if words.len() >= n
+                && let Some(Value::Day(d)) = slot("day", &words[..n])
+            {
+                day = Some(d);
+                words.drain(..n);
+                break;
+            }
+        }
+        if let ["in" | "at" | "for", rest @ ..] = words.as_slice() {
+            words = rest.to_vec();
+        }
+        let seconds = match slot("duration", &words) {
+            Some(Value::Duration(d)) if day.is_none() => d,
+            _ => {
+                let c = clock::parse(&words)?;
+                match day {
+                    Some(d) => c.seconds_on(ctx.now, d)?,
+                    None => c.seconds_from(ctx.now),
+                }
+            }
+        };
+        Some(Action::Reminder(Reminder::Set {
+            what: self.what.clone(),
+            seconds,
+        }))
     }
 }
 
@@ -219,6 +401,7 @@ fn reminders() -> Reply {
 
 #[cfg(test)]
 mod tests {
+    use super::super::dialogue::respond;
     use super::super::{Action, Context, parse_at};
     use super::*;
 
@@ -243,6 +426,101 @@ mod tests {
                 ("va-reminder-2.timer".to_owned(), 600)
             ]
         );
+    }
+
+    fn ask(what: Option<&str>, day: Option<u32>) -> Reminder {
+        Reminder::Ask {
+            what: what.map(Into::into),
+            day,
+        }
+    }
+
+    fn set(what: &str, seconds: u32) -> Reminder {
+        Reminder::Set {
+            what: what.into(),
+            seconds,
+        }
+    }
+
+    #[test]
+    fn missing_parts_are_asked_for() {
+        let ctx = Context::at(14 * 3600);
+        let p = |t| parse_at(t, &ctx);
+        for (text, want) in [
+            ("remind me to call my mom", ask(Some("call my mom"), None)),
+            (
+                "set a reminder to feed the dogs",
+                ask(Some("feed the dogs"), None),
+            ),
+            (
+                "make a reminder for me to do my taxes",
+                ask(Some("do my taxes"), None),
+            ),
+            (
+                "remind me to call the vet tomorrow",
+                ask(Some("call the vet"), Some(1)),
+            ),
+            (
+                "remind me tomorrow to call my mother",
+                ask(Some("call my mother"), Some(1)),
+            ),
+            ("set a reminder", ask(None, None)),
+            ("can you set me a reminder", ask(None, None)),
+            ("remind me", ask(None, None)),
+            (
+                "i need to set a reminder to go to the post office",
+                ask(Some("go to the post office"), None),
+            ),
+            (
+                "i want to get reminded to clean my room",
+                ask(Some("clean my room"), None),
+            ),
+            ("remind me to call mum at 5 pm", set("call mum", 3 * 3600)),
+            (
+                "remind me to call mum tomorrow at 9",
+                set("call mum", 19 * 3600),
+            ),
+            (
+                "set a reminder to call mum in 10 minutes",
+                set("call mum", 600),
+            ),
+        ] {
+            assert_eq!(p(text), Some(Action::Reminder(want)), "{text:?}");
+        }
+        // Alarms stay alarms.
+        assert!(matches!(p("remind me at 5 pm"), Some(Action::Timer(_))));
+    }
+
+    #[test]
+    fn questions_fill_the_gaps() {
+        let ctx = Context::at(14 * 3600);
+        let answer = |r: Reminder, t| {
+            let q = r.run(&ctx).question.expect("asks");
+            respond(t, &ctx, Some(q.as_ref()))
+        };
+        let call = || ask(Some("call mum"), None);
+        for (t, secs) in [
+            ("in 20 minutes", 1200),
+            ("20 minutes", 1200),
+            ("at 5 pm", 3 * 3600),
+            ("tomorrow at 9", 19 * 3600),
+        ] {
+            assert_eq!(
+                answer(call(), t),
+                Some(Action::Reminder(set("call mum", secs))),
+                "{t:?}"
+            );
+        }
+        assert_eq!(
+            answer(ask(Some("call mum"), Some(1)), "9 am"),
+            Some(Action::Reminder(set("call mum", 19 * 3600)))
+        );
+        assert_eq!(
+            answer(ask(None, None), "to water the plants"),
+            Some(Action::Reminder(ask(Some("water the plants"), None)))
+        );
+        assert_eq!(answer(ask(None, None), "never mind"), Some(Action::Dismiss));
+        assert_eq!(answer(call(), "forget it"), Some(Action::Dismiss));
     }
 
     #[test]
