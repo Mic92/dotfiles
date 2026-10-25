@@ -6,6 +6,7 @@ use super::json::{key, text as json_text};
 use super::notes::spoken_list;
 use super::{
     Action, Context, Intent, Module, Reply, Skill, intent, output, pick, slot, spawn, succeeds,
+    text,
 };
 use crate::clock;
 use crate::grammar::{Slots, Value, normalize};
@@ -38,13 +39,6 @@ fn r(x: Reminder) -> Option<Action> {
     Some(Action::Reminder(x))
 }
 
-fn text(s: &Slots, name: &str) -> Option<String> {
-    match s.get(name)? {
-        Value::Text(t) => Some(t.clone()),
-        _ => None,
-    }
-}
-
 /// "remind me to", "set a reminder for me to".
 const LEADS: &[&str] = &[
     "![can you|could you|please] remind me (to|about|that)",
@@ -57,25 +51,12 @@ const LEADS: &[&str] = &[
 
 /// Reminders with their time at the end ("in 10 minutes") or right after
 /// "remind me" ("remind me in 10 minutes to").
-fn timed(when: &str, word: &str) -> Vec<String> {
-    let at = if word.is_empty() {
-        when.to_owned()
-    } else {
-        format!("{word} {when}")
-    };
+fn timed(at: &str) -> Vec<String> {
     let mut v: Vec<String> = LEADS.iter().map(|l| format!("{l} {{text}} {at}")).collect();
     v.push(format!(
         "![can you|could you|please] remind me {at} (to|about|that) {{text}}"
     ));
     v
-}
-
-fn strs(v: &[String]) -> Vec<&str> {
-    v.iter().map(String::as_str).collect()
-}
-
-fn with_text() -> Vec<String> {
-    LEADS.iter().map(|l| format!("{l} {{text}}")).collect()
 }
 
 fn day(s: &Slots) -> Option<u32> {
@@ -147,17 +128,17 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
         // A time first: open text would swallow "call mum in 10 minutes".
-        intent(&strs(&timed("{duration}", "in")), set_in),
-        intent(&strs(&timed("{day} at {clock}", "")), set_in),
-        intent(&strs(&timed("at {clock} {day}", "")), set_in),
-        intent(&strs(&timed("{clock}", "at")), set_in),
-        intent(&strs(&timed("{day}", "")), |s, _| {
+        intent(&timed("in {duration}"), set_in),
+        intent(&timed("{day} at {clock}"), set_in),
+        intent(&timed("at {clock} {day}"), set_in),
+        intent(&timed("at {clock}"), set_in),
+        intent(&timed("{day}"), |s, _| {
             r(Reminder::Ask {
                 what: text(s, "text"),
                 day: day(s),
             })
         }),
-        intent(&strs(&with_text()), |s, _| {
+        intent(&timed(""), |s, _| {
             r(Reminder::Ask {
                 what: text(s, "text"),
                 day: None,
@@ -544,12 +525,11 @@ fn cancel(want: Option<&str>, all: bool) -> Reply {
             for p in pending.iter().filter(|p| hits.contains(&p.what.as_str())) {
                 stop(&p.unit);
             }
-            let what = spoken_list(&hits.iter().map(|h| (*h).to_owned()).collect::<Vec<_>>());
+            let what = spoken_list(&hits);
             Reply::live("Reminders", &what, pick(CANCELLED, &what))
         }
         (many, false) => {
-            let names: Vec<String> = many.iter().map(|h| (*h).to_owned()).collect();
-            let options = spoken_list(&names).replacen(" and ", " or ", 1);
+            let options = spoken_list(many).replacen(" and ", " or ", 1);
             let mut r = Reply::live("Reminders", &options, format!("Which one, {options}?"));
             r.question = Some(Box::new(WhichReminder));
             r

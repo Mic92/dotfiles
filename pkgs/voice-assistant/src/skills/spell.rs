@@ -1,6 +1,6 @@
 //! "How do you spell potato?", letter by letter.
 
-use super::{Action, Context, Intent, Module, Reply, Skill, choose, intent};
+use super::{Action, Context, Intent, Module, Reply, Skill, choose, intent, text};
 use crate::grammar::Value;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -15,13 +15,6 @@ pub enum Spell {
 
 fn s(x: Spell) -> Option<Action> {
     Some(Action::Spell(x))
-}
-
-fn text(v: Option<&Value>) -> Option<String> {
-    match v {
-        Some(Value::Text(t)) => Some(t.clone()),
-        _ => None,
-    }
 }
 
 pub const MODULE: Module = Module {
@@ -91,7 +84,7 @@ pub fn intents() -> Vec<Intent> {
                 "!i can't figure out how to spell [the word] {word}",
                 "![can you|could you|would you|please] spell [out] [the word] {word} [for me]",
             ],
-            |sl, _| s(Spell::Word(text(sl.get("word"))?)),
+            |sl, _| s(Spell::Word(text(sl, "word")?)),
         ),
         intent(
             &[
@@ -104,10 +97,10 @@ pub fn intents() -> Vec<Intent> {
                 "![the word] {word} (has|got|have) how many letters",
             ],
             |sl, _| {
-                let letter = text(sl.get("letter")).and_then(|l| l.chars().next());
+                let letter = text(sl, "letter").and_then(|l| l.chars().next());
                 s(Spell::Count {
                     letter,
-                    word: text(sl.get("word"))?,
+                    word: text(sl, "word")?,
                 })
             },
         ),

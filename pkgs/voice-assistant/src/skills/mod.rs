@@ -260,13 +260,16 @@ impl Intent {
     }
 }
 
-pub fn intent(templates: &[&str], build: fn(&Slots, &Context) -> Option<Action>) -> Intent {
+pub fn intent<S: AsRef<str>>(
+    templates: &[S],
+    build: fn(&Slots, &Context) -> Option<Action>,
+) -> Intent {
     Intent {
         templates: templates
             .iter()
             // The table is static; `all_templates_parse` catches typos.
             .filter_map(|t| {
-                Template::parse(t)
+                Template::parse(t.as_ref())
                     .inspect_err(|e| eprintln!("voice-assistant: {e}"))
                     .ok()
             })
@@ -396,6 +399,14 @@ fn slot_parser(name: &str) -> Option<SlotParser> {
             .flat_map(|m| m.slots)
             .find(|(n, _)| *n == name)
             .map(|(_, p)| *p),
+    }
+}
+
+/// An open slot's words.
+pub fn text(s: &Slots, name: &str) -> Option<String> {
+    match s.get(name)? {
+        Value::Text(t) => Some(t.clone()),
+        _ => None,
     }
 }
 

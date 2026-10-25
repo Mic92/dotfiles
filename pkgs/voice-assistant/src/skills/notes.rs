@@ -2,7 +2,7 @@
 
 use super::dialogue::Confirm;
 use super::json::{key, text as json_text};
-use super::{Action, Context, Intent, Module, Reply, Skill, intent, output, pick};
+use super::{Action, Context, Intent, Module, Reply, Skill, intent, output, pick, text};
 use crate::grammar::{Slots, Value};
 use crate::store;
 use std::env;
@@ -138,13 +138,6 @@ fn same_item(a: &str, b: &str) -> bool {
 
 fn n(x: Notes) -> Option<Action> {
     Some(Action::Notes(x))
-}
-
-fn text(s: &Slots, k: &str) -> Option<String> {
-    match s.get(k)? {
-        Value::Text(t) => Some(t.clone()),
-        _ => None,
-    }
 }
 
 fn items(s: &Slots) -> Option<Vec<String>> {
@@ -332,10 +325,11 @@ fn list_info(list: usize) -> Option<(&'static str, &'static str)> {
 }
 
 /// "milk", "milk and eggs", "milk, eggs and bread".
-pub fn spoken_list(items: &[String]) -> String {
-    match items {
+pub fn spoken_list<S: AsRef<str>>(items: &[S]) -> String {
+    let items: Vec<&str> = items.iter().map(AsRef::as_ref).collect();
+    match items.as_slice() {
         [] => String::new(),
-        [one] => one.clone(),
+        [one] => (*one).to_owned(),
         [init @ .., last] => format!("{} and {last}", init.join(", ")),
     }
 }
@@ -848,9 +842,6 @@ mod tests {
         assert!(same_item("Eggs", "egg"));
         assert!(same_item(" Milk", "milk"));
         assert!(!same_item("milk", "silk"));
-        assert_eq!(
-            spoken_list(&["a".into(), "b".into(), "c".into()]),
-            "a, b and c"
-        );
+        assert_eq!(spoken_list(&["a", "b", "c"]), "a, b and c");
     }
 }
