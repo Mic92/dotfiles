@@ -690,6 +690,36 @@ Chat(HowOld)	do you know how old you are
 Chat(HowOld)	how old
 Chat(HowOld)	what's your date of birth
 Chat(HowOld)	how old are you turning
+Timer(Start	wake me up at noon tomorrow
+Timer(Start	set my alarm for getting up
+Timer(Start	make sure my alarm is set for three thirty in the morning
+Timer(Start	please set an alarm for mid day
+Timer(Start	have an alarm set for three in the morning
+Timer(Start	you need to set alarm for me
+Timer(Start	i need you to set alarm for me
+Timer(Start	set the alarm for me
+Timer(Start	can you set alarm for me
+Timer(Start	please set alarm for me
+Timer(Start	make a new alarm for 6 in the morning
+Timer(Start	make a new alarm
+Timer(Start	create an alarm
+Timer(Start	i need an alarm for 6am
+Timer(Start	can you alert me at 6 in the morning
+Timer(Start	i'd like a new alarm set for 6am
+Timer(Start	set an alarm for 6am, please
+Timer(Start	initiate a new alarm please
+Timer(Start	set up an alarm
+Timer(Start	make up a new alarm
+Timer(Start	i want to make an alarm
+Timer(Start	i would like an alarm set
+Timer(Start	schedule an alarm
+Timer(Start	i need an alarm set
+Timer(Start	i need alarms set for 6am and 615am
+Timer(Start	i need an alarm to go off tomorrow at five fifteen
+Timer(Start	can you set an alarm for seven fifteen for tomorrow
+Timer(Start	set me an alarm for 4pm and another for 5pm
+Timer(Start	set one alarm for 215pm and another for 7pm
+Timer(Start	create an alarm for 9 am and another one for 11 am
 Chat(WhoMadeYou)	who formed you
 Chat(WhoMadeYou)	who constructed you
 Chat(WhoMadeYou)	what's your design company

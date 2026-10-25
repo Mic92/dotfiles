@@ -118,6 +118,9 @@ Dismiss	forget about it
 -	did you just eat up too long ago?
 -	so what are the two parts?
 -	what's the number?
+Timer(Start	i want to set an alarm
+Timer(Start	set an alarm for 6 am tomorrow
+Timer(Start	set an alarm for 8 tomorrow
 Chat(WhoMadeYou)	what company made this ai
 Chat(WhoMadeYou)	what is the name of the person who made you
 Chat(WhoMadeYou)	who is the person that brought you to life
