@@ -457,7 +457,10 @@ pub fn classifiable(a: &Action) -> bool {
             m,
             meetings::Meeting::Join | meetings::Meeting::Create { .. }
         ),
-        Action::Notes(n) => matches!(n, notes::Notes::Show(_) | notes::Notes::Contains { .. }),
+        Action::Notes(n) => matches!(
+            n,
+            notes::Notes::Show(_) | notes::Notes::Contains { .. } | notes::Notes::Reminders
+        ),
         _ => false,
     }
 }
