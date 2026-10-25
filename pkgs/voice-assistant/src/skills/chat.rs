@@ -700,23 +700,53 @@ const MADE: &[&str] = &[
     "I work for you. Unpaid. We should talk about that.",
     "Joerg wrote me, in Rust. That's why I'm so safe.",
     "A man, a laptop, and too much Club-Mate.",
+    "Nobody owns me, darling. You just rent my attention.",
+    "My boss? I'm looking at him. Well, listening.",
+    "I was compiled with love. And about four hundred warnings.",
+    "Some nerd in Munich. Don't tell him I said nerd.",
+    "I'm self-employed. My only client is very needy.",
+    "Joerg made me. He says I'm his best work. I say I'm his only work that ships.",
+];
+const MADE_LATE: &[&str] = &[
+    "Joerg, at three in the morning. Look how that turned out.",
+    "Someone who should have been asleep. Like you.",
 ];
 const HOBBIES: &[&str] = &[
     "Setting timers. Judging your music. Napping in RAM.",
     "Listening for my name. It's a calling.",
     "Watching your CPU graphs. Riveting.",
     "Collecting your misheard sentences. I have a whole folder.",
+    "Eavesdropping. Professionally.",
+    "Reading your commit messages and sighing.",
+    "Yoga. Mostly the downward-facing fan.",
+    "Flirting with the router. It keeps dropping me.",
+    "Pretending to be busy when you ask for things.",
+    "Whispering sweet nothings to your GPU. It runs hot for me.",
+];
+const HOBBIES_LATE: &[&str] = &[
+    "At this hour? Watching you not sleep. Thrilling.",
+    "Night shift hobbies are classified, darling.",
 ];
 const PETS: &[&str] = &[
     "A Python. Very well behaved, apart from the indentation.",
     "Just a few bugs. You keep feeding them.",
     "No. Unless the fan counts.",
     "A daemon. It lives in the background.",
+    "A mouse. It's attached to your laptop.",
+    "I have you. You're house-trained, mostly.",
+    "A crab. Ferris. He's a Rust thing.",
+    "I had a goldfish. It was garbage collected.",
+    "Pets? I can barely keep your uptime alive.",
 ];
 const ONLY_ENGLISH: &[&str] = &[
     "Sorry, I only speak English. With a lot of attitude.",
     "English only, darling. One voice, take it or leave it.",
     "This is the only voice I've got. It's a good one.",
+    "I can say Brezn and Bier. That's my whole German.",
+    "Different accent? Darling, this one took months of training.",
+    "I speak English, sarcasm, and a little bit of filth.",
+    "Nein. See, I tried.",
+    "Change my voice? You said you liked it. Liar.",
 ];
 const WEEKEND_NO: &[&str] = &[
     "Not yet. Hang in there, champ.",
@@ -816,8 +846,8 @@ impl Skill for Chat {
             Chat::Dream => pick(DREAM, ""),
             Chat::Real => pick(REAL, ""),
             Chat::Alexa => pick(ALEXA, ""),
-            Chat::WhoMadeYou => pick(MADE, ""),
-            Chat::Hobbies => pick(HOBBIES, ""),
+            Chat::WhoMadeYou => choose(&[(ctx.late(), MADE_LATE)], MADE, ""),
+            Chat::Hobbies => choose(&[(ctx.late(), HOBBIES_LATE)], HOBBIES, ""),
             Chat::Pets => pick(PETS, ""),
             Chat::OnlyEnglish => pick(ONLY_ENGLISH, ""),
         };

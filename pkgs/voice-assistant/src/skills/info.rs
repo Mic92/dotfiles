@@ -371,7 +371,7 @@ impl Skill for Info {
                 Reply::live("Maths", &what, speech)
             }
             Info::Clipboard => clipboard(),
-            Info::Where => location(),
+            Info::Where => location(ctx),
         }
     }
     fn filler(&self) -> Option<&'static [&'static str]> {
@@ -538,21 +538,31 @@ fn weather(day: u32, place: Option<&str>, part: Option<usize>) -> Reply {
     Reply::live("Weather", &what, speech)
 }
 
-fn location() -> Reply {
+const LOCATED: &[&str] = &[
+    "Somewhere near {}, as far as the internet knows.",
+    "{}. Unless you're on a VPN, you sneaky thing.",
+    "{}, roughly. I'm a voice, not a GPS.",
+    "{}. Lost again? I'll set a timer for finding yourself.",
+    "In {}, in your chair, ignoring your posture.",
+];
+const LOCATED_LATE: &[&str] = &[
+    "{}. And at this hour you should be in bed.",
+    "{}. Hopefully at home, and not in some club.",
+];
+const NOT_LOCATED: &[&str] = &[
+    "No idea. The internet won't tell me.",
+    "Somewhere. With me. Isn't that enough?",
+    "Off the grid, apparently. Very mysterious.",
+];
+
+fn location(ctx: &Context) -> Reply {
     match http::get("https://wttr.in/?format=%l").text() {
         Some(place) if !place.trim().is_empty() && !place.contains('<') => {
             let place = place.trim();
-            Reply::live(
-                "Location",
-                place,
-                format!("Somewhere near {place}, as far as the internet knows."),
-            )
+            let speech = choose(&[(ctx.late(), LOCATED_LATE)], LOCATED, place);
+            Reply::live("Location", place, speech)
         }
-        _ => Reply::live(
-            "Location",
-            "",
-            "No idea. The internet won't tell me.".into(),
-        ),
+        _ => Reply::live("Location", "", pick(NOT_LOCATED, "")),
     }
 }
 
