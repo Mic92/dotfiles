@@ -39,6 +39,8 @@ in
     # herdr plugin: sort tabs into per-project workspaces
     herdr-autospace = pkgs.callPackage ./herdr-autospace { };
     ghidra-cli = pkgs.callPackage ./ghidra-cli { };
+    # Rust compiler daemon (cargo rustd build/run)
+    rustd = pkgs.callPackage ./rustd { };
     # Cross-platform secure pinentry (works on macOS and Linux)
     rbw-pinentry = pkgs.callPackage ./rbw_pinentry { };
     # Nix evaluation warnings extractor

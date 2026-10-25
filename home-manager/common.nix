@@ -97,6 +97,11 @@
     ]
     ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [ iproute2mac ];
 
+  home.file.".cargo/config.toml".text = ''
+    [net]
+    git-fetch-with-cli = true
+  '';
+
   home.enableNixpkgsReleaseCheck = false;
 
   # better eval time
