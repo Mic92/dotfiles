@@ -522,7 +522,13 @@ const WHO: &[&str] = &[
     "The only one in this house who listens to you.",
 ];
 const HELP: &[&str] = &[
-    "Timers and alarms, music, volume, brightness, apps, weather, your calendar and mail, jokes, maths, and turning off the computer. Ask nicely.",
+    "Timers and alarms, music, weather, your calendar and mail, jokes, maths, and turning off the computer. Ask nicely.",
+    "Timers, reminders, your shopping list, the weather. Try me with sums or euros to dollars.",
+    "Ask me the time in Tokyo, the next holiday, or how to spell necessary. I also do music and timers.",
+    "Music, volume, timers, the weather, and anything I can look up on the web. Within reason.",
+    "Set a timer, check your calendar, convert some units, tell a joke. The usual tricks of a cheap date.",
+    "Reminders, alarms, the weather, maths. And I'll put you to bed by switching the computer off.",
+    "A bit of everything: timers, music, your mail, the weather, the web. Just ask, and I'll pretend it was easy.",
 ];
 const LOVE: &[&str] = &[
     "I love you too. Platonically. I'm software.",
