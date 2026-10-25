@@ -154,6 +154,9 @@ pub const MODULE: Module = Module {
     slots: &[("list", |w, _| list_lookup(w).map(Value::Index))],
 };
 
+/// "oat milk", "a pack of spaghetti"
+const MAX_ITEM_WORDS: usize = 4;
+
 pub fn intents() -> Vec<Intent> {
     vec![
         intent(
@@ -240,6 +243,12 @@ pub fn intents() -> Vec<Intent> {
                 "!do (i|we) (need|have to buy|still need) {text}",
             ],
             |s, _| {
+                // "do i need to get shots" or "a visa for japan" are no shopping.
+                let item = text(s, "text")?;
+                let w: Vec<&str> = item.split_whitespace().collect();
+                if w.first() == Some(&"to") || w.len() > MAX_ITEM_WORDS {
+                    return None;
+                }
                 n(Notes::Contains {
                     item: text(s, "text")?,
                     list: list(s, SHOPPING)?,
@@ -874,6 +883,12 @@ mod tests {
             ),
         ] {
             assert_eq!(p(text), Some(Action::Notes(want)), "{text:?}");
+        }
+        for text in [
+            "do i need to get any shots before volunteering in the congo",
+            "do i need a visa for japan if i am staying a week",
+        ] {
+            assert!(!matches!(p(text), Some(Action::Notes(_))), "{text:?}");
         }
     }
 
