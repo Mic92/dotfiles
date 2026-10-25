@@ -1,6 +1,7 @@
 //! Maths and unit conversion, worked out by numbat.
 
 use super::{Action, Context, Intent, Module, Reply, Skill, choose, intent, output, pick};
+use crate::clock;
 use crate::duration::number_words;
 use crate::grammar::Value;
 
@@ -8,6 +9,15 @@ use crate::grammar::Value;
 pub enum Calc {
     /// A numbat expression: "5 + 3", "sqrt(81)".
     Math(String),
+    /// A time of day (here when `at` is unset, now) from one zone to
+    /// another. Zones index `ZONES`, `None` is here.
+    Time {
+        at: Option<u32>,
+        from: Option<usize>,
+        to: Option<usize>,
+    },
+    /// "What timezone is London in?", an index into `ZONES`.
+    Zone(usize),
     /// Indices into `UNITS` of the same dimension.
     Convert { value: f64, from: usize, to: usize },
 }
@@ -22,11 +32,54 @@ pub const MODULE: Module = Module {
         ("expr", |w, _| expression(w).map(Value::Text)),
         ("from", |w, _| lookup(w).map(Value::Index)),
         ("to", |w, _| lookup(w).map(Value::Index)),
+        ("zone", |w, _| zone(w).map(Value::Index)),
+        ("origin", |w, _| zone(w).map(Value::Index)),
     ],
 };
 
 pub fn intents() -> Vec<Intent> {
     vec![
+        intent(
+            &[
+                "![tell me|give me|i need|i need to know|can you tell me|do you know|i would like to know|i'd like to know] [what's|what is] [the] (timezone|time zone) [now|currently] (of|for|in|where) {zone} [is]",
+                "!(what|which) (timezone|time zone) (is|does|do) {zone} [use|in|located in|located|reside in|be in]",
+                "!(in which|in what) (timezone|time zone) (is|does) {zone} [located|reside|lie]",
+                "![what's|what is|tell me|can you tell me|do you know|i need|i need to know] {zone} (timezone|time zone) [is what]",
+            ],
+            |s, _| match s.get("zone")? {
+                Value::Index(z) => c(Calc::Zone(*z)),
+                _ => None,
+            },
+        ),
+        intent(
+            &[
+                "![tell me] (what time is it|what's the time|what is the time|what's the current time|what is the current time|the time) [now|right now] in {zone} [right now|now]",
+                "![tell me] (what time is it|what's the time|what is the time|what's the current time) [now|right now] in {zone} [right now|now]",
+                "!(what's|what is|what time is) {time} [here|my time|local time] in {zone} [time]",
+                "!(what's|what is|what time is) {time} (in|at) {origin} [time] (in|to|for) {zone} [time]",
+                "!(what's|what is|what time is) {time} {origin} time (in|to|for) {zone} [time]",
+                "!convert {time} [in] {origin} [time] (to|into) {zone} [time]",
+                "!convert {time} [here|my time|local time] (to|into) {zone} [time]",
+                "!(when|if) it's {time} in {origin} [then] what time is it [here|for me]",
+                "!(when|if) it's {time} in {origin} [then] what time is it in {zone}",
+                "!(when|if) it's {time} [here] [then] what time is it in {zone}",
+                "!what time (will|would|is) it be in {zone} (at|when it's) {time} [here|my time]",
+            ],
+            |s, _| {
+                let at = match s.get("time") {
+                    Some(Value::Clock(c)) => Some(c.secs),
+                    None => None,
+                    Some(_) => return None,
+                };
+                let z = |k| match s.get(k) {
+                    Some(Value::Index(i)) => Some(*i),
+                    _ => None,
+                };
+                let (from, to) = (z("origin"), z("zone"));
+                (from.is_some() || to.is_some()).then_some(())?;
+                c(Calc::Time { at, from, to })
+            },
+        ),
         intent(
             &[
                 "![please] [tell me|i need to know|i want to know|i wanna know|i'd like to know|inform me|let me know|can you tell me] (what's|whats|what is|what are|how much is|how many) {number} {from} (in|to|into|as) {to}",
@@ -72,6 +125,458 @@ pub fn intents() -> Vec<Intent> {
             },
         ),
     ]
+}
+
+/// Spoken places, IANA zone, and how we name it.
+pub const ZONES: &[(&[&str], &str, &str)] = &[
+    (
+        &[
+            "new york",
+            "nyc",
+            "new york city",
+            "east coast",
+            "eastern time",
+            "boston",
+            "washington",
+            "miami",
+            "atlanta",
+        ],
+        "America/New_York",
+        "New York",
+    ),
+    (
+        &[
+            "los angeles",
+            "la",
+            "san francisco",
+            "california",
+            "seattle",
+            "west coast",
+            "pacific time",
+            "silicon valley",
+            "las vegas",
+        ],
+        "America/Los_Angeles",
+        "California",
+    ),
+    (
+        &[
+            "chicago",
+            "texas",
+            "houston",
+            "dallas",
+            "austin",
+            "central time",
+        ],
+        "America/Chicago",
+        "Chicago",
+    ),
+    (
+        &["denver", "mountain time", "colorado"],
+        "America/Denver",
+        "Denver",
+    ),
+    (&["phoenix", "arizona"], "America/Phoenix", "Arizona"),
+    (&["utah", "salt lake city"], "America/Denver", "Utah"),
+    (&["orlando", "florida"], "America/New_York", "Florida"),
+    (
+        &["missouri", "st louis", "kansas city"],
+        "America/Chicago",
+        "Missouri",
+    ),
+    (
+        &["british columbia"],
+        "America/Vancouver",
+        "British Columbia",
+    ),
+    (
+        &[
+            "vietnam",
+            "hanoi",
+            "saigon",
+            "ho chi minh",
+            "ho chi minh city",
+        ],
+        "Asia/Ho_Chi_Minh",
+        "Vietnam",
+    ),
+    (&["valencia"], "Europe/Madrid", "Valencia"),
+    (&["hawaii", "honolulu"], "Pacific/Honolulu", "Hawaii"),
+    (
+        &["toronto", "montreal", "canada"],
+        "America/Toronto",
+        "Toronto",
+    ),
+    (&["vancouver"], "America/Vancouver", "Vancouver"),
+    (
+        &["mexico", "mexico city"],
+        "America/Mexico_City",
+        "Mexico City",
+    ),
+    (
+        &["brazil", "sao paulo", "rio", "rio de janeiro"],
+        "America/Sao_Paulo",
+        "São Paulo",
+    ),
+    (
+        &["argentina", "buenos aires"],
+        "America/Argentina/Buenos_Aires",
+        "Buenos Aires",
+    ),
+    (
+        &[
+            "london",
+            "uk",
+            "england",
+            "britain",
+            "the uk",
+            "scotland",
+            "edinburgh",
+        ],
+        "Europe/London",
+        "London",
+    ),
+    (&["dublin", "ireland"], "Europe/Dublin", "Dublin"),
+    (&["lisbon", "portugal"], "Europe/Lisbon", "Lisbon"),
+    (&["paris", "france"], "Europe/Paris", "Paris"),
+    (
+        &["berlin", "germany", "munich", "hamburg", "frankfurt"],
+        "Europe/Berlin",
+        "Germany",
+    ),
+    (
+        &["amsterdam", "netherlands", "holland"],
+        "Europe/Amsterdam",
+        "Amsterdam",
+    ),
+    (&["madrid", "spain", "barcelona"], "Europe/Madrid", "Spain"),
+    (&["rome", "italy", "milan"], "Europe/Rome", "Italy"),
+    (&["vienna", "austria"], "Europe/Vienna", "Vienna"),
+    (&["zurich", "switzerland"], "Europe/Zurich", "Zurich"),
+    (&["stockholm", "sweden"], "Europe/Stockholm", "Stockholm"),
+    (&["helsinki", "finland"], "Europe/Helsinki", "Helsinki"),
+    (&["warsaw", "poland"], "Europe/Warsaw", "Warsaw"),
+    (&["athens", "greece"], "Europe/Athens", "Athens"),
+    (&["kyiv", "kiev", "ukraine"], "Europe/Kyiv", "Kyiv"),
+    (&["istanbul", "turkey"], "Europe/Istanbul", "Istanbul"),
+    (&["moscow", "russia"], "Europe/Moscow", "Moscow"),
+    (
+        &["israel", "tel aviv", "jerusalem"],
+        "Asia/Jerusalem",
+        "Israel",
+    ),
+    (&["cairo", "egypt"], "Africa/Cairo", "Cairo"),
+    (
+        &["south africa", "johannesburg", "cape town"],
+        "Africa/Johannesburg",
+        "South Africa",
+    ),
+    (&["nairobi", "kenya"], "Africa/Nairobi", "Nairobi"),
+    (&["lagos", "nigeria"], "Africa/Lagos", "Lagos"),
+    (&["dubai", "uae", "abu dhabi"], "Asia/Dubai", "Dubai"),
+    (
+        &["india", "delhi", "new delhi", "mumbai", "bangalore"],
+        "Asia/Kolkata",
+        "India",
+    ),
+    (&["bangkok", "thailand"], "Asia/Bangkok", "Bangkok"),
+    (&["singapore"], "Asia/Singapore", "Singapore"),
+    (&["hong kong"], "Asia/Hong_Kong", "Hong Kong"),
+    (&["china", "beijing", "shanghai"], "Asia/Shanghai", "China"),
+    (&["taiwan", "taipei"], "Asia/Taipei", "Taipei"),
+    (&["tokyo", "japan", "osaka"], "Asia/Tokyo", "Tokyo"),
+    (&["seoul", "korea", "south korea"], "Asia/Seoul", "Seoul"),
+    (
+        &["sydney", "australia", "melbourne"],
+        "Australia/Sydney",
+        "Sydney",
+    ),
+    (&["perth"], "Australia/Perth", "Perth"),
+    (
+        &["new zealand", "auckland"],
+        "Pacific/Auckland",
+        "New Zealand",
+    ),
+    (&["utc", "gmt"], "UTC", "UTC"),
+    // Abbreviations are fixed offsets: "3 pm EST" is UTC-5 even in summer.
+    // Etc/GMT signs are inverted.
+    (
+        &["cet", "c e t", "central european time"],
+        "Etc/GMT-1",
+        "CET",
+    ),
+    (
+        &["cest", "c e s t", "central european summer time"],
+        "Etc/GMT-2",
+        "CEST",
+    ),
+    (&["wet", "w e t", "western european time"], "Etc/GMT", "WET"),
+    (
+        &["west", "w e s t", "western european summer time"],
+        "Etc/GMT-1",
+        "WEST",
+    ),
+    (
+        &["eet", "e e t", "eastern european time"],
+        "Etc/GMT-2",
+        "EET",
+    ),
+    (
+        &["eest", "e e s t", "eastern european summer time"],
+        "Etc/GMT-3",
+        "EEST",
+    ),
+    (&["bst", "b s t", "british summer time"], "Etc/GMT-1", "BST"),
+    (&["msk", "m s k", "moscow time"], "Etc/GMT-3", "MSK"),
+    (
+        &["est", "e s t", "eastern standard time"],
+        "Etc/GMT+5",
+        "EST",
+    ),
+    (
+        &["edt", "e d t", "eastern daylight time"],
+        "Etc/GMT+4",
+        "EDT",
+    ),
+    (
+        &["cst", "c s t", "central standard time"],
+        "Etc/GMT+6",
+        "CST",
+    ),
+    (
+        &["cdt", "c d t", "central daylight time"],
+        "Etc/GMT+5",
+        "CDT",
+    ),
+    (
+        &["mst", "m s t", "mountain standard time"],
+        "Etc/GMT+7",
+        "MST",
+    ),
+    (
+        &["mdt", "m d t", "mountain daylight time"],
+        "Etc/GMT+6",
+        "MDT",
+    ),
+    (
+        &["pst", "p s t", "pacific standard time"],
+        "Etc/GMT+8",
+        "PST",
+    ),
+    (
+        &["pdt", "p d t", "pacific daylight time"],
+        "Etc/GMT+7",
+        "PDT",
+    ),
+    (&["akst", "a k s t", "alaska time"], "Etc/GMT+9", "AKST"),
+    (
+        &["hst", "h s t", "hawaii standard time"],
+        "Etc/GMT+10",
+        "HST",
+    ),
+    (&["jst", "j s t", "japan standard time"], "Etc/GMT-9", "JST"),
+    (&["kst", "k s t", "korea standard time"], "Etc/GMT-9", "KST"),
+    (&["sgt", "s g t", "singapore time"], "Etc/GMT-8", "SGT"),
+    (&["hkt", "h k t", "hong kong time"], "Etc/GMT-8", "HKT"),
+    (
+        &["aest", "a e s t", "australian eastern standard time"],
+        "Etc/GMT-10",
+        "AEST",
+    ),
+    (
+        &["aedt", "a e d t", "australian eastern daylight time"],
+        "Etc/GMT-11",
+        "AEDT",
+    ),
+    (
+        &["nzst", "n z s t", "new zealand standard time"],
+        "Etc/GMT-12",
+        "NZST",
+    ),
+    (
+        &["nzdt", "n z d t", "new zealand daylight time"],
+        "Etc/GMT-13",
+        "NZDT",
+    ),
+    (
+        &["ist", "i s t", "indian standard time"],
+        "Asia/Kolkata",
+        "IST",
+    ),
+];
+
+pub fn zone(words: &[&str]) -> Option<usize> {
+    let name = words.join(" ");
+    let name = name.strip_suffix("'s").unwrap_or(&name);
+    ZONES.iter().position(|(names, _, _)| names.contains(&name))
+}
+
+fn tz(z: Option<usize>) -> String {
+    match z.and_then(|z| ZONES.get(z)) {
+        Some((_, iana, _)) => format!("tz(\"{iana}\")"),
+        None => "local".into(),
+    }
+}
+
+/// `"IST +05:30 01:40"` -> abbreviation, spoken offset, time there.
+/// Zones without a name print the offset instead, like `-03`.
+fn zone_info(out: &str) -> Option<(String, String, u32)> {
+    let mut it = out.trim().trim_matches('"').split_whitespace();
+    let abbr = it.next()?;
+    let offset = it.next()?;
+    let (h, m) = it.next()?.split_once(':')?;
+    let secs = h.parse::<u32>().ok()? * 3600 + m.parse::<u32>().ok()? * 60;
+    let abbr = if abbr.starts_with(['+', '-']) {
+        ""
+    } else {
+        abbr
+    };
+    let (sign, rest) = offset.split_at(1);
+    let (oh, om) = rest.split_once(':')?;
+    let hours = oh.trim_start_matches('0');
+    let spoken = match (hours, om) {
+        ("", "00") => "UTC".to_owned(),
+        (h, "00") => format!("UTC {} {h}", if sign == "-" { "minus" } else { "plus" }),
+        (h, m) => format!(
+            "UTC {} {}:{m}",
+            if sign == "-" { "minus" } else { "plus" },
+            if h.is_empty() { "0" } else { h }
+        ),
+    };
+    Some((abbr.to_owned(), spoken, secs))
+}
+
+const ZONE_IS: &[&str] = &[
+    "{}.",
+    "{}. Now you know when to call.",
+    "{}. Write it on your hand.",
+    "{}. Time zones: humanity's worst invention after Mondays.",
+    "{}. Adjust your Club-Mate schedule accordingly.",
+    "{}. Long-distance thing going on? Tell me everything.",
+];
+
+fn which_zone(z: usize) -> Reply {
+    let Some((_, iana, name)) = ZONES.get(z) else {
+        return Reply::live("Time zone", "", pick(&["No idea where that is."], ""));
+    };
+    let e = format!("format_datetime(\"%Z %:z %H:%M\", now() -> tz(\"{iana}\"))");
+    let Some((abbr, offset, secs)) = output("numbat", &["-e", &e]).as_deref().and_then(zone_info)
+    else {
+        return Reply::live(
+            "Time zone",
+            "",
+            pick(&["Time zones broke. Blame the British."], ""),
+        );
+    };
+    let zone = if abbr.is_empty() || abbr == "UTC" {
+        offset
+    } else {
+        format!("{abbr}, {offset}")
+    };
+    let what = format!("{name} is on {zone}. It's {} there", clock::format_hm(secs));
+    Reply::live("Time zone", &what, pick(ZONE_IS, &what))
+}
+
+/// numbat prints the start's day of year, then the result's day of year
+/// and time, so we can tell "tomorrow" from "today".
+fn time_expr(at: Option<u32>, from: Option<usize>, to: Option<usize>) -> String {
+    let start = match at {
+        None => "now()".to_owned(),
+        Some(secs) => {
+            let zone = from
+                .and_then(|z| ZONES.get(z))
+                .map_or(String::new(), |(_, iana, _)| format!(" {iana}"));
+            format!(
+                "datetime(\"{{format_datetime(\"%Y-%m-%d\", now() -> {})}} {:02}:{:02}{zone}\")",
+                tz(from),
+                secs / 3600,
+                secs / 60 % 60
+            )
+        }
+    };
+    format!(
+        "\"{{format_datetime(\"%j\", {start})}} {{format_datetime(\"%j %H:%M\", {start} -> {})}}\"",
+        tz(to)
+    )
+}
+
+/// `"298 299 21:05"` -> 21:05, one day later.
+fn shifted(out: &str) -> Option<(u32, i32)> {
+    let out = out.trim().trim_matches('"');
+    let mut it = out.split_whitespace();
+    let a: i32 = it.next()?.parse().ok()?;
+    let b: i32 = it.next()?.parse().ok()?;
+    let (h, m) = it.next()?.split_once(':')?;
+    let secs = h.parse::<u32>().ok()? * 3600 + m.parse::<u32>().ok()? * 60;
+    let shift = match b - a {
+        d if d > 1 => -1,
+        d if d < -1 => 1,
+        d => d,
+    };
+    Some((secs, shift))
+}
+
+fn place_name(z: Option<usize>) -> &'static str {
+    z.and_then(|z| ZONES.get(z))
+        .map_or("here", |(_, _, name)| name)
+}
+
+const ZONE_NOW: &[&str] = &[
+    "{}.",
+    "{}. Hope they're awake.",
+    "{}. Don't call them if it's the middle of the night, monster.",
+    "{}. Time is relative anyway.",
+    "{}. Somewhere it's always Club-Mate o'clock.",
+    "{}. Jet lag not included.",
+    "{}. Planning a call or an escape?",
+    "{}. Different place, same deadlines.",
+    "{}. Perfect time for a booty call? I'm not judging.",
+    "{}. I checked, the planet's still spinning.",
+];
+const ZONE_NOW_LATE: &[&str] = &[
+    "{}. Who are you texting at this hour?",
+    "{}. At least someone over there is awake.",
+    "{}. Go to sleep, citizen of the world.",
+];
+
+fn world_time(at: Option<u32>, from: Option<usize>, to: Option<usize>, ctx: &Context) -> Reply {
+    let out = output("numbat", &["-e", &time_expr(at, from, to)]);
+    let Some((secs, shift)) = out.as_deref().and_then(shifted) else {
+        return Reply::live(
+            "Time",
+            "",
+            pick(&["Time zones broke. Blame the British."], ""),
+        );
+    };
+    let day = match shift {
+        1 => " tomorrow",
+        -1 => " yesterday",
+        _ => "",
+    };
+    let there = format!(
+        "{}{day} {}",
+        clock::format_hm(secs),
+        match to {
+            Some(_) => format!("in {}", place_name(to)),
+            None => "here".into(),
+        }
+    );
+    let what = match at {
+        None => format!("It's {there}"),
+        Some(at) => format!(
+            "{} {} is {there}",
+            clock::format_hm(at),
+            match from {
+                Some(_) => format!("in {}", place_name(from)),
+                None => "here".into(),
+            }
+        ),
+    };
+    Reply::live(
+        "Time",
+        &what,
+        choose(&[(ctx.late(), ZONE_NOW_LATE)], ZONE_NOW, &what),
+    )
 }
 
 /// One spoken operator and how numbat writes it.
@@ -193,6 +698,8 @@ impl Skill for Calc {
                 None => Reply::live("Maths", "", pick(NO_MATH, "")),
             },
             Calc::Convert { value, from, to } => conversion(*value, *from, *to, ctx),
+            Calc::Time { at, from, to } => world_time(*at, *from, *to, ctx),
+            Calc::Zone(z) => which_zone(*z),
         }
     }
 }
@@ -550,6 +1057,99 @@ mod tests {
         spoken(convert(v, f, t).unwrap())
     }
 
+    fn tz(t: &str) -> Option<(Option<u32>, Option<&'static str>, Option<&'static str>)> {
+        match calc(t)? {
+            Calc::Time { at, from, to } => {
+                Some((at, from.map(|z| ZONES[z].1), to.map(|z| ZONES[z].1)))
+            }
+            _ => None,
+        }
+    }
+
+    #[test]
+    fn time_zones() {
+        let pm3 = Some(15 * 3600);
+        for (text, want) in [
+            (
+                "What time is it in Tokyo?",
+                (None, None, Some("Asia/Tokyo")),
+            ),
+            (
+                "what's the time in new york right now",
+                (None, None, Some("America/New_York")),
+            ),
+            (
+                "what time is it in california",
+                (None, None, Some("America/Los_Angeles")),
+            ),
+            (
+                "what is 3 pm here in new york",
+                (pm3, None, Some("America/New_York")),
+            ),
+            (
+                "what's 3 pm in new york in tokyo time",
+                (pm3, Some("America/New_York"), Some("Asia/Tokyo")),
+            ),
+            (
+                "convert 3 pm london time to sydney time",
+                (pm3, Some("Europe/London"), Some("Australia/Sydney")),
+            ),
+            (
+                "when it's 3 pm in new york what time is it here",
+                (pm3, Some("America/New_York"), None),
+            ),
+            (
+                "what time will it be in india at 3 pm",
+                (pm3, None, Some("Asia/Kolkata")),
+            ),
+        ] {
+            assert_eq!(tz(text), Some(want), "{text}");
+        }
+    }
+
+    #[test]
+    fn which_zone_phrasings() {
+        let z = |t| match calc(t) {
+            Some(Calc::Zone(z)) => Some(ZONES[z].1),
+            _ => None,
+        };
+        for (text, want) in [
+            ("what timezone is london in", "Europe/London"),
+            ("what's london's timezone", "Europe/London"),
+            ("what is the timezone for la", "America/Los_Angeles"),
+            ("in which time zone does denver reside", "America/Denver"),
+            ("tell me the timezone for hong kong", "Asia/Hong_Kong"),
+            ("what timezone is hanoi in", "Asia/Ho_Chi_Minh"),
+            ("timezone in salt lake city", "America/Denver"),
+        ] {
+            assert_eq!(z(text), Some(want), "{text}");
+        }
+        assert_eq!(
+            zone_info("\"GMT +00:00 20:10\""),
+            Some(("GMT".into(), "UTC".into(), 20 * 3600 + 600))
+        );
+        assert_eq!(
+            zone_info("\"IST +05:30 01:40\""),
+            Some(("IST".into(), "UTC plus 5:30".into(), 6000))
+        );
+        assert_eq!(
+            zone_info("\"-03 -03:00 17:10\""),
+            Some((String::new(), "UTC minus 3".into(), 17 * 3600 + 600))
+        );
+    }
+
+    #[test]
+    fn time_zone_expressions() {
+        let tokyo = zone(&["tokyo"]);
+        let ny = zone(&["new", "york"]);
+        assert!(time_expr(None, None, tokyo).contains(r#"now() -> tz("Asia/Tokyo")"#));
+        let e = time_expr(Some(15 * 3600 + 30 * 60), ny, None);
+        assert!(e.contains(r#"15:30 America/New_York")"#), "{e}");
+        assert!(e.contains("-> local"), "{e}");
+        assert_eq!(shifted("\"298 299 21:05\""), Some((21 * 3600 + 5 * 60, 1)));
+        assert_eq!(shifted("\"1 365 23:00\""), Some((23 * 3600, -1)));
+    }
+
     #[test]
     fn numbat_expressions() {
         let e =
@@ -578,6 +1178,25 @@ mod tests {
         assert_eq!(numbat("20 / 100 * 50"), Some(10.0));
         assert_eq!(numbat("2^10"), Some(1024.0));
         assert_eq!(numbat("1 / 0"), None);
+        let run = |at, from: &[&str], to: &[&str]| {
+            let e = time_expr(at, zone(from), zone(to));
+            let out = output("numbat", &["-e", &e]);
+            eprintln!("{e}\n=> {out:?}");
+            out.as_deref().and_then(shifted)
+        };
+        assert!(run(Some(15 * 3600), &["new", "york"], &["berlin"]).is_some());
+        assert_eq!(
+            run(Some(23 * 3600), &["berlin"], &["tokyo"]).map(|r| r.1),
+            Some(1)
+        );
+        assert_eq!(
+            run(Some(3600), &["tokyo"], &["london"]).map(|r| r.1),
+            Some(-1)
+        );
+        assert!(run(None, &["here"], &["tokyo"]).is_some());
+        let r = which_zone(zone(&["india"]).unwrap());
+        eprintln!("{}", r.body);
+        assert!(r.body.contains("UTC plus 5:30"));
         assert_eq!(convert_live(1.0, "liter", "cups"), "4.23");
         assert_eq!(convert_live(1.0, "pound", "grams"), "454");
         assert_eq!(convert_live(1.0, "inch", "mm"), "25.4");
