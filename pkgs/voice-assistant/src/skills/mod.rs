@@ -20,6 +20,7 @@ pub mod news;
 pub mod notes;
 pub mod ops;
 mod say;
+pub mod spell;
 pub mod system;
 pub mod timer;
 pub mod volume;
@@ -48,6 +49,7 @@ pub enum Action {
     Volume(volume::Volume),
     Info(info::Info),
     Calc(calc::Calc),
+    Spell(spell::Spell),
     /// Spoken replies on or off ("shut up" / "you can talk again").
     Voice(bool),
     /// The assistant sleeps (ignores everything but "wake up") or listens.
@@ -108,6 +110,7 @@ impl Action {
             Action::Volume(x) => x,
             Action::Info(x) => x,
             Action::Calc(x) => x,
+            Action::Spell(x) => x,
             Action::Repeat
             | Action::Voice(_)
             | Action::Listen(_)
@@ -138,6 +141,7 @@ const MODULES: &[Module] = &[
     apps::MODULE,
     info::MODULE,
     calc::MODULE,
+    spell::MODULE,
     fun::MODULE,
     chat::MODULE,
     ops::MODULE,
@@ -416,7 +420,13 @@ const LEAD_INS: &[&[&str]] = &[
     &["please", "find"],
     &["find", "out"],
 ];
-const TAILS: &[&[&str]] = &[&["for", "me"], &["please"], &[","]];
+const TAILS: &[&[&str]] = &[
+    &["for", "me"],
+    &["please"],
+    &[","],
+    &[",", "i", "need", "to", "know"],
+    &[",", "can", "you", "tell", "me"],
+];
 
 /// "Can you tell me what time it is, please" -> "what time it is".
 fn unwrap_request<'a>(mut words: &'a [&'a str]) -> &'a [&'a str] {
