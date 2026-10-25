@@ -2,7 +2,9 @@
 
 use super::fuzzy;
 use super::succeeds;
-use super::{Action, Context, Intent, Module, Reply, Skill, intent, noctalia, output, pick, spawn};
+use super::{
+    Action, Context, Intent, Module, Reply, Skill, intent, noctalia, output, pick, spawn, text,
+};
 use crate::grammar::Value;
 use std::env;
 use std::os::unix::net::UnixStream;
@@ -97,13 +99,11 @@ pub fn intents() -> Vec<Intent> {
                 "!(play|put on|listen to) {text}",
                 "!put [on] {text} on",
                 "!(i|we) (want|would like|'d like|need) to (listen to|hear|play) {text}",
-                "!(can|could|may) (i|we) (hear|listen to|get) {text}",
+                "!(can|could|may) (i|we) (hear|listen to) {text}",
+                "!(can|could|may) (i|we) get [some] (music|songs|tracks) by {text}",
                 "!(let's|let me) (hear|listen to) {text}",
             ],
-            |s, _| match s.get("text")? {
-                Value::Text(t) => m(Media::Search(search_query(t)?)),
-                _ => None,
-            },
+            |s, _| m(Media::Search(search_query(&text(s, "text")?)?)),
         ),
         // "turn on" alone is a light or a setting.
         intent(
@@ -112,9 +112,9 @@ pub fn intents() -> Vec<Intent> {
                 "!turn [the|my] {text} playlist on",
                 "!(start|resume|pull up|use|do) [playing] [the|my] {text} playlist [please]",
             ],
-            |s, _| match s.get("text")? {
-                Value::Text(t) => m(Media::Search(search_query(&format!("{t} playlist"))?)),
-                _ => None,
+            |s, _| {
+                let t = text(s, "text")?;
+                m(Media::Search(search_query(&format!("{t} playlist"))?))
             },
         ),
         intent(
@@ -313,14 +313,34 @@ pub fn station_lookup(words: &[&str]) -> Option<usize> {
     )
 }
 
+/// Objects that are no title: "play it", "play a song for me".
+const VAGUE: &[&str] = &[
+    "it",
+    "that",
+    "this",
+    "something",
+    "anything",
+    "music",
+    "radio",
+    "again",
+    "it again",
+    "song",
+    "songs",
+    "playlist",
+];
+
 /// "some songs by daft punk" -> "daft punk". None for words that are
-/// no search ("it", "something").
+/// no search.
 fn search_query(t: &str) -> Option<String> {
-    let mut w: Vec<&str> = t.split_whitespace().collect();
-    while let Some(first) = w.first()
-        && matches!(*first, "some" | "my" | "the" | "a" | "me")
-    {
-        w.remove(0);
+    let t = t.replace(',', "");
+    let all: Vec<&str> = t.split_whitespace().collect();
+    let mut w = all.as_slice();
+    // "maroon 5 playlist play it for me"
+    if let Some(again) = w.iter().skip(1).position(|x| *x == "play") {
+        w = &w[..=again];
+    }
+    while let ["some" | "my" | "the" | "a" | "me", rest @ ..] = w {
+        w = rest;
     }
     if let Some(by) = w.iter().position(|x| *x == "by")
         && by > 0
@@ -331,45 +351,24 @@ fn search_query(t: &str) -> Option<String> {
             )
         })
     {
-        w.drain(..=by);
+        w = &w[by + 1..];
     }
-    // "maroon 5 playlist, play it for me"
-    if let Some(again) = w.iter().skip(1).position(|x| *x == "play") {
-        w.truncate(again + 1);
+    while let [rest @ .., "please" | "in" | "here" | "now"] | [rest @ .., "for", "me" | "us"] = w {
+        w = rest;
     }
-    while let [rest @ .., "please" | "in" | "here" | "now"] | [rest @ .., "for", "me" | "us"] =
-        w.as_slice()
-    {
-        w = rest.to_vec();
-    }
-    if let ["song" | "track" | "album", rest @ ..] = w.as_slice()
+    if let ["song" | "track" | "album", rest @ ..] = w
         && !rest.is_empty()
     {
-        w = rest.to_vec();
+        w = rest;
     }
-    let vague = [
-        "it",
-        "that",
-        "this",
-        "something",
-        "music",
-        "anything",
-        "again",
-        "it again",
-        "radio",
-    ];
-    // "my todo list", "the shopping list" belong to the notes.
-    if w.contains(&"list") {
+    // "my todo list" is for the notes, "the last song again" is a skip,
+    // "can i hear you" no title.
+    let first = w.first().copied().unwrap_or_default();
+    if w.contains(&"list") || matches!(first, "next" | "previous" | "last" | "same" | "you") {
         return None;
     }
-    // "the last song again" is a skip, not a title.
-    if w.first()
-        .is_some_and(|f| matches!(*f, "next" | "previous" | "last" | "same"))
-    {
-        return None;
-    }
-    let q = w.join(" ").replace(',', "");
-    (!q.is_empty() && !vague.contains(&q.as_str())).then_some(q)
+    let q = w.join(" ");
+    (!q.is_empty() && !VAGUE.contains(&q.as_str())).then_some(q)
 }
 
 fn search(query: &str) -> Reply {
@@ -608,6 +607,7 @@ mod tests {
             ("I want to listen to Bohemian Rhapsody", "bohemian rhapsody"),
             ("can you play some jazz", "jazz"),
             ("can i hear some music by fleet foxes", "fleet foxes"),
+            ("can i get some music by three six mafia", "three six mafia"),
             ("let's hear my workout playlist", "workout playlist"),
             ("turn my drake playlist on", "drake playlist"),
             ("turn on the rap playlist", "rap playlist"),
@@ -635,6 +635,16 @@ mod tests {
             "play the news",
             "Play.",
             "play it again",
+            "play a song for me",
+            "turn on the radio",
+            "turn on the night light",
+            "can i get the weather",
+            "can we get a pizza",
+            "can i hear you",
+            "start my playlist",
+            "let me hear you say it",
+            "i need to hear my todo list",
+            "i want to hear my to do list read out loud",
         ] {
             assert!(
                 !matches!(p(t), Some(Action::Media(Media::Search(_)))),
