@@ -16,6 +16,7 @@
   playerctl,
   mpv,
   curl,
+  numbat,
   # one of uisfx's sets: arcade cinematic dreamy glass mechanical minimal
   # organic rubber scifi soft studio zen
   soundTheme ? "mechanical",
@@ -133,6 +134,7 @@ rustPlatform.buildRustPackage {
           playerctl
           mpv
           curl
+          numbat
         ]
       }
   '';
