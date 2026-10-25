@@ -80,7 +80,7 @@ const FILLER: &[&str] = &[
 
 /// "some milk, eggs and a loaf of bread" -> ["milk", "eggs", "loaf of bread"].
 pub fn split_items(text: &str) -> Vec<String> {
-    let mut text = text.replace(',', " and ");
+    let mut text = text.replace([',', ';'], " and ");
     // Shield compounds from the split.
     for c in COMPOUNDS {
         text = text.replace(c, &c.replace(" and ", "\u{1}"));
@@ -92,12 +92,21 @@ pub fn split_items(text: &str) -> Vec<String> {
             .iter()
             .position(|w| !FILLER.contains(w))
             .unwrap_or(words.len());
-        let item = words[start..].join(" ").replace('\u{1}', " and ");
+        let end = (start..words.len())
+            .find(|&i| is_instruction(&words[i..]))
+            .unwrap_or(words.len());
+        let item = words[start..end].join(" ").replace('\u{1}', " and ");
         if !item.is_empty() && !out.iter().any(|o| same_item(o, &item)) {
             out.push(item);
         }
     }
     out
+}
+
+/// "add that to my list" or "so forget that" after the item.
+fn is_instruction(words: &[&str]) -> bool {
+    const VERBS: &[&str] = &["add", "put", "remind", "need", "so", "forget", "please"];
+    words.first().is_some_and(|w| VERBS.contains(w))
 }
 
 /// "Milk " and "milk" are the same thing; so are "egg" and "eggs".
@@ -172,6 +181,10 @@ pub fn intents() -> Vec<Intent> {
         ),
         intent(
             &[
+                "!(we are|we're|i'm|i am) (out of|running out of|low on|almost out of) {text} (so|and) [will|can|could|would] [you] [please] (add|put|write) (that|it|them|those) (to|on|onto) [the|my|our] [shopping|grocery] list",
+                "!(we are|we're|i'm|i am) (out of|running out of|low on|almost out of) {text} (will|can|could|would) you [please] (add|put|write) (that|it|them|those) (to|on|onto) [the|my|our] [shopping|grocery] list",
+                "!(we|i) (ran|run) out of {text} (so|and) [will|can|could|would] [you] [please] (add|put|write) (that|it|them|those) (to|on|onto) [the|my|our] [shopping|grocery] list",
+                "!(we|i) (ran|run) out of {text} (will|can|could|would) you [please] (add|put|write) (that|it|them|those) (to|on|onto) [the|my|our] [shopping|grocery] list",
                 "!(i|we) (need|should|have|must) [to] (buy|get) {text}",
                 "!we need {text}",
                 "!(we are|we're|i'm|i am) (out of|running out of|low on|almost out of) {text}",
@@ -189,6 +202,8 @@ pub fn intents() -> Vec<Intent> {
         ),
         intent(
             &[
+                "!(take|cross|scratch|strike) (off|out|away) [the] {text} (from|off) [the|my|our] {list} list",
+                "!(take|cross|scratch|strike) (off|out|away) [the] {text} (from|off) [the|my|our] list",
                 "!(remove|delete|take|cross|scratch) {text} (from|off) [the|my|our] {list} list",
                 "!(remove|delete|take|cross|scratch) {text} (from|off) [the|my|our] {list}",
                 "!(remove|delete|take|cross|scratch) {text} (from|off) [the|my|our] list",
@@ -203,6 +218,7 @@ pub fn intents() -> Vec<Intent> {
         ),
         intent(
             &[
+                "!(i|we) (no longer|don't|do not) need {text} [anymore|any more]",
                 "!(i|we) (bought|got|picked up) {text} [already]",
                 "!(i|we) already (bought|got) {text}",
             ],
@@ -648,6 +664,41 @@ mod tests {
                 add(&["toilet paper"], SHOPPING),
             ),
             ("I'm low on milk", add(&["milk"], SHOPPING)),
+            (
+                "I'm out of kleenex so will you put that on my shopping list",
+                add(&["kleenex"], SHOPPING),
+            ),
+            (
+                "I'm low on cheerios, can you add that to the shopping list",
+                add(&["cheerios"], SHOPPING),
+            ),
+            (
+                "I ran out of apples so add them to my list",
+                add(&["apples"], SHOPPING),
+            ),
+            ("Take off fries from the shopping list", done(&["fries"])),
+            (
+                "Please take away the fries from the shopping list",
+                done(&["fries"]),
+            ),
+            ("We no longer need fries", done(&["fries"])),
+            (
+                "I'm out of apples, add that to my list",
+                add(&["apples"], SHOPPING),
+            ),
+            (
+                "I'm out of bananas; add to shopping list",
+                add(&["bananas"], SHOPPING),
+            ),
+            (
+                "I am out of trash bags and need them to be added to my shopping list",
+                add(&["trash bags"], SHOPPING),
+            ),
+            ("I no longer need milk, so forget that", done(&["milk"])),
+            (
+                "Cross out bananas from my shopping list",
+                done(&["bananas"]),
+            ),
             ("I need to buy batteries", add(&["batteries"], SHOPPING)),
             (
                 "Don't forget to buy cat food.",
