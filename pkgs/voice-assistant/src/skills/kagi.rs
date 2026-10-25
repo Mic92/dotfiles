@@ -52,10 +52,10 @@ pub fn intents() -> Vec<Intent> {
                 "!(search|google|kagi|look up) [the web|the internet|online] [for] {text}",
                 "!(ask|use) kagi [about] {text}",
                 "!(can you|could you|please) (search|google|look up) [for] {text}",
-                "!(find out|tell me) (what|who|when|where|why|how) {text}",
             ],
             |s, _| ask(s, ""),
         ),
+        intent(&["!(find out|tell me) {question}"], |s, _| ask_whole(s)),
         // Open questions, asked whole, when nothing else understood them.
         intent(&["!{question}"], |s, _| ask_whole(s)).fallback(),
     ]
@@ -213,6 +213,24 @@ mod tests {
             "It is used ironically, e.g. in memes."
         );
         assert_eq!(spoken("", 2), "");
+    }
+
+    #[test]
+    fn the_question_word_stays() {
+        let p = |t| parse_at(t, &Context::at(0));
+        for (t, q) in [
+            (
+                "can you tell me how to clean a fish tank",
+                "how to clean a fish tank",
+            ),
+            (
+                "tell me who sells dixie paper plates",
+                "who sells dixie paper plates",
+            ),
+            ("find out why the sky is blue", "why the sky is blue"),
+        ] {
+            assert_eq!(p(t), Some(Action::Kagi(Query(q.into()))), "{t:?}");
+        }
     }
 
     #[test]
