@@ -142,9 +142,9 @@ Chat(OnlyEnglish)	talk to me in a different accent
 Info(Where)	pull up the map and show my location
 Info(Where)	where am i currently
 Info(Where)	where is my current location
-Notes(Reminders)	give me my reminders
-Notes(Reminders)	what were the things that i wanted to remember
-Notes(Reminders)	what were you supposed to remind me of
+Reminder(List)	give me my reminders
+Reminder(List)	what were the things that i wanted to remember
+Reminder(List)	what were you supposed to remind me of
 Info(Holiday)	on what day is our next free day
 Info(Holiday)	on what day is our next day off
 Info(Holiday)	what day is our next day off

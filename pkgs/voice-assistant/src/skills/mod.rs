@@ -20,6 +20,7 @@ pub mod meetings;
 pub mod news;
 pub mod notes;
 pub mod ops;
+pub mod reminders;
 mod say;
 pub mod spell;
 pub mod system;
@@ -41,6 +42,7 @@ pub enum Action {
     Chat(chat::Chat),
     Ops(ops::Ops),
     Notes(notes::Notes),
+    Reminder(reminders::Reminder),
     Meeting(meetings::Meeting),
     Kagi(kagi::Query),
     News(news::Feed),
@@ -104,6 +106,7 @@ impl Action {
             Action::Chat(x) => x,
             Action::Ops(x) => x,
             Action::Notes(x) => x,
+            Action::Reminder(x) => x,
             Action::Meeting(x) => x,
             Action::Kagi(x) => x,
             Action::News(x) => x,
@@ -147,6 +150,7 @@ const MODULES: &[Module] = &[
     chat::MODULE,
     ops::MODULE,
     notes::MODULE,
+    reminders::MODULE,
     meetings::MODULE,
     news::MODULE,
     kagi::MODULE,
@@ -528,10 +532,8 @@ pub fn classifiable(a: &Action) -> bool {
             m,
             meetings::Meeting::Join | meetings::Meeting::Create { .. }
         ),
-        Action::Notes(n) => matches!(
-            n,
-            notes::Notes::Show(_) | notes::Notes::Contains { .. } | notes::Notes::Reminders
-        ),
+        Action::Notes(n) => matches!(n, notes::Notes::Show(_) | notes::Notes::Contains { .. }),
+        Action::Reminder(r) => *r == reminders::Reminder::List,
         _ => false,
     }
 }
@@ -556,7 +558,7 @@ pub fn vetoed(kind: &str, text: &str) -> bool {
     if kind.starts_with("Info(Holiday") {
         return !has(HOLIDAY) || has(NOT_HOLIDAY);
     }
-    if !kind.starts_with("Notes(") {
+    if !kind.starts_with("Notes(") && !kind.starts_with("Reminder(") {
         return false;
     }
     let question = words

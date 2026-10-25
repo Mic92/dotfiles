@@ -870,36 +870,36 @@ Info(Where)	i'd like to know where i am
 Info(Where)	what are the gps coordinates where i am located
 Info(Where)	at this location what are my gps coordinates
 Info(Where)	in the place i am what are my gps coordinates
-Notes(Reminders)	tell me my reminders
-Notes(Reminders)	tell me my current reminders list
-Notes(Reminders)	please read my reminders
-Notes(Reminders)	will you repeat my reminder list
-Notes(Reminders)	check my reminders for mop and floor
-Notes(Reminders)	read my reminder list to me
-Notes(Reminders)	is mop the floor already in my reminders
-Notes(Reminders)	read back the reminder list
-Notes(Reminders)	what's on the reminder list
-Notes(Reminders)	read my reminders to me
-Notes(Reminders)	check my reminders for mop the floor
-Notes(Reminders)	what reminders do i have
-Notes(Reminders)	read what i added to the reminder list
-Notes(Reminders)	can you list each item on my reminder list
-Notes(Reminders)	can you tell me what reminders i've set
-Notes(Reminders)	tell me what's on my reminder list
-Notes(Reminders)	do i have any reminders to look up how to properly do a potato in my microwave
-Notes(Reminders)	do i have a reminder for our neighbor's anniversary
-Notes(Reminders)	tell my all my reminders
-Notes(Reminders)	is respond to the professor's email on my list of reminders
-Notes(Reminders)	read me my reminders list
-Notes(Reminders)	go through all the reminders on my list and state what they are
-Notes(Reminders)	is there a reminder for my aa meeting on my list
-Notes(Reminders)	speak back to me what's on my reminder list
-Notes(Reminders)	iterate the items on my reminder list
-Notes(Reminders)	please go through my reminder list and tell me what's on it
-Notes(Reminders)	did i add to my reminder list that i need to take the car in for an oil change
-Notes(Reminders)	what did i want to remember again
-Notes(Reminders)	what did i put on my list of reminders
-Notes(Reminders)	can you tell me the reminders i have set up
+Reminder(List)	tell me my reminders
+Reminder(List)	tell me my current reminders list
+Reminder(List)	please read my reminders
+Reminder(List)	will you repeat my reminder list
+Reminder(List)	check my reminders for mop and floor
+Reminder(List)	read my reminder list to me
+Reminder(List)	is mop the floor already in my reminders
+Reminder(List)	read back the reminder list
+Reminder(List)	what's on the reminder list
+Reminder(List)	read my reminders to me
+Reminder(List)	check my reminders for mop the floor
+Reminder(List)	what reminders do i have
+Reminder(List)	read what i added to the reminder list
+Reminder(List)	can you list each item on my reminder list
+Reminder(List)	can you tell me what reminders i've set
+Reminder(List)	tell me what's on my reminder list
+Reminder(List)	do i have any reminders to look up how to properly do a potato in my microwave
+Reminder(List)	do i have a reminder for our neighbor's anniversary
+Reminder(List)	tell my all my reminders
+Reminder(List)	is respond to the professor's email on my list of reminders
+Reminder(List)	read me my reminders list
+Reminder(List)	go through all the reminders on my list and state what they are
+Reminder(List)	is there a reminder for my aa meeting on my list
+Reminder(List)	speak back to me what's on my reminder list
+Reminder(List)	iterate the items on my reminder list
+Reminder(List)	please go through my reminder list and tell me what's on it
+Reminder(List)	did i add to my reminder list that i need to take the car in for an oil change
+Reminder(List)	what did i want to remember again
+Reminder(List)	what did i put on my list of reminders
+Reminder(List)	can you tell me the reminders i have set up
 Info(Holiday)	when is the upcoming holiday, please
 Info(Holiday)	when is the upcoming holiday
 Info(Holiday)	what day is our next free day
