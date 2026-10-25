@@ -18,7 +18,7 @@ bindgen = "0.72"
 cc = "1"
 
 [profile.release]
-lto = true
+lto = "thin"
 
 [lints.rust]
 unsafe_op_in_unsafe_fn = "deny"
