@@ -93,11 +93,15 @@ pub fn intents() -> Vec<Intent> {
         ),
         intent(
             &[
-                "!should i {any}",
-                "!(will|can|could) i {any}",
+                "!should i {text}",
+                "!(will|can|could) i {text}",
                 "magic eight ball",
             ],
-            |_, _| f(Fun::EightBall),
+            // "Can I hear the Beatles" asks for music, not fate.
+            |s, _| match s.get("text") {
+                Some(Value::Text(t)) if t.starts_with("hear") || t.starts_with("listen") => None,
+                _ => f(Fun::EightBall),
+            },
         ),
         intent(
             &[
@@ -319,6 +323,14 @@ impl Skill for Fun {
 mod tests {
     use super::super::{Action, Context, parse_at};
     use super::*;
+
+    #[test]
+    fn listening_is_not_a_question_for_the_eight_ball() {
+        let p = |t| parse_at(t, &Context::at(0));
+        for t in ["Can I hear the Beatles?", "Could I listen to some jazz"] {
+            assert_ne!(p(t), Some(Action::Fun(Fun::EightBall)), "{t}");
+        }
+    }
 
     #[test]
     fn phrasings() {
