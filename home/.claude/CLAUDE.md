@@ -43,9 +43,6 @@
 - Write Python code for 3.13 that conforms to `ruff format`, `ruff check` and
   `mypy`
 - Add debug output or unit tests when troubleshooting, e.g. `dbg!()` in Rust
-- Tests use realistic inputs/outputs that exercise actual code, not mocks.
-- Linter reports dead code: remove it.
-- Linter errors: fix root cause, do not suppress warnings.
 - Code comments: Keep them minimal, Explain WHY, not WHAT. Describe current
   state, not what was removed.
 
@@ -55,7 +52,6 @@
 - Before committing:
   1. Check for bugs
   2. Try to simplify your code
-  3. Always test/lint/format
 - Use `gh` for GitHub (CI logs, issues, PRs), e.g.
   `gh run view 18256703410 --log`
 - Use `tea` for Gitea, e.g. `tea pr 5519 --comments`
