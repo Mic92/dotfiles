@@ -215,7 +215,7 @@
   services.nginx.virtualHosts."auth.thalheim.io" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
-    locations."/api/firstfactor" = {
+    locations."~ ^/api/(firstfactor|reset-password/identity/start)$" = {
       proxyPass = "http://127.0.0.1:9091";
       extraConfig = ''
         limit_req zone=login burst=10 nodelay;
@@ -239,7 +239,7 @@
   services.nginx.virtualHosts."auth.devkid.net" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
-    locations."/api/firstfactor" = {
+    locations."~ ^/api/(firstfactor|reset-password/identity/start)$" = {
       proxyPass = "http://127.0.0.1:9091";
       extraConfig = ''
         limit_req zone=login burst=10 nodelay;
