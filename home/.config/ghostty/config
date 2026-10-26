@@ -18,4 +18,3 @@ keybind = alt+backspace=text:\x1b\x7f
 # vendored from https://github.com/sahaj-b/ghostty-cursor-shaders
 custom-shader = shaders/cursor_warp.glsl
 custom-shader = shaders/ripple_cursor.glsl
-custom-shader-animation = always
