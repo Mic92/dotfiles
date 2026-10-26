@@ -3,8 +3,15 @@
 //! edit distance.
 
 /// Lowercase letters and digits, every vowel the same, voiced and
-/// voiceless consonants merged, no doubled letters.
+/// voiceless consonants merged, hissing sounds merged, no doubled letters.
 pub fn skeleton(s: &str) -> Vec<char> {
+    // "joke" comes out as "chalk" or "shrog".
+    let s = s
+        .to_ascii_lowercase()
+        .replace("sch", "s")
+        .replace("sh", "s")
+        .replace("ch", "s")
+        .replace('j', "s");
     let mut out: Vec<char> = Vec::new();
     for c in s.chars().filter(char::is_ascii_alphanumeric) {
         let c = match c.to_ascii_lowercase() {

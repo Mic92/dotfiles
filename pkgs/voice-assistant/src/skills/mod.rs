@@ -695,7 +695,16 @@ static NAMED: LazyLock<Vec<(String, Vec<char>)>> = LazyLock::new(|| {
     let mut all: Vec<String> = INTENTS
         .iter()
         .filter(|i| !i.fallback)
-        .flat_map(|i| i.templates.iter().flat_map(|t| t.sentences(&closed_values)))
+        .flat_map(|i| i.templates.iter())
+        .flat_map(|t| {
+            // Fixed commands get a few phrasings ("tell a joke", not only
+            // the bare "tell joke").
+            let mut s = t.sentences(&closed_values);
+            if !t.has_slots() {
+                s.extend(t.expand(&|_| None, 12));
+            }
+            s
+        })
         .collect();
     all.sort();
     all.dedup();
@@ -883,6 +892,11 @@ mod tests {
         let c = sound_alikes("Play Laslos Radio.", 5);
         assert!(c.iter().any(|s| s.contains("lassulus")), "{c:?}");
         assert!(sound_alikes("ok", 5).is_empty());
+        // "tell a joke", heard through a headset
+        for heard in ["Tell it shalk", "tell it chalk."] {
+            let c = sound_alikes(heard, 8);
+            assert!(c.iter().any(|s| s.ends_with(" joke.")), "{heard}: {c:?}");
+        }
     }
 
     #[test]
