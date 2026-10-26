@@ -49,6 +49,7 @@ in
       proxyWebsockets = true;
       recommendedProxySettings = true;
       extraConfig = ''
+        limit_req zone=authelia_basic burst=20 nodelay;
         auth_request /authelia-basic;
         auth_request_set $user $upstream_http_remote_user;
         proxy_set_header Remote-User $user;
@@ -62,6 +63,7 @@ in
       proxyWebsockets = true;
       recommendedProxySettings = true;
       extraConfig = ''
+        limit_req zone=authelia_basic burst=50 nodelay;
         auth_request /authelia-basic;
         auth_request_set $user $upstream_http_remote_user;
         proxy_set_header Remote-User $user;
