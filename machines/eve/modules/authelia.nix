@@ -204,7 +204,11 @@
 
   # Authelia bans users, not IPs; every attempt still costs an lldap bind.
   services.nginx.appendHttpConfig = ''
-    limit_req_zone $binary_remote_addr zone=authelia_login:10m rate=10r/m;
+    map $request_method $login_limit_key {
+      POST $binary_remote_addr;
+      default "";
+    }
+    limit_req_zone $login_limit_key zone=login:10m rate=10r/m;
     limit_req_status 429;
   '';
 
@@ -214,7 +218,7 @@
     locations."/api/firstfactor" = {
       proxyPass = "http://127.0.0.1:9091";
       extraConfig = ''
-        limit_req zone=authelia_login burst=10 nodelay;
+        limit_req zone=login burst=10 nodelay;
         proxy_set_header X-Original-URL $scheme://$http_host$request_uri;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Host $http_host;
@@ -238,7 +242,7 @@
     locations."/api/firstfactor" = {
       proxyPass = "http://127.0.0.1:9091";
       extraConfig = ''
-        limit_req zone=authelia_login burst=10 nodelay;
+        limit_req zone=login burst=10 nodelay;
         proxy_set_header X-Original-URL $scheme://$http_host$request_uri;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Host $http_host;

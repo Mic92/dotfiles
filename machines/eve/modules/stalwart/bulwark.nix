@@ -23,6 +23,17 @@
   services.nginx.virtualHosts."mail.thalheim.io" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
+    locations."= /api/auth/session" = {
+      proxyPass = "http://127.0.0.1:8643";
+      recommendedProxySettings = false;
+      extraConfig = ''
+        limit_req zone=login burst=10 nodelay;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Real-IP $remote_addr;
+      '';
+    };
     locations."/" = {
       proxyPass = "http://127.0.0.1:8643";
       proxyWebsockets = true;

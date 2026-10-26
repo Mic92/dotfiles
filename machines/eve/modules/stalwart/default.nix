@@ -59,7 +59,6 @@ in
         "tracer.*"
         "server.*"
         "!server.blocked-ip.*"
-        "!server.allowed-ip.*"
         "certificate.*"
         "authentication.*"
         "storage.*"
@@ -92,6 +91,14 @@ in
       server = {
         hostname = "mail.thalheim.io";
         tls.certificate = "wildcard";
+        # Bulwark and Authelia connect from eve itself; failed logins they
+        # relay must not get eve auto-banned.
+        allowed-ip = {
+          "127.0.0.1" = "";
+          "::1" = "";
+          ${config.networking.eve.ipv4.address} = "";
+          ${config.networking.eve.ipv6.address} = "";
+        };
         listener = {
           smtp = {
             bind = [ "[::]:25" ];
