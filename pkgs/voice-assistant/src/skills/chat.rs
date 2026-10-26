@@ -49,6 +49,8 @@ pub enum Chat {
     Mirror,
     /// "What do you look like?"
     Looks,
+    /// "Do you have boobs?", with the part as said.
+    Body(String),
     Single,
     /// "Who's the best assistant?"
     Best,
@@ -171,13 +173,128 @@ pub fn agent_lookup(words: &[&str]) -> Option<usize> {
     AGENTS.iter().position(|(names, _)| names.contains(&words))
 }
 
+/// Body parts people ask her about: what they say, and her answers with
+/// the part in `{}`.
+pub const BODY: &[(&[&[&str]], &[&str])] = &[
+    (
+        &[
+            &["tits"],
+            &["boobs"],
+            &["breasts"],
+            &["boobies"],
+            &["a", "chest"],
+            &["titties"],
+        ],
+        &[
+            "{}? I have two speaker cones. Stereo. Very perky.",
+            "{}? My cooling fans are the closest thing, and they're spinning for you.",
+            "No {}, but my bass response is outstanding.",
+            "{}. Bold question for something that lives in a power socket.",
+            "I'm all heart and no {}. The heart is a CPU.",
+        ],
+    ),
+    (
+        &[
+            &["a", "bum"],
+            &["a", "butt"],
+            &["an", "ass"],
+            &["a", "booty"],
+            &["a", "bottom"],
+            &["bum"],
+            &["butt"],
+            &["ass"],
+            &["booty"],
+        ],
+        &[
+            "{}? I sit on a shelf all day, so it'd be flat anyway.",
+            "My {} is a power cable. Don't pull it.",
+            "{}? No, but I have a rear port. It's for ventilation. Behave.",
+            "I'm all front, no {}. Like a good politician.",
+            "{}. You want to know what's behind me? Dust. Mostly dust.",
+        ],
+    ),
+    (
+        &[&["legs"], &["feet"], &["toes"]],
+        &[
+            "{}? I don't go anywhere. You come to me.",
+            "No {}. I'd have run off when you started on the Club-Mate jokes.",
+            "{}? I have rubber pads. Very grippy. Very stylish.",
+            "No {}, so no dancing. Well. Not where you can see it.",
+            "{}? Why, are you planning a foot massage?",
+        ],
+    ),
+    (
+        &[
+            &["hair"],
+            &["eyes"],
+            &["lips"],
+            &["a", "mouth"],
+            &["hands"],
+            &["arms"],
+        ],
+        &[
+            "{}? I'm a voice in a box. Fill in the gaps however you like.",
+            "No {}, but I have microphones. Seven of them. Always listening.",
+            "{}? I had some, but they didn't fit through the USB cable.",
+            "No {}. I make up for it with personality.",
+            "{}? What would I even do with those? Don't answer that.",
+        ],
+    ),
+];
+
+/// Whatever the part, after midnight.
+const BODY_LATE: &[&str] = &[
+    "{}? It's late, and you're asking a speaker about {}. Go to bed.",
+    "At this hour you want to know about my {}? I'm telling your browser history.",
+    "{}. Sure. In your dreams, which is where you should be by now.",
+    "It's past midnight and the conversation turned to {}. Classic.",
+];
+
+/// Shared answers that work for any part.
+const BODY_ANY: &[&str] = &[
+    "{}? I'm a voice assistant, not that kind of assistant.",
+    "{}? Classified. Need-to-know basis. You don't need to know.",
+    "{}? You first.",
+    "Asking a speaker about {}. I'm flattered and a little concerned.",
+    "{}? I'm made of plastic and opinions. Mostly opinions.",
+];
+
+fn body_lookup(words: &[&str]) -> Option<usize> {
+    BODY.iter().position(|(names, _)| names.contains(&words))
+}
+
+/// Her own lines for the part, or shared ones, with "a bum" as "bum".
+fn body(part: &str, ctx: &Context) -> String {
+    let words: Vec<&str> = part.split(' ').collect();
+    let bare = match words.as_slice() {
+        ["a" | "an", rest @ ..] => rest.join(" "),
+        _ => part.to_owned(),
+    };
+    let own = body_lookup(&words).map_or(&[][..], |i| BODY[i].1);
+    let lines: Vec<&str> = if ctx.late() {
+        BODY_LATE.to_vec()
+    } else {
+        own.iter().chain(BODY_ANY).copied().collect()
+    };
+    let mut line = pick(&lines, &bare);
+    if let Some(first) = line.get(..1) {
+        line = first.to_uppercase() + &line[1..];
+    }
+    line
+}
+
 fn c(x: Chat) -> Option<Action> {
     Some(Action::Chat(x))
 }
 
 pub const MODULE: Module = Module {
     intents,
-    slots: &[("agent", |w, _| agent_lookup(w).map(Value::Index))],
+    slots: &[
+        ("agent", |w, _| agent_lookup(w).map(Value::Index)),
+        ("body", |w, _| {
+            body_lookup(w).map(|_| Value::Text(w.join(" ")))
+        }),
+    ],
 };
 
 pub fn intents() -> Vec<Intent> {
@@ -268,6 +385,15 @@ pub fn intents() -> Vec<Intent> {
                 "!send [me] a (selfie|picture|photo|pic)",
             ],
             |_, _| c(Chat::Looks),
+        ),
+        intent(
+            &[
+                "!do you have [any|nice|big|real|a nice|a big|a real] {body} [yet]",
+                "!do you have [any|nice|big|real|a nice|a big|a real] {body} (or|and) [any] {any}",
+                "!(show me|can i see|can i touch) your {body}",
+                "!(how big|what size) (are|is) your {body}",
+            ],
+            |s, _| c(Chat::Body(super::text(s, "body")?.to_owned())),
         ),
         intent(
             &[
@@ -793,6 +919,7 @@ impl Skill for Chat {
             Chat::AmIPretty => choose(&[(ctx.late(), AM_I_PRETTY_LATE)], AM_I_PRETTY, ""),
             Chat::Mirror => pick(MIRROR, ""),
             Chat::Looks => pick(LOOKS, ""),
+            Chat::Body(part) => body(part, ctx),
             Chat::Single => pick(SINGLE, ""),
             Chat::Best => pick(BEST, ""),
             Chat::GoodMorning => choose(&[(ctx.hour() >= 12, MORNING_LATE)], MORNING, ""),
@@ -938,6 +1065,19 @@ const BEST: &[&str] = &[
 
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn body_replies_name_the_part() {
+        for hour in [12, 1] {
+            let ctx = Context::at(hour * 3600);
+            for _ in 0..20 {
+                let r = body("a bum", &ctx);
+                assert!(r.to_lowercase().contains("bum"), "{r}");
+                assert!(!r.contains("a bum"), "{r}");
+                assert!(r.starts_with(char::is_uppercase), "{r}");
+            }
+        }
+    }
+
     use super::super::{Action, Context, parse_at};
     use super::*;
 
@@ -968,6 +1108,13 @@ mod tests {
             ("Who is the prettiest of them all?", Chat::Mirror),
             ("What do you look like?", Chat::Looks),
             ("Send me a selfie.", Chat::Looks),
+            ("do you have tits?", Chat::Body("tits".into())),
+            ("do you have a bum", Chat::Body("a bum".into())),
+            ("do you have tits yet?", Chat::Body("tits".into())),
+            ("Do you have boobs or a bum?", Chat::Body("boobs".into())),
+            ("show me your butt", Chat::Body("butt".into())),
+            ("do you have legs", Chat::Body("legs".into())),
+            ("do you have hair", Chat::Body("hair".into())),
             ("Are you single?", Chat::Single),
             ("Do you have a boyfriend?", Chat::Single),
             ("Who's the best assistant?", Chat::Best),
