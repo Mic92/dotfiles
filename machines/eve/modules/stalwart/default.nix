@@ -405,6 +405,9 @@ in
         useACMEHost = "thalheim.io";
         forceSSL = true;
         locations."/" = stalwart;
+        locations."= /api/account/auth" = stalwart // {
+          extraConfig = stalwart.extraConfig + "limit_req zone=login burst=10 nodelay;";
+        };
       };
       # bulwark owns / on mail.thalheim.io, stalwart the discovery/protocol paths
       "mail.thalheim.io".locations = {
@@ -418,7 +421,12 @@ in
     // lib.genAttrs (map (d: "autoconfig.${d}") dkimDomains) (_: {
       useACMEHost = "thalheim.io";
       forceSSL = true;
-      locations."/".proxyPass = "http://127.0.0.1:8642";
+      locations = {
+        "= /mail/config-v1.1.xml".proxyPass = "http://127.0.0.1:8642";
+        "/.well-known/".proxyPass = "http://127.0.0.1:8642";
+        "/autodiscover/".proxyPass = "http://127.0.0.1:8642";
+        "/".return = "404";
+      };
     });
 
   clan.core.vars.generators.postfix-aliases = {

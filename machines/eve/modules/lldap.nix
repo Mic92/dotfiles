@@ -69,5 +69,9 @@
     useACMEHost = "thalheim.io";
     forceSSL = true;
     locations."/".extraConfig = "proxy_pass http://localhost:17170;";
+    locations."= /auth/simple/login".extraConfig = ''
+      limit_req zone=login burst=10 nodelay;
+      proxy_pass http://localhost:17170;
+    '';
   };
 }
