@@ -57,7 +57,6 @@
     ./modules/packages.nix
     ./modules/paperless.nix
     ./modules/tribuchet.nix
-    ./modules/pinchflat.nix
     ./modules/radicle.nix
     ./modules/postgresql.nix
     ./modules/remote-builder.nix

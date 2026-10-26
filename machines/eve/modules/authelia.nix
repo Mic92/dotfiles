@@ -190,11 +190,6 @@
           policy = "one_factor";
           subject = [ "group:torrent" ];
         }
-        {
-          domain = "pinchflat.thalheim.io";
-          policy = "one_factor";
-          subject = [ "group:pinchflat" ];
-        }
       ];
     };
   };
@@ -210,7 +205,6 @@
   # Authelia bans users, not IPs; every attempt still costs an lldap bind.
   services.nginx.appendHttpConfig = ''
     limit_req_zone $binary_remote_addr zone=authelia_login:10m rate=10r/m;
-    limit_req_zone $binary_remote_addr zone=authelia_basic:10m rate=2r/s;
     limit_req_status 429;
   '';
 
