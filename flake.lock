@@ -334,11 +334,11 @@
     },
     "flakelet-postgres": {
       "locked": {
-        "lastModified": 1791473787,
-        "narHash": "sha256-JXKWRcBJtPDW35GmUwmrv2TQ9U7VuhYtDNHtJJwv/Mc=",
+        "lastModified": 1792683497,
+        "narHash": "sha256-HenL8kPLsECGR9BvTCMjVECjgyVZAadzdxdnkbpR62I=",
         "owner": "Mic92",
         "repo": "flakelet-postgres",
-        "rev": "1ba1a4612894c71c5c61c7bdee2cc4a3d74b9cee",
+        "rev": "64e4446a49539f8398d464b3784a1e0a03ba553e",
         "type": "github"
       },
       "original": {
