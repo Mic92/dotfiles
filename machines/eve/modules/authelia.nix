@@ -209,16 +209,27 @@
       default "";
     }
     limit_req_zone $login_limit_key zone=login:10m rate=10r/m;
+    limit_req_zone $login_limit_key zone=reset:10m rate=1r/m;
     limit_req_status 429;
   '';
 
   services.nginx.virtualHosts."auth.thalheim.io" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
-    locations."~ ^/api/(firstfactor|reset-password/identity/start)$" = {
+    locations."/api/firstfactor" = {
       proxyPass = "http://127.0.0.1:9091";
       extraConfig = ''
         limit_req zone=login burst=10 nodelay;
+        proxy_set_header X-Original-URL $scheme://$http_host$request_uri;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header X-Forwarded-For $remote_addr;
+      '';
+    };
+    locations."/api/reset-password/identity/start" = {
+      proxyPass = "http://127.0.0.1:9091";
+      extraConfig = ''
+        limit_req zone=reset burst=3 nodelay;
         proxy_set_header X-Original-URL $scheme://$http_host$request_uri;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Host $http_host;
@@ -239,10 +250,20 @@
   services.nginx.virtualHosts."auth.devkid.net" = {
     useACMEHost = "thalheim.io";
     forceSSL = true;
-    locations."~ ^/api/(firstfactor|reset-password/identity/start)$" = {
+    locations."/api/firstfactor" = {
       proxyPass = "http://127.0.0.1:9091";
       extraConfig = ''
         limit_req zone=login burst=10 nodelay;
+        proxy_set_header X-Original-URL $scheme://$http_host$request_uri;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-Host $http_host;
+        proxy_set_header X-Forwarded-For $remote_addr;
+      '';
+    };
+    locations."/api/reset-password/identity/start" = {
+      proxyPass = "http://127.0.0.1:9091";
+      extraConfig = ''
+        limit_req zone=reset burst=3 nodelay;
         proxy_set_header X-Original-URL $scheme://$http_host$request_uri;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Host $http_host;

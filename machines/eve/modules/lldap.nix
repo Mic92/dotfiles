@@ -70,7 +70,7 @@
     forceSSL = true;
     locations."/".extraConfig = "proxy_pass http://localhost:17170;";
     locations."/auth/reset/".extraConfig = ''
-      limit_req zone=login burst=3 nodelay;
+      limit_req zone=reset burst=3 nodelay;
       proxy_pass http://localhost:17170;
     '';
     locations."= /auth/simple/login".extraConfig = ''
