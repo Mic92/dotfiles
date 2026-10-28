@@ -11,6 +11,15 @@
     max_connections = "300";
     shared_buffers = "80MB";
   };
+  # The cluster predates PG15, so every public schema still lets any role
+  # create objects. Apply the PG15 defaults.
+  systemd.services.postgresql-setup.script = lib.mkAfter ''
+    psql -Atc 'SELECT datname FROM pg_database WHERE datallowconn AND NOT datistemplate' |
+      while read -r db; do
+        psql -d "$db" -qc 'ALTER SCHEMA public OWNER TO pg_database_owner; REVOKE CREATE ON SCHEMA public FROM PUBLIC'
+      done
+  '';
+
   services.postgresqlBackup.enable = true;
   services.postgresqlBackup.backupAll = true;
   services.postgresqlBackup.compression = "zstd";
