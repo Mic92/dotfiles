@@ -91,6 +91,8 @@ in
 
       # Copy the host's retiolum entries so jack.r resolves inside.
       networking.extraHosts = config.networking.extraHosts;
+      # Trust the retiolum CA for *.r hosts.
+      security.pki = { inherit (config.security.pki) certificates certificateFiles; };
 
       users.users.hermes = {
         isSystemUser = true;
