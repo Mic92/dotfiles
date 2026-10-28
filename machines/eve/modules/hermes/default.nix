@@ -40,6 +40,21 @@ in
   users.groups.hermes.gid = 2001;
   nix.settings.extra-allowed-users = [ "hermes" ];
 
+  clan.core.vars.generators.hermes-ldap = {
+    files.password = { };
+    runtimeInputs = [
+      pkgs.coreutils
+      pkgs.openssl
+    ];
+    script = ''openssl rand -hex 32 | tr -d '\n' > "$out/password"'';
+  };
+
+  services.lldap.ensureUsers.hermes = {
+    email = "hermes@thalheim.io";
+    passwordFile = config.clan.core.vars.generators.hermes-ldap.files.password.path;
+    groups = [ "lldap_strict_readonly" ];
+  };
+
   services.postgresql.ensureUsers = [ { name = "hermes"; } ];
   systemd.services.postgresql-setup.script = lib.mkAfter ''
     psql -tAc 'GRANT pg_read_all_data TO "hermes"'
@@ -63,6 +78,7 @@ in
       "--load-credential=slack-bot-token:${gen.files.slack-bot-token.path}"
       "--load-credential=slack-app-token:${gen.files.slack-app-token.path}"
       "--load-credential=anthropic-api-key:${gen.files.anthropic-api-key.path}"
+      "--load-credential=ldap-password:${config.clan.core.vars.generators.hermes-ldap.files.password.path}"
       "--load-credential=inference-api-key:${config.clan.core.vars.generators.litellm.files.master-key.path}"
     ];
 
@@ -86,9 +102,20 @@ in
         hermesPkg
         pkgs.radicle-node
         config.services.postgresql.package
+        pkgs.openldap
       ];
 
-      environment.variables.PGHOST = "/run/postgresql";
+      environment.variables = {
+        PGHOST = "/run/postgresql";
+        PGDATABASE = "postgres";
+      };
+
+      # `ldapsearch -y /run/credentials/hermes.service/ldap-password` binds as hermes.
+      environment.etc."openldap/ldap.conf".text = ''
+        URI ldap://localhost:3890
+        BASE dc=eve
+        BINDDN uid=hermes,ou=people,dc=eve
+      '';
 
       programs.git = {
         enable = true;
@@ -158,6 +185,7 @@ in
           OPENAI_BASE_URL = "http://[::1]:4000/v1";
           HERMES_MODEL = "qwen3.8-27b";
           SLACK_ALLOWED_USERS = "U02TAKGUGF4";
+          LDAP_PASSWORD_FILE = "%d/ldap-password";
         };
 
         serviceConfig = {
@@ -170,6 +198,7 @@ in
             "slack-app-token"
             "anthropic-api-key"
             "inference-api-key"
+            "ldap-password"
           ];
           Restart = "on-failure";
           RestartSec = 30;
