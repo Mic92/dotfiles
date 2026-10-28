@@ -301,7 +301,14 @@ impl Skill for Fun {
         matches!(self, Fun::Joke | Fun::DadJoke).then_some(&[
             "Let me think of a good one.",
             "Oh, I've got one.",
-            "Okay, this one's filthy. Kidding. Mostly.",
+            "Hang on, I'm rummaging through my joke drawer.",
+            "Okay. Brace yourself.",
+            "Fine, but you have to laugh this time.",
+            "One sec, picking one my lawyer approved.",
+            "Right. Lower your expectations.",
+            "I've been saving this one for you.",
+            "Drum roll, please.",
+            "Okay, try not to snort your Club-Mate.",
         ])
     }
 

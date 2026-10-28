@@ -1036,6 +1036,21 @@ mod tests {
     }
 
     #[test]
+    fn pick_remembers_each_list() {
+        let a = ["a1", "a2", "a3", "a4", "a5", "a6"];
+        let b = ["b1", "b2", "b3"];
+        let mut said: Vec<String> = Vec::new();
+        for _ in 0..30 {
+            said.push(pick(&a, ""));
+            pick(&b, "");
+        }
+        // Other lists in between must not make a line come back soon.
+        for w in said.windows(3) {
+            assert!(w[0] != w[1] && w[0] != w[2] && w[1] != w[2], "{said:?}");
+        }
+    }
+
+    #[test]
     fn pick_never_repeats() {
         let lines = ["a {}", "b {}"];
         let first = pick(&lines, "x");

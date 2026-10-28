@@ -3,11 +3,18 @@
 use std::time::SystemTime;
 use std::time::UNIX_EPOCH;
 
-/// Clock nanoseconds: random enough for banter, coin flips and dice.
+/// Random enough for banter, coin flips and dice: the clock and a counter,
+/// mixed (splitmix64), so calls in the same instant still differ.
 pub fn random() -> u64 {
-    SystemTime::now()
+    use std::sync::atomic::{AtomicU64, Ordering};
+    static COUNT: AtomicU64 = AtomicU64::new(0);
+    let nanos = SystemTime::now()
         .duration_since(UNIX_EPOCH)
-        .map_or(0, |d| u64::from(d.subsec_nanos()))
+        .map_or(0, |d| d.as_secs() ^ u64::from(d.subsec_nanos()) << 20);
+    let mut z = nanos ^ COUNT.fetch_add(0x9e37_79b9_7f4a_7c15, Ordering::Relaxed);
+    z = (z ^ (z >> 30)).wrapping_mul(0xbf58_476d_1ce4_e5b9);
+    z = (z ^ (z >> 27)).wrapping_mul(0x94d0_49bb_1331_11eb);
+    z ^ (z >> 31)
 }
 
 pub fn choose(cases: &[(bool, &[&str])], fallback: &[&str], what: &str) -> String {
@@ -23,19 +30,29 @@ pub fn choose(cases: &[(bool, &[&str])], fallback: &[&str], what: &str) -> Strin
     }
 }
 
-/// A random line with `{}` replaced, never the same one twice in a row.
+/// A random line with `{}` replaced, none of the list's last few again.
 pub fn pick(lines: &[&str], what: &str) -> String {
-    use std::sync::atomic::{AtomicUsize, Ordering};
-    // Global: every action runs on its own thread.
-    static LAST: AtomicUsize = AtomicUsize::new(usize::MAX);
-    if lines.is_empty() {
+    use std::collections::{HashMap, VecDeque};
+    use std::sync::{LazyLock, Mutex};
+    // Global, as every action runs on its own thread. Keyed by the first
+    // line's address, which stays put even when `choose` builds a new list.
+    static RECENT: LazyLock<Mutex<HashMap<usize, VecDeque<usize>>>> =
+        LazyLock::new(|| Mutex::new(HashMap::new()));
+    let Some(first) = lines.first() else {
         return String::new();
+    };
+    let mut recent = RECENT
+        .lock()
+        .unwrap_or_else(std::sync::PoisonError::into_inner);
+    let seen = recent.entry(first.as_ptr() as usize).or_default();
+    // Half the list stays fresh, so a short list still varies.
+    let keep = lines.len() / 2;
+    let fresh: Vec<usize> = (0..lines.len()).filter(|i| !seen.contains(i)).collect();
+    let i = fresh[usize::try_from(random() % fresh.len() as u64).unwrap_or(0)];
+    seen.push_back(i);
+    while seen.len() > keep {
+        seen.pop_front();
     }
-    let mut i = usize::try_from(random()).unwrap_or(0) % lines.len();
-    if lines.len() > 1 && i == LAST.load(Ordering::Relaxed) {
-        i = (i + 1) % lines.len();
-    }
-    LAST.store(i, Ordering::Relaxed);
     lines[i].replace("{}", what)
 }
 
