@@ -10,6 +10,7 @@ mod holiday;
 mod http;
 mod hush;
 mod onnx;
+mod phonetic;
 mod replay;
 mod rescore;
 mod skills;
@@ -887,6 +888,8 @@ fn main() {
         return;
     }
 
+    // Phonemizing every command takes a quarter second; not on the first miss.
+    thread::spawn(skills::warm_sound_alikes);
     let (tx, rx) = mpsc::channel();
     let worker = thread::spawn(move || run_worker(assistant, &rx));
     if let Err(e) = run_pipewire(tx) {

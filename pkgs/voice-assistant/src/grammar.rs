@@ -184,6 +184,54 @@ impl Template {
             .collect()
     }
 
+    /// The plainest sentence (shortest alternatives, nothing optional) and
+    /// each variant of it with one or two parts changed; how commands are
+    /// usually said ("tell a joke", "tell me a joke"). Empty with slots.
+    pub fn variants(&self) -> Vec<String> {
+        fn words(a: &Alts) -> Vec<Vec<&str>> {
+            a.iter()
+                .map(|w| w.iter().map(String::as_str).collect())
+                .collect()
+        }
+        let mut choices: Vec<Vec<Vec<&str>>> = Vec::new();
+        for part in &self.parts {
+            choices.push(match part {
+                Part::Word(a) => {
+                    let mut c: Vec<Vec<&str>> = words(a);
+                    c.sort_by_key(Vec::len);
+                    c
+                }
+                Part::Optional(a) => std::iter::once(Vec::new()).chain(words(a)).collect(),
+                Part::Slot(..) => return Vec::new(),
+            });
+        }
+        let say = |pick: &[usize]| {
+            choices
+                .iter()
+                .zip(pick)
+                .flat_map(|(c, &i)| c[i].iter().copied())
+                .collect::<Vec<_>>()
+                .join(" ")
+        };
+        let mut pick = vec![0; choices.len()];
+        let mut out = vec![say(&pick)];
+        for i in 0..choices.len() {
+            for a in 1..choices[i].len() {
+                pick[i] = a;
+                out.push(say(&pick));
+                for j in i + 1..choices.len() {
+                    for b in 1..choices[j].len() {
+                        pick[j] = b;
+                        out.push(say(&pick));
+                    }
+                    pick[j] = 0;
+                }
+            }
+            pick[i] = 0;
+        }
+        out
+    }
+
     /// Up to `cap` sentences spread over every combination of alternatives,
     /// optional words and slot `values`; examples for the intent classifier.
     pub fn expand(&self, values: &impl Fn(&str) -> Option<Vec<String>>, cap: usize) -> Vec<String> {
@@ -490,6 +538,28 @@ mod tests {
         assert!(t("say {text}").is_empty());
         assert!(t("ping {host} and {host}").is_empty());
         assert!(t("what time is it").is_empty());
+    }
+
+    #[test]
+    fn variants_change_one_or_two_parts() {
+        let v = Template::parse("(tell|give) [me|us] [a] joke")
+            .unwrap()
+            .variants();
+        for s in [
+            "tell joke",
+            "give joke",
+            "tell a joke",
+            "tell me a joke",
+            "give us joke",
+        ] {
+            assert!(v.iter().any(|v| v == s), "{s}: {v:?}");
+        }
+        assert!(
+            Template::parse("ping {host}")
+                .unwrap()
+                .variants()
+                .is_empty()
+        );
     }
 
     #[test]

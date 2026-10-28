@@ -17,6 +17,7 @@
   mpv,
   curl,
   numbat,
+  espeak-ng,
   # one of uisfx's sets: arcade cinematic dreamy glass mechanical minimal
   # organic rubber scifi soft studio zen
   soundTheme ? "mechanical",
@@ -105,6 +106,7 @@ rustPlatform.buildRustPackage {
   buildInputs = [
     pipewire
     sherpa-onnx
+    espeak-ng
     stdenv.cc.cc.lib
   ];
 
