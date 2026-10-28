@@ -58,6 +58,8 @@ in
   services.postgresql.ensureUsers = [ { name = "hermes"; } ];
   systemd.services.postgresql-setup.script = lib.mkAfter ''
     psql -tAc 'GRANT pg_read_all_data TO "hermes"'
+    # Older databases still grant CREATE on public to PUBLIC.
+    psql -tAc 'ALTER ROLE "hermes" SET default_transaction_read_only = on'
   '';
 
   systemd.tmpfiles.rules = [
@@ -108,13 +110,14 @@ in
       environment.variables = {
         PGHOST = "/run/postgresql";
         PGDATABASE = "postgres";
+        # BINDDN is a user-only option, ignored in the system ldap.conf.
+        LDAPBINDDN = "uid=hermes,ou=people,dc=eve";
       };
 
       # `ldapsearch -y /run/credentials/hermes.service/ldap-password` binds as hermes.
-      environment.etc."openldap/ldap.conf".text = ''
-        URI ldap://localhost:3890
+      environment.etc."ldap.conf".text = ''
+        URI ldap://127.0.0.1:3890
         BASE dc=eve
-        BINDDN uid=hermes,ou=people,dc=eve
       '';
 
       programs.git = {
