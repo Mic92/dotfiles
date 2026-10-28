@@ -56,6 +56,8 @@ in
   };
 
   services.postgresql.ensureUsers = [ { name = "hermes"; } ];
+  # Otherwise a postgres restart replaces the dir under the container's bind mount.
+  systemd.services.postgresql.serviceConfig.RuntimeDirectoryPreserve = "yes";
   systemd.services.postgresql-setup.script = lib.mkAfter ''
     psql -tAc 'GRANT pg_read_all_data TO "hermes"'
     # Older databases still grant CREATE on public to PUBLIC.
@@ -116,7 +118,7 @@ in
         LDAPBINDDN = "uid=hermes,ou=people,dc=eve";
       };
 
-      # `ldapsearch -y /run/credentials/hermes.service/ldap-password` binds as hermes.
+      # `ldapsearch -x -y "$LDAP_PASSWORD_FILE"` binds as hermes.
       environment.etc."ldap.conf".text = ''
         URI ldap://127.0.0.1:3890
         BASE dc=eve
