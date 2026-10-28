@@ -40,6 +40,11 @@ in
   users.groups.hermes.gid = 2001;
   nix.settings.extra-allowed-users = [ "hermes" ];
 
+  services.postgresql.ensureUsers = [ { name = "hermes"; } ];
+  systemd.services.postgresql-setup.script = lib.mkAfter ''
+    psql -tAc 'GRANT pg_read_all_data TO "hermes"'
+  '';
+
   systemd.tmpfiles.rules = [
     "d ${stateDir} 0750 - - -"
   ];
@@ -52,6 +57,7 @@ in
       hostPath = stateDir;
       isReadOnly = false;
     };
+    bindMounts."/run/postgresql".isReadOnly = true;
 
     extraFlags = [
       "--load-credential=slack-bot-token:${gen.files.slack-bot-token.path}"
@@ -79,7 +85,18 @@ in
       environment.systemPackages = [
         hermesPkg
         pkgs.radicle-node
+        config.services.postgresql.package
       ];
+
+      environment.variables.PGHOST = "/run/postgresql";
+
+      programs.git = {
+        enable = true;
+        config.user = {
+          name = "Hermes Bot";
+          email = "hermes@thalheim.io";
+        };
+      };
 
       environment.variables.XDG_RUNTIME_DIR = "/run/user/2001";
 
