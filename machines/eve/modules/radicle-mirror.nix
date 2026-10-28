@@ -40,7 +40,8 @@ in
       "TUM-DSE"
       "krebs"
     ];
-    p2pListen = [ "0.0.0.0:8776" ];
+    # Dual-stack: radicle.thalheim.io has an AAAA record.
+    p2pListen = [ "[::]:8776" ];
     p2pExternalAddresses = [ "radicle.thalheim.io:8776" ];
     # radicle.thalheim.io serves the mirror's own storage, so links are live
     # immediately after a sync
