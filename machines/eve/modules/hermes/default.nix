@@ -114,6 +114,8 @@ in
           HERMES_INFERENCE_PROVIDER = "vllm";
           # LiteLLM on the host (see ../litellm.nix): p0 with jack fallback.
           CUSTOM_BASE_URL = "http://[::1]:4000/v1";
+          # hermes only sends OPENAI_API_KEY to the host named here.
+          OPENAI_BASE_URL = "http://[::1]:4000/v1";
           HERMES_MODEL = "qwen3.8-27b";
           SLACK_ALLOWED_USERS = "U02TAKGUGF4";
         };
