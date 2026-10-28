@@ -76,7 +76,28 @@ in
       };
       users.groups.hermes.gid = 2001;
 
-      environment.systemPackages = [ hermesPkg ];
+      environment.systemPackages = [
+        hermesPkg
+        pkgs.radicle-node
+      ];
+
+      environment.variables.XDG_RUNTIME_DIR = "/run/user/2001";
+
+      systemd.services.radicle-node = {
+        wantedBy = [ "multi-user.target" ];
+        after = [ "network-online.target" ];
+        wants = [ "network-online.target" ];
+        environment = {
+          HOME = stateDir;
+          XDG_RUNTIME_DIR = "/run/user/2001";
+        };
+        serviceConfig = {
+          User = "hermes";
+          Group = "hermes";
+          ExecStart = "${pkgs.radicle-node}/bin/radicle-node";
+          Restart = "on-failure";
+        };
+      };
 
       systemd.tmpfiles.rules =
         let
@@ -91,6 +112,7 @@ in
         [
           "d ${stateDir} 0750 hermes hermes -"
           "d ${stateDir}/.hermes 0750 hermes hermes -"
+          "d /run/user/2001 0700 hermes hermes -"
           "L+ ${stateDir}/.hermes/config.yaml - - - - ${hermesConfig}"
         ];
 
@@ -111,6 +133,7 @@ in
           NIX_REMOTE = "daemon";
           HOME = stateDir;
           HERMES_HOME = "${stateDir}/.hermes";
+          XDG_RUNTIME_DIR = "/run/user/2001";
           HERMES_INFERENCE_PROVIDER = "vllm";
           # LiteLLM on the host (see ../litellm.nix): p0 with jack fallback.
           CUSTOM_BASE_URL = "http://[::1]:4000/v1";
