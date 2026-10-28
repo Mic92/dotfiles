@@ -1,5 +1,24 @@
 {
   "providers": {
+    "eve": {
+      "baseUrl": "http://eve.r:4000/v1",
+      "api": "openai-completions",
+      "apiKey": "!clan vars get --flake ~/.homesick/repos/dotfiles eve litellm/master-key 2>/dev/null",
+      "models": [
+        {
+          "id": "qwen3.8-27b",
+          "name": "Qwen 3.8 (27B, p0 → jack fallback)",
+          "contextWindow": 262144,
+          "reasoning": true,
+          "input": ["text", "image"],
+          "compat": {
+            "supportsDeveloperRole": false,
+            "thinkingFormat": "qwen-chat-template",
+            "reasoningEffortMap": { "minimal": "low", "xhigh": "high" }
+          }
+        }
+      ]
+    },
     "jack": {
       "baseUrl": "http://jack.r:8000/v1",
       "api": "openai-completions",
