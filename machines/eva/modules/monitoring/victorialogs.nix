@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, self, ... }:
 {
   services.victorialogs = {
     enable = true;
@@ -24,12 +24,21 @@
       enableACME = true;
       addSSL = true;
       basicAuthFile = config.sops.secrets.promtail-nginx-password.path;
-      locations."/" = {
+      # Shipper credentials are shared with external parties: write-only.
+      locations."/".return = "403";
+      # Grafana on eve queries through here.
+      locations."/select/" = {
         proxyPass = "http://127.0.0.1:9428";
         extraConfig = ''
+          allow ${self.nixosConfigurations.eve.config.networking.retiolum.ipv6};
+          deny all;
           proxy_read_timeout 1800s;
           access_log off;
         '';
+      };
+      locations."/insert/" = {
+        proxyPass = "http://127.0.0.1:9428";
+        extraConfig = "access_log off;";
       };
       locations."/loki/api/" = {
         proxyPass = "http://127.0.0.1:9428/insert/loki/api/";
