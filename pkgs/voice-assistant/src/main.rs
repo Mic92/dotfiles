@@ -670,12 +670,19 @@ impl Assistant {
 
     fn notify(&self, title: &str, body: &str) {
         if !self.cfg.stdin {
+            let ms = notify_ms(body).to_string();
             skills::spawn(
                 "notify-send",
-                &["-a", "Voice assistant", "-t", "4000", title, body],
+                &["-a", "Voice assistant", "-t", &ms, title, body],
             );
         }
     }
+}
+
+/// Long enough to read the body at a relaxed pace, 10 to 60 seconds.
+fn notify_ms(body: &str) -> u64 {
+    let words = u64::try_from(body.split_whitespace().count()).unwrap_or(u64::MAX);
+    words.saturating_mul(400).clamp(10_000, 60_000)
 }
 
 fn run_worker(mut a: Assistant, rx: &mpsc::Receiver<Vec<i16>>) {
@@ -896,4 +903,16 @@ fn main() {
         die(format!("pipewire: {e}"));
     }
     let _ = worker.join();
+}
+
+#[cfg(test)]
+mod tests {
+    use super::notify_ms;
+
+    #[test]
+    fn notifications_stay_long_enough_to_read() {
+        assert_eq!(notify_ms("Heads"), 10_000);
+        assert_eq!(notify_ms(&"word ".repeat(50)), 20_000);
+        assert_eq!(notify_ms(&"word ".repeat(500)), 60_000);
+    }
 }
