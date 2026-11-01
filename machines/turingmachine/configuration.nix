@@ -30,7 +30,7 @@
     #../../nixosModules/qtile.nix
     #../../nixosModules/keyd.nix
     ../../nixosModules/ksmbd.nix
-    ../../nixosModules/iets.nix
+    #../../nixosModules/iets.nix
     #../../nixosModules/lanzaboote.nix
     ../../nixosModules/make-linux-fast.nix
     ../../nixosModules/no-hz.nix
