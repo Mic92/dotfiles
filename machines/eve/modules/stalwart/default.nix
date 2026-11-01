@@ -205,7 +205,7 @@ in
           }
           {
             "if" = "rcpt == 'hello@handi-work.co.uk'";
-            "then" = "'shannan@lekwati.com'";
+            "then" = "'mlekwati@gmail.com'";
           }
           {
             "if" = "matches('^ls1-logins-[^@.]+@thalheim\\.io$', rcpt)";
@@ -220,7 +220,8 @@ in
             "then" = true;
           }
           {
-            "if" = "rcpt_domain == 'lists.lrz.de' || key_exists('alias-targets', rcpt)";
+            "if" =
+              "rcpt_domain == 'lists.lrz.de' || rcpt == 'mlekwati@gmail.com' || key_exists('alias-targets', rcpt)";
             "then" = true;
           }
           { "else" = false; }
