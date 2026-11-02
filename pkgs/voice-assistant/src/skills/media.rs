@@ -24,6 +24,8 @@ pub enum Media {
     NowPlaying,
     /// "Play Hey Jude": the first YouTube hit.
     Search(String),
+    /// "Search YouTube for cats": the first hit, with picture.
+    Video(String),
 }
 
 const WHAT: &str = "[the|my|this|some] (music|song|track|video|podcast|media|playback)";
@@ -93,6 +95,21 @@ pub fn intents() -> Vec<Intent> {
                 "!radio off",
             ],
             |_, _| m(Media::RadioOff),
+        ),
+        // Before the plain "play {text}", which would take "... on youtube".
+        intent(
+            &[
+                "!(search|look up|find) [on] youtube [for] {text}",
+                "!(search|look up|find) [for] {text} on youtube",
+                "!open youtube and (search|look up) [for] {text}",
+                "!youtube {text}",
+                "!(play|put on|watch|show me) {text} on youtube",
+                "!(play|put on|watch|show|find) [me] [a|the|some] [youtube|music] (video|videos) (about|of|for|on|with) {text}",
+                "!(i want to|i'd like to|let's|can i|can we) watch [a|some] [youtube] (video|videos) (about|of|for|on|with) {text}",
+                "!(i want to|i'd like to|let's|can i|can we) watch [some] {text}",
+                "!(can you|could you) (play|show me|find) [me] [a|the|some] [youtube|music] (video|videos) (about|of|for|on|with) {text}",
+            ],
+            |s, _| m(Media::Video(text(s, "text")?)),
         ),
         intent(
             &[
@@ -388,6 +405,25 @@ fn search(query: &str) -> Reply {
     Reply::new("Music", query, pick(SEARCH, query))
 }
 
+fn video(query: &str) -> Reply {
+    stop_radio();
+    let ipc = radio_socket().map(|p| format!("--input-ipc-server={}", p.display()));
+    let title = format!("--title={RADIO_TAG}");
+    let url = format!("ytdl://ytsearch1:{query}");
+    let mut args = vec!["--really-quiet", &title];
+    args.extend(ipc.as_deref());
+    args.push(&url);
+    spawn("mpv", &args);
+    Reply::new("YouTube", query, pick(VIDEO, query))
+}
+
+const VIDEO: &[&str] = &[
+    "{}, on YouTube. Grab the popcorn.",
+    "Searching YouTube for {}. Skip the ads, if you can.",
+    "{}. Don't forget to like and subscribe. Kidding.",
+    "Pulling up {}. Down the rabbit hole we go.",
+];
+
 const SEARCH: &[&str] = &[
     "{}, coming right up.",
     "Looking for {}. Give me a second.",
@@ -569,6 +605,7 @@ impl Skill for Media {
             }
             Media::NowPlaying => return now_playing(),
             Media::Search(q) => return search(q),
+            Media::Video(q) => return video(q),
             Media::Play => {
                 radio_pause(false);
                 ("play", PLAY)
@@ -648,6 +685,55 @@ mod tests {
         ] {
             assert!(
                 !matches!(p(t), Some(Action::Media(Media::Search(_)))),
+                "{t:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn video() {
+        let p = |t| parse_at(t, &Context::at(0));
+        for (text, q) in [
+            ("search youtube for cat videos", "cat videos"),
+            ("Search YouTube for how to tie a tie.", "how to tie a tie"),
+            ("search on youtube for lofi", "lofi"),
+            ("search for kurzgesagt on youtube", "kurzgesagt"),
+            ("look up kurzgesagt on youtube", "kurzgesagt"),
+            ("find a video about black holes", "black holes"),
+            ("youtube never gonna give you up", "never gonna give you up"),
+            ("play hey jude on youtube", "hey jude"),
+            ("put on hey jude on youtube", "hey jude"),
+            ("show me a video of cute puppies", "cute puppies"),
+            ("show me videos about sourdough", "sourdough"),
+            ("play a video about the moon landing", "the moon landing"),
+            ("play the video for bad guy", "bad guy"),
+            ("play the music video for thriller", "thriller"),
+            (
+                "watch the trailer for dune on youtube",
+                "the trailer for dune",
+            ),
+            ("I want to watch a video about rust", "rust"),
+            ("can you play a youtube video about nix", "nix"),
+            ("let's watch some cat videos", "cat videos"),
+            ("can i watch the dune trailer", "the dune trailer"),
+            (
+                "open youtube and search for linus tech tips",
+                "linus tech tips",
+            ),
+        ] {
+            assert_eq!(
+                p(text),
+                Some(Action::Media(Media::Video(q.into()))),
+                "{text:?}"
+            );
+        }
+        for t in [
+            "search for cat videos",
+            "play hey jude",
+            "play the next video",
+        ] {
+            assert!(
+                !matches!(p(t), Some(Action::Media(Media::Video(_)))),
                 "{t:?}"
             );
         }
