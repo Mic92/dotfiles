@@ -547,6 +547,10 @@ fn closed_values(slot: &str) -> Option<Vec<Vec<&'static str>>> {
             .iter()
             .flat_map(|(n, _)| n.iter().map(|w| w.to_vec()))
             .collect(),
+        "body" => chat::BODY
+            .iter()
+            .flat_map(|(n, _)| n.iter().map(|w| w.to_vec()))
+            .collect(),
         "app" => split(&apps::names().collect::<Vec<_>>()),
         "list" => notes::LISTS.iter().flat_map(|(n, _)| split(n)).collect(),
         _ => return None,
@@ -981,7 +985,7 @@ mod tests {
             cases.len(),
             start.elapsed()
         );
-        assert!(found >= 73, "{found} of {}", cases.len());
+        assert!(found >= 74, "{found} of {}", cases.len());
     }
 
     #[test]
