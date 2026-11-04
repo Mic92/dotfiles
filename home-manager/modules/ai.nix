@@ -29,10 +29,13 @@ let
       aiTools.herdr
     else
       aiTools.herdr.overrideAttrs (old: {
-        # remote.ssh_command config option; proposed upstream via discussion #1780.
-        patches = (old.patches or [ ]) ++ [
-          ./herdr/0001-remote-make-ssh-transport-program-configurable.patch
-        ];
+        # remote.ssh_command plus stall-tolerant reconnects, maintained in
+        # herdr-eternal against the same herdr release.
+        patches =
+          (old.patches or [ ])
+          ++ map (name: "${inputs.herdr-eternal}/nix/patches/${name}") (
+            builtins.attrNames (builtins.readDir "${inputs.herdr-eternal}/nix/patches")
+          );
       });
 in
 {
