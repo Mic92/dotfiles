@@ -65,13 +65,15 @@
                     (list* text (named-zones rust) more)))))
 
 (defun ported-p (debug)
-  "Whether DEBUG names a command the brain has, so it must agree."
-  (some (lambda (c)
-          (let ((kind (format nil "~a(~a" (va::camel (va:command-skill c))
-                              (va::command-kind c))))
-            (and (uiop:string-prefix-p kind debug)
-                 (find (char debug (length kind)) "() "))))
-        (va:commands)))
+  "Whether DEBUG names a command the brain has, so it must agree. Core
+commands print without their skill, as \"Dismiss\" or \"Repeat\"."
+  (flet ((names (kind)
+           (and (uiop:string-prefix-p kind debug)
+                (or (= (length debug) (length kind)) (find (char debug (length kind)) "() ")))))
+    (some (lambda (c)
+            (or (names (format nil "~a(~a" (va::camel (va:command-skill c)) (va::command-kind c)))
+                (names (va::command-kind c))))
+          (va:commands))))
 
 (defparameter *golden-fixes*
   '(("i don't need eggs anymore, but i do need milk"
