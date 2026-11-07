@@ -19,3 +19,7 @@
 (defn split-words ((s string)) list
   "S split at runs of whitespace."
   (remove "" (uiop:split-string s :separator *whitespace*) :test #'string=))
+
+(defn split-lines ((s string)) list
+  "The non-empty lines of S."
+  (remove "" (uiop:split-string s :separator '(#\Newline #\Return)) :test #'string=))

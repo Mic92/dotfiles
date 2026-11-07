@@ -36,11 +36,14 @@ failure."
 (defparameter *user-agent* "voice-assistant/0.1.0"
   "Sent with every request, as the Rust side does. Some sites refuse curl's.")
 
-(defn http-get ((url string) &key (header (or null string) nil) (timeout (integer 1) 3))
+(defn http-get ((url string) &key (header (or null string) nil) (timeout (integer 1) 3)
+                (ip (member nil :v4 :v6) nil))
     (or null string)
-  "The body at URL, or nil on any failure."
+  "The body at URL, or nil on any failure. IP forces IPv4 or IPv6."
   (let ((body (apply #'run "curl" "-sfL" "-A" *user-agent* "--max-time" (princ-to-string timeout)
-                     (append (and header (list "-H" header)) (list url)))))
+                     (append (and header (list "-H" header))
+                             (case ip (:v4 '("-4")) (:v6 '("-6")) (otherwise nil))
+                             (list url)))))
     (and body (plusp (length body)) body)))
 
 (defn spawn ((program string) &rest (args string)) null
@@ -56,3 +59,7 @@ failure."
   "PROGRAM's trimmed output, nil when it fails or says nothing."
   (let ((out (apply #'run program args)))
     (and out (let ((s (trim out))) (and (plusp (length s)) s)))))
+
+(defn read-proc ((path string)) string
+  "A /proc file's text, empty where there is none."
+  (handler-case (uiop:read-file-string path) (file-error () "")))
