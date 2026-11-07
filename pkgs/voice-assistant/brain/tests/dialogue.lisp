@@ -14,6 +14,7 @@
   (loop for (act timer music want) in
         '((:stop t t "Timer(Cancel)") (:cancel t t "Timer(Cancel)") (:no t nil "Dismiss")
           (:cancel nil t "Dismiss") (:stop nil nil "Dismiss") (:pause t t "Timer(Pause)")
+          (:stop nil t "Media(Stop)") (:pause nil t "Media(Pause)") (:resume nil nil "Media(Play)")
           (:yes nil nil "-"))
         do (is equal want (with-focus (:timer timer :music music) (shown (va::ambient act)))
                "~s timer ~s music ~s" act timer music)))
@@ -45,6 +46,8 @@
           (is equal "Say(\"phew\")" (ask text) "~s" text))
         (let ((unsure (ask "i don't know")))
           (true (and (uiop:string-prefix-p "Say(" unsure) (string/= unsure "Say(\"phew\")"))))))
+    (is equal "Media(Stop)"
+        (shown (va::respond "stop the music" (va::confirm (va::command-action 'va::nap 1) nil))))
     (is equal "Timer(Cancel)" (shown (va::respond "stop" nil)))
     (is equal "-" (shown (va::respond "yes" nil)))))
 

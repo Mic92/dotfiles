@@ -18,9 +18,10 @@
                  (:file "commands")
                  (:file "dispatch")
                  (:file "dialogue")
+                 (:file "fuzzy")
                  (:file "dev")
                  (:module "skills" :pathname "../skills/" :serial t
-                          :components ((:file "timer") (:file "system") (:file "volume")
+                          :components ((:file "timer") (:file "system") (:file "volume") (:file "media")
                                        (:file "fun") (:file "core")))))
 
 (defsystem "voice-assistant-brain/tests"
@@ -28,5 +29,6 @@
     :pathname "tests/"
     :serial t
     :components ((:file "tests") (:file "parsing") (:file "grammar") (:file "dispatch") (:file "fun")
-                 (:file "timer") (:file "dialogue") (:file "system"))
+                 (:file "timer") (:file "dialogue") (:file "system")
+                 (:file "media"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))
