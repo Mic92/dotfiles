@@ -38,10 +38,10 @@ def serialize_option_val(
     """Serialize an option value to UCI format."""
     if isinstance(val, float | int | str):
         val = interpolate_secrets(str(val), secrets)
-        return [f"set {key}='{val}'"]
+        return [f"uci set {key}='{val}'"]
 
     if isinstance(val, list):
-        return [f"add_list {key}='{interpolate_secrets(v, secrets)}'" for v in val]
+        return [f"uci add_list {key}='{interpolate_secrets(v, secrets)}'" for v in val]
 
     msg = f"{val} is not a string"
     raise ConfigError(msg)
@@ -58,15 +58,12 @@ def serialize_list_section(
     lines = []
     _type = None
 
-    # TODO(@joerg): Investigate how to delete all list sections
-    # truncate list so we can start from fresh
-
     _type = list_obj.get("_type")
     if _type is None:
         msg = f"{config_name}.@{section_name}[{idx}] has no type!"
         raise ConfigError(msg)
     del list_obj["_type"]
-    lines.append(f"set {config_name}.@{section_name}[{idx}]={_type}")
+    lines.append(f"uci set {config_name}.@{section_name}[{idx}]={_type}")
 
     for option_name, option in list_obj.items():
         lines.extend(
@@ -89,14 +86,14 @@ def serialize_named_section(
     lines = []
     _type = None
     # truncate section so we can start from fresh
-    lines.append(f"delete {config_name}.{section_name}")
+    lines.append(f"uci delete {config_name}.{section_name}")
 
     _type = section.get("_type")
     if _type is None:
         msg = f"{config_name}.{section_name} has no type"
         raise ConfigError(msg)
     del section["_type"]
-    lines.append(f"set {config_name}.{section_name}={_type}")
+    lines.append(f"uci set {config_name}.{section_name}={_type}")
 
     for option_name, option in section.items():
         # TODO(@joerg): Investigate how escaping works in UCI
@@ -113,6 +110,11 @@ def serialize_named_section(
 def serialize_uci(configs: dict[str, Any], secrets: dict[str, str]) -> str:
     """Serialize configuration dictionary to UCI format."""
     lines: list[str] = []
+    # Add shebang to make it a proper shell script
+    lines.append("#!/bin/sh")
+    lines.append("set -e")
+    lines.append("")
+
     config_names = []
     for config_name, sections in configs.items():
         config_names.append(config_name)
@@ -124,12 +126,14 @@ def serialize_uci(configs: dict[str, Any], secrets: dict[str, str]) -> str:
 
         for section_name, section in sections.items():
             if isinstance(section, list):
-                # NOTE: Clear out existing list sections (no better method available)
+                # Use shell loop to properly delete all existing list sections
+                lines.append(f"# Clear all existing {config_name}.@{section_name} sections")
+                lines.append(f"while uci -q delete {config_name}.@{section_name}[-1] 2>/dev/null; do :; done")
+                lines.append("")
+
+                # Add new sections
                 lines.extend(
-                    f"delete {config_name}.@{section_name}[0]" for _i in range(10)
-                )
-                lines.extend(
-                    f"add {config_name} {section_name}" for _i in range(len(section))
+                    f"uci add {config_name} {section_name}" for _i in range(len(section))
                 )
 
                 for idx, list_obj in enumerate(section):
@@ -142,7 +146,7 @@ def serialize_uci(configs: dict[str, Any], secrets: dict[str, str]) -> str:
                             secrets,
                         ),
                     )
-                # for option_name, option in section:
+                lines.append("")
             elif isinstance(section, dict):
                 lines.extend(
                     serialize_named_section(
@@ -152,11 +156,15 @@ def serialize_uci(configs: dict[str, Any], secrets: dict[str, str]) -> str:
                         secrets,
                     ),
                 )
+                lines.append("")
             else:
                 msg = f"{config_name}.{section_name} is not a valid section object, expected dict, got: {type(section).__name__}"
                 raise ConfigError(
                     msg,
                 )
+
+    # Commit all changes at the end
+    lines.append("uci commit")
 
     return "\n".join(lines)
 
