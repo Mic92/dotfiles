@@ -6,6 +6,7 @@ Maps systemctl commands to launchctl equivalents
 
 import argparse
 import contextlib
+import functools
 import os
 import plistlib
 import shutil
@@ -338,7 +339,6 @@ class Args:
     service: str
     unit_type: str | None = None
     user: bool = False
-    lines: int = 10
 
 
 def parse_args() -> Args:  # noqa: PLR0915
@@ -443,12 +443,14 @@ def parse_args() -> Args:  # noqa: PLR0915
     enabled_parser.set_defaults(func=is_enabled_wrapper)
 
     parsed_args = parser.parse_args()
+    command = parsed_args.func
+    if command == systemctl.status:
+        command = functools.partial(systemctl.status, log_lines=parsed_args.lines)
     return Args(
-        command=parsed_args.func,
+        command=command,
         service=getattr(parsed_args, "service", ""),
         unit_type=getattr(parsed_args, "type", None),
         user=getattr(parsed_args, "user", False),
-        lines=getattr(parsed_args, "lines", 10),
     )
 
 
@@ -456,12 +458,7 @@ def main() -> None:
     args = parse_args()
 
     try:
-        # Handle status command with lines parameter
-        if args.command.__name__ == "status":
-            # mypy: ignore since we know status takes two args
-            args.command(args.service, args.lines)  # type: ignore[call-arg]
-        else:
-            args.command(args.service)
+        args.command(args.service)
 
     except KeyboardInterrupt:
         sys.exit(130)

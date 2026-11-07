@@ -16,23 +16,29 @@ let
     programs.hclfmt.enable = true;
     programs.yamlfmt.enable = true;
     programs.actionlint.enable = true;
-    programs.mypy.enable = true;
-    programs.mypy.directories = {
-      "machines/eva/modules/prometheus" = { };
-      "openwrt" = { };
-      "pkgs/merge-when-green" = { };
-      "pkgs/systemctl" = { };
-      "pkgs/rbw_pinentry" = {
-        extraPythonPackages = with pkgs.python3.pkgs; [
-          keyring
+    settings.formatter.ty =
+      let
+        python = pkgs.python3.withPackages (ps: [
+          ps.dbus-python
+          ps.keyring
+        ]);
+      in
+      {
+        command = pkgs.writeShellApplication {
+          name = "ty-check";
+          runtimeInputs = [ pkgs.ty ];
+          text = ''
+            ty check --error-on-warning --python ${python} "$@"
+          '';
+        };
+        includes = [
+          "openwrt/*.py"
+          "pkgs/merge-when-green/*.py"
+          "pkgs/systemctl/*.py"
+          "pkgs/rbw_pinentry/*.py"
+          "nixosModules/niri/kwallet-tpm/*.py"
         ];
       };
-      "nixosModules/niri/kwallet-tpm" = {
-        extraPythonPackages = with pkgs.python3.pkgs; [
-          dbus-python
-        ];
-      };
-    };
     programs.deadnix.enable = true;
 
     # Keep transitive flake inputs deduplicated. `--no-lock` because the

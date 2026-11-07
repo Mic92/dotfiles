@@ -38,16 +38,6 @@ packages = ["nix_uci"]
 zip-safe = true
 include-package-data = true
 
-[tool.mypy]
-warn_redundant_casts = true
-disallow_untyped_calls = true
-disallow_untyped_defs = true
-no_implicit_optional = true
-
-[[tool.mypy.overrides]]
-module = "setuptools.*"
-ignore_missing_imports = true
-
 [tool.ruff]
 line-length = 88
 lint.select = ["ALL"]

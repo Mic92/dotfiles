@@ -5,7 +5,7 @@ import re
 import subprocess
 import sys
 from pathlib import Path
-from typing import Any, TypeVar
+from typing import Any, TypeVar, cast
 
 ROOT = Path(__file__).parent.parent.resolve()
 
@@ -17,7 +17,7 @@ class ConfigError(Exception):
 def interpolate_secrets(option_val: str, secrets: dict[str, str]) -> str:
     """Replace secret placeholders in option values with actual secret values."""
 
-    def substitute_secrets(matchobj: re.Match) -> str:
+    def substitute_secrets(matchobj: re.Match[str]) -> str:
         name = matchobj.group(1)
         val = secrets.get(name)
         if val:
@@ -32,7 +32,7 @@ def interpolate_secrets(option_val: str, secrets: dict[str, str]) -> str:
 
 def serialize_option_val(
     key: str,
-    val: list | str,
+    val: list[str] | str,
     secrets: dict[str, str],
 ) -> list[str]:
     """Serialize an option value to UCI format."""
@@ -173,7 +173,7 @@ def ensure_type[T](parent: dict[str, Any], key: str, t: type[T]) -> T:
     return val
 
 
-def ensure_dict(parent: dict[str, Any], key: str) -> dict:
+def ensure_dict(parent: dict[str, Any], key: str) -> dict[str, Any]:
     """Ensure a dictionary value is a dict."""
     return ensure_type(parent, key, dict)
 
@@ -189,7 +189,7 @@ def load_sops_file(file: str) -> dict[str, str]:
     if res.returncode != 0:
         msg = f"Cannot decrypt '{file}' with sops:\n{res.stderr}"
         raise ConfigError(msg)
-    return json.loads(res.stdout)
+    return cast("dict[str, str]", json.loads(res.stdout))
 
 
 def convert_file(path: Path) -> str:
