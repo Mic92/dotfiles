@@ -229,7 +229,6 @@ pub struct Hearing {
     pub now: u32,
     pub today: i64,
     pub music: bool,
-    pub timer: bool,
     /// We were listening for the answer to the brain's question.
     pub answering: bool,
     /// Listening ran into the time limit: only exact commands count.
@@ -249,7 +248,6 @@ impl Hearing {
             ("now".into(), f64::from(self.now).into()),
             ("today".into(), (self.today as f64).into()),
             ("music".into(), self.music.into()),
-            ("timer".into(), self.timer.into()),
             ("answering".into(), self.answering.into()),
             ("cut_off".into(), self.cut_off.into()),
             ("dry".into(), self.dry.into()),
@@ -541,7 +539,6 @@ mod tests {
             now: 36000,
             today: 20383,
             music: false,
-            timer: false,
             answering: false,
             cut_off: false,
             dry: true,

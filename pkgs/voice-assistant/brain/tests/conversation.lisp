@@ -127,6 +127,15 @@ FIELDS, alternating names and values, say."
      (is equal "Fun(Joke)" (got (hear "tell a joke" "dry" t "classified" (guess 0.1d0)) "action")
          "the grammar comes first"))))
 
+(define-test heard-knows-its-own-timer
+  :parent va-tests
+  (conversation
+   (let ((va::*timer* nil))
+     (is equal "Dismiss" (got (hear "stop" "dry" t) "action"))
+     (hear "set a timer for five minutes")
+     (is equal "Timer(Cancel)" (got (hear "stop" "dry" t) "action")
+         "stop means the timer we started, whatever Rust thinks"))))
+
 (define-test heard-follow-ups
   :parent va-tests
   (conversation

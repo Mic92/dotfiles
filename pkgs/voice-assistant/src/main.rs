@@ -543,7 +543,6 @@ impl Assistant {
                 now: ctx.now,
                 today: ctx.today,
                 music: ctx.focus.music,
-                timer: ctx.focus.timer,
                 answering,
                 cut_off,
                 dry: true,

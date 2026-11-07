@@ -4,6 +4,8 @@
 
 (in-package #:va)
 
+(declaim (ftype (function () (values boolean &optional)) timer-active-p))
+
 (defconstant +carry-over+ 120
   "Seconds \"and tomorrow?\" may refer back to the previous command.")
 
@@ -163,7 +165,7 @@ open until then. DRY only reads, keeping the question too."
                      (message-field msg "today" 'integer)
                      :previous (and (< (- at (conversation-previous-at c)) +carry-over+)
                                     (conversation-previous c))
-                     :timer (eq t (gethash "timer" msg))
+                     :timer (timer-active-p)
                      :music (eq t (gethash "music" msg)))))
     (if (and (not (awake-p at)) (not (named-p-text text 'listen-on)))
         (quiet "asleep")

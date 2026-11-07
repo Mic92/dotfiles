@@ -6,7 +6,6 @@
     "now": 36000,
     "today": 20383,
     "music": false,
-    "timer": false,
     "answering": false,
     "cut_off": false,
     "dry": true,
