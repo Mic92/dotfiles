@@ -4,6 +4,8 @@
 
 (defstruct command
   (name nil :type symbol)
+  ;; How Rust's Debug names it.
+  (kind "" :type string)
   (skill nil :type symbol)
   (templates nil :type list)
   (parsed nil :type list)
@@ -12,9 +14,17 @@
   (repeatable nil :type boolean)
   (fallback nil :type boolean)
   (fields nil :type list)
-  ;; Slots to field values, or nil to reject the match.
+  ;; Slots to field values, or nil to reject the match and t to accept it without fields.
   (parse nil :type (or null function))
   (run nil :type (or null function)))
+
+(defstruct (reply (:constructor reply (title body speech &key live)))
+  "What the assistant says, and the notification showing it. LIVE replies
+are not cached for \"repeat that\"."
+  (title "" :type string)
+  (body "" :type string)
+  (speech "" :type string)
+  (live nil :type boolean))
 
 (defvar *commands* nil
   "Every command, in definition order: ties go to the earlier one.")
@@ -45,16 +55,19 @@
 
 (defmacro defcommand (name &body body)
   "(defcommand NAME TEMPLATE... [:key value]... FORM...)
-Keys: :slots ((var CoaltonType)...), :parse, :filler, :repeatable,
-:fallback, :examples. :parse turns the matched slots into the fields, read
-with `(slot name [default])`, or nil to reject the match. Without it slot
-names are the field names. Fields are bound as variables in FORMs."
+Keys: :kind, :slots ((var CoaltonType)...), :parse, :filler, :repeatable,
+:fallback, :examples. :parse turns the matched slots, read with
+`(slot name [default])`, into the fields: a list, t for none, or nil to
+reject the match. It sees the matched template's source as TEMPLATE.
+Without it slot names are the field names. Fields are bound as variables
+in FORMs."
   (let* ((templates (loop while (stringp (car body)) collect (pop body)))
          (keys (loop while (keywordp (car body)) append (list (pop body) (pop body))))
          (slots (getf keys :slots)))
     `(progn
        (add-command
         (make-command :name ',name
+                      :kind ,(or (getf keys :kind) (remove #\- (string-capitalize name)))
                       :skill *skill*
                       :templates ',templates
                       :parsed (mapcar #'parse-template ',templates)
@@ -63,11 +76,14 @@ names are the field names. Fields are bound as variables in FORMs."
                       :repeatable ,(getf keys :repeatable)
                       :fallback ,(getf keys :fallback)
                       :fields ',slots
-                      :parse (lambda (slots)
+                      :parse (lambda (slots template)
+                               (declare (ignorable template))
                                (with-slots-of slots
                                  ,(or (getf keys :parse)
-                                      `(list ,@(loop for (var) in slots
-                                                     collect `(slot ,(string-downcase var)))))))
+                                      (if slots
+                                          `(list ,@(loop for (var) in slots
+                                                         collect `(slot ,(string-downcase var))))
+                                          t))))
                       :run (lambda ,(mapcar #'car slots)
                              (declare (ignorable ,@(mapcar #'car slots)))
                              ,@body)))

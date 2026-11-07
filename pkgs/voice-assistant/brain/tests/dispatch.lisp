@@ -35,7 +35,7 @@
   "Whether DEBUG names a command the brain has, so it must agree."
   (some (lambda (c)
           (let ((kind (format nil "~a(~a" (va::camel (va:command-skill c))
-                              (va::camel (va:command-name c)))))
+                              (va::command-kind c))))
             (and (uiop:string-prefix-p kind debug)
                  (find (char debug (length kind)) "()"))))
         (va:commands)))

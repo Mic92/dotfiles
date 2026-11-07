@@ -94,9 +94,10 @@ going to the earlier one."
           (multiple-value-bind (skipped slots) (find-template tpl ws #'slot-parser)
             (when (and skipped (or (null best) (< skipped best-skipped)))
               (multiple-value-bind (slots ok) (resolve-dates slots)
-                (let ((fields (and ok (funcall (command-parse c) slots))))
-                  (when (or fields (and ok (null (command-fields c))))
-                    (setf best (make-action c fields) best-skipped skipped)))))))))))
+                (let ((fields (and ok (funcall (command-parse c) slots (template-source tpl)))))
+                  (when fields
+                    (setf best (make-action c (if (eq fields t) nil fields))
+                          best-skipped skipped)))))))))))
 
 (defn parse-tier ((text string) (fallback boolean)) (or null action)
   "Only the catch-alls (FALLBACK) or only the rest. The question inside a
@@ -108,6 +109,11 @@ request beats a catch-all on the whole of it."
 
 (defn parse-text ((text string)) (or null action)
   (or (parse-tier text nil) (parse-tier text t)))
+
+(defn perform ((a action)) reply
+  "Run A. A plain string from the command is its speech."
+  (let ((out (apply (command-run (action-command a)) (action-fields a))))
+    (if (stringp out) (reply (command-kind (action-command a)) "" out) out)))
 
 (defn camel ((s symbol)) string
   (remove #\- (string-capitalize (symbol-name s))))
@@ -124,6 +130,6 @@ request beats a catch-all on the whole of it."
   (if (null a)
       "-"
       (let* ((c (action-command a))
-             (inner (format nil "~a~@[(~{~a~^, ~})~]" (camel (command-name c))
+             (inner (format nil "~a~@[(~{~a~^, ~})~]" (command-kind c)
                             (mapcar #'debug-value (action-fields a)))))
         (format nil "~a(~a)" (camel (command-skill c)) inner))))

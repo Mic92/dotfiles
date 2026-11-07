@@ -30,3 +30,10 @@ failure."
              (unless (zerop (sb-ext:process-exit-code p))
                (return-from run nil))))
        (error () nil)))))
+
+(defn http-get ((url string) &key (header (or null string) nil) (timeout (integer 1) 3))
+    (or null string)
+  "The body at URL, or nil on any failure."
+  (let ((body (apply #'run "curl" "-sfL" "--max-time" (princ-to-string timeout)
+                     (append (and header (list "-H" header)) (list url)))))
+    (and body (plusp (length body)) body)))

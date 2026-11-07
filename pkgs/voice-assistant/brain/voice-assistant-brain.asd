@@ -25,5 +25,5 @@
     :depends-on ("voice-assistant-brain" "parachute")
     :pathname "tests/"
     :serial t
-    :components ((:file "tests") (:file "parsing") (:file "grammar") (:file "dispatch"))
+    :components ((:file "tests") (:file "parsing") (:file "grammar") (:file "dispatch") (:file "fun"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))
