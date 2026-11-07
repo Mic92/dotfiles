@@ -40,7 +40,7 @@
   first.
 - In flakes: format code with `flake-fmt`
 - Write shell scripts that pass `shellcheck`.
-- Write Python code for 3.13 that conforms to ruff format/check and mypy
+- Write Python code for 3.13 that conforms to ruff format/check and ty
 - Add debug output or unit tests when troubleshooting, e.g. `dbg!()` in Rust
 - Code comments: Keep them minimal, Explain WHY, not WHAT. Describe current
   state, not what was removed.

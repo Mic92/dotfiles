@@ -37,6 +37,7 @@ let
           "pkgs/systemctl/*.py"
           "pkgs/rbw_pinentry/*.py"
           "nixosModules/niri/kwallet-tpm/*.py"
+          "machines/turingmachine/modules/networkmanager/*.py"
         ];
       };
     programs.deadnix.enable = true;
