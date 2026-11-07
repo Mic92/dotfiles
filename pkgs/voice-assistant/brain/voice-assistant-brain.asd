@@ -20,5 +20,5 @@
     :serial t
     :components #.(mapcar (lambda (f) (list :file f))
                           '("tests" "parsing" "grammar" "dispatch" "fun" "timer" "dialogue"
-                            "system" "media" "desktop" "info" "kagi" "news"))
+                            "system" "media" "desktop" "info" "kagi" "news" "types"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))

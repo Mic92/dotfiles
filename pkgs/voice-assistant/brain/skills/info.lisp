@@ -232,7 +232,7 @@ from today and the forecast slot."
 
 (defn in-weekend ((d integer)) boolean (or (= d 0) (= d 6)))
 
-(defn weather-fields ((day t) (place t)) list
+(defn weather-fields ((day (or null (integer 0) cons)) (place (or null string))) list
   "Fields from the day or day-part slot, nil beyond the day after tomorrow."
   (typecase day
     (null (list 0 place nil))
@@ -296,11 +296,12 @@ high and low and the chance of rain."
   (place "" :type string) (cond "" :type string) (temp 0 :type integer) (feels 0 :type integer)
   (high 0 :type integer) (low 0 :type integer) (rain 0 :type integer))
 
-(defn first-value ((v t) (key string)) (or null string)
+(defn first-value ((v (or null json)) (key string)) (or null string)
   "wttr.in wraps texts as [{\"value\": ...}]."
   (let ((s (json-get v key 0 "value"))) (and (stringp s) (trim s))))
 
-(defn weather-source ((v t) (hourly vector) (day (integer 0)) (slot t)) t
+(defn weather-source ((v json) (hourly vector) (day (integer 0)) (slot (or null json)))
+    (or null json)
   "A day part's slot, the current conditions today, the midday forecast otherwise."
   (cond (slot)
         ((= day 0) (json-get v "current_condition" 0))

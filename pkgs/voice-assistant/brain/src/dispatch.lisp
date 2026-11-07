@@ -17,7 +17,9 @@ music played when we started listening."
 
 (defn now () (integer 0) (context-now *context*))
 
-(defn current-context (&key (previous t nil) (timer boolean nil) (music boolean nil)) context
+(defn current-context (&key (previous (or null action) nil) (timer boolean nil)
+                            (music boolean nil))
+    context
   "The context for a request now, in local time."
   (multiple-value-bind (sec min hour d m y) (get-decoded-time)
     (make-context (+ sec (* 60 min) (* 3600 hour)) (day-number y m d)

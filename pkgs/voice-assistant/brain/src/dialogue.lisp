@@ -52,7 +52,11 @@
   (let ((ws (uiop:split-string text)))
     (if (and (rest ws) (in (first ws) "in" "at" "for" "on")) (rest ws) ws)))
 
-(defn dialogue-act ((ws words)) t
+(deftype act ()
+  "What a whole utterance does besides a command, like :stop or (:refine words)."
+  '(or keyword (cons (eql :refine) (cons list null))))
+
+(defn dialogue-act ((ws words)) (or null act)
   "The act a whole utterance is, if any."
   (let (best best-skipped)
     (loop for (templates . act) in *act-rules*
@@ -172,7 +176,7 @@ used while one is pending. Longer sentences are about something else."
 
 (defn say-action ((text string)) (or null action) (command-action 'say text))
 
-(defn ambient ((act t)) (or null action)
+(defn ambient ((act act)) (or null action)
   "An act without a question, resolved against the rest of the focus.
 \"never mind\" never touches a timer or the music."
   (let ((previous (context-previous *context*))
@@ -212,7 +216,7 @@ then an act about whatever else is going on."
         (let ((act (or act (answer-word ws))))
           (and act (act-response act q text))))))
 
-(defn act-response ((act t) (q question) (text string)) (or null action)
+(defn act-response ((act act) (q question) (text string)) (or null action)
   "What a bare act like \"no\" or \"maybe\" means: the question's say first."
   (or (and (question-act q) (funcall (question-act q) act))
       (case act

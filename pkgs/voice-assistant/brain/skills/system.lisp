@@ -89,10 +89,10 @@ spoken \"yes\"."
   (and (<= 1 (weekday (context-today *context*)) 5)
        (<= 9 (floor (mod (now) +day+) 3600) 17)))
 
-(defn power-action ((op t) (confirmed boolean)) (or null action)
+(defn power-action ((op va.types:Power) (confirmed boolean)) (or null action)
   (command-action 'system-poweroff op confirmed))
 
-(defn power ((op t) (confirmed boolean)) reply
+(defn power ((op va.types:Power) (confirmed boolean)) reply
   (adt-case op power
     ((lock) (power-run "noctalia msg session lock" 1 "Locked"
                        (choose *lock* nil (workday-p) *lock-work*)))
@@ -138,7 +138,7 @@ Noctalia draws the lock screen, logind lock signals are not wired up."
     ("lock [the|my|this] (screen|computer|laptop|session)" "!lock")
   "Lock the screen." "Lock.")
 
-(defn which ((text string) (op t)) (or null action)
+(defn which ((text string) (op va.types:Power)) (or null action)
   "The answer to \"me or the computer?\". Naming the computer is confirmation
 enough."
   (let ((ws (normalize text)))

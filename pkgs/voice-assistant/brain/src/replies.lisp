@@ -18,8 +18,7 @@
   "Per list of lines, keyed by its first line, the indices said lately. The
 first line stays the same object when `choose` merges lists.")
 
-(declaim (ftype (function (replies &rest t) (values string &optional)) pick))
-(defun pick (replies &rest args)
+(defn pick ((replies replies) &rest (args t)) string
   "A line from REPLIES formatted with ARGS, none of the last few again.
 Late lines replace the others at night."
   (let* ((lines (if (and *late* (plusp (length (replies-late replies))))

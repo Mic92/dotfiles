@@ -127,7 +127,7 @@ PARSER gives a slot's parser by name."
         (multiple-value-bind (end slots) (match-at rest words (+ wi (length alt)) parser)
           (when end (return (values end slots))))))))
 
-(defn match-slot ((name string) (optional t) (rest list) (words simple-vector) (wi fixnum)
+(defn match-slot ((name string) (optional boolean) (rest list) (words simple-vector) (wi fixnum)
                   (parser function))
     (values (or null fixnum) slots)
   "Slot NAME at WORDS from WI, longest first so \"{duration} timer\" still

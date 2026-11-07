@@ -16,11 +16,9 @@
   "BODY's value, its effects only recorded."
   `(let ((*fake-effects* (list :recording))) ,@body))
 
-(declaim (ftype (function () (values list &optional)) effects))
-(defun effects () *fake-effects*)
+(defn effects () list *fake-effects*)
 
-(declaim (ftype (function (string &rest string) (values (or null string) &optional)) run))
-(defun run (program &rest args)
+(defn run ((program string) &rest (args string)) (or null string)
   "Run PROGRAM with ARGS, without a shell. Returns its stdout, or nil on
 failure."
   (cond

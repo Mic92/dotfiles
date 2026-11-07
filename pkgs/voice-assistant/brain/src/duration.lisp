@@ -42,7 +42,7 @@
     ("few" 3d0)
     (("a" "an") (and (null num) next (unit-seconds next) 1d0))))
 
-(defn leftover-scale ((last-unit (or null real)) (fraction-only t)) real
+(defn leftover-scale ((last-unit (or null real)) (fraction-only boolean)) real
   "Seconds per unit of a trailing number: minutes alone, the next smaller unit
 after one (\"1 hour 20\"), the unit itself after a fraction."
   (cond ((null last-unit) 60)

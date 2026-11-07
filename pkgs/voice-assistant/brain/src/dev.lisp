@@ -2,20 +2,17 @@
 
 ;;; The eval socket: one form per connection, plain text back.
 
-(declaim (ftype (function () (values pathname &optional)) runtime-dir))
-(defun runtime-dir ()
+(defn runtime-dir () pathname
   (merge-pathnames "voice-assistant/"
                    (uiop:ensure-directory-pathname
                     (or (uiop:getenv "XDG_RUNTIME_DIR") "/tmp/"))))
 
-(declaim (ftype (function (condition) (values string &optional)) short-backtrace))
-(defun short-backtrace (c)
+(defn short-backtrace ((c condition)) string
   (with-output-to-string (s)
     (format s "~a: ~a~%" (type-of c) c)
     (sb-debug:print-backtrace :stream s :count 15)))
 
-(declaim (ftype (function (string) (values string &optional)) eval-string))
-(defun eval-string (text)
+(defn eval-string ((text string)) string
   "Every form in TEXT, in package VA. Output, then the last values."
   (let ((*package* (find-package '#:va)))
     (with-output-to-string (*standard-output*)
@@ -33,13 +30,11 @@
           (sb-ext:timeout () (format t "~&timed out after 10 s~%"))
           (error (c) (format t "~&~a" (short-backtrace c))))))))
 
-(declaim (ftype (function (stream) (values string &optional)) read-all))
-(defun read-all (stream)
+(defn read-all ((stream stream)) string
   (with-output-to-string (out)
     (loop for line = (read-line stream nil) while line do (write-line line out))))
 
-(declaim (ftype (function (pathname) nil) serve))
-(defun serve (path)
+(defn serve ((path pathname)) nil
   "Answer eval requests on the Unix socket PATH, each in its own thread."
   (ensure-directories-exist path)
   (when (probe-file path) (delete-file path))
@@ -58,8 +53,7 @@
             (sb-bsd-sockets:socket-close client)))
         :name "va-eval")))))
 
-(declaim (ftype (function () (values list &optional)) reload))
-(defun reload ()
+(defn reload () list
   "Recompile changed files and the ones after them (the system is serial,
 so Coalton types are rechecked). Returns the warnings as strings."
   (let (warnings)
@@ -78,8 +72,7 @@ so Coalton types are rechecked). Returns the warnings as strings."
         (asdf:load-system "voice-assistant-brain")))
     (nreverse warnings)))
 
-(declaim (ftype (function () (values boolean &optional)) check))
-(defun check ()
+(defn check () boolean
   "Reload, then run the tests. Prints failures and one summary line."
   (let ((warnings (reload)))
     (dolist (w warnings) (format t "~a~%" w))
@@ -95,8 +88,7 @@ so Coalton types are rechecked). Returns the warnings as strings."
               (length warnings) (length passed) (length failed))
       (and (null warnings) (null failed)))))
 
-(declaim (ftype (function () nil) main))
-(defun main ()
+(defn main () nil
   "Entry point of the live brain."
   (setf *random-state* (make-random-state t))
   (serve (merge-pathnames "brain.sock" (runtime-dir))))
