@@ -178,6 +178,8 @@ pub struct Hearing {
     pub cut_off: bool,
     /// Only parse, as for `--stdin`.
     pub dry: bool,
+    /// Answer "unsure" instead of trying the catch-alls, to rescore first.
+    pub unsure: bool,
 }
 
 impl Hearing {
@@ -191,6 +193,7 @@ impl Hearing {
             ("answering".into(), self.answering.into()),
             ("cut_off".into(), self.cut_off.into()),
             ("dry".into(), self.dry.into()),
+            ("unsure".into(), self.unsure.into()),
         ])
     }
 }
@@ -266,6 +269,19 @@ impl Shared {
         *guard = None;
         let b = guard.insert(Brain::connect()?);
         b.heard(h, filler)
+    }
+
+    /// The strict reading of each text, nothing when the brain is away.
+    pub fn parse(&self, texts: &[String], ctx: &Context) -> Vec<Option<String>> {
+        let mut guard = self.0.lock().unwrap_or_else(PoisonError::into_inner);
+        let parsed = match guard.as_mut() {
+            Some(b) => b.parse(texts, ctx),
+            None => Err("not connected".into()),
+        };
+        parsed
+            .inspect_err(|e| eprintln!("voice-assistant: {e}"))
+            .map(|ps| ps.into_iter().map(|p| p.strict).collect())
+            .unwrap_or_else(|_| vec![None; texts.len()])
     }
 }
 
@@ -398,6 +414,7 @@ mod tests {
             answering: false,
             cut_off: false,
             dry: true,
+            unsure: false,
         };
         let mut fields = h.fields();
         for k in ["id", "type"] {

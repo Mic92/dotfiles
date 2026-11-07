@@ -90,7 +90,11 @@ pub fn run(log: &Path, mut asr: Option<&mut Asr>, mut classifier: Option<&mut Cl
                     Some(t) => {
                         // Same order as live: real intents, the audio, catch-alls.
                         if skills::parse_tier(&t, &ctx, false).is_none() {
-                            rescored = rescore::run(asr, "", &t, &ctx);
+                            rescored = rescore::run(asr, "", &t, |cs| {
+                                cs.iter()
+                                    .map(|c| skills::parse_tier(c, &ctx, false))
+                                    .collect()
+                            });
                         }
                         t
                     }

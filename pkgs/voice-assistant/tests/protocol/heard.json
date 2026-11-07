@@ -9,7 +9,8 @@
     "timer": false,
     "answering": false,
     "cut_off": false,
-    "dry": true
+    "dry": true,
+    "unsure": false
   },
   "reply": {
     "id": 5,

@@ -6,7 +6,7 @@ use std::fmt;
 use std::time::Instant;
 
 use crate::asr::Asr;
-use crate::skills::{self, Action, Context};
+use crate::skills;
 
 /// Sound-alike commands to score against the audio.
 const CANDIDATES: usize = 8;
@@ -16,18 +16,18 @@ const CANDIDATES: usize = 8;
 /// "Sing for me" at -9), the best wrong one 18 or more.
 const MARGIN: f32 = 10.0;
 
-pub struct Rescored {
+pub struct Rescored<A> {
     pub heard: String,
     pub heard_score: f32,
     pub best: String,
     pub score: f32,
-    pub action: Action,
+    pub action: A,
     pub accepted: bool,
     candidates: usize,
     secs: f32,
 }
 
-impl fmt::Display for Rescored {
+impl<A> fmt::Display for Rescored<A> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
@@ -62,8 +62,14 @@ fn capitalised(text: &str) -> String {
 }
 
 /// `asr` must still hold the audio `heard` was transcribed from, with
-/// `said_before` (the wake word) in front of it.
-pub fn run(asr: &mut Asr, said_before: &str, heard: &str, ctx: &Context) -> Option<Rescored> {
+/// `said_before` (the wake word) in front of it. `parse` reads all
+/// candidates at once, as the Lisp brain takes one round trip for them.
+pub fn run<A>(
+    asr: &mut Asr,
+    said_before: &str,
+    heard: &str,
+    parse: impl FnOnce(&[String]) -> Vec<Option<A>>,
+) -> Option<Rescored<A>> {
     let mut candidates = vec![heard.to_owned()];
     candidates.extend(skills::sound_alikes(heard, CANDIDATES));
     if candidates.len() < 2 {
@@ -86,11 +92,11 @@ pub fn run(asr: &mut Asr, said_before: &str, heard: &str, ctx: &Context) -> Opti
         .map(|p| p.iter().copied().fold(f32::NEG_INFINITY, f32::max))
         .collect();
     let heard_score = scores.first().copied()?;
-    let (best, score, action) = candidates
+    let (best, score, action) = candidates[1..]
         .iter()
-        .zip(&scores)
-        .skip(1)
-        .filter_map(|(c, s)| Some((c, *s, skills::parse_tier(c, ctx, false)?)))
+        .zip(&scores[1..])
+        .zip(parse(&candidates[1..]))
+        .filter_map(|((c, s), a)| Some((c, *s, a?)))
         .max_by(|a, b| a.1.total_cmp(&b.1))?;
     Some(Rescored {
         heard: heard.to_owned(),

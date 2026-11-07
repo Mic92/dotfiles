@@ -60,7 +60,7 @@ struct Config {
     /// Texts to run through the grammar, then exit.
     parse: Vec<String>,
     golden: bool,
-    /// Also ask the Lisp brain, and show where it disagrees.
+    /// Let the Lisp brain answer.
     lisp: bool,
 }
 
@@ -167,11 +167,11 @@ enum State {
 /// What a command running in the background sends back.
 enum Done {
     Filler(String),
-    Rust(skills::Action, skills::Reply),
-    Lisp(Box<LispDone>),
+    Skill(skills::Action, skills::Reply),
+    Brain(Box<BrainAnswer>),
 }
 
-struct LispDone {
+struct BrainAnswer {
     text: String,
     audio: Vec<f32>,
     heard: Result<brain::Heard, String>,
@@ -203,8 +203,8 @@ struct Assistant {
     pending: Option<mpsc::Receiver<Done>>,
     /// The Lisp brain, with `--brain lisp`.
     brain: Option<brain::Shared>,
-    /// The Lisp brain asked a question.
-    asking: bool,
+    /// The brain asked a question and waits for the answer.
+    brain_asked: bool,
     /// For "and tomorrow?"; forgotten after `CARRY_OVER`.
     previous: Option<(skills::Action, Instant)>,
     wakelog: wakelog::WakeLog,
@@ -303,13 +303,13 @@ impl Assistant {
         while let Some(rx) = &self.pending {
             match rx.try_recv() {
                 Ok(Done::Filler(line)) => self.say(&line, true),
-                Ok(Done::Rust(action, reply)) => {
+                Ok(Done::Skill(action, reply)) => {
                     self.pending = None;
                     self.finish(action, reply);
                 }
-                Ok(Done::Lisp(done)) => {
+                Ok(Done::Brain(done)) => {
                     self.pending = None;
-                    self.finish_lisp(*done);
+                    self.carry_out(*done);
                 }
                 Err(mpsc::TryRecvError::Empty) => break,
                 Err(mpsc::TryRecvError::Disconnected) => {
@@ -333,7 +333,7 @@ impl Assistant {
             }
             self.speaking = false;
             self.reset_wake();
-            if self.question.is_some() || self.asking {
+            if self.question.is_some() || self.brain_asked {
                 self.start_listening(Vec::new());
             } else if mem::take(&mut self.resume_after_speech) {
                 self.unhush();
@@ -421,7 +421,7 @@ impl Assistant {
                     self.log("no speech");
                     self.wakelog.outcome("no-speech", "");
                     self.question = None;
-                    self.asking = false;
+                    self.brain_asked = false;
                     self.sound("cancel");
                     self.unhush();
                 }
@@ -537,8 +537,8 @@ impl Assistant {
             return;
         }
         if let Some(brain) = self.brain.clone() {
-            let answering = mem::take(&mut self.asking) && !cut_off;
-            let hearing = brain::Hearing {
+            let answering = mem::take(&mut self.brain_asked) && !cut_off;
+            let mut hearing = brain::Hearing {
                 text: text.clone(),
                 now: ctx.now,
                 today: ctx.today,
@@ -546,9 +546,26 @@ impl Assistant {
                 timer: ctx.focus.timer,
                 answering,
                 cut_off,
-                dry: self.cfg.stdin,
+                dry: true,
+                unsure: !cut_off,
             };
-            self.hear_lisp(&brain, hearing, audio);
+            let unsure = brain
+                .heard(&hearing, |_| {})
+                .is_ok_and(|h| h.outcome == "unsure");
+            if unsure
+                && !self.cfg.stdin
+                && let Some(r) = rescore::run(&mut self.asr, &said_before, &text, |cs| {
+                    brain.parse(cs, &ctx)
+                })
+            {
+                self.log(&r.to_string());
+                if r.accepted {
+                    hearing.text = r.best;
+                }
+            }
+            hearing.dry = self.cfg.stdin;
+            hearing.unsure = false;
+            self.ask_brain(&brain, hearing, &text, audio);
             return;
         }
         // Rescoring against the audio comes before the catch-all web
@@ -598,19 +615,27 @@ impl Assistant {
         let (tx, rx) = mpsc::channel();
         thread::spawn(move || {
             let reply = skills::run(&action, &ctx);
-            let _ = tx.send(Done::Rust(action, reply));
+            let _ = tx.send(Done::Skill(action, reply));
         });
         self.pending = Some(rx);
     }
 
-    /// The Lisp brain hears TEXT in the background, as commands may take
+    /// Tells the brain what was heard and lets it answer in the background, as commands may take
     /// seconds. Its filler arrives first.
-    fn hear_lisp(&mut self, brain: &brain::Shared, hearing: brain::Hearing, audio: &[f32]) {
-        let text = hearing.text.clone();
+    /// `heard` is what the recogniser wrote, which the log keeps even when
+    /// rescoring settled on another sentence.
+    fn ask_brain(
+        &mut self,
+        brain: &brain::Shared,
+        hearing: brain::Hearing,
+        heard: &str,
+        audio: &[f32],
+    ) {
+        let text = heard.to_owned();
         let audio = audio.to_vec();
         if self.cfg.stdin {
             let heard = brain.heard(&hearing, |_| {});
-            self.finish_lisp(LispDone { text, audio, heard });
+            self.carry_out(BrainAnswer { text, audio, heard });
             return;
         }
         let (tx, rx) = mpsc::channel();
@@ -620,13 +645,13 @@ impl Assistant {
             let heard = brain.heard(&hearing, |line| {
                 let _ = fillers.send(Done::Filler(line));
             });
-            let _ = tx.send(Done::Lisp(Box::new(LispDone { text, audio, heard })));
+            let _ = tx.send(Done::Brain(Box::new(BrainAnswer { text, audio, heard })));
         });
         self.pending = Some(rx);
     }
 
-    fn finish_lisp(&mut self, done: LispDone) {
-        let LispDone { text, audio, heard } = done;
+    fn carry_out(&mut self, done: BrainAnswer) {
+        let BrainAnswer { text, audio, heard } = done;
         let h = match heard {
             Ok(h) => h,
             Err(e) => {
@@ -667,7 +692,7 @@ impl Assistant {
         if h.voice == Some(false) {
             self.cfg.speak = false;
         }
-        self.asking = h.question;
+        self.brain_asked = h.question;
         if !h.question {
             self.end_conversation(h.leave_paused);
         } else if !self.speaking {
@@ -684,7 +709,11 @@ impl Assistant {
         if self.cfg.stdin {
             return None;
         }
-        let r = rescore::run(&mut self.asr, said_before, text, ctx)?;
+        let r = rescore::run(&mut self.asr, said_before, text, |cs| {
+            cs.iter()
+                .map(|c| skills::parse_tier(c, ctx, false))
+                .collect()
+        })?;
         self.log(&r.to_string());
         r.accepted.then_some(r.action)
     }
@@ -1031,7 +1060,7 @@ fn main() {
         previous: None,
         pending: None,
         brain,
-        asking: false,
+        brain_asked: false,
         history: VecDeque::new(),
         started: Instant::now(),
         dumps: 0,
