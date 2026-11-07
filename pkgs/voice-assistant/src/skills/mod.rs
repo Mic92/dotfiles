@@ -215,8 +215,7 @@ impl Context {
         }
     }
 
-    /// Wednesday, 2025-10-22 at `now`, for tests.
-    #[cfg(test)]
+    /// Wednesday, 2025-10-22 at `now`, for tests and `--golden`.
     pub const fn at(now: u32) -> Self {
         Context {
             now,

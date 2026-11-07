@@ -23,6 +23,20 @@ pub fn kind(a: &skills::Action) -> String {
     d[..end].to_owned()
 }
 
+/// `--golden`: what the grammar alone makes of `text`, from the regular
+/// intents and from the fallback ones, as `text\tintent\tfallback` with
+/// `-` for nothing. The clock
+/// is fixed so dates don't drift between runs.
+pub fn golden_line(text: &str) -> String {
+    let ctx = Context::at(9 * 3600);
+    let show = |a: Option<skills::Action>| a.map_or_else(|| "-".to_owned(), |a| format!("{a:?}"));
+    format!(
+        "{text}\t{}\t{}",
+        show(skills::parse_tier(text, &ctx, false)),
+        show(skills::parse_tier(text, &ctx, true))
+    )
+}
+
 /// 16-bit mono PCM from a WAV file, as written by `write_wav`.
 pub fn read_wav(path: &Path) -> Option<Vec<f32>> {
     let bytes = fs::read(path).ok()?;
@@ -146,6 +160,16 @@ mod tests {
     use std::env;
     use std::fs;
     use std::process;
+
+    #[test]
+    fn golden_lines_use_a_fixed_clock() {
+        assert_eq!(golden_line("tell a joke"), "tell a joke\tFun(Joke)\t-");
+        assert_eq!(golden_line("tell a joke"), golden_line("tell a joke"));
+        // Wednesday, so Friday is two days ahead.
+        let line = golden_line("what's on my calendar on friday");
+        assert!(line.contains("day: 2,"), "{line}");
+        assert_eq!(golden_line("blorp"), "blorp\t-\t-");
+    }
 
     #[test]
     fn kinds() {

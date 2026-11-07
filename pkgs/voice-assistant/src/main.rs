@@ -58,6 +58,7 @@ struct Config {
     transcribe: Vec<PathBuf>,
     /// Texts to run through the grammar, then exit.
     parse: Vec<String>,
+    golden: bool,
 }
 
 fn default_path(build_env: Option<&str>) -> PathBuf {
@@ -69,9 +70,10 @@ fn usage() -> ! {
         "usage: voice-assistant [--wake-model F] [--threshold P] [--vad-model F] [--asr-model DIR]\n\
          \x20                      [--intent-model DIR] [--threads N] [--sounds DIR] [--tts-model DIR]\n\
          \x20                      [--voice N] [--speed X] [--no-tts] [--verbose] [--stdin]\n\
-         \x20                      [--debug-dir DIR] [--say TEXT] [--replay] [--parse TEXT|-]\n\
+         \x20                      [--debug-dir DIR] [--say TEXT] [--replay] [--parse TEXT|-] [--golden]\n\
          --say speaks TEXT with the configured voice and exits.\n\
          --parse shows how TEXT (or each stdin line for -) is understood and exits.\n\
+         --golden prints the grammar's reading of each stdin line at a fixed clock.\n\
          --replay re-checks every logged utterance against the current build.\n\
          --debug-dir saves the audio around each wake word and command as WAV.\n\
          --stdin processes raw 16 kHz s16le mono from stdin instead of PipeWire."
@@ -99,6 +101,7 @@ fn parse_args() -> Config {
         replay: false,
         transcribe: Vec::new(),
         parse: Vec::new(),
+        golden: false,
     };
     let mut args = env::args().skip(1);
     while let Some(a) = args.next() {
@@ -122,6 +125,7 @@ fn parse_args() -> Config {
             "--replay" => c.replay = true,
             "--transcribe" => c.transcribe.push(val().into()),
             "--parse" => c.parse.push(val()),
+            "--golden" => c.golden = true,
             _ => usage(),
         }
     }
@@ -822,6 +826,12 @@ fn main() {
         tts.say(text, false);
         while tts.speaking(Duration::ZERO) {
             thread::sleep(Duration::from_millis(50));
+        }
+        return;
+    }
+    if cfg.golden {
+        for line in io::stdin().lines().map_while(Result::ok) {
+            println!("{}", replay::golden_line(&line));
         }
         return;
     }
