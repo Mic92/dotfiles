@@ -78,23 +78,41 @@ sent before it carry the id too."
           do (write-line (answer-line line) stream)
           (finish-output stream))))
 
-(defn accept-on ((path pathname) (name string) (handler function)) nil
-  "Call HANDLER with a stream for each connection to the Unix socket PATH,
-each in its own thread."
+(defn listening-socket ((path pathname)) sb-bsd-sockets:local-socket
+  "A fresh Unix socket listening on PATH."
   (ensure-directories-exist path)
   (when (probe-file path) (delete-file path))
   (let ((server (make-instance 'sb-bsd-sockets:local-socket :type :stream)))
     (sb-bsd-sockets:socket-bind server (namestring path))
     (sb-bsd-sockets:socket-listen server 8)
+    server))
+
+(defn handle-client ((client sb-bsd-sockets:local-socket) (name string) (handler function))
+    null
+  "Call HANDLER with a stream for CLIENT, then hang up."
+  (unwind-protect
+       (handler-case
+           (funcall handler (sb-bsd-sockets:socket-make-stream
+                             client :input t :output t :element-type 'character
+                             :external-format :utf-8))
+         (error (c) (format *error-output* "~&va-brain: ~a: ~a~%" name c)))
+    (sb-bsd-sockets:socket-close client))
+  nil)
+
+(defn accept-on ((path pathname) (name string) (handler function)) nil
+  "Call HANDLER with a stream for each connection to the Unix socket PATH,
+each in its own thread."
+  (let ((server (listening-socket path)))
     (loop
      (let ((client (sb-bsd-sockets:socket-accept server)))
-       (sb-thread:make-thread
-        (lambda ()
-          (unwind-protect
-               (handler-case
-                   (funcall handler (sb-bsd-sockets:socket-make-stream
-                                     client :input t :output t :element-type 'character
-                                     :external-format :utf-8))
-                 (error (c) (format *error-output* "~&va-brain: ~a: ~a~%" name c)))
-            (sb-bsd-sockets:socket-close client)))
-        :name name)))))
+       (sb-thread:make-thread (lambda () (handle-client client name handler)) :name name)))))
+
+(defn serve-one ((path pathname) (handler function)) null
+  "Serve a single client on PATH, as a private brain does, which then has
+no reason to live on, even when its parent was killed without cleaning up."
+  (let ((server (listening-socket path)))
+    (unwind-protect
+         (handle-client (sb-bsd-sockets:socket-accept server) "va-private" handler)
+      (sb-bsd-sockets:socket-close server)
+      (when (probe-file path) (delete-file path)))
+    nil))

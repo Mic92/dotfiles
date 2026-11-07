@@ -29,3 +29,16 @@
   :parent va-tests
   (is equal "{\"id\":null,\"type\":\"error\",\"message\":\"not a JSON object\"}"
       (va::answer-line "[1,")))
+
+(define-test private-brain-ends-with-its-client
+  :parent va-tests
+  (let* ((path (pathname (format nil "/tmp/va-serve-one-~d.sock" (random 1000000))))
+         (served (sb-thread:make-thread
+                  (lambda () (va::serve-one path (lambda (s) (read-line s nil)))))))
+    (loop repeat 100 until (probe-file path) do (sleep 1/100))
+    (let ((c (make-instance 'sb-bsd-sockets:local-socket :type :stream)))
+      (sb-bsd-sockets:socket-connect c (namestring path))
+      (sb-bsd-sockets:socket-close c))
+    (sb-thread:join-thread served :timeout 5 :default :still-serving)
+    (false (sb-thread:thread-alive-p served))
+    (false (probe-file path) "the socket is gone")))

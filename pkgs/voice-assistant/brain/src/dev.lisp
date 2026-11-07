@@ -79,11 +79,12 @@ so Coalton types are rechecked). Returns the warnings as strings."
 
 (defn main () nil
   "Entry point of the brain. With --socket PATH it only speaks the protocol
-there, as a private brain for one client, otherwise it is the live brain."
+there, as a private brain for one client, and exits with it, otherwise it is the live brain."
   (setf *random-state* (make-random-state t))
   (let ((private (second (member "--socket" sb-ext:*posix-argv* :test #'string=))))
     (unless private
       (sb-thread:make-thread (lambda () (serve (merge-pathnames "eval.sock" (runtime-dir))))
                              :name "va-eval server"))
-    (accept-on (if private (pathname private) (merge-pathnames "brain.sock" (runtime-dir)))
-               "va-protocol" #'converse)))
+    (cond (private (serve-one (pathname private) #'converse)
+                   (sb-ext:exit :code 0))
+          (t (accept-on (merge-pathnames "brain.sock" (runtime-dir)) "va-protocol" #'converse)))))
