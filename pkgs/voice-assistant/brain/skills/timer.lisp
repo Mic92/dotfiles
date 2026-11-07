@@ -311,7 +311,7 @@ the last minutes."
   :slots ((day coalton:UFix))
   :examples ("Set a timer for tomorrow." "Alarm tomorrow")
   (reply "When?" "" (pick *ask-when* (if (zerop day) "Today" "Tomorrow"))
-         :question (ask-time day)))
+         :question (question :answer (ask-time day))))
 
 (defcommand timer-start-in
   "[set|start|make] [a|an|the|my] (timer|alarm) [for|to|in|of] {duration}"

@@ -41,3 +41,12 @@ failure."
   (let ((body (apply #'run "curl" "-sfL" "--max-time" (princ-to-string timeout)
                      (append (and header (list "-H" header)) (list url)))))
     (and body (plusp (length body)) body)))
+
+(defn spawn ((program string) &rest (args string)) null
+  "Start PROGRAM with ARGS without waiting for it."
+  (if *fake-effects*
+      (push (cons program args) *fake-effects*)
+      (handler-case (sb-ext:run-program program args :search t :wait nil
+                                        :output nil :error nil :input nil)
+        (error () nil)))
+  nil)

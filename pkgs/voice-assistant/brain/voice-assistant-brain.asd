@@ -17,14 +17,16 @@
                  (:file "grammar")
                  (:file "commands")
                  (:file "dispatch")
+                 (:file "dialogue")
                  (:file "dev")
                  (:module "skills" :pathname "../skills/" :serial t
-                          :components ((:file "timer") (:file "fun")))))
+                          :components ((:file "timer") (:file "system") (:file "volume")
+                                       (:file "fun") (:file "core")))))
 
 (defsystem "voice-assistant-brain/tests"
     :depends-on ("voice-assistant-brain" "parachute")
     :pathname "tests/"
     :serial t
     :components ((:file "tests") (:file "parsing") (:file "grammar") (:file "dispatch") (:file "fun")
-                 (:file "timer"))
+                 (:file "timer") (:file "dialogue") (:file "system"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))

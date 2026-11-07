@@ -2,10 +2,15 @@
 
 (in-package #:va)
 
-(defstruct (context (:constructor make-context (now today)))
-  "Seconds since midnight and the day number of today."
+(defstruct (context (:constructor make-context (now today &key previous timer music)))
+  "Seconds since midnight, the day number of today, and what is going on: the
+last action if recent, whether a timer runs or rang a moment ago, and whether
+music played when we started listening."
   (now 0 :type (integer 0))
-  (today 0 :type integer))
+  (today 0 :type integer)
+  (previous nil)
+  (timer nil :type boolean)
+  (music nil :type boolean))
 
 (defvar *context* (make-context (* 9 3600) (day-number 2025 10 22)))
 
@@ -111,7 +116,9 @@ request beats a catch-all on the whole of it."
   (let* ((ws (normalize text))
          (core (unwrap-request ws)))
     (or (and (not fallback) (not (equal core ws)) (best-match core nil))
-        (best-match ws fallback))))
+        (best-match ws fallback)
+        (and (not fallback)
+             (let ((act (dialogue-act core))) (and act (ambient act)))))))
 
 (defn parse-text ((text string)) (or null action)
   (or (parse-tier text nil) (parse-tier text t)))
@@ -130,6 +137,10 @@ request beats a catch-all on the whole of it."
   (typecase v
     (null (if (eq type 'coalton:Boolean) "false" "None"))
     ((eql t) "true")
+    ;; Coalton constructors without fields, like Power's Poweroff.
+    (standard-object
+     (let ((name (symbol-name (type-of v))))
+       (string-capitalize (subseq name (1+ (position #\/ name))))))
     (string (format nil "~s" v))
     (float (if (= v (ftruncate v)) (format nil "~,1f" v) (format nil "~f" v)))
     (otherwise (princ-to-string v))))
@@ -149,4 +160,4 @@ request beats a catch-all on the whole of it."
                                          collect (substitute #\_ #\- (string-downcase name))
                                          collect v)))
                           (t (format nil "~a(~{~a~^, ~})" (command-kind c) values)))))
-        (format nil "~a(~a)" (camel (command-skill c)) inner))))
+        (if (command-bare c) inner (format nil "~a(~a)" (camel (command-skill c)) inner)))))

@@ -47,4 +47,7 @@
           for lisp = (parsed text)
           ;; Other skills may still win once they are ported.
           when (or (ported-p rust) (string= rust "-"))
-          do (is equal rust lisp "~s" text))))
+          ;; What Say says is picked at random.
+          do (if (uiop:string-prefix-p "Say(" rust)
+                 (true (uiop:string-prefix-p "Say(" lisp) "~s: ~a" text lisp)
+                 (is equal rust lisp "~s" text)))))

@@ -83,7 +83,8 @@
                (va::perform (va::parse-text "alarm tomorrow")))))
      (loop for (answer secs) in `(("7 am" ,(hms 17 0)) ("At 7." ,(hms 17 0))
                                   ("half past eight" ,(hms 18 30)))
-           do (is eql secs (first (va::action-fields (funcall ask answer))) "~s" answer)))))
+           do (is eql secs (first (va::action-fields (funcall (va::question-answer ask) answer)))
+                  "~s" answer)))))
 
 (define-test timer-replies
   :parent va-tests

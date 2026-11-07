@@ -7,6 +7,8 @@
   ;; How Rust's Debug names it, and whether with field names.
   (kind "" :type string)
   (named nil :type boolean)
+  ;; Printed without the skill around it, like Rust's core actions.
+  (bare nil :type boolean)
   (skill nil :type symbol)
   (templates nil :type list)
   (parsed nil :type list)
@@ -17,7 +19,11 @@
   (fields nil :type list)
   ;; Slots to field values, or nil to reject the match and t to accept it without fields.
   (parse nil :type (or null function))
-  (run nil :type (or null function)))
+  (run nil :type (or null function))
+  ;; "and tomorrow?": the previous action and the words, to a new action.
+  (refine nil :type (or null function)))
+
+(declaim (ftype function question-act question-answer))
 
 (defstruct (reply (:constructor reply (title body speech &key live question)))
   "What the assistant says, and the notification showing it. LIVE replies
@@ -26,17 +32,32 @@ are not cached for \"repeat that\"."
   (body "" :type string)
   (speech "" :type string)
   (live nil :type boolean)
-  ;; Interprets the next utterance as an answer: text to an action or nil.
-  (question nil :type (or null function)))
+  ;; How to take the next utterance.
+  (question nil :type (or null question)))
+
+(defstruct (question (:constructor question (&key answer act)))
+  "A question we asked and wait to have answered: ANSWER takes free text
+(\"the computer\", \"7 am\"), ACT yes, no and the like. Either returns an
+action, or nil to fall through."
+  (answer nil :type (or null function))
+  (act nil :type (or null function)))
 
 (defvar *commands* nil
-  "Every command, in definition order: ties go to the earlier one.")
+  "Every command, by skill in `*skill-order*`, then in definition order: ties
+go to the earlier one.")
+
+(defparameter *skill-order*
+  '(timer system volume media desktop apps info calc spell fun chat ops notes reminders
+    meetings news kagi core))
 
 (defn add-command ((c command)) symbol
   (let ((old (member (command-name c) *commands* :key #'command-name)))
     (if old
         (setf (car old) c)
-        (setf *commands* (append *commands* (list c))))
+        (setf *commands*
+              (stable-sort (append *commands* (list c)) #'<
+                           :key (lambda (c) (or (position (command-skill c) *skill-order*)
+                                                (length *skill-order*))))))
     (command-name c)))
 
 (defmacro with-slots-of (slots &body body)
@@ -57,6 +78,12 @@ are not cached for \"repeat that\"."
 (defn commands () list *commands*)
 
 (eval-when (:compile-toplevel :load-toplevel :execute)
+  (defn car-safe ((x t)) t (and (consp x) (car x)))
+
+  (defn join-template ((parts list)) string
+    "Pieces of a long template. Spaces inside groups are harmless."
+    (format nil "~{~a~^ ~}" parts))
+
   (defn default-kind ((name symbol) (skill symbol)) string
     "NAME in CamelCase, without the skill's prefix: timer-cancel is Cancel."
     (let* ((s (symbol-name name))
@@ -66,13 +93,16 @@ are not cached for \"repeat that\"."
 
 (defmacro defcommand (name &body body)
   "(defcommand NAME TEMPLATE... [:key value]... FORM...)
-Keys: :kind, :named, :slots ((var CoaltonType)...), :parse, :filler, :repeatable,
-:fallback, :examples. :parse turns the matched slots, read with
+A template is a string, or (:join string...) for long ones.
+Keys: :kind, :named, :bare, :refine, :slots ((var CoaltonType)...), :parse,
+:filler, :repeatable, :fallback, :examples. :parse turns the matched slots, read with
 `(slot name [default])`, into the fields: a list, t for none, or nil to
 reject the match. It sees the matched template's source as TEMPLATE.
 Without it slot names are the field names. Fields are bound as variables
 in FORMs."
-  (let* ((templates (loop while (stringp (car body)) collect (pop body)))
+  (let* ((templates (loop while (or (stringp (car body)) (eq (car-safe (car body)) :join))
+                          collect (let ((tpl (pop body)))
+                                    (if (stringp tpl) tpl (join-template (rest tpl))))))
          (keys (loop while (keywordp (car body)) append (list (pop body) (pop body))))
          (slots (getf keys :slots)))
     `(progn
@@ -80,6 +110,8 @@ in FORMs."
         (make-command :name ',name
                       :kind ,(or (getf keys :kind) (default-kind name *skill*))
                       :named ,(getf keys :named)
+                      :bare ,(getf keys :bare)
+                      :refine ,(getf keys :refine)
                       :skill *skill*
                       :templates ',templates
                       :parsed (mapcar #'parse-template ',templates)

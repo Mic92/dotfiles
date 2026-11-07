@@ -3,7 +3,8 @@
 (defpackage #:va.types
   (:use #:coalton #:coalton-prelude)
   (:export #:Clock #:clock-secs #:clock-twelve-hour #:clock-marked
-           #:Date #:Weekday #:MonthDay #:OfMonth))
+           #:Date #:Weekday #:MonthDay #:OfMonth
+           #:Power #:Poweroff #:Reboot #:Suspend #:Lock))
 
 (in-package #:va.types)
 
@@ -27,4 +28,10 @@ for 1 to 12), and whether it is unmistakably a time of day."
    ;; 1-based month, day.
    (MonthDay UFix UFix)
    ;; "the 15th": this month, or the next once it passed.
-   (OfMonth UFix)))
+   (OfMonth UFix))
+
+ (define-type Power
+     Poweroff
+   Reboot
+   Suspend
+   Lock))
