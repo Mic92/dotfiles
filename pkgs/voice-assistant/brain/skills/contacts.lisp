@@ -5,25 +5,6 @@
 
 (in-skill contact)
 
-(defparameter *not-people*
-  '("you" "your" "yours" "i" "me" "my" "it" "this" "that" "the" "a" "he" "she" "they" "we" "us"
-    "her" "him" "anyone" "anyone's" "someone" "everyone" "everybody" "nobody" "be" "turn" "get"
-    "born" "birthday" "next" "now")
-  "Words that are not a contact's name.")
-
-(defn person ((ws words)) (or null string)
-  "\"shannan's\", \"bob marley\": up to three words, possessive dropped."
-  (let* ((last (car (last ws)))
-         (ws (if (and last (uiop:string-suffix-p last "'s"))
-                 (append (butlast ws) (list (subseq last 0 (- (length last) 2))))
-                 ws)))
-    (and (<= 1 (length ws) 3)
-         (notany (lambda (w) (member w *not-people* :test #'string=)) ws)
-         (every (lambda (w) (every (lambda (c) (or (alpha-char-p c) (char= c #\-))) w)) ws)
-         (unwords ws))))
-
-(defslot "person" (ws next) (person ws))
-
 (defn read-birthdays ((text string)) list
   "(name month day year) from `khard birthdays --parsable', one per line as
 \"1992.03.03<tab>Name\"."
