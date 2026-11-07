@@ -26,12 +26,26 @@
 
 (deftype slots () "Slot name to value." 'list)
 
-(defstruct (template (:constructor %make-template (parts anchored source)))
+(defvar *cue-words* (make-hash-table :test #'equal :synchronized t)
+  "Every template's cue words, one string each, so cues compare with eq.")
+
+(defn cue-word ((w string)) string
+  (or (gethash w *cue-words*) (setf (gethash w *cue-words*) w)))
+
+(defn part-cues ((parts list)) list
+  (loop for (kind alts) in parts
+        when (eq kind :word) collect (mapcar (lambda (alt) (cue-word (first alt))) alts)))
+
+(defstruct (template (:constructor %make-template
+                                   (parts anchored source &aux (cues (part-cues parts)))))
   "A parsed template. Each part is (:word alts), (:optional alts) or (:slot
-name optional), alts being lists of words, longest first."
+name optional), alts being lists of words, longest first. CUES has the
+first words of each required part's alternatives: without one of each in
+a sentence the template can't match."
   (parts nil :type list)
   (anchored nil :type boolean)
-  (source "" :type string))
+  (source "" :type string)
+  (cues nil :type list))
 
 (defn template-tokens ((src string)) list
   "SRC split into tokens, bracketed groups whole."
@@ -101,6 +115,12 @@ not stop after \"another\"."
 (defn has-open-slots ((template template)) boolean
   (and (intersection (mapcar #'car (slot-names template)) *open-slots* :test #'string=) t))
 
+(declaim (inline same-word))
+(defn same-word ((a string) (b string)) boolean
+  "Whether A and B are the same word. The length check rules out most pairs
+before comparing characters."
+  (and (= (length a) (length b)) (string= a b)))
+
 (defn match-at ((parts list) (words simple-vector) (wi fixnum) (parser function))
     (values (or null fixnum) slots)
   "PARTS matched at WORDS from WI: the end position and the slots, or nil.
@@ -123,7 +143,7 @@ PARSER gives a slot's parser by name."
   (let ((wi (skip-commas words wi)))
     (dolist (alt alts (values nil nil))
       (when (and (<= (+ wi (length alt)) (length words))
-                 (loop for w in alt for i from wi always (string= w (svref words i))))
+                 (loop for w in alt for i from wi always (same-word w (svref words i))))
         (multiple-value-bind (end slots) (match-at rest words (+ wi (length alt)) parser)
           (when end (return (values end slots))))))))
 
@@ -136,18 +156,15 @@ PARSER gives a slot's parser by name."
   "Slot NAME at WORDS from WI, longest first so \"{duration} timer\" still
 finds \"timer\", then REST."
   (let ((parse (funcall parser name))
-        (wi (skip-commas words wi)))
+        (wi (skip-commas words wi))
+        (commas (member name *comma-slots* :test #'string=)))
     (unless parse (return-from match-slot (values nil nil)))
     (loop for end from (length words) above wi
-          for part = (coerce (subseq words wi end) 'list)
-          unless (comma-p (car (last part)))
-          do (let* ((next-at (skip-commas words end))
+          unless (comma-p (svref words (1- end)))
+          do (let* ((part (coerce (subseq words wi end) 'list))
+                    (next-at (skip-commas words end))
                     (next (and (< next-at (length words)) (svref words next-at)))
-                    (value (funcall parse
-                                    (if (member name *comma-slots* :test #'string=)
-                                        part
-                                        (remove-if #'comma-p part))
-                                    next)))
+                    (value (funcall parse (if commas part (remove-if #'comma-p part)) next)))
                (when value
                  (multiple-value-bind (stop slots) (match-at rest words end parser)
                    (when stop (return-from match-slot (values stop (acons name value slots))))))))
@@ -158,11 +175,32 @@ finds \"timer\", then REST."
 (defn ignored ((words list)) fixnum
   (count-if-not (lambda (w) (member w *fillers* :test #'string=)) words))
 
+(defvar *present* (cons nil nil)
+  "The last word list asked about and its cue words, as best-match tries
+every template on the same words.")
+
+(defn present-cues ((words list)) list
+  "The cue words among WORDS. No other word can start a template's part."
+  (let ((last *present*))
+    (if (eq (car last) words)
+        (cdr last)
+        (let ((cues (loop for w in words for c = (gethash w *cue-words*) when c collect c)))
+          (setf *present* (cons words cues))
+          cues))))
+
+(defn cued-p ((template template) (words list)) boolean
+  "Whether WORDS have a first word of every required part of TEMPLATE."
+  (let ((present (present-cues words)))
+    (every (lambda (firsts) (some (lambda (w) (member w present :test #'eq)) firsts))
+           (template-cues template))))
+
 (defn find-template ((template template) (words list) (parser function))
     (values (or null fixnum) slots)
   "The best match in WORDS: how many non-filler words it ignores, and the
 slots. Nil when it doesn't match."
   (let ((v (coerce words 'simple-vector)) best best-slots)
+    (unless (cued-p template words)
+      (return-from find-template (values nil nil)))
     (dotimes (start (length v))
       (multiple-value-bind (end slots) (match-at (template-parts template) v start parser)
         (when end

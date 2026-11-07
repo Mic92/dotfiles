@@ -18,6 +18,13 @@
   #("twenty" "thirty" "forty" "fifty" "sixty" "seventy" "eighty" "ninety")
   "Tens from twenty, indexed by value / 10 - 2.")
 
+(defparameter *number-values*
+  (let ((table (make-hash-table :test #'equal)))
+    (loop for w across *ones* for i from 0 do (setf (gethash w table) i))
+    (loop for w across *tens* for i from 2 do (setf (gethash w table) (* 10 i)))
+    table)
+  "Number words to their value.")
+
 (defn comma-p ((w t)) boolean (equal w +comma+))
 
 (defn digits ((w string)) (or null (integer 0))
@@ -36,10 +43,7 @@
 
 (defn number ((w string)) (or null (integer 0))
   "A single number word or digit string."
-  (or (digits w)
-      (position w *ones* :test #'string=)
-      (let ((i (position w *tens* :test #'string=)))
-        (and i (* 10 (+ i 2))))))
+  (or (digits w) (values (gethash w *number-values*))))
 
 (defn tens-ones ((tens string) (ones string)) (or null (integer 21 99))
   "\"twenty five\"."
