@@ -59,10 +59,6 @@
             labels.org = "krebs";
           }
           {
-            targets = [ "clan.lol:9273" ];
-            labels.org = "clan-lol";
-          }
-          {
             targets = [ "[2a01:4f9:c012:8178::1]:9273" ];
             labels.org = "nixos-wiki";
           }
@@ -127,14 +123,6 @@
           }
           {
             group_by = [ "host" ];
-            match_re.org = "clan-lol";
-            group_wait = "5m";
-            group_interval = "5m";
-            repeat_interval = "4h";
-            receiver = "clan-lol";
-          }
-          {
-            group_by = [ "host" ];
             match_re.org = "dave";
             group_wait = "5m";
             group_interval = "5m";
@@ -177,16 +165,6 @@
               url = "http://localhost:9088/alert";
               max_alerts = 5;
             }
-          ];
-        }
-        {
-          name = "clan-lol";
-          webhook_configs = [
-            # TODO
-            #{
-            #  url = "http://localhost:4050/services/hooks/YWxlcnRtYW5hZ2VyX3NlcnZpY2U";
-            #  max_alerts = 5;
-            #}
           ];
         }
         {
