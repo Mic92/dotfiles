@@ -179,7 +179,9 @@ open until then. DRY only reads, keeping the question too."
                 ((null a) (miss text))
                 ((eq t (gethash "dry" msg))
                  (heard-reply "action" (action-debug a) "kind" (action-kind (action-debug a))))
-                (t (run-heard a at)))))))
+                (t (prog1 (run-heard a at)
+                     (unless (named-p a 'repeat 'recall-request)
+                       (record-request (trim text) at)))))))))
 
 (defn named-p-text ((text string) (name symbol)) boolean
   (let ((a (parse-tier text nil))) (and a (named-p a name))))

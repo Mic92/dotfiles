@@ -62,15 +62,19 @@ or nil."
   (let ((f (gethash slot *closed-values*)))
     (and f (funcall f))))
 
+(defvar *lexicon* nil "See `lexicon' and `kept'.")
+
 (defn lexicon () list
   "Every plain sentence and every one naming a fixed thing (\"ping eve\",
 \"play radio 1\"), sorted: what sound-alikes are searched among."
-  (let ((all (loop for c in (commands)
-                   unless (command-fallback c)
-                   append (loop for tm in (command-parsed c)
-                                append (template-sentences tm #'closed-values)
-                                append (variants tm)))))
-    (remove-duplicates (sort all #'string<) :test #'string=)))
+  (kept '*lexicon*
+        (lambda ()
+          (let ((all (loop for c in (commands)
+                           unless (command-fallback c)
+                           append (loop for tm in (command-parsed c)
+                                        append (template-sentences tm #'closed-values)
+                                        append (variants tm)))))
+            (remove-duplicates (sort all #'string<) :test #'string=)))))
 
 (defn slot-parser ((name string)) (or null function)
   (values (gethash name *slot-parsers*)))

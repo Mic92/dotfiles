@@ -54,6 +54,16 @@ go to the earlier one.")
 (defvar *commands-changed* 0
   "Counts redefinitions, so caches built from the commands know when to go.")
 
+(defn kept ((cache symbol) (build function)) t
+  "The value of BUILD, kept in the special variable CACHE until a command
+changes. CACHE holds (count . value)."
+  (let ((cell (symbol-value cache)))
+    (if (and (consp cell) (eql (car cell) *commands-changed*))
+        (cdr cell)
+        (let ((value (funcall build)))
+          (setf (symbol-value cache) (cons *commands-changed* value))
+          value))))
+
 (defparameter *skill-order*
   '(timer system volume media desktop app info calc spell fun chat ops notes reminder
     meeting news kagi core)

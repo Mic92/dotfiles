@@ -43,21 +43,26 @@ loud\", \"louder\"), so volume, players, power and toggles stay grammar-only."
                      until (= (length ok) 3)
                      finally (return ok)))))))
 
+(defvar *examples* nil "See `classifier-examples' and `kept'.")
+
 (defn classifier-examples () list
   "Grammar sentences for the classifier as (text kind slotted), SLOTTED when
-`fill-slots` must find the values again."
-  (let ((out (loop for c in (commands)
-                   unless (command-fallback c)
-                   append (loop for tm in (command-parsed c)
-                                unless (has-open-slots tm)
-                                append (loop with slotted = (has-slots tm)
-                                             for s in (expand tm #'example-values 40)
-                                             for a = (parse-tier s nil)
-                                             when (and a (classifiable a))
-                                             collect (list s (action-kind (action-debug a))
-                                                           slotted))))))
-    (remove-duplicates (stable-sort out #'string< :key #'first)
-                       :key #'first :test #'string= :from-end t)))
+`fill-slots` must find the values again. Built once per set of commands, as
+that conses over half a gigabyte, which SBCL keeps as resident pages."
+  (kept '*examples*
+        (lambda ()
+          (let ((out (loop for c in (commands)
+                           unless (command-fallback c)
+                           append (loop for tm in (command-parsed c)
+                                        unless (has-open-slots tm)
+                                        append (loop with slotted = (has-slots tm)
+                                                     for s in (expand tm #'example-values 40)
+                                                     for a = (parse-tier s nil)
+                                                     when (and a (classifiable a))
+                                                     collect (list s (action-kind (action-debug a))
+                                                                   slotted))))))
+            (remove-duplicates (stable-sort out #'string< :key #'first)
+                               :key #'first :test #'string= :from-end t)))))
 
 (defn fill-slots ((text string) (kind string)) (or null action)
   "An action of KIND with slot values found anywhere in TEXT, the one using
@@ -77,17 +82,17 @@ the most slots."
                              (>= (length slots) most))
                     (setf best a most (length slots))))))))))))
 
-(defvar *plain-sentences* (cons -1 nil)
-  "Kind to the first example said without slot values, for the commands as
-of the count in the car.")
+(defvar *plain-sentences* nil
+  "Kind to the first example said without slot values, see `kept'.")
 
 (defn plain-sentence ((kind string)) (or null string)
-  (unless (= (car *plain-sentences*) *commands-changed*)
-    (let ((table (make-hash-table :test #'equal)))
-      (loop for (text k slotted) in (classifier-examples)
-            unless (or slotted (gethash k table)) do (setf (gethash k table) text))
-      (setf *plain-sentences* (cons *commands-changed* table))))
-  (values (gethash kind (cdr *plain-sentences*))))
+  (values (gethash kind (kept '*plain-sentences*
+                              (lambda ()
+                                (let ((table (make-hash-table :test #'equal)))
+                                  (loop for (text k slotted) in (classifier-examples)
+                                        unless (or slotted (gethash k table))
+                                        do (setf (gethash k table) text))
+                                  table))))))
 
 (defn plain-action ((kind string)) (or null action)
   "What KIND means said without slot values."

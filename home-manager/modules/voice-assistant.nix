@@ -9,6 +9,9 @@ let
   path = "PATH=/etc/profiles/per-user/%u/bin:/run/current-system/sw/bin";
 in
 {
+  # va-eval, va-reload and va-check, to poke at the live brain.
+  home.packages = [ packages.voice-assistant-brain ];
+
   # Its own service, so it can be reloaded or restarted without the
   # assistant losing the microphone.
   systemd.user.services.voice-assistant-brain = {
