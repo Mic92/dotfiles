@@ -27,6 +27,10 @@
   (dolist (text texts)
     (false (uiop:string-prefix-p prefix (parsed text)) "~s" text)))
 
+(defun answered (reply text)
+  "What TEXT answers to the question REPLY asked."
+  (shown (va::respond text (va::reply-question reply))))
+
 (va:defreplies *lines* "a" "b" "c" "d" "e" "f")
 (va:defreplies *greeting* "Hi." (:late "Shh, it's late."))
 

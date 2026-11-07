@@ -70,9 +70,6 @@
    ;; Alarms stay alarms.
    (true (uiop:string-prefix-p "Timer" (parsed "remind me at 5 pm")))))
 
-(defun answered (reply text)
-  (shown (va::respond text (va::reply-question reply))))
-
 (define-test reminders-questions-fill-the-gaps
   :parent va-tests
   (at-two-pm

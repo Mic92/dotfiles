@@ -12,10 +12,6 @@
   "The open slot swallows the on of \"on monday\"."
   (and text (if (uiop:string-suffix-p text " on") (subseq text 0 (- (length text) 3)) text)))
 
-(defn day-offset ((day (or null (integer 0) va.types:Date))) (or null (integer 0))
-  "Days ahead for what the day slot read: a number already, or a date."
-  (if (integerp day) day (and day (days-ahead day (context-today *context*)))))
-
 (defn remind-seconds ((duration (or null (integer 0))) (clock (or null va.types:Clock))
                       (day (or null (integer 0))))
     (or null (integer 0))
@@ -186,7 +182,7 @@ name. \"dentist\" also finds \"go to the dentists\"."
 Without one, DAY and WS. The last value is false when the day was not one."
   (let ((at (position "at" ws :test #'string=)))
     (if (and at (plusp at))
-        (let ((said (day-offset (funcall (slot-parser "day") (subseq ws 0 at) "at"))))
+        (let ((said (days-from-today (subseq ws 0 at))))
           (values said (nthcdr at ws) (and said t)))
         (values day ws t))))
 

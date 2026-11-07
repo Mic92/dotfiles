@@ -78,6 +78,14 @@ or nil."
     ((or (list "day" "after" "tomorrow") (list "the" "day" "after" "tomorrow")) 2)
     (_ (parse-date ws))))
 
+(defn day-offset ((day (or null (integer 0) va.types:Date))) (or null (integer 0))
+  "Days ahead for what the day slot read: a number already, or a date."
+  (if (integerp day) day (and day (days-ahead day (context-today *context*)))))
+
+(defn days-from-today ((ws words)) (or null (integer 0))
+  "\"tomorrow\", \"on friday\", \"march 3\" as days ahead."
+  (day-offset (funcall (slot-parser "day") ws nil)))
+
 (defparameter *lead-ins*
   '(("can" "you" "please" "tell" "me") ("can" "you" "tell" "me") ("could" "you" "tell" "me")
     ("would" "you" "tell" "me") ("would" "you" "let" "me" "know") ("please" "tell" "me")
