@@ -14,6 +14,7 @@
                  (:file "duration")
                  (:file "clock")
                  (:file "date")
+                 (:file "holiday")
                  (:file "grammar")
                  (:file "commands")
                  (:file "dispatch")
@@ -27,6 +28,7 @@
                                        (:file "media")
                                        (:file "desktop")
                                        (:file "apps")
+                                       (:file "info")
                                        (:file "fun")
                                        (:file "core")))))
 
@@ -43,5 +45,6 @@
                  (:file "dialogue")
                  (:file "system")
                  (:file "media")
-                 (:file "desktop"))
+                 (:file "desktop")
+                 (:file "info"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))

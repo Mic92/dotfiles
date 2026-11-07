@@ -16,9 +16,21 @@ music played when we started listening."
 
 (defn now () (integer 0) (context-now *context*))
 
+(defn current-context (&key (previous t nil) (timer boolean nil) (music boolean nil)) context
+  "The context for a request now, in local time."
+  (multiple-value-bind (sec min hour d m y) (get-decoded-time)
+    (make-context (+ sec (* 60 min) (* 3600 hour)) (day-number y m d)
+                  :previous previous :timer timer :music music)))
+
+(defn hour () (integer 0 23) (floor (mod (now) 86400) 3600))
+
 (defn late-p () boolean
   "23:00 to 5:00."
-  (let ((hour (floor (mod (now) 86400) 3600))) (or (>= hour 23) (< hour 5))))
+  (or (>= (hour) 23) (< (hour) 5)))
+
+(defn early-p () boolean
+  "5:00 to 8:00."
+  (<= 5 (hour) 7))
 
 (defstruct (action (:constructor make-action (command fields)))
   (command nil :type command)
@@ -134,6 +146,11 @@ request beats a catch-all on the whole of it."
 
 (defn debug-value ((v t) (type t)) string
   "V of Coalton TYPE as Rust's Debug prints it."
+  (if (and v (consp type) (eq (first type) 'coalton:Optional))
+      (format nil "Some(~a)" (debug-value v (second type)))
+      (debug-plain v type)))
+
+(defn debug-plain ((v t) (type t)) string
   (typecase v
     (null (if (eq type 'coalton:Boolean) "false" "None"))
     ((eql t) "true")
