@@ -26,5 +26,5 @@
                           '("tests" "parsing" "grammar" "dispatch" "fun" "timer" "dialogue"
                             "system" "media" "desktop" "info" "kagi" "news" "spell" "calc" "chat"
                             "ops" "notes" "reminders" "meetings" "classify" "protocol"
-                            "conversation" "types" "source"))
+                            "conversation" "countdown" "types" "source"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))

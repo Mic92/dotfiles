@@ -448,6 +448,80 @@ high and low and the chance of rain."
   "No unread mail. Inbox zero, you legend."
   "Nothing new. Nobody loves you. Except me.")
 
+(defparameter *events*
+  '((("christmas" "christmas day" "xmas") "Christmas" 12 25)
+    (("christmas eve") "Christmas Eve" 12 24)
+    (("boxing day") "Boxing Day" 12 26)
+    (("new year's eve" "new years eve" "silvester") "New Year's Eve" 12 31)
+    (("new year" "new year's" "new years" "new year's day" "new years day") "New Year" 1 1)
+    (("halloween") "Halloween" 10 31)
+    (("valentine's day" "valentines day" "valentine's" "valentines") "Valentine's Day" 2 14)
+    (("st patrick's day" "saint patrick's day" "st patricks day") "St Patrick's Day" 3 17)
+    (("may day" "labour day" "labor day") "Labour Day" 5 1)
+    (("german unity day") "German Unity Day" 10 3)
+    (("all saints' day" "all saints day" "all saints") "All Saints' Day" 11 1)
+    (("easter" "easter sunday") "Easter" :easter 0)
+    (("good friday") "Good Friday" :easter -2)
+    (("easter monday") "Easter Monday" :easter 1)
+    (("ascension day" "ascension") "Ascension Day" :easter 39)
+    (("whit monday" "pentecost monday") "Whit Monday" :easter 50)
+    (("corpus christi") "Corpus Christi" :easter 60))
+  "(names spoken-name month day), or :easter and days from Easter Sunday.")
+
+(defn event-of ((name string)) list
+  (let ((name (if (uiop:string-prefix-p "the " name) (subseq name 4) name)))
+    (find-if (lambda (e) (member name (first e) :test #'string=)) *events*)))
+
+(defn event-in ((event list) (y integer)) integer
+  (destructuring-bind (month day) (cddr event)
+    (if (eq month :easter) (+ (easter y) day) (day-number y month day))))
+
+(defn event-day ((name string) (today integer)) (or null integer)
+  "The day number of the next NAME, today included, nil for no known day."
+  (let ((e (event-of name)))
+    (and e (let ((this (event-in e (civil today))))
+             (if (>= this today) this (event-in e (1+ (civil today))))))))
+
+(defslot "event" (ws next) (let ((e (event-of (unwords ws)))) (and e (second e))))
+
+(defn days-away ((n (integer 0))) string
+  (case n (0 "today") (1 "tomorrow") (otherwise (format nil "in ~d days" n))))
+
+(defreplies *countdown*
+  "~a is ~a, on ~a."
+  "~a: ~a, on ~a. Not that I'm counting."
+  "~a comes ~a, on ~a. Start planning, slacker.")
+
+(defreplies *countdown-today*
+  "~a is today! ~a. Go celebrate, I'll hold the fort."
+  "It's ~a today. ~a, in case you lost track. Put the laptop away.")
+
+(defn countdown-fields ((event (or null string)) (day (or null (integer 0) va.types:Date))) list
+  (let ((today (context-today *context*)))
+    (cond (event (let ((e (event-of (string-downcase event))))
+                   (list (- (event-day (first (first e)) today) today) event)))
+          (t (let ((n (day-offset day)))
+               (and n (list n (spoken-day (+ today n)))))))))
+
+(defcommand info-countdown
+  "!how (many|much) (days|sleeps|weeks|time) [is|are] [left|still] (until|till|to|before) {event}"
+  "!how long [is it] (until|till|to|before) {event}"
+  "!(when is|when's) {event} [this year]"
+  "!(countdown|count down) (to|until|till) {event}"
+  "!how (many|much) (days|sleeps|time) [is|are] [left|still] (until|till|to|before) {day}"
+  "!how long [is it] (until|till|to) {day}"
+  "!(countdown|count down) (to|until|till) {day}"
+  :kind "Countdown"
+  :slots ((days coalton:UFix) (what coalton:String))
+  :parse (countdown-fields (slot "event") (slot "day"))
+  :examples ("How many days until Christmas?" "How long until Friday?")
+  (let ((day (+ (context-today *context*) days))
+        (when (days-away days)))
+    (live "Countdown" (format nil "~a, ~a" what when)
+          (if (zerop days)
+              (pick *countdown-today* what (spoken-day day))
+              (pick *countdown* what when (spoken-day day))))))
+
 (defcommand info-mail
   "(do|have) i (have|got) [any] [new|unread] (mail|email|emails|mails|messages)"
   "(any|how many) [new|unread] (mail|email|emails|mails)"
