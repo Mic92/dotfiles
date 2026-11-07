@@ -55,6 +55,23 @@ let
       includes = [ "flake.nix" ];
     };
 
+    settings.formatter.lisp-indent = {
+      command = pkgs.callPackage ../pkgs/lisp-indent { };
+      includes = [
+        "pkgs/voice-assistant/brain/*.lisp"
+        "pkgs/voice-assistant/brain/*.asd"
+      ];
+    };
+    settings.formatter.mallet = {
+      command = pkgs.callPackage ../pkgs/mallet { };
+      includes = [
+        "pkgs/voice-assistant/brain/*.lisp"
+        "pkgs/voice-assistant/brain/*.asd"
+      ];
+      excludes = [ "pkgs/voice-assistant/brain/.mallet.lisp" ];
+      priority = 1;
+    };
+
     programs.stylua.enable = true;
     settings.formatter.stylua.includes = [ "*.luau" ];
 

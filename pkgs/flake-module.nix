@@ -74,6 +74,8 @@ in
     live-text = pkgs.python3.pkgs.callPackage ./live-text { };
     phantun = pkgs.callPackage ./phantun { };
     goatcounter = pkgs.callPackage ./goatcounter { };
+    mallet = pkgs.callPackage ./mallet { };
+    lisp-indent = pkgs.callPackage ./lisp-indent { };
     mastodon-hnbot = pkgs.python3.pkgs.callPackage ./mastodon-hnbot { };
     vaultwarden_ldap = pkgs.callPackage ./vaultwarden_ldap { };
   }
