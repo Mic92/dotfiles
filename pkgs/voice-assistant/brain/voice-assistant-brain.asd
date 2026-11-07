@@ -21,14 +21,27 @@
                  (:file "fuzzy")
                  (:file "dev")
                  (:module "skills" :pathname "../skills/" :serial t
-                          :components ((:file "timer") (:file "system") (:file "volume") (:file "media")
-                                       (:file "fun") (:file "core")))))
+                          :components ((:file "timer")
+                                       (:file "system")
+                                       (:file "volume")
+                                       (:file "media")
+                                       (:file "desktop")
+                                       (:file "apps")
+                                       (:file "fun")
+                                       (:file "core")))))
 
 (defsystem "voice-assistant-brain/tests"
     :depends-on ("voice-assistant-brain" "parachute")
     :pathname "tests/"
     :serial t
-    :components ((:file "tests") (:file "parsing") (:file "grammar") (:file "dispatch") (:file "fun")
-                 (:file "timer") (:file "dialogue") (:file "system")
-                 (:file "media"))
+    :components ((:file "tests")
+                 (:file "parsing")
+                 (:file "grammar")
+                 (:file "dispatch")
+                 (:file "fun")
+                 (:file "timer")
+                 (:file "dialogue")
+                 (:file "system")
+                 (:file "media")
+                 (:file "desktop"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))

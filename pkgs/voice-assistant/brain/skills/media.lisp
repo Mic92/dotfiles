@@ -245,8 +245,8 @@ skip, \"can i hear you\" no title."
   (noctalia-media "play" *play*))
 
 (defmedia media-pause "pause" *pause*
-          ("pause [the|my|this|some] (music|song|track|video|podcast|media|playback)")
-          :examples ("Pause the music."))
+    ("pause [the|my|this|some] (music|song|track|video|podcast|media|playback)")
+  :examples ("Pause the music."))
 
 (defcommand media-stop
   "stop [the|my|this|some] (music|song|track|video|podcast|media|playback)"
@@ -255,17 +255,17 @@ skip, \"can i hear you\" no title."
   (noctalia-media "stop" *stop*))
 
 (defmedia media-next "next" *next*
-          ("[play] [the] next (song|track|one|video|episode)" "skip [this|the] [song|track|one]"
-                                                              "!next")
-          :repeatable t
-          :examples ("Next song." "Skip this track"))
+    ("[play] [the] next (song|track|one|video|episode)" "skip [this|the] [song|track|one]"
+                                                        "!next")
+  :repeatable t
+  :examples ("Next song." "Skip this track"))
 
 (defmedia media-previous "previous" *previous*
-          ("[play] [the] (previous|last) (song|track|one|video|episode)"
-           "go back [a|one] (song|track)"
-           "!previous")
-          :repeatable t
-          :examples ("Previous track" "Play the last song again"))
+    ("[play] [the] (previous|last) (song|track|one|video|episode)"
+     "go back [a|one] (song|track)"
+     "!previous")
+  :repeatable t
+  :examples ("Previous track" "Play the last song again"))
 
 (defn radio ((i (integer 0))) reply
   (destructuring-bind (&optional names name url) (nth i *stations*)

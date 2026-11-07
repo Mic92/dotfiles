@@ -47,7 +47,7 @@ action, or nil to fall through."
 go to the earlier one.")
 
 (defparameter *skill-order*
-  '(timer system volume media desktop apps info calc spell fun chat ops notes reminders
+  '(timer system volume media desktop app info calc spell fun chat ops notes reminders
     meetings news kagi core))
 
 (defn add-command ((c command)) symbol

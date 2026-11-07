@@ -120,22 +120,22 @@ Noctalia draws the lock screen, logind lock signals are not wired up."
   (reply title "" speech))
 
 (defpower system-poweroff va.types:Poweroff
-  ("(shut|power|turn|switch) (down|off) [the|my|this] (computer|laptop|pc|machine|system)"
-   "(shutdown|poweroff) [the|my|this] (computer|laptop|pc|machine|system)")
+    ("(shut|power|turn|switch) (down|off) [the|my|this] (computer|laptop|pc|machine|system)"
+     "(shutdown|poweroff) [the|my|this] (computer|laptop|pc|machine|system)")
   "Shut down the computer." "Turn off my laptop")
 
 (defpower system-reboot va.types:Reboot
-  ("(reboot|restart) [the|my|this] (computer|laptop|pc|machine|system)")
+    ("(reboot|restart) [the|my|this] (computer|laptop|pc|machine|system)")
   "Restart the computer")
 
 (defpower system-suspend va.types:Suspend
-  ("(suspend|hibernate) [the|my|this] (computer|laptop|pc|machine|system)"
-   "put [the|my|this] (computer|laptop|pc|machine|system) to sleep"
-   "!(suspend|hibernate)")
+    ("(suspend|hibernate) [the|my|this] (computer|laptop|pc|machine|system)"
+     "put [the|my|this] (computer|laptop|pc|machine|system) to sleep"
+     "!(suspend|hibernate)")
   "Put the laptop to sleep" "Suspend")
 
 (defpower system-lock va.types:Lock
-  ("lock [the|my|this] (screen|computer|laptop|session)" "!lock")
+    ("lock [the|my|this] (screen|computer|laptop|session)" "!lock")
   "Lock the screen." "Lock.")
 
 (defn which ((text string) (op t)) (or null action)
