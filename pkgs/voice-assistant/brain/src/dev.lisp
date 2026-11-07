@@ -78,7 +78,8 @@ so Coalton types are rechecked). Returns the warnings as strings."
       (and (null warnings) (null failed)))))
 
 (defn warm-caches () null
-  "Build what is kept until a command changes, as for the saved image."
+  "Build what is kept until a command changes, as for the saved image. At
+midnight every \"today at 7 pm\" is still ahead, so those examples parse."
   (let ((*context* (make-context 0 0)))
     (classifier-examples)
     (lexicon))

@@ -35,6 +35,8 @@ let
       ./skills
       ./tests
       ./build.lisp
+      ./check.lisp
+      ./strict.lisp
       ./deps.lisp
       ./dev.lisp
     ];
@@ -51,6 +53,7 @@ let
     buildPhase = ''
       export HOME=$TMPDIR XDG_CACHE_HOME=$TMPDIR/cache TZDIR=${tzdata}/share/zoneinfo
       cd brain
+      sbcl --noinform --non-interactive --load check.lisp
       sbcl --noinform --non-interactive --load build.lisp va-brain
       sbcl --noinform --non-interactive --load deps.lisp deps.core
     '';
