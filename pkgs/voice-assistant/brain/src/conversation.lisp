@@ -140,17 +140,18 @@ breaks says so instead of taking the brain down."
                  "question" (and (reply-question r) t))))
 
 (defn heard-action ((text string) (answering boolean) (cut-off boolean) (unsure boolean)
-                    (dry boolean))
+                    (dry boolean) (guess (or null hash-table)))
     (or null action (eql :unsure))
   "The strict reading, answering the open question when ANSWERING, then the
-catch-alls unless the listening was cut off. UNSURE leaves the catch-alls to
-a second request after rescoring, and the question open until then. DRY
-only reads, keeping the question too."
+classifier's GUESS and the catch-alls unless the listening was cut off.
+UNSURE leaves those to a second request after rescoring, and the question
+open until then. DRY only reads, keeping the question too."
   (let* ((c *conversation*)
          (strict (respond text (and answering (conversation-question c)))))
     (cond ((and unsure (null strict) (not cut-off)) :unsure)
           (t (unless dry (setf (conversation-question c) nil))
-             (or strict (and (not cut-off) (parse-tier text t)))))))
+             (or strict
+                 (and (not cut-off) (or (guessed text guess) (parse-tier text t))))))))
 
 (defn hear-text ((msg hash-table)) hash-table
   (let* ((text (message-field msg "text" 'string))
@@ -168,7 +169,9 @@ only reads, keeping the question too."
         (quiet "asleep")
         (let ((a (heard-action text (eq t (gethash "answering" msg))
                                (eq t (gethash "cut_off" msg)) (eq t (gethash "unsure" msg))
-                               (eq t (gethash "dry" msg)))))
+                               (eq t (gethash "dry" msg))
+                               (let ((g (gethash "classified" msg)))
+                                 (and (hash-table-p g) g)))))
           (cond ((eq a :unsure) (heard-reply "outcome" "unsure"))
                 ((and (null a) (eq t (gethash "cut_off" msg))) (quiet "noise"))
                 ((null a) (miss text))

@@ -117,6 +117,16 @@ FIELDS, alternating names and values, say."
    (is equal "noise" (got (hear "flibber" "unsure" t "cut_off" t) "outcome"))
    (is equal "command" (got (hear "roll a die" "unsure" t) "outcome"))))
 
+(define-test heard-takes-a-sure-classification
+  :parent va-tests
+  (flet ((guess (score)
+           (va::object "kind" "Fun(Joke)" "score" score "lead" 0.1d0)))
+    (conversation
+     (is equal "Fun(Joke)" (got (hear "crack me up" "dry" t "classified" (guess 0.95d0)) "action"))
+     (is equal "miss" (got (hear "crack me up" "classified" (guess 0.5d0)) "outcome"))
+     (is equal "Fun(Joke)" (got (hear "tell a joke" "dry" t "classified" (guess 0.1d0)) "action")
+         "the grammar comes first"))))
+
 (define-test heard-follow-ups
   :parent va-tests
   (conversation

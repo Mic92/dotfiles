@@ -53,3 +53,16 @@
     (is equal l (remove-duplicates (sort (copy-list l) #'string<) :test #'string=)
         "sorted, once each")
     (is equal l (gethash "sentences" (va::answer-body (va::object "type" "lexicon"))))))
+
+(define-test examples-and-classified-messages
+  :parent va-tests
+  (let* ((r (va::answer-body (va::object "type" "examples" "now" 0 "today" 20383)))
+         (ex (gethash "examples" r)))
+    (is equal "examples" (gethash "type" r))
+    (let ((joke (find "another joke" ex :key (lambda (e) (gethash "text" e)) :test #'string=)))
+      (is equal "Fun(Joke)" (gethash "kind" joke))))
+  (let ((r (va::answer-body (va::object "type" "classified" "text" "crack me up" "kind" "Fun(Joke)"
+                                        "score" 0.95d0 "lead" 0.1d0 "now" 0 "today" 20383))))
+    (is equal "classified" (gethash "type" r))
+    (is equal "Fun(Joke)" (gethash "action" r))
+    (is eq t (gethash "accepted" r))))

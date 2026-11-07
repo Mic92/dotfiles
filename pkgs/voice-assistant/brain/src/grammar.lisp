@@ -12,7 +12,7 @@
 
 (in-package #:va)
 
-(defparameter *open-slots* '("text" "any" "place")
+(defparameter *open-slots* '("text" "items" "any" "place")
   "Slots taking arbitrary words, which only a full match can delimit.")
 
 (defparameter *fillers*
@@ -253,3 +253,25 @@ Empty when a slot has no fixed set of values."
                                        (return-from template-sentences nil)))))))))
     (unless (eq options :none)
       (mapcar (lambda (v) (unwords (append prefix v suffix))) options))))
+
+(defn expand ((template template) (values function) (cap (integer 0))) list
+  "Up to CAP sentences spread over every combination of alternatives, optional
+words and slot VALUES: examples for the intent classifier."
+  (let* ((choices
+          (loop for (kind a optional) in (template-parts template)
+                collect (coerce
+                         (ecase kind
+                           (:word (mapcar #'unwords a))
+                           (:optional (cons "" (mapcar #'unwords a)))
+                           (:slot (let ((v (funcall values a)))
+                                    (unless v (return-from expand nil))
+                                    (if optional (cons "" v) v))))
+                         'simple-vector)))
+         (total (reduce #'* choices :key #'length))
+         (n (min total cap)))
+    (loop for k below n
+          collect (let ((i (if (= n total) k (* k (floor total n)))))
+                    (unwords (loop for c in choices
+                                   for w = (svref c (mod i (length c)))
+                                   do (setf i (floor i (length c)))
+                                   unless (string= w "") collect w))))))

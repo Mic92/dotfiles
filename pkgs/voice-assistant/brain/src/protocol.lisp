@@ -32,9 +32,24 @@
     (loop for (k v) on pairs by #'cddr do (setf (gethash k h) v))
     h))
 
+(defn message-context ((msg hash-table)) context
+  (make-context (message-field msg "now" '(integer 0 86400)) (message-field msg "today" 'integer)))
+
+(defn examples-reply ((msg hash-table)) hash-table
+  (let ((*context* (message-context msg)))
+    (object "type" "examples"
+            "examples" (map 'vector (lambda (e)
+                                      (destructuring-bind (text kind slotted) e
+                                        (object "text" text "kind" kind "slotted" slotted)))
+                            (classifier-examples)))))
+
+(defn classified-reply ((msg hash-table)) hash-table
+  (let ((*context* (message-context msg)))
+    (classified (message-field msg "text" 'string) (message-field msg "kind" 'string)
+                (message-field msg "score" 'real) (message-field msg "lead" 'real))))
+
 (defn parses ((msg hash-table)) hash-table
-  (let ((*context* (make-context (message-field msg "now" '(integer 0 86400))
-                                 (message-field msg "today" 'integer))))
+  (let ((*context* (message-context msg)))
     (object "type" "parsed"
             "parses" (map 'vector
                           (lambda (text)
@@ -50,6 +65,8 @@
     (cond ((string= type "hello") (object "type" "hello" "version" +protocol-version+))
           ((string= type "parse") (parses msg))
           ((string= type "heard") (hear msg))
+          ((string= type "examples") (examples-reply msg))
+          ((string= type "classified") (classified-reply msg))
           ((string= type "lexicon") (object "type" "lexicon" "sentences" (lexicon)))
           (t (reject "unknown message type ~s" type)))))
 
