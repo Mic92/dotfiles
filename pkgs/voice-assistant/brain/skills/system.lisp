@@ -121,6 +121,7 @@ Noctalia draws the lock screen, logind lock signals are not wired up."
 
 (defpower system-poweroff va.types:Poweroff
     ("(shut|power|turn|switch) (down|off) [the|my|this] (computer|laptop|pc|machine|system)"
+     "power of [the|my|this] (computer|laptop|pc|machine|system)"
      "(shutdown|poweroff) [the|my|this] (computer|laptop|pc|machine|system)")
   "Shut down the computer." "Turn off my laptop")
 
@@ -163,7 +164,7 @@ enough."
             :question (question :answer (lambda (text) (which text op))))))
 
 (defwhich which-poweroff va.types:Poweroff
-  "!(shutdown|poweroff)" "!(shut|power|turn|switch) (down|off)" "!good night")
+  "!(shutdown|poweroff)" "!(shut|power|turn|switch) (down|off)" "!power of" "!good night")
 (defwhich which-reboot va.types:Reboot "!(reboot|restart)")
 (defwhich which-suspend va.types:Suspend "!go to sleep" "!sleep")
 

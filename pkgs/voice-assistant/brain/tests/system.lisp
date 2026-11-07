@@ -68,3 +68,11 @@
                             "I'm saying something else. Please. I'll take one, please." q))))
     (dolist (text '("Never mind." "Nevermind" "Alexa, forget it." "Nothing."))
       (is equal "Dismiss" (parsed text) "~s" text))))
+
+(define-test power-of-is-power-off
+  :parent va-tests
+  (with-focus ()
+    (is equal "Which(Poweroff)" (parsed "power of"))
+    (is equal "System(System { op: Poweroff, confirmed: false })"
+        (parsed "power of the computer"))
+    (is equal "Calc(Math(\"2^10\"))" (parsed "two to the power of ten"))))
