@@ -19,8 +19,11 @@
 
 (defcommand joke
   "[please] (tell|give) [me|us] [a|another|one more] [funny|dirty|bad|good|short] joke [please]"
+  "(can|could|would) you (tell|give) (me|us) [a|another] [funny|dirty|bad|good|short] joke"
   "(make|cheer) (me|us) (laugh|up)"
   "![another|one more] joke [please]"
+  "[do you] (know|got|have) any [good|funny] jokes"
+  "i (want|need) [to hear] a joke"
   :filler *joke-intros*
   :repeatable t
   :examples ("Tell me a joke." "Tell me another dirty joke" "Joke!")
@@ -35,6 +38,7 @@
 (defcommand dice
   "roll a (die|dice|d6)" "roll [the] dice" "roll a d {number}" "roll a {number} sided (die|dice)"
   :slots ((sides coalton:UFix))
+  :parse (let ((n (slot "number" 6d0))) (and (<= 2 n 1000) (list (round n))))
   :repeatable t
   :examples ("roll a die" "roll a d 20")
   (let ((roll (1+ (random sides))))

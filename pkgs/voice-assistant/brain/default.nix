@@ -12,12 +12,15 @@ let
   lisp = sbcl.withPackages (p: [
     p.coalton
     p.alexandria
+    p.trivia
     p.com_dot_inuoe_dot_jzon
     p.parachute
   ]);
   src = lib.fileset.toSource {
-    root = ./.;
+    # The golden file is shared with the Rust side.
+    root = ../.;
     fileset = lib.fileset.unions [
+      ../tests/golden.tsv
       ./voice-assistant-brain.asd
       ./src
       ./skills
@@ -35,6 +38,7 @@ let
     # ASDF writes fasls to the cache dir.
     buildPhase = ''
       export HOME=$TMPDIR XDG_CACHE_HOME=$TMPDIR/cache
+      cd brain
       sbcl --noinform --non-interactive --load build.lisp va-brain
       sbcl --noinform --non-interactive --load deps.lisp deps.core
     '';
