@@ -91,3 +91,28 @@
   (let ((radio (va::command-action 'va::media-radio 3)))
     (with-focus (:previous radio)
       (is equal "Media(Radio(6))" (parsed "and fm4?")))))
+
+(defun ambient-of (text)
+  (let ((a (va::parse-text text)))
+    (and a (va::named-p a 'va::media-ambient)
+         (destructuring-bind (sound seconds) (va::action-fields a)
+           (list (first (va::ambient-at sound)) seconds)))))
+
+(define-test ambient-sounds
+  :parent va-tests
+  (with-focus ()
+    (loop for (text . want) in
+          '(("play rain sounds" "rain" 0) ("play some white noise" "white noise" 0)
+            ("play ocean waves for 30 minutes" "ocean" 1800)
+            ("put on brown noise for an hour" "brown noise" 3600)
+            ("i want to hear some rain" "rain" 0) ("play the fan" "fan" 0)
+            ("help me sleep" "rain" 3600) ("help me fall asleep" "rain" 3600)
+            ("sleep sounds for 20 minutes" "rain" 1200))
+          do (is equal want (ambient-of text) "~s" text))
+    (is equal "Media(Radio(3))" (parsed "play the radio")))
+  (let ((effects (va:fake-effects (va::perform (va::command-action 'va::media-ambient 0 1800)))))
+    (true (find-if (lambda (e) (and (equal (first e) "timeout") (equal (second e) "1800")
+                                    (find "mpv" e :test #'equal)
+                                    (some (lambda (a) (search "anoisesrc" a)) e)))
+                   effects)
+          "~s" effects)))

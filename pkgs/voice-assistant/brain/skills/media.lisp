@@ -292,6 +292,59 @@ skip, \"can i hear you\" no title."
   (declare (ignore previous))
   (let ((i (station-lookup ws))) (and i (command-action 'media-radio i))))
 
+(defparameter *ambient*
+  '((("rain" "rainfall" "rain sounds" "the rain" "raindrops") "rain"
+     "anoisesrc=c=pink:a=0.2,highpass=f=400,lowpass=f=5000")
+    (("white noise" "white") "white noise" "anoisesrc=c=white:a=0.08")
+    (("pink noise" "pink") "pink noise" "anoisesrc=c=pink:a=0.15")
+    (("brown noise" "brown" "brownian noise") "brown noise" "anoisesrc=c=brown:a=0.3")
+    (("ocean" "ocean waves" "waves" "the sea" "sea" "the ocean" "sea waves") "ocean"
+     "anoisesrc=c=brown:a=0.4,lowpass=f=1500,tremolo=f=0.1:d=0.8")
+    (("fan" "the fan" "fan noise") "fan" "anoisesrc=c=brown:a=0.35,lowpass=f=400"))
+  "Spoken names, the name, and the ffmpeg filter mpv makes the sound with.")
+
+(defn ambient-at ((i (integer 0))) list (rest (nth i *ambient*)))
+
+(defslot "sound" (ws next)
+  (let ((spoken (unwords (if (member (car (last ws)) '("sounds" "sound" "noises") :test #'string=)
+                             (butlast ws)
+                             ws))))
+    (position-if (lambda (s) (member spoken (first s) :test #'string=)) *ambient*)))
+
+(defreplies *ambient-on*
+  "~a~a. Sweet dreams."
+  "~a~a. Close your eyes, I've got this."
+  "~a~a. Shh. Relax."
+  (:late "~a~a. Night night, sleepyhead."
+         "~a~a. Finally, bedtime. I was getting worried."))
+
+(defcommand media-ambient
+  "!(play|put on|start|turn on) [some|the] {sound} [please]"
+  "!(play|put on|start|turn on) [some|the] {sound} for {duration}"
+  "!(i want|i'd like|i want to|i'd like to) [hear|listen to] [some|the] {sound} [please]"
+  "!(i want|i'd like|i want to|i'd like to) [hear|listen to] [some|the] {sound} for {duration}"
+  "!help me (sleep|fall asleep|get to sleep|relax|calm down) [please]"
+  "!(sleep|relaxing|calming|calm|background) (sounds|noise) [please]"
+  "!(sleep|relaxing|calming|calm|background) (sounds|noise) for {duration}"
+  :kind "Ambient"
+  :slots ((sound coalton:UFix) (seconds coalton:UFix))
+  :parse (let ((sound (slot "sound")) (secs (slot "duration")))
+           (list (or sound 0) (or secs (if sound 0 3600))))
+  :examples ("Play rain sounds" "Help me sleep")
+  (destructuring-bind (name filter) (ambient-at sound)
+    (stop-radio)
+    (let ((player (append (list "mpv" "--no-video" "--really-quiet"
+                                (format nil "--force-media-title=~a" *radio-tag*))
+                          (and (radio-socket)
+                               (list (format nil "--input-ipc-server=~a" (radio-socket))))
+                          (list (format nil "av://lavfi:~a" filter)))))
+      (if (plusp seconds)
+          (apply #'spawn "timeout" (princ-to-string seconds) player)
+          (apply #'spawn player)))
+    (reply "Ambient" name
+           (pick *ambient-on* (string-capitalize name :end 1)
+                 (if (plusp seconds) (format nil " for ~a" (spoken-duration seconds)) "")))))
+
 (defcommand media-radio
   (:join "!(play|put on|turn on|start|listen to|switch to|tune in to|tune into) [the|some]"
          "{station} [radio] [please]")
