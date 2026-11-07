@@ -68,41 +68,26 @@ and five\", \"two thousand\", \"minus three\", \"3.5\"."
                    (t (return-from unsigned-number-words nil))))
     (and seen (+ total current))))
 
+(defparameter *symbol-words*
+  '(("(?<=\\d),(?=\\d)" "") ("," " , ") ("(?<=\\d)/(?=\\d)" " over ") ("\\+" " plus ")
+    ("[*×]" " times ") ("÷" " divided by ") ("%" " percent ") ("=" " "))
+  "Regex and replacement, in order: digits around a comma or slash keep it a number.")
+
 (defn spell-symbols ((text string)) string
   "Arithmetic symbols as words and commas as their own token. \"1,000\" and
 \"3/4\" between digits stay numbers."
   (let ((s (string-downcase text)))
-    (with-output-to-string (out)
-      (loop for i below (length s)
-            for c = (char s i)
-            for between-digits = (and (plusp i) (digit-char-p (char s (1- i)))
-                                      (< (1+ i) (length s)) (digit-char-p (char s (1+ i))))
-            do (case c
-                 (#\+ (write-string " plus " out))
-                 ((#\MULTIPLICATION_SIGN #\*) (write-string " times " out))
-                 (#\DIVISION_SIGN (write-string " divided by " out))
-                 (#\% (write-string " percent " out))
-                 (#\= (write-string " " out))
-                 (#\/ (write-string (if between-digits " over " "/") out))
-                 (#\, (unless between-digits (write-string " , " out)))
-                 (otherwise (write-char c out)))))))
+    (loop for (regex to) in *symbol-words*
+          do (setf s (cl-ppcre:regex-replace-all regex s to)))
+    s))
 
 (defn dotted-time-p ((w string)) boolean
   "\"7.30\" as the speech recogniser writes 7:30. One decimal stays a number."
-  (let ((dot (position #\. w)))
-    (and dot (<= 1 dot 2) (= (- (length w) dot 1) 2)
-         (every #'digit-char-p (remove #\. w :count 1)))))
+  (and (cl-ppcre:scan "^\\d{1,2}\\.\\d\\d$" w) t))
 
 (defn split-digits ((w string)) list
   "W cut between digits and letters: \"10min\" -> \"10\" \"min\"."
-  (let ((cuts (loop for i from 1 below (length w)
-                    for a = (char w (1- i)) for b = (char w i)
-                    when (or (and (digit-char-p a) (alpha-char-p b))
-                             (and (alpha-char-p a) (digit-char-p b)))
-                    collect i)))
-    (loop for (start end) on (cons 0 cuts)
-          for piece = (subseq w start end)
-          when (plusp (length piece)) collect piece)))
+  (cl-ppcre:split "(?<=\\d)(?=[^\\W\\d_])|(?<=[^\\W\\d_])(?=\\d)" w))
 
 (defn split-raw ((s string)) list
   "S cut at everything but letters, digits and . ' : ,"

@@ -29,19 +29,7 @@
 (defn markdown-inline ((line string)) string
   "LINE without emphasis, code marks, links and footnote references.
 \"metres [^2].\" must not become \"metres .\""
-  (let ((out (make-string-output-stream)) (i 0) (n (length line)))
-    (loop while (< i n)
-          do (let ((c (char line i)))
-               (cond ((and (char= c #\[) (< (1+ i) n) (char= (char line (1+ i)) #\^))
-                      (let ((close (position #\] line :start i)))
-                        (cond (close
-                               (let ((sofar (get-output-stream-string out)))
-                                 (write-string (string-right-trim " " sofar) out)
-                                 (setf i (1+ close))))
-                              (t (write-char c out) (incf i)))))
-                     ((find c "*_`") (incf i))
-                     (t (write-char c out) (incf i)))))
-    (get-output-stream-string out)))
+  (cl-ppcre:regex-replace-all "[*_`]| *\\[\\^[^]]*\\]" line ""))
 
 (defn sentences ((text string)) list
   "TEXT split after . ! or ? when a capital, digit or quote follows, as

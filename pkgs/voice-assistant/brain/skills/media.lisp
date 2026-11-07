@@ -193,8 +193,8 @@ skip, \"can i hear you\" no title."
   (let ((dir (uiop:getenv "XDG_RUNTIME_DIR")))
     (and dir (format nil "~a/voice-assistant-radio.sock" dir))))
 
-(defn mpv-ipc ((command string)) (or null string)
-  "One request over mpv's JSON IPC, and its reply line."
+(defn mpv-ipc ((command string)) (or null json)
+  "One request over mpv's JSON IPC, and its parsed reply."
   (let ((path (radio-socket)))
     (when (and path (not *fake-effects*))
       (handler-case
@@ -210,7 +210,8 @@ skip, \"can i hear you\" no title."
                      (loop repeat 20
                            for line = (read-line s nil)
                            while line
-                           when (search "\"request_id\":1" line) return line)))
+                           for reply = (parse-json line)
+                           when (eql (json-get reply "request_id") 1) return reply)))
               (sb-bsd-sockets:socket-close sock)))
         (error () nil)))))
 
@@ -218,7 +219,8 @@ skip, \"can i hear you\" no title."
   "Pause or resume our radio. When pausing, whether it was playing."
   (if pause
       (let ((state (mpv-ipc "[\"get_property\", \"pause\"]")))
-        (and state (search "\"data\":false" state)
+        (and (hash-table-p state) (nth-value 1 (gethash "data" state))
+             (not (gethash "data" state))
              (mpv-ipc "[\"set_property\", \"pause\", true]") t))
       (and (mpv-ipc "[\"set_property\", \"pause\", false]") t)))
 

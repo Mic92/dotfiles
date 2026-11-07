@@ -36,20 +36,11 @@
   "Titles of <item> (RSS) or <entry> (Atom) elements, skipping the channel's
 title, livestreams and videos."
   (let (out)
-    (loop for (open close) in '(("<item" "</item>") ("<entry" "</entry>"))
-          do (loop with start = 0
-                   for i = (search open xml :start2 start)
-                   for end = (and i (search close xml :start2 i))
-                   while end
-                   do (let* ((tag (search "<title" xml :start2 i :end2 end))
-                             (gt (and tag (position #\> xml :start tag :end end)))
-                             (stop (and gt (search "</title>" xml :start2 gt :end2 end)))
-                             (title (and stop (unescape (subseq xml (1+ gt) stop)))))
-                        (when (and title (plusp (length title))
-                                   (not (uiop:string-prefix-p "Livestream" title))
-                                   (not (uiop:string-prefix-p "Watch:" title)))
-                          (push title out)))
-                   (setf start end)))
+    (cl-ppcre:do-register-groups (raw)
+      ("(?s)<(?:item|entry)\\b.*?<title[^>]*>(.*?)</title>.*?</(?:item|entry)>" xml)
+      (let ((title (unescape raw)))
+        (unless (or (zerop (length title)) (cl-ppcre:scan "^(?:Livestream|Watch:)" title))
+          (push title out))))
     (nreverse out)))
 
 (defn news ((url string) (name string)) reply
