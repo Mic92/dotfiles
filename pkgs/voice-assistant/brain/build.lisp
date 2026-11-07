@@ -10,6 +10,8 @@
   (asdf:load-system "voice-assistant-brain"))
 (unless (uiop:symbol-call :va :check)
   (uiop:quit 1))
+;; Built into the image, so the running brain never conses through them.
+(uiop:symbol-call :va :warm-caches)
 (sb-ext:save-lisp-and-die (second sb-ext:*posix-argv*)
                           :executable t
                           :toplevel (lambda () (uiop:symbol-call :va :main)))

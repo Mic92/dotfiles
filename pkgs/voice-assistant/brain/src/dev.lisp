@@ -77,6 +77,13 @@ so Coalton types are rechecked). Returns the warnings as strings."
               (length warnings) (length passed) (length failed))
       (and (null warnings) (null failed)))))
 
+(defn warm-caches () null
+  "Build what is kept until a command changes, as for the saved image."
+  (let ((*context* (make-context 0 0)))
+    (classifier-examples)
+    (lexicon))
+  nil)
+
 (defn tell-systemd-ready () null
   "Under systemd with Type=notify, the assistant waits for this before it
 connects, instead of starting a private brain."
@@ -89,6 +96,9 @@ connects, instead of starting a private brain."
   "Entry point of the brain. With --socket PATH it only speaks the protocol
 there, as a private brain for one client, and exits with it, otherwise it is the live brain."
   (setf *random-state* (make-random-state t))
+  ;; SBCL keeps every page it ever touched. A smaller nursery than the
+  ;; default 5% of the heap keeps that near 80 MB.
+  (setf (sb-ext:bytes-consed-between-gcs) (* 16 1024 1024))
   (let ((private (second (member "--socket" sb-ext:*posix-argv* :test #'string=))))
     (unless private
       (sb-thread:make-thread (lambda () (serve (merge-pathnames "eval.sock" (runtime-dir))))
