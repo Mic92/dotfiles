@@ -5,8 +5,9 @@
 }:
 let
   packages = self.packages.${pkgs.stdenv.hostPlatform.system};
-  # noctalia, systemctl, loginctl and sh come from the installed profiles.
-  path = "PATH=/etc/profiles/per-user/%u/bin:/run/current-system/sw/bin";
+  # The skills run khard, kagi-search, notmuch and friends from the home-manager
+  # profile, noctalia, systemctl and sh from the system.
+  path = "PATH=%h/.nix-profile/bin:/etc/profiles/per-user/%u/bin:/run/current-system/sw/bin";
 in
 {
   # va-eval, va-reload and va-check, to poke at the live brain.
