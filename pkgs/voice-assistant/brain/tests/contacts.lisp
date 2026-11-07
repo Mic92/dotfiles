@@ -50,3 +50,14 @@
                  ("what is the number of bob marley" "Phone(\"bob marley\")")
                  ("what's shannan's email address" "Email(\"shannan\")")))
     (is equal "Chat(HowOld)" (parsed "how old are you"))))
+
+(define-test contacts-named-by-their-address
+  :parent va-tests
+  (let ((cards (va::read-cards (format nil "shannan@lekwati.com~ashannan@lekwati.com~ainternet~%~
+                                            hanne.karl@gmx.de~aHanne Karl~awork"
+                                       #\Tab #\Tab #\Tab #\Tab))))
+    (dolist (heard '("shannon" "shanan" "shannan"))
+      (is equal "shannan@lekwati.com" (second (va::person-named (va::split-words heard) cards))
+          heard))
+    (is equal "Shannan" (va::first-name "shannan@lekwati.com"))
+    (is equal "Hanne Karl" (first (va::person-named '("hanne") cards)))))

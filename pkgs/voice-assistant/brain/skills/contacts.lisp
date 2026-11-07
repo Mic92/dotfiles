@@ -21,19 +21,26 @@
         for (value name) = (uiop:split-string line :separator '(#\Tab))
         when (and name (plusp (length value))) collect (list name value)))
 
+(defn name-words ((name string)) list
+  "The words NAME is spoken as: an address stands for the part before the @."
+  (let ((at (position #\@ name)))
+    (split-words (substitute-if #\Space (lambda (c) (find c "._-+"))
+                                (string-downcase (if at (subseq name 0 at) name))))))
+
 (defn person-named ((heard words) (people list)) (or null cons)
   "The entry of PEOPLE, lists starting with a name, that HEARD names: its
 whole name or first name, exactly or sounding alike, but only one."
   (let* ((names (remove-duplicates (mapcar #'first people) :test #'string=))
          (spoken (unwords heard))
          (exact (remove-if-not (lambda (n) (or (string-equal n spoken)
-                                               (string-equal (first (split-words n)) spoken)))
+                                               (string= (unwords (name-words n)) spoken)
+                                               (string= (first (name-words n)) spoken)))
                                names))
          (name (if exact
                    (and (= (length exact) 1) (first exact))
                    (let ((i (closest heard
                                      (loop for n in names for i from 0
-                                           for ws = (split-words (string-downcase n))
+                                           for ws = (name-words n)
                                            collect (cons i ws)
                                            when (rest ws) collect (cons i (list (first ws)))))))
                      (and i (nth i names))))))
@@ -53,7 +60,10 @@ whole name or first name, exactly or sounding alike, but only one."
   (sort (remove-if-not (lambda (p) (< (birthday-ahead p today) days)) (copy-list people))
         #'< :key (lambda (p) (birthday-ahead p today))))
 
-(defn first-name ((name string)) string (first (split-words name)))
+(defn first-name ((name string)) string
+  (if (find #\@ name)
+      (string-capitalize (first (name-words name)))
+      (first (split-words name))))
 
 (defn khard ((what string)) string
   (or (output "khard" what "--parsable") ""))
