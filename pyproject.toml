@@ -64,13 +64,8 @@ python-version = "3.13"
 [tool.ty.src]
 exclude = ["gdb/", "zsh/"]
 
-# Opt-in rules approximating mypy --strict; missing annotations are covered
-# by ruff's ANN rules.
+# Missing annotations are covered by ruff's ANN rules.
 [tool.ty.rules]
-missing-type-argument = "error"
-unsound-assignment = "error"
-unsound-return-statement = "error"
-unsound-yield = "error"
-dynamic-function-decorator-return = "error"
-redundant-cast = "error"
-unused-ignore-comment = "error"
+all = "error"
+# `if x:` on `str | None` intentionally treats "" like None.
+truthiness-test-of-none-union = "ignore"
