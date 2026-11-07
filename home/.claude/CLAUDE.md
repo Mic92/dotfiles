@@ -40,8 +40,7 @@
   first.
 - In flakes: format code with `flake-fmt`
 - Write shell scripts that pass `shellcheck`.
-- Write Python code for 3.13 that conforms to `ruff format`, `ruff check` and
-  `mypy`
+- Write Python code for 3.13 that conforms to ruff format/check and mypy
 - Add debug output or unit tests when troubleshooting, e.g. `dbg!()` in Rust
 - Code comments: Keep them minimal, Explain WHY, not WHAT. Describe current
   state, not what was removed.
@@ -49,12 +48,13 @@
 ## Git
 
 - Commit messages: Linux-kernel style, explain WHY the change is needed.
-- Before committing:
+- Before ANY commit, read the diff and ...
   1. Check for bugs
   2. Try to simplify your code
-- Use `gh` for GitHub (CI logs, issues, PRs), e.g.
-  `gh run view 18256703410 --log`
-- Use `tea` for Gitea, e.g. `tea pr 5519 --comments`
+  3. Remove comments that belong in commit message or will likely cause drift or
+     re-state the code
+- Use `gh` for GitHub (CI logs, issues, PRs)
+- Use `tea` for Gitea
 
 ## Running programs
 
