@@ -47,7 +47,7 @@ Compliment me.	Fun(Compliment)	-
 Connect my headphones.	Ops(Bluetooth { device: 0, connect: true })	-
 Cortana	Chat(Agent(7))	-
 Cortana?	Chat(Agent(7))	-
-Did my build fail?	Ops(Jobs)	-
+Did my build fail?	-	-
 Did you just eat up too long ago?	-	-
 Dim the screen	Desktop(Darker)	-
 Disconnect the mouse	Ops(Bluetooth { device: 2, connect: false })	-
@@ -82,7 +82,7 @@ Heads or tails?	Fun(Coin)	-
 Hello!	Chat(Hello)	-
 Hey gorgeous!	Chat(Pretty)	-
 Hi there.	Chat(Hello)	-
-How are my jobs doing?	Ops(Jobs)	Kagi(Query("how are my jobs doing"))
+How are my jobs doing?	-	Kagi(Query("how are my jobs doing"))
 How are you?	Chat(HowAreYou)	Kagi(Query("how are you"))
 How busy am I tomorrow?	Meeting(Day { day: 1, part: None })	Kagi(Query("how busy am i tomorrow"))
 How do I look?	Chat(AmIPretty)	Kagi(Query("how do i look"))
@@ -115,7 +115,7 @@ Is Copilot smarter than you?	Chat(Agent(5))	-
 Is eve up?	Ops(HostUp(0))	-
 Is it the weekend yet?	Chat(Weekend)	-
 Is milk on my shopping list?	Notes(Contains { item: "milk", list: 1 })	-
-Is my build done?	Ops(Jobs)	-
+Is my build done?	-	-
 Is the internet down?	Ops(Internet)	-
 Is the server down?	Ops(HostUp(0))	-
 Is turingmachine online?	Ops(HostUp(4))	-

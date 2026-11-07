@@ -3,14 +3,12 @@
 use crate::http::{Ip, get};
 
 const IP_URL: &str = "https://ip.thalheim.io";
-use super::json::{key, text};
 use super::succeeds;
 use super::{Action, Context, Intent, Module, Reply, Skill, choose, intent, output, pick, spawn};
 use crate::grammar::Value;
 use std::fs;
 use std::num::NonZero;
 use std::thread;
-use tinyjson::JsonValue;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Ops {
@@ -18,7 +16,6 @@ pub enum Ops {
     HostUp(usize),
     Internet,
     Ip,
-    Jobs,
     Disk,
     Memory,
     Cpu,
@@ -209,16 +206,6 @@ pub fn intents() -> Vec<Intent> {
         ),
         intent(
             &[
-                "(is|are) [my] (build|builds|job|jobs|task|tasks) (done|finished|ready|running|still running)",
-                "(how's|how is|how are) [my] (build|builds|job|jobs|task|tasks) [doing|going]",
-                "(did|has) [my] (build|job|task) (finish|finished|fail|failed|succeed|succeeded|pass|passed)",
-                "what's (running|in the queue)",
-                "!(pueue|queue) [status]",
-            ],
-            |_, _| o(Ops::Jobs),
-        ),
-        intent(
-            &[
                 "how much (disk|disc|storage) [space] [is] [left|free|do i have]",
                 "(is|am) [the|my] (disk|disc) [running] (full|out of space)",
                 "!(disk|disc) space",
@@ -332,7 +319,6 @@ impl Skill for Ops {
             Ops::HostUp(i) => host_up(*i),
             Ops::Internet => internet(),
             Ops::Ip => ip(),
-            Ops::Jobs => jobs(),
             Ops::Disk => disk(),
             Ops::Memory => memory(),
             Ops::Cpu => cpu(),
@@ -461,97 +447,6 @@ fn ip() -> Reply {
         }
     };
     Reply::live("IP address", &body, speech)
-}
-
-#[derive(Debug, Default, PartialEq)]
-struct Queue {
-    running: usize,
-    queued: usize,
-    /// Most recently finished: command and whether it succeeded.
-    last: Option<(String, bool)>,
-}
-
-/// `pueue status --json`: a status is `{"Running": {..}}`, `{"Queued": {..}}`
-/// or `{"Done": {"end": .., "result": "Success" | {"Failed": 1} | ..}}`.
-fn parse_queue(json: &str) -> Option<Queue> {
-    let v: JsonValue = json.parse().ok()?;
-    let JsonValue::Object(tasks) = key(&v, "tasks")? else {
-        return None;
-    };
-    let mut q = Queue::default();
-    let mut last_end = String::new();
-    for t in tasks.values() {
-        let Some(JsonValue::Object(status)) = key(t, "status") else {
-            continue;
-        };
-        if status.contains_key("Running") {
-            q.running += 1;
-        } else if status.contains_key("Queued") || status.contains_key("Stashed") {
-            q.queued += 1;
-        } else if let Some(done) = status.get("Done") {
-            let end = key(done, "end").and_then(text).unwrap_or_default();
-            if end > last_end.as_str() {
-                last_end = end.to_owned();
-                let ok = key(done, "result").and_then(text) == Some("Success");
-                let cmd = key(t, "command").and_then(text).unwrap_or_default();
-                q.last = Some((cmd.to_owned(), ok));
-            }
-        }
-    }
-    Some(q)
-}
-
-/// "nix build --keep-going .#foo" -> "nix build".
-fn short_command(cmd: &str) -> String {
-    cmd.split_whitespace()
-        .take_while(|w| !w.starts_with('-') && !w.contains(['/', '#', '.']))
-        .take(2)
-        .collect::<Vec<_>>()
-        .join(" ")
-}
-
-fn jobs() -> Reply {
-    let Some(q) = output("pueue", &["status", "--json"])
-        .as_deref()
-        .and_then(parse_queue)
-    else {
-        return Reply::live(
-            "Jobs",
-            "",
-            pick(
-                &[
-                    "I can't reach pueue. Is the daemon sleeping too?",
-                    "Pueue isn't answering. Lazy little daemon.",
-                ],
-                "",
-            ),
-        );
-    };
-    let last = q.last.as_ref().map(|(cmd, ok)| {
-        let what = short_command(cmd);
-        if *ok {
-            format!("The last one, {what}, worked.")
-        } else {
-            format!("The last one, {what}, failed. Oops.")
-        }
-    });
-    let body = format!("{} running, {} queued", q.running, q.queued);
-    let speech = match (q.running, q.queued) {
-        (0, 0) => format!(
-            "Nothing running. {}",
-            last.unwrap_or_else(|| "Queue is empty. Lazy day?".into())
-        ),
-        (1, 0) => format!(
-            "One job is still running. Patience, darling. {}",
-            last.unwrap_or_default()
-        ),
-        (r, 0) => format!(
-            "{r} jobs running. Your CPU is sweating. {}",
-            last.unwrap_or_default()
-        ),
-        (r, n) => format!("{r} running and {n} waiting in line. Grab a Club-Mate."),
-    };
-    Reply::live("Jobs", &body, speech.trim().to_owned())
 }
 
 fn disk() -> Reply {
@@ -715,9 +610,6 @@ mod tests {
             ("I can't find my phone!", Ops::FindPhone),
             ("Am I online?", Ops::Internet),
             ("What's my IP address?", Ops::Ip),
-            ("Is my build done?", Ops::Jobs),
-            ("How are my jobs doing?", Ops::Jobs),
-            ("Did my build fail?", Ops::Jobs),
             ("How much disk space is left?", Ops::Disk),
             ("How much memory is free?", Ops::Memory),
             ("Why is my computer so slow?", Ops::Cpu),
@@ -725,24 +617,6 @@ mod tests {
         ] {
             assert_eq!(p(text), Some(Action::Ops(want)), "{text:?}");
         }
-    }
-
-    #[test]
-    fn queue_parsing() {
-        let json = r#"{"tasks":{
-            "1":{"command":"nix build .#a","status":{"Done":{"end":"2026-10-17T15:00:00","result":"Success"}}},
-            "2":{"command":"merge-when-green --message x","status":{"Done":{"end":"2026-10-18T15:00:00","result":{"Failed":1}}}},
-            "3":{"command":"cargo test","status":{"Running":{"start":"x"}}},
-            "4":{"command":"sleep 1","status":{"Queued":{"enqueued_at":"x"}}}
-        },"groups":{}}"#;
-        let q = parse_queue(json).expect("parses");
-        assert_eq!((q.running, q.queued), (1, 1));
-        assert_eq!(q.last, Some(("merge-when-green --message x".into(), false)));
-        assert_eq!(
-            short_command("merge-when-green --message x"),
-            "merge-when-green"
-        );
-        assert_eq!(short_command("nix build --keep-going .#foo"), "nix build");
     }
 
     #[test]

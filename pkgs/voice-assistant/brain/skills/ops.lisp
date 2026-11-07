@@ -93,58 +93,6 @@ notification.~] Don't give it to strangers." public v6))
                                                      (and v6 (format nil "IPv6 ~a" v6)))))
           (ip-speech local public v6))))
 
-(defstruct queue
-  "Pueue's tasks: how many run and wait, and the most recently finished one."
-  (running 0 :type (integer 0)) (queued 0 :type (integer 0))
-  (last-command nil :type (or null string)) (last-ok nil :type boolean))
-
-(defn parse-queue ((raw string)) (or null queue)
-  "pueue status --json. A status is {\"Running\": ..}, {\"Queued\": ..} or
-{\"Done\": {\"end\": .., \"result\": \"Success\" or {\"Failed\": 1}}."
-  (let ((tasks (json-get (parse-json raw) "tasks")) (q (make-queue)) (last-end ""))
-    (when (hash-table-p tasks)
-      (loop for task being the hash-values of tasks
-            for status = (json-get task "status")
-            for done = (json-get status "Done")
-            for end = (json-get done "end")
-            when (hash-table-p status)
-            do (cond ((json-get status "Running") (incf (queue-running q)))
-                     ((or (json-get status "Queued") (json-get status "Stashed"))
-                      (incf (queue-queued q)))
-                     ((and (stringp end) (string> end last-end))
-                      (setf last-end end
-                            (queue-last-command q) (let ((c (json-get task "command")))
-                                                     (and (stringp c) c))
-                            (queue-last-ok q) (equal (json-get done "result") "Success")))))
-      q)))
-
-(defn short-command ((cmd string)) string
-  "\"nix build --keep-going .#foo\" -> \"nix build\"."
-  (unwords (take 2 (loop for w in (split-words cmd)
-                         until (or (uiop:string-prefix-p "-" w)
-                                   (find-if (lambda (c) (find c "/#.")) w))
-                         collect w))))
-
-(defreplies *no-pueue*
-  "I can't reach pueue. Is the daemon sleeping too?" "Pueue isn't answering. Lazy little daemon.")
-
-(defn jobs-speech ((q queue)) string
-  (let ((last (and (queue-last-command q)
-                   (format nil "The last one, ~a, ~:[failed. Oops.~;worked.~]"
-                           (short-command (queue-last-command q)) (queue-last-ok q))))
-        (r (queue-running q)) (n (queue-queued q)))
-    (trim (cond ((plusp n) (format nil "~d running and ~d waiting in line. Grab a Club-Mate." r n))
-                ((zerop r) (format nil "Nothing running. ~a" (or last "Queue is empty. Lazy day?")))
-                ((= r 1) (format nil "One job is still running. Patience, darling. ~@[~a~]" last))
-                (t (format nil "~d jobs running. Your CPU is sweating. ~@[~a~]" r last))))))
-
-(defn jobs () reply
-  (let ((q (let ((raw (run "pueue" "status" "--json"))) (and raw (parse-queue raw)))))
-    (if (null q)
-        (live "Jobs" "" (pick *no-pueue*))
-        (live "Jobs" (format nil "~d running, ~d queued" (queue-running q) (queue-queued q))
-              (jobs-speech q)))))
-
 (defreplies *no-disk*
   "I can't read the disk. Spooky." "The disk won't talk to me. Probably full of your downloads.")
 (defreplies *disk-full*
@@ -301,15 +249,6 @@ a magician." what)))
   :filler *ping-filler*
   :examples ("what's my ip address")
   (ip))
-
-(defcommand ops-jobs
-  "(is|are) [my] (build|builds|job|jobs|task|tasks) (done|finished|ready|running|still running)"
-  "(how's|how is|how are) [my] (build|builds|job|jobs|task|tasks) [doing|going]"
-  "(did|has) [my] (build|job|task) (finish|finished|fail|failed|succeed|succeeded|pass|passed)"
-  "what's (running|in the queue)"
-  "!(pueue|queue) [status]"
-  :examples ("is my build done" "pueue status")
-  (jobs))
 
 (defcommand ops-disk
   "how much (disk|disc|storage) [space] [is] [left|free|do i have]"

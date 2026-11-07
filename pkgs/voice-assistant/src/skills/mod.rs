@@ -984,7 +984,7 @@ mod tests {
             cases.len(),
             start.elapsed()
         );
-        assert!(found >= 74, "{found} of {}", cases.len());
+        assert!(found >= 71, "{found} of {}", cases.len());
     }
 
     #[test]
