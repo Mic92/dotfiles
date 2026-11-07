@@ -3,6 +3,7 @@
 //! changed.
 
 use crate::asr::Asr;
+use crate::brain::{self, Parses};
 use crate::classify::Classifier;
 use crate::rescore;
 use crate::skills::{self, Context};
@@ -12,7 +13,11 @@ use std::path::Path;
 /// "Info(Weather", "Fun(Joke)": the action without its slot values, which
 /// may legitimately differ between runs (timestamps, random picks).
 pub fn kind(a: &skills::Action) -> String {
-    let d = format!("{a:?}");
+    kind_of(&format!("{a:?}"))
+}
+
+/// `kind` of an action as `Debug` prints it.
+pub fn kind_of(d: &str) -> String {
     let mut end = d.len();
     for (n, (i, _)) in d.match_indices(['(', ' ', '{', '"']).enumerate() {
         if n == 1 || d[i..].starts_with([' ', '{', '"']) {
@@ -35,6 +40,35 @@ pub fn golden_line(text: &str) -> String {
         show(skills::parse_tier(text, &ctx, false)),
         show(skills::parse_tier(text, &ctx, true))
     )
+}
+
+/// Which brain reads the replayed sentences.
+pub enum Reader {
+    Rust,
+    Brain(brain::Shared),
+}
+
+impl Reader {
+    pub fn read(&self, texts: &[String], ctx: &Context) -> Vec<Parses> {
+        match self {
+            Reader::Rust => texts
+                .iter()
+                .map(|t| {
+                    let show =
+                        |fallback| skills::parse_tier(t, ctx, fallback).map(|a| format!("{a:?}"));
+                    Parses {
+                        strict: show(false),
+                        fallback: show(true),
+                    }
+                })
+                .collect(),
+            Reader::Brain(b) => b.parses(texts, ctx),
+        }
+    }
+
+    fn read_one(&self, text: &str, ctx: &Context) -> Parses {
+        self.read(&[text.to_owned()], ctx).pop().unwrap_or_default()
+    }
 }
 
 /// 16-bit mono PCM from a WAV file, as written by `write_wav`.
@@ -70,7 +104,12 @@ fn compare(old: &str, new: Option<&str>) -> Outcome {
 }
 
 /// Returns the process exit code: 1 when something that used to work broke.
-pub fn run(log: &Path, mut asr: Option<&mut Asr>, mut classifier: Option<&mut Classifier>) -> i32 {
+pub fn run(
+    log: &Path,
+    reader: &Reader,
+    mut asr: Option<&mut Asr>,
+    mut classifier: Option<&mut Classifier>,
+) -> i32 {
     let Ok(text) = fs::read_to_string(log) else {
         eprintln!("voice-assistant: nothing to replay in {}", log.display());
         return 1;
@@ -89,10 +128,12 @@ pub fn run(log: &Path, mut asr: Option<&mut Asr>, mut classifier: Option<&mut Cl
                 match read_wav(Path::new(w)).and_then(|a| asr.transcribe(&a).ok()) {
                     Some(t) => {
                         // Same order as live: real intents, the audio, catch-alls.
-                        if skills::parse_tier(&t, &ctx, false).is_none() {
+                        if reader.read_one(&t, &ctx).strict.is_none() {
                             rescored = rescore::run(asr, "", &t, |cs| {
-                                cs.iter()
-                                    .map(|c| skills::parse_tier(c, &ctx, false))
+                                reader
+                                    .read(cs, &ctx)
+                                    .into_iter()
+                                    .map(|p| p.strict)
                                     .collect()
                             });
                         }
@@ -106,18 +147,20 @@ pub fn run(log: &Path, mut asr: Option<&mut Asr>, mut classifier: Option<&mut Cl
         if let Some(r) = &rescored {
             println!("        {r}");
         }
-        let new = skills::parse_tier(&heard_now, &ctx, false)
+        let read = reader.read_one(&heard_now, &ctx);
+        let new = read
+            .strict
             .or_else(|| rescored.filter(|r| r.accepted).map(|r| r.action))
+            .map(|a| kind_of(&a))
             .or_else(|| {
                 let hit = classifier
                     .as_deref_mut()?
                     .classify(&heard_now, &ctx)
                     .ok()??;
                 println!("        {hit}");
-                hit.action.filter(|_| hit.accepted)
+                hit.action.filter(|_| hit.accepted).map(|a| kind(&a))
             })
-            .or_else(|| skills::parse_tier(&heard_now, &ctx, true))
-            .map(|a| kind(&a));
+            .or_else(|| read.fallback.map(|a| kind_of(&a)));
         let outcome = compare(old, new.as_deref());
         let label = match outcome {
             Outcome::Same => {
@@ -189,6 +232,15 @@ mod tests {
         );
         assert_eq!(kind(&Action::Kagi(Query("who".into()))), "Kagi(Query");
         assert_eq!(kind(&Action::Repeat), "Repeat");
+    }
+
+    #[test]
+    fn rust_reader_reads_both_tiers() {
+        let ctx = Context::at(9 * 3600);
+        let got = Reader::Rust.read(&["tell a joke".into(), "blorp".into()], &ctx);
+        assert_eq!(got[0].strict.as_deref(), Some("Fun(Joke)"));
+        assert_eq!(got[1], Parses::default());
+        assert_eq!(kind_of("Media(Radio(3))"), "Media(Radio");
     }
 
     #[test]

@@ -7,7 +7,7 @@ use std::fs;
 use std::io::{BufRead, BufReader, Write};
 use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
-use std::process::{self, Child, Command};
+use std::process::{self, Child, Command, Stdio};
 use std::sync::{Arc, Mutex, PoisonError};
 use std::thread;
 use std::time::{Duration, Instant};
@@ -19,7 +19,7 @@ use crate::skills::Context;
 pub const VERSION: f64 = 1.0;
 
 /// What the brain makes of one text, as Rust's `Debug` prints actions.
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, Default, PartialEq, Eq)]
 pub struct Parses {
     pub strict: Option<String>,
     pub fallback: Option<String>,
@@ -56,6 +56,7 @@ impl Brain {
         let mut child = Command::new(brain_program())
             .arg("--socket")
             .arg(&sock)
+            .stdout(Stdio::null())
             .spawn()
             .map_err(|e| format!("starting {}: {e}", brain_program()))?;
         let deadline = Instant::now() + Duration::from_secs(30);
@@ -271,8 +272,8 @@ impl Shared {
         b.heard(h, filler)
     }
 
-    /// The strict reading of each text, nothing when the brain is away.
-    pub fn parse(&self, texts: &[String], ctx: &Context) -> Vec<Option<String>> {
+    /// Both readings of each text, nothing when the brain is away.
+    pub fn parses(&self, texts: &[String], ctx: &Context) -> Vec<Parses> {
         let mut guard = self.0.lock().unwrap_or_else(PoisonError::into_inner);
         let parsed = match guard.as_mut() {
             Some(b) => b.parse(texts, ctx),
@@ -280,8 +281,15 @@ impl Shared {
         };
         parsed
             .inspect_err(|e| eprintln!("voice-assistant: {e}"))
-            .map(|ps| ps.into_iter().map(|p| p.strict).collect())
-            .unwrap_or_else(|_| vec![None; texts.len()])
+            .unwrap_or_else(|_| texts.iter().map(|_| Parses::default()).collect())
+    }
+
+    /// The strict reading of each text.
+    pub fn parse(&self, texts: &[String], ctx: &Context) -> Vec<Option<String>> {
+        self.parses(texts, ctx)
+            .into_iter()
+            .map(|p| p.strict)
+            .collect()
     }
 }
 

@@ -1028,7 +1028,16 @@ fn main() {
             .unwrap_or_else(|| die("no state directory"))
             .join("heard.tsv");
         let mut c = classifier(&cfg.intent_model);
-        process::exit(replay::run(&log, Some(&mut asr), c.as_mut()));
+        let reader = if cfg.lisp {
+            replay::Reader::Brain(
+                brain::Brain::connect()
+                    .map(brain::Shared::new)
+                    .unwrap_or_else(|e| die(e)),
+            )
+        } else {
+            replay::Reader::Rust
+        };
+        process::exit(replay::run(&log, &reader, Some(&mut asr), c.as_mut()));
     }
     let wake =
         wakeword::WakeWord::new(&cfg.wake_model, cfg.threshold, 5).unwrap_or_else(|e| die(e));
