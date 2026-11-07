@@ -13,8 +13,8 @@
                                ;; In Rust's MODULES order, which breaks ties between commands.
                                :components ,(mapcar (lambda (f) (list :file f))
                                                     '("timer" "system" "volume" "media" "desktop"
-                                                      "apps" "info" "spell" "fun" "news" "kagi"
-                                                      "core")))))
+                                                      "apps" "info" "calc" "spell" "fun" "news"
+                                                      "kagi" "core")))))
 
 (defsystem "voice-assistant-brain/tests"
     :depends-on ("voice-assistant-brain" "parachute")
@@ -22,5 +22,5 @@
     :serial t
     :components #.(mapcar (lambda (f) (list :file f))
                           '("tests" "parsing" "grammar" "dispatch" "fun" "timer" "dialogue" "system"
-                            "media" "desktop" "info" "kagi" "news" "spell" "types" "source"))
+                            "media" "desktop" "info" "kagi" "news" "spell" "calc" "types" "source"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))

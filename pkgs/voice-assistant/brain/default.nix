@@ -6,6 +6,7 @@
   socat,
   git,
   mallet,
+  tzdata,
   writeShellApplication,
 }:
 let
@@ -38,7 +39,7 @@ let
     nativeBuildInputs = [ lisp ];
     # ASDF writes fasls to the cache dir.
     buildPhase = ''
-      export HOME=$TMPDIR XDG_CACHE_HOME=$TMPDIR/cache
+      export HOME=$TMPDIR XDG_CACHE_HOME=$TMPDIR/cache TZDIR=${tzdata}/share/zoneinfo
       cd brain
       sbcl --noinform --non-interactive --load build.lisp va-brain
       sbcl --noinform --non-interactive --load deps.lisp deps.core

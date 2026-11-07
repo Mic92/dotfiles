@@ -24,6 +24,35 @@
   (is equal "-" (tier-parsed "roll a d 1"))
   (is equal "-" (tier-parsed "blorp")))
 
+(defparameter *rust-zones*
+  #("America/New_York" "America/Los_Angeles" "America/Chicago" "America/Denver" "America/Havana"
+    "America/Detroit" "America/Los_Angeles" "America/New_York" "America/Boise" "America/Anchorage"
+    "America/Bogota" "America/Lima" "America/Guayaquil" "America/Jamaica" "Asia/Phnom_Penh"
+    "Asia/Pyongyang" "America/Phoenix" "America/Denver" "America/New_York" "America/Chicago"
+    "America/Vancouver" "Asia/Ho_Chi_Minh" "Europe/Madrid" "Pacific/Honolulu" "America/Toronto"
+    "America/Vancouver" "America/Mexico_City" "America/Sao_Paulo" "America/Argentina/Buenos_Aires"
+    "Europe/London" "Europe/Dublin" "Europe/Lisbon" "Europe/Paris" "Europe/Berlin"
+    "Europe/Amsterdam" "Europe/Madrid" "Europe/Rome" "Europe/Vienna" "Europe/Zurich"
+    "Europe/Stockholm" "Europe/Helsinki" "Europe/Warsaw" "Europe/Athens" "Europe/Kyiv"
+    "Europe/Istanbul" "Europe/Moscow" "Asia/Jerusalem" "Africa/Cairo" "Africa/Johannesburg"
+    "Africa/Nairobi" "Africa/Lagos" "Asia/Dubai" "Asia/Kolkata" "Asia/Bangkok" "Asia/Singapore"
+    "Asia/Hong_Kong" "Asia/Shanghai" "Asia/Taipei" "Asia/Tokyo" "Asia/Seoul" "Australia/Sydney"
+    "Australia/Perth" "Pacific/Auckland" "UTC" "CET" "CEST" "WET" "WEST" "EET" "EEST" "BST" "MSK"
+    "EST" "EDT" "CST" "CDT" "MST" "MDT" "PST" "PDT" "AKST" "HST" "JST" "KST" "SGT" "HKT" "AEST"
+    "AEDT" "NZST" "NZDT" "IST")
+  "What Rust's zone indices are called here, so golden rows compare.")
+
+(defun named-zones (rust)
+  "RUST's Calc zone indices as the zone names they stand for."
+  (flet ((named (target start end match-start match-end reg-starts reg-ends)
+           (declare (ignore start end match-start match-end))
+           (let ((n (parse-integer target :start (aref reg-starts 1) :end (aref reg-ends 1))))
+             (format nil "~a~s)" (subseq target (aref reg-starts 0) (aref reg-ends 0))
+                     (aref *rust-zones* n)))))
+    (if (uiop:string-prefix-p "Calc(" rust)
+        (cl-ppcre:regex-replace-all "(Zone\\(|from: Some\\(|to: Some\\()(\\d+)\\)" rust #'named)
+        rust)))
+
 (defparameter *golden*
   (asdf:system-relative-pathname "voice-assistant-brain" "../tests/golden.tsv"))
 
@@ -31,7 +60,9 @@
   (with-open-file (in *golden*)
     (loop for line = (read-line in nil) while line
           unless (uiop:string-prefix-p "#" line)
-          collect (uiop:split-string line :separator '(#\Tab)))))
+          collect (destructuring-bind (text rust &rest more)
+                      (uiop:split-string line :separator '(#\Tab))
+                    (list* text (named-zones rust) more)))))
 
 (defun ported-p (debug)
   "Whether DEBUG names a command the brain has, so it must agree."
@@ -39,7 +70,7 @@
           (let ((kind (format nil "~a(~a" (va::camel (va:command-skill c))
                               (va::command-kind c))))
             (and (uiop:string-prefix-p kind debug)
-                 (find (char debug (length kind)) "()"))))
+                 (find (char debug (length kind)) "() "))))
         (va:commands)))
 
 (define-test golden
