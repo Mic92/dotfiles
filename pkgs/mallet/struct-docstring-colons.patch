@@ -1,0 +1,68 @@
+From b0a546a83ea32008340f722ad94c1f4ff6ced25a Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Sat, 7 Nov 2026 18:23:41 +0100
+Subject: [PATCH] docstring: accept struct docstrings with colons
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Parsed symbols are strings like "CURRENT:x", so any body string with a
+colon was taken for a slot and the struct flagged. Symbols never
+contain spaces while docstrings almost always do, which tells them
+apart well enough.
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ src/rules/forms/docstring.lisp                 | 11 ++++++-----
+ tests/rules/missing-struct-docstring-test.lisp |  4 ++++
+ 2 files changed, 10 insertions(+), 5 deletions(-)
+
+diff --git a/src/rules/forms/docstring.lisp b/src/rules/forms/docstring.lisp
+index 2b49787..8b5f2e0 100644
+--- a/src/rules/forms/docstring.lisp
++++ b/src/rules/forms/docstring.lisp
+@@ -191,8 +191,8 @@ The docstring is the 4th element: (defvar *name* value \"doc\")."
+ (defun defstruct-has-docstring-p (expr)
+   "Return T if defstruct EXPR has a docstring.
+ Checks both (:documentation \"string\") in name-and-options and a plain string in the body.
+-Note: only detects body docstrings that contain no colons. Docstrings like
+-\"See: foo.\" are an accepted limitation (same as defun-body-has-docstring-p)."
++Note: a body docstring with a colon is only detected when it has a space too,
++so \"See:foo\" is missed."
+   (when (defstruct-p expr)
+     (let ((name-and-opts (second expr))
+           (body (cddr expr)))
+@@ -201,11 +201,12 @@ Note: only detects body docstrings that contain no colons. Docstrings like
+        (and (consp name-and-opts)
+             (options-have-documentation-p (cdr name-and-opts)))
+        ;; Check for plain string literal as first body element.
+-       ;; Symbol representations in the parsed form always have a colon (e.g. "CURRENT:x"),
+-       ;; while string literals do not (e.g. "A doc string.").
++       ;; Symbol representations in the parsed form always have a colon (e.g. "CURRENT:x")
++       ;; and never a space, while docstrings with a colon have spaces too.
+        (and (consp body)
+             (stringp (first body))
+-            (not (find #\: (first body))))))))
++            (or (not (find #\: (first body)))
++                (find #\Space (first body))))))))
+ 
+ (defun defpackage-has-docstring-p (expr)
+   "Return T if defpackage or define-package EXPR has a :documentation option."
+diff --git a/tests/rules/missing-struct-docstring-test.lisp b/tests/rules/missing-struct-docstring-test.lisp
+index 888d0c6..4ca3122 100644
+--- a/tests/rules/missing-struct-docstring-test.lisp
++++ b/tests/rules/missing-struct-docstring-test.lisp
+@@ -60,6 +60,10 @@
+     (ok (null (check-struct-docstring
+                "(defstruct (point (:documentation \"A 2D point.\")) \"A 2D point.\" x y)"))))
+ 
++  (testing "defstruct with a colon in its body docstring is not flagged"
++    (ok (null (check-struct-docstring
++               "(defstruct point \"A 2D point: x and y.\" x y)"))))
++
+   (testing "non-defstruct forms are not flagged"
+     (ok (null (check-struct-docstring
+                "(defun foo (x) \"Doc.\" x)"))))
+-- 
+2.56.0
+

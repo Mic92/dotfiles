@@ -1,0 +1,117 @@
+From 894a9711c7c620c8437e026b3c688cad20037d1b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?J=C3=B6rg=20Thalheim?= <joerg@thalheim.io>
+Date: Sat, 7 Nov 2026 18:18:40 +0100
+Subject: [PATCH] metrics: measure project function macros via :definers
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Projects often wrap defun in their own macros, such as a typed
+(defn name ((x integer)) result . body). function-length,
+cyclomatic-complexity and comment-ratio only recognise the CL
+definers, so such functions escape every limit. A :definers option
+lists the extra macro names:
+
+  (:enable :function-length :max 40 :definers ("DEFN"))
+
+Signed-off-by: Jörg Thalheim <joerg@thalheim.io>
+---
+ src/rules/forms/metrics.lisp  | 30 +++++++++++++++++++++++++-----
+ tests/rules/metrics-test.lisp | 17 +++++++++++++++++
+ 2 files changed, 42 insertions(+), 5 deletions(-)
+
+diff --git a/src/rules/forms/metrics.lisp b/src/rules/forms/metrics.lisp
+index 2e0aaa8..e7697a8 100644
+--- a/src/rules/forms/metrics.lisp
++++ b/src/rules/forms/metrics.lisp
+@@ -19,7 +19,27 @@
+ 
+ ;;; Function-length rule
+ 
+-(defclass function-length-rule (base:rule)
++;;; Projects often define functions through their own macros, like a typed
++;;; (defn name ((x integer)) result . body). Listing them in :definers lets the
++;;; metric rules measure those too.
++
++(defvar *definers* '()
++  "Names of extra function-defining macros for the rule being checked.")
++
++(defclass definers-mixin ()
++  ((definers
++    :initarg :definers
++    :initform '()
++    :accessor rule-definers
++    :documentation "Extra macro names, such as (\"DEFN\"), that define functions."))
++  (:documentation "Lets a metric rule treat project macros as function definitions."))
++
++(defmethod base:check-form :around ((rule definers-mixin) form file)
++  (declare (ignore form file))
++  (let ((*definers* (rule-definers rule)))
++    (call-next-method)))
++
++(defclass function-length-rule (definers-mixin base:rule)
+   ((max-lines
+     :initarg :max
+     :initform 50
+@@ -149,10 +169,10 @@ Flags defun, defmethod, and defmacro forms whose body exceeds :max lines
+     violations))
+ 
+ (defun is-function-definition-p (head)
+-  "Check if HEAD is a CL function-defining form."
++  "Check if HEAD is a CL function-defining form or one of *DEFINERS*."
+   (and (stringp head)
+        (member (base:symbol-name-from-string head)
+-               '("DEFUN" "DEFMETHOD" "DEFMACRO" "DEFGENERIC")
++               (append '("DEFUN" "DEFMETHOD" "DEFMACRO" "DEFGENERIC") *definers*)
+                :test #'string-equal)))
+ 
+ (defun coalton-toplevel-p (head)
+@@ -555,7 +575,7 @@ VARIANT can be :standard (count per match clause) or :modified (match as +1 tota
+ 
+ ;;; Comment-ratio rule
+ 
+-(defclass comment-ratio-rule (base:rule)
++(defclass comment-ratio-rule (definers-mixin base:rule)
+   ((max-ratio
+     :initarg :max
+     :initform 0.5d0
+@@ -813,7 +833,7 @@ suggesting code may be over-commented or poorly expressed."))
+ 
+ ;;; Cyclomatic-complexity rule
+ 
+-(defclass cyclomatic-complexity-rule (base:rule)
++(defclass cyclomatic-complexity-rule (definers-mixin base:rule)
+   ((max
+     :initarg :max
+     :initform 15
+diff --git a/tests/rules/metrics-test.lisp b/tests/rules/metrics-test.lisp
+index 780129e..ec0c8e4 100644
+--- a/tests/rules/metrics-test.lisp
++++ b/tests/rules/metrics-test.lisp
+@@ -120,6 +120,23 @@
+       (ok (search "outer" (violation:violation-message (first violations))))
+       (ok (search "6 lines" (violation:violation-message (first violations)))))))
+ 
++(deftest function-length-definers
++  (testing "Macros listed in :definers are measured like defun"
++    (let ((code "(defn foo ((x integer)) integer
++  (+ x 1))"))
++      (test-no-violation (make-instance 'rules:function-length-rule :max 0) code)
++      (test-violation (make-instance 'rules:function-length-rule :max 0 :definers '("DEFN"))
++                      code "2 lines"))))
++
++(deftest complexity-definers
++  (testing "Macros listed in :definers are measured like defun"
++    (let ((code "(defn foo ((x integer)) integer
++  (if (> x 0) (if (> x 1) 2 1) 0))"))
++      (test-no-violation (make-instance 'rules:cyclomatic-complexity-rule :max 1) code)
++      (test-violation (make-instance 'rules:cyclomatic-complexity-rule :max 1
++                                     :definers '("DEFN"))
++                      code "complexity of 3"))))
++
+ (deftest function-length-custom-max
+   (testing "Custom max configuration"
+     (let* ((rule (make-instance 'rules:function-length-rule :max 75))
+-- 
+2.56.0
+

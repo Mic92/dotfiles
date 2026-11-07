@@ -28,6 +28,11 @@ stdenv.mkDerivation {
     tag = "0.9.2";
     hash = "sha256-9LVmkzsEGQOgKwRh5Nofu/D0uNEH21bGtPsTm/D0ifw=";
   };
+  patches = [
+    # Lets the metric rules measure macros such as the brain's defn.
+    ./definers.patch
+    ./struct-docstring-colons.patch
+  ];
   nativeBuildInputs = [ lisp ];
   buildPhase = ''
     runHook preBuild
