@@ -5,10 +5,10 @@
 (define-test news-phrasings
   :parent va-tests
   (with-focus ()
-    (loop for (text want) in '(("What's the news?" "World") ("Read me the headlines" "World")
-                               ("Headlines please." "World") ("What's on Hacker News?" "Tech")
-                               ("Tech news" "Tech"))
-          do (is equal (format nil "News(~a)" want) (shown (va::parse-text text)) "~s" text))))
+    (parses-as "News(~a)"
+               '(("What's the news?" "World") ("Read me the headlines" "World")
+                 ("Headlines please." "World") ("What's on Hacker News?" "Tech")
+                 ("Tech news" "Tech")))))
 
 (define-test news-feeds
   :parent va-tests

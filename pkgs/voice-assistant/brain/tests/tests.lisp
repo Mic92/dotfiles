@@ -5,6 +5,28 @@
 
 (define-test va-tests)
 
+(defmacro with-focus ((&key timer music previous) &body body)
+  "BODY with a request context at midnight on 2025-10-22."
+  `(let ((va::*context* (va::make-context 0 (va::day-number 2025 10 22)
+                                          :timer ,timer :music ,music :previous ,previous)))
+     ,@body))
+
+(defun shown (action) (va::action-debug action))
+
+(defun parsed (text)
+  "What TEXT parses to, as Rust's Debug prints it."
+  (shown (va::parse-text text)))
+
+(defun parses-as (control cases)
+  "Each case is (text . args): TEXT parses to CONTROL formatted with ARGS."
+  (loop for (text . args) in cases
+        do (is equal (apply #'format nil control args) (parsed text) "~s" text)))
+
+(defun parses-not (prefix texts)
+  "None of TEXTS parses to an action starting with PREFIX."
+  (dolist (text texts)
+    (false (uiop:string-prefix-p prefix (parsed text)) "~s" text)))
+
 (va:defreplies *lines* "a" "b" "c" "d" "e" "f")
 (va:defreplies *greeting* "Hi." (:late "Shh, it's late."))
 

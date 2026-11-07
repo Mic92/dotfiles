@@ -2,7 +2,9 @@
 
 (in-package #:va-tests)
 
-(defun parsed (text) (va::action-debug (va::parse-tier text nil)))
+(defun tier-parsed (text)
+  "TEXT parsed without the dialogue around it."
+  (shown (va::parse-tier text nil)))
 
 (define-test requests-unwrap
   :parent va-tests
@@ -16,11 +18,11 @@
 
 (define-test fun-commands
   :parent va-tests
-  (is equal "Fun(Joke)" (parsed "tell me a joke"))
-  (is equal "Fun(Dice(6))" (parsed "roll a die"))
-  (is equal "Fun(Dice(20))" (parsed "Roll a d20."))
-  (is equal "-" (parsed "roll a d 1"))
-  (is equal "-" (parsed "blorp")))
+  (is equal "Fun(Joke)" (tier-parsed "tell me a joke"))
+  (is equal "Fun(Dice(6))" (tier-parsed "roll a die"))
+  (is equal "Fun(Dice(20))" (tier-parsed "Roll a d20."))
+  (is equal "-" (tier-parsed "roll a d 1"))
+  (is equal "-" (tier-parsed "blorp")))
 
 (defparameter *golden*
   (asdf:system-relative-pathname "voice-assistant-brain" "../tests/golden.tsv"))
@@ -44,7 +46,7 @@
   :parent va-tests
   (let ((va::*context* (va::make-context (* 9 3600) (va::day-number 2025 10 22))))
     (loop for (text rust) in (golden-rows)
-          for lisp = (parsed text)
+          for lisp = (tier-parsed text)
           ;; Other skills may still win once they are ported.
           when (or (ported-p rust) (string= rust "-"))
           ;; What Say says is picked at random.

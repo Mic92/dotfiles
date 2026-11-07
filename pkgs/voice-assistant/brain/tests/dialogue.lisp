@@ -2,13 +2,6 @@
 
 (in-package #:va-tests)
 
-(defmacro with-focus ((&key timer music previous) &body body)
-  `(let ((va::*context* (va::make-context 0 (va::day-number 2025 10 22)
-                                          :timer ,timer :music ,music :previous ,previous)))
-     ,@body))
-
-(defun shown (action) (va::action-debug action))
-
 (define-test ambient-acts
   :parent va-tests
   (loop for (act timer music want) in
@@ -31,8 +24,8 @@
           ("actually forget that i don't need it" "Dismiss")
           ("forget what i told you to do" "Dismiss") ("stop, i changed my mind" "Dismiss")
           ("Nothing." "Dismiss"))
-        do (is equal want (with-focus (:timer t) (shown (va::parse-text text))) "~s" text))
-  (is equal "Dismiss" (with-focus () (shown (va::parse-text "Stop!")))))
+        do (is equal want (with-focus (:timer t) (parsed text)) "~s" text))
+  (is equal "Dismiss" (with-focus () (parsed "Stop!"))))
 
 (define-test questions-come-first
   :parent va-tests

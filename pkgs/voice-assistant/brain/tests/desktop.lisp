@@ -5,20 +5,23 @@
 (define-test desktop-phrasings
   :parent va-tests
   (with-focus ()
-    (loop for (text want) in
-          '(("Make the screen brighter." "Brighter") ("Brighter!" "Brighter")
-            ("Dim the screen" "Darker")
-            ("Set the brightness to 40 percent" "Brightness(40)")
-            ("Turn on the night light." "NightLight(true)") ("Night mode off" "NightLight(false)")
-            ("Turn off the wifi." "Wifi(false)") ("Turn on the Wi-Fi" "Wifi(true)")
-            ("Turn on bluetooth" "Bluetooth(true)") ("Do not disturb." "DoNotDisturb(true)")
-            ("Turn off do not disturb" "DoNotDisturb(false)") ("Take a screenshot." "Screenshot")
-            ("Screenshot of a region" "ScreenshotRegion") ("Change the wallpaper" "Wallpaper")
-            ("Keep the screen on." "Caffeine(true)")
-            ("Power saving mode" "PowerProfile(\"power-saver\")") ("Open the launcher" "Launcher")
-            ("Clear all notifications." "ClearNotifications") ("Close this window" "CloseWindow")
-            ("Fullscreen." "Fullscreen"))
-          do (is equal (format nil "Desktop(~a)" want) (shown (va::parse-text text)) "~s" text))))
+    (parses-as "Desktop(~a)"
+               '(("Make the screen brighter." "Brighter") ("Brighter!" "Brighter")
+                 ("Dim the screen" "Darker")
+                 ("Set the brightness to 40 percent" "Brightness(40)")
+                 ("Turn on the night light." "NightLight(true)")
+                 ("Night mode off" "NightLight(false)")
+                 ("Turn off the wifi." "Wifi(false)") ("Turn on the Wi-Fi" "Wifi(true)")
+                 ("Turn on bluetooth" "Bluetooth(true)") ("Do not disturb." "DoNotDisturb(true)")
+                 ("Turn off do not disturb" "DoNotDisturb(false)")
+                 ("Take a screenshot." "Screenshot")
+                 ("Screenshot of a region" "ScreenshotRegion") ("Change the wallpaper" "Wallpaper")
+                 ("Keep the screen on." "Caffeine(true)")
+                 ("Power saving mode" "PowerProfile(\"power-saver\")")
+                 ("Open the launcher" "Launcher")
+                 ("Clear all notifications." "ClearNotifications")
+                 ("Close this window" "CloseWindow")
+                 ("Fullscreen." "Fullscreen")))))
 
 (define-test app-phrasings
   :parent va-tests

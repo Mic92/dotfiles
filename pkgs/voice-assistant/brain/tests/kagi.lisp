@@ -20,22 +20,20 @@ It is used ironically, e.g. in memes.~%~%[^2]: https://example.com"))
 (define-test kagi-phrasings
   :parent va-tests
   (with-focus ()
-    (loop for (text q) in
-          '(("can you tell me how to clean a fish tank" "how to clean a fish tank")
-            ("tell me who sells dixie paper plates" "who sells dixie paper plates")
-            ("find out why the sky is blue" "why the sky is blue"))
-          do (is equal (format nil "Kagi(Query(~s))" q) (shown (va::parse-text text)) "~s" text))
-    (loop for (text q) in
-          '(("Search for the best pizza in Munich" "the best pizza in munich")
-            ("Look up nix flakes" "nix flakes") ("Ask Kagi about black holes" "black holes")
-            ("Who was Ada Lovelace?" "who was ada lovelace")
-            ("How tall is the Eiffel tower?" "how tall is the eiffel tower")
-            ("What is a quasar?" "what is a quasar")
-            ("How many people live in Germany?" "how many people live in germany"))
-          do (is equal (format nil "Kagi(Query(~s))" q) (shown (va::parse-text text)) "~s" text))
-    (dolist (text '("What's the time, please?" "How much time is left on the timer?"
-                    "What time is it?" "What is the weather like?"))
-      (false (uiop:string-prefix-p "Kagi" (shown (va::parse-text text))) "~s" text))
+    (parses-as "Kagi(Query(~s))"
+               '(("can you tell me how to clean a fish tank" "how to clean a fish tank")
+                 ("tell me who sells dixie paper plates" "who sells dixie paper plates")
+                 ("find out why the sky is blue" "why the sky is blue")))
+    (parses-as "Kagi(Query(~s))"
+               '(("Search for the best pizza in Munich" "the best pizza in munich")
+                 ("Look up nix flakes" "nix flakes") ("Ask Kagi about black holes" "black holes")
+                 ("Who was Ada Lovelace?" "who was ada lovelace")
+                 ("How tall is the Eiffel tower?" "how tall is the eiffel tower")
+                 ("What is a quasar?" "what is a quasar")
+                 ("How many people live in Germany?" "how many people live in germany")))
+    (parses-not "Kagi"
+                '("What's the time, please?" "How much time is left on the timer?"
+                  "What time is it?" "What is the weather like?"))
     (false (funcall (va::slot-parser "question") '("what" "now") nil))))
 
 (define-test kagi-answer
