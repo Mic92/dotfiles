@@ -1085,7 +1085,7 @@ how often should i change the tires on my car	-
 how often should i get my tires changed	-
 how often should my tires be changed	-
 how old are you turning	-
-how old is jennifer aniston	-
+how old is jennifer aniston	Contact(Age("jennifer aniston"))
 how old is the oldest person that is in the guiness book of world records	-
 how old were you on your last birthday	-
 how old will you be	-
@@ -2466,7 +2466,7 @@ when should i remove my snow tires	-
 when should my tires be changed	-
 when should you mow your grass after it's rained	-
 when should you use a dry cleaner	-
-when was albert einstein born	-
+when was albert einstein born	Contact(Birthday("albert einstein"))
 when was my car last in the shop	-
 when was my last visit to the car shop	-
 when was my lawn last mowed	-

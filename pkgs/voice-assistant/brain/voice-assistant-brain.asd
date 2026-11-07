@@ -16,7 +16,7 @@
                                                     '("timer" "system" "volume" "media" "desktop"
                                                       "apps" "info" "calc" "spell" "fun" "chat"
                                                       "ops" "notes" "reminders" "meetings" "news"
-                                                      "kagi" "core")))))
+                                                      "kagi" "contacts" "core")))))
 
 (defsystem "voice-assistant-brain/tests"
     :depends-on ("voice-assistant-brain" "parachute")
@@ -26,5 +26,5 @@
                           '("tests" "parsing" "grammar" "dispatch" "fun" "timer" "dialogue"
                             "system" "media" "desktop" "info" "kagi" "news" "spell" "calc" "chat"
                             "ops" "notes" "reminders" "meetings" "classify" "protocol"
-                            "conversation" "countdown" "types" "source"))
+                            "conversation" "countdown" "contacts" "types" "source"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))

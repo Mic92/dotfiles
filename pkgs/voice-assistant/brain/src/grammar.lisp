@@ -12,7 +12,7 @@
 
 (in-package #:va)
 
-(defparameter *open-slots* '("text" "items" "any" "place")
+(defparameter *open-slots* '("text" "items" "any" "place" "person")
   "Slots taking arbitrary words, which only a full match can delimit.")
 
 (defparameter *fillers*
