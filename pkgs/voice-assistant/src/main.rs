@@ -77,7 +77,7 @@ fn usage() -> ! {
          \x20                      [--brain rust|lisp]\n\
          --say speaks TEXT with the configured voice and exits.\n\
          --parse shows how TEXT (or each stdin line for -) is understood and exits.\n\
-         --brain lisp also parses with the Lisp brain and prints where it differs.\n\
+         --brain lisp lets the Lisp brain answer, and --parse diffs both brains.\n\
          --golden prints the grammar's reading of each stdin line at a fixed clock.\n\
          --replay re-checks every logged utterance against the current build.\n\
          --debug-dir saves the audio around each wake word and command as WAV.\n\
@@ -164,6 +164,19 @@ enum State {
     },
 }
 
+/// What a command running in the background sends back.
+enum Done {
+    Filler(String),
+    Rust(skills::Action, skills::Reply),
+    Lisp(Box<LispDone>),
+}
+
+struct LispDone {
+    text: String,
+    audio: Vec<f32>,
+    heard: Result<brain::Heard, String>,
+}
+
 struct Assistant {
     cfg: Config,
     wake: wakeword::WakeWord,
@@ -187,7 +200,11 @@ struct Assistant {
     /// For "repeat that".
     last_speech: String,
     /// An action running in the background.
-    pending: Option<mpsc::Receiver<(skills::Action, skills::Reply)>>,
+    pending: Option<mpsc::Receiver<Done>>,
+    /// The Lisp brain, with `--brain lisp`.
+    brain: Option<brain::Shared>,
+    /// The Lisp brain asked a question.
+    asking: bool,
     /// For "and tomorrow?"; forgotten after `CARRY_OVER`.
     previous: Option<(skills::Action, Instant)>,
     wakelog: wakelog::WakeLog,
@@ -254,7 +271,7 @@ impl Assistant {
     /// Log every utterance with its audio for `--replay`: misses are
     /// material for new skills, and commands are the test set for trying
     /// other speech recognisers.
-    fn log_heard(&self, text: &str, action: Option<&skills::Action>, audio: &[f32]) {
+    fn log_heard(&self, text: &str, kind: Option<String>, audio: &[f32]) {
         if self.cfg.stdin {
             return;
         }
@@ -262,16 +279,12 @@ impl Assistant {
             return;
         };
         let stamp = store::unix_ms() / 1000;
-        let sub = if action.is_some() {
-            "commands"
-        } else {
-            "misses"
-        };
+        let sub = if kind.is_some() { "commands" } else { "misses" };
         let wav = (!audio.is_empty()).then(|| dir.join(sub).join(format!("{stamp}.wav")));
         let line = store::tsv(&[
             &stamp.to_string(),
             text,
-            &action.map(replay::kind).unwrap_or_default(),
+            &kind.unwrap_or_default(),
             &wav.as_ref()
                 .map(|w| w.display().to_string())
                 .unwrap_or_default(),
@@ -287,13 +300,18 @@ impl Assistant {
 
     /// The reply queues behind any filler line still playing.
     fn poll(&mut self) {
-        if let Some(rx) = &self.pending {
+        while let Some(rx) = &self.pending {
             match rx.try_recv() {
-                Ok((action, reply)) => {
+                Ok(Done::Filler(line)) => self.say(&line, true),
+                Ok(Done::Rust(action, reply)) => {
                     self.pending = None;
                     self.finish(action, reply);
                 }
-                Err(mpsc::TryRecvError::Empty) => {}
+                Ok(Done::Lisp(done)) => {
+                    self.pending = None;
+                    self.finish_lisp(*done);
+                }
+                Err(mpsc::TryRecvError::Empty) => break,
                 Err(mpsc::TryRecvError::Disconnected) => {
                     eprintln!("voice-assistant: action thread died");
                     self.pending = None;
@@ -315,7 +333,7 @@ impl Assistant {
             }
             self.speaking = false;
             self.reset_wake();
-            if self.question.is_some() {
+            if self.question.is_some() || self.asking {
                 self.start_listening(Vec::new());
             } else if mem::take(&mut self.resume_after_speech) {
                 self.unhush();
@@ -403,6 +421,7 @@ impl Assistant {
                     self.log("no speech");
                     self.wakelog.outcome("no-speech", "");
                     self.question = None;
+                    self.asking = false;
                     self.sound("cancel");
                     self.unhush();
                 }
@@ -497,7 +516,8 @@ impl Assistant {
         {
             self.asleep = None;
         }
-        if self.asleep.is_some()
+        if self.brain.is_none()
+            && self.asleep.is_some()
             && skills::parse_at(&text, &ctx) != Some(skills::Action::Listen(true))
         {
             // Only "wake up" gets through; the rest stays quiet.
@@ -514,6 +534,21 @@ impl Assistant {
             self.wakelog.outcome("no-speech", "");
             self.sound("cancel");
             self.end_conversation(false);
+            return;
+        }
+        if let Some(brain) = self.brain.clone() {
+            let answering = mem::take(&mut self.asking) && !cut_off;
+            let hearing = brain::Hearing {
+                text: text.clone(),
+                now: ctx.now,
+                today: ctx.today,
+                music: ctx.focus.music,
+                timer: ctx.focus.timer,
+                answering,
+                cut_off,
+                dry: self.cfg.stdin,
+            };
+            self.hear_lisp(&brain, hearing, audio);
             return;
         }
         // Rescoring against the audio comes before the catch-all web
@@ -550,7 +585,7 @@ impl Assistant {
             return;
         };
         self.log(&format!("action {action:?}"));
-        self.log_heard(&text, Some(&action), audio);
+        self.log_heard(&text, Some(replay::kind(&action)), audio);
         self.wakelog.outcome("command", &text);
         if self.cfg.stdin {
             return;
@@ -563,9 +598,81 @@ impl Assistant {
         let (tx, rx) = mpsc::channel();
         thread::spawn(move || {
             let reply = skills::run(&action, &ctx);
-            let _ = tx.send((action, reply));
+            let _ = tx.send(Done::Rust(action, reply));
         });
         self.pending = Some(rx);
+    }
+
+    /// The Lisp brain hears TEXT in the background, as commands may take
+    /// seconds. Its filler arrives first.
+    fn hear_lisp(&mut self, brain: &brain::Shared, hearing: brain::Hearing, audio: &[f32]) {
+        let text = hearing.text.clone();
+        let audio = audio.to_vec();
+        if self.cfg.stdin {
+            let heard = brain.heard(&hearing, |_| {});
+            self.finish_lisp(LispDone { text, audio, heard });
+            return;
+        }
+        let (tx, rx) = mpsc::channel();
+        let brain = brain.clone();
+        thread::spawn(move || {
+            let fillers = tx.clone();
+            let heard = brain.heard(&hearing, |line| {
+                let _ = fillers.send(Done::Filler(line));
+            });
+            let _ = tx.send(Done::Lisp(Box::new(LispDone { text, audio, heard })));
+        });
+        self.pending = Some(rx);
+    }
+
+    fn finish_lisp(&mut self, done: LispDone) {
+        let LispDone { text, audio, heard } = done;
+        let h = match heard {
+            Ok(h) => h,
+            Err(e) => {
+                eprintln!("voice-assistant: {e}");
+                self.sound("error");
+                self.end_conversation(false);
+                return;
+            }
+        };
+        match &h.action {
+            Some(a) => self.log(&format!("action {a}")),
+            None => self.log(&format!("{} {text:?}", h.outcome)),
+        }
+        if h.outcome != "asleep" {
+            self.log_heard(&text, h.kind.clone(), &audio);
+        }
+        self.wakelog.outcome(&h.outcome, &text);
+        if self.cfg.stdin {
+            return;
+        }
+        if h.voice == Some(true) {
+            self.cfg.speak = true;
+        }
+        if h.notify {
+            let body = [h.body.as_str(), h.speech.as_str()]
+                .into_iter()
+                .filter(|s| !s.is_empty())
+                .collect::<Vec<_>>()
+                .join("\n");
+            self.notify(&h.title, &body);
+        }
+        if let Some(chime) = &h.chime {
+            self.sound(chime);
+        }
+        if !h.speech.is_empty() {
+            self.say(&h.speech, h.cache);
+        }
+        if h.voice == Some(false) {
+            self.cfg.speak = false;
+        }
+        self.asking = h.question;
+        if !h.question {
+            self.end_conversation(h.leave_paused);
+        } else if !self.speaking {
+            self.start_listening(Vec::new());
+        }
     }
 
     fn rescore(
@@ -899,6 +1006,11 @@ fn main() {
     let vad = asr::Vad::new(&cfg.vad_model).unwrap_or_else(|e| die(e));
     let classifier = classifier(&cfg.intent_model);
     let tts = tts::Tts::new(cfg.tts_model.clone(), cfg.voice, cfg.speed);
+    let brain = cfg.lisp.then(|| {
+        brain::Brain::connect()
+            .map(brain::Shared::new)
+            .unwrap_or_else(|e| die(e))
+    });
     let stdin = cfg.stdin;
     let threshold = cfg.threshold;
     let mut assistant = Assistant {
@@ -918,6 +1030,8 @@ fn main() {
         last_speech: String::new(),
         previous: None,
         pending: None,
+        brain,
+        asking: false,
         history: VecDeque::new(),
         started: Instant::now(),
         dumps: 0,

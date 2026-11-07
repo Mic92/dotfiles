@@ -3,10 +3,12 @@
 
 use std::collections::HashMap;
 use std::env;
+use std::fs;
 use std::io::{BufRead, BufReader, Write};
 use std::os::unix::net::UnixStream;
 use std::path::PathBuf;
-use std::process::{Child, Command};
+use std::process::{self, Child, Command};
+use std::sync::{Arc, Mutex, PoisonError};
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -50,7 +52,7 @@ impl Brain {
         if let Ok(s) = UnixStream::connect(live_socket()) {
             return Self::over(s);
         }
-        let sock = env::temp_dir().join(format!("va-brain-{}.sock", std::process::id()));
+        let sock = env::temp_dir().join(format!("va-brain-{}.sock", process::id()));
         let mut child = Command::new(brain_program())
             .arg("--socket")
             .arg(&sock)
@@ -95,7 +97,18 @@ impl Brain {
     fn request(
         &mut self,
         kind: &str,
+        fields: HashMap<String, JsonValue>,
+    ) -> Result<HashMap<String, JsonValue>, String> {
+        self.request_with(kind, fields, |_| {})
+    }
+
+    /// Sends a request and waits for its reply, handing anything the brain
+    /// sends first, such as fillers, to `early`.
+    fn request_with(
+        &mut self,
+        kind: &str,
         mut fields: HashMap<String, JsonValue>,
+        mut early: impl FnMut(&HashMap<String, JsonValue>),
     ) -> Result<HashMap<String, JsonValue>, String> {
         let id = self.next_id;
         self.next_id += 1;
@@ -105,17 +118,35 @@ impl Brain {
             .stringify()
             .map_err(|e| e.to_string())?;
         writeln!(self.writer, "{line}").map_err(|e| format!("writing to the brain: {e}"))?;
-        let mut answer = String::new();
-        match self.reader.read_line(&mut answer) {
-            Ok(0) => return Err("the brain hung up".into()),
-            Err(e) => return Err(format!("reading from the brain: {e}")),
-            Ok(_) => {}
+        loop {
+            let mut answer = String::new();
+            match self.reader.read_line(&mut answer) {
+                Ok(0) => return Err("the brain hung up".into()),
+                Err(e) => return Err(format!("reading from the brain: {e}")),
+                Ok(_) => {}
+            }
+            let reply = decode(&answer)?;
+            match reply.get("id") {
+                Some(JsonValue::Number(n)) if *n == id as f64 => {}
+                other => return Err(format!("reply for id {other:?}, expected {id}")),
+            }
+            let reply_kind = if kind == "parse" { "parsed" } else { kind };
+            if reply.get("type") == Some(&JsonValue::String(reply_kind.into())) {
+                return Ok(reply);
+            }
+            early(&reply);
         }
-        let reply = decode(&answer)?;
-        match reply.get("id") {
-            Some(JsonValue::Number(n)) if *n == id as f64 => Ok(reply),
-            other => Err(format!("reply for id {other:?}, expected {id}")),
-        }
+    }
+
+    /// What the brain makes of an utterance. Fillers go to `filler` while
+    /// the command runs.
+    pub fn heard(&mut self, h: &Hearing, mut filler: impl FnMut(String)) -> Result<Heard, String> {
+        let reply = self.request_with("heard", h.fields(), |m| {
+            if let Some(JsonValue::String(s)) = m.get("speech") {
+                filler(s.clone());
+            }
+        })?;
+        Heard::from(&reply)
     }
 
     pub fn parse(&mut self, texts: &[String], ctx: &Context) -> Result<Vec<Parses>, String> {
@@ -129,8 +160,112 @@ impl Drop for Brain {
         if let Some((child, sock)) = &mut self.private {
             let _ = child.kill();
             let _ = child.wait();
-            let _ = std::fs::remove_file(sock);
+            let _ = fs::remove_file(sock);
         }
+    }
+}
+
+/// One utterance and what the brain needs to know around it.
+pub struct Hearing {
+    pub text: String,
+    pub now: u32,
+    pub today: i64,
+    pub music: bool,
+    pub timer: bool,
+    /// We were listening for the answer to the brain's question.
+    pub answering: bool,
+    /// Listening ran into the time limit: only exact commands count.
+    pub cut_off: bool,
+    /// Only parse, as for `--stdin`.
+    pub dry: bool,
+}
+
+impl Hearing {
+    fn fields(&self) -> HashMap<String, JsonValue> {
+        HashMap::from([
+            ("text".into(), self.text.clone().into()),
+            ("now".into(), f64::from(self.now).into()),
+            ("today".into(), (self.today as f64).into()),
+            ("music".into(), self.music.into()),
+            ("timer".into(), self.timer.into()),
+            ("answering".into(), self.answering.into()),
+            ("cut_off".into(), self.cut_off.into()),
+            ("dry".into(), self.dry.into()),
+        ])
+    }
+}
+
+/// What to do about an utterance.
+#[derive(Debug, Default, PartialEq)]
+pub struct Heard {
+    /// command, miss, noise or asleep, as the wake log records it.
+    pub outcome: String,
+    pub action: Option<String>,
+    /// What heard.tsv logs, see `replay::kind`.
+    pub kind: Option<String>,
+    pub title: String,
+    pub body: String,
+    pub speech: String,
+    pub cache: bool,
+    pub chime: Option<String>,
+    pub notify: bool,
+    /// Turn the voice on before speaking or off after it.
+    pub voice: Option<bool>,
+    pub leave_paused: bool,
+    /// Listen for an answer without the wake word.
+    pub question: bool,
+}
+
+impl Heard {
+    fn from(o: &HashMap<String, JsonValue>) -> Result<Self, String> {
+        let text = |k: &str| match o.get(k) {
+            Some(JsonValue::String(s)) => Ok(Some(s.clone())),
+            Some(JsonValue::Null) => Ok(None),
+            v => Err(format!("heard: {k} is {v:?}")),
+        };
+        let flag = |k: &str| match o.get(k) {
+            Some(JsonValue::Boolean(b)) => Ok(Some(*b)),
+            Some(JsonValue::Null) => Ok(None),
+            v => Err(format!("heard: {k} is {v:?}")),
+        };
+        Ok(Heard {
+            outcome: text("outcome")?.unwrap_or_default(),
+            action: text("action")?,
+            kind: text("kind")?,
+            title: text("title")?.unwrap_or_default(),
+            body: text("body")?.unwrap_or_default(),
+            speech: text("speech")?.unwrap_or_default(),
+            cache: flag("cache")?.unwrap_or(false),
+            chime: text("chime")?,
+            notify: flag("notify")?.unwrap_or(false),
+            voice: flag("voice")?,
+            leave_paused: flag("leave_paused")?.unwrap_or(false),
+            question: flag("question")?.unwrap_or(false),
+        })
+    }
+}
+
+/// The brain behind a lock, shared with the threads running commands, and
+/// reconnected when it went away, as after a restart.
+#[derive(Clone)]
+pub struct Shared(Arc<Mutex<Option<Brain>>>);
+
+impl Shared {
+    pub fn new(b: Brain) -> Self {
+        Shared(Arc::new(Mutex::new(Some(b))))
+    }
+
+    pub fn heard(&self, h: &Hearing, mut filler: impl FnMut(String)) -> Result<Heard, String> {
+        let mut guard = self.0.lock().unwrap_or_else(PoisonError::into_inner);
+        if let Some(b) = guard.as_mut() {
+            match b.heard(h, &mut filler) {
+                Ok(r) => return Ok(r),
+                Err(e) => eprintln!("voice-assistant: {e}, reconnecting"),
+            }
+        }
+        *guard = None;
+        let b = guard.insert(Brain::connect()?);
+        b.heard(h, filler)
     }
 }
 
@@ -190,7 +325,7 @@ mod tests {
 
     fn fixture(name: &str) -> HashMap<String, JsonValue> {
         let path = format!("{}/tests/protocol/{name}.json", env!("CARGO_MANIFEST_DIR"));
-        let raw = std::fs::read_to_string(path).unwrap_or_default();
+        let raw = fs::read_to_string(path).unwrap_or_default();
         match raw.parse() {
             Ok(JsonValue::Object(o)) => o,
             _ => HashMap::new(),
@@ -250,13 +385,44 @@ mod tests {
         );
     }
 
+    #[test]
+    fn heard_fixture() {
+        let f = fixture("heard");
+        let req = part(&f, "request");
+        let h = Hearing {
+            text: "roll a die".into(),
+            now: 36000,
+            today: 20383,
+            music: false,
+            timer: false,
+            answering: false,
+            cut_off: false,
+            dry: true,
+        };
+        let mut fields = h.fields();
+        for k in ["id", "type"] {
+            fields.insert(k.into(), req.get(k).cloned().unwrap_or(JsonValue::Null));
+        }
+        assert_eq!(fields, req);
+        let got = Heard::from(&part(&f, "reply"));
+        assert_eq!(
+            got,
+            Ok(Heard {
+                outcome: "command".into(),
+                action: Some("Fun(Dice(6))".into()),
+                kind: Some("Fun(Dice".into()),
+                ..Heard::default()
+            })
+        );
+    }
+
     /// A fake brain answering each line with the next canned reply.
     #[test]
     fn talks_to_a_brain() {
-        let dir = env::temp_dir().join(format!("va-brain-test-{}", std::process::id()));
-        let _ = std::fs::create_dir_all(&dir);
+        let dir = env::temp_dir().join(format!("va-brain-test-{}", process::id()));
+        let _ = fs::create_dir_all(&dir);
         let sock = dir.join("brain.sock");
-        let _ = std::fs::remove_file(&sock);
+        let _ = fs::remove_file(&sock);
         let Ok(listener) = UnixListener::bind(&sock) else {
             panic!("bind {}", sock.display());
         };
@@ -288,6 +454,6 @@ mod tests {
         let got = b.parse(&["tell me a joke".into()], &Context::at(9 * 3600));
         assert_eq!(got.map(|p| p.len()), Ok(3));
         let _ = server.join();
-        let _ = std::fs::remove_dir_all(&dir);
+        let _ = fs::remove_dir_all(&dir);
     }
 }
