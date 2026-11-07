@@ -14,7 +14,8 @@
                                :components ,(mapcar (lambda (f) (list :file f))
                                                     '("timer" "system" "volume" "media" "desktop"
                                                       "apps" "info" "calc" "spell" "fun" "chat"
-                                                      "ops" "notes" "news" "kagi" "core")))))
+                                                      "ops" "notes" "reminders" "news" "kagi"
+                                                      "core")))))
 
 (defsystem "voice-assistant-brain/tests"
     :depends-on ("voice-assistant-brain" "parachute")
@@ -23,5 +24,5 @@
     :components #.(mapcar (lambda (f) (list :file f))
                           '("tests" "parsing" "grammar" "dispatch" "fun" "timer" "dialogue"
                             "system" "media" "desktop" "info" "kagi" "news" "spell" "calc" "chat"
-                            "ops" "notes" "types" "source"))
+                            "ops" "notes" "reminders" "types" "source"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))

@@ -52,8 +52,8 @@ action, or nil to fall through."
 go to the earlier one.")
 
 (defparameter *skill-order*
-  '(timer system volume media desktop app info calc spell fun chat ops notes reminders
-    meetings news kagi core)
+  '(timer system volume media desktop app info calc spell fun chat ops notes reminder
+    meeting news kagi core)
   "Skills in the order of Rust's MODULES. Ties between commands go to the earlier one.")
 
 (defn add-command ((c command)) symbol
