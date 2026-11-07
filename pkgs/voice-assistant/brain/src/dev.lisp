@@ -12,21 +12,30 @@
     (format s "~a: ~a~%" (type-of c) c)
     (sb-debug:print-backtrace :stream s :count 15)))
 
+(defn untimed-p ((form t)) boolean
+  "Whether FORM may run past the eval timeout: a reload compiles."
+  (and (consp form) (eq (first form) 'reload)))
+
 (defn eval-string ((text string)) string
-  "Every form in TEXT, in package VA. Output, then the last values."
+  "Every form in TEXT, in package VA, each cut off after 10 s unless
+`untimed-p'. Output, then the last values."
   (let ((*package* (find-package '#:va)))
     (with-output-to-string (*standard-output*)
       (let ((*error-output* *standard-output*)
             (*fake-effects* (or *fake-effects* (list :recording))))
         (handler-case
-            (sb-ext:with-timeout 10
-              (with-input-from-string (in text)
-                (let (values)
-                  (loop for form = (read in nil in)
-                        until (eq form in)
+            (with-input-from-string (in text)
+              (let (values)
+                (loop for form = (read in nil in)
+                      until (eq form in)
+                      do (setf values
+                               (if (untimed-p form)
                                         ; mallet:suppress no-eval -- the eval socket
-                        do (setf values (multiple-value-list (eval form))))
-                  (format t "~&~{~s~^~%~}~%" values))))
+                                   (multiple-value-list (eval form))
+                                   (sb-ext:with-timeout 10
+                                        ; mallet:suppress no-eval -- the eval socket
+                                     (multiple-value-list (eval form))))))
+                (format t "~&~{~s~^~%~}~%" values)))
           (sb-ext:timeout () (format t "~&timed out after 10 s~%"))
           (error (c) (format t "~&~a" (short-backtrace c))))))))
 
@@ -41,9 +50,14 @@
                (write-string (eval-string (read-all s)) s)
                (finish-output s))))
 
-(defn reload () list
+(defn reload (&optional (source (or null string pathname) nil)) list
   "Recompile changed files and the ones after them (the system is serial,
-so Coalton types are rechecked). Returns the warnings as strings."
+so Coalton types are rechecked). Returns the warnings as strings. SOURCE, the brain's directory in a
+checkout, points a brain built by nix at it first."
+  (when source
+    (asdf:clear-system "voice-assistant-brain")
+    (asdf:load-asd (merge-pathnames "voice-assistant-brain.asd"
+                                    (uiop:ensure-directory-pathname source))))
   (let (warnings)
     (handler-bind ((sb-kernel:redefinition-warning #'muffle-warning)
                    (warning
@@ -97,6 +111,9 @@ connects, instead of starting a private brain."
   "Entry point of the brain. With --socket PATH it only speaks the protocol
 there, as a private brain for one client, and exits with it, otherwise it is the live brain."
   (setf *random-state* (make-random-state t))
+  ;; The image remembers the build's cache dir, which `reload' would write to.
+  (uiop:call-image-restore-hook)
+  (asdf:clear-output-translations)
   ;; SBCL keeps every page it ever touched. A smaller nursery than the
   ;; default 5% of the heap keeps that near 80 MB.
   (setf (sb-ext:bytes-consed-between-gcs) (* 16 1024 1024))

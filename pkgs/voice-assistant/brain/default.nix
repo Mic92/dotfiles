@@ -108,6 +108,17 @@ let
       exit "$status"
     '';
   };
+  va-reload = writeShellApplication {
+    name = "va-reload";
+    runtimeInputs = [
+      socat
+      git
+    ];
+    text = ''
+      src=''${VA_BRAIN_SRC:-$(git rev-parse --show-toplevel)/pkgs/voice-assistant/brain}
+      printf '(va:reload "%s")\n' "$src" | socat -t 600 - "UNIX-CONNECT:"${sock "eval"}
+    '';
+  };
   va-dev = writeShellApplication {
     name = "va-dev";
     runtimeInputs = [
@@ -129,5 +140,6 @@ symlinkJoin {
     va-eval
     va-check
     va-dev
+    va-reload
   ];
 }

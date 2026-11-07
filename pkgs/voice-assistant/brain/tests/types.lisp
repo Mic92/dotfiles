@@ -35,7 +35,7 @@
 (defparameter *takes-anything*
   '(va::car-safe va::choose va::pick va::command-action va::bad-template va::comma-p
     va::debug-value va::debug-plain va::info-weather
-    va::reject)
+    va::reject va::untimed-p)
   "Functions that really take any value: format arguments, command fields and
 Rust Debug printing.")
 
