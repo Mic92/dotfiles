@@ -3,7 +3,8 @@
 (defmacro defn (name params result &body body)
   "A function with its types inline:
   (defn name ((x string) &optional (n fixnum 0) &rest (more string)) result body...)
-declaims its ftype, then defines it."
+declaims its ftype, then defines it. A single RESULT drops secondary values
+(`floor`, `parse-integer`), which the ftype would reject."
   (let (types args (mode :required))
     (dolist (p params)
       (cond
@@ -19,7 +20,12 @@ declaims its ftype, then defines it."
                                       `(values ,@(cdr result) &optional)
                                       `(values ,result &optional)))
                        ,name))
-       (defun ,name ,(nreverse args) ,@body))))
+       (defun ,name ,(nreverse args)
+         ,@(multiple-value-bind (forms decls doc) (a:parse-body body :documentation t)
+             `(,@(and doc (list doc)) ,@decls
+                 ,(if (and (consp result) (eq (car result) 'values))
+                      `(block ,name ,@forms)
+                      `(values (block ,name ,@forms)))))))))
 
 (defmacro in (word &rest choices)
   "Whether WORD is one of the strings CHOICES."
