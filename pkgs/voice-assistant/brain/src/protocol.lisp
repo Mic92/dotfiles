@@ -120,10 +120,12 @@ sent before it carry the id too."
 (defn accept-on ((path pathname) (name string) (handler function)) nil
   "Call HANDLER with a stream for each connection to the Unix socket PATH,
 each in its own thread."
-  (let ((server (listening-socket path)))
-    (loop
-     (let ((client (sb-bsd-sockets:socket-accept server)))
-       (sb-thread:make-thread (lambda () (handle-client client name handler)) :name name)))))
+  (serve-socket (listening-socket path) name handler))
+
+(defn serve-socket ((server sb-bsd-sockets:local-socket) (name string) (handler function)) nil
+  (loop
+   (let ((client (sb-bsd-sockets:socket-accept server)))
+     (sb-thread:make-thread (lambda () (handle-client client name handler)) :name name))))
 
 (defn serve-one ((path pathname) (handler function)) null
   "Serve a single client on PATH, as a private brain does, which then has

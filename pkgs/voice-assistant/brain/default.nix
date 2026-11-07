@@ -8,6 +8,12 @@
   mallet,
   tzdata,
   writeShellApplication,
+  makeWrapper,
+  curl,
+  mpv,
+  numbat,
+  playerctl,
+  libnotify,
 }:
 let
   lisp = sbcl.withPackages (p: [
@@ -37,7 +43,10 @@ let
     pname = "voice-assistant-brain";
     version = "0.1.0";
     inherit src;
-    nativeBuildInputs = [ lisp ];
+    nativeBuildInputs = [
+      lisp
+      makeWrapper
+    ];
     # ASDF writes fasls to the cache dir.
     buildPhase = ''
       export HOME=$TMPDIR XDG_CACHE_HOME=$TMPDIR/cache TZDIR=${tzdata}/share/zoneinfo
@@ -47,6 +56,17 @@ let
     '';
     installPhase = ''
       install -Dm755 va-brain $out/bin/va-brain
+      # web lookups, the radio, players and notifications. noctalia,
+      # systemctl and friends come from the session's PATH.
+      wrapProgram $out/bin/va-brain --prefix PATH : ${
+        lib.makeBinPath [
+          curl
+          mpv
+          numbat
+          playerctl
+          libnotify
+        ]
+      }
       install -Dm644 deps.core $out/lib/va-brain/deps.core
       install -Dm644 dev.lisp $out/lib/va-brain/dev.lisp
     '';

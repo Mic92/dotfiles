@@ -77,6 +77,14 @@ so Coalton types are rechecked). Returns the warnings as strings."
               (length warnings) (length passed) (length failed))
       (and (null warnings) (null failed)))))
 
+(defn tell-systemd-ready () null
+  "Under systemd with Type=notify, the assistant waits for this before it
+connects, instead of starting a private brain."
+  (when (uiop:getenv "NOTIFY_SOCKET")
+    (handler-case (sb-ext:run-program "systemd-notify" '("--ready") :search t)
+      (error (e) (format *error-output* "va-brain: systemd-notify: ~a~%" e))))
+  nil)
+
 (defn main () nil
   "Entry point of the brain. With --socket PATH it only speaks the protocol
 there, as a private brain for one client, and exits with it, otherwise it is the live brain."
@@ -87,4 +95,6 @@ there, as a private brain for one client, and exits with it, otherwise it is the
                              :name "va-eval server"))
     (cond (private (serve-one (pathname private) #'converse)
                    (sb-ext:exit :code 0))
-          (t (accept-on (merge-pathnames "brain.sock" (runtime-dir)) "va-protocol" #'converse)))))
+          (t (let ((server (listening-socket (merge-pathnames "brain.sock" (runtime-dir)))))
+               (tell-systemd-ready)
+               (serve-socket server "va-protocol" #'converse))))))

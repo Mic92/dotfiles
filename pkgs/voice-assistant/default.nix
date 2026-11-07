@@ -14,9 +14,6 @@
   onnxruntime,
   libnotify,
   playerctl,
-  mpv,
-  curl,
-  numbat,
   espeak-ng,
   voice-assistant-brain,
   # one of uisfx's sets: arcade cinematic dreamy glass mechanical minimal
@@ -134,13 +131,10 @@ rustPlatform.buildRustPackage {
     wrapProgram $out/bin/voice-assistant \
       --prefix PATH : ${
         lib.makeBinPath [
+          # chimes, notifications and pausing music while listening
           pipewire
           libnotify
-          # pausing music, now playing, the radio, web lookups
           playerctl
-          mpv
-          curl
-          numbat
         ]
       }
   '';
