@@ -183,10 +183,6 @@ nicknames, states, demonyms and countries with several zones.")
        (let ((*read-default-float-format* 'double-float) (*read-eval* nil))
          (float (read-from-string s) 1d0))))
 
-(defn strip-one ((ws words) &rest (heads string)) words
-  "WS without a leading word from HEADS."
-  (if (member (first ws) heads :test #'string=) (rest ws) ws))
-
 (defn find-zone ((ws words)) (or null string)
   "\"sydney, australia\" and \"houston, tx\": the city decides."
   (let* ((ws (strip-one (subseq ws 0 (position "," ws :test #'string=)) "the"))

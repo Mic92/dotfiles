@@ -110,3 +110,7 @@ digit/letter boundaries (\"10min\", \"7pm\"). \"1:30\" and \"o'clock\" stay whol
             (push piece out)))))
     (when (comma-p (car out)) (pop out))
     (nreverse out)))
+
+(defn strip-one ((ws words) &rest (heads string)) words
+  "WS without a leading word from HEADS."
+  (if (member (first ws) heads :test #'string=) (rest ws) ws))
