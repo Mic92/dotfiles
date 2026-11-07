@@ -43,7 +43,7 @@
 
 (defn day-of-month ((ws words)) (or null (integer 1 31))
   "\"1st\", \"15\", \"first\", \"twenty first\", \"thirtieth\"."
-  (let ((n (trivia:match (if (rest ws) ws (split-digits (first ws)))
+  (let ((n (trivia:match (if (rest ws) ws (and ws (split-digits (first ws))))
                          ((list d (or "st" "nd" "rd" "th")) (digits d))
                          ((list "twenty" o) (let ((o (below (ordinal o) 10))) (and o (+ 20 o))))
                          ((list "thirty" "first") 31)

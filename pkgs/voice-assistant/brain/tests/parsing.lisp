@@ -110,7 +110,7 @@
             ("march 4 th 2019" ,(va.types:MonthDay 3 4)) ("tuesday's" ,(va.types:Weekday 2 nil))
             ("monday the 1 st of march" ,march1))
           do (true (same-date want (date text)) "~s: ~s" text (date text))))
-  (dolist (text '("the" "march" "march 32" "may i" "the ball" "next" "1st"))
+  (dolist (text '("the" "of the" "march" "march 32" "may i" "the ball" "next" "1st"))
     (false (date text) "~s" text)))
 
 (define-test dates-from-today
