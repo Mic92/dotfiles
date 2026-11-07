@@ -32,6 +32,7 @@ carry indices, 0 is the todo list and 1 shopping.")
     (position-if (lambda (l) (member name (rest l) :test #'string=)) *lists*)))
 
 (defslot "list" (ws next) (list-lookup ws))
+(closed-slot "list" (lambda () (loop for l in *lists* append (mapcar #'split-words (rest l)))))
 ;; Unlike {text}, commas stay: they separate items.
 (defslot "items" (ws next) (and ws (unwords ws)))
 

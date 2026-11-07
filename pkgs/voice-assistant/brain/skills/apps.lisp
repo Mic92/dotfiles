@@ -44,6 +44,7 @@
     (position-if (lambda (app) (member spoken (first app) :test #'string=)) *apps*)))
 
 (defslot "app" (ws next) (app-lookup ws))
+(closed-slot "app" (lambda () (loop for (names) in *apps* append (mapcar #'split-words names))))
 
 (defn capitalize-first ((s string)) string
   (if (plusp (length s)) (concatenate 'string (string-upcase (subseq s 0 1)) (subseq s 1)) s))

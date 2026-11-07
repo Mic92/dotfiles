@@ -150,6 +150,7 @@ when \"radio\" was said, but not otherwise: \"turn on wifi\" is no lofi."
                                   append (mapcar (lambda (n) (cons i n)) names)))))))
 
 (defslot "station" (ws next) (station-lookup ws))
+(closed-slot "station" (lambda () (mapcan (lambda (s) (copy-list (first s))) *stations*)))
 
 (defparameter *vague*
   '("it" "that" "this" "something" "anything" "music" "radio" "again" "it again" "song" "songs"

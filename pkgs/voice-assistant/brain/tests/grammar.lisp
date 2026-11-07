@@ -53,6 +53,19 @@
       (true (member s v :test #'string=) "~s" s)))
   (false (va::variants (va::parse-template "ping {host}"))))
 
+(define-test sentences-for-closed-slots
+  :parent va-tests
+  (flet ((s (src)
+           (va::template-sentences (va::parse-template src)
+                                   (lambda (slot)
+                                     (and (string= slot "host") '(("eve") ("blob" "64")))))))
+    (is equal '("please reach eve" "please reach blob 64")
+        (s "!(can you|please) (reach|ping) [the] {host} [now]"))
+    (is equal '("ping eve" "ping blob 64") (s "ping {host}"))
+    (false (s "say {text}"))
+    (false (s "ping {host} and {host}"))
+    (false (s "what time is it"))))
+
 (define-test templates-reject-garbage
   :parent va-tests
   (fail (va::parse-template "set {x"))

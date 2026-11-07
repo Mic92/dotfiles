@@ -42,3 +42,14 @@
     (sb-thread:join-thread served :timeout 5 :default :still-serving)
     (false (sb-thread:thread-alive-p served))
     (false (probe-file path) "the socket is gone")))
+
+(define-test lexicon-holds-plain-and-named-commands
+  :parent va-tests
+  (let ((l (va::lexicon)))
+    (dolist (s '("tell a joke" "tell joke" "ping eve" "ping blob 64" "play radio 1"
+                 "do you have tits"))
+      (true (member s l :test #'string=) "~s" s))
+    (false (member "set a timer for" l :test #'string=) "open slots stay out")
+    (is equal l (remove-duplicates (sort (copy-list l) #'string<) :test #'string=)
+        "sorted, once each")
+    (is equal l (gethash "sentences" (va::answer-body (va::object "type" "lexicon"))))))

@@ -50,6 +50,7 @@
     (cond ((string= type "hello") (object "type" "hello" "version" +protocol-version+))
           ((string= type "parse") (parses msg))
           ((string= type "heard") (hear msg))
+          ((string= type "lexicon") (object "type" "lexicon" "sentences" (lexicon)))
           (t (reject "unknown message type ~s" type)))))
 
 (defn answer ((msg hash-table)) hash-table

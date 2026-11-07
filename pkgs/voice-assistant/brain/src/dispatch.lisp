@@ -50,6 +50,28 @@ or nil."
      (setf (gethash n *slot-parsers*)
            (lambda (,words ,next) (declare (ignorable ,words ,next)) ,@body))))
 
+(defvar *closed-values* (make-hash-table :test #'equal)
+  "Slot name to a function listing every value it takes, as word lists.")
+
+(defn closed-slot ((slot string) (values function)) string
+  "Declare that SLOT takes only what VALUES lists, for the lexicon."
+  (setf (gethash slot *closed-values*) values)
+  slot)
+
+(defn closed-values ((slot string)) list
+  (let ((f (gethash slot *closed-values*)))
+    (and f (funcall f))))
+
+(defn lexicon () list
+  "Every plain sentence and every one naming a fixed thing (\"ping eve\",
+\"play radio 1\"), sorted: what sound-alikes are searched among."
+  (let ((all (loop for c in (commands)
+                   unless (command-fallback c)
+                   append (loop for tm in (command-parsed c)
+                                append (template-sentences tm #'closed-values)
+                                append (variants tm)))))
+    (remove-duplicates (sort all #'string<) :test #'string=)))
+
 (defn slot-parser ((name string)) (or null function)
   (values (gethash name *slot-parsers*)))
 

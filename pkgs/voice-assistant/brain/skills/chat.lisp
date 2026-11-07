@@ -92,6 +92,8 @@
 
 (defslot "agent" (ws next) (row-of *agents* ws))
 (defslot "body" (ws next) (and (row-of *body* ws) (unwords ws)))
+(closed-slot "agent" (lambda () (mapcan (lambda (r) (copy-list (first r))) *agents*)))
+(closed-slot "body" (lambda () (mapcan (lambda (r) (copy-list (first r))) *body*)))
 
 (defreplies *hello*
   "Hey you."

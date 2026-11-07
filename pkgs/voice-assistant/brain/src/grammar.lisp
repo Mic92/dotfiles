@@ -233,3 +233,23 @@ variant of it with one or two parts changed: how commands are usually said
                     (setf (aref pick j) 0)))
         (setf (aref pick i) 0)))
     (nreverse out)))
+
+(defn template-sentences ((template template) (values function)) list
+  "The plainest sentences TEMPLATE accepts when its one required slot takes
+each of `(funcall VALUES slot)`: shortest alternatives, nothing optional.
+Empty when a slot has no fixed set of values."
+  (let (prefix suffix (options :none))
+    (dolist (part (template-parts template))
+      (destructuring-bind (kind a &optional optional) part
+        (flet ((add (ws) (if (eq options :none)
+                             (setf prefix (append prefix ws))
+                             (setf suffix (append suffix ws)))))
+          (ecase kind
+            (:word (add (reduce (lambda (x y) (if (< (length y) (length x)) y x)) a)))
+            (:optional)
+            (:slot (unless optional
+                     (unless (eq options :none) (return-from template-sentences nil))
+                     (setf options (or (funcall values a)
+                                       (return-from template-sentences nil)))))))))
+    (unless (eq options :none)
+      (mapcar (lambda (v) (unwords (append prefix v suffix))) options))))

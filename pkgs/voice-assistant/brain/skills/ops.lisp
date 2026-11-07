@@ -30,6 +30,8 @@ indices.")
 
 (defslot "host" (ws next) (named-row *hosts* ws))
 (defslot "bt" (ws next) (named-row *bt-devices* ws))
+(closed-slot "host" (lambda () (mapcan (lambda (r) (copy-list (a:lastcar r))) *hosts*)))
+(closed-slot "bt" (lambda () (mapcan (lambda (r) (copy-list (a:lastcar r))) *bt-devices*)))
 
 (defn succeeds ((program string) &rest (args string)) boolean
   (and (apply #'run program args) t))
