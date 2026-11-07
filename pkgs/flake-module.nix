@@ -81,7 +81,9 @@ in
   }
   // lib.optionalAttrs (pkgs.stdenv.hostPlatform.system == "x86_64-linux") {
     cewe-fotowelt = pkgs.callPackage ./cewe-fotowelt { };
-    voice-assistant = pkgs.callPackage ./voice-assistant { };
+    voice-assistant = pkgs.callPackage ./voice-assistant {
+      inherit (self'.packages) voice-assistant-brain;
+    };
     voice-assistant-brain = pkgs.callPackage ./voice-assistant/brain {
       inherit (self'.packages) mallet;
     };

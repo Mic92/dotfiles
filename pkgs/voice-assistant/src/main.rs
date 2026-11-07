@@ -1,6 +1,7 @@
 //! Wake word -> VAD-bounded command recording -> parakeet -> noctalia timer.
 
 mod asr;
+mod brain;
 mod classify;
 mod clock;
 mod date;
@@ -59,6 +60,8 @@ struct Config {
     /// Texts to run through the grammar, then exit.
     parse: Vec<String>,
     golden: bool,
+    /// Also ask the Lisp brain, and show where it disagrees.
+    lisp: bool,
 }
 
 fn default_path(build_env: Option<&str>) -> PathBuf {
@@ -71,8 +74,10 @@ fn usage() -> ! {
          \x20                      [--intent-model DIR] [--threads N] [--sounds DIR] [--tts-model DIR]\n\
          \x20                      [--voice N] [--speed X] [--no-tts] [--verbose] [--stdin]\n\
          \x20                      [--debug-dir DIR] [--say TEXT] [--replay] [--parse TEXT|-] [--golden]\n\
+         \x20                      [--brain rust|lisp]\n\
          --say speaks TEXT with the configured voice and exits.\n\
          --parse shows how TEXT (or each stdin line for -) is understood and exits.\n\
+         --brain lisp also parses with the Lisp brain and prints where it differs.\n\
          --golden prints the grammar's reading of each stdin line at a fixed clock.\n\
          --replay re-checks every logged utterance against the current build.\n\
          --debug-dir saves the audio around each wake word and command as WAV.\n\
@@ -102,6 +107,7 @@ fn parse_args() -> Config {
         transcribe: Vec::new(),
         parse: Vec::new(),
         golden: false,
+        lisp: false,
     };
     let mut args = env::args().skip(1);
     while let Some(a) = args.next() {
@@ -126,6 +132,11 @@ fn parse_args() -> Config {
             "--transcribe" => c.transcribe.push(val().into()),
             "--parse" => c.parse.push(val()),
             "--golden" => c.golden = true,
+            "--brain" => match val().as_str() {
+                "rust" => c.lisp = false,
+                "lisp" => c.lisp = true,
+                _ => usage(),
+            },
             _ => usage(),
         }
     }
@@ -786,15 +797,21 @@ fn classify_text(
         .flatten()
 }
 
-fn parse_texts(texts: &[String], mut classifier: Option<classify::Classifier>) -> i32 {
+fn parse_texts(texts: &[String], mut classifier: Option<classify::Classifier>, lisp: bool) -> i32 {
     let ctx = skills::Context::local();
     let mut texts: Vec<String> = texts.to_vec();
     if let Some(i) = texts.iter().position(|t| t == "-") {
         let lines = io::stdin().lines().map_while(Result::ok);
         texts.splice(i..=i, lines.filter(|l| !l.trim().is_empty()));
     }
+    let lisp = lisp.then(|| {
+        brain::Brain::connect()
+            .and_then(|mut b| b.parse(&texts, &ctx))
+            .unwrap_or_else(|e| die(e))
+    });
     let mut missed = false;
-    for t in &texts {
+    let mut differ = 0;
+    for (i, t) in texts.iter().enumerate() {
         let mut hit = || classifier.as_mut().and_then(|c| classify_text(c, t, &ctx));
         let (tier, action) = match skills::parse_tier(t, &ctx, false) {
             Some(a) => ("intent  ", Some(a)),
@@ -815,8 +832,25 @@ fn parse_texts(texts: &[String], mut classifier: Option<classify::Classifier>) -
                 println!("MISS      {t}");
             }
         }
+        if let Some(l) = lisp.as_ref().and_then(|l| l.get(i)) {
+            let strict = skills::parse_tier(t, &ctx, false).map(|a| format!("{a:?}"));
+            let fallback = skills::parse_tier(t, &ctx, true).map(|a| format!("{a:?}"));
+            let same = strict == l.strict && (strict.is_some() || fallback == l.fallback);
+            if !same {
+                differ += 1;
+                let show = |s: &Option<String>| s.clone().unwrap_or_else(|| "-".into());
+                println!(
+                    "LISP      {} / fallback {}",
+                    show(&l.strict),
+                    show(&l.fallback)
+                );
+            }
+        }
     }
-    i32::from(missed)
+    if lisp.is_some() {
+        eprintln!("{differ} of {} differ between the brains", texts.len());
+    }
+    i32::from(missed || differ > 0)
 }
 
 fn main() {
@@ -836,7 +870,11 @@ fn main() {
         return;
     }
     if !cfg.parse.is_empty() {
-        process::exit(parse_texts(&cfg.parse, classifier(&cfg.intent_model)));
+        process::exit(parse_texts(
+            &cfg.parse,
+            classifier(&cfg.intent_model),
+            cfg.lisp,
+        ));
     }
     let mut asr = asr::Asr::new(cfg.asr_model.clone(), cfg.threads);
     if !cfg.transcribe.is_empty() {

@@ -18,6 +18,7 @@
   curl,
   numbat,
   espeak-ng,
+  voice-assistant-brain,
   # one of uisfx's sets: arcade cinematic dreamy glass mechanical minimal
   # organic rubber scifi soft studio zen
   soundTheme ? "mechanical",
@@ -93,6 +94,7 @@ rustPlatform.buildRustPackage {
       ./build.rs
       ./src
       ./csrc
+      ./tests/protocol
     ];
   };
   cargoLock.lockFile = ./Cargo.lock;
@@ -120,6 +122,8 @@ rustPlatform.buildRustPackage {
     # The same library sherpa-onnx links. ort loads it at runtime.
     VA_ONNXRUNTIME = "${lib.getLib onnxruntime}/lib/libonnxruntime.so";
     VA_TTS_MODEL = ttsModel;
+    # --brain lisp starts a private brain when the service is not running.
+    VA_BRAIN = "${voice-assistant-brain}/bin/va-brain";
     VA_SOUNDS = "${uisfx}/packages/uisfx/sounds/${soundTheme}";
     SHERPA_CFLAGS = "-I${lib.getDev sherpa-onnx}/include";
   };
