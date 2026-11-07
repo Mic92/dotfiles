@@ -168,7 +168,31 @@ nicknames, states, demonyms and countries with several zones.")
           "kph")
          ("mile per hour" "miles per hour" :speed "mph" "mph")
          ("meter per second" "meters per second" :speed "m/s" "metres per second")
-         ("knot" "knots" :speed "knot")))
+         ("knot" "knots" :speed "knot")
+         ("euro" "euros" :money "EUR" "eur" "€")
+         ("US dollar" "US dollars" :money "USD" "dollar" "dollars" "usd" "us dollar" "us dollars"
+          "american dollar" "american dollars" "buck" "bucks")
+         ("British pound" "British pounds" :money "GBP" "british pound" "british pounds"
+          "pound sterling" "pounds sterling" "sterling" "quid" "gbp")
+         ("Swiss franc" "Swiss francs" :money "CHF" "franc" "francs" "swiss franc" "swiss francs"
+          "chf")
+         ("Japanese yen" "Japanese yen" :money "JPY" "yen" "japanese yen")
+         ("Chinese yuan" "Chinese yuan" :money "CNY" "yuan" "renminbi" "chinese yuan")
+         ("Canadian dollar" "Canadian dollars" :money "CAD" "canadian dollar" "canadian dollars")
+         ("Australian dollar" "Australian dollars" :money "AUD" "australian dollar"
+          "australian dollars" "aussie dollars")
+         ("Thai baht" "Thai baht" :money "THB" "baht" "thai baht")
+         ("Swedish krona" "Swedish kronor" :money "SEK" "swedish krona" "swedish kronor"
+          "swedish crowns")
+         ("Danish krone" "Danish kroner" :money "DKK" "danish krone" "danish kroner"
+          "danish crowns")
+         ("Norwegian krone" "Norwegian kroner" :money "NOK" "norwegian krone" "norwegian kroner"
+          "norwegian crowns")
+         ("Polish zloty" "Polish zlotys" :money "PLN" "zloty" "zlotys" "polish zloty")
+         ("Czech koruna" "Czech korunas" :money "CZK" "czech koruna" "czech crowns")
+         ("Indian rupee" "Indian rupees" :money "INR" "rupee" "rupees" "indian rupees")
+         ("Hungarian forint" "Hungarian forints" :money "HUF" "forint" "forints")
+         ("Turkish lira" "Turkish lira" :money "TRY" "lira" "turkish lira")))
   "Commands carry indices into this, like Rust's UNITS.")
 
 (defn rust-float ((v real)) string
@@ -215,6 +239,19 @@ nicknames, states, demonyms and countries with several zones.")
            (eq (unit-dimension (unit-at b)) :volume))
       (position "fluid ounce" *units* :key #'unit-singular :test #'string=)
       a))
+
+(defn sterling ((a (integer 0)) (b (integer 0))) (integer 0)
+  "\"Pounds in euros\" means British pounds."
+  (if (and (string= (unit-singular (unit-at a)) "pound")
+           (eq (unit-dimension (unit-at b)) :money))
+      (position "British pound" *units* :key #'unit-singular :test #'string=)
+      a))
+
+(defn money ((x double-float)) string
+  "Cents for amounts, three significant digits below one."
+  (cond ((= x (fround x)) (format nil "~d" (round x)))
+        ((>= (abs x) 1) (format nil "~,2f" x))
+        (t (spoken-3 x))))
 
 (defparameter *operators*
   '((("plus") " + ") (("+") " + ") (("minus") " - ") (("-") " - ") (("times") " * ")
@@ -519,8 +556,9 @@ time, so we can tell tomorrow from today."
                                             (unit-numbat (unit-at to)))))))
     (if (null result)
         (live "Convert" "" (pick *no-convert*))
-        (let ((what (format nil "~a ~a is ~a ~a" (spoken-3 value) (unit-name from value)
-                            (spoken-3 result) (unit-name to result))))
+        (let* ((say (if (eq (unit-dimension (unit-at to)) :money) #'money #'spoken-3))
+               (what (format nil "~a ~a is ~a ~a" (funcall say value) (unit-name from value)
+                             (funcall say result) (unit-name to result))))
           (live "Convert" what (pick *converted* what))))))
 
 (defcommand calc-date-in
@@ -641,12 +679,15 @@ time, so we can tell tomorrow from today."
   (:join "![what is|what's|what would be|give me|i need] the conversion (between|from) [a|an]"
          "{from} (and|to) [a|an] {to}")
   "!if i have {number} {from} how many {to} is that"
+  (:join "!(what's|what is|tell me|give me) the [current] (exchange|conversion) rate (from|of|for)"
+         "{from} (to|in|into|against|versus|vs) {to}")
+  "!how much is [a|one|the] {from} (worth in|in) {to} [right now|today]"
   :kind "Convert"
   :named t
   :slots ((value coalton:F64) (from coalton:UFix) (to coalton:UFix))
   :parse (let ((from (slot "from")) (to (slot "to")))
            (when (and from to)
-             (let ((f (fluid from to)) (u (fluid to from)))
+             (let ((f (sterling (fluid from to) to)) (u (sterling (fluid to from) from)))
                (and (convertible f u) (list (slot "number" 1d0) f u)))))
   :examples ("how many grams are in 9 kilograms" "convert 5 miles to kilometers")
   (conversion value from to))

@@ -470,7 +470,7 @@ clear my calendar for november 11th	-
 clear my calendar for september 6th	-
 clear my calendar on feb 28	-
 computer, place a call to alexa	-
-convert 20 yen to dollars	-
+convert 20 yen to dollars	Calc(Convert { value: 20.0, from: 35, to: 32 })
 correct spelling for aaron	Spell(Word("aaron"))
 could i get some more checkbooks sent to me	-
 could i get some more checkbooks sent to me, please	-
@@ -908,7 +908,7 @@ how many homeless people are there	-
 how many hours of pto have i used	-
 how many hurricanes are in an average hurricane season	-
 how many items are in a bakers dozen	-
-how many japanese yen are in a us dollar	-
+how many japanese yen are in a us dollar	Calc(Convert { value: 1.0, from: 32, to: 35 })
 how many keys does a xylophone have	-
 how many kilowatts have i used this month	-
 how many mexican pesos can i get for one us dollar	-
@@ -1025,7 +1025,7 @@ how much have i spent on video games recently	-
 how much have i spent this week	-
 how much in taxes will i owe	-
 how much interest is my nfcu accrueing	-
-how much is $30 usd in canadian dollar	-
+how much is $30 usd in canadian dollar	Calc(Convert { value: 30.0, from: 32, to: 37 })
 how much is 5 us dollars worth in canadian dollars	-
 how much is alorie intake	-
 how much is auto febreeze on amazon	-
@@ -1037,7 +1037,7 @@ how much is my maximum to spend on credit cards	-
 how much is my state taxes	-
 how much is my telephone bill this month	-
 how much is my water and sewer	-
-how much is one us dollar in british pounds	-
+how much is one us dollar in british pounds	Calc(Convert { value: 1.0, from: 32, to: 33 })
 how much is the car bill this month	-
 how much is the new nikon camera	-
 how much is the pay offered for my work	-

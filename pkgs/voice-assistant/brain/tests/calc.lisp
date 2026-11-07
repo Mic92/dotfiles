@@ -116,3 +116,29 @@
   (is equal '(82800 -1) (multiple-value-list (va::shifted "1 365 23:00")))
   (is = 8.04672d0 (va::parse-real "8.04672"))
   (false (va::convertible (va::find-unit '("mile")) (va::find-unit '("gram")))))
+
+(defun converts (text)
+  "What TEXT converts: value, from unit and to unit."
+  (let ((a (va::parse-text text)))
+    (and a (va::named-p a 'va::calc-convert)
+         (destructuring-bind (value from to) (va::action-fields a)
+           (list value (va::unit-singular (va::unit-at from))
+                 (va::unit-singular (va::unit-at to)))))))
+
+(define-test currencies
+  :parent va-tests
+  (with-focus ()
+    (loop for (text . want) in
+          '(("how much is 100 dollars in euros" 100d0 "US dollar" "euro")
+            ("convert 50 pounds to euros" 50d0 "British pound" "euro")
+            ("how many euros is 20 francs" 20d0 "Swiss franc" "euro")
+            ("what's the exchange rate from dollar to euro" 1d0 "US dollar" "euro")
+            ("what is the exchange rate of the pound against the dollar" 1d0 "British pound"
+             "US dollar")
+            ("how much is 1000 yen in euros" 1000d0 "Japanese yen" "euro")
+            ("convert 5 pounds to kilograms" 5d0 "pound" "kilogram"))
+          do (is equal want (converts text) "~s" text))
+    (false (converts "convert 5 euros to kilograms")))
+  (is equal "89.57" (va::money 89.5656d0))
+  (is equal "1200" (va::money 1200d0))
+  (is equal "0.00566" (va::money 0.00565707d0)))
