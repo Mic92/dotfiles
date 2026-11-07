@@ -9,6 +9,12 @@
 
 (defvar *context* (make-context (* 9 3600) (day-number 2025 10 22)))
 
+(defn now () (integer 0) (context-now *context*))
+
+(defn late-p () boolean
+  "23:00 to 5:00."
+  (let ((hour (floor (mod (now) 86400) 3600))) (or (>= hour 23) (< hour 5))))
+
 (defstruct (action (:constructor make-action (command fields)))
   (command nil :type command)
   (fields nil :type list))
@@ -112,15 +118,18 @@ request beats a catch-all on the whole of it."
 
 (defn perform ((a action)) reply
   "Run A. A plain string from the command is its speech."
-  (let ((out (apply (command-run (action-command a)) (action-fields a))))
+  (let ((out (let ((*late* (late-p)))
+               (apply (command-run (action-command a)) (action-fields a)))))
     (if (stringp out) (reply (command-kind (action-command a)) "" out) out)))
 
 (defn camel ((s symbol)) string
   (remove #\- (string-capitalize (symbol-name s))))
 
-(defn debug-value ((v t)) string
-  "V as Rust's Debug prints it."
+(defn debug-value ((v t) (type t)) string
+  "V of Coalton TYPE as Rust's Debug prints it."
   (typecase v
+    (null (if (eq type 'coalton:Boolean) "false" "None"))
+    ((eql t) "true")
     (string (format nil "~s" v))
     (float (if (= v (ftruncate v)) (format nil "~,1f" v) (format nil "~f" v)))
     (otherwise (princ-to-string v))))
@@ -130,6 +139,14 @@ request beats a catch-all on the whole of it."
   (if (null a)
       "-"
       (let* ((c (action-command a))
-             (inner (format nil "~a~@[(~{~a~^, ~})~]" (command-kind c)
-                            (mapcar #'debug-value (action-fields a)))))
+             (values (loop for v in (action-fields a)
+                           for (nil type) in (command-fields c)
+                           collect (debug-value v type)))
+             (inner (cond ((null values) (command-kind c))
+                          ((command-named c)
+                           (format nil "~a { ~{~a: ~a~^, ~} }" (command-kind c)
+                                   (loop for (name) in (command-fields c) for v in values
+                                         collect (substitute #\_ #\- (string-downcase name))
+                                         collect v)))
+                          (t (format nil "~a(~{~a~^, ~})" (command-kind c) values)))))
         (format nil "~a(~a)" (camel (command-skill c)) inner))))

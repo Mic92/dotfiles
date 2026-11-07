@@ -13,7 +13,8 @@
                                        :late ,(coerce late 'vector)))))
 
 (defvar *recent* (make-hash-table :test #'eq :synchronized t)
-  "Per reply table, the indices said lately.")
+  "Per list of lines, keyed by its first line, the indices said lately. The
+first line stays the same object when `choose` merges lists.")
 
 (declaim (ftype (function (replies &rest t) (values string &optional)) pick))
 (defun pick (replies &rest args)
@@ -23,8 +24,16 @@ Late lines replace the others at night."
                     (replies-late replies)
                     (replies-lines replies)))
          (n (length lines))
-         (seen (gethash lines *recent*))
+         (key (aref lines 0))
+         (seen (gethash key *recent*))
          (fresh (loop for i below n unless (member i seen) collect i))
          (i (nth (random (length fresh)) fresh)))
-    (setf (gethash lines *recent*) (subseq (cons i seen) 0 (min (floor n 2) (1+ (length seen)))))
+    (setf (gethash key *recent*) (subseq (cons i seen) 0 (min (floor n 2) (1+ (length seen)))))
     (apply #'format nil (aref lines i) args)))
+
+(defn choose ((fallback replies) (what t) &rest (cases t)) string
+  "A line from every table in CASES, (condition table)..., whose condition
+holds, or from FALLBACK when none does, formatted with WHAT."
+  (let ((lines (loop for (when table) on cases by #'cddr
+                     when when append (coerce (replies-lines table) 'list))))
+    (pick (if lines (make-replies :lines (coerce lines 'vector)) fallback) what)))

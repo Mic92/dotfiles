@@ -4,8 +4,9 @@
 
 (defstruct command
   (name nil :type symbol)
-  ;; How Rust's Debug names it.
+  ;; How Rust's Debug names it, and whether with field names.
   (kind "" :type string)
+  (named nil :type boolean)
   (skill nil :type symbol)
   (templates nil :type list)
   (parsed nil :type list)
@@ -18,13 +19,15 @@
   (parse nil :type (or null function))
   (run nil :type (or null function)))
 
-(defstruct (reply (:constructor reply (title body speech &key live)))
+(defstruct (reply (:constructor reply (title body speech &key live question)))
   "What the assistant says, and the notification showing it. LIVE replies
 are not cached for \"repeat that\"."
   (title "" :type string)
   (body "" :type string)
   (speech "" :type string)
-  (live nil :type boolean))
+  (live nil :type boolean)
+  ;; Interprets the next utterance as an answer: text to an action or nil.
+  (question nil :type (or null function)))
 
 (defvar *commands* nil
   "Every command, in definition order: ties go to the earlier one.")
@@ -53,9 +56,17 @@ are not cached for \"repeat that\"."
 
 (defn commands () list *commands*)
 
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defn default-kind ((name symbol) (skill symbol)) string
+    "NAME in CamelCase, without the skill's prefix: timer-cancel is Cancel."
+    (let* ((s (symbol-name name))
+           (prefix (format nil "~a-" skill))
+           (s (if (uiop:string-prefix-p prefix s) (subseq s (length prefix)) s)))
+      (remove #\- (string-capitalize s)))))
+
 (defmacro defcommand (name &body body)
   "(defcommand NAME TEMPLATE... [:key value]... FORM...)
-Keys: :kind, :slots ((var CoaltonType)...), :parse, :filler, :repeatable,
+Keys: :kind, :named, :slots ((var CoaltonType)...), :parse, :filler, :repeatable,
 :fallback, :examples. :parse turns the matched slots, read with
 `(slot name [default])`, into the fields: a list, t for none, or nil to
 reject the match. It sees the matched template's source as TEMPLATE.
@@ -67,7 +78,8 @@ in FORMs."
     `(progn
        (add-command
         (make-command :name ',name
-                      :kind ,(or (getf keys :kind) (remove #\- (string-capitalize name)))
+                      :kind ,(or (getf keys :kind) (default-kind name *skill*))
+                      :named ,(getf keys :named)
                       :skill *skill*
                       :templates ',templates
                       :parsed (mapcar #'parse-template ',templates)

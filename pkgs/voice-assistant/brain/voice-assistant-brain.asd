@@ -19,11 +19,12 @@
                  (:file "dispatch")
                  (:file "dev")
                  (:module "skills" :pathname "../skills/" :serial t
-                          :components ((:file "fun")))))
+                          :components ((:file "timer") (:file "fun")))))
 
 (defsystem "voice-assistant-brain/tests"
     :depends-on ("voice-assistant-brain" "parachute")
     :pathname "tests/"
     :serial t
-    :components ((:file "tests") (:file "parsing") (:file "grammar") (:file "dispatch") (:file "fun"))
+    :components ((:file "tests") (:file "parsing") (:file "grammar") (:file "dispatch") (:file "fun")
+                 (:file "timer"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))

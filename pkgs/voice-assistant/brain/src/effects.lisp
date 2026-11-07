@@ -12,6 +12,10 @@
      ,@body
      (reverse (butlast *fake-effects*))))
 
+(defmacro fake-effects-value (&body body)
+  "BODY's value, its effects only recorded."
+  `(let ((*fake-effects* (list :recording))) ,@body))
+
 (declaim (ftype (function () (values list &optional)) effects))
 (defun effects () *fake-effects*)
 
