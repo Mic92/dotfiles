@@ -51,3 +51,8 @@
           do (if (uiop:string-prefix-p "Say(" rust)
                  (true (uiop:string-prefix-p "Say(" lisp) "~s: ~a" text lisp)
                  (is equal rust lisp "~s" text)))))
+
+(define-test http-user-agent
+  :parent va-tests
+  (let ((ran (va:fake-effects (va::http-get "https://example.com"))))
+    (is equal "voice-assistant/0.1.0" (second (member "-A" (first ran) :test #'equal)))))

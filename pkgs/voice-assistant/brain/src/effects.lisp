@@ -35,10 +35,13 @@ failure."
                (return-from run nil))))
        (error () nil)))))
 
+(defparameter *user-agent* "voice-assistant/0.1.0"
+  "Sent with every request, as the Rust side does. Some sites refuse curl's.")
+
 (defn http-get ((url string) &key (header (or null string) nil) (timeout (integer 1) 3))
     (or null string)
   "The body at URL, or nil on any failure."
-  (let ((body (apply #'run "curl" "-sfL" "--max-time" (princ-to-string timeout)
+  (let ((body (apply #'run "curl" "-sfL" "-A" *user-agent* "--max-time" (princ-to-string timeout)
                      (append (and header (list "-H" header)) (list url)))))
     (and body (plusp (length body)) body)))
 

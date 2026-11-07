@@ -32,8 +32,9 @@
 (define-test jokes-work-offline
   :parent va-tests
   (let ((said nil))
-    (is equal '(("curl" "-sfL" "--max-time" "3" "-H" "Accept: text/plain"))
-        (mapcar (lambda (e) (subseq e 0 6))
+    (is equal '(("curl" "-sfL" "-A" "voice-assistant/0.1.0" "--max-time" "3"
+                 "-H" "Accept: text/plain"))
+        (mapcar (lambda (e) (subseq e 0 8))
                 (subseq (va:fake-effects (setf said (va::perform (va::parse-text "tell a joke"))))
                         0 1)))
     (true (plusp (length (va::reply-speech said))))))
