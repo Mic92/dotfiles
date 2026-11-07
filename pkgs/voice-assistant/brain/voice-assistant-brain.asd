@@ -30,6 +30,7 @@
                                        (:file "apps")
                                        (:file "info")
                                        (:file "fun")
+                                       (:file "kagi")
                                        (:file "core")))))
 
 (defsystem "voice-assistant-brain/tests"
@@ -46,5 +47,6 @@
                  (:file "system")
                  (:file "media")
                  (:file "desktop")
-                 (:file "info"))
+                 (:file "info")
+                 (:file "kagi"))
     :perform (test-op (o c) (symbol-call :parachute :test :va-tests)))
