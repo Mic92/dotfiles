@@ -94,11 +94,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792646627,
-        "narHash": "sha256-4rG1EWSeUmfYgWYVjq04zxL1f9AnAgF1iIF+oYH+xxs=",
+        "lastModified": 1793016696,
+        "narHash": "sha256-lTnOJAzwoq+UTdZEPoNMVsR25fg0rpaIHsbfU+LUGf8=",
         "ref": "main",
-        "rev": "b94705194f766cd5b62f88c4d2100b782fc1a783",
-        "revCount": 15399,
+        "rev": "dbae21013aca57424620d06863cbfd2e4107352b",
+        "revCount": 15419,
         "type": "git",
         "url": "https://git.clan.lol/clan/clan-core"
       },
@@ -509,11 +509,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1792850656,
-        "narHash": "sha256-6S8v3rVZaOqIBy7zh0n5CmJ4+Shnz4Xw6hk9B4hBtDE=",
+        "lastModified": 1793778187,
+        "narHash": "sha256-l0aRmEq2RWpT7svajXYiDgWeRVZLcT1DFiSYvU7zldA=",
         "owner": "Mic92",
         "repo": "herdr-eternal",
-        "rev": "444076180400cf4ebbca48ba0c0ae8181b2c0507",
+        "rev": "8997cb37f36af67aa89a10d846201bdfba5b85e6",
         "type": "github"
       },
       "original": {
@@ -784,11 +784,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1793201958,
-        "narHash": "sha256-71ho82CdM8xMtc+mudTDQBsC/FbCTbNKlwPyEI0Jqkk=",
+        "lastModified": 1794057345,
+        "narHash": "sha256-HGaIG2AkC8mQvsd08aidaboeZXhTn2uJLercp0+45ZQ=",
         "owner": "Mic92",
         "repo": "nix-grpc-store",
-        "rev": "493260fcbcdb99c54b7d3d54ec0e257257abda86",
+        "rev": "41a28e34c5ffa566c57569cb3bde791925ae6402",
         "type": "github"
       },
       "original": {
@@ -923,10 +923,10 @@
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1792698399,
-        "narHash": "sha256-oUKXmqcEcpLaojHTowjB939bnSeaa8Q7B6o6PleCwfQ=",
+        "lastModified": 1794054801,
+        "narHash": "sha256-m0hsClo/9kcrq8y0S3tRKQY27louNjoT1bQnMrNcqIc=",
         "ref": "main",
-        "rev": "1d634f520b971241b22815eab7451183e5f3abea",
+        "rev": "da0dcf92fca64589240ed60765b713397d81c942",
         "shallow": true,
         "type": "git",
         "url": "https://github.com/Mic92/nixpkgs"

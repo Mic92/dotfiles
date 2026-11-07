@@ -5,15 +5,11 @@ let
     name = "networkmanager-hook";
     src = ./__init__.py;
     buildInputs = [ python3 ];
-    nativeBuildInputs = [
-      makeWrapper
-      python3.pkgs.mypy
-    ];
+    nativeBuildInputs = [ makeWrapper ];
     dontUnpack = true;
     installPhase = ''
       install -D -m755 $src $out/bin/dispatcher
       patchShebangs $out/bin/dispatcher
-      mypy $src
       wrapProgram $out/bin/dispatcher --prefix PATH : ${
         lib.makeBinPath [
           systemd

@@ -3,6 +3,7 @@ import platform
 import sys
 
 import keyring
+import keyring.errors
 
 from .pinentry import Pinentry
 

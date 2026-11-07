@@ -76,7 +76,7 @@
       '')
       git
       radare2
-      mypy
+      ty
 
       self.packages.${pkgs.stdenv.hostPlatform.system}.forge-triage
       self.packages.${pkgs.stdenv.hostPlatform.system}.merge-when-green

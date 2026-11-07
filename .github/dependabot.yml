@@ -23,5 +23,8 @@ updates:
   - package-ecosystem: "nix"
     directory: "/"
     open-pull-requests-limit: 50
+    labels:
+      - "dependencies"
+      - "auto-merge"
     schedule:
       interval: "weekly"

@@ -26,7 +26,3 @@ ignore = [
     "D213",   # incompatible with D212 (multi-line-summary-first-line)
     "COM812", # conflicts with formatter
 ]
-
-[tool.mypy]
-python_version = "3.13"
-strict = true

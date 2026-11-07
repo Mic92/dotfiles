@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import TYPE_CHECKING
 
 import keyring
+import keyring.errors
 
 if TYPE_CHECKING:
     from collections.abc import Callable

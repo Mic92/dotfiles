@@ -11,21 +11,20 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "ghidra-cli";
-  version = "0.1.10";
+  version = "0.2.2";
 
   src = fetchFromGitHub {
     owner = "akiselev";
     repo = "ghidra-cli";
     rev = "v${finalAttrs.version}";
-    hash = "sha256-Ci2S+eQTSyT13UEabIsaREMN7ZDMwdSCLLHAuN9KdBI=";
+    hash = "sha256-B4bnOOFtEsckT5TOAmjbx5AkrdpjeA248G+BrDUHY88=";
   };
 
-  cargoHash = "sha256-udBEUmx9x1F1U+VDnBwMQVvwslym6gcznNJ6DSyyK2w=";
+  cargoHash = "sha256-r8AvlTJQ+j5YoLGJe3xIA0q+DPDTMKfhlT+nwFfNsPw=";
 
-  # Upstream is broken against Ghidra 12 (see akiselev/ghidra-cli#10):
-  #  - the embedded Java bridge uses the removed CParseResults API
-  #  - the bridge script is dropped under ~/.config which Ghidra's Bnd-based
-  #    OSGi compiler refuses to scan, so the script never gets compiled.
+  # - The bridge script is dropped under ~/.config which Ghidra's Bnd-based
+  #   OSGi compiler refuses to scan (akiselev/ghidra-cli#10).
+  # - Ghidra 12.2 dropped DataTypeManager.remove(DataType, TaskMonitor).
   patches = [ ./ghidra-12-compat.patch ];
 
   nativeBuildInputs = [

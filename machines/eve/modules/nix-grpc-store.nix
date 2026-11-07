@@ -23,6 +23,11 @@ in
     package = self.inputs.nix-grpc-store.packages.${pkgs.stdenv.hostPlatform.system}.default;
     # Remote builds import unsigned store paths from clients.
     trustClients = true;
+    # nix-daemon hands these to tribuchet via external-builders.
+    extraSystems = [
+      "aarch64-linux"
+      "aarch64-darwin"
+    ];
     tls = {
       certFile = "/var/lib/acme/thalheim.io/fullchain.pem";
       keyFile = "/var/lib/acme/thalheim.io/key.pem";

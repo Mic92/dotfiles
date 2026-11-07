@@ -1,15 +1,9 @@
 # Regression test for ghidra-cli + nixpkgs' Ghidra 12.
 #
-# Upstream v0.1.10 is broken against Ghidra 12 (akiselev/ghidra-cli#10):
-#   1. The Java bridge is dropped under ~/.config which Ghidra's Bnd-based
-#      OSGi compiler refuses to scan, so analyzeHeadless dies with
-#      "ClassNotFoundException: Failed to get OSGi bundle containing script".
-#   2. The bridge uses the removed CParseResults API and would not compile
-#      even if (1) were fixed.
-#
-# Both are addressed by ./ghidra-12-compat.patch.  This derivation exercises
-# the full import + decompile round-trip so we notice when a future Ghidra
-# bump in nixpkgs breaks the bridge again.
+# Exercises the full import + decompile round-trip so we notice when a Ghidra
+# bump in nixpkgs breaks the Java bridge (it surfaces as
+# "ClassNotFoundException: GhidraCliBridge"; the real javac error is in
+# ~/.config/*ghidra*/*/application.log).
 {
   stdenv,
   runCommand,
