@@ -11,4 +11,14 @@
       tags.org = "uni";
     }
   ];
+
+  # vLLM serving qwen on jack (LiteLLM fallback backend on eve)
+  services.telegraf.extraConfig.inputs.http_response = [
+    {
+      urls = [ "http://jack.r:8000/health" ];
+      tags.host = "jack";
+      tags.org = "uni";
+      response_status_code = 200;
+    }
+  ];
 }
