@@ -534,6 +534,17 @@ time, so we can tell tomorrow from today."
 
 (defreplies *no-convert* "Those don't convert. Apples and oranges.")
 
+(defreplies *exchanged*
+  "~a."
+  "~a. Rates from the European Central Bank, so blame them."
+  "~a. Rich yet?"
+  "~a. Money talks, and so do I."
+  "That's ~a. Before fees, obviously."
+  "~a. Spend it on me. I like gold-plated microphones."
+  "~a. Today, anyway. Tomorrow who knows."
+  (:late "~a. Online shopping at this hour? Put the card down."
+         "~a. Midnight money maths. Something you want to tell me?"))
+
 (defreplies *converted*
   "~a."
   "~a. Science."
@@ -553,13 +564,14 @@ time, so we can tell tomorrow from today."
   (let ((result (and (convertible from to)
                      (numbat-number (format nil "~a ~a -> ~a" (rust-float value)
                                             (unit-numbat (unit-at from))
-                                            (unit-numbat (unit-at to)))))))
+                                            (unit-numbat (unit-at to))))))
+        (cash (eq (unit-dimension (unit-at to)) :money)))
     (if (null result)
         (live "Convert" "" (pick *no-convert*))
-        (let* ((say (if (eq (unit-dimension (unit-at to)) :money) #'money #'spoken-3))
+        (let* ((say (if cash #'money #'spoken-3))
                (what (format nil "~a ~a is ~a ~a" (funcall say value) (unit-name from value)
                              (funcall say result) (unit-name to result))))
-          (live "Convert" what (pick *converted* what))))))
+          (live "Convert" what (pick (if cash *exchanged* *converted*) what))))))
 
 (defcommand calc-date-in
   (:join "!(what|which) (day|date) (will|would|is) it (be|gonna be) (in|after) {number} days"
