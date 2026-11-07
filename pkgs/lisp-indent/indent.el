@@ -1,6 +1,9 @@
 ;;; Indent Common Lisp files in place the way SLIME and Sly do.  -*- lexical-binding: t -*-
 (require 'cl-indent)
 (setq-default indent-tabs-mode nil)
+(put 'defn 'common-lisp-indent-function '(4 4 4 &body))
+(put 'word-case 'common-lisp-indent-function '(4 &rest (&whole 2 &rest 1)))
+(put 'adt-case 'common-lisp-indent-function '(4 4 &rest (&whole 2 &rest 1)))
 (put 'defcommand 'common-lisp-indent-function '(4 &body))
 (put 'defreplies 'common-lisp-indent-function '(4 &body))
 (put 'define-test 'common-lisp-indent-function '(4 &body))
